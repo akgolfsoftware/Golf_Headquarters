@@ -12,8 +12,9 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { startOfDay, endOfDay } from "@/lib/uke-helpers";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { T } from "@/lib/v2/tokens";
-import { Caps, Kort, TilbakeLenke } from "@/components/v2";
+import { TL } from "@/lib/v2/train-lock";
+
+import { Caps, TilbakeLenke } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import Link from "next/link";
 import { NyPlanKnapp } from "./ny-plan-knapp";
@@ -93,13 +94,13 @@ export default async function FysPlanListePage() {
       <div
         data-paper-slug="playerhq-fys-plan"
         data-od-id="playerhq-fys-plan"
-        style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}
+        style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}
       >
         {/* Topp — fasit: FYS / Fysiske treningsplaner */}
         <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
           <div>
-            <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>FYS</h1>
-            <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+            <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>FYS</h1>
+            <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
               Fysiske treningsplaner
             </span>
           </div>
@@ -110,21 +111,21 @@ export default async function FysPlanListePage() {
         {dagensFys && (
           <div
             style={{
-              background: T.handlingSoft,
-              border: `1px solid ${T.border}`,
-              borderRadius: T.rCard,
+              background: TL.dim,
+              border: `1px solid ${TL.hair}`,
+              borderRadius: TL.radius.card,
               padding: 16,
             }}
           >
             <Caps>Én ting nå</Caps>
-            <h3 style={{ margin: "8px 0", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+            <h3 style={{ margin: "8px 0", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
               {dagensFys.title}
               {" · "}
-              <span style={{ fontFamily: T.mono, fontVariantNumeric: "tabular-nums" }}>
+              <span style={{ fontFamily: TL.font.mono, fontVariantNumeric: "tabular-nums" }}>
                 {OSLO_TID.format(dagensFys.scheduledAt)}
               </span>
             </h3>
-            <p style={{ margin: "0 0 16px", fontFamily: T.bodyFont, fontSize: 14, color: T.mut, maxWidth: "52ch" }}>
+            <p style={{ margin: "0 0 16px", fontFamily: TL.font.sans, fontSize: 14, color: TL.mute, maxWidth: "52ch" }}>
               {dagensFys.location ? `${dagensFys.location} · ` : ""}
               {dagensFys.durationMin} min. Økta ligger først i dag — golfkølla venter til etterpå.
             </p>
@@ -140,10 +141,10 @@ export default async function FysPlanListePage() {
                 justifyContent: "center",
                 minHeight: 56,
                 width: "100%",
-                borderRadius: T.rCard,
-                background: T.handling,
-                color: T.onHandling,
-                fontFamily: T.ui,
+                borderRadius: TL.radius.card,
+                background: TL.fill,
+                color: TL.onFill,
+                fontFamily: TL.font.sans,
                 fontSize: 14,
                 fontWeight: 600,
               }}
@@ -184,15 +185,15 @@ export default async function FysPlanListePage() {
           <div
             style={{
               padding: "24px 16px",
-              background: T.panel2,
-              border: `1px dashed ${T.border}`,
-              borderRadius: T.rCard,
+              background: TL.dock,
+              border: `1px dashed ${TL.hair}`,
+              borderRadius: TL.radius.card,
             }}
           >
-            <h3 style={{ margin: "0 0 8px", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+            <h3 style={{ margin: "0 0 8px", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
               Ingen FYS-plan ennå
             </h3>
-            <p style={{ margin: "0 0 12px", fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut }}>
+            <p style={{ margin: "0 0 12px", fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute }}>
               Anders har ikke lagt en fysisk plan for deg. Du kan be om en — eller logge fri
               fysisk trening så lenge, den teller i totalen.
             </p>
@@ -209,11 +210,11 @@ export default async function FysPlanListePage() {
                   justifyContent: "center",
                   minHeight: 56,
                   width: "100%",
-                  borderRadius: T.rCard,
+                  borderRadius: TL.radius.card,
                   ...(!dagensFys
-                    ? { background: T.handling, color: T.onHandling }
-                    : { background: T.panel, color: T.fg, border: `1px solid ${T.border}` }),
-                  fontFamily: T.ui,
+                    ? { background: TL.fill, color: TL.onFill }
+                    : { background: TL.elev, color: TL.text, border: `1px solid ${TL.hair}` }),
+                  fontFamily: TL.font.sans,
                   fontSize: 14,
                   fontWeight: 600,
                 }}
@@ -231,11 +232,11 @@ export default async function FysPlanListePage() {
                   justifyContent: "center",
                   minHeight: 56,
                   width: "100%",
-                  borderRadius: T.rCard,
-                  background: T.panel,
-                  color: T.fg,
-                  border: `1px solid ${T.border}`,
-                  fontFamily: T.ui,
+                  borderRadius: TL.radius.card,
+                  background: TL.elev,
+                  color: TL.text,
+                  border: `1px solid ${TL.hair}`,
+                  fontFamily: TL.font.sans,
                   fontSize: 14,
                   fontWeight: 500,
                 }}
@@ -253,15 +254,15 @@ export default async function FysPlanListePage() {
               display: "flex",
               gap: 12,
               padding: "12px 16px",
-              borderRadius: T.rCard,
-              background: T.panel2,
-              border: `1px solid ${T.border}`,
-              fontFamily: T.bodyFont,
+              borderRadius: TL.radius.card,
+              background: TL.dock,
+              border: `1px solid ${TL.hair}`,
+              fontFamily: TL.font.sans,
               fontSize: 12.5,
-              color: T.mut,
+              color: TL.mute,
             }}
           >
-            <Icon name="clock" size={16} style={{ color: T.mut, flex: "none", marginTop: 2 }} />
+            <Icon name="clock" size={16} style={{ color: TL.mute, flex: "none", marginTop: 2 }} />
             <span>
               FYS-score kommer. Anders bekrefter referanseverdiene før tall vises her — vi viser
               heller ingenting enn tall som ikke stemmer.

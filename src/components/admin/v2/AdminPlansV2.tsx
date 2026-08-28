@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * AgencyOS Treningsplaner — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
  * T.* only. Mørk AgencyOS. Utkast · Aktiv · Fullført · Workbench for ny plan.
@@ -8,21 +8,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import {
-  Caps,
-  Kort,
-  Rad,
-  KpiFlis,
-  AvatarInit,
-  StatusPill,
-  CTAPill,
-  PillTabs,
-  InnsiktChip,
-  TomTilstand,
-  T,
-  type StatusTone,
-} from "@/components/v2";
-
+import { Caps, Kort, Rad, KpiFlis, AvatarInit, StatusPill, CTAPill, PillTabs, InnsiktChip, TomTilstand, type StatusTone } from "@/components/v2";
 // ── Datakontrakt (mappes fra TrainingPlan i ruten) ──────────────
 export type PlanFase = "utkast" | "aktiv" | "fullfort";
 export interface AdminPlanKort {
@@ -107,8 +93,8 @@ export function AdminPlansV2({ data }: { data: AdminPlansData }) {
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
         <div data-paper-pattern-topp data-paper-slug="agencyos-planbibliotek">
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Planer</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Planer</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>AgencyOS</span>
         </div>
       </div>
       <StatusPill tone={statusTone}>{statusTekst}</StatusPill>
@@ -127,7 +113,7 @@ export function AdminPlansV2({ data }: { data: AdminPlansData }) {
   // Tom stalle — ærlig vei videre
   if (data.antall === 0) {
     return (
-      <div data-paper-wave-h="plans" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+      <div data-paper-wave-h="plans" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 960, margin: "0 auto", width: "100%" }}>
         {hode}
         <Kort>
           <TomTilstand
@@ -142,10 +128,10 @@ export function AdminPlansV2({ data }: { data: AdminPlansData }) {
           style={{
             textDecoration: "none",
             textAlign: "center",
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 12,
             fontWeight: 600,
-            color: T.mut,
+            color: TL.mute,
           }}
         >
           Eller start fra en mal →
@@ -156,7 +142,7 @@ export function AdminPlansV2({ data }: { data: AdminPlansData }) {
 
   // ── KPI (3 faser) ──────────────────────────────────────────────
   const kpi = (
-    <div className="grid grid-cols-3" style={{ gap: T.gap }}>
+    <div className="grid grid-cols-3" style={{ gap: 16 }}>
       <KpiFlis label="Utkast" value={data.utkast} />
       <KpiFlis label="Aktive" value={data.aktive} tint />
       <KpiFlis label="Fullført" value={data.fullfort} />
@@ -173,7 +159,7 @@ export function AdminPlansV2({ data }: { data: AdminPlansData }) {
   const mobilTabs = FASER.map((f) => ({ id: f.id, l: `${f.label} · ${iFase(f.id).length}` }));
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {hode}
       {/* B: status/KPI først, deretter én primær */}
       {kpi}
@@ -187,14 +173,14 @@ export function AdminPlansV2({ data }: { data: AdminPlansData }) {
       </div>
 
       {/* Desktop: 3-kolonne kanban */}
-      <div className="hidden md:grid md:grid-cols-3" style={{ gap: T.gap, alignItems: "start" }}>
+      <div className="hidden md:grid md:grid-cols-3" style={{ gap: 16, alignItems: "start" }}>
         {FASER.map((f) => (
           <div key={f.id}>{renderKolonne(f.id)}</div>
         ))}
       </div>
 
       {/* Mobil: faneveksler + én kolonne-stabel */}
-      <div className="md:hidden" style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div className="md:hidden" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <StatusPill tone="info">Fase</StatusPill>
           <PillTabs tabs={mobilTabs} value={mobilFase} onChange={(id) => setMobilFase(id as PlanFase)} />

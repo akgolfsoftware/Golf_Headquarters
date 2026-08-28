@@ -7,7 +7,8 @@ import { notFound, redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { getAvailableSlots } from "@/lib/booking/availability";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Caps, Tittel, Kort, TilbakeLenke, StatusPill, TomTilstand } from "@/components/v2";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { RescheduleDatoVelger } from "./reschedule-dato-velger";
@@ -73,7 +74,7 @@ export default async function ReschedulePage({ params, searchParams }: Props) {
           margin: "0 auto",
           display: "flex",
           flexDirection: "column",
-          gap: T.gap,
+          gap: 16,
         }}
       >
         <TilbakeLenke href="/portal/meg/bookinger">Bookinger</TilbakeLenke>
@@ -84,7 +85,7 @@ export default async function ReschedulePage({ params, searchParams }: Props) {
             <div style={{ marginTop: 10 }}>
               <Tittel em={booking.serviceType.name}>Bytt tid på</Tittel>
             </div>
-            <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: "8px 0 0", lineHeight: 1.45 }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: "8px 0 0", lineHeight: 1.45 }}>
               Velg ny dato og tid under.
             </p>
           </div>
@@ -93,17 +94,17 @@ export default async function ReschedulePage({ params, searchParams }: Props) {
 
         <Kort>
           <Caps style={{ marginBottom: 8 }}>Nåværende tid</Caps>
-          <div style={{ fontFamily: T.ui, fontSize: 14, fontWeight: 600, color: T.fg }}>
+          <div style={{ fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600, color: TL.text }}>
             {naa} kl {naaTid}
           </div>
-          <div style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, marginTop: 4 }}>
+          <div style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, marginTop: 4 }}>
             {booking.serviceType.durationMin} min · {booking.location.name}
           </div>
         </Kort>
 
         <Kort>
-          <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.5 }}>
-            <strong style={{ color: T.fg }}>Regel:</strong> Bytting er gratis frem til 24 timer før start.
+          <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.5 }}>
+            <strong style={{ color: TL.text }}>Regel:</strong> Bytting er gratis frem til 24 timer før start.
             Etter det kan ikke tidspunktet endres, og bookingen er ikke refunderbar.
           </p>
         </Kort>

@@ -17,7 +17,8 @@ import { getBriefData, bygBriefSystemPrompt, bygBriefUserPrompt } from "@/lib/ad
 import { anthropicKlient, COACH_MODEL } from "@/lib/anthropic";
 import { tekstFra } from "@/lib/ai/client";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Caps, Tittel, Kort, KpiFlis, StatusPill, CTAPill, TomTilstand, Icon, TilbakeLenke } from "@/components/v2";
 import { handlingstypeLabel } from "@/lib/labels/handlingstyper";
 
@@ -89,7 +90,7 @@ export default async function DagligBrief() {
   return (
     <V2Shell bredde="kolonne" aktiv="cockpit" nav={AGENCYOS_NAV} navn={coach.name} avatarUrl={coach.avatarUrl}>
       <TilbakeLenke href="/admin/innboks">Innboks</TilbakeLenke>
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         {/* Hode */}
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>
           <div>
@@ -111,7 +112,7 @@ export default async function DagligBrief() {
                 {idag.toLocaleDateString("nb-NO", { weekday: "long", day: "numeric", month: "long" }).replace(/^\w/, (c) => c.toUpperCase())}.
               </Tittel>
             </div>
-            <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "10px 0 0" }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: "10px 0 0" }}>
               Brief generert {klokke} · genereres på nytt ved hvert besøk
             </p>
           </div>
@@ -137,7 +138,7 @@ export default async function DagligBrief() {
         </AgentStrip>
 
         {/* KPI-strip */}
-        <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: T.gap }}>
+        <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: 16 }}>
           <KpiFlis label="Dagens økter" value={data.dagensTimer.antall} delta={data.dagensTimer.antall === 0 ? "Ingen bookinger" : `${startTid}–${sluttTid}`} />
           <KpiFlis label="Ventende godkjenninger" value={data.ventendeGodkjenninger} delta={data.ventendeGodkjenninger > 0 ? undefined : "Alt avklart"} />
           <KpiFlis label="Ubesvarte meldinger" value={data.ubesvarteMeldinger} delta={data.ubesvarteMeldinger === 0 ? "Innboks ryddig" : "direkte-meldinger"} />
@@ -147,9 +148,9 @@ export default async function DagligBrief() {
         {/* 01 — AI-brief */}
         <Kort eyebrow="01 · AI-brief — oppsummering av dagen" tint>
           {aiBrief ? (
-            <p style={{ fontFamily: T.ui, fontSize: 13.5, lineHeight: 1.7, color: T.fg, whiteSpace: "pre-wrap", margin: 0 }}>{aiBrief}</p>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 13.5, lineHeight: 1.7, color: TL.text, whiteSpace: "pre-wrap", margin: 0 }}>{aiBrief}</p>
           ) : (
-            <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: 0 }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: 0 }}>
               {aiFeil ? `Kunne ikke generere AI-brief: ${aiFeil}` : "Genererer brief…"}
             </p>
           )}
@@ -173,14 +174,14 @@ export default async function DagligBrief() {
                     justifyContent: "space-between",
                     gap: 12,
                     padding: "10px 0",
-                    borderBottom: i === arr.length - 1 ? "none" : `1px solid ${T.border}`,
+                    borderBottom: i === arr.length - 1 ? "none" : `1px solid ${TL.hair}`,
                   }}
                 >
                   <div>
-                    <div style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>{r.spiller}</div>
-                    <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut }}>{r.bane}</div>
+                    <div style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text }}>{r.spiller}</div>
+                    <div style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute }}>{r.bane}</div>
                   </div>
-                  <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: r.sgTotal == null ? T.mut : r.sgTotal >= 0 ? T.up : T.down }}>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, color: r.sgTotal == null ? TL.mute : r.sgTotal >= 0 ? TL.ok : TL.danger }}>
                     {r.sgTotal != null ? `${r.sgTotal >= 0 ? "+" : ""}${r.sgTotal.toFixed(1).replace(".", ",")}` : "—"}
                   </span>
                 </div>
@@ -190,17 +191,17 @@ export default async function DagligBrief() {
         </div>
 
         {/* 03 + 04 */}
-        <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: T.gap, alignItems: "start" }}>
+        <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: 16, alignItems: "start" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             <Caps>03 · Agentenes anbefalinger</Caps>
             <Kort pad="12px 18px">
               <div style={{ display: "flex", gap: 12 }}>
-                <span style={{ display: "grid", placeItems: "center", width: 32, height: 32, borderRadius: 8, background: T.panel2, flexShrink: 0 }}>
-                  <Icon name="bot" size={16} style={{ color: T.lime }} />
+                <span style={{ display: "grid", placeItems: "center", width: 32, height: 32, borderRadius: 8, background: TL.dock, flexShrink: 0 }}>
+                  <Icon name="bot" size={16} style={{ color: TL.fill }} />
                 </span>
                 <div>
-                  <div style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>Agent-pipeline aktiv</div>
-                  <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 2 }}>
+                  <div style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text }}>Agent-pipeline aktiv</div>
+                  <div style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 2 }}>
                     {data.ukenGenerert.signals} signaler beregnet og {data.ukenGenerert.planActions} plan-forslag laget siste 7 dager.
                   </div>
                 </div>
@@ -210,12 +211,12 @@ export default async function DagligBrief() {
             {ferskeForslag.length === 0 ? (
               <Kort pad="12px 18px">
                 <div style={{ display: "flex", gap: 12 }}>
-                  <span style={{ display: "grid", placeItems: "center", width: 32, height: 32, borderRadius: 8, background: T.panel2, flexShrink: 0 }}>
-                    <Icon name="check-circle" size={16} style={{ color: T.mut }} />
+                  <span style={{ display: "grid", placeItems: "center", width: 32, height: 32, borderRadius: 8, background: TL.dock, flexShrink: 0 }}>
+                    <Icon name="check-circle" size={16} style={{ color: TL.mute }} />
                   </span>
                   <div>
-                    <div style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>Ingen forslag venter</div>
-                    <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 2 }}>
+                    <div style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text }}>Ingen forslag venter</div>
+                    <div style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 2 }}>
                       Forslag kommer typisk etter mandag-cron eller etter ny spilleraktivitet.
                     </div>
                   </div>
@@ -228,19 +229,19 @@ export default async function DagligBrief() {
                   <Link key={a.id} href={`/admin/spillere/${a.user.id}`} style={{ textDecoration: "none" }}>
                     <Kort hover pad="12px 18px">
                       <div style={{ display: "flex", gap: 12 }}>
-                        <span style={{ display: "grid", placeItems: "center", width: 32, height: 32, borderRadius: 8, background: T.panel2, flexShrink: 0 }}>
-                          <Icon name="sparkles" size={16} style={{ color: T.lime }} />
+                        <span style={{ display: "grid", placeItems: "center", width: 32, height: 32, borderRadius: 8, background: TL.dock, flexShrink: 0 }}>
+                          <Icon name="sparkles" size={16} style={{ color: TL.fill }} />
                         </span>
                         <div style={{ minWidth: 0, flex: 1 }}>
                           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                            <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                            <span style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                               {a.user.name}
                             </span>
-                            <span style={{ fontFamily: T.mono, fontSize: 9, textTransform: "uppercase", color: T.mut, background: T.panel3, borderRadius: 4, padding: "1px 6px" }}>
+                            <span style={{ fontFamily: TL.font.mono, fontSize: 9, textTransform: "uppercase", color: TL.mute, background: TL.dim, borderRadius: 4, padding: "1px 6px" }}>
                               {handlingstypeLabel(a.actionType)}
                             </span>
                           </div>
-                          <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                          <div style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                             {sugg?.forklaring ?? a.agentName}
                           </div>
                         </div>
@@ -253,8 +254,8 @@ export default async function DagligBrief() {
 
             {data.ventendeGodkjenninger > 0 && (
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <span style={{ fontFamily: T.ui, fontSize: 12, color: T.mut }}>{data.ventendeGodkjenninger} forslag venter totalt</span>
-                <Link href="/admin/godkjenninger" style={{ fontFamily: T.ui, fontSize: 12, color: T.lime, fontWeight: 600, textDecoration: "none" }}>
+                <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}>{data.ventendeGodkjenninger} forslag venter totalt</span>
+                <Link href="/admin/godkjenninger" style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.fill, fontWeight: 600, textDecoration: "none" }}>
                   Åpne godkjenningskø →
                 </Link>
               </div>
@@ -267,9 +268,9 @@ export default async function DagligBrief() {
           </div>
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderTop: `1px solid ${T.border}`, paddingTop: 16 }}>
-          <span style={{ fontFamily: T.mono, fontSize: 10.5, textTransform: "uppercase", color: T.mut }}>AgencyOS · Daglig brief</span>
-          <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderTop: `1px solid ${TL.hair}`, paddingTop: 16 }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 10.5, textTransform: "uppercase", color: TL.mute }}>AgencyOS · Daglig brief</span>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>
             Uke {ukeNr} · {klokke}
           </span>
         </div>

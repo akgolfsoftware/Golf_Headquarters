@@ -21,6 +21,7 @@
  */
 
 import { useState, useTransition, type ReactNode, type CSSProperties } from "react";
+import { TL } from "@/lib/v2/train-lock";
 import { T } from "@/lib/v2/tokens";
 import { LogoAK, Caps, Icon } from "@/components/v2";
 import { resendGuardianInvitation } from "@/app/auth/onboarding/actions";
@@ -69,8 +70,8 @@ function Felt({
           height: 44,
           padding: "0 14px",
           borderRadius: 12,
-          background: T.panel2,
-          border: `1px solid ${T.borderS}`,
+          background: TL.dock,
+          border: `1px solid ${TL.hair}`,
         }}
       >
         {leading}
@@ -89,10 +90,10 @@ function Felt({
             background: "transparent",
             border: "none",
             outline: "none",
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 13.5,
             fontWeight: 500,
-            color: T.fg,
+            color: TL.text,
           }}
         />
       </div>
@@ -118,8 +119,8 @@ function Knapp({
 }) {
   const v: CSSProperties =
     variant === "primary"
-      ? { background: T.handling, color: T.onHandling, border: "none" }
-      : { background: T.panel3, color: T.fg, border: `1px solid ${T.borderS}` };
+      ? { background: TL.fill, color: TL.onFill, border: "none" }
+      : { background: TL.dim, color: TL.text, border: `1px solid ${TL.hair}` };
   return (
     <button
       type={type}
@@ -137,7 +138,7 @@ function Knapp({
         alignItems: "center",
         justifyContent: "center",
         gap: 9,
-        fontFamily: T.ui,
+        fontFamily: TL.font.sans,
         fontSize: 13.5,
         fontWeight: 600,
         ...v,
@@ -162,8 +163,8 @@ function BrandPanel() {
         minWidth: 420,
         position: "relative",
         overflow: "hidden",
-        borderRight: `1px solid ${T.border}`,
-        background: `radial-gradient(560px 460px at 28% 24%, ${T.handlingSoft}, transparent 68%), radial-gradient(420px 380px at 82% 88%, color-mix(in srgb, var(--v2-handling) 10%, transparent), transparent 60%), ${T.bg}`,
+        borderRight: `1px solid ${TL.hair}`,
+        background: `radial-gradient(560px 460px at 28% 24%, ${TL.dim}, transparent 68%), radial-gradient(420px 380px at 82% 88%, color-mix(in srgb, var(--tl-fill) 10%, transparent), transparent 60%), ${TL.scene}`,
         flexDirection: "column",
         padding: "34px 40px 44px",
       }}
@@ -185,7 +186,7 @@ function BrandPanel() {
             strokeWidth="1"
           />
         ))}
-        <circle cx="260" cy="330" r="3.5" fill="color-mix(in srgb, var(--v2-handling) 45%, transparent)" />
+        <circle cx="260" cy="330" r="3.5" fill="color-mix(in srgb, var(--tl-fill) 45%, transparent)" />
       </svg>
       <div style={{ position: "relative" }}>
         <LogoAK size={30} surface="paper" />
@@ -195,23 +196,23 @@ function BrandPanel() {
         <LogoAK size={64} surface="paper" style={{ marginBottom: 22 }} />
         <h2
           style={{
-            fontFamily: T.disp,
+            fontFamily: TL.font.sans,
             fontWeight: 700,
             fontSize: 30,
             letterSpacing: "-0.03em",
             lineHeight: 1.12,
-            color: T.fg,
+            color: TL.text,
             margin: 0,
           }}
         >
           Nesten i mål.{" "}
-          <em style={{ fontStyle: "italic", color: T.lime }}>Ett samtykke igjen.</em>
+          <em style={{ fontStyle: "italic", color: TL.fill }}>Ett samtykke igjen.</em>
         </h2>
         <p
           style={{
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 13.5,
-            color: T.fg2,
+            color: TL.mute,
             lineHeight: 1.6,
             margin: "14px 0 0",
             maxWidth: 360,
@@ -273,9 +274,9 @@ function VenterKort({ spillerNavn, invitasjonEmail }: Props) {
             width: 60,
             height: 60,
             borderRadius: 16,
-            background: `radial-gradient(120% 120% at 30% 20%, ${T.handlingSoft}, ${T.farge.grafittMerke2A0} 70%), ${T.panel3}`,
-            border: `1px solid ${T.borderS}`,
-            color: T.lime,
+            background: `radial-gradient(120% 120% at 30% 20%, ${TL.dim}, ${T.farge.grafittMerke2A0} 70%), ${TL.dim}`,
+            border: `1px solid ${TL.hair}`,
+            color: TL.fill,
           }}
         >
           <Icon name="clock" size={28} />
@@ -289,12 +290,12 @@ function VenterKort({ spillerNavn, invitasjonEmail }: Props) {
             borderRadius: 9999,
             padding: "4px 11px",
             background: T.farge.varselMerkeA14,
-            fontFamily: T.mono,
+            fontFamily: TL.font.mono,
             fontSize: 9,
             fontWeight: 800,
             letterSpacing: "0.06em",
             textTransform: "uppercase",
-            color: T.warn,
+            color: TL.warn,
           }}
         >
           <Icon name="clock" size={11} />
@@ -303,19 +304,19 @@ function VenterKort({ spillerNavn, invitasjonEmail }: Props) {
 
         <h1
           style={{
-            fontFamily: T.disp,
+            fontFamily: TL.font.sans,
             fontWeight: 700,
             fontSize: 30,
             letterSpacing: "-0.025em",
             lineHeight: 1.05,
-            color: T.fg,
+            color: TL.text,
             margin: 0,
             textWrap: "balance",
           }}
         >
-          Nesten <em style={{ fontStyle: "italic", fontWeight: 400, color: T.lime }}>i mål.</em>
+          Nesten <em style={{ fontStyle: "italic", fontWeight: 400, color: TL.fill }}>i mål.</em>
         </h1>
-        <p style={{ fontFamily: T.ui, fontSize: 13.5, lineHeight: 1.55, color: T.fg2, margin: 0 }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 13.5, lineHeight: 1.55, color: TL.mute, margin: 0 }}>
           Hei {spillerNavn || "der"}! Du er under 16 år, så en forelder må godkjenne kontoen din.
           {epostSendt ? " Vi har sendt en e-post til forelderen du oppga." : ""}
         </p>
@@ -324,11 +325,11 @@ function VenterKort({ spillerNavn, invitasjonEmail }: Props) {
       {/* STATUS-kort — tre rader med check/klokke */}
       <div
         style={{
-          background: T.panel,
-          border: `1px solid ${T.border}`,
-          borderRadius: T.rCard,
+          background: TL.elev,
+          border: `1px solid ${TL.hair}`,
+          borderRadius: TL.radius.card,
           padding: 18,
-          boxShadow: `inset 0 1px 0 ${T.farge.hvitA5}, 0 12px 32px ${T.farge.svartA35}`,
+          boxShadow: `inset 0 1px 0 ${T.farge.hvitA5}, 0 12px 32px ${TL.scrim}`,
         }}
       >
         <Caps size={9}>Status</Caps>
@@ -344,19 +345,19 @@ function VenterKort({ spillerNavn, invitasjonEmail }: Props) {
                   height: 22,
                   flex: "none",
                   borderRadius: 9999,
-                  background: rad.done ? T.lime : T.panel3,
-                  border: rad.done ? "none" : `1px solid ${T.borderS}`,
-                  color: rad.done ? T.onLime : T.mut,
+                  background: rad.done ? TL.fill : TL.dim,
+                  border: rad.done ? "none" : `1px solid ${TL.hair}`,
+                  color: rad.done ? TL.onFill : TL.mute,
                 }}
               >
                 <Icon name={rad.done ? "check" : "clock"} size={13} />
               </span>
               <span
                 style={{
-                  fontFamily: T.ui,
+                  fontFamily: TL.font.sans,
                   fontSize: 13,
                   fontWeight: 500,
-                  color: rad.done ? T.fg : T.mut,
+                  color: rad.done ? TL.text : TL.mute,
                 }}
               >
                 {rad.label}
@@ -376,7 +377,7 @@ function VenterKort({ spillerNavn, invitasjonEmail }: Props) {
           placeholder="forelder@example.com"
           autoComplete="email"
           required
-          leading={<Icon name="mail" size={14} style={{ color: T.mut }} />}
+          leading={<Icon name="mail" size={14} style={{ color: TL.mute }} />}
         />
         <Knapp variant="primary" type="submit" disabled={isPending || !nyEmail.trim()}>
           {isPending ? "Sender…" : invitasjonEmail ? "Send påminnelse" : "Send invitasjon"}
@@ -386,11 +387,11 @@ function VenterKort({ spillerNavn, invitasjonEmail }: Props) {
           <p
             role="status"
             style={{
-              fontFamily: T.mono,
+              fontFamily: TL.font.mono,
               fontSize: 12,
               letterSpacing: "0.04em",
               margin: 0,
-              color: status.ok ? T.up : T.down,
+              color: status.ok ? TL.ok : TL.danger,
             }}
           >
             {status.melding}
@@ -399,11 +400,11 @@ function VenterKort({ spillerNavn, invitasjonEmail }: Props) {
       </form>
 
       {/* Hjelpetekst */}
-      <p style={{ fontFamily: T.ui, fontSize: 12, textAlign: "center", color: T.mut, margin: "4px 0 0" }}>
+      <p style={{ fontFamily: TL.font.sans, fontSize: 12, textAlign: "center", color: TL.mute, margin: "4px 0 0" }}>
         Har du spørsmål?{" "}
         <a
           href="mailto:post@akgolf.no"
-          style={{ color: T.lime, textDecoration: "none", fontWeight: 600 }}
+          style={{ color: TL.fill, textDecoration: "none", fontWeight: 600 }}
         >
           post@akgolf.no
         </a>
@@ -420,12 +421,12 @@ function VenterKort({ spillerNavn, invitasjonEmail }: Props) {
               background: "transparent",
               border: "none",
               cursor: "pointer",
-              fontFamily: T.mono,
+              fontFamily: TL.font.mono,
               fontSize: 11,
               fontWeight: 700,
               letterSpacing: "0.06em",
               textTransform: "uppercase",
-              color: T.mut,
+              color: TL.mute,
             }}
           >
             Logg ut
@@ -447,9 +448,9 @@ export function SamtykkeVenterV2({ spillerNavn, invitasjonEmail }: Props) {
         // Flaten er Paper LYS — "dark" fikk nettleseren til å tegne autofyll,
         // passordikon og rullefelt mørkt oppå en lys side.
         colorScheme: "light",
-        color: T.fg,
-        fontFamily: T.ui,
-        background: T.bg,
+        color: TL.text,
+        fontFamily: TL.font.sans,
+        background: TL.scene,
       }}
     >
       <BrandPanel />
@@ -461,7 +462,7 @@ export function SamtykkeVenterV2({ spillerNavn, invitasjonEmail }: Props) {
           alignItems: "center",
           justifyContent: "center",
           padding: "48px 22px",
-          background: `radial-gradient(700px 420px at 60% -12%, ${T.handlingSoft}, transparent 62%), ${T.bg}`,
+          background: `radial-gradient(700px 420px at 60% -12%, ${TL.dim}, transparent 62%), ${TL.scene}`,
         }}
       >
         <VenterKort spillerNavn={spillerNavn} invitasjonEmail={invitasjonEmail} />

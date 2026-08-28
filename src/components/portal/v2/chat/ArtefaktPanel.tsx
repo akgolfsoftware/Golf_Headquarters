@@ -20,7 +20,8 @@
 
 import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { BunnArk } from "@/components/v2/bunn-ark";
 
 /** Delt brytepunkt for chat-skallet — matcher fasitens `@media (max-width:1120px)`. */
@@ -78,8 +79,8 @@ export function ArtefaktPanel({
         flexDirection: "column",
         height: "100%",
         minHeight: 0,
-        borderLeft: `1px solid ${T.border}`,
-        background: T.panel,
+        borderLeft: `1px solid ${TL.hair}`,
+        background: TL.elev,
       }}
     >
       <div
@@ -87,11 +88,11 @@ export function ArtefaktPanel({
           display: "flex",
           alignItems: "center",
           padding: "12px 16px",
-          borderBottom: `1px solid ${T.border}`,
+          borderBottom: `1px solid ${TL.hair}`,
           flex: "none",
         }}
       >
-        <span style={{ fontFamily: T.disp, fontSize: 13, fontWeight: 600, color: T.fg }}>{tittel}</span>
+        <span style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text }}>{tittel}</span>
       </div>
       <div style={{ flex: 1, minHeight: 0, overflow: "auto", padding: 16 }}>{children}</div>
       {foot && (
@@ -101,7 +102,7 @@ export function ArtefaktPanel({
             display: "flex",
             gap: 8,
             padding: "12px 16px",
-            borderTop: `1px solid ${T.border}`,
+            borderTop: `1px solid ${TL.hair}`,
           }}
         >
           {foot}

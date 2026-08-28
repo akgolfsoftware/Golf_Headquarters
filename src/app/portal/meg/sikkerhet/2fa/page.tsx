@@ -4,7 +4,8 @@
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Caps, Tittel, TilbakeLenke } from "@/components/v2";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { TwoFaClient } from "./twofa-client";
@@ -20,7 +21,7 @@ export default async function TwoFaPage() {
           margin: "0 auto",
           display: "flex",
           flexDirection: "column",
-          gap: T.gap,
+          gap: 16,
         }}
       >
         <TilbakeLenke href="/portal/meg/innstillinger/sikkerhet">Sikkerhet</TilbakeLenke>
@@ -30,7 +31,7 @@ export default async function TwoFaPage() {
           <div style={{ marginTop: 10 }}>
             <Tittel em="tofaktor">Aktiver</Tittel>
           </div>
-          <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: "8px 0 0", lineHeight: 1.45, maxWidth: "42ch" }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: "8px 0 0", lineHeight: 1.45, maxWidth: "42ch" }}>
             Tre raske steg. Etter aktivering trenger du en 6-sifret kode hver gang du logger inn.
           </p>
         </div>

@@ -13,7 +13,8 @@
  * brutt "aldri fake data"-prinsippet resten av /meg-porten følger.
  */
 import { useMemo, useState } from "react";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Icon } from "@/components/v2/icon";
 import { InspektorTom } from "@/components/v2/inspektorpanel";
 import { sammeDag, dagNavnLang } from "@/lib/uke-helpers";
@@ -93,7 +94,7 @@ export function HistorikkArtefakt({
 
   return (
     <div data-od-id="panel-historikk" style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-      <div style={{ fontFamily: T.mono, fontSize: 11, color: T.mut }}>{filtrert.length} hendelser</div>
+      <div style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>{filtrert.length} hendelser</div>
 
       <div style={{ display: "flex", gap: 8 }}>
         <input
@@ -107,13 +108,13 @@ export function HistorikkArtefakt({
             flex: 1,
             minWidth: 0,
             minHeight: 36,
-            border: `1px solid ${T.border}`,
-            borderRadius: T.rInput,
-            background: T.panel,
+            border: `1px solid ${TL.hair}`,
+            borderRadius: TL.radius.field,
+            background: TL.elev,
             padding: "0 10px",
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 13,
-            color: T.fg,
+            color: TL.text,
           }}
         />
         <select
@@ -122,11 +123,11 @@ export function HistorikkArtefakt({
           aria-label="Filtrer på kanal"
           data-od-id="select-kanal"
           style={{
-            border: `1px solid ${T.border}`,
-            borderRadius: T.rInput,
-            background: T.panel,
-            color: T.fg,
-            fontFamily: T.ui,
+            border: `1px solid ${TL.hair}`,
+            borderRadius: TL.radius.field,
+            background: TL.elev,
+            color: TL.text,
+            fontFamily: TL.font.sans,
             fontSize: 13,
             padding: "0 8px",
             minHeight: 36,
@@ -149,16 +150,16 @@ export function HistorikkArtefakt({
       ) : (
         grupper.map(([label, gruppe]) => (
           <div key={label}>
-            <div style={{ fontFamily: T.mono, fontSize: 9, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut, margin: "4px 0" }}>
+            <div style={{ fontFamily: TL.font.mono, fontSize: 9, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute, margin: "4px 0" }}>
               {label}
             </div>
             <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
               {gruppe.rader.map((rad) => (
                 <li
                   key={rad.id}
-                  style={{ display: "flex", gap: 10, padding: "10px 0", borderBottom: `1px solid ${T.borderS}`, alignItems: "flex-start" }}
+                  style={{ display: "flex", gap: 10, padding: "10px 0", borderBottom: `1px solid ${TL.hair}`, alignItems: "flex-start" }}
                 >
-                  <span style={{ width: 40, flex: "none", textAlign: "right", fontFamily: T.mono, fontSize: 10.5, color: T.mut, paddingTop: 2 }}>
+                  <span style={{ width: 40, flex: "none", textAlign: "right", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, paddingTop: 2 }}>
                     {klokke(rad.tidspunkt)}
                   </span>
                   <span
@@ -166,17 +167,17 @@ export function HistorikkArtefakt({
                       width: 22,
                       height: 22,
                       flex: "none",
-                      borderRadius: T.rTag,
-                      background: T.panel2,
-                      border: `1px solid ${T.border}`,
+                      borderRadius: TL.radius.row,
+                      background: TL.dock,
+                      border: `1px solid ${TL.hair}`,
                       display: "grid",
                       placeItems: "center",
-                      color: T.mut,
+                      color: TL.mute,
                     }}
                   >
                     <Icon name={rad.kanal ? KANAL_IKON[rad.kanal] : "check-circle"} size={12} strokeWidth={1.8} />
                   </span>
-                  <span style={{ minWidth: 0, flex: 1, fontSize: 12.5, lineHeight: 1.45, fontFamily: T.ui, color: T.fg }}>
+                  <span style={{ minWidth: 0, flex: 1, fontSize: 12.5, lineHeight: 1.45, fontFamily: TL.font.sans, color: TL.text }}>
                     {rad.handling}
                     {rad.kanal && ` via ${KANAL_LABEL[rad.kanal]}`}
                     {rad.sakId && (
@@ -186,14 +187,14 @@ export function HistorikkArtefakt({
                           type="button"
                           onClick={() => onVelgSak(rad.sakId!)}
                           data-od-id={`cta-historikk-${rad.id}`}
-                          style={{ display: "inline", background: "none", border: 0, padding: 0, color: T.fg, textDecoration: "underline", cursor: "pointer", fontSize: 12.5, fontFamily: T.ui }}
+                          style={{ display: "inline", background: "none", border: 0, padding: 0, color: TL.text, textDecoration: "underline", cursor: "pointer", fontSize: 12.5, fontFamily: TL.font.sans }}
                         >
                           sak #{rad.sakId}
                         </button>
                       </>
                     )}
-                    <span style={{ display: "block", fontFamily: T.mono, fontSize: 10, color: T.mut, marginTop: 2 }}>
-                      <span style={{ color: T.up }}>✓ godkjent av {rad.godkjentAv}</span>
+                    <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, marginTop: 2 }}>
+                      <span style={{ color: TL.ok }}>✓ godkjent av {rad.godkjentAv}</span>
                     </span>
                   </span>
                 </li>

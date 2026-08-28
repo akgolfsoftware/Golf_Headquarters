@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ Coach-øvelser — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
  * T.* only. Lys PlayerHQ.
@@ -9,18 +9,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import type { PyramidArea } from "@/generated/prisma/client";
 import type { AkseKey } from "@/lib/v2/tokens";
-import {
-  T,
-  Caps,
-  PillTabs,
-  Kort,
-  AkseChip,
-  LFaseBadge,
-  Bit,
-  TomTilstand,
-  Icon,
-} from "@/components/v2";
-
+import { Caps, PillTabs, Kort, AkseChip, LFaseBadge, Bit, TomTilstand, Icon } from "@/components/v2";
 /* ── Datakontrakt (speiler ExerciseDefinition-feltene skjermen bruker) ── */
 
 export type CoachOvelseItem = {
@@ -81,22 +70,22 @@ export function CoachOvelserV2({ data }: { data: CoachOvelserData }) {
   const valgtLabel = OMRADE_TABS.find((t) => t.id === omrade)?.l ?? "";
 
   return (
-    <div data-paper-wave-g="coachovelser" data-paper-portal-coach-ovelser data-paper-slug="playerhq-coach-hub" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="coachovelser" data-paper-portal-coach-ovelser data-paper-slug="playerhq-coach-hub" style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>
           <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Øvelser</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Coach</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Øvelser</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>Coach</span>
         </div>
-          <Caps size={9} style={{ marginTop: 8, color: T.mut }}>
+          <Caps size={9} style={{ marginTop: 8, color: TL.mute }}>
             {ovelser.length} øvelse{ovelser.length === 1 ? "" : "r"} i biblioteket
           </Caps>
         </div>
         <Link href="/portal/coach/ovelser/ny" style={{ textDecoration: "none", display: "block" }}>
           <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
-            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
           }}>Ny øvelse</span>
         </Link>
       </div>
@@ -118,7 +107,7 @@ export function CoachOvelserV2({ data }: { data: CoachOvelserData }) {
             <Link href="/portal/coach/ovelser/ny" style={{ textDecoration: "none", display: "block" }}>
               <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
-            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
           }}>Opprett øvelse</span>
             </Link>
           </div>
@@ -134,7 +123,7 @@ export function CoachOvelserV2({ data }: { data: CoachOvelserData }) {
             <Link href="/portal/coach/ovelser/ny" style={{ textDecoration: "none", display: "block" }}>
               <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
-            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
           }}>Opprett øvelse</span>
             </Link>
           </div>
@@ -161,10 +150,10 @@ function OvelseKort({ o }: { o: CoachOvelseItem }) {
       <Kort hover pad="14px 15px" style={{ gap: 10, height: "100%" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
           <AkseChip a={o.omrade as AkseKey} />
-          <Icon name="chevron-right" size={14} style={{ color: T.mut }} />
+          <Icon name="chevron-right" size={14} style={{ color: TL.mute }} />
         </div>
 
-        <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 15, color: T.fg, lineHeight: 1.3 }}>
+        <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 15, color: TL.text, lineHeight: 1.3 }}>
           {o.navn}
         </div>
 
@@ -176,7 +165,7 @@ function OvelseKort({ o }: { o: CoachOvelseItem }) {
         )}
 
         {meta && (
-          <Caps size={9} style={{ color: T.mut }}>
+          <Caps size={9} style={{ color: TL.mute }}>
             {meta}
           </Caps>
         )}

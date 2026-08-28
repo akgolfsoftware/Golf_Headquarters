@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * AgencyOS — Rediger e-postmal (v2). 2-pane editor (felt til venstre, live
@@ -151,7 +152,7 @@ export function AdminEmailTemplateEditorV2({ template, testRecipient }: Props) {
   const statusTekst = dirty ? "Ulagrede endringer" : active ? "Aktiv · lagret" : "Utkast · lagret";
 
   return (
-    <div data-paper-wave-h="email-template-editor" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-h="email-template-editor" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {/* Hode — B: status + én primær CTA (Lagre) */}
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 14 }}>
         <div style={{ minWidth: 0 }}>
@@ -169,7 +170,7 @@ export function AdminEmailTemplateEditorV2({ template, testRecipient }: Props) {
           <Knapp ghost icon="star" disabled={pending || active} onClick={settStandard}>
             Sett som standard
           </Knapp>
-          <Knapp ghost icon="archive" disabled={pending} onClick={arkiver} style={{ color: T.down }}>
+          <Knapp ghost icon="archive" disabled={pending} onClick={arkiver} style={{ color: TL.danger }}>
             Arkiver
           </Knapp>
           <Knapp icon="check" disabled={pending || !dirty} onClick={lagre}>
@@ -186,13 +187,13 @@ export function AdminEmailTemplateEditorV2({ template, testRecipient }: Props) {
             display: "flex",
             alignItems: "center",
             gap: 8,
-            borderRadius: T.rRow,
-            border: `1px solid ${toast.type === "ok" ? T.lime : T.down}`,
-            background: `color-mix(in srgb, ${toast.type === "ok" ? T.lime : T.down} 10%, transparent)`,
+            borderRadius: TL.radius.row,
+            border: `1px solid ${toast.type === "ok" ? TL.fill : TL.danger}`,
+            background: `color-mix(in srgb, ${toast.type === "ok" ? TL.fill : TL.danger} 10%, transparent)`,
             padding: "10px 16px",
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 13,
-            color: toast.type === "ok" ? T.lime : T.down,
+            color: toast.type === "ok" ? TL.fill : TL.danger,
           }}
         >
           <Icon name={toast.type === "ok" ? "check-circle" : "alert-triangle"} size={14} />
@@ -201,7 +202,7 @@ export function AdminEmailTemplateEditorV2({ template, testRecipient }: Props) {
       )}
 
       {/* 2-pane editor — stables på mobil */}
-      <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: T.gap, alignItems: "start" }}>
+      <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: 16, alignItems: "start" }}>
         {/* Editor */}
         <Kort eyebrow="Editor" action={<StatusPill tone={active ? "up" : "info"}>{active ? "Aktiv" : "Utkast"}</StatusPill>}>
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
@@ -222,13 +223,13 @@ export function AdminEmailTemplateEditorV2({ template, testRecipient }: Props) {
             <Bryter label="Aktiv" sub="Kan brukes av agenter" checked={active} onChange={setActive} />
 
             {tokensIBruk.length > 0 && (
-              <div style={{ borderRadius: 11, border: `1px solid ${T.border}`, background: T.panel2, padding: 14 }}>
+              <div style={{ borderRadius: 11, border: `1px solid ${TL.hair}`, background: TL.dock, padding: 14 }}>
                 <Caps size={9}>Tokens i bruk · {tokensIBruk.length}</Caps>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 8 }}>
                   {tokensIBruk.map((t) => (
                     <span
                       key={t}
-                      style={{ fontFamily: T.mono, fontSize: 10, color: T.fg, background: T.panel3, borderRadius: 5, padding: "3px 7px" }}
+                      style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.text, background: TL.dim, borderRadius: 5, padding: "3px 7px" }}
                     >
                       {`{{${t}}}`}
                     </span>
@@ -246,13 +247,13 @@ export function AdminEmailTemplateEditorV2({ template, testRecipient }: Props) {
             <FeltVis label="Til" value={`${PREVIEW_DATA.spillerNavn} <markus@eksempel.no>`} />
             <FeltVis label="Emne" value={previewSubject || "—"} accent />
 
-            <div style={{ borderRadius: 11, border: `1px solid ${T.border}`, background: T.onForest, padding: 16 }}>
-              <pre style={{ margin: 0, whiteSpace: "pre-wrap", fontFamily: T.ui, fontSize: 13, lineHeight: 1.6, color: T.farge.svartKode }}>
+            <div style={{ borderRadius: 11, border: `1px solid ${TL.hair}`, background: TL.onFill, padding: 16 }}>
+              <pre style={{ margin: 0, whiteSpace: "pre-wrap", fontFamily: TL.font.sans, fontSize: 13, lineHeight: 1.6, color: T.farge.svartKode }}>
                 {previewBody || "—"}
               </pre>
             </div>
 
-            <p style={{ fontFamily: T.mono, fontSize: 9.5, letterSpacing: "0.06em", color: T.mut, margin: 0 }}>
+            <p style={{ fontFamily: TL.font.mono, fontSize: 9.5, letterSpacing: "0.06em", color: TL.mute, margin: 0 }}>
               Test sendes til: {testRecipient}
             </p>
           </div>
@@ -264,15 +265,15 @@ export function AdminEmailTemplateEditorV2({ template, testRecipient }: Props) {
 
 function FeltVis({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
   return (
-    <div style={{ borderRadius: 11, border: `1px solid ${T.border}`, background: T.panel2, padding: "9px 13px" }}>
+    <div style={{ borderRadius: 11, border: `1px solid ${TL.hair}`, background: TL.dock, padding: "9px 13px" }}>
       <Caps size={9}>{label}</Caps>
       <div
         style={{
           marginTop: 4,
-          fontFamily: accent ? T.disp : T.ui,
+          fontFamily: accent ? TL.font.sans : TL.font.sans,
           fontWeight: accent ? 700 : 500,
           fontSize: accent ? 15 : 13,
-          color: T.fg,
+          color: TL.text,
         }}
       >
         {value}

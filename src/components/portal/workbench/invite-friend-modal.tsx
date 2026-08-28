@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * InviteFriendModal — v2-overlay (mørkt bakteppe + panel-kort).
  *
@@ -18,10 +18,9 @@
  */
 
 import { useMemo, useState, useTransition } from "react";
-import { T, Caps, PillTabs, AvatarInit, TomTilstand, Knapp } from "@/components/v2";
+import { Caps, PillTabs, AvatarInit, TomTilstand, Knapp } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import { inviterSpiller } from "./invite-actions";
-
 export type InviteSpiller = {
   id: string;
   name: string;
@@ -122,17 +121,17 @@ export function InviteFriendModal({
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
-      style={{ position: "fixed", inset: 0, zIndex: 90, display: "flex", alignItems: "center", justifyContent: "center", padding: "24px 16px", background: T.farge.svartA55 }}
+      style={{ position: "fixed", inset: 0, zIndex: 90, display: "flex", alignItems: "center", justifyContent: "center", padding: "24px 16px", background: TL.scrim }}
     >
       <div
         className="v2-sheet-in"
-        style={{ width: "100%", maxWidth: 480, maxHeight: "86vh", display: "flex", flexDirection: "column", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, boxShadow: `0 24px 60px ${T.farge.svartA50}`, overflow: "hidden" }}
+        style={{ width: "100%", maxWidth: 480, maxHeight: "86vh", display: "flex", flexDirection: "column", background: TL.elev, border: `1px solid ${TL.hair}`, borderRadius: 20, boxShadow: "none", overflow: "hidden" }}
       >
         {/* Header */}
-        <div style={{ flex: "none", display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, padding: "18px 20px 14px", borderBottom: `1px solid ${T.border}` }}>
+        <div style={{ flex: "none", display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, padding: "18px 20px 14px", borderBottom: `1px solid ${TL.hair}` }}>
           <div>
             <Caps size={9}>Trene sammen</Caps>
-            <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 19, letterSpacing: "-0.02em", color: T.fg, margin: "6px 0 0", lineHeight: 1.2 }}>
+            <h2 style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 19, letterSpacing: "-0.02em", color: TL.text, margin: "6px 0 0", lineHeight: 1.2 }}>
               Inviter en kompis
             </h2>
           </div>
@@ -141,20 +140,20 @@ export function InviteFriendModal({
             aria-label="Lukk"
             onClick={onClose}
             className="v2-press v2-focus"
-            style={{ appearance: "none", width: 28, height: 28, borderRadius: 8, background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flex: "none", color: T.fg2 }}
+            style={{ appearance: "none", width: 28, height: 28, borderRadius: 8, background: TL.dock, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flex: "none", color: TL.mute }}
           >
             <Icon name="x" size={14} />
           </button>
         </div>
 
         {/* Counter */}
-        <div style={{ flex: "none", display: "flex", alignItems: "center", gap: 8, padding: "9px 20px", borderBottom: `1px solid ${T.border}`, background: T.panel2 }}>
-          <span style={{ fontFamily: T.mono, fontSize: 11, fontWeight: 700, fontVariantNumeric: "tabular-nums", letterSpacing: "0.04em", textTransform: "uppercase", color: T.fg2 }}>
-            <span style={{ color: T.fg }}>{currentParticipants + inviterteIdag}</span> av{" "}
+        <div style={{ flex: "none", display: "flex", alignItems: "center", gap: 8, padding: "9px 20px", borderBottom: `1px solid ${TL.hair}`, background: TL.dock }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 11, fontWeight: 700, fontVariantNumeric: "tabular-nums", letterSpacing: "0.04em", textTransform: "uppercase", color: TL.mute }}>
+            <span style={{ color: TL.text }}>{currentParticipants + inviterteIdag}</span> av{" "}
             {maxParticipants} plasser
           </span>
           {erFull && (
-            <span style={{ fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: T.down, background: `color-mix(in srgb, ${T.down} 13%, transparent)`, borderRadius: 9999, padding: "3px 9px" }}>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: TL.danger, background: `color-mix(in srgb, ${TL.danger} 13%, transparent)`, borderRadius: 9999, padding: "3px 9px" }}>
               Fullt
             </span>
           )}
@@ -175,7 +174,7 @@ export function InviteFriendModal({
             <Icon
               name="search"
               size={14}
-              style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: T.mut, pointerEvents: "none" }}
+              style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: TL.mute, pointerEvents: "none" }}
             />
             <input
               type="search"
@@ -188,7 +187,7 @@ export function InviteFriendModal({
               }
               aria-label="Søk"
               className="v2-focus"
-              style={{ width: "100%", boxSizing: "border-box", appearance: "none", borderRadius: 11, border: `1px solid ${T.borderS}`, background: T.panel2, padding: "9px 12px 9px 34px", fontFamily: T.ui, fontSize: 13, color: T.fg, outline: "none" }}
+              style={{ width: "100%", boxSizing: "border-box", appearance: "none", borderRadius: 11, border: `1px solid ${TL.hair}`, background: TL.dock, padding: "9px 12px 9px 34px", fontFamily: TL.font.sans, fontSize: 13, color: TL.text, outline: "none" }}
             />
           </div>
         </div>
@@ -223,10 +222,10 @@ export function InviteFriendModal({
 
                     {/* Navn + HCP/gruppe */}
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <p style={{ margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>
+                      <p style={{ margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text }}>
                         {spiller.name}
                       </p>
-                      <p style={{ margin: "2px 0 0", fontFamily: T.mono, fontSize: 10.5, fontVariantNumeric: "tabular-nums", color: T.mut }}>
+                      <p style={{ margin: "2px 0 0", fontFamily: TL.font.mono, fontSize: 10.5, fontVariantNumeric: "tabular-nums", color: TL.mute }}>
                         {spiller.hcp != null ? `HCP ${spiller.hcp}` : "Ingen HCP"}
                         {spiller.gruppe ? ` · ${spiller.gruppe}` : ""}
                       </p>
@@ -250,20 +249,20 @@ export function InviteFriendModal({
                         borderRadius: 9999,
                         border: "1px solid transparent",
                         padding: "5px 14px",
-                        fontFamily: T.ui,
+                        fontFamily: TL.font.sans,
                         fontSize: 12,
                         fontWeight: 600,
                         opacity: erFull && !erInvitert ? 0.4 : 1,
                         background: erInvitert
-                          ? `color-mix(in srgb, ${T.lime} 13%, transparent)`
+                          ? `color-mix(in srgb, ${TL.fill} 13%, transparent)`
                           : state === "error"
-                            ? `color-mix(in srgb, ${T.down} 13%, transparent)`
-                            : T.lime,
+                            ? `color-mix(in srgb, ${TL.danger} 13%, transparent)`
+                            : TL.fill,
                         color: erInvitert
-                          ? T.lime
+                          ? TL.fill
                           : state === "error"
-                            ? T.down
-                            : T.onLime,
+                            ? TL.danger
+                            : TL.onFill,
                       }}
                     >
                       {erInvitert ? (
@@ -288,8 +287,8 @@ export function InviteFriendModal({
         </div>
 
         {/* Footer */}
-        <div style={{ flex: "none", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, padding: "12px 20px", borderTop: `1px solid ${T.border}` }}>
-          <span style={{ fontFamily: T.mono, fontSize: 10.5, fontVariantNumeric: "tabular-nums", color: T.mut }}>
+        <div style={{ flex: "none", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, padding: "12px 20px", borderTop: `1px solid ${TL.hair}` }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 10.5, fontVariantNumeric: "tabular-nums", color: TL.mute }}>
             {inviterteIdag > 0
               ? `${inviterteIdag} invitert${inviterteIdag === 1 ? "" : "e"} nå`
               : "Ingen inviterte ennå"}

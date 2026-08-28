@@ -12,7 +12,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Caps, Icon } from "@/components/v2";
 
 export type DrillRad = {
@@ -58,18 +59,18 @@ export function DrillsListe({
       {anbefalt && (
         <div
           style={{
-            background: T.handlingSoft,
-            border: `1px solid ${T.border}`,
-            borderRadius: T.rCard,
+            background: TL.dim,
+            border: `1px solid ${TL.hair}`,
+            borderRadius: TL.radius.card,
             padding: 16,
             marginBottom: 16,
           }}
         >
           <Caps>Én ting nå · anbefalt for deg</Caps>
-          <h3 style={{ margin: "8px 0", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+          <h3 style={{ margin: "8px 0", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
             {anbefalt.navn} · {anbefalt.omrade}
           </h3>
-          <p style={{ margin: "0 0 16px", fontFamily: T.bodyFont, fontSize: 14, color: T.mut, maxWidth: "52ch" }}>
+          <p style={{ margin: "0 0 16px", fontFamily: TL.font.sans, fontSize: 14, color: TL.mute, maxWidth: "52ch" }}>
             {anbefalt.hvorfor}
           </p>
           {/* Kontrakt §3: skjermens ene aksenthandling — legger drillen i neste økt (via Workbench). */}
@@ -85,10 +86,10 @@ export function DrillsListe({
               justifyContent: "center",
               minHeight: 56,
               width: "100%",
-              borderRadius: T.rCard,
-              background: T.handling,
-              color: T.onHandling,
-              fontFamily: T.ui,
+              borderRadius: TL.radius.card,
+              background: TL.fill,
+              color: TL.onFill,
+              fontFamily: TL.font.sans,
               fontSize: 14,
               fontWeight: 600,
             }}
@@ -97,7 +98,7 @@ export function DrillsListe({
           </Link>
           <details
             data-od-id="drills-why-anbefalt"
-            style={{ marginTop: 12, border: `1px solid ${T.border}`, borderRadius: T.rCard }}
+            style={{ marginTop: 12, border: `1px solid ${TL.hair}`, borderRadius: TL.radius.card }}
           >
             <summary
               style={{
@@ -107,10 +108,10 @@ export function DrillsListe({
                 padding: "0 16px",
                 cursor: "pointer",
                 listStyle: "none",
-                fontFamily: T.ui,
+                fontFamily: TL.font.sans,
                 fontSize: 12.5,
                 fontWeight: 500,
-                color: T.mut,
+                color: TL.mute,
               }}
             >
               Hvorfor denne drillen
@@ -119,10 +120,10 @@ export function DrillsListe({
               style={{
                 margin: 0,
                 padding: "12px 16px 16px 24px",
-                fontFamily: T.bodyFont,
+                fontFamily: TL.font.sans,
                 fontSize: 13,
-                color: T.mut,
-                borderTop: `1px solid ${T.border}`,
+                color: TL.mute,
+                borderTop: `1px solid ${TL.hair}`,
               }}
             >
               {anbefalt.whyPunkter.map((p) => (
@@ -145,25 +146,25 @@ export function DrillsListe({
           display: "flex",
           alignItems: "center",
           gap: 10,
-          background: T.panel,
-          border: `1px solid ${T.border}`,
-          borderRadius: T.rCard,
+          background: TL.elev,
+          border: `1px solid ${TL.hair}`,
+          borderRadius: TL.radius.card,
           padding: "12px 16px",
           marginBottom: 12,
           textDecoration: "none",
           color: "inherit",
         }}
       >
-        <Icon name="sparkles" size={16} style={{ color: T.mut, flex: "none" }} />
+        <Icon name="sparkles" size={16} style={{ color: TL.mute, flex: "none" }} />
         <div style={{ flex: 1, minWidth: 0 }}>
-          <span style={{ display: "block", fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>
+          <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text }}>
             La AI foreslå driller
           </span>
-          <span style={{ display: "block", fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 1 }}>
+          <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 1 }}>
             Rangert liste på tvers av svakhetene dine
           </span>
         </div>
-        <Icon name="chevron-right" size={15} style={{ color: T.mut, flex: "none" }} />
+        <Icon name="chevron-right" size={15} style={{ color: TL.mute, flex: "none" }} />
       </Link>
 
       {/* Filterchips — aria-pressed inverterer til blekk (fasit §5) */}
@@ -184,11 +185,11 @@ export function DrillsListe({
               flex: "none",
               minHeight: 44,
               padding: "0 12px",
-              borderRadius: T.rPill,
-              border: `1px solid ${f === filter ? T.cta : T.border}`,
-              background: f === filter ? T.cta : "transparent",
-              color: f === filter ? T.onCta : T.fg,
-              fontFamily: T.ui,
+              borderRadius: TL.radius.pill,
+              border: `1px solid ${f === filter ? TL.fill : TL.hair}`,
+              background: f === filter ? TL.fill : "transparent",
+              color: f === filter ? TL.onFill : TL.text,
+              fontFamily: TL.font.sans,
               fontSize: 13,
               cursor: "pointer",
             }}
@@ -212,9 +213,9 @@ export function DrillsListe({
               display: "flex",
               alignItems: "center",
               gap: 12,
-              background: T.panel,
-              border: `1px solid ${T.border}`,
-              borderRadius: T.rCard,
+              background: TL.elev,
+              border: `1px solid ${TL.hair}`,
+              borderRadius: TL.radius.card,
               padding: "12px 16px",
               marginBottom: 8,
               textDecoration: "none",
@@ -222,19 +223,19 @@ export function DrillsListe({
             }}
           >
             <div style={{ flex: 1, minWidth: 0 }}>
-              <span style={{ display: "block", fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>
+              <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>
                 {d.navn}
               </span>
-              <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+              <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
                 {[d.omrade, d.meta, d.brukt].filter(Boolean).join(" · ")}
               </span>
               {d.formel && (
                 <span
                   style={{
                     display: "block",
-                    fontFamily: T.mono,
+                    fontFamily: TL.font.mono,
                     fontSize: 9.5,
-                    color: T.mut,
+                    color: TL.mute,
                     marginTop: 4,
                     wordBreak: "break-all",
                   }}
@@ -249,15 +250,15 @@ export function DrillsListe({
           <div
             style={{
               padding: "24px 16px",
-              background: T.panel2,
-              border: `1px dashed ${T.border}`,
-              borderRadius: T.rCard,
+              background: TL.dock,
+              border: `1px dashed ${TL.hair}`,
+              borderRadius: TL.radius.card,
             }}
           >
-            <h3 style={{ margin: "0 0 8px", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+            <h3 style={{ margin: "0 0 8px", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
               Ingen drills i dette filteret
             </h3>
-            <p style={{ margin: 0, fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut }}>
+            <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute }}>
               Prøv et annet pyramide-område — eller «Alle».
             </p>
           </div>

@@ -29,7 +29,8 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { AlertTriangle } from "lucide-react";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Caps, Tittel, Kort, KpiFlis, StatusPill, MikroMeta, TomTilstand, Rad, Knapp, Icon } from "@/components/v2";
 import { useErMobil } from "@/components/portal/v2/chat/ArtefaktPanel";
 import { AgentRunPanel } from "@/app/admin/agents/[agentId]/agent-run-panel";
@@ -123,11 +124,11 @@ function KpiCell({ label, value, sub }: { label: string; value: string | number;
       <span
         style={{
           display: "block",
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           fontSize: langTekst ? 14 : "clamp(22px, 2.2vw, 26px)",
           fontWeight: 600,
           letterSpacing: "-0.03em",
-          color: T.fg,
+          color: TL.text,
           lineHeight: langTekst ? 1.35 : 1,
           marginTop: 12,
           overflowWrap: "break-word",
@@ -136,7 +137,7 @@ function KpiCell({ label, value, sub }: { label: string; value: string | number;
       >
         {value}
       </span>
-      {sub && <span style={{ display: "block", fontFamily: T.ui, fontSize: 11, color: T.mut, marginTop: 8 }}>{sub}</span>}
+      {sub && <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 11, color: TL.mute, marginTop: 8 }}>{sub}</span>}
     </Kort>
   );
 }
@@ -149,16 +150,16 @@ function StegLinje({ steg, last }: { steg: AgentDetaljSteg; last?: boolean }) {
         alignItems: "flex-start",
         gap: 10,
         padding: "10px 0",
-        borderBottom: last ? "none" : `1px solid ${T.border}`,
+        borderBottom: last ? "none" : `1px solid ${TL.hair}`,
       }}
     >
       <span
         style={{
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           fontSize: 10,
           letterSpacing: "0.05em",
           textTransform: "uppercase",
-          color: T.mut,
+          color: TL.mute,
           minWidth: 88,
           flex: "none",
           paddingTop: 1,
@@ -166,7 +167,7 @@ function StegLinje({ steg, last }: { steg: AgentDetaljSteg; last?: boolean }) {
       >
         {steg.rolle}
       </span>
-      <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg, lineHeight: 1.5, flex: 1, minWidth: 0 }}>
+      <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.text, lineHeight: 1.5, flex: 1, minWidth: 0 }}>
         {steg.tekst}
       </span>
       <StatusPill tone={steg.ok ? "up" : "down"}>{steg.ok ? "OK" : "Feil"}</StatusPill>
@@ -180,7 +181,7 @@ function DeaktivertKjorKnapp({ forklaring }: { forklaring: string }) {
       <Knapp icon="play" disabled>
         Kjør nå
       </Knapp>
-      <span style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, maxWidth: "48ch" }}>{forklaring}</span>
+      <span style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.mute, maxWidth: "48ch" }}>{forklaring}</span>
     </div>
   );
 }
@@ -193,7 +194,7 @@ function InspektorPanel({ data }: { data: AgentDetaljData }) {
           <KpiFlis label="Godkjent-rate" value={data.panel.godkjentRateTekst} />
           <KpiFlis label="Eldste i kø" value={data.panel.eldsteIKoTekst} />
         </div>
-        <p style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, margin: "10px 0 0" }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.mute, margin: "10px 0 0" }}>
           {data.panel.godkjentSub} · {data.panel.eldsteSub}
         </p>
       </Kort>
@@ -205,7 +206,7 @@ function InspektorPanel({ data }: { data: AgentDetaljData }) {
       </Kort>
 
       <Kort eyebrow="Slik leses statusen" pad="14px 16px">
-        <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, margin: 0, lineHeight: 1.6 }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, margin: 0, lineHeight: 1.6 }}>
           «Feil» betyr at en kjøring stoppet — aldri at noe ble endret uten deg. En agent kan ikke
           endre en plan; den kan bare foreslå.
         </p>
@@ -214,8 +215,8 @@ function InspektorPanel({ data }: { data: AgentDetaljData }) {
       <Link href={data.godkjenningerHref} style={{ textDecoration: "none" }}>
         <Kort pad="14px 16px" hover>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-            <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>Forslagene i køen</span>
-            <Icon name="arrow-right" size={16} style={{ color: T.mut }} />
+            <span style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text }}>Forslagene i køen</span>
+            <Icon name="arrow-right" size={16} style={{ color: TL.mute }} />
           </div>
         </Kort>
       </Link>
@@ -245,11 +246,11 @@ function ForslagListe({ forslag, godkjenningerHref }: { forslag: AgentDetaljFors
                 <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8, marginBottom: 8 }}>
                   <Caps size={9}>{a.actionTypeLabel}</Caps>
                   <StatusPill tone={a.tone}>{a.statusLabel}</StatusPill>
-                  <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut }}>{a.brukerNavn}</span>
-                  <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, marginLeft: "auto" }}>{a.naar}</span>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>{a.brukerNavn}</span>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, marginLeft: "auto" }}>{a.naar}</span>
                 </div>
                 {a.forklaring && (
-                  <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg, lineHeight: 1.6, margin: 0 }}>{a.forklaring}</p>
+                  <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text, lineHeight: 1.6, margin: 0 }}>{a.forklaring}</p>
                 )}
               </div>
               {a.pending && (
@@ -280,7 +281,7 @@ function KjoringerTabell({ data }: { data: AgentDetaljData }) {
             title={k.naar}
             sub={k.outputTekst ?? undefined}
             meta={
-              <span style={{ fontFamily: T.mono, fontSize: 11, fontWeight: 700, color: T.mut, fontVariantNumeric: "tabular-nums" }}>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 11, fontWeight: 700, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
                 {k.varighetTekst}
               </span>
             }
@@ -297,10 +298,10 @@ function SisteKjoringIDetalj({ steg }: { steg: { naarTekst: string; steg: AgentD
   if (!steg) return null;
   return (
     <Kort eyebrow="Siste kjøring i detalj" action={<Caps size={9}>{steg.naarTekst}</Caps>} pad="4px 18px 12px">
-      <p style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, margin: "10px 0" }}>
+      <p style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, margin: "10px 0" }}>
         Stegene vises for agent-team-kjøringer med flere modeller; en enkel agent har ett steg.
       </p>
-      <div style={{ borderTop: `1px solid ${T.border}` }}>
+      <div style={{ borderTop: `1px solid ${TL.hair}` }}>
         {steg.steg.map((s, i) => (
           <StegLinje key={i} steg={s} last={i === steg.steg.length - 1} />
         ))}
@@ -320,14 +321,14 @@ function HodeOgKpi({ data }: { data: AgentDetaljData }) {
         <div style={{ marginTop: 10 }}>
           <Tittel>{data.navn}</Tittel>
         </div>
-        <p style={{ fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 4 }}>
+        <p style={{ fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 4 }}>
           agenticos · agent-detalj · {data.trigger.toLowerCase()}
         </p>
-        <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "10px 0 0", maxWidth: "62ch" }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: "10px 0 0", maxWidth: "62ch" }}>
           {data.beskrivelse}
         </p>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-4" style={{ gap: T.gap }}>
+      <div className="grid grid-cols-1 sm:grid-cols-4" style={{ gap: 16 }}>
         <KpiCell label="Kjøringer 30 d" value={data.kpi.kjoringer30d} sub={data.kpi.kjoringerSub} />
         <KpiCell label="Snitt-tid" value={data.kpi.snittTidTekst} sub="siste kjøringer" />
         <KpiCell label="Forslag laget" value={data.kpi.forslagLaget} sub={data.kpi.forslagSub} />
@@ -339,14 +340,14 @@ function HodeOgKpi({ data }: { data: AgentDetaljData }) {
 
 function AktivSeksjon({ data }: { data: AgentDetaljData }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <HodeOgKpi data={data} />
       <Kort eyebrow="Om agenten" action={<StatusPill tone="up">Aktiv</StatusPill>}>
-        <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: 0, lineHeight: 1.6 }}>{data.beskrivelse}</p>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: 0, lineHeight: 1.6 }}>{data.beskrivelse}</p>
         <div style={{ display: "flex", gap: 10, marginTop: 14, flexWrap: "wrap", alignItems: "center" }}>
           <DeaktivertKjorKnapp forklaring="Cron-/hendelsesagenter kan ikke trigges fra AgencyOS ennå — de kjører kun på plan eller hendelse." />
           <Link href={data.godkjenningerHref} style={{ textDecoration: "none" }}>
-            <Knapp icon="arrow-right" style={{ background: "transparent", border: `1px solid ${T.borderS}`, color: T.fg }}>
+            <Knapp icon="arrow-right" style={{ background: "transparent", border: `1px solid ${TL.hair}`, color: TL.text }}>
               Forslagene i køen
             </Knapp>
           </Link>
@@ -361,20 +362,20 @@ function AktivSeksjon({ data }: { data: AgentDetaljData }) {
 
 function FeiletSeksjon({ data }: { data: AgentDetaljData }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <HodeOgKpi data={data} />
-      <Kort style={{ borderColor: T.down, boxShadow: `inset 3px 0 0 ${T.down}` }} eyebrow="Siste kjøring feilet" action={<AlertTriangle size={16} color={T.down} strokeWidth={1.5} />}>
-        <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "0 0 8px", lineHeight: 1.6 }}>
+      <Kort style={{ borderColor: TL.danger, boxShadow: `inset 3px 0 0 ${TL.danger}` }} eyebrow="Siste kjøring feilet" action={<AlertTriangle size={16} color={TL.danger} strokeWidth={1.5} />}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: "0 0 8px", lineHeight: 1.6 }}>
           {data.feil?.naarTekst}
           {data.feil?.sidenTekst ? ` — ${data.feil.sidenTekst}` : ""}
         </p>
         {data.feil?.melding && (
-          <p style={{ fontFamily: T.mono, fontSize: 11.5, color: T.down, margin: "0 0 12px" }}>{data.feil.melding}</p>
+          <p style={{ fontFamily: TL.font.mono, fontSize: 11.5, color: TL.danger, margin: "0 0 12px" }}>{data.feil.melding}</p>
         )}
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
           <DeaktivertKjorKnapp forklaring="Ingen manuell gjenkjøring ennå — retten skjer på neste plan eller hendelse." />
           <Link href={data.feilloggHref} style={{ textDecoration: "none" }}>
-            <Knapp icon="external-link" style={{ background: "transparent", border: `1px solid ${T.borderS}`, color: T.fg }}>
+            <Knapp icon="external-link" style={{ background: "transparent", border: `1px solid ${TL.hair}`, color: TL.text }}>
               Åpne feilloggen
             </Knapp>
           </Link>
@@ -389,10 +390,10 @@ function FeiletSeksjon({ data }: { data: AgentDetaljData }) {
 
 function ManuellSeksjon({ data }: { data: AgentDetaljData }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <HodeOgKpi data={data} />
       <Kort eyebrow={data.navn} action={<Caps size={9}>Manuell</Caps>}>
-        <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "0 0 14px", lineHeight: 1.6 }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: "0 0 14px", lineHeight: 1.6 }}>
           {data.beskrivelse}
         </p>
         <AgentRunPanel
@@ -423,7 +424,7 @@ function ManuellSeksjon({ data }: { data: AgentDetaljData }) {
 
 function IngenSeksjon({ data }: { data: AgentDetaljData }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <HodeOgKpi data={data} />
       <Kort>
         <TomTilstand
@@ -458,7 +459,7 @@ export function AdminAgentDetaljV2({ data }: { data: AgentDetaljData }) {
 
   if (smal) {
     return (
-      <div data-paper-slug="agencyos-agent-detalj" style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div data-paper-slug="agencyos-agent-detalj" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         {topp}
         <Innhold data={data} />
         <InspektorPanel data={data} />
@@ -467,9 +468,9 @@ export function AdminAgentDetaljV2({ data }: { data: AgentDetaljData }) {
   }
 
   return (
-    <div data-paper-slug="agencyos-agent-detalj" style={{ display: "flex", flexDirection: "column", gap: T.gap, minWidth: 0 }}>
+    <div data-paper-slug="agencyos-agent-detalj" style={{ display: "flex", flexDirection: "column", gap: 16, minWidth: 0 }}>
       {topp}
-      <div style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr) 380px", gap: T.gap, alignItems: "start", minWidth: 0 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr) 380px", gap: 16, alignItems: "start", minWidth: 0 }}>
         <Innhold data={data} />
         <div style={{ minWidth: 0, position: "sticky", top: 16 }}>
           <InspektorPanel data={data} />

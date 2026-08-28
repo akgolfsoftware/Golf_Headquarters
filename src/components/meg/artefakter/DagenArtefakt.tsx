@@ -15,7 +15,8 @@
  * Innboksblokkene viser et nå-snapshot av køen, ikke en prognose for hvilke
  * frister som "rekkes" på blokkens fremtidige tidspunkt.
  */
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { InspektorTom } from "@/components/v2/inspektorpanel";
 import type { DagenData, DagenElement } from "@/lib/jarvis/types";
 
@@ -41,23 +42,23 @@ function ElementRad({ el, onApneSaker }: { el: DagenElement; onApneSaker: () => 
           flex: "none",
           textAlign: "right",
           paddingTop: 3,
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           fontSize: 11,
-          color: T.mut,
+          color: TL.mute,
           fontVariantNumeric: "tabular-nums",
         }}
       >
         {formatTid(el)}
       </span>
       <span style={{ width: 10, flex: "none", display: "flex", justifyContent: "center", alignSelf: "stretch", position: "relative" }}>
-        <span style={{ position: "absolute", top: 0, bottom: 0, width: 1, background: T.border }} />
+        <span style={{ position: "absolute", top: 0, bottom: 0, width: 1, background: TL.hair }} />
         <span
           style={{
             width: 9,
             height: 9,
-            borderRadius: T.rPill,
-            background: el.ferdig ? T.up : T.panel,
-            border: `1.5px solid ${el.ferdig ? T.up : T.mut}`,
+            borderRadius: TL.radius.pill,
+            background: el.ferdig ? TL.ok : TL.elev,
+            border: `1.5px solid ${el.ferdig ? TL.ok : TL.mute}`,
             marginTop: 6,
             position: "relative",
             zIndex: 1,
@@ -68,10 +69,10 @@ function ElementRad({ el, onApneSaker }: { el: DagenElement; onApneSaker: () => 
         style={{
           flex: 1,
           minWidth: 0,
-          background: ledig ? "transparent" : T.panel,
-          border: `1px ${ledig ? "dashed" : "solid"} ${ledig ? T.borderS : T.border}`,
-          borderLeft: blokk ? `3px solid ${T.fg}` : undefined,
-          borderRadius: T.rTag,
+          background: ledig ? "transparent" : TL.elev,
+          border: `1px ${ledig ? "dashed" : "solid"} ${ledig ? TL.hair : TL.hair}`,
+          borderLeft: blokk ? `3px solid ${TL.text}` : undefined,
+          borderRadius: TL.radius.row,
           padding: "8px 10px",
           marginBottom: 4,
         }}
@@ -79,18 +80,18 @@ function ElementRad({ el, onApneSaker }: { el: DagenElement; onApneSaker: () => 
         <span
           style={{
             display: "block",
-            fontFamily: ledig ? T.mono : T.disp,
+            fontFamily: ledig ? TL.font.mono : TL.font.sans,
             fontSize: ledig ? 10.5 : 13,
             fontWeight: ledig ? 500 : 600,
             letterSpacing: ledig ? "0.06em" : undefined,
             textTransform: ledig ? "uppercase" : undefined,
-            color: ledig ? T.mut : el.ferdig ? T.mut : T.fg,
+            color: ledig ? TL.mute : el.ferdig ? TL.mute : TL.text,
           }}
         >
           {el.tittel}
         </span>
         {el.undertekst && (
-          <span style={{ display: "block", fontSize: 11.5, color: T.mut, fontFamily: T.ui, marginTop: 2 }}>
+          <span style={{ display: "block", fontSize: 11.5, color: TL.mute, fontFamily: TL.font.sans, marginTop: 2 }}>
             {el.undertekst}
             {el.lenke === "saker" && (
               <>
@@ -105,11 +106,11 @@ function ElementRad({ el, onApneSaker }: { el: DagenElement; onApneSaker: () => 
                     background: "none",
                     border: 0,
                     padding: 0,
-                    color: T.info,
+                    color: TL.viz.target,
                     textDecoration: "underline",
                     cursor: "pointer",
                     fontSize: 11.5,
-                    fontFamily: T.ui,
+                    fontFamily: TL.font.sans,
                   }}
                 >
                   åpne saker
@@ -145,7 +146,7 @@ export function DagenArtefakt({ data, na, onApneSaker }: { data: DagenData; na: 
 
   return (
     <div data-od-id="panel-dagen" style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-      <div style={{ fontFamily: T.mono, fontSize: 11, color: T.mut, marginBottom: 8 }}>
+      <div style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute, marginBottom: 8 }}>
         {avtaler} avtale{avtaler === 1 ? "" : "r"} · {blokker} innboksblokk{blokker === 1 ? "" : "er"}
       </div>
 
@@ -160,19 +161,19 @@ export function DagenArtefakt({ data, na, onApneSaker }: { data: DagenData; na: 
             <div key={el.id}>
               {visNaaLinjeFør && (
                 <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "4px 0" }} aria-label="Nå">
-                  <span style={{ width: 78, flex: "none", textAlign: "right", fontFamily: T.mono, fontSize: 10, color: T.handling }}>
+                  <span style={{ width: 78, flex: "none", textAlign: "right", fontFamily: TL.font.mono, fontSize: 10, color: TL.fill }}>
                     {formatKlokke(na.toISOString())} nå
                   </span>
-                  <span style={{ flex: 1, height: 1, background: T.handling, opacity: 0.6 }} />
+                  <span style={{ flex: 1, height: 1, background: TL.fill, opacity: 0.6 }} />
                 </div>
               )}
               <ElementRad el={el} onApneSaker={onApneSaker} />
               {i === data.elementer.length - 1 && !naaLinjeSatt && (
                 <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "4px 0" }} aria-label="Nå">
-                  <span style={{ width: 78, flex: "none", textAlign: "right", fontFamily: T.mono, fontSize: 10, color: T.handling }}>
+                  <span style={{ width: 78, flex: "none", textAlign: "right", fontFamily: TL.font.mono, fontSize: 10, color: TL.fill }}>
                     {formatKlokke(na.toISOString())} nå
                   </span>
-                  <span style={{ flex: 1, height: 1, background: T.handling, opacity: 0.6 }} />
+                  <span style={{ flex: 1, height: 1, background: TL.fill, opacity: 0.6 }} />
                 </div>
               )}
             </div>
@@ -180,7 +181,7 @@ export function DagenArtefakt({ data, na, onApneSaker }: { data: DagenData; na: 
         })
       )}
 
-      <div style={{ fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 8 }}>
+      <div style={{ fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 8 }}>
         Oppdatert {formatKlokke(na.toISOString())}
         {data.ledigMinutterIgjen > 0 && (
           <>

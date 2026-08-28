@@ -18,20 +18,10 @@ import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Caps, Kort, KpiFlis, StatusPill, TilbakeLenke, type StatusTone } from "@/components/v2";
-import {
-  PPosisjonSeksjon,
-  PlanSammendragKort,
-  TrackmanMaalKort,
-  PyramideFordelingKort,
-  CoachAktivitetKort,
-  TomPlan,
-  type PyramidArea,
-  type KolleMaalRad,
-  type KolleStatus,
-  type AktivitetRad,
-} from "@/components/portal/v2/TekniskPlanV2";
+import { PPosisjonSeksjon, PlanSammendragKort, TrackmanMaalKort, PyramideFordelingKort, CoachAktivitetKort, TomPlan, type PyramidArea, type KolleMaalRad, type KolleStatus, type AktivitetRad } from "@/components/portal/v2/TekniskPlanV2";
 import { P_POSITIONS, omraadeToTab } from "@/components/teknisk-plan/constants";
 import type { OppgaveDraft } from "@/components/teknisk-plan/oppgave-modal";
 // Beholdes KUN for OppgaveModal-ens egne tp-*-klasser (tp-btn/tp-tag/tp-task) —
@@ -41,13 +31,8 @@ import { OppgaveLauncher, type PositionTarget } from "./oppgave-launcher";
 import { OppgaveEditLauncher } from "./oppgave-edit-launcher";
 import { TekniskPlanFullsvingShell } from "@/components/portal/v2/TekniskPlanFullsvingShell";
 import { erFullsving } from "@/lib/teknisk-plan/fullsving";
-import {
-  TekniskPlanVisning,
-  type EnTingLes,
-  type FokusLes,
-} from "@/components/teknisk-plan/teknisk-plan-visning";
+import { TekniskPlanVisning, type EnTingLes, type FokusLes } from "@/components/teknisk-plan/teknisk-plan-visning";
 import { loadNesteOkt } from "@/lib/portal/load-neste-okt";
-
 export const dynamic = "force-dynamic";
 
 interface PageProps {
@@ -99,15 +84,15 @@ export default async function PlanBuilderPage({ params }: PageProps) {
           <div
             style={{
               padding: "24px 16px",
-              background: T.panel2,
-              border: `1px dashed ${T.border}`,
-              borderRadius: T.rCard,
+              background: TL.dock,
+              border: `1px dashed ${TL.hair}`,
+              borderRadius: TL.radius.card,
             }}
           >
-            <h3 style={{ margin: "0 0 8px", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+            <h3 style={{ margin: "0 0 8px", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
               Ingen teknisk plan ennå
             </h3>
-            <p style={{ margin: "0 0 12px", fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut }}>
+            <p style={{ margin: "0 0 12px", fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute }}>
               Anders har ikke publisert en teknisk plan for deg. Den bygges vanligvis etter en
               svinganalyse — be om en, så starter dere der.
             </p>
@@ -124,10 +109,10 @@ export default async function PlanBuilderPage({ params }: PageProps) {
                 justifyContent: "center",
                 minHeight: 56,
                 width: "100%",
-                borderRadius: T.rCard,
-                background: T.handling,
-                color: T.onHandling,
-                fontFamily: T.ui,
+                borderRadius: TL.radius.card,
+                background: TL.fill,
+                color: TL.onFill,
+                fontFamily: TL.font.sans,
                 fontSize: 14,
                 fontWeight: 600,
               }}
@@ -314,15 +299,15 @@ export default async function PlanBuilderPage({ params }: PageProps) {
           fokus={fokusLes}
           whyPunkter={whyPunkter}
           rediger={
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap, width: "100%", minWidth: 0 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 16, width: "100%", minWidth: 0 }}>
         {/* Hode (redigeringsmodus — dagens verktøylinje, uendret) */}
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>
           <div style={{ minWidth: 0 }}>
-            <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Teknisk plan</h1>
-            <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+            <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Teknisk plan</h1>
+            <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
               {plan.navn} · {periodLabel}
             </span>
-            <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "10px 0 0" }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: "10px 0 0" }}>
               {allTasks.length} oppgaver fordelt på {plan.positions.length} P-posisjoner · sist oppdatert{" "}
               {plan.updatedAt.toLocaleDateString("nb-NO", { day: "numeric", month: "short" })}.
             </p>
@@ -333,7 +318,7 @@ export default async function PlanBuilderPage({ params }: PageProps) {
         </div>
 
         {/* KPI-strip */}
-        <div className="grid grid-cols-2 sm:grid-cols-4" style={{ gap: T.gap }}>
+        <div className="grid grid-cols-2 sm:grid-cols-4" style={{ gap: 16 }}>
           <Kort>
             <Caps size={9}>Status</Caps>
             <div style={{ marginTop: 14 }}>
@@ -346,8 +331,8 @@ export default async function PlanBuilderPage({ params }: PageProps) {
         </div>
 
         {/* Innhold: posisjoner + sidebar */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1.6fr_1fr]" style={{ gap: T.gap }}>
-          <section style={{ display: "flex", flexDirection: "column", gap: T.gap, minWidth: 0 }}>
+        <div className="grid grid-cols-1 lg:grid-cols-[1.6fr_1fr]" style={{ gap: 16 }}>
+          <section style={{ display: "flex", flexDirection: "column", gap: 16, minWidth: 0 }}>
             <TekniskPlanFullsvingShell fullsvingTasks={fullsvingTasks}>
               {({ onlyFullsving }) => (
                 <>
@@ -495,7 +480,7 @@ export default async function PlanBuilderPage({ params }: PageProps) {
             </TekniskPlanFullsvingShell>
           </section>
 
-          <aside style={{ display: "flex", flexDirection: "column", gap: T.gap, minWidth: 0 }}>
+          <aside style={{ display: "flex", flexDirection: "column", gap: 16, minWidth: 0 }}>
             <PlanSammendragKort
               status={statusLabel}
               statusTone={statusTone}

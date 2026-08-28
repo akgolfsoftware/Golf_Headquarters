@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * Hull-oversikt: 18-grid (eller 9) med score-farger, hopp til/rediger
@@ -7,7 +8,7 @@
  */
 
 import type { LoggetHull } from "@/lib/runde-logg/types";
-import { T, Icon } from "@/components/v2";
+import { Icon } from "@/components/v2";
 
 function scoreFor(hull: LoggetHull): number | null {
   if (hull.slag.at(-1)?.resultat.iHull !== true) return null;
@@ -15,12 +16,12 @@ function scoreFor(hull: LoggetHull): number | null {
 }
 
 function farge(par: number, s: number | null) {
-  if (s == null) return { bg: T.panel2, bd: T.border, fg: T.mut };
+  if (s == null) return { bg: TL.dock, bd: TL.hair, fg: TL.mute };
   const d = s - par;
-  if (d < 0) return { bg: "color-mix(in srgb, var(--v2-up) 14%, transparent)", bd: "color-mix(in srgb, var(--v2-up) 45%, transparent)", fg: T.up };
-  if (d === 0) return { bg: T.panel3, bd: T.borderS, fg: T.fg };
-  if (d === 1) return { bg: "color-mix(in srgb, var(--v2-warn) 12%, transparent)", bd: "color-mix(in srgb, var(--v2-warn) 40%, transparent)", fg: T.warn };
-  return { bg: "color-mix(in srgb, var(--v2-down) 12%, transparent)", bd: "color-mix(in srgb, var(--v2-down) 45%, transparent)", fg: T.down };
+  if (d < 0) return { bg: "color-mix(in srgb, var(--tl-ok) 14%, transparent)", bd: "color-mix(in srgb, var(--tl-ok) 45%, transparent)", fg: TL.ok };
+  if (d === 0) return { bg: TL.dim, bd: TL.hair, fg: TL.text };
+  if (d === 1) return { bg: "color-mix(in srgb, var(--v2-warn) 12%, transparent)", bd: "color-mix(in srgb, var(--v2-warn) 40%, transparent)", fg: TL.warn };
+  return { bg: "color-mix(in srgb, var(--v2-down) 12%, transparent)", bd: "color-mix(in srgb, var(--v2-down) 45%, transparent)", fg: TL.danger };
 }
 
 type HullOversiktProps = {
@@ -45,14 +46,14 @@ export function HullOversikt({ hullData, aktivtHullIdx, onVelgHull, onLukk, onAv
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div>
-          <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 22, color: T.fg, lineHeight: 1.1 }}>
+          <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 22, color: TL.text, lineHeight: 1.1 }}>
             Hull-oversikt
           </div>
-          <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 3 }}>
+          <div style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 3 }}>
             {ferdige} av {hullData.length} hull ført · trykk et hull for å redigere
           </div>
         </div>
-        <span style={{ fontFamily: T.mono, fontSize: 15, fontWeight: 700, color: T.fg }}>{diffTxt}</span>
+        <span style={{ fontFamily: TL.font.mono, fontSize: 15, fontWeight: 700, color: TL.text }}>{diffTxt}</span>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 8 }}>
@@ -72,7 +73,7 @@ export function HullOversikt({ hullData, aktivtHullIdx, onVelgHull, onLukk, onAv
                 aspectRatio: "1",
                 borderRadius: 12,
                 background: f.bg,
-                border: `1px solid ${aktiv ? T.lime : f.bd}`,
+                border: `1px solid ${aktiv ? TL.fill : f.bd}`,
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
@@ -90,14 +91,14 @@ export function HullOversikt({ hullData, aktivtHullIdx, onVelgHull, onLukk, onAv
                     width: 6,
                     height: 6,
                     borderRadius: 9999,
-                    background: T.lime,
+                    background: TL.fill,
                   }}
                 />
               )}
-              <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: T.mut }}>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, color: TL.mute }}>
                 {h.holeNumber} · P{h.par}
               </span>
-              <span style={{ fontFamily: T.mono, fontSize: 17, fontWeight: 700, color: f.fg }}>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 17, fontWeight: 700, color: f.fg }}>
                 {s ?? "—"}
               </span>
             </button>
@@ -105,13 +106,13 @@ export function HullOversikt({ hullData, aktivtHullIdx, onVelgHull, onLukk, onAv
         })}
       </div>
 
-      <div style={{ display: "flex", gap: 12, flexWrap: "wrap", fontFamily: T.mono, fontSize: 9.5, color: T.mut }}>
+      <div style={{ display: "flex", gap: 12, flexWrap: "wrap", fontFamily: TL.font.mono, fontSize: 9.5, color: TL.mute }}>
         {(
           [
-            ["Birdie–", T.up],
-            ["Par", T.fg],
-            ["Bogey", T.warn],
-            ["Dobbel+", T.down],
+            ["Birdie–", TL.ok],
+            ["Par", TL.text],
+            ["Bogey", TL.warn],
+            ["Dobbel+", TL.danger],
           ] as const
         ).map(([l, c]) => (
           <span key={l} style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
@@ -129,14 +130,14 @@ export function HullOversikt({ hullData, aktivtHullIdx, onVelgHull, onLukk, onAv
             gap: 10,
             padding: 14,
             borderRadius: 14,
-            background: T.panel,
-            border: `1px solid ${T.borderS}`,
+            background: TL.elev,
+            border: `1px solid ${TL.hair}`,
           }}
         >
-          <div style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 700, color: T.fg }}>
+          <div style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 700, color: TL.text }}>
             Avslutte runden nå?
           </div>
-          <div style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2, lineHeight: 1.55 }}>
+          <div style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.55 }}>
             {ferdige} av {hullData.length} hull er fullført. De {ferdige} lagres med full SG — resten
             lagres ikke. Du kan også fortsette senere fra kladden på denne enheten.
           </div>
@@ -151,12 +152,12 @@ export function HullOversikt({ hullData, aktivtHullIdx, onVelgHull, onLukk, onAv
                 flex: 1,
                 padding: "11px 0",
                 borderRadius: 12,
-                background: T.panel3,
-                border: `1px solid ${T.borderS}`,
-                fontFamily: T.ui,
+                background: TL.dim,
+                border: `1px solid ${TL.hair}`,
+                fontFamily: TL.font.sans,
                 fontSize: 13,
                 fontWeight: 700,
-                color: T.fg,
+                color: TL.text,
               }}
             >
               Lagre {ferdige} hull
@@ -172,11 +173,11 @@ export function HullOversikt({ hullData, aktivtHullIdx, onVelgHull, onLukk, onAv
                 padding: "11px 0",
                 borderRadius: 12,
                 background: "transparent",
-                border: `1px solid ${T.border}`,
-                fontFamily: T.ui,
+                border: `1px solid ${TL.hair}`,
+                fontFamily: TL.font.sans,
                 fontSize: 13,
                 fontWeight: 600,
-                color: T.fg2,
+                color: TL.mute,
               }}
             >
               Fortsett runden
@@ -200,11 +201,11 @@ export function HullOversikt({ hullData, aktivtHullIdx, onVelgHull, onLukk, onAv
           padding: "12px 0",
           borderRadius: 12,
           background: "transparent",
-          border: `1px solid ${T.border}`,
-          fontFamily: T.ui,
+          border: `1px solid ${TL.hair}`,
+          fontFamily: TL.font.sans,
           fontSize: 13,
           fontWeight: 600,
-          color: T.fg2,
+          color: TL.mute,
         }}
       >
         <Icon name="arrow-left" size={14} />

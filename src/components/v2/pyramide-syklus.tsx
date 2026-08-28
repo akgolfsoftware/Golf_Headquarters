@@ -12,6 +12,7 @@
  */
 
 import { useState, useTransition } from "react";
+import { TL } from "@/lib/v2/train-lock";
 import { T } from "@/lib/v2/tokens";
 import type { AkseKey } from "@/lib/v2/tokens";
 import { AKSE_NAVN, AkseChip } from "./core";
@@ -45,7 +46,7 @@ export function PyramideSyklusChip({ verdi, onEndre }: PyramideSyklusChipProps) 
     });
   };
 
-  const farge = T.ax[lokal] || T.mut;
+  const farge = T.ax[lokal] || TL.mute;
   return (
     <button
       type="button"
@@ -60,12 +61,12 @@ export function PyramideSyklusChip({ verdi, onEndre }: PyramideSyklusChipProps) 
         display: "inline-flex",
         alignItems: "center",
         gap: 5,
-        fontFamily: T.mono,
+        fontFamily: TL.font.mono,
         fontSize: 9,
         fontWeight: 700,
-        color: feil ? T.down : T.fg2,
+        color: feil ? TL.danger : TL.mute,
         background: `color-mix(in srgb,${farge} 12%,transparent)`,
-        border: `1px solid ${feil ? T.down : `color-mix(in srgb,${farge} 45%,transparent)`}`,
+        border: `1px solid ${feil ? TL.danger : `color-mix(in srgb,${farge} 45%,transparent)`}`,
         borderRadius: 5,
         padding: "3px 7px",
         opacity: pending ? 0.6 : 1,

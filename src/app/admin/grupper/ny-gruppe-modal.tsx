@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 // AgencyOS Grupper — «Ny gruppe»-modal. Bygget av v2-komponentbiblioteket
 // (Inndata/Velger/Icon/T) per design-system-regel.md — ingen tailwind, ingen
 // rå hex. Native <dialog> for fokusfelle/backdrop (samme mønster som
@@ -8,9 +8,8 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { T, Icon, Inndata, Velger } from "@/components/v2";
+import { Icon, Inndata, Velger } from "@/components/v2";
 import { createGroup } from "./actions";
-
 export type CoachValg = { id: string; name: string };
 
 const NIVAA_VALG = [
@@ -105,23 +104,23 @@ export function NyGruppeModal({
       style={{
         margin: "auto",
         padding: 0,
-        border: `1px solid ${T.borderS}`,
+        border: `1px solid ${TL.hair}`,
         borderRadius: 20,
-        background: T.panel,
-        boxShadow: `0 24px 60px ${T.farge.svartA50}`,
+        background: TL.elev,
+        boxShadow: "none",
         width: "min(480px, calc(100vw - 32px))",
-        color: T.fg,
+        color: TL.text,
       }}
     >
       <div style={{ padding: "22px 24px" }}>
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
           <div>
-            <div style={{ fontFamily: T.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.10em", color: T.mut }}>
+            <div style={{ fontFamily: TL.font.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.10em", color: TL.mute }}>
               Grupper · ny gruppe
             </div>
             <h2
               id="ny-gruppe-title"
-              style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 20, letterSpacing: "-0.02em", color: T.fg, margin: "4px 0 0" }}
+              style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 20, letterSpacing: "-0.02em", color: TL.text, margin: "4px 0 0" }}
             >
               Opprett gruppe
             </h2>
@@ -130,9 +129,9 @@ export function NyGruppeModal({
             type="button"
             onClick={lukk}
             aria-label="Lukk"
-            style={{ width: 28, height: 28, borderRadius: 8, background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flex: "none" }}
+            style={{ width: 28, height: 28, borderRadius: 8, background: TL.dock, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flex: "none" }}
           >
-            <Icon name="x" size={14} style={{ color: T.fg2 }} />
+            <Icon name="x" size={14} style={{ color: TL.mute }} />
           </button>
         </div>
 
@@ -149,12 +148,12 @@ export function NyGruppeModal({
             style={{
               marginTop: 16,
               borderRadius: 10,
-              border: `1px solid color-mix(in srgb,${T.down} 30%,transparent)`,
-              background: `color-mix(in srgb,${T.down} 10%,${T.panel})`,
+              border: `1px solid color-mix(in srgb,${TL.danger} 30%,transparent)`,
+              background: `color-mix(in srgb,${TL.danger} 10%,${TL.elev})`,
               padding: "9px 12px",
-              fontFamily: T.ui,
+              fontFamily: TL.font.sans,
               fontSize: 12.5,
-              color: T.down,
+              color: TL.danger,
             }}
           >
             {feil}
@@ -167,8 +166,8 @@ export function NyGruppeModal({
             onClick={lukk}
             disabled={pending}
             style={{
-              fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg,
-              background: T.panel3, border: `1px solid ${T.borderS}`, borderRadius: 9999,
+              fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text,
+              background: TL.dim, border: `1px solid ${TL.hair}`, borderRadius: 9999,
               padding: "9px 16px", cursor: pending ? "default" : "pointer", opacity: pending ? 0.6 : 1,
             }}
           >
@@ -179,8 +178,8 @@ export function NyGruppeModal({
             onClick={bekreft}
             disabled={pending || !navn.trim()}
             style={{
-              fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.onLime,
-              background: T.lime, border: "none", borderRadius: 9999, padding: "9px 18px",
+              fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.onFill,
+              background: TL.fill, border: "none", borderRadius: 9999, padding: "9px 18px",
               cursor: pending || !navn.trim() ? "default" : "pointer", opacity: pending || !navn.trim() ? 0.5 : 1,
             }}
           >

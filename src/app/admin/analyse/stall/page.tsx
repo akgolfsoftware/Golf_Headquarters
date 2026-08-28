@@ -57,7 +57,7 @@ async function loadInnsiktStall(viewer: { id: string; role: string }): Promise<I
     prisma.round.aggregate({
       _avg: { sgTotal: true },
       _count: { sgTotal: true },
-      where: { userId: { in: spillerIds }, playedAt: { gte: ukeStart, lte: ukeSlutt }, sgTotal: { not: null } },
+      where: { userId: { in: spillerIds }, playedAt: { gte: ukeStart, lt: ukeSlutt }, sgTotal: { not: null } },
     }),
     prisma.round.aggregate({
       _avg: { sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },

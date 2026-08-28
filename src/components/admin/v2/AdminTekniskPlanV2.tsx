@@ -26,20 +26,8 @@
 
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import {
-  Caps,
-  Tittel,
-  Kort,
-  Rad,
-  KpiFlis,
-  StatusPill,
-  CTAPill,
-  InnsiktChip,
-  TomTilstand,
-  AvatarFoto,
-  Icon,
-} from "@/components/v2";
-import { T } from "@/lib/v2/tokens";
+import { Caps, Tittel, Kort, Rad, KpiFlis, StatusPill, CTAPill, InnsiktChip, TomTilstand, AvatarFoto, Icon } from "@/components/v2";
+import { TL } from "@/lib/v2/train-lock";
 
 // ── Datakontrakt (mappes fra loaderen i ruten) ──────────────────
 export interface TekniskPlanSpillerRad {
@@ -87,11 +75,11 @@ function pct(fullfort: number, totalt: number): number | null {
 function Stat({ verdi, label, sub, accent }: { verdi: string; label: string; sub?: string; accent?: boolean }) {
   return (
     <span style={{ display: "inline-flex", flexDirection: "column", alignItems: "flex-end", gap: 2, width: 62, flex: "none" }}>
-      <span style={{ fontFamily: T.mono, fontSize: 14, fontWeight: 700, color: accent ? T.lime : T.fg, fontVariantNumeric: "tabular-nums", lineHeight: 1 }}>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 14, fontWeight: 700, color: accent ? TL.fill : TL.text, fontVariantNumeric: "tabular-nums", lineHeight: 1 }}>
         {verdi}
       </span>
-      {sub && <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut }}>{sub}</span>}
-      <span style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>{label}</span>
+      {sub && <span style={{ fontFamily: TL.font.mono, fontSize: 9, color: TL.mute }}>{sub}</span>}
+      <span style={{ fontFamily: TL.font.mono, fontSize: 8, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>{label}</span>
     </span>
   );
 }
@@ -127,7 +115,7 @@ export function AdminTekniskPlanV2({ data }: { data: AdminTekniskPlanData }) {
 
   // ── KPI-flis (4) ──────────────────────────────────────────────
   const kpi = (
-    <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: T.gap }}>
+    <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: 16 }}>
       <KpiFlis label="Spillere" value={spillere.length} />
       <KpiFlis label="Med aktiv plan" value={medPlan} />
       <KpiFlis label="TEK-økter" value={tekTotaltSum} />
@@ -184,7 +172,7 @@ export function AdminTekniskPlanV2({ data }: { data: AdminTekniskPlanData }) {
                   {p != null ? (
                     <StatusPill tone={høy ? "lime" : "info"}>{p}%</StatusPill>
                   ) : (
-                    <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut }}>Ingen økter</span>
+                    <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>Ingen økter</span>
                   )}
                 </span>
               }
@@ -208,13 +196,13 @@ export function AdminTekniskPlanV2({ data }: { data: AdminTekniskPlanData }) {
         maler.map((m, i) => (
           <Rad
             key={m.id}
-            leading={<Icon name="layers" size={17} style={{ color: T.mut, flex: "none" }} />}
+            leading={<Icon name="layers" size={17} style={{ color: TL.mute, flex: "none" }} />}
             title={m.navn}
             sub={m.beskrivelse ?? `${pl(m.varighetUker, "uke", "uker")}`}
             meta={
               <span style={{ display: "inline-flex", alignItems: "center", gap: 12 }}>
-                <span style={{ fontFamily: T.mono, fontSize: 11, color: T.fg2, fontVariantNumeric: "tabular-nums" }}>
-                  {m.varighetUker}<span style={{ color: T.mut }}> uker</span>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
+                  {m.varighetUker}<span style={{ color: TL.mute }}> uker</span>
                 </span>
                 <Link href={`/admin/plan-templates/${m.id}`} className="hidden md:inline-flex" style={{ textDecoration: "none" }}>
                   <CTAPill ghost>Bruk mal</CTAPill>
@@ -239,7 +227,7 @@ export function AdminTekniskPlanV2({ data }: { data: AdminTekniskPlanData }) {
   const innsikt = <InnsiktChip cta="Planlegg i Workbench" href="/admin/planlegge">{innsiktTekst}</InnsiktChip>;
 
   return (
-    <div data-paper-wave-h="teknisk-plan-admin" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-h="teknisk-plan-admin" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {hode}
       {kpi}
       {spillerListe}

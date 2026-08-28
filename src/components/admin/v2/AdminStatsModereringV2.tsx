@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * /admin/stats/moderering — moderering-/GDPR-kø, KOBLET 17. juli 2026 (D5).
@@ -13,7 +14,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Caps, Knapp, Kort, StatusPill, TekstOmraade, TomTilstand, T } from "@/components/v2";
+import { Caps, Knapp, Kort, StatusPill, TekstOmraade, TomTilstand } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import { CountUp } from "@/components/stats/count-up";
 import { avvisSak, godkjennSak, utforGdprSletting } from "@/app/admin/(legacy)/stats/moderering/actions";
@@ -72,11 +73,11 @@ type Tab = (typeof TABS)[number]["id"];
 /* ── Småbiter ────────────────────────────────────────────────────────────── */
 
 function Kpi({ label, value, tone }: { label: string; value: number; tone: "lime" | "up" | "down" }) {
-  const c = tone === "up" ? T.up : tone === "down" ? T.down : T.fg;
+  const c = tone === "up" ? TL.ok : tone === "down" ? TL.danger : TL.text;
   return (
     <Kort>
       <Caps>{label}</Caps>
-      <div style={{ marginTop: 6, fontFamily: T.mono, fontSize: 30, fontWeight: 700, lineHeight: 1, color: c, fontVariantNumeric: "tabular-nums" }}>
+      <div style={{ marginTop: 6, fontFamily: TL.font.mono, fontSize: 30, fontWeight: 700, lineHeight: 1, color: c, fontVariantNumeric: "tabular-nums" }}>
         <CountUp value={value} />
       </div>
     </Kort>
@@ -87,7 +88,7 @@ function KpiText({ label, value }: { label: string; value: string }) {
   return (
     <Kort>
       <Caps>{label}</Caps>
-      <div style={{ marginTop: 6, fontFamily: T.mono, fontSize: 26, fontWeight: 700, lineHeight: 1, color: T.fg }}>{value}</div>
+      <div style={{ marginTop: 6, fontFamily: TL.font.mono, fontSize: 26, fontWeight: 700, lineHeight: 1, color: TL.text }}>{value}</div>
     </Kort>
   );
 }
@@ -112,9 +113,9 @@ function InlineFeil({ melding }: { melding: string }) {
     <div
       role="alert"
       style={{
-        fontFamily: T.ui, fontSize: 12, color: T.down, lineHeight: 1.5,
-        background: `color-mix(in srgb, ${T.down} 10%, transparent)`,
-        border: `1px solid color-mix(in srgb, ${T.down} 30%, transparent)`,
+        fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, lineHeight: 1.5,
+        background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`,
+        border: `1px solid color-mix(in srgb, ${TL.danger} 30%, transparent)`,
         borderRadius: 10, padding: "8px 11px", marginTop: 12,
       }}
     >
@@ -126,8 +127,8 @@ function InlineFeil({ melding }: { melding: string }) {
 function MetaRad({ label, verdi }: { label: string; verdi: string }) {
   return (
     <>
-      <span style={{ color: T.mut }}>{label}</span>
-      <span style={{ color: T.fg, minWidth: 0, overflowWrap: "anywhere" }}>{verdi}</span>
+      <span style={{ color: TL.mute }}>{label}</span>
+      <span style={{ color: TL.text, minWidth: 0, overflowWrap: "anywhere" }}>{verdi}</span>
     </>
   );
 }
@@ -180,7 +181,7 @@ function SakKort({ sak }: { sak: ModereringSakV2 }) {
     <Kort
       eyebrow={
         <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-          <Icon name={gdpr ? "shield-check" : "flag"} size={11} style={{ color: T.mut }} />
+          <Icon name={gdpr ? "shield-check" : "flag"} size={11} style={{ color: TL.mute }} />
           Mottatt {sak.mottatt}
         </span>
       }
@@ -191,22 +192,22 @@ function SakKort({ sak }: { sak: ModereringSakV2 }) {
         </span>
       }
     >
-      <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, lineHeight: 1.25, color: T.fg }}>
+      <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 17, lineHeight: 1.25, color: TL.text }}>
         {sak.spillerNavn}
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "6px 16px", marginTop: 12, fontFamily: T.ui, fontSize: 13, lineHeight: 1.5 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "6px 16px", marginTop: 12, fontFamily: TL.font.sans, fontSize: 13, lineHeight: 1.5 }}>
         <MetaRad label={gdpr ? "Forespurt av:" : "Rapportert av:"} verdi={sak.rapportertAv ?? (gdpr ? "Spilleren selv (egenforespørsel)" : "Ukjent")} />
         {sak.mal && <MetaRad label="Gjelder:" verdi={sak.mal} />}
         {sak.begrunnelse && <MetaRad label="Begrunnelse:" verdi={`«${sak.begrunnelse}»`} />}
       </div>
 
       {venterUtforelse && (
-        <div style={{ marginTop: 14, borderRadius: 12, background: `color-mix(in srgb, ${T.down} 8%, transparent)`, padding: 14 }}>
-          <div style={{ marginBottom: 8, fontFamily: T.mono, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: T.down }}>
+        <div style={{ marginTop: 14, borderRadius: 12, background: `color-mix(in srgb, ${TL.danger} 8%, transparent)`, padding: 14 }}>
+          <div style={{ marginBottom: 8, fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: TL.danger }}>
             Dette skjer ved bekreftelse
           </div>
-          <ul style={{ display: "flex", flexDirection: "column", gap: 6, fontFamily: T.ui, fontSize: 13, lineHeight: 1.55, color: T.fg, margin: 0, paddingLeft: 0, listStyle: "none" }}>
+          <ul style={{ display: "flex", flexDirection: "column", gap: 6, fontFamily: TL.font.sans, fontSize: 13, lineHeight: 1.55, color: TL.text, margin: 0, paddingLeft: 0, listStyle: "none" }}>
             <li>· Profilen anonymiseres — navn blir «Slettet bruker», e-post/telefon/bilde/fødselsdato fjernes</li>
             <li>· Treningsdata, bookinger og økter beholdes uten personopplysninger</li>
             <li>· Handlingen logges i audit-loggen og kan ikke angres</li>
@@ -234,13 +235,13 @@ function SakKort({ sak }: { sak: ModereringSakV2 }) {
             icon={pending ? "loader" : "trash-2"}
             disabled={pending}
             onClick={bekreftSletting}
-            style={{ minHeight: 44, background: T.down, borderColor: T.down, color: T.bg }}
+            style={{ minHeight: 44, background: TL.danger, borderColor: TL.danger, color: TL.scene }}
           >
             Bekreft sletting
           </Knapp>
         ) : visAvvis ? (
           <>
-            <Knapp icon={pending ? "loader" : "x"} disabled={pending} onClick={avvis} style={{ minHeight: 44, background: T.down, borderColor: T.down, color: T.bg }}>
+            <Knapp icon={pending ? "loader" : "x"} disabled={pending} onClick={avvis} style={{ minHeight: 44, background: TL.danger, borderColor: TL.danger, color: TL.scene }}>
               Bekreft avvisning
             </Knapp>
             <Knapp ghost disabled={pending} onClick={() => setVisAvvis(false)} style={{ minHeight: 44 }}>
@@ -252,13 +253,13 @@ function SakKort({ sak }: { sak: ModereringSakV2 }) {
             <Knapp icon={pending ? "loader" : "check"} disabled={pending} onClick={godkjenn} style={{ minHeight: 44 }}>
               {gdpr ? "Godkjenn forespørselen" : "Godkjenn rapporten"}
             </Knapp>
-            <Knapp ghost icon="x" disabled={pending} onClick={() => setVisAvvis(true)} style={{ minHeight: 44, color: T.down }}>
+            <Knapp ghost icon="x" disabled={pending} onClick={() => setVisAvvis(true)} style={{ minHeight: 44, color: TL.danger }}>
               Avvis
             </Knapp>
           </>
         )}
         {gdpr && !venterUtforelse && (
-          <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, lineHeight: 1.5 }}>
+          <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, lineHeight: 1.5 }}>
             To steg: godkjenning først — selve slettingen bekreftes etterpå.
           </span>
         )}
@@ -277,28 +278,28 @@ export function ModeringClientV2({ saker, historikk, stats, lasteFeil }: AdminSt
   const slett = saker.filter((s) => s.type === "GDPR_SLETTING");
 
   return (
-    <div data-paper-wave-h="statsmoderering" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: T.gap, paddingBottom: 48 }}>
+    <div data-paper-wave-h="statsmoderering" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: 16, paddingBottom: 48 }}>
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 14 }}>
         <div>
           <Caps>Admin · Stats</Caps>
-          <h1 style={{ margin: "8px 0 0", fontFamily: T.disp, fontWeight: 700, fontSize: 30, lineHeight: 1.05, letterSpacing: "-0.02em", color: T.fg }}>Moderering</h1>
-          <p style={{ marginTop: 6, fontFamily: T.mono, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: T.mut }}>
+          <h1 style={{ margin: "8px 0 0", fontFamily: TL.font.sans, fontWeight: 700, fontSize: 30, lineHeight: 1.05, letterSpacing: "-0.02em", color: TL.text }}>Moderering</h1>
+          <p style={{ marginTop: 6, fontFamily: TL.font.mono, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: TL.mute }}>
             Behandle rapportert innhold · håndter GDPR-slett
           </p>
         </div>
         <div style={{ textAlign: "right" }}>
-          <div style={{ fontFamily: T.mono, fontSize: 48, fontWeight: 700, lineHeight: 1, color: T.lime, fontVariantNumeric: "tabular-nums" }}>
+          <div style={{ fontFamily: TL.font.mono, fontSize: 48, fontWeight: 700, lineHeight: 1, color: TL.fill, fontVariantNumeric: "tabular-nums" }}>
             <CountUp value={totaltVentende} />
           </div>
-          <div style={{ marginTop: 4, fontFamily: T.mono, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: T.mut }}>Ventende</div>
+          <div style={{ marginTop: 4, fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: TL.mute }}>Ventende</div>
         </div>
       </div>
 
       {lasteFeil && (
-        <Kort style={{ borderColor: `color-mix(in srgb, ${T.warn} 40%, ${T.border})` }}>
+        <Kort style={{ borderColor: `color-mix(in srgb, ${TL.warn} 40%, ${TL.hair})` }}>
           <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
-            <Icon name="alert-triangle" size={16} style={{ color: T.warn, flex: "none", marginTop: 1 }} />
-            <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg, lineHeight: 1.55, margin: 0 }}>{lasteFeil}</p>
+            <Icon name="alert-triangle" size={16} style={{ color: TL.warn, flex: "none", marginTop: 1 }} />
+            <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text, lineHeight: 1.55, margin: 0 }}>{lasteFeil}</p>
           </div>
         </Kort>
       )}
@@ -310,7 +311,7 @@ export function ModeringClientV2({ saker, historikk, stats, lasteFeil }: AdminSt
         <KpiText label="Snitt-tid" value={stats.snittTid} />
       </div>
 
-      <div style={{ display: "flex", alignItems: "center", gap: 4, overflowX: "auto", borderBottom: `1px solid ${T.border}` }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 4, overflowX: "auto", borderBottom: `1px solid ${TL.hair}` }}>
         {TABS.map((t) => {
           const count = t.id === "rapporter" ? stats.rapporter : t.id === "slett" ? stats.slett : undefined;
           const isActive = aktivTab === t.id;
@@ -323,15 +324,15 @@ export function ModeringClientV2({ saker, historikk, stats, lasteFeil }: AdminSt
               style={{
                 display: "inline-flex", alignItems: "center", gap: 8, whiteSpace: "nowrap",
                 marginBottom: -1, padding: "14px 14px", background: "none", border: "none",
-                borderBottomWidth: 2, borderBottomStyle: "solid", borderBottomColor: isActive ? T.lime : "transparent",
-                fontFamily: T.mono, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.10em",
-                color: isActive ? T.lime : T.mut, cursor: "pointer",
+                borderBottomWidth: 2, borderBottomStyle: "solid", borderBottomColor: isActive ? TL.fill : "transparent",
+                fontFamily: TL.font.mono, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.10em",
+                color: isActive ? TL.fill : TL.mute, cursor: "pointer",
               }}
             >
               <Icon name={t.icon} size={14} />
               {t.label}
               {count !== undefined && count > 0 && (
-                <span style={{ borderRadius: 9999, padding: "1px 6px", fontFamily: T.mono, fontSize: 10, fontWeight: 800, background: t.id === "slett" ? T.down : T.lime, color: t.id === "slett" ? T.bg : T.onLime }}>
+                <span style={{ borderRadius: 9999, padding: "1px 6px", fontFamily: TL.font.mono, fontSize: 10, fontWeight: 800, background: t.id === "slett" ? TL.danger : TL.fill, color: t.id === "slett" ? TL.scene : TL.onFill }}>
                   {count}
                 </span>
               )}
@@ -368,10 +369,10 @@ export function ModeringClientV2({ saker, historikk, stats, lasteFeil }: AdminSt
             historikk.map((s) => (
               <Kort key={s.id}>
                 <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 10 }}>
-                  <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 15, color: T.fg }}>{s.spillerNavn}</span>
+                  <span style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 15, color: TL.text }}>{s.spillerNavn}</span>
                   <TypePill type={s.type} />
                   <ResultatPill status={s.status} />
-                  <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: T.mut }}>
+                  <span style={{ marginLeft: "auto", fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: TL.mute }}>
                     {s.behandlet ? `Behandlet ${s.behandlet}` : `Mottatt ${s.mottatt}`}
                   </span>
                 </div>
@@ -381,8 +382,8 @@ export function ModeringClientV2({ saker, historikk, stats, lasteFeil }: AdminSt
       </div>
 
       <div style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
-        <Icon name="info" size={13} style={{ color: T.mut, flex: "none", marginTop: 2 }} />
-        <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, lineHeight: 1.6, margin: 0, maxWidth: 620 }}>
+        <Icon name="info" size={13} style={{ color: TL.mute, flex: "none", marginTop: 2 }} />
+        <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.6, margin: 0, maxWidth: 620 }}>
           Saker opprettes foreløpig av support — rapportert innhold meldes dit, og
           GDPR-sletting startes ved skriftlig forespørsel fra spilleren. Rapporteringsflyt
           i appen kommer senere.

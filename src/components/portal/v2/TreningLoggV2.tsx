@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ · Logg treningsøkt — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
  * T.* only. Lys PlayerHQ.
@@ -8,19 +8,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { SgCategory } from "@/generated/prisma/client";
-import {
-  T,
-  Caps,
-  Tittel,
-  Kort,
-  Knapp,
-  PillVelger,
-  Glider,
-  Inndata,
-  TekstOmraade,
-  HjelpTips,
-} from "@/components/v2";
-
+import { Caps, Tittel, Kort, Knapp, PillVelger, Glider, Inndata, TekstOmraade, HjelpTips } from "@/components/v2";
 // String-literaler (ikke verdi-import fra Prisma-klienten) — denne client-
 // komponenten må ikke dra Node-moduler inn i nettleser-bundelen.
 // Ordbok-kanon (docs/ordbok.json §sg.kategorier): norsk klarspråk i spiller-UI.
@@ -70,7 +58,7 @@ export function TreningLoggV2() {
   }
 
   return (
-    <div style={{ maxWidth: 560, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ maxWidth: 560, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
       <div>
         <Caps>PlayerHQ · Trening</Caps>
         <div style={{ marginTop: 10 }}>
@@ -78,7 +66,7 @@ export function TreningLoggV2() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         <Kort eyebrow="Økten">
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             <Inndata
@@ -95,7 +83,7 @@ export function TreningLoggV2() {
 
             <div>
               <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 7 }}>
-                <span style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.fg2 }}>Område</span>
+                <span style={{ fontFamily: TL.font.sans, fontSize: 12, fontWeight: 600, color: TL.mute }}>Område</span>
                 <HjelpTips k="sgOmrade" size={11} />
               </div>
               <PillVelger
@@ -123,7 +111,7 @@ export function TreningLoggV2() {
             />
 
             <div>
-              <span style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.fg2, display: "block", marginBottom: 7 }}>
+              <span style={{ fontFamily: TL.font.sans, fontSize: 12, fontWeight: 600, color: TL.mute, display: "block", marginBottom: 7 }}>
                 Kvalitet: {form.quality}/5
               </span>
               <PillVelger
@@ -144,7 +132,7 @@ export function TreningLoggV2() {
         </Kort>
 
         {feil && (
-          <p role="alert" style={{ fontFamily: T.ui, fontSize: 12.5, color: T.down, margin: 0 }}>
+          <p role="alert" style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.danger, margin: 0 }}>
             {feil}
           </p>
         )}

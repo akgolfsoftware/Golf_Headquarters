@@ -4,7 +4,7 @@
  * PlayerHQ · Coach-tilbakemelding etter økt (Paper W3, konsolidert flate).
  * Fasit: designsystem/paper/fase2/playerhq/playerhq-coach-tilbakemelding.html
  *
- * Dette er coachens ord til spilleren — prosa i Lora (T.bodyFont), ikke
+ * Dette er coachens ord til spilleren — prosa i Lora (TL.font.sans), ikke
  * datakort. «Tre ting å ta med» er den deterministiske delen og vises kun
  * når reelle punkter finnes. Video er en MODUL i flaten (ikke egen rute) og
  * viser kun ekte klipp fra økta — ellers ærlig plassholder (D10).
@@ -18,24 +18,21 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Icon, Knapp, TekstOmraade, TomTilstand } from "@/components/v2";
 import { PaperPage, PaperTopp, PaperKropp } from "@/components/portal/v2/PaperChrome";
 import type { CoachTilbakemeldingData } from "@/lib/portal-okt/coach-tilbakemelding-data";
-import {
-  sendTilbakemeldingSvar,
-  kvitterTilbakemelding,
-} from "@/app/portal/coach/tilbakemelding/[oktId]/actions";
-
+import { sendTilbakemeldingSvar, kvitterTilbakemelding } from "@/app/portal/coach/tilbakemelding/[oktId]/actions";
 /* ── Lokale byggeklosser (kun T.* — fasitens .kort/.eyebrow/.hjelp) ───── */
 
 function Kort({ eyebrow, children }: { eyebrow?: string; children: ReactNode }) {
   return (
     <section
       style={{
-        background: T.panel,
-        border: `1px solid ${T.border}`,
-        borderRadius: T.rCard,
+        background: TL.elev,
+        border: `1px solid ${TL.hair}`,
+        borderRadius: TL.radius.card,
         padding: 16,
       }}
     >
@@ -43,11 +40,11 @@ function Kort({ eyebrow, children }: { eyebrow?: string; children: ReactNode }) 
         <span
           style={{
             display: "block",
-            fontFamily: T.mono,
-            fontSize: T.capsSm,
+            fontFamily: TL.font.mono,
+            fontSize: TL.storrelse.capsSm,
             letterSpacing: "0.07em",
             textTransform: "uppercase",
-            color: T.fg2,
+            color: TL.mute,
             marginBottom: 10,
           }}
         >
@@ -65,10 +62,10 @@ function Hjelp({ children }: { children: ReactNode }) {
     <p
       style={{
         margin: "12px 0 0",
-        fontFamily: T.mono,
+        fontFamily: TL.font.mono,
         fontSize: 10,
         letterSpacing: "0.03em",
-        color: T.mut,
+        color: TL.mute,
         lineHeight: 1.5,
       }}
     >
@@ -104,17 +101,17 @@ function LenkeRad({
         minWidth: 0,
         padding: "10px 0",
         textDecoration: "none",
-        borderTop: forste ? "none" : `1px solid ${T.borderS}`,
+        borderTop: forste ? "none" : `1px solid ${TL.hair}`,
       }}
     >
       <div style={{ minWidth: 0, flex: 1 }}>
         <span
           style={{
             display: "block",
-            fontFamily: T.ui,
-            fontSize: T.body,
+            fontFamily: TL.font.sans,
+            fontSize: TL.storrelse.kropp,
             fontWeight: 600,
-            color: T.fg,
+            color: TL.text,
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -125,16 +122,16 @@ function LenkeRad({
         <span
           style={{
             display: "block",
-            fontFamily: T.mono,
+            fontFamily: TL.font.mono,
             fontSize: 10,
-            color: T.mut,
+            color: TL.mute,
             marginTop: 2,
           }}
         >
           {sub}
         </span>
       </div>
-      <Icon name="chevron-right" size={15} style={{ color: T.mut, flex: "none" }} />
+      <Icon name="chevron-right" size={15} style={{ color: TL.mute, flex: "none" }} />
     </Link>
   );
 }
@@ -218,9 +215,9 @@ export function CoachTilbakemeldingV2({ data }: { data: CoachTilbakemeldingData 
                 display: "flex",
                 alignItems: "center",
                 gap: 10,
-                background: T.panel,
-                border: `1px solid ${T.border}`,
-                borderRadius: T.rCard,
+                background: TL.elev,
+                border: `1px solid ${TL.hair}`,
+                borderRadius: TL.radius.card,
                 padding: "12px 16px",
               }}
             >
@@ -230,24 +227,24 @@ export function CoachTilbakemeldingV2({ data }: { data: CoachTilbakemeldingData 
                   flex: "none",
                   width: 38,
                   height: 38,
-                  borderRadius: T.rPill,
-                  background: T.panel3,
-                  border: `1px solid ${T.border}`,
+                  borderRadius: TL.radius.pill,
+                  background: TL.dim,
+                  border: `1px solid ${TL.hair}`,
                   display: "grid",
                   placeItems: "center",
-                  fontFamily: T.mono,
+                  fontFamily: TL.font.mono,
                   fontSize: 12,
                   fontWeight: 600,
-                  color: T.fg,
+                  color: TL.text,
                 }}
               >
                 {data.coach.initialer}
               </span>
               <div style={{ minWidth: 0, flex: 1 }}>
-                <span style={{ display: "block", fontFamily: T.ui, fontSize: T.body, fontWeight: 600, color: T.fg }}>
+                <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: TL.storrelse.kropp, fontWeight: 600, color: TL.text }}>
                   {data.coach.navn}
                 </span>
-                <span style={{ display: "block", fontFamily: T.mono, fontSize: 10, color: T.mut, marginTop: 2 }}>
+                <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, marginTop: 2 }}>
                   {data.kildeMeta}
                 </span>
               </div>
@@ -264,10 +261,10 @@ export function CoachTilbakemeldingV2({ data }: { data: CoachTilbakemeldingData 
                       key={i}
                       style={{
                         margin: i === data.prosa.length - 1 ? 0 : "0 0 12px",
-                        fontFamily: T.bodyFont,
+                        fontFamily: TL.font.sans,
                         fontSize: 15,
                         lineHeight: 1.62,
-                        color: T.fg2,
+                        color: TL.mute,
                       }}
                     >
                       {avsnitt}
@@ -287,7 +284,7 @@ export function CoachTilbakemeldingV2({ data }: { data: CoachTilbakemeldingData 
                           display: "flex",
                           gap: 10,
                           padding: "10px 0",
-                          borderBottom: i === data.punkter.length - 1 ? "none" : `1px solid ${T.borderS}`,
+                          borderBottom: i === data.punkter.length - 1 ? "none" : `1px solid ${TL.hair}`,
                         }}
                       >
                         <span
@@ -295,15 +292,15 @@ export function CoachTilbakemeldingV2({ data }: { data: CoachTilbakemeldingData 
                             flex: "none",
                             width: 22,
                             height: 22,
-                            borderRadius: T.rPill,
-                            background: T.panel3,
-                            border: `1px solid ${T.border}`,
+                            borderRadius: TL.radius.pill,
+                            background: TL.dim,
+                            border: `1px solid ${TL.hair}`,
                             display: "grid",
                             placeItems: "center",
-                            fontFamily: T.mono,
+                            fontFamily: TL.font.mono,
                             fontSize: 10,
                             fontWeight: 700,
-                            color: T.fg,
+                            color: TL.text,
                             marginTop: 1,
                           }}
                         >
@@ -313,10 +310,10 @@ export function CoachTilbakemeldingV2({ data }: { data: CoachTilbakemeldingData 
                           style={{
                             minWidth: 0,
                             flex: 1,
-                            fontFamily: T.bodyFont,
-                            fontSize: T.body,
+                            fontFamily: TL.font.sans,
+                            fontSize: TL.storrelse.kropp,
                             lineHeight: 1.55,
-                            color: T.fg2,
+                            color: TL.mute,
                           }}
                         >
                           {punkt}
@@ -346,18 +343,18 @@ export function CoachTilbakemeldingV2({ data }: { data: CoachTilbakemeldingData 
                           minWidth: 0,
                           padding: "10px 0",
                           textDecoration: "none",
-                          borderTop: i === 0 ? "none" : `1px solid ${T.borderS}`,
+                          borderTop: i === 0 ? "none" : `1px solid ${TL.hair}`,
                         }}
                       >
-                        <Icon name="video" size={15} style={{ color: T.fg2, flex: "none" }} />
+                        <Icon name="video" size={15} style={{ color: TL.mute, flex: "none" }} />
                         <div style={{ minWidth: 0, flex: 1 }}>
                           <span
                             style={{
                               display: "block",
-                              fontFamily: T.ui,
-                              fontSize: T.body,
+                              fontFamily: TL.font.sans,
+                              fontSize: TL.storrelse.kropp,
                               fontWeight: 600,
-                              color: T.fg,
+                              color: TL.text,
                               whiteSpace: "nowrap",
                               overflow: "hidden",
                               textOverflow: "ellipsis",
@@ -365,11 +362,11 @@ export function CoachTilbakemeldingV2({ data }: { data: CoachTilbakemeldingData 
                           >
                             {k.label}
                           </span>
-                          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10, color: T.mut, marginTop: 2 }}>
+                          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, marginTop: 2 }}>
                             {k.meta}
                           </span>
                         </div>
-                        <Icon name="external-link" size={13} style={{ color: T.mut, flex: "none" }} />
+                        <Icon name="external-link" size={13} style={{ color: TL.mute, flex: "none" }} />
                       </a>
                     ))}
                   </div>
@@ -377,16 +374,16 @@ export function CoachTilbakemeldingV2({ data }: { data: CoachTilbakemeldingData 
                   <div
                     style={{
                       aspectRatio: "16 / 9",
-                      border: `1px dashed ${T.border}`,
-                      borderRadius: T.rCard,
-                      background: T.panel2,
+                      border: `1px dashed ${TL.hair}`,
+                      borderRadius: TL.radius.card,
+                      background: TL.dock,
                       display: "grid",
                       placeItems: "center",
                       textAlign: "center",
                       padding: 16,
                     }}
                   >
-                    <span style={{ fontFamily: T.mono, fontSize: 10.5, letterSpacing: "0.04em", color: T.mut }}>
+                    <span style={{ fontFamily: TL.font.mono, fontSize: 10.5, letterSpacing: "0.04em", color: TL.mute }}>
                       Ingen videoklipp fra denne økta
                     </span>
                   </div>
@@ -419,10 +416,10 @@ export function CoachTilbakemeldingV2({ data }: { data: CoachTilbakemeldingData 
                     <p
                       style={{
                         margin: "0 0 10px",
-                        fontFamily: T.mono,
+                        fontFamily: TL.font.mono,
                         fontSize: 10,
                         letterSpacing: "0.03em",
-                        color: T.mut,
+                        color: TL.mute,
                       }}
                     >
                       {data.dittSvar.sendt} — du kan oppdatere svaret under.
@@ -461,9 +458,9 @@ export function CoachTilbakemeldingV2({ data }: { data: CoachTilbakemeldingData 
                       role="status"
                       style={{
                         margin: "10px 0 0",
-                        fontFamily: T.ui,
-                        fontSize: T.bodySm,
-                        color: status.ok ? T.up : T.down,
+                        fontFamily: TL.font.sans,
+                        fontSize: TL.storrelse.meta,
+                        color: status.ok ? TL.ok : TL.danger,
                       }}
                     >
                       {status.tekst}
@@ -496,10 +493,10 @@ export function CoachTilbakemeldingV2({ data }: { data: CoachTilbakemeldingData 
                 <p
                   style={{
                     margin: "0 0 12px",
-                    fontFamily: T.bodyFont,
-                    fontSize: T.body,
+                    fontFamily: TL.font.sans,
+                    fontSize: TL.storrelse.kropp,
                     lineHeight: 1.55,
-                    color: T.fg2,
+                    color: TL.mute,
                   }}
                 >
                   Husker du noe du vil spørre om før tilbakemeldingen kommer, skriv det i

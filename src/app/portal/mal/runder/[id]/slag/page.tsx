@@ -11,7 +11,8 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { Caps, Tittel, MikroMeta } from "@/components/v2";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { SlagWizard, type BaneKartData } from "../slag-wizard";
 import { UpGameImportModal } from "../upgame-import-modal";
 
@@ -123,9 +124,9 @@ export default async function SlagRegistreringPage({
             <div style={{ marginTop: 10 }}>
               <Tittel em="redigering.">Avansert</Tittel>
             </div>
-            <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "10px 0 0", lineHeight: 1.6 }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: "10px 0 0", lineHeight: 1.6 }}>
               Rediger enkeltslag på en lagret runde, eller importer fra UpGame. Ny føring gjøres{" "}
-              <Link href="/portal/runde/logg" style={{ color: T.lime, fontWeight: 600, textDecoration: "none" }}>
+              <Link href="/portal/runde/logg" style={{ color: TL.fill, fontWeight: 600, textDecoration: "none" }}>
                 slag for slag
               </Link>{" "}
               — raskere og alltid komplett kjede.

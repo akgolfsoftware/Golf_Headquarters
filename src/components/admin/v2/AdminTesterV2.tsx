@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * AgencyOS Tester — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
  * Stallens testresultater. T.* only. FYS-plassholder: ingen fasit-fargekoding.
@@ -8,21 +8,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import {
-  Caps,
-  Tittel,
-  Kort,
-  Rad,
-  AvatarInit,
-  DeltaChip,
-  StatusPill,
-  PillTabs,
-  KpiFlis,
-  CTAPill,
-  TomTilstand,
-  T,
-} from "@/components/v2";
-
+import { Caps, Tittel, Kort, Rad, AvatarInit, DeltaChip, StatusPill, PillTabs, KpiFlis, CTAPill, TomTilstand } from "@/components/v2";
 export type AdminTesterStatus =
   | "Pågår"
   | "Bedre"
@@ -81,12 +67,12 @@ function StatusMerke({ status }: { status: AdminTesterStatus }) {
   return (
     <span
       style={{
-        fontFamily: T.mono,
+        fontFamily: TL.font.mono,
         fontSize: 9,
         fontWeight: 700,
         letterSpacing: "0.06em",
         textTransform: "uppercase",
-        color: T.mut,
+        color: TL.mute,
       }}
     >
       {status}
@@ -162,7 +148,7 @@ export function AdminTesterV2({ data }: { data: AdminTesterV2Data }) {
 
   // ── KPI-flis (4) ────────────────────────────────────────────────
   const kpi = (
-    <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: T.gap }}>
+    <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: 16 }}>
       {data.kpis.map((k) => (
         <KpiFlis
           key={k.label}
@@ -209,10 +195,10 @@ export function AdminTesterV2({ data }: { data: AdminTesterV2Data }) {
                 >
                   <span
                     style={{
-                      fontFamily: T.mono,
+                      fontFamily: TL.font.mono,
                       fontSize: 15,
                       fontWeight: 700,
-                      color: r.resultat === "—" ? T.mut : T.fg,
+                      color: r.resultat === "—" ? TL.mute : TL.text,
                       fontVariantNumeric: "tabular-nums",
                     }}
                   >
@@ -232,7 +218,7 @@ export function AdminTesterV2({ data }: { data: AdminTesterV2Data }) {
   );
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {hode}
       {kpi}
       {primaerCta}

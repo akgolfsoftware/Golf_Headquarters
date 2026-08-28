@@ -12,7 +12,8 @@ import {
   type VennRad,
   type SokResultat,
 } from "@/lib/venner/actions";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Caps, TomTilstand, Icon, AvatarInit, StatusPill, Kort, Rad } from "@/components/v2";
 
 function vennSub(v: { hcp: number | null; kategori: string | null }): string {
@@ -61,12 +62,12 @@ function SokLeggTil() {
             alignItems: "center",
             gap: 8,
             borderRadius: 9999,
-            border: `1px solid ${T.border}`,
-            background: T.panel,
+            border: `1px solid ${TL.hair}`,
+            background: TL.elev,
             padding: "0 14px",
           }}
         >
-          <Icon name="search" size={15} style={{ color: T.mut, flex: "none" }} />
+          <Icon name="search" size={15} style={{ color: TL.mute, flex: "none" }} />
           <input
             value={q}
             onChange={(e) => {
@@ -80,9 +81,9 @@ function SokLeggTil() {
               border: "none",
               outline: "none",
               background: "transparent",
-              fontFamily: T.ui,
+              fontFamily: TL.font.sans,
               fontSize: 13.5,
-              color: T.fg,
+              color: TL.text,
             }}
           />
         </div>
@@ -94,9 +95,9 @@ function SokLeggTil() {
             flex: "none",
             border: "none",
             borderRadius: 9999,
-            background: T.handling,
-            color: T.onHandling,
-            fontFamily: T.ui,
+            background: TL.fill,
+            color: TL.onFill,
+            fontFamily: TL.font.sans,
             fontSize: 13.5,
             fontWeight: 600,
             padding: "0 18px",
@@ -111,7 +112,7 @@ function SokLeggTil() {
       {sokt && (
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {treff.length === 0 ? (
-            <p style={{ margin: 0, padding: "0 4px", fontFamily: T.ui, fontSize: 12, color: T.mut }}>
+            <p style={{ margin: 0, padding: "0 4px", fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}>
               Ingen spillere funnet.
             </p>
           ) : (
@@ -122,9 +123,9 @@ function SokLeggTil() {
                   display: "flex",
                   alignItems: "center",
                   gap: 12,
-                  borderRadius: T.rRow,
-                  border: `1px solid ${T.border}`,
-                  background: T.panel,
+                  borderRadius: TL.radius.row,
+                  border: `1px solid ${TL.hair}`,
+                  background: TL.elev,
                   padding: 12,
                 }}
               >
@@ -132,10 +133,10 @@ function SokLeggTil() {
                 <div style={{ minWidth: 0, flex: 1 }}>
                   <div
                     style={{
-                      fontFamily: T.ui,
+                      fontFamily: TL.font.sans,
                       fontSize: 13.5,
                       fontWeight: 600,
-                      color: T.fg,
+                      color: TL.text,
                       overflow: "hidden",
                       textOverflow: "ellipsis",
                       whiteSpace: "nowrap",
@@ -143,12 +144,12 @@ function SokLeggTil() {
                   >
                     {t.name}
                   </div>
-                  <div style={{ marginTop: 4, fontFamily: T.ui, fontSize: 11, color: T.mut }}>
+                  <div style={{ marginTop: 4, fontFamily: TL.font.sans, fontSize: 11, color: TL.mute }}>
                     {vennSub(t) || "—"}
                   </div>
                 </div>
                 {sendtTil.has(t.id) ? (
-                  <span style={{ flex: "none", fontFamily: T.ui, fontSize: 11, color: T.mut }}>Sendt</span>
+                  <span style={{ flex: "none", fontFamily: TL.font.sans, fontSize: 11, color: TL.mute }}>Sendt</span>
                 ) : (
                   <button
                     type="button"
@@ -160,13 +161,13 @@ function SokLeggTil() {
                       alignItems: "center",
                       gap: 4,
                       borderRadius: 9999,
-                      border: `1px solid ${T.border}`,
+                      border: `1px solid ${TL.hair}`,
                       background: "transparent",
                       padding: "6px 12px",
-                      fontFamily: T.ui,
+                      fontFamily: TL.font.sans,
                       fontSize: 12,
                       fontWeight: 600,
-                      color: T.fg,
+                      color: TL.text,
                       cursor: pending ? "not-allowed" : "pointer",
                       opacity: pending ? 0.4 : 1,
                     }}
@@ -213,9 +214,9 @@ function ForesporselInnRad({
         display: "flex",
         alignItems: "center",
         gap: 12,
-        borderRadius: T.rRow,
-        border: `1px solid ${T.border}`,
-        background: T.panel2,
+        borderRadius: TL.radius.row,
+        border: `1px solid ${TL.hair}`,
+        background: TL.dock,
         padding: 12,
       }}
     >
@@ -223,10 +224,10 @@ function ForesporselInnRad({
       <div style={{ minWidth: 0, flex: 1 }}>
         <div
           style={{
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 13.5,
             fontWeight: 600,
-            color: T.fg,
+            color: TL.text,
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
@@ -234,7 +235,7 @@ function ForesporselInnRad({
         >
           {bruker.name}
         </div>
-        <div style={{ marginTop: 4, fontFamily: T.ui, fontSize: 11, color: T.mut }}>
+        <div style={{ marginTop: 4, fontFamily: TL.font.sans, fontSize: 11, color: TL.mute }}>
           {vennSub(bruker) ? `${vennSub(bruker)} · ` : ""}vil bli venn
         </div>
       </div>
@@ -248,10 +249,10 @@ function ForesporselInnRad({
           borderRadius: 9999,
           background: "transparent",
           padding: "6px 12px",
-          fontFamily: T.ui,
+          fontFamily: TL.font.sans,
           fontSize: 12,
           fontWeight: 600,
-          color: T.mut,
+          color: TL.mute,
           cursor: pending ? "not-allowed" : "pointer",
           opacity: pending ? 0.4 : 1,
         }}
@@ -266,10 +267,10 @@ function ForesporselInnRad({
           flex: "none",
           border: "none",
           borderRadius: 9999,
-          background: T.handling,
-          color: T.onHandling,
+          background: TL.fill,
+          color: TL.onFill,
           padding: "6px 12px",
-          fontFamily: T.ui,
+          fontFamily: TL.font.sans,
           fontSize: 12,
           fontWeight: 600,
           cursor: pending ? "not-allowed" : "pointer",
@@ -300,7 +301,7 @@ function UtgaendeRad({ friendshipId, bruker }: { friendshipId: string; bruker: V
   if (trukket) return null;
 
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 10, fontFamily: T.ui, fontSize: 13.5, color: T.fg2 }}>
+    <div style={{ display: "flex", alignItems: "center", gap: 10, fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute }}>
       <AvatarInit navn={bruker.name} size={28} />
       <span style={{ flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{bruker.name}</span>
       <StatusPill tone="info">Venter</StatusPill>
@@ -311,10 +312,10 @@ function UtgaendeRad({ friendshipId, bruker }: { friendshipId: string; bruker: V
         style={{
           border: "none",
           background: "transparent",
-          fontFamily: T.ui,
+          fontFamily: TL.font.sans,
           fontSize: 11,
           fontWeight: 600,
-          color: T.mut,
+          color: TL.mute,
           textDecoration: "underline",
           textUnderlineOffset: 2,
           cursor: pending ? "not-allowed" : "pointer",
@@ -335,9 +336,9 @@ function VennRadKomponent({ v }: { v: VennRad }) {
         display: "flex",
         alignItems: "center",
         gap: 12,
-        borderRadius: T.rRow,
-        border: `1px solid ${T.border}`,
-        background: T.panel,
+        borderRadius: TL.radius.row,
+        border: `1px solid ${TL.hair}`,
+        background: TL.elev,
         padding: 12,
         textDecoration: "none",
         color: "inherit",
@@ -347,10 +348,10 @@ function VennRadKomponent({ v }: { v: VennRad }) {
       <div style={{ minWidth: 0, flex: 1 }}>
         <div
           style={{
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 13.5,
             fontWeight: 600,
-            color: T.fg,
+            color: TL.text,
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
@@ -358,11 +359,11 @@ function VennRadKomponent({ v }: { v: VennRad }) {
         >
           {v.name}
         </div>
-        <div style={{ marginTop: 4, fontFamily: T.ui, fontSize: 11.5, color: T.mut }}>
+        <div style={{ marginTop: 4, fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute }}>
           {vennSub(v) || "Ingen delte økter ennå"}
         </div>
       </div>
-      <Icon name="chevron-right" size={16} style={{ color: T.mut, flex: "none" }} />
+      <Icon name="chevron-right" size={16} style={{ color: TL.mute, flex: "none" }} />
     </Link>
   );
 }
@@ -373,8 +374,8 @@ export function VennerClient({ initial, visLeaderboard }: { initial: VennerData;
   return (
     <div data-paper-wave-g="venner" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: 28, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div data-paper-pattern-topp>
-        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Venner</h1>
-        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+        <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Venner</h1>
+        <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
           Søk, forespørsler og liste
         </span>
       </div>
@@ -426,7 +427,7 @@ export function VennerClient({ initial, visLeaderboard }: { initial: VennerData;
         <Link href="/portal/mal/leaderboard?tab=venner" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
           <Kort hover>
             <Rad
-              leading={<Icon name="bar-chart" size={16} style={{ color: T.mut }} />}
+              leading={<Icon name="bar-chart" size={16} style={{ color: TL.mute }} />}
               title="Se ledertavlen"
               sub="Hvor du ligger blant venner"
               last
@@ -440,20 +441,20 @@ export function VennerClient({ initial, visLeaderboard }: { initial: VennerData;
           display: "flex",
           alignItems: "flex-start",
           gap: 8,
-          borderTop: `1px solid ${T.border}`,
+          borderTop: `1px solid ${TL.hair}`,
           paddingTop: 14,
-          fontFamily: T.ui,
+          fontFamily: TL.font.sans,
           fontSize: 12,
           lineHeight: 1.5,
-          color: T.mut,
+          color: TL.mute,
         }}
       >
-        <Icon name="eye" size={14} style={{ color: T.forest, marginTop: 2, flex: "none" }} />
+        <Icon name="eye" size={14} style={{ color: TL.fill, marginTop: 2, flex: "none" }} />
         <span>
           Venner ser kun AT du har trent — aldri plan, fagkoder eller coach-notater. Skru av i{" "}
           <Link
             href="/portal/meg/innstillinger"
-            style={{ fontWeight: 600, color: T.forest, textDecoration: "none" }}
+            style={{ fontWeight: 600, color: TL.fill, textDecoration: "none" }}
           >
             Meg › Innstillinger › Varsler
           </Link>

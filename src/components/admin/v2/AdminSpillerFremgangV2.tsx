@@ -6,21 +6,9 @@
  */
 
 import Link from "next/link";
-import { T, fmtSg } from "@/lib/v2/tokens";
-import {
-  Caps,
-  Kort,
-  Rad,
-  Trend,
-  DeltaChip,
-  FordelingRad,
-  InnsiktChip,
-  TomTilstand,
-  StatusPill,
-  CTAPill,
-  TilbakeLenke,
-} from "@/components/v2";
-
+import { TL } from "@/lib/v2/train-lock";
+import { fmtSg } from "@/lib/v2/tokens";
+import { Caps, Kort, Rad, Trend, DeltaChip, FordelingRad, InnsiktChip, TomTilstand, StatusPill, CTAPill, TilbakeLenke } from "@/components/v2";
 // ── Datakontrakt (mappes fra den ekte loaderen i ruten) ─────────
 export interface FremgangV2Omrade {
   /** SG-kode (OTT/APP/ARG/PUTT). */
@@ -83,7 +71,7 @@ const TOLK_TEKST: Record<FremgangV2Tolkning, string> = {
 };
 
 function tolkFarge(t: FremgangV2Tolkning): string {
-  return t === "positiv" ? T.up : t === "negativ" ? T.down : T.mut;
+  return t === "positiv" ? TL.ok : t === "negativ" ? TL.danger : TL.mute;
 }
 
 /** Mini-trendkurve per område med padded y-akse (Trend tåler ikke flat serie). */
@@ -95,22 +83,22 @@ function OmradeTrend({ o }: { o: FremgangV2Omrade }) {
   return (
     <div
       style={{
-        background: T.panel2,
-        border: `1px solid ${T.border}`,
-        borderRadius: T.rRow,
+        background: TL.dock,
+        border: `1px solid ${TL.hair}`,
+        borderRadius: TL.radius.row,
         padding: "13px 15px",
         minWidth: 0,
       }}
     >
       <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10 }}>
-        <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg2 }}>{o.label}</span>
+        <span style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.mute }}>{o.label}</span>
         <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
           <span
             style={{
-              fontFamily: T.mono,
+              fontFamily: TL.font.mono,
               fontSize: 15,
               fontWeight: 700,
-              color: o.siste >= 0 ? T.up : T.down,
+              color: o.siste >= 0 ? TL.ok : TL.danger,
               fontVariantNumeric: "tabular-nums",
             }}
           >
@@ -123,7 +111,7 @@ function OmradeTrend({ o }: { o: FremgangV2Omrade }) {
         {o.serie.length >= 2 ? (
           <Trend series={o.serie} height={52} yMin={lo - pad} yMax={hi + pad} baseline={0} fmt={fmtSg} />
         ) : (
-          <span style={{ fontFamily: T.mono, fontSize: 9.5, color: T.mut }}>Bare én måling — trenger to for en kurve.</span>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 9.5, color: TL.mute }}>Bare én måling — trenger to for en kurve.</span>
         )}
       </div>
     </div>
@@ -145,8 +133,8 @@ export function AdminSpillerFremgangV2({ data }: { data: FremgangV2Data }) {
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
         <div>
           <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Fremgang</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Spiller</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Fremgang</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>Spiller</span>
         </div>
           <Caps size={9} style={{ display: "block", marginTop: 6 }}>{periode}</Caps>
         </div>
@@ -204,8 +192,8 @@ export function AdminSpillerFremgangV2({ data }: { data: FremgangV2Data }) {
               xLabels={volumUker.map((v) => v.uke)}
             />
           ) : (
-            <span style={{ fontFamily: T.mono, fontSize: 12, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>
-              {volumUker[0].total} min <span style={{ color: T.mut, fontWeight: 400 }}>· {volumUker[0].uke}</span>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 12, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>
+              {volumUker[0].total} min <span style={{ color: TL.mute, fontWeight: 400 }}>· {volumUker[0].uke}</span>
             </span>
           )}
           {volumOmrader.length > 0 && (
@@ -240,11 +228,11 @@ export function AdminSpillerFremgangV2({ data }: { data: FremgangV2Data }) {
               style={{
                 width: 46,
                 flex: "none",
-                fontFamily: T.mono,
+                fontFamily: TL.font.mono,
                 fontSize: 10,
                 fontWeight: 700,
                 letterSpacing: "0.04em",
-                color: T.fg2,
+                color: TL.mute,
               }}
             >
               {k.kode}
@@ -256,10 +244,10 @@ export function AdminSpillerFremgangV2({ data }: { data: FremgangV2Data }) {
             <span style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
               <span
                 style={{
-                  fontFamily: T.mono,
+                  fontFamily: TL.font.mono,
                   fontSize: 13,
                   fontWeight: 700,
-                  color: T.fg,
+                  color: TL.text,
                   fontVariantNumeric: "tabular-nums",
                 }}
               >
@@ -267,7 +255,7 @@ export function AdminSpillerFremgangV2({ data }: { data: FremgangV2Data }) {
               </span>
               <span
                 style={{
-                  fontFamily: T.mono,
+                  fontFamily: TL.font.mono,
                   fontSize: 8.5,
                   fontWeight: 700,
                   letterSpacing: "0.05em",
@@ -300,11 +288,11 @@ export function AdminSpillerFremgangV2({ data }: { data: FremgangV2Data }) {
   ) : null;
 
   return (
-    <div data-paper-wave-h="spiller-fremgang" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-h="spiller-fremgang" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {hode}
       {primaerCta}
       {sgKort}
-      <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: T.gap, alignItems: "start" }}>
+      <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: 16, alignItems: "start" }}>
         {volumKort}
         {korrKort}
       </div>

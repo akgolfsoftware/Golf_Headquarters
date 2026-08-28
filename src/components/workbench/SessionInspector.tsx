@@ -19,7 +19,8 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Knapp } from "@/components/v2/core";
 import { Icon } from "@/components/v2/icon";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { formatMinutes, formatTime, PYRAMID_LABEL, UI } from "@/lib/domain/workbench/labels";
 import type { RecurrencePolicy, WorkbenchSession } from "@/lib/domain/workbench/types";
 import { harHake, STATUS_CAPS, WARM } from "./wb-visuelt";
@@ -96,11 +97,11 @@ export function SessionInspector({
             display: "inline-flex",
             alignItems: "center",
             gap: 4,
-            fontFamily: T.mono,
+            fontFamily: TL.font.mono,
             fontSize: 9.5,
             fontWeight: 700,
             letterSpacing: "0.07em",
-            color: utkast ? T.mut : WARM,
+            color: utkast ? TL.mute : WARM,
           }}
         >
           {harHake(session.status) && <Icon name="check" size={10} style={{ color: WARM }} />}
@@ -131,13 +132,13 @@ export function SessionInspector({
             gap: 8,
             alignItems: "flex-start",
             padding: "9px 11px",
-            borderRadius: T.rTag,
-            border: `1px dashed ${T.border}`,
-            background: T.panel2,
+            borderRadius: TL.radius.row,
+            border: `1px dashed ${TL.hair}`,
+            background: TL.dock,
           }}
         >
-          <Icon name="eye" size={14} style={{ color: T.mut, marginTop: 1 }} />
-          <span style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2 }}>
+          <Icon name="eye" size={14} style={{ color: TL.mute, marginTop: 1 }} />
+          <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}>
             {UI.draftBadge}
           </span>
         </div>
@@ -241,7 +242,7 @@ export function SessionInspector({
               </option>
             ))}
           </Select>
-          <p style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, margin: "6px 0 0" }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, margin: "6px 0 0" }}>
             {UI.seriesEditHint(UI.delete)}
           </p>
         </InspektorBlokk>
@@ -266,12 +267,12 @@ function Felt({ label, children }: { label: string; children: React.ReactNode })
     <label style={{ display: "grid", gap: 5, minWidth: 0 }}>
       <span
         style={{
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           fontSize: 9.5,
           fontWeight: 600,
           letterSpacing: "0.07em",
           textTransform: "uppercase",
-          color: T.mut,
+          color: TL.mute,
         }}
       >
         {label}

@@ -3,7 +3,8 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { fjernVennViaBrukerId } from "@/lib/venner/actions";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Knapp } from "@/components/v2";
 
 export function FjernVennKnapp({ vennUserId }: { vennUserId: string }) {
@@ -30,7 +31,7 @@ export function FjernVennKnapp({ vennUserId }: { vennUserId: string }) {
         {pending ? "Fjerner…" : "Fjern venn"}
       </Knapp>
       {feil && (
-        <span style={{ fontFamily: T.ui, fontSize: 11, color: T.down }}>{feil}</span>
+        <span style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.danger }}>{feil}</span>
       )}
     </div>
   );

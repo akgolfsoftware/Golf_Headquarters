@@ -12,7 +12,8 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { Caps, Tittel, MikroMeta, Kort } from "@/components/v2";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { HullRedigerForm } from "@/components/portal/runde-ny/hull-rediger-form";
 
 export const dynamic = "force-dynamic";
@@ -73,7 +74,7 @@ export default async function RedigerHullPage({
 
         {/* Ærlighet: scorekortet er brutto tall; SG kommer fra slag-kjeden */}
         <Kort pad="12px 18px">
-          <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: 0, lineHeight: 1.6 }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: 0, lineHeight: 1.6 }}>
             Scorekortet er brutto tall per hull. Endrer du slag-tallet på et hull
             der slag-kjeden er ført, fjernes kjeden for det hullet — Strokes
             Gained beregnes kun fra en komplett slag-for-slag-kjede.

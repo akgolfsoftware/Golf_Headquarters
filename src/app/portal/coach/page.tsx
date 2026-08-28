@@ -1,3 +1,4 @@
+import { TL } from "@/lib/v2/train-lock";
 /**
  * v2-forhåndsvisning — PlayerHQ Coach-hub (retning C). Egen top-level route-group
  * (v2preview) som IKKE arver PortalShell — kun root-layout. V2Shell leverer
@@ -9,15 +10,10 @@
 
 import Link from "next/link";
 import { erCoachetSpiller } from "@/lib/auth/coached";
-import { T, Kort, TomTilstand, Knapp, TilbakeLenke } from "@/components/v2";
+import { Kort, TomTilstand, Knapp, TilbakeLenke } from "@/components/v2";
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import {
-  getCoachProfile,
-  getMessages,
-  getUpcomingSessions,
-  getCoachNotes,
-} from "@/app/portal/(legacy)/coach/actions";
+import { getCoachProfile, getMessages, getUpcomingSessions, getCoachNotes } from "@/app/portal/(legacy)/coach/actions";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { CoachHubV2, type CoachHubData } from "@/components/portal/v2/CoachHubV2";
 
@@ -47,7 +43,7 @@ export default async function V2CoachPreviewPage() {
           </div>
         </Kort>
         <Kort>
-          <p style={{ margin: 0, fontFamily: T.ui, fontSize: 13, color: T.mut, lineHeight: 1.6 }}>
+          <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.6 }}>
             Du mister ingenting ved å vente. Alt du logger nå — økter, runder og tester — er der den dagen du får coach.
           </p>
         </Kort>

@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * Caddie · Samtale (v2). Rekomponert fra
@@ -8,7 +9,7 @@
  */
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { T, Icon, Kort } from "@/components/v2";
+import { Icon, Kort } from "@/components/v2";
 import { useCaddieChat } from "@/components/admin/caddie/use-caddie-chat";
 import type { CaddieToolCall } from "@/components/admin/caddie/types";
 import { CaddieMessageV2 } from "./caddie-message-v2";
@@ -72,15 +73,15 @@ export function CaddieChatV2({ conversationId, initialSeed }: { conversationId: 
 
   return (
     <Kort pad="0" style={{ display: "flex", flexDirection: "column", minHeight: 600, height: "100%" }}>
-      <header style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: `1px solid ${T.border}`, padding: "16px 20px" }}>
-        <h2 style={{ fontFamily: T.disp, fontSize: 15, fontWeight: 700, letterSpacing: "-0.01em", color: T.fg, margin: 0 }}>
-          Direkte med <em style={{ fontStyle: "italic", fontWeight: 400, color: T.lime }}>Caddie</em>
+      <header style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: `1px solid ${TL.hair}`, padding: "16px 20px" }}>
+        <h2 style={{ fontFamily: TL.font.sans, fontSize: 15, fontWeight: 700, letterSpacing: "-0.01em", color: TL.text, margin: 0 }}>
+          Direkte med <em style={{ fontStyle: "italic", fontWeight: 400, color: TL.fill }}>Caddie</em>
         </h2>
-        <span style={{ display: "inline-flex", alignItems: "center", gap: 7, fontFamily: T.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.1em", color: T.mut }}>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 7, fontFamily: TL.font.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.1em", color: TL.mute }}>
           <span
             aria-hidden
             className={isStreaming ? "animate-pulse" : undefined}
-            style={{ width: 7, height: 7, borderRadius: 9999, background: isStreaming ? T.lime : `color-mix(in srgb, ${T.lime} 55%, transparent)` }}
+            style={{ width: 7, height: 7, borderRadius: 9999, background: isStreaming ? TL.fill : `color-mix(in srgb, ${TL.fill} 55%, transparent)` }}
           />
           {isStreaming ? "Caddie skriver" : "Klar"}
         </span>
@@ -92,7 +93,7 @@ export function CaddieChatV2({ conversationId, initialSeed }: { conversationId: 
         ))}
       </div>
 
-      <div style={{ borderTop: `1px solid ${T.border}`, padding: "16px 20px" }}>
+      <div style={{ borderTop: `1px solid ${TL.hair}`, padding: "16px 20px" }}>
         <div style={{ display: "flex", alignItems: "flex-end", gap: 8 }}>
           <textarea
             value={input}
@@ -102,8 +103,8 @@ export function CaddieChatV2({ conversationId, initialSeed }: { conversationId: 
             placeholder="Skriv direkte til Caddie… (cmd+enter for å sende)"
             aria-label="Skriv melding til Caddie"
             style={{
-              minHeight: 64, width: "100%", resize: "none", borderRadius: 12, border: `1px solid ${T.borderS}`, background: T.panel2,
-              padding: "10px 14px", fontFamily: T.ui, fontSize: 13.5, color: T.fg, outline: "none",
+              minHeight: 64, width: "100%", resize: "none", borderRadius: 12, border: `1px solid ${TL.hair}`, background: TL.dock,
+              padding: "10px 14px", fontFamily: TL.font.sans, fontSize: 13.5, color: TL.text, outline: "none",
             }}
           />
           <button
@@ -114,14 +115,14 @@ export function CaddieChatV2({ conversationId, initialSeed }: { conversationId: 
             className="v2-press v2-focus"
             style={{
               width: 40, height: 40, flex: "none", borderRadius: 9999, display: "inline-flex", alignItems: "center", justifyContent: "center",
-              background: T.handling, color: T.onHandling, border: "none", cursor: !input.trim() || isStreaming ? "default" : "pointer",
+              background: TL.fill, color: TL.onFill, border: "none", cursor: !input.trim() || isStreaming ? "default" : "pointer",
               opacity: !input.trim() || isStreaming ? 0.5 : 1,
             }}
           >
             <Icon name={isStreaming ? "loader" : "arrow-up"} size={16} className={isStreaming ? "animate-spin" : undefined} />
           </button>
         </div>
-        <div style={{ marginTop: 8, fontFamily: T.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.08em", color: T.mut }}>
+        <div style={{ marginTop: 8, fontFamily: TL.font.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.08em", color: TL.mute }}>
           Cmd/Ctrl + Enter for å sende
         </div>
       </div>

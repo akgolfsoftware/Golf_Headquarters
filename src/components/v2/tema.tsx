@@ -20,7 +20,8 @@
 
 import { useSyncExternalStore } from "react";
 import { Icon } from "./icon";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 
 export type V2Tema = "dark" | "light";
 
@@ -70,8 +71,8 @@ export function TemaHeaderKnapp() {
         justifyContent: "center",
         borderRadius: 12,
         background: "transparent",
-        border: `1px solid ${T.border}`,
-        color: T.fg2,
+        border: `1px solid ${TL.hair}`,
+        color: TL.mute,
         cursor: "pointer",
       }}
     >

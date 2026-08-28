@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * PlayerHQ · Logg en runde (etterregistrering) — Paper-port PP-3 (fase 1).
@@ -21,7 +22,7 @@ import Link from "next/link";
 import { lagreLoggetRunde, hentBaneHull } from "@/app/portal/(legacy)/mal/runder/logg/actions";
 import { logRoundManual } from "@/app/portal/mal/runder/ny/actions";
 import { syntetiserHurtigHull } from "@/lib/runde-logg/syntetiser-hurtig";
-import { T, Icon, Velger } from "@/components/v2";
+import { Icon, Velger } from "@/components/v2";
 
 const ANTALL_HULL = 18;
 /** Standardlengder per par når baneregisteret mangler data (som oppsett-steget). */
@@ -188,17 +189,17 @@ export function RundeEtterregistreringKlient({ baner, siste }: Props) {
   };
 
   const eyebrowStil = {
-    fontFamily: T.mono,
+    fontFamily: TL.font.mono,
     fontSize: 10,
     fontWeight: 500,
     letterSpacing: "0.09em",
     textTransform: "uppercase",
-    color: T.mut,
+    color: TL.mute,
   } as const;
 
   const kortStil = {
-    background: T.panel,
-    border: `1px solid ${T.border}`,
+    background: TL.elev,
+    border: `1px solid ${TL.hair}`,
     borderRadius: 12,
     padding: 16,
     marginBottom: 16,
@@ -210,7 +211,7 @@ export function RundeEtterregistreringKlient({ baner, siste }: Props) {
     <div
       data-paper-slug="playerhq-runde-logg"
       data-od-id="playerhq-runde-logg"
-      style={{ minHeight: "100dvh", background: T.bg, color: T.fg, fontFamily: T.ui }}
+      style={{ minHeight: "100dvh", background: TL.scene, color: TL.text, fontFamily: TL.font.sans }}
     >
       <div
         style={{
@@ -229,7 +230,7 @@ export function RundeEtterregistreringKlient({ baner, siste }: Props) {
             gap: 8,
             marginBottom: 14,
             paddingBottom: 12,
-            borderBottom: `1px solid ${T.border}`,
+            borderBottom: `1px solid ${TL.hair}`,
           }}
         >
           <Link
@@ -241,8 +242,8 @@ export function RundeEtterregistreringKlient({ baner, siste }: Props) {
               width: 44,
               height: 44,
               borderRadius: 12,
-              border: `1px solid ${T.border}`,
-              color: T.fg,
+              border: `1px solid ${TL.hair}`,
+              color: TL.text,
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
@@ -252,10 +253,10 @@ export function RundeEtterregistreringKlient({ baner, siste }: Props) {
             <Icon name="chevron-left" size={18} />
           </Link>
           <div style={{ minWidth: 0, flex: 1 }}>
-            <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>
+            <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>
               Logg en runde
             </h1>
-            <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+            <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
               Etterregistrering · kun brutto
             </span>
           </div>
@@ -266,15 +267,15 @@ export function RundeEtterregistreringKlient({ baner, siste }: Props) {
           <div
             style={{
               padding: "24px 16px",
-              background: T.panel2,
-              border: `1px dashed ${T.border}`,
+              background: TL.dock,
+              border: `1px dashed ${TL.hair}`,
               borderRadius: 12,
             }}
           >
-            <h3 style={{ margin: "0 0 8px", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+            <h3 style={{ margin: "0 0 8px", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
               Klarte ikke å lagre runden
             </h3>
-            <p style={{ margin: "0 0 12px", fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut, lineHeight: 1.55 }}>
+            <p style={{ margin: "0 0 12px", fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute, lineHeight: 1.55 }}>
               Alt du har tastet ligger trygt på telefonen. Prøv igjen når som helst — ingenting
               må tastes på nytt.
             </p>
@@ -289,9 +290,9 @@ export function RundeEtterregistreringKlient({ baner, siste }: Props) {
                 minHeight: 56,
                 border: "none",
                 borderRadius: 12,
-                background: T.handling,
-                color: T.onHandling,
-                fontFamily: T.disp,
+                background: TL.fill,
+                color: TL.onFill,
+                fontFamily: TL.font.sans,
                 fontSize: 16,
                 fontWeight: 700,
               }}
@@ -307,8 +308,8 @@ export function RundeEtterregistreringKlient({ baner, siste }: Props) {
             <div
               style={{
                 padding: "24px 16px",
-                background: T.panel,
-                border: `1px solid ${T.up}`,
+                background: TL.elev,
+                border: `1px solid ${TL.ok}`,
                 borderRadius: 12,
                 marginBottom: 16,
               }}
@@ -316,19 +317,19 @@ export function RundeEtterregistreringKlient({ baner, siste }: Props) {
               <h3
                 style={{
                   margin: "0 0 8px",
-                  fontFamily: T.disp,
+                  fontFamily: TL.font.sans,
                   fontSize: 16,
                   fontWeight: 600,
-                  color: T.fg,
+                  color: TL.text,
                   display: "flex",
                   alignItems: "center",
                   gap: 8,
                 }}
               >
-                <Icon name="check" size={20} style={{ color: T.up }} />
+                <Icon name="check" size={20} style={{ color: TL.ok }} />
                 Runden er lagret
               </h3>
-              <p style={{ margin: 0, fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut, lineHeight: 1.55 }}>
+              <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute, lineHeight: 1.55 }}>
                 {kvittering.hull} hull · {kvittering.slag} slag ({kvittering.rel}) · brutto. Runden
                 ligger i Analyse og teller i statistikken din. Anders ser den i stallen.
               </p>
@@ -343,11 +344,11 @@ export function RundeEtterregistreringKlient({ baner, siste }: Props) {
                   justifyContent: "center",
                   minHeight: 48,
                   borderRadius: 12,
-                  border: `1px solid ${T.border}`,
-                  fontFamily: T.ui,
+                  border: `1px solid ${TL.hair}`,
+                  fontFamily: TL.font.sans,
                   fontSize: 14,
                   fontWeight: 500,
-                  color: T.fg,
+                  color: TL.text,
                   textDecoration: "none",
                 }}
               >
@@ -362,12 +363,12 @@ export function RundeEtterregistreringKlient({ baner, siste }: Props) {
                   cursor: "pointer",
                   minHeight: 48,
                   borderRadius: 12,
-                  border: `1px solid ${T.border}`,
+                  border: `1px solid ${TL.hair}`,
                   background: "transparent",
-                  fontFamily: T.ui,
+                  fontFamily: TL.font.sans,
                   fontSize: 14,
                   fontWeight: 500,
-                  color: T.fg,
+                  color: TL.text,
                 }}
               >
                 Logg en runde til
@@ -383,16 +384,16 @@ export function RundeEtterregistreringKlient({ baner, siste }: Props) {
               <div
                 style={{
                   padding: "24px 16px",
-                  background: T.panel2,
-                  border: `1px dashed ${T.border}`,
+                  background: TL.dock,
+                  border: `1px dashed ${TL.hair}`,
                   borderRadius: 12,
                   marginBottom: 16,
                 }}
               >
-                <h3 style={{ margin: "0 0 8px", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+                <h3 style={{ margin: "0 0 8px", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
                   Ingen runder loggført ennå
                 </h3>
-                <p style={{ margin: 0, fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut, lineHeight: 1.55 }}>
+                <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute, lineHeight: 1.55 }}>
                   Den første runden gir Analyse noe å jobbe med. Fyll inn under — hull for hull
                   gir mest, men bare totalen teller også.
                 </p>
@@ -429,11 +430,11 @@ export function RundeEtterregistreringKlient({ baner, siste }: Props) {
                       width: "100%",
                       minHeight: 48,
                       padding: "0 12px",
-                      fontFamily: T.mono,
+                      fontFamily: TL.font.mono,
                       fontSize: 13,
-                      background: T.bg,
-                      color: T.fg,
-                      border: `1px solid ${T.border}`,
+                      background: TL.scene,
+                      color: TL.text,
+                      border: `1px solid ${TL.hair}`,
                       borderRadius: 8,
                       outline: "none",
                     }}
@@ -457,8 +458,8 @@ export function RundeEtterregistreringKlient({ baner, siste }: Props) {
               style={{
                 display: "flex",
                 gap: 4,
-                background: T.panel2,
-                border: `1px solid ${T.border}`,
+                background: TL.dock,
+                border: `1px solid ${TL.hair}`,
                 borderRadius: 12,
                 padding: 4,
                 marginBottom: 16,
@@ -481,13 +482,13 @@ export function RundeEtterregistreringKlient({ baner, siste }: Props) {
                     cursor: "pointer",
                     flex: 1,
                     minHeight: 44,
-                    border: modus === id ? `1px solid ${T.border}` : "none",
-                    background: modus === id ? T.panel : "transparent",
+                    border: modus === id ? `1px solid ${TL.hair}` : "none",
+                    background: modus === id ? TL.elev : "transparent",
                     borderRadius: 8,
-                    fontFamily: T.ui,
+                    fontFamily: TL.font.sans,
                     fontSize: 13,
                     fontWeight: 500,
-                    color: modus === id ? T.fg : T.mut,
+                    color: modus === id ? TL.text : TL.mute,
                   }}
                 >
                   {label}
@@ -513,9 +514,9 @@ export function RundeEtterregistreringKlient({ baner, siste }: Props) {
                         style={{
                           display: "flex",
                           justifyContent: "space-between",
-                          fontFamily: T.mono,
+                          fontFamily: TL.font.mono,
                           fontSize: 9.5,
-                          color: T.mut,
+                          color: TL.mute,
                           marginBottom: 2,
                         }}
                       >
@@ -541,12 +542,12 @@ export function RundeEtterregistreringKlient({ baner, siste }: Props) {
                           minHeight: 44,
                           padding: 0,
                           textAlign: "center",
-                          fontFamily: T.mono,
+                          fontFamily: TL.font.mono,
                           fontSize: 16,
                           fontVariantNumeric: "tabular-nums",
-                          background: T.bg,
-                          color: T.fg,
-                          border: `1px solid ${T.border}`,
+                          background: TL.scene,
+                          color: TL.text,
+                          border: `1px solid ${TL.hair}`,
                           borderRadius: 8,
                           outline: "none",
                           appearance: "textfield",
@@ -558,21 +559,21 @@ export function RundeEtterregistreringKlient({ baner, siste }: Props) {
                 <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginTop: 12 }}>
                   <span
                     style={{
-                      fontFamily: T.mono,
+                      fontFamily: TL.font.mono,
                       fontVariantNumeric: "tabular-nums",
                       fontSize: 32,
                       fontWeight: 500,
                       lineHeight: 1,
-                      color: T.fg,
+                      color: TL.text,
                     }}
                   >
                     {sumSlag}
                   </span>
-                  <span style={{ fontFamily: T.mono, fontSize: 14, color: T.mut }}>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 14, color: TL.mute }}>
                     {relStr} · {fylte} av {ANTALL_HULL} hull
                   </span>
                 </div>
-                <details style={{ margin: "12px 0 0", border: `1px solid ${T.border}`, borderRadius: 12 }}>
+                <details style={{ margin: "12px 0 0", border: `1px solid ${TL.hair}`, borderRadius: 12 }}>
                   <summary
                     className="v2-focus"
                     style={{
@@ -584,7 +585,7 @@ export function RundeEtterregistreringKlient({ baner, siste }: Props) {
                       listStyle: "none",
                       fontSize: 12.5,
                       fontWeight: 500,
-                      color: T.mut,
+                      color: TL.mute,
                     }}
                   >
                     Hvorfor dette tallet
@@ -593,9 +594,9 @@ export function RundeEtterregistreringKlient({ baner, siste }: Props) {
                     style={{
                       margin: 0,
                       padding: "12px 16px 16px 26px",
-                      fontFamily: T.bodyFont,
+                      fontFamily: TL.font.sans,
                       fontSize: 13,
-                      color: T.mut,
+                      color: TL.mute,
                       lineHeight: 1.55,
                     }}
                   >
@@ -611,7 +612,7 @@ export function RundeEtterregistreringKlient({ baner, siste }: Props) {
                   </ul>
                 </details>
                 {!fraRegister && (
-                  <p style={{ margin: "12px 0 0", fontFamily: T.ui, fontSize: 10.5, color: T.mut }}>
+                  <p style={{ margin: "12px 0 0", fontFamily: TL.font.sans, fontSize: 10.5, color: TL.mute }}>
                     Banen mangler hulldata i registeret — par settes til 4 per hull.
                   </p>
                 )}
@@ -637,12 +638,12 @@ export function RundeEtterregistreringKlient({ baner, siste }: Props) {
                     minHeight: 72,
                     marginTop: 8,
                     textAlign: "center",
-                    fontFamily: T.mono,
+                    fontFamily: TL.font.mono,
                     fontSize: 32,
                     fontVariantNumeric: "tabular-nums",
-                    background: T.bg,
-                    color: T.fg,
-                    border: `1px solid ${T.border}`,
+                    background: TL.scene,
+                    color: TL.text,
+                    border: `1px solid ${TL.hair}`,
                     borderRadius: 12,
                     outline: "none",
                     appearance: "textfield",
@@ -667,12 +668,12 @@ export function RundeEtterregistreringKlient({ baner, siste }: Props) {
                     minHeight: 48,
                     marginTop: 8,
                     textAlign: "center",
-                    fontFamily: T.mono,
+                    fontFamily: TL.font.mono,
                     fontSize: 20,
                     fontVariantNumeric: "tabular-nums",
-                    background: T.bg,
-                    color: T.fg,
-                    border: `1px solid ${T.border}`,
+                    background: TL.scene,
+                    color: TL.text,
+                    border: `1px solid ${TL.hair}`,
                     borderRadius: 12,
                     outline: "none",
                     appearance: "textfield",
@@ -681,9 +682,9 @@ export function RundeEtterregistreringKlient({ baner, siste }: Props) {
                 <p
                   style={{
                     margin: "12px 0 0",
-                    fontFamily: T.bodyFont,
+                    fontFamily: TL.font.sans,
                     fontSize: 12.5,
-                    color: T.mut,
+                    color: TL.mute,
                     lineHeight: 1.55,
                   }}
                 >
@@ -705,7 +706,7 @@ export function RundeEtterregistreringKlient({ baner, siste }: Props) {
                         alignItems: "baseline",
                         gap: 8,
                         padding: "8px 0",
-                        borderBottom: i === siste.length - 1 ? "none" : `1px solid ${T.border}`,
+                        borderBottom: i === siste.length - 1 ? "none" : `1px solid ${TL.hair}`,
                         fontSize: 13,
                         minWidth: 0,
                       }}
@@ -716,7 +717,7 @@ export function RundeEtterregistreringKlient({ baner, siste }: Props) {
                           overflow: "hidden",
                           textOverflow: "ellipsis",
                           whiteSpace: "nowrap",
-                          color: T.fg,
+                          color: TL.text,
                         }}
                       >
                         {r.bane}
@@ -725,9 +726,9 @@ export function RundeEtterregistreringKlient({ baner, siste }: Props) {
                         style={{
                           marginLeft: "auto",
                           flex: "none",
-                          fontFamily: T.mono,
+                          fontFamily: TL.font.mono,
                           fontVariantNumeric: "tabular-nums",
-                          color: T.fg2,
+                          color: TL.mute,
                         }}
                       >
                         {r.dato} · {r.slag} slag
@@ -746,7 +747,7 @@ export function RundeEtterregistreringKlient({ baner, siste }: Props) {
                 zIndex: 5,
                 paddingTop: 12,
                 paddingBottom: "calc(8px + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px))",
-                background: `linear-gradient(to top, ${T.bg} 72%, transparent)`,
+                background: `linear-gradient(to top, ${TL.scene} 72%, transparent)`,
               }}
             >
               <button
@@ -761,9 +762,9 @@ export function RundeEtterregistreringKlient({ baner, siste }: Props) {
                   minHeight: 56,
                   border: "none",
                   borderRadius: 12,
-                  background: T.handling,
-                  color: T.onHandling,
-                  fontFamily: T.disp,
+                  background: TL.fill,
+                  color: TL.onFill,
+                  fontFamily: TL.font.sans,
                   fontSize: 16,
                   fontWeight: 700,
                   opacity: lagrer ? 0.75 : 1,
@@ -776,9 +777,9 @@ export function RundeEtterregistreringKlient({ baner, siste }: Props) {
                   style={{
                     margin: "6px 0 0",
                     textAlign: "center",
-                    fontFamily: T.mono,
+                    fontFamily: TL.font.mono,
                     fontSize: 10,
-                    color: T.mut,
+                    color: TL.mute,
                   }}
                 >
                   {courseNavn} · {dato.split("-").reverse().join(".")}
@@ -798,12 +799,12 @@ export function RundeEtterregistreringKlient({ baner, siste }: Props) {
             bottom: 96,
             transform: "translateX(-50%)",
             zIndex: 100,
-            background: T.fg,
-            color: T.bg,
+            background: TL.text,
+            color: TL.scene,
             padding: "12px 16px",
             borderRadius: 12,
             fontSize: 13,
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             maxWidth: "min(90vw, 420px)",
           }}
         >

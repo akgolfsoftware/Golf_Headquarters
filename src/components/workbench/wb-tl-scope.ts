@@ -12,7 +12,7 @@
  * denne skjermen.
  *
  * Kjent grense (dokumentert i docs/natt/D3-DONE.md): geometri som er
- * hardkodede TALL i `T` (src/lib/v2/tokens.ts), f.eks. `T.rCard = 12`, kan
+ * hardkodede TALL i `T` (src/lib/v2/tokens.ts), f.eks. `TL.radius.card = 12`, kan
  * IKKE skygges via CSS-variabler — de er bakt inn i JS ved rendring. Delte
  * komponenter beholder derfor Paper-radius (12/8) der Train-lock ber om
  * 20/999/16. Egen markup i WeekGrid/Topplinje bruker `TL.radius.*` direkte

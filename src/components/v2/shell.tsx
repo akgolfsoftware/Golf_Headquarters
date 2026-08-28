@@ -5,7 +5,7 @@
    (smal IkonRail på desktop, BunnNav på mobil — Anders 9. juli: ingen bred
    sidemeny), men width:100% og ekte Next-Link-navigasjon. ERSTATTER den gamle
    PortalShell/AdminShell for v2-migrerte flater (vei A — unngår dobbel shell).
-   Mørk (retning C, mørk-først): setter dark-scope + T.bg-vignett på hele viewporten.
+   Mørk (retning C, mørk-først): setter dark-scope + TL.scene-vignett på hele viewporten.
 
    AgencyOS (2026-07-12): full seksjonsnav (10 punkter) + «Mer»-meny som gjør
    HELE flaten nåbar (varsler, godkjenninger, grupper, tester, rapporter m.fl.),
@@ -16,7 +16,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { T } from "@/lib/v2/tokens";
 import { TL } from "@/lib/v2/train-lock";
 import { Icon } from "./icon";
 import { LogoAK, AvatarFoto } from "./core";
@@ -281,10 +280,10 @@ function ProfilBytteKnapp({ erAgency }: { erAgency: boolean }) {
       href={href}
       title={label}
       className="v2-press v2-focus"
-      style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", gap: 3, textDecoration: "none", color: T.mut, padding: "6px 0", width: "100%" }}
+      style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", gap: 3, textDecoration: "none", color: TL.mute, padding: "6px 0", width: "100%" }}
     >
       <Icon name={erAgency ? "user" : "clipboard-list"} size={16} />
-      <span style={{ fontFamily: T.mono, fontSize: 7.5, fontWeight: 700, letterSpacing: "0.08em" }}>{erAgency ? "SPILLER" : "COACH"}</span>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 7.5, fontWeight: 700, letterSpacing: "0.08em" }}>{erAgency ? "SPILLER" : "COACH"}</span>
     </Link>
   );
 }
@@ -299,8 +298,8 @@ function TemaRailKnapp() {
       className="v2-press v2-focus"
       style={{ width: 46, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "7px 0 5px", borderRadius: 12, background: "transparent", border: 0, cursor: "pointer", flex: "none", marginBottom: 8 }}
     >
-      <Icon name={tilLys ? "sun" : "moon"} size={18} style={{ color: T.railFg }} strokeWidth={1.5} />
-      <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: T.railFg }}>{tilLys ? "Lys" : "Mørk"}</span>
+      <Icon name={tilLys ? "sun" : "moon"} size={18} style={{ color: TL.mute }} strokeWidth={1.5} />
+      <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: TL.mute }}>{tilLys ? "Lys" : "Mørk"}</span>
     </button>
   );
 }
@@ -324,17 +323,17 @@ function RailLenke({ item, on, dark }: { item: V2NavItem; on: boolean; dark?: bo
         borderRadius: 12,
         background: on
           ? dark
-            ? T.farge.kremA14
-            : `color-mix(in srgb, ${T.lime} 9%, transparent)`
+            ? TL.dim
+            : `color-mix(in srgb, ${TL.fill} 9%, transparent)`
           : "transparent",
         textDecoration: "none",
         position: "relative",
         flex: "none",
       }}
     >
-      {on && !dark && <span style={{ position: "absolute", left: -7, top: 10, bottom: 10, width: 2, borderRadius: 2, background: T.handling }} />}
+      {on && !dark && <span style={{ position: "absolute", left: -7, top: 10, bottom: 10, width: 2, borderRadius: 2, background: TL.fill }} />}
       <span style={{ position: "relative", display: "inline-flex" }}>
-        <Icon name={item.icon} size={19} style={{ color: dark ? (on ? T.railOn : T.railFg) : (on ? T.lime : T.mut) }} strokeWidth={on ? 2 : 1.5} />
+        <Icon name={item.icon} size={19} style={{ color: dark ? (on ? TL.text : TL.mute) : (on ? TL.fill : TL.mute) }} strokeWidth={on ? 2 : 1.5} />
         {badge != null && (
           <span
             aria-hidden
@@ -346,9 +345,9 @@ function RailLenke({ item, on, dark }: { item: V2NavItem; on: boolean; dark?: bo
               height: 14,
               padding: "0 3px",
               borderRadius: 999,
-              background: T.handling,
-              color: T.bg,
-              fontFamily: T.mono,
+              background: TL.fill,
+              color: TL.scene,
+              fontFamily: TL.font.mono,
               fontSize: 8,
               fontWeight: 700,
               lineHeight: "14px",
@@ -365,13 +364,13 @@ function RailLenke({ item, on, dark }: { item: V2NavItem; on: boolean; dark?: bo
           klippes — teksten er navigasjonen, ikke pynt. */}
       <span
         style={{
-          fontFamily: T.ui,
+          fontFamily: TL.font.sans,
           fontSize: item.label.length > 10 ? 9 : 10,
           fontWeight: 500,
           letterSpacing: 0,
           maxWidth: "100%",
           textAlign: "center",
-          color: dark ? (on ? T.railOn : T.railFg) : (on ? T.fg : T.mut),
+          color: dark ? (on ? TL.text : TL.mute) : (on ? TL.text : TL.mute),
         }}
       >
         {item.label}
@@ -406,20 +405,20 @@ function MerPanel({ grupper, rom, onClose, mobil, full, erAgency }: { grupper?: 
   // (post-hydrering), så document finnes alltid her.
   return createPortal(
     <>
-      <div onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 90, background: T.farge.svartA55 }} aria-hidden />
+      <div onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 90, background: TL.scrim }} aria-hidden />
       <div
         role="menu"
         aria-label="Mer"
         style={
           mobil
             ? full
-              ? { position: "fixed", inset: 0, zIndex: 91, overflowY: "auto", background: T.panel, opacity: 1, borderRadius: 0, padding: "calc(14px + env(safe-area-inset-top)) 16px calc(20px + env(safe-area-inset-bottom))", boxShadow: "0 -18px 48px rgba(0,0,0,0.5)" }
-              : { position: "fixed", left: 0, right: 0, bottom: 0, zIndex: 91, maxHeight: "72vh", overflowY: "auto", background: T.panel, opacity: 1, border: `1px solid ${T.border}`, borderRadius: "18px 18px 0 0", padding: "14px 16px calc(20px + env(safe-area-inset-bottom))", boxShadow: "0 -18px 48px rgba(0,0,0,0.5)" }
-            : { position: "fixed", left: 72, top: 12, bottom: 12, zIndex: 91, width: rom && rom.length > 0 ? 420 : 560, maxWidth: "calc(100vw - 84px)", overflowY: "auto", background: T.panel, opacity: 1, border: `1px solid ${T.border}`, borderRadius: 16, padding: "18px 20px", boxShadow: "0 24px 64px rgba(0,0,0,0.55)" }
+              ? { position: "fixed", inset: 0, zIndex: 91, overflowY: "auto", background: TL.elev, opacity: 1, borderRadius: 0, padding: "calc(14px + env(safe-area-inset-top)) 16px calc(20px + env(safe-area-inset-bottom))", boxShadow: "0 -18px 48px rgba(0,0,0,0.5)" }
+              : { position: "fixed", left: 0, right: 0, bottom: 0, zIndex: 91, maxHeight: "72vh", overflowY: "auto", background: TL.elev, opacity: 1, border: `1px solid ${TL.hair}`, borderRadius: "18px 18px 0 0", padding: "14px 16px calc(20px + env(safe-area-inset-bottom))", boxShadow: "0 -18px 48px rgba(0,0,0,0.5)" }
+            : { position: "fixed", left: 72, top: 12, bottom: 12, zIndex: 91, width: rom && rom.length > 0 ? 420 : 560, maxWidth: "calc(100vw - 84px)", overflowY: "auto", background: TL.elev, opacity: 1, border: `1px solid ${TL.hair}`, borderRadius: 16, padding: "18px 20px", boxShadow: "0 24px 64px rgba(0,0,0,0.55)" }
         }
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-          <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>
             {rom && rom.length > 0 ? `Mer · ${rom.length} rom` : "Alle flater"}
           </span>
           <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
@@ -431,22 +430,22 @@ function MerPanel({ grupper, rom, onClose, mobil, full, erAgency }: { grupper?: 
                 onClick={() => { onClose(); window.dispatchEvent(new CustomEvent("global-search:open")); }}
                 className="v2-press"
                 aria-label="Åpne globalt søk"
-                style={{ display: "flex", alignItems: "center", gap: 6, background: "transparent", border: `1px solid ${T.border}`, borderRadius: 8, color: T.fg2, cursor: "pointer", padding: "4px 9px" }}
+                style={{ display: "flex", alignItems: "center", gap: 6, background: "transparent", border: `1px solid ${TL.hair}`, borderRadius: 8, color: TL.mute, cursor: "pointer", padding: "4px 9px" }}
               >
                 <Icon name="search" size={13} />
-                <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase" }}>Søk</span>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase" }}>Søk</span>
               </button>
             )}
             <button
               onClick={bytt}
               className="v2-press"
               aria-label={tema === "dark" ? "Bytt til lys modus" : "Bytt til mørk modus"}
-              style={{ display: "flex", alignItems: "center", gap: 6, background: "transparent", border: `1px solid ${T.border}`, borderRadius: 8, color: T.fg2, cursor: "pointer", padding: "4px 9px" }}
+              style={{ display: "flex", alignItems: "center", gap: 6, background: "transparent", border: `1px solid ${TL.hair}`, borderRadius: 8, color: TL.mute, cursor: "pointer", padding: "4px 9px" }}
             >
               <Icon name={tema === "dark" ? "sun" : "moon"} size={13} />
-              <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase" }}>{tema === "dark" ? "Lys" : "Mørk"}</span>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase" }}>{tema === "dark" ? "Lys" : "Mørk"}</span>
             </button>
-            <button onClick={onClose} className="v2-press" aria-label="Lukk" style={{ background: "transparent", border: 0, color: T.mut, cursor: "pointer", padding: 4 }}>
+            <button onClick={onClose} className="v2-press" aria-label="Lukk" style={{ background: "transparent", border: 0, color: TL.mute, cursor: "pointer", padding: 4 }}>
               <Icon name="x" size={16} />
             </button>
           </div>
@@ -454,7 +453,7 @@ function MerPanel({ grupper, rom, onClose, mobil, full, erAgency }: { grupper?: 
         <div style={mobil ? { display: "flex", flexDirection: "column", gap: 14 } : { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px 22px" }}>
           {(grupper ?? []).map((g) => (
             <div key={g.label}>
-              <div style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut, marginBottom: 6 }}>{g.label}</div>
+              <div style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute, marginBottom: 6 }}>{g.label}</div>
               <div style={{ display: "flex", flexDirection: "column" }}>
                 {g.items.map((it) => {
                   const on = pathname === it.href;
@@ -465,9 +464,9 @@ function MerPanel({ grupper, rom, onClose, mobil, full, erAgency }: { grupper?: 
                       onClick={onClose}
                       role="menuitem"
                       className="v2-press v2-focus"
-                      style={{ display: "flex", alignItems: "center", gap: 10, padding: "7px 8px", borderRadius: 9, textDecoration: "none", color: on ? T.fg : T.fg2, background: on ? T.panel2 : "transparent" }}
+                      style={{ display: "flex", alignItems: "center", gap: 10, padding: "7px 8px", borderRadius: 9, textDecoration: "none", color: on ? TL.text : TL.mute, background: on ? TL.dock : "transparent" }}
                     >
-                      <Icon name={it.icon} size={15} style={{ color: on ? T.railOn : T.railFg, flex: "none" }} />
+                      <Icon name={it.icon} size={15} style={{ color: on ? TL.text : TL.mute, flex: "none" }} />
                       <span style={{ fontSize: 12.5, fontWeight: 500 }}>{it.label}</span>
                     </Link>
                   );
@@ -496,11 +495,11 @@ function MerPanel({ grupper, rom, onClose, mobil, full, erAgency }: { grupper?: 
                     alignItems: "center",
                     padding: 12,
                     minHeight: 44,
-                    borderRadius: T.rRow,
+                    borderRadius: TL.radius.row,
                     textDecoration: "none",
-                    color: T.fg,
-                    background: fremhevet ? T.handlingSoft : "transparent",
-                    border: `1px solid ${fremhevet ? `color-mix(in srgb, ${T.lime} 22%, ${T.border})` : "transparent"}`,
+                    color: TL.text,
+                    background: fremhevet ? TL.dim : "transparent",
+                    border: `1px solid ${fremhevet ? `color-mix(in srgb, ${TL.fill} 22%, ${TL.hair})` : "transparent"}`,
                   }}
                 >
                   <span
@@ -511,26 +510,26 @@ function MerPanel({ grupper, rom, onClose, mobil, full, erAgency }: { grupper?: 
                       display: "grid",
                       placeItems: "center",
                       flex: "none",
-                      background: fremhevet ? T.handlingSoft : T.panel3,
-                      border: `1px solid ${fremhevet ? `color-mix(in srgb, ${T.lime} 28%, ${T.border})` : T.border}`,
-                      color: fremhevet ? T.lime : T.fg2,
+                      background: fremhevet ? TL.dim : TL.dim,
+                      border: `1px solid ${fremhevet ? `color-mix(in srgb, ${TL.fill} 28%, ${TL.hair})` : TL.hair}`,
+                      color: fremhevet ? TL.fill : TL.mute,
                     }}
                   >
                     <Icon name={r.icon} size={18} />
                   </span>
                   <span style={{ minWidth: 0 }}>
-                    <span style={{ display: "block", fontFamily: T.disp, fontSize: 15, fontWeight: 600, letterSpacing: "-0.01em", marginBottom: 3 }}>{r.label}</span>
-                    <span style={{ display: "block", fontSize: 12, lineHeight: 1.4, color: T.mut, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{r.beskrivelse}</span>
+                    <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, letterSpacing: "-0.01em", marginBottom: 3 }}>{r.label}</span>
+                    <span style={{ display: "block", fontSize: 12, lineHeight: 1.4, color: TL.mute, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{r.beskrivelse}</span>
                   </span>
-                  <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.02em", color: fremhevet ? T.lime : T.mut }}>{r.meta}</span>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.02em", color: fremhevet ? TL.fill : TL.mute }}>{r.meta}</span>
                 </Link>
               );
             })}
-            <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${T.border}`, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
-              <p style={{ margin: 0, fontSize: 11.5, lineHeight: 1.4, color: T.mut }}>
+            <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${TL.hair}`, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+              <p style={{ margin: 0, fontSize: 11.5, lineHeight: 1.4, color: TL.mute }}>
                 Resten (audit-log, marketing, dyp-katalog) lever i søk — ikke her.
               </p>
-              <kbd style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, padding: "3px 7px", borderRadius: 6, border: `1px solid ${T.border}`, background: T.panel2, color: T.fg2, flex: "none" }}>⌘K</kbd>
+              <kbd style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, padding: "3px 7px", borderRadius: 6, border: `1px solid ${TL.hair}`, background: TL.dock, color: TL.mute, flex: "none" }}>⌘K</kbd>
             </div>
           </div>
         )}
@@ -770,7 +769,7 @@ function IkonRailNav({ aktiv, nav, mer, rom, navn, avatarUrl, erAgency }: Requir
       style={{
         width: 64,
         flex: "none",
-        borderRight: `1px solid ${T.farge.kremA8}`,
+        borderRight: `1px solid ${TL.hair}`,
         flexDirection: "column",
         alignItems: "center",
         padding: "14px 0 12px",
@@ -779,8 +778,8 @@ function IkonRailNav({ aktiv, nav, mer, rom, navn, avatarUrl, erAgency }: Requir
         top: 0,
         height: "100vh",
         overflowY: "auto",
-        background: T.rail,
-        color: T.railFg,
+        background: TL.dock,
+        color: TL.mute,
       }}
       aria-label="Hovedmeny"
       data-paper-rail
@@ -796,8 +795,8 @@ function IkonRailNav({ aktiv, nav, mer, rom, navn, avatarUrl, erAgency }: Requir
           className="v2-press v2-focus"
           style={{ width: 56, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "8px 0 6px", borderRadius: 12, background: "transparent", border: 0, cursor: "pointer", flex: "none" }}
         >
-          <Icon name="more-horizontal" size={19} style={{ color: aktiv === "mer" ? T.railOn : T.railFg }} strokeWidth={1.5} />
-          <span style={{ fontFamily: T.ui, fontSize: 10, fontWeight: 500, color: aktiv === "mer" ? T.railOn : T.railFg }}>Mer</span>
+          <Icon name="more-horizontal" size={19} style={{ color: aktiv === "mer" ? TL.text : TL.mute }} strokeWidth={1.5} />
+          <span style={{ fontFamily: TL.font.sans, fontSize: 10, fontWeight: 500, color: aktiv === "mer" ? TL.text : TL.mute }}>Mer</span>
         </button>
       )}
       <div style={{ flex: 1, minHeight: 8 }} />
@@ -826,7 +825,7 @@ function BunnNavLenker({ aktiv, nav, mer }: { aktiv?: string; nav: V2NavItem[]; 
       <nav
         className="flex md:hidden"
         data-paper-faner
-        style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 40, justifyContent: "space-around", padding: "6px 4px calc(10px + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px))", borderTop: `1px solid ${T.farge.kremA8}`, background: T.rail }}
+        style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 40, justifyContent: "space-around", padding: "6px 4px calc(10px + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px))", borderTop: `1px solid ${TL.hair}`, background: TL.dock }}
         aria-label="Hovedmeny"
       >
         {synlige.map((n) => {
@@ -839,10 +838,10 @@ function BunnNavLenker({ aktiv, nav, mer }: { aktiv?: string; nav: V2NavItem[]; 
               aria-current={on ? "page" : undefined}
               aria-label={badge ? `${n.label}, ${badge} i kø` : n.label}
               className="v2-press"
-              style={{ flex: 1, minHeight: 56, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 3, padding: "4px 0", color: on ? T.railOn : T.railFg, textDecoration: "none", position: "relative" }}
+              style={{ flex: 1, minHeight: 56, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 3, padding: "4px 0", color: on ? TL.text : TL.mute, textDecoration: "none", position: "relative" }}
             >
               {on && (
-                <span aria-hidden style={{ position: "absolute", top: 0, left: "24%", right: "24%", height: 2, borderRadius: 999, background: T.railOn }} />
+                <span aria-hidden style={{ position: "absolute", top: 0, left: "24%", right: "24%", height: 2, borderRadius: 999, background: TL.text }} />
               )}
               <span style={{ position: "relative", display: "inline-flex" }}>
                 <Icon name={n.icon} size={20} strokeWidth={on ? 2 : 1.5} />
@@ -857,9 +856,9 @@ function BunnNavLenker({ aktiv, nav, mer }: { aktiv?: string; nav: V2NavItem[]; 
                       height: 14,
                       padding: "0 3px",
                       borderRadius: 999,
-                      background: T.handling,
-                      color: T.onHandling,
-                      fontFamily: T.mono,
+                      background: TL.fill,
+                      color: TL.onFill,
+                      fontFamily: TL.font.mono,
                       fontSize: 8,
                       fontWeight: 700,
                       lineHeight: "14px",
@@ -870,7 +869,7 @@ function BunnNavLenker({ aktiv, nav, mer }: { aktiv?: string; nav: V2NavItem[]; 
                   </span>
                 )}
               </span>
-              <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 600 }}>{n.label}</span>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 600 }}>{n.label}</span>
             </Link>
           );
         })}
@@ -880,10 +879,10 @@ function BunnNavLenker({ aktiv, nav, mer }: { aktiv?: string; nav: V2NavItem[]; 
             aria-haspopup="menu"
             aria-expanded={merOpen}
             className="v2-press"
-            style={{ flex: 1, minHeight: 56, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 3, padding: "4px 0", color: merOpen ? T.railOn : T.railFg, background: "transparent", border: 0, cursor: "pointer" }}
+            style={{ flex: 1, minHeight: 56, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 3, padding: "4px 0", color: merOpen ? TL.text : TL.mute, background: "transparent", border: 0, cursor: "pointer" }}
           >
             <Icon name="more-horizontal" size={20} strokeWidth={1.5} />
-            <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 600 }}>Mer</span>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 600 }}>Mer</span>
           </button>
         )}
       </nav>
@@ -1086,7 +1085,7 @@ function MegArkTL({ onClose }: { onClose: () => void }) {
 /**
  * V2Shell — dark-scope app-ramme for v2-flater. Desktop: IkonRail + fluid innhold
  * (full bredde etter rail — ingen midtsone 1120/1680). Mobil: innhold + fast
- * BunnNav. Innholdet stables med T.gap — skjermkomponentene rendrer bare
+ * BunnNav. Innholdet stables med 16 — skjermkomponentene rendrer bare
  * stacken, shellen leverer chrome.
  */
 export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind Rohjan", avatarUrl, vekslerData, bredde = "full", hoyde = "dokument", composer, children }: V2ShellProps) {
@@ -1233,9 +1232,9 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
         ...(hoyde === "skjerm"
           ? { height: "100dvh", overflow: "hidden" }
           : { minHeight: "100vh" }),
-        background: T.bg,
-        color: T.fg,
-        fontFamily: T.ui,
+        background: TL.scene,
+        color: TL.text,
+        fontFamily: TL.font.sans,
         colorScheme: tema,
         display: "flex",
       }}
@@ -1271,7 +1270,7 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
             width: "100%",
             display: "flex",
             flexDirection: "column",
-            gap: T.gap,
+            gap: 16,
             // Leddet som brøt høydekjeden: uten dette har wrapperen auto
             // høyde, og barnets `height: 100%` faller tilbake til innholds-
             // høyde — komposeren havnet 230 px over bunn-nav-en.
@@ -1319,7 +1318,7 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
             right: 0,
             bottom: 0,
             zIndex: 30,
-            background: T.bg,
+            background: TL.scene,
             paddingBottom: "calc(env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px))",
           }}
         >

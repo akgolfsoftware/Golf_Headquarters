@@ -1,25 +1,12 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * Foreldreportal · Coach — v2 Presis + B-pakke (status + én grønn CTA).
  * Kun v2 + T.*. Enklere foreldre-språk.
  */
 
 import { useEffect, useState } from "react";
-import {
-  T,
-  Caps,
-  Tittel,
-  Kort,
-  StatusPill,
-  Rad,
-  InnsiktChip,
-  Knapp,
-  Icon,
-  AvatarFoto,
-  TomTilstand,
-} from "@/components/v2";
-
+import { Caps, Tittel, Kort, StatusPill, Rad, InnsiktChip, Knapp, Icon, AvatarFoto, TomTilstand } from "@/components/v2";
 export interface ForelderCoachData {
   /** Antall koblede barn — 0 gir ærlig tom-tilstand. */
   antallBarn: number;
@@ -66,7 +53,7 @@ export function ForelderCoachV2({ data }: { data: ForelderCoachData }) {
 
   if (antallBarn === 0) {
     return (
-      <div data-paper-wave-e="forelder-sub" data-paper-portal-forelder-coach style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+      <div data-paper-wave-e="forelder-sub" data-paper-portal-forelder-coach style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
         <div>
           <Caps>Coach</Caps>
           <div style={{ marginTop: 10 }}>
@@ -98,7 +85,7 @@ export function ForelderCoachV2({ data }: { data: ForelderCoachData }) {
     : "warn";
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {/* Hode + status */}
       <div
         style={{
@@ -118,9 +105,9 @@ export function ForelderCoachV2({ data }: { data: ForelderCoachData }) {
           </div>
           <span
             style={{
-              fontFamily: T.ui,
+              fontFamily: TL.font.sans,
               fontSize: 12.5,
-              color: T.mut,
+              color: TL.mute,
               display: "block",
               marginTop: 8,
             }}
@@ -139,11 +126,11 @@ export function ForelderCoachV2({ data }: { data: ForelderCoachData }) {
             <div style={{ flex: 1, minWidth: 0 }}>
               <div
                 style={{
-                  fontFamily: T.disp,
+                  fontFamily: TL.font.sans,
                   fontWeight: 700,
                   fontSize: mobile ? 17 : 19,
                   letterSpacing: "-0.01em",
-                  color: T.fg,
+                  color: TL.text,
                   lineHeight: 1.3,
                 }}
               >
@@ -151,9 +138,9 @@ export function ForelderCoachV2({ data }: { data: ForelderCoachData }) {
               </div>
               <p
                 style={{
-                  fontFamily: T.ui,
+                  fontFamily: TL.font.sans,
                   fontSize: 13,
-                  color: T.fg2,
+                  color: TL.mute,
                   lineHeight: 1.6,
                   margin: "8px 0 16px",
                 }}
@@ -220,16 +207,16 @@ export function ForelderCoachV2({ data }: { data: ForelderCoachData }) {
         {sisteMelding ? (
           <Rad
             leading={
-              <Icon name="message-circle" size={16} style={{ color: T.fg2 }} />
+              <Icon name="message-circle" size={16} style={{ color: TL.mute }} />
             }
             title={sisteMelding.title}
             sub={sisteMelding.body ?? undefined}
             meta={
               <span
                 style={{
-                  fontFamily: T.mono,
+                  fontFamily: TL.font.mono,
                   fontSize: 10.5,
-                  color: T.mut,
+                  color: TL.mute,
                   whiteSpace: "nowrap",
                 }}
               >

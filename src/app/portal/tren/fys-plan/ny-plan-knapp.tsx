@@ -7,7 +7,8 @@
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/shared/toast-provider";
 import { Knapp } from "@/components/v2";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 
 export function NyPlanKnapp({
   variant,
@@ -30,7 +31,7 @@ export function NyPlanKnapp({
       onClick={handleKlikk}
       style={
         primary
-          ? { background: T.handling, color: T.onHandling, width: variant === "empty-state" ? "100%" : undefined, minHeight: 48 }
+          ? { background: TL.fill, color: TL.onFill, width: variant === "empty-state" ? "100%" : undefined, minHeight: 48 }
           : undefined
       }
     >

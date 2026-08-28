@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * Ny turnering — v2 5-stegs-veiviser. Logikk/validering/payload bevart 1:1
@@ -9,7 +10,7 @@
 
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Caps, Kort, T, Veiviser, Inndata, Velger, TekstOmraade, RadioGruppe, ValgKort, Avkryssing, StatusPill, Tittel } from "@/components/v2";
+import { Caps, Kort, Veiviser, Inndata, Velger, TekstOmraade, RadioGruppe, ValgKort, Avkryssing, StatusPill, Tittel } from "@/components/v2";
 import { createTournament } from "@/app/admin/tournaments/ny/actions";
 
 type Course = { id: string; name: string };
@@ -189,7 +190,7 @@ export function TurneringWizardV2({ courses }: { courses: Course[] }) {
   const venue = courses.find((c) => c.id === state.courseId)?.name || state.manualVenue || "—";
 
   return (
-    <div data-paper-wave-h="turneringwizard" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 640, margin: "0 auto" }}>
+    <div data-paper-wave-h="turneringwizard" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 640, margin: "0 auto" }}>
       {/* B: status først */}
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>
         <div data-paper-pattern-topp data-paper-slug="agencyos-turneringer">
@@ -209,8 +210,8 @@ export function TurneringWizardV2({ courses }: { courses: Course[] }) {
         {step === 0 && (
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             <div>
-              <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 20, color: T.fg, letterSpacing: "-0.02em" }}>Hva slags turnering?</div>
-              <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "6px 0 0" }}>
+              <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 20, color: TL.text, letterSpacing: "-0.02em" }}>Hva slags turnering?</div>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: "6px 0 0" }}>
                 Bestem om dette er en intern AK-turnering eller et eksternt event spillerne påmeldes til.
               </p>
             </div>
@@ -286,7 +287,7 @@ export function TurneringWizardV2({ courses }: { courses: Course[] }) {
                       type="button"
                       onClick={() => toggleTee(t)}
                       className="v2-press v2-focus"
-                      style={{ appearance: "none", cursor: "pointer", borderRadius: 9999, padding: "8px 15px", fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, background: on ? T.lime : T.panel2, border: `1px solid ${on ? "transparent" : T.borderS}`, color: on ? T.onLime : T.fg }}
+                      style={{ appearance: "none", cursor: "pointer", borderRadius: 9999, padding: "8px 15px", fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 600, background: on ? TL.fill : TL.dock, border: `1px solid ${on ? "transparent" : TL.hair}`, color: on ? TL.onFill : TL.text }}
                     >
                       {t}
                     </button>
@@ -344,9 +345,9 @@ export function TurneringWizardV2({ courses }: { courses: Course[] }) {
               <Sum label="Cut" value={state.hasCut ? "Ja, etter runde 2" : "Nei"} />
             </div>
             {state.description && (
-              <div style={{ borderRadius: 12, background: T.panel2, border: `1px solid ${T.border}`, padding: 14 }}>
+              <div style={{ borderRadius: 12, background: TL.dock, border: `1px solid ${TL.hair}`, padding: 14 }}>
                 <Caps size={9}>Beskrivelse</Caps>
-                <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg, whiteSpace: "pre-line", margin: "8px 0 0" }}>{state.description}</p>
+                <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text, whiteSpace: "pre-line", margin: "8px 0 0" }}>{state.description}</p>
               </div>
             )}
             <Avkryssing label="Send invitasjon nå — inviterte spillere får varsel med en gang" checked={state.sendInvitations} onChange={(v) => update("sendInvitations", v)} />
@@ -354,12 +355,12 @@ export function TurneringWizardV2({ courses }: { courses: Course[] }) {
         )}
 
         {(error || stepError) && step !== 4 && error && (
-          <div role="alert" style={{ marginTop: 16, borderRadius: 11, background: `color-mix(in srgb, ${T.down} 10%, transparent)`, border: `1px solid color-mix(in srgb, ${T.down} 35%, transparent)`, padding: "10px 13px", fontFamily: T.ui, fontSize: 12.5, color: T.down }}>
+          <div role="alert" style={{ marginTop: 16, borderRadius: 11, background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`, border: `1px solid color-mix(in srgb, ${TL.danger} 35%, transparent)`, padding: "10px 13px", fontFamily: TL.font.sans, fontSize: 12.5, color: TL.danger }}>
             {error}
           </div>
         )}
         {error && step === 4 && (
-          <div role="alert" style={{ marginTop: 16, borderRadius: 11, background: `color-mix(in srgb, ${T.down} 10%, transparent)`, border: `1px solid color-mix(in srgb, ${T.down} 35%, transparent)`, padding: "10px 13px", fontFamily: T.ui, fontSize: 12.5, color: T.down }}>
+          <div role="alert" style={{ marginTop: 16, borderRadius: 11, background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`, border: `1px solid color-mix(in srgb, ${TL.danger} 35%, transparent)`, padding: "10px 13px", fontFamily: TL.font.sans, fontSize: 12.5, color: TL.danger }}>
             {error}
           </div>
         )}
@@ -371,17 +372,17 @@ export function TurneringWizardV2({ courses }: { courses: Course[] }) {
 function StegTittel({ title, sub }: { title: string; sub: string }) {
   return (
     <div>
-      <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 20, color: T.fg, letterSpacing: "-0.02em" }}>{title}</div>
-      <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "6px 0 0" }}>{sub}</p>
+      <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 20, color: TL.text, letterSpacing: "-0.02em" }}>{title}</div>
+      <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: "6px 0 0" }}>{sub}</p>
     </div>
   );
 }
 
 function Sum({ label, value }: { label: string; value: string }) {
   return (
-    <div style={{ borderRadius: 11, background: T.panel2, border: `1px solid ${T.border}`, padding: "12px 14px" }}>
+    <div style={{ borderRadius: 11, background: TL.dock, border: `1px solid ${TL.hair}`, padding: "12px 14px" }}>
       <Caps size={9}>{label}</Caps>
-      <div style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg, marginTop: 5 }}>{value}</div>
+      <div style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text, marginTop: 5 }}>{value}</div>
     </div>
   );
 }

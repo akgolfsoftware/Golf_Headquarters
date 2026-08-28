@@ -347,7 +347,7 @@ export function FangstSheet({
       autostartetRef.current = true;
       startOpptak();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- autostart kun ved mount
   }, []);
 
   // ── Chips: hver chip er i seg selv en fangst — autolagring ved trykk ────
@@ -368,7 +368,6 @@ export function FangstSheet({
       if (skrivDebounceRef.current) clearTimeout(skrivDebounceRef.current);
       skrivDebounceRef.current = setTimeout(() => autosaveRef.current(), 700);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [valgteChips, skrevet]);
 
   // ── Lukking: Esc + commit av pending ved avmontering ────────────────────

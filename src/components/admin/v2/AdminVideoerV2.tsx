@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * AgencyOS Coaching-videoer — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
  * Last opp video til spiller · se opplastede. T.* only.
@@ -9,25 +9,7 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { uploadVideo, deleteVideo, getSignedVideoUrl } from "@/lib/storage/video";
-import {
-  T,
-  Caps,
-  Tittel,
-  Kort,
-  KpiFlis,
-  Knapp,
-  Rad,
-  StatusPill,
-  TomTilstand,
-  CTAPill,
-  Icon,
-  Inndata,
-  Velger,
-  TekstOmraade,
-  Dropzone,
-  type VelgerIdValg,
-} from "@/components/v2";
-
+import { Caps, Kort, KpiFlis, Knapp, Rad, StatusPill, TomTilstand, CTAPill, Icon, Inndata, Velger, TekstOmraade, Dropzone, type VelgerIdValg } from "@/components/v2";
 /* ── Datakontrakt (mappes fra Prisma i ruten) ──────────────────────────── */
 
 export interface AdminVideoSpiller {
@@ -167,11 +149,11 @@ function OpplastingsSkjema({ spillere }: { spillere: AdminVideoSpiller[] }) {
         {pending && (
           <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut }}>Laster opp …</span>
-              <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut }}>vennligst vent</span>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>Laster opp …</span>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>vennligst vent</span>
             </div>
-            <div style={{ height: 6, borderRadius: 9999, background: T.track, overflow: "hidden" }}>
-              <div className="animate-pulse" style={{ height: "100%", width: "50%", borderRadius: 9999, background: T.lime }} />
+            <div style={{ height: 6, borderRadius: 9999, background: TL.hair, overflow: "hidden" }}>
+              <div className="animate-pulse" style={{ height: "100%", width: "50%", borderRadius: 9999, background: TL.fill }} />
             </div>
           </div>
         )}
@@ -192,17 +174,17 @@ function OpplastingsSkjema({ spillere }: { spillere: AdminVideoSpiller[] }) {
               display: "flex",
               alignItems: "flex-start",
               gap: 8,
-              fontFamily: T.ui,
+              fontFamily: TL.font.sans,
               fontSize: 12.5,
-              color: T.down,
-              background: `color-mix(in srgb, ${T.down} 10%, transparent)`,
-              border: `1px solid color-mix(in srgb, ${T.down} 30%, transparent)`,
+              color: TL.danger,
+              background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`,
+              border: `1px solid color-mix(in srgb, ${TL.danger} 30%, transparent)`,
               borderRadius: 11,
               padding: "10px 13px",
               lineHeight: 1.5,
             }}
           >
-            <Icon name="alert-triangle" size={14} style={{ color: T.down, flex: "none", marginTop: 1 }} />
+            <Icon name="alert-triangle" size={14} style={{ color: TL.danger, flex: "none", marginTop: 1 }} />
             {error}
           </div>
         )}
@@ -212,22 +194,22 @@ function OpplastingsSkjema({ spillere }: { spillere: AdminVideoSpiller[] }) {
               display: "flex",
               alignItems: "center",
               gap: 8,
-              fontFamily: T.ui,
+              fontFamily: TL.font.sans,
               fontSize: 12.5,
-              color: T.up,
-              background: `color-mix(in srgb, ${T.up} 10%, transparent)`,
-              border: `1px solid color-mix(in srgb, ${T.up} 30%, transparent)`,
+              color: TL.ok,
+              background: `color-mix(in srgb, ${TL.ok} 10%, transparent)`,
+              border: `1px solid color-mix(in srgb, ${TL.ok} 30%, transparent)`,
               borderRadius: 11,
               padding: "10px 13px",
             }}
           >
-            <Icon name="check-circle" size={14} style={{ color: T.up, flex: "none" }} />
+            <Icon name="check-circle" size={14} style={{ color: TL.ok, flex: "none" }} />
             Video lastet opp og delt med spilleren.
           </div>
         )}
 
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-          <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>
             Spilleren får varsel når videoen er klar.
           </span>
           {/* B: én primær lime CTA for opplasting */}
@@ -289,14 +271,14 @@ function VideoRad({ video, last }: { video: AdminVideoRad; last: boolean }) {
               width: 34,
               height: 34,
               borderRadius: 10,
-              background: `color-mix(in srgb, ${T.lime} 10%, transparent)`,
+              background: `color-mix(in srgb, ${TL.fill} 10%, transparent)`,
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
               flex: "none",
             }}
           >
-            <Icon name="video" size={15} style={{ color: T.lime }} />
+            <Icon name="video" size={15} style={{ color: TL.fill }} />
           </span>
         }
         title={video.title}
@@ -311,7 +293,7 @@ function VideoRad({ video, last }: { video: AdminVideoRad; last: boolean }) {
           </>
         }
         meta={
-          <span className="hidden sm:inline" style={{ fontFamily: T.mono, fontSize: 10.5, color: T.mut, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>
+          <span className="hidden sm:inline" style={{ fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>
             {video.dato}
             {video.storrelse ? ` · ${video.storrelse}` : ""}
           </span>
@@ -323,7 +305,7 @@ function VideoRad({ video, last }: { video: AdminVideoRad; last: boolean }) {
               Åpne
             </Knapp>
             {video.canDelete && (
-              <Knapp ghost icon="trash" disabled={pending} onClick={slett} style={{ padding: "7px 11px", color: T.down }} />
+              <Knapp ghost icon="trash" disabled={pending} onClick={slett} style={{ padding: "7px 11px", color: TL.danger }} />
             )}
           </span>
         }
@@ -332,11 +314,11 @@ function VideoRad({ video, last }: { video: AdminVideoRad; last: boolean }) {
         <div
           role="alert"
           style={{
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 12,
-            color: T.down,
-            background: `color-mix(in srgb, ${T.down} 10%, transparent)`,
-            border: `1px solid color-mix(in srgb, ${T.down} 30%, transparent)`,
+            color: TL.danger,
+            background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`,
+            border: `1px solid color-mix(in srgb, ${TL.danger} 30%, transparent)`,
             borderRadius: 10,
             padding: "6px 10px",
             margin: "6px 0 10px",
@@ -355,15 +337,15 @@ export function AdminVideoerV2({ data }: { data: AdminVideoerV2Data }) {
   const { kpis, spillere, videoer } = data;
 
   return (
-    <div data-paper-wave-h="videoer" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-h="videoer" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {/* Hode — B: status */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
         <div>
           <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Videoer</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Videoer</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>AgencyOS</span>
         </div>
-          <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, lineHeight: 1.55, margin: "10px 0 0" }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.55, margin: "10px 0 0" }}>
             {kpis.totalt} videoer totalt. Maks {MAX_MB} MB per video — mp4, mov eller webm.
           </p>
         </div>
@@ -373,7 +355,7 @@ export function AdminVideoerV2({ data }: { data: AdminVideoerV2Data }) {
       </div>
 
       {/* KPI-rad */}
-      <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: T.gap }}>
+      <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: 16 }}>
         <KpiFlis label="Videoer totalt" value={kpis.totalt} instant />
         <KpiFlis label="Siste 7 dager" value={kpis.sisteUke} instant />
         <KpiFlis label="Unike spillere" value={kpis.unikeSpillere} instant />
@@ -386,7 +368,7 @@ export function AdminVideoerV2({ data }: { data: AdminVideoerV2Data }) {
       <Kort
         eyebrow="Opplastede videoer"
         action={
-          <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, fontVariantNumeric: "tabular-nums" }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
             {videoer.length} stk
           </span>
         }

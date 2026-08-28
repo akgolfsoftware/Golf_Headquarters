@@ -1,23 +1,12 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ Coach-hub — v2 Presis + B-pakke (status + én primær «skriv/book»).
  * Coachkort, kommende økter, meldingstråd. T.* only. Tom = grønn vei.
  */
 
 import Link from "next/link";
-import {
-  T,
-  Caps,
-  Kort,
-  Rad,
-  StatusPill,
-  AvatarFoto,
-  TomTilstand,
-  Icon,
-  type StatusTone,
-} from "@/components/v2";
-
+import { Caps, Kort, Rad, StatusPill, AvatarFoto, TomTilstand, Icon, type StatusTone } from "@/components/v2";
 /* ── Datakontrakt (speiler /portal/coach sin loader) ───────────────── */
 
 export type CoachHubData = {
@@ -79,11 +68,11 @@ export function CoachHubV2({ data }: { data: CoachHubData }) {
     : "Send den første meldingen til coachen din";
 
   return (
-    <div data-paper-wave-g="coachhub" data-paper-slug="playerhq-coach-hub" data-paper-portal-coach-hub style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="coachhub" data-paper-slug="playerhq-coach-hub" data-paper-portal-coach-hub style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode — tittel + undertekst (fasit: «Fokus, meldinger og timene dine») */}
       <div>
-        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Coach</h1>
-        <span style={{ display: "block", fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 2 }}>Fokus, meldinger og timene dine</span>
+        <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Coach</h1>
+        <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 2 }}>Fokus, meldinger og timene dine</span>
       </div>
 
       {/* Fasit (fase2/playerhq/playerhq-coach-hub.html + w3-base.css §@media min-width:1024px:
@@ -93,8 +82,8 @@ export function CoachHubV2({ data }: { data: CoachHubData }) {
       <div style={{ display: "flex", alignItems: "center", gap: 13 }}>
         <AvatarFoto src={coach?.avatarUrl ?? null} navn={coach?.name ?? "?"} size={52} ring />
         <div style={{ minWidth: 0 }}>
-          <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, color: T.fg, lineHeight: 1.2 }}>{coach?.name ?? "Ingen coach ennå"}</div>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+          <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 17, color: TL.text, lineHeight: 1.2 }}>{coach?.name ?? "Ingen coach ennå"}</div>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
             {coach ? "Hovedcoach" : "Venter på tildeling"}
           </span>
         </div>
@@ -105,14 +94,14 @@ export function CoachHubV2({ data }: { data: CoachHubData }) {
         <Kort tint eyebrow="Fokus nå">
           {fokus ? (
             <>
-              {fokus.title && <div style={{ fontFamily: T.disp, fontWeight: 600, fontSize: 14.5, color: T.fg, marginBottom: 6 }}>{fokus.title}</div>}
-              <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.6, margin: 0 }}>
+              {fokus.title && <div style={{ fontFamily: TL.font.sans, fontWeight: 600, fontSize: 14.5, color: TL.text, marginBottom: 6 }}>{fokus.title}</div>}
+              <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.6, margin: 0 }}>
                 {fokus.content.slice(0, 200)}
                 {fokus.content.length > 200 ? "…" : ""}
               </p>
             </>
           ) : (
-            <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.6, margin: 0 }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.6, margin: 0 }}>
               Ingen fokusnotat fra coach denne uka.
             </p>
           )}
@@ -124,7 +113,7 @@ export function CoachHubV2({ data }: { data: CoachHubData }) {
         <Link href="/portal/coach/melding" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
           <Rad
             last
-            leading={<Icon name="message-circle" size={16} style={{ color: T.mut }} />}
+            leading={<Icon name="message-circle" size={16} style={{ color: TL.mute }} />}
             title="Meldinger"
             sub={meldingerSub}
             meta={nyeFraCoach > 0 ? <StatusPill tone="lime">{nyeFraCoach}</StatusPill> : undefined}
@@ -136,7 +125,7 @@ export function CoachHubV2({ data }: { data: CoachHubData }) {
         <Link href="/portal/booking" style={{ textDecoration: "none", display: "block" }}>
           <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
-            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
           }}>Book en time</span>
         </Link>
       )}
@@ -153,8 +142,8 @@ export function CoachHubV2({ data }: { data: CoachHubData }) {
                   key={s.id}
                   leading={
                     <span style={{ width: 52, flex: "none", display: "flex", flexDirection: "column", gap: 2 }}>
-                      <span style={{ fontFamily: T.mono, fontSize: 12, fontWeight: 700, color: naer?.tone === "lime" ? T.lime : T.fg, fontVariantNumeric: "tabular-nums" }}>{klokke(s.startAt)}</span>
-                      <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: T.mut }}>{datoKort(s.startAt)}</span>
+                      <span style={{ fontFamily: TL.font.mono, fontSize: 12, fontWeight: 700, color: naer?.tone === "lime" ? TL.fill : TL.text, fontVariantNumeric: "tabular-nums" }}>{klokke(s.startAt)}</span>
+                      <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: TL.mute }}>{datoKort(s.startAt)}</span>
                     </span>
                   }
                   title={s.title}
@@ -167,8 +156,8 @@ export function CoachHubV2({ data }: { data: CoachHubData }) {
             })}
             {kommende.length > timeline.length && (
               <Link href="/portal/booking" style={{ textDecoration: "none", display: "block", marginTop: 12 }}>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: T.lime }}>
-                  Se alle {kommende.length} <Icon name="arrow-right" size={12} style={{ color: T.lime }} />
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: TL.fill }}>
+                  Se alle {kommende.length} <Icon name="arrow-right" size={12} style={{ color: TL.fill }} />
                 </span>
               </Link>
             )}
@@ -180,7 +169,7 @@ export function CoachHubV2({ data }: { data: CoachHubData }) {
               <Link href="/portal/booking" style={{ textDecoration: "none", display: "block" }}>
                 <span style={{
                   display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
-                  borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+                  borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
                 }}>Book time</span>
               </Link>
             )}
@@ -192,13 +181,13 @@ export function CoachHubV2({ data }: { data: CoachHubData }) {
       {coach && (
         <Kort eyebrow={`Fra ${coach.name.split(" ")[0]}`} pad="4px 6px">
           <Link href="/portal/coach/videoer" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
-            <Rad leading={<Icon name="video" size={16} style={{ color: T.mut }} />} title="Videoer" sub="Klipp coachen har delt med deg" />
+            <Rad leading={<Icon name="video" size={16} style={{ color: TL.mute }} />} title="Videoer" sub="Klipp coachen har delt med deg" />
           </Link>
           <Link href="/portal/coach/ovelser" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
-            <Rad leading={<Icon name="dumbbell" size={16} style={{ color: T.mut }} />} title="Øvelser til deg" sub="Denne periodens øvelser" />
+            <Rad leading={<Icon name="dumbbell" size={16} style={{ color: TL.mute }} />} title="Øvelser til deg" sub="Denne periodens øvelser" />
           </Link>
           <Link href="/portal/coach/sporsmal" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
-            <Rad last leading={<Icon name="help-circle" size={16} style={{ color: T.mut }} />} title="Spørsmål" sub="Still et spørsmål mellom timene" />
+            <Rad last leading={<Icon name="help-circle" size={16} style={{ color: TL.mute }} />} title="Spørsmål" sub="Still et spørsmål mellom timene" />
           </Link>
         </Kort>
       )}

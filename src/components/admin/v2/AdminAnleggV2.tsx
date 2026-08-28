@@ -1,5 +1,6 @@
+import { TL } from "@/lib/v2/train-lock";
 import Link from "next/link";
-import { Caps, Tittel, Kort, TomTilstand, StatusPill, T } from "@/components/v2";
+import { Kort, TomTilstand, StatusPill } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import { LocationFormV2, FacilityFormV2, type FasilitetType } from "./AdminLocationFormV2";
 
@@ -35,17 +36,17 @@ export interface AdminAnleggV2Data {
 
 function FasilitetKort({ f }: { f: AnleggFasilitet }) {
   return (
-    <Kort style={{ background: T.panel2, opacity: f.aktiv ? 1 : 0.72 }}>
+    <Kort style={{ background: TL.dock, opacity: f.aktiv ? 1 : 0.72 }}>
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
-        <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 38, height: 38, borderRadius: 10, background: T.panel, color: f.aktiv ? T.lime : T.mut, flex: "none" }}>
+        <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 38, height: 38, borderRadius: 10, background: TL.elev, color: f.aktiv ? TL.fill : TL.mute, flex: "none" }}>
           <Icon name={f.ikonNavn} size={20} />
         </span>
         {!f.aktiv && <StatusPill tone="down">Deaktivert</StatusPill>}
       </div>
-      <div style={{ marginTop: 12, fontFamily: T.disp, fontWeight: 700, fontSize: 16, color: T.fg }}>{f.navn}</div>
-      <div style={{ marginTop: 6, fontFamily: T.mono, fontSize: 10, color: T.mut }}>
+      <div style={{ marginTop: 12, fontFamily: TL.font.sans, fontWeight: 700, fontSize: 16, color: TL.text }}>{f.navn}</div>
+      <div style={{ marginTop: 6, fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>
         {f.aktiv ? (
-          <strong style={{ color: T.lime }}>{f.bookinger} {f.bookinger === 1 ? "booking" : "bookinger"} denne uka</strong>
+          <strong style={{ color: TL.fill }}>{f.bookinger} {f.bookinger === 1 ? "booking" : "bookinger"} denne uka</strong>
         ) : (
           <span>Vises ikke i booking</span>
         )}{" "}
@@ -57,7 +58,7 @@ function FasilitetKort({ f }: { f: AnleggFasilitet }) {
           triggerLabel="Endre"
         />
         {f.aktiv && (
-          <Link href="/admin/availability" style={{ textDecoration: "none", fontFamily: T.mono, fontSize: 10, color: T.mut, textTransform: "uppercase", letterSpacing: "0.06em", display: "inline-flex", alignItems: "center", gap: 4 }}>
+          <Link href="/admin/availability" style={{ textDecoration: "none", fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, textTransform: "uppercase", letterSpacing: "0.06em", display: "inline-flex", alignItems: "center", gap: 4 }}>
             Tilgjengelighet <Icon name="arrow-right" size={11} />
           </Link>
         )}
@@ -73,14 +74,14 @@ export function AdminAnleggV2({ data }: { data: AdminAnleggV2Data }) {
     nLok === 0 ? "Ingen anlegg" : nAktive === nLok ? `${nLok} aktive` : `${nAktive} av ${nLok} aktive`;
 
   return (
-    <div data-paper-wave-h="anlegg" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-h="anlegg" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 14 }}>
         <div>
           <div data-paper-pattern-topp data-paper-slug="agencyos-bookinger">
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Anlegg</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Fasiliteter</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Anlegg</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>Fasiliteter</span>
         </div>
-          <p style={{ fontFamily: T.ui, fontSize: 13, lineHeight: 1.55, color: T.mut, margin: "10px 0 0", maxWidth: 560 }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 13, lineHeight: 1.55, color: TL.mute, margin: "10px 0 0", maxWidth: 560 }}>
             Anleggene du disponerer. Tallet viser hvor presset hver ressurs er denne uka. Deaktiverte anlegg og fasiliteter vises ikke i booking.
           </p>
         </div>
@@ -108,10 +109,10 @@ export function AdminAnleggV2({ data }: { data: AdminAnleggV2Data }) {
             <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
               <div style={{ minWidth: 0 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-                  <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 18, color: T.fg }}>{l.navn}</span>
+                  <span style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 18, color: TL.text }}>{l.navn}</span>
                   {l.aktiv ? <StatusPill>Aktiv</StatusPill> : <StatusPill tone="down">Deaktivert</StatusPill>}
                 </div>
-                <div style={{ marginTop: 6, display: "inline-flex", alignItems: "center", gap: 6, fontFamily: T.ui, fontSize: 12, color: T.mut }}>
+                <div style={{ marginTop: 6, display: "inline-flex", alignItems: "center", gap: 6, fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}>
                   <Icon name="map-pin" size={12} />
                   {l.adresse}
                 </div>

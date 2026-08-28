@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ · Drill-detalj — Paper-port W1 (fase2).
  * Fasit: designsystem/paper/fase2/playerhq/playerhq-drill-detalj.html.
@@ -14,12 +14,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import {
-  T,
-  Kort,
-  AvatarInit,
-  TomTilstand,
-} from "@/components/v2";
+import { Kort, AvatarInit, TomTilstand } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import type { AkseKey } from "@/lib/v2/tokens";
 
@@ -62,14 +57,14 @@ export function DrillDetaljV2({ data }: { data: DrillDetaljV2Data }) {
     <div
       data-paper-slug="playerhq-drill-detalj"
       data-od-id="playerhq-drill-detalj"
-      style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}
+      style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}
     >
       {/* Topp — fasit: navn + mono-sub */}
       <div style={{ minWidth: 0 }}>
-        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+        <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
           {data.navn}
         </h1>
-        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+        <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
           {data.sub}
         </span>
       </div>
@@ -77,7 +72,7 @@ export function DrillDetaljV2({ data }: { data: DrillDetaljV2Data }) {
       {/* Hva den trener */}
       {data.beskrivelse && (
         <Kort eyebrow="hva den trener">
-          <p style={{ fontFamily: T.bodyFont, fontSize: 14, color: T.fg2, lineHeight: 1.6, margin: 0 }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 14, color: TL.mute, lineHeight: 1.6, margin: 0 }}>
             {data.beskrivelse}
           </p>
         </Kort>
@@ -95,13 +90,13 @@ export function DrillDetaljV2({ data }: { data: DrillDetaljV2Data }) {
                   gap: 12,
                   padding: "8px 0",
                   fontSize: 12.5,
-                  borderBottom: i === data.slots.length - 1 ? "none" : `1px solid ${T.border}`,
+                  borderBottom: i === data.slots.length - 1 ? "none" : `1px solid ${TL.hair}`,
                 }}
               >
-                <span style={{ flex: "none", width: 96, fontFamily: T.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.06em", color: T.mut, paddingTop: 2 }}>
+                <span style={{ flex: "none", width: 96, fontFamily: TL.font.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.06em", color: TL.mute, paddingTop: 2 }}>
                   {s.k}
                 </span>
-                <span style={{ fontFamily: T.bodyFont, color: T.fg2 }}>{s.v}</span>
+                <span style={{ fontFamily: TL.font.sans, color: TL.mute }}>{s.v}</span>
               </div>
             ))}
           </div>
@@ -121,11 +116,11 @@ export function DrillDetaljV2({ data }: { data: DrillDetaljV2Data }) {
                   justifyContent: "space-between",
                   gap: 12,
                   padding: "10px 0",
-                  borderBottom: i === data.bruk.length - 1 ? "none" : `1px solid ${T.border}`,
+                  borderBottom: i === data.bruk.length - 1 ? "none" : `1px solid ${TL.hair}`,
                 }}
               >
-                <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut }}>{b.k}</span>
-                <span style={{ fontFamily: T.mono, fontSize: 12.5, fontWeight: 700, color: T.fg, textAlign: "right", fontVariantNumeric: "tabular-nums" }}>
+                <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute }}>{b.k}</span>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 12.5, fontWeight: 700, color: TL.text, textAlign: "right", fontVariantNumeric: "tabular-nums" }}>
                   {b.v}
                 </span>
               </div>
@@ -139,7 +134,7 @@ export function DrillDetaljV2({ data }: { data: DrillDetaljV2Data }) {
         <Kort
           eyebrow="Slik gjør du det"
           action={
-            <span style={{ fontFamily: T.mono, fontSize: 10.5, color: T.mut, fontVariantNumeric: "tabular-nums" }}>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
               {gjort.size}/{data.trinn.length}
             </span>
           }
@@ -155,14 +150,14 @@ export function DrillDetaljV2({ data }: { data: DrillDetaljV2Data }) {
                   tabIndex={0}
                   className="v2-press v2-focus"
                   onClick={() => toggleTrinn(t.n)}
-                  style={{ display: "flex", alignItems: "flex-start", gap: 12, padding: "11px 0", borderBottom: i === data.trinn.length - 1 ? "none" : `1px solid ${T.border}`, cursor: "pointer" }}
+                  style={{ display: "flex", alignItems: "flex-start", gap: 12, padding: "11px 0", borderBottom: i === data.trinn.length - 1 ? "none" : `1px solid ${TL.hair}`, cursor: "pointer" }}
                 >
-                  <span style={{ marginTop: 1, width: 20, height: 20, borderRadius: 7, border: `2px solid ${on ? T.cta : T.borderS}`, background: on ? T.cta : "transparent", display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
-                    {on && <Icon name="check" size={13} style={{ color: T.onCta }} />}
+                  <span style={{ marginTop: 1, width: 20, height: 20, borderRadius: 7, border: `2px solid ${on ? TL.fill : TL.hair}`, background: on ? TL.fill : "transparent", display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+                    {on && <Icon name="check" size={13} style={{ color: TL.onFill }} />}
                   </span>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.mut, marginRight: 8 }}>{t.n}.</span>
-                    <span style={{ fontFamily: T.ui, fontSize: 13.5, color: on ? T.mut : T.fg, lineHeight: 1.55, textDecoration: on ? "line-through" : "none" }}>
+                    <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, color: TL.mute, marginRight: 8 }}>{t.n}.</span>
+                    <span style={{ fontFamily: TL.font.sans, fontSize: 13.5, color: on ? TL.mute : TL.text, lineHeight: 1.55, textDecoration: on ? "line-through" : "none" }}>
                       {t.text}
                     </span>
                   </div>
@@ -186,13 +181,13 @@ export function DrillDetaljV2({ data }: { data: DrillDetaljV2Data }) {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="v2-row-h"
-                style={{ display: "flex", alignItems: "center", gap: 12, padding: "11px 10px", margin: "0 -10px", borderRadius: 10, borderBottom: i === data.media.length - 1 ? "none" : `1px solid ${T.border}`, textDecoration: "none" }}
+                style={{ display: "flex", alignItems: "center", gap: 12, padding: "11px 10px", margin: "0 -10px", borderRadius: 10, borderBottom: i === data.media.length - 1 ? "none" : `1px solid ${TL.hair}`, textDecoration: "none" }}
               >
-                <span style={{ width: 30, height: 30, borderRadius: 9999, background: T.panel3, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
-                  <Icon name={m.kind === "video" ? "video" : "image"} size={14} style={{ color: T.fg2 }} />
+                <span style={{ width: 30, height: 30, borderRadius: 9999, background: TL.dim, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+                  <Icon name={m.kind === "video" ? "video" : "image"} size={14} style={{ color: TL.mute }} />
                 </span>
-                <span style={{ flex: 1, fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>{m.label}</span>
-                <Icon name="external-link" size={13} style={{ color: T.mut }} />
+                <span style={{ flex: 1, fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>{m.label}</span>
+                <Icon name="external-link" size={13} style={{ color: TL.mute }} />
               </a>
             ))}
           </div>
@@ -205,8 +200,8 @@ export function DrillDetaljV2({ data }: { data: DrillDetaljV2Data }) {
           <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
             <AvatarInit navn={data.coachNavn} size={34} />
             <div style={{ flex: 1, minWidth: 0 }}>
-              <span style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.fg2, display: "block" }}>{data.coachNavn}</span>
-              <p style={{ fontFamily: T.bodyFont, fontSize: 13.5, color: T.fg, lineHeight: 1.6, margin: "6px 0 0" }}>{data.coachNotat}</p>
+              <span style={{ fontFamily: TL.font.sans, fontSize: 12, fontWeight: 600, color: TL.mute, display: "block" }}>{data.coachNavn}</span>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 13.5, color: TL.text, lineHeight: 1.6, margin: "6px 0 0" }}>{data.coachNotat}</p>
             </div>
           </div>
         </Kort>
@@ -217,9 +212,9 @@ export function DrillDetaljV2({ data }: { data: DrillDetaljV2Data }) {
         <Kort eyebrow="Parametere">
           <div>
             {data.params.map((p, i) => (
-              <div key={p.key} style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, padding: "10px 0", borderBottom: i === data.params.length - 1 ? "none" : `1px solid ${T.border}` }}>
-                <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut }}>{p.key}</span>
-                <span style={{ fontFamily: T.mono, fontSize: 12.5, fontWeight: 700, color: T.fg, textAlign: "right" }}>{p.value}</span>
+              <div key={p.key} style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, padding: "10px 0", borderBottom: i === data.params.length - 1 ? "none" : `1px solid ${TL.hair}` }}>
+                <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute }}>{p.key}</span>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 12.5, fontWeight: 700, color: TL.text, textAlign: "right" }}>{p.value}</span>
               </div>
             ))}
           </div>
@@ -238,10 +233,10 @@ export function DrillDetaljV2({ data }: { data: DrillDetaljV2Data }) {
           justifyContent: "center",
           minHeight: 56,
           width: "100%",
-          borderRadius: T.rCard,
-          background: T.handling,
-          color: T.onHandling,
-          fontFamily: T.ui,
+          borderRadius: TL.radius.card,
+          background: TL.fill,
+          color: TL.onFill,
+          fontFamily: TL.font.sans,
           fontSize: 14,
           fontWeight: 600,
         }}
@@ -256,14 +251,14 @@ export function DrillDetaljV2({ data }: { data: DrillDetaljV2Data }) {
           display: "flex",
           alignItems: "flex-start",
           gap: 10,
-          fontFamily: T.bodyFont,
+          fontFamily: TL.font.sans,
           fontSize: 12.5,
-          color: T.mut,
+          color: TL.mute,
           lineHeight: 1.6,
           paddingBottom: 24,
         }}
       >
-        <Icon name="pencil" size={14} style={{ color: T.mut, flex: "none", marginTop: 3 }} />
+        <Icon name="pencil" size={14} style={{ color: TL.mute, flex: "none", marginTop: 3 }} />
         <span>
           Å legge en drill i egen økt endrer ikke ukeplanen — derfor ingen godkjenning. Anders
           får beskjed og kan justere om det kolliderer med tema.

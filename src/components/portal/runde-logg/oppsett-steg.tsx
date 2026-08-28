@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * Oppsett-steget for slag-for-slag-føring: bane · 18/9 hull ·
@@ -8,7 +9,7 @@
 
 import { useEffect, useState, useTransition } from "react";
 import { hentBaneHull } from "@/app/portal/(legacy)/mal/runder/logg/actions";
-import { T, Caps, Kort, Icon, Velger, ValgKort, PillTabs } from "@/components/v2";
+import { Caps, Kort, Icon, Velger, ValgKort, PillTabs } from "@/components/v2";
 
 export type OppsettHull = { holeNumber: number; par: number; lengdeMeter: number };
 
@@ -100,10 +101,10 @@ export function OppsettSteg({ modus, baner, initial, onStart }: OppsettStegProps
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       <div>
-        <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 22, color: T.fg, lineHeight: 1.1 }}>
+        <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 22, color: TL.text, lineHeight: 1.1 }}>
           {modus === "live" ? "Start runde" : "Før runde i etterkant"}
         </div>
-        <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 3 }}>
+        <div style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 3 }}>
           Slag for slag — full Strokes Gained
         </div>
       </div>
@@ -128,10 +129,10 @@ export function OppsettSteg({ modus, baner, initial, onStart }: OppsettStegProps
               height: 44,
               borderRadius: 11,
               padding: "0 12px",
-              background: T.panel2,
-              border: `1px solid ${T.borderS}`,
-              color: T.fg,
-              fontFamily: T.mono,
+              background: TL.dock,
+              border: `1px solid ${TL.hair}`,
+              color: TL.text,
+              fontFamily: TL.font.mono,
               fontSize: 13,
               outline: "none",
               colorScheme: "dark",
@@ -177,12 +178,12 @@ export function OppsettSteg({ modus, baner, initial, onStart }: OppsettStegProps
               gridTemplateColumns: "36px 1fr 96px",
               gap: 8,
               padding: "4px 10px",
-              fontFamily: T.mono,
+              fontFamily: TL.font.mono,
               fontSize: 9,
               fontWeight: 700,
               letterSpacing: "0.08em",
               textTransform: "uppercase",
-              color: T.mut,
+              color: TL.mute,
             }}
           >
             <span>Hull</span>
@@ -202,7 +203,7 @@ export function OppsettSteg({ modus, baner, initial, onStart }: OppsettStegProps
                 borderRadius: 10,
               }}
             >
-              <span style={{ fontFamily: T.mono, fontSize: 12, fontWeight: 700, color: T.fg2 }}>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 12, fontWeight: 700, color: TL.mute }}>
                 {h.holeNumber}
               </span>
               <div style={{ display: "flex", gap: 4 }}>
@@ -219,12 +220,12 @@ export function OppsettSteg({ modus, baner, initial, onStart }: OppsettStegProps
                       padding: "6px 0",
                       textAlign: "center",
                       borderRadius: 8,
-                      fontFamily: T.mono,
+                      fontFamily: TL.font.mono,
                       fontSize: 11.5,
                       fontWeight: 700,
-                      background: p === h.par ? T.panel3 : "transparent",
-                      color: p === h.par ? T.fg : T.mut,
-                      border: `1px solid ${p === h.par ? T.borderS : T.border}`,
+                      background: p === h.par ? TL.dim : "transparent",
+                      color: p === h.par ? TL.text : TL.mute,
+                      border: `1px solid ${p === h.par ? TL.hair : TL.hair}`,
                     }}
                   >
                     {p}
@@ -242,10 +243,10 @@ export function OppsettSteg({ modus, baner, initial, onStart }: OppsettStegProps
                     height: 34,
                     borderRadius: 8,
                     padding: "0 26px 0 10px",
-                    background: T.panel2,
-                    border: `1px solid ${T.border}`,
-                    color: T.fg,
-                    fontFamily: T.mono,
+                    background: TL.dock,
+                    border: `1px solid ${TL.hair}`,
+                    color: TL.text,
+                    fontFamily: TL.font.mono,
                     fontSize: 12.5,
                     outline: "none",
                   }}
@@ -256,9 +257,9 @@ export function OppsettSteg({ modus, baner, initial, onStart }: OppsettStegProps
                     right: 10,
                     top: "50%",
                     transform: "translateY(-50%)",
-                    fontFamily: T.mono,
+                    fontFamily: TL.font.mono,
                     fontSize: 10,
-                    color: T.mut,
+                    color: TL.mute,
                   }}
                 >
                   m
@@ -266,7 +267,7 @@ export function OppsettSteg({ modus, baner, initial, onStart }: OppsettStegProps
               </div>
             </div>
           ))}
-          <div style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, padding: "6px 10px" }}>
+          <div style={{ fontFamily: TL.font.sans, fontSize: 10.5, color: TL.mute, padding: "6px 10px" }}>
             {henter
               ? "Henter hull fra baneregisteret…"
               : fraRegister
@@ -290,11 +291,11 @@ export function OppsettSteg({ modus, baner, initial, onStart }: OppsettStegProps
           width: "100%",
           height: 54,
           border: "none",
-          background: gyldig ? T.handling : T.panel3,
+          background: gyldig ? TL.fill : TL.dim,
           minHeight: 56,
           borderRadius: 12,
-          color: gyldig ? T.onHandling : T.mut,
-          fontFamily: T.disp,
+          color: gyldig ? TL.onFill : TL.mute,
+          fontFamily: TL.font.sans,
           fontSize: 16,
           fontWeight: 700,
           display: "inline-flex",

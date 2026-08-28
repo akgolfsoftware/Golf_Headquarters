@@ -16,7 +16,8 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Kort, Caps, AvatarFoto, TomTilstand, HjelpTips, Icon } from "@/components/v2";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import type { FokusData } from "@/lib/agencyos/fokus-spillere";
 import { pinnSpiller, avpinnSpiller } from "@/app/admin/agencyos/actions";
 
@@ -54,9 +55,9 @@ function IkonKnapp({
         alignItems: "center",
         justifyContent: "center",
         borderRadius: 9999,
-        background: T.panel3,
-        border: `1px solid ${T.border}`,
-        color: tone === "lime" ? T.lime : T.mut,
+        background: TL.dim,
+        border: `1px solid ${TL.hair}`,
+        color: tone === "lime" ? TL.fill : TL.mute,
         cursor: disabled ? "default" : "pointer",
         opacity: disabled ? 0.4 : 1,
       }}
@@ -99,8 +100,8 @@ function Tile({
         gap: 11,
         padding: "10px 11px",
         borderRadius: 12,
-        background: T.panel2,
-        border: `1px solid ${T.border}`,
+        background: TL.dock,
+        border: `1px solid ${TL.hair}`,
         cursor: "pointer",
       }}
     >
@@ -108,10 +109,10 @@ function Tile({
       <div style={{ flex: 1, minWidth: 0 }}>
         <div
           style={{
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 13.5,
             fontWeight: 600,
-            color: T.fg,
+            color: TL.text,
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -226,7 +227,7 @@ export function FokusSpillere({ fokus }: { fokus: FokusData }) {
       tint
       eyebrow={
         <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-          <Icon name="sparkles" size={11} style={{ color: T.lime }} />
+          <Icon name="sparkles" size={11} style={{ color: TL.fill }} />
           Foreslått nå
         </span>
       }
@@ -253,9 +254,9 @@ export function FokusSpillere({ fokus }: { fokus: FokusData }) {
                     display: "inline-flex",
                     alignItems: "center",
                     gap: 5,
-                    fontFamily: T.ui,
+                    fontFamily: TL.font.sans,
                     fontSize: 11.5,
-                    color: T.fg2,
+                    color: TL.mute,
                     lineHeight: 1.4,
                   }}
                 >
@@ -285,7 +286,7 @@ export function FokusSpillere({ fokus }: { fokus: FokusData }) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-      <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: T.gap }}>
+      <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: 16 }}>
         {pinnetSone}
         {forslagSone}
       </div>
@@ -293,13 +294,13 @@ export function FokusSpillere({ fokus }: { fokus: FokusData }) {
         <div
           role="status"
           style={{
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 12,
-            color: T.warn,
+            color: TL.warn,
             padding: "8px 12px",
             borderRadius: 10,
-            background: `color-mix(in srgb, ${T.warn} 10%, transparent)`,
-            border: `1px solid color-mix(in srgb, ${T.warn} 30%, transparent)`,
+            background: `color-mix(in srgb, ${TL.warn} 10%, transparent)`,
+            border: `1px solid color-mix(in srgb, ${TL.warn} 30%, transparent)`,
           }}
         >
           {feil}

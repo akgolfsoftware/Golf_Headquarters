@@ -9,7 +9,8 @@
 
 import type { ReactNode } from "react";
 import { Fragment, useState } from "react";
-import { T, type AkseKey } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+import { type AkseKey } from "@/lib/v2/tokens";
 import { Icon } from "@/components/v2/icon";
 import { Caps, Kort, Rad, AkseChip, StatusPill, CTAPill } from "./core";
 
@@ -23,14 +24,14 @@ export interface ArkProps {
 }
 export function Ark({ tittel, under, children, onLukk }: ArkProps) {
   return (
-    <div style={{ background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: "24px 24px 0 0", padding: "10px 18px 22px", boxShadow: `0 -18px 48px ${T.farge.svartA45}` }}>
-      <span style={{ display: "block", width: 38, height: 4, borderRadius: 9999, background: T.borderS, margin: "0 auto 12px" }} />
+    <div style={{ background: TL.elev, border: `1px solid ${TL.hair}`, borderRadius: "24px 24px 0 0", padding: "10px 18px 22px", boxShadow: `0 -18px 48px ${TL.scrim}` }}>
+      <span style={{ display: "block", width: 38, height: 4, borderRadius: 9999, background: TL.hair, margin: "0 auto 12px" }} />
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
         <div style={{ minWidth: 0 }}>
-          <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, color: T.fg }}>{tittel}</div>
-          {under && <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 3 }}>{under}</div>}
+          <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 17, color: TL.text }}>{tittel}</div>
+          {under && <div style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 3 }}>{under}</div>}
         </div>
-        <button onClick={onLukk} title="Lukk" style={{ appearance: "none", cursor: "pointer", width: 44, height: 44, flex: "none", borderRadius: 12, background: T.panel2, border: `1px solid ${T.border}`, color: T.fg2, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+        <button onClick={onLukk} title="Lukk" style={{ appearance: "none", cursor: "pointer", width: 44, height: 44, flex: "none", borderRadius: 12, background: TL.dock, border: `1px solid ${TL.hair}`, color: TL.mute, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
           <Icon name="x" size={16} />
         </button>
       </div>
@@ -53,8 +54,8 @@ export function ZoomBrodsmule({ sti = ["År", "Juli", "Uke 28", "Ons"], onHopp }
         const siste = i === sti.length - 1;
         return (
           <Fragment key={i}>
-            {i > 0 && <Icon name="chevron-right" size={11} style={{ color: T.mut, flex: "none" }} />}
-            <button onClick={() => onHopp && onHopp(i)} style={{ appearance: "none", cursor: siste ? "default" : "pointer", fontFamily: T.mono, fontSize: 11, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", whiteSpace: "nowrap", padding: "8px 9px", minHeight: 36, borderRadius: 9, border: "none", color: siste ? T.fg : T.mut, background: siste ? T.panel2 : "transparent" }}>{s}</button>
+            {i > 0 && <Icon name="chevron-right" size={11} style={{ color: TL.mute, flex: "none" }} />}
+            <button onClick={() => onHopp && onHopp(i)} style={{ appearance: "none", cursor: siste ? "default" : "pointer", fontFamily: TL.font.mono, fontSize: 11, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", whiteSpace: "nowrap", padding: "8px 9px", minHeight: 36, borderRadius: 9, border: "none", color: siste ? TL.text : TL.mute, background: siste ? TL.dock : "transparent" }}>{s}</button>
           </Fragment>
         );
       })}
@@ -106,17 +107,17 @@ export function FlyttTilArk({
         {dager.map((d) => {
           const on = dag === d.id;
           return (
-            <button key={d.id} onClick={() => setDag(d.id)} style={{ appearance: "none", cursor: "pointer", minHeight: 52, borderRadius: 12, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 2, background: on ? T.lime : T.panel2, border: `1px solid ${on ? "transparent" : T.border}` }}>
-              <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, textTransform: "uppercase", color: on ? T.onHandling : T.mut }}>{d.l}</span>
-              <span style={{ fontFamily: T.mono, fontSize: 14, fontWeight: 700, color: on ? T.onHandling : T.fg, fontVariantNumeric: "tabular-nums" }}>{d.d}</span>
+            <button key={d.id} onClick={() => setDag(d.id)} style={{ appearance: "none", cursor: "pointer", minHeight: 52, borderRadius: 12, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 2, background: on ? TL.fill : TL.dock, border: `1px solid ${on ? "transparent" : TL.hair}` }}>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, textTransform: "uppercase", color: on ? TL.onFill : TL.mute }}>{d.l}</span>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 14, fontWeight: 700, color: on ? TL.onFill : TL.text, fontVariantNumeric: "tabular-nums" }}>{d.d}</span>
             </button>
           );
         })}
       </div>
       {valgtDag && valgtDag.varsel && (
-        <div style={{ display: "flex", gap: 7, alignItems: "flex-start", marginTop: 10, padding: "8px 11px", borderRadius: 10, background: `color-mix(in srgb,${T.warn} 10%,transparent)` }}>
-          <Icon name="info" size={12} style={{ color: T.warn, flex: "none", marginTop: 1 }} />
-          <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.fg2, lineHeight: 1.45 }}>{valgtDag.varsel} — du velger selv.</span>
+        <div style={{ display: "flex", gap: 7, alignItems: "flex-start", marginTop: 10, padding: "8px 11px", borderRadius: 10, background: `color-mix(in srgb,${TL.warn} 10%,transparent)` }}>
+          <Icon name="info" size={12} style={{ color: TL.warn, flex: "none", marginTop: 1 }} />
+          <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, lineHeight: 1.45 }}>{valgtDag.varsel} — du velger selv.</span>
         </div>
       )}
       <Caps size={9} style={{ marginTop: 16 }}>Tid</Caps>
@@ -124,12 +125,12 @@ export function FlyttTilArk({
         {tider.map((t) => {
           const on = tid === t;
           return (
-            <button key={t} onClick={() => setTid(t)} style={{ appearance: "none", cursor: "pointer", height: 44, borderRadius: 12, fontFamily: T.mono, fontSize: 13, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: on ? T.onHandling : T.fg2, background: on ? T.lime : T.panel2, border: `1px solid ${on ? "transparent" : T.border}` }}>{t}</button>
+            <button key={t} onClick={() => setTid(t)} style={{ appearance: "none", cursor: "pointer", height: 44, borderRadius: 12, fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: on ? TL.onFill : TL.mute, background: on ? TL.fill : TL.dock, border: `1px solid ${on ? "transparent" : TL.hair}` }}>{t}</button>
           );
         })}
       </div>
-      <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, display: "block", marginTop: 10, fontVariantNumeric: "tabular-nums" }}>{kapasitet}</span>
-      <button onClick={() => onFlytt && onFlytt({ dag, tid })} style={{ appearance: "none", cursor: "pointer", width: "100%", height: 48, marginTop: 14, borderRadius: 9999, background: T.handling, border: "none", color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, display: "block", marginTop: 10, fontVariantNumeric: "tabular-nums" }}>{kapasitet}</span>
+      <button onClick={() => onFlytt && onFlytt({ dag, tid })} style={{ appearance: "none", cursor: "pointer", width: "100%", height: 48, marginTop: 14, borderRadius: 9999, background: TL.fill, border: "none", color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
         <Icon name="arrow-right" size={15} />Flytt hit
       </button>
     </Ark>
@@ -185,8 +186,8 @@ export function PreviewArk({
       <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 12 }}>
         <AkseChip a={axis} />
         {formel.map((f) => (
-          <span key={f.l} style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: T.fg2, background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 5, padding: "3px 7px" }}>
-            <span style={{ color: T.mut }}>{f.l}</span>{f.v}
+          <span key={f.l} style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, color: TL.mute, background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: 5, padding: "3px 7px" }}>
+            <span style={{ color: TL.mute }}>{f.l}</span>{f.v}
           </span>
         ))}
       </div>
@@ -195,14 +196,14 @@ export function PreviewArk({
         <div style={{ marginTop: 4 }}>
           {ovelser.map((o, i) => (
             <Rad key={i} title={o.navn} sub={o.mal} trailing={null} last={i === ovelser.length - 1}
-              leading={<span style={{ width: 22, flex: "none", fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.mut }}>{i + 1}.</span>} />
+              leading={<span style={{ width: 22, flex: "none", fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, color: TL.mute }}>{i + 1}.</span>} />
           ))}
         </div>
       </div>
-      {sist && <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, display: "block", marginTop: 10 }}>{sist}</span>}
+      {sist && <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, display: "block", marginTop: 10 }}>{sist}</span>}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 7, marginTop: 14 }}>
         {handlinger.map((h) => (
-          <button key={h.l} onClick={h.on} style={{ appearance: "none", cursor: "pointer", height: 44, borderRadius: 12, background: T.panel3, border: `1px solid ${T.borderS}`, color: T.fg, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", gap: 7 }}>
+          <button key={h.l} onClick={h.on} style={{ appearance: "none", cursor: "pointer", height: 44, borderRadius: 12, background: TL.dim, border: `1px solid ${TL.hair}`, color: TL.text, fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", gap: 7 }}>
             <Icon name={h.icon} size={14} />{h.l}
           </button>
         ))}
@@ -222,10 +223,10 @@ export function Ring({ pct = 60, size = 34, label }: RingProps) {
   return (
     <span title={label} style={{ position: "relative", width: size, height: size, flex: "none", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
       <svg width={size} height={size} style={{ position: "absolute", inset: 0, transform: "rotate(-90deg)" }}>
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={T.track} strokeWidth="3" />
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={T.up} strokeWidth="3" strokeLinecap="round" strokeDasharray={`${(pct / 100) * o} ${o}`} />
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={TL.hair} strokeWidth="3" />
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={TL.ok} strokeWidth="3" strokeLinecap="round" strokeDasharray={`${(pct / 100) * o} ${o}`} />
       </svg>
-      <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, color: T.fg2, fontVariantNumeric: "tabular-nums" }}>{pct}</span>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>{pct}</span>
     </span>
   );
 }
@@ -255,11 +256,11 @@ export function MaalStripe({
 }: MaalStripeProps) {
   const [apen, setApen] = useState(startApen);
   if (!apen) return (
-    <button onClick={() => setApen(true)} style={{ appearance: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 8, height: 36, padding: "0 13px", borderRadius: 9999, background: T.panel2, border: `1px solid ${T.border}` }}>
-      <Icon name="target" size={12} style={{ color: T.lime }} />
-      <span style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.fg }}>{resultatmal}</span>
-      <span style={{ fontFamily: T.mono, fontSize: 11, fontWeight: 700, color: T.fg2, fontVariantNumeric: "tabular-nums" }}>{dagerIgjen} d</span>
-      <Icon name="chevron-down" size={12} style={{ color: T.mut }} />
+    <button onClick={() => setApen(true)} style={{ appearance: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 8, height: 36, padding: "0 13px", borderRadius: 9999, background: TL.dock, border: `1px solid ${TL.hair}` }}>
+      <Icon name="target" size={12} style={{ color: TL.fill }} />
+      <span style={{ fontFamily: TL.font.sans, fontSize: 12, fontWeight: 600, color: TL.text }}>{resultatmal}</span>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 11, fontWeight: 700, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>{dagerIgjen} d</span>
+      <Icon name="chevron-down" size={12} style={{ color: TL.mute }} />
     </button>
   );
   return (
@@ -267,19 +268,19 @@ export function MaalStripe({
       <div onClick={() => setApen(false)}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 9, minWidth: 0 }}>
-            <Icon name="target" size={14} style={{ color: T.lime, flex: "none" }} />
-            <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 14.5, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{resultatmal}</span>
+            <Icon name="target" size={14} style={{ color: TL.fill, flex: "none" }} />
+            <span style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 14.5, color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{resultatmal}</span>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 8, flex: "none" }}>
-            <span style={{ fontFamily: T.mono, fontSize: 15, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>{dagerIgjen}<span style={{ fontSize: 10, color: T.mut, marginLeft: 2 }}>dager igjen</span></span>
-            <Icon name="chevron-up" size={13} style={{ color: T.mut }} />
+            <span style={{ fontFamily: TL.font.mono, fontSize: 15, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>{dagerIgjen}<span style={{ fontSize: 10, color: TL.mute, marginLeft: 2 }}>dager igjen</span></span>
+            <Icon name="chevron-up" size={13} style={{ color: TL.mute }} />
           </div>
         </div>
         <div style={{ display: "flex", gap: 14, marginTop: 12 }}>
           {prosessmal.map((p) => (
             <span key={p.l} style={{ display: "inline-flex", alignItems: "center", gap: 7, minWidth: 0 }}>
               <Ring pct={p.pct} label={p.l} />
-              <span style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, lineHeight: 1.3 }}>{p.l}</span>
+              <span style={{ fontFamily: TL.font.sans, fontSize: 10.5, color: TL.mute, lineHeight: 1.3 }}>{p.l}</span>
             </span>
           ))}
         </div>
@@ -313,9 +314,9 @@ export function SerieVelger({ valgt = "uke", eksisterende = true, onChange, onOm
         {valg.map((o, i) => {
           const on = v === o.id;
           return (
-            <button key={o.id} onClick={() => { setV(o.id); onChange?.(o.id); }} style={{ appearance: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, width: "100%", minHeight: 44, padding: "0 2px", textAlign: "left", background: "transparent", border: "none", borderBottom: i === valg.length - 1 ? "none" : `1px solid ${T.border}` }}>
-              <span style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: on ? 600 : 500, color: on ? T.fg : T.fg2 }}>{o.l}</span>
-              {on && <Icon name="check" size={15} style={{ color: T.lime }} />}
+            <button key={o.id} onClick={() => { setV(o.id); onChange?.(o.id); }} style={{ appearance: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, width: "100%", minHeight: 44, padding: "0 2px", textAlign: "left", background: "transparent", border: "none", borderBottom: i === valg.length - 1 ? "none" : `1px solid ${TL.hair}` }}>
+              <span style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: on ? 600 : 500, color: on ? TL.text : TL.mute }}>{o.l}</span>
+              {on && <Icon name="check" size={15} style={{ color: TL.fill }} />}
             </button>
           );
         })}
@@ -323,11 +324,11 @@ export function SerieVelger({ valgt = "uke", eksisterende = true, onChange, onOm
       {eksisterende && v !== "aldri" && (
         <div style={{ marginTop: 14 }}>
           <Caps size={9}>Endringen gjelder</Caps>
-          <div style={{ display: "flex", gap: 2, background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 9999, padding: 3, marginTop: 8 }}>
+          <div style={{ display: "flex", gap: 2, background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: 9999, padding: 3, marginTop: 8 }}>
             {[{ id: "denne", l: "Bare denne økta" }, { id: "fremtidige", l: "Alle fremtidige" }].map((o) => {
               const on = omfang === o.id;
               return (
-                <button key={o.id} onClick={() => { setOmfang(o.id); onOmfang?.(o.id); }} style={{ appearance: "none", cursor: "pointer", flex: 1, fontFamily: T.ui, fontSize: 12, fontWeight: 600, minHeight: 38, borderRadius: 9999, color: on ? T.bg : T.fg2, background: on ? T.fg : "transparent", border: "none", whiteSpace: "nowrap" }}>{o.l}</button>
+                <button key={o.id} onClick={() => { setOmfang(o.id); onOmfang?.(o.id); }} style={{ appearance: "none", cursor: "pointer", flex: 1, fontFamily: TL.font.sans, fontSize: 12, fontWeight: 600, minHeight: 38, borderRadius: 9999, color: on ? TL.scene : TL.mute, background: on ? TL.text : "transparent", border: "none", whiteSpace: "nowrap" }}>{o.l}</button>
               );
             })}
           </div>
@@ -364,17 +365,17 @@ export function EgentreningVindu({
     <Kort pad="15px 17px" eyebrow="Gruppeøkt med egentrening">
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
         <div style={{ minWidth: 0 }}>
-          <div style={{ fontFamily: T.ui, fontSize: 14, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{gruppeokt}</div>
-          <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut, display: "block", marginTop: 4, fontVariantNumeric: "tabular-nums" }}>{dag} · {tid}</span>
+          <div style={{ fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600, color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{gruppeokt}</div>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute, display: "block", marginTop: 4, fontVariantNumeric: "tabular-nums" }}>{dag} · {tid}</span>
         </div>
         <AkseChip a="SPILL" />
       </div>
-      <div style={{ position: "relative", height: 26, borderRadius: 8, background: T.panel3, border: `1px solid ${T.border}`, marginTop: 13, overflow: "hidden" }}>
-        <span style={{ position: "absolute", left: `${v0 * 100}%`, width: `${(v1 - v0) * 100}%`, top: 0, bottom: 0, background: `color-mix(in srgb,${T.lime} 16%,transparent)`, borderLeft: `2px solid ${T.lime}`, borderRight: `2px solid ${T.lime}` }} />
-        <span style={{ position: "absolute", left: `${v0 * 100}%`, width: `${(v1 - v0) * 100}%`, top: 0, bottom: 0, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: T.lime }}>Egentrening</span>
+      <div style={{ position: "relative", height: 26, borderRadius: 8, background: TL.dim, border: `1px solid ${TL.hair}`, marginTop: 13, overflow: "hidden" }}>
+        <span style={{ position: "absolute", left: `${v0 * 100}%`, width: `${(v1 - v0) * 100}%`, top: 0, bottom: 0, background: `color-mix(in srgb,${TL.fill} 16%,transparent)`, borderLeft: `2px solid ${TL.fill}`, borderRight: `2px solid ${TL.fill}` }} />
+        <span style={{ position: "absolute", left: `${v0 * 100}%`, width: `${(v1 - v0) * 100}%`, top: 0, bottom: 0, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: TL.fill }}>Egentrening</span>
       </div>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginTop: 12 }}>
-        <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut }}>Din tid: <span style={{ fontFamily: T.mono, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>{vindu}</span> — velg selv hva du fyller den med.</span>
+        <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute }}>Din tid: <span style={{ fontFamily: TL.font.mono, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>{vindu}</span> — velg selv hva du fyller den med.</span>
         {planlagt
           ? <StatusPill tone="up">Økt planlagt</StatusPill>
           : <span onClick={onPlanlegg}><CTAPill icon="plus">Planlegg din økt</CTAPill></span>}

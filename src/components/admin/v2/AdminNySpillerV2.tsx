@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * AgencyOS — Ny spiller (v2, retning C «Presis»). Rekomponering av
@@ -17,33 +18,9 @@
 import { useMemo, useState, useTransition } from "react";
 import type { ReactNode } from "react";
 import { useRouter } from "next/navigation";
-import {
-  Caps,
-  Tittel,
-  Kort,
-  ValgKort,
-  SkjemaFelt,
-  Inndata,
-  Velger,
-  TekstOmraade,
-  Bryter,
-  Veiviser,
-  ProfilFelt,
-  StatusPill,
-  ValideringsChip,
-  T,
-} from "@/components/v2";
-import {
-  createSpiller,
-  type OpprettSpillerInput,
-} from "@/app/admin/(legacy)/spillere/ny/actions";
-import {
-  SPILLER_KATEGORIER,
-  SPILLER_TIERS,
-  ALL_PROGRAMS,
-  type SpillerKategori,
-  type SpillerTier,
-} from "@/app/admin/(legacy)/spillere/ny/constants";
+import { Caps, Kort, ValgKort, SkjemaFelt, Inndata, Velger, TekstOmraade, Bryter, Veiviser, ProfilFelt, StatusPill, ValideringsChip } from "@/components/v2";
+import { createSpiller, type OpprettSpillerInput } from "@/app/admin/(legacy)/spillere/ny/actions";
+import { SPILLER_KATEGORIER, SPILLER_TIERS, ALL_PROGRAMS, type SpillerKategori, type SpillerTier } from "@/app/admin/(legacy)/spillere/ny/constants";
 import type { PlayerProgram } from "@/generated/prisma/client";
 
 const PROGRAM_LABEL: Record<PlayerProgram, string> = {
@@ -216,10 +193,10 @@ export function AdminNySpillerV2() {
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
         <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Ny spiller</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Ny spiller</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>AgencyOS</span>
         </div>
-        <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.55, margin: "10px 0 0", maxWidth: 460 }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.55, margin: "10px 0 0", maxWidth: 460 }}>
           Fire steg — identitet, golf-profil, tier og velkomst. Spilleren får
           invitasjon på e-post hvis du sender den nå.
         </p>
@@ -233,7 +210,7 @@ export function AdminNySpillerV2() {
   const feilTekst = serverFeil ?? (visFeil ? stegFeil : null);
 
   return (
-    <div data-paper-wave-h="ny-spiller" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-h="ny-spiller" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {hode}
 
       <Kort>
@@ -245,7 +222,7 @@ export function AdminNySpillerV2() {
               value={PROGRAM_LABEL[program]}
               onChange={(label) => setProgram(LABEL_TO_PROGRAM[label] ?? program)}
             />
-            <p style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, lineHeight: 1.55, margin: "-6px 2px 0" }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, lineHeight: 1.55, margin: "-6px 2px 0" }}>
               Spilleren enrolleres automatisk i dette programmet. Du kan endre
               det etterpå på spillerens profilside.
             </p>
@@ -318,7 +295,7 @@ export function AdminNySpillerV2() {
               <Kort tint>
                 <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14, flexWrap: "wrap" }}>
                   <StatusPill tone="warn">Under 18</StatusPill>
-                  <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2 }}>
+                  <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute }}>
                     {alder} år — foreldre-info er påkrevd
                   </span>
                 </div>

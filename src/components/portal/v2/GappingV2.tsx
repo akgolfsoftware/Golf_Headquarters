@@ -13,7 +13,8 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { TomTilstand } from "@/components/v2";
 import { PaperPage, PaperTopp, PaperKropp } from "@/components/portal/v2/PaperChrome";
 import { GAP_TERSKEL_M, MIN_SLAG } from "@/lib/domain/gapping";
@@ -27,9 +28,9 @@ function Kort({ eyebrow, children }: { eyebrow?: string; children: ReactNode }) 
   return (
     <section
       style={{
-        background: T.panel,
-        border: `1px solid ${T.border}`,
-        borderRadius: T.rCard,
+        background: TL.elev,
+        border: `1px solid ${TL.hair}`,
+        borderRadius: TL.radius.card,
         padding: 16,
         marginBottom: 12,
       }}
@@ -38,11 +39,11 @@ function Kort({ eyebrow, children }: { eyebrow?: string; children: ReactNode }) 
         <span
           style={{
             display: "block",
-            fontFamily: T.mono,
-            fontSize: T.capsSm,
+            fontFamily: TL.font.mono,
+            fontSize: TL.storrelse.capsSm,
             letterSpacing: "0.07em",
             textTransform: "uppercase",
-            color: T.fg2,
+            color: TL.mute,
             marginBottom: 10,
           }}
         >
@@ -59,9 +60,9 @@ function Brodtekst({ children }: { children: ReactNode }) {
     <p
       style={{
         margin: 0,
-        fontFamily: T.bodyFont,
-        fontSize: T.body,
-        color: T.fg,
+        fontFamily: TL.font.sans,
+        fontSize: TL.storrelse.kropp,
+        color: TL.text,
         lineHeight: 1.55,
       }}
     >
@@ -101,12 +102,12 @@ export function GappingV2({ data }: { data: GappingData }) {
                 style={{
                   display: "inline-flex",
                   padding: "10px 18px",
-                  borderRadius: T.rInput,
-                  border: `1px solid ${T.border}`,
-                  background: T.panel,
-                  color: T.fg,
-                  fontFamily: T.ui,
-                  fontSize: T.body,
+                  borderRadius: TL.radius.field,
+                  border: `1px solid ${TL.hair}`,
+                  background: TL.elev,
+                  color: TL.text,
+                  fontFamily: TL.font.sans,
+                  fontSize: TL.storrelse.kropp,
                   textDecoration: "none",
                 }}
               >
@@ -131,9 +132,9 @@ export function GappingV2({ data }: { data: GappingData }) {
                   gap: 8,
                   flexWrap: "wrap",
                   marginTop: 12,
-                  fontFamily: T.mono,
-                  fontSize: T.capsSm,
-                  color: T.fg2,
+                  fontFamily: TL.font.mono,
+                  fontSize: TL.storrelse.capsSm,
+                  color: TL.mute,
                 }}
               >
                 <span
@@ -141,14 +142,14 @@ export function GappingV2({ data }: { data: GappingData }) {
                     width: 22,
                     height: 8,
                     borderRadius: 4,
-                    background: T.panel3,
-                    border: `1px solid ${T.border}`,
+                    background: TL.dim,
+                    border: `1px solid ${TL.hair}`,
                   }}
                 />
                 <span>midtre halvdel</span>
-                <span style={{ width: 2, height: 12, background: T.fg, marginLeft: 6 }} />
+                <span style={{ width: 2, height: 12, background: TL.text, marginLeft: 6 }} />
                 <span>median</span>
-                <span style={{ color: T.down, marginLeft: 6 }}>gap over terskel</span>
+                <span style={{ color: TL.danger, marginLeft: 6 }}>gap over terskel</span>
               </div>
             </Kort>
 
@@ -158,9 +159,9 @@ export function GappingV2({ data }: { data: GappingData }) {
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
-                  fontFamily: T.mono,
-                  fontSize: T.capsSm,
-                  color: T.fg2,
+                  fontFamily: TL.font.mono,
+                  fontSize: TL.storrelse.capsSm,
+                  color: TL.mute,
                   marginBottom: 8,
                   paddingLeft: 76,
                 }}
@@ -195,9 +196,9 @@ export function GappingV2({ data }: { data: GappingData }) {
                     >
                       <span
                         style={{
-                          fontFamily: T.mono,
+                          fontFamily: TL.font.mono,
                           fontSize: 11,
-                          color: k.tynn ? T.fg2 : T.fg,
+                          color: k.tynn ? TL.mute : TL.text,
                         }}
                       >
                         {k.klubb}
@@ -208,8 +209,8 @@ export function GappingV2({ data }: { data: GappingData }) {
                           position: "relative",
                           minWidth: 0,
                           height: 14,
-                          background: T.panel2,
-                          borderRadius: T.rPill,
+                          background: TL.dock,
+                          borderRadius: TL.radius.pill,
                         }}
                       >
                         <span
@@ -219,11 +220,11 @@ export function GappingV2({ data }: { data: GappingData }) {
                             bottom: 3,
                             left: `${pst(k.p25)}%`,
                             width: `${Math.max(2, pst(k.p75) - pst(k.p25))}%`,
-                            borderRadius: T.rPill,
+                            borderRadius: TL.radius.pill,
                             background: k.tynn
                               ? "transparent"
-                              : `color-mix(in srgb, ${T.info} 45%, ${T.panel2})`,
-                            border: k.tynn ? `1px dashed ${T.border}` : undefined,
+                              : `color-mix(in srgb, ${TL.viz.target} 45%, ${TL.dock})`,
+                            border: k.tynn ? `1px dashed ${TL.hair}` : undefined,
                           }}
                         />
                         <span
@@ -234,7 +235,7 @@ export function GappingV2({ data }: { data: GappingData }) {
                             left: `calc(${pst(k.median)}% - 1.5px)`,
                             width: 3,
                             borderRadius: 2,
-                            background: k.tynn ? T.fg2 : T.info,
+                            background: k.tynn ? TL.mute : TL.viz.target,
                           }}
                         />
                       </div>
@@ -242,10 +243,10 @@ export function GappingV2({ data }: { data: GappingData }) {
                       <span
                         style={{
                           textAlign: "right",
-                          fontFamily: T.mono,
+                          fontFamily: TL.font.mono,
                           fontSize: 11,
                           fontWeight: 600,
-                          color: k.tynn ? T.fg2 : T.fg,
+                          color: k.tynn ? TL.mute : TL.text,
                         }}
                       >
                         {k.median} m
@@ -254,7 +255,7 @@ export function GappingV2({ data }: { data: GappingData }) {
                             display: "block",
                             fontSize: 8.5,
                             fontWeight: 400,
-                            color: T.fg2,
+                            color: TL.mute,
                           }}
                         >
                           {k.slag} slag{k.tynn ? ` · under ${MIN_SLAG}` : ""}
@@ -270,11 +271,11 @@ export function GappingV2({ data }: { data: GappingData }) {
                           gap: 8,
                           margin: "2px 0 2px 76px",
                           padding: "4px 12px",
-                          border: `1px dashed ${T.down}`,
-                          borderRadius: T.rTag,
-                          fontFamily: T.mono,
+                          border: `1px dashed ${TL.danger}`,
+                          borderRadius: TL.radius.row,
+                          fontFamily: TL.font.mono,
                           fontSize: 10,
-                          color: T.down,
+                          color: TL.danger,
                         }}
                       >
                         gap {gapEtter.meter} m · {gapEtter.under} → {gapEtter.over} · over
@@ -288,9 +289,9 @@ export function GappingV2({ data }: { data: GappingData }) {
               <p
                 style={{
                   margin: "12px 0 0",
-                  fontFamily: T.bodyFont,
-                  fontSize: T.bodySm,
-                  color: T.fg2,
+                  fontFamily: TL.font.sans,
+                  fontSize: TL.storrelse.meta,
+                  color: TL.mute,
                   lineHeight: 1.5,
                 }}
               >
@@ -312,7 +313,7 @@ export function GappingV2({ data }: { data: GappingData }) {
                       Mellom{" "}
                       <strong style={{ fontWeight: 600 }}>{g.under}</strong> og{" "}
                       <strong style={{ fontWeight: 600 }}>{g.over}</strong> er det{" "}
-                      <span style={{ fontFamily: T.mono, color: T.down }}>{g.meter} m</span> —
+                      <span style={{ fontFamily: TL.font.mono, color: TL.danger }}>{g.meter} m</span> —
                       over terskelen. Det betyr at innspill rundt {g.hullMidt} m mangler en
                       kølle å lande på.
                     </Brodtekst>
@@ -321,9 +322,9 @@ export function GappingV2({ data }: { data: GappingData }) {
                 <p
                   style={{
                     margin: "4px 0 0",
-                    fontFamily: T.bodyFont,
-                    fontSize: T.bodySm,
-                    color: T.fg2,
+                    fontFamily: TL.font.sans,
+                    fontSize: TL.storrelse.meta,
+                    color: TL.mute,
                     lineHeight: 1.5,
                   }}
                 >
@@ -337,11 +338,11 @@ export function GappingV2({ data }: { data: GappingData }) {
                     textAlign: "center",
                     marginTop: 12,
                     padding: "11px 18px",
-                    borderRadius: T.rInput,
-                    background: T.fg,
-                    color: T.bg,
-                    fontFamily: T.ui,
-                    fontSize: T.body,
+                    borderRadius: TL.radius.field,
+                    background: TL.text,
+                    color: TL.scene,
+                    fontFamily: TL.font.sans,
+                    fontSize: TL.storrelse.kropp,
                     fontWeight: 600,
                     textDecoration: "none",
                   }}

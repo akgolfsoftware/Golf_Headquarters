@@ -19,9 +19,9 @@
 
 import { useEffect, useRef } from "react";
 import type { ReactNode } from "react";
-import { T } from "@/lib/v2/tokens";
-import { Icon } from "@/components/v2/icon";
+import { TL } from "@/lib/v2/train-lock";
 
+import { Icon } from "@/components/v2/icon";
 const FOKUSERBAR =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
@@ -87,7 +87,7 @@ export function BunnArk({ open, onClose, tittel, maxHeight = "82vh", children }:
         onClick={onClose}
         aria-hidden
         className="v2-backdrop-in"
-        style={{ position: "fixed", inset: 0, zIndex: 90, background: T.farge.svartA55 }}
+        style={{ position: "fixed", inset: 0, zIndex: 90, background: TL.scrim }}
       />
       <div
         ref={arkRef}
@@ -105,11 +105,11 @@ export function BunnArk({ open, onClose, tittel, maxHeight = "82vh", children }:
           maxHeight,
           overflowY: "auto",
           outline: "none",
-          background: T.panel,
-          border: `1px solid ${T.border}`,
+          background: TL.elev,
+          border: `1px solid ${TL.hair}`,
           borderRadius: "18px 18px 0 0",
           padding: "10px 16px calc(20px + env(safe-area-inset-bottom))",
-          boxShadow: `0 -18px 48px ${T.farge.svartA50}`,
+          boxShadow: `0 -18px 48px ${TL.scrim}`,
         }}
       >
         {/* Drag-håndtak-hint (rent visuelt, ikke interaktivt) */}
@@ -119,18 +119,18 @@ export function BunnArk({ open, onClose, tittel, maxHeight = "82vh", children }:
             width: 38,
             height: 4,
             borderRadius: 9999,
-            background: T.border,
+            background: TL.hair,
             margin: "0 auto 12px",
           }}
         />
         {tittel !== undefined && (
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 12 }}>
-            <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, color: T.fg }}>{tittel}</span>
+            <span style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 16, color: TL.text }}>{tittel}</span>
             <button
               onClick={onClose}
               className="v2-press v2-focus"
               aria-label="Lukk"
-              style={{ background: "transparent", border: 0, color: T.mut, cursor: "pointer", padding: 4 }}
+              style={{ background: "transparent", border: 0, color: TL.mute, cursor: "pointer", padding: 4 }}
             >
               <Icon name="x" size={18} />
             </button>

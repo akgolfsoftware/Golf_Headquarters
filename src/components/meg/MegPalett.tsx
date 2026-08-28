@@ -9,7 +9,8 @@
  * artefakt-navigasjon i /meg.
  */
 import { useEffect, useMemo, useRef, useState } from "react";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Icon } from "@/components/v2/icon";
 import { ARTEFAKT_TITTEL, ARTEFAKT_TYPER, type ArtefaktType } from "@/lib/jarvis/artefakt";
 
@@ -94,7 +95,7 @@ export function MegPalett({
         justifyContent: "center",
         alignItems: "flex-start",
         paddingTop: "12vh",
-        background: T.farge.svartA40,
+        background: TL.scrim,
       }}
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) lukk();
@@ -106,15 +107,15 @@ export function MegPalett({
           maxHeight: "60vh",
           display: "flex",
           flexDirection: "column",
-          background: T.panel,
-          border: `1px solid ${T.border}`,
-          borderRadius: T.rCard,
+          background: TL.elev,
+          border: `1px solid ${TL.hair}`,
+          borderRadius: TL.radius.card,
           overflow: "hidden",
-          boxShadow: `0 12px 32px ${T.farge.svartA25}`,
+          boxShadow: `0 12px 32px ${TL.scrim}`,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 14px", borderBottom: `1px solid ${T.borderS}` }}>
-          <Icon name="search" size={16} strokeWidth={1.7} style={{ color: T.mut }} />
+        <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 14px", borderBottom: `1px solid ${TL.hair}` }}>
+          <Icon name="search" size={16} strokeWidth={1.7} style={{ color: TL.mute }} />
           <input
             ref={inputRef}
             value={sok}
@@ -127,16 +128,16 @@ export function MegPalett({
               border: "none",
               outline: "none",
               background: "transparent",
-              color: T.fg,
-              fontFamily: T.ui,
+              color: TL.text,
+              fontFamily: TL.font.sans,
               fontSize: 14,
             }}
           />
-          <kbd style={{ fontFamily: T.mono, fontSize: 10, color: T.mut }}>ESC</kbd>
+          <kbd style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>ESC</kbd>
         </div>
         <div style={{ overflowY: "auto", padding: 6 }} role="listbox">
           {treff.length === 0 && (
-            <div style={{ padding: "16px 12px", fontFamily: T.ui, fontSize: 12.5, color: T.mut }}>Ingen treff</div>
+            <div style={{ padding: "16px 12px", fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute }}>Ingen treff</div>
           )}
           {treff.map((type) => (
             <button
@@ -156,17 +157,17 @@ export function MegPalett({
                 alignItems: "center",
                 gap: 10,
                 padding: "8px 10px",
-                borderRadius: T.rTag,
+                borderRadius: TL.radius.row,
                 border: "none",
                 background: "transparent",
-                color: T.fg,
-                fontFamily: T.ui,
+                color: TL.text,
+                fontFamily: TL.font.sans,
                 fontSize: 13,
                 textAlign: "left",
                 cursor: "pointer",
               }}
             >
-              <Icon name={ARTEFAKT_IKON[type]} size={15} strokeWidth={1.7} style={{ color: T.mut }} />
+              <Icon name={ARTEFAKT_IKON[type]} size={15} strokeWidth={1.7} style={{ color: TL.mute }} />
               {ARTEFAKT_TITTEL[type]}
             </button>
           ))}

@@ -17,7 +17,8 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 
 export type SidebarBrandVariant = "player" | "coach" | "parent";
 
@@ -77,7 +78,7 @@ export function SidebarBrand({
           fontSize: 10.5,
           fontWeight: 700,
           letterSpacing: "0.14em",
-          color: T.handling,
+          color: TL.fill,
           textAlign: "center",
           lineHeight: 1.2,
         }}

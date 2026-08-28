@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ Coach Meldinger — v2 Presis + B-pakke (innboks + én primær «Ny melding»).
  * Master/detail mobil. T.* only. Tom = grønn vei.
@@ -7,24 +7,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import {
-  T,
-  Caps,
-  Tittel,
-  Kort,
-  Rad,
-  Knapp,
-  CTAPill,
-  StatusPill,
-  AvatarInit,
-  TomTilstand,
-  MeldingsTraad,
-  Skrivefelt,
-  ForslagRad,
-  Icon,
-  type Melding,
-} from "@/components/v2";
-
+import { Caps, Tittel, Kort, Rad, Knapp, CTAPill, StatusPill, AvatarInit, TomTilstand, MeldingsTraad, Skrivefelt, ForslagRad, Icon, type Melding } from "@/components/v2";
 /* ── Datakontrakt (speil av CoachingSession-innboksen) ─────────────── */
 
 export type MeldingTraad = {
@@ -80,11 +63,11 @@ export function CoachMeldingerV2({ data }: { data: CoachMeldingerData }) {
   // Pro-gate — direkte coach-meldinger krever PlayerHQ Pro (uendret regel).
   if (gratis) {
     return (
-      <div data-paper-wave-g="coachmeldinger" data-paper-portal-coach-melding style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+      <div data-paper-wave-g="coachmeldinger" data-paper-portal-coach-melding style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
         <div>
           <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Meldinger</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Coach</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Meldinger</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>Coach</span>
         </div>
         </div>
         <Kort tint>
@@ -97,7 +80,7 @@ export function CoachMeldingerV2({ data }: { data: CoachMeldingerData }) {
             <Link href="/portal/meg/abonnement" style={{ textDecoration: "none", display: "block" }}>
               <span style={{
                 display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", padding: "10px 16px",
-                borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600, minHeight: 56,
+                borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600, minHeight: 56,
               }}>Oppgrader til Pro
               </span>
             </Link>
@@ -113,7 +96,7 @@ export function CoachMeldingerV2({ data }: { data: CoachMeldingerData }) {
   if (mobile && visTraad && valgt) {
     const coachFornavn = valgt.coachNavn.split(" ")[0];
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         <div>
           <Knapp ghost icon="arrow-left" onClick={() => setVisTraad(false)}>
             Innboks
@@ -131,14 +114,14 @@ export function CoachMeldingerV2({ data }: { data: CoachMeldingerData }) {
               alignItems: "center",
               gap: 11,
               padding: "14px 16px",
-              borderBottom: `1px solid ${T.border}`,
+              borderBottom: `1px solid ${TL.hair}`,
               flex: "none",
             }}
           >
             <AvatarInit navn={valgt.coachNavn} size={36} />
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontFamily: T.ui, fontSize: 14, fontWeight: 700, color: T.fg }}>{valgt.coachNavn}</div>
-              <div style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, marginTop: 2 }}>Hovedcoach · GFGK</div>
+              <div style={{ fontFamily: TL.font.sans, fontSize: 14, fontWeight: 700, color: TL.text }}>{valgt.coachNavn}</div>
+              <div style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.mute, marginTop: 2 }}>Hovedcoach · GFGK</div>
             </div>
             <StatusPill tone="up">Pålogget</StatusPill>
           </div>
@@ -159,8 +142,8 @@ export function CoachMeldingerV2({ data }: { data: CoachMeldingerData }) {
               display: "flex",
               flexDirection: "column",
               gap: 10,
-              borderTop: `1px solid ${T.border}`,
-              background: T.panel,
+              borderTop: `1px solid ${TL.hair}`,
+              background: TL.elev,
               padding: "12px 14px calc(12px + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px))",
             }}
           >
@@ -185,8 +168,8 @@ export function CoachMeldingerV2({ data }: { data: CoachMeldingerData }) {
           const leading = <AvatarInit navn={t.coachNavn} size={34} />;
           const meta = (
             <span style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 3, flex: "none" }}>
-              <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, fontVariantNumeric: "tabular-nums" }}>{t.datoKort}</span>
-              <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: T.mut }}>{t.antall}</span>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>{t.datoKort}</span>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, color: TL.mute }}>{t.antall}</span>
             </span>
           );
           // På mobil åpner den innlastede tråden detail-visningen i appen;
@@ -223,11 +206,11 @@ export function CoachMeldingerV2({ data }: { data: CoachMeldingerData }) {
     <Kort eyebrow={valgt ? `Samtale · ${valgt.coachNavn}` : "Samtale"}>
       {valgt ? (
         <>
-          <div style={{ display: "flex", alignItems: "center", gap: 11, paddingBottom: 12, marginBottom: 12, borderBottom: `1px solid ${T.border}` }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 11, paddingBottom: 12, marginBottom: 12, borderBottom: `1px solid ${TL.hair}` }}>
             <AvatarInit navn={valgt.coachNavn} size={36} />
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontFamily: T.ui, fontSize: 14, fontWeight: 700, color: T.fg }}>{valgt.coachNavn}</div>
-              <div style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, marginTop: 2 }}>Hovedcoach · GFGK</div>
+              <div style={{ fontFamily: TL.font.sans, fontSize: 14, fontWeight: 700, color: TL.text }}>{valgt.coachNavn}</div>
+              <div style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.mute, marginTop: 2 }}>Hovedcoach · GFGK</div>
             </div>
             <StatusPill tone="up">Pålogget</StatusPill>
           </div>
@@ -240,7 +223,7 @@ export function CoachMeldingerV2({ data }: { data: CoachMeldingerData }) {
   );
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {/* Hode + B: status */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>
@@ -259,7 +242,7 @@ export function CoachMeldingerV2({ data }: { data: CoachMeldingerData }) {
         <Link href="/portal/coach/melding/ny" style={{ textDecoration: "none", display: "block" }}>
           <span style={{
                 display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", padding: "10px 16px",
-                borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600, minHeight: 56,
+                borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600, minHeight: 56,
               }}>Ny melding
           </span>
         </Link>
@@ -271,10 +254,10 @@ export function CoachMeldingerV2({ data }: { data: CoachMeldingerData }) {
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <AvatarInit navn={hovedcoach.navn} size={38} />
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontFamily: T.ui, fontSize: 14, fontWeight: 700, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+              <div style={{ fontFamily: TL.font.sans, fontSize: 14, fontWeight: 700, color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                 {hovedcoach.navn}
               </div>
-              <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 2 }}>Hovedcoach</div>
+              <div style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 2 }}>Hovedcoach</div>
             </div>
           </div>
         ) : (
@@ -287,7 +270,7 @@ export function CoachMeldingerV2({ data }: { data: CoachMeldingerData }) {
       {mobile ? (
         innboksKort
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-[2fr_3fr]" style={{ gap: T.gap, alignItems: "start" }}>
+        <div className="grid grid-cols-1 md:grid-cols-[2fr_3fr]" style={{ gap: 16, alignItems: "start" }}>
           {innboksKort}
           {valgtKort}
         </div>
@@ -296,8 +279,8 @@ export function CoachMeldingerV2({ data }: { data: CoachMeldingerData }) {
       {/* Q&A — sekundær (primær er Ny melding) */}
       <Kort eyebrow={`Q&A med ${fornavn}`}>
         <div style={{ display: "flex", alignItems: "flex-start", gap: 12, flexWrap: "wrap" }}>
-          <Icon name="help-circle" size={18} style={{ color: T.lime, flex: "none", marginTop: 2 }} />
-          <p style={{ flex: 1, minWidth: 180, fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.6, margin: 0 }}>
+          <Icon name="help-circle" size={18} style={{ color: TL.fill, flex: "none", marginTop: 2 }} />
+          <p style={{ flex: 1, minWidth: 180, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.6, margin: 0 }}>
             Still spørsmål direkte. Coachen svarer typisk innen 4 timer på hverdager.
           </p>
           <Link href="/portal/coach/sporsmal/ny" style={{ textDecoration: "none" }}>

@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * PlayerHQ Innstillinger · Anlegg — v2 Presis + B-pakke (status, lagre = full CTA).
@@ -8,7 +9,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import type { DrillFasilitet } from "@/generated/prisma/client";
 import { lagreFasilitetProfil } from "@/app/portal/meg/innstillinger/actions";
-import { T, Caps, Kort, Knapp, StatusPill, Icon } from "@/components/v2";
+import { Caps, Kort, Knapp, StatusPill, Icon } from "@/components/v2";
 import { InnstillingerHode } from "@/components/portal/v2/InnstillingerHode";
 
 /* ── Katalog (uendret innhold fra fasilitet-profil-form.tsx) ───────── */
@@ -182,7 +183,7 @@ function FasilitetRad({
         alignItems: "flex-start",
         gap: 12,
         padding: "13px 0",
-        borderBottom: last ? "none" : `1px solid ${T.border}`,
+        borderBottom: last ? "none" : `1px solid ${TL.hair}`,
         cursor: "pointer",
       }}
     >
@@ -192,19 +193,19 @@ function FasilitetRad({
           width: 20,
           height: 20,
           borderRadius: 6,
-          background: valgt ? T.lime : T.panel2,
-          border: `1px solid ${valgt ? "transparent" : T.borderS}`,
+          background: valgt ? TL.fill : TL.dock,
+          border: `1px solid ${valgt ? "transparent" : TL.hair}`,
           display: "inline-flex",
           alignItems: "center",
           justifyContent: "center",
           flex: "none",
         }}
       >
-        {valgt && <Icon name="check" size={13} style={{ color: T.onHandling }} />}
+        {valgt && <Icon name="check" size={13} style={{ color: TL.onFill }} />}
       </span>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>{tittel}</div>
-        <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, lineHeight: 1.55, marginTop: 3 }}>
+        <div style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>{tittel}</div>
+        <div style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, lineHeight: 1.55, marginTop: 3 }}>
           {beskrivelse}
         </div>
       </div>
@@ -260,7 +261,7 @@ export function InnstillingerAnleggV2({ data }: { data: InnstillingerAnleggData 
   const antallValgt = valgte.size;
 
   return (
-    <div data-paper-wave-g="innstillingeranlegg" data-paper-portal-innstillinger-anlegg data-paper-slug="playerhq-innstillinger" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="innstillingeranlegg" data-paper-portal-innstillinger-anlegg data-paper-slug="playerhq-innstillinger" style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <InnstillingerHode
         tittel="Anlegg"
         undertekst="Innstillinger"
@@ -277,10 +278,10 @@ export function InnstillingerAnleggV2({ data }: { data: InnstillingerAnleggData 
       {/* B: status først */}
       <Kort pad="12px">
         <Caps size={9}>Valgt</Caps>
-        <div style={{ fontFamily: T.mono, fontWeight: 700, fontSize: 18, marginTop: 8, color: T.fg }}>
+        <div style={{ fontFamily: TL.font.mono, fontWeight: 700, fontSize: 18, marginTop: 8, color: TL.text }}>
           {antallValgt}
         </div>
-        <div style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, marginTop: 4 }}>
+        <div style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, marginTop: 4 }}>
           {antallValgt === 0 ? "Ingen filter — alle drills vises" : "Drills filtreres etter dette"}
         </div>
       </Kort>
@@ -292,7 +293,7 @@ export function InnstillingerAnleggV2({ data }: { data: InnstillingerAnleggData 
         return (
           <div key={gruppe.label}>
             <div style={{ display: "flex", alignItems: "center", gap: 7, margin: "0 4px 8px" }}>
-              <Icon name={gruppe.ikon} size={13} style={{ color: T.mut }} />
+              <Icon name={gruppe.ikon} size={13} style={{ color: TL.mute }} />
               <Caps size={9} style={{ display: "inline" }}>{gruppe.label}</Caps>
               <span style={{ flex: 1 }} />
               <button
@@ -304,12 +305,12 @@ export function InnstillingerAnleggV2({ data }: { data: InnstillingerAnleggData 
                   background: "transparent",
                   border: 0,
                   cursor: "pointer",
-                  fontFamily: T.mono,
+                  fontFamily: TL.font.mono,
                   fontSize: 9.5,
                   fontWeight: 700,
                   letterSpacing: "0.06em",
                   textTransform: "uppercase",
-                  color: T.fg2,
+                  color: TL.mute,
                   padding: "2px 4px",
                 }}
               >

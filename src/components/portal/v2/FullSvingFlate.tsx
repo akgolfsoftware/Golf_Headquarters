@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * Full sving-flate — filter + TM-progresjon inne i teknisk plan (ikke egen app).
@@ -6,7 +7,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { T, Caps, Kort, StatusPill, Icon } from "@/components/v2";
+import { Caps, Kort, StatusPill, Icon } from "@/components/v2";
 
 export type FullSvingTaskRad = {
   id: string;
@@ -80,10 +81,10 @@ export function FullSvingFlate({ tasks, onFilterChange }: FullSvingFlateProps) {
           <Caps size={9}>Full sving · teknisk plan</Caps>
           <p
             style={{
-              fontFamily: T.ui,
+              fontFamily: TL.font.sans,
               fontSize: 13,
               fontWeight: 600,
-              color: T.fg,
+              color: TL.text,
               margin: "8px 0 0",
             }}
           >
@@ -92,7 +93,7 @@ export function FullSvingFlate({ tasks, onFilterChange }: FullSvingFlateProps) {
               ? ` · ${medData.length} med TrackMan-data`
               : " · ingen TrackMan-data ennå"}
           </p>
-          <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, margin: "4px 0 0" }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, margin: "4px 0 0" }}>
             {medMaal.length} med TM-mål · last opp TrackMan for å oppdatere «nå»
           </p>
         </div>
@@ -105,10 +106,10 @@ export function FullSvingFlate({ tasks, onFilterChange }: FullSvingFlateProps) {
               appearance: "none",
               cursor: "pointer",
               borderRadius: 999,
-              border: `1px solid ${onlyFullsving ? T.lime : T.border}`,
-              background: onlyFullsving ? "color-mix(in srgb, var(--v2-lime) 14%, transparent)" : T.panel3,
-              color: T.fg,
-              fontFamily: T.mono,
+              border: `1px solid ${onlyFullsving ? TL.fill : TL.hair}`,
+              background: onlyFullsving ? "color-mix(in srgb, var(--tl-fill) 14%, transparent)" : TL.dim,
+              color: TL.text,
+              fontFamily: TL.font.mono,
               fontSize: 10,
               fontWeight: 700,
               letterSpacing: "0.06em",
@@ -126,9 +127,9 @@ export function FullSvingFlate({ tasks, onFilterChange }: FullSvingFlateProps) {
               alignItems: "center",
               gap: 6,
               borderRadius: 999,
-              background: T.handling,
-              color: T.onHandling,
-              fontFamily: T.ui,
+              background: TL.fill,
+              color: TL.onFill,
+              fontFamily: TL.font.sans,
               fontSize: 12,
               fontWeight: 700,
               padding: "8px 14px",
@@ -152,8 +153,8 @@ export function FullSvingFlate({ tasks, onFilterChange }: FullSvingFlateProps) {
               key={t.id}
               style={{
                 borderRadius: 12,
-                border: `1px solid ${T.border}`,
-                background: T.panel2,
+                border: `1px solid ${TL.hair}`,
+                background: TL.dock,
                 padding: "12px 14px",
               }}
             >
@@ -169,10 +170,10 @@ export function FullSvingFlate({ tasks, onFilterChange }: FullSvingFlateProps) {
                 <div>
                   <span
                     style={{
-                      fontFamily: T.mono,
+                      fontFamily: TL.font.mono,
                       fontSize: 10,
                       fontWeight: 700,
-                      color: T.mut,
+                      color: TL.mute,
                       letterSpacing: "0.04em",
                     }}
                   >
@@ -180,16 +181,16 @@ export function FullSvingFlate({ tasks, onFilterChange }: FullSvingFlateProps) {
                   </span>
                   <div
                     style={{
-                      fontFamily: T.disp,
+                      fontFamily: TL.font.sans,
                       fontSize: 14,
                       fontWeight: 700,
-                      color: T.fg,
+                      color: TL.text,
                       marginTop: 2,
                     }}
                   >
                     {t.tittel}
                   </div>
-                  <div style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, marginTop: 2 }}>
+                  <div style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.mute, marginTop: 2 }}>
                     {t.koller.join(", ") || "Alle køller"}
                     {siste ? ` · TM ${siste}` : ""}
                   </div>
@@ -212,16 +213,16 @@ export function FullSvingFlate({ tasks, onFilterChange }: FullSvingFlateProps) {
                       key={g.id}
                       style={{
                         borderRadius: 8,
-                        background: T.panel3,
+                        background: TL.dim,
                         padding: "8px 10px",
                       }}
                     >
                       <div
                         style={{
-                          fontFamily: T.mono,
+                          fontFamily: TL.font.mono,
                           fontSize: 9,
                           fontWeight: 700,
-                          color: T.mut,
+                          color: TL.mute,
                           textTransform: "uppercase",
                           letterSpacing: "0.06em",
                         }}
@@ -230,16 +231,16 @@ export function FullSvingFlate({ tasks, onFilterChange }: FullSvingFlateProps) {
                       </div>
                       <div
                         style={{
-                          fontFamily: T.mono,
+                          fontFamily: TL.font.mono,
                           fontSize: 13,
                           fontWeight: 700,
-                          color: T.fg,
+                          color: TL.text,
                           marginTop: 4,
                           fontVariantNumeric: "tabular-nums",
                         }}
                       >
                         {g.current != null ? g.current : "—"}
-                        <span style={{ color: T.mut, fontWeight: 600, fontSize: 11 }}>
+                        <span style={{ color: TL.mute, fontWeight: 600, fontSize: 11 }}>
                           {" "}
                           / {g.target}
                         </span>
@@ -250,7 +251,7 @@ export function FullSvingFlate({ tasks, onFilterChange }: FullSvingFlateProps) {
                             marginTop: 6,
                             height: 4,
                             borderRadius: 999,
-                            background: T.track,
+                            background: TL.hair,
                             overflow: "hidden",
                           }}
                         >
@@ -258,7 +259,7 @@ export function FullSvingFlate({ tasks, onFilterChange }: FullSvingFlateProps) {
                             style={{
                               width: `${Math.min(100, g.progressPct)}%`,
                               height: "100%",
-                              background: g.inTarget ? T.lime : T.forest,
+                              background: g.inTarget ? TL.fill : TL.fill,
                               borderRadius: 999,
                             }}
                           />
@@ -268,7 +269,7 @@ export function FullSvingFlate({ tasks, onFilterChange }: FullSvingFlateProps) {
                   ))}
                 </div>
               ) : (
-                <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, margin: "8px 0 0" }}>
+                <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, margin: "8px 0 0" }}>
                   Ingen TM-mål satt på denne oppgaven.
                 </p>
               )}

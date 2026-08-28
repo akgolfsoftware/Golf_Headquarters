@@ -6,10 +6,10 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
-import { T } from "@/lib/v2/tokens";
-import { Caps, Tittel, Kort, Rad, StatusPill } from "@/components/v2";
-import { Icon } from "@/components/v2/icon";
+import { TL } from "@/lib/v2/train-lock";
 
+import { Caps, Kort, Rad, StatusPill } from "@/components/v2";
+import { Icon } from "@/components/v2/icon";
 /* ── Datakontrakt ──────────────────────────────────────────────────── */
 
 export type MegAbonnementFaktura = {
@@ -60,7 +60,7 @@ const INNGAAR = [
 
 /** Status-stripe etter Stripe-retur / ved feilet betaling. Full bredde, responsiv. */
 function Melding({ tone, children }: { tone: "ok" | "info" | "feil"; children: ReactNode }) {
-  const c = tone === "ok" ? T.up : tone === "feil" ? T.down : T.info;
+  const c = tone === "ok" ? TL.ok : tone === "feil" ? TL.danger : TL.viz.target;
   const ic = tone === "ok" ? "check-circle" : tone === "feil" ? "alert-triangle" : "info";
   return (
     <div
@@ -69,14 +69,14 @@ function Melding({ tone, children }: { tone: "ok" | "info" | "feil"; children: R
         display: "flex",
         gap: 10,
         alignItems: "flex-start",
-        background: `color-mix(in srgb,${c} 9%,${T.panel})`,
+        background: `color-mix(in srgb,${c} 9%,${TL.elev})`,
         border: `1px solid color-mix(in srgb,${c} 30%,transparent)`,
-        borderRadius: T.rRow,
+        borderRadius: TL.radius.row,
         padding: "12px 14px",
       }}
     >
       <Icon name={ic} size={15} style={{ color: c, flex: "none", marginTop: 1 }} />
-      <div style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg, lineHeight: 1.55, minWidth: 0 }}>{children}</div>
+      <div style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.text, lineHeight: 1.55, minWidth: 0 }}>{children}</div>
     </div>
   );
 }
@@ -105,12 +105,12 @@ function LenkePille({
         alignItems: "center",
         justifyContent: "center",
         gap: 8,
-        fontFamily: T.ui,
+        fontFamily: TL.font.sans,
         fontSize: 12.5,
         fontWeight: 600,
-        color: ghost ? T.fg : T.onHandling,
-        background: ghost ? T.panel3 : T.handling,
-        border: ghost ? `1px solid ${T.borderS}` : "1px solid transparent",
+        color: ghost ? TL.text : TL.onFill,
+        background: ghost ? TL.dim : TL.fill,
+        border: ghost ? `1px solid ${TL.hair}` : "1px solid transparent",
         borderRadius: 9999,
         padding: "11px 18px",
         textDecoration: "none",
@@ -126,8 +126,8 @@ function LenkePille({
 /** Feature-punkt med lime hake (mockup-idiom). */
 function Punkt({ children }: { children: ReactNode }) {
   return (
-    <span style={{ display: "flex", gap: 9, alignItems: "flex-start", fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.5 }}>
-      <Icon name="check" size={14} style={{ color: T.lime, flex: "none", marginTop: 2 }} />
+    <span style={{ display: "flex", gap: 9, alignItems: "flex-start", fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.5 }}>
+      <Icon name="check" size={14} style={{ color: TL.fill, flex: "none", marginTop: 2 }} />
       {children}
     </span>
   );
@@ -137,10 +137,10 @@ function Punkt({ children }: { children: ReactNode }) {
 function Pris({ tall, mobile }: { tall: string; mobile: boolean }) {
   return (
     <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: 12 }}>
-      <span style={{ fontFamily: T.mono, fontSize: mobile ? 40 : 46, fontWeight: 700, color: T.fg, lineHeight: 0.9, letterSpacing: "-0.03em", fontVariantNumeric: "tabular-nums" }}>
+      <span style={{ fontFamily: TL.font.mono, fontSize: mobile ? 40 : 46, fontWeight: 700, color: TL.text, lineHeight: 0.9, letterSpacing: "-0.03em", fontVariantNumeric: "tabular-nums" }}>
         {tall}
       </span>
-      <span style={{ fontFamily: T.mono, fontSize: 14, color: T.mut }}>kr/mnd</span>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 14, color: TL.mute }}>kr/mnd</span>
     </div>
   );
 }
@@ -150,13 +150,13 @@ function Pris({ tall, mobile }: { tall: string; mobile: boolean }) {
 /** Gratis-bruker som kan oppgradere → PRO-pris + feature-liste + CTA. */
 function HeroOppgrader({ mobile }: { mobile: boolean }) {
   return (
-    <Kort tint pad="24px 24px 26px" style={{ borderColor: `color-mix(in srgb,${T.lime} 32%,transparent)` }}>
+    <Kort tint pad="24px 24px 26px" style={{ borderColor: `color-mix(in srgb,${TL.fill} 32%,transparent)` }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-        <Caps color={T.handling}>PlayerHQ Pro</Caps>
+        <Caps color={TL.fill}>PlayerHQ Pro</Caps>
         <StatusPill>Full tilgang</StatusPill>
       </div>
       <Pris tall="299" mobile={mobile} />
-      <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.55, margin: "12px 0 0" }}>
+      <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.55, margin: "12px 0 0" }}>
         For deg som trener på egen hånd, uten coaching-pakke eller gruppe. Inkluderer:
       </p>
       <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 16 }}>
@@ -176,13 +176,13 @@ function HeroOppgrader({ mobile }: { mobile: boolean }) {
 /** Aktiv betalende PRO (uten pakke) → pris + fornyes-dato. */
 function HeroStatus({ fornyes, mobile }: { fornyes: string | null; mobile: boolean }) {
   return (
-    <Kort tint pad="24px 24px 26px" style={{ borderColor: `color-mix(in srgb,${T.lime} 32%,transparent)` }}>
+    <Kort tint pad="24px 24px 26px" style={{ borderColor: `color-mix(in srgb,${TL.fill} 32%,transparent)` }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-        <Caps color={T.handling}>PlayerHQ Pro</Caps>
+        <Caps color={TL.fill}>PlayerHQ Pro</Caps>
         <StatusPill tone="up">Aktiv</StatusPill>
       </div>
       <Pris tall="299" mobile={mobile} />
-      <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "12px 0 0" }}>
+      <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: "12px 0 0" }}>
         {fornyes ? `Fornyes ${fornyes}` : "Løper måned for måned, uten binding."}
       </p>
     </Kort>
@@ -194,15 +194,15 @@ function HeroGratis({ pakkeNavn }: { pakkeNavn: string | null }) {
   return (
     <Kort tint pad="24px 24px 26px">
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-        <Caps color={T.handling}>Ditt abonnement</Caps>
+        <Caps color={TL.fill}>Ditt abonnement</Caps>
         <StatusPill>Gratis</StatusPill>
       </div>
-      <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 30, letterSpacing: "-0.02em", color: T.fg, lineHeight: 1, marginTop: 14 }}>
+      <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 30, letterSpacing: "-0.02em", color: TL.text, lineHeight: 1, marginTop: 14 }}>
         Inkludert
       </div>
-      <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.55, margin: "12px 0 0" }}>
+      <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.55, margin: "12px 0 0" }}>
         Full app-tilgang uten månedspris via{" "}
-        <span style={{ color: T.lime, fontWeight: 600 }}>{pakkeNavn ?? "coaching-pakken din"}</span>, så lenge pakken er aktiv.
+        <span style={{ color: TL.fill, fontWeight: 600 }}>{pakkeNavn ?? "coaching-pakken din"}</span>, så lenge pakken er aktiv.
       </p>
       <div style={{ display: "flex", gap: 10, marginTop: 20, flexWrap: "wrap" }}>
         <LenkePille href="/portal/booking" icon="calendar">Administrer pakke</LenkePille>
@@ -240,11 +240,11 @@ export function MegAbonnementV2({ data }: { data: MegAbonnementData }) {
   if (kanAvbestille) handlinger.push({ href: "/portal/meg/abonnement/avbestill", ic: "x-circle", l: "Avbestill abonnement", sub: "Tilgang ut perioden, ingen nye trekk" });
 
   return (
-    <div data-paper-wave-g="megabonnement" data-paper-slug="playerhq-abonnement" data-paper-portal-meg-abonnement style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="megabonnement" data-paper-slug="playerhq-abonnement" data-paper-portal-meg-abonnement style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div>
         <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Abonnement</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Meg</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Abonnement</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>Meg</span>
         </div>
       </div>
 
@@ -258,7 +258,7 @@ export function MegAbonnementV2({ data }: { data: MegAbonnementData }) {
           {kanOppgradere && (
             <>
               {" "}
-              <Link href="/portal/meg/abonnement/oppgrader/flyt" style={{ color: T.lime, fontWeight: 600 }}>
+              <Link href="/portal/meg/abonnement/oppgrader/flyt" style={{ color: TL.fill, fontWeight: 600 }}>
                 Prøv igjen
               </Link>
             </>
@@ -294,14 +294,14 @@ export function MegAbonnementV2({ data }: { data: MegAbonnementData }) {
           title="Gratis"
           sub="Med coaching-pakke, prøveperiode eller gruppe"
           meta={gratis ? <StatusPill>Nå</StatusPill> : undefined}
-          trailing={<span style={{ fontFamily: T.mono, fontSize: 15, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>0 kr</span>}
+          trailing={<span style={{ fontFamily: TL.font.mono, fontSize: 15, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>0 kr</span>}
         />
         <Rad
           last
           title="Kun PlayerHQ"
           sub="Uten coaching-pakke"
           meta={!gratis ? <StatusPill>Nå</StatusPill> : undefined}
-          trailing={<span style={{ fontFamily: T.mono, fontSize: 15, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>299 kr</span>}
+          trailing={<span style={{ fontFamily: TL.font.mono, fontSize: 15, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>299 kr</span>}
         />
       </Kort>
 
@@ -311,7 +311,7 @@ export function MegAbonnementV2({ data }: { data: MegAbonnementData }) {
           <Rad
             key={f}
             last={i === INNGAAR.length - 1}
-            leading={<Icon name="check" size={16} style={{ color: T.lime }} />}
+            leading={<Icon name="check" size={16} style={{ color: TL.fill }} />}
             title={f}
             trailing={null}
           />
@@ -325,7 +325,7 @@ export function MegAbonnementV2({ data }: { data: MegAbonnementData }) {
             <Link key={h.href} href={h.href} style={{ textDecoration: "none", color: "inherit", display: "block" }}>
               <Rad
                 last={i === handlinger.length - 1}
-                leading={<Icon name={h.ic} size={16} style={{ color: T.mut }} />}
+                leading={<Icon name={h.ic} size={16} style={{ color: TL.mute }} />}
                 title={h.l}
                 sub={h.sub}
               />
@@ -339,7 +339,7 @@ export function MegAbonnementV2({ data }: { data: MegAbonnementData }) {
           {fakturaer.map((f) => (
             <Link key={f.id} href={`/portal/meg/abonnement/faktura/${f.id}`} style={{ textDecoration: "none", color: "inherit", display: "block" }}>
               <Rad
-                leading={<Icon name="file-text" size={16} style={{ color: T.mut }} />}
+                leading={<Icon name="file-text" size={16} style={{ color: TL.mute }} />}
                 title={f.tittel}
                 sub={f.meta}
                 meta={<StatusPill tone="up">Betalt</StatusPill>}
@@ -347,14 +347,14 @@ export function MegAbonnementV2({ data }: { data: MegAbonnementData }) {
             </Link>
           ))}
           <Link href="/portal/meg/dokumenter" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
-            <Rad last leading={<Icon name="file-text" size={16} style={{ color: T.mut }} />} title="Alle dokumenter" />
+            <Rad last leading={<Icon name="file-text" size={16} style={{ color: TL.mute }} />} title="Alle dokumenter" />
           </Link>
         </Kort>
       ) : (
         <Kort eyebrow="Fakturaer">
           <Rad
             last
-            leading={<Icon name="file-text" size={16} style={{ color: T.mut }} />}
+            leading={<Icon name="file-text" size={16} style={{ color: TL.mute }} />}
             title="Ingen fakturaer ennå"
             sub="Kvitteringer dukker opp her etter betaling"
           />

@@ -14,7 +14,8 @@
    derfor forest, ikke lime. Tall i mono. Tokens: T (@/lib/v2/tokens). */
 
 import type { ReactNode } from "react";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Caps, Knapp } from "./core";
 import { Icon } from "@/components/v2/icon";
 
@@ -24,7 +25,7 @@ export interface TipTallProps {
 }
 export function TipTall({ children }: TipTallProps) {
   return (
-    <strong style={{ fontFamily: T.mono, fontWeight: 600, color: T.lime, fontVariantNumeric: "tabular-nums" }}>
+    <strong style={{ fontFamily: TL.font.mono, fontWeight: 600, color: TL.fill, fontVariantNumeric: "tabular-nums" }}>
       {children}
     </strong>
   );
@@ -47,9 +48,9 @@ export function AiTipKort({ eyebrow = "AI-Caddie", tittel, children, handling, o
   return (
     <div
       style={{
-        background: T.panel2,
-        border: `1px solid color-mix(in srgb,${T.lime} 22%,${T.border})`,
-        borderRadius: T.rCard,
+        background: TL.dock,
+        border: `1px solid color-mix(in srgb,${TL.fill} 22%,${TL.hair})`,
+        borderRadius: TL.radius.card,
         padding: 20,
         display: "flex",
         flexDirection: "column",
@@ -65,10 +66,10 @@ export function AiTipKort({ eyebrow = "AI-Caddie", tittel, children, handling, o
             justifyContent: "center",
             width: 28,
             height: 28,
-            borderRadius: T.rPill,
+            borderRadius: TL.radius.pill,
             flex: "none",
-            background: `color-mix(in srgb,${T.lime} 16%,transparent)`,
-            color: T.lime,
+            background: `color-mix(in srgb,${TL.fill} 16%,transparent)`,
+            color: TL.fill,
           }}
         >
           <Icon name="sparkles" size={16} />
@@ -78,16 +79,16 @@ export function AiTipKort({ eyebrow = "AI-Caddie", tittel, children, handling, o
         </Caps>
       </div>
       {tittel && (
-        <div style={{ fontFamily: T.disp, fontWeight: 600, fontSize: 16, letterSpacing: "-0.01em", color: T.fg }}>
+        <div style={{ fontFamily: TL.font.sans, fontWeight: 600, fontSize: 16, letterSpacing: "-0.01em", color: TL.text }}>
           {tittel}
         </div>
       )}
-      <p style={{ fontFamily: T.ui, fontSize: 15, lineHeight: 1.55, color: T.fg2, margin: 0 }}>{children}</p>
+      <p style={{ fontFamily: TL.font.sans, fontSize: 15, lineHeight: 1.55, color: TL.mute, margin: 0 }}>{children}</p>
       {handling && (
         <div>
           <Knapp
             onClick={onHandling}
-            style={{ background: T.forest, color: T.onForest, border: "1px solid transparent", minHeight: 44, padding: "10px 16px", fontSize: 13 }}
+            style={{ background: TL.fill, color: TL.onFill, border: "1px solid transparent", minHeight: 44, padding: "10px 16px", fontSize: 13 }}
           >
             {handling}
           </Knapp>
@@ -104,7 +105,7 @@ export interface ListeIkonProps {
   tone?: ListeIkonTone;
 }
 export function ListeIkon({ icon, tone = "noytral" }: ListeIkonProps) {
-  const farge: string | null = tone === "forest" ? T.forest : tone === "up" ? T.up : tone === "down" ? T.down : null;
+  const farge: string | null = tone === "forest" ? TL.fill : tone === "up" ? TL.ok : tone === "down" ? TL.danger : null;
   return (
     <span
       style={{
@@ -115,8 +116,8 @@ export function ListeIkon({ icon, tone = "noytral" }: ListeIkonProps) {
         height: 36,
         borderRadius: 10,
         flex: "none",
-        background: farge ? `color-mix(in srgb,${farge} 16%,transparent)` : T.panel2,
-        color: farge ?? T.fg2,
+        background: farge ? `color-mix(in srgb,${farge} 16%,transparent)` : TL.dock,
+        color: farge ?? TL.mute,
       }}
     >
       <Icon name={icon} size={18} />
@@ -130,7 +131,7 @@ export function UlestPrikk() {
     <span
       aria-label="Ulest"
       role="img"
-      style={{ width: 7, height: 7, borderRadius: T.rPill, background: T.forest, flex: "none" }}
+      style={{ width: 7, height: 7, borderRadius: TL.radius.pill, background: TL.fill, flex: "none" }}
     />
   );
 }
@@ -147,9 +148,9 @@ export function RadMeta({ children }: RadMetaProps) {
         display: "flex",
         alignItems: "center",
         gap: 8,
-        fontFamily: T.mono,
+        fontFamily: TL.font.mono,
         fontSize: 12,
-        color: T.mut,
+        color: TL.mute,
         fontVariantNumeric: "tabular-nums",
       }}
     >

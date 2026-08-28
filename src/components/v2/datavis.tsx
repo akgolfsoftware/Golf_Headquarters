@@ -3,7 +3,7 @@
 /* AK Golf HQ v2 — DATAVISUALISERING (retning C «Presis»).
    Gjenskaping av golfdata/-datakontraktene i v2-idiomet: samme props/innhold,
    nytt uttrykk. Komponeres av kjernen (T-tokens, Kort, TallHero, chips).
-   Regler: mono-tall m/ komma-desimal, «—» for manglende data, opp/ned = T.up/T.down
+   Regler: mono-tall m/ komma-desimal, «—» for manglende data, opp/ned = TL.ok/TL.danger
    (ALDRI lime), aksefarger fra T.ax, lime kun som aksent/hero.
    Demo-data som default-props → rendres rett i galleriet.
    Port av ui_kits/v2/v2-datavis.jsx → produksjons-TSX (diff-null). */
@@ -11,6 +11,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import { Fragment, useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { TL } from "@/lib/v2/train-lock";
 import { T, fmtSg, type AkseKey } from "@/lib/v2/tokens";
 import { Icon } from "@/components/v2/icon";
 import { Kort, TallHero, Caps, TomTilstand, CTAPill, AkseChip, InnsiktChip, DeltaChip, AvatarInit, AKSE_NAVN, Rad } from "./core";
@@ -20,13 +21,13 @@ import type { HjelpNokkel } from "@/lib/v2/hjelpetekster";
 /* ── Delte hjelpere ───────────────────────────────────── */
 const kd = (v: number | null | undefined, d = 1): string =>
   v == null || Number.isNaN(Number(v)) ? "—" : Number(v).toFixed(d).replace(".", ",");
-const mono = (size: number, color: string = T.fg, weight = 700): CSSProperties => ({
-  fontFamily: T.mono, fontSize: size, fontWeight: weight, color, fontVariantNumeric: "tabular-nums",
+const mono = (size: number, color: string = TL.text, weight = 700): CSSProperties => ({
+  fontFamily: TL.font.mono, fontSize: size, fontWeight: weight, color, fontVariantNumeric: "tabular-nums",
 });
 const eyebrowRow = (lbl: ReactNode, right?: ReactNode) => (
   <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10, marginBottom: 10 }}>
     <Caps>{lbl}</Caps>
-    {right && <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut }}>{right}</span>}
+    {right && <span style={{ fontFamily: TL.font.mono, fontSize: 9, color: TL.mute }}>{right}</span>}
   </div>
 );
 interface TrendTagProps {
@@ -34,8 +35,8 @@ interface TrendTagProps {
   god?: boolean;
 }
 function TrendTag({ v, god }: TrendTagProps) { /* liten trend uten pil — farge etter dom (invertert-trygg) */
-  if (v == null) return <span style={{ ...mono(11, T.mut) }}>—</span>;
-  const c = god ? T.up : T.down;
+  if (v == null) return <span style={{ ...mono(11, TL.mute) }}>—</span>;
+  const c = god ? TL.ok : TL.danger;
   return <span style={{ ...mono(10.5, c), background: `color-mix(in srgb,${c} 12%,transparent)`, borderRadius: 5, padding: "2px 6px" }}>{v}</span>;
 }
 
@@ -58,7 +59,7 @@ export interface RingMaalerProps {
   zones?: RingZone[] | null;
   decimals?: number;
 }
-export function RingMaaler({ label = "Gjennomføring", value = 78, min = 0, max = 100, unit = "%", size = 120, thickness = 9, color = T.lime, zones = null, decimals = 0 }: RingMaalerProps) {
+export function RingMaaler({ label = "Gjennomføring", value = 78, min = 0, max = 100, unit = "%", size = 120, thickness = 9, color = TL.fill, zones = null, decimals = 0 }: RingMaalerProps) {
   const r = (size - thickness) / 2, c = 2 * Math.PI * r;
   const pct = Math.max(0, Math.min(1, (value - min) / (max - min)));
   const zone = zones && zones.length ? (zones.find((z) => value >= z.from && value < z.to) || zones[zones.length - 1]) : null;
@@ -66,17 +67,17 @@ export function RingMaaler({ label = "Gjennomføring", value = 78, min = 0, max 
   return (
     <div style={{ position: "relative", width: size, height: size, display: "inline-block" }}>
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={T.track} strokeWidth={thickness} />
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={TL.hair} strokeWidth={thickness} />
         <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={arc} strokeWidth={thickness} strokeLinecap="round"
           strokeDasharray={c} strokeDashoffset={c * (1 - pct)} transform={`rotate(-90 ${size / 2} ${size / 2})`} />
       </svg>
       <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 2 }}>
         <span style={{ ...mono(size >= 100 ? 27 : 18), lineHeight: 1 }}>
-          {kd(value, decimals)}<span style={{ fontSize: "0.5em", color: T.mut, marginLeft: 2 }}>{unit}</span>
+          {kd(value, decimals)}<span style={{ fontSize: "0.5em", color: TL.mute, marginLeft: 2 }}>{unit}</span>
         </span>
-        {label && <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: T.mut }}>{label}</span>}
+        {label && <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: TL.mute }}>{label}</span>}
       </div>
-      {zone && zone.label && <span style={{ position: "absolute", left: 0, right: 0, bottom: -18, textAlign: "center", fontFamily: T.ui, fontSize: 10.5, color: T.mut }}>{zone.label}</span>}
+      {zone && zone.label && <span style={{ position: "absolute", left: 0, right: 0, bottom: -18, textAlign: "center", fontFamily: TL.font.sans, fontSize: 10.5, color: TL.mute }}>{zone.label}</span>}
     </div>
   );
 }
@@ -95,7 +96,7 @@ export interface ProgresjonsBarProps {
   flame?: boolean;
   showValue?: boolean;
 }
-export function ProgresjonsBar({ variant = "bar", value = 64, max = 100, label = "Ukesvolum", color = T.lime, total = 7, filled = 4, active = 0, flame = true, showValue = true }: ProgresjonsBarProps) {
+export function ProgresjonsBar({ variant = "bar", value = 64, max = 100, label = "Ukesvolum", color = TL.fill, total = 7, filled = 4, active = 0, flame = true, showValue = true }: ProgresjonsBarProps) {
   if (variant === "streak") {
     const n = active || filled;
     return (
@@ -103,9 +104,9 @@ export function ProgresjonsBar({ variant = "bar", value = 64, max = 100, label =
         {Array.from({ length: total }).map((_, i) =>
           flame && i === n - 1
             ? <Icon key={i} name="flame" size={17} style={{ color }} />
-            : <span key={i} style={{ width: 10, height: 10, borderRadius: 9999, background: i < n ? color : T.track }} />
+            : <span key={i} style={{ width: 10, height: 10, borderRadius: 9999, background: i < n ? color : TL.hair }} />
         )}
-        {label && <span style={{ ...mono(11.5, T.fg2, 600), marginLeft: 4 }}>{label}</span>}
+        {label && <span style={{ ...mono(11.5, TL.mute, 600), marginLeft: 4 }}>{label}</span>}
       </div>
     );
   }
@@ -113,9 +114,9 @@ export function ProgresjonsBar({ variant = "bar", value = 64, max = 100, label =
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         <div style={{ display: "flex", gap: 4 }}>
-          {Array.from({ length: total }).map((_, i) => <span key={i} style={{ flex: 1, height: 8, borderRadius: 3, background: i < filled ? color : T.track }} />)}
+          {Array.from({ length: total }).map((_, i) => <span key={i} style={{ flex: 1, height: 8, borderRadius: 3, background: i < filled ? color : TL.hair }} />)}
         </div>
-        {showValue && <span style={{ ...mono(11.5, T.fg2, 600) }}>{filled} / {total}{label ? ` · ${label}` : ""}</span>}
+        {showValue && <span style={{ ...mono(11.5, TL.mute, 600) }}>{filled} / {total}{label ? ` · ${label}` : ""}</span>}
       </div>
     );
   }
@@ -124,11 +125,11 @@ export function ProgresjonsBar({ variant = "bar", value = 64, max = 100, label =
     <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
       {(label || showValue) && (
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-          {label && <span style={{ ...mono(11.5, T.fg2, 600) }}>{label}</span>}
+          {label && <span style={{ ...mono(11.5, TL.mute, 600) }}>{label}</span>}
           {showValue && <span style={{ ...mono(11.5) }}>{Math.round(pct)} %</span>}
         </div>
       )}
-      <div style={{ height: 8, borderRadius: 9999, background: T.track, overflow: "hidden" }}>
+      <div style={{ height: 8, borderRadius: 9999, background: TL.hair, overflow: "hidden" }}>
         <div style={{ width: `${pct}%`, height: "100%", borderRadius: 9999, background: color, opacity: 0.9 }} />
       </div>
     </div>
@@ -190,7 +191,7 @@ function VarmeKartCelle({ verdi, tekst, color, cell, align }: VarmeKartCelleProp
         onKeyDown={(e) => { if (e.key === "Escape") setOpen(false); }}
         style={{
           width: cell, height: cell, borderRadius: 6, display: "block", cursor: "pointer",
-          background: verdi === 0 ? T.track : `color-mix(in srgb, ${color} ${Math.round(verdi * 80)}%, ${T.panel2})`,
+          background: verdi === 0 ? TL.hair : `color-mix(in srgb, ${color} ${Math.round(verdi * 80)}%, ${TL.dock})`,
         }}
       />
       {open && (
@@ -203,14 +204,14 @@ function VarmeKartCelle({ verdi, tekst, color, cell, align }: VarmeKartCelleProp
             zIndex: 50,
             width: "max-content",
             maxWidth: 200,
-            background: T.panel3,
-            border: `1px solid ${T.border}`,
+            background: TL.dim,
+            border: `1px solid ${TL.hair}`,
             borderRadius: 10,
             padding: "7px 10px",
-            boxShadow: `0 12px 32px ${T.farge.svartA45}`,
-            fontFamily: T.ui,
+            boxShadow: `0 12px 32px ${TL.scrim}`,
+            fontFamily: TL.font.sans,
             fontSize: 11.5,
-            color: T.fg,
+            color: TL.text,
             fontWeight: 600,
           }}
         >
@@ -220,14 +221,14 @@ function VarmeKartCelle({ verdi, tekst, color, cell, align }: VarmeKartCelleProp
     </span>
   );
 }
-export function VarmeKart({ rows = VK_ROWS, cols = VK_COLS, values = VK_VALS, color = T.lime, cell = 24, gap = 3, fmt = (v) => `${Math.round(v * 100)} %` }: VarmeKartProps) {
+export function VarmeKart({ rows = VK_ROWS, cols = VK_COLS, values = VK_VALS, color = TL.fill, cell = 24, gap = 3, fmt = (v) => `${Math.round(v * 100)} %` }: VarmeKartProps) {
   return (
     <div style={{ display: "grid", gridTemplateColumns: `52px repeat(${cols.length}, ${cell}px)`, gridTemplateRows: `16px repeat(${rows.length}, ${cell}px)`, gap, alignItems: "center" }}>
       <span />
-      {cols.map((c, i) => <span key={i} style={{ ...mono(9, T.mut), textAlign: "center" }}>{c}</span>)}
+      {cols.map((c, i) => <span key={i} style={{ ...mono(9, TL.mute), textAlign: "center" }}>{c}</span>)}
       {rows.map((r, ri) => (
         <Fragment key={ri}>
-          <span style={{ ...mono(9, T.mut) }}>{r}</span>
+          <span style={{ ...mono(9, TL.mute) }}>{r}</span>
           {cols.map((_, ci) => {
             const v = Math.max(0, Math.min(1, (values[ri] || [])[ci] ?? 0));
             return (
@@ -270,7 +271,7 @@ const DT_ROWS: DataTabellRow[] = [
    (aldri rå JS-float/punktum). Delta → fmtSg; øvrige numeriske → nb-NO m/
    tusenskille + komma; tomt → «—». */
 function dtCelle(c: DataTabellColumn, v: DataTabellRow[string]): { vis: ReactNode; farge: string } {
-  const farge = c.delta && typeof v === "number" ? (v > 0 ? T.up : v < 0 ? T.down : T.fg2) : T.fg;
+  const farge = c.delta && typeof v === "number" ? (v > 0 ? TL.ok : v < 0 ? TL.danger : TL.mute) : TL.text;
   let vis: ReactNode;
   if (v == null) vis = "—";
   else if (c.delta && typeof v === "number") vis = fmtSg(v);
@@ -298,8 +299,8 @@ function DataTabellKort({ columns, rows }: { columns: DataTabellColumn[]; rows: 
                     const { vis, farge } = dtCelle(c, row[c.key]);
                     return (
                       <span key={c.key} style={{ display: "inline-flex", alignItems: "baseline", gap: 6 }}>
-                        <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: T.mut }}>{c.label}</span>
-                        <span style={{ fontFamily: T.mono, fontSize: 12, fontWeight: 700, color: farge, fontVariantNumeric: "tabular-nums" }}>{vis}</span>
+                        <span style={{ fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: TL.mute }}>{c.label}</span>
+                        <span style={{ fontFamily: TL.font.mono, fontSize: 12, fontWeight: 700, color: farge, fontVariantNumeric: "tabular-nums" }}>{vis}</span>
                       </span>
                     );
                   })}
@@ -331,7 +332,7 @@ export function DataTabell({ columns = DT_COLS, rows = DT_ROWS, sortKey = "sg", 
     const c = typeof va === "number" && typeof vb === "number" ? va - vb : String(va ?? "").localeCompare(String(vb ?? ""));
     return sort.dir === "desc" ? -c : c;
   });
-  const th: CSSProperties = { padding: "7px 10px", textAlign: "left", fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: T.mut, borderBottom: `1px solid ${T.borderS}`, whiteSpace: "nowrap" };
+  const th: CSSProperties = { padding: "7px 10px", textAlign: "left", fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: TL.mute, borderBottom: `1px solid ${TL.hair}`, whiteSpace: "nowrap" };
   const tabell = (
     <table style={{ width: "100%", borderCollapse: "collapse" }}>
       <thead><tr>
@@ -348,7 +349,7 @@ export function DataTabell({ columns = DT_COLS, rows = DT_ROWS, sortKey = "sg", 
             {columns.map((c) => {
               const { vis, farge } = dtCelle(c, row[c.key]);
               return (
-                <td key={c.key} style={{ padding: "9px 10px", textAlign: c.align || "left", borderBottom: ri === sorted.length - 1 ? "none" : `1px solid ${T.border}`, fontFamily: c.mono || c.delta ? T.mono : T.ui, fontSize: c.mono || c.delta ? 12.5 : 13, fontWeight: c.delta ? 700 : c.mono ? 600 : 500, color: farge, fontVariantNumeric: "tabular-nums" }}>
+                <td key={c.key} style={{ padding: "9px 10px", textAlign: c.align || "left", borderBottom: ri === sorted.length - 1 ? "none" : `1px solid ${TL.hair}`, fontFamily: c.mono || c.delta ? TL.font.mono : TL.font.sans, fontSize: c.mono || c.delta ? 12.5 : 13, fontWeight: c.delta ? 700 : c.mono ? 600 : 500, color: farge, fontVariantNumeric: "tabular-nums" }}>
                   {vis}
                 </td>
               );
@@ -383,8 +384,8 @@ export function SgTotal({ verdi = "+1,2", enhet = "slag", baseline = "Broadie sc
     <Kort tint eyebrow="SG Total">
       <TallHero value={verdi == null ? "—" : verdi} unit={enhet} delta={trend ?? undefined} dir={dir} size={52}
         sub={`siste ${runder} runder · mot ${baseline}`} />
-      {begrunnelse && <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.55, margin: "12px 0 0" }}>{begrunnelse}</p>}
-      {benchmark && <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, marginTop: 8 }}>{benchmark}</span>}
+      {begrunnelse && <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.55, margin: "12px 0 0" }}>{begrunnelse}</p>}
+      {benchmark && <span style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, marginTop: 8 }}>{benchmark}</span>}
     </Kort>
   );
 }
@@ -437,14 +438,14 @@ export function SgKategorier({ kategorier = SGK_DEMO, baseline = "Broadie scratc
       {kategorier.map((k, i) => {
         const gain = k.sg >= 0, w = (Math.abs(k.sg) / max) * 50;
         return (
-          <div key={k.akse} style={{ display: "flex", alignItems: "center", gap: 11, padding: "8px 0", borderBottom: i === kategorier.length - 1 ? "none" : `1px solid ${T.border}` }}>
-            <span style={{ width: 74, flex: "none", fontFamily: fagkoder ? T.mono : T.ui, fontSize: fagkoder ? 10 : 12.5, fontWeight: 600, color: T.fg2 }}>{fagkoder ? k.akse : SGK_NAVN[k.akse] || k.akse}</span>
-            <span style={{ flex: 1, position: "relative", height: 8, borderRadius: 9999, background: T.track }}>
-              <span style={{ position: "absolute", left: "50%", top: -2, width: 1, height: 12, background: T.borderS }} />
-              <span style={{ position: "absolute", top: 0, height: "100%", borderRadius: 9999, width: `${w}%`, background: gain ? T.up : T.down, ...(gain ? { left: "50%" } : { right: "50%" }) }} />
+          <div key={k.akse} style={{ display: "flex", alignItems: "center", gap: 11, padding: "8px 0", borderBottom: i === kategorier.length - 1 ? "none" : `1px solid ${TL.hair}` }}>
+            <span style={{ width: 74, flex: "none", fontFamily: fagkoder ? TL.font.mono : TL.font.sans, fontSize: fagkoder ? 10 : 12.5, fontWeight: 600, color: TL.mute }}>{fagkoder ? k.akse : SGK_NAVN[k.akse] || k.akse}</span>
+            <span style={{ flex: 1, position: "relative", height: 8, borderRadius: 9999, background: TL.hair }}>
+              <span style={{ position: "absolute", left: "50%", top: -2, width: 1, height: 12, background: TL.hair }} />
+              <span style={{ position: "absolute", top: 0, height: "100%", borderRadius: 9999, width: `${w}%`, background: gain ? TL.ok : TL.danger, ...(gain ? { left: "50%" } : { right: "50%" }) }} />
             </span>
-            <span style={{ width: 78, flex: "none", textAlign: "right", ...mono(12, gain ? T.up : T.down) }}>
-              {fmt(k.sg)}{i === verst && <span style={{ display: "block", fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: T.down }}>størst tap</span>}
+            <span style={{ width: 78, flex: "none", textAlign: "right", ...mono(12, gain ? TL.ok : TL.danger) }}>
+              {fmt(k.sg)}{i === verst && <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: TL.danger }}>størst tap</span>}
             </span>
           </div>
         );
@@ -482,18 +483,18 @@ export function SgTrendKort({ punkter = SGT_DEMO, hendelser = SGT_HEND, baseline
     <Kort>
       {eyebrowRow("SG-trend", `mot ${baseline}`)}
       <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto", display: "block" }} role="img" aria-label={`SG-trend over ${punkter.length} runder`}>
-        <line x1={pl} y1={y(0)} x2={W - pr} y2={y(0)} stroke={T.borderS} strokeWidth="1" strokeDasharray="3 3" />
-        <text x={4} y={y(0) + 3} style={{ fontFamily: T.mono, fontSize: 9, fill: T.mut }}>0</text>
+        <line x1={pl} y1={y(0)} x2={W - pr} y2={y(0)} stroke={TL.hair} strokeWidth="1" strokeDasharray="3 3" />
+        <text x={4} y={y(0) + 3} style={{ fontFamily: TL.font.mono, fontSize: 9, fill: TL.mute }}>0</text>
         {hendelser.map((e, i) => (
           <g key={i}>
-            <line x1={x(e.idx)} y1={py} x2={x(e.idx)} y2={H - py} stroke={T.border} strokeWidth="1" />
-            <text x={x(e.idx) + 4} y={py + 8} style={{ fontFamily: T.mono, fontSize: 8.5, fill: T.mut }}>{e.navn}</text>
+            <line x1={x(e.idx)} y1={py} x2={x(e.idx)} y2={H - py} stroke={TL.hair} strokeWidth="1" />
+            <text x={x(e.idx) + 4} y={py + 8} style={{ fontFamily: TL.font.mono, fontSize: 8.5, fill: TL.mute }}>{e.navn}</text>
           </g>
         ))}
-        <path d={d} fill="none" stroke={T.fg2} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        <path d={d} fill="none" stroke={TL.mute} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
         {punkter.map((p, i) => (
           <circle key={i} cx={x(i)} cy={y(p.sg)} r={i === punkter.length - 1 ? 4 : 2.4}
-            fill={i === punkter.length - 1 ? (last.sg >= 0 ? T.up : T.down) : T.mut} stroke={T.panel} strokeWidth="1.5" />
+            fill={i === punkter.length - 1 ? (last.sg >= 0 ? TL.ok : TL.danger) : TL.mute} stroke={TL.elev} strokeWidth="1.5" />
         ))}
       </svg>
     </Kort>
@@ -507,11 +508,11 @@ export interface MiniSparkProps {
   width?: number;
   height?: number;
 }
-/* Fargen dømmes av retningen (siste vs første) — opp = T.up, ned = T.down,
+/* Fargen dømmes av retningen (siste vs første) — opp = TL.ok, ned = TL.danger,
    ALDRI lime (jf. dataviz-regelen: lime er kun hero-aksent). */
 export function MiniSpark({ verdier, width = 64, height = 22 }: MiniSparkProps) {
   if (verdier.length < 2) {
-    return <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut, whiteSpace: "nowrap" }}>for få data</span>;
+    return <span style={{ fontFamily: TL.font.mono, fontSize: 9, color: TL.mute, whiteSpace: "nowrap" }}>for få data</span>;
   }
   const lo = Math.min(...verdier), hi = Math.max(...verdier);
   const span = hi - lo || 1;
@@ -520,7 +521,7 @@ export function MiniSpark({ verdier, width = 64, height = 22 }: MiniSparkProps) 
   const y = (v: number) => pad + (1 - (v - lo) / span) * (height - pad * 2);
   const d = verdier.map((v, i) => `${i ? "L" : "M"}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
   const opp = verdier[verdier.length - 1] >= verdier[0];
-  const c = opp ? T.up : T.down;
+  const c = opp ? TL.ok : TL.danger;
   return (
     <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} role="img" aria-label={opp ? "Stigende trend" : "Fallende trend"}>
       <path d={d} fill="none" stroke={c} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
@@ -547,7 +548,7 @@ const SK_DEMO: ScorekortHull[] = [4, 4, 3, 5, 4, 4, 3, 4, 5, 4, 3, 4, 5, 4, 4, 3
   score: par + [0, 0, -1, 0, 1, 0, 0, -1, 0, 0, 1, 0, 0, 2, 0, 0, -1, 0][i],
   sg: [0.1, 0, 0.6, 0.1, -0.8, 0.2, 0, 0.7, -0.1, 0.1, -0.9, 0, 0.2, -1.6, 0.1, 0, 0.8, 0.1][i],
 }));
-const skFarge = (d: number): string => (d < 0 ? T.up : d > 1 ? T.down : d === 1 ? T.warn : T.fg);
+const skFarge = (d: number): string => (d < 0 ? TL.ok : d > 1 ? TL.danger : d === 1 ? TL.warn : TL.text);
 export interface ScorekortProps {
   hull?: ScorekortHull[];
   sammendrag?: ScorekortSammendrag | null;
@@ -568,19 +569,19 @@ export function Scorekort({ hull = SK_DEMO, sammendrag = null, baseline = "Broad
   const sg = sammendrag ? sammendrag.sg : hull.reduce((s, h) => s + (h.sg || 0), 0);
   const rel = score - par;
   return (
-    <Kort eyebrow={eyebrow} action={<span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut }}>mot {baseline}</span>}>
+    <Kort eyebrow={eyebrow} action={<span style={{ fontFamily: TL.font.mono, fontSize: 9, color: TL.mute }}>mot {baseline}</span>}>
       <div style={{ display: "flex", gap: 28, alignItems: "baseline", marginBottom: 14 }}>
         <span style={{ ...mono(34), lineHeight: 1 }}>{score} <span style={{ fontSize: 14, color: skFarge(rel > 1 ? 2 : rel) }}>{rel === 0 ? "E" : rel > 0 ? `+${rel}` : rel}</span></span>
-        <span style={{ ...mono(20, sg == null ? T.mut : sg >= 0 ? T.up : T.down) }}>{sg == null ? "—" : fmtSg(sg)} <span style={{ fontSize: 10, color: T.mut }}>SG</span></span>
+        <span style={{ ...mono(20, sg == null ? TL.mute : sg >= 0 ? TL.ok : TL.danger) }}>{sg == null ? "—" : fmtSg(sg)} <span style={{ fontSize: 10, color: TL.mute }}>SG</span></span>
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(9, 1fr)", gap: 4 }}>
         {hull.map((h) => {
           const d = h.score - h.par;
           return (
-            <div key={h.nr} style={{ background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 8, padding: "6px 4px", textAlign: "center" }}>
-              <div style={{ fontFamily: T.mono, fontSize: 8.5, color: T.mut }}>{h.nr} · P{h.par}</div>
+            <div key={h.nr} style={{ background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: 8, padding: "6px 4px", textAlign: "center" }}>
+              <div style={{ fontFamily: TL.font.mono, fontSize: 8.5, color: TL.mute }}>{h.nr} · P{h.par}</div>
               <div style={{ ...mono(15, skFarge(d)), lineHeight: 1.3 }}>{h.score}</div>
-              <div style={{ ...mono(8.5, h.sg == null ? T.mut : h.sg >= 0 ? T.up : T.down, 600) }}>{h.sg == null ? "—" : fmtSg(h.sg)}</div>
+              <div style={{ ...mono(8.5, h.sg == null ? TL.mute : h.sg >= 0 ? TL.ok : TL.danger, 600) }}>{h.sg == null ? "—" : fmtSg(h.sg)}</div>
             </div>
           );
         })}
@@ -605,7 +606,7 @@ const T5_DEMO: TigerFiveMetrikk[] = [
   { navn: "Bogey par 5", verdi: "0", status: "god", trend: "0" },
   { navn: "Straffeslag", verdi: "4", status: "risiko", trend: "+2", invertert: true },
 ];
-const T5_TONE: Record<string, string> = { god: T.up, varsel: T.warn, risiko: T.down, noytral: T.mut };
+const T5_TONE: Record<string, string> = { god: TL.ok, varsel: TL.warn, risiko: TL.danger, noytral: TL.mute };
 export interface TigerFiveProps {
   metrikker?: TigerFiveMetrikk[];
 }
@@ -616,10 +617,10 @@ export function TigerFive({ metrikker = T5_DEMO }: TigerFiveProps) {
         const pos = m.trend != null && !/^[−-]/.test(m.trend) && m.trend !== "0";
         const god = m.trend === "0" ? true : m.invertert ? !pos : pos;
         return (
-          <div key={m.navn} style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 0", borderBottom: i === metrikker.length - 1 ? "none" : `1px solid ${T.border}` }}>
-            <span style={{ width: 7, height: 7, borderRadius: 9999, background: T5_TONE[m.status] || T.mut, flex: "none" }} />
-            <span style={{ flex: 1, fontFamily: T.ui, fontSize: 13, color: T.fg2 }}>{m.navn}</span>
-            <span style={{ ...mono(14) }}>{m.verdi}{m.enhet && <span style={{ fontSize: 9, color: T.mut }}> {m.enhet}</span>}</span>
+          <div key={m.navn} style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 0", borderBottom: i === metrikker.length - 1 ? "none" : `1px solid ${TL.hair}` }}>
+            <span style={{ width: 7, height: 7, borderRadius: 9999, background: T5_TONE[m.status] || TL.mute, flex: "none" }} />
+            <span style={{ flex: 1, fontFamily: TL.font.sans, fontSize: 13, color: TL.mute }}>{m.navn}</span>
+            <span style={{ ...mono(14) }}>{m.verdi}{m.enhet && <span style={{ fontSize: 9, color: TL.mute }}> {m.enhet}</span>}</span>
             <TrendTag v={m.trend} god={god} />
           </div>
         );
@@ -650,13 +651,13 @@ export function PuttModell({ band = PM_DEMO, baseline = "Team Norway IUP" }: Put
       {band.map((b, i) => {
         const d = b.baseline != null ? Math.round(b.pct - b.baseline) : null;
         return (
-          <div key={b.band} style={{ display: "flex", alignItems: "center", gap: 11, padding: "8px 0", borderBottom: i === band.length - 1 ? "none" : `1px solid ${T.border}` }}>
-            <span style={{ width: 58, flex: "none", ...mono(10, T.fg2) }}>{b.band}</span>
-            <span style={{ flex: 1, height: 7, borderRadius: 9999, background: T.track, overflow: "hidden" }}>
-              <span style={{ display: "block", width: `${Math.max(0, Math.min(100, b.pct))}%`, height: "100%", borderRadius: 9999, background: T.lime, opacity: 0.9 }} />
+          <div key={b.band} style={{ display: "flex", alignItems: "center", gap: 11, padding: "8px 0", borderBottom: i === band.length - 1 ? "none" : `1px solid ${TL.hair}` }}>
+            <span style={{ width: 58, flex: "none", ...mono(10, TL.mute) }}>{b.band}</span>
+            <span style={{ flex: 1, height: 7, borderRadius: 9999, background: TL.hair, overflow: "hidden" }}>
+              <span style={{ display: "block", width: `${Math.max(0, Math.min(100, b.pct))}%`, height: "100%", borderRadius: 9999, background: TL.fill, opacity: 0.9 }} />
             </span>
             <span style={{ width: 40, flex: "none", textAlign: "right", ...mono(12) }}>{b.pct} %</span>
-            <span style={{ width: 52, flex: "none", textAlign: "right", ...mono(10.5, d == null ? T.mut : d >= 0 ? T.up : T.down, 600) }}>
+            <span style={{ width: 52, flex: "none", textAlign: "right", ...mono(10.5, d == null ? TL.mute : d >= 0 ? TL.ok : TL.danger, 600) }}>
               {d == null ? "—" : `${d > 0 ? "+" : d < 0 ? "−" : ""}${Math.abs(d)} pp`}
             </span>
           </div>
@@ -691,19 +692,19 @@ export function Gapping({ koller = GAP_DEMO, varsler = ["Gap 3-tre → 5-jern er
         const w = (k.carry / max) * 100, sp = ((k.spredning || 0) / max) * 100;
         return (
           <div key={k.navn} style={{ display: "flex", alignItems: "center", gap: 11, padding: "6px 0" }}>
-            <span style={{ width: 52, flex: "none", ...mono(10, T.fg2) }}>{k.navn}</span>
-            <span style={{ flex: 1, position: "relative", height: 8, borderRadius: 9999, background: T.track }}>
-              <span style={{ position: "absolute", left: 0, top: 0, height: "100%", width: `${w}%`, borderRadius: 9999, background: `color-mix(in srgb, ${T.fg} 34%, transparent)` }} />
-              {k.spredning ? <span style={{ position: "absolute", top: 1, height: 6, borderRadius: 9999, left: `${w - sp}%`, width: `${sp * 2}%`, background: `color-mix(in srgb, ${T.lime} 30%, transparent)` }} /> : null}
+            <span style={{ width: 52, flex: "none", ...mono(10, TL.mute) }}>{k.navn}</span>
+            <span style={{ flex: 1, position: "relative", height: 8, borderRadius: 9999, background: TL.hair }}>
+              <span style={{ position: "absolute", left: 0, top: 0, height: "100%", width: `${w}%`, borderRadius: 9999, background: `color-mix(in srgb, ${TL.text} 34%, transparent)` }} />
+              {k.spredning ? <span style={{ position: "absolute", top: 1, height: 6, borderRadius: 9999, left: `${w - sp}%`, width: `${sp * 2}%`, background: `color-mix(in srgb, ${TL.fill} 30%, transparent)` }} /> : null}
             </span>
             <span style={{ width: 48, flex: "none", textAlign: "right", ...mono(12) }}>{k.carry} m</span>
           </div>
         );
       })}
       {varsler.map((v, i) => (
-        <div key={i} style={{ display: "flex", gap: 8, alignItems: "flex-start", marginTop: 10, padding: "9px 11px", borderRadius: T.rRow, background: `color-mix(in srgb, ${T.down} 9%, transparent)` }}>
-          <Icon name="alert-triangle" size={13} style={{ color: T.down, flex: "none", marginTop: 1 }} />
-          <span style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2, lineHeight: 1.5 }}>{typeof v === "string" ? v : v.tekst}</span>
+        <div key={i} style={{ display: "flex", gap: 8, alignItems: "flex-start", marginTop: 10, padding: "9px 11px", borderRadius: TL.radius.row, background: `color-mix(in srgb, ${TL.danger} 9%, transparent)` }}>
+          <Icon name="alert-triangle" size={13} style={{ color: TL.danger, flex: "none", marginTop: 1 }} />
+          <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.5 }}>{typeof v === "string" ? v : v.tekst}</span>
         </div>
       ))}
     </Kort>
@@ -752,26 +753,26 @@ export function LaunchWindow({ kolle = "Driver", csNivaa = "CS90", skudd = LW_SK
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10, marginBottom: 10 }}>
         <div>
           <Caps>Launch-vindu</Caps>
-          <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, color: T.fg, marginTop: 5 }}>{kolle}</div>
-          <div style={{ fontFamily: T.mono, fontSize: 9.5, color: T.mut, marginTop: 3 }}>{csNivaa}{grunnlag ? ` · ${grunnlag}` : " · datagrunnlag mangler"}</div>
+          <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 17, color: TL.text, marginTop: 5 }}>{kolle}</div>
+          <div style={{ fontFamily: TL.font.mono, fontSize: 9.5, color: TL.mute, marginTop: 3 }}>{csNivaa}{grunnlag ? ` · ${grunnlag}` : " · datagrunnlag mangler"}</div>
         </div>
         <div style={{ textAlign: "right" }}>
           <div style={{ ...mono(26), lineHeight: 1 }}>{meter}</div>
-          <div style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, marginTop: 4 }}>ligger i vinduet</div>
+          <div style={{ fontFamily: TL.font.sans, fontSize: 10.5, color: TL.mute, marginTop: 4 }}>ligger i vinduet</div>
         </div>
       </div>
       <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto", display: "block" }} role="img" aria-label={`Launch mot spinn — ${inne} av ${skudd.length} slag i vinduet`}>
-        <text x={m.l + 4} y={m.t + 2} style={{ fontFamily: T.mono, fontSize: 8.5, fill: T.mut }}>rpm</text>
-        <text x={W - m.r} y={m.t + 2} textAnchor="end" style={{ fontFamily: T.mono, fontSize: 8.5, fill: T.mut }}>launch °</text>
+        <text x={m.l + 4} y={m.t + 2} style={{ fontFamily: TL.font.mono, fontSize: 8.5, fill: TL.mute }}>rpm</text>
+        <text x={W - m.r} y={m.t + 2} textAnchor="end" style={{ fontFamily: TL.font.mono, fontSize: 8.5, fill: TL.mute }}>launch °</text>
         <rect x={X(vindu.launchMin)} y={Y(vindu.spinnMax)} width={X(vindu.launchMax) - X(vindu.launchMin)} height={Y(vindu.spinnMin) - Y(vindu.spinnMax)}
-          rx="5" fill={`color-mix(in srgb, ${T.up} 10%, transparent)`} stroke={`color-mix(in srgb, ${T.up} 45%, transparent)`} strokeDasharray="4 3" strokeWidth="1" />
-        <text x={X(vindu.launchMin) + 6} y={Y(vindu.spinnMax) + 12} style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, fill: T.up }}>Vindu · {csNivaa}</text>
+          rx="5" fill={`color-mix(in srgb, ${TL.ok} 10%, transparent)`} stroke={`color-mix(in srgb, ${TL.ok} 45%, transparent)`} strokeDasharray="4 3" strokeWidth="1" />
+        <text x={X(vindu.launchMin) + 6} y={Y(vindu.spinnMax) + 12} style={{ fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, fill: TL.ok }}>Vindu · {csNivaa}</text>
         {skudd.map((s, i) => er(s)
-          ? <circle key={i} cx={X(s.launch)} cy={Y(s.spinn)} r="3.4" fill={T.up} />
-          : <circle key={i} cx={X(s.launch)} cy={Y(s.spinn)} r="3" fill="none" stroke={T.mut} strokeWidth="1.4" />)}
+          ? <circle key={i} cx={X(s.launch)} cy={Y(s.spinn)} r="3.4" fill={TL.ok} />
+          : <circle key={i} cx={X(s.launch)} cy={Y(s.spinn)} r="3" fill="none" stroke={TL.mute} strokeWidth="1.4" />)}
       </svg>
-      <div style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, marginTop: 8 }}>{inne} av {skudd.length} slag i vinduet ({Math.round((inne / skudd.length) * 100)} %)</div>
-      {dom && <p style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2, lineHeight: 1.55, margin: "8px 0 0" }}>{dom}</p>}
+      <div style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, marginTop: 8 }}>{inne} av {skudd.length} slag i vinduet ({Math.round((inne / skudd.length) * 100)} %)</div>
+      {dom && <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.55, margin: "8px 0 0" }}>{dom}</p>}
     </Kort>
   );
 }
@@ -797,35 +798,35 @@ export function StrikeSmash({ kolle = "Driver", soner = SS_DEMO, idealSmash = 1.
   if (soner.length !== 9) return <Kort eyebrow="Treff & smash"><TomTilstand icon="target" title="Ingen treffdata ennå" sub="Kjør en TrackMan-økt med treffpunkt-måling, så tegnes bladet her." /></Kort>;
   const maks = Math.max(0.01, ...soner.map((z) => z.andel ?? 0));
   const smashFarge = (z: StrikeSone): string => {
-    if (z.smash == null || (z.andel ?? 0) < 0.005) return T.mut;
+    if (z.smash == null || (z.andel ?? 0) < 0.005) return TL.mute;
     const diff = idealSmash - z.smash;
-    return diff <= 0.015 ? T.up : diff <= 0.045 ? T.warn : T.down;
+    return diff <= 0.015 ? TL.ok : diff <= 0.045 ? TL.warn : TL.danger;
   };
   const celle: CSSProperties = { aspectRatio: "2 / 1", borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center" };
   return (
     <Kort>
       <Caps>Treff &amp; smash</Caps>
-      <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, color: T.fg, marginTop: 5 }}>{kolle}</div>
-      <div style={{ fontFamily: T.mono, fontSize: 9.5, color: T.mut, marginTop: 3 }}>{grunnlag || "Datagrunnlag mangler"}</div>
+      <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 17, color: TL.text, marginTop: 5 }}>{kolle}</div>
+      <div style={{ fontFamily: TL.font.mono, fontSize: 9.5, color: TL.mute, marginTop: 3 }}>{grunnlag || "Datagrunnlag mangler"}</div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 14 }}>
         {[0, 1].map((panel) => (
           <div key={panel}>
             <Caps size={8.5}>{panel === 0 ? "Treffpunkt" : "Smash per sone"}</Caps>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 3, marginTop: 8, background: panel === 0 ? T.panel2 : "transparent", border: panel === 0 ? `1px solid ${T.border}` : "none", borderRadius: 10, padding: panel === 0 ? 6 : 0 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 3, marginTop: 8, background: panel === 0 ? TL.dock : "transparent", border: panel === 0 ? `1px solid ${TL.hair}` : "none", borderRadius: 10, padding: panel === 0 ? 6 : 0 }}>
               {soner.map((z, i) => {
                 const tom = (z.andel ?? 0) < 0.005;
                 return panel === 0
-                  ? <span key={i} style={{ ...celle, background: tom ? "transparent" : `color-mix(in srgb, ${T.fg} ${Math.round(6 + ((z.andel ?? 0) / maks) * 46)}%, transparent)`, border: `1px ${tom ? "dashed" : "solid"} ${T.border}` }} />
-                  : <span key={i} style={{ ...celle, ...mono(11.5, smashFarge(z), 600), background: T.panel2, border: `1px solid ${T.border}` }}>{z.smash == null || tom ? "—" : kd(z.smash, 2)}</span>;
+                  ? <span key={i} style={{ ...celle, background: tom ? "transparent" : `color-mix(in srgb, ${TL.text} ${Math.round(6 + ((z.andel ?? 0) / maks) * 46)}%, transparent)`, border: `1px ${tom ? "dashed" : "solid"} ${TL.hair}` }} />
+                  : <span key={i} style={{ ...celle, ...mono(11.5, smashFarge(z), 600), background: TL.dock, border: `1px solid ${TL.hair}` }}>{z.smash == null || tom ? "—" : kd(z.smash, 2)}</span>;
               })}
             </div>
-            <div style={{ fontFamily: T.mono, fontSize: 8.5, color: T.mut, textAlign: "center", marginTop: 5 }}>Hæl ← → Tå</div>
+            <div style={{ fontFamily: TL.font.mono, fontSize: 8.5, color: TL.mute, textAlign: "center", marginTop: 5 }}>Hæl ← → Tå</div>
           </div>
         ))}
       </div>
       <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10, marginTop: 12 }}>
-        {dom && <p style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2, lineHeight: 1.55, margin: 0, flex: 1 }}>{dom}</p>}
-        <span style={{ ...mono(10, T.mut, 600), flex: "none" }}>Ideal {kd(idealSmash, 2)}</span>
+        {dom && <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.55, margin: 0, flex: 1 }}>{dom}</p>}
+        <span style={{ ...mono(10, TL.mute, 600), flex: "none" }}>Ideal {kd(idealSmash, 2)}</span>
       </div>
     </Kort>
   );
@@ -864,27 +865,27 @@ export function SlagLekkasje({ baand = SL_DEMO, baseline = "Broadie scratch", gr
   return (
     <Kort>
       <Caps>Slaglekkasje</Caps>
-      <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, color: T.fg, marginTop: 5 }}>{tittel}</div>
-      <div style={{ fontFamily: T.mono, fontSize: 9.5, color: T.mut, margin: "3px 0 12px" }}>SG per runde · mot {baseline}{grunnlag ? ` · ${grunnlag}` : ""}</div>
+      <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 17, color: TL.text, marginTop: 5 }}>{tittel}</div>
+      <div style={{ fontFamily: TL.font.mono, fontSize: 9.5, color: TL.mute, margin: "3px 0 12px" }}>SG per runde · mot {baseline}{grunnlag ? ` · ${grunnlag}` : ""}</div>
       <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
         {baand.map((b) => {
           const sg = b.sg ?? 0, t = Math.min(1, Math.abs(sg) / maks), noytral = Math.abs(sg) < 0.05;
-          const heat = noytral ? T.panel2 : sg < 0 ? `color-mix(in srgb, ${T.down} ${Math.round(8 + t * 24)}%, ${T.panel2})` : `color-mix(in srgb, ${T.up} ${Math.round(6 + t * 15)}%, ${T.panel2})`;
+          const heat = noytral ? TL.dock : sg < 0 ? `color-mix(in srgb, ${TL.danger} ${Math.round(8 + t * 24)}%, ${TL.dock})` : `color-mix(in srgb, ${TL.ok} ${Math.round(6 + t * 15)}%, ${TL.dock})`;
           return (
             <div key={b.id} onClick={onVelgBaand ? () => onVelgBaand(b) : undefined}
-              style={{ display: "flex", alignItems: "center", gap: 10, minHeight: 44, padding: "8px 13px", borderRadius: T.rRow, background: heat, border: `1px solid ${valgtId === b.id ? T.borderS : "transparent"}`, cursor: onVelgBaand ? "pointer" : "default" }}>
+              style={{ display: "flex", alignItems: "center", gap: 10, minHeight: 44, padding: "8px 13px", borderRadius: TL.radius.row, background: heat, border: `1px solid ${valgtId === b.id ? TL.hair : "transparent"}`, cursor: onVelgBaand ? "pointer" : "default" }}>
               <span style={{ flex: 1 }}>
-                <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg, display: "block" }}>{b.label}</span>
-                {b.slag != null && <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut }}>{b.slag} slag</span>}
+                <span style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text, display: "block" }}>{b.label}</span>
+                {b.slag != null && <span style={{ fontFamily: TL.font.mono, fontSize: 9, color: TL.mute }}>{b.slag} slag</span>}
               </span>
-              <span style={{ ...mono(13.5, noytral ? T.mut : sg < 0 ? T.down : T.up) }}>{fmt(sg)}</span>
+              <span style={{ ...mono(13.5, noytral ? TL.mute : sg < 0 ? TL.danger : TL.ok) }}>{fmt(sg)}</span>
             </div>
           );
         })}
       </div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 10 }}>
-        <span style={{ ...mono(10, sum < 0 ? T.down : T.up, 600) }}>Sum {fmt(sum)} slag/runde</span>
-        {onVelgBaand && <span style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut }}>Trykk et bånd for analyse</span>}
+        <span style={{ ...mono(10, sum < 0 ? TL.danger : TL.ok, 600) }}>Sum {fmt(sum)} slag/runde</span>
+        {onVelgBaand && <span style={{ fontFamily: TL.font.sans, fontSize: 10.5, color: TL.mute }}>Trykk et bånd for analyse</span>}
       </div>
     </Kort>
   );
@@ -921,8 +922,8 @@ export function Diagnose({ symptom = "Mister 0,8 slag på innspill 100–150 m",
   const steg = (lbl: ReactNode, siste: boolean, body: ReactNode) => (
     <div style={{ display: "flex", gap: 12 }}>
       <span style={{ display: "flex", flexDirection: "column", alignItems: "center", flex: "none", width: 10 }}>
-        <span style={{ width: 7, height: 7, borderRadius: 9999, background: T.borderS, marginTop: 4, flex: "none" }} />
-        {!siste && <span style={{ width: 1, flex: 1, background: T.border }} />}
+        <span style={{ width: 7, height: 7, borderRadius: 9999, background: TL.hair, marginTop: 4, flex: "none" }} />
+        {!siste && <span style={{ width: 1, flex: 1, background: TL.hair }} />}
       </span>
       <div style={{ flex: 1, minWidth: 0, paddingBottom: siste ? 0 : 16 }}>
         <Caps size={8.5}>{lbl}</Caps>
@@ -932,24 +933,24 @@ export function Diagnose({ symptom = "Mister 0,8 slag på innspill 100–150 m",
   );
   return (
     <Kort eyebrow="Diagnose">
-      {steg("Symptom", false, <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, color: T.fg, lineHeight: 1.25 }}>{symptom}</div>)}
+      {steg("Symptom", false, <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 17, color: TL.text, lineHeight: 1.25 }}>{symptom}</div>)}
       {steg("Bevis", false, (
         <div>
-          {bevis && [{ d: bevis.spiller, fyll: `color-mix(in srgb, ${T.down} 62%, transparent)` }, { d: bevis.baseline, fyll: T.borderS }].map(({ d, fyll }, i) => (
+          {bevis && [{ d: bevis.spiller, fyll: `color-mix(in srgb, ${TL.danger} 62%, transparent)` }, { d: bevis.baseline, fyll: TL.hair }].map(({ d, fyll }, i) => (
             <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "3px 0" }}>
-              <span style={{ width: 84, flex: "none", fontFamily: T.ui, fontSize: 11.5, color: T.fg2 }}>{d.label}</span>
-              <span style={{ flex: 1, height: 7, borderRadius: 9999, background: T.track, overflow: "hidden" }}>
+              <span style={{ width: 84, flex: "none", fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute }}>{d.label}</span>
+              <span style={{ flex: 1, height: 7, borderRadius: 9999, background: TL.hair, overflow: "hidden" }}>
                 <span style={{ display: "block", width: `${Math.min(100, (Number(d.verdi) / maks) * 100)}%`, height: "100%", borderRadius: 9999, background: fyll }} />
               </span>
-              <span style={{ width: 48, flex: "none", textAlign: "right", ...mono(11.5, T.fg, 600) }}>{String(d.verdi).replace(".", ",")}{bevis.enhet ? ` ${bevis.enhet}` : ""}</span>
+              <span style={{ width: 48, flex: "none", textAlign: "right", ...mono(11.5, TL.text, 600) }}>{String(d.verdi).replace(".", ",")}{bevis.enhet ? ` ${bevis.enhet}` : ""}</span>
             </div>
           ))}
-          <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut, display: "block", marginTop: 6 }}>{grunnlag || "Datagrunnlag mangler — diagnosen er usikker"}</span>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 9, color: TL.mute, display: "block", marginTop: 6 }}>{grunnlag || "Datagrunnlag mangler — diagnosen er usikker"}</span>
         </div>
       ))}
       {steg("Resept", true, (
         <div>
-          {resept?.tekst && <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.55, margin: "0 0 10px" }}>{resept.tekst}</p>}
+          {resept?.tekst && <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.55, margin: "0 0 10px" }}>{resept.tekst}</p>}
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             {ctaHref && (
               <Link href={ctaHref} style={{ textDecoration: "none" }}>
@@ -957,7 +958,7 @@ export function Diagnose({ symptom = "Mister 0,8 slag på innspill 100–150 m",
               </Link>
             )}
             {resept?.akse && <AkseChip a={resept.akse} />}
-            {resept?.kode && <span style={{ ...mono(9.5, T.mut, 600) }}>{resept.kode}</span>}
+            {resept?.kode && <span style={{ ...mono(9.5, TL.mute, 600) }}>{resept.kode}</span>}
           </div>
         </div>
       ))}
@@ -977,7 +978,7 @@ export interface NesteFokusProps {
   /** Rute handlingen peker til. Utelatt (galleri/lab) → ingen knapp, aldri død kontroll. */
   handlingHref?: string;
   /**
-   * «Én ting nå»-monopol: full bredde, T.handling (oransje).
+   * «Én ting nå»-monopol: full bredde, TL.fill (oransje).
    * Brukes av PlayerHQ Analysere (Paper-fasit playerhq-analyse.html).
    */
   enTingNa?: boolean;
@@ -987,19 +988,19 @@ export function NesteFokus({ omrade = "Putting innenfor 6 ft er største lekkasj
   return (
     <Kort tint>
       {enTingNa && (
-        <div style={{ fontFamily: T.mono, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut, marginBottom: 6 }}>
+        <div style={{ fontFamily: TL.font.mono, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute, marginBottom: 6 }}>
           Én ting nå
         </div>
       )}
       <Caps>Neste fokus</Caps>
-      <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 19, color: T.fg, lineHeight: 1.22, margin: "10px 0 0" }}>{omrade}</div>
+      <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 19, color: TL.text, lineHeight: 1.22, margin: "10px 0 0" }}>{omrade}</div>
       {sgTap != null && (
         <div style={{ display: "flex", alignItems: "center", gap: 9, marginTop: 10 }}>
           <DeltaChip v={`${sgTap} slag`} dir={/^[−-]/.test(sgTap) ? "down" : "up"} />
-          <span style={{ fontFamily: T.mono, fontSize: 9.5, color: T.mut }}>{AKSE[akse] || akse} · mot {baseline}</span>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 9.5, color: TL.mute }}>{AKSE[akse] || akse} · mot {baseline}</span>
         </div>
       )}
-      {begrunnelse && <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.55, margin: "10px 0 0" }}>{begrunnelse}</p>}
+      {begrunnelse && <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.55, margin: "10px 0 0" }}>{begrunnelse}</p>}
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 14, flexWrap: "wrap" }}>
         {handlingHref && (
           enTingNa ? (
@@ -1014,9 +1015,9 @@ export function NesteFokus({ omrade = "Putting innenfor 6 ft er største lekkasj
                 minHeight: 48,
                 width: "100%",
                 borderRadius: 10,
-                background: T.handling,
-                color: T.onHandling,
-                fontFamily: T.ui,
+                background: TL.fill,
+                color: TL.onFill,
+                fontFamily: TL.font.sans,
                 fontSize: 14,
                 fontWeight: 600,
                 textDecoration: "none",
@@ -1030,7 +1031,7 @@ export function NesteFokus({ omrade = "Putting innenfor 6 ft er største lekkasj
             </Link>
           )
         )}
-        {formelAkse && <span style={{ ...mono(9.5, T.mut, 600) }}>Tren {formelAkse}</span>}
+        {formelAkse && <span style={{ ...mono(9.5, TL.mute, 600) }}>Tren {formelAkse}</span>}
       </div>
     </Kort>
   );
@@ -1061,17 +1062,17 @@ export function KategoriKrav({ nivaa = "B", nesteNivaa = "A", krav = KK_DEMO, ne
   return (
     <Kort>
       <div style={{ display: "flex", alignItems: "center", gap: 13, marginBottom: 12 }}>
-        <span style={{ width: 46, height: 46, borderRadius: 13, background: T.panel3, border: `1px solid ${T.borderS}`, display: "inline-flex", alignItems: "center", justifyContent: "center", ...mono(20), flex: "none" }}>{nivaa || "—"}</span>
+        <span style={{ width: 46, height: 46, borderRadius: 13, background: TL.dim, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", ...mono(20), flex: "none" }}>{nivaa || "—"}</span>
         <div style={{ minWidth: 0 }}>
-          <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, color: T.fg }}>Kategori {nivaa}</div>
-          <div style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, marginTop: 3 }}>{bestatt} av {krav.length} krav bestått{nesteNivaa ? ` · neste: ${nesteNivaa}` : ""}</div>
+          <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 16, color: TL.text }}>Kategori {nivaa}</div>
+          <div style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, marginTop: 3 }}>{bestatt} av {krav.length} krav bestått{nesteNivaa ? ` · neste: ${nesteNivaa}` : ""}</div>
         </div>
       </div>
       {krav.map((k, i) => (
-        <div key={k.navn} style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 0", borderBottom: i === krav.length - 1 ? "none" : `1px solid ${T.border}` }}>
-          <Icon name={k.bestatt ? "check" : "circle"} size={14} style={{ color: k.bestatt ? T.up : T.mut, flex: "none" }} />
-          <span style={{ flex: 1, fontFamily: T.ui, fontSize: 12.5, color: k.bestatt ? T.fg : T.fg2 }}>{k.navn}</span>
-          {k.verdi != null && <span style={{ ...mono(11, T.fg2, 600) }}>{k.verdi}{k.mal ? <span style={{ color: T.mut }}> / {k.mal}</span> : null}</span>}
+        <div key={k.navn} style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 0", borderBottom: i === krav.length - 1 ? "none" : `1px solid ${TL.hair}` }}>
+          <Icon name={k.bestatt ? "check" : "circle"} size={14} style={{ color: k.bestatt ? TL.ok : TL.mute, flex: "none" }} />
+          <span style={{ flex: 1, fontFamily: TL.font.sans, fontSize: 12.5, color: k.bestatt ? TL.text : TL.mute }}>{k.navn}</span>
+          {k.verdi != null && <span style={{ ...mono(11, TL.mute, 600) }}>{k.verdi}{k.mal ? <span style={{ color: TL.mute }}> / {k.mal}</span> : null}</span>}
         </div>
       ))}
       {nesteKrav && <InnsiktChip>{nesteKrav}</InnsiktChip>}
@@ -1081,7 +1082,7 @@ export function KategoriKrav({ nivaa = "B", nesteNivaa = "A", krav = KK_DEMO, ne
 
 /* ── SpillerTilstand — coach-cockpitens 5-sekunderssvar ───── */
 export type SpillerTilstandTone = "god" | "stabil" | "varsel" | "risiko";
-const ST_TONE: Record<string, { c: string; t: string }> = { god: { c: T.up, t: "God form" }, stabil: { c: T.mut, t: "Stabil" }, varsel: { c: T.warn, t: "Følg opp" }, risiko: { c: T.down, t: "Risiko" } };
+const ST_TONE: Record<string, { c: string; t: string }> = { god: { c: TL.ok, t: "God form" }, stabil: { c: TL.mute, t: "Stabil" }, varsel: { c: TL.warn, t: "Følg opp" }, risiko: { c: TL.danger, t: "Risiko" } };
 export interface SpillerTilstandProps {
   navn?: string;
   tilstand?: SpillerTilstandTone | string;
@@ -1098,16 +1099,16 @@ export function SpillerTilstand({ navn = "Øyvind Rohjan", tilstand = "varsel", 
       <AvatarInit navn={navn} size={34} />
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-          <span style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>{navn}</span>
+          <span style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>{navn}</span>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 5, ...mono(9, tone.c, 700) }}>
             <span style={{ width: 5, height: 5, borderRadius: 9999, background: tone.c }} />{formTekst || tone.t}
           </span>
         </div>
-        <div style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, marginTop: 2 }}>{sisteAktivitet ? `Sist aktiv ${sisteAktivitet}` : "Ingen aktivitet ennå"}</div>
+        <div style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.mute, marginTop: 2 }}>{sisteAktivitet ? `Sist aktiv ${sisteAktivitet}` : "Ingen aktivitet ennå"}</div>
       </div>
       {sgTrend != null && <DeltaChip v={sgTrend} dir={/^[−-]/.test(sgTrend) ? "down" : "up"} />}
       {flagg && (
-        <span style={{ display: "inline-flex", alignItems: "center", gap: 5, ...mono(9.5, T.down, 700), background: `color-mix(in srgb, ${T.down} 12%, transparent)`, borderRadius: 6, padding: "4px 8px", flex: "none" }}>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 5, ...mono(9.5, TL.danger, 700), background: `color-mix(in srgb, ${TL.danger} 12%, transparent)`, borderRadius: 6, padding: "4px 8px", flex: "none" }}>
           <Icon name="alert-triangle" size={11} />{flagg}
         </span>
       )}
@@ -1139,14 +1140,14 @@ export function Pyramide({ data = PY_DEMO, max = 100, showValues = true }: Pyram
         const planPct = d.plan != null ? Math.max(0, Math.min(100, (d.plan / max) * 100)) : null;
         return (
           <div key={d.akse} style={{ display: "flex", alignItems: "center", gap: 11 }}>
-            <span style={{ width: 72, flex: "none", fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg2 }}>{AKSE_NAVN[d.akse as AkseKey] || d.akse}</span>
-            <div style={{ flex: 1, position: "relative", height: 9, borderRadius: 9999, background: T.track }}>
-              <div style={{ width: `${pct}%`, height: "100%", borderRadius: 9999, background: T.ax[d.akse as AkseKey] || T.mut, opacity: 0.85 }} />
-              {planPct != null && <span title={`Plan ${d.plan}`} style={{ position: "absolute", top: -3, left: `calc(${planPct}% - 1px)`, width: 2, height: 15, background: T.fg, borderRadius: 1 }} />}
+            <span style={{ width: 72, flex: "none", fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 600, color: TL.mute }}>{AKSE_NAVN[d.akse as AkseKey] || d.akse}</span>
+            <div style={{ flex: 1, position: "relative", height: 9, borderRadius: 9999, background: TL.hair }}>
+              <div style={{ width: `${pct}%`, height: "100%", borderRadius: 9999, background: T.ax[d.akse as AkseKey] || TL.mute, opacity: 0.85 }} />
+              {planPct != null && <span title={`Plan ${d.plan}`} style={{ position: "absolute", top: -3, left: `calc(${planPct}% - 1px)`, width: 2, height: 15, background: TL.text, borderRadius: 1 }} />}
             </div>
             {showValues && (
-              <span style={{ width: 58, flex: "none", textAlign: "right", ...mono(11, T.fg2, 600) }}>
-                {d.value}{d.plan != null && <span style={{ color: T.mut }}>/{d.plan}</span>}
+              <span style={{ width: 58, flex: "none", textAlign: "right", ...mono(11, TL.mute, 600) }}>
+                {d.value}{d.plan != null && <span style={{ color: TL.mute }}>/{d.plan}</span>}
               </span>
             )}
           </div>
@@ -1170,15 +1171,15 @@ export function PercentilBar({ percentile = 78, benchmark = 54, label = "SG Tota
         <Caps size={9}>{label}</Caps>
         {valueLabel != null && <span style={{ ...mono(13) }}>{valueLabel}</span>}
       </div>
-      <div style={{ position: "relative", height: 8, borderRadius: 9999, background: T.track }}>
-        {[25, 50, 75].map((q) => <span key={q} style={{ position: "absolute", left: `${q}%`, top: 1, width: 1, height: 6, background: T.borderS }} />)}
-        {benchmark != null && <span title={`Snitt: ${benchmark}.`} style={{ position: "absolute", left: `${benchmark}%`, top: -3, width: 2, height: 14, background: T.fg2, borderRadius: 1, transform: "translateX(-1px)" }} />}
-        <span style={{ position: "absolute", left: `${percentile}%`, top: -4, width: 16, height: 16, borderRadius: 9999, background: T.lime, border: `2px solid ${T.panel}`, transform: "translateX(-8px)" }} />
+      <div style={{ position: "relative", height: 8, borderRadius: 9999, background: TL.hair }}>
+        {[25, 50, 75].map((q) => <span key={q} style={{ position: "absolute", left: `${q}%`, top: 1, width: 1, height: 6, background: TL.hair }} />)}
+        {benchmark != null && <span title={`Snitt: ${benchmark}.`} style={{ position: "absolute", left: `${benchmark}%`, top: -3, width: 2, height: 14, background: TL.mute, borderRadius: 1, transform: "translateX(-1px)" }} />}
+        <span style={{ position: "absolute", left: `${percentile}%`, top: -4, width: 16, height: 16, borderRadius: 9999, background: TL.fill, border: `2px solid ${TL.elev}`, transform: "translateX(-8px)" }} />
       </div>
       <div style={{ display: "flex", justifyContent: "space-between", marginTop: 7 }}>
-        {["0", "50", "100"].map((s) => <span key={s} style={{ fontFamily: T.mono, fontSize: 8.5, color: T.mut }}>{s}</span>)}
+        {["0", "50", "100"].map((s) => <span key={s} style={{ fontFamily: TL.font.mono, fontSize: 8.5, color: TL.mute }}>{s}</span>)}
       </div>
-      {benchmark != null && <span style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, display: "block", marginTop: 6 }}>Stall-snitt {benchmark}. · {percentile - benchmark >= 0 ? "+" : "−"}{Math.abs(percentile - benchmark)} vs. snitt</span>}
+      {benchmark != null && <span style={{ fontFamily: TL.font.sans, fontSize: 10.5, color: TL.mute, display: "block", marginTop: 6 }}>Stall-snitt {benchmark}. · {percentile - benchmark >= 0 ? "+" : "−"}{Math.abs(percentile - benchmark)} vs. snitt</span>}
     </div>
   );
 }

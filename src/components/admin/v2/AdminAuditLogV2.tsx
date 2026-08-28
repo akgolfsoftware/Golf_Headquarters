@@ -1,21 +1,12 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * AgencyOS Audit-log — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
  * Siste sikkerhetshendelser. T.* only.
  */
 
 import Link from "next/link";
-import {
-  Kort,
-  Rad,
-  KpiFlis,
-  StatusPill,
-  TomTilstand,
-  CTAPill,
-  Icon,
-  T,
-} from "@/components/v2";
+import { Kort, Rad, KpiFlis, StatusPill, TomTilstand, CTAPill, Icon } from "@/components/v2";
 import type { IconProps } from "@/components/v2/icon";
 
 // ── Datakontrakt (mappes fra AuditLog i ruten) ──────────────────
@@ -70,8 +61,8 @@ function HendelseIkon({ kind }: { kind: AdminAuditLogV2Kind }) {
         width: 34,
         height: 34,
         borderRadius: 10,
-        background: `color-mix(in srgb, ${T.forest} 10%, transparent)`,
-        color: T.forest,
+        background: `color-mix(in srgb, ${TL.fill} 10%, transparent)`,
+        color: TL.fill,
         flexShrink: 0,
       }}
     >
@@ -88,8 +79,8 @@ export function AdminAuditLogV2({ data }: { data: AdminAuditLogV2Data }) {
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
         <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Audit-logg</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Sikkerhet</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Audit-logg</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>Sikkerhet</span>
         </div>
       </div>
       <StatusPill tone={ren ? "up" : "warn"}>{ren ? "Audit ren" : "Se gjennom"}</StatusPill>
@@ -98,7 +89,7 @@ export function AdminAuditLogV2({ data }: { data: AdminAuditLogV2Data }) {
 
   // ── KPI-strip ─────────────────────────────────────────────────
   const kpi = (
-    <div className="grid grid-cols-2" style={{ gap: T.gap }}>
+    <div className="grid grid-cols-2" style={{ gap: 16 }}>
       <KpiFlis label="Hendelser vist" value={`${data.events.length} av ${data.total}`} />
       <KpiFlis
         label="Mistenkelig · 7d"
@@ -120,7 +111,7 @@ export function AdminAuditLogV2({ data }: { data: AdminAuditLogV2Data }) {
   // ── Tom-tilstand + vei ────────────────────────────────────────
   if (data.events.length === 0) {
     return (
-      <div data-paper-wave-h="audit-log" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+      <div data-paper-wave-h="audit-log" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 960, margin: "0 auto", width: "100%" }}>
         {hode}
         {kpi}
         <Kort>
@@ -136,7 +127,7 @@ export function AdminAuditLogV2({ data }: { data: AdminAuditLogV2Data }) {
   }
 
   return (
-    <div data-paper-slug="agencyos-oppsett" style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-slug="agencyos-oppsett" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {hode}
       {kpi}
       {primaerCta}

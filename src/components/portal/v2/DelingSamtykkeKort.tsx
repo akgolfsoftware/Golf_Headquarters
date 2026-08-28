@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * Delingssamtykke til tredjepart (plan T8) — Team Norway-/WANG-lesere.
@@ -14,16 +15,10 @@
  */
 
 import { useState, useTransition } from "react";
-import { T, Kort, Icon, StatusPill } from "@/components/v2";
+import { Kort, Icon, StatusPill } from "@/components/v2";
 import { Bryter } from "@/components/v2/skjema";
-import {
-  DELING_SAMTYKKE_TEKST,
-  type DelingScope,
-} from "@/lib/deling/samtykke-regler";
-import {
-  giDelingsSamtykke,
-  trekkDelingsSamtykke,
-} from "@/app/portal/meg/innstillinger/personvern/deling-samtykke-actions";
+import { DELING_SAMTYKKE_TEKST, type DelingScope } from "@/lib/deling/samtykke-regler";
+import { giDelingsSamtykke, trekkDelingsSamtykke } from "@/app/portal/meg/innstillinger/personvern/deling-samtykke-actions";
 import { settDelingsSamtykkeForBarn } from "@/app/forelder/samtykke/actions";
 
 export type DelingGruppeStatus = {
@@ -96,24 +91,24 @@ export function DelingSamtykkeKort({
             width: 40,
             height: 40,
             borderRadius: 12,
-            background: T.panel3,
-            border: `1px solid ${T.border}`,
+            background: TL.dim,
+            border: `1px solid ${TL.hair}`,
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
             flex: "none",
           }}
         >
-          <Icon name="share-2" size={16} style={{ color: T.fg2 }} />
+          <Icon name="share-2" size={16} style={{ color: TL.mute }} />
         </span>
         <div style={{ minWidth: 0, flex: 1 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
             <span
               style={{
-                fontFamily: T.disp,
+                fontFamily: TL.font.sans,
                 fontSize: 16,
                 fontWeight: 700,
-                color: T.fg,
+                color: TL.text,
                 letterSpacing: "-0.02em",
               }}
             >
@@ -121,7 +116,7 @@ export function DelingSamtykkeKort({
             </span>
             <StatusPill tone={noeDelt ? "up" : "info"}>{noeDelt ? "På" : "Av"}</StatusPill>
           </div>
-          <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: "6px 0 0", lineHeight: 1.5 }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: "6px 0 0", lineHeight: 1.5 }}>
             Miljøer som Team Norway og WANG kan be om innsyn i testresultater og
             statistikk. Ingenting deles uten samtykke her — gruppemedlemskap
             alene gir aldri deling, og du kan ombestemme deg når som helst.
@@ -138,12 +133,12 @@ export function DelingSamtykkeKort({
             marginTop: 14,
             padding: "11px 13px",
             borderRadius: 12,
-            background: T.panel2,
-            border: `1px solid ${T.border}`,
+            background: TL.dock,
+            border: `1px solid ${TL.hair}`,
           }}
         >
-          <Icon name="shield" size={15} style={{ color: T.mut, flex: "none", marginTop: 1 }} />
-          <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.5 }}>
+          <Icon name="shield" size={15} style={{ color: TL.mute, flex: "none", marginTop: 1 }} />
+          <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.5 }}>
             Du er under 16 år. En foresatt må godkjenne delingen i
             foreldreportalen før noe deles. Du kan alltid slå det av selv.
           </span>
@@ -151,7 +146,7 @@ export function DelingSamtykkeKort({
       )}
 
       {status.length === 0 ? (
-        <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: "14px 0 0", lineHeight: 1.5 }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: "14px 0 0", lineHeight: 1.5 }}>
           Ingen eksterne miljøer har bedt om innsyn ennå. Når et miljø får
           lesetilgang til en av gruppene dine, dukker valget opp her.
         </p>
@@ -159,9 +154,9 @@ export function DelingSamtykkeKort({
         status.map((gruppe) => (
           <div
             key={gruppe.gruppeId}
-            style={{ marginTop: 16, paddingTop: 16, borderTop: `1px solid ${T.border}` }}
+            style={{ marginTop: 16, paddingTop: 16, borderTop: `1px solid ${TL.hair}` }}
           >
-            <div style={{ fontFamily: T.disp, fontSize: 14, fontWeight: 700, color: T.fg }}>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 14, fontWeight: 700, color: TL.text }}>
               {gruppe.gruppeNavn}
             </div>
             {(Object.keys(SCOPE_FELT) as DelingScope[]).map((scope) => {
@@ -185,16 +180,16 @@ export function DelingSamtykkeKort({
         style={{
           marginTop: 14,
           paddingTop: 12,
-          borderTop: `1px solid ${T.border}`,
-          fontFamily: T.ui,
+          borderTop: `1px solid ${TL.hair}`,
+          fontFamily: TL.font.sans,
           fontSize: 11.5,
-          color: feil ? T.down : lagret ? T.up : T.mut,
+          color: feil ? TL.danger : lagret ? TL.ok : TL.mute,
           display: "flex",
           alignItems: "center",
           gap: 6,
         }}
       >
-        {lagret && !feil && <Icon name="check-circle" size={13} style={{ color: T.up }} />}
+        {lagret && !feil && <Icon name="check-circle" size={13} style={{ color: TL.ok }} />}
         <span>
           {pending
             ? "Lagrer …"

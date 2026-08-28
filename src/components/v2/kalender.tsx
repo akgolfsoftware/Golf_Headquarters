@@ -8,14 +8,15 @@
    Port av ui_kits/v2/v2-kalender.jsx → produksjons-TSX (diff-null). */
 
 import type { CSSProperties } from "react";
+import { TL } from "@/lib/v2/train-lock";
 import { T, type AkseKey } from "@/lib/v2/tokens";
 import { StatusPill } from "./core";
 import { Icon } from "@/components/v2/icon";
 
 /* ── Lokale stil/format-helpere (som i mockupen) ────────── */
-const mono = (size: number, color: string = T.fg, weight: number = 700): CSSProperties => ({ fontFamily: T.mono, fontSize: size, fontWeight: weight, color, fontVariantNumeric: "tabular-nums" });
+const mono = (size: number, color: string = TL.text, weight: number = 700): CSSProperties => ({ fontFamily: TL.font.mono, fontSize: size, fontWeight: weight, color, fontVariantNumeric: "tabular-nums" });
 const fmtTime = (t: number): string => `${String(Math.floor(t)).padStart(2, "0")}:${t % 1 ? "30" : "00"}`;
-const aksesoft = (a: AkseKey, pct: number = 12): string => `color-mix(in srgb, ${T.ax[a] || T.mut} ${pct}%, ${T.panel2})`;
+const aksesoft = (a: AkseKey, pct: number = 12): string => `color-mix(in srgb, ${T.ax[a] || TL.mute} ${pct}%, ${TL.dock})`;
 
 /* ── UkeGrid — 7-kolonners uke, økter farget etter akse ──── */
 export type ComplianceKey = "on" | "off" | "none" | "planned";
@@ -31,7 +32,7 @@ export interface UkeDag {
   sessions: UkeSession[];
 }
 const UG_DAGER = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
-const UG_COMP: Record<ComplianceKey, string> = { on: T.up, off: T.down, none: T.mut, planned: `color-mix(in srgb, ${T.fg} 28%, transparent)` };
+const UG_COMP: Record<ComplianceKey, string> = { on: TL.ok, off: TL.danger, none: TL.mute, planned: `color-mix(in srgb, ${TL.text} 28%, transparent)` };
 const UG_DEMO: UkeDag[] = [
   { date: 6, sessions: [{ time: "07:00", title: "FYS styrke", axis: "FYS", compliance: "on" }] },
   { date: 7, sessions: [{ time: "16:00", title: "Teknikk driver", axis: "TEK", compliance: "off" }] },
@@ -53,17 +54,17 @@ export function UkeGrid({ week = UG_DEMO, onSessionClick = null }: UkeGridProps)
       {days.map((day, i) => (
         <div key={i} style={{ minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", padding: "0 2px 7px" }}>
-            <span style={{ ...mono(9, T.mut), letterSpacing: "0.08em", textTransform: "uppercase" }}>{UG_DAGER[i]}</span>
-            <span style={{ ...mono(11, day.today ? T.onLime : T.fg2), ...(day.today ? { background: T.lime, borderRadius: 9999, padding: "2px 7px" } : {}) }}>{day.date != null ? day.date : ""}</span>
+            <span style={{ ...mono(9, TL.mute), letterSpacing: "0.08em", textTransform: "uppercase" }}>{UG_DAGER[i]}</span>
+            <span style={{ ...mono(11, day.today ? TL.onFill : TL.mute), ...(day.today ? { background: TL.fill, borderRadius: 9999, padding: "2px 7px" } : {}) }}>{day.date != null ? day.date : ""}</span>
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 5, minHeight: 96, borderTop: `1px solid ${T.border}`, paddingTop: 6 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 5, minHeight: 96, borderTop: `1px solid ${TL.hair}`, paddingTop: 6 }}>
             {(day.sessions || []).map((s, j) => (
               <div key={j} onClick={onSessionClick ? () => onSessionClick(s) : undefined}
-                style={{ borderRadius: 9, padding: "6px 8px 6px 10px", background: aksesoft(s.axis), borderLeft: `2px solid ${T.ax[s.axis] || T.mut}`, cursor: onSessionClick ? "pointer" : "default" }}>
-                {s.time && <span style={{ ...mono(8.5, T.mut, 600), display: "block" }}>{s.time}</span>}
+                style={{ borderRadius: 9, padding: "6px 8px 6px 10px", background: aksesoft(s.axis), borderLeft: `2px solid ${T.ax[s.axis] || TL.mute}`, cursor: onSessionClick ? "pointer" : "default" }}>
+                {s.time && <span style={{ ...mono(8.5, TL.mute, 600), display: "block" }}>{s.time}</span>}
                 <span style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 2 }}>
                   <span style={{ width: 5, height: 5, borderRadius: 9999, background: UG_COMP[s.compliance || "planned"], flex: "none" }} />
-                  <span style={{ fontFamily: T.ui, fontSize: 10.5, fontWeight: 600, color: T.fg, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.title}</span>
+                  <span style={{ fontFamily: TL.font.sans, fontSize: 10.5, fontWeight: 600, color: TL.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.title}</span>
                 </span>
               </div>
             ))}
@@ -107,31 +108,31 @@ export function TidsGrid({ fraTime = 7, tilTime = 18, timeHoyde = 44, naa = 12.5
   return (
     <div style={{ display: "flex", gap: 0, position: "relative" }}>
       <div style={{ width: 44, flex: "none", position: "relative", marginTop: hdH }}>
-        {timer.map((t) => <span key={t} style={{ position: "absolute", top: (t - fraTime) * timeHoyde - 5, right: 8, ...mono(8.5, T.mut, 600) }}>{fmtTime(t)}</span>)}
+        {timer.map((t) => <span key={t} style={{ position: "absolute", top: (t - fraTime) * timeHoyde - 5, right: 8, ...mono(8.5, TL.mute, 600) }}>{fmtTime(t)}</span>)}
       </div>
       <div style={{ flex: 1, display: "grid", gridTemplateColumns: `repeat(${kolonner.length}, 1fr)`, gap: 6, position: "relative" }}>
         {kolonner.map((k, ki) => (
           <div key={ki} style={{ minWidth: 0 }}>
             <div style={{ height: hdH, display: "flex", alignItems: "center", gap: 6, padding: "0 2px" }}>
-              {k.idag && <span style={{ width: 6, height: 6, borderRadius: 9999, background: T.lime }} />}
-              <span style={{ ...mono(10.5, k.idag ? T.fg : T.fg2, k.idag ? 700 : 600) }}>{k.header}</span>
+              {k.idag && <span style={{ width: 6, height: 6, borderRadius: 9999, background: TL.fill }} />}
+              <span style={{ ...mono(10.5, k.idag ? TL.text : TL.mute, k.idag ? 700 : 600) }}>{k.header}</span>
             </div>
-            <div style={{ position: "relative", height: hoyde, borderTop: `1px solid ${T.borderS}` }}>
-              {timer.slice(1).map((t) => <div key={t} style={{ position: "absolute", left: 0, right: 0, top: (t - fraTime) * timeHoyde, height: 1, background: T.border }} />)}
+            <div style={{ position: "relative", height: hoyde, borderTop: `1px solid ${TL.hair}` }}>
+              {timer.slice(1).map((t) => <div key={t} style={{ position: "absolute", left: 0, right: 0, top: (t - fraTime) * timeHoyde, height: 1, background: TL.hair }} />)}
               {(k.blokker || []).map((b, bi) => (
                 <div key={bi} onClick={onBlokkKlikk ? () => onBlokkKlikk(b, k) : undefined}
-                  style={{ position: "absolute", left: 3, right: 3, top: (b.fra - fraTime) * timeHoyde + 1, height: Math.max((b.til - b.fra) * timeHoyde - 4, 20), borderRadius: 8, padding: "5px 8px 5px 9px", overflow: "hidden", background: aksesoft(b.akse), borderLeft: `2px solid ${T.ax[b.akse] || T.mut}`, cursor: onBlokkKlikk ? "pointer" : "default" }}>
-                  <span style={{ ...mono(8, T.mut, 600), display: "block" }}>{fmtTime(b.fra)}–{fmtTime(b.til)}</span>
-                  <span style={{ fontFamily: T.ui, fontSize: 11, fontWeight: 600, color: T.fg, display: "block", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{b.tittel}</span>
-                  {b.sub && <span style={{ fontFamily: T.ui, fontSize: 9.5, color: T.mut, display: "block", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{b.sub}</span>}
+                  style={{ position: "absolute", left: 3, right: 3, top: (b.fra - fraTime) * timeHoyde + 1, height: Math.max((b.til - b.fra) * timeHoyde - 4, 20), borderRadius: 8, padding: "5px 8px 5px 9px", overflow: "hidden", background: aksesoft(b.akse), borderLeft: `2px solid ${T.ax[b.akse] || TL.mute}`, cursor: onBlokkKlikk ? "pointer" : "default" }}>
+                  <span style={{ ...mono(8, TL.mute, 600), display: "block" }}>{fmtTime(b.fra)}–{fmtTime(b.til)}</span>
+                  <span style={{ fontFamily: TL.font.sans, fontSize: 11, fontWeight: 600, color: TL.text, display: "block", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{b.tittel}</span>
+                  {b.sub && <span style={{ fontFamily: TL.font.sans, fontSize: 9.5, color: TL.mute, display: "block", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{b.sub}</span>}
                 </div>
               ))}
             </div>
           </div>
         ))}
         {naa != null && naa >= fraTime && naa <= tilTime && (
-          <div style={{ position: "absolute", left: 0, right: 0, top: hdH + (naa - fraTime) * timeHoyde, height: 0, borderTop: `1.5px solid ${T.lime}`, zIndex: 2 }}>
-            <span style={{ position: "absolute", left: -3, top: -3.5, width: 7, height: 7, borderRadius: 9999, background: T.lime }} />
+          <div style={{ position: "absolute", left: 0, right: 0, top: hdH + (naa - fraTime) * timeHoyde, height: 0, borderTop: `1.5px solid ${TL.fill}`, zIndex: 2 }}>
+            <span style={{ position: "absolute", left: -3, top: -3.5, width: 7, height: 7, borderRadius: 9999, background: TL.fill }} />
           </div>
         )}
       </div>
@@ -180,27 +181,27 @@ export function Tidslinje({ total = 30, ticks = TL_TICKS, naa = 22, baner = TL_D
       <div style={{ display: "flex" }}>
         <span style={{ width: etikettBredde, flex: "none" }} />
         <div style={{ flex: 1, position: "relative", height: 18 }}>
-          {ticks.map((t, i) => <span key={i} style={{ position: "absolute", left: pct(t.ved), ...mono(8.5, T.mut, 600) }}>{t.tekst}</span>)}
+          {ticks.map((t, i) => <span key={i} style={{ position: "absolute", left: pct(t.ved), ...mono(8.5, TL.mute, 600) }}>{t.tekst}</span>)}
         </div>
       </div>
       <div style={{ position: "relative" }}>
         {baner.map((bane, bi) => (
-          <div key={bi} style={{ display: "flex", alignItems: "center", borderTop: `1px solid ${T.border}`, minHeight: 46 }}>
-            <span style={{ width: etikettBredde, flex: "none", fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.fg2, paddingRight: 10, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{bane.etikett}</span>
+          <div key={bi} style={{ display: "flex", alignItems: "center", borderTop: `1px solid ${TL.hair}`, minHeight: 46 }}>
+            <span style={{ width: etikettBredde, flex: "none", fontFamily: TL.font.sans, fontSize: 12, fontWeight: 600, color: TL.mute, paddingRight: 10, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{bane.etikett}</span>
             <div style={{ flex: 1, position: "relative", height: 46 }}>
               {(bane.barer || []).map((b, i) => (
-                <span key={i} style={{ position: "absolute", top: 10, height: 26, left: pct(b.fra), width: pct(b.til - b.fra), borderRadius: 7, background: aksesoft(b.akse, 16), borderLeft: `2px solid ${T.ax[b.akse] || T.mut}`, display: "inline-flex", alignItems: "center", padding: "0 8px", overflow: "hidden" }}>
-                  <span style={{ fontFamily: T.ui, fontSize: 10.5, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{b.tekst}</span>
+                <span key={i} style={{ position: "absolute", top: 10, height: 26, left: pct(b.fra), width: pct(b.til - b.fra), borderRadius: 7, background: aksesoft(b.akse, 16), borderLeft: `2px solid ${T.ax[b.akse] || TL.mute}`, display: "inline-flex", alignItems: "center", padding: "0 8px", overflow: "hidden" }}>
+                  <span style={{ fontFamily: TL.font.sans, fontSize: 10.5, fontWeight: 600, color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{b.tekst}</span>
                 </span>
               ))}
               {(bane.punkter || []).map((p, i) => (
-                <span key={i} title={p.etikett} style={{ position: "absolute", top: 18, left: `calc(${pct(p.ved)} - 5px)`, width: 10, height: 10, borderRadius: 9999, background: p.variant === "peak" ? T.lime : T.ax.TURN, border: `2px solid ${T.bg}` }} />
+                <span key={i} title={p.etikett} style={{ position: "absolute", top: 18, left: `calc(${pct(p.ved)} - 5px)`, width: 10, height: 10, borderRadius: 9999, background: p.variant === "peak" ? TL.fill : T.ax.TURN, border: `2px solid ${TL.scene}` }} />
               ))}
             </div>
           </div>
         ))}
         {naa != null && (
-          <div style={{ position: "absolute", top: 0, bottom: 0, left: `calc(${etikettBredde}px + (100% - ${etikettBredde}px) * ${naa / total})`, width: 0, borderLeft: `1.5px solid ${T.lime}` }} />
+          <div style={{ position: "absolute", top: 0, bottom: 0, left: `calc(${etikettBredde}px + (100% - ${etikettBredde}px) * ${naa / total})`, width: 0, borderLeft: `1.5px solid ${TL.fill}` }} />
         )}
       </div>
     </div>
@@ -219,7 +220,7 @@ export interface Turnering {
   uke: number;
   prio: PrioKey;
 }
-const PP_RAMP = ["rgb(36,49,42)", T.forest, "rgb(62,122,78)", "rgb(110,154,78)", T.lime];
+const PP_RAMP = ["rgb(36,49,42)", TL.fill, "rgb(62,122,78)", "rgb(110,154,78)", TL.fill];
 const PP_MND = ["Jan", "Feb", "Mar", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Des"];
 const PP_FASER: Fase[] = [
   { navn: "Grunnperiode", fraUke: 1, uker: 14 }, { navn: "Spesialisering", fraUke: 15, uker: 12 },
@@ -245,7 +246,7 @@ export function Periodeplan({ faser = PP_FASER, turneringer = PP_TURN, totalUker
           return (
             <span key={i} title={`${f.navn} · uke ${f.fraUke}–${f.fraUke + f.uker - 1}`}
               style={{ position: "absolute", top: 0, height: 30, left: left(f.fraUke), width: width(f.uker), borderRadius: 8, background: bg, display: "inline-flex", alignItems: "center", padding: "0 9px", overflow: "hidden" }}>
-              <span style={{ ...mono(8.5, i >= faser.length - 2 && bg === T.lime ? T.onLime : T.fg, 700), letterSpacing: "0.06em", textTransform: "uppercase", whiteSpace: "nowrap" }}>{f.navn}</span>
+              <span style={{ ...mono(8.5, i >= faser.length - 2 && bg === TL.fill ? TL.onFill : TL.text, 700), letterSpacing: "0.06em", textTransform: "uppercase", whiteSpace: "nowrap" }}>{f.navn}</span>
             </span>
           );
         })}
@@ -254,14 +255,14 @@ export function Periodeplan({ faser = PP_FASER, turneringer = PP_TURN, totalUker
         <div style={{ position: "relative", height: 22, marginTop: 6 }}>
           {turneringer.map((t, i) => (
             <span key={i} title={`${t.navn || ""} · uke ${t.uke}`}
-              style={{ position: "absolute", top: 2, left: left(t.uke), width: 17, height: 17, borderRadius: 5, background: PP_PRIO[t.prio] || T.mut, display: "inline-flex", alignItems: "center", justifyContent: "center", ...mono(8.5, T.bg, 700) }}>
+              style={{ position: "absolute", top: 2, left: left(t.uke), width: 17, height: 17, borderRadius: 5, background: PP_PRIO[t.prio] || TL.mute, display: "inline-flex", alignItems: "center", justifyContent: "center", ...mono(8.5, TL.scene, 700) }}>
               {t.prio}
             </span>
           ))}
         </div>
       )}
       <div style={{ display: "flex", marginTop: 7 }}>
-        {maaneder.map((m, i) => <span key={i} style={{ flex: 1, ...mono(8.5, T.mut, 600) }}>{m}</span>)}
+        {maaneder.map((m, i) => <span key={i} style={{ flex: 1, ...mono(8.5, TL.mute, 600) }}>{m}</span>)}
       </div>
     </div>
   );
@@ -297,7 +298,7 @@ export function MndKalender({ year = 2026, month = 6, days = MK_DEMO, valgt = nu
   return (
     <div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 4, marginBottom: 6 }}>
-        {MK_DOW.map((d, i) => <span key={i} style={{ ...mono(9, T.mut), textAlign: "center", letterSpacing: "0.08em" }}>{d}</span>)}
+        {MK_DOW.map((d, i) => <span key={i} style={{ ...mono(9, TL.mute), textAlign: "center", letterSpacing: "0.08em" }}>{d}</span>)}
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 4 }}>
         {cells.map((date, i) => {
@@ -308,10 +309,10 @@ export function MndKalender({ year = 2026, month = 6, days = MK_DEMO, valgt = nu
           return (
             <button key={i} type="button" onClick={onChange ? () => onChange(date) : undefined}
               aria-current={info.today ? "date" : undefined}
-              style={{ appearance: "none", cursor: onChange ? "pointer" : "default", position: "relative", aspectRatio: "1 / 1", borderRadius: 10, border: `1px solid ${info.today ? T.lime : aktiv ? T.borderS : T.border}`, background: aktiv ? T.fg : T.panel2, overflow: "hidden", ...mono(11.5, aktiv ? T.bg : T.fg2, 600) }}>
-              {heat > 0 && !aktiv && <span style={{ position: "absolute", inset: 0, background: T.lime, opacity: 0.07 + heat * 0.2 }} />}
+              style={{ appearance: "none", cursor: onChange ? "pointer" : "default", position: "relative", aspectRatio: "1 / 1", borderRadius: 10, border: `1px solid ${info.today ? TL.fill : aktiv ? TL.hair : TL.hair}`, background: aktiv ? TL.text : TL.dock, overflow: "hidden", ...mono(11.5, aktiv ? TL.scene : TL.mute, 600) }}>
+              {heat > 0 && !aktiv && <span style={{ position: "absolute", inset: 0, background: TL.fill, opacity: 0.07 + heat * 0.2 }} />}
               <span style={{ position: "relative" }}>{date}</span>
-              {info.oktAntall && info.oktAntall > 0 && !aktiv && <span style={{ position: "absolute", left: "50%", bottom: 4, width: 4, height: 4, borderRadius: 9999, background: T.mut, transform: "translateX(-2px)" }} />}
+              {info.oktAntall && info.oktAntall > 0 && !aktiv && <span style={{ position: "absolute", left: "50%", bottom: 4, width: 4, height: 4, borderRadius: 9999, background: TL.mute, transform: "translateX(-2px)" }} />}
             </button>
           );
         })}
@@ -344,10 +345,10 @@ export function DagStripe({ days = DS_DEMO, value = 8, onChange = null }: DagStr
         const on = d.date === aktiv;
         return (
           <button key={i} type="button" role="tab" aria-selected={on} onClick={onChange ? () => onChange(d.date, d) : undefined}
-            style={{ appearance: "none", cursor: onChange ? "pointer" : "default", flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "10px 0 8px", borderRadius: T.rCard, background: on ? T.fg : T.panel, border: `1px solid ${on ? T.fg : T.border}`, minHeight: 56 }}>
-            <span style={{ ...mono(8.5, on ? T.bg : T.mut, 600), letterSpacing: "0.08em" }}>{d.dow}</span>
-            <span style={{ ...mono(13.5, on ? T.bg : T.fg) }}>{d.date}</span>
-            <span style={{ width: 4, height: 4, borderRadius: 9999, background: d.today ? T.handling : d.state === "done" ? (on ? T.bg : T.mut) : "transparent", opacity: d.today ? 1 : 0.6 }} />
+            style={{ appearance: "none", cursor: onChange ? "pointer" : "default", flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "10px 0 8px", borderRadius: TL.radius.card, background: on ? TL.text : TL.elev, border: `1px solid ${on ? TL.text : TL.hair}`, minHeight: 56 }}>
+            <span style={{ ...mono(8.5, on ? TL.scene : TL.mute, 600), letterSpacing: "0.08em" }}>{d.dow}</span>
+            <span style={{ ...mono(13.5, on ? TL.scene : TL.text) }}>{d.date}</span>
+            <span style={{ width: 4, height: 4, borderRadius: 9999, background: d.today ? TL.fill : d.state === "done" ? (on ? TL.scene : TL.mute) : "transparent", opacity: d.today ? 1 : 0.6 }} />
           </button>
         );
       })}
@@ -370,20 +371,20 @@ export function AgendaRad({ time = "16:00", icon = "dumbbell", title = "Kravtren
   const live = state === "live", done = state === "done";
   return (
     <div style={{ display: "flex", alignItems: "stretch", gap: 12, opacity: done ? 0.55 : 1 }}>
-      <span style={{ width: 42, flex: "none", ...mono(11, T.fg2, 600), paddingTop: 13 }}>{time}</span>
+      <span style={{ width: 42, flex: "none", ...mono(11, TL.mute, 600), paddingTop: 13 }}>{time}</span>
       <div onClick={onClick || undefined}
-        style={{ flex: 1, display: "flex", alignItems: "center", gap: 11, padding: "10px 13px", borderRadius: T.rRow, background: T.panel2, border: `1px solid ${live ? `color-mix(in srgb, ${T.lime} 40%, transparent)` : T.border}`, cursor: onClick ? "pointer" : "default" }}>
-        <span style={{ width: 32, height: 32, borderRadius: 9, background: T.panel3, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
-          <Icon name={done ? "check" : icon} size={15} style={{ color: done ? T.up : live ? T.lime : T.fg2 }} />
+        style={{ flex: 1, display: "flex", alignItems: "center", gap: 11, padding: "10px 13px", borderRadius: TL.radius.row, background: TL.dock, border: `1px solid ${live ? `color-mix(in srgb, ${TL.fill} 40%, transparent)` : TL.hair}`, cursor: onClick ? "pointer" : "default" }}>
+        <span style={{ width: 32, height: 32, borderRadius: 9, background: TL.dim, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+          <Icon name={done ? "check" : icon} size={15} style={{ color: done ? TL.ok : live ? TL.fill : TL.mute }} />
         </span>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{title}</span>
+            <span style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{title}</span>
             {live && <StatusPill>Nå</StatusPill>}
           </div>
-          {subtitle && <div style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, marginTop: 1 }}>{subtitle}</div>}
+          {subtitle && <div style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.mute, marginTop: 1 }}>{subtitle}</div>}
         </div>
-        {duration && <span style={{ ...mono(10.5, T.mut, 600), flex: "none" }}>{duration}</span>}
+        {duration && <span style={{ ...mono(10.5, TL.mute, 600), flex: "none" }}>{duration}</span>}
       </div>
     </div>
   );
@@ -403,7 +404,7 @@ export interface VisningsVelgerProps {
 export function VisningsVelger({ visning = "uke", onVisning = null, visninger = ["dag", "uke", "maned", "aar"], periode = "Uke 28 · juli 2026", onForrige = null, onNeste = null, onIdag = null }: VisningsVelgerProps) {
   const pil = (name: string, onClickFn: (() => void) | null, lbl: string) => (
     <button type="button" onClick={onClickFn || undefined} aria-label={lbl}
-      style={{ appearance: "none", cursor: "pointer", width: 28, height: 28, borderRadius: 9999, background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", color: T.fg2 }}>
+      style={{ appearance: "none", cursor: "pointer", width: 28, height: 28, borderRadius: 9999, background: TL.dock, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", color: TL.mute }}>
       <Icon name={name} size={14} />
     </button>
   );
@@ -414,17 +415,17 @@ export function VisningsVelger({ visning = "uke", onVisning = null, visninger = 
           const on = visning === v;
           return (
             <button key={v} type="button" role="tab" aria-selected={on} onClick={onVisning ? () => onVisning(v) : undefined}
-              style={{ appearance: "none", cursor: "pointer", background: "transparent", border: "none", padding: "6px 10px 8px", fontFamily: T.ui, fontSize: 13, fontWeight: on ? 700 : 500, color: on ? T.fg : T.mut, borderBottom: `2px solid ${on ? T.lime : "transparent"}` }}>
+              style={{ appearance: "none", cursor: "pointer", background: "transparent", border: "none", padding: "6px 10px 8px", fontFamily: TL.font.sans, fontSize: 13, fontWeight: on ? 700 : 500, color: on ? TL.text : TL.mute, borderBottom: `2px solid ${on ? TL.fill : "transparent"}` }}>
               {VV_NAVN[v] || v}
             </button>
           );
         })}
       </div>
-      {periode && <span style={{ flex: 1, fontFamily: T.disp, fontWeight: 700, fontSize: 15, color: T.fg, letterSpacing: "-0.01em", whiteSpace: "nowrap" }}>{periode}</span>}
+      {periode && <span style={{ flex: 1, fontFamily: TL.font.sans, fontWeight: 700, fontSize: 15, color: TL.text, letterSpacing: "-0.01em", whiteSpace: "nowrap" }}>{periode}</span>}
       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
         {onIdag !== null && (
           <button type="button" onClick={onIdag || undefined}
-            style={{ appearance: "none", cursor: "pointer", fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.fg, background: T.panel3, border: `1px solid ${T.borderS}`, borderRadius: 9999, padding: "6px 13px" }}>
+            style={{ appearance: "none", cursor: "pointer", fontFamily: TL.font.sans, fontSize: 12, fontWeight: 600, color: TL.text, background: TL.dim, border: `1px solid ${TL.hair}`, borderRadius: 9999, padding: "6px 13px" }}>
             I dag
           </button>
         )}

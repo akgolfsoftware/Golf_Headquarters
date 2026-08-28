@@ -20,6 +20,7 @@
 
 import type { ReactNode, CSSProperties } from "react";
 import Link from "next/link";
+import { TL } from "@/lib/v2/train-lock";
 import { T } from "@/lib/v2/tokens";
 import { LogoAK, Caps, Icon } from "@/components/v2";
 
@@ -37,8 +38,8 @@ function Knapp({
 }) {
   const v: CSSProperties =
     variant === "primary"
-      ? { background: T.handling, color: T.onHandling, border: "none" }
-      : { background: T.panel3, color: T.fg, border: `1px solid ${T.borderS}` };
+      ? { background: TL.fill, color: TL.onFill, border: "none" }
+      : { background: TL.dim, color: TL.text, border: `1px solid ${TL.hair}` };
   return (
     <span
       className="v2-press v2-focus"
@@ -50,7 +51,7 @@ function Knapp({
         alignItems: "center",
         justifyContent: "center",
         gap: 9,
-        fontFamily: T.ui,
+        fontFamily: TL.font.sans,
         fontSize: 13.5,
         fontWeight: 600,
         ...v,
@@ -75,8 +76,8 @@ function BrandPanel() {
         minWidth: 420,
         position: "relative",
         overflow: "hidden",
-        borderRight: `1px solid ${T.border}`,
-        background: `radial-gradient(560px 460px at 28% 24%, ${T.handlingSoft}, transparent 68%), radial-gradient(420px 380px at 82% 88%, color-mix(in srgb, var(--v2-handling) 10%, transparent), transparent 60%), ${T.bg}`,
+        borderRight: `1px solid ${TL.hair}`,
+        background: `radial-gradient(560px 460px at 28% 24%, ${TL.dim}, transparent 68%), radial-gradient(420px 380px at 82% 88%, color-mix(in srgb, var(--tl-fill) 10%, transparent), transparent 60%), ${TL.scene}`,
         flexDirection: "column",
         padding: "34px 40px 44px",
       }}
@@ -98,7 +99,7 @@ function BrandPanel() {
             strokeWidth="1"
           />
         ))}
-        <circle cx="260" cy="330" r="3.5" fill="color-mix(in srgb, var(--v2-handling) 45%, transparent)" />
+        <circle cx="260" cy="330" r="3.5" fill="color-mix(in srgb, var(--tl-fill) 45%, transparent)" />
       </svg>
       <Link href="/" aria-label="AK Golf — hjem" style={{ position: "relative" }}>
         <LogoAK size={30} surface="paper" />
@@ -108,23 +109,23 @@ function BrandPanel() {
         <LogoAK size={64} surface="paper" style={{ marginBottom: 22 }} />
         <h2
           style={{
-            fontFamily: T.disp,
+            fontFamily: TL.font.sans,
             fontWeight: 700,
             fontSize: 30,
             letterSpacing: "-0.03em",
             lineHeight: 1.12,
-            color: T.fg,
+            color: TL.text,
             margin: 0,
           }}
         >
           Trygg innlogging for hele familien.{" "}
-          <em style={{ fontStyle: "italic", color: T.lime }}>Med BankID.</em>
+          <em style={{ fontStyle: "italic", color: TL.fill }}>Med BankID.</em>
         </h2>
         <p
           style={{
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 13.5,
-            color: T.fg2,
+            color: TL.mute,
             lineHeight: 1.6,
             margin: "14px 0 0",
             maxWidth: 360,
@@ -168,9 +169,9 @@ function BankIDKort() {
 
       <div
         style={{
-          background: T.panel,
-          border: `1px solid ${T.border}`,
-          borderRadius: T.rCard,
+          background: TL.elev,
+          border: `1px solid ${TL.hair}`,
+          borderRadius: TL.radius.card,
           padding: 28,
           display: "flex",
           flexDirection: "column",
@@ -178,7 +179,7 @@ function BankIDKort() {
           textAlign: "center",
           gap: 0,
           boxShadow:
-            `inset 0 1px 0 ${T.farge.hvitA5}, 0 12px 32px ${T.farge.svartA35}`,
+            `inset 0 1px 0 ${T.farge.hvitA5}, 0 12px 32px ${TL.scrim}`,
         }}
       >
         {/* BankID-badge — mørkt kvadrat med ordmerke og fingeravtrykk-motiv */}
@@ -190,39 +191,39 @@ function BankIDKort() {
             borderRadius: 16,
             display: "grid",
             placeItems: "center",
-            background: T.panel3,
-            border: `1px solid ${T.borderS}`,
+            background: TL.dim,
+            border: `1px solid ${TL.hair}`,
             marginBottom: 20,
           }}
         >
-          <Icon name="fingerprint" size={30} style={{ color: T.lime }} />
+          <Icon name="fingerprint" size={30} style={{ color: TL.fill }} />
         </span>
 
-        <Caps size={9} style={{ color: T.mut }}>
+        <Caps size={9} style={{ color: TL.mute }}>
           BANKID · KOMMER POST-BETA
         </Caps>
 
         <h1
           style={{
-            fontFamily: T.disp,
+            fontFamily: TL.font.sans,
             fontWeight: 700,
             fontSize: 28,
             letterSpacing: "-0.03em",
             lineHeight: 1.1,
-            color: T.fg,
+            color: TL.text,
             margin: "12px 0 0",
           }}
         >
           Logg inn med{" "}
-          <em style={{ fontStyle: "italic", color: T.lime }}>BankID.</em>
+          <em style={{ fontStyle: "italic", color: TL.fill }}>BankID.</em>
         </h1>
 
         <p
           style={{
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 13.5,
             lineHeight: 1.6,
-            color: T.fg2,
+            color: TL.mute,
             margin: "12px 0 0",
           }}
         >
@@ -234,7 +235,7 @@ function BankIDKort() {
           <Link href="/auth/login" style={{ textDecoration: "none" }}>
             <Knapp
               variant="primary"
-              icon={<Icon name="arrow-right" size={16} style={{ color: T.onLime }} />}
+              icon={<Icon name="arrow-right" size={16} style={{ color: TL.onFill }} />}
             >
               Tilbake til vanlig login
             </Knapp>
@@ -246,9 +247,9 @@ function BankIDKort() {
       <p
         className="md:hidden"
         style={{
-          fontFamily: T.ui,
+          fontFamily: TL.font.sans,
           fontSize: 10.5,
-          color: T.mut,
+          color: TL.mute,
           textAlign: "center",
           margin: "6px 0 0",
         }}
@@ -270,9 +271,9 @@ export function BankIDV2() {
         // Flaten er Paper LYS — "dark" fikk nettleseren til å tegne autofyll,
         // passordikon og rullefelt mørkt oppå en lys side.
         colorScheme: "light",
-        color: T.fg,
-        fontFamily: T.ui,
-        background: T.bg,
+        color: TL.text,
+        fontFamily: TL.font.sans,
+        background: TL.scene,
       }}
     >
       <BrandPanel />
@@ -284,7 +285,7 @@ export function BankIDV2() {
           alignItems: "center",
           justifyContent: "center",
           padding: "48px 22px",
-          background: `radial-gradient(700px 420px at 60% -12%, ${T.handlingSoft}, transparent 62%), ${T.bg}`,
+          background: `radial-gradient(700px 420px at 60% -12%, ${TL.dim}, transparent 62%), ${TL.scene}`,
         }}
       >
         <BankIDKort />

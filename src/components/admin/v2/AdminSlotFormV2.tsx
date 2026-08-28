@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * AgencyOS — Tidsvindu-skjema (opprett/endre/slett), v2-port 16. juli 2026.
@@ -8,7 +9,7 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { T, Caps, CTAPill } from "@/components/v2";
+import { Caps, CTAPill } from "@/components/v2";
 import { addSlot, updateSlot, deleteSlot } from "@/app/admin/(legacy)/availability/actions";
 
 const DAGER = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
@@ -37,12 +38,12 @@ type Props = {
 function Felt({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label style={{ display: "block" }}>
-      <span style={{ display: "block", marginBottom: 6, fontFamily: T.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.10em", color: T.mut }}>{label}</span>
+      <span style={{ display: "block", marginBottom: 6, fontFamily: TL.font.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.10em", color: TL.mute }}>{label}</span>
       {children}
     </label>
   );
 }
-const inputStyle: React.CSSProperties = { width: "100%", borderRadius: 10, border: `1px solid ${T.border}`, background: T.panel2, padding: "10px 12px", fontSize: 13, color: T.fg, outline: "none", boxSizing: "border-box" };
+const inputStyle: React.CSSProperties = { width: "100%", borderRadius: 10, border: `1px solid ${TL.hair}`, background: TL.dock, padding: "10px 12px", fontSize: 13, color: TL.text, outline: "none", boxSizing: "border-box" };
 
 function ModeKnapp({ aktiv, onClick, children }: { aktiv: boolean; onClick: () => void; children: React.ReactNode }) {
   return (
@@ -51,8 +52,8 @@ function ModeKnapp({ aktiv, onClick, children }: { aktiv: boolean; onClick: () =
       onClick={onClick}
       aria-pressed={aktiv}
       style={{
-        borderRadius: 10, border: `1px solid ${aktiv ? T.lime : T.border}`, padding: "10px 14px", fontSize: 13, fontWeight: 600,
-        color: aktiv ? T.lime : T.fg, background: aktiv ? `color-mix(in srgb, ${T.lime} 10%, transparent)` : T.panel2, cursor: "pointer",
+        borderRadius: 10, border: `1px solid ${aktiv ? TL.fill : TL.hair}`, padding: "10px 14px", fontSize: 13, fontWeight: 600,
+        color: aktiv ? TL.fill : TL.text, background: aktiv ? `color-mix(in srgb, ${TL.fill} 10%, transparent)` : TL.dock, cursor: "pointer",
       }}
     >
       {children}
@@ -141,7 +142,7 @@ export function SlotFormV2({ locations, initial, defaultWeekday, triggerLabel, t
         <button
           type="button"
           onClick={() => setOpen(true)}
-          style={{ background: "none", border: "none", cursor: "pointer", fontFamily: T.mono, fontSize: 11, color: T.lime, textTransform: "uppercase", letterSpacing: "0.06em" }}
+          style={{ background: "none", border: "none", cursor: "pointer", fontFamily: TL.font.mono, fontSize: 11, color: TL.fill, textTransform: "uppercase", letterSpacing: "0.06em" }}
         >
           {triggerLabel}
         </button>
@@ -161,7 +162,7 @@ export function SlotFormV2({ locations, initial, defaultWeekday, triggerLabel, t
       <dialog
         ref={dialogRef}
         onClose={() => setOpen(false)}
-        style={{ borderRadius: T.rCard, border: `1px solid ${T.borderS}`, background: T.panel, padding: 0, boxShadow: `0 24px 60px ${T.farge.svartA50}`, maxWidth: 400, width: "100%", color: T.fg }}
+        style={{ borderRadius: TL.radius.card, border: `1px solid ${TL.hair}`, background: TL.elev, padding: 0, boxShadow: "none", maxWidth: 400, width: "100%", color: TL.text }}
       >
         <form onSubmit={lagre} style={{ padding: 22 }}>
           <Caps>{initial ? "Endre" : "Nytt"} tidsvindu</Caps>
@@ -218,7 +219,7 @@ export function SlotFormV2({ locations, initial, defaultWeekday, triggerLabel, t
                 <button
                   type="button"
                   onClick={() => setVisPeriode((v) => !v)}
-                  style={{ background: "none", border: "none", cursor: "pointer", fontFamily: T.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.10em", color: T.mut }}
+                  style={{ background: "none", border: "none", cursor: "pointer", fontFamily: TL.font.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.10em", color: TL.mute }}
                 >
                   {visPeriode ? "− Periode" : "+ Begrens til periode (valgfritt)"}
                 </button>
@@ -235,14 +236,14 @@ export function SlotFormV2({ locations, initial, defaultWeekday, triggerLabel, t
               </div>
             )}
 
-            <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", fontSize: 13, color: T.fg }}>
+            <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", fontSize: 13, color: TL.text }}>
               <input type="checkbox" checked={active} onChange={(e) => setActive(e.target.checked)} />
               Aktiv (bookbar)
             </label>
           </div>
 
           {error && (
-            <div role="alert" style={{ marginTop: 14, borderRadius: 10, border: `1px solid color-mix(in srgb, ${T.down} 30%, transparent)`, background: `color-mix(in srgb, ${T.down} 10%, transparent)`, padding: "10px 14px", fontSize: 13, color: T.down }}>
+            <div role="alert" style={{ marginTop: 14, borderRadius: 10, border: `1px solid color-mix(in srgb, ${TL.danger} 30%, transparent)`, background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`, padding: "10px 14px", fontSize: 13, color: TL.danger }}>
               {error}
             </div>
           )}
@@ -253,7 +254,7 @@ export function SlotFormV2({ locations, initial, defaultWeekday, triggerLabel, t
                 type="button"
                 onClick={slett}
                 disabled={pending}
-                style={{ borderRadius: 9999, border: `1px solid color-mix(in srgb, ${T.down} 35%, transparent)`, background: `color-mix(in srgb, ${T.down} 6%, transparent)`, padding: "8px 16px", fontSize: 12, fontWeight: 600, color: T.down, cursor: "pointer", opacity: pending ? 0.6 : 1 }}
+                style={{ borderRadius: 9999, border: `1px solid color-mix(in srgb, ${TL.danger} 35%, transparent)`, background: `color-mix(in srgb, ${TL.danger} 6%, transparent)`, padding: "8px 16px", fontSize: 12, fontWeight: 600, color: TL.danger, cursor: "pointer", opacity: pending ? 0.6 : 1 }}
               >
                 Slett
               </button>
@@ -262,14 +263,14 @@ export function SlotFormV2({ locations, initial, defaultWeekday, triggerLabel, t
               type="button"
               onClick={() => setOpen(false)}
               disabled={pending}
-              style={{ marginLeft: "auto", borderRadius: 9999, border: `1px solid ${T.border}`, background: T.panel2, padding: "10px 18px", fontSize: 13, fontWeight: 600, color: T.fg, cursor: "pointer", opacity: pending ? 0.6 : 1 }}
+              style={{ marginLeft: "auto", borderRadius: 9999, border: `1px solid ${TL.hair}`, background: TL.dock, padding: "10px 18px", fontSize: 13, fontWeight: 600, color: TL.text, cursor: "pointer", opacity: pending ? 0.6 : 1 }}
             >
               Avbryt
             </button>
             <button
               type="submit"
               disabled={pending}
-              style={{ borderRadius: 9999, border: "1px solid transparent", background: T.handling, padding: "10px 18px", fontSize: 13, fontWeight: 600, color: T.onHandling, cursor: "pointer", opacity: pending ? 0.6 : 1 }}
+              style={{ borderRadius: 9999, border: "1px solid transparent", background: TL.fill, padding: "10px 18px", fontSize: 13, fontWeight: 600, color: TL.onFill, cursor: "pointer", opacity: pending ? 0.6 : 1 }}
             >
               {pending ? "Lagrer…" : "Lagre"}
             </button>

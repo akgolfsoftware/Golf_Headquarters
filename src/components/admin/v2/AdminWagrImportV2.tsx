@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * AgencyOS — Talent · WAGR-import, v2-port 16. juli 2026. Erstatter
@@ -9,7 +10,7 @@
 import { useTransition } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
-import { Caps, Tittel, Kort, Knapp, StatusPill, AvatarInit, TomTilstand, T } from "@/components/v2";
+import { Caps, Kort, Knapp, StatusPill, AvatarInit, TomTilstand } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import { synkWagrNaa } from "@/app/admin/talent/wagr-import/actions";
 
@@ -68,14 +69,14 @@ export function AdminWagrImportV2({ data }: { data: AdminWagrImportV2Data }) {
       : `${data.koblede.length} av ${data.antallSpillere} koblet`;
 
   return (
-    <div data-paper-wave-h="wagrimport" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-h="wagrimport" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 14 }}>
         <div>
           <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>WAGR-import</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>WAGR-import</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>AgencyOS</span>
         </div>
-          <p style={{ fontFamily: T.ui, fontSize: 13, lineHeight: 1.55, color: T.mut, margin: "10px 0 0", maxWidth: 560 }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 13, lineHeight: 1.55, color: TL.mute, margin: "10px 0 0", maxWidth: 560 }}>
             Hent World Amateur Golf Ranking for stallen din. Vi matcher på navn og fødselsdato.
           </p>
         </div>
@@ -89,14 +90,14 @@ export function AdminWagrImportV2({ data }: { data: AdminWagrImportV2Data }) {
 
       <Kort>
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 14 }}>
-          <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 38, height: 38, borderRadius: 10, background: T.panel2, color: T.lime, flex: "none" }}>
+          <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 38, height: 38, borderRadius: 10, background: TL.dock, color: TL.fill, flex: "none" }}>
             <Icon name="globe" size={20} />
           </span>
           <div style={{ flex: 1, minWidth: 180 }}>
-            <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 15, color: T.fg }}>
+            <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 15, color: TL.text }}>
               {data.koblede.length} av {data.antallSpillere} spillere har WAGR-profil
             </div>
-            <div style={{ marginTop: 3, fontFamily: T.mono, fontSize: 11, color: T.mut }}>
+            <div style={{ marginTop: 3, fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>
               {data.sistSynketLabel ? `Sist synket ${data.sistSynketLabel}` : "Aldri synket"}
             </div>
           </div>
@@ -105,7 +106,7 @@ export function AdminWagrImportV2({ data }: { data: AdminWagrImportV2Data }) {
 
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
         <Caps>{`Matchede spillere · ${data.koblede.length}`}</Caps>
-        <span style={{ flex: 1, height: 1, background: T.border }} />
+        <span style={{ flex: 1, height: 1, background: TL.hair }} />
       </div>
 
       <Kort pad="0">
@@ -120,11 +121,11 @@ export function AdminWagrImportV2({ data }: { data: AdminWagrImportV2Data }) {
             <Link
               key={s.id}
               href={`/admin/spillere/${s.spillerId}`}
-              style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 18px", borderTop: i ? `1px solid ${T.border}` : "none", textDecoration: "none" }}
+              style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 18px", borderTop: i ? `1px solid ${TL.hair}` : "none", textDecoration: "none" }}
             >
               <AvatarInit navn={s.navn} size={28} />
-              <span style={{ flex: 1, minWidth: 0, fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>{s.navn}</span>
-              <span style={{ fontFamily: T.mono, fontSize: 12, fontWeight: 700, color: T.fg }}>#{s.rank.toLocaleString("nb-NO")}</span>
+              <span style={{ flex: 1, minWidth: 0, fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text }}>{s.navn}</span>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 12, fontWeight: 700, color: TL.text }}>#{s.rank.toLocaleString("nb-NO")}</span>
               <StatusPill tone="up">Sikker match</StatusPill>
             </Link>
           ))

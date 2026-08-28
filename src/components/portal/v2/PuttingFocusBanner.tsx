@@ -1,3 +1,4 @@
+import { TL } from "@/lib/v2/train-lock";
 /**
  * Putting brain teaser — shows derived focus from PuttingSignals.
  * Never lists drills (FASIT may be empty). CTA ghost → putte-lab.
@@ -5,7 +6,7 @@
 import Link from "next/link";
 import type { PuttingFocus, PuttingSignals } from "@/lib/masterbrain/putting-signals";
 import { derivePuttingFocus } from "@/lib/masterbrain/putting-signals";
-import { T, Caps, Knapp } from "@/components/v2";
+import { Caps, Knapp } from "@/components/v2";
 
 export function PuttingFocusBanner({
   signals,
@@ -32,8 +33,8 @@ export function PuttingFocusBanner({
       data-paper-en-ting="putting-lab"
       style={{
         borderRadius: 12,
-        border: `1px solid ${T.border}`,
-        background: T.panel,
+        border: `1px solid ${TL.hair}`,
+        background: TL.elev,
         padding: "14px 16px",
         display: "flex",
         flexDirection: "column",
@@ -41,17 +42,17 @@ export function PuttingFocusBanner({
       }}
     >
       <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12 }}>
-        <Caps size={9} style={{ color: T.mut }}>
+        <Caps size={9} style={{ color: TL.mute }}>
           Putting · fokus
         </Caps>
         <span
           style={{
-            fontFamily: T.mono,
+            fontFamily: TL.font.mono,
             fontSize: 10,
             fontWeight: 700,
             letterSpacing: "0.06em",
             textTransform: "uppercase",
-            color: focus.confidence === "high" ? T.fg : T.mut,
+            color: focus.confidence === "high" ? TL.text : TL.mute,
           }}
         >
           {focus.confidence === "high" ? "Høy" : focus.confidence === "medium" ? "Middels" : "Lav"} signal
@@ -60,16 +61,16 @@ export function PuttingFocusBanner({
       <p
         style={{
           margin: 0,
-          fontFamily: T.disp,
+          fontFamily: TL.font.sans,
           fontSize: 15,
           fontWeight: 500,
-          color: T.fg,
+          color: TL.text,
           lineHeight: 1.35,
         }}
       >
         {focus.coachLineNb}
       </p>
-      <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.4 }}>
+      <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.4 }}>
         Drills hentes kun fra godkjent bank. Tom bank = ingen forslag.
       </p>
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>

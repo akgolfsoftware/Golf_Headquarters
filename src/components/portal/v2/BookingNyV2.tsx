@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * BookingNyV2 — v2-port (retning C) av credit-wizarden /portal/booking/ny.
  * RESTYLING ONLY: samme query-drevne steg-modell som legacy-siden
@@ -15,9 +15,8 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { T, Caps, Tittel, Kort, TomTilstand, Icon, HjelpTips } from "@/components/v2";
+import { Caps, Tittel, Kort, TomTilstand, Icon, HjelpTips } from "@/components/v2";
 import { CreditMeter } from "@/components/portal/abonnement/credit-meter";
-
 const WIZARD = "/portal/booking/ny";
 
 /* ── Datakontrakt (alt serialiserbart — server-pagen eier queries/format) ── */
@@ -90,11 +89,11 @@ function StegPrikker({ aktivt, steg }: {
         const erAktivt = s.nr === aktivt;
         return (
           <li key={s.nr} style={{ display: "flex", flex: i < steg.length - 1 ? 1 : "none", alignItems: "center", gap: 8 }}>
-            <span style={{ width: 22, height: 22, borderRadius: 9999, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none", fontFamily: T.mono, fontSize: 10, fontWeight: 700, background: erAktivt ? T.handling : s.ferdig ? "color-mix(in srgb, var(--v2-lime) 12%, transparent)" : T.panel2, color: erAktivt ? T.onHandling : s.ferdig ? T.lime : T.mut, border: `1px solid ${erAktivt ? "transparent" : s.ferdig ? "color-mix(in srgb, var(--v2-lime) 25%, transparent)" : T.border}` }}>
+            <span style={{ width: 22, height: 22, borderRadius: 9999, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none", fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, background: erAktivt ? TL.fill : s.ferdig ? "color-mix(in srgb, var(--tl-fill) 12%, transparent)" : TL.dock, color: erAktivt ? TL.onFill : s.ferdig ? TL.fill : TL.mute, border: `1px solid ${erAktivt ? "transparent" : s.ferdig ? "color-mix(in srgb, var(--tl-fill) 25%, transparent)" : TL.hair}` }}>
               {s.ferdig ? <Icon name="check" size={11} /> : s.nr}
             </span>
-            <span style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: erAktivt ? T.fg : s.ferdig ? T.fg2 : T.mut, whiteSpace: "nowrap" }}>{s.label}</span>
-            {i < steg.length - 1 && <span style={{ flex: 1, height: 1, background: s.ferdig ? "color-mix(in srgb, var(--v2-lime) 30%, transparent)" : T.border }} />}
+            <span style={{ fontFamily: TL.font.sans, fontSize: 12, fontWeight: 600, color: erAktivt ? TL.text : s.ferdig ? TL.mute : TL.mute, whiteSpace: "nowrap" }}>{s.label}</span>
+            {i < steg.length - 1 && <span style={{ flex: 1, height: 1, background: s.ferdig ? "color-mix(in srgb, var(--tl-fill) 30%, transparent)" : TL.hair }} />}
           </li>
         );
       })}
@@ -107,8 +106,8 @@ function StegPrikker({ aktivt, steg }: {
 function StegTittel({ nr, children }: { nr: number; children: React.ReactNode }) {
   return (
     <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 10 }}>
-      <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: T.lime }}>{nr}</span>
-      <span style={{ fontFamily: T.disp, fontSize: 18, fontWeight: 700, color: T.fg, letterSpacing: "-0.01em" }}>{children}</span>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, color: TL.fill }}>{nr}</span>
+      <span style={{ fontFamily: TL.font.sans, fontSize: 18, fontWeight: 700, color: TL.text, letterSpacing: "-0.01em" }}>{children}</span>
     </div>
   );
 }
@@ -147,15 +146,15 @@ function DagStripe({ valgtDatoIso, serviceSlug, dager }: {
             href={`${WIZARD}?service=${serviceSlug}&dato=${iso}`}
             scroll={false}
             className="v2-press v2-focus"
-            style={{ display: "flex", minWidth: 60, flex: "none", flexDirection: "column", alignItems: "center", gap: 1, padding: "8px 0 9px", borderRadius: 12, textDecoration: "none", background: aktiv ? T.handling : T.panel2, border: `1px solid ${aktiv ? "transparent" : T.border}` }}
+            style={{ display: "flex", minWidth: 60, flex: "none", flexDirection: "column", alignItems: "center", gap: 1, padding: "8px 0 9px", borderRadius: 12, textDecoration: "none", background: aktiv ? TL.fill : TL.dock, border: `1px solid ${aktiv ? "transparent" : TL.hair}` }}
           >
-            <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: aktiv ? T.onHandling : T.mut }}>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: aktiv ? TL.onFill : TL.mute }}>
               {UKEDAG[d.getDay()]}
             </span>
-            <span style={{ fontFamily: T.mono, fontSize: 15, fontWeight: 700, color: aktiv ? T.onHandling : T.fg, fontVariantNumeric: "tabular-nums" }}>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 15, fontWeight: 700, color: aktiv ? TL.onFill : TL.text, fontVariantNumeric: "tabular-nums" }}>
               {d.getDate()}
             </span>
-            <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: aktiv ? T.onHandling : T.mut }}>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: aktiv ? TL.onFill : TL.mute }}>
               {d.toLocaleDateString("nb-NO", { month: "short" })}
             </span>
           </Link>
@@ -191,7 +190,7 @@ function SlotLenker({ slots, serviceSlug }: { slots: NySlot[]; serviceSlug: stri
                   key={s.startIso}
                   href={`${WIZARD}/bekreft?service=${serviceSlug}&start=${encodeURIComponent(s.startIso)}&coach=${coachId}`}
                   className="v2-press v2-focus"
-                  style={{ display: "flex", minHeight: 44, alignItems: "center", justifyContent: "center", fontFamily: T.mono, fontSize: 12.5, fontWeight: 700, color: T.fg, textDecoration: "none", background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 10, fontVariantNumeric: "tabular-nums" }}
+                  style={{ display: "flex", minHeight: 44, alignItems: "center", justifyContent: "center", fontFamily: TL.font.mono, fontSize: 12.5, fontWeight: 700, color: TL.text, textDecoration: "none", background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: 10, fontVariantNumeric: "tabular-nums" }}
                 >
                   {klokke}
                 </Link>
@@ -208,9 +207,9 @@ function SlotLenker({ slots, serviceSlug }: { slots: NySlot[]; serviceSlug: stri
 
 function OppsumRad({ label, verdi, mono, last }: { label: React.ReactNode; verdi: string; mono?: boolean; last?: boolean }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14, padding: "11px 0", borderBottom: last ? "none" : `1px solid ${T.border}` }}>
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14, padding: "11px 0", borderBottom: last ? "none" : `1px solid ${TL.hair}` }}>
       <Caps size={9}>{label}</Caps>
-      <span style={{ textAlign: "right", fontSize: mono ? 12.5 : 13.5, fontWeight: mono ? 700 : 600, color: T.fg, fontFamily: mono ? T.mono : T.ui, fontVariantNumeric: mono ? "tabular-nums" : undefined }}>
+      <span style={{ textAlign: "right", fontSize: mono ? 12.5 : 13.5, fontWeight: mono ? 700 : 600, color: TL.text, fontFamily: mono ? TL.font.mono : TL.font.sans, fontVariantNumeric: mono ? "tabular-nums" : undefined }}>
         {verdi}
       </span>
     </div>
@@ -222,13 +221,13 @@ function OppsumRad({ label, verdi, mono, last }: { label: React.ReactNode; verdi
 export function BruktOppV2({ resetTekst }: { resetTekst: string | null }) {
   const mobile = useMobile();
   return (
-    <div data-paper-portal-booking-ny data-paper-slug="playerhq-booking-ny" style={{ width: "100%", maxWidth: 680, margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-booking-ny data-paper-slug="playerhq-booking-ny" style={{ width: "100%", maxWidth: 680, margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
       <div>
         <Caps>PlayerHQ · Book ny time</Caps>
         <div style={{ marginTop: 10 }}>
           <Tittel mobile={mobile} em="opp månedens timer.">Du har brukt</Tittel>
         </div>
-        <p style={{ fontFamily: T.ui, fontSize: 13.5, color: T.fg2, lineHeight: 1.6, margin: "10px 0 0" }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute, lineHeight: 1.6, margin: "10px 0 0" }}>
           Saldoen resettes ved neste fakturering. Du kan også booke en drop-in time mot betaling.
         </p>
       </div>
@@ -241,7 +240,7 @@ export function BruktOppV2({ resetTekst }: { resetTekst: string | null }) {
         <Link href="/booking" style={{ textDecoration: "none", marginTop: 4 }}>
           <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 10, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
           }}>Book drop-in mot betaling</span>
         </Link>
       </Kort>
@@ -262,14 +261,14 @@ export function BookingNyV2({ data }: { data: BookingNyV2Data }) {
   const valgtSlug = tjenester.find((t) => t.id === valgtServiceId)?.slug ?? "";
 
   return (
-    <div style={{ width: "100%", maxWidth: 680, margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ width: "100%", maxWidth: 680, margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
       {/* Hode */}
       <div>
         <Caps>PlayerHQ · Book ny time</Caps>
         <div style={{ marginTop: 10 }}>
           <Tittel mobile={mobile} em="månedens timer.">Bruk</Tittel>
         </div>
-        <p style={{ fontFamily: T.ui, fontSize: 13.5, color: T.fg2, lineHeight: 1.6, margin: "10px 0 0" }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute, lineHeight: 1.6, margin: "10px 0 0" }}>
           {creditsRemaining} av {monthlyCredits} timer igjen denne måneden. Velg tjeneste og tid på ett sted.
         </p>
       </div>
@@ -288,18 +287,18 @@ export function BookingNyV2({ data }: { data: BookingNyV2Data }) {
       {isFree && (
         <Kort>
           <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
-            <span style={{ width: 38, height: 38, borderRadius: 12, flex: "none", background: `color-mix(in srgb, ${T.warn} 12%, transparent)`, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
-              <Icon name="lock" size={16} style={{ color: T.warn }} />
+            <span style={{ width: 38, height: 38, borderRadius: 12, flex: "none", background: `color-mix(in srgb, ${TL.warn} 12%, transparent)`, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+              <Icon name="lock" size={16} style={{ color: TL.warn }} />
             </span>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontFamily: T.disp, fontSize: 15, fontWeight: 700, color: T.fg }}>Booking krever Pro</div>
-              <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.55, margin: "5px 0 0" }}>
+              <div style={{ fontFamily: TL.font.sans, fontSize: 15, fontWeight: 700, color: TL.text }}>Booking krever Pro</div>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.55, margin: "5px 0 0" }}>
                 Free-konto: oppgrader til Pro eller et aktivt coaching-abonnement for å bruke forhåndsbetalte timer.
               </p>
               <Link href="/portal/meg/abonnement" style={{ textDecoration: "none", display: "inline-block", marginTop: 12 }}>
                 <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 10, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
           }}>Oppgrader til Pro</span>
               </Link>
             </div>
@@ -313,10 +312,10 @@ export function BookingNyV2({ data }: { data: BookingNyV2Data }) {
       {aktivtSteg === 1 && (
         <Kort tint eyebrow="Min saldo" action={fornyerLabel ? <Caps size={9}>Fornyer · {fornyerLabel}</Caps> : undefined}>
           <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
-            <span style={{ fontFamily: T.mono, fontSize: 40, fontWeight: 700, color: T.fg, lineHeight: 0.9, letterSpacing: "-0.02em", fontVariantNumeric: "tabular-nums" }}>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 40, fontWeight: 700, color: TL.text, lineHeight: 0.9, letterSpacing: "-0.02em", fontVariantNumeric: "tabular-nums" }}>
               {creditsRemaining}
             </span>
-            <span style={{ fontFamily: T.mono, fontSize: 14, fontWeight: 600, color: T.mut, fontVariantNumeric: "tabular-nums" }}>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 14, fontWeight: 600, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
               / {monthlyCredits} igjen
             </span>
           </div>
@@ -341,30 +340,30 @@ export function BookingNyV2({ data }: { data: BookingNyV2Data }) {
                 scroll={false}
                 aria-pressed={aktiv}
                 className="v2-press v2-focus"
-                style={{ display: "flex", alignItems: "flex-start", gap: 14, padding: "16px 18px", borderRadius: T.rCard, textDecoration: "none", background: aktiv ? `${T.tint}, ${T.panel}` : T.panel, border: `1px solid ${aktiv ? "color-mix(in srgb, var(--v2-lime) 35%, transparent)" : T.border}` }}
+                style={{ display: "flex", alignItems: "flex-start", gap: 14, padding: "16px 18px", borderRadius: TL.radius.card, textDecoration: "none", background: aktiv ? `${TL.dim}, ${TL.elev}` : TL.elev, border: `1px solid ${aktiv ? "color-mix(in srgb, var(--tl-fill) 35%, transparent)" : TL.hair}` }}
               >
-                <span aria-hidden style={{ width: 20, height: 20, marginTop: 1, borderRadius: 9999, flex: "none", display: "inline-flex", alignItems: "center", justifyContent: "center", background: aktiv ? T.handling : "transparent", border: aktiv ? "1px solid transparent" : `1px solid ${T.borderS}` }}>
-                  {aktiv && <Icon name="check" size={12} style={{ color: T.onHandling }} />}
+                <span aria-hidden style={{ width: 20, height: 20, marginTop: 1, borderRadius: 9999, flex: "none", display: "inline-flex", alignItems: "center", justifyContent: "center", background: aktiv ? TL.fill : "transparent", border: aktiv ? "1px solid transparent" : `1px solid ${TL.hair}` }}>
+                  {aktiv && <Icon name="check" size={12} style={{ color: TL.onFill }} />}
                 </span>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
-                    <span style={{ fontFamily: T.disp, fontSize: 15, fontWeight: 700, color: T.fg }}>{s.navn}</span>
-                    <span style={{ display: "inline-flex", alignItems: "center", gap: 5, flex: "none", fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.mut }}>
-                      <Icon name="clock" size={11} style={{ color: T.mut }} />
+                    <span style={{ fontFamily: TL.font.sans, fontSize: 15, fontWeight: 700, color: TL.text }}>{s.navn}</span>
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 5, flex: "none", fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, color: TL.mute }}>
+                      <Icon name="clock" size={11} style={{ color: TL.mute }} />
                       {s.varighetMin} min
                     </span>
                   </div>
                   {s.beskrivelse && (
-                    <p style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2, lineHeight: 1.5, margin: "4px 0 0" }}>{s.beskrivelse}</p>
+                    <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.5, margin: "4px 0 0" }}>{s.beskrivelse}</p>
                   )}
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginTop: 7 }}>
-                    <span style={{ fontFamily: T.mono, fontSize: 11.5, fontWeight: 700, color: aktiv ? T.lime : T.fg, fontVariantNumeric: "tabular-nums" }}>
+                    <span style={{ fontFamily: TL.font.mono, fontSize: 11.5, fontWeight: 700, color: aktiv ? TL.fill : TL.text, fontVariantNumeric: "tabular-nums" }}>
                       {s.prisOre > 0 ? `${s.prisOre / 100} kr` : "1 credit"}
                       {s.prisOre <= 0 && <HjelpTips k="credits" size={11} />}
                     </span>
                     {s.stedNavn && (
-                      <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.mut }}>
-                        <Icon name="map-pin" size={11} style={{ color: T.mut }} />
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, color: TL.mute }}>
+                        <Icon name="map-pin" size={11} style={{ color: TL.mute }} />
                         {s.stedNavn}
                       </span>
                     )}
@@ -381,15 +380,15 @@ export function BookingNyV2({ data }: { data: BookingNyV2Data }) {
       {aktivtSteg >= 2 && (
         <Kort pad="12px 16px">
           <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 7, fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>
-              <Icon name="target" size={13} style={{ color: T.lime }} />
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 7, fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text }}>
+              <Icon name="target" size={13} style={{ color: TL.fill }} />
               {valgtServiceNavn}
             </span>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontFamily: T.mono, fontSize: 10.5, fontWeight: 700, color: T.mut }}>
-              <Icon name="clock" size={11} style={{ color: T.mut }} />
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontFamily: TL.font.mono, fontSize: 10.5, fontWeight: 700, color: TL.mute }}>
+              <Icon name="clock" size={11} style={{ color: TL.mute }} />
               {valgtServiceVarighetMin} min
             </span>
-            <Link href={WIZARD} scroll={false} className="v2-focus" style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.lime, textDecoration: "none" }}>
+            <Link href={WIZARD} scroll={false} className="v2-focus" style={{ marginLeft: "auto", fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.fill, textDecoration: "none" }}>
               Endre
             </Link>
           </div>
@@ -409,7 +408,7 @@ export function BookingNyV2({ data }: { data: BookingNyV2Data }) {
 
         <div style={{ marginTop: 16 }}>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-            <Icon name="calendar" size={12} style={{ color: T.mut }} />
+            <Icon name="calendar" size={12} style={{ color: TL.mute }} />
             <Caps size={9}>{valgtDatoLang}</Caps>
           </span>
           <div style={{ marginTop: 10 }}>
@@ -443,9 +442,9 @@ export function BookingNyV2({ data }: { data: BookingNyV2Data }) {
             <Kort tint pad="12px 16px">
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
                 <Caps size={9}>Saldo etter</Caps>
-                <span style={{ fontFamily: T.mono, fontSize: 12.5, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 12.5, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>
                   {creditsRemaining} / {monthlyCredits}
-                  <span style={{ padding: "0 6px", color: T.mut }}>→</span>
+                  <span style={{ padding: "0 6px", color: TL.mute }}>→</span>
                   {saldoEtter} / {monthlyCredits}
                 </span>
               </div>
@@ -453,15 +452,15 @@ export function BookingNyV2({ data }: { data: BookingNyV2Data }) {
           </div>
 
           {sisteCredit && (
-            <div style={{ display: "flex", gap: 8, alignItems: "flex-start", padding: "10px 12px", borderRadius: 12, marginTop: 10, background: `color-mix(in srgb, ${T.warn} 10%, transparent)`, border: `1px solid color-mix(in srgb, ${T.warn} 40%, transparent)` }}>
-              <Icon name="coins" size={13} style={{ color: T.warn, flex: "none", marginTop: 1 }} />
-              <span style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2, lineHeight: 1.5 }}>
+            <div style={{ display: "flex", gap: 8, alignItems: "flex-start", padding: "10px 12px", borderRadius: 12, marginTop: 10, background: `color-mix(in srgb, ${TL.warn} 10%, transparent)`, border: `1px solid color-mix(in srgb, ${TL.warn} 40%, transparent)` }}>
+              <Icon name="coins" size={13} style={{ color: TL.warn, flex: "none", marginTop: 1 }} />
+              <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.5 }}>
                 Dette er den siste crediten din denne måneden.
               </span>
             </div>
           )}
 
-          <p style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, lineHeight: 1.6, textAlign: "center", margin: "12px 0 0" }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, lineHeight: 1.6, textAlign: "center", margin: "12px 0 0" }}>
             Velg en ledig tid over for å fullføre. Avbestilling er gratis inntil 24 timer før.
           </p>
         </section>

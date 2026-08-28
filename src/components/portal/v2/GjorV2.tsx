@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ Gjør — v2 Presis + opplevelse B-pakke.
  * Oversikt (status + tall) → én grønn start → detalj. Runde/fysisk er sekundært.
@@ -13,21 +13,7 @@ import { markerOktStatus } from "@/lib/portal-gjennomfore/okt-status-actions";
 import type { GjennomforeData } from "@/lib/portal-gjennomfore/gjennomfore-data";
 import { HurtigStatusKnapper } from "@/components/widgets";
 import { FortsettRundeCta } from "@/components/portal/runde-logg/fortsett-runde-cta";
-import {
-  T,
-  Caps,
-  StatusPill,
-  Kort,
-  Rad,
-  TallHero,
-  CTAPill,
-  AkseChip,
-  HjelpTips,
-  TomTilstand,
-  Icon,
-  ProgresjonsBar,
-} from "@/components/v2";
-
+import { Caps, StatusPill, Kort, Rad, TallHero, CTAPill, AkseChip, HjelpTips, TomTilstand, Icon, ProgresjonsBar } from "@/components/v2";
 function fmtTid(min: number): string {
   if (min >= 60) return `${(min / 60).toFixed(1).replace(".", ",")} t`;
   return `${min} min`;
@@ -55,28 +41,28 @@ function SekundarHandlinger() {
       <FortsettRundeCta />
       <Link href="/portal/runde/live" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
         <Rad
-          leading={<Icon name="flag" size={16} style={{ color: T.mut }} />}
+          leading={<Icon name="flag" size={16} style={{ color: TL.mute }} />}
           title="Før runde slag for slag"
           sub="SG beregnes automatisk når du lagrer"
         />
       </Link>
       <Link href="/portal/runde/logg" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
         <Rad
-          leading={<Icon name="list" size={16} style={{ color: T.mut }} />}
+          leading={<Icon name="list" size={16} style={{ color: TL.mute }} />}
           title="Logg tidligere runde"
           sub="Etterpå-føring"
         />
       </Link>
       <Link href="/portal/mal/runder/ny" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
         <Rad
-          leading={<Icon name="upload" size={16} style={{ color: T.mut }} />}
+          leading={<Icon name="upload" size={16} style={{ color: TL.mute }} />}
           title="Hurtig score / importer runde"
           sub="Ny runde eller score fra fil (UpGame) etter lagring"
         />
       </Link>
       <Link href="/portal/fysisk" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
         <Rad
-          leading={<Icon name="dumbbell" size={16} style={{ color: T.mut }} />}
+          leading={<Icon name="dumbbell" size={16} style={{ color: TL.mute }} />}
           title="Logg fysisk-økt"
           sub="Styrke, mobilitet, kondisjon"
           last
@@ -113,7 +99,7 @@ export function GjorV2({ data }: { data: GjennomforeData }) {
   }
 
   return (
-    <div data-paper-wave-g="gjor" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="gjor" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div
         style={{
@@ -126,8 +112,8 @@ export function GjorV2({ data }: { data: GjennomforeData }) {
       >
         <div>
           <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Gjør</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Dagens økt</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Gjør</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>Dagens økt</span>
         </div>
         </div>
         {headerStatus}
@@ -148,11 +134,11 @@ export function GjorV2({ data }: { data: GjennomforeData }) {
                 <Caps size={9}>{k.l}</Caps>
                 <div
                   style={{
-                    fontFamily: T.mono,
+                    fontFamily: TL.font.mono,
                     fontWeight: 700,
                     fontSize: 16,
                     marginTop: 8,
-                    color: T.fg,
+                    color: TL.text,
                   }}
                 >
                   {k.v}
@@ -180,10 +166,10 @@ export function GjorV2({ data }: { data: GjennomforeData }) {
               textDecoration: "none",
               display: "block",
               textAlign: "center",
-              fontFamily: T.ui,
+              fontFamily: TL.font.sans,
               fontSize: 12,
               fontWeight: 600,
-              color: T.mut,
+              color: TL.mute,
               padding: "2px 0",
             }}
           >
@@ -207,11 +193,11 @@ export function GjorV2({ data }: { data: GjennomforeData }) {
                 <Caps size={9}>{k.l}</Caps>
                 <div
                   style={{
-                    fontFamily: T.mono,
+                    fontFamily: TL.font.mono,
                     fontWeight: 700,
                     fontSize: mobile ? 15 : 17,
                     marginTop: 8,
-                    color: T.fg,
+                    color: TL.text,
                     letterSpacing: "-0.02em",
                   }}
                 >
@@ -230,11 +216,11 @@ export function GjorV2({ data }: { data: GjennomforeData }) {
                   marginBottom: 6,
                 }}
               >
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: T.ui, fontSize: 11.5, color: T.mut, fontWeight: 600 }}>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, fontWeight: 600 }}>
                   Dagens gjennomføring
                   <HjelpTips k="planEtterlevelse" size={11} />
                 </span>
-                <span style={{ fontFamily: T.mono, fontSize: 11.5, fontWeight: 700 }}>{fullfortPct} %</span>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 11.5, fontWeight: 700 }}>{fullfortPct} %</span>
               </div>
               <ProgresjonsBar variant="bar" value={fullfortPct} max={100} showValue={false} label="" />
             </div>
@@ -300,11 +286,11 @@ export function GjorV2({ data }: { data: GjennomforeData }) {
                           display: "inline-flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          background: T.panel2,
-                          border: `1px solid ${T.border}`,
+                          background: TL.dock,
+                          border: `1px solid ${TL.hair}`,
                         }}
                       >
-                        <Icon name="circle" size={13} style={{ color: T.mut }} />
+                        <Icon name="circle" size={13} style={{ color: TL.mute }} />
                       </span>
                     }
                     title={navn}
@@ -328,10 +314,10 @@ export function GjorV2({ data }: { data: GjennomforeData }) {
                       style={{
                         width: 44,
                         flex: "none",
-                        fontFamily: T.mono,
+                        fontFamily: TL.font.mono,
                         fontSize: 11,
                         fontWeight: 700,
-                        color: T.mut,
+                        color: TL.mute,
                       }}
                     >
                       {o.tid}
@@ -371,11 +357,11 @@ export function GjorV2({ data }: { data: GjennomforeData }) {
                         display: "inline-flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        background: T.panel2,
+                        background: TL.dock,
                         border: "1px solid transparent",
                       }}
                     >
-                      <Icon name="check" size={13} style={{ color: T.up }} />
+                      <Icon name="check" size={13} style={{ color: TL.ok }} />
                     </span>
                   }
                   title={o.tittel}

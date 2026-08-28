@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * Slag-editor: resultatet av ETT slag i posisjonskjedet.
@@ -12,7 +13,7 @@
 import { useState } from "react";
 import type { WindDir } from "@/generated/prisma/enums";
 import type { HvileLie, LoggetSlag } from "@/lib/runde-logg/types";
-import { T, Caps, Icon } from "@/components/v2";
+import { Caps, Icon } from "@/components/v2";
 import { AvstandVelger, type AvstandKontekst } from "./avstand-velger";
 
 const LIES: Array<{ id: HvileLie; label: string }> = [
@@ -125,12 +126,12 @@ export function SlagEditor({
     gap: 6,
     padding: "8px 13px",
     borderRadius: 9999,
-    fontFamily: T.ui,
+    fontFamily: TL.font.sans,
     fontSize: 12,
     fontWeight: 600,
-    background: aktiv ? (farge?.bg ?? T.panel3) : "transparent",
-    color: aktiv ? (farge?.fg ?? T.fg) : T.fg2,
-    border: `1px solid ${aktiv ? (farge?.bd ?? T.borderS) : T.border}`,
+    background: aktiv ? (farge?.bg ?? TL.dim) : "transparent",
+    color: aktiv ? (farge?.fg ?? TL.text) : TL.mute,
+    border: `1px solid ${aktiv ? (farge?.bd ?? TL.hair) : TL.hair}`,
   });
 
   return (
@@ -141,8 +142,8 @@ export function SlagEditor({
         gap: 14,
         padding: "14px 14px 16px",
         borderRadius: 16,
-        background: T.panel,
-        border: `1px solid ${T.borderS}`,
+        background: TL.elev,
+        border: `1px solid ${TL.hair}`,
       }}
     >
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -163,11 +164,11 @@ export function SlagEditor({
               padding: "5px 10px",
               borderRadius: 9999,
               background: "transparent",
-              border: `1px solid ${T.border}`,
-              fontFamily: T.mono,
+              border: `1px solid ${TL.hair}`,
+              fontFamily: TL.font.mono,
               fontSize: 10,
               fontWeight: 700,
-              color: T.fg2,
+              color: TL.mute,
             }}
           >
             <Icon name="arrow-left" size={12} />
@@ -189,16 +190,16 @@ export function SlagEditor({
           height: 56,
           borderRadius: 16,
           border: "none",
-          background: straffe ? T.panel3 : T.lime,
-          color: straffe ? T.mut : T.onLime,
-          fontFamily: T.disp,
+          background: straffe ? TL.dim : TL.fill,
+          color: straffe ? TL.mute : TL.onFill,
+          fontFamily: TL.font.sans,
           fontSize: 17,
           fontWeight: 700,
           display: "inline-flex",
           alignItems: "center",
           justifyContent: "center",
           gap: 8,
-          boxShadow: straffe ? "none" : "0 10px 34px color-mix(in srgb, var(--v2-lime) 28%, transparent)",
+          boxShadow: straffe ? "none" : "0 10px 34px color-mix(in srgb, var(--tl-fill) 28%, transparent)",
         }}
       >
         <Icon name="flag" size={17} />I HULL
@@ -207,12 +208,12 @@ export function SlagEditor({
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         <span
           style={{
-            fontFamily: T.mono,
+            fontFamily: TL.font.mono,
             fontSize: 9.5,
             fontWeight: 700,
             letterSpacing: "0.08em",
             textTransform: "uppercase",
-            color: T.mut,
+            color: TL.mute,
           }}
         >
           …eller hvor landet ballen?
@@ -234,12 +235,12 @@ export function SlagEditor({
                   gap: 7,
                   padding: "9px 12px",
                   borderRadius: 12,
-                  fontFamily: T.ui,
+                  fontFamily: TL.font.sans,
                   fontSize: 12.5,
                   fontWeight: 600,
-                  background: on ? T.panel3 : "transparent",
-                  color: on ? T.fg : T.fg2,
-                  border: `1px solid ${on ? T.borderS : T.border}`,
+                  background: on ? TL.dim : "transparent",
+                  color: on ? TL.text : TL.mute,
+                  border: `1px solid ${on ? TL.hair : TL.hair}`,
                 }}
               >
                 <span
@@ -247,7 +248,7 @@ export function SlagEditor({
                     width: 6,
                     height: 6,
                     borderRadius: 9999,
-                    background: on ? T.lime : T.mut,
+                    background: on ? TL.fill : TL.mute,
                     opacity: on ? 1 : 0.5,
                   }}
                 />
@@ -274,10 +275,10 @@ export function SlagEditor({
                 height: 40,
                 borderRadius: 10,
                 padding: "0 12px",
-                background: T.panel2,
-                border: `1px solid ${T.border}`,
-                color: T.fg,
-                fontFamily: T.ui,
+                background: TL.dock,
+                border: `1px solid ${TL.hair}`,
+                color: TL.text,
+                fontFamily: TL.font.sans,
                 fontSize: 13,
                 outline: "none",
               }}
@@ -305,10 +306,10 @@ export function SlagEditor({
             style={{
               borderRadius: 10,
               padding: "10px 12px",
-              background: T.panel2,
-              border: `1px solid ${T.border}`,
-              color: T.fg,
-              fontFamily: T.ui,
+              background: TL.dock,
+              border: `1px solid ${TL.hair}`,
+              color: TL.text,
+              fontFamily: TL.font.sans,
               fontSize: 13,
               outline: "none",
               resize: "none",
@@ -325,7 +326,7 @@ export function SlagEditor({
           style={pill(straffe, {
             bg: "color-mix(in srgb, var(--v2-down) 12%, transparent)",
             bd: "color-mix(in srgb, var(--v2-down) 40%, transparent)",
-            fg: T.down,
+            fg: TL.danger,
           })}
         >
           {straffe ? <Icon name="check" size={12} /> : <Icon name="plus" size={12} />}
@@ -354,12 +355,12 @@ export function SlagEditor({
             gap: 6,
             padding: "10px 18px",
             borderRadius: 12,
-            background: T.panel3,
-            border: `1px solid ${T.borderS}`,
-            fontFamily: T.ui,
+            background: TL.dim,
+            border: `1px solid ${TL.hair}`,
+            fontFamily: TL.font.sans,
             fontSize: 13,
             fontWeight: 700,
-            color: !lie || avstand == null ? T.mut : T.fg,
+            color: !lie || avstand == null ? TL.mute : TL.text,
           }}
         >
           Lagre slag

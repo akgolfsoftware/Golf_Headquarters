@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * PlayerHQ · Booking · Økt-detalj — v2 (retning C «Presis»).
@@ -9,7 +10,7 @@
  * øktplaner). All formatering (Oslo-tid) skjer i page.tsx.
  */
 
-import { T, Caps, Tittel, Kort, StatusPill, MikroMeta, type StatusTone } from "@/components/v2";
+import { Caps, Tittel, Kort, StatusPill, MikroMeta, type StatusTone } from "@/components/v2";
 import { BookingAvbestillKnapp } from "./BookingAvbestillKnapp";
 
 export type BookingDetaljV2Data = {
@@ -33,16 +34,16 @@ export type BookingDetaljV2Data = {
 
 function DetaljRad({ label, verdi, last }: { label: string; verdi: React.ReactNode; last?: boolean }) {
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "90px 1fr", alignItems: "baseline", gap: 12, padding: "10px 0", borderBottom: last ? "none" : `1px solid ${T.border}` }}>
+    <div style={{ display: "grid", gridTemplateColumns: "90px 1fr", alignItems: "baseline", gap: 12, padding: "10px 0", borderBottom: last ? "none" : `1px solid ${TL.hair}` }}>
       <Caps size={9}>{label}</Caps>
-      <span style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>{verdi}</span>
+      <span style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>{verdi}</span>
     </div>
   );
 }
 
 export function BookingDetaljV2({ data }: { data: BookingDetaljV2Data }) {
   return (
-    <div data-paper-portal-booking-detalj data-paper-slug="playerhq-booking-mine" style={{ maxWidth: 560, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-booking-detalj data-paper-slug="playerhq-booking-mine" style={{ maxWidth: 560, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
       {/* Hero — ekte status + tjeneste */}
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         <div>
@@ -65,8 +66,8 @@ export function BookingDetaljV2({ data }: { data: BookingDetaljV2Data }) {
           <DetaljRad
             label="Tid"
             verdi={
-              <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: T.fg }}>
-                {data.tid} <span style={{ color: T.mut, fontWeight: 400 }}>({data.varighetMin} min)</span>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: TL.text }}>
+                {data.tid} <span style={{ color: TL.mute, fontWeight: 400 }}>({data.varighetMin} min)</span>
               </span>
             }
           />
@@ -79,7 +80,7 @@ export function BookingDetaljV2({ data }: { data: BookingDetaljV2Data }) {
       {/* Notat — kun hvis det faktisk finnes */}
       {data.notat && (
         <Kort eyebrow="Notat">
-          <p style={{ borderLeft: `2px solid ${T.lime}`, padding: "2px 0 2px 12px", fontFamily: T.disp, fontStyle: "italic", fontSize: 13.5, lineHeight: 1.55, color: T.fg, margin: 0 }}>
+          <p style={{ borderLeft: `2px solid ${TL.fill}`, padding: "2px 0 2px 12px", fontFamily: TL.font.sans, fontStyle: "italic", fontSize: 13.5, lineHeight: 1.55, color: TL.text, margin: 0 }}>
             {data.notat}
           </p>
         </Kort>

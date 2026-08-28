@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ · SG-hub · Coach-modus per-kølle analyse — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
  * T.* only. Lys PlayerHQ.
@@ -7,17 +7,7 @@
 
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import {
-  Kort,
-  Caps,
-  Tittel,
-  KpiFlis,
-  DataTabell,
-  type DataTabellColumn,
-  PillVelger,
-  HjelpTips,
-  T,
-} from "@/components/v2";
+import { Kort, Caps, Tittel, KpiFlis, DataTabell, type DataTabellColumn, PillVelger, HjelpTips } from "@/components/v2";
 import { DPlanePlot } from "@/components/sg-hub/DPlanePlot";
 import { StrikeHeatmap } from "@/components/sg-hub/StrikeHeatmap";
 import { SmashCurvePlot } from "@/components/sg-hub/SmashCurvePlot";
@@ -25,7 +15,6 @@ import type { DPlaneResult } from "@/lib/sg-hub/d-plane";
 import type { StrikeResult } from "@/lib/sg-hub/strike-pattern";
 import type { SmashCurveResult } from "@/lib/sg-hub/smash-curve";
 import { setSgHubMode } from "@/app/portal/(legacy)/mal/sg-hub/mode-action";
-
 export interface KolleSkuddRad {
   nr: number;
   face: string; // "−1,2°"
@@ -94,7 +83,7 @@ export function CoachSgHubKolleV2({ data }: { data: CoachSgHubKolleV2Data }) {
     <>
       {/* Coach-modus-banner */}
       <Kort tint pad="12px 20px">
-        <Caps color={T.lime}>Coach-modus · {data.spillerNavn}</Caps>
+        <Caps color={TL.fill}>Coach-modus · {data.spillerNavn}</Caps>
       </Kort>
 
       {/* Topptekst + modus */}
@@ -105,7 +94,7 @@ export function CoachSgHubKolleV2({ data }: { data: CoachSgHubKolleV2Data }) {
             <Tittel mobile em={data.kolle} />
             <HjelpTips k="trackman" />
           </div>
-          <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, margin: "8px 0 0" }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: "8px 0 0" }}>
             {data.antallSlag} slag · {data.antallOkter} økt{data.antallOkter !== 1 ? "er" : ""} · TrackMan
           </p>
         </div>
@@ -113,22 +102,22 @@ export function CoachSgHubKolleV2({ data }: { data: CoachSgHubKolleV2Data }) {
       </div>
 
       {/* Nøkkeltall */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: T.gap }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16 }}>
         <Kort>
           <Caps size={9}>D-Plane</Caps>
-          <div style={{ fontFamily: T.disp, fontSize: 20, fontWeight: 700, color: T.fg, marginTop: 12 }}>{data.dplaneLabel}</div>
-          <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, marginTop: 8 }}>{data.dplaneKonsistensPct} % konsistens</span>
+          <div style={{ fontFamily: TL.font.sans, fontSize: 20, fontWeight: 700, color: TL.text, marginTop: 12 }}>{data.dplaneLabel}</div>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, marginTop: 8 }}>{data.dplaneKonsistensPct} % konsistens</span>
         </Kort>
         <KpiFlis label="Sweet spot" value={`${data.sweetPct} %`} instant />
         <Kort>
           <Caps size={9}>Optimum speed</Caps>
           <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginTop: 12 }}>
-            <span style={{ fontFamily: T.mono, fontSize: 30, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 30, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>
               {data.optimumSpeed > 0 ? String(data.optimumSpeed).replace(".", ",") : "—"}
             </span>
-            {data.optimumSpeed > 0 && <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut }}>mph</span>}
+            {data.optimumSpeed > 0 && <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>mph</span>}
           </div>
-          <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, marginTop: 8 }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, marginTop: 8 }}>
             {data.aboveOptimumPct > 0 ? `${data.aboveOptimumPct} % over optimum` : "For lite data"}
           </span>
         </Kort>
@@ -137,8 +126,8 @@ export function CoachSgHubKolleV2({ data }: { data: CoachSgHubKolleV2Data }) {
       {/* D-Plane */}
       <Kort eyebrow="D-Plane · kurvemønster" action={<HjelpTips k="dPlane" />}>
         {!data.advanced && (
-          <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "0 0 12px" }}>
-            Dominerende mønster: <span style={{ color: T.fg, fontWeight: 600 }}>{data.dplaneLabel}</span>{" "}
+          <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: "0 0 12px" }}>
+            Dominerende mønster: <span style={{ color: TL.text, fontWeight: 600 }}>{data.dplaneLabel}</span>{" "}
             ({data.dplaneKonsistensPct} % av slagene)
           </p>
         )}
@@ -148,7 +137,7 @@ export function CoachSgHubKolleV2({ data }: { data: CoachSgHubKolleV2Data }) {
       {/* Strike heatmap */}
       <Kort eyebrow="Treffpunkt · beregnet" action={<HjelpTips k="strikeHeatmap" />}>
         {!data.advanced && (
-          <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "0 0 12px" }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: "0 0 12px" }}>
             {data.sweetPct} % sweet spot · snitt smash factor {String(data.avgSmash).replace(".", ",")}
           </p>
         )}
@@ -160,8 +149,8 @@ export function CoachSgHubKolleV2({ data }: { data: CoachSgHubKolleV2Data }) {
       {/* Smash curve */}
       <Kort eyebrow="Smash curve · effektivitets-optimum" action={<HjelpTips k="smashFactor" />}>
         {!data.advanced && data.optimumSpeed > 0 && (
-          <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "0 0 12px" }}>
-            Optimalt club speed: <span style={{ color: T.fg, fontWeight: 600 }}>{String(data.optimumSpeed).replace(".", ",")} mph</span>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: "0 0 12px" }}>
+            Optimalt club speed: <span style={{ color: TL.text, fontWeight: 600 }}>{String(data.optimumSpeed).replace(".", ",")} mph</span>
             {data.aboveOptimumPct > 0 && <> · {data.aboveOptimumPct} % over optimum</>}
           </p>
         )}
@@ -171,7 +160,7 @@ export function CoachSgHubKolleV2({ data }: { data: CoachSgHubKolleV2Data }) {
       {/* Slag-tabell (kun avansert) */}
       {data.advanced && (
         <Kort eyebrow="Slag-statistikk · alle slag">
-          <p style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, margin: "0 0 10px" }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, margin: "0 0 10px" }}>
             «Total» er TrackMan-total lengde per slag. Shot-annotasjoner aktiveres når
             ShotAnnotationPopover kobles inn i hovedversjonen.
           </p>

@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ Turneringer — v2 Presis + B-pakke (status + én primær Workbench).
  * Påmeldte turneringer. Tom = grønn vei til plan. T.* only.
@@ -7,17 +7,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  T,
-  Caps,
-  Kort,
-  Rad,
-  StatusPill,
-  CTAPill,
-  TomTilstand,
-  Icon,
-} from "@/components/v2";
-
+import { Caps, Kort, Rad, StatusPill, CTAPill, TomTilstand, Icon } from "@/components/v2";
 /* ── Data-kontrakt (speil av loaderen i den ekte siden) ────────────── */
 
 export type TurneringRad = {
@@ -46,12 +36,12 @@ export function TurneringerV2({ data }: { data: TurneringerData }) {
   const antallOrd = antall <= 12 ? TALLORD[antall] : String(antall);
 
   return (
-    <div  data-paper-slug="playerhq-turneringer" data-paper-wave-f="turneringer" data-od-id="playerhq-turneringer" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div  data-paper-slug="playerhq-turneringer" data-paper-wave-f="turneringer" data-od-id="playerhq-turneringer" style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Paper .topp */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Turneringer</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Turneringer</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
             Oversikt · {aar} · {antallOrd} påmeldt
           </span>
         </div>
@@ -81,14 +71,14 @@ export function TurneringerV2({ data }: { data: TurneringerData }) {
                     height: 38,
                     borderRadius: 12,
                     flex: "none",
-                    background: T.panel2,
-                    border: `1px solid ${T.border}`,
+                    background: TL.dock,
+                    border: `1px solid ${TL.hair}`,
                     display: "inline-flex",
                     alignItems: "center",
                     justifyContent: "center",
                   }}
                 >
-                  <Icon name="trophy" size={18} style={{ color: T.lime }} strokeWidth={1.75} />
+                  <Icon name="trophy" size={18} style={{ color: TL.fill }} strokeWidth={1.75} />
                 </span>
               }
               title={t.navn}

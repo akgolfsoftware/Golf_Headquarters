@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ Innstillinger — v2 Presis + B-pakke (status først, lys fast, én vei).
  * Ekte data fra requirePortalUser + getAbonnementData. Kun T.* / v2.
@@ -9,16 +9,8 @@ import { useEffect, useState, useTransition, type ReactNode } from "react";
 import Link from "next/link";
 import type { UserPreferences } from "@/lib/preferences";
 import { oppdaterPreferences } from "@/app/portal/meg/actions";
-import {
-  T,
-  Caps,
-  Kort,
-  Rad,
-  StatusPill,
-  Icon,
-} from "@/components/v2";
+import { Caps, Kort, Rad, StatusPill, Icon } from "@/components/v2";
 import { InnstillingerHode } from "@/components/portal/v2/InnstillingerHode";
-
 /* ── Datakontrakt ──────────────────────────────────────────────────── */
 
 export type InnstillingerData = {
@@ -68,8 +60,8 @@ function Toggle({ on, onToggle, label }: { on: boolean; onToggle: () => void; la
         flex: "none",
         position: "relative",
         display: "inline-block",
-        background: on ? T.handling : T.panel3,
-        border: `1px solid ${on ? "transparent" : T.borderS}`,
+        background: on ? TL.fill : TL.dim,
+        border: `1px solid ${on ? "transparent" : TL.hair}`,
         transition: "background 160ms",
       }}
     >
@@ -81,7 +73,7 @@ function Toggle({ on, onToggle, label }: { on: boolean; onToggle: () => void; la
           width: 16,
           height: 16,
           borderRadius: 9999,
-          background: on ? T.onHandling : T.mut,
+          background: on ? TL.onFill : TL.mute,
           transition: "left 160ms",
         }}
       />
@@ -97,15 +89,15 @@ function SeksjonIkon({ name, farge }: { name: string; farge?: string }) {
         width: 32,
         height: 32,
         borderRadius: 10,
-        background: T.panel3,
-        border: `1px solid ${T.border}`,
+        background: TL.dim,
+        border: `1px solid ${TL.hair}`,
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
         flex: "none",
       }}
     >
-      <Icon name={name} size={14} style={{ color: farge || T.fg2 }} />
+      <Icon name={name} size={14} style={{ color: farge || TL.mute }} />
     </span>
   );
 }
@@ -184,9 +176,9 @@ export function InnstillingerV2({ data }: { data: InnstillingerData }) {
   const kontoenDin = (
     <Seksjon label="Kontoen din">
       <div style={{ padding: "2px 0 12px" }}>
-        <div style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.mut, marginBottom: 4 }}>E-post</div>
-        <div style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>{epost}</div>
-        <p style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, margin: "6px 0 0", lineHeight: 1.5 }}>
+        <div style={{ fontFamily: TL.font.sans, fontSize: 12, fontWeight: 600, color: TL.mute, marginBottom: 4 }}>E-post</div>
+        <div style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>{epost}</div>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, margin: "6px 0 0", lineHeight: 1.5 }}>
           E-posten er innloggingen din. Vil du endre den, gjør du det fra profilen din.
         </p>
       </div>
@@ -203,7 +195,7 @@ export function InnstillingerV2({ data }: { data: InnstillingerData }) {
         />
       )}
       <Link href="/portal/meg/abonnement" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
-        <Rad leading={<SeksjonIkon name="sparkles" farge={T.lime} />} title="Abonnement" sub={aboSub} />
+        <Rad leading={<SeksjonIkon name="sparkles" farge={TL.fill} />} title="Abonnement" sub={aboSub} />
       </Link>
       <Link href="/portal/meg/profil" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
         <Rad leading={<SeksjonIkon name="mail" />} title="Rediger profil" sub="Endre e-post, navn og bilde" />
@@ -277,16 +269,16 @@ export function InnstillingerV2({ data }: { data: InnstillingerData }) {
   );
 
   const info = (
-    <div style={{ display: "flex", gap: 10, padding: "12px 16px", borderRadius: 12, background: T.panel2, border: `1px solid ${T.border}` }}>
-      <Icon name="info" size={14} style={{ color: T.mut, flex: "none", marginTop: 2 }} />
-      <span style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, lineHeight: 1.5 }}>
+    <div style={{ display: "flex", gap: 10, padding: "12px 16px", borderRadius: 12, background: TL.dock, border: `1px solid ${TL.hair}` }}>
+      <Icon name="info" size={14} style={{ color: TL.mute, flex: "none", marginTop: 2 }} />
+      <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.5 }}>
         Endringer lagres med én gang. Du får aldri en «Lagre»-knapp du kan gå fra uten å trykke.
       </span>
     </div>
   );
 
   return (
-    <div data-paper-portal-innstillinger data-paper-wave-f="innstillinger-player" data-od-id="playerhq-innstillinger" data-paper-slug="playerhq-innstillinger" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-portal-innstillinger data-paper-wave-f="innstillinger-player" data-od-id="playerhq-innstillinger" data-paper-slug="playerhq-innstillinger" style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <InnstillingerHode tittel="Innstillinger" undertekst="Meg · konto, varsler og personvern" tilbakeHref="/portal/meg" />
 
       {mobile ? (

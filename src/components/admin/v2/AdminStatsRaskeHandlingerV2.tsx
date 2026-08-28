@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * Raske handlinger-seksjon for /admin/stats/overview, v2-port 16. juli 2026.
@@ -9,7 +10,6 @@
  */
 
 import { useState, useTransition } from "react";
-import { T } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import { Reveal } from "@/components/stats/reveal";
 import { sjekkDbHelse, type DbHelseResultat } from "@/app/admin/(legacy)/stats/overview/actions";
@@ -49,14 +49,14 @@ export function RaskeHandlingerV2() {
           disabled={pending}
           style={{
             display: "flex", flexDirection: "column", gap: 10, width: "100%", height: "100%",
-            borderRadius: T.rCard, border: `1px solid ${T.border}`, background: T.panel, padding: 20,
+            borderRadius: TL.radius.card, border: `1px solid ${TL.hair}`, background: TL.elev, padding: 20,
             textAlign: "left", cursor: pending ? "default" : "pointer", opacity: pending ? 0.6 : 1,
           }}
         >
-          <Icon name={pending ? "loader" : "play"} size={16} style={{ color: T.lime }} className={pending ? "animate-spin" : undefined} />
-          <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, lineHeight: 1.4, color: T.fg }}>Sjekk DB-helse</span>
+          <Icon name={pending ? "loader" : "play"} size={16} style={{ color: TL.fill }} className={pending ? "animate-spin" : undefined} />
+          <span style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, lineHeight: 1.4, color: TL.text }}>Sjekk DB-helse</span>
           {resultat && (
-            <span style={{ display: "flex", alignItems: "center", gap: 6, fontFamily: T.mono, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: resultat.ok ? T.up : T.down }}>
+            <span style={{ display: "flex", alignItems: "center", gap: 6, fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: resultat.ok ? TL.ok : TL.danger }}>
               <Icon name={resultat.ok ? "check" : "triangle-alert"} size={12} />
               {resultat.ok ? `OK · ${resultat.latencyMs} ms · ${resultat.brukere} brukere` : `Feil · ${resultat.latencyMs} ms`}
             </span>
@@ -70,13 +70,13 @@ export function RaskeHandlingerV2() {
             title={GRUNN_TEKST[h.grunn]}
             style={{
               display: "flex", flexDirection: "column", gap: 10, width: "100%", height: "100%",
-              borderRadius: T.rCard, border: `1px dashed ${T.border}`, background: T.panel2, padding: 20,
+              borderRadius: TL.radius.card, border: `1px dashed ${TL.hair}`, background: TL.dock, padding: 20,
               textAlign: "left", cursor: "not-allowed",
             }}
           >
-            <Icon name="play" size={16} style={{ color: T.mut }} />
-            <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, lineHeight: 1.4, color: T.mut }}>{h.tekst}</span>
-            <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: T.mut }}>{GRUNN_TEKST[h.grunn]}</span>
+            <Icon name="play" size={16} style={{ color: TL.mute }} />
+            <span style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, lineHeight: 1.4, color: TL.mute }}>{h.tekst}</span>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: TL.mute }}>{GRUNN_TEKST[h.grunn]}</span>
           </div>
         </Reveal>
       ))}

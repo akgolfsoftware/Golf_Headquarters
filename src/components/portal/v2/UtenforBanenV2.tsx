@@ -18,7 +18,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Kort, Caps, TomTilstand } from "@/components/v2";
 
 export type UkeDagStatus = "" | "gjort" | "planlagt";
@@ -72,7 +73,7 @@ function initialer(navn: string): string {
 }
 
 function forklarStil(): React.CSSProperties {
-  return { fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 12, letterSpacing: "0.03em" };
+  return { fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 12, letterSpacing: "0.03em" };
 }
 
 export function UtenforBanenV2({ data }: { data: UtenforBanenData }) {
@@ -85,12 +86,12 @@ export function UtenforBanenV2({ data }: { data: UtenforBanenData }) {
     <div
       data-paper-slug="playerhq-hjem-rest"
       data-od-id="playerhq-utenfor-banen"
-      style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%", minWidth: 0 }}
+      style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%", minWidth: 0 }}
     >
       {/* Topp — fasit: Utenfor banen / Fysisk · lag · utfordringer */}
       <div style={{ minWidth: 0 }}>
-        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Utenfor banen</h1>
-        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+        <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Utenfor banen</h1>
+        <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
           {heltTom
             ? "Ingenting aktivert"
             : data.planlagtAntall > 0
@@ -117,11 +118,11 @@ export function UtenforBanenV2({ data }: { data: UtenforBanenData }) {
                 justifyContent: "center",
                 minHeight: 44,
                 padding: "0 16px",
-                borderRadius: T.rTag,
-                border: `1px solid ${T.border}`,
-                background: T.panel,
-                color: T.fg,
-                fontFamily: T.ui,
+                borderRadius: TL.radius.row,
+                border: `1px solid ${TL.hair}`,
+                background: TL.elev,
+                color: TL.text,
+                fontFamily: TL.font.sans,
                 fontSize: 13,
                 fontWeight: 600,
                 textDecoration: "none",
@@ -137,19 +138,19 @@ export function UtenforBanenV2({ data }: { data: UtenforBanenData }) {
           {data.dagensFys && (
             <div
               style={{
-                background: T.handlingSoft,
-                border: `1px solid ${T.border}`,
-                borderRadius: T.rCard,
+                background: TL.dim,
+                border: `1px solid ${TL.hair}`,
+                borderRadius: TL.radius.card,
                 padding: 16,
               }}
             >
-              <Caps color={T.handling}>Én ting nå</Caps>
-              <h2 style={{ margin: "8px 0 4px", fontFamily: T.disp, fontSize: 16, fontWeight: 600, color: T.fg }}>
+              <Caps color={TL.fill}>Én ting nå</Caps>
+              <h2 style={{ margin: "8px 0 4px", fontFamily: TL.font.sans, fontSize: 16, fontWeight: 600, color: TL.text }}>
                 Fysisk økt i dag — {data.dagensFys.varighetMin} min
               </h2>
-              <p style={{ margin: "0 0 12px", fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut, maxWidth: "46ch" }}>
+              <p style={{ margin: "0 0 12px", fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute, maxWidth: "46ch" }}>
                 {data.dagensFys.tittel} kl.{" "}
-                <span style={{ fontFamily: T.mono, fontVariantNumeric: "tabular-nums" }}>{data.dagensFys.tid}</span>
+                <span style={{ fontFamily: TL.font.mono, fontVariantNumeric: "tabular-nums" }}>{data.dagensFys.tid}</span>
                 {data.dagensFys.sted ? ` · ${data.dagensFys.sted}` : ""}. Ligger i planen din i dag.
               </p>
               <Link
@@ -161,10 +162,10 @@ export function UtenforBanenV2({ data }: { data: UtenforBanenData }) {
                   alignItems: "center",
                   justifyContent: "center",
                   minHeight: 56,
-                  borderRadius: T.rTag,
-                  background: T.handling,
-                  color: T.onHandling,
-                  fontFamily: T.ui,
+                  borderRadius: TL.radius.row,
+                  background: TL.fill,
+                  color: TL.onFill,
+                  fontFamily: TL.font.sans,
                   fontSize: 13.5,
                   fontWeight: 600,
                   textDecoration: "none",
@@ -188,11 +189,11 @@ export function UtenforBanenV2({ data }: { data: UtenforBanenData }) {
                 style={{
                   flex: 1,
                   minHeight: 40,
-                  border: `1px solid ${fane === id ? T.borderS : T.border}`,
-                  borderRadius: T.rTag,
-                  background: fane === id ? T.panel2 : T.panel,
-                  color: T.fg,
-                  fontFamily: T.ui,
+                  border: `1px solid ${fane === id ? TL.hair : TL.hair}`,
+                  borderRadius: TL.radius.row,
+                  background: fane === id ? TL.dock : TL.elev,
+                  color: TL.text,
+                  fontFamily: TL.font.sans,
                   fontSize: 12.5,
                   fontWeight: fane === id ? 600 : 400,
                   cursor: "pointer",
@@ -208,7 +209,7 @@ export function UtenforBanenV2({ data }: { data: UtenforBanenData }) {
               <Kort
                 eyebrow={`Uke ${data.ukeNr}`}
                 action={
-                  <span className="num" style={{ fontFamily: T.mono, fontSize: 11, color: T.mut }}>
+                  <span className="num" style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>
                     {data.gjortAntall}/{data.planlagtAntall} økter
                   </span>
                 }
@@ -220,21 +221,21 @@ export function UtenforBanenV2({ data }: { data: UtenforBanenData }) {
                       <div
                         key={d}
                         style={{
-                          border: `1px solid ${T.border}`,
-                          borderRadius: T.rTag,
+                          border: `1px solid ${TL.hair}`,
+                          borderRadius: TL.radius.row,
                           padding: "8px 2px",
                           textAlign: "center",
-                          background: s === "planlagt" ? T.panel2 : T.panel,
+                          background: s === "planlagt" ? TL.dock : TL.elev,
                         }}
                       >
                         <span
                           style={{
                             display: "block",
-                            fontFamily: T.mono,
+                            fontFamily: TL.font.mono,
                             fontSize: 9,
                             textTransform: "uppercase",
                             letterSpacing: "0.06em",
-                            color: T.mut,
+                            color: TL.mute,
                           }}
                         >
                           {d}
@@ -247,8 +248,8 @@ export function UtenforBanenV2({ data }: { data: UtenforBanenData }) {
                             height: 10,
                             borderRadius: 999,
                             margin: "6px auto 0",
-                            background: s === "gjort" ? T.up : s === "planlagt" ? "transparent" : T.panel2,
-                            border: `1px ${s === "planlagt" ? "dashed" : "solid"} ${s === "gjort" ? T.up : T.border}`,
+                            background: s === "gjort" ? TL.ok : s === "planlagt" ? "transparent" : TL.dock,
+                            border: `1px ${s === "planlagt" ? "dashed" : "solid"} ${s === "gjort" ? TL.ok : TL.hair}`,
                           }}
                         />
                       </div>
@@ -262,7 +263,7 @@ export function UtenforBanenV2({ data }: { data: UtenforBanenData }) {
                 eyebrow="Dagens økt"
                 action={
                   data.okt?.varighetMin != null ? (
-                    <span className="num" style={{ fontFamily: T.mono, fontSize: 11, color: T.mut }}>
+                    <span className="num" style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>
                       {data.okt.varighetMin} min
                     </span>
                   ) : undefined
@@ -278,14 +279,14 @@ export function UtenforBanenV2({ data }: { data: UtenforBanenData }) {
                         gap: 8,
                         alignItems: "center",
                         minHeight: 44,
-                        borderBottom: i === arr.length - 1 ? "none" : `1px solid ${T.borderS}`,
+                        borderBottom: i === arr.length - 1 ? "none" : `1px solid ${TL.hair}`,
                       }}
                     >
                       <div style={{ minWidth: 0 }}>
-                        <span style={{ display: "block", fontFamily: T.ui, fontSize: 13, fontWeight: 500, color: T.fg }}>
+                        <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 13, fontWeight: 500, color: TL.text }}>
                           {o.navn}
                         </span>
-                        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10, color: T.mut, marginTop: 1 }}>
+                        <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, marginTop: 1 }}>
                           {o.meta}
                         </span>
                       </div>
@@ -293,11 +294,11 @@ export function UtenforBanenV2({ data }: { data: UtenforBanenData }) {
                         <span
                           className="num"
                           style={{
-                            fontFamily: T.mono,
+                            fontFamily: TL.font.mono,
                             fontSize: 12.5,
                             fontWeight: 600,
                             textAlign: "right",
-                            color: o.pos ? T.up : T.fg,
+                            color: o.pos ? TL.ok : TL.text,
                           }}
                         >
                           {o.verdi}
@@ -322,11 +323,11 @@ export function UtenforBanenV2({ data }: { data: UtenforBanenData }) {
                     alignItems: "center",
                     justifyContent: "center",
                     minHeight: 44,
-                    borderRadius: T.rTag,
-                    border: `1px solid ${T.border}`,
-                    background: T.panel,
-                    color: T.fg,
-                    fontFamily: T.ui,
+                    borderRadius: TL.radius.row,
+                    border: `1px solid ${TL.hair}`,
+                    background: TL.elev,
+                    color: TL.text,
+                    fontFamily: TL.font.sans,
                     fontSize: 13,
                     fontWeight: 600,
                     textDecoration: "none",
@@ -342,7 +343,7 @@ export function UtenforBanenV2({ data }: { data: UtenforBanenData }) {
             <Kort
               eyebrow="Vennene dine"
               action={
-                <span className="num" style={{ fontFamily: T.mono, fontSize: 11, color: T.mut }}>
+                <span className="num" style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>
                   {data.venner.length} {data.venner.length === 1 ? "spiller" : "spillere"}
                 </span>
               }
@@ -360,7 +361,7 @@ export function UtenforBanenV2({ data }: { data: UtenforBanenData }) {
                         gap: 12,
                         minHeight: 52,
                         padding: "8px 0",
-                        borderBottom: i === arr.length - 1 ? "none" : `1px solid ${T.borderS}`,
+                        borderBottom: i === arr.length - 1 ? "none" : `1px solid ${TL.hair}`,
                         textDecoration: "none",
                         color: "inherit",
                         minWidth: 0,
@@ -376,21 +377,21 @@ export function UtenforBanenV2({ data }: { data: UtenforBanenData }) {
                           borderRadius: 999,
                           display: "grid",
                           placeItems: "center",
-                          background: T.panel2,
-                          border: `1px solid ${T.border}`,
-                          fontFamily: T.mono,
+                          background: TL.dock,
+                          border: `1px solid ${TL.hair}`,
+                          fontFamily: TL.font.mono,
                           fontSize: 11,
                           fontWeight: 700,
-                          color: T.fg,
+                          color: TL.text,
                         }}
                       >
                         {initialer(v.navn)}
                       </span>
                       <span style={{ flex: 1, minWidth: 0 }}>
-                        <span style={{ display: "block", fontFamily: T.ui, fontSize: 13, fontWeight: 500, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                        <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 13, fontWeight: 500, color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                           {v.navn}
                         </span>
-                        <span style={{ display: "block", fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 1 }}>
+                        <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 1 }}>
                           {v.hcp != null ? `HCP ${v.hcp.toLocaleString("nb-NO", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}` : "HCP —"}
                           {v.kategori ? ` · kat. ${v.kategori}` : ""}
                         </span>
@@ -415,7 +416,7 @@ export function UtenforBanenV2({ data }: { data: UtenforBanenData }) {
             <Kort
               eyebrow="Aktive utfordringer"
               action={
-                <span className="num" style={{ fontFamily: T.mono, fontSize: 11, color: T.mut }}>
+                <span className="num" style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>
                   {data.utfordringer.length} aktive
                 </span>
               }
@@ -429,21 +430,21 @@ export function UtenforBanenV2({ data }: { data: UtenforBanenData }) {
                       data-od-id={`rest-utfordring-${u.id}`}
                       style={{
                         display: "block",
-                        border: `1px solid ${T.border}`,
-                        borderRadius: T.rCard,
+                        border: `1px solid ${TL.hair}`,
+                        borderRadius: TL.radius.card,
                         padding: "12px 16px",
                         marginBottom: 8,
-                        background: T.panel,
+                        background: TL.elev,
                         textDecoration: "none",
                         color: "inherit",
                         minWidth: 0,
                       }}
                     >
-                      <span style={{ display: "block", fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>
+                      <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>
                         {u.navn}
                       </span>
                       {u.beskrivelse && (
-                        <span style={{ display: "block", fontFamily: T.bodyFont, fontSize: 12.5, color: T.mut, marginTop: 2 }}>
+                        <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, marginTop: 2 }}>
                           {u.beskrivelse}
                         </span>
                       )}
@@ -453,9 +454,9 @@ export function UtenforBanenV2({ data }: { data: UtenforBanenData }) {
                           display: "flex",
                           justifyContent: "space-between",
                           gap: 8,
-                          fontFamily: T.mono,
+                          fontFamily: TL.font.mono,
                           fontSize: 10,
-                          color: T.mut,
+                          color: TL.mute,
                           marginTop: 8,
                         }}
                       >

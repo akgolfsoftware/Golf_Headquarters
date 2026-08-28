@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ · Meg · Profil (W3-port).
  * Fasit: designsystem/paper/fase2/playerhq/playerhq-profil.html (§8 skjema).
@@ -22,7 +22,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { T, Icon, Inndata, TekstOmraade } from "@/components/v2";
+import { Icon, Inndata, TekstOmraade } from "@/components/v2";
 import { PaperPage, PaperTopp, PaperKropp } from "./PaperChrome";
 import type { LagreProfilInput } from "@/app/portal/meg/profil/actions";
 
@@ -58,9 +58,9 @@ function Kort({ eyebrow, children }: { eyebrow?: string; children: React.ReactNo
   return (
     <section
       style={{
-        background: T.panel,
-        border: `1px solid ${T.border}`,
-        borderRadius: T.rCard,
+        background: TL.elev,
+        border: `1px solid ${TL.hair}`,
+        borderRadius: TL.radius.card,
         padding: 16,
         minWidth: 0,
       }}
@@ -69,11 +69,11 @@ function Kort({ eyebrow, children }: { eyebrow?: string; children: React.ReactNo
         <span
           style={{
             display: "block",
-            fontFamily: T.mono,
-            fontSize: T.capsSm,
+            fontFamily: TL.font.mono,
+            fontSize: TL.storrelse.capsSm,
             letterSpacing: "0.09em",
             textTransform: "uppercase",
-            color: T.mut,
+            color: TL.mute,
             marginBottom: 4,
           }}
         >
@@ -107,19 +107,19 @@ function LesRad({
         justifyContent: "space-between",
         gap: 12,
         padding: "12px 0",
-        borderBottom: last ? "none" : `1px solid ${T.borderS}`,
+        borderBottom: last ? "none" : `1px solid ${TL.hair}`,
         minWidth: 0,
       }}
     >
       <div style={{ minWidth: 0 }}>
-        <span style={{ fontFamily: T.ui, fontSize: 13, color: T.fg }}>{navn}</span>
+        <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text }}>{navn}</span>
         {sub && (
           <span
             style={{
               display: "block",
-              fontFamily: T.mono,
+              fontFamily: TL.font.mono,
               fontSize: 10,
-              color: T.mut,
+              color: TL.mute,
               marginTop: 1,
             }}
           >
@@ -129,10 +129,10 @@ function LesRad({
       </div>
       <span
         style={{
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           fontSize: 13.5,
           fontWeight: 600,
-          color: tom ? T.mut : T.fg,
+          color: tom ? TL.mute : TL.text,
           textAlign: "right",
           flex: "none",
           fontVariantNumeric: "tabular-nums",
@@ -150,9 +150,9 @@ function Hjelp({ children }: { children: React.ReactNode }) {
     <p
       style={{
         margin: "10px 0 0",
-        fontFamily: T.mono,
+        fontFamily: TL.font.mono,
         fontSize: 10,
-        color: T.mut,
+        color: TL.mute,
         letterSpacing: "0.03em",
         lineHeight: 1.5,
       }}
@@ -186,21 +186,21 @@ function VidereRad({
         alignItems: "center",
         gap: 12,
         padding: "12px 0",
-        borderBottom: last ? "none" : `1px solid ${T.borderS}`,
+        borderBottom: last ? "none" : `1px solid ${TL.hair}`,
         textDecoration: "none",
         color: "inherit",
         minWidth: 0,
       }}
     >
       <div style={{ flex: 1, minWidth: 0 }}>
-        <span style={{ display: "block", fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>
+        <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>
           {tittel}
         </span>
-        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+        <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
           {sub}
         </span>
       </div>
-      <Icon name="chevron-right" size={16} style={{ color: T.mut, flex: "none" }} />
+      <Icon name="chevron-right" size={16} style={{ color: TL.mute, flex: "none" }} />
     </Link>
   );
 }
@@ -279,9 +279,9 @@ export function MegProfilV2({ data, lagre }: { data: MegProfilData; lagre: Lagre
               display: "flex",
               gap: 14,
               alignItems: "center",
-              background: T.panel,
-              border: `1px solid ${T.border}`,
-              borderRadius: T.rCard,
+              background: TL.elev,
+              border: `1px solid ${TL.hair}`,
+              borderRadius: TL.radius.card,
               padding: 16,
               minWidth: 0,
             }}
@@ -296,7 +296,7 @@ export function MegProfilV2({ data, lagre }: { data: MegProfilData; lagre: Lagre
                   width: 64,
                   height: 64,
                   borderRadius: 9999,
-                  border: `1px solid ${T.border}`,
+                  border: `1px solid ${TL.hair}`,
                   objectFit: "cover",
                 }}
               />
@@ -308,25 +308,25 @@ export function MegProfilV2({ data, lagre }: { data: MegProfilData; lagre: Lagre
                   width: 64,
                   height: 64,
                   borderRadius: 9999,
-                  background: T.panel2,
-                  border: `1px solid ${T.border}`,
+                  background: TL.dock,
+                  border: `1px solid ${TL.hair}`,
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontFamily: T.mono,
+                  fontFamily: TL.font.mono,
                   fontSize: 20,
                   fontWeight: 600,
-                  color: T.fg,
+                  color: TL.text,
                 }}
               >
                 {initialer(data.navn)}
               </span>
             )}
             <div style={{ flex: 1, minWidth: 0 }}>
-              <span style={{ display: "block", fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>
+              <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>
                 {data.navn}
               </span>
-              <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+              <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
                 {data.spillerSiden ? `Spiller siden ${data.spillerSiden}` : ""}
                 {data.spillerSiden && data.homeClub ? " · " : ""}
                 {data.homeClub ?? ""}
@@ -339,9 +339,9 @@ export function MegProfilV2({ data, lagre }: { data: MegProfilData; lagre: Lagre
                     marginTop: 6,
                     padding: "3px 8px",
                     borderRadius: 9999,
-                    background: T.handlingSoft,
-                    color: T.handling,
-                    fontFamily: T.mono,
+                    background: TL.dim,
+                    color: TL.fill,
+                    fontFamily: TL.font.mono,
                     fontSize: 10,
                     fontWeight: 600,
                   }}
@@ -360,13 +360,13 @@ export function MegProfilV2({ data, lagre }: { data: MegProfilData; lagre: Lagre
                 display: "flex",
                 gap: 12,
                 padding: "12px 16px",
-                borderRadius: T.rCard,
-                background: T.handlingSoft,
+                borderRadius: TL.radius.card,
+                background: TL.dim,
                 minWidth: 0,
               }}
             >
-              <p style={{ flex: 1, minWidth: 0, margin: 0, fontFamily: T.bodyFont, fontSize: 13, color: T.fg2, lineHeight: 1.55 }}>
-                <strong style={{ color: T.fg, fontWeight: 600 }}>
+              <p style={{ flex: 1, minWidth: 0, margin: 0, fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.55 }}>
+                <strong style={{ color: TL.text, fontWeight: 600 }}>
                   {ANTALL_ORD[antallMangler] ?? antallMangler} felt mangler
                 </strong>{" "}
                 — {listeTekst(data.mangler)}. Coachen bruker dem til å sette riktig nivå og
@@ -461,11 +461,11 @@ export function MegProfilV2({ data, lagre }: { data: MegProfilData; lagre: Lagre
             style={{
               width: "100%",
               padding: "13px 18px",
-              borderRadius: T.rInput,
+              borderRadius: TL.radius.field,
               border: "1px solid transparent",
-              background: T.handling,
-              color: T.onHandling,
-              fontFamily: T.ui,
+              background: TL.fill,
+              color: TL.onFill,
+              fontFamily: TL.font.sans,
               fontSize: 14,
               fontWeight: 600,
               cursor: pending ? "default" : "pointer",
@@ -476,12 +476,12 @@ export function MegProfilV2({ data, lagre }: { data: MegProfilData; lagre: Lagre
           </button>
           <div aria-live="polite" style={{ minHeight: 16, textAlign: "center" }}>
             {lagret && (
-              <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.up }}>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.ok }}>
                 Lagret
               </span>
             )}
             {feil && (
-              <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.down }}>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.danger }}>
                 {feil}
               </span>
             )}

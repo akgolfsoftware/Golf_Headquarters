@@ -65,14 +65,14 @@ async function loadInnsiktHub(viewer: { id: string; role: string }): Promise<Inn
     prisma.trainingPlanSession.count({
       where: {
         status: "COMPLETED",
-        scheduledAt: { gte: ukeStart, lte: ukeSlutt },
+        scheduledAt: { gte: ukeStart, lt: ukeSlutt },
         plan: { userId: { in: spillerIds } },
       },
     }),
     prisma.trainingPlanSession.findMany({
       where: {
         status: { not: "CANCELLED" },
-        scheduledAt: { gte: ukeStart, lte: ukeSlutt },
+        scheduledAt: { gte: ukeStart, lt: ukeSlutt },
         plan: { userId: { in: spillerIds } },
       },
       select: { plan: { select: { userId: true } } },

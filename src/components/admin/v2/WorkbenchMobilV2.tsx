@@ -18,7 +18,8 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import {
   Tittel,
   Kort,
@@ -53,15 +54,15 @@ function DesktopHenvisning({ onKlikk }: { onKlikk: () => void }) {
         gap: 10,
         padding: "12px 14px",
         borderRadius: 12,
-        border: `1px dashed ${T.borderS}`,
+        border: `1px dashed ${TL.hair}`,
         cursor: "pointer",
       }}
     >
-      <Icon name="monitor" size={15} style={{ color: T.mut }} />
-      <span style={{ flex: 1, fontFamily: T.ui, fontSize: 12, color: T.fg2 }}>
+      <Icon name="monitor" size={15} style={{ color: TL.mute }} />
+      <span style={{ flex: 1, fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}>
         Full ukeplanlegging gjør du i Workbench på desktop
       </span>
-      <Icon name="chevron-right" size={13} style={{ color: T.mut }} />
+      <Icon name="chevron-right" size={13} style={{ color: TL.mute }} />
     </div>
   );
 }
@@ -82,14 +83,14 @@ function OppgaveKort({
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
         <AvatarInit navn={o.spillerNavn} size={32} />
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>
+          <div style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>
             {o.spillerNavn}
           </div>
           <span
             style={{
-              fontFamily: T.mono,
+              fontFamily: TL.font.mono,
               fontSize: 9,
-              color: T.mut,
+              color: TL.mute,
               display: "block",
               marginTop: 2,
             }}
@@ -101,9 +102,9 @@ function OppgaveKort({
       </div>
       <p
         style={{
-          fontFamily: T.ui,
+          fontFamily: TL.font.sans,
           fontSize: 12.5,
-          color: T.fg2,
+          color: TL.mute,
           lineHeight: 1.5,
           margin: "10px 0 0",
         }}
@@ -160,7 +161,7 @@ export function WorkbenchMobilV2({ data }: { data: WorkbenchOppgaverData }) {
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div>
         <Tittel mobile em="å gjøre.">
           Workbench —
@@ -181,14 +182,14 @@ export function WorkbenchMobilV2({ data }: { data: WorkbenchOppgaverData }) {
             display: "flex",
             alignItems: "center",
             gap: 8,
-            background: T.panel3,
-            border: `1px solid ${T.borderS}`,
+            background: TL.dim,
+            border: `1px solid ${TL.hair}`,
             borderRadius: 12,
             padding: "9px 12px",
           }}
         >
-          <Icon name="info" size={12} style={{ color: T.fg2, flex: "none" }} />
-          <span style={{ flex: 1, fontFamily: T.ui, fontSize: 11.5, color: T.fg2 }}>{notis}</span>
+          <Icon name="info" size={12} style={{ color: TL.mute, flex: "none" }} />
+          <span style={{ flex: 1, fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute }}>{notis}</span>
           <span
             role="button"
             tabIndex={0}
@@ -197,7 +198,7 @@ export function WorkbenchMobilV2({ data }: { data: WorkbenchOppgaverData }) {
             onClick={() => setNotis(null)}
             style={{ cursor: "pointer", display: "inline-flex" }}
           >
-            <Icon name="x" size={11} style={{ color: T.mut }} />
+            <Icon name="x" size={11} style={{ color: TL.mute }} />
           </span>
         </div>
       )}

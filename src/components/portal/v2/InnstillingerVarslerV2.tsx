@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ Innstillinger · Varsler — v2 Presis + B-pakke (status først, auto-lagre).
  */
@@ -10,22 +10,8 @@ import type { UserPreferences } from "@/lib/preferences";
 import { oppdaterPreferences } from "@/app/portal/meg/actions";
 import { VAPID_PUBLIC_KEY } from "@/lib/push/vapid";
 import { InnstillingerHode } from "@/components/portal/v2/InnstillingerHode";
-import {
-  detectPushStatus,
-  aktiverPush,
-  deaktiverPush,
-  type PushStatus,
-} from "@/components/portal/push-toggle";
-import {
-  T,
-  Caps,
-  Kort,
-  StatusPill,
-  Bryter,
-  PillVelger,
-  Icon,
-} from "@/components/v2";
-
+import { detectPushStatus, aktiverPush, deaktiverPush, type PushStatus } from "@/components/portal/push-toggle";
+import { Caps, Kort, StatusPill, Bryter, PillVelger, Icon } from "@/components/v2";
 /* ── Datakontrakt ──────────────────────────────────────────────────── */
 
 export type InnstillingerVarslerData = {
@@ -38,7 +24,7 @@ export type InnstillingerVarslerData = {
 /** Bryter-rad med skillelinje (Bryter selv har ingen border). */
 function BryterRad({ last, children }: { last?: boolean; children: ReactNode }) {
   return (
-    <div style={{ padding: "12px 0", borderBottom: last ? "none" : `1px solid ${T.border}` }}>
+    <div style={{ padding: "12px 0", borderBottom: last ? "none" : `1px solid ${TL.hair}` }}>
       {children}
     </div>
   );
@@ -46,7 +32,7 @@ function BryterRad({ last, children }: { last?: boolean; children: ReactNode }) 
 
 /** Nøytral info-/feil-tekstboks for push-tilstandene (ærlig, aldri fabrikert). */
 function InfoBoks({ tone = "noytral", children }: { tone?: "noytral" | "warn" | "down"; children: ReactNode }) {
-  const c = tone === "warn" ? T.warn : tone === "down" ? T.down : T.mut;
+  const c = tone === "warn" ? TL.warn : tone === "down" ? TL.danger : TL.mute;
   return (
     <div
       style={{
@@ -55,12 +41,12 @@ function InfoBoks({ tone = "noytral", children }: { tone?: "noytral" | "warn" | 
         alignItems: "flex-start",
         padding: "10px 12px",
         borderRadius: 12,
-        background: T.panel2,
-        border: `1px solid ${tone === "noytral" ? T.border : `color-mix(in srgb, ${c} 30%, transparent)`}`,
+        background: TL.dock,
+        border: `1px solid ${tone === "noytral" ? TL.hair : `color-mix(in srgb, ${c} 30%, transparent)`}`,
       }}
     >
       <Icon name={tone === "noytral" ? "info" : "alert-triangle"} size={13} style={{ color: c, flex: "none", marginTop: 2 }} />
-      <span style={{ fontFamily: T.ui, fontSize: 12, color: tone === "noytral" ? T.fg2 : c, lineHeight: 1.55 }}>{children}</span>
+      <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: tone === "noytral" ? TL.mute : c, lineHeight: 1.55 }}>{children}</span>
     </div>
   );
 }
@@ -126,7 +112,7 @@ export function InnstillingerVarslerV2({ data }: { data: InnstillingerVarslerDat
 
   const pushKropp = (() => {
     if (pushStatus === "loading") {
-      return <span style={{ fontFamily: T.ui, fontSize: 12, color: T.mut }}>Sjekker push-status …</span>;
+      return <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}>Sjekker push-status …</span>;
     }
     if (pushStatus === "unsupported") {
       return (
@@ -161,7 +147,7 @@ export function InnstillingerVarslerV2({ data }: { data: InnstillingerVarslerDat
   const antallPaa = Object.values(prefs.notif).filter(Boolean).length;
 
   return (
-    <div data-paper-wave-g="innstillingervarsler" data-paper-portal-innstillinger-varsler data-paper-slug="playerhq-innstillinger" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="innstillingervarsler" data-paper-portal-innstillinger-varsler data-paper-slug="playerhq-innstillinger" style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <InnstillingerHode
         tittel="Varsler"
         undertekst="Innstillinger"
@@ -173,11 +159,11 @@ export function InnstillingerVarslerV2({ data }: { data: InnstillingerVarslerDat
       <div className="grid grid-cols-2" style={{ gap: 8 }}>
         <Kort pad="12px">
           <Caps size={9}>På</Caps>
-          <div style={{ fontFamily: T.mono, fontWeight: 700, fontSize: 18, marginTop: 8, color: T.fg }}>{antallPaa}</div>
+          <div style={{ fontFamily: TL.font.mono, fontWeight: 700, fontSize: 18, marginTop: 8, color: TL.text }}>{antallPaa}</div>
         </Kort>
         <Kort pad="12px">
           <Caps size={9}>Push</Caps>
-          <div style={{ fontFamily: T.ui, fontWeight: 600, fontSize: 14, marginTop: 8, color: T.fg }}>
+          <div style={{ fontFamily: TL.font.sans, fontWeight: 600, fontSize: 14, marginTop: 8, color: TL.text }}>
             {pushStatus === "on" ? "Aktiv" : pushStatus === "loading" ? "…" : "Av"}
           </div>
         </Kort>
@@ -185,7 +171,7 @@ export function InnstillingerVarslerV2({ data }: { data: InnstillingerVarslerDat
 
       <Kort eyebrow="Denne enheten">{pushKropp}</Kort>
 
-      <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: T.gap, alignItems: "start" }}>
+      <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: 16, alignItems: "start" }}>
         {/* Hendelser */}
         <Kort eyebrow="Varsler" action={<Caps size={9}>Hva du varsles om</Caps>}>
           <BryterRad>
@@ -231,7 +217,7 @@ export function InnstillingerVarslerV2({ data }: { data: InnstillingerVarslerDat
         </Kort>
 
         {/* Kanaler + språk */}
-        <div style={{ display: "flex", flexDirection: "column", gap: T.gap, minWidth: 0 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16, minWidth: 0 }}>
           <Kort eyebrow="Kanaler" action={<Caps size={9}>Hvordan du mottar dem</Caps>}>
             <BryterRad>
               <Bryter
@@ -268,7 +254,7 @@ export function InnstillingerVarslerV2({ data }: { data: InnstillingerVarslerDat
               value={prefs.spraak}
               onChange={(v) => !pending && setSpraak(v as "nb" | "en")}
             />
-            <p style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, lineHeight: 1.55, margin: "10px 0 0" }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, lineHeight: 1.55, margin: "10px 0 0" }}>
               Engelsk-støtte kommer i en senere fase.
             </p>
           </Kort>

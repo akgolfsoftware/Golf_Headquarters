@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * Caddie · sub-navigasjon (v2). Samler Samtale (chat) · Dashbord (co-agent) ·
@@ -9,7 +10,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { T } from "@/components/v2";
 
 const SUBTABS = [
   { href: "/admin/agencyos/caddie", label: "Samtale", exact: true },
@@ -30,8 +30,8 @@ export function CaddieSubNavV2() {
             aria-current={aktiv ? "page" : undefined}
             className="v2-press v2-focus"
             style={{
-              appearance: "none", fontFamily: T.ui, fontSize: 13, fontWeight: 600, padding: "8px 15px", borderRadius: 9999,
-              color: aktiv ? T.onLime : T.fg2, background: aktiv ? T.lime : T.panel2, border: `1px solid ${aktiv ? "transparent" : T.border}`,
+              appearance: "none", fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, padding: "8px 15px", borderRadius: 9999,
+              color: aktiv ? TL.onFill : TL.mute, background: aktiv ? TL.fill : TL.dock, border: `1px solid ${aktiv ? "transparent" : TL.hair}`,
               whiteSpace: "nowrap", textDecoration: "none",
             }}
           >

@@ -8,7 +8,8 @@
  */
 
 import { Kort, Caps } from "@/components/v2";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 
 export type TrendPunkt = {
   recordedAt: Date;
@@ -70,7 +71,7 @@ export function TrackManTrendSeksjon({ punkter }: { punkter: TrendPunkt[] }) {
         <polyline
           points={pts}
           fill="none"
-          stroke={T.fg}
+          stroke={TL.text}
           strokeWidth="1.5"
           strokeLinecap="round"
           strokeLinejoin="round"

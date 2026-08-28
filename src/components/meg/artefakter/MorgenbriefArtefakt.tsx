@@ -14,7 +14,8 @@
  * en lagret morgenbrief-tekst, vises den som et tillegg under — ikke i
  * stedet for de ekte tallene. Lyd-avspilling er utelatt (ingen TTS-infra).
  */
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import type { Sak } from "@/generated/prisma/client";
 import { SakStatus } from "@/generated/prisma/enums";
 import type { BriefSnapshot, DagenData } from "@/lib/jarvis/types";
@@ -59,46 +60,46 @@ export function MorgenbriefArtefakt({
           display: "flex",
           alignItems: "baseline",
           gap: 12,
-          background: T.panel,
-          border: `1px solid ${T.border}`,
-          borderRadius: T.rTag,
+          background: TL.elev,
+          border: `1px solid ${TL.hair}`,
+          borderRadius: TL.radius.row,
           padding: "12px 14px",
           marginBottom: 16,
         }}
         data-od-id="panel-ko-status"
       >
-        <span style={{ fontFamily: T.mono, fontSize: 32, fontWeight: 600, lineHeight: 1, color: T.fg }}>{ventende.length}</span>
-        <span style={{ fontFamily: T.mono, fontSize: 9.5, letterSpacing: "0.07em", textTransform: "uppercase", color: T.mut }}>
+        <span style={{ fontFamily: TL.font.mono, fontSize: 32, fontWeight: 600, lineHeight: 1, color: TL.text }}>{ventende.length}</span>
+        <span style={{ fontFamily: TL.font.mono, fontSize: 9.5, letterSpacing: "0.07em", textTransform: "uppercase", color: TL.mute }}>
           saker venter
           <br />i køen nå
         </span>
         {overFrist.length > 0 && (
-          <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 11, color: T.down }}>▲ {overFrist.length} over frist</span>
+          <span style={{ marginLeft: "auto", fontFamily: TL.font.mono, fontSize: 11, color: TL.danger }}>▲ {overFrist.length} over frist</span>
         )}
       </div>
 
       {brief.innhold && (
-        <p style={{ fontFamily: T.bodyFont, fontSize: 14, lineHeight: 1.62, color: T.fg, maxWidth: "56ch", marginBottom: 16 }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 14, lineHeight: 1.62, color: TL.text, maxWidth: "56ch", marginBottom: 16 }}>
           {brief.innhold}
         </p>
       )}
 
-      <h2 style={{ margin: "0 0 8px", fontFamily: T.disp, fontSize: 13, fontWeight: 600, color: T.fg }}>Dagens viktigste</h2>
+      <h2 style={{ margin: "0 0 8px", fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text }}>Dagens viktigste</h2>
       {topp3.length === 0 ? (
-        <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, marginBottom: 16 }}>Ingenting venter — ren kø.</p>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, marginBottom: 16 }}>Ingenting venter — ren kø.</p>
       ) : (
         <ol style={{ margin: "0 0 16px", paddingLeft: 20 }}>
           {topp3.map((s) => (
-            <li key={s.id} style={{ marginBottom: 8, fontFamily: T.ui, fontSize: 13.5, lineHeight: 1.5, color: T.fg }}>
+            <li key={s.id} style={{ marginBottom: 8, fontFamily: TL.font.sans, fontSize: 13.5, lineHeight: 1.5, color: TL.text }}>
               <button
                 type="button"
                 onClick={() => onVelgSak(s.id)}
                 data-od-id={`cta-morgenbrief-topp-${s.id}`}
-                style={{ background: "none", border: 0, padding: 0, color: T.fg, textAlign: "left", cursor: "pointer", font: "inherit" }}
+                style={{ background: "none", border: 0, padding: 0, color: TL.text, textAlign: "left", cursor: "pointer", font: "inherit" }}
               >
                 {s.avsender ?? "Ukjent avsender"} — {s.emne ?? s.innhold.slice(0, 60)}
               </button>{" "}
-              <span style={{ fontFamily: T.mono, fontSize: 11, color: (tidIgjenMs(s, na) ?? 1) < 0 ? T.down : T.mut }}>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: (tidIgjenMs(s, na) ?? 1) < 0 ? TL.danger : TL.mute }}>
                 ({sladTid(s, na)})
               </span>
             </li>
@@ -106,16 +107,16 @@ export function MorgenbriefArtefakt({
         </ol>
       )}
 
-      <h2 style={{ margin: "0 0 8px", fontFamily: T.disp, fontSize: 13, fontWeight: 600, color: T.fg }}>Kalenderen — kort</h2>
+      <h2 style={{ margin: "0 0 8px", fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text }}>Kalenderen — kort</h2>
       {!dagen.kalenderTilgjengelig ? (
-        <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, marginBottom: 8 }}>Fikk ikke lest kalenderen.</p>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, marginBottom: 8 }}>Fikk ikke lest kalenderen.</p>
       ) : forsteAvtaler.length === 0 ? (
-        <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, marginBottom: 8 }}>Ingen avtaler i dag.</p>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, marginBottom: 8 }}>Ingen avtaler i dag.</p>
       ) : (
         <ul style={{ listStyle: "none", margin: "0 0 8px", padding: 0 }}>
           {forsteAvtaler.map((e) => (
-            <li key={e.id} style={{ display: "flex", gap: 10, fontSize: 13, padding: "2px 0", fontFamily: T.ui, color: T.fg }}>
-              <span style={{ width: 96, flex: "none", color: T.mut, fontFamily: T.mono }}>
+            <li key={e.id} style={{ display: "flex", gap: 10, fontSize: 13, padding: "2px 0", fontFamily: TL.font.sans, color: TL.text }}>
+              <span style={{ width: 96, flex: "none", color: TL.mute, fontFamily: TL.font.mono }}>
                 {klokke(e.start)}
                 {e.slutt && `–${klokke(e.slutt)}`}
               </span>
@@ -129,15 +130,15 @@ export function MorgenbriefArtefakt({
           type="button"
           onClick={onApneDagen}
           data-od-id="cta-til-dagen"
-          style={{ background: "none", border: 0, padding: 0, color: T.info, textDecoration: "underline", cursor: "pointer", fontFamily: T.ui, fontSize: 12.5 }}
+          style={{ background: "none", border: 0, padding: 0, color: TL.viz.target, textDecoration: "underline", cursor: "pointer", fontFamily: TL.font.sans, fontSize: 12.5 }}
         >
           Hele dagen som tidslinje →
         </button>
       </p>
 
-      <h2 style={{ margin: "0 0 8px", fontFamily: T.disp, fontSize: 13, fontWeight: 600, color: T.fg }}>Venter på deg</h2>
+      <h2 style={{ margin: "0 0 8px", fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text }}>Venter på deg</h2>
       {ventende.length === 0 ? (
-        <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut }}>Ingenting venter.</p>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute }}>Ingenting venter.</p>
       ) : (
         <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
           {ventende.slice(0, 4).map((s) => (
@@ -146,24 +147,24 @@ export function MorgenbriefArtefakt({
                 type="button"
                 onClick={() => onVelgSak(s.id)}
                 data-od-id={`cta-morgenbrief-venter-${s.id}`}
-                style={{ background: "none", border: 0, padding: 0, color: T.fg, cursor: "pointer", fontFamily: T.ui, fontSize: 13 }}
+                style={{ background: "none", border: 0, padding: 0, color: TL.text, cursor: "pointer", fontFamily: TL.font.sans, fontSize: 13 }}
               >
                 {s.avsender ?? "Ukjent avsender"} · {s.emne ?? "—"}
               </button>
               <span
-                style={{ marginLeft: "auto", flex: "none", fontFamily: T.mono, fontSize: 11, color: (tidIgjenMs(s, na) ?? 1) < 0 ? T.down : T.mut }}
+                style={{ marginLeft: "auto", flex: "none", fontFamily: TL.font.mono, fontSize: 11, color: (tidIgjenMs(s, na) ?? 1) < 0 ? TL.danger : TL.mute }}
               >
                 {sladTid(s, na)}
               </span>
             </li>
           ))}
           {ventende.length > 4 && (
-            <li style={{ padding: "4px 0", fontSize: 13, fontFamily: T.ui, color: T.mut }}>+ {ventende.length - 4} til i køen</li>
+            <li style={{ padding: "4px 0", fontSize: 13, fontFamily: TL.font.sans, color: TL.mute }}>+ {ventende.length - 4} til i køen</li>
           )}
         </ul>
       )}
 
-      <div style={{ fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 16 }}>
+      <div style={{ fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 16 }}>
         {brief.generert ? `Generert ${klokke(brief.generert)}` : "Ingen morgenbrief-tekst generert ennå"}
       </div>
     </div>

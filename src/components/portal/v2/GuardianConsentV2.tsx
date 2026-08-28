@@ -25,6 +25,7 @@
 import { useState, useTransition, type ReactNode, type CSSProperties } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { TL } from "@/lib/v2/train-lock";
 import { T } from "@/lib/v2/tokens";
 import { LogoAK, Caps, Icon } from "@/components/v2";
 import { confirmGuardianConsent } from "@/app/auth/guardian-consent/[token]/actions";
@@ -74,8 +75,8 @@ function Felt({
           height: 44,
           padding: "0 14px",
           borderRadius: 12,
-          background: T.panel2,
-          border: `1px solid ${T.borderS}`,
+          background: TL.dock,
+          border: `1px solid ${TL.hair}`,
         }}
       >
         <input
@@ -92,13 +93,13 @@ function Felt({
             background: "transparent",
             border: "none",
             outline: "none",
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 13.5,
             fontWeight: 500,
-            color: T.fg,
+            color: TL.text,
           }}
         />
-        <Icon name="user" size={14} style={{ color: T.mut }} />
+        <Icon name="user" size={14} style={{ color: TL.mute }} />
       </div>
     </div>
   );
@@ -131,9 +132,9 @@ function Avkryssing({
         gap: 12,
         padding: 14,
         borderRadius: 12,
-        background: checked ? T.panel3 : T.panel2,
-        border: `1px solid ${checked ? T.borderS : T.border}`,
-        transition: `background ${T.dur}ms ${T.ease}, border-color ${T.dur}ms ${T.ease}`,
+        background: checked ? TL.dim : TL.dock,
+        border: `1px solid ${checked ? TL.hair : TL.hair}`,
+        transition: `background ${180}ms ${TL.motion.ease}, border-color ${180}ms ${TL.motion.ease}`,
       }}
     >
       <span
@@ -147,21 +148,21 @@ function Avkryssing({
           display: "inline-flex",
           alignItems: "center",
           justifyContent: "center",
-          background: checked ? T.lime : "transparent",
-          border: `1px solid ${checked ? T.lime : T.borderS}`,
+          background: checked ? TL.fill : "transparent",
+          border: `1px solid ${checked ? TL.fill : TL.hair}`,
         }}
       >
         {checked ? (
-          <Icon name="check" size={13} style={{ color: T.onHandling }} />
+          <Icon name="check" size={13} style={{ color: TL.onFill }} />
         ) : null}
       </span>
       <span
         style={{
           flex: 1,
-          fontFamily: T.ui,
+          fontFamily: TL.font.sans,
           fontSize: 12.5,
           lineHeight: 1.5,
-          color: T.fg2,
+          color: TL.mute,
         }}
       >
         {children}
@@ -184,8 +185,8 @@ function Knapp({
   onClick?: () => void;
 }) {
   const v: CSSProperties = disabled
-    ? { background: T.panel3, color: T.mut, border: `1px solid ${T.border}` }
-    : { background: T.handling, color: T.onHandling, border: "none" };
+    ? { background: TL.dim, color: TL.mute, border: `1px solid ${TL.hair}` }
+    : { background: TL.fill, color: TL.onFill, border: "none" };
   return (
     <button
       type={type}
@@ -202,7 +203,7 @@ function Knapp({
         alignItems: "center",
         justifyContent: "center",
         gap: 9,
-        fontFamily: T.ui,
+        fontFamily: TL.font.sans,
         fontSize: 13.5,
         fontWeight: 600,
         ...v,
@@ -219,13 +220,13 @@ function Lenke({ href, children }: { href: string; children: ReactNode }) {
     <Link
       href={href}
       style={{
-        fontFamily: T.ui,
+        fontFamily: TL.font.sans,
         fontSize: 12,
         fontWeight: 600,
-        color: T.fg2,
+        color: TL.mute,
         cursor: "pointer",
         textDecoration: "underline",
-        textDecorationColor: T.borderS,
+        textDecorationColor: TL.hair,
         textUnderlineOffset: 3,
       }}
     >
@@ -247,8 +248,8 @@ function BrandPanel() {
         minWidth: 420,
         position: "relative",
         overflow: "hidden",
-        borderRight: `1px solid ${T.border}`,
-        background: `radial-gradient(560px 460px at 28% 24%, ${T.handlingSoft}, transparent 68%), radial-gradient(420px 380px at 82% 88%, color-mix(in srgb, var(--v2-handling) 10%, transparent), transparent 60%), ${T.bg}`,
+        borderRight: `1px solid ${TL.hair}`,
+        background: `radial-gradient(560px 460px at 28% 24%, ${TL.dim}, transparent 68%), radial-gradient(420px 380px at 82% 88%, color-mix(in srgb, var(--tl-fill) 10%, transparent), transparent 60%), ${TL.scene}`,
         flexDirection: "column",
         padding: "34px 40px 44px",
       }}
@@ -269,7 +270,7 @@ function BrandPanel() {
             strokeWidth="1"
           />
         ))}
-        <circle cx="260" cy="330" r="3.5" fill="color-mix(in srgb, var(--v2-handling) 45%, transparent)" />
+        <circle cx="260" cy="330" r="3.5" fill="color-mix(in srgb, var(--tl-fill) 45%, transparent)" />
       </svg>
       <div style={{ position: "relative" }}>
         <LogoAK size={30} surface="paper" />
@@ -286,30 +287,30 @@ function BrandPanel() {
             justifyContent: "center",
             marginBottom: 22,
             background: T.farge.forestMerkeA22,
-            border: `1px solid ${T.borderS}`,
+            border: `1px solid ${TL.hair}`,
           }}
         >
-          <Icon name="shield" size={26} style={{ color: T.lime }} />
+          <Icon name="shield" size={26} style={{ color: TL.fill }} />
         </span>
         <h2
           style={{
-            fontFamily: T.disp,
+            fontFamily: TL.font.sans,
             fontWeight: 700,
             fontSize: 30,
             letterSpacing: "-0.03em",
             lineHeight: 1.12,
-            color: T.fg,
+            color: TL.text,
             margin: 0,
           }}
         >
           Trygt samtykke.{" "}
-          <em style={{ fontStyle: "italic", color: T.lime }}>Full kontroll.</em>
+          <em style={{ fontStyle: "italic", color: TL.fill }}>Full kontroll.</em>
         </h2>
         <p
           style={{
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 13.5,
-            color: T.fg2,
+            color: TL.mute,
             lineHeight: 1.6,
             margin: "14px 0 0",
             maxWidth: 360,
@@ -338,8 +339,8 @@ function Feilboks({ children }: { children: ReactNode }) {
         border: `1px solid ${T.farge.korallMerkeA30}`,
       }}
     >
-      <Icon name="triangle-alert" size={15} style={{ color: T.down, flex: "none", marginTop: 1 }} />
-      <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.down }}>{children}</span>
+      <Icon name="triangle-alert" size={15} style={{ color: TL.danger, flex: "none", marginTop: 1 }} />
+      <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.danger }}>{children}</span>
     </div>
   );
 }
@@ -364,19 +365,19 @@ function Hode({ playerName, playerAge }: { playerName: string; playerAge: number
             justifyContent: "center",
             marginBottom: 14,
             background: T.farge.forestMerkeA22,
-            border: `1px solid ${T.borderS}`,
+            border: `1px solid ${TL.hair}`,
           }}
         >
-          <Icon name="shield" size={26} style={{ color: T.lime }} />
+          <Icon name="shield" size={26} style={{ color: TL.fill }} />
         </span>
-        <Caps size={9} color={T.mut} style={{ marginBottom: 8, textAlign: "center" }}>
+        <Caps size={9} color={TL.mute} style={{ marginBottom: 8, textAlign: "center" }}>
           AK Golf · Foreldresamtykke
         </Caps>
-        <h1 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 28, letterSpacing: "-0.03em", color: T.fg, margin: 0 }}>
-          Bekreft <em style={{ fontStyle: "italic", color: T.lime }}>samtykke</em>
+        <h1 style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 28, letterSpacing: "-0.03em", color: TL.text, margin: 0 }}>
+          Bekreft <em style={{ fontStyle: "italic", color: TL.fill }}>samtykke</em>
         </h1>
-        <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "8px 0 0", lineHeight: 1.5 }}>
-          For at <strong style={{ color: T.fg, fontWeight: 600 }}>{playerName}</strong>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: "8px 0 0", lineHeight: 1.5 }}>
+          For at <strong style={{ color: TL.text, fontWeight: 600 }}>{playerName}</strong>
           {playerAge !== null ? ` (${playerAge} år)` : ""} skal kunne bruke AK Golf.
         </p>
       </div>
@@ -391,34 +392,34 @@ function InfoSeksjon() {
       style={{
         width: "100%",
         maxWidth: 440,
-        borderRadius: T.rCard,
-        background: T.panel,
-        border: `1px solid ${T.border}`,
+        borderRadius: TL.radius.card,
+        background: TL.elev,
+        border: `1px solid ${TL.hair}`,
         padding: 22,
       }}
     >
-      <h2 style={{ fontFamily: T.disp, fontSize: 14.5, fontWeight: 600, color: T.fg, margin: "0 0 10px" }}>
+      <h2 style={{ fontFamily: TL.font.sans, fontSize: 14.5, fontWeight: 600, color: TL.text, margin: "0 0 10px" }}>
         Hva betyr dette samtykket?
       </h2>
       <ul style={{ display: "flex", flexDirection: "column", gap: 9, margin: 0, padding: 0, listStyle: "none" }}>
-        <li style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.5 }}>
-          <strong style={{ color: T.fg, fontWeight: 600 }}>GDPR artikkel 8:</strong> Norske barn
+        <li style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.5 }}>
+          <strong style={{ color: TL.text, fontWeight: 600 }}>GDPR artikkel 8:</strong> Norske barn
           under 16 år trenger foreldresamtykke før de kan dele persondata med en tjeneste.
         </li>
-        <li style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.5 }}>
-          <strong style={{ color: T.fg, fontWeight: 600 }}>Du kan trekke samtykket</strong> når
+        <li style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.5 }}>
+          <strong style={{ color: TL.text, fontWeight: 600 }}>Du kan trekke samtykket</strong> når
           som helst ved å kontakte oss på{" "}
-          <a href="mailto:post@akgolf.no" style={{ color: T.lime, fontWeight: 600, textDecoration: "underline", textUnderlineOffset: 2 }}>
+          <a href="mailto:post@akgolf.no" style={{ color: TL.fill, fontWeight: 600, textDecoration: "underline", textUnderlineOffset: 2 }}>
             post@akgolf.no
           </a>
           .
         </li>
-        <li style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.5 }}>
-          <strong style={{ color: T.fg, fontWeight: 600 }}>Du får tilgang</strong> til en
+        <li style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.5 }}>
+          <strong style={{ color: TL.text, fontWeight: 600 }}>Du får tilgang</strong> til en
           foreldreportal som lar deg følge barnets utvikling, fakturaer og kommunikasjon med coach.
         </li>
       </ul>
-      <p style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, margin: "14px 0 0" }}>
+      <p style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.mute, margin: "14px 0 0" }}>
         Mer info i <Lenke href="/personvern">personvernerklæringen</Lenke> og{" "}
         <Lenke href="/vilkar">vilkårene</Lenke>.
       </p>
@@ -434,7 +435,7 @@ function ExpiredKort({ email }: { email: string }) {
         width: "100%",
         maxWidth: 440,
         textAlign: "center",
-        borderRadius: T.rCard,
+        borderRadius: TL.radius.card,
         background: T.farge.varselMerkeA10,
         border: `1px solid ${T.farge.varselMerkeA30}`,
         padding: 26,
@@ -444,13 +445,13 @@ function ExpiredKort({ email }: { email: string }) {
         gap: 4,
       }}
     >
-      <Icon name="triangle-alert" size={30} style={{ color: T.warn, marginBottom: 6 }} />
-      <h2 style={{ fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg, margin: 0 }}>
+      <Icon name="triangle-alert" size={30} style={{ color: TL.warn, marginBottom: 6 }} />
+      <h2 style={{ fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text, margin: 0 }}>
         Invitasjonen er utløpt
       </h2>
-      <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.55, margin: "6px 0 0" }}>
+      <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.55, margin: "6px 0 0" }}>
         Lenken er ikke lenger gyldig. Be spilleren sende deg en ny invitasjon til{" "}
-        <strong style={{ color: T.fg, fontWeight: 600 }}>{email}</strong>.
+        <strong style={{ color: TL.text, fontWeight: 600 }}>{email}</strong>.
       </p>
     </div>
   );
@@ -464,7 +465,7 @@ function SuccessKort({ playerName }: { playerName: string }) {
         width: "100%",
         maxWidth: 440,
         textAlign: "center",
-        borderRadius: T.rCard,
+        borderRadius: TL.radius.card,
         background: T.farge.myntLysA10,
         border: `1px solid ${T.farge.myntLysA30}`,
         padding: 26,
@@ -474,13 +475,13 @@ function SuccessKort({ playerName }: { playerName: string }) {
         gap: 4,
       }}
     >
-      <Icon name="check" size={30} style={{ color: T.up, marginBottom: 6 }} />
-      <h2 style={{ fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg, margin: 0 }}>
+      <Icon name="check" size={30} style={{ color: TL.ok, marginBottom: 6 }} />
+      <h2 style={{ fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text, margin: 0 }}>
         Samtykke allerede gitt
       </h2>
-      <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.55, margin: "6px 0 0" }}>
+      <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.55, margin: "6px 0 0" }}>
         Du har allerede bekreftet samtykke for{" "}
-        <strong style={{ color: T.fg, fontWeight: 600 }}>{playerName}</strong>.
+        <strong style={{ color: TL.text, fontWeight: 600 }}>{playerName}</strong>.
       </p>
       <div style={{ width: "100%", marginTop: 14 }}>
         <Link
@@ -496,11 +497,11 @@ function SuccessKort({ playerName }: { playerName: string }) {
             alignItems: "center",
             justifyContent: "center",
             gap: 9,
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 13.5,
             fontWeight: 600,
-            background: T.handling,
-            color: T.onHandling,
+            background: TL.fill,
+            color: TL.onFill,
           }}
         >
           Gå til foreldreportal
@@ -569,15 +570,15 @@ function ConsentKort({
       <form
         onSubmit={onSubmit}
         style={{
-          background: T.panel,
-          border: `1px solid ${T.border}`,
-          borderRadius: T.rCard,
+          background: TL.elev,
+          border: `1px solid ${TL.hair}`,
+          borderRadius: TL.radius.card,
           padding: 20,
           display: "flex",
           flexDirection: "column",
           gap: 16,
           boxShadow:
-            `inset 0 1px 0 ${T.farge.hvitA5}, 0 12px 32px ${T.farge.svartA35}`,
+            `inset 0 1px 0 ${T.farge.hvitA5}, 0 12px 32px ${TL.scrim}`,
         }}
       >
         {/* Spiller-kort */}
@@ -585,25 +586,25 @@ function ConsentKort({
           style={{
             padding: 14,
             borderRadius: 12,
-            background: T.panel2,
-            border: `1px solid ${T.border}`,
+            background: TL.dock,
+            border: `1px solid ${TL.hair}`,
           }}
         >
-          <Caps size={9} color={T.mut} style={{ marginBottom: 6 }}>
+          <Caps size={9} color={TL.mute} style={{ marginBottom: 6 }}>
             Spiller
           </Caps>
           <div
             style={{
-              fontFamily: T.disp,
+              fontFamily: TL.font.sans,
               fontSize: 15,
               fontWeight: 600,
-              color: T.fg,
+              color: TL.text,
             }}
           >
             {playerName}
             {playerAge !== null ? (
               <span
-                style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, fontWeight: 400 }}
+                style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, fontWeight: 400 }}
               >
                 {"  "}({playerAge} år)
               </span>
@@ -611,9 +612,9 @@ function ConsentKort({
           </div>
           <div
             style={{
-              fontFamily: T.mono,
+              fontFamily: TL.font.mono,
               fontSize: 10.5,
-              color: T.mut,
+              color: TL.mute,
               marginTop: 3,
             }}
           >
@@ -632,11 +633,11 @@ function ConsentKort({
           />
           <p
             style={{
-              fontFamily: T.mono,
+              fontFamily: TL.font.mono,
               fontSize: 10,
               letterSpacing: "0.06em",
               textTransform: "uppercase",
-              color: T.mut,
+              color: TL.mute,
               margin: "7px 0 0",
             }}
           >
@@ -650,14 +651,14 @@ function ConsentKort({
             checked={databehandling}
             onToggle={() => setDatabehandling((v) => !v)}
           >
-            <strong style={{ color: T.fg, fontWeight: 600 }}>
+            <strong style={{ color: TL.text, fontWeight: 600 }}>
               Jeg samtykker til at AK Golf behandler {playerName} sine persondata
             </strong>{" "}
             iht. personvernerklæringen — profil, treningsdata, golf-statistikk,
             bookinger og kommunikasjon med coach.
           </Avkryssing>
           <Avkryssing checked={vilkar} onToggle={() => setVilkar((v) => !v)}>
-            <strong style={{ color: T.fg, fontWeight: 600 }}>
+            <strong style={{ color: TL.text, fontWeight: 600 }}>
               Jeg har lest og godtar vilkårene
             </strong>{" "}
             for bruk av AK Golf på vegne av {playerName}, og bekrefter at jeg har
@@ -675,7 +676,7 @@ function ConsentKort({
             <Icon
               name="check"
               size={16}
-              style={{ color: kanSende && !isPending ? T.onHandling : T.mut }}
+              style={{ color: kanSende && !isPending ? TL.onFill : TL.mute }}
             />
           }
         >
@@ -684,9 +685,9 @@ function ConsentKort({
 
         <p
           style={{
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 11,
-            color: T.mut,
+            color: TL.mute,
             lineHeight: 1.55,
             margin: 0,
           }}
@@ -695,7 +696,7 @@ function ConsentKort({
           trekke samtykket når som helst ved å kontakte oss på{" "}
           <a
             href="mailto:post@akgolf.no"
-            style={{ color: T.fg2, textDecoration: "underline", textUnderlineOffset: 2 }}
+            style={{ color: TL.mute, textDecoration: "underline", textUnderlineOffset: 2 }}
           >
             post@akgolf.no
           </a>
@@ -722,9 +723,9 @@ export function GuardianConsentV2(props: GuardianConsentV2Props) {
         // Flaten er Paper LYS — "dark" fikk nettleseren til å tegne autofyll,
         // passordikon og rullefelt mørkt oppå en lys side.
         colorScheme: "light",
-        color: T.fg,
-        fontFamily: T.ui,
-        background: T.bg,
+        color: TL.text,
+        fontFamily: TL.font.sans,
+        background: TL.scene,
       }}
     >
       <BrandPanel />
@@ -738,7 +739,7 @@ export function GuardianConsentV2(props: GuardianConsentV2Props) {
           justifyContent: "center",
           gap: 22,
           padding: "48px 22px",
-          background: `radial-gradient(700px 420px at 60% -12%, ${T.handlingSoft}, transparent 62%), ${T.bg}`,
+          background: `radial-gradient(700px 420px at 60% -12%, ${TL.dim}, transparent 62%), ${TL.scene}`,
         }}
       >
         <Hode playerName={props.playerName} playerAge={props.playerAge} />

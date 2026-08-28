@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * Å3 · «Rull ut mal til gruppa» — planleggings-pyramidens masseoperasjon:
@@ -10,7 +11,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Caps, Kort, Knapp, PillVelger, Icon, StatusPill, T } from "@/components/v2";
+import { Caps, Kort, Knapp, PillVelger, Icon, StatusPill } from "@/components/v2";
 import { coachApplyTemplateToGroup } from "@/lib/workbench/apply-template-actions";
 
 export interface RullUtMal {
@@ -60,14 +61,14 @@ export function RullUtMalPanel({ groupId, maler, antallMedlemmer }: {
 
   return (
     <Kort eyebrow="Planlegg for hele gruppa" action={
-      <button type="button" onClick={() => setApen((v) => !v)} className="v2-press v2-focus" style={{ appearance: "none", background: "transparent", border: 0, cursor: "pointer", color: T.mut, display: "inline-flex" }}>
+      <button type="button" onClick={() => setApen((v) => !v)} className="v2-press v2-focus" style={{ appearance: "none", background: "transparent", border: 0, cursor: "pointer", color: TL.mute, display: "inline-flex" }}>
         <Icon name={apen ? "chevron-up" : "chevron-down"} size={15} />
       </button>
     }>
       {!apen ? (
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-            <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2 }}>
+            <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute }}>
               Rull ut en planmal til alle {antallMedlemmer} medlemmene i én operasjon.
             </span>
             <StatusPill tone="info">{maler.length} maler · {antallMedlemmer} medlemmer</StatusPill>
@@ -90,7 +91,7 @@ export function RullUtMalPanel({ groupId, maler, antallMedlemmer }: {
                 const m = maler.find((x) => x.id === e.target.value);
                 if (m) setUker(m.varighetUker);
               }}
-              style={{ marginTop: 6, width: "100%", appearance: "none", background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 10, padding: "9px 11px", color: T.fg, fontFamily: T.ui, fontSize: 13 }}
+              style={{ marginTop: 6, width: "100%", appearance: "none", background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: 10, padding: "9px 11px", color: TL.text, fontFamily: TL.font.sans, fontSize: 13 }}
             >
               {maler.map((m) => (
                 <option key={m.id} value={m.id}>{m.name} · {m.varighetUker} uker · {m.sessionCount} økter</option>
@@ -103,7 +104,7 @@ export function RullUtMalPanel({ groupId, maler, antallMedlemmer }: {
               <input
                 type="number" min={1} max={valgtMal?.varighetUker ?? 8} value={uker} disabled={kjorer}
                 onChange={(e) => setUker(Math.max(1, Math.min(valgtMal?.varighetUker ?? 8, Number(e.target.value) || 1)))}
-                style={{ marginTop: 6, width: 90, appearance: "none", background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 10, padding: "9px 11px", color: T.fg, fontFamily: T.ui, fontSize: 13 }}
+                style={{ marginTop: 6, width: 90, appearance: "none", background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: 10, padding: "9px 11px", color: TL.text, fontFamily: TL.font.sans, fontSize: 13 }}
               />
             </div>
             <div>
@@ -118,18 +119,18 @@ export function RullUtMalPanel({ groupId, maler, antallMedlemmer }: {
               </Knapp>
             </div>
           </div>
-          <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 9, color: TL.mute }}>
             Økter som kolliderer med noe spilleren alt har hoppes over — ingenting overskrives.
           </span>
 
-          {feil && <span style={{ fontFamily: T.ui, fontSize: 12, color: T.down }}>{feil}</span>}
+          {feil && <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger }}>{feil}</span>}
           {resultat && (
-            <div style={{ display: "flex", flexDirection: "column", gap: 6, padding: "10px 12px", borderRadius: 11, background: `color-mix(in srgb, ${T.up} 8%, ${T.panel})`, border: `1px solid color-mix(in srgb, ${T.up} 28%, transparent)` }}>
-              <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg }}>
-                <Icon name="check" size={12} style={{ color: T.up, marginRight: 6 }} />{resultat}
+            <div style={{ display: "flex", flexDirection: "column", gap: 6, padding: "10px 12px", borderRadius: 11, background: `color-mix(in srgb, ${TL.ok} 8%, ${TL.elev})`, border: `1px solid color-mix(in srgb, ${TL.ok} 28%, transparent)` }}>
+              <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.text }}>
+                <Icon name="check" size={12} style={{ color: TL.ok, marginRight: 6 }} />{resultat}
               </span>
               {hoppet.length > 0 && (
-                <span style={{ fontFamily: T.mono, fontSize: 9.5, color: T.mut }}>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 9.5, color: TL.mute }}>
                   Hoppet over: {hoppet
                     .map((h) =>
                       h.grunn === "FEIL"

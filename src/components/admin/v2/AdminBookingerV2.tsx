@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * AgencyOS Bookinger og kapasitet — Paper 1:1 (fase2 W4, `agencyos-bookinger`).
  * Fasit: designsystem/paper/fase2/agencyos/agencyos-bookinger.html.
@@ -16,27 +16,8 @@
 import { Fragment, useMemo, useState, useTransition, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import {
-  Kort,
-  Rad,
-  KpiFlis,
-  StatusPill,
-  CTAPill,
-  Knapp,
-  AvatarInit,
-  VarmeKart,
-  TomTilstand,
-  Inspektorpanel,
-  InspektorBlokk,
-  InspektorLinje,
-  InspektorTom,
-  MasterDetalj,
-  useInspektorSynlig,
-  T,
-  type StatusTone,
-} from "@/components/v2";
+import { Kort, Rad, KpiFlis, StatusPill, CTAPill, Knapp, AvatarInit, VarmeKart, TomTilstand, Inspektorpanel, InspektorBlokk, InspektorLinje, InspektorTom, MasterDetalj, useInspektorSynlig, type StatusTone } from "@/components/v2";
 import { bekreftBooking, avvisBooking } from "@/app/admin/(legacy)/bookinger/actions";
-
 // ── Datakontrakt (mappes fra Prisma i ruten) ────────────────────
 export type BookingStatusKey = "PENDING" | "CONFIRMED" | "CANCELLED" | "COMPLETED";
 
@@ -122,7 +103,7 @@ function BekreftAvvis({ id, stor }: { id: string; stor?: boolean }) {
       <Knapp ghost full={stor} disabled={pending} onClick={() => kjor(avvisBooking)} style={kompakt}>
         Avvis
       </Knapp>
-      {feil && <span style={{ fontFamily: T.ui, fontSize: 11, color: T.down, alignSelf: "center" }}>Feilet</span>}
+      {feil && <span style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.danger, alignSelf: "center" }}>Feilet</span>}
     </div>
   );
 }
@@ -170,7 +151,7 @@ function BookingInspektor({ b }: { b: AdminBookingV2Row }) {
       </InspektorBlokk>
 
       {b.status === "PENDING" && (
-        <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12, lineHeight: 1.55, color: T.mut }}>
+        <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12, lineHeight: 1.55, color: TL.mute }}>
           Forespørselen venter på svar — bekreft eller avvis under.
         </p>
       )}
@@ -178,7 +159,7 @@ function BookingInspektor({ b }: { b: AdminBookingV2Row }) {
       <Link
         href={`/admin/bookinger/${b.id}`}
         className="v2-focus"
-        style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.mut, textDecoration: "none", width: "fit-content" }}
+        style={{ fontFamily: TL.font.sans, fontSize: 12, fontWeight: 600, color: TL.mute, textDecoration: "none", width: "fit-content" }}
       >
         Kontakt, notat og historikk → detaljruten
       </Link>
@@ -237,8 +218,8 @@ export function AdminBookingerV2({ data }: { data: AdminBookingerV2Data }) {
       style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}
     >
       <div>
-        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 22, fontWeight: 600, color: T.fg }}>Bookinger og kapasitet</h1>
-        <span style={{ display: "block", fontFamily: T.mono, fontSize: 11, color: T.mut, marginTop: 4 }}>
+        <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 22, fontWeight: 600, color: TL.text }}>Bookinger og kapasitet</h1>
+        <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 11, color: TL.mute, marginTop: 4 }}>
           uke {data.ukeNr} · {data.lokasjon}
         </span>
       </div>
@@ -255,7 +236,7 @@ export function AdminBookingerV2({ data }: { data: AdminBookingerV2Data }) {
 
   // ── KPI-rad (5) ──────────────────────────────────────────────
   const kpi = (
-    <div className="grid grid-cols-2 lg:grid-cols-5" style={{ gap: T.gap }}>
+    <div className="grid grid-cols-2 lg:grid-cols-5" style={{ gap: 16 }}>
       <KpiFlis
         label="Bookinger"
         value={data.kpis.bookinger}
@@ -298,17 +279,17 @@ export function AdminBookingerV2({ data }: { data: AdminBookingerV2Data }) {
           rows={data.heat.timer}
           cols={data.heat.dager}
           values={data.heat.verdier}
-          color={T.info}
+          color={TL.viz.target}
           cell={22}
           fmt={(v) => `${Math.round(v * 100)} % belegg`}
         />
       </div>
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 12, fontFamily: T.mono, fontSize: 10, color: T.mut }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 12, fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>
         <span>Ingen</span>
-        <span style={{ width: 16, height: 10, borderRadius: 2, background: T.track }} />
-        <span style={{ width: 16, height: 10, borderRadius: 2, background: `color-mix(in srgb, ${T.info} 35%, ${T.track})` }} />
-        <span style={{ width: 16, height: 10, borderRadius: 2, background: `color-mix(in srgb, ${T.info} 60%, ${T.track})` }} />
-        <span style={{ width: 16, height: 10, borderRadius: 2, background: T.info }} />
+        <span style={{ width: 16, height: 10, borderRadius: 2, background: TL.hair }} />
+        <span style={{ width: 16, height: 10, borderRadius: 2, background: `color-mix(in srgb, ${TL.viz.target} 35%, ${TL.hair})` }} />
+        <span style={{ width: 16, height: 10, borderRadius: 2, background: `color-mix(in srgb, ${TL.viz.target} 60%, ${TL.hair})` }} />
+        <span style={{ width: 16, height: 10, borderRadius: 2, background: TL.viz.target }} />
         <span>Fullt</span>
       </div>
     </Kort>
@@ -330,15 +311,15 @@ export function AdminBookingerV2({ data }: { data: AdminBookingerV2Data }) {
           height: 32,
           padding: "0 12px",
           borderRadius: 9999,
-          background: anleggFilter === null ? T.handlingSoft : T.panel3,
-          border: `1px solid ${anleggFilter === null ? T.handling : T.borderS}`,
-          color: anleggFilter === null ? T.handling : T.fg,
-          fontFamily: T.ui,
+          background: anleggFilter === null ? TL.dim : TL.dim,
+          border: `1px solid ${anleggFilter === null ? TL.fill : TL.hair}`,
+          color: anleggFilter === null ? TL.fill : TL.text,
+          fontFamily: TL.font.sans,
           fontSize: 12.5,
           fontWeight: 500,
         }}
       >
-        Alle anlegg <span style={{ fontFamily: T.mono, fontSize: 11 }}>{data.bookinger.length}</span>
+        Alle anlegg <span style={{ fontFamily: TL.font.mono, fontSize: 11 }}>{data.bookinger.length}</span>
       </button>
       {data.anleggTabs.map((f) => {
         const on = anleggFilter === f.navn;
@@ -357,15 +338,15 @@ export function AdminBookingerV2({ data }: { data: AdminBookingerV2Data }) {
               height: 32,
               padding: "0 12px",
               borderRadius: 9999,
-              background: on ? T.handlingSoft : T.panel3,
-              border: `1px solid ${on ? T.handling : T.borderS}`,
-              color: on ? T.handling : T.fg,
-              fontFamily: T.ui,
+              background: on ? TL.dim : TL.dim,
+              border: `1px solid ${on ? TL.fill : TL.hair}`,
+              color: on ? TL.fill : TL.text,
+              fontFamily: TL.font.sans,
               fontSize: 12.5,
               fontWeight: 500,
             }}
           >
-            {f.navn} <span style={{ fontFamily: T.mono, fontSize: 11 }}>{f.antall}</span>
+            {f.navn} <span style={{ fontFamily: TL.font.mono, fontSize: 11 }}>{f.antall}</span>
           </button>
         );
       })}
@@ -376,25 +357,25 @@ export function AdminBookingerV2({ data }: { data: AdminBookingerV2Data }) {
   const th: CSSProperties = {
     padding: "10px 16px",
     textAlign: "left",
-    fontFamily: T.mono,
+    fontFamily: TL.font.mono,
     fontSize: 9.5,
     fontWeight: 600,
     letterSpacing: "0.07em",
     textTransform: "uppercase",
-    color: T.mut,
-    borderBottom: `1px solid ${T.borderS}`,
+    color: TL.mute,
+    borderBottom: `1px solid ${TL.hair}`,
     whiteSpace: "nowrap",
   };
   const td: CSSProperties = {
     padding: "10px 16px",
-    fontFamily: T.ui,
+    fontFamily: TL.font.sans,
     fontSize: 12.5,
-    color: T.fg,
+    color: TL.text,
     verticalAlign: "middle",
   };
 
   const tabell = (
-    <div style={{ overflowX: "auto", border: `1px solid ${T.border}`, borderRadius: T.rCard }}>
+    <div style={{ overflowX: "auto", border: `1px solid ${TL.hair}`, borderRadius: TL.radius.card }}>
       <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 640 }}>
         <caption className="sr-only" style={{ position: "absolute", width: 1, height: 1, overflow: "hidden" }}>
           Bookinger uke {data.ukeNr}
@@ -422,18 +403,18 @@ export function AdminBookingerV2({ data }: { data: AdminBookingerV2Data }) {
                 data-valgt={valgt ? "true" : undefined}
                 style={{
                   cursor: "pointer",
-                  borderBottom: sist ? "none" : `1px solid ${T.border}`,
-                  background: valgt ? T.panel3 : undefined,
+                  borderBottom: sist ? "none" : `1px solid ${TL.hair}`,
+                  background: valgt ? TL.dim : undefined,
                 }}
               >
-                <td style={{ ...td, fontFamily: T.mono, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>{b.tid}</td>
+                <td style={{ ...td, fontFamily: TL.font.mono, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>{b.tid}</td>
                 <td style={{ ...td, minWidth: 0, maxWidth: 200, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{b.navn}</td>
                 <td style={{ ...td, minWidth: 0, maxWidth: 160, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{b.tjeneste}</td>
                 <td style={{ ...td, minWidth: 0, maxWidth: 140, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{b.anlegg}</td>
                 <td style={td}>
                   {b.status === "PENDING" ? <BekreftAvvis id={b.id} /> : <StatusPill tone={st.tone}>{st.label}</StatusPill>}
                 </td>
-                <td style={{ ...td, textAlign: "right", fontFamily: T.mono, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>
+                <td style={{ ...td, textAlign: "right", fontFamily: TL.font.mono, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>
                   {b.prisKr > 0 ? krLabel(b.prisKr) : "0"}
                 </td>
               </tr>
@@ -460,7 +441,7 @@ export function AdminBookingerV2({ data }: { data: AdminBookingerV2Data }) {
               last={i === filtrert.length - 1}
             />
             {b.status === "PENDING" && (
-              <div style={{ padding: "0 0 12px", borderBottom: i === filtrert.length - 1 ? "none" : `1px solid ${T.border}` }}>
+              <div style={{ padding: "0 0 12px", borderBottom: i === filtrert.length - 1 ? "none" : `1px solid ${TL.hair}` }}>
                 <BekreftAvvis id={b.id} />
               </div>
             )}
@@ -477,7 +458,7 @@ export function AdminBookingerV2({ data }: { data: AdminBookingerV2Data }) {
         eyebrow="Tjenester og åpningstid"
         action={
           <Link href="/admin/services" className="v2-focus" style={{ textDecoration: "none" }}>
-            <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: T.mut }}>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: TL.mute }}>
               Rediger
             </span>
           </Link>
@@ -487,7 +468,7 @@ export function AdminBookingerV2({ data }: { data: AdminBookingerV2Data }) {
           <Rad
             key={t.id}
             title={`${t.navn} · ${t.varighetMin} min`}
-            meta={<span style={{ fontFamily: T.mono, fontSize: 12, color: T.fg }}>{t.prisLabel}</span>}
+            meta={<span style={{ fontFamily: TL.font.mono, fontSize: 12, color: TL.text }}>{t.prisLabel}</span>}
             trailing={null}
             last={i === data.tjenester.length - 1}
           />
@@ -518,7 +499,7 @@ export function AdminBookingerV2({ data }: { data: AdminBookingerV2Data }) {
         )
       }
     >
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap, minWidth: 0 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 16, minWidth: 0 }}>
       {hode}
       {kpi}
       {heatmap}

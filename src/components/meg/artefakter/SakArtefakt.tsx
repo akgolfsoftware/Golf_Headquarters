@@ -17,7 +17,8 @@
  * godkjenn-flyten hvis teksten er endret).
  */
 import { useEffect, useRef, useState } from "react";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Icon } from "@/components/v2/icon";
 import { InspektorBlokk, InspektorLinje, InspektorTom } from "@/components/v2/inspektorpanel";
 import type { Sak } from "@/generated/prisma/client";
@@ -140,12 +141,12 @@ export function SakArtefakt({
       <InspektorBlokk label="Fra">
         <InspektorLinje label={sak.avsender ?? "Ukjent avsender"} verdi={STATUS_LABEL[sak.status]} />
         {sak.emne && (
-          <div style={{ fontFamily: T.disp, fontSize: 13.5, fontWeight: 600, color: T.fg }}>{sak.emne}</div>
+          <div style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>{sak.emne}</div>
         )}
       </InspektorBlokk>
 
       <InspektorBlokk label="Innhold">
-        <p style={{ margin: 0, fontFamily: T.bodyFont, fontSize: 13, lineHeight: 1.6, color: T.fg }}>
+        <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 13, lineHeight: 1.6, color: TL.text }}>
           {sak.innhold}
         </p>
       </InspektorBlokk>
@@ -164,12 +165,12 @@ export function SakArtefakt({
               style={{
                 width: "100%",
                 resize: "vertical",
-                border: `1px solid ${T.border}`,
-                borderRadius: T.rTag,
+                border: `1px solid ${TL.hair}`,
+                borderRadius: TL.radius.row,
                 padding: 10,
-                background: T.bg,
-                color: T.fg,
-                fontFamily: T.bodyFont,
+                background: TL.scene,
+                color: TL.text,
+                fontFamily: TL.font.sans,
                 fontSize: 13,
                 lineHeight: 1.5,
               }}
@@ -179,13 +180,13 @@ export function SakArtefakt({
               style={{
                 margin: 0,
                 padding: 10,
-                border: `1px solid ${T.borderS}`,
-                borderRadius: T.rTag,
-                background: T.panel2,
-                fontFamily: T.bodyFont,
+                border: `1px solid ${TL.hair}`,
+                borderRadius: TL.radius.row,
+                background: TL.dock,
+                fontFamily: TL.font.sans,
                 fontSize: 13,
                 lineHeight: 1.6,
-                color: T.fg,
+                color: TL.text,
               }}
             >
               {svarUtkast}
@@ -195,7 +196,7 @@ export function SakArtefakt({
       )}
 
       {feilmelding && (
-        <div role="alert" style={{ fontFamily: T.ui, fontSize: 12, color: T.down }}>
+        <div role="alert" style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger }}>
           {feilmelding}
         </div>
       )}
@@ -210,12 +211,12 @@ export function SakArtefakt({
             justifyContent: "space-between",
             gap: 10,
             padding: "10px 12px",
-            borderRadius: T.rTag,
-            border: `1px solid ${T.border}`,
-            background: T.panel2,
+            borderRadius: TL.radius.row,
+            border: `1px solid ${TL.hair}`,
+            background: TL.dock,
           }}
         >
-          <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg }}>
+          <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.text }}>
             {ventende.type === "godkjenn" ? "Godkjenner" : "Avviser"} om {ventende.sekunderIgjen}s …
           </span>
           <button
@@ -226,11 +227,11 @@ export function SakArtefakt({
             style={{
               minHeight: 32,
               padding: "0 14px",
-              borderRadius: T.rTag,
-              border: `1px solid ${T.fg}`,
+              borderRadius: TL.radius.row,
+              border: `1px solid ${TL.text}`,
               background: "transparent",
-              color: T.fg,
-              fontFamily: T.ui,
+              color: TL.text,
+              fontFamily: TL.font.sans,
               fontSize: 12.5,
               fontWeight: 500,
               cursor: "pointer",
@@ -247,12 +248,12 @@ export function SakArtefakt({
             alignItems: "center",
             gap: 8,
             padding: "10px 12px",
-            borderRadius: T.rTag,
-            border: `1px solid ${T.borderS}`,
-            background: T.panel2,
-            fontFamily: T.ui,
+            borderRadius: TL.radius.row,
+            border: `1px solid ${TL.hair}`,
+            background: TL.dock,
+            fontFamily: TL.font.sans,
             fontSize: 12.5,
-            color: T.mut,
+            color: TL.mute,
           }}
         >
           <Icon name={sak.status === SakStatus.AVVIST ? "x-circle" : "check-circle"} size={15} strokeWidth={1.8} />
@@ -270,11 +271,11 @@ export function SakArtefakt({
             style={{
               flex: 1,
               minHeight: 40,
-              borderRadius: T.rTag,
-              border: `1px solid ${T.cta}`,
-              background: T.cta,
-              color: T.onCta,
-              fontFamily: T.ui,
+              borderRadius: TL.radius.row,
+              border: `1px solid ${TL.fill}`,
+              background: TL.fill,
+              color: TL.onFill,
+              fontFamily: TL.font.sans,
               fontSize: 13,
               fontWeight: 600,
               cursor: "pointer",
@@ -300,11 +301,11 @@ export function SakArtefakt({
               style={{
                 minHeight: 40,
                 padding: "0 14px",
-                borderRadius: T.rTag,
-                border: `1px solid ${T.border}`,
+                borderRadius: TL.radius.row,
+                border: `1px solid ${TL.hair}`,
                 background: "transparent",
-                color: T.fg,
-                fontFamily: T.ui,
+                color: TL.text,
+                fontFamily: TL.font.sans,
                 fontSize: 13,
                 fontWeight: 500,
                 cursor: "pointer",
@@ -321,11 +322,11 @@ export function SakArtefakt({
             style={{
               minHeight: 40,
               padding: "0 14px",
-              borderRadius: T.rTag,
-              border: `1px solid ${T.border}`,
+              borderRadius: TL.radius.row,
+              border: `1px solid ${TL.hair}`,
               background: "transparent",
-              color: T.mut,
-              fontFamily: T.ui,
+              color: TL.mute,
+              fontFamily: TL.font.sans,
               fontSize: 13,
               fontWeight: 500,
               cursor: "pointer",

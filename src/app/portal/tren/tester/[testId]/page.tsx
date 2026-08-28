@@ -20,7 +20,8 @@ import { FEATURES } from "@/lib/features";
 import { parseProtocol, type ScorekortForsok } from "@/lib/portal-tester/protocol";
 import { parseForScoring, lavereErBedre } from "@/lib/portal-tester/test-scoring";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Kort, StatusPill, MikroMeta, TilbakeLenke } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
@@ -103,7 +104,7 @@ export default async function TestDetaljSpillerPage({
       };
     }
   }
-  const toneFarge = { pos: T.up, neg: T.down, flat: T.mut } as const;
+  const toneFarge = { pos: TL.ok, neg: TL.danger, flat: TL.mute } as const;
 
   const subBiter = [test.pyramidArea, enhet ? `måles i ${enhet}` : null].filter(Boolean);
 
@@ -120,7 +121,7 @@ export default async function TestDetaljSpillerPage({
                 gap: 12,
                 padding: "8px 0",
                 fontSize: 13,
-                borderBottom: i === steg.length - 1 ? "none" : `1px solid ${T.borderS}`,
+                borderBottom: i === steg.length - 1 ? "none" : `1px solid ${TL.hair}`,
               }}
             >
               <span
@@ -128,20 +129,20 @@ export default async function TestDetaljSpillerPage({
                   flex: "none",
                   width: 22,
                   height: 22,
-                  borderRadius: T.rPill,
+                  borderRadius: TL.radius.pill,
                   display: "grid",
                   placeItems: "center",
-                  background: T.panel2,
-                  fontFamily: T.mono,
+                  background: TL.dock,
+                  fontFamily: TL.font.mono,
                   fontSize: 11,
-                  color: T.mut,
+                  color: TL.mute,
                 }}
               >
                 {i + 1}
               </span>
-              <span style={{ fontFamily: T.bodyFont, color: T.fg2 }}>
+              <span style={{ fontFamily: TL.font.sans, color: TL.mute }}>
                 {s.label}
-                <span style={{ fontFamily: T.mono, color: T.mut }}>
+                <span style={{ fontFamily: TL.font.mono, color: TL.mute }}>
                   {" "}× {s.antall}
                   {s.target != null ? ` · mål ${s.target}` : ""}
                 </span>
@@ -151,7 +152,7 @@ export default async function TestDetaljSpillerPage({
         </div>
       ) : (
         <div>
-          <p style={{ fontFamily: T.bodyFont, fontSize: 13, color: T.fg2, lineHeight: 1.6, margin: 0 }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.6, margin: 0 }}>
             Testen har ingen steg-protokoll i systemet ennå — scoringsregelen under gjelder.
           </p>
           <a href={NGF_URL} target="_blank" rel="noreferrer" style={{ textDecoration: "none", display: "inline-block", marginTop: 10 }}>
@@ -166,12 +167,12 @@ export default async function TestDetaljSpillerPage({
           alignItems: "baseline",
           marginTop: 8,
           paddingTop: 8,
-          borderTop: `1px solid ${T.borderS}`,
+          borderTop: `1px solid ${TL.hair}`,
           fontSize: 13,
         }}
       >
-        <span style={{ fontFamily: T.ui, color: T.fg }}>Scoring</span>
-        <span style={{ fontFamily: T.bodyFont, color: T.mut }}>{test.scoringRule}</span>
+        <span style={{ fontFamily: TL.font.sans, color: TL.text }}>Scoring</span>
+        <span style={{ fontFamily: TL.font.sans, color: TL.mute }}>{test.scoringRule}</span>
       </div>
     </Kort>
   );
@@ -182,7 +183,7 @@ export default async function TestDetaljSpillerPage({
       <div
         data-paper-slug="playerhq-test-detalj"
         data-od-id="playerhq-test-detalj"
-        style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}
+        style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}
       >
         {/* Kvittering etter gjennomføring — fasit playerhq-test-gjennomfor.html
             (serveren redirecter hit ved lagring; kvitteringen bor derfor her).
@@ -191,9 +192,9 @@ export default async function TestDetaljSpillerPage({
           <div
             style={{
               padding: "20px 16px",
-              background: T.panel,
-              border: `1px solid ${T.up}`,
-              borderRadius: T.rCard,
+              background: TL.elev,
+              border: `1px solid ${TL.ok}`,
+              borderRadius: TL.radius.card,
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
@@ -202,7 +203,7 @@ export default async function TestDetaljSpillerPage({
                 <MikroMeta icon="send">Del med coach</MikroMeta>
               </Link>
             </div>
-            <p style={{ margin: 0, fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut, lineHeight: 1.6 }}>
+            <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute, lineHeight: 1.6 }}>
               Resultatet er lagret og telles i historikken under. Coachen ser det i
               stallen.
             </p>
@@ -215,10 +216,10 @@ export default async function TestDetaljSpillerPage({
                   gap: 6,
                   marginTop: 12,
                   minHeight: 44,
-                  fontFamily: T.ui,
+                  fontFamily: TL.font.sans,
                   fontSize: 13,
                   fontWeight: 500,
-                  color: T.fg,
+                  color: TL.text,
                   textDecoration: "none",
                 }}
               >
@@ -230,10 +231,10 @@ export default async function TestDetaljSpillerPage({
 
         {/* Topp — fasit: testnavn / AKSE · måles i [enhet] */}
         <div>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>
             {test.name}
           </h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
             {subBiter.join(" · ")}
           </span>
         </div>
@@ -244,15 +245,15 @@ export default async function TestDetaljSpillerPage({
           <div
             style={{
               padding: "24px 16px",
-              background: T.panel2,
-              border: `1px dashed ${T.border}`,
-              borderRadius: T.rCard,
+              background: TL.dock,
+              border: `1px dashed ${TL.hair}`,
+              borderRadius: TL.radius.card,
             }}
           >
-            <h3 style={{ margin: "0 0 8px", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+            <h3 style={{ margin: "0 0 8px", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
               Du har ikke tatt denne testen ennå
             </h3>
-            <p style={{ margin: "0 0 12px", fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut }}>
+            <p style={{ margin: "0 0 12px", fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute }}>
               Protokollen står under — første måling blir referansen din.
             </p>
             <Link
@@ -267,10 +268,10 @@ export default async function TestDetaljSpillerPage({
                 justifyContent: "center",
                 minHeight: 56,
                 width: "100%",
-                borderRadius: T.rCard,
-                background: T.handling,
-                color: T.onHandling,
-                fontFamily: T.ui,
+                borderRadius: TL.radius.card,
+                background: TL.fill,
+                color: TL.onFill,
+                fontFamily: TL.font.sans,
                 fontSize: 14,
                 fontWeight: 600,
               }}
@@ -296,16 +297,16 @@ export default async function TestDetaljSpillerPage({
                 alignItems: "baseline",
                 gap: 8,
                 padding: "8px 0",
-                borderBottom: i === arr.length - 1 ? "none" : `1px solid ${T.borderS}`,
+                borderBottom: i === arr.length - 1 ? "none" : `1px solid ${TL.hair}`,
                 fontSize: 13,
               }}
             >
-              <span style={{ fontFamily: T.ui, color: T.fg }}>{k}</span>
-              <span style={{ marginLeft: "auto", fontFamily: T.mono, textAlign: "right", color: T.fg }}>{v}</span>
+              <span style={{ fontFamily: TL.font.sans, color: TL.text }}>{k}</span>
+              <span style={{ marginLeft: "auto", fontFamily: TL.font.mono, textAlign: "right", color: TL.text }}>{v}</span>
             </div>
           ))}
           {test.description && (
-            <p style={{ fontFamily: T.bodyFont, fontSize: 13, color: T.mut, lineHeight: 1.6, margin: "8px 0 0" }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.6, margin: "8px 0 0" }}>
               {test.description}
             </p>
           )}
@@ -324,7 +325,7 @@ export default async function TestDetaljSpillerPage({
                     key={r.id}
                     style={{
                       flex: 1,
-                      background: sisteStolpe ? T.mut : T.panel2,
+                      background: sisteStolpe ? TL.mute : TL.dock,
                       borderRadius: "8px 8px 0 0",
                       position: "relative",
                       minHeight: 8,
@@ -337,9 +338,9 @@ export default async function TestDetaljSpillerPage({
                         top: -18,
                         left: "50%",
                         transform: "translateX(-50%)",
-                        fontFamily: T.mono,
+                        fontFamily: TL.font.mono,
                         fontSize: 9.5,
-                        color: T.mut,
+                        color: TL.mute,
                         whiteSpace: "nowrap",
                       }}
                     >
@@ -353,7 +354,7 @@ export default async function TestDetaljSpillerPage({
               {hist.map((r) => (
                 <span
                   key={r.id}
-                  style={{ flex: 1, textAlign: "center", fontFamily: T.mono, fontSize: 9.5, color: T.mut }}
+                  style={{ flex: 1, textAlign: "center", fontFamily: TL.font.mono, fontSize: 9.5, color: TL.mute }}
                 >
                   {fmtDatoKort(r.takenAt)}
                 </span>
@@ -366,21 +367,21 @@ export default async function TestDetaljSpillerPage({
                     display: "inline-flex",
                     alignItems: "center",
                     padding: "3px 8px",
-                    borderRadius: T.rPill,
-                    fontFamily: T.mono,
+                    borderRadius: TL.radius.pill,
+                    fontFamily: TL.font.mono,
                     fontSize: 10,
                     letterSpacing: "0.04em",
                     textTransform: "uppercase",
-                    background: T.panel2,
+                    background: TL.dock,
                     color: toneFarge[trend.tone],
-                    border: `1px solid ${T.border}`,
+                    border: `1px solid ${TL.hair}`,
                   }}
                 >
                   {trend.text}
                 </span>
               </div>
             )}
-            <details data-od-id="testd-why" style={{ marginTop: 12, border: `1px solid ${T.border}`, borderRadius: T.rCard }}>
+            <details data-od-id="testd-why" style={{ marginTop: 12, border: `1px solid ${TL.hair}`, borderRadius: TL.radius.card }}>
               <summary
                 style={{
                   display: "flex",
@@ -389,10 +390,10 @@ export default async function TestDetaljSpillerPage({
                   padding: "0 16px",
                   cursor: "pointer",
                   listStyle: "none",
-                  fontFamily: T.ui,
+                  fontFamily: TL.font.sans,
                   fontSize: 12.5,
                   fontWeight: 500,
-                  color: T.mut,
+                  color: TL.mute,
                 }}
               >
                 Hvorfor dette tallet
@@ -401,10 +402,10 @@ export default async function TestDetaljSpillerPage({
                 style={{
                   margin: 0,
                   padding: "12px 16px 16px 24px",
-                  fontFamily: T.bodyFont,
+                  fontFamily: TL.font.sans,
                   fontSize: 13,
-                  color: T.mut,
-                  borderTop: `1px solid ${T.border}`,
+                  color: TL.mute,
+                  borderTop: `1px solid ${TL.hair}`,
                 }}
               >
                 <li style={{ marginBottom: 8 }}>
@@ -444,10 +445,10 @@ export default async function TestDetaljSpillerPage({
               justifyContent: "center",
               minHeight: 56,
               width: "100%",
-              borderRadius: T.rCard,
-              background: T.handling,
-              color: T.onHandling,
-              fontFamily: T.ui,
+              borderRadius: TL.radius.card,
+              background: TL.fill,
+              color: TL.onFill,
+              fontFamily: TL.font.sans,
               fontSize: 14,
               fontWeight: 600,
             }}

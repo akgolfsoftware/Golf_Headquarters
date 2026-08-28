@@ -9,7 +9,8 @@
  */
 
 import { CheckCircle2, AlertTriangle, TrendingUp } from "lucide-react";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import {
   beregnStabilitet,
   type StabilitetData,
@@ -48,27 +49,27 @@ const PARAMS = ["carry", "side", "ballSpeed", "launchAngle", "spinRate", "smash"
 // tokenen, som holder kontrast i begge temaer.
 
 const VFARGER: Record<1 | 2 | 3 | 4 | 5, { bg: string; text: string }> = {
-  1: { bg: `color-mix(in srgb, ${T.up} 22%, transparent)`, text: T.up },
-  2: { bg: `color-mix(in srgb, ${T.up} 11%, transparent)`, text: T.up },
-  3: { bg: `color-mix(in srgb, ${T.warn} 14%, transparent)`, text: T.warn },
-  4: { bg: `color-mix(in srgb, ${T.down} 12%, transparent)`, text: T.down },
-  5: { bg: `color-mix(in srgb, ${T.down} 24%, transparent)`, text: T.down },
+  1: { bg: `color-mix(in srgb, ${TL.ok} 22%, transparent)`, text: TL.ok },
+  2: { bg: `color-mix(in srgb, ${TL.ok} 11%, transparent)`, text: TL.ok },
+  3: { bg: `color-mix(in srgb, ${TL.warn} 14%, transparent)`, text: TL.warn },
+  4: { bg: `color-mix(in srgb, ${TL.danger} 12%, transparent)`, text: TL.danger },
+  5: { bg: `color-mix(in srgb, ${TL.danger} 24%, transparent)`, text: TL.danger },
 };
 
 const BIAS_FARGE = {
-  steady: { bg: `color-mix(in srgb, ${T.up} 12%, transparent)`, border: `color-mix(in srgb, ${T.up} 50%, transparent)`, text: T.up, label: "Stødig" },
-  bias:   { bg: `color-mix(in srgb, ${T.warn} 14%, transparent)`, border: `color-mix(in srgb, ${T.warn} 65%, transparent)`, text: T.warn, label: "Bias" },
-  spread: { bg: `color-mix(in srgb, ${T.down} 14%, transparent)`, border: `color-mix(in srgb, ${T.down} 60%, transparent)`, text: T.down, label: "Spredning" },
-  both:   { bg: `color-mix(in srgb, ${T.down} 22%, transparent)`, border: `color-mix(in srgb, ${T.down} 80%, transparent)`, text: T.down, label: "Bias + spredning" },
+  steady: { bg: `color-mix(in srgb, ${TL.ok} 12%, transparent)`, border: `color-mix(in srgb, ${TL.ok} 50%, transparent)`, text: TL.ok, label: "Stødig" },
+  bias:   { bg: `color-mix(in srgb, ${TL.warn} 14%, transparent)`, border: `color-mix(in srgb, ${TL.warn} 65%, transparent)`, text: TL.warn, label: "Bias" },
+  spread: { bg: `color-mix(in srgb, ${TL.danger} 14%, transparent)`, border: `color-mix(in srgb, ${TL.danger} 60%, transparent)`, text: TL.danger, label: "Spredning" },
+  both:   { bg: `color-mix(in srgb, ${TL.danger} 22%, transparent)`, border: `color-mix(in srgb, ${TL.danger} 80%, transparent)`, text: TL.danger, label: "Bias + spredning" },
 };
 
 const capsStil: React.CSSProperties = {
-  fontFamily: T.mono,
+  fontFamily: TL.font.mono,
   fontSize: 9,
   fontWeight: 700,
   textTransform: "uppercase",
   letterSpacing: "0.08em",
-  color: T.mut,
+  color: TL.mute,
 };
 
 // ── Bias-mini SVG ────────────────────────────────────────────────────────────
@@ -94,8 +95,8 @@ function BiasMinikart({ meanSide, stddevSide, type }: {
   return (
     <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%" }} aria-hidden>
       {/* Crosshair */}
-      <line x1={cx} y1={5} x2={cx} y2={H - 5} stroke={T.border} strokeWidth="1" />
-      <line x1={5} y1={cy} x2={W - 5} y2={cy} stroke={T.border} strokeWidth="1" />
+      <line x1={cx} y1={5} x2={cx} y2={H - 5} stroke={TL.hair} strokeWidth="1" />
+      <line x1={5} y1={cy} x2={W - 5} y2={cy} stroke={TL.hair} strokeWidth="1" />
       {/* Spread ellipse */}
       <ellipse
         cx={cx + biasX}
@@ -111,12 +112,12 @@ function BiasMinikart({ meanSide, stddevSide, type }: {
         cx={cx + biasX}
         cy={cy}
         r={3.5}
-        fill={T.fg}
-        stroke={T.panel}
+        fill={TL.text}
+        stroke={TL.elev}
         strokeWidth="1.5"
       />
       {/* Target dot */}
-      <circle cx={cx} cy={cy} r={2} fill={T.mut} opacity="0.5" />
+      <circle cx={cx} cy={cy} r={2} fill={TL.mute} opacity="0.5" />
     </svg>
   );
 }
@@ -126,7 +127,7 @@ function BiasMinikart({ meanSide, stddevSide, type }: {
 function HeatmapCelle({ stats, paramKey }: { stats: ParamStats; paramKey: ParamKey }) {
   if (stats.level === null || stats.stddev === null) {
     return (
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", background: T.panel, padding: 8, fontFamily: T.mono, fontSize: 11, color: T.mut }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", background: TL.elev, padding: 8, fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>
         —
       </div>
     );
@@ -146,7 +147,7 @@ function HeatmapCelle({ stats, paramKey }: { stats: ParamStats; paramKey: ParamK
 
   return (
     <div
-      style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: 8, fontFamily: T.mono, fontSize: 11, fontWeight: 600, background: farge.bg, color: farge.text }}
+      style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: 8, fontFamily: TL.font.mono, fontSize: 11, fontWeight: 600, background: farge.bg, color: farge.text }}
       title={`${val}${enhet}`}
     >
       {val}
@@ -172,20 +173,20 @@ function Callout({
   type: "best" | "worst" | "prog";
   icon: React.ReactNode;
 }) {
-  const farge = type === "best" ? T.up : type === "worst" ? T.down : T.warn;
+  const farge = type === "best" ? TL.ok : type === "worst" ? TL.danger : TL.warn;
 
   return (
-    <div style={{ position: "relative", display: "flex", flexDirection: "column", gap: 4, padding: 16, borderRight: `1px solid ${T.border}` }}>
+    <div style={{ position: "relative", display: "flex", flexDirection: "column", gap: 4, padding: 16, borderRight: `1px solid ${TL.hair}` }}>
       <span style={{ ...capsStil, fontSize: 9.5, letterSpacing: "0.12em" }}>{label}</span>
       <div style={{ marginTop: 4, display: "flex", alignItems: "baseline", gap: 10 }}>
-        <span style={{ fontFamily: T.disp, fontSize: 20, fontWeight: 700, lineHeight: 1, letterSpacing: "-0.01em", color: T.fg }}>
+        <span style={{ fontFamily: TL.font.sans, fontSize: 20, fontWeight: 700, lineHeight: 1, letterSpacing: "-0.01em", color: TL.text }}>
           {klubb}
         </span>
-        <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: farge }}>
+        <span style={{ fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: farge }}>
           {score}
         </span>
       </div>
-      <span style={{ fontFamily: T.mono, fontSize: 10.5, color: T.mut }}>{detail}</span>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute }}>{detail}</span>
       <span
         style={{ position: "absolute", right: 16, top: 16, display: "inline-flex", height: 28, width: 28, alignItems: "center", justifyContent: "center", borderRadius: 8, background: `color-mix(in srgb, ${farge} 14%, transparent)`, color: farge }}
       >
@@ -216,29 +217,29 @@ export function StabilitetSeksjon({ data }: { data: StabilitetData }) {
   return (
     <section
       aria-label="TrackMan stabilitet-analyse"
-      style={{ overflow: "hidden", borderRadius: T.rCard, border: `1px solid ${T.border}`, background: T.panel }}
+      style={{ overflow: "hidden", borderRadius: TL.radius.card, border: `1px solid ${TL.hair}`, background: TL.elev }}
     >
       {/* Header */}
-      <header style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 16, borderBottom: `1px solid ${T.border}`, padding: "16px 20px 14px" }}>
+      <header style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 16, borderBottom: `1px solid ${TL.hair}`, padding: "16px 20px 14px" }}>
         <div>
           <span style={{ ...capsStil, fontSize: 10, letterSpacing: "0.12em", display: "inline-flex", alignItems: "center", gap: 8 }}>
             TrackMan · Stabilitet
           </span>
-          <h2 style={{ margin: "4px 0 0", fontFamily: T.disp, fontSize: 19, fontWeight: 700, lineHeight: 1.1, letterSpacing: "-0.015em", color: T.fg }}>
+          <h2 style={{ margin: "4px 0 0", fontFamily: TL.font.sans, fontSize: 19, fontWeight: 700, lineHeight: 1.1, letterSpacing: "-0.015em", color: TL.text }}>
             Konsistens-analyse{" "}
-            <em style={{ fontWeight: 400, fontStyle: "italic", color: T.mut }}>
+            <em style={{ fontWeight: 400, fontStyle: "italic", color: TL.mute }}>
               · {klubber.length} køller
             </em>
           </h2>
         </div>
-        <span style={{ ...capsStil, fontSize: 10, letterSpacing: "0.1em", flexShrink: 0, borderRadius: 6, background: T.panel2, padding: "4px 10px" }}>
+        <span style={{ ...capsStil, fontSize: 10, letterSpacing: "0.1em", flexShrink: 0, borderRadius: 6, background: TL.dock, padding: "4px 10px" }}>
           {klubber.reduce((a, k) => a + k.antallSlag, 0)} slag
         </span>
       </header>
 
       {/* Top callouts */}
       <div
-        style={{ display: "grid", borderBottom: `1px solid ${T.border}`, gridTemplateColumns: mestStødig && trengerJobbing && trengerJobbing.navn !== mestStødig.navn ? "1fr 1fr" : "1fr" }}
+        style={{ display: "grid", borderBottom: `1px solid ${TL.hair}`, gridTemplateColumns: mestStødig && trengerJobbing && trengerJobbing.navn !== mestStødig.navn ? "1fr 1fr" : "1fr" }}
       >
         {mestStødig && (
           <Callout
@@ -265,10 +266,10 @@ export function StabilitetSeksjon({ data }: { data: StabilitetData }) {
       {/* Heatmap */}
       <div style={{ padding: "16px 20px 0" }}>
         <div style={{ marginBottom: 12, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <h3 style={{ margin: 0, fontFamily: T.disp, fontSize: 14, fontWeight: 700, letterSpacing: "-0.015em", color: T.fg }}>
+          <h3 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 700, letterSpacing: "-0.015em", color: TL.text }}>
             Varians-heatmap · køller × parametere
           </h3>
-          <span style={{ fontFamily: T.mono, fontSize: 10.5, color: T.mut }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute }}>
             Lavere = mer stødig
           </span>
         </div>
@@ -276,7 +277,7 @@ export function StabilitetSeksjon({ data }: { data: StabilitetData }) {
         {/* Fargeskala-legend */}
         <div style={{ marginBottom: 12, display: "flex", alignItems: "center", gap: 12, ...capsStil }}>
           <span>Stødig</span>
-          <div style={{ display: "flex", height: 10, width: 144, overflow: "hidden", borderRadius: 999, border: `1px solid ${T.border}` }}>
+          <div style={{ display: "flex", height: 10, width: 144, overflow: "hidden", borderRadius: 999, border: `1px solid ${TL.hair}` }}>
             {([1, 2, 3, 4, 5] as const).map((v) => (
               <span key={v} style={{ flex: 1, background: VFARGER[v].bg }} />
             ))}
@@ -290,26 +291,26 @@ export function StabilitetSeksjon({ data }: { data: StabilitetData }) {
             marginBottom: 20,
             overflow: "hidden",
             borderRadius: 8,
-            border: `1px solid ${T.border}`,
+            border: `1px solid ${TL.hair}`,
             display: "grid",
             gridTemplateColumns: "80px repeat(6, 1fr) 68px",
             gap: "1px",
-            background: T.border,
+            background: TL.hair,
           }}
         >
           {/* Header-rad */}
-          <div style={{ display: "flex", alignItems: "center", background: T.bg, padding: "8px", ...capsStil }}>
+          <div style={{ display: "flex", alignItems: "center", background: TL.scene, padding: "8px", ...capsStil }}>
             Kølle
           </div>
           {PARAMS.map((p) => (
             <div
               key={p}
-              style={{ display: "flex", alignItems: "center", justifyContent: "center", background: T.bg, padding: "8px 4px", textAlign: "center", ...capsStil, letterSpacing: "0.06em" }}
+              style={{ display: "flex", alignItems: "center", justifyContent: "center", background: TL.scene, padding: "8px 4px", textAlign: "center", ...capsStil, letterSpacing: "0.06em" }}
             >
               {PARAM_LABEL[p]}
             </div>
           ))}
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", background: T.bg, padding: "8px", ...capsStil }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", background: TL.scene, padding: "8px", ...capsStil }}>
             Stab
           </div>
 
@@ -319,7 +320,7 @@ export function StabilitetSeksjon({ data }: { data: StabilitetData }) {
               {/* Navn */}
               <div
                 key={`${k.navn}-navn`}
-                style={{ display: "flex", alignItems: "center", background: T.bg, padding: "10px 8px", fontFamily: T.mono, fontSize: 11, fontWeight: 700, color: T.fg }}
+                style={{ display: "flex", alignItems: "center", background: TL.scene, padding: "10px 8px", fontFamily: TL.font.mono, fontSize: 11, fontWeight: 700, color: TL.text }}
               >
                 {k.navn}
               </div>
@@ -332,13 +333,13 @@ export function StabilitetSeksjon({ data }: { data: StabilitetData }) {
                 key={`${k.navn}-stab`}
                 style={{
                   display: "flex", alignItems: "center", justifyContent: "flex-end",
-                  background: T.panel, padding: "10px 8px",
-                  fontFamily: T.mono, fontSize: 13, fontWeight: 700, fontVariantNumeric: "tabular-nums",
-                  color: k.stabilitetScore >= 8 ? T.up : k.stabilitetScore < 5 ? T.down : T.fg,
+                  background: TL.elev, padding: "10px 8px",
+                  fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, fontVariantNumeric: "tabular-nums",
+                  color: k.stabilitetScore >= 8 ? TL.ok : k.stabilitetScore < 5 ? TL.danger : TL.text,
                 }}
               >
                 {k.stabilitetScore.toFixed(1)}
-                <small style={{ marginLeft: 2, fontSize: 9, fontWeight: 600, color: T.mut }}>
+                <small style={{ marginLeft: 2, fontSize: 9, fontWeight: 600, color: TL.mute }}>
                   /10
                 </small>
               </div>
@@ -348,13 +349,13 @@ export function StabilitetSeksjon({ data }: { data: StabilitetData }) {
       </div>
 
       {/* Bias vs spredning */}
-      <div style={{ borderTop: `1px solid ${T.border}`, padding: "16px 20px 20px" }}>
+      <div style={{ borderTop: `1px solid ${TL.hair}`, padding: "16px 20px 20px" }}>
         <div style={{ marginBottom: 12, display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
           <div>
-            <h3 style={{ margin: 0, fontFamily: T.disp, fontSize: 14, fontWeight: 700, letterSpacing: "-0.015em", color: T.fg }}>
+            <h3 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 700, letterSpacing: "-0.015em", color: TL.text }}>
               Bias vs. tilfeldig spredning
             </h3>
-            <p style={{ margin: "2px 0 0", fontFamily: T.mono, fontSize: 10.5, color: T.mut }}>
+            <p style={{ margin: "2px 0 0", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute }}>
               Bias = misser samme vei · Spredning = tilfeldig
             </p>
           </div>
@@ -381,7 +382,7 @@ export function StabilitetSeksjon({ data }: { data: StabilitetData }) {
             return (
               <div
                 key={k.navn}
-                style={{ display: "flex", flexDirection: "column", gap: 6, borderRadius: 8, border: `1px solid ${T.border}`, background: T.bg, padding: 8 }}
+                style={{ display: "flex", flexDirection: "column", gap: 6, borderRadius: 8, border: `1px solid ${TL.hair}`, background: TL.scene, padding: 8 }}
               >
                 <BiasMinikart
                   meanSide={k.meanSide}
@@ -389,7 +390,7 @@ export function StabilitetSeksjon({ data }: { data: StabilitetData }) {
                   type={k.biasType}
                 />
                 <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                  <span style={{ fontFamily: T.mono, fontSize: 11, fontWeight: 700, letterSpacing: "0.04em", color: T.fg }}>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 11, fontWeight: 700, letterSpacing: "0.04em", color: TL.text }}>
                     {k.navn}
                   </span>
                   <span
@@ -397,14 +398,14 @@ export function StabilitetSeksjon({ data }: { data: StabilitetData }) {
                   >
                     {c.label}
                   </span>
-                  <span style={{ fontFamily: T.mono, fontSize: 9, lineHeight: 1.3, color: T.mut }}>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 9, lineHeight: 1.3, color: TL.mute }}>
                     Snitt{" "}
-                    <strong style={{ color: T.fg }}>
+                    <strong style={{ color: TL.text }}>
                       {k.meanSide >= 0 ? "+" : ""}
                       {k.meanSide.toFixed(1)} m
                     </strong>{" "}
                     · spred{" "}
-                    <strong style={{ color: T.fg }}>±{k.stddevSide.toFixed(1)}</strong>
+                    <strong style={{ color: TL.text }}>±{k.stddevSide.toFixed(1)}</strong>
                   </span>
                 </div>
               </div>
@@ -413,10 +414,10 @@ export function StabilitetSeksjon({ data }: { data: StabilitetData }) {
         </div>
 
         {/* Diagnosepanel */}
-        <div style={{ marginTop: 16, display: "flex", alignItems: "flex-start", gap: 10, borderRadius: T.rCard, border: `1px solid ${T.border}`, background: T.bg, padding: "12px 16px" }}>
-          <TrendingUp style={{ marginTop: 2, height: 16, width: 16, flexShrink: 0, color: T.warn }} />
-          <p style={{ margin: 0, fontFamily: T.mono, fontSize: 11, lineHeight: 1.6, color: T.mut }}>
-            <strong style={{ fontWeight: 700, color: T.fg }}>Diagnose-prinsipp:</strong>{" "}
+        <div style={{ marginTop: 16, display: "flex", alignItems: "flex-start", gap: 10, borderRadius: TL.radius.card, border: `1px solid ${TL.hair}`, background: TL.scene, padding: "12px 16px" }}>
+          <TrendingUp style={{ marginTop: 2, height: 16, width: 16, flexShrink: 0, color: TL.warn }} />
+          <p style={{ margin: 0, fontFamily: TL.font.mono, fontSize: 11, lineHeight: 1.6, color: TL.mute }}>
+            <strong style={{ fontWeight: 700, color: TL.text }}>Diagnose-prinsipp:</strong>{" "}
             Bias = tren på sikte. Spredning = tren på teknikk. Begge = prioriter teknikk
             først — ellers gjør sikte-justering ingen forskjell.
           </p>

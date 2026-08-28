@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * Fellesmelding til turneringsdeltakere (D1) — AgencyOS turneringsdetalj.
@@ -16,7 +17,7 @@
 import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { T, Caps, AvatarInit, StatusPill, TomTilstand, type StatusTone } from "@/components/v2";
+import { Caps, AvatarInit, StatusPill, TomTilstand, type StatusTone } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import { TurneringModal, ModalFeil, useMobile } from "@/components/admin/v2/turnering-ui";
 import { sendFellesmelding, type FellesmeldingResultat } from "@/app/admin/tournaments/actions";
@@ -98,12 +99,12 @@ export function FellesmeldingFlyt({
           gap: 7,
           borderRadius: 9999,
           padding: "9px 16px",
-          fontFamily: T.ui,
+          fontFamily: TL.font.sans,
           fontSize: 12.5,
           fontWeight: 600,
-          color: tom ? T.mut : T.fg,
-          background: T.panel3,
-          border: `1px solid ${T.borderS}`,
+          color: tom ? TL.mute : TL.text,
+          background: TL.dim,
+          border: `1px solid ${TL.hair}`,
           opacity: tom ? 0.5 : 1,
           whiteSpace: "nowrap",
         }}
@@ -202,17 +203,17 @@ function FellesmeldingModal({
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
-              background: `color-mix(in srgb, ${delvis ? T.warn : T.up} 14%, transparent)`,
-              border: `1px solid color-mix(in srgb, ${delvis ? T.warn : T.up} 32%, transparent)`,
+              background: `color-mix(in srgb, ${delvis ? TL.warn : TL.ok} 14%, transparent)`,
+              border: `1px solid color-mix(in srgb, ${delvis ? TL.warn : TL.ok} 32%, transparent)`,
             }}
           >
-            <Icon name={delvis ? "triangle-alert" : "check"} size={22} style={{ color: delvis ? T.warn : T.up }} />
+            <Icon name={delvis ? "triangle-alert" : "check"} size={22} style={{ color: delvis ? TL.warn : TL.ok }} />
           </span>
           <div>
-            <h3 style={{ fontFamily: T.disp, fontSize: 17, fontWeight: 700, color: T.fg, margin: 0 }}>
+            <h3 style={{ fontFamily: TL.font.sans, fontSize: 17, fontWeight: 700, color: TL.text, margin: 0 }}>
               {resultat.sendt} melding{resultat.sendt === 1 ? "" : "er"} sendt
             </h3>
-            <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "6px 0 0" }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: "6px 0 0" }}>
               Landet i PlayerHQ-innboksen til {resultat.sendt} spiller{resultat.sendt === 1 ? "" : "e"}.
             </p>
           </div>
@@ -236,12 +237,12 @@ function FellesmeldingModal({
               textDecoration: "none",
               borderRadius: 9999,
               padding: "9px 16px",
-              fontFamily: T.ui,
+              fontFamily: TL.font.sans,
               fontSize: 12.5,
               fontWeight: 600,
-              color: T.fg,
-              background: T.panel3,
-              border: `1px solid ${T.borderS}`,
+              color: TL.text,
+              background: TL.dim,
+              border: `1px solid ${TL.hair}`,
             }}
           >
             <Icon name="message-circle" size={14} />
@@ -263,11 +264,11 @@ function FellesmeldingModal({
                 cursor: pending ? "default" : "pointer",
                 borderRadius: 9999,
                 padding: "9px 18px",
-                fontFamily: T.ui,
+                fontFamily: TL.font.sans,
                 fontSize: 12.5,
                 fontWeight: 700,
-                color: T.onHandling,
-                background: T.handling,
+                color: TL.onFill,
+                background: TL.fill,
                 border: "none",
                 opacity: pending ? 0.6 : 1,
               }}
@@ -284,12 +285,12 @@ function FellesmeldingModal({
               cursor: "pointer",
               borderRadius: 9999,
               padding: "9px 18px",
-              fontFamily: T.ui,
+              fontFamily: TL.font.sans,
               fontSize: 12.5,
               fontWeight: delvis ? 600 : 700,
-              color: delvis ? T.fg : T.onHandling,
-              background: delvis ? T.panel3 : T.lime,
-              border: delvis ? `1px solid ${T.borderS}` : "none",
+              color: delvis ? TL.text : TL.onFill,
+              background: delvis ? TL.dim : TL.fill,
+              border: delvis ? `1px solid ${TL.hair}` : "none",
             }}
           >
             Ferdig
@@ -316,12 +317,12 @@ function FellesmeldingModal({
           {steg === "velg" && (
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-                <span style={{ fontFamily: T.mono, fontSize: 12, fontWeight: 700, color: T.fg }}>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 12, fontWeight: 700, color: TL.text }}>
                   {antallValgt} av {deltakere.length} valgt
                 </span>
                 <div style={{ display: "flex", gap: 6 }}>
                   <MiniLenke onClick={() => velgAlle(true)}>Velg alle</MiniLenke>
-                  <span style={{ color: T.border }}>·</span>
+                  <span style={{ color: TL.hair }}>·</span>
                   <MiniLenke onClick={() => velgAlle(false)}>Fjern alle</MiniLenke>
                 </div>
               </div>
@@ -329,8 +330,8 @@ function FellesmeldingModal({
               <div
                 style={{
                   borderRadius: 12,
-                  border: `1px solid ${T.border}`,
-                  background: T.panel2,
+                  border: `1px solid ${TL.hair}`,
+                  background: TL.dock,
                   maxHeight: 320,
                   overflowY: "auto",
                 }}
@@ -354,13 +355,13 @@ function FellesmeldingModal({
                         padding: "10px 13px",
                         background: "transparent",
                         border: "none",
-                        borderBottom: i === deltakere.length - 1 ? "none" : `1px solid ${T.border}`,
+                        borderBottom: i === deltakere.length - 1 ? "none" : `1px solid ${TL.hair}`,
                         textAlign: "left",
                       }}
                     >
                       <Avkryss av={av} />
                       <AvatarInit navn={d.navn} size={32} />
-                      <span style={{ flex: 1, minWidth: 0, fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                      <span style={{ flex: 1, minWidth: 0, fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                         {d.navn}
                       </span>
                       <StatusPill tone={st.tone}>{st.l}</StatusPill>
@@ -389,15 +390,15 @@ function FellesmeldingModal({
                       gap: 6,
                       borderRadius: 9999,
                       padding: "7px 13px",
-                      fontFamily: T.ui,
+                      fontFamily: TL.font.sans,
                       fontSize: 11.5,
                       fontWeight: 600,
-                      color: T.fg2,
-                      background: T.panel2,
-                      border: `1px solid ${T.border}`,
+                      color: TL.mute,
+                      background: TL.dock,
+                      border: `1px solid ${TL.hair}`,
                     }}
                   >
-                    <Icon name={m.ikon} size={12} style={{ color: T.mut }} />
+                    <Icon name={m.ikon} size={12} style={{ color: TL.mute }} />
                     {m.navn}
                   </button>
                 ))}
@@ -414,13 +415,13 @@ function FellesmeldingModal({
                   style={{
                     width: "100%",
                     boxSizing: "border-box",
-                    background: T.panel2,
-                    border: `1px solid ${T.borderS}`,
+                    background: TL.dock,
+                    border: `1px solid ${TL.hair}`,
                     borderRadius: 12,
                     padding: "11px 13px",
-                    fontFamily: T.ui,
+                    fontFamily: TL.font.sans,
                     fontSize: 14,
-                    color: T.fg,
+                    color: TL.text,
                     outline: "none",
                     resize: "vertical",
                     lineHeight: 1.55,
@@ -446,14 +447,14 @@ function FellesmeldingModal({
                   alignItems: "center",
                   gap: 11,
                   borderRadius: 12,
-                  background: T.panel2,
-                  border: `1px solid ${T.border}`,
-                  borderLeft: `3px solid ${T.lime}`,
+                  background: TL.dock,
+                  border: `1px solid ${TL.hair}`,
+                  borderLeft: `3px solid ${TL.fill}`,
                   padding: "13px 15px",
                 }}
               >
-                <Icon name="users" size={16} style={{ color: T.lime, flex: "none" }} />
-                <span style={{ fontFamily: T.ui, fontSize: 13, color: T.fg }}>
+                <Icon name="users" size={16} style={{ color: TL.fill, flex: "none" }} />
+                <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text }}>
                   Sendes til <strong>{antallValgt} spiller{antallValgt === 1 ? "" : "e"}</strong> som melding i
                   PlayerHQ-innboksen.
                 </span>
@@ -477,12 +478,12 @@ function FellesmeldingModal({
                 cursor: pending ? "default" : "pointer",
                 borderRadius: 9999,
                 padding: "9px 16px",
-                fontFamily: T.ui,
+                fontFamily: TL.font.sans,
                 fontSize: 12.5,
                 fontWeight: 600,
-                color: T.fg,
-                background: T.panel3,
-                border: `1px solid ${T.borderS}`,
+                color: TL.text,
+                background: TL.dim,
+                border: `1px solid ${TL.hair}`,
                 opacity: pending ? 0.6 : 1,
               }}
             >
@@ -513,11 +514,11 @@ function FellesmeldingModal({
                   gap: 7,
                   borderRadius: 9999,
                   padding: "9px 20px",
-                  fontFamily: T.ui,
+                  fontFamily: TL.font.sans,
                   fontSize: 12.5,
                   fontWeight: 700,
-                  color: T.onHandling,
-                  background: T.handling,
+                  color: TL.onFill,
+                  background: TL.fill,
                   border: "none",
                   opacity: !kanSende || pending ? 0.6 : 1,
                 }}
@@ -550,12 +551,12 @@ function NesteKnapp({ disabled, onClick, children }: { disabled?: boolean; onCli
         gap: 6,
         borderRadius: 9999,
         padding: "9px 18px",
-        fontFamily: T.ui,
+        fontFamily: TL.font.sans,
         fontSize: 12.5,
         fontWeight: 600,
-        color: T.fg,
-        background: T.panel3,
-        border: `1px solid ${T.borderS}`,
+        color: TL.text,
+        background: TL.dim,
+        border: `1px solid ${TL.hair}`,
         opacity: disabled ? 0.5 : 1,
       }}
     >
@@ -571,7 +572,7 @@ function MiniLenke({ onClick, children }: { onClick: () => void; children: React
       type="button"
       onClick={onClick}
       className="v2-focus"
-      style={{ appearance: "none", cursor: "pointer", background: "none", border: "none", padding: 0, fontFamily: T.ui, fontSize: 11.5, fontWeight: 600, color: T.lime }}
+      style={{ appearance: "none", cursor: "pointer", background: "none", border: "none", padding: 0, fontFamily: TL.font.sans, fontSize: 11.5, fontWeight: 600, color: TL.fill }}
     >
       {children}
     </button>
@@ -589,11 +590,11 @@ function Avkryss({ av }: { av: boolean }) {
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
-        background: av ? T.lime : "transparent",
-        border: av ? "1px solid transparent" : `1.5px solid ${T.borderS}`,
+        background: av ? TL.fill : "transparent",
+        border: av ? "1px solid transparent" : `1.5px solid ${TL.hair}`,
       }}
     >
-      {av && <Icon name="check" size={13} style={{ color: T.onHandling }} />}
+      {av && <Icon name="check" size={13} style={{ color: TL.onFill }} />}
     </span>
   );
 }
@@ -607,28 +608,28 @@ function ForhandsBoble({ tekst }: { tekst: string }) {
           width: 34,
           height: 34,
           borderRadius: 9999,
-          background: `color-mix(in srgb, ${T.lime} 16%, transparent)`,
-          border: `1px solid color-mix(in srgb, ${T.lime} 30%, transparent)`,
+          background: `color-mix(in srgb, ${TL.fill} 16%, transparent)`,
+          border: `1px solid color-mix(in srgb, ${TL.fill} 30%, transparent)`,
           display: "inline-flex",
           alignItems: "center",
           justifyContent: "center",
           flex: "none",
         }}
       >
-        <Icon name="user" size={16} style={{ color: T.lime }} />
+        <Icon name="user" size={16} style={{ color: TL.fill }} />
       </span>
       <div
         style={{
           maxWidth: "86%",
-          background: T.panel2,
-          border: `1px solid ${T.border}`,
+          background: TL.dock,
+          border: `1px solid ${TL.hair}`,
           borderRadius: 16,
           borderBottomLeftRadius: 5,
           padding: "12px 14px",
-          fontFamily: T.ui,
+          fontFamily: TL.font.sans,
           fontSize: 14,
           lineHeight: 1.55,
-          color: T.fg,
+          color: TL.text,
           whiteSpace: "pre-wrap",
           wordBreak: "break-word",
         }}

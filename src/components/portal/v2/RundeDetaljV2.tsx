@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ Runde-detalj — v2 Presis + B-pakke (score-status + én primær handling).
  * Scorekort, SG, hull. T.* only. Tom hull/SG = grønn vei videre.
@@ -8,21 +8,7 @@
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import { UpGameImportModal } from "@/app/portal/mal/runder/[id]/upgame-import-modal";
-import {
-  T,
-  Caps,
-  Kort,
-  Rad,
-  StatusPill,
-  MikroMeta,
-  TomTilstand,
-  KpiFlis,
-  SgKategorier,
-  HjelpTips,
-  type ScorekortHull,
-  type SgKategori,
-} from "@/components/v2";
-
+import { Caps, Kort, Rad, StatusPill, MikroMeta, TomTilstand, KpiFlis, SgKategorier, HjelpTips, type ScorekortHull, type SgKategori } from "@/components/v2";
 /* ── Data-kontrakt ─────────────────────────────────────────────────── */
 
 export type GranulaerSgData = {
@@ -113,10 +99,10 @@ function BucketKort({
           trailing={
             <span
               style={{
-                fontFamily: T.mono,
+                fontFamily: TL.font.mono,
                 fontSize: 12,
                 fontWeight: 700,
-                color: v == null ? T.mut : v >= 0 ? T.up : T.down,
+                color: v == null ? TL.mute : v >= 0 ? TL.ok : TL.danger,
               }}
             >
               {v == null ? "— ingen slag" : sgTekst(v)}
@@ -140,7 +126,7 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
     Object.values(g).some((v) => v != null) && data.sgTotal != null;
 
   return (
-    <div data-paper-portal-runde-detalj data-paper-slug="playerhq-runde-detalj" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-portal-runde-detalj data-paper-slug="playerhq-runde-detalj" style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Tilbake */}
       <Link href="/portal/mal/runder" style={{ textDecoration: "none", alignSelf: "flex-start" }}>
         <MikroMeta icon="arrow-left">Runder</MikroMeta>
@@ -163,12 +149,12 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
       {data.nettoppLagret && data.erEier && (
         <Kort>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
-            <p style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg, margin: 0 }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text, margin: 0 }}>
               Runden er lagret
             </p>
             {data.sgTotal != null && <StatusPill tone="up">SG klar</StatusPill>}
           </div>
-          <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, margin: "6px 0 0" }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, margin: "6px 0 0" }}>
             {data.sgTotal != null
               ? "Strokes Gained er klar — se tallene under."
               : "Mangler hull-score for full Strokes Gained. Neste steg står rett under."}
@@ -181,21 +167,21 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
         <Link href={`/portal/mal/runder/${data.id}/fullfor`} style={{ textDecoration: "none", display: "block" }}>
 <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-            borderRadius: 10, background: T.cta, color: T.onCta, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 10, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
           }}>Fullfør slag-kjeden</span>
         </Link>
       ) : data.erEier && !harHull ? (
         <Link href={`/portal/mal/runder/${data.id}/hull`} style={{ textDecoration: "none", display: "block" }}>
 <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-            borderRadius: 10, background: T.cta, color: T.onCta, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 10, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
           }}>Legg til hull-for-hull</span>
         </Link>
       ) : (
         <Link href="/portal/coach/melding" style={{ textDecoration: "none", display: "block" }}>
 <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-            borderRadius: 10, background: T.cta, color: T.onCta, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 10, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
           }}>Del med coach</span>
         </Link>
       )}
@@ -219,7 +205,7 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
 
       {/* Granulære buckets — kun når kjeden faktisk ga bucket-nivå-data */}
       {harGranulaerData && (
-        <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: T.gap }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: 16 }}>
           <BucketKort
             tittel="Tee og innspill — per avstand"
             rader={[
@@ -257,7 +243,7 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
       {harHull ? (
         <>
           <Kort eyebrow={`Scorekort · ${data.hull.length} hull`}>
-            <div style={{ maxHeight: 280, overflow: "auto", borderTop: `1px solid ${T.border}`, marginTop: 8 }}>
+            <div style={{ maxHeight: 280, overflow: "auto", borderTop: `1px solid ${TL.hair}`, marginTop: 8 }}>
               <table style={{ width: "100%", borderCollapse: "collapse" }}>
                 <thead>
                   <tr>
@@ -267,16 +253,16 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
                         style={{
                           position: "sticky",
                           top: 0,
-                          background: T.panel,
+                          background: TL.elev,
                           textAlign: i === 0 ? "left" : "right",
-                          fontFamily: T.mono,
+                          fontFamily: TL.font.mono,
                           fontSize: 9.5,
                           letterSpacing: "0.08em",
                           textTransform: "uppercase",
-                          color: T.mut,
+                          color: TL.mute,
                           fontWeight: 500,
                           padding: "8px 4px",
-                          borderBottom: `1px solid ${T.border}`,
+                          borderBottom: `1px solid ${TL.hair}`,
                         }}
                       >
                         {h}
@@ -289,9 +275,9 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
                     const d = h.score - h.par;
                     const td = (hoyre: boolean, farge?: string): CSSProperties => ({
                       padding: "8px 4px",
-                      borderBottom: i === data.hull.length - 1 ? "none" : `1px solid ${T.border}`,
+                      borderBottom: i === data.hull.length - 1 ? "none" : `1px solid ${TL.hair}`,
                       fontSize: 12.5,
-                      ...(hoyre ? { textAlign: "right" as const, fontFamily: T.mono, fontVariantNumeric: "tabular-nums" as const } : {}),
+                      ...(hoyre ? { textAlign: "right" as const, fontFamily: TL.font.mono, fontVariantNumeric: "tabular-nums" as const } : {}),
                       ...(farge ? { color: farge } : {}),
                     });
                     return (
@@ -299,23 +285,23 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
                         <td style={td(false)}>{h.nr}</td>
                         <td style={td(true)}>{h.par}</td>
                         <td style={td(true)}>{h.score}</td>
-                        <td style={td(true, d > 0 ? T.down : d < 0 ? T.up : undefined)}>{tilKortParTekst(d)}</td>
+                        <td style={td(true, d > 0 ? TL.danger : d < 0 ? TL.ok : undefined)}>{tilKortParTekst(d)}</td>
                       </tr>
                     );
                   })}
                 </tbody>
                 <tfoot>
                   <tr>
-                    <td style={{ padding: "8px 4px 0", fontFamily: T.mono, fontSize: 11, color: T.mut }}>Sum</td>
-                    <td style={{ padding: "8px 4px 0", textAlign: "right", fontFamily: T.mono, fontSize: 11, color: T.mut }}>{data.par}</td>
-                    <td style={{ padding: "8px 4px 0", textAlign: "right", fontFamily: T.mono, fontSize: 11, color: T.mut }}>{data.score}</td>
+                    <td style={{ padding: "8px 4px 0", fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>Sum</td>
+                    <td style={{ padding: "8px 4px 0", textAlign: "right", fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>{data.par}</td>
+                    <td style={{ padding: "8px 4px 0", textAlign: "right", fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>{data.score}</td>
                     <td
                       style={{
                         padding: "8px 4px 0",
                         textAlign: "right",
-                        fontFamily: T.mono,
+                        fontFamily: TL.font.mono,
                         fontSize: 11,
-                        color: diff > 0 ? T.down : diff < 0 ? T.up : T.mut,
+                        color: diff > 0 ? TL.danger : diff < 0 ? TL.ok : TL.mute,
                       }}
                     >
                       {tilKortParTekst(diff)}
@@ -336,7 +322,7 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
                     key: "putter",
                     navn: <>Putter totalt <HjelpTips k="putter" size={11} /></>,
                     innhold: (
-                      <span style={{ fontFamily: T.mono, fontSize: 12.5, fontWeight: 600, color: T.fg }}>
+                      <span style={{ fontFamily: TL.font.mono, fontSize: 12.5, fontWeight: 600, color: TL.text }}>
                         {s.putter.totalt} putt · {s.putter.hull} hull
                       </span>
                     ),
@@ -347,7 +333,7 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
                     key: "fairway",
                     navn: <>Fairway truffet <HjelpTips k="fairwayTreff" size={11} /></>,
                     innhold: (
-                      <span style={{ fontFamily: T.mono, fontSize: 12.5, fontWeight: 600, color: T.fg }}>
+                      <span style={{ fontFamily: TL.font.mono, fontSize: 12.5, fontWeight: 600, color: TL.text }}>
                         {s.fairway.treff} av {s.fairway.av}
                       </span>
                     ),
@@ -358,7 +344,7 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
                     key: "gir",
                     navn: <>Green in regulation <HjelpTips k="gir" size={11} /></>,
                     innhold: (
-                      <span style={{ fontFamily: T.mono, fontSize: 12.5, fontWeight: 600, color: T.fg }}>
+                      <span style={{ fontFamily: TL.font.mono, fontSize: 12.5, fontWeight: 600, color: TL.text }}>
                         {s.gir.treff} av {s.gir.av}
                       </span>
                     ),
@@ -377,10 +363,10 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
             >
               <Kort pad="10px 16px">
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <span style={{ width: 8, height: 8, borderRadius: 9999, background: T.warn, flexShrink: 0 }} />
-                  <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, margin: 0, lineHeight: 1.5 }}>
+                  <span style={{ width: 8, height: 8, borderRadius: 9999, background: TL.warn, flexShrink: 0 }} />
+                  <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, margin: 0, lineHeight: 1.5 }}>
                     SG venter på slag-kjeden: {data.antallKomplette} av {data.antallHullMedScore} hull
-                    komplette. <span style={{ color: T.lime, fontWeight: 700 }}>Fullfør kjeden</span> for
+                    komplette. <span style={{ color: TL.fill, fontWeight: 700 }}>Fullfør kjeden</span> for
                     full Strokes Gained.
                   </p>
                 </div>
@@ -419,10 +405,10 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
                   href="/portal/runde/logg"
                   style={{
                     textDecoration: "none",
-                    fontFamily: T.ui,
+                    fontFamily: TL.font.sans,
                     fontSize: 12,
                     fontWeight: 600,
-                    color: T.mut,
+                    color: TL.mute,
                   }}
                 >
                   Eller før slag for slag →
@@ -440,10 +426,10 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
           textDecoration: "none",
           display: "block",
           textAlign: "center",
-          fontFamily: T.ui,
+          fontFamily: TL.font.sans,
           fontSize: 12,
           fontWeight: 600,
-          color: T.mut,
+          color: TL.mute,
         }}
       >
         Se SG-trend i Analyse →

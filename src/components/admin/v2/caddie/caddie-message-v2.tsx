@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * Caddie · meldingsboble (v2). Rekomponert fra
@@ -8,7 +9,6 @@
 
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { T } from "@/components/v2";
 import type { CaddieMessage } from "@/components/admin/caddie/types";
 import { CaddieToolCallV2 } from "./caddie-tool-call-v2";
 
@@ -19,7 +19,7 @@ function CaddieMarkdown({ text }: { text: string }) {
   if (!text) return null;
   return (
     <div
-      style={{ fontFamily: T.ui, fontSize: 13.5, lineHeight: 1.55, color: "inherit" }}
+      style={{ fontFamily: TL.font.sans, fontSize: 13.5, lineHeight: 1.55, color: "inherit" }}
       className="v2-md"
     >
       <ReactMarkdown remarkPlugins={[remarkGfm]}>{text}</ReactMarkdown>
@@ -34,13 +34,13 @@ export function CaddieMessageV2({ message, streaming }: { message: CaddieMessage
       <div
         style={{
           maxWidth: "80%", display: "flex", flexDirection: "column", gap: 8, borderRadius: 14, padding: "10px 14px", fontSize: 13.5,
-          background: isUser ? T.lime : T.panel2,
-          color: isUser ? T.onLime : T.fg,
-          border: isUser ? "none" : `1px solid ${T.border}`,
+          background: isUser ? TL.fill : TL.dock,
+          color: isUser ? TL.onFill : TL.text,
+          border: isUser ? "none" : `1px solid ${TL.hair}`,
         }}
       >
         {!isUser && (
-          <div style={{ fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: T.mut }}>
+          <div style={{ fontFamily: TL.font.mono, fontSize: 9.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: TL.mute }}>
             Caddie
           </div>
         )}

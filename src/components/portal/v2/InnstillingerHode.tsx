@@ -7,7 +7,8 @@
 
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Icon } from "@/components/v2/icon";
 
 export function InnstillingerHode({
@@ -31,18 +32,18 @@ export function InnstillingerHode({
           width: 44,
           height: 44,
           borderRadius: 12,
-          border: `1px solid ${T.border}`,
+          border: `1px solid ${TL.hair}`,
           display: "grid",
           placeItems: "center",
-          color: T.fg,
+          color: TL.text,
           textDecoration: "none",
         }}
       >
         <Icon name="arrow-left" size={18} />
       </Link>
       <div style={{ minWidth: 0, flex: 1 }}>
-        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>{tittel}</h1>
-        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+        <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>{tittel}</h1>
+        <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
           {undertekst}
         </span>
       </div>

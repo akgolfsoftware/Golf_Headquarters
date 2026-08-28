@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ AI-coach — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
  * T.* only. Lys PlayerHQ.
@@ -9,21 +9,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import type { Tier } from "@/generated/prisma/client";
 import type { ChatMelding } from "@/lib/anthropic";
-import {
-  T,
-  Caps,
-  Tittel,
-  Kort,
-  Knapp,
-  TomTilstand,
-  AiMerke,
-  SamtaleBoble,
-  SamtaleSkriver,
-  SamtaleFeil,
-  Skrivefelt,
-  ForslagRad,
-} from "@/components/v2";
-
+import { Caps, Tittel, Kort, Knapp, TomTilstand, AiMerke, SamtaleBoble, SamtaleSkriver, SamtaleFeil, Skrivefelt, ForslagRad } from "@/components/v2";
 /* ── Datakontrakt (1:1 med den ekte siden) ─────────────────────────── */
 
 export type CoachAIData = {
@@ -167,12 +153,12 @@ export function CoachAIV2({ data }: { data: CoachAIData }) {
   const tom = meldinger.length === 0;
 
   return (
-    <div data-paper-wave-g="coachai" data-paper-portal-coach-ai data-paper-slug="playerhq-coach-hub" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="coachai" data-paper-portal-coach-ai data-paper-slug="playerhq-coach-hub" style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div>
         <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Coach AI</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Assistent</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Coach AI</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>Assistent</span>
         </div>
       </div>
 
@@ -180,7 +166,7 @@ export function CoachAIV2({ data }: { data: CoachAIData }) {
       <Kort pad="0" style={{ height: mobile ? "auto" : "min(66vh, 640px)", minHeight: mobile ? 520 : undefined }}>
         <div style={{ display: "grid", gridTemplateRows: "auto 1fr auto", height: "100%", minHeight: 0 }}>
           {/* Identitetsstripe + verktøy */}
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap", padding: "14px 16px", borderBottom: `1px solid ${T.border}` }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap", padding: "14px 16px", borderBottom: `1px solid ${TL.hair}` }}>
             <AiMerke navn={`AI om ${fornavn}`} sub="Personlig kontekst" />
             <div style={{ display: "flex", gap: 8 }}>
               <Knapp ghost icon="download" onClick={eksporter} disabled={tom}>Eksporter</Knapp>
@@ -213,7 +199,7 @@ export function CoachAIV2({ data }: { data: CoachAIData }) {
           </div>
 
           {/* Komposisjon */}
-          <div style={{ padding: "12px 16px 14px", borderTop: `1px solid ${T.border}`, display: "flex", flexDirection: "column", gap: 10 }}>
+          <div style={{ padding: "12px 16px 14px", borderTop: `1px solid ${TL.hair}`, display: "flex", flexDirection: "column", gap: 10 }}>
             {feil && <SamtaleFeil>{feil}</SamtaleFeil>}
             <Skrivefelt value={input} onChange={setInput} onSend={send} sender={sender} />
             {!tom && <ForslagRad items={FORSLAG} onPick={setInput} />}
@@ -228,7 +214,7 @@ export function CoachAIV2({ data }: { data: CoachAIData }) {
 
 function ProGate({ mobile }: { mobile: boolean }) {
   return (
-    <div data-paper-portal-coach-ai data-paper-slug="playerhq-coach-hub" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-portal-coach-ai data-paper-slug="playerhq-coach-hub" style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div>
         <Caps>PlayerHQ · AI-coach</Caps>
         <div style={{ marginTop: 10 }}>
@@ -236,7 +222,7 @@ function ProGate({ mobile }: { mobile: boolean }) {
         </div>
       </div>
       <Kort tint>
-        <p style={{ fontFamily: T.ui, fontSize: 13.5, color: T.fg2, lineHeight: 1.6, margin: "0 0 16px" }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute, lineHeight: 1.6, margin: "0 0 16px" }}>
           AI-coach er en del av Pro-abonnementet.
         </p>
         <Link href="/portal/meg/abonnement" style={{ textDecoration: "none", alignSelf: "flex-start" }}>

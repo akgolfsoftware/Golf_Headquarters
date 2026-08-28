@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * AgencyOS · Caddie · Aktivitet (v2). Rekomponert fra
@@ -13,7 +14,7 @@
 import { useMemo, useState } from "react";
 import { avatarBg } from "@/lib/avatar-colors";
 import Link from "next/link";
-import { Caps, Tittel, Kort, Rad, KpiFlis, StatusPill, FordelingRad, TomTilstand, Icon, Knapp, CTAPill, T, type StatusTone } from "@/components/v2";
+import { Caps, Kort, Rad, KpiFlis, StatusPill, FordelingRad, TomTilstand, Icon, Knapp, CTAPill, T, type StatusTone } from "@/components/v2";
 
 export type CaddieEvent = {
   id: string;
@@ -58,16 +59,16 @@ function FilterSelectV2({ value, onChange, options }: { value: string; onChange:
         value={value}
         onChange={(e) => onChange(e.target.value)}
         style={{
-          appearance: "none", height: 34, borderRadius: 9999, border: `1px solid ${T.borderS}`, background: T.panel2,
-          padding: "0 30px 0 14px", fontFamily: T.ui, fontSize: 12.5, color: T.fg, cursor: "pointer", outline: "none",
+          appearance: "none", height: 34, borderRadius: 9999, border: `1px solid ${TL.hair}`, background: TL.dock,
+          padding: "0 30px 0 14px", fontFamily: TL.font.sans, fontSize: 12.5, color: TL.text, cursor: "pointer", outline: "none",
         }}
       >
         {options.map((o) => (
-          <option key={o.value} value={o.value} style={{ background: T.panel3, color: T.fg }}>{o.label}</option>
+          <option key={o.value} value={o.value} style={{ background: TL.dim, color: TL.text }}>{o.label}</option>
         ))}
       </select>
       <span style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }}>
-        <Icon name="chevron-down" size={12} style={{ color: T.mut }} />
+        <Icon name="chevron-down" size={12} style={{ color: TL.mute }} />
       </span>
     </div>
   );
@@ -215,10 +216,10 @@ export function AdminCaddieAktivitetV2({
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
         <div>
           <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Caddie</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Aktivitet</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Caddie</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>Aktivitet</span>
         </div>
-          <p style={{ marginTop: 8, fontFamily: T.ui, fontSize: 13, color: T.mut }}>
+          <p style={{ marginTop: 8, fontFamily: TL.font.sans, fontSize: 13, color: TL.mute }}>
             I dag · {stats.total} hendelser · {stats.ok} godkjent · {stats.rej} avvist · {stats.wait} venter · snitt-konfidens {(stats.conf * 100).toFixed(0)}%
           </p>
         </div>
@@ -234,7 +235,7 @@ export function AdminCaddieAktivitetV2({
         </CTAPill>
       </Link>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: T.gap }}>
+      <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: 16 }}>
         <KpiFlis label="I dag · samtaler" value={stats.total} tint />
         <KpiFlis label="Godkjenningsrate" value={`${stats.total === 0 ? 0 : Math.round((stats.ok / stats.total) * 100)}%`} />
         <KpiFlis label="Snitt-konfidens" value={stats.conf.toFixed(2)} />
@@ -242,14 +243,14 @@ export function AdminCaddieAktivitetV2({
       </div>
 
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8 }}>
-        <div style={{ display: "flex", flex: "1 1 260px", alignItems: "center", gap: 8, borderRadius: 9999, border: `1px solid ${T.borderS}`, background: T.panel2, padding: "8px 14px" }}>
-          <Icon name="search" size={14} style={{ color: T.mut }} />
+        <div style={{ display: "flex", flex: "1 1 260px", alignItems: "center", gap: 8, borderRadius: 9999, border: `1px solid ${TL.hair}`, background: TL.dock, padding: "8px 14px" }}>
+          <Icon name="search" size={14} style={{ color: TL.mute }} />
           <input
             type="search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Søk spiller, emne eller hendelse"
-            style={{ flex: 1, border: "none", background: "transparent", fontFamily: T.ui, fontSize: 13, color: T.fg, outline: "none" }}
+            style={{ flex: 1, border: "none", background: "transparent", fontFamily: TL.font.sans, fontSize: 13, color: TL.text, outline: "none" }}
           />
         </div>
         <FilterSelectV2
@@ -276,14 +277,14 @@ export function AdminCaddieAktivitetV2({
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_1fr]" style={{ gap: T.gap, alignItems: "flex-start" }}>
+      <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_1fr]" style={{ gap: 16, alignItems: "flex-start" }}>
         {/* Live-feed */}
         <Kort pad="0">
-          <div style={{ display: "flex", alignItems: "center", gap: 8, borderBottom: `1px solid ${T.border}`, padding: "16px 20px" }}>
-            <h2 style={{ margin: 0, fontFamily: T.disp, fontSize: 15, fontWeight: 700, letterSpacing: "-0.01em", color: T.fg }}>
-              Live-feed <em style={{ fontStyle: "italic", fontWeight: 400, color: T.lime }}>siste 24 timer</em>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, borderBottom: `1px solid ${TL.hair}`, padding: "16px 20px" }}>
+            <h2 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 15, fontWeight: 700, letterSpacing: "-0.01em", color: TL.text }}>
+              Live-feed <em style={{ fontStyle: "italic", fontWeight: 400, color: TL.fill }}>siste 24 timer</em>
             </h2>
-            <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 10, color: T.mut }}>Sist synk {formatTime(new Date(nowMs))}</span>
+            <span style={{ marginLeft: "auto", fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>Sist synk {formatTime(new Date(nowMs))}</span>
           </div>
 
           <div style={{ maxHeight: 760, overflowY: "auto", padding: "6px 10px 10px" }}>
@@ -302,9 +303,9 @@ export function AdminCaddieAktivitetV2({
             ) : (
               grouped.map((g) => (
                 <section key={g.key}>
-                  <div style={{ position: "sticky", top: 0, zIndex: 1, background: T.panel, padding: "10px 6px 6px" }}>
-                    <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: T.mut }}>
-                      {g.label} <span style={{ marginLeft: 6, color: T.fg, fontWeight: 700 }}>{g.events.length} hendelser</span>
+                  <div style={{ position: "sticky", top: 0, zIndex: 1, background: TL.elev, padding: "10px 6px 6px" }}>
+                    <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: TL.mute }}>
+                      {g.label} <span style={{ marginLeft: 6, color: TL.text, fontWeight: 700 }}>{g.events.length} hendelser</span>
                     </span>
                   </div>
                   {g.events.map((ev, i) => {
@@ -318,7 +319,7 @@ export function AdminCaddieAktivitetV2({
                           leading={
                             <span
                               aria-hidden
-                              style={{ width: 28, height: 28, flex: "none", borderRadius: 9999, display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.onCta, background: avatarBg(ev.playerName) }}
+                              style={{ width: 28, height: 28, flex: "none", borderRadius: 9999, display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, color: TL.onFill, background: avatarBg(ev.playerName) }}
                             >
                               {ev.playerInitials}
                             </span>
@@ -331,7 +332,7 @@ export function AdminCaddieAktivitetV2({
                           }
                           sub={`${ev.title} · ${ev.confidence.toFixed(2)}`}
                           meta={
-                            <span style={{ flex: "none", fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.mut, textAlign: "right" }}>
+                            <span style={{ flex: "none", fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, color: TL.mute, textAlign: "right" }}>
                               {formatTime(ev.at)}
                               <span style={{ display: "block", fontSize: 9 }}>{relativeShort(ev.at, nowMs)}</span>
                             </span>
@@ -340,9 +341,9 @@ export function AdminCaddieAktivitetV2({
                           naa={isFresh(ev.at, nowMs) && !open}
                         />
                         {open && (
-                          <div style={{ margin: "0 6px 10px 44px", borderRadius: 12, border: `1px solid ${T.border}`, background: T.panel2, padding: 14 }}>
+                          <div style={{ margin: "0 6px 10px 44px", borderRadius: 12, border: `1px solid ${TL.hair}`, background: TL.dock, padding: 14 }}>
                             <Caps size={9}>Full samtale-kontekst</Caps>
-                            <p style={{ marginTop: 8, fontFamily: T.ui, fontSize: 12.5, lineHeight: 1.5, color: T.fg2 }}>
+                            <p style={{ marginTop: 8, fontFamily: TL.font.sans, fontSize: 12.5, lineHeight: 1.5, color: TL.mute }}>
                               Caddie-agenten konkluderte basert på SG-data, kalenderstatus og spillerens egne meldinger. Bruk knappene for å markere oppfølging — coach-handlingen logges på saken.
                             </p>
                             <div className="grid grid-cols-2 sm:grid-cols-4" style={{ gap: 8, marginTop: 8 }}>
@@ -355,7 +356,7 @@ export function AdminCaddieAktivitetV2({
                               <Knapp icon="check" ghost={fu !== "followed"} onClick={() => toggleFollowup(ev.id, "followed")}>Fulgt opp</Knapp>
                               <Knapp icon="x" ghost={fu !== "ignored"} onClick={() => toggleFollowup(ev.id, "ignored")}>Ignorert</Knapp>
                               {fu && (
-                                <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.06em", color: T.mut }}>
+                                <span style={{ marginLeft: "auto", fontFamily: TL.font.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.06em", color: TL.mute }}>
                                   Markert som {fu === "followed" ? "fulgt opp" : "ignorert"}
                                 </span>
                               )}
@@ -372,9 +373,9 @@ export function AdminCaddieAktivitetV2({
         </Kort>
 
         {/* Rail */}
-        <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-          <Kort style={{ background: T.cta }}>
-            <Caps size={9} color={T.lime}>I dag · nøkkeltall</Caps>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <Kort style={{ background: TL.fill }}>
+            <Caps size={9} color={TL.fill}>I dag · nøkkeltall</Caps>
             <div style={{ marginTop: 8 }}>
               <NokkeltallRad k="Forslag totalt" v={String(stats.total)} />
               <NokkeltallRad k="Godkjenningsrate" v={`${stats.total === 0 ? 0 : Math.round((stats.ok / stats.total) * 100)}%`} />
@@ -384,10 +385,10 @@ export function AdminCaddieAktivitetV2({
           </Kort>
 
           <Kort>
-            <span style={{ fontFamily: T.disp, fontSize: 14, fontWeight: 700, letterSpacing: "-0.01em", color: T.fg }}>Mest aktive spillere · 7d</span>
+            <span style={{ fontFamily: TL.font.sans, fontSize: 14, fontWeight: 700, letterSpacing: "-0.01em", color: TL.text }}>Mest aktive spillere · 7d</span>
             <Caps size={9} style={{ marginTop: 3 }}>Flest AI-interaksjoner</Caps>
             {topPlayers.length === 0 ? (
-              <p style={{ marginTop: 12, fontFamily: T.mono, fontSize: 11, color: T.mut }}>Ingen aktivitet siste 7 dager.</p>
+              <p style={{ marginTop: 12, fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>Ingen aktivitet siste 7 dager.</p>
             ) : (
               <div style={{ marginTop: 4 }}>
                 {topPlayers.map((p, i) => (
@@ -397,14 +398,14 @@ export function AdminCaddieAktivitetV2({
                     leading={
                       <span
                         aria-hidden
-                        style={{ width: 26, height: 26, flex: "none", borderRadius: 9999, display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.onCta, background: avatarBg(p.name) }}
+                        style={{ width: 26, height: 26, flex: "none", borderRadius: 9999, display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, color: TL.onFill, background: avatarBg(p.name) }}
                       >
                         {p.initials}
                       </span>
                     }
                     title={p.name}
                     trailing={
-                      <span style={{ borderRadius: 9999, background: T.panel3, padding: "2px 9px", fontFamily: T.mono, fontSize: 11, fontWeight: 800, color: T.fg }}>{p.count}</span>
+                      <span style={{ borderRadius: 9999, background: TL.dim, padding: "2px 9px", fontFamily: TL.font.mono, fontSize: 11, fontWeight: 800, color: TL.text }}>{p.count}</span>
                     }
                   />
                 ))}
@@ -413,10 +414,10 @@ export function AdminCaddieAktivitetV2({
           </Kort>
 
           <Kort>
-            <span style={{ fontFamily: T.disp, fontSize: 14, fontWeight: 700, letterSpacing: "-0.01em", color: T.fg }}>Fordeling av hendelser · 30d</span>
+            <span style={{ fontFamily: TL.font.sans, fontSize: 14, fontWeight: 700, letterSpacing: "-0.01em", color: TL.text }}>Fordeling av hendelser · 30d</span>
             <Caps size={9} style={{ marginTop: 3 }}>Andel per hendelsestype</Caps>
             {eventDistribution.length === 0 ? (
-              <p style={{ marginTop: 12, fontFamily: T.mono, fontSize: 11, color: T.mut }}>Ingen hendelser siste 30 dager.</p>
+              <p style={{ marginTop: 12, fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>Ingen hendelser siste 30 dager.</p>
             ) : (
               <div style={{ marginTop: 8 }}>
                 {eventDistribution.map((d, i) => (
@@ -427,29 +428,29 @@ export function AdminCaddieAktivitetV2({
           </Kort>
 
           <Kort>
-            <span style={{ fontFamily: T.disp, fontSize: 14, fontWeight: 700, letterSpacing: "-0.01em", color: T.fg }}>AI-feil · siste 7 dager</span>
+            <span style={{ fontFamily: TL.font.sans, fontSize: 14, fontWeight: 700, letterSpacing: "-0.01em", color: TL.text }}>AI-feil · siste 7 dager</span>
             <Caps size={9} style={{ marginTop: 3 }}>
               {aiErrors.length === 0 ? "Ingen rapporterte tilfeller" : `${aiErrors.length} rapportert${aiErrors.length === 1 ? "" : "e"} tilfelle${aiErrors.length === 1 ? "" : "r"}`}
             </Caps>
             {aiErrors.length === 0 ? (
-              <div style={{ marginTop: 12, display: "flex", alignItems: "center", gap: 10, borderRadius: 10, border: `1px solid ${T.up}`, padding: 14 }}>
-                <span style={{ width: 28, height: 28, flex: "none", borderRadius: 8, display: "inline-flex", alignItems: "center", justifyContent: "center", background: `color-mix(in srgb, ${T.up} 15%, transparent)`, color: T.up }}>
+              <div style={{ marginTop: 12, display: "flex", alignItems: "center", gap: 10, borderRadius: 10, border: `1px solid ${TL.ok}`, padding: 14 }}>
+                <span style={{ width: 28, height: 28, flex: "none", borderRadius: 8, display: "inline-flex", alignItems: "center", justifyContent: "center", background: `color-mix(in srgb, ${TL.ok} 15%, transparent)`, color: TL.ok }}>
                   <Icon name="check" size={13} strokeWidth={2.5} />
                 </span>
-                <p style={{ fontFamily: T.mono, fontSize: 11, color: T.mut }}>Ingen agent-feil registrert siste 7 dager.</p>
+                <p style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>Ingen agent-feil registrert siste 7 dager.</p>
               </div>
             ) : (
               <div style={{ marginTop: 8, display: "flex", flexDirection: "column", gap: 8 }}>
                 {aiErrors.map((er) => (
-                  <div key={er.id} style={{ display: "flex", gap: 10, borderRadius: 10, border: `1px solid ${T.down}`, padding: 14 }}>
-                    <span style={{ width: 28, height: 28, flex: "none", borderRadius: 8, display: "inline-flex", alignItems: "center", justifyContent: "center", background: `color-mix(in srgb, ${T.down} 15%, transparent)`, color: T.down }}>
+                  <div key={er.id} style={{ display: "flex", gap: 10, borderRadius: 10, border: `1px solid ${TL.danger}`, padding: 14 }}>
+                    <span style={{ width: 28, height: 28, flex: "none", borderRadius: 8, display: "inline-flex", alignItems: "center", justifyContent: "center", background: `color-mix(in srgb, ${TL.danger} 15%, transparent)`, color: TL.danger }}>
                       <Icon name="alert-triangle" size={13} />
                     </span>
                     <div style={{ minWidth: 0 }}>
-                      <p style={{ margin: 0, fontFamily: T.disp, fontSize: 12.5, fontWeight: 700, color: T.fg }}>
-                        {er.title} <span style={{ marginLeft: 6, fontFamily: T.mono, fontSize: 10, fontWeight: 400, color: T.mut }}>{formatTime(er.at)}</span>
+                      <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 700, color: TL.text }}>
+                        {er.title} <span style={{ marginLeft: 6, fontFamily: TL.font.mono, fontSize: 10, fontWeight: 400, color: TL.mute }}>{formatTime(er.at)}</span>
                       </p>
-                      <p style={{ margin: "3px 0 0", fontFamily: T.mono, fontSize: 10, color: T.mut, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>{er.desc}</p>
+                      <p style={{ margin: "3px 0 0", fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>{er.desc}</p>
                     </div>
                   </div>
                 ))}
@@ -464,18 +465,18 @@ export function AdminCaddieAktivitetV2({
 
 function MetaFelt({ k, v }: { k: string; v: string }) {
   return (
-    <div style={{ borderRadius: 8, background: T.panel3, padding: "8px 10px" }}>
-      <span style={{ display: "block", fontFamily: T.mono, fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: T.mut }}>{k}</span>
-      <span style={{ display: "block", marginTop: 2, fontFamily: T.mono, fontSize: 12, fontWeight: 700, color: T.fg }}>{v}</span>
+    <div style={{ borderRadius: 8, background: TL.dim, padding: "8px 10px" }}>
+      <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: TL.mute }}>{k}</span>
+      <span style={{ display: "block", marginTop: 2, fontFamily: TL.font.mono, fontSize: 12, fontWeight: 700, color: TL.text }}>{v}</span>
     </div>
   );
 }
 
 function NokkeltallRad({ k, v, last }: { k: string; v: string; last?: boolean }) {
   return (
-    <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", padding: "9px 0", borderBottom: last ? "none" : `1px solid color-mix(in srgb, var(--v2-lime) 10%, transparent)` }}>
-      <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: T.farge.taakeMerkeA65 }}>{k}</span>
-      <span style={{ fontFamily: T.mono, fontSize: 20, fontWeight: 800, letterSpacing: "-0.01em", color: T.lime }}>{v}</span>
+    <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", padding: "9px 0", borderBottom: last ? "none" : `1px solid color-mix(in srgb, var(--tl-fill) 10%, transparent)` }}>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: T.farge.taakeMerkeA65 }}>{k}</span>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 20, fontWeight: 800, letterSpacing: "-0.01em", color: TL.fill }}>{v}</span>
     </div>
   );
 }

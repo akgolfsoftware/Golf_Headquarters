@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * G6 — «Per trener»-fanen på AgencyOS Tilgang. ADMIN velger en coach og
@@ -11,7 +12,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Kort, Bryter, StatusPill, TomTilstand, T } from "@/components/v2";
+import { Kort, Bryter, StatusPill, TomTilstand } from "@/components/v2";
 import { settCapabilityOverride } from "@/app/admin/settings/tilgang/actions";
 
 export type PerTrenerRad = {
@@ -69,11 +70,11 @@ export function AdminTilgangPerTrenerV2({ trenere }: { trenere: PerTrenerCoach[]
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <Kort>
         <label
           htmlFor="g6-velg-coach"
-          style={{ display: "block", fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg, marginBottom: 6 }}
+          style={{ display: "block", fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 600, color: TL.text, marginBottom: 6 }}
         >
           Velg trener
         </label>
@@ -88,10 +89,10 @@ export function AdminTilgangPerTrenerV2({ trenere }: { trenere: PerTrenerCoach[]
             height: 38,
             padding: "0 10px",
             borderRadius: 8,
-            border: `1px solid ${T.border}`,
-            background: T.panel2,
-            color: T.fg,
-            fontFamily: T.ui,
+            border: `1px solid ${TL.hair}`,
+            background: TL.dock,
+            color: TL.text,
+            fontFamily: TL.font.sans,
             fontSize: 13,
           }}
         >
@@ -106,17 +107,17 @@ export function AdminTilgangPerTrenerV2({ trenere }: { trenere: PerTrenerCoach[]
       {valgt && (
         <Kort>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 6 }}>
-            <div style={{ fontFamily: T.disp, fontSize: 15, fontWeight: 700, color: T.fg }}>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 15, fontWeight: 700, color: TL.text }}>
               Tilganger for {valgt.navn}
             </div>
             {pending && <StatusPill tone="info">Lagrer…</StatusPill>}
           </div>
-          <p style={{ margin: "0 0 8px", fontFamily: T.ui, fontSize: 11.5, color: T.mut, lineHeight: 1.55 }}>
+          <p style={{ margin: "0 0 8px", fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, lineHeight: 1.55 }}>
             Bryteren viser effektiv tilgang. Avvik fra trener-standarden lagres
             som unntak for denne treneren og kan slås tilbake når som helst.
           </p>
           {feil && (
-            <p role="alert" style={{ margin: "0 0 8px", fontFamily: T.ui, fontSize: 12, color: T.fg, fontWeight: 600 }}>
+            <p role="alert" style={{ margin: "0 0 8px", fontFamily: TL.font.sans, fontSize: 12, color: TL.text, fontWeight: 600 }}>
               {feil}
             </p>
           )}

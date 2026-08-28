@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * AgencyOS Planlegge-hub — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
  * T.* only. Mørk AgencyOS. Hver rad = ett trykk til Workbench.
@@ -7,18 +7,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import {
-  Caps,
-  Kort,
-  Rad,
-  KpiFlis,
-  AvatarInit,
-  CTAPill,
-  InnsiktChip,
-  TomTilstand,
-  StatusPill,
-  T,
-} from "@/components/v2";
+import { Caps, Kort, Rad, KpiFlis, AvatarInit, CTAPill, InnsiktChip, TomTilstand, StatusPill } from "@/components/v2";
 // T is exported from v2 barrel — used for G9 year-wheel chip
 
 // ── Datakontrakt (mappes fra loaderen i ruten) ─────────────────
@@ -70,8 +59,8 @@ export function AdminPlanleggeV2({ data }: { data: AdminPlanleggeData }) {
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
         <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Planlegge</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Planlegge</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>AgencyOS</span>
         </div>
       </div>
       {totalt > 0 && (
@@ -87,7 +76,7 @@ export function AdminPlanleggeV2({ data }: { data: AdminPlanleggeData }) {
   // Ingen spillere → ærlig tom-tilstand + vei
   if (totalt === 0) {
     return (
-      <div data-paper-wave-h="planlegge" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+      <div data-paper-wave-h="planlegge" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 960, margin: "0 auto", width: "100%" }}>
         {hode}
         <Kort>
           <TomTilstand
@@ -108,7 +97,7 @@ export function AdminPlanleggeV2({ data }: { data: AdminPlanleggeData }) {
 
   // ── KPI ───────────────────────────────────────────────────────
   const kpi = (
-    <div className="grid grid-cols-3" style={{ gap: T.gap }}>
+    <div className="grid grid-cols-3" style={{ gap: 16 }}>
       <KpiFlis label="Spillere" value={totalt} />
       <KpiFlis label="Med aktiv plan" value={medAktiv} />
       <KpiFlis label="Uten aktiv plan" value={utenAktiv} varsle={utenAktiv > 0} />
@@ -163,16 +152,16 @@ export function AdminPlanleggeV2({ data }: { data: AdminPlanleggeData }) {
                   display: "inline-flex",
                   alignItems: "center",
                   gap: 4,
-                  fontFamily: T.mono,
+                  fontFamily: TL.font.mono,
                   fontSize: 9,
                   fontWeight: 700,
                   letterSpacing: "0.04em",
                   textTransform: "uppercase",
-                  color: T.lime,
+                  color: TL.fill,
                   padding: "4px 8px",
                   borderRadius: 8,
-                  border: `1px solid ${T.border}`,
-                  background: T.panel2,
+                  border: `1px solid ${TL.hair}`,
+                  background: TL.dock,
                 }}
               >
                 År
@@ -191,7 +180,7 @@ export function AdminPlanleggeV2({ data }: { data: AdminPlanleggeData }) {
       : "Alle spillere har en aktiv plan — finjuster mål og drills i Workbench.";
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {hode}
       {/* B: status/KPI først, deretter én primær */}
       {kpi}

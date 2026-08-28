@@ -4,7 +4,8 @@ import { useState } from "react";
 import { Knapp } from "@/components/v2";
 import { NyGruppeModal, type CoachValg } from "./ny-gruppe-modal";
 import { bootstrapGfgkJuniorGrupper } from "./actions";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 
 export function NyGruppeButton({ coaches }: { coaches: CoachValg[] }) {
   const [aapen, setAapen] = useState(false);
@@ -49,7 +50,7 @@ export function GfgkBootstrapButton() {
         {kjorer ? "Oppretter GFGK Junior …" : "Opprett GFGK Junior-gruppene"}
       </Knapp>
       {melding ? (
-        <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut }}>{melding}</span>
+        <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>{melding}</span>
       ) : null}
     </span>
   );

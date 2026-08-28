@@ -78,6 +78,25 @@ test("startOfWeek regner mot NORSK kalenderdag, ikke UTC-dagen", () => {
   });
 });
 
+test("endOfWeek er neste mandag 00:00 — Prisma-vindu må være lt, ikke lte", () => {
+  // F1: hentForelderUkerapport brukte lte mot denne grensen. Et tidsstempel
+  // nøyaktig på neste mandag 00:00 lå da i BÅDE denne uka (lte) og neste
+  // (gte startOfWeek). Spørringen skal speile [start, slutt).
+  const mandag = startOfWeek(new Date("2026-08-26T12:00:00+02:00"));
+  const slutt = endOfWeek(mandag);
+  assert.equal(slutt.getTime(), startOfWeek(slutt).getTime());
+  const nesteMandagOkt = slutt;
+  const iUkaInklusiv =
+    nesteMandagOkt.getTime() >= mandag.getTime() &&
+    nesteMandagOkt.getTime() <= slutt.getTime();
+  const iUkaEksklusiv =
+    nesteMandagOkt.getTime() >= mandag.getTime() &&
+    nesteMandagOkt.getTime() < slutt.getTime();
+  assert.equal(iUkaInklusiv, true);
+  assert.equal(iUkaEksklusiv, false);
+  assert.equal(iUkaInklusiv && nesteMandagOkt.getTime() >= slutt.getTime(), true);
+});
+
 test("dagerIUken gir syv sammenhengende dager fra mandag", () => {
   iAlleTidsvinduer((v) => {
     const dager = dagerIUken(startOfWeek(v.na));

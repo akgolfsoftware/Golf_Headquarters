@@ -15,7 +15,8 @@
  * vises derfor som egne, tydelig merkede seksjoner i stedet for oppdiktede
  * statussirkler.
  */
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Icon } from "@/components/v2/icon";
 import { InspektorBlokk, InspektorLinje } from "@/components/v2/inspektorpanel";
 import type { InnsamlerStatus, SystemHelse } from "@/lib/jarvis/types";
@@ -40,34 +41,34 @@ function StatusRad({ innsamler, na }: { innsamler: InnsamlerStatus; na: Date }) 
         display: "flex",
         gap: 10,
         alignItems: "center",
-        background: feilet ? T.panel2 : T.panel,
-        border: `1px solid ${T.border}`,
-        borderLeft: feilet ? `3px solid ${T.down}` : `1px solid ${T.border}`,
-        borderRadius: T.rTag,
+        background: feilet ? TL.dock : TL.elev,
+        border: `1px solid ${TL.hair}`,
+        borderLeft: feilet ? `3px solid ${TL.danger}` : `1px solid ${TL.hair}`,
+        borderRadius: TL.radius.row,
         padding: feilet ? "10px 10px 10px 8px" : "10px",
       }}
     >
       <span style={{ flex: "none", width: 14, display: "flex", justifyContent: "center" }}>
         {innsamler.helse === "OK" && (
-          <span style={{ width: 8, height: 8, borderRadius: T.rPill, background: T.up, display: "block" }} />
+          <span style={{ width: 8, height: 8, borderRadius: TL.radius.pill, background: TL.ok, display: "block" }} />
         )}
-        {feilet && <Icon name="triangle-alert" size={14} strokeWidth={2} style={{ color: T.down }} />}
-        {ukjent && <span style={{ fontFamily: T.mono, fontSize: 12, color: T.mut }}>—</span>}
+        {feilet && <Icon name="triangle-alert" size={14} strokeWidth={2} style={{ color: TL.danger }} />}
+        {ukjent && <span style={{ fontFamily: TL.font.mono, fontSize: 12, color: TL.mute }}>—</span>}
       </span>
       <span style={{ flex: 1, minWidth: 0 }}>
         <span
           style={{
             display: "block",
-            fontFamily: T.disp,
+            fontFamily: TL.font.sans,
             fontSize: 13,
             fontWeight: 600,
-            color: feilet ? T.down : T.fg,
+            color: feilet ? TL.danger : TL.text,
           }}
         >
           {innsamler.navn}
           {feilet && ` — feilet ${relativTid(innsamler.sistKjort, na)}`}
         </span>
-        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut }}>
+        <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute }}>
           {innsamler.frekvens ?? "ukjent kjøreplan"} · sist {relativTid(innsamler.sistKjort, na)}
           {innsamler.feilmelding ? ` · ${innsamler.feilmelding}` : ""}
         </span>
@@ -91,9 +92,9 @@ export function MaskinromArtefakt({ data, na }: { data: SystemHelse; na: Date })
     <div data-od-id="panel-maskinrom" style={{ display: "flex", flexDirection: "column", gap: 20 }}>
       <div
         style={{
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           fontSize: 11,
-          color: antallFeilet > 0 ? T.down : T.up,
+          color: antallFeilet > 0 ? TL.danger : TL.ok,
           fontWeight: 600,
         }}
       >
@@ -120,13 +121,13 @@ export function MaskinromArtefakt({ data, na }: { data: SystemHelse; na: Date })
                 display: "flex",
                 flexDirection: "column",
                 gap: 2,
-                border: `1px dashed ${T.border}`,
-                borderRadius: T.rTag,
+                border: `1px dashed ${TL.hair}`,
+                borderRadius: TL.radius.row,
                 padding: "8px 10px",
               }}
             >
-              <span style={{ fontFamily: T.disp, fontSize: 12.5, fontWeight: 600, color: T.mut }}>{r.navn}</span>
-              <span style={{ fontFamily: T.ui, fontSize: 11, color: T.mut }}>{r.forklaring}</span>
+              <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 600, color: TL.mute }}>{r.navn}</span>
+              <span style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.mute }}>{r.forklaring}</span>
             </div>
           ))}
         </div>
@@ -134,16 +135,16 @@ export function MaskinromArtefakt({ data, na }: { data: SystemHelse; na: Date })
 
       <InspektorBlokk label="Agent og kjøretid — siste 7 dager">
         {data.aiKostSum.antallKall === 0 ? (
-          <span style={{ fontFamily: T.ui, fontSize: 12, color: T.mut }}>
+          <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}>
             Ingen AI-kostnad registrert for Jarvis ennå.
           </span>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-            <InspektorLinje label="Kall" verdi={<span style={{ fontFamily: T.mono }}>{data.aiKostSum.antallKall}</span>} />
+            <InspektorLinje label="Kall" verdi={<span style={{ fontFamily: TL.font.mono }}>{data.aiKostSum.antallKall}</span>} />
             <InspektorLinje
               label="Tokens (inn/ut)"
               verdi={
-                <span style={{ fontFamily: T.mono }}>
+                <span style={{ fontFamily: TL.font.mono }}>
                   {data.aiKostSum.inputTokens.toLocaleString("nb-NO")} / {data.aiKostSum.outputTokens.toLocaleString("nb-NO")}
                 </span>
               }
@@ -151,7 +152,7 @@ export function MaskinromArtefakt({ data, na }: { data: SystemHelse; na: Date })
             <InspektorLinje
               label="Kostnad"
               verdi={
-                <span style={{ fontFamily: T.mono }}>
+                <span style={{ fontFamily: TL.font.mono }}>
                   {data.aiKostSum.costUsd != null ? `$${data.aiKostSum.costUsd.toFixed(2)}` : "ukjent pris"}
                 </span>
               }
@@ -166,13 +167,13 @@ export function MaskinromArtefakt({ data, na }: { data: SystemHelse; na: Date })
             display: "flex",
             gap: 8,
             alignItems: "flex-start",
-            border: `1px dashed ${T.border}`,
-            borderRadius: T.rTag,
+            border: `1px dashed ${TL.hair}`,
+            borderRadius: TL.radius.row,
             padding: "8px 10px",
           }}
         >
-          <Icon name="wifi" size={14} strokeWidth={1.8} style={{ color: T.mut, flex: "none", marginTop: 1 }} />
-          <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut }}>
+          <Icon name="wifi" size={14} strokeWidth={1.8} style={{ color: TL.mute, flex: "none", marginTop: 1 }} />
+          <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute }}>
             Ukjent herfra — Ollama og LaunchAgents kjører lokalt på Mac Minien over Tailscale, og Vercel når
             aldri det nettet. Sjekk direkte på maskinen (Terminal/LaunchAgent-status) inntil et lokalt
             helsesjekk-endepunkt finnes.

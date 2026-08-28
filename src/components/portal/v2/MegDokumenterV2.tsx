@@ -1,21 +1,11 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ Meg · Dokumenter — v2 Presis + B-pakke (status, tom = én grønn vei).
  */
 
 import Link from "next/link";
-import {
-  T,
-  Caps,
-  Kort,
-  Rad,
-  StatusPill,
-  TomTilstand,
-  Icon,
-  type StatusTone,
-} from "@/components/v2";
-
+import { Caps, Kort, Rad, StatusPill, TomTilstand, Icon, type StatusTone } from "@/components/v2";
 /* ── Datakontrakt ──────────────────────────────────────────────────── */
 
 export type DokumentRad = {
@@ -76,15 +66,15 @@ function DokIkon({ kind }: { kind: string }) {
         width: 40,
         height: 40,
         borderRadius: 11,
-        background: T.panel3,
-        border: `1px solid ${T.border}`,
+        background: TL.dim,
+        border: `1px solid ${TL.hair}`,
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
         flex: "none",
       }}
     >
-      <Icon name={KIND_IKON[kind] ?? "file-text"} size={18} style={{ color: T.fg2 }} />
+      <Icon name={KIND_IKON[kind] ?? "file-text"} size={18} style={{ color: TL.mute }} />
     </span>
   );
 }
@@ -96,11 +86,11 @@ export function MegDokumenterV2({ data }: { data: MegDokumenterData }) {
   const n = dokumenter.length;
 
   return (
-    <div data-paper-wave-g="megdokumenter" data-paper-portal-meg-dokumenter style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="megdokumenter" data-paper-portal-meg-dokumenter style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div>
         <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Dokumenter</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Meg</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Dokumenter</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>Meg</span>
         </div>
       </div>
 
@@ -108,11 +98,11 @@ export function MegDokumenterV2({ data }: { data: MegDokumenterData }) {
       <div className="grid grid-cols-2" style={{ gap: 8 }}>
         <Kort pad="12px">
           <Caps size={9}>Antall</Caps>
-          <div style={{ fontFamily: T.mono, fontWeight: 700, fontSize: 18, marginTop: 8, color: T.fg }}>{n}</div>
+          <div style={{ fontFamily: TL.font.mono, fontWeight: 700, fontSize: 18, marginTop: 8, color: TL.text }}>{n}</div>
         </Kort>
         <Kort pad="12px">
           <Caps size={9}>Status</Caps>
-          <div style={{ fontFamily: T.ui, fontWeight: 600, fontSize: 14, marginTop: 8, color: T.fg }}>
+          <div style={{ fontFamily: TL.font.sans, fontWeight: 600, fontSize: 14, marginTop: 8, color: TL.text }}>
             {n === 0 ? "Ingen ennå" : "Klar"}
           </div>
         </Kort>
@@ -130,7 +120,7 @@ export function MegDokumenterV2({ data }: { data: MegDokumenterData }) {
           <Link href="/portal/meg" style={{ textDecoration: "none", display: "block" }}>
             <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
-            borderRadius: 12, background: T.panel3, color: T.fg, border: `1px solid ${T.borderS}`, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 12, background: TL.dim, color: TL.text, border: `1px solid ${TL.hair}`, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
           }}>Tilbake til Meg</span>
           </Link>
         </>
@@ -152,7 +142,7 @@ export function MegDokumenterV2({ data }: { data: MegDokumenterData }) {
                   leading={<DokIkon kind={d.kind} />}
                   title={d.title}
                   sub={
-                    <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut }}>
+                    <span style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>
                       {d.dato} · {etikett}
                     </span>
                   }

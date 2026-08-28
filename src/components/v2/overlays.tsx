@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /* AK Golf HQ v2 — OVERLEGG (retning C «Presis», fase 4).
    Modaler, ark, skuffer, popovers, tooltips, toasts, bannere og kommandopalett.
@@ -28,8 +29,8 @@ function Ramme({ w = 560, h = 360, scrim = true, align = "center", children }: R
     top: { flexDirection: "column", justifyContent: "flex-start" },
   };
   return (
-    <div style={{ position: "relative", width: w, height: h, background: T.bg, border: `1px solid ${T.border}`, borderRadius: T.rCard, overflow: "hidden", display: "flex", ...al[align] }}>
-      {scrim && <div style={{ position: "absolute", inset: 0, background: T.farge.nestenSvartA62, backdropFilter: "blur(2px)" }} />}
+    <div style={{ position: "relative", width: w, height: h, background: TL.scene, border: `1px solid ${TL.hair}`, borderRadius: TL.radius.card, overflow: "hidden", display: "flex", ...al[align] }}>
+      {scrim && <div style={{ position: "absolute", inset: 0, background: TL.scrim, backdropFilter: "none" }} />}
       {children}
     </div>
   );
@@ -39,15 +40,15 @@ interface KbdProps {
   children?: ReactNode;
 }
 function Kbd({ children }: KbdProps) {
-  return <span style={{ fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, color: T.mut, background: T.panel3, border: `1px solid ${T.border}`, borderRadius: 5, padding: "2px 6px", whiteSpace: "nowrap" }}>{children}</span>;
+  return <span style={{ fontFamily: TL.font.mono, fontSize: 9.5, fontWeight: 700, color: TL.mute, background: TL.dim, border: `1px solid ${TL.hair}`, borderRadius: 5, padding: "2px 6px", whiteSpace: "nowrap" }}>{children}</span>;
 }
 
 /* Paper-radiusskala (designsystem/paper/tokens/akhq-tokens.css): r-sm 8 · r
    (app-default) 12 · r-pill 999. T fra ./core dekker allerede disse tallene
    (rTag=8, rRow=12, rPill=9999) — gjenbrukt her under Paper-navn for
    lesbarhet i denne filen. Ingen nye tokens innført, ingen verdier endret. */
-const PAPER_R_SM = T.rTag; // 8 — Paper --r-sm (lukkeknapper, chips, verktøytips)
-const PAPER_R = T.rRow; // 12 — Paper --r (app-default: modal, ark-topp, popover)
+const PAPER_R_SM = TL.radius.row; // 8 — Paper --r-sm (lukkeknapper, chips, verktøytips)
+const PAPER_R = TL.radius.row; // 12 — Paper --r (app-default: modal, ark-topp, popover)
 
 /* Lukkeknapp — størrelse/radius følger Paper sin spesifikasjon per lag
    (Ark-håndtaket ER lukkeknappen i Paper, Modal lukkes kun via handlingsraden
@@ -63,8 +64,8 @@ function LukkKnapp({ size = 44, radius = PAPER_R, iconSize = 16 }: { size?: numb
         width: size,
         height: size,
         borderRadius: radius,
-        background: T.panel2,
-        border: `1px solid ${T.border}`,
+        background: TL.dock,
+        border: `1px solid ${TL.hair}`,
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
@@ -74,7 +75,7 @@ function LukkKnapp({ size = 44, radius = PAPER_R, iconSize = 16 }: { size?: numb
         padding: 0,
       }}
     >
-      <Icon name="x" size={iconSize} style={{ color: T.fg2 }} />
+      <Icon name="x" size={iconSize} style={{ color: TL.mute }} />
     </button>
   );
 }
@@ -104,8 +105,8 @@ export function Modal({
           position: "relative",
           width: 420,
           maxWidth: "calc(100% - 24px)",
-          background: T.panel,
-          border: `1px solid ${T.border}`,
+          background: TL.elev,
+          border: `1px solid ${TL.hair}`,
           borderRadius: PAPER_R,
           padding: 24,
           display: "flex",
@@ -114,8 +115,8 @@ export function Modal({
           boxShadow: "var(--v2-shadow)",
         }}
       >
-        <h2 id="v2-modal-title" style={{ fontFamily: T.disp, fontWeight: 500, fontSize: 16, color: T.fg, margin: 0 }}>{title}</h2>
-        <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.5, margin: 0 }}>{body}</p>
+        <h2 id="v2-modal-title" style={{ fontFamily: TL.font.sans, fontWeight: 500, fontSize: 16, color: TL.text, margin: 0 }}>{title}</h2>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.5, margin: 0 }}>{body}</p>
         <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, flexWrap: "wrap" }}>
           <CTAPill ghost>{avbryt}</CTAPill>
           <CTAPill>{bekreft}</CTAPill>
@@ -152,8 +153,8 @@ export function Ark({
         aria-modal="true"
         style={{
           position: "relative",
-          background: T.panel,
-          border: `1px solid ${T.border}`,
+          background: TL.elev,
+          border: `1px solid ${TL.hair}`,
           borderBottom: "none",
           borderRadius: `${PAPER_R}px ${PAPER_R}px 0 0`,
           padding: "12px 16px 24px",
@@ -165,8 +166,8 @@ export function Ark({
       >
         {/* Håndtaket ER lukkeknappen i Paper (BottomSheet.prompt.md) — ingen
             separat hjørne-X ved siden av tittelen. */}
-        <span style={{ display: "block", width: 36, height: 4, borderRadius: T.rPill, background: T.borderS, margin: "0 auto" }} aria-hidden />
-        <h2 style={{ fontFamily: T.disp, fontWeight: 500, fontSize: 16, color: T.fg, margin: 0 }}>{title}</h2>
+        <span style={{ display: "block", width: 36, height: 4, borderRadius: TL.radius.pill, background: TL.hair, margin: "0 auto" }} aria-hidden />
+        <h2 style={{ fontFamily: TL.font.sans, fontWeight: 500, fontSize: 16, color: TL.text, margin: 0 }}>{title}</h2>
         <div>
           {items.map((x, i) => (
             <Rad key={i} title={x.t} sub={x.s} meta={<AkseChip a={x.a} />} last={i === items.length - 1} />
@@ -210,28 +211,28 @@ export function Skuff({
           width: 420,
           maxWidth: "100%",
           height: "100%",
-          background: T.panel,
-          borderLeft: `1px solid ${T.border}`,
+          background: TL.elev,
+          borderLeft: `1px solid ${TL.hair}`,
           display: "flex",
           flexDirection: "column",
         }}
       >
-        <div style={{ display: "flex", alignItems: "flex-start", gap: 12, padding: "16px 16px 12px", borderBottom: `1px solid ${T.border}` }}>
+        <div style={{ display: "flex", alignItems: "flex-start", gap: 12, padding: "16px 16px 12px", borderBottom: `1px solid ${TL.hair}` }}>
           <div style={{ flex: 1 }}>
             <Caps size={9} style={{ marginBottom: 2 }}>{eyebrow}</Caps>
-            <h2 style={{ fontFamily: T.disp, fontWeight: 500, fontSize: 17, lineHeight: 1.25, color: T.fg, margin: 0 }}>{title}</h2>
+            <h2 style={{ fontFamily: TL.font.sans, fontWeight: 500, fontSize: 17, lineHeight: 1.25, color: TL.text, margin: 0 }}>{title}</h2>
           </div>
           <LukkKnapp size={32} radius={PAPER_R_SM} iconSize={14} />
         </div>
         <div style={{ flex: 1, minHeight: 0, overflow: "auto", padding: 16 }}>
           {rows.map((r, i) => (
-            <div key={i} style={{ display: "flex", justifyContent: "space-between", gap: 10, padding: "10px 0", borderBottom: i === rows.length - 1 ? "none" : `1px solid ${T.border}` }}>
-              <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut }}>{r.l}</span>
-              <span style={{ fontFamily: T.mono, fontSize: 12.5, fontWeight: 700, color: T.fg }}>{r.v}</span>
+            <div key={i} style={{ display: "flex", justifyContent: "space-between", gap: 10, padding: "10px 0", borderBottom: i === rows.length - 1 ? "none" : `1px solid ${TL.hair}` }}>
+              <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute }}>{r.l}</span>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 12.5, fontWeight: 700, color: TL.text }}>{r.v}</span>
             </div>
           ))}
         </div>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, padding: "12px 16px", borderTop: `1px solid ${T.border}` }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, padding: "12px 16px", borderTop: `1px solid ${TL.hair}` }}>
           <CTAPill icon="arrow-right">{cta}</CTAPill>
         </div>
       </div>
@@ -256,7 +257,7 @@ export function Popover({
   items = [
     { i: "pencil", t: "Rediger økt" },
     { i: "copy", t: "Dupliser til uke 30" },
-    { i: "trash-2", t: "Slett økt", farge: T.down },
+    { i: "trash-2", t: "Slett økt", farge: TL.danger },
   ], w = 360, h = 250,
 }: PopoverProps) {
   return (
@@ -266,11 +267,11 @@ export function Popover({
         {/* Paper Popover-laget (akhq-pop-lay): 288 px, r(12), s3-padding, delt
             skygge-token. Radraden under er AK-eget menyinnhold — Paper har
             ikke tegnet menyanatomien her (se PR-beskrivelsen). */}
-        <div style={{ width: 288, background: T.panel3, border: `1px solid ${T.borderS}`, borderRadius: PAPER_R, padding: 12, boxShadow: "var(--v2-shadow)" }}>
+        <div style={{ width: 288, background: TL.dim, border: `1px solid ${TL.hair}`, borderRadius: PAPER_R, padding: 12, boxShadow: "var(--v2-shadow)" }}>
           {items.map((x, i) => (
-            <div key={i} style={{ display: "flex", alignItems: "center", gap: 9, padding: "10px 12px", minHeight: 44, borderRadius: T.rRow, cursor: "pointer", background: i === 0 ? T.panel2 : "transparent" }}>
-              <Icon name={x.i} size={14} style={{ color: x.farge || T.fg2 }} />
-              <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 500, color: x.farge || T.fg }}>{x.t}</span>
+            <div key={i} style={{ display: "flex", alignItems: "center", gap: 9, padding: "10px 12px", minHeight: 44, borderRadius: TL.radius.row, cursor: "pointer", background: i === 0 ? TL.dock : "transparent" }}>
+              <Icon name={x.i} size={14} style={{ color: x.farge || TL.mute }} />
+              <span style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 500, color: x.farge || TL.text }}>{x.t}</span>
             </div>
           ))}
         </div>
@@ -293,10 +294,10 @@ export function Verktoytips({ tekst = "SG mot CS100-referansen, siste 8 runder",
       {/* Paper Tooltip: mono 11px, r-sm(8), 6px 8px-padding, ingen kant, ingen
           pil — kun 6 px luft ned mot utløseren (Tooltip.jsx). */}
       <div style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
-        <span style={{ maxWidth: 240, textAlign: "left", fontFamily: T.mono, fontSize: 11, letterSpacing: "0.01em", color: T.fg, lineHeight: 1.35, background: T.farge.grafittPanel, borderRadius: PAPER_R_SM, padding: "6px 8px", boxShadow: "var(--v2-shadow)" }}>{tekst}</span>
-        <span style={{ display: "inline-flex", alignItems: "baseline", gap: 8, background: T.panel2, border: `1px dashed ${T.borderS}`, borderRadius: 10, padding: "7px 13px" }}>
-          <span style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2 }}>{trigger}</span>
-          <span style={{ fontFamily: T.mono, fontSize: 14, fontWeight: 700, color: T.fg }}>{verdi}</span>
+        <span style={{ maxWidth: 240, textAlign: "left", fontFamily: TL.font.mono, fontSize: 11, letterSpacing: "0.01em", color: TL.text, lineHeight: 1.35, background: T.farge.grafittPanel, borderRadius: PAPER_R_SM, padding: "6px 8px", boxShadow: "var(--v2-shadow)" }}>{tekst}</span>
+        <span style={{ display: "inline-flex", alignItems: "baseline", gap: 8, background: TL.dock, border: `1px dashed ${TL.hair}`, borderRadius: 10, padding: "7px 13px" }}>
+          <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}>{trigger}</span>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 14, fontWeight: 700, color: TL.text }}>{verdi}</span>
         </span>
       </div>
     </Ramme>
@@ -312,7 +313,7 @@ export interface ToastProps {
   h?: number;
 }
 export function Toast({ melding = "Økten er logget — 1,5 t nærspill", angre = "Angre", tone = "up", w = 560, h = 170 }: ToastProps) {
-  const c: string = { up: T.up, warn: T.warn, down: T.down, info: T.info, lime: T.lime }[tone];
+  const c: string = { up: TL.ok, warn: TL.warn, down: TL.danger, info: TL.viz.target, lime: TL.fill }[tone];
   return (
     <Ramme w={w} h={h} scrim={false} align="bottom">
       {/* Paper Toast (Toast.prompt.md): «fargen ligger i prikken, ikke
@@ -326,18 +327,18 @@ export function Toast({ melding = "Økten er logget — 1,5 t nærspill", angre 
           display: "flex",
           alignItems: "center",
           gap: 9,
-          background: T.panel3,
-          border: `1px solid ${T.border}`,
+          background: TL.dim,
+          border: `1px solid ${TL.hair}`,
           borderRadius: PAPER_R_SM,
           padding: "12px 16px",
           margin: "0 0 24px",
           boxShadow: "var(--v2-shadow)",
         }}
       >
-        <span style={{ width: 6, height: 6, borderRadius: T.rPill, background: c, flex: "none" }} aria-hidden />
-        <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg, flex: 1 }}>{melding}</span>
+        <span style={{ width: 6, height: 6, borderRadius: TL.radius.pill, background: c, flex: "none" }} aria-hidden />
+        <span style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text, flex: 1 }}>{melding}</span>
         {angre && (
-          <button type="button" className="v2-focus" style={{ appearance: "none", fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.lime, cursor: "pointer", background: "transparent", border: "none", minHeight: 44, padding: "0 8px" }}>
+          <button type="button" className="v2-focus" style={{ appearance: "none", fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 600, color: TL.fill, cursor: "pointer", background: "transparent", border: "none", minHeight: 44, padding: "0 8px" }}>
             {angre}
           </button>
         )}
@@ -355,7 +356,7 @@ export interface BannerProps {
   w?: number;
 }
 export function Banner({ tone = "info", tekst = "TrackMan-synk pågår — nye slag vises om noen minutter.", cta = "Se status", w = 720 }: BannerProps) {
-  const m: { c: string; i: string } = { info: { c: T.info, i: "info" }, advarsel: { c: T.warn, i: "alert-triangle" }, ok: { c: T.up, i: "check" } }[tone] || { c: T.info, i: "info" };
+  const m: { c: string; i: string } = { info: { c: TL.viz.target, i: "info" }, advarsel: { c: TL.warn, i: "alert-triangle" }, ok: { c: TL.ok, i: "check" } }[tone] || { c: TL.viz.target, i: "info" };
   return (
     <div
       role="status"
@@ -366,21 +367,21 @@ export function Banner({ tone = "info", tekst = "TrackMan-synk pågår — nye s
         alignItems: "center",
         gap: 10,
         minHeight: 48,
-        background: `color-mix(in srgb,${m.c} 9%,${T.panel})`,
+        background: `color-mix(in srgb,${m.c} 9%,${TL.elev})`,
         border: `1px solid color-mix(in srgb,${m.c} 30%,transparent)`,
-        borderRadius: T.rRow,
+        borderRadius: TL.radius.row,
         padding: "10px 14px",
       }}
     >
       <Icon name={m.i} size={15} style={{ color: m.c, flex: "none" }} />
-      <span style={{ flex: 1, fontFamily: T.ui, fontSize: 12.5, color: T.fg, lineHeight: 1.5 }}>{tekst}</span>
+      <span style={{ flex: 1, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.text, lineHeight: 1.5 }}>{tekst}</span>
       {cta && (
-        <button type="button" className="v2-focus" style={{ appearance: "none", fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: m.c, cursor: "pointer", whiteSpace: "nowrap", background: "transparent", border: "none", minHeight: 44 }}>
+        <button type="button" className="v2-focus" style={{ appearance: "none", fontFamily: TL.font.sans, fontSize: 12, fontWeight: 600, color: m.c, cursor: "pointer", whiteSpace: "nowrap", background: "transparent", border: "none", minHeight: 44 }}>
           {cta} →
         </button>
       )}
       <button type="button" aria-label="Lukk banner" className="v2-focus" style={{ appearance: "none", background: "transparent", border: "none", cursor: "pointer", minWidth: 44, minHeight: 44, display: "inline-flex", alignItems: "center", justifyContent: "center", padding: 0 }}>
-        <Icon name="x" size={14} style={{ color: T.mut }} />
+        <Icon name="x" size={14} style={{ color: TL.mute }} />
       </button>
     </div>
   );
@@ -422,10 +423,10 @@ export function KommandoPalett({
 }: KommandoPalettProps) {
   return (
     <Ramme w={w} h={h}>
-      <div style={{ position: "relative", width: 520, background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 16, overflow: "hidden", boxShadow: `0 28px 70px ${T.farge.svartA55}` }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "13px 16px", borderBottom: `1px solid ${T.border}` }}>
-          <Icon name="search" size={15} style={{ color: T.mut, flex: "none" }} />
-          <span style={{ flex: 1, fontFamily: T.ui, fontSize: 14, color: T.mut }}>{sok}</span>
+      <div style={{ position: "relative", width: 520, background: TL.elev, border: `1px solid ${TL.hair}`, borderRadius: 16, overflow: "hidden", boxShadow: `0 28px 70px ${TL.scrim}` }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "13px 16px", borderBottom: `1px solid ${TL.hair}` }}>
+          <Icon name="search" size={15} style={{ color: TL.mute, flex: "none" }} />
+          <span style={{ flex: 1, fontFamily: TL.font.sans, fontSize: 14, color: TL.mute }}>{sok}</span>
           <Kbd>ESC</Kbd>
         </div>
         <div style={{ padding: "8px 8px 10px" }}>
@@ -433,10 +434,10 @@ export function KommandoPalett({
             <div key={gi} style={{ marginTop: gi ? 6 : 0 }}>
               <Caps size={8.5} style={{ padding: "6px 10px 4px" }}>{g.l}</Caps>
               {g.items.map((x, i) => (
-                <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", minHeight: 44, borderRadius: T.rRow, background: x.aktiv ? T.panel3 : "transparent", position: "relative", cursor: "pointer" }}>
-                  {x.aktiv && <span style={{ position: "absolute", left: 0, top: 8, bottom: 8, width: 2, borderRadius: 2, background: T.lime }} />}
-                  <Icon name={x.i} size={14} style={{ color: x.aktiv ? T.lime : T.fg2 }} />
-                  <span style={{ flex: 1, fontFamily: T.ui, fontSize: 13, fontWeight: x.aktiv ? 600 : 500, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{x.t}</span>
+                <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", minHeight: 44, borderRadius: TL.radius.row, background: x.aktiv ? TL.dim : "transparent", position: "relative", cursor: "pointer" }}>
+                  {x.aktiv && <span style={{ position: "absolute", left: 0, top: 8, bottom: 8, width: 2, borderRadius: 2, background: TL.fill }} />}
+                  <Icon name={x.i} size={14} style={{ color: x.aktiv ? TL.fill : TL.mute }} />
+                  <span style={{ flex: 1, fontFamily: TL.font.sans, fontSize: 13, fontWeight: x.aktiv ? 600 : 500, color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{x.t}</span>
                   {x.k && <Kbd>{x.k}</Kbd>}
                 </div>
               ))}

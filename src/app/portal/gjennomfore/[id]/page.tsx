@@ -23,7 +23,8 @@ import { loadNesteOkt } from "@/lib/portal/load-neste-okt";
 import { nesteOktTekst } from "@/lib/portal/neste-okt-tekst";
 import { InviteFriendTrigger } from "@/components/portal/workbench/invite-friend-trigger";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Caps, TilbakeLenke, StatusPill, Icon } from "@/components/v2";
 import { Check } from "lucide-react";
 
@@ -37,9 +38,9 @@ function fmtMin(m: number): string {
 }
 
 const kortStil: React.CSSProperties = {
-  background: T.panel,
-  border: `1px solid ${T.border}`,
-  borderRadius: T.rCard,
+  background: TL.elev,
+  border: `1px solid ${TL.hair}`,
+  borderRadius: TL.radius.card,
   padding: 16,
 };
 
@@ -62,19 +63,19 @@ function MetaKort({
               alignItems: "baseline",
               gap: 8,
               padding: "8px 0",
-              borderBottom: i < rader.length - 1 ? `1px solid ${T.borderS}` : undefined,
-              fontFamily: T.ui,
+              borderBottom: i < rader.length - 1 ? `1px solid ${TL.hair}` : undefined,
+              fontFamily: TL.font.sans,
               fontSize: 13,
-              color: T.fg,
+              color: TL.text,
             }}
           >
             <span style={{ minWidth: 0 }}>{label}</span>
             <span
               style={{
                 marginLeft: "auto",
-                fontFamily: T.mono,
+                fontFamily: TL.font.mono,
                 textAlign: "right",
-                color: T.fg,
+                color: TL.text,
                 minWidth: 0,
               }}
             >
@@ -97,7 +98,7 @@ function DrillListe({ drills, medHaker }: { drills: OktDrill[]; medHaker: boolea
       </Caps>
       <div style={{ marginTop: 8 }}>
         {drills.length === 0 && (
-          <p style={{ margin: 0, fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut }}>
+          <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute }}>
             Økta har ingen drills — innholdet avtales på stedet.
           </p>
         )}
@@ -108,9 +109,9 @@ function DrillListe({ drills, medHaker }: { drills: OktDrill[]; medHaker: boolea
               display: "flex",
               alignItems: "flex-start",
               gap: 12,
-              background: T.panel,
-              border: `1px solid ${T.border}`,
-              borderRadius: T.rCard,
+              background: TL.elev,
+              border: `1px solid ${TL.hair}`,
+              borderRadius: TL.radius.card,
               padding: 12,
               marginBottom: 8,
             }}
@@ -122,12 +123,12 @@ function DrillListe({ drills, medHaker }: { drills: OktDrill[]; medHaker: boolea
                   flex: "none",
                   width: 22,
                   height: 22,
-                  borderRadius: T.rPill,
+                  borderRadius: TL.radius.pill,
                   display: "grid",
                   placeItems: "center",
-                  border: `1px solid ${T.border}`,
-                  color: d.gjort ? T.up : T.mut,
-                  background: d.gjort ? T.panel2 : "transparent",
+                  border: `1px solid ${TL.hair}`,
+                  color: d.gjort ? TL.ok : TL.mute,
+                  background: d.gjort ? TL.dock : "transparent",
                 }}
               >
                 {d.gjort ? (
@@ -135,17 +136,17 @@ function DrillListe({ drills, medHaker }: { drills: OktDrill[]; medHaker: boolea
                 ) : (
                   <span
                     aria-hidden
-                    style={{ width: 4, height: 4, borderRadius: T.rPill, background: "currentcolor" }}
+                    style={{ width: 4, height: 4, borderRadius: TL.radius.pill, background: "currentcolor" }}
                   />
                 )}
               </span>
             )}
             <div style={{ minWidth: 0, flex: 1 }}>
-              <span style={{ display: "block", fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>
+              <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>
                 {d.navn}
               </span>
               {(d.volum || d.tidMin != null) && (
-                <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+                <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
                   {[d.volum, d.tidMin != null ? `${d.tidMin} min` : null].filter(Boolean).join(" · ")}
                 </span>
               )}
@@ -153,9 +154,9 @@ function DrillListe({ drills, medHaker }: { drills: OktDrill[]; medHaker: boolea
                 <span
                   style={{
                     display: "block",
-                    fontFamily: T.mono,
+                    fontFamily: TL.font.mono,
                     fontSize: 9.5,
-                    color: T.mut,
+                    color: TL.mute,
                     marginTop: 4,
                     wordBreak: "break-all",
                   }}
@@ -175,11 +176,11 @@ function MaalKort({ maal, hvorfor }: { maal: string; hvorfor: string | null }) {
   return (
     <div style={kortStil}>
       <Caps>målsetning</Caps>
-      <p style={{ margin: "8px 0 0", fontFamily: T.bodyFont, fontSize: 15, color: T.fg }}>{maal}</p>
+      <p style={{ margin: "8px 0 0", fontFamily: TL.font.sans, fontSize: 15, color: TL.text }}>{maal}</p>
       {hvorfor && (
         <details
           data-od-id="okt-why-maal"
-          style={{ marginTop: 12, border: `1px solid ${T.border}`, borderRadius: T.rCard }}
+          style={{ marginTop: 12, border: `1px solid ${TL.hair}`, borderRadius: TL.radius.card }}
         >
           <summary
             style={{
@@ -189,10 +190,10 @@ function MaalKort({ maal, hvorfor }: { maal: string; hvorfor: string | null }) {
               padding: "0 16px",
               cursor: "pointer",
               listStyle: "none",
-              fontFamily: T.ui,
+              fontFamily: TL.font.sans,
               fontSize: 12.5,
               fontWeight: 500,
-              color: T.mut,
+              color: TL.mute,
             }}
           >
             Hvorfor dette tallet
@@ -201,10 +202,10 @@ function MaalKort({ maal, hvorfor }: { maal: string; hvorfor: string | null }) {
             style={{
               margin: 0,
               padding: "12px 16px 16px",
-              fontFamily: T.bodyFont,
+              fontFamily: TL.font.sans,
               fontSize: 13,
-              color: T.mut,
-              borderTop: `1px solid ${T.border}`,
+              color: TL.mute,
+              borderTop: `1px solid ${TL.hair}`,
             }}
           >
             {hvorfor}
@@ -243,15 +244,15 @@ export default async function OktDetaljPage({
           <div
             style={{
               padding: "24px 16px",
-              background: T.panel2,
-              border: `1px dashed ${T.border}`,
-              borderRadius: T.rCard,
+              background: TL.dock,
+              border: `1px dashed ${TL.hair}`,
+              borderRadius: TL.radius.card,
             }}
           >
-            <h3 style={{ margin: "0 0 8px", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+            <h3 style={{ margin: "0 0 8px", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
               Fant ikke økta
             </h3>
-            <p style={{ margin: "0 0 12px", fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut }}>
+            <p style={{ margin: "0 0 12px", fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute }}>
               Den kan være slettet fra planen, eller lenken er gammel.
               {nesteTekst ? ` ${nesteTekst.tekst}` : ""}
             </p>
@@ -268,10 +269,10 @@ export default async function OktDetaljPage({
                 justifyContent: "center",
                 minHeight: 56,
                 width: "100%",
-                borderRadius: T.rCard,
-                background: T.handling,
-                color: T.onHandling,
-                fontFamily: T.ui,
+                borderRadius: TL.radius.card,
+                background: TL.fill,
+                color: TL.onFill,
+                fontFamily: TL.font.sans,
                 fontSize: 14,
                 fontWeight: 600,
               }}
@@ -307,15 +308,15 @@ export default async function OktDetaljPage({
       <div
         data-paper-slug="playerhq-okt-detalj"
         data-od-id="playerhq-okt-detalj"
-        style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}
+        style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}
       >
         {/* Topp — fasit: «Økt» + dag · uke */}
         <div style={{ display: "flex", alignItems: "flex-start", gap: 8, minWidth: 0 }}>
           <div style={{ minWidth: 0, flex: 1 }}>
-            <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>
+            <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>
               {data.emTittel}
             </h1>
-            <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+            <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
               {data.dagTekst} · uke {data.ukeNr}
             </span>
           </div>
@@ -331,7 +332,7 @@ export default async function OktDetaljPage({
               <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 8 }}>
                 <div style={{ ...kortStil, padding: "12px 16px" }}>
                   <Caps>resultat</Caps>
-                  <div style={{ fontFamily: T.mono, fontSize: 22, fontWeight: 600, color: T.fg, fontVariantNumeric: "tabular-nums" }}>
+                  <div style={{ fontFamily: TL.font.mono, fontSize: 22, fontWeight: 600, color: TL.text, fontVariantNumeric: "tabular-nums" }}>
                     {data.resultat.drillsFullfort} av {data.resultat.antallDrills}
                   </div>
                   {data.resultat.antallDrills > 0 &&
@@ -349,7 +350,7 @@ export default async function OktDetaljPage({
             {data.notat && (
               <div style={kortStil}>
                 <Caps>din observasjon</Caps>
-                <p style={{ margin: "8px 0 0", fontFamily: T.bodyFont, fontSize: 15, color: T.fg }}>
+                <p style={{ margin: "8px 0 0", fontFamily: TL.font.sans, fontSize: 15, color: TL.text }}>
                   {data.notat}
                 </p>
               </div>
@@ -374,10 +375,10 @@ export default async function OktDetaljPage({
                   minHeight: 56,
                   flex: 1,
                   minWidth: 0,
-                  borderRadius: T.rCard,
-                  background: T.handling,
-                  color: T.onHandling,
-                  fontFamily: T.ui,
+                  borderRadius: TL.radius.card,
+                  background: TL.fill,
+                  color: TL.onFill,
+                  fontFamily: TL.font.sans,
                   fontSize: 14,
                   fontWeight: 600,
                 }}
@@ -395,10 +396,10 @@ export default async function OktDetaljPage({
                   justifyContent: "center",
                   minHeight: 56,
                   padding: "0 16px",
-                  borderRadius: T.rCard,
-                  border: `1px solid ${T.border}`,
-                  color: T.fg,
-                  fontFamily: T.ui,
+                  borderRadius: TL.radius.card,
+                  border: `1px solid ${TL.hair}`,
+                  color: TL.text,
+                  fontFamily: TL.font.sans,
                   fontSize: 14,
                   fontWeight: 500,
                 }}
@@ -413,24 +414,24 @@ export default async function OktDetaljPage({
             {data.kanStarte && (
               <div
                 style={{
-                  background: T.handlingSoft,
-                  border: `1px solid ${T.border}`,
-                  borderRadius: T.rCard,
+                  background: TL.dim,
+                  border: `1px solid ${TL.hair}`,
+                  borderRadius: TL.radius.card,
                   padding: 16,
                 }}
               >
                 <Caps>Én ting nå</Caps>
-                <h3 style={{ margin: "8px 0", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+                <h3 style={{ margin: "8px 0", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
                   {data.status === "now" ? (
                     "Økta pågår"
                   ) : (
                     <>
                       Økta starter kl.{" "}
-                      <span style={{ fontFamily: T.mono }}>{data.tidTekst.split("–")[0]}</span>
+                      <span style={{ fontFamily: TL.font.mono }}>{data.tidTekst.split("–")[0]}</span>
                     </>
                   )}
                 </h3>
-                <p style={{ margin: "0 0 16px", fontFamily: T.bodyFont, fontSize: 14, color: T.mut, maxWidth: "52ch" }}>
+                <p style={{ margin: "0 0 16px", fontFamily: TL.font.sans, fontSize: 14, color: TL.mute, maxWidth: "52ch" }}>
                   {data.status === "now"
                     ? `${data.sted} · ${data.tidTekst}. Loggen ligger trygt i live-flyten — fortsett der du slapp.`
                     : `${data.sted} · ${data.tidTekst}. Alt du trenger står klart under — du trenger ikke gjøre noe før du er der.`}
@@ -451,10 +452,10 @@ export default async function OktDetaljPage({
                       minHeight: 56,
                       flex: 1,
                       minWidth: 0,
-                      borderRadius: T.rCard,
-                      background: T.handling,
-                      color: T.onHandling,
-                      fontFamily: T.ui,
+                      borderRadius: TL.radius.card,
+                      background: TL.fill,
+                      color: TL.onFill,
+                      fontFamily: TL.font.sans,
                       fontSize: 14,
                       fontWeight: 600,
                     }}
@@ -472,10 +473,10 @@ export default async function OktDetaljPage({
                       justifyContent: "center",
                       minHeight: 48,
                       padding: "0 16px",
-                      borderRadius: T.rCard,
-                      border: `1px solid ${T.border}`,
-                      color: T.fg,
-                      fontFamily: T.ui,
+                      borderRadius: TL.radius.card,
+                      border: `1px solid ${TL.hair}`,
+                      color: TL.text,
+                      fontFamily: TL.font.sans,
                       fontSize: 14,
                       fontWeight: 500,
                     }}
@@ -491,7 +492,7 @@ export default async function OktDetaljPage({
             {!data.maal && data.hvorfor && (
               <div style={kortStil}>
                 <Caps>fra coach</Caps>
-                <p style={{ margin: "8px 0 0", fontFamily: T.bodyFont, fontSize: 14, color: T.fg }}>
+                <p style={{ margin: "8px 0 0", fontFamily: TL.font.sans, fontSize: 14, color: TL.text }}>
                   {data.hvorfor}
                 </p>
               </div>
@@ -512,16 +513,16 @@ export default async function OktDetaljPage({
                           alignItems: "baseline",
                           gap: 8,
                           padding: "6px 0",
-                          fontFamily: T.ui,
+                          fontFamily: TL.font.sans,
                           fontSize: 13,
-                          color: T.fg,
+                          color: TL.text,
                           minWidth: 0,
                         }}
                       >
                         <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                           {p.navn}
                         </span>
-                        <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 10.5, color: T.mut }}>
+                        <span style={{ marginLeft: "auto", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute }}>
                           {p.statusLabel}
                         </span>
                       </div>
@@ -550,15 +551,15 @@ export default async function OktDetaljPage({
                 display: "flex",
                 gap: 12,
                 padding: "12px 16px",
-                borderRadius: T.rCard,
-                background: T.panel2,
-                border: `1px solid ${T.border}`,
-                fontFamily: T.bodyFont,
+                borderRadius: TL.radius.card,
+                background: TL.dock,
+                border: `1px solid ${TL.hair}`,
+                fontFamily: TL.font.sans,
                 fontSize: 12.5,
-                color: T.mut,
+                color: TL.mute,
               }}
             >
-              <Icon name="pencil" size={16} style={{ color: T.mut, flex: "none", marginTop: 2 }} />
+              <Icon name="pencil" size={16} style={{ color: TL.mute, flex: "none", marginTop: 2 }} />
               <span style={{ minWidth: 0 }}>
                 Økta er din. Du kan endre målet, hoppe over drills eller droppe hele økta —
                 ingenting sperrer. Anders får beskjed, så han vet hva som skjedde.

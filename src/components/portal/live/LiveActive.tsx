@@ -18,7 +18,9 @@ import {
   synkLiveDrillKo,
 } from "@/lib/offline-queue/live-drill-queue";
 import type { LiveDrillReps } from "@/lib/offline-queue/live-drill-kladd";
-import { T } from "@/lib/v2/tokens";
+
+import { TL } from "@/lib/v2/train-lock";
+
 
 type DrillStatus = "done" | "active" | "queued";
 
@@ -126,7 +128,7 @@ function ConfirmOverlay({ show, onConfirm, onCancel }: ConfirmOverlayProps) {
   return (
     <div
       className="absolute inset-0 z-50 flex items-center justify-center p-5"
-      style={{ background: T.farge.svartA55, backdropFilter: "blur(4px)" }}
+      style={{ background: TL.scrim, backdropFilter: "blur(4px)" }}
     >
       <div
         className="w-full max-w-[320px] rounded-[20px] p-6"

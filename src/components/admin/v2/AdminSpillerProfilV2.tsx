@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * AgencyOS — Spillerprofil 360° seksjoner — v2 Presis + B-pakke.
  * Brukes i SpillerDashboardV2 (variant «seksjoner») og full variant.
@@ -8,26 +8,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  T,
-  Kort,
-  Caps,
-  CTAPill,
-  TilbakeLenke,
-  StatusPill,
-  AvatarInit,
-  InnsiktChip,
-  TomTilstand,
-  Rad,
-  VarselRad,
-  Pyramide,
-  ProgresjonsBar,
-  DataTabell,
-  Icon,
-  type StatusTone,
-  type DataTabellColumn,
-  type DataTabellRow,
-} from "@/components/v2";
+import { Kort, Caps, CTAPill, TilbakeLenke, StatusPill, AvatarInit, InnsiktChip, TomTilstand, Rad, VarselRad, Pyramide, ProgresjonsBar, DataTabell, Icon, type StatusTone, type DataTabellColumn, type DataTabellRow } from "@/components/v2";
 import type { AkseKey } from "@/lib/v2/tokens";
 
 // ── Datakontrakt (mappes fra Prisma i ruten) ───────────────────
@@ -108,10 +89,10 @@ export function AdminSpillerProfilV2({ data, variant = "full" }: { data: AdminSp
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 16 }}>
         <AvatarInit navn={data.navn} size={56} />
         <div style={{ flex: 1, minWidth: 180 }}>
-          <h1 style={{ fontFamily: T.disp, fontWeight: 600, fontSize: 17, letterSpacing: "-0.02em", color: T.fg, margin: 0, lineHeight: 1.2 }}>
+          <h1 style={{ fontFamily: TL.font.sans, fontWeight: 600, fontSize: 17, letterSpacing: "-0.02em", color: TL.text, margin: 0, lineHeight: 1.2 }}>
             {data.navn}
           </h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
             {data.eyebrow || "Spillerprofil"}
             {data.meta ? ` · ${data.meta}` : ""}
           </span>
@@ -136,7 +117,7 @@ export function AdminSpillerProfilV2({ data, variant = "full" }: { data: AdminSp
   // ── Coach-flagg (kun fra ekte data, ellers skjult) ─────────
   const flagg = data.flagg && (
     <Kort tint eyebrow="Coach-flagg" action={<StatusPill tone={data.flagg.tone}>{data.flagg.chip}</StatusPill>}>
-      <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.55, margin: 0 }}>{data.flagg.tekst}</p>
+      <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.55, margin: 0 }}>{data.flagg.tekst}</p>
       <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
         <Link href={data.flagg.ctaHref} style={{ textDecoration: "none" }}>
           <CTAPill icon="plus" full>{data.flagg.ctaLabel}</CTAPill>
@@ -184,8 +165,8 @@ export function AdminSpillerProfilV2({ data, variant = "full" }: { data: AdminSp
   const plan = data.plan ? (
     <Link href={data.plan.href} style={{ textDecoration: "none" }}>
       <Kort hover eyebrow="Aktiv plan" action={<StatusPill tone="lime">Aktiv</StatusPill>}>
-        <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, color: T.fg }}>{data.plan.navn}</div>
-        <div style={{ fontFamily: T.mono, fontSize: 11, color: T.mut, margin: "6px 0 12px", fontVariantNumeric: "tabular-nums" }}>
+        <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 16, color: TL.text }}>{data.plan.navn}</div>
+        <div style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute, margin: "6px 0 12px", fontVariantNumeric: "tabular-nums" }}>
           {data.plan.meta}
         </div>
         <ProgresjonsBar variant="bar" value={data.plan.pct} max={100} label="Fullført" />
@@ -211,8 +192,8 @@ export function AdminSpillerProfilV2({ data, variant = "full" }: { data: AdminSp
           key={h.label}
           onClick={() => router.push(h.href)}
           leading={
-            <span style={{ width: 34, height: 34, borderRadius: 11, background: T.panel3, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
-              <Icon name={h.icon} size={16} style={{ color: T.handling }} />
+            <span style={{ width: 34, height: 34, borderRadius: 11, background: TL.dim, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+              <Icon name={h.icon} size={16} style={{ color: TL.fill }} />
             </span>
           }
           title={h.label}
@@ -242,7 +223,7 @@ export function AdminSpillerProfilV2({ data, variant = "full" }: { data: AdminSp
   );
 
   return (
-    <div data-paper-wave-e="spillerprofil" data-od-id="agencyos-spillerprofil" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 1100, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-e="spillerprofil" data-od-id="agencyos-spillerprofil" style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 1100, margin: "0 auto", width: "100%" }}>
       {/* «seksjoner»: dashboardet (SpillerDashboardV2) eier tilbake-lenke + hero. */}
       {variant === "full" && (
         <div>
@@ -250,13 +231,13 @@ export function AdminSpillerProfilV2({ data, variant = "full" }: { data: AdminSp
         </div>
       )}
       {variant === "full" && hero}
-      <div className="grid grid-cols-1 lg:grid-cols-[1.3fr_1fr]" style={{ gap: T.gap, alignItems: "start" }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div className="grid grid-cols-1 lg:grid-cols-[1.3fr_1fr]" style={{ gap: 16, alignItems: "start" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {flagg}
           {pyramide}
           {historikk}
         </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {plan}
           {handlinger}
           {meldinger}

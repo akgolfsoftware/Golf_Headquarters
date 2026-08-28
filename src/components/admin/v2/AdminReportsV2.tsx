@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * AgencyOS Rapporter — v2 (retning C «Presis»). Rekomponerer den ekte skjermen
  * src/app/admin/reports/page.tsx i v2-idiomet, med IDENTISK funksjon +
@@ -18,16 +18,7 @@
 
 import type { Maanedsrapport } from "@/lib/agents/maanedsrapport";
 import Link from "next/link";
-import {
-  Caps,
-  Kort,
-  Icon,
-  StatusPill,
-  TomTilstand,
-  CTAPill,
-  T,
-} from "@/components/v2";
-
+import { Caps, Kort, Icon, StatusPill, TomTilstand, CTAPill } from "@/components/v2";
 // ── Datakontrakt (mappes fra den ekte loaderen i ruten) ─────────
 export interface ReportsV2Data {
   /** Antall aktive spillere (Prisma-count). */
@@ -60,11 +51,11 @@ function MaanedsrapportKort({ r, visKroner }: { r: Maanedsrapport; visKroner: bo
         <TallPar label="Økter gjennomført" verdi={String(r.totalt.okterGjennomfort)} />
       </div>
       {r.perSelskap.length > 0 && (
-        <div style={{ marginTop: 16, borderTop: `1px solid ${T.border}`, paddingTop: 12, display: "flex", flexDirection: "column", gap: 8 }}>
+        <div style={{ marginTop: 16, borderTop: `1px solid ${TL.hair}`, paddingTop: 12, display: "flex", flexDirection: "column", gap: 8 }}>
           {r.perSelskap.map((sel) => (
             <div key={sel.navn} style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12 }}>
-              <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2 }}>{sel.navn}</span>
-              <span style={{ fontFamily: T.mono, fontSize: 12, color: T.fg, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>
+              <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute }}>{sel.navn}</span>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 12, color: TL.text, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>
                 {sel.bookinger} bookinger{visKroner ? ` · ${kr(sel.innbetaltOre)} inn` : ""}
               </span>
             </div>
@@ -79,7 +70,7 @@ function TallPar({ label, verdi }: { label: string; verdi: string }) {
   return (
     <div>
       <Caps size={9}>{label}</Caps>
-      <div style={{ fontFamily: T.mono, fontSize: 22, fontWeight: 700, color: T.fg, marginTop: 6, fontVariantNumeric: "tabular-nums" }}>{verdi}</div>
+      <div style={{ fontFamily: TL.font.mono, fontSize: 22, fontWeight: 700, color: TL.text, marginTop: 6, fontVariantNumeric: "tabular-nums" }}>{verdi}</div>
     </div>
   );
 }
@@ -104,22 +95,22 @@ function RapportKort({ t }: { t: Tile }) {
           width: 40,
           height: 40,
           borderRadius: 11,
-          background: `color-mix(in srgb,${T.lime} 12%,transparent)`,
+          background: `color-mix(in srgb,${TL.fill} 12%,transparent)`,
           display: "inline-flex",
           alignItems: "center",
           justifyContent: "center",
           flex: "none",
         }}
       >
-        <Icon name={t.icon} size={19} style={{ color: T.lime }} strokeWidth={1.6} />
+        <Icon name={t.icon} size={19} style={{ color: TL.fill }} strokeWidth={1.6} />
       </span>
       <span
         style={{
-          fontFamily: T.disp,
+          fontFamily: TL.font.sans,
           fontSize: 16,
           fontWeight: 700,
           letterSpacing: "-0.015em",
-          color: T.fg,
+          color: TL.text,
           lineHeight: 1.2,
         }}
       >
@@ -137,11 +128,11 @@ function RapportKort({ t }: { t: Tile }) {
       >
         <span
           style={{
-            fontFamily: T.mono,
+            fontFamily: TL.font.mono,
             fontSize: 10,
             fontWeight: 700,
             letterSpacing: "0.02em",
-            color: t.nedlasting ? T.lime : T.fg2,
+            color: t.nedlasting ? TL.fill : TL.mute,
             display: "inline-flex",
             alignItems: "center",
             gap: 6,
@@ -150,7 +141,7 @@ function RapportKort({ t }: { t: Tile }) {
           <Icon name={t.nedlasting ? "download" : "arrow-right"} size={12} />
           {t.cta}
         </span>
-        <span style={{ fontFamily: T.mono, fontSize: 9.5, color: T.mut }}>{t.meta}</span>
+        <span style={{ fontFamily: TL.font.mono, fontSize: 9.5, color: TL.mute }}>{t.meta}</span>
       </div>
     </Kort>
   );
@@ -221,15 +212,15 @@ export function AdminReportsV2({ data }: { data: ReportsV2Data }) {
   ];
 
   return (
-    <div data-paper-wave-h="reports" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-h="reports" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {/* B: status først + én primær CTA */}
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 14 }}>
         <div>
           <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Rapporter</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Rapporter</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>AgencyOS</span>
         </div>
-          <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: "8px 0 0", maxWidth: 460 }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: "8px 0 0", maxWidth: 460 }}>
             Generer rapporter for spillere, foreldre, klubb eller forbund. Eksport til PDF og CSV.
           </p>
         </div>
@@ -244,7 +235,7 @@ export function AdminReportsV2({ data }: { data: ReportsV2Data }) {
         </CTAPill>
       </a>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3" style={{ gap: T.gap }}>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3" style={{ gap: 16 }}>
         {tiles.map((t) => (
           <RapportKort key={t.navn} t={t} />
         ))}
@@ -264,7 +255,7 @@ export function AdminReportsV2({ data }: { data: ReportsV2Data }) {
             </Kort>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: T.gap, marginTop: 12 }}>
+          <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: 16, marginTop: 12 }}>
             {maanedsrapporter.map((r) => (
               <MaanedsrapportKort key={`${r.year}-${r.month}`} r={r} visKroner={visKroner} />
             ))}

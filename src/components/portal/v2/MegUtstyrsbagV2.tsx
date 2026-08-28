@@ -1,25 +1,13 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ Meg · Utstyrsbag — v2 Presis + B-pakke (status, én grønn CTA).
  */
 
 import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import {
-  T,
-  Caps,
-  Tittel,
-  Kort,
-  Rad,
-  Knapp,
-  TomTilstand,
-  Icon,
-  Inndata,
-  TekstOmraade,
-} from "@/components/v2";
+import { Caps, Tittel, Kort, Rad, Knapp, TomTilstand, Icon, Inndata, TekstOmraade } from "@/components/v2";
 import { lagreUtstyrsbag, type UtstyrsbagInput } from "@/app/portal/meg/utstyrsbag/actions";
-
 /* ── Datakontrakt ──────────────────────────────────────────────────── */
 
 export type MegUtstyrsbagData = {
@@ -81,10 +69,10 @@ function useMobile(): boolean {
 function UtstyrRad({ felt, verdi, last }: { felt: Felt; verdi: string; last: boolean }) {
   return (
     <Rad
-      leading={<Icon name={felt.ikon} size={16} style={{ color: T.mut }} />}
+      leading={<Icon name={felt.ikon} size={16} style={{ color: TL.mute }} />}
       title={felt.label}
       sub={
-        <span style={{ fontFamily: T.mono, fontSize: 11.5, color: T.fg2, fontVariantNumeric: "tabular-nums" }}>
+        <span style={{ fontFamily: TL.font.mono, fontSize: 11.5, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
           {verdi}
         </span>
       }
@@ -97,7 +85,6 @@ function UtstyrRad({ felt, verdi, last }: { felt: Felt; verdi: string; last: boo
 /* ── Skjerm ────────────────────────────────────────────────────────── */
 
 export function MegUtstyrsbagV2({ data }: { data: MegUtstyrsbagData }) {
-  const mobile = useMobile();
   const router = useRouter();
   const [redigerer, setRedigerer] = useState(false);
 
@@ -119,11 +106,11 @@ export function MegUtstyrsbagV2({ data }: { data: MegUtstyrsbagData }) {
   const total = KOLLER.length + OVRIG.length;
 
   return (
-    <div data-paper-wave-g="megutstyrsbag" data-paper-portal-meg-utstyrsbag style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="megutstyrsbag" data-paper-portal-meg-utstyrsbag style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div>
         <div data-paper-pattern-topp>
-        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Utstyr</h1>
-        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Meg</span>
+        <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Utstyr</h1>
+        <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>Meg</span>
       </div>
         <Caps size={9} style={{ marginTop: 10 }}>
           Køller, ball og bag
@@ -134,13 +121,13 @@ export function MegUtstyrsbagV2({ data }: { data: MegUtstyrsbagData }) {
       <div className="grid grid-cols-2" style={{ gap: 8 }}>
         <Kort pad="12px">
           <Caps size={9}>Registrert</Caps>
-          <div style={{ fontFamily: T.mono, fontWeight: 700, fontSize: 18, marginTop: 8, color: T.fg }}>
+          <div style={{ fontFamily: TL.font.mono, fontWeight: 700, fontSize: 18, marginTop: 8, color: TL.text }}>
             {antall} / {total}
           </div>
         </Kort>
         <Kort pad="12px">
           <Caps size={9}>Status</Caps>
-          <div style={{ fontFamily: T.ui, fontWeight: 600, fontSize: 14, marginTop: 8, color: T.fg }}>
+          <div style={{ fontFamily: TL.font.sans, fontWeight: 600, fontSize: 14, marginTop: 8, color: TL.text }}>
             {harNoe ? "Delvis fylt" : "Tom"}
           </div>
         </Kort>
@@ -183,10 +170,10 @@ export function MegUtstyrsbagV2({ data }: { data: MegUtstyrsbagData }) {
           border: 0,
           cursor: "pointer",
           textAlign: "center",
-          fontFamily: T.ui,
+          fontFamily: TL.font.sans,
           fontSize: 12,
           fontWeight: 600,
-          color: T.mut,
+          color: TL.mute,
           padding: "4px 0",
         }}
       >
@@ -273,7 +260,7 @@ function UtstyrsbagRediger({
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div>
         <Tittel mobile={mobile}>Rediger utstyr</Tittel>
         <Caps size={9} style={{ marginTop: 10 }}>Alle felter er valgfrie</Caps>
@@ -296,11 +283,11 @@ function UtstyrsbagRediger({
           style={{
             padding: "11px 14px",
             borderRadius: 12,
-            background: `color-mix(in srgb, ${T.down} 10%, transparent)`,
-            border: `1px solid color-mix(in srgb, ${T.down} 35%, transparent)`,
-            fontFamily: T.ui,
+            background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`,
+            border: `1px solid color-mix(in srgb, ${TL.danger} 35%, transparent)`,
+            fontFamily: TL.font.sans,
             fontSize: 12.5,
-            color: T.down,
+            color: TL.danger,
           }}
         >
           {feil}
@@ -314,14 +301,14 @@ function UtstyrsbagRediger({
           alignItems: "center",
           gap: 12,
           padding: "12px 16px",
-          borderRadius: T.rCard,
-          background: T.panel2,
-          border: `1px solid ${T.border}`,
+          borderRadius: TL.radius.card,
+          background: TL.dock,
+          border: `1px solid ${TL.hair}`,
         }}
       >
         <span style={{ flex: 1, minWidth: 0, display: "inline-flex", alignItems: "center", gap: 6 }}>
-          {lagret && <Icon name="check" size={13} style={{ color: T.lime }} />}
-          <Caps size={9} color={lagret ? T.fg2 : T.mut}>
+          {lagret && <Icon name="check" size={13} style={{ color: TL.fill }} />}
+          <Caps size={9} color={lagret ? TL.mute : TL.mute}>
             {pending ? "Lagrer …" : lagret ? "Lagret" : "Endringene lagres til utstyrsbagen din"}
           </Caps>
         </span>

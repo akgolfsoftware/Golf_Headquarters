@@ -11,7 +11,8 @@
 
 import type { DragEvent } from "react";
 import { Icon } from "@/components/v2/icon";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { UI } from "@/lib/domain/workbench/labels";
 import type { SourceItem } from "@/lib/domain/workbench/types";
 import { settKildeDataTransfer } from "./wb-drag";
@@ -31,9 +32,9 @@ export function SourcesPanel({ kilder }: Props) {
     <aside
       aria-label={UI.sourcesTitle}
       style={{
-        background: T.panel,
-        border: `1px solid ${T.border}`,
-        borderRadius: T.rCard,
+        background: TL.elev,
+        border: `1px solid ${TL.hair}`,
+        borderRadius: TL.radius.card,
         padding: 14,
         minWidth: 0,
         display: "grid",
@@ -42,12 +43,12 @@ export function SourcesPanel({ kilder }: Props) {
     >
       <div
         style={{
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           fontSize: 10,
           fontWeight: 700,
           letterSpacing: "0.08em",
           textTransform: "uppercase",
-          color: T.mut,
+          color: TL.mute,
         }}
       >
         {UI.sourcesTitle}
@@ -55,12 +56,12 @@ export function SourcesPanel({ kilder }: Props) {
 
       {kilder.length === 0 ? (
         <div style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
-          <Icon name="layers" size={14} style={{ color: T.mut, marginTop: 2 }} />
+          <Icon name="layers" size={14} style={{ color: TL.mute, marginTop: 2 }} />
           <div>
-            <div style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2 }}>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute }}>
               {UI.emptySourcesTitle}
             </div>
-            <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 3 }}>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 3 }}>
               {UI.emptySourcesBody}
             </div>
           </div>
@@ -76,15 +77,15 @@ export function SourcesPanel({ kilder }: Props) {
                   display: "flex",
                   alignItems: "center",
                   gap: 5,
-                  fontFamily: T.mono,
+                  fontFamily: TL.font.mono,
                   fontSize: 9.5,
                   fontWeight: 600,
                   letterSpacing: "0.06em",
                   textTransform: "uppercase",
-                  color: T.mut,
+                  color: TL.mute,
                 }}
               >
-                <Icon name={gruppe.ikon} size={11} style={{ color: T.mut }} />
+                <Icon name={gruppe.ikon} size={11} style={{ color: TL.mute }} />
                 {gruppe.tittel}
               </div>
               <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 6 }}>
@@ -107,12 +108,12 @@ function KildeKort({ kilde }: { kilde: SourceItem }) {
       title={UI.dragHint}
       onDragStart={(e: DragEvent<HTMLLIElement>) => settKildeDataTransfer(e, kilde.id)}
       style={{
-        fontFamily: T.ui,
+        fontFamily: TL.font.sans,
         fontSize: 12.5,
-        color: T.fg,
+        color: TL.text,
         padding: "7px 9px",
-        borderRadius: T.rTag,
-        background: T.panel2,
+        borderRadius: TL.radius.row,
+        background: TL.dock,
         cursor: "grab",
         minWidth: 0,
       }}
@@ -130,7 +131,7 @@ function KildeKort({ kilde }: { kilde: SourceItem }) {
         <div
           style={{
             fontSize: 10.5,
-            color: T.mut,
+            color: TL.mute,
             marginTop: 2,
             overflow: "hidden",
             textOverflow: "ellipsis",

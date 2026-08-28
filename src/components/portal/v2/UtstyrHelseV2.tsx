@@ -1,23 +1,12 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ · SG-hub · Utstyr-helsesjekk (equipment fit) — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
  * T.* only. Lys PlayerHQ.
  */
 
 import Link from "next/link";
-import {
-  Caps,
-  Kort,
-  StatusPill,
-  type StatusTone,
-  TilbakeLenke,
-  Tittel,
-  TomTilstand,
-  HjelpTips,
-  Icon,
-  T,
-} from "@/components/v2";
+import { Caps, Kort, StatusPill, type StatusTone, TilbakeLenke, Tittel, TomTilstand, HjelpTips, Icon } from "@/components/v2";
 import type { HjelpNokkel } from "@/lib/v2/hjelpetekster";
 import type {
   ClubFitReport,
@@ -46,10 +35,10 @@ const STATUS_IKON: Record<FitStatus, string> = {
   missing: "help-circle",
 };
 const STATUS_FARGE: Record<FitStatus, string> = {
-  ok: T.up,
-  warn: T.warn,
-  critical: T.down,
-  missing: T.mut,
+  ok: TL.ok,
+  warn: TL.warn,
+  critical: TL.danger,
+  missing: TL.mute,
 };
 const STATUS_LABEL: Record<FitStatus, string> = {
   ok: "I target",
@@ -66,7 +55,7 @@ const METRIC_HJELP: Record<string, HjelpNokkel> = {
 
 export function UtstyrHelseV2({ backHref, spillerNavn, reports }: UtstyrHelseV2Props) {
   return (
-    <div data-paper-portal-utstyr-helse style={{ maxWidth: 760, margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap, width: "100%" }}>
+    <div data-paper-portal-utstyr-helse style={{ maxWidth: 760, margin: "0 auto", display: "flex", flexDirection: "column", gap: 16, width: "100%" }}>
       <TilbakeLenke href={backHref}>SG-hub</TilbakeLenke>
 
       {/* Topptekst */}
@@ -75,11 +64,11 @@ export function UtstyrHelseV2({ backHref, spillerNavn, reports }: UtstyrHelseV2P
         <div style={{ marginTop: 6, display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
           <Tittel mobile em="-helsesjekk">
             Utstyr
-            {spillerNavn ? <span style={{ color: T.mut, fontWeight: 500 }}> · {spillerNavn}</span> : null}
+            {spillerNavn ? <span style={{ color: TL.mute, fontWeight: 500 }}> · {spillerNavn}</span> : null}
           </Tittel>
           <HjelpTips k="trackman" />
         </div>
-        <p style={{ fontFamily: T.ui, fontSize: 13.5, color: T.mut, lineHeight: 1.55, margin: "10px 0 0", maxWidth: 620 }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute, lineHeight: 1.55, margin: "10px 0 0", maxWidth: 620 }}>
           Launch, spin og smash sjekkes mot optimale target-vinduer per kølletype.
           Avvik kan tyde på feil køllevalg, oppsett eller ball-fitting — og er ofte
           raskere å fikse enn teknikk.
@@ -92,7 +81,7 @@ export function UtstyrHelseV2({ backHref, spillerNavn, reports }: UtstyrHelseV2P
           {(["ok", "warn", "critical", "missing"] as FitStatus[]).map((s) => (
             <span key={s} style={{ display: "inline-flex", alignItems: "center", gap: 7 }}>
               <StatusMerke status={s} />
-              <span style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2 }}>{STATUS_LABEL[s]}</span>
+              <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}>{STATUS_LABEL[s]}</span>
             </span>
           ))}
         </div>
@@ -109,13 +98,13 @@ export function UtstyrHelseV2({ backHref, spillerNavn, reports }: UtstyrHelseV2P
             <Link href="/portal/mal/trackman" style={{ textDecoration: "none" }}>
               <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 10, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
           }}>Importer din første økt</span>
             </Link>
           </div>
         </Kort>
       ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: T.gap }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 16 }}>
           {reports.map((r) => (
             <KolleKort key={r.clubId} report={r} />
           ))}
@@ -131,7 +120,7 @@ function KolleKort({ report }: { report: ClubFitReport }) {
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10, marginBottom: 14 }}>
         <div>
           <Caps size={9}>{categoryLabel(report.category)}</Caps>
-          <div style={{ fontFamily: T.disp, fontSize: 19, fontWeight: 700, letterSpacing: "-0.01em", color: T.fg, marginTop: 5 }}>
+          <div style={{ fontFamily: TL.font.sans, fontSize: 19, fontWeight: 700, letterSpacing: "-0.01em", color: TL.text, marginTop: 5 }}>
             {report.clubId}
           </div>
         </div>
@@ -140,7 +129,7 @@ function KolleKort({ report }: { report: ClubFitReport }) {
 
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         {report.metrics.length === 0 ? (
-          <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, margin: 0 }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, margin: 0 }}>
             Ingen target-vinduer definert for denne køllen.
           </p>
         ) : (
@@ -148,7 +137,7 @@ function KolleKort({ report }: { report: ClubFitReport }) {
         )}
       </div>
 
-      <p style={{ fontFamily: T.mono, fontSize: 10, letterSpacing: "0.04em", color: T.mut, margin: "14px 0 0" }}>
+      <p style={{ fontFamily: TL.font.mono, fontSize: 10, letterSpacing: "0.04em", color: TL.mute, margin: "14px 0 0" }}>
         Basert på {report.shotCount} slag
       </p>
     </Kort>
@@ -166,23 +155,23 @@ function MetrikkRad({ metric }: { metric: FitMetric }) {
         gap: 10,
         padding: "9px 12px",
         borderRadius: 10,
-        background: T.panel2,
-        border: `1px solid ${T.border}`,
+        background: TL.dock,
+        border: `1px solid ${TL.hair}`,
       }}
     >
       <span style={{ display: "inline-flex", alignItems: "center", gap: 7, minWidth: 0 }}>
         <StatusMerke status={metric.status} />
-        <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>
+        <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>
           {metric.label}
         </span>
         {hjelp && <HjelpTips k={hjelp} size={11} />}
       </span>
       <span style={{ textAlign: "right", flex: "none" }}>
-        <span style={{ display: "block", fontFamily: T.mono, fontSize: 13, fontWeight: 600, color: T.fg, fontVariantNumeric: "tabular-nums" }}>
+        <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 13, fontWeight: 600, color: TL.text, fontVariantNumeric: "tabular-nums" }}>
           {metric.value === null ? "—" : `${formatValue(metric.value, metric.unit)}${metric.unit}`}
         </span>
         {metric.target && (
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10, color: T.mut, marginTop: 2 }}>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, marginTop: 2 }}>
             Target: {formatNum(metric.target.min)}–{formatNum(metric.target.max)}
             {metric.unit}
           </span>

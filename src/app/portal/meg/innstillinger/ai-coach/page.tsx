@@ -5,7 +5,8 @@
 
 import Link from "next/link";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Caps, Kort, StatusPill, CTAPill, Icon } from "@/components/v2";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { InnstillingerHode } from "@/components/portal/v2/InnstillingerHode";
@@ -37,7 +38,7 @@ export default async function AiCoachPage() {
         margin: "0 auto",
         display: "flex",
         flexDirection: "column",
-        gap: T.gap,
+        gap: 16,
       }}
     >
       <InnstillingerHode
@@ -46,7 +47,7 @@ export default async function AiCoachPage() {
         tilbakeHref="/portal/meg/innstillinger"
         action={<StatusPill tone="info">Kommer snart</StatusPill>}
       />
-      <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: 0, lineHeight: 1.45, maxWidth: "36ch" }}>
+      <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: 0, lineHeight: 1.45, maxWidth: "36ch" }}>
         Personlig assistent som leser dataene dine og foreslår neste steg.
       </p>
 
@@ -57,20 +58,20 @@ export default async function AiCoachPage() {
               width: 40,
               height: 40,
               borderRadius: 9999,
-              background: T.lime,
+              background: TL.fill,
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
               flex: "none",
             }}
           >
-            <Icon name="sparkles" size={18} style={{ color: T.onLime }} />
+            <Icon name="sparkles" size={18} style={{ color: TL.onFill }} />
           </span>
           <div>
-            <div style={{ fontFamily: T.disp, fontSize: 15, fontWeight: 700, color: T.fg }}>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 15, fontWeight: 700, color: TL.text }}>
               Hva AI-coach gjør
             </div>
-            <div style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, marginTop: 2 }}>
+            <div style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, marginTop: 2 }}>
               Personlig · datadrevet · coach-assistent
             </div>
           </div>
@@ -78,15 +79,15 @@ export default async function AiCoachPage() {
         <ul style={{ margin: "14px 0 0", padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 8 }}>
           {FEATURES.map((f) => (
             <li key={f} style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
-              <Icon name="check" size={14} style={{ color: T.up, marginTop: 2, flex: "none" }} />
-              <span style={{ fontFamily: T.ui, fontSize: 13, color: T.fg, lineHeight: 1.45 }}>{f}</span>
+              <Icon name="check" size={14} style={{ color: TL.ok, marginTop: 2, flex: "none" }} />
+              <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text, lineHeight: 1.45 }}>{f}</span>
             </li>
           ))}
         </ul>
       </Kort>
 
       <Kort pad="0">
-        <div style={{ padding: "12px 18px", borderBottom: `1px solid ${T.border}` }}>
+        <div style={{ padding: "12px 18px", borderBottom: `1px solid ${TL.hair}` }}>
           <Caps>Ofte stilte spørsmål</Caps>
         </div>
         {FAQ.map((item, i) => (
@@ -94,11 +95,11 @@ export default async function AiCoachPage() {
             key={item.q}
             style={{
               padding: "14px 18px",
-              borderBottom: i < FAQ.length - 1 ? `1px solid ${T.border}` : "none",
+              borderBottom: i < FAQ.length - 1 ? `1px solid ${TL.hair}` : "none",
             }}
           >
-            <div style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>{item.q}</div>
-            <div style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, marginTop: 4, lineHeight: 1.5 }}>{item.a}</div>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>{item.q}</div>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, marginTop: 4, lineHeight: 1.5 }}>{item.a}</div>
           </div>
         ))}
       </Kort>
@@ -110,7 +111,7 @@ export default async function AiCoachPage() {
           </CTAPill>
         </div>
         <Link href="/portal/meg/help" style={{ textDecoration: "none", textAlign: "center" }}>
-          <span style={{ fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.forest }}>
+          <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 600, color: TL.fill }}>
             Les mer i hjelpesenteret →
           </span>
         </Link>

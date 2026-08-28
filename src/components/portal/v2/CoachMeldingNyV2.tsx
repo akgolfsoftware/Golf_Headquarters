@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ Coach · Ny melding — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
  * T.* only. Lys PlayerHQ.
@@ -7,18 +7,7 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import {
-  T,
-  Caps,
-  Tittel,
-  Kort,
-  CTAPill,
-  AvatarInit,
-  TomTilstand,
-  TekstOmraade,
-  Veiviser,
-} from "@/components/v2";
-
+import { Caps, Tittel, Kort, AvatarInit, TomTilstand, TekstOmraade, Veiviser } from "@/components/v2";
 export type CoachMeldingNyData = {
   /** true = tier GRATIS (Pro-gate på direkte coach-meldinger, uendret regel). */
   gratis: boolean;
@@ -43,11 +32,11 @@ export function CoachMeldingNyV2({
 
   if (gratis) {
     return (
-      <div data-paper-wave-g="coachmeldingny" data-paper-pattern  data-paper-portal-coach-melding-ny style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+      <div data-paper-wave-g="coachmeldingny" data-paper-pattern  data-paper-portal-coach-melding-ny style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
         <div>
           <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Ny melding</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Coach</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Ny melding</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>Coach</span>
         </div>
         </div>
         <Kort tint>
@@ -60,7 +49,7 @@ export function CoachMeldingNyV2({
             <Link href="/portal/meg/abonnement" style={{ textDecoration: "none" }}>
               <span style={{
               display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "10px 16px",
-              borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 13, fontWeight: 600,
+              borderRadius: 10, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600,
             }}>Oppgrader til Pro</span>
             </Link>
           </div>
@@ -71,7 +60,7 @@ export function CoachMeldingNyV2({
 
   if (!coach) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         <div>
           <Caps>Coach · Ny melding</Caps>
           <div style={{ marginTop: 10 }}>
@@ -103,7 +92,7 @@ export function CoachMeldingNyV2({
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div>
         <Caps>Coach · Ny melding</Caps>
         <div style={{ marginTop: 10 }}>
@@ -115,8 +104,8 @@ export function CoachMeldingNyV2({
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <AvatarInit navn={coach.name} size={38} />
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontFamily: T.ui, fontSize: 14, fontWeight: 700, color: T.fg }}>{coach.name}</div>
-            <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 1 }}>Svarer vanligvis innen 3 t</div>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 14, fontWeight: 700, color: TL.text }}>{coach.name}</div>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 1 }}>Svarer vanligvis innen 3 t</div>
           </div>
         </div>
       </Kort>
@@ -131,8 +120,8 @@ export function CoachMeldingNyV2({
               className="v2-press v2-focus"
               style={{
                 appearance: "none", cursor: "pointer", minHeight: 38, padding: "0 15px", borderRadius: 9999,
-                fontFamily: T.ui, fontSize: 13, fontWeight: 600,
-                border: `1px solid ${T.borderS}`, background: T.panel2, color: T.fg,
+                fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600,
+                border: `1px solid ${TL.hair}`, background: TL.dock, color: TL.text,
               }}
             >
               {h}
@@ -149,7 +138,7 @@ export function CoachMeldingNyV2({
           rows={6}
           placeholder={`Skriv en melding til ${coach.name.split(" ")[0]} …`}
         />
-        {feil && <div style={{ fontFamily: T.ui, fontSize: 12, color: T.down, marginTop: 8 }}>{feil}</div>}
+        {feil && <div style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, marginTop: 8 }}>{feil}</div>}
       </Kort>
 
       <Veiviser steg={["Skriv til coachen"]} aktiv={0} sisteTekst={pending ? "Sender …" : "Send melding"} onNeste={pending ? undefined : handleSend} />

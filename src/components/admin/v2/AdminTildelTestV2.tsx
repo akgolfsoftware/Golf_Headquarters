@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * AgencyOS — Tildel test-modal, v2-port 16. juli 2026.
@@ -16,7 +17,7 @@
 
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { T, Caps, AkseChip, Knapp, StatusPill, TomTilstand } from "@/components/v2";
+import { Caps, AkseChip, Knapp, StatusPill, TomTilstand } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import { tildelTest } from "@/app/admin/(legacy)/tester/tildel/[spillerId]/actions";
 
@@ -95,7 +96,7 @@ export function AdminTildelTestV2({ data }: { data: AdminTildelTestV2Data }) {
       onClick={(e) => {
         if (e.target === e.currentTarget) lukk();
       }}
-      style={{ position: "fixed", inset: 0, zIndex: 50, display: "grid", placeItems: "center", background: T.farge.svartA55, padding: 16 }}
+      style={{ position: "fixed", inset: 0, zIndex: 50, display: "grid", placeItems: "center", background: TL.scrim, padding: 16 }}
     >
       <div
         style={{
@@ -103,16 +104,16 @@ export function AdminTildelTestV2({ data }: { data: AdminTildelTestV2Data }) {
           maxWidth: 520,
           maxHeight: "88vh",
           overflowY: "auto",
-          borderRadius: T.rCard,
-          background: T.panel,
-          border: `1px solid ${T.borderS}`,
-          boxShadow: `0 24px 60px ${T.farge.svartA50}`,
+          borderRadius: TL.radius.card,
+          background: TL.elev,
+          border: `1px solid ${TL.hair}`,
+          boxShadow: "none",
         }}
       >
-        <div style={{ position: "sticky", top: 0, background: T.panel, padding: "18px 22px 14px", borderBottom: `1px solid ${T.border}`, display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, zIndex: 1 }}>
+        <div style={{ position: "sticky", top: 0, background: TL.elev, padding: "18px 22px 14px", borderBottom: `1px solid ${TL.hair}`, display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, zIndex: 1 }}>
           <div>
             <Caps>AgencyOS · Stall · Spillere</Caps>
-            <h2 style={{ margin: "8px 0 0", fontFamily: T.disp, fontWeight: 700, fontSize: 19, color: T.fg }}>
+            <h2 style={{ margin: "8px 0 0", fontFamily: TL.font.sans, fontWeight: 700, fontSize: 19, color: TL.text }}>
               Tildel test til <strong>{data.spillerNavn}</strong>
             </h2>
             <div style={{ marginTop: 8, display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
@@ -125,37 +126,37 @@ export function AdminTildelTestV2({ data }: { data: AdminTildelTestV2Data }) {
           <button
             onClick={lukk}
             aria-label="Lukk"
-            style={{ display: "grid", placeItems: "center", width: 28, height: 28, borderRadius: 8, background: T.panel2, border: `1px solid ${T.border}`, color: T.mut, cursor: "pointer", flex: "none" }}
+            style={{ display: "grid", placeItems: "center", width: 28, height: 28, borderRadius: 8, background: TL.dock, border: `1px solid ${TL.hair}`, color: TL.mute, cursor: "pointer", flex: "none" }}
           >
             <Icon name="x" size={14} />
           </button>
         </div>
 
         <div style={{ padding: "18px 22px", display: "flex", flexDirection: "column", gap: 18 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 12px", borderRadius: 12, background: T.panel2, border: `1px solid ${T.border}` }}>
-            <span style={{ width: 36, height: 36, borderRadius: 9999, background: T.panel3, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: T.mono, fontSize: 12, fontWeight: 700, color: T.fg2, flex: "none" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 12px", borderRadius: 12, background: TL.dock, border: `1px solid ${TL.hair}` }}>
+            <span style={{ width: 36, height: 36, borderRadius: 9999, background: TL.dim, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: TL.font.mono, fontSize: 12, fontWeight: 700, color: TL.mute, flex: "none" }}>
               {data.spillerNavn.split(" ").map((x) => x[0]).join("").slice(0, 2).toUpperCase()}
             </span>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 14, color: T.fg }}>{data.spillerNavn}</div>
-              <div style={{ fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+              <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 14, color: TL.text }}>{data.spillerNavn}</div>
+              <div style={{ fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
                 {data.hcpLabel} · {data.tester.length} tester i biblioteket
               </div>
             </div>
           </div>
 
           <div>
-            <div style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.fg2, marginBottom: 8 }}>
-              Velg test <span style={{ color: T.down }}>*</span>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 12, fontWeight: 600, color: TL.mute, marginBottom: 8 }}>
+              Velg test <span style={{ color: TL.danger }}>*</span>
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, height: 40, borderRadius: 10, border: `1px solid ${T.border}`, background: T.panel2, padding: "0 12px" }}>
-              <Icon name="search" size={14} style={{ color: T.mut }} />
+            <div style={{ display: "flex", alignItems: "center", gap: 8, height: 40, borderRadius: 10, border: `1px solid ${TL.hair}`, background: TL.dock, padding: "0 12px" }}>
+              <Icon name="search" size={14} style={{ color: TL.mute }} />
               <input
                 type="search"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Søk test, disiplin, mål …"
-                style={{ flex: 1, border: "none", outline: "none", background: "transparent", fontFamily: T.ui, fontSize: 13, color: T.fg }}
+                style={{ flex: 1, border: "none", outline: "none", background: "transparent", fontFamily: TL.font.sans, fontSize: 13, color: TL.text }}
               />
             </div>
 
@@ -168,15 +169,15 @@ export function AdminTildelTestV2({ data }: { data: AdminTildelTestV2Data }) {
                     key={f}
                     type="button"
                     onClick={() => setFilter(f)}
-                    style={{ appearance: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6, height: 28, padding: "0 10px", borderRadius: 9999, background: on ? T.lime : T.panel3, border: `1px solid ${on ? "transparent" : T.borderS}`, color: on ? T.onLime : T.fg, fontFamily: T.ui, fontSize: 11.5, fontWeight: on ? 600 : 500 }}
+                    style={{ appearance: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6, height: 28, padding: "0 10px", borderRadius: 9999, background: on ? TL.fill : TL.dim, border: `1px solid ${on ? "transparent" : TL.hair}`, color: on ? TL.onFill : TL.text, fontFamily: TL.font.sans, fontSize: 11.5, fontWeight: on ? 600 : 500 }}
                   >
-                    {f} <span style={{ fontFamily: T.mono, fontSize: 10, opacity: 0.8 }}>{count}</span>
+                    {f} <span style={{ fontFamily: TL.font.mono, fontSize: 10, opacity: 0.8 }}>{count}</span>
                   </button>
                 );
               })}
             </div>
 
-            <div style={{ marginTop: 10, borderRadius: 12, border: `1px solid ${T.border}`, overflow: "hidden" }}>
+            <div style={{ marginTop: 10, borderRadius: 12, border: `1px solid ${TL.hair}`, overflow: "hidden" }}>
               {filtered.length === 0 ? (
                 <TomTilstand
                   icon="search"
@@ -190,14 +191,14 @@ export function AdminTildelTestV2({ data }: { data: AdminTildelTestV2Data }) {
                     <div
                       key={t.id}
                       onClick={() => setSelectedId(t.id)}
-                      style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", cursor: "pointer", background: isSel ? `color-mix(in srgb, ${T.lime} 10%, transparent)` : "transparent", borderTop: i ? `1px solid ${T.border}` : "none" }}
+                      style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", cursor: "pointer", background: isSel ? `color-mix(in srgb, ${TL.fill} 10%, transparent)` : "transparent", borderTop: i ? `1px solid ${TL.hair}` : "none" }}
                     >
                       <AkseChip a={t.pyramidArea} />
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>{t.name}</div>
-                        <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 2 }}>{t.description}</div>
+                        <div style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text }}>{t.name}</div>
+                        <div style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 2 }}>{t.description}</div>
                       </div>
-                      {isSel && <Icon name="check" size={15} style={{ color: T.lime, flex: "none" }} />}
+                      {isSel && <Icon name="check" size={15} style={{ color: TL.fill, flex: "none" }} />}
                     </div>
                   );
                 })
@@ -206,30 +207,30 @@ export function AdminTildelTestV2({ data }: { data: AdminTildelTestV2Data }) {
           </div>
 
           <div>
-            <div style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.fg2, marginBottom: 8 }}>Frist (valgfritt)</div>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 12, fontWeight: 600, color: TL.mute, marginBottom: 8 }}>Frist (valgfritt)</div>
             <input
               type="date"
               value={dato}
               onChange={(e) => setDato(e.target.value)}
-              style={{ width: "100%", height: 40, borderRadius: 10, border: `1px solid ${T.border}`, background: T.panel2, padding: "0 12px", fontFamily: T.mono, fontSize: 13, color: T.fg, boxSizing: "border-box" }}
+              style={{ width: "100%", height: 40, borderRadius: 10, border: `1px solid ${TL.hair}`, background: TL.dock, padding: "0 12px", fontFamily: TL.font.mono, fontSize: 13, color: TL.text, boxSizing: "border-box" }}
             />
           </div>
 
           <div>
-            <div style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.fg2, marginBottom: 8 }}>Notat til spiller</div>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 12, fontWeight: 600, color: TL.mute, marginBottom: 8 }}>Notat til spiller</div>
             <textarea
               value={notat}
               onChange={(e) => setNotat(e.target.value)}
               rows={4}
               placeholder={`Hva skal ${data.spillerNavn.split(" ")[0]} ha i tankene før testen?`}
-              style={{ width: "100%", borderRadius: 10, border: `1px solid ${T.border}`, background: T.panel2, padding: 12, fontFamily: T.ui, fontSize: 13, color: T.fg, outline: "none", resize: "vertical", boxSizing: "border-box" }}
+              style={{ width: "100%", borderRadius: 10, border: `1px solid ${TL.hair}`, background: TL.dock, padding: 12, fontFamily: TL.font.sans, fontSize: 13, color: TL.text, outline: "none", resize: "vertical", boxSizing: "border-box" }}
             />
-            <div style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, marginTop: 4 }}>Spilleren får varsel i appen · {notat.length} / 280 tegn</div>
+            <div style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, marginTop: 4 }}>Spilleren får varsel i appen · {notat.length} / 280 tegn</div>
           </div>
         </div>
 
-        <div style={{ position: "sticky", bottom: 0, background: T.panel, padding: "14px 22px", borderTop: `1px solid ${T.border}`, display: "flex", alignItems: "center", gap: 8 }}>
-          {feil && <span style={{ marginRight: "auto", fontFamily: T.mono, fontSize: 11, color: T.down }}>{feil}</span>}
+        <div style={{ position: "sticky", bottom: 0, background: TL.elev, padding: "14px 22px", borderTop: `1px solid ${TL.hair}`, display: "flex", alignItems: "center", gap: 8 }}>
+          {feil && <span style={{ marginRight: "auto", fontFamily: TL.font.mono, fontSize: 11, color: TL.danger }}>{feil}</span>}
           <Knapp ghost disabled={pending} onClick={lukk}>
             Avbryt
           </Knapp>

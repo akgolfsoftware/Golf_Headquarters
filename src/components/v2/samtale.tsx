@@ -8,7 +8,8 @@
 
 import type { ReactNode } from "react";
 import { useRef } from "react";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Icon } from "@/components/v2/icon";
 
 /* Blink-keyframes for «skriver»-prikkene (.v2-blink) bor statisk i
@@ -23,15 +24,15 @@ function AiSkive({ size = 34 }: { size?: number }) {
         width: size,
         height: size,
         borderRadius: 9999,
-        background: T.panel3,
-        border: `1px solid ${T.border}`,
+        background: TL.dim,
+        border: `1px solid ${TL.hair}`,
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
         flex: "none",
       }}
     >
-      <Icon name="sparkles" size={Math.round(size * 0.45)} style={{ color: T.lime }} />
+      <Icon name="sparkles" size={Math.round(size * 0.45)} style={{ color: TL.fill }} />
     </span>
   );
 }
@@ -46,11 +47,11 @@ export function AiMerke({ navn = "AI-coach", sub = "Personlig kontekst" }: AiMer
     <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0 }}>
       <span style={{ position: "relative", flex: "none" }}>
         <AiSkive size={40} />
-        <span style={{ position: "absolute", right: -2, bottom: -2, width: 13, height: 13, borderRadius: 9999, background: T.lime, border: `2px solid ${T.panel}` }} />
+        <span style={{ position: "absolute", right: -2, bottom: -2, width: 13, height: 13, borderRadius: 9999, background: TL.fill, border: `2px solid ${TL.elev}` }} />
       </span>
       <div style={{ minWidth: 0 }}>
-        <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 14, color: T.fg, lineHeight: 1.2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{navn}</div>
-        <div style={{ fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: T.mut, marginTop: 3 }}>{sub}</div>
+        <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 14, color: TL.text, lineHeight: 1.2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{navn}</div>
+        <div style={{ fontFamily: TL.font.mono, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: TL.mute, marginTop: 3 }}>{sub}</div>
       </div>
     </div>
   );
@@ -66,7 +67,7 @@ export interface SamtaleBobleProps {
 export function SamtaleBoble({ rolle, initialer = "DU", children }: SamtaleBobleProps) {
   const bruker = rolle === "user";
   const avatar = bruker ? (
-    <span style={{ width: 34, height: 34, borderRadius: 9999, background: T.lime, color: T.onLime, display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: T.mono, fontSize: 11, fontWeight: 700, flex: "none" }}>{initialer}</span>
+    <span style={{ width: 34, height: 34, borderRadius: 9999, background: TL.fill, color: TL.onFill, display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: TL.font.mono, fontSize: 11, fontWeight: 700, flex: "none" }}>{initialer}</span>
   ) : (
     <AiSkive size={34} />
   );
@@ -76,16 +77,16 @@ export function SamtaleBoble({ rolle, initialer = "DU", children }: SamtaleBoble
       <div
         style={{
           maxWidth: "86%",
-          background: bruker ? `color-mix(in srgb, ${T.lime} 8%, transparent)` : T.panel2,
-          border: `1px solid ${bruker ? `color-mix(in srgb, ${T.lime} 22%, transparent)` : T.border}`,
+          background: bruker ? `color-mix(in srgb, ${TL.fill} 8%, transparent)` : TL.dock,
+          border: `1px solid ${bruker ? `color-mix(in srgb, ${TL.fill} 22%, transparent)` : TL.hair}`,
           borderRadius: 16,
           borderBottomRightRadius: bruker ? 5 : 16,
           borderBottomLeftRadius: bruker ? 16 : 5,
           padding: "12px 14px",
-          fontFamily: T.ui,
+          fontFamily: TL.font.sans,
           fontSize: 14,
           lineHeight: 1.55,
-          color: T.fg,
+          color: TL.text,
           whiteSpace: "pre-wrap",
           wordBreak: "break-word",
         }}
@@ -102,9 +103,9 @@ export function SamtaleSkriver() {
   return (
     <div style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
       <AiSkive size={34} />
-      <div style={{ display: "inline-flex", gap: 5, alignItems: "center", background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 16, borderBottomLeftRadius: 5, padding: "15px 16px" }}>
+      <div style={{ display: "inline-flex", gap: 5, alignItems: "center", background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: 16, borderBottomLeftRadius: 5, padding: "15px 16px" }}>
         {[0, 1, 2].map((i) => (
-          <span key={i} className="v2-blink" style={{ width: 6, height: 6, borderRadius: 9999, background: T.mut, animationDelay: `${i * 160}ms` }} />
+          <span key={i} className="v2-blink" style={{ width: 6, height: 6, borderRadius: 9999, background: TL.mute, animationDelay: `${i * 160}ms` }} />
         ))}
       </div>
     </div>
@@ -119,9 +120,9 @@ export function SamtaleFeil({ children }: SamtaleFeilProps) {
   return (
     <div
       role="alert"
-      style={{ display: "flex", alignItems: "flex-start", gap: 8, padding: "9px 12px", borderRadius: 10, background: `color-mix(in srgb, ${T.down} 12%, transparent)`, border: `1px solid ${`color-mix(in srgb, ${T.down} 30%, transparent)`}`, fontFamily: T.ui, fontSize: 12.5, color: T.down, lineHeight: 1.5 }}
+      style={{ display: "flex", alignItems: "flex-start", gap: 8, padding: "9px 12px", borderRadius: 10, background: `color-mix(in srgb, ${TL.danger} 12%, transparent)`, border: `1px solid ${`color-mix(in srgb, ${TL.danger} 30%, transparent)`}`, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.danger, lineHeight: 1.5 }}
     >
-      <Icon name="x-circle" size={14} style={{ color: T.down, flex: "none", marginTop: 1 }} />
+      <Icon name="x-circle" size={14} style={{ color: TL.danger, flex: "none", marginTop: 1 }} />
       <span>{children}</span>
     </div>
   );
@@ -156,8 +157,8 @@ export function SendKnapp({ onClick, aktiv, storrelse = 44 }: SendKnappProps) {
         minHeight: storrelse,
         borderRadius: 9999,
         border: "none",
-        background: aktiv ? T.fg : T.panel3,
-        color: aktiv ? T.bg : T.mut,
+        background: aktiv ? TL.text : TL.dim,
+        color: aktiv ? TL.scene : TL.mute,
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
@@ -219,8 +220,8 @@ export function Skrivefelt({
         border: "none",
         outline: "none",
         background: "transparent",
-        color: T.fg,
-        fontFamily: T.ui,
+        color: TL.text,
+        fontFamily: TL.font.sans,
         fontSize: 15,
         lineHeight: 1.45,
         /* Paper .cbox textarea har ingen egen padding — rammen (.cbox) eier den.
@@ -243,9 +244,9 @@ export function Skrivefelt({
         gridTemplateColumns: "1fr 44px",
         gap: 8,
         alignItems: "end",
-        background: T.panel,
-        border: `1px solid ${T.border}`,
-        borderRadius: T.rCard,
+        background: TL.elev,
+        border: `1px solid ${TL.hair}`,
+        borderRadius: TL.radius.card,
         padding: 6,
       }}
     >
@@ -260,11 +261,11 @@ export function Skrivefelt({
         style={{
           width: 44,
           height: 44,
-          borderRadius: T.rRow,
+          borderRadius: TL.radius.row,
           border: "none",
           /* Paper .sendbtn = ink CTA, ikke lime */
-          background: kanSende ? T.fg : T.panel3,
-          color: kanSende ? T.bg : T.mut,
+          background: kanSende ? TL.text : TL.dim,
+          color: kanSende ? TL.scene : TL.mute,
           display: "inline-flex",
           alignItems: "center",
           justifyContent: "center",
@@ -288,7 +289,7 @@ export function ForslagRad({ items, onPick, sentrert }: ForslagRadProps) {
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center", justifyContent: sentrert ? "center" : "flex-start" }}>
       {!sentrert && (
-        <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: T.mut, marginRight: 2 }}>Forslag</span>
+        <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: TL.mute, marginRight: 2 }}>Forslag</span>
       )}
       {items.map((s) => (
         <button
@@ -296,7 +297,7 @@ export function ForslagRad({ items, onPick, sentrert }: ForslagRadProps) {
           type="button"
           onClick={() => onPick(s)}
           className="v2-press v2-focus"
-          style={{ appearance: "none", cursor: "pointer", fontFamily: T.ui, fontSize: 12.5, fontWeight: 500, color: T.fg, background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 9999, padding: "7px 13px", whiteSpace: "nowrap" }}
+          style={{ appearance: "none", cursor: "pointer", fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 500, color: TL.text, background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: 9999, padding: "7px 13px", whiteSpace: "nowrap" }}
         >
           {s}
         </button>

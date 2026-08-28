@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * AgencyOS Godkjenninger — 1:1 port av
@@ -31,16 +32,7 @@
 import { useEffect, useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  Caps,
-  Icon,
-  Inspektorpanel,
-  InspektorBlokk,
-  InspektorKpi,
-  MasterDetalj,
-  useInspektorSynlig,
-  T,
-} from "@/components/v2";
+import { Caps, Icon, Inspektorpanel, InspektorBlokk, InspektorKpi, MasterDetalj, useInspektorSynlig } from "@/components/v2";
 import { handlingstypeLabel } from "@/lib/labels/handlingstyper";
 import { acceptPlanAction, rejectPlanAction } from "@/lib/agents/actions";
 import { avvisProaktivtForslag, godkjennCaddieDraft } from "@/app/admin/agencyos/caddie/dashbord/actions";
@@ -136,17 +128,17 @@ function knappStil(fyll: "ink" | "ghost" | "fare", extra?: React.CSSProperties):
     gap: 8,
     minHeight: 44,
     padding: "0 16px",
-    borderRadius: T.rTag,
-    fontFamily: T.ui,
+    borderRadius: TL.radius.row,
+    fontFamily: TL.font.sans,
     fontSize: 12.5,
     fontWeight: 600,
     cursor: "pointer",
     whiteSpace: "nowrap",
     textDecoration: "none",
   };
-  if (fyll === "ink") return { ...base, background: T.cta, color: T.onCta, border: `1px solid ${T.cta}`, ...extra };
-  if (fyll === "fare") return { ...base, background: "transparent", color: T.down, border: `1px solid ${T.border}`, ...extra };
-  return { ...base, background: T.panel, color: T.fg, border: `1px solid ${T.border}`, ...extra };
+  if (fyll === "ink") return { ...base, background: TL.fill, color: TL.onFill, border: `1px solid ${TL.fill}`, ...extra };
+  if (fyll === "fare") return { ...base, background: "transparent", color: TL.danger, border: `1px solid ${TL.hair}`, ...extra };
+  return { ...base, background: TL.elev, color: TL.text, border: `1px solid ${TL.hair}`, ...extra };
 }
 
 /** Massehandling: godkjenn alle lav-risiko-forslag i køen (fasitens ren `.btn`, ikke ink). */
@@ -191,13 +183,13 @@ function SakHandlinger({ row, mobile }: { row: AdminGodkjenningV2Row; mobile: bo
         style={{
           flex: 1,
           minWidth: 0,
-          borderRadius: T.rInput,
-          border: `1px solid ${T.border}`,
-          background: T.panel2,
+          borderRadius: TL.radius.field,
+          border: `1px solid ${TL.hair}`,
+          background: TL.dock,
           padding: "10px 14px",
-          fontFamily: T.ui,
+          fontFamily: TL.font.sans,
           fontSize: 13,
-          color: T.fg,
+          color: TL.text,
         }}
       />
       <button
@@ -285,28 +277,28 @@ function RapportKort({ rapport }: { rapport: AdminUkesrapportKort }) {
     <article
       data-od-id="panel-ukesrapport"
       style={{
-        background: T.panel,
-        border: `1px solid ${T.border}`,
-        borderRadius: T.rCard,
+        background: TL.elev,
+        border: `1px solid ${TL.hair}`,
+        borderRadius: TL.radius.card,
         padding: "16px 18px",
-        boxShadow: `inset 3px 0 0 ${T.info}`,
+        boxShadow: `inset 3px 0 0 ${TL.viz.target}`,
         marginBottom: 10,
       }}
     >
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8 }}>
-        <span style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>
+        <span style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>
           Ukesrapport · uke {rapport.ukenummer}
         </span>
-        <span style={{ fontFamily: T.mono, fontSize: 10, letterSpacing: "0.04em", textTransform: "uppercase", color: T.info }}>
+        <span style={{ fontFamily: TL.font.mono, fontSize: 10, letterSpacing: "0.04em", textTransform: "uppercase", color: TL.viz.target }}>
           agent · leses, ikke godkjennes
         </span>
-        <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 11, color: T.mut }}>{rapport.when}</span>
+        <span style={{ marginLeft: "auto", fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>{rapport.when}</span>
       </div>
 
-      <h3 style={{ margin: "8px 0 0", fontFamily: T.disp, fontSize: 14.5, fontWeight: 600, color: T.fg }}>
+      <h3 style={{ margin: "8px 0 0", fontFamily: TL.font.sans, fontSize: 14.5, fontWeight: 600, color: TL.text }}>
         Uke {rapport.ukenummer} oppsummert — hele stallen
       </h3>
-      <p style={{ margin: "6px 0 0", fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.55 }}>
+      <p style={{ margin: "6px 0 0", fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.55 }}>
         Rapportagenten leser plan, logg, runder og tester — den skriver aldri noe selv. Alt under er
         telt, ikke vurdert.
       </p>
@@ -314,19 +306,19 @@ function RapportKort({ rapport }: { rapport: AdminUkesrapportKort }) {
       <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginTop: 12 }}>
         {rapport.tall.map((t) => (
           <div key={t.key} style={{ minWidth: 120 }}>
-            <span style={{ display: "block", fontFamily: T.mono, fontSize: 9, letterSpacing: "0.07em", textTransform: "uppercase", color: T.mut }}>
+            <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 9, letterSpacing: "0.07em", textTransform: "uppercase", color: TL.mute }}>
               {t.key}
             </span>
-            <span style={{ fontFamily: T.mono, fontSize: 15, fontWeight: 600, color: T.fg }}>{t.verdi}</span>
-            <span style={{ display: "block", fontFamily: T.mono, fontSize: 9.5, color: T.mut }}>{t.nevner}</span>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 15, fontWeight: 600, color: TL.text }}>{t.verdi}</span>
+            <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 9.5, color: TL.mute }}>{t.nevner}</span>
           </div>
         ))}
       </div>
 
       {rapport.hvorfor.length > 0 && (
         <details style={{ marginTop: 12 }}>
-          <summary style={{ cursor: "pointer", fontFamily: T.ui, fontSize: 12, color: T.mut }}>Hvorfor?</summary>
-          <ul style={{ margin: "8px 0 0", paddingLeft: 18, fontFamily: T.ui, fontSize: 12, color: T.mut, lineHeight: 1.6 }}>
+          <summary style={{ cursor: "pointer", fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}>Hvorfor?</summary>
+          <ul style={{ margin: "8px 0 0", paddingLeft: 18, fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.6 }}>
             {rapport.hvorfor.map((h, i) => (
               <li key={i}>{h}</li>
             ))}
@@ -401,49 +393,49 @@ function SakKort({
       aria-current={markert ? "true" : undefined}
       onClick={kanVelges ? () => onVelg(row.id) : undefined}
       style={{
-        background: T.panel,
-        border: `1px solid ${markert ? T.fg : T.border}`,
-        borderRadius: T.rCard,
+        background: TL.elev,
+        border: `1px solid ${markert ? TL.text : TL.hair}`,
+        borderRadius: TL.radius.card,
         padding: mobile ? "14px 15px" : "16px 18px",
-        boxShadow: markert ? `inset 3px 0 0 ${T.fg}` : undefined,
+        boxShadow: markert ? `inset 3px 0 0 ${TL.text}` : undefined,
         cursor: kanVelges ? "pointer" : undefined,
       }}
     >
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8 }}>
-        <span style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>{row.who}</span>
+        <span style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>{row.who}</span>
         {row.urgent && (
-          <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: T.warn, border: `1px solid ${T.warn}`, borderRadius: T.rTag, padding: "2px 7px" }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: TL.warn, border: `1px solid ${TL.warn}`, borderRadius: TL.radius.row, padding: "2px 7px" }}>
             Haster
           </span>
         )}
         {row.lowRisk && (
-          <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: T.mut, border: `1px solid ${T.border}`, borderRadius: T.rTag, padding: "2px 7px" }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: TL.mute, border: `1px solid ${TL.hair}`, borderRadius: TL.radius.row, padding: "2px 7px" }}>
             Lavrisiko
           </span>
         )}
-        <span style={{ fontFamily: T.mono, fontSize: 10, letterSpacing: "0.04em", textTransform: "uppercase", color: T.mut }}>{kildeLabel}</span>
-        <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 11, color: T.mut }}>{row.when}</span>
+        <span style={{ fontFamily: TL.font.mono, fontSize: 10, letterSpacing: "0.04em", textTransform: "uppercase", color: TL.mute }}>{kildeLabel}</span>
+        <span style={{ marginLeft: "auto", fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>{row.when}</span>
       </div>
 
-      <h3 style={{ margin: "8px 0 0", fontFamily: T.disp, fontSize: 14.5, fontWeight: 600, color: T.fg }}>{row.title}</h3>
+      <h3 style={{ margin: "8px 0 0", fontFamily: TL.font.sans, fontSize: 14.5, fontWeight: 600, color: TL.text }}>{row.title}</h3>
       {row.detail && (
-        <p style={{ margin: "6px 0 0", fontFamily: T.ui, fontSize: 13, lineHeight: 1.55, color: T.fg2 }}>{row.detail}</p>
+        <p style={{ margin: "6px 0 0", fontFamily: TL.font.sans, fontSize: 13, lineHeight: 1.55, color: TL.mute }}>{row.detail}</p>
       )}
-      <div style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, marginTop: 6 }}>{handlingstypeLabel(row.actionType)}</div>
+      <div style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, marginTop: 6 }}>{handlingstypeLabel(row.actionType)}</div>
 
       {row.diffPreview && (
-        <div style={{ margin: "10px 0 0", padding: "10px 14px", background: T.panel2, border: `1px solid ${T.borderS}`, borderRadius: T.rTag }}>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 9, letterSpacing: "0.07em", textTransform: "uppercase", color: T.mut, marginBottom: 4 }}>
+        <div style={{ margin: "10px 0 0", padding: "10px 14px", background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: TL.radius.row }}>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 9, letterSpacing: "0.07em", textTransform: "uppercase", color: TL.mute, marginBottom: 4 }}>
             Dette endres
           </span>
-          <span style={{ fontFamily: T.mono, fontSize: 12, color: T.fg, overflowWrap: "anywhere" }}>{row.diffPreview}</span>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 12, color: TL.text, overflowWrap: "anywhere" }}>{row.diffPreview}</span>
         </div>
       )}
 
       {row.hvorfor && (
         <details onClick={(e) => e.stopPropagation()} style={{ marginTop: 10 }}>
-          <summary style={{ cursor: "pointer", fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.mut }}>Hvorfor?</summary>
-          <p style={{ margin: "6px 0 0", fontFamily: T.ui, fontSize: 12, lineHeight: 1.55, color: T.mut }}>{row.hvorfor}</p>
+          <summary style={{ cursor: "pointer", fontFamily: TL.font.sans, fontSize: 12, fontWeight: 600, color: TL.mute }}>Hvorfor?</summary>
+          <p style={{ margin: "6px 0 0", fontFamily: TL.font.sans, fontSize: 12, lineHeight: 1.55, color: TL.mute }}>{row.hvorfor}</p>
         </details>
       )}
 
@@ -468,41 +460,41 @@ function SakInspektor({ row }: { row: AdminGodkjenningV2Row }) {
       ariaLabel={`Valgt sak: ${row.who}`}
       tag={
         row.urgent ? (
-          <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: T.warn, border: `1px solid ${T.warn}`, borderRadius: T.rTag, padding: "2px 7px" }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: TL.warn, border: `1px solid ${TL.warn}`, borderRadius: TL.radius.row, padding: "2px 7px" }}>
             Haster
           </span>
         ) : row.lowRisk ? (
-          <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: T.mut, border: `1px solid ${T.border}`, borderRadius: T.rTag, padding: "2px 7px" }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: TL.mute, border: `1px solid ${TL.hair}`, borderRadius: TL.radius.row, padding: "2px 7px" }}>
             Lavrisiko
           </span>
         ) : undefined
       }
     >
       <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-        <span style={{ fontFamily: T.mono, fontSize: 10, letterSpacing: "0.04em", textTransform: "uppercase", color: T.mut }}>{kildeLabel}</span>
-        <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 11, color: T.mut }}>{row.when}</span>
+        <span style={{ fontFamily: TL.font.mono, fontSize: 10, letterSpacing: "0.04em", textTransform: "uppercase", color: TL.mute }}>{kildeLabel}</span>
+        <span style={{ marginLeft: "auto", fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>{row.when}</span>
       </div>
 
       <div>
-        <h3 style={{ margin: 0, fontFamily: T.disp, fontSize: 14.5, fontWeight: 600, color: T.fg }}>{row.title}</h3>
+        <h3 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 14.5, fontWeight: 600, color: TL.text }}>{row.title}</h3>
         {row.detail && (
-          <p style={{ margin: "6px 0 0", fontFamily: T.ui, fontSize: 12.5, lineHeight: 1.55, color: T.fg2 }}>{row.detail}</p>
+          <p style={{ margin: "6px 0 0", fontFamily: TL.font.sans, fontSize: 12.5, lineHeight: 1.55, color: TL.mute }}>{row.detail}</p>
         )}
-        <div style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, marginTop: 6 }}>{handlingstypeLabel(row.actionType)}</div>
+        <div style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, marginTop: 6 }}>{handlingstypeLabel(row.actionType)}</div>
       </div>
 
       {row.diffPreview && (
-        <div style={{ padding: "10px 14px", background: T.panel2, border: `1px solid ${T.borderS}`, borderRadius: T.rTag }}>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 9, letterSpacing: "0.07em", textTransform: "uppercase", color: T.mut, marginBottom: 4 }}>
+        <div style={{ padding: "10px 14px", background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: TL.radius.row }}>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 9, letterSpacing: "0.07em", textTransform: "uppercase", color: TL.mute, marginBottom: 4 }}>
             Dette endres
           </span>
-          <span style={{ fontFamily: T.mono, fontSize: 12, color: T.fg, overflowWrap: "anywhere" }}>{row.diffPreview}</span>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 12, color: TL.text, overflowWrap: "anywhere" }}>{row.diffPreview}</span>
         </div>
       )}
 
       {row.hvorfor && (
         <InspektorBlokk label="Hvorfor?">
-          <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12, lineHeight: 1.55, color: T.mut }}>{row.hvorfor}</p>
+          <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12, lineHeight: 1.55, color: TL.mute }}>{row.hvorfor}</p>
         </InspektorBlokk>
       )}
 
@@ -528,9 +520,9 @@ function KøenITall({ data }: { data: AdminGodkjenningerV2Data }) {
         <InspektorKpi label="Godkjent 7 dg" verdi={String(data.godkjent7Dager ?? 0)} sub={`${data.avvist7Dager ?? 0} avvist`} />
       </div>
 
-      <div style={{ background: T.panel2, border: `1px solid ${T.borderS}`, borderRadius: T.rTag, padding: 12 }}>
+      <div style={{ background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: TL.radius.row, padding: 12 }}>
         <Caps size={9}>Slik leses køen</Caps>
-        <p style={{ margin: "8px 0 0", fontFamily: T.ui, fontSize: 12, lineHeight: 1.55, color: T.mut }}>
+        <p style={{ margin: "8px 0 0", fontFamily: TL.font.sans, fontSize: 12, lineHeight: 1.55, color: TL.mute }}>
           Hvert forslag viser hva som faktisk endres før du sier ja. Har et forslag ingen «Dette endres»-linje, er
           det ingen planendring — da er det en melding eller en forespørsel.
         </p>
@@ -549,8 +541,8 @@ function KøenITall({ data }: { data: AdminGodkjenningerV2Data }) {
 function KildeLinje({ label, verdi, href }: { label: string; verdi: string; href?: string }) {
   const content = (
     <>
-      <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg }}>{label}</span>
-      <span style={{ fontFamily: T.mono, fontSize: 12, color: T.mut }}>{verdi}</span>
+      <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.text }}>{label}</span>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 12, color: TL.mute }}>{verdi}</span>
     </>
   );
   if (href) {
@@ -606,8 +598,8 @@ export function AdminGodkjenningerV2({ data }: { data: AdminGodkjenningerV2Data 
       <div style={{ display: "flex", flexDirection: "column", gap: 16, minWidth: 0 }}>
         {/* ── Hode ── */}
         <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Godkjenninger</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Godkjenninger</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
             agencyos · én kø · {antallKilder} kilder
           </span>
         </div>
@@ -630,18 +622,18 @@ export function AdminGodkjenningerV2({ data }: { data: AdminGodkjenningerV2Data 
                   gap: 8,
                   minHeight: 44,
                   padding: "0 16px",
-                  borderRadius: T.rPill,
-                  border: `1px solid ${aktiv ? T.fg : T.border}`,
-                  background: aktiv ? T.fg : T.panel,
-                  color: aktiv ? T.bg : T.fg,
-                  fontFamily: T.ui,
+                  borderRadius: TL.radius.pill,
+                  border: `1px solid ${aktiv ? TL.text : TL.hair}`,
+                  background: aktiv ? TL.text : TL.elev,
+                  color: aktiv ? TL.scene : TL.text,
+                  fontFamily: TL.font.sans,
                   fontSize: 12.5,
                   cursor: "pointer",
                   whiteSpace: "nowrap",
                 }}
               >
                 <span>{f.n}</span>
-                <span style={{ fontFamily: T.mono, fontSize: 11, opacity: 0.75 }}>{f.antall}</span>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 11, opacity: 0.75 }}>{f.antall}</span>
               </button>
             );
           })}
@@ -649,7 +641,7 @@ export function AdminGodkjenningerV2({ data }: { data: AdminGodkjenningerV2Data 
 
         {/* ── Kø-hode: N venter på deg + ghost «godkjenn lavrisiko samlet» ── */}
         <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
-          <span style={{ fontFamily: T.mono, fontSize: 22, fontWeight: 600, color: T.fg }}>{totalt}</span>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 22, fontWeight: 600, color: TL.text }}>{totalt}</span>
           <Caps size={9}>venter på deg</Caps>
           {data.lowRiskCount > 0 && (
             <div style={{ marginLeft: mobile ? undefined : "auto", width: mobile ? "100%" : undefined }}>
@@ -661,12 +653,12 @@ export function AdminGodkjenningerV2({ data }: { data: AdminGodkjenningerV2Data 
         {/* ── Kø ── */}
         {visRapport && <RapportKort rapport={rapport!} />}
         {filtrert.length === 0 && !visRapport ? (
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, textAlign: "center", padding: "34px 24px", background: T.panel2, border: `1px dashed ${T.border}`, borderRadius: T.rCard }}>
-            <Icon name="check-circle" size={20} style={{ color: T.mut }} />
-            <h3 style={{ margin: "6px 0 0", fontFamily: T.disp, fontSize: 14.5, fontWeight: 600, color: T.fg }}>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, textAlign: "center", padding: "34px 24px", background: TL.dock, border: `1px dashed ${TL.hair}`, borderRadius: TL.radius.card }}>
+            <Icon name="check-circle" size={20} style={{ color: TL.mute }} />
+            <h3 style={{ margin: "6px 0 0", fontFamily: TL.font.sans, fontSize: 14.5, fontWeight: 600, color: TL.text }}>
               {data.rows.length === 0 ? "Køen er tom" : "Ingen saker i dette filteret"}
             </h3>
-            <p style={{ margin: 0, maxWidth: "44ch", fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.55 }}>
+            <p style={{ margin: 0, maxWidth: "44ch", fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.55 }}>
               {data.rows.length === 0
                 ? "Ingenting venter på godkjenning akkurat nå. Agentene sender nye forslag når det kommer inn nye runder, tester eller signaler fra spillerne dine."
                 : "Bytt filter for å se resten av køen."}
@@ -696,15 +688,15 @@ export function AdminGodkjenningerV2({ data }: { data: AdminGodkjenningerV2Data 
         {(data.lostSjekkpunkter?.length ?? 0) > 0 && (
           <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 4 }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-              <h2 style={{ margin: 0, fontFamily: T.disp, fontSize: 14.5, fontWeight: 600, color: T.fg }}>Løst nylig</h2>
-              <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut }}>
+              <h2 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 14.5, fontWeight: 600, color: TL.text }}>Løst nylig</h2>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>
                 {pl(data.lostSjekkpunkter!.length, "sjekkpunkt", "sjekkpunkter")}
               </span>
             </div>
-            <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12, color: T.mut }}>
+            <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}>
               Godkjente forslag med sjekkpunkt — de kommer tilbake hit når fristen er nådd.
             </p>
-            <div style={{ background: T.panel, border: `1px solid ${T.border}`, borderRadius: T.rCard, padding: "4px 16px" }}>
+            <div style={{ background: TL.elev, border: `1px solid ${TL.hair}`, borderRadius: TL.radius.card, padding: "4px 16px" }}>
               {data.lostSjekkpunkter!.map((l, i) => (
                 <div
                   key={l.id}
@@ -713,16 +705,16 @@ export function AdminGodkjenningerV2({ data }: { data: AdminGodkjenningerV2Data 
                     justifyContent: "space-between",
                     gap: 12,
                     padding: "10px 0",
-                    borderTop: i === 0 ? undefined : `1px solid ${T.borderS}`,
-                    fontFamily: T.ui,
+                    borderTop: i === 0 ? undefined : `1px solid ${TL.hair}`,
+                    fontFamily: TL.font.sans,
                     fontSize: 12.5,
-                    color: T.fg,
+                    color: TL.text,
                   }}
                 >
                   <span style={{ minWidth: 0 }}>
                     {l.who} · {l.sjekkpunkt}
                   </span>
-                  <span style={{ flex: "none", fontFamily: T.mono, fontSize: 11, color: T.mut }}>{l.when}</span>
+                  <span style={{ flex: "none", fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>{l.when}</span>
                 </div>
               ))}
             </div>

@@ -23,7 +23,8 @@
 import { Suspense, useState, type ReactNode, type CSSProperties } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { LogoAK, Caps, Icon } from "@/components/v2";
 import { createClient } from "@/lib/supabase/client";
 import { safeRedirectPath } from "@/lib/security/safe-redirect-client";
@@ -77,8 +78,8 @@ function Felt({
           height: 44,
           padding: "0 14px",
           borderRadius: 12,
-          background: T.panel2,
-          border: `1px solid ${T.borderS}`,
+          background: TL.dock,
+          border: `1px solid ${TL.hair}`,
         }}
       >
         <input
@@ -96,10 +97,10 @@ function Felt({
             background: "transparent",
             border: "none",
             outline: "none",
-            fontFamily: mono ? T.mono : T.ui,
+            fontFamily: mono ? TL.font.mono : TL.font.sans,
             fontSize: 13.5,
             fontWeight: 500,
-            color: T.fg,
+            color: TL.text,
           }}
         />
         {trailing}
@@ -130,8 +131,8 @@ function Knapp({
   // bryter ikke monopolet. Anders bekreftet mot fasit innlogging.html 10.08.2026.
   const v: CSSProperties =
     variant === "primary"
-      ? { background: T.handling, color: T.onHandling, border: "none", minHeight: 48 }
-      : { background: T.panel3, color: T.fg, border: `1px solid ${T.borderS}` };
+      ? { background: TL.fill, color: TL.onFill, border: "none", minHeight: 48 }
+      : { background: TL.dim, color: TL.text, border: `1px solid ${TL.hair}` };
   return (
     <button
       type={type}
@@ -149,7 +150,7 @@ function Knapp({
         alignItems: "center",
         justifyContent: "center",
         gap: 9,
-        fontFamily: T.ui,
+        fontFamily: TL.font.sans,
         fontSize: 13.5,
         fontWeight: 600,
         opacity: disabled ? 0.6 : 1,
@@ -170,15 +171,15 @@ function GoogleG() {
         width: 18,
         height: 18,
         borderRadius: 9999,
-        background: T.panel,
-        border: `1px solid ${T.borderS}`,
+        background: TL.elev,
+        border: `1px solid ${TL.hair}`,
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
-        fontFamily: T.disp,
+        fontFamily: TL.font.sans,
         fontSize: 11,
         fontWeight: 700,
-        color: T.fg,
+        color: TL.text,
         flex: "none",
       }}
     >
@@ -190,19 +191,19 @@ function GoogleG() {
 function EllerSkille() {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-      <span style={{ flex: 1, height: 1, background: T.border }} />
+      <span style={{ flex: 1, height: 1, background: TL.hair }} />
       <span
         style={{
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           fontSize: 9,
           fontWeight: 700,
           letterSpacing: "0.1em",
-          color: T.mut,
+          color: TL.mute,
         }}
       >
         ELLER
       </span>
-      <span style={{ flex: 1, height: 1, background: T.border }} />
+      <span style={{ flex: 1, height: 1, background: TL.hair }} />
     </div>
   );
 }
@@ -213,13 +214,13 @@ function Lenke({ href, children }: { href: string; children: ReactNode }) {
     <Link
       href={href}
       style={{
-        fontFamily: T.ui,
+        fontFamily: TL.font.sans,
         fontSize: 12,
         fontWeight: 600,
-        color: T.fg2,
+        color: TL.mute,
         cursor: "pointer",
         textDecoration: "underline",
-        textDecorationColor: T.borderS,
+        textDecorationColor: TL.hair,
         textUnderlineOffset: 3,
       }}
     >
@@ -248,8 +249,8 @@ function BrandPanel() {
         minWidth: 420,
         position: "relative",
         overflow: "hidden",
-        borderRight: `1px solid ${T.border}`,
-        background: T.bg,
+        borderRight: `1px solid ${TL.hair}`,
+        background: TL.scene,
         flexDirection: "column",
         padding: "34px 40px 44px",
       }}
@@ -271,7 +272,7 @@ function BrandPanel() {
             strokeWidth="1"
           />
         ))}
-        <circle cx="260" cy="330" r="3.5" fill="color-mix(in srgb, var(--v2-handling) 45%, transparent)" />
+        <circle cx="260" cy="330" r="3.5" fill="color-mix(in srgb, var(--tl-fill) 45%, transparent)" />
       </svg>
       <div style={{ position: "relative" }}>
         <LogoAK size={30} surface="paper" />
@@ -281,23 +282,23 @@ function BrandPanel() {
         <LogoAK size={64} surface="paper" style={{ marginBottom: 22 }} />
         <h2
           style={{
-            fontFamily: T.disp,
+            fontFamily: TL.font.sans,
             fontWeight: 700,
             fontSize: 30,
             letterSpacing: "-0.03em",
             lineHeight: 1.12,
-            color: T.fg,
+            color: TL.text,
             margin: 0,
           }}
         >
           Én konto.{" "}
-          <em style={{ fontStyle: "italic", color: T.fg }}>Riktig sted.</em>
+          <em style={{ fontStyle: "italic", color: TL.text }}>Riktig sted.</em>
         </h2>
         <p
           style={{
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 13.5,
-            color: T.fg2,
+            color: TL.mute,
             lineHeight: 1.6,
             margin: "14px 0 0",
             maxWidth: 360,
@@ -308,12 +309,12 @@ function BrandPanel() {
         <div
           style={{
             marginTop: 22,
-            fontFamily: T.mono,
+            fontFamily: TL.font.mono,
             fontSize: 10,
             fontWeight: 600,
             letterSpacing: "0.06em",
             textTransform: "uppercase",
-            color: T.mut,
+            color: TL.mute,
           }}
         >
           AK Golf Academy · Fredrikstad
@@ -332,7 +333,7 @@ function HvorDuHavner() {
     { icon: "shield-check", navn: "Foreldreportalen", tekst: "Samtykker, betaling og innsyn i planen." },
   ];
   return (
-    <div style={{ marginTop: 18, paddingTop: 18, borderTop: `1px solid ${T.border}` }}>
+    <div style={{ marginTop: 18, paddingTop: 18, borderTop: `1px solid ${TL.hair}` }}>
       <Caps size={9} style={{ marginBottom: 10 }}>
         Hvor du havner
       </Caps>
@@ -344,17 +345,17 @@ function HvorDuHavner() {
             alignItems: "flex-start",
             gap: 10,
             padding: "10px 0",
-            borderBottom: i < porter.length - 1 ? `1px solid ${T.borderS}` : "none",
+            borderBottom: i < porter.length - 1 ? `1px solid ${TL.hair}` : "none",
           }}
         >
-          <Icon name={p.icon} size={15} style={{ color: T.mut, marginTop: 2, flex: "none" }} />
+          <Icon name={p.icon} size={15} style={{ color: TL.mute, marginTop: 2, flex: "none" }} />
           <div style={{ minWidth: 0 }}>
-            <div style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>{p.navn}</div>
-            <div style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, lineHeight: 1.45 }}>{p.tekst}</div>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text }}>{p.navn}</div>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.45 }}>{p.tekst}</div>
           </div>
         </div>
       ))}
-      <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, margin: "10px 0 0", lineHeight: 1.45 }}>
+      <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, margin: "10px 0 0", lineHeight: 1.45 }}>
         Du velger ikke selv. Kontoen avgjør, og du sendes rett dit etter innlogging.
       </p>
     </div>
@@ -439,7 +440,7 @@ function LoginKort() {
             transform: "translateX(-50%)",
             width: "100vw",
             height: 140,
-            background: T.panel2,
+            background: TL.dock,
             pointerEvents: "none",
           }}
         />
@@ -451,17 +452,17 @@ function LoginKort() {
       <div style={{ marginBottom: 4 }}>
         <h1
           style={{
-            fontFamily: T.disp,
+            fontFamily: TL.font.sans,
             fontWeight: 700,
             fontSize: 26,
             letterSpacing: "-0.03em",
-            color: T.fg,
+            color: TL.text,
             margin: 0,
           }}
         >
           Logg inn
         </h1>
-        <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "8px 0 0" }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: "8px 0 0" }}>
           Ny her? <Lenke href="/auth/signup">Opprett konto</Lenke>
         </p>
       </div>
@@ -486,7 +487,7 @@ function LoginKort() {
           placeholder="oyvind@akgolf.no"
           autoComplete="email"
           required
-          trailing={<Icon name="mail" size={14} style={{ color: T.mut }} />}
+          trailing={<Icon name="mail" size={14} style={{ color: TL.mute }} />}
         />
         <Felt
           label="Passord"
@@ -513,7 +514,7 @@ function LoginKort() {
                 display: "inline-flex",
               }}
             >
-              <Icon name="eye" size={14} style={{ color: T.mut }} />
+              <Icon name="eye" size={14} style={{ color: TL.mute }} />
             </button>
           }
         />
@@ -526,12 +527,12 @@ function LoginKort() {
                 alignItems: "flex-start",
                 gap: 8,
                 borderRadius: 10,
-                border: `1px solid color-mix(in srgb,${T.down} 35%,transparent)`,
-                background: `color-mix(in srgb,${T.down} 12%,transparent)`,
+                border: `1px solid color-mix(in srgb,${TL.danger} 35%,transparent)`,
+                background: `color-mix(in srgb,${TL.danger} 12%,transparent)`,
                 padding: "9px 12px",
-                fontFamily: T.ui,
+                fontFamily: TL.font.sans,
                 fontSize: 12.5,
-                color: T.fg,
+                color: TL.text,
                 lineHeight: 1.4,
               }}
             >
@@ -548,7 +549,7 @@ function LoginKort() {
           Fortsett med Google
         </Knapp>
         <Link href="/auth/bankid" style={{ textDecoration: "none" }}>
-          <Knapp variant="ghost" icon={<Icon name="fingerprint" size={16} style={{ color: T.fg2 }} />}>
+          <Knapp variant="ghost" icon={<Icon name="fingerprint" size={16} style={{ color: TL.mute }} />}>
             Fortsett med BankID
           </Knapp>
         </Link>
@@ -564,9 +565,9 @@ function LoginKort() {
       <p
         className="md:hidden"
         style={{
-          fontFamily: T.ui,
+          fontFamily: TL.font.sans,
           fontSize: 10.5,
-          color: T.mut,
+          color: TL.mute,
           textAlign: "center",
           margin: "6px 0 0",
         }}
@@ -594,9 +595,9 @@ export function LoginV2 /* wave A fasit: innlogging.html */() {
         // native UI mørk oppå en lys side — autofyll-bakgrunn, passord-
         // avsløringsikon og rullefelt. Gjaldt alle enheter.
         colorScheme: "light",
-        color: T.fg,
-        fontFamily: T.ui,
-        background: T.bg,
+        color: TL.text,
+        fontFamily: TL.font.sans,
+        background: TL.scene,
       }}
     >
       <BrandPanel />
@@ -612,7 +613,7 @@ export function LoginV2 /* wave A fasit: innlogging.html */() {
           alignItems: "center",
           justifyContent: "center",
           padding: "48px 22px",
-          background: T.bg,
+          background: TL.scene,
         }}
       >
         <Suspense fallback={<div style={{ width: "100%", maxWidth: 400, height: 420 }} aria-hidden />}>

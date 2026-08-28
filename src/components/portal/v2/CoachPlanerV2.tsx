@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ Delte planer — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
  * T.* only. Lys PlayerHQ.
@@ -8,20 +8,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import type { Tier } from "@/generated/prisma/client";
-import {
-  T,
-  Caps,
-  Tittel,
-  Kort,
-  KpiFlis,
-  StatusPill,
-  PillTabs,
-  ProgresjonsBar,
-  TomTilstand,
-  Icon,
-  type StatusTone,
-} from "@/components/v2";
-
+import { Caps, Kort, KpiFlis, StatusPill, PillTabs, ProgresjonsBar, TomTilstand, Icon, type StatusTone } from "@/components/v2";
 /* ── Datakontrakt ──────────────────────────────────────────────────── */
 
 export type PlanKolonne = "aktiv" | "fullfort" | "pause";
@@ -76,7 +63,7 @@ function useMobile(): boolean {
 /* ── Skjerm ────────────────────────────────────────────────────────── */
 
 export function CoachPlanerV2({ data }: { data: CoachPlanerData }) {
-  const mobile = useMobile();
+  const _mobile = useMobile();
   const { tier, coachNavn, planer } = data;
 
   const antall = useMemo(
@@ -96,8 +83,8 @@ export function CoachPlanerV2({ data }: { data: CoachPlanerData }) {
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
       <div>
         <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Planer</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Coach</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Planer</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>Coach</span>
         </div>
         {coachNavn && <Caps size={9} style={{ marginTop: 8 }}>Fra {coachNavn}</Caps>}
       </div>
@@ -105,7 +92,7 @@ export function CoachPlanerV2({ data }: { data: CoachPlanerData }) {
         <Link href="/portal/onskeligokt" style={{ textDecoration: "none" }}>
           <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
-            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
           }}>Be om plan</span>
         </Link>
       )}
@@ -115,7 +102,7 @@ export function CoachPlanerV2({ data }: { data: CoachPlanerData }) {
   // Pro-gating — coach-laget plan er en del av Pro (låst, ærlig tekst).
   if (tier === "GRATIS") {
     return (
-      <div data-paper-wave-g="coachplaner" data-paper-portal-coach-planer style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+      <div data-paper-wave-g="coachplaner" data-paper-portal-coach-planer style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
         {hode}
         <Kort tint>
           <TomTilstand
@@ -127,7 +114,7 @@ export function CoachPlanerV2({ data }: { data: CoachPlanerData }) {
             <Link href="/portal/meg/abonnement" style={{ textDecoration: "none", display: "block" }}>
               <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
-            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
           }}>Oppgrader til Pro</span>
             </Link>
           </div>
@@ -139,7 +126,7 @@ export function CoachPlanerV2({ data }: { data: CoachPlanerData }) {
   // Ingen planer ennå — ærlig tom-tilstand.
   if (planer.length === 0) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         {hode}
         <Kort>
           <TomTilstand
@@ -151,7 +138,7 @@ export function CoachPlanerV2({ data }: { data: CoachPlanerData }) {
             <Link href="/portal/onskeligokt" style={{ textDecoration: "none", display: "block" }}>
               <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
-            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
           }}>Be om plan</span>
             </Link>
             <Link
@@ -159,10 +146,10 @@ export function CoachPlanerV2({ data }: { data: CoachPlanerData }) {
               style={{
                 textDecoration: "none",
                 textAlign: "center",
-                fontFamily: T.ui,
+                fontFamily: TL.font.sans,
                 fontSize: 12,
                 fontWeight: 600,
-                color: T.mut,
+                color: TL.mute,
               }}
             >
               Til mine økter →
@@ -174,11 +161,11 @@ export function CoachPlanerV2({ data }: { data: CoachPlanerData }) {
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {hode}
 
       {/* Sammendrag — planer per status */}
-      <div className="grid grid-cols-3" style={{ gap: T.gap }}>
+      <div className="grid grid-cols-3" style={{ gap: 16 }}>
         <KpiFlis label="Aktive" value={String(antall.aktiv)} tint={antall.aktiv > 0} />
         <KpiFlis label="Fullført" value={String(antall.fullfort)} />
         <KpiFlis label="På pause" value={String(antall.pause)} />
@@ -202,7 +189,7 @@ export function CoachPlanerV2({ data }: { data: CoachPlanerData }) {
           <TomTilstand icon="circle" title="Ingen planer her" sub="Bytt filter for å se andre planer." />
         </Kort>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: T.gap }}>
+        <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: 16 }}>
           {synlige.map((p) => (
             <PlanKort key={p.id} plan={p} />
           ))}
@@ -224,17 +211,17 @@ function PlanKort({ plan }: { plan: CoachPlanRad }) {
       <Kort hover>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
           <StatusPill tone={status.tone}>{status.l}</StatusPill>
-          <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.mut, whiteSpace: "nowrap" }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, color: TL.mute, whiteSpace: "nowrap" }}>
             {periode(plan.startDate, plan.endDate)}
           </span>
         </div>
 
         <div
           style={{
-            fontFamily: T.disp,
+            fontFamily: TL.font.sans,
             fontWeight: 700,
             fontSize: 17,
-            color: T.fg,
+            color: TL.text,
             lineHeight: 1.25,
             marginTop: 12,
             display: "flex",
@@ -244,7 +231,7 @@ function PlanKort({ plan }: { plan: CoachPlanRad }) {
           }}
         >
           <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis" }}>{plan.name}</span>
-          <Icon name="chevron-right" size={16} style={{ color: T.mut, flex: "none" }} />
+          <Icon name="chevron-right" size={16} style={{ color: TL.mute, flex: "none" }} />
         </div>
 
         <div style={{ marginTop: 14 }}>

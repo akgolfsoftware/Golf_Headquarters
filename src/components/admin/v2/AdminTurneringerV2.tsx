@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * AgencyOS Turneringer — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
@@ -8,7 +9,7 @@
 
 import Link from "next/link";
 import { useState, type CSSProperties } from "react";
-import { Kort, Rad, StatusPill, TomTilstand, T, CTAPill, PillTabs, KpiFlis, type StatusTone } from "@/components/v2";
+import { Kort, Rad, StatusPill, TomTilstand, CTAPill, PillTabs, KpiFlis, type StatusTone } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import { useMobile } from "./turnering-ui";
 
@@ -59,12 +60,12 @@ function fellesmeldingPille(mobile: boolean, nedtonet: boolean): CSSProperties {
     gap: 6,
     borderRadius: 9999,
     padding: mobile ? "8px 12px" : "6px 12px",
-    fontFamily: T.ui,
+    fontFamily: TL.font.sans,
     fontSize: 11.5,
     fontWeight: 600,
-    color: nedtonet ? T.mut : T.fg,
-    background: T.panel3,
-    border: `1px solid ${T.borderS}`,
+    color: nedtonet ? TL.mute : TL.text,
+    background: TL.dim,
+    border: `1px solid ${TL.hair}`,
     whiteSpace: "nowrap",
     opacity: nedtonet ? 0.5 : 1,
     cursor: nedtonet ? "default" : "pointer",
@@ -73,19 +74,19 @@ function fellesmeldingPille(mobile: boolean, nedtonet: boolean): CSSProperties {
 
 function TurneringIkon() {
   return (
-    <span style={{ width: 32, height: 32, borderRadius: 10, background: T.panel3, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
-      <Icon name="trophy" size={15} style={{ color: T.lime }} />
+    <span style={{ width: 32, height: 32, borderRadius: 10, background: TL.dim, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+      <Icon name="trophy" size={15} style={{ color: TL.fill }} />
     </span>
   );
 }
 
 function TurneringTittel({ r }: { r: AdminTurneringV2Row }) {
   return r.href ? (
-    <Link href={r.href} onClick={(e) => e.stopPropagation()} style={{ textDecoration: "none", color: T.fg, fontWeight: 600 }}>
+    <Link href={r.href} onClick={(e) => e.stopPropagation()} style={{ textDecoration: "none", color: TL.text, fontWeight: 600 }}>
       {r.navn}
     </Link>
   ) : (
-    <span style={{ color: T.fg, fontWeight: 600 }}>{r.navn}</span>
+    <span style={{ color: TL.text, fontWeight: 600 }}>{r.navn}</span>
   );
 }
 
@@ -113,8 +114,8 @@ export function AdminTurneringerV2({ data }: { data: AdminTurneringerV2Data }) {
     dublettAntall > 0 ? (
       <Kort tint>
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          <span style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.fg }}>Én ting nå</span>
-          <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: 0 }}>
+          <span style={{ fontFamily: TL.font.sans, fontSize: 12, fontWeight: 600, color: TL.text }}>Én ting nå</span>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: 0 }}>
             {dublettAntall === 1
               ? "Én manuelt registrert turnering ser ut til å matche en kjent kilde."
               : `${dublettAntall} manuelt registrerte turneringer ser ut til å matche kjente kilder.`}{" "}
@@ -133,12 +134,12 @@ export function AdminTurneringerV2({ data }: { data: AdminTurneringerV2Data }) {
     <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>
       <div>
         <div data-paper-pattern-topp data-paper-slug="agencyos-turneringer">
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Turneringer</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Turneringer</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
             AgencyOS · sesong {sesong} · {pl(antall, "registrert", "registrerte")}
           </span>
         </div>
-        <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "8px 0 0", maxWidth: 460 }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: "8px 0 0", maxWidth: 460 }}>
           Turneringene stallen din spiller. Send fellesmelding til alle påmeldte med ett klikk.
         </p>
       </div>
@@ -149,7 +150,7 @@ export function AdminTurneringerV2({ data }: { data: AdminTurneringerV2Data }) {
   // KPI-rad (fasit): kommende/dekning/synk-hull/dubletter — måler stallens
   // turneringsbilde utover raden av påmeldte turneringer under.
   const kpiRad = (
-    <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: T.gap }}>
+    <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: 16 }}>
       <KpiFlis label="Kommende" value={kommende.length} sub={pl(spilte.length, "spilt", "spilte")} />
       <KpiFlis
         label="Påmeldte spillere"
@@ -173,7 +174,7 @@ export function AdminTurneringerV2({ data }: { data: AdminTurneringerV2Data }) {
 
   if (antall === 0) {
     return (
-      <div data-paper-wave-h="turneringer" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div data-paper-wave-h="turneringer" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         {hode}
         {kpiRad}
         {dublettBanner}
@@ -190,7 +191,7 @@ export function AdminTurneringerV2({ data }: { data: AdminTurneringerV2Data }) {
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {hode}
       {kpiRad}
       {dublettBanner}

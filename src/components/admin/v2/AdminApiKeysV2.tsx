@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * AgencyOS Innstillinger · API-nøkler — v2 (retning C «Presis»). Rekomponerer
  * /admin/(legacy)/settings/api i v2-språket, bygget utelukkende av
@@ -24,22 +24,8 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import {
-  T,
-  Caps,
-  Tittel,
-  Kort,
-  Rad,
-  StatusPill,
-  CTAPill,
-  Knapp,
-  Inndata,
-  Avkryssing,
-  TomTilstand,
-  Icon,
-} from "@/components/v2";
+import { Caps, Kort, Rad, StatusPill, CTAPill, Knapp, Inndata, Avkryssing, TomTilstand, Icon } from "@/components/v2";
 import { createApiKey, revokeApiKey } from "@/app/admin/(legacy)/settings/api/actions";
-
 // ── Datakontrakt (mappes fra Prisma i ruten) ───────────────────
 export interface AdminApiKeysV2Nokkel {
   id: string;
@@ -96,11 +82,11 @@ function KopierPrefixKnapp({ prefix }: { prefix: string }) {
       title={kopiert ? "Kopiert" : "Kopier prefix"}
       style={{
         display: "inline-flex", alignItems: "center", justifyContent: "center",
-        width: 28, height: 28, borderRadius: 8, background: T.panel2,
-        border: `1px solid ${T.border}`, cursor: "pointer", flex: "none",
+        width: 28, height: 28, borderRadius: 8, background: TL.dock,
+        border: `1px solid ${TL.hair}`, cursor: "pointer", flex: "none",
       }}
     >
-      <Icon name={kopiert ? "check" : "copy"} size={13} style={{ color: kopiert ? T.lime : T.mut }} />
+      <Icon name={kopiert ? "check" : "copy"} size={13} style={{ color: kopiert ? TL.fill : TL.mute }} />
     </button>
   );
 }
@@ -122,9 +108,9 @@ function NokkelRad({ n, last, onRevoke, pending }: { n: AdminApiKeysV2Nokkel; la
         }
         trailing={
           n.revokert ? (
-            <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut }}>—</span>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>—</span>
           ) : (
-            <Knapp ghost icon="trash-2" disabled={pending} onClick={() => onRevoke(n.id)} style={{ color: T.down }}>
+            <Knapp ghost icon="trash-2" disabled={pending} onClick={() => onRevoke(n.id)} style={{ color: TL.danger }}>
               Revoker
             </Knapp>
           )
@@ -186,26 +172,26 @@ function NyNokkelModal({ onClose }: { onClose: () => void }) {
       aria-modal="true"
       aria-labelledby="ny-api-nokkel-tittel"
       className="fixed inset-0 z-[80] flex items-center justify-center px-4"
-      style={{ background: T.farge.nestenSvartA62, backdropFilter: "blur(2px)" }}
+      style={{ background: TL.scrim, backdropFilter: "none" }}
       onClick={() => {
         if (!pending) onClose();
       }}
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        style={{ width: "100%", maxWidth: 440, borderRadius: 20, border: `1px solid ${T.borderS}`, background: T.panel, boxShadow: `0 24px 60px ${T.farge.svartA50}`, padding: "20px 22px" }}
+        style={{ width: "100%", maxWidth: 440, borderRadius: 20, border: `1px solid ${TL.hair}`, background: TL.elev, boxShadow: "none", padding: "20px 22px" }}
       >
         {secret ? (
           <>
-            <h2 id="ny-api-nokkel-tittel" style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 18, letterSpacing: "-0.02em", color: T.fg, margin: 0 }}>
-              <em style={{ fontStyle: "italic", color: T.lime }}>Lagre</em> nøkkelen nå
+            <h2 id="ny-api-nokkel-tittel" style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 18, letterSpacing: "-0.02em", color: TL.text, margin: 0 }}>
+              <em style={{ fontStyle: "italic", color: TL.fill }}>Lagre</em> nøkkelen nå
             </h2>
-            <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.55, margin: "10px 0 0" }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.55, margin: "10px 0 0" }}>
               Dette er den eneste gangen du kan se hele nøkkelen. Lagre den i passordforvalter — den
               vises aldri igjen.
             </p>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 14 }}>
-              <code style={{ flex: 1, minWidth: 0, wordBreak: "break-all", borderRadius: 10, border: `1px solid ${T.border}`, background: T.panel2, padding: "12px 14px", fontFamily: T.mono, fontSize: 12, color: T.fg }}>
+              <code style={{ flex: 1, minWidth: 0, wordBreak: "break-all", borderRadius: 10, border: `1px solid ${TL.hair}`, background: TL.dock, padding: "12px 14px", fontFamily: TL.font.mono, fontSize: 12, color: TL.text }}>
                 {secret}
               </code>
               <button
@@ -213,9 +199,9 @@ function NyNokkelModal({ onClose }: { onClose: () => void }) {
                 onClick={kopierSecret}
                 aria-label="Kopier nøkkel"
                 title={kopiert ? "Kopiert" : "Kopier nøkkel"}
-                style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 36, height: 36, borderRadius: 10, background: T.panel3, border: `1px solid ${T.borderS}`, cursor: "pointer", flex: "none" }}
+                style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 36, height: 36, borderRadius: 10, background: TL.dim, border: `1px solid ${TL.hair}`, cursor: "pointer", flex: "none" }}
               >
-                <Icon name={kopiert ? "check" : "copy"} size={15} style={{ color: kopiert ? T.lime : T.fg2 }} />
+                <Icon name={kopiert ? "check" : "copy"} size={15} style={{ color: kopiert ? TL.fill : TL.mute }} />
               </button>
             </div>
             <div style={{ marginTop: 20 }}>
@@ -224,10 +210,10 @@ function NyNokkelModal({ onClose }: { onClose: () => void }) {
           </>
         ) : (
           <>
-            <h2 id="ny-api-nokkel-tittel" style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 18, letterSpacing: "-0.02em", color: T.fg, margin: 0 }}>
-              <em style={{ fontStyle: "italic", color: T.lime }}>Ny</em> API-nøkkel
+            <h2 id="ny-api-nokkel-tittel" style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 18, letterSpacing: "-0.02em", color: TL.text, margin: 0 }}>
+              <em style={{ fontStyle: "italic", color: TL.fill }}>Ny</em> API-nøkkel
             </h2>
-            <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.55, margin: "6px 0 16px" }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.55, margin: "6px 0 16px" }}>
               For tredjeparts-integrasjoner mot AgencyOS.
             </p>
 
@@ -243,7 +229,7 @@ function NyNokkelModal({ onClose }: { onClose: () => void }) {
             </div>
 
             {feil && (
-              <div role="alert" style={{ marginTop: 14, borderRadius: 10, border: `1px solid color-mix(in srgb, ${T.down} 30%, transparent)`, background: `color-mix(in srgb, ${T.down} 10%, transparent)`, padding: "10px 14px", fontFamily: T.ui, fontSize: 13, color: T.down }}>
+              <div role="alert" style={{ marginTop: 14, borderRadius: 10, border: `1px solid color-mix(in srgb, ${TL.danger} 30%, transparent)`, background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`, padding: "10px 14px", fontFamily: TL.font.sans, fontSize: 13, color: TL.danger }}>
                 {feil}
               </div>
             )}
@@ -284,8 +270,8 @@ export function AdminApiKeysV2({ data }: { data: AdminApiKeysV2Data }) {
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
         <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>API-nøkler</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Integrasjoner</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>API-nøkler</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>Integrasjoner</span>
         </div>
       </div>
       <span onClick={() => setVisModal(true)} style={{ display: "inline-flex" }}>
@@ -312,10 +298,10 @@ export function AdminApiKeysV2({ data }: { data: AdminApiKeysV2Data }) {
     );
 
   return (
-    <div data-paper-wave-h="api-keys" data-paper-pattern data-paper-slug="agencyos-oppsett" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-h="api-keys" data-paper-pattern data-paper-slug="agencyos-oppsett" style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {hode}
       {liste}
-      <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, lineHeight: 1.6, margin: 0 }}>
+      <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.6, margin: 0 }}>
         Trackman, FlightScope, Garmin, Zapier og NGF Golfbox kommer som egne integrasjoner senere.
         Inntil da brukes API-nøkler over.
       </p>

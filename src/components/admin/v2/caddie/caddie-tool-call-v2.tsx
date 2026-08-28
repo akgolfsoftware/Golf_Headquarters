@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * Caddie · tool-call-visning (v2). Rekomponert fra
@@ -7,7 +8,7 @@
  */
 
 import { useState } from "react";
-import { T, Icon } from "@/components/v2";
+import { Icon } from "@/components/v2";
 import type { CaddieToolCall } from "@/components/admin/caddie/types";
 
 const TOOL_LABEL: Record<string, string> = {
@@ -46,7 +47,7 @@ export function CaddieToolCallV2({ toolCall }: { toolCall: CaddieToolCall }) {
   const label = TOOL_LABEL[toolCall.toolName] ?? `kjørte ${toolCall.toolName}`;
 
   return (
-    <div style={{ marginBottom: 8, borderRadius: 10, border: `1px solid ${T.border}`, background: T.panel2 }}>
+    <div style={{ marginBottom: 8, borderRadius: 10, border: `1px solid ${TL.hair}`, background: TL.dock }}>
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
@@ -54,28 +55,28 @@ export function CaddieToolCallV2({ toolCall }: { toolCall: CaddieToolCall }) {
         aria-expanded={open}
         style={{
           display: "flex", width: "100%", alignItems: "center", gap: 8, padding: "8px 12px", textAlign: "left",
-          fontFamily: T.ui, fontSize: 12, color: T.fg, background: "none", border: "none", cursor: "pointer",
+          fontFamily: TL.font.sans, fontSize: 12, color: TL.text, background: "none", border: "none", cursor: "pointer",
         }}
       >
-        <Icon name="cog" size={13} style={{ color: T.mut }} />
+        <Icon name="cog" size={13} style={{ color: TL.mute }} />
         <span style={{ fontWeight: 600 }}>Caddie {label}</span>
-        <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.08em", color: T.mut }}>
+        <span style={{ marginLeft: "auto", fontFamily: TL.font.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.08em", color: TL.mute }}>
           {summarizeOutput(toolCall)}
         </span>
-        <Icon name={open ? "chevron-down" : "chevron-right"} size={13} style={{ color: T.mut }} />
+        <Icon name={open ? "chevron-down" : "chevron-right"} size={13} style={{ color: TL.mute }} />
       </button>
       {open && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 8, borderTop: `1px solid ${T.border}`, padding: "8px 12px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8, borderTop: `1px solid ${TL.hair}`, padding: "8px 12px" }}>
           <div>
-            <div style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: T.mut }}>Input</div>
-            <pre style={{ marginTop: 4, overflowX: "auto", borderRadius: 6, background: T.panel3, padding: "8px 10px", fontFamily: T.mono, fontSize: 11, color: T.fg }}>
+            <div style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: TL.mute }}>Input</div>
+            <pre style={{ marginTop: 4, overflowX: "auto", borderRadius: 6, background: TL.dim, padding: "8px 10px", fontFamily: TL.font.mono, fontSize: 11, color: TL.text }}>
               {JSON.stringify(toolCall.input, null, 2)}
             </pre>
           </div>
           {toolCall.output !== undefined && (
             <div>
-              <div style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: T.mut }}>Output</div>
-              <pre style={{ marginTop: 4, overflowX: "auto", borderRadius: 6, background: T.panel3, padding: "8px 10px", fontFamily: T.mono, fontSize: 11, color: T.fg }}>
+              <div style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: TL.mute }}>Output</div>
+              <pre style={{ marginTop: 4, overflowX: "auto", borderRadius: 6, background: TL.dim, padding: "8px 10px", fontFamily: TL.font.mono, fontSize: 11, color: TL.text }}>
                 {JSON.stringify(toolCall.output, null, 2)}
               </pre>
             </div>

@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * Live SG-panel: klient-ESTIMAT beregnet KUN på fullførte hull, alltid
@@ -11,22 +12,22 @@
 import type { LoggetHull } from "@/lib/runde-logg/types";
 import { beregnSg } from "@/lib/domain/sg";
 import { rundeTilSgShots } from "@/lib/runde-logg/til-sg-shots";
-import { T, fmtSg, Kort, TomTilstand, Icon } from "@/components/v2";
+import { fmtSg, Kort, TomTilstand, Icon } from "@/components/v2";
 
 function SgLinje({ l, v }: { l: string; v: number }) {
   const w = Math.min(100, Math.abs(v) * 46);
   return (
     <div style={{ display: "grid", gridTemplateColumns: "44px 1fr 52px", gap: 10, alignItems: "center" }}>
-      <span style={{ fontFamily: T.mono, fontSize: 10.5, fontWeight: 700, color: T.fg2 }}>{l}</span>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 10.5, fontWeight: 700, color: TL.mute }}>{l}</span>
       <div style={{ position: "relative", height: 14 }}>
-        <span style={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: 1, background: T.borderS }} />
+        <span style={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: 1, background: TL.hair }} />
         <span
           style={{
             position: "absolute",
             top: 2,
             bottom: 2,
             borderRadius: 4,
-            background: v >= 0 ? T.up : T.down,
+            background: v >= 0 ? TL.ok : TL.danger,
             left: v >= 0 ? "50%" : `calc(50% - ${w}px)`,
             width: w,
           }}
@@ -34,10 +35,10 @@ function SgLinje({ l, v }: { l: string; v: number }) {
       </div>
       <span
         style={{
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           fontSize: 12,
           fontWeight: 700,
-          color: v >= 0 ? T.up : T.down,
+          color: v >= 0 ? TL.ok : TL.danger,
           textAlign: "right",
         }}
       >
@@ -62,10 +63,10 @@ export function SgPanel({ hullData, onLukk }: { hullData: LoggetHull[]; onLukk: 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       <div>
-        <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 22, color: T.fg, lineHeight: 1.1 }}>
+        <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 22, color: TL.text, lineHeight: 1.1 }}>
           SG hittil
         </div>
-        <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 3 }}>
+        <div style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 3 }}>
           {ferdige.length} av {hullData.length} hull fullført
         </div>
       </div>
@@ -84,15 +85,15 @@ export function SgPanel({ hullData, onLukk }: { hullData: LoggetHull[]; onLukk: 
             <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between" }}>
               <span
                 style={{
-                  fontFamily: T.mono,
+                  fontFamily: TL.font.mono,
                   fontSize: 26,
                   fontWeight: 700,
-                  color: sg.total >= 0 ? T.up : T.down,
+                  color: sg.total >= 0 ? TL.ok : TL.danger,
                 }}
               >
                 {fmtSg(sg.total)}
               </span>
-              <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut }}>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>
                 SG totalt · {ferdige.length} av {hullData.length} hull
               </span>
             </div>
@@ -100,7 +101,7 @@ export function SgPanel({ hullData, onLukk }: { hullData: LoggetHull[]; onLukk: 
             <SgLinje l="APP" v={sg.app} />
             <SgLinje l="ARG" v={sg.arg} />
             <SgLinje l="PUTT" v={sg.putt} />
-            <div style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, lineHeight: 1.5 }}>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 10.5, color: TL.mute, lineHeight: 1.5 }}>
               Estimat på fullførte hull — serveren er fasit ved lagring.
             </div>
           </div>
@@ -122,11 +123,11 @@ export function SgPanel({ hullData, onLukk }: { hullData: LoggetHull[]; onLukk: 
           padding: "12px 0",
           borderRadius: 12,
           background: "transparent",
-          border: `1px solid ${T.border}`,
-          fontFamily: T.ui,
+          border: `1px solid ${TL.hair}`,
+          fontFamily: TL.font.sans,
           fontSize: 13,
           fontWeight: 600,
-          color: T.fg2,
+          color: TL.mute,
         }}
       >
         <Icon name="arrow-left" size={14} />

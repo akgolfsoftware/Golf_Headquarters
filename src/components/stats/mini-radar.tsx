@@ -3,7 +3,6 @@
  * Server component — pure SVG, no state.
  */
 
-import { T } from "@/lib/v2/tokens";
 
 interface MiniRadarProps {
   values?: number[];

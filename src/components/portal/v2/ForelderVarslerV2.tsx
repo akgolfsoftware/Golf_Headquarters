@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * Foreldreportal · Varsler — v2 Presis + B-pakke (status + tom = vei).
  * Kanaler fortsatt lese-modus (ikke lagret ennå). Kun v2 + T.*.
@@ -7,18 +7,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  T,
-  Caps,
-  Tittel,
-  Kort,
-  StatusPill,
-  Bryter,
-  TomTilstand,
-  Icon,
-  Knapp,
-} from "@/components/v2";
-
+import { Caps, Tittel, Kort, StatusPill, Bryter, TomTilstand, Icon, Knapp } from "@/components/v2";
 /* ── Datakontrakt (serialisert fra loader) ─────────────────────────── */
 
 export type ForelderVarsel = {
@@ -86,7 +75,7 @@ function VarselRad({ v, last }: { v: ForelderVarsel; last: boolean }) {
         gap: 12,
         alignItems: "flex-start",
         padding: "13px 0",
-        borderBottom: last ? "none" : `1px solid ${T.border}`,
+        borderBottom: last ? "none" : `1px solid ${TL.hair}`,
       }}
     >
       <span
@@ -94,23 +83,23 @@ function VarselRad({ v, last }: { v: ForelderVarsel; last: boolean }) {
           width: 34,
           height: 34,
           borderRadius: 10,
-          background: T.panel3,
-          border: `1px solid ${T.border}`,
+          background: TL.dim,
+          border: `1px solid ${TL.hair}`,
           display: "inline-flex",
           alignItems: "center",
           justifyContent: "center",
           flex: "none",
         }}
       >
-        <Icon name={varselIkon(v.type)} size={15} style={{ color: T.fg2 }} />
+        <Icon name={varselIkon(v.type)} size={15} style={{ color: TL.mute }} />
       </span>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div
           style={{
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 13.5,
             fontWeight: 600,
-            color: T.fg,
+            color: TL.text,
           }}
         >
           {v.title}
@@ -118,9 +107,9 @@ function VarselRad({ v, last }: { v: ForelderVarsel; last: boolean }) {
         {v.body && (
           <p
             style={{
-              fontFamily: T.ui,
+              fontFamily: TL.font.sans,
               fontSize: 12.5,
-              color: T.fg2,
+              color: TL.mute,
               lineHeight: 1.55,
               margin: "4px 0 0",
             }}
@@ -144,7 +133,7 @@ export function ForelderVarslerV2({ data }: { data: ForelderVarslerData }) {
   const { email, barn, varsler } = data;
 
   return (
-    <div data-paper-wave-e="forelder-sub" data-paper-portal-forelder-varsler style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-e="forelder-sub" data-paper-portal-forelder-varsler style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode + status */}
       <div
         style={{
@@ -164,9 +153,9 @@ export function ForelderVarslerV2({ data }: { data: ForelderVarslerData }) {
           </div>
           <span
             style={{
-              fontFamily: T.ui,
+              fontFamily: TL.font.sans,
               fontSize: 12.5,
-              color: T.mut,
+              color: TL.mute,
               display: "block",
               marginTop: 8,
             }}
@@ -185,24 +174,24 @@ export function ForelderVarslerV2({ data }: { data: ForelderVarslerData }) {
           <Icon
             name="bell"
             size={18}
-            style={{ color: T.lime, flex: "none", marginTop: 2 }}
+            style={{ color: TL.fill, flex: "none", marginTop: 2 }}
           />
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
-                fontFamily: T.disp,
+                fontFamily: TL.font.sans,
                 fontWeight: 700,
                 fontSize: 15,
-                color: T.fg,
+                color: TL.text,
               }}
             >
               Varsler sendes på e-post
             </div>
             <p
               style={{
-                fontFamily: T.ui,
+                fontFamily: TL.font.sans,
                 fontSize: 12.5,
-                color: T.fg2,
+                color: TL.mute,
                 lineHeight: 1.55,
                 margin: "6px 0 0",
               }}
@@ -230,7 +219,7 @@ export function ForelderVarslerV2({ data }: { data: ForelderVarslerData }) {
           />
         </Kort>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <Caps>{`Per barn · ${barn.length}`}</Caps>
           {barn.map((b) => (
             <Kort key={b.id}>
@@ -243,7 +232,7 @@ export function ForelderVarslerV2({ data }: { data: ForelderVarslerData }) {
                   gap: 10,
                   paddingBottom: 12,
                   marginBottom: 4,
-                  borderBottom: `1px solid ${T.border}`,
+                  borderBottom: `1px solid ${TL.hair}`,
                 }}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
@@ -252,22 +241,22 @@ export function ForelderVarslerV2({ data }: { data: ForelderVarslerData }) {
                       width: 30,
                       height: 30,
                       borderRadius: 9,
-                      background: T.panel3,
-                      border: `1px solid ${T.border}`,
+                      background: TL.dim,
+                      border: `1px solid ${TL.hair}`,
                       display: "inline-flex",
                       alignItems: "center",
                       justifyContent: "center",
                       flex: "none",
                     }}
                   >
-                    <Icon name="user" size={15} style={{ color: T.fg2 }} />
+                    <Icon name="user" size={15} style={{ color: TL.mute }} />
                   </span>
                   <span
                     style={{
-                      fontFamily: T.disp,
+                      fontFamily: TL.font.sans,
                       fontWeight: 700,
                       fontSize: 15,
-                      color: T.fg,
+                      color: TL.text,
                       letterSpacing: "-0.01em",
                       whiteSpace: "nowrap",
                       overflow: "hidden",
@@ -306,12 +295,12 @@ export function ForelderVarslerV2({ data }: { data: ForelderVarslerData }) {
         action={
           <span
             style={{
-              fontFamily: T.mono,
+              fontFamily: TL.font.mono,
               fontSize: 9,
               fontWeight: 700,
               letterSpacing: "0.06em",
               textTransform: "uppercase",
-              color: T.mut,
+              color: TL.mute,
             }}
           >
             {varsler.length} de siste dagene

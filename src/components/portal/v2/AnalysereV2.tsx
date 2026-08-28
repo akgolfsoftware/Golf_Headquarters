@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PP-1.3 paper slug playerhq-analyse.
  *
@@ -23,42 +23,12 @@ import { useToppbarHoyde } from "@/components/v2/toppbar-hoyde";
 import type { MinGolfData } from "@/lib/min-golf/load-min-golf";
 import type { AnalyticsWorkbenchData } from "@/app/portal/analysere/actions";
 import { hentTreningsHistorikkFiltrert } from "@/app/portal/analysere/actions";
-import {
-  AnalyseFilterBar,
-  TOMME_FILTRE,
-  type AnalyseFiltre,
-} from "./AnalyseFilterBar";
+import { AnalyseFilterBar, TOMME_FILTRE, type AnalyseFiltre } from "./AnalyseFilterBar";
 import { MILJO_GRUPPE_LABEL } from "@/lib/taxonomy";
 import type { AkseKey } from "@/lib/v2/tokens";
 import type { PyramidArea } from "@/generated/prisma/client";
 import { useMount, EASE } from "@/lib/v2/hooks";
-import {
-  T,
-  fmtSg,
-  Caps,
-  Kort,
-  TallHero,
-  StatusPill,
-  Trend,
-  FordelingRad,
-  FordelingHode,
-  KpiFlis,
-  Rad,
-  PillTabs,
-  FilterChips,
-  TomTilstand,
-  AkseChip,
-  Icon,
-  HjelpTips,
-  HvorforDette,
-  Skjelett,
-  CTAPill,
-  SgKategorier,
-  Diagnose,
-  NesteFokus,
-  SlagLekkasje,
-  type StatusTone,
-} from "@/components/v2";
+import { fmtSg, Caps, Kort, TallHero, StatusPill, Trend, FordelingRad, FordelingHode, KpiFlis, Rad, PillTabs, FilterChips, TomTilstand, AkseChip, Icon, HjelpTips, HvorforDette, Skjelett, CTAPill, SgKategorier, Diagnose, NesteFokus, SlagLekkasje, type StatusTone } from "@/components/v2";
 import type { HjelpNokkel } from "@/lib/v2/hjelpetekster";
 import { PuttingFocusBanner } from "@/components/portal/v2/PuttingFocusBanner";
 import type { PuttingSignals } from "@/lib/masterbrain/putting-signals";
@@ -160,7 +130,7 @@ function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
   const harScoreSerie = scoreSerie.length >= 2;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr]" style={{ gap: T.gap }}>
+    <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr]" style={{ gap: 16 }}>
       <Kort tint>
         {sgStatus.verdi ? (
           <>
@@ -217,10 +187,10 @@ function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
               href="/portal/mal/runder/ny"
               style={{
                 textDecoration: "none",
-                fontFamily: T.ui,
+                fontFamily: TL.font.sans,
                 fontSize: 12,
                 fontWeight: 600,
-                color: T.fg2,
+                color: TL.mute,
                 textAlign: "center",
               }}
             >
@@ -232,7 +202,7 @@ function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
 
 
       {nesteFokus && (
-        <div style={{ gridColumn: "1 / -1", display: "grid", gap: T.gap }} className="md:grid-cols-[3fr_2fr]">
+        <div style={{ gridColumn: "1 / -1", display: "grid", gap: 16 }} className="md:grid-cols-[3fr_2fr]">
           <NesteFokus
             omrade={nesteFokus.omrade}
             akse={nesteFokus.akse}
@@ -259,7 +229,7 @@ function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
       {harScoreSerie && (
         <Kort eyebrow={`Score · siste ${scoreSerie.length} runder`} style={{ gridColumn: "1 / -1" }}>
           <Trend series={scoreSerie} baseline={null} fmt={(v) => String(v)} />
-          <div style={{ display: "flex", gap: 12, marginTop: 8, fontFamily: T.mono, fontSize: 10.5, color: T.mut }}>
+          <div style={{ display: "flex", gap: 12, marginTop: 8, fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute }}>
             <span>beste {Math.min(...scoreSerie)}</span>
             <span>snitt {komma(scoreSerie.reduce((a, b) => a + b, 0) / scoreSerie.length)}</span>
             <span style={{ marginLeft: "auto" }}>siste {scoreSerie[scoreSerie.length - 1]}</span>
@@ -277,14 +247,14 @@ function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
       <Link href="/portal/analysere/datagolf" className="v2-press v2-focus" style={{ textDecoration: "none", gridColumn: "1 / -1" }}>
         <Kort>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <span style={{ width: 36, height: 36, borderRadius: 10, background: T.panel3, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
-              <Icon name="trophy" size={16} style={{ color: T.lime }} />
+            <span style={{ width: 36, height: 36, borderRadius: 10, background: TL.dim, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+              <Icon name="trophy" size={16} style={{ color: TL.fill }} />
             </span>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 14, color: T.fg }}>DataGolf</div>
-              <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 2 }}>Deg mot touren — din SG mot en PGA-referansespiller</div>
+              <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 14, color: TL.text }}>DataGolf</div>
+              <div style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 2 }}>Deg mot touren — din SG mot en PGA-referansespiller</div>
             </div>
-            <Icon name="chevron-right" size={15} style={{ color: T.mut, flex: "none" }} />
+            <Icon name="chevron-right" size={15} style={{ color: TL.mute, flex: "none" }} />
           </div>
         </Kort>
       </Link>
@@ -293,14 +263,14 @@ function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
       <Kort eyebrow="Putteverktøy" style={{ gridColumn: "1 / -1" }}>
         <Link href="/portal/trening/putte-laboratoriet" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
           <Rad
-            leading={<Icon name="target" size={16} style={{ color: T.mut }} />}
+            leading={<Icon name="target" size={16} style={{ color: TL.mute }} />}
             title="Putte-laboratoriet"
             sub="Sannsynlighet for å sette putten"
           />
         </Link>
         <Link href="/portal/trening/break-tabell" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
           <Rad
-            leading={<Icon name="sliders" size={16} style={{ color: T.mut }} />}
+            leading={<Icon name="sliders" size={16} style={{ color: TL.mute }} />}
             title="Break-tabell"
             sub="Hvor mye putten bryter"
             last
@@ -323,7 +293,7 @@ function AnalyseDybde({ data, mobile }: { data: AnalysereData; mobile: boolean }
   const { rounds, training } = data.workbench;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {nesteFokus?.diagnose && (
         <Diagnose
           symptom={nesteFokus.diagnose.symptom}
@@ -348,7 +318,7 @@ function AnalyseDybde({ data, mobile }: { data: AnalysereData; mobile: boolean }
         />
       )}
 
-      <div className="grid grid-cols-2 md:grid-cols-3" style={{ gap: T.gap, alignItems: "start" }}>
+      <div className="grid grid-cols-2 md:grid-cols-3" style={{ gap: 16, alignItems: "start" }}>
         {[
           { ic: "target", l: "SG-nedbrytning", s: `${sgStatus.kategorier.length} områder · ${sgStatus.baseline}` },
           { ic: "flag", l: "Runder", s: `${rounds.totalRounds} i sesong${rounds.bestScore != null ? ` · beste ${rounds.bestScore}` : ""}` },
@@ -356,15 +326,15 @@ function AnalyseDybde({ data, mobile }: { data: AnalysereData; mobile: boolean }
         ].map((c, i) => (
           <Kort key={c.l} tint={i === 2} style={mobile && i === 2 ? { gridColumn: "1 / -1" } : undefined}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <Icon name={c.ic} size={17} style={{ color: i === 2 ? T.lime : T.fg2 }} />
+              <Icon name={c.ic} size={17} style={{ color: i === 2 ? TL.fill : TL.mute }} />
             </div>
-            <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, color: T.fg, marginTop: 14 }}>{c.l}</div>
-            <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 4 }}>{c.s}</div>
+            <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 16, color: TL.text, marginTop: 14 }}>{c.l}</div>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 4 }}>{c.s}</div>
           </Kort>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: T.gap }}>
+      <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: 16 }}>
         {[
           { href: "/portal/analysere/hull", ic: "map", l: "Hull-analyse", s: "Hvor taper du slag — hull for hull" },
           { href: "/portal/gameplan", ic: "crosshair", l: "Gameplan", s: "Banekart, spredning og hull-for-hull sikte" },
@@ -373,14 +343,14 @@ function AnalyseDybde({ data, mobile }: { data: AnalysereData; mobile: boolean }
           <Link key={c.href} href={c.href} className="v2-press v2-focus" style={{ textDecoration: "none" }}>
             <Kort>
               <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <span style={{ width: 36, height: 36, borderRadius: 10, background: T.panel3, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
-                  <Icon name={c.ic} size={16} style={{ color: T.lime }} />
+                <span style={{ width: 36, height: 36, borderRadius: 10, background: TL.dim, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+                  <Icon name={c.ic} size={16} style={{ color: TL.fill }} />
                 </span>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 14, color: T.fg }}>{c.l}</div>
-                  <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 2 }}>{c.s}</div>
+                  <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 14, color: TL.text }}>{c.l}</div>
+                  <div style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 2 }}>{c.s}</div>
                 </div>
-                <Icon name="chevron-right" size={15} style={{ color: T.mut, flex: "none" }} />
+                <Icon name="chevron-right" size={15} style={{ color: TL.mute, flex: "none" }} />
               </div>
             </Kort>
           </Link>
@@ -403,8 +373,8 @@ function TabStatistikk({ data, mobile }: { data: AnalysereData; mobile: boolean 
   const besteUmulig = rounds.bestScore != null && rounds.bestScore < MIN_MULIG_BRUTTOSCORE;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      <div className="grid grid-cols-2 md:grid-cols-3" style={{ gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <div className="grid grid-cols-2 md:grid-cols-3" style={{ gap: 16 }}>
         {avgUmulig ? (
           <Skjelett linjer={0} />
         ) : (
@@ -447,7 +417,7 @@ function TabStatistikk({ data, mobile }: { data: AnalysereData; mobile: boolean 
             <Link
               href="/portal/analysere/historikk"
               data-od-id="analysere-hele-historikken"
-              style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.mut, textDecoration: "underline", textUnderlineOffset: 3 }}
+              style={{ fontFamily: TL.font.sans, fontSize: 12, fontWeight: 600, color: TL.mute, textDecoration: "underline", textUnderlineOffset: 3 }}
             >
               Hele historikken →
             </Link>
@@ -458,14 +428,14 @@ function TabStatistikk({ data, mobile }: { data: AnalysereData; mobile: boolean 
           rounds.rounds.slice(0, 10).map((r, i, arr) => (
             <Rad
               key={r.id}
-              leading={<span style={{ width: 46, flex: "none", fontFamily: T.mono, fontSize: 10, color: T.mut }}>{kortDato(r.playedAt)}</span>}
+              leading={<span style={{ width: 46, flex: "none", fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>{kortDato(r.playedAt)}</span>}
               title={r.courseName}
               meta={
                 <span style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: T.fg }}>
-                    {r.score} <span style={{ color: T.mut, fontWeight: 600, fontSize: 10 }}>{tilPar(r.score, r.par)}</span>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, color: TL.text }}>
+                    {r.score} <span style={{ color: TL.mute, fontWeight: 600, fontSize: 10 }}>{tilPar(r.score, r.par)}</span>
                   </span>
-                  <span style={{ fontFamily: T.mono, fontSize: 12, fontWeight: 700, color: r.sgTotal == null ? T.mut : r.sgTotal < 0 ? T.down : T.up, width: 44, textAlign: "right" }}>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 12, fontWeight: 700, color: r.sgTotal == null ? TL.mute : r.sgTotal < 0 ? TL.danger : TL.ok, width: 44, textAlign: "right" }}>
                     {r.sgTotal == null ? "–" : fmtSg(r.sgTotal)}
                   </span>
                 </span>
@@ -531,7 +501,7 @@ function TabTrening({ data, mobile, userId }: { data: AnalysereData; mobile: boo
   const mestTrent = o?.perPyramide[0] ?? null;
 
   const filtrePanel = (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <Kort eyebrow="Vis trening">
         <AnalyseFilterBar
           filtre={filtre}
@@ -575,7 +545,7 @@ function TabTrening({ data, mobile, userId }: { data: AnalysereData; mobile: boo
   );
 
   const resultat = (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <Kort tint>
         <TallHero
           label={`Treningsvolum · ${hist?.vinduLabel ?? ""}`}
@@ -634,7 +604,7 @@ function TabTrening({ data, mobile, userId }: { data: AnalysereData; mobile: boo
             <Rad
               key={r.id}
               leading={
-                <span style={{ width: 46, flex: "none", fontFamily: T.mono, fontSize: 10, color: T.mut }}>
+                <span style={{ width: 46, flex: "none", fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>
                   {kortDato(new Date(r.dato))}
                 </span>
               }
@@ -670,19 +640,19 @@ function TabTrening({ data, mobile, userId }: { data: AnalysereData; mobile: boo
                 <Caps size={9}>Etterlevelse</Caps>
                 <HjelpTips k="planEtterlevelse" size={11} />
               </span>
-              <div style={{ marginTop: 6, fontFamily: T.disp, fontSize: mobile ? 28 : 32, fontWeight: 700, color: T.fg }}>
+              <div style={{ marginTop: 6, fontFamily: TL.font.sans, fontSize: mobile ? 28 : 32, fontWeight: 700, color: TL.text }}>
                 {training.analyse.etterlevelsePct != null ? `${training.analyse.etterlevelsePct} %` : "–"}
               </div>
-              <div style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, marginTop: 4 }}>
+              <div style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, marginTop: 4 }}>
                 {training.analyse.gjennomforteOkter} av {training.analyse.planlagteOkter} økter
               </div>
             </div>
             <div>
               <Caps size={9}>Reps</Caps>
-              <div style={{ marginTop: 6, fontFamily: T.disp, fontSize: mobile ? 28 : 32, fontWeight: 700, color: T.fg }}>
+              <div style={{ marginTop: 6, fontFamily: TL.font.sans, fontSize: mobile ? 28 : 32, fontWeight: 700, color: TL.text }}>
                 {training.analyse.faktiskeReps}
               </div>
-              <div style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, marginTop: 4 }}>
+              <div style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, marginTop: 4 }}>
                 av {training.analyse.planlagteReps} planlagt · {training.analyse.ballerSlatt} baller · {training.analyse.svingerUtenBall} uten ball
               </div>
             </div>
@@ -696,12 +666,12 @@ function TabTrening({ data, mobile, userId }: { data: AnalysereData; mobile: boo
   return mobile ? (
     /* Mobil: filterpanelet ØVERST (før innholdet) — samme rekkefølge som
        desktop (venstre/topp), aldri filtre gjemt under lange lister. */
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {filtrePanel}
       {resultat}
     </div>
   ) : (
-    <div className="grid" style={{ gridTemplateColumns: "2fr 3fr", gap: T.gap, alignItems: "start" }}>
+    <div className="grid" style={{ gridTemplateColumns: "2fr 3fr", gap: 16, alignItems: "start" }}>
       {filtrePanel}
       {resultat}
     </div>
@@ -757,7 +727,7 @@ function TabTrackman({ data, mobile }: { data: AnalysereData; mobile: boolean })
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {/* Filter: kølle → parametere (Anders-krav: spilleren velger kolonnene, bredden følger valget) */}
       <Kort eyebrow="Filter · kølle → parametere">
         <div style={{ display: "flex", flexDirection: "column", gap: 13 }}>
@@ -788,16 +758,16 @@ function TabTrackman({ data, mobile }: { data: AnalysereData; mobile: boolean })
               return (
                 <div key={p.id}>
                   <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><Caps size={9} style={{ whiteSpace: "nowrap" }}>{p.l}</Caps>{p.hjelp && <HjelpTips k={p.hjelp} size={10} />}</span>
-                  <span style={{ fontFamily: T.mono, fontSize: i === 0 ? 30 : 20, fontWeight: 700, color: i === 0 ? T.lime : T.fg, lineHeight: 1, display: "block", marginTop: 7, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: i === 0 ? 30 : 20, fontWeight: 700, color: i === 0 ? TL.fill : TL.text, lineHeight: 1, display: "block", marginTop: 7, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>
                     {raw == null ? "–" : p.fmt(raw)}
-                    {raw != null && p.unit && <span style={{ fontSize: 11, color: T.mut, fontWeight: 600 }}> {p.unit}</span>}
+                    {raw != null && p.unit && <span style={{ fontSize: 11, color: TL.mute, fontWeight: 600 }}> {p.unit}</span>}
                   </span>
                 </div>
               );
             })}
           </div>
         ) : (
-          <div style={{ marginTop: 12, fontFamily: T.ui, fontSize: 12, color: T.fg2 }}>Ingen parametere valgt — slå på i filteret over.</div>
+          <div style={{ marginTop: 12, fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}>Ingen parametere valgt — slå på i filteret over.</div>
         )}
       </Kort>
 
@@ -812,9 +782,9 @@ function TabTrackman({ data, mobile }: { data: AnalysereData; mobile: boolean })
           {trackman.sessions.map((s, i, arr) => (
             <Rad
               key={s.id}
-              leading={<span style={{ width: 46, flex: "none", fontFamily: T.mono, fontSize: 10, color: T.mut }}>{kortDato(s.recordedAt)}</span>}
+              leading={<span style={{ width: 46, flex: "none", fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>{kortDato(s.recordedAt)}</span>}
               title={trackManOktNavn(s)}
-              meta={<span style={{ fontFamily: T.mono, fontSize: 12, fontWeight: 700, color: T.fg }}>{s.shotCount} slag</span>}
+              meta={<span style={{ fontFamily: TL.font.mono, fontSize: 12, fontWeight: 700, color: TL.text }}>{s.shotCount} slag</span>}
               trailing={null}
               last={i === arr.length - 1}
             />
@@ -864,7 +834,7 @@ function TabTester({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[2fr_3fr]" style={{ gap: T.gap, alignItems: "start" }}>
+    <div className="grid grid-cols-1 md:grid-cols-[2fr_3fr]" style={{ gap: 16, alignItems: "start" }}>
       <Kort tint>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <Caps>Siste test</Caps>
@@ -892,7 +862,7 @@ function TabTester({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
             meta={
               <span style={{ display: "flex", alignItems: "center", gap: 12 }}>
                 <AkseChip a={t.pyramidArea as AkseKey} />
-                <span style={{ fontFamily: T.mono, fontSize: 14, fontWeight: 700, color: T.fg, width: 56, textAlign: "right" }}>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 14, fontWeight: 700, color: TL.text, width: 56, textAlign: "right" }}>
                   {komma(t.score, t.score % 1 === 0 ? 0 : 1)}
                 </span>
               </span>
@@ -978,7 +948,7 @@ export function AnalysereV2({
   return (
     <div
       data-paper-portal-analysere data-paper-wave-a="analyse" data-paper-slug="playerhq-analyse"
-      style={{ display: "flex", flexDirection: "column", minHeight: "100%", background: T.bg }}
+      style={{ display: "flex", flexDirection: "column", minHeight: "100%", background: TL.scene }}
     >
       {/* Paper .topp */}
       {header ? (
@@ -993,15 +963,15 @@ export function AnalysereV2({
             alignItems: "center",
             gap: 8,
             padding: "12px 16px",
-            borderBottom: `1px solid ${T.border}`,
-            background: T.bg,
+            borderBottom: `1px solid ${TL.hair}`,
+            background: TL.scene,
             position: "sticky",
             top: 0,
             zIndex: 5,
           }}
         >
           <div style={{ minWidth: 0, flex: 1 }}>
-            <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>
+            <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>
               Analyse
             </h1>
             <span
@@ -1009,9 +979,9 @@ export function AnalysereV2({
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 5,
-                fontFamily: T.mono,
+                fontFamily: TL.font.mono,
                 fontSize: 10.5,
-                color: T.mut,
+                color: TL.mute,
                 marginTop: 2,
               }}
             >
@@ -1028,8 +998,8 @@ export function AnalysereV2({
       <div
         style={{
           flex: "none",
-          borderBottom: `1px solid ${T.border}`,
-          background: T.bg,
+          borderBottom: `1px solid ${TL.hair}`,
+          background: TL.scene,
           padding: "10px 16px 12px",
         }}
         data-paper-segs
@@ -1040,17 +1010,17 @@ export function AnalysereV2({
       </div>
 
       <div style={{ flex: 1, minHeight: 0, overflow: "auto", padding: "16px 16px 32px" }}>
-        <div style={{ maxWidth: 720, margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+        <div style={{ maxWidth: 720, margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
 
       {/* Fasitens `.merknad` — står over fane-innholdet, alltid. Uten den er
           tallene påstander framfor målinger. */}
       <p
         style={{
           margin: 0,
-          fontFamily: T.bodyFont,
+          fontFamily: TL.font.sans,
           fontSize: 12.5,
           lineHeight: 1.5,
-          color: T.mut,
+          color: TL.mute,
         }}
       >
         Tallene er målinger, ikke karakterer. Ingen terskler er vurdert.

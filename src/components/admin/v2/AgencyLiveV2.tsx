@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * AgencyOS · Live (v2) — «Mission Control», rekomponert fra
  * src/app/admin/(legacy)/agencyos/live/mission-control.tsx med v2-biblioteket
@@ -17,42 +17,13 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import {
-  Caps,
-  Tittel,
-  Kort,
-  Rad,
-  KpiFlis,
-  StatusPill,
-  Knapp,
-  TomTilstand,
-  Icon,
-  T,
-} from "@/components/v2";
-import {
-  ANTALL_AVTALER,
-  DAGENS_TRE,
-  type CalEvent,
-  type Email,
-  EMAILS,
-  EVENTS,
-  EVENTS_MORE,
-  INCOMING,
-  type Message,
-  MESSAGES,
-  MODULES,
-  NOTION,
-  type Priority,
-  SCENE_DATE,
-  type Task,
-  TASKS,
-} from "@/lib/agencyos/live-data";
-
+import { Caps, Kort, Rad, KpiFlis, StatusPill, Knapp, TomTilstand, Icon } from "@/components/v2";
+import { ANTALL_AVTALER, DAGENS_TRE, type CalEvent, type Email, EMAILS, EVENTS, EVENTS_MORE, INCOMING, type Message, MESSAGES, MODULES, NOTION, type Priority, type Task, TASKS } from "@/lib/agencyos/live-data";
 /* ---------- prioritet ---------- */
 const PRIO: Record<Priority, { label: string; color: string; icon: string }> = {
-  urgent: { label: "Haster", color: T.down, icon: "flame" },
-  followup: { label: "Følg opp", color: T.warn, icon: "flag" },
-  open: { label: "Ubesvart", color: T.mut, icon: "circle" },
+  urgent: { label: "Haster", color: TL.danger, icon: "flame" },
+  followup: { label: "Følg opp", color: TL.warn, icon: "flag" },
+  open: { label: "Ubesvart", color: TL.mute, icon: "circle" },
 };
 
 /* ---------- klokke / sync ---------- */
@@ -93,14 +64,14 @@ function useSyncTicker() {
 
 /* ---------- avatar ---------- */
 function LiveAvatar({ initials, tone = "neutral", size = 32 }: { initials: string; tone?: "neutral" | "lime" | "urgent"; size?: number }) {
-  const bg = tone === "lime" ? T.lime : tone === "urgent" ? T.forest : T.panel3;
-  const fg = tone === "lime" ? T.onLime : tone === "urgent" ? T.lime : T.fg2;
+  const bg = tone === "lime" ? TL.fill : tone === "urgent" ? TL.fill : TL.dim;
+  const fg = tone === "lime" ? TL.onFill : tone === "urgent" ? TL.fill : TL.mute;
   return (
     <span
       style={{
         width: size, height: size, borderRadius: 9999, background: bg, color: fg, flex: "none",
         display: "inline-flex", alignItems: "center", justifyContent: "center",
-        fontFamily: T.disp, fontWeight: 700, fontSize: size * 0.36, lineHeight: 1,
+        fontFamily: TL.font.sans, fontWeight: 700, fontSize: size * 0.36, lineHeight: 1,
       }}
     >
       {initials}
@@ -126,8 +97,8 @@ function SvarBoks({ onSend, placeholder }: { onSend: () => void; placeholder?: s
           if (e.key === "Enter") onSend();
         }}
         style={{
-          height: 34, flex: 1, borderRadius: 9, border: `1px solid ${T.lime}`, background: "color-mix(in srgb, var(--v2-lime) 6%, transparent)",
-          padding: "0 12px", fontFamily: T.ui, fontSize: 13, color: T.fg, outline: "none",
+          height: 34, flex: 1, borderRadius: 9, border: `1px solid ${TL.fill}`, background: "color-mix(in srgb, var(--tl-fill) 6%, transparent)",
+          padding: "0 12px", fontFamily: TL.font.sans, fontSize: 13, color: TL.text, outline: "none",
         }}
       />
       <button
@@ -135,8 +106,8 @@ function SvarBoks({ onSend, placeholder }: { onSend: () => void; placeholder?: s
         onClick={onSend}
         className="v2-press v2-focus"
         style={{
-          height: 34, display: "inline-flex", alignItems: "center", gap: 6, borderRadius: 9, background: T.handling,
-          padding: "0 13px", fontFamily: T.disp, fontSize: 12, fontWeight: 700, color: T.onHandling, border: "none", cursor: "pointer",
+          height: 34, display: "inline-flex", alignItems: "center", gap: 6, borderRadius: 9, background: TL.fill,
+          padding: "0 13px", fontFamily: TL.font.sans, fontSize: 12, fontWeight: 700, color: TL.onFill, border: "none", cursor: "pointer",
         }}
       >
         <Icon name="send" size={13} /> Send
@@ -154,10 +125,10 @@ function ActBtn({ icon, label, onClick, primary }: { icon: string; label: string
       className="v2-press v2-focus"
       style={{
         height: 28, display: "inline-flex", alignItems: "center", gap: 6, borderRadius: 8,
-        padding: "0 10px", fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em",
-        color: primary ? T.onHandling : T.fg2,
-        background: primary ? T.handling : "transparent",
-        border: `1px solid ${primary ? T.handling : T.borderS}`,
+        padding: "0 10px", fontFamily: TL.font.mono, fontSize: 9.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em",
+        color: primary ? TL.onFill : TL.mute,
+        background: primary ? TL.fill : "transparent",
+        border: `1px solid ${primary ? TL.fill : TL.hair}`,
         cursor: "pointer",
       }}
     >
@@ -169,9 +140,9 @@ function ActBtn({ icon, label, onClick, primary }: { icon: string; label: string
 /* ---------- kort-header ---------- */
 function KortHode({ icon, title, children }: { icon: string; title: string; children?: React.ReactNode }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 9, paddingBottom: 12, marginBottom: 4, borderBottom: `1px solid ${T.border}` }}>
-      <Icon name={icon} size={15} style={{ color: T.fg }} />
-      <span style={{ fontFamily: T.mono, fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em", color: T.fg }}>{title}</span>
+    <div style={{ display: "flex", alignItems: "center", gap: 9, paddingBottom: 12, marginBottom: 4, borderBottom: `1px solid ${TL.hair}` }}>
+      <Icon name={icon} size={15} style={{ color: TL.text }} />
+      <span style={{ fontFamily: TL.font.mono, fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em", color: TL.text }}>{title}</span>
       {children}
     </div>
   );
@@ -182,7 +153,7 @@ type Drawer = { kind: "email"; item: Email } | { kind: "event"; item: CalEvent }
 
 /* ============================================================ */
 
-export function AgencyLiveV2({ coachFirstName = "Anders" }: { coachFirstName?: string }) {
+export function AgencyLiveV2({ coachFirstName: _coachFirstName = "Anders" }: { coachFirstName?: string }) {
   const now = useClock();
   const { since, syncing } = useSyncTicker();
 
@@ -249,10 +220,10 @@ export function AgencyLiveV2({ coachFirstName = "Anders" }: { coachFirstName?: s
   return (
     <div data-paper-wave-h="agency-live" data-paper-agencyos-live-session style={{ maxWidth: 1200, margin: "0 auto", width: "100%" }}>
       {/* DEMO-banner */}
-      <Kort pad="10px 16px" style={{ borderColor: `color-mix(in srgb, ${T.warn} 35%, ${T.border})`, background: `color-mix(in srgb, ${T.warn} 8%, ${T.panel})` }}>
+      <Kort pad="10px 16px" style={{ borderColor: `color-mix(in srgb, ${TL.warn} 35%, ${TL.hair})`, background: `color-mix(in srgb, ${TL.warn} 8%, ${TL.elev})` }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <Icon name="alert-triangle" size={15} style={{ color: T.warn, flex: "none" }} />
-          <span style={{ fontFamily: T.ui, fontSize: 12, color: T.warn, lineHeight: 1.5 }}>
+          <Icon name="alert-triangle" size={15} style={{ color: TL.warn, flex: "none" }} />
+          <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.warn, lineHeight: 1.5 }}>
             DEMO — visuelt skall, ikke ekte sanntidsdata. Tallene og hendelsene er statiske eksempler; kobles til ekte kilder (Gmail · Beeper · Notion · Kalender) senere.
           </span>
         </div>
@@ -262,18 +233,18 @@ export function AgencyLiveV2({ coachFirstName = "Anders" }: { coachFirstName?: s
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
         <div>
           <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Live</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Live</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>AgencyOS</span>
         </div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <StatusPill>LIVE · alle kilder tilkoblet</StatusPill>
           <div style={{ textAlign: "right", lineHeight: 1.1 }}>
-            <div style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: syncing ? T.lime : T.mut, display: "flex", alignItems: "center", gap: 5, justifyContent: "flex-end" }}>
+            <div style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: syncing ? TL.fill : TL.mute, display: "flex", alignItems: "center", gap: 5, justifyContent: "flex-end" }}>
               <Icon name="refresh-cw" size={11} className={syncing ? "animate-spin" : undefined} />
               {syncing ? "Synker…" : `for ${since} s siden`}
             </div>
-            <div style={{ fontFamily: T.mono, fontSize: 16, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>
+            <div style={{ fontFamily: TL.font.mono, fontSize: 16, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>
               {now ? fmtTime(now) : "––:––:––"}
             </div>
           </div>
@@ -283,23 +254,23 @@ export function AgencyLiveV2({ coachFirstName = "Anders" }: { coachFirstName?: s
       {/* Søk */}
       <Kort pad="10px 16px">
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <Icon name="search" size={15} style={{ color: T.mut, flex: "none" }} />
+          <Icon name="search" size={15} style={{ color: TL.mute, flex: "none" }} />
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Søk på tvers av Gmail, Notion, kalender, meldinger…"
-            style={{ flex: 1, border: "none", background: "transparent", fontFamily: T.ui, fontSize: 13, color: T.fg, outline: "none" }}
+            style={{ flex: 1, border: "none", background: "transparent", fontFamily: TL.font.sans, fontSize: 13, color: TL.text, outline: "none" }}
           />
           {q && (
             <button type="button" onClick={() => setQ("")} aria-label="Tøm søk" className="v2-focus" style={{ background: "none", border: "none", cursor: "pointer", display: "inline-flex" }}>
-              <Icon name="x" size={13} style={{ color: T.mut }} />
+              <Icon name="x" size={13} style={{ color: TL.mute }} />
             </button>
           )}
         </div>
       </Kort>
 
       {/* KPI-strip */}
-      <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: T.gap }}>
+      <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: 16 }}>
         <KpiFlis label="Avtaler i dag" value={counts.avtaler} />
         <KpiFlis label="Aktive oppgaver" value={counts.oppgaver} />
         <KpiFlis label="Ubesvarte e-poster" value={counts.ubesvarte} varsle />
@@ -314,19 +285,19 @@ export function AgencyLiveV2({ coachFirstName = "Anders" }: { coachFirstName?: s
               <span
                 style={{
                   width: 34, height: 34, borderRadius: 10, display: "inline-flex", alignItems: "center", justifyContent: "center",
-                  background: m.app ? T.forest : T.panel2, color: m.app ? T.lime : T.mut,
+                  background: m.app ? TL.fill : TL.dock, color: m.app ? TL.fill : TL.mute,
                 }}
               >
                 <Icon name={m.icon} size={16} />
               </span>
-              <span style={{ fontFamily: T.disp, fontSize: 13, fontWeight: 700, color: T.fg, letterSpacing: "-0.01em" }}>{m.label}</span>
-              {m.href && <Icon name="arrow-up-right" size={12} style={{ position: "absolute", right: 12, top: 12, color: T.mut }} />}
+              <span style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 700, color: TL.text, letterSpacing: "-0.01em" }}>{m.label}</span>
+              {m.href && <Icon name="arrow-up-right" size={12} style={{ position: "absolute", right: 12, top: 12, color: TL.mute }} />}
             </>
           );
           const style: React.CSSProperties = {
             position: "relative", display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 12,
-            borderRadius: 14, border: `1px solid ${T.border}`, background: T.panel, padding: 12, textDecoration: "none",
-            color: T.fg, cursor: m.href ? "pointer" : "not-allowed", opacity: m.href ? 1 : 0.5,
+            borderRadius: 14, border: `1px solid ${TL.hair}`, background: TL.elev, padding: 12, textDecoration: "none",
+            color: TL.text, cursor: m.href ? "pointer" : "not-allowed", opacity: m.href ? 1 : 0.5,
           };
           return m.href ? (
             <Link key={m.key} href={m.href} className="v2-kort-h" style={style}>
@@ -342,18 +313,18 @@ export function AgencyLiveV2({ coachFirstName = "Anders" }: { coachFirstName?: s
 
       {/* Dagens tre */}
       <Kort tint style={{ padding: "18px 20px" }}>
-        <Caps color={T.lime}>DAGENS TRE · IKKE-FORHANDLINGSBART</Caps>
+        <Caps color={TL.fill}>DAGENS TRE · IKKE-FORHANDLINGSBART</Caps>
         <div style={{ marginTop: 13, display: "flex", flexWrap: "wrap", gap: 10 }}>
           {DAGENS_TRE.map((t) => (
             <span
               key={t.n}
               style={{
                 display: "inline-flex", alignItems: "center", gap: 9, borderRadius: 9999,
-                border: `1px solid color-mix(in srgb, ${T.lime} 45%, transparent)`, background: T.farge.svartA20,
-                padding: "10px 16px 10px 12px", fontFamily: T.disp, fontSize: 15, fontWeight: 700, color: T.fg,
+                border: `1px solid color-mix(in srgb, ${TL.fill} 45%, transparent)`, background: TL.scrim,
+                padding: "10px 16px 10px 12px", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 700, color: TL.text,
               }}
             >
-              <b style={{ fontFamily: T.mono, fontSize: 11, fontWeight: 800, color: T.lime }}>{t.n}</b>
+              <b style={{ fontFamily: TL.font.mono, fontSize: 11, fontWeight: 800, color: TL.fill }}>{t.n}</b>
               <Icon name={t.icon} size={14} />
               {t.label}
             </span>
@@ -362,14 +333,14 @@ export function AgencyLiveV2({ coachFirstName = "Anders" }: { coachFirstName?: s
       </Kort>
 
       {/* BENTO */}
-      <div className="flex flex-col lg:flex-row" style={{ gap: T.gap, alignItems: "flex-start" }}>
+      <div className="flex flex-col lg:flex-row" style={{ gap: 16, alignItems: "flex-start" }}>
         {/* venstre kolonne */}
-        <div className="flex w-full flex-col lg:flex-[1.3]" style={{ gap: T.gap, minWidth: 0 }}>
+        <div className="flex w-full flex-col lg:flex-[1.3]" style={{ gap: 16, minWidth: 0 }}>
           {/* Kalender */}
           <Kort>
             <KortHode icon="calendar" title="Dagens kalender">
-              <span style={{ marginLeft: 4, fontFamily: T.mono, fontSize: 10, fontWeight: 800, color: T.mut }}>{counts.avtaler} AVTALER</span>
-              <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: T.mut }}>Google Kalender</span>
+              <span style={{ marginLeft: 4, fontFamily: TL.font.mono, fontSize: 10, fontWeight: 800, color: TL.mute }}>{counts.avtaler} AVTALER</span>
+              <span style={{ marginLeft: "auto", fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: TL.mute }}>Google Kalender</span>
             </KortHode>
             <div>
               {fEvents.map((ev, i) => (
@@ -378,7 +349,7 @@ export function AgencyLiveV2({ coachFirstName = "Anders" }: { coachFirstName?: s
                   last={i === fEvents.length - 1}
                   onClick={() => setDrawer({ kind: "event", item: ev })}
                   leading={
-                    <span style={{ width: 56, flex: "none", fontFamily: T.mono, fontSize: 12, fontWeight: 800, color: T.fg, fontVariantNumeric: "tabular-nums" }}>
+                    <span style={{ width: 56, flex: "none", fontFamily: TL.font.mono, fontSize: 12, fontWeight: 800, color: TL.text, fontVariantNumeric: "tabular-nums" }}>
                       {ev.allday ? "Hele dagen" : ev.time}
                     </span>
                   }
@@ -397,8 +368,8 @@ export function AgencyLiveV2({ coachFirstName = "Anders" }: { coachFirstName?: s
                   className="v2-press v2-focus"
                   style={{
                     marginTop: 6, display: "flex", width: "100%", alignItems: "center", justifyContent: "center", gap: 6,
-                    borderRadius: 10, border: `1px dashed ${T.border}`, padding: "9px 0", fontFamily: T.mono, fontSize: 10,
-                    fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: T.mut, textDecoration: "none",
+                    borderRadius: 10, border: `1px dashed ${TL.hair}`, padding: "9px 0", fontFamily: TL.font.mono, fontSize: 10,
+                    fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: TL.mute, textDecoration: "none",
                   }}
                 >
                   <Icon name="chevron-down" size={13} /> +{EVENTS_MORE} flere avtaler i dag
@@ -410,7 +381,7 @@ export function AgencyLiveV2({ coachFirstName = "Anders" }: { coachFirstName?: s
           {/* Gmail */}
           <Kort>
             <KortHode icon="mail" title="Gmail">
-              <span style={{ marginLeft: 4, fontFamily: T.mono, fontSize: 10, fontWeight: 800, color: T.down }}>{emails.length} UBESVART</span>
+              <span style={{ marginLeft: 4, fontFamily: TL.font.mono, fontSize: 10, fontWeight: 800, color: TL.danger }}>{emails.length} UBESVART</span>
             </KortHode>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 10 }}>
               {(
@@ -429,9 +400,9 @@ export function AgencyLiveV2({ coachFirstName = "Anders" }: { coachFirstName?: s
                     onClick={() => setPf(k)}
                     className="v2-press v2-focus"
                     style={{
-                      height: 28, borderRadius: 9999, padding: "0 12px", fontFamily: T.mono, fontSize: 10, fontWeight: 700,
+                      height: 28, borderRadius: 9999, padding: "0 12px", fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700,
                       textTransform: "uppercase", letterSpacing: "0.06em", cursor: "pointer",
-                      color: on ? T.onLime : T.fg2, background: on ? T.lime : "transparent", border: `1px solid ${on ? T.lime : T.border}`,
+                      color: on ? TL.onFill : TL.mute, background: on ? TL.fill : "transparent", border: `1px solid ${on ? TL.fill : TL.hair}`,
                     }}
                   >
                     {l}
@@ -450,20 +421,20 @@ export function AgencyLiveV2({ coachFirstName = "Anders" }: { coachFirstName?: s
                       key={e.id}
                       onClick={() => setDrawer({ kind: "email", item: e })}
                       className="v2-row-h"
-                      style={{ display: "flex", gap: 11, borderRadius: 10, padding: "12px 8px", cursor: "pointer", borderBottom: i < fEmails.length - 1 ? `1px solid ${T.border}` : "none" }}
+                      style={{ display: "flex", gap: 11, borderRadius: 10, padding: "12px 8px", cursor: "pointer", borderBottom: i < fEmails.length - 1 ? `1px solid ${TL.hair}` : "none" }}
                     >
                       <LiveAvatar initials={e.initials} tone={e.priority === "urgent" ? "urgent" : "neutral"} size={34} />
                       <div style={{ minWidth: 0, flex: 1 }}>
                         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8 }}>
-                          <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 700, color: T.fg }}>{e.name}</span>
-                          <span style={{ display: "inline-flex", alignItems: "center", gap: 4, borderRadius: 9999, border: `1px solid ${Pri.color}`, padding: "2px 7px 2px 6px", fontFamily: T.mono, fontSize: 8.5, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.06em", color: Pri.color }}>
+                          <span style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 700, color: TL.text }}>{e.name}</span>
+                          <span style={{ display: "inline-flex", alignItems: "center", gap: 4, borderRadius: 9999, border: `1px solid ${Pri.color}`, padding: "2px 7px 2px 6px", fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.06em", color: Pri.color }}>
                             <Icon name={Pri.icon} size={10} style={{ color: Pri.color }} />
                             {Pri.label}
                           </span>
-                          <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 10, color: T.mut }}>{e.when}</span>
+                          <span style={{ marginLeft: "auto", fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>{e.when}</span>
                         </div>
-                        <div style={{ marginTop: 3, fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>{e.subject}</div>
-                        <div style={{ marginTop: 3, fontFamily: T.ui, fontSize: 12, lineHeight: 1.45, color: T.mut, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{e.snippet}</div>
+                        <div style={{ marginTop: 3, fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text }}>{e.subject}</div>
+                        <div style={{ marginTop: 3, fontFamily: TL.font.sans, fontSize: 12, lineHeight: 1.45, color: TL.mute, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{e.snippet}</div>
                         {reply === e.id ? (
                           <SvarBoks
                             onSend={() => {
@@ -489,7 +460,7 @@ export function AgencyLiveV2({ coachFirstName = "Anders" }: { coachFirstName?: s
           {/* Oppgaver */}
           <Kort>
             <KortHode icon="check-check" title="Oppgaver">
-              <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: T.mut }}>Notion ↗</span>
+              <span style={{ marginLeft: "auto", fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: TL.mute }}>Notion ↗</span>
             </KortHode>
             <Caps size={9} style={{ margin: "4px 0 8px" }}>FORFALLER I DAG</Caps>
             <div>
@@ -499,21 +470,21 @@ export function AgencyLiveV2({ coachFirstName = "Anders" }: { coachFirstName?: s
                   type="button"
                   onClick={() => toggleTask(t.id)}
                   className="v2-row-h v2-focus"
-                  style={{ display: "flex", width: "100%", gap: 11, borderRadius: 10, padding: "11px 8px", textAlign: "left", cursor: "pointer", border: "none", background: "none", borderBottom: i < tasks.length - 1 ? `1px solid ${T.border}` : "none" }}
+                  style={{ display: "flex", width: "100%", gap: 11, borderRadius: 10, padding: "11px 8px", textAlign: "left", cursor: "pointer", border: "none", background: "none", borderBottom: i < tasks.length - 1 ? `1px solid ${TL.hair}` : "none" }}
                 >
                   <span
                     style={{
                       marginTop: 1, width: 18, height: 18, borderRadius: 6, flex: "none", display: "inline-flex", alignItems: "center", justifyContent: "center",
-                      border: `1px solid ${t.done ? T.lime : T.border}`, background: t.done ? T.lime : "transparent", color: T.onLime,
+                      border: `1px solid ${t.done ? TL.fill : TL.hair}`, background: t.done ? TL.fill : "transparent", color: TL.onFill,
                     }}
                   >
                     {t.done && <Icon name="check" size={12} strokeWidth={2.4} />}
                   </span>
                   <span>
-                    <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: t.done ? T.mut : T.fg, textDecoration: t.done ? "line-through" : "none" }}>{t.title}</span>
-                    <span style={{ marginTop: 6, display: "flex", alignItems: "center", gap: 8, fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.mut }}>
-                      <span style={{ borderRadius: 5, padding: "2px 6px", fontSize: 8.5, fontWeight: 800, letterSpacing: "0.04em", color: t.prio === "P1" ? T.down : T.warn, background: `color-mix(in srgb, ${t.prio === "P1" ? T.down : T.warn} 14%, transparent)` }}>{t.prio}</span>
-                      <span style={{ borderRadius: 5, background: T.panel3, padding: "2px 7px", textTransform: "uppercase", letterSpacing: "0.06em" }}>{t.tag}</span>
+                    <span style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: t.done ? TL.mute : TL.text, textDecoration: t.done ? "line-through" : "none" }}>{t.title}</span>
+                    <span style={{ marginTop: 6, display: "flex", alignItems: "center", gap: 8, fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, color: TL.mute }}>
+                      <span style={{ borderRadius: 5, padding: "2px 6px", fontSize: 8.5, fontWeight: 800, letterSpacing: "0.04em", color: t.prio === "P1" ? TL.danger : TL.warn, background: `color-mix(in srgb, ${t.prio === "P1" ? TL.danger : TL.warn} 14%, transparent)` }}>{t.prio}</span>
+                      <span style={{ borderRadius: 5, background: TL.dim, padding: "2px 7px", textTransform: "uppercase", letterSpacing: "0.06em" }}>{t.tag}</span>
                       {t.due}
                     </span>
                   </span>
@@ -524,11 +495,11 @@ export function AgencyLiveV2({ coachFirstName = "Anders" }: { coachFirstName?: s
         </div>
 
         {/* høyre kolonne */}
-        <div className="flex w-full flex-col lg:flex-1" style={{ gap: T.gap, minWidth: 0 }}>
+        <div className="flex w-full flex-col lg:flex-1" style={{ gap: 16, minWidth: 0 }}>
           {/* Meldinger */}
           <Kort>
             <KortHode icon="message-square" title="Uleste meldinger">
-              <span style={{ marginLeft: 4, display: "inline-flex", height: 22, minWidth: 22, alignItems: "center", justifyContent: "center", borderRadius: 9999, background: T.lime, padding: "0 7px", fontFamily: T.mono, fontSize: 10, fontWeight: 800, color: T.onLime }}>
+              <span style={{ marginLeft: 4, display: "inline-flex", height: 22, minWidth: 22, alignItems: "center", justifyContent: "center", borderRadius: 9999, background: TL.fill, padding: "0 7px", fontFamily: TL.font.mono, fontSize: 10, fontWeight: 800, color: TL.onFill }}>
                 {counts.uleste}
               </span>
             </KortHode>
@@ -538,7 +509,7 @@ export function AgencyLiveV2({ coachFirstName = "Anders" }: { coachFirstName?: s
                 <MsgRad key={m.id} m={m} last={i === beeper.length - 1} reply={reply} setReply={setReply} onOpen={() => setDrawer({ kind: "msg", item: m })} onRead={(verb) => readMessage(m.id, verb)} />
               ))}
             </div>
-            <Caps size={9} style={{ margin: "12px 0 8px", paddingTop: 12, borderTop: `1px solid ${T.border}` }}>IMESSAGE · {imsg.reduce((s, m) => s + m.unread, 0)} ULESTE</Caps>
+            <Caps size={9} style={{ margin: "12px 0 8px", paddingTop: 12, borderTop: `1px solid ${TL.hair}` }}>IMESSAGE · {imsg.reduce((s, m) => s + m.unread, 0)} ULESTE</Caps>
             <div>
               {imsg.map((m, i) => (
                 <MsgRad key={m.id} m={m} last={i === imsg.length - 1} reply={reply} setReply={setReply} onOpen={() => setDrawer({ kind: "msg", item: m })} onRead={(verb) => readMessage(m.id, verb)} />
@@ -549,22 +520,22 @@ export function AgencyLiveV2({ coachFirstName = "Anders" }: { coachFirstName?: s
           {/* Notion-prosjekt */}
           <Kort>
             <KortHode icon="book-open" title="Notion-prosjekt">
-              <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: T.mut }}>Notion ↗</span>
+              <span style={{ marginLeft: "auto", fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: TL.mute }}>Notion ↗</span>
             </KortHode>
-            <div style={{ fontFamily: T.disp, fontSize: 16, fontWeight: 700, color: T.fg, letterSpacing: "-0.015em" }}>{NOTION.project}</div>
-            <div style={{ margin: "8px 0 14px", display: "flex", alignItems: "center", gap: 12, fontFamily: T.mono, fontSize: 10, color: T.mut }}>
-              <span style={{ fontWeight: 800, textTransform: "uppercase", color: T.lime }}>{NOTION.status}</span>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 16, fontWeight: 700, color: TL.text, letterSpacing: "-0.015em" }}>{NOTION.project}</div>
+            <div style={{ margin: "8px 0 14px", display: "flex", alignItems: "center", gap: 12, fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>
+              <span style={{ fontWeight: 800, textTransform: "uppercase", color: TL.fill }}>{NOTION.status}</span>
               <span>{NOTION.sprint}</span>
             </div>
-            <div style={{ height: 8, borderRadius: 9999, background: T.track, overflow: "hidden" }}>
-              <span style={{ display: "block", height: "100%", borderRadius: 9999, width: `${NOTION.progress}%`, background: `linear-gradient(90deg, ${T.forest}, ${T.lime})` }} />
+            <div style={{ height: 8, borderRadius: 9999, background: TL.hair, overflow: "hidden" }}>
+              <span style={{ display: "block", height: "100%", borderRadius: 9999, width: `${NOTION.progress}%`, background: `linear-gradient(90deg, ${TL.fill}, ${TL.fill})` }} />
             </div>
-            <div style={{ marginTop: 7, fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.mut }}>{NOTION.progress}% fullført</div>
+            <div style={{ marginTop: 7, fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, color: TL.mute }}>{NOTION.progress}% fullført</div>
             <div className="grid grid-cols-2 sm:grid-cols-5" style={{ gap: 8, marginTop: 16 }}>
               {NOTION.columns.map((c) => (
-                <div key={c.name} style={{ borderRadius: 10, border: `1px solid ${T.border}`, background: T.panel2, padding: "10px 6px", textAlign: "center" }}>
-                  <b style={{ display: "block", fontFamily: T.mono, fontSize: 18, fontWeight: 700, color: T.fg }}>{c.count}</b>
-                  <span style={{ marginTop: 4, display: "block", fontFamily: T.mono, fontSize: 8, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: T.mut }}>{c.name}</span>
+                <div key={c.name} style={{ borderRadius: 10, border: `1px solid ${TL.hair}`, background: TL.dock, padding: "10px 6px", textAlign: "center" }}>
+                  <b style={{ display: "block", fontFamily: TL.font.mono, fontSize: 18, fontWeight: 700, color: TL.text }}>{c.count}</b>
+                  <span style={{ marginTop: 4, display: "block", fontFamily: TL.font.mono, fontSize: 8, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: TL.mute }}>{c.name}</span>
                 </div>
               ))}
             </div>
@@ -575,7 +546,7 @@ export function AgencyLiveV2({ coachFirstName = "Anders" }: { coachFirstName?: s
       {/* drawer */}
       {drawer && (
         <div className="fixed inset-0 z-[60] flex justify-end">
-          <div onClick={() => setDrawer(null)} style={{ position: "absolute", inset: 0, background: T.farge.nestenSvartA62, backdropFilter: "blur(2px)" }} />
+          <div onClick={() => setDrawer(null)} style={{ position: "absolute", inset: 0, background: TL.scrim, backdropFilter: "none" }} />
           <DrawerBody drawer={drawer} onClose={() => setDrawer(null)} onReadEmail={readEmail} onReadMessage={readMessage} />
         </div>
       )}
@@ -585,8 +556,8 @@ export function AgencyLiveV2({ coachFirstName = "Anders" }: { coachFirstName?: s
         <div
           className="fixed z-[70]"
           style={{
-            right: 18, top: 18, display: "flex", alignItems: "center", gap: 8, borderRadius: 12, background: T.lime,
-            padding: "12px 16px", fontFamily: T.disp, fontSize: 13, fontWeight: 700, color: T.onLime, boxShadow: `0 12px 28px ${T.farge.svartA35}`,
+            right: 18, top: 18, display: "flex", alignItems: "center", gap: 8, borderRadius: 12, background: TL.fill,
+            padding: "12px 16px", fontFamily: TL.font.sans, fontSize: 13, fontWeight: 700, color: TL.onFill, boxShadow: `0 12px 28px ${TL.scrim}`,
           }}
         >
           <Icon name="check" size={15} strokeWidth={2.4} /> {toast}
@@ -616,22 +587,22 @@ function MsgRad({
     <div
       onClick={onOpen}
       className="v2-row-h"
-      style={{ display: "flex", gap: 11, borderRadius: 10, padding: "10px 8px", cursor: "pointer", borderBottom: last ? "none" : `1px solid ${T.border}` }}
+      style={{ display: "flex", gap: 11, borderRadius: 10, padding: "10px 8px", cursor: "pointer", borderBottom: last ? "none" : `1px solid ${TL.hair}` }}
     >
       <LiveAvatar initials={m.initials} tone={m.fresh ? "lime" : "neutral"} size={32} />
       <div style={{ minWidth: 0, flex: 1 }}>
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 7 }}>
-          <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 700, color: T.fg }}>{m.name}</span>
+          <span style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 700, color: TL.text }}>{m.name}</span>
           {m.unread > 1 && (
-            <span style={{ display: "inline-flex", height: 17, minWidth: 17, alignItems: "center", justifyContent: "center", borderRadius: 9999, background: T.down, padding: "0 5px", fontFamily: T.mono, fontSize: 9, fontWeight: 800, color: T.fg }}>
+            <span style={{ display: "inline-flex", height: 17, minWidth: 17, alignItems: "center", justifyContent: "center", borderRadius: 9999, background: TL.danger, padding: "0 5px", fontFamily: TL.font.mono, fontSize: 9, fontWeight: 800, color: TL.text }}>
               {m.unread}
             </span>
           )}
-          <span style={{ borderRadius: 5, background: T.panel3, padding: "2px 7px", fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: T.mut }}>{m.source}</span>
-          {m.fresh && <span style={{ width: 7, height: 7, borderRadius: 9999, background: T.lime }} />}
-          <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 10, color: T.mut }}>{m.when}</span>
+          <span style={{ borderRadius: 5, background: TL.dim, padding: "2px 7px", fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: TL.mute }}>{m.source}</span>
+          {m.fresh && <span style={{ width: 7, height: 7, borderRadius: 9999, background: TL.fill }} />}
+          <span style={{ marginLeft: "auto", fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>{m.when}</span>
         </div>
-        <div style={{ marginTop: 3, fontFamily: T.ui, fontSize: 12, lineHeight: 1.45, color: T.mut, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{m.snippet}</div>
+        <div style={{ marginTop: 3, fontFamily: TL.font.sans, fontSize: 12, lineHeight: 1.45, color: TL.mute, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{m.snippet}</div>
         {reply === m.id ? (
           <SvarBoks
             onSend={() => {
@@ -672,29 +643,29 @@ function DrawerBody({
     <div
       style={{
         position: "relative", width: 420, maxWidth: "88%", height: "100%", display: "flex", flexDirection: "column",
-        background: T.panel, borderLeft: `1px solid ${T.borderS}`, boxShadow: `-20px 0 60px ${T.farge.svartA40}`,
+        background: TL.elev, borderLeft: `1px solid ${TL.hair}`, boxShadow: `-20px 0 60px ${TL.scrim}`,
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 20px", borderBottom: `1px solid ${T.border}` }}>
-        <Caps size={9} color={T.lime}>{eyebrow}</Caps>
-        <button type="button" onClick={onClose} aria-label="Lukk" className="v2-focus" style={{ width: 34, height: 34, borderRadius: 9, border: `1px solid ${T.border}`, background: "none", color: T.fg, cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 20px", borderBottom: `1px solid ${TL.hair}` }}>
+        <Caps size={9} color={TL.fill}>{eyebrow}</Caps>
+        <button type="button" onClick={onClose} aria-label="Lukk" className="v2-focus" style={{ width: 34, height: 34, borderRadius: 9, border: `1px solid ${TL.hair}`, background: "none", color: TL.text, cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
           <Icon name="x" size={16} />
         </button>
       </div>
       <div style={{ flex: 1, overflowY: "auto", padding: "22px 20px" }}>
-        <h3 style={{ margin: 0, fontFamily: T.disp, fontSize: 19, fontWeight: 700, lineHeight: 1.25, letterSpacing: "-0.015em", color: T.fg }}>{title}</h3>
+        <h3 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 19, fontWeight: 700, lineHeight: 1.25, letterSpacing: "-0.015em", color: TL.text }}>{title}</h3>
         {kind === "email" && (
-          <div style={{ marginTop: 8, fontFamily: T.mono, fontSize: 10, color: T.mut }}>{item.name} · {item.from} · {item.when}</div>
+          <div style={{ marginTop: 8, fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>{item.name} · {item.from} · {item.when}</div>
         )}
         {kind === "event" && (
-          <div style={{ marginTop: 8, fontFamily: T.mono, fontSize: 10, color: T.mut }}>{item.allday ? "Hele dagen" : item.time} · {item.who}</div>
+          <div style={{ marginTop: 8, fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>{item.allday ? "Hele dagen" : item.time} · {item.who}</div>
         )}
         {kind === "msg" && (
-          <div style={{ marginTop: 8, fontFamily: T.mono, fontSize: 10, color: T.mut }}>{item.source} · {item.when} · {item.unread} uleste</div>
+          <div style={{ marginTop: 8, fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>{item.source} · {item.when} · {item.unread} uleste</div>
         )}
-        <p style={{ marginTop: 18, fontFamily: T.ui, fontSize: 14, lineHeight: 1.6, color: T.fg2 }}>{body}</p>
+        <p style={{ marginTop: 18, fontFamily: TL.font.sans, fontSize: 14, lineHeight: 1.6, color: TL.mute }}>{body}</p>
         {loc && (
-          <div style={{ marginTop: 14, display: "inline-flex", alignItems: "center", gap: 7, fontFamily: T.mono, fontSize: 11, color: T.mut }}>
+          <div style={{ marginTop: 14, display: "inline-flex", alignItems: "center", gap: 7, fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>
             <Icon name="map-pin" size={14} /> {loc}
           </div>
         )}
@@ -709,7 +680,7 @@ function DrawerBody({
           />
         )}
       </div>
-      <div style={{ display: "flex", gap: 10, padding: "16px 20px", borderTop: `1px solid ${T.border}` }}>
+      <div style={{ display: "flex", gap: 10, padding: "16px 20px", borderTop: `1px solid ${TL.hair}` }}>
         {(kind === "email" || kind === "msg") && (
           <Knapp
             icon="check"

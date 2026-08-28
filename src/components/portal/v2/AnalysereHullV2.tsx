@@ -1,27 +1,13 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ Hull-analyse — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
  * T.* only. Lys PlayerHQ.
  */
 
 import { Fragment, useEffect, useRef, useState } from "react";
-import {
-  T,
-  fmtSg,
-  Caps,
-  Kort,
-  KpiFlis,
-  PillTabs,
-  Rad,
-  TomTilstand,
-  MiniSpark,
-  VarmeKart,
-  HjelpTips,
-  hoverKapabel,
-} from "@/components/v2";
+import { fmtSg, Caps, Kort, KpiFlis, PillTabs, Rad, TomTilstand, MiniSpark, VarmeKart, HjelpTips, hoverKapabel } from "@/components/v2";
 import { MIN_RUNDER, type HullVarmeCelle, type HullVarmeResultat } from "@/lib/domain/hole-heatmap";
-
 /* ── Datakontrakt (mappes fra Prisma i ruten) ──────────────────────────── */
 
 export interface HullSone {
@@ -130,10 +116,10 @@ function SoneDiagramBlokk({
     kanHover.current = hoverKapabel();
   }, []);
 
-  // Tom-tilstand (0 SG-registreringer totalt): nøytral T.mut uansett fortegn
+  // Tom-tilstand (0 SG-registreringer totalt): nøytral TL.mute uansett fortegn
   // — aldri fabrikker et tall når datagrunnlaget mangler.
   const visSg = harData && sone.sg != null;
-  const farge = visSg ? (sone.sg! >= 0 ? T.up : T.down) : T.mut;
+  const farge = visSg ? (sone.sg! >= 0 ? TL.ok : TL.danger) : TL.mute;
   const sgTekst = visSg ? `${fmtSg2(sone.sg!)} slag` : "—";
   const kortTekst = `${sone.label}: ${sgTekst}`;
 
@@ -162,20 +148,20 @@ function SoneDiagramBlokk({
           alignItems: "center",
           gap: 6,
           padding: "12px 4px 10px",
-          borderRadius: T.rRow,
+          borderRadius: TL.radius.row,
           cursor: "pointer",
-          background: T.panel2,
-          border: `1px solid ${T.border}`,
+          background: TL.dock,
+          border: `1px solid ${TL.hair}`,
         }}
       >
         {/* Fasit-soneblok: kode + verdi + spor — ingen ikonrad. */}
-        <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: T.mut }}>
+        <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: TL.mute }}>
           {sone.kode}
         </span>
-        <span style={{ fontFamily: T.mono, fontSize: 12.5, fontWeight: 700, color: farge, fontVariantNumeric: "tabular-nums" }}>
+        <span style={{ fontFamily: TL.font.mono, fontSize: 12.5, fontWeight: 700, color: farge, fontVariantNumeric: "tabular-nums" }}>
           {visSg ? fmtSg2(sone.sg!) : "—"}
         </span>
-        <span style={{ width: "70%", height: 4, borderRadius: 9999, background: T.track, overflow: "hidden" }}>
+        <span style={{ width: "70%", height: 4, borderRadius: 9999, background: TL.hair, overflow: "hidden" }}>
           <span
             style={{
               display: "block",
@@ -198,22 +184,22 @@ function SoneDiagramBlokk({
             zIndex: 50,
             width: "max-content",
             maxWidth: 220,
-            background: T.panel3,
-            border: `1px solid ${T.border}`,
+            background: TL.dim,
+            border: `1px solid ${TL.hair}`,
             borderRadius: 12,
             padding: "11px 13px",
-            boxShadow: `0 12px 32px ${T.farge.svartA45}`,
+            boxShadow: `0 12px 32px ${TL.scrim}`,
           }}
         >
-          <div style={{ fontFamily: T.ui, fontSize: 12.5, fontWeight: 700, color: T.fg }}>{sone.label}</div>
+          <div style={{ fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 700, color: TL.text }}>{sone.label}</div>
           <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 14, marginTop: 6 }}>
-            <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut }}>mot Broadie scratch</span>
-            <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: farge }}>{sgTekst}</span>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 9, color: TL.mute }}>mot Broadie scratch</span>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, color: farge }}>{sgTekst}</span>
           </div>
           <div style={{ marginTop: 8 }}>
             <MiniSpark verdier={sone.trend} />
           </div>
-          <p style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, lineHeight: 1.5, margin: "8px 0 0", paddingTop: 7, borderTop: `1px solid ${T.border}` }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 10.5, color: TL.mute, lineHeight: 1.5, margin: "8px 0 0", paddingTop: 7, borderTop: `1px solid ${TL.hair}` }}>
             {sone.okter} økter · {sone.minutter} min siste 30 d
           </p>
         </div>
@@ -237,7 +223,7 @@ function SoneDiagram({ soner, harData }: { soner: HullSone[]; harData: boolean }
             {i > 0 && (
               <span
                 aria-hidden
-                style={{ flex: "0 1 10px", minWidth: 6, height: 2, borderRadius: 2, background: T.border, alignSelf: "center", marginTop: 20 }}
+                style={{ flex: "0 1 10px", minWidth: 6, height: 2, borderRadius: 2, background: TL.hair, alignSelf: "center", marginTop: 20 }}
               />
             )}
             <SoneDiagramBlokk sone={s} harData={harData} align={i < soner.length / 2 ? "left" : "right"} />
@@ -269,7 +255,7 @@ function SoneFane({ soner, sgGrunnlag }: { soner: HullSone[]; sgGrunnlag: string
               SG per sone <HjelpTips k="sgOmrade" size={11} />
             </span>
           }
-          action={<span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut }}>mot Broadie scratch</span>}
+          action={<span style={{ fontFamily: TL.font.mono, fontSize: 9, color: TL.mute }}>mot Broadie scratch</span>}
         >
           {(() => {
             const maks = Math.max(0.5, ...kategorier.map((k) => Math.abs(k.sg)));
@@ -281,9 +267,9 @@ function SoneFane({ soner, sgGrunnlag }: { soner: HullSone[]; sgGrunnlag: string
                   key={k.akse}
                   style={{ display: "grid", gridTemplateColumns: "82px minmax(0,1fr) 78px", gap: 8, alignItems: "center", minHeight: 34 }}
                 >
-                  <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg, minWidth: 0 }}>{navn.get(k.akse) ?? k.akse}</span>
-                  <span style={{ position: "relative", height: 10, borderRadius: 9999, background: T.track, minWidth: 0 }}>
-                    <span aria-hidden style={{ position: "absolute", left: "50%", top: -3, bottom: -3, width: 1, background: T.borderS }} />
+                  <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.text, minWidth: 0 }}>{navn.get(k.akse) ?? k.akse}</span>
+                  <span style={{ position: "relative", height: 10, borderRadius: 9999, background: TL.hair, minWidth: 0 }}>
+                    <span aria-hidden style={{ position: "absolute", left: "50%", top: -3, bottom: -3, width: 1, background: TL.hair }} />
                     <span
                       style={{
                         position: "absolute",
@@ -291,18 +277,18 @@ function SoneFane({ soner, sgGrunnlag }: { soner: HullSone[]; sgGrunnlag: string
                         bottom: 0,
                         borderRadius: 9999,
                         width: `${(Math.abs(k.sg) / maks) * 48}%`,
-                        background: gain ? T.up : T.down,
+                        background: gain ? TL.ok : TL.danger,
                         ...(gain ? { left: "50%" } : { right: "50%" }),
                       }}
                     />
                   </span>
                   <span
                     style={{
-                      fontFamily: T.mono,
+                      fontFamily: TL.font.mono,
                       fontSize: 13,
                       textAlign: "right",
                       fontVariantNumeric: "tabular-nums",
-                      color: gain ? T.up : T.down,
+                      color: gain ? TL.ok : TL.danger,
                     }}
                   >
                     {fmtSg2(k.sg)} slag
@@ -325,7 +311,7 @@ function SoneFane({ soner, sgGrunnlag }: { soner: HullSone[]; sgGrunnlag: string
       <Kort
         eyebrow="Per sone"
         action={
-          <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 9, color: TL.mute }}>
             {sgGrunnlag ?? "ingen SG-data"}
           </span>
         }
@@ -343,11 +329,11 @@ function SoneFane({ soner, sgGrunnlag }: { soner: HullSone[]; sgGrunnlag: string
                   width: 84,
                   flex: "none",
                   textAlign: "right",
-                  fontFamily: T.mono,
+                  fontFamily: TL.font.mono,
                   fontSize: 12.5,
                   fontWeight: 700,
                   fontVariantNumeric: "tabular-nums",
-                  color: s.sg == null ? T.mut : s.sg >= 0 ? T.up : T.down,
+                  color: s.sg == null ? TL.mute : s.sg >= 0 ? TL.ok : TL.danger,
                 }}
               >
                 {s.sg == null ? "—" : `${fmtSg2(s.sg)} slag`}
@@ -373,7 +359,7 @@ function VarmekartKort({ hullVarme }: { hullVarme: HullVarmeResultat }) {
       }
       action={
         hullVarme.harNokData ? (
-          <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 9, color: TL.mute }}>
             {hullVarme.rundeAntall} runder m/ hull-for-hull
           </span>
         ) : undefined
@@ -386,7 +372,7 @@ function VarmekartKort({ hullVarme }: { hullVarme: HullVarmeResultat }) {
               rows={grid.rows}
               cols={grid.cols}
               values={grid.values}
-              color={T.down}
+              color={TL.danger}
               fmt={(_v, ri, ci) => {
                 const c = grid.raw[ri]?.[ci];
                 if (!c) return "Ingen data på dette hullet";
@@ -395,11 +381,11 @@ function VarmekartKort({ hullVarme }: { hullVarme: HullVarmeResultat }) {
             />
           </div>
           {/* Fasit-legende: på/under par → konsekvent bogey+ */}
-          <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 12, fontFamily: T.mono, fontSize: 9.5, color: T.mut }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 12, fontFamily: TL.font.mono, fontSize: 9.5, color: TL.mute }}>
             <span>på/under par</span>
             <span
               aria-hidden
-              style={{ width: 64, height: 8, borderRadius: 9999, background: `linear-gradient(to right, ${T.panel2}, ${T.down})` }}
+              style={{ width: 64, height: 8, borderRadius: 9999, background: `linear-gradient(to right, ${TL.dock}, ${TL.danger})` }}
             />
             <span>konsekvent bogey+</span>
           </div>
@@ -446,7 +432,7 @@ function HullFane({ runde, hullVarme }: { runde: HullRunde | null; hullVarme: Hu
     <>
       <Caps>Siste runde · {runde.courseName}</Caps>
 
-      <div className="grid grid-cols-3" style={{ gap: T.gap }}>
+      <div className="grid grid-cols-3" style={{ gap: 16 }}>
         <KpiFlis label="Score (brutto)" value={runde.totalScore} instant />
         <KpiFlis label="Mot par" value={fmtSignedNb(runde.parDiff)} instant />
         <KpiFlis label="Snitt per hull" value={snittTekst} instant />
@@ -461,7 +447,7 @@ function HullFane({ runde, hullVarme }: { runde: HullRunde | null; hullVarme: Hu
           </span>
         }
       >
-        <div style={{ maxHeight: 280, overflow: "auto", borderTop: `1px solid ${T.border}`, marginTop: 8 }}>
+        <div style={{ maxHeight: 280, overflow: "auto", borderTop: `1px solid ${TL.hair}`, marginTop: 8 }}>
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr>
@@ -471,16 +457,16 @@ function HullFane({ runde, hullVarme }: { runde: HullRunde | null; hullVarme: Hu
                     style={{
                       position: "sticky",
                       top: 0,
-                      background: T.panel,
+                      background: TL.elev,
                       textAlign: i === 0 ? "left" : "right",
-                      fontFamily: T.mono,
+                      fontFamily: TL.font.mono,
                       fontSize: 9.5,
                       letterSpacing: "0.08em",
                       textTransform: "uppercase",
-                      color: T.mut,
+                      color: TL.mute,
                       fontWeight: 500,
                       padding: "8px 4px",
-                      borderBottom: `1px solid ${T.border}`,
+                      borderBottom: `1px solid ${TL.hair}`,
                     }}
                   >
                     {h}
@@ -493,9 +479,9 @@ function HullFane({ runde, hullVarme }: { runde: HullRunde | null; hullVarme: Hu
                 const diff = h.strokes - h.par;
                 const td = (hoyre: boolean, farge?: string): React.CSSProperties => ({
                   padding: "8px 4px",
-                  borderBottom: i === runde.holes.length - 1 ? "none" : `1px solid ${T.border}`,
+                  borderBottom: i === runde.holes.length - 1 ? "none" : `1px solid ${TL.hair}`,
                   fontSize: 12.5,
-                  ...(hoyre ? { textAlign: "right" as const, fontFamily: T.mono, fontVariantNumeric: "tabular-nums" as const } : {}),
+                  ...(hoyre ? { textAlign: "right" as const, fontFamily: TL.font.mono, fontVariantNumeric: "tabular-nums" as const } : {}),
                   ...(farge ? { color: farge } : {}),
                 });
                 return (
@@ -503,23 +489,23 @@ function HullFane({ runde, hullVarme }: { runde: HullRunde | null; hullVarme: Hu
                     <td style={td(false)}>{h.holeNumber}</td>
                     <td style={td(true)}>{h.par}</td>
                     <td style={td(true)}>{h.strokes}</td>
-                    <td style={td(true, diff > 0 ? T.down : diff < 0 ? T.up : undefined)}>{fmtSignedNb(diff)}</td>
+                    <td style={td(true, diff > 0 ? TL.danger : diff < 0 ? TL.ok : undefined)}>{fmtSignedNb(diff)}</td>
                   </tr>
                 );
               })}
             </tbody>
             <tfoot>
               <tr>
-                <td style={{ padding: "8px 4px 0", fontFamily: T.mono, fontSize: 11, color: T.mut }}>Sum</td>
-                <td style={{ padding: "8px 4px 0", textAlign: "right", fontFamily: T.mono, fontSize: 11, color: T.mut }}>{parSum}</td>
-                <td style={{ padding: "8px 4px 0", textAlign: "right", fontFamily: T.mono, fontSize: 11, color: T.mut }}>{slagSum}</td>
+                <td style={{ padding: "8px 4px 0", fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>Sum</td>
+                <td style={{ padding: "8px 4px 0", textAlign: "right", fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>{parSum}</td>
+                <td style={{ padding: "8px 4px 0", textAlign: "right", fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>{slagSum}</td>
                 <td
                   style={{
                     padding: "8px 4px 0",
                     textAlign: "right",
-                    fontFamily: T.mono,
+                    fontFamily: TL.font.mono,
                     fontSize: 11,
-                    color: runde.parDiff > 0 ? T.down : runde.parDiff < 0 ? T.up : T.mut,
+                    color: runde.parDiff > 0 ? TL.danger : runde.parDiff < 0 ? TL.ok : TL.mute,
                   }}
                 >
                   {fmtSignedNb(runde.parDiff)}
@@ -543,12 +529,12 @@ export function AnalysereHullV2({ data }: { data: AnalysereHullV2Data }) {
   const [tab, setTab] = useState<TabKey>("sone");
 
   return (
-    <div  data-paper-slug="playerhq-analyse-hull" data-paper-wave-g="analyserehull" data-paper-portal-analysere-hull style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%", minWidth: 0 }}>
+    <div  data-paper-slug="playerhq-analyse-hull" data-paper-wave-g="analyserehull" data-paper-portal-analysere-hull style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%", minWidth: 0 }}>
       {/* Hode */}
       <div>
         <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Hull-analyse</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Hull-analyse</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
             {data.spillerNavn
               ? `${data.spillerNavn}${data.kategori ? ` · kat. ${data.kategori}` : ""}`
               : "Analyse"}
@@ -570,11 +556,11 @@ export function AnalysereHullV2({ data }: { data: AnalysereHullV2Data }) {
       <p
         style={{
           margin: 0,
-          fontFamily: T.bodyFont,
+          fontFamily: TL.font.sans,
           fontSize: 12,
-          color: T.mut,
+          color: TL.mute,
           padding: "8px 12px",
-          background: T.panel2,
+          background: TL.dock,
           borderRadius: 8,
         }}
       >

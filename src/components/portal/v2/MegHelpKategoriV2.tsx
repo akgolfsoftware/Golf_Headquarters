@@ -1,12 +1,12 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * PlayerHQ Meg · Hjelp · Kategori — v2 Presis + B-pakke (liste + én full CTA).
  */
 
 import Link from "next/link";
-import { T, Caps, Kort, Icon, MikroMeta, TomTilstand } from "@/components/v2";
-
+import { Caps, Kort, Icon, MikroMeta, TomTilstand } from "@/components/v2";
 /* ── Datakontrakt ──────────────────────────────────────────────────── */
 
 export type KategoriSort = "populaer" | "dato" | "mest-leste";
@@ -50,7 +50,7 @@ function sortHref(slug: string, sort: KategoriSort): string {
 
 export function MegHelpKategoriV2({ data }: { data: MegHelpKategoriData }) {
   return (
-    <div data-paper-wave-g="meghelpkategori" data-paper-pattern  data-paper-portal-meg-help-kategori style={{ maxWidth: 760, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-g="meghelpkategori" data-paper-pattern  data-paper-portal-meg-help-kategori style={{ maxWidth: 760, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
       {/* Hero */}
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, textAlign: "center", paddingTop: 6 }}>
         <span
@@ -58,20 +58,20 @@ export function MegHelpKategoriV2({ data }: { data: MegHelpKategoriData }) {
             width: 56,
             height: 56,
             borderRadius: 16,
-            background: T.panel3,
-            border: `1px solid ${T.border}`,
+            background: TL.dim,
+            border: `1px solid ${TL.hair}`,
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
           }}
         >
-          <Icon name={data.ikon} size={24} style={{ color: T.fg2 }} />
+          <Icon name={data.ikon} size={24} style={{ color: TL.mute }} />
         </span>
         <Caps>PlayerHQ · Hjelp</Caps>
-        <h1 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 30, letterSpacing: "-0.025em", color: T.fg, margin: 0, lineHeight: 1.1 }}>
-          <em style={{ fontStyle: "italic", fontWeight: 400, color: T.lime }}>{data.tittel}</em>
+        <h1 style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 30, letterSpacing: "-0.025em", color: TL.text, margin: 0, lineHeight: 1.1 }}>
+          <em style={{ fontStyle: "italic", fontWeight: 400, color: TL.fill }}>{data.tittel}</em>
         </h1>
-        <p style={{ fontFamily: T.ui, fontSize: 13, lineHeight: 1.6, color: T.mut, margin: 0, maxWidth: 520 }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 13, lineHeight: 1.6, color: TL.mute, margin: 0, maxWidth: 520 }}>
           {data.beskrivelse}
         </p>
         <Caps size={9}>
@@ -96,12 +96,12 @@ export function MegHelpKategoriV2({ data }: { data: MegHelpKategoriData }) {
                 padding: "7px 14px",
                 borderRadius: 9999,
                 textDecoration: "none",
-                fontFamily: T.ui,
+                fontFamily: TL.font.sans,
                 fontSize: 12.5,
                 fontWeight: 600,
-                background: on ? T.handling : T.panel2,
-                border: `1px solid ${on ? "transparent" : T.border}`,
-                color: on ? T.onHandling : T.fg2,
+                background: on ? TL.fill : TL.dock,
+                border: `1px solid ${on ? "transparent" : TL.hair}`,
+                color: on ? TL.onFill : TL.mute,
               }}
             >
               {on && <Icon name="check" size={12} />}
@@ -133,23 +133,23 @@ export function MegHelpKategoriV2({ data }: { data: MegHelpKategoriData }) {
                 padding: "14px 10px",
                 margin: "0 -10px",
                 borderRadius: 10,
-                borderBottom: i === data.artikler.length - 1 ? "none" : `1px solid ${T.border}`,
+                borderBottom: i === data.artikler.length - 1 ? "none" : `1px solid ${TL.hair}`,
                 cursor: "pointer",
               }}
             >
-              <span style={{ width: 26, flex: "none", paddingTop: 2, fontFamily: T.mono, fontSize: 11, fontWeight: 700, color: T.mut, fontVariantNumeric: "tabular-nums" }}>
+              <span style={{ width: 26, flex: "none", paddingTop: 2, fontFamily: TL.font.mono, fontSize: 11, fontWeight: 700, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
                 {(i + 1).toString().padStart(2, "0")}
               </span>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontFamily: T.ui, fontSize: 14, fontWeight: 600, color: T.fg, lineHeight: 1.35 }}>
+                <div style={{ fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600, color: TL.text, lineHeight: 1.35 }}>
                   {a.tittel}
                 </div>
                 <p
                   style={{
-                    fontFamily: T.ui,
+                    fontFamily: TL.font.sans,
                     fontSize: 12.5,
                     lineHeight: 1.55,
-                    color: T.mut,
+                    color: TL.mute,
                     margin: "5px 0 0",
                     display: "-webkit-box",
                     WebkitLineClamp: 2,
@@ -165,7 +165,7 @@ export function MegHelpKategoriV2({ data }: { data: MegHelpKategoriData }) {
                   <MikroMeta icon="calendar">Oppdatert {a.oppdatertTekst}</MikroMeta>
                 </div>
               </div>
-              <Icon name="chevron-right" size={15} style={{ color: T.mut, flex: "none", marginTop: 4 }} />
+              <Icon name="chevron-right" size={15} style={{ color: TL.mute, flex: "none", marginTop: 4 }} />
             </div>
           </Link>
         ))}
@@ -175,7 +175,7 @@ export function MegHelpKategoriV2({ data }: { data: MegHelpKategoriData }) {
       <Link href="/portal/meg/help/kontakt" style={{ textDecoration: "none", display: "block" }}>
         <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", padding: "10px 16px",
-            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600, minHeight: 56,
+            borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600, minHeight: 56,
           }}>Send oss et spørsmål</span>
       </Link>
     </div>

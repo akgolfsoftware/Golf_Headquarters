@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * AgencyOS · Innstillinger · Periodenavn.
  * Viser periodenavn (TrainingPeriod.name) som ikke gjenkjennes av den
@@ -10,14 +10,10 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { T, Caps, Tittel, Kort, StatusPill, Knapp, Icon } from "@/components/v2";
+import { Caps, Tittel, Kort, StatusPill, Knapp, Icon } from "@/components/v2";
 import { Velger } from "@/components/v2/skjema";
 import type { PeriodeType } from "@/generated/prisma/client";
-import {
-  leggTilPeriodeNavnMapping,
-  slettPeriodeNavnMapping,
-  type PeriodeNavnOversikt,
-} from "@/app/admin/settings/periode-navn/actions";
+import { leggTilPeriodeNavnMapping, slettPeriodeNavnMapping, type PeriodeNavnOversikt } from "@/app/admin/settings/periode-navn/actions";
 import type { PeriodeNavnLabel } from "@/app/admin/settings/periode-navn/labels";
 
 export function PeriodeNavnV2({
@@ -34,12 +30,12 @@ export function PeriodeNavnV2({
       : "Alle navn gjenkjent";
 
   return (
-    <div data-paper-slug="agencyos-oppsett" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 900 }}>
+    <div data-paper-slug="agencyos-oppsett" style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 900 }}>
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>
         <div>
           <Caps>Metodikk</Caps>
           <Tittel em="navn">Periode</Tittel>
-          <p style={{ fontFamily: T.ui, fontSize: 13.5, color: T.mut, lineHeight: 1.55, margin: "10px 0 0", maxWidth: 680 }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute, lineHeight: 1.55, margin: "10px 0 0", maxWidth: 680 }}>
             Et periodenavn som ikke gjenkjennes (f.eks. «Sommersamling») valideres aldri mot
             CANON — heller ikke, det gjettes ikke feil krav. Koble navnet til en periodetype her
             for å slå på validering for den perioden.
@@ -51,8 +47,8 @@ export function PeriodeNavnV2({
       {oversikt.ukjente.length > 0 && (
         <Kort pad="18px 20px">
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
-            <Icon name="triangle-alert" size={15} style={{ color: T.warn }} />
-            <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, color: T.fg }}>
+            <Icon name="triangle-alert" size={15} style={{ color: TL.warn }} />
+            <span style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 16, color: TL.text }}>
               Ukjente navn
             </span>
           </div>
@@ -65,11 +61,11 @@ export function PeriodeNavnV2({
       )}
 
       <Kort pad="18px 20px">
-        <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, color: T.fg, display: "block", marginBottom: 14 }}>
+        <span style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 16, color: TL.text, display: "block", marginBottom: 14 }}>
           Lagrede mappinger
         </span>
         {oversikt.lagrede.length === 0 ? (
-          <div style={{ textAlign: "center", padding: "16px 12px", fontFamily: T.ui, fontSize: 13, color: T.mut }}>
+          <div style={{ textAlign: "center", padding: "16px 12px", fontFamily: TL.font.sans, fontSize: 13, color: TL.mute }}>
             Ingen egne mappinger lagt til ennå.
           </div>
         ) : (
@@ -104,7 +100,7 @@ function UkjentNavnRad({ navn, typer }: { navn: string; typer: PeriodeNavnLabel[
 
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-      <span style={{ fontFamily: T.mono, fontSize: 13, color: T.fg, background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 8, padding: "6px 10px" }}>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 13, color: TL.text, background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: 8, padding: "6px 10px" }}>
         {navn}
       </span>
       <div style={{ width: 200 }}>
@@ -115,7 +111,7 @@ function UkjentNavnRad({ navn, typer }: { navn: string; typer: PeriodeNavnLabel[
         />
       </div>
       <Knapp onClick={lagre} disabled={pending}>{pending ? "Lagrer…" : "Koble til"}</Knapp>
-      {feil && <span style={{ fontFamily: T.mono, fontSize: 11, color: T.down }}>{feil}</span>}
+      {feil && <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.danger }}>{feil}</span>}
     </div>
   );
 }
@@ -140,11 +136,11 @@ function LagretNavnRad({ navn, periodeTypeLabel }: { navn: string; periodeTypeLa
   return (
     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <span style={{ fontFamily: T.mono, fontSize: 13, color: T.fg }}>{navn}</span>
-        <span style={{ fontFamily: T.ui, fontSize: 12, color: T.mut }}>→ {periodeTypeLabel}</span>
+        <span style={{ fontFamily: TL.font.mono, fontSize: 13, color: TL.text }}>{navn}</span>
+        <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}>→ {periodeTypeLabel}</span>
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        {feil && <span style={{ fontFamily: T.mono, fontSize: 11, color: T.down }}>{feil}</span>}
+        {feil && <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.danger }}>{feil}</span>}
         <Knapp ghost onClick={slett} disabled={pending}>{pending ? "Fjerner…" : "Fjern"}</Knapp>
       </div>
     </div>

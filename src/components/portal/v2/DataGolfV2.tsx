@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ DataGolf — Paper-fasit playerhq-datagolf.html (deg mot touren).
  * Ekte SG vs PGA Tour-baseline. T.* only. Tom = registrer runde / se analyse.
@@ -7,18 +7,7 @@
 
 import Link from "next/link";
 import type { DataGolfData, DataGolfKategori } from "@/lib/portal-stats/datagolf-data";
-import {
-  T,
-  fmtSg,
-  Caps,
-  Kort,
-  KpiFlis,
-  TomTilstand,
-  HjelpTips,
-  CTAPill,
-  Trend,
-} from "@/components/v2";
-
+import { fmtSg, Caps, Kort, KpiFlis, TomTilstand, HjelpTips, CTAPill, Trend } from "@/components/v2";
 export type DataGolfProps = { data: DataGolfData; spillerNavn?: string };
 
 /* ── Rene hjelpere ─────────────────────────────────────────────────── */
@@ -32,13 +21,13 @@ function sg(v: number | null): string {
    fylles i up-grønn mot høyre, negativ i dn-rød mot venstre. */
 function SgBar({ v, max }: { v: number | null; max: number }) {
   if (v == null) {
-    return <div style={{ flex: 1, height: 10, borderRadius: 9999, background: T.track }} />;
+    return <div style={{ flex: 1, height: 10, borderRadius: 9999, background: TL.hair }} />;
   }
   const halv = Math.min(48, (Math.abs(v) / max) * 48);
   const neg = v < 0;
   return (
-    <div style={{ flex: 1, height: 10, borderRadius: 9999, background: T.track, position: "relative" }}>
-      <span style={{ position: "absolute", left: "50%", top: -3, bottom: -3, width: 1, background: T.borderS }} />
+    <div style={{ flex: 1, height: 10, borderRadius: 9999, background: TL.hair, position: "relative" }}>
+      <span style={{ position: "absolute", left: "50%", top: -3, bottom: -3, width: 1, background: TL.hair }} />
       <div
         style={{
           position: "absolute",
@@ -46,7 +35,7 @@ function SgBar({ v, max }: { v: number | null; max: number }) {
           bottom: 0,
           ...(neg ? { right: "50%" } : { left: "50%" }),
           width: halv + "%",
-          background: neg ? T.down : T.up,
+          background: neg ? TL.danger : TL.ok,
           borderRadius: 9999,
         }}
       />
@@ -61,22 +50,22 @@ function DGGruppe({ k, max, last }: { k: DataGolfKategori; max: number; last: bo
     { l: "Referanse", v: k.ref },
   ];
   return (
-    <div style={{ padding: "11px 0", borderBottom: last ? "none" : `1px solid ${T.border}` }}>
+    <div style={{ padding: "11px 0", borderBottom: last ? "none" : `1px solid ${TL.hair}` }}>
       <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 8 }}>
-        <span style={{ fontFamily: T.mono, fontSize: 12, fontVariantNumeric: "tabular-nums", color: T.fg }}>{k.code}</span>
-        <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut }}>{k.name}</span>
+        <span style={{ fontFamily: TL.font.mono, fontSize: 12, fontVariantNumeric: "tabular-nums", color: TL.text }}>{k.code}</span>
+        <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute }}>{k.name}</span>
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
         {rows.map((r) => (
           <div key={r.l} style={{ display: "grid", gridTemplateColumns: "70px minmax(0,1fr) 58px", gap: 8, alignItems: "center", minHeight: 32 }}>
-            <span style={{ fontFamily: T.mono, fontSize: 12, color: T.mut }}>{r.l}</span>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 12, color: TL.mute }}>{r.l}</span>
             <SgBar v={r.v} max={max} />
             <span
               style={{
                 textAlign: "right",
-                fontFamily: T.mono,
+                fontFamily: TL.font.mono,
                 fontSize: 13,
-                color: r.v == null ? T.mut : r.v >= 0 ? T.up : T.down,
+                color: r.v == null ? TL.mute : r.v >= 0 ? TL.ok : TL.danger,
                 fontVariantNumeric: "tabular-nums",
               }}
             >
@@ -100,10 +89,10 @@ export function DataGolfV2({ data, spillerNavn }: DataGolfProps) {
     // helt tom, men med riktig budskap og én vei videre.
     const manglerRef = data.tilstand === "MANGLER_REF";
     return (
-      <div data-paper-slug="playerhq-datagolf" data-paper-wave-g="datagolf" data-paper-portal-datagolf style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+      <div data-paper-slug="playerhq-datagolf" data-paper-wave-g="datagolf" data-paper-portal-datagolf style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
         <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Deg mot touren</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Deg mot touren</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
             DataGolf · PGA Tour-baseline{navn ? ` · ${navn}` : ""}
           </span>
         </div>
@@ -130,7 +119,7 @@ export function DataGolfV2({ data, spillerNavn }: DataGolfProps) {
             <Link href={manglerRef ? "/stats/sg-sammenlign/start" : "/portal/runde/live"} style={{ textDecoration: "none", display: "block" }}>
               <span style={{
                 display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", padding: "10px 16px",
-                borderRadius: 12, background: T.cta, color: T.onCta, fontFamily: T.ui, fontSize: 14, fontWeight: 600, minHeight: 48,
+                borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600, minHeight: 48,
               }}>{manglerRef ? "Velg referansespiller" : "Start live-føring"}
               </span>
             </Link>
@@ -160,17 +149,17 @@ export function DataGolfV2({ data, spillerNavn }: DataGolfProps) {
   const trendHi = harTrend ? Math.max(0, ...data.trend) + 0.4 : 0;
 
   return (
-    <div data-paper-slug="playerhq-datagolf" data-paper-portal-datagolf style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-slug="playerhq-datagolf" data-paper-portal-datagolf style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode — fasit: h1 «Deg mot touren», sub DataGolf · baseline · navn */}
       <div data-paper-pattern-topp>
-        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Deg mot touren</h1>
-        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+        <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Deg mot touren</h1>
+        <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
           DataGolf · PGA Tour-baseline{navn ? ` · ${navn}` : ""}
         </span>
       </div>
 
       {/* Fasit: .merknad — serif på myk flate */}
-      <p style={{ fontFamily: T.bodyFont, fontSize: 12, color: T.mut, lineHeight: 1.6, margin: 0, background: T.panel2, borderRadius: 8, padding: "8px 12px" }}>
+      <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.6, margin: 0, background: TL.dock, borderRadius: 8, padding: "8px 12px" }}>
         Sammenligningen er mot én registrert referansespiller, ikke mot hele tourfeltet.
       </p>
 
@@ -183,19 +172,19 @@ export function DataGolfV2({ data, spillerNavn }: DataGolfProps) {
         <div style={{ marginTop: 10 }}>
           <span
             style={{
-              fontFamily: T.mono,
+              fontFamily: TL.font.mono,
               fontSize: 40,
               fontWeight: 600,
               lineHeight: 1,
               fontVariantNumeric: "tabular-nums",
-              color: posisjon == null ? T.mut : posisjon >= 0 ? T.up : T.down,
+              color: posisjon == null ? TL.mute : posisjon >= 0 ? TL.ok : TL.danger,
             }}
           >
             {posisjon != null ? fmtSg(posisjon) : "—"}
           </span>
-          <span style={{ fontFamily: T.ui, fontSize: 12, color: T.mut }}> slag/runde</span>
+          <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}> slag/runde</span>
         </div>
-        <p style={{ fontFamily: T.bodyFont, fontSize: 12, color: T.mut, margin: "6px 0 0" }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, margin: "6px 0 0" }}>
           mot {refNavn}
           {data.refAar != null ? ` (${data.refAar})` : ""} · brutto
         </p>
@@ -210,8 +199,8 @@ export function DataGolfV2({ data, spillerNavn }: DataGolfProps) {
 
       {/* Innsikt — fasit: kort m/ info-kant, serif, utledet av de samme tallene */}
       {data.storsteGap && (
-        <Kort style={{ borderLeft: `3px solid ${T.info}` }}>
-          <p style={{ fontFamily: T.bodyFont, fontSize: 13, color: T.fg, lineHeight: 1.6, margin: 0 }}>
+        <Kort style={{ borderLeft: `3px solid ${TL.viz.target}` }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text, lineHeight: 1.6, margin: 0 }}>
             Størst avstand til referansen er i {data.storsteGap.name.toLowerCase()} ({sg(-data.storsteGap.gap)} slag) — det er der gapet mot touren lukkes raskest.
           </p>
         </Kort>
@@ -228,7 +217,7 @@ export function DataGolfV2({ data, spillerNavn }: DataGolfProps) {
             height={92}
             xLabels={data.trendLabels.length ? data.trendLabels : undefined}
           />
-          <div style={{ marginTop: 10, fontFamily: T.ui, fontSize: 11.5, color: T.mut }}>
+          <div style={{ marginTop: 10, fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute }}>
             {data.gapDelta != null && data.gapDelta >= 0
               ? `Gapet har krympet ${sg(Math.abs(data.gapDelta))} slag siden forrige sammenligning.`
               : `Basert på ${data.antallSnapshots} registrerte sammenligninger.`}

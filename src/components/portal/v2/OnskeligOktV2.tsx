@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ Be om økt — v2 Presis + B-pakke (skjema + én primær «Send»).
  * Ekte coach-liste. T.* only.
@@ -8,21 +8,7 @@
 import { useState, useTransition, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { sendOnskeligOkt } from "@/app/portal/(legacy)/onskeligokt/actions";
-import {
-  T,
-  Caps,
-  Tittel,
-  Kort,
-  Knapp,
-  FilterChips,
-  Velger,
-  Inndata,
-  TekstOmraade,
-  Bryter,
-  ValgKort,
-  Icon,
-} from "@/components/v2";
-
+import { Caps, Tittel, Kort, Knapp, FilterChips, Velger, Inndata, TekstOmraade, Bryter, ValgKort, Icon } from "@/components/v2";
 /* ── Datakontrakt (samme som ekte side leverer) ────────────────────── */
 export interface OnskeligOktV2Data {
   coacher: { id: string; name: string; email?: string }[];
@@ -56,8 +42,8 @@ const EKSTRA_ITEMS = ["PUTT", "Mental", "Turneringsforberedelse", "Annet"];
 function Seksjon({ num, tittel, hjelp, children }: { num: string; tittel: string; hjelp?: string; children: ReactNode }) {
   return (
     <Kort eyebrow={num}>
-      <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, color: T.fg, lineHeight: 1.25, margin: 0 }}>{tittel}</h2>
-      {hjelp && <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, lineHeight: 1.55, margin: "5px 0 0" }}>{hjelp}</p>}
+      <h2 style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 17, color: TL.text, lineHeight: 1.25, margin: 0 }}>{tittel}</h2>
+      {hjelp && <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.55, margin: "5px 0 0" }}>{hjelp}</p>}
       <div style={{ marginTop: 14 }}>{children}</div>
     </Kort>
   );
@@ -124,14 +110,14 @@ export function OnskeligOktV2({ data }: { data: OnskeligOktV2Data }) {
   }
 
   return (
-    <div data-paper-portal-onskeligokt style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-portal-onskeligokt style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div>
         <Caps>PlayerHQ · Be om økt</Caps>
         <div style={{ marginTop: 10 }}>
           <Tittel em="økt">Be om</Tittel>
         </div>
-        <p style={{ fontFamily: T.ui, fontSize: 13.5, color: T.fg2, lineHeight: 1.55, margin: "10px 0 0" }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute, lineHeight: 1.55, margin: "10px 0 0" }}>
           {coachName} svarer normalt innen 24 timer på hverdager.
         </p>
       </div>
@@ -196,7 +182,7 @@ export function OnskeligOktV2({ data }: { data: OnskeligOktV2Data }) {
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {datoer.map((d, i) => (
               <div key={i} style={{ display: "grid", gridTemplateColumns: "26px 1fr 1fr", alignItems: "end", gap: 10 }}>
-                <span style={{ fontFamily: T.mono, fontSize: 11, fontWeight: 700, color: T.mut, paddingBottom: 11 }}>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 11, fontWeight: 700, color: TL.mute, paddingBottom: 11 }}>
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <Inndata
@@ -222,7 +208,7 @@ export function OnskeligOktV2({ data }: { data: OnskeligOktV2Data }) {
             </div>
           )}
         </div>
-        <div style={{ marginTop: 16, paddingTop: 14, borderTop: `1px solid ${T.border}` }}>
+        <div style={{ marginTop: 16, paddingTop: 14, borderTop: `1px solid ${TL.hair}` }}>
           <Bryter
             label="Helt fleksibel"
             sub="Coachen foreslår tid"
@@ -258,20 +244,20 @@ export function OnskeligOktV2({ data }: { data: OnskeligOktV2Data }) {
           onChange={(v) => setMelding(v.slice(0, 500))}
         />
         <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 6 }}>
-          <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, fontVariantNumeric: "tabular-nums" }}>{melding.length} / 500</span>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>{melding.length} / 500</span>
         </div>
       </Seksjon>
 
       {error && (
-        <div role="alert" style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 13px", borderRadius: 11, background: `color-mix(in srgb, ${T.down} 12%, transparent)`, border: `1px solid color-mix(in srgb, ${T.down} 34%, transparent)` }}>
-          <Icon name="triangle-alert" size={14} style={{ color: T.down }} />
-          <span style={{ fontFamily: T.ui, fontSize: 13, color: T.fg }}>{error}</span>
+        <div role="alert" style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 13px", borderRadius: 11, background: `color-mix(in srgb, ${TL.danger} 12%, transparent)`, border: `1px solid color-mix(in srgb, ${TL.danger} 34%, transparent)` }}>
+          <Icon name="triangle-alert" size={14} style={{ color: TL.danger }} />
+          <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text }}>{error}</span>
         </div>
       )}
 
       {/* B: én primær Send full bredde */}
       <div style={{ display: "flex", flexDirection: "column", gap: 10, paddingTop: 6 }}>
-        <Knapp icon="send" full onClick={send} disabled={pending} style={{ background: T.handling, color: T.onHandling }}>
+        <Knapp icon="send" full onClick={send} disabled={pending} style={{ background: TL.fill, color: TL.onFill }}>
           {pending ? "Sender …" : "Send forespørsel"}
         </Knapp>
         <button
@@ -282,10 +268,10 @@ export function OnskeligOktV2({ data }: { data: OnskeligOktV2Data }) {
             background: "none",
             border: "none",
             cursor: "pointer",
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 12,
             fontWeight: 600,
-            color: T.mut,
+            color: TL.mute,
             textAlign: "center",
             padding: 0,
           }}

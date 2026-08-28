@@ -25,7 +25,8 @@
 import { Fragment, cloneElement, isValidElement } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import { useId, useState } from "react";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Icon } from "@/components/v2/icon";
 import { CTAPill, Caps } from "./core";
 
@@ -43,14 +44,14 @@ const FELT: CSSProperties = {
   width: "100%",
   boxSizing: "border-box",
   appearance: "none",
-  background: T.panel2,
-  border: `1px solid ${T.border}`,
-  borderRadius: T.rInput,
+  background: TL.dock,
+  border: `1px solid ${TL.hair}`,
+  borderRadius: TL.radius.field,
   padding: "0 12px",
   minHeight: 44,
-  fontFamily: T.ui,
+  fontFamily: TL.font.sans,
   fontSize: 16, // unngår iOS-zoom; desktop kan se litt større ut — OK for a11y
-  color: T.fg,
+  color: TL.text,
   outline: "none",
   lineHeight: 1.4,
 };
@@ -60,12 +61,12 @@ function feltStil(opts?: { disabled?: boolean; error?: boolean; mono?: boolean; 
   const disabled = opts?.disabled;
   return {
     ...FELT,
-    fontFamily: opts?.mono ? T.mono : T.ui,
+    fontFamily: opts?.mono ? TL.font.mono : TL.font.sans,
     fontVariantNumeric: opts?.mono ? "tabular-nums" : undefined,
     opacity: disabled ? 0.5 : 1,
     cursor: disabled ? "not-allowed" : undefined,
-    borderColor: error ? T.down : T.border,
-    boxShadow: error ? `0 0 0 3px color-mix(in srgb, ${T.down} 18%, transparent)` : undefined,
+    borderColor: error ? TL.danger : TL.hair,
+    boxShadow: error ? `0 0 0 3px color-mix(in srgb, ${TL.danger} 18%, transparent)` : undefined,
     ...opts?.extra,
   };
 }
@@ -80,7 +81,7 @@ function Etikett({ children, htmlFor }: EtikettProps) {
   return (
     <label
       htmlFor={htmlFor}
-      style={{ fontFamily: T.ui, fontSize: 10, fontWeight: 500, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut, display: "block", marginBottom: 8 }}
+      style={{ fontFamily: TL.font.sans, fontSize: 10, fontWeight: 500, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute, display: "block", marginBottom: 8 }}
     >
       {children}
     </label>
@@ -96,7 +97,7 @@ function Feltmelding({ feil, children }: { feil?: boolean; children?: ReactNode 
   return (
     <p
       role={feil ? "alert" : undefined}
-      style={{ fontFamily: T.ui, fontSize: 11, lineHeight: 1.45, color: feil ? T.down : T.mut, display: "block", margin: "6px 0 0" }}
+      style={{ fontFamily: TL.font.sans, fontSize: 11, lineHeight: 1.45, color: feil ? TL.danger : TL.mute, display: "block", margin: "6px 0 0" }}
     >
       {children}
     </p>
@@ -166,7 +167,7 @@ export function Inndata({
           style={feltStil({ disabled, error: isError, mono, extra: { paddingRight: suffix ? 44 : 12 } })}
         />
         {suffix && (
-          <span style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", fontFamily: T.mono, fontSize: 11, color: T.mut }}>
+          <span style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>
             {suffix}
           </span>
         )}
@@ -192,8 +193,8 @@ export function ProfilFelt({ label, value, placeholder, trailing, hint, mono }: 
   return (
     <div>
       <Caps size={10} style={{ marginBottom: 8 }}>{label}</Caps>
-      <div style={{ display: "flex", alignItems: "center", gap: 8, height: 44, padding: "0 12px", borderRadius: 12, background: T.panel2, border: `1px solid ${T.borderS}` }}>
-        <span style={{ flex: 1, fontFamily: mono ? T.mono : T.ui, fontSize: 13.5, fontWeight: 500, color: value ? T.fg : T.mut, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{value || placeholder}</span>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, height: 44, padding: "0 12px", borderRadius: 12, background: TL.dock, border: `1px solid ${TL.hair}` }}>
+        <span style={{ flex: 1, fontFamily: mono ? TL.font.mono : TL.font.sans, fontSize: 13.5, fontWeight: 500, color: value ? TL.text : TL.mute, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{value || placeholder}</span>
         {trailing}
       </div>
       {hint && <Feltmelding>{hint}</Feltmelding>}
@@ -257,13 +258,13 @@ export function Velger({
           style={feltStil({ disabled, error: isError, extra: { paddingRight: 38, cursor: disabled ? "not-allowed" : "pointer" } })}
         >
           {norm.map((o) => (
-            <option key={o.value} value={o.value} style={{ background: T.panel3, color: T.fg }}>
+            <option key={o.value} value={o.value} style={{ background: TL.dim, color: TL.text }}>
               {o.label}
             </option>
           ))}
         </select>
         <span style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", pointerEvents: "none", display: "inline-flex" }}>
-          <Icon name="chevron-down" size={14} style={{ color: T.mut }} />
+          <Icon name="chevron-down" size={14} style={{ color: TL.mute }} />
         </span>
       </div>
       <Feltmelding feil>{feil}</Feltmelding>
@@ -364,16 +365,16 @@ export function Bryter({ label = "Varsle meg før økter", sub = "Push-varsel 30
       }}
     >
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>{label}</div>
-        {sub && <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 2 }}>{sub}</div>}
+        <div style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>{label}</div>
+        {sub && <div style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 2 }}>{sub}</div>}
       </div>
       <span
         style={{
           width: 36,
           height: 20,
-          borderRadius: T.rPill,
-          background: val ? T.lime : T.panel3,
-          border: `1px solid ${val ? "transparent" : T.border}`,
+          borderRadius: TL.radius.pill,
+          background: val ? TL.fill : TL.dim,
+          border: `1px solid ${val ? "transparent" : TL.hair}`,
           position: "relative",
           flex: "none",
           transition: "background 120ms",
@@ -386,8 +387,8 @@ export function Bryter({ label = "Varsle meg før økter", sub = "Push-varsel 30
             left: val ? 18 : 2,
             width: 16,
             height: 16,
-            borderRadius: T.rPill,
-            background: val ? T.onLime : T.fg2,
+            borderRadius: TL.radius.pill,
+            background: val ? TL.onFill : TL.mute,
             transition: "left 120ms",
           }}
         />
@@ -435,18 +436,18 @@ export function Avkryssing({ label = "Jeg godtar vilkårene for PlayerHQ", check
         style={{
           width: 16,
           height: 16,
-          borderRadius: T.rTag,
-          background: val ? T.lime : T.panel2,
-          border: `1px solid ${val ? "transparent" : T.border}`,
+          borderRadius: TL.radius.row,
+          background: val ? TL.fill : TL.dock,
+          border: `1px solid ${val ? "transparent" : TL.hair}`,
           display: "inline-flex",
           alignItems: "center",
           justifyContent: "center",
           flex: "none",
         }}
       >
-        {val && <Icon name="check" size={11} style={{ color: T.onLime }} />}
+        {val && <Icon name="check" size={11} style={{ color: TL.onFill }} />}
       </span>
-      <span style={{ fontFamily: T.ui, fontSize: 13, color: T.fg }}>{label}</span>
+      <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text }}>{label}</span>
     </button>
   );
 }
@@ -476,7 +477,7 @@ export function RadioGruppe({
      merket er blekk, som alt annet valgt i systemet» (Radio.prompt.md). AK
      beholdt en kortstil frem til steg 5B; nå kun ring-dot + tekst, minHeight
      44 for treffmål (samme AK-avvik som ellers i fila — alltid på, ikke bare
-     @media(pointer:coarse)). Fargebruken (T.lime/T.borderS på ringen) er
+     @media(pointer:coarse)). Fargebruken (TL.fill/TL.hair på ringen) er
      UENDRET fra før — kun kortrammen/bakgrunnen er fjernet. */
   return (
     <div role="radiogroup" aria-label={ariaNavn(label) ?? "Valg"}>
@@ -514,19 +515,19 @@ export function RadioGruppe({
                 style={{
                   width: 18,
                   height: 18,
-                  borderRadius: T.rPill,
-                  border: `1.5px solid ${on ? T.lime : T.borderS}`,
+                  borderRadius: TL.radius.pill,
+                  border: `1.5px solid ${on ? TL.fill : TL.hair}`,
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
                   flex: "none",
                 }}
               >
-                {on && <span style={{ width: 12, height: 12, borderRadius: T.rPill, background: T.lime }} />}
+                {on && <span style={{ width: 12, height: 12, borderRadius: TL.radius.pill, background: TL.fill }} />}
               </span>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 500, color: T.fg }}>{o.l}</span>
-                {o.sub && <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut, marginLeft: 8 }}>{o.sub}</span>}
+                <span style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 500, color: TL.text }}>{o.l}</span>
+                {o.sub && <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute, marginLeft: 8 }}>{o.sub}</span>}
               </div>
             </button>
           );
@@ -577,9 +578,9 @@ export function SegmentertFaner({
           flexWrap: "wrap",
           padding: 2,
           gap: 2,
-          background: T.panel3,
-          borderRadius: T.rPill,
-          border: `1px solid ${T.border}`,
+          background: TL.dim,
+          borderRadius: TL.radius.pill,
+          border: `1px solid ${TL.hair}`,
           maxWidth: "100%",
         }}
       >
@@ -603,16 +604,16 @@ export function SegmentertFaner({
                 minWidth: 44,
                 padding: "0 16px",
                 border: 0,
-                borderRadius: T.rPill,
+                borderRadius: TL.radius.pill,
                 // Fasit (forms/SegmentControl.jsx): «Segmentert — ikke lime».
                 // Valgt segment får panel-flate + innfelt 1px kant (aria-pressed),
                 // ikke løftende skygge — steg 5B bytter fra elevasjon til
                 // Papers flate innfelt-ring. Lime-jobben på skjermen tilhører
                 // fortsatt primær-CTA, ikke navigasjon.
-                background: on ? T.panel : "transparent",
-                boxShadow: on ? `inset 0 0 0 1px ${T.border}` : "none",
-                color: on ? T.fg : T.fg2,
-                fontFamily: T.ui,
+                background: on ? TL.elev : "transparent",
+                boxShadow: on ? `inset 0 0 0 1px ${TL.hair}` : "none",
+                color: on ? TL.text : TL.mute,
+                fontFamily: TL.font.sans,
                 fontSize: 13,
                 fontWeight: on ? 600 : 500,
                 cursor: "pointer",
@@ -641,7 +642,7 @@ export interface ValgKortProps {
   onClick?: () => void;
 }
 export function ValgKort({ tittel, tittelSuffix, tag, tagTone = "noytral", sub, valgt, onClick }: ValgKortProps) {
-  const tagC = tagTone === "warn" ? T.warn : T.fg2;
+  const tagC = tagTone === "warn" ? TL.warn : TL.mute;
   return (
     <div
       onClick={onClick}
@@ -649,20 +650,20 @@ export function ValgKort({ tittel, tittelSuffix, tag, tagTone = "noytral", sub, 
       role="radio"
       aria-checked={!!valgt}
       tabIndex={0}
-      style={{ display: "flex", alignItems: "flex-start", gap: 12, padding: "12px 16px", borderRadius: 12, background: valgt ? T.panel3 : T.panel2, border: `1px solid ${valgt ? T.lime : T.border}`, cursor: "pointer" }}
+      style={{ display: "flex", alignItems: "flex-start", gap: 12, padding: "12px 16px", borderRadius: 12, background: valgt ? TL.dim : TL.dock, border: `1px solid ${valgt ? TL.fill : TL.hair}`, cursor: "pointer" }}
     >
-      <span style={{ marginTop: 2, width: 18, height: 18, borderRadius: 9999, border: `1.5px solid ${valgt ? T.lime : T.borderS}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
-        {valgt && <span style={{ width: 12, height: 12, borderRadius: 9999, background: T.lime }} />}
+      <span style={{ marginTop: 2, width: 18, height: 18, borderRadius: 9999, border: `1.5px solid ${valgt ? TL.fill : TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+        {valgt && <span style={{ width: 12, height: 12, borderRadius: 9999, background: TL.fill }} />}
       </span>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-          <span style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>
+          <span style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>
             {tittel}
-            {tittelSuffix && <span style={{ fontWeight: 400, color: T.mut, marginLeft: 8, fontSize: 12 }}>{tittelSuffix}</span>}
+            {tittelSuffix && <span style={{ fontWeight: 400, color: TL.mute, marginLeft: 8, fontSize: 12 }}>{tittelSuffix}</span>}
           </span>
-          {tag && <span style={{ flex: "none", fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: tagC, background: `color-mix(in srgb, ${tagC} 13%, transparent)`, borderRadius: 9999, padding: "4px 8px", whiteSpace: "nowrap" }}>{tag}</span>}
+          {tag && <span style={{ flex: "none", fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: tagC, background: `color-mix(in srgb, ${tagC} 13%, transparent)`, borderRadius: 9999, padding: "4px 8px", whiteSpace: "nowrap" }}>{tag}</span>}
         </div>
-        {sub && <div style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, lineHeight: 1.55, marginTop: 4 }}>{sub}</div>}
+        {sub && <div style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.55, marginTop: 4 }}>{sub}</div>}
       </div>
     </div>
   );
@@ -688,12 +689,12 @@ export function Glider({ label = "Innsats (RPE)", min = 1, max = 10, step = 1, v
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 }}>
         {label && <Etikett>{label}</Etikett>}
-        <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 600, color: T.fg, fontVariantNumeric: "tabular-nums" }}>{fmt ? fmt(val) : String(val).replace(".", ",")}{enhet && <span style={{ fontSize: 10, color: T.mut }}> {enhet}</span>}</span>
+        <span style={{ fontFamily: TL.font.mono, fontSize: 13, fontWeight: 600, color: TL.text, fontVariantNumeric: "tabular-nums" }}>{fmt ? fmt(val) : String(val).replace(".", ",")}{enhet && <span style={{ fontSize: 10, color: TL.mute }}> {enhet}</span>}</span>
       </div>
       <div style={{ position: "relative", height: 24, display: "flex", alignItems: "center" }}>
-        <div style={{ position: "absolute", left: 0, right: 0, height: 4, borderRadius: 9999, background: T.track }} />
-        <div style={{ position: "absolute", left: 0, width: pct + "%", height: 4, borderRadius: 9999, background: T.lime, opacity: 0.9 }} />
-        <span style={{ position: "absolute", left: `calc(${pct}% - 9px)`, width: 18, height: 18, borderRadius: 9999, background: T.lime, border: `2px solid ${T.panel}`, pointerEvents: "none" }} />
+        <div style={{ position: "absolute", left: 0, right: 0, height: 4, borderRadius: 9999, background: TL.hair }} />
+        <div style={{ position: "absolute", left: 0, width: pct + "%", height: 4, borderRadius: 9999, background: TL.fill, opacity: 0.9 }} />
+        <span style={{ position: "absolute", left: `calc(${pct}% - 9px)`, width: 18, height: 18, borderRadius: 9999, background: TL.fill, border: `2px solid ${TL.elev}`, pointerEvents: "none" }} />
         <input
           type="range" min={min} max={max} step={step} value={val}
           onChange={(e) => { const n = Number(e.target.value); setV(n); onChange?.(n); }}
@@ -701,8 +702,8 @@ export function Glider({ label = "Innsats (RPE)", min = 1, max = 10, step = 1, v
         />
       </div>
       <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6 }}>
-        <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut }}>{min}</span>
-        <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut }}>{max}</span>
+        <span style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>{min}</span>
+        <span style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>{max}</span>
       </div>
     </div>
   );
@@ -721,7 +722,7 @@ export interface StegtellerProps {
 }
 function StegKnapp({ icon, onClick }: { icon: string; onClick: () => void }) {
   return (
-    <button type="button" onClick={onClick} style={{ appearance: "none", cursor: "pointer", width: 36, height: 36, borderRadius: 8, background: T.panel3, border: `1px solid ${T.borderS}`, color: T.fg, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+    <button type="button" onClick={onClick} style={{ appearance: "none", cursor: "pointer", width: 36, height: 36, borderRadius: 8, background: TL.dim, border: `1px solid ${TL.hair}`, color: TL.text, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
       <Icon name={icon} size={15} />
     </button>
   );
@@ -735,7 +736,7 @@ export function Stegteller({ label = "Repetisjoner", min = 0, max = 999, step = 
       {label && <Etikett>{label}</Etikett>}
       <div style={{ display: "inline-flex", alignItems: "center", gap: 12 }}>
         <StegKnapp icon="minus" onClick={() => set(val - step)} />
-        <span style={{ minWidth: 72, textAlign: "center", fontFamily: T.mono, fontSize: 22, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>{val}<span style={{ fontSize: 10, color: T.mut, marginLeft: 5 }}>{enhet}</span></span>
+        <span style={{ minWidth: 72, textAlign: "center", fontFamily: TL.font.mono, fontSize: 22, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>{val}<span style={{ fontSize: 10, color: TL.mute, marginLeft: 5 }}>{enhet}</span></span>
         <StegKnapp icon="plus" onClick={() => set(val + step)} />
       </div>
     </div>
@@ -773,19 +774,19 @@ export function DatoVelger({
   return (
     <div>
       {label && <Etikett>{label}</Etikett>}
-      <div style={{ background: T.panel2, border: `1px solid ${T.borderS}`, borderRadius: 12, padding: 12 }}>
+      <div style={{ background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: 12, padding: 12 }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg }}><Icon name="calendar" size={13} style={{ color: T.mut }} />{maaned}</span>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 600, color: TL.text }}><Icon name="calendar" size={13} style={{ color: TL.mute }} />{maaned}</span>
           <span style={{ display: "inline-flex", gap: 4 }}>
-            <Icon name="chevron-left" size={14} style={{ color: T.mut, cursor: "pointer" }} />
-            <Icon name="chevron-right" size={14} style={{ color: T.mut, cursor: "pointer" }} />
+            <Icon name="chevron-left" size={14} style={{ color: TL.mute, cursor: "pointer" }} />
+            <Icon name="chevron-right" size={14} style={{ color: TL.mute, cursor: "pointer" }} />
           </span>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 4 }}>
           {dager.map((x) => { const on = val === x.n; return (
-            <div key={x.n} onClick={() => { setV(x.n); onChange?.(x.n); }} style={{ textAlign: "center", padding: "6px 0 7px", borderRadius: 8, background: on ? T.lime : "transparent", cursor: "pointer" }}>
-              <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: on ? T.onLime : T.mut, display: "block" }}>{x.d}</span>
-              <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: on ? T.onLime : T.fg, fontVariantNumeric: "tabular-nums", display: "block", marginTop: 2 }}>{x.n}</span>
+            <div key={x.n} onClick={() => { setV(x.n); onChange?.(x.n); }} style={{ textAlign: "center", padding: "6px 0 7px", borderRadius: 8, background: on ? TL.fill : "transparent", cursor: "pointer" }}>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: on ? TL.onFill : TL.mute, display: "block" }}>{x.d}</span>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, color: on ? TL.onFill : TL.text, fontVariantNumeric: "tabular-nums", display: "block", marginTop: 2 }}>{x.n}</span>
             </div>
           ); })}
         </div>
@@ -812,7 +813,7 @@ export function KodeInput({ label = "Engangskode fra e-post", lengde = 6, value,
       <div style={{ position: "relative", display: "inline-block" }}>
         <div style={{ display: "flex", gap: 8 }}>
           {Array.from({ length: lengde }, (_, i) => { const aktiv = i === val.length; return (
-            <span key={i} style={{ width: 44, height: 52, borderRadius: 8, background: T.panel2, border: `1px solid ${aktiv ? T.lime : T.borderS}`, display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: T.mono, fontSize: 20, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>{val[i] || ""}</span>
+            <span key={i} style={{ width: 44, height: 52, borderRadius: 8, background: TL.dock, border: `1px solid ${aktiv ? TL.fill : TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: TL.font.mono, fontSize: 20, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>{val[i] || ""}</span>
           ); })}
         </div>
         <input
@@ -883,15 +884,15 @@ export function Veiviser({
           const done = i < aktiv, on = i === aktiv;
           return (
             <Fragment key={i}>
-              {i > 0 && <span aria-hidden style={{ flex: 1, height: 2, borderRadius: 2, background: done || on ? "color-mix(in srgb, var(--v2-lime) 45%, transparent)" : T.track, margin: "0 8px", marginBottom: 19 }} />}
+              {i > 0 && <span aria-hidden style={{ flex: 1, height: 2, borderRadius: 2, background: done || on ? "color-mix(in srgb, var(--tl-fill) 45%, transparent)" : TL.hair, margin: "0 8px", marginBottom: 19 }} />}
               <div role="listitem" aria-current={on ? "step" : undefined} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, flex: "none" }}>
-                <span style={{ width: 26, height: 26, borderRadius: 9999, display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: T.mono, fontSize: 11.5, fontWeight: 700, fontVariantNumeric: "tabular-nums",
-                  background: done ? T.lime : on ? "transparent" : T.panel2,
-                  border: `1px solid ${done || on ? T.lime : T.borderS}`,
-                  color: done ? T.onLime : on ? T.lime : T.mut }}>
+                <span style={{ width: 26, height: 26, borderRadius: 9999, display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: TL.font.mono, fontSize: 11.5, fontWeight: 700, fontVariantNumeric: "tabular-nums",
+                  background: done ? TL.fill : on ? "transparent" : TL.dock,
+                  border: `1px solid ${done || on ? TL.fill : TL.hair}`,
+                  color: done ? TL.onFill : on ? TL.fill : TL.mute }}>
                   {done ? <Icon name="check" size={12} /> : i + 1}
                 </span>
-                <span style={{ fontFamily: T.ui, fontSize: 11, fontWeight: on ? 700 : 500, color: on ? T.fg : T.mut, whiteSpace: "nowrap" }}>{s}</span>
+                <span style={{ fontFamily: TL.font.sans, fontSize: 11, fontWeight: on ? 700 : 500, color: on ? TL.text : TL.mute, whiteSpace: "nowrap" }}>{s}</span>
                 {(done || on) && (
                   <span className="sr-only">Steg {i + 1} av {steg.length} · {done ? "fullført" : "pågår"}</span>
                 )}
@@ -919,9 +920,9 @@ export function npsSegment(v: number): NpsSegment {
   return "ambassador";
 }
 const NPS_SEG: Record<NpsSegment, { c: string; l: string }> = {
-  kritiker: { c: T.down, l: "Kritiker" },
-  passiv: { c: T.warn, l: "Passiv" },
-  ambassador: { c: T.lime, l: "Ambassadør" },
+  kritiker: { c: TL.danger, l: "Kritiker" },
+  passiv: { c: TL.warn, l: "Passiv" },
+  ambassador: { c: TL.fill, l: "Ambassadør" },
 };
 export interface NpsSkalaProps {
   value: number;
@@ -930,7 +931,7 @@ export interface NpsSkalaProps {
 export function NpsSkala({ value, onChange }: NpsSkalaProps) {
   const seg = npsSegment(value);
   const segC = NPS_SEG[seg].c;
-  const kant: CSSProperties = { fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: T.mut };
+  const kant: CSSProperties = { fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: TL.mute };
   return (
     <div>
       <div className="v2-nps-grid">
@@ -949,10 +950,10 @@ export function NpsSkala({ value, onChange }: NpsSkalaProps) {
               style={{
                 appearance: "none", cursor: "pointer",
                 borderRadius: 8, padding: 0,
-                fontFamily: T.mono, fontSize: 13, fontWeight: 700, fontVariantNumeric: "tabular-nums",
-                background: on ? c : iSeg ? `color-mix(in srgb, ${c} 12%, transparent)` : T.panel2,
-                border: `1px solid ${on ? "transparent" : iSeg ? `color-mix(in srgb, ${c} 32%, transparent)` : T.borderS}`,
-                color: on ? T.onLime : T.fg,
+                fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, fontVariantNumeric: "tabular-nums",
+                background: on ? c : iSeg ? `color-mix(in srgb, ${c} 12%, transparent)` : TL.dock,
+                border: `1px solid ${on ? "transparent" : iSeg ? `color-mix(in srgb, ${c} 32%, transparent)` : TL.hair}`,
+                color: on ? TL.onFill : TL.text,
                 transition: "background 140ms, border-color 140ms",
               }}
             >
@@ -963,7 +964,7 @@ export function NpsSkala({ value, onChange }: NpsSkalaProps) {
       </div>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginTop: 12 }}>
         <span style={kant}>Ikke sannsynlig</span>
-        <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: segC, background: `color-mix(in srgb, ${segC} 12%, transparent)`, borderRadius: 9999, padding: "4px 8px", whiteSpace: "nowrap" }}>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: segC, background: `color-mix(in srgb, ${segC} 12%, transparent)`, borderRadius: 9999, padding: "4px 8px", whiteSpace: "nowrap" }}>
           <span style={{ width: 5, height: 5, borderRadius: 9999, background: segC }} />
           {value} · {NPS_SEG[seg].l}
         </span>
@@ -1001,13 +1002,13 @@ export function IkonChipVelger<T extends string = string>({ valg, value, onChang
               appearance: "none", cursor: "pointer",
               display: "inline-flex", alignItems: "center", gap: 8,
               padding: "8px 12px", borderRadius: 9999,
-              fontFamily: T.ui, fontSize: 12, fontWeight: 500,
-              background: on ? T.lime : T.panel2,
-              border: `1px solid ${on ? "transparent" : T.borderS}`,
-              color: on ? T.onLime : T.fg,
+              fontFamily: TL.font.sans, fontSize: 12, fontWeight: 500,
+              background: on ? TL.fill : TL.dock,
+              border: `1px solid ${on ? "transparent" : TL.hair}`,
+              color: on ? TL.onFill : TL.text,
             }}
           >
-            <Icon name={o.ikon} size={14} style={{ color: on ? T.onLime : T.fg2 }} />
+            <Icon name={o.ikon} size={14} style={{ color: on ? TL.onFill : TL.mute }} />
             {o.navn}
           </button>
         );

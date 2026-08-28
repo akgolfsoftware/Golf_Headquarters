@@ -14,7 +14,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Kort, TomTilstand } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import {
@@ -122,13 +123,13 @@ export function HistorikkV2({ entries, navn }: { entries: HistorikkEntry[]; navn
     <div
       data-paper-slug="playerhq-historikk-filter-sheet"
       data-od-id="playerhq-historikk"
-      style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%", minWidth: 0 }}
+      style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%", minWidth: 0 }}
     >
       {/* Topp — fasit: Historikk / navn · alle økter og runder + filterknapp */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>
         <div style={{ minWidth: 0 }}>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Historikk</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Historikk</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
             {navn} · alle økter og runder
           </span>
         </div>
@@ -145,10 +146,10 @@ export function HistorikkV2({ entries, navn }: { entries: HistorikkEntry[]; navn
             height: 44,
             display: "grid",
             placeItems: "center",
-            borderRadius: T.rCard,
-            border: `1px solid ${T.border}`,
-            background: T.panel,
-            color: T.fg,
+            borderRadius: TL.radius.card,
+            border: `1px solid ${TL.hair}`,
+            background: TL.elev,
+            color: TL.text,
             cursor: "pointer",
           }}
         >
@@ -166,7 +167,7 @@ export function HistorikkV2({ entries, navn }: { entries: HistorikkEntry[]; navn
 
       {liste.length > 0 ? (
         <Kort>
-          <p className="num" style={{ margin: "0 0 8px", fontFamily: T.mono, fontSize: 11, color: T.mut }}>
+          <p className="num" style={{ margin: "0 0 8px", fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>
             {liste.length} av {entries.length} oppføringer
           </p>
           <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
@@ -180,23 +181,23 @@ export function HistorikkV2({ entries, navn }: { entries: HistorikkEntry[]; navn
                       display: "flex",
                       flexDirection: "column",
                       alignItems: "center",
-                      background: T.panel2,
-                      border: `1px solid ${T.border}`,
-                      borderRadius: T.rTag,
+                      background: TL.dock,
+                      border: `1px solid ${TL.hair}`,
+                      borderRadius: TL.radius.row,
                       padding: "6px 10px",
                       minWidth: 46,
                     }}
                   >
-                    <span className="num" style={{ fontFamily: T.mono, fontSize: 15, fontWeight: 700, lineHeight: 1, color: T.fg }}>
+                    <span className="num" style={{ fontFamily: TL.font.mono, fontSize: 15, fontWeight: 700, lineHeight: 1, color: TL.text }}>
                       {e.dag}
                     </span>
                     <span
                       style={{
-                        fontFamily: T.mono,
+                        fontFamily: TL.font.mono,
                         fontSize: 8.5,
                         textTransform: "uppercase",
                         letterSpacing: "0.08em",
-                        color: T.mut,
+                        color: TL.mute,
                         marginTop: 2,
                       }}
                     >
@@ -204,10 +205,10 @@ export function HistorikkV2({ entries, navn }: { entries: HistorikkEntry[]; navn
                     </span>
                   </span>
                   <span style={{ flex: 1, minWidth: 0 }}>
-                    <span style={{ display: "block", fontFamily: T.ui, fontSize: 13, fontWeight: 500, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                    <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 13, fontWeight: 500, color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                       {e.navn}
                     </span>
-                    <span style={{ display: "block", fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                    <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                       {e.meta}
                     </span>
                   </span>
@@ -215,10 +216,10 @@ export function HistorikkV2({ entries, navn }: { entries: HistorikkEntry[]; navn
                     className="num"
                     style={{
                       flex: "none",
-                      fontFamily: T.mono,
+                      fontFamily: TL.font.mono,
                       fontSize: 12.5,
                       fontWeight: 600,
-                      color: e.tone === "pos" ? T.up : e.tone === "neg" ? T.down : T.fg,
+                      color: e.tone === "pos" ? TL.ok : e.tone === "neg" ? TL.danger : TL.text,
                     }}
                   >
                     {e.verdi}
@@ -231,7 +232,7 @@ export function HistorikkV2({ entries, navn }: { entries: HistorikkEntry[]; navn
                 gap: 12,
                 minHeight: 52,
                 padding: "8px 0",
-                borderBottom: i === arr.length - 1 ? "none" : `1px solid ${T.borderS}`,
+                borderBottom: i === arr.length - 1 ? "none" : `1px solid ${TL.hair}`,
                 textDecoration: "none",
                 color: "inherit",
                 minWidth: 0,
@@ -265,11 +266,11 @@ export function HistorikkV2({ entries, navn }: { entries: HistorikkEntry[]; navn
               style={{
                 minHeight: 44,
                 padding: "0 16px",
-                borderRadius: T.rTag,
-                border: `1px solid ${T.border}`,
-                background: T.panel,
-                color: T.fg,
-                fontFamily: T.ui,
+                borderRadius: TL.radius.row,
+                border: `1px solid ${TL.hair}`,
+                background: TL.elev,
+                color: TL.text,
+                fontFamily: TL.font.sans,
                 fontSize: 13,
                 fontWeight: 600,
                 cursor: "pointer",

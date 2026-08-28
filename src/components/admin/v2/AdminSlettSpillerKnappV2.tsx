@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * Slett spiller-knapp + bekreftelses-dialog, v2-port 16. juli 2026. Samme
@@ -8,7 +9,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { T, Caps, Knapp } from "@/components/v2";
+import { Caps, Knapp } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import { slettSpiller } from "@/app/admin/(legacy)/spillere/[id]/rediger/actions";
 
@@ -32,7 +33,7 @@ export function AdminSlettSpillerKnappV2({ spillerId, spillerNavn }: { spillerId
       <button
         type="button"
         onClick={() => setOpen(true)}
-        style={{ display: "inline-flex", alignItems: "center", gap: 8, borderRadius: 9999, border: `1px solid color-mix(in srgb, ${T.down} 40%, transparent)`, background: "transparent", padding: "10px 18px", fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.down, cursor: "pointer" }}
+        style={{ display: "inline-flex", alignItems: "center", gap: 8, borderRadius: 9999, border: `1px solid color-mix(in srgb, ${TL.danger} 40%, transparent)`, background: "transparent", padding: "10px 18px", fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.danger, cursor: "pointer" }}
       >
         <Icon name="trash-2" size={14} />
         Slett spiller
@@ -44,18 +45,18 @@ export function AdminSlettSpillerKnappV2({ spillerId, spillerNavn }: { spillerId
           aria-modal="true"
           aria-label="Slett spiller"
           onClick={(e) => { if (e.target === e.currentTarget && !pending) setOpen(false); }}
-          style={{ position: "fixed", inset: 0, zIndex: 50, display: "grid", placeItems: "center", background: T.farge.svartA55, padding: 16 }}
+          style={{ position: "fixed", inset: 0, zIndex: 50, display: "grid", placeItems: "center", background: TL.scrim, padding: 16 }}
         >
-          <div style={{ width: "100%", maxWidth: 420, borderRadius: T.rCard, background: T.panel, border: `1px solid ${T.borderS}`, padding: 22, boxShadow: `0 24px 60px ${T.farge.svartA50}` }}>
+          <div style={{ width: "100%", maxWidth: 420, borderRadius: TL.radius.card, background: TL.elev, border: `1px solid ${TL.hair}`, padding: 22, boxShadow: "none" }}>
             <Caps>Slett spiller</Caps>
-            <h2 style={{ margin: "6px 0 0", fontFamily: T.disp, fontWeight: 700, fontSize: 20, color: T.fg }}>{spillerNavn}</h2>
-            <p style={{ marginTop: 14, fontSize: 13, lineHeight: 1.55, color: T.fg }}>
+            <h2 style={{ margin: "6px 0 0", fontFamily: TL.font.sans, fontWeight: 700, fontSize: 20, color: TL.text }}>{spillerNavn}</h2>
+            <p style={{ marginTop: 14, fontSize: 13, lineHeight: 1.55, color: TL.text }}>
               Spilleren fjernes fra stallen og mister tilgang. Dataene beholdes og kan gjenopprettes via support. Vil du fortsette?
             </p>
-            {error && <p style={{ marginTop: 10, fontSize: 13, color: T.down }}>{error}</p>}
+            {error && <p style={{ marginTop: 10, fontSize: 13, color: TL.danger }}>{error}</p>}
             <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 20 }}>
               <Knapp ghost disabled={pending} onClick={() => setOpen(false)}>Avbryt</Knapp>
-              <Knapp disabled={pending} onClick={bekreftSlett} style={{ background: T.down, color: T.onCta }}>
+              <Knapp disabled={pending} onClick={bekreftSlett} style={{ background: TL.danger, color: TL.onFill }}>
                 {pending ? "Sletter…" : "Slett spiller"}
               </Knapp>
             </div>

@@ -1,23 +1,13 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ Coach · Spørsmål-tråd — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
  * T.* only. Lys PlayerHQ.
  */
 
 import { useState, useTransition } from "react";
-import {
-  T,
-  Kort,
-  StatusPill,
-  AvatarInit,
-  TekstOmraade,
-  Knapp,
-  Rad,
-  Icon,
-} from "@/components/v2";
+import { Kort, StatusPill, AvatarInit, TekstOmraade, Knapp, Rad, Icon } from "@/components/v2";
 import { useToast } from "@/components/shared/toast-provider";
-
 /* ── Datakontrakt (serialiserbar — formatert på server) ────────────── */
 
 export type CoachSporsmalTraad = {
@@ -44,12 +34,12 @@ function TidMeta({ icon, children }: { icon: string; children: React.ReactNode }
         display: "inline-flex",
         alignItems: "center",
         gap: 5,
-        fontFamily: T.mono,
+        fontFamily: TL.font.mono,
         fontSize: 10.5,
-        color: T.mut,
+        color: TL.mute,
       }}
     >
-      <Icon name={icon} size={11} style={{ color: T.mut }} />
+      <Icon name={icon} size={11} style={{ color: TL.mute }} />
       {children}
     </span>
   );
@@ -83,14 +73,14 @@ export function CoachSporsmalTraadV2({
         margin: "0 auto",
         display: "flex",
         flexDirection: "column",
-        gap: T.gap,
+        gap: 16,
       }}
     >
       {/* Hode */}
       <div>
         <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Spørsmål</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Tråd</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Spørsmål</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>Tråd</span>
         </div>
         <div
           style={{
@@ -126,21 +116,21 @@ export function CoachSporsmalTraadV2({
                 gap: 8,
               }}
             >
-              <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 700, color: T.fg }}>
+              <span style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 700, color: TL.text }}>
                 {data.askerNavn}
               </span>
-              <span style={{ fontFamily: T.mono, fontSize: 10.5, color: T.mut }}>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute }}>
                 {data.stiltTid}
               </span>
             </div>
             <div
               style={{
-                fontFamily: T.disp,
+                fontFamily: TL.font.sans,
                 fontWeight: 700,
                 fontSize: 19,
                 letterSpacing: "-0.01em",
                 lineHeight: 1.25,
-                color: T.fg,
+                color: TL.text,
                 margin: "6px 0 8px",
               }}
             >
@@ -148,10 +138,10 @@ export function CoachSporsmalTraadV2({
             </div>
             <p
               style={{
-                fontFamily: T.ui,
+                fontFamily: TL.font.sans,
                 fontSize: 14.5,
                 lineHeight: 1.6,
-                color: T.fg,
+                color: TL.text,
                 whiteSpace: "pre-line",
                 margin: 0,
               }}
@@ -172,10 +162,10 @@ export function CoachSporsmalTraadV2({
           >
             <p
               style={{
-                fontFamily: T.ui,
+                fontFamily: TL.font.sans,
                 fontSize: 14.5,
                 lineHeight: 1.6,
-                color: T.fg,
+                color: TL.text,
                 whiteSpace: "pre-line",
                 margin: 0,
               }}
@@ -189,7 +179,7 @@ export function CoachSporsmalTraadV2({
                 gap: 16,
                 marginTop: 16,
                 paddingTop: 14,
-                borderTop: `1px solid ${T.border}`,
+                borderTop: `1px solid ${TL.hair}`,
               }}
             >
               <TidMeta icon="clock">Stilt {data.stiltTid}</TidMeta>
@@ -211,7 +201,7 @@ export function CoachSporsmalTraadV2({
       <Kort
         eyebrow="Liknende spørsmål andre har stilt"
         action={
-          <span style={{ fontFamily: T.mono, fontSize: 10.5, color: T.mut }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute }}>
             {RELATERTE.length} relaterte
           </span>
         }
@@ -220,7 +210,7 @@ export function CoachSporsmalTraadV2({
           {RELATERTE.map((q, i) => (
             <Rad
               key={q}
-              leading={<Icon name="message-circle" size={16} style={{ color: T.mut }} />}
+              leading={<Icon name="message-circle" size={16} style={{ color: TL.mute }} />}
               title={q}
               meta={<StatusPill tone="up">Besvart</StatusPill>}
               last={i === RELATERTE.length - 1}
@@ -297,10 +287,10 @@ function Reaksjon() {
         }}
       >
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontFamily: T.ui, fontSize: 14, fontWeight: 700, color: T.fg }}>
+          <div style={{ fontFamily: TL.font.sans, fontSize: 14, fontWeight: 700, color: TL.text }}>
             Hjalp dette deg?
           </div>
-          <div style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, marginTop: 2 }}>
+          <div style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, marginTop: 2 }}>
             Reaksjonen din hjelper coachen din med å forstå hva som funker.
           </div>
         </div>

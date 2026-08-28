@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * Avbestill-knapp for /portal/booking/[bookingId] — matcher fasitens
@@ -10,7 +11,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { T, Knapp } from "@/components/v2";
+import { Knapp } from "@/components/v2";
 import { cancelBooking } from "@/app/portal/meg/bookinger/actions";
 
 export function BookingAvbestillKnapp({ bookingId, canRefund }: { bookingId: string; canRefund: boolean }) {
@@ -43,26 +44,26 @@ export function BookingAvbestillKnapp({ bookingId, canRefund }: { bookingId: str
   return (
     <div
       style={{
-        border: `1px dashed ${T.borderS}`,
-        borderRadius: T.rCard,
-        background: T.panel2,
+        border: `1px dashed ${TL.hair}`,
+        borderRadius: TL.radius.card,
+        background: TL.dock,
         padding: 14,
         display: "flex",
         flexDirection: "column",
         gap: 10,
       }}
     >
-      <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.55 }}>
+      <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.55 }}>
         {canRefund
           ? "Sikker? Timen frigis og krediten din betales tilbake."
           : "Sikker? Mindre enn 24 timer til timen — krediten refunderes ikke."}
       </p>
-      {feil && <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12, color: T.down }}>{feil}</p>}
+      {feil && <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12, color: TL.danger }}>{feil}</p>}
       <div style={{ display: "flex", gap: 8 }}>
         <Knapp ghost onClick={() => setBekreft(false)} disabled={pending} style={{ flex: 1 }}>
           Behold timen
         </Knapp>
-        <Knapp onClick={utfor} disabled={pending} style={{ flex: 1, background: T.down, color: T.onForest }}>
+        <Knapp onClick={utfor} disabled={pending} style={{ flex: 1, background: TL.danger, color: TL.onFill }}>
           {pending ? "Avbestiller…" : "Ja, avbestill"}
         </Knapp>
       </div>

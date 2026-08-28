@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * AgencyOS — Inviter coach (v2, retning C «Presis»). Rekomponerer
  * (legacy)/team/inviter (InviterCoachForm) i v2-biblioteket, med uendret
@@ -14,19 +14,9 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  Kort,
-  SkjemaFelt,
-  Inndata,
-  Knapp,
-  CTAPill,
-  ValideringsChip,
-  Avkryssing,
-  T,
-} from "@/components/v2";
+import { Kort, SkjemaFelt, Inndata, Knapp, CTAPill, ValideringsChip, Avkryssing } from "@/components/v2";
 import { Capability, CAPABILITY_BESKRIVELSER } from "@/lib/auth/cbac";
 import { inviterCoach } from "@/app/admin/(legacy)/team/actions";
-
 // G6: ekstra-tilganger utover COACH-defaulten som ADMIN kan gi ved invitasjon.
 // Skrives som GRANT-overrides i user_capabilities av inviterCoach.
 const EKSTRA_TILGANGER: Capability[] = [
@@ -90,10 +80,10 @@ export function AdminInviterCoachV2({
   const hode = (
     <div>
       <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Inviter coach</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Inviter coach</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>AgencyOS</span>
         </div>
-      <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.55, margin: "10px 0 0", maxWidth: 460 }}>
+      <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.55, margin: "10px 0 0", maxWidth: 460 }}>
         Coachen får en e-post med innloggingslink og kan logge inn umiddelbart
         med samme e-post.
       </p>
@@ -101,7 +91,7 @@ export function AdminInviterCoachV2({
   );
 
   return (
-    <div data-paper-wave-h="inviter-coach" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-h="inviter-coach" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {hode}
 
       <Kort style={{ maxWidth: 480 }}>
@@ -117,10 +107,10 @@ export function AdminInviterCoachV2({
           {kanTildeleTilganger && (
             <div>
               {/* G6 — funksjonelt; trenger fasit-runde for endelig utseende. */}
-              <div style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>
+              <div style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text }}>
                 Ekstra tilganger
               </div>
-              <p style={{ margin: "2px 0 6px", fontFamily: T.ui, fontSize: 11.5, color: T.mut, lineHeight: 1.5 }}>
+              <p style={{ margin: "2px 0 6px", fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, lineHeight: 1.5 }}>
                 Standard trenertilgang (grupper, planer, tester, spillerdata,
                 booking) følger med automatisk. Kryss av for det ekstra denne
                 treneren skal ha.

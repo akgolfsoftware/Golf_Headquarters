@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 // AI Golf Coach — utfellbart chat-panel under en AKTIV live-økt (plan-session
 // eller session-v2). Flyter over bunn/høyre som en fast boks, blokkerer aldri
 // tapper/rep-logging under. Gjenbruker samtale-familien fra @/components/v2
@@ -10,20 +10,9 @@
 
 import { useEffect, useRef, useState, type ChangeEvent, type ReactNode } from "react";
 import Link from "next/link";
-import {
-  T,
-  Icon,
-  AiMerke,
-  SamtaleBoble,
-  SamtaleSkriver,
-  SamtaleFeil,
-  Skrivefelt,
-  ForslagRad,
-  Knapp,
-} from "@/components/v2";
+import { Icon, AiMerke, SamtaleBoble, SamtaleSkriver, SamtaleFeil, Skrivefelt, ForslagRad, Knapp } from "@/components/v2";
 import type { LiveCoachChatRow, LiveCoachPanelData } from "./types";
 import { useLiveCoachVideoUpload } from "./useLiveCoachVideoUpload";
-
 const FORSLAG = [
   "Hva skal jeg fokusere på nå?",
   "Jeg slår det feil — hva gjør jeg?",
@@ -142,7 +131,7 @@ export function LiveCoachPanel({
       <FloatingShell open={open} onToggle={() => setOpen((v) => !v)} harUlest={false}>
         <PanelHeader onClose={() => setOpen(false)} />
         <div style={{ padding: "18px 18px 20px", display: "flex", flexDirection: "column", gap: 12 }}>
-          <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.6, margin: 0 }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.6, margin: 0 }}>
             Oppgrader for AI-coach under trening.
           </p>
           <Link href="/portal/meg/abonnement" style={{ textDecoration: "none", alignSelf: "flex-start" }}>
@@ -159,7 +148,7 @@ export function LiveCoachPanel({
       <div ref={scrollRef} style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "14px 16px", display: "flex", flexDirection: "column", gap: 12 }}>
         {meldinger.length === 0 ? (
           <div style={{ margin: "auto 0", display: "flex", flexDirection: "column", gap: 14, alignItems: "center", padding: "10px 4px", textAlign: "center" }}>
-            <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut }}>Spør om noe underveis i økta.</span>
+            <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute }}>Spør om noe underveis i økta.</span>
             <ForslagRad items={FORSLAG} onPick={setInput} sentrert />
           </div>
         ) : (
@@ -175,10 +164,10 @@ export function LiveCoachPanel({
         )}
       </div>
 
-      <div style={{ padding: "10px 14px 14px", borderTop: `1px solid ${T.border}`, display: "flex", flexDirection: "column", gap: 8 }}>
+      <div style={{ padding: "10px 14px 14px", borderTop: `1px solid ${TL.hair}`, display: "flex", flexDirection: "column", gap: 8 }}>
         {feil && <SamtaleFeil>{feil}</SamtaleFeil>}
         {videoInfo && (
-          <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut }}>{videoInfo}</span>
+          <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute }}>{videoInfo}</span>
         )}
         {upload.feil && <SamtaleFeil>{upload.feil}</SamtaleFeil>}
         <div style={{ display: "flex", gap: 8, alignItems: "end" }}>
@@ -188,7 +177,7 @@ export function LiveCoachPanel({
             disabled={upload.busy}
             aria-label="Last opp video"
             className="v2-press v2-focus"
-            style={{ width: 40, height: 40, flex: "none", borderRadius: 10, border: `1px solid ${T.borderS}`, background: T.panel3, color: T.fg2, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: upload.busy ? "default" : "pointer", opacity: upload.busy ? 0.5 : 1 }}
+            style={{ width: 40, height: 40, flex: "none", borderRadius: 10, border: `1px solid ${TL.hair}`, background: TL.dim, color: TL.mute, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: upload.busy ? "default" : "pointer", opacity: upload.busy ? 0.5 : 1 }}
           >
             <Icon name="video" size={17} />
           </button>
@@ -231,17 +220,17 @@ function FloatingShell({
           width: 56,
           height: 56,
           borderRadius: 9999,
-          background: T.panel2,
-          border: `1px solid ${T.borderS}`,
+          background: TL.dock,
+          border: `1px solid ${TL.hair}`,
           display: "inline-flex",
           alignItems: "center",
           justifyContent: "center",
-          boxShadow: `0 12px 28px ${T.farge.svartA40}`,
+          boxShadow: `0 12px 28px ${TL.scrim}`,
         }}
       >
-        <Icon name="sparkles" size={22} style={{ color: T.lime }} />
+        <Icon name="sparkles" size={22} style={{ color: TL.fill }} />
         {harUlest && (
-          <span style={{ position: "absolute", top: 2, right: 2, width: 11, height: 11, borderRadius: 9999, background: T.lime, border: `2px solid ${T.panel2}` }} />
+          <span style={{ position: "absolute", top: 2, right: 2, width: 11, height: 11, borderRadius: 9999, background: TL.fill, border: `2px solid ${TL.dock}` }} />
         )}
       </button>
     );
@@ -258,10 +247,10 @@ function FloatingShell({
         maxHeight: "min(70vh, 620px)",
         display: "flex",
         flexDirection: "column",
-        background: T.panel,
-        border: `1px solid ${T.border}`,
+        background: TL.elev,
+        border: `1px solid ${TL.hair}`,
         borderRadius: 20,
-        boxShadow: `0 24px 60px ${T.farge.svartA55}`,
+        boxShadow: "none",
         overflow: "hidden",
       }}
     >
@@ -272,14 +261,14 @@ function FloatingShell({
 
 function PanelHeader({ onClose }: { onClose: () => void }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, padding: "12px 14px", borderBottom: `1px solid ${T.border}`, flex: "none" }}>
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, padding: "12px 14px", borderBottom: `1px solid ${TL.hair}`, flex: "none" }}>
       <AiMerke navn="AI Golf Coach" sub="Under økta" />
       <button
         type="button"
         onClick={onClose}
         aria-label="Lukk AI Golf Coach"
         className="v2-press v2-focus"
-        style={{ width: 32, height: 32, borderRadius: 9999, border: `1px solid ${T.border}`, background: T.panel3, color: T.mut, display: "inline-flex", alignItems: "center", justifyContent: "center" }}
+        style={{ width: 32, height: 32, borderRadius: 9999, border: `1px solid ${TL.hair}`, background: TL.dim, color: TL.mute, display: "inline-flex", alignItems: "center", justifyContent: "center" }}
       >
         <Icon name="x" size={15} />
       </button>

@@ -6,7 +6,8 @@
 
 import Link from "next/link";
 import { Caps, Tittel, Kort, StatusPill, TomTilstand } from "@/components/v2";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Icon } from "@/components/v2/icon";
 import { safeUrl } from "@/lib/security/safe-url";
 
@@ -15,10 +16,10 @@ function Chip({ children, accent }: { children: React.ReactNode; accent?: boolea
     <span
       style={{
         display: "inline-flex", alignItems: "center", height: 22, padding: "0 9px", borderRadius: 6,
-        fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.03em",
-        background: accent ? `color-mix(in srgb, ${T.lime} 16%, transparent)` : T.panel2,
-        border: `1px solid ${accent ? "transparent" : T.border}`,
-        color: accent ? T.lime : T.fg2,
+        fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.03em",
+        background: accent ? `color-mix(in srgb, ${TL.fill} 16%, transparent)` : TL.dock,
+        border: `1px solid ${accent ? "transparent" : TL.hair}`,
+        color: accent ? TL.fill : TL.mute,
       }}
     >
       {children}
@@ -66,7 +67,7 @@ function NgfRangePlot({ ngfOrder, min, max }: { ngfOrder: string[]; min: string 
   const maxIdx = max ? ngfOrder.indexOf(max) : ngfOrder.length - 1;
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-      <div style={{ display: "flex", height: 8, borderRadius: 9999, overflow: "hidden", background: T.panel2 }}>
+      <div style={{ display: "flex", height: 8, borderRadius: 9999, overflow: "hidden", background: TL.dock }}>
         {ngfOrder.map((_, i) => {
           const inRange = i >= minIdx && i <= maxIdx;
           return (
@@ -74,15 +75,15 @@ function NgfRangePlot({ ngfOrder, min, max }: { ngfOrder: string[]; min: string 
               key={i}
               style={{
                 flex: 1,
-                background: inRange ? `linear-gradient(90deg, ${T.forest}, ${T.lime})` : "transparent",
+                background: inRange ? `linear-gradient(90deg, ${TL.fill}, ${TL.fill})` : "transparent",
               }}
             />
           );
         })}
       </div>
-      <div style={{ display: "flex", justifyContent: "space-between", fontFamily: T.mono, fontSize: 10, color: T.mut }}>
+      <div style={{ display: "flex", justifyContent: "space-between", fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>
         {ngfOrder.map((k, i) => (
-          <span key={k} style={{ fontWeight: i >= minIdx && i <= maxIdx ? 700 : 400, color: i >= minIdx && i <= maxIdx ? T.fg : T.mut }}>
+          <span key={k} style={{ fontWeight: i >= minIdx && i <= maxIdx ? 700 : 400, color: i >= minIdx && i <= maxIdx ? TL.text : TL.mute }}>
             {k}
           </span>
         ))}
@@ -93,9 +94,9 @@ function NgfRangePlot({ ngfOrder, min, max }: { ngfOrder: string[]; min: string 
 
 function Rad({ label, value }: { label: string; value: string }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, padding: "8px 0", borderBottom: `1px solid ${T.border}` }}>
-      <span style={{ fontFamily: T.mono, fontSize: 10, letterSpacing: "0.06em", textTransform: "uppercase", color: T.mut }}>{label}</span>
-      <span style={{ fontFamily: T.mono, fontSize: 12, color: T.fg, fontVariantNumeric: "tabular-nums" }}>{value}</span>
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, padding: "8px 0", borderBottom: `1px solid ${TL.hair}` }}>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 10, letterSpacing: "0.06em", textTransform: "uppercase", color: TL.mute }}>{label}</span>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 12, color: TL.text, fontVariantNumeric: "tabular-nums" }}>{value}</span>
     </div>
   );
 }
@@ -103,8 +104,8 @@ function Rad({ label, value }: { label: string; value: string }) {
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-      <span style={{ fontFamily: T.mono, fontSize: 9, letterSpacing: "0.06em", textTransform: "uppercase", color: T.mut }}>{label}</span>
-      <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>{value}</span>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 9, letterSpacing: "0.06em", textTransform: "uppercase", color: TL.mute }}>{label}</span>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>{value}</span>
     </div>
   );
 }
@@ -117,8 +118,8 @@ export function AdminDrillDetaljV2({ data, actions }: { data: AdminDrillDetaljV2
   const statusTone = data.brukAntall > 0 ? "lime" as const : "info" as const;
 
   return (
-    <div data-paper-wave-h="drill-detalj" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
-      <Link href="/admin/drills" style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: T.mono, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: T.mut, textDecoration: "none" }}>
+    <div data-paper-wave-h="drill-detalj" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+      <Link href="/admin/drills" style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: TL.font.mono, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: TL.mute, textDecoration: "none" }}>
         <Icon name="arrow-left" size={12} />
         Tilbake til biblioteket
       </Link>
@@ -148,11 +149,11 @@ export function AdminDrillDetaljV2({ data, actions }: { data: AdminDrillDetaljV2
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: T.gap, alignItems: "start" }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 16, alignItems: "start" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <Kort eyebrow="Beskrivelse">
             {data.beskrivelse ? (
-              <p style={{ margin: 0, fontFamily: T.ui, fontSize: 13, lineHeight: 1.6, color: T.fg, whiteSpace: "pre-wrap" }}>{data.beskrivelse}</p>
+              <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 13, lineHeight: 1.6, color: TL.text, whiteSpace: "pre-wrap" }}>{data.beskrivelse}</p>
             ) : (
               <TomTilstand
                 icon="file-text"
@@ -164,7 +165,7 @@ export function AdminDrillDetaljV2({ data, actions }: { data: AdminDrillDetaljV2
 
           {data.coachNotater && (
             <Kort eyebrow="Coach-notater">
-              <p style={{ margin: 0, fontFamily: T.ui, fontSize: 13, lineHeight: 1.6, color: T.fg2, fontStyle: "italic", whiteSpace: "pre-wrap" }}>{data.coachNotater}</p>
+              <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 13, lineHeight: 1.6, color: TL.mute, fontStyle: "italic", whiteSpace: "pre-wrap" }}>{data.coachNotater}</p>
             </Kort>
           )}
 
@@ -189,7 +190,7 @@ export function AdminDrillDetaljV2({ data, actions }: { data: AdminDrillDetaljV2
           )}
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <Kort eyebrow="Default oppsett">
             <div style={{ display: "flex", flexDirection: "column" }}>
               <Rad label="Varighet" value={data.varighetMin ? `${data.varighetMin} min` : "–"} />
@@ -218,7 +219,7 @@ export function AdminDrillDetaljV2({ data, actions }: { data: AdminDrillDetaljV2
             {data.utstyr.length > 0 ? (
               <ul style={{ margin: 0, paddingLeft: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 4 }}>
                 {data.utstyr.map((u) => (
-                  <li key={u} style={{ fontFamily: T.ui, fontSize: 13, color: T.fg }}>
+                  <li key={u} style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text }}>
                     · {u}
                   </li>
                 ))}
@@ -245,7 +246,7 @@ export function AdminDrillDetaljV2({ data, actions }: { data: AdminDrillDetaljV2
               <ul style={{ margin: 0, paddingLeft: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 6 }}>
                 {data.prerequisites.map((p) => (
                   <li key={p.id}>
-                    <Link href={`/admin/drills/${p.id}`} style={{ fontFamily: T.ui, fontSize: 13, color: T.lime }}>
+                    <Link href={`/admin/drills/${p.id}`} style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.fill }}>
                       {p.navn}
                     </Link>
                   </li>
@@ -268,7 +269,7 @@ export function AdminDrillDetaljV2({ data, actions }: { data: AdminDrillDetaljV2
               husets sanitering (S-21) må stå på ALLE href fra databasen. */}
           {safeUrl(data.videoUrl) && (
             <Kort eyebrow="Video">
-              <a href={safeUrl(data.videoUrl)!} target="_blank" rel="noopener noreferrer" style={{ fontFamily: T.ui, fontSize: 13, color: T.lime, wordBreak: "break-all" }}>
+              <a href={safeUrl(data.videoUrl)!} target="_blank" rel="noopener noreferrer" style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.fill, wordBreak: "break-all" }}>
                 {data.videoUrl}
               </a>
             </Kort>

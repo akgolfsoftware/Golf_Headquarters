@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * Tommel-sone (GO V2) — hovedhandlingen i runde-føringen skal alltid ligge
@@ -11,12 +12,12 @@
  * kort), med safe-area-inset for iOS-PWA og en myk uttoning så innhold som
  * ruller under ikke kolliderer visuelt med knappen.
  *
- * `PrimaerKnapp` er den ene oransje «Én ting nå»-handlingen (T.handling)
+ * `PrimaerKnapp` er den ene oransje «Én ting nå»-handlingen (TL.fill)
  * i runde-føringen — Paper-fasit playerhq-runde-live.html.
  */
 
 import type { CSSProperties, ReactNode } from "react";
-import { T, Icon } from "@/components/v2";
+import { Icon } from "@/components/v2";
 
 export function TommelSone({ children }: { children: ReactNode }) {
   return (
@@ -29,7 +30,7 @@ export function TommelSone({ children }: { children: ReactNode }) {
         paddingBottom: "calc(8px + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px))",
         // Uttoning mot bakgrunnen: innhold som ruller under blir dempet, ikke
         // kuttet — knappen leses fortsatt som del av siden, ikke en flytende bar.
-        background: `linear-gradient(to top, ${T.bg} 72%, transparent)`,
+        background: `linear-gradient(to top, ${TL.scene} 72%, transparent)`,
       }}
     >
       {children}
@@ -67,9 +68,9 @@ export function PrimaerKnapp({
         height: 54,
         borderRadius: 10,
         border: "none",
-        background: T.handling,
-        color: T.onHandling,
-        fontFamily: T.disp,
+        background: TL.fill,
+        color: TL.onFill,
+        fontFamily: TL.font.sans,
         fontSize: 16,
         fontWeight: 700,
         display: "inline-flex",

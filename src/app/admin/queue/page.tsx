@@ -16,7 +16,8 @@ import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { KoHubNav } from "@/components/admin/v2/agency-hub-subnav";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Caps, Tittel, Kort, KpiFlis, MikroMeta, CTAPill } from "@/components/v2";
 import { QueueBoard, type QueueKolonne, type QueueKort, type QueueStatus } from "./_board";
 
@@ -128,7 +129,7 @@ export default async function OppfolgingsKoPage() {
   return (
     <V2Shell bredde="kolonne" aktiv="innboks" nav={AGENCYOS_NAV} navn={coach.name} avatarUrl={coach.avatarUrl}>
       <KoHubNav />
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         {/* Hode */}
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>
           <div data-paper-pattern-topp data-paper-slug="agencyos-godkjenninger">
@@ -136,7 +137,7 @@ export default async function OppfolgingsKoPage() {
             <div style={{ marginTop: 10 }}>
               <Tittel em="samtale">Hvem trenger en</Tittel>
             </div>
-            <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "10px 0 0" }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: "10px 0 0" }}>
               Plattformen flagger — du bestemmer.
             </p>
           </div>
@@ -153,7 +154,7 @@ export default async function OppfolgingsKoPage() {
         </div>
 
         {/* KPI-strip */}
-        <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: T.gap }}>
+        <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: 16 }}>
           <KpiFlis label="Risiko" value={risk.length} delta="krever samtale < 48 t" />
           <KpiFlis label="Watch" value={watch.length} delta="trender feil retning" />
           <KpiFlis label="Sjekk inn" value={check.length} delta="lett oppdatering" />
@@ -165,12 +166,12 @@ export default async function OppfolgingsKoPage() {
           <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 18 }}>
             <Caps>Aktivitet · siste 7d</Caps>
             <MikroMeta icon="check-circle">
-              Løst <b style={{ color: T.fg }}>{ok.length}</b> saker
+              Løst <b style={{ color: TL.text }}>{ok.length}</b> saker
             </MikroMeta>
             <MikroMeta icon="bell">
-              Flagget <b style={{ color: T.fg }}>{totalAktive}</b> aktive
+              Flagget <b style={{ color: TL.text }}>{totalAktive}</b> aktive
             </MikroMeta>
-            <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 10, textTransform: "uppercase", color: T.mut }}>
+            <span style={{ marginLeft: "auto", fontFamily: TL.font.mono, fontSize: 10, textTransform: "uppercase", color: TL.mute }}>
               Av {players.length} spillere totalt
             </span>
           </div>
@@ -179,9 +180,9 @@ export default async function OppfolgingsKoPage() {
         {/* Board — I5: kanban med drag-and-drop (klient) */}
         <QueueBoard kolonner={kolonner as QueueKolonne[]} />
 
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderTop: `1px solid ${T.border}`, paddingTop: 16 }}>
-          <span style={{ fontFamily: T.mono, fontSize: 10.5, textTransform: "uppercase", color: T.mut }}>AgencyOS · Oppfølgingskø</span>
-          <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut }}>{totalAktive} aktive saker</span>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderTop: `1px solid ${TL.hair}`, paddingTop: 16 }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 10.5, textTransform: "uppercase", color: TL.mute }}>AgencyOS · Oppfølgingskø</span>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>{totalAktive} aktive saker</span>
         </div>
       </div>
     </V2Shell>

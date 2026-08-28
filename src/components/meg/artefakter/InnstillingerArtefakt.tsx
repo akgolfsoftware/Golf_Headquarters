@@ -11,7 +11,8 @@
  * i stedet for å la bryterne se ut som de har full effekt med en gang.
  */
 import { useState } from "react";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import type { Innstillinger, InnstillingEndring } from "@/lib/jarvis/types";
 
 type MutasjonSvar = { ok: true } | { ok: false; feil: string };
@@ -30,9 +31,9 @@ function Bryter({ pa, onToggle, label }: { pa: boolean; onToggle: () => void; la
         width: 40,
         height: 24,
         flex: "none",
-        borderRadius: T.rPill,
-        background: pa ? T.fg : T.panel2,
-        border: `1px solid ${pa ? T.fg : T.borderS}`,
+        borderRadius: TL.radius.pill,
+        background: pa ? TL.text : TL.dock,
+        border: `1px solid ${pa ? TL.text : TL.hair}`,
         cursor: "pointer",
         padding: 0,
       }}
@@ -44,9 +45,9 @@ function Bryter({ pa, onToggle, label }: { pa: boolean; onToggle: () => void; la
           left: pa ? 17 : 1,
           width: 18,
           height: 18,
-          borderRadius: T.rPill,
-          background: T.panel,
-          border: `1px solid ${T.border}`,
+          borderRadius: TL.radius.pill,
+          background: TL.elev,
+          border: `1px solid ${TL.hair}`,
           transition: "left 0.15s ease",
         }}
       />
@@ -56,10 +57,10 @@ function Bryter({ pa, onToggle, label }: { pa: boolean; onToggle: () => void; la
 
 function InnstillingRad({ navn, detalj, children }: { navn: string; detalj: string; children: React.ReactNode }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 0", borderBottom: `1px solid ${T.borderS}` }}>
+    <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 0", borderBottom: `1px solid ${TL.hair}` }}>
       <span style={{ minWidth: 0, flex: 1 }}>
-        <span style={{ display: "block", fontFamily: T.disp, fontSize: 13, fontWeight: 600, color: T.fg }}>{navn}</span>
-        <span style={{ display: "block", fontSize: 11.5, color: T.mut, fontFamily: T.ui }}>{detalj}</span>
+        <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text }}>{navn}</span>
+        <span style={{ display: "block", fontSize: 11.5, color: TL.mute, fontFamily: TL.font.sans }}>{detalj}</span>
       </span>
       {children}
     </div>
@@ -97,19 +98,19 @@ export function InnstillingerArtefakt({
           display: "flex",
           gap: 8,
           alignItems: "flex-start",
-          border: `1px dashed ${T.border}`,
-          borderRadius: T.rTag,
+          border: `1px dashed ${TL.hair}`,
+          borderRadius: TL.radius.row,
           padding: "8px 10px",
           marginBottom: 16,
-          fontFamily: T.ui,
+          fontFamily: TL.font.sans,
           fontSize: 11.5,
-          color: T.mut,
+          color: TL.mute,
         }}
       >
         Valgene lagres, men styrer ikke innsamlerne/SLA-fristen ennå — det er fortsatt hardkodet andre steder i koden.
       </div>
 
-      <div style={{ fontFamily: T.mono, fontSize: 9, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut, marginBottom: 4 }}>
+      <div style={{ fontFamily: TL.font.mono, fontSize: 9, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute, marginBottom: 4 }}>
         Kanaler — innsamlere av/på
       </div>
       <InnstillingRad navn="Gmail" detalj="hvert 10. min">
@@ -128,7 +129,7 @@ export function InnstillingerArtefakt({
         <Bryter pa={verdier.kanalKalender} onToggle={() => endre({ felt: "kanalKalender", verdi: !verdier.kanalKalender })} label="Kalender" />
       </InnstillingRad>
 
-      <div style={{ fontFamily: T.mono, fontSize: 9, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut, margin: "16px 0 4px" }}>
+      <div style={{ fontFamily: TL.font.mono, fontSize: 9, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute, margin: "16px 0 4px" }}>
         Rytme
       </div>
       <InnstillingRad navn="SLA-terskel" detalj="frist for skriftlig svar">
@@ -138,11 +139,11 @@ export function InnstillingerArtefakt({
           aria-label="SLA-terskel"
           data-od-id="select-sla"
           style={{
-            border: `1px solid ${T.border}`,
-            borderRadius: T.rInput,
-            background: T.panel,
-            color: T.fg,
-            fontFamily: T.mono,
+            border: `1px solid ${TL.hair}`,
+            borderRadius: TL.radius.field,
+            background: TL.elev,
+            color: TL.text,
+            fontFamily: TL.font.mono,
             fontSize: 12,
             padding: "0 8px",
             minHeight: 32,
@@ -164,7 +165,7 @@ export function InnstillingerArtefakt({
         />
       </InnstillingRad>
 
-      <div style={{ fontFamily: T.mono, fontSize: 10.5, color: status === "feil" ? T.down : T.mut, marginTop: 16 }}>
+      <div style={{ fontFamily: TL.font.mono, fontSize: 10.5, color: status === "feil" ? TL.danger : TL.mute, marginTop: 16 }}>
         {status === "lagrer" && "Lagrer …"}
         {status === "lagret" && "✓ Lagret"}
         {status === "feil" && "Kunne ikke lagre — prøv igjen"}

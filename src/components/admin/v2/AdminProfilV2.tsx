@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * AgencyOS Min coach-profil — v2 (retning C «Presis»). Coachens EGEN profil
  * (selvbetjening — matcher /portal/meg sitt "min profil"-idiom, ikke en
@@ -18,23 +18,10 @@
 import { useEffect, useRef, useState, useTransition } from "react";
 import type { ReactNode } from "react";
 import { useRouter } from "next/navigation";
-import {
-  T,
-  Tittel,
-  Knapp,
-  CTAPill,
-  Kort,
-  StatusPill,
-  AvatarFoto,
-  Inndata,
-  TekstOmraade,
-  ProfilFelt,
-  type StatusTone,
-} from "@/components/v2";
+import { Knapp, CTAPill, Kort, StatusPill, AvatarFoto, Inndata, TekstOmraade, ProfilFelt, type StatusTone } from "@/components/v2";
 import { oppdaterCoachProfil } from "@/app/admin/(legacy)/profile/actions";
 import { uploadAvatar } from "@/lib/storage/avatar";
 import { skalerAvatar } from "@/lib/klient/skaler-avatar";
-
 /* ── Datakontrakt (mappes fra requirePortalUser i ruten) ────────────── */
 export type AdminProfilV2Data = {
   navn: string;
@@ -74,7 +61,7 @@ function useMobile(): boolean {
 }
 
 function FeltFeil({ children }: { children: ReactNode }) {
-  return <p style={{ fontFamily: T.ui, fontSize: 11, color: T.down, margin: "6px 0 0" }}>{children}</p>;
+  return <p style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.danger, margin: "6px 0 0" }}>{children}</p>;
 }
 
 /* ── Skjerm ────────────────────────────────────────────────────────── */
@@ -166,7 +153,7 @@ export function AdminProfilV2({ data }: { data: AdminProfilV2Data }) {
       <div style={{ display: "flex", alignItems: "center", gap: mobile ? 16 : 22, flexDirection: mobile ? "column" : "row", textAlign: mobile ? "center" : "left" }}>
         <AvatarFoto src={avatarUrl} navn={data.navn} size={mobile ? 88 : 96} ring />
         <div style={{ flex: 1, minWidth: 0 }}>
-          <h1 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: mobile ? 24 : 28, letterSpacing: "-0.03em", color: T.fg, margin: 0 }}>{data.navn}</h1>
+          <h1 style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: mobile ? 24 : 28, letterSpacing: "-0.03em", color: TL.text, margin: 0 }}>{data.navn}</h1>
           <div style={{ display: "flex", gap: 6, marginTop: 9, justifyContent: mobile ? "center" : "flex-start", flexWrap: "wrap" }}>
             {piller.map((p) => (
               <StatusPill key={p.l} tone={p.tone}>{p.l}</StatusPill>
@@ -189,7 +176,7 @@ export function AdminProfilV2({ data }: { data: AdminProfilV2Data }) {
         />
       </div>
       {avatarFeil && (
-        <p style={{ fontFamily: T.ui, fontSize: 12, color: T.down, margin: "12px 0 0" }}>{avatarFeil}</p>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, margin: "12px 0 0" }}>{avatarFeil}</p>
       )}
     </Kort>
   );
@@ -244,11 +231,11 @@ export function AdminProfilV2({ data }: { data: AdminProfilV2Data }) {
   );
 
   return (
-    <div data-paper-wave-h="profil" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-h="profil" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
         <div data-paper-pattern-topp>
-        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Profil</h1>
-        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Coach</span>
+        <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Profil</h1>
+        <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>Coach</span>
       </div>
         {!mobile && lagreKnapp}
       </div>
@@ -256,10 +243,10 @@ export function AdminProfilV2({ data }: { data: AdminProfilV2Data }) {
       {topp}
 
       {generellFeil && (
-        <p role="alert" style={{ fontFamily: T.ui, fontSize: 12, color: T.down, margin: 0 }}>{generellFeil}</p>
+        <p role="alert" style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, margin: 0 }}>{generellFeil}</p>
       )}
       {lagret && !generellFeil && (
-        <p role="status" style={{ fontFamily: T.ui, fontSize: 12, color: T.up, margin: 0 }}>Lagret.</p>
+        <p role="status" style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.ok, margin: 0 }}>Lagret.</p>
       )}
 
       {mobile ? (
@@ -270,12 +257,12 @@ export function AdminProfilV2({ data }: { data: AdminProfilV2Data }) {
           {lagreKnapp}
         </>
       ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "1.35fr 1fr", gap: T.gap, alignItems: "start" }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: T.gap, minWidth: 0 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1.35fr 1fr", gap: 16, alignItems: "start" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 16, minWidth: 0 }}>
             {personalia}
             {profesjonelt}
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: T.gap, minWidth: 0 }}>{konto}</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 16, minWidth: 0 }}>{konto}</div>
         </div>
       )}
     </div>

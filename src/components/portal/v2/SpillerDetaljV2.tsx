@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ · Spiller-detalj (/portal/spiller/[spillerId]) — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
  * T.* only. Lys PlayerHQ.
@@ -7,25 +7,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import {
-  Kort,
-  Tittel,
-  KpiFlis,
-  PillTabs,
-  StatusPill,
-  TomTilstand,
-  CTAPill,
-  Rad,
-  DataTabell,
-  type DataTabellColumn,
-  SgKategorier,
-  AvatarFoto,
-  HjelpTips,
-  ProgresjonsBar,
-  T,
-  fmtSg,
-} from "@/components/v2";
-
+import { Kort, Tittel, KpiFlis, PillTabs, StatusPill, TomTilstand, CTAPill, Rad, DataTabell, type DataTabellColumn, SgKategorier, AvatarFoto, HjelpTips, ProgresjonsBar, fmtSg } from "@/components/v2";
 export type SpillerData = {
   id: string;
   navn: string;
@@ -120,7 +102,7 @@ export function SpillerDetaljV2({ data }: { data: SpillerData }) {
         <AvatarFoto src={data.avatarUrl} navn={data.navn} size={64} ring />
         <div style={{ flex: 1, minWidth: 220 }}>
           <Tittel mobile em={etternavn}>{fornavn}</Tittel>
-          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8, marginTop: 8, fontFamily: T.mono, fontSize: 10.5, color: T.mut }}>
+          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8, marginTop: 8, fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute }}>
             {data.hcp !== null && (
               <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
                 HCP {String(data.hcp).replace(".", ",")}
@@ -133,7 +115,7 @@ export function SpillerDetaljV2({ data }: { data: SpillerData }) {
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 10 }}>
             <StatusPill tone="lime">Aktiv spiller</StatusPill>
             {data.aktivPlan && <StatusPill tone="info">{data.aktivPlan.name}</StatusPill>}
-            <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: T.mut, border: `1px solid ${T.border}`, borderRadius: 9999, padding: "4px 9px" }}>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: TL.mute, border: `1px solid ${TL.hair}`, borderRadius: 9999, padding: "4px 9px" }}>
               Siden {formatKortDato(data.memberSince)}
             </span>
           </div>
@@ -149,7 +131,7 @@ export function SpillerDetaljV2({ data }: { data: SpillerData }) {
       </div>
 
       {/* KPI-rad */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: T.gap }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 16 }}>
         <KpiFlis label="Runder" value={data.stats.antallRunder > 0 ? data.stats.antallRunder : "—"} instant />
         <KpiFlis label="Snitt-score (slag)" value={data.stats.snittScore !== null ? String(data.stats.snittScore).replace(".", ",") : "—"} instant />
         <KpiFlis label="SG totalt (slag)" value={sgTekst(data.stats.sgSnitt)} hjelp="sgTotal" instant />
@@ -181,12 +163,12 @@ function OversiktTab({ data }: { data: SpillerData }) {
   ];
 
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: T.gap, alignItems: "start" }}>
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16, alignItems: "start" }}>
       <Kort eyebrow="Profil">
         {profilRader.map(({ k, v }, i) => (
-          <div key={k} style={{ display: "grid", gridTemplateColumns: "110px 1fr", gap: 8, padding: "8px 0", borderBottom: i === profilRader.length - 1 ? "none" : `1px solid ${T.border}` }}>
-            <span style={{ alignSelf: "center", fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>{k}</span>
-            <span style={{ fontFamily: T.ui, fontSize: 13, color: T.fg }}>{v}</span>
+          <div key={k} style={{ display: "grid", gridTemplateColumns: "110px 1fr", gap: 8, padding: "8px 0", borderBottom: i === profilRader.length - 1 ? "none" : `1px solid ${TL.hair}` }}>
+            <span style={{ alignSelf: "center", fontFamily: TL.font.mono, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>{k}</span>
+            <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text }}>{v}</span>
           </div>
         ))}
       </Kort>
@@ -201,8 +183,8 @@ function OversiktTab({ data }: { data: SpillerData }) {
               title={r.kursNavn}
               sub={`${formatKortDato(r.playedAt)}${r.sgTotal !== null ? ` · SG ${fmtSg(r.sgTotal)}` : ""}`}
               meta={
-                <span style={{ fontFamily: T.mono, fontSize: 12, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>
-                  {r.score} <span style={{ color: r.relativ <= 0 ? T.up : T.mut }}>({relativStr(r.relativ)})</span>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 12, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>
+                  {r.score} <span style={{ color: r.relativ <= 0 ? TL.ok : TL.mute }}>({relativStr(r.relativ)})</span>
                 </span>
               }
               trailing={null}
@@ -219,15 +201,15 @@ function OversiktTab({ data }: { data: SpillerData }) {
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {data.mal.map((m) => (
               <div key={m.id}>
-                <div style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg, lineHeight: 1.4 }}>{m.title}</div>
-                <div style={{ fontFamily: T.mono, fontSize: 9.5, color: T.mut, marginTop: 3 }}>
+                <div style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text, lineHeight: 1.4 }}>{m.title}</div>
+                <div style={{ fontFamily: TL.font.mono, fontSize: 9.5, color: TL.mute, marginTop: 3 }}>
                   {m.deadline ? `Frist ${formatKortDato(m.deadline)}` : m.type}
                 </div>
                 <div style={{ marginTop: 8 }}>
                   {m.pct != null ? (
                     <ProgresjonsBar value={m.pct} max={100} label="Fremdrift" />
                   ) : (
-                    <span style={{ fontFamily: T.mono, fontSize: 9.5, textTransform: "uppercase", letterSpacing: "0.06em", color: T.mut }}>
+                    <span style={{ fontFamily: TL.font.mono, fontSize: 9.5, textTransform: "uppercase", letterSpacing: "0.06em", color: TL.mute }}>
                       Ingen data ennå
                     </span>
                   )}
@@ -259,8 +241,8 @@ function PlanTab({ data }: { data: SpillerData }) {
     <Kort eyebrow="Aktiv plan">
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
         <div style={{ minWidth: 0 }}>
-          <div style={{ fontFamily: T.disp, fontSize: 18, fontWeight: 700, color: T.fg }}>{data.aktivPlan.name}</div>
-          <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "6px 0 0" }}>
+          <div style={{ fontFamily: TL.font.sans, fontSize: 18, fontWeight: 700, color: TL.text }}>{data.aktivPlan.name}</div>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: "6px 0 0" }}>
             Planen vises fullt ut i Workbench.
           </p>
         </div>
@@ -290,7 +272,7 @@ function StatistikkTab({ data }: { data: SpillerData }) {
 
   return (
     <>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: T.gap }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 16 }}>
         <KpiFlis label="Runder totalt" value={data.stats.antallRunder} instant />
         <KpiFlis label="Snitt-score (slag)" value={data.stats.snittScore !== null ? String(data.stats.snittScore).replace(".", ",") : "—"} instant tint />
         <KpiFlis label="SG totalt (slag)" value={sgTekst(data.stats.sgSnitt)} hjelp="sgTotal" instant />
@@ -378,7 +360,7 @@ function CoachingTab({ data }: { data: SpillerData }) {
           title={formatDato(okt.scheduledAt)}
           sub={`Coach: ${okt.coachNavn}${okt.summary ? ` · ${okt.summary}` : ""}`}
           meta={
-            <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: T.fg2, background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 5, padding: "3px 7px" }}>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: TL.mute, background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: 5, padding: "3px 7px" }}>
               {okt.type}
             </span>
           }

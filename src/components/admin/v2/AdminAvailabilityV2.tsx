@@ -1,13 +1,12 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 import Link from "next/link";
 import { toast } from "sonner";
-import { T, Caps, Tittel, StatusPill, TomTilstand, Kort } from "@/components/v2";
+import { Caps, StatusPill, TomTilstand, Kort } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import { SlotFormV2, type LocationOption } from "./AdminSlotFormV2";
 import { AvailabilityWeekGridV2, type WeekWindow } from "./AdminAvailabilityWeekGridV2";
 import { AvailabilityYearGanttV2, type YearWindow } from "./AdminAvailabilityYearGanttV2";
-
 /**
  * AgencyOS Tilgjengelighet — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
  * Tidsvinduer for booking. T.* only. Primær: Nytt tidsvindu (SlotFormV2).
@@ -56,7 +55,7 @@ function SynkKnappV2() {
     <button
       type="button"
       onClick={() => toast.info("Synkronisering skjer automatisk hvert 15. minutt")}
-      style={{ display: "inline-flex", alignItems: "center", gap: 8, borderRadius: 9999, border: `1px solid ${T.border}`, background: T.panel2, padding: "10px 18px", fontSize: 13, fontWeight: 600, color: T.fg, cursor: "pointer" }}
+      style={{ display: "inline-flex", alignItems: "center", gap: 8, borderRadius: 9999, border: `1px solid ${TL.hair}`, background: TL.dock, padding: "10px 18px", fontSize: 13, fontWeight: 600, color: TL.text, cursor: "pointer" }}
     >
       <Icon name="refresh-cw" size={14} />
       Synk
@@ -70,8 +69,8 @@ function VisningKnapp({ href, aktiv, children }: { href: string; aktiv: boolean;
       href={href}
       style={{
         display: "inline-flex", alignItems: "center", height: 32, padding: "0 14px", borderRadius: 9999,
-        background: aktiv ? T.lime : T.panel2, border: `1px solid ${aktiv ? "transparent" : T.border}`,
-        color: aktiv ? T.onLime : T.fg, fontSize: 12.5, fontWeight: 600, textDecoration: "none",
+        background: aktiv ? TL.fill : TL.dock, border: `1px solid ${aktiv ? "transparent" : TL.hair}`,
+        color: aktiv ? TL.onFill : TL.text, fontSize: 12.5, fontWeight: 600, textDecoration: "none",
       }}
     >
       {children}
@@ -82,14 +81,14 @@ function VisningKnapp({ href, aktiv, children }: { href: string; aktiv: boolean;
 export function AdminAvailabilityV2({ data }: { data: AdminAvailabilityV2Data }) {
   const nSlots = data.slots.length;
   return (
-    <div data-paper-wave-h="availability" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-h="availability" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 14 }}>
         <div>
           <div data-paper-pattern-topp data-paper-slug="agencyos-bookinger">
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Tilgjengelighet</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Tilgjengelighet</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>AgencyOS</span>
         </div>
-          <p style={{ fontFamily: T.ui, fontSize: 13, lineHeight: 1.55, color: T.mut, margin: "10px 0 0", maxWidth: 620 }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 13, lineHeight: 1.55, color: TL.mute, margin: "10px 0 0", maxWidth: 620 }}>
             Sett tidsvinduer du er tilgjengelig, per anlegg. Grønne dager er åpne for spiller-booking. Du kan aldri være tilgjengelig to steder samtidig.
           </p>
         </div>
@@ -127,24 +126,24 @@ export function AdminAvailabilityV2({ data }: { data: AdminAvailabilityV2Data })
       ) : data.visning === "aar" ? (
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 6 }}>
-            <Link href={data.aarForrigeHref} aria-label="Forrige år" style={{ display: "grid", placeItems: "center", width: 32, height: 32, borderRadius: 10, border: `1px solid ${T.border}`, background: T.panel2, color: T.fg }}>
+            <Link href={data.aarForrigeHref} aria-label="Forrige år" style={{ display: "grid", placeItems: "center", width: 32, height: 32, borderRadius: 10, border: `1px solid ${TL.hair}`, background: TL.dock, color: TL.text }}>
               <Icon name="chevron-left" size={15} />
             </Link>
-            <Link href={data.aarNesteHref} aria-label="Neste år" style={{ display: "grid", placeItems: "center", width: 32, height: 32, borderRadius: 10, border: `1px solid ${T.border}`, background: T.panel2, color: T.fg }}>
+            <Link href={data.aarNesteHref} aria-label="Neste år" style={{ display: "grid", placeItems: "center", width: 32, height: 32, borderRadius: 10, border: `1px solid ${TL.hair}`, background: TL.dock, color: TL.text }}>
               <Icon name="chevron-right" size={15} />
             </Link>
           </div>
           <AvailabilityYearGanttV2 year={data.y} windows={data.aarsVinduer} />
         </div>
       ) : (
-        <div style={{ borderRadius: T.rCard, border: `1px solid ${T.border}`, background: T.panel, padding: 18 }}>
+        <div style={{ borderRadius: TL.radius.card, border: `1px solid ${TL.hair}`, background: TL.elev, padding: 18 }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
-            <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, color: T.fg }}>{data.mndNavn}</div>
+            <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 17, color: TL.text }}>{data.mndNavn}</div>
             <div style={{ display: "flex", gap: 6 }}>
-              <Link href={data.forrigeHref} aria-label="Forrige måned" style={{ display: "grid", placeItems: "center", width: 32, height: 32, borderRadius: 10, border: `1px solid ${T.border}`, background: T.panel2, color: T.fg }}>
+              <Link href={data.forrigeHref} aria-label="Forrige måned" style={{ display: "grid", placeItems: "center", width: 32, height: 32, borderRadius: 10, border: `1px solid ${TL.hair}`, background: TL.dock, color: TL.text }}>
                 <Icon name="chevron-left" size={15} />
               </Link>
-              <Link href={data.nesteHref} aria-label="Neste måned" style={{ display: "grid", placeItems: "center", width: 32, height: 32, borderRadius: 10, border: `1px solid ${T.border}`, background: T.panel2, color: T.fg }}>
+              <Link href={data.nesteHref} aria-label="Neste måned" style={{ display: "grid", placeItems: "center", width: 32, height: 32, borderRadius: 10, border: `1px solid ${TL.hair}`, background: TL.dock, color: TL.text }}>
                 <Icon name="chevron-right" size={15} />
               </Link>
             </div>
@@ -152,7 +151,7 @@ export function AdminAvailabilityV2({ data }: { data: AdminAvailabilityV2Data })
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 6, marginBottom: 6 }}>
             {["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"].map((w) => (
-              <span key={w} style={{ textAlign: "center", fontFamily: T.mono, fontSize: 9, fontWeight: 800, letterSpacing: "0.08em", color: T.mut }}>{w}</span>
+              <span key={w} style={{ textAlign: "center", fontFamily: TL.font.mono, fontSize: 9, fontWeight: 800, letterSpacing: "0.08em", color: TL.mute }}>{w}</span>
             ))}
           </div>
 
@@ -164,18 +163,18 @@ export function AdminAvailabilityV2({ data }: { data: AdminAvailabilityV2Data })
                   key={c.dag}
                   style={{
                     display: "flex", flexDirection: "column", gap: 4, minHeight: 72, borderRadius: 10, padding: "8px 9px", textAlign: "left",
-                    border: `1px solid ${c.range ? `color-mix(in srgb, ${T.up} 25%, transparent)` : T.border}`,
-                    background: c.range ? `color-mix(in srgb, ${T.up} 8%, transparent)` : T.panel2,
+                    border: `1px solid ${c.range ? `color-mix(in srgb, ${TL.ok} 25%, transparent)` : TL.hair}`,
+                    background: c.range ? `color-mix(in srgb, ${TL.ok} 8%, transparent)` : TL.dock,
                   }}
                 >
                   <span style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: T.fg }}>{c.dag}</span>
-                    {c.erIdag && <span style={{ width: 6, height: 6, borderRadius: 9999, background: T.lime, boxShadow: `0 0 6px color-mix(in srgb, ${T.lime} 70%, transparent)` }} />}
+                    <span style={{ fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, color: TL.text }}>{c.dag}</span>
+                    {c.erIdag && <span style={{ width: 6, height: 6, borderRadius: 9999, background: TL.fill, boxShadow: `0 0 6px color-mix(in srgb, ${TL.fill} 70%, transparent)` }} />}
                   </span>
                   {c.range ? (
-                    <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.01em", color: T.up }}>{c.range}</span>
+                    <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.01em", color: TL.ok }}>{c.range}</span>
                   ) : (
-                    <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut }}>—</span>
+                    <span style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>—</span>
                   )}
                 </div>
               );
@@ -183,16 +182,16 @@ export function AdminAvailabilityV2({ data }: { data: AdminAvailabilityV2Data })
           </div>
 
           <div style={{ marginTop: 14, display: "flex", flexWrap: "wrap", gap: 18 }}>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 7, fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.06em", color: T.mut }}>
-              <span style={{ width: 12, height: 12, borderRadius: 4, border: `1px solid color-mix(in srgb, ${T.up} 25%, transparent)`, background: `color-mix(in srgb, ${T.up} 8%, transparent)` }} />
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 7, fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.06em", color: TL.mute }}>
+              <span style={{ width: 12, height: 12, borderRadius: 4, border: `1px solid color-mix(in srgb, ${TL.ok} 25%, transparent)`, background: `color-mix(in srgb, ${TL.ok} 8%, transparent)` }} />
               Åpen for booking
             </span>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 7, fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.06em", color: T.mut }}>
-              <span style={{ width: 12, height: 12, borderRadius: 4, border: `1px solid ${T.border}`, background: T.panel2 }} />
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 7, fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.06em", color: TL.mute }}>
+              <span style={{ width: 12, height: 12, borderRadius: 4, border: `1px solid ${TL.hair}`, background: TL.dock }} />
               Ingen tid satt
             </span>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 7, fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.06em", color: T.mut }}>
-              <span style={{ width: 6, height: 6, borderRadius: 9999, background: T.lime }} />
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 7, fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.06em", color: TL.mute }}>
+              <span style={{ width: 6, height: 6, borderRadius: 9999, background: TL.fill }} />
               I dag
             </span>
           </div>
@@ -202,17 +201,17 @@ export function AdminAvailabilityV2({ data }: { data: AdminAvailabilityV2Data })
       <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 12 }}>
         <div>
           <Caps>Gjennomføre · Tilgjengelighet · Tidsvinduer</Caps>
-          <h2 style={{ margin: "6px 0 0", fontFamily: T.disp, fontWeight: 700, fontSize: 17, color: T.fg }}>Dine tidsvinduer</h2>
+          <h2 style={{ margin: "6px 0 0", fontFamily: TL.font.sans, fontWeight: 700, fontSize: 17, color: TL.text }}>Dine tidsvinduer</h2>
         </div>
         {data.slots.length === 0 ? (
-          <p style={{ fontSize: 13, color: T.mut, margin: 0 }}>Ingen tidsvinduer satt ennå. Klikk «Nytt tidsvindu» for å legge til.</p>
+          <p style={{ fontSize: 13, color: TL.mute, margin: 0 }}>Ingen tidsvinduer satt ennå. Klikk «Nytt tidsvindu» for å legge til.</p>
         ) : (
-          <div style={{ borderRadius: T.rCard, border: `1px solid ${T.border}`, background: T.panel, overflow: "hidden" }}>
+          <div style={{ borderRadius: TL.radius.card, border: `1px solid ${TL.hair}`, background: TL.elev, overflow: "hidden" }}>
             {data.slots.map((s, i) => (
-              <div key={s.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14, padding: "12px 18px", borderTop: i ? `1px solid ${T.border}` : "none", opacity: s.slukket ? 0.6 : 1 }}>
+              <div key={s.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14, padding: "12px 18px", borderTop: i ? `1px solid ${TL.hair}` : "none", opacity: s.slukket ? 0.6 : 1 }}>
                 <div style={{ minWidth: 0 }}>
-                  <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: T.fg }}>{s.tidLabel}</span>{" "}
-                  <span style={{ fontSize: 13, color: T.mut }}>{s.metaLabel}</span>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, color: TL.text }}>{s.tidLabel}</span>{" "}
+                  <span style={{ fontSize: 13, color: TL.mute }}>{s.metaLabel}</span>
                 </div>
                 <SlotFormV2 locations={data.locations} triggerLabel="Endre" triggerVariant="lenke" initial={s.formInitial} />
               </div>

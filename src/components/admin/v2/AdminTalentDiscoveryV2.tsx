@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * AgencyOS Talent-discovery — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
  * Scout-feed over spillere utenfor talent-tracking. T.* only.
@@ -7,28 +7,8 @@
 
 import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
-import {
-  Caps,
-  Tittel,
-  Kort,
-  Rad,
-  AvatarInit,
-  StatusPill,
-  KpiFlis,
-  FilterChips,
-  Knapp,
-  Velger,
-  Inndata,
-  ValideringsChip,
-  TomTilstand,
-  CTAPill,
-  T,
-} from "@/components/v2";
-import {
-  leggTilITalent,
-  type LeggTilState,
-} from "@/app/admin/talent/discovery/actions";
-
+import { Caps, Kort, Rad, AvatarInit, StatusPill, KpiFlis, FilterChips, Knapp, Velger, Inndata, ValideringsChip, TomTilstand, CTAPill } from "@/components/v2";
+import { leggTilITalent, type LeggTilState } from "@/app/admin/talent/discovery/actions";
 // ── Datakontrakt (mappes fra loaderen i ruten) ──────────────────
 export interface TalentKandidat {
   id: string;
@@ -93,10 +73,10 @@ function KandidatRad({ k, last }: { k: TalentKandidat; last: boolean }) {
       <span style={{ textAlign: "right" }}>
         <span
           style={{
-            fontFamily: T.mono,
+            fontFamily: TL.font.mono,
             fontSize: 15,
             fontWeight: 700,
-            color: T.fg,
+            color: TL.text,
             fontVariantNumeric: "tabular-nums",
             display: "block",
           }}
@@ -112,7 +92,7 @@ function KandidatRad({ k, last }: { k: TalentKandidat; last: boolean }) {
   );
 
   return (
-    <div style={{ borderBottom: last && !apen ? "none" : `1px solid ${T.border}` }}>
+    <div style={{ borderBottom: last && !apen ? "none" : `1px solid ${TL.hair}` }}>
       <Rad
         leading={<AvatarInit navn={k.navn} size={34} />}
         title={k.navn}
@@ -198,10 +178,10 @@ export function AdminTalentDiscoveryV2({ data }: { data: TalentDiscoveryV2Data }
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
         <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Talent</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Discovery</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Talent</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>Discovery</span>
         </div>
-        <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.55, margin: "10px 0 0", maxWidth: 460 }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.55, margin: "10px 0 0", maxWidth: 460 }}>
           Spillere som ennå ikke er i talent-tracking. Søk, filtrer på HCP og
           klubb, og legg de mest aktuelle inn i oppfølgingen.
         </p>
@@ -221,7 +201,7 @@ export function AdminTalentDiscoveryV2({ data }: { data: TalentDiscoveryV2Data }
   );
 
   const kpi = (
-    <div className="grid grid-cols-2 lg:grid-cols-3" style={{ gap: T.gap }}>
+    <div className="grid grid-cols-2 lg:grid-cols-3" style={{ gap: 16 }}>
       <KpiFlis label="Kandidater" value={data.total} />
       <KpiFlis label="Klubber" value={data.klubber.length} />
       <KpiFlis label="I utvalg nå" value={filtrert.length} />
@@ -283,7 +263,7 @@ export function AdminTalentDiscoveryV2({ data }: { data: TalentDiscoveryV2Data }
 
   if (data.kandidater.length === 0) {
     return (
-      <div data-paper-wave-h="talentdiscovery" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div data-paper-wave-h="talentdiscovery" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         {hode}
         <Kort>
           <TomTilstand
@@ -298,7 +278,7 @@ export function AdminTalentDiscoveryV2({ data }: { data: TalentDiscoveryV2Data }
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {hode}
       {kpi}
       {primaerCta}

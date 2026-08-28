@@ -6,7 +6,8 @@
 
 import { useState, useTransition } from "react";
 import { Knapp, Kort } from "@/components/v2";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { opprettRapport } from "@/lib/moderering/actions";
 
 export function RapporterVennKnapp({ vennUserId }: { vennUserId: string }) {
@@ -38,12 +39,12 @@ export function RapporterVennKnapp({ vennUserId }: { vennUserId: string }) {
           alignItems: "center",
           gap: 6,
           borderRadius: 9999,
-          border: `1px solid ${T.border}`,
-          background: T.panel,
+          border: `1px solid ${TL.hair}`,
+          background: TL.elev,
           padding: "8px 14px",
-          fontFamily: T.ui,
+          fontFamily: TL.font.sans,
           fontSize: 12,
-          color: T.fg2,
+          color: TL.mute,
         }}
       >
         Rapport sendt — takk. En coach ser på den.
@@ -61,10 +62,10 @@ export function RapporterVennKnapp({ vennUserId }: { vennUserId: string }) {
 
   return (
     <Kort style={{ maxWidth: 360 }}>
-      <div style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>
+      <div style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>
         Rapporter denne profilen
       </div>
-      <p style={{ margin: "6px 0 0", fontFamily: T.ui, fontSize: 12, color: T.mut, lineHeight: 1.45 }}>
+      <p style={{ margin: "6px 0 0", fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.45 }}>
         Fortell kort hva som er galt. En coach vurderer rapporten. Vi deler ikke hvem som har rapportert.
       </p>
       <textarea
@@ -78,18 +79,18 @@ export function RapporterVennKnapp({ vennUserId }: { vennUserId: string }) {
           width: "100%",
           resize: "none",
           borderRadius: 11,
-          border: `1px solid ${T.borderS}`,
-          background: T.panel2,
+          border: `1px solid ${TL.hair}`,
+          background: TL.dock,
           padding: "10px 12px",
-          fontFamily: T.ui,
+          fontFamily: TL.font.sans,
           fontSize: 13,
-          color: T.fg,
+          color: TL.text,
           outline: "none",
           boxSizing: "border-box",
         }}
       />
       {feil ? (
-        <p style={{ margin: "8px 0 0", fontFamily: T.mono, fontSize: 11, color: T.down }}>{feil}</p>
+        <p style={{ margin: "8px 0 0", fontFamily: TL.font.mono, fontSize: 11, color: TL.danger }}>{feil}</p>
       ) : null}
       <div style={{ marginTop: 12, display: "flex", flexWrap: "wrap", gap: 8 }}>
         <Knapp icon="flag" onClick={send} disabled={pending || begrunnelse.trim().length === 0}>

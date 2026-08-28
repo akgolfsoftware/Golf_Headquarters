@@ -8,27 +8,28 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Caps, Knapp } from "@/components/v2/core";
 import { opprettHendelse } from "@/lib/kalender-hendelse/actions";
 
 const feltStil: React.CSSProperties = {
   width: "100%",
   boxSizing: "border-box",
-  fontFamily: T.ui,
+  fontFamily: TL.font.sans,
   fontSize: 13,
-  color: T.fg,
-  background: T.panel2,
-  border: `1px solid ${T.border}`,
-  borderRadius: T.rRow,
+  color: TL.text,
+  background: TL.dock,
+  border: `1px solid ${TL.hair}`,
+  borderRadius: TL.radius.row,
   padding: "10px 12px",
 };
 
 const labelStil: React.CSSProperties = {
-  fontFamily: T.ui,
+  fontFamily: TL.font.sans,
   fontSize: 11.5,
   fontWeight: 600,
-  color: T.fg2,
+  color: TL.mute,
   marginBottom: 6,
   display: "block",
 };
@@ -115,7 +116,7 @@ export function HendelseForm({
         />
       </div>
 
-      {feil && <Caps style={{ color: T.down }}>{feil}</Caps>}
+      {feil && <Caps style={{ color: TL.danger }}>{feil}</Caps>}
 
       <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
         <Knapp ghost onClick={() => router.push("/admin/kalender")}>Avbryt</Knapp>

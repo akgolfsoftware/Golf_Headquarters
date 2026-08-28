@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * AgencyOS Kalender-synk — v2 (retning C «Presis»). Rekomponerer
  * /admin/settings/calendar (Google Calendar 2-veis synk) i v2-språket.
@@ -16,24 +16,8 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import {
-  disconnectGoogleCalendar,
-  oppdaterSubscriptions,
-  refreshCalendarList,
-} from "@/app/admin/(legacy)/settings/calendar/actions";
-import {
-  T,
-  Caps,
-  Tittel,
-  Kort,
-  Rad,
-  StatusPill,
-  Knapp,
-  CTAPill,
-  TomTilstand,
-  Icon,
-} from "@/components/v2";
-
+import { disconnectGoogleCalendar, oppdaterSubscriptions, refreshCalendarList } from "@/app/admin/(legacy)/settings/calendar/actions";
+import { Caps, Kort, Rad, StatusPill, Knapp, CTAPill, TomTilstand, Icon } from "@/components/v2";
 /* ── Datakontrakt (mappes fra Prisma i ruten) ───────────────────────── */
 export interface KalenderRad {
   id: string;
@@ -73,7 +57,7 @@ function Varselboks({
   icon: string;
   children: React.ReactNode;
 }) {
-  const c = tone === "ok" ? T.up : tone === "feil" ? T.down : T.warn;
+  const c = tone === "ok" ? TL.ok : tone === "feil" ? TL.danger : TL.warn;
   return (
     <div
       style={{
@@ -84,9 +68,9 @@ function Varselboks({
         border: `1px solid color-mix(in srgb, ${c} 30%, transparent)`,
         background: `color-mix(in srgb, ${c} 8%, transparent)`,
         padding: "12px 14px",
-        fontFamily: T.ui,
+        fontFamily: TL.font.sans,
         fontSize: 12.5,
-        color: T.fg,
+        color: TL.text,
         lineHeight: 1.5,
       }}
     >
@@ -127,8 +111,8 @@ function Vippe({
         flex: "none",
         position: "relative",
         display: "inline-block",
-        background: on ? T.lime : T.panel3,
-        border: `1px solid ${on ? "transparent" : T.borderS}`,
+        background: on ? TL.fill : TL.dim,
+        border: `1px solid ${on ? "transparent" : TL.hair}`,
         transition: "background 160ms",
       }}
     >
@@ -140,7 +124,7 @@ function Vippe({
           width: 16,
           height: 16,
           borderRadius: 9999,
-          background: on ? T.onLime : T.mut,
+          background: on ? TL.onFill : TL.mute,
           transition: "left 160ms",
         }}
       />
@@ -156,7 +140,7 @@ function KalenderDot({ color }: { color: string | null }) {
         width: 10,
         height: 10,
         borderRadius: 9999,
-        background: color ?? T.mut,
+        background: color ?? TL.mute,
         flex: "none",
       }}
       aria-hidden
@@ -265,13 +249,13 @@ export function AdminKalenderSynkV2({ data }: { data: AdminKalenderSynkV2Data })
   const antallMedFeil = subscriptions.filter((r) => r.lastError).length;
 
   return (
-    <div data-paper-wave-h="kalender-synk" data-paper-pattern data-paper-slug="agencyos-oppsett" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-h="kalender-synk" data-paper-pattern data-paper-slug="agencyos-oppsett" style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       <div>
         <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Kalender-synk</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Kalender-synk</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>AgencyOS</span>
         </div>
-        <p style={{ marginTop: 8, fontFamily: T.ui, fontSize: 13, color: T.mut, lineHeight: 1.6, maxWidth: 560 }}>
+        <p style={{ marginTop: 8, fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.6, maxWidth: 560 }}>
           Koble Google-kontoen din og velg hvilke kalendere som skal pushe bookinger og blokkere
           tider. Endringer i Google Calendar reflekteres tilbake hit.
         </p>
@@ -297,14 +281,14 @@ export function AdminKalenderSynkV2({ data }: { data: AdminKalenderSynkV2Data })
                   width: 36,
                   height: 36,
                   borderRadius: 10,
-                  background: `color-mix(in srgb, ${T.lime} 12%, transparent)`,
+                  background: `color-mix(in srgb, ${TL.fill} 12%, transparent)`,
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
                   flex: "none",
                 }}
               >
-                <Icon name="calendar-check" size={16} style={{ color: T.lime }} />
+                <Icon name="calendar-check" size={16} style={{ color: TL.fill }} />
               </span>
             }
             title="Koblet til"
@@ -314,13 +298,13 @@ export function AdminKalenderSynkV2({ data }: { data: AdminKalenderSynkV2Data })
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 14, margin: "14px 0" }}>
             <div>
               <Caps size={9}>Siste sync</Caps>
-              <div style={{ marginTop: 6, fontFamily: T.mono, fontSize: 13, color: T.fg }}>
+              <div style={{ marginTop: 6, fontFamily: TL.font.mono, fontSize: 13, color: TL.text }}>
                 {connection.lastSyncAt ?? "Aldri"}
               </div>
             </div>
             <div>
               <Caps size={9}>Antall kalendere</Caps>
-              <div style={{ marginTop: 6, fontFamily: T.mono, fontSize: 13, color: T.fg }}>
+              <div style={{ marginTop: 6, fontFamily: TL.font.mono, fontSize: 13, color: TL.text }}>
                 {subscriptions.length}
               </div>
             </div>
@@ -379,7 +363,7 @@ export function AdminKalenderSynkV2({ data }: { data: AdminKalenderSynkV2Data })
 
           {antallMedFeil > 0 && (
             <Varselboks tone="advarsel" icon="alert-triangle">
-              <strong style={{ color: T.fg, fontWeight: 600 }}>
+              <strong style={{ color: TL.text, fontWeight: 600 }}>
                 {antallMedFeil} {antallMedFeil === 1 ? "kalender" : "kalendere"} kan ikke nås.
               </strong>{" "}
               Tilgangen er utgått. Koble Google på nytt for å gi systemet tilgang igjen — inntil
@@ -390,7 +374,7 @@ export function AdminKalenderSynkV2({ data }: { data: AdminKalenderSynkV2Data })
           <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
             <div>
               <Caps size={9}>Dine kalendere</Caps>
-              <p style={{ marginTop: 4, fontFamily: T.ui, fontSize: 12.5, color: T.mut }}>
+              <p style={{ marginTop: 4, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute }}>
                 Velg én kalender for nye bookinger og hvilke som skal blokkere ledige tider.
               </p>
             </div>
@@ -466,11 +450,11 @@ export function AdminKalenderSynkV2({ data }: { data: AdminKalenderSynkV2Data })
           </div>
 
           <Kort eyebrow="Slik fungerer det">
-            <ol style={{ margin: 0, paddingLeft: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 8, fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.6 }}>
-              <li><span style={{ fontFamily: T.mono, color: T.fg }}>1.</span> Kalenderen med bryteren på i første liste blokkerer ledige slots i AK Golf HQ.</li>
-              <li><span style={{ fontFamily: T.mono, color: T.fg }}>2.</span> Kalenderen med bryteren på i andre liste mottar nye, bekreftede bookinger.</li>
-              <li><span style={{ fontFamily: T.mono, color: T.fg }}>3.</span> Endringer i Google (flyttet eller slettet hendelse) reflekteres tilbake til booking-tabellen via webhook.</li>
-              <li><span style={{ fontFamily: T.mono, color: T.fg }}>4.</span> Du kan slå av enkeltkalendere uten å koble fra hele tilkoblingen.</li>
+            <ol style={{ margin: 0, paddingLeft: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 8, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.6 }}>
+              <li><span style={{ fontFamily: TL.font.mono, color: TL.text }}>1.</span> Kalenderen med bryteren på i første liste blokkerer ledige slots i AK Golf HQ.</li>
+              <li><span style={{ fontFamily: TL.font.mono, color: TL.text }}>2.</span> Kalenderen med bryteren på i andre liste mottar nye, bekreftede bookinger.</li>
+              <li><span style={{ fontFamily: TL.font.mono, color: TL.text }}>3.</span> Endringer i Google (flyttet eller slettet hendelse) reflekteres tilbake til booking-tabellen via webhook.</li>
+              <li><span style={{ fontFamily: TL.font.mono, color: TL.text }}>4.</span> Du kan slå av enkeltkalendere uten å koble fra hele tilkoblingen.</li>
             </ol>
           </Kort>
         </>

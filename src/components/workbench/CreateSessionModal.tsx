@@ -24,7 +24,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Knapp } from "@/components/v2/core";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { AREA_LABEL, formatTime, PYRAMID_LABEL, UI } from "@/lib/domain/workbench/labels";
 import type { AKFormel, PyramidArea } from "@/lib/domain/workbench/types";
 import { DrillListEditor, type DrillListItem } from "./DrillListEditor";
@@ -213,7 +214,7 @@ export function CreateSessionModal({
             </Felt>
 
             {feil && (
-              <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.down, margin: 0 }}>{feil}</p>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.danger, margin: 0 }}>{feil}</p>
             )}
           </div>
         </DialogBody>
@@ -236,12 +237,12 @@ function Felt({ label, children }: { label: string; children: React.ReactNode })
     <label style={{ display: "grid", gap: 6, minWidth: 0 }}>
       <span
         style={{
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           fontSize: 10,
           fontWeight: 600,
           letterSpacing: "0.07em",
           textTransform: "uppercase",
-          color: T.mut,
+          color: TL.mute,
         }}
       >
         {label}

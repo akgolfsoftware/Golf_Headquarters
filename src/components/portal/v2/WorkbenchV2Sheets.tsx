@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * WORKBENCH V2 — aksjons-ark og «valgt økt»-handlinger. Utskilt fra
@@ -38,9 +39,9 @@ function chipStil(satt: boolean): CSSProperties {
   return {
     appearance: "none", display: "inline-flex", alignItems: "center", gap: 7,
     padding: "8px 12px", borderRadius: 9999, cursor: "pointer",
-    background: satt ? T.handlingSoft : T.panel2,
-    border: `1px solid ${satt ? T.handling : T.border}`,
-    color: satt ? T.fg : T.mut, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600,
+    background: satt ? TL.dim : TL.dock,
+    border: `1px solid ${satt ? TL.fill : TL.hair}`,
+    color: satt ? TL.text : TL.mute, fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 600,
     transition: "all 140ms",
   };
 }
@@ -157,14 +158,14 @@ export function DagPillRow({
               appearance: "none",
               cursor: disabled ? "default" : "pointer",
               flex: 1,
-              fontFamily: T.mono,
+              fontFamily: TL.font.mono,
               fontSize: 9.5,
               fontWeight: 700,
               padding: "7px 0",
               borderRadius: 8,
-              border: `1px solid ${on ? "transparent" : T.border}`,
-              background: on ? T.panel : T.panel2,
-              color: on ? T.onHandling : T.fg2,
+              border: `1px solid ${on ? "transparent" : TL.hair}`,
+              background: on ? TL.elev : TL.dock,
+              color: on ? TL.onFill : TL.mute,
               opacity: disabled ? 0.5 : 1,
             }}
           >
@@ -181,12 +182,12 @@ function Felt({ label, hjelp, children }: { label: string; hjelp?: HjelpNokkel; 
     <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
       <span
         style={{
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           fontSize: 8,
           fontWeight: 700,
           letterSpacing: "0.1em",
           textTransform: "uppercase",
-          color: T.mut,
+          color: TL.mute,
           display: "inline-flex",
           alignItems: "center",
           gap: 5,
@@ -203,12 +204,12 @@ function Felt({ label, hjelp, children }: { label: string; hjelp?: HjelpNokkel; 
 const inputStyle: CSSProperties = {
   width: "100%",
   appearance: "none",
-  background: T.panel2,
-  border: `1px solid ${T.border}`,
+  background: TL.dock,
+  border: `1px solid ${TL.hair}`,
   borderRadius: 10,
   padding: "9px 11px",
-  color: T.fg,
-  fontFamily: T.ui,
+  color: TL.text,
+  fontFamily: TL.font.sans,
   fontSize: 13,
   outline: "none",
 };
@@ -531,7 +532,7 @@ function OktArkSkjema({
 
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: 70, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
-      <div onClick={lagrer ? undefined : onLukk} style={{ position: "absolute", inset: 0, background: T.farge.nestenSvartA62, backdropFilter: "blur(2px)" }} />
+      <div onClick={lagrer ? undefined : onLukk} style={{ position: "absolute", inset: 0, background: TL.scrim, backdropFilter: "none" }} />
       <div
         role="dialog"
         aria-label={overskrift}
@@ -541,19 +542,19 @@ function OktArkSkjema({
           width: "min(880px, calc(100vw - 32px))",
           maxHeight: "92vh",
           overflowY: "auto",
-          background: T.panel,
-          border: `1px solid ${T.borderS}`,
+          background: TL.elev,
+          border: `1px solid ${TL.hair}`,
           borderRadius: 20,
           padding: "22px 24px",
-          boxShadow: `0 24px 60px ${T.farge.svartA50}`,
+          boxShadow: "none",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div>
             <Caps size={8.5}>Composer · bygg økt</Caps>
-            <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 18, letterSpacing: "-0.02em", color: T.fg, margin: "4px 0 0" }}>{overskrift}</h2>
+            <h2 style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 18, letterSpacing: "-0.02em", color: TL.text, margin: "4px 0 0" }}>{overskrift}</h2>
           </div>
-          <button onClick={onLukk} className="v2-press" aria-label="Lukk" style={{ background: T.panel3, border: `1px solid ${T.border}`, borderRadius: 9, color: T.mut, cursor: "pointer", padding: 6, display: "inline-flex" }}>
+          <button onClick={onLukk} className="v2-press" aria-label="Lukk" style={{ background: TL.dim, border: `1px solid ${TL.hair}`, borderRadius: 9, color: TL.mute, cursor: "pointer", padding: 6, display: "inline-flex" }}>
             <Icon name="x" size={14} />
           </button>
         </div>
@@ -583,12 +584,12 @@ function OktArkSkjema({
                 gap: 6,
                 padding: "5px 10px",
                 borderRadius: 9999,
-                background: T.panel2,
-                border: `1px solid ${T.border}`,
-                fontFamily: T.mono,
+                background: TL.dock,
+                border: `1px solid ${TL.hair}`,
+                fontFamily: TL.font.mono,
                 fontSize: 9,
                 fontWeight: 700,
-                color: T.fg2,
+                color: TL.mute,
                 letterSpacing: "0.04em",
                 textTransform: "uppercase",
               }}
@@ -597,8 +598,8 @@ function OktArkSkjema({
                 style={{
                   width: 16,
                   height: 16,
-                  background: T.handling, minHeight: 52, borderRadius: 12,
-                  color: T.onHandling,
+                  background: TL.fill, minHeight: 52, borderRadius: 12,
+                  color: TL.onFill,
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -619,7 +620,7 @@ function OktArkSkjema({
           maxLength={120}
           autoFocus
           aria-label="Tittel"
-          style={{ appearance: "none", width: "100%", background: "transparent", border: "none", borderBottom: `1px solid ${T.border}`, borderRadius: 0, padding: "12px 0 12px", marginTop: 8, color: T.fg, fontFamily: T.disp, fontSize: 20, fontWeight: 700, letterSpacing: "-0.02em", outline: "none" }}
+          style={{ appearance: "none", width: "100%", background: "transparent", border: "none", borderBottom: `1px solid ${TL.hair}`, borderRadius: 0, padding: "12px 0 12px", marginTop: 8, color: TL.text, fontFamily: TL.font.sans, fontSize: 20, fontWeight: 700, letterSpacing: "-0.02em", outline: "none" }}
         />
 
         {/* Desktop: to kolonner · mobil: stack */}
@@ -651,10 +652,10 @@ function OktArkSkjema({
               </Felt>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-              <span style={{ fontFamily: T.mono, fontSize: 10.5, color: T.mut, fontVariantNumeric: "tabular-nums" }}>{tid} → {sluttTid} · {fmtVarighet(durMin)}</span>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>{tid} → {sluttTid} · {fmtVarighet(durMin)}</span>
               <span style={{ display: "inline-flex", gap: 4, marginLeft: "auto" }}>
                 {[30, 45, 60, 90, 120].map((m) => (
-                  <button key={m} type="button" onClick={() => setDurMin(m)} className="v2-press" aria-label={`${m} minutter`} style={{ appearance: "none", cursor: "pointer", fontFamily: T.mono, fontSize: 9, fontWeight: 700, padding: "4px 8px", borderRadius: 9999, background: durMin === m ? T.panel : T.panel2, border: `1px solid ${durMin === m ? T.fg : T.border}`, color: durMin === m ? T.fg : T.fg2, boxShadow: durMin === m ? `inset 0 -2px 0 ${T.handling}` : undefined }}>
+                  <button key={m} type="button" onClick={() => setDurMin(m)} className="v2-press" aria-label={`${m} minutter`} style={{ appearance: "none", cursor: "pointer", fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, padding: "4px 8px", borderRadius: 9999, background: durMin === m ? TL.elev : TL.dock, border: `1px solid ${durMin === m ? TL.text : TL.hair}`, color: durMin === m ? TL.text : TL.mute, boxShadow: durMin === m ? `inset 0 -2px 0 ${TL.fill}` : undefined }}>
                     {m}
                   </button>
                 ))}
@@ -682,9 +683,9 @@ function OktArkSkjema({
                           fontWeight: 600,
                           padding: "5px 10px",
                           borderRadius: 9999,
-                          background: valgt ? T.panel : T.panel2,
-                          border: `1px solid ${valgt ? "transparent" : T.border}`,
-                          color: valgt ? T.onHandling : T.fg2,
+                          background: valgt ? TL.elev : TL.dock,
+                          border: `1px solid ${valgt ? "transparent" : TL.hair}`,
+                          color: valgt ? TL.onFill : TL.mute,
                         }}
                       >
                         <Icon name={sted.isIndoor ? "home" : "sun"} size={11} />
@@ -736,14 +737,14 @@ function OktArkSkjema({
                       style={{
                         appearance: "none",
                         cursor: "pointer",
-                        fontFamily: T.ui,
+                        fontFamily: TL.font.sans,
                         fontSize: 12.5,
                         fontWeight: 600,
                         padding: "8px 14px",
                         borderRadius: 9999,
-                        background: gjentaModus === o.v ? T.panel : T.panel2,
-                        border: `1px solid ${gjentaModus === o.v ? "transparent" : T.border}`,
-                        color: gjentaModus === o.v ? T.onHandling : T.fg2,
+                        background: gjentaModus === o.v ? TL.elev : TL.dock,
+                        border: `1px solid ${gjentaModus === o.v ? "transparent" : TL.hair}`,
+                        color: gjentaModus === o.v ? TL.onFill : TL.mute,
                       }}
                     >
                       {o.l}
@@ -752,7 +753,7 @@ function OktArkSkjema({
                 </div>
                 {gjentaModus !== "av" && (
                   <div style={{ marginTop: 10, display: "flex", flexDirection: "column", gap: 8 }}>
-                    <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut }}>Slutter etter antall ganger</span>
+                    <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute }}>Slutter etter antall ganger</span>
                     <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
                       {[2, 4, 8, 12, 16].map((n) => (
                         <button
@@ -764,25 +765,25 @@ function OktArkSkjema({
                           style={{
                             appearance: "none",
                             cursor: "pointer",
-                            fontFamily: T.mono,
+                            fontFamily: TL.font.mono,
                             fontSize: 11,
                             fontWeight: 700,
                             padding: "6px 11px",
                             borderRadius: 9999,
-                            background: gjentaAntall === n ? T.panel3 : T.panel2,
-                            border: `1px solid ${gjentaAntall === n ? T.fg : T.border}`,
-                            color: T.fg,
+                            background: gjentaAntall === n ? TL.dim : TL.dock,
+                            border: `1px solid ${gjentaAntall === n ? TL.text : TL.hair}`,
+                            color: TL.text,
                           }}
                         >
                           {n}×
                         </button>
                       ))}
                     </div>
-                    <span style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2, lineHeight: 1.4 }}>{gjentaOppsummering}</span>
+                    <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.4 }}>{gjentaOppsummering}</span>
                   </div>
                 )}
                 {gjentaModus === "av" && (
-                  <span style={{ display: "block", marginTop: 8, fontFamily: T.ui, fontSize: 12, color: T.mut }}>{gjentaOppsummering}</span>
+                  <span style={{ display: "block", marginTop: 8, fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}>{gjentaOppsummering}</span>
                 )}
               </Felt>
             )}
@@ -797,11 +798,11 @@ function OktArkSkjema({
                 className="v2-press v2-focus"
                 data-wb-syklechip
                 aria-label={`Pyramideområde: ${akseLabel}. Trykk for neste.`}
-                style={{ appearance: "none", display: "inline-flex", alignItems: "center", gap: 8, alignSelf: "flex-start", padding: "9px 14px", borderRadius: 9999, background: `color-mix(in srgb, ${T.ax[akse]} 14%, ${T.panel2})`, border: `1px solid color-mix(in srgb, ${T.ax[akse]} 55%, transparent)`, cursor: "pointer", transition: "all 140ms" }}
+                style={{ appearance: "none", display: "inline-flex", alignItems: "center", gap: 8, alignSelf: "flex-start", padding: "9px 14px", borderRadius: 9999, background: `color-mix(in srgb, ${T.ax[akse]} 14%, ${TL.dock})`, border: `1px solid color-mix(in srgb, ${T.ax[akse]} 55%, transparent)`, cursor: "pointer", transition: "all 140ms" }}
               >
                 <span style={{ width: 8, height: 8, borderRadius: 9999, background: T.ax[akse] }} />
-                <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 700, color: T.fg }}>{akseLabel}</span>
-                <Icon name="refresh-cw" size={12} style={{ color: T.mut }} />
+                <span style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 700, color: TL.text }}>{akseLabel}</span>
+                <Icon name="refresh-cw" size={12} style={{ color: TL.mute }} />
               </button>
             </Felt>
 
@@ -809,13 +810,13 @@ function OktArkSkjema({
               <Felt label="Læringsfase — trykk for å bytte" hjelp="lFase">
                 <button type="button" onClick={sykleLFase} className="v2-press v2-focus" data-wb-lfasechip data-klar style={chipStil(!!lFase)}>
                   {lFase ? faseLabel(lFase as LFase) : "Ikke satt"}
-                  <Icon name="refresh-cw" size={11} style={{ color: T.mut }} />
+                  <Icon name="refresh-cw" size={11} style={{ color: TL.mute }} />
                 </button>
               </Felt>
               <Felt label="Miljø — trykk for å bytte" hjelp="miljo">
                 <button type="button" onClick={sykleMiljo} className="v2-press v2-focus" data-wb-miljochip style={chipStil(!!miljo)}>
                   {miljo ?? "Ikke satt"}
-                  <Icon name="refresh-cw" size={11} style={{ color: T.mut }} />
+                  <Icon name="refresh-cw" size={11} style={{ color: TL.mute }} />
                 </button>
               </Felt>
             </div>
@@ -823,7 +824,7 @@ function OktArkSkjema({
             {/* Driller: + manuell først, søk sekundært */}
             <div>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
-                <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>
                   Driller ({drills.length})
                 </span>
                 <button
@@ -837,9 +838,9 @@ function OktArkSkjema({
                     appearance: "none",
                     width: 36,
                     height: 36,
-                    background: T.handling, minHeight: 52, borderRadius: 12,
+                    background: TL.fill, minHeight: 52, borderRadius: 12,
                     border: "none",
-                    color: T.onHandling,
+                    color: TL.onFill,
                     cursor: "pointer",
                     display: "inline-flex",
                     alignItems: "center",
@@ -853,15 +854,15 @@ function OktArkSkjema({
               <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
                 {drills.map((d, i) => (
                   <div key={i} style={{ display: "flex", flexDirection: "column", gap: 5 }}>
-                    <div data-wb-drillrad style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 10px", borderRadius: 10, background: T.panel2, border: `1px solid ${T.border}` }}>
-                      <span style={{ flex: 1, minWidth: 0, fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{d.navn}</span>
+                    <div data-wb-drillrad style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 10px", borderRadius: 10, background: TL.dock, border: `1px solid ${TL.hair}` }}>
+                      <span style={{ flex: 1, minWidth: 0, fontFamily: TL.font.sans, fontSize: 12, fontWeight: 600, color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{d.navn}</span>
                       <input type="number" min={1} max={240} placeholder="min" value={d.minutter ?? ""} onChange={(e) => setDrills(drills.map((x, j) => j === i ? { ...x, minutter: e.target.value ? Number(e.target.value) : null } : x))} style={{ ...inputStyle, width: 56, padding: "5px 7px", fontSize: 11 }} aria-label="Minutter" />
                       <input type="number" min={1} max={50} placeholder="sett" value={d.sett ?? ""} onChange={(e) => setDrills(drills.map((x, j) => j === i ? { ...x, sett: e.target.value ? Number(e.target.value) : null } : x))} style={{ ...inputStyle, width: 50, padding: "5px 7px", fontSize: 11 }} aria-label="Sett" />
                       <input type="number" min={1} max={500} placeholder="reps" value={d.reps ?? ""} onChange={(e) => setDrills(drills.map((x, j) => j === i ? { ...x, reps: e.target.value ? Number(e.target.value) : null } : x))} style={{ ...inputStyle, width: 54, padding: "5px 7px", fontSize: 11 }} aria-label="Reps" />
-                      <button type="button" onClick={() => setDrills(drills.map((x, j) => j === i ? { ...x, nivaa: x.nivaa === "uten" ? "lav" : x.nivaa === "lav" ? "vanlig" : "uten" } : x))} className="v2-press" title="Intensitet — trykk for å bytte" style={{ appearance: "none", fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, padding: "5px 8px", borderRadius: 9999, background: T.panel3, border: `1px solid ${T.borderS}`, color: T.fg2, cursor: "pointer", flex: "none" }}>
+                      <button type="button" onClick={() => setDrills(drills.map((x, j) => j === i ? { ...x, nivaa: x.nivaa === "uten" ? "lav" : x.nivaa === "lav" ? "vanlig" : "uten" } : x))} className="v2-press" title="Intensitet — trykk for å bytte" style={{ appearance: "none", fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, padding: "5px 8px", borderRadius: 9999, background: TL.dim, border: `1px solid ${TL.hair}`, color: TL.mute, cursor: "pointer", flex: "none" }}>
                         {d.nivaa === "uten" ? "uten ball" : d.nivaa === "lav" ? "lav fart" : "vanlig"}
                       </button>
-                      <button type="button" onClick={() => setDrills(drills.filter((_, j) => j !== i))} className="v2-press" aria-label="Fjern drill" style={{ appearance: "none", background: "transparent", border: 0, color: T.mut, cursor: "pointer", padding: 2, flex: "none" }}>
+                      <button type="button" onClick={() => setDrills(drills.filter((_, j) => j !== i))} className="v2-press" aria-label="Fjern drill" style={{ appearance: "none", background: "transparent", border: 0, color: TL.mute, cursor: "pointer", padding: 2, flex: "none" }}>
                         <Icon name="x" size={13} />
                       </button>
                     </div>
@@ -878,7 +879,7 @@ function OktArkSkjema({
                               type="button"
                               className="v2-press"
                               onClick={() => setDrills(drills.map((x, j) => (j === i ? { ...x, [trinn.felt]: 0 } : x)))}
-                              style={{ appearance: "none", display: "inline-flex", alignItems: "center", gap: 3, background: "transparent", border: `1px dashed ${T.borderS}`, borderRadius: 9999, padding: "3px 8px", cursor: "pointer", fontFamily: T.mono, fontSize: 9, color: T.mut }}
+                              style={{ appearance: "none", display: "inline-flex", alignItems: "center", gap: 3, background: "transparent", border: `1px dashed ${TL.hair}`, borderRadius: 9999, padding: "3px 8px", cursor: "pointer", fontFamily: TL.font.mono, fontSize: 9, color: TL.mute }}
                             >
                               <Icon name="plus" size={9} />
                               {trinn.kort}
@@ -898,14 +899,14 @@ function OktArkSkjema({
                               aria-label={`Reps ${trinn.label.toLowerCase()}`}
                               style={{ ...inputStyle, width: 48, padding: "4px 6px", fontSize: 10.5 }}
                             />
-                            <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut }}>{trinn.kort}</span>
+                            <span style={{ fontFamily: TL.font.mono, fontSize: 9, color: TL.mute }}>{trinn.kort}</span>
                             {!trinn.alltid && (
                               <button
                                 type="button"
                                 className="v2-press"
                                 aria-label={`Fjern ${trinn.label.toLowerCase()}`}
                                 onClick={() => setDrills(drills.map((x, j) => (j === i ? { ...x, [trinn.felt]: null } : x)))}
-                                style={{ appearance: "none", background: "transparent", border: 0, color: T.mut, cursor: "pointer", padding: 0 }}
+                                style={{ appearance: "none", background: "transparent", border: 0, color: TL.mute, cursor: "pointer", padding: 0 }}
                               >
                                 <Icon name="x" size={9} />
                               </button>
@@ -914,7 +915,7 @@ function OktArkSkjema({
                         );
                       })}
                       {d.estimatTekst && (
-                        <span style={{ display: "inline-flex", alignItems: "center", gap: 3, marginLeft: "auto", fontFamily: T.mono, fontSize: 9, color: T.mut }}>
+                        <span style={{ display: "inline-flex", alignItems: "center", gap: 3, marginLeft: "auto", fontFamily: TL.font.mono, fontSize: 9, color: TL.mute }}>
                           <Icon name="clock" size={9} />
                           {d.estimatTekst}
                         </span>
@@ -926,13 +927,13 @@ function OktArkSkjema({
                           type="button"
                           className="v2-press"
                           onClick={() => { setOppgaveKobler(oppgaveKobler === i ? null : i); setOppgaveSok(""); setOppgaveTreff([]); }}
-                          style={{ appearance: "none", display: "inline-flex", alignItems: "center", gap: 4, background: "transparent", border: 0, padding: 0, cursor: "pointer", fontFamily: T.mono, fontSize: 9.5, color: d.positionTaskId ? T.handling : T.mut }}
+                          style={{ appearance: "none", display: "inline-flex", alignItems: "center", gap: 4, background: "transparent", border: 0, padding: 0, cursor: "pointer", fontFamily: TL.font.mono, fontSize: 9.5, color: d.positionTaskId ? TL.fill : TL.mute }}
                         >
                           <Icon name="link-2" size={10} />
                           {d.positionTaskId ? `Koblet: ${d.positionTaskTittel ?? "teknisk oppgave"}` : "Koble til teknisk oppgave"}
                         </button>
                         {d.positionTaskId && (
-                          <button type="button" className="v2-press" aria-label="Fjern kobling" onClick={() => setDrills(drills.map((x, j) => j === i ? { ...x, positionTaskId: undefined, positionTaskTittel: undefined } : x))} style={{ appearance: "none", background: "transparent", border: 0, color: T.mut, cursor: "pointer", padding: 0 }}>
+                          <button type="button" className="v2-press" aria-label="Fjern kobling" onClick={() => setDrills(drills.map((x, j) => j === i ? { ...x, positionTaskId: undefined, positionTaskTittel: undefined } : x))} style={{ appearance: "none", background: "transparent", border: 0, color: TL.mute, cursor: "pointer", padding: 0 }}>
                             <Icon name="x" size={10} />
                           </button>
                         )}
@@ -956,7 +957,7 @@ function OktArkSkjema({
                               setDrills(drills.map((x, j) => j === i ? { ...x, positionTaskId: t.id, positionTaskTittel: t.tittel } : x));
                               setOppgaveKobler(null);
                             }}
-                            style={{ appearance: "none", textAlign: "left", padding: "6px 9px", borderRadius: 8, background: T.panel3, border: `1px dashed ${T.borderS}`, color: T.fg, fontFamily: T.ui, fontSize: 11, cursor: "pointer" }}
+                            style={{ appearance: "none", textAlign: "left", padding: "6px 9px", borderRadius: 8, background: TL.dim, border: `1px dashed ${TL.hair}`, color: TL.text, fontFamily: TL.font.sans, fontSize: 11, cursor: "pointer" }}
                           >
                             {t.pNummer} · {t.tittel}
                           </button>
@@ -975,11 +976,11 @@ function OktArkSkjema({
                       gap: 8,
                       padding: 12,
                       borderRadius: 12,
-                      background: T.handlingSoft,
-                      border: `1px solid color-mix(in srgb, ${T.handling} 35%, transparent)`,
+                      background: TL.dim,
+                      border: `1px solid color-mix(in srgb, ${TL.fill} 35%, transparent)`,
                     }}
                   >
-                    <span style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 700, color: T.fg }}>Egen øvelse</span>
+                    <span style={{ fontFamily: TL.font.sans, fontSize: 12, fontWeight: 700, color: TL.text }}>Egen øvelse</span>
                     <input
                       value={manuellNavn}
                       onChange={(e) => setManuellNavn(e.target.value)}
@@ -998,7 +999,7 @@ function OktArkSkjema({
                             type="button"
                             onClick={() => setManuellAkse(a.v)}
                             className="v2-press"
-                            style={{ appearance: "none", cursor: "pointer", fontFamily: T.mono, fontSize: 9, fontWeight: 700, padding: "5px 9px", borderRadius: 9999, background: valgt ? T.panel : T.panel3, border: `1px solid ${valgt ? T.fg : T.borderS}`, color: valgt ? T.fg : T.fg2, boxShadow: valgt ? `inset 0 -2px 0 ${T.handling}` : undefined }}
+                            style={{ appearance: "none", cursor: "pointer", fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, padding: "5px 9px", borderRadius: 9999, background: valgt ? TL.elev : TL.dim, border: `1px solid ${valgt ? TL.text : TL.hair}`, color: valgt ? TL.text : TL.mute, boxShadow: valgt ? `inset 0 -2px 0 ${TL.fill}` : undefined }}
                           >
                             {a.l}
                           </button>
@@ -1022,7 +1023,7 @@ function OktArkSkjema({
                       <input type="number" min={1} max={50} placeholder="Sett" value={manuellSett} onChange={(e) => setManuellSett(e.target.value ? Number(e.target.value) : "")} style={inputStyle} />
                       <input type="number" min={1} max={500} placeholder="Reps" value={manuellReps} onChange={(e) => setManuellReps(e.target.value ? Number(e.target.value) : "")} style={inputStyle} />
                     </div>
-                    <span style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut }}>
+                    <span style={{ fontFamily: TL.font.sans, fontSize: 10.5, color: TL.mute }}>
                       Øvelsen lagres i din egen øvelsesbank.
                     </span>
                     <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
@@ -1042,12 +1043,12 @@ function OktArkSkjema({
                 {drillSok.trim().length >= 2 && (
                   <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                     {drillTreff.map((t) => (
-                      <button key={t.id} type="button" className="v2-press" onClick={() => { setDrills([...drills, { exerciseId: t.id, navn: t.name, minutter: null, sett: null, reps: null, nivaa: "vanlig", planRepsUtenBall: t.defaultRepsUtenBall, planRepsLavFart: t.defaultRepsLavFart, planRepsAuto: t.defaultRepsAuto, estimatTekst: t.estimatTekst }]); setDrillSok(""); }} style={{ appearance: "none", textAlign: "left", padding: "7px 10px", borderRadius: 9, background: T.panel2, border: `1px dashed ${T.borderS}`, color: T.fg, fontFamily: T.ui, fontSize: 12, cursor: "pointer" }}>
-                        + {t.name} <span style={{ color: T.mut, fontFamily: T.mono, fontSize: 9 }}>({t.pyramidArea})</span>
+                      <button key={t.id} type="button" className="v2-press" onClick={() => { setDrills([...drills, { exerciseId: t.id, navn: t.name, minutter: null, sett: null, reps: null, nivaa: "vanlig", planRepsUtenBall: t.defaultRepsUtenBall, planRepsLavFart: t.defaultRepsLavFart, planRepsAuto: t.defaultRepsAuto, estimatTekst: t.estimatTekst }]); setDrillSok(""); }} style={{ appearance: "none", textAlign: "left", padding: "7px 10px", borderRadius: 9, background: TL.dock, border: `1px dashed ${TL.hair}`, color: TL.text, fontFamily: TL.font.sans, fontSize: 12, cursor: "pointer" }}>
+                        + {t.name} <span style={{ color: TL.mute, fontFamily: TL.font.mono, fontSize: 9 }}>({t.pyramidArea})</span>
                       </button>
                     ))}
                     {drillTreff.length === 0 && (
-                      <button type="button" className="v2-press" onClick={() => { setManuellNavn(drillSok.trim()); setManuellApen(true); setDrillSok(""); }} style={{ appearance: "none", textAlign: "left", padding: "7px 10px", borderRadius: 9, background: T.handlingSoft, border: `1px dashed color-mix(in srgb, ${T.handling} 40%, transparent)`, color: T.fg, fontFamily: T.ui, fontSize: 12, cursor: "pointer" }}>
+                      <button type="button" className="v2-press" onClick={() => { setManuellNavn(drillSok.trim()); setManuellApen(true); setDrillSok(""); }} style={{ appearance: "none", textAlign: "left", padding: "7px 10px", borderRadius: 9, background: TL.dim, border: `1px dashed color-mix(in srgb, ${TL.fill} 40%, transparent)`, color: TL.text, fontFamily: TL.font.sans, fontSize: 12, cursor: "pointer" }}>
                         + Opprett manuell: «{drillSok.trim()}»
                       </button>
                     )}
@@ -1058,7 +1059,7 @@ function OktArkSkjema({
           </div>
         </div>
 
-        {feil && <span style={{ fontFamily: T.ui, fontSize: 12, color: T.down, display: "block", marginTop: 10 }}>{feil}</span>}
+        {feil && <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, display: "block", marginTop: 10 }}>{feil}</span>}
 
         <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 20 }}>
           <Knapp ghost onClick={onLukk} disabled={lagrer}>Avbryt</Knapp>
@@ -1108,22 +1109,22 @@ export function ForslagArk({ suggestions, usedAi, onLukk, onBruk }: ForslagArkPr
     >
       <div
         onClick={brukes ? undefined : onLukk}
-        style={{ position: "absolute", inset: 0, background: T.farge.nestenSvartA62, backdropFilter: "blur(2px)" }}
+        style={{ position: "absolute", inset: 0, background: TL.scrim, backdropFilter: "none" }}
       />
       <div
         className="v2-sheet-in"
         style={{
           position: "relative", width: "min(760px, 100%)", maxHeight: "88vh", overflowY: "auto",
-          background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px",
-          boxShadow: `0 24px 60px ${T.farge.svartA50}`,
+          background: TL.elev, border: `1px solid ${TL.hair}`, borderRadius: 20, padding: "20px 22px",
+          boxShadow: "none",
         }}
       >
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
           <div>
-            <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 18, letterSpacing: "-0.02em", color: T.fg, margin: 0 }}>
+            <h2 style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 18, letterSpacing: "-0.02em", color: TL.text, margin: 0 }}>
               Forslag til uka
             </h2>
-            <span style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, display: "block", marginTop: 4 }}>
+            <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, display: "block", marginTop: 4 }}>
               {usedAi
                 ? "Tre varianter basert på nivået ditt, fokusområdet og planen din. Velg den som passer uka."
                 : "Standardforslag (uten AI) — tre varianter du kan bruke som utgangspunkt."}
@@ -1135,11 +1136,11 @@ export function ForslagArk({ suggestions, usedAi, onLukk, onBruk }: ForslagArkPr
             disabled={brukes != null}
             style={{
               appearance: "none", cursor: "pointer", width: 28, height: 28, borderRadius: 8,
-              background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex",
+              background: TL.dock, border: `1px solid ${TL.hair}`, display: "inline-flex",
               alignItems: "center", justifyContent: "center", flex: "none",
             }}
           >
-            <Icon name="x" size={14} style={{ color: T.fg2 }} />
+            <Icon name="x" size={14} style={{ color: TL.mute }} />
           </button>
         </div>
 
@@ -1154,25 +1155,25 @@ export function ForslagArk({ suggestions, usedAi, onLukk, onBruk }: ForslagArkPr
           {suggestions.map((s) => (
             <Kort key={s.variant} style={{ padding: 14, display: "flex", flexDirection: "column", gap: 10 }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-                <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 14, color: T.fg }}>
+                <span style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 14, color: TL.text }}>
                   {VARIANT_LABEL[s.variant]}
                 </span>
-                <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.mut }}>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, color: TL.mute }}>
                   {s.totalSessions} økter
                 </span>
               </div>
-              <span style={{ fontFamily: T.mono, fontSize: 10, color: T.fg2 }}>{s.focusBlend}</span>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>{s.focusBlend}</span>
               <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                 {s.sessions.map((okt, i) => (
                   <div key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <span style={{ fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, color: T.mut, width: 26, flex: "none" }}>
+                    <span style={{ fontFamily: TL.font.mono, fontSize: 9.5, fontWeight: 700, color: TL.mute, width: 26, flex: "none" }}>
                       {DAGER[okt.day] ?? ""}
                     </span>
                     <AkseChip a={okt.pyramidArea} />
-                    <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.fg, flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.text, flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                       {okt.title}
                     </span>
-                    <span style={{ fontFamily: T.mono, fontSize: 9.5, color: T.mut, flex: "none" }}>
+                    <span style={{ fontFamily: TL.font.mono, fontSize: 9.5, color: TL.mute, flex: "none" }}>
                       {fmtVarighet(okt.durationMin)}
                     </span>
                   </div>
@@ -1192,7 +1193,7 @@ export function ForslagArk({ suggestions, usedAi, onLukk, onBruk }: ForslagArkPr
         </div>
 
         {feil && (
-          <span style={{ fontFamily: T.ui, fontSize: 12, color: T.down, display: "block", marginTop: 12 }}>
+          <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, display: "block", marginTop: 12 }}>
             {feil}
           </span>
         )}
@@ -1362,11 +1363,11 @@ export function ValgtOktSeksjon({
               style={{
                 appearance: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6,
                 padding: "6px 10px", borderRadius: 9999,
-                background: okt.eb === a.v ? T.panel : T.panel2, color: okt.eb === a.v ? T.fg : T.fg2, border: `1px solid ${okt.eb === a.v ? T.fg : T.border}`, boxShadow: okt.eb === a.v ? `inset 0 -2px 0 ${T.handling}` : undefined,
-                fontFamily: T.ui, fontSize: 11, fontWeight: 600, opacity: lagrerFelt ? 0.5 : 1,
+                background: okt.eb === a.v ? TL.elev : TL.dock, color: okt.eb === a.v ? TL.text : TL.mute, border: `1px solid ${okt.eb === a.v ? TL.text : TL.hair}`, boxShadow: okt.eb === a.v ? `inset 0 -2px 0 ${TL.fill}` : undefined,
+                fontFamily: TL.font.sans, fontSize: 11, fontWeight: 600, opacity: lagrerFelt ? 0.5 : 1,
               }}
             >
-              <span style={{ width: 6, height: 6, borderRadius: 9999, background: okt.eb === a.v ? T.onHandling : T.ax[a.v] }} />
+              <span style={{ width: 6, height: 6, borderRadius: 9999, background: okt.eb === a.v ? TL.onFill : T.ax[a.v] }} />
               {a.l}
             </button>
           ))}
@@ -1381,7 +1382,7 @@ export function ValgtOktSeksjon({
             disabled={lagrerFelt}
             onChange={(e) => setTittelUtkast(e.target.value)}
             onKeyDown={(e) => { if (e.key === "Enter") lagreFelt({ title: tittelUtkast.trim() || okt.ttl }); if (e.key === "Escape") setRediger(null); }}
-            style={{ ...inputStyle, fontFamily: T.disp, fontSize: 15, fontWeight: 700 }}
+            style={{ ...inputStyle, fontFamily: TL.font.sans, fontSize: 15, fontWeight: 700 }}
           />
           <Knapp icon="check" disabled={lagrerFelt} onClick={() => lagreFelt({ title: tittelUtkast.trim() || okt.ttl })}>{""}</Knapp>
         </div>
@@ -1389,7 +1390,7 @@ export function ValgtOktSeksjon({
         <div
           onClick={kanRedigere ? () => { setTittelUtkast(okt.ttl); setRediger("tittel"); } : undefined}
           title={kanRedigere ? "Trykk for å endre tittel" : undefined}
-          style={{ fontFamily: T.disp, fontSize: 16, fontWeight: 700, color: T.fg, marginTop: 9, cursor: kanRedigere ? "text" : "default" }}
+          style={{ fontFamily: TL.font.sans, fontSize: 16, fontWeight: 700, color: TL.text, marginTop: 9, cursor: kanRedigere ? "text" : "default" }}
         >
           {okt.ttl}
         </div>
@@ -1398,7 +1399,7 @@ export function ValgtOktSeksjon({
         <div style={{ display: "flex", gap: 6, alignItems: "center", marginTop: 6 }}>
           <input type="time" value={tidUtkast} disabled={lagrerFelt} onChange={(e) => setTidUtkast(e.target.value)} style={{ ...inputStyle, width: 110 }} />
           <input type="number" min={5} max={480} step={5} value={durUtkast} disabled={lagrerFelt} onChange={(e) => setDurUtkast(Math.max(5, Math.min(480, Number(e.target.value) || okt.durMin)))} style={{ ...inputStyle, width: 84 }} />
-          <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut }}>min</span>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 9, color: TL.mute }}>min</span>
           <Knapp
             icon="check"
             disabled={lagrerFelt}
@@ -1412,7 +1413,7 @@ export function ValgtOktSeksjon({
         <div
           onClick={kanRedigere ? () => { setTidUtkast(toKl(okt.h, okt.m)); setDurUtkast(okt.durMin); setRediger("tid"); } : undefined}
           title={kanRedigere ? "Trykk for å endre tid og varighet" : undefined}
-          style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, marginTop: 4, cursor: kanRedigere ? "pointer" : "default" }}
+          style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, marginTop: 4, cursor: kanRedigere ? "pointer" : "default" }}
         >
           {toKl(okt.h, okt.m)} · {fmtVarighet(okt.durMin)}
           {okt.meta.filter(([ic]) => ic === "map-pin").map(([, t]) => ` · ${t}`).join("")}
@@ -1463,12 +1464,12 @@ export function ValgtOktSeksjon({
           ) : (
             <>
               {oktFormel?.lFase && (
-                <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: T.fg2, background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 9999, padding: "4px 9px" }}>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: TL.mute, background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: 9999, padding: "4px 9px" }}>
                   {faseLabel(oktFormel.lFase as LFase)}
                 </span>
               )}
               {oktFormel?.miljo && (
-                <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: T.fg2, background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 9999, padding: "4px 9px" }}>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: TL.mute, background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: 9999, padding: "4px 9px" }}>
                   {oktFormel.miljo}
                 </span>
               )}
@@ -1507,15 +1508,15 @@ export function ValgtOktSeksjon({
         </div>
       )}
 
-      {okt.id && feil && <span style={{ fontFamily: T.ui, fontSize: 11, color: T.down, display: "block", marginTop: 8 }}>{feil}</span>}
+      {okt.id && feil && <span style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.danger, display: "block", marginTop: 8 }}>{feil}</span>}
 
       {okt.id && erPlan && (
         <div style={{ marginTop: 10 }} data-wb-inspektordrills>
-          <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>
             Driller {oktDrills ? `(${oktDrills.length})` : ""}
           </span>
           {oktDrills === null ? (
-            <div style={{ fontFamily: T.mono, fontSize: 9, color: T.mut, marginTop: 6 }}>Henter…</div>
+            <div style={{ fontFamily: TL.font.mono, fontSize: 9, color: TL.mute, marginTop: 6 }}>Henter…</div>
           ) : oktDrills.length > 0 ? (
             <div style={{ display: "flex", flexDirection: "column", gap: 4, marginTop: 6 }}>
               {oktDrills.map((d, i) => (
@@ -1531,17 +1532,17 @@ export function ValgtOktSeksjon({
                     gap: 8,
                     padding: "6px 9px",
                     borderRadius: 9,
-                    background: T.panel2,
-                    border: `1px solid ${T.border}`,
+                    background: TL.dock,
+                    border: `1px solid ${TL.hair}`,
                     cursor: kanRedigere && onApneFullRediger ? "pointer" : "default",
                     textAlign: "left",
                     width: "100%",
                     color: "inherit",
                   }}
                 >
-                  <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, color: T.mut, flex: "none" }}>{i + 1}</span>
-                  <span style={{ flex: 1, minWidth: 0, fontFamily: T.ui, fontSize: 11.5, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{d.navn}</span>
-                  <span style={{ fontFamily: T.mono, fontSize: 8.5, color: T.mut, flex: "none" }}>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, color: TL.mute, flex: "none" }}>{i + 1}</span>
+                  <span style={{ flex: 1, minWidth: 0, fontFamily: TL.font.sans, fontSize: 11.5, color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{d.navn}</span>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 8.5, color: TL.mute, flex: "none" }}>
                     {[d.minutter != null ? `${d.minutter} min` : null, d.sett != null && d.reps != null ? `${d.sett}×${d.reps}` : null, d.nivaa === "uten" ? "uten ball" : d.nivaa === "lav" ? "lav fart" : null].filter(Boolean).join(" · ") || "—"}
                   </span>
                 </button>
@@ -1549,7 +1550,7 @@ export function ValgtOktSeksjon({
             </div>
           ) : (
             <div style={{ marginTop: 6 }}>
-              <span style={{ display: "block", fontFamily: T.ui, fontSize: 11, color: T.mut, marginBottom: 6 }}>
+              <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 11, color: TL.mute, marginBottom: 6 }}>
                 Ingen driller i denne økta ennå.
               </span>
               {kanRedigere && onApneFullRediger && (
@@ -1567,7 +1568,7 @@ export function ValgtOktSeksjon({
           {flyttApen && (
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               <DagPillRow value={-1} onChange={flytt} disabled={flyttLoading} />
-              <span style={{ fontFamily: T.mono, fontSize: 8.5, color: T.mut }}>Velg ny dag — klokkeslettet beholdes</span>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 8.5, color: TL.mute }}>Velg ny dag — klokkeslettet beholdes</span>
             </div>
           )}
           <div style={{ display: "flex", gap: 8 }}>
@@ -1596,17 +1597,17 @@ export function ValgtOktSeksjon({
           fra canvas → bekreftelses-popup) — samme mønster som mal-bekreft. */}
       {bekreftSlett && (
         <div style={{ position: "fixed", inset: 0, zIndex: 70, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
-          <div onClick={sletterLoading ? undefined : () => setBekreftSlett(false)} style={{ position: "absolute", inset: 0, background: T.farge.nestenSvartA62, backdropFilter: "blur(2px)" }} />
-          <div role="alertdialog" aria-label="Bekreft sletting" className="v2-sheet-in" style={{ position: "relative", width: "min(400px, 100%)", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: `0 24px 60px ${T.farge.svartA50}` }}>
+          <div onClick={sletterLoading ? undefined : () => setBekreftSlett(false)} style={{ position: "absolute", inset: 0, background: TL.scrim, backdropFilter: "none" }} />
+          <div role="alertdialog" aria-label="Bekreft sletting" className="v2-sheet-in" style={{ position: "relative", width: "min(400px, 100%)", background: TL.elev, border: `1px solid ${TL.hair}`, borderRadius: 20, padding: "20px 22px", boxShadow: "none" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <Icon name="trash-2" size={16} style={{ color: T.down }} />
-              <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, letterSpacing: "-0.02em", color: T.fg, margin: 0 }}>Slett økt</h2>
+              <Icon name="trash-2" size={16} style={{ color: TL.danger }} />
+              <h2 style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 17, letterSpacing: "-0.02em", color: TL.text, margin: 0 }}>Slett økt</h2>
             </div>
-            <div style={{ marginTop: 12, padding: "11px 13px", borderRadius: 11, background: T.panel2, border: `1px solid ${T.border}` }}>
-              <div style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>{okt.ttl}</div>
-              <div style={{ fontFamily: T.mono, fontSize: 9.5, color: T.mut, marginTop: 3 }}>{dag != null && dag >= 0 ? `${DAGER[dag]} · ` : ""}{toKl(okt.h, okt.m)} · {okt.durMin} min</div>
+            <div style={{ marginTop: 12, padding: "11px 13px", borderRadius: 11, background: TL.dock, border: `1px solid ${TL.hair}` }}>
+              <div style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>{okt.ttl}</div>
+              <div style={{ fontFamily: TL.font.mono, fontSize: 9.5, color: TL.mute, marginTop: 3 }}>{dag != null && dag >= 0 ? `${DAGER[dag]} · ` : ""}{toKl(okt.h, okt.m)} · {okt.durMin} min</div>
             </div>
-            <p style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, margin: "10px 0 0", lineHeight: 1.5 }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, margin: "10px 0 0", lineHeight: 1.5 }}>
               Økten fjernes fra planen. Dette kan ikke angres.
             </p>
             <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 16 }}>
@@ -1662,9 +1663,9 @@ export function RedigerOktArk({ okt, dag, weekOffset, actions, onLukk, onEndret,
   if (!initial) {
     return (
       <div style={{ position: "fixed", inset: 0, zIndex: 70, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
-        <div onClick={onLukk} style={{ position: "absolute", inset: 0, background: T.farge.nestenSvartA62, backdropFilter: "blur(2px)" }} />
-        <div role="dialog" aria-label="Rediger økt" className="v2-sheet-in" style={{ position: "relative", width: "min(420px, 100%)", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: `0 24px 60px ${T.farge.svartA50}` }}>
-          <span style={{ fontFamily: T.ui, fontSize: 13, color: T.mut }}>Laster økt …</span>
+        <div onClick={onLukk} style={{ position: "absolute", inset: 0, background: TL.scrim, backdropFilter: "none" }} />
+        <div role="dialog" aria-label="Rediger økt" className="v2-sheet-in" style={{ position: "relative", width: "min(420px, 100%)", background: TL.elev, border: `1px solid ${TL.hair}`, borderRadius: 20, padding: "20px 22px", boxShadow: "none" }}>
+          <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute }}>Laster økt …</span>
         </div>
       </div>
     );

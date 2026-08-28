@@ -1,20 +1,11 @@
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ · Coach SG-hub (/portal/coach/sg-hub) — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
  * T.* only. Lys PlayerHQ.
  */
 
 import Link from "next/link";
-import {
-  Kort,
-  Caps,
-  TomTilstand,
-  InnsiktChip,
-  Icon,
-  HjelpTips,
-  CTAPill,
-  T,
-  fmtSg,
-} from "@/components/v2";
+import { Kort, Caps, TomTilstand, InnsiktChip, Icon, HjelpTips, CTAPill, fmtSg } from "@/components/v2";
 
 export interface CoachSgKategori {
   label: string; // "OTT" | "APP" | "ARG" | "PUTT"
@@ -47,13 +38,13 @@ function LenkeKort({ href, tittel, em, sub }: { href: string; tittel: string; em
       <Kort hover>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
           <div style={{ minWidth: 0 }}>
-            <div style={{ fontFamily: T.disp, fontSize: 15, fontWeight: 700, color: T.fg }}>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 15, fontWeight: 700, color: TL.text }}>
               {tittel}
-              <em style={{ fontStyle: "italic", fontWeight: 500, color: T.lime }}> {em}</em>
+              <em style={{ fontStyle: "italic", fontWeight: 500, color: TL.fill }}> {em}</em>
             </div>
-            <div style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, marginTop: 3 }}>{sub}</div>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, marginTop: 3 }}>{sub}</div>
           </div>
-          <Icon name="arrow-right" size={16} style={{ color: T.mut, flexShrink: 0 }} />
+          <Icon name="arrow-right" size={16} style={{ color: TL.mute, flexShrink: 0 }} />
         </div>
       </Kort>
     </Link>
@@ -68,11 +59,11 @@ export function CoachSgHubV2({ data }: { data: CoachSgHubV2Data }) {
         <Caps>Sammenlign med coach</Caps>
         <div style={{ marginTop: 6 }}>
           <div data-paper-pattern-topp>
-        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>SG Hub</h1>
-        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Coach</span>
+        <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>SG Hub</h1>
+        <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>Coach</span>
       </div>
         </div>
-        <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, margin: "8px 0 0" }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: "8px 0 0" }}>
           Head Coach · SG-data til inspirasjon
         </p>
       </div>
@@ -84,13 +75,13 @@ export function CoachSgHubV2({ data }: { data: CoachSgHubV2Data }) {
             <Caps>SG per kategori</Caps>
             <HjelpTips k="sgOmrade" size={11} />
           </span>
-          <span style={{ display: "flex", gap: 12, fontFamily: T.mono, fontSize: 9, color: T.mut }}>
+          <span style={{ display: "flex", gap: 12, fontFamily: TL.font.mono, fontSize: 9, color: TL.mute }}>
             <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
-              <span style={{ width: 10, height: 3, borderRadius: 2, background: T.up, display: "inline-block" }} />
+              <span style={{ width: 10, height: 3, borderRadius: 2, background: TL.ok, display: "inline-block" }} />
               {data.spillerFornavn}
             </span>
             <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
-              <span style={{ width: 2, height: 10, borderRadius: 1, background: T.fg, display: "inline-block" }} />
+              <span style={{ width: 2, height: 10, borderRadius: 1, background: TL.text, display: "inline-block" }} />
               {data.coachFornavn} (referanse)
             </span>
           </span>
@@ -116,7 +107,7 @@ export function CoachSgHubV2({ data }: { data: CoachSgHubV2Data }) {
               const coachPos = k.coach >= 0;
               const minePct = fillPct(k.mine);
               const coachPos50 = coachPos ? 50 + fillPct(k.coach) : 50 - fillPct(k.coach);
-              const valColor = minePos ? T.up : T.down;
+              const valColor = minePos ? TL.ok : TL.danger;
               return (
                 <div data-paper-wave-g="coachsghub" data-paper-pattern 
                   key={k.label}
@@ -126,16 +117,16 @@ export function CoachSgHubV2({ data }: { data: CoachSgHubV2Data }) {
                     alignItems: "center",
                     gap: 11,
                     padding: "10px 0",
-                    borderBottom: i === data.kategorier.length - 1 ? "none" : `1px solid ${T.border}`,
+                    borderBottom: i === data.kategorier.length - 1 ? "none" : `1px solid ${TL.hair}`,
                   }}
                 >
-                  <span style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.fg2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                  <span style={{ fontFamily: TL.font.sans, fontSize: 12, fontWeight: 600, color: TL.mute, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                     {k.navn}
                   </span>
 
-                  <div style={{ position: "relative", height: 10, borderRadius: 9999, background: T.track }}>
+                  <div style={{ position: "relative", height: 10, borderRadius: 9999, background: TL.hair }}>
                     {/* nullstrek */}
-                    <span aria-hidden style={{ position: "absolute", left: "50%", top: -2, width: 1, height: 14, background: T.borderS }} />
+                    <span aria-hidden style={{ position: "absolute", left: "50%", top: -2, width: 1, height: 14, background: TL.hair }} />
                     {/* din fylling fra null */}
                     <span
                       style={{
@@ -154,17 +145,17 @@ export function CoachSgHubV2({ data }: { data: CoachSgHubV2Data }) {
                     <span
                       aria-hidden
                       title={`${data.coachFornavn}: ${fmtSg(k.coach)} SG`}
-                      style={{ position: "absolute", left: `${coachPos50}%`, top: -3, width: 2, height: 16, borderRadius: 1, background: T.fg }}
+                      style={{ position: "absolute", left: `${coachPos50}%`, top: -3, width: 2, height: 16, borderRadius: 1, background: TL.text }}
                     />
                   </div>
 
-                  <span style={{ textAlign: "right", fontFamily: T.mono, fontSize: 12, fontWeight: 700, color: valColor, fontVariantNumeric: "tabular-nums" }}>
+                  <span style={{ textAlign: "right", fontFamily: TL.font.mono, fontSize: 12, fontWeight: 700, color: valColor, fontVariantNumeric: "tabular-nums" }}>
                     {fmtSg(k.mine)}
                   </span>
                 </div>
               );
             })}
-            <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut, marginTop: 10 }}>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 9, color: TL.mute, marginTop: 10 }}>
               SG i slag/runde · coach-verdier er statiske referanser
             </span>
           </div>
@@ -175,7 +166,7 @@ export function CoachSgHubV2({ data }: { data: CoachSgHubV2Data }) {
       {!data.ingenData && data.storsteGap && (
         <InnsiktChip>
           {data.coachFornavn} er{" "}
-          <span style={{ color: T.fg, fontWeight: 600 }}>
+          <span style={{ color: TL.text, fontWeight: 600 }}>
             +{data.storsteGap.verdi.toFixed(1).replace(".", ",")} SG {data.storsteGap.navn.toLowerCase()}
           </span>{" "}
           over deg. Det er her den største gevinsten finnes — fokusert arbeid i 6–8 uker kan lukke gapet.

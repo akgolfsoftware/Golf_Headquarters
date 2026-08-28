@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ Utfordring-detalj — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
  * T.* only. Lys PlayerHQ.
@@ -8,24 +8,7 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  T,
-  Caps,
-  Tittel,
-  Kort,
-  Knapp,
-  StatusPill,
-  MikroMeta,
-  TomTilstand,
-  Bit,
-  Rad,
-  AvatarInit,
-  KpiFlis,
-  SkjemaFelt,
-  Inndata,
-  HjelpTips,
-} from "@/components/v2";
-
+import { Caps, Tittel, Kort, Knapp, StatusPill, MikroMeta, TomTilstand, Bit, Rad, AvatarInit, KpiFlis, SkjemaFelt, Inndata, HjelpTips } from "@/components/v2";
 /* ── Data-kontrakt ─────────────────────────────────────────────────── */
 
 export type DeltakerRad = {
@@ -156,7 +139,7 @@ export function UtfordringDetaljV2({
   }
 
   return (
-    <div data-paper-portal-utfordring-detalj style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-portal-utfordring-detalj style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Tilbake */}
       <Link href="/portal/utfordringer" style={{ textDecoration: "none", alignSelf: "flex-start" }}>
         <MikroMeta icon="arrow-left">PlayerHQ · Utfordringer</MikroMeta>
@@ -173,7 +156,7 @@ export function UtfordringDetaljV2({
           <div style={{ marginTop: 10 }}>
             <Tittel em={data.name} />
           </div>
-          <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "10px 0 0" }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: "10px 0 0" }}>
             {metaParts.join(" · ")}
           </p>
         </div>
@@ -194,14 +177,14 @@ export function UtfordringDetaljV2({
       {/* Beskrivelse */}
       {data.description && (
         <Kort pad="14px 18px">
-          <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.6, margin: 0 }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.6, margin: 0 }}>
             {data.description}
           </p>
         </Kort>
       )}
 
       {/* Nøkkeltall */}
-      <div className="grid grid-cols-1 sm:grid-cols-3" style={{ gap: T.gap }}>
+      <div className="grid grid-cols-1 sm:grid-cols-3" style={{ gap: 16 }}>
         <KpiFlis label="Deltakere" value={String(data.deltakere.length)} />
         <KpiFlis label="Startet" value={data.startAt ? langDato(data.startAt) : "—"} />
         <KpiFlis label={erAktiv ? "Slutter" : "Avsluttet"} value={data.endAt ? langDato(data.endAt) : "—"} />
@@ -237,10 +220,10 @@ export function UtfordringDetaljV2({
                   <span style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
                     <span
                       style={{
-                        fontFamily: T.mono,
+                        fontFamily: TL.font.mono,
                         fontSize: 13,
                         fontWeight: 700,
-                        color: p.rank != null && p.rank <= 3 ? T.lime : T.mut,
+                        color: p.rank != null && p.rank <= 3 ? TL.fill : TL.mute,
                         fontVariantNumeric: "tabular-nums",
                         minWidth: 22,
                         textAlign: "right",
@@ -256,10 +239,10 @@ export function UtfordringDetaljV2({
                 trailing={
                   <span
                     style={{
-                      fontFamily: T.mono,
+                      fontFamily: TL.font.mono,
                       fontSize: 16,
                       fontWeight: 700,
-                      color: p.score != null ? T.fg : T.mut,
+                      color: p.score != null ? TL.text : TL.mute,
                       fontVariantNumeric: "tabular-nums",
                     }}
                   >

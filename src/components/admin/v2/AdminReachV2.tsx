@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * AgencyOS Reach — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
  * Engasjement & compliance. T.* only.
@@ -7,9 +7,8 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Caps, Kort, Knapp, StatusPill, AvatarFoto, TomTilstand, CTAPill, T } from "@/components/v2";
+import { Caps, Kort, Knapp, StatusPill, AvatarFoto, TomTilstand, CTAPill } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
-
 export interface ReachSpiller {
   id: string;
   navn: string;
@@ -54,15 +53,15 @@ const STATUS_TONE: Record<ReachSpiller["status"], "up" | "warn" | "down"> = { gr
 const STATUS_LABEL: Record<ReachSpiller["status"], string> = { green: "På sporet", amber: "Følg med", red: "Trenger oppfølging" };
 
 function Kpi({ label, value, sub, progress, tone = "lime" }: { label: string; value: string; sub: string; progress: number; tone?: "lime" | "warn" | "down" }) {
-  const c = tone === "down" ? T.down : tone === "warn" ? T.warn : T.lime;
+  const c = tone === "down" ? TL.danger : tone === "warn" ? TL.warn : TL.fill;
   return (
     <Kort>
       <Caps>{label}</Caps>
-      <div style={{ fontFamily: T.mono, fontWeight: 700, fontSize: 30, color: T.fg, marginTop: 8, fontVariantNumeric: "tabular-nums" }}>{value}</div>
-      <div style={{ height: 6, borderRadius: 9999, background: T.track, marginTop: 10, overflow: "hidden" }}>
+      <div style={{ fontFamily: TL.font.mono, fontWeight: 700, fontSize: 30, color: TL.text, marginTop: 8, fontVariantNumeric: "tabular-nums" }}>{value}</div>
+      <div style={{ height: 6, borderRadius: 9999, background: TL.hair, marginTop: 10, overflow: "hidden" }}>
         <div style={{ height: "100%", width: `${Math.min(100, progress)}%`, background: c, borderRadius: 9999 }} />
       </div>
-      <p style={{ margin: "8px 0 0", fontFamily: T.mono, fontSize: 10, color: T.mut }}>{sub}</p>
+      <p style={{ margin: "8px 0 0", fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>{sub}</p>
     </Kort>
   );
 }
@@ -85,17 +84,17 @@ function DagligAktivitet({ data, totaltSpillere }: { data: { dato: string; aktiv
       <svg viewBox={`0 0 ${width} ${height}`} style={{ height: 160, width: "100%", minWidth: 480 }} role="img" aria-label="Daglig aktive spillere siste 30 dager">
         <defs>
           <linearGradient id="reach-area-v2" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor={T.lime} stopOpacity={0.25} />
-            <stop offset="100%" stopColor={T.lime} stopOpacity={0} />
+            <stop offset="0%" stopColor={TL.fill} stopOpacity={0.25} />
+            <stop offset="100%" stopColor={TL.fill} stopOpacity={0} />
           </linearGradient>
         </defs>
         {flate && <path d={flate} fill="url(#reach-area-v2)" />}
-        {linje && <path d={linje} fill="none" stroke={T.lime} strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" />}
+        {linje && <path d={linje} fill="none" stroke={TL.fill} strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" />}
         {points.map((p, i) =>
           i % 5 === 0 || i === points.length - 1 ? (
             <g key={p.dato}>
-              <circle cx={p.x} cy={p.y} r={3.5} fill={T.panel} stroke={T.lime} strokeWidth={2} />
-              <text x={p.x} y={height - 4} textAnchor="middle" fontSize={9} fill={T.mut} fontFamily={T.mono}>
+              <circle cx={p.x} cy={p.y} r={3.5} fill={TL.elev} stroke={TL.fill} strokeWidth={2} />
+              <text x={p.x} y={height - 4} textAnchor="middle" fontSize={9} fill={TL.mute} fontFamily={TL.font.mono}>
                 {p.dato.slice(5)}
               </text>
             </g>
@@ -115,14 +114,14 @@ function FeatureBruk({ data, totaltSpillere }: { data: { label: string; antall: 
         const adopsjon = totaltSpillere ? Math.round((f.antall / totaltSpillere) * 100) : 0;
         return (
           <div key={f.label} style={{ display: "grid", gridTemplateColumns: "120px 1fr 44px", alignItems: "center", gap: 12 }}>
-            <span style={{ fontFamily: T.mono, fontSize: 11.5, color: T.fg }}>{f.label}</span>
-            <div style={{ position: "relative", height: 22, borderRadius: 6, background: T.track, overflow: "hidden" }}>
-              <div style={{ height: "100%", width: `${pct}%`, background: T.lime, borderRadius: 6 }} />
-              <span style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", paddingLeft: 8, fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.onLime }}>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 11.5, color: TL.text }}>{f.label}</span>
+            <div style={{ position: "relative", height: 22, borderRadius: 6, background: TL.hair, overflow: "hidden" }}>
+              <div style={{ height: "100%", width: `${pct}%`, background: TL.fill, borderRadius: 6 }} />
+              <span style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", paddingLeft: 8, fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, color: TL.onFill }}>
                 {f.antall} spillere
               </span>
             </div>
-            <span style={{ textAlign: "right", fontFamily: T.mono, fontSize: 11, color: T.mut }}>{adopsjon} %</span>
+            <span style={{ textAlign: "right", fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>{adopsjon} %</span>
           </div>
         );
       })}
@@ -143,14 +142,14 @@ export function AdminReachV2({ data }: { data: AdminReachV2Data }) {
   }, [filter, data.spillere]);
 
   return (
-    <div data-paper-wave-h="reach" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-h="reach" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
         <div>
           <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Reach</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Reach</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>AgencyOS</span>
         </div>
-          <p style={{ fontFamily: T.mono, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: T.mut, margin: "8px 0 0" }}>
+          <p style={{ fontFamily: TL.font.mono, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: TL.mute, margin: "8px 0 0" }}>
             {data.totaltSpillere} spillere · hvor mye lander det vi sender, og hvem trenger oppmerksomhet?
           </p>
         </div>
@@ -178,8 +177,8 @@ export function AdminReachV2({ data }: { data: AdminReachV2Data }) {
       <Kort eyebrow="Daglig">
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8, marginBottom: 8 }}>
           <div>
-            <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, color: T.fg }}>Daglige aktive spillere</span>
-            <p style={{ margin: "4px 0 0", fontFamily: T.mono, fontSize: 11, color: T.mut }}>
+            <span style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 17, color: TL.text }}>Daglige aktive spillere</span>
+            <p style={{ margin: "4px 0 0", fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>
               Siste 30 dager · spillere som logget økt, runde, AI-tråd, mål eller åpnet melding
             </p>
           </div>
@@ -190,19 +189,19 @@ export function AdminReachV2({ data }: { data: AdminReachV2Data }) {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 12 }}>
         <Kort>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-            <Icon name="flame" size={15} style={{ color: T.lime }} />
-            <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, color: T.fg }}>Topp engasjerte</span>
+            <Icon name="flame" size={15} style={{ color: TL.fill }} />
+            <span style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 16, color: TL.text }}>Topp engasjerte</span>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {data.toppEngasjerte.map((p, i) => (
-              <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 10, background: T.panel2, border: `1px solid ${T.border}` }}>
-                <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.mut, width: 16 }}>#{i + 1}</span>
+              <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 10, background: TL.dock, border: `1px solid ${TL.hair}` }}>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, color: TL.mute, width: 16 }}>#{i + 1}</span>
                 <AvatarFoto src={p.avatarUrl} navn={p.navn} size={32} />
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <Link href={`/admin/spillere/${p.id}`} style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg, textDecoration: "none" }}>
+                  <Link href={`/admin/spillere/${p.id}`} style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text, textDecoration: "none" }}>
                     {p.navn}
                   </Link>
-                  <div style={{ marginTop: 2, fontFamily: T.mono, fontSize: 10, color: T.mut }}>
+                  <div style={{ marginTop: 2, fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>
                     {p.compliancePct}% compliance · {p.readRatePct}% lest · {p.aiCaddieThreads} AI-tråder
                   </div>
                 </div>
@@ -211,21 +210,21 @@ export function AdminReachV2({ data }: { data: AdminReachV2Data }) {
           </div>
         </Kort>
 
-        <Kort style={{ borderColor: `color-mix(in srgb, ${T.down} 35%, ${T.border})` }}>
+        <Kort style={{ borderColor: `color-mix(in srgb, ${TL.danger} 35%, ${TL.hair})` }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-            <Icon name="triangle-alert" size={15} style={{ color: T.down }} />
-            <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, color: T.fg }}>Trenger oppfølging</span>
+            <Icon name="triangle-alert" size={15} style={{ color: TL.danger }} />
+            <span style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 16, color: TL.text }}>Trenger oppfølging</span>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {data.trengerOppfolging.map((p) => (
-              <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 10, background: T.panel2, border: `1px solid ${T.border}` }}>
+              <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 10, background: TL.dock, border: `1px solid ${TL.hair}` }}>
                 <AvatarFoto src={p.avatarUrl} navn={p.navn} size={32} />
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <Link href={`/admin/spillere/${p.id}`} style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg, textDecoration: "none" }}>
+                  <Link href={`/admin/spillere/${p.id}`} style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text, textDecoration: "none" }}>
                     {p.navn}
                   </Link>
-                  <div style={{ marginTop: 2, fontFamily: T.mono, fontSize: 10, color: T.down }}>
-                    {p.compliancePct}% compliance <span style={{ color: T.mut }}>· {p.readRatePct}% lest{p.sistSett ? ` · sett ${p.sistSett}` : ""}</span>
+                  <div style={{ marginTop: 2, fontFamily: TL.font.mono, fontSize: 10, color: TL.danger }}>
+                    {p.compliancePct}% compliance <span style={{ color: TL.mute }}>· {p.readRatePct}% lest{p.sistSett ? ` · sett ${p.sistSett}` : ""}</span>
                   </div>
                 </div>
                 <Link href={`/admin/innboks?ny=${p.id}`}>
@@ -240,10 +239,10 @@ export function AdminReachV2({ data }: { data: AdminReachV2Data }) {
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
           <div>
-            <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, color: T.fg }}>Compliance per spiller</span>
-            <p style={{ margin: "4px 0 0", fontFamily: T.mono, fontSize: 11, color: T.mut }}>Sortert etter lavest compliance · klikk for å åpne profilen</p>
+            <span style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 16, color: TL.text }}>Compliance per spiller</span>
+            <p style={{ margin: "4px 0 0", fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>Sortert etter lavest compliance · klikk for å åpne profilen</p>
           </div>
-          <div style={{ display: "inline-flex", gap: 6, borderRadius: 9999, background: T.panel2, border: `1px solid ${T.border}`, padding: 4 }}>
+          <div style={{ display: "inline-flex", gap: 6, borderRadius: 9999, background: TL.dock, border: `1px solid ${TL.hair}`, padding: 4 }}>
             {FILTERS.map((f) => {
               const on = filter === f;
               return (
@@ -251,7 +250,7 @@ export function AdminReachV2({ data }: { data: AdminReachV2Data }) {
                   key={f}
                   type="button"
                   onClick={() => setFilter(f)}
-                  style={{ appearance: "none", cursor: "pointer", border: "none", borderRadius: 9999, padding: "6px 14px", fontFamily: T.mono, fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", background: on ? T.lime : "transparent", color: on ? T.onLime : T.mut }}
+                  style={{ appearance: "none", cursor: "pointer", border: "none", borderRadius: 9999, padding: "6px 14px", fontFamily: TL.font.mono, fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", background: on ? TL.fill : "transparent", color: on ? TL.onFill : TL.mute }}
                 >
                   {f}
                 </button>
@@ -269,20 +268,20 @@ export function AdminReachV2({ data }: { data: AdminReachV2Data }) {
             />
           ) : (
             filtrerte.map((p, i) => (
-              <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 18px", borderTop: i ? `1px solid ${T.border}` : "none", flexWrap: "wrap" }}>
+              <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 18px", borderTop: i ? `1px solid ${TL.hair}` : "none", flexWrap: "wrap" }}>
                 <AvatarFoto src={p.avatarUrl} navn={p.navn} size={30} />
-                <Link href={`/admin/spillere/${p.id}`} style={{ flex: "1 1 160px", minWidth: 0, fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg, textDecoration: "none" }}>
+                <Link href={`/admin/spillere/${p.id}`} style={{ flex: "1 1 160px", minWidth: 0, fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text, textDecoration: "none" }}>
                   {p.navn}
                 </Link>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, flex: "1 1 140px" }}>
-                  <span style={{ height: 6, width: 96, borderRadius: 9999, background: T.track, overflow: "hidden", display: "inline-block" }}>
-                    <span style={{ display: "block", height: "100%", width: `${p.compliancePct}%`, borderRadius: 9999, background: p.compliancePct >= 75 ? T.lime : p.compliancePct >= 50 ? T.warn : T.down }} />
+                  <span style={{ height: 6, width: 96, borderRadius: 9999, background: TL.hair, overflow: "hidden", display: "inline-block" }}>
+                    <span style={{ display: "block", height: "100%", width: `${p.compliancePct}%`, borderRadius: 9999, background: p.compliancePct >= 75 ? TL.fill : p.compliancePct >= 50 ? TL.warn : TL.danger }} />
                   </span>
-                  <span style={{ fontFamily: T.mono, fontSize: 11, color: T.fg }}>{p.compliancePct}%</span>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.text }}>{p.compliancePct}%</span>
                 </div>
-                <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut, flex: "0 0 auto" }}>{p.sistSett ?? "—"}</span>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute, flex: "0 0 auto" }}>{p.sistSett ?? "—"}</span>
                 <StatusPill tone={STATUS_TONE[p.status]}>{STATUS_LABEL[p.status]}</StatusPill>
-                <Link href={`/admin/spillere/${p.id}`} style={{ marginLeft: "auto", display: "inline-flex", alignItems: "center", gap: 4, fontFamily: T.mono, fontSize: 10.5, textTransform: "uppercase", letterSpacing: "0.04em", color: T.mut, textDecoration: "none" }}>
+                <Link href={`/admin/spillere/${p.id}`} style={{ marginLeft: "auto", display: "inline-flex", alignItems: "center", gap: 4, fontFamily: TL.font.mono, fontSize: 10.5, textTransform: "uppercase", letterSpacing: "0.04em", color: TL.mute, textDecoration: "none" }}>
                   Åpne <Icon name="arrow-right" size={12} />
                 </Link>
               </div>
@@ -293,8 +292,8 @@ export function AdminReachV2({ data }: { data: AdminReachV2Data }) {
 
       <Kort eyebrow="Adoption">
         <div style={{ marginBottom: 12 }}>
-          <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, color: T.fg }}>Feature-bruk</span>
-          <p style={{ margin: "4px 0 0", fontFamily: T.mono, fontSize: 11, color: T.mut }}>Antall unike spillere som har brukt featuret siste 30 dager</p>
+          <span style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 16, color: TL.text }}>Feature-bruk</span>
+          <p style={{ margin: "4px 0 0", fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>Antall unike spillere som har brukt featuret siste 30 dager</p>
         </div>
         <FeatureBruk data={data.featureBruk} totaltSpillere={data.totaltSpillere} />
       </Kort>

@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * AgencyOS — Plan-mal-editor (`/admin/plan-templates/[id]/rediger`) — v2.
@@ -28,42 +29,10 @@ import type {
   SessionEnvironment,
   SkillArea,
 } from "@/generated/prisma/enums";
-import {
-  addTemplateSession,
-  copyTemplateWeek,
-  deleteTemplateSession,
-  setWeekDuration,
-  updateTemplate,
-  updateTemplateSession,
-  type SessionInput,
-  type TemplateUpdateInput,
-} from "@/app/admin/(legacy)/plan-templates/actions";
-import {
-  DAG_LABEL,
-  ENV_LABEL,
-  FASE_ALLE,
-  FASE_LABEL,
-  KATEGORI_ALLE,
-  KATEGORI_LABEL,
-  SKILL_LABEL,
-  type DisciplinFordeling,
-  type DrillEntry,
-} from "@/components/admin/plan-templates/shared";
+import { addTemplateSession, copyTemplateWeek, deleteTemplateSession, setWeekDuration, updateTemplate, updateTemplateSession, type SessionInput, type TemplateUpdateInput } from "@/app/admin/(legacy)/plan-templates/actions";
+import { DAG_LABEL, ENV_LABEL, FASE_ALLE, FASE_LABEL, KATEGORI_ALLE, KATEGORI_LABEL, SKILL_LABEL, type DisciplinFordeling, type DrillEntry } from "@/components/admin/plan-templates/shared";
 import { beregnTemplateVolum } from "@/lib/plan-templates/beregn-volum";
-import {
-  Kort,
-  Caps,
-  StatusPill,
-  TomTilstand,
-  Tittel,
-  Knapp,
-  Inndata,
-  Velger,
-  Icon,
-  HjelpTips,
-  AKSE_NAVN,
-  T,
-} from "@/components/v2";
+import { Kort, Caps, StatusPill, TomTilstand, Knapp, Inndata, Velger, Icon, HjelpTips, AKSE_NAVN, T } from "@/components/v2";
 
 /* ── Datakontrakter (mappes fra Prisma i ruten) ───────── */
 
@@ -131,12 +100,12 @@ const FELT_STIL: React.CSSProperties = {
   width: "100%",
   marginTop: 6,
   borderRadius: 10,
-  border: `1px solid ${T.border}`,
-  background: T.panel2,
+  border: `1px solid ${TL.hair}`,
+  background: TL.dock,
   padding: "9px 12px",
-  fontFamily: T.ui,
+  fontFamily: TL.font.sans,
   fontSize: 13,
-  color: T.fg,
+  color: TL.text,
   outline: "none",
   boxSizing: "border-box",
 };
@@ -145,7 +114,7 @@ type HjelpKey = "lFase" | "pyramideAkse" | "skillArea" | "miljo" | "csNivaa";
 
 function Etikett({ children, hjelp }: { children: React.ReactNode; hjelp?: HjelpKey }) {
   return (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: T.mono, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.10em", color: T.mut }}>
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.10em", color: TL.mute }}>
       {children}
       {hjelp && <HjelpTips k={hjelp} size={11} />}
     </span>
@@ -180,7 +149,7 @@ function IkonKnappLiten({
       disabled={disabled}
       onClick={onClick}
       className="v2-press v2-focus"
-      style={{ appearance: "none", cursor: disabled ? "default" : "pointer", width: 20, height: 20, borderRadius: 6, border: 0, background: "transparent", color: T.mut, display: "inline-flex", alignItems: "center", justifyContent: "center", opacity: disabled ? 0.5 : 1 }}
+      style={{ appearance: "none", cursor: disabled ? "default" : "pointer", width: 20, height: 20, borderRadius: 6, border: 0, background: "transparent", color: TL.mute, display: "inline-flex", alignItems: "center", justifyContent: "center", opacity: disabled ? 0.5 : 1 }}
     >
       <Icon name={icon} size={12} />
     </button>
@@ -189,15 +158,15 @@ function IkonKnappLiten({
 
 // Destruktiv ghost-Knapp (samme idiom som «Slett økt» i økt-dialogen)
 const KNAPP_FARE_STIL: React.CSSProperties = {
-  color: T.down,
-  borderColor: `color-mix(in srgb, ${T.down} 40%, transparent)`,
+  color: TL.danger,
+  borderColor: `color-mix(in srgb, ${TL.danger} 40%, transparent)`,
 };
 
 function FeilBoks({ children }: { children: React.ReactNode }) {
   return (
     <p
       role="alert"
-      style={{ margin: 0, borderRadius: 10, border: `1px solid color-mix(in srgb, ${T.down} 40%, transparent)`, background: `color-mix(in srgb, ${T.down} 10%, transparent)`, padding: "9px 12px", fontFamily: T.ui, fontSize: 12, color: T.down, lineHeight: 1.5 }}
+      style={{ margin: 0, borderRadius: 10, border: `1px solid color-mix(in srgb, ${TL.danger} 40%, transparent)`, background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`, padding: "9px 12px", fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, lineHeight: 1.5 }}
     >
       {children}
     </p>
@@ -225,23 +194,23 @@ function ModalSkall({
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
-      style={{ position: "fixed", inset: 0, zIndex: 90, display: "flex", alignItems: "center", justifyContent: "center", padding: "24px 16px", background: T.farge.svartA55 }}
+      style={{ position: "fixed", inset: 0, zIndex: 90, display: "flex", alignItems: "center", justifyContent: "center", padding: "24px 16px", background: TL.scrim }}
     >
       <div
         className="v2-sheet-in"
-        style={{ width: "100%", maxWidth: 440, background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: `0 24px 60px ${T.farge.svartA50}`, maxHeight: "86vh", overflowY: "auto" }}
+        style={{ width: "100%", maxWidth: 440, background: TL.elev, border: `1px solid ${TL.hair}`, borderRadius: 20, padding: "20px 22px", boxShadow: "none", maxHeight: "86vh", overflowY: "auto" }}
       >
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
           <div>
             <Caps size={9}>{eyebrow}</Caps>
-            <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 19, letterSpacing: "-0.02em", color: T.fg, margin: "6px 0 0", lineHeight: 1.2 }}>{tittel}</h2>
+            <h2 style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 19, letterSpacing: "-0.02em", color: TL.text, margin: "6px 0 0", lineHeight: 1.2 }}>{tittel}</h2>
           </div>
           <button
             type="button"
             aria-label="Lukk"
             onClick={onClose}
             className="v2-press v2-focus"
-            style={{ appearance: "none", width: 28, height: 28, borderRadius: 8, background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flex: "none", color: T.fg2 }}
+            style={{ appearance: "none", width: 28, height: 28, borderRadius: 8, background: TL.dock, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flex: "none", color: TL.mute }}
           >
             <Icon name="x" size={14} />
           </button>
@@ -396,15 +365,15 @@ export function AdminPlanMalRedigerV2({
   }
 
   return (
-    <div data-paper-wave-h="plan-mal-rediger" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-h="plan-mal-rediger" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {/* Topptekst — B: status + én primær CTA */}
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 10 }}>
         <div style={{ minWidth: 0 }}>
           <div data-paper-pattern-topp data-paper-slug="agencyos-planbibliotek">
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Rediger planmal</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Rediger planmal</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>AgencyOS</span>
         </div>
-          <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, margin: "8px 0 0", lineHeight: 1.55, maxWidth: 640 }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: "8px 0 0", lineHeight: 1.55, maxWidth: 640 }}>
             Endringer på innstillinger må lagres separat. Endringer på enkeltøkter lagres når du klikker «Lagre endring».
           </p>
           <div style={{ marginTop: 10 }}>
@@ -427,7 +396,7 @@ export function AdminPlanMalRedigerV2({
             <Icon
               name="search"
               size={13}
-              style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: T.mut, pointerEvents: "none" }}
+              style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: TL.mute, pointerEvents: "none" }}
             />
             <input
               type="text"
@@ -438,21 +407,21 @@ export function AdminPlanMalRedigerV2({
               style={{ ...FELT_STIL, marginTop: 0, paddingLeft: 30 }}
             />
           </div>
-          <p style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, margin: "8px 0 0", lineHeight: 1.5 }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 10.5, color: TL.mute, margin: "8px 0 0", lineHeight: 1.5 }}>
             Bibliotek-referanse. Drills legges til på en økt via «Legg til» i grid-en.
           </p>
           <div style={{ marginTop: 8, maxHeight: 420, overflowY: "auto", display: "flex", flexDirection: "column", gap: 4 }}>
             {filtererteDrills.slice(0, 50).map((d) => (
               <div
                 key={d.id}
-                style={{ display: "flex", alignItems: "center", gap: 7, borderRadius: 8, border: `1px solid ${T.border}`, background: T.panel2, padding: "6px 8px" }}
+                style={{ display: "flex", alignItems: "center", gap: 7, borderRadius: 8, border: `1px solid ${TL.hair}`, background: TL.dock, padding: "6px 8px" }}
               >
                 <span aria-hidden style={{ width: 6, height: 6, borderRadius: 9999, background: T.ax[d.pyramidArea], flex: "none" }} />
-                <span style={{ fontFamily: T.ui, fontSize: 11, color: T.fg, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{d.name}</span>
+                <span style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{d.name}</span>
               </div>
             ))}
             {filtererteDrills.length > 50 && (
-              <p style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, margin: "2px 0 0" }}>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 10.5, color: TL.mute, margin: "2px 0 0" }}>
                 +{filtererteDrills.length - 50} flere. Avgrens søket.
               </p>
             )}
@@ -477,7 +446,7 @@ export function AdminPlanMalRedigerV2({
             </span>
           }
           action={
-            <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut }}>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 9, color: TL.mute }}>
               {sessions.length} av {varighetUker * ukentligOktAntall} planlagte
             </span>
           }
@@ -490,7 +459,7 @@ export function AdminPlanMalRedigerV2({
                 {DAG_LABEL.map((d) => (
                   <div
                     key={d}
-                    style={{ borderRadius: 8, background: T.panel2, border: `1px solid ${T.border}`, padding: "4px 0", textAlign: "center", fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: T.mut }}
+                    style={{ borderRadius: 8, background: TL.dock, border: `1px solid ${TL.hair}`, padding: "4px 0", textAlign: "center", fontFamily: TL.font.mono, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: TL.mute }}
                   >
                     {d}
                   </div>
@@ -502,11 +471,11 @@ export function AdminPlanMalRedigerV2({
                 const ukeTimer = Math.round((ukeMin / 60) * 10) / 10;
                 return (
                   <div key={uke} style={{ marginTop: 4, display: "grid", gridTemplateColumns: "72px repeat(7, 1fr)", gap: 4 }}>
-                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 2, borderRadius: 8, background: T.panel3, padding: "4px 0", fontFamily: T.mono, fontSize: 11, fontWeight: 700, color: T.fg2 }}>
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 2, borderRadius: 8, background: TL.dim, padding: "4px 0", fontFamily: TL.font.mono, fontSize: 11, fontWeight: 700, color: TL.mute }}>
                       <span>{uke}</span>
                       {/* Uke-volum (fra beregnTemplateVolum) — skjules for tomme uker */}
                       {ukeMin > 0 && (
-                        <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: T.mut, fontVariantNumeric: "tabular-nums" }}>
+                        <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
                           {ukeTimer.toFixed(1).replace(".", ",")} t
                         </span>
                       )}
@@ -524,12 +493,12 @@ export function AdminPlanMalRedigerV2({
                               type="button"
                               onClick={() => setModal({ kind: "edit", session: s })}
                               className="v2-row-h v2-focus"
-                              style={{ appearance: "none", cursor: "pointer", display: "flex", height: "100%", width: "100%", flexDirection: "column", gap: 4, borderRadius: 8, border: `1px solid ${T.border}`, borderLeft: `3px solid ${T.ax[s.pyramidArea]}`, background: T.panel2, padding: 6, textAlign: "left" }}
+                              style={{ appearance: "none", cursor: "pointer", display: "flex", height: "100%", width: "100%", flexDirection: "column", gap: 4, borderRadius: 8, border: `1px solid ${TL.hair}`, borderLeft: `3px solid ${T.ax[s.pyramidArea]}`, background: TL.dock, padding: 6, textAlign: "left" }}
                             >
-                              <span style={{ fontFamily: T.ui, fontSize: 11, fontWeight: 600, color: T.fg, lineHeight: 1.3, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                              <span style={{ fontFamily: TL.font.sans, fontSize: 11, fontWeight: 600, color: TL.text, lineHeight: 1.3, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
                                 {s.title}
                               </span>
-                              <span style={{ marginTop: "auto", fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: T.mut }}>
+                              <span style={{ marginTop: "auto", fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: TL.mute }}>
                                 {s.varighetMin}m · {s.drills.length}d
                               </span>
                             </button>
@@ -539,7 +508,7 @@ export function AdminPlanMalRedigerV2({
                               onClick={() => setModal({ kind: "create", ukeNr: uke, dagNr: dag })}
                               aria-label={`Ny økt uke ${uke}, ${DAG_LABEL[dag - 1]}`}
                               className="v2-press v2-focus"
-                              style={{ appearance: "none", cursor: "pointer", display: "flex", height: "100%", width: "100%", alignItems: "center", justifyContent: "center", borderRadius: 8, border: `1px dashed ${T.border}`, background: "transparent", color: T.mut }}
+                              style={{ appearance: "none", cursor: "pointer", display: "flex", height: "100%", width: "100%", alignItems: "center", justifyContent: "center", borderRadius: 8, border: `1px dashed ${TL.hair}`, background: "transparent", color: TL.mute }}
                             >
                               <Icon name="plus" size={13} />
                             </button>
@@ -601,7 +570,7 @@ export function AdminPlanMalRedigerV2({
             <div>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
                 <Etikett hjelp="pyramideAkse">Disiplin-fordeling</Etikett>
-                <span style={{ fontFamily: T.mono, fontSize: 11, fontWeight: 700, color: fordelingSum === 100 ? T.up : T.down, fontVariantNumeric: "tabular-nums" }}>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 11, fontWeight: 700, color: fordelingSum === 100 ? TL.ok : TL.danger, fontVariantNumeric: "tabular-nums" }}>
                   {fordelingSum}%
                 </span>
               </div>
@@ -609,7 +578,7 @@ export function AdminPlanMalRedigerV2({
                 {PYR_ALLE.map((p) => (
                   <div key={p} style={{ display: "flex", alignItems: "center", gap: 8 }}>
                     <span aria-hidden style={{ width: 7, height: 7, borderRadius: 3, background: T.ax[p], flex: "none" }} />
-                    <span style={{ width: 56, flex: "none", fontFamily: T.ui, fontSize: 11, fontWeight: 600, color: T.fg2 }}>{AKSE_NAVN[p]}</span>
+                    <span style={{ width: 56, flex: "none", fontFamily: TL.font.sans, fontSize: 11, fontWeight: 600, color: TL.mute }}>{AKSE_NAVN[p]}</span>
                     <input
                       type="range"
                       min={0}
@@ -621,7 +590,7 @@ export function AdminPlanMalRedigerV2({
                       aria-label={`Andel ${AKSE_NAVN[p]}`}
                       style={{ flex: 1, accentColor: T.ax[p], minWidth: 0 }}
                     />
-                    <span style={{ width: 36, flex: "none", textAlign: "right", fontFamily: T.mono, fontSize: 10.5, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>
+                    <span style={{ width: 36, flex: "none", textAlign: "right", fontFamily: TL.font.mono, fontSize: 10.5, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>
                       {Math.round(fordeling[p] * 100)}%
                     </span>
                   </div>
@@ -630,15 +599,15 @@ export function AdminPlanMalRedigerV2({
             </div>
 
             {/* Volum-sammendrag (beregnTemplateVolum — samme tekster/terskler som volum-linje) */}
-            <div style={{ borderRadius: T.rRow, border: `1px solid ${T.border}`, background: T.panel2, padding: "10px 12px" }}>
+            <div style={{ borderRadius: TL.radius.row, border: `1px solid ${TL.hair}`, background: TL.dock, padding: "10px 12px" }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
                 <Caps size={9}>Volum</Caps>
-                <span style={{ fontFamily: T.mono, fontSize: 11, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>{volum.timerLabel}</span>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 11, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>{volum.timerLabel}</span>
               </div>
               {sessions.length > 0 && (
                 <div style={{ marginTop: 7, display: "flex", flexWrap: "wrap", gap: "3px 12px" }}>
                   {PYR_ALLE.map((p) => (
-                    <span key={p} style={{ display: "inline-flex", alignItems: "center", gap: 4, fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, color: T.mut }}>
+                    <span key={p} style={{ display: "inline-flex", alignItems: "center", gap: 4, fontFamily: TL.font.mono, fontSize: 9.5, fontWeight: 700, color: TL.mute }}>
                       <span aria-hidden style={{ width: 6, height: 6, borderRadius: 9999, background: T.ax[p] }} />
                       {AKSE_NAVN[p]} {volum.realisertProsent[p]}%
                     </span>
@@ -646,12 +615,12 @@ export function AdminPlanMalRedigerV2({
                 </div>
               )}
               {fordelingSum !== 100 && (
-                <p style={{ margin: "7px 0 0", fontFamily: T.ui, fontSize: 10.5, color: T.down, lineHeight: 1.5 }}>
+                <p style={{ margin: "7px 0 0", fontFamily: TL.font.sans, fontSize: 10.5, color: TL.danger, lineHeight: 1.5 }}>
                   Fordelingen summerer til {fordelingSum} % — må være 100 %.
                 </p>
               )}
               {volum.storsteAvvik && volum.storsteAvvik.diffPp > AVVIK_TERSKEL_PP && (
-                <p style={{ margin: "5px 0 0", fontFamily: T.ui, fontSize: 10.5, color: T.down, lineHeight: 1.5 }}>
+                <p style={{ margin: "5px 0 0", fontFamily: TL.font.sans, fontSize: 10.5, color: TL.danger, lineHeight: 1.5 }}>
                   Øktene gir {AKSE_NAVN[volum.storsteAvvik.omrade]} {volum.realisertProsent[volum.storsteAvvik.omrade]} % —
                   glideren sier {Math.round(fordeling[volum.storsteAvvik.omrade] * 100)} %.
                 </p>
@@ -673,10 +642,10 @@ export function AdminPlanMalRedigerV2({
               }}
               style={{ display: "inline-flex", alignItems: "center", gap: 10, cursor: "pointer", width: "fit-content" }}
             >
-              <span style={{ width: 18, height: 18, borderRadius: 6, background: approved ? T.lime : T.panel2, border: `1px solid ${approved ? "transparent" : T.borderS}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
-                {approved && <Icon name="check" size={12} style={{ color: T.onLime }} />}
+              <span style={{ width: 18, height: 18, borderRadius: 6, background: approved ? TL.fill : TL.dock, border: `1px solid ${approved ? "transparent" : TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+                {approved && <Icon name="check" size={12} style={{ color: TL.onFill }} />}
               </span>
-              <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg }}>Godkjent (tilgjengelig for AI)</span>
+              <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.text }}>Godkjent (tilgjengelig for AI)</span>
             </div>
           </div>
         </Kort>
@@ -684,11 +653,11 @@ export function AdminPlanMalRedigerV2({
       </div>
 
       {/* Sticky lagre-bar (samme mønster som AdminDrillRedigerV2) */}
-      <div style={{ position: "sticky", bottom: 0, zIndex: 20, background: `color-mix(in srgb, ${T.bg} 95%, transparent)`, backdropFilter: "blur(6px)", borderTop: `1px solid ${T.border}`, padding: "10px 0", display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 12 }}>
+      <div style={{ position: "sticky", bottom: 0, zIndex: 20, background: `color-mix(in srgb, ${TL.scene} 95%, transparent)`, backdropFilter: "blur(6px)", borderTop: `1px solid ${TL.hair}`, padding: "10px 0", display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 12 }}>
         {lagreMelding && (
           <span
             role={lagreMelding.type === "feil" ? "alert" : "status"}
-            style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: lagreMelding.type === "feil" ? T.down : T.up, textAlign: "right", lineHeight: 1.4 }}
+            style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: TL.font.sans, fontSize: 12, fontWeight: 600, color: lagreMelding.type === "feil" ? TL.danger : TL.ok, textAlign: "right", lineHeight: 1.4 }}
           >
             <Icon name={lagreMelding.type === "feil" ? "alert-triangle" : "check"} size={13} style={{ flex: "none" }} />
             {lagreMelding.tekst}
@@ -801,7 +770,7 @@ function VarighetUkeDialog({
           value={minutter}
           onChange={setMinutter}
         />
-        <p style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, margin: 0, lineHeight: 1.55 }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, margin: 0, lineHeight: 1.55 }}>
           Gjelder alle økter i uke {ukeNr}. Mellom 5 og 480 minutter.
         </p>
         {feil && <FeilBoks>{feil}</FeilBoks>}
@@ -849,7 +818,7 @@ function KopierUkeDialog({
       <div style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 12 }}>
         {konflikt ? (
           <>
-            <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, margin: 0, lineHeight: 1.55 }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: 0, lineHeight: 1.55 }}>
               Uke {konflikt.tilUke} har {konflikt.antallIMaal} økter fra før. Erstatte dem?
             </p>
             {feil && <FeilBoks>{feil}</FeilBoks>}
@@ -867,7 +836,7 @@ function KopierUkeDialog({
             {ukeValg.length > 0 ? (
               <Velger label="Kopier til uke" options={ukeValg} value={tilUke} onChange={setTilUke} />
             ) : (
-              <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: 0, lineHeight: 1.55 }}>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: 0, lineHeight: 1.55 }}>
                 Malen har ingen andre uker å kopiere til.
               </p>
             )}
@@ -901,7 +870,7 @@ function BekreftSlettOktDialog({
   return (
     <ModalSkall eyebrow="Bekreft" tittel="Slette denne økten?" onClose={onClose}>
       <div style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 12 }}>
-        <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, margin: 0, lineHeight: 1.55 }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: 0, lineHeight: 1.55 }}>
           Økten fjernes fra malen. Dette kan ikke angres.
         </p>
         {feil && <FeilBoks>{feil}</FeilBoks>}
@@ -1024,14 +993,14 @@ function OktRedigerDialog({
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
-      style={{ position: "fixed", inset: 0, zIndex: 50, display: "grid", placeItems: "center", background: T.farge.svartA55, padding: 16 }}
+      style={{ position: "fixed", inset: 0, zIndex: 50, display: "grid", placeItems: "center", background: TL.scrim, padding: 16 }}
     >
       <div
         className="v2-sheet-in"
-        style={{ width: "100%", maxWidth: 640, maxHeight: "92vh", overflowY: "auto", borderRadius: T.rCard, background: T.panel, border: `1px solid ${T.borderS}`, padding: 22, boxShadow: `0 24px 60px ${T.farge.svartA50}` }}
+        style={{ width: "100%", maxWidth: 640, maxHeight: "92vh", overflowY: "auto", borderRadius: TL.radius.card, background: TL.elev, border: `1px solid ${TL.hair}`, padding: 22, boxShadow: "none" }}
       >
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
-          <h2 style={{ margin: 0, fontFamily: T.disp, fontWeight: 700, fontSize: 20, letterSpacing: "-0.02em", color: T.fg }}>
+          <h2 style={{ margin: 0, fontFamily: TL.font.sans, fontWeight: 700, fontSize: 20, letterSpacing: "-0.02em", color: TL.text }}>
             {state.kind === "edit" ? "Rediger økt" : "Ny økt"}
           </h2>
           <button
@@ -1039,7 +1008,7 @@ function OktRedigerDialog({
             onClick={onClose}
             aria-label="Lukk"
             className="v2-press v2-focus"
-            style={{ appearance: "none", cursor: "pointer", width: 28, height: 28, borderRadius: 8, background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none", color: T.fg2 }}
+            style={{ appearance: "none", cursor: "pointer", width: 28, height: 28, borderRadius: 8, background: TL.dock, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none", color: TL.mute }}
           >
             <Icon name="x" size={14} />
           </button>
@@ -1114,9 +1083,9 @@ function OktRedigerDialog({
           </span>
           <div style={{ marginTop: 8, display: "flex", flexDirection: "column", gap: 8 }}>
             {drills.map((d, i) => (
-              <div key={`${d.exerciseId}-${i}`} style={{ borderRadius: T.rRow, border: `1px solid ${T.border}`, background: T.panel2, padding: "9px 11px" }}>
+              <div key={`${d.exerciseId}-${i}`} style={{ borderRadius: TL.radius.row, border: `1px solid ${TL.hair}`, background: TL.dock, padding: "9px 11px" }}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-                  <span style={{ minWidth: 0, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  <span style={{ minWidth: 0, fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 600, color: TL.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                     {navnPerId.get(d.exerciseId) ?? d.exerciseId}
                   </span>
                   <button
@@ -1124,7 +1093,7 @@ function OktRedigerDialog({
                     onClick={() => removeDrill(i)}
                     aria-label="Fjern drill"
                     className="v2-press v2-focus"
-                    style={{ appearance: "none", cursor: "pointer", width: 26, height: 26, borderRadius: 8, border: 0, background: "transparent", color: T.down, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}
+                    style={{ appearance: "none", cursor: "pointer", width: 26, height: 26, borderRadius: 8, border: 0, background: "transparent", color: TL.danger, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}
                   >
                     <Icon name="trash-2" size={13} />
                   </button>
@@ -1138,7 +1107,7 @@ function OktRedigerDialog({
                     onChange={(e) =>
                       updateDrill(i, { sets: e.target.value ? parseInt(e.target.value, 10) : undefined })
                     }
-                    style={{ ...FELT_STIL, marginTop: 0, padding: "7px 10px", fontSize: 12, fontFamily: T.mono, fontVariantNumeric: "tabular-nums" }}
+                    style={{ ...FELT_STIL, marginTop: 0, padding: "7px 10px", fontSize: 12, fontFamily: TL.font.mono, fontVariantNumeric: "tabular-nums" }}
                   />
                   <input
                     type="number"
@@ -1148,7 +1117,7 @@ function OktRedigerDialog({
                     onChange={(e) =>
                       updateDrill(i, { reps: e.target.value ? parseInt(e.target.value, 10) : undefined })
                     }
-                    style={{ ...FELT_STIL, marginTop: 0, padding: "7px 10px", fontSize: 12, fontFamily: T.mono, fontVariantNumeric: "tabular-nums" }}
+                    style={{ ...FELT_STIL, marginTop: 0, padding: "7px 10px", fontSize: 12, fontFamily: TL.font.mono, fontVariantNumeric: "tabular-nums" }}
                   />
                   <input
                     type="number"
@@ -1158,23 +1127,23 @@ function OktRedigerDialog({
                     onChange={(e) =>
                       updateDrill(i, { csTarget: e.target.value ? parseFloat(e.target.value) : undefined })
                     }
-                    style={{ ...FELT_STIL, marginTop: 0, padding: "7px 10px", fontSize: 12, fontFamily: T.mono, fontVariantNumeric: "tabular-nums" }}
+                    style={{ ...FELT_STIL, marginTop: 0, padding: "7px 10px", fontSize: 12, fontFamily: TL.font.mono, fontVariantNumeric: "tabular-nums" }}
                   />
                 </div>
               </div>
             ))}
             {drills.length === 0 && (
-              <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, margin: 0 }}>Ingen drills lagt til ennå.</p>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, margin: 0 }}>Ingen drills lagt til ennå.</p>
             )}
           </div>
 
           {/* Drill-velger */}
-          <div style={{ marginTop: 10, borderRadius: T.rRow, border: `1px solid ${T.border}`, background: T.panel2, padding: 10 }}>
+          <div style={{ marginTop: 10, borderRadius: TL.radius.row, border: `1px solid ${TL.hair}`, background: TL.dock, padding: 10 }}>
             <div style={{ position: "relative" }}>
               <Icon
                 name="search"
                 size={13}
-                style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: T.mut, pointerEvents: "none" }}
+                style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: TL.mute, pointerEvents: "none" }}
               />
               <input
                 type="text"
@@ -1182,7 +1151,7 @@ function OktRedigerDialog({
                 onChange={(e) => setDrillSok(e.target.value)}
                 placeholder="Søk drill å legge til"
                 aria-label="Søk drill å legge til"
-                style={{ ...FELT_STIL, marginTop: 0, paddingLeft: 30, background: T.panel3 }}
+                style={{ ...FELT_STIL, marginTop: 0, paddingLeft: 30, background: TL.dim }}
               />
             </div>
             <div style={{ marginTop: 8, maxHeight: 160, overflowY: "auto", display: "flex", flexDirection: "column", gap: 2 }}>
@@ -1198,13 +1167,13 @@ function OktRedigerDialog({
                     style={{ appearance: "none", cursor: valgt ? "default" : "pointer", display: "flex", width: "100%", alignItems: "center", gap: 8, borderRadius: 8, border: 0, background: "transparent", padding: "6px 8px", textAlign: "left", opacity: valgt ? 0.5 : 1 }}
                   >
                     <span aria-hidden style={{ width: 6, height: 6, borderRadius: 9999, background: T.ax[d.pyramidArea], flex: "none" }} />
-                    <span style={{ flex: 1, minWidth: 0, fontFamily: T.ui, fontSize: 11.5, color: T.fg, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{d.name}</span>
-                    {valgt && <Icon name="check" size={12} style={{ color: T.lime, flex: "none" }} />}
+                    <span style={{ flex: 1, minWidth: 0, fontFamily: TL.font.sans, fontSize: 11.5, color: TL.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{d.name}</span>
+                    {valgt && <Icon name="check" size={12} style={{ color: TL.fill, flex: "none" }} />}
                   </button>
                 );
               })}
               {filtererteDrills.length === 0 && (
-                <p style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, margin: "2px 0 0" }}>Ingen drills matcher søket.</p>
+                <p style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.mute, margin: "2px 0 0" }}>Ingen drills matcher søket.</p>
               )}
             </div>
           </div>

@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * WORKBENCH · COLDSTART — første fasit-ombygging (G7), portet 1:1 fra
@@ -13,7 +14,7 @@
  */
 
 import { useEffect, useState } from "react";
-import { T, Kort, Knapp, Icon, TomTilstand } from "@/components/v2";
+import { Kort, Knapp, Icon, TomTilstand } from "@/components/v2";
 import type { WorkbenchData, WorkbenchPlanTemplate } from "@/lib/workbench/load-workbench";
 import { LPHASE_LABEL } from "./WorkbenchV2";
 
@@ -73,14 +74,14 @@ export function WorkbenchColdstart({
       <div style={{ width: 540, maxWidth: "100%" }}>
         {/* Hode — 1:1 fra fasit: ikon-badge + tittel + undertekst */}
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 12, marginBottom: 28 }}>
-          <div style={{ width: 58, height: 58, borderRadius: 15, background: `color-mix(in srgb, ${T.lime} 14%, ${T.panel})`, border: `1px solid ${T.border}`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <Icon name="calendar" size={26} style={{ color: T.lime }} />
+          <div style={{ width: 58, height: 58, borderRadius: 15, background: `color-mix(in srgb, ${TL.fill} 14%, ${TL.elev})`, border: `1px solid ${TL.hair}`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <Icon name="calendar" size={26} style={{ color: TL.fill }} />
           </div>
           <div>
-            <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 22, letterSpacing: "-0.02em", color: T.fg }}>
+            <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 22, letterSpacing: "-0.02em", color: TL.text }}>
               Ingen plan for {fornavn} ennå
             </div>
-            <p style={{ fontFamily: T.ui, fontSize: 13.5, color: T.mut, lineHeight: 1.55, margin: "7px auto 0", maxWidth: 380 }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute, lineHeight: 1.55, margin: "7px auto 0", maxWidth: 380 }}>
               Tre trygge veier inn — velg én, finjuster på tidslinja etterpå.
             </p>
           </div>
@@ -107,8 +108,8 @@ export function WorkbenchColdstart({
               style={{
                 padding: "10px 12px",
                 borderRadius: 12,
-                background: T.panel,
-                border: `1px solid ${T.border}`,
+                background: TL.elev,
+                border: `1px solid ${TL.hair}`,
                 textAlign: "left",
               }}
             >
@@ -118,9 +119,9 @@ export function WorkbenchColdstart({
                   width: 18,
                   height: 18,
                   borderRadius: 9999,
-                  background: T.handling,
-                  color: T.onHandling,
-                  fontFamily: T.mono,
+                  background: TL.fill,
+                  color: TL.onFill,
+                  fontFamily: TL.font.mono,
                   fontSize: 10,
                   fontWeight: 800,
                   alignItems: "center",
@@ -129,8 +130,8 @@ export function WorkbenchColdstart({
               >
                 {s.n}
               </span>
-              <div style={{ fontFamily: T.ui, fontSize: 12.5, fontWeight: 700, color: T.fg, marginTop: 6 }}>{s.t}</div>
-              <div style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, marginTop: 2 }}>{s.d}</div>
+              <div style={{ fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 700, color: TL.text, marginTop: 6 }}>{s.t}</div>
+              <div style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.mute, marginTop: 2 }}>{s.d}</div>
             </div>
           ))}
         </div>
@@ -138,17 +139,17 @@ export function WorkbenchColdstart({
         <Kort pad="20px" style={{ display: "flex", flexDirection: "column", gap: 20 }}>
           {/* Turnerings-kontekst — EKTE data når den finnes */}
           {nesteTurnering && (
-            <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 12px", borderRadius: 10, background: T.panel2, border: `1px solid ${T.border}` }}>
-              <Icon name="trophy" size={14} style={{ color: T.lime, flex: "none" }} />
-              <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, lineHeight: 1.5 }}>
-                Neste turnering: <span style={{ color: T.fg2, fontWeight: 700 }}>{nesteTurnering.tn}</span> · {nesteTurnering.td} — planen bør toppe mot den.
+            <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 12px", borderRadius: 10, background: TL.dock, border: `1px solid ${TL.hair}` }}>
+              <Icon name="trophy" size={14} style={{ color: TL.fill, flex: "none" }} />
+              <span style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, lineHeight: 1.5 }}>
+                Neste turnering: <span style={{ color: TL.mute, fontWeight: 700 }}>{nesteTurnering.tn}</span> · {nesteTurnering.td} — planen bør toppe mot den.
               </span>
             </div>
           )}
 
           {/* Mal-velger — ekte godkjente maler, fase-merket */}
           <div>
-            <div style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: T.mut, marginBottom: 9 }}>
+            <div style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: TL.mute, marginBottom: 9 }}>
               1 · Planmal
             </div>
             {maler.length === 0 ? (
@@ -167,13 +168,13 @@ export function WorkbenchColdstart({
                       className="v2-press v2-focus"
                       style={{
                         appearance: "none", textAlign: "left", padding: "10px 12px", borderRadius: 10, cursor: "pointer",
-                        background: on ? `color-mix(in srgb, ${T.lime} 12%, ${T.panel2})` : T.panel2,
-                        border: `1px solid ${on ? T.lime : T.border}`,
+                        background: on ? `color-mix(in srgb, ${TL.fill} 12%, ${TL.dock})` : TL.dock,
+                        border: `1px solid ${on ? TL.fill : TL.hair}`,
                         transition: "all 120ms",
                       }}
                     >
-                      <div style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: on ? T.lime : T.fg, lineHeight: 1.35 }}>{m.name}</div>
-                      <div style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, marginTop: 2 }}>
+                      <div style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: on ? TL.fill : TL.text, lineHeight: 1.35 }}>{m.name}</div>
+                      <div style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.mute, marginTop: 2 }}>
                         {LPHASE_LABEL[m.lPhase] ?? m.lPhase} · {m.sessionCount} økter · {m.varighetUker} uker
                       </div>
                     </button>
@@ -183,7 +184,7 @@ export function WorkbenchColdstart({
             )}
           </div>
 
-          {feil && <span style={{ fontFamily: T.ui, fontSize: 12, color: T.down }}>{feil}</span>}
+          {feil && <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger }}>{feil}</span>}
 
           {onBrukMal && maler.length > 0 && (
             <Knapp icon="layers" full disabled={!valgtMal || brukerMal} onClick={brukMal}>
@@ -197,9 +198,9 @@ export function WorkbenchColdstart({
               onClick={onForeslaaUke}
               disabled={foreslarUke}
               className="v2-press v2-focus"
-              style={{ appearance: "none", height: 36, borderRadius: 10, background: "transparent", border: `1px dashed ${T.borderS}`, color: T.fg2, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, opacity: foreslarUke ? 0.6 : 1 }}
+              style={{ appearance: "none", height: 36, borderRadius: 10, background: "transparent", border: `1px dashed ${TL.hair}`, color: TL.mute, fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, opacity: foreslarUke ? 0.6 : 1 }}
             >
-              <Icon name="sparkles" size={14} style={{ color: T.lime }} />
+              <Icon name="sparkles" size={14} style={{ color: TL.fill }} />
               {foreslarUke ? "Foreslår…" : "Eller: la AI-Caddie foreslå uka"}
             </button>
           )}
@@ -209,9 +210,9 @@ export function WorkbenchColdstart({
               type="button"
               onClick={onAarsplan}
               className="v2-press v2-focus"
-              style={{ appearance: "none", height: 36, borderRadius: 10, background: "transparent", border: `1px dashed ${T.borderS}`, color: T.fg2, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}
+              style={{ appearance: "none", height: 36, borderRadius: 10, background: "transparent", border: `1px dashed ${TL.hair}`, color: TL.mute, fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}
             >
-              <Icon name="calendar-range" size={14} style={{ color: T.lime }} />
+              <Icon name="calendar-range" size={14} style={{ color: TL.fill }} />
               Eller: legg årsplanen først — perioder, testuker og ferie
             </button>
           )}
@@ -221,14 +222,14 @@ export function WorkbenchColdstart({
               type="button"
               onClick={onManuelt}
               className="v2-press v2-focus"
-              style={{ appearance: "none", height: 36, borderRadius: 10, background: "transparent", border: `1px dashed ${T.borderS}`, color: T.fg2, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}
+              style={{ appearance: "none", height: 36, borderRadius: 10, background: "transparent", border: `1px dashed ${TL.hair}`, color: TL.mute, fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}
             >
-              <Icon name="pencil" size={14} style={{ color: T.lime }} />
+              <Icon name="pencil" size={14} style={{ color: TL.fill }} />
               Eller: start med blanke ark
             </button>
           )}
 
-          <span style={{ fontFamily: T.mono, fontSize: 8.5, color: T.mut, textAlign: "center" }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 8.5, color: TL.mute, textAlign: "center" }}>
             Alltid en anbefaling — du kan endre alt på tidslinja etterpå.
           </span>
         </Kort>

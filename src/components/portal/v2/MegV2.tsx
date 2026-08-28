@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * PlayerHQ Meg — v2 Presis + B-pakke (oversikt først, konto-liste etter).
@@ -26,21 +27,7 @@ import { oppdaterPreferences, settEgetLydSamtykke } from "@/app/portal/meg/actio
 import { uploadAvatar } from "@/lib/storage/avatar";
 import { skalerAvatar } from "@/lib/klient/skaler-avatar";
 import { useCountUp } from "@/lib/v2/hooks";
-import {
-  T,
-  fmtSg,
-  Caps,
-  Kort,
-  StatusPill,
-  Rad,
-  Bryter,
-  ProgresjonsBar,
-  AvatarFoto,
-  TomTilstand,
-  Icon,
-  HjelpTips,
-  type StatusTone,
-} from "@/components/v2";
+import { fmtSg, Caps, Kort, StatusPill, Rad, Bryter, ProgresjonsBar, AvatarFoto, TomTilstand, Icon, HjelpTips, type StatusTone } from "@/components/v2";
 import { PaperPage, PaperTopp, PaperKropp } from "./PaperChrome";
 
 /* ── Datakontrakt ──────────────────────────────────────────────────── */
@@ -140,10 +127,10 @@ function SesongTallVerdi({ value }: { value: string }) {
   return (
     <span
       style={{
-        fontFamily: T.mono,
+        fontFamily: TL.font.mono,
         fontSize: 26,
         fontWeight: 700,
-        color: T.fg,
+        color: TL.text,
         display: "block",
         marginTop: 8,
         fontVariantNumeric: "tabular-nums",
@@ -198,10 +185,10 @@ function VarslerMini({ notif }: { notif: UserPreferences["notif"] }) {
         style={{
           display: "block",
           marginTop: 10,
-          fontFamily: T.ui,
+          fontFamily: TL.font.sans,
           fontSize: 12,
           fontWeight: 600,
-          color: T.mut,
+          color: TL.mute,
           textDecoration: "none",
         }}
       >
@@ -337,14 +324,14 @@ export function MegV2({ data }: { data: MegData }) {
               width: 18,
               height: 18,
               borderRadius: 9999,
-              background: T.panel3,
-              border: `1.5px solid ${T.panel}`,
+              background: TL.dim,
+              border: `1.5px solid ${TL.elev}`,
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <Icon name={avatarLagrer ? "loader" : "camera"} size={10} style={{ color: T.fg2 }} />
+            <Icon name={avatarLagrer ? "loader" : "camera"} size={10} style={{ color: TL.mute }} />
           </span>
         </label>
         <input
@@ -360,30 +347,30 @@ export function MegV2({ data }: { data: MegData }) {
 
       <PaperKropp>
       {avatarFeil && (
-        <Caps style={{ color: T.down }}>{avatarFeil}</Caps>
+        <Caps style={{ color: TL.danger }}>{avatarFeil}</Caps>
       )}
       {!lydGittLokalt && (
         <div
           style={{
             /* Paper .varselblokk — lys clay-flate med clay-strek langs venstre kant.
                Kortet er «Én ting nå», ikke et vanlig panel. */
-            border: `1px solid ${T.border}`,
-            borderLeft: `3px solid ${T.handling}`,
-            borderRadius: T.rCard,
-            background: T.handlingSoft,
+            border: `1px solid ${TL.hair}`,
+            borderLeft: `3px solid ${TL.fill}`,
+            borderRadius: TL.radius.card,
+            background: TL.dim,
             padding: 16,
             display: "flex",
             flexDirection: "column",
             gap: 8,
           }}
         >
-          <div style={{ fontFamily: T.mono, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>
+          <div style={{ fontFamily: TL.font.mono, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>
             Én ting nå
           </div>
-          <h2 style={{ margin: 0, fontFamily: T.disp, fontSize: 16, fontWeight: 600, color: T.fg }}>
+          <h2 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 16, fontWeight: 600, color: TL.text }}>
             Lydsamtykke mangler
           </h2>
-          <p style={{ margin: 0, fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut, lineHeight: 1.55, maxWidth: "52ch" }}>
+          <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute, lineHeight: 1.55, maxWidth: "52ch" }}>
             Uten lydsamtykke kan Anders ikke dele videoanalyse med lyd med deg.
             Gi samtykke her hvis du er over 16 år — ellers må foresatt gjøre det via trener.
           </p>
@@ -410,9 +397,9 @@ export function MegV2({ data }: { data: MegData }) {
               width: "100%",
               borderRadius: 12,
               border: "none",
-              background: T.handling,
-              color: T.onHandling,
-              fontFamily: T.ui,
+              background: TL.fill,
+              color: TL.onFill,
+              fontFamily: TL.font.sans,
               fontSize: 14,
               fontWeight: 600,
               cursor: lydPending ? "default" : "pointer",
@@ -422,7 +409,7 @@ export function MegV2({ data }: { data: MegData }) {
             {lydPending ? "Lagrer …" : "Gi lydsamtykke"}
           </button>
           {lydFeil && (
-            <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12.5, color: T.down }} role="alert">
+            <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.danger }} role="alert">
               {lydFeil}
             </p>
           )}
@@ -433,7 +420,7 @@ export function MegV2({ data }: { data: MegData }) {
       {identitetsrader.length > 0 && (
         <Kort eyebrow="Om deg">
           {identitetsrader.map((r, i) => (
-            <Rad key={r.l} title={r.l} trailing={<span style={{ fontFamily: T.mono, fontSize: 13 }}>{r.v}</span>} last={i === identitetsrader.length - 1} />
+            <Rad key={r.l} title={r.l} trailing={<span style={{ fontFamily: TL.font.mono, fontSize: 13 }}>{r.v}</span>} last={i === identitetsrader.length - 1} />
           ))}
         </Kort>
       )}
@@ -441,10 +428,10 @@ export function MegV2({ data }: { data: MegData }) {
       {/* Coach og program — kun for spillere med en aktiv coach-tilknytning */}
       {program && (
         <Kort eyebrow="Coach og program">
-          <Rad title="Coach" trailing={<span style={{ fontFamily: T.mono, fontSize: 13 }}>{program.coachNavn}</span>} />
-          <Rad title="Program" trailing={<span style={{ fontFamily: T.mono, fontSize: 13 }}>{PROGRAM_LABEL[program.program]}</span>} />
+          <Rad title="Coach" trailing={<span style={{ fontFamily: TL.font.mono, fontSize: 13 }}>{program.coachNavn}</span>} />
+          <Rad title="Program" trailing={<span style={{ fontFamily: TL.font.mono, fontSize: 13 }}>{PROGRAM_LABEL[program.program]}</span>} />
           {programStart && (
-            <Rad title="Startet" trailing={<span style={{ fontFamily: T.mono, fontSize: 13 }}>{programStart}</span>} last />
+            <Rad title="Startet" trailing={<span style={{ fontFamily: TL.font.mono, fontSize: 13 }}>{programStart}</span>} last />
           )}
         </Kort>
       )}
@@ -467,7 +454,7 @@ export function MegV2({ data }: { data: MegData }) {
       <Kort eyebrow="Sesongmål" action={pill ? <StatusPill tone={pill.tone}>{pill.l}</StatusPill> : undefined}>
         {primaer ? (
           <>
-            <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 18, color: T.fg, lineHeight: 1.25 }}>
+            <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 18, color: TL.text, lineHeight: 1.25 }}>
               {primaer.title}
             </div>
             <div style={{ marginTop: 12 }}>
@@ -489,11 +476,11 @@ export function MegV2({ data }: { data: MegData }) {
           alignItems: "center",
           justifyContent: "center",
           minHeight: 48,
-          borderRadius: T.rCard,
-          border: `1px solid ${T.border}`,
-          background: T.panel,
-          color: T.fg,
-          fontFamily: T.ui,
+          borderRadius: TL.radius.card,
+          border: `1px solid ${TL.hair}`,
+          background: TL.elev,
+          color: TL.text,
+          fontFamily: TL.font.sans,
           fontSize: 14,
           fontWeight: 600,
         }}
@@ -506,10 +493,10 @@ export function MegV2({ data }: { data: MegData }) {
           textDecoration: "none",
           display: "block",
           textAlign: "center",
-          fontFamily: T.ui,
+          fontFamily: TL.font.sans,
           fontSize: 12,
           fontWeight: 600,
-          color: T.mut,
+          color: TL.mute,
           padding: "2px 0 4px",
         }}
       >
@@ -529,12 +516,12 @@ export function MegV2({ data }: { data: MegData }) {
       <VarslerMini notif={notif} />
 
       <Kort eyebrow="Abonnement">
-        <Rad title="Plan" trailing={<span style={{ fontFamily: T.mono, fontSize: 13 }}>{aboPlan}</span>} />
-        {aboStatus && <Rad title="Status" trailing={<span style={{ fontFamily: T.mono, fontSize: 13 }}>{aboStatus}</span>} />}
-        {aboNesteTrekk && <Rad title="Neste trekk" trailing={<span style={{ fontFamily: T.mono, fontSize: 13 }}>{aboNesteTrekk}</span>} />}
+        <Rad title="Plan" trailing={<span style={{ fontFamily: TL.font.mono, fontSize: 13 }}>{aboPlan}</span>} />
+        {aboStatus && <Rad title="Status" trailing={<span style={{ fontFamily: TL.font.mono, fontSize: 13 }}>{aboStatus}</span>} />}
+        {aboNesteTrekk && <Rad title="Neste trekk" trailing={<span style={{ fontFamily: TL.font.mono, fontSize: 13 }}>{aboNesteTrekk}</span>} />}
         <Link href="/portal/meg/abonnement" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
           <Rad
-            leading={<Icon name="credit-card" size={16} style={{ color: T.mut }} />}
+            leading={<Icon name="credit-card" size={16} style={{ color: TL.mute }} />}
             title="Fakturaer og betalingsmåte"
             sub="Oppgrader, endre kort eller avbestill"
             last
@@ -552,7 +539,7 @@ export function MegV2({ data }: { data: MegData }) {
       >
         <Link href="/portal/utviklingsplan" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
           <Rad
-            leading={<Icon name="trending-up" size={16} style={{ color: T.mut }} />}
+            leading={<Icon name="trending-up" size={16} style={{ color: TL.mute }} />}
             title="Åpne utviklingsplan"
             sub="Talent og teknisk plan"
             last={!visTalent}
@@ -561,7 +548,7 @@ export function MegV2({ data }: { data: MegData }) {
         {visTalent && (
           <Link href="/portal/talent" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
             <Rad
-              leading={<Icon name="trophy" size={16} style={{ color: T.mut }} />}
+              leading={<Icon name="trophy" size={16} style={{ color: TL.mute }} />}
               title="Talentprofil"
               sub="Nivå, reise og sammenligning"
               last
@@ -573,7 +560,7 @@ export function MegV2({ data }: { data: MegData }) {
       <Kort eyebrow="Uka di">
         <Link href="/portal/ukesdigest" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
           <Rad
-            leading={<Icon name="calendar" size={16} style={{ color: T.mut }} />}
+            leading={<Icon name="calendar" size={16} style={{ color: TL.mute }} />}
             title="Se ukesdigesten"
             sub="Samme tall som Anders' ukesrapport"
             last
@@ -586,7 +573,7 @@ export function MegV2({ data }: { data: MegData }) {
         {konto.map((k, i) => (
           <Link key={`${k.l}-${i}`} href={k.href} style={{ textDecoration: "none", color: "inherit", display: "block" }}>
             <Rad
-              leading={<Icon name={k.ic} size={16} style={{ color: T.mut }} />}
+              leading={<Icon name={k.ic} size={16} style={{ color: TL.mute }} />}
               title={k.l}
               sub={k.sub}
             />
@@ -606,8 +593,8 @@ export function MegV2({ data }: { data: MegData }) {
               padding: "11px 0",
             }}
           >
-            <Icon name="log-out" size={16} style={{ color: T.down }} />
-            <span style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.down }}>
+            <Icon name="log-out" size={16} style={{ color: TL.danger }} />
+            <span style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.danger }}>
               Logg ut
             </span>
           </button>

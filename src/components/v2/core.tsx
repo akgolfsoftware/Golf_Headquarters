@@ -10,7 +10,7 @@
    Designport steg 5B «core» (2026-08, docs/port/plan-designport-alle-skjermer.md
    + docs/port/steg5-kontroll.md): radius/avstand/typografi rettet mot Paper-
    fasiten i designsystem/paper/components/{actions,primitives,data,feedback,
-   navigation,layout,forms}/. Farger/tone-systemet (T.lime m.fl.) er IKKE rørt —
+   navigation,layout,forms}/. Farger/tone-systemet (TL.fill m.fl.) er IKKE rørt —
    kun form. Komponenter uten dedikert Paper-fasit (LogoAK, MikroMeta,
    FordelingHode/-Rad, AkseBar, Prikker, NivaSkala, Trend, InnsiktChip, Rad,
    AmbientBakgrunn, Skjerm, PillTabs, TilbakeLenke) er IKKE endret i dette
@@ -19,7 +19,8 @@
 import type { CSSProperties, ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { T, fmtSg, TOM_TALL, type AkseKey } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+import { fmtSg, TOM_TALL, type AkseKey } from "@/lib/v2/tokens";
 import { useCountUp, useMount, EASE, reduced } from "@/lib/v2/hooks";
 import { Icon } from "@/components/v2/icon";
 import { HjelpTips } from "@/components/v2/hjelp";
@@ -48,12 +49,12 @@ export interface LogoAKProps {
   surface?: "paper" | "ink" | "auto";
 }
 /* Ekte AK Golf-logo (baneform + Paper-prikk). Banen følger color-prop.
-   Prikken: Paper-aksent — aldri T.lime (utgått Presis-system). */
+   Prikken: Paper-aksent — aldri TL.fill (utgått Presis-system). */
 export function LogoAK({ size = 26, color, style, surface = "auto" }: LogoAKProps) {
   // Paper ak-golf-logo-bruk.md:
   // - ink (mørk flate/rail): wordmark #FAF9F5 + prikk #D97757
   // - paper (lys flate): wordmark #141413 + prikk #B85C3D
-  // - auto: arver T.fg + --p-logo-dot (tema)
+  // - auto: arver TL.text + --p-logo-dot (tema)
   // surface=ink | paper låser kontrast (rail alltid mørk, canvas lys).
   // auto følger tema-tokens --p-logo-mark / --p-logo-dot.
   const mark =
@@ -93,8 +94,8 @@ export interface CapsProps {
 /* Paper-fasit: primitives/SectionLabel (mono 10/600, sporing .1em, versaler,
    muted, line-height 1). `size`-propen beholdes (mange skjermer setter 9px i
    tette KPI-etiketter) — kun vekt/sporing/line-height rettet mot fasiten. */
-export function Caps({ size = 10, color = T.mut, children, style }: CapsProps) {
-  return <span style={{ fontFamily: T.mono, fontSize: size, fontWeight: 600, letterSpacing: "0.1em", lineHeight: 1, textTransform: "uppercase", color, display: "block", ...style }}>{children}</span>;
+export function Caps({ size = 10, color = TL.mute, children, style }: CapsProps) {
+  return <span style={{ fontFamily: TL.font.mono, fontSize: size, fontWeight: 600, letterSpacing: "0.1em", lineHeight: 1, textTransform: "uppercase", color, display: "block", ...style }}>{children}</span>;
 }
 export interface TittelProps {
   children?: ReactNode;
@@ -102,10 +103,10 @@ export interface TittelProps {
   em?: string;
 }
 /* skjermtittel m/ valgfri kursiv lime-aksent. Paper-fasit: type-display.html
-   «sidetittel» 32/600, sporing -.01em. Skriftfamilien er Poppins via T.disp
+   «sidetittel» 32/600, sporing -.01em. Skriftfamilien er Poppins via TL.font.sans
    (steg 10, 2026-08-14 — Familjen Grotesk er fjernet fra appen). */
 export function Tittel({ children, mobile, em }: TittelProps) {
-  return <h1 style={{ fontFamily: T.disp, fontWeight: 600, fontSize: mobile ? 27 : 32, letterSpacing: "-0.01em", color: T.fg, margin: 0, lineHeight: 1.1 }}>{children}{em && <> <em style={{ fontStyle: "italic", color: T.lime }}>{em}</em></>}</h1>;
+  return <h1 style={{ fontFamily: TL.font.sans, fontWeight: 600, fontSize: mobile ? 27 : 32, letterSpacing: "-0.01em", color: TL.text, margin: 0, lineHeight: 1.1 }}>{children}{em && <> <em style={{ fontStyle: "italic", color: TL.fill }}>{em}</em></>}</h1>;
 }
 
 /* ── Chips + status ───────────────────────────────────── */
@@ -117,8 +118,8 @@ export interface DeltaChipProps {
    ingen pille-bakgrunn og ikke ikon (retning bæres av fortegn + farge, ikke pil).
    Strukturell forenkling (2026-08 steg 5B) — samme prop-API. */
 export function DeltaChip({ v, dir }: DeltaChipProps) {
-  const c = dir === "down" ? T.down : T.up;
-  return <span style={{ fontFamily: T.mono, fontSize: 11, fontWeight: 600, color: c, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>{v}</span>;
+  const c = dir === "down" ? TL.danger : TL.ok;
+  return <span style={{ fontFamily: TL.font.mono, fontSize: 11, fontWeight: 600, color: c, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>{v}</span>;
 }
 
 export type StatusTone = "lime" | "up" | "warn" | "down" | "info";
@@ -132,7 +133,7 @@ export interface StatusPillProps {
    for et merke (den er reservert Knapp, se Button.prompt.md) — retter til rPill. */
 export function StatusPill({ children, tone = "lime" }: StatusPillProps) {
   /* lime-tone = Paper ink accent soft (not neon). Brand neon never on status default. */
-  const c: string = { lime: T.fg, up: T.up, warn: T.warn, down: T.down, info: T.info }[tone];
+  const c: string = { lime: TL.text, up: TL.ok, warn: TL.warn, down: TL.danger, info: TL.viz.target }[tone];
   return (
     <span
       style={{
@@ -141,7 +142,7 @@ export function StatusPill({ children, tone = "lime" }: StatusPillProps) {
         gap: 5,
         height: 20,
         boxSizing: "border-box",
-        fontFamily: T.mono,
+        fontFamily: TL.font.mono,
         fontSize: 10,
         fontWeight: 600,
         letterSpacing: "0.06em",
@@ -149,7 +150,7 @@ export function StatusPill({ children, tone = "lime" }: StatusPillProps) {
         color: c,
         background: `color-mix(in srgb,${c} 10%,transparent)`,
         border: `1px solid color-mix(in srgb,${c} 26%,transparent)`,
-        borderRadius: T.rPill,
+        borderRadius: TL.radius.pill,
         padding: "0 8px",
         textTransform: "uppercase",
         whiteSpace: "nowrap",
@@ -175,10 +176,10 @@ export interface SevChipProps {
    Paper-fasit: samme StatusBadge-geometri som StatusPill (20px, r-pill). */
 export function SevChip({ s }: SevChipProps) {
   const map: Record<string, { c: string; l: string }> = {
-    sterk: { c: T.down, l: "Sterkt avvik" },
-    medium: { c: T.warn, l: "Venter" },
-    lav: { c: T.info, l: "Spørsmål" },
-    ok: { c: T.up, l: "I rute" },
+    sterk: { c: TL.danger, l: "Sterkt avvik" },
+    medium: { c: TL.warn, l: "Venter" },
+    lav: { c: TL.viz.target, l: "Spørsmål" },
+    ok: { c: TL.ok, l: "I rute" },
   };
   const m = map[s] || map.lav;
   return (
@@ -188,7 +189,7 @@ export function SevChip({ s }: SevChipProps) {
         alignItems: "center",
         height: 20,
         boxSizing: "border-box",
-        fontFamily: T.mono,
+        fontFamily: TL.font.mono,
         fontSize: 10,
         fontWeight: 600,
         letterSpacing: "0.06em",
@@ -197,7 +198,7 @@ export function SevChip({ s }: SevChipProps) {
         color: m.c,
         background: `color-mix(in srgb,${m.c} 12%,transparent)`,
         border: `1px solid color-mix(in srgb,${m.c} 26%,transparent)`,
-        borderRadius: T.rPill,
+        borderRadius: TL.radius.pill,
         padding: "0 8px",
         whiteSpace: "nowrap",
       }}
@@ -218,8 +219,8 @@ export interface AkseChipProps {
    dedikert Paper-komponent, men badge-formen den bruker er felles med StatusPill/SevChip. */
 export function AkseChip({ a }: AkseChipProps) {
   return (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 5, height: 20, boxSizing: "border-box", fontFamily: T.mono, fontSize: 10, fontWeight: 600, lineHeight: 1, color: T.fg2, background: T.panel2, border: `1px solid ${T.border}`, borderRadius: T.rPill, padding: "0 8px" }}>
-      <span style={{ width: 6, height: 6, borderRadius: 9999, background: T.ax[a] || T.mut, flex: "none" }} />{AKSE_NAVN[a] || a}
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 5, height: 20, boxSizing: "border-box", fontFamily: TL.font.mono, fontSize: 10, fontWeight: 600, lineHeight: 1, color: TL.mute, background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: TL.radius.pill, padding: "0 8px" }}>
+      <span style={{ width: 6, height: 6, borderRadius: 9999, background: TL.mute, flex: "none" }} />{AKSE_NAVN[a] || a}
     </span>
   );
 }
@@ -231,8 +232,8 @@ export interface MikroMetaProps {
 /* Liten mono-meta: ikon + tekst (sted, serie/gjentakelse osv.). */
 export function MikroMeta({ icon, children }: MikroMetaProps) {
   return (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: T.mut }}>
-      <Icon name={icon} size={10} style={{ color: T.mut }} />{children}
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, color: TL.mute }}>
+      <Icon name={icon} size={10} style={{ color: TL.mute }} />{children}
     </span>
   );
 }
@@ -240,14 +241,14 @@ export function MikroMeta({ icon, children }: MikroMetaProps) {
 /* ── Flater ───────────────────────────────────────────── */
 /* Paper-fasit: layout/Panel (.akhq-panel) — radius var(--r) 12px, padding
    16/18/18, box-shadow var(--p-shadow) (myk i lys, INGEN skygge i mørk — flaten
-   skiller seg med --p-surface/--p-border der, ikke med skygge). T.rCard i
+   skiller seg med --p-surface/--p-border der, ikke med skygge). TL.radius.card i
    tokens.ts er fortsatt 20 (delt av andre v2-familier); Kort bruker en lokal
    Paper-radius her fremfor å endre det delte tallet utenfor denne filens scope
    (steg 5B core). R_CARD/SHADOW_CARD bør flyttes inn i T når hele porten
    konvergerer. Erstatter den gamle "dybde"-skyggen (inset-highlight + stor
    mørk skygge) som ikke har noe motstykke i Paper. */
-const R_CARD = 12;
-const SHADOW_CARD = "var(--p-shadow)";
+const R_CARD = TL.radius.card;
+const SHADOW_CARD = "none";
 export interface KortProps {
   tint?: boolean;
   eyebrow?: ReactNode;
@@ -259,7 +260,7 @@ export interface KortProps {
 }
 export function Kort({ tint, eyebrow, action, children, pad = "16px 18px 18px", hover, style }: KortProps) {
   return (
-    <div className={hover ? "v2-kort-h" : undefined} style={{ background: tint ? `${T.tint}, ${T.panel}` : T.panel, border: `1px solid ${T.border}`, borderRadius: R_CARD, padding: pad, minWidth: 0, display: "flex", flexDirection: "column", boxShadow: SHADOW_CARD, transition: `transform 180ms ${EASE}, border-color 180ms ${EASE}`, ...(hover ? { cursor: "pointer" } : null), ...style }}>
+    <div className={hover ? "v2-kort-h" : undefined} style={{ background: tint ? `${TL.dim}, ${TL.elev}` : TL.elev, border: `1px solid ${TL.hair}`, borderRadius: R_CARD, padding: pad, minWidth: 0, display: "flex", flexDirection: "column", boxShadow: SHADOW_CARD, transition: `transform 180ms ${EASE}, border-color 180ms ${EASE}`, ...(hover ? { cursor: "pointer" } : null), ...style }}>
       {(eyebrow || action) && (
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 14 }}>
           {eyebrow ? <Caps>{eyebrow}</Caps> : <span />}{action}
@@ -305,11 +306,11 @@ export function TallHero({ label, value, unit, delta, dir, sub, size = 56, accen
       )}
       <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginTop: label ? 14 : 0, flexWrap: "wrap", minWidth: 0 }}>
         {/* Paper-fasit: type-mono.html «hero-val» — vekt 500 (ikke 700), sporing -.02em. */}
-        <span style={{ fontFamily: T.mono, fontSize: size, fontWeight: 500, color: accent && !tom ? T.lime : T.fg, lineHeight: 0.9, letterSpacing: "-0.02em", fontVariantNumeric: "tabular-nums" }}>{display}</span>
-        {unit && !tom && <span style={{ fontFamily: T.mono, fontSize: Math.round(size * 0.3), color: T.mut }}>{unit}</span>}
+        <span style={{ fontFamily: TL.font.mono, fontSize: size, fontWeight: 500, color: accent && !tom ? TL.fill : TL.text, lineHeight: 0.9, letterSpacing: "-0.02em", fontVariantNumeric: "tabular-nums" }}>{display}</span>
+        {unit && !tom && <span style={{ fontFamily: TL.font.mono, fontSize: Math.round(size * 0.3), color: TL.mute }}>{unit}</span>}
         {delta && !tom && <DeltaChip v={delta} dir={dir} />}
       </div>
-      {sub && <span style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, display: "block", marginTop: 10 }}>{sub}</span>}
+      {sub && <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, display: "block", marginTop: 10 }}>{sub}</span>}
     </div>
   );
 }
@@ -343,10 +344,10 @@ export function KpiFlis({ label, value, delta, dir, tint, varsle, hjelp, instant
         {hjelp && <HjelpTips k={hjelp} size={11} />}
       </div>
       <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: 12, flexWrap: "wrap", minWidth: 0 }}>
-        <span style={{ fontFamily: T.mono, fontSize: "clamp(24px, 2.4vw, 28px)", fontWeight: 600, letterSpacing: "-0.03em", color: T.fg, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>{shown}</span>
+        <span style={{ fontFamily: TL.font.mono, fontSize: "clamp(24px, 2.4vw, 28px)", fontWeight: 600, letterSpacing: "-0.03em", color: TL.text, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>{shown}</span>
         {delta && !tom && <DeltaChip v={delta} dir={dir} />}
       </div>
-      {sub && <span style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, display: "block", marginTop: 6 }}>{sub}</span>}
+      {sub && <span style={{ fontFamily: TL.font.sans, fontSize: 10.5, color: TL.mute, display: "block", marginTop: 6 }}>{sub}</span>}
     </Kort>
   );
 }
@@ -389,12 +390,12 @@ export function PillTabs({ tabs, value, onChange }: PillTabsProps) {
         {tabs.map((t) => {
           const on = value === t.id;
           return (
-            <button key={t.id} className="v2-press v2-focus" onClick={() => onChange && onChange(t.id)} style={{ appearance: "none", cursor: "pointer", fontFamily: T.ui, fontSize: 13, fontWeight: 600, padding: "8px 15px", minHeight: 40, minWidth: 44, borderRadius: T.rPill, color: on ? T.fg : T.fg2, background: on ? T.panel : T.panel2, border: `1px solid ${on ? T.fg : T.border}`, boxShadow: on ? `inset 0 -2px 0 ${T.handling}` : undefined, whiteSpace: "nowrap" }}>{t.l}</button>
+            <button key={t.id} className="v2-press v2-focus" onClick={() => onChange && onChange(t.id)} style={{ appearance: "none", cursor: "pointer", fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, padding: "8px 15px", minHeight: 40, minWidth: 44, borderRadius: TL.radius.pill, color: on ? TL.text : TL.mute, background: on ? TL.elev : TL.dock, border: `1px solid ${on ? TL.text : TL.hair}`, boxShadow: on ? `inset 0 -2px 0 ${TL.fill}` : undefined, whiteSpace: "nowrap" }}>{t.l}</button>
           );
         })}
       </div>
       {overflow && (
-        <Icon name="chevron-right" size={12} style={{ position: "absolute", right: 0, top: "50%", transform: "translateY(calc(-50% - 1px))", color: T.mut, pointerEvents: "none" }} />
+        <Icon name="chevron-right" size={12} style={{ position: "absolute", right: 0, top: "50%", transform: "translateY(calc(-50% - 1px))", color: TL.mute, pointerEvents: "none" }} />
       )}
     </div>
   );
@@ -413,11 +414,11 @@ export interface PillVelgerProps {
    knapp-høyde 28px fast, sporing/vekt 12/500 (var 12.5/600). */
 export function PillVelger({ options, value, onChange }: PillVelgerProps) {
   return (
-    <div style={{ display: "flex", gap: 2, background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 9999, padding: 2, width: "fit-content" }}>
+    <div style={{ display: "flex", gap: 2, background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: 9999, padding: 2, width: "fit-content" }}>
       {options.map((o) => {
         const on = value === o.v;
         return (
-          <button key={o.v} className="v2-press v2-focus" onClick={() => onChange && onChange(o.v)} style={{ appearance: "none", cursor: "pointer", fontFamily: T.ui, fontSize: 12, fontWeight: 500, height: 28, padding: "0 16px", borderRadius: 9999, color: on ? T.bg : T.fg2, background: on ? T.fg : "transparent", border: "none", whiteSpace: "nowrap" }}>{o.l}</button>
+          <button key={o.v} className="v2-press v2-focus" onClick={() => onChange && onChange(o.v)} style={{ appearance: "none", cursor: "pointer", fontFamily: TL.font.sans, fontSize: 12, fontWeight: 500, height: 28, padding: "0 16px", borderRadius: 9999, color: on ? TL.scene : TL.mute, background: on ? TL.text : "transparent", border: "none", whiteSpace: "nowrap" }}>{o.l}</button>
         );
       })}
     </div>
@@ -430,17 +431,17 @@ export interface FilterChipsProps {
   axis?: boolean;
 }
 /* multi-filter m/ check. axis=true → x er en AkseKey-datanøkkel (matching/onToggle uendret), vises som Fysisk/Teknikk/…
-   Mørk chip-stil (audit 2026-07-12): umarkert = T.panel3 + border (som badges/chips ellers
-   i appen), valgt = lime m/ T.onLime — aldri lyse piller på mørk flate. */
+   Mørk chip-stil (audit 2026-07-12): umarkert = TL.dim + border (som badges/chips ellers
+   i appen), valgt = lime m/ TL.onFill — aldri lyse piller på mørk flate. */
 export function FilterChips({ items, active = [], onToggle, axis }: FilterChipsProps) {
   return (
     <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
       {items.map((x, i) => {
         const on = active.indexOf(x) !== -1;
         return (
-          <button key={i} className="v2-press v2-focus" onClick={() => onToggle && onToggle(x)} style={{ appearance: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6, height: 32, padding: "0 12px", borderRadius: 9999, background: on ? T.handlingSoft : T.panel3, border: `1px solid ${on ? T.handling : T.borderS}`, color: on ? T.handling : T.fg, fontFamily: T.ui, fontSize: 12.5, fontWeight: 500 }}>
+          <button key={i} className="v2-press v2-focus" onClick={() => onToggle && onToggle(x)} style={{ appearance: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6, height: 32, padding: "0 12px", borderRadius: 9999, background: on ? TL.dim : TL.dim, border: `1px solid ${on ? TL.fill : TL.hair}`, color: on ? TL.fill : TL.text, fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 500 }}>
             {on && <Icon name="check" size={12} />}
-            {axis && T.ax[x as AkseKey] && <span style={{ width: 7, height: 7, borderRadius: 9999, background: T.ax[x as AkseKey] }} />}
+            {axis && <span style={{ width: 7, height: 7, borderRadius: 9999, background: TL.mute }} />}
             {axis ? AKSE_NAVN[x as AkseKey] || x : x}
           </button>
         );
@@ -460,8 +461,8 @@ export interface CTAPillProps {
 }
 /* Paper-fasit: solid default = ink (--p-cta). enTing=true → clay handling-monopol. */
 export function CTAPill({ icon, children, ghost, full, enTing, onClick }: CTAPillProps) {
-  const solidBg = enTing ? T.handling : T.cta;
-  const solidFg = enTing ? T.onHandling : T.onCta;
+  const solidBg = enTing ? TL.fill : TL.fill;
+  const solidFg = enTing ? TL.onFill : TL.onFill;
   return (
     <button
       type="button"
@@ -474,13 +475,13 @@ export function CTAPill({ icon, children, ghost, full, enTing, onClick }: CTAPil
         alignItems: "center",
         justifyContent: full ? "center" : undefined,
         gap: 8,
-        fontFamily: T.ui,
+        fontFamily: TL.font.sans,
         fontSize: enTing ? 14 : 12.5,
         fontWeight: 600,
-        color: ghost ? T.fg : solidFg,
-        background: ghost ? T.panel3 : solidBg,
-        border: ghost ? `1px solid ${T.borderS}` : "none",
-        borderRadius: enTing ? 12 : T.rTag,
+        color: ghost ? TL.text : solidFg,
+        background: ghost ? TL.dim : solidBg,
+        border: ghost ? `1px solid ${TL.hair}` : "none",
+        borderRadius: enTing ? 12 : TL.radius.row,
         padding: enTing ? "14px 18px" : "10px 16px",
         minHeight: enTing ? 56 : 44,
         cursor: "pointer",
@@ -522,8 +523,8 @@ export interface KnappProps {
 }
 /* Paper: default solid = ink CTA; enTing → clay handling. */
 export function Knapp({ icon, children, ghost, full, disabled, enTing, onClick, type = "button", style }: KnappProps) {
-  const solidBg = enTing ? T.handling : T.cta;
-  const solidFg = enTing ? T.onHandling : T.onCta;
+  const solidBg = enTing ? TL.fill : TL.fill;
+  const solidFg = enTing ? TL.onFill : TL.onFill;
   return (
     <button
       type={type}
@@ -537,13 +538,13 @@ export function Knapp({ icon, children, ghost, full, disabled, enTing, onClick, 
         alignItems: "center",
         justifyContent: "center",
         gap: 8,
-        fontFamily: T.ui,
+        fontFamily: TL.font.sans,
         fontSize: 12.5,
         fontWeight: 600,
-        color: ghost ? T.fg : solidFg,
-        background: ghost ? T.panel3 : solidBg,
-        border: ghost ? `1px solid ${T.borderS}` : "1px solid transparent",
-        borderRadius: T.rTag,
+        color: ghost ? TL.text : solidFg,
+        background: ghost ? TL.dim : solidBg,
+        border: ghost ? `1px solid ${TL.hair}` : "1px solid transparent",
+        borderRadius: TL.radius.row,
         padding: "10px 18px",
         minHeight: 44,
         cursor: disabled ? "default" : "pointer",
@@ -568,7 +569,7 @@ export interface AvatarInitProps {
    default-endring uten skjerm-for-skjerm-gjennomgang er utenfor denne PR-ens
    scope (flagget i PR-beskrivelsen). */
 export function AvatarInit({ navn, size = 30 }: AvatarInitProps) {
-  return <span style={{ width: size, height: size, borderRadius: 9999, background: T.panel3, display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: T.mono, fontSize: size * 0.33, fontWeight: 600, letterSpacing: "0.02em", color: T.fg2, flex: "none" }}>{navn.split(" ").map((x) => x[0]).join("").slice(0, 2)}</span>;
+  return <span style={{ width: size, height: size, borderRadius: 9999, background: TL.dim, display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: TL.font.mono, fontSize: size * 0.33, fontWeight: 600, letterSpacing: "0.02em", color: TL.mute, flex: "none" }}>{navn.split(" ").map((x) => x[0]).join("").slice(0, 2)}</span>;
 }
 export interface AvatarFotoProps {
   src?: string | null;
@@ -580,7 +581,7 @@ export function AvatarFoto({ src, navn = PROFIL.navn, size = 30, ring }: AvatarF
   const kilde = src !== undefined ? src : PROFIL.src;
   if (!kilde) return <AvatarInit navn={navn} size={size} />;
   return (
-    <span style={{ width: size, height: size, borderRadius: 9999, overflow: "hidden", flex: "none", display: "inline-block", boxShadow: ring ? `0 0 0 2px ${T.bg}, 0 0 0 3.5px color-mix(in srgb,${T.lime} 55%,transparent)` : "none" }}>
+    <span style={{ width: size, height: size, borderRadius: 9999, overflow: "hidden", flex: "none", display: "inline-block", boxShadow: ring ? `0 0 0 2px ${TL.scene}, 0 0 0 3.5px color-mix(in srgb,${TL.fill} 55%,transparent)` : "none" }}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={kilde} alt={navn} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
     </span>
@@ -594,8 +595,8 @@ export function AmbientBakgrunn() {
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={PROFIL.src} alt="" style={{ position: "absolute", top: "-20%", left: "-10%", width: "120%", height: "70%", objectFit: "cover",
         filter: "blur(90px) saturate(1.25) brightness(0.55)", opacity: 0.38,
-        maskImage: `linear-gradient(180deg, ${T.farge.svart} 0%, ${T.farge.svartA50} 55%, transparent 90%)`,
-        WebkitMaskImage: `linear-gradient(180deg, ${T.farge.svart} 0%, ${T.farge.svartA50} 55%, transparent 90%)` }} />
+        maskImage: `linear-gradient(180deg, ${TL.scene} 0%, transparent 90%)`,
+        WebkitMaskImage: `linear-gradient(180deg, ${TL.scene} 0%, transparent 90%)` }} />
     </div>
   );
 }
@@ -611,15 +612,15 @@ export interface RadProps {
 }
 export function Rad({ leading, title, sub, meta, trailing, naa, last, onClick }: RadProps) {
   return (
-    <div onClick={onClick} className={onClick ? "v2-row-h" : undefined} style={{ display: "flex", alignItems: "center", gap: 12, padding: onClick ? "11px 10px" : "11px 0", margin: onClick ? "0 -10px" : 0, borderRadius: onClick ? T.rRow : 0, borderBottom: last ? "none" : `1px solid ${T.border}`, cursor: onClick ? "pointer" : "default" }}>
+    <div onClick={onClick} className={onClick ? "v2-row-h" : undefined} style={{ display: "flex", alignItems: "center", gap: 12, padding: onClick ? "11px 10px" : "11px 0", margin: onClick ? "0 -10px" : 0, borderRadius: onClick ? TL.radius.row : 0, borderBottom: last ? "none" : `1px solid ${TL.hair}`, cursor: onClick ? "pointer" : "default" }}>
       {leading}
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{title}</div>
-        {sub && <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{sub}</div>}
+        <div style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{title}</div>
+        {sub && <div style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{sub}</div>}
       </div>
       {meta}
       {naa && <StatusPill>Nå</StatusPill>}
-      {trailing !== null && (trailing || <Icon name="chevron-right" size={14} style={{ color: T.mut }} />)}
+      {trailing !== null && (trailing || <Icon name="chevron-right" size={14} style={{ color: TL.mute }} />)}
     </div>
   );
 }
@@ -631,7 +632,7 @@ export interface FordelingHodeProps {
 }
 export function FordelingHode({ kol1 = "%", kol2 }: FordelingHodeProps) {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 11, paddingBottom: 5, borderBottom: `1px solid ${T.border}` }}>
+    <div style={{ display: "flex", alignItems: "center", gap: 11, paddingBottom: 5, borderBottom: `1px solid ${TL.hair}` }}>
       <span style={{ flex: 1 }} />
       <Caps size={9} style={{ width: 36, textAlign: "right" }}>{kol1}</Caps>
       {kol2 && <Caps size={9} style={{ width: 84, textAlign: "right" }}>{kol2}</Caps>}
@@ -654,8 +655,8 @@ export interface FordelingRadProps {
    Uten signal → MENGDE/andel: lime-fyll (aksent, ikke signal). */
 export function FordelingRad({ code, label, pct, value, neg, signal, kol2, last, emphasis }: FordelingRadProps) {
   const grown = useMount();
-  const fyll = signal ? (neg ? T.down : T.up) : (neg ? T.down : T.lime);
-  const valgFg = signal ? (neg ? T.down : T.up) : (neg ? T.down : T.fg);
+  const fyll = signal ? (neg ? TL.danger : TL.ok) : (neg ? TL.danger : TL.fill);
+  const valgFg = signal ? (neg ? TL.danger : TL.ok) : (neg ? TL.danger : TL.text);
   return (
     <div
       style={{
@@ -665,20 +666,20 @@ export function FordelingRad({ code, label, pct, value, neg, signal, kol2, last,
         padding: emphasis ? "12px 10px" : "10px 0",
         margin: emphasis ? "0 -10px" : undefined,
         borderRadius: emphasis ? 12 : undefined,
-        background: emphasis ? `color-mix(in srgb, ${T.down} 8%, transparent)` : undefined,
-        borderBottom: last || emphasis ? "none" : `1px solid ${T.border}`,
+        background: emphasis ? `color-mix(in srgb, ${TL.danger} 8%, transparent)` : undefined,
+        borderBottom: last || emphasis ? "none" : `1px solid ${TL.hair}`,
       }}
     >
-      {code && <span style={{ width: 40, fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.fg2, flex: "none" }}>{code}</span>}
+      {code && <span style={{ width: 40, fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, color: TL.mute, flex: "none" }}>{code}</span>}
       {label && (
         <span
           style={{
             width: 110,
             flex: "none",
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: emphasis ? 14 : 13,
             fontWeight: emphasis ? 700 : 400,
-            color: emphasis ? T.fg : T.fg2,
+            color: emphasis ? TL.text : TL.mute,
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -687,11 +688,11 @@ export function FordelingRad({ code, label, pct, value, neg, signal, kol2, last,
           {label}
         </span>
       )}
-      <div style={{ flex: 1, height: emphasis ? 9 : 7, borderRadius: 9999, background: T.track, overflow: "hidden" }}>
+      <div style={{ flex: 1, height: emphasis ? 9 : 7, borderRadius: 9999, background: TL.hair, overflow: "hidden" }}>
         <div style={{ width: (grown ? Math.max(3, Math.min(100, pct)) : 0) + "%", height: "100%", background: fyll, opacity: (neg || signal) ? 1 : 0.9, borderRadius: 9999, transition: `width 500ms ${EASE}` }} />
       </div>
-      {typeof pct === "number" && <span style={{ width: 36, flex: "none", textAlign: "right", fontFamily: T.mono, fontSize: 12, fontWeight: 700, color: T.fg2, fontVariantNumeric: "tabular-nums" }}>{Math.round(pct)}%</span>}
-      <span style={{ width: kol2 ? 84 : 48, flex: "none", textAlign: "right", fontFamily: T.mono, fontSize: emphasis ? 15 : 12.5, fontWeight: 700, color: valgFg, fontVariantNumeric: "tabular-nums" }}>{value}</span>
+      {typeof pct === "number" && <span style={{ width: 36, flex: "none", textAlign: "right", fontFamily: TL.font.mono, fontSize: 12, fontWeight: 700, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>{Math.round(pct)}%</span>}
+      <span style={{ width: kol2 ? 84 : 48, flex: "none", textAlign: "right", fontFamily: TL.font.mono, fontSize: emphasis ? 15 : 12.5, fontWeight: 700, color: valgFg, fontVariantNumeric: "tabular-nums" }}>{value}</span>
     </div>
   );
 }
@@ -707,13 +708,13 @@ export interface AkseBarProps {
 export function AkseBar({ a, v, m, max = 60, enhet = "t", last }: AkseBarProps) {
   const grown = useMount();
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 11, padding: "9px 0", borderBottom: last ? "none" : `1px solid ${T.border}` }}>
-      <span style={{ width: 64, fontFamily: T.ui, fontSize: 11.5, fontWeight: 600, color: T.fg2, flex: "none", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{AKSE_NAVN[a] || a}</span>
-      <div style={{ flex: 1, height: 7, borderRadius: 9999, background: T.track, position: "relative" }}>
-        <div style={{ width: (grown ? Math.min(100, (v / max) * 100) : 0) + "%", height: "100%", background: T.ax[a] || T.lime, opacity: 0.85, borderRadius: 9999, transition: `width 500ms ${EASE}` }} />
-        <span style={{ position: "absolute", left: Math.min(100, (m / max) * 100) + "%", top: -3, width: 2, height: 13, background: T.fg, borderRadius: 1 }} />
+    <div style={{ display: "flex", alignItems: "center", gap: 11, padding: "9px 0", borderBottom: last ? "none" : `1px solid ${TL.hair}` }}>
+      <span style={{ width: 64, fontFamily: TL.font.sans, fontSize: 11.5, fontWeight: 600, color: TL.mute, flex: "none", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{AKSE_NAVN[a] || a}</span>
+      <div style={{ flex: 1, height: 7, borderRadius: 9999, background: TL.hair, position: "relative" }}>
+        <div style={{ width: (grown ? Math.min(100, (v / max) * 100) : 0) + "%", height: "100%", background: TL.fill, opacity: 0.85, borderRadius: 9999, transition: `width 500ms ${EASE}` }} />
+        <span style={{ position: "absolute", left: Math.min(100, (m / max) * 100) + "%", top: -3, width: 2, height: 13, background: TL.text, borderRadius: 1 }} />
       </div>
-      <span style={{ fontFamily: T.mono, fontSize: 11, color: T.fg2, width: 60, textAlign: "right", fontVariantNumeric: "tabular-nums" }}>{v}<span style={{ color: T.mut }}>/{m} {enhet}</span></span>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute, width: 60, textAlign: "right", fontVariantNumeric: "tabular-nums" }}>{v}<span style={{ color: TL.mute }}>/{m} {enhet}</span></span>
     </div>
   );
 }
@@ -724,12 +725,12 @@ export interface PrikkerProps {
   cols?: number;
 }
 /* frekvens-heatmap */
-export function Prikker({ n = 84, hits, on = T.lime, cols = 28 }: PrikkerProps) {
+export function Prikker({ n = 84, hits, on = TL.fill, cols = 28 }: PrikkerProps) {
   const seed = hits || [3, 7, 9, 12, 16, 17, 22, 26, 28, 31, 36, 38, 43, 45, 50, 52, 57, 61, 64, 68, 71, 75, 78, 82];
   return (
     <div style={{ display: "grid", gridTemplateColumns: `repeat(${cols}, 1fr)`, gap: 3 }}>
       {Array.from({ length: n }, (_, i) => (
-        <span key={i} style={{ width: 5, height: 5, borderRadius: 9999, background: seed.indexOf(i) !== -1 ? on : T.track }} />
+        <span key={i} style={{ width: 5, height: 5, borderRadius: 9999, background: seed.indexOf(i) !== -1 ? on : TL.hair }} />
       ))}
     </div>
   );
@@ -743,11 +744,11 @@ export function NivaSkala({ pct, stops = ["CS90", "CS100", "CS110", "CS120"] }: 
   const grown = useMount();
   return (
     <div>
-      <div style={{ position: "relative", height: 8, borderRadius: 9999, background: T.nivaGrad }}>
-        <span style={{ position: "absolute", left: (grown ? pct : 0) + "%", top: -4, width: 16, height: 16, borderRadius: 9999, background: T.lime, border: `2px solid ${T.panel}`, transform: "translateX(-8px)", transition: `left 500ms ${EASE}` }} />
+      <div style={{ position: "relative", height: 8, borderRadius: 9999, background: TL.dim }}>
+        <span style={{ position: "absolute", left: (grown ? pct : 0) + "%", top: -4, width: 16, height: 16, borderRadius: 9999, background: TL.fill, border: `2px solid ${TL.elev}`, transform: "translateX(-8px)", transition: `left 500ms ${EASE}` }} />
       </div>
       <div style={{ display: "flex", justifyContent: "space-between", marginTop: 8 }}>
-        {stops.map((s) => <span key={s} style={{ fontFamily: T.mono, fontSize: 8.5, color: T.mut }}>{s}</span>)}
+        {stops.map((s) => <span key={s} style={{ fontFamily: TL.font.mono, fontSize: 8.5, color: TL.mute }}>{s}</span>)}
       </div>
     </div>
   );
@@ -790,8 +791,8 @@ export function Trend({ series, height = 96, yMin, yMax, baseline = 0, fmt, xLab
     <svg viewBox={`0 0 ${W_} ${height}`} style={{ width: "100%", height: "auto", display: "block" }}>
       <defs>
         <linearGradient id={gid} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={T.lime} stopOpacity="0.22" />
-          <stop offset="100%" stopColor={T.lime} stopOpacity="0" />
+          <stop offset="0%" stopColor={TL.fill} stopOpacity="0.22" />
+          <stop offset="100%" stopColor={TL.fill} stopOpacity="0" />
         </linearGradient>
         <filter id={gid + "g"} x="-30%" y="-30%" width="160%" height="160%">
           <feGaussianBlur stdDeviation="3" result="b" /><feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
@@ -799,20 +800,20 @@ export function Trend({ series, height = 96, yMin, yMax, baseline = 0, fmt, xLab
       </defs>
       {grid.map((v, i) => (
         <g key={i}>
-          <line x1={PADL} x2={W_ - PADR} y1={Y(v)} y2={Y(v)} stroke={`color-mix(in srgb, ${T.border} 70%, transparent)`} strokeWidth="1" />
-          <text x={PADL - 7} y={Y(v) + 3} textAnchor="end" style={{ fontFamily: "var(--p-mono)" }} fontSize="8.5" fill={T.mut}>{f(v)}</text>
+          <line x1={PADL} x2={W_ - PADR} y1={Y(v)} y2={Y(v)} stroke={`color-mix(in srgb, ${TL.hair} 70%, transparent)`} strokeWidth="1" />
+          <text x={PADL - 7} y={Y(v) + 3} textAnchor="end" style={{ fontFamily: "var(--p-mono)" }} fontSize="8.5" fill={TL.mute}>{f(v)}</text>
         </g>
       ))}
       {baseline != null && baseline >= lo && baseline <= hi && (
-        <line x1={PADL} x2={W_ - PADR} y1={Y(baseline)} y2={Y(baseline)} stroke={`color-mix(in srgb, ${T.fg} 22%, transparent)`} strokeWidth="1" strokeDasharray="3 4" />
+        <line x1={PADL} x2={W_ - PADR} y1={Y(baseline)} y2={Y(baseline)} stroke={`color-mix(in srgb, ${TL.text} 22%, transparent)`} strokeWidth="1" strokeDasharray="3 4" />
       )}
       <polygon points={omr} fill={`url(#${gid})`} style={{ opacity: drawn ? 1 : 0, transition: `opacity 700ms ${EASE}` }} />
-      <polyline ref={lineRef} points={pts} fill="none" stroke={T.lime} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" filter={`url(#${gid + "g"})`}
+      <polyline ref={lineRef} points={pts} fill="none" stroke={TL.fill} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" filter={`url(#${gid + "g"})`}
         style={len ? { strokeDasharray: len, strokeDashoffset: drawn ? 0 : len, transition: `stroke-dashoffset 700ms ${EASE}` } : undefined} />
-      <circle cx={sisteX} cy={sisteY} r="7" fill={T.lime} opacity="0.18" />
-      <circle cx={sisteX} cy={sisteY} r="3.2" fill={T.lime} stroke={T.panel} strokeWidth="1.5" />
+      <circle cx={sisteX} cy={sisteY} r="7" fill={TL.fill} opacity="0.18" />
+      <circle cx={sisteX} cy={sisteY} r="3.2" fill={TL.fill} stroke={TL.elev} strokeWidth="1.5" />
       {xLabels && xLabels.map((l, i) => (
-        <text key={i} x={PADL + (i / (xLabels.length - 1)) * iw} y={height - 4} textAnchor={i === 0 ? "start" : i === xLabels.length - 1 ? "end" : "middle"} style={{ fontFamily: "var(--p-mono)" }} fontSize="8" fill={T.mut} letterSpacing="0.08em">{l}</text>
+        <text key={i} x={PADL + (i / (xLabels.length - 1)) * iw} y={height - 4} textAnchor={i === 0 ? "start" : i === xLabels.length - 1 ? "end" : "middle"} style={{ fontFamily: "var(--p-mono)" }} fontSize="8" fill={TL.mute} letterSpacing="0.08em">{l}</text>
       ))}
     </svg>
   );
@@ -828,19 +829,19 @@ export interface InnsiktChipProps {
 /* AI-innsikt — stille, aldri ropende */
 export function InnsiktChip({ children, cta, href }: InnsiktChipProps) {
   return (
-    <div style={{ display: "flex", gap: 8, alignItems: "flex-start", padding: "10px 12px", borderRadius: 12, background: T.panel2, border: `1px solid ${T.border}` }}>
-      <Icon name="sparkles" size={13} style={{ color: T.lime, flex: "none", marginTop: 1 }} />
-      <span style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2, lineHeight: 1.5 }}>
+    <div style={{ display: "flex", gap: 8, alignItems: "flex-start", padding: "10px 12px", borderRadius: 12, background: TL.dock, border: `1px solid ${TL.hair}` }}>
+      <Icon name="sparkles" size={13} style={{ color: TL.fill, flex: "none", marginTop: 1 }} />
+      <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.5 }}>
         {children}
         {cta && href && (
           <>
             {" "}
-            <Link href={href} style={{ color: T.lime, fontWeight: 600, textDecoration: "none" }}>
+            <Link href={href} style={{ color: TL.fill, fontWeight: 600, textDecoration: "none" }}>
               {cta} →
             </Link>
           </>
         )}
-        {cta && !href && <> <span style={{ color: T.fg, fontWeight: 600 }}>{cta}</span></>}
+        {cta && !href && <> <span style={{ color: TL.text, fontWeight: 600 }}>{cta}</span></>}
       </span>
     </div>
   );
@@ -855,15 +856,15 @@ export interface TomTilstandProps {
    forklaring 12.5/1.55 maks 44ch. `action`-plassen i fasiten (CTA under
    teksten) er IKKE lagt til her — det er en API-utvidelse, ikke en geometri-
    retting, og TomTilstand brukes i ~208 filer; utsatt til egen beslutning.
-   Beskrivelsesteksten holder Inter (T.ui), ikke Paper sin serif --body — se
+   Beskrivelsesteksten holder Inter (TL.font.sans), ikke Paper sin serif --body — se
    CLAUDE.md invariant 2 (ingen nye skriftfamilier før etter piloten). */
 export function TomTilstand({ icon = "circle", title, sub }: TomTilstandProps) {
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, textAlign: "center", padding: "34px 24px" }}>
-      <span style={{ width: 32, height: 32, borderRadius: 9999, background: T.panel2, display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 4 }}><Icon name={icon} size={16} style={{ color: T.mut }} /></span>
+      <span style={{ width: 32, height: 32, borderRadius: 9999, background: TL.dock, display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 4 }}><Icon name={icon} size={16} style={{ color: TL.mute }} /></span>
       <div>
-        <div style={{ fontFamily: T.disp, fontWeight: 600, fontSize: 14.5, lineHeight: 1.3, color: T.fg }}>{title}</div>
-        {sub && <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.55, margin: "6px 0 0", maxWidth: "44ch" }}>{sub}</p>}
+        <div style={{ fontFamily: TL.font.sans, fontWeight: 600, fontSize: 14.5, lineHeight: 1.3, color: TL.text }}>{title}</div>
+        {sub && <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.55, margin: "6px 0 0", maxWidth: "44ch" }}>{sub}</p>}
       </div>
     </div>
   );
@@ -893,21 +894,21 @@ export interface IkonRailProps {
    fortsatt appens tema her. */
 export function IkonRail({ aktiv, navn = "Øyvind Rohjan" }: IkonRailProps) {
   return (
-    <div style={{ width: 64, flex: "none", borderRight: `1px solid ${T.border}`, display: "flex", flexDirection: "column", alignItems: "center", padding: "16px 0 14px", gap: 2 }}>
+    <div style={{ width: 64, flex: "none", borderRight: `1px solid ${TL.hair}`, display: "flex", flexDirection: "column", alignItems: "center", padding: "16px 0 14px", gap: 2 }}>
       <span style={{ width: 36, height: 36, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 14, flex: "none" }}><LogoAK size={26} /></span>
       {NAV.map((n) => {
         const on = aktiv === n.id;
         return (
-          <div key={n.id} title={n.l} className="v2-press v2-focus" tabIndex={0} style={{ width: 48, minHeight: 44, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 3, padding: "8px 0 6px", borderRadius: 12, background: on ? "color-mix(in srgb, var(--v2-lime) 9%, transparent)" : "transparent", cursor: "pointer", position: "relative" }}>
-            {on && <span style={{ position: "absolute", left: -7, top: 12, bottom: 12, width: 2, borderRadius: 2, background: T.lime }} />}
-            <Icon name={n.i} size={18} style={{ color: on ? T.lime : T.mut }} strokeWidth={on ? 2 : 1.5} />
-            <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: on ? T.fg : T.mut }}>{n.l}</span>
+          <div key={n.id} title={n.l} className="v2-press v2-focus" tabIndex={0} style={{ width: 48, minHeight: 44, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 3, padding: "8px 0 6px", borderRadius: 12, background: on ? "color-mix(in srgb, var(--tl-fill) 9%, transparent)" : "transparent", cursor: "pointer", position: "relative" }}>
+            {on && <span style={{ position: "absolute", left: -7, top: 12, bottom: 12, width: 2, borderRadius: 2, background: TL.fill }} />}
+            <Icon name={n.i} size={18} style={{ color: on ? TL.fill : TL.mute }} strokeWidth={on ? 2 : 1.5} />
+            <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: on ? TL.text : TL.mute }}>{n.l}</span>
           </div>
         );
       })}
       <div style={{ flex: 1 }} />
-      <div title="Søk og hopp til · ⌘K" className="v2-press v2-focus" tabIndex={0} style={{ width: 34, height: 34, borderRadius: 10, background: T.panel2, border: `1px solid ${T.border}`, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", marginBottom: 8 }}>
-        <Icon name="search" size={15} style={{ color: T.fg2 }} />
+      <div title="Søk og hopp til · ⌘K" className="v2-press v2-focus" tabIndex={0} style={{ width: 34, height: 34, borderRadius: 10, background: TL.dock, border: `1px solid ${TL.hair}`, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", marginBottom: 8 }}>
+        <Icon name="search" size={15} style={{ color: TL.mute }} />
       </div>
       <AvatarFoto navn={navn} size={32} ring />
     </div>
@@ -923,12 +924,12 @@ export interface BunnNavProps {
    fargebeslutning (utenfor scope) og er ikke rørt her. */
 export function BunnNav({ aktiv }: BunnNavProps) {
   return (
-    <div style={{ flex: "none", display: "flex", justifyContent: "space-around", padding: "8px 8px 16px", borderTop: `1px solid ${T.border}`, background: `color-mix(in srgb,${T.bg} 82%,transparent)`, backdropFilter: "blur(10px)" }}>
+    <div style={{ flex: "none", display: "flex", justifyContent: "space-around", padding: "8px 8px 16px", borderTop: `1px solid ${TL.hair}`, background: `color-mix(in srgb,${TL.scene} 82%,transparent)`, backdropFilter: "blur(10px)" }}>
       {NAV.map((n) => {
         const on = aktiv === n.id;
         return (
-          <div key={n.id} className="v2-press" style={{ flex: 1, minHeight: 44, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 3, padding: "4px 0", borderRadius: T.rTag, color: on ? T.lime : T.mut }}>
-            <Icon name={n.i} size={20} strokeWidth={on ? 2 : 1.5} /><span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: on ? 600 : 500 }}>{n.l}</span>
+          <div key={n.id} className="v2-press" style={{ flex: 1, minHeight: 44, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 3, padding: "4px 0", borderRadius: TL.radius.row, color: on ? TL.fill : TL.mute }}>
+            <Icon name={n.i} size={20} strokeWidth={on ? 2 : 1.5} /><span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: on ? 600 : 500 }}>{n.l}</span>
           </div>
         );
       })}
@@ -943,11 +944,11 @@ export interface SkjermProps {
 /* Skjerm: desktop 1280 (sidebar + innhold maks 1120) eller mobil 390 (bunn-nav) */
 export function Skjerm({ aktiv, mobile, children }: SkjermProps) {
   if (mobile) return (
-    <div style={{ width: 390, minHeight: 800, background: T.bg, borderRadius: 40, border: `1px solid ${T.borderS}`, overflow: "hidden", display: "flex", flexDirection: "column", position: "relative" }}>
+    <div style={{ width: 390, minHeight: 800, background: TL.scene, borderRadius: 40, border: `1px solid ${TL.hair}`, overflow: "hidden", display: "flex", flexDirection: "column", position: "relative" }}>
       <AmbientBakgrunn />
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "13px 24px 5px", flex: "none", position: "relative" }}>
-        <span style={{ fontFamily: T.mono, fontSize: 12.5, fontWeight: 700, color: T.fg }}>9:41</span>
-        <Icon name="activity" size={13} style={{ color: T.fg }} />
+        <span style={{ fontFamily: TL.font.mono, fontSize: 12.5, fontWeight: 700, color: TL.text }}>9:41</span>
+        <Icon name="activity" size={13} style={{ color: TL.text }} />
       </div>
       <div style={{ flex: 1, overflowY: "auto", padding: "10px 16px 20px", position: "relative" }}>{children}</div>
       <BunnNav aktiv={aktiv} />
@@ -955,12 +956,12 @@ export function Skjerm({ aktiv, mobile, children }: SkjermProps) {
   );
   return (
     /* Vignett (§12) + ambient profilbilde-glød (Spotify-idiomet) */
-    <div style={{ width: 1280, background: `radial-gradient(1100px 460px at 24% -8%, ${T.farge.forestMerkeA16}, transparent 62%), ${T.bg}`, borderRadius: 20, border: `1px solid ${T.borderS}`, overflow: "hidden", display: "flex", position: "relative" }}>
+    <div style={{ width: 1280, background: TL.scene, borderRadius: 20, border: `1px solid ${TL.hair}`, overflow: "hidden", display: "flex", position: "relative" }}>
       <AmbientBakgrunn />
       <div style={{ position: "relative", display: "flex", width: "100%" }}>
         <Sidebar aktiv={aktiv} />
         <div style={{ flex: 1, minWidth: 0, padding: "28px 32px 36px" }}>
-          <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: T.gap }}>{children}</div>
+          <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 16 }}>{children}</div>
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /* AK Golf HQ v2 — DOMENE-KOMPONENTER (retning C «Presis»).
    Datakontrakter speiler src/components/athletic/golfdata/ (OektKort, ListRow,
@@ -43,7 +44,7 @@ interface MetaBitProps {
   children?: ReactNode;
 }
 function MetaBit({ icon, children }: MetaBitProps) {
-  return <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: T.ui, fontSize: 11.5, color: T.mut }}><Icon name={icon} size={12} />{children}</span>;
+  return <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute }}><Icon name={icon} size={12} />{children}</span>;
 }
 
 /* ── OktKort / OektKort — økt (showroom: tidskolonne + fargekant + CTA) ─
@@ -84,16 +85,16 @@ export function OktKort({
 }: OktKortProps) {
   const st = OKT_STATUS[state] || OKT_STATUS.planned;
   const kant =
-    state === "done" ? T.up : state === "live" ? T.down : state === "cancelled" ? T.mut : T.forest;
+    state === "done" ? TL.ok : state === "live" ? TL.danger : state === "cancelled" ? TL.mute : TL.fill;
   return (
     <div
       onClick={onClick}
       className={onClick ? "v2-kort-h" : undefined}
       style={{
         position: "relative",
-        background: T.panel,
-        border: `1px solid ${T.border}`,
-        borderRadius: T.rCard,
+        background: TL.elev,
+        border: `1px solid ${TL.hair}`,
+        borderRadius: TL.radius.card,
         padding: 0,
         overflow: "hidden",
         cursor: onClick ? "pointer" : "default",
@@ -106,7 +107,7 @@ export function OktKort({
           top: 12,
           bottom: 12,
           width: 3,
-          borderRadius: T.rPill,
+          borderRadius: TL.radius.pill,
           background: kant,
         }}
         aria-hidden
@@ -122,23 +123,23 @@ export function OktKort({
       >
         <div
           style={{
-            fontFamily: T.mono,
+            fontFamily: TL.font.mono,
             fontSize: 12,
-            color: T.mut,
+            color: TL.mute,
             lineHeight: 1.35,
             fontVariantNumeric: "tabular-nums",
           }}
         >
-          {time && <b style={{ display: "block", color: T.fg, fontWeight: 600 }}>{time}</b>}
+          {time && <b style={{ display: "block", color: TL.text, fontWeight: 600 }}>{time}</b>}
           {duration}
         </div>
         <div style={{ minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
-            <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, color: T.fg, lineHeight: 1.2 }}>{title}</div>
+            <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 16, color: TL.text, lineHeight: 1.2 }}>{title}</div>
             {naa ? <StatusPill>Nå</StatusPill> : <StatusPill tone={st.tone}>{st.l}</StatusPill>}
           </div>
           {(meta || location || coach) && (
-            <div style={{ fontFamily: T.mono, fontSize: 11, color: T.mut, marginTop: 4 }}>
+            <div style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute, marginTop: 4 }}>
               {meta ?? (
                 <>
                   {location}
@@ -158,7 +159,7 @@ export function OktKort({
               style={{
                 marginTop: 14,
                 paddingTop: 12,
-                borderTop: `1px solid ${T.border}`,
+                borderTop: `1px solid ${TL.hair}`,
                 display: "flex",
                 gap: 8,
                 alignItems: "center",
@@ -220,10 +221,10 @@ export function BookingKort({
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
         <Caps>Booking</Caps><StatusPill tone={s.tone}>{s.l}</StatusPill>
       </div>
-      <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, color: T.fg, marginTop: 9 }}>{tittel}</div>
+      <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 17, color: TL.text, marginTop: 9 }}>{tittel}</div>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginTop: 9 }}>
         <MetaBit icon="calendar">{dato}</MetaBit>
-        <MetaBit icon="clock"><span style={{ fontFamily: T.mono, fontVariantNumeric: "tabular-nums" }}>{tid}</span></MetaBit>
+        <MetaBit icon="clock"><span style={{ fontFamily: TL.font.mono, fontVariantNumeric: "tabular-nums" }}>{tid}</span></MetaBit>
         <MetaBit icon="user">{coach}</MetaBit>
         <MetaBit icon="map-pin">{sted}</MetaBit>
       </div>
@@ -257,14 +258,14 @@ export function KvitteringKort({
       </div>
       <div style={{ marginTop: 6 }}>
         {linjer.map((x, i) => (
-          <div key={i} style={{ display: "flex", justifyContent: "space-between", gap: 10, padding: "9px 0", borderBottom: `1px solid ${T.border}` }}>
-            <span style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2 }}>{x.l}</span>
-            <span style={{ fontFamily: T.mono, fontSize: 12.5, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>{x.v}</span>
+          <div key={i} style={{ display: "flex", justifyContent: "space-between", gap: 10, padding: "9px 0", borderBottom: `1px solid ${TL.hair}` }}>
+            <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute }}>{x.l}</span>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 12.5, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>{x.v}</span>
           </div>
         ))}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", paddingTop: 11 }}>
-          <span style={{ fontFamily: T.ui, fontSize: 12, color: T.mut }}>Totalt · {dato}</span>
-          <span style={{ fontFamily: T.mono, fontSize: 20, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>{sum} <span style={{ fontSize: 11, color: T.mut }}>{valuta}</span></span>
+          <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}>Totalt · {dato}</span>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 20, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>{sum} <span style={{ fontSize: 11, color: TL.mute }}>{valuta}</span></span>
         </div>
       </div>
     </Kort>
@@ -289,14 +290,14 @@ export function VarselRad({
     <Rad
       onClick={onClick} last={last}
       leading={
-        <span style={{ position: "relative", width: 34, height: 34, borderRadius: 11, background: T.panel3, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
-          <Icon name={icon} size={15} style={{ color: T.fg2 }} />
-          {ulest && <span style={{ position: "absolute", top: -2, right: -2, width: 8, height: 8, borderRadius: 9999, background: T.lime, border: `2px solid ${T.panel}` }} />}
+        <span style={{ position: "relative", width: 34, height: 34, borderRadius: 11, background: TL.dim, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+          <Icon name={icon} size={15} style={{ color: TL.mute }} />
+          {ulest && <span style={{ position: "absolute", top: -2, right: -2, width: 8, height: 8, borderRadius: 9999, background: TL.fill, border: `2px solid ${TL.elev}` }} />}
         </span>
       }
       title={<span style={{ fontWeight: ulest ? 700 : 600 }}>{tittel}</span>}
       sub={sub}
-      meta={<span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, flex: "none" }}>{tid}</span>}
+      meta={<span style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, flex: "none" }}>{tid}</span>}
       trailing={null}
     />
   );
@@ -324,11 +325,11 @@ export function MeldingsTraad({
     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
       {meldinger.map((m, i) => (
         <div key={i} style={{ display: "flex", flexDirection: "column", alignItems: m.meg ? "flex-end" : "flex-start" }}>
-          <div style={{ maxWidth: "78%", padding: "10px 13px", borderRadius: 14, borderBottomRightRadius: m.meg ? 4 : 14, borderBottomLeftRadius: m.meg ? 14 : 4, background: m.meg ? T.farge.forestMerkeA45 : T.panel2, border: `1px solid ${m.meg ? "${T.farge.forestMerkeA60}" : T.border}` }}>
-            {!m.meg && m.fra && <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut, display: "block", marginBottom: 4 }}>{m.fra}</span>}
-            <span style={{ fontFamily: T.ui, fontSize: 13, color: T.fg, lineHeight: 1.55 }}>{m.tekst}</span>
+          <div style={{ maxWidth: "78%", padding: "10px 13px", borderRadius: 14, borderBottomRightRadius: m.meg ? 4 : 14, borderBottomLeftRadius: m.meg ? 14 : 4, background: m.meg ? T.farge.forestMerkeA45 : TL.dock, border: `1px solid ${m.meg ? "${T.farge.forestMerkeA60}" : TL.hair}` }}>
+            {!m.meg && m.fra && <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute, display: "block", marginBottom: 4 }}>{m.fra}</span>}
+            <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text, lineHeight: 1.55 }}>{m.tekst}</span>
           </div>
-          <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut, marginTop: 4, padding: "0 4px" }}>{m.tid}</span>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 9, color: TL.mute, marginTop: 4, padding: "0 4px" }}>{m.tid}</span>
         </div>
       ))}
     </div>
@@ -394,8 +395,8 @@ export function TestResultatKort({
       <TallHero label={test} value={verdi} unit={enhet} delta={delta} dir={dir} size={44} />
       <div style={{ marginTop: 16 }}><NivaSkala pct={pct} stops={stops} /></div>
       <div style={{ display: "flex", justifyContent: "space-between", marginTop: 12 }}>
-        <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.fg2 }}>{krav}</span>
-        <span style={{ fontFamily: T.ui, fontSize: 11, color: T.mut }}>{dato}</span>
+        <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute }}>{krav}</span>
+        <span style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.mute }}>{dato}</span>
       </div>
     </Kort>
   );
@@ -417,11 +418,11 @@ export function TurneringNedtelling({
     <Kort tint eyebrow="Neste turnering" pad="16px 18px">
       <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
         <div style={{ flex: "none", textAlign: "center" }}>
-          <span style={{ fontFamily: T.mono, fontSize: 48, fontWeight: 700, color: T.lime, lineHeight: 0.9, fontVariantNumeric: "tabular-nums", display: "block" }}>{dager}</span>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 48, fontWeight: 700, color: TL.fill, lineHeight: 0.9, fontVariantNumeric: "tabular-nums", display: "block" }}>{dager}</span>
           <Caps size={9} style={{ marginTop: 6, textAlign: "center" }}>dager</Caps>
         </div>
         <div style={{ minWidth: 0 }}>
-          <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, color: T.fg }}>{navn}</div>
+          <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 17, color: TL.text }}>{navn}</div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginTop: 7 }}>
             <MetaBit icon="calendar">{dato}</MetaBit>
             <MetaBit icon="map-pin">{sted}</MetaBit>
@@ -454,12 +455,12 @@ export function FakturaRad({
   return (
     <Rad
       onClick={onClick} last={last}
-      leading={<span style={{ width: 34, height: 34, borderRadius: 11, background: T.panel3, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}><Icon name="file-text" size={15} style={{ color: T.fg2 }} /></span>}
+      leading={<span style={{ width: 34, height: 34, borderRadius: 11, background: TL.dim, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}><Icon name="file-text" size={15} style={{ color: TL.mute }} /></span>}
       title={hva}
-      sub={<><span style={{ fontFamily: T.mono }}>{nr}</span> · forfall {forfall}</>}
+      sub={<><span style={{ fontFamily: TL.font.mono }}>{nr}</span> · forfall {forfall}</>}
       meta={
         <span style={{ display: "flex", alignItems: "center", gap: 10, flex: "none" }}>
-          <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>{belop} <span style={{ fontSize: 10, color: T.mut }}>{valuta}</span></span>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>{belop} <span style={{ fontSize: 10, color: TL.mute }}>{valuta}</span></span>
           <StatusPill tone={s.tone}>{s.l}</StatusPill>
         </span>
       }
@@ -485,13 +486,13 @@ export function SamtykkeKort({
     <Kort pad="16px 18px">
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
         <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-          <Icon name="shield" size={15} style={{ color: gitt ? T.up : T.warn }} />
-          <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 15, color: T.fg }}>{tittel}</span>
+          <Icon name="shield" size={15} style={{ color: gitt ? TL.ok : TL.warn }} />
+          <span style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 15, color: TL.text }}>{tittel}</span>
         </span>
         <StatusPill tone={gitt ? "up" : "warn"}>{gitt ? "Samtykke gitt" : "Venter på svar"}</StatusPill>
       </div>
-      <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.6, margin: "10px 0 0" }}>{tekst}</p>
-      <span style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, display: "block", marginTop: 8 }}>{forelder}</span>
+      <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.6, margin: "10px 0 0" }}>{tekst}</p>
+      <span style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.mute, display: "block", marginTop: 8 }}>{forelder}</span>
       {!gitt && (
         <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
           <CTAPill icon="send">Send påminnelse</CTAPill>
@@ -548,10 +549,10 @@ export function SpillerKort({
         <div style={{ flex: 1, minWidth: 0 }}>
           <div
             style={{
-              fontFamily: T.disp,
+              fontFamily: TL.font.sans,
               fontSize: 16,
               fontWeight: 600,
-              color: T.fg,
+              color: TL.text,
               whiteSpace: "nowrap",
               overflow: "hidden",
               textOverflow: "ellipsis",
@@ -561,18 +562,18 @@ export function SpillerKort({
           </div>
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 5 }}>
             <StatusPill tone="info">
-              HCP <span style={{ fontFamily: T.mono, fontVariantNumeric: "tabular-nums" }}>{hcp}</span>
+              HCP <span style={{ fontFamily: TL.font.mono, fontVariantNumeric: "tabular-nums" }}>{hcp}</span>
             </StatusPill>
             {kategori && <StatusPill tone="lime">{kategori}</StatusPill>}
           </div>
           {!stripe && sistAktiv && (
-            <div style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, marginTop: 6 }}>{sistAktiv}</div>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.mute, marginTop: 6 }}>{sistAktiv}</div>
           )}
         </div>
         {!stripe && (
           <div style={{ textAlign: "right", flex: "none" }}>
             <div style={{ display: "flex", alignItems: "baseline", gap: 6, justifyContent: "flex-end" }}>
-              <span style={{ fontFamily: T.mono, fontSize: 19, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>{sgVis}</span>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 19, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>{sgVis}</span>
               {sgDelta && sgVis !== "—" && <DeltaChip v={sgDelta} dir={sgDir} />}
             </div>
             <div style={{ marginTop: 5, display: "flex", justifyContent: "flex-end" }}>
@@ -586,7 +587,7 @@ export function SpillerKort({
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(3, 1fr)",
-            borderTop: `1px solid ${T.border}`,
+            borderTop: `1px solid ${TL.hair}`,
             marginTop: 14,
             paddingTop: 14,
           }}
@@ -594,17 +595,17 @@ export function SpillerKort({
           <div>
             <Caps size={9}>SG snitt</Caps>
             <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginTop: 4 }}>
-              <span style={{ fontFamily: T.mono, fontSize: 22, fontWeight: 600, color: T.fg, fontVariantNumeric: "tabular-nums" }}>{sgVis}</span>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 22, fontWeight: 600, color: TL.text, fontVariantNumeric: "tabular-nums" }}>{sgVis}</span>
               {sgDelta && sgVis !== "—" && <DeltaChip v={sgDelta} dir={sgDir} />}
             </div>
           </div>
-          <div style={{ borderLeft: `1px solid ${T.border}`, paddingLeft: 14 }}>
+          <div style={{ borderLeft: `1px solid ${TL.hair}`, paddingLeft: 14 }}>
             <Caps size={9}>Runder</Caps>
-            <span style={{ fontFamily: T.mono, fontSize: 22, fontWeight: 600, color: T.fg, fontVariantNumeric: "tabular-nums", display: "block", marginTop: 4 }}>{runderVis}</span>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 22, fontWeight: 600, color: TL.text, fontVariantNumeric: "tabular-nums", display: "block", marginTop: 4 }}>{runderVis}</span>
           </div>
-          <div style={{ borderLeft: `1px solid ${T.border}`, paddingLeft: 14 }}>
+          <div style={{ borderLeft: `1px solid ${TL.hair}`, paddingLeft: 14 }}>
             <Caps size={9}>Adherence</Caps>
-            <span style={{ fontFamily: T.mono, fontSize: 22, fontWeight: 600, color: T.fg, fontVariantNumeric: "tabular-nums", display: "block", marginTop: 4 }}>{adhVis}</span>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 22, fontWeight: 600, color: TL.text, fontVariantNumeric: "tabular-nums", display: "block", marginTop: 4 }}>{adhVis}</span>
           </div>
         </div>
       )}
@@ -635,16 +636,16 @@ export function FokusSpillerBlokk({
       <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
         <AvatarInit navn={navn} size={44} />
         <div>
-          <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 18, color: T.fg }}>{navn}</div>
-          <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 2 }}>{kategori}</div>
+          <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 18, color: TL.text }}>{navn}</div>
+          <div style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 2 }}>{kategori}</div>
         </div>
       </div>
-      <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.6, margin: "12px 0 0" }}>{hvorfor}</p>
+      <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.6, margin: "12px 0 0" }}>{hvorfor}</p>
       <div style={{ display: "grid", gridTemplateColumns: `repeat(${tall.length}, 1fr)`, gap: 10, marginTop: 14 }}>
         {tall.map((x, i) => (
-          <div key={i} style={{ background: T.panel2, border: `1px solid ${T.border}`, borderRadius: T.rRow, padding: "10px 12px" }}>
+          <div key={i} style={{ background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: TL.radius.row, padding: "10px 12px" }}>
             <Caps size={8.5}>{x.l}</Caps>
-            <span style={{ fontFamily: T.mono, fontSize: 17, fontWeight: 700, color: x.v.indexOf("−") === 0 ? T.down : T.fg, fontVariantNumeric: "tabular-nums", display: "block", marginTop: 6 }}>{x.v}</span>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 17, fontWeight: 700, color: x.v.indexOf("−") === 0 ? TL.danger : TL.text, fontVariantNumeric: "tabular-nums", display: "block", marginTop: 6 }}>{x.v}</span>
           </div>
         ))}
       </div>
@@ -668,8 +669,8 @@ export interface AnbefalingsKortProps {
 function AnbSeksjon({ l, children }: { l: string; children?: ReactNode }) {
   return (
     <div style={{ marginTop: 10 }}>
-      <Caps size={8.5} color={T.fg2}>{l}</Caps>
-      <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.6, margin: "4px 0 0" }}>{children}</p>
+      <Caps size={8.5} color={TL.mute}>{l}</Caps>
+      <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.6, margin: "4px 0 0" }}>{children}</p>
     </div>
   );
 }
@@ -691,21 +692,21 @@ export function AnbefalingsKort({
           alignItems: "center",
           gap: 8,
           padding: "12px 16px",
-          borderBottom: `1px solid ${T.border}`,
+          borderBottom: `1px solid ${TL.hair}`,
         }}
       >
-        <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: T.mut }}>
-          <Icon name="sparkles" size={12} style={{ color: T.lime }} />
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: TL.mute }}>
+          <Icon name="sparkles" size={12} style={{ color: TL.fill }} />
           Anbefaling
         </span>
         <span
           style={{
             marginLeft: "auto",
-            fontFamily: T.mono,
+            fontFamily: TL.font.mono,
             fontSize: 9,
-            color: T.mut,
-            border: `1px solid ${T.border}`,
-            borderRadius: T.rPill,
+            color: TL.mute,
+            border: `1px solid ${TL.hair}`,
+            borderRadius: TL.radius.pill,
             padding: "2px 8px",
           }}
         >
@@ -713,7 +714,7 @@ export function AnbefalingsKort({
         </span>
       </div>
       <div style={{ padding: "14px 16px" }}>
-        {kilde && <span style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, display: "block", marginBottom: 4 }}>{kilde}</span>}
+        {kilde && <span style={{ fontFamily: TL.font.sans, fontSize: 10.5, color: TL.mute, display: "block", marginBottom: 4 }}>{kilde}</span>}
         <AnbSeksjon l="Hvorfor">{hvorfor}</AnbSeksjon>
         <AnbSeksjon l="Hva">{hva}</AnbSeksjon>
         <AnbSeksjon l="Forventet effekt">{effekt}</AnbSeksjon>
@@ -725,13 +726,13 @@ export function AnbefalingsKort({
           alignItems: "center",
           gap: 8,
           padding: "12px 16px",
-          borderTop: `1px solid ${T.border}`,
+          borderTop: `1px solid ${TL.hair}`,
           flexWrap: "wrap",
         }}
       >
         <span onClick={onBruk}><CTAPill icon="check">Bruk forslag</CTAPill></span>
         <span onClick={onAvvis}><CTAPill ghost>Avvis</CTAPill></span>
-        <span style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, marginLeft: "auto" }}>
+        <span style={{ fontFamily: TL.font.sans, fontSize: 10.5, color: TL.mute, marginLeft: "auto" }}>
           Du bestemmer — planen endres ikke før du velger.
         </span>
       </div>
@@ -757,7 +758,7 @@ export function LiveBar({
   onClick,
   kritisk = false,
 }: LiveBarProps) {
-  const prikk = kritisk ? T.down : T.lime;
+  const prikk = kritisk ? TL.danger : TL.fill;
   return (
     <div
       style={{
@@ -765,11 +766,11 @@ export function LiveBar({
         alignItems: "center",
         gap: 12,
         minHeight: 52,
-        background: kritisk ? T.down : T.panel3,
-        border: `1px solid ${kritisk ? "transparent" : T.borderS}`,
-        borderRadius: T.rPill,
+        background: kritisk ? TL.danger : TL.dim,
+        border: `1px solid ${kritisk ? "transparent" : TL.hair}`,
+        borderRadius: TL.radius.pill,
         padding: "9px 10px 9px 16px",
-        color: kritisk ? T.onForest : undefined,
+        color: kritisk ? TL.onFill : undefined,
       }}
     >
       <span style={{ display: "inline-flex", alignItems: "center", gap: 7, flex: "none" }}>
@@ -777,18 +778,18 @@ export function LiveBar({
           style={{
             width: 8,
             height: 8,
-            borderRadius: T.rPill,
-            background: kritisk ? T.onForest : prikk,
+            borderRadius: TL.radius.pill,
+            background: kritisk ? TL.onFill : prikk,
             boxShadow: kritisk ? undefined : `0 0 0 3px color-mix(in srgb,${prikk} 25%,transparent)`,
           }}
         />
         <span
           style={{
-            fontFamily: T.mono,
+            fontFamily: TL.font.mono,
             fontSize: 9,
             fontWeight: 700,
             letterSpacing: "0.08em",
-            color: kritisk ? T.onForest : prikk,
+            color: kritisk ? TL.onFill : prikk,
           }}
         >
           {kritisk ? "STARTER SNART" : "LIVE"}
@@ -798,10 +799,10 @@ export function LiveBar({
         style={{
           flex: 1,
           minWidth: 0,
-          fontFamily: T.ui,
+          fontFamily: TL.font.sans,
           fontSize: 13,
           fontWeight: 600,
-          color: kritisk ? T.onForest : T.fg,
+          color: kritisk ? TL.onFill : TL.text,
           whiteSpace: "nowrap",
           overflow: "hidden",
           textOverflow: "ellipsis",
@@ -811,15 +812,15 @@ export function LiveBar({
       </span>
       {deltakere != null && (
         <MetaBit icon="users">
-          <span style={{ fontFamily: T.mono, fontVariantNumeric: "tabular-nums", color: kritisk ? T.onForest : undefined }}>{deltakere}</span>
+          <span style={{ fontFamily: TL.font.mono, fontVariantNumeric: "tabular-nums", color: kritisk ? TL.onFill : undefined }}>{deltakere}</span>
         </MetaBit>
       )}
       <span
         style={{
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           fontSize: 14,
           fontWeight: 700,
-          color: kritisk ? T.onForest : T.fg,
+          color: kritisk ? TL.onFill : TL.text,
           fontVariantNumeric: "tabular-nums",
           flex: "none",
         }}
@@ -866,13 +867,13 @@ export function VideoKort({
         className="v2-kort-h"
         style={{
           appearance: "none", textAlign: "left", cursor: pending ? "default" : "pointer",
-          background: T.panel, border: `1px solid ${T.border}`, borderRadius: T.rCard,
+          background: TL.elev, border: `1px solid ${TL.hair}`, borderRadius: TL.radius.card,
           padding: 0, overflow: "hidden", display: "flex", flexDirection: "column",
-          minWidth: 0, opacity: pending ? 0.6 : 1, transition: `transform 180ms ${T.ease}, border-color 180ms ${T.ease}`,
+          minWidth: 0, opacity: pending ? 0.6 : 1, transition: `transform 180ms ${TL.motion.ease}, border-color 180ms ${TL.motion.ease}`,
         }}
       >
         {/* Media — fallback-gradient ligger alltid i bunn; bildet legges over */}
-        <span style={{ position: "relative", display: "block", aspectRatio: "16 / 9", background: `linear-gradient(150deg, ${T.forest}, ${T.bg})` }}>
+        <span style={{ position: "relative", display: "block", aspectRatio: "16 / 9", background: `linear-gradient(150deg, ${TL.fill}, ${TL.scene})` }}>
           {visBilde && (
             /* eslint-disable-next-line @next/next/no-img-element */
             <img
@@ -884,31 +885,31 @@ export function VideoKort({
           )}
           {/* Play-knapp midtstilt */}
           <span style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 46, height: 46, borderRadius: 9999, background: T.lime, boxShadow: `0 6px 18px color-mix(in srgb,${T.bg} 55%,transparent)` }}>
-              <Icon name="play" size={20} style={{ color: T.onLime }} />
+            <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 46, height: 46, borderRadius: 9999, background: TL.fill, boxShadow: `0 6px 18px color-mix(in srgb,${TL.scene} 55%,transparent)` }}>
+              <Icon name="play" size={20} style={{ color: TL.onFill }} />
             </span>
           </span>
           {/* Varighet-badge */}
           {varighet && (
-            <span style={{ position: "absolute", right: 8, bottom: 8, fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.fg, background: `color-mix(in srgb,${T.bg} 70%,transparent)`, borderRadius: 6, padding: "3px 7px", fontVariantNumeric: "tabular-nums" }}>
+            <span style={{ position: "absolute", right: 8, bottom: 8, fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, color: TL.text, background: `color-mix(in srgb,${TL.scene} 70%,transparent)`, borderRadius: 6, padding: "3px 7px", fontVariantNumeric: "tabular-nums" }}>
               {varighet}
             </span>
           )}
         </span>
         {/* Tekst */}
         <span style={{ display: "flex", flexDirection: "column", gap: 8, padding: "12px 14px 14px" }}>
-          <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 15, lineHeight: 1.25, color: T.fg }}>{title}</span>
+          <span style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 15, lineHeight: 1.25, color: TL.text }}>{title}</span>
           <span style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "6px 12px" }}>
             <MetaBit icon="user">{coach}</MetaBit>
             {tag && (
-              <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: T.fg2, background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 5, padding: "2px 7px" }}>{tag}</span>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: TL.mute, background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: 5, padding: "2px 7px" }}>{tag}</span>
             )}
             <MetaBit icon="calendar">{dato}</MetaBit>
           </span>
         </span>
       </button>
       {error && (
-        <span role="alert" style={{ fontFamily: T.ui, fontSize: 12, color: T.down, background: `color-mix(in srgb,${T.down} 10%,transparent)`, border: `1px solid color-mix(in srgb,${T.down} 30%,transparent)`, borderRadius: 10, padding: "6px 10px" }}>
+        <span role="alert" style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, background: `color-mix(in srgb,${TL.danger} 10%,transparent)`, border: `1px solid color-mix(in srgb,${TL.danger} 30%,transparent)`, borderRadius: 10, padding: "6px 10px" }}>
           {error}
         </span>
       )}

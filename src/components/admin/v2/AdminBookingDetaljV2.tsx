@@ -13,7 +13,7 @@
 
 import Link from "next/link";
 import { Caps, Kort, Rad, StatusPill, Icon, CTAPill } from "@/components/v2";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
 
 export type BookingDetaljStatus = "PENDING" | "CONFIRMED" | "CANCELLED" | "COMPLETED";
 
@@ -51,7 +51,7 @@ function DetaljRad({
 }) {
   return (
     <Rad
-      leading={<Icon name={icon} size={15} style={{ color: T.mut }} />}
+      leading={<Icon name={icon} size={15} style={{ color: TL.mute }} />}
       title={value}
       sub={label}
       trailing={null}
@@ -69,17 +69,17 @@ export function AdminBookingDetaljV2({ data }: { data: AdminBookingDetaljV2Data 
   const primaerIkon = data.spiller ? "user" : "arrow-left";
 
   return (
-    <div data-paper-wave-h="booking-detalj" data-paper-pattern data-paper-slug="agencyos-bookinger" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 640 }}>
+    <div data-paper-wave-h="booking-detalj" data-paper-pattern data-paper-slug="agencyos-bookinger" style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 640 }}>
       <Link
         href="/admin/bookinger"
         style={{
           display: "inline-flex",
           alignItems: "center",
           gap: 6,
-          fontFamily: T.ui,
+          fontFamily: TL.font.sans,
           fontSize: 12,
           fontWeight: 600,
-          color: T.mut,
+          color: TL.mute,
           textDecoration: "none",
           width: "fit-content",
         }}
@@ -93,16 +93,16 @@ export function AdminBookingDetaljV2({ data }: { data: AdminBookingDetaljV2Data 
           <Caps>Booking · {data.dato}</Caps>
           <div
             style={{
-              fontFamily: T.disp,
+              fontFamily: TL.font.sans,
               fontSize: 22,
               fontWeight: 700,
-              color: T.fg,
+              color: TL.text,
               marginTop: 8,
             }}
           >
             {data.tjeneste}
           </div>
-          <p style={{ margin: "6px 0 0", fontFamily: T.ui, fontSize: 12.5, color: T.mut }}>
+          <p style={{ margin: "6px 0 0", fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute }}>
             {data.dato} · {data.tid} · {data.sted}
           </p>
         </div>
@@ -119,10 +119,10 @@ export function AdminBookingDetaljV2({ data }: { data: AdminBookingDetaljV2Data 
         {data.spiller ? (
           <Link href={`/admin/spillere/${data.spiller.id}`} style={{ textDecoration: "none", display: "block" }}>
             <Rad
-              leading={<Icon name="user" size={15} style={{ color: T.mut }} />}
+              leading={<Icon name="user" size={15} style={{ color: TL.mute }} />}
               title={data.spiller.navn}
               sub="Spiller"
-              trailing={<Icon name="chevron-right" size={14} style={{ color: T.mut }} />}
+              trailing={<Icon name="chevron-right" size={14} style={{ color: TL.mute }} />}
             />
           </Link>
         ) : (

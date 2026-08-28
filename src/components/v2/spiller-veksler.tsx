@@ -13,7 +13,8 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Icon } from "./icon";
 import { AvatarFoto } from "./core";
 
@@ -48,7 +49,7 @@ export interface VekslerData {
 
 function SeksjonHode({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut, padding: "10px 12px 6px" }}>
+    <div style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute, padding: "10px 12px 6px" }}>
       {children}
     </div>
   );
@@ -56,7 +57,7 @@ function SeksjonHode({ children }: { children: React.ReactNode }) {
 
 function TomLinje({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, padding: "8px 12px 12px", lineHeight: 1.5 }}>
+    <div style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, padding: "8px 12px 12px", lineHeight: 1.5 }}>
       {children}
     </div>
   );
@@ -122,20 +123,20 @@ export function SpillerVeksler({ data }: { data: VekslerData }) {
         aria-haspopup="menu"
         aria-expanded={open}
         className="v2-press v2-focus"
-        style={{ display: "inline-flex", alignItems: "center", gap: 9, background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 9999, padding: "6px 12px 6px 8px", cursor: "pointer", maxWidth: "100%" }}
+        style={{ display: "inline-flex", alignItems: "center", gap: 9, background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: 9999, padding: "6px 12px 6px 8px", cursor: "pointer", maxWidth: "100%" }}
       >
         {aktivType === "spiller" ? (
           <AvatarFoto src={data.aktivAvatarUrl ?? undefined} navn={aktivNavn} size={22} />
         ) : (
-          <span style={{ width: 22, height: 22, borderRadius: 9999, background: T.panel3, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
-            <Icon name="users" size={12} style={{ color: T.fg2 }} />
+          <span style={{ width: 22, height: 22, borderRadius: 9999, background: TL.dim, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+            <Icon name="users" size={12} style={{ color: TL.mute }} />
           </span>
         )}
         <span style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", minWidth: 0 }}>
-          <span style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut, lineHeight: 1 }}>Kontekst</span>
-          <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg, lineHeight: 1.3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 180 }}>{aktivNavn}</span>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 8, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute, lineHeight: 1 }}>Kontekst</span>
+          <span style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text, lineHeight: 1.3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 180 }}>{aktivNavn}</span>
         </span>
-        <Icon name="chevron-down" size={14} style={{ color: T.mut, flex: "none", transform: open ? "rotate(180deg)" : undefined, transition: `transform ${T.dur}ms ${T.ease}` }} />
+        <Icon name="chevron-down" size={14} style={{ color: TL.mute, flex: "none", transform: open ? "rotate(180deg)" : undefined, transition: `transform ${180}ms ${TL.motion.ease}` }} />
       </button>
 
       {open && (
@@ -143,26 +144,26 @@ export function SpillerVeksler({ data }: { data: VekslerData }) {
           role="menu"
           aria-label="Bytt kontekst"
           className="v2-fade-in"
-          style={{ position: "absolute", top: "calc(100% + 6px)", left: 0, zIndex: 80, width: 320, maxWidth: "calc(100vw - 32px)", maxHeight: "min(460px, 70vh)", overflowY: "auto", background: T.panel, border: `1px solid ${T.border}`, borderRadius: 14, boxShadow: `0 24px 64px ${T.farge.svartA50}` }}
+          style={{ position: "absolute", top: "calc(100% + 6px)", left: 0, zIndex: 80, width: 320, maxWidth: "calc(100vw - 32px)", maxHeight: "min(460px, 70vh)", overflowY: "auto", background: TL.elev, border: `1px solid ${TL.hair}`, borderRadius: 14, boxShadow: `0 24px 64px ${TL.scrim}` }}
         >
           {/* Søk */}
-          <div style={{ position: "sticky", top: 0, background: T.panel, padding: "10px 10px 8px", borderBottom: `1px solid ${T.border}` }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 9999, padding: "7px 12px" }}>
-              <Icon name="search" size={14} style={{ color: T.mut, flex: "none" }} />
+          <div style={{ position: "sticky", top: 0, background: TL.elev, padding: "10px 10px 8px", borderBottom: `1px solid ${TL.hair}` }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: 9999, padding: "7px 12px" }}>
+              <Icon name="search" size={14} style={{ color: TL.mute, flex: "none" }} />
               <input
                 ref={inputRef}
                 value={sok}
                 onChange={(e) => setSok(e.target.value)}
                 placeholder="Søk spiller eller gruppe …"
                 aria-label="Søk spiller eller gruppe"
-                style={{ flex: 1, minWidth: 0, appearance: "none", background: "transparent", border: 0, outline: "none", color: T.fg, fontFamily: T.ui, fontSize: 13 }}
+                style={{ flex: 1, minWidth: 0, appearance: "none", background: "transparent", border: 0, outline: "none", color: TL.text, fontFamily: TL.font.sans, fontSize: 13 }}
               />
             </div>
           </div>
 
           {data.laster ? (
-            <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "16px 12px", color: T.mut, fontFamily: T.ui, fontSize: 12.5 }}>
-              <Icon name="loader" size={14} style={{ color: T.mut }} />
+            <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "16px 12px", color: TL.mute, fontFamily: TL.font.sans, fontSize: 12.5 }}>
+              <Icon name="loader" size={14} style={{ color: TL.mute }} />
               Laster stallen …
             </div>
           ) : (
@@ -186,10 +187,10 @@ export function SpillerVeksler({ data }: { data: VekslerData }) {
                     >
                       <AvatarFoto src={s.avatarUrl ?? undefined} navn={s.navn} size={26} />
                       <span style={{ display: "flex", flexDirection: "column", minWidth: 0, flex: 1 }}>
-                        <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{s.navn}</span>
-                        {s.gruppe && <span style={{ fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.04em", color: T.mut }}>{s.gruppe}</span>}
+                        <span style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{s.navn}</span>
+                        {s.gruppe && <span style={{ fontFamily: TL.font.mono, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.04em", color: TL.mute }}>{s.gruppe}</span>}
                       </span>
-                      <Icon name="chevron-right" size={13} style={{ color: T.mut, flex: "none" }} />
+                      <Icon name="chevron-right" size={13} style={{ color: TL.mute, flex: "none" }} />
                     </button>
                   ))}
                 </div>
@@ -212,14 +213,14 @@ export function SpillerVeksler({ data }: { data: VekslerData }) {
                       className="v2-press v2-focus v2-row-h"
                       style={{ display: "flex", alignItems: "center", gap: 10, width: "100%", textAlign: "left", background: "transparent", border: 0, borderRadius: 9, padding: "8px 8px", cursor: "pointer" }}
                     >
-                      <span style={{ width: 26, height: 26, borderRadius: 8, background: T.panel3, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
-                        <Icon name="users" size={13} style={{ color: T.fg2 }} />
+                      <span style={{ width: 26, height: 26, borderRadius: 8, background: TL.dim, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+                        <Icon name="users" size={13} style={{ color: TL.mute }} />
                       </span>
                       <span style={{ display: "flex", flexDirection: "column", minWidth: 0, flex: 1 }}>
-                        <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{g.navn}</span>
-                        {g.antall != null && <span style={{ fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.04em", color: T.mut }}>{g.antall} spillere</span>}
+                        <span style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{g.navn}</span>
+                        {g.antall != null && <span style={{ fontFamily: TL.font.mono, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.04em", color: TL.mute }}>{g.antall} spillere</span>}
                       </span>
-                      <Icon name="chevron-right" size={13} style={{ color: T.mut, flex: "none" }} />
+                      <Icon name="chevron-right" size={13} style={{ color: TL.mute, flex: "none" }} />
                     </button>
                   ))}
                 </div>

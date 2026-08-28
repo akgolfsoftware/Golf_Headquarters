@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * AgencyOS Agenter — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
  * T.* only. Mørk AgencyOS. Pipeline: aktive · forslag · godkjenninger.
@@ -8,22 +8,8 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import {
-  Caps,
-  Kort,
-  Rad,
-  KpiFlis,
-  StatusPill,
-  Knapp,
-  CTAPill,
-  FilterChips,
-  InnsiktChip,
-  TomTilstand,
-  Icon,
-  T,
-} from "@/components/v2";
+import { Caps, Kort, Rad, KpiFlis, StatusPill, Knapp, CTAPill, FilterChips, InnsiktChip, TomTilstand, Icon } from "@/components/v2";
 import { triggerAgentManually } from "@/app/admin/(legacy)/agents/actions";
-
 // ── Datakontrakt (mappes fra Prisma i ruten) ────────────────────
 export type AgentStatusKey = "aktiv" | "feil" | "ingen-data";
 
@@ -73,9 +59,9 @@ function IkonFlis({ name }: { name: string }) {
         display: "grid",
         placeItems: "center",
         borderRadius: 10,
-        background: T.panel2,
-        border: `1px solid ${T.border}`,
-        color: T.fg2,
+        background: TL.dock,
+        border: `1px solid ${TL.hair}`,
+        color: TL.mute,
       }}
     >
       <Icon name={name} size={16} />
@@ -109,7 +95,7 @@ function KjorAgent({ agenter }: { agenter: { slug: string; navn: string }[] }) {
 
   return (
     <Kort eyebrow="Kjør agent manuelt" action={<Caps size={9}>Admin</Caps>}>
-      <div style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, marginBottom: 12 }}>
+      <div style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, marginBottom: 12 }}>
         Kjør en agent umiddelbart i stedet for å vente på cron.
       </div>
       <FilterChips
@@ -127,10 +113,10 @@ function KjorAgent({ agenter }: { agenter: { slug: string; navn: string }[] }) {
         {resultat && (
           <span
             style={{
-              fontFamily: T.mono,
+              fontFamily: TL.font.mono,
               fontSize: 11,
               fontWeight: 700,
-              color: resultat.ok ? T.up : T.down,
+              color: resultat.ok ? TL.ok : TL.danger,
             }}
           >
             {resultat.ok ? "OK" : "Feil"} · {resultat.melding}
@@ -157,10 +143,10 @@ export function AdminAgenterV2({ data }: { data: AdminAgenterV2Data }) {
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
         <div data-paper-pattern-topp data-paper-slug="agencyos-agenticos">
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Agenter</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgenticOS</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Agenter</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>AgenticOS</span>
         </div>
-        <div style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, marginTop: 8 }}>
+        <div style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, marginTop: 8 }}>
           {pl(data.signalsCount, "signal", "signaler")} · {pl(data.planActionsCount, "plan-action", "plan-actions")} totalt.
         </div>
       </div>
@@ -184,7 +170,7 @@ export function AdminAgenterV2({ data }: { data: AdminAgenterV2Data }) {
 
   // ── KPI-flis (3) ──────────────────────────────────────────────
   const kpi = (
-    <div className="grid grid-cols-2 lg:grid-cols-3" style={{ gap: T.gap }}>
+    <div className="grid grid-cols-2 lg:grid-cols-3" style={{ gap: 16 }}>
       <KpiFlis label="Aktive agenter" value={data.aktiveAgenter} />
       <KpiFlis label="Forslag i dag" value={data.forslagIdag} />
       <Link href={data.godkjenningerHref} style={{ textDecoration: "none" }}>
@@ -218,7 +204,7 @@ export function AdminAgenterV2({ data }: { data: AdminAgenterV2Data }) {
               title={a.navn}
               sub={`${a.trigger} · ${stats}`}
               meta={<AgentStatus status={a.status} />}
-              trailing={<Icon name="chevron-right" size={16} style={{ color: T.mut }} />}
+              trailing={<Icon name="chevron-right" size={16} style={{ color: TL.mute }} />}
               last={i === data.agenter.length - 1}
             />
           );
@@ -252,10 +238,10 @@ export function AdminAgenterV2({ data }: { data: AdminAgenterV2Data }) {
             meta={
               <span
                 style={{
-                  fontFamily: T.mono,
+                  fontFamily: TL.font.mono,
                   fontSize: 11,
                   fontWeight: 700,
-                  color: T.mut,
+                  color: TL.mute,
                   fontVariantNumeric: "tabular-nums",
                 }}
               >
@@ -276,12 +262,12 @@ export function AdminAgenterV2({ data }: { data: AdminAgenterV2Data }) {
       : "Ingen forslag venter på godkjenning akkurat nå.";
 
   return (
-    <div data-paper-wave-h="agenter" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-h="agenter" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {hode}
       {primaerCta}
       {kpi}
       {data.erAdmin && data.manuelleAgenter.length > 0 && <KjorAgent agenter={data.manuelleAgenter} />}
-      <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr]" style={{ gap: T.gap, alignItems: "start" }}>
+      <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr]" style={{ gap: 16, alignItems: "start" }}>
         {agentliste}
         {kjoringer}
       </div>

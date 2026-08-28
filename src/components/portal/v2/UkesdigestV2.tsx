@@ -12,7 +12,8 @@
 
 import type { ReactNode } from "react";
 
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { TomTilstand } from "@/components/v2";
 import { PaperPage, PaperTopp, PaperKropp } from "@/components/portal/v2/PaperChrome";
 import type { UkesdigestData, DigestDag } from "@/lib/portal/ukesdigest";
@@ -34,9 +35,9 @@ function Kort({ eyebrow, children }: { eyebrow: string; children: ReactNode }) {
   return (
     <section
       style={{
-        background: T.panel,
-        border: `1px solid ${T.border}`,
-        borderRadius: T.rCard,
+        background: TL.elev,
+        border: `1px solid ${TL.hair}`,
+        borderRadius: TL.radius.card,
         padding: 16,
         marginBottom: 12,
       }}
@@ -44,11 +45,11 @@ function Kort({ eyebrow, children }: { eyebrow: string; children: ReactNode }) {
       <span
         style={{
           display: "block",
-          fontFamily: T.mono,
-          fontSize: T.capsSm,
+          fontFamily: TL.font.mono,
+          fontSize: TL.storrelse.capsSm,
           letterSpacing: "0.07em",
           textTransform: "uppercase",
-          color: T.fg2,
+          color: TL.mute,
           marginBottom: 10,
         }}
       >
@@ -66,16 +67,16 @@ function Tall({ verdi, under }: { verdi: string; under: string }) {
       <span
         style={{
           display: "block",
-          fontFamily: T.mono,
-          fontSize: T.numMd,
+          fontFamily: TL.font.mono,
+          fontSize: TL.storrelse.tallMin,
           fontWeight: 600,
-          color: T.fg,
+          color: TL.text,
           lineHeight: 1.1,
         }}
       >
         {verdi}
       </span>
-      <span style={{ display: "block", fontSize: T.bodySm, color: T.fg2, marginTop: 2 }}>
+      <span style={{ display: "block", fontSize: TL.storrelse.meta, color: TL.mute, marginTop: 2 }}>
         {under}
       </span>
     </div>
@@ -94,7 +95,7 @@ function Linje({
   verdi: string;
   retning?: "opp" | "ned";
 }) {
-  const farge = retning === "opp" ? T.up : retning === "ned" ? T.down : T.fg;
+  const farge = retning === "opp" ? TL.ok : retning === "ned" ? TL.danger : TL.text;
   return (
     <div
       style={{
@@ -102,18 +103,18 @@ function Linje({
         alignItems: "baseline",
         gap: 8,
         padding: "8px 0",
-        borderTop: `1px solid ${T.borderS}`,
+        borderTop: `1px solid ${TL.hair}`,
       }}
     >
-      <span style={{ fontSize: T.body, color: T.fg, flex: "none" }}>{navn}</span>
+      <span style={{ fontSize: TL.storrelse.kropp, color: TL.text, flex: "none" }}>{navn}</span>
       {note && (
-        <span style={{ fontSize: T.bodySm, color: T.fg2, minWidth: 0, flex: 1 }}>{note}</span>
+        <span style={{ fontSize: TL.storrelse.meta, color: TL.mute, minWidth: 0, flex: 1 }}>{note}</span>
       )}
       <span
         style={{
           marginLeft: "auto",
-          fontFamily: T.mono,
-          fontSize: T.body,
+          fontFamily: TL.font.mono,
+          fontSize: TL.storrelse.kropp,
           fontWeight: 600,
           color: farge,
           flex: "none",
@@ -144,12 +145,12 @@ function Ukestripe({ uke }: { uke: DigestDag[] }) {
             style={{
               textAlign: "center",
               padding: "8px 0",
-              borderRadius: T.rTag,
-              fontFamily: T.mono,
-              fontSize: T.capsSm,
-              background: fylt ? T.fg : hopp ? T.panel3 : "transparent",
-              color: fylt ? T.bg : hopp ? T.fg2 : T.fg2,
-              border: fylt ? "none" : `1px solid ${hopp ? T.border : T.borderS}`,
+              borderRadius: TL.radius.row,
+              fontFamily: TL.font.mono,
+              fontSize: TL.storrelse.capsSm,
+              background: fylt ? TL.text : hopp ? TL.dim : "transparent",
+              color: fylt ? TL.scene : hopp ? TL.mute : TL.mute,
+              border: fylt ? "none" : `1px solid ${hopp ? TL.hair : TL.hair}`,
               textDecoration: hopp ? "line-through" : "none",
             }}
           >
@@ -165,9 +166,9 @@ function Hjelp({ children }: { children: ReactNode }) {
   return (
     <p
       style={{
-        fontFamily: T.bodyFont,
-        fontSize: T.bodySm,
-        color: T.fg2,
+        fontFamily: TL.font.sans,
+        fontSize: TL.storrelse.meta,
+        color: TL.mute,
         lineHeight: 1.5,
         marginTop: 10,
       }}
@@ -206,12 +207,12 @@ export function UkesdigestV2({ data }: { data: UkesdigestData }) {
                   display: "inline-flex",
                   alignItems: "center",
                   padding: "10px 18px",
-                  borderRadius: T.rInput,
-                  border: `1px solid ${T.border}`,
-                  background: T.panel,
-                  color: T.fg,
-                  fontFamily: T.ui,
-                  fontSize: T.body,
+                  borderRadius: TL.radius.field,
+                  border: `1px solid ${TL.hair}`,
+                  background: TL.elev,
+                  color: TL.text,
+                  fontFamily: TL.font.sans,
+                  fontSize: TL.storrelse.kropp,
                   textDecoration: "none",
                 }}
               >
@@ -233,7 +234,7 @@ export function UkesdigestV2({ data }: { data: UkesdigestData }) {
               ) : (
                 /* Ingen økter er forfalt ennå. En stor «—» over nevneren leser
                    som et dårlig resultat; en setning sier det som faktisk er. */
-                <p style={{ margin: 0, fontFamily: T.ui, fontSize: T.body, color: T.fg }}>
+                <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: TL.storrelse.kropp, color: TL.text }}>
                   {data.planlagtMinutter > 0
                     ? "Ingen økter er forfalt ennå denne uka."
                     : "Ingen økter er planlagt denne uka."}

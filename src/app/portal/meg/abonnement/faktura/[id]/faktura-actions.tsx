@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 // Knapper for faktura-detalj: "Last ned PDF" (lenke til pdf-ruten) og
 // "Send på e-post" (server action med inline-tilbakemelding).
@@ -6,7 +7,7 @@
 // (sendFakturaPaaEpost) og pdf-ruten er uendret.
 
 import { useState, useTransition } from "react";
-import { T, CTAPill, Knapp, Icon } from "@/components/v2";
+import { CTAPill, Knapp, Icon } from "@/components/v2";
 import { sendFakturaPaaEpost } from "./actions";
 
 export function LastNedPdfKnapp({ paymentId }: { paymentId: string }) {
@@ -55,9 +56,9 @@ export function SendEpostKnapp({ paymentId }: { paymentId: string }) {
             display: "inline-flex",
             alignItems: "center",
             gap: 4,
-            fontFamily: T.mono,
+            fontFamily: TL.font.mono,
             fontSize: 10.5,
-            color: status.type === "ok" ? T.up : T.down,
+            color: status.type === "ok" ? TL.ok : TL.danger,
           }}
         >
           {status.type === "feil" && <Icon name="alert-triangle" size={11} />}

@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * AvailabilityWeekGrid — drag-to-create tilgjengelighet på et time-rutenett,
  * v2-port 16. juli 2026. Samme drag/klikk-logikk og samme addSlot-action
@@ -11,7 +11,7 @@
 
 import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { T } from "@/components/v2";
+
 import { addSlot } from "@/app/admin/(legacy)/availability/actions";
 import type { LocationOption } from "./AdminSlotFormV2";
 
@@ -106,14 +106,14 @@ export function AvailabilityWeekGridV2({ locations, windows }: { locations: Loca
   return (
     <div data-paper-wave-h="availabilityweekgrid" data-paper-pattern  style={{ userSelect: "none", position: "relative" }}>
       {livePreview && (
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, background: `color-mix(in srgb, ${T.lime} 90%, transparent)`, color: T.onLime, textAlign: "center", padding: "4px 0", fontFamily: T.mono, fontSize: 11, zIndex: 10, borderRadius: "10px 10px 0 0" }}>
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, background: `color-mix(in srgb, ${TL.fill} 90%, transparent)`, color: TL.onFill, textAlign: "center", padding: "4px 0", fontFamily: TL.font.mono, fontSize: 11, zIndex: 10, borderRadius: "10px 10px 0 0" }}>
           Dragging: {livePreview} (slipp for å bekrefte)
         </div>
       )}
-      <div style={{ display: "grid", gridTemplateColumns: `44px repeat(7, 1fr)`, gap: 1, borderRadius: 12, border: `1px solid ${T.border}`, background: T.border, overflow: "hidden" }}>
-        <div style={{ background: T.panel }} />
+      <div style={{ display: "grid", gridTemplateColumns: `44px repeat(7, 1fr)`, gap: 1, borderRadius: 12, border: `1px solid ${TL.hair}`, background: TL.hair, overflow: "hidden" }}>
+        <div style={{ background: TL.elev }} />
         {DAGER.map((d) => (
-          <div key={d} style={{ background: T.panel, padding: "6px 0", textAlign: "center", fontFamily: T.mono, fontSize: 9, fontWeight: 800, letterSpacing: "0.08em", color: T.mut }}>
+          <div key={d} style={{ background: TL.elev, padding: "6px 0", textAlign: "center", fontFamily: TL.font.mono, fontSize: 9, fontWeight: 800, letterSpacing: "0.08em", color: TL.mute }}>
             {d}
           </div>
         ))}
@@ -122,7 +122,7 @@ export function AvailabilityWeekGridV2({ locations, windows }: { locations: Loca
           const erHel = rad % 2 === 0;
           return (
             <FragmentRow key={rad}>
-              <div style={{ background: T.panel, paddingRight: 4, textAlign: "right", fontFamily: T.mono, fontSize: 8, lineHeight: "18px", color: T.mut }}>
+              <div style={{ background: TL.elev, paddingRight: 4, textAlign: "right", fontFamily: TL.font.mono, fontSize: 8, lineHeight: "18px", color: TL.mute }}>
                 {erHel ? radTilTid(rad) : ""}
               </div>
               {DAGER.map((_, dag) => {
@@ -138,7 +138,7 @@ export function AvailabilityWeekGridV2({ locations, windows }: { locations: Loca
                     aria-label={`${DAGER[dag]} ${radTilTid(rad)}`}
                     style={{
                       height: 18, width: "100%", cursor: "crosshair", border: "none", padding: 0,
-                      background: iDrag ? `color-mix(in srgb, ${T.lime} 55%, transparent)` : erHel ? T.panel : T.panel2,
+                      background: iDrag ? `color-mix(in srgb, ${TL.fill} 55%, transparent)` : erHel ? TL.elev : TL.dock,
                     }}
                   />
                 );
@@ -153,27 +153,27 @@ export function AvailabilityWeekGridV2({ locations, windows }: { locations: Loca
           {windows.map((w) => (
             <span
               key={w.id}
-              style={{ display: "inline-flex", alignItems: "center", gap: 6, borderRadius: 9999, border: `1px solid color-mix(in srgb, ${T.up} 30%, transparent)`, background: `color-mix(in srgb, ${T.up} 8%, transparent)`, padding: "4px 10px", fontFamily: T.mono, fontSize: 10, color: T.up }}
+              style={{ display: "inline-flex", alignItems: "center", gap: 6, borderRadius: 9999, border: `1px solid color-mix(in srgb, ${TL.ok} 30%, transparent)`, background: `color-mix(in srgb, ${TL.ok} 8%, transparent)`, padding: "4px 10px", fontFamily: TL.font.mono, fontSize: 10, color: TL.ok }}
             >
               {DAGER[w.weekday]} {w.startTime}–{w.endTime}
-              <span style={{ color: T.mut }}>· {w.locationName ?? "Alle steder"}</span>
+              <span style={{ color: TL.mute }}>· {w.locationName ?? "Alle steder"}</span>
             </span>
           ))}
         </div>
       )}
 
       {bekreft && (
-        <div style={{ position: "fixed", inset: 0, zIndex: 50, display: "grid", placeItems: "center", background: T.farge.svartA55, padding: 16 }}>
-          <div style={{ width: "100%", maxWidth: 380, borderRadius: T.rCard, border: `1px solid ${T.borderS}`, background: T.panel, padding: 22, boxShadow: `0 24px 60px ${T.farge.svartA50}` }}>
-            <h3 style={{ margin: 0, fontFamily: T.disp, fontWeight: 700, fontSize: 18, color: T.fg }}>
-              Tilgjengelig <em style={{ fontStyle: "italic", fontWeight: 400, color: T.lime }}>{DAGER[bekreft.dag]} {bekreft.start}–{bekreft.end}</em>?
+        <div style={{ position: "fixed", inset: 0, zIndex: 50, display: "grid", placeItems: "center", background: TL.scrim, padding: 16 }}>
+          <div style={{ width: "100%", maxWidth: 380, borderRadius: TL.radius.card, border: `1px solid ${TL.hair}`, background: TL.elev, padding: 22, boxShadow: "none" }}>
+            <h3 style={{ margin: 0, fontFamily: TL.font.sans, fontWeight: 700, fontSize: 18, color: TL.text }}>
+              Tilgjengelig <em style={{ fontStyle: "italic", fontWeight: 400, color: TL.fill }}>{DAGER[bekreft.dag]} {bekreft.start}–{bekreft.end}</em>?
             </h3>
             <label style={{ display: "block", marginTop: 16 }}>
-              <span style={{ display: "block", marginBottom: 6, fontFamily: T.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.10em", color: T.mut }}>Anlegg</span>
+              <span style={{ display: "block", marginBottom: 6, fontFamily: TL.font.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.10em", color: TL.mute }}>Anlegg</span>
               <select
                 value={locationId}
                 onChange={(e) => setLocationId(e.target.value)}
-                style={{ width: "100%", borderRadius: 10, border: `1px solid ${T.border}`, background: T.panel2, padding: "10px 12px", fontSize: 13, color: T.fg, outline: "none", boxSizing: "border-box" }}
+                style={{ width: "100%", borderRadius: 10, border: `1px solid ${TL.hair}`, background: TL.dock, padding: "10px 12px", fontSize: 13, color: TL.text, outline: "none", boxSizing: "border-box" }}
               >
                 {locations.map((l) => (
                   <option key={l.id} value={l.id}>{l.name}</option>
@@ -181,15 +181,15 @@ export function AvailabilityWeekGridV2({ locations, windows }: { locations: Loca
               </select>
             </label>
             {feil && (
-              <div role="alert" style={{ marginTop: 12, borderRadius: 10, border: `1px solid color-mix(in srgb, ${T.down} 30%, transparent)`, background: `color-mix(in srgb, ${T.down} 10%, transparent)`, padding: "10px 14px", fontSize: 13, color: T.down }}>
+              <div role="alert" style={{ marginTop: 12, borderRadius: 10, border: `1px solid color-mix(in srgb, ${TL.danger} 30%, transparent)`, background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`, padding: "10px 14px", fontSize: 13, color: TL.danger }}>
                 {feil}
               </div>
             )}
             <div style={{ marginTop: 20, display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 8 }}>
-              <button type="button" onClick={() => setBekreft(null)} disabled={pending} style={{ borderRadius: 9999, border: `1px solid ${T.border}`, background: T.panel2, padding: "10px 18px", fontSize: 13, fontWeight: 600, color: T.fg, cursor: "pointer", opacity: pending ? 0.6 : 1 }}>
+              <button type="button" onClick={() => setBekreft(null)} disabled={pending} style={{ borderRadius: 9999, border: `1px solid ${TL.hair}`, background: TL.dock, padding: "10px 18px", fontSize: 13, fontWeight: 600, color: TL.text, cursor: "pointer", opacity: pending ? 0.6 : 1 }}>
                 Avbryt
               </button>
-              <button type="button" onClick={lagre} disabled={pending} style={{ borderRadius: 9999, border: "1px solid transparent", background: T.handling, padding: "10px 18px", fontSize: 13, fontWeight: 600, color: T.onHandling, cursor: "pointer", opacity: pending ? 0.6 : 1 }}>
+              <button type="button" onClick={lagre} disabled={pending} style={{ borderRadius: 9999, border: "1px solid transparent", background: TL.fill, padding: "10px 18px", fontSize: 13, fontWeight: 600, color: TL.onFill, cursor: "pointer", opacity: pending ? 0.6 : 1 }}>
                 {pending ? "Lagrer…" : "Godkjenn"}
               </button>
             </div>

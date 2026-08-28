@@ -1,19 +1,11 @@
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ · SG-hub · Coach-modus spilleroversikt — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
  * T.* only. Lys PlayerHQ.
  */
 
 import Link from "next/link";
-import {
-  Kort,
-  Caps,
-  KpiFlis,
-  TomTilstand,
-  Icon,
-  HjelpTips,
-  T,
-} from "@/components/v2";
-
+import { Kort, Caps, KpiFlis, TomTilstand, Icon, HjelpTips } from "@/components/v2";
 export interface CoachSgHubSpillerV2Data {
   spillerNavn: string;
   antallOkter: number;
@@ -27,17 +19,17 @@ export function CoachSgHubSpillerV2({ data }: { data: CoachSgHubSpillerV2Data })
     <>
       {/* Coach-modus-banner */}
       <Kort tint>
-        <Caps color={T.lime}>Coach-modus</Caps>
-        <h1 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 24, letterSpacing: "-0.02em", color: T.fg, margin: "8px 0 0", lineHeight: 1.1 }}>
-          Du ser <em style={{ fontStyle: "italic", fontWeight: 500, color: T.lime }}>{data.spillerNavn}</em> sin SG-hub
+        <Caps color={TL.fill}>Coach-modus</Caps>
+        <h1 style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 24, letterSpacing: "-0.02em", color: TL.text, margin: "8px 0 0", lineHeight: 1.1 }}>
+          Du ser <em style={{ fontStyle: "italic", fontWeight: 500, color: TL.fill }}>{data.spillerNavn}</em> sin SG-hub
         </h1>
-        <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, margin: "8px 0 0", lineHeight: 1.55 }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: "8px 0 0", lineHeight: 1.55 }}>
           Alle innsikter og data tilhører spilleren. Du kan legge til shot-annotasjoner som spilleren ser.
         </p>
       </Kort>
 
       {/* Nøkkeltall */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: T.gap }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 16 }}>
         <KpiFlis label="TrackMan-økter" value={data.antallOkter} hjelp="trackman" instant />
         <KpiFlis label="Køller registrert" value={data.klubber.length} instant />
         <KpiFlis label="Spillerens tier" value={data.tierLabel} instant />
@@ -64,15 +56,15 @@ export function CoachSgHubSpillerV2({ data }: { data: CoachSgHubSpillerV2Data })
                   alignItems: "center",
                   gap: 7,
                   borderRadius: 13,
-                  border: `1px solid ${T.border}`,
-                  background: T.panel2,
+                  border: `1px solid ${TL.hair}`,
+                  background: TL.dock,
                   padding: "14px 8px",
                   textDecoration: "none",
                 }}
               >
-                <Icon name="circle-dot" size={16} style={{ color: T.mut }} />
-                <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: T.fg }}>{klubb}</span>
-                <Icon name="chevron-right" size={12} style={{ color: T.mut }} />
+                <Icon name="circle-dot" size={16} style={{ color: TL.mute }} />
+                <span style={{ fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, color: TL.text }}>{klubb}</span>
+                <Icon name="chevron-right" size={12} style={{ color: TL.mute }} />
               </Link>
             ))}
           </div>
@@ -84,21 +76,21 @@ export function CoachSgHubSpillerV2({ data }: { data: CoachSgHubSpillerV2Data })
         <Link href={`${data.baseHref}/equipment`} style={{ textDecoration: "none" }}>
           <div
             className="v2-row-h"
-            style={{ display: "flex", alignItems: "center", gap: 12, borderRadius: 13, border: `1px solid ${T.border}`, background: T.panel2, padding: 14, cursor: "pointer" }}
+            style={{ display: "flex", alignItems: "center", gap: 12, borderRadius: 13, border: `1px solid ${TL.hair}`, background: TL.dock, padding: 14, cursor: "pointer" }}
           >
-            <span style={{ width: 34, height: 34, borderRadius: 10, background: T.panel3, border: `1px solid ${T.borderS}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
-              <Icon name="wrench" size={15} style={{ color: T.fg2 }} />
+            <span style={{ width: 34, height: 34, borderRadius: 10, background: TL.dim, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+              <Icon name="wrench" size={15} style={{ color: TL.mute }} />
             </span>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-                <span style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>Equipment Fit</span>
+                <span style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>Equipment Fit</span>
                 <HjelpTips k="trackman" size={11} />
               </div>
-              <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 2 }}>
+              <div style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 2 }}>
                 Per-kølle helsesjekk på launch, spin og smash.
               </div>
             </div>
-            <Icon name="chevron-right" size={14} style={{ color: T.mut }} />
+            <Icon name="chevron-right" size={14} style={{ color: TL.mute }} />
           </div>
         </Link>
       </Kort>

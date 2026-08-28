@@ -4,10 +4,10 @@
  */
 
 import Link from "next/link";
-import { Caps, Tittel, CTAPill, Kort, TomTilstand, StatusPill } from "@/components/v2";
-import { T } from "@/lib/v2/tokens";
-import { Icon } from "@/components/v2/icon";
+import { CTAPill, Kort, TomTilstand, StatusPill } from "@/components/v2";
+import { TL } from "@/lib/v2/train-lock";
 
+import { Icon } from "@/components/v2/icon";
 export type AdminDrillsKategori = { param: string; label: string };
 
 export type AdminDrillsRad = {
@@ -39,14 +39,14 @@ function kategoriHref(kat: string, q: string): string {
 /** Wave D Paper chrome */
 export function AdminDrillsV2({ data }: { data: AdminDrillsV2Data }) {
   return (
-    <div data-paper-wave-h="drills" data-paper-pattern  data-paper-wave-d="admin-drills" style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-h="drills" data-paper-pattern  data-paper-wave-d="admin-drills" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
         <div>
           <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Drills</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Admin</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Drills</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>Admin</span>
         </div>
-          <p style={{ marginTop: 8, maxWidth: 520, fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.5 }}>
+          <p style={{ marginTop: 8, maxWidth: 520, fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.5 }}>
             Øvelsesbiblioteket coachene deler. Filtrer på ferdighet og slipp drills rett inn i en plan.
           </p>
         </div>
@@ -63,14 +63,14 @@ export function AdminDrillsV2({ data }: { data: AdminDrillsV2Data }) {
 
       {/* Søk — kombineres med kategorifilteret via ?q= */}
       <form action="/admin/drills" method="GET" style={{ maxWidth: 360 }}>
-        <label style={{ display: "flex", alignItems: "center", gap: 8, height: 38, borderRadius: 9999, border: `1px solid ${T.border}`, background: T.panel, padding: "0 14px" }}>
-          <Icon name="search" size={13} style={{ color: T.mut, flex: "none" }} />
+        <label style={{ display: "flex", alignItems: "center", gap: 8, height: 38, borderRadius: 9999, border: `1px solid ${TL.hair}`, background: TL.elev, padding: "0 14px" }}>
+          <Icon name="search" size={13} style={{ color: TL.mute, flex: "none" }} />
           <input
             type="search"
             name="q"
             defaultValue={data.sok}
             placeholder="Søk drill-navn, beskrivelse eller tag"
-            style={{ flex: 1, minWidth: 0, background: "transparent", border: "none", outline: "none", fontFamily: T.ui, fontSize: 13, color: T.fg }}
+            style={{ flex: 1, minWidth: 0, background: "transparent", border: "none", outline: "none", fontFamily: TL.font.sans, fontSize: 13, color: TL.text }}
           />
         </label>
         {data.aktivKategori !== "alle" && <input type="hidden" name="kat" value={data.aktivKategori} />}
@@ -85,10 +85,10 @@ export function AdminDrillsV2({ data }: { data: AdminDrillsV2Data }) {
               <span
                 style={{
                   display: "inline-flex", alignItems: "center", height: 30, padding: "0 12px", borderRadius: 9999,
-                  fontFamily: T.ui, fontSize: 12.5, fontWeight: on ? 600 : 500,
-                  background: on ? T.lime : T.panel3,
-                  border: `1px solid ${on ? "transparent" : T.borderS}`,
-                  color: on ? T.onLime : T.fg,
+                  fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: on ? 600 : 500,
+                  background: on ? TL.fill : TL.dim,
+                  border: `1px solid ${on ? "transparent" : TL.hair}`,
+                  color: on ? TL.onFill : TL.text,
                 }}
               >
                 {k.label}
@@ -111,15 +111,15 @@ export function AdminDrillsV2({ data }: { data: AdminDrillsV2Data }) {
               <Kort hover pad="16px" style={{ minHeight: 112, justifyContent: "space-between", cursor: "pointer" }}>
                 <span
                   style={{
-                    width: 38, height: 38, borderRadius: 10, background: T.panel3,
+                    width: 38, height: 38, borderRadius: 10, background: TL.dim,
                     display: "inline-flex", alignItems: "center", justifyContent: "center",
                     color: d.kategoriFarge,
                   }}
                 >
                   <Icon name="target" size={18} />
                 </span>
-                <span style={{ marginTop: 10, fontFamily: T.disp, fontWeight: 700, fontSize: 14, lineHeight: 1.3, color: T.fg }}>{d.navn}</span>
-                <span style={{ marginTop: "auto", paddingTop: 8, fontFamily: T.mono, fontSize: 10, color: T.mut }}>{d.meta}</span>
+                <span style={{ marginTop: 10, fontFamily: TL.font.sans, fontWeight: 700, fontSize: 14, lineHeight: 1.3, color: TL.text }}>{d.navn}</span>
+                <span style={{ marginTop: "auto", paddingTop: 8, fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>{d.meta}</span>
               </Kort>
             </Link>
           ))}
@@ -127,7 +127,7 @@ export function AdminDrillsV2({ data }: { data: AdminDrillsV2Data }) {
       )}
 
       {data.iKategori > data.visMaks && (
-        <p style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, margin: 0 }}>
+        <p style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, margin: 0 }}>
           Viser {data.visMaks} av {data.iKategori} i kategorien «{data.kategorier.find((k) => k.param === data.aktivKategori)?.label ?? data.aktivKategori}».
         </p>
       )}

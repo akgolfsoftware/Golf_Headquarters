@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * Første-besøk push-opt-in for PlayerHQ.
@@ -7,12 +8,8 @@
  */
 
 import { useEffect, useState } from "react";
-import {
-  aktiverPush,
-  detectPushStatus,
-  type PushStatus,
-} from "@/components/portal/push-toggle";
-import { T, Caps, CTAPill, Icon, Kort } from "@/components/v2";
+import { aktiverPush, detectPushStatus, type PushStatus } from "@/components/portal/push-toggle";
+import { Caps, CTAPill, Icon, Kort } from "@/components/v2";
 
 const STORAGE_KEY = "akgolf-push-optin-dismissed";
 
@@ -66,16 +63,16 @@ export function PushOptInBanner() {
   return (
     <Kort eyebrow={<Caps>Varsler</Caps>} pad="16px 18px">
       <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-        <Icon name="bell" size={18} style={{ color: T.lime, flex: "none", marginTop: 2 }} />
+        <Icon name="bell" size={18} style={{ color: TL.fill, flex: "none", marginTop: 2 }} />
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontFamily: T.ui, fontSize: 14, fontWeight: 600, color: T.fg, marginBottom: 4 }}>
+          <div style={{ fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600, color: TL.text, marginBottom: 4 }}>
             Få beskjed når planen er klar
           </div>
-          <p style={{ margin: "0 0 12px", fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.5 }}>
+          <p style={{ margin: "0 0 12px", fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.5 }}>
             Slå på push-varsler for nye økter, godkjenninger og påminnelser. Du kan endre dette når som helst under Meg → Innstillinger.
           </p>
           {feil ? (
-            <p style={{ margin: "0 0 10px", fontFamily: T.ui, fontSize: 12, color: T.down }}>{feil}</p>
+            <p style={{ margin: "0 0 10px", fontFamily: TL.font.sans, fontSize: 12, color: TL.danger }}>{feil}</p>
           ) : null}
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
             <CTAPill icon="bell" onClick={() => void onAktiver()}>

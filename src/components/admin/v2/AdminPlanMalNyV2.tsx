@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * AgencyOS — Ny plan-mal (`/admin/plan-templates/ny`) — v2.
@@ -12,19 +13,9 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import type { LPhase, NgfKategori, PyramidArea } from "@/generated/prisma/enums";
-import {
-  createTemplate,
-  type TemplateCreateInput,
-} from "@/app/admin/(legacy)/plan-templates/actions";
-import {
-  ANBEFALT_FORDELING_PER_KATEGORI,
-  FASE_ALLE,
-  FASE_LABEL,
-  KATEGORI_ALLE,
-  KATEGORI_LABEL,
-  type DisciplinFordeling,
-} from "@/components/admin/plan-templates/shared";
-import { Kort, Caps, Tittel, Knapp, Icon, HjelpTips, StatusPill, T, AKSE_NAVN } from "@/components/v2";
+import { createTemplate, type TemplateCreateInput } from "@/app/admin/(legacy)/plan-templates/actions";
+import { ANBEFALT_FORDELING_PER_KATEGORI, FASE_ALLE, FASE_LABEL, KATEGORI_ALLE, KATEGORI_LABEL, type DisciplinFordeling } from "@/components/admin/plan-templates/shared";
+import { Kort, Caps, Knapp, Icon, HjelpTips, StatusPill, T, AKSE_NAVN } from "@/components/v2";
 
 const PYR_ALLE: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
 
@@ -35,12 +26,12 @@ const FELT_STIL: React.CSSProperties = {
   width: "100%",
   marginTop: 6,
   borderRadius: 10,
-  border: `1px solid ${T.border}`,
-  background: T.panel2,
+  border: `1px solid ${TL.hair}`,
+  background: TL.dock,
   padding: "10px 14px",
-  fontFamily: T.ui,
+  fontFamily: TL.font.sans,
   fontSize: 13,
-  color: T.fg,
+  color: TL.text,
   outline: "none",
   boxSizing: "border-box",
 };
@@ -55,9 +46,9 @@ function Etikett({
   required?: boolean;
 }) {
   return (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: T.mono, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.10em", color: T.mut }}>
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.10em", color: TL.mute }}>
       {children}
-      {required && <span style={{ color: T.down }}>*</span>}
+      {required && <span style={{ color: TL.danger }}>*</span>}
       {hjelp && <HjelpTips k={hjelp} size={11} />}
     </span>
   );
@@ -139,14 +130,14 @@ export function AdminPlanMalNyV2() {
   }
 
   return (
-    <div data-paper-wave-h="plan-mal-ny" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-h="plan-mal-ny" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>
         <div>
           <div data-paper-pattern-topp data-paper-slug="agencyos-planbibliotek">
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Ny planmal</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Ny planmal</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>AgencyOS</span>
         </div>
-          <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: "8px 0 0", lineHeight: 1.55 }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: "8px 0 0", lineHeight: 1.55 }}>
             Fyll inn metadata og opprett. Du kan legge til økter etterpå.
           </p>
         </div>
@@ -243,7 +234,7 @@ export function AdminPlanMalNyV2() {
       <Kort>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
           <Etikett hjelp="pyramideAkse">Disiplin-fordeling (start fra anbefalt)</Etikett>
-          <span style={{ fontFamily: T.mono, fontSize: 11, fontWeight: 700, color: sum === 100 ? T.up : T.down, fontVariantNumeric: "tabular-nums" }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 11, fontWeight: 700, color: sum === 100 ? TL.ok : TL.danger, fontVariantNumeric: "tabular-nums" }}>
             {sum}%
           </span>
         </div>
@@ -251,7 +242,7 @@ export function AdminPlanMalNyV2() {
           {PYR_ALLE.map((p) => (
             <div key={p} style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <span aria-hidden style={{ width: 8, height: 8, borderRadius: 3, background: T.ax[p], flex: "none" }} />
-              <span style={{ width: 76, flex: "none", fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg2 }}>
+              <span style={{ width: 76, flex: "none", fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 600, color: TL.mute }}>
                 {AKSE_NAVN[p]}
               </span>
               <input
@@ -265,7 +256,7 @@ export function AdminPlanMalNyV2() {
                 aria-label={`Andel ${AKSE_NAVN[p]}`}
                 style={{ flex: 1, accentColor: T.ax[p] }}
               />
-              <span style={{ width: 42, flex: "none", textAlign: "right", fontFamily: T.mono, fontSize: 12, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>
+              <span style={{ width: 42, flex: "none", textAlign: "right", fontFamily: TL.font.mono, fontSize: 12, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>
                 {Math.round(fordeling[p] * 100)}%
               </span>
             </div>
@@ -280,7 +271,7 @@ export function AdminPlanMalNyV2() {
       </div>
       {/* Ikke-blokkerende hint når fordelingen ikke går opp — selve stoppet skjer i submit + server-zod */}
       {sum !== 100 && (
-        <p style={{ fontFamily: T.ui, fontSize: 12, color: T.down, margin: 0, textAlign: "right" }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, margin: 0, textAlign: "right" }}>
           <Icon name="alert-triangle" size={12} style={{ verticalAlign: "-2px", marginRight: 4 }} />
           Fordelingen summerer til {sum} % — må være 100 % før malen kan opprettes.
         </p>

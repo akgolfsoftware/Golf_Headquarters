@@ -10,25 +10,12 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { T } from "@/lib/v2/tokens";
-import {
-  Kort,
-  Caps,
-  Icon,
-  TomTilstand,
-  StatusPill,
-  AvatarInit,
-  CTAPill,
-  PillTabs,
-  TilbakeLenke,
-} from "@/components/v2";
+import { TL } from "@/lib/v2/train-lock";
+
+import { Kort, Caps, Icon, TomTilstand, StatusPill, AvatarInit, CTAPill, PillTabs, TilbakeLenke } from "@/components/v2";
 import { HjelpTips } from "@/components/v2/hjelp";
 import type { HjelpNokkel } from "@/lib/v2/hjelpetekster";
-import {
-  AdminSpillerProfilV2,
-  type AdminSpillerProfilV2Data,
-} from "./AdminSpillerProfilV2";
-
+import { AdminSpillerProfilV2, type AdminSpillerProfilV2Data } from "./AdminSpillerProfilV2";
 /* ── Datakontrakt (alt ferdigformatert server-side) ─────────── */
 
 export interface DashKpi {
@@ -132,21 +119,21 @@ export interface SpillerDashboardV2Data {
 
 /* ── Små byggeklosser ───────────────────────────────────────── */
 
-const TONE_FARGE = { lime: T.lime, warn: T.warn, down: T.down, mut: T.mut } as const;
+const TONE_FARGE = { lime: TL.fill, warn: TL.warn, down: TL.danger, mut: TL.mute } as const;
 
 function RadListe({ items, tomIcon, tomTitle, tomSub }: { items: DashRadItem[]; tomIcon: string; tomTitle: string; tomSub: string }) {
   if (!items.length) return <TomTilstand icon={tomIcon} title={tomTitle} sub={tomSub} />;
   return (
     <div>
       {items.map((r, i) => (
-        <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 0", borderBottom: i < items.length - 1 ? `1px solid ${T.border}` : "none" }}>
-          <span style={{ fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, color: T.mut, width: 64, flex: "none" }}>{r.venstre}</span>
+        <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 0", borderBottom: i < items.length - 1 ? `1px solid ${TL.hair}` : "none" }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 9.5, fontWeight: 700, color: TL.mute, width: 64, flex: "none" }}>{r.venstre}</span>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{r.tittel}</div>
-            {r.sub && <div style={{ fontFamily: T.mono, fontSize: 8.5, color: T.mut, marginTop: 3 }}>{r.sub}</div>}
+            <div style={{ fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 600, color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{r.tittel}</div>
+            {r.sub && <div style={{ fontFamily: TL.font.mono, fontSize: 8.5, color: TL.mute, marginTop: 3 }}>{r.sub}</div>}
           </div>
           {r.hoyre && (
-            <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: r.hoyreTone ? TONE_FARGE[r.hoyreTone] : T.fg2, flex: "none" }}>{r.hoyre}</span>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, color: r.hoyreTone ? TONE_FARGE[r.hoyreTone] : TL.mute, flex: "none" }}>{r.hoyre}</span>
           )}
         </div>
       ))}
@@ -158,16 +145,16 @@ function FeltListe({ felter }: { felter: DashFelt[] }) {
   return (
     <div>
       {felter.map((f, i) => (
-        <div key={f.k} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 0", borderBottom: i < felter.length - 1 ? `1px solid ${T.border}` : "none" }}>
-          <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: T.mut, width: 96, flex: "none" }}>{f.k}</span>
-          <span style={{ flex: 1, fontFamily: T.ui, fontSize: 12.5, fontWeight: 500, color: T.fg }}>{f.v}</span>
+        <div key={f.k} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 0", borderBottom: i < felter.length - 1 ? `1px solid ${TL.hair}` : "none" }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: TL.mute, width: 96, flex: "none" }}>{f.k}</span>
+          <span style={{ flex: 1, fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 500, color: TL.text }}>{f.v}</span>
         </div>
       ))}
     </div>
   );
 }
 
-function MiniSpark({ serie, accent = T.lime }: { serie: number[]; accent?: string }) {
+function MiniSpark({ serie, accent = TL.fill }: { serie: number[]; accent?: string }) {
   if (serie.length < 2) return null;
   const w = 120;
   const h = 34;
@@ -212,9 +199,9 @@ function Restitusjonsmerke({
   }
 
   const oppsett = {
-    GROENN: { tone: "up" as const, farge: T.up, tekst: "Normalt", sub: "Ingen avvik fra spillerens eget nivå." },
-    GUL: { tone: "warn" as const, farge: T.warn, tekst: "Følg med", sub: "Ett avvik fra spillerens eget normalnivå." },
-    ROED: { tone: "down" as const, farge: T.down, tekst: "Tilpass", sub: "Tydelig avvik — vurder å redusere belastningen." },
+    GROENN: { tone: "up" as const, farge: TL.ok, tekst: "Normalt", sub: "Ingen avvik fra spillerens eget nivå." },
+    GUL: { tone: "warn" as const, farge: TL.warn, tekst: "Følg med", sub: "Ett avvik fra spillerens eget normalnivå." },
+    ROED: { tone: "down" as const, farge: TL.danger, tekst: "Tilpass", sub: "Tydelig avvik — vurder å redusere belastningen." },
   }[data.farge];
 
   return (
@@ -232,16 +219,16 @@ function Restitusjonsmerke({
       />
       <div style={{ minWidth: 0 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-          <span style={{ fontFamily: T.disp, fontSize: 17, fontWeight: 700, color: T.fg, letterSpacing: "-0.02em" }}>
+          <span style={{ fontFamily: TL.font.sans, fontSize: 17, fontWeight: 700, color: TL.text, letterSpacing: "-0.02em" }}>
             {oppsett.tekst}
           </span>
           <StatusPill tone={oppsett.tone}>Restitusjon</StatusPill>
         </div>
-        <div style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, marginTop: 4, lineHeight: 1.45 }}>
+        <div style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, marginTop: 4, lineHeight: 1.45 }}>
           {oppsett.sub}
         </div>
         {data.dato && (
-          <div style={{ fontFamily: T.mono, fontSize: 9, color: T.mut, marginTop: 6 }}>
+          <div style={{ fontFamily: TL.font.mono, fontSize: 9, color: TL.mute, marginTop: 6 }}>
             Siste måling {data.dato}
           </div>
         )}
@@ -285,7 +272,7 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
   const trengerOppfolging = data.heroBadges.some((b) => b.tone === "down" || b.tone === "warn");
 
   return (
-    <div data-paper-agencyos-spillerprofil data-paper-wave-e="spillerprofil" data-od-id="agencyos-spillerprofil" style={{ display: "flex", flexDirection: "column", gap: T.gap, width: "100%" }}>
+    <div data-paper-agencyos-spillerprofil data-paper-wave-e="spillerprofil" data-od-id="agencyos-spillerprofil" style={{ display: "flex", flexDirection: "column", gap: 16, width: "100%" }}>
       <div>
         <TilbakeLenke href="/admin/spillere">Tilbake til Spillere</TilbakeLenke>
       </div>
@@ -296,12 +283,12 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
           <AvatarInit navn={p.navn} size={mobile ? 48 : 64} />
           <div style={{ flex: 1, minWidth: mobile ? 160 : 200 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 9, flexWrap: "wrap" }}>
-              <h1 style={{ fontFamily: T.disp, fontWeight: 600, fontSize: 17, letterSpacing: "-0.02em", color: T.fg, margin: 0, lineHeight: 1.2 }}>{p.navn}</h1>
+              <h1 style={{ fontFamily: TL.font.sans, fontWeight: 600, fontSize: 17, letterSpacing: "-0.02em", color: TL.text, margin: 0, lineHeight: 1.2 }}>{p.navn}</h1>
               {data.heroBadges.map((b) => (
                 <StatusPill key={b.label} tone={b.tone}>{b.label}</StatusPill>
               ))}
             </div>
-            <div style={{ fontFamily: T.mono, fontSize: 11, color: T.mut, marginTop: 7, fontVariantNumeric: "tabular-nums" }}>{data.heroMeta}</div>
+            <div style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute, marginTop: 7, fontVariantNumeric: "tabular-nums" }}>{data.heroMeta}</div>
           </div>
         </div>
       </Kort>
@@ -309,12 +296,12 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
       {/* B: status/KPI først (5s-test) */}
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7" style={{ gap: mobile ? 8 : 10 }}>
         {data.kpi.map((k) => (
-          <div key={k.label} style={{ background: T.panel, border: `1px solid ${T.border}`, borderRadius: 12, padding: mobile ? "8px 10px" : "10px 13px" }}>
+          <div key={k.label} style={{ background: TL.elev, border: `1px solid ${TL.hair}`, borderRadius: 12, padding: mobile ? "8px 10px" : "10px 13px" }}>
             <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
               <Caps size={8}>{k.label}</Caps>
               {k.hjelp && <HjelpTips k={k.hjelp} size={11} />}
             </span>
-            <div style={{ fontFamily: T.mono, fontSize: mobile ? 15 : 17, fontWeight: 700, color: k.tone ? TONE_FARGE[k.tone] : T.fg, marginTop: mobile ? 4 : 6, fontVariantNumeric: "tabular-nums" }}>{k.verdi}</div>
+            <div style={{ fontFamily: TL.font.mono, fontSize: mobile ? 15 : 17, fontWeight: 700, color: k.tone ? TONE_FARGE[k.tone] : TL.text, marginTop: mobile ? 4 : 6, fontVariantNumeric: "tabular-nums" }}>{k.verdi}</div>
           </div>
         ))}
       </div>
@@ -323,18 +310,18 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
       {data.forKort ? (
         <Kort
           style={{
-            borderColor: `color-mix(in srgb, ${T.handling} 35%, ${T.border})`,
-            background: `color-mix(in srgb, ${T.handling} 6%, ${T.panel})`,
+            borderColor: `color-mix(in srgb, ${TL.fill} 35%, ${TL.hair})`,
+            background: `color-mix(in srgb, ${TL.fill} 6%, ${TL.elev})`,
           }}
         >
           <Caps size={9}>Før neste økt · sjekkpunkt</Caps>
           <p
             style={{
               margin: "8px 0 0",
-              fontFamily: T.ui,
+              fontFamily: TL.font.sans,
               fontSize: 14,
               fontWeight: 600,
-              color: T.fg,
+              color: TL.text,
               lineHeight: 1.45,
             }}
           >
@@ -350,7 +337,7 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
               justifyContent: "space-between",
             }}
           >
-            <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut }}>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>
               Godkjent {data.forKort.godkjentLabel}
             </span>
             <Link href={data.forKort.godkjenningsHref} style={{ textDecoration: "none" }}>
@@ -363,7 +350,7 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
       ) : (
         <Kort>
           <Caps size={9}>Før neste økt</Caps>
-          <p style={{ margin: "8px 0 0", fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.5 }}>
+          <p style={{ margin: "8px 0 0", fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.5 }}>
             Ingen godkjent sjekkpunkt ennå. Etter fangst og godkjenning i køen
             dukker tråden til neste økt opp her.
           </p>
@@ -387,9 +374,9 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
             padding: "10px 18px",
             borderRadius: 12,
             /* Paper fasit spillerprofil: .btn.ink (ikke .btn.now clay) */
-            background: T.cta,
-            color: T.onCta,
-            fontFamily: T.ui,
+            background: TL.fill,
+            color: TL.onFill,
+            fontFamily: TL.font.sans,
             fontSize: 13,
             fontWeight: 600,
           }}
@@ -409,7 +396,7 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
           onChange={(id) => setFane(id as FaneId)}
         />
       ) : (
-        <div role="tablist" aria-label="Spillerinformasjon" style={{ display: "flex", gap: 2, borderBottom: `1px solid ${T.border}`, overflowX: "auto" }}>
+        <div role="tablist" aria-label="Spillerinformasjon" style={{ display: "flex", gap: 2, borderBottom: `1px solid ${TL.hair}`, overflowX: "auto" }}>
           {FANER.map((f) => {
             const on = fane === f.id;
             return (
@@ -419,9 +406,9 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
                 aria-selected={on}
                 onClick={() => setFane(f.id)}
                 className="v2-press v2-focus"
-                style={{ height: 40, padding: "0 13px", background: "none", border: "none", borderBottom: `2px solid ${on ? T.lime : "transparent"}`, color: on ? T.fg : T.mut, fontFamily: T.ui, fontSize: 12.5, fontWeight: on ? 700 : 500, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 7, whiteSpace: "nowrap", flex: "none" }}
+                style={{ height: 40, padding: "0 13px", background: "none", border: "none", borderBottom: `2px solid ${on ? TL.fill : "transparent"}`, color: on ? TL.text : TL.mute, fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: on ? 700 : 500, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 7, whiteSpace: "nowrap", flex: "none" }}
               >
-                <Icon name={f.icon} size={13} style={{ color: on ? T.lime : T.mut }} />
+                <Icon name={f.icon} size={13} style={{ color: on ? TL.fill : TL.mute }} />
                 {f.label}
               </button>
             );
@@ -434,7 +421,7 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
 
       {/* ── Utvikling ── */}
       {fane === "utvikling" && (
-        <div className="grid grid-cols-1 lg:grid-cols-3" style={{ gap: T.gap, alignItems: "start" }}>
+        <div className="grid grid-cols-1 lg:grid-cols-3" style={{ gap: 16, alignItems: "start" }}>
           <Kort eyebrow="Aktive mål" action={<Link href={data.wbHref} style={{ textDecoration: "none" }}><Caps size={9}>Rediger i Workbench →</Caps></Link>}>
             <RadListe items={data.utvikling.maal} tomIcon="target" tomTitle="Ingen aktive mål" tomSub="Mål settes sammen med spilleren i Workbench." />
           </Kort>
@@ -447,7 +434,7 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
           <div className="lg:col-span-3">
             <Kort>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
-                <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2 }}>
+                <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute }}>
                   Full SG-utvikling, treningsvolum og trening↔effekt-korrelasjon ligger i Fremgang-visningen.
                 </span>
                 <Link href={data.utvikling.fremgangHref} style={{ textDecoration: "none" }}><CTAPill ghost icon="trending-up">Åpne fremgang</CTAPill></Link>
@@ -459,18 +446,18 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
 
       {/* ── Plan ── */}
       {fane === "plan" && (
-        <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <Kort eyebrow="Sesongplan · periodisering" action={data.plan.sesong ? <Caps size={9}>{data.plan.sesong.tittel}</Caps> : undefined}>
             {data.plan.sesong ? (
               <div className="grid grid-cols-1 md:grid-cols-3" style={{ gap: 10 }}>
                 {data.plan.sesong.perioder.map((per, i) => (
-                  <div key={i} style={{ padding: "11px 13px", borderRadius: 11, background: per.aktiv ? `color-mix(in srgb, ${T.lime} 10%, ${T.panel2})` : T.panel2, border: `1px solid ${per.aktiv ? T.lime : T.border}` }}>
+                  <div key={i} style={{ padding: "11px 13px", borderRadius: 11, background: per.aktiv ? `color-mix(in srgb, ${TL.fill} 10%, ${TL.dock})` : TL.dock, border: `1px solid ${per.aktiv ? TL.fill : TL.hair}` }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: per.aktiv ? T.lime : T.fg }}>{per.navn}</span>
+                      <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, color: per.aktiv ? TL.fill : TL.text }}>{per.navn}</span>
                       {per.aktiv && <StatusPill tone="lime">Aktiv</StatusPill>}
                     </div>
-                    <div style={{ fontFamily: T.mono, fontSize: 8.5, color: T.mut, marginTop: 6 }}>{per.datoer}</div>
-                    {per.fokus && <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.fg2, marginTop: 5 }}>{per.fokus}</div>}
+                    <div style={{ fontFamily: TL.font.mono, fontSize: 8.5, color: TL.mute, marginTop: 6 }}>{per.datoer}</div>
+                    {per.fokus && <div style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 5 }}>{per.fokus}</div>}
                   </div>
                 ))}
               </div>
@@ -478,13 +465,13 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
               <TomTilstand icon="calendar" title="Ingen sesongplan" sub="Årsplanen lages i Workbench (årsplan-zoom)." />
             )}
           </Kort>
-          <div className="grid grid-cols-1 lg:grid-cols-3" style={{ gap: T.gap, alignItems: "start" }}>
+          <div className="grid grid-cols-1 lg:grid-cols-3" style={{ gap: 16, alignItems: "start" }}>
             <Kort eyebrow="Treningsplan">
               {p.plan ? (
                 <div>
-                  <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, color: T.fg }}>{p.plan.navn}</div>
-                  <div style={{ fontFamily: T.mono, fontSize: 11, color: T.mut, margin: "6px 0 12px" }}>{p.plan.meta} · {p.plan.pct} % fullført</div>
-                  <Link href={data.wbHref} className="v2-press v2-focus" style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", minHeight: 44, padding: "10px 16px", borderRadius: 12, background: T.cta, color: T.onCta, fontFamily: T.ui, fontSize: 13, fontWeight: 600 }}>Åpne i Workbench</Link>
+                  <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 16, color: TL.text }}>{p.plan.navn}</div>
+                  <div style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute, margin: "6px 0 12px" }}>{p.plan.meta} · {p.plan.pct} % fullført</div>
+                  <Link href={data.wbHref} className="v2-press v2-focus" style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", minHeight: 44, padding: "10px 16px", borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600 }}>Åpne i Workbench</Link>
                 </div>
               ) : (
                 <>
@@ -509,8 +496,8 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
 
       {/* ── Helse ── */}
       {fane === "helse" && (
-        <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr]" style={{ gap: T.gap, alignItems: "start" }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+        <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr]" style={{ gap: 16, alignItems: "start" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             <Kort eyebrow="Restitusjon">
               <Restitusjonsmerke data={data.helse.restitusjon} />
             </Kort>
@@ -518,9 +505,9 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
               {data.helse.sparklines.length ? (
                 <div className="grid grid-cols-1 md:grid-cols-3" style={{ gap: 14 }}>
                   {data.helse.sparklines.map((s) => (
-                    <div key={s.label} style={{ padding: "12px 13px", borderRadius: 11, background: T.panel2, border: `1px solid ${T.border}` }}>
+                    <div key={s.label} style={{ padding: "12px 13px", borderRadius: 11, background: TL.dock, border: `1px solid ${TL.hair}` }}>
                       <Caps size={8}>{s.label}</Caps>
-                      <div style={{ fontFamily: T.mono, fontSize: 19, fontWeight: 700, color: T.fg, margin: "7px 0" }}>{s.naa}</div>
+                      <div style={{ fontFamily: TL.font.mono, fontSize: 19, fontWeight: 700, color: TL.text, margin: "7px 0" }}>{s.naa}</div>
                       <MiniSpark serie={s.serie} />
                     </div>
                   ))}
@@ -539,15 +526,15 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
           <Kort eyebrow="Skade og permisjon">
             {data.helse.skader.length ? (
               <div style={{ position: "relative", paddingLeft: 18 }}>
-                <div style={{ position: "absolute", left: 4, top: 4, bottom: 4, width: 2, background: T.border }} />
+                <div style={{ position: "absolute", left: 4, top: 4, bottom: 4, width: 2, background: TL.hair }} />
                 {data.helse.skader.map((s, i) => (
                   <div key={i} style={{ position: "relative", paddingBottom: i < data.helse.skader.length - 1 ? 16 : 0 }}>
-                    <span style={{ position: "absolute", left: -18, top: 3, width: 9, height: 9, borderRadius: 9999, background: s.aktiv ? T.warn : T.up, border: `2px solid ${T.panel}` }} />
+                    <span style={{ position: "absolute", left: -18, top: 3, width: 9, height: 9, borderRadius: 9999, background: s.aktiv ? TL.warn : TL.ok, border: `2px solid ${TL.elev}` }} />
                     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>{s.tittel}</span>
+                      <span style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text }}>{s.tittel}</span>
                       <StatusPill tone={s.aktiv ? "warn" : "up"}>{s.aktiv ? "Pågår" : "Tilbake"}</StatusPill>
                     </div>
-                    <div style={{ fontFamily: T.mono, fontSize: 9, color: T.mut, marginTop: 6 }}>{s.sub}</div>
+                    <div style={{ fontFamily: TL.font.mono, fontSize: 9, color: TL.mute, marginTop: 6 }}>{s.sub}</div>
                   </div>
                 ))}
               </div>
@@ -560,8 +547,8 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
 
       {/* ── Turnering ── */}
       {fane === "turnering" && (
-        <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr]" style={{ gap: T.gap, alignItems: "start" }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+        <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr]" style={{ gap: 16, alignItems: "start" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             <Kort eyebrow="Kommende turneringer" action={<Link href="/admin/tournaments" style={{ textDecoration: "none" }}><Caps size={9}>Meld på →</Caps></Link>}>
               <RadListe items={data.turnering.kommende} tomIcon="trophy" tomTitle="Ingen påmeldinger" tomSub="Kommende turneringer med nedtelling vises her." />
             </Kort>
@@ -573,10 +560,10 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
             {data.turnering.wagr ? (
               <div>
                 <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
-                  <span style={{ fontFamily: T.mono, fontSize: 34, fontWeight: 700, color: T.lime, letterSpacing: "-0.02em" }}>{data.turnering.wagr.rank}</span>
-                  {data.turnering.wagr.endring && <span style={{ fontFamily: T.mono, fontSize: 9.5, color: T.fg2 }}>{data.turnering.wagr.endring}</span>}
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 34, fontWeight: 700, color: TL.fill, letterSpacing: "-0.02em" }}>{data.turnering.wagr.rank}</span>
+                  {data.turnering.wagr.endring && <span style={{ fontFamily: TL.font.mono, fontSize: 9.5, color: TL.mute }}>{data.turnering.wagr.endring}</span>}
                 </div>
-                <div style={{ fontFamily: T.mono, fontSize: 9, color: T.mut, marginTop: 8 }}>Poengsnitt {data.turnering.wagr.ptsAvg}</div>
+                <div style={{ fontFamily: TL.font.mono, fontSize: 9, color: TL.mute, marginTop: 8 }}>Poengsnitt {data.turnering.wagr.ptsAvg}</div>
               </div>
             ) : (
               <TomTilstand icon="globe" title="Ikke i WAGR" sub="Verdensranking vises når spilleren er registrert." />
@@ -597,16 +584,16 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
                 name="link"
                 size={16}
                 style={{
-                  color: data.turnering.kobling.tone === "lime" ? T.lime : T.warn,
+                  color: data.turnering.kobling.tone === "lime" ? TL.fill : TL.warn,
                   marginTop: 2,
                   flex: "none",
                 }}
               />
               <div>
-                <div style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>
+                <div style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text }}>
                   {data.turnering.kobling.status}
                 </div>
-                <div style={{ fontFamily: T.mono, fontSize: 9.5, color: T.mut, marginTop: 4, lineHeight: 1.4 }}>
+                <div style={{ fontFamily: TL.font.mono, fontSize: 9.5, color: TL.mute, marginTop: 4, lineHeight: 1.4 }}>
                   {data.turnering.kobling.sub}
                 </div>
               </div>
@@ -617,8 +604,8 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
 
       {/* ── Logg ── */}
       {fane === "logg" && (
-        <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: T.gap, alignItems: "start" }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+        <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: 16, alignItems: "start" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             <Kort eyebrow="Aktivitet · varsler">
               <RadListe items={data.logg.varsler} tomIcon="bell" tomTitle="Ingen aktivitet" tomSub="Spillerens varsler og hendelser vises her." />
             </Kort>
@@ -626,12 +613,12 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
               {data.logg.notater.length ? (
                 <div>
                   {data.logg.notater.map((n, i) => (
-                    <div key={i} style={{ padding: "11px 0", borderBottom: i < data.logg.notater.length - 1 ? `1px solid ${T.border}` : "none" }}>
+                    <div key={i} style={{ padding: "11px 0", borderBottom: i < data.logg.notater.length - 1 ? `1px solid ${TL.hair}` : "none" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-                        {n.tittel && <span style={{ fontFamily: T.ui, fontSize: 12.5, fontWeight: 700, color: T.fg }}>{n.tittel}</span>}
-                        <span style={{ fontFamily: T.mono, fontSize: 8.5, color: T.mut }}>{n.dato}</span>
+                        {n.tittel && <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 700, color: TL.text }}>{n.tittel}</span>}
+                        <span style={{ fontFamily: TL.font.mono, fontSize: 8.5, color: TL.mute }}>{n.dato}</span>
                       </div>
-                      <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.5 }}>{n.tekst}</p>
+                      <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.5 }}>{n.tekst}</p>
                     </div>
                   ))}
                 </div>
@@ -642,15 +629,15 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
             <Kort eyebrow="AI-Caddie">
               {data.logg.caddie ? (
                 <div>
-                  <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12.5, color: T.fg, lineHeight: 1.5 }}>«{data.logg.caddie.tekst}»</p>
-                  <div style={{ fontFamily: T.mono, fontSize: 8.5, color: T.mut, marginTop: 7 }}>{data.logg.caddie.sub}</div>
+                  <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.text, lineHeight: 1.5 }}>«{data.logg.caddie.tekst}»</p>
+                  <div style={{ fontFamily: TL.font.mono, fontSize: 8.5, color: TL.mute, marginTop: 7 }}>{data.logg.caddie.sub}</div>
                 </div>
               ) : (
                 <TomTilstand icon="message-circle" title="Ingen caddie-samtaler" sub="Spillerens AI-dialog vises her (lesetilgang)." />
               )}
             </Kort>
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             <Kort eyebrow="Video · swing">
               <RadListe items={data.logg.videoer} tomIcon="play" tomTitle="Ingen videoer" tomSub="Coaching-video og swing-opplastinger vises her." />
             </Kort>
@@ -663,22 +650,22 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
 
       {/* ── Administrasjon ── */}
       {fane === "admin" && (
-        <div className="grid grid-cols-1 lg:grid-cols-3" style={{ gap: T.gap, alignItems: "start" }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+        <div className="grid grid-cols-1 lg:grid-cols-3" style={{ gap: 16, alignItems: "start" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             <Kort eyebrow="Personalia" action={<Link href={data.admin.redigerHref} style={{ textDecoration: "none" }}><Caps size={9}>Rediger →</Caps></Link>}>
               <FeltListe felter={data.admin.personalia} />
             </Kort>
             <Kort eyebrow="Foresatte og samtykke">
               {data.admin.samtykke.vis && (
-                <div style={{ display: "flex", alignItems: "center", gap: 9, padding: "9px 11px", borderRadius: 10, background: `color-mix(in srgb, ${data.admin.samtykke.ok ? T.lime : T.warn} 8%, ${T.panel2})`, border: `1px solid color-mix(in srgb, ${data.admin.samtykke.ok ? T.lime : T.warn} 30%, ${T.border})`, marginBottom: 10 }}>
-                  <Icon name="shield-check" size={14} style={{ color: data.admin.samtykke.ok ? T.lime : T.warn }} />
-                  <span style={{ fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, color: T.fg }}>{data.admin.samtykke.tekst}</span>
+                <div style={{ display: "flex", alignItems: "center", gap: 9, padding: "9px 11px", borderRadius: 10, background: `color-mix(in srgb, ${data.admin.samtykke.ok ? TL.fill : TL.warn} 8%, ${TL.dock})`, border: `1px solid color-mix(in srgb, ${data.admin.samtykke.ok ? TL.fill : TL.warn} 30%, ${TL.hair})`, marginBottom: 10 }}>
+                  <Icon name="shield-check" size={14} style={{ color: data.admin.samtykke.ok ? TL.fill : TL.warn }} />
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 9.5, fontWeight: 700, color: TL.text }}>{data.admin.samtykke.tekst}</span>
                 </div>
               )}
               <RadListe items={data.admin.foresatte} tomIcon="users" tomTitle="Ingen foresatte registrert" tomSub="Foreldrekoblinger vises her." />
             </Kort>
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             <Kort eyebrow="Økonomi">
               <FeltListe felter={data.admin.okonomi} />
               <div style={{ marginTop: 10 }}>
@@ -689,12 +676,12 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
               <RadListe items={data.admin.bookinger} tomIcon="calendar-plus" tomTitle="Ingen kommende timer" tomSub="Book direkte fra kalenderen." />
             </Kort>
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             <Kort eyebrow="Utstyr (bag)">
               {data.admin.utstyr ? <FeltListe felter={data.admin.utstyr} /> : <TomTilstand icon="package" title="Ingen utstyrsdata" sub="Spillerens køllesett vises her." />}
             </Kort>
             <Kort eyebrow="Personvern">
-              <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12, color: T.mut, lineHeight: 1.6 }}>
+              <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.6 }}>
                 Dataeksport, retting og sletting håndteres under Styring → GDPR. Alle endringer på persondata logges.
               </p>
             </Kort>

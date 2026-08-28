@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * AgencyOS Klubb-innstillinger — v2 (retning C «Presis»). Rekomponerer
  * /admin/klubb/innstillinger (multi-club setup) i v2-språket, drevet av EKTE
@@ -21,28 +21,8 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import {
-  Caps,
-  Tittel,
-  Kort,
-  KpiFlis,
-  CTAPill,
-  Knapp,
-  StatusPill,
-  TomTilstand,
-  Icon,
-  Inndata,
-  Bryter,
-  Velger,
-  T,
-} from "@/components/v2";
-import {
-  addClub,
-  lagreClubSettings,
-  removeClub,
-  updateClubSettings,
-} from "@/app/admin/(legacy)/klubb/innstillinger/actions";
-
+import { Caps, Kort, KpiFlis, CTAPill, Knapp, StatusPill, TomTilstand, Icon, Inndata, Bryter, Velger } from "@/components/v2";
+import { addClub, lagreClubSettings, removeClub, updateClubSettings } from "@/app/admin/(legacy)/klubb/innstillinger/actions";
 // ── Datakontrakt (mappes fra Prisma i ruten) ───────────────────
 export interface ClubFacility {
   id: string;
@@ -98,16 +78,16 @@ export function AdminKlubbInnstillingerV2({ klubber, settings }: Props) {
   const totalCoacher = klubber.reduce((s, k) => s + k.coacherCount, 0);
 
   return (
-    <div data-paper-wave-f="innstillinger" data-od-id="agencyos-innstillinger" data-paper-slug="agencyos-oppsett" style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-f="innstillinger" data-od-id="agencyos-innstillinger" data-paper-slug="agencyos-oppsett" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div>
         <Caps>{`${klubber.length === 1 ? "1 klubb" : `${klubber.length} klubber`} · ${aktive} aktive · AgencyOS`}</Caps>
         <div style={{ marginTop: 10 }}>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Innstillinger</h1>
-        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS · klubb</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Innstillinger</h1>
+        <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>AgencyOS · klubb</span>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: T.gap }}>
+      <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: 16 }}>
         <KpiFlis tint label="Klubber totalt" value={klubber.length} />
         <KpiFlis label="Fasiliteter" value={totalFasiliteter} />
         <KpiFlis label="Spillere" value={totalSpillere} />
@@ -130,7 +110,7 @@ export function AdminKlubbInnstillingerV2({ klubber, settings }: Props) {
           </div>
         </Kort>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: T.gap }}>
+        <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: 16 }}>
           {klubber.map((k) => (
             <KlubbKort key={k.id} klubb={k} onEdit={() => setEdit(k)} />
           ))}
@@ -207,16 +187,16 @@ function OrgInnstillingerPanel({
         </span>
       }
     >
-      <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, letterSpacing: "-0.02em", color: T.fg, marginBottom: 14 }}>
+      <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 16, letterSpacing: "-0.02em", color: TL.text, marginBottom: 14 }}>
         Klubbinformasjon
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" style={{ gap: 14, borderTop: `1px solid ${T.border}`, paddingTop: 14 }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" style={{ gap: 14, borderTop: `1px solid ${TL.hair}`, paddingTop: 14 }}>
         {rader.map((r) => (
           <div key={r.label} style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
-            <Icon name={r.icon} size={14} style={{ color: T.mut, flex: "none" }} />
+            <Icon name={r.icon} size={14} style={{ color: TL.mute, flex: "none" }} />
             <div style={{ minWidth: 0 }}>
               <Caps size={8.5}>{r.label}</Caps>
-              <div style={{ marginTop: 2, fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+              <div style={{ marginTop: 2, fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                 {r.value || "—"}
               </div>
             </div>
@@ -313,10 +293,10 @@ function SettingsDialog({
 function KlubbStat({ icon, label, value }: { icon: string; label: string; value: string }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
-      <Icon name={icon} size={14} style={{ color: T.mut, flex: "none" }} />
+      <Icon name={icon} size={14} style={{ color: TL.mute, flex: "none" }} />
       <div style={{ minWidth: 0 }}>
         <Caps size={8.5}>{label}</Caps>
-        <div style={{ marginTop: 2, fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+        <div style={{ marginTop: 2, fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
           {value}
         </div>
       </div>
@@ -326,13 +306,13 @@ function KlubbStat({ icon, label, value }: { icon: string; label: string; value:
 
 function KlubbInfoBoks({ icon, label, value, sub }: { icon: string; label: string; value: string; sub?: string }) {
   return (
-    <div style={{ borderRadius: 10, border: `1px solid ${T.border}`, background: T.panel2, padding: "10px 14px" }}>
+    <div style={{ borderRadius: 10, border: `1px solid ${TL.hair}`, background: TL.dock, padding: "10px 14px" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        <Icon name={icon} size={12} style={{ color: T.lime }} />
+        <Icon name={icon} size={12} style={{ color: TL.fill }} />
         <Caps size={8.5}>{label}</Caps>
       </div>
-      <div style={{ marginTop: 4, fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>{value}</div>
-      {sub && <div style={{ fontFamily: T.ui, fontSize: 11, color: T.mut }}>{sub}</div>}
+      <div style={{ marginTop: 4, fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text }}>{value}</div>
+      {sub && <div style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.mute }}>{sub}</div>}
     </div>
   );
 }
@@ -345,15 +325,15 @@ function KlubbKort({ klubb, onEdit }: { klubb: ClubItem; onEdit: () => void }) {
     <Kort>
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
-          <span style={{ display: "grid", placeItems: "center", width: 36, height: 36, borderRadius: 9999, background: `color-mix(in srgb, ${T.lime} 12%, transparent)`, color: T.lime, flex: "none" }}>
-            <Icon name="building-2" size={17} style={{ color: T.lime }} />
+          <span style={{ display: "grid", placeItems: "center", width: 36, height: 36, borderRadius: 9999, background: `color-mix(in srgb, ${TL.fill} 12%, transparent)`, color: TL.fill, flex: "none" }}>
+            <Icon name="building-2" size={17} style={{ color: TL.fill }} />
           </span>
           <div style={{ minWidth: 0 }}>
-            <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 15, letterSpacing: "-0.02em", color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+            <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 15, letterSpacing: "-0.02em", color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
               {klubb.name}
             </div>
-            <div style={{ marginTop: 2, display: "flex", alignItems: "center", gap: 5, fontFamily: T.ui, fontSize: 11.5, color: T.mut }}>
-              <Icon name="map-pin" size={11} style={{ color: T.mut }} />
+            <div style={{ marginTop: 2, display: "flex", alignItems: "center", gap: 5, fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute }}>
+              <Icon name="map-pin" size={11} style={{ color: TL.mute }} />
               {klubb.address}
             </div>
           </div>
@@ -361,7 +341,7 @@ function KlubbKort({ klubb, onEdit }: { klubb: ClubItem; onEdit: () => void }) {
         <StatusPill tone={klubb.active ? "lime" : "info"}>{klubb.active ? "Aktiv" : "Inaktiv"}</StatusPill>
       </div>
 
-      <div className="grid grid-cols-2" style={{ gap: 12, marginTop: 16, paddingTop: 14, borderTop: `1px solid ${T.border}` }}>
+      <div className="grid grid-cols-2" style={{ gap: 12, marginTop: 16, paddingTop: 14, borderTop: `1px solid ${TL.hair}` }}>
         <KlubbStat icon="users" label="Spillere" value={String(klubb.spillereCount)} />
         <KlubbStat icon="user" label="Coacher" value={String(klubb.coacherCount)} />
         <KlubbStat icon="map-pin" label="Fasiliteter" value={String(klubb.facilities.length)} />
@@ -377,7 +357,7 @@ function KlubbKort({ klubb, onEdit }: { klubb: ClubItem; onEdit: () => void }) {
         <KlubbInfoBoks icon="user" label="Daglig leder" value={klubb.dagligLederNavn} sub={klubb.dagligLederEmail} />
       </div>
 
-      <div style={{ marginTop: 16, paddingTop: 14, borderTop: `1px solid ${T.border}` }}>
+      <div style={{ marginTop: 16, paddingTop: 14, borderTop: `1px solid ${TL.hair}` }}>
         <span onClick={onEdit}>
           <CTAPill ghost icon="pencil">
             Rediger
@@ -403,18 +383,18 @@ function LeggTilKort({ onClick }: { onClick: () => void }) {
         alignItems: "center",
         justifyContent: "center",
         gap: 10,
-        borderRadius: T.rCard,
-        border: `1px dashed ${T.borderS}`,
-        background: T.panel2,
-        color: T.mut,
+        borderRadius: TL.radius.card,
+        border: `1px dashed ${TL.hair}`,
+        background: TL.dock,
+        color: TL.mute,
         padding: 24,
       }}
     >
-      <span style={{ display: "grid", placeItems: "center", width: 44, height: 44, borderRadius: 9999, background: T.panel3 }}>
-        <Icon name="plus" size={19} style={{ color: T.fg }} />
+      <span style={{ display: "grid", placeItems: "center", width: 44, height: 44, borderRadius: 9999, background: TL.dim }}>
+        <Icon name="plus" size={19} style={{ color: TL.text }} />
       </span>
-      <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 14.5, color: T.fg }}>Legg til klubb</span>
-      <span style={{ maxWidth: 240, textAlign: "center", fontFamily: T.ui, fontSize: 12, color: T.mut, lineHeight: 1.5 }}>
+      <span style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 14.5, color: TL.text }}>Legg til klubb</span>
+      <span style={{ maxWidth: 240, textAlign: "center", fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.5 }}>
         Multi-club lar deg drifte flere anlegg fra samme AgencyOS.
       </span>
     </button>
@@ -531,7 +511,7 @@ function KlubbDialog({ mode, klubb, onClose }: DialogProps) {
 
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 22 }}>
         {mode === "edit" && klubb && (
-          <Knapp ghost icon="x-circle" disabled={pending} onClick={deaktiver} style={{ color: T.down, borderColor: `color-mix(in srgb, ${T.down} 35%, transparent)` }}>
+          <Knapp ghost icon="x-circle" disabled={pending} onClick={deaktiver} style={{ color: TL.danger, borderColor: `color-mix(in srgb, ${TL.danger} 35%, transparent)` }}>
             Deaktiver
           </Knapp>
         )}
@@ -557,12 +537,12 @@ function DialogFeil({ children }: { children: React.ReactNode }) {
       style={{
         marginTop: 16,
         borderRadius: 10,
-        border: `1px solid color-mix(in srgb, ${T.down} 35%, transparent)`,
-        background: `color-mix(in srgb, ${T.down} 10%, transparent)`,
+        border: `1px solid color-mix(in srgb, ${TL.danger} 35%, transparent)`,
+        background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`,
         padding: "10px 14px",
-        fontFamily: T.ui,
+        fontFamily: TL.font.sans,
         fontSize: 13,
-        color: T.down,
+        color: TL.danger,
       }}
     >
       {children}
@@ -603,7 +583,7 @@ function V2ModalRamme({
         if (!pending) onClose();
       }}
       className="fixed inset-0 z-[80] flex items-end justify-center sm:items-center"
-      style={{ background: T.farge.nestenSvartA62, backdropFilter: "blur(2px)" }}
+      style={{ background: TL.scrim, backdropFilter: "none" }}
     >
       <div
         ref={panelRef}
@@ -613,18 +593,18 @@ function V2ModalRamme({
         style={{
           maxHeight: "90vh",
           overflowY: "auto",
-          background: T.panel,
-          border: `1px solid ${T.borderS}`,
+          background: TL.elev,
+          border: `1px solid ${TL.hair}`,
           borderRadius: "20px 20px 0 0",
           padding: "20px 22px calc(20px + env(safe-area-inset-bottom))",
-          boxShadow: `0 24px 60px ${T.farge.svartA50}`,
+          boxShadow: "none",
           outline: "none",
         }}
       >
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
           <div>
             <Caps>{eyebrow}</Caps>
-            <div style={{ marginTop: 4, fontFamily: T.disp, fontWeight: 700, fontSize: 19, letterSpacing: "-0.02em", color: T.fg }}>
+            <div style={{ marginTop: 4, fontFamily: TL.font.sans, fontWeight: 700, fontSize: 19, letterSpacing: "-0.02em", color: TL.text }}>
               {title}
             </div>
           </div>
@@ -633,7 +613,7 @@ function V2ModalRamme({
             onClick={onClose}
             aria-label="Lukk"
             className="v2-focus"
-            style={{ appearance: "none", cursor: "pointer", background: T.panel2, border: `1px solid ${T.borderS}`, borderRadius: 9999, width: 28, height: 28, display: "inline-flex", alignItems: "center", justifyContent: "center", color: T.fg2, flex: "none" }}
+            style={{ appearance: "none", cursor: "pointer", background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: 9999, width: 28, height: 28, display: "inline-flex", alignItems: "center", justifyContent: "center", color: TL.mute, flex: "none" }}
           >
             <Icon name="x" size={14} />
           </button>

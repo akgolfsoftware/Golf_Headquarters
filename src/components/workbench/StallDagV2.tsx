@@ -24,7 +24,6 @@ import { useEffect, useState } from "react";
 import { TimeGrid, timeGridBlockStyle, type TimeGridDay } from "@/components/v2/time-grid";
 import { Icon } from "@/components/v2/icon";
 import { Knapp, TomTilstand } from "@/components/v2/core";
-import { T } from "@/lib/v2/tokens";
 import { TL } from "@/lib/v2/train-lock";
 import { addDays, mondayOf } from "@/lib/domain/workbench/operations";
 import { formatTime, UI } from "@/lib/domain/workbench/labels";
@@ -108,10 +107,10 @@ function Topplinje({
   return (
     <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 10, minWidth: 0 }}>
       <div style={{ minWidth: 0 }}>
-        <div style={{ fontFamily: T.disp, fontSize: 19, fontWeight: 600, color: T.fg }}>
+        <div style={{ fontFamily: TL.font.sans, fontSize: 19, fontWeight: 600, color: TL.text }}>
           Stall · {formaterDato(dato)}
         </div>
-        <div style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, fontVariantNumeric: "tabular-nums" }}>
+        <div style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
           {antallSpillere} {antallSpillere === 1 ? "spiller" : "spillere"}
         </div>
       </div>
@@ -196,12 +195,12 @@ function DesktopGrid({ dato, spillere }: { dato: string; spillere: StallDagSpill
                   right: 3,
                   top: 96,
                   borderRadius: TL.radius.row,
-                  border: `1px dashed ${T.border}`,
+                  border: `1px dashed ${TL.hair}`,
                   padding: "8px 8px",
                   textAlign: "center",
-                  fontFamily: T.ui,
+                  fontFamily: TL.font.sans,
                   fontSize: 11,
-                  color: T.mut,
+                  color: TL.mute,
                 }}
               >
                 Ingen økt i dag
@@ -254,11 +253,11 @@ function OktBlokk({
           display: "flex",
           alignItems: "center",
           gap: 4,
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           fontSize: 8.5,
           fontWeight: 700,
           letterSpacing: "0.06em",
-          color: utkast ? T.mut : WARM,
+          color: utkast ? TL.mute : WARM,
         }}
       >
         {hake && <Icon name="check" size={9} style={{ color: WARM }} />}
@@ -267,10 +266,10 @@ function OktBlokk({
       <span
         style={{
           display: "block",
-          fontFamily: T.ui,
+          fontFamily: TL.font.sans,
           fontSize: 11.5,
           fontWeight: 600,
-          color: T.fg,
+          color: TL.text,
           whiteSpace: "nowrap",
           overflow: "hidden",
           textOverflow: "ellipsis",
@@ -278,7 +277,7 @@ function OktBlokk({
       >
         {okt.tittel}
       </span>
-      <span style={{ display: "block", fontFamily: T.mono, fontSize: 9.5, color: T.mut, fontVariantNumeric: "tabular-nums" }}>
+      <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 9.5, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
         {formatTime(okt.startMinute)}–{formatTime(slutt)}
       </span>
     </Link>
@@ -321,7 +320,7 @@ function MobilListe({ dato, spillere }: { dato: string; spillere: StallDagSpille
                   >
                     <span
                       style={{
-                        fontFamily: T.mono,
+                        fontFamily: TL.font.mono,
                         fontSize: 11,
                         color: TL.mute,
                         fontVariantNumeric: "tabular-nums",
@@ -338,7 +337,7 @@ function MobilListe({ dato, spillere }: { dato: string; spillere: StallDagSpille
                         display: "flex",
                         alignItems: "center",
                         gap: 3,
-                        fontFamily: T.mono,
+                        fontFamily: TL.font.mono,
                         fontSize: 9.5,
                         fontWeight: 700,
                         letterSpacing: "0.05em",
@@ -372,16 +371,16 @@ export function StallDagFeil({ melding }: { melding: string }) {
         justifyItems: "center",
         textAlign: "center",
         padding: "48px 20px",
-        border: `1px solid ${T.border}`,
-        borderRadius: T.rCard,
-        background: T.panel,
+        border: `1px solid ${TL.hair}`,
+        borderRadius: TL.radius.card,
+        background: TL.elev,
       }}
     >
-      <Icon name="triangle-alert" size={22} style={{ color: T.down }} />
-      <div style={{ fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+      <Icon name="triangle-alert" size={22} style={{ color: TL.danger }} />
+      <div style={{ fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
         Kunne ikke hente dagen
       </div>
-      <div style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, maxWidth: 380 }}>{melding}</div>
+      <div style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, maxWidth: 380 }}>{melding}</div>
       <Knapp onClick={() => router.refresh()}>{UI.retry}</Knapp>
     </div>
   );

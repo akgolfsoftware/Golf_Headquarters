@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * AgencyOS — Lokasjon/fasilitet-skjema, v2-port 16. juli 2026, KOBLET
@@ -10,7 +11,7 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { T, Caps, CTAPill, Velger } from "@/components/v2";
+import { Caps, CTAPill, Velger } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import { CourseMap } from "@/components/gameplan/course-map";
 import {
@@ -44,14 +45,14 @@ export const FASILITET_TYPER: { value: FasilitetType; label: string }[] = [
 function Felt({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label style={{ display: "block" }}>
-      <span style={{ display: "block", marginBottom: 6, fontFamily: T.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.10em", color: T.mut }}>{label}</span>
+      <span style={{ display: "block", marginBottom: 6, fontFamily: TL.font.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.10em", color: TL.mute }}>{label}</span>
       {children}
     </label>
   );
 }
-const inputStyle: React.CSSProperties = { width: "100%", borderRadius: 10, border: `1px solid ${T.border}`, background: T.panel2, padding: "10px 12px", fontSize: 13, color: T.fg, outline: "none", boxSizing: "border-box" };
+const inputStyle: React.CSSProperties = { width: "100%", borderRadius: 10, border: `1px solid ${TL.hair}`, background: TL.dock, padding: "10px 12px", fontSize: 13, color: TL.text, outline: "none", boxSizing: "border-box" };
 
-const hintStyle: React.CSSProperties = { fontFamily: T.mono, fontSize: 10, color: T.mut, letterSpacing: "0.04em" };
+const hintStyle: React.CSSProperties = { fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, letterSpacing: "0.04em" };
 
 function fmtKoord(n: number): string {
   return n.toFixed(5);
@@ -65,7 +66,7 @@ function fmtKoord(n: number): string {
  */
 function FjernKnapp({ onClick }: { onClick: () => void }) {
   return (
-    <button type="button" onClick={onClick} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: T.mono, fontSize: 10, color: T.mut, textTransform: "uppercase", letterSpacing: "0.06em" }}>
+    <button type="button" onClick={onClick} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, textTransform: "uppercase", letterSpacing: "0.06em" }}>
       Fjern posisjon
     </button>
   );
@@ -131,7 +132,7 @@ function KartVelger({
       />
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
         {satt ? (
-          <span style={{ ...hintStyle, color: T.fg }}>{fmtKoord(lat as number)}, {fmtKoord(lng as number)}</span>
+          <span style={{ ...hintStyle, color: TL.text }}>{fmtKoord(lat as number)}, {fmtKoord(lng as number)}</span>
         ) : (
           <span style={hintStyle}>Ingen posisjon satt — tapp i kartet.</span>
         )}
@@ -163,12 +164,12 @@ function DialogSkall({
     <dialog
       ref={dialogRef}
       onClose={onClose}
-      style={{ borderRadius: T.rCard, border: `1px solid ${T.borderS}`, background: T.panel, padding: 0, boxShadow: `0 24px 60px ${T.farge.svartA50}`, maxWidth: 420, width: "100%", color: T.fg }}
+      style={{ borderRadius: TL.radius.card, border: `1px solid ${TL.hair}`, background: TL.elev, padding: 0, boxShadow: "none", maxWidth: 420, width: "100%", color: TL.text }}
     >
       <div style={{ padding: 22 }}>
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: 18 }}>
           <Caps>{tittel}</Caps>
-          <button type="button" onClick={onClose} aria-label="Lukk" style={{ display: "grid", placeItems: "center", width: 28, height: 28, borderRadius: 8, background: T.panel2, border: `1px solid ${T.border}`, color: T.mut, cursor: "pointer" }}>
+          <button type="button" onClick={onClose} aria-label="Lukk" style={{ display: "grid", placeItems: "center", width: 28, height: 28, borderRadius: 8, background: TL.dock, border: `1px solid ${TL.hair}`, color: TL.mute, cursor: "pointer" }}>
             <Icon name="x" size={14} />
           </button>
         </div>
@@ -200,17 +201,17 @@ function Fotknapper({
           disabled={pending}
           style={
             sekundaer.farlig
-              ? { borderRadius: 9999, border: `1px solid color-mix(in srgb, ${T.down} 35%, transparent)`, background: `color-mix(in srgb, ${T.down} 6%, transparent)`, padding: "8px 16px", fontSize: 12, fontWeight: 600, color: T.down, cursor: "pointer", opacity: pending ? 0.6 : 1 }
-              : { borderRadius: 9999, border: `1px solid ${T.border}`, background: T.panel2, padding: "8px 16px", fontSize: 12, fontWeight: 600, color: T.fg, cursor: "pointer", opacity: pending ? 0.6 : 1 }
+              ? { borderRadius: 9999, border: `1px solid color-mix(in srgb, ${TL.danger} 35%, transparent)`, background: `color-mix(in srgb, ${TL.danger} 6%, transparent)`, padding: "8px 16px", fontSize: 12, fontWeight: 600, color: TL.danger, cursor: "pointer", opacity: pending ? 0.6 : 1 }
+              : { borderRadius: 9999, border: `1px solid ${TL.hair}`, background: TL.dock, padding: "8px 16px", fontSize: 12, fontWeight: 600, color: TL.text, cursor: "pointer", opacity: pending ? 0.6 : 1 }
           }
         >
           {sekundaer.label}
         </button>
       )}
-      <button type="button" onClick={onAvbryt} disabled={pending} style={{ marginLeft: "auto", borderRadius: 9999, border: `1px solid ${T.border}`, background: T.panel2, padding: "10px 18px", fontSize: 13, fontWeight: 600, color: T.fg, cursor: "pointer", opacity: pending ? 0.6 : 1 }}>
+      <button type="button" onClick={onAvbryt} disabled={pending} style={{ marginLeft: "auto", borderRadius: 9999, border: `1px solid ${TL.hair}`, background: TL.dock, padding: "10px 18px", fontSize: 13, fontWeight: 600, color: TL.text, cursor: "pointer", opacity: pending ? 0.6 : 1 }}>
         Avbryt
       </button>
-      <button type="submit" disabled={pending} style={{ borderRadius: 9999, border: "1px solid transparent", background: T.handling, padding: "10px 18px", fontSize: 13, fontWeight: 600, color: T.onHandling, cursor: "pointer", opacity: pending ? 0.6 : 1 }}>
+      <button type="submit" disabled={pending} style={{ borderRadius: 9999, border: "1px solid transparent", background: TL.fill, padding: "10px 18px", fontSize: 13, fontWeight: 600, color: TL.onFill, cursor: "pointer", opacity: pending ? 0.6 : 1 }}>
         {pending ? "Lagrer…" : "Lagre"}
       </button>
     </div>
@@ -219,7 +220,7 @@ function Fotknapper({
 
 function FeilBoks({ children }: { children: React.ReactNode }) {
   return (
-    <div role="alert" style={{ marginTop: 14, borderRadius: 10, border: `1px solid color-mix(in srgb, ${T.down} 30%, transparent)`, background: `color-mix(in srgb, ${T.down} 10%, transparent)`, padding: "10px 14px", fontSize: 13, color: T.down }}>
+    <div role="alert" style={{ marginTop: 14, borderRadius: 10, border: `1px solid color-mix(in srgb, ${TL.danger} 30%, transparent)`, background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`, padding: "10px 14px", fontSize: 13, color: TL.danger }}>
       {children}
     </div>
   );
@@ -307,7 +308,7 @@ export function LocationFormV2({ initial, triggerLabel }: LocationFormV2Props) {
   return (
     <div data-paper-wave-h="locationform" data-paper-pattern style={{ display: "contents" }}><>
       {initial ? (
-        <button type="button" onClick={aapne} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: T.mono, fontSize: 11, color: T.lime, textTransform: "uppercase", letterSpacing: "0.06em" }}>
+        <button type="button" onClick={aapne} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: TL.font.mono, fontSize: 11, color: TL.fill, textTransform: "uppercase", letterSpacing: "0.06em" }}>
           {triggerLabel}
         </button>
       ) : (
@@ -332,7 +333,7 @@ export function LocationFormV2({ initial, triggerLabel }: LocationFormV2Props) {
               <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Storgata 1, 1601 Fredrikstad" style={inputStyle} />
             </Felt>
             <div>
-              <span style={{ display: "block", marginBottom: 6, fontFamily: T.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.10em", color: T.mut }}>Posisjon på kart (valgfri)</span>
+              <span style={{ display: "block", marginBottom: 6, fontFamily: TL.font.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.10em", color: TL.mute }}>Posisjon på kart (valgfri)</span>
               {/* Monteres først når dialogen er åpen — unngår Mapbox-instanser for lukkede skjemaer og gir ferskt sentrum hver gang. */}
               {open && <KartVelger lat={lat} lng={lng} setLat={setLat} setLng={setLng} />}
             </div>
@@ -435,14 +436,14 @@ export function FacilityFormV2({ locationId, initial, triggerLabel }: FacilityFo
   return (
     <>
       {initial ? (
-        <button type="button" onClick={aapne} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: T.mono, fontSize: 11, color: T.lime, textTransform: "uppercase", letterSpacing: "0.06em" }}>
+        <button type="button" onClick={aapne} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: TL.font.mono, fontSize: 11, color: TL.fill, textTransform: "uppercase", letterSpacing: "0.06em" }}>
           {triggerLabel}
         </button>
       ) : (
         <button
           type="button"
           onClick={aapne}
-          style={{ borderRadius: 9999, border: `1px solid ${T.border}`, background: T.panel2, padding: "6px 14px", fontSize: 12, fontWeight: 600, color: T.fg, cursor: "pointer" }}
+          style={{ borderRadius: 9999, border: `1px solid ${TL.hair}`, background: TL.dock, padding: "6px 14px", fontSize: 12, fontWeight: 600, color: TL.text, cursor: "pointer" }}
         >
           {triggerLabel}
         </button>

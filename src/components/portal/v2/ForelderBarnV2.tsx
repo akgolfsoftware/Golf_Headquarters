@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * Foreldreportal · Barn-lista — Paper-port (W5).
  * Fasit: designsystem/paper/fase2/forelder/forelder-barn.html, data-vis="flere"
@@ -20,20 +20,7 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { bekreftSkoletidAction } from "@/app/forelder/barn/skoletid-actions";
 import type { PyramidArea } from "@/generated/prisma/client";
-import {
-  T,
-  Caps,
-  Tittel,
-  Kort,
-  Pyramide,
-  TomTilstand,
-  AvatarFoto,
-  Icon,
-  StatusPill,
-  Knapp,
-  HjelpTips,
-} from "@/components/v2";
-
+import { Caps, Tittel, Kort, Pyramide, TomTilstand, AvatarFoto, Icon, StatusPill, Knapp, HjelpTips } from "@/components/v2";
 /* ── Datakontrakt (1:1 med page.tsx-loaderen) ──────────────────────── */
 
 export type ForelderBarnRad = {
@@ -114,9 +101,9 @@ function Stat({
   return (
     <div
       style={{
-        background: T.panel2,
-        border: `1px solid ${T.border}`,
-        borderRadius: T.rRow,
+        background: TL.dock,
+        border: `1px solid ${TL.hair}`,
+        borderRadius: TL.radius.row,
         padding: "10px 12px",
         minWidth: 0,
       }}
@@ -126,26 +113,26 @@ function Stat({
           display: "inline-flex",
           alignItems: "center",
           gap: 5,
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           fontSize: 8.5,
           fontWeight: 700,
           letterSpacing: "0.08em",
           textTransform: "uppercase",
-          color: T.mut,
+          color: TL.mute,
         }}
       >
-        <Icon name={ikon} size={11} style={{ color: T.mut }} />
+        <Icon name={ikon} size={11} style={{ color: TL.mute }} />
         {label}
       </span>
       <span
         style={{
           display: "block",
           marginTop: 6,
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           fontSize: 13.5,
           fontWeight: 700,
           fontVariantNumeric: "tabular-nums",
-          color: alert ? T.down : T.fg,
+          color: alert ? TL.danger : TL.text,
           whiteSpace: "nowrap",
           overflow: "hidden",
           textOverflow: "ellipsis",
@@ -166,15 +153,15 @@ function Personvernlinje() {
         display: "flex",
         gap: 10,
         padding: "12px 14px",
-        background: T.panel2,
-        borderRadius: T.rCard,
-        fontFamily: T.ui,
+        background: TL.dock,
+        borderRadius: TL.radius.card,
+        fontFamily: TL.font.sans,
         fontSize: 12.5,
-        color: T.mut,
+        color: TL.mute,
         lineHeight: 1.5,
       }}
     >
-      <Icon name="shield-check" size={14} style={{ color: T.mut, flex: "none", marginTop: 1 }} />
+      <Icon name="shield-check" size={14} style={{ color: TL.mute, flex: "none", marginTop: 1 }} />
       <span>Du ser oppmøte, plan og økonomi. Barnas egne notater, meldinger til coachen og velværelogg vises ikke her.</span>
     </div>
   );
@@ -188,10 +175,10 @@ function UtenSamtykkeKort({ b }: { b: ForelderBarnRad }) {
       <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
         <AvatarFoto src={b.avatarUrl} navn={b.navn} size={44} />
         <div style={{ flex: 1, minWidth: 0 }}>
-          <span style={{ display: "block", fontFamily: T.disp, fontSize: 15, fontWeight: 700, color: T.fg }}>
+          <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 700, color: TL.text }}>
             {b.navn}
           </span>
-          <span style={{ display: "block", marginTop: 2, fontFamily: T.ui, fontSize: 12, color: T.mut }}>
+          <span style={{ display: "block", marginTop: 2, fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}>
             Vi mangler samtykket ditt — kontoen åpnes ikke før det er bekreftet.
           </span>
         </div>
@@ -245,12 +232,12 @@ function BarnKort({
           <span
             style={{
               display: "block",
-              fontFamily: T.mono,
+              fontFamily: TL.font.mono,
               fontSize: 9.5,
               fontWeight: 700,
               letterSpacing: "0.1em",
               textTransform: "uppercase",
-              color: T.mut,
+              color: TL.mute,
             }}
           >
             {b.relationship}
@@ -263,27 +250,27 @@ function BarnKort({
             style={{
               display: "block",
               marginTop: 3,
-              fontFamily: T.disp,
+              fontFamily: TL.font.sans,
               fontSize: 19,
               fontWeight: 700,
               letterSpacing: "-0.02em",
-              color: T.fg,
+              color: TL.text,
               whiteSpace: "nowrap",
               overflow: "hidden",
               textOverflow: "ellipsis",
             }}
           >
-            <span style={{ color: T.lime }}>{fornavn}</span>
+            <span style={{ color: TL.fill }}>{fornavn}</span>
             {etternavn ? ` ${etternavn}` : ""}
           </span>
         </span>
-        <Icon name="chevron-right" size={18} style={{ color: T.mut, flex: "none" }} />
+        <Icon name="chevron-right" size={18} style={{ color: TL.mute, flex: "none" }} />
       </button>
 
       {/* Treningsfordeling (siste 30 dager) */}
-      <div style={{ borderTop: `1px solid ${T.border}`, padding: mobile ? "14px 16px" : "14px 20px" }}>
+      <div style={{ borderTop: `1px solid ${TL.hair}`, padding: mobile ? "14px 16px" : "14px 20px" }}>
         <Caps size={9} style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-          <Icon name="layers" size={12} style={{ color: T.mut }} />
+          <Icon name="layers" size={12} style={{ color: TL.mute }} />
           Hva det er trent på · 30 dager
           <HjelpTips k="pyramideAkse" size={11} />
         </Caps>
@@ -291,7 +278,7 @@ function BarnKort({
           {okter > 0 ? (
             <Pyramide data={b.pyramide} max={Math.max(1, okter)} showValues />
           ) : (
-            <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: 0 }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: 0 }}>
               Ingen fullførte økter ennå — trykk for å se profilen.
             </p>
           )}
@@ -304,7 +291,7 @@ function BarnKort({
           display: "grid",
           gridTemplateColumns: "repeat(3, 1fr)",
           gap: 8,
-          borderTop: `1px solid ${T.border}`,
+          borderTop: `1px solid ${TL.hair}`,
           padding: mobile ? "14px 16px" : "14px 20px",
         }}
       >
@@ -354,17 +341,17 @@ function SkoletidKort({
   return (
     <div
       style={{
-        borderTop: `1px solid ${T.border}`,
+        borderTop: `1px solid ${TL.hair}`,
         padding: mobile ? "14px 16px" : "14px 20px",
       }}
     >
       <h3
         style={{
           margin: 0,
-          fontFamily: T.disp,
+          fontFamily: TL.font.sans,
           fontSize: 14,
           fontWeight: 600,
-          color: T.fg,
+          color: TL.text,
         }}
       >
         Skoletid · {data.semesterVisning}
@@ -372,9 +359,9 @@ function SkoletidKort({
       <p
         style={{
           margin: "6px 0 0",
-          fontFamily: T.ui,
+          fontFamily: TL.font.sans,
           fontSize: 12.5,
-          color: T.mut,
+          color: TL.mute,
           lineHeight: 1.55,
         }}
       >
@@ -421,11 +408,11 @@ function SkoletidKort({
           }}
           style={{
             padding: "9px 16px",
-            borderRadius: T.rInput,
+            borderRadius: TL.radius.field,
             border: "none",
-            background: status.bekreftet ? T.panel3 : T.fg,
-            color: status.bekreftet ? T.mut : T.bg,
-            fontFamily: T.ui,
+            background: status.bekreftet ? TL.dim : TL.text,
+            color: status.bekreftet ? TL.mute : TL.scene,
+            fontFamily: TL.font.sans,
             fontSize: 12.5,
             fontWeight: 600,
             cursor: status.bekreftet ? "default" : sender ? "wait" : "pointer",
@@ -438,11 +425,11 @@ function SkoletidKort({
           className="v2-press v2-focus"
           style={{
             padding: "9px 16px",
-            borderRadius: T.rInput,
-            border: `1px solid ${T.border}`,
-            background: T.panel,
-            color: T.fg,
-            fontFamily: T.ui,
+            borderRadius: TL.radius.field,
+            border: `1px solid ${TL.hair}`,
+            background: TL.elev,
+            color: TL.text,
+            fontFamily: TL.font.sans,
             fontSize: 12.5,
             textDecoration: "none",
           }}
@@ -454,9 +441,9 @@ function SkoletidKort({
       <p
         style={{
           margin: "12px 0 0",
-          fontFamily: T.ui,
+          fontFamily: TL.font.sans,
           fontSize: 12,
-          color: T.mut,
+          color: TL.mute,
           lineHeight: 1.55,
         }}
       >
@@ -476,13 +463,13 @@ function Linje({ navn, verdi }: { navn: string; verdi: string }) {
         justifyContent: "space-between",
         gap: 12,
         padding: "5px 0",
-        fontFamily: T.ui,
+        fontFamily: TL.font.sans,
         fontSize: 12.5,
-        color: T.fg,
+        color: TL.text,
       }}
     >
       <span style={{ flex: "none" }}>{navn}</span>
-      <span style={{ color: T.mut, textAlign: "right", minWidth: 0 }}>{verdi}</span>
+      <span style={{ color: TL.mute, textAlign: "right", minWidth: 0 }}>{verdi}</span>
     </div>
   );
 }
@@ -501,7 +488,7 @@ export function ForelderBarnV2({ data }: { data: ForelderBarnData }) {
       data-paper-slug="forelder-barn"
       data-paper-wave-e="forelder-sub"
       data-paper-portal-forelder-barn
-      style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}
+      style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}
     >
       {/* Hode + status */}
       <div
@@ -524,9 +511,9 @@ export function ForelderBarnV2({ data }: { data: ForelderBarnData }) {
             style={{
               display: "block",
               marginTop: 8,
-              fontFamily: T.ui,
+              fontFamily: TL.font.sans,
               fontSize: 12.5,
-              color: T.mut,
+              color: TL.mute,
             }}
           >
             {barn.length > 0
@@ -564,7 +551,7 @@ export function ForelderBarnV2({ data }: { data: ForelderBarnData }) {
               </Knapp>
             </div>
           )}
-          <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             {barn.map((b) =>
               b.samtykkeGitt ? (
                 <BarnKort

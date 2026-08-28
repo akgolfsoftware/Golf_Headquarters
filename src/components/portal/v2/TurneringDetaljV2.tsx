@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * PlayerHQ · Turnering-detalj — Paper-port W1 (fase2).
@@ -20,7 +21,7 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { T, Caps, Kort, Knapp, CTAPill, StatusPill, MikroMeta } from "@/components/v2";
+import { Caps, Kort, Knapp, CTAPill, StatusPill, MikroMeta } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import {
   claimPaamelding,
@@ -60,10 +61,10 @@ const CLAY_CTA: React.CSSProperties = {
   minHeight: 56,
   width: "100%",
   border: "none",
-  borderRadius: T.rCard,
-  background: T.handling,
-  color: T.onHandling,
-  fontFamily: T.ui,
+  borderRadius: TL.radius.card,
+  background: TL.fill,
+  color: TL.onFill,
+  fontFamily: TL.font.sans,
   fontSize: 14,
   fontWeight: 600,
   cursor: "pointer",
@@ -127,14 +128,14 @@ export function TurneringDetaljV2({
     <div
       data-paper-slug="playerhq-turnering-detalj"
       data-od-id="playerhq-turnering-detalj"
-      style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}
+      style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}
     >
       {/* Topp — fasit: navn + mono-sub */}
       <div style={{ minWidth: 0 }}>
-        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+        <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
           {data.navn}
         </h1>
-        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+        <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
           {data.sub}
         </span>
       </div>
@@ -143,12 +144,12 @@ export function TurneringDetaljV2({
       {feil && (
         <div
           role="alert"
-          style={{ padding: "24px 16px", background: T.panel2, border: `1px dashed ${T.border}`, borderRadius: T.rCard }}
+          style={{ padding: "24px 16px", background: TL.dock, border: `1px dashed ${TL.hair}`, borderRadius: TL.radius.card }}
         >
-          <h3 style={{ margin: "0 0 8px", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+          <h3 style={{ margin: "0 0 8px", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
             Påmeldingen gikk ikke gjennom
           </h3>
-          <p style={{ margin: "0 0 12px", fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut }}>
+          <p style={{ margin: "0 0 12px", fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute }}>
             Ingen penger er trukket, og du står IKKE på startlisten — prøv
             igjen, eller meld deg på direkte i GolfBox.
           </p>
@@ -170,7 +171,7 @@ export function TurneringDetaljV2({
       {paameldt && (
         <Kort eyebrow="status">
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
-            <span style={{ fontFamily: T.ui, fontSize: 13, color: T.fg }}>Påmeldt</span>
+            <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text }}>Påmeldt</span>
             <StatusPill tone="up">Bekreftet i GolfBox</StatusPill>
           </div>
         </Kort>
@@ -178,14 +179,14 @@ export function TurneringDetaljV2({
 
       {/* Én ting nå — fristvarsel + første av to trykk */}
       {!paameldt && !feil && (
-        <div style={{ background: T.handlingSoft, border: `1px solid ${T.border}`, borderRadius: T.rCard, padding: 16 }}>
+        <div style={{ background: TL.dim, border: `1px solid ${TL.hair}`, borderRadius: TL.radius.card, padding: 16 }}>
           <Caps>Én ting nå</Caps>
-          <h3 style={{ margin: "8px 0", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+          <h3 style={{ margin: "8px 0", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
             {data.fristLabel
               ? `Fristen går ut ${data.fristLabel}`
               : "Du er ikke påmeldt ennå"}
           </h3>
-          <p style={{ margin: bekreftApen ? 0 : "0 0 16px", fontFamily: T.bodyFont, fontSize: 14, color: T.mut, maxWidth: "52ch" }}>
+          <p style={{ margin: bekreftApen ? 0 : "0 0 16px", fontFamily: TL.font.sans, fontSize: 14, color: TL.mute, maxWidth: "52ch" }}>
             Du er ikke påmeldt. Påmeldingen er din — to trykk, så står du på
             startlisten.
           </p>
@@ -209,7 +210,7 @@ export function TurneringDetaljV2({
       {/* Bekreftelsen — andre trykk (dobbel bekreftelse er spilleransvarets form) */}
       {!paameldt && !feil && bekreftApen && (
         <Kort eyebrow="bekreft påmeldingen">
-          <p style={{ margin: "0 0 12px", fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut }}>
+          <p style={{ margin: "0 0 12px", fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute }}>
             Du melder deg på {data.navn}
             {data.sub ? ` (${data.sub})` : ""}. Dette er ditt andre og siste
             trykk — appen sjekker ikke hos arrangør, ansvaret er ditt.
@@ -239,13 +240,13 @@ export function TurneringDetaljV2({
                 justifyContent: "center",
                 minHeight: 48,
                 padding: "0 16px",
-                fontFamily: T.ui,
+                fontFamily: TL.font.sans,
                 fontSize: 14,
                 fontWeight: 500,
                 background: "transparent",
-                border: `1px solid ${T.border}`,
-                borderRadius: T.rCard,
-                color: T.fg,
+                border: `1px solid ${TL.hair}`,
+                borderRadius: TL.radius.card,
+                color: TL.text,
                 cursor: "pointer",
               }}
             >
@@ -268,11 +269,11 @@ export function TurneringDetaljV2({
                   gap: 8,
                   padding: "8px 0",
                   fontSize: 13,
-                  borderBottom: i === data.fakta.length - 1 ? "none" : `1px solid ${T.borderS}`,
+                  borderBottom: i === data.fakta.length - 1 ? "none" : `1px solid ${TL.hair}`,
                 }}
               >
-                <span style={{ fontFamily: T.ui, color: T.fg }}>{r.k}</span>
-                <span style={{ marginLeft: "auto", fontFamily: T.mono, fontVariantNumeric: "tabular-nums", textAlign: "right", color: T.fg }}>
+                <span style={{ fontFamily: TL.font.sans, color: TL.text }}>{r.k}</span>
+                <span style={{ marginLeft: "auto", fontFamily: TL.font.mono, fontVariantNumeric: "tabular-nums", textAlign: "right", color: TL.text }}>
                   {r.v}
                 </span>
               </div>
@@ -283,10 +284,10 @@ export function TurneringDetaljV2({
               href={data.arrangorUrl}
               target="_blank"
               rel="noopener noreferrer"
-              style={{ display: "inline-flex", alignItems: "center", gap: 6, marginTop: 10, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg2, textDecoration: "none" }}
+              style={{ display: "inline-flex", alignItems: "center", gap: 6, marginTop: 10, fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 600, color: TL.mute, textDecoration: "none" }}
             >
               Turneringen hos arrangør
-              <Icon name="external-link" size={13} style={{ color: T.mut }} />
+              <Icon name="external-link" size={13} style={{ color: TL.mute }} />
             </a>
           )}
         </Kort>
@@ -305,13 +306,13 @@ export function TurneringDetaljV2({
               justifyContent: "center",
               minHeight: 48,
               width: "100%",
-              fontFamily: T.ui,
+              fontFamily: TL.font.sans,
               fontSize: 14,
               fontWeight: 500,
               background: "transparent",
-              border: `1px solid ${T.border}`,
-              borderRadius: T.rCard,
-              color: T.fg,
+              border: `1px solid ${TL.hair}`,
+              borderRadius: TL.radius.card,
+              color: TL.text,
               cursor: "pointer",
             }}
           >
@@ -323,15 +324,15 @@ export function TurneringDetaljV2({
       {/* Din turneringsrunde (D6c) — reell funksjon, beholdt fra forrige port.
           Utelates helt når spilleren verken har en runde eller kan starte. */}
       {visRundeKort && (
-        <Kort eyebrow="Din turneringsrunde" action={<Icon name="flag" size={14} style={{ color: T.mut }} />}>
+        <Kort eyebrow="Din turneringsrunde" action={<Icon name="flag" size={14} style={{ color: TL.mute }} />}>
           {turneringsrunde ? (
             turneringsrunde.fort ? (
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
                   <StatusPill tone="up">Ført</StatusPill>
-                  <span style={{ fontFamily: T.mono, fontSize: 20, fontWeight: 800, color: T.fg, fontVariantNumeric: "tabular-nums" }}>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 20, fontWeight: 800, color: TL.text, fontVariantNumeric: "tabular-nums" }}>
                     {turneringsrunde.score}
-                    <span style={{ fontSize: 10, fontWeight: 700, color: T.mut, textTransform: "uppercase", letterSpacing: "0.06em", marginLeft: 6 }}>slag</span>
+                    <span style={{ fontSize: 10, fontWeight: 700, color: TL.mute, textTransform: "uppercase", letterSpacing: "0.06em", marginLeft: 6 }}>slag</span>
                   </span>
                 </div>
                 <MikroMeta icon="check-circle">{turneringsrunde.hullAntall} hull ført · brutto</MikroMeta>
@@ -346,7 +347,7 @@ export function TurneringDetaljV2({
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   <StatusPill tone="info">Pågår</StatusPill>
                 </div>
-                <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, margin: 0, lineHeight: 1.6 }}>
+                <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: 0, lineHeight: 1.6 }}>
                   Runden er startet, men scorekortet er ikke ført ennå. Før det
                   hull for hull mens du spiller.
                 </p>
@@ -356,7 +357,7 @@ export function TurneringDetaljV2({
                     className="v2-press v2-focus"
                     style={{
                       display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "0 16px",
-                      borderRadius: T.rTag, background: T.cta, color: T.onCta, fontFamily: T.ui, fontSize: 13, fontWeight: 600,
+                      borderRadius: TL.radius.row, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600,
                       textDecoration: "none",
                     }}
                   >
@@ -367,7 +368,7 @@ export function TurneringDetaljV2({
             )
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, margin: 0, lineHeight: 1.6 }}>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: 0, lineHeight: 1.6 }}>
                 Fører du runden hull for hull mens du spiller, knyttes den til
                 turneringen.
               </p>
@@ -382,7 +383,7 @@ export function TurneringDetaljV2({
       {/* Egne notater på påmeldingen — reelle data, utelates når tomt */}
       {data.notater && (
         <Kort eyebrow="Notatene dine">
-          <p style={{ fontFamily: T.bodyFont, fontSize: 13.5, color: T.fg, lineHeight: 1.6, margin: 0 }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 13.5, color: TL.text, lineHeight: 1.6, margin: 0 }}>
             {data.notater}
           </p>
         </Kort>
@@ -393,20 +394,20 @@ export function TurneringDetaljV2({
         <Kort eyebrow="Resultater · historikk · brutto">
           <div>
             {data.historikk.map((h, i) => (
-              <div key={h.id} style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, padding: "10px 0", borderBottom: i === data.historikk.length - 1 ? "none" : `1px solid ${T.border}` }}>
-                <span style={{ fontFamily: T.mono, fontSize: 12, color: T.mut, fontVariantNumeric: "tabular-nums" }}>{h.aar}</span>
+              <div key={h.id} style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, padding: "10px 0", borderBottom: i === data.historikk.length - 1 ? "none" : `1px solid ${TL.hair}` }}>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 12, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>{h.aar}</span>
                 {h.plassering != null ? (
-                  <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>
                     #{h.plassering}{" "}
-                    <span style={{ fontSize: 10, fontWeight: 700, color: T.mut, textTransform: "uppercase", letterSpacing: "0.06em" }}>plass</span>
+                    <span style={{ fontSize: 10, fontWeight: 700, color: TL.mute, textTransform: "uppercase", letterSpacing: "0.06em" }}>plass</span>
                   </span>
                 ) : h.score != null ? (
-                  <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>
                     {h.score}{" "}
-                    <span style={{ fontSize: 10, fontWeight: 700, color: T.mut, textTransform: "uppercase", letterSpacing: "0.06em" }}>slag</span>
+                    <span style={{ fontSize: 10, fontWeight: 700, color: TL.mute, textTransform: "uppercase", letterSpacing: "0.06em" }}>slag</span>
                   </span>
                 ) : (
-                  <span style={{ fontFamily: T.mono, fontSize: 13, color: T.mut }}>—</span>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 13, color: TL.mute }}>—</span>
                 )}
               </div>
             ))}
@@ -420,15 +421,15 @@ export function TurneringDetaljV2({
           display: "flex",
           gap: 12,
           padding: "12px 16px",
-          borderRadius: T.rCard,
-          background: T.panel2,
-          border: `1px solid ${T.border}`,
-          fontFamily: T.bodyFont,
+          borderRadius: TL.radius.card,
+          background: TL.dock,
+          border: `1px solid ${TL.hair}`,
+          fontFamily: TL.font.sans,
           fontSize: 12.5,
-          color: T.mut,
+          color: TL.mute,
         }}
       >
-        <Icon name="pencil" size={16} style={{ color: T.mut, flex: "none", marginTop: 2 }} />
+        <Icon name="pencil" size={16} style={{ color: TL.mute, flex: "none", marginTop: 2 }} />
         <span>
           Påmeldingen er din, ikke appens. Anders ser at du er påmeldt og
           legger uka til rette — mandag etter turnering er alltid FYS.

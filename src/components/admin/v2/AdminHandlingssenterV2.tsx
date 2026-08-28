@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * AgencyOS Handlingssenter — v2 (retning C «Presis»). Coach-kontekst: alle
  * åpne handlinger/oppgaver samlet, gruppert etter hastegrad. Ingen mockup
@@ -25,24 +25,7 @@
  */
 
 import { useMemo, useState } from "react";
-import {
-  Caps,
-  Tittel,
-  Kort,
-  Rad,
-  AvatarInit,
-  StatusPill,
-  KpiFlis,
-  PillTabs,
-  CTAPill,
-  Knapp,
-  TomTilstand,
-  InnsiktChip,
-  Icon,
-  T,
-  type StatusTone,
-} from "@/components/v2";
-
+import { Caps, Kort, Rad, AvatarInit, StatusPill, KpiFlis, PillTabs, CTAPill, Knapp, TomTilstand, InnsiktChip, Icon, type StatusTone } from "@/components/v2";
 // ── Datakontrakt (mappes fra OppgaveCache i ruten) ──────────────
 export type HandlingKol = "todo" | "doing" | "done" | "backlog";
 export type HandlingPri = "high" | "mid" | "low";
@@ -116,7 +99,7 @@ function DetaljInnhold({
       verdi: (
         <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
           <AvatarInit navn={item.spiller} size={22} />
-          <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>
+          <span style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text }}>
             {item.spiller}
           </span>
         </span>
@@ -125,7 +108,7 @@ function DetaljInnhold({
     {
       label: "Forfall",
       verdi: (
-        <span style={{ fontFamily: T.mono, fontSize: 12, fontWeight: 700, color: T.fg2, fontVariantNumeric: "tabular-nums" }}>
+        <span style={{ fontFamily: TL.font.mono, fontSize: 12, fontWeight: 700, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
           {item.due}
         </span>
       ),
@@ -133,7 +116,7 @@ function DetaljInnhold({
     {
       label: "Kategori",
       verdi: (
-        <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.06em", color: T.fg2, background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 6, padding: "3px 8px" }}>
+        <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.06em", color: TL.mute, background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: 6, padding: "3px 8px" }}>
           {item.tag}
         </span>
       ),
@@ -142,7 +125,7 @@ function DetaljInnhold({
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-      <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 18, lineHeight: 1.3, letterSpacing: "-0.01em", color: T.fg, margin: 0 }}>
+      <h2 style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 18, lineHeight: 1.3, letterSpacing: "-0.01em", color: TL.text, margin: 0 }}>
         {item.tittel}
       </h2>
 
@@ -150,7 +133,7 @@ function DetaljInnhold({
         {rader.map((r, i) => (
           <div
             key={r.label}
-            style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, padding: "9px 0", borderBottom: i === rader.length - 1 ? "none" : `1px solid ${T.border}` }}
+            style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, padding: "9px 0", borderBottom: i === rader.length - 1 ? "none" : `1px solid ${TL.hair}` }}
           >
             <Caps size={9}>{r.label}</Caps>
             {r.verdi}
@@ -158,13 +141,13 @@ function DetaljInnhold({
         ))}
       </div>
 
-      <div style={{ fontFamily: T.ui, fontSize: 12.5, lineHeight: 1.55, color: T.fg2, background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 12, padding: "12px 14px" }}>
+      <div style={{ fontFamily: TL.font.sans, fontSize: 12.5, lineHeight: 1.55, color: TL.mute, background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: 12, padding: "12px 14px" }}>
         {item.desc}
       </div>
 
       {ferdig ? (
-        <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, fontFamily: T.mono, fontSize: 11, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: T.up, background: `color-mix(in srgb,${T.up} 12%,transparent)`, borderRadius: 9999, padding: "11px 18px" }}>
-          <Icon name="check-circle" size={14} style={{ color: T.up }} />
+        <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, fontFamily: TL.font.mono, fontSize: 11, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: TL.ok, background: `color-mix(in srgb,${TL.ok} 12%,transparent)`, borderRadius: 9999, padding: "11px 18px" }}>
+          <Icon name="check-circle" size={14} style={{ color: TL.ok }} />
           Fullført
         </span>
       ) : (
@@ -223,8 +206,8 @@ export function AdminHandlingssenterV2({ data, meg }: { data: AdminHandlingssent
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
         <div data-paper-pattern-topp data-paper-slug="agencyos-godkjenninger">
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Handlingssenter</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Handlingssenter</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>AgencyOS</span>
         </div>
       </div>
       <div className="hidden md:inline-flex">
@@ -235,7 +218,7 @@ export function AdminHandlingssenterV2({ data, meg }: { data: AdminHandlingssent
 
   // ── KPI-flis (3) ──────────────────────────────────────────────
   const kpi = (
-    <div className="grid grid-cols-3" style={{ gap: T.gap }}>
+    <div className="grid grid-cols-3" style={{ gap: 16 }}>
       <KpiFlis label="Åpne oppgaver" value={tellere.åpne} />
       <KpiFlis label="Haster nå" value={tellere.haster} varsle={tellere.haster > 0} />
       <KpiFlis label="Fullført i dag" value={tellere.fullført} />
@@ -272,9 +255,9 @@ export function AdminHandlingssenterV2({ data, meg }: { data: AdminHandlingssent
           return (
             <div key={b.key} style={{ marginBottom: 4 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 0 6px" }}>
-                <span style={{ width: 6, height: 6, borderRadius: 9999, background: PRI_TONE[b.key] === "down" ? T.down : PRI_TONE[b.key] === "warn" ? T.warn : T.info, flex: "none" }} />
+                <span style={{ width: 6, height: 6, borderRadius: 9999, background: PRI_TONE[b.key] === "down" ? TL.danger : PRI_TONE[b.key] === "warn" ? TL.warn : TL.viz.target, flex: "none" }} />
                 <Caps size={9}>{b.label}</Caps>
-                <span style={{ fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, color: T.mut }}>{rader.length}</span>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 9.5, fontWeight: 700, color: TL.mute }}>{rader.length}</span>
               </div>
               {rader.map((o, i) => {
                 const ferdig = erFerdig(o);
@@ -292,7 +275,7 @@ export function AdminHandlingssenterV2({ data, meg }: { data: AdminHandlingssent
                     }
                     trailing={
                       valgt?.id === o.id
-                        ? <span style={{ width: 2, height: 20, borderRadius: 2, background: T.lime, flex: "none" }} />
+                        ? <span style={{ width: 2, height: 20, borderRadius: 2, background: TL.fill, flex: "none" }} />
                         : undefined
                     }
                     last={i === rader.length - 1}
@@ -331,19 +314,19 @@ export function AdminHandlingssenterV2({ data, meg }: { data: AdminHandlingssent
       <div className="lg:hidden" style={{ position: "fixed", inset: 0, zIndex: 60, display: "flex", flexDirection: "column", justifyContent: "flex-end" }}>
         <div
           onClick={() => setArkAapen(false)}
-          style={{ position: "absolute", inset: 0, background: T.farge.svartA62, backdropFilter: "blur(2px)" }}
+          style={{ position: "absolute", inset: 0, background: TL.scrim, backdropFilter: "none" }}
         />
-        <div style={{ position: "relative", background: T.panel, borderTop: `1px solid ${T.borderS}`, borderRadius: "20px 20px 0 0", padding: "10px 18px calc(18px + env(safe-area-inset-bottom))", maxHeight: "84vh", overflowY: "auto", boxShadow: `0 -24px 60px ${T.farge.svartA50}` }}>
+        <div style={{ position: "relative", background: TL.elev, borderTop: `1px solid ${TL.hair}`, borderRadius: "20px 20px 0 0", padding: "10px 18px calc(18px + env(safe-area-inset-bottom))", maxHeight: "84vh", overflowY: "auto", boxShadow: `0 -24px 60px ${TL.scrim}` }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-            <span style={{ width: 36, height: 4, borderRadius: 9999, background: T.borderS }} />
+            <span style={{ width: 36, height: 4, borderRadius: 9999, background: TL.hair }} />
             <button
               type="button"
               onClick={() => setArkAapen(false)}
               className="v2-press v2-focus"
               aria-label="Lukk"
-              style={{ appearance: "none", width: 30, height: 30, borderRadius: 9999, background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}
+              style={{ appearance: "none", width: 30, height: 30, borderRadius: 9999, background: TL.dock, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}
             >
-              <Icon name="x" size={15} style={{ color: T.fg2 }} />
+              <Icon name="x" size={15} style={{ color: TL.mute }} />
             </button>
           </div>
           <DetaljInnhold item={valgt} ferdig={erFerdig(valgt)} onMarkDone={markFullfør} />
@@ -352,11 +335,11 @@ export function AdminHandlingssenterV2({ data, meg }: { data: AdminHandlingssent
     ) : null;
 
   return (
-    <div data-paper-wave-h="handlingssenter" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-h="handlingssenter" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {hode}
       {kpi}
       {filtre}
-      <div className="grid grid-cols-1 lg:grid-cols-[1.6fr_1fr]" style={{ gap: T.gap, alignItems: "start" }}>
+      <div className="grid grid-cols-1 lg:grid-cols-[1.6fr_1fr]" style={{ gap: 16, alignItems: "start" }}>
         {liste}
         <div className="hidden lg:block">{detalj}</div>
       </div>

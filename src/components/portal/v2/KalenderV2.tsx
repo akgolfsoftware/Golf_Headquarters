@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * PlayerHQ Kalender — v2 (retning C «Presis»). Komponert 1:1 fra
@@ -14,21 +15,7 @@
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState, type CSSProperties } from "react";
 import Link from "next/link";
-import {
-  T,
-  Caps,
-  Tittel,
-  CTAPill,
-  PillVelger,
-  Kort,
-  Rad,
-  AkseChip,
-  StatusPill,
-  KpiFlis,
-  TomTilstand,
-  Icon,
-  Periodeplan,
-} from "@/components/v2";
+import { T, Caps, CTAPill, PillVelger, Kort, Rad, AkseChip, StatusPill, KpiFlis, TomTilstand, Icon, Periodeplan } from "@/components/v2";
 import type { KalenderData } from "@/app/portal/kalender/data";
 
 /** true på klient etter mount når viewport < 768px (styrer kun layout-tetthet). */
@@ -44,7 +31,7 @@ function useMobile(): boolean {
   return m;
 }
 
-const LIME_KANT = `color-mix(in srgb,${T.lime} 25%,transparent)`;
+const LIME_KANT = `color-mix(in srgb,${TL.fill} 25%,transparent)`;
 
 // ── Periode-navigasjon (forrige/neste/i dag) — deles av alle fire visninger ──
 function parseVisningsDato(iso: string): Date {
@@ -57,7 +44,7 @@ function tilIso(d: Date): string {
 
 const NAV_KNAPP_STIL: CSSProperties = {
   appearance: "none", cursor: "pointer", width: 26, height: 26, borderRadius: 8,
-  background: T.panel2, border: `1px solid ${T.border}`,
+  background: TL.dock, border: `1px solid ${TL.hair}`,
   display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none",
 };
 
@@ -65,11 +52,11 @@ function PeriodeNav({ tittel, onForrige, onNeste, onIdag }: { tittel: string; on
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 4 }}>
       <button type="button" onClick={onForrige} aria-label="Forrige periode" className="v2-press v2-focus" style={NAV_KNAPP_STIL}>
-        <Icon name="chevron-left" size={13} style={{ color: T.fg2 }} />
+        <Icon name="chevron-left" size={13} style={{ color: TL.mute }} />
       </button>
       <Caps>{tittel}</Caps>
       <button type="button" onClick={onNeste} aria-label="Neste periode" className="v2-press v2-focus" style={NAV_KNAPP_STIL}>
-        <Icon name="chevron-right" size={13} style={{ color: T.fg2 }} />
+        <Icon name="chevron-right" size={13} style={{ color: TL.mute }} />
       </button>
       <button
         type="button"
@@ -77,8 +64,8 @@ function PeriodeNav({ tittel, onForrige, onNeste, onIdag }: { tittel: string; on
         className="v2-press v2-focus"
         style={{
           appearance: "none", cursor: "pointer", marginLeft: 2, padding: "4px 10px", borderRadius: 9999,
-          background: "transparent", border: `1px solid ${T.border}`,
-          fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: T.mut,
+          background: "transparent", border: `1px solid ${TL.hair}`,
+          fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: TL.mute,
         }}
       >
         I dag
@@ -98,7 +85,7 @@ function Dag({ dag }: { dag: KalenderData["dag"] }) {
           <Link href="/portal/planlegge/workbench?zoom=uke" style={{ textDecoration: "none", display: "block" }}>
             <span style={{
               display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", padding: "10px 16px",
-              borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600, minHeight: 56,
+              borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600, minHeight: 56,
             }}>Åpne Workbench</span>
           </Link>
         </div>
@@ -108,8 +95,8 @@ function Dag({ dag }: { dag: KalenderData["dag"] }) {
             const time = dag.fraTime + i;
             const timeOkter = dag.okter.filter((o) => o.startTime === time);
             return (
-              <div key={i} style={{ display: "flex", gap: 12, minHeight: timeOkter.length ? 72 : 34, borderTop: `1px solid ${T.border}` }}>
-                <span style={{ width: 44, flex: "none", fontFamily: T.mono, fontSize: 10, color: T.mut, paddingTop: 8 }}>
+              <div key={i} style={{ display: "flex", gap: 12, minHeight: timeOkter.length ? 72 : 34, borderTop: `1px solid ${TL.hair}` }}>
+                <span style={{ width: 44, flex: "none", fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, paddingTop: 8 }}>
                   {String(time).padStart(2, "0")}:00
                 </span>
                 <div style={{ flex: 1, padding: "6px 0", display: "flex", flexDirection: "column", gap: 6 }}>
@@ -122,22 +109,22 @@ function Dag({ dag }: { dag: KalenderData["dag"] }) {
                       role="button"
                       style={{
                         display: "flex", alignItems: "center", gap: 12, padding: "11px 14px", borderRadius: 12,
-                        background: okt.naa ? `${T.tint}, ${T.panel3}` : T.panel3,
-                        border: `1px solid ${okt.naa ? LIME_KANT : T.border}`,
+                        background: okt.naa ? `${TL.dim}, ${TL.dim}` : TL.dim,
+                        border: `1px solid ${okt.naa ? LIME_KANT : TL.hair}`,
                         opacity: okt.done ? 0.62 : 1,
                         cursor: "pointer",
                       }}
                     >
                       <span style={{ width: 3, alignSelf: "stretch", borderRadius: 2, background: T.ax[okt.a], flex: "none" }} />
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{okt.title}</div>
-                        <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 2 }}>
+                        <div style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{okt.title}</div>
+                        <div style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 2 }}>
                           {okt.kl}–{okt.slutt}{okt.sted ? ` · ${okt.sted}` : ""}
                         </div>
                       </div>
                       <AkseChip a={okt.a} />
                       {okt.naa && <StatusPill>Nå</StatusPill>}
-                      {okt.done && <Icon name="check" size={14} style={{ color: T.up }} />}
+                      {okt.done && <Icon name="check" size={14} style={{ color: TL.ok }} />}
                     </div>
                   ))}
                 </div>
@@ -162,7 +149,7 @@ function Uke({ uke, mobile }: { uke: KalenderData["uke"]; mobile: boolean }) {
       );
     }
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         {uke.dager.map((d) =>
           d.okter.length > 0 ? (
             <Kort key={d.d} eyebrow={d.d}>
@@ -170,7 +157,7 @@ function Uke({ uke, mobile }: { uke: KalenderData["uke"]; mobile: boolean }) {
                 <Rad
                   key={o.id}
                   onClick={() => router.push(`/portal/gjennomfore/${o.id}`)}
-                  leading={<span style={{ width: 42, flex: "none", fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: o.naa ? T.lime : T.mut }}>{o.kl}</span>}
+                  leading={<span style={{ width: 42, flex: "none", fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, color: o.naa ? TL.fill : TL.mute }}>{o.kl}</span>}
                   title={<span style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", whiteSpace: "normal" }}>{o.title}</span>}
                   meta={<AkseChip a={o.a} />}
                   naa={o.naa}
@@ -181,7 +168,7 @@ function Uke({ uke, mobile }: { uke: KalenderData["uke"]; mobile: boolean }) {
             </Kort>
           ) : (
             <Kort key={d.d} eyebrow={d.d}>
-              <span style={{ fontFamily: T.ui, fontSize: 12, color: T.mut }}>Hvile</span>
+              <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}>Hvile</span>
             </Kort>
           ),
         )}
@@ -196,11 +183,11 @@ function Uke({ uke, mobile }: { uke: KalenderData["uke"]; mobile: boolean }) {
             key={d.d}
             style={{
               display: "flex", flexDirection: "column", gap: 8, padding: "10px 8px", borderRadius: 14,
-              background: d.isToday ? T.panel2 : "transparent",
-              border: `1px solid ${d.isToday ? T.borderS : T.border}`,
+              background: d.isToday ? TL.dock : "transparent",
+              border: `1px solid ${d.isToday ? TL.hair : TL.hair}`,
             }}
           >
-            <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: d.isToday ? T.lime : T.mut, textAlign: "center" }}>{d.d}</span>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: d.isToday ? TL.fill : TL.mute, textAlign: "center" }}>{d.d}</span>
             {d.okter.map((o) => (
               <div
                 key={o.id}
@@ -208,18 +195,18 @@ function Uke({ uke, mobile }: { uke: KalenderData["uke"]; mobile: boolean }) {
                 className="v2-press v2-focus"
                 tabIndex={0}
                 role="button"
-                style={{ padding: "8px 9px", borderRadius: 10, background: T.panel3, border: `1px solid ${o.naa ? LIME_KANT : T.border}`, opacity: o.done ? 0.55 : 1, cursor: "pointer" }}
+                style={{ padding: "8px 9px", borderRadius: 10, background: TL.dim, border: `1px solid ${o.naa ? LIME_KANT : TL.hair}`, opacity: o.done ? 0.55 : 1, cursor: "pointer" }}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
                   <span style={{ width: 6, height: 6, borderRadius: 9999, background: T.ax[o.a], flex: "none" }} />
-                  <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: T.fg2 }}>{o.kl}</span>
-                  {o.done && <Icon name="check" size={10} style={{ color: T.up, marginLeft: "auto" }} />}
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, color: TL.mute }}>{o.kl}</span>
+                  {o.done && <Icon name="check" size={10} style={{ color: TL.ok, marginLeft: "auto" }} />}
                 </div>
-                <div style={{ fontFamily: T.ui, fontSize: 11, fontWeight: 600, color: T.fg, marginTop: 5, lineHeight: 1.3 }}>{o.title}</div>
+                <div style={{ fontFamily: TL.font.sans, fontSize: 11, fontWeight: 600, color: TL.text, marginTop: 5, lineHeight: 1.3 }}>{o.title}</div>
               </div>
             ))}
             {d.okter.length === 0 && (
-              <span style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: T.ui, fontSize: 10.5, color: T.mut }}>Hvile</span>
+              <span style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: TL.font.sans, fontSize: 10.5, color: TL.mute }}>Hvile</span>
             )}
           </div>
         ))}
@@ -245,11 +232,11 @@ function Maaned({ maaned, mobile }: { maaned: KalenderData["maaned"]; mobile: bo
   if (mobile) {
     const valgtAkser = valgtDag != null ? maaned.perDag[valgtDag] : undefined;
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         <Kort eyebrow={maaned.label} action={<Caps size={9}>{maaned.totalLabel}</Caps>}>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 4, marginTop: 4 }}>
             {dager.map((d, i) => (
-              <span key={i} style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: T.mut, textAlign: "center", textTransform: "uppercase", paddingBottom: 4 }}>{d}</span>
+              <span key={i} style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, color: TL.mute, textAlign: "center", textTransform: "uppercase", paddingBottom: 4 }}>{d}</span>
             ))}
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
@@ -270,14 +257,14 @@ function Maaned({ maaned, mobile }: { maaned: KalenderData["maaned"]; mobile: bo
                       style={{
                         appearance: "none", cursor: "pointer", aspectRatio: "1", borderRadius: 10,
                         display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 3,
-                        background: idag ? T.lime : valgt ? T.panel2 : okter ? T.panel3 : "transparent",
-                        border: `1px solid ${idag ? "transparent" : valgt ? T.borderS : T.border}`,
+                        background: idag ? TL.fill : valgt ? TL.dock : okter ? TL.dim : "transparent",
+                        border: `1px solid ${idag ? "transparent" : valgt ? TL.hair : TL.hair}`,
                       }}
                     >
-                      <span style={{ fontFamily: T.mono, fontSize: 12, fontWeight: 700, color: idag ? T.onLime : okter ? T.fg : T.mut }}>{dag}</span>
+                      <span style={{ fontFamily: TL.font.mono, fontSize: 12, fontWeight: 700, color: idag ? TL.onFill : okter ? TL.text : TL.mute }}>{dag}</span>
                       <span style={{ height: 5, display: "flex", gap: 2 }}>
                         {(okter ?? []).slice(0, 3).map((a, j) => (
-                          <span key={j} style={{ width: 4, height: 4, borderRadius: 9999, background: idag ? T.onLime : T.ax[a] }} />
+                          <span key={j} style={{ width: 4, height: 4, borderRadius: 9999, background: idag ? TL.onFill : T.ax[a] }} />
                         ))}
                       </span>
                     </button>
@@ -304,7 +291,7 @@ function Maaned({ maaned, mobile }: { maaned: KalenderData["maaned"]; mobile: bo
     <Kort eyebrow={maaned.label} action={<Caps size={9}>{maaned.totalLabel}</Caps>}>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 6, marginTop: 4 }}>
         {dager.map((d, i) => (
-          <span key={i} style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, color: T.mut, textAlign: "center", textTransform: "uppercase", paddingBottom: 4 }}>{d}</span>
+          <span key={i} style={{ fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, color: TL.mute, textAlign: "center", textTransform: "uppercase", paddingBottom: 4 }}>{d}</span>
         ))}
         {celler.map((dag, i) => {
           if (dag == null) return <span key={`tom-${i}`} />;
@@ -315,14 +302,14 @@ function Maaned({ maaned, mobile }: { maaned: KalenderData["maaned"]; mobile: bo
               key={dag}
               style={{
                 aspectRatio: "1", borderRadius: 10, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 4,
-                background: idag ? T.lime : okter ? T.panel2 : "transparent",
-                border: `1px solid ${idag ? "transparent" : T.border}`,
+                background: idag ? TL.fill : okter ? TL.dock : "transparent",
+                border: `1px solid ${idag ? "transparent" : TL.hair}`,
               }}
             >
-              <span style={{ fontFamily: T.mono, fontSize: 12, fontWeight: 700, color: idag ? T.onLime : okter ? T.fg : T.mut }}>{dag}</span>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 12, fontWeight: 700, color: idag ? TL.onFill : okter ? TL.text : TL.mute }}>{dag}</span>
               <span style={{ height: 6, display: "flex", gap: 2 }}>
                 {(okter ?? []).slice(0, 3).map((a, j) => (
-                  <span key={j} style={{ width: 5, height: 5, borderRadius: 9999, background: idag ? T.onLime : T.ax[a] }} />
+                  <span key={j} style={{ width: 5, height: 5, borderRadius: 9999, background: idag ? TL.onFill : T.ax[a] }} />
                 ))}
               </span>
             </div>
@@ -351,11 +338,11 @@ function Aar({ aar, mobile }: { aar: KalenderData["aar"]; mobile: boolean }) {
   }
   const ingenPeriodeplan = aar.perioder.length === 0;
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <Kort tint eyebrow={aar.subtitle} action={aar.aktivPeriodeLabel ? <StatusPill>{aar.aktivPeriodeLabel}</StatusPill> : undefined}>
         {ingenPeriodeplan ? (
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.6, margin: 0 }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.6, margin: 0 }}>
               {aar.turneringer.length > 0
                 ? "Ingen periodeblokker i sesongplanen ennå — turneringene under er hentet fra påmeldingene dine."
                 : "Ingen periodeblokker i sesongplanen ennå — turneringer vises i tallene under."}
@@ -369,11 +356,11 @@ function Aar({ aar, mobile }: { aar: KalenderData["aar"]; mobile: boolean }) {
             {aar.perioder.map((p, i) => (
               <div key={i} style={{ display: "flex", alignItems: "center", gap: 12 }}>
                 <span style={{ width: mobile ? 92 : 120, flex: "none" }}>
-                  <span style={{ fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: p.tone === "naa" ? T.fg : T.fg2, display: "block", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{p.navn}</span>
-                  <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut }}>{p.mnd}</span>
+                  <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 600, color: p.tone === "naa" ? TL.text : TL.mute, display: "block", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{p.navn}</span>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 9, color: TL.mute }}>{p.mnd}</span>
                 </span>
-                <div style={{ flex: 1, height: 16, borderRadius: 8, background: T.track, overflow: "hidden", position: "relative" }}>
-                  <div style={{ width: p.pct + "%", height: "100%", background: p.tone === "naa" ? T.lime : `color-mix(in srgb,${T.ax[p.a]} 55%,${T.panel3})`, borderRadius: 8, opacity: p.tone === "naa" ? 0.9 : 1 }} />
+                <div style={{ flex: 1, height: 16, borderRadius: 8, background: TL.hair, overflow: "hidden", position: "relative" }}>
+                  <div style={{ width: p.pct + "%", height: "100%", background: p.tone === "naa" ? TL.fill : `color-mix(in srgb,${T.ax[p.a]} 55%,${TL.dim})`, borderRadius: 8, opacity: p.tone === "naa" ? 0.9 : 1 }} />
                 </div>
                 <span style={{ width: 52, flex: "none" }}><AkseChip a={p.a} /></span>
               </div>
@@ -391,7 +378,7 @@ function Aar({ aar, mobile }: { aar: KalenderData["aar"]; mobile: boolean }) {
           </div>
         </Kort>
       )}
-      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(4,1fr)", gap: T.gap }}>
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(4,1fr)", gap: 16 }}>
         <KpiFlis label="Uker til turnering" value={aar.kpis.ukerTil === "–" ? "–" : `${aar.kpis.ukerTil} uker`} tint />
         <KpiFlis label="Turneringer igjen" value={String(aar.kpis.turneringerIgjen)} />
         <KpiFlis label="Treningstimer i år" value={`${aar.kpis.treningstimer} t`} />
@@ -436,14 +423,14 @@ export function KalenderV2({ data }: { data: KalenderData }) {
   }[vis as "dag" | "uke" | "maaned" | "aar"];
 
   return (
-    <div data-paper-wave-g="kalender" data-paper-portal-kalender style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="kalender" data-paper-portal-kalender style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>
           <PeriodeNav tittel={periodeNav.tittel} onForrige={periodeNav.forrige} onNeste={periodeNav.neste} onIdag={gaIdag} />
           <div style={{ marginTop: 10 }}>
             <div data-paper-pattern-topp>
-        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Kalender</h1>
-        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Treningskalender</span>
+        <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Kalender</h1>
+        <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>Treningskalender</span>
       </div>
           </div>
         </div>

@@ -26,7 +26,8 @@
  */
 
 import { useId, useRef, useState, type CSSProperties, type ReactNode } from "react";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Icon } from "@/components/v2/icon";
 
 export interface ComposerProps {
@@ -69,12 +70,12 @@ const srOnly: CSSProperties = {
 
 /** Fasitens `.eyebrow` under/ved siden av feltet. */
 const hintStil: CSSProperties = {
-  fontFamily: T.mono,
+  fontFamily: TL.font.mono,
   fontSize: 10,
   fontWeight: 500,
   letterSpacing: "0.09em",
   textTransform: "uppercase",
-  color: T.mut,
+  color: TL.mute,
 };
 
 export function Composer({
@@ -152,9 +153,9 @@ export function Composer({
         outline: "none",
         resize: "none",
         background: "transparent",
-        color: T.fg,
+        color: TL.text,
         // Fasit: desktop-feltet er prosa (`var(--body)` = Lora), mobil UI-sans.
-        fontFamily: mobil ? T.ui : T.bodyFont,
+        fontFamily: mobil ? TL.font.sans : TL.font.sans,
         fontSize: 15,
         lineHeight: mobil ? 1.45 : 1.5,
         minHeight: 44, // fasitens globale `textarea{ min-height: var(--tap) }`
@@ -171,18 +172,18 @@ export function Composer({
     return (
       <div
         data-paper-composer
-        style={{ borderTop: `1px solid ${T.border}`, background: T.bg, padding: "8px 12px 12px" }}
+        style={{ borderTop: `1px solid ${TL.hair}`, background: TL.scene, padding: "8px 12px 12px" }}
       >
         <div style={{ maxWidth: maksBredde, margin: "0 auto", display: "flex", flexDirection: "column", gap: 8 }}>
           {kontekst != null && (
             <div
               data-od-id="toggle-context"
               style={{
-                fontFamily: T.mono,
+                fontFamily: TL.font.mono,
                 fontSize: 10.5,
                 letterSpacing: "0.06em",
                 textTransform: "uppercase",
-                color: T.mut,
+                color: TL.mute,
                 padding: "4px 4px 0",
               }}
             >
@@ -195,9 +196,9 @@ export function Composer({
               style={{
                 flex: 1,
                 minWidth: 0,
-                background: T.panel,
-                border: `1px solid ${harFokus ? T.fg : T.border}`,
-                borderRadius: T.rCard,
+                background: TL.elev,
+                border: `1px solid ${harFokus ? TL.text : TL.hair}`,
+                borderRadius: TL.radius.card,
                 padding: "8px 12px",
               }}
             >
@@ -223,10 +224,10 @@ export function Composer({
                         display: "grid",
                         placeItems: "center",
                         border: "none",
-                        borderRadius: T.rTag,
+                        borderRadius: TL.radius.row,
                         background: "transparent",
-                        color: T.mut,
-                        fontFamily: T.mono,
+                        color: TL.mute,
+                        fontFamily: TL.font.mono,
                         fontSize: 14,
                         cursor: disabled ? "default" : "pointer",
                         opacity: disabled ? 0.45 : 1,
@@ -254,10 +255,10 @@ export function Composer({
                 minHeight: 44,
                 display: "grid",
                 placeItems: "center",
-                borderRadius: T.rCard,
-                border: `1px solid ${kanSende ? T.cta : T.border}`,
-                background: kanSende ? T.cta : T.panel3,
-                color: kanSende ? T.onCta : T.mut,
+                borderRadius: TL.radius.card,
+                border: `1px solid ${kanSende ? TL.fill : TL.hair}`,
+                background: kanSende ? TL.fill : TL.dim,
+                color: kanSende ? TL.onFill : TL.mute,
                 cursor: kanSende ? "pointer" : "default",
               }}
             >
@@ -274,15 +275,15 @@ export function Composer({
   return (
     <div
       data-paper-composer
-      style={{ borderTop: `1px solid ${T.border}`, background: T.panel, padding: "12px 20px 16px" }}
+      style={{ borderTop: `1px solid ${TL.hair}`, background: TL.elev, padding: "12px 20px 16px" }}
     >
       <div style={{ position: "relative", maxWidth: maksBredde, margin: "0 auto", display: "flex", flexDirection: "column", gap: 8 }}>
         {/* Fasitens .box — felt, deretter boxbar i én rad. */}
         <div
           style={{
-            background: T.bg,
-            border: `1px solid ${harFokus ? T.mut : T.border}`,
-            borderRadius: T.rCard,
+            background: TL.scene,
+            border: `1px solid ${harFokus ? TL.mute : TL.hair}`,
+            borderRadius: TL.radius.card,
             padding: 12,
           }}
         >
@@ -306,13 +307,13 @@ export function Composer({
                   minWidth: 36,
                   padding: "0 12px",
                   flex: "none",
-                  fontFamily: T.ui,
+                  fontFamily: TL.font.sans,
                   fontSize: 13,
                   fontWeight: 500,
-                  color: T.fg,
+                  color: TL.text,
                   background: "transparent",
-                  border: `1px solid ${T.border}`,
-                  borderRadius: T.rTag,
+                  border: `1px solid ${TL.hair}`,
+                  borderRadius: TL.radius.row,
                   cursor: disabled ? "default" : "pointer",
                   opacity: disabled ? 0.45 : 1,
                 }}
@@ -332,13 +333,13 @@ export function Composer({
                 minHeight: 36,
                 padding: "0 18px",
                 flex: "none",
-                fontFamily: T.ui,
+                fontFamily: TL.font.sans,
                 fontSize: 13,
                 fontWeight: 500,
-                color: kanSende ? T.onCta : T.mut,
-                background: kanSende ? T.cta : T.panel3,
-                border: `1px solid ${kanSende ? T.cta : T.border}`,
-                borderRadius: T.rTag,
+                color: kanSende ? TL.onFill : TL.mute,
+                background: kanSende ? TL.fill : TL.dim,
+                border: `1px solid ${kanSende ? TL.fill : TL.hair}`,
+                borderRadius: TL.radius.row,
                 cursor: kanSende ? "pointer" : "default",
               }}
             >
@@ -356,12 +357,12 @@ export function Composer({
                 alignItems: "center",
                 minHeight: 28,
                 padding: "0 10px",
-                fontFamily: T.mono,
+                fontFamily: TL.font.mono,
                 fontSize: 10.5,
                 letterSpacing: "0.05em",
-                color: T.mut,
-                border: `1px solid ${T.border}`,
-                borderRadius: T.rPill,
+                color: TL.mute,
+                border: `1px solid ${TL.hair}`,
+                borderRadius: TL.radius.pill,
               }}
             >
               {kontekst}

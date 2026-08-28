@@ -1,14 +1,13 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * AgencyOS Fasiter — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
  * DataGolf-autosync. T.* only.
  */
 
 import { useTransition } from "react";
-import { Caps, Tittel, Kort, Knapp, StatusPill, TilbakeLenke, CTAPill, TomTilstand, T } from "@/components/v2";
+import { Caps, Tittel, Kort, Knapp, StatusPill, TilbakeLenke, CTAPill, TomTilstand } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
-
 export type SyncMode = "auto" | "follow" | "static";
 const MODE_LABEL: Record<SyncMode, string> = { auto: "AUTO", follow: "FØLGER DRIVER", static: "REFERANSE" };
 
@@ -43,10 +42,10 @@ function VentendeKort({
 }) {
   const [pending, startTransition] = useTransition();
   return (
-    <Kort style={{ borderColor: `color-mix(in srgb, ${T.warn} 45%, ${T.border})` }}>
+    <Kort style={{ borderColor: `color-mix(in srgb, ${TL.warn} 45%, ${TL.hair})` }}>
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8 }}>
-        <Icon name="triangle-alert" size={16} style={{ color: T.warn }} />
-        <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 15, color: T.fg }}>{rad.navn}</span>
+        <Icon name="triangle-alert" size={16} style={{ color: TL.warn }} />
+        <span style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 15, color: TL.text }}>{rad.navn}</span>
         <StatusPill tone="warn">
           Venter godkjenning · {rad.endringPct} % endring · {rad.årsak}
         </StatusPill>
@@ -54,11 +53,11 @@ function VentendeKort({
 
       <div style={{ marginTop: 12, maxWidth: 420 }}>
         {rad.nivaer.map((n, i) => (
-          <div key={n.id} style={{ display: "grid", gridTemplateColumns: "1fr auto 20px auto", alignItems: "center", gap: 8, padding: "6px 0", borderTop: i ? `1px solid ${T.border}` : "none" }}>
-            <span style={{ fontFamily: T.ui, fontSize: 13, color: T.fg }}>{n.label}</span>
-            <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: T.mut, textAlign: "right" }}>{n.verdi}</span>
-            <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut, textAlign: "center" }}>→</span>
-            <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: n.endret ? T.warn : T.mut, textAlign: "right" }}>
+          <div key={n.id} style={{ display: "grid", gridTemplateColumns: "1fr auto 20px auto", alignItems: "center", gap: 8, padding: "6px 0", borderTop: i ? `1px solid ${TL.hair}` : "none" }}>
+            <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text }}>{n.label}</span>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, color: TL.mute, textAlign: "right" }}>{n.verdi}</span>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute, textAlign: "center" }}>→</span>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, color: n.endret ? TL.warn : TL.mute, textAlign: "right" }}>
               {n.nesteVerdi ?? "—"}
             </span>
           </div>
@@ -91,7 +90,7 @@ export function AdminBenchmarksV2({
   const [syncPending, startSync] = useTransition();
 
   return (
-    <div data-paper-wave-h="benchmarks" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 860 }}>
+    <div data-paper-wave-h="benchmarks" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 860 }}>
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 14 }}>
         <div>
           <TilbakeLenke href="/admin/tester">Tester</TilbakeLenke>
@@ -107,10 +106,10 @@ export function AdminBenchmarksV2({
         </StatusPill>
       </div>
 
-      <p style={{ fontFamily: T.ui, fontSize: 13, lineHeight: 1.55, color: T.mut, margin: 0, maxWidth: 620 }}>
+      <p style={{ fontFamily: TL.font.sans, fontSize: 13, lineHeight: 1.55, color: TL.mute, margin: 0, maxWidth: 620 }}>
         Kjøres automatisk hver mandag kl. 08:00 (norsk sommertid). Endringer under 3 % skrives
         automatisk — større utslag havner her og venter på din godkjenning. Du får Telegram-melding
-        etter hver kjøring. Siste kjøring: <b style={{ color: T.fg }}>{data.sisteKjoring}</b>.
+        etter hver kjøring. Siste kjøring: <b style={{ color: TL.text }}>{data.sisteKjoring}</b>.
       </p>
 
       {/* B: én primær CTA */}
@@ -153,23 +152,23 @@ export function AdminBenchmarksV2({
             {data.alle.map((rad, i) => (
               <div
                 key={rad.id}
-                style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr auto", alignItems: "center", gap: 12, padding: "12px 18px", borderTop: i ? `1px solid ${T.border}` : "none" }}
+                style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr auto", alignItems: "center", gap: 12, padding: "12px 18px", borderTop: i ? `1px solid ${TL.hair}` : "none" }}
               >
-                <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 700, color: T.fg }}>{rad.navn}</span>
+                <span style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 700, color: TL.text }}>{rad.navn}</span>
                 <StatusPill tone={rad.mode === "static" ? "info" : "lime"}>{MODE_LABEL[rad.mode]}</StatusPill>
-                <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut }}>{rad.kilde}</span>
-                <span style={{ fontFamily: T.mono, fontSize: 12, fontWeight: 700, color: T.fg, textAlign: "right", fontVariantNumeric: "tabular-nums" }}>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>{rad.kilde}</span>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 12, fontWeight: 700, color: TL.text, textAlign: "right", fontVariantNumeric: "tabular-nums" }}>
                   {rad.verdier}
                 </span>
               </div>
             ))}
           </div>
         )}
-        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 8, padding: "12px 18px", borderTop: `1px solid ${T.border}`, background: T.panel2 }}>
-          <span style={{ fontFamily: T.mono, fontSize: 11, fontWeight: 700, color: T.mut }}>
+        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 8, padding: "12px 18px", borderTop: `1px solid ${TL.hair}`, background: TL.dock }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 11, fontWeight: 700, color: TL.mute }}>
             {data.alle.length} tester med fasit · {data.ventende.length} venter godkjenning
           </span>
-          <span style={{ fontFamily: T.mono, fontSize: 11, fontWeight: 700, color: T.fg }}>Data powered by DataGolf</span>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 11, fontWeight: 700, color: TL.text }}>Data powered by DataGolf</span>
         </div>
       </Kort>
     </div>

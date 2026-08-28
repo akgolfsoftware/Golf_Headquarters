@@ -19,7 +19,8 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { markNotificationsRead } from "@/app/portal/(legacy)/varsler/actions";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Caps, Kort, TomTilstand } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 
@@ -97,13 +98,13 @@ export function VarslerV2({ data }: { data: VarslerV2Data }) {
       data-paper-wave-g="varsler"
       data-paper-slug="playerhq-hjem-varsler"
       data-paper-portal-varsler
-      style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%", minWidth: 0 }}
+      style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%", minWidth: 0 }}
     >
       {/* Topp — fasit: Varsler / navn · N uleste */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div style={{ minWidth: 0 }} data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Varsler</h1>
-          <span className="num" style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Varsler</h1>
+          <span className="num" style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
             {navn}
             {" · "}
             {uleste > 0 ? `${uleste} uleste` : "ingen uleste"}
@@ -130,11 +131,11 @@ export function VarslerV2({ data }: { data: VarslerV2Data }) {
                 justifyContent: "center",
                 minHeight: 44,
                 padding: "0 16px",
-                borderRadius: T.rTag,
-                border: `1px solid ${T.border}`,
-                background: T.panel,
-                color: T.fg,
-                fontFamily: T.ui,
+                borderRadius: TL.radius.row,
+                border: `1px solid ${TL.hair}`,
+                background: TL.elev,
+                color: TL.text,
+                fontFamily: TL.font.sans,
                 fontSize: 13,
                 fontWeight: 600,
                 textDecoration: "none",
@@ -150,18 +151,18 @@ export function VarslerV2({ data }: { data: VarslerV2Data }) {
           {nyesteUlest && (
             <div
               style={{
-                background: T.handlingSoft,
-                border: `1px solid ${T.border}`,
-                borderRadius: T.rCard,
+                background: TL.dim,
+                border: `1px solid ${TL.hair}`,
+                borderRadius: TL.radius.card,
                 padding: 16,
               }}
             >
-              <Caps color={T.handling}>Én ting nå</Caps>
-              <h2 style={{ margin: "8px 0 4px", fontFamily: T.disp, fontSize: 16, fontWeight: 600, color: T.fg }}>
+              <Caps color={TL.fill}>Én ting nå</Caps>
+              <h2 style={{ margin: "8px 0 4px", fontFamily: TL.font.sans, fontSize: 16, fontWeight: 600, color: TL.text }}>
                 {nyesteUlest.tittel}
               </h2>
               {nyesteUlest.body && (
-                <p style={{ margin: "0 0 12px", fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut, maxWidth: "46ch" }}>
+                <p style={{ margin: "0 0 12px", fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute, maxWidth: "46ch" }}>
                   {nyesteUlest.body}
                 </p>
               )}
@@ -177,11 +178,11 @@ export function VarslerV2({ data }: { data: VarslerV2Data }) {
                   alignItems: "center",
                   justifyContent: "center",
                   minHeight: 56,
-                  borderRadius: T.rTag,
+                  borderRadius: TL.radius.row,
                   border: "none",
-                  background: T.handling,
-                  color: T.onHandling,
-                  fontFamily: T.ui,
+                  background: TL.fill,
+                  color: TL.onFill,
+                  fontFamily: TL.font.sans,
                   fontSize: 13.5,
                   fontWeight: 600,
                   cursor: "pointer",
@@ -206,11 +207,11 @@ export function VarslerV2({ data }: { data: VarslerV2Data }) {
                   flex: "none",
                   minHeight: 36,
                   padding: "0 12px",
-                  border: `1px solid ${filter === c.id ? T.borderS : T.border}`,
-                  borderRadius: T.rPill,
-                  background: filter === c.id ? T.panel2 : T.panel,
-                  color: T.fg,
-                  fontFamily: T.mono,
+                  border: `1px solid ${filter === c.id ? TL.hair : TL.hair}`,
+                  borderRadius: TL.radius.pill,
+                  background: filter === c.id ? TL.dock : TL.elev,
+                  color: TL.text,
+                  fontFamily: TL.font.mono,
                   fontSize: 11,
                   fontWeight: filter === c.id ? 600 : 400,
                   cursor: "pointer",
@@ -234,7 +235,7 @@ export function VarslerV2({ data }: { data: VarslerV2Data }) {
                 <section key={gr} style={{ minWidth: 0 }}>
                   <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8, marginBottom: 8 }}>
                     <Caps>{gr}</Caps>
-                    <span className="num" style={{ fontFamily: T.mono, fontSize: 11, color: T.mut }}>
+                    <span className="num" style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>
                       {g.length}
                     </span>
                   </div>
@@ -252,9 +253,9 @@ export function VarslerV2({ data }: { data: VarslerV2Data }) {
                         alignItems: "flex-start",
                         width: "100%",
                         textAlign: "left",
-                        background: v.ulest ? T.panel2 : T.panel,
-                        border: `1px solid ${T.border}`,
-                        borderRadius: T.rCard,
+                        background: v.ulest ? TL.dock : TL.elev,
+                        border: `1px solid ${TL.hair}`,
+                        borderRadius: TL.radius.card,
                         padding: "12px 16px",
                         marginBottom: 8,
                         color: "inherit",
@@ -268,29 +269,29 @@ export function VarslerV2({ data }: { data: VarslerV2Data }) {
                           flex: "none",
                           width: 34,
                           height: 34,
-                          borderRadius: T.rTag,
-                          background: T.panel2,
-                          border: `1px solid ${T.border}`,
+                          borderRadius: TL.radius.row,
+                          background: TL.dock,
+                          border: `1px solid ${TL.hair}`,
                           display: "grid",
                           placeItems: "center",
                           marginTop: 2,
-                          color: T.mut,
+                          color: TL.mute,
                         }}
                       >
                         <Icon name={v.icon} size={16} />
                       </span>
                       <span style={{ flex: 1, minWidth: 0 }}>
-                        <span style={{ display: "flex", alignItems: "center", gap: 6, fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>
+                        <span style={{ display: "flex", alignItems: "center", gap: 6, fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>
                           <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{v.tittel}</span>
                           {v.ulest && (
                             <i
                               aria-label="Ulest"
-                              style={{ flex: "none", width: 7, height: 7, borderRadius: "50%", background: T.fg }}
+                              style={{ flex: "none", width: 7, height: 7, borderRadius: "50%", background: TL.text }}
                             />
                           )}
                         </span>
                         {v.body && (
-                          <span style={{ display: "block", fontFamily: T.bodyFont, fontSize: 13, color: T.mut, marginTop: 2 }}>
+                          <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, marginTop: 2 }}>
                             {v.body}
                           </span>
                         )}
@@ -298,9 +299,9 @@ export function VarslerV2({ data }: { data: VarslerV2Data }) {
                           className="num"
                           style={{
                             display: "block",
-                            fontFamily: T.mono,
+                            fontFamily: TL.font.mono,
                             fontSize: 10,
-                            color: T.mut,
+                            color: TL.mute,
                             marginTop: 6,
                             letterSpacing: "0.04em",
                             textTransform: "uppercase",

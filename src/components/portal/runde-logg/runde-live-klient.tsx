@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * PlayerHQ · Runde live — Paper-port PP-3 (fase 1).
@@ -22,14 +23,9 @@
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import type { LoggetHull, LoggetSlag } from "@/lib/runde-logg/types";
-import {
-  lesKladdCached,
-  lesKladdServer,
-  lagreKladd,
-  slettKladd,
-} from "@/lib/runde-logg/draft";
+import { lesKladdCached, lesKladdServer, lagreKladd, slettKladd } from "@/lib/runde-logg/draft";
 import { syntetiserHurtigHull, scoreFraHull } from "@/lib/runde-logg/syntetiser-hurtig";
-import { T, Icon } from "@/components/v2";
+import { Icon } from "@/components/v2";
 import { OppsettSteg, type OppsettVerdi } from "./oppsett-steg";
 import { HullForing } from "./hull-foring";
 import { HullOversikt } from "./hull-oversikt";
@@ -278,7 +274,7 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
     <div
       data-paper-slug="playerhq-runde-live"
       data-od-id="playerhq-runde-live"
-      style={{ minHeight: "100dvh", background: T.bg, color: T.fg, fontFamily: T.ui }}
+      style={{ minHeight: "100dvh", background: TL.scene, color: TL.text, fontFamily: TL.font.sans }}
     >
       <div
         style={{
@@ -297,7 +293,7 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
             gap: 8,
             marginBottom: 14,
             paddingBottom: 12,
-            borderBottom: `1px solid ${T.border}`,
+            borderBottom: `1px solid ${TL.hair}`,
           }}
         >
           <Link
@@ -309,8 +305,8 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
               width: 44,
               height: 44,
               borderRadius: 12,
-              border: `1px solid ${T.border}`,
-              color: T.fg,
+              border: `1px solid ${TL.hair}`,
+              color: TL.text,
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
@@ -320,10 +316,10 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
             <Icon name="chevron-left" size={18} />
           </Link>
           <div style={{ minWidth: 0, flex: 1 }}>
-            <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>
+            <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>
               Runde · live
             </h1>
-            <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+            <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
               {oppsett
                 ? `${oppsett.courseNavn} · ${hullData.length} hull · brutto`
                 : "På banen · brutto"}
@@ -346,12 +342,12 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
                   border: "1px solid color-mix(in srgb, var(--v2-warn) 35%, transparent)",
                 }}
               >
-                <Icon name="clock" size={16} style={{ color: T.warn, flex: "none" }} />
+                <Icon name="clock" size={16} style={{ color: TL.warn, flex: "none" }} />
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontFamily: T.ui, fontSize: 12.5, fontWeight: 700, color: T.fg }}>
+                  <div style={{ fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 700, color: TL.text }}>
                     Uferdig runde funnet
                   </div>
-                  <div style={{ fontFamily: T.ui, fontSize: 11, color: T.fg2 }}>
+                  <div style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.mute }}>
                     {kladd.oppsett.courseNavn} · {kladd.hullData.filter(erFerdig).length} hull ført —
                     lagret på denne enheten
                   </div>
@@ -365,12 +361,12 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
                     cursor: "pointer",
                     padding: "8px 14px",
                     borderRadius: 10,
-                    background: T.warn,
+                    background: TL.warn,
                     border: "none",
-                    fontFamily: T.ui,
+                    fontFamily: TL.font.sans,
                     fontSize: 12,
                     fontWeight: 700,
-                    color: T.onLime,
+                    color: TL.onFill,
                   }}
                 >
                   Fortsett
@@ -385,11 +381,11 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
                     padding: "8px 10px",
                     borderRadius: 10,
                     background: "transparent",
-                    border: `1px solid ${T.border}`,
-                    fontFamily: T.ui,
+                    border: `1px solid ${TL.hair}`,
+                    fontFamily: TL.font.sans,
                     fontSize: 12,
                     fontWeight: 600,
-                    color: T.mut,
+                    color: TL.mute,
                   }}
                 >
                   Forkast
@@ -407,11 +403,11 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
                 gap: 6,
                 minHeight: 48,
                 borderRadius: 12,
-                border: `1px solid ${T.border}`,
-                fontFamily: T.ui,
+                border: `1px solid ${TL.hair}`,
+                fontFamily: TL.font.sans,
                 fontSize: 13,
                 fontWeight: 600,
-                color: T.fg2,
+                color: TL.mute,
                 textDecoration: "none",
               }}
             >
@@ -426,8 +422,8 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
             {/* Sumkort — løpende brutto, regnet, ikke skrevet */}
             <div
               style={{
-                background: T.panel,
-                border: `1px solid ${T.border}`,
+                background: TL.elev,
+                border: `1px solid ${TL.hair}`,
                 borderRadius: 12,
                 padding: 16,
                 marginBottom: 16,
@@ -435,12 +431,12 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
             >
               <span
                 style={{
-                  fontFamily: T.mono,
+                  fontFamily: TL.font.mono,
                   fontSize: 10,
                   fontWeight: 500,
                   letterSpacing: "0.09em",
                   textTransform: "uppercase",
-                  color: T.mut,
+                  color: TL.mute,
                 }}
               >
                 etter {spilte} av {hullData.length} hull
@@ -448,24 +444,24 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
               <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginTop: 4 }}>
                 <span
                   style={{
-                    fontFamily: T.mono,
+                    fontFamily: TL.font.mono,
                     fontVariantNumeric: "tabular-nums",
                     fontSize: 40,
                     fontWeight: 500,
                     lineHeight: 1,
-                    color: T.fg,
+                    color: TL.text,
                   }}
                 >
                   {sumSlag}
                 </span>
-                <span style={{ fontFamily: T.mono, fontSize: 16, color: T.mut }}>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 16, color: TL.mute }}>
                   {relStr} · brutto
                 </span>
               </div>
-              <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 4 }}>
+              <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 4 }}>
                 {oppsett.courseNavn} · par {sumPar} på spilte hull
               </span>
-              <details style={{ margin: "12px 0 0", border: `1px solid ${T.border}`, borderRadius: 12 }}>
+              <details style={{ margin: "12px 0 0", border: `1px solid ${TL.hair}`, borderRadius: 12 }}>
                 <summary
                   className="v2-focus"
                   style={{
@@ -477,7 +473,7 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
                     listStyle: "none",
                     fontSize: 12.5,
                     fontWeight: 500,
-                    color: T.mut,
+                    color: TL.mute,
                   }}
                 >
                   Hvorfor dette tallet
@@ -486,9 +482,9 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
                   style={{
                     margin: 0,
                     padding: "12px 16px 16px 26px",
-                    fontFamily: T.bodyFont,
+                    fontFamily: TL.font.sans,
                     fontSize: 13,
-                    color: T.mut,
+                    color: TL.mute,
                     lineHeight: 1.55,
                   }}
                 >
@@ -537,9 +533,9 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
                       cursor: "pointer",
                       minHeight: 44,
                       minWidth: 0,
-                      border: `1px solid ${aktiv ? T.fg : T.border}`,
+                      border: `1px solid ${aktiv ? TL.text : TL.hair}`,
                       borderRadius: 8,
-                      background: aktiv ? T.panel2 : T.panel,
+                      background: aktiv ? TL.dock : TL.elev,
                       display: "flex",
                       flexDirection: "column",
                       alignItems: "center",
@@ -547,18 +543,18 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
                       padding: "2px 0",
                     }}
                   >
-                    <span style={{ fontFamily: T.mono, fontSize: 8.5, color: T.mut, lineHeight: 1.2 }}>
+                    <span style={{ fontFamily: TL.font.mono, fontSize: 8.5, color: TL.mute, lineHeight: 1.2 }}>
                       {h.holeNumber}
                     </span>
                     <span
                       style={{
-                        fontFamily: T.mono,
+                        fontFamily: TL.font.mono,
                         fontVariantNumeric: "tabular-nums",
                         fontSize: 13,
                         fontWeight: s == null ? 400 : 600,
                         lineHeight: 1.2,
                         color:
-                          s == null ? T.mut : s > h.par ? T.down : s < h.par ? T.up : T.fg,
+                          s == null ? TL.mute : s > h.par ? TL.danger : s < h.par ? TL.ok : TL.text,
                       }}
                     >
                       {s == null ? "·" : s}
@@ -571,18 +567,18 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
             {/* Gjeldende hull — score settes med to store knapper */}
             <div
               style={{
-                background: T.panel,
-                border: `1px solid ${T.border}`,
+                background: TL.elev,
+                border: `1px solid ${TL.hair}`,
                 borderRadius: 12,
                 padding: 16,
                 marginBottom: 16,
               }}
             >
               <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 12 }}>
-                <h2 style={{ margin: 0, fontFamily: T.disp, fontSize: 16, fontWeight: 600, color: T.fg }}>
+                <h2 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 16, fontWeight: 600, color: TL.text }}>
                   Hull {aktivtHull.holeNumber}
                 </h2>
-                <span style={{ fontFamily: T.mono, fontSize: 12, color: T.mut }}>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 12, color: TL.mute }}>
                   par {aktivtHull.par}
                 </span>
               </div>
@@ -608,12 +604,12 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
                         appearance: "none",
                         cursor: "pointer",
                         minHeight: 88,
-                        border: `1px solid ${T.border}`,
+                        border: `1px solid ${TL.hair}`,
                         borderRadius: 12,
-                        background: T.panel2,
-                        fontFamily: T.mono,
+                        background: TL.dock,
+                        fontFamily: TL.font.mono,
                         fontSize: 28,
-                        color: T.fg,
+                        color: TL.text,
                       }}
                     >
                       −
@@ -621,12 +617,12 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
                     <div style={{ minWidth: 96, textAlign: "center" }}>
                       <span
                         style={{
-                          fontFamily: T.mono,
+                          fontFamily: TL.font.mono,
                           fontVariantNumeric: "tabular-nums",
                           fontSize: 56,
                           fontWeight: 500,
                           lineHeight: 1,
-                          color: T.fg,
+                          color: TL.text,
                         }}
                       >
                         {vis}
@@ -634,9 +630,9 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
                       <span
                         style={{
                           display: "block",
-                          fontFamily: T.mono,
+                          fontFamily: TL.font.mono,
                           fontSize: 10.5,
-                          color: T.mut,
+                          color: TL.mute,
                           marginTop: 4,
                         }}
                       >
@@ -652,12 +648,12 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
                         appearance: "none",
                         cursor: "pointer",
                         minHeight: 88,
-                        border: `1px solid ${T.border}`,
+                        border: `1px solid ${TL.hair}`,
                         borderRadius: 12,
-                        background: T.panel2,
-                        fontFamily: T.mono,
+                        background: TL.dock,
+                        fontFamily: TL.font.mono,
                         fontSize: 28,
-                        color: T.fg,
+                        color: TL.text,
                       }}
                     >
                       +
@@ -676,13 +672,13 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
                     cursor: aktivtHullIdx === 0 ? "default" : "pointer",
                     flex: 1,
                     minHeight: 48,
-                    border: `1px solid ${T.border}`,
+                    border: `1px solid ${TL.hair}`,
                     borderRadius: 12,
                     background: "transparent",
-                    fontFamily: T.ui,
+                    fontFamily: TL.font.sans,
                     fontSize: 14,
                     fontWeight: 500,
-                    color: T.fg,
+                    color: TL.text,
                     opacity: aktivtHullIdx === 0 ? 0.4 : 1,
                   }}
                 >
@@ -699,11 +695,11 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
                     minHeight: 48,
                     border: "none",
                     borderRadius: 12,
-                    background: T.cta,
-                    fontFamily: T.ui,
+                    background: TL.fill,
+                    fontFamily: TL.font.sans,
                     fontSize: 14,
                     fontWeight: 500,
-                    color: T.onCta,
+                    color: TL.onFill,
                   }}
                 >
                   Neste hull →
@@ -723,13 +719,13 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
                   alignItems: "center",
                   justifyContent: "center",
                   gap: 6,
-                  border: `1px solid ${T.border}`,
+                  border: `1px solid ${TL.hair}`,
                   borderRadius: 12,
                   background: "transparent",
-                  fontFamily: T.ui,
+                  fontFamily: TL.font.sans,
                   fontSize: 12.5,
                   fontWeight: 500,
-                  color: T.fg2,
+                  color: TL.mute,
                 }}
               >
                 <Icon name="list" size={13} />
@@ -737,7 +733,7 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
               </button>
             </div>
 
-            <p style={{ margin: 0, fontFamily: T.bodyFont, fontSize: 12.5, color: T.mut, lineHeight: 1.55 }}>
+            <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.55 }}>
               Du kan lagre når som helst — også etter 9 hull eller midt i runden. Det som er
               tastet, telles.
             </p>
@@ -765,13 +761,13 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
                 minHeight: 44,
                 padding: "0 12px",
                 marginBottom: 12,
-                border: `1px solid ${T.border}`,
+                border: `1px solid ${TL.hair}`,
                 borderRadius: 12,
                 background: "transparent",
-                fontFamily: T.ui,
+                fontFamily: TL.font.sans,
                 fontSize: 12.5,
                 fontWeight: 600,
-                color: T.fg2,
+                color: TL.mute,
               }}
             >
               <Icon name="arrow-left" size={13} />
@@ -817,12 +813,12 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
             bottom: 96,
             transform: "translateX(-50%)",
             zIndex: 100,
-            background: T.fg,
-            color: T.bg,
+            background: TL.text,
+            color: TL.scene,
             padding: "12px 16px",
             borderRadius: 12,
             fontSize: 13,
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             maxWidth: "min(90vw, 420px)",
           }}
         >

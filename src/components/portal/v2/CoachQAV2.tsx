@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ Coach — Spørsmål — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
  * T.* only. Lys PlayerHQ.
@@ -7,17 +7,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import {
-  T,
-  Kort,
-  KpiFlis,
-  PillTabs,
-  StatusPill,
-  Rad,
-  AvatarInit,
-  TomTilstand,
-  } from "@/components/v2";
-
+import { Kort, KpiFlis, PillTabs, StatusPill, Rad, AvatarInit, TomTilstand } from "@/components/v2";
 /* ── Datakontrakt (serialiserbar — formatert på server) ────────────── */
 
 export type CoachSporsmal = {
@@ -51,17 +41,17 @@ export function CoachQAV2({ data }: { data: CoachQAData }) {
   );
 
   return (
-    <div data-paper-wave-g="coachqa" data-paper-portal-coach-qa data-paper-slug="playerhq-coach-hub" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="coachqa" data-paper-portal-coach-qa data-paper-slug="playerhq-coach-hub" style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div>
         <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Spørsmål</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Coach</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Spørsmål</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>Coach</span>
         </div>
       </div>
 
       {/* KPI-rad — ekte tellinger fra køen */}
-      <div className="grid grid-cols-3" style={{ gap: T.gap }}>
+      <div className="grid grid-cols-3" style={{ gap: 16 }}>
         <KpiFlis label="Åpne" value={String(antallApne)} varsle={antallApne > 0} />
         <KpiFlis label="Besvart" value={String(antallBesvart)} />
         <KpiFlis label="Totalt" value={String(sporsmal.length)} />
@@ -92,7 +82,7 @@ export function CoachQAV2({ data }: { data: CoachQAData }) {
             <Link href="/portal/coach/sporsmal/ny" style={{ textDecoration: "none", display: "block" }}>
               <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
-            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
           }}>Still et spørsmål</span>
             </Link>
           </div>
