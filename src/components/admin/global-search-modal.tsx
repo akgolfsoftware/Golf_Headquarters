@@ -220,8 +220,9 @@ const ACTIONS: Action[] = [
   // «Mer»-flyout lenger for Agency. Rutene under hadde ellers mistet all vei
   // inn, og fasiten sier eksplisitt at resten skal leve i søket. Rene
   // navigate-handlinger — ingen ny logikk.
-  { id: "s-caddie", label: "Caddie", description: "AI-assistenten i AgencyOS", keywords: ["caddie", "ai", "chat", "assistent"], icon: MessageSquare, kind: { type: "navigate", href: "/admin/agencyos/caddie" } },
+  { id: "s-caddie", label: "Caddie", description: "Foldet inn i AgenticOS", keywords: ["caddie", "ai", "chat", "assistent"], icon: MessageSquare, kind: { type: "navigate", href: "/admin/agenticos" } },
   { id: "s-agent-team", label: "AgenticOS", description: "Agentene — status, kjøringer og godkjenninger", keywords: ["agent", "team", "oppdrag", "agenter", "agenticos"], icon: Bot, kind: { type: "navigate", href: "/admin/agenticos" } },
+  { id: "s-jarvis-innboks", label: "Personlig innboks", description: "Jarvis på /meg — e-post, SMS, kalender", keywords: ["jarvis", "meg", "innboks", "gmail", "imessage"], icon: Mail, kind: { type: "navigate", href: "/meg" } },
   { id: "s-brief", label: "Daglig brief", description: "Dagens oppsummering", keywords: ["brief", "daglig", "morgen", "oppsummering"], icon: FileText, kind: { type: "navigate", href: "/admin/brief" } },
   { id: "s-plan-maler", label: "Plan-maler", description: "Maler for treningsplaner", keywords: ["mal", "maler", "template", "plan"], icon: Copy, kind: { type: "navigate", href: "/admin/plan-templates" } },
   { id: "s-drills", label: "Drills", description: "Kilder i Workbench", keywords: ["drill", "drills", "ovelse", "øvelse", "bibliotek", "kilder"], icon: Dumbbell, kind: { type: "navigate", href: "/admin/planlegge" } },
