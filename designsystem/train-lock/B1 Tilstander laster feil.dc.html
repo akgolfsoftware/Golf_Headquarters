@@ -14,6 +14,10 @@
   a { color: #F5F5F5; text-decoration: none; }
   a:hover { color: #FFFFFF; }
   ::-webkit-scrollbar { display: none; }
+  :root { --ease-out: cubic-bezier(0.23, 1, 0.32, 1); }
+  [data-press] { transition: transform 220ms var(--ease-out); }
+  [data-press]:active { transition-duration: 110ms; }
+  @media (prefers-reduced-motion: reduce) { [data-press]:active { transform: none !important; } }
 </style>
 </helmet>
 <div style="min-height: 100vh; background: #000000; display: flex; align-items: flex-start; justify-content: safe center; gap: 48px; padding: 56px 32px; flex-wrap: wrap;">
@@ -76,7 +80,7 @@
         <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #FF453A;">Feil</div>
         <div style="margin-top: 8px; font-size: 15px; font-weight: 600;">Fikk ikke lastet dagen din</div>
         <div style="margin-top: 4px; font-size: 13px; font-weight: 400; color: #8E8E93; line-height: 1.5;">Sjekk nettet og prøv igjen. Planen ligger trygt hos Anders.</div>
-        <div style="margin-top: 16px; height: 48px; border-radius: 999px; background: #FFFFFF; color: #000000; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 180ms cubic-bezier(0.32, 0.72, 0, 1);" style-active="transform: scale(0.97);">Prøv igjen</div>
+        <div style="margin-top: 16px; height: 48px; border-radius: 999px; background: #FFFFFF; color: #000000; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; cursor: pointer;" data-press="1" style-active="transform: scale(0.97);">Prøv igjen</div>
       </div>
     </div>
     <div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 10px 16px 0; z-index: 6;">
@@ -153,7 +157,7 @@
         <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #FF453A;">Feil</div>
         <div style="margin-top: 8px; font-size: 15px; font-weight: 600;">Fikk ikke lastet uken</div>
         <div style="margin-top: 4px; font-size: 13px; font-weight: 400; color: #8E8E93; line-height: 1.5;">Sjekk nettet og prøv igjen.</div>
-        <div style="margin-top: 16px; height: 48px; border-radius: 999px; background: #FFFFFF; color: #000000; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 180ms cubic-bezier(0.32, 0.72, 0, 1);" style-active="transform: scale(0.97);">Prøv igjen</div>
+        <div style="margin-top: 16px; height: 48px; border-radius: 999px; background: #FFFFFF; color: #000000; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; cursor: pointer;" data-press="1" style-active="transform: scale(0.97);">Prøv igjen</div>
       </div>
     </div>
     <div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 10px 16px 0; z-index: 6;">
@@ -223,7 +227,7 @@
         <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #FF453A;">Feil</div>
         <div style="margin-top: 8px; font-size: 15px; font-weight: 600;">Fikk ikke hentet SG</div>
         <div style="margin-top: 4px; font-size: 13px; font-weight: 400; color: #8E8E93; line-height: 1.5;">Tallene dine er trygge. Prøv igjen om litt.</div>
-        <div style="margin-top: 16px; height: 48px; border-radius: 999px; background: #FFFFFF; color: #000000; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 180ms cubic-bezier(0.32, 0.72, 0, 1);" style-active="transform: scale(0.97);">Prøv igjen</div>
+        <div style="margin-top: 16px; height: 48px; border-radius: 999px; background: #FFFFFF; color: #000000; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; cursor: pointer;" data-press="1" style-active="transform: scale(0.97);">Prøv igjen</div>
       </div>
     </div>
     <div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 10px 16px 0; z-index: 6;">
@@ -293,7 +297,7 @@
         <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #FF453A;">Feil</div>
         <div style="margin-top: 8px; font-size: 15px; font-weight: 600;">Fikk ikke lastet innstillingene</div>
         <div style="margin-top: 4px; font-size: 13px; font-weight: 400; color: #8E8E93; line-height: 1.5;">Profilen vises fra siste lagrede versjon.</div>
-        <div style="margin-top: 16px; height: 48px; border-radius: 999px; background: #FFFFFF; color: #000000; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 180ms cubic-bezier(0.32, 0.72, 0, 1);" style-active="transform: scale(0.97);">Prøv igjen</div>
+        <div style="margin-top: 16px; height: 48px; border-radius: 999px; background: #FFFFFF; color: #000000; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; cursor: pointer;" data-press="1" style-active="transform: scale(0.97);">Prøv igjen</div>
       </div>
     </div>
     <div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 10px 16px 0; z-index: 6;">

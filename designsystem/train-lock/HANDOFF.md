@@ -377,3 +377,65 @@ Verifikasjon i alle seks: scene #000000 · én hvit primær CTA per skjerm (unnt
 - **WB-09 (WB-GRP-01/02/03 + origin + stall):** GROUP-uke med banner «gjelder 9 medlemmer», medlemsliste med multi-gruppe-tags, varsel om lokale endringer før lagring; slette-regel: fjernes kun hos medlemmer uten lokal endring. Kvittering «Materialisert til 9 profiler» med warm hake og «Velger selv»-rader i target. Origin-caps GRUPPE · COACH · DEG i spillerens plan (COACH target-kant, venter på svar, stjeler aldri hero). Stall: kun entitlement-spillere, hairline gruppe-tags, kolonner Uke/Venter/Sist aktiv, tom tilstand «Ingen spillere med aktiv tilgang»; self-serve usynlig til tilgangsprodukt er kjøpt.
 
 Token-pass 24.08: ingen #0A0A0A; gradienter kun timeline-hairline; TM-11 renset for regnbue-ellipser → én 1σ-ellipse i hair + nøytrale bøtte-prikker; #30D158 kun godkjent-handling.
+
+## 28.08.2026 — EC-02 og AG-19 (utkast)
+
+- `EC-02 AS Compliance.dc.html` — AS-frister under Økonomi. iPhone 390 (nedtelling 56/700 + fristliste + levert), iPad 834 (bento 3 + årsprikker + tabell), Mac 1440 (skinne 64 + rail 232 + tabell + inspektør 340 med MVA-grunnlag, KID, sjekkliste), lys tom-tilstand. Datamodell per frist: dato · type · periode · skjema · beløp · status (Åpen / N dager / Forfalt / Levert). warn = nær frist, danger = kun forfalt, warm-ring = levert, levert-rader på opacity 0.5.
+- `AG-19 Notifikasjonssenter.dc.html` — varselkjeden: låseskjerm (3 varsler, ingen knapp) → langtrykk utvidet varsel med diff + hvit Godkjenn / hairline Avvis / dim Åpne i Cockpit → godkjenn-ark 24 24 0 0 med full diff og proveniens → SMS-tråd med J/N, ref-kode og utløp → Mac-senter gruppert venter / feil / behandlet, med kanaltogglene push · SMS · e-post.
+- Beslutning: SMS-godkjenning bærer aldri spillerdata, kun beløp, antall og ref-kode. Alle agentvarsler har eksplisitt utløp og fallback «ingen handling».
+- Godkjent-status i behandlet-listen er caps mute, ikke ok-grønn (AgenticOS-regelen gjelder også her).
+- Gjenstår i denne bølgen: GAP-2 runtime/Ollama-feil og re-autentisering som egne rammer, AO-13 routing-hub (lokal vs. cloud), lys variant av EC-02b/c og AG-19f.
+
+## 28.08.2026 — GAP-2 og AO-13
+
+- `GAP-2 Tilstander drift.dc.html` — driftstilstandene som manglet: runtimes nede (Mac + iPhone), Jarvis-kø tom (mørk + lys), integrasjoner som krever re-autentisering, og re-auth-arket. Feilmønsteret er låst: caps danger + 8px prikk i radens venstrekant, aldri fylt flate. Nær-utløp er warn. Tom kø er fem tomme spor i dim + hel setning.
+- Beslutning: en nede-motor stopper aldri køen — oppgaver beholdes uten delvis kjøring, og skjermen sier det eksplisitt. Re-auth-arket lister også hva som ALDRI deles (spillernavn, helsedata).
+- `AO-13 Routing-hub.dc.html` — Agentic OS routing lokal vs. sky. Grunnregel «alt som inneholder navn kjøres lokalt» er en egen låst regel (rad 1, caps LÅST i stedet for bryter). Regellista er ordnet, øverste treff vinner, av-regler på opacity 0.5. Inspektør: når · send til · fallback-kjede i tre trinn · takstopp per døgn.
+- Regel-datamodell: rekkefølge · betingelse (oppgavetype, persondata, web) · motor (lokal modell / sky-nivå) · takstopp · krever godkjenning · fallback 1-2-3.
+- Gjenstår: lys variant av EC-02b/c, AG-19f, AO-13a; iPad-ramme for AG-19 og GAP-2.
+
+## 28.08.2026 — S3-03 Spiller profil (landingsside)
+
+- `S3-03 Spiller profil bento.dc.html` — ny **landingsside** for en spiller: trykk på navn i stall- eller gruppeliste åpner denne, ikke S3-01. S3-01 beholdes som arbeidsvisning med stalliste i venstre kolonne.
+- Mac-layout: rail 64 + breadcrumb-linje 58 + bento i tre kolonner 344 / flex / 380. Kolonne 1 identitet (portrett 3:4 + felt + fire nøkkeltall), kolonne 2 ukeaktivitet-måler + teknisk plan + Nå-kort, kolonne 3 sesong + månedskalender + dagens agenda.
+- Ny komponent **Ukeaktivitet-måler**: 25 streker i halvsirkel, fylte = text, tomme = dim, tall 56/700 i midten, med FYS/TEK/SLAG/SPILL som hairline-rader under. Ingen farge, ingen heatmap.
+- Fanerad på profilen: Oversikt · Plan · Analyse · Turneringer · Tester · Notater. Kun Oversikt er tegnet.
+- Portrett er plassholder (#1C1C1E + ØR-avatar + mono-caption «portrett · 3:4») til ekte bilder finnes.
+- Turneringsrader: kommende i full opacity, spilte på 0.5 med plassering som tabular-tall.
+
+## 28.08.2026 — Analyse-huben: TM-12, TM-13, TM-14
+
+Datafundamentet (TrackMan-parametere, Strokes Gained, DECADE) fikk sine tre flater. Én farge-beslutning gjelder alle tre:
+
+- **Målvindu = target `#0A84FF`**, ikke grønn. Ok-grønn er reservert for Player «Godta» i WB-04, og et treff i trenerens vindu er ikke en godkjenning. Fyll 16–18 %, stiplet kant 2px.
+- **Bom er ikke feil.** Slag utenfor vinduet tegnes i `dim` / `mute`, aldri danger. Avvik over tid er warn (`#FFD60A`). Danger er fortsatt kun reell systemfeil.
+- Treffprikker er `shot #B08968` som i DispersionMap. Ingen køllefarger, ingen heatmap.
+
+### TM-12 Økt · Teknikk vs. Slag
+- **ParameterGauge**: halvsirkel, 0 øverst i midten, 19 streker (`dim`), midtstrek 28px i `text`, målvinduets streker 4px brede i target. Nål = 2px hvit stang + 16px nav. Verdi 56/700 i midten, vindu som meta under. Utenfor vindu: nål og verdi i `mute` + caps «UTENFOR VINDUET».
+- **ShotSequenceBar**: én stolpe per slag, i vinduet = target, utenfor = dim, siste slag = hvit. Legende alltid under.
+- **Slag-visning**: 3D-flate øverst (side / ovenfra / bak som pillevalg), sveipbart kortspor nederst — kortene faller i opacity bakover i tid (1,0 → 0,5 → 0,25).
+
+### TM-13 Progresjon og trenerens mål
+- **BandChart**: målvindu som target-rektangel 16 % med stiplede kanter, spillerens spredning som hvitt polygon 10 %, ukesnitt som hvit 3px linje, siste punkt r=8.
+- Avvikstilstand: bruddpunkt markert med loddrett warn-stiplet + warn-prikk, og en hendelseslogg som forklarer hva som skjedde den uken (nytt utstyr, avlyste økter).
+- Coach-varselet er et kort i inspektøren med tre handlinger: hvit «Legg i teknisk plan», hairline «Utvid vinduet», dim «Avfei varselet». Spilleren ser aldri varselmekanikken — bare målet og én setning fra coach.
+
+### TM-14 Bag mapping og DECADE
+- **BagRow**: carry hvit, total i dim bak, 1σ som hvitt 12 %-felt med hairline-kanter. Valgt rad får `#FFFFFF0A`.
+- Planleggingstallet (snitt minus 1σ) er eksplisitt eget felt — det er tallet DECADE bruker.
+- **ConeMap er et LAG oppå HoleMapBase fra `TM-07 Hullkart komponenter.dc.html`** — ikke et nytt hullkart. Arver fasit-paletten uendret: scene #111111, rough #141414, fairway #1A1A1A, green #212121, sand #2A2A2A, tee-rect #2C2C2E, viewBox 240×170 med tee til venstre. Siktlinjen følger §5: hvit 20 %, dash 4 5. OB er samme 20 % med dash 2 4. Kjeglen er target 18 % med stiplede kanter og bue i enden; siktepunktet er hvit ring r8 med kryss + stiplet dra-radius r15. Prikker er shot #B08968 r4 som i fasiten.
+- Rettet etter review: første utkast hadde egen hull-anatomi og to nye farger (#242424, #3A3A3C) samt siktlinje på 35 %. Alt tre er borte — ingen nye tokens.
+- Sammenlign-listen viser forventet score per siktepunkt — det er den aksjonsorienterte innsikten, ikke kjeglen i seg selv.
+
+### Lys modus
+- EC-02e, AG-19g og AO-13e er lyse Mac-varianter, generert med token-mapping: scene→#FFFFFF, elev→#F2F2F2, dock→#E9E9EB, hair→#00000014, dim→#DDDDDE, text→#111111, mute→#6E6E73, danger→#FF3B30. target, warn, warm, shot og avatar er uendret i begge temaer.
+
+## 28.08.2026 — Motion-token-pass (apple-design + emil-design-eng), hele prosjektet
+
+- DESIGN-SYSTEM.md §4 er utvidet med de faktiske tokens: `--ease-out`, `[data-press]` (220ms inn / 110ms release, asymmetrisk), hover-gating (`hover: hover) and (pointer: fine)`), reduced-motion og reduced-transparency. Trykkflate-minimum presisert til 44px inkl. chips/pills.
+- Chip/pille-høyde 34→44px rettet i 5 filer (11 flater) der mønsteret var en ekte pille (`border-radius: 999px`). Rail-nav (radius 10), 34×34-avatarer og kalenderprikker er IKKE chips og er urørt.
+- **Global konvertering**: den gamle trykk-easingen (`transition: transform 180ms cubic-bezier(0.32, 0.72, 0, 1)` + separat `style-active`) er byttet til fasit-tokenet (`data-press="1"` + delt CSS-regel, 220/110ms) i **41 filer, ~95 trykkflater** — CTA-er i I dag/Plan/Analyse/Meg-tilstander, Cockpit, Innboks, Uke, Årsplan, Stall, Live, Booking-ark, Onboarding, m.fl. Verifisert med prosjektbredt grep: 0 gjenværende treff på gammel signatur.
+- To filer med Ø i filnavn (`B2 PH-04 Økt-ark iPad Mac`, `PH-04 Økt-ark`, `B3 Lys nøkkelskjermer`) krevde str_replace_edit i stedet for run_script pga. sandbox-tegnfilter — samme sluttresultat.
+- Ingen `ease-in`, `transition: all` eller `scale(0)` finnes noe sted i prosjektet (bekreftet med grep før og etter).
+- Gjenstår, bevisst ikke gjort blindt: å legge NY press-feedback (data-press) på elementer som i dag har `cursor: pointer` uten noen interaksjonsstil (rail-nav, enkelte ikonknapper) — dette krever et øye på hver skjerm, ikke en regex, og tas i egne verifiserte batcher videre.
