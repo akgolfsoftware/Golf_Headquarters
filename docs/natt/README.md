@@ -4,7 +4,8 @@ Denne mappen er **kanon for bølge 1** (A1–A4 + økt-pakke) og **bølge 2** (l
 Den superseder Paper-port-plan. **Design 25.08.2026 (Anders): Train-lock er fasit for ALLE
 skjermer i PlayerHQ OG AgencyOS** — se CLAUDE.md invariant 2 og `.claude/rules/beslutninger.md`.
 
-**Status og kjøreplan: `LAUNCH-PLAN-FULL-2026-08-25.md` — start der.**
+**Status og kjøreplan:** `docs/STATUS-NÅ.md` (snapshot) + `docs/LANSERINGSPLAN-KOMPLETT-2026-08-27.md`
+(gjenstående). `LAUNCH-PLAN-FULL-2026-08-25.md` er detaljgrunnlag for T-/C-radene.
 
 | Fil | Bruk |
 |-----|------|
