@@ -59,6 +59,7 @@ export function TrackManListeTrainLock({ data }: { data: TrackManListeData }) {
             <Link
               key={r.id}
               href={`/portal/analysere/trackman/${r.id}`}
+              className="v2-press v2-focus"
               style={{
                 display: "flex",
                 alignItems: "center",

@@ -196,7 +196,33 @@ export function OktArk({ session: initial }: { session: WorkbenchSession }) {
       {session.status === "COMPLETED" && (
         <div style={kort}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <Icon name="check" size={18} style={{ color: WARM }} />
+            {/* Warm hake med tegne-animasjon — delight-budsjettet (én gang per
+                økt). Ring lander fra scale(0.9), haken tegnes rett etter. */}
+            <span
+              className="v2-hake-ring"
+              aria-hidden
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: 28,
+                height: 28,
+                borderRadius: "50%",
+                border: `1.5px solid ${WARM}`,
+                flex: "none",
+              }}
+            >
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path
+                  className="v2-hake-tegn"
+                  d="M2.5 7.5 L5.5 10.5 L11.5 3.5"
+                  stroke={WARM}
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </span>
             <span style={{ fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
               {UI.sessionCompletedTitle}
             </span>

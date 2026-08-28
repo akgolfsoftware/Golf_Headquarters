@@ -211,7 +211,7 @@ function TrackManKort({ data }: { data: TmHubData }) {
       </div>
       <div style={{ marginTop: 12, display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 13, gap: 12 }}>
         <span style={{ color: TL.mute, fontVariantNumeric: "tabular-nums" }}>{tm.kpis}</span>
-        <Link href={`/portal/analysere/trackman/${tm.sessionId}`} style={{ fontWeight: 600, color: TL.text, textDecoration: "none" }}>
+        <Link href={`/portal/analysere/trackman/${tm.sessionId}`} className="v2-press v2-focus" style={{ fontWeight: 600, color: TL.text, textDecoration: "none" }}>
           Åpne økt
         </Link>
       </div>
@@ -228,6 +228,7 @@ function Dypere({ rader }: { rader: TmHubData["dypere"] }) {
           <Link
             key={r.href}
             href={r.href}
+            className="v2-press v2-focus"
             style={{
               display: "flex",
               alignItems: "center",

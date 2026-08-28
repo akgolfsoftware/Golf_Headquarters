@@ -17,7 +17,7 @@
  * der desktop viser samme innhold i et side-panel. Eieren holder `open`-state.
  */
 
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { TL } from "@/lib/v2/train-lock";
 
@@ -37,6 +37,27 @@ export interface BunnArkProps {
 
 export function BunnArk({ open, onClose, tittel, maxHeight = "82vh", children }: BunnArkProps) {
   const arkRef = useRef<HTMLDivElement>(null);
+  // Lukking speiler inngangen (fasit §4): arket glir ned 440 ms før unmount.
+  // `lukker` holder arket montert mens exit-transition kjører; transitionend
+  // (eller fallback-timer for reduced motion/gamle motorer) kaller onClose.
+  const [lukker, setLukker] = useState(false);
+  const beOmLukk = useCallback(() => setLukker(true), []);
+  // Nullstill lukke-tilstanden når eieren gjenåpner (render-justering, ikke
+  // effekt — https://react.dev/learn/you-might-not-need-an-effect).
+  const [forrigeOpen, setForrigeOpen] = useState(open);
+  if (open !== forrigeOpen) {
+    setForrigeOpen(open);
+    if (open && lukker) setLukker(false);
+  }
+
+  useEffect(() => {
+    if (!lukker) return;
+    const t = window.setTimeout(() => {
+      setLukker(false);
+      onClose();
+    }, 500);
+    return () => window.clearTimeout(t);
+  }, [lukker, onClose]);
 
   useEffect(() => {
     if (!open) return;
@@ -49,7 +70,7 @@ export function BunnArk({ open, onClose, tittel, maxHeight = "82vh", children }:
 
     const keys = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        onClose();
+        beOmLukk();
         return;
       }
       // Fokus-felle: Tab sykler innenfor arket (aria-modal-kontrakten).
@@ -77,16 +98,17 @@ export function BunnArk({ open, onClose, tittel, maxHeight = "82vh", children }:
       document.body.style.overflow = forrigeOverflow;
       forrigeFokus?.focus();
     };
-  }, [open, onClose]);
+  }, [open, beOmLukk]);
 
   if (!open) return null;
 
   return (
     <>
       <div
-        onClick={onClose}
+        onClick={beOmLukk}
         aria-hidden
-        className="v2-backdrop-in"
+        className="v2-ark-backdrop"
+        data-lukker={lukker ? "1" : undefined}
         style={{ position: "fixed", inset: 0, zIndex: 90, background: TL.scrim }}
       />
       <div
@@ -95,7 +117,8 @@ export function BunnArk({ open, onClose, tittel, maxHeight = "82vh", children }:
         role="dialog"
         aria-modal="true"
         aria-label={tittel ?? "Detaljer"}
-        className="v2-sheet-in"
+        className="v2-ark-inn"
+        data-lukker={lukker ? "1" : undefined}
         style={{
           position: "fixed",
           left: 0,
@@ -107,7 +130,7 @@ export function BunnArk({ open, onClose, tittel, maxHeight = "82vh", children }:
           outline: "none",
           background: TL.elev,
           border: `1px solid ${TL.hair}`,
-          borderRadius: "18px 18px 0 0",
+          borderRadius: `${TL.radius.sheet} ${TL.radius.sheet} 0 0`,
           padding: "10px 16px calc(20px + env(safe-area-inset-bottom))",
           boxShadow: `0 -18px 48px ${TL.scrim}`,
         }}
@@ -127,7 +150,7 @@ export function BunnArk({ open, onClose, tittel, maxHeight = "82vh", children }:
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 12 }}>
             <span style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 16, color: TL.text }}>{tittel}</span>
             <button
-              onClick={onClose}
+              onClick={beOmLukk}
               className="v2-press v2-focus"
               aria-label="Lukk"
               style={{ background: "transparent", border: 0, color: TL.mute, cursor: "pointer", padding: 4 }}

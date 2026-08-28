@@ -5,8 +5,10 @@
  * AdminGodkjenningerV2, caddie-message-v2, wizard-fields, mic-button).
  * Statisk CSS = ingen FOUC før hydrering, og katalogen kan leses som fasit.
  *
- * Bevegelsesspråket (FASIT §4b): 180 ms cubic-bezier(0.2,0,0,1) for
- * interaksjon, 200 ms for inn-animasjoner, 600 ms for count-up (JS-hook).
+ * Bevegelsesspråket (Train-lock DESIGN-SYSTEM §4, portet 2026-08-28):
+ * press 110 ms inn / 220 ms ut med --tl-ease-out (asymmetrisk: rask respons,
+ * myk retur) · inn-animasjoner 200 ms --tl-ease-out · ark 440 ms --tl-ease
+ * fra bunn · hover alltid bak (hover:hover) · fokus = target-blå.
  * ALT honorerer prefers-reduced-motion nederst i fila.
  *
  * Fargene refererer --v2-*-tokens i globals.css (lys default + mørk via
@@ -15,26 +17,32 @@
 
 /* ── Interaksjon: trykk, fokus, hover ─────────────────────────────── */
 .v2-press {
-  transition: transform 180ms cubic-bezier(0.2, 0, 0, 1);
+  transition:
+    transform 220ms var(--tl-ease-out),
+    background-color 220ms var(--tl-ease-out),
+    opacity 220ms var(--tl-ease-out);
 }
 .v2-press:active {
-  transform: scale(0.98);
+  transition-duration: 110ms;
+  transform: scale(0.97);
 }
 .v2-focus:focus-visible {
   outline: none;
   box-shadow:
-    0 0 0 2px var(--v2-bg),
-    0 0 0 3.5px color-mix(in srgb, var(--v2-lime) 55%, transparent);
+    0 0 0 2px var(--tl-scene),
+    0 0 0 3.5px var(--tl-viz-target);
 }
 .v2-row-h {
-  transition: background 180ms cubic-bezier(0.2, 0, 0, 1);
+  transition: background 180ms ease;
 }
-.v2-row-h:hover {
-  background: var(--v2-panel2);
-}
-.v2-kort-h:hover {
-  transform: translateY(-2px);
-  border-color: var(--v2-border-s);
+@media (hover: hover) and (pointer: fine) {
+  .v2-row-h:hover {
+    background: var(--tl-dock);
+  }
+  .v2-kort-h:hover {
+    transform: translateY(-2px);
+    border-color: var(--v2-border-s);
+  }
 }
 
 /* ── Drag (Workbench-perioder/økter) ──────────────────────────────── */
@@ -66,7 +74,7 @@
   }
 }
 .v2-fade-in {
-  animation: v2FadeIn 200ms cubic-bezier(0.2, 0, 0, 1);
+  animation: v2FadeIn 200ms var(--tl-ease-out);
 }
 @keyframes v2SheetIn {
   from {
@@ -79,7 +87,62 @@
   }
 }
 .v2-sheet-in {
-  animation: v2SheetIn 200ms cubic-bezier(0.2, 0, 0, 1);
+  animation: v2SheetIn 200ms var(--tl-ease-out);
+}
+
+/* ── Bunn-ark (Train-lock §4: 440 ms fra bunn, --tl-ease, speilet ut) ──
+ * Transitions (ikke keyframes) så arket kan avbrytes og lukke samme vei.
+ * @starting-style gir inn-animasjonen uten JS-mount-triks. */
+.v2-ark-inn {
+  transform: translateY(0);
+  transition: transform var(--tl-dur-sheet) var(--tl-ease);
+}
+.v2-ark-inn[data-lukker="1"] {
+  transform: translateY(100%);
+}
+.v2-ark-backdrop {
+  opacity: 1;
+  transition: opacity 260ms var(--tl-ease-out);
+}
+.v2-ark-backdrop[data-lukker="1"] {
+  opacity: 0;
+}
+@starting-style {
+  .v2-ark-inn {
+    transform: translateY(100%);
+  }
+  .v2-ark-backdrop {
+    opacity: 0;
+  }
+}
+
+/* ── Fullført-haken (delight-budsjettet: sjeldent øyeblikk, én gang per økt).
+ * Ringen lander fra scale(0.9) (aldri scale(0)), haken tegnes med
+ * stroke-dashoffset rett etter. Keyframes er OK her: kan ikke re-trigges. */
+@keyframes v2HakeRing {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.v2-hake-ring {
+  animation: v2HakeRing 520ms var(--tl-ease-out) backwards;
+}
+@keyframes v2HakeTegn {
+  from {
+    stroke-dashoffset: 24;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.v2-hake-tegn {
+  stroke-dasharray: 24;
+  animation: v2HakeTegn 400ms var(--tl-ease-out) 140ms backwards;
 }
 @keyframes v2BackdropIn {
   from {
@@ -273,6 +336,18 @@
   .v2-sheet-in,
   .v2-backdrop-in {
     animation: none;
+  }
+  /* Arket: behold opacity-fade, dropp bevegelsen (fasit §4 reduced motion). */
+  .v2-ark-inn {
+    transform: none !important;
+    transition: opacity var(--tl-dur-reduced) ease;
+  }
+  .v2-ark-inn[data-lukker="1"] {
+    opacity: 0;
+  }
+  .v2-hake-tegn,
+  .v2-hake-ring {
+    animation: none !important;
   }
   .v2-skel {
     animation: none;
