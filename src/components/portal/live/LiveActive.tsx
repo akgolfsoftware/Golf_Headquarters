@@ -132,12 +132,12 @@ function ConfirmOverlay({ show, onConfirm, onCancel }: ConfirmOverlayProps) {
     >
       <div
         className="w-full max-w-[320px] rounded-[20px] p-6"
-        style={{ background: "var(--p-surface)", border: "1px solid var(--p-border)", color: "var(--p-fg)" }}
+        style={{ background: "var(--tl-elev)", border: "1px solid var(--tl-hair)", color: "var(--tl-text)" }}
       >
-        <div className="font-sans text-[18px] font-semibold" style={{ color: "var(--p-fg)" }}>
+        <div className="font-sans text-[18px] font-semibold" style={{ color: "var(--tl-text)" }}>
           Avslutte økta?
         </div>
-        <p className="mb-5 mt-2 font-serif text-[13.5px] leading-[1.55]" style={{ color: "var(--p-muted)" }}>
+        <p className="mb-5 mt-2 font-serif text-[13.5px] leading-[1.55]" style={{ color: "var(--tl-mute)" }}>
           Alt du har telt og notert blir med til oppsummeringen.
         </p>
         <div className="flex flex-col gap-2">
@@ -145,7 +145,7 @@ function ConfirmOverlay({ show, onConfirm, onCancel }: ConfirmOverlayProps) {
             type="button"
             onClick={onConfirm}
             className="w-full border-none py-[13px] font-sans text-[14px] font-semibold v2-press"
-            style={{ background: "var(--p-cta)", color: "var(--p-on-cta)", minHeight: 52, borderRadius: 12 }}
+            style={{ background: "var(--tl-fill)", color: "var(--tl-on-fill)", minHeight: 52, borderRadius: 12 }}
           >
             Avslutt og logg
           </button>
@@ -153,7 +153,7 @@ function ConfirmOverlay({ show, onConfirm, onCancel }: ConfirmOverlayProps) {
             type="button"
             onClick={onCancel}
             className="w-full py-[13px] font-sans text-[13px] font-medium v2-press"
-            style={{ border: "1px solid var(--p-border)", background: "var(--p-soft)", color: "var(--p-fg)", borderRadius: 12 }}
+            style={{ border: "1px solid var(--tl-hair)", background: "var(--tl-dim)", color: "var(--tl-text)", borderRadius: 12 }}
           >
             Fortsett økta
           </button>
@@ -482,10 +482,10 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
       data-paper-slug="playerhq-live-okt"
       className="fixed inset-0 z-50 flex flex-col overflow-hidden"
       style={{
-        background: "var(--p-bg)",
-        color: "var(--p-fg)",
+        background: "var(--tl-scene)",
+        color: "var(--tl-text)",
         isolation: "isolate",
-        fontFamily: "var(--p-ui, var(--font-sans), system-ui, sans-serif)",
+        fontFamily: "var(--tl-font-sans, system-ui, sans-serif)",
       }}
     >
       <ConfirmOverlay
@@ -500,15 +500,15 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
         className="flex flex-shrink-0 items-center gap-2 px-4 py-3"
         style={{
           paddingTop: "max(env(safe-area-inset-top) + 10px, 14px)",
-          borderBottom: "1px solid var(--p-border)",
-          background: "var(--p-surface)",
+          borderBottom: "1px solid var(--tl-hair)",
+          background: "var(--tl-elev)",
         }}
       >
         <div style={{ minWidth: 0, flex: 1 }}>
-          <h1 className="font-sans text-[17px] font-semibold leading-tight" style={{ margin: 0, color: "var(--p-fg)" }}>
+          <h1 className="font-sans text-[17px] font-semibold leading-tight" style={{ margin: 0, color: "var(--tl-text)" }}>
             Økta pågår
           </h1>
-          <div className="mt-[2px] truncate font-mono text-[10.5px]" style={{ color: "var(--p-muted)" }}>
+          <div className="mt-[2px] truncate font-mono text-[10.5px]" style={{ color: "var(--tl-mute)" }}>
             {data.title}
             {data.location ? ` · ${data.location}` : ""}
           </div>
@@ -527,10 +527,10 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
           <div
             className="mb-4 mt-2 px-4 py-3 font-serif text-[12.5px]"
             style={{
-              background: "var(--p-soft)",
-              border: "1px solid var(--p-border)",
+              background: "var(--tl-dim)",
+              border: "1px solid var(--tl-hair)",
               borderRadius: 12,
-              color: "var(--p-muted)",
+              color: "var(--tl-mute)",
             }}
             role="status"
           >
@@ -547,7 +547,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
         {/* Modusveksler: Sjekkliste · Reps · Logg */}
         <div
           className="mt-4 flex gap-1 p-1"
-          style={{ background: "var(--p-soft)", border: "1px solid var(--p-border)", borderRadius: 12 }}
+          style={{ background: "var(--tl-dim)", border: "1px solid var(--tl-hair)", borderRadius: 12 }}
           role="group"
           aria-label="Velg visning"
         >
@@ -570,9 +570,9 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
                 style={{
                   minHeight: 44,
                   borderRadius: 8,
-                  border: on ? "1px solid var(--p-border)" : "1px solid transparent",
-                  background: on ? "var(--p-surface)" : "transparent",
-                  color: on ? "var(--p-fg)" : "var(--p-muted)",
+                  border: on ? "1px solid var(--tl-hair)" : "1px solid transparent",
+                  background: on ? "var(--tl-elev)" : "transparent",
+                  color: on ? "var(--tl-text)" : "var(--tl-mute)",
                 }}
               >
                 {label}
@@ -585,12 +585,12 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
         {drills.length === 0 && modus !== "logg" && (
           <div
             className="mt-4 px-4 py-6"
-            style={{ background: "var(--p-soft)", border: "1px dashed var(--p-border)", borderRadius: 12 }}
+            style={{ background: "var(--tl-dim)", border: "1px dashed var(--tl-hair)", borderRadius: 12 }}
           >
-            <h3 className="m-0 font-sans text-[15px] font-semibold" style={{ color: "var(--p-fg)" }}>
+            <h3 className="m-0 font-sans text-[15px] font-semibold" style={{ color: "var(--tl-text)" }}>
               Ingen drills i denne økta
             </h3>
-            <p className="mb-3 mt-2 font-serif text-[13.5px]" style={{ color: "var(--p-muted)" }}>
+            <p className="mb-3 mt-2 font-serif text-[13.5px]" style={{ color: "var(--tl-mute)" }}>
               Åpne økta i planen og legg til driller — eller tren fritt, noter i
               Logg og avslutt når du er ferdig.
             </p>
@@ -601,9 +601,9 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
               style={{
                 minHeight: 48,
                 borderRadius: 12,
-                border: "1px solid var(--p-border)",
-                background: "var(--p-surface)",
-                color: "var(--p-fg)",
+                border: "1px solid var(--tl-hair)",
+                background: "var(--tl-elev)",
+                color: "var(--tl-text)",
               }}
             >
               Til planen
@@ -614,7 +614,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
         {/* ── Sjekkliste ── */}
         {modus === "sjekk" && drills.length > 0 && (
           <div className="mt-4 min-w-0">
-            <span className={eyebrowCls} style={{ color: "var(--p-muted)" }}>
+            <span className={eyebrowCls} style={{ color: "var(--tl-mute)" }}>
               drills · {completedCount} av {drills.length} gjennomført
             </span>
             <div className="mt-2 flex min-w-0 flex-col gap-2">
@@ -625,8 +625,8 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
                     key={d.id}
                     className="flex min-w-0 items-start gap-3 p-3"
                     style={{
-                      background: "var(--p-surface)",
-                      border: "1px solid var(--p-border)",
+                      background: "var(--tl-elev)",
+                      border: "1px solid var(--tl-hair)",
                       borderRadius: 12,
                     }}
                   >
@@ -642,9 +642,9 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
                         width: 44,
                         height: 44,
                         borderRadius: 9999,
-                        border: `1px solid ${ferdig ? "var(--p-up)" : "var(--p-border)"}`,
-                        background: ferdig ? "var(--p-soft)" : "transparent",
-                        color: ferdig ? "var(--p-up)" : "var(--p-mid)",
+                        border: `1px solid ${ferdig ? "var(--tl-ok)" : "var(--tl-hair)"}`,
+                        background: ferdig ? "var(--tl-dim)" : "transparent",
+                        color: ferdig ? "var(--tl-ok)" : "var(--tl-mute)",
                       }}
                     >
                       <Check className="h-[18px] w-[18px]" strokeWidth={2} aria-hidden />
@@ -653,13 +653,13 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
                       <span
                         className="block text-[13.5px] font-semibold"
                         style={{
-                          color: ferdig ? "var(--p-muted)" : "var(--p-fg)",
+                          color: ferdig ? "var(--tl-mute)" : "var(--tl-text)",
                           textDecoration: ferdig ? "line-through" : "none",
                         }}
                       >
                         {d.name}
                       </span>
-                      <span className="font-mono text-[10.5px]" style={{ color: "var(--p-muted)" }}>
+                      <span className="font-mono text-[10.5px]" style={{ color: "var(--tl-mute)" }}>
                         {d.repsTotal} av {d.plannedReps > 0 ? d.plannedReps : "—"} reps
                         {d.durationMinutes > 0 ? ` · ${d.durationMinutes} min` : ""}
                       </span>
@@ -676,9 +676,9 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
                       style={{
                         minHeight: 44,
                         borderRadius: 12,
-                        border: "1px solid var(--p-border)",
+                        border: "1px solid var(--tl-hair)",
                         background: "transparent",
-                        color: "var(--p-fg)",
+                        color: "var(--tl-text)",
                       }}
                     >
                       Tell
@@ -687,7 +687,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
                 );
               })}
             </div>
-            <p className="mb-0 mt-3 font-serif text-[12.5px]" style={{ color: "var(--p-muted)" }}>
+            <p className="mb-0 mt-3 font-serif text-[12.5px]" style={{ color: "var(--tl-mute)" }}>
               Å hoppe over en drill er lov. Det du ikke rekker, følger med til
               oppsummeringen som avvik — ikke som feil.
             </p>
@@ -716,9 +716,9 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
                     style={{
                       minHeight: 44,
                       borderRadius: 9999,
-                      border: `1px solid ${on ? "var(--p-fg)" : "var(--p-border)"}`,
-                      background: on ? "var(--p-fg)" : "var(--p-surface)",
-                      color: on ? "var(--p-bg)" : "var(--p-muted)",
+                      border: `1px solid ${on ? "var(--tl-text)" : "var(--tl-hair)"}`,
+                      background: on ? "var(--tl-text)" : "var(--tl-elev)",
+                      color: on ? "var(--tl-scene)" : "var(--tl-mute)",
                     }}
                   >
                     {d.name}
@@ -750,12 +750,12 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
             {data.maalsetning && (
               <div
                 className="mt-2 p-4"
-                style={{ background: "var(--p-surface)", border: "1px solid var(--p-border)", borderRadius: 12 }}
+                style={{ background: "var(--tl-elev)", border: "1px solid var(--tl-hair)", borderRadius: 12 }}
               >
-                <span className={eyebrowCls} style={{ color: "var(--p-muted)" }}>
+                <span className={eyebrowCls} style={{ color: "var(--tl-mute)" }}>
                   mål i dag
                 </span>
-                <p className="m-0 mt-1 font-serif text-[14px]" style={{ color: "var(--p-fg)" }}>
+                <p className="m-0 mt-1 font-serif text-[14px]" style={{ color: "var(--tl-text)" }}>
                   {data.maalsetning}
                 </p>
                 <WhyDetails
@@ -775,7 +775,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
         {/* ── Logg: fritt notat med tidsstempel inn i økta ── */}
         {modus === "logg" && (
           <div className="mt-4 min-w-0">
-            <span className={eyebrowCls} style={{ color: "var(--p-muted)" }}>
+            <span className={eyebrowCls} style={{ color: "var(--tl-mute)" }}>
               notat til loggen
             </span>
             <textarea
@@ -787,9 +787,9 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
               className="mt-2 w-full resize-y p-3 font-serif text-[15px]"
               style={{
                 minHeight: 110,
-                background: "var(--p-surface)",
-                color: "var(--p-fg)",
-                border: "1px solid var(--p-border)",
+                background: "var(--tl-elev)",
+                color: "var(--tl-text)",
+                border: "1px solid var(--tl-hair)",
                 borderRadius: 12,
               }}
             />
@@ -802,21 +802,21 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
               style={{
                 minHeight: 48,
                 borderRadius: 12,
-                border: "1px solid var(--p-cta)",
-                background: "var(--p-cta)",
-                color: "var(--p-on-cta)",
+                border: "1px solid var(--tl-fill)",
+                background: "var(--tl-fill)",
+                color: "var(--tl-on-fill)",
               }}
             >
               Lagre notat
             </button>
-            <p className="mb-0 mt-3 font-serif text-[12.5px]" style={{ color: "var(--p-muted)" }}>
+            <p className="mb-0 mt-3 font-serif text-[12.5px]" style={{ color: "var(--tl-mute)" }}>
               Notatene ligger på telefonen gjennom økta og flettes inn i
               oppsummeringen — der lagres de i loggen med dine ord.
               Stemmefangst finnes på I dag-skjermen.
             </p>
             {notater.length > 0 && (
               <div className="mt-4">
-                <span className={eyebrowCls} style={{ color: "var(--p-muted)" }}>
+                <span className={eyebrowCls} style={{ color: "var(--tl-mute)" }}>
                   notater i denne økta · {notater.length}
                 </span>
                 {notater.map((n, i) => (
@@ -824,13 +824,13 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
                     key={`${n.t}-${i}`}
                     className="mt-2 p-3 font-serif text-[13.5px]"
                     style={{
-                      background: "var(--p-surface)",
-                      border: "1px solid var(--p-border)",
+                      background: "var(--tl-elev)",
+                      border: "1px solid var(--tl-hair)",
                       borderRadius: 12,
-                      color: "var(--p-fg)",
+                      color: "var(--tl-text)",
                     }}
                   >
-                    <span className="mb-[2px] block font-mono text-[10px]" style={{ color: "var(--p-muted)" }}>
+                    <span className="mb-[2px] block font-mono text-[10px]" style={{ color: "var(--tl-mute)" }}>
                       {n.t} inn i økta
                     </span>
                     {n.tekst}
@@ -850,8 +850,8 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
         className="flex-shrink-0 px-4 pt-3"
         style={{
           paddingBottom: "max(env(safe-area-inset-bottom), 12px)",
-          borderTop: "1px solid var(--p-border)",
-          background: "var(--p-bg)",
+          borderTop: "1px solid var(--tl-hair)",
+          background: "var(--tl-scene)",
         }}
       >
         <div style={{ maxWidth: 720, margin: "0 auto" }}>
@@ -864,8 +864,8 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
             style={{
               minHeight: 56,
               borderRadius: 12,
-              background: "var(--p-accent)",
-              color: "var(--p-on-accent)",
+              background: "var(--tl-fill)",
+              color: "var(--tl-on-fill)",
             }}
           >
             Avslutt og logg økta

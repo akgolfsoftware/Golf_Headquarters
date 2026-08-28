@@ -45,9 +45,9 @@ function TallKnapp({
       className={`grid place-items-center font-mono font-semibold ${liten ? "h-9 w-9 text-[12px]" : "h-11 w-11 text-[13px]"}`}
       style={{
         borderRadius: 9999,
-        border: `1px solid ${valgt ? "var(--p-fg)" : "var(--p-border)"}`,
-        background: valgt ? "var(--p-fg)" : "var(--p-surface)",
-        color: valgt ? "var(--p-bg)" : "var(--p-muted)",
+        border: `1px solid ${valgt ? "var(--tl-text)" : "var(--tl-hair)"}`,
+        background: valgt ? "var(--tl-text)" : "var(--tl-elev)",
+        color: valgt ? "var(--tl-scene)" : "var(--tl-mute)",
       }}
     >
       {n}
@@ -68,18 +68,18 @@ export function SpillerVurderingForm({ sessionId, eksisterende }: Props) {
     return (
       <div
         className="p-4"
-        style={{ background: "var(--p-surface)", border: "1px solid var(--p-border)", borderRadius: 12 }}
+        style={{ background: "var(--tl-elev)", border: "1px solid var(--tl-hair)", borderRadius: 12 }}
       >
-        <span className={EYEBROW} style={{ color: "var(--p-muted)" }}>
+        <span className={EYEBROW} style={{ color: "var(--tl-mute)" }}>
           din vurdering
         </span>
-        <p className="mb-0 mt-2 font-serif text-[13.5px]" style={{ color: "var(--p-fg)" }}>
+        <p className="mb-0 mt-2 font-serif text-[13.5px]" style={{ color: "var(--tl-text)" }}>
           Kvalitet: {kvalitet || eksisterende?.kvalitet}/5
           {(rpe || eksisterende?.rpe) ? ` · RPE ${rpe || eksisterende?.rpe}/10` : ""}
           {(folelse || eksisterende?.folelse) ? ` · ${folelse || eksisterende?.folelse}` : ""}
         </p>
         {(nesteFokus || eksisterende?.nesteFokus) ? (
-          <p className="mb-0 mt-1 font-serif text-[13px]" style={{ color: "var(--p-muted)" }}>
+          <p className="mb-0 mt-1 font-serif text-[13px]" style={{ color: "var(--tl-mute)" }}>
             Neste fokus: {nesteFokus || eksisterende?.nesteFokus}
           </p>
         ) : null}
@@ -115,12 +115,12 @@ export function SpillerVurderingForm({ sessionId, eksisterende }: Props) {
   return (
     <div
       className="p-4"
-      style={{ background: "var(--p-surface)", border: "1px solid var(--p-border)", borderRadius: 12 }}
+      style={{ background: "var(--tl-elev)", border: "1px solid var(--tl-hair)", borderRadius: 12 }}
     >
-      <span className={EYEBROW} style={{ color: "var(--p-muted)" }}>
+      <span className={EYEBROW} style={{ color: "var(--tl-mute)" }}>
         hvordan var økta?
       </span>
-      <p className="mb-3 mt-1 font-serif text-[12.5px]" style={{ color: "var(--p-muted)" }}>
+      <p className="mb-3 mt-1 font-serif text-[12.5px]" style={{ color: "var(--tl-mute)" }}>
         Kvalitet og neste fokus går til coachen — informasjon, aldri sperre.
       </p>
 
@@ -136,7 +136,7 @@ export function SpillerVurderingForm({ sessionId, eksisterende }: Props) {
         ))}
       </div>
 
-      <label className={FELT_LABEL} style={{ color: "var(--p-muted)" }}>
+      <label className={FELT_LABEL} style={{ color: "var(--tl-mute)" }}>
         Hvor hard var økta? (1 = veldig lett · 10 = maksimal)
       </label>
       <div className="mb-3 flex flex-wrap gap-1.5">
@@ -152,7 +152,7 @@ export function SpillerVurderingForm({ sessionId, eksisterende }: Props) {
         ))}
       </div>
 
-      <label className={FELT_LABEL} style={{ color: "var(--p-muted)" }}>
+      <label className={FELT_LABEL} style={{ color: "var(--tl-mute)" }}>
         Følelse (valgfritt)
       </label>
       <input
@@ -161,15 +161,15 @@ export function SpillerVurderingForm({ sessionId, eksisterende }: Props) {
         placeholder="F.eks. fokusert, sliten, motivert"
         className="mb-3 w-full px-3 py-2.5 font-serif text-[13px]"
         style={{
-          background: "var(--p-bg)",
-          color: "var(--p-fg)",
-          border: "1px solid var(--p-border)",
+          background: "var(--tl-scene)",
+          color: "var(--tl-text)",
+          border: "1px solid var(--tl-hair)",
           borderRadius: 8,
         }}
         maxLength={200}
       />
 
-      <label className={FELT_LABEL} style={{ color: "var(--p-muted)" }}>
+      <label className={FELT_LABEL} style={{ color: "var(--tl-mute)" }}>
         Neste fokus
       </label>
       <textarea
@@ -179,16 +179,16 @@ export function SpillerVurderingForm({ sessionId, eksisterende }: Props) {
         rows={2}
         className="mb-3 w-full px-3 py-2.5 font-serif text-[13px]"
         style={{
-          background: "var(--p-bg)",
-          color: "var(--p-fg)",
-          border: "1px solid var(--p-border)",
+          background: "var(--tl-scene)",
+          color: "var(--tl-text)",
+          border: "1px solid var(--tl-hair)",
           borderRadius: 8,
         }}
         maxLength={500}
       />
 
       {feil ? (
-        <p className="mb-2 font-serif text-[12px]" style={{ color: "var(--p-dn)" }} role="alert">
+        <p className="mb-2 font-serif text-[12px]" style={{ color: "var(--tl-danger)" }} role="alert">
           {feil}
         </p>
       ) : null}
@@ -201,8 +201,8 @@ export function SpillerVurderingForm({ sessionId, eksisterende }: Props) {
         style={{
           minHeight: 48,
           borderRadius: 12,
-          background: "var(--p-cta)",
-          color: "var(--p-on-cta)",
+          background: "var(--tl-fill)",
+          color: "var(--tl-on-fill)",
         }}
       >
         {pending ? "Lagrer…" : "Lagre vurdering"}

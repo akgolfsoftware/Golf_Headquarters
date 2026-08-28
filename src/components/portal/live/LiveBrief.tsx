@@ -62,8 +62,8 @@ function omTekst(minTil: number): string | null {
 }
 
 const KORT_STIL: CSSProperties = {
-  background: "var(--p-surface)",
-  border: "1px solid var(--p-border)",
+  background: "var(--tl-elev)",
+  border: "1px solid var(--tl-hair)",
   borderRadius: 12,
   padding: 16,
   minWidth: 0,
@@ -75,10 +75,10 @@ function MetaRad({ navn, verdi }: { navn: string; verdi: string }) {
   return (
     <div
       className="flex min-w-0 items-baseline gap-2 border-b py-2 text-[13px] last:border-b-0"
-      style={{ borderColor: "var(--p-border-soft, var(--p-border))" }}
+      style={{ borderColor: "var(--tl-hair)" }}
     >
-      <span style={{ color: "var(--p-fg)" }}>{navn}</span>
-      <span className="ml-auto min-w-0 text-right font-mono" style={{ color: "var(--p-fg)" }}>
+      <span style={{ color: "var(--tl-text)" }}>{navn}</span>
+      <span className="ml-auto min-w-0 text-right font-mono" style={{ color: "var(--tl-text)" }}>
         {verdi}
       </span>
     </div>
@@ -136,18 +136,18 @@ export function LiveBrief({ data, canStart, blockReason }: LiveBriefProps) {
           <div
             className="mt-4"
             style={{
-              background: "var(--p-accent-soft)",
-              border: "1px solid var(--p-border)",
+              background: "var(--tl-dim)",
+              border: "1px solid var(--tl-hair)",
               borderRadius: 12,
               padding: 16,
             }}
           >
-            <span className={EYEBROW} style={{ color: "var(--p-muted)" }}>
+            <span className={EYEBROW} style={{ color: "var(--tl-mute)" }}>
               Én ting nå
             </span>
             <h2
               className="my-2 font-sans text-[15px] font-semibold"
-              style={{ color: "var(--p-fg)" }}
+              style={{ color: "var(--tl-text)" }}
             >
               Økta starter kl. <span className="font-mono">{startKl}</span>
               {om && (
@@ -159,7 +159,7 @@ export function LiveBrief({ data, canStart, blockReason }: LiveBriefProps) {
             </h2>
             <p
               className="mb-4 mt-0 font-serif text-[14px]"
-              style={{ color: "var(--p-muted)", maxWidth: "52ch" }}
+              style={{ color: "var(--tl-mute)", maxWidth: "52ch" }}
             >
               {data.location
                 ? `${data.location} er satt opp ${startKl}–${sluttKl}. Du trenger ikke gjøre noe før du står der.`
@@ -175,9 +175,9 @@ export function LiveBrief({ data, canStart, blockReason }: LiveBriefProps) {
                   style={{
                     minHeight: 56,
                     borderRadius: 12,
-                    background: "var(--p-accent)",
-                    color: "var(--p-on-accent)",
-                    border: "1px solid var(--p-accent)",
+                    background: "var(--tl-fill)",
+                    color: "var(--tl-on-fill)",
+                    border: "1px solid var(--tl-fill)",
                   }}
                 >
                   Start økta
@@ -189,12 +189,12 @@ export function LiveBrief({ data, canStart, blockReason }: LiveBriefProps) {
                   style={{
                     minHeight: 56,
                     borderRadius: 12,
-                    border: "1px solid var(--p-border)",
-                    background: "var(--p-surface)",
-                    color: "var(--p-muted)",
+                    border: "1px solid var(--tl-hair)",
+                    background: "var(--tl-elev)",
+                    color: "var(--tl-mute)",
                   }}
                 >
-                  <CheckCircle2 className="h-5 w-5" style={{ color: "var(--p-up)" }} strokeWidth={2} aria-hidden />
+                  <CheckCircle2 className="h-5 w-5" style={{ color: "var(--tl-ok)" }} strokeWidth={2} aria-hidden />
                   Økta er fullført — se oppsummeringen
                 </Link>
               ) : (
@@ -204,9 +204,9 @@ export function LiveBrief({ data, canStart, blockReason }: LiveBriefProps) {
                   style={{
                     minHeight: 56,
                     borderRadius: 12,
-                    border: "1px solid var(--p-border)",
-                    background: "var(--p-surface)",
-                    color: "var(--p-muted)",
+                    border: "1px solid var(--tl-hair)",
+                    background: "var(--tl-elev)",
+                    color: "var(--tl-mute)",
                   }}
                 >
                   <Lock className="h-4 w-4" strokeWidth={2} aria-hidden />
@@ -221,9 +221,9 @@ export function LiveBrief({ data, canStart, blockReason }: LiveBriefProps) {
                 style={{
                   minHeight: 48,
                   borderRadius: 12,
-                  border: "1px solid var(--p-border)",
+                  border: "1px solid var(--tl-hair)",
                   background: "transparent",
-                  color: "var(--p-fg)",
+                  color: "var(--tl-text)",
                 }}
               >
                 Flytt økta
@@ -233,7 +233,7 @@ export function LiveBrief({ data, canStart, blockReason }: LiveBriefProps) {
 
           {/* Metadata — kilde: TrainingSessionV2 */}
           <div className="mt-4" style={KORT_STIL}>
-            <span className={EYEBROW} style={{ color: "var(--p-muted)" }}>
+            <span className={EYEBROW} style={{ color: "var(--tl-mute)" }}>
               {data.title}
             </span>
             <div className="mt-1">
@@ -256,10 +256,10 @@ export function LiveBrief({ data, canStart, blockReason }: LiveBriefProps) {
           {/* Målsetning + hvorfor */}
           {data.maalsetning && (
             <div className="mt-4" style={KORT_STIL}>
-              <span className={EYEBROW} style={{ color: "var(--p-muted)" }}>
+              <span className={EYEBROW} style={{ color: "var(--tl-mute)" }}>
                 målsetning
               </span>
-              <p className="mb-0 mt-2 font-serif text-[15px]" style={{ color: "var(--p-fg)" }}>
+              <p className="mb-0 mt-2 font-serif text-[15px]" style={{ color: "var(--tl-text)" }}>
                 {data.maalsetning}
               </p>
               <WhyDetails
@@ -277,10 +277,10 @@ export function LiveBrief({ data, canStart, blockReason }: LiveBriefProps) {
           {/* Coach-kommentar (finnes ikke i fasit-demoen, men er ekte data) */}
           {data.coachComment && (
             <div className="mt-4" style={KORT_STIL}>
-              <span className={EYEBROW} style={{ color: "var(--p-muted)" }}>
+              <span className={EYEBROW} style={{ color: "var(--tl-mute)" }}>
                 fra coachen
               </span>
-              <p className="mb-0 mt-2 font-serif text-[14px]" style={{ color: "var(--p-fg)" }}>
+              <p className="mb-0 mt-2 font-serif text-[14px]" style={{ color: "var(--tl-text)" }}>
                 {data.coachComment}
               </p>
             </div>
@@ -288,7 +288,7 @@ export function LiveBrief({ data, canStart, blockReason }: LiveBriefProps) {
 
           {/* Drills — kilde: TrainingDrillV2 */}
           <div className="mt-4 min-w-0">
-            <span className={EYEBROW} style={{ color: "var(--p-muted)" }}>
+            <span className={EYEBROW} style={{ color: "var(--tl-mute)" }}>
               drills · {data.drills.length}
               {drillSumMin > 0 ? ` · ${tidTekst(drillSumMin)}` : ""}
             </span>
@@ -296,15 +296,15 @@ export function LiveBrief({ data, canStart, blockReason }: LiveBriefProps) {
               <div
                 className="mt-2 px-4 py-6"
                 style={{
-                  background: "var(--p-soft)",
-                  border: "1px dashed var(--p-border)",
+                  background: "var(--tl-dim)",
+                  border: "1px dashed var(--tl-hair)",
                   borderRadius: 12,
                 }}
               >
-                <h3 className="m-0 font-sans text-[15px] font-semibold" style={{ color: "var(--p-fg)" }}>
+                <h3 className="m-0 font-sans text-[15px] font-semibold" style={{ color: "var(--tl-text)" }}>
                   Ingen drills i økta ennå
                 </h3>
-                <p className="mb-0 mt-2 font-serif text-[13.5px]" style={{ color: "var(--p-muted)" }}>
+                <p className="mb-0 mt-2 font-serif text-[13.5px]" style={{ color: "var(--tl-mute)" }}>
                   Åpne økta i Workbench og legg til driller — eller start og tren
                   fritt. Ingenting sperrer.
                 </p>
@@ -317,16 +317,16 @@ export function LiveBrief({ data, canStart, blockReason }: LiveBriefProps) {
                     (drill.plannedReps > 0 ? `${drill.plannedReps} reps` : null);
                   return (
                     <div key={drill.id} className="min-w-0" style={{ ...KORT_STIL, padding: 12 }}>
-                      <span className="text-[13.5px] font-semibold" style={{ color: "var(--p-fg)" }}>
+                      <span className="text-[13.5px] font-semibold" style={{ color: "var(--tl-text)" }}>
                         {drill.name}
                       </span>
-                      <span className="font-mono text-[10.5px]" style={{ color: "var(--p-muted)" }}>
+                      <span className="font-mono text-[10.5px]" style={{ color: "var(--tl-mute)" }}>
                         {volum ? ` ${volum}` : ""}
                         {drill.durationMinutes > 0 ? ` · ${tidTekst(drill.durationMinutes)}` : ""}
                       </span>
                       <span
                         className="mt-1 block break-all font-mono text-[9.5px]"
-                        style={{ color: "var(--p-mid)" }}
+                        style={{ color: "var(--tl-mute)" }}
                       >
                         {AXIS_LABEL[drill.pyramide] ?? drill.pyramide}
                         {drill.lFase ? ` · ${L_PHASE_LABEL[drill.lFase] ?? drill.lFase}` : ""}
@@ -342,10 +342,10 @@ export function LiveBrief({ data, canStart, blockReason }: LiveBriefProps) {
           <div
             className="mt-4 flex gap-3 px-4 py-3 font-serif text-[12.5px]"
             style={{
-              background: "var(--p-soft)",
-              border: "1px solid var(--p-border)",
+              background: "var(--tl-dim)",
+              border: "1px solid var(--tl-hair)",
               borderRadius: 12,
-              color: "var(--p-muted)",
+              color: "var(--tl-mute)",
             }}
           >
             <Pencil className="mt-[2px] h-4 w-4 flex-none" strokeWidth={1.7} aria-hidden />

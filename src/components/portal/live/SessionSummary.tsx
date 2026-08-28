@@ -88,8 +88,8 @@ function byggUtkast(data: LiveV2Summary, notater: LiveNotat[]): string {
 const EYEBROW = "font-mono text-[10px] font-medium uppercase tracking-[0.09em]";
 
 const KORT: CSSProperties = {
-  background: "var(--p-surface)",
-  border: "1px solid var(--p-border)",
+  background: "var(--tl-elev)",
+  border: "1px solid var(--tl-hair)",
   borderRadius: 12,
   padding: 16,
   minWidth: 0,
@@ -101,9 +101,9 @@ function Tag({ tekst, tone }: { tekst: string; tone: "up" | "info" }) {
       className="ml-auto inline-flex flex-none items-center whitespace-nowrap px-2 py-[3px] font-mono text-[10px] uppercase tracking-[0.04em]"
       style={{
         borderRadius: 9999,
-        background: "var(--p-soft)",
-        border: "1px solid var(--p-border)",
-        color: tone === "up" ? "var(--p-up)" : "var(--p-info)",
+        background: "var(--tl-dim)",
+        border: "1px solid var(--tl-hair)",
+        color: tone === "up" ? "var(--tl-ok)" : "var(--tl-viz-target)",
       }}
     >
       {tekst}
@@ -194,7 +194,7 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }:
       data-paper-portal-live-summary
       data-paper-slug="playerhq-live-summary"
       className="flex min-w-0 flex-col px-4 pb-16 pt-2"
-      style={{ maxWidth: 720, margin: "0 auto", width: "100%", color: "var(--p-fg)" }}
+      style={{ maxWidth: 720, margin: "0 auto", width: "100%", color: "var(--tl-text)" }}
     >
       <LiveLoopNav aktiv="etter" sessionId={data.sessionId} />
 
@@ -204,19 +204,19 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }:
           <div
             className="mt-4 px-4 py-6"
             style={{
-              background: "var(--p-surface)",
-              border: "1px solid var(--p-up)",
+              background: "var(--tl-elev)",
+              border: "1px solid var(--tl-ok)",
               borderRadius: 12,
             }}
           >
             <h2
               className="m-0 flex items-center gap-2 font-sans text-[16px] font-semibold"
-              style={{ color: "var(--p-fg)" }}
+              style={{ color: "var(--tl-text)" }}
             >
-              <Check className="h-5 w-5" style={{ color: "var(--p-up)" }} strokeWidth={2} aria-hidden />
+              <Check className="h-5 w-5" style={{ color: "var(--tl-ok)" }} strokeWidth={2} aria-hidden />
               Lagret i loggen
             </h2>
-            <p className="mb-0 mt-2 font-serif text-[13.5px]" style={{ color: "var(--p-muted)" }}>
+            <p className="mb-0 mt-2 font-serif text-[13.5px]" style={{ color: "var(--tl-mute)" }}>
               Økta er logget som gjennomført.
               {data.coachName
                 ? ` ${data.coachName.split(" ")[0]} ser oppsummeringen — han skal ikke godkjenne noe, bare vite hva som skjedde.`
@@ -227,14 +227,14 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }:
           {/* Neste steg — én vei videre, aldri blank flate */}
           {nesteOkt && (
             <div className="mt-4" style={KORT}>
-              <span className={EYEBROW} style={{ color: "var(--p-muted)" }}>
+              <span className={EYEBROW} style={{ color: "var(--tl-mute)" }}>
                 neste økt
               </span>
               <Link
                 href={nesteOkt.href}
                 data-od-id="etter-kvitt-neste"
                 className="mt-1 flex min-w-0 items-baseline gap-2 py-2 text-[13px] no-underline"
-                style={{ color: "var(--p-fg)" }}
+                style={{ color: "var(--tl-text)" }}
               >
                 <span className="min-w-0 truncate">{nesteOkt.tekst}</span>
               </Link>
@@ -249,9 +249,9 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }:
               style={{
                 minHeight: 48,
                 borderRadius: 12,
-                border: "1px solid var(--p-border)",
+                border: "1px solid var(--tl-hair)",
                 background: "transparent",
-                color: "var(--p-fg)",
+                color: "var(--tl-text)",
               }}
             >
               Til planen
@@ -263,9 +263,9 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }:
               style={{
                 minHeight: 48,
                 borderRadius: 12,
-                border: "1px solid var(--p-border)",
+                border: "1px solid var(--tl-hair)",
                 background: "transparent",
-                color: "var(--p-fg)",
+                color: "var(--tl-text)",
               }}
             >
               Se utviklingen i Analyse
@@ -278,9 +278,9 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }:
               style={{
                 minHeight: 44,
                 borderRadius: 12,
-                border: "1px solid var(--p-border)",
+                border: "1px solid var(--tl-hair)",
                 background: "transparent",
-                color: "var(--p-muted)",
+                color: "var(--tl-mute)",
               }}
             >
               Tilbake til oppsummeringen
@@ -291,7 +291,7 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }:
         <>
           {/* ── Tallene — kilde: DrillLogV2-loggene fra økta ── */}
           <div className="mt-4" style={KORT}>
-            <span className={EYEBROW} style={{ color: "var(--p-muted)" }}>
+            <span className={EYEBROW} style={{ color: "var(--tl-mute)" }}>
               {data.title} · gjennomført
             </span>
             <div className="mt-1">
@@ -299,14 +299,14 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }:
                 <div
                   key={navn}
                   className="flex min-w-0 items-baseline gap-2 border-b py-2 text-[13px] last:border-b-0"
-                  style={{ borderColor: "var(--p-border-soft, var(--p-border))" }}
+                  style={{ borderColor: "var(--tl-hair)" }}
                 >
                   <span>{navn}</span>
                   <span className="ml-auto min-w-0 text-right font-mono">{verdi}</span>
                 </div>
               ))}
               {tallRader.length === 0 && (
-                <p className="mb-0 mt-2 font-serif text-[13.5px]" style={{ color: "var(--p-muted)" }}>
+                <p className="mb-0 mt-2 font-serif text-[13.5px]" style={{ color: "var(--tl-mute)" }}>
                   Ingen tall ble logget i denne økta — det er også informasjon.
                 </p>
               )}
@@ -326,7 +326,7 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }:
           {/* ── Plan mot gjort — informasjon, aldri kritikk ── */}
           {data.drills.length > 0 && (
             <div className="mt-4" style={KORT}>
-              <span className={EYEBROW} style={{ color: "var(--p-muted)" }}>
+              <span className={EYEBROW} style={{ color: "var(--tl-mute)" }}>
                 plan mot gjort
               </span>
               <div className="mt-1">
@@ -347,11 +347,11 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }:
                     <div
                       key={drill.id}
                       className="flex min-w-0 items-start gap-2 border-b py-2 text-[13px] last:border-b-0"
-                      style={{ borderColor: "var(--p-border-soft, var(--p-border))" }}
+                      style={{ borderColor: "var(--tl-hair)" }}
                     >
                       <div className="min-w-0">
                         <span className="block truncate">{drill.name}</span>
-                        <span className="block font-mono text-[10.5px]" style={{ color: "var(--p-muted)" }}>
+                        <span className="block font-mono text-[10.5px]" style={{ color: "var(--tl-mute)" }}>
                           {gjort}
                         </span>
                       </div>
@@ -362,14 +362,14 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }:
                 {Math.abs(tidsavvikMin) >= 1 && (
                   <div
                     className="flex min-w-0 items-start gap-2 py-2 text-[13px]"
-                    style={{ borderColor: "var(--p-border-soft, var(--p-border))" }}
+                    style={{ borderColor: "var(--tl-hair)" }}
                   >
                     <div className="min-w-0">
                       <span className="block">
                         Avsluttet {tidTekst(Math.abs(tidsavvikMin))}{" "}
                         {tidsavvikMin > 0 ? "før" : "etter"} planlagt
                       </span>
-                      <span className="block font-mono text-[10.5px]" style={{ color: "var(--p-muted)" }}>
+                      <span className="block font-mono text-[10.5px]" style={{ color: "var(--tl-mute)" }}>
                         Helt greit — avvik er informasjon til neste plan, ikke feil.
                       </span>
                     </div>
@@ -383,7 +383,7 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }:
           {/* ── Notater fra økta ── */}
           {notater.length > 0 && (
             <div className="mt-4 min-w-0">
-              <span className={EYEBROW} style={{ color: "var(--p-muted)" }}>
+              <span className={EYEBROW} style={{ color: "var(--tl-mute)" }}>
                 notater fra økta · {notater.length}
               </span>
               {notater.map((n, i) => (
@@ -391,12 +391,12 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }:
                   key={`${n.t}-${i}`}
                   className="mt-2 p-3 font-serif text-[13.5px]"
                   style={{
-                    background: "var(--p-surface)",
-                    border: "1px solid var(--p-border)",
+                    background: "var(--tl-elev)",
+                    border: "1px solid var(--tl-hair)",
                     borderRadius: 12,
                   }}
                 >
-                  <span className="mb-[2px] block font-mono text-[10px]" style={{ color: "var(--p-muted)" }}>
+                  <span className="mb-[2px] block font-mono text-[10px]" style={{ color: "var(--tl-mute)" }}>
                     {n.t} inn i økta
                   </span>
                   {n.tekst}
@@ -412,7 +412,7 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }:
 
           {/* ── Dine ord — utkastet er bygget av øktas tall, endres fritt ── */}
           <div className="mt-4 min-w-0">
-            <span className={EYEBROW} style={{ color: "var(--p-muted)" }}>
+            <span className={EYEBROW} style={{ color: "var(--tl-mute)" }}>
               dine ord · skrives til loggen
             </span>
             <textarea
@@ -423,13 +423,13 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }:
               className="mt-2 w-full resize-y p-3 font-serif text-[15px]"
               style={{
                 minHeight: 110,
-                background: "var(--p-surface)",
-                color: "var(--p-fg)",
-                border: "1px solid var(--p-border)",
+                background: "var(--tl-elev)",
+                color: "var(--tl-text)",
+                border: "1px solid var(--tl-hair)",
                 borderRadius: 12,
               }}
             />
-            <p className="mb-0 mt-2 font-serif text-[12.5px]" style={{ color: "var(--p-muted)" }}>
+            <p className="mb-0 mt-2 font-serif text-[12.5px]" style={{ color: "var(--tl-mute)" }}>
               Utkastet er laget fra tallene og notatene dine. Endre fritt — det
               er dine ord som lagres.
               {data.coachName ? ` ${data.coachName.split(" ")[0]} ser oppsummeringen i stallen sin.` : ""}
@@ -437,7 +437,7 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }:
           </div>
 
           {feil && (
-            <p className="mb-0 mt-3 font-serif text-[13px]" style={{ color: "var(--p-dn)" }} role="alert">
+            <p className="mb-0 mt-3 font-serif text-[13px]" style={{ color: "var(--tl-danger)" }} role="alert">
               {feil}
             </p>
           )}
@@ -453,8 +453,8 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }:
             style={{
               minHeight: 56,
               borderRadius: 12,
-              background: "var(--p-accent)",
-              color: "var(--p-on-accent)",
+              background: "var(--tl-fill)",
+              color: "var(--tl-on-fill)",
             }}
           >
             {pending ? "Lagrer…" : "Lagre i loggen"}

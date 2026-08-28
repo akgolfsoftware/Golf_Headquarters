@@ -87,20 +87,20 @@ export function DrillLogger({
     alignItems: "center",
     justifyContent: "center",
     gap: 2,
-    border: "1px solid var(--p-border)",
-    borderRadius: "var(--p-r, 12px)",
-    background: "var(--p-soft)",
+    border: "1px solid var(--tl-hair)",
+    borderRadius: "var(--tl-r-card)",
+    background: "var(--tl-dim)",
     cursor: "pointer",
-    fontFamily: "var(--p-disp)",
+    fontFamily: "var(--tl-font-sans)",
     fontSize: 15,
     fontWeight: 600,
-    color: "var(--p-fg)",
+    color: "var(--tl-text)",
   };
   const tapperSmall: React.CSSProperties = {
-    fontFamily: "var(--p-font-mono)",
+    fontFamily: "var(--tl-font-mono)",
     fontSize: 10,
     fontWeight: 400,
-    color: "var(--p-muted)",
+    color: "var(--tl-mute)",
     textTransform: "uppercase",
     letterSpacing: "0.06em",
   };
@@ -113,21 +113,21 @@ export function DrillLogger({
         /* Fasitens repkort */
         <div
           style={{
-            background: "var(--p-surface)",
-            border: "1px solid var(--p-border)",
-            borderRadius: "var(--p-r, 12px)",
+            background: "var(--tl-elev)",
+            border: "1px solid var(--tl-hair)",
+            borderRadius: "var(--tl-r-card)",
             padding: 16,
           }}
         >
           <span
             style={{
               display: "block",
-              fontFamily: "var(--p-font-mono)",
+              fontFamily: "var(--tl-font-mono)",
               fontSize: 10,
               fontWeight: 700,
               textTransform: "uppercase",
               letterSpacing: "0.1em",
-              color: "var(--p-muted)",
+              color: "var(--tl-mute)",
             }}
           >
             {drill.name}
@@ -135,17 +135,17 @@ export function DrillLogger({
           <div style={{ display: "flex", alignItems: "baseline", gap: 12, margin: "10px 0 12px", flexWrap: "wrap" }}>
             <span
               style={{
-                fontFamily: "var(--p-font-mono)",
+                fontFamily: "var(--tl-font-mono)",
                 fontVariantNumeric: "tabular-nums",
                 fontSize: 40,
                 fontWeight: 500,
                 lineHeight: 1,
-                color: "var(--p-fg)",
+                color: "var(--tl-text)",
               }}
             >
               {total}
             </span>
-            <span style={{ fontFamily: "var(--p-font-mono)", fontSize: 13, color: "var(--p-muted)" }}>
+            <span style={{ fontFamily: "var(--tl-font-mono)", fontSize: 13, color: "var(--tl-mute)" }}>
               av {drill.plannedReps > 0 ? drill.plannedReps : "—"} reps
               {state.repsHit > 0 ? ` · ${state.repsHit} treff` : ""}
             </span>
@@ -166,7 +166,7 @@ export function DrillLogger({
               data-od-id="live-tap-treff"
               onClick={() => leggTil("repsHit")}
               className="active:translate-y-px"
-              style={{ ...tapperStil, borderColor: "var(--p-up)" }}
+              style={{ ...tapperStil, borderColor: "var(--tl-ok)" }}
             >
               +1
               <small style={tapperSmall}>treff</small>
@@ -181,13 +181,13 @@ export function DrillLogger({
             style={{
               marginTop: 8,
               minHeight: 44,
-              borderRadius: "var(--p-r-sm, 8px)",
-              border: "1px solid var(--p-border)",
-              background: "var(--p-surface)",
-              fontFamily: "var(--p-ui)",
+              borderRadius: "var(--tl-r-row)",
+              border: "1px solid var(--tl-hair)",
+              background: "var(--tl-elev)",
+              fontFamily: "var(--tl-font-sans)",
               fontSize: 13,
               fontWeight: 500,
-              color: tapp.length === 0 ? "var(--p-muted)" : "var(--p-fg)",
+              color: tapp.length === 0 ? "var(--tl-mute)" : "var(--tl-text)",
               cursor: tapp.length === 0 ? "default" : "pointer",
               opacity: tapp.length === 0 ? 0.6 : 1,
             }}
@@ -203,7 +203,7 @@ export function DrillLogger({
         type="button"
         onClick={onComplete}
         className="mt-2 flex w-full items-center justify-center gap-2 font-sans text-[14px] font-semibold active:scale-[0.98] v2-press"
-        style={{ background: "var(--p-cta)", color: "var(--p-on-cta)", minHeight: 56, borderRadius: 12, border: "none" }}
+        style={{ background: "var(--tl-fill)", color: "var(--tl-on-fill)", minHeight: 56, borderRadius: 12, border: "none" }}
       >
         <Check className="h-5 w-5" strokeWidth={2.5} aria-hidden />
         {isLast ? "Fullfør økt" : "Fullfør drill"}
