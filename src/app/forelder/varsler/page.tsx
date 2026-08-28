@@ -13,7 +13,7 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentBarnForForelder } from "@/lib/forelder";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, FORELDER_NAV } from "@/components/v2/shell";
+import { V2Shell, FORELDER_NAV, FORELDER_MER } from "@/components/v2/shell";
 import {
   ForelderVarslerV2,
   type ForelderVarslerData,
@@ -21,11 +21,12 @@ import {
 
 export const dynamic = "force-dynamic";
 
+/* FO-10-fasitens datoformat: «24.08.2026» (nb-NO, Oslo-tid). */
 const NB_DATO = new Intl.DateTimeFormat("nb-NO", {
+  timeZone: "Europe/Oslo",
   day: "2-digit",
-  month: "short",
-  hour: "2-digit",
-  minute: "2-digit",
+  month: "2-digit",
+  year: "numeric",
 });
 
 export default async function V2ForelderVarslerPreviewPage() {
@@ -44,6 +45,7 @@ export default async function V2ForelderVarslerPreviewPage() {
 
   const data: ForelderVarslerData = {
     email: user.email,
+    parentName: user.name,
     barn: barn.map((b) => ({
       id: b.child.id,
       name: b.child.name,
@@ -60,7 +62,7 @@ export default async function V2ForelderVarslerPreviewPage() {
   };
 
   return (
-    <V2Shell bredde="kolonne" aktiv="oversikt" nav={FORELDER_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="oversikt" nav={FORELDER_NAV} mer={FORELDER_MER} navn={user.name} avatarUrl={user.avatarUrl}>
       <ForelderVarslerV2 data={data} />
     </V2Shell>
   );

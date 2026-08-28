@@ -11,7 +11,7 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentBarnForForelder } from "@/lib/forelder";
-import { V2Shell, FORELDER_NAV } from "@/components/v2/shell";
+import { V2Shell, FORELDER_NAV, FORELDER_MER } from "@/components/v2/shell";
 import {
   ForelderInnstillingerV2,
   type ForelderInnstillingerData,
@@ -39,7 +39,7 @@ export default async function V2ForelderInnstillingerPreviewPage() {
     <V2Shell
       bredde="kolonne"
       aktiv="oversikt"
-      nav={FORELDER_NAV}
+      nav={FORELDER_NAV} mer={FORELDER_MER}
       navn={user.name}
       avatarUrl={user.avatarUrl}
     >

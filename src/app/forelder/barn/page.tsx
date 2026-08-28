@@ -13,7 +13,7 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentBarnForForelder, alderFraFodselsdato } from "@/lib/forelder";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, FORELDER_NAV } from "@/components/v2/shell";
+import { V2Shell, FORELDER_NAV, FORELDER_MER } from "@/components/v2/shell";
 import {
   ForelderBarnV2,
   type ForelderBarnData,
@@ -30,6 +30,45 @@ const SEMESTER_SLUTT_FMT = new Intl.DateTimeFormat("nb-NO", {
   timeZone: "Europe/Oslo",
 });
 
+/* FO-02-fasitens formater. */
+const NB_DATO = new Intl.DateTimeFormat("nb-NO", {
+  timeZone: "Europe/Oslo",
+  day: "2-digit",
+  month: "2-digit",
+  year: "numeric",
+});
+const NB_OKT_DATO = new Intl.DateTimeFormat("nb-NO", {
+  timeZone: "Europe/Oslo",
+  day: "2-digit",
+  month: "2-digit",
+});
+const NB_OKT_TID = new Intl.DateTimeFormat("nb-NO", {
+  timeZone: "Europe/Oslo",
+  hour: "2-digit",
+  minute: "2-digit",
+});
+
+const NB_OKT_UKEDAG = new Intl.DateTimeFormat("nb-NO", {
+  timeZone: "Europe/Oslo",
+  weekday: "short",
+});
+
+/** «Lør 29.08 · 09.00» — fasitens neste økt-format. */
+function nesteOktTekst(d: Date): string {
+  const dag = NB_OKT_UKEDAG.format(d).replace(".", "");
+  const kap = dag.charAt(0).toUpperCase() + dag.slice(1);
+  const dato = NB_OKT_DATO.format(d).replace(/\.$/, "");
+  return `${kap} ${dato} · ${NB_OKT_TID.format(d).replace(":", ".")}`;
+}
+
+/** «1 450,00 kr» — fasitens beløpsformat. */
+function belopTekst(ore: number): string {
+  return `${(ore / 100).toLocaleString("nb-NO", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })} kr`;
+}
+
 export const dynamic = "force-dynamic";
 
 // Apex→base: TURN øverst, FYS fundament (pyramide-kanon).
@@ -39,7 +78,11 @@ export default async function V2ForelderBarnPreviewPage() {
   const user = await requirePortalUser({ allow: ["PARENT"] });
   const barn = await hentBarnForForelder(user.id);
 
-  let data: ForelderBarnData = { barn: [] };
+  let data: ForelderBarnData = {
+    barn: [],
+    parentName: user.name,
+    dagensDato: NB_DATO.format(new Date()),
+  };
 
   if (barn.length > 0) {
     const childIds = barn.map((b) => b.child.id);
@@ -153,6 +196,8 @@ export default async function V2ForelderBarnPreviewPage() {
           PyramidArea,
           number
         >);
+      const nesteOkt = nesteOktPerBarn.get(id) ?? null;
+      const utestaaende = utestaaendePerBarn.get(id) ?? { antall: 0, ore: 0 };
       return {
         id,
         navn: b.child.name,
@@ -164,22 +209,24 @@ export default async function V2ForelderBarnPreviewPage() {
         // foreldresamtykke (guardian-consent-token), men feltet settes på
         // barnet selv. Aldri fabrikkert.
         samtykkeGitt: b.child.guardianConsentGivenAt != null,
+        koblet: NB_DATO.format(b.koblet),
+        klubb: b.child.homeClub,
         okter30d: okterPerBarn.get(id) ?? 0,
         pyramide: AKSE_APEX.map((akse) => ({ akse, value: fordeling[akse] })),
-        nesteOkt: nesteOktPerBarn.get(id) ?? null,
-        utestaaende: utestaaendePerBarn.get(id) ?? { antall: 0, ore: 0 },
+        nesteOkt: nesteOkt ? nesteOktTekst(nesteOkt.scheduledAt) : null,
+        utestaaende: belopTekst(utestaaende.ore),
         skoletid: skoletidPerBarn.get(id) ?? null,
       };
     });
 
-    data = { barn: rader };
+    data = { barn: rader, parentName: user.name, dagensDato: NB_DATO.format(now) };
   }
 
   return (
     <V2Shell
       bredde="kolonne"
       aktiv="barn"
-      nav={FORELDER_NAV}
+      nav={FORELDER_NAV} mer={FORELDER_MER}
       navn={user.name}
       avatarUrl={user.avatarUrl}
     >

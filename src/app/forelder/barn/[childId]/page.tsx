@@ -10,7 +10,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { assertBarnTilhorerForelder, alderFraFodselsdato } from "@/lib/forelder";
 import { prisma } from "@/lib/prisma";
 import { startOfWeek, endOfWeek } from "@/lib/uke-helpers";
-import { V2Shell, FORELDER_NAV } from "@/components/v2/shell";
+import { V2Shell, FORELDER_NAV, FORELDER_MER } from "@/components/v2/shell";
 import {
   ForelderBarnDetaljV2,
   type BarnDetaljTab,
@@ -298,7 +298,7 @@ export default async function BarnProfil({
     <V2Shell
       bredde="kolonne"
       aktiv="barn"
-      nav={FORELDER_NAV}
+      nav={FORELDER_NAV} mer={FORELDER_MER}
       navn={user.name}
       avatarUrl={user.avatarUrl}
     >

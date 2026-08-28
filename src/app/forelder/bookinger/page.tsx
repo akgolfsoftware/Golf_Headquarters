@@ -17,7 +17,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentBarnForForelder } from "@/lib/forelder";
 import { prisma } from "@/lib/prisma";
 import { startOfWeek, endOfWeek, ukenummer } from "@/lib/uke-helpers";
-import { V2Shell, FORELDER_NAV } from "@/components/v2/shell";
+import { V2Shell, FORELDER_NAV, FORELDER_MER } from "@/components/v2/shell";
 import {
   ForelderBookingerV2,
   type ForelderBookingerData,
@@ -105,13 +105,14 @@ export default async function V2ForelderBookingerPage() {
     denneUka,
     kommende,
     tidligere,
+    parentName: user.name,
   };
 
   return (
     <V2Shell
       bredde="kolonne"
       aktiv="oversikt"
-      nav={FORELDER_NAV}
+      nav={FORELDER_NAV} mer={FORELDER_MER}
       navn={user.name}
       avatarUrl={user.avatarUrl}
     >
