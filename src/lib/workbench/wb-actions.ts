@@ -465,6 +465,8 @@ export type PlayerDaySession = {
   status: string;
   drillsCount: number;
   location?: string;
+  /** Coach-notat som vises på Nå-kortet («mål 8/12 i vindu»). */
+  notes?: string;
   /** Hvor økten kommer fra — styrer «Forslag fra coach»/«Forslag fra gruppe»-copy. */
   origin: string;
   /** Venter på Godta/Avvis (Loop 3T/B6) — se `resolvePlayerApproval`. */
@@ -514,6 +516,7 @@ export async function loadPlayerDay(params: {
     status: s.status,
     drillsCount: s.drills.length,
     location: s.location,
+    notes: s.notes,
     origin: s.origin,
     needsPlayerApproval: s.needsPlayerApproval ?? false,
     approvalStatus: s.approvalStatus,

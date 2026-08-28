@@ -95,9 +95,11 @@ export async function hentIDagKalender(playerId: string, naa: Date): Promise<IDa
   let neste: IDagNeste | null = null;
   if (kommendeWb[0]) {
     const n = kommendeWb[0];
+    const ukedag = ukedagLangFraIso(n.iso);
+    const erHvile = n.tittel.trim().toLowerCase() === "hvile";
     neste = {
       tittel: n.tittel,
-      meta: `${ukedagLangFraIso(n.iso)} · ${punktFraMinutt(n.startMinute)} · programmert`,
+      meta: erHvile ? `${ukedag} · programmert` : `${ukedag} · ${punktFraMinutt(n.startMinute)} · programmert`,
       datoIso: n.iso,
     };
   } else {

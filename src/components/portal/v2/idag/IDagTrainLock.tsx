@@ -105,7 +105,10 @@ function TekstLenke({ href, barn }: { href: string; barn: string }) {
 
 function NaaFlate({ naa }: { naa: NaaKort }) {
   return (
-    <div style={{ ...kort, padding: 20 }}>
+    <div
+      className="ph01-naa"
+      style={{ background: TL.elev, borderRadius: TL.radius.card }}
+    >
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
         <span style={{ ...caps, color: naa.live ? TL.text : TL.mute, display: "inline-flex", alignItems: "center", gap: 7 }}>
           {naa.live && (
@@ -343,7 +346,8 @@ export function IDagTrainLock(p: IDagTrainLockProps) {
   }
 
   const visBento = p.tilstand === "okt" || p.tilstand === "hvile" || p.tilstand === "pagar";
-  const visPrikker = p.tilstand !== "feil";
+  const visPrikker =
+    p.tilstand === "okt" || p.tilstand === "hvile" || p.tilstand === "pagar" || p.tilstand === "tom-uke";
   const visNeste = Boolean(p.neste && p.tilstand !== "feil");
   const visTm = Boolean(p.trackman && (p.tilstand === "okt" || p.tilstand === "pagar"));
 
@@ -368,12 +372,14 @@ export function IDagTrainLock(p: IDagTrainLockProps) {
         .ph01-grid { display: flex; flex-direction: column; gap: 12px; }
         .ph01-kun-mac { display: none; }
         .ph01-kun-telefon { display: contents; }
+        .ph01-naa { padding: 20px; }
         input.ph01-caddie::placeholder { color: var(--tl-mute); }
         @media (min-width: 1101px) {
           .ph01-grid { display: grid; grid-template-columns: 1.25fr 1fr; gap: 14px; align-items: start; }
           .ph01-kun-mac { display: flex; flex-direction: column; gap: 12px; }
           .ph01-kun-telefon { display: none; }
           .ph01-cta-prim { width: 260px; }
+          .ph01-naa { padding: 24px; }
         }
       `}</style>
       <div
@@ -403,7 +409,9 @@ export function IDagTrainLock(p: IDagTrainLockProps) {
               <GodkjenningKort key={okt.id} okt={okt} onFerdig={(id) => setBesvart((prev) => new Set(prev).add(id))} />
             ))}
             {hero}
-            {visTm && p.trackman && <TrackManKort trackman={p.trackman} />}
+            <div className="ph01-kun-telefon">
+              {visTm && p.trackman && <TrackManKort trackman={p.trackman} />}
+            </div>
             {p.testerLive && p.tilstand !== "feil" && <TesterKort testerLive={p.testerLive} />}
             <div className="ph01-kun-telefon">{nesteNode}</div>
             {visBento && <Bento sg={p.sgInnspill} okter={p.okterUke} />}

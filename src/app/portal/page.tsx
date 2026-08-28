@@ -95,8 +95,14 @@ export default async function PortalHjemPage() {
       meta: [sted, formatMinutes(wbOkt.durationMinutes)].filter(Boolean).join(" · "),
       ctaTekst: live ? IDAG_UI.fortsett : IDAG_UI.startOkt,
       ctaHref: `/portal/tren/wb/${wbOkt.id}`,
-      fremdriftPst: live || igjen != null ? fremdriftPst(wbOkt.startMinute, wbOkt.durationMinutes, naaMinutt) : null,
-      fremdriftTekst: !live && igjen != null && igjen > 0 ? `${igjen} min igjen` : null,
+      fremdriftPst:
+        live || (igjen != null && igjen > 0)
+          ? fremdriftPst(wbOkt.startMinute, wbOkt.durationMinutes, naaMinutt)
+          : null,
+      fremdriftTekst:
+        igjen != null && igjen > 0
+          ? [`${igjen} min igjen`, wbOkt.notes?.trim()].filter(Boolean).join(" · ")
+          : null,
       live,
       sekundarTekst: live ? IDAG_UI.avslutt : undefined,
       sekundarHref: live ? `/portal/tren/wb/${wbOkt.id}` : undefined,

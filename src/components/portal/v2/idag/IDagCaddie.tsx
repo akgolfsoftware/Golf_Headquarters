@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, type CSSProperties, type FormEvent } from "react";
-import { Mic } from "lucide-react";
 import { TL } from "@/lib/v2/train-lock";
 import { usePortalChat } from "@/components/portal/v2/chat/use-portal-chat";
 import { SamtaleBoble, SamtaleSkriver } from "@/components/v2/samtale";
@@ -91,7 +90,11 @@ export function IDagCaddie({
           flex: "none",
         }}
       >
-        <Mic size={20} strokeWidth={1.8} />
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
+          <rect x="9.5" y="3" width="5" height="10.5" rx="2.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+          <path d="M6 11.5 a6 6 0 0 0 12 0" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+          <path d="M12 17.5 V21" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+        </svg>
       </button>
     </form>
   );

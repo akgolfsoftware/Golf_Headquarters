@@ -756,17 +756,68 @@ function TrainLockTemaKnapp() {
 }
 
 function HusIkon({ size, fyll }: { size: number; fyll: boolean }) {
+  const felles = {
+    width: size,
+    height: size,
+    viewBox: "0 0 24 24",
+    "aria-hidden": true as const,
+    style: { display: "block", flex: "none" },
+  };
   if (fyll) {
     return (
-      <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden>
+      <svg {...felles}>
         <path d="M4 10.5 L12 4 L20 10.5 V20 H14.5 V14.5 H9.5 V20 H4 Z" fill="currentColor" />
       </svg>
     );
   }
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden>
+    <svg {...felles} fill="none">
       <path d="M4 10.5 L12 4 L20 10.5 V20 H15 V14.5 H9 V20 H4 Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
     </svg>
+  );
+}
+
+/** PH-01 dock/rail-ikoner — fasitens SVG, ikke Lucide. */
+function PlayerFaneIkon({ icon, size, fyll }: { icon: string; size: number; fyll?: boolean }) {
+  if (icon === "home") return <HusIkon size={size} fyll={Boolean(fyll)} />;
+  if (icon === "calendar") {
+    return (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden>
+        <rect x="4" y="5.5" width="16" height="15" rx="3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        <path d="M8 3.5 V7 M16 3.5 V7 M4 10.5 H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      </svg>
+    );
+  }
+  if (icon === "bar-chart") {
+    return (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden>
+        <path d="M5 20 V13 M12 20 V6 M19 20 V10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      </svg>
+    );
+  }
+  return <Icon name={icon} size={size} strokeWidth={2} />;
+}
+
+function Initialer({ navn, size, fontSize }: { navn: string; size: number; fontSize: number }) {
+  return (
+    <span
+      aria-hidden
+      style={{
+        width: size,
+        height: size,
+        borderRadius: "50%",
+        background: TL.avatar,
+        color: TL.onAvatar,
+        fontSize,
+        fontWeight: 600,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        flex: "none",
+      }}
+    >
+      {playerInitialer(navn)}
+    </span>
   );
 }
 
@@ -782,14 +833,12 @@ function TrainLockPlayerRail({
   aktiv,
   nav,
   navn,
-  avatarUrl,
 }: {
   aktiv?: string;
   nav: V2NavItem[];
   navn: string;
   avatarUrl?: string | null;
 }) {
-  const initialer = playerInitialer(navn);
   return (
     <nav
       className="hidden md:flex"
@@ -831,38 +880,14 @@ function TrainLockPlayerRail({
               flex: "none",
             }}
           >
-            {n.icon === "home" ? (
-              <HusIkon size={21} fyll={on} />
-            ) : (
-              <Icon name={n.icon} size={21} strokeWidth={2} style={{ color: on ? TL.onFill : TL.mute }} />
-            )}
+            <PlayerFaneIkon icon={n.icon} size={21} fyll={on} />
           </Link>
         );
       })}
       <div style={{ flex: 1, minHeight: 8 }} />
       <TrainLockTemaKnapp />
       <Link href="/portal/meg" title="Meg" aria-label="Meg" className="v2-press">
-        {avatarUrl ? (
-          <AvatarFoto src={avatarUrl} navn={navn} size={32} />
-        ) : (
-          <span
-            aria-hidden
-            style={{
-              width: 32,
-              height: 32,
-              borderRadius: "50%",
-              background: TL.avatar,
-              color: TL.onAvatar,
-              fontSize: 11,
-              fontWeight: 600,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            {initialer}
-          </span>
-        )}
+        <Initialer navn={navn} size={32} fontSize={11} />
       </Link>
     </nav>
   );
@@ -880,7 +905,6 @@ function TrainLockPlayerDock({
   navn: string;
   composer?: ReactNode;
 }) {
-  const initialer = playerInitialer(navn);
   const faner = nav.slice(0, 4);
   return (
     <div
@@ -949,27 +973,9 @@ function TrainLockPlayerDock({
                 }}
               >
                 {erMeg ? (
-                  <span
-                    aria-hidden
-                    style={{
-                      width: 22,
-                      height: 22,
-                      borderRadius: "50%",
-                      background: TL.avatar,
-                      color: TL.onAvatar,
-                      fontSize: 9,
-                      fontWeight: 600,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {initialer}
-                  </span>
-                ) : n.icon === "home" ? (
-                  <HusIkon size={20} fyll />
+                  <Initialer navn={navn} size={22} fontSize={9} />
                 ) : (
-                  <Icon name={n.icon} size={20} strokeWidth={2} style={{ color: TL.onFill }} />
+                  <PlayerFaneIkon icon={n.icon} size={20} fyll />
                 )}
                 <span
                   style={{
@@ -1002,28 +1008,13 @@ function TrainLockPlayerDock({
                 gap: 2,
                 textDecoration: "none",
                 flex: "none",
+                color: TL.mute,
               }}
             >
               {erMeg ? (
-                <span
-                  aria-hidden
-                  style={{
-                    width: 22,
-                    height: 22,
-                    borderRadius: "50%",
-                    background: TL.avatar,
-                    color: TL.onAvatar,
-                    fontSize: 9,
-                    fontWeight: 600,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  {initialer}
-                </span>
+                <Initialer navn={navn} size={22} fontSize={9} />
               ) : (
-                <Icon name={n.icon} size={17} strokeWidth={2} style={{ color: TL.mute }} />
+                <PlayerFaneIkon icon={n.icon} size={17} />
               )}
               <span
                 style={{
@@ -1544,15 +1535,13 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
       <div
         className={
           erPlayer
-            ? "px-4 md:px-14 pb-[calc(148px+env(safe-area-inset-bottom)+var(--ak-cookie-h,0px))] md:pb-24"
+            ? "px-4 md:px-14 pt-[calc(8px+env(safe-area-inset-top))] md:pt-[calc(40px+env(safe-area-inset-top))] pb-[calc(148px+env(safe-area-inset-bottom)+var(--ak-cookie-h,0px))] md:pb-[120px]"
             : "px-4 md:px-8 pb-[calc(96px+env(safe-area-inset-bottom))] md:pb-9"
         }
         style={{
           flex: 1,
           minWidth: 0,
-          paddingTop: erPlayer
-            ? "calc(8px + env(safe-area-inset-top))"
-            : "calc(24px + env(safe-area-inset-top))",
+          paddingTop: erPlayer ? undefined : "calc(24px + env(safe-area-inset-top))",
           // Uten minHeight: 0 nekter en flex-item å krympe under innholdet sitt,
           // og «egen rulling» blir til dokumentrulling likevel.
           ...(hoyde === "skjerm"
