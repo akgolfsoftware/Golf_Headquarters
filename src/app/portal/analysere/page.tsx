@@ -1,38 +1,28 @@
 /**
- * v2-forhåndsvisning — PlayerHQ Analysere (retning C). Egen top-level route-group
- * (v2preview) som IKKE arver PortalShell — kun root-layout. V2Shell leverer
- * chrome-en (IkonRail/BunnNav), AnalysereV2 rendrer innholds-stacken.
- *
- * Auth + dataloadere gjenbrukt 1:1 fra den ekte siden (src/app/portal/analysere/page.tsx).
+ * PlayerHQ Analyse-hub — TM-04.
+ * Fasit: designsystem/train-lock/TM-04 Analyse-hub TrackMan.dc.html
+ * Historikk/runder ligger på /portal/analysere/historikk.
  */
 
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { loadMinGolf } from "@/lib/min-golf/load-min-golf";
-import { loadAnalyticsWorkbenchData } from "@/app/portal/analysere/actions";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { AnalysereV2 } from "@/components/portal/v2/AnalysereV2";
-import { getPlayerDepthMode } from "@/lib/player-depth-mode";
-import { loadPuttingSignalsForUser } from "@/lib/masterbrain/load-putting-signals";
+import { AnalyseHubTrainLock } from "@/components/portal/v2/AnalyseHubTrainLock";
+import { hentAnalyseHub } from "@/lib/portal-analyse/tm-hub-data";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Analyse · PlayerHQ" };
 
-export default async function V2AnalyserePreviewPage() {
+export default async function AnalyserePage() {
   const user = await requirePortalUser({ kreverTilgang: "TALENT" });
   if (user.role === "GUEST") redirect("/admin/kalender");
   if (user.role === "PARENT") redirect("/forelder");
 
-  const [minGolf, workbench, depthMode, puttingSignals] = await Promise.all([
-    loadMinGolf(user.id),
-    loadAnalyticsWorkbenchData(user.id),
-    getPlayerDepthMode(),
-    loadPuttingSignalsForUser(user.id),
-  ]);
+  const data = await hentAnalyseHub(user.id);
 
   return (
     <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <AnalysereV2 data={{ minGolf, workbench }} userId={user.id} puttingSignals={puttingSignals} depthMode={depthMode} />
+      <AnalyseHubTrainLock data={data} />
     </V2Shell>
   );
 }
