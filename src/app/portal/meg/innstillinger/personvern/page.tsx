@@ -1,6 +1,7 @@
 /**
- * /portal/meg/innstillinger/personvern — B-pakke.
- * Status først, én grønn eksport-CTA, sletting sekundært.
+ * /portal/meg/innstillinger/personvern — Samtykker.
+ * Fasit: designsystem/train-lock/PH-18 Meg samtykke.dc.html
+ * Én setning per bryter, av/på, ingen mørke mønstre. Eksport/sletting nederst.
  */
 
 import Link from "next/link";
@@ -50,13 +51,14 @@ export default async function PersonvernPage() {
       }}
     >
       <InnstillingerHode
-        tittel="Personvern og data"
-        undertekst="Innstillinger"
+        tittel="Samtykker"
+        undertekst="Meg"
         tilbakeHref="/portal/meg/innstillinger"
         action={<StatusPill tone="info">GDPR</StatusPill>}
       />
+      {/* PH-18: trygghetssetningen — aldri mørke mønstre. */}
       <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: 0, lineHeight: 1.45, maxWidth: "42ch" }}>
-        Last ned dine data, se hvordan vi lagrer dem, eller be om sletting.
+        Du kan endre alt her, når som helst. Ingenting deles uten ja.
       </p>
 
       <HelseSamtykkeKort

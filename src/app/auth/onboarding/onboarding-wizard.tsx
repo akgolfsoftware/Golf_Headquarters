@@ -2,6 +2,11 @@
 
 /**
  * Onboarding-wizard (spiller) — MOBIL-FØRST 430px.
+ * Fasit: designsystem/train-lock/PH-19 Onboarding.dc.html — DELVIS:
+ * fasiten tegner 3 steg (hvem/hvor/coach-kode) på mørk scene, men /auth er
+ * låst LYS (PP-A/A4, beslutninger.md) og steg-maskinen (6 steg, GDPR-gate)
+ * er funksjonell fasit. Struktur-krympingen til 3 steg krever Anders'
+ * beslutning — flagget som åpent avvik i PIKSELPLAN PX-1.
  * Chrome portet til fersk fasit (juni 2026): (historisk juni-fasit, fjernet fra repo)
  * AK Golf HQ Design System/playerhq-app/ph-auth.jsx → AOnboarding
  * (steps-rail, TRINN-eyebrow + AHead, opt-card-valg, CTA-rad m/tilbake).
