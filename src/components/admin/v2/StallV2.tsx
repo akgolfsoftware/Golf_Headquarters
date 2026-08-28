@@ -14,7 +14,7 @@ import { TL } from "@/lib/v2/train-lock";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Caps, Kort, Rad, AvatarInit, SevChip, DeltaChip, TallHero, Trend, AkseBar, CTAPill, TomTilstand, BunnArk, HjelpTips, Icon, type SevKey } from "@/components/v2";
-import type { AkseKey } from "@/lib/v2/tokens";
+import type { AkseKey } from "@/lib/v2/format";
 
 /** true på klient etter mount når viewport < 768px (M3-mobilvariant). */
 function useMobile(): boolean {

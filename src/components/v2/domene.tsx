@@ -9,7 +9,7 @@ import { TL } from "@/lib/v2/train-lock";
    Alle props har demo-data som default → alt kan rendres rett i galleriet. */
 
 import { useState, type ReactNode } from "react";
-import type { AkseKey } from "@/lib/v2/tokens";
+import type { AkseKey } from "@/lib/v2/format";
 import {
   T,
   Kort,

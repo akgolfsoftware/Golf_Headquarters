@@ -91,7 +91,7 @@ export default async function TrackManOktDetalj({ params }: { params: Promise<{ 
   return (
     <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <Link
-        href="/portal/mal/trackman"
+        href="/portal/analysere/trackman"
         style={{
           display: "inline-flex",
           alignItems: "center",

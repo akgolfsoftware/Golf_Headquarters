@@ -12,7 +12,7 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { loadStallen, type StatusKind, type Axis } from "@/lib/admin/stallen-data";
-import { fmtSg, type AkseKey } from "@/lib/v2/tokens";
+import { fmtSg, type AkseKey } from "@/lib/v2/format";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import type { StallV2Data, StallV2Player } from "@/components/admin/v2/StallV2";
 import { TrainLockStall } from "@/components/admin/v2/TrainLockStall";

@@ -16,7 +16,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Kort, AvatarInit, TomTilstand } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
-import type { AkseKey } from "@/lib/v2/tokens";
+import type { AkseKey } from "@/lib/v2/format";
 
 export type DrillDetaljV2Data = {
   akse: AkseKey;

@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Caps, Kort, Rad, AvatarInit, KpiFlis, TallHero, StatusPill, TomTilstand, CTAPill, Icon } from "@/components/v2";
 import { TL } from "@/lib/v2/train-lock";
-import { fmtSg } from "@/lib/v2/tokens";
+import { fmtSg } from "@/lib/v2/format";
 // ── Datakontrakt (mappes fra Round i ruten) ─────────────────────
 export interface AdminRunderV2Round {
   id: string;

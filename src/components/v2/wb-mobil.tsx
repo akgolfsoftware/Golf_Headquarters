@@ -10,7 +10,7 @@
 import type { ReactNode } from "react";
 import { Fragment, useState } from "react";
 import { TL } from "@/lib/v2/train-lock";
-import { type AkseKey } from "@/lib/v2/tokens";
+import { type AkseKey } from "@/lib/v2/format";
 import { Icon } from "@/components/v2/icon";
 import { Caps, Kort, Rad, AkseChip, StatusPill, CTAPill } from "./core";
 

@@ -16,7 +16,7 @@ import {
   InnsiktChip,
   TomTilstand,
 } from "@/components/v2";
-import type { AkseKey } from "@/lib/v2/tokens";
+import type { AkseKey } from "@/lib/v2/format";
 import type { AxisKind } from "@/lib/portal-ai/ai-data";
 
 export type DrillSuggestion = {

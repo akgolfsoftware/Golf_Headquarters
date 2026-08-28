@@ -18,7 +18,7 @@ import {
   DrillDetaljV2,
   type DrillDetaljV2Data,
 } from "@/components/portal/v2/DrillDetaljV2";
-import type { AkseKey } from "@/lib/v2/tokens";
+import type { AkseKey } from "@/lib/v2/format";
 
 // Modulnivå-helper: Date.now() kan ikke kalles i render-body (react-hooks/purity).
 function tredveDagerSiden(): Date {

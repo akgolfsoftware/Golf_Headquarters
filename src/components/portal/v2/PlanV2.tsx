@@ -20,7 +20,7 @@ import { OktKort } from "@/components/v2/domene";
 import { HvorforDette } from "@/components/v2/hjelp";
 import { BunnArk } from "@/components/v2/bunn-ark";
 import type { UkePeriode } from "@/lib/portal-plan/uke-periode";
-import type { AkseKey } from "@/lib/v2/tokens";
+import type { AkseKey } from "@/lib/v2/format";
 import { WORKBENCH_HREF } from "./WorkbenchInngang";
 
 const UKEDAGER = ["søndag", "mandag", "tirsdag", "onsdag", "torsdag", "fredag", "lørdag"];

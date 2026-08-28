@@ -6,7 +6,7 @@
 import Image from "next/image";
 import { useSyncExternalStore, type ReactNode } from "react";
 import { TL } from "@/lib/v2/train-lock";
-import { fmtTall, TOM_TALL } from "@/lib/v2/tokens";
+import { fmtTall, TOM_TALL } from "@/lib/v2/format";
 import {
   Caps,
   CTAPill,

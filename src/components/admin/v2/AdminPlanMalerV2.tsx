@@ -24,7 +24,7 @@ import {
   useInspektorSynlig,
   T,
 } from "@/components/v2";
-import type { AkseKey } from "@/lib/v2/tokens";
+import type { AkseKey } from "@/lib/v2/format";
 import type { LPhase } from "@/generated/prisma/enums";
 
 // ── Datakontrakt (mappes fra PlanTemplate i ruten) ──────────────

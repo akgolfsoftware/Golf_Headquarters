@@ -8,7 +8,7 @@ import { TL } from "@/lib/v2/train-lock";
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import type { PyramidArea } from "@/generated/prisma/client";
-import type { AkseKey } from "@/lib/v2/tokens";
+import type { AkseKey } from "@/lib/v2/format";
 import { Caps, PillTabs, Kort, AkseChip, LFaseBadge, Bit, TomTilstand, Icon } from "@/components/v2";
 /* ── Datakontrakt (speiler ExerciseDefinition-feltene skjermen bruker) ── */
 

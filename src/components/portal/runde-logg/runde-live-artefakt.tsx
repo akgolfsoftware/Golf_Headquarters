@@ -14,7 +14,7 @@
 import { useSyncExternalStore, type CSSProperties } from "react";
 import Link from "next/link";
 import { TL } from "@/lib/v2/train-lock";
-import { fmtSg } from "@/lib/v2/tokens";
+import { fmtSg } from "@/lib/v2/format";
 import { Icon } from "@/components/v2/icon";
 import { lesKladdCached, lesKladdServer } from "@/lib/runde-logg/draft";
 import { scoreFraHull } from "@/lib/runde-logg/syntetiser-hurtig";

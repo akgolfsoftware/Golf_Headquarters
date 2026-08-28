@@ -11,7 +11,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import { useState } from "react";
 import { TL } from "@/lib/v2/train-lock";
-import { fmtSg, type AkseKey } from "@/lib/v2/tokens";
+import { fmtSg, type AkseKey } from "@/lib/v2/format";
 import { Icon } from "@/components/v2/icon";
 import { AkseChip, Caps, Kort, StatusPill, InnsiktChip, AvatarInit } from "./core";
 

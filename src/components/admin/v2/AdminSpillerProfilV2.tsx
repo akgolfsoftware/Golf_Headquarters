@@ -9,7 +9,7 @@ import { TL } from "@/lib/v2/train-lock";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Kort, Caps, CTAPill, TilbakeLenke, StatusPill, AvatarInit, InnsiktChip, TomTilstand, Rad, VarselRad, Pyramide, ProgresjonsBar, DataTabell, Icon, type StatusTone, type DataTabellColumn, type DataTabellRow } from "@/components/v2";
-import type { AkseKey } from "@/lib/v2/tokens";
+import type { AkseKey } from "@/lib/v2/format";
 
 // ── Datakontrakt (mappes fra Prisma i ruten) ───────────────────
 export interface SpillerProfilFlagg {

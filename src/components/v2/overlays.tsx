@@ -9,7 +9,7 @@ import { TL } from "@/lib/v2/train-lock";
 
 import type { CSSProperties, ReactNode } from "react";
 import { T, Caps, Rad, AkseChip, CTAPill, type StatusTone } from "./core";
-import type { AkseKey } from "@/lib/v2/tokens";
+import type { AkseKey } from "@/lib/v2/format";
 import { Icon } from "@/components/v2/icon";
 
 /* ── Intern demo-ramme: posisjonert innhold på scrim — kun for galleri ── */

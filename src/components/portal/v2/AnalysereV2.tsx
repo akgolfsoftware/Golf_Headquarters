@@ -25,7 +25,7 @@ import type { AnalyticsWorkbenchData } from "@/app/portal/analysere/actions";
 import { hentTreningsHistorikkFiltrert } from "@/app/portal/analysere/actions";
 import { AnalyseFilterBar, TOMME_FILTRE, type AnalyseFiltre } from "./AnalyseFilterBar";
 import { MILJO_GRUPPE_LABEL } from "@/lib/taxonomy";
-import type { AkseKey } from "@/lib/v2/tokens";
+import type { AkseKey } from "@/lib/v2/format";
 import type { PyramidArea } from "@/generated/prisma/client";
 import { useMount, EASE } from "@/lib/v2/hooks";
 import { fmtSg, Caps, Kort, TallHero, StatusPill, Trend, FordelingRad, FordelingHode, KpiFlis, Rad, PillTabs, FilterChips, TomTilstand, AkseChip, Icon, HjelpTips, HvorforDette, Skjelett, CTAPill, SgKategorier, Diagnose, NesteFokus, SlagLekkasje, type StatusTone } from "@/components/v2";

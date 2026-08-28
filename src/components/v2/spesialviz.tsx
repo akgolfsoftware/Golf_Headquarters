@@ -12,7 +12,7 @@ import { TL } from "@/lib/v2/train-lock";
 
 import type { CSSProperties, ReactNode } from "react";
 import { T, fmtSg, Kort, TomTilstand, Caps, DeltaChip, StatusPill, CTAPill } from "./core";
-import type { AkseKey } from "@/lib/v2/tokens";
+import type { AkseKey } from "@/lib/v2/format";
 import { Icon } from "@/components/v2/icon";
 
 /* ── Delte hjelpere ───────────────────────────────────── */
