@@ -38,6 +38,9 @@ export async function acceptPlanAction(actionId: string) {
   revalidatePath("/admin/godkjenninger");
   revalidatePath(`/admin/godkjenninger/${actionId}`);
   revalidatePath("/admin/approvals");
+  revalidatePath("/admin/agenticos");
+  revalidatePath("/admin/agenticos/godkjenn");
+  revalidatePath("/admin/agenticos/ko");
   revalidatePath("/portal/tren/teknisk-plan");
   revalidatePath("/portal/mal/trackman");
 }
@@ -70,4 +73,7 @@ export async function rejectPlanAction(actionId: string, reason?: string) {
   revalidatePath("/portal");
   revalidatePath("/portal/agent-pipeline");
   revalidatePath("/admin/godkjenninger");
+  revalidatePath("/admin/agenticos");
+  revalidatePath("/admin/agenticos/godkjenn");
+  revalidatePath("/admin/agenticos/ko");
 }
