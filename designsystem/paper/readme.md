@@ -1,6 +1,11 @@
 # AK Golf HQ — Claude Paper
 
-Masterdesignsystemet for AK Golf HQ. Varmt papir (#FAF9F5) i lys modus, varmt blekk (#141413) i mørk — aldri ren sort/hvit, aldri kald grå, aldri rød. To produktflater: **AgencyOS** (desktop-først coach/byrå-verktøy, papirflatet sidemeny 232 px, body 13,5 px) og **PlayerHQ** (mobil-først spillerapp, 430 px-kolonne, body 14 px).
+> **ARKIV / DEPRECATED (25.08.2026, bekreftet 28.08).** Dette er IKKE designfasit for
+> PlayerHQ, AgencyOS eller Forelder. Gjeldende system: `designsystem/train-lock/`.
+> Les `DEPRECATED.md` i denne mappen. Ikke few-shot, ikke port, ikke kopier tokens herfra
+> inn i `/portal` eller `/admin`. Marketing-katalog kan fortsatt speile Paper-look.
+
+Masterdesignsystemet for AK Golf HQ *(historisk tekst under — ikke bygg mot den)*. Varmt papir (#FAF9F5) i lys modus, varmt blekk (#141413) i mørk — aldri ren sort/hvit, aldri kald grå, aldri rød. To produktflater: **AgencyOS** (desktop-først coach/byrå-verktøy, papirflatet sidemeny 232 px, body 13,5 px) og **PlayerHQ** (mobil-først spillerapp, 430 px-kolonne, body 14 px).
 
 ## Hvor står hva
 

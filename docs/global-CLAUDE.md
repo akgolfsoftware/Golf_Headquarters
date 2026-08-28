@@ -64,7 +64,7 @@ Enkle/korte instrukser for ikke-trivielle oppgaver struktureres automatisk til o
 - kebab-case, ingen æøå i filnavn, default .md. Leveranser alltid med Drive-/web-lenke.
 
 ## Kilder ved usikkerhet
-Operasjonelt (status/kunder/økonomi) → Notion. Faglig (CANON, AK-formel, MORAD) → ak-second-brain/Masterbrain. Daglig kontekst → ak-brain. Design → Claude Design «AK Golf HQ — Claude Paper» (605a48cc). Finnes ikke svaret der: spør Anders.
+Operasjonelt (status/kunder/økonomi) → Notion. Faglig (CANON, AK-formel, MORAD) → ak-second-brain/Masterbrain. Daglig kontekst → ak-brain. Design (PlayerHQ/AgencyOS/Forelder) → Train-lock i akgolf-hq (`designsystem/train-lock/`). Claude Paper er arkiv. Finnes ikke svaret der: spør Anders.
 
 ## Læring (Compounding Engineering)
 Gjør Claude en feil som skyldes manglende regel: foreslå umiddelbart «Ny regel: ikke X, gjør Y» og legg den i riktig CLAUDE.md (global eller prosjekt). Månedlig: fjern regler som ikke lenger gjelder.

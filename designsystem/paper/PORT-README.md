@@ -1,8 +1,11 @@
 # PORT-README — porteringskontrakt
 
-**Les denne først.** Deretter `DESIGN-FASIT.md`. `PROSESS.md` gjelder ikke deg — den beskriver arbeid inne i Claude Design.
+> **ARKIV / DEPRECATED (25.08.2026).** Ikke port produktskjermer herfra.
+> Gjeldende portkontrakt: `designsystem/train-lock/PORTING.md`. Se `DEPRECATED.md`.
 
-Sist oppdatert 18.08.2026.
+**Historisk:** Les denne først. Deretter `DESIGN-FASIT.md`. `PROSESS.md` gjelder ikke deg — den beskriver arbeid inne i Claude Design.
+
+Sist oppdatert 18.08.2026 (supersedert 25.08).
 
 ---
 
