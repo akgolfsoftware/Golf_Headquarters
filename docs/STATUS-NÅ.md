@@ -21,6 +21,8 @@ over alt gjenstående. LAUNCH-PLAN-FULL er detaljgrunnlag for T-/C-radene.
 - **QA-1** merget #629 (admin-toast, tel-lenke m.m.).
 - **P0:** Google Calendar UTFØRT. Åpent: DKIM, DNS, Stripe live, aktiverings-e-post,
   `SCREENTEST_PASSWORD`. **Betaling starter automatisk 1. september.**
+- **Bølge N (TalentHQ inn i PlayerHQ):** N1–N3 og N5 inne. Plan gjenopprettet
+  (`docs/natt/BOLGE-N-TALENTHQ-INN-2026-08-26.md`). Neste: N4 merge + N6-kvitter.
 
 ## Neste steg (lansering)
 
@@ -41,6 +43,7 @@ over alt gjenstående. LAUNCH-PLAN-FULL er detaljgrunnlag for T-/C-radene.
 |---|---|
 | **Snapshot (denne)** | `docs/STATUS-NÅ.md` |
 | **Samlet gjenstående-plan** | `docs/LANSERINGSPLAN-KOMPLETT-2026-08-27.md` |
+| **TalentHQ inn i PlayerHQ** | `docs/natt/BOLGE-N-TALENTHQ-INN-2026-08-26.md` (10 steg; eget spor) |
 | **T-/C-rad-detaljer** | `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md` |
 | **Designfasit (alle skjermer)** | `designsystem/train-lock/DESIGN-SYSTEM.md` + `SCREEN-INDEX.md` |
 | **Uavklart / parkert / løst** | `docs/AAPNE-SPORSMAAL.md` |

@@ -16,6 +16,16 @@ Gjelder til Anders endrer dem.
 
 ## Beslutningene (august 2026)
 
+- **TALENTHQ AVVIKLES SOM EGET PRODUKT — ALT SAMLES I PLAYERHQ (Anders 26.08.2026,
+  rest-låst 28.08):** den gamle appen (`akgolfsoftware/talenthq`, mappe
+  `~/Developer/ak-golf-talenthq`) skal ikke utvikles videre. Merkenavn: alt heter
+  PlayerHQ; «talent» kun som ord på skjermer. Gratis-brukeren er PlayerHQ sitt
+  TALENT-nivå (`resolveTilgang`). WANG og Team Norway får **egne flater** (utvidelse
+  av `/innsyn`), aldri AgencyOS-menyen. PEI = nærhet ÷ lengde, lavere er bedre.
+  Pipelines bor i `akgolfsoftware/ak-golf-pipelines`. Team Norway-rød kun på logo
+  og skinne (ikke som status). ~23 skjermer skal med, ikke 70. **Arkiveres ikke** før
+  datahenting har kjørt grønt minst én uke fra pipeline-repoet og skjermene er inne.
+  Fasit og 10-stegs rekkefølge: `docs/natt/BOLGE-N-TALENTHQ-INN-2026-08-26.md`.
 - **ALLE SKJERMER I PLAYERHQ, AGENCYOS OG FORELDER SKAL HA LYS OG MØRK MODUS
   (Anders 2026-08-26, i økt):** løser forelder-omfangsspørsmålet (T4 i AAPNE-SPORSMAAL) —
   forelder-appen er IKKE unntatt Train-lock, hele appen porter med fungerende
@@ -146,15 +156,13 @@ Gjelder til Anders endrer dem.
   primary=accent-kollisjonen), (4) fasitens tilsvarende skjerm ved siden av. CI måler typer og
   bygg — ikke layout. Dette tetter hullet som lot PR1–PR4 passere som «ferdige».
   Ferdig-definisjonen per skjerm er skjermbilde-gaten i `CLAUDE.md` §Skjermarbeid.
-- **Tester planlegges i Workbench, resultat syncer til TalentHQ (Anders 2026-08-04):** spilleren
-  legger tester inn i planen sin via Workbench (fasiten `workbench-mobil.html` har allerede
-  «Testbatteriet» som eget ark med egen Tester-seksjon per økt — design finnes, kode mangler).
-  Når en test gjennomføres og logges (`/portal/tren/tester/[testId]/gjennomfor`), skal resultatet
-  synces direkte til TalentHQ (`/portal/talent/*` — 5 skjermer, live men skjult fra meny siden
-  D1 2026-07-15). **Sync-koblingen er BYGGET 2026-08-16 (T4):** `src/lib/talent/test-sync.ts` +
-  `src/lib/domain/talent-sync.ts` skriver `TalentTracking.testNivaaer` fra begge loggeveiene.
-  Gjenstår: talent-skjermene LESER ikke `testNivaaer` ennå, og Workbench-halvdelen
-  (testbatteri-ark) er ikke bygget — se `docs/MASTERPLAN-GJENSTAAENDE.md`.
+- **Tester planlegges i Workbench, resultat synces til spillerens talentprofil
+  (Anders 2026-08-04, oppdatert 28.08):** TalentHQ som eget produkt er avviklet
+  (se beslutningen øverst). Når en test logges (`/portal/tren/tester/[testId]/gjennomfor`),
+  skrives resultatet til `TalentTracking.testNivaaer` via `src/lib/talent/test-sync.ts` +
+  `src/lib/domain/talent-sync.ts` (T4, 16.08). `/portal/talent/mitt-niva` leser feltet.
+  Huben `/portal/talent` redirecter til «Mitt nivå». Workbench testbatteri-ark gjenstår
+  (N8/N10 i `docs/natt/BOLGE-N-TALENTHQ-INN-2026-08-26.md`).
   **Protokoll-avklaringen er LØST 2026-08-16 (T5):** spilleren ser 21 CANON-rader (20 protokoller;
   Putt Speed Control har to gjennomføringsvarianter) + egne tester — kodet i
   `src/lib/portal-tester/test-tilgang.ts`. **Fasit for test-gjennomføringsskjermen finnes nå**
