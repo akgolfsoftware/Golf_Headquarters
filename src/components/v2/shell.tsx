@@ -193,6 +193,23 @@ export const FORELDER_NAV: V2NavItem[] = [
   { id: "coach", label: "Meldinger", icon: "message-circle", href: "/forelder/coach" },
 ];
 
+/** Forelder-«Mer» — underskjermene FO-03…FO-10 som ikke får plass i navben
+    (PX-5: FO-01-forsiden er ren lesevisning uten lenkefaner, så rutene må
+    kunne nås herfra). */
+export const FORELDER_MER: V2NavGruppe[] = [
+  {
+    label: "Mer",
+    items: [
+      { id: "bookinger", label: "Bookinger", icon: "calendar", href: "/forelder/bookinger" },
+      { id: "ukerapport", label: "Ukerapport", icon: "file-text", href: "/forelder/ukerapport" },
+      { id: "fakturaer", label: "Fakturaer", icon: "list", href: "/forelder/fakturaer" },
+      { id: "samtykke", label: "Samtykke", icon: "shield-check", href: "/forelder/samtykke" },
+      { id: "varsler", label: "Varsler", icon: "bell", href: "/forelder/varsler" },
+      { id: "innstillinger", label: "Innstillinger", icon: "settings", href: "/forelder/innstillinger" },
+    ],
+  },
+];
+
 export interface V2ShellProps {
   /** Aktiv nav-id (matcher V2NavItem.id). */
   aktiv?: string;
