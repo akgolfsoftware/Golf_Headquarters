@@ -384,7 +384,7 @@ export function V2Laster({ variant = "kort" }: V2LasterProps) {
     <div
       style={{
         minHeight: "100vh",
-        background: `radial-gradient(1100px 460px at 24% -8%, var(--v2-vignett), transparent 62%), ${TL.scene}`,
+        background: `${TL.scene}`,
         colorScheme: "dark",
         display: "flex",
       }}

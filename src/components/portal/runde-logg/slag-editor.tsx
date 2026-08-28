@@ -324,8 +324,8 @@ export function SlagEditor({
           onClick={() => setStraffe((s) => !s)}
           className="v2-press v2-focus"
           style={pill(straffe, {
-            bg: "color-mix(in srgb, var(--v2-down) 12%, transparent)",
-            bd: "color-mix(in srgb, var(--v2-down) 40%, transparent)",
+            bg: "color-mix(in srgb, var(--tl-danger) 12%, transparent)",
+            bd: "color-mix(in srgb, var(--tl-danger) 40%, transparent)",
             fg: TL.danger,
           })}
         >

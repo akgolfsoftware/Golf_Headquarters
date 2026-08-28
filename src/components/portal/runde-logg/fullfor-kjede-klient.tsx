@@ -253,7 +253,7 @@ export function FullforKjedeKlient({
             )}
 
             {(mismatch || forMange) && (
-              <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 12px", borderRadius: 12, background: "color-mix(in srgb, var(--v2-down) 8%, transparent)", border: "1px solid color-mix(in srgb, var(--v2-down) 35%, transparent)" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 12px", borderRadius: 12, background: "color-mix(in srgb, var(--tl-danger) 8%, transparent)", border: "1px solid color-mix(in srgb, var(--tl-danger) 35%, transparent)" }}>
                 <Icon name="triangle-alert" size={14} style={{ color: TL.danger, flex: "none" }} />
                 <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.text, lineHeight: 1.5 }}>
                   Kjeden har <b>{slag.length} slag + {straffer} straffer</b>, men scorekortet sier{" "}
@@ -275,7 +275,7 @@ export function FullforKjedeKlient({
             )}
 
             {feil && (
-              <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 12px", borderRadius: 12, background: "color-mix(in srgb, var(--v2-down) 8%, transparent)", border: "1px solid color-mix(in srgb, var(--v2-down) 35%, transparent)" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 12px", borderRadius: 12, background: "color-mix(in srgb, var(--tl-danger) 8%, transparent)", border: "1px solid color-mix(in srgb, var(--tl-danger) 35%, transparent)" }}>
                 <Icon name="triangle-alert" size={14} style={{ color: TL.danger, flex: "none" }} />
                 <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.text }}>{feil}</span>
               </div>

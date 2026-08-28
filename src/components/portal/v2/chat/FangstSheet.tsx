@@ -409,16 +409,16 @@ export function FangstSheet({
     display: "inline-flex",
     alignItems: "center",
     justifyContent: "center",
-    gap: "var(--p-s2)",
-    minHeight: "var(--p-tap)",
-    padding: "0 var(--p-s4)",
-    fontFamily: "var(--p-ui)",
+    gap: "8px",
+    minHeight: "var(--tl-tap)",
+    padding: "0 16px",
+    fontFamily: "var(--tl-font-sans)",
     fontSize: 13,
     fontWeight: 500,
-    color: "var(--p-fg)",
+    color: "var(--tl-text)",
     background: "transparent",
-    border: "1px solid var(--p-border)",
-    borderRadius: "var(--p-r)",
+    border: "1px solid var(--tl-hair)",
+    borderRadius: "var(--tl-r-card)",
     cursor: "pointer",
   };
 
@@ -427,7 +427,7 @@ export function FangstSheet({
       <div
         aria-hidden
         onClick={lukk}
-        style={{ position: "fixed", inset: 0, background: "var(--p-scrim)", zIndex: 92 }}
+        style={{ position: "fixed", inset: 0, background: "var(--tl-scrim)", zIndex: 92 }}
       />
       <div
         ref={sheetRef}
@@ -443,34 +443,34 @@ export function FangstSheet({
           right: 0,
           bottom: 0,
           zIndex: 93,
-          background: "var(--p-surface)",
-          color: "var(--p-fg)",
-          borderTop: "1px solid var(--p-border)",
-          borderRadius: "var(--p-r) var(--p-r) 0 0",
-          boxShadow: "var(--p-shadow)",
-          padding: "var(--p-s3) var(--p-s4) calc(var(--p-s5) + env(safe-area-inset-bottom))",
+          background: "var(--tl-elev)",
+          color: "var(--tl-text)",
+          borderTop: "1px solid var(--tl-hair)",
+          borderRadius: "var(--tl-r-card) var(--tl-r-card) 0 0",
+          boxShadow: "none",
+          padding: "12px 16px calc(20px + env(safe-area-inset-bottom))",
           maxHeight: "88vh",
           overflow: "auto",
-          fontFamily: "var(--p-ui)",
+          fontFamily: "var(--tl-font-sans)",
         }}
       >
-        <div style={{ maxWidth: 560, margin: "0 auto", display: "flex", flexDirection: "column", gap: "var(--p-s3)", minWidth: 0 }}>
+        <div style={{ maxWidth: 560, margin: "0 auto", display: "flex", flexDirection: "column", gap: "12px", minWidth: 0 }}>
           {/* Grab-håndtak */}
           <div
             aria-hidden
-            style={{ width: 36, height: 4, borderRadius: 999, background: "var(--p-border)", margin: "0 auto" }}
+            style={{ width: 36, height: 4, borderRadius: 999, background: "var(--tl-hair)", margin: "0 auto" }}
           />
 
           {/* Hode: kontekst + formel-tag + lukk */}
-          <div style={{ display: "flex", alignItems: "center", gap: "var(--p-s2)", flexWrap: "wrap", minWidth: 0 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap", minWidth: 0 }}>
             <span
               style={{
-                fontFamily: "var(--p-mono)",
+                fontFamily: "var(--tl-font-mono)",
                 fontSize: 10,
                 fontWeight: 500,
                 letterSpacing: "0.09em",
                 textTransform: "uppercase",
-                color: "var(--p-muted)",
+                color: "var(--tl-mute)",
               }}
             >
               Fangst
@@ -480,15 +480,15 @@ export function FangstSheet({
               <span
                 className="num"
                 style={{
-                  fontFamily: "var(--p-mono)",
+                  fontFamily: "var(--tl-font-mono)",
                   fontSize: 10.5,
                   letterSpacing: "0.04em",
                   textTransform: "uppercase",
-                  padding: "3px var(--p-s2)",
+                  padding: "3px 8px",
                   borderRadius: 999,
-                  background: "var(--p-soft)",
-                  color: "var(--p-muted)",
-                  border: "1px solid var(--p-border)",
+                  background: "var(--tl-dim)",
+                  color: "var(--tl-mute)",
+                  border: "1px solid var(--tl-hair)",
                   maxWidth: "100%",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
@@ -503,25 +503,25 @@ export function FangstSheet({
               onClick={lukk}
               aria-label="Lukk"
               data-od-id="fangst-lukk"
-              style={{ ...ghostBtn, width: "var(--p-tap)", padding: 0 }}
+              style={{ ...ghostBtn, width: "var(--tl-tap)", padding: 0 }}
             >
               <X size={18} />
             </button>
           </div>
 
           <div>
-            <p style={{ margin: 0, fontFamily: "var(--p-disp)", fontSize: 17, fontWeight: 600, lineHeight: 1.25 }}>
+            <p style={{ margin: 0, fontFamily: "var(--tl-font-sans)", fontSize: 17, fontWeight: 600, lineHeight: 1.25 }}>
               Hva la du merke til?
             </p>
             {oktLabel && (
-              <p style={{ margin: "2px 0 0", fontFamily: "var(--p-body)", fontSize: 13.5, color: "var(--p-muted)" }}>
+              <p style={{ margin: "2px 0 0", fontFamily: "var(--tl-text-body)", fontSize: 13.5, color: "var(--tl-mute)" }}>
                 {oktLabel}
               </p>
             )}
           </div>
 
           {/* Scene: mikrofon (komponentens ENE clay-flate) + teller + hint */}
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "var(--p-s2)", padding: "var(--p-s3) 0 var(--p-s1)" }}>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px", padding: "12px 0 4px" }}>
             <button
               ref={micRef}
               type="button"
@@ -537,9 +537,9 @@ export function FangstSheet({
               data-od-id="fangst-mic"
               style={{
                 position: "relative",
-                width: "var(--p-tap-capture)",
-                height: "var(--p-tap-capture)",
-                minHeight: "var(--p-tap-capture)",
+                width: "var(--tl-tap-capture)",
+                height: "var(--tl-tap-capture)",
+                minHeight: "var(--tl-tap-capture)",
                 padding: 0,
                 borderRadius: 999,
                 display: "inline-flex",
@@ -547,10 +547,10 @@ export function FangstSheet({
                 justifyContent: "center",
                 border:
                   tilstand === "ingen_mikrofon"
-                    ? "1px solid var(--p-border)"
-                    : "1px solid var(--p-accent)",
-                background: tilstand === "ingen_mikrofon" ? "transparent" : "var(--p-accent)",
-                color: tilstand === "ingen_mikrofon" ? "var(--p-muted)" : "var(--p-on-accent)",
+                    ? "1px solid var(--tl-hair)"
+                    : "1px solid var(--tl-fill)",
+                background: tilstand === "ingen_mikrofon" ? "transparent" : "var(--tl-fill)",
+                color: tilstand === "ingen_mikrofon" ? "var(--tl-mute)" : "var(--tl-on-fill)",
                 cursor: tilstand === "ingen_mikrofon" ? "not-allowed" : "pointer",
               }}
             >
@@ -561,17 +561,17 @@ export function FangstSheet({
                     position: "absolute",
                     inset: -8,
                     borderRadius: 999,
-                    border: "2px solid var(--p-accent)",
-                    animation: "fangst-ring 1.4s var(--p-ease) infinite",
+                    border: "2px solid var(--tl-fill)",
+                    animation: "fangst-ring 1.4s var(--tl-ease) infinite",
                   }}
                 />
               )}
               {tilstand === "opptak" ? <Square size={24} fill="currentColor" /> : <Mic size={26} />}
             </button>
-            <span className="num" style={{ fontFamily: "var(--p-mono)", fontSize: 15, fontWeight: 500, color: "var(--p-muted)" }}>
+            <span className="num" style={{ fontFamily: "var(--tl-font-mono)", fontSize: 15, fontWeight: 500, color: "var(--tl-mute)" }}>
               {sek(opptakMs)}
             </span>
-            <p style={{ margin: 0, fontFamily: "var(--p-body)", fontSize: 13.5, color: "var(--p-muted)", textAlign: "center", maxWidth: "40ch" }}>
+            <p style={{ margin: 0, fontFamily: "var(--tl-text-body)", fontSize: 13.5, color: "var(--tl-mute)", textAlign: "center", maxWidth: "40ch" }}>
               {HINT[tilstand]}
             </p>
           </div>
@@ -586,10 +586,10 @@ export function FangstSheet({
                   style={{
                     width: w,
                     height: 12,
-                    marginBottom: "var(--p-s2)",
-                    background: "var(--p-soft)",
-                    borderRadius: "var(--p-r-sm)",
-                    animation: "fangst-puls 1.6s var(--p-ease) infinite",
+                    marginBottom: "8px",
+                    background: "var(--tl-dim)",
+                    borderRadius: "var(--tl-r-row)",
+                    animation: "fangst-puls 1.6s var(--tl-ease) infinite",
                   }}
                 />
               ))}
@@ -601,11 +601,11 @@ export function FangstSheet({
             <div
               aria-live="polite"
               style={{
-                padding: "var(--p-s3)",
-                background: "var(--p-soft)",
-                border: "1px solid var(--p-border)",
-                borderRadius: "var(--p-r)",
-                fontFamily: "var(--p-body)",
+                padding: "12px",
+                background: "var(--tl-dim)",
+                border: "1px solid var(--tl-hair)",
+                borderRadius: "var(--tl-r-card)",
+                fontFamily: "var(--tl-text-body)",
                 fontSize: 14.5,
                 lineHeight: 1.62,
               }}
@@ -621,17 +621,17 @@ export function FangstSheet({
               style={{
                 display: "flex",
                 flexDirection: "column",
-                gap: "var(--p-s2)",
-                padding: "var(--p-s4)",
-                background: "var(--p-soft)",
-                border: "1px dashed var(--p-border)",
-                borderRadius: "var(--p-r)",
+                gap: "8px",
+                padding: "16px",
+                background: "var(--tl-dim)",
+                border: "1px dashed var(--tl-hair)",
+                borderRadius: "var(--tl-r-card)",
               }}
             >
-              <span style={{ fontFamily: "var(--p-disp)", fontSize: 15, fontWeight: 600 }}>
+              <span style={{ fontFamily: "var(--tl-font-sans)", fontSize: 15, fontWeight: 600 }}>
                 Ingenting fanget ennå
               </span>
-              <span style={{ fontFamily: "var(--p-body)", fontSize: 14, color: "var(--p-muted)", maxWidth: "46ch" }}>
+              <span style={{ fontFamily: "var(--tl-text-body)", fontSize: 14, color: "var(--tl-mute)", maxWidth: "46ch" }}>
                 Trykk mikrofonen og si det med dine egne ord, eller velg en chip. Begge deler teller.
               </span>
             </div>
@@ -644,13 +644,13 @@ export function FangstSheet({
                 htmlFor="fangst-skriv"
                 style={{
                   display: "block",
-                  marginBottom: "var(--p-s1)",
-                  fontFamily: "var(--p-mono)",
+                  marginBottom: "4px",
+                  fontFamily: "var(--tl-font-mono)",
                   fontSize: 10,
                   fontWeight: 500,
                   letterSpacing: "0.09em",
                   textTransform: "uppercase",
-                  color: "var(--p-muted)",
+                  color: "var(--tl-mute)",
                 }}
               >
                 Skriv i stedet
@@ -664,14 +664,14 @@ export function FangstSheet({
                 data-od-id="fangst-skriv"
                 style={{
                   width: "100%",
-                  minHeight: "var(--p-tap-lg)",
-                  padding: "var(--p-s3)",
-                  fontFamily: "var(--p-body)",
+                  minHeight: "var(--tl-tap-cta)",
+                  padding: "12px",
+                  fontFamily: "var(--tl-text-body)",
                   fontSize: 14,
-                  color: "var(--p-fg)",
-                  background: "var(--p-surface)",
-                  border: "1px solid var(--p-border)",
-                  borderRadius: "var(--p-r)",
+                  color: "var(--tl-text)",
+                  background: "var(--tl-elev)",
+                  border: "1px solid var(--tl-hair)",
+                  borderRadius: "var(--tl-r-card)",
                   resize: "vertical",
                 }}
               />
@@ -679,7 +679,7 @@ export function FangstSheet({
           )}
 
           {/* Chips — avledet av øktformelen, ≥44px, autolagres ved trykk */}
-          <div role="group" aria-label="Velg det som stemmer" style={{ display: "flex", gap: "var(--p-s2)", flexWrap: "wrap" }}>
+          <div role="group" aria-label="Velg det som stemmer" style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
             {chips.map((c) => {
               const valgt = valgteChips.includes(c.tekst);
               return (
@@ -693,13 +693,13 @@ export function FangstSheet({
                   style={{
                     display: "inline-flex",
                     alignItems: "center",
-                    minHeight: "var(--p-tap)",
-                    padding: "0 var(--p-s4)",
-                    fontFamily: "var(--p-ui)",
+                    minHeight: "var(--tl-tap)",
+                    padding: "0 16px",
+                    fontFamily: "var(--tl-font-sans)",
                     fontSize: 12.5,
-                    color: valgt ? "var(--p-bg)" : "var(--p-fg)",
-                    background: valgt ? "var(--p-fg)" : "var(--p-surface)",
-                    border: `1px solid ${valgt ? "var(--p-fg)" : "var(--p-border)"}`,
+                    color: valgt ? "var(--tl-scene)" : "var(--tl-text)",
+                    background: valgt ? "var(--tl-text)" : "var(--tl-elev)",
+                    border: `1px solid ${valgt ? "var(--tl-text)" : "var(--tl-hair)"}`,
                     borderRadius: 999,
                     cursor: "pointer",
                   }}
@@ -717,12 +717,12 @@ export function FangstSheet({
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "var(--p-s3)",
+                gap: "12px",
                 flexWrap: "wrap",
-                padding: "var(--p-s3)",
-                background: "var(--p-soft)",
-                border: "1px solid var(--p-border)",
-                borderRadius: "var(--p-r)",
+                padding: "12px",
+                background: "var(--tl-dim)",
+                border: "1px solid var(--tl-hair)",
+                borderRadius: "var(--tl-r-card)",
                 fontSize: 12.5,
               }}
             >
@@ -732,58 +732,58 @@ export function FangstSheet({
                   width: 7,
                   height: 7,
                   borderRadius: 999,
-                  background: kvittering.koet ? "var(--p-info)" : "var(--p-up)",
+                  background: kvittering.koet ? "var(--tl-viz-target)" : "var(--tl-ok)",
                 }}
               />
               <span>
                 {kvittering.koet ? "Lagret lokalt " : "Lagret "}
-                <span className="num" style={{ fontFamily: "var(--p-mono)" }}>{kvittering.kl}</span>
+                <span className="num" style={{ fontFamily: "var(--tl-font-mono)" }}>{kvittering.kl}</span>
                 {kvittering.koet ? " · køet for synk" : ""}
               </span>
               <span style={{ flex: "1 1 auto" }} />
               {angreSek != null && angreSek > 0 ? (
                 <button type="button" onClick={angre} data-od-id="fangst-angre" style={{ ...ghostBtn, fontSize: 12 }}>
-                  Angre <span className="num" style={{ fontFamily: "var(--p-mono)" }}>{angreSek}</span>&nbsp;s
+                  Angre <span className="num" style={{ fontFamily: "var(--tl-font-mono)" }}>{angreSek}</span>&nbsp;s
                 </button>
               ) : (
-                <span style={{ color: "var(--p-muted)" }}>Angrefrist ute</span>
+                <span style={{ color: "var(--tl-mute)" }}>Angrefrist ute</span>
               )}
             </div>
           )}
 
           {/* Fot: stoppeklokke (midlertidig telemetri) + skriv-toggle */}
-          <div style={{ display: "flex", alignItems: "center", gap: "var(--p-s2)", flexWrap: "wrap" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
             <span
               data-verdict={watchFerdig ? (innenfor ? "ok" : "over") : ""}
               style={{
                 display: "inline-flex",
                 alignItems: "center",
-                gap: "var(--p-s2)",
-                padding: "var(--p-s1) var(--p-s3)",
-                border: "1px solid var(--p-border)",
+                gap: "8px",
+                padding: "4px 12px",
+                border: "1px solid var(--tl-hair)",
                 borderRadius: 999,
-                background: "var(--p-surface)",
+                background: "var(--tl-elev)",
                 fontSize: 12,
               }}
             >
               <span
                 style={{
-                  fontFamily: "var(--p-mono)",
+                  fontFamily: "var(--tl-font-mono)",
                   fontSize: 10,
                   letterSpacing: "0.09em",
                   textTransform: "uppercase",
-                  color: "var(--p-muted)",
+                  color: "var(--tl-mute)",
                 }}
               >
                 Tid
               </span>
-              <span className="num" style={{ fontFamily: "var(--p-mono)", fontSize: 13.5, fontWeight: 600 }}>
+              <span className="num" style={{ fontFamily: "var(--tl-font-mono)", fontSize: 13.5, fontWeight: 600 }}>
                 {sek(watchVerdi)}
               </span>
               <span
                 style={{
-                  fontFamily: "var(--p-body)",
-                  color: watchFerdig ? (innenfor ? "var(--p-up)" : "var(--p-dn)") : "var(--p-muted)",
+                  fontFamily: "var(--tl-text-body)",
+                  color: watchFerdig ? (innenfor ? "var(--tl-ok)" : "var(--tl-danger)") : "var(--tl-mute)",
                 }}
               >
                 {watchFerdig ? (innenfor ? "innenfor målet på 20 s" : "over målet på 20 s") : "måler …"}

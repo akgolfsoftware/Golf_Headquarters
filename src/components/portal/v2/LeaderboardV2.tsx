@@ -55,8 +55,8 @@ const SG_LABEL: Record<LeaderboardSgTab, string> = {
 
 const MEDALJE_FARGE: Record<NonNullable<LeaderboardRad["medalje"]>, string> = {
   gull: "var(--tl-fill)",
-  solv: "var(--v2-fg2)",
-  bronse: "var(--v2-warn)",
+  solv: "var(--tl-mute)",
+  bronse: "var(--tl-warn)",
 };
 
 function LenkePille({ href, aktiv, children }: { href: string; aktiv: boolean; children: React.ReactNode }) {

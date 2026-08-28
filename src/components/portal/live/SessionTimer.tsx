@@ -30,21 +30,21 @@ export function SessionTimer({
     <div
       className="flex min-w-0 items-center gap-3 px-4 py-3"
       style={{
-        background: "var(--p-surface)",
-        border: "1px solid var(--p-border)",
+        background: "var(--tl-elev)",
+        border: "1px solid var(--tl-hair)",
         borderRadius: 12,
       }}
     >
       <span
         className="font-mono text-[40px] font-medium leading-none [font-variant-numeric:tabular-nums]"
-        style={{ color: paused ? "var(--p-muted)" : "var(--p-fg)" }}
+        style={{ color: paused ? "var(--tl-mute)" : "var(--tl-text)" }}
         aria-live="polite"
         aria-label={`${label} ${fmtMSS(seconds)}${paused ? " — pauset" : ""}`}
       >
         {fmtMSS(seconds)}
       </span>
       {meta && (
-        <span className="min-w-0 font-mono text-[10.5px]" style={{ color: "var(--p-muted)" }}>
+        <span className="min-w-0 font-mono text-[10.5px]" style={{ color: "var(--tl-mute)" }}>
           {meta}
         </span>
       )}
@@ -57,9 +57,9 @@ export function SessionTimer({
         style={{
           minHeight: 44,
           borderRadius: 12,
-          border: "1px solid var(--p-border)",
+          border: "1px solid var(--tl-hair)",
           background: "transparent",
-          color: "var(--p-fg)",
+          color: "var(--tl-text)",
         }}
       >
         {paused ? "Fortsett" : "Pause"}

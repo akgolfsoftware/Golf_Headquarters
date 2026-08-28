@@ -114,7 +114,7 @@ export default async function FakturaDetaljPage({
           <>
             <PrintButton
               label="Skriv ut"
-              className="inline-flex items-center gap-2 rounded-full border border-[var(--v2-border-s)] bg-[var(--v2-panel3)] px-4 py-2 text-[12.5px] font-semibold text-[var(--v2-fg)]"
+              className="inline-flex items-center gap-2 rounded-full border border-[var(--tl-hair)] bg-[var(--tl-dim)] px-4 py-2 text-[12.5px] font-semibold text-[var(--tl-text)]"
             />
             <SendEpostKnapp paymentId={payment.id} />
             <LastNedPdfKnapp paymentId={payment.id} />

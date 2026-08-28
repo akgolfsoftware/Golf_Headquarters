@@ -55,7 +55,7 @@ function useMontert(): boolean {
   );
 }
 
-const mono: CSSProperties = { fontFamily: "var(--p-mono)" };
+const mono: CSSProperties = { fontFamily: "var(--tl-font-mono)" };
 
 function KildeLinje({ kilde }: { kilde: string }) {
   return (
@@ -64,7 +64,7 @@ function KildeLinje({ kilde }: { kilde: string }) {
         ...mono,
         display: "block",
         fontSize: 9,
-        color: "var(--p-mid)",
+        color: "var(--tl-mute)",
         letterSpacing: "0.04em",
       }}
     >
@@ -81,10 +81,10 @@ function Seksjon({ s }: { s: ProfilSeksjon }) {
       open={Boolean(s.aapen) && !stub && !tom}
       data-od-id={`pp-sek-${s.id}`}
       style={{
-        border: "1px solid var(--p-border)",
-        borderRadius: "var(--p-r)",
-        background: "var(--p-surface)",
-        marginBottom: "var(--p-s2)",
+        border: "1px solid var(--tl-hair)",
+        borderRadius: "var(--tl-r-card)",
+        background: "var(--tl-elev)",
+        marginBottom: "8px",
         overflow: "hidden",
       }}
     >
@@ -92,9 +92,9 @@ function Seksjon({ s }: { s: ProfilSeksjon }) {
         style={{
           display: "flex",
           alignItems: "center",
-          gap: "var(--p-s2)",
-          minHeight: "var(--p-tap)",
-          padding: "var(--p-s2) var(--p-s3)",
+          gap: "8px",
+          minHeight: "var(--tl-tap)",
+          padding: "8px 12px",
           cursor: "pointer",
           listStyle: "none",
           minWidth: 0,
@@ -104,22 +104,22 @@ function Seksjon({ s }: { s: ProfilSeksjon }) {
           <span style={{ display: "block", fontSize: 13, fontWeight: 600 }}>{s.tittel}</span>
           <KildeLinje kilde={s.kilde} />
         </span>
-        <span style={{ ...mono, marginLeft: "auto", fontSize: 11, color: "var(--p-muted)", flex: "none" }}>
+        <span style={{ ...mono, marginLeft: "auto", fontSize: 11, color: "var(--tl-mute)", flex: "none" }}>
           {stub ? "" : (s.linjer?.length ?? 0) || "—"}
         </span>
       </summary>
-      <div style={{ padding: "var(--p-s3)", borderTop: "1px solid var(--p-border)" }}>
+      <div style={{ padding: "12px", borderTop: "1px solid var(--tl-hair)" }}>
         {stub ? (
-          <p style={{ margin: 0, fontFamily: "var(--p-body)", fontSize: 12.5, color: "var(--p-muted)" }}>
-            <b style={{ display: "block", color: "var(--p-fg)", fontFamily: "var(--p-ui)", fontWeight: 600 }}>
+          <p style={{ margin: 0, fontFamily: "var(--tl-text-body)", fontSize: 12.5, color: "var(--tl-mute)" }}>
+            <b style={{ display: "block", color: "var(--tl-text)", fontFamily: "var(--tl-font-sans)", fontWeight: 600 }}>
               Ikke koblet ennå
             </b>
             Seksjonen finnes i fasiten, men datakoblingen mot {s.kilde} er ikke bygget. Ingenting er
             skjult — det er bare ikke koblet.
           </p>
         ) : tom ? (
-          <p style={{ margin: 0, fontFamily: "var(--p-body)", fontSize: 12.5, color: "var(--p-muted)" }}>
-            <b style={{ display: "block", color: "var(--p-fg)", fontFamily: "var(--p-ui)", fontWeight: 600 }}>
+          <p style={{ margin: 0, fontFamily: "var(--tl-text-body)", fontSize: 12.5, color: "var(--tl-mute)" }}>
+            <b style={{ display: "block", color: "var(--tl-text)", fontFamily: "var(--tl-font-sans)", fontWeight: 600 }}>
               Ingenting registrert ennå
             </b>
             {s.tomTekst ?? `Når det finnes data for ${s.tittel.toLowerCase()}, vises den her.`}
@@ -131,21 +131,21 @@ function Seksjon({ s }: { s: ProfilSeksjon }) {
               style={{
                 display: "flex",
                 alignItems: "baseline",
-                gap: "var(--p-s3)",
-                padding: "var(--p-s2) 0",
-                borderBottom: i === (s.linjer?.length ?? 0) - 1 ? 0 : "1px solid var(--p-border)",
+                gap: "12px",
+                padding: "8px 0",
+                borderBottom: i === (s.linjer?.length ?? 0) - 1 ? 0 : "1px solid var(--tl-hair)",
                 fontSize: 12.5,
                 minWidth: 0,
               }}
             >
-              <span style={{ color: "var(--p-muted)", minWidth: 0 }}>{l.k}</span>
+              <span style={{ color: "var(--tl-mute)", minWidth: 0 }}>{l.k}</span>
               <span
                 className="num"
                 style={{
                   ...mono,
                   marginLeft: "auto",
                   textAlign: "right",
-                  color: l.tone === "pos" ? "var(--p-up)" : l.tone === "neg" ? "var(--p-dn)" : "var(--p-fg)",
+                  color: l.tone === "pos" ? "var(--tl-ok)" : l.tone === "neg" ? "var(--tl-danger)" : "var(--tl-text)",
                 }}
               >
                 {l.v}
@@ -169,8 +169,8 @@ function KpiFliser({ kpi, className }: { kpi: SpillerProfilPanelData["kpi"]; cla
           : {
               display: "grid",
               gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-              gap: "var(--p-s2)",
-              marginBottom: "var(--p-s3)",
+              gap: "8px",
+              marginBottom: "12px",
             }
       }
     >
@@ -178,10 +178,10 @@ function KpiFliser({ kpi, className }: { kpi: SpillerProfilPanelData["kpi"]; cla
         <div
           key={k.k}
           style={{
-            padding: "var(--p-s3)",
-            background: "var(--p-surface)",
-            border: "1px solid var(--p-border)",
-            borderRadius: "var(--p-r)",
+            padding: "12px",
+            background: "var(--tl-elev)",
+            border: "1px solid var(--tl-hair)",
+            borderRadius: "var(--tl-r-card)",
             minWidth: 0,
           }}
         >
@@ -192,7 +192,7 @@ function KpiFliser({ kpi, className }: { kpi: SpillerProfilPanelData["kpi"]; cla
               fontSize: 9,
               letterSpacing: "0.07em",
               textTransform: "uppercase",
-              color: "var(--p-muted)",
+              color: "var(--tl-mute)",
             }}
           >
             {k.k}
@@ -205,7 +205,7 @@ function KpiFliser({ kpi, className }: { kpi: SpillerProfilPanelData["kpi"]; cla
               fontSize: 21,
               fontWeight: 600,
               letterSpacing: "-0.02em",
-              color: k.tone === "pos" ? "var(--p-up)" : k.tone === "neg" ? "var(--p-dn)" : "var(--p-fg)",
+              color: k.tone === "pos" ? "var(--tl-ok)" : k.tone === "neg" ? "var(--tl-danger)" : "var(--tl-text)",
               overflow: "hidden",
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
@@ -213,7 +213,7 @@ function KpiFliser({ kpi, className }: { kpi: SpillerProfilPanelData["kpi"]; cla
           >
             {k.v}
           </span>
-          <span style={{ display: "block", fontSize: 10.5, color: "var(--p-muted)" }}>{k.w}</span>
+          <span style={{ display: "block", fontSize: 10.5, color: "var(--tl-mute)" }}>{k.w}</span>
         </div>
       ))}
     </div>
@@ -227,16 +227,16 @@ const ghostBtn: CSSProperties = {
   display: "inline-flex",
   alignItems: "center",
   justifyContent: "center",
-  gap: "var(--p-s2)",
-  minHeight: "var(--p-tap)",
-  padding: "0 var(--p-s4)",
-  fontFamily: "var(--p-ui)",
+  gap: "8px",
+  minHeight: "var(--tl-tap)",
+  padding: "0 16px",
+  fontFamily: "var(--tl-font-sans)",
   fontSize: 13,
   fontWeight: 500,
-  color: "var(--p-fg)",
+  color: "var(--tl-text)",
   background: "transparent",
-  border: "1px solid var(--p-border)",
-  borderRadius: "var(--p-r)",
+  border: "1px solid var(--tl-hair)",
+  borderRadius: "var(--tl-r-card)",
   cursor: "pointer",
   textDecoration: "none",
   whiteSpace: "nowrap",
@@ -253,19 +253,19 @@ export function SpillerProfilFull({ data }: { data: SpillerProfilPanelData }) {
     <div
       data-paper-slug="spillerprofil"
       data-od-id="spiller-profil-full"
-      style={{ fontFamily: "var(--p-ui)", color: "var(--p-fg)", minWidth: 0 }}
+      style={{ fontFamily: "var(--tl-font-sans)", color: "var(--tl-text)", minWidth: 0 }}
     >
       <style>{`
-        .pp-full-kpi{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--p-s2);margin-bottom:var(--p-s3)}
+        .pp-full-kpi{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px}
         @media (min-width:900px){.pp-full-kpi{grid-template-columns:repeat(4,minmax(0,1fr))}}
-        .pp-full-sek{column-count:1;column-gap:var(--p-s4)}
+        .pp-full-sek{column-count:1;column-gap:16px}
         @media (min-width:1100px){.pp-full-sek{column-count:2}}
         @media (min-width:1700px){.pp-full-sek{column-count:3}}
         .pp-full-sek > details{break-inside:avoid}
       `}</style>
 
       {/* phead — kilde: User */}
-      <header style={{ display: "flex", alignItems: "center", gap: "var(--p-s3)", minWidth: 0, marginBottom: "var(--p-s4)" }}>
+      <header style={{ display: "flex", alignItems: "center", gap: "12px", minWidth: 0, marginBottom: "16px" }}>
         <span
           aria-hidden
           style={{
@@ -274,28 +274,28 @@ export function SpillerProfilFull({ data }: { data: SpillerProfilPanelData }) {
             height: 44,
             flex: "none",
             borderRadius: 999,
-            background: "var(--p-soft)",
+            background: "var(--tl-dim)",
             display: "grid",
             placeItems: "center",
             fontSize: 14,
             fontWeight: 600,
-            color: "var(--p-muted)",
+            color: "var(--tl-mute)",
           }}
         >
           {data.initialer}
         </span>
         <div style={{ minWidth: 0, flex: "1 1 auto" }}>
-          <h1 style={{ margin: 0, fontFamily: "var(--p-disp)", fontSize: 17, fontWeight: 600 }}>{data.navn}</h1>
-          <span style={{ ...mono, display: "block", fontSize: 11, color: "var(--p-muted)" }}>{data.subLinje}</span>
+          <h1 style={{ margin: 0, fontFamily: "var(--tl-font-sans)", fontSize: 17, fontWeight: 600 }}>{data.navn}</h1>
+          <span style={{ ...mono, display: "block", fontSize: 11, color: "var(--tl-mute)" }}>{data.subLinje}</span>
         </div>
-        <div style={{ display: "flex", gap: "var(--p-s2)", flex: "none" }}>
+        <div style={{ display: "flex", gap: "8px", flex: "none" }}>
           <Link href="/admin/spillere" data-od-id="pp-full-tilbake" style={ghostBtn}>
             Tilbake til Spillere
           </Link>
           <Link
             href={data.workbenchHref}
             data-od-id="pp-full-workbench"
-            style={{ ...ghostBtn, background: "var(--p-cta)", color: "var(--p-on-cta)", borderColor: "var(--p-cta)" }}
+            style={{ ...ghostBtn, background: "var(--tl-fill)", color: "var(--tl-on-fill)", borderColor: "var(--tl-fill)" }}
           >
             Åpne i Workbench
           </Link>
@@ -307,12 +307,12 @@ export function SpillerProfilFull({ data }: { data: SpillerProfilPanelData }) {
       <p
         style={{
           fontSize: 11.5,
-          color: "var(--p-muted)",
-          fontFamily: "var(--p-body)",
-          padding: "var(--p-s2) var(--p-s3)",
-          background: "var(--p-soft)",
-          borderRadius: "var(--p-r-sm)",
-          margin: "0 0 var(--p-s4)",
+          color: "var(--tl-mute)",
+          fontFamily: "var(--tl-text-body)",
+          padding: "8px 12px",
+          background: "var(--tl-dim)",
+          borderRadius: "var(--tl-r-row)",
+          margin: "0 0 16px",
         }}
       >
         {MERKNAD}
@@ -360,7 +360,7 @@ export function SpillerProfilPanel({
       <div
         aria-hidden
         onClick={lukk}
-        style={{ position: "fixed", inset: 0, background: "var(--p-scrim)", zIndex: 92 }}
+        style={{ position: "fixed", inset: 0, background: "var(--tl-scrim)", zIndex: 92 }}
       />
       <aside
         role="dialog"
@@ -373,19 +373,19 @@ export function SpillerProfilPanel({
           zIndex: 93,
           display: "flex",
           flexDirection: "column",
-          background: "var(--p-bg)",
-          color: "var(--p-fg)",
-          fontFamily: "var(--p-ui)",
-          fontSize: "var(--p-text-body-agency)",
+          background: "var(--tl-scene)",
+          color: "var(--tl-text)",
+          fontFamily: "var(--tl-font-sans)",
+          fontSize: "var(--tl-text-body)",
           ...(smal
             ? {
                 left: 0,
                 right: 0,
                 bottom: 0,
                 maxHeight: "90vh",
-                borderTop: "1px solid var(--p-border)",
-                borderRadius: "var(--p-r-lg) var(--p-r-lg) 0 0",
-                boxShadow: "var(--p-shadow)",
+                borderTop: "1px solid var(--tl-hair)",
+                borderRadius: "var(--tl-r-sheet) var(--tl-r-sheet) 0 0",
+                boxShadow: "none",
                 paddingBottom: "env(safe-area-inset-bottom)",
               }
             : {
@@ -394,8 +394,8 @@ export function SpillerProfilPanel({
                 bottom: 0,
                 width: 380,
                 maxWidth: "100vw",
-                borderLeft: "1px solid var(--p-border)",
-                boxShadow: "var(--p-shadow)",
+                borderLeft: "1px solid var(--tl-hair)",
+                boxShadow: "none",
               }),
         }}
       >
@@ -407,8 +407,8 @@ export function SpillerProfilPanel({
               height: 4,
               flex: "none",
               borderRadius: 999,
-              background: "var(--p-border)",
-              margin: "var(--p-s3) auto var(--p-s1)",
+              background: "var(--tl-hair)",
+              margin: "12px auto 4px",
             }}
           />
         )}
@@ -417,12 +417,12 @@ export function SpillerProfilPanel({
         <header
           style={{
             flex: "none",
-            padding: "var(--p-s4)",
-            borderBottom: "1px solid var(--p-border)",
-            background: "var(--p-surface)",
+            padding: "16px",
+            borderBottom: "1px solid var(--tl-hair)",
+            background: "var(--tl-elev)",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: "var(--p-s3)", minWidth: 0 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px", minWidth: 0 }}>
             <span
               aria-hidden
               style={{
@@ -431,12 +431,12 @@ export function SpillerProfilPanel({
                 height: 44,
                 flex: "none",
                 borderRadius: 999,
-                background: "var(--p-soft)",
+                background: "var(--tl-dim)",
                 display: "grid",
                 placeItems: "center",
                 fontSize: 14,
                 fontWeight: 600,
-                color: "var(--p-muted)",
+                color: "var(--tl-mute)",
               }}
             >
               {feil || !data ? "—" : data.initialer}
@@ -445,7 +445,7 @@ export function SpillerProfilPanel({
               <h1
                 style={{
                   margin: 0,
-                  fontFamily: "var(--p-disp)",
+                  fontFamily: "var(--tl-font-sans)",
                   fontSize: 17,
                   fontWeight: 600,
                   overflow: "hidden",
@@ -456,23 +456,23 @@ export function SpillerProfilPanel({
                 {feil || !data ? "Spillerprofil" : data.navn}
               </h1>
               {data && !feil && (
-                <span style={{ ...mono, display: "block", fontSize: 11, color: "var(--p-muted)" }}>
+                <span style={{ ...mono, display: "block", fontSize: 11, color: "var(--tl-mute)" }}>
                   {data.subLinje}
                 </span>
               )}
             </div>
-            <div style={{ display: "flex", gap: "var(--p-s2)", flex: "none" }}>
+            <div style={{ display: "flex", gap: "8px", flex: "none" }}>
               {data && !feil && (
                 <Link
                   href={data.fullSideHref}
                   data-od-id="pp-full-side"
-                  style={{ ...ghostBtn, fontSize: 12, padding: "0 var(--p-s3)" }}
+                  style={{ ...ghostBtn, fontSize: 12, padding: "0 12px" }}
                 >
                   <ExternalLink size={14} />
                   Full side
                 </Link>
               )}
-              <button type="button" onClick={lukk} aria-label="Lukk profilen" data-od-id="pp-lukk" style={{ ...ghostBtn, width: "var(--p-tap)", padding: 0 }}>
+              <button type="button" onClick={lukk} aria-label="Lukk profilen" data-od-id="pp-lukk" style={{ ...ghostBtn, width: "var(--tl-tap)", padding: 0 }}>
                 <X size={17} />
               </button>
             </div>
@@ -480,21 +480,21 @@ export function SpillerProfilPanel({
         </header>
 
         {/* pbody */}
-        <div style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "var(--p-s4)", ...(smal ? { maxHeight: "58vh" } : {}) }}>
+        <div style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "16px", ...(smal ? { maxHeight: "58vh" } : {}) }}>
           {feil || !data ? (
             <div
               style={{
                 display: "flex",
                 flexDirection: "column",
-                gap: "var(--p-s3)",
-                padding: "var(--p-s5)",
-                background: "var(--p-soft)",
-                border: "1px dashed var(--p-border)",
-                borderRadius: "var(--p-r)",
+                gap: "12px",
+                padding: "20px",
+                background: "var(--tl-dim)",
+                border: "1px dashed var(--tl-hair)",
+                borderRadius: "var(--tl-r-card)",
               }}
             >
-              <span style={{ fontFamily: "var(--p-disp)", fontSize: 15, fontWeight: 600 }}>Noe gikk galt</span>
-              <p style={{ margin: 0, fontFamily: "var(--p-body)", fontSize: 13.5, color: "var(--p-muted)", maxWidth: "46ch" }}>
+              <span style={{ fontFamily: "var(--tl-font-sans)", fontSize: 15, fontWeight: 600 }}>Noe gikk galt</span>
+              <p style={{ margin: 0, fontFamily: "var(--tl-text-body)", fontSize: 13.5, color: "var(--tl-mute)", maxWidth: "46ch" }}>
                 Klarte ikke å hente spillerprofilen. Prøv igjen, eller åpne spillerens fulle side.
               </p>
               <button type="button" onClick={() => router.refresh()} data-od-id="pp-retry" style={ghostBtn}>
@@ -509,12 +509,12 @@ export function SpillerProfilPanel({
               <p
                 style={{
                   fontSize: 11.5,
-                  color: "var(--p-muted)",
-                  fontFamily: "var(--p-body)",
-                  padding: "var(--p-s2) var(--p-s3)",
-                  background: "var(--p-soft)",
-                  borderRadius: "var(--p-r-sm)",
-                  margin: "0 0 var(--p-s4)",
+                  color: "var(--tl-mute)",
+                  fontFamily: "var(--tl-text-body)",
+                  padding: "8px 12px",
+                  background: "var(--tl-dim)",
+                  borderRadius: "var(--tl-r-row)",
+                  margin: "0 0 16px",
                 }}
               >
                 {MERKNAD}
@@ -534,11 +534,11 @@ export function SpillerProfilPanel({
           style={{
             flex: "none",
             display: "flex",
-            gap: "var(--p-s2)",
-            padding: "var(--p-s3) var(--p-s4)",
-            borderTop: "1px solid var(--p-border)",
-            background: "var(--p-surface)",
-            paddingBottom: "calc(var(--p-s3) + env(safe-area-inset-bottom))",
+            gap: "8px",
+            padding: "12px 16px",
+            borderTop: "1px solid var(--tl-hair)",
+            background: "var(--tl-elev)",
+            paddingBottom: "calc(12px + env(safe-area-inset-bottom))",
           }}
         >
           <Link href="/admin/spillere" data-od-id="pp-tilbake" style={{ ...ghostBtn, flex: 1 }}>
@@ -551,9 +551,9 @@ export function SpillerProfilPanel({
               style={{
                 ...ghostBtn,
                 flex: 1,
-                background: "var(--p-cta)",
-                color: "var(--p-on-cta)",
-                borderColor: "var(--p-cta)",
+                background: "var(--tl-fill)",
+                color: "var(--tl-on-fill)",
+                borderColor: "var(--tl-fill)",
               }}
             >
               Åpne i Workbench

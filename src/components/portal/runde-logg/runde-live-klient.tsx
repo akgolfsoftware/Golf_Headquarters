@@ -338,8 +338,8 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
                   gap: 10,
                   padding: "12px 14px",
                   borderRadius: 14,
-                  background: "color-mix(in srgb, var(--v2-warn) 8%, transparent)",
-                  border: "1px solid color-mix(in srgb, var(--v2-warn) 35%, transparent)",
+                  background: "color-mix(in srgb, var(--tl-warn) 8%, transparent)",
+                  border: "1px solid color-mix(in srgb, var(--tl-warn) 35%, transparent)",
                 }}
               >
                 <Icon name="clock" size={16} style={{ color: TL.warn, flex: "none" }} />

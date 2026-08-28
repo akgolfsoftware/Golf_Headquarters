@@ -112,7 +112,7 @@ export function Modal({
           display: "flex",
           flexDirection: "column",
           gap: 16,
-          boxShadow: "var(--v2-shadow)",
+          boxShadow: "none",
         }}
       >
         <h2 id="v2-modal-title" style={{ fontFamily: TL.font.sans, fontWeight: 500, fontSize: 16, color: TL.text, margin: 0 }}>{title}</h2>
@@ -267,7 +267,7 @@ export function Popover({
         {/* Paper Popover-laget (akhq-pop-lay): 288 px, r(12), s3-padding, delt
             skygge-token. Radraden under er AK-eget menyinnhold — Paper har
             ikke tegnet menyanatomien her (se PR-beskrivelsen). */}
-        <div style={{ width: 288, background: TL.dim, border: `1px solid ${TL.hair}`, borderRadius: PAPER_R, padding: 12, boxShadow: "var(--v2-shadow)" }}>
+        <div style={{ width: 288, background: TL.dim, border: `1px solid ${TL.hair}`, borderRadius: PAPER_R, padding: 12, boxShadow: "none" }}>
           {items.map((x, i) => (
             <div key={i} style={{ display: "flex", alignItems: "center", gap: 9, padding: "10px 12px", minHeight: 44, borderRadius: TL.radius.row, cursor: "pointer", background: i === 0 ? TL.dock : "transparent" }}>
               <Icon name={x.i} size={14} style={{ color: x.farge || TL.mute }} />
@@ -294,7 +294,7 @@ export function Verktoytips({ tekst = "SG mot CS100-referansen, siste 8 runder",
       {/* Paper Tooltip: mono 11px, r-sm(8), 6px 8px-padding, ingen kant, ingen
           pil — kun 6 px luft ned mot utløseren (Tooltip.jsx). */}
       <div style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
-        <span style={{ maxWidth: 240, textAlign: "left", fontFamily: TL.font.mono, fontSize: 11, letterSpacing: "0.01em", color: TL.text, lineHeight: 1.35, background: T.farge.grafittPanel, borderRadius: PAPER_R_SM, padding: "6px 8px", boxShadow: "var(--v2-shadow)" }}>{tekst}</span>
+        <span style={{ maxWidth: 240, textAlign: "left", fontFamily: TL.font.mono, fontSize: 11, letterSpacing: "0.01em", color: TL.text, lineHeight: 1.35, background: T.farge.grafittPanel, borderRadius: PAPER_R_SM, padding: "6px 8px", boxShadow: "none" }}>{tekst}</span>
         <span style={{ display: "inline-flex", alignItems: "baseline", gap: 8, background: TL.dock, border: `1px dashed ${TL.hair}`, borderRadius: 10, padding: "7px 13px" }}>
           <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}>{trigger}</span>
           <span style={{ fontFamily: TL.font.mono, fontSize: 14, fontWeight: 700, color: TL.text }}>{verdi}</span>
@@ -332,7 +332,7 @@ export function Toast({ melding = "Økten er logget — 1,5 t nærspill", angre 
           borderRadius: PAPER_R_SM,
           padding: "12px 16px",
           margin: "0 0 24px",
-          boxShadow: "var(--v2-shadow)",
+          boxShadow: "none",
         }}
       >
         <span style={{ width: 6, height: 6, borderRadius: TL.radius.pill, background: c, flex: "none" }} aria-hidden />

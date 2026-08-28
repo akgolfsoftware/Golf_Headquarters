@@ -114,16 +114,16 @@ export function OppgraderFlytWizard() {
           border: "none",
         }}
       >
-        <Caps color="color-mix(in srgb, var(--v2-on-lime) 70%, transparent)">Din pris</Caps>
+        <Caps color="color-mix(in srgb, var(--tl-on-fill) 70%, transparent)">Din pris</Caps>
         <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: 8 }}>
           <span style={{ fontFamily: TL.font.mono, fontSize: 48, fontWeight: 800, letterSpacing: "-0.03em", color: TL.onFill, lineHeight: 1 }}>
             {intervall === "aar" ? "2 690" : "299"}
           </span>
-          <span style={{ fontFamily: TL.font.mono, fontSize: 14, fontWeight: 700, color: "color-mix(in srgb, var(--v2-on-lime) 70%, transparent)" }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 14, fontWeight: 700, color: "color-mix(in srgb, var(--tl-on-fill) 70%, transparent)" }}>
             {intervall === "aar" ? "kr / år" : "kr / mnd"}
           </span>
         </div>
-        <p style={{ margin: "10px 0 0", fontFamily: TL.font.sans, fontSize: 13, color: "color-mix(in srgb, var(--v2-on-lime) 80%, transparent)", lineHeight: 1.45 }}>
+        <p style={{ margin: "10px 0 0", fontFamily: TL.font.sans, fontSize: 13, color: "color-mix(in srgb, var(--tl-on-fill) 80%, transparent)", lineHeight: 1.45 }}>
           {intervall === "aar"
             ? "Tre måneder gratis mot månedspris. Alt inkludert."
             : "Alt inkludert. Fri pause, fri avbestilling."}
