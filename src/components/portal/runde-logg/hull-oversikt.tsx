@@ -20,8 +20,8 @@ function farge(par: number, s: number | null) {
   const d = s - par;
   if (d < 0) return { bg: "color-mix(in srgb, var(--tl-ok) 14%, transparent)", bd: "color-mix(in srgb, var(--tl-ok) 45%, transparent)", fg: TL.ok };
   if (d === 0) return { bg: TL.dim, bd: TL.hair, fg: TL.text };
-  if (d === 1) return { bg: "color-mix(in srgb, var(--v2-warn) 12%, transparent)", bd: "color-mix(in srgb, var(--v2-warn) 40%, transparent)", fg: TL.warn };
-  return { bg: "color-mix(in srgb, var(--v2-down) 12%, transparent)", bd: "color-mix(in srgb, var(--v2-down) 45%, transparent)", fg: TL.danger };
+  if (d === 1) return { bg: "color-mix(in srgb, var(--tl-warn) 12%, transparent)", bd: "color-mix(in srgb, var(--tl-warn) 40%, transparent)", fg: TL.warn };
+  return { bg: "color-mix(in srgb, var(--tl-danger) 12%, transparent)", bd: "color-mix(in srgb, var(--tl-danger) 45%, transparent)", fg: TL.danger };
 }
 
 type HullOversiktProps = {

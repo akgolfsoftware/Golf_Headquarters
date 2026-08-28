@@ -117,7 +117,7 @@ export function DesignLabV2() {
     <div
       style={{
         minHeight: "100vh",
-        background: `radial-gradient(900px 380px at 20% -10%, var(--v2-vignett), transparent 60%), ${TL.scene}`,
+        background: `${TL.scene}`,
         color: TL.text,
         fontFamily: TL.font.sans,
         padding: "32px 20px 64px",

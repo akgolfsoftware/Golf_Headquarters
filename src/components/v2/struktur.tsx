@@ -306,7 +306,7 @@ export function HjelpPopover({ tittel = "Hva er SG?", tekst = "Strokes Gained sa
       <span style={{ width: 28, height: 28, borderRadius: 9999, background: TL.dock, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
         <Icon name="help-circle" size={14} style={{ color: TL.mute }} />
       </span>
-      <div style={{ width: w, background: TL.dim, border: `1px solid ${TL.hair}`, borderRadius: TL.radius.row, padding: 12, boxShadow: `var(--v2-shadow, 0 16px 40px ${TL.scrim})` }}>
+      <div style={{ width: w, background: TL.dim, border: `1px solid ${TL.hair}`, borderRadius: TL.radius.row, padding: 12, boxShadow: "none" }}>
         <div style={{ fontFamily: TL.font.sans, fontWeight: 600, fontSize: 13, color: TL.text }}>{tittel}</div>
         <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.5, margin: "6px 0 0" }}>{tekst}</p>
       </div>
@@ -363,7 +363,7 @@ export function DataForhaandsvisning({ dato = "24. jun", verdi = "+1,8", enhet =
         <line x1={hx} y1={12} x2={hx} y2={h - 6} stroke={TL.hair} strokeWidth="1" strokeDasharray="3 3" />
         <circle cx={hx} cy={hy} r="5" fill={TL.fill} stroke={TL.elev} strokeWidth="2.5" />
       </svg>
-      <div style={{ position: "absolute", left: 150, top: 10, background: TL.dim, border: `1px solid ${TL.hair}`, borderRadius: TL.radius.row, padding: "8px 10px", boxShadow: `var(--v2-shadow, 0 10px 26px ${TL.scrim})` }}>
+      <div style={{ position: "absolute", left: 150, top: 10, background: TL.dim, border: `1px solid ${TL.hair}`, borderRadius: TL.radius.row, padding: "8px 10px", boxShadow: "none" }}>
         <Caps size={9}>{dato}</Caps>
         <span style={{ fontFamily: TL.font.mono, fontSize: 15, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>{verdi}<span style={{ fontSize: 9.5, color: TL.mute, marginLeft: 4 }}>{enhet}</span></span>
       </div>
