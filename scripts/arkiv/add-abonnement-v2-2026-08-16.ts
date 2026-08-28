@@ -15,10 +15,14 @@
  * (se .claude/rules/gotchas.md §Schema-endringer). Kirurgisk DDL mot
  * DIRECT_URL er den dokumenterte veien. Idempotent.
  *
- *   npx tsx scripts/add-abonnement-v2-2026-08-16.ts
+ *   npx tsx scripts/arkiv/add-abonnement-v2-2026-08-16.ts
+ *
+ * `--dropp-gammel-indeks` dropper subscriptions_userId_key i prod. V1 (2026-08-28):
+ * om flagget er kjørt mot prod kan ikke leses fra git — sjekk pg_indexes før
+ * du kjører. Kjør ALDRI mot prod uten at Anders ber om det.
  */
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "../src/generated/prisma/client";
+import { PrismaClient } from "../../src/generated/prisma/client";
 import { config as loadEnv } from "dotenv";
 
 loadEnv({ path: ".env.local" });

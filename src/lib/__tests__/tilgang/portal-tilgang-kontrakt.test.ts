@@ -211,6 +211,16 @@ test("hvert prefiks i allowlisten peker på en rute som finnes", () => {
  * fjernes kreverTilgang så defaulten slår inn igjen — kommer løkka tilbake, og
  * denne testen sier ifra.
  */
+test("requirePortalUser er fail-closed: default kreverTilgang er FULL", () => {
+  const src = readFileSync(join(process.cwd(), "src/lib/auth/requirePortalUser.ts"), "utf8");
+  assert.match(
+    src,
+    /kreverTilgang = "FULL"/,
+    "Default uten kreverTilgang MÅ være FULL. Endres den til TALENT/INGEN, " +
+      "er en ny portal-side åpen for den gratis profilen til noen husker å låse.",
+  );
+});
+
 test("rot-layouten håndhever INGEN — nivået eies av hver side", () => {
   assert.equal(
     nivaIFil(ROT_LAYOUT),

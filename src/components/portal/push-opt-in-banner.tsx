@@ -13,6 +13,22 @@ import { Caps, CTAPill, Icon, Kort } from "@/components/v2";
 
 const STORAGE_KEY = "akgolf-push-optin-dismissed";
 
+function lesLagret(key: string): string | null {
+  try {
+    return window.localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function skrivLagret(key: string, value: string): void {
+  try {
+    window.localStorage.setItem(key, value);
+  } catch {
+    // privat modus / sperret storage — visning i denne sesjonen er nok
+  }
+}
+
 export function PushOptInBanner() {
   const [status, setStatus] = useState<PushStatus>("loading");
   const [synlig, setSynlig] = useState(false);
@@ -23,30 +39,36 @@ export function PushOptInBanner() {
     let cancelled = false;
     void (async () => {
       if (typeof window === "undefined") return;
-      if (window.localStorage.getItem(STORAGE_KEY) === "1") return;
-      const s = await detectPushStatus();
-      if (cancelled) return;
-      setStatus(s);
-      if (s === "off") setSynlig(true);
+      try {
+        if (lesLagret(STORAGE_KEY) === "1") return;
+        const s = await detectPushStatus();
+        if (cancelled) return;
+        setStatus(s);
+        if (s === "off") setSynlig(true);
+      } catch {
+        // Banner vises ikke — bedre enn krasj på hjem.
+      }
     })();
     return () => {
       cancelled = true;
     };
   }, []);
 
-  if (!synlig || status !== "off") return null;
-
   async function onAktiver() {
+    if (busy) return;
     setBusy(true);
     setFeil(null);
     try {
       const neste = await aktiverPush();
       setStatus(neste);
       if (neste === "on") {
-        window.localStorage.setItem(STORAGE_KEY, "1");
+        skrivLagret(STORAGE_KEY, "1");
         setSynlig(false);
       } else if (neste === "blocked") {
         setFeil("Varsler er blokkert i nettleseren. Åpne nettleser-innstillingene for å tillate dem.");
+      } else if (neste === "unsupported") {
+        setFeil("Nettleseren støtter ikke push-varsler.");
+        setSynlig(false);
       }
     } catch (e) {
       setFeil(e instanceof Error ? e.message : "Kunne ikke aktivere varsler");
@@ -56,9 +78,12 @@ export function PushOptInBanner() {
   }
 
   function onSenere() {
-    window.localStorage.setItem(STORAGE_KEY, "1");
+    if (busy) return;
+    skrivLagret(STORAGE_KEY, "1");
     setSynlig(false);
   }
+
+  if (!synlig || status !== "off") return null;
 
   return (
     <Kort eyebrow={<Caps>Varsler</Caps>} pad="16px 18px">
@@ -74,7 +99,15 @@ export function PushOptInBanner() {
           {feil ? (
             <p style={{ margin: "0 0 10px", fontFamily: TL.font.sans, fontSize: 12, color: TL.danger }}>{feil}</p>
           ) : null}
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 8,
+              pointerEvents: busy ? "none" : undefined,
+              opacity: busy ? 0.7 : undefined,
+            }}
+          >
             <CTAPill icon="bell" onClick={() => void onAktiver()}>
               {busy ? "Aktiverer…" : "Slå på varsler"}
             </CTAPill>

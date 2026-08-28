@@ -28,6 +28,7 @@
 import { test, mock } from "node:test";
 import assert from "node:assert/strict";
 import type { User } from "@/generated/prisma/client";
+import type { Tilgang } from "@/lib/feature-flags";
 
 /** Kastes av redirect-mocken, så vi kan se HVOR guarden sendte brukeren. */
 class RedirectSignal extends Error {
@@ -47,8 +48,23 @@ function bruker(over: Partial<User> = {}): User {
   } as User;
 }
 
+type GuardUser = User & { tilgang?: Tilgang };
+
+function spillerMedTilgang(nivaa: Tilgang["nivaa"], over: Partial<User> = {}): GuardUser {
+  const kilde: Tilgang["kilde"] =
+    nivaa === "FULL" ? "PLAYERHQ_ABONNEMENT" : nivaa === "TALENT" ? "TALENT_PROFIL" : "INGEN";
+  return {
+    ...bruker({ role: "PLAYER", ...over }),
+    tilgang: {
+      nivaa,
+      kilde,
+      effektivTier: nivaa === "FULL" ? "PRO" : "GRATIS",
+    },
+  };
+}
+
 // Delt tilstand som hvert testtilfelle setter før det kaller guarden.
-let gjeldendeBruker: User | null = null;
+let gjeldendeBruker: GuardUser | null = null;
 let coachHarTilgang = false;
 
 mock.module("@/lib/auth/getCurrentUser", {
@@ -227,6 +243,59 @@ test("requirePortalUser sender mindreårig uten samtykke til venterom (GDPR art.
   // Riktig rolle, men manglende foreldresamtykke skal fortsatt stoppe.
   const til = await fangRedirect(() => requirePortalUser({ allow: "PLAYER" }));
   assert.equal(til, "/auth/samtykke-venter");
+});
+
+test("requirePortalUser fail-closed: TALENT avvises på default FULL-side", async () => {
+  const { requirePortalUser } = await guards();
+  gjeldendeBruker = spillerMedTilgang("TALENT");
+
+  const utenArgs = await fangRedirect(() => requirePortalUser());
+  assert.equal(utenArgs, "/portal/oppgrader?fra=laast");
+
+  const eksplisittFull = await fangRedirect(() =>
+    requirePortalUser({ kreverTilgang: "FULL" }),
+  );
+  assert.equal(eksplisittFull, "/portal/oppgrader?fra=laast");
+});
+
+test("requirePortalUser fail-closed: INGEN avvises på TALENT- og FULL-sider", async () => {
+  const { requirePortalUser } = await guards();
+  gjeldendeBruker = spillerMedTilgang("INGEN");
+
+  const full = await fangRedirect(() => requirePortalUser());
+  assert.equal(full, "/portal/oppgrader");
+
+  const talent = await fangRedirect(() =>
+    requirePortalUser({ kreverTilgang: "TALENT" }),
+  );
+  assert.equal(talent, "/portal/oppgrader");
+});
+
+test("requirePortalUser: TALENT slipper inn på TALENT- og INGEN-sider", async () => {
+  const { requirePortalUser } = await guards();
+  gjeldendeBruker = spillerMedTilgang("TALENT", { id: "talent-1" });
+
+  const talent = await requirePortalUser({ kreverTilgang: "TALENT" });
+  assert.equal(talent.id, "talent-1");
+
+  const konto = await requirePortalUser({ kreverTilgang: "INGEN" });
+  assert.equal(konto.id, "talent-1");
+});
+
+test("requirePortalUser: INGEN slipper inn på oppgraderingsveien (INGEN-nivå)", async () => {
+  const { requirePortalUser } = await guards();
+  gjeldendeBruker = spillerMedTilgang("INGEN", { id: "ingen-1" });
+
+  const konto = await requirePortalUser({ kreverTilgang: "INGEN" });
+  assert.equal(konto.id, "ingen-1");
+});
+
+test("requirePortalUser: FULL slipper inn på default-siden", async () => {
+  const { requirePortalUser } = await guards();
+  gjeldendeBruker = spillerMedTilgang("FULL", { id: "full-1" });
+
+  const u = await requirePortalUser();
+  assert.equal(u.id, "full-1");
 });
 
 test("canAccessMissionControl avviser alt annet enn ADMIN", async () => {
