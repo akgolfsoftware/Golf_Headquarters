@@ -297,19 +297,40 @@ function GodkjenningerSkel() {
   );
 }
 
-/** /portal — PortalChatHjem (designport steg 7): topplinje · tråd med melding-bobler · composer-linje. */
+/** /portal — PH-01 I dag laster (B1): skjelett i kortgeometri, ingen spinner. */
 function HjemSkel() {
+  const kort: CSSProperties = {
+    background: TL.elev,
+    borderRadius: TL.radius.card,
+    padding: 20,
+    display: "flex",
+    flexDirection: "column",
+    gap: 14,
+  };
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 16, height: "100%" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-        <SkelBlock w={70} h={14} />
-        <SkelBlock w={140} h={10} style={{ marginLeft: "auto" }} />
+    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+      <SkelBlock w={140} h={11} r={4} />
+      <SkelBlock w={90} h={34} r={8} />
+      <div style={kort}>
+        <SkelBlock w="30%" h={10} r={5} />
+        <SkelBlock w="62%" h={22} r={8} />
+        <SkelBlock w="40%" h={10} r={5} />
+        <SkelBlock w="100%" h={48} r={999} style={{ marginTop: 8 }} />
       </div>
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 16, marginTop: 8 }}>
-        <SkelBlock w="60%" h={38} r={16} />
-        <SkelBlock w="72%" h={64} r={16} style={{ alignSelf: "flex-end" }} />
+      <div style={kort}>
+        <SkelBlock w="24%" h={10} r={5} />
+        <SkelBlock w="44%" h={14} r={6} />
       </div>
-      <SkelBlock h={44} r={12} />
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+        <div style={kort}>
+          <SkelBlock w="56%" h={24} r={8} />
+          <SkelBlock w="70%" h={10} r={5} />
+        </div>
+        <div style={kort}>
+          <SkelBlock w="32%" h={24} r={8} />
+          <SkelBlock w="78%" h={10} r={5} />
+        </div>
+      </div>
     </div>
   );
 }

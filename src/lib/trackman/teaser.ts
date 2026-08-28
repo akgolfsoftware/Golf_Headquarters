@@ -53,9 +53,10 @@ export async function getTrackManTeaser(userId: string): Promise<TrackManTeaser 
     if (kolleShots.length === 0) return null;
 
     const result = computeTrackManDispersionMap(kolleShots);
-    const sentence =
-      generateCaddieSentence(result.offlineBias, result.n) ??
-      `${result.n} slag registrert${result.medianCarry != null ? ` · ${Math.round(result.medianCarry)} m carry` : ""}.`;
+    // PH-01c: én caddie-setning. Uten den (for få slag / ingen bias) er kortet
+    // PH-01d — skjult. Aldri vis «0 slag registrert» som tom-innhold.
+    const sentence = generateCaddieSentence(result.offlineBias, result.n);
+    if (!sentence) return null;
 
     const dateText = sesjon.recordedAt.toLocaleDateString("nb-NO", { day: "2-digit", month: "2-digit" });
 

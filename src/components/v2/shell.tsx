@@ -755,13 +755,295 @@ function TrainLockTemaKnapp() {
   );
 }
 
+function HusIkon({ size, fyll }: { size: number; fyll: boolean }) {
+  const felles = {
+    width: size,
+    height: size,
+    viewBox: "0 0 24 24",
+    "aria-hidden": true as const,
+    style: { display: "block", flex: "none" },
+  };
+  if (fyll) {
+    return (
+      <svg {...felles}>
+        <path d="M4 10.5 L12 4 L20 10.5 V20 H14.5 V14.5 H9.5 V20 H4 Z" fill="currentColor" />
+      </svg>
+    );
+  }
+  return (
+    <svg {...felles} fill="none">
+      <path d="M4 10.5 L12 4 L20 10.5 V20 H15 V14.5 H9 V20 H4 Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+/** PH-01 dock/rail-ikoner — fasitens SVG, ikke Lucide. */
+function PlayerFaneIkon({ icon, size, fyll }: { icon: string; size: number; fyll?: boolean }) {
+  if (icon === "home") return <HusIkon size={size} fyll={Boolean(fyll)} />;
+  if (icon === "calendar") {
+    return (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden>
+        <rect x="4" y="5.5" width="16" height="15" rx="3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        <path d="M8 3.5 V7 M16 3.5 V7 M4 10.5 H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      </svg>
+    );
+  }
+  if (icon === "bar-chart") {
+    return (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden>
+        <path d="M5 20 V13 M12 20 V6 M19 20 V10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      </svg>
+    );
+  }
+  return <Icon name={icon} size={size} strokeWidth={2} />;
+}
+
+function Initialer({ navn, size, fontSize }: { navn: string; size: number; fontSize: number }) {
+  return (
+    <span
+      aria-hidden
+      style={{
+        width: size,
+        height: size,
+        borderRadius: "50%",
+        background: TL.avatar,
+        color: TL.onAvatar,
+        fontSize,
+        fontWeight: 600,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        flex: "none",
+      }}
+    >
+      {playerInitialer(navn)}
+    </span>
+  );
+}
+
+function playerInitialer(navn: string): string {
+  const deler = navn.trim().split(/\s+/).filter(Boolean);
+  if (deler.length === 0) return "";
+  if (deler.length === 1) return deler[0].slice(0, 2).toUpperCase();
+  return `${deler[0][0] ?? ""}${deler[deler.length - 1][0] ?? ""}`.toUpperCase();
+}
+
+/** PH-01 Mac-rail: 72 px, 44×44 r12, aktiv = hvit fyll, ØR nederst. */
+function TrainLockPlayerRail({
+  aktiv,
+  nav,
+  navn,
+}: {
+  aktiv?: string;
+  nav: V2NavItem[];
+  navn: string;
+  avatarUrl?: string | null;
+}) {
+  return (
+    <nav
+      className="hidden md:flex"
+      aria-label="Hovedmeny"
+      data-tl-player-rail
+      style={{
+        width: 72,
+        flex: "none",
+        borderRight: `1px solid ${TL.hair}`,
+        flexDirection: "column",
+        alignItems: "center",
+        padding: "14px 0 18px",
+        gap: 6,
+        position: "sticky",
+        top: 0,
+        height: "100vh",
+        background: TL.scene,
+      }}
+    >
+      {nav.filter((n) => n.id !== "meg").slice(0, 3).map((n) => {
+        const on = aktiv === n.id;
+        return (
+          <Link
+            key={n.id}
+            href={n.href}
+            title={n.label}
+            aria-current={on ? "page" : undefined}
+            className="v2-press v2-focus"
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: 12,
+              background: on ? TL.fill : "transparent",
+              color: on ? TL.onFill : TL.mute,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              textDecoration: "none",
+              flex: "none",
+            }}
+          >
+            <PlayerFaneIkon icon={n.icon} size={21} fyll={on} />
+          </Link>
+        );
+      })}
+      <div style={{ flex: 1, minHeight: 8 }} />
+      <TrainLockTemaKnapp />
+      <Link href="/portal/meg" title="Meg" aria-label="Meg" className="v2-press">
+        <Initialer navn={navn} size={32} fontSize={11} />
+      </Link>
+    </nav>
+  );
+}
+
+/** PH-01 telefon-dock: flytende pille 64 h, aktiv = hvit I DAG-pille. */
+function TrainLockPlayerDock({
+  aktiv,
+  nav,
+  navn,
+  composer,
+}: {
+  aktiv?: string;
+  nav: V2NavItem[];
+  navn: string;
+  composer?: ReactNode;
+}) {
+  const faner = nav.slice(0, 4);
+  return (
+    <div
+      data-tl-player-dock
+      style={{
+        position: "fixed",
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 40,
+        pointerEvents: "none",
+      }}
+    >
+      <style>{`
+        [data-tl-player-dock] { padding: 10px 16px 0; padding-bottom: calc(env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px)); }
+        [data-tl-player-pill] { display: flex; }
+        [data-tl-player-caddie] { margin-bottom: 10px; }
+        @media (min-width: 768px) {
+          [data-tl-player-dock] {
+            left: 72px;
+            padding: 12px 56px 20px;
+            padding-bottom: calc(20px + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px));
+            background: ${TL.scene};
+          }
+          [data-tl-player-pill] { display: none; }
+          [data-tl-player-caddie] { margin-bottom: 0; }
+        }
+      `}</style>
+      {composer != null && (
+        <div data-tl-player-caddie style={{ pointerEvents: "auto" }}>{composer}</div>
+      )}
+      <nav
+        data-tl-player-pill
+        aria-label="Hovedmeny"
+        style={{
+          pointerEvents: "auto",
+          height: 64,
+          background: TL.dock,
+          borderRadius: 999,
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "8px 10px",
+        }}
+      >
+        {faner.map((n) => {
+          const on = aktiv === n.id;
+          const erMeg = n.id === "meg";
+          if (on) {
+            return (
+              <Link
+                key={n.id}
+                href={n.href}
+                aria-current="page"
+                className="v2-press"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 7,
+                  background: TL.fill,
+                  color: TL.onFill,
+                  borderRadius: 999,
+                  height: 48,
+                  padding: "0 18px",
+                  textDecoration: "none",
+                  flex: "none",
+                }}
+              >
+                {erMeg ? (
+                  <Initialer navn={navn} size={22} fontSize={9} />
+                ) : (
+                  <PlayerFaneIkon icon={n.icon} size={20} fyll />
+                )}
+                <span
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 600,
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
+                    whiteSpace: "nowrap",
+                    color: TL.onFill,
+                  }}
+                >
+                  {n.label}
+                </span>
+              </Link>
+            );
+          }
+          return (
+            <Link
+              key={n.id}
+              href={n.href}
+              aria-label={n.label}
+              className="v2-press"
+              style={{
+                width: 52,
+                height: 48,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 2,
+                textDecoration: "none",
+                flex: "none",
+                color: TL.mute,
+              }}
+            >
+              {erMeg ? (
+                <Initialer navn={navn} size={22} fontSize={9} />
+              ) : (
+                <PlayerFaneIkon icon={n.icon} size={17} />
+              )}
+              <span
+                style={{
+                  fontSize: 9,
+                  fontWeight: 600,
+                  letterSpacing: "0.06em",
+                  textTransform: "uppercase",
+                  color: TL.mute,
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {n.label}
+              </span>
+            </Link>
+          );
+        })}
+      </nav>
+    </div>
+  );
+}
+
 /** Smal ikon-rail (desktop) — ett Link-punkt per seksjon, lime-indikator på aktiv. */
-function IkonRailNav({ aktiv, nav, mer, rom, navn, avatarUrl, erAgency }: Required<Pick<V2ShellProps, "nav" | "navn">> & { aktiv?: string; mer?: V2NavGruppe[]; rom?: V2Rom[]; avatarUrl?: string | null; erAgency?: boolean }) {
+function IkonRailNav({ aktiv, nav, mer, rom, navn, avatarUrl, erAgency, erPlayer }: Required<Pick<V2ShellProps, "nav" | "navn">> & { aktiv?: string; mer?: V2NavGruppe[]; rom?: V2Rom[]; avatarUrl?: string | null; erAgency?: boolean; erPlayer?: boolean }) {
   const [merOpen, setMerOpen] = useState(false);
-  // Train-lock er fasit for AgencyOS (D3, 25.08.2026) — egen gren, PlayerHQ-
-  // railen (72px/4-ikon) er ikke portet ennå og beholder Paper-stilen.
   if (erAgency) {
     return <TrainLockAgencyRail />;
+  }
+  if (erPlayer) {
+    return <TrainLockPlayerRail aktiv={aktiv} nav={nav} navn={navn} avatarUrl={avatarUrl} />;
   }
   return (
     <nav
@@ -1096,6 +1378,10 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
     nav === AGENCYOS_NAV ||
     (nav.length === AGENCYOS_NAV.length &&
       nav.every((n, i) => n.id === AGENCYOS_NAV[i]?.id && n.href === AGENCYOS_NAV[i]?.href));
+  const erPlayer =
+    nav === PLAYERHQ_NAV ||
+    (nav.length === PLAYERHQ_NAV.length &&
+      nav.every((n, i) => n.id === PLAYERHQ_NAV[i]?.id && n.href === PLAYERHQ_NAV[i]?.href));
 
   // COACH ser ikke adminOnly-punkter (Økonomi, Workspace, E-post m.fl.).
   // Ren UI-skjuling — sidene bak er alltid server-gated.
@@ -1239,7 +1525,7 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
         display: "flex",
       }}
     >
-      <IkonRailNav aktiv={autoAktiv} nav={navSynlig} mer={merGrupper} rom={romSynlig} navn={navn} avatarUrl={avatarUrl} erAgency={erAgency} />
+      <IkonRailNav aktiv={autoAktiv} nav={navSynlig} mer={merGrupper} rom={romSynlig} navn={navn} avatarUrl={avatarUrl} erAgency={erAgency} erPlayer={erPlayer} />
       {/* Topp-luft inkluderer safe-area: i installert PWA på iPhone dekker
           innholdet statuslinje-området — uten env() kolliderer hilsen/avatar
           med klokka (Anders' mobil-funn 2026-07-13). Desktop: env() = 0. */}
@@ -1247,11 +1533,15 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
           env(safe-area-inset-bottom), så fast pb-24 (96px) var mindre enn
           nav-høyden på notch-iPhone → siste innholdselement lå bak nav-en. */}
       <div
-        className="px-4 md:px-8 pb-[calc(96px+env(safe-area-inset-bottom))] md:pb-9"
+        className={
+          erPlayer
+            ? "px-4 md:px-14 pt-[calc(8px+env(safe-area-inset-top))] md:pt-[calc(40px+env(safe-area-inset-top))] pb-[calc(148px+env(safe-area-inset-bottom)+var(--ak-cookie-h,0px))] md:pb-[120px]"
+            : "px-4 md:px-8 pb-[calc(96px+env(safe-area-inset-bottom))] md:pb-9"
+        }
         style={{
           flex: 1,
           minWidth: 0,
-          paddingTop: "calc(24px + env(safe-area-inset-top))",
+          paddingTop: erPlayer ? undefined : "calc(24px + env(safe-area-inset-top))",
           // Uten minHeight: 0 nekter en flex-item å krympe under innholdet sitt,
           // og «egen rulling» blir til dokumentrulling likevel.
           ...(hoyde === "skjerm"
@@ -1270,7 +1560,7 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
             width: "100%",
             display: "flex",
             flexDirection: "column",
-            gap: 16,
+            gap: erPlayer ? 0 : 16,
             // Leddet som brøt høydekjeden: uten dette har wrapperen auto
             // høyde, og barnets `height: 100%` faller tilbake til innholds-
             // høyde — komposeren havnet 230 px over bunn-nav-en.
@@ -1308,7 +1598,7 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
           bunnluften eier Composer-noden selv. left:64 = railbredden — rail og
           feste deler md-brytepunktet. zIndex 30: under bunn-nav (40) og
           Mer-panelet (90/91), over innholdet. */}
-      {composer != null && (
+      {composer != null && !erPlayer && (
         <div
           className="hidden md:block"
           data-paper-shell-composer
@@ -1325,12 +1615,18 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
           {composer}
         </div>
       )}
-      {/* Mobil-bunnnav: AgencyOS får Train-lock-doken (5 kolonner, AG-00 K1) +
-          global Mer-knapp i toppen (AG-05); PlayerHQ/forelder beholder
-          BunnNavLenker uendret (ikke Train-lock-portet ennå). */}
-      {erAgency
-        ? <TrainLockAgencyDock />
-        : <BunnNavLenker aktiv={autoAktiv} nav={navSynlig} mer={merGrupper} />}
+      {erAgency ? (
+        <TrainLockAgencyDock />
+      ) : erPlayer ? (
+        <TrainLockPlayerDock
+          aktiv={autoAktiv}
+          nav={navSynlig}
+          navn={navn}
+          composer={composer}
+        />
+      ) : (
+        <BunnNavLenker aktiv={autoAktiv} nav={navSynlig} mer={merGrupper} />
+      )}
       {/* Globalt søk (Cmd+K + «global-search:open»-event fra Mer-panelets
           søkeknapp) — kun montert i AgencyOS. Selv-styrt, rendrer null lukket. */}
       {erAgency && <GlobalSearchModal />}
