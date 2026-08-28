@@ -205,8 +205,8 @@ Betaling starter **automatisk 1. september** (`BETALING_STARTER` i `src/lib/feat
 
 Skal ikke re-flagges som lanseringsarbeid: `/stats/*`-migrasjonen (~45 ruter, D5-beslutning
 26.08) · SG-appen AP1–AP6 (plan i `docs/plan-baneguide-sg-app-2026-08-16.md`; AP0 er inne) ·
-TalentHQ-konsolideringsbølgen (NB: talenthq-repoet kan IKKE arkiveres før `public_db.py`-
-avhengigheten er løst) · Masterbrain-rebuild + øvelsesbank · onboarding-quiz · AI Coach
+TalentHQ inn i PlayerHQ (eget spor: `docs/natt/BOLGE-N-TALENTHQ-INN-2026-08-26.md`;
+talenthq-repoet arkiveres først i steg 10 der) · Masterbrain-rebuild + øvelsesbank · onboarding-quiz · AI Coach
 (bølge 7) · GJGT-scraping (ToS-gråsone, trenger ja/nei) · banedata rette-editor ·
 historikk-import til Supabase Storage · dame-tour/college-datakilder · CSP-chunk-støy.
 

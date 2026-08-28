@@ -29,6 +29,7 @@ GJELDENDE merge-status, se `docs/STATUS-NÅ.md`.
 | T13 | Oppsett + Meg til Train-lock | `claude/t13-oppsett-meg-tl` (#613) | Merget |
 | D2-Tokens | Train-lock-tokens utledet til kode | — (#586, font #597) | Ferdig |
 | D3 | Workbench uke (Mac) portet til Train-lock | `design/d3-workbench-uke` | Ferdig |
+| N1 | Pipelines flyttet til `akgolfsoftware/ak-golf-pipelines` (`public_db.py` + cron) | eget repo | Ferdig 26.08, kjører mot prod |
 | N2 | Dashboard-data-bro (talenthq → akgolf-hq) | `claude/n2-dashboard-data-bridge` | Ferdig |
 | N3 | Scorekort- og PEI-beregningsmotor høstet fra talenthq | `claude/n3-pei-scorekort-motor` | Ferdig, ikke merget da |
 | N5 | Team Norway som egen organisasjon | `claude/n5-team-norway-org` | Ferdig |
