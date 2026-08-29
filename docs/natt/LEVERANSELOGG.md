@@ -45,6 +45,7 @@ GJELDENDE merge-status, se `docs/STATUS-NÅ.md`.
 | TL-port | T→TL på PlayerHQ, AgencyOS, Meg, Forelder (380 filer). Marketing/auth urørt | `claude/tl-port-alle-skjermer-2026-08-28` | Merget #631 — token, ikke piksel-1:1 |
 | F1-bug | Mandagsøkter i ukesrapport telles ikke lenger dobbelt (`lt` mot `endOfWeek`) | samme som #631 | Merget #631 |
 | C1 | Workbench måned + år (leseflate; klikk dag→uke; gammel rute redirect) | `claude/c1-workbench-maned-aar-2026-08-28` | Merget #632 |
+| PX-7 | Tilstander/brekk: GAP-1/2/00, B1, MAT-00/01, B3/B4 lys-revisjon (105→114/204 sitert). B2 (iPad/Mac-brekk) spec'et, ikke bygget — se `docs/natt/PX7-DONE.md` | `claude/px7-tilstander-brekk-4cp4nu` | Åpen PR, DELVIS |
 
 Se `docs/natt/README.md` for hvilke natt-dokumenter som fortsatt er levende (LAUNCH-PLAN,
 ACCESS-AND-GROUPS, SKJERM-STATUS, D-beslutningene) vs. denne loggen (historikk).

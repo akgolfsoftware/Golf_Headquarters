@@ -2,6 +2,10 @@
 
 /**
  * AO-03 Kø — Klar · Pågår · Venter godkjenning. Én hvit Kjør (første klare).
+ *
+ * Tom-tilstand (linje ~87, AoTom) dekker GAP-2c «Jarvis-kø tom»
+ * (Fasit: designsystem/train-lock/GAP-2 Tilstander drift.dc.html) — ingen
+ * fabrikkerte tall, kun hel setning.
  */
 
 import { useMemo, useState, useTransition } from "react";

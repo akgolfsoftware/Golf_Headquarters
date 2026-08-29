@@ -34,7 +34,8 @@ import { Icon } from "@/components/v2/icon";
 type OktState = "live" | "done" | "planned" | "cancelled";
 const OKT_STATUS: Record<OktState, { tone: StatusTone; l: string }> = {
   live: { tone: "down", l: "Live" },
-  done: { tone: "up", l: "Fullført" },
+  // MAT-00: Fullført er varm, aldri TL.ok-grønn (den er kun Godta/PUBLISERT).
+  done: { tone: "warm", l: "Fullført" },
   planned: { tone: "info", l: "Planlagt" },
   cancelled: { tone: "down", l: "Avlyst" },
 };

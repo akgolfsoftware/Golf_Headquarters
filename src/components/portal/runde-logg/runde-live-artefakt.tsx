@@ -9,6 +9,14 @@
  *
  * SG så langt regnes med samme motor som live-føringen selv bruker
  * (beregnSg/rundeTilSgShots) — kun på fullførte hull, aldri fabrikkert.
+ *
+ * AVVIK fra GAP-1 «RU-01 Runde tom» (Fasit: designsystem/train-lock/GAP-1
+ * Tilstander.dc.html): fasiten tegner en eksplisitt tom-kort med CTA
+ * («Ingen aktiv runde» / «Start runde») der denne komponenten bevisst
+ * returnerer null (Loop 9/C5-beslutningen over). Byttet ikke i PX-7 —
+ * et alltid synlig "start runde"-kort i I dag-strømmen bryter med
+ * enkelhets-prinsippet (CLAUDE.md §Enkelhet) når runden allerede kan
+ * startes fra Plan/Workbench. Notert, ikke løst på sparket.
  */
 
 import { useSyncExternalStore, type CSSProperties } from "react";

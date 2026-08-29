@@ -12,6 +12,11 @@
  * Grid-konvensjon (fasit): over par = dimmet (TL.opasitet.negativ),
  * under par = ring. Scorekort-utdraget viser de {UTDRAG_ANTALL} hullene med
  * størst |SG| — ikke alle 18 (det er RU-03/Analyse sin jobb, urørt her).
+ *
+ * Feil-tilstanden (linje ~108, `feil`) dekker GAP-1 «RU-01 Runde feil»
+ * (Fasit: designsystem/train-lock/GAP-1 Tilstander.dc.html) — meldingen
+ * er mer presis enn fasitens («Runden lagres lokalt og synkes…») fordi
+ * kladden faktisk KUN lagres lokalt frem til denne lagringen lykkes.
  */
 
 import { useState } from "react";

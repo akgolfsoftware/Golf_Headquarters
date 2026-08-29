@@ -5,7 +5,13 @@
    rendres inni en tynn error.tsx) og V2Laster (skeleton, rendres i en tynn
    loading.tsx). Maler i docs/redesign-v2/maler/{error,loading}-mal.tsx.txt.
    Samme visuelle språk som src/components/v2/core.tsx (T-tokens, Knapp,
-   Icon) — bruk disse malene fremfor ad-hoc feil-/last-UI i nye v2-skjermer. */
+   Icon) — bruk disse malene fremfor ad-hoc feil-/last-UI i nye v2-skjermer.
+
+   Fasit: designsystem/train-lock/B1 Tilstander laster feil.dc.html — PX-7
+   (2026-08-29). PlayerHQ-kjernens fire faner (I dag/Plan/Analyse/Meg) sine
+   laster/feil-tilstander: skjelett i faktisk kortgeometri (ingen spinner),
+   feil-tittel + kort norsk melding + hvit «Prøv igjen». Danger (#FF453A)
+   kun på selve feilteksten/ikonet, aldri fylt flate. */
 
 import type { CSSProperties } from "react";
 import Link from "next/link";
@@ -20,11 +26,19 @@ export interface V2FeilProps {
   /** Hvor "Tilbake"-lenken skal peke (nærmeste fungerende oversikt). */
   tilbakeHref: string;
   tittel?: string;
+  /** Skjermspesifikk underforklaring (Fasit: designsystem/train-lock/B1
+   *  Tilstander laster feil.dc.html) — default er den generiske teksten. */
+  melding?: string;
 }
 
 /** Feilinnhold i v2-design. Rendres INNI en error.tsx (som selv er tynn og
  *  logger error.digest) — se docs/redesign-v2/maler/error-mal.tsx.txt. */
-export function V2Feil({ reset, tilbakeHref, tittel = "Noe gikk galt" }: V2FeilProps) {
+export function V2Feil({
+  reset,
+  tilbakeHref,
+  tittel = "Noe gikk galt",
+  melding = "Vi støtte på en uventet feil — prøv igjen, eller gå tilbake.",
+}: V2FeilProps) {
   return (
     <main style={{ minHeight: "60vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", gap: 14, padding: "48px 24px" }}>
       <span style={{ width: 52, height: 52, borderRadius: 16, background: `color-mix(in srgb, ${TL.danger} 14%, transparent)`, border: `1px solid ${TL.danger}`, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
@@ -32,7 +46,7 @@ export function V2Feil({ reset, tilbakeHref, tittel = "Noe gikk galt" }: V2FeilP
       </span>
       <h1 style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 22, color: TL.text, margin: 0 }}>{tittel}</h1>
       <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, maxWidth: 340, lineHeight: 1.6, margin: 0 }}>
-        Vi støtte på en uventet feil — prøv igjen, eller gå tilbake.
+        {melding}
       </p>
       <div style={{ display: "flex", gap: 10, marginTop: 6, flexWrap: "wrap", justifyContent: "center" }}>
         <Knapp icon="rotate-cw" onClick={reset}>Prøv igjen</Knapp>
@@ -335,6 +349,75 @@ function HjemSkel() {
   );
 }
 
+/** /portal/planlegge — PlanV2 laster (B1): dagstripe (7 piller) + to ukekort. */
+function PlanSkel() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+      <SkelBlock w={110} h={11} r={4} />
+      <SkelBlock w={70} h={34} r={8} />
+      <div style={{ display: "flex", justifyContent: "space-between", gap: 4 }}>
+        {Array.from({ length: 7 }).map((_, i) => (
+          <SkelBlock key={i} w={46} h={58} r={999} style={{ flex: "none" }} />
+        ))}
+      </div>
+      <div style={{ background: TL.elev, borderRadius: TL.radius.card, padding: 20, display: "flex", flexDirection: "column", gap: 12 }}>
+        <SkelBlock w="52%" h={14} r={6} />
+        <SkelBlock w="38%" h={10} r={5} />
+      </div>
+      <div style={{ background: TL.elev, borderRadius: TL.radius.card, padding: 20, display: "flex", flexDirection: "column", gap: 12 }}>
+        <SkelBlock w="30%" h={14} r={6} />
+        <SkelBlock w="46%" h={10} r={5} />
+      </div>
+    </div>
+  );
+}
+
+/** /portal/analysere — AnalyseHub laster (B1): hero-tall + 3 KPI-kort + tekstpanel. */
+function AnalyseSkel() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+      <SkelBlock w={140} h={11} r={4} />
+      <SkelBlock w={110} h={34} r={8} />
+      <div style={{ background: TL.elev, borderRadius: TL.radius.card, padding: 20, display: "flex", flexDirection: "column", gap: 14 }}>
+        <SkelBlock w="34%" h={10} r={5} />
+        <SkelBlock w="40%" h={40} r={10} />
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10 }}>
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div key={i} style={{ background: TL.elev, borderRadius: TL.radius.card, padding: 16, display: "flex", flexDirection: "column", gap: 10 }}>
+            <SkelBlock w="70%" h={18} r={7} />
+            <SkelBlock w="56%" h={9} r={4} />
+          </div>
+        ))}
+      </div>
+      <div style={{ background: TL.elev, borderRadius: TL.radius.card, padding: 20, display: "flex", flexDirection: "column", gap: 12 }}>
+        <SkelBlock w="22%" h={10} r={5} />
+        <SkelBlock w="92%" h={12} r={5} />
+        <SkelBlock w="74%" h={12} r={5} />
+      </div>
+    </div>
+  );
+}
+
+/** /portal/meg — MegV2 laster (B1): avatar + navn/undertekst sentrert + innstillingsliste. */
+function MegSkel() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 14, padding: "18px 0 4px" }}>
+        <SkelBlock w={84} h={84} r={9999} />
+        <SkelBlock w={160} h={18} r={7} />
+        <SkelBlock w={210} h={10} r={5} />
+      </div>
+      <div style={{ background: TL.elev, borderRadius: TL.radius.card, padding: 20, display: "flex", flexDirection: "column", gap: 18 }}>
+        <SkelBlock w="34%" h={12} r={5} />
+        <SkelBlock w="42%" h={12} r={5} />
+        <SkelBlock w="28%" h={12} r={5} />
+        <SkelBlock w="38%" h={12} r={5} />
+      </div>
+    </div>
+  );
+}
+
 /** /portal/gjennomfore — GjorV2: hode · runde-kort · KPI-rad · øvelser · (neste økt | avslutt-flyt). */
 function GjorSkel() {
   return (
@@ -377,6 +460,9 @@ export type V2LasterVariant =
   | "stall"
   | "godkjenninger"
   | "hjem"
+  | "plan"
+  | "analyse"
+  | "meg"
   | "gjor";
 export interface V2LasterProps {
   variant?: V2LasterVariant;
@@ -399,6 +485,9 @@ export function V2Laster({ variant = "kort" }: V2LasterProps) {
     : variant === "stall" ? <StallSkel />
     : variant === "godkjenninger" ? <GodkjenningerSkel />
     : variant === "hjem" ? <HjemSkel />
+    : variant === "plan" ? <PlanSkel />
+    : variant === "analyse" ? <AnalyseSkel />
+    : variant === "meg" ? <MegSkel />
     : variant === "gjor" ? <GjorSkel />
     : <KortSkel />;
   return (
