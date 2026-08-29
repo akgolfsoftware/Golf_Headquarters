@@ -45,6 +45,7 @@ GJELDENDE merge-status, se `docs/STATUS-NÅ.md`.
 | TL-port | T→TL på PlayerHQ, AgencyOS, Meg, Forelder (380 filer). Marketing/auth urørt | `claude/tl-port-alle-skjermer-2026-08-28` | Merget #631 — token, ikke piksel-1:1 |
 | F1-bug | Mandagsøkter i ukesrapport telles ikke lenger dobbelt (`lt` mot `endOfWeek`) | samme som #631 | Merget #631 |
 | C1 | Workbench måned + år (leseflate; klikk dag→uke; gammel rute redirect) | `claude/c1-workbench-maned-aar-2026-08-28` | Merget #632 |
+| PX-6 | AgencyOS-resten: AG-01/09 sitert, AG-11 dag-tidslinje bygget (nå-linje, overlapp), AO-00/02/04/05/09/12 sitert, KA-01L/02/03 sitert, DG-01/EC-01/GP-01/BO-02/03/ME-01–04 sitert. Dekning 105→124 av 204. Deferret (dokumentert, ikke løst): AG-19, AO-13, BO-01, EC-02, FY-01, GP-02, JV-01–03, S3-01L/02/03, TU-02 — alle krever ny funksjonalitet/datamodell eller betydelig restrukturering utenfor pikselport-anti-scope | `claude/px6-agency-rest-fasit-iopubc` | PR åpnet, ikke merget — se PR-beskrivelse for deferret-liste |
 
 Se `docs/natt/README.md` for hvilke natt-dokumenter som fortsatt er levende (LAUNCH-PLAN,
 ACCESS-AND-GROUPS, SKJERM-STATUS, D-beslutningene) vs. denne loggen (historikk).
