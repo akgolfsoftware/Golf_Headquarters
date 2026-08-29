@@ -6,9 +6,16 @@
  * NØYAKTIG samme server-logikk — guards, redirects, queries, getAvailableSlots
  * og lokasjonsoppløsning er kopiert uendret. Kun presentasjonen er ny
  * (V2Shell + BookingNyV2). URL-kontrakten ?service=&dato= er uendret.
+ *
+ * Utvidet 2026-08-28 (Anders: spilleren skal ALDRI sendes ut av appen for å
+ * booke): to moduser. «credits» = som før (forhåndsbetalte timer). «betaling»
+ * = betal per time med kort (opprettBookingMedKort → Stripe Checkout →
+ * webhook bekrefter). Betaling brukes når spilleren ikke har brukbare
+ * credits (ingen pakke, eller brukt opp), eller når ?betaling=1 er satt
+ * (drop-in-lenken fra booking-huben). Redirecten til /coaching er fjernet —
+ * TALENT-nivået har rett til å booke enkelttimer (BUSINESS-RULES).
  */
 
-import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { kanBrukeCredits } from "@/lib/booking/credits-tilgang";
@@ -17,52 +24,39 @@ import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { TilbakeLenke, Kort, TomTilstand } from "@/components/v2";
 import {
   BookingNyV2,
-  BruktOppV2,
   type BookingNyV2Data,
 } from "@/components/portal/v2/BookingNyV2";
 
 type Props = {
-  searchParams: Promise<{ dato?: string; service?: string }>;
+  searchParams: Promise<{ dato?: string; service?: string; betaling?: string }>;
 };
 
 export default async function NyBookingPage({ searchParams }: Props) {
-  const { dato: datoParam, service: serviceParam } = await searchParams;
+  const { dato: datoParam, service: serviceParam, betaling: betalingParam } = await searchParams;
   const user = await requirePortalUser({ kreverTilgang: "TALENT", allow: ["PLAYER", "COACH", "ADMIN"] });
 
   const subscription = await prisma.subscription.findUnique({
     where: { userId_kind: { userId: user.id, kind: "COACHING" } },
   });
 
-  // Ingen betalt abonnement (aktivt, eller avbestilt med tid igjen av perioden)
-  // eller PlayerHQ-only (uten credits) → send til /coaching
-  if (
-    !subscription ||
-    !kanBrukeCredits(subscription) ||
-    subscription.monthlyCredits === 0
-  ) {
-    redirect("/coaching");
-  }
+  const harPakke =
+    !!subscription && kanBrukeCredits(subscription) && subscription.monthlyCredits > 0;
+  const harCreditsIgjen = harPakke && subscription!.creditsRemaining > 0;
 
-  // Brukt opp månedens credits — vis info + drop-in-CTA
-  if (subscription.creditsRemaining <= 0) {
-    const resetAt = subscription.currentPeriodEnd;
-    return (
-      <V2Shell aktiv="plan" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-        <TilbakeLenke href="/portal/booking">Booking</TilbakeLenke>
-        <BruktOppV2
-          resetTekst={
-            resetAt
-              ? `Neste reset: ${resetAt.toLocaleDateString("nb-NO", {
-                  weekday: "long",
-                  day: "numeric",
-                  month: "long",
-                })}`
-              : null
-          }
-        />
-      </V2Shell>
-    );
-  }
+  // Modus: credits når spilleren har timer igjen og ikke eksplisitt har bedt
+  // om drop-in (?betaling=1). Ellers betal per time — internt, aldri ut av appen.
+  const modus: "credits" | "betaling" =
+    harCreditsIgjen && betalingParam !== "1" ? "credits" : "betaling";
+
+  // Hvorfor betaling-modus? Styrer info-banneret i wizarden.
+  const betalingGrunn: BookingNyV2Data["betalingGrunn"] =
+    modus === "credits"
+      ? null
+      : betalingParam === "1" && harCreditsIgjen
+        ? "VALGT"
+        : harPakke
+          ? "BRUKT_OPP"
+          : "INGEN_PAKKE";
 
   // Alle aktive coaching-tjenester
   const services = await prisma.serviceType.findMany({
@@ -115,8 +109,10 @@ export default async function NyBookingPage({ searchParams }: Props) {
     locations.find((l) =>
       l.name.toLowerCase().includes(resolvedLocationName.toLowerCase()),
     ) ?? locations[0] ?? null;
-  const saldoEtter = subscription.creditsRemaining - 1;
-  const sisteCredit = subscription.creditsRemaining === 1;
+  const creditsRemaining = subscription?.creditsRemaining ?? 0;
+  const monthlyCredits = subscription?.monthlyCredits ?? 0;
+  const saldoEtter = creditsRemaining - 1;
+  const sisteCredit = creditsRemaining === 1;
 
   // Sted per tjeneste-kort — samme oppslag som legacy-kortene (UTEN
   // locations[0]-fallback; ingen treff → ingen sted-meta på kortet).
@@ -131,6 +127,8 @@ export default async function NyBookingPage({ searchParams }: Props) {
   };
 
   const data: BookingNyV2Data = {
+    modus,
+    betalingGrunn,
     tjenester: services.map((s) => ({
       id: s.id,
       slug: s.slug,
@@ -143,6 +141,7 @@ export default async function NyBookingPage({ searchParams }: Props) {
     valgtServiceId: valgtService.id,
     valgtServiceNavn: valgtService.name,
     valgtServiceVarighetMin: valgtService.durationMin,
+    valgtServicePrisOre: valgtService.priceOre,
     datoParam: datoParam ?? null,
     serviceParamSatt: !!serviceParam,
     valgtDatoIso: valgtDato.toISOString(),
@@ -158,9 +157,9 @@ export default async function NyBookingPage({ searchParams }: Props) {
       coachId: s.coachId,
       coachNavn: s.coachName,
     })),
-    creditsRemaining: subscription.creditsRemaining,
-    monthlyCredits: subscription.monthlyCredits,
-    fornyerLabel: subscription.currentPeriodEnd
+    creditsRemaining,
+    monthlyCredits,
+    fornyerLabel: subscription?.currentPeriodEnd
       ? subscription.currentPeriodEnd.toLocaleDateString("nb-NO", {
           day: "2-digit",
           month: "short",

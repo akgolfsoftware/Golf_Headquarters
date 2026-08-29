@@ -40,10 +40,15 @@ export type NySlot = {
 };
 
 export type BookingNyV2Data = {
+  /** «credits» = forhåndsbetalte timer (som før). «betaling» = betal per time med kort. */
+  modus: "credits" | "betaling";
+  /** Hvorfor betaling-modus: VALGT (?betaling=1), BRUKT_OPP, INGEN_PAKKE. Null i credits-modus. */
+  betalingGrunn: "VALGT" | "BRUKT_OPP" | "INGEN_PAKKE" | null;
   tjenester: NyTjeneste[];
   valgtServiceId: string;
   valgtServiceNavn: string;
   valgtServiceVarighetMin: number;
+  valgtServicePrisOre: number;
   /** Rå ?dato=-queryverdi (brukes uendret i tjeneste-lenkene). */
   datoParam: string | null;
   serviceParamSatt: boolean;
@@ -116,10 +121,12 @@ function StegTittel({ nr, children }: { nr: number; children: React.ReactNode })
 
 const UKEDAG = ["Sø", "Ma", "Ti", "On", "To", "Fr", "Lø"];
 
-function DagStripe({ valgtDatoIso, serviceSlug, dager }: {
+function DagStripe({ valgtDatoIso, serviceSlug, dager, ekstraQuery }: {
   valgtDatoIso: string;
   serviceSlug: string;
   dager: number;
+  /** «&betaling=1» i betaling-modus — holder modusen gjennom hele wizarden. */
+  ekstraQuery: string;
 }) {
   const valgtDato = new Date(valgtDatoIso);
   const idag = new Date();
@@ -143,7 +150,7 @@ function DagStripe({ valgtDatoIso, serviceSlug, dager }: {
         return (
           <Link
             key={iso}
-            href={`${WIZARD}?service=${serviceSlug}&dato=${iso}`}
+            href={`${WIZARD}?service=${serviceSlug}&dato=${iso}${ekstraQuery}`}
             scroll={false}
             className="v2-press v2-focus"
             style={{ display: "flex", minWidth: 60, flex: "none", flexDirection: "column", alignItems: "center", gap: 1, padding: "8px 0 9px", borderRadius: 12, textDecoration: "none", background: aktiv ? TL.fill : TL.dock, border: `1px solid ${aktiv ? "transparent" : TL.hair}` }}
@@ -166,7 +173,7 @@ function DagStripe({ valgtDatoIso, serviceSlug, dager }: {
 
 /* ── Slot-lenker gruppert per coach — href-kontrakt identisk med legacy ──── */
 
-function SlotLenker({ slots, serviceSlug }: { slots: NySlot[]; serviceSlug: string }) {
+function SlotLenker({ slots, serviceSlug, ekstraQuery }: { slots: NySlot[]; serviceSlug: string; ekstraQuery: string }) {
   const perCoach = new Map<string, { coachNavn: string; slots: { startIso: string }[] }>();
   for (const s of slots) {
     const eksisterende = perCoach.get(s.coachId);
@@ -188,7 +195,7 @@ function SlotLenker({ slots, serviceSlug }: { slots: NySlot[]; serviceSlug: stri
               return (
                 <Link
                   key={s.startIso}
-                  href={`${WIZARD}/bekreft?service=${serviceSlug}&start=${encodeURIComponent(s.startIso)}&coach=${coachId}`}
+                  href={`${WIZARD}/bekreft?service=${serviceSlug}&start=${encodeURIComponent(s.startIso)}&coach=${coachId}${ekstraQuery}`}
                   className="v2-press v2-focus"
                   style={{ display: "flex", minHeight: 44, alignItems: "center", justifyContent: "center", fontFamily: TL.font.mono, fontSize: 12.5, fontWeight: 700, color: TL.text, textDecoration: "none", background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: 10, fontVariantNumeric: "tabular-nums" }}
                 >
@@ -216,49 +223,21 @@ function OppsumRad({ label, verdi, mono, last }: { label: React.ReactNode; verdi
   );
 }
 
-/* ── Brukt opp månedens timer (ærlig tomtilstand + drop-in-CTA) ──────────── */
-
-export function BruktOppV2({ resetTekst }: { resetTekst: string | null }) {
-  const mobile = useMobile();
-  return (
-    <div data-paper-portal-booking-ny data-paper-slug="playerhq-booking-ny" style={{ width: "100%", maxWidth: 680, margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
-      <div>
-        <Caps>PlayerHQ · Book ny time</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel mobile={mobile} em="opp månedens timer.">Du har brukt</Tittel>
-        </div>
-        <p style={{ fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute, lineHeight: 1.6, margin: "10px 0 0" }}>
-          Saldoen resettes ved neste fakturering. Du kan også booke en drop-in time mot betaling.
-        </p>
-      </div>
-      <Kort>
-        <TomTilstand
-          icon="target"
-          title="Ingen timer igjen denne måneden"
-          sub={resetTekst ?? "Du får nye timer ved neste fakturering."}
-        />
-        <Link href="/booking" style={{ textDecoration: "none", marginTop: 4 }}>
-          <span style={{
-            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-            borderRadius: 10, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
-          }}>Book drop-in mot betaling</span>
-        </Link>
-      </Kort>
-    </div>
-  );
-}
-
 /* ── Skjerm ──────────────────────────────────────────────────────────────── */
 
 export function BookingNyV2({ data }: { data: BookingNyV2Data }) {
   const mobile = useMobile();
   const {
+    modus, betalingGrunn,
     tjenester, valgtServiceId, valgtServiceNavn, valgtServiceVarighetMin,
+    valgtServicePrisOre,
     datoParam, serviceParamSatt, valgtDatoIso, valgtDatoLang, aktivtSteg,
     isFree, slots, creditsRemaining, monthlyCredits, fornyerLabel,
     stedNavn, saldoEtter, sisteCredit,
   } = data;
   const valgtSlug = tjenester.find((t) => t.id === valgtServiceId)?.slug ?? "";
+  const erBetaling = modus === "betaling";
+  const betalingQ = erBetaling ? "&betaling=1" : "";
 
   return (
     <div style={{ width: "100%", maxWidth: 680, margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
@@ -266,10 +245,20 @@ export function BookingNyV2({ data }: { data: BookingNyV2Data }) {
       <div>
         <Caps>PlayerHQ · Book ny time</Caps>
         <div style={{ marginTop: 10 }}>
-          <Tittel mobile={mobile} em="månedens timer.">Bruk</Tittel>
+          {erBetaling ? (
+            <Tittel mobile={mobile} em="per time.">Betal</Tittel>
+          ) : (
+            <Tittel mobile={mobile} em="månedens timer.">Bruk</Tittel>
+          )}
         </div>
         <p style={{ fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute, lineHeight: 1.6, margin: "10px 0 0" }}>
-          {creditsRemaining} av {monthlyCredits} timer igjen denne måneden. Velg tjeneste og tid på ett sted.
+          {erBetaling
+            ? betalingGrunn === "BRUKT_OPP"
+              ? "Månedens timer er brukt opp — denne timen betales med kort. Velg tjeneste og tid på ett sted."
+              : betalingGrunn === "VALGT"
+                ? "Drop-in mot betaling — abonnementstimene dine røres ikke. Velg tjeneste og tid på ett sted."
+                : "Timen betales med kort — ingen coaching-pakke kreves. Velg tjeneste og tid på ett sted."
+            : `${creditsRemaining} av ${monthlyCredits} timer igjen denne måneden. Velg tjeneste og tid på ett sted.`}
         </p>
       </div>
 
@@ -283,8 +272,8 @@ export function BookingNyV2({ data }: { data: BookingNyV2Data }) {
         ]}
       />
 
-      {/* Free-gate */}
-      {isFree && (
+      {/* Free-gate — kun i credits-modus; betal-per-time er åpent for TALENT. */}
+      {isFree && !erBetaling && (
         <Kort>
           <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
             <span style={{ width: 38, height: 38, borderRadius: 12, flex: "none", background: `color-mix(in srgb, ${TL.warn} 12%, transparent)`, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
@@ -309,7 +298,7 @@ export function BookingNyV2({ data }: { data: BookingNyV2Data }) {
       {/* Credit-saldo — kun steg 1, jf. fasit (saldo-banneret lever inne i
           data-vis="steg1"; fra steg 2 erstattes den av saldo-linjen i
           kontekst-kortet under). */}
-      {aktivtSteg === 1 && (
+      {aktivtSteg === 1 && !erBetaling && (
         <Kort tint eyebrow="Min saldo" action={fornyerLabel ? <Caps size={9}>Fornyer · {fornyerLabel}</Caps> : undefined}>
           <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
             <span style={{ fontFamily: TL.font.mono, fontSize: 40, fontWeight: 700, color: TL.text, lineHeight: 0.9, letterSpacing: "-0.02em", fontVariantNumeric: "tabular-nums" }}>
@@ -336,7 +325,7 @@ export function BookingNyV2({ data }: { data: BookingNyV2Data }) {
             return (
               <Link
                 key={s.id}
-                href={`${WIZARD}?service=${s.slug}${datoParam ? `&dato=${datoParam}` : ""}`}
+                href={`${WIZARD}?service=${s.slug}${datoParam ? `&dato=${datoParam}` : ""}${betalingQ}`}
                 scroll={false}
                 aria-pressed={aktiv}
                 className="v2-press v2-focus"
@@ -358,8 +347,12 @@ export function BookingNyV2({ data }: { data: BookingNyV2Data }) {
                   )}
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginTop: 7 }}>
                     <span style={{ fontFamily: TL.font.mono, fontSize: 11.5, fontWeight: 700, color: aktiv ? TL.fill : TL.text, fontVariantNumeric: "tabular-nums" }}>
-                      {s.prisOre > 0 ? `${s.prisOre / 100} kr` : "1 credit"}
-                      {s.prisOre <= 0 && <HjelpTips k="credits" size={11} />}
+                      {erBetaling
+                        ? `${s.prisOre / 100} kr`
+                        : s.prisOre > 0
+                          ? `${s.prisOre / 100} kr`
+                          : "1 credit"}
+                      {!erBetaling && s.prisOre <= 0 && <HjelpTips k="credits" size={11} />}
                     </span>
                     {s.stedNavn && (
                       <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, color: TL.mute }}>
@@ -404,7 +397,7 @@ export function BookingNyV2({ data }: { data: BookingNyV2Data }) {
           <Caps size={9}>Velg dag</Caps>
           <Caps size={9}>Neste 14 dager</Caps>
         </div>
-        <DagStripe valgtDatoIso={valgtDatoIso} serviceSlug={valgtSlug} dager={14} />
+        <DagStripe valgtDatoIso={valgtDatoIso} serviceSlug={valgtSlug} dager={14} ekstraQuery={betalingQ} />
 
         <div style={{ marginTop: 16 }}>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
@@ -417,7 +410,7 @@ export function BookingNyV2({ data }: { data: BookingNyV2Data }) {
                 <TomTilstand icon="calendar" title="Ingen ledige tider denne dagen" sub="Prøv en annen dag over." />
               </Kort>
             ) : (
-              <SlotLenker slots={slots} serviceSlug={valgtSlug} />
+              <SlotLenker slots={slots} serviceSlug={valgtSlug} ekstraQuery={betalingQ} />
             )}
           </div>
         </div>
@@ -434,10 +427,15 @@ export function BookingNyV2({ data }: { data: BookingNyV2Data }) {
             <OppsumRad label="Varighet" verdi={`${valgtServiceVarighetMin} min`} mono />
             <OppsumRad label="Dato" verdi={valgtDatoLang} mono />
             {stedNavn !== null && <OppsumRad label="Sted" verdi={stedNavn} />}
-            <OppsumRad label={<>Kostnad <HjelpTips k="credits" size={11} /></>} verdi="1 credit" mono last />
+            {erBetaling ? (
+              <OppsumRad label="Pris" verdi={`${valgtServicePrisOre / 100} kr`} mono last />
+            ) : (
+              <OppsumRad label={<>Kostnad <HjelpTips k="credits" size={11} /></>} verdi="1 credit" mono last />
+            )}
           </Kort>
 
-          {/* Saldo før → etter */}
+          {/* Saldo før → etter (kun credits — kortbetaling rører ikke saldoen) */}
+          {!erBetaling && (
           <div style={{ marginTop: 10 }}>
             <Kort tint pad="12px 16px">
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
@@ -450,8 +448,9 @@ export function BookingNyV2({ data }: { data: BookingNyV2Data }) {
               </div>
             </Kort>
           </div>
+          )}
 
-          {sisteCredit && (
+          {!erBetaling && sisteCredit && (
             <div style={{ display: "flex", gap: 8, alignItems: "flex-start", padding: "10px 12px", borderRadius: 12, marginTop: 10, background: `color-mix(in srgb, ${TL.warn} 10%, transparent)`, border: `1px solid color-mix(in srgb, ${TL.warn} 40%, transparent)` }}>
               <Icon name="coins" size={13} style={{ color: TL.warn, flex: "none", marginTop: 1 }} />
               <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.5 }}>
@@ -461,7 +460,9 @@ export function BookingNyV2({ data }: { data: BookingNyV2Data }) {
           )}
 
           <p style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, lineHeight: 1.6, textAlign: "center", margin: "12px 0 0" }}>
-            Velg en ledig tid over for å fullføre. Avbestilling er gratis inntil 24 timer før.
+            {erBetaling
+              ? "Velg en ledig tid over — betalingen skjer trygt med kort i neste steg. Avbestilling er gratis inntil 24 timer før."
+              : "Velg en ledig tid over for å fullføre. Avbestilling er gratis inntil 24 timer før."}
           </p>
         </section>
       )}

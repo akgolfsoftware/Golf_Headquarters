@@ -12,13 +12,8 @@ import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 export default async function MineBookinger() {
   const user = await requirePortalUser({ kreverTilgang: "INGEN", allow: ["PLAYER", "COACH", "ADMIN"] });
 
-  const subscription = await prisma.subscription.findUnique({
-    where: { userId_kind: { userId: user.id, kind: "COACHING" } },
-    select: { monthlyCredits: true },
-  });
-  const erAcademyKunde =
-    subscription && subscription.monthlyCredits > 0 ? true : false;
-  const nyBookingHref = erAcademyKunde ? "/portal/booking/ny" : "/booking";
+  // Alle bookinger skjer i appen — wizarden velger selv credits/betaling.
+  const nyBookingHref = "/portal/booking/ny";
 
   const bookings = await prisma.booking.findMany({
     where: { userId: user.id },
