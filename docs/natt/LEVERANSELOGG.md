@@ -45,6 +45,7 @@ GJELDENDE merge-status, se `docs/STATUS-NÅ.md`.
 | TL-port | T→TL på PlayerHQ, AgencyOS, Meg, Forelder (380 filer). Marketing/auth urørt | `claude/tl-port-alle-skjermer-2026-08-28` | Merget #631 — token, ikke piksel-1:1 |
 | F1-bug | Mandagsøkter i ukesrapport telles ikke lenger dobbelt (`lt` mot `endOfWeek`) | samme som #631 | Merget #631 |
 | C1 | Workbench måned + år (leseflate; klikk dag→uke; gammel rute redirect) | `claude/c1-workbench-maned-aar-2026-08-28` | Merget #632 |
+| PX-4 (delvis) | RU-02 Runde ferdig (recap-grid pikseljustert + sitert) + WB-00 sitert på WeekGrid (allerede dekket av A-familien). RU-01/RU-01L/RU-03/RU-04/LO-01/LO-01L/LO-02/WB-resten/P-resten IKKE portet — funksjons-/IA-gap eller delt komponent uten visuell verifikasjonsmulighet i worktree, se PR og feillogg | `px/4-player-wb-runde` | Draft-PR, ikke merget |
 
 Se `docs/natt/README.md` for hvilke natt-dokumenter som fortsatt er levende (LAUNCH-PLAN,
 ACCESS-AND-GROUPS, SKJERM-STATUS, D-beslutningene) vs. denne loggen (historikk).

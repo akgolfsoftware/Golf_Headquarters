@@ -1,6 +1,7 @@
 "use client";
 
 /**
+ * Fasit: designsystem/train-lock/RU-02 Player Runde ferdig iPhone.dc.html
  * RU-02 — Recap: V8 hullgrid (front/back ni) + scorekort-utdrag, Train-lock.
  * Erstatter den gamle T-styrte Oppsummering-komponenten for
  * `steg === "oppsummering"` i runde-live-klient.tsx. Rendres som en HEL,
@@ -155,21 +156,19 @@ export function RundeRecap({ courseId, courseNavn, playedAt, roundType, hullData
                 return (
                   <div
                     key={holeNumber}
+                    title={`Hull ${holeNumber}`}
                     style={{
                       aspectRatio: "1",
-                      borderRadius: TL.radius.row,
+                      borderRadius: 6,
                       background: TL.elev,
                       boxShadow: under ? `inset 0 0 0 1.5px ${TL.text}` : "none",
                       opacity: over ? TL.opasitet.negativ : 1,
                       display: "flex",
-                      flexDirection: "column",
                       alignItems: "center",
                       justifyContent: "center",
-                      gap: 2,
                     }}
                   >
-                    <span style={{ fontFamily: TL.font.mono, fontSize: 9, color: TL.mute }}>{holeNumber}</span>
-                    <span style={{ fontFamily: TL.font.mono, fontSize: 15, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>
+                    <span style={{ fontFamily: TL.font.sans, fontSize: 11, fontWeight: 600, color: TL.text, fontVariantNumeric: "tabular-nums" }}>
                       {hs ? hs.strokes : "—"}
                     </span>
                   </div>

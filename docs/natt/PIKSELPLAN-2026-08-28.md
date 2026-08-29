@@ -41,13 +41,39 @@ siterer, den bygger ikke blindt nytt).
 | PX-1 | PH (22) | 22 | PlayerHQ-kjernen: I dag-varianter, Plan, Økt-ark, Live/Live ferdig, Booking-ark, Analyse-innganger, Meg, samtykke, onboarding 19a–c, varsel-ark | `px/1-ph` |
 | PX-2 | A (24) | 24 | Agency Workbench Mac/iPad/iPhone: uke, økt, ny-økt/drill-modaler, kilder, måned, årsplan, stall-dag, drag, publish-confirm, lys-varianter | `px/2-agency-wb` |
 | PX-3 | TM (12) + TE (13) | 25 | Analyse/TrackMan-familien + testbatteri/live-gate/innspill | `px/3-tm-te` |
-| PX-4 | WB (10) + P (9) + RU (5) + LO (3) | 27 | Player-workbench, min uke/økt, live runde, gate-skjermene | `px/4-player-wb-runde` |
+| PX-4 | WB (10) + P (9) + RU (5) + LO (3) | 27 | Player-workbench, min uke/økt, live runde, gate-skjermene | `px/4-player-wb-runde` — **delvis, se under** |
 | PX-5 | FO (20) | 20 | Hele Forelder med lys+mørk toggle (T4-beslutningen 26.08) | `px/5-forelder` |
 | PX-6 | AG (4) + AO (5) + JV (3) + S3 (3) + KA (3) + EC (2) + DG/FY/TU/GP/BO/ME-rest | ~28 | AgencyOS-resten: cockpit-varianter, AgenticOS, Jarvis, Spiller 360, kalender, økonomi, DataGolf, fys, turneringer, gameplan, booking, meg-detaljer | `px/6-agency-rest` |
 | PX-7 | GAP (3) + B1–B5 (9) + MAT (2) + Analyse | ~15 | Tilstander (tom/laster/feil per GAP-1/B1), lys-arkene B3/B4/B5, iPad/Mac-brekkene B2, materialer, Dynamic Type XL-rammen | `px/7-tilstander-brekk` |
 
 **Kapasitet:** en bølge på 20–27 filer er én lang økt (mange filer er varianter
 av samme skjerm). Total: 7 økter + gate-runder.
+
+**PX-4-status (29.08.2026):** 2 av 27 filer skipet (RU-02 pikseljustert +
+sitert, WB-00 sitert — komponentreferanse allerede dekket av A-familien i
+`WeekGrid.tsx`). Resten IKKE portet — tre reelle blokkere avdekket, ikke
+kapasitetsmangel:
+1. **RU-01/RU-01L** tegner en annen datamodell enn koden (score+FW/GIR/putt-
+   piller vs. slag-for-slag-kjede som eneste SG-motor) — ny datamodell,
+   utenfor scope.
+2. **LO-01/LO-01L** («Gate», 4-flate produktvelger) finnes ikke i koden
+   (rollebasert auto-redirect i stedet) — ny IA/funksjonalitet. **LO-02**
+   («Innlogging») er tegnet MØRK, men `.claude/rules/beslutninger.md` §A4
+   (16.08, FAST REGEL) låser `/auth` til LYS — uavklart om Train-lock
+   overstyrer denne spesifikke låsen. Begge trenger Anders' avgjørelse.
+3. **WB-resten/P-resten** deler `WorkbenchV2.tsx` (3300 linjer) +
+   `WeekGrid.tsx` med AgencyOS (allerede pikselportet PX-2 mot A-familien) —
+   endringer her flytter piksler i BEGGE produkter. Worktreen har kun dummy
+   DB (se gotchas.md), så ingen ekte skjermbilde-verifikasjon var mulig
+   lokalt — turte ikke gjøre uverifiserte endringer i en delt komponent.
+   Fant én reell kandidat (P-01 sier «ingen Publiser» for spiller, koden
+   viser den fortsatt) — notert, ikke rettet (kan være tilsiktet
+   selvbetjening).
+
+RU-03/RU-04 er delvis dekket av eksisterende kode men har egne gap
+(RU-03: «runden mot snittet»-panelet trenger snitt-data som ikke finnes;
+RU-04: koden er en full side, fasiten er et bunnark fra Analyse — IA-endring).
+Se `docs/feillogg.md` (2026-08-29-linjene) for full begrunnelse per punkt.
 
 ## 3 · Gater og fremdrift
 
