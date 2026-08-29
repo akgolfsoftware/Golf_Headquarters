@@ -23,7 +23,8 @@ Sist oppdatert: 2026-08-17 (dato rettet — §Abonnement og tilgang er fra 2026-
 
 ### FULL tilgang gratis — fire eksakte tilfeller
 
-1. **Prøveperiode:** 1 måneds gratis tilgang etter registrering
+1. **Prøveperiode:** 1 ukes gratis tilgang etter registrering (Anders 2026-08-29 —
+   kortet ned fra 1 måned da abonnement ble hovedinntektsmodellen)
    (`User.trialEndsAt` kan forlenge/forkorte per bruker).
 2. **Coaching-pakke:** Spiller har aktiv Performance- eller Performance Pro-pakke.
    **Oppsagt pakke gir tilgang UT den betalte perioden.**

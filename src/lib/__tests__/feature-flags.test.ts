@@ -198,14 +198,22 @@ test("null aktive AK-gruppemedlemskap: ikke gruppe-tilgang", () => {
 
 // ── Prøveperiode ───────────────────────────────────────────────────────────
 
-test("innenfor 30 dager fra registrering: FULL via PROVEPERIODE", () => {
+test("innenfor 7 dager fra registrering: FULL via PROVEPERIODE", () => {
+  // SENERE er 15.10 — registrert 12.10 er tre dager inn i prøveuka.
   const t = resolveTilgang(
-    persona({ createdAt: new Date("2026-10-01T00:00:00+02:00"), now: SENERE }),
+    persona({ createdAt: new Date("2026-10-12T00:00:00+02:00"), now: SENERE }),
   );
   assert.equal(t.kilde, "PROVEPERIODE");
 });
 
-test("trialEndsAt vinner over createdAt+30d — kan forlenge og forkorte", () => {
+test("åtte dager etter registrering: prøveperioden er ute", () => {
+  const t = resolveTilgang(
+    persona({ createdAt: new Date("2026-10-07T00:00:00+02:00"), now: SENERE }),
+  );
+  assert.equal(t.nivaa, "INGEN");
+});
+
+test("trialEndsAt vinner over createdAt+7d — kan forlenge og forkorte", () => {
   // Gammel bruker med forlenget prøve → FULL.
   const forlenget = resolveTilgang(
     persona({ trialEndsAt: new Date("2026-12-01T00:00:00+01:00") }),
@@ -221,9 +229,9 @@ test("trialEndsAt vinner over createdAt+30d — kan forlenge og forkorte", () =>
   assert.equal(avsluttet.nivaa, "INGEN");
 });
 
-test("prøveperioden utløper på grensen (eksakt 30 dager)", () => {
+test("prøveperioden utløper på grensen (eksakt 7 dager)", () => {
   const createdAt = new Date("2026-09-10T00:00:00+02:00");
-  const grense = new Date(createdAt.getTime() + 30 * 86_400_000);
+  const grense = new Date(createdAt.getTime() + 7 * 86_400_000);
   assert.equal(
     resolveTilgang(persona({ createdAt, now: new Date(grense.getTime() - 1) })).nivaa,
     "FULL",
@@ -261,7 +269,7 @@ test("TALENT-profil som meldes inn i AK-gruppe: FULL vinner", () => {
 test("TALENT-profil i prøveperiode: FULL i prøven, TALENT etterpå (aldri INGEN)", () => {
   const createdAt = new Date("2026-09-10T00:00:00+02:00");
   const iProven = resolveTilgang(
-    persona({ profilType: "TALENT", createdAt, now: new Date("2026-09-20T00:00:00+02:00") }),
+    persona({ profilType: "TALENT", createdAt, now: new Date("2026-09-14T00:00:00+02:00") }),
   );
   assert.equal(iProven.nivaa, "FULL");
   const etterProven = resolveTilgang(persona({ profilType: "TALENT", createdAt, now: SENERE }));
@@ -287,7 +295,8 @@ test("kilde-prioritet: abonnement før coaching før gruppe før prøve", () => 
     playerhq: { status: "ACTIVE", currentPeriodEnd: null, plan: "PLAYERHQ_MND", stripeSubscriptionId: "s" },
     coaching: { status: "ACTIVE", monthlyCredits: 4, currentPeriodEnd: null },
     akGruppeCount: 2,
-    createdAt: new Date("2026-10-01T00:00:00+02:00"),
+    // Innenfor prøveuka, ellers faller siste ledd i kjeden til INGEN.
+    createdAt: new Date("2026-10-12T00:00:00+02:00"),
   });
   assert.equal(resolveTilgang(alt).kilde, "PLAYERHQ_ABONNEMENT");
   assert.equal(resolveTilgang({ ...alt, playerhq: null, tier: "GRATIS" }).kilde, "COACHING_PAKKE");

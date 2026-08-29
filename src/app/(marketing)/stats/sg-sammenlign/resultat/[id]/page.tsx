@@ -831,7 +831,7 @@ export default async function SgResultatPage({ params }: Props) {
                 style={{ textDecoration: "none" }}
                 className="stats-btn stats-btn-outline stats-btn-lg"
               >
-                <span>Prøv PlayerHQ gratis i 30 dager</span>
+                <span>Prøv PlayerHQ gratis i én uke</span>
                 <ArrowRight size={15} className="stats-btn-icon" />
               </Link>
               <Link

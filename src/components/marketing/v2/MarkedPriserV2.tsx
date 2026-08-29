@@ -17,7 +17,7 @@ import { PkShell } from "./paper/PkShell";
 const FAQ: { q: string; a: string }[] = [
   {
     q: "Hvordan får jeg PlayerHQ gratis?",
-    a: "Tre veier: én måneds prøveperiode for alle nye spillere, coaching-pakke (Performance eller Performance Pro) der appen er inkludert, eller gruppe via AK Golf, for eksempel WANG eller klubbtrening.",
+    a: "Tre veier: én ukes prøveperiode for alle nye spillere, coaching-pakke (Performance eller Performance Pro) der appen er inkludert, eller gruppe via AK Golf, for eksempel WANG eller klubbtrening.",
   },
   {
     q: "Hva er forskjellen på coaching-pakker og appen?",
@@ -53,7 +53,7 @@ export function MarkedPriserV2() {
               </span>
               <p className="pk-pris-lede">Full app, uten månedspris, hvis ett av dette gjelder deg:</p>
               <ul>
-                <li>Én måneds prøveperiode, for alle nye</li>
+                <li>Én ukes prøveperiode, for alle nye</li>
                 <li>Coaching-pakke: Performance eller Performance Pro</li>
                 <li>Gruppe via AK Golf, som WANG eller klubbtrening</li>
               </ul>

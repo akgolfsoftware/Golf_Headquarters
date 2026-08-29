@@ -8,7 +8,7 @@
 //            Performance Pro — også CANCELLED med resttid: tilgangen følger
 //            pakken UT perioden), (d) aktivt spiller-medlemskap i AK Golf-
 //            administrert gruppe (GFGK, WANG, WANG UNG, Academy, Junior
-//            Academy), (e) prøveperiode (trialEndsAt, ellers 30 dager fra
+//            Academy), (e) prøveperiode (trialEndsAt, ellers 7 dager fra
 //            registrering).
 //   TALENT — gratis, låst TalentHQ-profil (User.profilType = "TALENT"):
 //            kun tester, stats-lesing, SG-/runderegistrering, DataGolf-
@@ -26,7 +26,9 @@ import { harAktivPakke, girPlayerHqTilgang } from "@/lib/domain/abonnement";
 
 // Betaling starter 1. september 2026 (Europe/Oslo). Frem til da har ALLE full tilgang.
 const BETALING_STARTER = new Date("2026-09-01T00:00:00.000+02:00");
-const PROVEPERIODE_DAGER = 30;
+// Én ukes prøveperiode (Anders 2026-08-29). Var 30 dager frem til betalingen
+// ble slått på — kortet ned da abonnement ble hovedinntektsmodellen.
+const PROVEPERIODE_DAGER = 7;
 
 export function gratisForAlle(now: Date = new Date()): boolean {
   return now.getTime() < BETALING_STARTER.getTime();
@@ -112,7 +114,7 @@ export function resolveTilgang(user: ResolveTilgangInput): Tilgang {
   }
   // (d) Aktivt spiller-medlemskap i AK Golf-administrert gruppe.
   if (user.akGruppeCount > 0) return full("AK_GRUPPE");
-  // (e) Prøveperiode: trialEndsAt vinner; ellers createdAt + 30 dager.
+  // (e) Prøveperiode: trialEndsAt vinner; ellers createdAt + 7 dager.
   const proveSlutt =
     user.trialEndsAt?.getTime() ??
     user.createdAt.getTime() + PROVEPERIODE_DAGER * 86_400_000;
