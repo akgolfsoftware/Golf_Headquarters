@@ -40,7 +40,7 @@ siterer, den bygger ikke blindt nytt).
 | PX-0 | baseline | — | Gå gjennom DONE-docs (T2–T13, B-bølgen): skjermer som ER pikselbygget men mangler sitering får `Fasit:`-kommentar etter visuell kontroll. Gir sann baseline. | `px/0-baseline` |
 | PX-1 | PH (22) | 22 | PlayerHQ-kjernen: I dag-varianter, Plan, Økt-ark, Live/Live ferdig, Booking-ark, Analyse-innganger, Meg, samtykke, onboarding 19a–c, varsel-ark | `px/1-ph` |
 | PX-2 | A (24) | 24 | Agency Workbench Mac/iPad/iPhone: uke, økt, ny-økt/drill-modaler, kilder, måned, årsplan, stall-dag, drag, publish-confirm, lys-varianter | `px/2-agency-wb` |
-| PX-3 | TM (12) + TE (13) | 25 | Analyse/TrackMan-familien + testbatteri/live-gate/innspill | **DELVIS** (`claude/project-status-screens-smffo7`, PR åpen — se §7) |
+| PX-3 | TM (12) + TE (13) | 25 | Analyse/TrackMan-familien + testbatteri/live-gate/innspill | **DELVIS** (`claude/project-status-screens-smffo7`, PR #656 draft — se §7) |
 | PX-4 | WB (10) + P (9) + RU (5) + LO (3) | 27 | Player-workbench, min uke/økt, live runde, gate-skjermene | `px/4-player-wb-runde` |
 | PX-5 | FO (20) | 20 | Hele Forelder med lys+mørk toggle (T4-beslutningen 26.08) | `px/5-forelder` |
 | PX-6 | AG (4) + AO (5) + JV (3) + S3 (3) + KA (3) + EC (2) + DG/FY/TU/GP/BO/ME-rest | ~28 | AgencyOS-resten: cockpit-varianter, AgenticOS, Jarvis, Spiller 360, kalender, økonomi, DataGolf, fys, turneringer, gameplan, booking, meg-detaljer | `px/6-agency-rest` |
