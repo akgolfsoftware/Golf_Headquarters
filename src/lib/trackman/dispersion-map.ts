@@ -44,6 +44,8 @@ export type TrackManDispersionShot = {
   totalDistance: number | null;
   smashFactor: number | null;
   launchAngle: number | null;
+  /** Grader — TM-02/TM-08 «Funn»-radens «Face mot path». Valgfri: eldre rader kan mangle feltet. */
+  faceToPath?: number | null;
 };
 
 export type DispersionBucketKey = "good" | "acceptable" | "disaster";
@@ -81,12 +83,27 @@ export type DispersionMapResult = {
   oneSigmaRadius: number | null;
   /** Snitt smash factor. */
   meanSmash: number | null;
+  /** «Spredning» (TM-00/TM-02/TM-08 «Funn»-lista): P90−P10 av carry, meter. Null under 2 gyldige slag. */
+  carrySpreadP90P10: number | null;
+  /** Snitt face-to-path (grader) — TM-02/TM-08 «Funn»-radens «Face mot path». Null uten TrackManShot.faceToPath-data. */
+  meanFaceToPath: number | null;
   /** Andel (0–1) av slagene i hver bøtte. Kun fylt når `hasEllipse`. */
   bucketShare: DispersionBuckets;
   shots: DispersionMapShot[];
   /** Norsk caddie-setning, eller null når det ikke er nok slag. */
   caddieSentence: string | null;
 };
+
+/** P-te persentil (0–100) i en tallrekke, lineær interpolasjon (samme metode som brukes for median). */
+function percentile(sortedValues: number[], p: number): number {
+  if (sortedValues.length === 1) return sortedValues[0];
+  const rank = (p / 100) * (sortedValues.length - 1);
+  const lo = Math.floor(rank);
+  const hi = Math.ceil(rank);
+  if (lo === hi) return sortedValues[lo];
+  const frac = rank - lo;
+  return sortedValues[lo] * (1 - frac) + sortedValues[hi] * frac;
+}
 
 function komma(v: number, desimaler: number): string {
   return v.toFixed(desimaler).replace(".", ",");
@@ -157,6 +174,11 @@ export function computeTrackManDispersionMap(shots: TrackManDispersionShot[]): D
   const medianCarry = median(carries);
   const meanSmash = mean(smashes);
 
+  const sortedCarries = [...carries].sort((a, b) => a - b);
+  const carrySpreadP90P10 = sortedCarries.length >= 2 ? percentile(sortedCarries, 90) - percentile(sortedCarries, 10) : null;
+  const faceToPaths = shots.map((s) => s.faceToPath).filter((v): v is number => v != null);
+  const meanFaceToPath = mean(faceToPaths);
+
   const hasEllipse = n >= MIN_SHOTS_FOR_ELLIPSE;
 
   let oneSigma: DispersionStats | null = null;
@@ -206,6 +228,8 @@ export function computeTrackManDispersionMap(shots: TrackManDispersionShot[]): D
     offlineBias,
     oneSigmaRadius,
     meanSmash,
+    carrySpreadP90P10,
+    meanFaceToPath,
     bucketShare,
     shots: mappedShots,
     caddieSentence: generateCaddieSentence(offlineBias, n),

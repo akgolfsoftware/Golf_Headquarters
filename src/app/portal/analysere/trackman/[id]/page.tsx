@@ -60,6 +60,7 @@ export default async function TrackManOktDetalj({ params }: { params: Promise<{ 
       totalDistance: true,
       smashFactor: true,
       launchAngle: true,
+      faceToPath: true,
     },
   });
 
@@ -81,6 +82,32 @@ export default async function TrackManOktDetalj({ params }: { params: Promise<{ 
   const kolleShots = shots.filter((s) => s.club === valgtKolle);
 
   const result = computeTrackManDispersionMap(kolleShots);
+
+  // «Mot forrige» (TM-02/TM-08 «Funn»-lista, siste rad) — nærmeste TIDLIGERE
+  // økt med samme kølle, medianCarry-delta. Ren les-side aggregering av
+  // eksisterende TrackManShot-data, ingen ny datamodell.
+  const forrigeOkt = await prisma.trackManShot.findFirst({
+    where: { club: valgtKolle, session: { userId: sesjon.userId, recordedAt: { lt: sesjon.recordedAt } } },
+    orderBy: { session: { recordedAt: "desc" } },
+    select: { sessionId: true },
+  });
+  let forrigeDeltaTekst: string | null = null;
+  if (forrigeOkt) {
+    const forrigeShots = await prisma.trackManShot.findMany({
+      where: { sessionId: forrigeOkt.sessionId, club: valgtKolle },
+      select: { carryDistance: true },
+    });
+    const forrigeCarries = forrigeShots.map((s) => s.carryDistance).filter((v): v is number => v != null).sort((a, b) => a - b);
+    if (forrigeCarries.length > 0 && result.medianCarry != null) {
+      const mid = Math.floor(forrigeCarries.length / 2);
+      const forrigeMedian = forrigeCarries.length % 2 === 0 ? (forrigeCarries[mid - 1] + forrigeCarries[mid]) / 2 : forrigeCarries[mid];
+      const delta = result.medianCarry - forrigeMedian;
+      forrigeDeltaTekst =
+        Math.abs(delta) < 0.5
+          ? "+0 m · som sist"
+          : `${delta > 0 ? "+" : ""}${Math.round(delta)} m · ${delta > 0 ? "lenger enn sist" : "kortere enn sist"}`;
+    }
+  }
 
   const datoTekst = sesjon.recordedAt.toLocaleDateString("nb-NO", {
     day: "2-digit",
@@ -134,6 +161,7 @@ export default async function TrackManOktDetalj({ params }: { params: Promise<{ 
           sourceLabel={SOURCE_LABEL[sesjon.source] ?? sesjon.source}
           result={result}
           allShotsHref="#alle-slag"
+          forrigeDeltaTekst={forrigeDeltaTekst}
         />
       )}
     </V2Shell>

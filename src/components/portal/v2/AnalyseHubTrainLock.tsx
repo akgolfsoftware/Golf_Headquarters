@@ -5,11 +5,21 @@
  * Fasit: designsystem/train-lock/TM-04 Analyse-hub TrackMan.dc.html
  * Fasit: designsystem/train-lock/PH-10 Analyse.dc.html (én flate, innganger under fold)
  * Fasit: designsystem/train-lock/PH-16 Analyse tom.dc.html (tom: én setning + CTA)
+ * Fasit: designsystem/train-lock/TM-09 Mini-kart og runde.dc.html (TM-09a/b/f
+ * «Analyse mini»: TrackMan-kortet får hullkart-bakgrunn (HoleMap, "mini")
+ * + «Se full spredning»-lenketeksten, i stedet for et blankt rutenett).
  */
 
 import Link from "next/link";
 import { TL } from "@/lib/v2/train-lock";
 import type { TmHubData } from "@/lib/portal-analyse/tm-hub-data";
+import {
+  HOLE_MAP_VIEWBOX_MINI,
+  HoleMapTargetLine,
+  HoleMapTerrain,
+  HoleMapTerrainStyle,
+  HOLE_MAP_TARGET_MINI,
+} from "@/components/trackman/HoleMap";
 
 function Caps({ children }: { children: React.ReactNode }) {
   return (
@@ -170,13 +180,16 @@ function TrackManKort({ data }: { data: TmHubData }) {
         {tm.setning}
       </div>
       <div style={{ marginTop: 8, fontSize: 13, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>{tm.meta}</div>
-      <div style={{ marginTop: 14, position: "relative" }}>
+      <div className="tm-holemap-terrain" style={{ marginTop: 14, position: "relative" }}>
+        <HoleMapTerrainStyle />
         <svg
-          viewBox="0 0 240 160"
-          style={{ display: "block", width: "100%", height: 160, background: TL.bane.base, borderRadius: 16 }}
-          preserveAspectRatio="none"
+          viewBox={HOLE_MAP_VIEWBOX_MINI}
+          role="img"
+          aria-label="Hullkart med slag"
+          style={{ display: "block", width: "100%", aspectRatio: "240 / 120", borderRadius: 16 }}
         >
-          <line x1="120" y1="0" x2="120" y2="160" stroke={TL.text} strokeOpacity="0.2" strokeWidth="1" />
+          <HoleMapTerrain variant={tm.variant} size="mini" />
+          <HoleMapTargetLine variant={tm.variant} target={HOLE_MAP_TARGET_MINI[tm.variant]} size="mini" />
           {tm.ellipse && (
             <ellipse
               cx={tm.ellipse.cx}
@@ -196,25 +209,11 @@ function TrackManKort({ data }: { data: TmHubData }) {
             </g>
           ))}
         </svg>
-        <div
-          style={{
-            position: "absolute",
-            right: 12,
-            top: 10,
-            fontSize: 11,
-            fontWeight: 600,
-            letterSpacing: TL.track.caps,
-            textTransform: "uppercase",
-            color: TL.mute,
-          }}
-        >
-          Topp-syn
-        </div>
       </div>
       <div style={{ marginTop: 12, display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 13, gap: 12 }}>
         <span style={{ color: TL.mute, fontVariantNumeric: "tabular-nums" }}>{tm.kpis}</span>
         <Link href={`/portal/analysere/trackman/${tm.sessionId}`} className="v2-press v2-focus" style={{ fontWeight: 600, color: TL.text, textDecoration: "none" }}>
-          Åpne økt
+          Se full spredning
         </Link>
       </div>
     </Kort>
