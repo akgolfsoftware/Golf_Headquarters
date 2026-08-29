@@ -219,6 +219,19 @@ export async function proxy(request: NextRequest) {
   // Rolle-sjekk for /admin/* gjøres i src/app/admin/layout.tsx (RSC) via
   // requirePortalUser({ allow: ["ADMIN","COACH"] }) for å unngå Prisma-kall
   // her i proxy-laget. Proxy-en stopper kun uautentiserte requests.
+  //
+  // /kino er en selvstendig statisk markedsside (public/kino/index.html,
+  // animated-website 29.08.2026) med inline <script> som ikke kan få
+  // per-request-nonce. Den har ingen auth, ingen skjema og ingen brukerdata,
+  // så den får en egen CSP med 'unsafe-inline' i stedet for nonce +
+  // strict-dynamic — KUN på denne stien; resten av appen beholder streng CSP.
+  if (path === "/kino" || path.startsWith("/kino/")) {
+    response.headers.set(
+      "Content-Security-Policy",
+      "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'",
+    );
+    return response;
+  }
   response.headers.set("Content-Security-Policy", buildCsp(nonce));
   return response;
 }

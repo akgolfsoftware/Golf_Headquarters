@@ -16,5 +16,7 @@ export default serwist({
     "public/splash/**",
     "public/team-gfgk/**",
     "public/brand/**",
+    // Kino-landingssiden: 7 MB frames — lastes progressivt av siden selv.
+    "public/kino/**",
   ],
 });

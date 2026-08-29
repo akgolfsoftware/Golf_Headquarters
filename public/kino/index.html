@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AK Golf Academy — Coaching bygget på målt sannhet</title>
+<style>
+/* Selvhostede fonter (GDPR: ingen Google Fonts-oppslag) */
+@font-face { font-family: 'DM Sans'; font-style: italic; font-weight: 300; font-display: swap; src: url(fonts/DMSans-300i-latin-ext.woff2) format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'DM Sans'; font-style: italic; font-weight: 300; font-display: swap; src: url(fonts/DMSans-300i-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'DM Sans'; font-style: normal; font-weight: 300; font-display: swap; src: url(fonts/DMSans-300-latin-ext.woff2) format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'DM Sans'; font-style: normal; font-weight: 300; font-display: swap; src: url(fonts/DMSans-300-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'DM Sans'; font-style: normal; font-weight: 400; font-display: swap; src: url(fonts/DMSans-400-latin-ext.woff2) format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'DM Sans'; font-style: normal; font-weight: 400; font-display: swap; src: url(fonts/DMSans-400-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'DM Sans'; font-style: normal; font-weight: 500; font-display: swap; src: url(fonts/DMSans-500-latin-ext.woff2) format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'DM Sans'; font-style: normal; font-weight: 500; font-display: swap; src: url(fonts/DMSans-500-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Playfair Display'; font-style: italic; font-weight: 400; font-display: swap; src: url(fonts/PlayfairDisplay-400i-latin-ext.woff2) format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Playfair Display'; font-style: italic; font-weight: 400; font-display: swap; src: url(fonts/PlayfairDisplay-400i-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Playfair Display'; font-style: normal; font-weight: 400; font-display: swap; src: url(fonts/PlayfairDisplay-400-latin-ext.woff2) format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Playfair Display'; font-style: normal; font-weight: 400; font-display: swap; src: url(fonts/PlayfairDisplay-400-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+</style>
+<style>
+:root {
+  --concrete: #d4cfc8;
+  --concrete-dim: #9e9890;
+  --stone: #706050;
+  --charcoal: #1a1816;
+  --ink: #0e0d0c;
+  --warm-white: #f4f0ea;
+  --warm-white-dim: #c8c0b4;
+  --accent: #c89848;
+  --accent-glow: rgba(200, 152, 72, 0.35);
+  --accent-soft: rgba(200, 152, 72, 0.08);
+  --sunset-pink: #d4a0b0;
+  --heading: 'Playfair Display', 'Georgia', serif;
+  --body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: auto; }
+body {
+  background: var(--ink);
+  color: var(--warm-white);
+  font-family: var(--body);
+  font-weight: 300;
+  overflow-x: hidden;
+}
+::selection { background: var(--accent-glow); }
+
+/* ── Custom cursor (desktop) ─────────────────────────────── */
+#cursor-dot, #cursor-ring { position: fixed; top: 0; left: 0; pointer-events: none; border-radius: 50%; }
+#cursor-dot { width: 6px; height: 6px; background: #fff; mix-blend-mode: difference; z-index: 9998; transform: translate(-50%, -50%); }
+#cursor-ring { width: 36px; height: 36px; border: 1px solid rgba(244,240,234,0.35); z-index: 9997; transform: translate(-50%, -50%); transition: width .25s, height .25s, border-color .25s, box-shadow .25s; }
+#cursor-ring.hover { width: 56px; height: 56px; border-color: var(--accent); box-shadow: 0 0 24px var(--accent-glow); }
+@media (max-width: 900px), (pointer: coarse) { #cursor-dot, #cursor-ring { display: none; } }
+
+/* ── Grain + vignette ────────────────────────────────────── */
+#grain { position: fixed; inset: 0; z-index: 100; pointer-events: none; opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 256px 256px; }
+#vignette { position: fixed; inset: 0; z-index: 99; pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 50%, rgba(14,13,12,0.45) 100%); }
+#particles { position: fixed; inset: 0; z-index: 15; pointer-events: none; opacity: 0.4; }
+
+/* ── Loader ──────────────────────────────────────────────── */
+#loader { position: fixed; inset: 0; z-index: 9999; background: var(--ink); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; transition: opacity .8s, filter .8s; }
+#loader.done { opacity: 0; filter: blur(8px); pointer-events: none; }
+#loader .mark { font-family: var(--heading); font-weight: 400; font-size: 22px; letter-spacing: 0.35em; text-transform: uppercase; }
+#loader .mark span { color: var(--accent); }
+#loader .line { width: 60px; height: 1px; background: rgba(244,240,234,0.18); }
+#loader .bar { width: 140px; height: 2px; background: rgba(244,240,234,0.1); border-radius: 2px; overflow: hidden; }
+#loader .bar i { display: block; height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--sunset-pink)); transition: width .2s; }
+#loader .pct { font-size: 10px; letter-spacing: 0.3em; color: var(--concrete-dim); font-variant-numeric: tabular-nums; }
+
+/* ── Chapter markers ─────────────────────────────────────── */
+#chapters { position: fixed; right: 26px; top: 50%; transform: translateY(-50%); z-index: 50; display: flex; flex-direction: column; align-items: center; gap: 0; }
+#chapters .dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(244,240,234,0.22); transition: background .3s, box-shadow .3s; }
+#chapters .dot.active { background: var(--accent); box-shadow: 0 0 14px var(--accent-glow); }
+#chapters .seg { width: 1px; height: 34px; background: rgba(244,240,234,0.12); position: relative; overflow: hidden; }
+#chapters .seg i { position: absolute; top: 0; left: 0; width: 100%; height: 0%; background: var(--accent); }
+@media (max-width: 900px) { #chapters { display: none; } }
+
+/* ── Animasjonsseksjon ───────────────────────────────────── */
+#anim { position: relative; height: 700vh; }
+#stage { position: sticky; top: 0; height: 100vh; overflow: hidden; }
+#film { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
+.grad-left { position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(90deg, rgba(14,13,12,0.72) 0%, rgba(14,13,12,0.28) 38%, transparent 62%); }
+.grad-bottom { position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(0deg, rgba(14,13,12,0.6) 0%, transparent 30%); }
+#tint { position: absolute; inset: 0; z-index: 5; pointer-events: none; transition: background 1.2s; }
+
+/* ── Scroll-tekst ────────────────────────────────────────── */
+.st { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 10; display: flex; align-items: center; pointer-events: none; opacity: 0; filter: blur(6px); transform: translateX(-20px); transition: opacity .8s, filter .8s, transform .8s; }
+.st.visible { opacity: 1; filter: blur(0); transform: translateX(0); pointer-events: auto; }
+.st .inner { padding-left: 6%; max-width: 660px; }
+.st.center { justify-content: center; text-align: center; }
+.st.center .inner { padding: 0 6%; max-width: 760px; }
+
+.overline { font-size: 9px; font-weight: 500; letter-spacing: 0.32em; text-transform: uppercase; color: var(--accent); margin-bottom: 18px; }
+.st h1 { font-family: var(--heading); font-weight: 300; font-size: clamp(42px, 5.5vw, 76px); line-height: 1.04; }
+.st h1 em, .st h2 em { font-style: italic; color: var(--accent); }
+.st h2 { font-family: var(--heading); font-weight: 300; font-size: clamp(30px, 3.6vw, 52px); line-height: 1.1; margin-bottom: 18px; }
+.st .lede { font-size: 15px; line-height: 1.75; color: var(--warm-white-dim); max-width: 46ch; }
+.tagline { margin-top: 20px; font-size: 15px; letter-spacing: 0.02em; color: var(--warm-white-dim); max-width: 44ch; line-height: 1.7; }
+
+/* Hero */
+#st-hero .stats { position: absolute; left: 6%; right: 6%; bottom: 44px; display: flex; gap: 0; background: rgba(244,240,234,0.03); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(244,240,234,0.06); border-radius: 14px; overflow: hidden; }
+#st-hero .stat { flex: 1; padding: 18px 20px; border-right: 1px solid rgba(244,240,234,0.06); }
+#st-hero .stat:last-child { border-right: none; }
+#st-hero .stat .v { font-family: var(--heading); font-size: 24px; font-weight: 400; color: var(--warm-white); font-variant-numeric: tabular-nums; }
+#st-hero .stat .l { margin-top: 4px; font-size: 8.5px; letter-spacing: 0.26em; text-transform: uppercase; color: var(--concrete-dim); }
+@media (max-width: 900px) { #st-hero .stats { flex-wrap: wrap; } #st-hero .stat { flex: 1 1 50%; } }
+
+/* Vision */
+#st-vision .q { font-family: var(--heading); font-style: italic; font-weight: 300; font-size: clamp(26px, 3.2vw, 44px); line-height: 1.25; }
+#st-vision .qmark { font-family: var(--heading); font-size: 88px; line-height: 0.6; color: var(--accent); opacity: 0.5; display: block; margin-bottom: 26px; }
+#st-vision .attr { margin-top: 26px; display: flex; align-items: center; gap: 14px; font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--concrete-dim); }
+#st-vision .attr::before { content: ""; width: 44px; height: 1px; background: var(--accent); }
+
+/* Details-liste */
+.feat { margin-top: 26px; display: flex; flex-direction: column; }
+.feat .row { display: flex; align-items: baseline; gap: 16px; padding: 13px 0; border-bottom: 1px solid rgba(244,240,234,0.08); }
+.feat .row:last-child { border-bottom: none; }
+.feat .ic { color: var(--accent); font-size: 11px; }
+.feat .t { font-weight: 500; font-size: 14px; min-width: 96px; }
+.feat .d { font-size: 13px; color: var(--warm-white-dim); line-height: 1.6; }
+
+/* Grid */
+.amen { margin-top: 26px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.amen .cell { background: rgba(244,240,234,0.03); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(244,240,234,0.06); border-radius: 12px; padding: 16px 18px; transition: background .3s, border-color .3s; }
+.amen .cell:hover { background: rgba(244,240,234,0.06); border-color: rgba(200,152,72,0.35); }
+.amen .cell .t { font-weight: 500; font-size: 13.5px; }
+.amen .cell .d { margin-top: 5px; font-size: 12px; color: var(--concrete-dim); line-height: 1.55; }
+@media (max-width: 560px) { .amen { grid-template-columns: 1fr; } }
+
+/* Context distanser */
+.dist { margin-top: 26px; display: flex; flex-direction: column; gap: 12px; max-width: 420px; }
+.dist .row { display: flex; align-items: baseline; font-size: 13px; }
+.dist .n { color: var(--warm-white); font-weight: 400; }
+.dist .fill { flex: 1; margin: 0 10px; border-bottom: 1px dotted rgba(244,240,234,0.22); }
+.dist .v { color: var(--concrete-dim); font-variant-numeric: tabular-nums; }
+
+/* CTA */
+#st-cta .btns { margin-top: 34px; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+.btn { display: inline-flex; align-items: center; justify-content: center; min-height: 50px; padding: 0 34px; border-radius: 999px; font-family: var(--body); font-size: 13px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; transition: transform .25s, box-shadow .25s, background .25s; cursor: pointer; }
+.btn.primary { background: var(--accent); color: var(--ink); }
+.btn.primary:hover { transform: translateY(-2px); box-shadow: 0 10px 34px var(--accent-glow); }
+.btn.ghost { border: 1px solid rgba(244,240,234,0.3); color: var(--warm-white); }
+.btn.ghost:hover { border-color: var(--warm-white); }
+#st-cta .contact { margin-top: 34px; display: inline-flex; flex-direction: column; gap: 4px; padding: 18px 30px; background: rgba(244,240,234,0.03); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(244,240,234,0.06); border-radius: 14px; }
+#st-cta .contact .n { font-family: var(--heading); font-size: 17px; }
+#st-cta .contact .e { font-size: 11px; letter-spacing: 0.14em; color: var(--concrete-dim); }
+
+/* ── Galleri ─────────────────────────────────────────────── */
+#galleri { position: relative; background: var(--ink); padding: 110px 6% 90px; z-index: 20; }
+#galleri .head { margin-bottom: 44px; }
+#galleri h2 { font-family: var(--heading); font-weight: 300; font-size: clamp(28px, 3.4vw, 46px); }
+#galleri .grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: 200px; gap: 12px; }
+#galleri .item { position: relative; border-radius: 12px; overflow: hidden; opacity: 0; transform: translateY(28px); transition: opacity .8s, transform .8s; }
+#galleri .item.vis { opacity: 1; transform: none; }
+#galleri .item.tall { grid-row: span 2; }
+#galleri img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .6s; will-change: transform; }
+#galleri .item:hover img { transform: scale(1.03); }
+@media (max-width: 760px) { #galleri .grid { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 150px; } }
+
+/* ── Footer ──────────────────────────────────────────────── */
+footer { background: #131110; padding: 54px 6%; display: flex; align-items: baseline; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
+footer .brand { font-family: var(--heading); font-size: 18px; letter-spacing: 0.2em; text-transform: uppercase; }
+footer .brand span { color: var(--accent); }
+footer .legal { font-size: 10px; letter-spacing: 0.12em; color: var(--concrete-dim); }
+
+/* ── Redusert bevegelse ──────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .st { transition: none; }
+  #galleri .item { opacity: 1; transform: none; transition: none; }
+  #particles { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+<div id="grain"></div>
+<div id="vignette"></div>
+<canvas id="particles"></canvas>
+
+<div id="loader">
+  <div class="line"></div>
+  <div class="mark">AK <span>Golf</span> Academy</div>
+  <div class="line"></div>
+  <div class="bar"><i id="loader-fill"></i></div>
+  <div class="pct" id="loader-pct">0%</div>
+</div>
+
+<div id="chapters"></div>
+
+<section id="anim">
+  <div id="stage">
+    <canvas id="film"></canvas>
+    <div class="grad-left"></div>
+    <div class="grad-bottom"></div>
+    <div id="tint"></div>
+  </div>
+
+  <!-- 1 · Hero -->
+  <div class="st" id="st-hero" data-show-at="0" data-hide-at="0.13">
+    <div class="inner">
+      <div class="overline">AK Golf Academy · Fredrikstad</div>
+      <h1 data-split>Coaching bygget på <em>målt sannhet.</em></h1>
+      <p class="tagline">TrackMan-data, P-posisjoner og en metodikk som følger deg fra første økt til turneringsscore. Ikke synsing — måling.</p>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v" data-target="300">0</div><div class="l">kr · første time</div></div>
+      <div class="stat"><div class="v" data-target="10">0</div><div class="l">P-posisjoner · P1–P10</div></div>
+      <div class="stat"><div class="v" data-target="6">0</div><div class="l">simulatorer · Mulligan</div></div>
+      <div class="stat"><div class="v" data-target="2">0</div><div class="l">anlegg · Østfold</div></div>
+    </div>
+  </div>
+
+  <!-- 2 · Visjon -->
+  <div class="st" id="st-vision" data-show-at="0.16" data-hide-at="0.3">
+    <div class="inner">
+      <span class="qmark">&ldquo;</span>
+      <p class="q">Svingen din har et svar. Vi finner det i tallene — ikke i magefølelsen.</p>
+      <div class="attr">Anders Kristiansen · Grunnlegger og hovedcoach</div>
+    </div>
+  </div>
+
+  <!-- 3 · Metodikken -->
+  <div class="st" id="st-details" data-show-at="0.33" data-hide-at="0.47">
+    <div class="inner">
+      <div class="overline">Metodikken</div>
+      <h2>Fra range til bane til <em>turnering.</em></h2>
+      <p class="lede">Hver økt bygger på forrige. Fremgangen måles — aldri antas.</p>
+      <div class="feat">
+        <div class="row"><span class="ic">◆</span><span class="t">Teknikk</span><span class="d">Svingarbeid forankret i P-posisjoner og ballflukt-lovene — filmet og målt med TrackMan.</span></div>
+        <div class="row"><span class="ic">◆</span><span class="t">Spill</span><span class="d">Banecoaching der beslutninger, strategi og scoring trenes der det faktisk gjelder.</span></div>
+        <div class="row"><span class="ic">◆</span><span class="t">Plan</span><span class="d">Periodisert trening med tydelige mål — du vet alltid neste steg, og hvorfor.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4 · Tilbudet -->
+  <div class="st" id="st-grid" data-show-at="0.5" data-hide-at="0.64">
+    <div class="inner">
+      <div class="overline">Tilbudet</div>
+      <h2>Alt under <em>ett tak.</em></h2>
+      <div class="amen">
+        <div class="cell"><div class="t">1:1-coaching</div><div class="d">Fast coach, faste økter og en plan som lever mellom øktene.</div></div>
+        <div class="cell"><div class="t">Junior og elite</div><div class="d">Strukturert utvikling fra junior til turneringsspiller.</div></div>
+        <div class="cell"><div class="t">AK Golf HQ</div><div class="d">Plan, økter, tester og TrackMan-tall samlet i én app.</div></div>
+        <div class="cell"><div class="t">TrackMan-analyse</div><div class="d">Hvert slag målt. Dispersion, ballflukt og fremgang over tid.</div></div>
+        <div class="cell"><div class="t">Mulligan Indoor Golf</div><div class="d">Seks simulatorer i Fredrikstad og Sarpsborg. Åpent 07–24.</div></div>
+        <div class="cell"><div class="t">Toppidrett</div><div class="d">Samme metodikk som brukes i toppidretts- og klubbsatsing.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5 · Fredrikstad -->
+  <div class="st" id="st-context" data-show-at="0.67" data-hide-at="0.8">
+    <div class="inner">
+      <div class="overline">Hvor du finner oss</div>
+      <h2>Forankret i <em>Fredrikstad.</em></h2>
+      <p class="lede">Utendørs på Gamle Fredrikstad Golfklubb, innendørs hos Mulligan — og i lomma di gjennom AK Golf HQ.</p>
+      <div class="dist">
+        <div class="row"><span class="n">Gamle Fredrikstad GK</span><span class="fill"></span><span class="v">bane og range</span></div>
+        <div class="row"><span class="n">Mulligan Fredrikstad</span><span class="fill"></span><span class="v">TrackMan · 07–24</span></div>
+        <div class="row"><span class="n">Mulligan Sarpsborg</span><span class="fill"></span><span class="v">TrackMan · 07–24</span></div>
+        <div class="row"><span class="n">AK Golf HQ</span><span class="fill"></span><span class="v">alltid med deg</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6 · CTA -->
+  <div class="st center" id="st-cta" data-show-at="0.85" data-hide-at="1.01">
+    <div class="inner">
+      <div class="overline">Kartleggingsøkt</div>
+      <h2>Klar for å trene <em>med system?</em></h2>
+      <p class="lede" style="margin: 0 auto;">Første økt kartlegger svingen, tallene og målene dine — og ender i en konkret plan.</p>
+      <div class="btns">
+        <a class="btn primary" href="/booking">Book en kartleggingsøkt</a>
+        <a class="btn ghost" href="/playerhq">Utforsk AK Golf HQ</a>
+      </div>
+      <div class="contact">
+        <span class="n">AK Golf Academy</span>
+        <span class="e">akgolfgroup@gmail.com · Fredrikstad, Norge</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="galleri">
+  <div class="head">
+    <div class="overline">Stillbilder</div>
+    <h2>Øyeblikk fra <em>reisen.</em></h2>
+  </div>
+  <div class="grid" id="galleri-grid"></div>
+</section>
+
+<footer>
+  <div class="brand">AK <span>Golf</span> Academy</div>
+  <div class="legal">AK Golf Group AS · Fredrikstad, Norge</div>
+</footer>
+
+<script>
+/* ═══ Konfig ═══ */
+const FRAME_COUNT = window.__FRAME_COUNT__ ?? 120;
+const IS_MOBILE = matchMedia("(max-width: 900px)").matches;
+const FRAME_DIR = IS_MOBILE ? "frames/mobile" : "frames/desktop";
+const LERP_FACTOR = 0.09;
+const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const pad = (n) => String(n + 1).padStart(4, "0");
+const frameSrc = (i) => `${FRAME_DIR}/frame-${pad(i)}.webp`;
+
+/* ═══ Cursor ═══ */
+const dot = document.getElementById("cursor-dot");
+const ring = document.getElementById("cursor-ring");
+let mx = innerWidth / 2, my = innerHeight / 2, rx = mx, ry = my;
+addEventListener("mousemove", (e) => { mx = e.clientX; my = e.clientY; dot.style.transform = `translate(${mx - 3}px, ${my - 3}px)`; }, { passive: true });
+(function ringLoop() { rx += (mx - rx) * 0.15; ry += (my - ry) * 0.15; ring.style.transform = `translate(${rx - 18}px, ${ry - 18}px)`; requestAnimationFrame(ringLoop); })();
+document.addEventListener("mouseover", (e) => { ring.classList.toggle("hover", !!e.target.closest("a, button, .cell")); });
+
+/* ═══ Partikler ═══ */
+const pc = document.getElementById("particles");
+const pctx = pc.getContext("2d");
+let parts = [];
+function pInit() {
+  pc.width = innerWidth; pc.height = innerHeight;
+  parts = Array.from({ length: 40 }, () => ({
+    x: Math.random() * pc.width, y: Math.random() * pc.height,
+    r: 0.3 + Math.random() * 1.5,
+    vx: (Math.random() - 0.5) * 0.18, vy: (Math.random() - 0.5) * 0.14,
+    o: 0.05 + Math.random() * 0.3,
+  }));
+}
+function pLoop() {
+  pctx.clearRect(0, 0, pc.width, pc.height);
+  for (const p of parts) {
+    p.x = (p.x + p.vx + pc.width) % pc.width;
+    p.y = (p.y + p.vy + pc.height) % pc.height;
+    pctx.beginPath(); pctx.arc(p.x, p.y, p.r, 0, 7);
+    pctx.fillStyle = `rgba(244,240,234,${p.o})`; pctx.fill();
+  }
+  requestAnimationFrame(pLoop);
+}
+if (!REDUCED) { pInit(); pLoop(); addEventListener("resize", pInit); }
+
+/* ═══ Letter-split ═══ */
+document.querySelectorAll("[data-split]").forEach((el) => {
+  const frag = document.createDocumentFragment();
+  let idx = 0;
+  el.childNodes.forEach((node) => {
+    if (node.nodeType === 3) {
+      // ordvis gruppering så ord aldri brytes («på» skal ikke bli «p / å»)
+      node.textContent.split(" ").forEach((word, wi, arr) => {
+        if (word) {
+          const w = document.createElement("span");
+          w.style.cssText = "display:inline-block;white-space:nowrap;";
+          word.split("").forEach((ch) => {
+            const s = document.createElement("span");
+            s.textContent = ch;
+            s.style.cssText = `display:inline-block;opacity:0;transform:translateY(14px);transition:opacity .5s ${idx * 22}ms, transform .5s ${idx * 22}ms;`;
+            s.className = "ch";
+            w.appendChild(s);
+            idx++;
+          });
+          frag.appendChild(w);
+        }
+        if (wi < arr.length - 1) frag.appendChild(document.createTextNode(" "));
+      });
+    } else frag.appendChild(node.cloneNode(true));
+  });
+  el.innerHTML = ""; el.appendChild(frag);
+});
+function playSplit() {
+  document.querySelectorAll("#st-hero .ch").forEach((s) => { s.style.opacity = "1"; s.style.transform = "none"; });
+}
+
+/* ═══ Dwell-motor ═══ */
+const SECTIONS = [...document.querySelectorAll(".st")].map((el) => ({
+  el, show: parseFloat(el.dataset.showAt), hide: parseFloat(el.dataset.hideAt),
+}));
+const DWELL_CENTERS = SECTIONS.map((s) => (s.show + Math.min(s.hide, 1)) / 2);
+const DWELL_WIDTH = 0.045, DWELL_PEAK = 3.5, REMAP_N = 2000;
+const lut = new Float32Array(REMAP_N + 1);
+{
+  let acc = 0;
+  const dens = (x) => 1 + DWELL_CENTERS.reduce((a, c) => a + DWELL_PEAK * Math.exp(-((x - c) ** 2) / (2 * DWELL_WIDTH ** 2)), 0);
+  for (let i = 0; i <= REMAP_N; i++) { lut[i] = acc; acc += dens(i / REMAP_N) / REMAP_N; }
+  for (let i = 0; i <= REMAP_N; i++) lut[i] /= acc; // normaliser 0..1
+}
+function remapProgress(p) {
+  // inverter: finn effektiv fremdrift der kumulativ tetthet = p
+  let lo = 0, hi = REMAP_N;
+  while (lo < hi) { const mid = (lo + hi) >> 1; if (lut[mid] < p) lo = mid + 1; else hi = mid; }
+  return lo / REMAP_N;
+}
+
+/* ═══ Frames ═══ */
+const film = document.getElementById("film");
+const fctx = film.getContext("2d");
+const frames = new Array(FRAME_COUNT).fill(null);
+let loaded = 0;
+function sizeCanvas() {
+  const dpr = Math.min(devicePixelRatio || 1, 2);
+  film.width = innerWidth * dpr; film.height = innerHeight * dpr;
+}
+sizeCanvas(); addEventListener("resize", () => { sizeCanvas(); drawFrame(Math.round(currentFrame)); });
+function nearest(i) {
+  for (let d = 0; d < FRAME_COUNT; d++) {
+    if (frames[i - d]) return frames[i - d];
+    if (frames[i + d]) return frames[i + d];
+  }
+  return null;
+}
+function drawFrame(i) {
+  const img = nearest(Math.max(0, Math.min(FRAME_COUNT - 1, i)));
+  if (!img) return;
+  const cw = film.width, ch = film.height;
+  const s = Math.max(cw / img.width, ch / img.height);
+  const w = img.width * s, h = img.height * s;
+  fctx.drawImage(img, (cw - w) / 2, (ch - h) / 2, w, h);
+}
+async function loadFrame(i) {
+  if (frames[i]) return;
+  try {
+    const res = await fetch(frameSrc(i));
+    const blob = await res.blob();
+    frames[i] = await createImageBitmap(blob);
+  } catch {
+    const img = new Image();
+    img.src = frameSrc(i);
+    await img.decode().catch(() => {});
+    frames[i] = img;
+  }
+  loaded++;
+  const pct = Math.round((loaded / FRAME_COUNT) * 100);
+  document.getElementById("loader-fill").style.width = pct + "%";
+  document.getElementById("loader-pct").textContent = pct + "%";
+}
+async function loadAll() {
+  // kritiske først: hver 8., så resten i puljer
+  const critical = [];
+  for (let i = 0; i < FRAME_COUNT; i += 8) critical.push(i);
+  await Promise.all(critical.map(loadFrame));
+  drawFrame(0);
+  document.getElementById("loader").classList.add("done");
+  playSplit();
+  const rest = [];
+  for (let i = 0; i < FRAME_COUNT; i++) if (!frames[i]) rest.push(i);
+  for (let i = 0; i < rest.length; i += 12) {
+    await Promise.all(rest.slice(i, i + 12).map(loadFrame));
+  }
+}
+
+/* ═══ Kapittel-markører ═══ */
+const chapEl = document.getElementById("chapters");
+SECTIONS.forEach((_, i) => {
+  const d = document.createElement("div"); d.className = "dot"; chapEl.appendChild(d);
+  if (i < SECTIONS.length - 1) { const s = document.createElement("div"); s.className = "seg"; s.appendChild(document.createElement("i")); chapEl.appendChild(s); }
+});
+const chapDots = [...chapEl.querySelectorAll(".dot")];
+const chapSegs = [...chapEl.querySelectorAll(".seg i")];
+
+/* ═══ Scroll-loop ═══ */
+const anim = document.getElementById("anim");
+const tint = document.getElementById("tint");
+const TINTS = [
+  "linear-gradient(160deg, rgba(200,152,72,0.06), transparent 60%)",
+  "linear-gradient(200deg, rgba(212,160,176,0.05), transparent 60%)",
+  "linear-gradient(160deg, rgba(200,152,72,0.05), transparent 55%)",
+  "linear-gradient(220deg, rgba(212,160,176,0.05), transparent 60%)",
+  "linear-gradient(160deg, rgba(200,152,72,0.06), transparent 60%)",
+  "linear-gradient(180deg, rgba(200,152,72,0.08), transparent 65%)",
+];
+let currentFrame = 0, targetFrame = 0, statsPlayed = false, tintIdx = -1;
+function scrollProgress() {
+  const r = anim.getBoundingClientRect();
+  const total = r.height - innerHeight;
+  return total > 0 ? Math.max(0, Math.min(1, -r.top / total)) : 0;
+}
+function playStats() {
+  if (statsPlayed) return; statsPlayed = true;
+  document.querySelectorAll("#st-hero .stat .v").forEach((el) => {
+    const target = parseFloat(el.dataset.target); const t0 = performance.now();
+    (function tick(now) {
+      const t = Math.min(1, (now - t0) / 1500), e = 1 - (1 - t) ** 3;
+      el.textContent = String(Math.round(target * e));
+      if (t < 1) requestAnimationFrame(tick);
+    })(t0);
+  });
+}
+function loop() {
+  const raw = scrollProgress();
+  const p = REDUCED ? raw : remapProgress(raw);
+  targetFrame = p * (FRAME_COUNT - 1);
+  currentFrame += (targetFrame - currentFrame) * (REDUCED ? 1 : LERP_FACTOR);
+  drawFrame(Math.round(currentFrame));
+
+  let active = -1;
+  SECTIONS.forEach((s, i) => {
+    const vis = raw >= s.show && raw < s.hide;
+    s.el.classList.toggle("visible", vis);
+    if (vis) active = i;
+  });
+  if (active === 0) playStats();
+  chapDots.forEach((d, i) => d.classList.toggle("active", i === active));
+  chapSegs.forEach((seg, i) => {
+    const a = SECTIONS[i].show, b = SECTIONS[i + 1].show;
+    seg.style.height = `${Math.max(0, Math.min(1, (raw - a) / (b - a))) * 100}%`;
+  });
+  if (active >= 0 && active !== tintIdx) { tintIdx = active; tint.style.background = TINTS[active]; }
+  requestAnimationFrame(loop);
+}
+
+/* ═══ Galleri ═══ */
+const grid = document.getElementById("galleri-grid");
+const GAL = 7;
+for (let g = 0; g < GAL; g++) {
+  const i = Math.round((g / (GAL - 1)) * (FRAME_COUNT - 1));
+  const item = document.createElement("div");
+  item.className = "item" + (g === 1 || g === 4 ? " tall" : "");
+  const img = document.createElement("img");
+  img.loading = "lazy"; img.src = frameSrc(i); img.alt = "Stillbilde fra filmen";
+  item.appendChild(img); grid.appendChild(item);
+}
+const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("vis"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -10% 0px" });
+grid.querySelectorAll(".item").forEach((el) => io.observe(el));
+
+/* ═══ Init ═══ */
+loadAll().then(() => { if (REDUCED) { drawFrame(0); } });
+loop();
+</script>
+</body>
+</html>
