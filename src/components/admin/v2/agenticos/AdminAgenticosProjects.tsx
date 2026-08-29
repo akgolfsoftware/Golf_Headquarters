@@ -2,6 +2,10 @@
 
 /**
  * AO-05 Projects gruppert på Area. Tom = hel setning, ingen oppdiktede tall.
+ * Fasit: designsystem/train-lock/AO-05 Projects og Tasks.dc.html (listen —
+ * AO-06 Project-ark og AO-07 Task-ark, klikk-gjennom detaljark i samme fil,
+ * er IKKE bygget: radene har verken href eller onClick ennå. Dokumentert
+ * avvik, ikke løst i PX-6 — se PR-beskrivelsen.)
  */
 
 import { TL } from "@/lib/v2/train-lock";

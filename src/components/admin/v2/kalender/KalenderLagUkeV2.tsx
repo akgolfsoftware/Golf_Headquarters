@@ -5,8 +5,9 @@
  *
  * Fasit: designsystem/train-lock/KA-01 Agency Kalender uke Mac.dc.html,
  * KA-01L Kalender uke lys.dc.html (TL-tokens bytter automatisk),
- * KA-02 Agency Kalender maned Mac.dc.html, KA-03 Agency Kalender agenda
- * iPhone.dc.html, KA-05 Agency Kollisjon rom.dc.html,
+ * KA-02 Agency Kalender maned Mac.dc.html,
+ * KA-03 Agency Kalender agenda iPhone.dc.html,
+ * KA-05 Agency Kollisjon rom.dc.html,
  * AG-11 Kalender dag.dc.html (time-akse i «dag»-visning, se DagTidslinje).
  *
  * Én flate på `/admin/kalender`: uke (default), måned og dag. Fem lag med
