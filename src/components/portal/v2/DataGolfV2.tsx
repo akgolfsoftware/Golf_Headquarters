@@ -1,7 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ DataGolf-spillerkort — Train-lock DG-01 (C10).
+ * PlayerHQ DataGolf-spillerkort — Train-lock (C10).
+ * Fasit: designsystem/train-lock/DG-01 DataGolf spiller.dc.html
  *
  * Kun DataGolf-motor. Negative tall = opacity, aldri rødt. PGA-putt merkes
  * som Broadie-tabell. «Tren mot» er UTKAST, aldri auto-plan.

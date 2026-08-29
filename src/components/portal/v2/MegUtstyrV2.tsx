@@ -1,6 +1,6 @@
 /**
- * PlayerHQ · Meg · Utstyr og bag (W3-port).
- * Fasit: designsystem/paper/fase2/playerhq/playerhq-utstyr.html (§9 tabell + trapp).
+ * PlayerHQ · Meg · Utstyr og bag — Train-lock.
+ * Fasit: designsystem/train-lock/ME-01 Utstyr.dc.html
  *
  * Tilstander: Bag registrert · Tom. Ingen clay — «Én ting nå: —» i manifestet.
  *
