@@ -8,10 +8,22 @@
  * fasiten har nøyaktig ett sted å endres.
  *
  * FASIT: designsystem/train-lock/ (HANDOFF.md · TRAIN LOCK.dc.html ·
- * AG-00 LOCK.dc.html · AX-01 Skall rail og tabbar.dc.html).
+ * AG-00 LOCK.dc.html · AX-01 Skall rail og tabbar.dc.html ·
+ * GAP-00 Kart.dc.html · MAT-00 Materialer.dc.html).
  * Train-lock er designfasit for ALLE skjermer i PlayerHQ OG AgencyOS
  * (CLAUDE.md invariant 2). AG-00 viser at AgencyOS arver samme tokens —
- * derfor ett objekt, ikke to.
+ * derfor ett objekt, ikke to. GAP-00 er IKKE en skjerm — det er
+ * Paper→Train-ID-kartet (hvilken gammel Paper-jobb som bor hvor nå, hvilken
+ * bølge den hører til). Referert her fordi denne fila er det naturlige
+ * skjerm-ID-krysspunktet i kode; ingen UI bygges av GAP-00 selv (PX-7,
+ * 29.08.2026).
+ * MAT-00 er materiale-spesimen (logo-prikk, Fullført-hake, pyramide-
+ * streker, foto-stripe), ikke en skjerm — reglene den viser ER allerede
+ * håndhevet mekanisk her og i CLAUDE.md invariant 2 («Fullført = warm
+ * TL.warm + hake. TL.ok er BARE godkjent-av-coach»), verifisert PX-7 mot
+ * OktArk.tsx (`session.status === "COMPLETED" ? TL.warm : …`). MAT-01
+ * (Mac Økt FYS hero-foto) er IKKE portert — hero-foto på øktvisning finnes
+ * ikke i koden ennå og er ny UI utover tilstand/brekk, se PR-beskrivelsen.
  *
  * FORHOLD TIL T (src/lib/v2/tokens.ts): T er Paper-speilet og er UTGÅENDE.
  * Det står urørt så lenge skjermene fortsatt leser det. Ny Train-lock-kode

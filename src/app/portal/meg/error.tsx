@@ -18,5 +18,12 @@ export default function Error({
     console.error("[v2/error]", error.digest, error);
   }, [error]);
 
-  return <V2Feil reset={reset} tilbakeHref="/portal/meg" />;
+  return (
+    <V2Feil
+      reset={reset}
+      tilbakeHref="/portal/meg"
+      tittel="Fikk ikke lastet innstillingene"
+      melding="Profilen vises fra siste lagrede versjon."
+    />
+  );
 }
