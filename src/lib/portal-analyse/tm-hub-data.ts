@@ -200,7 +200,8 @@ export async function hentAnalyseHub(userId: string): Promise<TmHubData> {
     sgAkser,
     dypere: [
       {
-        href: "/portal/analysere/historikk",
+        /* PH-10→PH-11: «Runder» går til runde-listen, ikke samle-historikken. */
+        href: "/portal/mal/runder",
         tittel: "Runder",
         meta: runderIManed > 0 ? `${runderIManed} i ${manedsnavn}` : "Ingen i denne måneden",
       },

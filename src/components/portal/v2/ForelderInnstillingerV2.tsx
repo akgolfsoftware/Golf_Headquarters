@@ -1,12 +1,28 @@
 "use client";
-import { TL } from "@/lib/v2/train-lock";
+
 /**
- * Foreldreportal · Innstillinger — v2 Presis + B-pakke (status + én grønn CTA).
- * Varsel-brytere fortsatt lese-status (ikke lagret ennå). Kun v2 + T.*.
+ * Foreldreportal · Innstillinger — pikselport PX-5.
+ * Fasit: designsystem/train-lock/FO-06 Innstillinger.dc.html
+ * (+ FO-06L Innstillinger lys.dc.html — lys/mørk gjøres av tokens, aldri
+ * varianter her). Varsel-bryterne er lokale (persistens finnes ikke ennå —
+ * samme begrensning som før porten, nå i fasitens 51×31-toggle).
  */
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Caps, Tittel, Kort, Rad, StatusPill, TomTilstand, AvatarInit, Icon, Knapp } from "@/components/v2";
+import { TL } from "@/lib/v2/train-lock";
+import {
+  FoSkjerm,
+  FoHode,
+  FoCaps,
+  FoRad,
+  FoToggle,
+  FoAvatar,
+  FoCtaSekundar,
+  FoFotnote,
+  FoTom,
+} from "@/components/forelder/fo-kit";
+
 /* ── Datakontrakt (avledet av requirePortalUser + hentBarnForForelder) ── */
 
 export interface ForelderInnstillingerBarn {
@@ -23,217 +39,106 @@ export interface ForelderInnstillingerData {
   barn: ForelderInnstillingerBarn[];
 }
 
-/* Varseltyper en forelder mottar (per e-post inntil app-varsler kobles på).
-   Kopiert 1:1 fra den ekte skjermen — statisk konfig, ikke fabrikerte data. */
-const VARSEL_TYPER: { tittel: string; beskrivelse: string }[] = [
-  { tittel: "Ukerapport", beskrivelse: "Sammendrag av treningsuken hver fredag" },
-  { tittel: "Booking", beskrivelse: "Når en time bookes, endres eller avlyses" },
-  { tittel: "Faktura", beskrivelse: "Nye fakturaer og forfalte betalinger" },
-  { tittel: "Samtykke", beskrivelse: "Når en godkjenning fra deg trengs" },
+/* Varseltyper — fasitens fire rader (FO-06). Statisk konfig, ikke data. */
+const VARSEL_TYPER: { key: string; tittel: string; beskrivelse: string }[] = [
+  { key: "plan", tittel: "Endringer i plan", beskrivelse: "Når coachen flytter eller avlyser en økt" },
+  { key: "ukerapport", tittel: "Ukerapport", beskrivelse: "Sammendrag hver mandag morgen" },
+  { key: "betaling", tittel: "Betalinger", beskrivelse: "Når en faktura forfaller" },
+  { key: "turnering", tittel: "Turneringer", beskrivelse: "Påminnelse dagen før" },
 ];
 
-/* ── Liten mono-tekstlenke for kort-hoder («Rediger» / «Se alle») ──────── */
-function KortLenke({ children, onClick }: { children: string; onClick: () => void }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="v2-press v2-focus"
-      style={{
-        appearance: "none",
-        background: "transparent",
-        border: "none",
-        cursor: "pointer",
-        fontFamily: TL.font.mono,
-        fontSize: 10,
-        fontWeight: 700,
-        letterSpacing: "0.1em",
-        textTransform: "uppercase",
-        color: TL.fill,
-        padding: 0,
-      }}
-    >
-      {children}
-    </button>
-  );
+/** «Mor» / «Far» → fasitens nøytrale «Foresatt». */
+function relasjonTekst(relasjon: string): string {
+  const r = relasjon.trim();
+  return r.length > 0 ? r : "Foresatt";
 }
-
-/* ── Skjerm ────────────────────────────────────────────────────────────── */
 
 export function ForelderInnstillingerV2({ data }: { data: ForelderInnstillingerData }) {
   const router = useRouter();
-  const gaaTil = (href: string) => () => router.push(href);
+  const { navn, epost, barn } = data;
+  const fornavn = navn.split(" ")[0] ?? navn;
 
-  const { navn, epost, telefon, barn } = data;
-
-  const kontakt: { icon: string; label: string; verdi: string; mangler?: boolean }[] = [
-    { icon: "user", label: "Navn", verdi: navn },
-    { icon: "mail", label: "E-post", verdi: epost },
-    telefon
-      ? { icon: "phone", label: "Telefon", verdi: telefon }
-      : { icon: "phone", label: "Telefon", verdi: "Ikke registrert", mangler: true },
-  ];
+  const [varsler, setVarsler] = useState<Record<string, boolean>>({
+    plan: true,
+    ukerapport: true,
+    betaling: true,
+    turnering: false,
+  });
 
   return (
-    <div data-paper-wave-e="forelder-sub" data-paper-portal-forelder-innstillinger style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
-      {/* Hode + status */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "flex-end",
-          justifyContent: "space-between",
-          gap: 12,
-          flexWrap: "wrap",
-        }}
-      >
-        <div>
-          <Caps>Innstillinger</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel em="varsler">Konto og</Tittel>
-          </div>
-          <span
-            style={{
-              fontFamily: TL.font.sans,
-              fontSize: 12.5,
-              color: TL.mute,
-              display: "block",
-              marginTop: 8,
-            }}
-          >
-            Kontaktinfo, varsler og sikkerhet.
-          </span>
-        </div>
-        <StatusPill tone={barn.length > 0 ? "up" : "warn"}>
-          {barn.length > 0
-            ? barn.length === 1
-              ? "1 barn"
-              : `${barn.length} barn`
-            : "Ingen barn"}
-        </StatusPill>
-      </div>
+    <FoSkjerm>
+      <FoHode caps={`Forelder · ${fornavn}`} tittel="Innstillinger" under={epost} />
 
-      {/* Én primær CTA (B) */}
-      <div>
-        <Knapp icon="user" onClick={gaaTil("/portal/meg")}>
-          Rediger profil
-        </Knapp>
+      {/* Varsler — hairline-rader med 51×31-toggle (FO-06) */}
+      <div style={{ marginTop: 22 }}>
+        <FoCaps>Varsler</FoCaps>
       </div>
-
-      {/* Kontaktinfo — ekte data fra Prisma */}
-      <Kort
-        eyebrow="Kontaktinformasjon"
-        action={<KortLenke onClick={gaaTil("/portal/meg")}>Rediger</KortLenke>}
-      >
-        <div>
-          {kontakt.map((k, i) => (
-            <Rad
-              key={k.label}
-              leading={<Icon name={k.icon} size={16} style={{ color: TL.mute }} />}
-              title={
-                <span style={{ color: k.mangler ? TL.mute : TL.text }}>{k.verdi}</span>
-              }
-              sub={k.label}
-              trailing={null}
-              last={i === kontakt.length - 1}
+      {VARSEL_TYPER.map((v) => (
+        <FoRad
+          key={v.key}
+          title={v.tittel}
+          sub={v.beskrivelse}
+          right={
+            <FoToggle
+              on={varsler[v.key] ?? false}
+              onChange={(på) => setVarsler((s) => ({ ...s, [v.key]: på }))}
+              label={v.tittel}
             />
-          ))}
-        </div>
-      </Kort>
+          }
+        />
+      ))}
 
-      {/* Koblede barn — samtykke-kontekst */}
-      <Kort
-        eyebrow="Koblede barn"
-        action={<KortLenke onClick={gaaTil("/forelder/barn")}>Se alle</KortLenke>}
-      >
-        {barn.length === 0 ? (
-          <TomTilstand
-            icon="users"
-            title="Ingen barn koblet ennå"
-            sub="Be spilleren sende en invitasjon fra sin profil."
-          />
-        ) : (
-          <div>
-            {barn.map((b, i) => (
-              <Rad
+      {/* Koblede barn — kort med avatar 38 + «Endre» (FO-06) */}
+      <div style={{ marginTop: 22 }}>
+        <FoCaps>Koblede barn</FoCaps>
+      </div>
+      {barn.length === 0 ? (
+        <FoTom
+          tittel="Ingen barn er koblet ennå"
+          sub="Coachen sender invitasjon når barnet er registrert i klubben."
+        />
+      ) : (
+        <div style={{ marginTop: 10, display: "flex", flexDirection: "column", gap: 10 }}>
+          {barn.map((b) => {
+            const barnFornavn = b.navn.split(" ")[0] ?? b.navn;
+            return (
+              <div
                 key={b.id}
-                leading={<AvatarInit navn={b.navn} size={34} />}
-                title={b.navn}
-                sub={b.relasjon}
-                trailing={<StatusPill tone="up">Koblet</StatusPill>}
-                last={i === barn.length - 1}
-              />
-            ))}
-          </div>
-        )}
-      </Kort>
-
-      {/* Varsler — typer du mottar (brytere kobles på senere, vist som lese-status) */}
-      <Kort eyebrow="Varsler" action={<StatusPill tone="info">På e-post</StatusPill>}>
-        <div>
-          {VARSEL_TYPER.map((v, i) => (
-            <Rad
-              key={v.tittel}
-              title={v.tittel}
-              sub={v.beskrivelse}
-              trailing={
-                <span
-                  style={{
-                    fontFamily: TL.font.mono,
-                    fontSize: 10,
-                    fontWeight: 700,
-                    letterSpacing: "0.1em",
-                    textTransform: "uppercase",
-                    color: TL.ok,
-                    flex: "none",
-                  }}
-                >
-                  På
-                </span>
-              }
-              last={i === VARSEL_TYPER.length - 1}
-            />
-          ))}
+                onClick={() => router.push(`/forelder/barn/${b.id}`)}
+                style={{
+                  background: TL.elev,
+                  borderRadius: 20,
+                  padding: "14px 16px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  cursor: "pointer",
+                }}
+              >
+                <FoAvatar navn={barnFornavn} size={38} />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
+                    {barnFornavn}
+                  </div>
+                  <div style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute }}>
+                    {relasjonTekst(b.relasjon)} · full lesetilgang
+                  </div>
+                </div>
+                <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute }}>Endre</span>
+              </div>
+            );
+          })}
         </div>
-        <p
-          style={{
-            fontFamily: TL.font.sans,
-            fontSize: 12,
-            color: TL.mute,
-            lineHeight: 1.6,
-            margin: "14px 0 0",
-            paddingTop: 14,
-            borderTop: `1px solid ${TL.hair}`,
-          }}
-        >
-          Varslene sendes til e-posten din. Individuelle varselbrytere og
-          push-varsler kommer i en senere versjon.
-        </p>
-      </Kort>
+      )}
 
-      {/* Konto */}
-      <Kort eyebrow="Konto">
-        <div>
-          <Rad
-            leading={<Icon name="lock" size={16} style={{ color: TL.mute }} />}
-            title="Endre passord"
-            sub="Via Supabase Auth"
-            onClick={gaaTil("/portal/meg/innstillinger/sikkerhet")}
-          />
-          <Rad
-            leading={<Icon name="shield-check" size={16} style={{ color: TL.mute }} />}
-            title="To-faktor-autentisering"
-            sub="Ikke aktivert"
-            onClick={gaaTil("/portal/meg/innstillinger/sikkerhet")}
-          />
-          <Rad
-            leading={<Icon name="log-out" size={16} style={{ color: TL.danger }} />}
-            title={<span style={{ color: TL.danger }}>Logg ut</span>}
-            onClick={gaaTil("/auth/login")}
-            trailing={<Icon name="chevron-right" size={14} style={{ color: TL.danger }} />}
-            last
-          />
-        </div>
-      </Kort>
-    </div>
+      <div style={{ marginTop: 10 }}>
+        <FoCtaSekundar onClick={() => router.push("/auth/login")}>Logg ut</FoCtaSekundar>
+      </div>
+
+      <FoFotnote>
+        Lesetilgang gjelder plan, oppmøte og betaling. Analyse og samtaler er
+        ikke tilgjengelig for foresatte.
+      </FoFotnote>
+    </FoSkjerm>
   );
 }

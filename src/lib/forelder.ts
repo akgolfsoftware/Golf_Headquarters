@@ -23,6 +23,7 @@ export async function hentBarnForForelder(parentUserId: string) {
           hcp: true,
           dateOfBirth: true,
           guardianConsentGivenAt: true,
+          homeClub: true,
         },
       },
     },
@@ -31,6 +32,8 @@ export async function hentBarnForForelder(parentUserId: string) {
   return links.map((l) => ({
     linkId: l.id,
     relationship: l.relationship,
+    /** Når koblingen ble opprettet (FO-02 «Koblet dd.mm.yyyy»). */
+    koblet: l.createdAt,
     child: l.child,
   }));
 }

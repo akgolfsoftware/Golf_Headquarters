@@ -15,7 +15,7 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentBarnForForelder } from "@/lib/forelder";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, FORELDER_NAV } from "@/components/v2/shell";
+import { V2Shell, FORELDER_NAV, FORELDER_MER } from "@/components/v2/shell";
 import {
   ForelderCoachV2,
   type ForelderCoachData,
@@ -25,11 +25,12 @@ export const dynamic = "force-dynamic";
 
 const SUPPORT_EPOST = "support@akgolf.no";
 
+/* FO-04-fasitens datoformat: «22.08.2026». */
 const NB_DATO = new Intl.DateTimeFormat("nb-NO", {
+  timeZone: "Europe/Oslo",
   day: "2-digit",
-  month: "short",
-  hour: "2-digit",
-  minute: "2-digit",
+  month: "2-digit",
+  year: "numeric",
 });
 
 export default async function ForelderCoachPage() {
@@ -39,16 +40,16 @@ export default async function ForelderCoachPage() {
   if (barn.length === 0) {
     const data: ForelderCoachData = {
       antallBarn: 0,
+      parentName: user.name,
       childFirstName: null,
       coachNavn: null,
       coachAvatarUrl: null,
       coachEpost: null,
-      nesteBooking: null,
       sisteMelding: null,
       supportEpost: SUPPORT_EPOST,
     };
     return (
-      <V2Shell bredde="kolonne" aktiv="coach" nav={FORELDER_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <V2Shell bredde="kolonne" aktiv="coach" nav={FORELDER_NAV} mer={FORELDER_MER} navn={user.name} avatarUrl={user.avatarUrl}>
         <ForelderCoachV2 data={data} />
       </V2Shell>
     );
@@ -100,16 +101,11 @@ export default async function ForelderCoachPage() {
 
   const data: ForelderCoachData = {
     antallBarn: barn.length,
+    parentName: user.name,
     childFirstName,
     coachNavn: coach?.name ?? null,
     coachAvatarUrl: coach?.avatarUrl ?? null,
     coachEpost: coach?.email ?? null,
-    nesteBooking: nesteBookingRad
-      ? {
-          dato: NB_DATO.format(nesteBookingRad.startAt),
-          serviceName: nesteBookingRad.serviceType.name,
-        }
-      : null,
     sisteMelding: sisteMeldingRad
       ? {
           title: sisteMeldingRad.title,
@@ -121,7 +117,7 @@ export default async function ForelderCoachPage() {
   };
 
   return (
-    <V2Shell bredde="kolonne" aktiv="coach" nav={FORELDER_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="coach" nav={FORELDER_NAV} mer={FORELDER_MER} navn={user.name} avatarUrl={user.avatarUrl}>
       <ForelderCoachV2 data={data} />
     </V2Shell>
   );

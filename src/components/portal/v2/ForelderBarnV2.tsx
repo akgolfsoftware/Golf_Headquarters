@@ -1,27 +1,43 @@
 "use client";
-import { TL } from "@/lib/v2/train-lock";
+
 /**
- * Foreldreportal · Barn-lista — Paper-port (W5).
- * Fasit: designsystem/paper/fase2/forelder/forelder-barn.html, data-vis="flere"
- * (listen over flere koblede barn — demoens faste «Emil Berg»-topptekst i
- * .topp hører til barn-DETALJ-siden og er derfor bevisst ikke kopiert hit;
- * lista bruker en generisk «Mine barn»-topptekst siden ingen enkeltbarn er
- * valgt ennå. Personvernlinjen fra fasiten står uendret).
- *
- * Trykkbare kort per barn. Kun v2 + T.*. Enklere foreldre-språk.
- * Samtykke leses fra User.guardianConsentGivenAt (ekte GuardianConsent-felt)
- * — barn uten bekreftet samtykke vises som egen «uten samtykke»-rad i stedet
- * for stall-tallene (aldri fabrikkert).
+ * Foreldreportal · Barn — pikselport PX-5.
+ * Fasit: designsystem/train-lock/FO-02 Barn.dc.html
+ * (+ FO-02L Barn lys.dc.html — lys/mørk gjøres av tokens).
+ * Kort per koblet barn: avatar 44 + fornavn 20/700, pyramide-snapshot
+ * (fasitens faste trappeform — dataene bæres av Økter-tallet), øktantall
+ * 34/700, «Neste økt» og «Utestående» som 74px-etikettlinjer. Skoletid-
+ * bekreftelsen (D6, ekte action) beholdes som egen seksjon i kortet —
+ * tillegg utover fasiten, notert i PR-en.
  */
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { toast } from "sonner";
 import { bekreftSkoletidAction } from "@/app/forelder/barn/skoletid-actions";
 import type { PyramidArea } from "@/generated/prisma/client";
-import { Caps, Tittel, Kort, Pyramide, TomTilstand, AvatarFoto, Icon, StatusPill, Knapp, HjelpTips } from "@/components/v2";
-/* ── Datakontrakt (1:1 med page.tsx-loaderen) ──────────────────────── */
+import { TL } from "@/lib/v2/train-lock";
+import {
+  FoSkjerm,
+  FoHode,
+  FoCaps,
+  FoKort,
+  FoAvatar,
+  FoChevron,
+  FoCtaSekundar,
+  FoFotnote,
+  FoTom,
+} from "@/components/forelder/fo-kit";
+
+/* ── Datakontrakt (serialisert fra loader) ─────────────────────────── */
+
+export type SkoletidVisning = {
+  semesterVisning: string;
+  /** «20.12» — til «gjelder til …» etter bekreftelse. */
+  semesterSlutt: string;
+  status: { bekreftet: boolean; tekst: string; bekreftetAt?: Date };
+  blokker: { dager: string; fra: string; til: string }[];
+};
 
 export type ForelderBarnRad = {
   id: string;
@@ -33,443 +49,141 @@ export type ForelderBarnRad = {
   alder: number | null;
   /** Ekte GuardianConsent-felt (User.guardianConsentGivenAt != null). */
   samtykkeGitt: boolean;
+  /** «Koblet 12.03.2026» — ParentRelation.createdAt, server-formatert. */
+  koblet: string | null;
+  /** Barnets hjemmeklubb (User.homeClub) — null når ukjent. */
+  klubb: string | null;
   /** Fullførte økter siste 30 dager. */
   okter30d: number;
-  /** Pyramide-fordeling (apex→base: TURN øverst, FYS fundament), verdi = antall økter. */
+  /** Pyramide-fordeling (apex→base), verdi = antall økter. */
   pyramide: { akse: PyramidArea; value: number }[];
-  /** Neste planlagte/aktive økt, eller null. */
-  nesteOkt: { scheduledAt: Date; title: string } | null;
-  /** Utestående betaling (PENDING/FAILED). */
-  utestaaende: { antall: number; ore: number };
+  /** Neste planlagte/aktive økt («Lør 29.08 · 09.00»), server-formatert. */
+  nesteOkt: string | null;
+  /** Utestående beløp («1 450,00 kr»), server-formatert. */
+  utestaaende: string;
   /** D6 · skoletid for inneværende semester. Null = flaten er ikke koblet. */
   skoletid?: SkoletidVisning | null;
 };
 
-/** D6 · det komponenten trenger om skoletid — datoene er alt formatert. */
-export type SkoletidVisning = {
-  semesterVisning: string;
-  /** «20.12» — til «gjelder til …» etter bekreftelse. */
-  semesterSlutt: string;
-  status: { bekreftet: boolean; tekst: string; bekreftetAt?: Date };
-  blokker: { dager: string; fra: string; til: string }[];
+export type ForelderBarnData = {
+  barn: ForelderBarnRad[];
+  /** Forelderens navn (caps-linjen «Forelder · …»). */
+  parentName?: string;
+  /** «26.08.2026» — dagens dato, server-formatert til undertittelen. */
+  dagensDato?: string;
 };
 
-export type ForelderBarnData = { barn: ForelderBarnRad[] };
+/* ── Pyramide-snapshot — fasitens faste trappeform (FO-02) ─────────── */
 
-/* ── Rene hjelpere ─────────────────────────────────────────────────── */
+const PYRAMIDE_TRINN: { bredde: string; opacity: number }[] = [
+  { bredde: "36%", opacity: 1 },
+  { bredde: "52%", opacity: 0.8 },
+  { bredde: "68%", opacity: 0.62 },
+  { bredde: "84%", opacity: 0.44 },
+  { bredde: "100%", opacity: 0.28 },
+];
 
-const NB_DATO = new Intl.DateTimeFormat("nb-NO", {
-  weekday: "short",
-  day: "2-digit",
-  month: "short",
-});
-
-function ore(n: number): string {
-  return new Intl.NumberFormat("nb-NO", {
-    style: "currency",
-    currency: "NOK",
-    maximumFractionDigits: 0,
-  }).format(n / 100);
-}
-
-/** true på klient etter mount når viewport < 768px (styrer kun tallstørrelser). */
-function useMobile(): boolean {
-  const [m, setM] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const oppdater = () => setM(mq.matches);
-    oppdater();
-    mq.addEventListener("change", oppdater);
-    return () => mq.removeEventListener("change", oppdater);
-  }, []);
-  return m;
-}
-
-/* ── Nøkkeltall-celle (inline layout-lim, som BarnProgresjonKort.tall) ── */
-
-function Stat({
-  ikon,
-  label,
-  value,
-  alert,
-}: {
-  ikon: string;
-  label: string;
-  value: string;
-  alert?: boolean;
-}) {
+function PyramideSnapshot() {
   return (
     <div
       style={{
-        background: TL.dock,
-        border: `1px solid ${TL.hair}`,
-        borderRadius: TL.radius.row,
-        padding: "10px 12px",
-        minWidth: 0,
+        marginTop: 10,
+        display: "flex",
+        flexDirection: "column",
+        gap: 5,
+        alignItems: "center",
       }}
     >
+      {PYRAMIDE_TRINN.map((t) => (
+        <div
+          key={t.bredde}
+          style={{
+            width: t.bredde,
+            height: 12,
+            borderRadius: 3,
+            background: TL.text,
+            opacity: t.opacity,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+/* ── Etikettlinje — 74px etikett + verdi (FO-02) ───────────────────── */
+
+function EtikettLinje({ label, verdi }: { label: string; verdi: string }) {
+  return (
+    <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
       <span
         style={{
-          display: "inline-flex",
-          alignItems: "center",
-          gap: 5,
-          fontFamily: TL.font.mono,
-          fontSize: 8.5,
-          fontWeight: 700,
-          letterSpacing: "0.08em",
-          textTransform: "uppercase",
+          fontFamily: TL.font.sans,
+          fontSize: 13,
           color: TL.mute,
+          width: 74,
+          flexShrink: 0,
         }}
       >
-        <Icon name={ikon} size={11} style={{ color: TL.mute }} />
         {label}
       </span>
       <span
         style={{
-          display: "block",
-          marginTop: 6,
-          fontFamily: TL.font.mono,
-          fontSize: 13.5,
-          fontWeight: 700,
+          flex: 1,
+          fontFamily: TL.font.sans,
+          fontSize: 13,
+          fontWeight: 600,
+          color: TL.text,
           fontVariantNumeric: "tabular-nums",
-          color: alert ? TL.danger : TL.text,
-          whiteSpace: "nowrap",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
         }}
       >
-        {value}
+        {verdi}
       </span>
     </div>
   );
 }
 
-/* ── Personvernlinje (fasit — hva forelder ser, aldri redigert) ──────── */
+/* ── D6 · skoletidsbekreftelse (ekte action — beholdt fra før porten) ── */
 
-function Personvernlinje() {
-  return (
-    <div
-      style={{
-        display: "flex",
-        gap: 10,
-        padding: "12px 14px",
-        background: TL.dock,
-        borderRadius: TL.radius.card,
-        fontFamily: TL.font.sans,
-        fontSize: 12.5,
-        color: TL.mute,
-        lineHeight: 1.5,
-      }}
-    >
-      <Icon name="shield-check" size={14} style={{ color: TL.mute, flex: "none", marginTop: 1 }} />
-      <span>Du ser oppmøte, plan og økonomi. Barnas egne notater, meldinger til coachen og velværelogg vises ikke her.</span>
-    </div>
-  );
-}
-
-/* ── Uten samtykke — egen rad i stedet for stall-tall ─────────────────── */
-
-function UtenSamtykkeKort({ b }: { b: ForelderBarnRad }) {
-  return (
-    <Kort tint pad="16px 18px">
-      <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-        <AvatarFoto src={b.avatarUrl} navn={b.navn} size={44} />
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 700, color: TL.text }}>
-            {b.navn}
-          </span>
-          <span style={{ display: "block", marginTop: 2, fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}>
-            Vi mangler samtykket ditt — kontoen åpnes ikke før det er bekreftet.
-          </span>
-        </div>
-        <Link href="/forelder/samtykke" style={{ textDecoration: "none" }}>
-          <Knapp icon="shield-check">Gi samtykke</Knapp>
-        </Link>
-      </div>
-    </Kort>
-  );
-}
-
-/* ── Ett barn-kort ─────────────────────────────────────────────────── */
-
-function BarnKort({
-  b,
-  mobile,
-  onOpen,
-}: {
-  b: ForelderBarnRad;
-  mobile: boolean;
-  onOpen: () => void;
-}) {
-  const fornavn = b.navn.split(" ")[0];
-  const etternavn = b.navn.split(" ").slice(1).join(" ");
-  const okter = b.okter30d;
-  const utest = b.utestaaende;
+function SkoletidSeksjon({ barnId, skoletid }: { barnId: string; skoletid: SkoletidVisning }) {
+  const [sender, setSender] = useState(false);
+  const [status, setStatus] = useState(skoletid.status);
 
   return (
-    <Kort tint hover pad="0" style={{ overflow: "hidden" }}>
-      {/* Hode — trykkbart (åpner barnets profil). Stor mobil-tapflate. */}
-      <button
-        type="button"
-        onClick={onOpen}
-        className="v2-press v2-focus"
-        style={{
-          appearance: "none",
-          background: "transparent",
-          border: "none",
-          textAlign: "left",
-          cursor: "pointer",
-          width: "100%",
-          display: "flex",
-          alignItems: "center",
-          gap: 14,
-          padding: mobile ? "16px 16px" : "18px 20px",
-        }}
-        aria-label={`Åpne profilen til ${b.navn}`}
-      >
-        <AvatarFoto src={b.avatarUrl} navn={b.navn} size={52} />
-        <span style={{ flex: 1, minWidth: 0 }}>
-          <span
-            style={{
-              display: "block",
-              fontFamily: TL.font.mono,
-              fontSize: 9.5,
-              fontWeight: 700,
-              letterSpacing: "0.1em",
-              textTransform: "uppercase",
-              color: TL.mute,
-            }}
-          >
-            {b.relationship}
-            {b.alder != null ? ` · ${b.alder} år` : ""} · HCP{" "}
-            <span style={{ fontVariantNumeric: "tabular-nums" }}>
-              {b.hcp != null ? b.hcp.toFixed(1) : "—"}
-            </span>
-          </span>
-          <span
-            style={{
-              display: "block",
-              marginTop: 3,
-              fontFamily: TL.font.sans,
-              fontSize: 19,
-              fontWeight: 700,
-              letterSpacing: "-0.02em",
-              color: TL.text,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-          >
-            <span style={{ color: TL.fill }}>{fornavn}</span>
-            {etternavn ? ` ${etternavn}` : ""}
-          </span>
-        </span>
-        <Icon name="chevron-right" size={18} style={{ color: TL.mute, flex: "none" }} />
-      </button>
-
-      {/* Treningsfordeling (siste 30 dager) */}
-      <div style={{ borderTop: `1px solid ${TL.hair}`, padding: mobile ? "14px 16px" : "14px 20px" }}>
-        <Caps size={9} style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-          <Icon name="layers" size={12} style={{ color: TL.mute }} />
-          Hva det er trent på · 30 dager
-          <HjelpTips k="pyramideAkse" size={11} />
-        </Caps>
-        <div style={{ marginTop: 12 }}>
-          {okter > 0 ? (
-            <Pyramide data={b.pyramide} max={Math.max(1, okter)} showValues />
-          ) : (
-            <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: 0 }}>
-              Ingen fullførte økter ennå — trykk for å se profilen.
-            </p>
-          )}
-        </div>
-      </div>
-
-      {/* Nøkkeltall — økter · neste · utestående */}
+    <div style={{ marginTop: 14, paddingTop: 12, borderTop: `1px solid ${TL.hair}` }}>
+      <FoCaps>Skoletid · {skoletid.semesterVisning}</FoCaps>
       <div
         style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
-          gap: 8,
-          borderTop: `1px solid ${TL.hair}`,
-          padding: mobile ? "14px 16px" : "14px 20px",
-        }}
-      >
-        <Stat ikon="trending-up" label="Økter" value={String(okter)} />
-        <Stat
-          ikon="calendar"
-          label="Neste"
-          value={b.nesteOkt ? NB_DATO.format(b.nesteOkt.scheduledAt) : "—"}
-        />
-        <Stat
-          ikon="credit-card"
-          label="Utestående"
-          value={utest.antall > 0 ? ore(utest.ore) : "0 kr"}
-          alert={utest.antall > 0}
-        />
-      </div>
-
-      {b.skoletid && (
-        <SkoletidKort barnId={b.id} fornavn={b.navn.split(" ")[0]} data={b.skoletid} mobile={mobile} />
-      )}
-    </Kort>
-  );
-}
-
-/**
- * D6 · skoletidsbekreftelse.
- * Fasit: designsystem/paper/fase2/forelder/forelder-barn.html
- *
- * Én bekreftelse per semester, logget med dato. Ubekreftet semester vises som
- * «skoletid mangler» hos coachen — forrige semesters tider brukes aldri.
- * Bekreftet timeplan er bakteppe det varsles mot, ikke en sperre (invariant 1).
- */
-function SkoletidKort({
-  barnId,
-  fornavn,
-  data,
-  mobile,
-}: {
-  barnId: string;
-  fornavn: string;
-  data: SkoletidVisning;
-  mobile: boolean;
-}) {
-  const [status, setStatus] = useState(data.status);
-  const [sender, setSender] = useState(false);
-
-  return (
-    <div
-      style={{
-        borderTop: `1px solid ${TL.hair}`,
-        padding: mobile ? "14px 16px" : "14px 20px",
-      }}
-    >
-      <h3
-        style={{
-          margin: 0,
+          marginTop: 6,
           fontFamily: TL.font.sans,
-          fontSize: 14,
-          fontWeight: 600,
-          color: TL.text,
-        }}
-      >
-        Skoletid · {data.semesterVisning}
-      </h3>
-      <p
-        style={{
-          margin: "6px 0 0",
-          fontFamily: TL.font.sans,
-          fontSize: 12.5,
+          fontSize: 13,
           color: TL.mute,
-          lineHeight: 1.55,
+          lineHeight: 1.5,
         }}
       >
-        Coachen planlegger rundt skoletiden. {fornavn} sin skole deler ikke timeplanen
-        automatisk — derfor bekrefter du den her én gang per semester. Ubekreftet semester
-        vises som «skoletid mangler» hos coachen; vi bruker aldri forrige semesters tider.
-      </p>
-
-      <div style={{ marginTop: 10 }}>
-        {data.blokker.length > 0 ? (
-          data.blokker.map((blokk) => (
-            <Linje key={blokk.dager} navn={blokk.dager} verdi={`${blokk.fra}–${blokk.til}`} />
-          ))
-        ) : (
-          <Linje navn="Timeplan" verdi="ingen tider lagt inn ennå" />
-        )}
-        <Linje navn="Status" verdi={status.tekst} />
+        {status.bekreftet
+          ? `Bekreftet · gjelder til ${skoletid.semesterSlutt}`
+          : status.tekst}
       </div>
-
-      <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
-        <button
-          type="button"
-          className="v2-press v2-focus"
-          disabled={sender || status.bekreftet}
-          onClick={async () => {
-            setSender(true);
-            try {
+      {!status.bekreftet && (
+        <div style={{ marginTop: 10 }}>
+          <FoCtaSekundar
+            disabled={sender}
+            onClick={async () => {
+              setSender(true);
               const res = await bekreftSkoletidAction(barnId);
-              if (res.ok) {
-                toast.success(res.melding);
-                setStatus({
-                  bekreftet: true,
-                  bekreftetAt: new Date(),
-                  tekst: `bekreftet i dag · gjelder til ${data.semesterSlutt}`,
-                });
-              } else {
-                toast.error(res.melding);
-              }
-            } catch {
-              toast.error("Kunne ikke bekrefte. Prøv igjen.");
-            } finally {
               setSender(false);
-            }
-          }}
-          style={{
-            padding: "9px 16px",
-            borderRadius: TL.radius.field,
-            border: "none",
-            background: status.bekreftet ? TL.dim : TL.text,
-            color: status.bekreftet ? TL.mute : TL.scene,
-            fontFamily: TL.font.sans,
-            fontSize: 12.5,
-            fontWeight: 600,
-            cursor: status.bekreftet ? "default" : sender ? "wait" : "pointer",
-          }}
-        >
-          {status.bekreftet ? "Bekreftet" : sender ? "Bekrefter …" : "Bekreft timeplanen"}
-        </button>
-        <Link
-          href="/forelder/innstillinger"
-          className="v2-press v2-focus"
-          style={{
-            padding: "9px 16px",
-            borderRadius: TL.radius.field,
-            border: `1px solid ${TL.hair}`,
-            background: TL.elev,
-            color: TL.text,
-            fontFamily: TL.font.sans,
-            fontSize: 12.5,
-            textDecoration: "none",
-          }}
-        >
-          Endre tidene
-        </Link>
-      </div>
-
-      <p
-        style={{
-          margin: "12px 0 0",
-          fontFamily: TL.font.sans,
-          fontSize: 12,
-          color: TL.mute,
-          lineHeight: 1.55,
-        }}
-      >
-        Bekreftet timeplan tegnes som bakteppe i coachens planlegging — økter i skoletid
-        varsles, de sperres ikke.
-      </p>
-    </div>
-  );
-}
-
-/** Navn til venstre, verdi til høyre — fasitens `.linje`. */
-function Linje({ navn, verdi }: { navn: string; verdi: string }) {
-  return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        gap: 12,
-        padding: "5px 0",
-        fontFamily: TL.font.sans,
-        fontSize: 12.5,
-        color: TL.text,
-      }}
-    >
-      <span style={{ flex: "none" }}>{navn}</span>
-      <span style={{ color: TL.mute, textAlign: "right", minWidth: 0 }}>{verdi}</span>
+              if (res.ok) {
+                setStatus({ bekreftet: true, tekst: "Bekreftet", bekreftetAt: new Date() });
+                toast.success(res.melding || "Skoletid bekreftet for semesteret");
+              } else {
+                toast.error(res.melding || "Noe gikk galt. Prøv igjen.");
+              }
+            }}
+          >
+            {sender ? "Bekrefter …" : "Bekreft skoletid"}
+          </FoCtaSekundar>
+        </div>
+      )}
     </div>
   );
 }
@@ -477,96 +191,124 @@ function Linje({ navn, verdi }: { navn: string; verdi: string }) {
 /* ── Skjerm ────────────────────────────────────────────────────────── */
 
 export function ForelderBarnV2({ data }: { data: ForelderBarnData }) {
-  const mobile = useMobile();
   const router = useRouter();
-  const { barn } = data;
+  const { barn, parentName, dagensDato } = data;
+  const fornavn = (parentName ?? "").split(" ")[0] || "deg";
 
-  const forste = barn[0];
+  const antallTekst =
+    barn.length === 1
+      ? "Ett koblet barn"
+      : barn.length === 2
+        ? "To koblede barn"
+        : `${barn.length} koblede barn`;
 
   return (
-    <div
-      data-paper-slug="forelder-barn"
-      data-paper-wave-e="forelder-sub"
-      data-paper-portal-forelder-barn
-      style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}
-    >
-      {/* Hode + status */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "flex-end",
-          justifyContent: "space-between",
-          gap: 12,
-          flexWrap: "wrap",
-        }}
-      >
-        <div>
-          <Caps>Foreldreportal · Barn</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel mobile={mobile} em="barn">
-              Mine
-            </Tittel>
-          </div>
-          <span
-            style={{
-              display: "block",
-              marginTop: 8,
-              fontFamily: TL.font.sans,
-              fontSize: 12.5,
-              color: TL.mute,
-            }}
-          >
-            {barn.length > 0
-              ? "Trykk på et kort for å se treningen."
-              : "Her dukker barna opp når de er koblet."}
-          </span>
-        </div>
-        {barn.length > 0 && (
-          <StatusPill tone="up">
-            {barn.length === 1 ? "1 barn" : `${barn.length} barn`}
-          </StatusPill>
-        )}
-      </div>
+    <FoSkjerm>
+      <FoHode
+        caps={`Forelder · ${fornavn}`}
+        tittel="Barn"
+        under={dagensDato ? `${antallTekst} · ${dagensDato}` : antallTekst}
+      />
 
       {barn.length === 0 ? (
-        <Kort>
-          <TomTilstand
-            icon="users"
-            title="Ingen barn er koblet ennå"
-            sub="Be spilleren sende en invitasjon fra sin profil, eller spør coachen."
-          />
-        </Kort>
+        <FoTom
+          tittel="Ingen barn er koblet ennå"
+          sub="Coachen sender invitasjon når barnet er registrert i klubben."
+        />
       ) : (
-        <>
-          <Personvernlinje />
+        barn.map((b) => {
+          const barnFornavn = b.navn.split(" ")[0] ?? b.navn;
+          return (
+            <FoKort
+              key={b.id}
+              pad="18px"
+              style={{ marginTop: 14 }}
+              onClick={() => router.push(`/forelder/barn/${b.id}`)}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <FoAvatar navn={barnFornavn} size={44} />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontFamily: TL.font.sans, fontSize: 20, fontWeight: 700, color: TL.text }}>
+                    {barnFornavn}
+                  </div>
+                  <div style={{ marginTop: 1, fontFamily: TL.font.sans, fontSize: 13, color: TL.mute }}>
+                    {[b.koblet ? `Koblet ${b.koblet}` : null, b.klubb]
+                      .filter(Boolean)
+                      .join(" · ") || b.relationship}
+                  </div>
+                </div>
+                <FoChevron />
+              </div>
 
-          {forste && (
-            <div>
-              <Knapp
-                icon="arrow-right"
-                full={mobile}
-                onClick={() => router.push(`/forelder/barn/${forste.id}`)}
-              >
-                Åpne {forste.navn.split(" ")[0]}
-              </Knapp>
-            </div>
-          )}
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            {barn.map((b) =>
-              b.samtykkeGitt ? (
-                <BarnKort
-                  key={b.id}
-                  b={b}
-                  mobile={mobile}
-                  onOpen={() => router.push(`/forelder/barn/${b.id}`)}
-                />
+              {!b.samtykkeGitt ? (
+                <div
+                  style={{
+                    marginTop: 14,
+                    paddingTop: 12,
+                    borderTop: `1px solid ${TL.hair}`,
+                    fontFamily: TL.font.sans,
+                    fontSize: 13,
+                    color: TL.mute,
+                    lineHeight: 1.5,
+                  }}
+                >
+                  Vi mangler samtykket ditt — kontoen åpnes ikke før det er
+                  bekreftet. Se Samtykke-siden.
+                </div>
               ) : (
-                <UtenSamtykkeKort key={b.id} b={b} />
-              ),
-            )}
-          </div>
-        </>
+                <>
+                  <div style={{ marginTop: 14, display: "flex", gap: 16, alignItems: "flex-end" }}>
+                    <div style={{ flex: 1 }}>
+                      <FoCaps>Pyramide · 30 dager</FoCaps>
+                      <PyramideSnapshot />
+                    </div>
+                    <div style={{ width: 96 }}>
+                      <FoCaps>Økter</FoCaps>
+                      <div
+                        style={{
+                          marginTop: 4,
+                          fontFamily: TL.font.sans,
+                          fontSize: 34,
+                          fontWeight: 700,
+                          fontVariantNumeric: "tabular-nums",
+                          letterSpacing: "-0.02em",
+                          color: TL.text,
+                        }}
+                      >
+                        {b.okter30d}
+                      </div>
+                      <div style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.mute }}>
+                        30 dager
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    style={{
+                      marginTop: 14,
+                      paddingTop: 12,
+                      borderTop: `1px solid ${TL.hair}`,
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 8,
+                    }}
+                  >
+                    <EtikettLinje label="Neste økt" verdi={b.nesteOkt ?? "Ingen planlagt"} />
+                    <EtikettLinje label="Utestående" verdi={b.utestaaende} />
+                  </div>
+
+                  {b.skoletid && <SkoletidSeksjon barnId={b.id} skoletid={b.skoletid} />}
+                </>
+              )}
+            </FoKort>
+          );
+        })
       )}
-    </div>
+
+      <FoFotnote>
+        Du ser plan, oppmøte og betaling. Trening, samtaler og analyse er
+        mellom barnet og coachen.
+      </FoFotnote>
+    </FoSkjerm>
   );
 }

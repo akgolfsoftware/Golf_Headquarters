@@ -1,243 +1,121 @@
 "use client";
-import { TL } from "@/lib/v2/train-lock";
+
 /**
- * Foreldreportal · Coach — v2 Presis + B-pakke (status + én grønn CTA).
- * Kun v2 + T.*. Enklere foreldre-språk.
+ * Foreldreportal · Coach — pikselport PX-5.
+ * Fasit: designsystem/train-lock/FO-04 Coach.dc.html
+ * (+ FO-04L Coach lys.dc.html — lys/mørk gjøres av tokens).
+ * Coach-kort med avatar 48, siste melding og én kontakt-CTA — ikke chat.
+ * Meldingen kommer fra Notification type «melding» (samme kilde som
+ * coachNote i hentForelderUkerapport).
  */
 
-import { useEffect, useState } from "react";
-import { Caps, Tittel, Kort, StatusPill, Rad, InnsiktChip, Knapp, Icon, AvatarFoto, TomTilstand } from "@/components/v2";
+import { useState } from "react";
+import { TL } from "@/lib/v2/train-lock";
+import {
+  FoSkjerm,
+  FoHode,
+  FoCaps,
+  FoKort,
+  FoAvatar,
+  FoCtaPrimar,
+  FoCtaSekundar,
+  FoFotnote,
+  FoTom,
+} from "@/components/forelder/fo-kit";
+
+/* ── Datakontrakt (serialisert fra loader) ─────────────────────────── */
+
 export interface ForelderCoachData {
-  /** Antall koblede barn — 0 gir ærlig tom-tilstand. */
   antallBarn: number;
+  /** Forelderens navn (caps-linjen «Forelder · …»). */
+  parentName?: string;
   childFirstName: string | null;
-  /** Barnets coach, avledet fra kommende/siste booking. Null = ingen coach tildelt ennå. */
   coachNavn: string | null;
   coachAvatarUrl: string | null;
   coachEpost: string | null;
-  nesteBooking: { dato: string; serviceName: string } | null;
-  /** Siste faktiske melding fra coachen (Notification type="melding"). Null = ingen ennå. */
+  /** Siste melding coachen har sendt (ekte Notification, aldri fabrikert). */
   sisteMelding: { title: string; body: string | null; dato: string } | null;
-  /** Support-adresse for spørsmål utover coach-kontakt. */
   supportEpost: string;
 }
 
-/** true på klient etter mount når viewport < 768px (styrer kun tallstørrelser). */
-function useMobile(): boolean {
-  const [m, setM] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const oppdater = () => setM(mq.matches);
-    oppdater();
-    mq.addEventListener("change", oppdater);
-    return () => mq.removeEventListener("change", oppdater);
-  }, []);
-  return m;
-}
-
-function mailto(epost: string, emne: string): string {
-  return `mailto:${epost}?subject=${encodeURIComponent(emne)}`;
-}
-
 export function ForelderCoachV2({ data }: { data: ForelderCoachData }) {
-  const mobile = useMobile();
-  const {
-    antallBarn,
-    coachNavn,
-    coachAvatarUrl,
-    coachEpost,
-    nesteBooking,
-    sisteMelding,
-    supportEpost,
-  } = data;
+  const { antallBarn, parentName, childFirstName, coachNavn, coachEpost, sisteMelding, supportEpost } = data;
+  const fornavn = (parentName ?? "").split(" ")[0] || "deg";
+  const [visKontakt, setVisKontakt] = useState(false);
 
-  if (antallBarn === 0) {
-    return (
-      <div data-paper-wave-e="forelder-sub" data-paper-portal-forelder-coach style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
-        <div>
-          <Caps>Coach</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel mobile={mobile} em="coach">
-              Barnets
-            </Tittel>
-          </div>
-        </div>
-        <Kort>
-          <TomTilstand
-            icon="users"
-            title="Ingen barn er koblet ennå"
-            sub="Be spilleren sende en invitasjon, eller spør coachen — så dukker kontakt opp her."
-          />
-        </Kort>
-      </div>
-    );
-  }
-
-  const statusTekst = coachNavn
-    ? nesteBooking
-      ? "Neste time booket"
-      : "Ingen time snart"
-    : "Mangler coach";
-  const statusTone = coachNavn
-    ? nesteBooking
-      ? "up"
-      : "info"
-    : "warn";
+  const epost = coachEpost ?? supportEpost;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-      {/* Hode + status */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "flex-end",
-          justifyContent: "space-between",
-          gap: 12,
-          flexWrap: "wrap",
-        }}
-      >
-        <div>
-          <Caps>Coach</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel mobile={mobile} em="coach">
-              Barnets
-            </Tittel>
-          </div>
-          <span
-            style={{
-              fontFamily: TL.font.sans,
-              fontSize: 12.5,
-              color: TL.mute,
-              display: "block",
-              marginTop: 8,
-            }}
-          >
-            Kontakt og siste melding. Private notater er ikke synlige her.
-          </span>
-        </div>
-        <StatusPill tone={statusTone}>{statusTekst}</StatusPill>
-      </div>
+    <FoSkjerm>
+      <FoHode
+        caps={`Forelder · ${fornavn}`}
+        tittel="Coach"
+        under="Fra siste og kommende booking"
+      />
 
-      {/* Coach-kort + én primær CTA */}
-      <Kort tint={!!coachNavn}>
-        {coachNavn ? (
-          <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
-            <AvatarFoto src={coachAvatarUrl} navn={coachNavn} size={42} />
+      {antallBarn === 0 ? (
+        <FoTom
+          tittel="Ingen barn er koblet ennå"
+          sub="Coachen sender invitasjon når barnet er registrert i klubben."
+        />
+      ) : !coachNavn ? (
+        <FoTom
+          tittel="Ingen coach registrert ennå"
+          sub="Coachen vises her når barnet har hatt eller har en booket time."
+        />
+      ) : (
+        <FoKort pad="18px" style={{ marginTop: 14 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <FoAvatar navn={coachNavn} size={48} />
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div
-                style={{
-                  fontFamily: TL.font.sans,
-                  fontWeight: 700,
-                  fontSize: mobile ? 17 : 19,
-                  letterSpacing: "-0.01em",
-                  color: TL.text,
-                  lineHeight: 1.3,
-                }}
-              >
+              <div style={{ fontFamily: TL.font.sans, fontSize: 20, fontWeight: 700, color: TL.text }}>
                 {coachNavn}
               </div>
-              <p
-                style={{
-                  fontFamily: TL.font.sans,
-                  fontSize: 13,
-                  color: TL.mute,
-                  lineHeight: 1.6,
-                  margin: "8px 0 16px",
-                }}
-              >
-                {nesteBooking
-                  ? `Neste time: ${nesteBooking.serviceName} · ${nesteBooking.dato}`
-                  : "Ingen kommende time booket akkurat nå."}
-              </p>
-              {coachEpost ? (
-                <Knapp
-                  icon="mail"
-                  full={mobile}
-                  onClick={() =>
-                    (window.location.href = mailto(
-                      coachEpost,
-                      "Spørsmål fra foreldre",
-                    ))
-                  }
-                >
-                  Skriv til {coachNavn.split(" ")[0]}
-                </Knapp>
-              ) : (
-                <Knapp
-                  icon="mail"
-                  full={mobile}
-                  onClick={() =>
-                    (window.location.href = mailto(
-                      supportEpost,
-                      "Spørsmål fra foreldre",
-                    ))
-                  }
-                >
-                  Kontakt support
-                </Knapp>
-              )}
+              <div style={{ marginTop: 1, fontFamily: TL.font.sans, fontSize: 13, color: TL.mute }}>
+                {childFirstName ? `Coach for ${childFirstName}` : "Coach"}
+              </div>
             </div>
           </div>
-        ) : (
-          <>
-            <TomTilstand
-              icon="user"
-              title="Ingen coach tilknyttet ennå"
-              sub="Coachen dukker opp her når barnet har booket en time."
-            />
-            <div style={{ marginTop: 12, display: "flex", justifyContent: "center" }}>
-              <Knapp
-                icon="mail"
-                onClick={() =>
-                  (window.location.href = mailto(
-                    supportEpost,
-                    "Spørsmål fra foreldre",
-                  ))
-                }
-              >
-                Kontakt support
-              </Knapp>
-            </div>
-          </>
-        )}
-      </Kort>
 
-      {/* Siste melding fra coach */}
-      <Kort eyebrow="Siste melding">
-        {sisteMelding ? (
-          <Rad
-            leading={
-              <Icon name="message-circle" size={16} style={{ color: TL.mute }} />
-            }
-            title={sisteMelding.title}
-            sub={sisteMelding.body ?? undefined}
-            meta={
-              <span
+          {sisteMelding && (
+            <div style={{ marginTop: 16, paddingTop: 14, borderTop: `1px solid ${TL.hair}` }}>
+              <FoCaps>Siste melding · {sisteMelding.dato}</FoCaps>
+              <div
                 style={{
-                  fontFamily: TL.font.mono,
-                  fontSize: 10.5,
-                  color: TL.mute,
-                  whiteSpace: "nowrap",
+                  marginTop: 8,
+                  fontFamily: TL.font.sans,
+                  fontSize: 15,
+                  lineHeight: 1.5,
+                  color: TL.text,
+                  textWrap: "pretty",
                 }}
               >
-                {sisteMelding.dato}
-              </span>
-            }
-            trailing={null}
-            last
-          />
-        ) : (
-          <TomTilstand
-            icon="message-circle"
-            title="Ingen meldinger ennå"
-            sub="Når coachen sender noe, dukker det opp her."
-          />
-        )}
-      </Kort>
+                {sisteMelding.body ?? sisteMelding.title}
+              </div>
+            </div>
+          )}
 
-      <InnsiktChip>
-        Du ser bare det coachen deler med deg — ikke private treningsnotater.
-      </InnsiktChip>
-    </div>
+          <div style={{ marginTop: 14 }}>
+            <FoCtaPrimar
+              onClick={() => {
+                window.location.href = `mailto:${epost}`;
+              }}
+            >
+              Kontakt coach
+            </FoCtaPrimar>
+          </div>
+          <div style={{ marginTop: 10 }}>
+            <FoCtaSekundar onClick={() => setVisKontakt((v) => !v)}>
+              {visKontakt ? epost : "Se kontaktinfo"}
+            </FoCtaSekundar>
+          </div>
+        </FoKort>
+      )}
+
+      <FoFotnote>
+        Dette er ikke en samtaletråd. Meldinger fra coachen vises her når de
+        sendes; svar går på e-post eller telefon.
+      </FoFotnote>
+    </FoSkjerm>
   );
 }

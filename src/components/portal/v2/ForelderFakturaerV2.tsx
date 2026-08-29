@@ -1,14 +1,27 @@
 "use client";
-import { TL } from "@/lib/v2/train-lock";
+
 /**
- * Foreldreportal · Fakturaer — v2 Presis + B-pakke (status + én vei).
- * Kun v2 + T.*. Enklere foreldre-språk.
+ * Foreldreportal · Fakturaer — pikselport PX-5.
+ * Fasit: designsystem/train-lock/FO-05 Fakturaer.dc.html
+ * (+ FO-05L Fakturaer lys.dc.html — lys/mørk gjøres av tokens).
+ * Bento «Betalt i år» / «Utestående», deretter måneds-grupperte hairline-
+ * rader med beløp til høyre (13 mute tabular). Fasitens «Betal …»-CTA er
+ * utelatt — det finnes ingen betalings-action for foresatte ennå (avvik
+ * notert i PR-en).
  */
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { Caps, Tittel, Kort, Rad, TallHero, StatusPill, TomTilstand, Icon, Knapp, type StatusTone } from "@/components/v2";
-/* ── Datakontrakt (mappes fra Prisma i ruten) ─────────────────────── */
+import {
+  FoSkjerm,
+  FoHode,
+  FoCaps,
+  FoRad,
+  FoRadTall,
+  FoTallKort,
+  FoFotnote,
+  FoTom,
+} from "@/components/forelder/fo-kit";
+
+/* ── Datakontrakt (serialisert fra loader) ─────────────────────────── */
 
 export type FakturaStatus =
   | "SUCCEEDED"
@@ -24,247 +37,118 @@ export interface ForelderFakturaRad {
   spillerNavn: string | null;
   belopOre: number;
   status: FakturaStatus;
-  /** Ferdigformatert dato, nb-NO (f.eks. «2. jul»). */
+  /** Ferdigformatert dato, nb-NO («04.08.2026»). */
   dato: string;
+  /** Månedsgruppe-etikett («August 2026») — FO-05 grupperer per måned. */
+  maaned: string;
+  /** true når fakturaen er fra inneværende år (for «Betalt i år»). */
+  iAar: boolean;
 }
 
 export interface ForelderFakturaerData {
   fakturaer: ForelderFakturaRad[];
+  /** Forelderens navn (caps-linjen «Forelder · …»). */
+  parentName?: string;
 }
-
-/* ── Rene hjelpere ─────────────────────────────────────────────────── */
-
-const STATUS: Record<FakturaStatus, { label: string; tone: StatusTone }> = {
-  SUCCEEDED: { label: "Betalt", tone: "up" },
-  PENDING: { label: "Venter", tone: "warn" },
-  FAILED: { label: "Feilet", tone: "down" },
-  REFUNDED: { label: "Refundert", tone: "info" },
-  PARTIALLY_REFUNDED: { label: "Delvis refundert", tone: "warn" },
-};
 
 const UBETALT: FakturaStatus[] = ["PENDING", "FAILED"];
 
-/** nb-NO heltall med tusenskille — konsekvent «kr»-prefiks (aldri rå float). */
-function kr(ore: number): string {
-  return `kr ${new Intl.NumberFormat("nb-NO").format(Math.round(ore / 100))}`;
+/** «1 450,00» — norsk beløpsformat med to desimaler (FO-05). */
+function belop(ore: number): string {
+  return (ore / 100).toLocaleString("nb-NO", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
 }
 
-/** true på klient etter mount når viewport < 768px (styrer kun tallstørrelser). */
-function useMobile(): boolean {
-  const [m, setM] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const oppdater = () => setM(mq.matches);
-    oppdater();
-    mq.addEventListener("change", oppdater);
-    return () => mq.removeEventListener("change", oppdater);
-  }, []);
-  return m;
+/** Hele kroner med tynn mellomrom-gruppering («24 800») for bento-tallene. */
+function belopHel(ore: number): string {
+  return Math.round(ore / 100).toLocaleString("nb-NO", {
+    maximumFractionDigits: 0,
+  });
 }
 
-/** Én faktura som kort-liste-innslag (mobil-vennlig, ingen tabell). */
-function FakturaRad({ f, last }: { f: ForelderFakturaRad; last: boolean }) {
-  const st = STATUS[f.status];
-  const sub = [f.spillerNavn, f.dato].filter(Boolean).join(" · ");
-  return (
-    <Rad
-      leading={
-        <span
-          style={{
-            width: 38,
-            height: 38,
-            borderRadius: 11,
-            background: TL.dim,
-            border: `1px solid ${TL.hair}`,
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flex: "none",
-          }}
-        >
-          <Icon name="file-text" size={16} style={{ color: TL.mute }} />
-        </span>
-      }
-      title={f.beskrivelse}
-      sub={sub}
-      meta={
-        <span
-          style={{
-            display: "inline-flex",
-            flexDirection: "column",
-            alignItems: "flex-end",
-            gap: 5,
-            flex: "none",
-          }}
-        >
-          <span
-            style={{
-              fontFamily: TL.font.mono,
-              fontSize: 13.5,
-              fontWeight: 700,
-              color: TL.text,
-              fontVariantNumeric: "tabular-nums",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {kr(f.belopOre)}
-          </span>
-          <StatusPill tone={st.tone}>{st.label}</StatusPill>
-        </span>
-      }
-      trailing={null}
-      last={last}
-    />
-  );
+function statusTekst(f: ForelderFakturaRad): string {
+  if (f.status === "SUCCEEDED") return `Betalt ${f.dato}`;
+  if (f.status === "PENDING") return `Forfaller · ubetalt · ${f.dato}`;
+  if (f.status === "FAILED") return `Betaling feilet · ${f.dato}`;
+  if (f.status === "REFUNDED") return `Refundert ${f.dato}`;
+  return `Delvis refundert ${f.dato}`;
 }
-
-/* ── Skjerm ────────────────────────────────────────────────────────── */
 
 export function ForelderFakturaerV2({ data }: { data: ForelderFakturaerData }) {
-  const mobile = useMobile();
-  const router = useRouter();
-  const { fakturaer } = data;
+  const { fakturaer, parentName } = data;
+  const fornavn = (parentName ?? "").split(" ")[0] || "deg";
 
-  // KPI-aggregater — avledet av den ekte lista (identisk logikk som ekte skjerm).
-  const betaltHittilOre = fakturaer
-    .filter((f) => f.status === "SUCCEEDED")
+  const betaltIAarOre = fakturaer
+    .filter((f) => f.status === "SUCCEEDED" && f.iAar)
     .reduce((s, f) => s + f.belopOre, 0);
-  const neste = fakturaer.find((f) => UBETALT.includes(f.status)) ?? null;
+  const utestaaendeOre = fakturaer
+    .filter((f) => UBETALT.includes(f.status))
+    .reduce((s, f) => s + f.belopOre, 0);
 
-  const heroSize = mobile ? 34 : 40;
+  /* Månedsgrupper i innsendt rekkefølge (nyest først fra loaderen). */
+  const grupper: { maaned: string; rader: ForelderFakturaRad[] }[] = [];
+  for (const f of fakturaer) {
+    const siste = grupper[grupper.length - 1];
+    if (siste && siste.maaned === f.maaned) siste.rader.push(f);
+    else grupper.push({ maaned: f.maaned, rader: [f] });
+  }
 
   return (
-    <div data-paper-wave-e="forelder-sub" data-paper-portal-forelder-fakturaer style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
-      {/* Hode + status */}
+    <FoSkjerm>
+      <FoHode
+        caps={`Forelder · ${fornavn}`}
+        tittel="Fakturaer"
+        under="Alle koblede barn · siste 50"
+      />
+
+      {/* Bento: Betalt i år / Utestående (FO-05) */}
       <div
         style={{
-          display: "flex",
-          alignItems: "flex-end",
-          justifyContent: "space-between",
+          marginTop: 12,
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
           gap: 12,
-          flexWrap: "wrap",
         }}
       >
-        <div>
-          <Caps>Økonomi</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel mobile={mobile} em="fakturaer">
-              Mine
-            </Tittel>
+        <FoTallKort label="Betalt i år" value={belopHel(betaltIAarOre)} />
+        <FoTallKort label="Utestående" value={belopHel(utestaaendeOre)} />
+      </div>
+
+      {fakturaer.length === 0 ? (
+        <FoTom
+          tittel="Ingen fakturaer ennå"
+          sub="Betalinger for koblede barn dukker opp her."
+        />
+      ) : (
+        grupper.map((g) => (
+          <div key={g.maaned}>
+            <div style={{ marginTop: 22 }}>
+              <FoCaps>{g.maaned}</FoCaps>
+            </div>
+            {g.rader.map((f) => {
+              const barnFornavn = f.spillerNavn
+                ? (f.spillerNavn.split(" ")[0] ?? f.spillerNavn)
+                : null;
+              return (
+                <FoRad
+                  key={f.id}
+                  title={
+                    barnFornavn ? `${barnFornavn} · ${f.beskrivelse}` : f.beskrivelse
+                  }
+                  sub={statusTekst(f)}
+                  right={<FoRadTall>{belop(f.belopOre)}</FoRadTall>}
+                />
+              );
+            })}
           </div>
-        </div>
-        <StatusPill tone={neste ? "warn" : "up"}>
-          {neste ? "Noe forfaller" : "Alt betalt"}
-        </StatusPill>
-      </div>
+        ))
+      )}
 
-      {/* Status-stripe */}
-      <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: 16 }}>
-        <Kort tint>
-          <TallHero
-            label="Betalt hittil"
-            value={kr(betaltHittilOre)}
-            sub="Sum betalte fakturaer"
-            size={heroSize}
-          />
-        </Kort>
-
-        {neste ? (
-          <Kort tint>
-            <TallHero
-              label="Neste forfall"
-              value={kr(neste.belopOre)}
-              sub={`Forfaller ${neste.dato}`}
-              size={heroSize}
-              action={<StatusPill tone="warn">Venter</StatusPill>}
-            />
-          </Kort>
-        ) : (
-          <Kort>
-            <TallHero
-              label="Neste forfall"
-              value="—"
-              sub="Ingen utestående"
-              size={heroSize}
-            />
-          </Kort>
-        )}
-      </div>
-
-      {/* Én primær CTA (B) */}
-      <div>
-        {neste ? (
-          <Knapp
-            icon="mail"
-            full={mobile}
-            onClick={() => {
-              window.location.href =
-                "mailto:hei@akgolf.no?subject=" +
-                encodeURIComponent("Spørsmål om faktura");
-            }}
-          >
-            Spør om betaling
-          </Knapp>
-        ) : (
-          <Knapp
-            icon="arrow-right"
-            full={mobile}
-            onClick={() => router.push("/forelder/okonomi")}
-          >
-            Se abonnement
-          </Knapp>
-        )}
-      </div>
-
-      {/* Fakturahistorikk */}
-      <Kort
-        eyebrow="Alle fakturaer"
-        action={
-          fakturaer.length > 0 ? (
-            <Caps size={9}>{`${fakturaer.length} stk`}</Caps>
-          ) : undefined
-        }
-      >
-        {fakturaer.length > 0 ? (
-          fakturaer.map((f, i) => (
-            <FakturaRad key={f.id} f={f} last={i === fakturaer.length - 1} />
-          ))
-        ) : (
-          <TomTilstand
-            icon="file-text"
-            title="Ingen fakturaer ennå"
-            sub="Når det kommer en betaling, ser du den her. Spør coachen ved tvil."
-          />
-        )}
-      </Kort>
-
-      <Kort>
-        <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-          <Icon
-            name="info"
-            size={16}
-            style={{ color: TL.mute, flex: "none", marginTop: 2 }}
-          />
-          <p
-            style={{
-              fontFamily: TL.font.sans,
-              fontSize: 12.5,
-              color: TL.mute,
-              lineHeight: 1.6,
-              margin: 0,
-            }}
-          >
-            Betaling følger coaching-avtalen. Spørsmål? Skriv til{" "}
-            <a
-              href="mailto:hei@akgolf.no"
-              style={{ color: TL.fill, fontWeight: 600, textDecoration: "none" }}
-            >
-              hei@akgolf.no
-            </a>
-            .
-          </p>
-        </div>
-      </Kort>
-    </div>
+      <FoFotnote>
+        Beløp i norske kroner. Kvittering sendes på e-post etter betaling.
+      </FoFotnote>
+    </FoSkjerm>
   );
 }

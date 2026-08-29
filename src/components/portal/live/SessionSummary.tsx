@@ -85,7 +85,8 @@ function byggUtkast(data: LiveV2Summary, notater: LiveNotat[]): string {
   return deler.join(" ");
 }
 
-const EYEBROW = "font-mono text-[10px] font-medium uppercase tracking-[0.09em]";
+/** PH-06: caps-linjene er sans 11/600 med 0.08em — ikke mono. */
+const EYEBROW = "font-sans text-[11px] font-semibold uppercase tracking-[0.08em]";
 
 const KORT: CSSProperties = {
   background: "var(--tl-elev)",
@@ -112,9 +113,10 @@ function Tag({ tekst, tone }: { tekst: string; tone: "up" | "info" }) {
 }
 
 /**
- * ETTER-skjermen i live-sløyfa — Paper-fasit playerhq-live-summary.html (PP-3).
- * Tallkort m/why → plan mot gjort → notater → dine ord (deterministisk
- * utkast) → clay «Lagre til loggen» → kvittering med neste økt.
+ * ETTER-skjermen i live-sløyfa.
+ * Fasit: designsystem/train-lock/PH-06 Live ferdig.dc.html
+ * Caps «Økt ferdig · varighet» + tittel, tallkort, recap («dine ord»),
+ * kvittering med neste økt. Ingen konfetti/XP.
  */
 export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }: SessionSummaryProps) {
   const [notater, setNotater] = useState<LiveNotat[]>([]);
@@ -197,6 +199,19 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }:
       style={{ maxWidth: 720, margin: "0 auto", width: "100%", color: "var(--tl-text)" }}
     >
       <LiveLoopNav aktiv="etter" sessionId={data.sessionId} />
+
+      {/* PH-06-hode: caps «Økt ferdig · varighet» + tittel 26/700 */}
+      <div className="mt-3">
+        <span className={EYEBROW} style={{ color: "var(--tl-mute)" }}>
+          Økt ferdig{varighetMin > 0 ? ` · ${tidTekst(varighetMin)}` : ""}
+        </span>
+        <h1
+          className="m-0 mt-[7px] font-sans"
+          style={{ fontSize: 26, fontWeight: 700, letterSpacing: "-0.01em", color: "var(--tl-text)" }}
+        >
+          {data.title}
+        </h1>
+      </div>
 
       {lagret ? (
         <>
@@ -292,7 +307,7 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }:
           {/* ── Tallene — kilde: DrillLogV2-loggene fra økta ── */}
           <div className="mt-4" style={KORT}>
             <span className={EYEBROW} style={{ color: "var(--tl-mute)" }}>
-              {data.title} · gjennomført
+              Gjennomført
             </span>
             <div className="mt-1">
               {tallRader.map(([navn, verdi]) => (

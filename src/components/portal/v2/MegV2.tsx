@@ -2,8 +2,10 @@
 import { TL } from "@/lib/v2/train-lock";
 
 /**
- * PlayerHQ Meg — v2 Presis + B-pakke (oversikt først, konto-liste etter).
- * Ekte data: profil, mål, sesongtall. Én grønn hovedhandling øverst.
+ * PlayerHQ Meg.
+ * Fasit: designsystem/train-lock/PH-17 Meg.dc.html
+ * Sentrert hero (avatar 84 + navn 26/700 + mute sub), deretter alt personlig
+ * som rader/kort. Ekte data: profil, mål, sesongtall.
  *
  * Steg 7 PR4 (Paper-port, designsystem/paper/fase1/playerhq-meg.html): lagt
  * til «Om deg» (identitet), «Coach og program» og et abonnements-sammendrag
@@ -28,7 +30,7 @@ import { uploadAvatar } from "@/lib/storage/avatar";
 import { skalerAvatar } from "@/lib/klient/skaler-avatar";
 import { useCountUp } from "@/lib/v2/hooks";
 import { fmtSg, Caps, Kort, StatusPill, Rad, Bryter, ProgresjonsBar, AvatarFoto, TomTilstand, Icon, HjelpTips, type StatusTone } from "@/components/v2";
-import { PaperPage, PaperTopp, PaperKropp } from "./PaperChrome";
+import { PaperPage, PaperKropp } from "./PaperChrome";
 
 /* ── Datakontrakt ──────────────────────────────────────────────────── */
 
@@ -242,9 +244,10 @@ export function MegV2({ data }: { data: MegData }) {
     });
   }
 
-  // Meta-linje — ærlig avledet av hcp + klubb (WAGR/kategori finnes ikke i data).
+  // PH-17-sub: «HCP 4,2 · AK Golf Academy · Onsøy GK» — kun ekte felt.
   const metaDeler: string[] = [];
   if (hcp != null) metaDeler.push(`HCP ${hcpTekst(hcp)}`);
+  if (program) metaDeler.push(PROGRAM_LABEL[program.program]);
   if (homeClub) metaDeler.push(homeClub);
 
   const primaer = goals[0] ?? null;
@@ -289,21 +292,12 @@ export function MegV2({ data }: { data: MegData }) {
   const aboStatus = abo.status ? ABO_STATUS_LABEL[abo.status] ?? abo.status : null;
   const aboNesteTrekk = formatDato(abo.nesteTrekk);
 
-  const subLinje = (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 5, flexWrap: "wrap" }}>
-      {metaDeler.length > 0 ? metaDeler[0] : "Meg"}
-      {hcp != null && <HjelpTips k="hcp" size={11} />}
-      {metaDeler.length > 1 && <span>· {metaDeler.slice(1).join(" · ")}</span>}
-    </span>
-  );
-
   return (
     <PaperPage odId="playerhq-meg">
       <div data-paper-portal-meg data-paper-slug="playerhq-meg" style={{ display: "contents" }}>
-      <PaperTopp
-        tittel={navn}
-        sub={subLinje}
-      >
+      <PaperKropp>
+      {/* PH-17-hero: sentrert avatar 84 + navn 26/700 + mute sub */}
+      <div style={{ marginTop: 18, display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
         <label
           htmlFor="meg-avatar-input"
           aria-label="Bytt profilbilde"
@@ -314,15 +308,15 @@ export function MegV2({ data }: { data: MegData }) {
             flex: "none",
           }}
         >
-          <AvatarFoto src={avatarUrl} navn={navn} size={44} ring />
+          <AvatarFoto src={avatarUrl} navn={navn} size={84} ring />
           <span
             aria-hidden
             style={{
               position: "absolute",
-              right: -2,
-              bottom: -2,
-              width: 18,
-              height: 18,
+              right: 0,
+              bottom: 0,
+              width: 24,
+              height: 24,
               borderRadius: 9999,
               background: TL.dim,
               border: `1.5px solid ${TL.elev}`,
@@ -331,7 +325,7 @@ export function MegV2({ data }: { data: MegData }) {
               justifyContent: "center",
             }}
           >
-            <Icon name={avatarLagrer ? "loader" : "camera"} size={10} style={{ color: TL.mute }} />
+            <Icon name={avatarLagrer ? "loader" : "camera"} size={12} style={{ color: TL.mute }} />
           </span>
         </label>
         <input
@@ -343,9 +337,30 @@ export function MegV2({ data }: { data: MegData }) {
           disabled={avatarLagrer}
           style={{ display: "none" }}
         />
-      </PaperTopp>
-
-      <PaperKropp>
+        <div style={{ textAlign: "center" }}>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 26, fontWeight: 700, letterSpacing: "-0.01em", color: TL.text }}>
+            {navn}
+          </h1>
+          {metaDeler.length > 0 && (
+            <div
+              style={{
+                marginTop: 5,
+                fontFamily: TL.font.sans,
+                fontSize: 13,
+                fontWeight: 400,
+                color: TL.mute,
+                fontVariantNumeric: "tabular-nums",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 5,
+              }}
+            >
+              {metaDeler.join(" · ")}
+              {hcp != null && <HjelpTips k="hcp" size={11} />}
+            </div>
+          )}
+        </div>
+      </div>
       {avatarFeil && (
         <Caps style={{ color: TL.danger }}>{avatarFeil}</Caps>
       )}

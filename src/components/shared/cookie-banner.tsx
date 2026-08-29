@@ -68,10 +68,19 @@ export function CookieBanner() {
   // Auth-flyten (login/signup/onboarding) er kort og fokusert — banneren
   // dekket «Fortsett med Google»-knappen og andre CTA-er nederst på skjermen.
   const skjulPaAuth = pathname?.startsWith("/auth") ?? false;
-  // Paper-drakt (--p-*, src/styles/paper-tokens.css). Primærknappen er BLEKK
-  // (--p-cta), ikke clay: aksenten #d97757 har monopol på «Én ting nå»
-  // (monsterdokument-paper.md §2 + §7). Blekk snur seg selv i mørkt tema, så
-  // den gamle primary/accent-kollisjonen kan ikke gjenoppstå her.
+  // Train-lock-drakt (28.08.2026): banneret er GLOBALT (root-layout) og lå
+  // tidligere alltid i Paper — inkludert oppå portal/admin/forelder, der det
+  // var eneste synlige Paper-flate på hver sideinnlasting. --tl-*-tokens er
+  // satt på :root (train-lock-tokens.css) og trenger ikke data-paper-shell.
+  const trainLock =
+    (pathname?.startsWith("/portal") ||
+      pathname?.startsWith("/admin") ||
+      pathname?.startsWith("/forelder")) ??
+    false;
+  // Primærknappen er BLEKK (--p-cta) i Paper, ikke clay: aksenten #d97757 har
+  // monopol på «Én ting nå» (monsterdokument-paper.md §2 + §7). Blekk snur seg
+  // selv i mørkt tema, så den gamle primary/accent-kollisjonen kan ikke
+  // gjenoppstå her. Train-lock-drakten følger samme regel med TL.warm.
   const farger = gfgk
     ? {
         kortBg: "var(--gfgk-white)",
@@ -86,21 +95,36 @@ export function CookieBanner() {
         knapp2Fg: "var(--ink)",
         knapp2Border: "var(--n-200)",
       }
-    : {
-        kortBg: "var(--p-surface)",
-        kortBorder: "var(--p-border)",
-        tittel: "var(--p-fg)",
-        tittelFont: "var(--p-font-sans)",
-        tekst: "var(--p-muted)",
-        ikon: "var(--p-muted)",
-        lenke: "var(--p-fg)",
-        knappBg: "var(--p-cta)",
-        knappFg: "var(--p-on-cta)",
-        knapp2Fg: "var(--p-fg)",
-        knapp2Border: "var(--p-border)",
-      };
-  // Brødtekst er Lora i Paper, men GFGK-micrositen har egen prosa-font.
-  const brodFont = gfgk ? "var(--font-jr-sans)" : "var(--p-font-serif)";
+    : trainLock
+      ? {
+          kortBg: "var(--tl-elev)",
+          kortBorder: "var(--tl-hair)",
+          tittel: "var(--tl-text)",
+          tittelFont: "var(--tl-font-sans)",
+          tekst: "var(--tl-mute)",
+          ikon: "var(--tl-mute)",
+          lenke: "var(--tl-text)",
+          knappBg: "var(--tl-fill)",
+          knappFg: "var(--tl-on-fill)",
+          knapp2Fg: "var(--tl-text)",
+          knapp2Border: "var(--tl-hair)",
+        }
+      : {
+          kortBg: "var(--p-surface)",
+          kortBorder: "var(--p-border)",
+          tittel: "var(--p-fg)",
+          tittelFont: "var(--p-font-sans)",
+          tekst: "var(--p-muted)",
+          ikon: "var(--p-muted)",
+          lenke: "var(--p-fg)",
+          knappBg: "var(--p-cta)",
+          knappFg: "var(--p-on-cta)",
+          knapp2Fg: "var(--p-fg)",
+          knapp2Border: "var(--p-border)",
+        };
+  // Brødtekst er Lora i Paper (prosa-serif), sans i Train-lock (fasiten har
+  // ingen serif) — GFGK-micrositen har egen prosa-font.
+  const brodFont = gfgk ? "var(--font-jr-sans)" : trainLock ? "var(--tl-font-sans)" : "var(--p-font-serif)";
 
   useEffect(() => {
     const stored = getStoredConsent();

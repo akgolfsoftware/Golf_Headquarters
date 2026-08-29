@@ -1,0 +1,115 @@
+/* ═══ Forside-reisen — scroll-drevet kino på akgolf.no ═══
+   Null avhengigheter: CSS 3D-perspektiv + custom properties som settes av
+   en rAF-scroll-lytter i MarkedForsideReise.tsx (--fr-p = 0..1 per scene).
+   Farger/typografi leses fra mk-tokenene via Tailwind-klassene i TSX-en —
+   denne fila eier KUN bevegelse og scene-geometri.
+
+   Respekterer prefers-reduced-motion: alt faller til statisk layout. */
+
+/* Hero: videoen zoomer svakt og innholdet glir opp mens man scroller forbi. */
+.fr-hero-video {
+  transform: scale(calc(1 + var(--fr-hero, 0) * 0.18));
+  will-change: transform;
+}
+.fr-hero-inner {
+  transform: translateY(calc(var(--fr-hero, 0) * -60px));
+  opacity: calc(1 - var(--fr-hero, 0) * 1.1);
+  will-change: transform, opacity;
+}
+
+/* Reisen: sticky scene med 3D-perspektiv. Kapitlene byttes med --fr-p. */
+.fr-reise {
+  position: relative;
+}
+.fr-scene {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  perspective: 1200px;
+}
+.fr-kapittel {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  /* --fr-op settes i JS (1 i fokus → 0 utenfor) — CSS abs() er for ny. */
+  opacity: var(--fr-op, 0);
+  pointer-events: none;
+  will-change: opacity;
+}
+.fr-kapittel[data-aktiv="true"] {
+  pointer-events: auto;
+}
+/* Bildet reiser i dybden: kommer fra langt bak, roterer på plass, glir forbi. */
+.fr-kapittel-bilde {
+  transform: translateZ(calc(var(--fr-k, 0) * -420px))
+    rotateY(calc(var(--fr-k, 0) * -14deg))
+    translateX(calc(var(--fr-k, 0) * 18%));
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+/* Teksten glir motsatt vei — dybdefølelse uten WebGL. */
+.fr-kapittel-tekst {
+  transform: translateY(calc(var(--fr-k, 0) * 80px));
+  opacity: var(--fr-op-tekst, 0);
+  will-change: transform, opacity;
+}
+.fr-kapittel-tall {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Filmstripen: bildene ruller horisontalt som en filmrull, drevet av scroll. */
+.fr-strip {
+  overflow: hidden;
+}
+.fr-strip-rad {
+  display: flex;
+  gap: 16px;
+  width: max-content;
+  transform: translateX(calc(var(--fr-strip, 0) * -1px));
+  will-change: transform;
+}
+.fr-strip-rad img {
+  border-radius: 16px;
+}
+
+/* Reveal: seksjoner under reisen glir inn når de treffer viewport. */
+.fr-reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.7s cubic-bezier(0.32, 0.72, 0, 1),
+    transform 0.7s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.fr-reveal.fr-vis {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fr-hero-video,
+  .fr-hero-inner,
+  .fr-kapittel-bilde,
+  .fr-kapittel-tekst,
+  .fr-strip-rad {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+  .fr-kapittel {
+    position: relative;
+    opacity: 1 !important;
+  }
+  .fr-scene {
+    position: static;
+    height: auto;
+    display: block;
+  }
+  .fr-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
