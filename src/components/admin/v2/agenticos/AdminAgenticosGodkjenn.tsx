@@ -3,6 +3,11 @@
 /**
  * AO-08 Godkjenn-kø. Én hvit Godkjenn på uthevet sak. Avvis dim.
  * Godkjent = warm hake, aldri ok-grønn.
+ *
+ * Fasit: designsystem/train-lock/AO-01 Cockpit ko godkjenning.dc.html
+ * (§AO-08 Godkjenn), AO-12 Godkjenningspolicy A3 B1 C3.dc.html (uthevet
+ * sak-mønsteret: caps-undertype + tittel + diff-linje + hvit Godkjenn +
+ * hairline Avvis — tom-tilstanden matcher AO-12f).
  */
 
 import { useMemo, useState, useTransition } from "react";

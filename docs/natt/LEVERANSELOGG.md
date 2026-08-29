@@ -45,6 +45,7 @@ GJELDENDE merge-status, se `docs/STATUS-NÅ.md`.
 | TL-port | T→TL på PlayerHQ, AgencyOS, Meg, Forelder (380 filer). Marketing/auth urørt | `claude/tl-port-alle-skjermer-2026-08-28` | Merget #631 — token, ikke piksel-1:1 |
 | F1-bug | Mandagsøkter i ukesrapport telles ikke lenger dobbelt (`lt` mot `endOfWeek`) | samme som #631 | Merget #631 |
 | C1 | Workbench måned + år (leseflate; klikk dag→uke; gammel rute redirect) | `claude/c1-workbench-maned-aar-2026-08-28` | Merget #632 |
+| PX-6 | AgencyOS-resten mot Train-lock (PIKSELPLAN): siterte 21 av 32 udekkede AG/AO/JV/S3/KA/EC/DG/FY/TU/GP/BO/ME-filer — de fleste var allerede token-rene (T12/T13/#631), kun siteringskommentaren manglet. Dekning 105→126 (204 totalt). Gjenstår som DOKUMENTERT gap (ny funksjonalitet, ikke bare visuell justering): AG-11 (dag-tidsakse m/ overlapp+nå-linje), AG-19 (varsel-senter), AO-13 (routing-hub), JV-01/02/03 (Jarvis-merge-kø — domenet finnes i `src/lib/domain/jarvis-merge/`, null UI-konsumenter), S3-01L/02/03 (Spiller 360 er fortsatt Paper, avvik dokumentert av T4), FY-01 (ACWR-stall-oversikt, ingen datamodell), TU-02 (turnering-detalj mangler klasse/felt/cut-felter + gameplan-lenke) | `px/6-agency-rest` | Draft PR, ikke merget |
 
 Se `docs/natt/README.md` for hvilke natt-dokumenter som fortsatt er levende (LAUNCH-PLAN,
 ACCESS-AND-GROUPS, SKJERM-STATUS, D-beslutningene) vs. denne loggen (historikk).

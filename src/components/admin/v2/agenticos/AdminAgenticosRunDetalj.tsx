@@ -3,6 +3,9 @@
 /**
  * AO-04 Run-detalj. AgentRun er ferdig (OK|ERROR) — ingen falsk progresjon.
  * Godkjenn resultat er hvit primær når et forslag venter.
+ *
+ * Fasit: designsystem/train-lock/AO-00 LOCK Run Skills Tilstander.dc.html
+ * (§AO-04 Run-detalj).
  */
 
 import { TL } from "@/lib/v2/train-lock";

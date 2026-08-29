@@ -2,6 +2,8 @@
 import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ Meg · Helse — v2 Presis + B-pakke (status først, logg = én grønn CTA).
+ *
+ * Fasit: designsystem/train-lock/ME-02 Helse.dc.html.
  */
 
 import { useEffect, useState, useTransition } from "react";

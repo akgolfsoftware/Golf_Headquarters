@@ -4,9 +4,12 @@
  * AgencyOS · Live-tavle — Train-lock (T9, 27.08.2026).
  *
  * Fasit: `AG-09b Live-tavle full.dc.html` (b1 iPhone stack / b2 iPad grid /
- * b3 Mac 3-kort-grid). Mono-caption i fasiten: «Tavla er artefakt, aldri
- * fane. Ingen kart, ingen fake video, ingen sim-booking.» — denne siden er
- * derfor et rent status-overblikk (timer/fremdrift), ingen video/kart.
+ * b3 Mac 3-kort-grid), `AG-09 Live-tavle.dc.html` (kompakt variant — samme
+ * kort-mønster: stasjon-caps + «I økt», avatar+navn+aktivitet, stor
+ * min-igjen-tall, fremdriftslinje). Mono-caption i fasiten: «Tavla er
+ * artefakt, aldri fane. Ingen kart, ingen fake video, ingen sim-booking.» —
+ * denne siden er derfor et rent status-overblikk (timer/fremdrift), ingen
+ * video/kart.
  *
  * Ekte data (`live-tavle-data.ts`, trainingSessionV2 status=IN_PROGRESS) —
  * erstatter tidligere seed-data «Mission Control» på denne ruten.

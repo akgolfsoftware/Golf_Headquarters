@@ -3,6 +3,9 @@
 /**
  * AO-02 Runtimes + AO-10 Ollama. Status er ærlig: bare Claude er koblet i appen.
  * Hvit prikk = på. Ok-grønn brukes ikke.
+ *
+ * Fasit: designsystem/train-lock/AO-02 Runtimes og Ollama.dc.html,
+ * AO-00 LOCK Run Skills Tilstander.dc.html (§AO-11 runtime nede).
  */
 
 import { TL } from "@/lib/v2/train-lock";

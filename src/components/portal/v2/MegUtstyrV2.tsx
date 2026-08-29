@@ -1,6 +1,9 @@
 /**
  * PlayerHQ · Meg · Utstyr og bag (W3-port).
- * Fasit: designsystem/paper/fase2/playerhq/playerhq-utstyr.html (§9 tabell + trapp).
+ *
+ * Fasit: designsystem/train-lock/ME-01 Utstyr.dc.html. Komponenten er
+ * allerede token-ren (kun TL.*, PX-6 29.08.2026) — Paper-fasit-linjen under
+ * er historisk kontekst for §9 tabell + trapp-mønsteret som ble kopiert inn.
  *
  * Tilstander: Bag registrert · Tom. Ingen clay — «Én ting nå: —» i manifestet.
  *

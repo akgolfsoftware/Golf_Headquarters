@@ -1,7 +1,11 @@
 /**
- * PlayerHQ · Gameplan-banekart (/portal/gameplan/[baneId]) — Paper-port W2 (fase2).
- * Fasit: designsystem/paper/fase2/playerhq/playerhq-gameplan-banekart.html.
+ * PlayerHQ · Gameplan-banekart (/portal/gameplan/[baneId]).
  *
+ * Fasit: designsystem/train-lock/GP-02 Gameplan Onsoy.dc.html (hull 1-5
+ * kart + liste-mønsteret). Siden bruker allerede kun TL.* (PX-6, 29.08.2026
+ * — Paper-fasit-referansen under er historisk, komponenten er token-ren).
+ *
+
  * Struktur per fasit: tilbake «‹ Gameplan» → topp (banenavn / «Banekart») →
  * merknad («N hull kartlagt · par X») → kartpanel (Mapbox-satellitt med
  * tee/green per hull — CourseMap gjenbrukes som den er) → hull-liste

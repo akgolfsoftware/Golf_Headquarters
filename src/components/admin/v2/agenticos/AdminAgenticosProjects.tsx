@@ -2,6 +2,9 @@
 
 /**
  * AO-05 Projects gruppert på Area. Tom = hel setning, ingen oppdiktede tall.
+ *
+ * Fasit: designsystem/train-lock/AO-05 Projects og Tasks.dc.html
+ * (§AO-05 Projects, AO-06 Project-ark, AO-07 Task-ark).
  */
 
 import { TL } from "@/lib/v2/train-lock";
