@@ -74,7 +74,10 @@ Bølge 2 (måned/år, stall, kalender uten Google, tester-live, runde-live, Jarv
      porter til Train-lock med toggle, ikke bare ett kort. Default (lys/mørk uten cookie)
      er ikke endret av denne beslutningen — kun at begge moduser MÅ virke. Selve
      skjermporten gjenstår (B8 = Player, bølge T = AgencyOS, forelder-porten ubestemt
-     session ennå). Marketing/landingssider har egen fasit (ak-golf-website) og omfattes ikke.
+     session ennå). Marketing/landingssider har egen fasit (ak-golf-website) og omfattes ikke —
+     **UNNTAK (Anders 28.08.2026): hele booking-flyten, også `/booking` på marketing, er
+     Train-lock (lys variant).** PR #650 porter den; ny booking-kode leser aldri `T`/`--p-*`-verdier
+     direkte (broen i `booking-paper.css` peker dem til `--tl-*`).
    - Ingen nye tokens / parallelle designsystemer uten Anders' ja.
    - Fullført = warm `#B85C3D` + hake. `#30D158` **kun** Godta / PUBLISERT-merke.
    - **DO NOT USE — Paper og Presis.** Ny skjermkode = `--tl-*` / `TL`. Ikke `T.*`, ikke `--p-*`, ikke cream `#FAF9F5`/`#F0EEE6`, ikke clay som generell CTA, ikke Inter/Familjen/JetBrains, ikke Presis-skog/lime. Ikke few-shot fra `designsystem/paper/` (arkiv, se `DEPRECATED.md` der). Marketing eier sin egen Paper-katalog; den kopieres ikke inn i PlayerHQ/AgencyOS. Skills `akgolf-claude-paper` og Paper-kroppen i `ak-designekspert` er historikk.
