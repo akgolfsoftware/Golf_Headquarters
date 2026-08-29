@@ -1,17 +1,17 @@
 "use client";
 
-/* AK Golf HQ v2 — MARKEDSSIDE: Tjeneste + tidspunktvalg (/booking/[slug],
-   retning C «Presis»). v2-port 16. juli 2026 av (mlegacy)/booking/[slug]/
-   page.tsx + slot-picker.tsx sitt presentasjonslag. BEVISST UENDRET:
-   dag-lenkene (?dato=ISO), slot-lenkene (bekreft?start&coach), slot-gruppering
-   per coach, klokkeslett-formatering (nb-NO på klient, som originalens
-   slot-picker) og all copy. Slot-henting/coach-filtrering/dagliste bor i
-   page.tsx (server) — kun utseendet er nytt. Chrome: delt MRamme. */
+/* AK Golf HQ — MARKEDSSIDE: Tjeneste + tidspunktvalg (/booking/[slug]).
+   Train-lock LYS (29.08.2026) — restyling av v2-porten fra 16. juli.
+   BEVISST UENDRET: dag-lenkene (?dato=ISO), slot-lenkene (bekreft?start&coach),
+   slot-gruppering per coach, klokkeslett-formatering (nb-NO på klient, som
+   originalens slot-picker) og all copy. Slot-henting/coach-filtrering/dagliste
+   bor i page.tsx (server) — kun utseendet er nytt. Chrome: BookingRamme (lys
+   topplinje, ingen footer) i stedet for mørk MRamme. Tokens: TL, aldri T. */
 
 import Link from "next/link";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
 import { Kort, Caps, TilbakeLenke, TomTilstand } from "@/components/v2";
-import { MRamme, Eyebrow, HeroT, Seksjon, useMobile } from "./marked-ramme";
+import { BookingRamme, Eyebrow, HeroT, Seksjon, useMobile } from "./booking-tl-ramme";
 
 /* ── Datakontrakter (serialisert i page.tsx) ───────────── */
 export type TjenesteInfo = {
@@ -72,14 +72,14 @@ function SlotVelger({ slug, slots, mobile }: { slug: string; slots: TjenesteSlot
                     display: "inline-flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    fontFamily: T.mono,
+                    fontFamily: TL.font.mono,
                     fontSize: 13,
                     fontWeight: 700,
                     fontVariantNumeric: "tabular-nums",
-                    color: T.fg,
-                    background: T.panel2,
-                    border: `1px solid ${T.borderS}`,
-                    borderRadius: 10,
+                    color: TL.text,
+                    background: TL.elev,
+                    border: `1px solid ${TL.hair}`,
+                    borderRadius: TL.radius.row,
                     padding: "10px 0",
                     textDecoration: "none",
                   }}
@@ -102,7 +102,7 @@ export function MarkedBookingTjenesteV2({ tjeneste, dager, valgtDatoTekst, slots
   const mobile = useMobile();
 
   return (
-    <MRamme mobile={mobile} aktiv="booking" waveId="marked-booking-tjeneste">
+    <BookingRamme waveId="marked-booking-tjeneste">
       {/* Hero */}
       <Seksjon mobile={mobile} style={{ paddingBottom: mobile ? 20 : 28 }}>
         <TilbakeLenke href="/booking">Alle tjenester</TilbakeLenke>
@@ -111,20 +111,20 @@ export function MarkedBookingTjenesteV2({ tjeneste, dager, valgtDatoTekst, slots
         </div>
         <HeroT mobile={mobile}>{tjeneste.name}</HeroT>
         {tjeneste.description && (
-          <p style={{ fontFamily: T.ui, fontSize: 15, color: T.fg2, lineHeight: 1.6, margin: "16px 0 0", maxWidth: 560 }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 15, color: TL.mute, lineHeight: 1.6, margin: "16px 0 0", maxWidth: 560 }}>
             {tjeneste.description}
           </p>
         )}
         <div style={{ display: "flex", gap: mobile ? 24 : 40, marginTop: 22, flexWrap: "wrap" }}>
           <span>
             <Caps size={9}>Pris</Caps>
-            <span style={{ fontFamily: T.mono, fontSize: 22, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums", display: "block", marginTop: 5 }}>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 22, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums", display: "block", marginTop: 5 }}>
               {tjeneste.prisTekst}
             </span>
           </span>
           <span>
             <Caps size={9}>Varighet</Caps>
-            <span style={{ fontFamily: T.mono, fontSize: 22, fontWeight: 700, color: T.fg2, fontVariantNumeric: "tabular-nums", display: "block", marginTop: 5 }}>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 22, fontWeight: 700, color: TL.mute, fontVariantNumeric: "tabular-nums", display: "block", marginTop: 5 }}>
               {tjeneste.durationMin} min
             </span>
           </span>
@@ -133,7 +133,7 @@ export function MarkedBookingTjenesteV2({ tjeneste, dager, valgtDatoTekst, slots
 
       {/* Velg dag — horisontal 14-dagers stripe (samme ?dato-lenker som før) */}
       <Seksjon mobile={mobile} style={{ paddingTop: 0, paddingBottom: mobile ? 16 : 20 }}>
-        <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 19, letterSpacing: "-0.02em", color: T.fg, margin: 0 }}>Velg dag</h2>
+        <h2 style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 19, letterSpacing: "-0.02em", color: TL.text, margin: 0 }}>Velg dag</h2>
         <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 8, marginTop: 16 }}>
           {dager.map((d) => (
             <Link
@@ -148,25 +148,25 @@ export function MarkedBookingTjenesteV2({ tjeneste, dager, valgtDatoTekst, slots
                 flex: "none",
                 minWidth: 72,
                 padding: "10px 12px 12px",
-                borderRadius: 12,
-                background: d.valgt ? T.lime : T.panel2,
-                border: `1px solid ${d.valgt ? "transparent" : T.border}`,
+                borderRadius: TL.radius.row,
+                background: d.valgt ? TL.fill : TL.elev,
+                border: `1px solid ${d.valgt ? "transparent" : TL.hair}`,
                 textDecoration: "none",
               }}
             >
               <span
                 style={{
-                  fontFamily: T.mono,
+                  fontFamily: TL.font.mono,
                   fontSize: 8.5,
                   fontWeight: 700,
                   letterSpacing: "0.08em",
                   textTransform: "uppercase",
-                  color: d.valgt ? T.onLime : T.mut,
+                  color: d.valgt ? TL.onFill : TL.mute,
                 }}
               >
                 {d.dagsnavn}
               </span>
-              <span style={{ fontFamily: T.mono, fontSize: 13.5, fontWeight: 700, color: d.valgt ? T.onLime : T.fg, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 13.5, fontWeight: 700, color: d.valgt ? TL.onFill : TL.text, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>
                 {d.datotekst}
               </span>
             </Link>
@@ -176,9 +176,9 @@ export function MarkedBookingTjenesteV2({ tjeneste, dager, valgtDatoTekst, slots
 
       {/* Ledige tider */}
       <Seksjon mobile={mobile} style={{ paddingTop: 0 }}>
-        <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 19, letterSpacing: "-0.02em", color: T.fg, margin: 0 }}>
+        <h2 style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 19, letterSpacing: "-0.02em", color: TL.text, margin: 0 }}>
           Ledige tider{" "}
-          <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 400, color: T.mut, letterSpacing: 0 }}>{valgtDatoTekst}</span>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 13, fontWeight: 400, color: TL.mute, letterSpacing: 0 }}>{valgtDatoTekst}</span>
         </h2>
         {slots.length === 0 ? (
           <Kort pad="26px 20px" style={{ marginTop: 18 }}>
@@ -188,6 +188,6 @@ export function MarkedBookingTjenesteV2({ tjeneste, dager, valgtDatoTekst, slots
           <SlotVelger slug={tjeneste.slug} slots={slots} mobile={mobile} />
         )}
       </Seksjon>
-    </MRamme>
+    </BookingRamme>
   );
 }
