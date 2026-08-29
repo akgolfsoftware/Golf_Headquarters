@@ -1,9 +1,10 @@
-/* ═══ Booking · offentlig landingsside (PP-1.7) ═══
-   Portert fra Paper-fasiten `designsystem/paper/fase1/booking.html`.
-   Reglene er fasitens egne, med `var(--x)` → `var(--p-x)` mot
-   `src/styles/paper-tokens.css` — som speiler de samme verdiene og har
-   mørk-grenen på `html[data-v2-tema="dark"]`. Ikke hardkod fonter eller
-   farger her; alt skal leses fra tokenene.
+/* ═══ Booking · offentlig landingsside (PP-1.7 → Train-lock lys 29.08.2026) ═══
+   Geometri-skalaen (spacing, tekststørrelser, z, tap) er fortsatt Paper-portens
+   (`designsystem/paper/fase1/booking.html`), men farger, fonter og radier
+   re-pekes i TL-BROEN under til Train-lock-tokenene
+   (`src/styles/train-lock-tokens.css`) — marketing er alltid lys, så det er
+   lys-verdiene som gjelder. Ikke hardkod fonter eller farger her; alt skal
+   leses fra tokenene.
 
    Alt er scoped under `.bkp` så reglene ikke lekker ut i markedssidene.
 
@@ -12,8 +13,40 @@
    Ressursen er coachens tid — derfor én tidsliste, ikke én per rom. */
 
 .bkp {
-  --softer: #f6f4ee;
-  --border-soft: #efede4;
+  /* ── TL-BRO (29.08.2026): --p-farger/-fonter/-radier → Train-lock.
+     Spacing (--p-s*), tekst-skala (--p-text-*), z og tap beholdes som
+     Paper-verdier — det er geometri, ikke merkevare. ── */
+  --p-bg: var(--tl-scene);
+  --p-fg: var(--tl-text);
+  --p-surface: var(--tl-elev);
+  --p-soft: var(--tl-dock);
+  --p-muted: var(--tl-mute);
+  --p-mid: var(--tl-mute);
+  --p-border: var(--tl-hair);
+  --p-cta: var(--tl-fill);
+  --p-on-cta: var(--tl-on-fill);
+  --p-accent: var(--tl-warm);
+  --p-accent-fg: var(--tl-warm);
+  --p-accent-soft: color-mix(in srgb, var(--tl-warm) 12%, transparent);
+  --p-on-accent: var(--tl-on-fill);
+  --p-up: var(--tl-ok);
+  --p-dn: var(--tl-danger);
+  --p-focus: var(--tl-viz-target);
+  --p-ui: var(--tl-font-sans);
+  --p-mono: var(--tl-font-mono);
+  --p-body: var(--tl-font-sans);
+  /* --p-disp/-logo-*: leses av .logo/.hero/.seksjon her — broet i tillegg
+     til bestillingslista (Train-lock har ingen egen display-font). */
+  --p-disp: var(--tl-font-sans);
+  --p-logo-mark: var(--tl-text);
+  --p-logo-dot: var(--tl-warm);
+  --p-r: var(--tl-r-card);
+  --p-r-md: var(--tl-r-field);
+  --p-r-sm: var(--tl-r-row);
+  --p-r-pill: var(--tl-r-pill);
+
+  --softer: var(--tl-elev);
+  --border-soft: var(--tl-hair);
 
   background: var(--p-bg);
   color: var(--p-fg);
@@ -117,10 +150,12 @@ html[data-v2-tema="dark"] .bkp {
   border-color: var(--p-cta);
 }
 
+/* Train-lock (29.08): primær-CTA er ink/fill — warm er reservert fullført,
+   aldri handling. Paper-tidens clay-«nå»-knapp arver derfor cta-tokenene. */
 .bkp .btn.now {
-  background: var(--p-accent);
-  color: var(--p-on-accent);
-  border-color: var(--p-accent);
+  background: var(--p-cta);
+  color: var(--p-on-cta);
+  border-color: var(--p-cta);
   font-weight: 600;
   min-height: 56px;
   font-size: 16px;

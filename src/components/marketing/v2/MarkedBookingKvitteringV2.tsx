@@ -1,19 +1,20 @@
 "use client";
 
-/* AK Golf HQ v2 — MARKEDSSIDE: Kvittering (/booking/kvittering/[bookingId],
-   retning C «Presis»). v2-port 16. juli 2026 av (mlegacy)/booking/kvittering/
-   [bookingId]/page.tsx + pending-refresh.tsx sitt presentasjonslag. BEVISST
-   UENDRET: PENDING-pollingen (router.refresh hvert 3. sek, maks 10 forsøk —
-   flyttet inn hit fra pending-refresh.tsx), CONFIRMED-deteksjonen, signup-
-   broen for gjester og all copy. Dato-/pris-formatering skjer i page.tsx
-   (server, Europe/Oslo + Intl nb-NO NOK) — samme kilde som før. Chrome:
-   delt MRamme. */
+/* AK Golf HQ — MARKEDSSIDE: Kvittering (/booking/kvittering/[bookingId] —
+   Stripe success_url lander her). Train-lock LYS (29.08.2026) — restyling av
+   v2-porten fra 16. juli. BEVISST UENDRET: PENDING-pollingen (router.refresh
+   hvert 3. sek, maks 10 forsøk), CONFIRMED-deteksjonen, signup-broen for
+   gjester og all copy. Dato-/pris-formatering skjer i page.tsx (server,
+   Europe/Oslo + Intl nb-NO NOK) — samme kilde som før. Kun visuelt:
+   TL-tokens, BookingRamme (lys topplinje, ingen footer) i stedet for mørk
+   MRamme. Fullført-merket er warm hake (TL.warm — aldri grønn). Én primær
+   CTA: «Mine bestillinger»/«Opprett konto». Tokens: TL, aldri T. */
 
 import { useEffect, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
 import { Icon, Kort, Caps } from "@/components/v2";
-import { MRamme, Eyebrow, MCta, Seksjon, useMobile } from "./marked-ramme";
+import { BookingRamme, BookingCta, Eyebrow, HeroT, Seksjon, useMobile } from "./booking-tl-ramme";
 
 /* ── Datakontrakt (serialisert i page.tsx) ─────────────── */
 export interface KvitteringDetaljer {
@@ -56,7 +57,7 @@ function PendingRefresh() {
   }, [router]);
 
   return (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: T.ui, fontSize: 13, color: T.mut }}>
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: TL.font.sans, fontSize: 13, color: TL.mute }}>
       <style>{`@keyframes v2BookSpin{to{transform:rotate(360deg)}}@media (prefers-reduced-motion: reduce){.v2-book-spin{animation:none;}}`}</style>
       <Icon name="loader" size={14} className="v2-book-spin" style={{ animation: "v2BookSpin 1.2s linear infinite" }} />
       Oppdaterer automatisk…
@@ -73,15 +74,15 @@ function DetaljRad({ label, value, bold, last }: { label: string; value: ReactNo
         justifyContent: "space-between",
         gap: 14,
         padding: "11px 0",
-        borderBottom: last ? "none" : `1px solid ${T.border}`,
+        borderBottom: last ? "none" : `1px solid ${TL.hair}`,
       }}
     >
       <Caps size={9} style={{ flex: "none" }}>{label}</Caps>
       <span
         style={
           bold
-            ? { fontFamily: T.mono, fontSize: 20, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums", textAlign: "right" }
-            : { fontFamily: T.ui, fontSize: 13.5, fontWeight: 500, color: T.fg, textAlign: "right" }
+            ? { fontFamily: TL.font.mono, fontSize: 20, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums", textAlign: "right" }
+            : { fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 500, color: TL.text, textAlign: "right" }
         }
       >
         {value}
@@ -103,7 +104,7 @@ export function MarkedBookingKvitteringV2({
   const mobile = useMobile();
 
   return (
-    <MRamme mobile={mobile} aktiv="booking" waveId="marked-booking-kvittering">
+    <BookingRamme waveId="marked-booking-kvittering">
       <Seksjon mobile={mobile} style={{ paddingBottom: mobile ? 20 : 28 }}>
         <div style={{ maxWidth: 620, margin: "0 auto", textAlign: "center" }}>
           {bekreftet ? (
@@ -112,32 +113,28 @@ export function MarkedBookingKvitteringV2({
                 style={{
                   width: 56,
                   height: 56,
-                  borderRadius: 9999,
-                  background: `color-mix(in srgb, ${T.lime} 12%, transparent)`,
+                  borderRadius: TL.radius.pill,
+                  background: `color-mix(in srgb, ${TL.warm} 12%, transparent)`,
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
                   marginBottom: 20,
                 }}
               >
-                <Icon name="check-circle" size={26} style={{ color: T.lime }} />
+                <Icon name="check-circle" size={26} style={{ color: TL.warm }} />
               </span>
               <Eyebrow>Bekreftet</Eyebrow>
-              <h1 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: mobile ? 34 : 48, letterSpacing: "-0.035em", color: T.fg, margin: 0, lineHeight: 1.05 }}>
-                <em style={{ fontStyle: "italic", color: T.lime }}>Takk</em> for bestillingen
-              </h1>
-              <p style={{ fontFamily: T.ui, fontSize: 15, color: T.fg2, lineHeight: 1.65, margin: "18px auto 0", maxWidth: 480 }}>
-                Vi har sendt bekreftelse til <strong style={{ color: T.fg, fontWeight: 600 }}>{guestEmail ?? "din e-post"}</strong>. Vi
+              <HeroT mobile={mobile}>Takk for bestillingen</HeroT>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 15, color: TL.mute, lineHeight: 1.65, margin: "18px auto 0", maxWidth: 480 }}>
+                Vi har sendt bekreftelse til <strong style={{ color: TL.text, fontWeight: 600 }}>{guestEmail ?? "din e-post"}</strong>. Vi
                 gleder oss til å se deg!
               </p>
             </>
           ) : (
             <>
               <Caps size={11} style={{ marginBottom: 18 }}>Behandler</Caps>
-              <h1 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: mobile ? 34 : 48, letterSpacing: "-0.035em", color: T.fg, margin: 0, lineHeight: 1.05 }}>
-                Behandler bestillingen…
-              </h1>
-              <p style={{ fontFamily: T.ui, fontSize: 15, color: T.fg2, lineHeight: 1.65, margin: "18px auto 0", maxWidth: 480 }}>
+              <HeroT mobile={mobile}>Behandler bestillingen…</HeroT>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 15, color: TL.mute, lineHeight: 1.65, margin: "18px auto 0", maxWidth: 480 }}>
                 Betalingen ser ut til å gå gjennom. Siden oppdaterer seg automatisk.
               </p>
               <div style={{ marginTop: 16 }}>
@@ -151,7 +148,7 @@ export function MarkedBookingKvitteringV2({
       <Seksjon mobile={mobile} style={{ paddingTop: 0 }}>
         <div style={{ maxWidth: 620, margin: "0 auto" }}>
           <Kort pad="20px 22px 10px">
-            <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, letterSpacing: "-0.015em", color: T.fg, marginBottom: 6 }}>
+            <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 17, letterSpacing: "-0.01em", color: TL.text, marginBottom: 6 }}>
               Detaljer
             </div>
             <DetaljRad label="Bestilling" value={detaljer.bestillingRef} />
@@ -164,25 +161,27 @@ export function MarkedBookingKvitteringV2({
 
           <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap", marginTop: 28 }}>
             {innlogget ? (
-              <MCta href="/portal/meg/bookinger" icon="arrow-right">
+              <BookingCta href="/portal/meg/bookinger">
                 Mine bestillinger
-              </MCta>
+                <Icon name="arrow-right" size={14} />
+              </BookingCta>
             ) : (
-              <MCta href={signupHref} icon="arrow-right">
+              <BookingCta href={signupHref}>
                 Opprett konto
-              </MCta>
+                <Icon name="arrow-right" size={14} />
+              </BookingCta>
             )}
-            <MCta ghost href="/booking">
+            <BookingCta ghost href="/booking">
               Book en til
-            </MCta>
+            </BookingCta>
           </div>
           {!innlogget && (
-            <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, textAlign: "center", margin: "16px 0 0" }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, textAlign: "center", margin: "16px 0 0" }}>
               Opprett gratis konto for å se og endre bestillingene dine.
             </p>
           )}
         </div>
       </Seksjon>
-    </MRamme>
+    </BookingRamme>
   );
 }

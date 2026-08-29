@@ -28,19 +28,20 @@ const STEG = [
     Ikon: CalendarDays,
     tittel: "Velg tid",
     beskrivelse:
-      "Uke for uke, tid i Europa/Oslo. Tomme dager sier ærlig ifra.",
+      "Ledige tider uke for uke, i norsk tid, hos bookingtjenesten.",
   },
   {
     nr: 3,
     Ikon: CreditCard,
-    tittel: "Bekreft og betal",
-    beskrivelse: "Pris og avbestilling synlig før Stripe.",
+    tittel: "Betal hos bookingtjenesten",
+    beskrivelse:
+      "Pris og avbestillingsregler vises der før du betaler med kort.",
   },
   {
     nr: 4,
     Ikon: BadgeCheck,
-    tittel: "Kvittering",
-    beskrivelse: "Bekreftelse på e-post og i kalenderen.",
+    tittel: "Bekreftelse på e-post",
+    beskrivelse: "Bookingtjenesten sender bekreftelse og kalenderinvitasjon.",
   },
 ];
 
