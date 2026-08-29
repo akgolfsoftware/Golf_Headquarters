@@ -1,12 +1,18 @@
 "use client";
 
 /**
- * TimeGrid — felles Notion Calendar-uke (N1).
+ * TimeGrid — felles Workbench-uke/dag-motor (N1, Train-lock PX-2).
  *
- * Én motor for tidskolonne + dag-headers + time-/halvtime-linjer + nå-linje.
+ * Én motor for tidskolonne + dag-headers + timelinjer + nå-linje.
  * Dag-innhold (økter, droppable, booking-blokker) leveres via `renderDay`.
  *
- * Fasit: src/lib/calendar/notion-grid.ts (05:00–23:00, 30 min, 44 px/time).
+ * Fasit: designsystem/train-lock/A-01 Mac Uke Pro.dc.html (rutenettet):
+ * dag-header «Man 17» caps 11/600/0.08em (i dag = tekstfarge, ellers mute),
+ * kun hele timer som hairline-linjer, klokkeslett «07.00» 10/600 mute i
+ * tidskolonnen, nå-linje = 1 px tekst-hvit over hele raden med 9 px prikk,
+ * i dag-kolonnen får #16161680-flate. Tidsakse-området (05:00–23:00, 30 min
+ * slot-snap) styres fortsatt av src/lib/calendar/notion-grid.ts; fasitens
+ * tetthet er 48 px/time (`hourPx`), kalenderen (KA-01) beholder 44.
  */
 
 import {
@@ -18,14 +24,12 @@ import {
   useState,
 } from "react";
 import {
-  GRID_BODY_PX,
   GRID_END_HOUR,
   GRID_SLOT_MIN,
   GRID_START_HOUR,
   GRID_START_MIN,
   PIXEL_PER_HOUR,
   gridHours,
-  gridTicks,
 } from "@/lib/calendar/notion-grid";
 import { TL } from "@/lib/v2/train-lock";
 
@@ -61,13 +65,15 @@ type Props = {
   showNowLine?: boolean;
   timeColWidth?: number;
   bordered?: boolean;
+  /** Piksler per time. Fasit A-01 (workbench) = 48; kalender-fasit KA-01 = 44. */
+  hourPx?: number;
   className?: string;
   style?: CSSProperties;
 };
 
 /** Snap Y i grid-body til slot innenfor 05:00–(23:00−GRID_SLOT_MIN). */
-export function snapYToSlot(y: number): Omit<TimeGridSlot, "dayIndex"> {
-  const hours = GRID_START_HOUR + y / PIXEL_PER_HOUR;
+export function snapYToSlot(y: number, hourPx = PIXEL_PER_HOUR): Omit<TimeGridSlot, "dayIndex"> {
+  const hours = GRID_START_HOUR + y / hourPx;
   let totalMin = Math.round((hours * 60) / GRID_SLOT_MIN) * GRID_SLOT_MIN;
   const maxStart = GRID_END_HOUR * 60 - GRID_SLOT_MIN;
   totalMin = Math.max(GRID_START_MIN, Math.min(maxStart, totalMin));
@@ -78,14 +84,18 @@ export function snapYToSlot(y: number): Omit<TimeGridSlot, "dayIndex"> {
   };
 }
 
-/** Absolutt posisjon for en hendelse i TimeGrid-dag-kroppen. */
+/**
+ * Absolutt posisjon for en hendelse i TimeGrid-dag-kroppen.
+ * Fasit A-01: eksakt topp/høyde (1,5 t = 72 px ved 48 px/time), left/right 3.
+ */
 export function timeGridBlockStyle(
   startMin: number,
   durationMin: number,
   extra?: CSSProperties,
+  hourPx = PIXEL_PER_HOUR,
 ): CSSProperties {
-  const top = Math.max(0, ((startMin - GRID_START_MIN) / 60) * PIXEL_PER_HOUR + 2);
-  const height = Math.max(20, (durationMin / 60) * PIXEL_PER_HOUR - 3);
+  const top = Math.max(0, ((startMin - GRID_START_MIN) / 60) * hourPx);
+  const height = Math.max(20, (durationMin / 60) * hourPx);
   return {
     position: "absolute",
     left: 3,
@@ -103,16 +113,15 @@ export function TimeGrid({
   onEmptyClick,
   onDropSlot,
   showNowLine = true,
-  // Paper `.tg` bruker en 62px tidskolonne — «05:30» i mono trenger mer plass
-  // enn den gamle to-sifrede time-etiketten.
-  timeColWidth = 62,
+  // Fasit A-01: tidskolonne 48 px, klokkeslett høyrestilt 8 px fra kanten.
+  timeColWidth = 48,
   bordered = true,
+  hourPx = PIXEL_PER_HOUR,
   className,
   style,
 }: Props) {
   const timer = useMemo(() => gridHours(), []);
-  const merker = useMemo(() => gridTicks(), []);
-  const bodyH = GRID_BODY_PX;
+  const bodyH = (GRID_END_HOUR - GRID_START_HOUR) * hourPx;
 
   const [tikk, setTikk] = useState(0);
   useEffect(() => {
@@ -125,9 +134,8 @@ export function TimeGrid({
   void tikk;
   const nowMin = now.getHours() * 60 + now.getMinutes();
   const nowInGrid = nowMin >= GRID_START_MIN && nowMin <= GRID_END_HOUR * 60;
-  const nowTop = ((nowMin - GRID_START_MIN) / 60) * PIXEL_PER_HOUR;
+  const nowTop = ((nowMin - GRID_START_MIN) / 60) * hourPx;
   const todayIndex = days.findIndex((d) => d.today);
-  const n = Math.max(1, days.length);
 
   const shell: CSSProperties = {
     overflow: "hidden",
@@ -139,7 +147,8 @@ export function TimeGrid({
 
   return (
     <div className={className} style={shell} data-time-grid="notion">
-      {/* Dag-header */}
+      {/* Dag-header — fasit A-01: én linje «Man 17», caps 11/600/0.08em,
+          i dag = tekstfarge, ellers mute. Ingen prikk, ingen fylt flate. */}
       <div style={{ display: "flex", borderBottom: `1px solid ${TL.hair}` }}>
         <div style={{ width: timeColWidth, flex: "none" }} />
         {days.map((d) => (
@@ -149,82 +158,56 @@ export function TimeGrid({
               flex: 1,
               minWidth: 0,
               textAlign: "center",
-              padding: "9px 0 8px",
-              borderLeft: `1px solid ${TL.hair}`,
-              background: d.today
-                ? `color-mix(in srgb, ${TL.fill} 6%, transparent)`
-                : "transparent",
+              padding: "10px 0 8px",
             }}
           >
-            <div
-              style={{
-                fontFamily: TL.font.mono,
-                fontSize: 8.5,
-                fontWeight: 700,
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                color: d.today ? TL.fill : TL.mute,
-              }}
-            >
-              {d.dow}
-            </div>
-            <div
+            <span
               style={{
                 fontFamily: TL.font.sans,
-                fontSize: 15,
-                fontWeight: 700,
+                fontSize: 11,
+                fontWeight: 600,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
                 color: d.today ? TL.text : TL.mute,
-                marginTop: 1,
                 fontVariantNumeric: "tabular-nums",
+                whiteSpace: "nowrap",
               }}
             >
-              {d.date}
-            </div>
-            {d.today && (
-              <span
-                style={{
-                  display: "inline-block",
-                  width: 4,
-                  height: 4,
-                  borderRadius: 9999,
-                  background: TL.fill,
-                  marginTop: 3,
-                }}
-              />
-            )}
+              {d.dow} {d.date}
+            </span>
           </div>
         ))}
       </div>
 
       {/* Kropp: tid + dager */}
       <div style={{ display: "flex", position: "relative", height: bodyH }}>
-        {/* Tidsakse (Paper `tegnAkse`): ett merke per slot, hele timer i full
-            tekstfarge og halvtimene dempet — så aksen er lesbar uten å rope. */}
+        {/* Tidsakse — fasit A-01: kun hele timer, «07.00» 10/600 mute,
+            høyrestilt 8 px, sentrert på timelinjen. */}
         <div style={{ width: timeColWidth, flex: "none", position: "relative" }}>
-          {merker.map((min) => {
-            const helTime = min % 60 === 0;
-            return (
+          {timer.map((h) =>
+            h < GRID_END_HOUR ? (
               <span
-                key={min}
+                key={h}
                 style={{
                   position: "absolute",
-                  top: ((min - GRID_START_MIN) / 60) * PIXEL_PER_HOUR - 5,
+                  top: (h - GRID_START_HOUR) * hourPx - 7,
                   right: 8,
-                  fontFamily: TL.font.mono,
+                  fontFamily: TL.font.sans,
                   fontSize: 10,
-                  fontWeight: helTime ? 500 : 400,
-                  color: helTime ? TL.text : TL.mute,
+                  fontWeight: 600,
+                  color: TL.mute,
                   fontVariantNumeric: "tabular-nums",
                 }}
               >
-                {String(Math.floor(min / 60)).padStart(2, "0")}:
-                {String(min % 60).padStart(2, "0")}
+                {String(h).padStart(2, "0")}.00
               </span>
-            );
-          })}
+            ) : null,
+          )}
         </div>
 
         <div style={{ flex: 1, position: "relative", display: "flex", minWidth: 0 }}>
+          {/* Kun hele timer som hairline (fasit: repeating-gradient per 48 px,
+              ingen halvtimelinjer). */}
           {timer.map((h) =>
             h > GRID_START_HOUR && h < GRID_END_HOUR ? (
               <span
@@ -233,26 +216,9 @@ export function TimeGrid({
                   position: "absolute",
                   left: 0,
                   right: 0,
-                  top: (h - GRID_START_HOUR) * PIXEL_PER_HOUR,
+                  top: (h - GRID_START_HOUR) * hourPx,
                   height: 1,
-                  background: `color-mix(in srgb, ${TL.hair} 70%, transparent)`,
-                  pointerEvents: "none",
-                  zIndex: 0,
-                }}
-              />
-            ) : null,
-          )}
-          {timer.map((h) =>
-            h < GRID_END_HOUR ? (
-              <span
-                key={`half-${h}`}
-                style={{
-                  position: "absolute",
-                  left: 0,
-                  right: 0,
-                  top: (h - GRID_START_HOUR) * PIXEL_PER_HOUR + PIXEL_PER_HOUR / 2,
-                  height: 1,
-                  background: `color-mix(in srgb, ${TL.hair} 32%, transparent)`,
+                  background: TL.hair,
                   pointerEvents: "none",
                   zIndex: 0,
                 }}
@@ -260,20 +226,34 @@ export function TimeGrid({
             ) : null,
           )}
 
+          {/* Nå-linje — fasit A-01: 1 px tekst-hvit over hele raden + 9 px prikk
+              i venstre kant. Aldri fill-glød. */}
           {showNowLine && nowInGrid && todayIndex >= 0 && (
-            <div
-              aria-hidden
-              style={{
-                position: "absolute",
-                left: `${(todayIndex / n) * 100}%`,
-                width: `${100 / n}%`,
-                top: nowTop,
-                zIndex: 2,
-                pointerEvents: "none",
-                borderTop: `2px solid ${TL.fill}`,
-                boxShadow: `0 0 6px color-mix(in srgb, ${TL.fill} 40%, transparent)`,
-              }}
-            />
+            <div aria-hidden style={{ pointerEvents: "none" }}>
+              <div
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  right: 0,
+                  top: nowTop,
+                  height: 1,
+                  background: TL.text,
+                  zIndex: 3,
+                }}
+              />
+              <div
+                style={{
+                  position: "absolute",
+                  left: -4,
+                  top: nowTop - 4,
+                  width: 9,
+                  height: 9,
+                  borderRadius: "50%",
+                  background: TL.text,
+                  zIndex: 3,
+                }}
+              />
+            </div>
           )}
 
           {days.map((d, i) => (
@@ -285,7 +265,7 @@ export function TimeGrid({
                   ? (e) => {
                       if (e.target !== e.currentTarget) return;
                       const y = e.clientY - e.currentTarget.getBoundingClientRect().top;
-                      const slot = snapYToSlot(y);
+                      const slot = snapYToSlot(y, hourPx);
                       onEmptyClick({ ...slot, dayIndex: i });
                     }
                   : undefined
@@ -296,7 +276,7 @@ export function TimeGrid({
                   ? (e) => {
                       e.preventDefault();
                       const y = e.clientY - e.currentTarget.getBoundingClientRect().top;
-                      const slot = snapYToSlot(y);
+                      const slot = snapYToSlot(y, hourPx);
                       onDropSlot({ ...slot, dayIndex: i }, e);
                     }
                   : undefined
@@ -306,8 +286,9 @@ export function TimeGrid({
                 minWidth: 0,
                 position: "relative",
                 borderLeft: `1px solid ${TL.hair}`,
+                // Fasit A-01: i dag-kolonnen har elev-flate @ 50 % alfa.
                 background: d.today
-                  ? `color-mix(in srgb, ${TL.fill} 3%, transparent)`
+                  ? `color-mix(in srgb, ${TL.elev} 50%, transparent)`
                   : "transparent",
                 height: bodyH,
               }}

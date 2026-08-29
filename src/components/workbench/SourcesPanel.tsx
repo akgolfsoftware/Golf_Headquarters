@@ -1,12 +1,20 @@
 "use client";
 
 /**
- * SourcesPanel — venstrekolonnen (natt-plan Loop 2T/B5).
+ * SourcesPanel — venstrekolonnen «Sett inn» (natt-plan Loop 2T/B5, PX-2).
  *
- * Ekte innhold fra `loadSources` (øvelsesbank, maler, forrige uke), gruppert
- * per kilde-type. Hvert element er `draggable` — dra inn i uka via native
- * HTML5 drag-and-drop (se wb-drag.ts). Klikk gjør ingenting ennå; kortene er
- * kun en dra-kilde i v1.
+ * Fasit: designsystem/train-lock/A-04 Kilder Ovelsesbank.dc.html
+ * Fasit: designsystem/train-lock/A-01b Mac Uke kollapset.dc.html (avvik)
+ * Fasit: designsystem/train-lock/A-04b Program ghost.dc.html (avvik)
+ *
+ * Fasit-stilen (A-01/A-04): caps-overskrift «Sett inn» 11/600/0.08em, rader
+ * med border-top hairline (aldri kort-ramme), gruppetittel 13/600 + antall
+ * 11 mute tabular. Elementene under er `draggable` (native HTML5 DnD,
+ * wb-drag.ts).
+ *
+ * Kjente avvik (PX-2): søkefeltet, minikalenderen og Kontekst-seksjonen med
+ * øye-toggles er ikke bygget; ⌘\-kollaps (A-01b) mangler; program-slipp gir
+ * økter direkte i stedet for A-04b sine ghost-uker med Bekreft/Forkast.
  */
 
 import type { DragEvent } from "react";
@@ -29,23 +37,13 @@ const GRUPPER: { kind: SourceItem["kind"]; tittel: string; ikon: string }[] = [
 
 export function SourcesPanel({ kilder }: Props) {
   return (
-    <aside
-      aria-label={UI.sourcesTitle}
-      style={{
-        background: TL.elev,
-        border: `1px solid ${TL.hair}`,
-        borderRadius: TL.radius.card,
-        padding: 14,
-        minWidth: 0,
-        display: "grid",
-        gap: 14,
-      }}
-    >
+    <aside aria-label={UI.sourcesTitle} style={{ minWidth: 0 }}>
+      {/* A-01/A-04: caps «Sett inn»-overskrift 11/600/0.08em — ingen ramme. */}
       <div
         style={{
-          fontFamily: TL.font.mono,
-          fontSize: 10,
-          fontWeight: 700,
+          fontFamily: TL.font.sans,
+          fontSize: 11,
+          fontWeight: 600,
           letterSpacing: "0.08em",
           textTransform: "uppercase",
           color: TL.mute,
@@ -55,47 +53,71 @@ export function SourcesPanel({ kilder }: Props) {
       </div>
 
       {kilder.length === 0 ? (
-        <div style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
+        <div style={{ display: "flex", gap: 8, alignItems: "flex-start", marginTop: 10 }}>
           <Icon name="layers" size={14} style={{ color: TL.mute, marginTop: 2 }} />
           <div>
-            <div style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute }}>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.mute }}>
               {UI.emptySourcesTitle}
             </div>
-            <div style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 3 }}>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.mute, marginTop: 3 }}>
               {UI.emptySourcesBody}
             </div>
           </div>
         </div>
       ) : (
-        GRUPPER.map((gruppe) => {
-          const elementer = kilder.filter((k) => k.kind === gruppe.kind);
-          if (elementer.length === 0) return null;
-          return (
-            <div key={gruppe.kind} style={{ display: "grid", gap: 6, minWidth: 0 }}>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 5,
-                  fontFamily: TL.font.mono,
-                  fontSize: 9.5,
-                  fontWeight: 600,
-                  letterSpacing: "0.06em",
-                  textTransform: "uppercase",
-                  color: TL.mute,
-                }}
-              >
-                <Icon name={gruppe.ikon} size={11} style={{ color: TL.mute }} />
-                {gruppe.tittel}
+        <div style={{ marginTop: 6 }}>
+          {GRUPPER.map((gruppe) => {
+            const elementer = kilder.filter((k) => k.kind === gruppe.kind);
+            if (elementer.length === 0) return null;
+            return (
+              <div key={gruppe.kind} style={{ minWidth: 0 }}>
+                {/* A-01: gruppe-rad — 13/600 tittel + antall 11 mute tabular,
+                    border-top hairline. */}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 6,
+                    padding: "9px 2px",
+                    borderTop: `1px solid ${TL.hair}`,
+                  }}
+                >
+                  <span
+                    style={{
+                      fontFamily: TL.font.sans,
+                      fontSize: 13,
+                      fontWeight: 600,
+                      color: TL.text,
+                      minWidth: 0,
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {gruppe.tittel}
+                  </span>
+                  <span
+                    style={{
+                      fontFamily: TL.font.sans,
+                      fontSize: 11,
+                      color: TL.mute,
+                      fontVariantNumeric: "tabular-nums",
+                      flexShrink: 0,
+                    }}
+                  >
+                    {elementer.length}
+                  </span>
+                </div>
+                <ul style={{ listStyle: "none", margin: 0, padding: "0 0 6px" }}>
+                  {elementer.map((k) => (
+                    <KildeKort key={k.id} kilde={k} />
+                  ))}
+                </ul>
               </div>
-              <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 6 }}>
-                {elementer.map((k) => (
-                  <KildeKort key={k.id} kilde={k} />
-                ))}
-              </ul>
-            </div>
-          );
-        })
+            );
+          })}
+        </div>
       )}
     </aside>
   );
@@ -106,14 +128,21 @@ function KildeKort({ kilde }: { kilde: SourceItem }) {
     <li
       draggable
       title={UI.dragHint}
-      onDragStart={(e: DragEvent<HTMLLIElement>) => settKildeDataTransfer(e, kilde.id)}
+      onDragStart={(e: DragEvent<HTMLLIElement>) => {
+        settKildeDataTransfer(e, kilde.id);
+        // A-11: elementet som dras får hair-ring i biblioteket.
+        e.currentTarget.style.boxShadow = `inset 0 0 0 1px ${TL.draftBorder}`;
+      }}
+      onDragEnd={(e: DragEvent<HTMLLIElement>) => {
+        e.currentTarget.style.boxShadow = "none";
+      }}
       style={{
         fontFamily: TL.font.sans,
-        fontSize: 12.5,
+        fontSize: 13,
+        fontWeight: 600,
         color: TL.text,
-        padding: "7px 9px",
-        borderRadius: TL.radius.row,
-        background: TL.dock,
+        padding: "6px 2px 6px 10px",
+        borderRadius: 8,
         cursor: "grab",
         minWidth: 0,
       }}
@@ -130,9 +159,10 @@ function KildeKort({ kilde }: { kilde: SourceItem }) {
       {kilde.subtitle && (
         <div
           style={{
-            fontSize: 10.5,
+            fontSize: 11,
+            fontWeight: 400,
             color: TL.mute,
-            marginTop: 2,
+            marginTop: 1,
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",

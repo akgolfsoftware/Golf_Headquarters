@@ -1,7 +1,13 @@
 "use client";
 
 /**
- * PublishConfirmDialog — bekreftelse før publisering (natt-plan Loop 2).
+ * PublishConfirmDialog — bekreftelse før publisering (natt-plan Loop 2, PX-2).
+ *
+ * Fasit: designsystem/train-lock/A-01d Publish confirm.dc.html (ramme A-01d1):
+ * caps-kicker «Uke 36 · Øyvind Rohjan», tittel 26/700/−0.02em «Publiser N
+ * økter?», brødtekst 15 mute, økt-liste som #161616-kort radius 16 med rader
+ * «Tir 16.00» (13 mute, 88 px) + tittel 15/600, footer = Avbryt som ren tekst
+ * + den ene hvite «Publiser»-pillen (48 px).
  *
  * Publisering er øyeblikket spilleren ser økten, derfor egen bekreftelse med
  * full liste. Gjelder en økt i dag advares det ekstra: den dukker opp i
@@ -21,10 +27,19 @@ import { Knapp } from "@/components/v2/core";
 import { Icon } from "@/components/v2/icon";
 import { TL } from "@/lib/v2/train-lock";
 
-import { formatTime, UI } from "@/lib/domain/workbench/labels";
+import { formatKlokke, UI } from "@/lib/domain/workbench/labels";
+import { isoWeekNumber } from "@/lib/domain/workbench/operations";
 import type { ValidationNote } from "@/lib/domain/workbench/operations";
 import type { WorkbenchSession } from "@/lib/domain/workbench/types";
 import { WARM } from "./wb-visuelt";
+
+const DAG_KORT = ["Søn", "Man", "Tir", "Ons", "Tor", "Fre", "Lør"];
+
+/** «Tir 16.00» — dagforkortelse fra ISO-dato (UTC-trygt for rene datoer). */
+function dagOgKlokke(isoDate: string, startMinute: number): string {
+  const d = new Date(`${isoDate}T00:00:00`);
+  return `${DAG_KORT[d.getDay()]} ${formatKlokke(startMinute)}`;
+}
 
 type Props = {
   open: boolean;
@@ -32,6 +47,8 @@ type Props = {
   okter: WorkbenchSession[];
   /** Dagens dato i Oslo (YYYY-MM-DD). */
   idag: string;
+  /** Til caps-kickeren «Uke 36 · Øyvind Rohjan» (A-01d). */
+  spillerNavn?: string;
   /** VARSEL fra validateWeek (f.eks. overlapp) — informerer, sperrer aldri (invariant 1). */
   notater?: ValidationNote[];
   publiserer: boolean;
@@ -43,19 +60,40 @@ export function PublishConfirmDialog({
   open,
   okter,
   idag,
+  spillerNavn,
   notater = [],
   publiserer,
   onLukk,
   onBekreft,
 }: Props) {
   const iDagAntall = okter.filter((s) => s.date === idag).length;
+  const ukeNr = okter[0] ? isoWeekNumber(okter[0].date) : isoWeekNumber(idag);
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onLukk()}>
       <DialogContent size="md">
         <DialogHeader>
-          <DialogTitle>{UI.publishConfirmTitle}</DialogTitle>
-          <DialogDescription>{UI.publishConfirmBody}</DialogDescription>
+          {spillerNavn && (
+            <div
+              style={{
+                fontFamily: TL.font.sans,
+                fontSize: 11,
+                fontWeight: 600,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                color: TL.mute,
+                fontVariantNumeric: "tabular-nums",
+              }}
+            >
+              {UI.publishConfirmKicker(ukeNr, spillerNavn)}
+            </div>
+          )}
+          <DialogTitle className="text-[26px] font-bold tracking-[-0.02em]">
+            {UI.publishConfirmHeading(okter.length)}
+          </DialogTitle>
+          <DialogDescription className="text-[15px] leading-[1.45]">
+            {UI.publishConfirmBody}
+          </DialogDescription>
         </DialogHeader>
 
         <DialogBody>
@@ -112,35 +150,47 @@ export function PublishConfirmDialog({
             </div>
           )}
 
-          <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 6 }}>
-            {okter.map((s) => (
+          {/* A-01d: økt-listen som #161616-kort radius 16, rader med
+              «Tir 16.00» (13 mute, 88 px) + tittel 15/600. */}
+          <ul
+            style={{
+              listStyle: "none",
+              margin: 0,
+              padding: "2px 18px",
+              background: TL.elev,
+              borderRadius: 16,
+            }}
+          >
+            {okter.map((s, i) => (
               <li
                 key={s.id}
                 style={{
                   display: "flex",
-                  gap: 10,
-                  alignItems: "baseline",
-                  padding: "8px 10px",
-                  borderRadius: TL.radius.row,
-                  background: TL.dock,
+                  alignItems: "center",
+                  gap: 14,
+                  padding: "14px 0",
+                  borderBottom: i < okter.length - 1 ? `1px solid ${TL.hair}` : "none",
                   minWidth: 0,
                 }}
               >
                 <span
                   style={{
-                    fontFamily: TL.font.mono,
-                    fontSize: 11,
-                    color: TL.mute,
+                    width: 88,
                     flex: "none",
+                    fontFamily: TL.font.sans,
+                    fontSize: 13,
+                    color: TL.mute,
                     fontVariantNumeric: "tabular-nums",
                   }}
                 >
-                  {s.date.slice(8, 10)}.{s.date.slice(5, 7)} {formatTime(s.startMinute)}
+                  {dagOgKlokke(s.date, s.startMinute)}
                 </span>
                 <span
                   style={{
+                    flex: 1,
                     fontFamily: TL.font.sans,
-                    fontSize: 13,
+                    fontSize: 15,
+                    fontWeight: 600,
                     color: TL.text,
                     minWidth: 0,
                     overflow: "hidden",
@@ -155,11 +205,39 @@ export function PublishConfirmDialog({
           </ul>
         </DialogBody>
 
-        <DialogFooter>
-          <Knapp ghost onClick={onLukk}>
+        {/* A-01d: Avbryt som ren tekst, «Publiser» som den ene hvite pillen. */}
+        <DialogFooter className="gap-5">
+          <button
+            type="button"
+            onClick={onLukk}
+            className="v2-focus"
+            style={{
+              appearance: "none",
+              background: "transparent",
+              border: "none",
+              padding: 0,
+              fontFamily: TL.font.sans,
+              fontSize: 15,
+              fontWeight: 600,
+              color: TL.mute,
+              cursor: "pointer",
+            }}
+          >
             {UI.cancel}
-          </Knapp>
-          <Knapp onClick={onBekreft} disabled={publiserer}>
+          </button>
+          <Knapp
+            enTing
+            onClick={onBekreft}
+            disabled={publiserer}
+            style={{
+              height: 48,
+              minHeight: 48,
+              borderRadius: 9999,
+              padding: "0 28px",
+              fontSize: 16,
+              fontWeight: 700,
+            }}
+          >
             {publiserer ? UI.publishing : UI.publish}
           </Knapp>
         </DialogFooter>

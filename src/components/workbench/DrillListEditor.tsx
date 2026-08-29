@@ -1,23 +1,30 @@
 "use client";
 
 /**
- * DrillListEditor — delt drill-liste + «legg til»-skjema.
+ * DrillListEditor — delt drill-liste + «legg til»-skjema (PX-2).
  *
- * Brukes både i `SessionInspector` (drills lagres server-side per handling)
- * og `CreateSessionModal` (drills er et lokalt utkast til økten opprettes).
- * Komponenten selv er statsløs på drill-nivå — eier kaller inn listen og får
- * tilbake handlinger; ingen ny dnd-lib for reorder (anti-scope).
+ * Fasit: designsystem/train-lock/A-03b Ny drill tom.dc.html
+ * Fasit: designsystem/train-lock/A-03c Ny drill fylt.dc.html
+ * Fasit: designsystem/train-lock/A-02 Mac Okt Naerspill.dc.html (Øvelser-listen)
+ *
+ * Fasit-stil: rader 15/600 + meta 13 mute tabular med border-bottom hairline
+ * (aldri kort-ramme), «+ Legg til» som 13/600 mute tekst. Skjemaet: caps-
+ * etiketter 11/600/0.08em, felt 44 px #1C1C1E radius 12, pyramide som
+ * pille-rad 32 px, «Lagre drill» hvit pille — disabled = dim (#2C2C2E/mute,
+ * A-03b), ufullstendig drill = caps «Mangler» i mute (aldri rødt).
+ *
+ * Brukes i `SessionInspector` (drills lagres server-side per handling).
+ * Statsløs på drill-nivå; ingen ny dnd-lib for reorder (anti-scope).
  */
 
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Knapp } from "@/components/v2/core";
 import { Icon } from "@/components/v2/icon";
 import { TL } from "@/lib/v2/train-lock";
 
-import { AREA_LABEL, PYRAMID_LABEL, UI } from "@/lib/domain/workbench/labels";
+import { AREA_LABEL, UI } from "@/lib/domain/workbench/labels";
 import type { PyramidArea, TrainingArea } from "@/lib/domain/workbench/types";
 
 const OMRADE_GRUPPER: { label: string; areas: TrainingArea[] }[] = [
@@ -78,11 +85,11 @@ export function DrillListEditor({
   return (
     <div style={{ display: "grid", gap: 10 }}>
       {drills.length === 0 ? (
-        <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: 0 }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: 0 }}>
           {UI.emptyDrills}
         </p>
       ) : (
-        <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 6 }}>
+        <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
           {drills.map((d, i) => {
             const komplett = drillErKomplett(d);
             return (
@@ -90,21 +97,21 @@ export function DrillListEditor({
                 key={d.id}
                 style={{
                   display: "flex",
-                  alignItems: "center",
+                  alignItems: "baseline",
                   justifyContent: "space-between",
                   gap: 8,
-                  padding: "7px 9px",
-                  borderRadius: TL.radius.row,
-                  border: `1px solid ${TL.hair}`,
-                  background: TL.dock,
+                  padding: "9px 0",
+                  borderBottom: `1px solid ${TL.hair}`,
                   minWidth: 0,
                 }}
               >
-                <div style={{ display: "grid", gap: 2, minWidth: 0, flex: 1 }}>
+                <div style={{ minWidth: 0, flex: 1 }}>
                   <span
                     style={{
+                      display: "block",
                       fontFamily: TL.font.sans,
-                      fontSize: 12.5,
+                      fontSize: 15,
+                      fontWeight: 600,
                       color: TL.text,
                       overflow: "hidden",
                       textOverflow: "ellipsis",
@@ -113,29 +120,10 @@ export function DrillListEditor({
                   >
                     {d.title || UI.drillTitlePlaceholder}
                   </span>
-                  {komplett ? (
-                    <span style={{ fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute }}>
-                      {PYRAMID_LABEL[d.akFormel.pyramid]} · {AREA_LABEL[d.akFormel.area]} ·{" "}
-                      {d.durationMinutes} min
-                    </span>
-                  ) : (
-                    <span
-                      style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: 4,
-                        fontFamily: TL.font.mono,
-                        fontSize: 10.5,
-                        color: TL.danger,
-                      }}
-                    >
-                      <Icon name="triangle-alert" size={11} />
-                      {UI.incompleteDrill}
-                    </span>
-                  )}
                   {d.description ? (
                     <span
                       style={{
+                        display: "block",
                         fontFamily: TL.font.sans,
                         fontSize: 11,
                         color: TL.mute,
@@ -148,6 +136,34 @@ export function DrillListEditor({
                     </span>
                   ) : null}
                 </div>
+                {/* A-03b: ufullstendig = caps «Mangler» i mute — aldri rødt. */}
+                {komplett ? (
+                  <span
+                    style={{
+                      fontFamily: TL.font.sans,
+                      fontSize: 13,
+                      color: TL.mute,
+                      fontVariantNumeric: "tabular-nums",
+                      flexShrink: 0,
+                    }}
+                  >
+                    {d.durationMinutes} min
+                  </span>
+                ) : (
+                  <span
+                    style={{
+                      fontFamily: TL.font.sans,
+                      fontSize: 11,
+                      fontWeight: 600,
+                      letterSpacing: "0.08em",
+                      textTransform: "uppercase",
+                      color: TL.mute,
+                      flexShrink: 0,
+                    }}
+                  >
+                    {UI.drillMissingCaps}
+                  </span>
+                )}
                 <div style={{ display: "flex", gap: 2, flex: "none" }}>
                   <IkonKnapp
                     icon="arrow-up"
@@ -175,15 +191,7 @@ export function DrillListEditor({
       )}
 
       {visSkjema ? (
-        <div
-          style={{
-            display: "grid",
-            gap: 8,
-            padding: "9px 11px",
-            borderRadius: TL.radius.row,
-            border: `1px dashed ${TL.hair}`,
-          }}
-        >
+        <div style={{ display: "grid", gap: 14 }}>
           <Felt label={UI.drillTitle}>
             <Input
               value={tittel}
@@ -192,16 +200,45 @@ export function DrillListEditor({
               autoFocus
             />
           </Felt>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-            <Felt label={UI.drillPyramid}>
-              <Select value={pyramid} onChange={(e) => setPyramid(e.target.value as PyramidArea)}>
-                {PYRAMIDER.map((p) => (
-                  <option key={p} value={p}>
-                    {PYRAMID_LABEL[p]}
-                  </option>
-                ))}
-              </Select>
-            </Felt>
+          {/* A-03b/A-03c: pyramide som pille-rad 32 px, aktiv = hvit pille. */}
+          <Felt label={UI.drillPyramid}>
+            <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+              {PYRAMIDER.map((p) => {
+                const on = pyramid === p;
+                return (
+                  <button
+                    key={p}
+                    type="button"
+                    className="v2-press v2-focus"
+                    aria-pressed={on}
+                    onClick={() => setPyramid(p)}
+                    style={{
+                      appearance: "none",
+                      height: 32,
+                      borderRadius: 9999,
+                      border: "none",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      padding: "0 14px",
+                      fontFamily: TL.font.sans,
+                      fontSize: 10,
+                      fontWeight: 600,
+                      letterSpacing: "0.06em",
+                      textTransform: "uppercase",
+                      whiteSpace: "nowrap",
+                      cursor: "pointer",
+                      background: on ? TL.fill : "transparent",
+                      color: on ? TL.onFill : TL.mute,
+                      boxShadow: on ? "none" : `inset 0 0 0 1px ${TL.hair}`,
+                    }}
+                  >
+                    {p}
+                  </button>
+                );
+              })}
+            </div>
+          </Felt>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <Felt label={UI.drillArea}>
               <Select value={omrade} onChange={(e) => setOmrade(e.target.value as TrainingArea)}>
                 {OMRADE_GRUPPER.map((gruppe) => (
@@ -215,16 +252,16 @@ export function DrillListEditor({
                 ))}
               </Select>
             </Felt>
+            <Felt label={UI.drillDuration}>
+              <Input
+                type="number"
+                min={1}
+                max={600}
+                value={varighet}
+                onChange={(e) => setVarighet(Number(e.target.value))}
+              />
+            </Felt>
           </div>
-          <Felt label={UI.drillDuration}>
-            <Input
-              type="number"
-              min={1}
-              max={600}
-              value={varighet}
-              onChange={(e) => setVarighet(Number(e.target.value))}
-            />
-          </Felt>
           <Felt label={UI.drillDescription}>
             <Textarea
               value={beskrivelse}
@@ -233,40 +270,96 @@ export function DrillListEditor({
               rows={2}
             />
           </Felt>
-          <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
-            <Knapp
-              ghost
+          {/* A-03b: footer = Avbryt som ren tekst + «Lagre drill»-pille.
+              Disabled = dim flate + mute tekst — aldri hvit. */}
+          <div style={{ display: "flex", gap: 16, justifyContent: "flex-end", alignItems: "center" }}>
+            <button
+              type="button"
+              className="v2-focus"
               onClick={() => {
                 setVisSkjema(false);
                 setTittel("");
                 setBeskrivelse("");
+              }}
+              style={{
+                appearance: "none",
+                background: "transparent",
+                border: "none",
+                padding: 0,
+                fontFamily: TL.font.sans,
+                fontSize: 15,
+                fontWeight: 600,
+                color: TL.mute,
+                cursor: "pointer",
               }}
             >
               {UI.cancel}
-            </Knapp>
-            <Knapp
-              disabled={disabled || tittel.trim() === "" || !(varighet > 0)}
-              onClick={() => {
-                onLeggTil({
-                  title: tittel.trim(),
-                  durationMinutes: varighet,
-                  pyramid,
-                  area: omrade,
-                  description: beskrivelse.trim() || undefined,
-                });
-                setVisSkjema(false);
-                setTittel("");
-                setBeskrivelse("");
-              }}
-            >
-              {UI.save}
-            </Knapp>
+            </button>
+            {(() => {
+              const ugyldig = disabled || tittel.trim() === "" || !(varighet > 0);
+              return (
+                <button
+                  type="button"
+                  className="v2-press v2-focus"
+                  disabled={ugyldig}
+                  onClick={() => {
+                    onLeggTil({
+                      title: tittel.trim(),
+                      durationMinutes: varighet,
+                      pyramid,
+                      area: omrade,
+                      description: beskrivelse.trim() || undefined,
+                    });
+                    setVisSkjema(false);
+                    setTittel("");
+                    setBeskrivelse("");
+                  }}
+                  style={{
+                    appearance: "none",
+                    height: 44,
+                    borderRadius: 9999,
+                    border: "none",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: "0 26px",
+                    fontFamily: TL.font.sans,
+                    fontSize: 16,
+                    fontWeight: 700,
+                    whiteSpace: "nowrap",
+                    cursor: ugyldig ? "default" : "pointer",
+                    background: ugyldig ? TL.dim : TL.fill,
+                    color: ugyldig ? TL.mute : TL.onFill,
+                  }}
+                >
+                  {UI.drillSave}
+                </button>
+              );
+            })()}
           </div>
         </div>
       ) : (
-        <Knapp ghost icon="plus" disabled={disabled} onClick={() => setVisSkjema(true)}>
-          {UI.addDrill}
-        </Knapp>
+        /* A-02: «+ Legg til» som 13/600 mute tekst. */
+        <button
+          type="button"
+          className="v2-focus"
+          disabled={disabled}
+          onClick={() => setVisSkjema(true)}
+          style={{
+            appearance: "none",
+            background: "transparent",
+            border: "none",
+            padding: 0,
+            textAlign: "left",
+            fontFamily: TL.font.sans,
+            fontSize: 13,
+            fontWeight: 600,
+            color: TL.mute,
+            cursor: "pointer",
+          }}
+        >
+          {UI.addDrillShort}
+        </button>
       )}
     </div>
   );
@@ -309,15 +402,16 @@ function IkonKnapp({
   );
 }
 
+/* Fasit A-03b: caps-etikett 11/600/0.08em over feltet. */
 function Felt({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <label style={{ display: "grid", gap: 5, minWidth: 0 }}>
+    <label style={{ display: "grid", gap: 6, minWidth: 0 }}>
       <span
         style={{
-          fontFamily: TL.font.mono,
-          fontSize: 9.5,
+          fontFamily: TL.font.sans,
+          fontSize: 11,
           fontWeight: 600,
-          letterSpacing: "0.07em",
+          letterSpacing: "0.08em",
           textTransform: "uppercase",
           color: TL.mute,
         }}
