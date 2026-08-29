@@ -286,7 +286,7 @@ export function TimeGrid({
                 minWidth: 0,
                 position: "relative",
                 borderLeft: `1px solid ${TL.hair}`,
-                // Fasit A-01: i dag-kolonnen har #16161680-flate (elev @ 50 %).
+                // Fasit A-01: i dag-kolonnen har elev-flate @ 50 % alfa.
                 background: d.today
                   ? `color-mix(in srgb, ${TL.elev} 50%, transparent)`
                   : "transparent",
