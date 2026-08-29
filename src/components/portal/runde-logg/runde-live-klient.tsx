@@ -2,8 +2,17 @@
 import { TL } from "@/lib/v2/train-lock";
 
 /**
- * PlayerHQ · Runde live — Paper-port PP-3 (fase 1).
- * Fasit: designsystem/paper/fase1/playerhq-runde-live.html.
+ * PlayerHQ · Runde live.
+ * Fasit: designsystem/train-lock/RU-01 Player Live runde iPhone.dc.html
+ * (+ designsystem/train-lock/RU-01L Live runde lys.dc.html — samme
+ * komponent, TL.* svarer på html[data-v2-tema]).
+ * Geometri PORTET fra fasiten: 72/700 stort tall, sirkulære 52px −/+,
+ * pille-CTA (TommelSone/PrimaerKnapp). IKKE portet (data/motor mangler,
+ * anti-scope): fasitens FW TREFF/GIR/2 PUTT-hurtigpiller — hurtigmodus
+ * (syntetiserHurtigHull) sporer kun slagtall, ikke lie/putt per hull; å
+ * wire dem krever domenearbeid utenfor PX-4. Sumkort + hullstripe + egen
+ * slag-for-slag-detalj er BEHOLDT ut over fasiten (Enkelhet — fasitens
+ * enklere ett-hull-av-gangen-modell er ikke bygget om, funksjonen står).
  *
  * Stepper er standardinngangen: sumkort (løpende brutto + why-details),
  * hullstripe (hopp til hull), − / stort tall / + per hull, ← Forrige /
@@ -603,13 +612,17 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
                       style={{
                         appearance: "none",
                         cursor: "pointer",
-                        minHeight: 88,
-                        border: `1px solid ${TL.hair}`,
-                        borderRadius: 12,
-                        background: TL.dock,
-                        fontFamily: TL.font.mono,
-                        fontSize: 28,
-                        color: TL.text,
+                        width: 52,
+                        height: 52,
+                        borderRadius: "50%",
+                        border: "none",
+                        boxShadow: `inset 0 0 0 1.5px ${TL.hair}`,
+                        background: "transparent",
+                        fontFamily: TL.font.sans,
+                        fontSize: 22,
+                        fontWeight: 400,
+                        color: TL.mute,
+                        justifySelf: "start",
                       }}
                     >
                       −
@@ -619,8 +632,8 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
                         style={{
                           fontFamily: TL.font.mono,
                           fontVariantNumeric: "tabular-nums",
-                          fontSize: 56,
-                          fontWeight: 500,
+                          fontSize: 72,
+                          fontWeight: 700,
                           lineHeight: 1,
                           color: TL.text,
                         }}
@@ -647,13 +660,17 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
                       style={{
                         appearance: "none",
                         cursor: "pointer",
-                        minHeight: 88,
-                        border: `1px solid ${TL.hair}`,
-                        borderRadius: 12,
-                        background: TL.dock,
-                        fontFamily: TL.font.mono,
-                        fontSize: 28,
+                        width: 52,
+                        height: 52,
+                        borderRadius: "50%",
+                        border: "none",
+                        boxShadow: `inset 0 0 0 1.5px ${TL.hair}`,
+                        background: "transparent",
+                        fontFamily: TL.font.sans,
+                        fontSize: 22,
+                        fontWeight: 400,
                         color: TL.text,
+                        justifySelf: "end",
                       }}
                     >
                       +

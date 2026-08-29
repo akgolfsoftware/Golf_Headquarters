@@ -464,10 +464,23 @@ function TrackManTeaserKort({ trackman }: { trackman: TrackManTeaser }) {
 }
 
 /**
- * Godkjenningskort (Loop 3T/B6, WB-10/WB-04-mønster) — én økt med
- * `needsPlayerApproval`. «Godta» er eneste sted #30D158 (TL.ok) forekommer i
- * denne flyten (CLAUDE.md invariant 2); «Avvis» er en nøytral ghost-knapp,
- * ALDRI rød. Avvis skjuler økten (hiddenByPlayer) — sletter aldri.
+ * Fasit: designsystem/train-lock/WB-04 Player godkjenning 3 skall.dc.html
+ * (rammen «WB-04 iPhone forslag» — Mac/iPad-rammene i samme fil er Agency-
+ * siden, PX-2-scope). Godkjenningskort (Loop 3T/B6, WB-10/WB-04-mønster) —
+ * én økt med `needsPlayerApproval`. «Godta» er eneste sted #30D158 (TL.ok)
+ * forekommer i denne flyten (CLAUDE.md invariant 2); «Avvis» er en nøytral
+ * ghost-knapp, ALDRI rød. Avvis skjuler økten (hiddenByPlayer) — sletter
+ * aldri.
+ *
+ * GAP mot fasiten (dokumentert, ikke bygget — data/motor mangler,
+ * anti-scope): fasitens forslag-ark viser drill-linjene i klartekst og en
+ * avatar+navn-linje («Anders la inn en ny økt · i går 20.14») — `PlayerDaySession`
+ * har kun `drillsCount` (ikke drill-titler) og ingen forfatter-/tidsstempel-
+ * felt. Etter-tilstandene («Godtatt»/«Avvist») i fasiten samler en
+ * avvis-begrunnelse og tilbyr Angre — `resolvePlayerApproval` har ingen
+ * slike parametre. Å legge dem til er domenearbeid utenfor PX-4 (piksel,
+ * ikke funksjon). Kortet under bruker det som FINNES i dag (tittel, tid,
+ * pyramide, coach-notat) i fasitens geometri.
  *
  * C8: hele I dag-skjermen leser TL.* — «Godta» er eneste TL.ok.
  */
@@ -518,12 +531,49 @@ function GodkjenningKort({ okt, onFerdig }: { okt: PlayerDaySession; onFerdig: (
         </span>
       </div>
       <div>
-        <h3 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 16, fontWeight: 600, color: TL.text }}>{okt.title}</h3>
-        <p style={{ margin: "4px 0 0", fontFamily: TL.font.mono, fontSize: 12, color: TL.mute }}>
-          {formatTime(okt.startMinute)} · {formatMinutes(okt.durationMinutes)} ·{" "}
-          {PYRAMID_LABEL[okt.pyramid as keyof typeof PYRAMID_LABEL] ?? okt.pyramid}
+        <h3 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 20, fontWeight: 700, letterSpacing: "-0.01em", color: TL.text }}>
+          {okt.title}
+        </h3>
+        <p style={{ margin: "5px 0 0", fontFamily: TL.font.mono, fontSize: 12, color: TL.mute }}>
+          {formatTime(okt.startMinute)} · {formatMinutes(okt.durationMinutes)}
         </p>
       </div>
+      <div>
+        <span
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            height: 26,
+            padding: "0 10px",
+            borderRadius: TL.radius.pill,
+            background: TL.fill,
+            color: TL.onFill,
+            fontFamily: TL.font.sans,
+            fontSize: 9,
+            fontWeight: 600,
+            letterSpacing: "0.06em",
+            textTransform: "uppercase",
+          }}
+        >
+          {PYRAMID_LABEL[okt.pyramid as keyof typeof PYRAMID_LABEL] ?? okt.pyramid}
+        </span>
+      </div>
+      {okt.notes && (
+        <p
+          style={{
+            margin: 0,
+            background: TL.dock,
+            borderRadius: TL.radius.row,
+            padding: "10px 12px",
+            fontFamily: TL.font.sans,
+            fontSize: 12.5,
+            color: TL.text,
+            lineHeight: 1.5,
+          }}
+        >
+          «{okt.notes}»
+        </p>
+      )}
       <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.5 }}>{WB_UI.approvalRejectHint}</p>
       <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
         <button

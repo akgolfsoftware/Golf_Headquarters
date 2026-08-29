@@ -1082,22 +1082,46 @@ export function DagNivaa({ dag, valgt, onVelg, dager, onFlytt }: {
   }
   const denneDagIndex = dager?.findIndex((d) => d.dato === dag.dato && d.dow === dag.dow) ?? -1;
   return (
-    <Kort eyebrow={`${dag.dow} ${dag.dato} · tidslinje`} action={<Caps size={9}>{dag.events.length} økter</Caps>}>
-      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+    // Fasit: designsystem/train-lock/P-05 iPhone Agenda.dc.html (rad-geometri:
+    // fast 44px tidskolonne, caps-metalinje, hairline mellom rader i én kortflate
+    // i stedet for egen boks per rad — dag-velger + ett-dag-av-gangen beholdt,
+    // fasiten scroller alle 7 dagene i ett — se GAP-notat i WorkbenchV2Mobil.tsx).
+    <Kort eyebrow={`${dag.dow} ${dag.dato} · tidslinje`} action={<Caps size={9}>{dag.events.length} økter</Caps>} pad="4px 16px">
+      <div style={{ display: "flex", flexDirection: "column" }}>
         {dag.events.map((o, j) => {
           const ak = o.eb as AkseKey;
           const sel = !!o.id && valgt === o.id;
           const pending = erOptimistisk(o.id);
           const flyttApen = !!o.id && flyttId === o.id;
           return (
-            <div key={o.id ?? j} className="v2-fade-in" style={{ padding: "9px 11px", borderRadius: 10, background: TL.dock, border: `1px ${pending ? "dashed" : "solid"} ${sel ? TL.fill : TL.hair}`, borderLeft: `3px solid ${sel ? TL.fill : TL.hair}`, opacity: pending ? 0.6 : 1 }}>
-              <div onClick={() => o.id && !pending && onVelg(o.id)} style={{ cursor: pending ? "default" : "pointer" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, color: TL.mute }}>{toKl(o.h, o.m)}</span>
-                  <span style={{ fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, color: TL.mute }}>{AKSE_NAVN[ak] || o.eb}</span>
-                  <span style={{ marginLeft: "auto", fontFamily: TL.font.mono, fontSize: 8.5, color: TL.mute }}>{fmtVarighet(o.durMin)}</span>
+            <div
+              key={o.id ?? j}
+              className="v2-fade-in"
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                padding: "10px 0",
+                borderTop: j === 0 ? "none" : `1px solid ${TL.hair}`,
+                opacity: pending ? 0.6 : 1,
+              }}
+            >
+              <div
+                onClick={() => o.id && !pending && onVelg(o.id)}
+                style={{ display: "flex", gap: 12, cursor: pending ? "default" : "pointer" }}
+              >
+                <span style={{ width: 44, flex: "none", fontFamily: TL.font.mono, fontSize: 11, fontWeight: 600, color: TL.mute, paddingTop: 2 }}>
+                  {toKl(o.h, o.m)}
+                </span>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 600, letterSpacing: "0.04em", color: TL.mute, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                    {AKSE_NAVN[ak] || o.eb}
+                    {sel && " · valgt"}
+                  </div>
+                  <div style={{ fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text, marginTop: 2 }}>
+                    {o.ttl} · {fmtVarighet(o.durMin)}
+                  </div>
                 </div>
-                <div style={{ fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 600, color: TL.text, marginTop: 5 }}>{o.ttl}</div>
+                {sel && <Icon name="check" size={12} style={{ color: TL.fill, flex: "none", alignSelf: "center" }} />}
               </div>
               {onFlytt && dager && !pending && o.id && (
                 <>
