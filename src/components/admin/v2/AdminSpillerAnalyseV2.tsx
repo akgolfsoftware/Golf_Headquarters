@@ -17,6 +17,7 @@ import { AnalysereV2, type AnalysereData } from "@/components/portal/v2/Analyser
 import { Caps, Kort, Tittel, StatusPill, TilbakeLenke, CTAPill, HjelpTips, type StatusTone } from "@/components/v2";
 import { TL } from "@/lib/v2/train-lock";
 import { MIN_MERKBAR_ENDRING, type SgMotSegSelv } from "@/lib/domain/sg-mot-seg-selv";
+import type { Turneringshistorikk } from "@/lib/domain/turneringshistorikk";
 
 /** Norsk eieform: «Rohjan» → «Rohjans», «Alex» → «Alex'». Holder navnet helt. */
 function eieform(navn: string): string {
@@ -177,9 +178,11 @@ export interface AdminSpillerAnalyseV2Props {
   data: AnalysereData;
   /** «Hvor taper hen slag, mot seg selv» — beslutning 2026-08-30. */
   motSegSelv: SgMotSegSelv;
+  /** Spillerens egne turneringsresultater — samme visning som spilleren ser. */
+  turneringer?: Turneringshistorikk;
 }
 
-export function AdminSpillerAnalyseV2({ navn, spillerId, data, motSegSelv }: AdminSpillerAnalyseV2Props) {
+export function AdminSpillerAnalyseV2({ navn, spillerId, data, motSegSelv, turneringer }: AdminSpillerAnalyseV2Props) {
   const kat = data.minGolf.kategori;
   const aar = new Date().getFullYear();
   const eyebrow = kat
@@ -190,6 +193,7 @@ export function AdminSpillerAnalyseV2({ navn, spillerId, data, motSegSelv }: Adm
   return (
     <AnalysereV2
       data={data}
+      turneringer={turneringer}
       /* Spillerens historikk, ikke coachens — tilgangen håndheves server-side
          av assertCanViewPlayerData i hentTreningsHistorikkFiltrert. */
       userId={spillerId}

@@ -21,6 +21,7 @@ import { loadAnalyticsWorkbenchData } from "@/app/portal/analysere/actions";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { AdminSpillerAnalyseV2 } from "@/components/admin/v2/AdminSpillerAnalyseV2";
 import { sammenlignMedSegSelv, STANDARD_VINDU } from "@/lib/domain/sg-mot-seg-selv";
+import { hentTurneringshistorikk } from "@/lib/portal/turneringshistorikk-data";
 
 export const dynamic = "force-dynamic";
 
@@ -44,7 +45,7 @@ export default async function SpillerAnalysePage({
   // I tillegg: «hvor taper hen slag, målt mot seg selv» — coachens
   // hovedspørsmål (beslutning 2026-08-30). Vi henter dobbelt så mange runder
   // som vindusstørrelsen, siden sammenligningen trenger et vindu bakover også.
-  const [minGolf, workbench, sgRunder] = await Promise.all([
+  const [minGolf, workbench, sgRunder, turneringer] = await Promise.all([
     loadMinGolf(spiller.id, "elite"),
     loadAnalyticsWorkbenchData(spiller.id),
     prisma.round.findMany({
@@ -59,6 +60,7 @@ export default async function SpillerAnalysePage({
         sgPutt: true,
       },
     }),
+    hentTurneringshistorikk(spiller.id),
   ]);
 
   const motSegSelv = sammenlignMedSegSelv(sgRunder);
@@ -70,6 +72,7 @@ export default async function SpillerAnalysePage({
         spillerId={spiller.id}
         data={{ minGolf, workbench }}
         motSegSelv={motSegSelv}
+        turneringer={turneringer}
       />
     </V2Shell>
   );
