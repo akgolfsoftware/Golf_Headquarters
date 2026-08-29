@@ -1,16 +1,42 @@
 "use client";
-import { TL } from "@/lib/v2/train-lock";
+
 /**
- * Foreldreportal · Samtykke — v2 Presis + B-pakke (status + lagre-CTA).
- * Server-actions uendret. Kun v2 + T.*. Enklere foreldre-språk.
+ * Foreldreportal · Samtykke — pikselport PX-5.
+ * Fasit: designsystem/train-lock/FO-08 Samtykke.dc.html
+ * (+ FO-08L Samtykke lys.dc.html — lys/mørk gjøres av tokens).
+ * GDPR-samtykke per relasjon (kort per barn med 51×31-toggler) + «Sletting»-
+ * seksjon. Nøytral, ikke salg. Server-actionene er uendret: lagreSamtykker
+ * (eksplisitt Lagre-knapp), settHelseSamtykkeForBarn (sporbar rad per klikk)
+ * og beOmDataSletting. GDPR-eksporten beholdes som egen rad (tillegg utover
+ * fasiten — eksisterende funksjonalitet, notert i PR-en).
  */
 
-import { useEffect, useState, useTransition } from "react";
-import { Caps, Tittel, Kort, StatusPill, Knapp, Rad, TomTilstand, Icon } from "@/components/v2";
-import { Bryter } from "@/components/v2/skjema";
-import { lagreSamtykker, beOmDataSletting, settHelseSamtykkeForBarn } from "@/app/forelder/samtykke/actions";
-import { HELSE_SAMTYKKE_TEKST, type HelseSamtykkeType } from "@/lib/health/samtykke-regler";
-/* ── Datakontrakt (avledet av barnets EKTE Prisma-data) ────────────── */
+import { useState, useTransition } from "react";
+import { TL } from "@/lib/v2/train-lock";
+import {
+  lagreSamtykker,
+  beOmDataSletting,
+  settHelseSamtykkeForBarn,
+} from "@/app/forelder/samtykke/actions";
+import {
+  HELSE_SAMTYKKE_TEKST,
+  type HelseSamtykkeType,
+} from "@/lib/health/samtykke-regler";
+import {
+  FoSkjerm,
+  FoHode,
+  FoCaps,
+  FoKort,
+  FoRad,
+  FoToggle,
+  FoAvatar,
+  FoCtaPrimar,
+  FoCtaSekundar,
+  FoFotnote,
+  FoTom,
+} from "@/components/forelder/fo-kit";
+
+/* ── Datakontrakt (serialisert fra loader) ─────────────────────────── */
 
 export type SamtykkeBarn = {
   id: string;
@@ -39,6 +65,8 @@ export type ForelderSamtykkeData = {
   /** Alle påkrevde samtykker aktive på alle barn (server-beregnet). */
   alleAktive: boolean;
   sisteSletting: { type: string; status: string; createdAt: string } | null;
+  /** Forelderens navn (caps-linjen «Forelder · …»). */
+  parentName?: string;
 };
 
 /* Consent-definisjoner — EKSAKTE nøkler som server-actionen forventer + ekte
@@ -47,48 +75,30 @@ const SAMTYKKER: { key: string; tittel: string; beskrivelse: string }[] = [
   {
     key: "fotoBruk",
     tittel: "Bilder og video",
-    beskrivelse:
-      "AK Golf kan bruke bilder/video av barnet i planer og rapporter, og i markedsføring (anonymisert om ikke annet er avtalt).",
+    beskrivelse: "Brukes i intern coaching",
   },
   {
     key: "dataDeling",
-    tittel: "Dele treningsdata med coach",
-    beskrivelse:
-      "Runder, Trackman og helse-data kan deles med barnets coach for bedre planer.",
+    tittel: "Lagre treningsdata",
+    beskrivelse: "Plan, oppmøte og økter",
   },
   {
     key: "nyhetsbrev",
     tittel: "Nyheter på e-post",
-    beskrivelse:
-      "Tips, kurs og nyheter om juniorgolf. Du kan melde deg av når som helst.",
+    beskrivelse: "Tips, kurs og nyheter om juniorgolf",
   },
   {
     key: "thirdParty",
     tittel: "Dele anonym data videre",
-    beskrivelse:
-      "Anonym data kan deles med WAGR, NGF og talentregistre hvis barnet kvalifiserer.",
+    beskrivelse: "WAGR, NGF og talentregistre hvis barnet kvalifiserer",
   },
 ];
 
-/* ── Rene hjelpere ─────────────────────────────────────────────────── */
-
-/** true på klient etter mount når viewport < 768px (styrer kun tallstørrelser). */
-function useMobile(): boolean {
-  const [m, setM] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const oppdater = () => setM(mq.matches);
-    oppdater();
-    mq.addEventListener("change", oppdater);
-    return () => mq.removeEventListener("change", oppdater);
-  }, []);
-  return m;
-}
-
 function formatDato(iso: string): string {
   return new Date(iso).toLocaleDateString("nb-NO", {
-    day: "numeric",
-    month: "long",
+    timeZone: "Europe/Oslo",
+    day: "2-digit",
+    month: "2-digit",
     year: "numeric",
   });
 }
@@ -128,95 +138,32 @@ function HelseSamtykkeSeksjon({ barn }: { barn: SamtykkeBarn }) {
     });
   }
 
-  const harKilde = valg.wearable || valg.manuell;
+  const helseTyper: HelseSamtykkeType[] = ["WEARABLE_HELSE", "MANUELL_HELSE"];
+  if (valg.wearable || valg.manuell) helseTyper.push("COACH_INNSYN");
+  if (valg.coachInnsyn) helseTyper.push("COACH_DETALJ");
 
   return (
-    <div
-      style={{
-        padding: "14px 18px",
-        borderTop: `1px solid ${TL.hair}`,
-        background: TL.dock,
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-        <Icon name="heart" size={13} style={{ color: TL.mute }} />
-        <span
-          style={{
-            fontFamily: TL.font.sans,
-            fontSize: 10.5,
-            fontWeight: 700,
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
-            color: TL.mute,
-          }}
-        >
-          Helsedata
-        </span>
-      </div>
-
-      <p
-        style={{
-          fontFamily: TL.font.sans,
-          fontSize: 12,
-          color: TL.mute,
-          lineHeight: 1.5,
-          margin: "0 0 8px",
-        }}
-      >
-        Søvn, puls, vekt og skader regnes som helseopplysninger — enten en klokke
-        måler dem eller barnet fyller dem ut selv. Er barnet under 16 år, er det
-        bare du som kan si ja til dette. Treningen blir aldri sperret av det du
-        velger her.
-      </p>
-
-      {(["WEARABLE_HELSE", "MANUELL_HELSE"] as const).map((type) => (
-        <div key={type} style={{ padding: "6px 0" }}>
-          <Bryter
-            label={HELSE_SAMTYKKE_TEKST[type].tittel}
+    <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${TL.hair}` }}>
+      <FoCaps>Helsedata</FoCaps>
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        {helseTyper.map((type) => (
+          <FoRad
+            key={type}
+            title={HELSE_SAMTYKKE_TEKST[type].tittel}
             sub={HELSE_SAMTYKKE_TEKST[type].forklaring}
-            checked={valg[felt[type]]}
-            onChange={(v) => {
-              if (!pending) endre(type, v);
-            }}
+            right={
+              <FoToggle
+                on={valg[felt[type]]}
+                disabled={pending}
+                onChange={(v) => endre(type, v)}
+                label={HELSE_SAMTYKKE_TEKST[type].tittel}
+              />
+            }
           />
-        </div>
-      ))}
-
-      {harKilde && (
-        <div style={{ padding: "6px 0", borderTop: `1px solid ${TL.hair}` }}>
-          <Bryter
-            label={HELSE_SAMTYKKE_TEKST.COACH_INNSYN.tittel}
-            sub={HELSE_SAMTYKKE_TEKST.COACH_INNSYN.forklaring}
-            checked={valg.coachInnsyn}
-            onChange={(v) => {
-              if (!pending) endre("COACH_INNSYN", v);
-            }}
-          />
-        </div>
-      )}
-
-      {valg.coachInnsyn && (
-        <div style={{ padding: "6px 0", borderTop: `1px solid ${TL.hair}` }}>
-          <Bryter
-            label={HELSE_SAMTYKKE_TEKST.COACH_DETALJ.tittel}
-            sub={HELSE_SAMTYKKE_TEKST.COACH_DETALJ.forklaring}
-            checked={valg.coachDetalj}
-            onChange={(v) => {
-              if (!pending) endre("COACH_DETALJ", v);
-            }}
-          />
-        </div>
-      )}
-
+        ))}
+      </div>
       {feil && (
-        <p
-          style={{
-            fontFamily: TL.font.sans,
-            fontSize: 12,
-            color: TL.danger,
-            margin: "8px 0 0",
-          }}
-        >
+        <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, margin: "8px 0 0" }}>
           {feil}
         </p>
       )}
@@ -224,21 +171,25 @@ function HelseSamtykkeSeksjon({ barn }: { barn: SamtykkeBarn }) {
   );
 }
 
-/* ── Per-barn samtykke-kort ────────────────────────────────────────── */
+/* ── Per-barn samtykke-kort (FO-08) ────────────────────────────────── */
 
-function BarnSamtykkeKort({ barn }: { barn: SamtykkeBarn }) {
+function BarnSamtykkeKort({ barn, forste }: { barn: SamtykkeBarn; forste: boolean }) {
   const [pending, startTransition] = useTransition();
   const [feil, setFeil] = useState<string | null>(null);
   const [lagret, setLagret] = useState(false);
+  const [endret, setEndret] = useState(false);
   const [valg, setValg] = useState<Record<string, boolean>>(() => {
     const init: Record<string, boolean> = {};
     for (const s of SAMTYKKER) init[s.key] = barn.prefs[s.key] ?? false;
     return init;
   });
 
-  function toggle(key: string) {
-    setValg((v) => ({ ...v, [key]: !v[key] }));
+  const fornavn = barn.name.split(" ")[0] ?? barn.name;
+
+  function toggle(key: string, v: boolean) {
+    setValg((s) => ({ ...s, [key]: v }));
     setLagret(false);
+    setEndret(true);
   }
 
   function lagre() {
@@ -247,137 +198,94 @@ function BarnSamtykkeKort({ barn }: { barn: SamtykkeBarn }) {
       try {
         await lagreSamtykker(barn.id, valg);
         setLagret(true);
+        setEndret(false);
       } catch (err) {
-        setFeil(err instanceof Error ? err.message : "Lagring feilet.");
+        setFeil(err instanceof Error ? err.message : "Lagring feilet. Prøv igjen.");
       }
     });
   }
 
   return (
-    <Kort pad="0">
-      {/* Hode: barnets navn + e-post */}
-      <div
-        style={{
-          padding: "16px 18px",
-          borderBottom: `1px solid ${TL.hair}`,
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-        }}
-      >
-        <span
-          style={{
-            width: 34,
-            height: 34,
-            borderRadius: 10,
-            background: TL.dim,
-            border: `1px solid ${TL.hair}`,
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flex: "none",
-          }}
-        >
-          <Icon name="user" size={16} style={{ color: TL.mute }} />
-        </span>
-        <div style={{ minWidth: 0 }}>
-          <div
-            style={{
-              fontFamily: TL.font.sans,
-              fontWeight: 700,
-              fontSize: 15,
-              color: TL.text,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-          >
-            {barn.name}
+    <FoKort pad="18px" style={{ marginTop: forste ? 14 : 12 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <FoAvatar navn={fornavn} size={38} />
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontFamily: TL.font.sans, fontSize: 16, fontWeight: 700, color: TL.text }}>
+            {fornavn}
           </div>
           <div
             style={{
-              fontFamily: TL.font.mono,
-              fontSize: 10.5,
+              fontFamily: TL.font.sans,
+              fontSize: 13,
               color: TL.mute,
-              marginTop: 2,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
+              fontVariantNumeric: "tabular-nums",
             }}
           >
-            {barn.email}
+            Samtykke per barn du er foresatt for
           </div>
         </div>
       </div>
 
-      {/* Consent-brytere */}
-      <div style={{ padding: "4px 18px" }}>
-        {SAMTYKKER.map((s, i) => (
-          <div
+      <div style={{ marginTop: 12, display: "flex", flexDirection: "column" }}>
+        {SAMTYKKER.map((s) => (
+          <FoRad
             key={s.key}
-            style={{
-              padding: "14px 0",
-              borderBottom:
-                i < SAMTYKKER.length - 1 ? `1px solid ${TL.hair}` : "none",
-            }}
-          >
-            <Bryter
-              label={s.tittel}
-              sub={s.beskrivelse}
-              checked={valg[s.key] ?? false}
-              onChange={() => toggle(s.key)}
-            />
-          </div>
+            title={s.tittel}
+            sub={s.beskrivelse}
+            right={
+              <FoToggle
+                on={valg[s.key] ?? false}
+                disabled={pending}
+                onChange={(v) => toggle(s.key, v)}
+                label={s.tittel}
+              />
+            }
+          />
         ))}
       </div>
 
-      {/* Helsedata — lagres umiddelbart per bryter, ikke via Lagre-knappen
-          under: hvert klikk er en egen sporbar samtykke-hendelse. */}
+      {/* Helsedata — lagres umiddelbart per bryter (egen sporbar hendelse). */}
       <HelseSamtykkeSeksjon barn={barn} />
 
-      {/* Fot: kvittering + lagre */}
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: 12,
-          padding: "14px 18px",
-          borderTop: `1px solid ${TL.hair}`,
-          background: TL.dock,
-        }}
-      >
-        <span
+      {endret && (
+        <div style={{ marginTop: 12 }}>
+          <FoCtaPrimar disabled={pending} onClick={lagre}>
+            {pending ? "Lagrer …" : "Lagre samtykker"}
+          </FoCtaPrimar>
+        </div>
+      )}
+      {(lagret || feil) && (
+        <p
           style={{
             fontFamily: TL.font.sans,
-            fontSize: 11.5,
-            color: lagret ? TL.ok : feil ? TL.danger : TL.mute,
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
+            fontSize: 12,
+            color: feil ? TL.danger : TL.mute,
+            margin: "10px 0 0",
           }}
         >
-          {lagret && (
-            <Icon name="check-circle" size={14} style={{ color: TL.ok }} />
-          )}
-          {lagret
-            ? "Samtykker lagret"
-            : feil
-              ? feil
-              : "Endringer logges i revisjonsloggen."}
-        </span>
-        <Knapp icon="check" disabled={pending} onClick={lagre}>
-          {pending ? "Lagrer …" : "Lagre samtykker"}
-        </Knapp>
+          {feil ?? "Samtykker lagret. Endringer logges i revisjonsloggen."}
+        </p>
+      )}
+
+      <div
+        style={{
+          marginTop: 12,
+          fontFamily: TL.font.sans,
+          fontSize: 13,
+          color: TL.mute,
+          lineHeight: 1.5,
+        }}
+      >
+        Trekker du samtykket, stopper ny lagring. Data som er nødvendig for
+        regnskap beholdes så lenge loven krever.
       </div>
-    </Kort>
+    </FoKort>
   );
 }
 
-/* ── Data-handlinger (GDPR eksport + sletting) ─────────────────────── */
+/* ── Sletting (GDPR) ───────────────────────────────────────────────── */
 
-function DataHandlinger({
+function SlettingSeksjon({
   sisteSletting,
 }: {
   sisteSletting: ForelderSamtykkeData["sisteSletting"];
@@ -386,6 +294,8 @@ function DataHandlinger({
   const [sendt, setSendt] = useState(false);
   const [feil, setFeil] = useState<string | null>(null);
 
+  const kvittert = sendt || sisteSletting != null;
+
   function sletteForespoersel() {
     setFeil(null);
     startTransition(async () => {
@@ -393,284 +303,94 @@ function DataHandlinger({
         await beOmDataSletting();
         setSendt(true);
       } catch (err) {
-        setFeil(
-          err instanceof Error ? err.message : "Kunne ikke sende forespørsel.",
-        );
+        setFeil(err instanceof Error ? err.message : "Kunne ikke sende forespørsel. Prøv igjen.");
       }
     });
   }
 
-  const slettingKvittert = sendt || sisteSletting != null;
-
   return (
-    <Kort eyebrow="Dine data">
-      {/* Eksport — GET-nedlasting til den ekte eksport-ruten */}
-      <Rad
-        leading={
-          <span
-            style={{
-              width: 34,
-              height: 34,
-              borderRadius: 10,
-              background: TL.dim,
-              border: `1px solid ${TL.hair}`,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flex: "none",
-            }}
-          >
-            <Icon name="download" size={16} style={{ color: TL.fill }} />
-          </span>
-        }
-        title="Last ned alle data"
-        sub="Full GDPR-eksport som fil"
-        onClick={() => {
-          window.location.href = "/forelder/samtykke/eksport";
-        }}
-      />
-
-      {/* Sletting */}
-      <button
-        type="button"
-        className="v2-press v2-focus"
-        onClick={pending ? undefined : sletteForespoersel}
-        disabled={pending}
-        style={{
-          appearance: "none",
-          width: "calc(100% + 20px)",
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-          padding: "11px 10px",
-          margin: "0 -10px",
-          borderRadius: 10,
-          border: "none",
-          background: "transparent",
-          cursor: pending ? "default" : "pointer",
-          textAlign: "left",
-        }}
-      >
-        <span
-          style={{
-            width: 34,
-            height: 34,
-            borderRadius: 10,
-            background: `color-mix(in srgb, ${TL.danger} 12%, transparent)`,
-            border: `1px solid color-mix(in srgb, ${TL.danger} 26%, transparent)`,
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flex: "none",
-          }}
-        >
-          <Icon name="trash-2" size={15} style={{ color: TL.danger }} />
-        </span>
-        <span style={{ flex: 1, minWidth: 0 }}>
-          <span
-            style={{
-              display: "block",
-              fontFamily: TL.font.sans,
-              fontSize: 13.5,
-              fontWeight: 600,
-              color: TL.danger,
-            }}
-          >
-            {pending ? "Sender forespørsel …" : "Be om sletting av data"}
-          </span>
-          <span
-            style={{
-              display: "block",
-              fontFamily: TL.font.sans,
-              fontSize: 11.5,
-              color: TL.mute,
-              marginTop: 2,
-            }}
-          >
-            AK Golf behandler forespørselen manuelt
-          </span>
-        </span>
-      </button>
-
-      {feil && (
-        <p
-          style={{
-            fontFamily: TL.font.sans,
-            fontSize: 12,
-            color: TL.danger,
-            margin: "8px 0 0",
-          }}
-        >
-          {feil}
-        </p>
-      )}
-
-      {slettingKvittert && (
+    <>
+      <div style={{ marginTop: 22 }}>
+        <FoCaps>Sletting</FoCaps>
+      </div>
+      <FoKort pad="16px 18px" style={{ marginTop: 10 }}>
+        <div style={{ fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
+          Be om sletting av data
+        </div>
         <div
           style={{
-            display: "flex",
-            alignItems: "flex-start",
-            gap: 10,
-            marginTop: 12,
-            padding: "11px 13px",
-            borderRadius: 12,
-            background: `color-mix(in srgb, ${TL.ok} 10%, transparent)`,
-            border: `1px solid color-mix(in srgb, ${TL.ok} 24%, transparent)`,
+            marginTop: 6,
+            fontFamily: TL.font.sans,
+            fontSize: 13,
+            color: TL.mute,
+            lineHeight: 1.5,
           }}
         >
-          <Icon
-            name="check"
-            size={15}
-            style={{ color: TL.ok, flex: "none", marginTop: 1 }}
-          />
-          <span
-            style={{
-              fontFamily: TL.font.sans,
-              fontSize: 12.5,
-              color: TL.mute,
-              lineHeight: 1.5,
+          {kvittert
+            ? sisteSletting
+              ? `Forespørsel sendt ${formatDato(sisteSletting.createdAt)} — vi svarer innen 30 dager.`
+              : "Forespørsel sendt — vi svarer innen 30 dager."
+            : "Vi svarer innen 30 dager. Forespørselen gjelder alle koblede barn."}
+        </div>
+        {!kvittert && (
+          <div style={{ marginTop: 10 }}>
+            <FoCtaSekundar disabled={pending} onClick={sletteForespoersel}>
+              {pending ? "Sender …" : "Start forespørsel"}
+            </FoCtaSekundar>
+          </div>
+        )}
+        {feil && (
+          <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, margin: "8px 0 0" }}>
+            {feil}
+          </p>
+        )}
+        {/* GDPR-eksport — beholdt funksjonalitet (tillegg utover fasiten). */}
+        <div style={{ marginTop: 10 }}>
+          <FoCtaSekundar
+            onClick={() => {
+              // Fil-nedlasting (GET-rute som svarer med attachment) — ikke en
+              // Next-side, så router.push ville vært feil her.
+              // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+              window.location.href = "/forelder/samtykke/eksport";
             }}
           >
-            <strong style={{ color: TL.text, fontWeight: 600 }}>
-              Slette-forespørsel registrert.
-            </strong>{" "}
-            {sisteSletting && !sendt
-              ? `Sendt ${formatDato(sisteSletting.createdAt)}. `
-              : ""}
-            AK Golf behandler forespørselen og kontakter deg på e-post.
-          </span>
+            Last ned alle data
+          </FoCtaSekundar>
         </div>
-      )}
-    </Kort>
+      </FoKort>
+    </>
   );
 }
 
 /* ── Skjerm ────────────────────────────────────────────────────────── */
 
 export function ForelderSamtykkeV2({ data }: { data: ForelderSamtykkeData }) {
-  const mobile = useMobile();
-  const { barn, barnNavn, alleAktive, sisteSletting } = data;
-  const harBarn = barn.length > 0;
+  const { barn, sisteSletting, parentName } = data;
+  const fornavn = (parentName ?? "").split(" ")[0] || "deg";
 
   return (
-    <div data-paper-portal-forelder-samtykke style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
-      {/* Hode */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "flex-end",
-          justifyContent: "space-between",
-          gap: 12,
-          flexWrap: "wrap",
-        }}
-      >
-        <div>
-          <Caps>Personvern</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel mobile={mobile} em="samtykke">
-              Personvern og
-            </Tittel>
-          </div>
-          <span
-            style={{
-              fontFamily: TL.font.sans,
-              fontSize: 12.5,
-              color: TL.mute,
-              display: "block",
-              marginTop: 8,
-            }}
-          >
-            Du styrer hva som er greit for {barnNavn} data.
-          </span>
-        </div>
-        {harBarn && (
-          <StatusPill tone={alleAktive ? "up" : "warn"}>
-            {alleAktive ? "Alt godkjent" : "Se gjennom"}
-          </StatusPill>
-        )}
-      </div>
+    <FoSkjerm>
+      <FoHode
+        caps={`Forelder · ${fornavn}`}
+        tittel="Samtykke"
+        under="Per barn du er foresatt for"
+      />
 
-      {/* Ansvars-info (anbefaling, aldri sperre) */}
-      <Kort tint>
-        <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-          <Icon
-            name="shield"
-            size={18}
-            style={{ color: TL.fill, flex: "none", marginTop: 2 }}
-          />
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div
-              style={{
-                fontFamily: TL.font.sans,
-                fontWeight: 700,
-                fontSize: 15,
-                color: TL.text,
-              }}
-            >
-              Du bestemmer til barnet er 18
-            </div>
-            <p
-              style={{
-                fontFamily: TL.font.sans,
-                fontSize: 12.5,
-                color: TL.mute,
-                lineHeight: 1.55,
-                margin: "6px 0 0",
-              }}
-            >
-              Over 13 år: snakk gjerne gjennom valgene sammen. Etter 18 tar
-              barnet over selv.
-            </p>
-          </div>
-        </div>
-      </Kort>
-
-      {/* Per-barn samtykke-kort, eller tom-tilstand */}
-      {harBarn ? (
-        barn.map((b) => <BarnSamtykkeKort key={b.id} barn={b} />)
+      {barn.length === 0 ? (
+        <FoTom
+          tittel="Ingen barn er koblet ennå"
+          sub="Coachen sender invitasjon når barnet er registrert i klubben."
+        />
       ) : (
-        <Kort>
-          <TomTilstand
-            icon="users"
-            title="Ingen barn er koblet"
-            sub="Når barn er koblet via invitasjon, vises samtykkene her."
-          />
-        </Kort>
+        barn.map((b, i) => <BarnSamtykkeKort key={b.id} barn={b} forste={i === 0} />)
       )}
 
-      {/* Data-handlinger */}
-      {harBarn && <DataHandlinger sisteSletting={sisteSletting} />}
+      <SlettingSeksjon sisteSletting={sisteSletting} />
 
-      {/* Personvern-policy */}
-      <Kort eyebrow="Slik håndterer vi data">
-        <ul
-          style={{
-            margin: 0,
-            paddingLeft: 18,
-            display: "flex",
-            flexDirection: "column",
-            gap: 8,
-            fontFamily: TL.font.sans,
-            fontSize: 12.5,
-            color: TL.mute,
-            lineHeight: 1.55,
-          }}
-        >
-          <li>Data lagres hos Supabase i London-regionen (Storbritannia).</li>
-          <li>Vi deler aldri persondata med tredjepart uten eksplisitt samtykke.</li>
-          <li>
-            Du kan be om full dataeksport eller sletting når som helst via{" "}
-            <a
-              href="mailto:personvern@akgolf.no"
-              style={{ color: TL.fill, textDecoration: "none" }}
-            >
-              personvern@akgolf.no
-            </a>
-            .
-          </li>
-          <li>Endringer i samtykker logges i revisjonsloggen og er sporbare.</li>
-        </ul>
-      </Kort>
-    </div>
+      <FoFotnote>
+        Behandlingsansvarlig er AK Golf. Kontakt support@akgolf.no ved spørsmål
+        om lagring.
+      </FoFotnote>
+    </FoSkjerm>
   );
 }

@@ -12,7 +12,7 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentBarnForForelder } from "@/lib/forelder";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, FORELDER_NAV } from "@/components/v2/shell";
+import { V2Shell, FORELDER_NAV, FORELDER_MER } from "@/components/v2/shell";
 import {
   ForelderOkonomiV2,
   type ForelderOkonomiData,
@@ -32,15 +32,11 @@ export default async function V2ForelderOkonomiPreviewPage() {
   if (childIds.length === 0) {
     const tomt: ForelderOkonomiData = {
       barnAntall: 0,
-      utestaaendeOre: 0,
-      betaltOre: 0,
-      aktivePakker: 0,
-      ubetalteAntall: 0,
+      parentName: user.name,
       abonnement: [],
-      sistePayments: [],
     };
     return (
-      <V2Shell bredde="kolonne" aktiv="okonomi" nav={FORELDER_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <V2Shell bredde="kolonne" aktiv="okonomi" nav={FORELDER_NAV} mer={FORELDER_MER} navn={user.name} avatarUrl={user.avatarUrl}>
         <ForelderOkonomiV2 data={tomt} />
       </V2Shell>
     );
@@ -76,49 +72,48 @@ export default async function V2ForelderOkonomiPreviewPage() {
 
   const abonnementPerBarn = new Map(abonnementer.map((a) => [a.userId, a]));
 
-  // Utestående totalt (PENDING/FAILED) på tvers av barn.
-  const ubetalte = betalinger.filter((p) => UBETALT.includes(p.status));
-  const utestaaendeOre = ubetalte.reduce((s, p) => s + p.amountOre, 0);
-
-  // Betalt totalt (SUCCEEDED).
-  const betaltOre = betalinger
-    .filter((p) => p.status === "SUCCEEDED")
-    .reduce((s, p) => s + p.amountOre, 0);
-
-  // Aktive coaching-pakker (credits > 0).
-  const aktivePakker = abonnementer.filter((a) => a.monthlyCredits > 0).length;
+  /* FO-07: tallene grupperes PER BARN — neste trekk, betalt i år, utestående. */
+  const naa = new Date();
+  const NB_DATO = new Intl.DateTimeFormat("nb-NO", {
+    timeZone: "Europe/Oslo",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
 
   const data: ForelderOkonomiData = {
     barnAntall: barn.length,
-    utestaaendeOre,
-    betaltOre,
-    aktivePakker,
-    ubetalteAntall: ubetalte.length,
+    parentName: user.name,
     abonnement: barn.map((b) => {
       const fornavn = b.child.name.split(" ")[0] ?? b.child.name;
       const ab = abonnementPerBarn.get(b.child.id);
+      const barnetsBetalinger = betalinger.filter((p) => p.userId === b.child.id);
+      const betaltIAarOre = barnetsBetalinger
+        .filter(
+          (p) =>
+            p.status === "SUCCEEDED" &&
+            p.createdAt.getFullYear() === naa.getFullYear()
+        )
+        .reduce((s, p) => s + p.amountOre, 0);
+      const utestaaendeOre = barnetsBetalinger
+        .filter((p) => UBETALT.includes(p.status))
+        .reduce((s, p) => s + p.amountOre, 0);
       return {
         childId: b.child.id,
         fornavn,
         tier: ab?.tier ?? "GRATIS",
         status: ab?.status ?? null,
-        currentPeriodEndISO: ab?.currentPeriodEnd?.toISOString() ?? null,
+        nesteTrekk: ab?.currentPeriodEnd ? NB_DATO.format(ab.currentPeriodEnd) : null,
         monthlyCredits: ab?.monthlyCredits ?? 0,
         creditsRemaining: ab?.creditsRemaining ?? 0,
+        betaltIAarOre,
+        utestaaendeOre,
       };
     }),
-    // Siste 4 betalinger (preview — full historikk på /forelder/fakturaer).
-    sistePayments: betalinger.slice(0, 4).map((p) => ({
-      id: p.id,
-      tittel: p.description ?? p.type,
-      datoISO: p.createdAt.toISOString(),
-      amountOre: p.amountOre,
-      status: p.status,
-    })),
   };
 
   return (
-    <V2Shell bredde="kolonne" aktiv="okonomi" nav={FORELDER_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="okonomi" nav={FORELDER_NAV} mer={FORELDER_MER} navn={user.name} avatarUrl={user.avatarUrl}>
       <ForelderOkonomiV2 data={data} />
     </V2Shell>
   );
