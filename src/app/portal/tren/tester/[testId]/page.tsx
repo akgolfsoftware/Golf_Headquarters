@@ -1,12 +1,26 @@
 /**
- * PlayerHQ · Test-detalj (/portal/tren/tester/[testId]) — Paper-port W1 (fase2).
- * Fasit: designsystem/paper/fase2/playerhq/playerhq-test-detalj.html.
+ * PlayerHQ · Test-detalj (/portal/tren/tester/[testId]).
+ * Fasit: designsystem/train-lock/TE-03 TN Putt Gate detalj.dc.html
  *
- * Struktur per fasit: «om testen» → protokollkort med nummererte steg +
- * scoringsregel (vises ALLTID, også uten resultater) → historikk-stolpediagram
- * med siste måling uthevet + trend-tag + why-details → clay-CTA «Ta måling»
- * (gjennomføringen har egen fasit — denne skjermen er forberedelsen).
- * Auth + datahenting uendret: requirePortalUser + testTilgangWhere +
+ * TE-03 dekker «type A»-protokollene (TE-00 korttype A: serie OK/Bom, tappet
+ * 64h) — Driver Gate/Wedge Gate/Putt Gate/Nærspill Gate/VISA Express deler
+ * denne siden, ikke bare Putt Gate. Porten er derfor scoped til hit-rate/
+ * count_ok-kind: giant hero-tall («N OK av M · mål K», mål fra
+ * `gateMaalFraProtokoll` — reell protokoll-tekst, ikke fabrikkert) +
+ * «Siste forsøk»-rutenett lest fra siste `TestResult.details.perSlag`
+ * (ekte lagrede OK/BOM + V|H-data fra live-gate-artefakten, TE-04/gate-
+ * live-artefakt.tsx). Andre scoring-kinds (PEI, poeng, tid …) beholder
+ * forrige visning uendret — type B/C/D-korttypene (TE-07/08/09/10) er IKKE
+ * portet i denne runden, se PR-notat.
+ * IKKE bygget i denne runden: fast bunn-CTA (fasiten har «Start test» festet
+ * nederst uansett scroll — endring til `position: fixed` her krever samme
+ * `--ak-cookie-h`-forskyvning som andre bunn-dokker, se gotchas.md, og er
+ * utsatt for å unngå regresjon uten skjermbilde-verifikasjon denne runden;
+ * eksisterende inline CTA — «Ta første måling» i tom tilstand, «Start
+ * testen» under historikken ellers — dekker samme funksjon) og «Tren mot
+ * neste» (utkast-forslag til neste test — ny anbefalings-logikk, anti-scope).
+ *
+ * Auth + datahenting ellers uendret: requirePortalUser + testTilgangWhere +
  * parseProtocol (zod) + parseForScoring/lavereErBedre. `?lagret=1`-kvittering
  * beholdt (funksjonell retur fra gjennomføringen).
  */
@@ -18,7 +32,8 @@ import { prisma } from "@/lib/prisma";
 import { testTilgangWhere } from "@/lib/portal-tester/test-tilgang";
 import { FEATURES } from "@/lib/features";
 import { parseProtocol, type ScorekortForsok } from "@/lib/portal-tester/protocol";
-import { parseForScoring, lavereErBedre } from "@/lib/portal-tester/test-scoring";
+import { parseForScoring, lavereErBedre, ScoringDetailsSchema } from "@/lib/portal-tester/test-scoring";
+import { gateMaalFraProtokoll } from "@/lib/domain/tester-live";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { TL } from "@/lib/v2/train-lock";
 
@@ -75,7 +90,7 @@ export default async function TestDetaljSpillerPage({
   const resultater = await prisma.testResult.findMany({
     where: { userId: user.id, testId },
     orderBy: { takenAt: "asc" },
-    select: { id: true, score: true, takenAt: true },
+    select: { id: true, score: true, takenAt: true, details: true },
   });
 
   const spec = parseProtocol(test.protocol);
@@ -90,6 +105,26 @@ export default async function TestDetaljSpillerPage({
   const maks = hist.length > 0 ? Math.max(...hist.map((r) => r.score), 0) : 0;
   const siste = resultater[resultater.length - 1] ?? null;
   const nestSiste = resultater[resultater.length - 2] ?? null;
+
+  // TE-03 type A-hero (count_ok/hit_rate — Gate-familien): «N OK av M · mål K».
+  const erGateType = scoringSpec.kind === "count_ok" || scoringSpec.kind === "hit_rate";
+  const gateMal = erGateType ? gateMaalFraProtokoll(test.protocol) : null;
+  const gateShotsCount = scoringSpec.shots.length;
+
+  // «Siste forsøk» — ekte per-slag OK/BOM (+V|H) fra siste TestResult.details
+  // (TE-04 gate-live-artefakt.tsx skriver ok + miss_side). Eldre resultater
+  // uten details, eller ikke-Gate-tester, viser ikke rutenettet.
+  let sisteForsok: { nr: number; ok: boolean | null; side: "V" | "H" | null }[] = [];
+  if (erGateType && siste) {
+    const parsedDetails = ScoringDetailsSchema.safeParse((siste as { details?: unknown }).details);
+    if (parsedDetails.success) {
+      sisteForsok = parsedDetails.data.perSlag.map((s) => ({
+        nr: s.nr,
+        ok: typeof s.verdier.ok === "boolean" ? s.verdier.ok : typeof s.verdier.sunket === "boolean" ? s.verdier.sunket : null,
+        side: s.verdier.miss_side === "V" || s.verdier.miss_side === "H" ? (s.verdier.miss_side as "V" | "H") : null,
+      }));
+    }
+  }
 
   let trend: { text: string; tone: "pos" | "neg" | "flat" } | null = null;
   if (siste && nestSiste) {
@@ -238,6 +273,43 @@ export default async function TestDetaljSpillerPage({
             {subBiter.join(" · ")}
           </span>
         </div>
+
+        {/* TE-03 gate-hero — kun count_ok/hit_rate med minst ett resultat.
+            Giant tall + «OK av M · mål K» (K fra ekte protokoll-tekst, aldri
+            fabrikkert), pluss «Siste forsøk»-rutenettet fra siste TestResult. */}
+        {erGateType && siste && (
+          <div>
+            <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
+              <span style={{ fontFamily: TL.font.sans, fontSize: 44, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: TL.text, lineHeight: 1 }}>
+                {fmtNum(siste.score)}
+              </span>
+              <span style={{ fontFamily: TL.font.sans, fontSize: 18, fontWeight: 400, color: TL.mute }}>
+                OK av {gateShotsCount}{gateMal != null ? ` · mål ${gateMal}` : ""}
+              </span>
+            </div>
+            <span style={{ display: "block", marginTop: 2, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
+              sist {fmtDatoLang(siste.takenAt)}
+            </span>
+
+            {sisteForsok.length > 0 && (
+              <>
+                <span style={{ display: "block", marginTop: 18, fontFamily: TL.font.mono, fontSize: 10.5, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>
+                  Siste forsøk · {fmtDatoLang(siste.takenAt)}
+                </span>
+                <div style={{ marginTop: 6, display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 20px" }}>
+                  {sisteForsok.map((f) => (
+                    <div key={f.nr} style={{ display: "flex", justifyContent: "space-between", padding: "7px 0", borderBottom: `1px solid ${TL.hair}` }}>
+                      <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>{f.nr}</span>
+                      <span style={{ fontFamily: TL.font.sans, fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", color: TL.text, opacity: f.ok === false ? 0.45 : 1 }}>
+                        {f.ok == null ? "—" : f.ok ? "OK" : f.side ? `BOM · ${f.side}` : "BOM"}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        )}
 
         {/* Tom tilstand — ingen resultater ennå (protokollen står fortsatt under).
             Fasit: clay-handlingen ligger INNE i tom-blokken, over protokollkortet. */}

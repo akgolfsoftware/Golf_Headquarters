@@ -91,7 +91,80 @@ av samme skjerm). Total: 7 økter + gate-runder.
 - **Måle-scriptet teller sitering, ikke sannhet** — gaten (Anders' øyne) er
   fortsatt eneste bevis på pikselnærhet.
 
-## 7 · PX-3-status (levert 29.08.2026, `claude/project-status-screens-smffo7`)
+## 7 · PX-3-status (PX-3 + PX-3-rest, 29.08.2026, `claude/project-status-screens-smffo7`)
+
+Dekning: 105/204 (før PX-3) → 113/204 (PX-3) → **115/204 (PX-3-rest)**.
+
+### PX-3-rest (denne runden, TM-resten + hele TE-familien)
+
+**Levert og sitert (3 filer):**
+- `TE-01 Tester hub iPhone.dc.html` + `TE-01L Tester hub lys.dc.html` — hub-en
+  (`/portal/tren/tester`) bygget om fra pyramide-akse-hero+filtrert-liste
+  (PH-15-mønsteret) til fasitens FLATE liste, gruppert GOLFSLAG/TEKNIKK
+  (ny `src/lib/portal-tester/hub-gruppe.ts` — navnebasert gruppe-oppslag for
+  de 15 fasit-navngitte protokollene, siden verken pyramidArea eller
+  scoring-kind alene skiller gruppene riktig; ugrupperte tester havner i en
+  synlig «Andre»-bøtte, aldri skjult). Forfall-/planlagt-caps er ekte
+  `TestAssignment.dueDate`, ikke fabrikkert. «Én ting nå»-heroen fra forrige
+  hub er fjernet (fasiten har ingen — HANDOFF: «Live = artefakt over I dag
+  uten dock»). PEI vises med ett tall (prosent), ikke fasitens to
+  («4,26 % · 0,04») — det andre tallet er en spredning som ikke finnes i
+  `scoreTest()`-aggregatet i dag, fabrikkeres ikke.
+- `TE-03 TN Putt Gate detalj.dc.html` — dekker alle 5 «type A»-protokollene
+  (Driver/Wedge/Putt/Nærspill Gate + VISA Express deler denne ruten, ikke
+  bare Putt Gate): giant hero-tall («N OK av M · mål K», K fra ekte
+  `gateMaalFraProtokoll`-protokolltekst) + «Siste forsøk»-rutenett lest fra
+  siste `TestResult.details.perSlag` (ekte OK/BOM + V|H fra live-gate-
+  artefakten). Fant og fikset en reell skjema-drift underveis:
+  `ScoringDetailsSchema.perSlag.verdier` tillot ikke miss_side «V»/«H» som
+  `scoreTest()` faktisk skriver — se `docs/feillogg.md` 29.08. «Tren mot
+  neste» og fast bunn-CTA er IKKE bygget (se gap-notat under).
+
+**Ikke rukket / vurdert IKKE porterbart (14 av 17 gjenstående filer):**
+- **`TM-03 Ingest-tilstander.dc.html`, `TM-12 Okt teknikk og slag.dc.html`,
+  `TM-13 Progresjon maalvindu.dc.html`, `TM-14 Bag mapping og DECADE.dc.html`**
+  — alle fire krever funksjonalitet som ikke finnes i datamodellen (live
+  coach-satte målvinduer per TrackMan-parameter, ukentlig
+  spredningsaggregering med bruddpunkt-deteksjon, DECADE-kjegle/bag-mapping,
+  asynkron PDF/foto-OCR-busy-tilstand). Ingen kan bygges uten ny
+  datamodell/forretningslogikk — anti-scope. Full begrunnelse per fil:
+  `docs/feillogg.md` 29.08 (PX-3-rest).
+- **`TE-00 Test-specimen.dc.html` + `TE-00L` (lys)** — lest og brukt som
+  vokabular-kilde for portene over (korttype A/B/C/D, tap-knapper,
+  hub-rad-med-forfall, fullført-badge), men selve spesimen-filene har ingen
+  tilsvarende rute i koden å sitere `Fasit:` fra (de er komponent-referanse,
+  ikke en skjerm) — derfor ikke i 115-tallet, men innholdet er reelt brukt.
+- **`TE-02 Tester hub Mac.dc.html` + `TE-13 Tester hub iPad.dc.html`** — samme
+  GOLFSLAG/TEKNIKK-liste som TE-01 er nå riktig strukturert og vises på alle
+  bredder via samme rute, MEN fasitens 380px master–detalj-inspektørpanel
+  (liste + levende detalj-forhåndsvisning side ved side) er IKKE bygget —
+  det ville krevd å duplisere detaljsidens data-henting inline i hub-siden.
+  Rad-klikk navigerer til `/portal/tren/tester/[testId]` som før. Ikke
+  sitert `Fasit:` (kun delvis strukturelt sant).
+- **`TE-07 Wedge Variation Mac.dc.html`** (type B — matrise mål-lengde ×
+  till-mål) og **`TE-10 GS-18 resultat.dc.html`** (type D — per-hull-liste)
+  krever egne visualiseringskomponenter (rutenett-matrise / hull-for-hull-
+  liste) som ikke finnes — ikke bygget denne runden, tidsbudsjett.
+- **`TE-08 Driver Basic.dc.html`** — fasiten viser Driver Basic som PEI-score
+  («56/700 → 3,91 % · 0,04»), men den seedede protokollen scorer den faktisk
+  med `carry_average` — å vise PEI-formatert tekst på carry-data ville være
+  feil informasjon, og å endre scoring-kind er en forretningsregel-endring
+  (anti-scope, krever Anders' ja). Ikke portet.
+- **`TE-09 Gapping-stige.dc.html`** — «V7 gapping» er en egen stige-
+  visualisering (kølle-for-kølle avstandstrapp) uten eksisterende rute eller
+  komponent å bygge på. Ikke portet.
+- **`TE-12 Egen test.dc.html`** — dagens `/portal/tren/tester/ny/egen`
+  (`NyTestEgenV2.tsx`, 854 linjer) er en flerstegs Paper-veiviser med
+  kategori-valg og `T.*`-tokens (forbudt i ny skjermkode). Fasiten er ETT
+  enkelt skjema (Tittel/N/Mål/Enhet/Intervall, MANGLER-caps, Lagre disabled
+  til utfylt). En riktig port er en full omskriving av filen, ikke en
+  pikseljustering — for stor jobb for gjenstående tid denne runden.
+
+**Skjermbilder: fortsatt IKKE tatt** — samme grunn som PX-3 (ingen
+`.env.local`/Supabase-credentials i denne remote-økten). Se PX-3s notat
+over; uendret.
+
+### PX-3 (forrige runde — original tekst bevart)
 
 Dekning ved start av økta: 105/204 sitert. Ved slutt: **113/204**.
 
@@ -161,6 +234,19 @@ det er den eneste verifikasjonen denne økten kunne gjøre. Skjermbilde-gaten
 credentials (eller Anders selv mot PR-previewen) må ta 390px + 1440px,
 lys+mørk, før merge.
 
-**Neste økt (PX-3-rest eller PX-4) bør starte med:** TE-hub-restruktureringen
-(TE-01/01L/02/13) som egen, avgrenset jobb, deretter TM-03/12/13/14, deretter
-resten av TE (07/08/09/10/12, som trolig krever nye ruter for enkeltprotokoller).
+**Neste økt (PX-3-rest, levert — se over) startet med:** TE-hub-restruktureringen
+(TE-01/01L) og TE-03 (Gate-familien). **Gjenstår for en FREMTIDIG runde,
+kun etter nye avklaringer fra Anders (ikke ren pikselport lenger):**
+- TM-03/12/13/14 — krever ny funksjonalitet/datamodell (målvindu-live,
+  progresjon-aggregering, DECADE/bag-mapping, PDF/foto-ingest).
+- TE-02/TE-13 — master–detalj-inspektørpanelet (380px liste + levende
+  detalj-forhåndsvisning) er en egen, avgrenset UI-jobb oppå TE-01-listen
+  som allerede er bygget.
+- TE-07 (matrise-visualisering) og TE-10 (per-hull-liste) — nye
+  komponenter, ingen eksisterende å bygge på.
+- TE-08 — venter på Anders' avklaring: er Driver Basic faktisk `carry_average`
+  eller skal den re-scores som PEI (fasiten forutsetter PEI)? Ikke en
+  pikselport-beslutning.
+- TE-09 (gapping-stige) — ny visualisering.
+- TE-12 (egen test) — full omskriving av `NyTestEgenV2.tsx` (854 linjer,
+  `T.*`→`TL.*` + strukturell forenkling til fasitens ett-skjema-skjerm).

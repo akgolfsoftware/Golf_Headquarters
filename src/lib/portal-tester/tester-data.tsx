@@ -13,6 +13,8 @@
 
 import { prisma } from "@/lib/prisma";
 import { testTilgangWhere } from "@/lib/portal-tester/test-tilgang";
+import { parseForScoring, type ScoringKind } from "@/lib/portal-tester/test-scoring";
+import { hubGruppeForNavn, type HubGruppe } from "@/lib/portal-tester/hub-gruppe";
 import type { PyramidArea, TestSessionStatus } from "@/generated/prisma/client";
 
 export type Axis = "fys" | "tek" | "slag" | "spill" | "turn";
@@ -57,6 +59,13 @@ export type TestRow = {
   lowerIsBetter: boolean;
   verdict: Verdict;
   href: string;
+  /** TE-01/02/13 hub: GOLFSLAG/TEKNIKK/Andre — se hub-gruppe.ts. */
+  hubGruppe: HubGruppe;
+  scoringKind: ScoringKind;
+  /** Antall slag/forsøk PROTOKOLLEN spesifiserer (ikke antall utførte økter). */
+  shotsCount: number;
+  /** TestAssignment.dueDate, formatert DD.MM — null uten aktiv tildeling. */
+  forfallDato: string | null;
 };
 
 export type AxisGroup = {
@@ -115,6 +124,11 @@ function dateLabel(d: Date): string {
   return `${d.getDate()}. ${MND_KORT[d.getMonth()]}`;
 }
 
+/** TE-01 hub-caps: «FORFALL 19.08» — DD.MM, ikke dateLabel()s «19. aug». */
+function ddmm(d: Date): string {
+  return `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}`;
+}
+
 function isToday(d: Date, now: Date): boolean {
   return d.toDateString() === now.toDateString();
 }
@@ -143,11 +157,11 @@ export async function loadTesterScreen(user: {
 }): Promise<TesterScreenData> {
   const now = new Date();
 
-  const [definitions, results, sessions] = await Promise.all([
+  const [definitions, results, sessions, tildelinger] = await Promise.all([
     // Spillerens test-univers: standard + egne + delt med akademi/coach-godkjent.
     prisma.testDefinition.findMany({
       where: testTilgangWhere(user.id),
-      select: { id: true, name: true, pyramidArea: true, scoringRule: true },
+      select: { id: true, name: true, pyramidArea: true, scoringRule: true, protocol: true },
       orderBy: { name: "asc" },
     }),
     prisma.testResult.findMany({
@@ -167,7 +181,20 @@ export async function loadTesterScreen(user: {
       },
       orderBy: { startedAt: "desc" },
     }),
+    // TE-01 hub: FORFALL/PLANLAGT-caps — TestAssignment.dueDate satt av coach.
+    // Nyeste åpne tildeling per test vinner (createdAt desc, samme spørring
+    // som «Én ting nå» brukte før, kun uten take:1).
+    prisma.testAssignment.findMany({
+      where: { playerId: user.id, status: "OPEN" },
+      orderBy: { createdAt: "desc" },
+      select: { testId: true, dueDate: true },
+    }),
   ]);
+
+  const forfallByTest = new Map<string, Date | null>();
+  for (const t of tildelinger) {
+    if (!forfallByTest.has(t.testId)) forfallByTest.set(t.testId, t.dueDate);
+  }
 
   // Resultater gruppert per test, eldste→nyeste (input er allerede asc).
   const resultsByTest = new Map<string, { score: number; takenAt: Date }[]>();
@@ -216,6 +243,9 @@ export async function loadTesterScreen(user: {
       verdict = "signal"; // første måling — baseline satt
     }
 
+    const spec = parseForScoring(def.protocol);
+    const forfallRaw = forfallByTest.get(def.id) ?? null;
+
     const row: TestRow = {
       id: def.id,
       name: def.name,
@@ -230,6 +260,10 @@ export async function loadTesterScreen(user: {
       lowerIsBetter,
       verdict,
       href: `/portal/tren/tester/${def.id}`,
+      hubGruppe: hubGruppeForNavn(def.name),
+      scoringKind: spec.kind,
+      shotsCount: spec.shots.length,
+      forfallDato: forfallRaw ? ddmm(forfallRaw) : null,
     };
     rowsByAxis.get(axis)!.push(row);
   }
