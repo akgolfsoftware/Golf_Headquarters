@@ -17,6 +17,15 @@
  *
  * Under `MIN_SHOTS_FOR_ELLIPSE` slag (TM-11/TM-08g: 8) tegnes prikker + mål-
  * linje, men INGEN ellipse — 1σ vises som "—" med caps "FRA 8 SLAG".
+ *
+ * Fasit: designsystem/train-lock/TM-05 Tom og faa slag.dc.html —
+ * `generateCaddieSentence` fikk en forsiktigere lavt-n-variant («To slag
+ * høyre. Median står — vent med å flytte siktet.», TM-05a viser den
+ * eksakt ved n=2) i stedet for bare `null` under 8 slag. TM-05b (tom
+ * TrackMan-tilstand med «CSV, PDF eller foto») er IKKE dekket her — appen
+ * har kun CSV/HTML-parsing (src/lib/trackman/parse-*.ts), ingen
+ * PDF/foto-OCR ennå, så den delen av fasiten er en funksjonsgap, ikke en
+ * visningsjobb (anti-scope PX-3: bygges ikke på sparket).
  */
 
 import {
@@ -148,12 +157,30 @@ function bucketFor(m: number): DispersionBucketKey {
   return "disaster";
 }
 
-/** Caddie-setning à la HANDOFF: «Klyngen ligger 3,7 m høyre. Sikt 4 m venstre, samme sving.» */
+function spelltAntall(n: number): string {
+  if (n === 1) return "Ett slag";
+  if (n === 2) return "To slag";
+  return `${n} slag`;
+}
+
+/**
+ * Caddie-setning à la HANDOFF: «Klyngen ligger 3,7 m høyre. Sikt 4 m venstre, samme sving.»
+ *
+ * Under MIN_SHOTS_FOR_ELLIPSE (ellipsen tegnes ikke ennå) gir vi en FORSIKTIGERE
+ * variant uten sikt-korreksjon — TM-00 TmCaddieLeak sier eksplisitt: «Ved 1–2
+ * slag: 'To slag høyre. Median står — vent med å flytte siktet.'» — og TM-05a
+ * viser akkurat denne teksten ved n=2. Under 1 m bias ved lavt n sier vi
+ * ingenting ennå (for lite grunnlag til å påstå noen retning).
+ */
 export function generateCaddieSentence(offlineBias: number | null, n: number): string | null {
-  if (n < MIN_SHOTS_FOR_ELLIPSE || offlineBias === null) return null;
+  if (n < 1 || offlineBias === null) return null;
   const abs = Math.abs(offlineBias);
-  if (abs < 1) return "Klyngen ligger midt på linja. Ingen sideveis lekkasje å rette på.";
   const side = offlineBias > 0 ? "høyre" : "venstre";
+  if (n < MIN_SHOTS_FOR_ELLIPSE) {
+    if (abs < 1) return null;
+    return `${spelltAntall(n)} ${side}. Median står — vent med å flytte siktet.`;
+  }
+  if (abs < 1) return "Klyngen ligger midt på linja. Ingen sideveis lekkasje å rette på.";
   const motsattSide = offlineBias > 0 ? "venstre" : "høyre";
   const siktKorreksjon = Math.round(abs);
   return `Klyngen ligger ${komma(abs, 1)} m ${side}. Sikt ${siktKorreksjon} m ${motsattSide}, samme sving.`;

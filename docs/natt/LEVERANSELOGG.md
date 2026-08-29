@@ -45,6 +45,7 @@ GJELDENDE merge-status, se `docs/STATUS-NÅ.md`.
 | TL-port | T→TL på PlayerHQ, AgencyOS, Meg, Forelder (380 filer). Marketing/auth urørt | `claude/tl-port-alle-skjermer-2026-08-28` | Merget #631 — token, ikke piksel-1:1 |
 | F1-bug | Mandagsøkter i ukesrapport telles ikke lenger dobbelt (`lt` mot `endOfWeek`) | samme som #631 | Merget #631 |
 | C1 | Workbench måned + år (leseflate; klikk dag→uke; gammel rute redirect) | `claude/c1-workbench-maned-aar-2026-08-28` | Merget #632 |
+| PX-3 | Pikselport TM-familien (delvis): hullkart-bakgrunn (ny `HoleMap.tsx`), slag-ark, «Funn»-liste, lavt-n caddie-setning, TE-04-token-fiks. Fasit-dekning 105→113/204. Se `docs/natt/PIKSELPLAN-2026-08-28.md` §7 | `claude/project-status-screens-smffo7` | PR åpen (draft) — skjermbilder IKKE tatt (ingen DB/Supabase-credentials i økten) |
 
 Se `docs/natt/README.md` for hvilke natt-dokumenter som fortsatt er levende (LAUNCH-PLAN,
 ACCESS-AND-GROUPS, SKJERM-STATUS, D-beslutningene) vs. denne loggen (historikk).

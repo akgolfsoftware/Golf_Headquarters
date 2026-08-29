@@ -24,6 +24,11 @@
  * Rekkefølge (låst, HANDOFF §TRACKMAN — rørt IKKE): CaddieLeak
  * → KPI-stripe → DispersionMap (hero) → bøtte-bar → «Funn»-liste → tabell.
  *
+ * Fasit: designsystem/train-lock/TM-05 Tom og faa slag.dc.html —
+ * «Spredning»-radens «For få slag til spredning. Median står.»-setning ved
+ * lavt n (TM-05a). Selve caddie-setningens lavt-n-variant bor i
+ * `generateCaddieSentence` (dispersion-map.ts).
+ *
  * Server-komponenten (page.tsx) gjør auth + Prisma-henting + regner
  * dispersion-resultatet (computeTrackManDispersionMap) og sender et rent,
  * serialiserbart resultat hit — ingen Prisma/DB-logikk i klient-komponenten.
@@ -90,12 +95,15 @@ function FunnRad({
   holder,
   verdi,
   mutedVerdi,
+  beskrivelse,
   siste,
 }: {
   tittel: string;
   holder: string;
   verdi: string;
   mutedVerdi?: boolean;
+  /** TM-05a: «For få slag til spredning. Median står.» — kort setning, ikke et tall (sans, ikke mono/bold). */
+  beskrivelse?: boolean;
   siste?: boolean;
 }) {
   return (
@@ -106,7 +114,17 @@ function FunnRad({
           {holder}
         </div>
       </div>
-      <span style={{ fontFamily: TL.font.mono, fontSize: 14.5, fontWeight: 600, color: mutedVerdi ? TL.mute : TL.text, fontVariantNumeric: "tabular-nums" }}>
+      <span
+        style={{
+          fontFamily: beskrivelse ? TL.font.sans : TL.font.mono,
+          fontSize: beskrivelse ? 13 : 14.5,
+          fontWeight: beskrivelse ? 400 : 600,
+          color: mutedVerdi || beskrivelse ? TL.mute : TL.text,
+          fontVariantNumeric: "tabular-nums",
+          textAlign: "right",
+          maxWidth: beskrivelse ? 160 : undefined,
+        }}
+      >
         {verdi}
       </span>
     </div>
@@ -128,7 +146,12 @@ function FunnListe({ result, forrigeDeltaTekst }: { result: DispersionMapResult;
   return (
     <div style={{ background: TL.elev, border: `1px solid ${TL.hair}`, borderRadius: TL.radius.card, padding: "0 16px" }}>
       <FunnRad tittel="Klynge" holder="Lekkasje" verdi={klyngeVerdi} />
-      <FunnRad tittel="Spredning" holder="Holder" verdi={result.carrySpreadP90P10 != null ? `${komma(result.carrySpreadP90P10, 0)} m P90−P10` : "—"} />
+      <FunnRad
+        tittel="Spredning"
+        holder={result.carrySpreadP90P10 != null ? "Holder" : "For få slag"}
+        verdi={result.carrySpreadP90P10 != null ? `${komma(result.carrySpreadP90P10, 0)} m P90−P10` : "For få slag til spredning. Median står."}
+        beskrivelse={result.carrySpreadP90P10 == null}
+      />
       <FunnRad tittel="Smash" holder="Holder" verdi={komma(result.meanSmash, 2)} />
       <FunnRad
         tittel="Face mot path"

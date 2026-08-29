@@ -52,14 +52,16 @@ describe("MIN_SHOTS_FOR_ELLIPSE-grensen (n<8)", () => {
     assert.equal(MIN_SHOTS_FOR_ELLIPSE, 8);
   });
 
-  it("7 slag: ingen ellipse, prikker + caddie-setning finnes ikke", () => {
+  it("7 slag: ingen ellipse, prikker + forsiktig caddie-setning (TM-05a)", () => {
     const shots = Array.from({ length: 7 }, (_, i) => shot(i, 3, 150 + i));
     const r = computeTrackManDispersionMap(shots);
     assert.equal(r.n, 7);
     assert.equal(r.hasEllipse, false);
     assert.equal(r.oneSigmaEllipse, null);
     assert.equal(r.twoSigmaEllipse, null);
-    assert.equal(r.caddieSentence, null);
+    // Under 8 slag tegnes ingen ellipse, men en tydelig bias gir likevel en
+    // forsiktig setning uten sikt-korreksjon (TM-00 TmCaddieLeak / TM-05a).
+    assert.equal(r.caddieSentence, "7 slag høyre. Median står — vent med å flytte siktet.");
     // Prikkene finnes fortsatt (topp-syn uten ellipse).
     assert.equal(r.shots.length, 7);
     for (const s of r.shots) assert.equal(s.bucket, null);
@@ -130,12 +132,28 @@ describe("meanCarry / medianCarry / offlineBias / oneSigmaRadius", () => {
 });
 
 describe("generateCaddieSentence", () => {
-  it("under 8 slag: ingen setning", () => {
-    assert.equal(generateCaddieSentence(5, 7), null);
+  it("under 8 slag med tydelig bias: forsiktig variant uten sikt-korreksjon (TM-00/TM-05a)", () => {
+    assert.equal(generateCaddieSentence(5, 7), "7 slag høyre. Median står — vent med å flytte siktet.");
+  });
+
+  it("TM-05a: nøyaktig to slag, spelt ut 'To slag'", () => {
+    assert.equal(generateCaddieSentence(3.4, 2), "To slag høyre. Median står — vent med å flytte siktet.");
+  });
+
+  it("ett slag, spelt ut 'Ett slag'", () => {
+    assert.equal(generateCaddieSentence(2, 1), "Ett slag høyre. Median står — vent med å flytte siktet.");
+  });
+
+  it("under 8 slag og under 1 m bias: for lite grunnlag, ingen setning", () => {
+    assert.equal(generateCaddieSentence(0.5, 5), null);
   });
 
   it("null bias eller ukjent: ingen setning", () => {
     assert.equal(generateCaddieSentence(null, 20), null);
+  });
+
+  it("0 slag: ingen setning", () => {
+    assert.equal(generateCaddieSentence(5, 0), null);
   });
 
   it("under 1 m bias: sentrert-setning uten sikt-korreksjon", () => {

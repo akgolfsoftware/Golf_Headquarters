@@ -40,7 +40,7 @@ siterer, den bygger ikke blindt nytt).
 | PX-0 | baseline | — | Gå gjennom DONE-docs (T2–T13, B-bølgen): skjermer som ER pikselbygget men mangler sitering får `Fasit:`-kommentar etter visuell kontroll. Gir sann baseline. | `px/0-baseline` |
 | PX-1 | PH (22) | 22 | PlayerHQ-kjernen: I dag-varianter, Plan, Økt-ark, Live/Live ferdig, Booking-ark, Analyse-innganger, Meg, samtykke, onboarding 19a–c, varsel-ark | `px/1-ph` |
 | PX-2 | A (24) | 24 | Agency Workbench Mac/iPad/iPhone: uke, økt, ny-økt/drill-modaler, kilder, måned, årsplan, stall-dag, drag, publish-confirm, lys-varianter | `px/2-agency-wb` |
-| PX-3 | TM (12) + TE (13) | 25 | Analyse/TrackMan-familien + testbatteri/live-gate/innspill | `px/3-tm-te` |
+| PX-3 | TM (12) + TE (13) | 25 | Analyse/TrackMan-familien + testbatteri/live-gate/innspill | **DELVIS** (`claude/project-status-screens-smffo7`, PR åpen — se §7) |
 | PX-4 | WB (10) + P (9) + RU (5) + LO (3) | 27 | Player-workbench, min uke/økt, live runde, gate-skjermene | `px/4-player-wb-runde` |
 | PX-5 | FO (20) | 20 | Hele Forelder med lys+mørk toggle (T4-beslutningen 26.08) | `px/5-forelder` |
 | PX-6 | AG (4) + AO (5) + JV (3) + S3 (3) + KA (3) + EC (2) + DG/FY/TU/GP/BO/ME-rest | ~28 | AgencyOS-resten: cockpit-varianter, AgenticOS, Jarvis, Spiller 360, kalender, økonomi, DataGolf, fys, turneringer, gameplan, booking, meg-detaljer | `px/6-agency-rest` |
@@ -90,3 +90,77 @@ av samme skjerm). Total: 7 økter + gate-runder.
   berørte bølger re-åpnes.
 - **Måle-scriptet teller sitering, ikke sannhet** — gaten (Anders' øyne) er
   fortsatt eneste bevis på pikselnærhet.
+
+## 7 · PX-3-status (levert 29.08.2026, `claude/project-status-screens-smffo7`)
+
+Dekning ved start av økta: 105/204 sitert. Ved slutt: **113/204**.
+
+**Levert og sitert (8 av 25 TM/TE-filer):**
+- `TM-00 Komponenter.dc.html` — KPI-stripe 2×2/4-kolonne.
+- `TM-02 TrackMan økt.dc.html` — «Funn»-lista (Klynge/Spredning/Smash/Face mot
+  path/Mot forrige, sistnevnte en ny les-side-aggregering mot forrige økt med
+  samme kølle). Bakgrunnen på TM-02 (blankt rutenett) er IKKE fulgt — se
+  under.
+- `TM-05 Tom og faa slag.dc.html` — `generateCaddieSentence` fikk en
+  forsiktigere lavt-n-variant (1–7 slag), «Spredning»-raden viser riktig
+  «For få slag»-setning.
+- `TM-07 Hullkart komponenter.dc.html` — ny `HoleMap.tsx` (rough/fairway/
+  green/bunker, tee/approach-variant, «full» 240×170 og «mini» 240×120).
+- `TM-08 Okt med hullkart.dc.html` — hullkartet satt inn i
+  `DispersionMap`/`TrackManSessionDetail`. Responsiv 3-pane/split-layout
+  (TM-08c iPad, TM-08d Mac) er IKKE bygget — se gap under.
+- `TM-08f Slag-ark fra prikk.dc.html` — `ShotSheet` fikk stort avviks-tall,
+  hullkart-mini og Forrige/Neste.
+- `TM-09 Mini-kart og runde.dc.html` — kun a/b/f («Analyse mini»). c/d/e
+  («Hull-detalj» i runde) er IKKE bygget — se gap under.
+- Fikset (ikke ny sitering, men reell feilretting): TE-04/TE-04L «Live Gate»
+  brukte `TL.hair` (8 %) der fasiten ber om 24 % — rettet til `TL.draftBorder`
+  (samme verdier, ingen ny token).
+
+**Ikke rukket (17 av 25 filer), med grunn:**
+- `TM-03 Ingest-tilstander.dc.html`, `TM-12 Okt teknikk og slag.dc.html`,
+  `TM-13 Progresjon maalvindu.dc.html`, `TM-14 Bag mapping og DECADE.dc.html`
+  — ikke åpnet, tidsbudsjett.
+- **TE-hele familien (12 filer: TE-00/00L/01/01L/02/03/07/08/09/10/12/13)** —
+  TE-01/01L/02/13 (Tester hub) krever en STØRRE restrukturering: dagens
+  `/portal/tren/tester` (siterer PH-15) har «Én ting nå»-hero + filtrert
+  liste (kun tester MED resultat); TE-01 er en helt annen IA — flat liste av
+  ALLE ~15 protokoller gruppert GOLFSLAG/TEKNIKK, ingen hero, forfall/planlagt
+  som caps-tag. TE-01s egen fottekst sier eksplisitt «Hub = PH-15-jobben»,
+  så dette er en bevisst revisjon, ikke en duplikat-fasit — men jobben er for
+  stor til å ta som sidespor i denne økta. TE-00/00L er komponent-spesimen
+  (4 korttyper × mange faktiske protokoll-skjermer, TE-07/08/09/10/12) som
+  krever cross-sjekk mot skjermer som ikke finnes som egne ruter ennå.
+  TE-03 (TN Putt Gate detalj) ikke åpnet.
+
+**Kjente fasit↔funksjonalitet-gap (notert i kode-kommentarer, ikke løst):**
+1. **TM-02/TM-05 vs TM-07/08/08f/09 — to generasjoner av samme skjerm.**
+   TM-02/TM-05 tegner spredningskartet på et blankt rutenett; TM-07/08/08f/09
+   (høyere nummer, senere i fasit-rekken) legger til det dekorative
+   hullkartet. TM-07s egen tekst («aldri blankt koordinatsystem») og TM-08fs
+   HANDOFF-kommentar bekrefter at hullkartet er gjeldende retning — vi har
+   fulgt DEN, ikke TM-02/05s eldre bakgrunn. Se `docs/feillogg.md` 29.08.
+2. **PDF/foto-ingest finnes ikke.** TM-00 TmIngestDrop, TM-03, TM-05b, TM-08f
+   m.fl. viser «CSV, PDF eller foto» + «Ta bilde av kortet» som ingest-vei —
+   appen har kun CSV/HTML-parsing (`src/lib/trackman/parse-*.ts`), ingen
+   PDF- eller foto-OCR. Ikke bygget her (ny funksjonalitet, anti-scope).
+3. **TM-08/TM-09 «Hull-detalj» krever per-hull skudd-posisjoner** (tee →
+   innspill → putt langs en bane-polylinje) som verken `Round`/`Hole` eller
+   `TrackManShot` har i dag (praksis-data, ikke runde-data). Ikke bygget.
+4. **TM-08c/d responsiv restruktur** (iPad kart|sidebar-split, Mac 3-pane
+   med økt-liste-rail) — `TrackManSessionDetail` forblir én sentrert kolonne
+   på alle bredder. Innhold/data er rettet, layoutet er ikke restrukturert.
+
+**Skjermbilder: IKKE tatt.** Denne remote-økten hadde ingen `.env.local`,
+ingen reelle Supabase/DB-credentials og ingen tilgang til
+`SCREENTEST_PASSWORD` — `scripts/app-shot.mjs` krever ekte innlogging mot
+Supabase Auth, som ikke kan omgås lokalt. `npm run verify` (typecheck, lint,
+token-gap, `npm test`, full `next build`) er grønt for alt som er levert —
+det er den eneste verifikasjonen denne økten kunne gjøre. Skjermbilde-gaten
+(fast regel) er derfor IKKE oppfylt for PR-en; neste økt med ekte
+credentials (eller Anders selv mot PR-previewen) må ta 390px + 1440px,
+lys+mørk, før merge.
+
+**Neste økt (PX-3-rest eller PX-4) bør starte med:** TE-hub-restruktureringen
+(TE-01/01L/02/13) som egen, avgrenset jobb, deretter TM-03/12/13/14, deretter
+resten av TE (07/08/09/10/12, som trolig krever nye ruter for enkeltprotokoller).
