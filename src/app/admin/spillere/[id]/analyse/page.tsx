@@ -20,6 +20,7 @@ import { loadMinGolf } from "@/lib/min-golf/load-min-golf";
 import { loadAnalyticsWorkbenchData } from "@/app/portal/analysere/actions";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { AdminSpillerAnalyseV2 } from "@/components/admin/v2/AdminSpillerAnalyseV2";
+import { sammenlignMedSegSelv, STANDARD_VINDU } from "@/lib/domain/sg-mot-seg-selv";
 
 export const dynamic = "force-dynamic";
 
@@ -39,10 +40,28 @@ export default async function SpillerAnalysePage({
   if (!spiller) notFound();
 
   // Coach ser alltid full dekomponering → «elite»-dybde.
-  const [minGolf, workbench] = await Promise.all([
+  //
+  // I tillegg: «hvor taper hen slag, målt mot seg selv» — coachens
+  // hovedspørsmål (beslutning 2026-08-30). Vi henter dobbelt så mange runder
+  // som vindusstørrelsen, siden sammenligningen trenger et vindu bakover også.
+  const [minGolf, workbench, sgRunder] = await Promise.all([
     loadMinGolf(spiller.id, "elite"),
     loadAnalyticsWorkbenchData(spiller.id),
+    prisma.round.findMany({
+      where: { userId: spiller.id },
+      orderBy: { playedAt: "desc" },
+      take: STANDARD_VINDU * 2,
+      select: {
+        playedAt: true,
+        sgOtt: true,
+        sgApp: true,
+        sgArg: true,
+        sgPutt: true,
+      },
+    }),
   ]);
+
+  const motSegSelv = sammenlignMedSegSelv(sgRunder);
 
   return (
     <V2Shell bredde="kolonne" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
@@ -50,6 +69,7 @@ export default async function SpillerAnalysePage({
         navn={spiller.name ?? "Spiller"}
         spillerId={spiller.id}
         data={{ minGolf, workbench }}
+        motSegSelv={motSegSelv}
       />
     </V2Shell>
   );
