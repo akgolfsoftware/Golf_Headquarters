@@ -2,14 +2,16 @@
  * Marketing Forside (akgolf.no). OFFENTLIG flate: ingen auth-guard, ingen
  * dataloader (dette er markedsføringssiden, ikke en datadrevet app-skjerm).
  *
- * Designfasit siden 20.08.2026: `ak-golf-website` — lys Paper, ekte
- * Academy-foto, hero med motion-loop. Skallet (nav/footer) eies av
+ * Siden 2026-08-28 (Anders): «Reisen» — scroll-drevet, 3D-animert forside
+ * med de ekte Academy-bildene (MarkedForsideReise). Copy og palett er
+ * videreført fra ak-golf-website-porten (lys Paper, ekte foto); bevegelsen
+ * er bygget uten nye avhengigheter. Skallet (nav/footer) eies fortsatt av
  * `(marketing)/layout.tsx`; denne siden tegner aldri eget chrome.
- * Erstattet MarkedForsideV2, som var mørk og hadde sin egen MNav/MFot.
+ * MarkedForside (statisk forgjenger) beholdes til reisen er signert.
  */
 
-import { MarkedForside } from "@/components/marketing/paper/MarkedForside";
+import { MarkedForsideReise } from "@/components/marketing/paper/MarkedForsideReise";
 
 export default function MarketingHjemPage() {
-  return <MarkedForside />;
+  return <MarkedForsideReise />;
 }
