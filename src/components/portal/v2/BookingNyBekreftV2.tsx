@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Caps, Tittel, Kort, Knapp, TekstOmraade, Icon } from "@/components/v2";
 import { createCreditBooking } from "@/lib/booking/credit-booking";
+import { opprettBookingMedKort } from "@/app/portal/booking/actions";
 import { PolicyBanner } from "@/components/booking/PolicyBanner";
 
 /* ── Datakontrakt (alt serialiserbart — server-pagen eier queries/format) ── */
@@ -22,6 +23,10 @@ import { PolicyBanner } from "@/components/booking/PolicyBanner";
 export type BekreftRad = { label: string; verdi: string };
 
 export type BookingNyBekreftV2Data = {
+  /** «credits» = trekk fra forhåndsbetalte timer. «betaling» = kort via Stripe Checkout. */
+  modus: "credits" | "betaling";
+  /** Pris i øre — vises kun i betaling-modus. */
+  prisOre: number;
   serviceTypeId: string;
   coachId: string;
   /** startAt.toISOString() — sendes UENDRET til createCreditBooking. */
@@ -45,7 +50,8 @@ function FeilBoks({ children }: { children: React.ReactNode }) {
 }
 
 export function BookingNyBekreftV2({ data }: { data: BookingNyBekreftV2Data }) {
-  const { serviceTypeId, coachId, startIso, backHref, ledig, rader, creditsRemaining, saldoEtter } = data;
+  const { modus, prisOre, serviceTypeId, coachId, startIso, backHref, ledig, rader, creditsRemaining, saldoEtter } = data;
+  const erBetaling = modus === "betaling";
   const router = useRouter();
   const [notes, setNotes] = useState("");
   const [pending, startTransition] = useTransition();
@@ -56,6 +62,23 @@ export function BookingNyBekreftV2({ data }: { data: BookingNyBekreftV2Data }) {
     setError(null);
     startTransition(async () => {
       try {
+        if (erBetaling) {
+          // Kortbetaling: PENDING-booking + Stripe Checkout (webhooken
+          // bekrefter). Eneste hopp ut er selve betalingssiden hos Stripe —
+          // success/cancel lander tilbake på /portal/booking.
+          const res = await opprettBookingMedKort({
+            serviceTypeId,
+            coachId,
+            startIso,
+            notes: notes.trim() || undefined,
+          });
+          if (!res.ok) {
+            setError(res.grunn);
+            return;
+          }
+          window.location.href = res.url;
+          return;
+        }
         const result = await createCreditBooking({
           serviceTypeId,
           coachId,
@@ -97,15 +120,17 @@ export function BookingNyBekreftV2({ data }: { data: BookingNyBekreftV2Data }) {
         </div>
       </Kort>
 
-      {/* Betaling → credit-saldo (denne flyten bruker forhåndsbetalte timer) */}
+      {/* Betaling — credits: saldo før → etter. Kort: pris + Stripe-info. */}
       <Kort tint eyebrow="Betaling">
         <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: TL.radius.row, background: TL.dock, border: `1px solid ${TL.hair}` }}>
           <span style={{ width: 32, height: 32, flex: "none", borderRadius: 9999, background: TL.fill, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
             <Icon name="credit-card" size={15} style={{ color: TL.onFill }} />
           </span>
-          <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text }}>Trekkes fra forhåndsbetalte timer</span>
+          <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text }}>
+            {erBetaling ? "Betales med kort (Stripe)" : "Trekkes fra forhåndsbetalte timer"}
+          </span>
           <span style={{ marginLeft: "auto", fontFamily: TL.font.mono, fontSize: 11.5, fontWeight: 700, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
-            {creditsRemaining} → {saldoEtter}
+            {erBetaling ? `${prisOre / 100} kr` : `${creditsRemaining} → ${saldoEtter}`}
           </span>
         </div>
       </Kort>
@@ -125,8 +150,10 @@ export function BookingNyBekreftV2({ data }: { data: BookingNyBekreftV2Data }) {
 
           {error && <FeilBoks>{error}</FeilBoks>}
 
-          <Knapp type="submit" icon="check" full disabled={pending} style={{ minHeight: 46 }}>
-            {pending ? "Bekrefter …" : "Bekreft booking"}
+          <Knapp type="submit" icon={erBetaling ? "credit-card" : "check"} full disabled={pending} style={{ minHeight: 46 }}>
+            {pending
+              ? erBetaling ? "Åpner betaling …" : "Bekrefter …"
+              : erBetaling ? "Til betaling" : "Bekreft booking"}
           </Knapp>
 
           <Link href={backHref} style={{ textDecoration: "none" }}>

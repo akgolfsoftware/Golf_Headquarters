@@ -111,6 +111,14 @@ export async function opprettBooking(input: OpprettBookingInput): Promise<Oppret
 
 export type KortBetalingResult = { ok: true; url: string } | { ok: false; grunn: string };
 
+export type KortBetalingInput = {
+  serviceTypeId: string;
+  coachId: string;
+  /** Eksakt starttidspunkt fra availability-engine (slot.start.toISOString()). */
+  startIso: string;
+  notes?: string;
+};
+
 /**
  * B7 (booking-trygging 2026-07-13): kortbetaling for spillere UTEN
  * coaching-pakke — samme kjede som den offentlige drop-in-flyten:
@@ -119,15 +127,12 @@ export type KortBetalingResult = { ok: true; url: string } | { ok: false; grunn:
  * betalingen. Utløper Checkout (30 min) kanselleres bookingen av webhooken.
  */
 export async function opprettBookingMedKort(
-  input: OpprettBookingInput,
+  input: KortBetalingInput,
 ): Promise<KortBetalingResult> {
   const user = await requirePortalUser({ kreverTilgang: "TALENT", allow: ["PLAYER", "COACH", "ADMIN"] });
 
-  const [t, m] = input.kl.split(":").map(Number);
-  if (Number.isNaN(t) || Number.isNaN(m)) return { ok: false, grunn: "Ugyldig klokkeslett." };
-  const dag = new Date(input.datoIso);
-  if (Number.isNaN(dag.getTime())) return { ok: false, grunn: "Ugyldig dato." };
-  const startAt = new Date(dag.getFullYear(), dag.getMonth(), dag.getDate(), t, m, 0, 0);
+  const startAt = new Date(input.startIso);
+  if (Number.isNaN(startAt.getTime())) return { ok: false, grunn: "Ugyldig tidspunkt." };
   if (startAt.getTime() <= Date.now()) return { ok: false, grunn: "Tidspunktet er passert." };
 
   const service = await prisma.serviceType.findUnique({
@@ -184,6 +189,7 @@ export async function opprettBookingMedKort(
           endAt,
           status: "PENDING",
           priceOre: service.priceOre,
+          notes: input.notes?.trim() || undefined,
         },
         select: { id: true },
       });

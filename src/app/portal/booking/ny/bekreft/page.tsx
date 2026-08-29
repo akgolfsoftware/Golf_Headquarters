@@ -21,30 +21,34 @@ import {
 } from "@/components/portal/v2/BookingNyBekreftV2";
 
 type Props = {
-  searchParams: Promise<{ service?: string; start?: string; coach?: string }>;
+  searchParams: Promise<{ service?: string; start?: string; coach?: string; betaling?: string }>;
 };
 
 export default async function BekreftCreditBookingPage({
   searchParams,
 }: Props) {
-  const { service: serviceSlug, start, coach: coachId } = await searchParams;
+  const { service: serviceSlug, start, coach: coachId, betaling } = await searchParams;
 
   if (!serviceSlug || !start || !coachId) notFound();
 
   const user = await requirePortalUser({ kreverTilgang: "TALENT", allow: ["PLAYER", "COACH", "ADMIN"] });
 
+  const erBetaling = betaling === "1";
+
   const subscription = await prisma.subscription.findUnique({
     where: { userId_kind: { userId: user.id, kind: "COACHING" } },
   });
-  if (
-    !subscription ||
-    !kanBrukeCredits(subscription) ||
-    subscription.monthlyCredits === 0
-  ) {
-    redirect("/coaching");
-  }
-  if (subscription.creditsRemaining <= 0) {
-    redirect("/portal/booking/ny");
+  // Credits-modus krever brukbare credits — mangler de, tar wizarden
+  // spilleren videre i betaling-modus i stedet (aldri ut av appen).
+  if (!erBetaling) {
+    if (
+      !subscription ||
+      !kanBrukeCredits(subscription) ||
+      subscription.monthlyCredits === 0 ||
+      subscription.creditsRemaining <= 0
+    ) {
+      redirect("/portal/booking/ny");
+    }
   }
 
   const service = await prisma.serviceType.findUnique({
@@ -75,13 +79,16 @@ export default async function BekreftCreditBookingPage({
   });
   const datoTid = `${dato.charAt(0).toUpperCase()}${dato.slice(1)} · ${klokkeslett}`;
 
-  const saldoEtter = subscription.creditsRemaining - 1;
+  const creditsRemaining = subscription?.creditsRemaining ?? 0;
+  const saldoEtter = creditsRemaining - 1;
 
   const backHref = `/portal/booking/ny?service=${serviceSlug}&dato=${
     startAt.toISOString().split("T")[0]
-  }`;
+  }${erBetaling ? "&betaling=1" : ""}`;
 
   const data: BookingNyBekreftV2Data = {
+    modus: erBetaling ? "betaling" : "credits",
+    prisOre: service.priceOre,
     serviceTypeId: service.id,
     coachId,
     startIso: startAt.toISOString(),
@@ -92,9 +99,12 @@ export default async function BekreftCreditBookingPage({
       { label: "Coach", verdi: coachUser.name ?? "Coach" },
       { label: "Dato/tid", verdi: datoTid },
       { label: "Varighet", verdi: `${service.durationMin} min` },
-      { label: "Kostnad", verdi: "1 av månedens timer" },
+      {
+        label: erBetaling ? "Pris" : "Kostnad",
+        verdi: erBetaling ? `${service.priceOre / 100} kr` : "1 av månedens timer",
+      },
     ],
-    creditsRemaining: subscription.creditsRemaining,
+    creditsRemaining,
     saldoEtter,
   };
 

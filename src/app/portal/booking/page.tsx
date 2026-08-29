@@ -10,9 +10,9 @@
  * aldri rendret. Bruker nå hele svaret, ingen ny query.
  *
  * Selve bookingen skjer på /portal/booking/ny (BookingNyV2) — den finnes
- * fra før, er credits-bevisst (redirecter GRATIS-brukere til /coaching,
- * håndterer brukt-opp-tilstand med drop-in-betaling via /booking). Denne
- * siden dupliserer ikke den logikken.
+ * fra før og er credits-bevisst: med timer igjen brukes de, uten (eller med
+ * ?betaling=1) betales timen per gang med kort — alt internt i appen.
+ * Denne siden dupliserer ikke den logikken.
  */
 
 import { redirect } from "next/navigation";
@@ -24,7 +24,10 @@ import { BookingHubV2 } from "@/components/portal/v2/BookingHubV2";
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Booking · AK Golf" };
 
-export default async function BookingHubPage() {
+type Props = { searchParams: Promise<{ betalt?: string; avbrutt?: string }> };
+
+export default async function BookingHubPage({ searchParams }: Props) {
+  const { betalt, avbrutt } = await searchParams;
   const user = await requirePortalUser({ kreverTilgang: "TALENT", allow: ["PLAYER", "COACH", "ADMIN"] });
   if (user.role === "PARENT") redirect("/forelder");
 
@@ -38,6 +41,7 @@ export default async function BookingHubPage() {
           upcoming: hub.upcoming,
           coaches: hub.coaches,
           forsteLedige: hub.forsteLedige,
+          melding: betalt === "1" ? "betalt" : avbrutt === "1" ? "avbrutt" : null,
         }}
       />
     </V2Shell>

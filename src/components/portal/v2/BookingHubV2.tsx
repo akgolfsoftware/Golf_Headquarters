@@ -11,11 +11,9 @@ import { TL } from "@/lib/v2/train-lock";
  * upcoming/past ble hentet og aldri vist noe sted). Ingen ny query.
  *
  * "Book time" leder til /portal/booking/ny — den eksisterende, credits-
- * bevisste wizardpry (håndterer GRATIS-redirect til /coaching og
- * brukt-opp-tilstand selv, se BookingNyV2.tsx). Denne siden dupliserer
- * ikke den logikken. "Kjøp drop-in mot betaling" peker til samme sted
- * (/booking, offentlig side) som BruktOppV2 allerede bruker for akkurat
- * dette — samme mønster, ikke en ny betalingsflyt.
+ * bevisste wizarden (velger selv credits- eller betaling-modus, se
+ * BookingNyV2.tsx). "Kjøp ekstra time mot betaling" er samme wizard med
+ * ?betaling=1 — spilleren sendes aldri ut av appen (Anders 2026-08-28).
  */
 
 import Link from "next/link";
@@ -30,6 +28,8 @@ export type BookingHubV2Data = {
   coaches: HubCoach[];
   /** Første ledige luke — grunnlaget for «Én ting nå». Null = ingen ledig tid funnet. */
   forsteLedige: HubForsteLedige | null;
+  /** Retur fra Stripe Checkout (?betalt=1 / ?avbrutt=1). Null ellers. */
+  melding?: "betalt" | "avbrutt" | null;
 };
 
 const UKEDAG = ["søn", "man", "tir", "ons", "tor", "fre", "lør"];
@@ -79,7 +79,7 @@ function AboRad({ label, verdi, last }: { label: string; verdi: string; last?: b
 // og tier-verdiene er app-nivåer, ikke coaching-pakker.
 
 export function BookingHubV2({ data }: { data: BookingHubV2Data }) {
-  const { credits, upcoming, coaches, forsteLedige } = data;
+  const { credits, upcoming, coaches, forsteLedige, melding } = data;
   const harPakke = credits.monthlyCredits > 0;
   const tomtForCredits = harPakke && credits.creditsRemaining <= 0;
 
@@ -93,6 +93,24 @@ export function BookingHubV2({ data }: { data: BookingHubV2Data }) {
         tilbakeLabel="Til hjem"
       />
       <PaperKropp>
+
+      {/* Retur fra Stripe Checkout — kvittering/avbrudd i klarspråk. */}
+      {melding === "betalt" && (
+        <div style={{ display: "flex", gap: 10, alignItems: "flex-start", padding: "12px 14px", borderRadius: TL.radius.card, background: `color-mix(in srgb, ${TL.ok} 10%, transparent)`, border: `1px solid color-mix(in srgb, ${TL.ok} 40%, transparent)` }}>
+          <Icon name="check-circle" size={15} style={{ color: TL.ok, flex: "none", marginTop: 1 }} />
+          <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text, lineHeight: 1.55 }}>
+            Betalingen er mottatt. Timen bekreftes om et øyeblikk og dukker opp under «Kommende timer». Du får også e-post.
+          </span>
+        </div>
+      )}
+      {melding === "avbrutt" && (
+        <div style={{ display: "flex", gap: 10, alignItems: "flex-start", padding: "12px 14px", borderRadius: TL.radius.card, background: `color-mix(in srgb, ${TL.warn} 10%, transparent)`, border: `1px solid color-mix(in srgb, ${TL.warn} 40%, transparent)` }}>
+          <Icon name="alert-triangle" size={15} style={{ color: TL.warn, flex: "none", marginTop: 1 }} />
+          <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text, lineHeight: 1.55 }}>
+            Betalingen ble avbrutt — tiden er ikke reservert. Velg gjerne en ny tid under.
+          </span>
+        </div>
+      )}
 
       {/* Paper .nowblock — «Én ting nå» peker på EN konkret luke, ikke på
           «book en time» generelt. Vises bare når det finnes en ledig luke. */}
@@ -206,9 +224,9 @@ export function BookingHubV2({ data }: { data: BookingHubV2Data }) {
           >
             {tomtForCredits ? "Book — betal per time" : forsteLedige ? "Se alle ledige tider" : "Book time"}
           </Link>
-          {/* Samme mål som BruktOppV2 sin drop-in-CTA (BookingNyV2.tsx) — ikke en ny betalingsflyt. */}
+          {/* Drop-in mot betaling — samme wizard i betaling-modus. Alt skjer i appen. */}
           <Link
-            href="/booking"
+            href="/portal/booking/ny?betaling=1"
             style={{ textDecoration: "none", textAlign: "center", fontFamily: TL.font.sans, fontSize: 12, fontWeight: 600, color: TL.mute, padding: "6px 0" }}
           >
             Kjøp ekstra time mot betaling →
