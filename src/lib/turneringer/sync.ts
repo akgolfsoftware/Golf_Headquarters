@@ -199,6 +199,7 @@ export async function syncLiveLeaderboards(): Promise<{
   events: number;
   entries: number;
   playersCreated: number;
+  lukket: { fullfoert: number; avlyst: number };
 }> {
   let totalEntries = 0;
   let totalEvents = 0;
@@ -327,12 +328,56 @@ export async function syncLiveLeaderboards(): Promise<{
     });
   }
 
+  const lukket = await lukkUtloepteTurneringer();
+
   return {
     tours: LIVE_TOURS.length,
     events: totalEvents,
     entries: totalEntries,
     playersCreated,
+    lukket,
   };
+}
+
+/**
+ * Lukker turneringer som står som IN_PROGRESS selv om de er over.
+ *
+ * `deriveStatus` er riktig, men den kjører bare når en turnering faktisk
+ * synkes på nytt. Kilder som kun henter et vindu rundt dagens dato (GJGT,
+ * enkelte GolfBox-tourer) rører aldri gamle rader igjen, så en turnering som
+ * var IN_PROGRESS ved siste synk blir stående sånn for alltid. Målt 29.08.2026:
+ * fem slike rader, blant dem én med «AVLYST» i navnet.
+ *
+ * Kjøres fra live-jobben (hvert 10. min) slik at feilen retter seg selv i
+ * stedet for å måtte ryddes manuelt. Ren SQL-oppdatering, ingen kildekall.
+ *
+ * To regler:
+ *  - Avlyst i navnet → CANCELLED, uansett dato.
+ *  - Sluttdato passert med margin → COMPLETED.
+ *
+ * Marginen på ett døgn etter sluttdagen speiler `deriveStatus`, som lar hele
+ * sluttdagen telle som pågående.
+ */
+export async function lukkUtloepteTurneringer(
+  now: Date = new Date(),
+): Promise<{ fullfoert: number; avlyst: number }> {
+  const grense = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
+  const avlyst = await prisma.tournament.updateMany({
+    where: { status: "IN_PROGRESS", name: { contains: "AVLYST", mode: "insensitive" } },
+    data: { status: "CANCELLED" },
+  });
+
+  const fullfoert = await prisma.tournament.updateMany({
+    where: {
+      status: "IN_PROGRESS",
+      // lt utelater null av seg selv, så turneringer uten datoer røres ikke.
+      OR: [{ endDate: { lt: grense } }, { endDate: null, startDate: { lt: grense } }],
+    },
+    data: { status: "COMPLETED" },
+  });
+
+  return { fullfoert: fullfoert.count, avlyst: avlyst.count };
 }
 
 /**
