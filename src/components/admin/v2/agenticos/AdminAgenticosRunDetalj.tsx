@@ -21,7 +21,11 @@ export function AdminAgenticosRunDetalj({ data }: { data: AgentDetaljData }) {
         <AoFeilKort
           tittel={`${data.navn} svarer ikke`}
           tekst={data.feil.melding ?? "Siste kjøring feilet. Tidligere forslag står i køen — ingenting er mistet."}
-          primaer={<AoKnapp variant="primaer" href={data.godkjenningerHref}>Åpne godkjenn-kø</AoKnapp>}
+          primaer={
+            <AoKnapp variant={venter[0] ? undefined : "primaer"} href={data.godkjenningerHref}>
+              Åpne godkjenn-kø
+            </AoKnapp>
+          }
           sekundaer={<AoKnapp href="/admin/agenticos">Tilbake til cockpit</AoKnapp>}
         />
       ) : null}
