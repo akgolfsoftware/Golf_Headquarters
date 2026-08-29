@@ -26,9 +26,15 @@ import { harAktivPakke, girPlayerHqTilgang } from "@/lib/domain/abonnement";
 
 // Betaling starter 1. september 2026 (Europe/Oslo). Frem til da har ALLE full tilgang.
 const BETALING_STARTER = new Date("2026-09-01T00:00:00.000+02:00");
-// Én ukes prøveperiode (Anders 2026-08-29). Var 30 dager frem til betalingen
-// ble slått på — kortet ned da abonnement ble hovedinntektsmodellen.
-const PROVEPERIODE_DAGER = 7;
+/**
+ * Prøveperiodens lengde i dager. Én uke (Anders 2026-08-29).
+ *
+ * Prøven bor i STRIPE, ikke her: den starter når spilleren legger inn kort i
+ * Checkout, og går automatisk over til betaling på dag åtte. Denne konstanten
+ * leses av `/api/stripe/checkout` (trial_period_days) og av copy-en — den er
+ * IKKE lenger en gratis prøve appen deler ut selv.
+ */
+export const PROVEPERIODE_DAGER = 7;
 
 export function gratisForAlle(now: Date = new Date()): boolean {
   return now.getTime() < BETALING_STARTER.getTime();
@@ -114,11 +120,18 @@ export function resolveTilgang(user: ResolveTilgangInput): Tilgang {
   }
   // (d) Aktivt spiller-medlemskap i AK Golf-administrert gruppe.
   if (user.akGruppeCount > 0) return full("AK_GRUPPE");
-  // (e) Prøveperiode: trialEndsAt vinner; ellers createdAt + 7 dager.
-  const proveSlutt =
-    user.trialEndsAt?.getTime() ??
-    user.createdAt.getTime() + PROVEPERIODE_DAGER * 86_400_000;
-  if (now.getTime() < proveSlutt) return full("PROVEPERIODE");
+  // (e) Prøveperiode: KUN når den er eksplisitt satt på brukeren.
+  //
+  // Frem til 2026-08-29 fikk alle nye 30 dager full app gratis, regnet ut fra
+  // registreringsdato, uten kort. Den usynlige prøven er borte: prøveuka bor
+  // nå i Stripe og krever kort (se /api/stripe/checkout). Uten kort lander en
+  // ny spiller på TALENT — gratis for alltid, aldri INGEN.
+  //
+  // `trialEndsAt` består som manuell overstyring: gitt tilgang i en periode,
+  // forlengelse, eller opprydding etter en regelendring som denne.
+  if (user.trialEndsAt && now.getTime() < user.trialEndsAt.getTime()) {
+    return full("PROVEPERIODE");
+  }
   // TalentHQ-profilen: gratis, låst, utløper aldri.
   if (user.profilType === "TALENT") {
     return { nivaa: "TALENT", kilde: "TALENT_PROFIL", effektivTier: "GRATIS" };

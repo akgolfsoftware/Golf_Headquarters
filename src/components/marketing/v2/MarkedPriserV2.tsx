@@ -17,7 +17,7 @@ import { PkShell } from "./paper/PkShell";
 const FAQ: { q: string; a: string }[] = [
   {
     q: "Hvordan får jeg PlayerHQ gratis?",
-    a: "Testbatteriet, DataGolf-verktøyet, runde- og statistikkføring og booking av enkelttimer er gratis for alle, uten utløpsdato. Resten av appen får du gratis på tre måter: én ukes prøveperiode som ny, coaching-pakke (Performance eller Performance Pro) der appen er inkludert, eller gruppe via AK Golf, for eksempel WANG eller klubbtrening.",
+    a: "Testbatteriet, DataGolf-verktøyet, runde- og statistikkføring og booking av enkelttimer er gratis for alle, uten utløpsdato og uten kort. Resten av appen følger med coaching-pakke (Performance eller Performance Pro) eller gruppe via AK Golf, for eksempel WANG eller klubbtrening. Vil du prøve full app på egen hånd, får du én uke gratis mot at du legger inn kort — den går over til 299 kr på dag åtte hvis du ikke sier opp.",
   },
   {
     q: "Hva er forskjellen på coaching-pakker og appen?",
@@ -62,8 +62,8 @@ export function MarkedPriserV2() {
                 <li>Book enkelttimer med coach</li>
               </ul>
               <p className="pk-pris-fot">
-                Full app gratis i tillegg hvis du har coaching-pakke, trener i gruppe gjennom
-                AK Golf, eller er i prøveuka som ny.
+                Full app følger med coaching-pakke eller gruppe gjennom AK Golf. Vil du prøve
+                den på egen hånd, får du én uke gratis mot at du legger inn kort.
               </p>
               <Link className="pk-btn" href="/auth/signup">
                 Lag gratis konto

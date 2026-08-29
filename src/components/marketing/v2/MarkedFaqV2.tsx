@@ -52,11 +52,11 @@ const FAQ: { kategori: string; punkter: Sporsmal[] }[] = [
     punkter: [
       {
         q: "Hva er PlayerHQ?",
-        a: "Din digitale spillerportal. Her finner du treningsplaner, runder, tester, AI-coach og fremdriftsdata. Testbatteriet og DataGolf-verktøyet er gratis for alle, uten utløpsdato. Hele appen er gratis med aktiv coaching-pakke (Performance eller Performance Pro), i prøveuka, eller om du trener i gruppe gjennom AK Golf. Ellers koster den 299 kr/mnd.",
+        a: "Din digitale spillerportal. Her finner du treningsplaner, runder, tester, AI-coach og fremdriftsdata. Testbatteriet og DataGolf-verktøyet er gratis for alle, uten utløpsdato og uten kort. Hele appen er gratis med aktiv coaching-pakke (Performance eller Performance Pro) eller om du trener i gruppe gjennom AK Golf. Ellers koster den 299 kr/mnd, med én gratis prøveuke.",
       },
       {
         q: "Trenger jeg å være kunde for å bruke PlayerHQ?",
-        a: "Nei. Alle kan opprette konto uten å være Academy-kunde, og teste hele appen gratis i én uke. Etterpå beholder du testbatteriet og DataGolf-verktøyet gratis for alltid. Hele appen er fortsatt gratis om du har en aktiv coaching-pakke eller trener i gruppe gjennom AK Golf. Ellers 299 kr/mnd.",
+        a: "Nei. Alle kan opprette konto uten å være Academy-kunde. Testbatteriet, DataGolf-verktøyet og runde- og statistikkføringen er gratis for alltid, uten kort. Vil du prøve hele appen, får du én uke gratis mot at du legger inn kort, og den går over til 299 kr/mnd hvis du ikke sier opp. Har du coaching-pakke eller trener i gruppe gjennom AK Golf, er hele appen gratis uansett.",
       },
     ],
   },

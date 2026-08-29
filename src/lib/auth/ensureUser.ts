@@ -34,12 +34,24 @@ export async function ensureUser(authUser: AuthUser): Promise<User | null> {
       ? requestedRole
       : "PLAYER";
 
-  // TalentHQ-registrering (?kilde=talenthq, plan T3): gratis LÅST profil —
-  // profilType TALENT gir tilgangsnivå TALENT i resolveTilgang, aldri mer.
+  // Gratisnivået er nå standard for alle nye spillere (Anders 2026-08-29).
+  //
+  // profilType TALENT gir tilgangsnivå TALENT i resolveTilgang: testbatteri,
+  // DataGolf-verktøy, runde- og statistikkføring og booking av enkelttimer —
+  // gratis, uten utløp. Full app krever kort via Stripe.
+  //
+  // Dette MÅ henge sammen med at den usynlige prøveperioden er fjernet fra
+  // resolveTilgang: uten TALENT som standard ville en ny spiller landet på
+  // INGEN og vært stengt ute av hele appen fra første innlogging.
+  //
+  // Foreldre holdes utenfor — de har sin egen app (/forelder) og styres ikke
+  // av portalens tilgangsnivåer.
+  //
   // Settes KUN i create-grenen: update er tom, så en eksisterende brukers
   // profilType røres aldri ved senere innlogginger. Trygt selv om metadata
   // er klient-kontrollert — TALENT er en INNSNEVRING av gratis-tilgangen.
-  const erTalent = meta.kilde === "talenthq";
+  const erTalent = role === "PLAYER";
+  const kilde = meta.kilde === "talenthq" ? "TALENTHQ" : "SIGNUP";
 
   return prisma.user.upsert({
     where: { authId: authUser.id },
@@ -50,7 +62,7 @@ export async function ensureUser(authUser: AuthUser): Promise<User | null> {
       name,
       role,
       tier: "GRATIS",
-      ...(erTalent ? { profilType: "TALENT", profilKilde: "TALENTHQ" } : {}),
+      ...(erTalent ? { profilType: "TALENT", profilKilde: kilde } : {}),
     },
   });
 }

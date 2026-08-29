@@ -10,6 +10,7 @@ import {
   STRIPE_PRICE_ID_PERFORMANCE_PRO,
 } from "@/lib/stripe";
 import { rateLimit } from "@/lib/rate-limit";
+import { PROVEPERIODE_DAGER } from "@/lib/feature-flags";
 
 export const runtime = "nodejs";
 
@@ -77,7 +78,13 @@ export async function POST(req: Request) {
 
   // Hent eller opprett Stripe customer for brukeren. Kunde-ankeret kan ligge
   // på hvilken som helst av radene (A1: én per kind — COACHING | PLAYERHQ).
-  const kind = plan === "pro" ? "PLAYERHQ" : "COACHING";
+  // pro OG pro_aar er begge PlayerHQ-abonnement. Sto tidligere `plan === "pro"`
+  // alene, som la årsabonnementet (2 690 kr) på COACHING-raden — feil kind,
+  // feil anker-rad, og en abonnent som ikke ville fått PlayerHQ-tilgang av
+  // webhooken. Rettet 2026-08-29. Vinn-tilbake-grenen under har alltid
+  // behandlet de to likt, så dette var et sprik internt i samme fil.
+  const erPlayerHq = plan === "pro" || plan === "pro_aar";
+  const kind = erPlayerHq ? "PLAYERHQ" : "COACHING";
   const eksisterende = await prisma.subscription.findFirst({
     where: { userId: user.id, stripeCustomerId: { not: null } },
     select: { stripeCustomerId: true },
@@ -111,7 +118,7 @@ export async function POST(req: Request) {
   // coaching-periodens slutt. Stripe krever trial_end >= 48 t frem — nærmere
   // enn det (eller passert) starter abonnementet umiddelbart uten trial.
   let trialEnd: number | undefined;
-  if (startEtterCoaching && (plan === "pro" || plan === "pro_aar")) {
+  if (startEtterCoaching && erPlayerHq) {
     const coaching = await prisma.subscription.findUnique({
       where: { userId_kind: { userId: user.id, kind: "COACHING" } },
       select: { currentPeriodEnd: true },
@@ -120,6 +127,33 @@ export async function POST(req: Request) {
     if (slutt > Date.now() + 48 * 60 * 60 * 1000) {
       trialEnd = Math.floor(slutt / 1000);
     }
+  }
+
+  // Prøveuka (Anders 2026-08-29): den bor nå i Stripe, ikke i appen. Den gamle
+  // usynlige prøven (registreringsdato + 7 dager, uten kort) er fjernet fra
+  // resolveTilgang — se feature-flags.ts. Konsekvensen er at full app krever
+  // kort, mens gratisnivået (testbatteri, DataGolf, runde- og statistikkføring)
+  // er åpent for alle uten kort og uten utløp.
+  //
+  // Stripe Checkout krever betalingsmåte ved abonnement med prøveperiode, så
+  // kortkravet følger av dette alene. På dag åtte trekkes 299 automatisk med
+  // mindre spilleren har sagt opp.
+  //
+  // Kun ved FØRSTE PlayerHQ-abonnement: har brukeren hatt et før, er prøven
+  // brukt opp. Vinn-tilbake-broen (trial_end) vinner hvis begge slår til —
+  // Stripe godtar ikke trial_end og trial_period_days samtidig, og en spiller
+  // som kommer fra en coaching-pakke skal ha broen, ikke sju dager.
+  let proveDager: number | undefined;
+  if (erPlayerHq && trialEnd === undefined) {
+    const brukt = await prisma.subscription.findFirst({
+      where: {
+        userId: user.id,
+        kind: "PLAYERHQ",
+        stripeSubscriptionId: { not: null },
+      },
+      select: { id: true },
+    });
+    if (!brukt) proveDager = PROVEPERIODE_DAGER;
   }
 
   const session = await stripe.checkout.sessions.create({
@@ -133,6 +167,7 @@ export async function POST(req: Request) {
     subscription_data: {
       metadata: { userId: user.id, plan },
       ...(trialEnd ? { trial_end: trialEnd } : {}),
+      ...(proveDager ? { trial_period_days: proveDager } : {}),
     },
   });
 

@@ -198,22 +198,30 @@ test("null aktive AK-gruppemedlemskap: ikke gruppe-tilgang", () => {
 
 // ── Prøveperiode ───────────────────────────────────────────────────────────
 
-test("innenfor 7 dager fra registrering: FULL via PROVEPERIODE", () => {
-  // SENERE er 15.10 — registrert 12.10 er tre dager inn i prøveuka.
-  const t = resolveTilgang(
-    persona({ createdAt: new Date("2026-10-12T00:00:00+02:00"), now: SENERE }),
+test("fersk registrering gir INGEN gratis prøve av seg selv (kort kreves)", () => {
+  // Kjernen i 29.08-endringen: prøveuka bor i Stripe og krever kort. Å bare
+  // ha registrert seg i går gir ikke lenger full app.
+  const igaar = resolveTilgang(
+    persona({ createdAt: new Date("2026-10-14T00:00:00+02:00"), now: SENERE }),
   );
-  assert.equal(t.kilde, "PROVEPERIODE");
+  assert.equal(igaar.kilde, "INGEN");
+  assert.notEqual(igaar.kilde, "PROVEPERIODE");
 });
 
-test("åtte dager etter registrering: prøveperioden er ute", () => {
+test("fersk TALENT-profil lander på gratisnivået, aldri INGEN", () => {
+  // Nye spillere opprettes med profilType TALENT (ensureUser), så den
+  // manglende prøven skal lande mykt — ikke stenge dem ute.
   const t = resolveTilgang(
-    persona({ createdAt: new Date("2026-10-07T00:00:00+02:00"), now: SENERE }),
+    persona({
+      profilType: "TALENT",
+      createdAt: new Date("2026-10-14T00:00:00+02:00"),
+      now: SENERE,
+    }),
   );
-  assert.equal(t.nivaa, "INGEN");
+  assert.equal(t.nivaa, "TALENT");
 });
 
-test("trialEndsAt vinner over createdAt+7d — kan forlenge og forkorte", () => {
+test("trialEndsAt er eneste vei til PROVEPERIODE — kan forlenge og forkorte", () => {
   // Gammel bruker med forlenget prøve → FULL.
   const forlenget = resolveTilgang(
     persona({ trialEndsAt: new Date("2026-12-01T00:00:00+01:00") }),
@@ -229,14 +237,18 @@ test("trialEndsAt vinner over createdAt+7d — kan forlenge og forkorte", () => 
   assert.equal(avsluttet.nivaa, "INGEN");
 });
 
-test("prøveperioden utløper på grensen (eksakt 7 dager)", () => {
-  const createdAt = new Date("2026-09-10T00:00:00+02:00");
-  const grense = new Date(createdAt.getTime() + 7 * 86_400_000);
+test("en satt trialEndsAt utløper på grensen, ikke ett millisekund før", () => {
+  const slutt = new Date("2026-10-20T00:00:00+02:00");
   assert.equal(
-    resolveTilgang(persona({ createdAt, now: new Date(grense.getTime() - 1) })).nivaa,
+    resolveTilgang(
+      persona({ trialEndsAt: slutt, now: new Date(slutt.getTime() - 1) }),
+    ).nivaa,
     "FULL",
   );
-  assert.equal(resolveTilgang(persona({ createdAt, now: grense })).nivaa, "INGEN");
+  assert.equal(
+    resolveTilgang(persona({ trialEndsAt: slutt, now: slutt })).nivaa,
+    "INGEN",
+  );
 });
 
 // ── TALENT-profilen ────────────────────────────────────────────────────────
@@ -266,13 +278,19 @@ test("TALENT-profil som meldes inn i AK-gruppe: FULL vinner", () => {
   assert.equal(t.kilde, "AK_GRUPPE");
 });
 
-test("TALENT-profil i prøveperiode: FULL i prøven, TALENT etterpå (aldri INGEN)", () => {
-  const createdAt = new Date("2026-09-10T00:00:00+02:00");
+test("TALENT-profil med satt prøve: FULL i prøven, TALENT etterpå (aldri INGEN)", () => {
+  const slutt = new Date("2026-10-20T00:00:00+02:00");
   const iProven = resolveTilgang(
-    persona({ profilType: "TALENT", createdAt, now: new Date("2026-09-14T00:00:00+02:00") }),
+    persona({
+      profilType: "TALENT",
+      trialEndsAt: slutt,
+      now: new Date("2026-10-18T00:00:00+02:00"),
+    }),
   );
   assert.equal(iProven.nivaa, "FULL");
-  const etterProven = resolveTilgang(persona({ profilType: "TALENT", createdAt, now: SENERE }));
+  const etterProven = resolveTilgang(
+    persona({ profilType: "TALENT", trialEndsAt: slutt, now: new Date("2026-10-25T00:00:00+02:00") }),
+  );
   assert.equal(etterProven.nivaa, "TALENT");
 });
 
@@ -295,8 +313,9 @@ test("kilde-prioritet: abonnement før coaching før gruppe før prøve", () => 
     playerhq: { status: "ACTIVE", currentPeriodEnd: null, plan: "PLAYERHQ_MND", stripeSubscriptionId: "s" },
     coaching: { status: "ACTIVE", monthlyCredits: 4, currentPeriodEnd: null },
     akGruppeCount: 2,
-    // Innenfor prøveuka, ellers faller siste ledd i kjeden til INGEN.
-    createdAt: new Date("2026-10-12T00:00:00+02:00"),
+    // Eksplisitt prøve, ellers faller siste ledd i kjeden til INGEN —
+    // registreringsdato gir ikke lenger prøve av seg selv (29.08).
+    trialEndsAt: new Date("2026-10-20T00:00:00+02:00"),
   });
   assert.equal(resolveTilgang(alt).kilde, "PLAYERHQ_ABONNEMENT");
   assert.equal(resolveTilgang({ ...alt, playerhq: null, tier: "GRATIS" }).kilde, "COACHING_PAKKE");
