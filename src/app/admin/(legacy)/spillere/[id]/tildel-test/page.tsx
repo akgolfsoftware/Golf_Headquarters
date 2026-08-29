@@ -1,56 +1,23 @@
+import { permanentRedirect } from "next/navigation";
+
 /**
- * /admin/spillere/[id]/tildel-test — v2-port 16. juli 2026: delt
- * `AdminTildelTestV2` med `/admin/tester/tildel/[spillerId]` (samme skjerm,
- * to inngangspunkt). Erstatter `TildelTestModalScreen`
- * (`test-modul-v2/`) som viste fabrikerte tall («HCP 4.8 · 12/36 tester
- * gjennomført · A1») uansett hvem spilleren faktisk var.
+ * Pensjonert 2026-08-29 (rad 5 i §5T-tabellen, godkjent av Anders 27.08).
+ *
+ * Dette var det ene av to inngangspunkt til NØYAKTIG samme skjerm
+ * (`AdminTildelTestV2`) — det andre er `/admin/tester/tildel/[spillerId]`,
+ * som fortsatt lever og er lenket fra spiller-testfanen.
+ *
+ * Avvik fra beslutningsraden, bevisst: raden sier «pensjoner → WB TEST-blokker».
+ * Testblokker i Workbench er ikke bygget (T4→T6 leverte dem ikke), så en
+ * redirect dit ville vært en blindvei. Adressen peker derfor på den kanoniske
+ * tvillingen i stedet — duplikatet forsvinner, funksjonen består. Når
+ * TEST-blokkene finnes i Workbench, flyttes begge dit.
  */
-
-import { notFound } from "next/navigation";
-import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { coachScopedPlayerWhere } from "@/lib/auth/coached";
-import { prisma } from "@/lib/prisma";
-import { hentSpillerAkKategori } from "@/lib/domain/spiller-kategori";
-import { AdminTildelTestV2, type AdminTildelTestV2Data } from "@/components/admin/v2/AdminTildelTestV2";
-
-export const dynamic = "force-dynamic";
-
-export default async function TildelTestPage({ params }: { params: Promise<{ id: string }> }) {
-  const viewer = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+export default async function TildelTestRedirect({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
-
-  const [spiller, tester, totalt, fullforte] = await Promise.all([
-    // Coach-scoping: uten porten lakk skjermen navn, handicap og AK-kategori
-    // for en vilkårlig bruker-id.
-    prisma.user.findFirst({ where: { AND: [coachScopedPlayerWhere(viewer), { id }] } }),
-    prisma.testDefinition
-      .findMany({
-        orderBy: { name: "asc" },
-        select: { id: true, name: true, description: true, pyramidArea: true },
-      })
-      .catch(() => []),
-    prisma.testAssignment.count({ where: { playerId: id } }),
-    prisma.testAssignment.count({ where: { playerId: id, status: "COMPLETED" } }),
-  ]);
-  if (!spiller) notFound();
-
-  const kategori = await hentSpillerAkKategori(spiller.id, { hcp: spiller.hcp });
-
-  const data: AdminTildelTestV2Data = {
-    spillerId: spiller.id,
-    spillerNavn: spiller.name ?? "Spiller",
-    kategori,
-    hcpLabel: spiller.hcp != null ? `HCP ${spiller.hcp}` : "HCP —",
-    fullforte,
-    totalt,
-    tester: tester.map((t) => ({
-      id: t.id,
-      name: t.name,
-      description: t.description ?? "",
-      pyramidArea: t.pyramidArea,
-    })),
-    tilbakeHref: `/admin/spillere/${spiller.id}/tester`,
-  };
-
-  return <AdminTildelTestV2 data={data} />;
+  permanentRedirect(`/admin/tester/tildel/${id}`);
 }
