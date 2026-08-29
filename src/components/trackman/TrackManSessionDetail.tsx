@@ -2,7 +2,10 @@
 
 /**
  * TrackManSessionDetail — TM-11 «TrackMan-økt-detalj», hovedskjermen for én
- * TrackMan-økt. Rekkefølge (låst, HANDOFF §TRACKMAN — rørt IKKE): CaddieLeak
+ * TrackMan-økt.
+ * Fasit: designsystem/train-lock/TM-11 Okt-detalj komplett.dc.html
+ * Fasit: designsystem/train-lock/PH-14 TrackMan detalj.dc.html
+ * Rekkefølge (låst, HANDOFF §TRACKMAN — rørt IKKE): CaddieLeak
  * → KPI-stripe → DispersionMap (hero) → findings (bøtte-bar) → tabell.
  *
  * Server-komponenten (page.tsx) gjør auth + Prisma-henting + regner

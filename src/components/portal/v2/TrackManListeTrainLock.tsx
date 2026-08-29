@@ -1,7 +1,9 @@
 "use client";
 
 /**
- * TM-01 TrackMan-liste. Fasit: TM-01 TrackMan liste.dc.html
+ * TrackMan-liste.
+ * Fasit: designsystem/train-lock/TM-01 TrackMan liste.dc.html
+ * Fasit: designsystem/train-lock/PH-13 TrackMan liste.dc.html
  * Én hvit primær: Last opp. Tom tilstand uten fabrikkerte tall.
  */
 

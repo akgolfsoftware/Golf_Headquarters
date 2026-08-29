@@ -1,6 +1,6 @@
 /**
- * PlayerHQ · Tester (/portal/tren/tester) — Paper-port W1 (fase2).
- * Fasit: designsystem/paper/fase2/playerhq/playerhq-tester-hub.html.
+ * PlayerHQ · Tester (/portal/tren/tester).
+ * Fasit: designsystem/train-lock/PH-15 Analyse tester.dc.html
  *
  * Struktur per fasit: «Én ting nå» (neste test — pågående/planlagt økt, ellers
  * åpen tildeling fra coach) → «testene dine · siste resultat» med akse, dato,
@@ -13,7 +13,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { loadTesterScreen, type TestRow } from "@/lib/portal-tester/tester-data";
+import { loadTesterScreen } from "@/lib/portal-tester/tester-data";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { TL } from "@/lib/v2/train-lock";
 
@@ -27,28 +27,6 @@ const TONE_FARGE: Record<"pos" | "neg" | "flat", string> = {
   neg: TL.danger,
   flat: TL.mute,
 };
-
-function TrendTag({ delta }: { delta: NonNullable<TestRow["delta"]> }) {
-  return (
-    <span
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        padding: "3px 8px",
-        borderRadius: TL.radius.pill,
-        fontFamily: TL.font.mono,
-        fontSize: 10,
-        letterSpacing: "0.04em",
-        textTransform: "uppercase",
-        background: TL.dock,
-        color: TONE_FARGE[delta.tone],
-        border: `1px solid ${TL.hair}`,
-      }}
-    >
-      {delta.text} vs forrige
-    </span>
-  );
-}
 
 export default async function TesterHubPage() {
   const user = await requirePortalUser({ kreverTilgang: "TALENT" });
@@ -80,17 +58,39 @@ export default async function TesterHubPage() {
 
   return (
     <V2Shell bredde="kolonne" aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/planlegge">Plan</TilbakeLenke>
+      {/* PH-15: Tester er push under Analyse. */}
+      <TilbakeLenke href="/portal/analysere">Analyse</TilbakeLenke>
       <div
         data-paper-slug="playerhq-tester-hub"
         data-od-id="playerhq-tester-hub"
         style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}
       >
-        {/* Topp — fasit: Tester / Testbatteriet ditt · resultater går til talentprofilen din */}
+        {/* PH-15-hode: «Tester» 34/700 + mute sub «N aktive» */}
         <div>
-          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Tester</h1>
-          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
-            Testbatteriet ditt · resultater går til talentprofilen din
+          <h1
+            style={{
+              margin: 0,
+              fontFamily: TL.font.sans,
+              fontSize: 34,
+              fontWeight: 700,
+              letterSpacing: "-0.02em",
+              lineHeight: 1.1,
+              color: TL.text,
+            }}
+          >
+            Tester
+          </h1>
+          <span
+            style={{
+              display: "block",
+              fontFamily: TL.font.sans,
+              fontSize: 13,
+              color: TL.mute,
+              marginTop: 4,
+              fontVariantNumeric: "tabular-nums",
+            }}
+          >
+            {screen.totalTests} aktive · {screen.testedCount} testet
           </span>
         </div>
 
@@ -203,39 +203,49 @@ export default async function TesterHubPage() {
                   </p>
                 </div>
               ) : (
-                <div>
+                /* PH-15: én elev-flate med hairline-delte rader */
+                <div style={{ background: TL.elev, borderRadius: TL.radius.card, padding: "4px 20px" }}>
                   {medResultat.map((r, i) => (
                     <Link
                       key={r.id}
                       href={r.href}
                       data-od-id={`tester-rad-${i}`}
+                      className="v2-press"
                       style={{
                         display: "flex",
                         alignItems: "center",
-                        gap: 12,
-                        background: TL.elev,
-                        border: `1px solid ${TL.hair}`,
-                        borderRadius: TL.radius.card,
-                        padding: "12px 16px",
-                        marginBottom: 8,
+                        gap: 14,
+                        padding: "15px 0",
+                        borderBottom: i < medResultat.length - 1 ? `1px solid ${TL.hair}` : "none",
                         textDecoration: "none",
                         color: "inherit",
+                        minWidth: 0,
                       }}
                     >
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>
+                        <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
                           {r.name}
                         </span>
-                        <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
+                        <span
+                          style={{
+                            display: "block",
+                            fontFamily: TL.font.sans,
+                            fontSize: 13,
+                            color: TL.mute,
+                            marginTop: 2,
+                            fontVariantNumeric: "tabular-nums",
+                          }}
+                        >
                           {r.axis.toUpperCase()}
                           {r.latestDate ? ` · sist ${r.latestDate}` : ""}
                         </span>
                       </div>
-                      <div style={{ textAlign: "right", display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
+                      <div style={{ textAlign: "right", flex: "none" }}>
                         <span
                           style={{
-                            fontFamily: TL.font.mono,
-                            fontSize: 14,
+                            display: "block",
+                            fontFamily: TL.font.sans,
+                            fontSize: 15,
                             fontWeight: 600,
                             fontVariantNumeric: "tabular-nums",
                             color: TL.text,
@@ -243,7 +253,20 @@ export default async function TesterHubPage() {
                         >
                           {r.latest}
                         </span>
-                        {r.delta && <TrendTag delta={r.delta} />}
+                        {r.delta && (
+                          <span
+                            style={{
+                              display: "block",
+                              marginTop: 2,
+                              fontFamily: TL.font.sans,
+                              fontSize: 13,
+                              color: TONE_FARGE[r.delta.tone],
+                              fontVariantNumeric: "tabular-nums",
+                            }}
+                          >
+                            {r.delta.text} vs forrige
+                          </span>
+                        )}
                       </div>
                     </Link>
                   ))}

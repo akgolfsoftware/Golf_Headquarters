@@ -2,15 +2,17 @@
 import { TL } from "@/lib/v2/train-lock";
 
 /**
- * PlayerHQ Booking — v2 Presis + B-pakke (oversikt + én primær Neste/Book).
+ * PlayerHQ Booking.
+ * Fasit: designsystem/train-lock/PH-09 Booking-ark.dc.html — DELVIS:
+ * tid-grid, valgt-linje og Bekreft/Avbryt følger fasiten; selve ark-varianten
+ * (bunn-ark direkte fra Plan) er ikke bygget — booking åpnes fortsatt som
+ * egen flate. Flagget som åpent avvik i PIKSELPLAN PX-1.
  * Flerstegs: type → coach → dato/tid → bekreft → kvittering. Ekte data.
- * Én grønn hovedhandling per steg (sticky Neste / Book time).
  */
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
-  T,
   Caps,
   Tittel,
   Kort,
@@ -364,7 +366,7 @@ function MiniKalender({ ledigeIso, valgtIso, setValgtIso, visMnd, visAar, setVis
               onClick={() => iso !== null && setValgtIso(iso)}
               disabled={!ledig}
               className={ledig ? "v2-press v2-focus" : undefined}
-              style={{ appearance: "none", height: celle, borderRadius: 10, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 2, fontFamily: TL.font.mono, fontSize: 12, fontWeight: valgt ? 700 : 500, cursor: ledig ? "pointer" : "default", background: valgt ? TL.text : ledig ? TL.dim : "transparent", color: valgt ? TL.scene : passert ? T.farge.hvitA18 : ledig ? TL.text : TL.mute, border: iDagCelle && !valgt ? `1px solid ${TL.hair}` : "1px solid transparent" }}
+              style={{ appearance: "none", height: celle, borderRadius: 10, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 2, fontFamily: TL.font.mono, fontSize: 12, fontWeight: valgt ? 700 : 500, cursor: ledig ? "pointer" : "default", background: valgt ? TL.text : ledig ? TL.dim : "transparent", color: valgt ? TL.scene : passert ? TL.dim : ledig ? TL.text : TL.mute, border: iDagCelle && !valgt ? `1px solid ${TL.hair}` : "1px solid transparent" }}
             >
               {n}
               {ledig && !valgt && <span style={{ width: 3, height: 3, borderRadius: 9999, background: TL.fill }} />}

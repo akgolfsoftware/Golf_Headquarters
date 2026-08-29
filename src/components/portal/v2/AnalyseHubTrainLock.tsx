@@ -1,8 +1,10 @@
 "use client";
 
 /**
- * TM-04 Analyse-hub. Broadie venstre, TrackMan høyre på desktop.
- * Fasit: TM-04 Analyse-hub TrackMan.dc.html
+ * Analyse-hub. Broadie venstre, TrackMan høyre på desktop.
+ * Fasit: designsystem/train-lock/TM-04 Analyse-hub TrackMan.dc.html
+ * Fasit: designsystem/train-lock/PH-10 Analyse.dc.html (én flate, innganger under fold)
+ * Fasit: designsystem/train-lock/PH-16 Analyse tom.dc.html (tom: én setning + CTA)
  */
 
 import Link from "next/link";
@@ -250,6 +252,55 @@ function Dypere({ rader }: { rader: TmHubData["dypere"] }) {
 }
 
 export function AnalyseHubTrainLock({ data }: { data: TmHubData }) {
+  /* PH-16: helt tom — én setning + CTA, aldri dummy-graf. */
+  const helTom =
+    data.vindu == null &&
+    data.lekkasje == null &&
+    data.trackman == null &&
+    data.sgAkser.every((a) => a.verdi == null || a.verdi === 0);
+  if (helTom) {
+    return (
+      <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
+        <Caps>{data.dagLabel}</Caps>
+        <h1
+          style={{
+            margin: "6px 0 0",
+            fontSize: TL.storrelse.tittel,
+            fontWeight: TL.vekt.tittel,
+            letterSpacing: TL.track.tittel,
+            lineHeight: 1.1,
+            color: TL.text,
+          }}
+        >
+          Analyse
+        </h1>
+        <Kort mt={18}>
+          <div style={{ fontSize: 15, fontWeight: 400, lineHeight: 1.5, color: TL.mute }}>
+            Ingen data ennå. SG kommer fra runder og tester.
+          </div>
+          <Link
+            href="/portal/coach"
+            className="v2-press v2-focus"
+            style={{
+              marginTop: 16,
+              height: 48,
+              borderRadius: 999,
+              background: TL.fill,
+              color: TL.onFill,
+              fontSize: 16,
+              fontWeight: 700,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              textDecoration: "none",
+            }}
+          >
+            Be Anders hente SG
+          </Link>
+        </Kort>
+      </div>
+    );
+  }
   return (
     <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
       <div className="flex flex-col gap-2 min-[834px]:flex-row min-[834px]:items-baseline min-[834px]:gap-4">

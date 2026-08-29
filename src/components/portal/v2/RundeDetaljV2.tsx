@@ -1,14 +1,15 @@
 "use client";
 import { TL } from "@/lib/v2/train-lock";
 /**
- * PlayerHQ Runde-detalj — v2 Presis + B-pakke (score-status + én primær handling).
- * Scorekort, SG, hull. T.* only. Tom hull/SG = grønn vei videre.
+ * PlayerHQ Runde-detalj.
+ * Fasit: designsystem/train-lock/PH-12 Analyse én runde.dc.html
+ * H1 bane 34/700 + mute sub «dato · hull · score (+par)», SG-tall, scorekort.
  */
 
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import { UpGameImportModal } from "@/app/portal/mal/runder/[id]/upgame-import-modal";
-import { Caps, Kort, Rad, StatusPill, MikroMeta, TomTilstand, KpiFlis, SgKategorier, HjelpTips, type ScorekortHull, type SgKategori } from "@/components/v2";
+import { Kort, Rad, StatusPill, MikroMeta, TomTilstand, KpiFlis, SgKategorier, HjelpTips, type ScorekortHull, type SgKategori } from "@/components/v2";
 /* ── Data-kontrakt ─────────────────────────────────────────────────── */
 
 export type GranulaerSgData = {
@@ -132,14 +133,39 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
         <MikroMeta icon="arrow-left">Runder</MikroMeta>
       </Link>
 
-      {/* Hode — fasit: bane + dato i toppen, KPI-rad rett under (begge tilstander) */}
-      <Caps>
-        {data.baneNavn} · {data.datoTekst}
-      </Caps>
+      {/* PH-12-hode: bane 34/700 + mute sub «dato · hull · score slag (+par)» */}
+      <div>
+        <h1
+          style={{
+            margin: 0,
+            fontFamily: TL.font.sans,
+            fontSize: 34,
+            fontWeight: 700,
+            letterSpacing: "-0.02em",
+            lineHeight: 1.1,
+            color: TL.text,
+          }}
+        >
+          {data.baneNavn}
+        </h1>
+        <div
+          style={{
+            marginTop: 4,
+            fontFamily: TL.font.sans,
+            fontSize: 13,
+            fontWeight: 400,
+            color: TL.mute,
+            fontVariantNumeric: "tabular-nums",
+          }}
+        >
+          {data.datoTekst}
+          {data.antallSpilteHull > 0 ? ` · ${data.antallSpilteHull} hull` : ""} · {data.score} slag ({tilKortParTekst(diff)})
+        </div>
+      </div>
       <div className="grid grid-cols-3" style={{ gap: 8 }}>
         <KpiFlis label="Score (brutto)" value={String(data.score)} instant />
         <KpiFlis label="Mot par" value={tilKortParTekst(diff)} instant />
-        <KpiFlis label="SG total" value={sgTotalTekst} hjelp="sgTotal" instant />
+        <KpiFlis label="SG totalt" value={sgTotalTekst} hjelp="sgTotal" instant />
       </div>
 
       {/* GO V2: rett etter lagring er dette en KVITTERING, ikke en handlings-meny.
