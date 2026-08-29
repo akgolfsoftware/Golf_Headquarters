@@ -40,6 +40,12 @@ import {
   type KalenderHendelse,
   type KalenderLag,
 } from "@/lib/domain/kalender-lag";
+import {
+  TIDSLINJE_START_MIN,
+  TIDSLINJE_SLUTT_MIN,
+  tidslinjeKolonner,
+  tidslinjeTopp,
+} from "@/lib/domain/kalender-tidslinje";
 import type { KalenderLagUkeData, KalenderVisning } from "@/app/admin/kalender/lag/data";
 
 function useErMobil(breakpointPx: number): boolean {
@@ -415,51 +421,6 @@ function AgendaListe({
   );
 }
 
-const TIDSLINJE_START_TIME = 7 * 60;
-const TIDSLINJE_SLUTT_TIME = 21 * 60;
-const TIDSLINJE_PX_PER_MIN = 64 / 60;
-
-function tidslinjeTopp(min: number): number {
-  return (Math.max(TIDSLINJE_START_TIME, Math.min(TIDSLINJE_SLUTT_TIME, min)) - TIDSLINJE_START_TIME) * TIDSLINJE_PX_PER_MIN;
-}
-
-/** Fordeler overlappende hendelser i kolonner side om side (AG-11: «overlapp side om side»). */
-function tidslinjeKolonner(hendelser: KalenderHendelse[]): { h: KalenderHendelse; kolonne: number; avKolonner: number }[] {
-  const sortert = [...hendelser].sort((a, b) => (a.startMin ?? 0) - (b.startMin ?? 0));
-  const grupper: KalenderHendelse[][] = [];
-  let aktivSlutt = -1;
-  let gruppe: KalenderHendelse[] = [];
-  for (const h of sortert) {
-    const start = h.startMin ?? 0;
-    if (gruppe.length > 0 && start >= aktivSlutt) {
-      grupper.push(gruppe);
-      gruppe = [];
-      aktivSlutt = -1;
-    }
-    gruppe.push(h);
-    aktivSlutt = Math.max(aktivSlutt, h.sluttMin ?? start + 30);
-  }
-  if (gruppe.length > 0) grupper.push(gruppe);
-
-  const resultat: { h: KalenderHendelse; kolonne: number; avKolonner: number }[] = [];
-  for (const g of grupper) {
-    const kolonneSlutt: number[] = [];
-    const tildelt = g.map((h) => {
-      const start = h.startMin ?? 0;
-      let kolonne = kolonneSlutt.findIndex((slutt) => slutt <= start);
-      if (kolonne === -1) {
-        kolonne = kolonneSlutt.length;
-        kolonneSlutt.push(0);
-      }
-      kolonneSlutt[kolonne] = h.sluttMin ?? start + 30;
-      return { h, kolonne };
-    });
-    const avKolonner = kolonneSlutt.length;
-    for (const t of tildelt) resultat.push({ ...t, avKolonner });
-  }
-  return resultat;
-}
-
 /**
  * Fasit: designsystem/train-lock/AG-11 Kalender dag.dc.html — dagen, ikke
  * månedsvegg: time-akse 07–21, nå-linje, overlappende hendelser side om side.
@@ -493,8 +454,8 @@ function DagTidslinje({
   const tidsatt = hendelser.filter((h) => !h.heldag && h.startMin !== null);
   const plassert = useMemo(() => tidslinjeKolonner(tidsatt), [tidsatt]);
   const timer: number[] = [];
-  for (let m = TIDSLINJE_START_TIME; m <= TIDSLINJE_SLUTT_TIME; m += 60) timer.push(m);
-  const hoyde = tidslinjeTopp(TIDSLINJE_SLUTT_TIME);
+  for (let m = TIDSLINJE_START_MIN; m <= TIDSLINJE_SLUTT_MIN; m += 60) timer.push(m);
+  const hoyde = tidslinjeTopp(TIDSLINJE_SLUTT_MIN);
 
   return (
     <div>
@@ -525,7 +486,7 @@ function DagTidslinje({
             </div>
           ))}
           {plassert.map(({ h, kolonne, avKolonner }) => {
-            const start = h.startMin ?? TIDSLINJE_START_TIME;
+            const start = h.startMin ?? TIDSLINJE_START_MIN;
             const slutt = h.sluttMin ?? start + 30;
             const topp = tidslinjeTopp(start);
             const kortHoyde = Math.max(28, tidslinjeTopp(slutt) - topp);
@@ -574,7 +535,7 @@ function DagTidslinje({
               </button>
             );
           })}
-          {naaMin !== null && naaMin >= TIDSLINJE_START_TIME && naaMin <= TIDSLINJE_SLUTT_TIME && (
+          {naaMin !== null && naaMin >= TIDSLINJE_START_MIN && naaMin <= TIDSLINJE_SLUTT_MIN && (
             <div style={{ position: "absolute", top: tidslinjeTopp(naaMin) - 1, left: 38, right: 0, height: 2, background: TL.text, borderRadius: 1, zIndex: 3 }}>
               <div style={{ position: "absolute", left: -4, top: -4, width: 10, height: 10, borderRadius: "50%", background: TL.text }} />
             </div>
