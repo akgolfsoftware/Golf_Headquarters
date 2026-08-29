@@ -150,10 +150,12 @@ html[data-v2-tema="dark"] .bkp {
   border-color: var(--p-cta);
 }
 
+/* Train-lock (29.08): primær-CTA er ink/fill — warm er reservert fullført,
+   aldri handling. Paper-tidens clay-«nå»-knapp arver derfor cta-tokenene. */
 .bkp .btn.now {
-  background: var(--p-accent);
-  color: var(--p-on-accent);
-  border-color: var(--p-accent);
+  background: var(--p-cta);
+  color: var(--p-on-cta);
+  border-color: var(--p-cta);
   font-weight: 600;
   min-height: 56px;
   font-size: 16px;
