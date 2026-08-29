@@ -41,32 +41,27 @@ export interface LogoAKProps {
   color?: string;
   style?: CSSProperties;
   /**
-   * Flate prikken sitter på (designsystem/paper/guidelines/ak-golf-logo-bruk.md).
-   * - "ink": mørk skinne/rail → prikk #D97757 (--p-accent)
-   * - "paper": lys flate → prikk #B85C3D (--p-accent-fg)
-   * - "auto" (default): følger tema via --p-logo-dot
+   * Flate prikken sitter på.
+   * - "ink": Train-lock mørk skinne/rail (V2Shell) → TL.text + TL.warm
+   * - "paper": lys Paper-flate (auth, marketing — låst lys) → Paper-hex
+   * - "auto" (default): følger tema via --p-logo-dot (marketing)
    */
   surface?: "paper" | "ink" | "auto";
 }
-/* Ekte AK Golf-logo (baneform + Paper-prikk). Banen følger color-prop.
-   Prikken: Paper-aksent — aldri TL.fill (utgått Presis-system). */
+/* Ekte AK Golf-logo (baneform + prikk). Banen følger color-prop.
+   "ink" er Train-lock-skallets rail (TL-tokens) — "paper"/"auto" er
+   Paper-låste flater (auth §4A, marketing) og beholder Paper-hex med vilje. */
 export function LogoAK({ size = 26, color, style, surface = "auto" }: LogoAKProps) {
-  // Paper ak-golf-logo-bruk.md:
-  // - ink (mørk flate/rail): wordmark #FAF9F5 + prikk #D97757
-  // - paper (lys flate): wordmark #141413 + prikk #B85C3D
-  // - auto: arver TL.text + --p-logo-dot (tema)
-  // surface=ink | paper låser kontrast (rail alltid mørk, canvas lys).
-  // auto følger tema-tokens --p-logo-mark / --p-logo-dot.
   const mark =
     color ??
     (surface === "ink"
-      ? "#FAF9F5"
+      ? TL.text
       : surface === "paper"
         ? "#141413"
         : "var(--p-logo-mark)");
   const prikk =
     surface === "ink"
-      ? "#D97757"
+      ? TL.warm
       : surface === "paper"
         ? "#B85C3D"
         : "var(--p-logo-dot)";
