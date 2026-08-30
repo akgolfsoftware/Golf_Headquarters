@@ -207,11 +207,12 @@ export function NivaStige({
 
 /* ── OppgaveKort — oppgave m/ frist og status ─────────── */
 type OppgaveStatus = "aapen" | "paagaar" | "fullfort" | "forfalt";
-type OppgaveTone = "info" | "warn" | "up" | "down";
+type OppgaveTone = "info" | "warn" | "up" | "warm" | "down";
 const OPPGAVE_STATUS: Record<OppgaveStatus, { tone: OppgaveTone; l: string; ikon: string }> = {
   aapen:    { tone: "info", l: "Åpen",     ikon: "circle" },
   paagaar:  { tone: "warn", l: "Pågår",    ikon: "loader" },
-  fullfort: { tone: "up",   l: "Fullført", ikon: "check" },
+  // MAT-00: Fullført er varm, aldri TL.ok-grønn (den er kun Godta/PUBLISERT).
+  fullfort: { tone: "warm", l: "Fullført", ikon: "check" },
   forfalt:  { tone: "down", l: "Forfalt",  ikon: "alert-triangle" },
 };
 export interface OppgaveKortProps {
@@ -232,7 +233,7 @@ export function OppgaveKort({
   return (
     <div onClick={onClick} style={{ display: "flex", alignItems: "center", gap: 12, background: TL.elev, border: `1px solid ${TL.hair}`, borderRadius: TL.radius.row + 4, padding: "13px 16px", cursor: onClick ? "pointer" : "default" }}>
       <span style={{ width: 34, height: 34, borderRadius: 11, background: TL.dim, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
-        <Icon name={s.ikon} size={15} style={{ color: { info: TL.viz.target, warn: TL.warn, up: TL.ok, down: TL.danger }[s.tone] }} />
+        <Icon name={s.ikon} size={15} style={{ color: { info: TL.viz.target, warn: TL.warn, up: TL.ok, warm: TL.warm, down: TL.danger }[s.tone] }} />
       </span>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: ferdig ? TL.mute : TL.text, textDecoration: ferdig ? "line-through" : "none", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{tittel}</div>

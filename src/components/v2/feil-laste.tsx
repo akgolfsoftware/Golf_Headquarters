@@ -432,6 +432,36 @@ function GjorSkel() {
   );
 }
 
+/** /portal/analysere — AnalyseHub laster (B1): hero-tall + 3 KPI-kort + tekstpanel.
+ *  Hentet fra `claude/px7-tilstander-brekk-4cp4nu` ved sammenslåingen 30.08:
+ *  denne grenen dekket bare tre av B1s fire PlayerHQ-faner (I dag/Plan/Meg),
+ *  og Analyse manglet. */
+function AnalyseSkel() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+      <SkelBlock w={140} h={11} r={4} />
+      <SkelBlock w={110} h={34} r={8} />
+      <div style={{ background: TL.elev, borderRadius: TL.radius.card, padding: 20, display: "flex", flexDirection: "column", gap: 14 }}>
+        <SkelBlock w="34%" h={10} r={5} />
+        <SkelBlock w="40%" h={40} r={10} />
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10 }}>
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div key={i} style={{ background: TL.elev, borderRadius: TL.radius.card, padding: 16, display: "flex", flexDirection: "column", gap: 10 }}>
+            <SkelBlock w="70%" h={18} r={7} />
+            <SkelBlock w="56%" h={9} r={4} />
+          </div>
+        ))}
+      </div>
+      <div style={{ background: TL.elev, borderRadius: TL.radius.card, padding: 20, display: "flex", flexDirection: "column", gap: 12 }}>
+        <SkelBlock w="22%" h={10} r={5} />
+        <SkelBlock w="92%" h={12} r={5} />
+        <SkelBlock w="74%" h={12} r={5} />
+      </div>
+    </div>
+  );
+}
+
 export type V2LasterVariant =
   | "liste"
   | "kort"
@@ -443,6 +473,7 @@ export type V2LasterVariant =
   | "hjem"
   | "plan"
   | "meg"
+  | "analyse"
   | "gjor";
 export interface V2LasterProps {
   variant?: V2LasterVariant;
@@ -467,6 +498,7 @@ export function V2Laster({ variant = "kort" }: V2LasterProps) {
     : variant === "hjem" ? <HjemSkel />
     : variant === "plan" ? <PlanSkel />
     : variant === "meg" ? <MegSkel />
+    : variant === "analyse" ? <AnalyseSkel />
     : variant === "gjor" ? <GjorSkel />
     : <KortSkel />;
   return (

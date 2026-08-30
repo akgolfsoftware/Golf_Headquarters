@@ -41,6 +41,15 @@
  *   Aldri rød, aldri fargekodet ferdighet, aldri heatmap/radar/lime.
  * - tabular-nums på alle tall. Norsk format: 1 000,00 · +0,18 ·
  *   22.08.2026 · 09.00.
+ *
+ * LYS PÅ TVERS AV SKJERMER (B3/B4, PX-7 2026-08-29 — full begrunnelse i
+ * src/styles/train-lock-tokens.css-headeren). Fasit:
+ * - designsystem/train-lock/B3 Lys nøkkelskjermer.dc.html
+ * - designsystem/train-lock/B3 Lys resterende skjermer.dc.html
+ * - designsystem/train-lock/B4 Lys iPad Mac.dc.html
+ * Lys/mørk er ÉN mekanisme — enhver skjerm som leser TL/--tl-* får korrekt
+ * lys automatisk, uansett brekkpunkt. Repo-bred grep (PX-7) fant ingen nye
+ * hardkodet-mørk-lekkasjer utover det C8 (#636) allerede dokumenterte.
  */
 export const TL = {
   // ── Flater ──
@@ -62,7 +71,12 @@ export const TL = {
   // ── Identitet ──
   avatar: "var(--tl-avatar)",
   onAvatar: "var(--tl-on-avatar)",
-  /** Logo-prikk + fullført-hake/ring. Fullført er ALDRI grønn. */
+  /** Logo-prikk + fullført-hake/ring. Fullført er ALDRI grønn.
+   *  Fasit: designsystem/train-lock/MAT-00 Materialer.dc.html +
+   *  MAT-01 Mac Okt FYS hero.dc.html (PX-7, 2026-08-29) — logo-prikk 64/28/16,
+   *  fullført = hake + 1px varm ring (aldri grønn fylt flate), pyramide-
+   *  streker er posisjon (F5F5F5 aktiv / 2C2C2E resten), ikke farge, og foto
+   *  får bare bredde på FYS/hero — aldri bak tall. */
   warm: "var(--tl-warm)",
   /** Varsel som IKKE sperrer (publiser med advarsel, «mangler drill»). Aldri generell fargekoding. */
   warn: "var(--tl-warn)",

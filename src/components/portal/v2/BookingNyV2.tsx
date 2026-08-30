@@ -11,6 +11,9 @@ import { TL } from "@/lib/v2/train-lock";
  * Dato-strengene i lenkene (toISOString().split("T")[0]) og klokkeslett-
  * formateringen er bevisst byte-identiske med legacy _components/dato-velger +
  * slot-grid — URL-kontrakten mot serveren skal ikke røres i denne porten.
+ *
+ * Tom-tilstanden under (linje ~410, TomTilstand) dekker GAP-1 «BO-01
+ * Booking tom» (Fasit: designsystem/train-lock/GAP-1 Tilstander.dc.html).
  */
 
 import Link from "next/link";
