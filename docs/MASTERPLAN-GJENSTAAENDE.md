@@ -1,24 +1,23 @@
-# MASTERPLAN — alt som gjenstår (17.08.2026)
+# MASTERPLAN — alt som gjenstår (17.08.2026, konsolidert 30.08.2026)
 
-> **VIKTIG (27.08.2026):** Dette dokumentet er SUPERSEDERT som samlet oversikt av
-> **`docs/LANSERINGSPLAN-KOMPLETT-2026-08-27.md`** — start der. Steg 0-tabellen under er
-> utdatert (alle PR-ene #490/#549/#547/#542/#534/#514 ble merget 17.08). Dokumentet beholdes
-> kun for spor-detaljer den samlede planen peker på (SG-app, Masterbrain, datakilder m.m.).
->
-> **(25.08.2026):** Lanseringssporet (Workbench/økt/PlayerHQ/AgencyOS) styres av
-> **`docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`** — den vinner over dette dokumentet der de
-> overlapper. Design: Train-lock er fasit for ALLE produktskjermer (Anders 25.08) — alle
-> Paper-port-rader under er supersedert.
+> **Konsolidert 30.08.2026:** dette dokumentet er nå DEN gjeldende, eneste plandokumentet i
+> repoet. Alt reelt gjenstående arbeid fra 26 aktive plandokumenter (inkludert
+> `docs/LANSERINGSPLAN-KOMPLETT-2026-08-27.md` og `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`,
+> som tidligere var oppgitt som overstyrende) er flettet inn i STEG-tabellene under — se
+> særlig STEG 10–14. De opprinnelige dokumentene er slettet (git-historikken bevarer dem i
+> full detalj); denne fila er nå eneste sted å lete etter gjenstående arbeid. Design:
+> Train-lock er fasit for ALLE produktskjermer (Anders 25.08) — alle Paper-port-rader under
+> er historikk/supersedert.
 
 **Rolle:** den ENE samlede gjenstående-planen på tvers av alle spor. Skrevet under
 plan-oppryddingen 17.08 (78 utgåtte dokumenter slettet, status målt mot `main` @ `1f3e127`
-og fem parallelle kodekartlegginger — ikke antatt). Erstatter `COMPLETE-REMAINING-PLAN.md`,
-`REMAINING.md` og `gjenstaaende-plan-2026-07-31.md` (alle slettet — git-historikk).
+og fem parallelle kodekartlegginger — ikke antatt), utvidet 30.08 med gjenstående arbeid fra
+26 flere plandokumenter (se STEG 10–14).
 
 **Underplaner denne peker på (ikke dupliserer):**
-`docs/arkiv/paper-port/PORTPLAN.md` (supersedert 25.08 — arkivreferanse; lansering styres av
-`docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`) · `docs/plan-agenticos-jarvis-2026-08-17.md` (AI-laget) ·
-`docs/plan-baneguide-sg-app-2026-08-16.md` i PR #514 (SG-appen) ·
+`docs/arkiv/paper-port/PORTPLAN.md` (supersedert 25.08 — arkivreferanse) ·
+`docs/baneguide-produktdokument-2026-08-02.md` (produktspec for SG-appen/baneguide — referanse,
+se STEG 13) · `docs/jarvis-shortcut.md` (driftshåndbok for Jarvis-snarveien) ·
 `docs/platform/stripe-cutover-sjekkliste.md` (betaling).
 
 ---
@@ -57,10 +56,10 @@ Status 17.08: **40/88 rader signert · 44 bygget-uventer-signering · 4 ubygget 
 | 2.4 | **Fem frie sesjoner:** S3 (#549 åpen) · S9 booking-ny · S17 turneringer · S22 AgenticOS-hub · S23 agent-detalj — 25 ruter uten nye avklaringer | Ingen |
 | 2.5 | **PORTPLAN §A1: 10 beslutninger fra Anders** (talent-hub vs redirect, godkjenninger, booking-steg, årsplan-fane, coach-tråd, Stripe Elements, help, utstyr-URL, digest-URL, PP-A-formalitet) — låser opp B2/B3-sesjonene | **Anders** |
 | 2.6 | **W5-designbestilling:** 38 marketing/auth/forelder-ruter stryker én-linje-testen fordi DESIGN mangler (bl.a. auth-skallet som blokkerer alle 13 auth-ruter) — bestill fra Claude Design | Anders + designer |
-| 2.7 | **De 4 ubygde:** D2 booking→faktura (ublokkert siden 15.08 — kan bygges nå) · D4 test→drill (venter ~20 testers område-backfill: `docs/testomrader-forslag-2026-08-15.md`) · D1 Workbench F4 (venter DB-ja) · wang-logg-inn (venter #490 + OTP-beslutning) | Delvis Anders |
+| 2.7 | **De 4 ubygde:** D2 booking→faktura (ublokkert siden 15.08 — kan bygges nå) · D4 test→drill (venter ~20 testers område-backfill — forslaget lå i `docs/testomrader-forslag-2026-08-15.md`, slettet 30.08, se git-historikk for detaljene) · D1 Workbench F4 (venter DB-ja) · wang-logg-inn (venter #490 + OTP-beslutning) | Delvis Anders |
 | 2.8 | **W7-stats** (~45 `/stats/*`-ruter): egen bølge, blokkert av PR-F-plasseringen (se steg 4.4) | 2.5/PR-F |
 | 2.9 | **Vaktene F1–F8:** kun F4 (bredde-gate) er levert; F2 (clay-gate i CI) hindrer at 2.3-sweepen eroderer | Etter 2.3 |
-| 2.10 | **Jarvis-skjermene 5–12** (8 stk., fasit klar) — eget spor, se `plan-agenticos-jarvis-2026-08-17.md` fase J1 | Ingen |
+| 2.10 | **Jarvis-skjermene 5–12** (8 stk., fasit klar) — eget spor, se STEG 12 (fase J1) | Ingen |
 
 ## STEG 3 — Funksjoner og datakobling (punkt 3 i bestillingen)
 
@@ -69,9 +68,9 @@ Status 17.08: **40/88 rader signert · 44 bygget-uventer-signering · 4 ubygget 
 | 3.1 | **TalentHQ leser `testNivaaer`:** syncen (T4) skriver feltet, ingen skjerm leser det. Minste inngrep er målt: feltet ligger allerede i minne på `mitt-niva/page.tsx:59` (findUnique uten select) — legg `testNivaaerSchema.safeParse()` på det og send som prop. **BLOKKERT av PORTPLAN §A1.2** (skal talent-huben bygges eller bli redirect?) — ikke bygg ut flaten før svaret. NB: `milepaeler` fra samme synk VISES allerede (min-plan + roadmap) | Kartlegging 17.08 |
 | 3.2 | ~~Talent-gate-asymmetrien~~ **FIKSET 17.08.2026** — `if (!FEATURES.TALENT) notFound()` lagt på huben, samme gate som de fire underskjermene | Kartlegging 17.08 |
 | 3.3 | **Testbatteri-ark i Workbench:** `/portal/tren/tester` lovte det i copy (#542 rettet teksten ærlig); selve arket i `WorkbenchV2Sheets` gjenstår (beslutning 04.08, design i `workbench-mobil.html`) | beslutninger.md |
-| 3.4 | **SG-appen AP0–AP6:** merge #514 (planen) + #534 (AP0-grunnmuren — én SG-sannhet, ellipse-speilbuggen fikset). Deretter Føring 2.0 → baneguide-MVP → referansestige → analyse → coach-flater | PR #514/#534 |
+| 3.4 | **SG-appen AP0–AP6:** merge #514 (planen) + #534 (AP0-grunnmuren — én SG-sannhet, ellipse-speilbuggen fikset). Deretter Føring 2.0 → baneguide-MVP → referansestige → analyse → coach-flater. Full arbeidspakke-tabell + beslutningskø + baneguide-kjøreplanen: **STEG 13** | PR #514/#534 |
 | 3.5 | **Banedata:** runde-flatene faller tilbake på manuell par/lengde fordi `CourseDefinition` mangler hulldata — fortsett OSM-importen + rette-editor (fase 2 i baneguide-planen) | Kartlegging 17.08 |
-| 3.6 | **Pyramidefordeling:** overskrivingsfeilen er **FIKSET 17.08.2026** — `plan-action-executor.ts` setter nå kun `targetAllocation` når feltet er `null` (den dokumenterte «ikke satt»-tilstanden), så et periodebytte aldri overskriver et menneskes valg. Gjenstår fra `docs/plan-egen-pyramidefordeling-2026-08-02.md`: selve UI-et der spilleren setter sin egen. NB funnet underveis: `applyPyramidSuggestion()` (`target-allocation.ts:48`) er død produksjonskode — kun kalt fra tester | Verifisert 17.08 |
+| 3.6 | **Pyramidefordeling:** overskrivingsfeilen er **FIKSET 17.08.2026** — `plan-action-executor.ts` setter nå kun `targetAllocation` når feltet er `null` (den dokumenterte «ikke satt»-tilstanden), så et periodebytte aldri overskriver et menneskes valg. Gjenstår: selve UI-et der spilleren setter sin egen — full 10-stegs plan i **STEG 14.1**. NB funnet underveis: `applyPyramidSuggestion()` (`target-allocation.ts:48`) er død produksjonskode — kun kalt fra tester | Verifisert 17.08 |
 | 3.7 | **Live-økt-rest:** offline-kø for drill-reps + DB-persist (i dag sessionStorage) | STATUS-NÅ (eldre) |
 | 3.8 | ~~Enhetstest for `protocol.ts`~~ **FIKSET 17.08.2026** — `src/lib/portal-tester/protocol.test.ts`, 18 assertions over normaliseringsreglene som før kun sto i filhodet | Kartlegging 17.08 |
 
@@ -120,6 +119,7 @@ og runde-scorekortet (live + etterregistrering, hull/slag, SG server-side, fasit
 | 6.2 | WANG: PII-fiksen #490 FØRST (steg 0.1) · deretter B4 (coach-siden: beholde eller inn i AgencyOS?) og B5 (skole-/foreldredata: modelleres eller demo?) — 18 av 22 skjermer i `plan-design-wang-arsplan.md` venter på de to svarene |
 | 6.3 | WANG demo-rester: `wang-plan.ts` har fortsatt hardkodet KM-matrise, timeplan, TESTS-datoer — byttes til live-data etter B5 |
 | 6.4 | Team Norway: ingen egen flate (bevisst) — baseline i SG-motoren ✅, protokollvariant B ✅, ekstern lesetilgang med samtykke (T8) ✅. Gjenstår kun: rydd død `PuttModell`-komponent i `datavis.tsx` |
+| 6.8 | **TN-betalt spillerabonnement (Anders 30.08.2026, i økt).** Spillerlisens-beslutningen (`beslutninger.md`) sier TN/WANG betaler for spillerens abonnement — teknisk grunnlag mangler i dag (`Subscription.userId` er alltid brukeren selv, ingen sponsor-felt, ingen org-Stripe-kunde). Kartlagt i `docs/kartlegging-teamnorway-wang-playerhq.md` §5–6. Forslag skissert i samtalen 30.08: TN får egen Stripe-kunde med setbasert abonnement (antall = aktive `GroupMember`, synket ved inn/ut av gruppen), og spillerens `Subscription`/tilgang merkes «betalt av gruppe» i stedet for «betalt selv». **Krever eksplisitt regel mot dobbeltbetaling**: overtar TN regningen, må spillerens ev. private abonnement stoppes automatisk, ikke bare vises ved siden av. Ikke bygg før design er skrevet ut i detalj (felt/tabeller/Stripe-flyt) og godkjent |
 | 6.5 | **Fysiske tester:** finnes i PlayerHQ (`/portal/fysisk` + fys-plan) med ærlige hull (ingen spøkelsesverdier). Admin har INGEN egen FYS-flate — kun akser i plan/analyse. Avklar med Anders om egen admin-FYS-skjerm skal bestilles (designbestilling i så fall) |
 | 6.6 | FYS-formelen: lås referanseverdier når Anders gir grønt lys (beslutningen «FYS avventer» står) |
 | 6.7 | Skoletidsbekreftelse (D6) og ukesrapport (D3) er bygget — inn i signeringsbølgene |
@@ -139,10 +139,12 @@ abonnement 299/mnd eller 2 690/år, FULL automatisk ved kjøp/gruppe.
 
 ## STEG 8 — AgenticOS + Jarvis (punkt 8)
 
-Egen plan: **`docs/plan-agenticos-jarvis-2026-08-17.md`** (fase J1–J3 + beslutningene J-A–J-D).
-Kort: 8 Jarvis-skjermer igjen (design klart) · godkjenninger + konsollpanel inn i AgenticOS ·
-samle `godkjennSak` · Telegram-kø · registry-løft (13→57 agenter synlige) · Jarvis-masterplanen
-inn i repoet · `/meg` inn i IA-en.
+De 12 Jarvis-skjermene, godkjenninger/konsollpanel-konsolideringen, `godkjennSak`-samlingen,
+Telegram-kø-visningen og registry-løftet (13→57 agenter synlige) er **LEVERT** (PR-kjeden
+#532/#546/#547, verifisert 17.08 og igjen i T12-porten). Kun **J-D (KommandoTask vs.
+Notion-cache)** står fortsatt åpen — se beslutningskø nederst. Kjerne-Jarvis' gjenstående
+steg (kø-rytme, anrop+kalendervakt, personlig cockpit, stemme) og hele Familie-OS-sporet
+(helt nytt, ikke startet): **STEG 12**.
 
 ## STEG 9 — Øvrige funksjoner (punkt 9)
 
@@ -156,6 +158,138 @@ inn i repoet · `/meg` inn i IA-en.
 | 9.6 | Tripletex | Integrasjon fortsatt ikke bygget (`.claude/rules/admin-tripletex.md` — REST-API med les-tilgang er planen; agentene forbereder manuelt i dag) |
 | 9.7 | CSP-chunk-støyen i prod | Kjent, bevisst åpen (03.08-målingen) — ta ved anledning, ikke som lanseringsblokker |
 
+## STEG 10 — Lanseringsplan-rest 27.–30.08 (Player-porten, lys-pass, piksel-nærhet, cutover)
+
+Flettet inn fra `docs/LANSERINGSPLAN-KOMPLETT-2026-08-27.md` og `docs/natt/PIKSELPLAN-2026-08-28.md`
+(begge slettet 30.08 — innholdet under er alt som var reelt gjenstående på slettetidspunktet).
+
+| # | Oppgave | Detalj |
+|---|---|---|
+| 10.1 | **P-bølgen (Player-porten), fire sesjoner:** P1 Meg-familien (~19 underruter: innstillinger, abonnement+faktura, bookinger, profil, utstyr, 2fa, varsler) · P2 Analyse-familien (mal/runder+trackman, analysere+historikk, gameplan, drills) · P3 Tren+planlegge+resten (tester/turneringer/fys-plan/teknisk-plan, planlegge/workbench, booking, venner, kalender, varsler, coach, utenfor-banen, ai/foreslå-drill) · P4 Live-løypa+gjennomføring (live-rutene, gjennomfore/[id], offline-siden). Alle fire: tokens portet (#631), men fasit-1:1-port + skjermbilde-gate gjenstår |
+| 10.2 | **AD-1 Admin-rest:** spillere/[id]-detaljrest (fremgang/analyse/tester/turnering-kobling), `runder`, `teknisk-plan`, `queue`, `brief`, `innboks-epost` (PII-vurdering i økten), `bookinger/[id]` (hvis ikke tatt i T7), `analysere/compliance`, `tester/foreslatte` |
+| 10.3 | **F1 Forelder-helporten:** alle 9 seksjoner + `barn/[childId]` til Train-lock med lys+mørk (T4-beslutning 26.08). Mandagstelling-bugen (`hentForelderUkerapport`) er fikset — fasit-1:1-porten gjenstår |
+| 10.4 | **C8 Lys-pass:** 8 nøkkelskjermer (I dag, Plan-uke, TM-detalj, Workbench-uke, Kalender-uke, Live runde, Gate, Login) + mekanisk avledet lys der tegnet fasit mangler. KUN `data-v2-tema`. Rydd død `PuttModell`-komponent samtidig. Kjøres SIST, aldri parallelt — rører manges filer |
+| 10.5 | **C10 DataGolf+økonomi:** kode LEVERT — skjermbilde-gate gjenstår |
+| 10.6 | **T12 visuell-rest (AgenticOS/Jarvis):** IA levert (#630), AO-00/01-piksel likeså (#628). Gjenstår: AO-12a–e start-/pause-/avvist-dialoger (krever start-status i data) · AO-06/07 project-ark og task-ark (krever project/task-modell utover Notion-cache — se J-D) · piksel-diff mot `.dc.html` + skjermbilde-gate · fjern død `AdminAgenticosHubV2` (Paper-hub, ubrukt) |
+| 10.7 | **W5-auth:** 15 auth-ruter er funksjonelle men mangler tegnet fasit (låst lys). Krever designbestilling fra Anders — ikke smoke-blokker, kan gå etter lansering |
+| 10.8 | **V1 Betalings-cutover-verifisering:** test-clock-løypen (8 steg, `docs/platform/stripe-cutover-sjekkliste.md`), talent-gate i prod (kontrakttestene fra #539 — aldri kjørt mot prod), A1-indeks-scriptet (`--dropp-gammel-indeks` — udokumentert om kjørt), push-opt-in i prod |
+| 10.9 | **V2 Full smoke + release:** Del 3-kriteriene + samlet ende-til-ende-smoke klikket av MENNESKE (inkl. TM-steget + godta/avvis), offentlig booking ende-til-ende, e2e-secrets i CI (427 spillertester hoppes over i dag — se 9.5), vedlikeholdsmodus-av-plan for `akgolf.no` |
+| 10.10 | **PIKSELPLAN — piksel-nærhet til Train-lock for ALLE skjermer** (opprettet 28.08, målt 30.08: **114/204 fasitfiler sitert, 90 igjen**). Gjenstår: **PX-3** (TM+TE, PR #656, konflikt, ikke løst) · **PX-4** (Player-workbench/runde/gate, PR #657, konflikt, ikke løst) · **PX-6** (AgencyOS-resten — cockpit/AgenticOS/Jarvis/Spiller360/kalender/økonomi/DataGolf/fys/turneringer/gameplan/booking/meg-detaljer, PR #668 — sitering levert, skjermbilder ikke tatt, venter merge) · **PX-7** (tilstander/brekk, delvis levert — **B2** iPad/Mac topp-tab-brekk for PH-01/04/05/10/17 (5 filer) IKKE bygget: fasiten krever en annen navigasjonsform enn dagens `V2Shell`-ikonrail, bør planlegges som egen IA-økt, ikke en tilstand/brekk-bølge · **B4** lys-på-B2 er avledet gap av samme · **GAP-1**s tom-tilstander (Tom uke / Ingen aktiv runde / Velg en spiller / Ingen ledige luker) IKKE bygget (krever ekte tom-datasjekk per flate) · **GAP-2**s Runtimes-nede/Integrasjoner-reauth IKKE bygget (krever ny helse-/utløpsmodell) · **MAT-01** FYS-hero-bilde finnes ikke i koden, anti-scope · **TM-03/12/13/14** ikke åpnet). Metode (les `.dc.html` aldri hukommelse, siter fasiten i toppkommentar, `node scripts/maal-fasit-dekning.mjs` for fremdriftstall) og full session-prompt-mal ligger i git-historikken. **Lærdom 30.08 (ikke gjenta):** to par av PX-6/PX-7 ble kjørt av to økter samtidig på hver sin gren og måtte manuelt slås sammen (#667, #668) — én PX-bølge er én økt; sjekk `gh pr list` før du starter en ny |
+
+## STEG 11 — TalentHQ-innflytting i AK Golf HQ (Bølge N)
+
+Flettet inn fra `docs/natt/BOLGE-N-TALENTHQ-INN-2026-08-26.md` (slettet 30.08). Grunnlag:
+Anders' beslutning 26.08 (sju punkter, se `beslutninger.md`). **N1/N2/N3/N5 er LEVERT**
+(pipelines flyttet til eget repo `akgolfsoftware/ak-golf-pipelines`, data-bro `src/lib/dashboard-data/`,
+PEI-motor `src/lib/domain/pei/`, Team Norway som kanonisk gruppe — alle i PR #605).
+
+**Gjennomføringsrekkefølge (steg 2–10 av 10):**
+
+| # | Rad | Hva gjenstår | Avhenger av |
+|---|---|---|---|
+| 2 | N4 | `test_shots` + attestering. Kode ligger på gren `claude/n4-testshot-normalisering` — **ikke merget**, tester mangler, DDL ikke kjørt mot prod | N3 |
+| 3 | N6 | Kvitter Nordic League-pipelinen — den FINNES ALLEREDE i `ak-golf-pipelines` (`nordic-league-sync.yml`, cron 04:00 UTC) — ikke bygg på nytt, bare verifiser siste kjøring + rader | N1 |
+| 4 | N7 | Fasit: organisasjonsflaten. Tegn i Train-lock (mørk `#000000` + lys): skall + Oversikt for WANG og Team Norway. Arv per organisasjon: logo, skinne, handlingsfarge. Dekningsgrad-kortet («4 av 11 med profil») obligatorisk på TN | N-D1, N-D2 |
+| 4 | N8 | Fasit: trenerens føringsskjerm — det ekte skjermgapet: én trener fører mange spillere gjennom samme protokoll på testdag. Tre arketyper (port/tall/stige) + PEI-varianten | N7 |
+| 5 | N9 | Bygg organisasjonsskall + Oversikt per N7. Utvid `/innsyn` (eller ny rute per N-D1) | N7, N5 |
+| 6 | N10 | Bygg testdag og føring per N8. PEI fra N3, skriver til `test_shots` fra N4, attestering | N8, N4 |
+| 7 | N11 | Uttak (TN) + kartlegging (WANG) — `selection_criteria`/`selection_scores`/`wang_recruit_flags` tas i bruk, karaktermatrise. **Uttak er alltid underlag — appen konkluderer aldri** (jf. `.claude/rules/wang-toppidrett.md`) | N9 |
+| 8 | N12 | Analyse + DataGolf inn i PlayerHQ: AnalyseTerminal, SpredningsAnalyse, KohortUtvikling, ResultatVsFelt, DataGolfProfil, TruthLayer på ekte `dg_*` via N2. Tre motorer aldri blandet. **DataGolf-attribusjon** («Data powered by DataGolf», lisenskrav) lagt inn — lukker D5 | N2, N1 |
+| 9 | N13 | Talent-skjermene ferdig + `/innsyn` Train-lock. `/portal/talent/mitt-niva` leser allerede `testNivaaer` (delvis levert). Gjenstår: L-fase-navn ut av `roadmap`, `/innsyn` ferdig portet, admin-talent parkert eller inn i org-flaten | N2 |
+| 10 | N14 | **Arkiver `akgolfsoftware/talenthq`** — kun etter at N1 har kjørt grønt mot prod i minst én uke OG N9–N13 er inne. Fjern Vercel-prosjektet, skriv høstingslogg | N1, N9–N13 |
+
+**Låste beslutninger (Anders):** N-D1 egen organisasjonsflate for WANG/TN, aldri under AgencyOS
+(«Det skal være egne skjermer. Ikke under AK Golf agency.») · N-D2 TN-rød (`#D50431`) kun på logo
+og skinne, aldri som statusfarge (kolliderer med `--tl-danger`) · N-D3 PEI = `resultat ÷ lengde`,
+lavere er bedre (samme som eksisterende `test-scoring.ts`) · N-D4 Python-pipelines i eget repo
+`akgolfsoftware/ak-golf-pipelines`, aldri skrevet om til TypeScript · N-D5 ~23 av 70 gamle
+talenthq-skjermer skal med (Team Norway ×7, Testføring ×6, Analyse ×4, DataGolf ×3, WANG ×3 —
+full liste i git-historikken); resten er dekket bedre i akgolf-hq allerede.
+
+**Det som ikke skal skje:** ikke arkiver talenthq før N1 har kjørt grønt ≥1 uke og N9–N13 er
+inne (stopper DataGolf-tilførselen til prod) · ikke bygg videre i `ak-golf-talenthq` · ikke skriv
+Python-pipelines om til TypeScript · ikke skru på Prisma `multiSchema` · ikke høst GolfBox/Olyo/
+Østlandstour/college/SG-baselines (dekket bedre i akgolf-hq allerede).
+
+## STEG 12 — Jarvis / Familie-OS (gjenstående)
+
+Flettet inn fra `docs/jarvis-masterplan.md` (slettet 30.08). Kjerne-Jarvis steg 1–4 (sak-kø,
+innsamlere, triage-agent, godkjenning fra Meg-boten) er i drift.
+
+**DEL A — kjerne-Jarvis, steg 5–8 gjenstår:**
+
+| # | Steg | Innhold |
+|---|---|---|
+| 5 | Anrop + kalender-vakt | Ubesvarte anrop (fra Mini) blir saker i køen; kalender-agent (freebusy finnes) flagger konflikt, manglende reisetid, avtale uten varsel |
+| 6 | Rytmen på køen | Morgenbrief åpner med kø-status, innboksblokkene (11:30/16:00) blir kø-gjennomgang, kveldsjournal melder restanse |
+| 7 | Personlig cockpit | `/meg`-flaten med «Én ting nå» (Paper-fasit, `AiDispatchPanelV2`-mønster). Skjermbilde-gate 390px+1280px, lys/mørk |
+| 8 | Stemme | Morgenbrief og kø-status som lyd (TTS). Sist, valgfritt |
+
+**DEL B — Familie-OS, 5 steg, HELT NYTT (ikke startet).** Prinsipp: barnas data forlater
+ALDRI Mac Mini — familie-boten kjører lokalt (LaunchAgent, ikke Vercel-webhook) med
+`hermes3:8b` (installert, ubrukt i dag) som hjerne. Claude brukes kun ved voksen-sak, anonymisert.
+
+| # | Steg | Innhold |
+|---|---|---|
+| F1 | Familie-boten | Egen Telegram-bot, EGET token (barna skal aldri ha tilgang til Meg/de 26 verktøyene). Roller `familie-voksen`/`familie-barn`. I gruppechat MÅ identitet leses fra avsenderens `from.id`, ikke `chat.id` |
+| F2 | Familiekalenderen | Delt Google-kalender «Familie» + hvert medlems egen via `GoogleCalendarSubscription` (visIKalender-flagget). «Når er pappa ferdig?» svares KUN med ledig/opptatt fra Anders' jobbkalendere — aldri detaljer om kunder/spillere |
+| F3 | Hendelser fra melding | «Fotballkamp lørdag 12:00» → forslag om kalenderoppføring, BEKREFT-flyt (barn-forslag bekreftes av voksen). Aldri auto-innlegging |
+| F4 | Familielogistikk-vakten | Kveldsmelding kl. 20:00: morgendagens logistikk, kollisjoner mellom foreldrenes kalendere |
+| F5 | Familieminne | Egen `subject`-isolert loggtabell (IKKE golf-DB, IKKE Meg-tabellene, IKKE ak-brain/ak-second-brain — familiens minne bor hos familien) |
+
+Regler (ufravikelige): AI foreslår → menneske godkjenner → system utfører, aldri auto-send/
+auto-kalender · barnas meldinger kun lokalt · «når er pappa ferdig»-svar er ledig/opptatt, aldri
+kalenderinnhold · én sak → én flate · ingen nye MCP-servere/plattformer.
+
+## STEG 13 — SG-app / Baneguide i PlayerHQ (AP0–AP6)
+
+Flettet inn fra `docs/plan-baneguide-sg-app-2026-08-16.md` og `docs/baneguide-kjoreplan-2026-08-02.md`
+(begge slettet 30.08). Produktspec/designspesifikasjon for baneguiden er beholdt som referanse i
+`docs/baneguide-produktdokument-2026-08-02.md` (ikke slettet). Mål: egen SG-data-app i PlayerHQ,
+UpGame-inspirert men selvstendig løst (aldri kopiering — samme problemklasse, egen implementasjon).
+Fordelen fremfor UpGame: treningen kobles til plan/Workbench, ikke løsrevet fra spillerens nivå.
+
+**Arbeidspakker (grov innsats ~35–40 kodeøkter, mange små PR-er over uker):**
+
+| Pakke | Innhold |
+|---|---|
+| AP0 | Grunnmur: én SG-selector (`hentSpillerSg`, beregnede runder primært, `BrukerSgInput` kun fallback) · `SgBaseline`-semantikkfeil rettes (`sg_gained` feilaktig lagret som `expectedStrokes`) · enhetstester for `dispersion.ts`/`aggregateSg`/`sg-gap` (i dag utestet) · bro `Round.baneId` → `CourseDefinition` · doc-rettelser |
+| AP1 | **Føring 2.0 — planens hjerte:** «kartet er skjemaet», som UpGame. Én føringsmodell (posisjonskjeden utvides, legacy slag-wizard fryses og avvikles). Kart-modus i `/runde/logg` + `/runde/live`. Avstander/lie avledes automatisk, aldri tastet (manuell overstyring alltid mulig). Putt-flyt (+/− stepper). Intensjon (target-punkt) + mental-rating tas i bruk (feltene finnes). Tre nivåer, ærlig merket: Hurtig total · Hull for hull · Slag for slag (kun sistnevnte gir SG) |
+| AP2 | Baneguide MVP «Live på banen» — kjøreplanen under gjennomføres som den står, pluss to UpGame-tillegg: pin-justering per runde, gameplan-target forhåndsutfylt fra sikte |
+| AP3 | SG-motor 2.0: ny tabell `SgReferanse` (nivå × kategori × distansebucket × lie — PGA Top 40, Broadie scratch, AK-kategori, egen historikk), interpolasjon mellom buckets, lie-justering (CANON #8), SG per slag/hull persisteres, AK-kategori-referanseverdier kalibreres av Anders |
+| AP4 | Analyse-flatene: lukk C5-bølgens skjermer · rute-sanering (putte-lab/gapping → kanonisk `/portal/analysere/`-adresse) · Insights-flate («sterkeste/svakeste 3», peker alltid på handling) · ny statistikk fra slagkjeden (proximity, miss-retning, opp-og-ned, snittscore per par-type) · «Min bag» per-kølle-dispersion · referansevelger · DataGolf-flate der PR-F lander |
+| AP5 | Coach-flatene (AgencyOS): samme SG-selector som spiller · `/admin/spillere/[id]/baneguide` lesevisning · gameplan-etterlevelse i rundeoppsummeringen · gruppebilde WANG/GFGK (aggregater, aldri sanntidsposisjon) |
+| AP6 | Tester/practice-sløyfen — avgrenset, koblingspunkt notert (putte-lab mates av både runder og puttetester) |
+
+**Beslutninger til Anders (PB1–PB10, kompakt):** PB1 DataGolf i PlayerHQ — egen flate eller
+dybde under Analyse (anbefalt: dybdefane) · PB2 Analyse-huben 5 vs. 3 faner (anbefalt: fasitens 3)
+· PB3 referansestigen — nivåer og default (anbefalt: spillerens AK-kategori) · PB4 Freemium —
+låses SG-detalj/spredning bak PRO? · PB5 baneguide-B1–B6 (navn, GPS auto-bekreft, kart som
+default, m.m.) · PB6 putt-break-registrering (anbefalt: nei i første runde) · PB7 DB-endringene
+i `SgReferanse`+`Shot.sg` godkjennes samlet · PB8 legacy slag-wizard avvikles når Føring 2.0 er
+signert · PB9 kanonisk adresse for gapping/putte-lab (`/portal/analysere/`) · PB10 UpGame-import
+løftes frem i WANG-onboarding.
+
+**Baneguide-kjøreplanen (Fase 1 MVP, 7 økter à maks 2 t, egen gren per økt):**
+Økt 1 geometri+GPS-hook (ren logikk) → Økt 2 banedata-pakke+offline-cache → Økt 3
+CourseMap-utvidelser (GPS-prikk, rotasjon, slagmarkør) → **★ FELT-TEST go/no-go** (Anders,
+ikke en kodeøkt, Onsøy anbefalt bane) → Økt 4 kart-føring i RundeLoggKlient (den store) →
+Økt 5 offline slag-kø+synk / Økt 6 gameplan-overlay+kølle/planB (eneste DB-endring i Fase 1) /
+Økt 7 offline-fallback+sluttverifisering → pilot. Ingen nye dependencies i Fase 1; SG-motoren
+røres ikke.
+
+## STEG 14 — Diverse fra konsoliderte plandokumenter
+
+| # | Oppgave | Detalj |
+|---|---|---|
+| 14.1 | **Pyramidefordeling — spilleren setter egen fordeling (steg 3–10 av 10, steg 1–2 fikset 17.08, se 3.6):** domenelag `settEgenFordeling()` i `src/lib/training/target-allocation.ts` (normaliser sum 100, zod, CANON-avvik som varsel — ingen sperre) · server action for spilleren (kilde `SPILLER`) · spillerskjerm i Workbench (fem skyveknapper/talefelt, `AkseFordelingsBar` live forhåndsvisning, «Tilbakestill til periodens forslag») · samme redigering på coach-siden i AgencyOS (kilde `COACH`) · `allocationForPeriod()` blir et forslag til skjermen i stedet for å skrive rett til planen · skjermbilde-gate · full verify+PR |
+| 14.2 | **Testdekning-rest:** steg 1–7 (E2E-credentials-kobling, testglobb utvidet, `sg-hub`-mattetester, auth-guard avvis-tester, cron-secret+zod på API-grenser, dato-hjelper+workbench-sveip, GDPR/booking/Stripe-regresjon) er alle **LEVERT**. Steg 8 er delvis: `docs/testing.md` er rettet, men **skip-gate-scriptet** (`scripts/check-test-skip.mjs`, feiler CI hvis en «må-kjøre»-spec rapporterer skip) er IKKE bygget — hører sammen med 9.5 (venter på Anders' e2e-secrets) |
+| 14.3 | **AK-formel v3-struktur** (dokumentert 03.08.2026, aldri kjørt i kode): full struktur for pyramide → område → delferdighet → betinget P-posisjon-slot → motorikk/belastning/press, pluss praksisform-felt (BLOKK/SERIELL/VARIABEL). **Status uklar etter 18.08-beslutningen** (alle treningsregler låst opp, se `beslutninger.md`) — **avklar med Anders** om v3-strukturen fortsatt skal implementeres som fast datamodell, eller om formelen nå er en fri merkelapp uten fast struktur/migrasjon. Ved videreføring: 13 åpne punkter (innspill-navnekonvensjon, putt-bøttegrenser m/meter→fot-migrering, P-format `P1.0` vs `P1`, m.fl.) må avklares først — full liste i git-historikken. **Ikke migrer Prisma-enums uten Anders' eksplisitte ja** |
+| 14.4 | **AK Golf Intelligence-konsolidering** (kartlagt 27.06.2026, ikke verifisert på nytt siden — reverifiser status før videre arbeid, spesielt siden `ak-golf-pipelines` nå er eget repo per N-D4). Mål: samle DataGolf/WAGR/turnering-proff/kohort/college/SG-benchmarks i ak-golf-intelligence, HQ leser via API i stedet for å synke selv. SG-benchmark-lesing ER koblet (2026-07-31). **Blokkerende beslutning (§6.6 i kildedokumentet):** Intelligence sitt `dashboard`-schema var tomt — tre veier ble skissert (kjør Intelligence-pipelines mot delt DB / engangsmigrer HQ-data inn / snu retning, la HQ være master). Ikke koble flere HQ-lesere til Intel-API-et før dette er avklart på nytt |
+| 14.5 | **Treningsplanlegger WANG/GFGK Junior** (spec 07.07.2026 — verifiser om fortsatt aktuelt/prioritert før arbeid startes). Tre jobber: **A** — gjør gruppe→spiller-utsending pålitelig: kjent feil i `src/lib/workbench/merge-week-sessions.ts:69-70` (dedupliserer på `id` i stedet for `generertFraId`, dobbelttelling av speilede økter → feil timetall/«på plan»-prosent), manglende transaksjoner i `v2-sync.ts`/`coachDuplicateWeek`/`apply-template-actions.ts`. **B** — åpne, delbare gruppe-sider for WANG+GFGK uten innlogging (kun felles gruppedata: tider/kalender/samlinger/turneringer/tester — ALDRI personlige spillerdata, PII-mindreårige-regelen). **C** — koble `gfgkjunior.no` til den datadrevne siden (repoet er ikke lokalisert ennå) |
+| 14.6 | **Workbench/kalender-konsolideringsforslag** (analyse 18.08.2026, **IKKE vedtatt av Anders** — kun forslag). Fant 12 parallelle kalender/tidslinje-implementasjoner i `src/` med 3 ulike tidsrastre, mot designsystemets étt-motor-mønster. Forslag: konsolider til 3 delte motor-komponenter (`TidsGrid`/`DagStripe`/`ÅrsTidslinje`) som alle flater komponerer tynt oppå — coach-workbench bygges da på ny på spillerens motor i stedet for å reparere en fasit som ble avviklet 03.07. **Krever Anders' beslutning om omfang/rekkefølge før noe kodes** — sjekk først om T-bølgens Train-lock-porting allerede har gjort deler av dette moot |
+| 14.7 | **Mindre åpne spørsmål** (fra flere kilder, ikke dekket over): **Team-wang-tilgangen** («åpen pr nå» siden 15.08) må enten bekreftes varig eller sperres igjen i `src/proxy.ts` — én linje fra Anders. **`/kommando`** kan ikke slettes før `/admin/workspace` er databakket med ekte `KommandoTask`-data (henger sammen med J-D under). **Mission Control** (personlig innboks-dashboard) sin plassering må avklares nå som `/admin/agencyos/live` er en ekte Live-tavle (funnet under T9-porten). **Drift-agenticos-resten:** skal marketing/rapporter ha egen inngang fra AgenticOS-huben eller egne fasiter? Skal `meg/dispatch`+`meg/morgenbrief` redirecte til `/admin/brief`? |
+
 ---
 
 ## Samlet beslutningskø til Anders (alt på ett sted)
@@ -166,8 +300,14 @@ inn i repoet · `/meg` inn i IA-en.
 4. PR-F: DataGolf/stats-plassering i PlayerHQ.
 5. WANG B4 + B5.
 6. Freemium-presiseringen (7.1 — én linje).
-7. Jarvis J-A–J-D (`plan-agenticos-jarvis-2026-08-17.md`).
+7. Jarvis J-A–J-D (se STEG 12).
 8. FYS-referanseverdier (når klar — ingen hast, plassholder er ærlig).
 9. D4-backfill: områdekoder for resten av testdefinisjonene.
-10. KommandoTask vs. Notion-cache.
+10. KommandoTask vs. Notion-cache (J-D).
 11. #514-planen (SG-app) — ja/nei/endringer, så #534 kan merges.
+12. W5-auth: bestille tegnet designfasit for de 15 auth-rutene? (STEG 10.7)
+13. Team-wang-tilgangen: bekreftes varig åpen (navnefri) eller sperres igjen? (STEG 14.7)
+14. Mission Control: hvor bor det personlige innboks-dashboardet nå som `/admin/agencyos/live` er en ekte Live-tavle? (STEG 14.7)
+15. AK-formel v3-strukturen (STEG 14.3): fortsatt ønsket som fast datamodell etter 18.08-opplåsingen, eller skrotes til fordel for frie merkelapper?
+16. Workbench/kalender-konsolideringsforslaget (STEG 14.6): omfang og rekkefølge, eller avvist?
+17. AK Golf Intelligence-konsolideringen (STEG 14.4): fortsatt ønsket retning, gitt at pipelinene nå ligger i eget repo?
