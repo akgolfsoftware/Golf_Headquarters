@@ -934,7 +934,6 @@ function TrainLockPlayerDock({
       data-tl-player-dock
       style={{
         position: "fixed",
-        left: 0,
         right: 0,
         bottom: 0,
         zIndex: 40,
@@ -942,7 +941,10 @@ function TrainLockPlayerDock({
       }}
     >
       <style>{`
-        [data-tl-player-dock] { padding: 10px 16px 0; padding-bottom: calc(env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px)); }
+        /* left MÅ stå her, ikke inline: inline-stil vinner over media-queryen
+           under, så en hardkodet left:0 ville lagt doken under 72px-skinnen på
+           desktop (målt mot PH-01 Mac 30.08 — composeren startet på x=56). */
+        [data-tl-player-dock] { left: 0; padding: 10px 16px 0; padding-bottom: calc(env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px)); }
         [data-tl-player-pill] { display: flex; }
         [data-tl-player-caddie] { margin-bottom: 10px; }
         @media (min-width: 768px) {

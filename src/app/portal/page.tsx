@@ -133,7 +133,8 @@ export default async function PortalHjemPage() {
       : kalender.neste
         ? { tittel: kalender.neste.tittel, meta: kalender.neste.meta }
         : hvile && wbOkt
-          ? { tittel: IDAG_UI.hvile, meta: `${IDAG_UI.programmert}` }
+          ? // Fasitens «Neste»-kort skriver alltid dagen først («Søndag · programmert»).
+            { tittel: IDAG_UI.hvile, meta: `${storForbokstav(dagNavnLang(naa))} · ${IDAG_UI.programmert}` }
           : null;
 
   const datoLinje = `${dagNavnLang(naa)} ${dagNr}. ${OSLO_MANED.format(naa)}`;
