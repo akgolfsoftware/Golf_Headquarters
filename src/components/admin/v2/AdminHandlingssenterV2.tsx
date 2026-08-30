@@ -160,7 +160,20 @@ function DetaljInnhold({
   );
 }
 
-export function AdminHandlingssenterV2({ data, meg }: { data: AdminHandlingssenterData; meg?: string | null }) {
+export function AdminHandlingssenterV2({
+  data,
+  meg,
+  somFane = false,
+}: {
+  data: AdminHandlingssenterData;
+  meg?: string | null;
+  /**
+   * True når komponenten står som fane «Tildelt meg» i /admin/oppgaver
+   * (MASTERPLAN 15.2). Da eier siden overskriften — «Handlingssenter» er
+   * dessuten et navn som ikke finnes lenger etter konsolideringen.
+   */
+  somFane?: boolean;
+}) {
   const [filter, setFilter] = useState<Filter>("alle");
   const [ferdigSett, setFerdigSett] = useState<ReadonlySet<string>>(() => new Set());
   const [valgtId, setValgtId] = useState<string | null>(data.oppgaver[0]?.id ?? null);
@@ -206,10 +219,14 @@ export function AdminHandlingssenterV2({ data, meg }: { data: AdminHandlingssent
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
-        <div data-paper-pattern-topp data-paper-slug="agencyos-godkjenninger">
-          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Handlingssenter</h1>
-          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>AgencyOS</span>
-        </div>
+        {somFane ? (
+          <span style={{ fontSize: 13, color: TL.mute }}>{data.dato}</span>
+        ) : (
+          <div data-paper-pattern-topp data-paper-slug="agencyos-godkjenninger">
+            <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Handlingssenter</h1>
+            <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>AgencyOS</span>
+          </div>
+        )}
       </div>
       <div className="hidden md:inline-flex">
         <CTAPill icon="plus">Ny oppgave</CTAPill>

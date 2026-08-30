@@ -193,9 +193,17 @@ function NyttProsjektKort() {
 export function AdminWorkspaceProsjekterTrainLock({
   prosjekter,
   filter,
+  somFane = false,
 }: {
   prosjekter: WorkspaceProsjektKort[];
   filter: "alle" | "aktive" | "pause" | "arkiv";
+  /**
+   * True når komponenten står som fane i /admin/oppgaver (MASTERPLAN 15.2).
+   * Da eier siden overskriften, og komponentens egen workspace-tabbrad er
+   * fjernet — den navigerte mellom sider som nå ER faner. Uten flagget fikk
+   * skjermen tre navigasjonsrader stablet, som er nøyaktig det 6.9 fjerner.
+   */
+  somFane?: boolean;
 }) {
   const counts = {
     alle: prosjekter.length,
@@ -213,7 +221,13 @@ export function AdminWorkspaceProsjekterTrainLock({
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>
-        <TlTittel sub={`${counts.alle} totalt · ${counts.aktive} aktive · ${counts.pause} på pause`}>Prosjekter</TlTittel>
+        {somFane ? (
+          <span style={{ fontSize: 13, color: TL.mute }}>
+            {`${counts.alle} totalt · ${counts.aktive} aktive · ${counts.pause} på pause`}
+          </span>
+        ) : (
+          <TlTittel sub={`${counts.alle} totalt · ${counts.aktive} aktive · ${counts.pause} på pause`}>Prosjekter</TlTittel>
+        )}
         <div style={{ display: "flex", gap: 8 }}>
           <a href="https://notion.so" target="_blank" rel="noreferrer" style={{ textDecoration: "none" }}>
             <span
@@ -237,7 +251,7 @@ export function AdminWorkspaceProsjekterTrainLock({
         </div>
       </div>
 
-      <TlWorkspaceTabs active="prosjekter" />
+      {!somFane && <TlWorkspaceTabs active="prosjekter" />}
 
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 6 }}>
         <TlFilterChip label="Alle" count={counts.alle} active={filter === "alle"} href="?filter=alle" />
