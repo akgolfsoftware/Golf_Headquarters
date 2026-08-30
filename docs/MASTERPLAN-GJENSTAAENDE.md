@@ -165,6 +165,7 @@ steg (kø-rytme, anrop+kalendervakt, personlig cockpit, stemme) og hele Familie-
 | 9.4 | AI Coach (bølge 7) | Bevisst utsatt til loopen produserer gjennomføringsdata |
 | 9.5 | e2e | 427 spiller-tester hoppes over i CI (mangler `E2E_TEST_USER_*`/`E2E_COACH_*`-secrets) — sett dem etter passord-rotasjonen (0.2) |
 | 9.6 | Tripletex | Integrasjon fortsatt ikke bygget (`.claude/rules/admin-tripletex.md` — REST-API med les-tilgang er planen; agentene forbereder manuelt i dag) |
+| 9.8 | Foreldre booker for barnet | **Full booking-opprettelse fra forelderportalen** (ikke bare forespørsel) — grillingen 11.2, bygges **etter 1. september**. Forelderen er ofte den som faktisk administrerer juniorens timer, og booking av enkelttimer ligger i gratisnivået. I dag er `src/app/forelder/bookinger/` kun en lesevisning (verifisert 30.08: ingen opprettelses-flyt). Gjenbruk booking-flyten fra `/portal/booking` med forelder-scope (`src/lib/auth/booking-scope.ts`). Kilde: `.claude/rules/beslutninger.md` §GRILLINGEN RUNDE 2 |
 | 9.7 | CSP-chunk-støyen i prod | Kjent, bevisst åpen (03.08-målingen) — ta ved anledning, ikke som lanseringsblokker |
 
 ## STEG 10 — Lanseringsplan-rest 27.–30.08 (Player-porten, lys-pass, piksel-nærhet, cutover)
@@ -339,6 +340,62 @@ under.
 
 ---
 
+## STEG 16 — Datagrunnlag, kjønn og måling (beslutninger 30.08)
+
+**Kilde:** `.claude/rules/beslutninger.md` §DATAKARTLEGGING, §GRILLINGEN RUNDE 2, §PRODUKTRETNING.
+Måletall: `docs/beslutningsgrunnlag/datakartlegging-2026-08-30.md`.
+
+**Hvorfor dette står samlet:** alt under er grunnlaget analysene hviler på. Bygges en analyse på
+feil kolonne, er tallet feil for alle som ser det etterpå — og TruthLayer-prinsippet (PRODUKTRETNING
+pkt. 7) sier at alt appen påstår om et menneske skal kunne spores til en måling med dato og kilde.
+
+| # | Oppgave | Detalj |
+|---|---|---|
+| 16.1 | **Til-par-grunnlaget — ett view (~1 dag).** Bærer ni andre analyser | Les til-par fra `public_player_entries.scoreToPar` (`prisma/schema.prisma:2985`), filtrer score 55–130, kollaps de 43 dublettgruppene. **Par skal ALDRI utledes fra `public.baner` og påføres juniorrunder** — treffer i 39,7 %, systematisk avvik −1,02 slag (juniorer spiller kortere tee). Ferdig når viewet finnes og minst én skjerm leser det |
+| 16.2 | **Kjønn som felt (svar 2, fire trinn).** Uten kjønn er enhver kullsammenligning villedende for halve gruppen | (a) felt i datamodellen — finnes ikke i `prisma/schema.prisma` i dag (verifisert 30.08) · (b) manuell utfylling for Anders' egne spillere (WANG, GFGK, Academy) umiddelbart · (c) utledning fra klassekode som **eksplisitt merket** supplement — dekker 26,4 % og gir 200 jenter mot 2 066 gutter, altså systematisk skjevt · (d) ekte kilde via NGF/GolfBox som mål. Additiv DDL via `db execute`-mønsteret (`.claude/rules/gotchas.md`) — **ikke** `migrate dev`/`db push`/`migrate deploy` |
+| 16.3 | **Bruksmåling — daglig aktiv (grillingen 1.7, «bygges nå»).** Aktivering og frafall må måles fra dag én av betalt drift, ikke gjettes | Én rad per bruker per aktiv dag (userId + dato), skrevet ved innlasting av `/portal`. Ingen tredjepartsverktøy, ingen cookies. Kort i AgencyOS: «X brukte appen i går / denne uka / ikke åpnet på 30 dager». **Delvis bygget allerede:** `src/components/admin/v2/AdminReachV2.tsx:69` har en `DagligAktivitet`-komponent — men den har **null importører** og ingen datakilde. Gjenbruk komponenten, bygg tabellen og koblingen |
+| 16.4 | **Identitetslaget trinn 0 (~½ dag).** Billigere enn antatt | Eksakt navnematch treffer 2 486 av 4 873 ekte navn (51 %) og dekker 59,9 % av resultatradene; kun **3** er tvetydige. Løfter `mv_canonical_players` fra 47 til ~2 500. **Nordic League er allerede koblet:** alle 22 529 rader har `dg_id`, og joinen virker på `dg_events.event_id` (172/172 treff), ikke `dg_events.id` (0 treff) — 50 arrangementer kan dateres med én UPDATE |
+| 16.5 | **`player_source_matches.birth_year` fylles (~2 t).** Utfylt i 0 av 124 rader i dag | Fylles den, får kohort-progresjonen 313 treff umiddelbart. To av de åtte ferdigbygde analysene i `src/lib/dashboard-data/` er tomme kun av denne grunnen |
+| 16.6 | **Klubb og klassekode sluttes å kastes i scraperen.** Én pipeline-endring, to gevinster | `src/lib/scrapers/golfbox.ts:223` parser `ClubName` i zod-skjemaet og forkaster det i mappingen; samme mønster for klasse. Gir både klubbdimensjonen (`mv_club_aggregates` har i dag 46 rader med **én unik verdi: «Øst»** — det er region, ikke klubb) og ekte brutto-garanti via nettokode-hvitlista |
+| 16.7 | **De åtte ferdige analysene får skjerm.** `src/lib/dashboard-data/` har 15 zod-validerte lesefunksjoner mot åtte materialiserte views, med tester og **null importører fra skjermkode** | Koble dem. **Unntak: `mv_cohort_baselines` skal IKKE vises før den er rettet** — J19 2025 har snitt 155,3 og p90 241,8, altså flerrundetotaler behandlet som enkeltrunder. Henger sammen med N12 (STEG 11) |
+| 16.8 | **`source_registry.yaml` lukkes.** 16 kilder finnes i turneringsdata, kun 4 er registrert | Tolv kilder henter uten registrert lisens-/GDPR-grunnlag. Bryter pipeline-repoets egen regel 2. Arbeidet hører i `akgolfsoftware/ak-golf-pipelines` |
+
+**Ikke bygg (fra samme beslutning):** plassering som persentil · par påført fra baneregisteret ·
+aldersstige under 16 år · sesongform som populasjonskurve · regionkart presentert som nasjonalt ·
+banevanskelighetsindeks per bane · kohort-persentil til spiller/forelder/åpen flate · odds,
+prognoser, fantasy.
+
+**Åpent før 16.1 skrives:** nivådefinisjonen i opprykksanalysen (+2,10 eller +2,27 slag) — se
+beslutningskøen punkt 19.
+
+---
+
+## STEG 17 — Team Norway Workdesk (TN-bølgen)
+
+**Kilde:** `.claude/rules/beslutninger.md` §TEAM NORWAY-WORKDESK (Anders 30.08.2026).
+**Rekkefølge:** **etter bølge N-kjernen (STEG 11)** — Anders' punkt 4. Lansering 1. sep og bølge N
+går først. WANG-elevene onboardes i september uavhengig av dette (PlayerHQ, ikke Workdesk).
+
+**Målet:** TN-siden blir et komplett arbeidsområde som erstatter Messenger-grupper, e-post og
+Word/Excel. Bygger på org-flate-grunnmuren fra bølge N (N7/N9) og samtykke-stakken
+(`src/lib/auth/ekstern-leser-scope.ts`, verifisert 30.08).
+
+**Låst:** dataansvar = **AK Golf eier alt** (Anders valgte bort «organisasjonen eier»-modellen).
+Hver TN-spiller/forelder samtykker direkte til AK Golf. Må avtalefestes når lisensavtalen kommer
+i 2027. Forretningsmodell: gratis pilot 2026/27 → **spillerlisenser** fra 2027, ikke plattformleie
+(se §FORRETNINGSMODELL: SPILLERLISENSER) — sies høyt fra start.
+
+| # | Oppgave | Detalj |
+|---|---|---|
+| 17.1 | **Poster, ikke chat** | Trener poster til gruppe og til enkeltspiller, med video, bilder, lenker og vedlegg (flybilletter, hotellreservasjoner). **Ingen fri chat.** 1:1-poster til mindreårige skal være sporbare og synlige for forelder (idrettens åpenhetsprinsipp) — det er et krav til datamodellen, ikke en UI-detalj |
+| 17.2 | **Dokumenter med lesekvittering** | Fildeling per gruppe, «12 av 14 har åpnet uttakskriteriene», og «sist oppdatert»-merking |
+| 17.3 | **Delte testprotokoller på tvers av AK Golf, WANG og TN** | En protokoll opprettes én gang og deles. **Driftsmodellen SKAL spesifiseres i planen (Anders eksplisitt).** Anbefalt: versjonerte protokoller som låses ved første bruk — resultater peker på versjonen, endring gir ny versjon, eierorganisasjonen endrer, delte mottakere bruker. Henger sammen med N8/N10 (STEG 11) |
+| 17.4 | **Pilot høsten 2026** | Anders + 2–5 navngitte TN-trenere får konto, tilgang kun til egne grupper; spillere inn via samtykke. **Bevis på én samling før utrulling** |
+| 17.5 | **Landskapsanalyse av norsk juniorgolf** — «kartlegging av spillere», ikke internt register | Antall Olyo-/Srixon Tour-spillere per region, nivå, konkurranser per år, klubber med flest spillere per klasse. Datagrunnlaget finnes (klubbaggregater og kohortanalyser uten skjerm, se 16.7) — men **klubbdimensjonen krever 16.6 først**. **BLOKKERT:** venter på MD-fila fra Anders med alle turneringer og lenker |
+| 17.6 | **TN-branding** | Anders lager komplett brandingsystem selv. **TN-bølgen tegner ingenting før det foreligger.** TN-rød `#D50431` kun på logo og skinne, aldri som statusfarge (N-D2) |
+
+---
+
 ## Samlet beslutningskø til Anders (alt på ett sted)
 
 1. **#490-merge (PII — haster)** + team-wang-tilgangen varig åpen eller sperret igjen.
@@ -359,3 +416,5 @@ under.
 16. Workbench/kalender-konsolideringsforslaget (STEG 14.6): omfang og rekkefølge, eller avvist?
 17. AK Golf Intelligence-konsolideringen (STEG 14.4): fortsatt ønsket retning, gitt at pipelinene nå ligger i eget repo?
 18. **PlayerHQ-konsolideringen (STEG 15, siste avsnitt):** beslutning 6.9 gjelder AgencyOS. Skal samme regel — én inngang per funksjon — også gjelde spillerappen? Målt 30.08: «Analyse» har 17 innganger, «Meg» har 34 undersider.
+19. **Nivådefinisjonen i opprykksanalysen (STEG 16.1):** gir +2,10 eller +2,27 slag avhengig av om et spiller-år tilordnes ett nivå eller flere (77 mot 159 opprykkere). Retningen er robust, størrelsen er et definisjonsvalg — endres den etter at viewet er skrevet, er det TruthLayer-brudd. Må låses FØR 16.1.
+20. **MD-fila med turneringer og lenker (STEG 17.5):** spesifikasjonen for landskapsanalysen. Etterlyst 30.08, ikke levert. TN-bølgens punkt 5 er blokkert til den kommer.

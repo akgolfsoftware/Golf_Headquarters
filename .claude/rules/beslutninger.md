@@ -30,6 +30,7 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
 
 - **DATAKARTLEGGING — fire svar + bindende dataregler (Anders 2026-08-30, i økt):**
   fullt grunnlag med alle måletall: `docs/beslutningsgrunnlag/datakartlegging-2026-08-30.md`.
+  **Arbeidet er ført inn i `docs/MASTERPLAN-GJENSTAAENDE.md` STEG 16 — bygg derfra.**
 
   **Anders' fire svar:** (1) `/stats/aargang` flyttes bak innlogging — den er en åpen
   kohort-utforsker for 2000–2012, altså nøyaktig det barnevern-regelen forbyr; den slettes ikke,
@@ -114,6 +115,8 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
      MASTERPLAN STEG 15. `/admin/talent/*` er per beslutningen 26.08 uansett feilplassert —
      talent-flatene skal bo under `/innsyn`, aldri i AgencyOS-menyen.
 - **GRILLINGEN RUNDE 2 — fire svar + nullstilt base (Anders 2026-08-30, i økt):**
+  **Arbeidet er ført inn i MASTERPLAN: bruksmåling = STEG 16.3, foreldre-booking = STEG 9.8,
+  DataGolf-attribusjon = STEG 0.9 (gjort). Nullstillingen er utført og krever ingen bygging.**
   oppfølging av 112-spørsmålsdokumentet («Grillingen», artifact `6ef6f807`). Alle
   målinger verifisert i produksjonsdatabasen 30.08.2026 før beslutning.
 
@@ -208,7 +211,8 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
   4. **Riktig turneringsprogram?** Konkurransevolum og motstandsnivå målt mot
      utviklingen, koblet til A/B/C-prioriteringen som finnes i modellen.
 
-- **TEAM NORWAY-WORKDESK — spesifikasjon (Anders 2026-08-30, i økt):** TN-siden
+- **TEAM NORWAY-WORKDESK — spesifikasjon (Anders 2026-08-30, i økt):**
+  **Arbeidet er ført inn i `docs/MASTERPLAN-GJENSTAAENDE.md` STEG 17 — bygg derfra.** TN-siden
   utvikles til et komplett arbeidsområde som erstatter Messenger-grupper, e-post
   og Word/Excel. Bygger på org-flate-grunnmuren fra bølge N og samtykke-stakken
   (`src/lib/auth/ekstern-leser-scope.ts`).
@@ -274,7 +278,8 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
      erstatter e-post/Word/Excel. Egen grilling/spesifikasjon kjørt samme økt;
      svarene låses i egen blokk.
 
-- **PRODUKTRETNING — åtte svar (Anders 2026-08-30, i økt):** grunnlaget for Innsikt
+- **PRODUKTRETNING — åtte svar (Anders 2026-08-30, i økt):**
+  **Datagrunnlaget er STEG 16; Innsikt-skjermene er N12 (STEG 11).** Grunnlaget for Innsikt
   (AgencyOS) og Analyse (PlayerHQ). Bygg mot disse, ikke mot gjetning.
 
   1. **Coachens hovedspørsmål er «hvor taper spilleren slag».** Innsikt bygges rundt
