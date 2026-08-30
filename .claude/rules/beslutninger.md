@@ -16,6 +16,43 @@ Gjelder til Anders endrer dem.
 
 ## Beslutningene (august 2026)
 
+- **PRODUKTRETNING — åtte svar (Anders 2026-08-30, i økt):** grunnlaget for Innsikt
+  (AgencyOS) og Analyse (PlayerHQ). Bygg mot disse, ikke mot gjetning.
+
+  1. **Coachens hovedspørsmål er «hvor taper spilleren slag».** Innsikt bygges rundt
+     slagfordeling som oversettes til trening — ikke rundt etterlevelse, ikke rundt
+     rangering. De andre spørsmålene kan finnes, men de eier ikke skjermen.
+  2. **Slagtapet måles mot SPILLEREN SELV over tid**, ikke mot proffnivå, ikke mot
+     jevnaldrende, ikke mot coach-satte mål. «Hvor har hen blitt bedre eller
+     dårligere enn seg selv.» Konsekvens: kjernen i Innsikt trenger KUN spillerens
+     egne runder — den er ikke blokkert av identitetslaget.
+  3. **Kohort-sammenligning er coachens verktøy alene.** Spilleren ser ikke sin
+     persentil i årskullet. Foreldre og eksterne lesere ser den ikke. Anders
+     formidler den muntlig når han vil.
+  4. **Spillerens «hvor står jeg» = egen utvikling + egen turneringshistorikk +
+     veien til de som lyktes.** Historiske baner for navngitte spillere (Hovland,
+     Reitan: «slik lå de da de var 17») er GODKJENT for spillerflaten. Det er ikke
+     i strid med punkt 3: å speile seg i en historisk karriere er noe annet enn å
+     bli rangert mot sitt eget kull.
+  5. **AgencyOS-morgenskjerm: kø øverst, dagens plan under.** Kø er handlingslista
+     og hovedsaken; dagen er orientering. Avvik nås via Stall, ikke her.
+  6. **Workbench åpner på spillerlisten med ukestatus** (planlagt/utkast/publisert
+     per spiller), ikke på en mellomside og ikke på sist brukte spiller.
+  7. **TruthLayer = målte tall, aldri synsing.** Ikke en skjerm og ikke et
+     produkt: et kvalitetsprinsipp for hele plattformen. Alt appen påstår om en
+     spiller skal kunne spores til en måling med **dato og kilde**, og estimerte
+     tall skal merkes eksplisitt som estimat. Gjelder Innsikt, Analyse, tester,
+     fys-score og alt annet som viser et tall om et menneske.
+  8. **Prøveuka krever kort og bor i Stripe** (samme dag, se BUSINESS-RULES
+     §Abonnement). Gratisnivået — testbatteri, DataGolf-verktøy, runde- og
+     statistikkføring, booking av enkelttimer — er permanent og er
+     hovedbudskapet i markedsføringen, ikke prøveperioden.
+
+  **Rekkefølge-konsekvens:** fordi referansen er spilleren selv (punkt 2), kan
+  Innsikt bygges FØR identitetslaget. Identitetslaget kreves fortsatt for punkt 4
+  (spillerens egen turneringshistorikk + historiske baner) og for coachens
+  kohorttall (punkt 3), men det blokkerer ikke kjernen lenger.
+
 - **TALENTHQ AVVIKLES SOM EGET PRODUKT — ALT SAMLES I PLAYERHQ (Anders 26.08.2026,
   rest-låst 28.08):** den gamle appen (`akgolfsoftware/talenthq`, mappe
   `~/Developer/ak-golf-talenthq`) skal ikke utvikles videre. Merkenavn: alt heter
