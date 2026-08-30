@@ -8,6 +8,7 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { StatsSpillereV2, type Spiller } from "@/components/marketing/v2/StatsSpillereV2";
 import { offentligSpillerFilter } from "@/lib/stats/offentlig-spiller";
+import { hentEntryAntall } from "@/lib/stats/entry-antall";
 
 export const revalidate = 3600;
 
@@ -44,24 +45,41 @@ async function hentSideData(q: string | undefined, aar: string | undefined, tier
   const birthYearFilter = aar && /^\d{4}$/.test(aar) ? { birthYear: parseInt(aar, 10) } : {};
   const tierFilter = tier && tier !== "alle" ? { tier: { in: TIER_MAP[tier] ?? [tier] } } : {};
 
-  const spillere = await prisma.publicPlayer.findMany({
+  // MERK: ingen `_count: { entries }` her — det gir en ufiltrert GROUP BY over
+  // hele public_player_entries per sidevisning (se hentEntryAntall). Vi henter
+  // tellingen for de 50/20 idene vi faktisk viser i stedet.
+  const SPILLER_FELT = {
+    id: true, slug: true, name: true, birthYear: true, tier: true, bio: true,
+  } as const;
+
+  const spillereRaa = await prisma.publicPlayer.findMany({
     where: { country: "NO", isActive: true, ...offentligSpillerFilter(), ...navnFilter, ...birthYearFilter, ...tierFilter },
     orderBy: { name: "asc" },
     take: PAGE_SIZE,
     skip: (side - 1) * PAGE_SIZE,
-    select: { id: true, slug: true, name: true, birthYear: true, tier: true, bio: true, _count: { select: { entries: true } } },
+    select: SPILLER_FELT,
   });
 
   const harFilter = Boolean(q || aar || (tier && tier !== "alle"));
-  let topp20: Spiller[] = [];
-  if (!harFilter) {
-    topp20 = await prisma.publicPlayer.findMany({
-      where: { country: "NO", isActive: true, ...offentligSpillerFilter() },
-      orderBy: [{ tier: "asc" }, { name: "asc" }],
-      take: 20,
-      select: { id: true, slug: true, name: true, birthYear: true, tier: true, bio: true, _count: { select: { entries: true } } },
-    });
-  }
+  const topp20Raa = harFilter
+    ? []
+    : await prisma.publicPlayer.findMany({
+        where: { country: "NO", isActive: true, ...offentligSpillerFilter() },
+        orderBy: [{ tier: "asc" }, { name: "asc" }],
+        take: 20,
+        select: SPILLER_FELT,
+      });
+
+  const antall = await hentEntryAntall(prisma, [
+    ...spillereRaa.map((s) => s.id),
+    ...topp20Raa.map((s) => s.id),
+  ]);
+  const medAntall = (r: (typeof spillereRaa)[number]): Spiller => ({
+    ...r,
+    _count: { entries: antall.get(r.id) ?? 0 },
+  });
+  const spillere = spillereRaa.map(medAntall);
+  const topp20: Spiller[] = topp20Raa.map(medAntall);
 
   return { totalSpillere, totalTurneringer, totalResultater, spillere, topp20, harFilter, PAGE_SIZE };
 }
