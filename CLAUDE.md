@@ -8,13 +8,12 @@ Ved konflikt: `docs/ak-master.md` > denne filen — **unntatt design**: for alt 
 
 ## Start her (les i denne rekkefølgen)
 
-1. **`docs/natt/README.md`** — nattkjøring A1–A4 + bølge 2. **Gjeldende lanseringsspor.**
-2. **`docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`** — komplett lanseringsplan, session-tabell, status. (LOOP-1-PROMPT er FERDIG BRUKT.)
+1. **`docs/MASTERPLAN-GJENSTAAENDE.md`** — DEN gjeldende, eneste plandokumentet: alt gjenstående arbeid, session-tabeller, status, beslutningskø.
+2. **`docs/STATUS-NÅ.md`** — levert / ikke levert (løpende snapshot).
 3. **`src/lib/domain/workbench/` + `src/lib/workbench/wb-actions.ts`** — koden er fasit for domain/actions. `docs/natt/workbench/` er kontrakt/arkiv (ACCESS-AND-GROUPS.md gjelder fortsatt for tilgang).
-4. **`docs/STATUS-NÅ.md`** — levert / ikke levert.
-5. **`docs/platform/AGENT-BRIEF.md`** — stack, versjoner, mappestruktur.
-6. **`docs/platform/BUSINESS-RULES.md`** — abonnement, GDPR, booking (ikke utledbart fra kode).
-7. **`.claude/rules/gotchas.md`** — les FØR koding.
+4. **`docs/platform/AGENT-BRIEF.md`** — stack, versjoner, mappestruktur.
+5. **`docs/platform/BUSINESS-RULES.md`** — abonnement, GDPR, booking (ikke utledbart fra kode).
+6. **`.claude/rules/gotchas.md`** — les FØR koding.
 
 Ikke les hele repoet. Åpne filer etter behov. Lange kommandoer → redirect til fil, tail/grep.
 

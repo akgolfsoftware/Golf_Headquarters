@@ -122,3 +122,4 @@ tmp-handoff/
 # beslutning som må tas bevisst.
 screenshots/
 **/*-snapshots/
+graphify-out/cost.json
