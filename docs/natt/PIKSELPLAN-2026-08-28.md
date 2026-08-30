@@ -9,6 +9,18 @@ typografi og tilstander, i lys OG mørk, på fasitens breakpoints.
 204 fasitfiler · **39 sitert fra kode** (bygget mot fasit) · **165 udekket**.
 Dekningsmålet er 204/204 minus bevisste unntak (se §5).
 
+**Status 30.08 natt (målt på `origin/main` @ 5102448a9): 114 av 204 sitert, 90 igjen.**
+PX-1, PX-2, PX-5 og PX-7 er inne. PX-6 ligger i PR #668. PX-3 (#656) og PX-4 (#657) har
+konflikter og står.
+
+> ⚠ **LÆRDOM 30.08 — ikke gjenta:** PX-6 og PX-7 ble hver kjørt av TO økter samtidig, på
+> hver sin gren. Ingen av parene var en delmengde av den andre (#658 hadde 15 filer #660
+> manglet, blant dem `core.tsx`, `shell.tsx` og token-fila), så å merge den ene og forkaste
+> den andre ville mistet ekte arbeid. Begge parene måtte slås sammen manuelt (#667, #668),
+> og i PX-7 ble en hel skjermtilstand nesten borte: den ene grenen dekket bare tre av B1s
+> fire PlayerHQ-faner, Analyse manglet skjelett helt. Det ble fanget av `tsc`, ikke av
+> lesing. **Én bølge = én økt. Sjekk `gh pr list` FØR du starter en PX-bølge.**
+
 ---
 
 ## 1 · Metode per skjerm (ufravikelig, fra PORTING.md)
