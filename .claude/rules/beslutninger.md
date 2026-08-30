@@ -71,6 +71,46 @@ Gjelder til Anders endrer dem.
      turneringsstatus virker — 30.08 står 5 turneringer som pågående, ingen med
      passert sluttdato, og «AVLYST»-raden er korrekt CANCELLED.
 
+- **TEAM NORWAY-WORKDESK — spesifikasjon (Anders 2026-08-30, i økt):** TN-siden
+  utvikles til et komplett arbeidsområde som erstatter Messenger-grupper, e-post
+  og Word/Excel. Bygger på org-flate-grunnmuren fra bølge N og samtykke-stakken
+  (`src/lib/auth/ekstern-leser-scope.ts`).
+
+  1. **Pilot høsten 2026:** Anders + 2–5 navngitte TN-trenere får konto, med
+     tilgang kun til egne grupper; spillere inn via samtykke. Bevis på én
+     samling før utrulling.
+  2. **Forretningsmodell: gratis pilot 2026/27 → lisensavtale fra 2027** hvis TN
+     tar den i bruk — sies høyt fra start. NGF som referansekunde er inngangen
+     til klubbmarkedet (Fredrikstad Total-sporet).
+  3. **Dataansvar: AK Golf eier alt.** (Anders valgte bort «organisasjonen
+     eier»-modellen.) Konsekvens: hver TN-spiller/forelder samtykker direkte til
+     AK Golf, og GolfBox-bruken forblir AK Golfs ansvar (innlogget bruk = lav
+     risiko; avtale søkes per live-siden-beslutningen). Dataansvaret må
+     avtalefestes når lisensavtalen kommer i 2027.
+  4. **Rekkefølge: egen TN-bølge ETTER bølge N-kjernen.** Lansering 1. sep og
+     bølge N går først; denne spesifikasjonen er byggeordren for TN-bølgen.
+     WANG-elevene onboardes i september uavhengig av dette (PlayerHQ, ikke
+     Workdesk).
+  5. **Kommunikasjon: poster, ikke chat.** Trener poster til gruppe og til
+     enkeltspiller — med video, bilder, lenker og vedlegg (flybilletter,
+     hotellreservasjoner o.l.). Coach jobber direkte i plattformen, aldri via
+     Word-vedlegg. Ingen fri chat. 1:1-poster til mindreårige skal være
+     sporbare og synlige for forelder (idrettens åpenhetsprinsipp).
+  6. **Testprotokoller deles på tvers av AK Golf, WANG og Team Norway:** en ny
+     protokoll (f.eks. putt- eller TrackMan-test) opprettes én gang og deles
+     mellom organisasjonene. Driftsmodellen for endringer SKAL spesifiseres i
+     planen (Anders eksplisitt): anbefalt løsning er versjonerte protokoller
+     som låses ved første bruk — resultater peker på versjonen, endring gir ny
+     versjon, eierorganisasjonen endrer, delte mottakere bruker.
+  7. **«Kartlegging av spillere» = landskapsanalyse av norsk juniorgolf**, ikke
+     internt register: antall Olyo Tour-/Srixon Tour-spillere per region, nivå,
+     konkurranser per år, hvilke klubber som har flest spillere per klasse.
+     Datagrunnlaget finnes (941k resultater + ferdigbygde klubbaggregater og
+     kohortanalyser uten skjerm). Anders leverer MD-fil med alle turneringer og
+     lenker som spesifikasjon — bygging venter på den.
+  8. **Dokumenter: fildeling per gruppe MED lesekvittering** («12 av 14 har
+     åpnet uttakskriteriene») og «sist oppdatert»-merking.
+
 - **WANG/TEAM NORWAY — fire svar (Anders 2026-08-30, i økt):** grillingen runde 7.
 
   1. **WANG-elevene og GFGK-juniorene blir fulle PlayerHQ-brukere i høst (7.2):**
