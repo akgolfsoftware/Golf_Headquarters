@@ -2,7 +2,10 @@
 import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ Booking — oversikt (ny default-landing på /portal/booking).
- * Fasit: designsystem/train-lock/BO-02 Mine bookinger.dc.html
+ * Fasit: designsystem/train-lock/BO-02 Mine bookinger.dc.html (kommende
+ * timer-listen) + BO-01 Booking ledige luker.dc.html (første ledige-hintet).
+ * BO-01-henvisningen er hentet fra px/6-agency-rest ved sammenslåingen 30.08 —
+ * skjermen siterer to fasitfiler, ikke én.
  * Bygget 2026-08-04 på Anders' eksplisitte instruks: default-siden skal vise
  * timer/credits-status først, ikke hoppe rett inn i en veiviser.
  *

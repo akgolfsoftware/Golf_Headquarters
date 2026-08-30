@@ -2,6 +2,9 @@
 
 /**
  * AO-03 Kø — Klar · Pågår · Venter godkjenning. Én hvit Kjør (første klare).
+ *
+ * Fasit: designsystem/train-lock/AO-01 Cockpit ko godkjenning.dc.html
+ * (§AO-03 Ko).
  */
 
 import { useMemo, useState, useTransition } from "react";

@@ -4,6 +4,8 @@
  * AgencyOS Økonomi — Train-lock (C10).
  * Fasit: designsystem/train-lock/EC-01 Økonomi.dc.html
  *
+ * Fasit: designsystem/train-lock/EC-01 Økonomi.dc.html.
+ *
  * FORFALT = eneste danger (TL.danger). Øvrige statuser mute. Tripletex-tall
  * som mangler = «mangler». Reports flettes inn nederst. Ingen simulator-omsetning.
  */

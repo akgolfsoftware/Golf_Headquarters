@@ -10,6 +10,14 @@
  * KA-05 Agency Kollisjon rom.dc.html,
  * AG-11 Kalender dag.dc.html (time-akse i «dag»-visning, se DagTidslinje).
  *
+ * Fasit: designsystem/train-lock/KA-01 Agency Kalender uke Mac.dc.html
+ * (mekanisk invertert lys = KA-01L Kalender uke lys.dc.html — verifisert
+ * PX-6 28.08: ingen hardkodet hex i denne fila, lys følger token-swap),
+ * KA-02 Agency Kalender maned Mac.dc.html (måned-rutenettet),
+ * KA-03 Agency Kalender agenda iPhone.dc.html (mobil/dag-agendaen),
+ * KA-05 Agency Kollisjon rom.dc.html (kollisjons-indikatoren på
+ * BOOKING-laget).
+ *
  * Én flate på `/admin/kalender`: uke (default), måned og dag. Fem lag med
  * øye-toggle. Booking er et lag — detalj/ny/tilgjengelighet er egne ruter
  * (wizard og skriveflyt), lenket herfra. Ingen Google.

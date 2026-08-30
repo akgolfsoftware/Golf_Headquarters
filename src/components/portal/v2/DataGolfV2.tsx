@@ -4,6 +4,9 @@
  * PlayerHQ DataGolf-spillerkort — Train-lock (C10).
  * Fasit: designsystem/train-lock/DG-01 DataGolf spiller.dc.html
  *
+ * Fasit: designsystem/train-lock/DG-01 DataGolf spiller.dc.html
+ * (DG-01a iPhone / DG-01b iPad / DG-01c Mac).
+ *
  * Kun DataGolf-motor. Negative tall = opacity, aldri rødt. PGA-putt merkes
  * som Broadie-tabell. «Tren mot» er UTKAST, aldri auto-plan.
  */
