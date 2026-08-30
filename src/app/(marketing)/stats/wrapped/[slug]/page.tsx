@@ -11,6 +11,7 @@ import "@/app/(marketing)/(mlegacy)/stats/stats.css";
 import { StatsWrappedPlayer } from "@/components/stats/stats-wrapped-player";
 import type { WrappedSlideData } from "@/components/stats/stats-wrapped-slide";
 import { StatsLegacyShell } from "@/components/marketing/v2/stats-ramme";
+import { kanVisesOffentlig } from "@/lib/stats/offentlig-spiller";
 
 export const revalidate = 86400;
 
@@ -21,7 +22,7 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const player = await getPlayer(slug);
-  if (!player) return { title: "Spiller ikke funnet" };
+  if (!player || !kanVisesOffentlig(player)) return { title: "Spiller ikke funnet" };
   const aar = new Date().getFullYear();
   return {
     title: `${player.name}s golfsesong ${aar} | AK Golf Stats`,
@@ -65,7 +66,7 @@ async function getEntries(playerId: string, aar: number) {
 export default async function WrappedPage({ params }: Props) {
   const { slug } = await params;
   const player = await getPlayer(slug);
-  if (!player) notFound();
+  if (!player || !kanVisesOffentlig(player)) notFound();
 
   const aar = new Date().getFullYear();
   const entries = await getEntries(player.id, aar);
@@ -104,7 +105,7 @@ export default async function WrappedPage({ params }: Props) {
 
   // Estimated HCP (simplified WHS formula)
   const estimertHcp = snittScore > 0 ? Math.max(0, ((snittScore - 70) * 0.93)).toFixed(1) : "N/A";
-  const fodselsAar = player.birthYear ?? 1990;
+  const fodselsAar = player.birthYear;
 
   // Build slides
   const delLenke = `https://akgolf.no/stats/wrapped/${slug}`;
