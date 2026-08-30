@@ -63,6 +63,7 @@ export default async function OppgaverPage({
           <AdminWorkspaceProsjekterTrainLock
             prosjekter={prosjekter}
             filter={erProsjektFilter(onsketFilter) ? onsketFilter : "alle"}
+            somFane
           />
         );
       }
@@ -72,7 +73,7 @@ export default async function OppgaverPage({
       }
       case "tildelt": {
         const data = await lastTildeltMeg();
-        return <AdminHandlingssenterV2 data={data} meg={user.name} />;
+        return <AdminHandlingssenterV2 data={data} meg={user.name} somFane />;
       }
     }
   })();
