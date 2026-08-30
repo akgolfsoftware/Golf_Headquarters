@@ -1,0 +1,32 @@
+<!-- @dsCard group="04 Rom & form" viewport="700x300" name="Tilstander" subtitle="Hvile · hover · trykk · fokus · deaktivert — samme lov overalt" -->
+<link rel="stylesheet" href="../styles.css">
+<div style="height:300px;padding:24px 28px;background:var(--white);font-family:var(--font-body);display:flex;flex-direction:column;gap:20px">
+<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;align-items:start">
+<div style="display:flex;flex-direction:column;gap:9px;align-items:flex-start">
+<div style="height:42px;padding:0 20px;border-radius:var(--radius-full);display:inline-flex;align-items:center;font-size:14px;font-weight:600;background:var(--navy-900);color:#fff;box-shadow:var(--shadow-sm)">Publiser</div>
+<span style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.14em;color:var(--ink-500)">HVILE</span>
+
+</div><div style="display:flex;flex-direction:column;gap:9px;align-items:flex-start">
+<div style="height:42px;padding:0 20px;border-radius:var(--radius-full);display:inline-flex;align-items:center;font-size:14px;font-weight:600;background:var(--navy-700);color:#fff;box-shadow:var(--shadow-sm)">Publiser</div>
+<span style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.14em;color:var(--ink-500)">HOVER</span>
+<span style="font-size:11px;color:var(--ink-400);margin-top:-4px">kun med ekte peker</span>
+</div><div style="display:flex;flex-direction:column;gap:9px;align-items:flex-start">
+<div style="height:42px;padding:0 20px;border-radius:var(--radius-full);display:inline-flex;align-items:center;font-size:14px;font-weight:600;background:var(--navy-700);color:#fff;box-shadow:var(--shadow-sm);transform:scale(.97)">Publiser</div>
+<span style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.14em;color:var(--ink-500)">TRYKK</span>
+<span style="font-size:11px;color:var(--ink-400);margin-top:-4px">scale .97</span>
+</div><div style="display:flex;flex-direction:column;gap:9px;align-items:flex-start">
+<div style="height:42px;padding:0 20px;border-radius:var(--radius-full);display:inline-flex;align-items:center;font-size:14px;font-weight:600;background:var(--navy-900);color:#fff;box-shadow:0 0 0 3px rgba(10,81,153,.28)">Publiser</div>
+<span style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.14em;color:var(--ink-500)">FOKUS</span>
+<span style="font-size:11px;color:var(--ink-400);margin-top:-4px">synlig ring</span>
+</div><div style="display:flex;flex-direction:column;gap:9px;align-items:flex-start">
+<div style="height:42px;padding:0 20px;border-radius:var(--radius-full);display:inline-flex;align-items:center;font-size:14px;font-weight:600;background:var(--navy-900);color:#fff;opacity:.45">Publiser</div>
+<span style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.14em;color:var(--ink-500)">DEAKTIVERT</span>
+
+</div>
+</div>
+<div style="border-top:1px solid var(--border-subtle);padding-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:26px">
+<div style="font-size:12.5px;color:var(--ink-500);line-height:1.6;text-wrap:pretty"><b style="color:var(--ink-900)">Trykk svarer på pointer-down, ikke på slipp.</b> Ventes det på klikk, føles flaten død. Alt som kan trykkes krymper til <span style="font-family:var(--font-mono);color:var(--ink-900)">.97</span> på 120&nbsp;ms.</div>
+<div style="font-size:12.5px;color:var(--ink-500);line-height:1.6;text-wrap:pretty"><b style="color:var(--ink-900)">Hover finnes ikke på berøring.</b> Alle hover-tilstander ligger bak <span style="font-family:var(--font-mono);color:var(--ink-900)">(hover:hover)</span>, ellers henger tilstanden igjen etter et trykk.</div>
+</div>
+<div style="border-top:1px solid var(--border-subtle);padding-top:14px;font-size:12.5px;color:var(--ink-500);line-height:1.6;text-wrap:pretty"><b style="color:var(--ink-900)">Redusert bevegelse fjerner ikke svaret.</b> Med <span style="font-family:var(--font-mono);color:var(--ink-900)">prefers-reduced-motion</span> byttes skalering mot opasitet, og forflytning mot kryssfading — feedbacken består, bevegelsen forsvinner.</div>
+</div>

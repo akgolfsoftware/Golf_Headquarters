@@ -1,0 +1,27 @@
+<!-- @dsCard group="05 Komponenter" viewport="700x430" name="Merkevare — Logo, Hero, Pyramide, SectionHeader" subtitle="Logoen fra fil, diagonalen og pyramiden" -->
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin></script>
+<script src="../../_ds_bundle.js"></script>
+<div id="root"></div>
+<script>
+const {Logo,Hero,PyramidDiagram,Button}=window.ClawDesignTeamNorwayGolf_a03bf9;
+const e=React.createElement;
+const LOGO='../../assets/logo/team-norway-golf.png';
+function Demo(){
+const [a,setA]=React.useState(2);
+return e('div',{style:{padding:'20px',display:'flex',flexDirection:'column',gap:'18px',background:'var(--surface-page)'}},
+e('div',{style:{display:'flex',gap:'18px',alignItems:'center',background:'var(--white)',border:'1px solid var(--border-subtle)',borderRadius:'var(--radius-lg)',padding:'18px 22px'}},
+e(Logo,{height:44,src:LOGO}),
+e('span',{style:{fontFamily:'var(--font-mono)',fontSize:'10.5px',letterSpacing:'.16em',color:'var(--ink-400)'}},'LOGO · FRA FIL')
+),
+e(Hero,{eyebrow:'Toppidrett · 01',title:'Nøkkelatferder',description:'Systematisk trening og innsats over tid — dokumentert i individuell utviklingsplan.',height:220,
+actions:[e(Button,{key:1,variant:'accent'},'Åpne IUP'),e(Button,{key:2,variant:'onDark'},'Se pyramiden')],
+meta:[{label:'Utøvere',value:'24'},{label:'Mål RR',value:'125'},{label:'Mål OWGR',value:'250'}]}),
+e('div',{style:{background:'var(--white)',border:'1px solid var(--border-subtle)',borderRadius:'var(--radius-lg)',boxShadow:'var(--shadow-sm)',padding:'22px',display:'flex',justifyContent:'center'}},
+e(PyramidDiagram,{active:a,onSelect:setA,width:320})
+)
+);
+}
+ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(Demo));
+</script>

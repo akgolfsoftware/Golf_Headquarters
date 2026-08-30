@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Team Norway — hele appen" description="Sammenhengende prototype: sidemeny, rollebytte (trener/spiller/foresatt), delt datamodell og gjennomførte flyter — invitasjon, publisering av samling, chat med foresatte, økt, testresultat, uttak og evaluering. 1440×900." -->
+<helmet><script src="./ds-base.js"></script></helmet>
+<div style="min-height:100vh;background:var(--surface-page);padding:28px;display:flex;justify-content:center;font-family:var(--font-body)">
+<div data-screen-label="Team Norway app" style="position:relative;width:1440px;height:900px;flex-shrink:0;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-xl);box-shadow:var(--shadow-lg);overflow:hidden;display:flex">
+
+<div style="width:236px;flex-shrink:0;background:var(--navy-900);display:flex;flex-direction:column;overflow:hidden">
+<div style="padding:22px 20px 18px;flex-shrink:0">
+<img src="../../assets/logo/team-norway-golf.png" alt="Team Norway Golf" style="height:34px;width:auto;display:block">
+</div>
+<div style="padding:0 12px;display:flex;flex-direction:column;gap:2px;flex:1;min-height:0;overflow:auto">
+<sc-for list="{{ nav }}" as="n" hint-placeholder-count="9">
+<sc-if value="{{ n.isHeading }}" hint-placeholder-val="{{ false }}">
+<div style="padding:16px 10px 6px;font-family:var(--font-mono);font-size:9px;letter-spacing:.18em;color:rgba(255,255,255,.38)">{{ n.label }}</div>
+</sc-if>
+<sc-if value="{{ n.isItem }}" hint-placeholder-val="{{ true }}">
+<div onClick="{{ n.go }}" ref="{{ n.ref }}" style="height:38px;border-radius:var(--radius-sm);padding:0 12px;display:flex;align-items:center;gap:10px;cursor:pointer;color:rgba(255,255,255,.72)">
+<span style="width:6px;height:6px;border-radius:2px;background:currentColor;opacity:.5;flex-shrink:0"></span>
+<span style="flex:1;min-width:0;font-size:13.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ n.label }}</span>
+<sc-if value="{{ n.badge }}" hint-placeholder-val="{{ false }}">
+<span style="min-width:19px;height:19px;padding:0 5px;border-radius:var(--radius-full);background:var(--red-600);color:#fff;font-family:var(--font-mono);font-size:9.5px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0">{{ n.badge }}</span>
+</sc-if>
+</div>
+</sc-if>
+</sc-for>
+</div>
+<div style="flex-shrink:0;padding:14px 16px 18px;border-top:1px solid rgba(255,255,255,.1);display:flex;flex-direction:column;gap:10px">
+<span style="font-family:var(--font-mono);font-size:9px;letter-spacing:.18em;color:rgba(255,255,255,.38)">DU SER APPEN SOM</span>
+<div style="display:flex;flex-direction:column;gap:3px">
+<sc-for list="{{ roles }}" as="r" hint-placeholder-count="3">
+<div onClick="{{ r.pick }}" ref="{{ r.ref }}" style="height:32px;border-radius:var(--radius-sm);padding:0 11px;display:flex;align-items:center;gap:9px;cursor:pointer">
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:.1em">{{ r.label }}</span>
+<div style="flex:1"></div>
+<span style="font-size:11px">{{ r.check }}</span>
+</div>
+</sc-for>
+</div>
+<span style="font-size:11px;color:rgba(255,255,255,.45);line-height:1.5;text-wrap:pretty">{{ roleNote }}</span>
+</div>
+</div>
+
+<div style="flex:1;min-width:0;display:flex;flex-direction:column">
+
+<div style="height:68px;flex-shrink:0;display:flex;align-items:center;gap:16px;padding:0 24px;border-bottom:1px solid var(--border-subtle);background:var(--surface-card)">
+<sc-if value="{{ canGoBack }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ goBack }}" style="width:30px;height:30px;flex-shrink:0;border-radius:var(--radius-full);border:1px solid var(--border-subtle);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;color:var(--ink-500)">←</div>
+</sc-if>
+<div style="min-width:0">
+<div style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.16em;color:var(--ink-500)">{{ crumb }}</div>
+<div style="font-family:var(--font-display);font-size:19px;font-weight:700;letter-spacing:-.025em;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ title }}</div>
+</div>
+<div style="flex:1"></div>
+<sc-for list="{{ actions }}" as="a" hint-placeholder-count="2">
+<div onClick="{{ a.go }}" ref="{{ a.ref }}" style="height:34px;border-radius:var(--radius-full);padding:0 16px;display:flex;align-items:center;cursor:pointer;font-size:13px;font-weight:600;white-space:nowrap">{{ a.label }}</div>
+</sc-for>
+</div>
+
+<div style="flex:1;min-height:0;overflow:auto;background:var(--surface-page)">
+<sc-if value="{{ isOversikt }}" hint-placeholder-val="{{ true }}">
+<dc-import name="ScreenOversikt" data="{{ data }}" dispatch="{{ dispatch }}" role="{{ role }}" hint-size="100%,760px"></dc-import>
+</sc-if>
+<sc-if value="{{ isKomm }}" hint-placeholder-val="{{ false }}">
+<dc-import name="ScreenKommunikasjon" data="{{ data }}" dispatch="{{ dispatch }}" role="{{ role }}" params="{{ params }}" hint-size="100%,760px"></dc-import>
+</sc-if>
+<sc-if value="{{ isSamling }}" hint-placeholder-val="{{ false }}">
+
+</x-dc>
+</body>
+</html>

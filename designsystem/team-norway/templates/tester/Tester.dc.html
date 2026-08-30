@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Tester — hub" description="Hele TN-batteriet: 20 protokoller i fem grupper, med detaljvisning, nivåstige og forsøk. 1440×900." -->
+<helmet><script src="./ds-base.js"></script></helmet>
+<div style="min-height:100vh;background:var(--surface-page);padding:28px;display:flex;justify-content:center;font-family:var(--font-body)">
+<div data-screen-label="Tester hub" style="width:1440px;height:900px;flex-shrink:0;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-xl);box-shadow:var(--shadow-lg);overflow:hidden;display:flex">
+
+<div style="width:84px;flex-shrink:0;border-right:1px solid var(--border-subtle);background:var(--ink-50);display:flex;flex-direction:column;align-items:center;padding:20px 0;gap:8px">
+<img src="../../assets/logo/team-norway-golf.png" alt="Team Norway Golf" style="width:52px;height:auto;display:block;margin-bottom:14px">
+<div style="width:44px;height:44px;flex-shrink:0;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.06em;cursor:pointer;color:var(--ink-400)">HJEM</div>
+<div style="width:44px;height:44px;flex-shrink:0;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.06em;cursor:pointer;color:var(--ink-400)">PLAN</div>
+<div style="width:44px;height:44px;flex-shrink:0;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.06em;background:var(--navy-900);color:#fff;box-shadow:var(--shadow-sm)">TEST</div>
+<div style="width:44px;height:44px;flex-shrink:0;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.06em;cursor:pointer;color:var(--ink-400)">MEG</div>
+<div style="flex:1"></div>
+<div style="width:34px;height:34px;border-radius:var(--radius-full);background:var(--navy-600);color:#fff;font-family:var(--font-mono);font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center">ØR</div>
+</div>
+
+<div style="width:392px;flex-shrink:0;border-right:1px solid var(--border-subtle);display:flex;flex-direction:column;overflow:hidden">
+<div style="padding:26px 24px 16px;border-bottom:1px solid var(--border-subtle);flex-shrink:0">
+<span style="font-family:var(--font-mono);font-size:10.5px;letter-spacing:.16em;color:var(--ink-400)">TN-BATTERI · SATT AV TRENER</span>
+<h1 style="font-family:var(--font-display);font-size:30px;font-weight:800;letter-spacing:-.035em;margin:6px 0 0">Tester</h1>
+<div style="display:flex;align-items:center;gap:8px;margin-top:10px">
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Badge" tone="amber" dot="{{ true }}" hint-size="118px,28px">{{ dueLabel }}</x-import>
+<span style="font-family:var(--font-mono);font-size:11px;color:var(--ink-400)">{{ countLabel }}</span>
+</div>
+</div>
+<div style="flex:1;min-height:0;overflow-y:auto;padding:6px 16px 24px">
+<sc-for list="{{ groups }}" as="grp" hint-placeholder-count="5">
+<div style="margin-top:18px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;padding:0 8px;margin-bottom:6px">
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-400)">{{ grp.name }}</span>
+<span style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.1em;color:var(--ink-300)">{{ grp.count }}</span>
+</div>
+<sc-for list="{{ grp.tests }}" as="t" hint-placeholder-count="4">
+<sc-if value="{{ t.isSelected }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ t.select }}" style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:var(--radius-sm);cursor:pointer;margin-bottom:2px;background:var(--navy-50);box-shadow:inset 3px 0 0 var(--red-600)">
+<div style="flex:1;min-width:0">
+<div style="font-size:14px;font-weight:700;color:var(--navy-900)">{{ t.name }}</div>
+<div style="font-family:var(--font-mono);font-size:11px;color:var(--ink-500);margin-top:3px">{{ t.spec }}</div>
+</div>
+<div style="text-align:right;flex-shrink:0">
+<div style="font-family:var(--font-mono);font-size:13.5px;font-weight:600;color:var(--ink-900)">{{ t.value }}</div>
+<div style="font-family:var(--font-mono);font-size:9px;letter-spacing:.1em;color:var(--ink-400);margin-top:3px">{{ t.due }}</div>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{ t.notSelected }}" hint-placeholder-val="{{ true }}">
+<div onClick="{{ t.select }}" style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:var(--radius-sm);cursor:pointer;margin-bottom:2px" style-hover="background:var(--ink-50)">
+<div style="flex:1;min-width:0">
+<div style="font-size:14px;font-weight:600;color:var(--ink-900)">{{ t.name }}</div>
+<div style="font-family:var(--font-mono);font-size:11px;color:var(--ink-500);margin-top:3px">{{ t.spec }}</div>
+</div>
+<div style="text-align:right;flex-shrink:0">
+<div style="font-family:var(--font-mono);font-size:13.5px;font-weight:600;color:var(--ink-900)">{{ t.value }}</div>
+<div style="font-family:var(--font-mono);font-size:9px;letter-spacing:.1em;color:var(--ink-400);margin-top:3px">{{ t.due }}</div>
+</div>
+</div>
+</sc-if>
+</sc-for>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div style="flex:1;min-width:0;overflow-y:auto;padding:32px 44px 40px;display:flex;flex-direction:column">
+<span style="font-family:var(--font-mono);font-size:10.5px;letter-spacing:.16em;color:var(--ink-400)">{{ sel.eyebrow }}</span>
+<h1 style="font-family:var(--font-display);font-size:38px;font-weight:800;letter-spacing:-.035em;margin:8px 0 0">{{ sel.name }}</h1>
+<p style="font-size:15px;line-height:1.5;color:var(--ink-700);margin:10px 0 0;max-width:60ch;text-wrap:pretty">{{ sel.description }}</p>
+
+<div style="margin-top:22px;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap">
+<span style="font-family:var(--font-display);font-size:66px;font-weight:800;letter-spacing:-.045em;line-height:.9;color:var(--ink-900)">{{ sel.big }}</span>
+<span style="font-size:20px;color:var(--ink-500)">{{ sel.bigUnit }}</span>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Badge" tone="{{ sel.tone }}" dot="{{ true }}" hint-size="96px,28px">{{ sel.status }}</x-import>
+</div>
+<div style="font-family:var(--font-mono);font-size:12px;color:var(--ink-400);margin-top:8px">{{ sel.meta }}</div>
+
+<div style="margin-top:24px;background:var(--ink-50);border-radius:var(--radius-md);padding:18px 20px">
+<svg width="100%" height="64" viewBox="0 0 300 64" preserveAspectRatio="none" fill="none">
+<line x1="0" y1="22" x2="300" y2="22" stroke="#B9C4CE" stroke-width="1" stroke-dasharray="3 3" vector-effect="non-scaling-stroke"></line>
+<polyline points="0,52 43,48 86,55 129,38 171,42 214,30 257,26 300,18" stroke="#012B5D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"></polyline>
+<circle cx="300" cy="18" r="4" fill="#D70232"></circle>
+</svg>
+<div style="display:flex;justify-content:space-between;margin-top:8px">
+<span style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.14em;color:var(--ink-400)">8 UKER</span>
+<span style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.14em;color:var(--ink-400)">{{ sel.goalLabel }}</span>
+</div>
+</div>
+
+<div style="margin-top:26px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.16em;color:var(--ink-400)">{{ sel.ladderLabel }}</div>
+<sc-if value="{{ sel.hasLadder }}" hint-placeholder-val="{{ true }}">
+<div style="margin-top:10px;background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);overflow:hidden">
+<sc-for list="{{ sel.ladder }}" as="l" hint-placeholder-count="7">
+<div style="display:flex;align-items:center;gap:16px;padding:9px 18px;border-bottom:1px solid var(--ink-100)">
+<span style="width:180px;flex-shrink:0;font-size:13.5px;font-weight:600;color:var(--ink-900)">{{ l.label }}</span>
+<div style="flex:1;display:flex;gap:3px;align-items:center">
+<sc-for list="{{ l.cells }}" as="c" hint-placeholder-count="10">
+<sc-if value="{{ c.filled }}" hint-placeholder-val="{{ true }}">
+<div style="flex:1;height:8px;border-radius:2px;background:var(--navy-600)"></div>
+</sc-if>
+<sc-if value="{{ c.empty }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;height:8px;border-radius:2px;background:var(--ink-100)"></div>
+</sc-if>
+</sc-for>
+</div>
+<span style="width:78px;flex-shrink:0;text-align:right;font-family:var(--font-mono);font-size:12.5px;font-weight:600;color:var(--ink-900)">{{ l.value }}</span>
+<span style="width:74px;flex-shrink:0;font-family:var(--font-mono);font-size:9px;letter-spacing:.1em;color:var(--ink-300)">{{ l.conf }}</span>
+</div>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ sel.noLadder }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:10px;background:var(--ink-50);border:1px dashed var(--border-strong);border-radius:var(--radius-md);padding:16px 18px;font-size:13.5px;line-height:1.5;color:var(--ink-500);max-width:64ch">{{ sel.ladderNote }}</div>
+</sc-if>
+
+<div style="margin-top:26px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.16em;color:var(--ink-400)">MÅLEPUNKTER</div>
+<div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:8px">
+<sc-for list="{{ sel.metrics }}" as="m" hint-placeholder-count="4">
+<span style="padding:6px 12px;border-radius:var(--radius-full);background:var(--navy-50);color:var(--navy-900);font-family:var(--font-mono);font-size:11px;letter-spacing:.06em">{{ m.label }}</span>
+</sc-for>
+</div>
+<div style="margin-top:10px;font-size:13px;color:var(--ink-500);max-width:64ch;text-wrap:pretty">{{ sel.scoring }}</div>
+
+<div style="margin-top:28px;display:flex;gap:12px">
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="primary" size="lg" hint-size="150px,52px">Start test</x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="ghost" size="lg" hint-size="170px,52px">Se all historikk</x-import>
+</div>
+</div>
+
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1496,&quot;height&quot;:956}}">
+// Datagrunnlag: prisma/seed-data/ngf-test-battery.json (20 protokoller).
+// Ingen håndskrevne oppsummeringstall — antall og etiketter deriveres nedenfor.
+const CONF = { measured: 'MÅLT', reference: 'REF', estimated: 'ANSLAG' };
+
+const PEI_LADDER = (v) => [
+  ['PGA topp 40', v[0], 'reference'], ['PGA-snitt', v[1], 'reference'],
+  ['DP World / Korn Ferry', v[2], 'estimated'], ['Challenge Tour', v[3], 'estimated'],
+  ['Nordic League', v[4], 'estimated'], ['Norsk elitejunior', v[5], 'estimated'],
+  ['Scratch', v[6], 'estimated']
+];
+
+const NOTE_TEKNISK = 'Teknisk test uten tour-motstykke. Intern norm settes fra elevdata og Team Norway junior-elite-referanser i v2.';
+const NOTE_FYSISK = 'Fysisk norm hentes fra NGF/Olympiatoppen i v2.';
+
+const BATTERY = [
+  { g: 'GOLFSLAG', name: 'Driver Basic', spec: '5 slag · TM · carry + side', value: '256 m', due: 'FORFALL 19.08',
+    big: '256', bigUnit: 'm carry · snitt av 5', tone: 'amber', status: 'Under mål', meta: 'sist 22.07 · intervall 8 uker · forfall 19.08',
+    goal: 'MÅL 262 M', desc: '5 slag med driver. Måler carry-avstand og spredning.',
+    scoring: 'PEI = avstand til hull / avstand til mål. Lavere er bedre. Carry: PGA topp 40 ≈ 273 m, PGA-snitt ≈ 268 m.',
+    metrics: ['carry_m', 'total_m', 'side_m', 'pei'], unit: 'm', dir: 'higher',
+    ladder: PEI_LADDER([273, 268, 266, 262, 258, 256, 246]).map((r, i) => [r[0], r[1], i < 3 ? 'measured' : 'estimated']) },
+  { g: 'GOLFSLAG', name: 'Driver Gate', spec: '6 slag · gate 2 m · OK/Bom', value: '4 / 6', due: '',
+    big: '4', bigUnit: 'gjennom av 6', tone: 'navy', status: 'Følges', meta: 'sist 22.07 · intervall 8 uker',
+    goal: 'MÅL 5 AV 6', desc: '6 slag gjennom 2 m gate. Måler presisjon under press.',
+    scoring: 'Antall gjennom gate / 6. Spredning under 5 % av avstand.', metrics: ['ok_count', 'total_6'], unit: '%', dir: 'higher',
+    ladder: PEI_LADDER([65, 61, 60, 57, 55, 53, 52]).map((r, i) => [r[0], r[1], i > 0 && i < 3 ? 'measured' : r[2]]) },
+  { g: 'GOLFSLAG', name: 'Inspill Basic', spec: '10 slag · 100–200 m · PEI', value: '8,2 %', due: '',
+    big: '8,2', bigUnit: '% PEI · lavere bedre', tone: 'navy', status: 'På nivå', meta: 'sist 22.07 · intervall 8 uker',
+    goal: 'MÅL 7,7 %', desc: '10 slag fra ulike avstander (100–200 m). Måler PEI og presisjon.',
+    scoring: 'PEI = avstand til hull / avstand til mål. PGA-snitt 5,7 % — topp 40 5,0 %.',
+    metrics: ['carry_m', 'side_m', 'till_hull_m', 'pei'], unit: '%', dir: 'lower',
+    ladder: PEI_LADDER([5.0, 5.7, 6.1, 6.8, 7.7, 8.2, 9.0]) },
+  { g: 'GOLFSLAG', name: 'Inspill 120m', spec: '5 slag · 120 m', value: '8,0 %', due: '',
+    big: '8,0', bigUnit: '% PEI · lavere bedre', tone: 'navy', status: 'På nivå', meta: 'sist 22.07 · intervall 8 uker',
+    goal: 'MÅL 7,9 %', desc: '5 slag fra 120 m.', scoring: 'PGA-snitt PEI ≈ 5,8 % (topp 40 ≈ 5,0 %).',
+    metrics: ['carry_m', 'till_hull_m', 'pei'], unit: '%', dir: 'lower',
+    ladder: PEI_LADDER([5.0, 5.8, 6.2, 7.0, 7.9, 8.4, 9.2]) },
+  { g: 'GOLFSLAG', name: 'Inspill 160m', spec: '5 slag · 160 m', value: '7,6 %', due: '',
+    big: '7,6', bigUnit: '% PEI · lavere bedre', tone: 'navy', status: 'På nivå', meta: 'sist 22.07 · intervall 8 uker',
+    goal: 'MÅL 7,1 %', desc: '5 slag fra 160 m.', scoring: 'PGA-snitt PEI ≈ 5,5 % (topp 40 ≈ 4,8 %).',
+    metrics: ['carry_m', 'till_hull_m', 'pei'], unit: '%', dir: 'lower',
+    ladder: PEI_LADDER([4.8, 5.5, 5.8, 6.4, 7.1, 7.4, 8.0]) },
+  { g: 'GOLFSLAG', name: 'Inspill Variation', spec: 'Variert · 100–130 m', value: '—', due: 'FORFALL 24.08',
+    big: '—', bigUnit: '% PEI · ikke ført', tone: 'ink', status: 'Ikke ført', meta: 'ingen forsøk · forfall 24.08',
+    goal: 'MÅL 7,7 %', desc: 'Varierende avstander (100–130 m). Tester tilpasningsevne.',
+    scoring: 'PEI per slag, snitt over serien. Sammenlignes med Inspill Basic for å se blokkert vs. variert.',
+    metrics: ['lengde', 'till_hull_m', 'pei'], unit: '%', dir: 'lower',
+    ladder: PEI_LADDER([5.0, 5.7, 6.1, 6.8, 7.7, 8.2, 9.0]) },
+  { g: 'GOLFSLAG', name: 'Wedge Variation', spec: '30–70 m · 9 mål-lengder', value: '10,1 %', due: '',
+    big: '10,1', bigUnit: '% PEI · lavere bedre', tone: 'green', status: 'Over nivå', meta: 'sist 22.07 · intervall 8 uker',
+    goal: 'MÅL 9,7 %', desc: 'Varierende wedge-slag fra 30–70 m. Tester tilpasningsevne.',
+    scoring: 'PEI-basert med variasjonsfaktor. PEI 20–60 m: PGA-snitt 7,0 % — topp 40 6,0 %.',
+    metrics: ['carry_m', 'till_hull_m', 'pei'], unit: '%', dir: 'lower',
+    ladder: PEI_LADDER([6.0, 7.0, 7.5, 8.5, 9.7, 10.3, 11.3]) },
+  { g: 'GOLFSLAG', name: 'Wedge Gate', spec: '9 slag · launch × carry 40/50/60 m', value: '14 p', due: '',
+    big: '14', bigUnit: 'poeng av 27', tone: 'navy', status: 'Følges', meta: 'sist 22.07 · intervall 8 uker',
+    goal: 'MÅL 18 P', desc: '9 slag: Lav/Medium/Høy × 40 m/50 m/60 m carry-sone.',
+    scoring: 'Poeng per treff i riktig sone og launch-vinkel (<26° / 28–30° / >32°, carry ±3 m). Launch-kontroll innen 2 grader.',
+    metrics: ['launch_deg', 'carry_zone', 'poeng'], unit: '%', dir: 'lower',
+    ladder: PEI_LADDER([6.0, 7.0, 7.5, 8.5, 9.7, 10.3, 11.3]) },
+  { g: 'NÆRSPILL', name: '8-Ball Variation', spec: '24 slag · chip/wedge/lobb/bunker', value: '10,4 %', due: '',
+    big: '10,4', bigUnit: '% PEI · 62 av 96 p', tone: 'navy', status: 'På nivå', meta: 'sist 22.07 · intervall 8 uker',
+    goal: 'MÅL 9,8 %', desc: '24 slag: Chip (10/30 m), Wedge (20/40 m), Lobb (15/25 m), Bunker (10/20 m). Varierende rekkefølge.',
+    scoring: 'Poeng 0–4 per slag, maks 96. 1-putt-sone = 4 p. PEI 0–20 m: PGA-snitt 8,0 % — topp 40 7,4 %.',
+    metrics: ['pei', 'pga_putts', 'poeng'], unit: '%', dir: 'lower',
+    ladder: PEI_LADDER([7.4, 8.0, 8.3, 9.0, 9.8, 10.4, 11.2]) },
+  { g: 'NÆRSPILL', name: 'Nærspill Gate', spec: '9 slag · lav/mid/høy × 2/3/4 m', value: '15 p', due: '',
+    big: '15', bigUnit: 'poeng av 27', tone: 'navy', status: 'Følges', meta: 'sist 22.07 · intervall 8 uker',
+    goal: 'MÅL 18 P', desc: '9 slag: Lav/Middels/Høy × 2 m/3 m/4 m carry-sone.',
+    scoring: 'Poeng per treff i riktig sone. Scrambling over 60 %.', metrics: ['launch', 'carry_zone', 'poeng'],
+    note: NOTE_TEKNISK },
+  { g: 'NÆRSPILL', name: 'VISA Express', spec: '9 slag · speedzone 2/3/4 m', value: '12 p', due: '',
+    big: '12', bigUnit: 'poeng av 27', tone: 'amber', status: 'Under mål', meta: 'sist 22.07 · intervall 8 uker',
+    goal: 'MÅL 18 P', desc: '9 slag med hastighetsvariasjoner (2 m/3 m/4 m speedsoner).',
+    scoring: 'Poeng per treff i riktig speedsone. Fartskontroll innen 5 %.', metrics: ['speed_zone', 'poeng'],
+    note: NOTE_TEKNISK },
+  { g: 'PUTTING', name: 'Putt 1–3 m', spec: '25 putter · 1/1,5/2/2,5/3 m', value: '53 %', due: '',
+    big: '53', bigUnit: '% sunket av 25', tone: 'navy', status: 'På nivå', meta: 'sist 22.07 · intervall 4 uker',
+    goal: 'MÅL 55 %', desc: 'Putting fra 1–3 meter. Måler sinkprosent mot PGA-putts.',
+    scoring: 'Antall sunket / totalt. PGA hullprosent: 1 m 87 % · 2 m 55 % · 3 m 39 %.',
+    metrics: ['sink_pct', 'avstand_etter'], unit: '%', dir: 'higher',
+    ladder: PEI_LADDER([62, 60, 59, 57, 55, 53, 51]) },
+  { g: 'PUTTING', name: 'Putt Gate', spec: '10 putter · 40 cm gate', value: '7 / 10', due: 'FORFALL 19.08',
+    big: '7', bigUnit: 'OK av 10 · mål 7', tone: 'green', status: 'På mål', meta: 'sist 22.07 · intervall 4 uker · forfall 19.08',
+    goal: 'MÅL 7 OK', desc: '10 putter gjennom 40 cm gate, port 6 cm, sone 50 cm. Måler retningskontroll.',
+    scoring: 'Antall gjennom gate / 10, med V|H-registrering på bom. Startlinje-nøyaktighet over 90 %.',
+    metrics: ['ok_count', 'total_10', 'v_h'], note: NOTE_TEKNISK },
+  { g: 'PUTTING', name: 'Putt Speed Control', spec: '1×5 (3 m) · 3×3 (3/5/7 m)', value: '0,42 m', due: '',
+    big: '0,42', bigUnit: 'm snitt fra hull', tone: 'green', status: 'På mål', meta: 'sist 22.07 · intervall 4 uker',
+    goal: 'MÅL 0,50 M', desc: 'Fartskontroll: 1×5 (5 putter fra 3 m) og 3×3 (3 m/5 m/7 m).',
+    scoring: 'Avstand fra hull etter putt, med lang/kort-registrering. Leave under 0,5 m.',
+    metrics: ['avstand', 'distanse', 'lang_kort'], note: NOTE_TEKNISK },
+  { g: 'BANE', name: 'PEI Test Bane', spec: '18 hull · innspill · PEI + SG', value: '8,4 %', due: '',
+    big: '8,4', bigUnit: '% snitt-PEI · 18 hull', tone: 'navy', status: 'På nivå', meta: 'sist 12.07 · intervall 12 uker',
+    goal: 'MÅL 7,7 %', desc: '18-hulls PEI-test på bane. Måler innspillpresisjon under reelle forhold.',
+    scoring: 'PEI per innspill, snitt over 18 hull. Lie registreres (g/fw/b/r). Gir også SG.',
+    metrics: ['hull', 'slag_type', 'lengde', 'till_hull', 'pei'], unit: '%', dir: 'lower',
+    ladder: PEI_LADDER([5.0, 5.7, 6.1, 6.8, 7.7, 8.2, 9.0]) },
+  { g: 'FYSISK', name: 'Clubhead Speed (CHS)', spec: 'Driver · TM · innendørs', value: '108 mph', due: '',
+    big: '108', bigUnit: 'mph med driver', tone: 'navy', status: 'På nivå', meta: 'sist 22.07 · intervall 8 uker',
+    goal: 'MÅL 109 MPH', desc: 'Klubbhodehastighet med driver innendørs (Trackman).',
+    scoring: 'Mest direkte mål på slagkraft. 1 mph CHS ≈ 2,5 yards carry.',
+    metrics: ['chs_mph'], unit: 'mph', dir: 'higher',
+    ladder: PEI_LADDER([121, 115, 113, 111, 109, 108, 102]) },
+  { g: 'FYSISK', name: 'Trapbarmarkløft', spec: '1RM · kg · vekting 1,0', value: '145 kg', due: '',
+    big: '145', bigUnit: 'kg · 1RM', tone: 'green', status: 'Framgang', meta: 'sist 15.07 · intervall 12 uker',
+    goal: 'INTERN NORM', desc: 'Maksimal styrke i underkropp og rygg. Korrelerer med rotasjonskraft.',
+    scoring: 'Direkte kobling til rotasjonskraft og stabilitet i svingen. Høyere markløft = mer kraft tilgjengelig for CHS.',
+    metrics: ['kg'], note: NOTE_FYSISK },
+  { g: 'FYSISK', name: 'Benkpress', spec: '1RM · kg · vekting 1,0', value: '82 kg', due: '',
+    big: '82', bigUnit: 'kg · 1RM', tone: 'navy', status: 'Følges', meta: 'sist 15.07 · intervall 12 uker',
+    goal: 'INTERN NORM', desc: 'Overkroppsstyrke. Viktig for stabilitet og kraftoverføring.',
+    scoring: 'Stabiliserer overkroppen i svingen. Bidrar til konsistent treffpunkt.',
+    metrics: ['kg'], note: NOTE_FYSISK },
+  { g: 'FYSISK', name: 'Stille lengde', spec: 'cm · vekting 0,5', value: '241 cm', due: '',
+    big: '241', bigUnit: 'cm · beste av 3', tone: 'navy', status: 'Følges', meta: 'sist 15.07 · intervall 12 uker',
+    goal: 'INTERN NORM', desc: 'Eksplosiv kraft i underkropp. Måler power output.',
+    scoring: 'Eksplosivitet i bakkekontakt under nedsvingen. Korrelerer med CHS.',
+    metrics: ['cm'], note: NOTE_FYSISK },
+  { g: 'FYSISK', name: 'Ballkast knestående', spec: 'cm · vekting 0,166', value: '712 cm', due: 'FORFALL 24.08',
+    big: '712', bigUnit: 'cm · beste av 3', tone: 'amber', status: 'Forfaller', meta: 'sist 02.05 · intervall 12 uker · forfall 24.08',
+    goal: 'INTERN NORM', desc: 'Rotasjonskraft i overkropp fra knestående posisjon.',
+    scoring: 'Direkte mål på rotasjonskraft som brukes i golfsving. Isolerer overkropp-rotasjon.',
+    metrics: ['cm'], note: NOTE_FYSISK }
+];
+
+class Component extends DCLogic {
+  state = { selected: 'Putt Gate' };
+  renderVals() {
+    const sel = BATTERY.find(t => t.name === this.state.selected) || BATTERY[0];
+    const order = ['GOLFSLAG', 'NÆRSPILL', 'PUTTING', 'BANE', 'FYSISK'];
+    const groups = order.map(name => {
+      const tests = BATTERY.filter(t => t.g === name).map(t => ({
+        name: t.name, spec: t.spec, value: t.value, due: t.due,
+        isSelected: t.name === sel.name, notSelected: t.name !== sel.name,
+        select: () => this.setState({ selected: t.name })
+      }));
+      return { name, count: tests.length + ' STK', tests };
+    });
+    const dueCount = BATTERY.filter(t => t.due).length;
+    const nums = (sel.ladder || []).map(r => Number(r[1]));
+    const max = nums.length ? Math.max(...nums) : 1;
+    const min = nums.length ? Math.min(...nums) : 0;
+    const fmt = (v) => String(v).replace('.', ',');
+    const suffix = sel.unit === '%' ? ' %' : sel.unit === 'mph' ? ' mph' : sel.unit === 'm' ? ' m' : '';
+    const ladder = (sel.ladder || []).map(r => {
+      const v = Number(r[1]);
+      const pct = sel.dir === 'lower'
+        ? Math.round(100 - ((v - min) / ((max - min) || 1)) * 62)
+        : Math.round(38 + ((v - min) / ((max - min) || 1)) * 62);
+      const on = Math.max(1, Math.min(10, Math.round(pct / 10)));
+      const cells = Array.from({ length: 10 }, (_, i) => ({ filled: i < on, empty: i >= on }));
+      return { label: r[0], value: fmt(r[1]) + suffix, conf: CONF[r[2]] || '', cells };
+    });
+    return {
+      groups,
+      countLabel: BATTERY.length + ' protokoller · ' + order.length + ' grupper',
+      dueLabel: dueCount + ' forfaller',
+      sel: {
+        eyebrow: sel.g + ' · ' + sel.spec.toUpperCase(),
+        name: sel.name, description: sel.desc, big: sel.big, bigUnit: sel.bigUnit,
+        tone: sel.tone, status: sel.status, meta: sel.meta, goalLabel: sel.goal,
+        scoring: sel.scoring, metrics: sel.metrics.map(m => ({ label: m })),
+        ladder, hasLadder: ladder.length > 0, noLadder: ladder.length === 0,
+        ladderLabel: ladder.length ? 'NIVÅSTIGE · DATAGOLF V1 2026-06' : 'NIVÅSTIGE',
+        ladderNote: sel.note || ''
+      }
+    };
+  }
+}
+
+</script>
+</body>
+</html>

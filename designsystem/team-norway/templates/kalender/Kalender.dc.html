@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Kalender — dag, uke, måned" description="Tre visninger med samme hendelsesdata: dag, uke med heldagsrad og nålinje, månedsrutenett. Teksten er skrevet per hendelsestype. 1440×900." -->
+<helmet><script src="./ds-base.js"></script></helmet>
+<div style="min-height:100vh;background:var(--surface-page);padding:28px;display:flex;justify-content:center;font-family:var(--font-body)">
+<div data-screen-label="Kalender uke" style="width:1440px;height:900px;flex-shrink:0;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-xl);box-shadow:var(--shadow-lg);overflow:hidden;display:flex">
+
+<div style="width:84px;flex-shrink:0;border-right:1px solid var(--border-subtle);background:var(--ink-50);display:flex;flex-direction:column;align-items:center;padding:20px 0;gap:8px">
+<img src="../../assets/logo/team-norway-golf.png" alt="Team Norway Golf" style="width:52px;height:auto;display:block;margin-bottom:14px">
+<div style="width:44px;height:44px;flex-shrink:0;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.06em;cursor:pointer;color:var(--ink-400)">HJEM</div>
+<div style="width:44px;height:44px;flex-shrink:0;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.06em;cursor:pointer;color:var(--ink-400)">PLAN</div>
+<div style="width:44px;height:44px;flex-shrink:0;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.06em;background:var(--navy-900);color:#fff;box-shadow:var(--shadow-sm)">KAL</div>
+<div style="width:44px;height:44px;flex-shrink:0;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.06em;cursor:pointer;color:var(--ink-400)">STALL</div>
+<div style="width:44px;height:44px;flex-shrink:0;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.06em;cursor:pointer;color:var(--ink-400)">MEG</div>
+<div style="flex:1"></div>
+<div style="width:34px;height:34px;border-radius:var(--radius-full);background:var(--navy-600);color:#fff;font-family:var(--font-mono);font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center">ØR</div>
+</div>
+
+<div style="flex:1;min-width:0;display:flex;flex-direction:column">
+
+<div style="padding:22px 32px 18px;border-bottom:1px solid var(--border-subtle);display:flex;align-items:center;gap:18px">
+<div>
+<div style="font-family:var(--font-mono);font-size:10.5px;letter-spacing:.16em;color:var(--ink-400)">{{ eyebrow }}</div>
+<h1 style="font-family:var(--font-display);font-size:28px;font-weight:800;letter-spacing:-.03em;margin:5px 0 0">{{ headline }}</h1>
+</div>
+<div style="display:flex;align-items:center;gap:12px">
+<span style="color:var(--ink-400);font-size:14px;cursor:pointer">‹</span>
+<span style="font-family:var(--font-mono);font-size:12.5px;color:var(--ink-400)">{{ prevLabel }}</span>
+<span style="font-family:var(--font-mono);font-size:12.5px;color:var(--ink-400)">{{ nextLabel }}</span>
+<span style="color:var(--ink-400);font-size:14px;cursor:pointer">›</span>
+</div>
+<div style="height:36px;background:var(--ink-100);border-radius:var(--radius-full);display:flex;align-items:center;padding:3px;gap:2px">
+<sc-for list="{{ tabs }}" as="tab" hint-placeholder-count="3">
+<sc-if value="{{ tab.active }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ tab.select }}" style="height:30px;display:flex;align-items:center;padding:0 14px;border-radius:var(--radius-full);background:var(--navy-900);color:#fff;font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;box-shadow:var(--shadow-sm);cursor:pointer">{{ tab.label }}</div>
+</sc-if>
+<sc-if value="{{ tab.inactive }}" hint-placeholder-val="{{ true }}">
+<div onClick="{{ tab.select }}" style="height:30px;display:flex;align-items:center;padding:0 14px;border-radius:var(--radius-full);font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;color:var(--ink-500);cursor:pointer">{{ tab.label }}</div>
+</sc-if>
+</sc-for>
+</div>
+<div style="flex:1"></div>
+<span style="font-size:13px;color:var(--ink-400)">{{ headerNote }}</span>
+</div>
+
+<div style="flex:1;min-height:0;display:flex">
+
+<div style="width:236px;flex-shrink:0;border-right:1px solid var(--border-subtle);background:var(--ink-50);padding:20px 18px;display:flex;flex-direction:column;gap:22px;overflow:hidden">
+<div>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+<span style="font-size:13px;font-weight:600">August 2026</span>
+<span style="font-family:var(--font-mono);font-size:11px;color:var(--ink-400)">‹ ›</span>
+</div>
+<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px">
+<div style="text-align:center;font-family:var(--font-mono);font-size:9px;color:var(--ink-500);padding-bottom:4px">M</div>
+<div style="text-align:center;font-family:var(--font-mono);font-size:9px;color:var(--ink-500);padding-bottom:4px">T</div>
+<div style="text-align:center;font-family:var(--font-mono);font-size:9px;color:var(--ink-500);padding-bottom:4px">O</div>
+<div style="text-align:center;font-family:var(--font-mono);font-size:9px;color:var(--ink-500);padding-bottom:4px">T</div>
+<div style="text-align:center;font-family:var(--font-mono);font-size:9px;color:var(--ink-500);padding-bottom:4px">F</div>
+<div style="text-align:center;font-family:var(--font-mono);font-size:9px;color:var(--ink-500);padding-bottom:4px">L</div>
+<div style="text-align:center;font-family:var(--font-mono);font-size:9px;color:var(--ink-500);padding-bottom:4px">S</div>
+<sc-for list="{{ monthDays }}" as="d" hint-placeholder-count="35">
+<sc-if value="{{ d.blank }}" hint-placeholder-val="{{ false }}"><div style="height:24px"></div></sc-if>
+<sc-if value="{{ d.isToday }}" hint-placeholder-val="{{ false }}"><div style="height:24px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-full);font-family:var(--font-mono);font-size:10px;font-weight:600;cursor:pointer;background:var(--navy-900);color:#fff">{{ d.n }}</div></sc-if>
+<sc-if value="{{ d.inWeek }}" hint-placeholder-val="{{ false }}"><div style="height:24px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-full);font-family:var(--font-mono);font-size:10px;cursor:pointer;background:var(--navy-100);color:var(--navy-800)">{{ d.n }}</div></sc-if>
+<sc-if value="{{ d.plain }}" hint-placeholder-val="{{ true }}"><div style="height:24px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-full);font-family:var(--font-mono);font-size:10px;cursor:pointer;color:var(--ink-500)">{{ d.n }}</div></sc-if>
+</sc-for>
+</div>
+</div>
+<div>
+<div style="font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-400);margin-bottom:8px">LAG</div>
+<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--border-subtle)"><span style="width:9px;height:9px;border-radius:50%;flex-shrink:0;background:var(--navy-600)"></span><span style="flex:1;font-size:13px;font-weight:600;color:var(--ink-900)">Økter</span><span style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.1em;color:var(--ink-400)">PÅ</span></div>
+<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--border-subtle)"><span style="width:9px;height:9px;border-radius:50%;flex-shrink:0;background:var(--ink-300)"></span><span style="flex:1;font-size:13px;font-weight:600;color:var(--ink-900)">Skole</span><span style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.1em;color:var(--ink-400)">LÅST</span></div>
+<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--border-subtle)"><span style="width:9px;height:9px;border-radius:50%;flex-shrink:0;background:var(--red-600)"></span><span style="flex:1;font-size:13px;font-weight:600;color:var(--ink-900)">Turneringer</span><span style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.1em;color:var(--ink-400)">PÅ</span></div>
+<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--border-subtle)"><span style="width:9px;height:9px;border-radius:50%;flex-shrink:0;background:var(--data-3)"></span><span style="flex:1;font-size:13px;font-weight:600;color:var(--ink-900)">Tester</span><span style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.1em;color:var(--ink-400)">PÅ</span></div>
+<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--border-subtle)"><span style="width:9px;height:9px;border-radius:50%;flex-shrink:0;background:var(--data-4)"></span><span style="flex:1;font-size:13px;font-weight:600;color:var(--ink-900)">Booking</span><span style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.1em;color:var(--ink-400)">PÅ</span></div>
+</div>
+<div style="flex:1"></div>
+<span style="font-size:11.5px;color:var(--ink-400);line-height:1.6;text-wrap:pretty">Eksterne kalendere er lag med lesetilgang. Synk-innstillinger bor i Oppsett.</span>
+</div>
+
+<sc-if value="{{ isUke }}" hint-placeholder-val="{{ true }}">
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden">
+<div style="display:flex;padding-left:56px;border-bottom:1px solid var(--border-subtle)">
+<sc-for list="{{ dayHeads }}" as="d" hint-placeholder-count="7">
+<div onClick="{{ d.openDay }}" style="flex:1;text-align:center;padding:11px 0;cursor:pointer"><span ref="{{ d.ref }}" style="font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;color:var(--ink-400)">{{ d.label }}</span></div>
+</sc-for>
+</div>
+<div style="display:flex;padding-left:56px;min-height:32px;align-items:center;border-bottom:1px solid var(--border-subtle);background:var(--ink-50)">
+<sc-for list="{{ allDay }}" as="a" hint-placeholder-count="7">
+<div style="flex:1;min-width:0;padding:4px">
+<sc-if value="{{ a.has }}" hint-placeholder-val="{{ false }}">
+<div ref="{{ a.ref }}" style="height:22px;border-radius:var(--radius-xs);background:var(--navy-100);display:flex;align-items:center;padding:0 8px;font-family:var(--font-mono);font-size:8.5px;letter-spacing:.08em;color:var(--navy-800);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ a.label }}</div>
+</sc-if>
+</div>
+</sc-for>
+</div>
+<div style="flex:1;min-height:0;display:flex;align-items:flex-start;overflow:hidden;position:relative">
+<div style="width:56px;flex-shrink:0">
+<sc-for list="{{ hours }}" as="hour" hint-placeholder-count="14">
+<div style="height:52px;line-height:52px;font-family:var(--font-mono);font-size:10.5px;color:var(--ink-400);text-align:right;padding-right:10px">{{ hour }}</div>
+</sc-for>
+</div>
+<div style="flex:1;height:728px;display:flex;position:relative;background:repeating-linear-gradient(to bottom,transparent 0 51px,var(--ink-100) 51px 52px)">
+<sc-for list="{{ columns }}" as="col" hint-placeholder-count="7">
+<div style="flex:1;position:relative;border-left:1px solid var(--ink-100)">
+<sc-for list="{{ col.events }}" as="ev" hint-placeholder-count="1">
+<sc-if value="{{ ev.solid }}" hint-placeholder-val="{{ true }}">
+<div ref="{{ ev.ref }}" style="box-sizing:border-box;position:absolute;left:4px;right:4px;border-radius:var(--radius-sm);padding:8px 10px;overflow:hidden;cursor:pointer;z-index:2;background:var(--white);border:1px solid var(--border-subtle);border-left:3px solid var(--navy-600);box-shadow:var(--shadow-sm)">
+<span style="font-family:var(--font-mono);font-size:8.5px;letter-spacing:.1em;color:var(--ink-500);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block">{{ ev.cat }}</span>
+<div style="font-size:13px;font-weight:600;line-height:1.25;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink-900)">{{ ev.title }}</div>
+<div style="font-family:var(--font-mono);font-size:10.5px;color:var(--ink-500);margin-top:2px;white-space:nowrap">{{ ev.time }}</div>
+<div style="font-size:11px;line-height:1.3;color:var(--ink-500);margin-top:3px;overflow:hidden;text-overflow:ellipsis">{{ ev.meta }}</div>
+</div>
+</sc-if>
+<sc-if value="{{ ev.muted }}" hint-placeholder-val="{{ false }}">
+<div ref="{{ ev.ref }}" style="box-sizing:border-box;position:absolute;left:4px;right:4px;border-radius:var(--radius-sm);padding:8px 10px;overflow:hidden;z-index:1;background:var(--ink-50);border:1px solid var(--ink-100);border-left:3px solid var(--ink-300)">
+<span style="font-family:var(--font-mono);font-size:8.5px;letter-spacing:.1em;color:var(--ink-500);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block">{{ ev.cat }}</span>
+<div style="font-size:11px;line-height:1.3;color:var(--ink-400);margin-top:3px;overflow:hidden;text-overflow:ellipsis">{{ ev.meta }}</div>
+</div>
+</sc-if>
+</sc-for>
+</div>
+</sc-for>
+<div style="position:absolute;left:0;right:0;top:130px;height:2px;background:var(--red-600);z-index:5;pointer-events:none"></div>
+<div style="position:absolute;left:-5px;top:125px;width:12px;height:12px;border-radius:50%;background:var(--red-600);z-index:5;pointer-events:none"></div>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isDag }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden">
+<div style="display:flex;align-items:center;gap:16px;padding:14px 24px;border-bottom:1px solid var(--border-subtle)">
+<span style="font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;color:var(--ink-900);font-weight:600">{{ dayTitle }}</span>
+<span style="font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;color:var(--ink-400)">{{ daySummary }}</span>
+<div style="flex:1"></div>
+<sc-for list="{{ dayChips }}" as="c" hint-placeholder-count="3">
+<div ref="{{ c.ref }}" style="padding:3px 9px;border-radius:var(--radius-full);background:var(--ink-100);font-family:var(--font-mono);font-size:9px;letter-spacing:.1em;color:var(--ink-500);white-space:nowrap">{{ c.label }}</div>
+</sc-for>
+</div>
+<div style="flex:1;min-height:0;display:flex;align-items:flex-start;overflow-y:auto;position:relative">
+<div style="width:56px;flex-shrink:0">
+<sc-for list="{{ hours }}" as="hour" hint-placeholder-count="14">
+<div style="height:52px;line-height:52px;font-family:var(--font-mono);font-size:10.5px;color:var(--ink-400);text-align:right;padding-right:10px">{{ hour }}</div>
+</sc-for>
+</div>
+<div style="flex:1;height:728px;position:relative;background:repeating-linear-gradient(to bottom,transparent 0 51px,var(--ink-100) 51px 52px);border-left:1px solid var(--ink-100)">
+<sc-for list="{{ dayEvents }}" as="ev" hint-placeholder-count="3">
+<sc-if value="{{ ev.solid }}" hint-placeholder-val="{{ true }}">
+<div ref="{{ ev.dayRef }}" style="box-sizing:border-box;position:absolute;border-radius:var(--radius-sm);padding:12px 16px;overflow:hidden;cursor:pointer;z-index:2;background:var(--white);border:1px solid var(--border-subtle);border-left:3px solid var(--navy-600);box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:3px">
+<span style="font-family:var(--font-mono);font-size:9px;letter-spacing:.12em;color:var(--ink-500)">{{ ev.cat }}</span>
+<div style="font-size:15.5px;font-weight:700;line-height:1.2;color:var(--ink-900)">{{ ev.title }}</div>
+<div style="font-family:var(--font-mono);font-size:11px;color:var(--ink-500)">{{ ev.time }}</div>
+<div style="font-size:12.5px;line-height:1.45;color:var(--ink-700);text-wrap:pretty">{{ ev.detail }}</div>
+</div>
+</sc-if>
+<sc-if value="{{ ev.muted }}" hint-placeholder-val="{{ false }}">
+<div ref="{{ ev.dayRef }}" style="box-sizing:border-box;position:absolute;border-radius:var(--radius-sm);padding:12px 16px;overflow:hidden;z-index:1;background:var(--ink-50);border:1px solid var(--ink-100);border-left:3px solid var(--ink-300);display:flex;flex-direction:column;gap:3px">
+<span style="font-family:var(--font-mono);font-size:9px;letter-spacing:.12em;color:var(--ink-500)">{{ ev.cat }}</span>
+<div style="font-size:12.5px;color:var(--ink-500)">{{ ev.detail }}</div>
+</div>
+</sc-if>
+</sc-for>
+<div ref="{{ dayNowRef }}" style="position:absolute;left:0;right:0;height:2px;background:var(--red-600);z-index:5;pointer-events:none"></div>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isManed }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden">
+<div style="display:flex;padding:0;border-bottom:1px solid var(--border-subtle)">
+<sc-for list="{{ weekdayHeads }}" as="w" hint-placeholder-count="7">
+<div style="flex:1;text-align:center;padding:11px 0;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.12em;color:var(--ink-400)">{{ w }}</div>
+</sc-for>
+</div>
+<div style="flex:1;min-height:0;display:grid;grid-template-columns:repeat(7,1fr);grid-auto-rows:1fr">
+<sc-for list="{{ monthCells }}" as="c" hint-placeholder-count="35">
+<div ref="{{ c.cellRef }}" style="border-right:1px solid var(--ink-100);border-bottom:1px solid var(--ink-100);padding:7px 8px;display:flex;flex-direction:column;gap:3px;min-width:0;overflow:hidden">
+<div style="display:flex;align-items:center;justify-content:space-between">
+<span ref="{{ c.numRef }}" style="font-family:var(--font-mono);font-size:11px;color:var(--ink-500)">{{ c.n }}</span>
+<span style="font-family:var(--font-mono);font-size:8.5px;letter-spacing:.08em;color:var(--ink-300)">{{ c.weekTag }}</span>
+</div>
+<sc-for list="{{ c.chips }}" as="chip" hint-placeholder-count="2">
+<div ref="{{ chip.ref }}" style="border-radius:var(--radius-xs);padding:3px 6px;background:var(--ink-100);font-size:10.5px;line-height:1.25;color:var(--ink-700);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer">{{ chip.label }}</div>
+</sc-for>
+<sc-if value="{{ c.hasMore }}" hint-placeholder-val="{{ false }}">
+<span style="font-family:var(--font-mono);font-size:9px;letter-spacing:.06em;color:var(--ink-400)">{{ c.more }}</span>
+</sc-if>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<div style="width:340px;flex-shrink:0;border-left:1px solid var(--border-subtle);padding:26px 24px;display:flex;flex-direction:column;gap:0;overflow:hidden">
+<span style="font-family:var(--font-mono);font-size:10.5px;letter-spacing:.16em;color:var(--ink-400)">{{ detail.cat }}</span>
+<h2 style="font-family:var(--font-display);font-size:26px;font-weight:800;letter-spacing:-.03em;margin:10px 0 0;line-height:1.1">{{ detail.title }}</h2>
+<div style="font-family:var(--font-mono);font-size:12px;color:var(--ink-500);margin-top:8px">{{ detail.when }}</div>
+<div style="margin-top:12px"><x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Badge" tone="{{ detail.tone }}" dot="{{ true }}" hint-size="90px,28px">{{ detail.status }}</x-import></div>
+<div style="margin-top:18px;display:flex;flex-direction:column;gap:9px">
+<sc-for list="{{ detail.facts }}" as="f" hint-placeholder-count="4">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding-bottom:8px;border-bottom:1px solid var(--ink-100)">
+<span style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.12em;color:var(--ink-400);flex-shrink:0">{{ f.label }}</span>
+<span style="font-size:13px;font-weight:600;color:var(--ink-900);text-align:right">{{ f.value }}</span>
+</div>
+</sc-for>
+</div>
+<p style="margin:16px 0 0;font-size:13.5px;color:var(--ink-500);line-height:1.6;text-wrap:pretty">{{ detail.note }}</p>
+<div style="margin-top:24px;display:flex;flex-direction:column;gap:10px">
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="primary" size="lg" full-width="{{ true }}" hint-size="100%,52px">Åpne i Workbench</x-import>
+<div style="display:flex;gap:8px">
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="ghost" hint-size="50%,42px">Bytt tid</x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="ghost" hint-size="50%,42px">Vis dag</x-import>
+</div>
+</div>
+<div style="flex:1"></div>
+<div style="border-top:1px solid var(--border-subtle);padding-top:16px;font-size:12px;color:var(--ink-400);line-height:1.6;text-wrap:pretty">Kalenderen er lesevisning for gjennomføring. Ingen formel eller reps her.</div>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1496,&quot;height&quot;:956}}">
+const HOUR = 52, START = 7, TODAY = 22;
+const CAT = {
+  ØKT: 'var(--navy-600)', SKOLE: 'var(--ink-300)', TURN: 'var(--red-600)',
+  TEST: 'var(--data-3)', BOOK: 'var(--data-4)'
+};
+// Teksten er skrevet per hendelsestype: hva slags hendelse (cat), hva det er (title),
+// når (time), og den ene linja som gjør den handlingsklar (meta i uke, detail i dag).
+const WEEK = [
+  { d: 17, name: 'Man', events: [
+    { kind: 'SKOLE', cat: 'SKOLE · WANG', title: 'Toppidrett golf', time: '08.00–14.00', from: 8, hours: 6,
+      meta: 'Låst av skolen', detail: 'Skolens kalender. Kan ikke flyttes her — meld avvik til kontaktlærer.' },
+    { kind: 'ØKT', area: 'FYS', cat: 'ØKT · FYS · ØR', title: 'Styrke · underkropp', time: '15.00–16.30', from: 15, hours: 1.5,
+      meta: 'Styrkerom · 6 øvelser', detail: 'Knebøy, markløft og rotasjon. Sett, reps og belastning ligger i Workbench.',
+      facts: [['STED', 'Styrkerom · Wang'], ['ANSVARLIG', 'Fysisk trener'], ['OMFANG', '6 øvelser · 1,5 t'], ['INNHOLD', 'Sett og reps i Workbench']] } ] },
+  { d: 18, name: 'Tir', events: [
+    { kind: 'SKOLE', cat: 'SKOLE · WANG', title: 'Toppidrett golf', time: '08.00–14.00', from: 8, hours: 6,
+      meta: 'Låst av skolen', detail: 'Skolens kalender. Kan ikke flyttes her — meld avvik til kontaktlærer.' },
+    { kind: 'ØKT', area: 'SLAG', cat: 'ØKT · SLAG · ØR', title: 'Wedge 40–60 m', time: '15.00–16.30', from: 15, hours: 1.5,
+      meta: 'Range · 9 mål-lengder', detail: 'Gate-oppsettet står klart. Launch og carry-sone føres underveis — samme oppsett som Wedge Gate.',
+      facts: [['STED', 'Range · felt 4–6'], ['ANSVARLIG', 'Øyvind Rojahn'], ['OMFANG', '9 mål-lengder'], ['INNHOLD', 'Ligger i Workbench']] } ] },
+  { d: 19, name: 'Ons', events: [
+    { kind: 'SKOLE', cat: 'SKOLE · WANG', title: 'Toppidrett golf', time: '08.00–14.00', from: 8, hours: 6,
+      meta: 'Låst av skolen', detail: 'Skolens kalender. Kan ikke flyttes her — meld avvik til kontaktlærer.' },
+    { kind: 'BOOK', cat: 'BOOKING · SIM 2', title: 'Simulator', time: '15.00–16.00', from: 15, hours: 1,
+      meta: 'Egentid · 60 min', detail: 'Bane 2 er reservert på deg. Egentid — du bestemmer innholdet selv.' } ] },
+  { d: 20, name: 'Tor', events: [
+    { kind: 'SKOLE', cat: 'SKOLE · WANG', title: 'Toppidrett golf', time: '08.00–14.00', from: 8, hours: 6,
+      meta: 'Låst av skolen', detail: 'Skolens kalender. Kan ikke flyttes her — meld avvik til kontaktlærer.' },
+    { kind: 'ØKT', area: 'SLAG', cat: 'ØKT · SLAG · ØR', title: 'Innspill 100–150 m', time: '15.00–17.00', from: 15, hours: 2,
+      meta: 'Range · PEI-føring', detail: 'Ti innspill per avstand med PEI-føring. Siste harde økt før testdagen.',
+      facts: [['STED', 'Range · felt 1–3'], ['ANSVARLIG', 'Øyvind Rojahn'], ['OMFANG', '10 slag per avstand'], ['MERK', 'Siste harde økt før test']] } ] },
+  { d: 21, name: 'Fre', allDay: 'TEST · TN-BATTERI Q3', events: [
+    { kind: 'TEST', cat: 'TEST · TN-BATTERI Q3', title: 'Testdag Q3', time: '09.00–12.00', from: 9, hours: 3,
+      meta: '11 protokoller · fører ØR', detail: 'Fem stasjoner: utslag, innspill, wedge, nærspill og putting. Resultatene attesteres av fører før de skrives til testloggen.' } ] },
+  { d: 22, name: 'Lør', events: [
+    { kind: 'ØKT', area: 'SPILL', cat: 'ØKT · SPILL · ØR', title: 'Banespill · 18 hull', time: '09.00–13.00', from: 9, hours: 4,
+      meta: 'Oslo GK · scorekort og SG', detail: '18 hull med fullt scorekort og SG-føring. Møt 30 minutter før for oppvarming.',
+      facts: [['STED', 'Oslo GK · hull 1'], ['ANSVARLIG', 'Øyvind Rojahn'], ['GRUPPE', '4 spillere'], ['INNHOLD', 'Scorekort og SG-føring']] } ] },
+  { d: 23, name: 'Søn', allDay: 'TURN · ONSØY OPEN', events: [
+    { kind: 'TURN', cat: 'TURN · ONSØY OPEN · R1', title: 'Onsøy Open', time: '08.30–13.30', from: 8.5, hours: 5,
+      meta: 'Tee 08.30 · runde 1 av 2', detail: 'Første runde, tee 08.30 fra hull 1. Reise lørdag kveld, ankomst rundt 21.00.' } ] }
+];
+
+const FACTS = {
+  ØKT: [['STED', 'Oslo GK · hull 1'], ['ANSVARLIG', 'Øyvind Rojahn'], ['GRUPPE', '4 spillere'], ['INNHOLD', 'Ligger i Workbench']],
+  TEST: [['STED', 'Miklagard · range og green'], ['FØRER', 'Øyvind Rojahn'], ['PROTOKOLLER', '11 av 20 i batteriet'], ['ATTESTERING', 'Signeres av fører']],
+  TURN: [['BANE', 'Onsøy GK'], ['TEE', '08.30 · hull 1'], ['RUNDE', '1 av 2'], ['REISE', 'Lørdag 18.00']],
+  BOOK: [['RESSURS', 'Simulator bane 2'], ['VARIGHET', '60 minutter'], ['TYPE', 'Egentid'], ['INNHOLD', 'Fylles av spiller']],
+  SKOLE: [['SKOLE', 'Wang Toppidrett'], ['FAG', 'Toppidrett golf'], ['TILGANG', 'Lesevisning'], ['ENDRING', 'Via kontaktlærer']]
+};
+const NOTES = {
+  ØKT: 'Innholdet — drills, formel, reps — redigeres i Workbench. Kalenderen viser tid og sted.',
+  TEST: 'Testdagen fører én trener for hele gruppa. Kø og stasjonsrekkefølge settes i føringsskjermen.',
+  TURN: 'Turneringen kommer fra turneringskalenderen. Tee-tid oppdateres automatisk ved endring.',
+  BOOK: 'Booking er ressursen, ikke økta. Legg innhold i egentiden hvis du vil ha det i loggen.',
+  SKOLE: 'Skolekalenderen er et lag med lesetilgang. Synk-innstillinger bor i Oppsett.'
+};
+const STATUS = { ØKT: ['Publisert', 'green'], TEST: ['Låst protokoll', 'navy'], TURN: ['Påmeldt', 'green'], BOOK: ['Reservert', 'navy'], SKOLE: ['Låst', 'ink'] };
+
+// August 2026 — 1. august er lørdag, så rutenettet starter med fem tomme celler.
+const MONTH = {
+  3: [['ØKT', 'Fys · styrke']], 5: [['BOOK', 'Simulator']],
+  8: [['TURN', 'Narvik Cup R1']], 9: [['TURN', 'Narvik Cup R2']],
+  12: [['ØKT', 'Nærspill · gate']], 14: [['TEST', 'Deltest · putting']],
+  17: [['SKOLE', 'Skole 08–14'], ['ØKT', 'Styrke']],
+  18: [['SKOLE', 'Skole 08–14'], ['ØKT', 'Wedge 40–60 m']],
+  19: [['SKOLE', 'Skole 08–14'], ['BOOK', 'Simulator']],
+  20: [['SKOLE', 'Skole 08–14'], ['ØKT', 'Innspill']],
+  21: [['TEST', 'TN-batteri Q3']],
+  22: [['ØKT', 'Banespill 18 hull']],
+  23: [['TURN', 'Onsøy Open R1']],
+  24: [['TURN', 'Onsøy Open R2']],
+  26: [['ØKT', 'Innspill 120/160']],
+  29: [['TURN', 'Sørlandet R1']], 30: [['TURN', 'Sørlandet R2']]
+};
+const CHIP_BG = { ØKT: 'var(--navy-50)', TEST: 'var(--navy-100)', TURN: 'var(--red-100)', BOOK: 'var(--ink-100)', SKOLE: 'var(--ink-50)' };
+const CHIP_FG = { ØKT: 'var(--navy-900)', TEST: 'var(--navy-800)', TURN: 'var(--red-700)', BOOK: 'var(--ink-700)', SKOLE: 'var(--ink-400)' };
+
+class Component extends DCLogic {
+  state = { view: 'UKE', dayIndex: 5 };
+  ev(o) {
+    const top = (o.from - START) * HOUR;
+    const height = o.hours * HOUR - 4;
+    const accent = CAT[o.kind] || 'var(--navy-600)';
+    const muted = o.kind === 'SKOLE';
+    const place = (el, wide) => {
+      if (!el) return;
+      el.style.top = top + 'px';
+      el.style.height = height + 'px';
+      if (wide) { el.style.left = '10px'; el.style.right = '10px'; }
+      if (!muted) el.style.borderLeftColor = accent;
+    };
+    return {
+      ...o, muted, solid: !muted,
+      ref: (el) => place(el, false),
+      dayRef: (el) => place(el, true)
+    };
+  }
+  renderVals() {
+    const view = this.state.view;
+    const go = (v) => () => this.setState({ view: v });
+    const tabs = ['DAG', 'UKE', 'MÅNED'].map(label => ({
+      label, active: label === view, inactive: label !== view, select: go(label)
+    }));
+
+    const hours = [];
+    for (let h = START; h <= 20; h++) hours.push(String(h).padStart(2, '0') + '.00');
+
+    const dayHeads = WEEK.map((d, i) => ({
+      label: d.name + ' ' + d.d,
+      openDay: () => this.setState({ view: 'DAG', dayIndex: i }),
+      ref: (el) => {
+        if (el && d.d === TODAY) { el.style.color = 'var(--ink-900)'; el.style.fontWeight = '600'; }
+      }
+    }));
+    const allDay = WEEK.map(d => ({
+      has: !!d.allDay, label: d.allDay || '',
+      ref: (el) => {
+        if (!el) return;
+        if ((d.allDay || '').indexOf('TURN') === 0) {
+          el.style.background = 'var(--red-100)';
+          el.style.color = 'var(--red-700)';
+        }
+      }
+    }));
+
+    const day = WEEK[this.state.dayIndex] || WEEK[0];
+    const dayMin = day.events.filter(e => e.kind !== 'SKOLE').reduce((s, e) => s + e.hours * 60, 0);
+    const dayEvents = day.events.map(e => this.ev(e));
+    const dayChips = day.events.map(e => ({
+      label: e.kind,
+      ref: (el) => {
+        if (!el) return;
+        el.style.background = CHIP_BG[e.kind];
+        el.style.color = CHIP_FG[e.kind];
+      }
+    }));
+
+    const monthCells = [];
+    for (let i = 0; i < 5; i++) monthCells.push({ n: '', weekTag: '', chips: [], hasMore: false, more: '', cellRef: (el) => { if (el) el.style.background = 'var(--ink-50)'; }, numRef: () => {} });
+    for (let n = 1; n <= 31; n++) {
+      const list = MONTH[n] || [];
+      const shown = list.slice(0, 2);
+      const dow = (n + 4) % 7; // 1. august 2026 = lørdag (index 5)
+      const isToday = n === TODAY;
+      const inWeek = n >= 17 && n <= 23;
+      monthCells.push({
+        n: String(n),
+        weekTag: dow === 0 ? 'U' + (31 + Math.floor((n + 4) / 7)) : '',
+        chips: shown.map(c => ({
+          label: c[1],
+          ref: (el) => {
+            if (!el) return;
+            el.style.background = CHIP_BG[c[0]];
+            el.style.color = CHIP_FG[c[0]];
+          }
+        })),
+        hasMore: list.length > 2, more: '+' + (list.length - 2) + ' mer',
+        cellRef: (el) => {
+          if (!el) return;
+          if (isToday) el.style.background = 'var(--navy-50)';
+          else if (inWeek) el.style.background = 'var(--surface-card)';
+        },
+        numRef: (el) => {
+          if (!el) return;
+          if (isToday) { el.style.color = 'var(--red-600)'; el.style.fontWeight = '700'; }
+          else if (inWeek) { el.style.color = 'var(--ink-900)'; el.style.fontWeight = '600'; }
+        }
+      });
+    }
+    while (monthCells.length < 42) monthCells.push({ n: '', weekTag: '', chips: [], hasMore: false, more: '', cellRef: (el) => { if (el) el.style.background = 'var(--ink-50)'; }, numRef: () => {} });
+
+    const monthDays = [];
+    for (let i = 0; i < 5; i++) monthDays.push({ n: '', blank: true });
+    for (let n = 1; n <= 31; n++) {
+      const inWeek = n >= 17 && n <= 23, isToday = n === TODAY;
+      monthDays.push({ n: String(n), blank: false, isToday, inWeek: inWeek && !isToday, plain: !inWeek });
+    }
+
+    // Detaljpanelet følger visningen: dagens hovedhendelse i DAG, ukas i UKE og MÅNED.
+    const focus = view === 'DAG'
+      ? (day.events.find(e => e.kind !== 'SKOLE') || day.events[0])
+      : WEEK[5].events[0];
+    const st = STATUS[focus.kind];
+    const hhmm = (min) => min < 60 ? min + ' min' : (Math.round(min / 6) / 10).toString().replace('.', ',') + ' t';
+
+    const heads = {
+      DAG: [day.name.toUpperCase() + 'DAG · UKE 34', day.name + ' ' + day.d + '. august'],
+      UKE: ['KALENDER · UKE 34', 'Uke 34'],
+      'MÅNED': ['KALENDER · AUGUST', 'August 2026']
+    };
+    const notes = {
+      DAG: 'Én dag om gangen — tid, sted og hva økta består av',
+      UKE: 'Oversikt og gjennomføring — innhold redigeres i Workbench',
+      'MÅNED': 'Måneden i grovt — turneringer, testdager og samlinger'
+    };
+    const nav = { DAG: ['21', '23'], UKE: ['33', '35'], 'MÅNED': ['JUL', 'SEP'] };
+
+    return {
+      tabs,
+      isDag: view === 'DAG', isUke: view === 'UKE', isManed: view === 'MÅNED',
+      eyebrow: heads[view][0], headline: heads[view][1],
+      headerNote: notes[view], prevLabel: nav[view][0], nextLabel: nav[view][1],
+      hours, monthDays, dayHeads, allDay,
+      columns: WEEK.map(d => ({ events: d.events.map(e => this.ev(e)) })),
+      dayTitle: day.name + ' ' + day.d + '. august',
+      daySummary: dayEvents.length + (dayEvents.length === 1 ? ' hendelse · ' : ' hendelser · ') + hhmm(dayMin) + ' trening',
+      dayChips, dayEvents,
+      dayNowRef: (el) => { if (el) el.style.top = ((9.5 - START) * HOUR) + 'px'; },
+      weekdayHeads: ['MAN', 'TIR', 'ONS', 'TOR', 'FRE', 'LØR', 'SØN'],
+      monthCells,
+      detail: {
+        cat: focus.cat, title: focus.title,
+        when: (view === 'DAG' ? day.name : 'Lør') + ' ' + focus.time,
+        status: st[0], tone: st[1],
+        facts: (focus.facts || FACTS[focus.kind] || []).map(f => ({ label: f[0], value: f[1] })),
+        note: NOTES[focus.kind]
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

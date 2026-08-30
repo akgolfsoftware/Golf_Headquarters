@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Kommunikasjon — grupper & samtaler" description="Samleside for kommunikasjon: gruppetråd med all praktisk samlingsinfo (reise, oppmøte, flybilletter), enkeltsamtaler med spiller og foresatte, automatisk teaminnkalling, og invitasjon av ny spiller til Team Norway-gruppen. 1440×900." -->
+<helmet><script src="./ds-base.js"></script></helmet>
+<div style="min-height:100vh;background:var(--surface-page);padding:28px;display:flex;justify-content:center;font-family:var(--font-body)">
+<div data-screen-label="Kommunikasjon" style="position:relative;width:1440px;height:900px;flex-shrink:0;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-xl);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;flex-direction:column">
+
+<div style="height:68px;flex-shrink:0;display:flex;align-items:center;gap:18px;padding:0 22px;border-bottom:1px solid var(--border-subtle)">
+<img src="../../assets/logo/team-norway-golf.png" alt="Team Norway Golf" style="height:32px;width:auto;display:block;flex-shrink:0">
+<div style="width:1px;height:26px;background:var(--border-subtle)"></div>
+<span style="font-family:var(--font-display);font-size:16px;font-weight:700;letter-spacing:-.02em">Workbench</span>
+<div style="height:34px;border-radius:var(--radius-full);background:var(--navy-100);display:flex;align-items:center;gap:10px;padding:0 14px;cursor:pointer">
+<span style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.14em;color:var(--navy-600)">KOMMUNIKASJON</span>
+<span style="font-size:13.5px;font-weight:600;color:var(--navy-800)">Team Norway Junior</span>
+<span style="font-size:10px;color:var(--navy-400)">▼</span>
+</div>
+<span style="font-family:var(--font-mono);font-size:13.5px;font-weight:500">9 spillere · 14 foresatte · 3 trenere</span>
+<div style="flex:1"></div>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="secondary" size="sm" hint-size="104px,34px">Ny gruppe</x-import>
+<div onClick="{{ openInvite }}"><x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="primary" size="sm" hint-size="146px,34px">Inviter spiller</x-import></div>
+</div>
+
+<div style="flex:1;min-height:0;display:flex">
+
+<div style="width:296px;flex-shrink:0;border-right:1px solid var(--border-subtle);background:var(--ink-50);display:flex;flex-direction:column;overflow:hidden">
+<div style="padding:16px 16px 12px;flex-shrink:0">
+<div style="height:36px;border-radius:var(--radius-full);background:var(--white);border:1px solid var(--border-subtle);display:flex;align-items:center;padding:0 14px;gap:9px">
+<span style="font-size:12px;color:var(--ink-400)">⌕</span>
+<span style="font-size:13px;color:var(--ink-400)">Søk i samtaler</span>
+</div>
+</div>
+
+<div style="padding:6px 16px 8px;display:flex;justify-content:space-between;align-items:baseline;flex-shrink:0">
+<span style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.16em;color:var(--ink-500)">GRUPPER</span>
+<span style="font-family:var(--font-mono);font-size:10px;color:var(--ink-400)">3</span>
+</div>
+<div style="padding:0 10px;display:flex;flex-direction:column;gap:2px;flex-shrink:0">
+<sc-for list="{{ groups }}" as="g" hint-placeholder-count="3">
+<div onClick="{{ g.open }}" ref="{{ g.ref }}" style="border-radius:var(--radius-sm);padding:10px 12px;cursor:pointer;display:flex;gap:11px;align-items:flex-start">
+<div style="width:30px;height:30px;flex-shrink:0;border-radius:var(--radius-sm);background:var(--navy-600);color:var(--white);font-family:var(--font-mono);font-size:9px;font-weight:600;display:flex;align-items:center;justify-content:center">{{ g.tag }}</div>
+<div style="flex:1;min-width:0">
+<div style="display:flex;align-items:baseline;gap:8px">
+<span style="flex:1;min-width:0;font-size:13.5px;font-weight:600;color:var(--ink-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ g.name }}</span>
+<span style="font-family:var(--font-mono);font-size:9.5px;color:var(--ink-400);flex-shrink:0">{{ g.time }}</span>
+</div>
+<div style="font-size:12px;color:var(--ink-500);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px">{{ g.preview }}</div>
+</div>
+<sc-if value="{{ g.unread }}" hint-placeholder-val="{{ false }}">
+
+</x-dc>
+</body>
+</html>
