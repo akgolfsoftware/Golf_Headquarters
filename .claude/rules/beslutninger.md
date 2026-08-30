@@ -69,10 +69,16 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
   odds/prognoser/fantasy. Proffreferanse for jenter er ikke mulig — alle 26 tourer i lageret er
   herretourer; det er et produktvalg, ikke en skjerm som kan bygges.
 
-  **Fortsatt åpent:** nivådefinisjonen i opprykksanalysen gir +2,10 eller +2,27 slag avhengig av
-  om et spiller-år tilordnes ett nivå eller flere. Retningen er robust, størrelsen er et
-  definisjonsvalg — endres den etterpå, er det TruthLayer-brudd. **Venter på Anders:** MD-fila med
-  turneringer og lenker (spesifikasjon for landskapsanalysen).
+  **Opprykksanalysen — LUKKET 30.08.2026, skal ikke bygges som tall.** Etterprøvd i basen samme
+  dag: valget «ett nivå eller flere per spiller-år» var ikke problemet. Juniorer forbedrer seg
+  hvert år uansett nivå — opprykkere −1,64 slag, men de som ble værende −1,13 og de som rykket ned
+  −1,14. Netto effekt ~0,5 slag, ikke 2, og med alder inne **skifter den fortegn** (+1,99 ved 14 år,
+  −1,16 ved 18, 10–96 spillere per alderstrinn). Å publisere ett tall her ville vært TruthLayer-brudd.
+  Står nå på «Ikke bygg». Ønskes den likevel: kontrollgruppe + aldersjustering + usikkerhet oppgitt.
+
+  **Venter på Anders:** MD-fila med turneringer og lenker. Blokkerer nå KUN lenkene per turnering
+  (`dashboard.tournament_links` er tom) — resten av landskapsanalysen kan bygges uten den, se
+  MASTERPLAN 17.5a.
 - **GRILLINGEN RUNDE 6 — Anders' arbeidsdag og AgencyOS-arkitekturen (Anders 2026-08-30, i økt):**
   ni svar som låser hva AgencyOS skal være. Fullt grunnlag med alle måletall og begrunnelser:
   `docs/beslutningsgrunnlag/grillingen-runde6-2026-08-30.md`.

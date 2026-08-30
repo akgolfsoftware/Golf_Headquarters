@@ -137,6 +137,14 @@ de lastes i hver økt. Dette dokumentet slår du opp i når du trenger tallene.
   tilordnes ett nivå eller flere (77 mot 159 opprykkere). Retningen er robust,
   størrelsen er et definisjonsvalg — endres den etterpå, er det TruthLayer-brudd.
 
+  > **RETTET 30.08.2026 ved etterprøving mot basen.** Påstanden «retningen er
+  > robust» holdt ikke. Med kontrollgruppe: opprykkere −1,64 slag, men de som
+  > ble på samme nivå −1,13 og de som rykket ned −1,14 — alle forbedrer seg,
+  > fordi juniorer blir bedre med alderen. Netto opprykkseffekt ~0,5 slag, og
+  > med alder inne skifter den fortegn (+1,99 ved 14 år, −1,16 ved 18 år,
+  > 10–96 spillere per alderstrinn). Analysen er flyttet til «Ikke bygg»;
+  > beslutningskøens punkt 19 er lukket uten at Anders trengte å velge.
+
   **Venter på Anders:** MD-fila med turneringer og lenker (spesifikasjon for
   landskapsanalysen, jf. TN-Workdesk punkt 7) er ikke levert. Kartleggingen er
   gjort uten den; bygging av landskapsflaten venter fortsatt på den.
