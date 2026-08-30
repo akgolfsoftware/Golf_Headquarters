@@ -1,5 +1,6 @@
 "use client";
 import { TL } from "@/lib/v2/train-lock";
+import { AK } from "@/lib/v2/ak-palett";
 
 /**
  * AgencyOS · Caddie · Aktivitet (v2). Rekomponert fra
@@ -14,7 +15,7 @@ import { TL } from "@/lib/v2/train-lock";
 import { useMemo, useState } from "react";
 import { avatarBg } from "@/lib/avatar-colors";
 import Link from "next/link";
-import { Caps, Kort, Rad, KpiFlis, StatusPill, FordelingRad, TomTilstand, Icon, Knapp, CTAPill, T, type StatusTone } from "@/components/v2";
+import { Caps, Kort, Rad, KpiFlis, StatusPill, FordelingRad, TomTilstand, Icon, Knapp, CTAPill, type StatusTone } from "@/components/v2";
 
 export type CaddieEvent = {
   id: string;
@@ -475,7 +476,7 @@ function MetaFelt({ k, v }: { k: string; v: string }) {
 function NokkeltallRad({ k, v, last }: { k: string; v: string; last?: boolean }) {
   return (
     <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", padding: "9px 0", borderBottom: last ? "none" : `1px solid color-mix(in srgb, var(--tl-fill) 10%, transparent)` }}>
-      <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: T.farge.taakeMerkeA65 }}>{k}</span>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: AK.farge.taakeMerkeA65 }}>{k}</span>
       <span style={{ fontFamily: TL.font.mono, fontSize: 20, fontWeight: 800, letterSpacing: "-0.01em", color: TL.fill }}>{v}</span>
     </div>
   );

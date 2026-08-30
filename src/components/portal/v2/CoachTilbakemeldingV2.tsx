@@ -21,7 +21,7 @@ import type { ReactNode } from "react";
 import { TL } from "@/lib/v2/train-lock";
 
 import { Icon, Knapp, TekstOmraade, TomTilstand } from "@/components/v2";
-import { PaperPage, PaperTopp, PaperKropp } from "@/components/portal/v2/PaperChrome";
+import { PaperPage, PaperTopp, PaperKropp } from "@/components/portal/v2/SideChrome";
 import type { CoachTilbakemeldingData } from "@/lib/portal-okt/coach-tilbakemelding-data";
 import { sendTilbakemeldingSvar, kvitterTilbakemelding } from "@/app/portal/coach/tilbakemelding/[oktId]/actions";
 /* ── Lokale byggeklosser (kun T.* — fasitens .kort/.eyebrow/.hjelp) ───── */

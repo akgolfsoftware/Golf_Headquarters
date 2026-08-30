@@ -9,7 +9,9 @@
  * lenker videre til de seks stats-hovedgruppene via StatsRamme sin subnav.
  */
 import Link from "next/link";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+import { AK } from "@/lib/v2/ak-palett";
+
 import { Icon, Kort, Caps, KpiFlis } from "@/components/v2";
 import { StatsRamme, StatsStatusBar, useMobile, type StatsFamilie } from "./stats-ramme";
 import { Eyebrow, HeroT, SeksT, Lede, MCta, Seksjon } from "./marked-ramme";
@@ -145,11 +147,11 @@ export function MarkedStatsHubV2({ norskeIAksjon, kommendeTurneringer, sisteSync
                   alignItems: "center",
                   justifyContent: "space-between",
                   padding: "10px 0",
-                  borderTop: i === 0 ? "none" : `1px solid ${T.border}`,
+                  borderTop: i === 0 ? "none" : `1px solid ${TL.hair}`,
                 }}
               >
-                <span style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2 }}>{label}</span>
-                <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: T.fg }}>{val}</span>
+                <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute }}>{label}</span>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, color: TL.text }}>{val}</span>
               </div>
             ))}
           </Kort>
@@ -158,15 +160,15 @@ export function MarkedStatsHubV2({ norskeIAksjon, kommendeTurneringer, sisteSync
 
       {/* KPI-strip */}
       <Seksjon mobile={mobile} style={{ paddingTop: 0 }}>
-        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: T.gap }}>
+        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: AK.gap }}>
           <KpiFlis label="Denne uken · norske i aksjon" value={norskeIAksjon} />
           <KpiFlis label="Neste 30 dager · turneringer" value={kommendeTurneringer} />
           <Kort>
             <Caps size={9}>Database</Caps>
-            <div style={{ marginTop: 12, fontFamily: T.disp, fontWeight: 700, fontSize: 21, color: T.fg }}>
+            <div style={{ marginTop: 12, fontFamily: TL.font.sans, fontWeight: 700, fontSize: 21, color: TL.text }}>
               Oppdatert
             </div>
-            <div style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, marginTop: 4 }}>{sisteSync}</div>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, marginTop: 4 }}>{sisteSync}</div>
           </Kort>
         </div>
       </Seksjon>
@@ -180,19 +182,19 @@ export function MarkedStatsHubV2({ norskeIAksjon, kommendeTurneringer, sisteSync
               Seks familier.
             </SeksT>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(2, 1fr)", gap: T.gap, marginTop: 24 }}>
+          <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(2, 1fr)", gap: AK.gap, marginTop: 24 }}>
             {familier.map((f) => (
               <Link key={f.id} href={f.href} style={{ textDecoration: "none" }}>
                 <Kort hover style={{ minHeight: 176 }}>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    <span style={{ width: 34, height: 34, borderRadius: 10, background: T.panel2, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
-                      <Icon name={f.icon} size={16} style={{ color: T.lime }} />
+                    <span style={{ width: 34, height: 34, borderRadius: 10, background: TL.dock, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+                      <Icon name={f.icon} size={16} style={{ color: TL.fill }} />
                     </span>
-                    <Icon name="arrow-right" size={16} style={{ color: T.mut }} />
+                    <Icon name="arrow-right" size={16} style={{ color: TL.mute }} />
                   </div>
-                  <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 19, color: T.fg, marginTop: 14, letterSpacing: "-0.015em" }}>{f.navn}</div>
-                  <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.55, margin: "8px 0 0" }}>{f.desc}</p>
-                  <div style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut, marginTop: "auto", paddingTop: 16 }}>
+                  <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 19, color: TL.text, marginTop: 14, letterSpacing: "-0.015em" }}>{f.navn}</div>
+                  <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.55, margin: "8px 0 0" }}>{f.desc}</p>
+                  <div style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute, marginTop: "auto", paddingTop: 16 }}>
                     {f.foot}
                   </div>
                 </Kort>
@@ -206,13 +208,13 @@ export function MarkedStatsHubV2({ norskeIAksjon, kommendeTurneringer, sisteSync
       <Seksjon mobile={mobile}>
         <Kort tint pad={mobile ? "26px 22px" : "40px 44px"} style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1.2fr 1fr", gap: 32 }}>
           <div>
-            <Caps color={T.lime} style={{ marginBottom: 14 }}>
+            <Caps color={TL.fill} style={{ marginBottom: 14 }}>
               PlayerHQ · Treningsdagbok
             </Caps>
             <SeksT mobile={mobile} em="dine egne tall?">
               Vil du følge
             </SeksT>
-            <p style={{ fontFamily: T.ui, fontSize: 14, color: T.fg2, lineHeight: 1.65, margin: "14px 0 0", maxWidth: 440 }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 14, color: TL.mute, lineHeight: 1.65, margin: "14px 0 0", maxWidth: 440 }}>
               PlayerHQ regner ut Strokes Gained automatisk fra hvert scorekort. Du ser hvor strokene tapes, og om treningen virker. Trenden over måneder, ikke synsing.
             </p>
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 22 }}>
@@ -225,16 +227,16 @@ export function MarkedStatsHubV2({ norskeIAksjon, kommendeTurneringer, sisteSync
             </div>
           </div>
           <div>
-            <div style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 700, color: T.fg, marginBottom: 10 }}>Inkludert i abonnement</div>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 700, color: TL.text, marginBottom: 10 }}>Inkludert i abonnement</div>
             <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 8 }}>
               {PLAYERHQ_FORDELER.map((f) => (
-                <li key={f} style={{ display: "flex", alignItems: "flex-start", gap: 8, fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.5 }}>
-                  <Icon name="check" size={13} style={{ color: T.lime, flex: "none", marginTop: 3 }} />
+                <li key={f} style={{ display: "flex", alignItems: "flex-start", gap: 8, fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.5 }}>
+                  <Icon name="check" size={13} style={{ color: TL.fill, flex: "none", marginTop: 3 }} />
                   {f}
                 </li>
               ))}
             </ul>
-            <div style={{ fontFamily: T.ui, fontSize: 13, color: T.fg, marginTop: 16 }}>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text, marginTop: 16 }}>
               <strong>299 kr/mnd</strong> · gratis under beta
             </div>
           </div>
@@ -249,21 +251,21 @@ export function MarkedStatsHubV2({ norskeIAksjon, kommendeTurneringer, sisteSync
             Slik bruker treneren
           </SeksT>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: T.gap, marginTop: 24 }}>
+        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: AK.gap, marginTop: 24 }}>
           {TRENER_STEG.map((s) => (
             <Kort key={s.n}>
               <Caps size={9}>{s.n}</Caps>
-              <Icon name={s.icon} size={22} style={{ color: T.lime, marginTop: 10 }} />
-              <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, color: T.fg, marginTop: 10 }}>{s.tittel}</div>
-              <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.55, margin: "8px 0 0" }}>{s.tekst}</p>
+              <Icon name={s.icon} size={22} style={{ color: TL.fill, marginTop: 10 }} />
+              <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 17, color: TL.text, marginTop: 10 }}>{s.tittel}</div>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.55, margin: "8px 0 0" }}>{s.tekst}</p>
             </Kort>
           ))}
         </div>
 
-        <Kort tint style={{ marginTop: T.gap, flexDirection: mobile ? "column" : "row", alignItems: mobile ? "flex-start" : "center", display: "flex", gap: 18 }}>
+        <Kort tint style={{ marginTop: AK.gap, flexDirection: mobile ? "column" : "row", alignItems: mobile ? "flex-start" : "center", display: "flex", gap: 18 }}>
           <div style={{ flex: 1 }}>
-            <strong style={{ fontFamily: T.ui, fontSize: 14.5, fontWeight: 700, color: T.fg }}>Vil du jobbe med en av våre coacher?</strong>
-            <div style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, marginTop: 6 }}>
+            <strong style={{ fontFamily: TL.font.sans, fontSize: 14.5, fontWeight: 700, color: TL.text }}>Vil du jobbe med en av våre coacher?</strong>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, marginTop: 6 }}>
               Vi har plass til nye spillere på AK Golf Academy i 2026: junior, amatør og proffspillere.
             </div>
           </div>
@@ -279,7 +281,7 @@ export function MarkedStatsHubV2({ norskeIAksjon, kommendeTurneringer, sisteSync
         <SeksT mobile={mobile} em="bedre?">
           Klar for å bli
         </SeksT>
-        <p style={{ fontFamily: T.ui, fontSize: 14, color: T.fg2, margin: "14px auto 0", maxWidth: 440, lineHeight: 1.6 }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 14, color: TL.mute, margin: "14px auto 0", maxWidth: 440, lineHeight: 1.6 }}>
           Det tar fem minutter å sette opp PlayerHQ. Etter første scorekort har du din egen SG-profil.
         </p>
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "center", marginTop: 24 }}>
@@ -290,7 +292,7 @@ export function MarkedStatsHubV2({ norskeIAksjon, kommendeTurneringer, sisteSync
             Se norske i aksjon
           </MCta>
         </div>
-        <div style={{ fontFamily: T.mono, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut, marginTop: 18 }}>
+        <div style={{ fontFamily: TL.font.mono, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute, marginTop: 18 }}>
           Ingen kredittkort nødvendig · avslutt når du vil
         </div>
       </Seksjon>

@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * Widget-pakke — «Stallen i dag» (AgencyOS cockpit).
@@ -10,17 +11,7 @@
 
 import { useRouter } from "next/navigation";
 import type { StallOkterData } from "@/lib/widgets/stall-okter-data";
-import {
-  T,
-  Caps,
-  Kort,
-  Rad,
-  StatusPill,
-  AkseChip,
-  TomTilstand,
-  AvatarInit,
-  Icon,
-} from "@/components/v2";
+import { Caps, Kort, Rad, StatusPill, AkseChip, TomTilstand, AvatarInit, Icon } from "@/components/v2";
 
 export function StallOkterWidget({ data }: { data: StallOkterData }) {
   const router = useRouter();
@@ -58,7 +49,7 @@ export function StallOkterWidget({ data }: { data: StallOkterData }) {
               key={`${o.kilde}-${o.id}`}
               leading={
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 8, flex: "none" }}>
-                  <span style={{ width: 40, fontFamily: T.mono, fontSize: 11, fontWeight: 700, color: o.status === "now" ? T.lime : T.mut }}>
+                  <span style={{ width: 40, fontFamily: TL.font.mono, fontSize: 11, fontWeight: 700, color: o.status === "now" ? TL.fill : TL.mute }}>
                     {o.tid}
                   </span>
                   {o.erGruppe ? (
@@ -66,10 +57,10 @@ export function StallOkterWidget({ data }: { data: StallOkterData }) {
                       style={{
                         width: 26, height: 26, borderRadius: 9999, flex: "none",
                         display: "inline-flex", alignItems: "center", justifyContent: "center",
-                        background: T.panel2, border: `1px solid ${T.border}`,
+                        background: TL.dock, border: `1px solid ${TL.hair}`,
                       }}
                     >
-                      <Icon name="users" size={13} style={{ color: T.mut }} />
+                      <Icon name="users" size={13} style={{ color: TL.mute }} />
                     </span>
                   ) : (
                     <AvatarInit navn={o.deltakerNavn} size={26} />

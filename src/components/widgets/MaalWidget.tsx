@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * Widget-pakke — «Målsetninger» (PlayerHQ).
@@ -11,16 +12,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { MaalWidgetData, MaalWidgetMaal } from "@/lib/widgets/maal-widget-data";
-import {
-  T,
-  Caps,
-  Kort,
-  StatusPill,
-  ProgresjonsBar,
-  TomTilstand,
-  CTAPill,
-  type StatusTone,
-} from "@/components/v2";
+import { Caps, Kort, StatusPill, ProgresjonsBar, TomTilstand, CTAPill, type StatusTone } from "@/components/v2";
 
 const TONE: Record<MaalWidgetMaal["status"], StatusTone> = {
   "on-track": "info",
@@ -75,10 +67,10 @@ export function MaalWidget({ data }: { data: MaalWidgetData }) {
             >
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginBottom: 6 }}>
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 8, minWidth: 0 }}>
-                  <Caps size={9} style={{ display: "inline", color: T.mut }}>{m.typeLabel}</Caps>
+                  <Caps size={9} style={{ display: "inline", color: TL.mute }}>{m.typeLabel}</Caps>
                   <span
                     style={{
-                      fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg,
+                      fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text,
                       overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
                     }}
                   >
@@ -91,11 +83,11 @@ export function MaalWidget({ data }: { data: MaalWidgetData }) {
                 <ProgresjonsBar
                   value={m.pct}
                   max={100}
-                  label={<span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.fg2 }}>{m.sub}</span>}
-                  color={m.status === "behind" ? T.warn : T.lime}
+                  label={<span style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute }}>{m.sub}</span>}
+                  color={m.status === "behind" ? TL.warn : TL.fill}
                 />
               ) : (
-                <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut }}>{m.sub}</span>
+                <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute }}>{m.sub}</span>
               )}
             </div>
           ))}

@@ -22,7 +22,8 @@
 
 import { useState, useTransition, type ReactNode, type CSSProperties } from "react";
 import { TL } from "@/lib/v2/train-lock";
-import { T } from "@/lib/v2/tokens";
+import { AK } from "@/lib/v2/ak-palett";
+
 import { LogoAK, Caps, Icon } from "@/components/v2";
 import { resendGuardianInvitation } from "@/app/auth/onboarding/actions";
 import { logout } from "@/lib/auth/logout";
@@ -189,11 +190,11 @@ function BrandPanel() {
         <circle cx="260" cy="330" r="3.5" fill="color-mix(in srgb, var(--tl-fill) 45%, transparent)" />
       </svg>
       <div style={{ position: "relative" }}>
-        <LogoAK size={30} surface="paper" />
+        <LogoAK size={30} />
       </div>
       <div style={{ flex: 1 }} />
       <div style={{ position: "relative" }}>
-        <LogoAK size={64} surface="paper" style={{ marginBottom: 22 }} />
+        <LogoAK size={64} style={{ marginBottom: 22 }} />
         <h2
           style={{
             fontFamily: TL.font.sans,
@@ -261,7 +262,7 @@ function VenterKort({ spillerNavn, invitasjonEmail }: Props) {
         className="md:hidden"
         style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 18, padding: "6px 0 6px" }}
       >
-        <LogoAK size={46} surface="paper" />
+        <LogoAK size={46} />
       </div>
 
       {/* Hode: klokke-badge + chip + tittel */}
@@ -274,7 +275,7 @@ function VenterKort({ spillerNavn, invitasjonEmail }: Props) {
             width: 60,
             height: 60,
             borderRadius: 16,
-            background: `radial-gradient(120% 120% at 30% 20%, ${TL.dim}, ${T.farge.grafittMerke2A0} 70%), ${TL.dim}`,
+            background: `radial-gradient(120% 120% at 30% 20%, ${TL.dim}, ${AK.farge.grafittMerke2A0} 70%), ${TL.dim}`,
             border: `1px solid ${TL.hair}`,
             color: TL.fill,
           }}
@@ -289,7 +290,7 @@ function VenterKort({ spillerNavn, invitasjonEmail }: Props) {
             gap: 6,
             borderRadius: 9999,
             padding: "4px 11px",
-            background: T.farge.varselMerkeA14,
+            background: AK.farge.varselMerkeA14,
             fontFamily: TL.font.mono,
             fontSize: 9,
             fontWeight: 800,
@@ -329,7 +330,7 @@ function VenterKort({ spillerNavn, invitasjonEmail }: Props) {
           border: `1px solid ${TL.hair}`,
           borderRadius: TL.radius.card,
           padding: 18,
-          boxShadow: `inset 0 1px 0 ${T.farge.hvitA5}, 0 12px 32px ${TL.scrim}`,
+          boxShadow: `inset 0 1px 0 ${AK.farge.hvitA5}, 0 12px 32px ${TL.scrim}`,
         }}
       >
         <Caps size={9}>Status</Caps>

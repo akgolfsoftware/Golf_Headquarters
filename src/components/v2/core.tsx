@@ -28,7 +28,7 @@ import type { HjelpNokkel } from "@/lib/v2/hjelpetekster";
 
 /* Re-eksport av grunnstein-primitivene så søster-familier kan importere fra "./core"
    (samme overflate som mockupens window.V2). */
-export { T, fmtSg, TOM_TALL, fmtTall } from "@/lib/v2/tokens";
+export { fmtSg, TOM_TALL, fmtTall } from "@/lib/v2/format";
 export { useCountUp, useMount } from "@/lib/v2/hooks";
 
 /* Interaksjonspolish (press-scale, fokusring, hover-løft/rad, drag-løft/landing,
@@ -44,27 +44,21 @@ export interface LogoAKProps {
    * Flate prikken sitter på.
    * - "ink": Train-lock mørk skinne/rail (V2Shell) → TL.text + TL.warm
    * - "paper": lys Paper-flate (auth, marketing — låst lys) → Paper-hex
-   * - "auto" (default): følger tema via --p-logo-dot (marketing)
+   * - "auto" (default): følger tema via --tl-warm (marketing)
    */
-  surface?: "paper" | "ink" | "auto";
+  surface?: "ink" | "auto";
 }
 /* Ekte AK Golf-logo (baneform + prikk). Banen følger color-prop.
-   "ink" er Train-lock-skallets rail (TL-tokens) — "paper"/"auto" er
-   Paper-låste flater (auth §4A, marketing) og beholder Paper-hex med vilje. */
+   "ink" er Train-lock-skallets rail (faste TL-verdier); "auto" følger temaet
+   via --tl-text/--tl-warm og er riktig på både lys og mørk flate.
+   Den gamle "paper"-varianten låste logoen til svart #141413 og gjorde den
+   usynlig på mørke flater (målt på /stats 30.08.2026). Fjernet da Paper gikk ut. */
 export function LogoAK({ size = 26, color, style, surface = "auto" }: LogoAKProps) {
   const mark =
     color ??
-    (surface === "ink"
-      ? TL.text
-      : surface === "paper"
-        ? "#141413"
-        : "var(--p-logo-mark)");
+    (surface === "ink" ? TL.text : "var(--tl-text)");
   const prikk =
-    surface === "ink"
-      ? TL.warm
-      : surface === "paper"
-        ? "#B85C3D"
-        : "var(--p-logo-dot)";
+    surface === "ink" ? TL.warm : "var(--tl-warm)";
   return (
     <svg width={size} height={Math.round((size * 470) / 538)} viewBox="0 0 538 470" fill="none" style={style} aria-label="AK Golf">
       <g transform="translate(0,470) scale(0.1,-0.1)">
@@ -240,8 +234,8 @@ export function MikroMeta({ icon, children }: MikroMetaProps) {
 
 /* ── Flater ───────────────────────────────────────────── */
 /* Paper-fasit: layout/Panel (.akhq-panel) — radius var(--r) 12px, padding
-   16/18/18, box-shadow var(--p-shadow) (myk i lys, INGEN skygge i mørk — flaten
-   skiller seg med --p-surface/--p-border der, ikke med skygge). TL.radius.card i
+   16/18/18, box-shadow 0 1px 0 rgba(20,20,19,0.03), 0 18px 40px rgba(20,20,19,0.05) (myk i lys, INGEN skygge i mørk — flaten
+   skiller seg med --tl-elev/--tl-hair der, ikke med skygge). TL.radius.card i
    tokens.ts er fortsatt 20 (delt av andre v2-familier); Kort bruker en lokal
    Paper-radius her fremfor å endre det delte tallet utenfor denne filens scope
    (steg 5B core). R_CARD/SHADOW_CARD bør flyttes inn i T når hele porten
@@ -459,7 +453,7 @@ export interface CTAPillProps {
   enTing?: boolean;
   onClick?: () => void;
 }
-/* Paper-fasit: solid default = ink (--p-cta). enTing=true → clay handling-monopol. */
+/* Paper-fasit: solid default = ink (--tl-fill). enTing=true → clay handling-monopol. */
 export function CTAPill({ icon, children, ghost, full, enTing, onClick }: CTAPillProps) {
   const solidBg = enTing ? TL.fill : TL.fill;
   const solidFg = enTing ? TL.onFill : TL.onFill;
@@ -801,7 +795,7 @@ export function Trend({ series, height = 96, yMin, yMax, baseline = 0, fmt, xLab
       {grid.map((v, i) => (
         <g key={i}>
           <line x1={PADL} x2={W_ - PADR} y1={Y(v)} y2={Y(v)} stroke={`color-mix(in srgb, ${TL.hair} 70%, transparent)`} strokeWidth="1" />
-          <text x={PADL - 7} y={Y(v) + 3} textAnchor="end" style={{ fontFamily: "var(--p-mono)" }} fontSize="8.5" fill={TL.mute}>{f(v)}</text>
+          <text x={PADL - 7} y={Y(v) + 3} textAnchor="end" style={{ fontFamily: "var(--tl-font-mono)" }} fontSize="8.5" fill={TL.mute}>{f(v)}</text>
         </g>
       ))}
       {baseline != null && baseline >= lo && baseline <= hi && (
@@ -813,7 +807,7 @@ export function Trend({ series, height = 96, yMin, yMax, baseline = 0, fmt, xLab
       <circle cx={sisteX} cy={sisteY} r="7" fill={TL.fill} opacity="0.18" />
       <circle cx={sisteX} cy={sisteY} r="3.2" fill={TL.fill} stroke={TL.elev} strokeWidth="1.5" />
       {xLabels && xLabels.map((l, i) => (
-        <text key={i} x={PADL + (i / (xLabels.length - 1)) * iw} y={height - 4} textAnchor={i === 0 ? "start" : i === xLabels.length - 1 ? "end" : "middle"} style={{ fontFamily: "var(--p-mono)" }} fontSize="8" fill={TL.mute} letterSpacing="0.08em">{l}</text>
+        <text key={i} x={PADL + (i / (xLabels.length - 1)) * iw} y={height - 4} textAnchor={i === 0 ? "start" : i === xLabels.length - 1 ? "end" : "middle"} style={{ fontFamily: "var(--tl-font-mono)" }} fontSize="8" fill={TL.mute} letterSpacing="0.08em">{l}</text>
       ))}
     </svg>
   );

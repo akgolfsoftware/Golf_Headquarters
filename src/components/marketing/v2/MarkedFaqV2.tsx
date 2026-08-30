@@ -8,7 +8,7 @@
    COPY: uendret fra forrige versjon (kilde mlegacy/faq). */
 
 import Link from "next/link";
-import { PkShell } from "./paper/PkShell";
+import { PkShell } from "./kit/PkShell";
 
 type Sporsmal = { q: string; a: string };
 

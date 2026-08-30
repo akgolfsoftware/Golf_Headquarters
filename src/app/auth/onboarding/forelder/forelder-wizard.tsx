@@ -20,7 +20,9 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { CreditCard, Mail, Smartphone, Users } from "lucide-react";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+import { AK } from "@/lib/v2/ak-palett";
+
 import {
   saveForelderOnboardingStep,
   completeForelderOnboarding,
@@ -176,11 +178,11 @@ export function ForelderWizard() {
           />
           <div
             className="px-4 py-4"
-            style={{ borderRadius: 14, background: T.panel2, border: `1px solid ${T.border}` }}
+            style={{ borderRadius: 14, background: TL.dock, border: `1px solid ${TL.hair}` }}
           >
-            <p className="text-[13px] leading-relaxed" style={{ color: T.mut }}>
+            <p className="text-[13px] leading-relaxed" style={{ color: TL.mute }}>
               Du får din egen{" "}
-              <strong style={{ fontWeight: 600, color: T.fg }}>foreldre-portal</strong> med
+              <strong style={{ fontWeight: 600, color: TL.text }}>foreldre-portal</strong> med
               innsyn i planer, runder, fakturaer og fremgang. Du kan også sende meldinger til
               Anders direkte.
             </p>
@@ -189,13 +191,13 @@ export function ForelderWizard() {
             className="px-4 py-4"
             style={{
               borderRadius: 14,
-              background: `color-mix(in srgb, ${T.lime} 10%, transparent)`,
-              border: `1px solid color-mix(in srgb, ${T.lime} 35%, transparent)`,
+              background: `color-mix(in srgb, ${TL.fill} 10%, transparent)`,
+              border: `1px solid color-mix(in srgb, ${TL.fill} 35%, transparent)`,
             }}
           >
             <blockquote
               className="italic leading-snug"
-              style={{ fontFamily: T.disp, fontSize: 15, color: T.fg }}
+              style={{ fontFamily: TL.font.sans, fontSize: 15, color: TL.text }}
             >
               Foreldre er den viktigste støttespilleren en ung utøver har. Vi gjør alt vi kan for
               at du skal føle deg trygg på hva vi gjør — og hvorfor.
@@ -203,12 +205,12 @@ export function ForelderWizard() {
             <cite
               className="mt-2 block not-italic"
               style={{
-                fontFamily: T.mono,
+                fontFamily: TL.font.mono,
                 fontSize: 10,
                 fontWeight: 700,
                 letterSpacing: "0.1em",
                 textTransform: "uppercase",
-                color: T.lime,
+                color: TL.fill,
               }}
             >
               Anders Kristiansen · Head Coach
@@ -280,12 +282,12 @@ export function ForelderWizard() {
                     height: 44,
                     borderRadius: 11,
                     cursor: "pointer",
-                    fontFamily: T.ui,
+                    fontFamily: TL.font.sans,
                     fontSize: 13,
                     fontWeight: 600,
-                    background: selected ? T.panel3 : T.panel2,
-                    border: `1px solid ${selected ? T.lime : T.border}`,
-                    color: selected ? T.fg : T.mut,
+                    background: selected ? TL.dim : TL.dock,
+                    border: `1px solid ${selected ? TL.fill : TL.hair}`,
+                    color: selected ? TL.text : TL.mute,
                   }}
                 >
                   {rel.label}
@@ -362,39 +364,39 @@ export function ForelderWizard() {
               hvit tekst — uavhengig av tema, samme idiom som HeroIllo) */}
           <div
             className="flex flex-col gap-1 px-4 py-4"
-            style={{ borderRadius: 16, background: T.forest }}
+            style={{ borderRadius: 16, background: TL.fill }}
           >
             <span
               style={{
-                fontFamily: T.mono,
+                fontFamily: TL.font.mono,
                 fontSize: 10,
                 fontWeight: 700,
                 letterSpacing: "0.12em",
                 textTransform: "uppercase",
-                color: T.farge.hvitA75,
+                color: AK.farge.hvitA75,
               }}
             >
               Abonnement
             </span>
-            <span style={{ fontFamily: T.disp, fontSize: 18, fontWeight: 700, color: T.farge.hvitA96 }}>
+            <span style={{ fontFamily: TL.font.sans, fontSize: 18, fontWeight: 700, color: AK.farge.hvitA96 }}>
               AK Golf Academy PRO
             </span>
             <span
               style={{
-                fontFamily: T.mono,
+                fontFamily: TL.font.mono,
                 fontSize: 28,
                 fontWeight: 700,
                 lineHeight: 1,
                 letterSpacing: "-0.01em",
                 fontVariantNumeric: "tabular-nums",
-                color: T.farge.hvitA96,
+                color: AK.farge.hvitA96,
               }}
             >
               299 kr/mnd
             </span>
             <span
               className="mt-1"
-              style={{ fontFamily: T.mono, fontSize: 10, letterSpacing: "0.04em", color: T.farge.hvitA65 }}
+              style={{ fontFamily: TL.font.mono, fontSize: 10, letterSpacing: "0.04em", color: AK.farge.hvitA65 }}
             >
               Avsluttes når som helst · 30 dagers oppsigelse
             </span>
@@ -422,8 +424,8 @@ export function ForelderWizard() {
                     padding: "12px 8px",
                     textAlign: "center",
                     cursor: "pointer",
-                    background: selected ? T.panel3 : T.panel2,
-                    border: `1px solid ${selected ? T.lime : T.border}`,
+                    background: selected ? TL.dim : TL.dock,
+                    border: `1px solid ${selected ? TL.fill : TL.hair}`,
                   }}
                 >
                   {anbefalt && (
@@ -433,14 +435,14 @@ export function ForelderWizard() {
                         top: -9,
                         right: 6,
                         borderRadius: 4,
-                        background: T.lime,
+                        background: TL.fill,
                         padding: "2px 6px",
-                        fontFamily: T.mono,
+                        fontFamily: TL.font.mono,
                         fontSize: 8,
                         fontWeight: 700,
                         letterSpacing: "0.1em",
                         textTransform: "uppercase",
-                        color: T.onLime,
+                        color: TL.onFill,
                       }}
                     >
                       Anbefalt
@@ -455,26 +457,26 @@ export function ForelderWizard() {
                       height: 32,
                       borderRadius: 9999,
                       background: selected
-                        ? `color-mix(in srgb, ${T.lime} 14%, transparent)`
-                        : T.panel3,
-                      color: selected ? T.lime : T.mut,
+                        ? `color-mix(in srgb, ${TL.fill} 14%, transparent)`
+                        : TL.dim,
+                      color: selected ? TL.fill : TL.mute,
                     }}
                   >
                     <Icon className="h-4 w-4" strokeWidth={1.75} aria-hidden />
                   </span>
                   <span
-                    style={{ fontFamily: T.disp, fontSize: 12.5, fontWeight: 700, letterSpacing: "-0.015em", color: T.fg }}
+                    style={{ fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 700, letterSpacing: "-0.015em", color: TL.text }}
                   >
                     {label}
                   </span>
                   <span
                     style={{
-                      fontFamily: T.mono,
+                      fontFamily: TL.font.mono,
                       fontSize: 8,
                       fontWeight: 600,
                       lineHeight: 1.4,
                       letterSpacing: "0.04em",
-                      color: T.mut,
+                      color: TL.mute,
                     }}
                   >
                     {sub}
@@ -500,9 +502,9 @@ export function ForelderWizard() {
             className="px-4 py-3 text-[13px]"
             style={{
               borderRadius: 11,
-              border: `1px solid color-mix(in srgb, ${T.down} 30%, transparent)`,
-              background: `color-mix(in srgb, ${T.down} 10%, transparent)`,
-              color: T.down,
+              border: `1px solid color-mix(in srgb, ${TL.danger} 30%, transparent)`,
+              background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`,
+              color: TL.danger,
             }}
             role="alert"
           >

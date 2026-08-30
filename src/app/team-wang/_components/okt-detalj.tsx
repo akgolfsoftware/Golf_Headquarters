@@ -1,5 +1,5 @@
 "use client";
-import { T } from "@/lib/v2/tokens";
+import { AK } from "@/lib/v2/ak-palett";
 
 /**
  * Øktdetalj — én treningsøkt.
@@ -145,7 +145,7 @@ export function OktDetalj({
             margin: 0,
             fontSize: 15,
             lineHeight: 1.55,
-            color: T.farge.hvitA90,
+            color: AK.farge.hvitA90,
             maxWidth: 660,
           }}
         >
@@ -491,7 +491,7 @@ function StatusBadge({
       ? "var(--wang-mint)"
       : farge === "hvit"
         ? "var(--white)"
-        : T.farge.hvitA14;
+        : AK.farge.hvitA14;
   const tekst = farge === "dempet" ? "var(--text-on-dark)" : "var(--wang-navy)";
   return (
     <span
@@ -523,7 +523,7 @@ function Pill({ children }: { children: React.ReactNode }) {
         height: 28,
         padding: "0 13px",
         borderRadius: 999,
-        background: T.farge.hvitA14,
+        background: AK.farge.hvitA14,
         color: "var(--text-on-dark)",
         fontFamily: "var(--font-brand)",
         fontWeight: 700,

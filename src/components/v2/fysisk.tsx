@@ -9,7 +9,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { TL } from "@/lib/v2/train-lock";
-import { T } from "@/lib/v2/tokens";
+import { AK } from "@/lib/v2/ak-palett";
+
 import { Icon } from "@/components/v2/icon";
 import { HjelpTips } from "@/components/v2/hjelp";
 import { Kort, Caps, DeltaChip } from "./core";
@@ -299,8 +300,8 @@ export function FysOktKort({
       ...(loftet ? { transform: "scale(1.03) rotate(2deg)", boxShadow: `0 18px 40px ${TL.scrim}`, borderColor: TL.hair } : null),
       transition: "transform 180ms cubic-bezier(0.2,0,0,1), box-shadow 180ms" }}>
       <Icon name="grip-vertical" size={14} style={{ color: TL.mute, flex: "none" }} />
-      <span style={{ width: 36, height: 36, flex: "none", borderRadius: 10, background: `color-mix(in srgb,${T.ax.FYS} 13%,transparent)`, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
-        <Icon name={t.icon} size={16} style={{ color: T.ax.FYS }} />
+      <span style={{ width: 36, height: 36, flex: "none", borderRadius: 10, background: `color-mix(in srgb,${AK.ax.FYS} 13%,transparent)`, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+        <Icon name={t.icon} size={16} style={{ color: AK.ax.FYS }} />
       </span>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{tittel}</div>

@@ -269,11 +269,11 @@ function BrandPanel() {
         <circle cx="260" cy="330" r="3.5" fill="color-mix(in srgb, var(--tl-fill) 45%, transparent)" />
       </svg>
       <div style={{ position: "relative" }}>
-        <LogoAK size={30} surface="paper" />
+        <LogoAK size={30} />
       </div>
       <div style={{ flex: 1 }} />
       <div style={{ position: "relative" }}>
-        <LogoAK size={64} surface="paper" style={{ marginBottom: 22 }} />
+        <LogoAK size={64} style={{ marginBottom: 22 }} />
         <h2
           style={{
             fontFamily: TL.font.sans,
@@ -439,7 +439,7 @@ function LoginKort() {
           }}
         />
         <div style={{ position: "relative" }}>
-          <LogoAK size={46} surface="paper" />
+          <LogoAK size={46} />
         </div>
       </div>
 

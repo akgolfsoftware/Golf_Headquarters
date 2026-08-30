@@ -53,10 +53,6 @@ export const TL_SCOPE = {
   "--v2-warn": "var(--tl-warn)",
   "--v2-info": "var(--tl-mute)",
   "--v2-font-mono": "var(--tl-font-mono)",
-  // ── p-laget (fonter — WARM peker direkte på --tl-warm i wb-visuelt.ts) ──
-  "--p-ui": "var(--tl-font-sans)",
-  "--p-disp": "var(--tl-font-sans)",
-  "--p-font-mono": "var(--tl-font-mono)",
   // ── shadcn-basen (Input/Select/Dialog i ui/) ──
   "--color-background": "var(--tl-scene)",
   "--color-foreground": "var(--tl-text)",

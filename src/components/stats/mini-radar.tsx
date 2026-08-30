@@ -37,7 +37,7 @@ export function MiniRadar({
       return `${cx + Math.cos(a) * r * k},${cy + Math.sin(a) * r * k}`;
     }).join(" ");
     return (
-      <polygon key={i} points={pts} fill="none" stroke="var(--p-border)" strokeWidth="1" />
+      <polygon key={i} points={pts} fill="none" stroke="var(--tl-hair)" strokeWidth="1" />
     );
   });
 
@@ -53,30 +53,30 @@ export function MiniRadar({
             y1={cy}
             x2={cx + Math.cos(a) * r}
             y2={cy + Math.sin(a) * r}
-            stroke="var(--p-border)"
+            stroke="var(--tl-hair)"
             strokeWidth="1"
           />
         );
       })}
       <path
         d={buildPath(values2)}
-        fill="var(--p-mid)"
+        fill="var(--tl-mute)"
         fillOpacity="0.08"
-        stroke="var(--p-mid)"
+        stroke="var(--tl-mute)"
         strokeOpacity="0.4"
         strokeWidth="1"
         strokeDasharray="2 2"
       />
       <path
         d={buildPath(values)}
-        fill="var(--p-info)"
+        fill="var(--tl-viz-target)"
         fillOpacity="0.28"
-        stroke="var(--p-info)"
+        stroke="var(--tl-viz-target)"
         strokeWidth="1.5"
       />
       {values.map((v, i) => {
         const [x, y] = pt(v, i);
-        return <circle key={i} cx={x} cy={y} r="2.5" fill="var(--p-info)" />;
+        return <circle key={i} cx={x} cy={y} r="2.5" fill="var(--tl-viz-target)" />;
       })}
     </svg>
   );

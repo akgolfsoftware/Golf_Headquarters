@@ -150,7 +150,7 @@ export function OpptattTidV2({ rader }: Props) {
                 onChange={setPrivat}
               />
             </SkjemaFelt>
-            {feil && <Caps color="var(--p-dn)">{feil}</Caps>}
+            {feil && <Caps color="var(--tl-danger)">{feil}</Caps>}
             <Knapp full disabled={venter || tittel.trim().length === 0} onClick={lagre}>
               {venter ? "Lagrer …" : "Lagre"}
             </Knapp>

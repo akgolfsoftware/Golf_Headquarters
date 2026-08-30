@@ -14,19 +14,21 @@
  */
 
 import { Check, Home, Info, Plus, Sun, Trash2, type LucideIcon } from "lucide-react";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+import { AK } from "@/lib/v2/ak-palett";
+
 import { cn } from "@/lib/utils";
 
 // Placeholder-farge + siste-rad-regler (.obf-input/.obf-sumrow) bor statisk i
 // src/styles/v2/motion.css — de kan ikke settes inline.
 
 const CAPS: React.CSSProperties = {
-  fontFamily: T.mono,
+  fontFamily: TL.font.mono,
   fontSize: 10,
   fontWeight: 700,
   letterSpacing: "0.1em",
   textTransform: "uppercase",
-  color: T.mut,
+  color: TL.mute,
 };
 
 // ── Felt-label + input ──────────────────────────────────────────
@@ -51,12 +53,12 @@ export function Field({
           <span
             style={{
               marginLeft: 7,
-              fontFamily: T.mono,
+              fontFamily: TL.font.mono,
               fontSize: 9,
               fontWeight: 600,
               letterSpacing: "0.04em",
               textTransform: "none",
-              color: T.mut,
+              color: TL.mute,
               opacity: 0.85,
             }}
           >
@@ -81,14 +83,14 @@ export function TextField(
         boxSizing: "border-box",
         appearance: "none",
         height: 44,
-        background: T.panel2,
-        border: `1px solid ${T.borderS}`,
+        background: TL.dock,
+        border: `1px solid ${TL.hair}`,
         borderRadius: 11,
         padding: "0 13px",
-        fontFamily: mono ? T.mono : T.ui,
+        fontFamily: mono ? TL.font.mono : TL.font.sans,
         fontVariantNumeric: mono ? "tabular-nums" : undefined,
         fontSize: 13.5,
-        color: T.fg,
+        color: TL.text,
         outline: "none",
         lineHeight: 1.4,
         ...style,
@@ -109,7 +111,7 @@ export function HeroIllo({ label }: { label: string }) {
         height: 88,
         overflow: "hidden",
         borderRadius: 16,
-        background: T.forest,
+        background: TL.fill,
         padding: "8px 12px",
       }}
     >
@@ -122,7 +124,7 @@ export function HeroIllo({ label }: { label: string }) {
           opacity: 0.07,
           pointerEvents: "none",
           backgroundImage:
-            `repeating-linear-gradient(135deg, transparent 0 12px, ${T.farge.hvitA90} 12px 24px)`,
+            `repeating-linear-gradient(135deg, transparent 0 12px, ${AK.farge.hvitA90} 12px 24px)`,
         }}
       />
       <span
@@ -135,11 +137,11 @@ export function HeroIllo({ label }: { label: string }) {
           width: 28,
           height: 28,
           borderRadius: 8,
-          background: T.farge.hvitA14,
-          fontFamily: T.disp,
+          background: AK.farge.hvitA14,
+          fontFamily: TL.font.sans,
           fontSize: 13,
           fontWeight: 700,
-          color: T.farge.hvitA95,
+          color: AK.farge.hvitA95,
         }}
       >
         ak
@@ -149,12 +151,12 @@ export function HeroIllo({ label }: { label: string }) {
           position: "relative",
           zIndex: 1,
           marginLeft: "auto",
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           fontSize: 9,
           fontWeight: 700,
           letterSpacing: "0.12em",
           textTransform: "uppercase",
-          color: T.farge.hvitA75,
+          color: AK.farge.hvitA75,
         }}
       >
         {label}
@@ -172,14 +174,14 @@ export function InfoNote({ children }: { children: React.ReactNode }) {
         gridTemplateColumns: "14px 1fr",
         gap: 8,
         borderRadius: 11,
-        background: T.panel2,
-        border: `1px solid ${T.border}`,
-        borderLeft: `3px solid ${T.lime}`,
+        background: TL.dock,
+        border: `1px solid ${TL.hair}`,
+        borderLeft: `3px solid ${TL.fill}`,
         padding: "10px 12px",
       }}
     >
-      <Info size={14} strokeWidth={1.75} style={{ marginTop: 2, color: T.lime }} aria-hidden />
-      <p style={{ margin: 0, fontFamily: T.ui, fontSize: 11.5, lineHeight: 1.55, color: T.fg }}>
+      <Info size={14} strokeWidth={1.75} style={{ marginTop: 2, color: TL.fill }} aria-hidden />
+      <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 11.5, lineHeight: 1.55, color: TL.text }}>
         {children}
       </p>
     </div>
@@ -203,9 +205,9 @@ function CheckCircle({ selected }: { selected: boolean }) {
         height: 22,
         flex: "none",
         borderRadius: 9999,
-        background: selected ? T.lime : "transparent",
-        border: `1.5px solid ${selected ? T.lime : T.borderS}`,
-        color: selected ? T.onHandling : "transparent",
+        background: selected ? TL.fill : "transparent",
+        border: `1.5px solid ${selected ? TL.fill : TL.hair}`,
+        color: selected ? TL.onFill : "transparent",
       }}
     >
       {selected && <Check size={13} strokeWidth={2.5} aria-hidden />}
@@ -224,8 +226,8 @@ function IkonKvadrat({ icon: Icon, selected }: { icon: LucideIcon; selected: boo
         height: 44,
         flex: "none",
         borderRadius: 12,
-        background: selected ? `color-mix(in srgb, ${T.lime} 14%, transparent)` : T.panel3,
-        color: selected ? T.lime : T.fg2,
+        background: selected ? `color-mix(in srgb, ${TL.fill} 14%, transparent)` : TL.dim,
+        color: selected ? TL.fill : TL.mute,
       }}
     >
       <Icon size={21} strokeWidth={1.75} aria-hidden />
@@ -268,17 +270,17 @@ export function OptionRow({
       className="v2-press v2-focus"
       style={{
         ...VALGKORT,
-        background: selected ? T.panel3 : T.panel2,
-        border: `1px solid ${selected ? T.lime : T.border}`,
+        background: selected ? TL.dim : TL.dock,
+        border: `1px solid ${selected ? TL.fill : TL.hair}`,
       }}
     >
       {Icon && <IkonKvadrat icon={Icon} selected={selected} />}
       <span style={{ minWidth: 0, flex: 1, lineHeight: 1.3 }}>
-        <span style={{ display: "block", fontFamily: T.ui, fontSize: 14.5, fontWeight: 600, color: T.fg }}>
+        <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 14.5, fontWeight: 600, color: TL.text }}>
           {label}
         </span>
         {sub && (
-          <span style={{ display: "block", marginTop: 2, fontFamily: T.mono, fontSize: 10.5, color: T.mut }}>
+          <span style={{ display: "block", marginTop: 2, fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute }}>
             {sub}
           </span>
         )}
@@ -287,11 +289,11 @@ export function OptionRow({
         <span
           style={{
             flex: "none",
-            fontFamily: T.mono,
+            fontFamily: TL.font.mono,
             fontSize: 12,
             fontWeight: 700,
             fontVariantNumeric: "tabular-nums",
-            color: selected ? T.lime : T.fg,
+            color: selected ? TL.fill : TL.text,
           }}
         >
           {trailing}
@@ -328,10 +330,10 @@ export function PillToggle({
         height: 32,
         padding: "0 12px",
         borderRadius: 9999,
-        background: selected ? T.lime : T.panel3,
-        border: `1px solid ${selected ? "transparent" : T.borderS}`,
-        color: selected ? T.onHandling : T.fg2,
-        fontFamily: T.mono,
+        background: selected ? TL.fill : TL.dim,
+        border: `1px solid ${selected ? "transparent" : TL.hair}`,
+        color: selected ? TL.onFill : TL.mute,
+        fontFamily: TL.font.mono,
         fontSize: 11,
         fontWeight: 600,
         letterSpacing: "0.03em",
@@ -374,8 +376,8 @@ export function ProfileCard({
         padding: "12px 8px",
         textAlign: "center",
         cursor: "pointer",
-        background: selected ? T.panel3 : T.panel2,
-        border: `1px solid ${selected ? T.lime : T.border}`,
+        background: selected ? TL.dim : TL.dock,
+        border: `1px solid ${selected ? TL.fill : TL.hair}`,
       }}
     >
       <span
@@ -386,23 +388,23 @@ export function ProfileCard({
           width: 32,
           height: 32,
           borderRadius: 9999,
-          background: selected ? `color-mix(in srgb, ${T.lime} 14%, transparent)` : T.panel3,
-          color: selected ? T.lime : T.mut,
+          background: selected ? `color-mix(in srgb, ${TL.fill} 14%, transparent)` : TL.dim,
+          color: selected ? TL.fill : TL.mute,
         }}
       >
         <Icon size={15} strokeWidth={1.75} aria-hidden />
       </span>
-      <span style={{ fontFamily: T.disp, fontSize: 12.5, fontWeight: 700, letterSpacing: "-0.015em", color: T.fg }}>
+      <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 700, letterSpacing: "-0.015em", color: TL.text }}>
         {name}
       </span>
       <span
         style={{
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           fontSize: 8,
           fontWeight: 600,
           letterSpacing: "0.04em",
           lineHeight: 1.4,
-          color: T.mut,
+          color: TL.mute,
         }}
       >
         {desc}
@@ -417,15 +419,15 @@ export function ImplicationBanner({ children }: { children: React.ReactNode }) {
     <div
       style={{
         borderRadius: 10,
-        background: `color-mix(in srgb, ${T.lime} 12%, transparent)`,
+        background: `color-mix(in srgb, ${TL.fill} 12%, transparent)`,
         padding: "8px 12px",
-        fontFamily: T.mono,
+        fontFamily: TL.font.mono,
         fontSize: 9,
         fontWeight: 700,
         letterSpacing: "0.04em",
         textTransform: "uppercase",
         lineHeight: 1.7,
-        color: T.lime,
+        color: TL.fill,
       }}
     >
       {children}
@@ -455,17 +457,17 @@ export function FacilityRow({
       className="v2-press v2-focus"
       style={{
         ...VALGKORT,
-        background: selected ? T.panel3 : T.panel2,
-        border: `1px solid ${selected ? T.lime : T.border}`,
+        background: selected ? TL.dim : TL.dock,
+        border: `1px solid ${selected ? TL.fill : TL.hair}`,
       }}
     >
       <IkonKvadrat icon={Icon} selected={selected} />
       <span style={{ minWidth: 0, flex: 1, lineHeight: 1.3 }}>
-        <span style={{ display: "block", fontFamily: T.ui, fontSize: 14.5, fontWeight: 600, color: T.fg }}>
+        <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 14.5, fontWeight: 600, color: TL.text }}>
           {name}
         </span>
         {sub && (
-          <span style={{ display: "block", marginTop: 2, fontFamily: T.mono, fontSize: 10.5, color: T.mut }}>
+          <span style={{ display: "block", marginTop: 2, fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute }}>
             {sub}
           </span>
         )}
@@ -505,8 +507,8 @@ export function PlaceRow({
         gap: 9,
         borderRadius: 13,
         padding: 12,
-        background: T.panel2,
-        border: `1px solid ${T.border}`,
+        background: TL.dock,
+        border: `1px solid ${TL.hair}`,
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -531,9 +533,9 @@ export function PlaceRow({
             height: 40,
             flexShrink: 0,
             borderRadius: 11,
-            background: T.panel3,
-            border: `1px solid ${T.borderS}`,
-            color: T.mut,
+            background: TL.dim,
+            border: `1px solid ${TL.hair}`,
+            color: TL.mute,
             cursor: "pointer",
           }}
         >
@@ -574,9 +576,9 @@ export function AddRowButton({ label, onClick }: { label: string; onClick: () =>
         height: 44,
         borderRadius: 11,
         background: "transparent",
-        border: `1px dashed ${T.border}`,
-        color: T.fg2,
-        fontFamily: T.ui,
+        border: `1px dashed ${TL.hair}`,
+        color: TL.mute,
+        fontFamily: TL.font.sans,
         fontSize: 13.5,
         fontWeight: 600,
         cursor: "pointer",
@@ -642,27 +644,27 @@ export function FrequencySegment({
     <div
       style={{
         borderRadius: 12,
-        background: T.panel2,
-        border: `1px solid ${T.border}`,
+        background: TL.dock,
+        border: `1px solid ${TL.hair}`,
         padding: 10,
       }}
     >
       <div style={{ display: "flex", alignItems: "baseline", gap: 5, marginBottom: 8 }}>
         <span
           style={{
-            fontFamily: T.mono,
+            fontFamily: TL.font.mono,
             fontSize: 26,
             fontWeight: 700,
             lineHeight: 1,
             letterSpacing: "-0.025em",
             fontVariantNumeric: "tabular-nums",
-            color: T.fg,
+            color: TL.text,
           }}
         >
           {value}
         </span>
         {unit && (
-          <span style={{ fontFamily: T.mono, fontSize: 10.5, fontWeight: 700, letterSpacing: "0.04em", color: T.mut }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 10.5, fontWeight: 700, letterSpacing: "0.04em", color: TL.mute }}>
             {unit}
           </span>
         )}
@@ -683,13 +685,13 @@ export function FrequencySegment({
                 flex: 1,
                 borderRadius: 9,
                 border: "1px solid transparent",
-                fontFamily: T.mono,
+                fontFamily: TL.font.mono,
                 fontSize: 13,
                 fontWeight: 700,
                 fontVariantNumeric: "tabular-nums",
                 cursor: "pointer",
-                background: on ? T.lime : T.panel3,
-                color: on ? T.onHandling : T.fg2,
+                background: on ? TL.fill : TL.dim,
+                color: on ? TL.onFill : TL.mute,
               }}
             >
               {n}
@@ -734,8 +736,8 @@ export function CoachCard({
         padding: "12px 14px",
         textAlign: "left",
         cursor: "pointer",
-        background: selected ? T.panel3 : T.panel2,
-        border: `1px solid ${selected ? T.lime : T.border}`,
+        background: selected ? TL.dim : TL.dock,
+        border: `1px solid ${selected ? TL.fill : TL.hair}`,
       }}
     >
       {selected && (
@@ -745,14 +747,14 @@ export function CoachCard({
             top: 10,
             right: 10,
             borderRadius: 4,
-            background: T.handling,
+            background: TL.fill,
             padding: "2px 6px",
-            fontFamily: T.mono,
+            fontFamily: TL.font.mono,
             fontSize: 8,
             fontWeight: 700,
             letterSpacing: "0.1em",
             textTransform: "uppercase",
-            color: T.onHandling,
+            color: TL.onFill,
           }}
         >
           Valgt
@@ -767,22 +769,22 @@ export function CoachCard({
           height: 44,
           flex: "none",
           borderRadius: 9999,
-          background: selected ? T.lime : T.panel3,
-          border: `1px solid ${selected ? "transparent" : T.border}`,
-          fontFamily: T.mono,
+          background: selected ? TL.fill : TL.dim,
+          border: `1px solid ${selected ? "transparent" : TL.hair}`,
+          fontFamily: TL.font.mono,
           fontSize: 13,
           fontWeight: 700,
-          color: selected ? T.onHandling : T.fg2,
+          color: selected ? TL.onFill : TL.mute,
         }}
       >
         {initials}
       </span>
       <span style={{ minWidth: 0, lineHeight: 1.3 }}>
-        <span style={{ display: "block", fontFamily: T.disp, fontSize: 13.5, fontWeight: 700, letterSpacing: "-0.015em", color: T.fg }}>
+        <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 700, letterSpacing: "-0.015em", color: TL.text }}>
           {name}
         </span>
         <span style={{ ...CAPS, display: "block", marginTop: 2, fontSize: 9 }}>{role}</span>
-        <span style={{ display: "block", marginTop: 2, fontFamily: T.ui, fontSize: 11, lineHeight: 1.45, color: T.mut }}>
+        <span style={{ display: "block", marginTop: 2, fontFamily: TL.font.sans, fontSize: 11, lineHeight: 1.45, color: TL.mute }}>
           {meta}
         </span>
       </span>
@@ -826,8 +828,8 @@ export function PlanCard({
         padding: "15px 16px",
         textAlign: "left",
         cursor: "pointer",
-        background: selected ? T.panel3 : T.panel2,
-        border: `1px solid ${selected ? T.lime : T.border}`,
+        background: selected ? TL.dim : TL.dock,
+        border: `1px solid ${selected ? TL.fill : TL.hair}`,
       }}
     >
       {recommended && selected && (
@@ -837,14 +839,14 @@ export function PlanCard({
             top: -9,
             right: 14,
             borderRadius: 4,
-            background: T.handling,
+            background: TL.fill,
             padding: "2px 6px",
-            fontFamily: T.mono,
+            fontFamily: TL.font.mono,
             fontSize: 8,
             fontWeight: 700,
             letterSpacing: "0.1em",
             textTransform: "uppercase",
-            color: T.onHandling,
+            color: TL.onFill,
           }}
         >
           Anbefalt
@@ -852,42 +854,42 @@ export function PlanCard({
       )}
       <span
         style={{
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           fontSize: 10.5,
           fontWeight: 700,
           letterSpacing: "0.14em",
           textTransform: "uppercase",
-          color: selected ? T.lime : T.mut,
+          color: selected ? TL.fill : TL.mute,
         }}
       >
         {tier}
       </span>
       <span
         style={{
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           fontSize: 22,
           fontWeight: 700,
           lineHeight: 1,
           fontVariantNumeric: "tabular-nums",
-          color: T.fg,
+          color: TL.text,
         }}
       >
         {price}
-        {per && <span style={{ marginLeft: 4, fontSize: 12.5, fontWeight: 500, color: T.mut }}>{per}</span>}
+        {per && <span style={{ marginLeft: 4, fontSize: 12.5, fontWeight: 500, color: TL.mute }}>{per}</span>}
       </span>
       <span style={{ display: "flex", flexDirection: "column", gap: 6 }}>
         {features.map((f) => (
           <span
             key={f}
-            style={{ display: "flex", alignItems: "flex-start", gap: 6, fontFamily: T.ui, fontSize: 12, lineHeight: 1.45, color: T.fg2 }}
+            style={{ display: "flex", alignItems: "flex-start", gap: 6, fontFamily: TL.font.sans, fontSize: 12, lineHeight: 1.45, color: TL.mute }}
           >
-            <Check size={12} strokeWidth={2} style={{ marginTop: 3, flex: "none", color: T.up }} aria-hidden />
+            <Check size={12} strokeWidth={2} style={{ marginTop: 3, flex: "none", color: TL.ok }} aria-hidden />
             {f}
           </span>
         ))}
       </span>
       {footnote && (
-        <span style={{ fontFamily: T.mono, fontSize: 9.5, color: T.mut }}>{footnote}</span>
+        <span style={{ fontFamily: TL.font.mono, fontSize: 9.5, color: TL.mute }}>{footnote}</span>
       )}
     </button>
   );
@@ -904,11 +906,11 @@ export function SummaryRow({ label, value }: { label: string; value: React.React
         justifyContent: "space-between",
         gap: 12,
         padding: "9px 0",
-        borderBottom: `1px solid ${T.border}`,
+        borderBottom: `1px solid ${TL.hair}`,
       }}
     >
       <span style={{ ...CAPS, flex: "none", letterSpacing: "0.06em" }}>{label}</span>
-      <span style={{ textAlign: "right", fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>
+      <span style={{ textAlign: "right", fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text }}>
         {value}
       </span>
     </div>
@@ -920,8 +922,8 @@ export function SummaryCard({ children }: { children: React.ReactNode }) {
     <div
       style={{
         borderRadius: 14,
-        background: T.panel2,
-        border: `1px solid ${T.border}`,
+        background: TL.dock,
+        border: `1px solid ${TL.hair}`,
         padding: "15px 16px",
       }}
     >
@@ -959,8 +961,8 @@ export function AgreeItem({
         padding: "13px 15px",
         textAlign: "left",
         cursor: "pointer",
-        background: checked ? T.panel3 : T.panel2,
-        border: `1px solid ${checked ? T.lime : T.border}`,
+        background: checked ? TL.dim : TL.dock,
+        border: `1px solid ${checked ? TL.fill : TL.hair}`,
       }}
     >
       <span
@@ -973,18 +975,18 @@ export function AgreeItem({
           height: 20,
           flex: "none",
           borderRadius: 6,
-          background: checked ? T.lime : T.panel2,
-          border: `1px solid ${checked ? "transparent" : T.borderS}`,
-          color: T.onHandling,
+          background: checked ? TL.fill : TL.dock,
+          border: `1px solid ${checked ? "transparent" : TL.hair}`,
+          color: TL.onFill,
         }}
       >
         {checked && <Check size={13} strokeWidth={2.5} aria-hidden />}
       </span>
       <span style={{ lineHeight: 1.4 }}>
-        <span style={{ display: "block", fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>
+        <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>
           {title}
         </span>
-        <span style={{ display: "block", marginTop: 2, fontFamily: T.ui, fontSize: 12, lineHeight: 1.5, color: T.mut }}>
+        <span style={{ display: "block", marginTop: 2, fontFamily: TL.font.sans, fontSize: 12, lineHeight: 1.5, color: TL.mute }}>
           {desc}
         </span>
       </span>
@@ -998,13 +1000,13 @@ export function SecurityStrip({ children }: { children: React.ReactNode }) {
     <div
       style={{
         borderRadius: 12,
-        border: `1px solid color-mix(in srgb, ${T.lime} 40%, transparent)`,
-        background: `color-mix(in srgb, ${T.lime} 10%, transparent)`,
+        border: `1px solid color-mix(in srgb, ${TL.fill} 40%, transparent)`,
+        background: `color-mix(in srgb, ${TL.fill} 10%, transparent)`,
         padding: "11px 15px",
-        fontFamily: T.ui,
+        fontFamily: TL.font.sans,
         fontSize: 12.5,
         lineHeight: 1.55,
-        color: T.fg,
+        color: TL.text,
       }}
     >
       {children}

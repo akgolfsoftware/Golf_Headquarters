@@ -24,7 +24,7 @@ import { TL } from "@/lib/v2/train-lock";
 
 import { MIN_SLAG } from "@/lib/domain/gapping";
 import { kortKolleNavn, type UtstyrFlateData, type UtstyrBagFelt } from "@/lib/portal/utstyr-data";
-import { PaperPage, PaperTopp, PaperKropp } from "./PaperChrome";
+import { PaperPage, PaperTopp, PaperKropp } from "./SideChrome";
 /* ── Lokale byggeklosser (kun T.*) ─────────────────────────────────── */
 
 function Kort({ eyebrow, children }: { eyebrow?: string; children: ReactNode }) {

@@ -18,7 +18,8 @@
 import type { ReactNode, CSSProperties } from "react";
 import Link from "next/link";
 import { TL } from "@/lib/v2/train-lock";
-import { T } from "@/lib/v2/tokens";
+import { AK } from "@/lib/v2/ak-palett";
+
 import { LogoAK, Caps, Icon } from "@/components/v2";
 
 /* ── Lokale auth-byggeklosser (1:1 med LoggetUtV2-idiomet) ─────────── */
@@ -124,11 +125,11 @@ function BrandPanel() {
         <circle cx="260" cy="330" r="3.5" fill="color-mix(in srgb, var(--tl-fill) 45%, transparent)" />
       </svg>
       <div style={{ position: "relative" }}>
-        <LogoAK size={30} surface="paper" />
+        <LogoAK size={30} />
       </div>
       <div style={{ flex: 1 }} />
       <div style={{ position: "relative" }}>
-        <LogoAK size={64} surface="paper" style={{ marginBottom: 22 }} />
+        <LogoAK size={64} style={{ marginBottom: 22 }} />
         <h2
           style={{
             fontFamily: TL.font.sans,
@@ -176,7 +177,7 @@ function CheckEmailKort() {
           padding: "6px 0 2px",
         }}
       >
-        <LogoAK size={46} surface="paper" />
+        <LogoAK size={46} />
       </Link>
 
       <div
@@ -190,7 +191,7 @@ function CheckEmailKort() {
           alignItems: "center",
           textAlign: "center",
           gap: 0,
-          boxShadow: `inset 0 1px 0 ${T.farge.hvitA5}, 0 12px 32px ${TL.scrim}`,
+          boxShadow: `inset 0 1px 0 ${AK.farge.hvitA5}, 0 12px 32px ${TL.scrim}`,
         }}
       >
         {/* Mail-check-merke i lime-tintet sirkel */}

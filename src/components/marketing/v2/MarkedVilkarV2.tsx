@@ -7,7 +7,7 @@
    er byttet. Ingen omskriving av juridisk innhold. */
 
 import Link from "next/link";
-import { PkShell } from "./paper/PkShell";
+import { PkShell } from "./kit/PkShell";
 
 const SIST_OPPDATERT = "12. mai 2026";
 

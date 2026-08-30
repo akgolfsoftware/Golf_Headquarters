@@ -191,7 +191,7 @@ if (markupTreff.length) {
   rødt = true;
   console.error(
     "check-token-gap: hex-literaler i className eller SVG-attributt funnet.\n" +
-      'Bruk var(--p-*) — også i Tailwind arbitrary values (bg-[var(--p-soft)])\n' +
+      'Bruk var(--tl-*) — også i Tailwind arbitrary values (bg-[var(--tl-dock)])\n' +
       "og i fill/stroke. Er verdien bevisst tema-uavhengig, legg fila i\n" +
       "ALLOW_MARKUP i dette scriptet med én linje begrunnelse.\n"
   );

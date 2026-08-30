@@ -10,7 +10,7 @@ export default function manifest(): MetadataRoute.Manifest {
     orientation: "portrait",
     // Web manifest krever literal hex (kan ikke referere CSS-variabler).
     // start_url er /portal, og app-flatene er LYS som standard — splash
-    // speiler derfor LYS --v2-bg, som nå er Paper-fasitens --p-bg (#faf9f5).
+    // speiler derfor LYS --v2-bg, som nå er Paper-fasitens --tl-scene (#faf9f5).
     // theme_color er blekk, som `viewport.themeColor` i src/app/layout.tsx —
     // samme verdi som ikonets bakgrunn, så chrome og ikon henger sammen.
     background_color: "#faf9f5",

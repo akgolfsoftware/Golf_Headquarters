@@ -7,7 +7,9 @@
  * hentes 1:1 server-side i page.tsx og formateres til strenger der.
  */
 import Link from "next/link";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+import { AK } from "@/lib/v2/ak-palett";
+
 import { Icon, Kort, Caps, KpiFlis, DataTabell, TomTilstand } from "@/components/v2";
 import type { DataTabellRow } from "@/components/v2";
 import { StatsRamme, StatsStatusBar, useMobile } from "./stats-ramme";
@@ -87,7 +89,7 @@ export function StatsUkaV2({
         <HeroT mobile={mobile} em="denne uken.">
           Norsk golf
         </HeroT>
-        <p style={{ fontFamily: T.ui, fontSize: 15, color: T.fg2, marginTop: 18, maxWidth: 520, lineHeight: 1.6 }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 15, color: TL.mute, marginTop: 18, maxWidth: 520, lineHeight: 1.6 }}>
           Alle norske resultater, ukens spiller og hva som venter neste uke, på 60 sekunder.
         </p>
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 20 }}>
@@ -102,7 +104,7 @@ export function StatsUkaV2({
 
       {/* KPI-strip */}
       <Seksjon mobile={mobile} style={{ paddingTop: 0 }}>
-        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(3, 1fr)", gap: T.gap }}>
+        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(3, 1fr)", gap: AK.gap }}>
           <KpiFlis label="Norske spillere · spilte denne uka" value={antallSpillere} />
           <KpiFlis label="Turneringer · på tvers av tourer" value={antallTurneringer} />
           <KpiFlis label="Resultater registrert" value={antallResultater} tint />
@@ -114,11 +116,11 @@ export function StatsUkaV2({
         <Seksjon mobile={mobile} style={{ paddingTop: 0 }}>
           <Caps style={{ marginBottom: 16 }}>Ukens spiller</Caps>
           <Kort tint pad={mobile ? "22px" : "32px 36px"}>
-            <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: mobile ? 24 : 32, color: T.fg, letterSpacing: "-0.01em" }}>{ukensSpiller.navn}</div>
-            <p style={{ fontFamily: T.ui, fontSize: 14, color: T.fg2, marginTop: 12, lineHeight: 1.6, maxWidth: 560 }}>
+            <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: mobile ? 24 : 32, color: TL.text, letterSpacing: "-0.01em" }}>{ukensSpiller.navn}</div>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 14, color: TL.mute, marginTop: 12, lineHeight: 1.6, maxWidth: 560 }}>
               Beste norske i {ukensSpiller.turnering}: posisjon {ukensSpiller.posisjonTekst} med totalscore {ukensSpiller.scoreTekst}.
             </p>
-            <Link href={`/stats/spillere/${ukensSpiller.slug}`} style={{ display: "inline-flex", alignItems: "center", gap: 6, marginTop: 18, fontFamily: T.ui, fontSize: 13, fontWeight: 700, color: T.lime, textDecoration: "none" }}>
+            <Link href={`/stats/spillere/${ukensSpiller.slug}`} style={{ display: "inline-flex", alignItems: "center", gap: 6, marginTop: 18, fontFamily: TL.font.sans, fontSize: 13, fontWeight: 700, color: TL.fill, textDecoration: "none" }}>
               Se hele profilen <Icon name="arrow-right" size={13} />
             </Link>
           </Kort>
@@ -131,10 +133,10 @@ export function StatsUkaV2({
           <Caps style={{ marginBottom: 16 }}>Ukens runde</Caps>
           <Kort pad={mobile ? "22px" : "32px 36px"}>
             <div style={{ display: "flex", alignItems: "baseline", gap: 18, flexWrap: "wrap" }}>
-              <span style={{ fontFamily: T.mono, fontSize: 56, fontWeight: 700, lineHeight: 1, color: T.lime, fontVariantNumeric: "tabular-nums" }}>{ukensRunde.score}</span>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 56, fontWeight: 700, lineHeight: 1, color: TL.fill, fontVariantNumeric: "tabular-nums" }}>{ukensRunde.score}</span>
               <div>
-                <div style={{ fontFamily: T.disp, fontSize: 18, fontWeight: 700, color: T.fg }}>{ukensRunde.turnering}</div>
-                <div style={{ fontFamily: T.mono, fontSize: 11, color: T.mut, marginTop: 4 }}>
+                <div style={{ fontFamily: TL.font.sans, fontSize: 18, fontWeight: 700, color: TL.text }}>{ukensRunde.turnering}</div>
+                <div style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute, marginTop: 4 }}>
                   av {ukensRunde.spiller} · {ukensRunde.tour}
                 </div>
               </div>
@@ -177,10 +179,10 @@ export function StatsUkaV2({
       {/* Pullquote */}
       <Seksjon mobile={mobile} style={{ paddingTop: 0 }}>
         <Kort pad={mobile ? "26px 22px" : "40px 48px"} style={{ textAlign: "center" }}>
-          <div style={{ fontFamily: T.disp, fontSize: mobile ? 20 : 26, fontWeight: 600, color: T.fg, lineHeight: 1.4, fontStyle: "italic", maxWidth: 640, margin: "0 auto" }}>
+          <div style={{ fontFamily: TL.font.sans, fontSize: mobile ? 20 : 26, fontWeight: 600, color: TL.text, lineHeight: 1.4, fontStyle: "italic", maxWidth: 640, margin: "0 auto" }}>
             &ldquo;{pullquote}&rdquo;
           </div>
-          <div style={{ fontFamily: T.mono, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut, marginTop: 18 }}>
+          <div style={{ fontFamily: TL.font.mono, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute, marginTop: 18 }}>
             AK Golf Stats redaksjon · uke {ukeNummer}
           </div>
         </Kort>
@@ -195,14 +197,14 @@ export function StatsUkaV2({
               Hva skjer
             </SeksT>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: T.gap }}>
+          <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: AK.gap }}>
             {kommende.map((t) => (
               <Kort key={t.id}>
                 <Caps size={9}>{t.dato}</Caps>
-                <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 14.5, color: T.fg, marginTop: 10, lineHeight: 1.3 }}>{t.navn}</div>
-                {t.tour && <div style={{ fontFamily: T.mono, fontSize: 10.5, color: T.lime, marginTop: 6, letterSpacing: "0.04em" }}>{t.tour}</div>}
+                <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 14.5, color: TL.text, marginTop: 10, lineHeight: 1.3 }}>{t.navn}</div>
+                {t.tour && <div style={{ fontFamily: TL.font.mono, fontSize: 10.5, color: TL.fill, marginTop: 6, letterSpacing: "0.04em" }}>{t.tour}</div>}
                 {t.norske != null && t.norske > 0 && (
-                  <div style={{ fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 4 }}>{t.norske} norske</div>
+                  <div style={{ fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 4 }}>{t.norske} norske</div>
                 )}
               </Kort>
             ))}
@@ -214,8 +216,8 @@ export function StatsUkaV2({
       <Seksjon mobile={mobile}>
         <Kort tint pad={mobile ? "26px 22px" : "36px 40px"} style={{ display: "flex", flexDirection: mobile ? "column" : "row", alignItems: mobile ? "flex-start" : "center", justifyContent: "space-between", gap: 20 }}>
           <div>
-            <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 20, color: T.fg }}>Få ukens roundup i innboksen.</div>
-            <div style={{ fontFamily: T.mono, fontSize: 11, letterSpacing: "0.06em", textTransform: "uppercase", color: T.mut, marginTop: 8 }}>
+            <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 20, color: TL.text }}>Få ukens roundup i innboksen.</div>
+            <div style={{ fontFamily: TL.font.mono, fontSize: 11, letterSpacing: "0.06em", textTransform: "uppercase", color: TL.mute, marginTop: 8 }}>
               Hver mandag morgen · 60 sekunder å lese · gratis
             </div>
           </div>
@@ -230,13 +232,13 @@ export function StatsUkaV2({
                 flex: mobile ? 1 : "none",
                 width: mobile ? undefined : 220,
                 boxSizing: "border-box",
-                background: T.panel2,
-                border: `1px solid ${T.borderS}`,
+                background: TL.dock,
+                border: `1px solid ${TL.hair}`,
                 borderRadius: 9999,
                 padding: "11px 16px",
-                fontFamily: T.ui,
+                fontFamily: TL.font.sans,
                 fontSize: 13.5,
-                color: T.fg,
+                color: TL.text,
                 outline: "none",
               }}
             />
@@ -249,7 +251,7 @@ export function StatsUkaV2({
 
       {/* Footer */}
       <Seksjon mobile={mobile} style={{ paddingTop: 0 }}>
-        <Link href="/stats" style={{ fontFamily: T.mono, fontSize: 12.5, color: T.mut, textDecoration: "none" }}>
+        <Link href="/stats" style={{ fontFamily: TL.font.mono, fontSize: 12.5, color: TL.mute, textDecoration: "none" }}>
           Tilbake til Stats Hub
         </Link>
       </Seksjon>

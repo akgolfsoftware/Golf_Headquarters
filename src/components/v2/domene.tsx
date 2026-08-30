@@ -1,5 +1,6 @@
 "use client";
 import { TL } from "@/lib/v2/train-lock";
+import { AK } from "@/lib/v2/ak-palett";
 
 /* AK Golf HQ v2 — DOMENE-KOMPONENTER (retning C «Presis»).
    Datakontrakter speiler src/components/athletic/golfdata/ (OektKort, ListRow,
@@ -10,24 +11,7 @@ import { TL } from "@/lib/v2/train-lock";
 
 import { useState, type ReactNode } from "react";
 import type { AkseKey } from "@/lib/v2/format";
-import {
-  T,
-  Kort,
-  Caps,
-  StatusPill,
-  AkseChip,
-  Rad,
-  TomTilstand,
-  AvatarInit,
-  TallHero,
-  NivaSkala,
-  DeltaChip,
-  SevChip,
-  InnsiktChip,
-  CTAPill,
-  type StatusTone,
-  type SevKey,
-} from "./core";
+import { Kort, Caps, StatusPill, AkseChip, Rad, TomTilstand, AvatarInit, TallHero, NivaSkala, DeltaChip, SevChip, InnsiktChip, CTAPill, type StatusTone, type SevKey } from "./core";
 import { Icon } from "@/components/v2/icon";
 
 /* Delt: status-chip for økt/booking (klarspråk, aldri sperre-språk) */
@@ -326,7 +310,7 @@ export function MeldingsTraad({
     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
       {meldinger.map((m, i) => (
         <div key={i} style={{ display: "flex", flexDirection: "column", alignItems: m.meg ? "flex-end" : "flex-start" }}>
-          <div style={{ maxWidth: "78%", padding: "10px 13px", borderRadius: 14, borderBottomRightRadius: m.meg ? 4 : 14, borderBottomLeftRadius: m.meg ? 14 : 4, background: m.meg ? T.farge.forestMerkeA45 : TL.dock, border: `1px solid ${m.meg ? "${T.farge.forestMerkeA60}" : TL.hair}` }}>
+          <div style={{ maxWidth: "78%", padding: "10px 13px", borderRadius: 14, borderBottomRightRadius: m.meg ? 4 : 14, borderBottomLeftRadius: m.meg ? 14 : 4, background: m.meg ? AK.farge.forestMerkeA45 : TL.dock, border: `1px solid ${m.meg ? "${AK.farge.forestMerkeA60}" : TL.hair}` }}>
             {!m.meg && m.fra && <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute, display: "block", marginBottom: 4 }}>{m.fra}</span>}
             <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text, lineHeight: 1.55 }}>{m.tekst}</span>
           </div>

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { PaperTilstand, PaperIkon } from "@/components/system/paper-tilstand";
+import { PaperTilstand, PaperIkon } from "@/components/system/side-tilstand";
 import { VEDLIKEHOLD_TELEFON, VEDLIKEHOLD_TELEFON_LENKE } from "@/lib/vedlikehold";
 
 /**

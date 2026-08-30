@@ -1,5 +1,6 @@
 "use client";
 import { TL } from "@/lib/v2/train-lock";
+import { AK } from "@/lib/v2/ak-palett";
 
 /**
  * PlayerHQ · Ny egen test — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
@@ -9,17 +10,7 @@ import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/shared/toast-provider";
 import { opprettCustomTest } from "@/app/portal/tren/tester/ny/egen/actions";
-import {
-  T,
-  Caps,
-  Kort,
-  Knapp,
-  Inndata,
-  TekstOmraade,
-  ValgKort,
-  ProgresjonsBar,
-  HjelpTips,
-} from "@/components/v2";
+import { Caps, Kort, Knapp, Inndata, TekstOmraade, ValgKort, ProgresjonsBar, HjelpTips } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 
 type Kategori = "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN";
@@ -347,7 +338,7 @@ function Steg1({
         >
           {KATEGORIER.map((k) => {
             const valgt = state.kategori === k.verdi;
-            const aksefarge = T.ax[k.verdi];
+            const aksefarge = AK.ax[k.verdi];
             return (
               <button
                 key={k.verdi}
@@ -752,7 +743,7 @@ function Steg5({
           {state.navn || <em style={{ fontStyle: "italic", color: TL.mute }}>(uten navn)</em>}
         </h3>
         {kategori && (
-          <span style={{ marginTop: 10, display: "inline-flex", alignItems: "center", gap: 6, borderRadius: 9999, background: `color-mix(in srgb, ${T.ax[kategori.verdi]} 14%, transparent)`, padding: "4px 12px", fontFamily: TL.font.sans, fontSize: 12, fontWeight: 600, color: T.ax[kategori.verdi] }}>
+          <span style={{ marginTop: 10, display: "inline-flex", alignItems: "center", gap: 6, borderRadius: 9999, background: `color-mix(in srgb, ${AK.ax[kategori.verdi]} 14%, transparent)`, padding: "4px 12px", fontFamily: TL.font.sans, fontSize: 12, fontWeight: 600, color: AK.ax[kategori.verdi] }}>
             <Icon name={kategori.ikon} size={12} />
             {kategori.navn}
           </span>

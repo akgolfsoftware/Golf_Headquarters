@@ -1,4 +1,5 @@
-import { T } from "@/lib/v2/tokens";
+import { AK } from "@/lib/v2/ak-palett";
+
 /**
  * /stats/sg-sammenlign/resultat/[id] — magazine-spread resultat-side
  * Pixel-perfect port av design 09 fra design-handoff-stats-2026-05-25.
@@ -335,7 +336,7 @@ export default async function SgResultatPage({ params }: Props) {
             </div>
             <div
               className="stats-kpi-sub"
-              style={{ color: T.farge.forestMerkeA70 }}
+              style={{ color: AK.farge.forestMerkeA70 }}
             >
               du må ta inn
             </div>
@@ -773,7 +774,7 @@ export default async function SgResultatPage({ params }: Props) {
         className="stats-section"
         // Invers band: flaten er papir, ikke skinnesvart. Snu derfor --accent
         // til lys-verdien, ellers arver kursiv-aksenten scopets mørke
-        // --p-up (#9DB284) og lander på 2,2:1 mot papir.
+        // --tl-ok (#9DB284) og lander på 2,2:1 mot papir.
         style={
           {
             background: "hsl(var(--primary))",
@@ -818,7 +819,7 @@ export default async function SgResultatPage({ params }: Props) {
                 fontSize: 16,
                 lineHeight: 1.55,
                 marginTop: 20,
-                color: T.farge.sandLysA85,
+                color: AK.farge.sandLysA85,
                 maxWidth: 440,
               }}
             >
@@ -837,7 +838,7 @@ export default async function SgResultatPage({ params }: Props) {
               <Link
                 href="/stats/sg-sammenlign/start"
                 className="stats-btn stats-btn-ghost stats-btn-lg"
-                style={{ textDecoration: "none", color: T.farge.sandLysA80 }}
+                style={{ textDecoration: "none", color: AK.farge.sandLysA80 }}
               >
                 <RotateCcw size={15} />
                 <span>Ny sammenligning</span>
@@ -847,7 +848,7 @@ export default async function SgResultatPage({ params }: Props) {
 
           <div
             style={{
-              background: T.farge.hvitA6,
+              background: AK.farge.hvitA6,
               border: "1px solid color-mix(in srgb, var(--v2-lime) 20%, transparent)",
               borderRadius: 14,
               padding: 24,
@@ -867,7 +868,7 @@ export default async function SgResultatPage({ params }: Props) {
                   alignItems: "flex-start",
                   marginBottom: 12,
                   fontSize: 14,
-                  color: T.farge.sandLysA88,
+                  color: AK.farge.sandLysA88,
                 }}
               >
                 <span

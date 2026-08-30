@@ -1,5 +1,5 @@
 "use client";
-import { T } from "@/lib/v2/tokens";
+import { AK } from "@/lib/v2/ak-palett";
 
 import { useState, useSyncExternalStore } from "react";
 import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
@@ -160,18 +160,18 @@ export function GruppeplanInnhold({
             <h1 className="mt-3 font-black uppercase leading-[0.98] text-white" style={{ fontSize: "clamp(36px, 6vw, 54px)" }}>
               {g.navn}
             </h1>
-            <p className="mt-3.5 max-w-[460px] text-[16px] leading-relaxed sm:text-[17.5px]" style={{ color: T.farge.hvitA85 }}>
+            <p className="mt-3.5 max-w-[460px] text-[16px] leading-relaxed sm:text-[17.5px]" style={{ color: AK.farge.hvitA85 }}>
               {g.motto}. Her finner du gruppas faktiske treningsplan – økter, kalender og hva vi
               jobber med akkurat nå.
             </p>
             {faseNaa ? (
               <div
                 className="mt-5 inline-flex flex-wrap items-center gap-2 rounded-full px-4 py-2"
-                style={{ background: T.farge.hvitA8, border: `1px solid ${T.farge.hvitA15}` }}
+                style={{ background: AK.farge.hvitA8, border: `1px solid ${AK.farge.hvitA15}` }}
               >
                 <span className="h-[9px] w-[9px] rounded-full" style={{ background: FASE_FARGER[faseNaa] }} />
                 <span className="text-sm font-bold">Nå: {faseNaa}</span>
-                <span className="text-[13.5px]" style={{ color: T.farge.hvitA65 }}>
+                <span className="text-[13.5px]" style={{ color: AK.farge.hvitA65 }}>
                   · {FASE_TEKST[faseNaa]}
                 </span>
               </div>
@@ -179,9 +179,9 @@ export function GruppeplanInnhold({
             <div
               className="mt-3 flex w-fit items-center gap-2 rounded-full px-3.5 py-1.5 text-[12.5px]"
               style={{
-                background: T.farge.hvitA6,
-                border: `1px solid ${T.farge.hvitA12}`,
-                color: T.farge.hvitA70,
+                background: AK.farge.hvitA6,
+                border: `1px solid ${AK.farge.hvitA12}`,
+                color: AK.farge.hvitA70,
               }}
             >
               <span
@@ -455,17 +455,17 @@ export function GruppeplanInnhold({
               {selLabel}
             </div>
             <h3 className="mt-2.5 text-[22px] font-bold text-white">{selTittel}</h3>
-            <p className="mb-0 mt-2.5 text-[14.5px] leading-relaxed" style={{ color: T.farge.hvitA75 }}>
+            <p className="mb-0 mt-2.5 text-[14.5px] leading-relaxed" style={{ color: AK.farge.hvitA75 }}>
               {selTekst}
             </p>
             {selItems.map((it) => (
               <div
                 key={it.tittel + it.meta}
                 className="mt-3.5 rounded-[var(--r-sm)] px-4 py-3"
-                style={{ background: T.farge.hvitA7, borderLeft: `3px solid ${it.farge}` }}
+                style={{ background: AK.farge.hvitA7, borderLeft: `3px solid ${it.farge}` }}
               >
                 <div className="text-[14.5px] font-bold">{it.tittel}</div>
-                <div className="mt-0.5 text-[12.5px]" style={{ fontFamily: "var(--font-jr-mono)", color: T.farge.hvitA65 }}>
+                <div className="mt-0.5 text-[12.5px]" style={{ fontFamily: "var(--font-jr-mono)", color: AK.farge.hvitA65 }}>
                   {it.meta}
                 </div>
               </div>
@@ -493,7 +493,7 @@ export function GruppeplanInnhold({
               <div className="flex items-center justify-between gap-2.5 px-5 py-4 text-white" style={{ background: "var(--ink)" }}>
                 <div>
                   <div className="text-base font-bold">{okt.tittel}</div>
-                  <div className="mt-0.5 text-xs" style={{ fontFamily: "var(--font-jr-mono)", color: T.farge.hvitA60 }}>
+                  <div className="mt-0.5 text-xs" style={{ fontFamily: "var(--font-jr-mono)", color: AK.farge.hvitA60 }}>
                     {okt.meta}
                   </div>
                 </div>

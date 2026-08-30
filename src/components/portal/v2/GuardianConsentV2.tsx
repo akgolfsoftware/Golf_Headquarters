@@ -26,7 +26,8 @@ import { useState, useTransition, type ReactNode, type CSSProperties } from "rea
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { TL } from "@/lib/v2/train-lock";
-import { T } from "@/lib/v2/tokens";
+import { AK } from "@/lib/v2/ak-palett";
+
 import { LogoAK, Caps, Icon } from "@/components/v2";
 import { confirmGuardianConsent } from "@/app/auth/guardian-consent/[token]/actions";
 
@@ -273,7 +274,7 @@ function BrandPanel() {
         <circle cx="260" cy="330" r="3.5" fill="color-mix(in srgb, var(--tl-fill) 45%, transparent)" />
       </svg>
       <div style={{ position: "relative" }}>
-        <LogoAK size={30} surface="paper" />
+        <LogoAK size={30} />
       </div>
       <div style={{ flex: 1 }} />
       <div style={{ position: "relative" }}>
@@ -286,7 +287,7 @@ function BrandPanel() {
             alignItems: "center",
             justifyContent: "center",
             marginBottom: 22,
-            background: T.farge.forestMerkeA22,
+            background: AK.farge.forestMerkeA22,
             border: `1px solid ${TL.hair}`,
           }}
         >
@@ -335,8 +336,8 @@ function Feilboks({ children }: { children: ReactNode }) {
         gap: 9,
         padding: "11px 14px",
         borderRadius: 12,
-        background: T.farge.korallMerkeA10,
-        border: `1px solid ${T.farge.korallMerkeA30}`,
+        background: AK.farge.korallMerkeA10,
+        border: `1px solid ${AK.farge.korallMerkeA30}`,
       }}
     >
       <Icon name="triangle-alert" size={15} style={{ color: TL.danger, flex: "none", marginTop: 1 }} />
@@ -351,7 +352,7 @@ function Hode({ playerName, playerAge }: { playerName: string; playerAge: number
     <div style={{ width: "100%", maxWidth: 440, display: "flex", flexDirection: "column", gap: 14 }}>
       {/* Mobil-logo (BrandPanel skjult under md) */}
       <div className="md:hidden" style={{ display: "flex", justifyContent: "center", padding: "6px 0 2px" }}>
-        <LogoAK size={44} surface="paper" />
+        <LogoAK size={44} />
       </div>
       <div style={{ textAlign: "center" }}>
         <span
@@ -364,7 +365,7 @@ function Hode({ playerName, playerAge }: { playerName: string; playerAge: number
             alignItems: "center",
             justifyContent: "center",
             marginBottom: 14,
-            background: T.farge.forestMerkeA22,
+            background: AK.farge.forestMerkeA22,
             border: `1px solid ${TL.hair}`,
           }}
         >
@@ -436,8 +437,8 @@ function ExpiredKort({ email }: { email: string }) {
         maxWidth: 440,
         textAlign: "center",
         borderRadius: TL.radius.card,
-        background: T.farge.varselMerkeA10,
-        border: `1px solid ${T.farge.varselMerkeA30}`,
+        background: AK.farge.varselMerkeA10,
+        border: `1px solid ${AK.farge.varselMerkeA30}`,
         padding: 26,
         display: "flex",
         flexDirection: "column",
@@ -466,8 +467,8 @@ function SuccessKort({ playerName }: { playerName: string }) {
         maxWidth: 440,
         textAlign: "center",
         borderRadius: TL.radius.card,
-        background: T.farge.myntLysA10,
-        border: `1px solid ${T.farge.myntLysA30}`,
+        background: AK.farge.myntLysA10,
+        border: `1px solid ${AK.farge.myntLysA30}`,
         padding: 26,
         display: "flex",
         flexDirection: "column",
@@ -578,7 +579,7 @@ function ConsentKort({
           flexDirection: "column",
           gap: 16,
           boxShadow:
-            `inset 0 1px 0 ${T.farge.hvitA5}, 0 12px 32px ${TL.scrim}`,
+            `inset 0 1px 0 ${AK.farge.hvitA5}, 0 12px 32px ${TL.scrim}`,
         }}
       >
         {/* Spiller-kort */}

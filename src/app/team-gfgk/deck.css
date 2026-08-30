@@ -12,9 +12,9 @@
   --forest-900: #0A1F17;
   --forest-700: #0F2A22;
   --forest-600: #163027;
-  --forest-500: #141413;    /* Paper --p-cta */
+  --forest-500: #141413;    /* Paper --tl-fill */
   --forest-300: #2B4F42;
-  --lime-500: #63784A;      /* Paper --p-up */
+  --lime-500: #63784A;      /* Paper --tl-ok */
   --cream-50: #FAFAF7;
   --cream-100: #F5F4EE;
   --cream-200: #F1EEE5;
@@ -50,10 +50,10 @@
   --ring: var(--forest-500);
 
   /* Pyramide-akser */
-  --pyr-fys: #788C5D;       /* Paper --p-accent-olive */
+  --pyr-fys: #788C5D;       /* Paper #788c5d */
   --pyr-tek: #B8852A;
   --pyr-slag: #2563EB;
-  --pyr-spill: #C46686;     /* Paper --p-accent-fig */
+  --pyr-spill: #C46686;     /* Paper #c46686 */
   --pyr-turn: #A32D2D;
 
   /* Type scale */

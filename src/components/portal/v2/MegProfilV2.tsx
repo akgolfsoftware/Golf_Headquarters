@@ -23,7 +23,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Icon, Inndata, TekstOmraade } from "@/components/v2";
-import { PaperPage, PaperTopp, PaperKropp } from "./PaperChrome";
+import { PaperPage, PaperTopp, PaperKropp } from "./SideChrome";
 import type { LagreProfilInput } from "@/app/portal/meg/profil/actions";
 
 export type MegProfilData = {

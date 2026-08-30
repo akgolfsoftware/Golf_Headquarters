@@ -12,7 +12,7 @@
    Trekkspillet er native <details>, som i fasiten — ingen klient-state. */
 
 import Link from "next/link";
-import { PkShell } from "./paper/PkShell";
+import { PkShell } from "./kit/PkShell";
 
 const FAQ: { q: string; a: string }[] = [
   {

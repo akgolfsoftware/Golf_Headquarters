@@ -10,7 +10,7 @@
  * MarkedForside (statisk forgjenger) beholdes til reisen er signert.
  */
 
-import { MarkedForsideReise } from "@/components/marketing/paper/MarkedForsideReise";
+import { MarkedForsideReise } from "@/components/marketing/landing/MarkedForsideReise";
 
 export default function MarketingHjemPage() {
   return <MarkedForsideReise />;

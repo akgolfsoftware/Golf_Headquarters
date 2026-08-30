@@ -1,5 +1,6 @@
 "use client";
 import { TL } from "@/lib/v2/train-lock";
+import { AK } from "@/lib/v2/ak-palett";
 
 /* AK Golf HQ v2 — OVERLEGG (retning C «Presis», fase 4).
    Modaler, ark, skuffer, popovers, tooltips, toasts, bannere og kommandopalett.
@@ -8,7 +9,7 @@ import { TL } from "@/lib/v2/train-lock";
    (diff-null). Primitiver fra ./core, tokens/ikon fra grunnstein. */
 
 import type { CSSProperties, ReactNode } from "react";
-import { T, Caps, Rad, AkseChip, CTAPill, type StatusTone } from "./core";
+import { Caps, Rad, AkseChip, CTAPill, type StatusTone } from "./core";
 import type { AkseKey } from "@/lib/v2/format";
 import { Icon } from "@/components/v2/icon";
 
@@ -294,7 +295,7 @@ export function Verktoytips({ tekst = "SG mot CS100-referansen, siste 8 runder",
       {/* Paper Tooltip: mono 11px, r-sm(8), 6px 8px-padding, ingen kant, ingen
           pil — kun 6 px luft ned mot utløseren (Tooltip.jsx). */}
       <div style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
-        <span style={{ maxWidth: 240, textAlign: "left", fontFamily: TL.font.mono, fontSize: 11, letterSpacing: "0.01em", color: TL.text, lineHeight: 1.35, background: T.farge.grafittPanel, borderRadius: PAPER_R_SM, padding: "6px 8px", boxShadow: "none" }}>{tekst}</span>
+        <span style={{ maxWidth: 240, textAlign: "left", fontFamily: TL.font.mono, fontSize: 11, letterSpacing: "0.01em", color: TL.text, lineHeight: 1.35, background: AK.farge.grafittPanel, borderRadius: PAPER_R_SM, padding: "6px 8px", boxShadow: "none" }}>{tekst}</span>
         <span style={{ display: "inline-flex", alignItems: "baseline", gap: 8, background: TL.dock, border: `1px dashed ${TL.hair}`, borderRadius: 10, padding: "7px 13px" }}>
           <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}>{trigger}</span>
           <span style={{ fontFamily: TL.font.mono, fontSize: 14, fontWeight: 700, color: TL.text }}>{verdi}</span>

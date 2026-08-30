@@ -18,7 +18,8 @@ import {
   eksternLeserSpillerIderPerGruppe,
 } from "@/lib/auth/ekstern-leser-scope";
 import { prisma } from "@/lib/prisma";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 
 export const dynamic = "force-dynamic";
 
@@ -59,7 +60,7 @@ export default async function InnsynPage() {
       <div>
         <h1
           style={{
-            fontFamily: T.disp,
+            fontFamily: TL.font.sans,
             fontSize: 22,
             fontWeight: 700,
             letterSpacing: "-0.02em",
@@ -68,14 +69,14 @@ export default async function InnsynPage() {
         >
           Delte spillerdata
         </h1>
-        <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: "6px 0 0", lineHeight: 1.5 }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: "6px 0 0", lineHeight: 1.5 }}>
           Du ser kun spillere som selv (eller foresatt) har samtykket til deling
           — og kun {[harTester && "testresultater", harStats && "statistikk"].filter(Boolean).join(" og ")}.
         </p>
       </div>
 
       {grupper.length === 0 && (
-        <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: 0 }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: 0 }}>
           Du har ingen aktive gruppetilganger. Kontakt AK Golf hvis dette er feil.
         </p>
       )}
@@ -96,15 +97,15 @@ export default async function InnsynPage() {
           <section
             key={gruppe.id}
             style={{
-              background: T.panel,
-              border: `1px solid ${T.border}`,
+              background: TL.elev,
+              border: `1px solid ${TL.hair}`,
               borderRadius: 14,
               padding: "16px 18px",
             }}
           >
             <h2
               style={{
-                fontFamily: T.disp,
+                fontFamily: TL.font.sans,
                 fontSize: 15,
                 fontWeight: 700,
                 letterSpacing: "-0.01em",
@@ -114,7 +115,7 @@ export default async function InnsynPage() {
               {gruppe.name}
             </h2>
             {rader.length === 0 ? (
-              <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: "10px 0 0" }}>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: "10px 0 0" }}>
                 Ingen spillere i gruppen har samtykket til deling ennå.
               </p>
             ) : (
@@ -128,29 +129,29 @@ export default async function InnsynPage() {
                       justifyContent: "space-between",
                       gap: 10,
                       padding: "10px 0",
-                      borderTop: `1px solid ${T.border}`,
+                      borderTop: `1px solid ${TL.hair}`,
                     }}
                   >
                     <div style={{ minWidth: 0 }}>
                       <Link
                         href={`/innsyn/${spiller.id}`}
                         style={{
-                          fontFamily: T.ui,
+                          fontFamily: TL.font.sans,
                           fontSize: 14,
                           fontWeight: 600,
-                          color: T.fg,
+                          color: TL.text,
                           textDecoration: "none",
                         }}
                       >
                         {spiller.name}
                       </Link>
-                      <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, marginLeft: 8 }}>
+                      <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, marginLeft: 8 }}>
                         {spiller.dateOfBirth
                           ? `Årgang ${spiller.dateOfBirth.getFullYear()}`
                           : "Årgang ukjent"}
                       </span>
                     </div>
-                    <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, flex: "none" }}>
+                    <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, flex: "none" }}>
                       {[
                         testerIder.has(spiller.id) && "Tester",
                         statsIder.has(spiller.id) && "Stats",
