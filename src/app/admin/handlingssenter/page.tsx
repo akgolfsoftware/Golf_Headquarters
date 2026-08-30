@@ -13,7 +13,6 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { KoHubNav } from "@/components/admin/v2/agency-hub-subnav";
 import {
   AdminHandlingssenterV2,
   type AdminHandlingssenterData,
@@ -122,7 +121,7 @@ export default async function V2HandlingssenterPage() {
 
   return (
     <V2Shell bredde="kolonne" aktiv="innboks" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <KoHubNav />
+      {/* Kø-pillene fjernet 30.08.2026: denne siden er ikke Kø — den hører i Oppgaver (MASTERPLAN 15.2). */}
       <AdminHandlingssenterV2 data={data} meg={user.name} />
     </V2Shell>
   );

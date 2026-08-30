@@ -46,6 +46,12 @@ const GATEDE_PREFIKSER: readonly string[] = [
  */
 const REDIRECT_STUBBER: readonly string[] = [
   "src/app/admin/agents/page.tsx", // → /admin/agenticos (USE_AGENTS-gated)
+  // MASTERPLAN 15.1: kø-adressene ble til faner på /admin/ko, som gater hver
+  // fane på sin opprinnelige capability (synligeFaner + canUser). Låst av
+  // src/lib/admin/ko/faner.test.ts, inkludert at siden faktisk bruker gaten.
+  "src/app/admin/agenticos/ko/page.tsx", // → /admin/ko?fane=agentko (USE_AGENTS)
+  "src/app/admin/agenticos/godkjenn/page.tsx", // → /admin/ko?fane=agentgodkjenn (USE_AGENTS)
+  "src/app/admin/tester/foreslatte/page.tsx", // → /admin/ko?fane=tester (MANAGE_TESTS)
 ] as const;
 
 function filerUnder(dir: string, pred: (f: string) => boolean, ut: string[] = []): string[] {

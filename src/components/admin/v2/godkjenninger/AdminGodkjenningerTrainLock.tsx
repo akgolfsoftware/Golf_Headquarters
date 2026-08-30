@@ -405,7 +405,18 @@ function KøenITall({ data }: { data: AdminGodkjenningerV2Data }) {
   );
 }
 
-export function AdminGodkjenningerTrainLock({ data }: { data: AdminGodkjenningerV2Data }) {
+export function AdminGodkjenningerTrainLock({
+  data,
+  hode,
+}: {
+  data: AdminGodkjenningerV2Data;
+  /**
+   * Sidens eget hode, rendret øverst i master-kolonnen (MASTERPLAN 15.1).
+   * /admin/ko sender inn «Kø» + fanerad; utelates det, faller komponenten
+   * tilbake på sitt opprinnelige «Academy · Godkjenninger»-hode.
+   */
+  hode?: React.ReactNode;
+}) {
   const mobile = useMediaQuery("(max-width: 767px)");
   const visPanel = useInspektorSynlig();
   const [filter, setFilter] = useState<FilterKey>("alle");
@@ -435,42 +446,53 @@ export function AdminGodkjenningerTrainLock({ data }: { data: AdminGodkjenninger
   return (
     <MasterDetalj panel={valgtSak ? <SakInspektor row={valgtSak} /> : <KøenITall data={data} />}>
       <div style={{ display: "flex", flexDirection: "column", gap: 18, minWidth: 0 }}>
-        <div>
-          <TlCaps>Academy</TlCaps>
-          <h1 style={{ margin: "6px 0 0", fontSize: 26, fontWeight: 700, letterSpacing: "-0.01em", color: TL.text }}>Godkjenninger</h1>
-        </div>
+        {hode ?? (
+          <div>
+            <TlCaps>Academy</TlCaps>
+            <h1 style={{ margin: "6px 0 0", fontSize: 26, fontWeight: 700, letterSpacing: "-0.01em", color: TL.text }}>Godkjenninger</h1>
+          </div>
+        )}
 
-        <div role="group" aria-label="Kilder" style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          {filtre.map((f) => {
-            const aktiv = f.k === filter;
-            return (
-              <button
-                key={f.k}
-                type="button"
-                aria-pressed={aktiv}
-                onClick={() => setFilter(f.k)}
-                className={PRESS}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 8,
-                  height: 40,
-                  padding: "0 16px",
-                  borderRadius: TL.radius.pill,
-                  background: aktiv ? TL.fill : TL.dim,
-                  color: aktiv ? TL.onFill : TL.text,
-                  fontSize: 13,
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  whiteSpace: "nowrap",
-                  border: "none",
-                }}
-              >
-                <span>{f.n}</span>
-                <span style={{ fontVariantNumeric: "tabular-nums", opacity: 0.75 }}>{f.antall}</span>
-              </button>
-            );
-          })}
+        {/* Kilde-filteret er et UNDERfilter under Kø-fanene (MASTERPLAN 15.1).
+            Det var tidligere samme pille-stil som fanene; med sidens fanerad rett
+            over ga det to like rader og ni piller før første sak på 390px. Nå
+            kompakt og merket, så hierarkiet er synlig. Samme funksjon, samme
+            filtre — kun vekt. */}
+        <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginTop: -4 }}>
+          <TlCaps size={10}>Kilde</TlCaps>
+          <div role="group" aria-label="Kilder" style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+            {filtre.map((f) => {
+              const aktiv = f.k === filter;
+              return (
+                <button
+                  key={f.k}
+                  type="button"
+                  aria-pressed={aktiv}
+                  onClick={() => setFilter(f.k)}
+                  className={PRESS}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 6,
+                    height: 32,
+                    padding: "0 12px",
+                    borderRadius: TL.radius.pill,
+                    background: "transparent",
+                    boxShadow: `inset 0 0 0 1px ${aktiv ? TL.text : TL.hair}`,
+                    color: aktiv ? TL.text : TL.mute,
+                    fontSize: 12.5,
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    whiteSpace: "nowrap",
+                    border: "none",
+                  }}
+                >
+                  <span>{f.n}</span>
+                  <span style={{ fontVariantNumeric: "tabular-nums", opacity: 0.7 }}>{f.antall}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
