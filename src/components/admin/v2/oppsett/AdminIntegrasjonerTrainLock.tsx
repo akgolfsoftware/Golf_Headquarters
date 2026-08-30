@@ -8,6 +8,12 @@
  * NOK-format, CTA-adresser) er hentet ferdig fra page.tsx (server component)
  * og sendt inn som `cards` — denne komponenten er ren visning, ingen ny
  * datahenting.
+ *
+ * Fasit: designsystem/train-lock/GAP-2 Tilstander drift.dc.html (GAP-2d/e,
+ * PX-7 2026-08-29) — "error"-status er re-autentiserings-tilstanden:
+ * danger-prikk + caps "Krever pålogging", aldri fylt flate. Utledet fra
+ * GoogleCalendarConnection.status (finnes allerede i skjemaet — ingen ny
+ * datamodell), ikke en påfunnet tilstand.
  */
 
 import Link from "next/link";
@@ -15,7 +21,7 @@ import { TL } from "@/lib/v2/train-lock";
 import { Icon } from "@/components/v2/icon";
 import { TlKort, TlTittel, TL_PRESS } from "./tl-kit";
 
-export type IntegrasjonStatus = "active" | "connected" | "disconnected";
+export type IntegrasjonStatus = "active" | "connected" | "disconnected" | "error";
 
 export type IntegrasjonKort = {
   key: string;
@@ -34,6 +40,7 @@ const STATUS_FARGE: Record<IntegrasjonStatus, string> = {
   active: TL.warm,
   connected: TL.warm,
   disconnected: TL.warn,
+  error: TL.danger,
 };
 
 function StatusMerke({ status, label }: { status: IntegrasjonStatus; label: string }) {

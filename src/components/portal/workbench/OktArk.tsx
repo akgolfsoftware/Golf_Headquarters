@@ -3,6 +3,9 @@
 /**
  * Spillerens økt-ark for en publisert Workbench-økt (Loop 3S).
  * Fasit: designsystem/train-lock/PH-04 Økt-ark.dc.html
+ * Lys: designsystem/train-lock/B3 Lys nøkkelskjermer.dc.html (Lys PH-04
+ * Økt-ark) — mekanisk (PX-7, 29.08.2026): filen leser konsekvent TL.* uten
+ * hardkodet hex, verifisert med grep — ingen manuell lys-finpuss utover det.
  * Start → IN_PROGRESS, Fullfør → COMPLETED, Hopp over → SKIPPED.
  * Kaller wb-actions direkte (server actions) — WbResultat + toast ved feil,
  * lokal state oppdateres optimistisk fra returnert økt (ingen full reload).

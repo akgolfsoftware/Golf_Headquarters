@@ -5,6 +5,9 @@
  * Fasit: designsystem/train-lock/TM-04 Analyse-hub TrackMan.dc.html
  * Fasit: designsystem/train-lock/PH-10 Analyse.dc.html (én flate, innganger under fold)
  * Fasit: designsystem/train-lock/PH-16 Analyse tom.dc.html (tom: én setning + CTA)
+ * Lys: designsystem/train-lock/B3 Lys nøkkelskjermer.dc.html (Lys PH-10
+ * Analyse) — mekanisk (PX-7, 29.08.2026): filen leser konsekvent TL.* uten
+ * hardkodet hex, verifisert med grep — ingen manuell lys-finpuss utover det.
  */
 
 import Link from "next/link";

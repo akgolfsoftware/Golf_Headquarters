@@ -3,6 +3,9 @@
 /**
  * Live-økt (spiller, fullskjerm).
  * Fasit: designsystem/train-lock/PH-05 Live.dc.html
+ * Lys: designsystem/train-lock/B3 Lys resterende skjermer.dc.html (Lys PH-05
+ * Live) — mekanisk (PX-7, 29.08.2026): filen leser konsekvent var(--tl-*)
+ * uten hardkodet hex, verifisert med grep — ingen manuell lys-finpuss utover det.
  * Faner skjult, caps «Live · tittel» + Avslutt i toppen, 72px øktklokke.
  */
 

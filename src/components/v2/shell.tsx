@@ -71,6 +71,12 @@ export interface V2Rom {
  * PlayerHQ-navigasjon (4 faner, låst 05.08.2026 — monsterdokument-paper.md §6).
  * «Gjør» utgår: live-økt/runde/test åpnes fra I dag eller Plan, ikke egen fane.
  * Sider som fortsatt sender aktiv="gjor" får ingen markert fane — bevisst.
+ *
+ * Referanse: designsystem/train-lock/GAP-00 Kart.dc.html — IA-kartet fra
+ * gamle Paper-skjermnavn til disse fire fanene + hvor hver gamle flate
+ * («Gjør», «Chat-tråd», «Fys-plan» m.fl.) bor nå. Selve GAP-00-filen er et
+ * planleggingskart, ikke en skjerm — porteres ikke, kun sitert her som kilde
+ * for at strukturen under er tro mot kartet.
  */
 export const PLAYERHQ_NAV: V2NavItem[] = [
   { id: "hjem", label: "I dag", icon: "home", href: "/portal" },
