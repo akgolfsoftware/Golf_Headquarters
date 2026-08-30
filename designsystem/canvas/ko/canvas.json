@@ -1,0 +1,14 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 1440, "h": 900, "title": "Kø — Mac, mørk (klikkbare faner)", "is_interactive": true },
+    { "file": "KoMobil.dc.html", "x": 1560, "y": 0, "w": 390, "h": 844, "title": "Kø — iPhone (klikkbare faner)", "is_interactive": true },
+    { "file": "KoTom.dc.html", "x": 2070, "y": 0, "w": 390, "h": 844, "title": "Kø tom — iPhone" },
+    { "file": "KoLys.dc.html", "x": 0, "y": 1020, "w": 1440, "h": 900, "title": "Kø — Mac, lys" }
+  ],
+  "annotations": [
+    { "id": "premiss", "x": 0, "y": -190, "w": 700, "text": "STEG 15.1 — Kø: seks adresser blir én\n\nGodkjenninger · Agent-kø · Agent-godkjenning · Foreslåtte tester · Dubletter blir faner på /admin/ko.\nAlle gamle adresser blir redirects. Ingen funksjonalitet fjernes.\n\n/admin/queue (oppfølging av spillere) er IKKE Kø — den hører i Stall, jf. beslutning 6.6." },
+    { "id": "faner-note", "x": 1560, "y": -190, "w": 500, "text": "Fanene er klikkbare i de to øverste artboardene.\nTrykk deg gjennom — det er fanebyttet som er beslutningen." },
+    { "id": "lys-note", "x": 0, "y": 1960, "w": 620, "text": "Lys er samme skjerm, samme fane — kun tokens snus.\nDefault på /admin er mørk (beslutning 25.08); begge må virke." }
+  ],
+  "launch": { "view": "canvas" }
+}
