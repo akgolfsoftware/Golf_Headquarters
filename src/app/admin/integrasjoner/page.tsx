@@ -27,11 +27,13 @@ function nokFormat(ore: number): string {
 export default async function V2IntegrasjonerPage() {
   const me = await requirePortalUser({ allow: ["ADMIN"] });
 
-  // Google Calendar — sjekk om current user har en kobling.
+  // Google Calendar — sjekk om current user har en kobling, og om den
+  // krever ny pålogging (status ERROR — f.eks. utløpt/tilbakekalt token).
   const googleConn = await prisma.googleCalendarConnection.findUnique({
     where: { userId: me.id },
-    select: { id: true, updatedAt: true },
+    select: { id: true, updatedAt: true, status: true, lastError: true },
   });
+  const googleKreverPalogging = googleConn?.status === "ERROR";
 
   // Stripe — env-sjekk + sum av betalte bookinger siste 30 dager.
   const stripeAktiv = Boolean(process.env.STRIPE_SECRET_KEY);
@@ -56,14 +58,16 @@ export default async function V2IntegrasjonerPage() {
       key: "google-calendar",
       title: "Google Calendar",
       icon: "calendar",
-      status: (googleConn ? "connected" : "disconnected") as IntegrasjonStatus,
-      statusLabel: googleConn ? "Koblet" : "Ikke koblet",
+      status: (googleKreverPalogging ? "error" : googleConn ? "connected" : "disconnected") as IntegrasjonStatus,
+      statusLabel: googleKreverPalogging ? "Krever pålogging" : googleConn ? "Koblet" : "Ikke koblet",
       description:
         "Toveis-sync av timer og bookinger med trenerens Google-kalender.",
-      meta: googleConn
-        ? `Sist oppdatert ${googleConn.updatedAt.toLocaleDateString("nb-NO")}`
-        : undefined,
-      ctaLabel: googleConn ? "Administrer" : "Koble til",
+      meta: googleKreverPalogging
+        ? (googleConn?.lastError ?? "Tilgangen utløp — logg inn på nytt.")
+        : googleConn
+          ? `Sist oppdatert ${googleConn.updatedAt.toLocaleDateString("nb-NO")}`
+          : undefined,
+      ctaLabel: googleKreverPalogging ? "Logg inn på nytt" : googleConn ? "Administrer" : "Koble til",
       ctaHref: "/admin/settings/calendar",
     },
     {

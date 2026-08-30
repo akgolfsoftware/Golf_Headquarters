@@ -1,7 +1,8 @@
 /**
- * PlayerHQ Booking — oversikt (/portal/booking). v2, Paper-fasit
- * playerhq-booking.html. V2Shell leverer chrome-en, BookingHubV2 rendrer
- * innholds-stacken.
+ * PlayerHQ Booking — oversikt (/portal/booking). Train-lock
+ * `BO-02 Mine bookinger.dc.html` (PX-6, 29.08.2026 — komponenten var
+ * allerede TL.*-bygget, stale Paper-referanse i denne kommentaren rettet).
+ * V2Shell leverer chrome-en, BookingHubV2 rendrer innholds-stacken.
  *
  * Ombygget 2026-08-04 (Anders' instruks): default-siden skal vise timer/
  * credits-status og kommende bookinger, ikke hoppe rett inn i en veiviser.

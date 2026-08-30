@@ -26,6 +26,8 @@ import { hentTreningsHistorikkFiltrert } from "@/app/portal/analysere/actions";
 import { AnalyseFilterBar, TOMME_FILTRE, type AnalyseFiltre } from "./AnalyseFilterBar";
 import { MILJO_GRUPPE_LABEL } from "@/lib/taxonomy";
 import type { AkseKey } from "@/lib/v2/format";
+import type { Turneringshistorikk } from "@/lib/domain/turneringshistorikk";
+import { TurneringshistorikkTrainLock } from "./TurneringshistorikkTrainLock";
 import type { PyramidArea } from "@/generated/prisma/client";
 import { useMount, EASE } from "@/lib/v2/hooks";
 import { fmtSg, Caps, Kort, TallHero, StatusPill, Trend, FordelingRad, FordelingHode, KpiFlis, Rad, PillTabs, FilterChips, TomTilstand, AkseChip, Icon, HjelpTips, HvorforDette, Skjelett, CTAPill, SgKategorier, Diagnose, NesteFokus, SlagLekkasje, type StatusTone } from "@/components/v2";
@@ -886,6 +888,10 @@ const TABS = [
   { id: "sg", l: "SG" },
   { id: "trening", l: "Trening" },
   { id: "tester", l: "Tester" },
+  // Spillerens egne turneringsresultater (Anders 2026-08-30: «hvor står jeg»
+  // = egen utvikling + egne turneringer). Vises for alle, ikke bare i deep —
+  // dette er offentlige resultater spilleren selv har spilt.
+  { id: "turneringer", l: "Turneringer" },
   { id: "trackman", l: "TrackMan" },
   { id: "statistikk", l: "Statistikk" },
 ] as const;
@@ -898,6 +904,7 @@ export function AnalysereV2({
   userId,
   puttingSignals,
   depthMode = "simple",
+  turneringer,
 }: {
   data: AnalysereData;
   /** Overstyr default «Din analyse»-hodet (brukes av AgencyOS coach-speilet).
@@ -910,6 +917,9 @@ export function AnalysereV2({
   puttingSignals?: PuttingSignals | null;
   /** Simple/Deep progressive disclosure — TrackMan-fane kun i deep. */
   depthMode?: "simple" | "deep";
+  /** Spillerens egen turneringshistorikk. Utelatt = fanen skjules helt,
+   *  slik at flater som ikke laster den ikke viser en tom fane. */
+  turneringer?: Turneringshistorikk;
 }) {
   const mobile = useMobile();
   const toppRef = useToppbarHoyde<HTMLElement>();
@@ -918,12 +928,19 @@ export function AnalysereV2({
   // Trening · Tester. TrackMan og Statistikk er dybdelag — de vises kun i
   // deep-modus, så vanlige spillere møter fasitens tre. Innholdet er beholdt
   // i sin helhet; det er bare ikke lenger fjerde og femte valg for alle.
-  const visibleTabs = TABS.filter((t) => deep || (t.id !== "trackman" && t.id !== "statistikk"));
+  // Turnering-fanen finnes kun når flaten faktisk har lastet historikken —
+  // en fane som alltid er tom er verre enn ingen fane.
+  const visibleTabs = TABS.filter(
+    (t) =>
+      (t.id !== "turneringer" || turneringer !== undefined) &&
+      (deep || (t.id !== "trackman" && t.id !== "statistikk")),
+  );
   const [valgtTab, setTab] = useState<TabId>("sg");
   // Simple-mode har ingen TrackMan-fane — fall tilbake til SG uten å skrive
   // state i en effect (avledet verdi, ikke synk).
-  const tab: TabId =
-    !deep && (valgtTab === "trackman" || valgtTab === "statistikk") ? "sg" : valgtTab;
+  // Faller tilbake til SG hvis valgt fane ikke er synlig på denne flaten —
+  // gjelder både dybdelagene og turneringer, som en ?tab=-lenke kan peke på.
+  const tab: TabId = visibleTabs.some((t) => t.id === valgtTab) ? valgtTab : "sg";
 
   // URL-tab-state (?tab=) — leses ved mount, oppdateres uten full navigasjon.
   useEffect(() => {
@@ -1038,6 +1055,9 @@ export function AnalysereV2({
         {tab === "trening" && <TabTrening data={data} mobile={mobile} userId={userId} />}
         {tab === "trackman" && deep && <TabTrackman data={data} mobile={mobile} />}
         {tab === "tester" && <TabTester data={data} mobile={mobile} />}
+        {tab === "turneringer" && turneringer && (
+          <TurneringshistorikkTrainLock h={turneringer} mobile={mobile} />
+        )}
       </FaneInnhold>
         </div>
       </div>

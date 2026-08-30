@@ -275,7 +275,7 @@ function DetailHeader({ data }: { data: SpillerDetaljData }) {
             Rediger
           </Link>
           <Link
-            href={`/admin/spillere/${data.id}/tildel-test`}
+            href={`/admin/tester/tildel/${data.id}`}
             className="inline-flex h-9 items-center gap-1.5 rounded-full border border-border bg-card px-3.5 font-mono text-[9px] font-extrabold uppercase tracking-[0.06em] text-foreground transition-colors hover:bg-secondary"
           >
             <ClipboardList className="h-[13px] w-[13px]" strokeWidth={2} aria-hidden />

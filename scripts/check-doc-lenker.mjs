@@ -18,16 +18,17 @@ const LEVENDE_KILDER = [
   ".claude/rules/beslutninger.md",
   ".claude/rules/arkitektur.md",
   "docs/STATUS-NÅ.md",
-  "docs/AAPNE-SPORSMAAL.md",
   "docs/MASTERPLAN-GJENSTAAENDE.md",
   "docs/FASIT-AK-GOLF-HQ.md",
   "docs/feillogg.md",
   "docs/platform/AGENT-BRIEF.md",
   "docs/platform/BUSINESS-RULES.md",
   "docs/natt/README.md",
-  "docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md",
-  "docs/treningsplanlegger/README.md",
 ];
+// docs/AAPNE-SPORSMAAL.md, docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md og
+// docs/treningsplanlegger/README.md ble slettet 30.08.2026 i doc-konsolideringen
+// (docs/MASTERPLAN-GJENSTAAENDE.md er nå eneste plandokument) — fjernet fra
+// levende-kilder-lista med vilje, ikke en forglemmelse.
 
 const LENKE_MØNSTER = /docs\/[A-Za-zÆØÅæøå0-9._/-]+\.md/g;
 

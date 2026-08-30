@@ -60,7 +60,7 @@ const ROUTES: Omit<SearchRoute, "id">[] = [
   { label: "Analyse", description: "Samlet: SG, Runder, TrackMan, Tester", href: "/portal/analysere" },
   { label: "Strokes Gained Hub", description: "SG per kølle, benchmark, strategi", href: "/portal/mal/sg-hub" },
   { label: "Runder", description: "Logg og se runder + shot-by-shot", href: "/portal/mal/runder" },
-  { label: "TrackMan", description: "Sesjoner og data", href: "/portal/mal/trackman" },
+  { label: "TrackMan", description: "Sesjoner og data", href: "/portal/analysere/trackman" },
   { label: "Tester", description: "Testkatalog og resultater", href: "/portal/tren/tester" },
   { label: "Kalender", description: "Min uke og bookinger", href: "/portal/kalender" },
   { label: "Ny økt", description: "Start eller planlegg økt", href: "/portal/ny-okt" },

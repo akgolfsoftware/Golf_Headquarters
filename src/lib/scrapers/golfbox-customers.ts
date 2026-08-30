@@ -52,6 +52,9 @@ export const NO_TOUR_CUSTOMERS: GolfBoxCustomerSource[] = [
   { customerId: 873, label: "Olyo Region Midt", defaultTour: "junior-no", region: "Midt", onlyMatching: /olyo|region.?tour/i },
   // Østlandstour — egen serie-kunde (amatør/junior, flere WAGR-tellende runder).
   { customerId: 895, label: "Østlandstour", defaultTour: "amateur-no" },
+  // Region Nord Norge — egen serie-kunde for Region Tour (herrer/damer), samme
+  // mønster som Østlandstour. Kartlagt 2026-08-30 (manglet helt frem til da).
+  { customerId: 1442, label: "Region Nord Norge", defaultTour: "amateur-no" },
 ];
 
 export type TourClassification = {

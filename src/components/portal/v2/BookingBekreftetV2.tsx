@@ -2,8 +2,9 @@
 import { TL } from "@/lib/v2/train-lock";
 
 /**
- * PlayerHQ · Booking bekreftet (kvittering etter credit-booking) — v2
- * (retning C «Presis»). v2-port 17. juli 2026 (Team G-B): erstatter
+ * PlayerHQ · Booking bekreftet (kvittering etter credit-booking) — Train-lock.
+ * Fasit: designsystem/train-lock/BO-03 Booking bekreftet.dc.html
+ * v2-port 17. juli 2026 (Team G-B): erstatter
  * legacy-siden i (legacy)/booking/bekreftet. COPY-FIKS i porten: legacy sa
  * «Forespørsel sendt!», men credit-bookingen opprettes CONFIRMED — ny ærlig
  * tittel «Booking bekreftet». Eierskaps-sjekk og googleKalenderUrl()

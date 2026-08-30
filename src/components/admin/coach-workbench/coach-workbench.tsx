@@ -714,7 +714,7 @@ function Inspector({
         {/* 4. Tildel oppgave */}
         <InspectorSection label="Tildel oppgave">
           <Link
-            href={`/admin/spillere/${playerId}/tildel-test`}
+            href={`/admin/tester/tildel/${playerId}`}
             className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-dashed border-border px-2.5 py-3 font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground hover:border-primary hover:text-primary"
           >
             <Plus className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />

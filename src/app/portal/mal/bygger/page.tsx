@@ -1,29 +1,21 @@
-/**
- * PlayerHQ · AI mal-bygger (/portal/mal/bygger) — v2.
- * v2-port 17. juli 2026: ruten flyttet ut av (legacy), tynn server-side
- * over samme loader (hentByggerKontekst — auth via requirePortalUser i
- * actions.ts, flyttet verbatim). All wizard-logikk bor i MalByggerV2.
- */
-
-import { hentByggerKontekst } from "./actions";
+import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
-import { MalByggerV2 } from "@/components/portal/v2/MalByggerV2";
 
-export const dynamic = "force-dynamic";
-export const metadata = { title: "AI mal-bygger — PlayerHQ" };
-
-export default async function MalByggerPage() {
-  // Rot-layouten krever kun innlogging (16.08) — tilgangsnivået håndheves her.
-  // Mal-byggeren står ikke på talent-allowlisten: FULL. (Loaderen i actions.ts
-  // guarder også, men siden må si det selv — rutekontrakten leses per side.)
+/**
+ * Pensjonert 2026-08-29. Den nyere 5-stegs byggeren på
+ * `/portal/planlegge/bygger` har siden 10. juli vært ment som spillerens
+ * inngang — den sier det selv i toppkommentaren sin — men denne adressen ble
+ * aldri stengt, så begge levde som fungerende, parallelle innganger.
+ *
+ * Kjernelogikken deles allerede via `src/lib/plan-builder/`, så ingen
+ * funksjonalitet forsvinner med adressen.
+ *
+ * Etterlater to filer uten referanser: `components/portal/v2/MalByggerV2.tsx`
+ * og `app/portal/mal/bygger/actions.ts`. De er bevisst ikke slettet i samme
+ * endring — `sendTilGodkjenning` finnes ikke i den nye flyten, og det bør
+ * avklares om den skal med før koden fjernes.
+ */
+export default async function MalByggerRedirect(): Promise<never> {
   await requirePortalUser({ kreverTilgang: "FULL" });
-  const kontekst = await hentByggerKontekst();
-  return (
-    <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={kontekst.spiller.navn}>
-      <TilbakeLenke href="/portal/mal">Mål</TilbakeLenke>
-      <MalByggerV2 kontekst={kontekst} />
-    </V2Shell>
-  );
+  redirect("/portal/planlegge/bygger");
 }

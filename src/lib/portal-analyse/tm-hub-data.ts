@@ -66,10 +66,29 @@ export async function hentAnalyseHub(userId: string): Promise<TmHubData> {
   const manedStart = new Date(Date.UTC(aar, (maned ?? 1) - 1, 1));
 
   const minGolf = await loadMinGolf(userId);
-  const [runderIManed, tmAntall] = await Promise.all([
+  const [runderIManed, tmAntall, bruker] = await Promise.all([
     prisma.round.count({ where: { userId, playedAt: { gte: manedStart } } }),
     prisma.trackManSession.count({ where: { userId } }),
+    prisma.user.findUnique({ where: { id: userId }, select: { publicPlayerId: true } }),
   ]);
+
+  // Turneringsraden: tell kun når spilleren faktisk er koblet. Er hen ikke
+  // koblet, sier meta det i stedet for å vise «0 turneringer», som ville
+  // lest som om spilleren aldri har spilt.
+  const turneringsAntall = bruker?.publicPlayerId
+    ? await prisma.publicPlayerEntry.count({
+        where: {
+          playerId: bruker.publicPlayerId,
+          tournament: { mergedIntoId: null },
+        },
+      })
+    : null;
+  const turneringsMeta =
+    turneringsAntall == null
+      ? "Ikke koblet ennå"
+      : turneringsAntall === 0
+        ? "Ingen registrert"
+        : `${turneringsAntall} registrert`;
   const kat = minGolf.sgStatus.kategorier;
   const sgAkser: SgAkseVisning[] = AKSE.map((a) => {
     const funnet = kat.find((k) => k.akse === a.id);
@@ -215,6 +234,13 @@ export async function hentAnalyseHub(userId: string): Promise<TmHubData> {
         href: "/portal/tren/tester",
         tittel: "Tester",
         meta: "TN-batteriet",
+      },
+      {
+        /* Spillerens egne turneringsresultater (beslutning 2026-08-30).
+           Meta sier antall, eller hvorfor det er tomt — aldri bare «0». */
+        href: "/portal/analysere/turneringer",
+        tittel: "Turneringer",
+        meta: turneringsMeta,
       },
     ],
     trackman,

@@ -26,5 +26,12 @@ export default function PortalError({
     });
   }, [error]);
 
-  return <V2Feil reset={reset} tilbakeHref="/portal" />;
+  return (
+    <V2Feil
+      reset={reset}
+      tilbakeHref="/portal"
+      tittel="Fikk ikke lastet dagen din"
+      melding="Sjekk nettet og prøv igjen. Planen ligger trygt hos Anders."
+    />
+  );
 }

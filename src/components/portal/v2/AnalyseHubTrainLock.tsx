@@ -8,6 +8,9 @@
  * Fasit: designsystem/train-lock/TM-09 Mini-kart og runde.dc.html (TM-09a/b/f
  * «Analyse mini»: TrackMan-kortet får hullkart-bakgrunn (HoleMap, "mini")
  * + «Se full spredning»-lenketeksten, i stedet for et blankt rutenett).
+ * Lys: designsystem/train-lock/B3 Lys nøkkelskjermer.dc.html (Lys PH-10
+ * Analyse) — mekanisk (PX-7, 29.08.2026): filen leser konsekvent TL.* uten
+ * hardkodet hex, verifisert med grep — ingen manuell lys-finpuss utover det.
  */
 
 import Link from "next/link";

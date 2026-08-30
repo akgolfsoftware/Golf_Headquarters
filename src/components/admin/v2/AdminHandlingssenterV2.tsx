@@ -146,8 +146,9 @@ function DetaljInnhold({
       </div>
 
       {ferdig ? (
-        <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, fontFamily: TL.font.mono, fontSize: 11, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: TL.ok, background: `color-mix(in srgb,${TL.ok} 12%,transparent)`, borderRadius: 9999, padding: "11px 18px" }}>
-          <Icon name="check-circle" size={14} style={{ color: TL.ok }} />
+        // MAT-00: Fullført er varm, aldri TL.ok-grønn (den er kun Godta/PUBLISERT).
+        <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, fontFamily: TL.font.mono, fontSize: 11, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: TL.warm, background: `color-mix(in srgb,${TL.warm} 12%,transparent)`, borderRadius: 9999, padding: "11px 18px" }}>
+          <Icon name="check-circle" size={14} style={{ color: TL.warm }} />
           Fullført
         </span>
       ) : (

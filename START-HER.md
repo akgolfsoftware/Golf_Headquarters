@@ -3,9 +3,9 @@
 Én plattform, fire produkter (Marketing · Booking · **PlayerHQ** `/portal` · **AgencyOS** `/admin`).
 
 **Les i denne rekkefølgen:**
-1. [`docs/platform/AGENT-BRIEF.md`](docs/platform/AGENT-BRIEF.md) — stack, prosjektkart, sannhets-hierarki (5 min). Les før du rører kode.
-2. [`docs/STATUS-NÅ.md`](docs/STATUS-NÅ.md) — hvor prosjektet står nå.
-3. [`docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`](docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md) — gjeldende lanseringsspor.
+1. [`docs/MASTERPLAN-GJENSTAAENDE.md`](docs/MASTERPLAN-GJENSTAAENDE.md) — DEN gjeldende, eneste plandokumentet: alt gjenstående arbeid, session-tabeller, status, beslutningskø.
+2. [`docs/platform/AGENT-BRIEF.md`](docs/platform/AGENT-BRIEF.md) — stack, prosjektkart, sannhets-hierarki (5 min). Les før du rører kode.
+3. [`docs/STATUS-NÅ.md`](docs/STATUS-NÅ.md) — hvor prosjektet står nå.
 
 **Design:** Train-lock (`designsystem/train-lock/`) er designfasit for ALLE skjermer i
 PlayerHQ, AgencyOS og Forelder — se `CLAUDE.md` invariant 2 og `.claude/rules/beslutninger.md`.

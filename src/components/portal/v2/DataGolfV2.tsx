@@ -1,7 +1,11 @@
 "use client";
 
 /**
- * PlayerHQ DataGolf-spillerkort — Train-lock DG-01 (C10).
+ * PlayerHQ DataGolf-spillerkort — Train-lock (C10).
+ * Fasit: designsystem/train-lock/DG-01 DataGolf spiller.dc.html
+ *
+ * Fasit: designsystem/train-lock/DG-01 DataGolf spiller.dc.html
+ * (DG-01a iPhone / DG-01b iPad / DG-01c Mac).
  *
  * Kun DataGolf-motor. Negative tall = opacity, aldri rødt. PGA-putt merkes
  * som Broadie-tabell. «Tren mot» er UTKAST, aldri auto-plan.
@@ -466,6 +470,20 @@ export function DataGolfV2({ data }: DataGolfProps) {
         {data.pgaPutt.length > 0
           ? ` ${data.pgaPutt.length} avstander lastet.`
           : " Tabellen er tom — vi gjetter ikke putt-prosent."}
+      </p>
+
+      {/* Lisenskrav fra DataGolf — attribusjon på spillerens DataGolf-kort
+          (Anders 30.08.2026, datakartleggingens svar 4). */}
+      <p style={{ margin: "10px 0 0", fontSize: 12, color: TL.mute }}>
+        Powered by{" "}
+        <a
+          href="https://datagolf.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: "inherit", textDecoration: "underline" }}
+        >
+          Data Golf
+        </a>
       </p>
     </div>
   );

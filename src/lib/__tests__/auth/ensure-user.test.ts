@@ -102,7 +102,10 @@ test("ensureUser — TalentHQ-kilde, tier-tvang og urørt eksisterende profil", 
     },
   );
 
-  await t.test("uten kilde → ingen profilType/profilKilde i create (DB-default STANDARD)", async () => {
+  await t.test("vanlig spiller uten kilde → TALENT med kilde SIGNUP", async () => {
+    // Endret 2026-08-29: gratisnivået er standard for alle nye spillere.
+    // Uten dette ville en ny bruker landet på INGEN, siden den usynlige
+    // prøveperioden er fjernet fra resolveTilgang samtidig.
     await ensureUser(
       authBruker({
         id: "auth-standard",
@@ -112,8 +115,8 @@ test("ensureUser — TalentHQ-kilde, tier-tvang og urørt eksisterende profil", 
     );
     assert.equal(upserts.length, 2);
     const { create } = upserts[1];
-    assert.equal("profilType" in create, false);
-    assert.equal("profilKilde" in create, false);
+    assert.equal(create.profilType, "TALENT");
+    assert.equal(create.profilKilde, "SIGNUP");
     assert.equal(create.tier, "GRATIS");
   });
 
@@ -152,5 +155,23 @@ test("ensureUser — TalentHQ-kilde, tier-tvang og urørt eksisterende profil", 
     assert.deepEqual(updates[0].data, { authId: "auth-ekte" });
     // Ingen ny upsert — raden er den samme, profilType urørt.
     assert.equal(upserts.length, 3);
+  });
+
+  // Står sist med vilje: subtestene over teller upserts absolutt, så en ny
+  // opprettelse tidligere i rekka forskyver dem.
+  await t.test("forelder får IKKE portalens gratisnivå", async () => {
+    // Foreldre har egen app (/forelder) og styres ikke av portal-nivåene.
+    findFirstResultat = null;
+    await ensureUser(
+      authBruker({
+        id: "auth-forelder",
+        email: "forelder@example.com",
+        meta: { role: "PARENT", tier: "GRATIS" },
+      }),
+    );
+    const { create } = upserts[upserts.length - 1];
+    assert.equal("profilType" in create, false);
+    assert.equal("profilKilde" in create, false);
+    assert.equal(create.role, "PARENT");
   });
 });

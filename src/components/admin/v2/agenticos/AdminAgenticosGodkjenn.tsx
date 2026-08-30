@@ -3,6 +3,13 @@
 /**
  * AO-08 Godkjenn-kø. Én hvit Godkjenn på uthevet sak. Avvis dim.
  * Godkjent = warm hake, aldri ok-grønn.
+ *
+ * Fasit: designsystem/train-lock/AO-12 Godkjenningspolicy A3 B1 C3.dc.html
+ * (AO-08 kø + AO-12f tom). AO-12a–e (venter start/pågår/venter resultat/
+ * research ferdig/avvist-feilet-pause) er policy-tilstander fra
+ * `src/lib/domain/agenticos/godkjenningspolicy.ts` — vist generisk via
+ * `rad.merke`/`rad.merkeLabel` i samme kort, ikke som fem separate
+ * hardkodede layouter. AO-12g (mobil 393) er samme kort på smalere bredde.
  */
 
 import { useMemo, useState, useTransition } from "react";
