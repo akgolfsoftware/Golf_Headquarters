@@ -5565,6 +5565,38 @@ model KommandoTask {
   @@map("kommando_tasks")
 }
 
+/**
+ * Driftsrutine — gjentakende arbeid som holder virksomheten i gang
+ * (MASTERPLAN 15.2, beslutning 6.6 fra GRILLINGEN RUNDE 6, Anders 30.08.2026).
+ *
+ * Skilt fra KommandoTask med vilje: en oppgave gjøres ferdig og forsvinner,
+ * en rutine kommer tilbake. «Rydd driving range» er ikke en oppgave — den er
+ * hver dag, for alltid.
+ *
+ * `automatiserbar` er hele poenget med modellen: Anders skal se hvilke
+ * rutiner en agent kan overta og hvilke som krever et menneske på stedet.
+ * Uten det feltet er lista bare enda en oppgaveliste.
+ */
+model DriftRutine {
+  id        String   @id @default(cuid())
+  userId    String
+  tittel    String
+  detalj    String?
+  /** "daglig" | "ukentlig" | "manedlig" */
+  frekvens  String
+  /** Fritekst: «torsdag 20.00», «den 3.», «rullering Anders/Christoffer». */
+  naar      String?
+  /** true = en agent kan overta. false = krever et menneske fysisk til stede. */
+  automatiserbar Boolean @default(false)
+  aktiv     Boolean  @default(true)
+  sistUtfort DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, aktiv, frekvens])
+  @@map("drift_rutiner")
+}
+
 model KommandoChat {
   id        String   @id @default(cuid())
   userId    String

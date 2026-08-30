@@ -587,11 +587,19 @@ function skallAktivFraPath(pathname: string): string {
     { prefix: "/admin/spillere", id: "stall" },
     { prefix: "/admin/planlegge", id: "workbench" },
     { prefix: "/admin/workbench", id: "workbench" },
-    { prefix: "/admin/queue", id: "ko" },
+    // MASTERPLAN 15.1/15.2: Kø er én adresse (/admin/ko). De gamle kø-adressene
+    // er redirects, men beholdes her så railen lyser riktig i det korte
+    // øyeblikket før redirecten lander.
+    { prefix: "/admin/ko", id: "ko" },
     { prefix: "/admin/godkjenninger", id: "ko" },
     { prefix: "/admin/innboks", id: "ko" },
     { prefix: "/admin/varsler", id: "ko" },
-    { prefix: "/admin/handlingssenter", id: "ko" },
+    // Oppfølging av spillere er IKKE Kø (beslutning 6.6) — den hører i Stall.
+    { prefix: "/admin/queue", id: "stall" },
+    // Oppgaver bor under Meg, som i canvasen (MASTERPLAN 15.2).
+    { prefix: "/admin/oppgaver", id: "meg" },
+    { prefix: "/admin/handlingssenter", id: "meg" },
+    { prefix: "/admin/workspace", id: "meg" },
     { prefix: "/admin/agenticos", id: "jarvis" },
     { prefix: "/admin/agent-team", id: "jarvis" },
     { prefix: "/admin/agents", id: "jarvis" },
@@ -1446,12 +1454,13 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
     let best: { id: string; href: string } | undefined;
     // Hub-ruter utenfor Mer → primær-seksjon (Kø / Kalender / Innsikt).
     const pathTilSeksjon: Array<{ prefix: string; id: string }> = [
+      { prefix: "/admin/ko", id: "innboks" },
       { prefix: "/admin/godkjenninger", id: "innboks" },
       { prefix: "/admin/innboks", id: "innboks" },
-      { prefix: "/admin/innboks", id: "innboks" },
       { prefix: "/admin/varsler", id: "innboks" },
-      { prefix: "/admin/queue", id: "innboks" },
-      { prefix: "/admin/handlingssenter", id: "innboks" },
+      { prefix: "/admin/queue", id: "spillere" },
+      { prefix: "/admin/oppgaver", id: "cockpit" },
+      { prefix: "/admin/handlingssenter", id: "cockpit" },
       { prefix: "/admin/kalender", id: "kalender" },
       { prefix: "/admin/bookinger", id: "kalender" },
       { prefix: "/admin/agencyos/uka", id: "kalender" },
