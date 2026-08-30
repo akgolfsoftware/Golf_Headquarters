@@ -71,6 +71,46 @@ Gjelder til Anders endrer dem.
      turneringsstatus virker — 30.08 står 5 turneringer som pågående, ingen med
      passert sluttdato, og «AVLYST»-raden er korrekt CANCELLED.
 
+- **FORRETNINGSMODELL: SPILLERLISENSER (Anders 2026-08-30, i økt):** binder
+  sammen PlayerHQ-abonnementet og organisasjonene (WANG/Team Norway). Kjernen:
+  spilleren eier profilen og abonnementet — organisasjonene betaler aldri for
+  plattformen, kun for spillerlisenser.
+
+  1. **Gratis PlayerHQ-profil** = testdata, turneringsdata og statistikk — og
+     det er GRATIS å dele dette trinnet til organisasjoner. Plattformen fungerer
+     dermed som kartleggingsverktøy for WANG/TN uten betalingsterskel.
+  2. **FULL (299 kr/mnd)** = alle funksjoner + mulighet for komplett
+     profildeling.
+  3. **Deling i to trinn per organisasjon** (grillingen 7.4 avgjort): trinn 1 =
+     tester + turneringer + statistikk (gratis å dele); trinn 2 = komplett
+     profil — treningsplan, TrackMan, analyse, fremgang (krever FULL). Spilleren
+     (forelder for mindreårige) styrer trinn per organisasjon og kan trekke når
+     som helst. To brytere, aldri ti.
+  4. **Team Norway-spillere har KRAV om komplett PlayerHQ (FULL).** TN eller
+     WANG kan betale lisensen for spilleren — organisasjonsbetalt abonnement er
+     lisensmodellen. Organisasjonene betaler aldri for Workdesk/plattform i seg
+     selv.
+  5. **WANG Fredrikstad er gratis** — Anders jobber der og har private spillere
+     der; inkludert i kontrakten. **Alle andre WANG-skoler betaler** —
+     spillerlisenser til øvrige WANG-skoler er et eget B2B-marked.
+  6. TN-farge/branding: Anders lager komplett brandingsystem selv (leveres
+     separat, samme dag) — TN-bølgen tegner ingenting før det foreligger.
+
+- **INNSIKT PER SPILLER — de fire spørsmålene (Anders 2026-08-30, grillingen
+  10.1):** coach-flaten Innsikt bygges for å svare på disse, i denne rekkefølgen.
+  Alle fire har ferdigbygd eller eksisterende datagrunnlag.
+
+  1. **Utvikler hen seg raskt nok?** Vekstrate år for år mot eget utgangspunkt,
+     med kohortens snitt som coachens (skjulte) referanse — analysen ligger
+     ferdigbygd uten skjerm.
+  2. **Hvor kan hen nå?** Spillerens bane lagt oppå historiske løp («slik lå
+     Hovland/Reitan da de var 17») — godkjent for spillerflaten i
+     produktretning pkt. 4, bygges også i coach-visning.
+  3. **Tåler hen konkurranse?** Gapet mellom turneringsscore og trenings-/
+     testnivå, og om gapet øker eller minker over tid.
+  4. **Riktig turneringsprogram?** Konkurransevolum og motstandsnivå målt mot
+     utviklingen, koblet til A/B/C-prioriteringen som finnes i modellen.
+
 - **TEAM NORWAY-WORKDESK — spesifikasjon (Anders 2026-08-30, i økt):** TN-siden
   utvikles til et komplett arbeidsområde som erstatter Messenger-grupper, e-post
   og Word/Excel. Bygger på org-flate-grunnmuren fra bølge N og samtykke-stakken
@@ -79,9 +119,11 @@ Gjelder til Anders endrer dem.
   1. **Pilot høsten 2026:** Anders + 2–5 navngitte TN-trenere får konto, med
      tilgang kun til egne grupper; spillere inn via samtykke. Bevis på én
      samling før utrulling.
-  2. **Forretningsmodell: gratis pilot 2026/27 → lisensavtale fra 2027** hvis TN
-     tar den i bruk — sies høyt fra start. NGF som referansekunde er inngangen
-     til klubbmarkedet (Fredrikstad Total-sporet).
+  2. **Forretningsmodell: gratis pilot 2026/27 → avtale fra 2027** hvis TN tar
+     den i bruk — sies høyt fra start. NGF som referansekunde er inngangen til
+     klubbmarkedet (Fredrikstad Total-sporet). PRESISERT senere samme økt:
+     avtalen gjelder SPILLERLISENSER, ikke plattformleie — se blokken
+     «FORRETNINGSMODELL: SPILLERLISENSER».
   3. **Dataansvar: AK Golf eier alt.** (Anders valgte bort «organisasjonen
      eier»-modellen.) Konsekvens: hver TN-spiller/forelder samtykker direkte til
      AK Golf, og GolfBox-bruken forblir AK Golfs ansvar (innlogget bruk = lav
