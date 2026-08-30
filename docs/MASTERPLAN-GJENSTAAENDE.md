@@ -25,6 +25,11 @@ se STEG 13) · `docs/jarvis-shortcut.md` (driftshåndbok for Jarvis-snarveien) �
 
 ## STEG 0 — Akutt (denne uka, før alt annet)
 
+| # | Oppgave | Detalj |
+|---|---|---|
+| 0.12 | **BLOKKERER ALL SKJERMBILDE-GATE FOR AGENCYOS (funnet 30.08.2026).** `coachtest@akgolf.test` — brukeren `scripts/signoff-trainlock.mjs` og `signoff-gallery.mjs` logger inn med for ALLE AgencyOS-skjermer — ble slettet i nullstillingen 30.08. Målt i basen samme dag: tre brukere igjen (ADMIN Anders, COACH Markus, PLAYER screentest). `screentest` er spiller og kan ikke se `/admin/*`. **Konsekvens:** ingen AgencyOS-skjerm kan gjennom skjermbilde-gaten — hele STEG 15 er berørt, ikke bare 15.1 (PR #689 står og venter på nettopp dette). **Krever Anders:** skal det opprettes en coach-testbruker med data i prod, eller skal gaten kjøres med hans egen innlogging? Agenten oppretter ikke brukere i produksjonsbasen på eget initiativ |
+
+
 | # | Oppgave | Eier | Status/kilde |
 |---|---|---|---|
 | 0.1 | **Merge PR #490 — WANG PII-fiks.** `/team-wang` (inkl. coach + IUP-vurderinger av mindreårige) er åpen uten innlogging siden 15.08. #490 gjør fellessiden navnefri og sperrer coach igjen. #406 lukkes som overflødig | **Anders (ja) + agent** | PR #490 klar |
