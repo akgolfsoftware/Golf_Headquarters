@@ -47,6 +47,54 @@ Gjelder til Anders endrer dem.
      etter 1. september. Forelderen er ofte den som faktisk administrerer
      juniorens timer, og booking av enkelttimer ligger i gratisnivået.
 
+- **LIVE-SIDEN: TO-LAGS-MODELL (Anders 2026-08-30, i økt):** besvarer grillingen
+  9.1, 9.2, 9.5, 9.6 og 9.7 i én beslutning.
+
+  1. **Åpent lag (uten innlogging):** DataGolf-proffdata (alltid med «Powered by
+     Data Golf»), egne spillere med aktivt samtykke, og myndige spillere. Formål:
+     rekruttering og synlighet — siden skal selge gratisnivået, ikke være en
+     nøytral resultattjeneste.
+  2. **Barnevern-regel på ALLE åpne flater:** spillere født 2008 eller senere
+     uten aktivt samtykke vises aldri offentlig; mangler fødselsår → vises ikke.
+     Gjelder også de eksisterende ~45 offentlige statistikksidene, som må få
+     samme filter.
+  3. **Gratis konto-laget:** norske turneringer i bredden, juniorresultater og
+     «følg spiller» ligger bak gratis innlogging. Registreringen er trakten mot
+     299 kr/mnd, og innlogget visning til berørte (forelder/trener/spiller) er
+     juridisk en tjeneste, ikke masse-republisering.
+  4. **GolfBox:** offisiell avtale søkes via Anders' NGF-kontaktpunkter FØR bred
+     åpen visning av GolfBox-data. Intern/innlogget bruk fortsetter som i dag.
+     Begrunnelse: databasevernet beskytter GolfBox' samling selv om hvert
+     resultat er offentlig, og en konflikt ville truffet Team Norway-relasjonene.
+     E-postutkast til NGF: Anders ba om det senere, ikke i denne økten.
+  5. **Datahygiene (grillingen 9.10) anses løst:** selvhelbredende
+     turneringsstatus virker — 30.08 står 5 turneringer som pågående, ingen med
+     passert sluttdato, og «AVLYST»-raden er korrekt CANCELLED.
+
+- **WANG/TEAM NORWAY — fire svar (Anders 2026-08-30, i økt):** grillingen runde 7.
+
+  1. **WANG-elevene og GFGK-juniorene blir fulle PlayerHQ-brukere i høst (7.2):**
+     foreldresamtykke først, deretter invitasjon til gratisnivået; Anders
+     planlegger øktene deres i Workbench; organisasjonsflaten leser via
+     samtykkemodellen. De er de første ekte brukerne, før markedsføringen starter.
+  2. **«Karaktermatrisen» er Anders' egen sportslige vurdering — IKKE
+     skolekarakterer (7.7).** Bygges som coach-vurdering i elevoppfølgingen.
+     Heter «vurdering» i UI, aldri «karakterer». Skolens karakterer holdes helt
+     utenfor appen (skolens domene).
+  3. **Test-føringsskjermen bygges, med fysiske tester som primærcase (7.5):**
+     på testdager føres fysiske tester i bulk — 10+ elever etter tur på samme
+     øvelse (benkpress-eksempelet). Øvrige protokoller føres oftest én-til-én,
+     men parallellføring skal være mulig for alle protokoller. Design: velg
+     protokoll → før spiller for spiller i kø.
+  4. **NGF-samarbeidet er produktleveranse, ikke rapportplikt (7.3):** ingen har
+     bestilt data av Anders. Produktet lages på vegne av WANG Toppidrett og
+     NGF-samarbeidet, der Anders er ressurs for begge. Ambisjonen: Team
+     Norway-siden utvikles til et komplett arbeidsområde («Workdesk») — tester,
+     DataGolf-integrering, GolfBox-resultater, kartlegging av spillere, grupper
+     med kommunikasjon, egne tester, dokumentdeling, samlingspunkt — som
+     erstatter e-post/Word/Excel. Egen grilling/spesifikasjon kjørt samme økt;
+     svarene låses i egen blokk.
+
 - **PRODUKTRETNING — åtte svar (Anders 2026-08-30, i økt):** grunnlaget for Innsikt
   (AgencyOS) og Analyse (PlayerHQ). Bygg mot disse, ikke mot gjetning.
 
