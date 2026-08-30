@@ -3,8 +3,10 @@
 /**
  * AgencyOS Cockpit — Train-lock (T2, 26.08.2026).
  *
- * Fasit: designsystem/train-lock/AG-01 Cockpit.dc.html (+lys),
- * AG-02 Cockpit Mac.dc.html, AG-14 Cockpit tom.dc.html, AG-15 Cockpit feil.dc.html.
+ * Fasit: designsystem/train-lock/AG-01 Cockpit.dc.html,
+ * AG-01 Cockpit lys.dc.html (samme kortspråk, inverterte flater — TL-tokens
+ * bytter automatisk), AG-02 Cockpit Mac.dc.html, AG-14 Cockpit tom.dc.html,
+ * AG-15 Cockpit feil.dc.html.
  * Erstatter KonsollChat (Caddie-tråd/artefaktpanel) på denne ruten — AG-01 har
  * verken composer eller chat-feed. Caddie-hooken (useCaddieChat) er urørt og
  * kan gjenbrukes et annet sted (Jarvis-sporet), men har ingen inngang herfra

@@ -1,13 +1,15 @@
 "use client";
 
 /**
- * AO-02 Runtimes + AO-10 Ollama. Status er ærlig: bare Claude er koblet i appen.
- * Hvit prikk = på. Ok-grønn brukes ikke.
+ * Fasit: designsystem/train-lock/AO-02 Runtimes og Ollama.dc.html
+ * (AO-02 Runtimes + AO-10 Ollama, samme fil). Status er ærlig: bare Claude
+ * er koblet i appen. Hvit prikk = på. Ok-grønn brukes ikke.
  *
- * Fasit: designsystem/train-lock/GAP-2 Tilstander drift.dc.html (GAP-2a/b,
- * PX-7 2026-08-29) — «ingen motor svarer»-driften er caps danger + prikk på
- * tittelen, ALDRI en fylt feil-flate. Køen (kjøringer i dag) beholdes uendret
- * under banneret — ingenting mistes når motorene er nede.
+ * Fasit: designsystem/train-lock/GAP-2 Tilstander drift.dc.html (GAP-2a/b) —
+ * «ingen motor svarer»-driften er caps danger + prikk på tittelen, ALDRI en
+ * fylt feil-flate. Køen (kjøringer i dag) beholdes uendret under banneret,
+ * så ingenting mistes når motorene er nede. Begge henvisningene er beholdt
+ * ved sammenslåingen 30.08: skjermen bygger på to fasitfiler.
  */
 
 import { TL } from "@/lib/v2/train-lock";

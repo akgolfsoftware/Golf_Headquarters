@@ -2,7 +2,8 @@
  * AgenticOS cockpit — /admin/agenticos.
  *
  * Fasit: designsystem/train-lock/AO-01 Cockpit ko godkjenning.dc.html
- * + AO-00 LOCK (indre rail).
+ * + AO-00 LOCK Run Skills Tilstander.dc.html (AO-00 er et lås-/referanseark
+ * for tokens+rail, ikke en egen skjerm — oppfylt av train-lock.ts + V2Shell).
  *
  * IA (T12 #630) er urørt: AgencyOS Kø = /admin/godkjenninger.
  * Jarvis-fanen peker hit.

@@ -43,6 +43,8 @@ siterer, den bygger ikke blindt nytt).
 | PX-3 | TM (12) + TE (13) | 25 | Analyse/TrackMan-familien + testbatteri/live-gate/innspill | `px/3-tm-te` |
 | PX-4 | WB (10) + P (9) + RU (5) + LO (3) | 27 | Player-workbench, min uke/økt, live runde, gate-skjermene | `px/4-player-wb-runde` |
 | PX-5 | FO (20) | 20 | Hele Forelder med lys+mørk toggle (T4-beslutningen 26.08) | `px/5-forelder` |
+| PX-6 | AG (4) + AO (5) + JV (3) + S3 (3) + KA (3) + EC (2) + DG/FY/TU/GP/BO/ME-rest | ~28 | AgencyOS-resten: cockpit-varianter, AgenticOS, Jarvis, Spiller 360, kalender, økonomi, DataGolf, fys, turneringer, gameplan, booking, meg-detaljer | `samle/px6-agency` (sammenslåing av `claude/px6-agency-rest-fasit-iopubc` + `px/6-agency-rest`) — sitering levert, skjermbilder ikke tatt |
+| PX-7 | GAP (3) + B1–B5 (9) + MAT (2) + Analyse | ~15 | Tilstander (tom/laster/feil per GAP-1/B1), lys-arkene B3/B4/B5, iPad/Mac-brekkene B2, materialer, Dynamic Type XL-rammen | `px/7-tilstander-brekk` |
 | PX-6 | AG (4) + AO (5) + JV (3) + S3 (3) + KA (3) + EC (2) + DG/FY/TU/GP/BO/ME-rest | ~28 | AgencyOS-resten: cockpit-varianter, AgenticOS, Jarvis, Spiller 360, kalender, økonomi, DataGolf, fys, turneringer, gameplan, booking, meg-detaljer | `px/6-agency-rest` |
 | PX-7 | GAP (3) + B1–B5 (9) + MAT (2) + Analyse | ~15 | Tilstander (tom/laster/feil per GAP-1/B1), lys-arkene B3/B4/B5, iPad/Mac-brekkene B2, materialer, Dynamic Type XL-rammen | `samle/px7-tilstander` (sammenslåing av `px/7-tilstander-brekk` + `claude/px7-tilstander-brekk-4cp4nu`) — **DELVIS.** GAP (alle 3) + B1 + MAT + B3/B4 levert og sitert. **B2 (5 filer, iPad/Mac-brekk) IKKE bygget** — spec ligger klar i `docs/natt/PX7-DONE.md`. GAP-2e (reauth-samtykkeark) vurdert som ny feature, ikke bygget. Skjermbilder ikke tatt. |
 
