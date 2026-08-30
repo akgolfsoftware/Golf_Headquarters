@@ -10,7 +10,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { koTelling } from "@/lib/admin/ko-telling";
-import { lastAgenticosGodkjennCount } from "@/lib/agencyos/last-agenticos";
+import { lastAgenticosKo, lastAgenticosGodkjenn } from "@/lib/agencyos/last-agenticos";
 import type { KoFane, KoFaneId } from "./faner";
 import type { KoBruker } from "./last-godkjenninger";
 
@@ -27,16 +27,19 @@ export async function koFaneTellinger(
           ut.godkjenninger = t.totalt;
         })
       : null,
-    // Agent-kø viser klar + pågår + venter; PlanAction-køen er den samme
-    // kilden lastAgenticosKo bygger de tre bøttene av.
+    // Agent-fanene teller det fanen FAKTISK viser, ikke antall PENDING
+    // PlanActions. Begge listene er `take`-begrenset i loaderen, så tallet er
+    // billig — og det matcher skjermen når du klikker. Målt 30.08: den
+    // enkle PlanAction-tellingen ga 530 på begge fanene, mens Agent-kø viste
+    // 23 rader. Et tall som ikke stemmer med innholdet er verre enn intet tall.
     vis.has("agentko")
-      ? lastAgenticosGodkjennCount(user).then((n) => {
-          ut.agentko = n;
+      ? lastAgenticosKo(user).then((d) => {
+          ut.agentko = d.klar.length + d.pagar.length + d.venter.length;
         })
       : null,
     vis.has("agentgodkjenn")
-      ? lastAgenticosGodkjennCount(user).then((n) => {
-          ut.agentgodkjenn = n;
+      ? lastAgenticosGodkjenn(user).then((d) => {
+          ut.agentgodkjenn = d.rader.length;
         })
       : null,
     vis.has("tester")
