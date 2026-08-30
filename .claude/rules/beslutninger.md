@@ -16,6 +16,37 @@ Gjelder til Anders endrer dem.
 
 ## Beslutningene (august 2026)
 
+- **GRILLINGEN RUNDE 2 — fire svar + nullstilt base (Anders 2026-08-30, i økt):**
+  oppfølging av 112-spørsmålsdokumentet («Grillingen», artifact `6ef6f807`). Alle
+  målinger verifisert i produksjonsdatabasen 30.08.2026 før beslutning.
+
+  1. **BRUKERBASEN ER NULLSTILT FØR LANSERING (utført 30.08.2026).** Alle brukere
+     slettet unntatt Anders (`akgolfgroup@gmail.com`), Markus (`markus@akgolf.no`)
+     og demo-spilleren Øyvind Rohjan (`screentest@akgolf.test`, beholdt fordi
+     skjermbilde-gaten krever innlogget testbruker med data). 42 app-brukere,
+     28 auth-kontoer og all eid data (runder, tester, TrackMan-økter, bookinger,
+     abonnement-rader) er slettet; foreldreløse testbookinger ryddet i samme økt.
+     Grunnlag: hele basen var verifisert testdata — 0 av 38 spillere innlogget
+     siste døgn, 0 Stripe-abonnement, eneste spiller med treningsdata var
+     demo-brukeren. Turneringsbasen (7 274 turneringer, 941 245 resultater)
+     er uberørt. Konsekvens: 1. september starter med reell base = 0, og
+     spørsmålet «hva skjer med eksisterende gratisbrukere» (grillingen 11.5)
+     er bortfalt. Kjent skavank fra før: screentest-brukerens `authId` peker
+     ikke på noen auth-konto — skjermtest-innlogging må verifiseres ved neste
+     skjerm-PR.
+  2. **Bruksmåling bygges nå (grillingen 1.7).** Minimal daglig aktiv-måling:
+     én rad per bruker per aktiv dag (userId + dato), skrevet ved innlasting av
+     `/portal`, pluss et lite kort i AgencyOS («X brukte appen i går / denne uka /
+     ikke åpnet på 30 dager»). Ingen tredjepartsverktøy, ingen cookies. Motivasjon:
+     aktivering og frafall må måles fra dag én av betalt drift, ikke gjettes.
+  3. **DataGolf-attribusjon fikses denne uka (grillingen 9.8).** «Powered by
+     Data Golf» inn på alle offentlige statistikksider (~45) og på spillerens
+     DataGolf-kort. Dette er et løpende lisenskrav uavhengig av live-siden.
+  4. **Foreldre skal kunne booke time for barnet (grillingen 11.2).** Full
+     booking-opprettelse fra forelderportalen (ikke bare forespørsel), bygges
+     etter 1. september. Forelderen er ofte den som faktisk administrerer
+     juniorens timer, og booking av enkelttimer ligger i gratisnivået.
+
 - **PRODUKTRETNING — åtte svar (Anders 2026-08-30, i økt):** grunnlaget for Innsikt
   (AgencyOS) og Analyse (PlayerHQ). Bygg mot disse, ikke mot gjetning.
 
