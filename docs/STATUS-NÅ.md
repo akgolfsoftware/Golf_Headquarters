@@ -4,8 +4,8 @@
 
 **Sist oppdatert:** 2026-08-30 natt (PR #664–#667). **Betalingen er teknisk klar — kun
 Stripe live-nøkler gjenstår, og betalingen slås på 1. september.**
-**Samlet lanseringsplan: `docs/LANSERINGSPLAN-KOMPLETT-2026-08-27.md`** — den ENE oversikten
-over alt gjenstående. LAUNCH-PLAN-FULL er detaljgrunnlag for T-/C-radene.
+**Samlet lanseringsplan: `docs/MASTERPLAN-GJENSTAAENDE.md`** — den ENE oversikten
+over alt gjenstående (konsolidert 30.08 fra det tidligere LANSERINGSPLAN-KOMPLETT + LAUNCH-PLAN-FULL, begge slettet).
 **Produktretning låst 30.08:** `.claude/rules/beslutninger.md` §«PRODUKTRETNING — åtte svar».
 Den blokken er fasit for Innsikt og Analyse og vinner over eldre dokumenter.
 
@@ -58,7 +58,7 @@ Den blokken er fasit for Innsikt og Analyse og vinner over eldre dokumenter.
 - **P0:** Google Calendar UTFØRT. Åpent: DKIM, DNS, Stripe live, aktiverings-e-post,
   `SCREENTEST_PASSWORD`. **Betaling starter automatisk 1. september.**
 - **Bølge N (TalentHQ inn i PlayerHQ):** N1–N3 og N5 inne. Plan gjenopprettet
-  (`docs/natt/BOLGE-N-TALENTHQ-INN-2026-08-26.md`). Neste: N4 merge + N6-kvitter.
+  (`docs/MASTERPLAN-GJENSTAAENDE.md` STEG 11). Neste: N4 merge + N6-kvitter.
 
 ## Neste steg (lansering)
 
@@ -96,15 +96,13 @@ parallelt. Ingen var en delmengde av den andre, så begge måtte slås sammen ma
 | Rolle | Dokument |
 |---|---|
 | **Snapshot (denne)** | `docs/STATUS-NÅ.md` |
-| **Samlet gjenstående-plan** | `docs/LANSERINGSPLAN-KOMPLETT-2026-08-27.md` |
-| **TalentHQ inn i PlayerHQ** | `docs/natt/BOLGE-N-TALENTHQ-INN-2026-08-26.md` (10 steg; eget spor) |
-| **T-/C-rad-detaljer** | `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md` |
+| **Samlet gjenstående-plan** | `docs/MASTERPLAN-GJENSTAAENDE.md` (konsolidert 30.08 — inkluderer tidligere LANSERINGSPLAN-KOMPLETT og LAUNCH-PLAN-FULL, T-/C-rad-detaljer og alt uavklart/parkert som lå i AAPNE-SPORSMAAL) |
+| **TalentHQ inn i PlayerHQ** | `docs/MASTERPLAN-GJENSTAAENDE.md` STEG 11 (10 steg; eget spor) |
 | **Designfasit (alle skjermer)** | `designsystem/train-lock/DESIGN-SYSTEM.md` + `SCREEN-INDEX.md` |
-| **Uavklart / parkert / løst** | `docs/AAPNE-SPORSMAAL.md` |
 | **Låste forretningsregler** (fasit) | `docs/platform/BUSINESS-RULES.md` |
 | **Full plattformkontekst** (5 min) | `docs/platform/AGENT-BRIEF.md` |
 | **Stripe-cutover** | `docs/platform/stripe-cutover-sjekkliste.md` |
-| **AgenticOS + Jarvis** | `docs/plan-agenticos-jarvis-2026-08-17.md` |
+| **AgenticOS + Jarvis** | `docs/MASTERPLAN-GJENSTAAENDE.md` STEG 12 |
 | **Arkiv: den avsluttede Paper-porten** | `docs/arkiv/paper-port/` (rutekartlegging med referanseverdi) |
 
 Historiske bygg-spor, nattrapporter, gallerier og erstattede planer er slettet 05.08, 17.08

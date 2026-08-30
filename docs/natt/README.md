@@ -1,11 +1,17 @@
 # Natt-plan 24–25.08.2026 (Train-lock · Workbench)
 
-Denne mappen er **kanon for bølge 1** (A1–A4 + økt-pakke) og **bølge 2** (loop 5–14).
-Den superseder Paper-port-plan. **Design 25.08.2026 (Anders): Train-lock er fasit for ALLE
+> **Supersedert 30.08.2026:** `LAUNCH-PLAN-FULL-2026-08-25.md` (denne mappens plandokument) og
+> `LANSERINGSPLAN-KOMPLETT-2026-08-27.md` er begge slettet — alt gjenstående arbeid derfra
+> er flettet inn i `docs/MASTERPLAN-GJENSTAAENDE.md`, som nå er DEN gjeldende planen. Denne
+> fila står som historikk over bølge 1/2-tankegangen, ikke som gjeldende kjøreplan.
+
+Denne mappen var **kanon for bølge 1** (A1–A4 + økt-pakke) og **bølge 2** (loop 5–14).
+Den superserte Paper-port-plan. **Design 25.08.2026 (Anders): Train-lock er fasit for ALLE
 skjermer i PlayerHQ OG AgencyOS** — se CLAUDE.md invariant 2 og `.claude/rules/beslutninger.md`.
 
-**Status og kjøreplan:** `docs/STATUS-NÅ.md` (snapshot) + `docs/LANSERINGSPLAN-KOMPLETT-2026-08-27.md`
-(gjenstående). `LAUNCH-PLAN-FULL-2026-08-25.md` er detaljgrunnlag for T-/C-radene.
+**Status og kjøreplan:** se `docs/MASTERPLAN-GJENSTAAENDE.md` (gjeldende) og `docs/STATUS-NÅ.md`
+(snapshot). `LAUNCH-PLAN-FULL-2026-08-25.md` (slettet) var detaljgrunnlag for T-/C-radene —
+innholdet ligger nå i masterplanen.
 
 | Fil | Bruk |
 |-----|------|
@@ -47,7 +53,7 @@ Smoke manuelt grønn 7/8 (TM-steget venter på B7). Design: Train-lock-tokens i 
 Additiv DDL (`seriesId`/`seriesIndex`/`isTemplate` på `workbench_sessions`) er ALLEREDE
 kjørt mot prod — ikke bare skrevet — så en gren som starter fra `main` uten #601 vil
 mangle disse kolonnene i `schema.prisma`/generert klient selv om databasen har dem. Detalj:
-`docs/natt/LEVERANSELOGG.md`. **B6/T5/T6 (som avhenger av B5) bør branche fra en gren som
+`natt/LEVERANSELOGG.md`. **B6/T5/T6 (som avhenger av B5) bør branche fra en gren som
 inkluderer #601**, ikke fra `main`/`release` alene, for å unngå å bygge kilder/drag/serie
 på nytt.
 

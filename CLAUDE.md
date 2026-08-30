@@ -43,9 +43,9 @@ TrackMan-detalj: 1σ-ellipse + én caddie-setning + prikk → slag-ark
 
 **Én Claude-session per loop.** Ny chat. Commit + leveranserapport for loopen. Ikke start neste loop uten grønn forrige.
 
-Gren for kode: `claude/agency-workbench-uke-ui-c4d2a4`-linjen (Loop 1+2+3S); Loop 2S ligger på PR #577, RLS på `claude/workbench-rls-policies-8b054b` — samles i release-gren per `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md` (session B2). PR #575 er superseded.
+Gren for kode: `claude/agency-workbench-uke-ui-c4d2a4`-linjen (Loop 1+2+3S); Loop 2S ligger på PR #577, RLS på `claude/workbench-rls-policies-8b054b` — samles i release-gren per session-tabellen i `docs/MASTERPLAN-GJENSTAAENDE.md` (session B2, tidligere `natt/LAUNCH-PLAN-FULL-2026-08-25.md`, slettet 30.08 i doc-konsolideringen). PR #575 er superseded.
 
-Bølge 2 (måned/år, stall, kalender uten Google, tester-live, runde-live, Jarvis, AgenticOS, lys, Forelder, DataGolf/økonomi): `docs/natt/OVERNIGHT-CODING-LOOP-BOLGE2.md` — **kun etter** bølge 1-smoke.
+Bølge 2 (måned/år, stall, kalender uten Google, tester-live, runde-live, Jarvis, AgenticOS, lys, Forelder, DataGolf/økonomi): se `docs/MASTERPLAN-GJENSTAAENDE.md` — **kun etter** bølge 1-smoke.
 
 ---
 

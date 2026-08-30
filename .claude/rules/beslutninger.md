@@ -451,7 +451,7 @@ Gjelder til Anders endrer dem.
   Pipelines bor i `akgolfsoftware/ak-golf-pipelines`. Team Norway-rød kun på logo
   og skinne (ikke som status). ~23 skjermer skal med, ikke 70. **Arkiveres ikke** før
   datahenting har kjørt grønt minst én uke fra pipeline-repoet og skjermene er inne.
-  Fasit og 10-stegs rekkefølge: `docs/natt/BOLGE-N-TALENTHQ-INN-2026-08-26.md`.
+  Fasit og 10-stegs rekkefølge: `natt/BOLGE-N-TALENTHQ-INN-2026-08-26.md`.
 - **ALLE SKJERMER I PLAYERHQ, AGENCYOS OG FORELDER SKAL HA LYS OG MØRK MODUS
   (Anders 2026-08-26, i økt):** løser forelder-omfangsspørsmålet (T4 i AAPNE-SPORSMAAL) —
   forelder-appen er IKKE unntatt Train-lock, hele appen porter med fungerende
@@ -465,7 +465,7 @@ Gjelder til Anders endrer dem.
   mørke uten cookie. Train-lock er mørk-først (scene `#000000`, lys er varianten), og
   lys-defaulten fra 25.07 — begrunnet med «mørk skjerm er vanskelig å lese utendørs i
   sollys» — er nå brukerens valg via bryteren, ikke appens default. Dette besvarer åpent
-  spørsmål 1 i `docs/natt/D2-TOKENS-DONE.md`. Regelen bor i **`src/lib/v2/tema-default.ts`**
+  spørsmål 1 i `natt/D2-TOKENS-DONE.md`. Regelen bor i **`src/lib/v2/tema-default.ts`**
   (`onsketTema`), kalt av både rot-layout (SSR) og `V2Shell` (rute-veksling) — den var
   duplisert i to filer, som er en driftsfelle. **Uendret:** `/auth` er LYS (låst PP-A/A4
   16.08), landingssidene alltid lyse, resten mørk som før. `/forelder` er fortsatt LYS
@@ -487,7 +487,7 @@ Gjelder til Anders endrer dem.
   (04.08) og «Enkelhet/færrest trykk» gjelder uendret. **Begge forutsetningene er levert 25.08:**
   fasiten ligger i `designsystem/train-lock/` (D3, 180 skjermer), og tokensettet i kode
   (D2, PR #586) — `src/styles/train-lock-tokens.css` + `src/lib/v2/train-lock.ts`, med kilder
-  og ti åpne spørsmål i `docs/natt/D2-TOKENS-DONE.md`. Selve skjermporten gjenstår (B8 +
+  og ti åpne spørsmål i `natt/D2-TOKENS-DONE.md`. Selve skjermporten gjenstår (B8 +
   bølge T), og mørk-som-default er fortsatt uavklart (åpent spørsmål 1 der). Marketing/
   landingssider beholder egen fasit (ak-golf-website). Forelder-portalens omfang: uavklart,
   spør Anders. Konfliktregel: sier et dokument/skill noe annet enn Train-lock for
@@ -588,7 +588,7 @@ Gjelder til Anders endrer dem.
   skrives resultatet til `TalentTracking.testNivaaer` via `src/lib/talent/test-sync.ts` +
   `src/lib/domain/talent-sync.ts` (T4, 16.08). `/portal/talent/mitt-niva` leser feltet.
   Huben `/portal/talent` redirecter til «Mitt nivå». Workbench testbatteri-ark gjenstår
-  (N8/N10 i `docs/natt/BOLGE-N-TALENTHQ-INN-2026-08-26.md`).
+  (N8/N10 i `natt/BOLGE-N-TALENTHQ-INN-2026-08-26.md`).
   **Protokoll-avklaringen er LØST 2026-08-16 (T5):** spilleren ser 21 CANON-rader (20 protokoller;
   Putt Speed Control har to gjennomføringsvarianter) + egne tester — kodet i
   `src/lib/portal-tester/test-tilgang.ts`. **Fasit for test-gjennomføringsskjermen finnes nå**
@@ -600,7 +600,7 @@ Gjelder til Anders endrer dem.
   de gamle adressene blir redirects dit. Kun redesign av agent-team alene er IKKE beslutningen.
   **Status 17.08.2026:** `/admin/agenticos` er bygget; `agent-team` og `agents` redirecter.
   Gjenstår: `/admin/godkjenninger` (fortsatt egen side) og konsollens AI-panel — se
-  `docs/plan-agenticos-jarvis-2026-08-17.md`.
+  `plan-agenticos-jarvis-2026-08-17.md`.
 - **Turneringsplanlegging inn i Workbench (Anders 2026-08-04, Fase 1):** fasiten
   `workbench-turnering.html` bygges som del av `WorkbenchV2` (coach planlegger turnering samme
   sted som trening) — ikke som ombygging av `/admin/tournaments`.

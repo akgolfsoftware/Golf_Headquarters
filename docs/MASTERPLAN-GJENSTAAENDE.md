@@ -2,7 +2,7 @@
 
 > **Konsolidert 30.08.2026:** dette dokumentet er nå DEN gjeldende, eneste plandokumentet i
 > repoet. Alt reelt gjenstående arbeid fra 26 aktive plandokumenter (inkludert
-> `docs/LANSERINGSPLAN-KOMPLETT-2026-08-27.md` og `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`,
+> `LANSERINGSPLAN-KOMPLETT-2026-08-27.md` og `natt/LAUNCH-PLAN-FULL-2026-08-25.md`,
 > som tidligere var oppgitt som overstyrende) er flettet inn i STEG-tabellene under — se
 > særlig STEG 10–14. De opprinnelige dokumentene er slettet (git-historikken bevarer dem i
 > full detalj); denne fila er nå eneste sted å lete etter gjenstående arbeid. Design:
@@ -58,7 +58,7 @@ Status 17.08: **40/88 rader signert · 44 bygget-uventer-signering · 4 ubygget 
 | 2.4 | **Fem frie sesjoner:** S3 (#549 åpen) · S9 booking-ny · S17 turneringer · S22 AgenticOS-hub · S23 agent-detalj — 25 ruter uten nye avklaringer | Ingen |
 | 2.5 | **PORTPLAN §A1: 10 beslutninger fra Anders** (talent-hub vs redirect, godkjenninger, booking-steg, årsplan-fane, coach-tråd, Stripe Elements, help, utstyr-URL, digest-URL, PP-A-formalitet) — låser opp B2/B3-sesjonene | **Anders** |
 | 2.6 | **W5-designbestilling:** 38 marketing/auth/forelder-ruter stryker én-linje-testen fordi DESIGN mangler (bl.a. auth-skallet som blokkerer alle 13 auth-ruter) — bestill fra Claude Design | Anders + designer |
-| 2.7 | **De 4 ubygde:** D2 booking→faktura (ublokkert siden 15.08 — kan bygges nå) · D4 test→drill (venter ~20 testers område-backfill — forslaget lå i `docs/testomrader-forslag-2026-08-15.md`, slettet 30.08, se git-historikk for detaljene) · D1 Workbench F4 (venter DB-ja) · wang-logg-inn (venter #490 + OTP-beslutning) | Delvis Anders |
+| 2.7 | **De 4 ubygde:** D2 booking→faktura (ublokkert siden 15.08 — kan bygges nå) · D4 test→drill (venter ~20 testers område-backfill — forslaget lå i `testomrader-forslag-2026-08-15.md`, slettet 30.08, se git-historikk for detaljene) · D1 Workbench F4 (venter DB-ja) · wang-logg-inn (venter #490 + OTP-beslutning) | Delvis Anders |
 | 2.8 | **W7-stats** (~45 `/stats/*`-ruter): egen bølge, blokkert av PR-F-plasseringen (se steg 4.4) | 2.5/PR-F |
 | 2.9 | **Vaktene F1–F8:** kun F4 (bredde-gate) er levert; F2 (clay-gate i CI) hindrer at 2.3-sweepen eroderer | Etter 2.3 |
 | 2.10 | **Jarvis-skjermene 5–12** (8 stk., fasit klar) — eget spor, se STEG 12 (fase J1) | Ingen |
@@ -162,7 +162,7 @@ steg (kø-rytme, anrop+kalendervakt, personlig cockpit, stemme) og hele Familie-
 
 ## STEG 10 — Lanseringsplan-rest 27.–30.08 (Player-porten, lys-pass, piksel-nærhet, cutover)
 
-Flettet inn fra `docs/LANSERINGSPLAN-KOMPLETT-2026-08-27.md` og `docs/natt/PIKSELPLAN-2026-08-28.md`
+Flettet inn fra `LANSERINGSPLAN-KOMPLETT-2026-08-27.md` og `natt/PIKSELPLAN-2026-08-28.md`
 (begge slettet 30.08 — innholdet under er alt som var reelt gjenstående på slettetidspunktet).
 
 | # | Oppgave | Detalj |
@@ -180,7 +180,7 @@ Flettet inn fra `docs/LANSERINGSPLAN-KOMPLETT-2026-08-27.md` og `docs/natt/PIKSE
 
 ## STEG 11 — TalentHQ-innflytting i AK Golf HQ (Bølge N)
 
-Flettet inn fra `docs/natt/BOLGE-N-TALENTHQ-INN-2026-08-26.md` (slettet 30.08). Grunnlag:
+Flettet inn fra `natt/BOLGE-N-TALENTHQ-INN-2026-08-26.md` (slettet 30.08). Grunnlag:
 Anders' beslutning 26.08 (sju punkter, se `beslutninger.md`). **N1/N2/N3/N5 er LEVERT**
 (pipelines flyttet til eget repo `akgolfsoftware/ak-golf-pipelines`, data-bro `src/lib/dashboard-data/`,
 PEI-motor `src/lib/domain/pei/`, Team Norway som kanonisk gruppe — alle i PR #605).
@@ -215,7 +215,7 @@ Python-pipelines om til TypeScript · ikke skru på Prisma `multiSchema` · ikke
 
 ## STEG 12 — Jarvis / Familie-OS (gjenstående)
 
-Flettet inn fra `docs/jarvis-masterplan.md` (slettet 30.08). Kjerne-Jarvis steg 1–4 (sak-kø,
+Flettet inn fra `jarvis-masterplan.md` (slettet 30.08). Kjerne-Jarvis steg 1–4 (sak-kø,
 innsamlere, triage-agent, godkjenning fra Meg-boten) er i drift.
 
 **DEL A — kjerne-Jarvis, steg 5–8 gjenstår:**
@@ -245,7 +245,7 @@ kalenderinnhold · én sak → én flate · ingen nye MCP-servere/plattformer.
 
 ## STEG 13 — SG-app / Baneguide i PlayerHQ (AP0–AP6)
 
-Flettet inn fra `docs/plan-baneguide-sg-app-2026-08-16.md` og `docs/baneguide-kjoreplan-2026-08-02.md`
+Flettet inn fra `plan-baneguide-sg-app-2026-08-16.md` og `baneguide-kjoreplan-2026-08-02.md`
 (begge slettet 30.08). Produktspec/designspesifikasjon for baneguiden er beholdt som referanse i
 `docs/baneguide-produktdokument-2026-08-02.md` (ikke slettet). Mål: egen SG-data-app i PlayerHQ,
 UpGame-inspirert men selvstendig løst (aldri kopiering — samme problemklasse, egen implementasjon).
