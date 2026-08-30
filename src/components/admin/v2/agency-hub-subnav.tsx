@@ -4,7 +4,10 @@ import { TL } from "@/lib/v2/train-lock";
 /**
  * AgencyOS hub-faner — forener overflødige menypunkter under de 5 primærjobbene.
  *
- * Kø ← AI-godkjenning · meldinger · varsler · oppfølging · oppgaver
+ * Kø er IKKE lenger her: den ble én adresse (/admin/ko) med faner i stedet
+ * for en pill-rad som navigerte mellom fem sider — MASTERPLAN 15.1,
+ * beslutning 6.9. KO_HUB_TABS/KoHubNav er derfor slettet 30.08.2026.
+ *
  * Kalender ← ukegrid · booking-liste · uke-tavle · tilgjengelighet
  * Innsikt ← stall-analyse · tester · TrackMan · runder · rapporter · etterlevelse
  *
@@ -20,15 +23,6 @@ export type AgencyHubTab = {
   /** Exact match only (default: prefix). */
   exact?: boolean;
 };
-
-/** Primær «Kø» — alt som krever handling / oppmerksomhet. */
-export const KO_HUB_TABS: AgencyHubTab[] = [
-  { href: "/admin/godkjenninger", label: "Godkjenning" },
-  { href: "/admin/innboks", label: "Innboks", exact: true },
-  { href: "/admin/varsler", label: "Varsler" },
-  { href: "/admin/queue", label: "Oppfølging" },
-  { href: "/admin/handlingssenter", label: "Oppgaver" },
-];
 
 /** Primær «Kalender» — uke/måned + tilgjengelighet (T7: lista og tavla er pensjonert). */
 export const KALENDER_HUB_TABS: AgencyHubTab[] = [
@@ -109,10 +103,6 @@ export function AgencyHubSubNav({
       })}
     </nav>
   );
-}
-
-export function KoHubNav() {
-  return <AgencyHubSubNav tabs={KO_HUB_TABS} ariaLabel="Kø-visninger" />;
 }
 
 export function KalenderHubNav() {

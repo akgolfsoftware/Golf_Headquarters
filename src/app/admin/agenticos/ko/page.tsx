@@ -1,22 +1,11 @@
+import { redirect } from "next/navigation";
+
 /**
- * AgenticOS Kø — AO-03. Klar · Pågår · Venter godkjenning.
+ * /admin/agenticos/ko → /admin/ko?fane=agentko
+ *
+ * MASTERPLAN 15.1 (beslutning 6.9, «én inngang per funksjon»): seks kø-adresser
+ * ble til én. Adressen består som redirect — ingen lenke noe sted skal brekke.
  */
-
-import { requireCapability } from "@/lib/auth/requireCapability";
-import { Capability } from "@/lib/auth/cbac";
-import { lastAgenticosKo } from "@/lib/agencyos/last-agenticos";
-import { AgenticosRamme } from "@/components/admin/v2/agenticos/AgenticosRamme";
-import { AdminAgenticosKo } from "@/components/admin/v2/agenticos/AdminAgenticosKo";
-
-export const dynamic = "force-dynamic";
-export const metadata = { title: "Kø · AgenticOS" };
-
-export default async function AdminAgenticosKoPage() {
-  const user = await requireCapability(Capability.USE_AGENTS);
-  const data = await lastAgenticosKo(user);
-  return (
-    <AgenticosRamme user={user}>
-      <AdminAgenticosKo data={data} />
-    </AgenticosRamme>
-  );
+export default function AgenticosKoRedirect(): never {
+  redirect("/admin/ko?fane=agentko");
 }

@@ -405,7 +405,18 @@ function KøenITall({ data }: { data: AdminGodkjenningerV2Data }) {
   );
 }
 
-export function AdminGodkjenningerTrainLock({ data }: { data: AdminGodkjenningerV2Data }) {
+export function AdminGodkjenningerTrainLock({
+  data,
+  hode,
+}: {
+  data: AdminGodkjenningerV2Data;
+  /**
+   * Sidens eget hode, rendret øverst i master-kolonnen (MASTERPLAN 15.1).
+   * /admin/ko sender inn «Kø» + fanerad; utelates det, faller komponenten
+   * tilbake på sitt opprinnelige «Academy · Godkjenninger»-hode.
+   */
+  hode?: React.ReactNode;
+}) {
   const mobile = useMediaQuery("(max-width: 767px)");
   const visPanel = useInspektorSynlig();
   const [filter, setFilter] = useState<FilterKey>("alle");
@@ -435,10 +446,12 @@ export function AdminGodkjenningerTrainLock({ data }: { data: AdminGodkjenninger
   return (
     <MasterDetalj panel={valgtSak ? <SakInspektor row={valgtSak} /> : <KøenITall data={data} />}>
       <div style={{ display: "flex", flexDirection: "column", gap: 18, minWidth: 0 }}>
-        <div>
-          <TlCaps>Academy</TlCaps>
-          <h1 style={{ margin: "6px 0 0", fontSize: 26, fontWeight: 700, letterSpacing: "-0.01em", color: TL.text }}>Godkjenninger</h1>
-        </div>
+        {hode ?? (
+          <div>
+            <TlCaps>Academy</TlCaps>
+            <h1 style={{ margin: "6px 0 0", fontSize: 26, fontWeight: 700, letterSpacing: "-0.01em", color: TL.text }}>Godkjenninger</h1>
+          </div>
+        )}
 
         <div role="group" aria-label="Kilder" style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
           {filtre.map((f) => {
