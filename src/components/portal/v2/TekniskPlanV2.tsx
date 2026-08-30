@@ -1,5 +1,6 @@
 "use client";
 import { TL } from "@/lib/v2/train-lock";
+import { AK } from "@/lib/v2/ak-palett";
 
 /**
  * Teknisk plan (PlayerHQ) — v2 Presis + B-pakke (status + fremdrift, tom = vei).
@@ -7,17 +8,7 @@ import { TL } from "@/lib/v2/train-lock";
  */
 
 import { useState, type ReactNode } from "react";
-import {
-  T,
-  Caps,
-  Kort,
-  StatusPill,
-  AvatarInit,
-  TomTilstand,
-  HjelpTips,
-  Icon,
-  type StatusTone,
-} from "@/components/v2";
+import { Caps, Kort, StatusPill, AvatarInit, TomTilstand, HjelpTips, Icon, type StatusTone } from "@/components/v2";
 
 /* ── Domenetyper (speil av datakontraktene, uendret) ─────────── */
 export type PyramidArea = "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN";
@@ -145,7 +136,7 @@ export function TekniskTaskKort(props: TekniskTaskKortProps) {
 
       {/* Merkerad */}
       <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 11 }}>
-        <Merke dot={T.ax[props.pyramide]}>{props.pyramide}</Merke>
+        <Merke dot={AK.ax[props.pyramide]}>{props.pyramide}</Merke>
         <Merke>{props.omraade.toUpperCase()}</Merke>
         <Merke>{kolle}</Merke>
         {props.cs && (
@@ -426,7 +417,7 @@ export function PyramideFordelingKort({ rows }: { rows: PyramideRad[] }) {
           <div key={r.area} style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <span style={{ width: 40, fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, color: TL.mute, flex: "none" }}>{r.area}</span>
             <div style={{ flex: 1, height: 7, borderRadius: 9999, background: TL.hair, overflow: "hidden" }}>
-              <div style={{ width: `${Math.min(100, r.pct)}%`, height: "100%", background: T.ax[r.area], borderRadius: 9999 }} />
+              <div style={{ width: `${Math.min(100, r.pct)}%`, height: "100%", background: AK.ax[r.area], borderRadius: 9999 }} />
             </div>
             <span style={{ width: 34, textAlign: "right", fontFamily: TL.font.mono, fontSize: 11.5, fontWeight: 700, color: TL.mute, fontVariantNumeric: "tabular-nums", flex: "none" }}>{r.pct} %</span>
           </div>

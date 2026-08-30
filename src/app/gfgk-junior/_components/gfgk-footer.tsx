@@ -1,12 +1,12 @@
+import { AK } from "@/lib/v2/ak-palett";
 import Image from "next/image";
 import Link from "next/link";
-import { T } from "@/lib/v2/tokens";
 
 import { KONTAKT } from "../_data/gfgk-junior-data";
 
 export function GfgkFooter() {
   return (
-    <footer style={{ background: "var(--ink)", color: T.farge.hvitA75 }}>
+    <footer style={{ background: "var(--ink)", color: AK.farge.hvitA75 }}>
       <div className="mx-auto grid max-w-[1200px] gap-10 px-5 py-14 sm:px-7 md:grid-cols-[1.4fr_1fr_1fr]">
         <div>
           <div className="flex items-center gap-3">
@@ -29,7 +29,7 @@ export function GfgkFooter() {
             <a
               href={KONTAKT.facebook}
               className="rounded-full px-3.5 py-2 text-[13px] font-bold no-underline"
-              style={{ background: T.farge.hvitA10, color: "var(--gfgk-white)" }}
+              style={{ background: AK.farge.hvitA10, color: "var(--gfgk-white)" }}
             >
               Facebook
             </a>
@@ -43,12 +43,12 @@ export function GfgkFooter() {
             Navigasjon
           </div>
           <div className="flex flex-col gap-2 text-[14.5px]">
-            <Link href="/gfgk-junior" className="no-underline" style={{ color: T.farge.hvitA75 }}>Hjem</Link>
-            <Link href="/gfgk-junior#gruppene" className="no-underline" style={{ color: T.farge.hvitA75 }}>Gruppene</Link>
-            <Link href="/gfgk-junior#slik-starter-du" className="no-underline" style={{ color: T.farge.hvitA75 }}>Starte med golf</Link>
-            <Link href="/gfgk-junior/treningsplaner" className="no-underline" style={{ color: T.farge.hvitA75 }}>Treningsplaner</Link>
-            <Link href="/gfgk-junior/veileder" className="no-underline" style={{ color: T.farge.hvitA75 }}>Kunnskapsbase</Link>
-            <Link href="/gfgk-junior/kalender" className="no-underline" style={{ color: T.farge.hvitA75 }}>Full treningskalender</Link>
+            <Link href="/gfgk-junior" className="no-underline" style={{ color: AK.farge.hvitA75 }}>Hjem</Link>
+            <Link href="/gfgk-junior#gruppene" className="no-underline" style={{ color: AK.farge.hvitA75 }}>Gruppene</Link>
+            <Link href="/gfgk-junior#slik-starter-du" className="no-underline" style={{ color: AK.farge.hvitA75 }}>Starte med golf</Link>
+            <Link href="/gfgk-junior/treningsplaner" className="no-underline" style={{ color: AK.farge.hvitA75 }}>Treningsplaner</Link>
+            <Link href="/gfgk-junior/veileder" className="no-underline" style={{ color: AK.farge.hvitA75 }}>Kunnskapsbase</Link>
+            <Link href="/gfgk-junior/kalender" className="no-underline" style={{ color: AK.farge.hvitA75 }}>Full treningskalender</Link>
           </div>
         </div>
         <div>
@@ -70,10 +70,10 @@ export function GfgkFooter() {
           </div>
         </div>
       </div>
-      <div style={{ borderTop: `1px solid ${T.farge.hvitA12}` }}>
+      <div style={{ borderTop: `1px solid ${AK.farge.hvitA12}` }}>
         <div
           className="mx-auto flex max-w-[1200px] flex-wrap justify-between gap-3 px-5 py-4 text-[13px] sm:px-7"
-          style={{ color: T.farge.hvitA55 }}
+          style={{ color: AK.farge.hvitA55 }}
         >
           <span>© {new Date().getFullYear()} GFGK Junior & Elite</span>
           <span>Torsnesveien 16, 1630 Gamle Fredrikstad</span>

@@ -10,7 +10,7 @@
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { PkShell } from "./paper/PkShell";
+import { PkShell } from "./kit/PkShell";
 import {
   PkSek,
   PkEyebrow,
@@ -23,7 +23,7 @@ import {
   PkBilde,
   PkTag,
   PkFilterrad,
-} from "./paper/PkPrimitives";
+} from "./kit/PkPrimitives";
 
 export type CoachKort = {
   slug: string;
@@ -143,7 +143,7 @@ export function MarkedCoacherListeV2({ coacher }: { coacher: CoachKort[] }) {
             style={{ display: "flex", flexDirection: "column", gap: 16 }}
           >
             <PkSekt>Tren med oss</PkSekt>
-            <p style={{ fontFamily: "var(--p-body)", fontSize: 14.5, color: "var(--p-muted)", margin: 0, maxWidth: 480 }}>
+            <p style={{ fontFamily: "var(--tl-font-sans)", fontSize: 14.5, color: "var(--tl-mute)", margin: 0, maxWidth: 480 }}>
               Book en økt med Anders eller Markus. Er du usikker på hvor du bør starte, ta kontakt, så finner vi ut av det sammen.
             </p>
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
@@ -165,7 +165,7 @@ function CoachCard({ c }: { c: CoachKort }) {
   const rolleKort = c.tittel.split("·")[0]?.trim() ?? c.tittel;
   return (
     <Link href={`/coacher/${c.slug}`} className="pk-kort pk-kort-hover">
-      <div style={{ position: "relative", aspectRatio: "4 / 5", width: "100%", background: "var(--p-soft)" }}>
+      <div style={{ position: "relative", aspectRatio: "4 / 5", width: "100%", background: "var(--tl-dock)" }}>
         {c.foto ? (
           <Image src={c.foto} alt={c.navn} fill sizes="(max-width: 860px) 100vw, 440px" style={{ objectFit: "cover" }} />
         ) : (
@@ -178,13 +178,13 @@ function CoachCard({ c }: { c: CoachKort }) {
             left: 12,
             display: "inline-flex",
             alignItems: "center",
-            fontFamily: "var(--p-mono)",
+            fontFamily: "var(--tl-font-mono)",
             fontSize: 10,
             fontWeight: 700,
             letterSpacing: "0.05em",
             textTransform: "uppercase",
-            color: "var(--p-on-accent)",
-            background: "var(--p-accent)",
+            color: "var(--tl-on-fill)",
+            background: "var(--tl-warm)",
             borderRadius: 9999,
             padding: "5px 10px",
           }}

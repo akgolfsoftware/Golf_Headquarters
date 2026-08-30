@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { LogoAK, Caps } from "@/components/v2";
 
 /**
@@ -52,9 +53,9 @@ export function CheckoutResumeClient({ plan }: { plan?: string }) {
         alignItems: "center",
         justifyContent: "center",
         padding: 24,
-        background: `radial-gradient(900px 380px at 50% -10%, var(--v2-vignett), transparent 62%), ${T.bg}`,
-        color: T.fg,
-        fontFamily: T.ui,
+        background: `radial-gradient(900px 380px at 50% -10%, var(--v2-vignett), transparent 62%), ${TL.scene}`,
+        color: TL.text,
+        fontFamily: TL.font.sans,
         colorScheme: "light",
       }}
     >
@@ -64,22 +65,22 @@ export function CheckoutResumeClient({ plan }: { plan?: string }) {
         </div>
         {feil ? (
           <>
-            <Caps size={10} style={{ marginBottom: 10, color: T.mut }}>
+            <Caps size={10} style={{ marginBottom: 10, color: TL.mute }}>
               Betaling
             </Caps>
             <p
               style={{
-                fontFamily: T.disp,
+                fontFamily: TL.font.sans,
                 fontSize: 22,
                 fontWeight: 700,
                 letterSpacing: "-0.02em",
                 margin: "0 0 10px",
-                color: T.fg,
+                color: TL.text,
               }}
             >
               Vi fikk ikke startet betalingen
             </p>
-            <p style={{ fontSize: 14, lineHeight: 1.5, color: T.mut, margin: "0 0 22px" }}>
+            <p style={{ fontSize: 14, lineHeight: 1.5, color: TL.mute, margin: "0 0 22px" }}>
               Prøv igjen fra abonnement — du mister ikke kontoen.
             </p>
             <Link
@@ -92,8 +93,8 @@ export function CheckoutResumeClient({ plan }: { plan?: string }) {
                 height: 48,
                 padding: "0 22px",
                 borderRadius: 9999,
-                background: T.lime,
-                color: T.onLime,
+                background: TL.fill,
+                color: TL.onFill,
                 fontWeight: 700,
                 fontSize: 14,
                 textDecoration: "none",
@@ -104,22 +105,22 @@ export function CheckoutResumeClient({ plan }: { plan?: string }) {
           </>
         ) : (
           <>
-            <Caps size={10} style={{ marginBottom: 10, color: T.mut }}>
+            <Caps size={10} style={{ marginBottom: 10, color: TL.mute }}>
               Nesten ferdig
             </Caps>
             <p
               style={{
-                fontFamily: T.disp,
+                fontFamily: TL.font.sans,
                 fontSize: 22,
                 fontWeight: 700,
                 letterSpacing: "-0.02em",
                 margin: "0 0 10px",
-                color: T.fg,
+                color: TL.text,
               }}
             >
               Sender deg til betaling
             </p>
-            <p style={{ fontSize: 14, color: T.mut, margin: 0 }}>
+            <p style={{ fontSize: 14, color: TL.mute, margin: 0 }}>
               Et øyeblikk …
             </p>
           </>

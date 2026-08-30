@@ -17,8 +17,8 @@
 
 .golfdata-scope {
   /* ---- Råskalaer (tema-uavhengige, fra colors.css) ---- */
-  --lime-500: #63784A;      /* Paper --p-up */
-  --forest-700: #141413;    /* Paper --p-cta */
+  --lime-500: #63784A;      /* Paper --tl-ok */
+  --forest-700: #141413;    /* Paper --tl-fill */
   /* v14-synk (2026-07-08): bakgrunn variant B "løftet" — LÅST etter Anders' fysiske
      sollys-test («ikke for mørkt»). Historie: #0A0B0A → #060706 → #141513 (låst). */
   --graphite-0: #141513;
@@ -39,9 +39,9 @@
   --sand-900: #101613;
 
   /* ---- Typografi (typography.css) ---- */
-  --font-display: var(--p-disp);
-  --font-ui: var(--p-ui);
-  --font-mono: var(--p-mono);
+  --font-display: var(--tl-font-sans);
+  --font-ui: var(--tl-font-sans);
+  --font-mono: var(--tl-font-mono);
   --text-11: 0.6875rem;
   --text-12: 0.75rem;
   --text-13: 0.8125rem;
@@ -92,7 +92,7 @@
   --up: #00753A;
   --down: #C0392F;
   --signal: var(--forest-700);
-  --signal-press: var(--p-cta-hover); /* Paper: press på blekk-CTA */
+  --signal-press: var(--tl-text); /* Paper: press på blekk-CTA */
   --on-signal: #FFFFFF;
   --glow-signal: 0 0 0 1px rgba(217, 119, 87, 0.35);
   --primary-fill: var(--sand-900);
@@ -115,7 +115,7 @@
   --signal-fill-edge: var(--border-strong);
 
   /* ---- Pyramide-akser — LYS (data-viz.css .light-blokken) ---- */
-  --axis-fys: #788C5D;      /* Paper --p-accent-olive */
+  --axis-fys: #788C5D;      /* Paper #788c5d */
   --axis-fys-text: #63784A;
   --axis-fys-soft: rgba(20, 20, 19, 0.13);
   --axis-tek: #B8852A;
@@ -124,7 +124,7 @@
   --axis-slag: #2563EB;
   --axis-slag-text: #1D4FD0;
   --axis-slag-soft: rgba(37, 99, 235, 0.13);
-  --axis-spill: #C46686;    /* Paper --p-accent-fig */
+  --axis-spill: #C46686;    /* Paper #c46686 */
   --axis-spill-text: #55680A;
   --axis-spill-soft: rgba(99, 120, 74, 0.22);
   --axis-turn: #A32D2D;
@@ -171,7 +171,7 @@ html[data-v2-tema="dark"] .golfdata-scope {
   --up: var(--lime-500);
   --down: #FF6B5A;
   --signal: var(--lime-500);
-  --signal-press: var(--p-up); /* Paper mørk: lysere grønn press */
+  --signal-press: var(--tl-ok); /* Paper mørk: lysere grønn press */
   --on-signal: var(--graphite-0);
   --glow-signal: 0 0 0 1px rgba(217, 119, 87, 0.4);
   --primary-fill: var(--graphite-900);
@@ -199,7 +199,7 @@ html[data-v2-tema="dark"] .golfdata-scope {
   --axis-slag: #84A9FF;
   --axis-slag-text: #9EBCFF;
   --axis-slag-soft: rgba(132, 169, 255, 0.15);
-  --axis-spill: #C46686;    /* Paper --p-accent-fig */
+  --axis-spill: #C46686;    /* Paper #c46686 */
   /* v14-synk (2026-07-08): adoptert fra design-prosjektet — #F0E6A8, en avmettet varm
      gull-tone (hue dreid bort fra markørens grønn-gule mot ~55°). Erstatter forrige
      hotfix #DFF982 (samme problem løst, men denne er umulig å forveksle med -fill

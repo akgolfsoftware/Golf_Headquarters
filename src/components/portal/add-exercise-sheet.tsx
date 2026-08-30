@@ -288,7 +288,7 @@ export function AddExerciseSheet({
           transition: border-color 0.15s, color 0.15s;
         }
         .chip-add:hover { border-color: hsl(var(--primary)); color: hsl(var(--primary)); }
-        .font-display { font-family: var(--p-disp); }
+        .font-display { font-family: var(--tl-font-sans); }
       `}</style>
     </>
   );

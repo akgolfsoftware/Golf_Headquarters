@@ -1,5 +1,6 @@
 "use client";
 import { TL } from "@/lib/v2/train-lock";
+import { AK } from "@/lib/v2/ak-palett";
 
 /**
  * PlayerHQ Kalender — v2 (retning C «Presis»). Komponert 1:1 fra
@@ -15,7 +16,7 @@ import { TL } from "@/lib/v2/train-lock";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState, type CSSProperties } from "react";
 import Link from "next/link";
-import { T, Caps, CTAPill, PillVelger, Kort, Rad, AkseChip, StatusPill, KpiFlis, TomTilstand, Icon, Periodeplan } from "@/components/v2";
+import { Caps, CTAPill, PillVelger, Kort, Rad, AkseChip, StatusPill, KpiFlis, TomTilstand, Icon, Periodeplan } from "@/components/v2";
 import type { KalenderData } from "@/app/portal/kalender/data";
 
 /** true på klient etter mount når viewport < 768px (styrer kun layout-tetthet). */
@@ -115,7 +116,7 @@ function Dag({ dag }: { dag: KalenderData["dag"] }) {
                         cursor: "pointer",
                       }}
                     >
-                      <span style={{ width: 3, alignSelf: "stretch", borderRadius: 2, background: T.ax[okt.a], flex: "none" }} />
+                      <span style={{ width: 3, alignSelf: "stretch", borderRadius: 2, background: AK.ax[okt.a], flex: "none" }} />
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{okt.title}</div>
                         <div style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 2 }}>
@@ -198,7 +199,7 @@ function Uke({ uke, mobile }: { uke: KalenderData["uke"]; mobile: boolean }) {
                 style={{ padding: "8px 9px", borderRadius: 10, background: TL.dim, border: `1px solid ${o.naa ? LIME_KANT : TL.hair}`, opacity: o.done ? 0.55 : 1, cursor: "pointer" }}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                  <span style={{ width: 6, height: 6, borderRadius: 9999, background: T.ax[o.a], flex: "none" }} />
+                  <span style={{ width: 6, height: 6, borderRadius: 9999, background: AK.ax[o.a], flex: "none" }} />
                   <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, color: TL.mute }}>{o.kl}</span>
                   {o.done && <Icon name="check" size={10} style={{ color: TL.ok, marginLeft: "auto" }} />}
                 </div>
@@ -264,7 +265,7 @@ function Maaned({ maaned, mobile }: { maaned: KalenderData["maaned"]; mobile: bo
                       <span style={{ fontFamily: TL.font.mono, fontSize: 12, fontWeight: 700, color: idag ? TL.onFill : okter ? TL.text : TL.mute }}>{dag}</span>
                       <span style={{ height: 5, display: "flex", gap: 2 }}>
                         {(okter ?? []).slice(0, 3).map((a, j) => (
-                          <span key={j} style={{ width: 4, height: 4, borderRadius: 9999, background: idag ? TL.onFill : T.ax[a] }} />
+                          <span key={j} style={{ width: 4, height: 4, borderRadius: 9999, background: idag ? TL.onFill : AK.ax[a] }} />
                         ))}
                       </span>
                     </button>
@@ -309,7 +310,7 @@ function Maaned({ maaned, mobile }: { maaned: KalenderData["maaned"]; mobile: bo
               <span style={{ fontFamily: TL.font.mono, fontSize: 12, fontWeight: 700, color: idag ? TL.onFill : okter ? TL.text : TL.mute }}>{dag}</span>
               <span style={{ height: 6, display: "flex", gap: 2 }}>
                 {(okter ?? []).slice(0, 3).map((a, j) => (
-                  <span key={j} style={{ width: 5, height: 5, borderRadius: 9999, background: idag ? TL.onFill : T.ax[a] }} />
+                  <span key={j} style={{ width: 5, height: 5, borderRadius: 9999, background: idag ? TL.onFill : AK.ax[a] }} />
                 ))}
               </span>
             </div>
@@ -360,7 +361,7 @@ function Aar({ aar, mobile }: { aar: KalenderData["aar"]; mobile: boolean }) {
                   <span style={{ fontFamily: TL.font.mono, fontSize: 9, color: TL.mute }}>{p.mnd}</span>
                 </span>
                 <div style={{ flex: 1, height: 16, borderRadius: 8, background: TL.hair, overflow: "hidden", position: "relative" }}>
-                  <div style={{ width: p.pct + "%", height: "100%", background: p.tone === "naa" ? TL.fill : `color-mix(in srgb,${T.ax[p.a]} 55%,${TL.dim})`, borderRadius: 8, opacity: p.tone === "naa" ? 0.9 : 1 }} />
+                  <div style={{ width: p.pct + "%", height: "100%", background: p.tone === "naa" ? TL.fill : `color-mix(in srgb,${AK.ax[p.a]} 55%,${TL.dim})`, borderRadius: 8, opacity: p.tone === "naa" ? 0.9 : 1 }} />
                 </div>
                 <span style={{ width: 52, flex: "none" }}><AkseChip a={p.a} /></span>
               </div>

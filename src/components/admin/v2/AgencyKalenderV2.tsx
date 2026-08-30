@@ -36,7 +36,7 @@ import {
   timeGridBlockStyle,
   snapYToSlot,
 } from "@/components/v2";
-import { PaperPage, PaperTopp, PaperKropp } from "@/components/portal/v2/PaperChrome";
+import { PaperPage, PaperTopp, PaperKropp } from "@/components/portal/v2/SideChrome";
 import { TL } from "@/lib/v2/train-lock";
 import type { KalenderData, KalDag, KalOkt } from "@/app/admin/kalender/data";
 import {

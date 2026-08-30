@@ -33,7 +33,7 @@ import { uploadAvatar } from "@/lib/storage/avatar";
 import { skalerAvatar } from "@/lib/klient/skaler-avatar";
 import { useCountUp } from "@/lib/v2/hooks";
 import { fmtSg, Caps, Kort, StatusPill, Rad, Bryter, ProgresjonsBar, AvatarFoto, TomTilstand, Icon, HjelpTips, type StatusTone } from "@/components/v2";
-import { PaperPage, PaperKropp } from "./PaperChrome";
+import { PaperPage, PaperKropp } from "./SideChrome";
 
 /* ── Datakontrakt ──────────────────────────────────────────────────── */
 

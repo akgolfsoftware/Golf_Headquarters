@@ -1,5 +1,5 @@
 "use client";
-import { T } from "@/lib/v2/tokens";
+import { AK } from "@/lib/v2/ak-palett";
 
 // WANG Treningsplattform — Fellesside for golfgruppa (elever + foreldre).
 // Portert fra Claude Design-skjermen «WANG Toppidrett Fredrikstad Golf v2».
@@ -374,7 +374,7 @@ function Oversikt({
             fontFamily: "var(--font-body)",
             fontSize: 15,
             lineHeight: 1.55,
-            color: T.farge.hvitA90,
+            color: AK.farge.hvitA90,
             maxWidth: 660,
           }}
         >
@@ -396,7 +396,7 @@ function Oversikt({
               height: 34,
               padding: "0 14px",
               borderRadius: 999,
-              background: T.farge.myntGronnA18,
+              background: AK.farge.myntGronnA18,
               color: "var(--wang-mint)",
               fontFamily: "var(--font-brand)",
               fontWeight: 700,
@@ -420,7 +420,7 @@ function Oversikt({
               height: 34,
               padding: "0 14px",
               borderRadius: 999,
-              background: T.farge.hvitA10,
+              background: AK.farge.hvitA10,
               color: "var(--white)",
               fontFamily: "var(--font-body)",
               fontWeight: 600,
@@ -436,7 +436,7 @@ function Oversikt({
               height: 34,
               padding: "0 14px",
               borderRadius: 999,
-              background: T.farge.hvitA10,
+              background: AK.farge.hvitA10,
               color: "var(--white)",
               fontFamily: "var(--font-body)",
               fontWeight: 600,

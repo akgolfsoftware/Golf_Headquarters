@@ -3,7 +3,7 @@
 /* AK Golf HQ — delt LYS ramme for bookingens undersider (Train-lock, 29.08.2026).
    Brukes av MarkedBookingTjenesteV2 / -BekreftV2 / -KvitteringV2 i stedet for
    den mørke MRamme (marked-ramme.tsx, som andre markedssider fortsatt eier).
-   Topplinja er samme stil som MarkedBookingPaperV2 sin (`.bkp .topp` i
+   Topplinja er samme stil som MarkedBookingV2 sin (`.bkp .topp` i
    booking-paper.css — nå TL-broet): logo + tilbakelenke til /booking, ingen
    egen footer. Alle farger/fonter leses fra TL / --tl-* — aldri T / --p-*. */
 
@@ -11,8 +11,6 @@ import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import Link from "next/link";
 import { TL } from "@/lib/v2/train-lock";
 import { Caps } from "@/components/v2";
-import "./booking-paper.css";
-
 /** Fluid breakpoint (samme terskel som marked-ramme, default desktop). */
 export function useMobile(): boolean {
   const [mobile, setMobile] = useState(false);

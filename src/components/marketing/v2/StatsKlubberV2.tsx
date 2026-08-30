@@ -9,7 +9,9 @@
  */
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+import { AK } from "@/lib/v2/ak-palett";
+
 import { Kort, Caps, KpiFlis, FilterChips, TomTilstand } from "@/components/v2";
 import { StatsRamme, StatsSok, StatsStatusBar, useMobile } from "./stats-ramme";
 import { Eyebrow, HeroT, SeksT, Lede, MCta, Seksjon } from "./marked-ramme";
@@ -95,7 +97,7 @@ export function StatsKlubberV2({ klubber, totalSpillere, totalTurneringer }: Sta
 
       {/* KPI-strip */}
       <Seksjon mobile={mobile} style={{ paddingTop: 0 }}>
-        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(3, 1fr)", gap: T.gap }}>
+        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(3, 1fr)", gap: AK.gap }}>
           <KpiFlis label="Klubber" value={klubber.length} />
           <KpiFlis label="Spillere registrert" value={totalSpillere} />
           <KpiFlis label="Turneringer registrert" value={totalTurneringer} />
@@ -111,7 +113,7 @@ export function StatsKlubberV2({ klubber, totalSpillere, totalTurneringer }: Sta
               Tre
             </SeksT>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: T.gap, marginTop: 24 }}>
+          <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: AK.gap, marginTop: 24 }}>
             {[
               { k: flestSpillere, label: "Flest spillere", val: flestSpillere.spillere, sub: "registrerte spillere" },
               { k: mestTurneringer, label: "Mest turneringer", val: mestTurneringer.turneringer, sub: "turneringer arrangert" },
@@ -120,9 +122,9 @@ export function StatsKlubberV2({ klubber, totalSpillere, totalTurneringer }: Sta
               <Link key={k.slug} href={`/stats/klubber/${k.slug}`} style={{ textDecoration: "none" }}>
                 <Kort hover pad="20px 22px">
                   <Caps size={9}>{label}</Caps>
-                  <div style={{ fontFamily: T.mono, fontSize: 36, fontWeight: 700, color: T.fg, marginTop: 10, lineHeight: 1 }}>{val}</div>
-                  <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, color: T.fg, marginTop: 12 }}>{k.navn}</div>
-                  <div style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, marginTop: 4 }}>
+                  <div style={{ fontFamily: TL.font.mono, fontSize: 36, fontWeight: 700, color: TL.text, marginTop: 10, lineHeight: 1 }}>{val}</div>
+                  <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 16, color: TL.text, marginTop: 12 }}>{k.navn}</div>
+                  <div style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, marginTop: 4 }}>
                     {k.kommune} · {k.region} · {sub}
                   </div>
                 </Kort>
@@ -144,7 +146,7 @@ export function StatsKlubberV2({ klubber, totalSpillere, totalTurneringer }: Sta
             <TomTilstand icon="building-2" title="Ingen klubber matcher søket" sub="Prøv et annet søk eller en annen region." />
           </Kort>
         ) : (
-          <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: T.gap }}>
+          <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: AK.gap }}>
             {filtrert.map((k) => (
               <Link key={k.slug} href={`/stats/klubber/${k.slug}`} style={{ textDecoration: "none" }}>
                 <Kort hover>
@@ -154,31 +156,31 @@ export function StatsKlubberV2({ klubber, totalSpillere, totalTurneringer }: Sta
                         width: 36,
                         height: 36,
                         borderRadius: 9999,
-                        background: T.panel2,
+                        background: TL.dock,
                         display: "inline-flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        fontFamily: T.mono,
+                        fontFamily: TL.font.mono,
                         fontSize: 12,
                         fontWeight: 700,
-                        color: T.lime,
+                        color: TL.fill,
                       }}
                     >
                       {initialer(k.navn)}
                     </span>
                     <Caps size={9}>{k.region}</Caps>
                   </div>
-                  <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, color: T.fg, marginTop: 14 }}>{k.navn}</div>
-                  <div style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, marginTop: 2 }}>{k.kommune}</div>
-                  <div style={{ display: "flex", gap: 16, marginTop: 16, paddingTop: 14, borderTop: `1px solid ${T.border}` }}>
+                  <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 17, color: TL.text, marginTop: 14 }}>{k.navn}</div>
+                  <div style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, marginTop: 2 }}>{k.kommune}</div>
+                  <div style={{ display: "flex", gap: 16, marginTop: 16, paddingTop: 14, borderTop: `1px solid ${TL.hair}` }}>
                     {[
                       ["Spillere", k.spillere],
                       ["Pro", k.pro],
                       ["Junior", k.junior],
                     ].map(([lbl, val]) => (
                       <div key={lbl}>
-                        <div style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>{lbl}</div>
-                        <div style={{ fontFamily: T.mono, fontSize: 15, fontWeight: 700, color: T.fg, marginTop: 2 }}>{val}</div>
+                        <div style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>{lbl}</div>
+                        <div style={{ fontFamily: TL.font.mono, fontSize: 15, fontWeight: 700, color: TL.text, marginTop: 2 }}>{val}</div>
                       </div>
                     ))}
                   </div>
@@ -192,13 +194,13 @@ export function StatsKlubberV2({ klubber, totalSpillere, totalTurneringer }: Sta
       {/* Mersalg */}
       <Seksjon mobile={mobile}>
         <Kort tint pad={mobile ? "26px 22px" : "40px 44px"} style={{ textAlign: mobile ? "left" : "center" }}>
-          <Caps color={T.lime} style={{ marginBottom: 14 }}>
+          <Caps color={TL.fill} style={{ marginBottom: 14 }}>
             PlayerHQ
           </Caps>
           <SeksT mobile={mobile} em="din klubb.">
             Spill for
           </SeksT>
-          <p style={{ fontFamily: T.ui, fontSize: 14, color: T.fg2, margin: "14px auto 0", maxWidth: 480, lineHeight: 1.65 }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 14, color: TL.mute, margin: "14px auto 0", maxWidth: 480, lineHeight: 1.65 }}>
             Logg runder og se din klubbs statistikk i sanntid. Sammenlign deg med andre spillere på banen din.
           </p>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 22, justifyContent: mobile ? "flex-start" : "center" }}>

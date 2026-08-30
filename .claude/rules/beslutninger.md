@@ -1,5 +1,26 @@
 # Låste beslutninger — AK Golf HQ
 
+> **PAPER ER FJERNET FRA HELE PLATTFORMEN (Anders 30.08.2026, i økt).**
+> Ordrett: «Paper skal ett hundre prosent bort fra hele plattformen, uansett hva
+> regler og diverse sier.» Dette **overstyrer** unntaket som tidligere ga
+> marketing lov til å beholde sin egen Paper-katalog.
+>
+> Utført samme dag: `designsystem/paper/` (846 filer) slettet ·
+> `src/lib/v2/tokens.ts` (T) slettet · alle fem Paper-CSS-filene slettet ·
+> `--p-*` erstattet med `--tl-*` i hele `src/` · skill `akgolf-claude-paper`
+> slettet · komponenter og mapper med «paper» i navnet omdøpt.
+>
+> Domeneverdier som ikke var Paper-stil (pyramideakser, tee-farger,
+> merkefarger, delekort-gradienter) er flyttet ORDRETT til
+> `src/lib/v2/ak-palett.ts` (`AK`) — ingen verdi endret.
+>
+> **Vakt:** `scripts/check-ingen-paper.mjs` kjører i `npm run verify` og feiler
+> bygget hvis Paper siver inn igjen. Ikke deaktiver den uten ny beslutning.
+>
+> Alle Paper-omtaler lenger ned i denne fila er **historikk**. De beskriver hva
+> som gjaldt før 30.08.2026, og skal aldri leses som byggeordre.
+
+
 Flyttet fra rot-CLAUDE.md 2026-07-19 (modulariserings-beslutning, Agentic OS Steg 2).
 Gjelder til Anders endrer dem.
 

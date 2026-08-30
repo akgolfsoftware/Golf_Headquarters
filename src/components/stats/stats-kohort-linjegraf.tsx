@@ -65,7 +65,7 @@ export function StatsKohortLinjegraf({
               y1={ty}
               x2={pad.l + cw}
               y2={ty}
-              stroke="var(--p-border)"
+              stroke="var(--tl-hair)"
               strokeWidth={1}
               strokeDasharray="4 4"
             />
@@ -75,7 +75,7 @@ export function StatsKohortLinjegraf({
               textAnchor="end"
               fontFamily="var(--font-mono)"
               fontSize={10}
-              fill="var(--p-muted)"
+              fill="var(--tl-mute)"
             >
               {tick.toFixed(1)}
             </text>
@@ -93,7 +93,7 @@ export function StatsKohortLinjegraf({
             textAnchor="middle"
             fontFamily="var(--font-mono)"
             fontSize={10}
-            fill="var(--p-muted)"
+            fill="var(--tl-mute)"
           >
             {alder}
           </text>
@@ -138,7 +138,7 @@ export function StatsKohortLinjegraf({
                 cy={p.y}
                 r={isHovered ? 5 : 3.5}
                 fill={serie.color}
-                stroke="var(--p-bg)"
+                stroke="var(--tl-scene)"
                 strokeWidth={2}
                 style={{ transition: "r .15s" }}
               >

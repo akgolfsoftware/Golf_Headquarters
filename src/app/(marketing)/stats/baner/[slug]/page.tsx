@@ -1,3 +1,4 @@
+import { AK } from "@/lib/v2/ak-palett";
 /**
  * /stats/baner/[slug] — Bane-detalj (v2, retning C)
  * Swap av (mlegacy)/stats/baner/[slug]/page.tsx → v2-utseende. Data
@@ -10,7 +11,6 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { hentBaneBySlug, hentBaneStats } from "@/lib/stats/bane-queries";
 import { StatsBaneDetaljV2 } from "@/components/marketing/v2/StatsBaneDetaljV2";
-import { T } from "@/lib/v2/tokens";
 
 export const revalidate = 3600;
 
@@ -99,10 +99,10 @@ export default async function BaneDetaljPage({
 
   const teer = bane.lengdeMeter
     ? [
-        { tee: "Hvit", farge: T.tee.hvit, lengde: bane.lengdeMeter, slope: bane.slope ?? 0, cr: bane.courseRating ?? 0, par: bane.par },
+        { tee: "Hvit", farge: AK.tee.hvit, lengde: bane.lengdeMeter, slope: bane.slope ?? 0, cr: bane.courseRating ?? 0, par: bane.par },
         {
           tee: "Gul",
-          farge: T.tee.gul,
+          farge: AK.tee.gul,
           lengde: Math.round(bane.lengdeMeter * 0.932),
           slope: bane.slope ? bane.slope - 5 : 0,
           cr: bane.courseRating ? Math.round((bane.courseRating - 1.4) * 10) / 10 : 0,
@@ -110,7 +110,7 @@ export default async function BaneDetaljPage({
         },
         {
           tee: "Rød",
-          farge: T.tee.rod,
+          farge: AK.tee.rod,
           lengde: Math.round(bane.lengdeMeter * 0.822),
           slope: bane.slope ? bane.slope - 11 : 0,
           cr: bane.courseRating ? Math.round((bane.courseRating - 3.1) * 10) / 10 : 0,

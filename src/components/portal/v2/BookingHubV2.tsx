@@ -23,7 +23,7 @@ import { TL } from "@/lib/v2/train-lock";
 import Link from "next/link";
 import { Caps, Kort, Rad, StatusPill, TomTilstand, Icon } from "@/components/v2";
 import { pakkeNavn } from "@/lib/domain/abonnement";
-import { PaperPage, PaperTopp, PaperKropp, PaperDokk } from "./PaperChrome";
+import { PaperPage, PaperTopp, PaperKropp, PaperDokk } from "./SideChrome";
 import type { HubCredits, HubBooking, HubCoach, HubForsteLedige } from "@/lib/portal-booking/hub-data";
 
 export type BookingHubV2Data = {

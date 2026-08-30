@@ -470,7 +470,7 @@ export function WorkbenchAarsplan({ data, handlers, onEndret }: {
                   };
                   return (
                     <div key={o} style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                      {/* PX-2: Train-lock fargekoder aldri data — TL.mute-prikk, ikke Paper T.ax. */}
+                      {/* PX-2: Train-lock fargekoder aldri data — TL.mute-prikk, ikke Paper AK.ax. */}
                       <span style={{ width: 8, height: 8, borderRadius: 3, background: TL.mute, flex: "none" }} />
                       <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, color: TL.mute, width: 46 }}>{o}</span>
                       <div style={{ display: "flex", alignItems: "center", gap: 8, marginLeft: "auto" }}>

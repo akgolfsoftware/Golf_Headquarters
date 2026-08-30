@@ -14,7 +14,8 @@ import { getCurrentUserRaw } from "@/lib/auth/getCurrentUser";
 import { effectiveCapabilities } from "@/lib/auth/effective-capabilities";
 import { Capability } from "@/lib/auth/cbac";
 import { logout } from "@/lib/auth/logout";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 
 export const metadata: Metadata = {
   title: "Innsyn — AK Golf",
@@ -39,9 +40,9 @@ export default async function InnsynLayout({
     <div
       style={{
         minHeight: "100dvh",
-        background: T.bg,
-        color: T.fg,
-        fontFamily: T.ui,
+        background: TL.scene,
+        color: TL.text,
+        fontFamily: TL.font.sans,
       }}
     >
       <header
@@ -51,13 +52,13 @@ export default async function InnsynLayout({
           justifyContent: "space-between",
           gap: 12,
           padding: "14px 20px",
-          borderBottom: `1px solid ${T.border}`,
+          borderBottom: `1px solid ${TL.hair}`,
         }}
       >
         <div style={{ display: "flex", alignItems: "baseline", gap: 10, minWidth: 0 }}>
           <span
             style={{
-              fontFamily: T.disp,
+              fontFamily: TL.font.sans,
               fontSize: 16,
               fontWeight: 700,
               letterSpacing: "-0.02em",
@@ -65,14 +66,14 @@ export default async function InnsynLayout({
           >
             AK Golf
           </span>
-          <span style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2 }}>Innsyn</span>
+          <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute }}>Innsyn</span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <span
             style={{
-              fontFamily: T.ui,
+              fontFamily: TL.font.sans,
               fontSize: 12.5,
-              color: T.fg2,
+              color: TL.mute,
               overflow: "hidden",
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
@@ -85,12 +86,12 @@ export default async function InnsynLayout({
             <button
               type="submit"
               style={{
-                fontFamily: T.ui,
+                fontFamily: TL.font.sans,
                 fontSize: 12.5,
                 fontWeight: 600,
-                color: T.fg,
+                color: TL.text,
                 background: "transparent",
-                border: `1px solid ${T.border}`,
+                border: `1px solid ${TL.hair}`,
                 borderRadius: 8,
                 padding: "6px 12px",
                 cursor: "pointer",

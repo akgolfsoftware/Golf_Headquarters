@@ -1,17 +1,18 @@
 "use client";
 import { TL } from "@/lib/v2/train-lock";
+import { AK } from "@/lib/v2/ak-palett";
 
 /* AK Golf HQ v2 — SPESIALVISUALISERINGER (retning C «Presis»).
    Sammenligning, runde, køller/TrackMan, belastning, kategori-progresjon,
    treningstid og marketing. Ren SVG (viewBox, ingen eksterne libs), tegnet
    enkelt og presist. Komponeres av kjernebiblioteket (./core).
    Regler: mono-tall m/ komma-desimal, «—» for manglende data, opp/ned =
-   TL.ok/TL.danger (ALDRI lime), aksefarger fra T.ax, lime kun aksent/hero.
+   TL.ok/TL.danger (ALDRI lime), aksefarger fra AK.ax, lime kun aksent/hero.
    Demo-data som default-props → alt rendres rett i galleriet.
    Port av ui_kits/v2/v2-spesialviz.jsx → produksjons-TSX (diff-null). */
 
 import type { CSSProperties, ReactNode } from "react";
-import { T, fmtSg, Kort, TomTilstand, Caps, DeltaChip, StatusPill, CTAPill } from "./core";
+import { fmtSg, Kort, TomTilstand, Caps, DeltaChip, StatusPill, CTAPill } from "./core";
 import type { AkseKey } from "@/lib/v2/format";
 import { Icon } from "@/components/v2/icon";
 
@@ -260,7 +261,7 @@ export function Radar({ data = RD_DEMO, sammenlign = null, max = 100, size = 240
         return (
           <g key={d.akse}>
             <line x1={cx} y1={cy} x2={ex} y2={ey} stroke={TL.hair} strokeWidth="1" />
-            <text x={lx} y={ly + 3} textAnchor="middle" style={svgTekst(9, T.ax[d.akse] || TL.mute, 700)}>{d.akse}</text>
+            <text x={lx} y={ly + 3} textAnchor="middle" style={svgTekst(9, AK.ax[d.akse] || TL.mute, 700)}>{d.akse}</text>
           </g>
         );
       })}
@@ -660,7 +661,7 @@ export function TidsPyramide({ data = TPY_DEMO, periode = "denne uken" }: TidsPy
         {data.map((d) => {
           const w = 28 + ((d.timer ?? 0) / max) * 72; /* % — topp aldri null-bredde */
           return (
-            <div key={d.akse} style={{ width: `${w}%`, height: 30, borderRadius: 8, background: `color-mix(in srgb, ${T.ax[d.akse] || TL.mute} 26%, ${TL.dock})`, border: `1px solid color-mix(in srgb, ${T.ax[d.akse] || TL.mute} 45%, transparent)`, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 12px", minWidth: 150 }}>
+            <div key={d.akse} style={{ width: `${w}%`, height: 30, borderRadius: 8, background: `color-mix(in srgb, ${AK.ax[d.akse] || TL.mute} 26%, ${TL.dock})`, border: `1px solid color-mix(in srgb, ${AK.ax[d.akse] || TL.mute} 45%, transparent)`, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 12px", minWidth: 150 }}>
               <span style={{ fontFamily: TL.font.mono, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.08em", color: TL.text }}>{d.akse}</span>
               <span style={{ ...mono(11.5, TL.mute, 600) }}>{kd(d.timer, 1)} t</span>
             </div>
@@ -692,8 +693,8 @@ export function FeaturedCard({
 }: FeaturedCardProps) {
   return (
     <div style={{ background: TL.elev, border: `1px solid ${TL.hair}`, borderRadius: TL.radius.card, overflow: "hidden", maxWidth: 400 }}>
-      <div style={{ position: "relative", height: 150, background: bilde ? `url(${bilde}) center/cover` : `linear-gradient(140deg, ${T.farge.forestMerkeA55} 0%, ${TL.dim} 70%)`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-        {!bilde && <Icon name="image" size={26} style={{ color: T.farge.hvitA22 }} />}
+      <div style={{ position: "relative", height: 150, background: bilde ? `url(${bilde}) center/cover` : `linear-gradient(140deg, ${AK.farge.forestMerkeA55} 0%, ${TL.dim} 70%)`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        {!bilde && <Icon name="image" size={26} style={{ color: AK.farge.hvitA22 }} />}
         {badge && <span style={{ position: "absolute", top: 12, left: 12, fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: TL.onFill, background: TL.fill, borderRadius: 9999, padding: "4px 9px" }}>{badge}</span>}
       </div>
       <div style={{ padding: "16px 18px 18px" }}>

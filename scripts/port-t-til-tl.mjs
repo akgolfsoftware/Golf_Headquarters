@@ -1,32 +1,15 @@
 #!/usr/bin/env node
 /**
- * Mekanisk T → TL for PlayerHQ / AgencyOS / Forelder / Meg / v2-primitiver.
- * Marketing og auth røres ikke.
+ * Mekanisk T → TL for HELE plattformen.
+ *
+ * Marketing og auth var tidligere unntatt (marketing eide sin egen Paper-katalog).
+ * Anders opphevet det 30.08.2026: Paper skal 100 % ut av hele plattformen.
  */
 import fs from "node:fs";
 import path from "node:path";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
-const DIRS = [
-  "src/app/admin",
-  "src/app/portal",
-  "src/app/forelder",
-  "src/app/meg",
-  "src/components/admin",
-  "src/components/portal",
-  "src/components/forelder",
-  "src/components/meg",
-  "src/components/v2",
-  "src/components/workbench",
-  "src/components/planlegge-v2",
-  "src/components/sg-hub",
-  "src/components/gameplan",
-  "src/components/fys-plan",
-  "src/components/teknisk-plan",
-  "src/components/coachhq",
-  "src/components/shared",
-  "src/lib/v2/hjelpetekster.ts",
-];
+const DIRS = ["src"];
 
 /** Lengst først — unngå T.panel inne i T.panel2. */
 const REPL = [

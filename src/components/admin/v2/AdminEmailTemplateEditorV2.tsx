@@ -1,5 +1,6 @@
 "use client";
 import { TL } from "@/lib/v2/train-lock";
+import { AK } from "@/lib/v2/ak-palett";
 
 /**
  * AgencyOS — Rediger e-postmal (v2). 2-pane editor (felt til venstre, live
@@ -15,7 +16,7 @@ import { TL } from "@/lib/v2/train-lock";
 
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Caps, Tittel, Kort, StatusPill, Knapp, Icon, T } from "@/components/v2";
+import { Caps, Tittel, Kort, StatusPill, Knapp, Icon } from "@/components/v2";
 import { Inndata, TekstOmraade, Bryter } from "@/components/v2";
 import {
   saveTemplate,
@@ -248,7 +249,7 @@ export function AdminEmailTemplateEditorV2({ template, testRecipient }: Props) {
             <FeltVis label="Emne" value={previewSubject || "—"} accent />
 
             <div style={{ borderRadius: 11, border: `1px solid ${TL.hair}`, background: TL.onFill, padding: 16 }}>
-              <pre style={{ margin: 0, whiteSpace: "pre-wrap", fontFamily: TL.font.sans, fontSize: 13, lineHeight: 1.6, color: T.farge.svartKode }}>
+              <pre style={{ margin: 0, whiteSpace: "pre-wrap", fontFamily: TL.font.sans, fontSize: 13, lineHeight: 1.6, color: AK.farge.svartKode }}>
                 {previewBody || "—"}
               </pre>
             </div>

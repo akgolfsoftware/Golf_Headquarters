@@ -15,7 +15,7 @@
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
-import { PkShell } from "./paper/PkShell";
+import { PkShell } from "./kit/PkShell";
 import { sendKontaktMelding, type KontaktFormState } from "@/app/(marketing)/kontakt/actions";
 
 const TEMA_ALTERNATIV = ["Coaching", "Booking", "Annet"];

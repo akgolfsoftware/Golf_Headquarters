@@ -1,4 +1,5 @@
-import { T } from "@/lib/v2/tokens";
+import { AK } from "@/lib/v2/ak-palett";
+
 // AarsplanView — Gantt 52 uker × N spillere.
 //
 // Hver rad er én spiller, 52 kolonner er ISO-uker. Periode-blokker rendres
@@ -162,9 +163,9 @@ export function AarsplanView({
                           backgroundColor: diagonal ? "transparent" : farge.bg,
                           color: farge.text,
                           backgroundImage: diagonal
-                            ? `repeating-linear-gradient(135deg, ${T.farge.sandMerke} 0 6px, ${T.farge.linjeMerke} 6px 12px)`
+                            ? `repeating-linear-gradient(135deg, ${AK.farge.sandMerke} 0 6px, ${AK.farge.linjeMerke} 6px 12px)`
                             : undefined,
-                          border: diagonal ? `1px solid ${T.farge.linjeMerke}` : undefined,
+                          border: diagonal ? `1px solid ${AK.farge.linjeMerke}` : undefined,
                         }}
                         title={`${PERIODE_LABELS[p.type]} · ${p.focus ?? ""}`}
                       >
@@ -189,7 +190,7 @@ export function AarsplanView({
                         style={{
                           left: `${lassPct}%`,
                           width: `${((uke - lassUke) / 52) * 100}%`,
-                          borderLeft: `2px solid ${T.farge.limeMerke}`,
+                          borderLeft: `2px solid ${AK.farge.limeMerke}`,
                         }}
                         aria-hidden
                       />

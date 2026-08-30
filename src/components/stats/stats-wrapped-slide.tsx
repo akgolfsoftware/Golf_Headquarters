@@ -6,7 +6,8 @@
  */
 
 import { CountUp } from "./count-up";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+import { AK } from "@/lib/v2/ak-palett";
 
 export type SlideType =
   | "intro"
@@ -119,24 +120,24 @@ export type WrappedSlideData =
 // hsl(var(--foreground)) — som i praksis alltid resolvet til disse samme
 // verdiene i det (lys-only) legacy-appen, men som ville blitt INVERTERT
 // under v2s mørke adapter-scope (der --background/--foreground er byttet om).
-// Selve hex-verdiene bor i T.wrapped (src/lib/v2/tokens.ts) så denne fila
+// Selve hex-verdiene bor i AK.wrapped (src/lib/v2/tokens.ts) så denne fila
 // forblir hex-fri.
 const BG_STYLES: Record<string, React.CSSProperties> = {
   forest: {
-    background: T.wrapped.bgForest,
-    color: T.wrapped.textOnDark,
+    background: AK.wrapped.bgForest,
+    color: AK.wrapped.textOnDark,
   },
   "forest-dark": {
-    background: T.wrapped.bgForestDark,
-    color: T.wrapped.textOnDark,
+    background: AK.wrapped.bgForestDark,
+    color: AK.wrapped.textOnDark,
   },
   lime: {
-    background: T.wrapped.bgLime,
-    color: T.wrapped.textOnLight,
+    background: AK.wrapped.bgLime,
+    color: AK.wrapped.textOnLight,
   },
   offwhite: {
-    background: T.wrapped.bgOffwhite,
-    color: T.wrapped.textOnLight,
+    background: AK.wrapped.bgOffwhite,
+    color: AK.wrapped.textOnLight,
   },
 };
 
@@ -148,7 +149,7 @@ interface StatsWrappedSlideProps {
 
 export function StatsWrappedSlide({ slide, isActive, delLenke }: StatsWrappedSlideProps) {
   const bgStyle = BG_STYLES[slide.bgVariant] ?? BG_STYLES.forest;
-  const accentColor = slide.bgVariant === "lime" ? T.forest : T.lime;
+  const accentColor = slide.bgVariant === "lime" ? TL.fill : TL.fill;
   const mutedColor =
     slide.bgVariant === "lime"
       ? "rgba(10,31,23,0.6)"
@@ -295,7 +296,7 @@ function SlideBeste({ slide, accentColor, mutedColor }: { slide: BesteSlide; acc
         BESTE RUNDE
       </div>
       <div style={{
-        background: T.farge.hvitA12,
+        background: AK.farge.hvitA12,
         borderRadius: 16,
         padding: "32px 40px",
         display: "inline-block",
@@ -342,7 +343,7 @@ function SlideKlubber({ slide, accentColor, mutedColor }: { slide: KlubberSlide;
             textTransform: "uppercase",
             padding: "6px 12px",
             borderRadius: 999,
-            background: T.farge.hvitA15,
+            background: AK.farge.hvitA15,
             color: "inherit",
           }}>
             {k}
@@ -439,7 +440,7 @@ function SlideRanking({ slide, accentColor, mutedColor, isActive }: { slide: Ran
         av {slide.totalNasjon.toLocaleString("nb-NO")} norske spillere
       </div>
       {slide.fodselsAar !== null && (
-        <div style={{ marginTop: 32, background: T.farge.hvitA12, borderRadius: 12, padding: "16px 24px", display: "inline-block" }}>
+        <div style={{ marginTop: 32, background: AK.farge.hvitA12, borderRadius: 12, padding: "16px 24px", display: "inline-block" }}>
           <div style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: mutedColor, marginBottom: 8 }}>
             {slide.fodselsAar}-ÅRSKULLET
           </div>
@@ -462,7 +463,7 @@ function SlideSammenligning({ slide, accentColor, mutedColor }: { slide: Sammenl
         width: 96, height: 96,
         borderRadius: "50%",
         background: accentColor,
-        color: slide.bgVariant === "lime" ? T.forest : T.wrapped.textOnLight,
+        color: slide.bgVariant === "lime" ? TL.fill : AK.wrapped.textOnLight,
         display: "grid",
         placeItems: "center",
         fontFamily: "var(--font-mono)",
@@ -512,7 +513,7 @@ function SlideAvslutning({ slide, accentColor, mutedColor, delLenke }: { slide: 
             padding: "14px 28px",
             borderRadius: 999,
             background: accentColor,
-            color: slide.bgVariant === "lime" ? T.forest : T.wrapped.textOnLight,
+            color: slide.bgVariant === "lime" ? TL.fill : AK.wrapped.textOnLight,
             fontWeight: 600,
             fontSize: 15,
             fontFamily: "inherit",
@@ -530,7 +531,7 @@ function SlideAvslutning({ slide, accentColor, mutedColor, delLenke }: { slide: 
             gap: 8,
             padding: "12px 24px",
             borderRadius: 999,
-            background: T.farge.hvitA15,
+            background: AK.farge.hvitA15,
             color: "inherit",
             fontSize: 14,
             fontFamily: "inherit",

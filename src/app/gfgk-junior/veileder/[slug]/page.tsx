@@ -1,8 +1,8 @@
+import { AK } from "@/lib/v2/ak-palett";
 import type { Metadata } from "next";
 import { ArrowLeft, ArrowRight, Clock3 } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { T } from "@/lib/v2/tokens";
 
 import { ArtikkelMd } from "../../_components/artikkel-md";
 import { GfgkFooter } from "../../_components/gfgk-footer";
@@ -43,7 +43,7 @@ export default async function ArtikkelPage({
 
       <section className="text-white" style={{ background: "var(--ink)" }}>
         <div className="jr-fade-up mx-auto max-w-[820px] px-5 pb-10 pt-12 sm:px-7 sm:pt-14">
-          <div className="flex flex-wrap items-center gap-2 text-[12.5px]" style={{ fontFamily: "var(--font-jr-mono)", color: T.farge.hvitA60 }}>
+          <div className="flex flex-wrap items-center gap-2 text-[12.5px]" style={{ fontFamily: "var(--font-jr-mono)", color: AK.farge.hvitA60 }}>
             <Link
               href="/gfgk-junior/veileder"
               className="inline-flex items-center gap-1.5 font-bold no-underline"
@@ -62,7 +62,7 @@ export default async function ArtikkelPage({
             >
               {meta.label}
             </span>
-            <span className="inline-flex items-center gap-1.5 text-[12.5px]" style={{ fontFamily: "var(--font-jr-mono)", color: T.farge.hvitA60 }}>
+            <span className="inline-flex items-center gap-1.5 text-[12.5px]" style={{ fontFamily: "var(--font-jr-mono)", color: AK.farge.hvitA60 }}>
               <Clock3 className="h-3.5 w-3.5" strokeWidth={2} />
               {artikkel.lesetid}
             </span>
@@ -70,7 +70,7 @@ export default async function ArtikkelPage({
           <h1 className="mt-3.5 text-[32px] font-black leading-[1.05] text-white sm:text-[42px]">
             {artikkel.tittel}
           </h1>
-          <p className="mt-3.5 text-[17px] leading-relaxed" style={{ color: T.farge.hvitA85 }}>
+          <p className="mt-3.5 text-[17px] leading-relaxed" style={{ color: AK.farge.hvitA85 }}>
             {artikkel.ingress}
           </p>
         </div>

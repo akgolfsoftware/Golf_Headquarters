@@ -34,7 +34,8 @@ import {
   Sunset,
   Trophy,
 } from "lucide-react";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import {
   byggSgBaseline,
   tolkTall,
@@ -411,9 +412,9 @@ export function OnboardingWizard({
                   width: 56,
                   height: 56,
                   borderRadius: 14,
-                  background: T.lime,
-                  color: T.onLime,
-                  fontFamily: T.disp,
+                  background: TL.fill,
+                  color: TL.onFill,
+                  fontFamily: TL.font.sans,
                   fontSize: 24,
                   fontWeight: 700,
                   lineHeight: 1,
@@ -492,7 +493,7 @@ export function OnboardingWizard({
                 placeholder="forelder@example.com"
                 autoComplete="email"
               />
-              <p className="mt-1 text-[11px]" style={{ color: T.warn }}>
+              <p className="mt-1 text-[11px]" style={{ color: TL.warn }}>
                 Vi sender en forespørsel om foreldresamtykke iht. GDPR art. 8.
               </p>
             </Field>
@@ -984,9 +985,9 @@ export function OnboardingWizard({
             className="px-4 py-3 text-[13px]"
             style={{
               borderRadius: 11,
-              border: `1px solid color-mix(in srgb, ${T.down} 30%, transparent)`,
-              background: `color-mix(in srgb, ${T.down} 10%, transparent)`,
-              color: T.down,
+              border: `1px solid color-mix(in srgb, ${TL.danger} 30%, transparent)`,
+              background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`,
+              color: TL.danger,
             }}
             role="alert"
           >
