@@ -241,6 +241,14 @@ export async function hentAnalyseHub(userId: string): Promise<TmHubData> {
         tittel: "Turneringer",
         meta: turneringsMeta,
       },
+      {
+        /* DG-01-inngangen hører hjemme her — HANDOFF §DataGolf: «Inngang:
+           PH-10 "Gå dypere"-rad (lagt til)». Egen motor, blandes aldri med
+           Broadie-SG over. */
+        href: "/portal/analysere/datagolf",
+        tittel: "DataGolf",
+        meta: "mot feltet",
+      },
     ],
     trackman,
   };
