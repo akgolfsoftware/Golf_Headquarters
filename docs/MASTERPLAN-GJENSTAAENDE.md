@@ -27,7 +27,7 @@ se STEG 13) · `docs/jarvis-shortcut.md` (driftshåndbok for Jarvis-snarveien) �
 
 | # | Oppgave | Detalj |
 |---|---|---|
-| 0.12 | **BLOKKERER ALL SKJERMBILDE-GATE FOR AGENCYOS (funnet 30.08.2026).** `coachtest@akgolf.test` — brukeren `scripts/signoff-trainlock.mjs` og `signoff-gallery.mjs` logger inn med for ALLE AgencyOS-skjermer — ble slettet i nullstillingen 30.08. Målt i basen samme dag: tre brukere igjen (ADMIN Anders, COACH Markus, PLAYER screentest). `screentest` er spiller og kan ikke se `/admin/*`. **Konsekvens:** ingen AgencyOS-skjerm kan gjennom skjermbilde-gaten — hele STEG 15 er berørt, ikke bare 15.1 (PR #689 står og venter på nettopp dette). **Krever Anders:** skal det opprettes en coach-testbruker med data i prod, eller skal gaten kjøres med hans egen innlogging? Agenten oppretter ikke brukere i produksjonsbasen på eget initiativ |
+| 0.12 | ~~Skjermbilde-gaten for AgencyOS blokkert~~ **LØST 30.08.2026 (Anders: «opprett testbruker»).** `scripts/seed-screentest-coach.ts` kjørt mot prod — `coachtest@akgolf.test` finnes igjen (ADMIN-rolle) med 38 demo-spillere, 4 grupper, 16 bookinger, 4 forespørsler og 3 godkjenninger. Idempotent; alle demo-rader gjenkjennes på `*@stall.akgolf.test` og `demo-stall-*` og kan fjernes igjen. Passordet er `SCREENTEST_PASSWORD` i `.env.local` — uendret, aldri lest av agenten. Gaten er kjørt for 15.1 | Løst |
 
 
 | # | Oppgave | Eier | Status/kilde |
@@ -333,7 +333,7 @@ bygge-PR, jf. `.claude/rules/beslutninger.md` §TEGN SKJERMEN FØR DU BYGGER DEN
 
 | # | Funksjon (én adresse) | Slås sammen fra | Merknad |
 |---|---|---|---|
-| 15.1 | ~~**Kø**~~ **BYGGET 30.08.2026 — PR #689** (venter Anders' skjermbilde-gate). Canvas: `designsystem/canvas/ko/` | `admin/godkjenninger`, `admin/agenticos/godkjenn`, `admin/agenticos/ko`, `admin/tester/foreslatte`, `admin/tournaments/dubletter`, `admin/queue` | Kø = alt som krever Anders i dag: e-post, SMS, forespørsler, tilbakemeldinger, oppfølginger, godkjenninger (6.2). `admin/queue` (spiller-signaler) er IKKE Kø — flyttes til Stall (6.6) |
+| 15.1 | ~~**Kø**~~ **LEVERT OG MERGET 30.08.2026 (PR #689).** Skjermbilde-gaten kjørt mot ekte data — to feil funnet og rettet der: agent-fanene viste 530 (PlanAction-totalen) mot faktiske 23/12, og kilde-filteret hadde samme pille-stil som fanene, som ga ni piller før første sak på 390px. Canvas: `designsystem/canvas/ko/` | `admin/godkjenninger`, `admin/agenticos/godkjenn`, `admin/agenticos/ko`, `admin/tester/foreslatte`, `admin/tournaments/dubletter`, `admin/queue` | Kø = alt som krever Anders i dag: e-post, SMS, forespørsler, tilbakemeldinger, oppfølginger, godkjenninger (6.2). `admin/queue` (spiller-signaler) er IKKE Kø — flyttes til Stall (6.6) |
 | 15.2 | **Oppgaver** | `admin/handlingssenter`, `admin/workspace`, `admin/workspace/prosjekter`, `admin/workspace/notion` | Prosjektstyring + gjentakende rutiner (daglig/ukentlig/månedlig). Hver rutine merkes «kan automatiseres» / «må gjøres fysisk» (6.6). Henger sammen med 14.7 (`/kommando` kan ikke slettes før dette er databakket) |
 | 15.3 | **Oppsett** | `admin/settings` + `/api`, `/calendar`, `/periode-navn`, `/security`, `/tilgang`, `admin/klubb/innstillinger`, `admin/integrasjoner` | Faner i én side |
 | 15.4 | **Kalender** | `admin/kalender`, `admin/kalender/lag`, `admin/kalender/hendelse/ny`, `admin/agencyos/uka`, `admin/stall/dag` | Sjekk mot 14.6 (kalender-motor-konsolideringen) før arbeid — de kan gjøre hverandre moot |
