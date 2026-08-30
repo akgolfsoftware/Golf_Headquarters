@@ -4,9 +4,20 @@
  * spiller-detalj-client (hybrid), ruten flyttet ut av (legacy). Auth
  * (innlogging kreves), alle Prisma-queries og snitt-utregningene
  * (snittScore/sgSnitt) er uendret — kun presentasjonslaget er nytt.
+ *
+ * IDOR lukket 30.08.2026 (arkitektur-kartlegging §To sikkerhetsfunn): siden
+ * viste tidligere full profil — runder, SG-fordeling, aktiv plan og
+ * coaching-historikk — til ENHVER innlogget bruker som kjente spiller-ID-en.
+ * Kun egen profil eller en coach med tilgang til nettopp denne spilleren
+ * (samme port som AgencyOS bruker) får nå se dataene; andre får notFound(),
+ * ikke et delvis svar. Ingen samtykkemodell gir i dag ekstern tilgang til
+ * dette detaljnivået — kohortsammenligning er bevisst coachens verktøy alene
+ * (beslutninger.md, PRODUKTRETNING pkt. 3).
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
+import { kanSeSpillerprofil } from "@/lib/auth/spiller-side-tilgang";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
@@ -24,6 +35,12 @@ type Props = {
 export default async function SpillerDetaljPage({ params }: Props) {
   const { spillerId } = await params;
   const user = await requirePortalUser(); // sikrer innlogging
+
+  const erCoachMedTilgang =
+    user.id !== spillerId &&
+    (user.role === "ADMIN" || user.role === "COACH") &&
+    (await harCoachTilgangTilSpiller(user, spillerId));
+  if (!kanSeSpillerprofil(user, spillerId, erCoachMedTilgang)) notFound();
 
   const spiller = await prisma.user.findFirst({
     where: { id: spillerId },
