@@ -37,7 +37,7 @@ se STEG 13) · `docs/jarvis-shortcut.md` (driftshåndbok for Jarvis-snarveien) �
 | 0.8 | ~~**TruthLayer: `/stats/wrapped` diktet opp fødselsår**~~ **GJORT 30.08.2026, PR #675.** `birthYear ?? 1990` ga 3 598 spillere feil fødselsår. Årskull-boksen utelates nå når året mangler | **Anders (ja)** | PR #675 |
 | 0.9 | ~~**DataGolf-attribusjon manglet på alle offentlige sider**~~ **GJORT 30.08.2026, PR #675.** «Powered by Data Golf» lagt i `StatsRamme` (dekker alle ~45 rutene, ny rute kan ikke glemme den) + spillerens DataGolf-kort | **Anders (ja)** | PR #675 |
 | 0.10 | ~~**CSS-kommentar brøt appen**~~ **GJORT 30.08.2026, PR #675.** `--tl-*/TL` på linje 44 i `train-lock-tokens.css` avsluttet kommentaren for tidlig (83 starter mot 84 avslutninger). Dev-serveren svarte 500 på hver side; prodbygget slapp det gjennom som kun en advarsel selv om lys-blokken står rett etter bruddet. Innført i #667 | — | PR #675 |
-| 0.11 | **`/stats/aargang` bak innlogging** (datakartleggingens svar 1) — siden er en åpen kohort-utforsker for 2000–2012, altså nøyaktig det 0.7 forbyr. Skal ikke slettes, men flyttes til gratis-konto-laget. Aldersfilteret i 0.7 dekker den IKKE | Agent | Svar 1, 30.08 |
+| 0.11 | ~~**`/stats/aargang` bak innlogging**~~ **GJORT 30.08.2026, PR #679.** Sperret i `src/proxy.ts` (`erAargangHub`) — siden er verken slettet eller tømt, den ligger nå på gratis-konto-laget per datakartleggingens svar 1. `offentligSpillerFilter()` hjalp ikke her: siden aggregerer antall per fødselsår, så kohort-strukturen ER det som skjules. Verifisert i koden 30.08 | — | PR #679 |
 | 0.12 | **`/stats/wrapped`: resten av de fabrikkerte tallene.** Utover fødselsåret (0.8) viser siden hardkodet nasjonal ranking (47 av 1 547), aldersgrupperanking (12 av 142), «spillingen din ligner Kris Ventura», putte-tall (28) og streak (5) som om de var målt. Samme TruthLayer-brudd som 0.8, men bredere — enten hentes ekte tall, eller slidene fjernes | Agent | Funnet 30.08 under 0.8 |
 
 ## STEG 1 — Lansering P0 (uendret spor, fasene i masterplan-lansering-12.08)
@@ -351,7 +351,7 @@ pkt. 7) sier at alt appen påstår om et menneske skal kunne spores til en måli
 
 | # | Oppgave | Detalj |
 |---|---|---|
-| 16.1 | **Til-par-grunnlaget — ett view (~1 dag).** Bærer ni andre analyser | Les til-par fra `public_player_entries.scoreToPar` (`prisma/schema.prisma:2985`), filtrer score 55–130, kollaps de 43 dublettgruppene. **Par skal ALDRI utledes fra `public.baner` og påføres juniorrunder** — treffer i 39,7 %, systematisk avvik −1,02 slag (juniorer spiller kortere tee). Ferdig når viewet finnes og minst én skjerm leser det |
+| 16.1 | ~~**Til-par-grunnlaget — ett view**~~ **VIEWET ER LEVERT (PR #679, `scripts/lag-topar-grunnlag-2026-08-30.ts`).** Målt i basen 30.08: `dashboard.mv_topar_grunnlag` har **123 257 rader**, 8 538 spillere, 2014–2026, fersk til i dag. **0** rader uten til-par, **0** utenfor 55–130, **0** dublettgrupper på (spiller, turnering). Leser `scoreToPar` (`prisma/schema.prisma:2985`), aldri par fra `public.baner`. **Gjenstår to ting:** (a) **ingen kode leser viewet** — `grep` på `mv_topar_grunnlag` i `src/` gir null treff, så det er foreløpig en niende analyse uten skjerm (se 16.7); (b) **ingen oppfriskning** — det finnes ingen cron for `refresh materialized view concurrently`, så snapshotet fryser på 30.08 og blir gradvis feil. Legg refresh i en cron-rute før noen skjerm kobles på | Verifisert i basen 30.08.2026 |
 | 16.2 | **Kjønn som felt (svar 2, fire trinn).** Uten kjønn er enhver kullsammenligning villedende for halve gruppen | (a) felt i datamodellen — finnes ikke i `prisma/schema.prisma` i dag (verifisert 30.08) · (b) manuell utfylling for Anders' egne spillere (WANG, GFGK, Academy) umiddelbart · (c) utledning fra klassekode som **eksplisitt merket** supplement — dekker 26,4 % og gir 200 jenter mot 2 066 gutter, altså systematisk skjevt · (d) ekte kilde via NGF/GolfBox som mål. Additiv DDL via `db execute`-mønsteret (`.claude/rules/gotchas.md`) — **ikke** `migrate dev`/`db push`/`migrate deploy` |
 | 16.3 | **Bruksmåling — daglig aktiv (grillingen 1.7, «bygges nå»).** Aktivering og frafall må måles fra dag én av betalt drift, ikke gjettes | Én rad per bruker per aktiv dag (userId + dato), skrevet ved innlasting av `/portal`. Ingen tredjepartsverktøy, ingen cookies. Kort i AgencyOS: «X brukte appen i går / denne uka / ikke åpnet på 30 dager». **Delvis bygget allerede:** `src/components/admin/v2/AdminReachV2.tsx:69` har en `DagligAktivitet`-komponent — men den har **null importører** og ingen datakilde. Gjenbruk komponenten, bygg tabellen og koblingen |
 | 16.4 | **Identitetslaget trinn 0 (~½ dag).** Billigere enn antatt | Eksakt navnematch treffer 2 486 av 4 873 ekte navn (51 %) og dekker 59,9 % av resultatradene; kun **3** er tvetydige. Løfter `mv_canonical_players` fra 47 til ~2 500. **Nordic League er allerede koblet:** alle 22 529 rader har `dg_id`, og joinen virker på `dg_events.event_id` (172/172 treff), ikke `dg_events.id` (0 treff) — 50 arrangementer kan dateres med én UPDATE |
@@ -363,10 +363,21 @@ pkt. 7) sier at alt appen påstår om et menneske skal kunne spores til en måli
 **Ikke bygg (fra samme beslutning):** plassering som persentil · par påført fra baneregisteret ·
 aldersstige under 16 år · sesongform som populasjonskurve · regionkart presentert som nasjonalt ·
 banevanskelighetsindeks per bane · kohort-persentil til spiller/forelder/åpen flate · odds,
-prognoser, fantasy.
+prognoser, fantasy · **opprykkseffekt som ett tall** (ikke robust — se avsnittet over).
 
-**Åpent før 16.1 skrives:** nivådefinisjonen i opprykksanalysen (+2,10 eller +2,27 slag) — se
-beslutningskøen punkt 19.
+**Opprykksanalysen er IKKE åpen lenger — den skal ikke bygges som tall (målt 30.08.2026).**
+Spørsmålet var «ett nivå eller flere per spiller-år». Målingen viser at valget mellom de to
+definisjonene ikke er problemet: **juniorer forbedrer seg hvert år uansett nivå**, så en
+opprykkseffekt uten kontrollgruppe er aldersutvikling forkledd som opprykk. Med nivåstigen
+REGIONTOUR → OSTLANDS → OLYO → SRIXON → NORGESCUP (rekkefølgen er bekreftet av feltstyrken:
+snitt til-par 13,64 · 10,55 · 10,41 · 8,76 · 6,32) ble det målt: opprykkere −1,64 slag, **men de
+som ble på samme nivå −1,13 og de som rykket ned −1,14**. Netto opprykkseffekt er altså ~0,5
+slag, ikke 2 — og trekkes alderen inn, **skifter den fortegn**: +1,99 ved 14 år, −1,08 ved 16,
+−1,16 ved 18, med bare 10–96 spillere per alderstrinn. Effekten er ikke robust. Å publisere
+«+2,10» eller «+2,27» ville vært TruthLayer-brudd uansett hvilken definisjon som vant.
+**Konsekvens:** ingen opprykksanalyse bygges nå; den flyttes til «Ikke bygg»-lista under.
+Ønsker Anders den likevel senere, kreves kontrollgruppe (samme nivå) og aldersjustering, og
+tallet må oppgis med usikkerhet — ikke som ett tall.
 
 ---
 
@@ -391,7 +402,10 @@ i 2027. Forretningsmodell: gratis pilot 2026/27 → **spillerlisenser** fra 2027
 | 17.2 | **Dokumenter med lesekvittering** | Fildeling per gruppe, «12 av 14 har åpnet uttakskriteriene», og «sist oppdatert»-merking |
 | 17.3 | **Delte testprotokoller på tvers av AK Golf, WANG og TN** | En protokoll opprettes én gang og deles. **Driftsmodellen SKAL spesifiseres i planen (Anders eksplisitt).** Anbefalt: versjonerte protokoller som låses ved første bruk — resultater peker på versjonen, endring gir ny versjon, eierorganisasjonen endrer, delte mottakere bruker. Henger sammen med N8/N10 (STEG 11) |
 | 17.4 | **Pilot høsten 2026** | Anders + 2–5 navngitte TN-trenere får konto, tilgang kun til egne grupper; spillere inn via samtykke. **Bevis på én samling før utrulling** |
-| 17.5 | **Landskapsanalyse av norsk juniorgolf** — «kartlegging av spillere», ikke internt register | Antall Olyo-/Srixon Tour-spillere per region, nivå, konkurranser per år, klubber med flest spillere per klasse. Datagrunnlaget finnes (klubbaggregater og kohortanalyser uten skjerm, se 16.7) — men **klubbdimensjonen krever 16.6 først**. **BLOKKERT:** venter på MD-fila fra Anders med alle turneringer og lenker |
+| 17.5a | **Landskapsanalyse — delen som kan bygges NÅ** (ikke blokkert, målt 30.08) | `dashboard.mv_topar_grunnlag` bærer allerede turneringer per år, spillere per år, deltakelser og nivå (`kilde`). Målt 2018→2026: 187→177 turneringer, 1 989→2 984 spillere, 10 705→13 212 deltakelser. **Advarsel som MÅ følge tallet:** juniorer U19 hopper 328 (2024) → 1 006 (2025) — det er kildesammensetningen som endrer seg (OLYO kom inn), ikke virkeligheten. Derfor sies volumtall til NGF som **+24,3 % målt på OLYO alene**, aldri flerkilde-tallet |
+| 17.5b | **Klubbdimensjonen** — «hvilke klubber har flest spillere per klasse» | **Blokkert av 16.6.** `mv_club_aggregates` har i dag 46 rader med én unik verdi, «Øst» — det er region, ikke klubb. Klubbnavnet finnes i GolfBox-svaret og kastes i scraperen |
+| 17.5c | **Regionsdimensjonen** | **Kan ikke bygges som nasjonalt bilde.** Alle seks regioner i datagrunnlaget er kun OLYO — et regionkart ville framstilt én kilde som hele Norge. Står allerede på «Ikke bygg»-lista i STEG 16 |
+| 17.5d | **Lenker per turnering** | **Blokkert: `dashboard.tournament_links` er tom (0 rader, målt 30.08).** Det er denne MD-fila fra Anders skal fylle — se beslutningskøen punkt 20. Merk at 17.5a IKKE venter på den; lenkene er berikelse, ikke grunnlag |
 | 17.6 | **TN-branding** | Anders lager komplett brandingsystem selv. **TN-bølgen tegner ingenting før det foreligger.** TN-rød `#D50431` kun på logo og skinne, aldri som statusfarge (N-D2) |
 
 ---
@@ -416,5 +430,6 @@ i 2027. Forretningsmodell: gratis pilot 2026/27 → **spillerlisenser** fra 2027
 16. Workbench/kalender-konsolideringsforslaget (STEG 14.6): omfang og rekkefølge, eller avvist?
 17. AK Golf Intelligence-konsolideringen (STEG 14.4): fortsatt ønsket retning, gitt at pipelinene nå ligger i eget repo?
 18. **PlayerHQ-konsolideringen (STEG 15, siste avsnitt):** beslutning 6.9 gjelder AgencyOS. Skal samme regel — én inngang per funksjon — også gjelde spillerappen? Målt 30.08: «Analyse» har 17 innganger, «Meg» har 34 undersider.
-19. **Nivådefinisjonen i opprykksanalysen (STEG 16.1):** gir +2,10 eller +2,27 slag avhengig av om et spiller-år tilordnes ett nivå eller flere (77 mot 159 opprykkere). Retningen er robust, størrelsen er et definisjonsvalg — endres den etter at viewet er skrevet, er det TruthLayer-brudd. Må låses FØR 16.1.
-20. **MD-fila med turneringer og lenker (STEG 17.5):** spesifikasjonen for landskapsanalysen. Etterlyst 30.08, ikke levert. TN-bølgens punkt 5 er blokkert til den kommer.
+19. ~~Nivådefinisjonen i opprykksanalysen~~ **LUKKET 30.08.2026 — krever ingen beslutning fra Anders.** Målt i basen: effekten er ikke robust (skifter fortegn med alder, 10–96 spillere per trinn), og valget mellom de to definisjonene endrer den ikke. Opprykksanalysen er flyttet til «Ikke bygg» i STEG 16. Vil Anders ha den likevel, må den bygges med kontrollgruppe og aldersjustering — og oppgis med usikkerhet, ikke som ett tall.
+20. **MD-fila med turneringer og lenker (STEG 17.5d):** blokkerer nå KUN lenkene, ikke hele landskapsanalysen. 17.5a kan bygges i dag. `dashboard.tournament_links` er tom (0 rader) — det er den MD-fila skal fylle. **Trenger fortsatt Anders.**
+21. **Klubbdimensjonen (16.6 → 17.5b):** krever kun én pipeline-endring, ingen beslutning — men prioriteringen er Anders'. Uten den finnes ikke «hvilke klubber har flest spillere», som var et av de fire spørsmålene i TN-Workdesk punkt 7.
