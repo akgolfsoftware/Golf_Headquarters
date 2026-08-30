@@ -31,16 +31,38 @@ node "<design-skillens base>/seed-canvas.mjs" \
 Publiser deretter med Artifact-verktøyet, og **send URL-en i samtalen** — Anders
 jobber ofte fra mobil, og en filsti når ham ikke.
 
-## Faste krav per canvas
+## To slag canvas — ikke samme krav
 
-- Verdiene hentes fra `src/styles/train-lock-tokens.css`, aldri fra hukommelsen.
-- Mobil 390 og Mac 1440 skal begge finnes. Lys og mørk skal begge finnes.
-- Tom tilstand tegnes — det er den Anders møter oftest når køen er unnagjort.
-- Ekte norsk skjermtekst, aldri lorem ipsum. Tall som ikke er målt, sies å være eksempler.
+**Retningsutkast** svarer på ett spørsmål: er dette riktig inndeling? Tegnes bredt,
+mange skjermer om gangen, så Anders kan velge retning før noe bygges.
+
+**Byggeklar canvas** er den som ligger til grunn for en PR. Den må være komplett,
+fordi koden skrives etter den.
+
+| Krav | Retningsutkast | Byggeklar |
+|---|---|---|
+| Verdier fra `train-lock-tokens.css` | ja | ja |
+| Ekte norsk tekst, umålte tall merket | ja | ja |
+| Mac 1440 | ja | ja |
+| Mobil 390 | for de skjermene Anders bruker daglig | ja |
+| Lys modus | nei | ja |
+| Tom tilstand | nei | ja |
+
+Et retningsutkast som får ja, tegnes ferdig i bygge-PR-en. Presisert 30.08.2026
+etter at STEG 15-utkastene ble tegnet — den opprinnelige regelen skilte ikke, og
+ville i praksis stoppet bredden.
 
 ## Canvaser
 
 | Mappe | Skjerm | Plan | Canvas |
 |---|---|---|---|
 | `ko/` | Kø — én adresse, fem faner | MASTERPLAN 15.1 | https://claude.ai/code/artifact/4df52812-fa4f-4654-8564-c46353fe430b |
+| `agencyos-ia/` | Hele STEG 15: 13 funksjoner (retningsutkast) | MASTERPLAN 15.2–15.12 | https://claude.ai/code/artifact/581d1668-c627-42eb-a59c-1ba40bfe3751 |
 | `team-norway/` | Team Norway Workdesk — 20 skjermer | MASTERPLAN STEG 17 | Ikke tegnet ennå — `BRIEF.md` + `PROMPT.md` er klare |
+
+
+## `gen.py`
+
+`agencyos-ia/gen.py` genererer artboards fra en datastruktur (rail, faner, rader,
+Mac- og mobilskall). Tegner du flere skjermer i samme språk, gjenbruk den framfor
+å skrive HTML for hånd — tokenverdiene står ett sted, og skallene blir like.

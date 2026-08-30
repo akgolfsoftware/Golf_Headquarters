@@ -38,10 +38,15 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
   1. **Verdiene hentes fra koden, ikke fra hukommelsen** — `src/styles/train-lock-tokens.css`
      og komponenten som allerede finnes for nærmeste skjerm. Aldri en farge eller et mål
      «omtrent».
-  2. **Fire visninger som minimum:** Mac 1440 og mobil 390, lys og mørk. Beslutningen
-     26.08 («alle skjermer skal ha lys og mørk») gjør begge obligatoriske, og 6.1 gjør
-     mobil til den viktigste — Anders skanner stående på treningsfeltet.
-  3. **Tom tilstand tegnes alltid.** Det er den han møter når arbeidet er unnagjort.
+  2. **Fire visninger på en BYGGEKLAR canvas:** Mac 1440 og mobil 390, lys og mørk.
+     Beslutningen 26.08 («alle skjermer skal ha lys og mørk») gjør begge obligatoriske,
+     og 6.1 gjør mobil til den viktigste — Anders skanner stående på treningsfeltet.
+     **Et RETNINGSUTKAST** — bredt, mange skjermer, for å velge inndeling før noe bygges —
+     klarer seg med Mac, pluss mobil for skjermene Anders bruker daglig. Får utkastet ja,
+     tegnes det ferdig i bygge-PR-en. Skillet er presisert 30.08.2026 og står i
+     `designsystem/canvas/README.md`; uten det ville regelen stoppet bredden.
+  3. **Tom tilstand tegnes på byggeklar canvas.** Det er den han møter når arbeidet er
+     unnagjort.
   4. **Ekte norsk skjermtekst.** Aldri lorem ipsum. Tall som ikke er målt i basen,
      sies eksplisitt å være eksempler.
   5. **Arbeidsfilene bor i repoet**, `designsystem/canvas/<skjerm>/` — ikke i en

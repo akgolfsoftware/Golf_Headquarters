@@ -318,9 +318,15 @@ redirects.** Anders avviste kutt som mål — målet er én inngang, ikke færre
 i vilkårlig rekkefølge, én funksjon per økt, én PR per funksjon. Hver PR: redirects på plass +
 `npm run verify` grønt + skjermbilde-gate (mobil 390px + desktop 1280px, lys og mørk).
 
+**ALLE TRETTEN ER TEGNET (30.08.2026).** Retningsutkast for hele konsolideringen:
+https://claude.ai/code/artifact/581d1668-c627-42eb-a59c-1ba40bfe3751 — arbeidsfiler i
+`designsystem/canvas/agencyos-ia/`. **Hver rad under venter nå på Anders' ja til tegningen**,
+ikke på ny utredning. Får en rad ja, tegnes den ferdig (lys + tom tilstand) i sin egen
+bygge-PR, jf. `.claude/rules/beslutninger.md` §TEGN SKJERMEN FØR DU BYGGER DEN.
+
 | # | Funksjon (én adresse) | Slås sammen fra | Merknad |
 |---|---|---|---|
-| 15.1 | **Kø** | `admin/godkjenninger`, `admin/agenticos/godkjenn`, `admin/agenticos/ko`, `admin/tester/foreslatte`, `admin/tournaments/dubletter`, `admin/queue` | Kø = alt som krever Anders i dag: e-post, SMS, forespørsler, tilbakemeldinger, oppfølginger, godkjenninger (6.2). `admin/queue` (spiller-signaler) er IKKE Kø — flyttes til Stall (6.6) |
+| 15.1 | ~~**Kø**~~ **BYGGET 30.08.2026 — PR #689** (venter Anders' skjermbilde-gate). Canvas: `designsystem/canvas/ko/` | `admin/godkjenninger`, `admin/agenticos/godkjenn`, `admin/agenticos/ko`, `admin/tester/foreslatte`, `admin/tournaments/dubletter`, `admin/queue` | Kø = alt som krever Anders i dag: e-post, SMS, forespørsler, tilbakemeldinger, oppfølginger, godkjenninger (6.2). `admin/queue` (spiller-signaler) er IKKE Kø — flyttes til Stall (6.6) |
 | 15.2 | **Oppgaver** | `admin/handlingssenter`, `admin/workspace`, `admin/workspace/prosjekter`, `admin/workspace/notion` | Prosjektstyring + gjentakende rutiner (daglig/ukentlig/månedlig). Hver rutine merkes «kan automatiseres» / «må gjøres fysisk» (6.6). Henger sammen med 14.7 (`/kommando` kan ikke slettes før dette er databakket) |
 | 15.3 | **Oppsett** | `admin/settings` + `/api`, `/calendar`, `/periode-navn`, `/security`, `/tilgang`, `admin/klubb/innstillinger`, `admin/integrasjoner` | Faner i én side |
 | 15.4 | **Kalender** | `admin/kalender`, `admin/kalender/lag`, `admin/kalender/hendelse/ny`, `admin/agencyos/uka`, `admin/stall/dag` | Sjekk mot 14.6 (kalender-motor-konsolideringen) før arbeid — de kan gjøre hverandre moot |
