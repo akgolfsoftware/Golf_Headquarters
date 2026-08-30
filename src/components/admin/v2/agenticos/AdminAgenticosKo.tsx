@@ -2,6 +2,10 @@
 
 /**
  * AO-03 Kø — Klar · Pågår · Venter godkjenning. Én hvit Kjør (første klare).
+ *
+ * Tom-tilstand (linje ~87, AoTom) dekker GAP-2c «Jarvis-kø tom»
+ * (Fasit: designsystem/train-lock/GAP-2 Tilstander drift.dc.html) — ingen
+ * fabrikkerte tall, kun hel setning.
  */
 
 import { useMemo, useState, useTransition } from "react";
@@ -82,10 +86,14 @@ export function AdminAgenticosKo({ data }: { data: AgenticosKoData }) {
       </div>
 
       {totalt === 0 ? (
+        // Fasit: designsystem/train-lock/GAP-2 Tilstander drift.dc.html
+        // (GAP-2c/2f Jarvis-kø tom, PX-7 29.08.2026) — «ingen fabrikkerte
+        // tall»: fasitens «sist merget»-liste er IKKE lagt til her (ville krevd
+        // ny data/felt utenfor scope), kun tittel/tekst/CTA er portert.
         <AoTom
-          tittel="Køen er tom"
-          tekst="Ingen tasks venter. Agenten foreslår nye når det kommer data den kan jobbe med — forslagene havner i godkjenn-køen."
-          cta={<AoKnapp variant="primaer" href="/admin/workspace">Ny oppgave</AoKnapp>}
+          tittel="Ingen som venter"
+          tekst="Research lander i Cockpit. Du får varsel når noe trenger et blikk."
+          cta={<AoKnapp variant="primaer" href="/admin/workspace">Start en ny kjøring</AoKnapp>}
         />
       ) : (
         <div style={{ padding: "16px 0", display: "flex", flexDirection: "column", gap: 16 }}>

@@ -1,14 +1,14 @@
 "use client";
 
-/* Fanger uventede feil i /portal-treet. Fungerer også som fallback for
-   underruter uten egen error.tsx (Next.js nærmeste-ancestor-mønster).
-   Logger til feillogg via reportClientError. */
+/* Fanger uventede feil i /portal/planlegge (Plan-fanen, B1 «Plan feil»).
+   Manglet egen error.tsx før PX-7 — falt tilbake på generisk /portal/error.tsx-
+   tekst («Fikk ikke lastet dagen din»), feil for denne fanen. */
 
 import { useEffect } from "react";
 import { V2Feil } from "@/components/v2/feil-laste";
 import { reportClientError } from "@/lib/report-client-error";
 
-export default function PortalError({
+export default function PlanleggeError({
   error,
   reset,
 }: {
@@ -17,7 +17,7 @@ export default function PortalError({
 }) {
   useEffect(() => {
     reportClientError({
-      context: "portal-error",
+      context: "portal-planlegge-error",
       message: error.message,
       stack: error.stack,
       digest: error.digest,
@@ -30,8 +30,8 @@ export default function PortalError({
     <V2Feil
       reset={reset}
       tilbakeHref="/portal"
-      tittel="Fikk ikke lastet dagen din"
-      melding="Sjekk nettet og prøv igjen. Planen ligger trygt hos Anders."
+      tittel="Fikk ikke lastet uken"
+      melding="Sjekk nettet og prøv igjen."
     />
   );
 }

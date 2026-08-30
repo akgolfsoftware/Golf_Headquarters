@@ -4,6 +4,9 @@ import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ Meg.
  * Fasit: designsystem/train-lock/PH-17 Meg.dc.html
+ * Lys: designsystem/train-lock/B3 Lys nøkkelskjermer.dc.html (Lys PH-17
+ * Meg) — mekanisk (PX-7, 29.08.2026): filen leser konsekvent TL.* uten
+ * hardkodet hex, verifisert med grep — ingen manuell lys-finpuss utover det.
  * Sentrert hero (avatar 84 + navn 26/700 + mute sub), deretter alt personlig
  * som rader/kort. Ekte data: profil, mål, sesongtall.
  *
