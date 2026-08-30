@@ -28,6 +28,43 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
 
 ## Beslutningene (august 2026)
 
+- **TEAM NORWAY-SKJERMENE DESIGNES I CLAW-BRANDINGEN, IKKE TRAIN-LOCK (Anders 30.08.2026, i økt):**
+  Anders leverte TN-brandingsystemet han varslet 30.08 (17.6), og valgte det som fasit for Team
+  Norways egne skjermer. Fasit er Claude Design-prosjektet **«Claw Design — Team Norway Golf»**
+  (`a03bf94a-c923-4c04-82ff-415773557e37`), speilet i repoet som `designsystem/team-norway/`.
+  - **Verdier:** navy `#012B5D` + rød `#D70232` (begge målt fra logofilen) · Schibsted Grotesk
+    (display + body) + IBM Plex Mono (alt som måles) · lys flate er standard, **mørk `#06111F` er
+    en ROLLE** — hero, seksjonsskille, presentasjon — aldri et tema · radius 6/10/14/20/28/999 ·
+    tre skyggenivåer · romskala 2→128 · diagonalen (56px) på hero og seksjonsskille, aldri på kort
+    eller kontroller · aldri `ease-in` på grensesnitt.
+  - **`--ink-400` (`#647280`) er lyseste gråtone som får bære tekst.** `--ink-300` og lysere er
+    kanter og linjer. Gjelder også 9–11px etiketter.
+  - **Merkevarerød er identitet, aldri status.** Logo, skinne, «denne utøveren» i data. Status
+    bruker `#C2352B` sammen med grønn og ravgul. Dette er samme regel som N-D2 — de to systemene
+    landet uavhengig på den.
+  - **Konsekvens:** `templates/tn-workdesk/TnBatch1.dc.html` (TN-01 Hjem, TN-02 Gruppe/spillerliste,
+    TN-03 Spiller-ark) er tegnet i Train-lock mørk og **skal tegnes om** i Claw-stil. Verifisert
+    i prosjektet 30.08: filen bruker `#000000`, Poppins, `#8E8E93` og rail 232px.
+  - **Arbeidsdelingen mot Train-lock:** Train-lock eier plattformflatene (PlayerHQ, AgencyOS,
+    Forelder). Claw eier `/team-norway/*`. **Ingen skjerm har to fasiter.** Dette overstyrer
+    N7-formuleringen «tegn organisasjonsflaten i Train-lock» for Team Norways del.
+  - **`SKILL.md` i Claw-pakken er UTDATERT og skal ikke følges.** Den sier «ingen skygger, ingen
+    piller» og oppgir Jost + Public Sans. Systemet slik det faktisk er bygget har tre skyggenivåer,
+    `--radius-full` og Schibsted Grotesk. `readme.md` + `tokens/` er fasit.
+  - **Uavklart, ikke antatt:** WANG-flatenes stil er IKKE avgjort av denne beslutningen. WANG har
+    eget system (`src/styles/wang-tokens.css`, `.wang-tp`, enpalett lys). Se beslutningskøen.
+
+- **TN-RØDT LÅST TIL `#D70232` (Anders 30.08.2026, i økt):** målt fra logofilen
+  (`designsystem/team-norway/assets/logo/team-norway-golf-original.jpg`) — eneste verdi med
+  sporbar opprinnelse i selve merket. **Overstyrer N-D2s `#D50431`**, som ikke har oppgitt kilde
+  og ligger 2 % unna. Navy er `#012B5D` av samme grunn.
+  De to andre verdiene som sirkulerer i `akgolfsoftware/talenthq` er **plassholdere, ikke logoen**:
+  `#BA0C2F`/`#00205B` er Pantone 200/281 — det norske flaggets spesifikasjon, ordrett. `#EF2B2D`/
+  `#002868` er «Old Glory Red»/«Old Glory Blue» — det amerikanske flagget. Begge SVG-ene er
+  dessuten håndtegnede tilnærminger med feil strekproporsjoner.
+  **Gjenstår:** ekte vektorlogo fra NGF. Dagens PNG er beskåret fra en JPEG med
+  kompresjonsartefakter. Til da er den fasit.
+
 - **TEGN SKJERMEN FØR DU BYGGER DEN (Anders 30.08.2026, i økt):** hver skjerm som skal
   bygges eller bygges om, tegnes først som en Claude Design-canvas Anders ser og godkjenner.
   Ordrett: «Dette du nå har gjort skal vi gjøre for alle skjermer videre.» Utløst av

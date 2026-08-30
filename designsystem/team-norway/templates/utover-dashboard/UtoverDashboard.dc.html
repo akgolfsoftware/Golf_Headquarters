@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Utøverdashboard" description="Oversikt over én utøver: hero, nøkkeltall, pyramide, utviklingsområder og statustabell." -->
+<helmet><script src="./ds-base.js"></script></helmet>
+<div style="min-height:100vh;background:var(--surface-page);font-family:var(--font-body);padding:32px 40px 72px">
+<div style="max-width:1160px;margin:0 auto;display:flex;flex-direction:column;gap:32px">
+
+<div style="display:flex;justify-content:space-between;align-items:center">
+<img src="../../assets/logo/team-norway-golf.png" alt="Team Norway Golf" style="height:44px;width:auto;display:block">
+<div style="display:flex;gap:10px;align-items:center">
+<span style="font-family:var(--font-mono);font-size:11px;letter-spacing:.16em;color:var(--ink-400)">SESONG 2026</span>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="secondary" size="sm" hint-size="120px,34px">Eksporter IUP</x-import>
+</div>
+</div>
+
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Hero" eyebrow="Investeringsperioden · 16–19 år" title="{{ athleteName }}" description="{{ athleteSummary }}" meta="{{ heroMeta }}" height="{{ 300 }}" hint-size="100%,300px"></x-import>
+
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px">
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.MetricTile" label="Snittscore" value="70.8" delta="−1.4" delta-tone="up" caption="Siste 20 runder" hint-size="100%,150px"></x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.MetricTile" label="WAGR" value="412" delta="+38" delta-tone="up" caption="Mål: topp 250 OWGR" hint-size="100%,150px"></x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.MetricTile" label="Runder logget" value="46" unit="stk" caption="Up-game statistikk" hint-size="100%,150px"></x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.MetricTile" label="Fysiske tester" value="2" unit="/ 2" caption="Gjennomført i år" hint-size="100%,150px"></x-import>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start">
+
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-md);padding:28px;display:flex;flex-direction:column;gap:22px">
+<div style="display:flex;flex-direction:column;gap:8px">
+<span style="font-family:var(--font-mono);font-size:11px;letter-spacing:.18em;color:var(--ink-400)">UTVIKLINGSTRAPP</span>
+<h3 style="font-family:var(--font-display);font-size:21px;font-weight:700;letter-spacing:-.02em;margin:0">Hvor ligger fokus nå</h3>
+</div>
+<div style="display:flex;justify-content:center">
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.PyramidDiagram" active="{{ activeLevel }}" on-select="{{ setLevel }}" width="{{ 300 }}" hint-size="100%,220px"></x-import>
+</div>
+<div style="background:var(--ink-50);border-radius:var(--radius-md);padding:16px 18px;font-size:13.5px;color:var(--ink-700);line-height:1.55;text-wrap:pretty">{{ levelNote }}</div>
+</div>
+
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-md);padding:28px;display:flex;flex-direction:column;gap:22px">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px">
+<div style="display:flex;flex-direction:column;gap:8px">
+<span style="font-family:var(--font-mono);font-size:11px;letter-spacing:.18em;color:var(--ink-400)">STROKES GAINED</span>
+<h3 style="font-family:var(--font-display);font-size:21px;font-weight:700;letter-spacing:-.02em;margin:0">Mot referansenivå</h3>
+</div>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Badge" tone="navy" hint-size="90px,28px">Topp 250</x-import>
+</div>
+<div style="display:flex;flex-direction:column;gap:18px">
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.StatBar" label="Driving" value="{{ 72 }}" target="{{ 80 }}" tone="navy" hint-size="100%,44px"></x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.StatBar" label="Innspill" value="{{ 76 }}" target="{{ 80 }}" tone="navy" hint-size="100%,44px"></x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.StatBar" label="Nærspill" value="{{ 54 }}" target="{{ 80 }}" tone="amber" hint-size="100%,44px"></x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.StatBar" label="Putting" value="{{ 88 }}" target="{{ 80 }}" tone="green" hint-size="100%,44px"></x-import>
+</div>
+<div style="font-size:12px;color:var(--ink-400);display:flex;align-items:center;gap:8px"><span style="display:inline-block;width:2px;height:12px;background:var(--ink-900)"></span>Merket viser referansenivå for topp 250.</div>
+</div>
+
+</div>
+
+<div style="display:flex;flex-direction:column;gap:20px">
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.SectionHeader" index="04" eyebrow="Uttakskriterier" title="Status mot krav" description="Prosess og adferd veier like tungt som resultater. Alt dokumenteres i individuell utviklingsplan." hint-size="100%,120px"></x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.DataTable" columns="{{ tableColumns }}" rows="{{ tableRows }}" hint-size="100%,300px"></x-import>
+</div>
+
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:1500},&quot;athleteName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Øyvind Rojahn&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;athleteSummary&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Andre år i Team Norway Golf.&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = { level: 2 };
+  renderVals() {
+    const notes = [
+      'TURN — turnering: rutiner, forberedelse og evne til å levere når det gjelder.',
+      'SPILL — strategiske valg på banen, risikostyring og planen for runden.',
+      'SLAG — golfslaget som helhet: kontakt, ballflukt og treffsikkerhet under press.',
+      'TEK — teknikken bak slaget. Bygges systematisk, ikke sesongvis.',
+      'FYS — grunnmuren. Testes to ganger per år og registreres i Athlete monitoring.'
+    ];
+    return {
+      athleteName: this.props.athleteName ?? 'Øyvind Rojahn',
+      athleteSummary: this.props.athleteSummary ?? 'Andre år i Team Norway Golf. Fokus denne sesongen er nærspill innenfor 100 meter og konsistens i turneringsrunder.',
+      heroMeta: [
+        { label: 'Klubb', value: 'Oslo GK' },
+        { label: 'WAGR', value: '412' },
+        { label: 'Snitt', value: '70.8' },
+        { label: 'Periode', value: '16–19' }
+      ],
+      activeLevel: this.state.level,
+      setLevel: (i) => this.setState({ level: i }),
+      levelNote: notes[this.state.level],
+      tableColumns: [
+        { key: 'krav', label: 'Krav' },
+        { key: 'type', label: 'Kategori' },
+        { key: 'status', label: 'Status' },
+        { key: 'verdi', label: 'Verdi', align: 'right' },
+        { key: 'frist', label: 'Frist', align: 'right' }
+      ],
+      tableRows: [
+        { krav: 'Individuell utviklingsplan', type: 'Prosess', status: this.badge('green', 'Levert'), verdi: '—', frist: '01.02' },
+        { krav: '«Ren utøver»-programmet', type: 'Prosess', status: this.badge('green', 'Fullført'), verdi: '—', frist: '01.03' },
+        { krav: 'Turneringsrunder i Up-game', type: 'Prestasjon', status: this.badge('green', 'À jour'), verdi: '46', frist: 'Løpende' },
+        { krav: 'Fysiske tester', type: 'Prestasjon', status: this.badge('green', '2 av 2'), verdi: '2', frist: '15.11' },
+        { krav: 'Athlete monitoring', type: 'Prosess', status: this.badge('amber', 'Mangler 3 uker'), verdi: '82 %', frist: 'Løpende' },
+        { krav: 'Deltakelse NM', type: 'Resultat', status: this.badge('green', 'Påmeldt'), verdi: '—', frist: '20.06' },
+        { krav: 'Aktivitetsdager for NGF', type: 'Prosess', status: this.badge('red', 'Ikke satt'), verdi: '0 / 20 t', frist: '31.12' }
+      ]
+    };
+  }
+  badge(tone, text) {
+    const NS = window.ClawDesignTeamNorwayGolf_a03bf9 || {};
+    if (!NS.Badge) return text;
+    return React.createElement(NS.Badge, { tone, dot: true }, text);
+  }
+}
+</script>
+</body>
+</html>

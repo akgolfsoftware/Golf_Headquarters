@@ -200,7 +200,8 @@ PEI-motor `src/lib/domain/pei/`, Team Norway som kanonisk gruppe — alle i PR #
 |---|---|---|---|
 | 2 | N4 | `test_shots` + attestering. **RETTET 30.08.2026 — den gamle teksten stemte ikke.** Koden ER i main (`src/lib/domain/test-shot.ts`, `src/lib/actions/test-shot-actions.ts`, `scripts/n4-add-testshot-table.ts`, schema-endringen), og testene finnes (`src/lib/domain/test-shot.test.ts`). Grenen inneholdt ingenting main manglet. **Eneste reelle gjenstående: DDL-en er ikke kjørt mot prod** — `information_schema` har null tabeller som matcher `test_shot` (målt 30.08). Kjør `scripts/n4-add-testshot-table.ts` mot `DIRECT_URL` per gotcha-mønsteret for additive endringer. **Krever Anders' ja** (DB-endring) | N3 |
 | 3 | N6 | Kvitter Nordic League-pipelinen — den FINNES ALLEREDE i `ak-golf-pipelines` (`nordic-league-sync.yml`, cron 04:00 UTC) — ikke bygg på nytt, bare verifiser siste kjøring + rader | N1 |
-| 4 | N7 | Fasit: organisasjonsflaten. Tegn i Train-lock (mørk `#000000` + lys): skall + Oversikt for WANG og Team Norway. Arv per organisasjon: logo, skinne, handlingsfarge. Dekningsgrad-kortet («4 av 11 med profil») obligatorisk på TN | N-D1, N-D2 |
+| 4 | N7 | Fasit: organisasjonsflaten. **RETTET 30.08.2026 — Team Norway tegnes IKKE i Train-lock.** TN-skjermene følger Claw-brandingen (`designsystem/team-norway/`, Claude Design `a03bf94a`): navy `#012B5D` + rød `#D70232`, Schibsted Grotesk + IBM Plex Mono, lys flate, mørk kun som rolle. Se `.claude/rules/beslutninger.md` §TEAM NORWAY-SKJERMENE DESIGNES I CLAW-BRANDINGEN. **WANG-flatens stil er uavklart** — se beslutningskøen punkt 22. Dekningsgrad-kortet («4 av 11 med profil») obligatorisk på TN | N-D1, N-D2 |
+| 4 | N7b | **Tegn om `templates/tn-workdesk/TnBatch1.dc.html`** — TN-01 Hjem, TN-02 Gruppe/spillerliste og TN-03 Spiller-ark er tegnet i Train-lock mørk (`#000000`, Poppins, rail 232px, verifisert 30.08) og må gjøres om i Claw-stil. Bestillingen ligger klar i `designsystem/team-norway/prompt-batch-2.md` | N7 |
 | 4 | N8 | Fasit: trenerens føringsskjerm — det ekte skjermgapet: én trener fører mange spillere gjennom samme protokoll på testdag. Tre arketyper (port/tall/stige) + PEI-varianten | N7 |
 | 5 | N9 | Bygg organisasjonsskall + Oversikt per N7. Utvid `/innsyn` (eller ny rute per N-D1) | N7, N5 |
 | 6 | N10 | Bygg testdag og føring per N8. PEI fra N3, skriver til `test_shots` fra N4, attestering | N8, N4 |
@@ -210,8 +211,9 @@ PEI-motor `src/lib/domain/pei/`, Team Norway som kanonisk gruppe — alle i PR #
 | 10 | N14 | **Arkiver `akgolfsoftware/talenthq`** — kun etter at N1 har kjørt grønt mot prod i minst én uke OG N9–N13 er inne. Fjern Vercel-prosjektet, skriv høstingslogg | N1, N9–N13 |
 
 **Låste beslutninger (Anders):** N-D1 egen organisasjonsflate for WANG/TN, aldri under AgencyOS
-(«Det skal være egne skjermer. Ikke under AK Golf agency.») · N-D2 TN-rød (`#D50431`) kun på logo
-og skinne, aldri som statusfarge (kolliderer med `--tl-danger`) · N-D3 PEI = `resultat ÷ lengde`,
+(«Det skal være egne skjermer. Ikke under AK Golf agency.») · N-D2 TN-rød kun på logo
+og skinne, aldri som statusfarge (kolliderer med `--tl-danger`). **Verdien er RETTET 30.08.2026 fra
+`#D50431` til `#D70232`** (målt fra logofilen) — se `beslutninger.md` §TN-RØDT LÅST TIL `#D70232` · N-D3 PEI = `resultat ÷ lengde`,
 lavere er bedre (samme som eksisterende `test-scoring.ts`) · N-D4 Python-pipelines i eget repo
 `akgolfsoftware/ak-golf-pipelines`, aldri skrevet om til TypeScript · N-D5 ~23 av 70 gamle
 talenthq-skjermer skal med (Team Norway ×7, Testføring ×6, Analyse ×4, DataGolf ×3, WANG ×3 —
@@ -407,7 +409,7 @@ i 2027. Forretningsmodell: gratis pilot 2026/27 → **spillerlisenser** fra 2027
 | 17.5b | **Klubbdimensjonen** — «hvilke klubber har flest spillere per klasse» | **Blokkert av 16.6.** `mv_club_aggregates` har i dag 46 rader med én unik verdi, «Øst» — det er region, ikke klubb. Klubbnavnet finnes i GolfBox-svaret og kastes i scraperen |
 | 17.5c | **Regionsdimensjonen** | **Kan ikke bygges som nasjonalt bilde.** Alle seks regioner i datagrunnlaget er kun OLYO — et regionkart ville framstilt én kilde som hele Norge. Står allerede på «Ikke bygg»-lista i STEG 16 |
 | 17.5d | **Lenker per turnering** | **Blokkert: `dashboard.tournament_links` er tom (0 rader, målt 30.08).** Det er denne MD-fila fra Anders skal fylle — se beslutningskøen punkt 20. Merk at 17.5a IKKE venter på den; lenkene er berikelse, ikke grunnlag |
-| 17.6 | **TN-branding** | Anders lager komplett brandingsystem selv. **TN-bølgen tegner ingenting før det foreligger.** TN-rød `#D50431` kun på logo og skinne, aldri som statusfarge (N-D2) |
+| 17.6 | **TN-branding — LEVERT 30.08.2026** | Brandingsystemet foreligger: Claude Design «Claw Design — Team Norway Golf» (`a03bf94a`), speilet i `designsystem/team-norway/` (112 filer, 10 ferdige skjermmaler). **Sperren «tegner ingenting før det foreligger» er dermed løftet.** TN-rød er `#D70232`, ikke `#D50431` — kun på logo og skinne, aldri status (status bruker `#C2352B`). Utestående: ekte vektorlogo fra NGF, se beslutningskøen punkt 23 |
 
 ---
 
@@ -434,3 +436,5 @@ i 2027. Forretningsmodell: gratis pilot 2026/27 → **spillerlisenser** fra 2027
 19. ~~Nivådefinisjonen i opprykksanalysen~~ **LUKKET 30.08.2026 — krever ingen beslutning fra Anders.** Målt i basen: effekten er ikke robust (skifter fortegn med alder, 10–96 spillere per trinn), og valget mellom de to definisjonene endrer den ikke. Opprykksanalysen er flyttet til «Ikke bygg» i STEG 16. Vil Anders ha den likevel, må den bygges med kontrollgruppe og aldersjustering — og oppgis med usikkerhet, ikke som ett tall.
 20. **MD-fila med turneringer og lenker (STEG 17.5d):** blokkerer nå KUN lenkene, ikke hele landskapsanalysen. 17.5a kan bygges i dag. `dashboard.tournament_links` er tom (0 rader) — det er den MD-fila skal fylle. **Trenger fortsatt Anders.**
 21. **Klubbdimensjonen (16.6 → 17.5b):** krever kun én pipeline-endring, ingen beslutning — men prioriteringen er Anders'. Uten den finnes ikke «hvilke klubber har flest spillere», som var et av de fire spørsmålene i TN-Workdesk punkt 7.
+22. **WANG-flatens stil (STEG 11 N7):** Team Norway er avgjort (Claw, 30.08). WANG er ikke. Tre muligheter: WANG beholder sitt eget system (`src/styles/wang-tokens.css`, `.wang-tp` — enpalett lys, 10 skjermer i produksjon), WANG porter til Train-lock som N7 opprinnelig sa, eller WANG får samme behandling som TN med et eget merkevaresystem. N7 kan ikke ferdigstilles for WANG før dette er svart. **Trenger Anders.**
+23. **Ekte vektorlogo fra NGF (STEG 17.6):** dagens TN-logo er en PNG beskåret fra en JPEG med kompresjonsartefakter. `#D70232` er målt fra den, så en ekte vektorfil ville gjort fargen endelig og skalerbar. NGFs kontaktpunkt står under «Grafisk utforming / visuell profil» på golfforbundet.no. **Trenger Anders** — det er hans relasjon til forbundet.

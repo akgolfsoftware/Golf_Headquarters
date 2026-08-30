@@ -1,0 +1,32 @@
+<!-- @dsCard group="05 Komponenter" viewport="700x330" name="Data — MetricTile, StatBar, ScaleRating, DataTable" subtitle="Alle måltall i mono, rød markerer «deg»" -->
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin></script>
+<script src="../../_ds_bundle.js"></script>
+<div id="root"></div>
+<script>
+const {MetricTile,StatBar,ScaleRating,DataTable}=window.ClawDesignTeamNorwayGolf_a03bf9;
+const e=React.createElement;
+function Demo(){
+const [r,setR]=React.useState(4);
+return e('div',{style:{padding:'24px',display:'flex',flexDirection:'column',gap:'18px',background:'var(--surface-page)',minHeight:'330px'}},
+e('div',{style:{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'14px'}},
+e(MetricTile,{label:'Snittscore',value:'70.8',delta:'−1.4',deltaTone:'up',caption:'Siste 20 runder'}),
+e(MetricTile,{label:'WAGR',value:'412',delta:'+38',deltaTone:'up'}),
+e(MetricTile,{label:'Runder',value:'46',unit:'stk',caption:'Registrert i Up-game'})
+),
+e('div',{style:{display:'grid',gridTemplateColumns:'1.1fr 1fr',gap:'26px',alignItems:'start'}},
+e('div',{style:{display:'flex',flexDirection:'column',gap:'14px'}},
+e(StatBar,{label:'Driving (SG)',value:72,target:80,tone:'navy'}),
+e(StatBar,{label:'Nærspill (SG)',value:54,target:80,tone:'amber'}),
+e(StatBar,{label:'Putting (SG)',value:88,target:80,tone:'green'})
+),
+e('div',{style:{display:'flex',flexDirection:'column',gap:'10px'}},
+e('span',{style:{fontFamily:'var(--font-mono)',fontSize:'10.5px',letterSpacing:'.16em',color:'var(--ink-400)'}},'GJENNOMFØRINGSEVNE'),
+e(ScaleRating,{value:r,onChange:setR,labels:['Ikke etablert','Automatisert']})
+)
+)
+);
+}
+ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(Demo));
+</script>
