@@ -18,7 +18,8 @@ og fem parallelle kodekartlegginger — ikke antatt), utvidet 30.08 med gjenstå
 `docs/arkiv/paper-port/PORTPLAN.md` (supersedert 25.08 — arkivreferanse) ·
 `docs/baneguide-produktdokument-2026-08-02.md` (produktspec for SG-appen/baneguide — referanse,
 se STEG 13) · `docs/jarvis-shortcut.md` (driftshåndbok for Jarvis-snarveien) ·
-`docs/platform/stripe-cutover-sjekkliste.md` (betaling).
+`docs/platform/stripe-cutover-sjekkliste.md` (betaling) ·
+`docs/beslutningsgrunnlag/` (måletall og fullt underlag bak beslutningene i `.claude/rules/beslutninger.md`).
 
 ---
 
@@ -303,6 +304,7 @@ røres ikke.
 ## STEG 15 — Én inngang per funksjon (konsolideringen, beslutning 6.9)
 
 **Kilde:** `.claude/rules/beslutninger.md` §GRILLINGEN RUNDE 6, punkt 6.9 (Anders 30.08.2026).
+Fullt underlag: `docs/beslutningsgrunnlag/grillingen-runde6-2026-08-30.md`.
 **Målt tilstand:** `docs/arkitektur-kartlegging-2026-08-30.md` — 245 ekte skjermer, 36 uten vei
 inn, 107 adresser allerede gjort om til veivisere.
 
