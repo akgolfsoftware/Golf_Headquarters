@@ -5,6 +5,7 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { SokV2, type SokServerResultater } from "@/components/marketing/v2/MarkedStatsSokV2";
+import { offentligSpillerFilter } from "@/lib/stats/offentlig-spiller";
 
 export const revalidate = 0; // Aldri caches — søk er alltid live
 
@@ -26,7 +27,7 @@ async function serverSok(q: string): Promise<SokServerResultater | null> {
   const [norskeSpillere, pgaSpillere, turneringer] = await Promise.all([
     prisma.publicPlayer
       .findMany({
-        where: { country: "NO", isActive: true, name: { contains: q, mode: "insensitive" } },
+        where: { country: "NO", isActive: true, ...offentligSpillerFilter(), name: { contains: q, mode: "insensitive" } },
         take: 10,
         select: { slug: true, name: true, tier: true, bio: true },
       })

@@ -14,6 +14,7 @@ import "@/app/(marketing)/(mlegacy)/stats/stats.css";
 
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { kanVisesOffentlig } from "@/lib/stats/offentlig-spiller";
 import Link from "next/link";
 import { ArrowRight, Mail, ChevronLeft } from "lucide-react";
 import { prisma } from "@/lib/prisma";
@@ -49,6 +50,7 @@ async function hentSpiller(slug: string) {
       slug: true,
       name: true,
       birthYear: true,
+      dataGolfId: true,
       tier: true,
       bio: true,
       photoUrl: true,
@@ -288,9 +290,11 @@ export async function generateMetadata({
   const { slug } = await params;
   const spiller = await prisma.publicPlayer.findUnique({
     where: { slug },
-    select: { name: true, birthYear: true, bio: true, tier: true },
+    select: { name: true, birthYear: true, dataGolfId: true, bio: true, tier: true },
   });
-  if (!spiller) return { title: "Spiller ikke funnet" };
+  // Samme gate som siden selv: uten denne lekker navn og fødselsår i <title>/OG
+  // for en profil som svarer 404.
+  if (!spiller || !kanVisesOffentlig(spiller)) return { title: "Spiller ikke funnet" };
 
   const tittel = spiller.birthYear
     ? `${spiller.name} (f. ${spiller.birthYear}): AK Golf Stats`
@@ -329,7 +333,7 @@ export default async function SpillerProfilPage({
   const activeTour  = typeof sp.tour === "string" ? sp.tour : "alle";
 
   const spiller = await hentSpiller(slug);
-  if (!spiller) notFound();
+  if (!spiller || !kanVisesOffentlig(spiller)) notFound();
 
   const spillerData = spiller as NonNullable<typeof spiller>;
   const klubb       = parseKlubb(spillerData.bio);

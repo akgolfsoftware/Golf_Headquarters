@@ -81,7 +81,9 @@ export interface RankingSlide extends SlideBase {
   totalNasjon: number;
   rankAldersgruppe: number;
   totalAldersgruppe: number;
-  fodselsAar: number;
+  /** Ekte fødselsår fra basen. `null` når det mangler — da utelates årskull-boksen
+   *  helt, aldri et gjettet år (TruthLayer, Anders 30.08.2026). */
+  fodselsAar: number | null;
 }
 
 export interface SammenligningSlide extends SlideBase {
@@ -436,14 +438,16 @@ function SlideRanking({ slide, accentColor, mutedColor, isActive }: { slide: Ran
       <div style={{ fontFamily: "var(--font-mono)", fontSize: 18, color: mutedColor, marginTop: 12 }}>
         av {slide.totalNasjon.toLocaleString("nb-NO")} norske spillere
       </div>
-      <div style={{ marginTop: 32, background: T.farge.hvitA12, borderRadius: 12, padding: "16px 24px", display: "inline-block" }}>
-        <div style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: mutedColor, marginBottom: 8 }}>
-          {slide.fodselsAar}-ÅRSKULLET
+      {slide.fodselsAar !== null && (
+        <div style={{ marginTop: 32, background: T.farge.hvitA12, borderRadius: 12, padding: "16px 24px", display: "inline-block" }}>
+          <div style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: mutedColor, marginBottom: 8 }}>
+            {slide.fodselsAar}-ÅRSKULLET
+          </div>
+          <div style={{ fontFamily: "var(--font-mono)", fontSize: 28, fontWeight: 500, color: accentColor }}>
+            #{slide.rankAldersgruppe} av {slide.totalAldersgruppe}
+          </div>
         </div>
-        <div style={{ fontFamily: "var(--font-mono)", fontSize: 28, fontWeight: 500, color: accentColor }}>
-          #{slide.rankAldersgruppe} av {slide.totalAldersgruppe}
-        </div>
-      </div>
+      )}
     </div>
   );
 }
