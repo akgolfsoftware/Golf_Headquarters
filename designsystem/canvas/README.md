@@ -43,3 +43,4 @@ jobber ofte fra mobil, og en filsti når ham ikke.
 | Mappe | Skjerm | Plan | Canvas |
 |---|---|---|---|
 | `ko/` | Kø — én adresse, fem faner | MASTERPLAN 15.1 | https://claude.ai/code/artifact/4df52812-fa4f-4654-8564-c46353fe430b |
+| `team-norway/` | Team Norway Workdesk — 20 skjermer | MASTERPLAN STEG 17 | Ikke tegnet ennå — `BRIEF.md` + `PROMPT.md` er klare |
