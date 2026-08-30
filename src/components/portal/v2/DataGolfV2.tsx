@@ -471,6 +471,20 @@ export function DataGolfV2({ data }: DataGolfProps) {
           ? ` ${data.pgaPutt.length} avstander lastet.`
           : " Tabellen er tom — vi gjetter ikke putt-prosent."}
       </p>
+
+      {/* Lisenskrav fra DataGolf — attribusjon på spillerens DataGolf-kort
+          (Anders 30.08.2026, datakartleggingens svar 4). */}
+      <p style={{ margin: "10px 0 0", fontSize: 12, color: TL.mute }}>
+        Powered by{" "}
+        <a
+          href="https://datagolf.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: "inherit", textDecoration: "underline" }}
+        >
+          Data Golf
+        </a>
+      </p>
     </div>
   );
 }

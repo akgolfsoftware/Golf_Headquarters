@@ -255,6 +255,43 @@ export function StatsSubnav({ mobile, aktiv }: { mobile: boolean; aktiv?: StatsF
   );
 }
 
+/**
+ * DataGolfAttribusjon — lisenskrav fra DataGolf: attribusjon skal stå på alle
+ * offentlige flater som viser deres data (Anders 30.08.2026, datakartleggingens
+ * svar 4 / grillingen 9.8). Ligger i StatsRamme, ikke på hver enkelt side, slik
+ * at alle ~45 /stats-rutene dekkes ett sted og ingen ny rute kan glemme den.
+ */
+export function DataGolfAttribusjon() {
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        padding: "20px 16px 8px",
+      }}
+    >
+      <span
+        style={{
+          fontFamily: T.mono,
+          fontSize: 11,
+          letterSpacing: "0.06em",
+          color: T.mut,
+        }}
+      >
+        Powered by{" "}
+        <a
+          href="https://datagolf.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: "inherit", textDecoration: "underline" }}
+        >
+          Data Golf
+        </a>
+      </span>
+    </div>
+  );
+}
+
 export function StatsRamme({
   mobile,
   aktiv,
@@ -274,6 +311,7 @@ export function StatsRamme({
     >
       <StatsSubnav mobile={mobile} aktiv={aktiv} />
       {children}
+      <DataGolfAttribusjon />
     </MRamme>
   );
 }
