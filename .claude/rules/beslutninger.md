@@ -28,6 +28,36 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
 
 ## Beslutningene (august 2026)
 
+- **TEGN SKJERMEN FØR DU BYGGER DEN (Anders 30.08.2026, i økt):** hver skjerm som skal
+  bygges eller bygges om, tegnes først som en Claude Design-canvas Anders ser og godkjenner.
+  Ordrett: «Dette du nå har gjort skal vi gjøre for alle skjermer videre.» Utløst av
+  Kø-canvasen (MASTERPLAN 15.1) — den ble tegnet fordi det ikke fantes noen Train-lock-fasit
+  for en samlet Kø-side, og Anders valgte tegning framfor at det ble bygget på gjetning.
+
+  **Slik gjøres det, hver gang:**
+  1. **Verdiene hentes fra koden, ikke fra hukommelsen** — `src/styles/train-lock-tokens.css`
+     og komponenten som allerede finnes for nærmeste skjerm. Aldri en farge eller et mål
+     «omtrent».
+  2. **Fire visninger som minimum:** Mac 1440 og mobil 390, lys og mørk. Beslutningen
+     26.08 («alle skjermer skal ha lys og mørk») gjør begge obligatoriske, og 6.1 gjør
+     mobil til den viktigste — Anders skanner stående på treningsfeltet.
+  3. **Tom tilstand tegnes alltid.** Det er den han møter når arbeidet er unnagjort.
+  4. **Ekte norsk skjermtekst.** Aldri lorem ipsum. Tall som ikke er målt i basen,
+     sies eksplisitt å være eksempler.
+  5. **Arbeidsfilene bor i repoet**, `designsystem/canvas/<skjerm>/` — ikke i en
+     scratchpad. Uten det dør tegningen ved neste `/clear` og neste økt starter på nytt.
+  6. **URL-en sendes i samtalen.** Anders jobber ofte fra mobil; en filsti når ham ikke.
+
+  **Forholdet til de to andre design-reglene:** finnes en tegnet Train-lock-fasit for
+  skjermen, er den fortsatt fasit (CLAUDE.md invariant 2) — canvasen gjenskaper den i den
+  sammenhengen skjermen faktisk skal stå i. Skjermbilde-gaten (04.08) gjelder uendret, men
+  ETTER bygging: canvas før, skjermbilde av den kjørende appen etter. De erstatter ikke
+  hverandre.
+
+  **Konsekvens for planen:** STEG 2.6 var blokkert av «Anders + designer» fordi 38 ruter
+  manglet design. Tegningen skjer nå i økten, så den blokkeringen faller bort for skjermer
+  uten fasit. Se MASTERPLAN STEG 2.6 og 2.11.
+
 - **DATAKARTLEGGING — fire svar + bindende dataregler (Anders 2026-08-30, i økt):**
   fullt grunnlag med alle måletall: `docs/beslutningsgrunnlag/datakartlegging-2026-08-30.md`.
   **Arbeidet er ført inn i `docs/MASTERPLAN-GJENSTAAENDE.md` STEG 16 — bygg derfra.**
@@ -445,7 +475,9 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
   førsteinntrykket på iPhone) + desktop 1280px, (3) lys OG mørk modus (kjent felle:
   primary=accent-kollisjonen), (4) fasitens tilsvarende skjerm ved siden av. CI måler typer og
   bygg — ikke layout. Dette tetter hullet som lot PR1–PR4 passere som «ferdige».
-  Ferdig-definisjonen per skjerm er skjermbilde-gaten i `CLAUDE.md` §Skjermarbeid.
+  Ferdig-definisjonen per skjerm er denne blokken selv (§Skjermarbeid i `CLAUDE.md` finnes ikke —
+  død referanse rettet 30.08.2026). Fra 30.08 gjelder i tillegg §TEGN SKJERMEN FØR DU BYGGER DEN:
+  canvas godkjent FØR koding, skjermbilde-gaten ETTER.
 - **Tester planlegges i Workbench, resultat synces til spillerens talentprofil
   (Anders 2026-08-04, oppdatert 28.08):** TalentHQ som eget produkt er avviklet
   (se beslutningen øverst). Når en test logges (`/portal/tren/tester/[testId]/gjennomfor`),

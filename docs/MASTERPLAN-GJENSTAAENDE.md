@@ -64,11 +64,12 @@ Status 17.08: **40/88 rader signert · 44 bygget-uventer-signering · 4 ubygget 
 | 2.3 | **PP-B-resten:** montér `Composer` i `V2Shell` (0 kallsteder i dag — alle desktop-flater skal arve) · fullfør clay-sweepen (44 filer med `enTing`) · B4 chrome-rest-verifisering | Ingen |
 | 2.4 | **Fem frie sesjoner:** S3 (#549 åpen) · S9 booking-ny · S17 turneringer · S22 AgenticOS-hub · S23 agent-detalj — 25 ruter uten nye avklaringer | Ingen |
 | 2.5 | **PORTPLAN §A1: 10 beslutninger fra Anders** (talent-hub vs redirect, godkjenninger, booking-steg, årsplan-fane, coach-tråd, Stripe Elements, help, utstyr-URL, digest-URL, PP-A-formalitet) — låser opp B2/B3-sesjonene | **Anders** |
-| 2.6 | **W5-designbestilling:** 38 marketing/auth/forelder-ruter stryker én-linje-testen fordi DESIGN mangler (bl.a. auth-skallet som blokkerer alle 13 auth-ruter) — bestill fra Claude Design | Anders + designer |
+| 2.6 | **W5-designbestilling: DELVIS UBLOKKERT 30.08.2026.** 38 marketing/auth/forelder-ruter stryker én-linje-testen fordi DESIGN mangler (bl.a. auth-skallet som blokkerer alle 13 auth-ruter). Etter beslutningen «TEGN SKJERMEN FØR DU BYGGER DEN» (30.08) tegnes disse i økten som Claude Design-canvas etter oppskriften i 2.11 — ingen ekstern designer trengs. Anders godkjenner tegningen, ikke bestiller den. Gjenstår hans ja per skjerm | Anders (godkjenning per canvas) |
 | 2.7 | **De 4 ubygde:** D2 booking→faktura (ublokkert siden 15.08 — kan bygges nå) · D4 test→drill (venter ~20 testers område-backfill — forslaget lå i `testomrader-forslag-2026-08-15.md`, slettet 30.08, se git-historikk for detaljene) · D1 Workbench F4 (venter DB-ja) · wang-logg-inn (venter #490 + OTP-beslutning) | Delvis Anders |
 | 2.8 | **W7-stats** (~45 `/stats/*`-ruter): egen bølge, blokkert av PR-F-plasseringen (se steg 4.4) | 2.5/PR-F |
 | 2.9 | **Vaktene F1–F8:** kun F4 (bredde-gate) er levert; F2 (clay-gate i CI) hindrer at 2.3-sweepen eroderer | Etter 2.3 |
 | 2.10 | **Jarvis-skjermene 5–12** (8 stk., fasit klar) — eget spor, se STEG 12 (fase J1) | Ingen |
+| 2.11 | **Canvas-først som fast arbeidsmåte** (`.claude/rules/beslutninger.md` §TEGN SKJERMEN FØR DU BYGGER DEN, Anders 30.08.2026). Hver skjermrad i denne planen får et tegne-steg FØR kode: canvas med Mac 1440 + mobil 390, lys + mørk, tom tilstand, ekte norsk tekst, verdier lest fra `src/styles/train-lock-tokens.css`. Arbeidsfilene bor i `designsystem/canvas/<skjerm>/`, oppskrift i `designsystem/canvas/README.md`. **Ferdig når** hver skjermrad som starter, har en godkjent canvas-URL notert. Første canvas levert: Kø (15.1). Skjermbilde-gaten (04.08) gjelder uendret ETTER bygging | Ingen |
 
 ## STEG 3 — Funksjoner og datakobling (punkt 3 i bestillingen)
 
