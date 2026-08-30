@@ -300,6 +300,43 @@ røres ikke.
 
 ---
 
+## STEG 15 — Én inngang per funksjon (konsolideringen, beslutning 6.9)
+
+**Kilde:** `.claude/rules/beslutninger.md` §GRILLINGEN RUNDE 6, punkt 6.9 (Anders 30.08.2026).
+**Målt tilstand:** `docs/arkitektur-kartlegging-2026-08-30.md` — 245 ekte skjermer, 36 uten vei
+inn, 107 adresser allerede gjort om til veivisere.
+
+**Regelen:** hver funksjon har nøyaktig én adresse. Det som i dag er egne sider blir faner
+eller paneler inne i den ene siden. **Ingen funksjonalitet fjernes; alle gamle adresser blir
+redirects.** Anders avviste kutt som mål — målet er én inngang, ikke færre funksjoner.
+
+**Rekkefølge:** 15.1 og 15.2 først (de er de to Anders faktisk møter hver dag). Resten kan tas
+i vilkårlig rekkefølge, én funksjon per økt, én PR per funksjon. Hver PR: redirects på plass +
+`npm run verify` grønt + skjermbilde-gate (mobil 390px + desktop 1280px, lys og mørk).
+
+| # | Funksjon (én adresse) | Slås sammen fra | Merknad |
+|---|---|---|---|
+| 15.1 | **Kø** | `admin/godkjenninger`, `admin/agenticos/godkjenn`, `admin/agenticos/ko`, `admin/tester/foreslatte`, `admin/tournaments/dubletter`, `admin/queue` | Kø = alt som krever Anders i dag: e-post, SMS, forespørsler, tilbakemeldinger, oppfølginger, godkjenninger (6.2). `admin/queue` (spiller-signaler) er IKKE Kø — flyttes til Stall (6.6) |
+| 15.2 | **Oppgaver** | `admin/handlingssenter`, `admin/workspace`, `admin/workspace/prosjekter`, `admin/workspace/notion` | Prosjektstyring + gjentakende rutiner (daglig/ukentlig/månedlig). Hver rutine merkes «kan automatiseres» / «må gjøres fysisk» (6.6). Henger sammen med 14.7 (`/kommando` kan ikke slettes før dette er databakket) |
+| 15.3 | **Oppsett** | `admin/settings` + `/api`, `/calendar`, `/periode-navn`, `/security`, `/tilgang`, `admin/klubb/innstillinger`, `admin/integrasjoner` | Faner i én side |
+| 15.4 | **Kalender** | `admin/kalender`, `admin/kalender/lag`, `admin/kalender/hendelse/ny`, `admin/agencyos/uka`, `admin/stall/dag` | Sjekk mot 14.6 (kalender-motor-konsolideringen) før arbeid — de kan gjøre hverandre moot |
+| 15.5 | **Jarvis** | `admin/agenticos`, `/projects`, `/runtimes`, `/skills` | Se også STEG 8 og 12 |
+| 15.6 | **Turnering** | `admin/tournaments`, `/ny`, `/dubletter`, `admin/turnering-kart` | `/dubletter` går også inn i Kø (15.1) som sak-type — selve verktøyet bor her |
+| 15.7 | **Kommunikasjon** | `admin/innboks`, `admin/innboks-epost`, `admin/email-templates`, `/meg` | Se 14.7 om `meg/dispatch` + `meg/morgenbrief` |
+| 15.8 | **Analyse** | `admin/analyse`, `admin/analyse/stall`, `admin/analysere/compliance` | Innhold styres av beslutning «INNSIKT PER SPILLER — de fire spørsmålene» (30.08) |
+| 15.9 | **Plan** | `admin/planlegge`, `admin/plan-templates` (+`/ny`), `admin/teknisk-plan` | «Planlegge er ett trykkpunkt til Workbench» (beslutning 21.07) gjelder fortsatt |
+| 15.10 | **Hjem** | `admin/agencyos` (Konsoll), `admin/brief` (Daglig brief) | Kø øverst, dagens plan under (6.5). **Mobilflate først** — Anders skanner den stående på treningsfeltet mellom økter (6.1) |
+| 15.11 | **Stall-lista slankes** | — | Raden viser: navn, neste økt, siste aktivitet, én varsel-prikk. SG-form, plan-etterlevelse, hcp, pakke og skyldig beløp flyttes inn i spillerkortet (6.5). Prikk: fylt = trenger deg, åpen = følg med, ingen = på planen |
+| 15.12 | **`/admin/talent/*` ut av AgencyOS** | — | Talent-flatene skal bo under `/innsyn` (beslutning 26.08). Ikke en sammenslåing — en flytting |
+| 15.13 | **De 36 skjermene uten vei inn** | — | Etter 15.1–15.12: gå gjennom lista i `docs/arkitektur-kartlegging-2026-08-30.md` og gi hver enten en inngang eller en redirect. Ingen skjerm skal stå igjen uten vei inn |
+
+**Ikke i denne konsolideringen:** PlayerHQ. Beslutning 6.9 gjelder AgencyOS. Kartleggingen
+30.08 målte at «Analyse» i spillerappen har 17 innganger og «Meg» 34 undersider — det er samme
+sykdom, men **krever egen beslutning fra Anders** før noe slås sammen. Legges i beslutningskøen
+under.
+
+---
+
 ## Samlet beslutningskø til Anders (alt på ett sted)
 
 1. **#490-merge (PII — haster)** + team-wang-tilgangen varig åpen eller sperret igjen.
@@ -319,3 +356,4 @@ røres ikke.
 15. AK-formel v3-strukturen (STEG 14.3): fortsatt ønsket som fast datamodell etter 18.08-opplåsingen, eller skrotes til fordel for frie merkelapper?
 16. Workbench/kalender-konsolideringsforslaget (STEG 14.6): omfang og rekkefølge, eller avvist?
 17. AK Golf Intelligence-konsolideringen (STEG 14.4): fortsatt ønsket retning, gitt at pipelinene nå ligger i eget repo?
+18. **PlayerHQ-konsolideringen (STEG 15, siste avsnitt):** beslutning 6.9 gjelder AgencyOS. Skal samme regel — én inngang per funksjon — også gjelde spillerappen? Målt 30.08: «Analyse» har 17 innganger, «Meg» har 34 undersider.
