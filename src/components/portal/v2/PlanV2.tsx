@@ -220,7 +220,11 @@ export function PlanV2({
             padding: "24px 20px",
           }}
         >
-          <div style={{ fontSize: 15, fontWeight: 400, color: TL.mute }}>Ingen økter denne uken.</div>
+          {/* lineHeight låst: fasiten treffer SF Pros normal (~1.19), Poppins
+              har ~1.5 og gjorde kortet 71px mot PH-08s 66px. */}
+          <div style={{ fontSize: 15, fontWeight: 400, lineHeight: 1.2, color: TL.mute }}>
+            Ingen økter denne uken.
+          </div>
         </div>
       ) : (
         dagerMedInnhold.map((d, di) => {
