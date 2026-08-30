@@ -217,7 +217,7 @@ export function MarkedStatsHubV2({ norskeIAksjon, kommendeTurneringer, sisteSync
             </p>
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 22 }}>
               <MCta icon="arrow-right" href="/portal">
-                Prøv gratis i 30 dager
+                Lag gratis konto
               </MCta>
               <MCta ghost href="/priser">
                 Se priser

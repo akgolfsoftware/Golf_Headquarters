@@ -1,10 +1,13 @@
 "use client";
 import { TL } from "@/lib/v2/train-lock";
 /**
- * AgencyOS Compliance — v2 (retning C «Presis»). Plan møter virkelighet på
- * tvers av stallen, drevet av EKTE ComplianceData fra loadComplianceData
- * (Prisma). Bygget utelukkende av v2-komponentbiblioteket (src/components/v2)
- * — ingen ad-hoc UI, ingen rå hex (kun T.*).
+ * AgencyOS Compliance — Train-lock EC-02 (PX-6, 29.08.2026).
+ *
+ * Fasit: designsystem/train-lock/EC-02 AS Compliance.dc.html (EC-02a
+ * iPhone / EC-02b iPad / EC-02c Mac / EC-02d tom lys / EC-02e Mac lys).
+ * Plan møter virkelighet på tvers av stallen, drevet av EKTE ComplianceData
+ * fra loadComplianceData (Prisma). Bygget utelukkende av `TL.*`
+ * (train-lock.ts) — ingen ad-hoc UI, ingen rå hex.
  *
  * Tre nivåer i samme språk (bevart fra v10-flaten):
  *   1) spillerpanel  — plan-fullføring for ÉN spiller (ring + uke-strip + akse-barometer + diagnose)

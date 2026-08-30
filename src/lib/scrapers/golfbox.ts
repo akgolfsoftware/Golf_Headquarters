@@ -413,18 +413,21 @@ export function parseCompetitionClasses(raw: unknown): GolfBoxCompetitionClass[]
 }
 
 /**
- * Brutto-klasser vi skal hente: individuelle spillerklasser som ikke er netto.
- * AK-regel: alltid brutto — netto-klasser («… Netto», «… N») hoppes over.
+ * Individuelle spillerklasser å hente (ekskluderer kun lagklasser).
+ *
+ * VIKTIG: en GolfBox-klasse med «Netto» i navnet er ofte en EGEN divisjon med
+ * eget, ikke-overlappende feltspillere (f.eks. Østlandstour: «Damer brutto» og
+ * «Damer netto» er to ulike påmeldingslister, ikke samme spillere vist to
+ * ganger) — ikke en duplikat-visning av brutto-klassen. Spillere som KUN er
+ * meldt på i en nettoklasse må derfor også hentes, ellers forsvinner de helt
+ * fra resultatene. AK-regelen «alltid brutto, aldri netto» håndheves i stedet
+ * på score-nivå av extractRoundScore (bruker kun Actual*, aldri Net*) — ikke
+ * ved å utelate hele klassen her.
  */
 export function velgBruttoKlasser(
   classes: GolfBoxCompetitionClass[],
 ): GolfBoxCompetitionClass[] {
-  return classes.filter(
-    (c) =>
-      (c.classType == null || c.classType === "PlayerClass") &&
-      !erNettoKlasse(c.name) &&
-      !erNettoKlasse(c.shortName),
-  );
+  return classes.filter((c) => c.classType == null || c.classType === "PlayerClass");
 }
 
 type LeaderboardAccumulator = {
@@ -441,11 +444,7 @@ function collectClasses(
   acc: LeaderboardAccumulator,
 ): void {
   if (!classes) return;
-  for (const [classKey, cls] of Object.entries(classes)) {
-    const klasseNavn = golfboxKlasseNavn(cls, classKey);
-    // AK-regel: ekskluder nett-klasser (navn som ender på N / Net / Netto).
-    if (erNettoKlasse(klasseNavn)) continue;
-
+  for (const [, cls] of Object.entries(classes)) {
     const lb = (cls as { Leaderboard?: RawLeaderboard } | null)?.Leaderboard;
     if (!lb) continue;
     if (Array.isArray(lb.RoundNames) && lb.RoundNames.length > acc.roundNames.length)

@@ -1,27 +1,63 @@
 "use client";
 
 /**
- * AO-02 Runtimes + AO-10 Ollama. Status er ærlig: bare Claude er koblet i appen.
- * Hvit prikk = på. Ok-grønn brukes ikke.
+ * Fasit: designsystem/train-lock/AO-02 Runtimes og Ollama.dc.html
+ * (AO-02 Runtimes + AO-10 Ollama, samme fil). Status er ærlig: bare Claude
+ * er koblet i appen. Hvit prikk = på. Ok-grønn brukes ikke.
+ *
+ * Fasit: designsystem/train-lock/GAP-2 Tilstander drift.dc.html (GAP-2a/b) —
+ * «ingen motor svarer»-driften er caps danger + prikk på tittelen, ALDRI en
+ * fylt feil-flate. Køen (kjøringer i dag) beholdes uendret under banneret,
+ * så ingenting mistes når motorene er nede. Begge henvisningene er beholdt
+ * ved sammenslåingen 30.08: skjermen bygger på to fasitfiler.
  */
 
 import { TL } from "@/lib/v2/train-lock";
+import { Icon } from "@/components/v2/icon";
 import { AGENTICOS_RUNTIMES } from "@/lib/agencyos/agenticos-ia";
 import { AoCaps, AoKort, AoPrikk, AoToggle, AoTittel } from "./tl-agenticos";
 
 export function AdminAgenticosRuntimes({ kjoringerIdag }: { kjoringerIdag: number }) {
   const paa = AGENTICOS_RUNTIMES.filter((r) => r.koblet).length;
   const av = AGENTICOS_RUNTIMES.length - paa;
+  const ingenMotorSvarer = paa === 0;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
       <div data-screen-label="AO-02 Runtimes" style={{ display: "flex", flexDirection: "column", gap: 14 }}>
         <div style={{ display: "flex", alignItems: "baseline", gap: 10, flexWrap: "wrap" }}>
           <AoTittel size={20}>Runtimes</AoTittel>
-          <span style={{ fontSize: 12, color: TL.mute }}>
-            {paa} på · {av} av
-          </span>
+          {ingenMotorSvarer ? (
+            <span
+              style={{
+                fontSize: 11,
+                fontWeight: 600,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                color: TL.danger,
+              }}
+            >
+              Ingen motor svarer
+            </span>
+          ) : (
+            <span style={{ fontSize: 12, color: TL.mute }}>
+              {paa} på · {av} av
+            </span>
+          )}
         </div>
+        {ingenMotorSvarer && (
+          <AoKort pad="20px 22px" radius={20} style={{ flexDirection: "column", alignItems: "flex-start", gap: 8 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <Icon name="triangle-alert" size={16} style={{ color: TL.danger }} />
+              <span style={{ fontSize: 15, fontWeight: 600, color: TL.text }}>Ingen motor svarer akkurat nå.</span>
+            </div>
+            <p style={{ margin: 0, fontSize: 13, color: TL.mute, lineHeight: 1.55 }}>
+              {kjoringerIdag === 0
+                ? "Ingen oppgaver ligger i kø."
+                : `${kjoringerIdag} kjøring${kjoringerIdag === 1 ? "" : "er"} venter. Ingen er kjørt halvveis — de starter fra begynnelsen når en motor er tilbake.`}
+            </p>
+          </AoKort>
+        )}
         <div>
           {AGENTICOS_RUNTIMES.map((r, i) => (
             <div

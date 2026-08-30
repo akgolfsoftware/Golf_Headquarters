@@ -90,7 +90,7 @@ test("extractRoundScore: fallback til hullsum når ResultSum mangler (Olyo/Østl
   );
 });
 
-test("parseCompetitionClasses + velgBruttoKlasser: alle brutto, aldri netto", () => {
+test("parseCompetitionClasses + velgBruttoKlasser: alle spillerklasser, også netto-navngitte (egne felt-lister)", () => {
   const raw = {
     CompetitionData: {
       Classes: [
@@ -105,8 +105,12 @@ test("parseCompetitionClasses + velgBruttoKlasser: alle brutto, aldri netto", ()
   };
   const alle = parseCompetitionClasses(raw);
   assert.equal(alle.length, 6);
+  // Netto-navngitte klasser (2, 4) er egne påmeldingslister (f.eks. Østlandstour
+  // «Damer netto») og skal hentes på lik linje med brutto-klassene — kun
+  // lagklasser (TeamClass) ekskluderes. AK-regelen «alltid brutto» håndheves i
+  // stedet på score-nivå (extractRoundScore), ikke ved å droppe hele klassen.
   const brutto = velgBruttoKlasser(alle).map((c) => c.id);
-  assert.deepEqual(brutto, [1, 3, 5]);
+  assert.deepEqual(brutto, [1, 2, 3, 4, 5]);
 });
 
 test("parseCompetitionClasses: manglende/ugyldig CompetitionData → tom liste", () => {

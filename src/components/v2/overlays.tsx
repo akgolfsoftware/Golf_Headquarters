@@ -313,7 +313,7 @@ export interface ToastProps {
   h?: number;
 }
 export function Toast({ melding = "Økten er logget — 1,5 t nærspill", angre = "Angre", tone = "up", w = 560, h = 170 }: ToastProps) {
-  const c: string = { up: TL.ok, warn: TL.warn, down: TL.danger, info: TL.viz.target, lime: TL.fill }[tone];
+  const c: string = { up: TL.ok, warm: TL.warm, warn: TL.warn, down: TL.danger, info: TL.viz.target, lime: TL.fill }[tone];
   return (
     <Ramme w={w} h={h} scrim={false} align="bottom">
       {/* Paper Toast (Toast.prompt.md): «fargen ligger i prikken, ikke

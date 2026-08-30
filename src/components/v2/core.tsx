@@ -117,7 +117,7 @@ export function DeltaChip({ v, dir }: DeltaChipProps) {
   return <span style={{ fontFamily: TL.font.mono, fontSize: 11, fontWeight: 600, color: c, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>{v}</span>;
 }
 
-export type StatusTone = "lime" | "up" | "warn" | "down" | "info";
+export type StatusTone = "lime" | "up" | "warm" | "warn" | "down" | "info";
 export interface StatusPillProps {
   children?: ReactNode;
   tone?: StatusTone;
@@ -125,10 +125,15 @@ export interface StatusPillProps {
 /* ● STIGENDE · LIVE · NÅ
    Paper-fasit: primitives/StatusBadge — 20px høy, r-pill, mono 10/600 versaler,
    border i samme tone (26%) rundt den 10%-tonede fyllen. rTag(8) var feil radius
-   for et merke (den er reservert Knapp, se Button.prompt.md) — retter til rPill. */
+   for et merke (den er reservert Knapp, se Button.prompt.md) — retter til rPill.
+   "warm" (Fasit: designsystem/train-lock/MAT-00 Materialer.dc.html, PX-7
+   2026-08-29): Fullført/completed-status ER ALDRI TL.ok (#30D158) — den er
+   forbeholdt Godta/PUBLISERT (CLAUDE.md invariant 2). Bruk tone="warm" for
+   fullført-merker, "up" er fortsatt tilgjengelig for andre positive statuser
+   (Bekreftet, Betalt) som ikke er "fullført"-semantikk. */
 export function StatusPill({ children, tone = "lime" }: StatusPillProps) {
   /* lime-tone = Paper ink accent soft (not neon). Brand neon never on status default. */
-  const c: string = { lime: TL.text, up: TL.ok, warn: TL.warn, down: TL.danger, info: TL.viz.target }[tone];
+  const c: string = { lime: TL.text, up: TL.ok, warm: TL.warm, warn: TL.warn, down: TL.danger, info: TL.viz.target }[tone];
   return (
     <span
       style={{

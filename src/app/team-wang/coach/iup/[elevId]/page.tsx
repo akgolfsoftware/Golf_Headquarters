@@ -1,12 +1,19 @@
 import { notFound } from "next/navigation";
 
 import { prisma } from "@/lib/prisma";
+import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { assertBarnTilhorerForelder } from "@/lib/forelder";
+import { kanSeIup } from "@/lib/auth/spiller-side-tilgang";
 import { IupSamtale, type IupPeriode, type IupMaaling } from "./iup-samtale";
 
 /**
- * IUP-samtalen for én elev. MIDLERTIDIG åpnet uten innlogging (Anders
- * 2026-08-15, «pr nå») — reverserer COACH/ADMIN-sperren. Dette er vurderinger
- * om mindreårige, nå åpent tilgjengelig for alle med lenken. Skjermen er delt
+ * IUP-samtalen for én elev. Åpnet uten rollesperre 15.08.2026 («pr nå»,
+ * MIDLERTIDIG) og aldri satt tilbake — enhver innlogget bruker, også en
+ * vanlig spiller, kunne fram til 30.08.2026 lese vurderinger om en navngitt
+ * mindreårig. Rettet (arkitektur-kartlegging §To sikkerhetsfunn, Anders'
+ * beslutning 30.08: rollesperre + elev og foresatt): ADMIN/COACH ser alle
+ * elever, eleven selv ser egen IUP, og en foresatt ser IUP for barn koblet
+ * via `ParentRelation`. Alle andre får notFound(). Skjermen er fortsatt delt
  * mellom elev og trener i samme rom, derfor står egenvurdering og
  * trenervurdering side om side i stedet for i hver sin visning.
  */
@@ -41,6 +48,16 @@ export default async function IupPage({
   params: Promise<{ elevId: string }>;
 }) {
   const { elevId } = await params;
+
+  const bruker = await requirePortalUser({
+    allow: ["ADMIN", "COACH", "PLAYER", "PARENT"],
+    redirectTo: "/team-wang/logg-inn",
+    kreverTilgang: "INGEN",
+  });
+
+  const erForesattTilEleven =
+    bruker.role === "PARENT" && (await assertBarnTilhorerForelder(bruker.id, elevId));
+  if (!kanSeIup(bruker, elevId, erForesattTilEleven)) notFound();
 
   const elev = await prisma.user.findUnique({
     where: { id: elevId },

@@ -1,7 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ Meg · Abonnement — v2 Presis + B-pakke (status-hero, én grønn CTA).
+ * PlayerHQ Meg · Abonnement — Train-lock (status-hero, én grønn CTA).
+ * Fasit: designsystem/train-lock/ME-03 Abonnement.dc.html
  */
 
 import { useEffect, useState, type ReactNode } from "react";

@@ -3,7 +3,7 @@
  * (v2preview) som IKKE arver PortalShell/AdminShell — kun root-layout — så
  * V2Shell leverer all chrome (rail/dock) i mørk v2-scope.
  *
- * Fasit: AG-01 Cockpit(+lys), AG-02 Cockpit Mac, AG-14 tom, AG-15 feil.
+ * Fasit: AG-01 Cockpit, AG-01 Cockpit lys, AG-02 Cockpit Mac, AG-14 tom, AG-15 feil.
  * Erstatter KonsollChat (Caddie-tråd) — AG-01 har verken composer eller
  * chat-feed, kun Nå · live / Kø / neste økt. Se TrainLockCockpit.tsx-hodet
  * for hva som falt bort i porten.

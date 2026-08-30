@@ -3,5 +3,5 @@
 import { V2Laster } from "@/components/v2/feil-laste";
 
 export default function Loading() {
-  return <V2Laster variant="dashboard" />;
+  return <V2Laster variant="analyse" />;
 }

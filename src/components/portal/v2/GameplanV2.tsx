@@ -1,8 +1,9 @@
 "use client";
 import { TL } from "@/lib/v2/train-lock";
 /**
- * PlayerHQ Gameplan — v2 Presis + B-pakke (status + baneliste, tom = én grønn vei).
- * Banebibliotek: kartlagt geometri + spilte baner. Ekte tall, T.* only.
+ * PlayerHQ Gameplan — Train-lock.
+ * Fasit: designsystem/train-lock/GP-01 Gameplan baner.dc.html
+ * Banebibliotek: kartlagt geometri + spilte baner. Ekte tall, kun TL.
  */
 
 import { useEffect, useState } from "react";

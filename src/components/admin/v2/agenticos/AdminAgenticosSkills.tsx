@@ -3,6 +3,7 @@
 /**
  * AO-09 Skills — hva agenten får lov til. Ingen hvit primær (ingen kjøre-handling).
  * Publisere økter og sende e-post er av og låst.
+ * Fasit: designsystem/train-lock/AO-00 LOCK Run Skills Tilstander.dc.html
  */
 
 import { TL } from "@/lib/v2/train-lock";

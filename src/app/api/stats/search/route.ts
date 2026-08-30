@@ -9,6 +9,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/rate-limit";
 import { getClientIp } from "@/lib/security/same-origin";
+import { offentligSpillerFilter } from "@/lib/stats/offentlig-spiller";
 
 export const runtime = "nodejs";
 
@@ -34,6 +35,7 @@ export async function GET(req: NextRequest) {
         where: {
           country: "NO",
           isActive: true,
+          ...offentligSpillerFilter(),
           name: { contains: q, mode: "insensitive" },
         },
         take: 10,

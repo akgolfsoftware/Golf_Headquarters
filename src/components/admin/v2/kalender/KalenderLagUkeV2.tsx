@@ -1,14 +1,31 @@
 "use client";
 
 /**
- * AgencyOS Kalender — KA-01/KA-02/KA-03/KA-05 (C3 lag + T7 samling).
+ * AgencyOS Kalender — (C3 lag + T7 samling).
+ *
+ * Fasit: designsystem/train-lock/KA-01 Agency Kalender uke Mac.dc.html,
+ * KA-01L Kalender uke lys.dc.html (TL-tokens bytter automatisk),
+ * KA-02 Agency Kalender maned Mac.dc.html,
+ * KA-03 Agency Kalender agenda iPhone.dc.html,
+ * KA-05 Agency Kollisjon rom.dc.html,
+ * AG-11 Kalender dag.dc.html (time-akse i «dag»-visning, se DagTidslinje).
+ *
+ * Fasit: designsystem/train-lock/KA-01 Agency Kalender uke Mac.dc.html
+ * (mekanisk invertert lys = KA-01L Kalender uke lys.dc.html — verifisert
+ * PX-6 28.08: ingen hardkodet hex i denne fila, lys følger token-swap),
+ * KA-02 Agency Kalender maned Mac.dc.html (måned-rutenettet),
+ * KA-03 Agency Kalender agenda iPhone.dc.html (mobil/dag-agendaen),
+ * KA-05 Agency Kollisjon rom.dc.html (kollisjons-indikatoren på
+ * BOOKING-laget).
  *
  * Én flate på `/admin/kalender`: uke (default), måned og dag. Fem lag med
  * øye-toggle. Booking er et lag — detalj/ny/tilgjengelighet er egne ruter
  * (wizard og skriveflyt), lenket herfra. Ingen Google.
  *
  * Ukegrid er kronologisk dag-liste, ikke pikselnøyaktig tidsakse
- * (CLAUDE.md §Design: port oppførsel/hierarki). Kun TL.
+ * (CLAUDE.md §Design: port oppførsel/hierarki) — «dag»-visningen (AG-11)
+ * har derimot en ekte time-akse med nå-linje og overlapp side om side,
+ * se `DagTidslinje` under. Kun TL.
  */
 
 import { useEffect, useMemo, useState } from "react";
@@ -31,6 +48,12 @@ import {
   type KalenderHendelse,
   type KalenderLag,
 } from "@/lib/domain/kalender-lag";
+import {
+  TIDSLINJE_START_MIN,
+  TIDSLINJE_SLUTT_MIN,
+  tidslinjeKolonner,
+  tidslinjeTopp,
+} from "@/lib/domain/kalender-tidslinje";
 import type { KalenderLagUkeData, KalenderVisning } from "@/app/admin/kalender/lag/data";
 
 function useErMobil(breakpointPx: number): boolean {
@@ -406,6 +429,131 @@ function AgendaListe({
   );
 }
 
+/**
+ * Fasit: designsystem/train-lock/AG-11 Kalender dag.dc.html — dagen, ikke
+ * månedsvegg: time-akse 07–21, nå-linje, overlappende hendelser side om side.
+ */
+function DagTidslinje({
+  hendelser,
+  erIdag,
+  kollidererIder,
+  valgtId,
+  onVelg,
+}: {
+  hendelser: KalenderHendelse[];
+  erIdag: boolean;
+  kollidererIder: Set<string>;
+  valgtId: string | null;
+  onVelg: (id: string) => void;
+}) {
+  const [klokke, setKlokke] = useState<number | null>(null);
+  useEffect(() => {
+    const oppdater = () => {
+      const n = new Date();
+      setKlokke(n.getHours() * 60 + n.getMinutes());
+    };
+    oppdater();
+    const iv = window.setInterval(oppdater, 60_000);
+    return () => window.clearInterval(iv);
+  }, []);
+  const naaMin = erIdag ? klokke : null;
+
+  const heldag = hendelser.filter((h) => h.heldag || h.startMin === null);
+  const tidsatt = hendelser.filter((h) => !h.heldag && h.startMin !== null);
+  const plassert = useMemo(() => tidslinjeKolonner(tidsatt), [tidsatt]);
+  const timer: number[] = [];
+  for (let m = TIDSLINJE_START_MIN; m <= TIDSLINJE_SLUTT_MIN; m += 60) timer.push(m);
+  const hoyde = tidslinjeTopp(TIDSLINJE_SLUTT_MIN);
+
+  return (
+    <div>
+      {heldag.length > 0 && (
+        <div style={{ marginBottom: 14 }}>
+          {heldag.map((h) => (
+            <TlRad
+              key={h.id}
+              title={h.tittel}
+              sub={LAG_LABEL[h.lag]}
+              meta="Hele dagen"
+              href={h.href}
+              chevron={!!h.href}
+            />
+          ))}
+        </div>
+      )}
+      {tidsatt.length === 0 ? (
+        heldag.length === 0 ? <TlTomTilstand icon="calendar" title="Ingen hendelser denne dagen" sub="Ingen av de synlige lagene har noe her." /> : null
+      ) : (
+        <div style={{ position: "relative", height: hoyde, marginTop: 4 }}>
+          {timer.map((m) => (
+            <div key={m} style={{ position: "absolute", top: tidslinjeTopp(m), left: 0, right: 0, display: "flex", alignItems: "center", gap: 10 }}>
+              <span style={{ width: 42, fontSize: 11, fontWeight: 600, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
+                {klokkeslett(m)}
+              </span>
+              <div style={{ flex: 1, height: 1, background: TL.hair }} />
+            </div>
+          ))}
+          {plassert.map(({ h, kolonne, avKolonner }) => {
+            const start = h.startMin ?? TIDSLINJE_START_MIN;
+            const slutt = h.sluttMin ?? start + 30;
+            const topp = tidslinjeTopp(start);
+            const kortHoyde = Math.max(28, tidslinjeTopp(slutt) - topp);
+            const bredde = `calc((100% - 52px) / ${avKolonner})`;
+            const valgt = h.id === valgtId;
+            const style: React.CSSProperties = {
+              position: "absolute",
+              top: topp,
+              height: kortHoyde,
+              left: `calc(52px + ${bredde} * ${kolonne} + ${kolonne > 0 ? 2 : 0}px)`,
+              width: bredde,
+              display: "block",
+              textAlign: "left",
+              appearance: "none",
+              border: "none",
+              cursor: "pointer",
+              background: TL.dock,
+              borderRadius: TL.radius.card,
+              padding: "8px 10px",
+              overflow: "hidden",
+              boxShadow: valgt || kollidererIder.has(h.id) ? `inset 0 0 0 2px ${TL.text}` : "none",
+            };
+            const innhold = (
+              <>
+                <div style={{ display: "flex", justifyContent: "space-between", gap: 6 }}>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                    {h.tittel}
+                  </span>
+                  {kollidererIder.has(h.id) && <Icon name="triangle-alert" size={12} style={{ color: TL.text, flexShrink: 0 }} />}
+                </div>
+                {kortHoyde > 40 && (
+                  <div style={{ marginTop: 2, fontSize: 11, color: TL.mute, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                    {LAG_LABEL[h.lag]}
+                    {h.undertekst ? ` · ${h.undertekst}` : ""}
+                  </div>
+                )}
+              </>
+            );
+            return h.href ? (
+              <Link key={h.id} href={h.href} className="v2-press v2-focus" style={style}>
+                {innhold}
+              </Link>
+            ) : (
+              <button key={h.id} type="button" onClick={() => onVelg(h.id)} className="v2-press v2-focus" style={style}>
+                {innhold}
+              </button>
+            );
+          })}
+          {naaMin !== null && naaMin >= TIDSLINJE_START_MIN && naaMin <= TIDSLINJE_SLUTT_MIN && (
+            <div style={{ position: "absolute", top: tidslinjeTopp(naaMin) - 1, left: 38, right: 0, height: 2, background: TL.text, borderRadius: 1, zIndex: 3 }}>
+              <div style={{ position: "absolute", left: -4, top: -4, width: 10, height: 10, borderRadius: "50%", background: TL.text }} />
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function KalenderLagUkeV2({
   data,
   startLag,
@@ -603,7 +751,17 @@ export function KalenderLagUkeV2({
             );
           })}
         </div>
-        <AgendaListe hendelser={dagHendelser} kollidererIder={kollidererIder} />
+        {data.visning === "dag" ? (
+          <DagTidslinje
+            hendelser={dagHendelser}
+            erIdag={valgtDag === data.idagIso}
+            kollidererIder={kollidererIder}
+            valgtId={valgtId}
+            onVelg={setValgtId}
+          />
+        ) : (
+          <AgendaListe hendelser={dagHendelser} kollidererIder={kollidererIder} />
+        )}
       </div>
     );
   }

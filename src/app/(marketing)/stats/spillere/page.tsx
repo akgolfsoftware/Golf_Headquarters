@@ -7,6 +7,7 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { StatsSpillereV2, type Spiller } from "@/components/marketing/v2/StatsSpillereV2";
+import { offentligSpillerFilter } from "@/lib/stats/offentlig-spiller";
 
 export const revalidate = 3600;
 
@@ -34,7 +35,7 @@ async function hentSideData(q: string | undefined, aar: string | undefined, tier
   const PAGE_SIZE = 50;
 
   const [totalSpillere, totalTurneringer, totalResultater] = await Promise.all([
-    prisma.publicPlayer.count({ where: { country: "NO", isActive: true } }),
+    prisma.publicPlayer.count({ where: { country: "NO", isActive: true, ...offentligSpillerFilter() } }),
     prisma.tournament.count({ where: { mergedIntoId: null } }),
     prisma.publicPlayerEntry.count(),
   ]);
@@ -44,7 +45,7 @@ async function hentSideData(q: string | undefined, aar: string | undefined, tier
   const tierFilter = tier && tier !== "alle" ? { tier: { in: TIER_MAP[tier] ?? [tier] } } : {};
 
   const spillere = await prisma.publicPlayer.findMany({
-    where: { country: "NO", isActive: true, ...navnFilter, ...birthYearFilter, ...tierFilter },
+    where: { country: "NO", isActive: true, ...offentligSpillerFilter(), ...navnFilter, ...birthYearFilter, ...tierFilter },
     orderBy: { name: "asc" },
     take: PAGE_SIZE,
     skip: (side - 1) * PAGE_SIZE,
@@ -55,7 +56,7 @@ async function hentSideData(q: string | undefined, aar: string | undefined, tier
   let topp20: Spiller[] = [];
   if (!harFilter) {
     topp20 = await prisma.publicPlayer.findMany({
-      where: { country: "NO", isActive: true },
+      where: { country: "NO", isActive: true, ...offentligSpillerFilter() },
       orderBy: [{ tier: "asc" }, { name: "asc" }],
       take: 20,
       select: { id: true, slug: true, name: true, birthYear: true, tier: true, bio: true, _count: { select: { entries: true } } },
@@ -67,7 +68,7 @@ async function hentSideData(q: string | undefined, aar: string | undefined, tier
 
 async function hentAarganger(): Promise<number[]> {
   const rows = await prisma.publicPlayer.findMany({
-    where: { country: "NO", isActive: true, birthYear: { not: null } },
+    where: { country: "NO", isActive: true, ...offentligSpillerFilter(), birthYear: { not: null } },
     select: { birthYear: true },
     distinct: ["birthYear"],
     orderBy: { birthYear: "desc" },

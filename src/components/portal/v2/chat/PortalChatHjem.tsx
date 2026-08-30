@@ -5,6 +5,9 @@
  * retter avviksliste A1 mot plan-designport-alle-skjermer.md).
  * Erstatter HjemV2 som innhold på /portal. V2Shell (rail/bunn-nav) er uendret
  * rundt denne komponenten — se src/app/portal/page.tsx.
+ * Lys: designsystem/train-lock/B3 Lys nøkkelskjermer.dc.html (Lys PH-01
+ * I dag) — allerede tunet i C8 (#636); PX-7 (29.08.2026) verifiserte på
+ * nytt at ingen ny hardkodet hex er lekket inn siden.
  *
  * PP-1.1 (2026-08-09): loop ink underline, btn.ink=TL.fill, mic 60px clay, composer bg canvas.
  * Matcher Paper-fasiten (designsystem/paper/fase1/playerhq-chat-desktop.html)

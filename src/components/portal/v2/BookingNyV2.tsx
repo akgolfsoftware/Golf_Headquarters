@@ -2,6 +2,10 @@
 import { TL } from "@/lib/v2/train-lock";
 /**
  * BookingNyV2 — v2-port (retning C) av credit-wizarden /portal/booking/ny.
+ *
+ * Fasit: designsystem/train-lock/BO-01 Booking ledige luker.dc.html
+ * (slot-grid-steget).
+ *
  * RESTYLING ONLY: samme query-drevne steg-modell som legacy-siden
  * (?service=&dato= → steg 1/2/3), samme URL-kontrakter (tjeneste-/dato-lenker
  * på /portal/booking/ny, slot-lenker til /portal/booking/ny/bekreft?service=
@@ -11,6 +15,9 @@ import { TL } from "@/lib/v2/train-lock";
  * Dato-strengene i lenkene (toISOString().split("T")[0]) og klokkeslett-
  * formateringen er bevisst byte-identiske med legacy _components/dato-velger +
  * slot-grid — URL-kontrakten mot serveren skal ikke røres i denne porten.
+ *
+ * Tom-tilstanden under (linje ~410, TomTilstand) dekker GAP-1 «BO-01
+ * Booking tom» (Fasit: designsystem/train-lock/GAP-1 Tilstander.dc.html).
  */
 
 import Link from "next/link";

@@ -5,7 +5,22 @@
    rendres inni en tynn error.tsx) og V2Laster (skeleton, rendres i en tynn
    loading.tsx). Maler i docs/redesign-v2/maler/{error,loading}-mal.tsx.txt.
    Samme visuelle språk som src/components/v2/core.tsx (T-tokens, Knapp,
-   Icon) — bruk disse malene fremfor ad-hoc feil-/last-UI i nye v2-skjermer. */
+   Icon) — bruk disse malene fremfor ad-hoc feil-/last-UI i nye v2-skjermer.
+
+   Fasit: designsystem/train-lock/B1 Tilstander laster feil.dc.html (PX-7,
+   29.08.2026) — I dag/Plan/Analyse/Meg × laster/feil. Skjelett i kortgeometri
+   uten spinner (variant="hjem"/"plan"/"meg"/"dashboard"), feil-etikett i
+   TL.danger med hvit «Prøv igjen»-CTA (V2Feil). Fasitens inline feil-kort
+   (chrome + bunn-nav synlig) er IKKE portert 1:1 — Next.js' error.tsx-grense
+   erstatter hele siden fordi V2Shell rendres i page.tsx, ikke i en layout;
+   V2Laster/V2Feil bærer derfor sin egen mørke chrome (railsilhuett) som
+   erstatning, se JSDoc på V2Laster. Kopien («Fikk ikke lastet dagen din» osv.)
+   er fasitens, satt per rute via tittel/melding-propene.
+   Samme mønster (tom/laster/feil, «Prøv igjen», danger kun på feilteksten)
+   gjelder KA-01/RU-01/S3-01/BO-01 — se
+   designsystem/train-lock/GAP-1 Tilstander.dc.html, portet i egne
+   error.tsx/loading.tsx per rute (admin/kalender,
+   portal/(fullscreen)/runde/live, admin/spillere/[id], portal/booking). */
 
 import type { CSSProperties } from "react";
 import Link from "next/link";
@@ -20,19 +35,25 @@ export interface V2FeilProps {
   /** Hvor "Tilbake"-lenken skal peke (nærmeste fungerende oversikt). */
   tilbakeHref: string;
   tittel?: string;
+  /** Undertekst — fasit-spesifikk per flate (B1). Kort norsk, aldri stack trace. */
+  melding?: string;
 }
 
 /** Feilinnhold i v2-design. Rendres INNI en error.tsx (som selv er tynn og
- *  logger error.digest) — se docs/redesign-v2/maler/error-mal.tsx.txt. */
-export function V2Feil({ reset, tilbakeHref, tittel = "Noe gikk galt" }: V2FeilProps) {
+ *  logger error.digest) — se docs/redesign-v2/maler/error-mal.tsx.txt.
+ *  Tittel/melding er fasit-spesifikke per flate (B1 Tilstander laster feil):
+ *  «Fikk ikke lastet dagen din», «Fikk ikke lastet uken», «Fikk ikke hentet
+ *  SG», «Fikk ikke lastet innstillingene» — danger kun på Feil-etiketten. */
+export function V2Feil({ reset, tilbakeHref, tittel = "Noe gikk galt", melding = "Vi støtte på en uventet feil — prøv igjen, eller gå tilbake." }: V2FeilProps) {
   return (
     <main style={{ minHeight: "60vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", gap: 14, padding: "48px 24px" }}>
       <span style={{ width: 52, height: 52, borderRadius: 16, background: `color-mix(in srgb, ${TL.danger} 14%, transparent)`, border: `1px solid ${TL.danger}`, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
         <Icon name="alert-triangle" size={22} style={{ color: TL.danger }} />
       </span>
+      <div style={{ fontFamily: TL.font.mono, fontSize: 11, fontWeight: 700, letterSpacing: TL.track.capsSm, textTransform: "uppercase", color: TL.danger }}>Feil</div>
       <h1 style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 22, color: TL.text, margin: 0 }}>{tittel}</h1>
       <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, maxWidth: 340, lineHeight: 1.6, margin: 0 }}>
-        Vi støtte på en uventet feil — prøv igjen, eller gå tilbake.
+        {melding}
       </p>
       <div style={{ display: "flex", gap: 10, marginTop: 6, flexWrap: "wrap", justifyContent: "center" }}>
         <Knapp icon="rotate-cw" onClick={reset}>Prøv igjen</Knapp>
@@ -335,6 +356,49 @@ function HjemSkel() {
   );
 }
 
+/** /portal/planlegge — PlanV2 (B1 «Plan laster»): dagstripe (7 piller) + to ukekort. */
+function PlanSkel() {
+  const kort: CSSProperties = { background: TL.elev, borderRadius: TL.radius.card, padding: 20, display: "flex", flexDirection: "column", gap: 12 };
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+      <SkelBlock w={110} h={11} r={4} />
+      <SkelBlock w={70} h={30} r={8} />
+      <div style={{ display: "flex", justifyContent: "space-between", gap: 6 }}>
+        {Array.from({ length: 7 }).map((_, i) => (
+          <SkelBlock key={i} w={44} h={56} r={9999} style={{ flex: "none" }} />
+        ))}
+      </div>
+      <div style={kort}>
+        <SkelBlock w="52%" h={14} r={6} />
+        <SkelBlock w="38%" h={10} r={5} />
+      </div>
+      <div style={kort}>
+        <SkelBlock w="30%" h={14} r={6} />
+        <SkelBlock w="46%" h={10} r={5} />
+      </div>
+    </div>
+  );
+}
+
+/** /portal/meg — Meg (B1 «Meg laster»): avatar-sirkel + navn/undertekst + innstillings-kort. */
+function MegSkel() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
+        <SkelBlock w={84} h={84} r={9999} />
+        <SkelBlock w={160} h={18} r={7} />
+        <SkelBlock w={210} h={10} r={5} />
+      </div>
+      <div style={{ background: TL.elev, borderRadius: TL.radius.card, padding: 20, display: "flex", flexDirection: "column", gap: 16 }}>
+        <SkelBlock w="34%" h={12} r={5} />
+        <SkelBlock w="42%" h={12} r={5} />
+        <SkelBlock w="28%" h={12} r={5} />
+        <SkelBlock w="38%" h={12} r={5} />
+      </div>
+    </div>
+  );
+}
+
 /** /portal/gjennomfore — GjorV2: hode · runde-kort · KPI-rad · øvelser · (neste økt | avslutt-flyt). */
 function GjorSkel() {
   return (
@@ -368,6 +432,36 @@ function GjorSkel() {
   );
 }
 
+/** /portal/analysere — AnalyseHub laster (B1): hero-tall + 3 KPI-kort + tekstpanel.
+ *  Hentet fra `claude/px7-tilstander-brekk-4cp4nu` ved sammenslåingen 30.08:
+ *  denne grenen dekket bare tre av B1s fire PlayerHQ-faner (I dag/Plan/Meg),
+ *  og Analyse manglet. */
+function AnalyseSkel() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+      <SkelBlock w={140} h={11} r={4} />
+      <SkelBlock w={110} h={34} r={8} />
+      <div style={{ background: TL.elev, borderRadius: TL.radius.card, padding: 20, display: "flex", flexDirection: "column", gap: 14 }}>
+        <SkelBlock w="34%" h={10} r={5} />
+        <SkelBlock w="40%" h={40} r={10} />
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10 }}>
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div key={i} style={{ background: TL.elev, borderRadius: TL.radius.card, padding: 16, display: "flex", flexDirection: "column", gap: 10 }}>
+            <SkelBlock w="70%" h={18} r={7} />
+            <SkelBlock w="56%" h={9} r={4} />
+          </div>
+        ))}
+      </div>
+      <div style={{ background: TL.elev, borderRadius: TL.radius.card, padding: 20, display: "flex", flexDirection: "column", gap: 12 }}>
+        <SkelBlock w="22%" h={10} r={5} />
+        <SkelBlock w="92%" h={12} r={5} />
+        <SkelBlock w="74%" h={12} r={5} />
+      </div>
+    </div>
+  );
+}
+
 export type V2LasterVariant =
   | "liste"
   | "kort"
@@ -377,6 +471,9 @@ export type V2LasterVariant =
   | "stall"
   | "godkjenninger"
   | "hjem"
+  | "plan"
+  | "meg"
+  | "analyse"
   | "gjor";
 export interface V2LasterProps {
   variant?: V2LasterVariant;
@@ -399,6 +496,9 @@ export function V2Laster({ variant = "kort" }: V2LasterProps) {
     : variant === "stall" ? <StallSkel />
     : variant === "godkjenninger" ? <GodkjenningerSkel />
     : variant === "hjem" ? <HjemSkel />
+    : variant === "plan" ? <PlanSkel />
+    : variant === "meg" ? <MegSkel />
+    : variant === "analyse" ? <AnalyseSkel />
     : variant === "gjor" ? <GjorSkel />
     : <KortSkel />;
   return (

@@ -16,6 +16,432 @@ Gjelder til Anders endrer dem.
 
 ## Beslutningene (august 2026)
 
+- **DATAKARTLEGGING — fire svar + målt inventar (Anders 2026-08-30, i økt):**
+  full kartlegging av DataGolf-lageret og norsk turneringsdata. 870 spørringer
+  mot produksjonsbasen, 19 parallelle agenter. Rapport:
+  https://claude.ai/code/artifact/4e712519-a0f0-4c5e-9363-14dbb2f01a24
+
+  **Anders' fire svar:**
+
+  1. **`/stats/aargang` flyttes bak innlogging.** Siden er bygget som åpen
+     kohort-utforsker for fødselsår 2000–2012 — nøyaktig det 30.08-beslutningen
+     om spillere født 2008+ forbyr. Den slettes ikke og tømmes ikke; den flyttes
+     til gratis-konto-laget, samme sted som live-sidens lag 2.
+  2. **Kjønn SKAL legges til som felt** (Anders: «Vi må legge til kjønn»).
+     Hele veien, i denne rekkefølgen: (a) felt i datamodellen, (b) manuell
+     utfylling for Anders' egne spillere (WANG, GFGK, Academy) umiddelbart,
+     (c) utledning fra klassekode som EKSPLISITT MERKET supplement — den dekker
+     kun 2 266 av 8 593 norske (26,4 %) og gir 200 jenter mot 2 066 gutter,
+     altså systematisk skjevt, (d) ekte kilde via NGF/GolfBox som mål.
+     Uten kjønn er enhver kullsammenligning villedende for halve gruppen.
+  3. **Fail-closed på fødselsår gjelder KUN ikke-DataGolf-spillere.** Regelen
+     «mangler fødselsår → skjul» ville fjernet 3 556 av 3 569 DataGolf-proffer
+     fra de åpne sidene — voksne proffer på offentlige tourer, altså det laget
+     som faktisk er trygt. Norske turneringsspillere må ha fødselsår OG være
+     myndige for å vises åpent.
+  4. **Stripe-koblingen sikres framover, historikken godtas.** Webhooken fikses
+     nå slik at alt fra 1. sep er målbart. De 49 vellykkede betalingene på
+     59 100 kr (samt 7 feilede på 10 500 kr) forblir historikk uten kobling til
+     bruker/booking/abonnement.
+
+  **Hastesak (før 1. september, én arbeidsdag totalt):**
+  - **1 655 norske spillere født 2008+ ligger åpent med navn og fødselsår** på
+    45 stats-sider uten innlogging. Yngste fødselsår i basen er 2021. Filteret
+    koster kun 10,74 % av norsk turneringsdata — 89,0 % av deltakelsene er
+    myndige. Ett felles predikat på fire innganger: `/stats/spillere`,
+    `/stats/spillere/[slug]`, `/stats/sok`, `/api/stats/search`.
+  - **`/stats/wrapped` gir 3 598 spillere oppdiktet fødselsår** (`birthYear ?? 1990`).
+    Direkte TruthLayer-brudd. 10 minutters fiks.
+  - **DataGolf-attribusjon mangler på 0 av 45 offentlige sider.** Lisensvilkår.
+    Eneste forekomst i `src/` står på en adminflate (AdminBenchmarksV2.tsx:171).
+
+  **Målte korreksjoner av premisset (bruk disse tallene, ikke de gamle):**
+  - `public_players` = **12 839**, ikke 13 614 (13 614 var Postgres-estimat).
+    Norske: **8 593**, hvorav **8 546 (99,5 %) har fødselsår**.
+  - «941 245 norske resultater» er feil. 941 245 er HELE `public_player_rounds`,
+    hvorav **757 928 er DataGolf-proffdata**. Ekte norsk grunnlag:
+    **183 317 runder / 147 670 deltakelser**, 2014–2026.
+  - `dg_rounds` = **962 208** med komplett SG på alle. Fordelt på 21 tourer;
+    PGA 392 248 (1983–2026), Nordic League 53 155 (2020–2026).
+  - **16 kilder finnes i turneringsdata, men `source_registry.yaml` har kun 4
+    registrerte.** Tolv kilder henter uten registrert lisens-/GDPR-grunnlag.
+    Dette bryter pipelines-repoets egen regel 2 og må lukkes.
+
+  **Grunnlagsbeslutninger for all videre analysebygging:**
+  - **Til-par leses fra `public_player_entries.scoreToPar`** — utfylt på
+    **166 169 av 170 465** gyldige norske runder (97,48 %), allerede
+    banenormalisert. **Par skal ALDRI utledes fra `public.baner` og påføres
+    juniorrunder:** treffer eksakt i 39,7 %, systematisk avvik −1,02 slag
+    (Borregaard −7,00, Huseby & Hankø −4,00, begge med SD 0,00) fordi juniorer
+    spiller kortere tee. Ville framstilt juniorer 1–7 slag dårligere.
+  - **Netto-filter er en HVITLISTE av 13 faktiske nettokoder, aldri mønsteret
+    «ender på N».** Mønsteret treffer også `Open` (22 529 rader), `Mann` (95)
+    og `A-klassen` (13) — 26 % av tabellen, deriblant den største klassen.
+    Klassekode finnes KUN i `dashboard.tournament_results`; den mangler helt i
+    `public`-tabellene appen leser fra, og lageret merker alle 87 564 rader som
+    «brutto» inkludert de 13 709 med nettokode.
+  - **`position` skal ALDRI brukes som persentil.** Det er plassering INNEN
+    KLASSE: 1 976 av 2 044 norske turneringer har flere enn én på plass 1
+    (snitt 4,59). Bruk feltstyrke-justert score.
+  - **Aldersstige bygges fra 16 år og oppover**, ikke fra 13. Under 16 er den
+    ikke monoton (13 år 16,66 → 14 år 17,48) på grunn av tee-effekt.
+  - **Volumtall til NGF sies som +24,3 %** (målt på OLYO alene, eneste kilde med
+    jevn dekning bakover), ikke +54 % som flerkilde-tallet gir — der endrer
+    kildesammensetningen seg mellom årene.
+  - **Datahelse leses fra `public.agent_runs`**, ikke `dg_sync_state`. Sistnevnte
+    rapporterer 0 % feil på 2 617 kjøringer; `agent_runs` dekker 40 agenter og
+    769 feil, inkludert `jarvis-gmail-innsamling` med **735 av 735 feilet**.
+
+  **Anbefalt byggerekkefølge (topp 5, alle kan bygges FØR identitetslaget
+  tettes — deltakelser er koblet per spiller med null foreldreløse rader):**
+  1. Lukk de tre åpne hullene over (1 dag).
+  2. Til-par-grunnlaget: ett view, filtrer score 55–130, kollaps 43
+     dublettgrupper (1 dag). Bærer ni andre punkter.
+  3. Utviklingsfart og jevnhet mot spilleren selv — **912 spillere** har to
+     kvalifiserende sesonger og fersk 2026-sesong (2 dager).
+  4. Testene over tid — **64 spiller/test-par med 3 målinger hver over opptil
+     336 dager** i `dashboard.test_results`; `dashboard.test_shots` har 732 slag
+     med PEI (228 med SG) og er første bruker av `src/lib/domain/pei/` (1–2 dager).
+  5. Køllelengder og gapping — alle 12 køller har 19–52 slag; målt hull på
+     **24,3 m** mellom 5-jern og 4-hybrid (under 1 dag).
+
+  **Åtte ferdige analyser har lesemodul uten skjerm.** `src/lib/dashboard-data/`
+  har 15 zod-validerte lesefunksjoner mot alle åtte materialiserte views, med
+  tester og **null importører fra skjermkode**. To av dem er tomme av samme
+  grunn: `player_source_matches.birth_year` er utfylt i 0 av 124 rader — fylles
+  det, får kohort-progresjonen 313 treff umiddelbart (2 timer).
+
+  **Identitetslaget — trinnvis, billigere enn antatt.** Trinn 0 (½ dag):
+  eksakt navnematch treffer 2 486 av 4 873 ekte navn (51 %) og dekker 59,9 % av
+  resultatradene; kun **3** er tvetydige. Løfter `mv_canonical_players` fra 47
+  til ~2 500. Nordic League er allerede koblet: alle 22 529 rader har `dg_id`,
+  og joinen virker på `dg_events.event_id` (172/172 treff), ikke `dg_events.id`
+  (0 treff) — 50 arrangementer kan dateres med én UPDATE i dag.
+
+  **Klubb og klassekode kastes i scraperen.** `src/lib/scrapers/golfbox.ts`
+  linje 223 parser `ClubName` og forkaster det; samme mønster for `class`.
+  Begge kommer inn hver time. Én pipeline-endring gir både klubbdimensjonen
+  (`mv_club_aggregates` har i dag 46 rader med **1 unik verdi: «Øst»** — det er
+  region, ikke klubb) og ekte brutto-garanti.
+
+  **Kvalitetsadvarsel — `mv_cohort_baselines` skal IKKE vises før den er rettet.**
+  J19 2025 har snitt 155,3 og p90 241,8; det er flerrundetotaler behandlet som
+  enkeltrunder. 2 865 av 33 002 spiller-år i `mv_player_yearly_stats` har snitt
+  over 120 slag, og 65 % mangler til-par.
+
+  **Ikke bygg:** plassering som persentil · par påført fra baneregisteret ·
+  aldersstige under 16 år · sesongform som populasjonskurve (mars 528 spillere,
+  september 2 842 — ulike populasjoner) · regionkart presentert som nasjonalt
+  (alle seks regioner er kun OLYO) · banevanskelighetsindeks per bane (redundant
+  mot feltsnitt) · kohort-persentil til spiller/forelder/åpen flate (produktsvar
+  3) · odds/prognoser/fantasy. Proffreferanse for jenter er ikke mulig: alle 26
+  tourer i lageret er herretourer — det er et produktvalg som må tas, ikke en
+  skjerm som kan bygges.
+
+  **Fortsatt åpent (må låses før viewet skrives):** nivådefinisjonen i
+  opprykksanalysen gir +2,10 eller +2,27 slag avhengig av om et spiller-år
+  tilordnes ett nivå eller flere (77 mot 159 opprykkere). Retningen er robust,
+  størrelsen er et definisjonsvalg — endres den etterpå, er det TruthLayer-brudd.
+
+  **Venter på Anders:** MD-fila med turneringer og lenker (spesifikasjon for
+  landskapsanalysen, jf. TN-Workdesk punkt 7) er ikke levert. Kartleggingen er
+  gjort uten den; bygging av landskapsflaten venter fortsatt på den.
+
+- **GRILLINGEN RUNDE 6 — Anders' arbeidsdag og AgencyOS-arkitekturen (Anders
+  2026-08-30, i økt):** ni svar som låser hva AgencyOS skal være. Alle målinger
+  gjort mot kodebasen 30.08.2026 før spørsmålene ble stilt.
+
+  **Forbehold Anders ga innledningsvis:** ingenting i AgencyOS-/PlayerHQ-
+  arkitekturen er låst — heller ikke railens fem punkter (Stall · Workbench ·
+  Kø · Jarvis · Meg) eller «Mer»-arkivet. Svarene under er retningsgivende
+  produktbeslutninger, ikke en fredet IA. En egen, komplett arkitektur-
+  kartlegging av begge appene er ønsket som SENERE økt (Anders valgte å
+  fullføre runde 6 først).
+
+  1. **Mandagen begynner ikke foran en skjerm (6.1).** 08:00–10:00 trening med
+     WANG Toppidrett — ofte etter konkurransehelg, og da alltid teknisk
+     grunntreningsøkt for å få grunnteknikken tilbake. Ettermiddag/kveld:
+     privattimer med de samme spillerne pluss vanlige kunder. Maskinen åpnes i
+     mellomrommene. **Konsekvens: AgencyOS' morgenflate er en mobilflate**,
+     ikke en dashboard-vegg — den skal kunne skannes stående på treningsfeltet.
+  2. **Kø = alt som krever Anders i dag (6.2).** Ikke bare ja/nei-saker: svar på
+     e-post, SMS, forespørsler, tilbakemeldinger, oppfølginger og godkjenninger
+     — «alt som krever manuell tid av meg». Kø er stedet han kommer à jour og
+     får kontroll over alle deler av bedriften. De fem målte godkjennings-
+     adressene (`/admin/godkjenninger`, `/admin/agenticos/godkjenn`,
+     `/admin/agenticos/ko`, `/admin/tester/foreslatte`,
+     `/admin/tournaments/dubletter`) blir én.
+  3. **Spillerplanen er alltid kanonisk; gruppe er en planleggingsmodus (6.3).**
+     En spiller har ALLTID sin individuelle plan. Ligger spilleren i en gruppe
+     (GFGK Mini/Basis/Aspirant/Elite, WANG Toppidrett Fredrikstad, Team
+     Norway-grupper), planlegges gruppeøkta i grupperegi — men økta lagres i
+     hver enkelt spillers treningsplan med alle detaljer. **Én økt kan være
+     delt:** WANG 08:00–10:00 kan ha første time individuell (hver av de 11
+     jobber på sin egen utviklingsplan) og siste 45 minutter felles. Hver blokk
+     skal spesifisere ansvarlig trener — AK Golf Academy, Team Norway eller
+     annen WANG-trener. Ikke tre ulike planleggingsjobber; én med to nivåer.
+  4. **Workbench åpner på spillerlisten med ukestatus (6.4)** — allerede låst i
+     «PRODUKTRETNING — åtte svar» pkt. 6. Uendret.
+  5. **Stall-lista: navn, neste økt, siste aktivitet, én varsel-prikk (6.5).**
+     SG-form/delta, plan-etterlevelse per akse, hcp, pakke og skyldig beløp
+     flyttes ut av raden og inn i spillerkortet — de er lese-informasjon, ikke
+     skanne-informasjon. Prikk-nivåene: fylt = trenger deg, åpen = følg med,
+     ingen = på planen.
+  6. **Oppgaver og Kø er to ulike ting, skilt av TID (6.6).**
+     **Kø** = i dag, krever meg (pkt. 2 over).
+     **Oppgaver** = prosjektstyring og rutiner, Notion-modellen: oppgaver
+     knyttet til prosjekt, pluss gjentakende rutiner (daglig/ukentlig/månedlig)
+     som «rydd driving range» eller «send e-post til foreldre». Hver rutine
+     merkes med om den **kan automatiseres** eller **må gjøres fysisk**.
+     Konsekvens: `handlingssenter` + `workspace` + `workspace/prosjekter` +
+     `workspace/notion` slås sammen til ÉN Oppgaver-flate. `/admin/queue`
+     (spiller-signaler) er verken Kø eller Oppgaver — det er oppfølging, og
+     hører hjemme i Stall.
+  7. **Jarvis forbereder alt, sender ingenting (6.7).**
+     **Gjør selv, uten å spørre:** sortere e-post/SMS inn i Kø, skrive
+     svarutkast, foreslå økter, oppdage avvik, forberede møteunderlag, lage
+     rapportutkast, rydde data (f.eks. turneringsdubletter).
+     **Krever ALLTID Anders' ja:** sende e-post/SMS, bekrefte booking,
+     publisere økt til spiller, dele noe med forelder, og alt som koster penger.
+     Regelen i én setning: alt som forlater huset eller endrer noe for et
+     menneske, krever ja.
+  8. **Push-varsler til coach — tre kategorier (6.8):** (a) noen venter på svar
+     nå (booking-forespørsel, melding fra spiller/forelder, avlysning),
+     (b) dagen endrer seg (økt avlyst/flyttet, forfall, ny bekreftet booking),
+     (c) penger (betaling feilet, nytt abonnement, oppsigelse, forfalt faktura).
+     **Spillerens fremgang og avvik skal IKKE pushes** — det haster aldri i
+     minutter og hører hjemme i Stall.
+  9. **ÉN INNGANG PER FUNKSJON — konsolideringsregelen (6.9).** Anders avviste
+     kutt som mål: «målet er ikke nødvendigvis å kutte, men at vi har alt
+     forenklet, slik at det ikke er fem forskjellige innganger til samme
+     funksjon». **Regel: hver funksjon har nøyaktig én adresse. Det som i dag er
+     egne sider blir faner eller paneler inne i den ene siden. Ingen
+     funksjonalitet fjernes; alle gamle adresser blir redirects.**
+
+     Målt tilstand 30.08.2026: 90 ekte AgencyOS-skjermer (ikke-legacy,
+     ikke-redirect). Railen (AX-01) + radene under Meg gir 9 adresser — ~57
+     skjermer står utenfor navigasjonen, og **15 har ingen vei inn i det hele
+     tatt** (`agencyos/ak-stigen`, `agenticos/projects|runtimes|skills`,
+     `analysere/compliance`, `gdpr`, `kalender/hendelse/ny`, `kalender/lag`,
+     `settings/api`, `settings/security`, `talent/wagr-import`, `team/ekstern`,
+     `team/inviter`, `videoer`, `workspace/prosjekter`).
+
+     **Konsolideringslista — 42 skjermer → 10 funksjoner:**
+
+     | Funksjon | Slås sammen fra |
+     |---|---|
+     | Kø | `godkjenninger`, `agenticos/godkjenn`, `agenticos/ko`, `tester/foreslatte`, `tournaments/dubletter` |
+     | Oppsett | `settings` + `api`/`calendar`/`periode-navn`/`security`/`tilgang`, `klubb/innstillinger`, `integrasjoner` |
+     | Kalender | `kalender`, `kalender/lag`, `kalender/hendelse/ny`, `agencyos/uka`, `stall/dag` |
+     | Jarvis | `agenticos`, `agenticos/projects`, `agenticos/runtimes`, `agenticos/skills` |
+     | Oppgaver | `handlingssenter`, `workspace`, `workspace/prosjekter`, `workspace/notion` |
+     | Turnering | `tournaments`, `tournaments/ny`, `tournaments/dubletter`, `turnering-kart` |
+     | Kommunikasjon | `innboks`, `innboks-epost`, `email-templates`, `/meg` |
+     | Analyse | `analyse`, `analyse/stall`, `analysere/compliance` |
+     | Plan | `planlegge`, `plan-templates`(+`/ny`), `teknisk-plan` |
+     | Hjem | `agencyos` (Konsoll), `brief` (Daglig brief) |
+
+     `/admin/talent/*` er per beslutningen 26.08 uansett feilplassert —
+     talent-flatene skal bo under `/innsyn`, aldri i AgencyOS-menyen.
+
+- **GRILLINGEN RUNDE 2 — fire svar + nullstilt base (Anders 2026-08-30, i økt):**
+  oppfølging av 112-spørsmålsdokumentet («Grillingen», artifact `6ef6f807`). Alle
+  målinger verifisert i produksjonsdatabasen 30.08.2026 før beslutning.
+
+  1. **BRUKERBASEN ER NULLSTILT FØR LANSERING (utført 30.08.2026).** Alle brukere
+     slettet unntatt Anders (`akgolfgroup@gmail.com`), Markus (`markus@akgolf.no`)
+     og demo-spilleren Øyvind Rohjan (`screentest@akgolf.test`, beholdt fordi
+     skjermbilde-gaten krever innlogget testbruker med data). 42 app-brukere,
+     28 auth-kontoer og all eid data (runder, tester, TrackMan-økter, bookinger,
+     abonnement-rader) er slettet; foreldreløse testbookinger ryddet i samme økt.
+     Grunnlag: hele basen var verifisert testdata — 0 av 38 spillere innlogget
+     siste døgn, 0 Stripe-abonnement, eneste spiller med treningsdata var
+     demo-brukeren. Turneringsbasen (7 274 turneringer, 941 245 resultater)
+     er uberørt. Konsekvens: 1. september starter med reell base = 0, og
+     spørsmålet «hva skjer med eksisterende gratisbrukere» (grillingen 11.5)
+     er bortfalt. Kjent skavank fra før: screentest-brukerens `authId` peker
+     ikke på noen auth-konto — skjermtest-innlogging må verifiseres ved neste
+     skjerm-PR.
+  2. **Bruksmåling bygges nå (grillingen 1.7).** Minimal daglig aktiv-måling:
+     én rad per bruker per aktiv dag (userId + dato), skrevet ved innlasting av
+     `/portal`, pluss et lite kort i AgencyOS («X brukte appen i går / denne uka /
+     ikke åpnet på 30 dager»). Ingen tredjepartsverktøy, ingen cookies. Motivasjon:
+     aktivering og frafall må måles fra dag én av betalt drift, ikke gjettes.
+  3. **DataGolf-attribusjon fikses denne uka (grillingen 9.8).** «Powered by
+     Data Golf» inn på alle offentlige statistikksider (~45) og på spillerens
+     DataGolf-kort. Dette er et løpende lisenskrav uavhengig av live-siden.
+  4. **Foreldre skal kunne booke time for barnet (grillingen 11.2).** Full
+     booking-opprettelse fra forelderportalen (ikke bare forespørsel), bygges
+     etter 1. september. Forelderen er ofte den som faktisk administrerer
+     juniorens timer, og booking av enkelttimer ligger i gratisnivået.
+
+- **LIVE-SIDEN: TO-LAGS-MODELL (Anders 2026-08-30, i økt):** besvarer grillingen
+  9.1, 9.2, 9.5, 9.6 og 9.7 i én beslutning.
+
+  1. **Åpent lag (uten innlogging):** DataGolf-proffdata (alltid med «Powered by
+     Data Golf»), egne spillere med aktivt samtykke, og myndige spillere. Formål:
+     rekruttering og synlighet — siden skal selge gratisnivået, ikke være en
+     nøytral resultattjeneste.
+  2. **Barnevern-regel på ALLE åpne flater:** spillere født 2008 eller senere
+     uten aktivt samtykke vises aldri offentlig; mangler fødselsår → vises ikke.
+     Gjelder også de eksisterende ~45 offentlige statistikksidene, som må få
+     samme filter.
+  3. **Gratis konto-laget:** norske turneringer i bredden, juniorresultater og
+     «følg spiller» ligger bak gratis innlogging. Registreringen er trakten mot
+     299 kr/mnd, og innlogget visning til berørte (forelder/trener/spiller) er
+     juridisk en tjeneste, ikke masse-republisering.
+  4. **GolfBox:** offisiell avtale søkes via Anders' NGF-kontaktpunkter FØR bred
+     åpen visning av GolfBox-data. Intern/innlogget bruk fortsetter som i dag.
+     Begrunnelse: databasevernet beskytter GolfBox' samling selv om hvert
+     resultat er offentlig, og en konflikt ville truffet Team Norway-relasjonene.
+     E-postutkast til NGF: Anders ba om det senere, ikke i denne økten.
+  5. **Datahygiene (grillingen 9.10) anses løst:** selvhelbredende
+     turneringsstatus virker — 30.08 står 5 turneringer som pågående, ingen med
+     passert sluttdato, og «AVLYST»-raden er korrekt CANCELLED.
+
+- **FORRETNINGSMODELL: SPILLERLISENSER (Anders 2026-08-30, i økt):** binder
+  sammen PlayerHQ-abonnementet og organisasjonene (WANG/Team Norway). Kjernen:
+  spilleren eier profilen og abonnementet — organisasjonene betaler aldri for
+  plattformen, kun for spillerlisenser.
+
+  1. **Gratis PlayerHQ-profil** = testdata, turneringsdata og statistikk — og
+     det er GRATIS å dele dette trinnet til organisasjoner. Plattformen fungerer
+     dermed som kartleggingsverktøy for WANG/TN uten betalingsterskel.
+  2. **FULL (299 kr/mnd)** = alle funksjoner + mulighet for komplett
+     profildeling.
+  3. **Deling i to trinn per organisasjon** (grillingen 7.4 avgjort): trinn 1 =
+     tester + turneringer + statistikk (gratis å dele); trinn 2 = komplett
+     profil — treningsplan, TrackMan, analyse, fremgang (krever FULL). Spilleren
+     (forelder for mindreårige) styrer trinn per organisasjon og kan trekke når
+     som helst. To brytere, aldri ti.
+  4. **Team Norway-spillere har KRAV om komplett PlayerHQ (FULL).** TN eller
+     WANG kan betale lisensen for spilleren — organisasjonsbetalt abonnement er
+     lisensmodellen. Organisasjonene betaler aldri for Workdesk/plattform i seg
+     selv.
+  5. **WANG Fredrikstad er gratis** — Anders jobber der og har private spillere
+     der; inkludert i kontrakten. **Alle andre WANG-skoler betaler** —
+     spillerlisenser til øvrige WANG-skoler er et eget B2B-marked.
+  6. TN-farge/branding: Anders lager komplett brandingsystem selv (leveres
+     separat, samme dag) — TN-bølgen tegner ingenting før det foreligger.
+
+- **INNSIKT PER SPILLER — de fire spørsmålene (Anders 2026-08-30, grillingen
+  10.1):** coach-flaten Innsikt bygges for å svare på disse, i denne rekkefølgen.
+  Alle fire har ferdigbygd eller eksisterende datagrunnlag.
+
+  1. **Utvikler hen seg raskt nok?** Vekstrate år for år mot eget utgangspunkt,
+     med kohortens snitt som coachens (skjulte) referanse — analysen ligger
+     ferdigbygd uten skjerm.
+  2. **Hvor kan hen nå?** Spillerens bane lagt oppå historiske løp («slik lå
+     Hovland/Reitan da de var 17») — godkjent for spillerflaten i
+     produktretning pkt. 4, bygges også i coach-visning.
+  3. **Tåler hen konkurranse?** Gapet mellom turneringsscore og trenings-/
+     testnivå, og om gapet øker eller minker over tid.
+  4. **Riktig turneringsprogram?** Konkurransevolum og motstandsnivå målt mot
+     utviklingen, koblet til A/B/C-prioriteringen som finnes i modellen.
+
+- **TEAM NORWAY-WORKDESK — spesifikasjon (Anders 2026-08-30, i økt):** TN-siden
+  utvikles til et komplett arbeidsområde som erstatter Messenger-grupper, e-post
+  og Word/Excel. Bygger på org-flate-grunnmuren fra bølge N og samtykke-stakken
+  (`src/lib/auth/ekstern-leser-scope.ts`).
+
+  1. **Pilot høsten 2026:** Anders + 2–5 navngitte TN-trenere får konto, med
+     tilgang kun til egne grupper; spillere inn via samtykke. Bevis på én
+     samling før utrulling.
+  2. **Forretningsmodell: gratis pilot 2026/27 → avtale fra 2027** hvis TN tar
+     den i bruk — sies høyt fra start. NGF som referansekunde er inngangen til
+     klubbmarkedet (Fredrikstad Total-sporet). PRESISERT senere samme økt:
+     avtalen gjelder SPILLERLISENSER, ikke plattformleie — se blokken
+     «FORRETNINGSMODELL: SPILLERLISENSER».
+  3. **Dataansvar: AK Golf eier alt.** (Anders valgte bort «organisasjonen
+     eier»-modellen.) Konsekvens: hver TN-spiller/forelder samtykker direkte til
+     AK Golf, og GolfBox-bruken forblir AK Golfs ansvar (innlogget bruk = lav
+     risiko; avtale søkes per live-siden-beslutningen). Dataansvaret må
+     avtalefestes når lisensavtalen kommer i 2027.
+  4. **Rekkefølge: egen TN-bølge ETTER bølge N-kjernen.** Lansering 1. sep og
+     bølge N går først; denne spesifikasjonen er byggeordren for TN-bølgen.
+     WANG-elevene onboardes i september uavhengig av dette (PlayerHQ, ikke
+     Workdesk).
+  5. **Kommunikasjon: poster, ikke chat.** Trener poster til gruppe og til
+     enkeltspiller — med video, bilder, lenker og vedlegg (flybilletter,
+     hotellreservasjoner o.l.). Coach jobber direkte i plattformen, aldri via
+     Word-vedlegg. Ingen fri chat. 1:1-poster til mindreårige skal være
+     sporbare og synlige for forelder (idrettens åpenhetsprinsipp).
+  6. **Testprotokoller deles på tvers av AK Golf, WANG og Team Norway:** en ny
+     protokoll (f.eks. putt- eller TrackMan-test) opprettes én gang og deles
+     mellom organisasjonene. Driftsmodellen for endringer SKAL spesifiseres i
+     planen (Anders eksplisitt): anbefalt løsning er versjonerte protokoller
+     som låses ved første bruk — resultater peker på versjonen, endring gir ny
+     versjon, eierorganisasjonen endrer, delte mottakere bruker.
+  7. **«Kartlegging av spillere» = landskapsanalyse av norsk juniorgolf**, ikke
+     internt register: antall Olyo Tour-/Srixon Tour-spillere per region, nivå,
+     konkurranser per år, hvilke klubber som har flest spillere per klasse.
+     Datagrunnlaget finnes (941k resultater + ferdigbygde klubbaggregater og
+     kohortanalyser uten skjerm). Anders leverer MD-fil med alle turneringer og
+     lenker som spesifikasjon — bygging venter på den.
+  8. **Dokumenter: fildeling per gruppe MED lesekvittering** («12 av 14 har
+     åpnet uttakskriteriene») og «sist oppdatert»-merking.
+
+- **WANG/TEAM NORWAY — fire svar (Anders 2026-08-30, i økt):** grillingen runde 7.
+
+  1. **WANG-elevene og GFGK-juniorene blir fulle PlayerHQ-brukere i høst (7.2):**
+     foreldresamtykke først, deretter invitasjon til gratisnivået; Anders
+     planlegger øktene deres i Workbench; organisasjonsflaten leser via
+     samtykkemodellen. De er de første ekte brukerne, før markedsføringen starter.
+  2. **«Karaktermatrisen» er Anders' egen sportslige vurdering — IKKE
+     skolekarakterer (7.7).** Bygges som coach-vurdering i elevoppfølgingen.
+     Heter «vurdering» i UI, aldri «karakterer». Skolens karakterer holdes helt
+     utenfor appen (skolens domene).
+  3. **Test-føringsskjermen bygges, med fysiske tester som primærcase (7.5):**
+     på testdager føres fysiske tester i bulk — 10+ elever etter tur på samme
+     øvelse (benkpress-eksempelet). Øvrige protokoller føres oftest én-til-én,
+     men parallellføring skal være mulig for alle protokoller. Design: velg
+     protokoll → før spiller for spiller i kø.
+  4. **NGF-samarbeidet er produktleveranse, ikke rapportplikt (7.3):** ingen har
+     bestilt data av Anders. Produktet lages på vegne av WANG Toppidrett og
+     NGF-samarbeidet, der Anders er ressurs for begge. Ambisjonen: Team
+     Norway-siden utvikles til et komplett arbeidsområde («Workdesk») — tester,
+     DataGolf-integrering, GolfBox-resultater, kartlegging av spillere, grupper
+     med kommunikasjon, egne tester, dokumentdeling, samlingspunkt — som
+     erstatter e-post/Word/Excel. Egen grilling/spesifikasjon kjørt samme økt;
+     svarene låses i egen blokk.
+
+- **PRODUKTRETNING — åtte svar (Anders 2026-08-30, i økt):** grunnlaget for Innsikt
+  (AgencyOS) og Analyse (PlayerHQ). Bygg mot disse, ikke mot gjetning.
+
+  1. **Coachens hovedspørsmål er «hvor taper spilleren slag».** Innsikt bygges rundt
+     slagfordeling som oversettes til trening — ikke rundt etterlevelse, ikke rundt
+     rangering. De andre spørsmålene kan finnes, men de eier ikke skjermen.
+  2. **Slagtapet måles mot SPILLEREN SELV over tid**, ikke mot proffnivå, ikke mot
+     jevnaldrende, ikke mot coach-satte mål. «Hvor har hen blitt bedre eller
+     dårligere enn seg selv.» Konsekvens: kjernen i Innsikt trenger KUN spillerens
+     egne runder — den er ikke blokkert av identitetslaget.
+  3. **Kohort-sammenligning er coachens verktøy alene.** Spilleren ser ikke sin
+     persentil i årskullet. Foreldre og eksterne lesere ser den ikke. Anders
+     formidler den muntlig når han vil.
+  4. **Spillerens «hvor står jeg» = egen utvikling + egen turneringshistorikk +
+     veien til de som lyktes.** Historiske baner for navngitte spillere (Hovland,
+     Reitan: «slik lå de da de var 17») er GODKJENT for spillerflaten. Det er ikke
+     i strid med punkt 3: å speile seg i en historisk karriere er noe annet enn å
+     bli rangert mot sitt eget kull.
+  5. **AgencyOS-morgenskjerm: kø øverst, dagens plan under.** Kø er handlingslista
+     og hovedsaken; dagen er orientering. Avvik nås via Stall, ikke her.
+  6. **Workbench åpner på spillerlisten med ukestatus** (planlagt/utkast/publisert
+     per spiller), ikke på en mellomside og ikke på sist brukte spiller.
+  7. **TruthLayer = målte tall, aldri synsing.** Ikke en skjerm og ikke et
+     produkt: et kvalitetsprinsipp for hele plattformen. Alt appen påstår om en
+     spiller skal kunne spores til en måling med **dato og kilde**, og estimerte
+     tall skal merkes eksplisitt som estimat. Gjelder Innsikt, Analyse, tester,
+     fys-score og alt annet som viser et tall om et menneske.
+  8. **Prøveuka krever kort og bor i Stripe** (samme dag, se BUSINESS-RULES
+     §Abonnement). Gratisnivået — testbatteri, DataGolf-verktøy, runde- og
+     statistikkføring, booking av enkelttimer — er permanent og er
+     hovedbudskapet i markedsføringen, ikke prøveperioden.
+
+  **Rekkefølge-konsekvens:** fordi referansen er spilleren selv (punkt 2), kan
+  Innsikt bygges FØR identitetslaget. Identitetslaget kreves fortsatt for punkt 4
+  (spillerens egen turneringshistorikk + historiske baner) og for coachens
+  kohorttall (punkt 3), men det blokkerer ikke kjernen lenger.
+
 - **TALENTHQ AVVIKLES SOM EGET PRODUKT — ALT SAMLES I PLAYERHQ (Anders 26.08.2026,
   rest-låst 28.08):** den gamle appen (`akgolfsoftware/talenthq`, mappe
   `~/Developer/ak-golf-talenthq`) skal ikke utvikles videre. Merkenavn: alt heter
@@ -25,7 +451,7 @@ Gjelder til Anders endrer dem.
   Pipelines bor i `akgolfsoftware/ak-golf-pipelines`. Team Norway-rød kun på logo
   og skinne (ikke som status). ~23 skjermer skal med, ikke 70. **Arkiveres ikke** før
   datahenting har kjørt grønt minst én uke fra pipeline-repoet og skjermene er inne.
-  Fasit og 10-stegs rekkefølge: `docs/natt/BOLGE-N-TALENTHQ-INN-2026-08-26.md`.
+  Fasit og 10-stegs rekkefølge: `natt/BOLGE-N-TALENTHQ-INN-2026-08-26.md`.
 - **ALLE SKJERMER I PLAYERHQ, AGENCYOS OG FORELDER SKAL HA LYS OG MØRK MODUS
   (Anders 2026-08-26, i økt):** løser forelder-omfangsspørsmålet (T4 i AAPNE-SPORSMAAL) —
   forelder-appen er IKKE unntatt Train-lock, hele appen porter med fungerende
@@ -39,7 +465,7 @@ Gjelder til Anders endrer dem.
   mørke uten cookie. Train-lock er mørk-først (scene `#000000`, lys er varianten), og
   lys-defaulten fra 25.07 — begrunnet med «mørk skjerm er vanskelig å lese utendørs i
   sollys» — er nå brukerens valg via bryteren, ikke appens default. Dette besvarer åpent
-  spørsmål 1 i `docs/natt/D2-TOKENS-DONE.md`. Regelen bor i **`src/lib/v2/tema-default.ts`**
+  spørsmål 1 i `natt/D2-TOKENS-DONE.md`. Regelen bor i **`src/lib/v2/tema-default.ts`**
   (`onsketTema`), kalt av både rot-layout (SSR) og `V2Shell` (rute-veksling) — den var
   duplisert i to filer, som er en driftsfelle. **Uendret:** `/auth` er LYS (låst PP-A/A4
   16.08), landingssidene alltid lyse, resten mørk som før. `/forelder` er fortsatt LYS
@@ -61,7 +487,7 @@ Gjelder til Anders endrer dem.
   (04.08) og «Enkelhet/færrest trykk» gjelder uendret. **Begge forutsetningene er levert 25.08:**
   fasiten ligger i `designsystem/train-lock/` (D3, 180 skjermer), og tokensettet i kode
   (D2, PR #586) — `src/styles/train-lock-tokens.css` + `src/lib/v2/train-lock.ts`, med kilder
-  og ti åpne spørsmål i `docs/natt/D2-TOKENS-DONE.md`. Selve skjermporten gjenstår (B8 +
+  og ti åpne spørsmål i `natt/D2-TOKENS-DONE.md`. Selve skjermporten gjenstår (B8 +
   bølge T), og mørk-som-default er fortsatt uavklart (åpent spørsmål 1 der). Marketing/
   landingssider beholder egen fasit (ak-golf-website). Forelder-portalens omfang: uavklart,
   spør Anders. Konfliktregel: sier et dokument/skill noe annet enn Train-lock for
@@ -162,7 +588,7 @@ Gjelder til Anders endrer dem.
   skrives resultatet til `TalentTracking.testNivaaer` via `src/lib/talent/test-sync.ts` +
   `src/lib/domain/talent-sync.ts` (T4, 16.08). `/portal/talent/mitt-niva` leser feltet.
   Huben `/portal/talent` redirecter til «Mitt nivå». Workbench testbatteri-ark gjenstår
-  (N8/N10 i `docs/natt/BOLGE-N-TALENTHQ-INN-2026-08-26.md`).
+  (N8/N10 i `natt/BOLGE-N-TALENTHQ-INN-2026-08-26.md`).
   **Protokoll-avklaringen er LØST 2026-08-16 (T5):** spilleren ser 21 CANON-rader (20 protokoller;
   Putt Speed Control har to gjennomføringsvarianter) + egne tester — kodet i
   `src/lib/portal-tester/test-tilgang.ts`. **Fasit for test-gjennomføringsskjermen finnes nå**
@@ -174,7 +600,7 @@ Gjelder til Anders endrer dem.
   de gamle adressene blir redirects dit. Kun redesign av agent-team alene er IKKE beslutningen.
   **Status 17.08.2026:** `/admin/agenticos` er bygget; `agent-team` og `agents` redirecter.
   Gjenstår: `/admin/godkjenninger` (fortsatt egen side) og konsollens AI-panel — se
-  `docs/plan-agenticos-jarvis-2026-08-17.md`.
+  `plan-agenticos-jarvis-2026-08-17.md`.
 - **Turneringsplanlegging inn i Workbench (Anders 2026-08-04, Fase 1):** fasiten
   `workbench-turnering.html` bygges som del av `WorkbenchV2` (coach planlegger turnering samme
   sted som trening) — ikke som ombygging av `/admin/tournaments`.
