@@ -23,7 +23,15 @@ Sist oppdatert: 2026-08-17 (dato rettet — §Abonnement og tilgang er fra 2026-
 
 ### FULL tilgang gratis — fire eksakte tilfeller
 
-1. **Prøveperiode:** 1 måneds gratis tilgang etter registrering
+1. **Prøveperiode:** 1 uke full app, **starter i Stripe og krever kort**
+   (Anders 2026-08-29). Går automatisk over til betaling på dag 8 med mindre
+   spilleren sier opp. Kun ved FØRSTE PlayerHQ-abonnement.
+   - **Registrering gir ingen prøve av seg selv.** Den gamle regelen
+     (`createdAt` + 30 dager, uten kort) er FJERNET fra `resolveTilgang`.
+     Nye spillere opprettes med `profilType = "TALENT"` og lander på
+     gratisnivået — aldri INGEN.
+   - `User.trialEndsAt` består som manuell overstyring (gitt tilgang,
+     forlengelse, opprydding). Det er nå eneste vei til kilde `PROVEPERIODE`.
    (`User.trialEndsAt` kan forlenge/forkorte per bruker).
 2. **Coaching-pakke:** Spiller har aktiv Performance- eller Performance Pro-pakke.
    **Oppsagt pakke gir tilgang UT den betalte perioden.**

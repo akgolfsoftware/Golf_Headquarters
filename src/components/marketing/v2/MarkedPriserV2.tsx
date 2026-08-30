@@ -17,7 +17,7 @@ import { PkShell } from "./paper/PkShell";
 const FAQ: { q: string; a: string }[] = [
   {
     q: "Hvordan får jeg PlayerHQ gratis?",
-    a: "Tre veier: én måneds prøveperiode for alle nye spillere, coaching-pakke (Performance eller Performance Pro) der appen er inkludert, eller gruppe via AK Golf, for eksempel WANG eller klubbtrening.",
+    a: "Testbatteriet, DataGolf-verktøyet, runde- og statistikkføring og booking av enkelttimer er gratis for alle, uten utløpsdato og uten kort. Resten av appen følger med coaching-pakke (Performance eller Performance Pro) eller gruppe via AK Golf, for eksempel WANG eller klubbtrening. Vil du prøve full app på egen hånd, får du én uke gratis mot at du legger inn kort — den går over til 299 kr på dag åtte hvis du ikke sier opp.",
   },
   {
     q: "Hva er forskjellen på coaching-pakker og appen?",
@@ -29,7 +29,7 @@ const FAQ: { q: string; a: string }[] = [
   },
   {
     q: "Hva skjer etter prøveperioden?",
-    a: "Du velger selv: fortsett for 299 kr per måned, gå videre med en coaching-pakke der appen er inkludert, eller la kontoen hvile. Dataene dine slettes ikke.",
+    a: "Du beholder testbatteriet, DataGolf-verktøyet og runde- og statistikkføringen gratis, uten tidsbegrensning. Vil du ha resten av appen, velger du selv: 299 kr per måned, en coaching-pakke der appen er inkludert, eller la det ligge. Dataene dine slettes ikke.",
   },
 ];
 
@@ -41,7 +41,8 @@ export function MarkedPriserV2() {
           <span className="pk-eyebrow">Priser</span>
           <h1 className="pk-hero">Enkelt og ærlig.</h1>
           <p className="pk-ing">
-            Én app, to måter å ha den på. Coaching-pakker med antall økter kjøpes separat, de er
+            Testbatteriet og DataGolf-verktøyet er gratis, uten utløpsdato. Resten av appen
+            koster 299 kr i måneden. Coaching-pakker med antall økter kjøpes separat, de er
             ikke app-nivåer.
           </p>
 
@@ -51,14 +52,21 @@ export function MarkedPriserV2() {
               <span className="pk-tall">
                 0 <small>kr/mnd</small>
               </span>
-              <p className="pk-pris-lede">Full app, uten månedspris, hvis ett av dette gjelder deg:</p>
+              <p className="pk-pris-lede">
+                Dette koster ingenting, og utløper aldri:
+              </p>
               <ul>
-                <li>Én måneds prøveperiode, for alle nye</li>
-                <li>Coaching-pakke: Performance eller Performance Pro</li>
-                <li>Gruppe via AK Golf, som WANG eller klubbtrening</li>
+                <li>Hele testbatteriet, med resultatene dine over tid</li>
+                <li>DataGolf-verktøyet: sammenlign deg med proffene</li>
+                <li>Logg runder og se hvor du taper slagene</li>
+                <li>Book enkelttimer med coach</li>
               </ul>
+              <p className="pk-pris-fot">
+                Full app følger med coaching-pakke eller gruppe gjennom AK Golf. Vil du prøve
+                den på egen hånd, får du én uke gratis mot at du legger inn kort.
+              </p>
               <Link className="pk-btn" href="/auth/signup">
-                Kom i gang gratis
+                Lag gratis konto
               </Link>
             </div>
 

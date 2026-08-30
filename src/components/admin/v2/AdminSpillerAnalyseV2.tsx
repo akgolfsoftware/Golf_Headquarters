@@ -14,7 +14,10 @@
 
 import Link from "next/link";
 import { AnalysereV2, type AnalysereData } from "@/components/portal/v2/AnalysereV2";
-import { Caps, Tittel, StatusPill, TilbakeLenke, CTAPill, HjelpTips, type StatusTone } from "@/components/v2";
+import { Caps, Kort, Tittel, StatusPill, TilbakeLenke, CTAPill, HjelpTips, type StatusTone } from "@/components/v2";
+import { TL } from "@/lib/v2/train-lock";
+import { MIN_MERKBAR_ENDRING, type SgMotSegSelv } from "@/lib/domain/sg-mot-seg-selv";
+import type { Turneringshistorikk } from "@/lib/domain/turneringshistorikk";
 
 /** Norsk eieform: «Rohjan» → «Rohjans», «Alex» → «Alex'». Holder navnet helt. */
 function eieform(navn: string): string {
@@ -31,15 +34,155 @@ function sgForm(data: AnalysereData): { l: string; tone: StatusTone } | null {
   return { l: "Stabil", tone: "info" };
 }
 
+/** Fortegnet tall, alltid med fortegn og komma: 0,6 → «+0,6». */
+function fmtEndring(v: number): string {
+  const s = v.toFixed(2).replace(".", ",");
+  return v > 0 ? `+${s}` : s;
+}
+
+function fmtNivaa(v: number | null): string {
+  return v == null ? "—" : v.toFixed(2).replace(".", ",");
+}
+
+/**
+ * «Mot seg selv» — coachens hovedspørsmål på én skjerm.
+ *
+ * Viser endring per SG-område mellom spillerens siste runder og de før dem.
+ * Positiv endring er forbedring. Området med størst tilbakegang løftes fram,
+ * fordi det er der samtalen bør starte.
+ *
+ * TruthLayer: hvert område viser hvor mange runder tallet bygger på, og et
+ * område uten registrerte verdier viser «—», aldri null. Tomt datagrunnlag
+ * gir en setning som sier hva som mangler, ikke en tom boks.
+ */
+function MotSegSelv({ d }: { d: SgMotSegSelv }) {
+  if (!d.harSvar) {
+    return (
+      <Kort eyebrow="Mot seg selv">
+        <p style={{ margin: 0, color: TL.mute, fontSize: 14, lineHeight: 1.55 }}>{d.grunnlag}</p>
+      </Kort>
+    );
+  }
+
+  const verst = d.storsteTilbakegang;
+
+  return (
+    <Kort
+      eyebrow="Mot seg selv"
+      action={
+        verst ? (
+          <StatusPill tone="down">{`${verst.navn} ${fmtEndring(verst.endring!)}`}</StatusPill>
+        ) : (
+          // Ikke tone «up»: den er grønn, og grønt er reservert for Godta og
+          // PUBLISERT (invariant 2). Nøytral er dessuten riktigere her —
+          // fravær av tilbakegang er ikke en godkjenning.
+          <StatusPill tone="lime">Ingen tilbakegang</StatusPill>
+        )
+      }
+    >
+      {verst && (
+        <p style={{ margin: "0 0 14px", fontSize: 15, lineHeight: 1.5, color: TL.text }}>
+          Størst tilbakegang er <strong>{verst.navn.toLowerCase()}</strong>, som har falt{" "}
+          {Math.abs(verst.endring!).toFixed(2).replace(".", ",")} slag mot spillerens egne
+          tidligere runder.
+        </p>
+      )}
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 1, background: TL.hair }}>
+        {d.akser.map((a) => {
+          // Kun tilbakegang får farge. Forbedring står nøytralt: grønt er
+          // reservert for Godta/PUBLISERT (invariant 2), og skjermens jobb er
+          // å peke på det som har falt — ikke å dele ut ros.
+          //
+          // Samme støygrense som domenet bruker, ellers ville en endring kunne
+          // stå rødt i tabellen uten å nevnes i overskriften, eller omvendt.
+          const farge =
+            a.endring == null
+              ? TL.mute
+              : a.endring <= -MIN_MERKBAR_ENDRING
+                ? TL.danger
+                : TL.text;
+          return (
+            <div
+              key={a.akse}
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr auto auto auto",
+                gap: 12,
+                alignItems: "baseline",
+                background: TL.elev,
+                padding: "10px 0",
+                minWidth: 0,
+              }}
+            >
+              <span style={{ fontSize: 14, color: TL.text, minWidth: 0 }}>
+                {a.navn}
+                {a.endring != null && (
+                  <span style={{ fontSize: 11, color: TL.mute, marginLeft: 8, fontFamily: TL.font.mono }}>
+                    {a.nyligAntall} mot {a.tidligereAntall} runder
+                  </span>
+                )}
+              </span>
+              <span
+                style={{
+                  fontFamily: TL.font.mono,
+                  fontSize: 13,
+                  color: TL.mute,
+                  fontVariantNumeric: "tabular-nums",
+                }}
+                title="Snitt i det eldre vinduet"
+              >
+                {fmtNivaa(a.tidligere)}
+              </span>
+              <span
+                style={{
+                  fontFamily: TL.font.mono,
+                  fontSize: 13,
+                  color: TL.text,
+                  fontVariantNumeric: "tabular-nums",
+                }}
+                title="Snitt i de siste rundene"
+              >
+                {fmtNivaa(a.nylig)}
+              </span>
+              <span
+                style={{
+                  fontFamily: TL.font.mono,
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: farge,
+                  fontVariantNumeric: "tabular-nums",
+                  minWidth: 52,
+                  textAlign: "right",
+                }}
+              >
+                {a.endring == null ? "—" : fmtEndring(a.endring)}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+
+      <p style={{ margin: "12px 0 0", fontSize: 12, color: TL.mute, fontFamily: TL.font.mono }}>
+        {d.grunnlag} Målt mot spilleren selv, ikke mot tour eller årskull.
+      </p>
+    </Kort>
+  );
+}
+
 export interface AdminSpillerAnalyseV2Props {
   /** Fullt spillernavn (kanon: alltid fullt navn). */
   navn: string;
   /** Spillerens bruker-id — for tilbake-lenke til profilen. */
   spillerId: string;
   data: AnalysereData;
+  /** «Hvor taper hen slag, mot seg selv» — beslutning 2026-08-30. */
+  motSegSelv: SgMotSegSelv;
+  /** Spillerens egne turneringsresultater — samme visning som spilleren ser. */
+  turneringer?: Turneringshistorikk;
 }
 
-export function AdminSpillerAnalyseV2({ navn, spillerId, data }: AdminSpillerAnalyseV2Props) {
+export function AdminSpillerAnalyseV2({ navn, spillerId, data, motSegSelv, turneringer }: AdminSpillerAnalyseV2Props) {
   const kat = data.minGolf.kategori;
   const aar = new Date().getFullYear();
   const eyebrow = kat
@@ -50,6 +193,7 @@ export function AdminSpillerAnalyseV2({ navn, spillerId, data }: AdminSpillerAna
   return (
     <AnalysereV2
       data={data}
+      turneringer={turneringer}
       /* Spillerens historikk, ikke coachens — tilgangen håndheves server-side
          av assertCanViewPlayerData i hentTreningsHistorikkFiltrert. */
       userId={spillerId}
@@ -79,6 +223,8 @@ export function AdminSpillerAnalyseV2({ navn, spillerId, data }: AdminSpillerAna
             {/* B: status — form eller «ingen trend» */}
             <StatusPill tone={form?.tone ?? "info"}>{form?.l ?? "Ingen trend ennå"}</StatusPill>
           </div>
+          {/* Coachens hovedspørsmål, over fanene: hvor taper hen slag. */}
+          <MotSegSelv d={motSegSelv} />
           {/* B: én primær CTA — Workbench / plan */}
           <Link href={`/admin/spillere/${spillerId}/plan`} style={{ textDecoration: "none", display: "block" }}>
             <CTAPill icon="layout-dashboard" full={mobile}>

@@ -135,6 +135,16 @@ a.pk-mkort:hover { border-color: var(--p-mid); color: inherit; }
   color: var(--p-muted);
 }
 
+/* Fotnote i priskortet: de tre veiene til full app gratis, under hovedlista.
+   Nedtonet, fordi hovedbudskapet er det permanent gratise over. */
+.pk-pris .pk-pris-fot {
+  margin: var(--p-s3) 0 0;
+  font-family: var(--p-body);
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--p-muted);
+}
+
 /* Sluttnote under en seksjon (fasit: `.ing` i 15px med toppluft) */
 p.pk-ing.pk-ing-fot { font-size: 15px; margin-top: var(--p-s5); max-width: 62ch; }
 

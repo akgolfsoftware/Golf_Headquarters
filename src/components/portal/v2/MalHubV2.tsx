@@ -85,7 +85,7 @@ export function MalHubV2({ data }: { data: MalHubData }) {
       </div>
 
       {/* B: én primær CTA full */}
-      <Link href="/portal/mal/bygger" style={{ textDecoration: "none", display: "block" }}>
+      <Link href="/portal/planlegge/bygger" style={{ textDecoration: "none", display: "block" }}>
         <span style={{
                 display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", padding: "10px 16px",
                 borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600, minHeight: 56,

@@ -65,7 +65,7 @@ export default async function AdminTrackmanSessionPage({ params }: Props) {
   const datoTekst = sesjon.recordedAt.toLocaleDateString("nb-NO", { day: "2-digit", month: "2-digit", year: "numeric" });
   const kilde = SOURCE_LABEL[sesjon.source] ?? sesjon.source;
   const spillerHref = `/admin/spillere/${sesjon.user.id}`;
-  const portalDetalj = `/portal/mal/trackman/${sesjon.id}`;
+  const portalDetalj = `/portal/analysere/trackman/${sesjon.id}`;
 
   return (
     <V2Shell bredde="kolonne" aktiv="innsikt" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>

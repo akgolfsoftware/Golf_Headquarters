@@ -141,7 +141,7 @@ const REGION_STATIC: Record<RegionSlug, {
     watchList: [
       { initialer: "TN", navn: "Tor Nilsen", klubb: "Trondheim GK", grunn: "Eneste pro fra Midt-Norge i 2025." },
     ],
-    mersalg: "Spiller du i Midt-Norge? PlayerHQ logger runder og viser SG-profilen din. Gratis i 30 dager.",
+    mersalg: "Spiller du i Midt-Norge? PlayerHQ logger runder og viser SG-profilen din. Gratis konto, ingen utløpsdato.",
   },
   nord: {
     klubber: 6, spillere: 67, turneringer: 18, pro: 0,
