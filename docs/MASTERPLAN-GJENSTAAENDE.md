@@ -195,7 +195,7 @@ PEI-motor `src/lib/domain/pei/`, Team Norway som kanonisk gruppe — alle i PR #
 
 | # | Rad | Hva gjenstår | Avhenger av |
 |---|---|---|---|
-| 2 | N4 | `test_shots` + attestering. Kode ligger på gren `claude/n4-testshot-normalisering` — **ikke merget**, tester mangler, DDL ikke kjørt mot prod | N3 |
+| 2 | N4 | `test_shots` + attestering. **RETTET 30.08.2026 — den gamle teksten stemte ikke.** Koden ER i main (`src/lib/domain/test-shot.ts`, `src/lib/actions/test-shot-actions.ts`, `scripts/n4-add-testshot-table.ts`, schema-endringen), og testene finnes (`src/lib/domain/test-shot.test.ts`). Grenen inneholdt ingenting main manglet. **Eneste reelle gjenstående: DDL-en er ikke kjørt mot prod** — `information_schema` har null tabeller som matcher `test_shot` (målt 30.08). Kjør `scripts/n4-add-testshot-table.ts` mot `DIRECT_URL` per gotcha-mønsteret for additive endringer. **Krever Anders' ja** (DB-endring) | N3 |
 | 3 | N6 | Kvitter Nordic League-pipelinen — den FINNES ALLEREDE i `ak-golf-pipelines` (`nordic-league-sync.yml`, cron 04:00 UTC) — ikke bygg på nytt, bare verifiser siste kjøring + rader | N1 |
 | 4 | N7 | Fasit: organisasjonsflaten. Tegn i Train-lock (mørk `#000000` + lys): skall + Oversikt for WANG og Team Norway. Arv per organisasjon: logo, skinne, handlingsfarge. Dekningsgrad-kortet («4 av 11 med profil») obligatorisk på TN | N-D1, N-D2 |
 | 4 | N8 | Fasit: trenerens føringsskjerm — det ekte skjermgapet: én trener fører mange spillere gjennom samme protokoll på testdag. Tre arketyper (port/tall/stige) + PEI-varianten | N7 |
