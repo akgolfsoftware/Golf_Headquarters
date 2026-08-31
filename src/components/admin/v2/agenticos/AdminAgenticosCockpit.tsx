@@ -25,7 +25,11 @@ export function AdminAgenticosCockpit({ data }: { data: AgenticosCockpitData }) 
         <AoFeilKort
           tittel={`${data.feilende[0].navn} svarer ikke`}
           tekst="Siste kjøring feilet. Tidligere forslag står i godkjenn-køen — ingenting er rørt uten deg."
-          primaer={<AoKnapp variant="primaer" href={data.feilende[0].detaljHref}>Åpne agent</AoKnapp>}
+          primaer={
+            <AoKnapp variant={data.neste ? undefined : "primaer"} href={data.feilende[0].detaljHref}>
+              Åpne agent
+            </AoKnapp>
+          }
           sekundaer={<AoKnapp href="/admin/agenticos/ko">Se kø</AoKnapp>}
         />
       ) : null}
@@ -95,7 +99,7 @@ function NesteKort({ data }: { data: AgenticosCockpitData }) {
         <p style={{ margin: 0, fontSize: 13, color: TL.mute, lineHeight: 1.6 }}>
           Agenten foreslår nye når det kommer data den kan jobbe med — forslagene havner i godkjenn-køen.
         </p>
-        <AoKnapp variant="primaer" href="/admin/workspace">
+        <AoKnapp variant="primaer" full href="/admin/workspace">
           Ny oppgave
         </AoKnapp>
       </AoKort>
@@ -117,7 +121,7 @@ function NesteKort({ data }: { data: AgenticosCockpitData }) {
       <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
         {erGodkjenn ? (
           <>
-            <AoKnapp variant="primaer" href={`/admin/agenticos/godkjenn?sak=${neste.id}`}>
+            <AoKnapp variant="primaer" full href={`/admin/agenticos/godkjenn?sak=${neste.id}`}>
               Godkjenn
             </AoKnapp>
             <AoKnapp href={`/admin/agenticos/godkjenn?sak=${neste.id}`}>Åpne task</AoKnapp>
@@ -128,7 +132,7 @@ function NesteKort({ data }: { data: AgenticosCockpitData }) {
             <AoKnapp href={`/admin/agents/${neste.slug}`}>Åpne task</AoKnapp>
           </>
         ) : (
-          <AoKnapp variant="primaer" href={`/admin/agents/${neste.slug}`}>
+          <AoKnapp variant="primaer" full href={`/admin/agents/${neste.slug}`}>
             Åpne task
           </AoKnapp>
         )}
@@ -143,6 +147,7 @@ function KjorKnapp({ slug }: { slug: string }) {
   return (
     <AoKnapp
       variant="primaer"
+      full
       disabled={pending}
       onClick={() =>
         start(async () => {
