@@ -111,7 +111,7 @@ export const AGENCYOS_NAV: V2NavItem[] = [
   { id: "spillere", label: "Stall", icon: "users", href: "/admin/spillere" },
   { id: "planlegge", label: "Workbench", icon: "file-text", href: "/admin/planlegge" },
   { id: "innsikt", label: "Innsikt", icon: "bar-chart", href: "/admin/analyse" },
-  { id: "innstillinger", label: "Oppsett", icon: "settings", href: "/admin/settings" },
+  { id: "innstillinger", label: "Oppsett", icon: "settings", href: "/admin/oppsett" },
 ];
 
 /**
@@ -186,7 +186,7 @@ export const AGENCYOS_ROM: V2Rom[] = [
     beskrivelse: "Innstillinger, team, integrasjoner, sikkerhet",
     meta: "System",
     icon: "settings",
-    href: "/admin/settings",
+    href: "/admin/oppsett",
     adminOnly: true,
   },
 ];

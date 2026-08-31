@@ -92,6 +92,8 @@ export interface ClubSettingsData {
 type Props = {
   klubber: KlubbItem[];
   settings: ClubSettingsData;
+  /** True når komponenten står som «Klubb»-fanen i /admin/oppsett (MASTERPLAN 15.3). */
+  somFane?: boolean;
 };
 
 // ── Delte skjema-primitiver (lokale — ikke rediger tl-kit.tsx) ──
@@ -754,7 +756,7 @@ function StatCelle({ label, value, sub }: { label: string; value: string; sub?: 
 
 // ----------------- Hovedkomponent -----------------
 
-export function AdminKlubbInnstillingerTrainLock({ klubber, settings }: Props) {
+export function AdminKlubbInnstillingerTrainLock({ klubber, settings, somFane = false }: Props) {
   const router = useRouter();
   const [addOpen, setAddOpen] = useState(false);
   const [editKlubb, setEditKlubb] = useState<KlubbItem | null>(null);
@@ -770,9 +772,11 @@ export function AdminKlubbInnstillingerTrainLock({ klubber, settings }: Props) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 18, maxWidth: 960, margin: "0 auto", width: "100%" }}>
-      <TlTittel sub={`Klubb og steder · ${klubber.length === 1 ? "1 klubb" : `${klubber.length} klubber`} · ${aktive} aktive`}>
-        Innstillinger
-      </TlTittel>
+      {!somFane && (
+        <TlTittel sub={`Klubb og steder · ${klubber.length === 1 ? "1 klubb" : `${klubber.length} klubber`} · ${aktive} aktive`}>
+          Innstillinger
+        </TlTittel>
+      )}
 
       <OrgKort settings={settings} onEdit={() => setOrgOpen(true)} />
 

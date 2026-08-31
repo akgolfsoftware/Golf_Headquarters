@@ -119,7 +119,7 @@ export default async function DagligBrief() {
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
             <PrintButton label="Skriv ut" />
             <EksportTrigger kind="brief" />
-            <Link href="/admin/settings" style={{ textDecoration: "none" }}>
+            <Link href="/admin/oppsett" style={{ textDecoration: "none" }}>
               <CTAPill ghost icon="settings">
                 Innstillinger
               </CTAPill>

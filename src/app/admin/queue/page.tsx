@@ -141,7 +141,7 @@ export default async function OppfolgingsKoPage() {
             </p>
           </div>
           <div style={{ display: "flex", gap: 8 }}>
-            <Link href="/admin/settings" style={{ textDecoration: "none" }}>
+            <Link href="/admin/oppsett" style={{ textDecoration: "none" }}>
               <CTAPill ghost icon="settings">
                 Justere regler
               </CTAPill>

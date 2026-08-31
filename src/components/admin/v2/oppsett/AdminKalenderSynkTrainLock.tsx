@@ -123,7 +123,14 @@ function KobleFraKnapp() {
   );
 }
 
-export function AdminKalenderSynkTrainLock({ data }: { data: AdminKalenderSynkV2Data }) {
+export function AdminKalenderSynkTrainLock({
+  data,
+  somFane = false,
+}: {
+  data: AdminKalenderSynkV2Data;
+  /** True når komponenten står som «Kalender»-fanen i /admin/oppsett (MASTERPLAN 15.3). */
+  somFane?: boolean;
+}) {
   const router = useRouter();
   const { connection, subscriptions } = data;
 
@@ -202,8 +209,8 @@ export function AdminKalenderSynkTrainLock({ data }: { data: AdminKalenderSynkV2
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 18, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       <div>
-        <TlTittel sub="AgencyOS">Kalender-synk</TlTittel>
-        <p style={{ marginTop: 8, fontSize: 13, color: TL.mute, lineHeight: 1.6, maxWidth: 560 }}>
+        {!somFane && <TlTittel sub="AgencyOS">Kalender-synk</TlTittel>}
+        <p style={{ marginTop: somFane ? 0 : 8, fontSize: 13, color: TL.mute, lineHeight: 1.6, maxWidth: 560 }}>
           Koble Google-kontoen din og velg hvilke kalendere som skal pushe bookinger og blokkere
           tider. Endringer i Google Calendar reflekteres tilbake hit.
         </p>
