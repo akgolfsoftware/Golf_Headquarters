@@ -557,9 +557,14 @@ function DagTidslinje({
 export function KalenderLagUkeV2({
   data,
   startLag,
+  somFane = false,
 }: {
   data: KalenderLagUkeData;
   startLag?: KalenderLag;
+  /** MASTERPLAN 15.4: under /admin/kalender-fanene eier siden caps-tittelen og
+   *  fane-raden — komponentens «Kalender»-caps og VisningBytte skjules da
+   *  (lærdommen fra 15.1/15.2: en side-komponent tar med seg eget hode inn i fanen). */
+  somFane?: boolean;
 }) {
   const mobil = useErMobil(1101);
   const [synligeLag, setSynligeLag] = useState<Set<KalenderLag>>(
@@ -601,10 +606,12 @@ export function KalenderLagUkeV2({
   const header = (
     <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 14, marginBottom: 16 }}>
       <div>
-        <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>
-          Kalender
-        </div>
-        <div style={{ marginTop: 4, fontSize: 26, fontWeight: 700, letterSpacing: "-0.01em", color: TL.text }}>
+        {!somFane && (
+          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>
+            Kalender
+          </div>
+        )}
+        <div style={{ marginTop: somFane ? 0 : 4, fontSize: somFane ? 19 : 26, fontWeight: 700, letterSpacing: "-0.01em", color: TL.text }}>
           {data.periode}
         </div>
       </div>
@@ -619,7 +626,7 @@ export function KalenderLagUkeV2({
           <Icon name="chevron-right" size={16} />
         </Link>
       </div>
-      <VisningBytte nav={data.nav} visning={data.visning} />
+      {!somFane && <VisningBytte nav={data.nav} visning={data.visning} />}
       {antallKollisjoner > 0 && (
         <TlBadge tone="fare">
           {antallKollisjoner} {antallKollisjoner === 1 ? "romkollisjon" : "romkollisjoner"}

@@ -543,7 +543,7 @@ export function TrainLockStall({ data }: { data: StallV2Data }) {
         </div>
       </div>
       <Link
-        href="/admin/stall/dag"
+        href="/admin/kalender?fane=stall"
         className={PRESS}
         style={{
           flexShrink: 0,

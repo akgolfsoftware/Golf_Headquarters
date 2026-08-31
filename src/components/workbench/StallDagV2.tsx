@@ -75,14 +75,25 @@ type Props = {
   data: StallDagViewModel;
   /** true = valgt dato er i dag (Oslo) — styrer «I dag»-knappen i topplinjen. */
   erIdag: boolean;
+  /** MASTERPLAN 15.4: flaten bor nå som fane på /admin/kalender — dag-navigasjonen
+   *  lenker da dit i stedet for til den redirect-ede /admin/stall/dag-adressen. */
+  somFane?: boolean;
 };
 
-export function StallDagV2({ dato, data, erIdag }: Props) {
+/** Dag-navigasjonens adresse — fanen på /admin/kalender eller den gamle egen-siden. */
+function stallDagHref(dato: string | null, somFane: boolean): string {
+  if (somFane) {
+    return dato === null ? "/admin/kalender?fane=stall" : `/admin/kalender?fane=stall&dato=${dato}`;
+  }
+  return dato === null ? "/admin/stall/dag" : `/admin/stall/dag?dato=${dato}`;
+}
+
+export function StallDagV2({ dato, data, erIdag, somFane = false }: Props) {
   const mobile = useMobile();
 
   return (
     <div style={{ display: "grid", gap: 16, minWidth: 0 }}>
-      <Topplinje dato={dato} antallSpillere={data.spillere.length} erIdag={erIdag} />
+      <Topplinje dato={dato} antallSpillere={data.spillere.length} erIdag={erIdag} somFane={somFane} />
 
       {data.spillere.length === 0 ? (
         <TomTilstand icon="users" title="Ingen spillere i stallen" sub="Legg til en spiller for å se dagen her." />
@@ -99,10 +110,12 @@ function Topplinje({
   dato,
   antallSpillere,
   erIdag,
+  somFane = false,
 }: {
   dato: string;
   antallSpillere: number;
   erIdag: boolean;
+  somFane?: boolean;
 }) {
   return (
     <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 10, minWidth: 0 }}>
@@ -116,15 +129,15 @@ function Topplinje({
       </div>
 
       <div style={{ display: "flex", gap: 6, marginLeft: "auto", flexWrap: "wrap" }}>
-        <Link href={`/admin/stall/dag?dato=${addDays(dato, -1)}`} prefetch={false}>
+        <Link href={stallDagHref(addDays(dato, -1), somFane)} prefetch={false}>
           <Knapp ghost icon="chevron-left">Forrige dag</Knapp>
         </Link>
         {!erIdag && (
-          <Link href="/admin/stall/dag" prefetch={false}>
+          <Link href={stallDagHref(null, somFane)} prefetch={false}>
             <Knapp ghost>{UI.today}</Knapp>
           </Link>
         )}
-        <Link href={`/admin/stall/dag?dato=${addDays(dato, 1)}`} prefetch={false}>
+        <Link href={stallDagHref(addDays(dato, 1), somFane)} prefetch={false}>
           <Knapp ghost icon="chevron-right">Neste dag</Knapp>
         </Link>
       </div>
