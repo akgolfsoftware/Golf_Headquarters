@@ -6,10 +6,20 @@
  * scoringMode "hit-rate", ett steg med checkbox-feltet «ok», se
  * `detectLiveArtefaktKind` i src/lib/domain/tester-live.ts).
  *
- * Fasit: designsystem/train-lock/TE-04 Live Gate.dc.html (+TE-04L lys) og
- * TE-05 Gate ferdig.dc.html — 10-prikk-rekke, Gjennom/Bom, V|H kun når
- * protokollen har et miss_side-felt (kun Putt Gate i dag). Fullført er
- * ALDRI grønn (TL.warm + hake, CLAUDE.md invariant 2).
+ * Fasit: designsystem/train-lock/TE-04 Live Gate.dc.html
+ * Fasit: designsystem/train-lock/TE-04L Live Gate lys.dc.html
+ * Fasit: designsystem/train-lock/TE-05 Gate ferdig.dc.html — 10-prikk-rekke,
+ * Gjennom/Bom, V|H kun når protokollen har et miss_side-felt (kun Putt Gate
+ * i dag). Fullført er ALDRI grønn (TL.warm + hake, CLAUDE.md invariant 2).
+ * PX-3 (28.08): sammenlignet mot TE-04L pixel for pixel — én reell feil
+ * funnet og rettet: pending-prikkens og V|H-knappenes ring brukte `TL.hair`
+ * (8 % kant, delelinjer) der fasiten bruker en sterkere 24 %-kant
+ * (`#0000003D` lys / `#FFFFFF3D` mørk) — det finnes allerede som
+ * `TL.draftBorder` (samme verdier, se train-lock-tokens.css), brukt der nå.
+ * Ingen ny token. Øvrige verdier (TL.dock på tap-knappene, TL.text/TL.scene
+ * på fylte prikker, TL.mute på caps/meta) stemte allerede eksakt mot begge
+ * tema. TL er ren token-referanse — lys kommer automatisk via
+ * `html[data-v2-tema]`-kaskaden, ingen egen lys-gren i denne filen.
  *
  * Artefakt uten dock: siden ligger allerede i (fullscreen)-gruppen — ingen
  * ny rute, kun riktig visuelt uttrykk for gate-protokollene. Andre
@@ -275,7 +285,7 @@ function GateDot({ nr, tilstand }: { nr: number; tilstand: "ok" | "bom" | "pendi
         fontVariantNumeric: "tabular-nums",
         background: fylt ? TL.text : "transparent",
         color: fylt ? TL.scene : TL.mute,
-        boxShadow: fylt ? "none" : `inset 0 0 0 1px ${TL.hair}`,
+        boxShadow: fylt ? "none" : `inset 0 0 0 1px ${TL.draftBorder}`,
         opacity: tilstand === "bom" ? 0.55 : 1,
       }}
     >
@@ -322,7 +332,7 @@ function SideKnapp({ label, aktiv, onClick }: { label: string; aktiv: boolean; o
         height: 44,
         borderRadius: TL.radius.card,
         background: "transparent",
-        boxShadow: `inset 0 0 0 1px ${TL.hair}`,
+        boxShadow: `inset 0 0 0 1px ${TL.draftBorder}`,
         border: "none",
         display: "flex",
         alignItems: "center",

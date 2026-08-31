@@ -10,6 +10,7 @@ import {
   generateCaddieSentence,
   type DispersionMapResult,
 } from "@/lib/trackman/dispersion-map";
+import { holeMapProjection, holeMapVariantFor, type HoleMapVariant } from "@/components/trackman/HoleMap";
 
 export type SgAkseVisning = {
   id: "OTT" | "APP" | "ARG" | "PUTT";
@@ -35,6 +36,7 @@ export type TmHubData = {
     setning: string;
     meta: string;
     kpis: string;
+    variant: HoleMapVariant;
     punkter: { cx: number; cy: number; siste: boolean }[];
     ellipse: { cx: number; cy: number; rx: number; ry: number } | null;
   } | null;
@@ -157,26 +159,24 @@ export async function hentAnalyseHub(userId: string): Promise<TmHubData> {
         map.caddieSentence ??
         generateCaddieSentence(map.offlineBias, map.n) ??
         `${map.n} slag registrert${map.medianCarry != null ? ` · ${Math.round(map.medianCarry)} m` : ""}.`;
-      const sides = egne.map((s) => s.side).filter((v): v is number => v != null);
-      const carries = egne.map((s) => s.carryDistance).filter((v): v is number => v != null);
-      const maxSide = Math.max(15, ...sides.map((v) => Math.abs(v)), 1);
-      const minC = Math.min(...carries, 130);
-      const maxC = Math.max(...carries, 170);
-      const spanC = Math.max(20, maxC - minC);
-      const punkter = egne
-        .filter((s) => s.side != null && s.carryDistance != null)
-        .map((s, i, alle) => ({
-          cx: 120 + ((s.side ?? 0) / maxSide) * 90,
-          cy: 150 - (((s.carryDistance ?? 0) - minC) / spanC) * 130,
-          siste: i === alle.length - 1,
-        }));
+      // TM-09a/b/f «Analyse mini»: samme projeksjon (hullkart-anker, "mini"
+      // størrelse 240×120) som hero-kartet i TrackManSessionDetail — ikke en
+      // egen skala-regel for kortet.
+      const variant = holeMapVariantFor(klubb);
+      const ellipseReach = map.hasEllipse && map.oneSigmaEllipse ? Math.max(map.oneSigmaEllipse.semiMajor, map.oneSigmaEllipse.semiMinor) : 0;
+      const { toX, toY } = holeMapProjection(map.shots.map((s) => s.point), ellipseReach, variant, "mini");
+      const punkter = map.shots.map((s, i, alle) => ({
+        cx: toX(s.point.lateral),
+        cy: toY(s.point.distance),
+        siste: i === alle.length - 1,
+      }));
       const ellipse =
         map.oneSigmaEllipse && map.hasEllipse
           ? {
-              cx: 120 + (map.oneSigmaEllipse.centerLateral / maxSide) * 90,
-              cy: 150 - (((map.meanCarry ?? minC) - minC) / spanC) * 130,
-              rx: Math.max(8, (map.oneSigmaEllipse.semiMinor / maxSide) * 90),
-              ry: Math.max(6, (map.oneSigmaEllipse.semiMajor / spanC) * 130),
+              cx: toX(map.oneSigmaEllipse.centerLateral),
+              cy: toY(map.oneSigmaEllipse.centerDistance),
+              rx: map.oneSigmaEllipse.semiMinor * (toX(1) - toX(0)),
+              ry: map.oneSigmaEllipse.semiMajor * (toY(0) - toY(1)),
             }
           : null;
       const datoKort = sesjon.recordedAt.toLocaleDateString("nb-NO", {
@@ -201,6 +201,7 @@ export async function hentAnalyseHub(userId: string): Promise<TmHubData> {
         setning,
         meta: bias,
         kpis,
+        variant,
         punkter,
         ellipse,
       };
