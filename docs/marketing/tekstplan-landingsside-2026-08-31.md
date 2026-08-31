@@ -129,8 +129,8 @@ er listet her:
 
 | # | Hva mangler | Hvem svarer |
 |---|---|---|
-| 1 | Pris på kartleggingsøkt | Anders |
-| 2 | Varer den 90 minutter? | Anders |
+| 1 | ~~Pris på kartleggingsøkt~~ **SVART 31.08:** ingen egen pris — vanlig timepris, og prisen hardkodes ikke i teksten (booking er kilden) | Anders ✓ |
+| 2 | ~~Varer den 90 minutter?~~ **SVART 31.08:** ja, 90 minutter er anbefalt lengde | Anders ✓ |
 | 3 | Pris per coaching-økt / pakkepriser | Anders |
 | 4 | Ett ekte spillersitat med navn, klubb og hcp før/etter (skriftlig samtykke) | Anders |
 | 5 | Antall spillere fulgt gjennom sesongen — ekte tall | Basen / Anders |
