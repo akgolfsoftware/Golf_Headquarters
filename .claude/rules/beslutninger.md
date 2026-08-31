@@ -28,6 +28,24 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
 
 ## Beslutningene (august 2026)
 
+- **KARTLEGGINGSØKTA ER IKKE GRATIS — 90 MINUTTER TIL VANLIG TIMEPRIS (Anders 31.08.2026, i økt):**
+  førstegangsøkta bookes som en helt vanlig time. Anbefalt lengde er **90 minutter**, og prisen er
+  den ordinære timeprisen for den lengden hos den aktuelle coachen — ingen egen kartleggingspris,
+  ingen rabatt, ingen gratisøkt. **Ordet «gratis» skal ut av all publikumsvendt tekst om
+  kartleggingsøkt.**
+  **Prisen skal ikke hardkodes i markedstekst.** `ServiceType.priceOre` i basen er eneste
+  priskilde, og booking-flaten viser den. Markedssidene sier «90 minutter, til vanlig timepris»
+  og lenker til `/booking`. Verifisert i basen 31.08: eneste aktive 90-minutters enkelttime er
+  `anders-flex-90` (2 500 kr); Markus har ingen aktiv 90-minutters, så ett fast tall på forsiden
+  ville vært feil for halve staben.
+  **Utført i samme økt:** «gratis» fjernet fire steder i produksjon
+  (`src/components/marketing/v2/MarkedCasesV2.tsx` ×3, `MarkedKontaktV2.tsx` ×1), 90-minutters-
+  anbefalingen lagt inn i kartleggingsavsnittet på begge forsidevariantene
+  (`MarkedForside.tsx`, `MarkedForsideReise.tsx`), og `[DIN PRIS] kr`-plassholderen fjernet fra
+  landingsside-kanvasen (`designsystem/canvas/landingsside-akgolf/`).
+  **Konsekvens:** «pris på kartleggingsøkt» var én av to ting som sperret lansering av den nye
+  landingssiden. Den sperren er borte. Igjen står ett ekte spillersitat med samtykke.
+
 - **MERKEPLATTFORMEN LÅST — JUNIOR- OG SPILLERUTVIKLING ER MÅLET, MORAD NEVNES ALDRI OFFENTLIG (Anders 31.08.2026, i økt):**
   fire svar som lukker STEG 18.1. Fullt grunnlag: `docs/merkevare/ak-golf-merkeplattform-2026-08-31.md`.
 

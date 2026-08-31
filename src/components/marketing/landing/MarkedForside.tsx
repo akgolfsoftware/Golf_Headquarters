@@ -316,7 +316,8 @@ export function MarkedForside() {
           </h2>
           <p className="mx-auto mt-4 max-w-md font-mk-serif text-lg text-mk-muted">
             Første økt kartlegger svingen, tallene og målene dine — og ender i
-            en konkret plan. Velg tid i kalenderen, eller send en e-post.
+            en konkret plan. Vi anbefaler 90 minutter, til vanlig timepris.
+            Velg tid i kalenderen, eller send en e-post.
           </p>
           <Link
             href="/booking"
