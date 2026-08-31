@@ -373,7 +373,12 @@ export const ScoringDetailsSchema = z.object({
     label: z.string().optional(),
     target: z.number().optional(),
     category: z.string().optional(),
-    verdier: z.record(z.string(), z.union([z.number(), z.boolean(), z.null()])),
+    // "V"/"H" = miss_side (Gate-protokoller, se harMissSideFelt/tester-live.ts).
+    // Uten disse feiler safeParse på ALLE Gate-resultater med registrert BOM —
+    // scoreTest() skriver dem allerede (Verdi-typen over inkluderer "V"|"H"),
+    // så leseskjemaet fulgte ikke skrive-siden. Oppdaget under PX-3-rest
+    // (TE-03-porten), se docs/feillogg.md 29.08.
+    verdier: z.record(z.string(), z.union([z.number(), z.boolean(), z.enum(["V", "H"]), z.null()])),
     pei: z.number().optional(),
   })),
   aggregat: z.record(z.string(), z.number()),

@@ -5,8 +5,29 @@
  * TrackMan-økt.
  * Fasit: designsystem/train-lock/TM-11 Okt-detalj komplett.dc.html
  * Fasit: designsystem/train-lock/PH-14 TrackMan detalj.dc.html
+ * Fasit: designsystem/train-lock/TM-00 Komponenter.dc.html (KPI-stripe:
+ * TmKpiStrip — 2×2 på iPhone, 4 i rad fra 768px — og TmFindingList-radformen).
+ * «Funn»-lista (Klynge/Spredning/Smash/Face mot path/Mot forrige) følger
+ * innholdet i designsystem/train-lock/TM-02 TrackMan økt.dc.html og
+ * designsystem/train-lock/TM-08 Okt med hullkart.dc.html — de to fasitene
+ * er samme skjerm i to revisjoner (TM-08 er TM-02 ETT steg senere i
+ * fasit-nummerrekken, med hullkart lagt til bak spredningen). Vi følger
+ * TM-08/TM-07 for selve kartet og begge for «Funn»-listas innhold — IKKE
+ * sitert som fullt portet: layoutet her forblir ÉN sentrert kolonne (720px
+ * maks) på alle bredder, mens TM-08c (iPad) splitter kart|sidebar og TM-08d
+ * (Mac 1440) er et 3-pane skall (rail + økt-liste 280px + kart|funn) — den
+ * responsive re-strukturen er IKKE bygget (ville kreve en økt-liste-sidebar,
+ * utenfor denne filens ansvar). «Mot forrige» (Funn-listas siste rad) er
+ * nærmeste TIDLIGERE økt med samme kølle — ren les-side-aggregering i
+ * page.tsx (ingen ny datamodell), sendt hit som ferdig norsk tekst i
+ * `forrigeDeltaTekst`.
  * Rekkefølge (låst, HANDOFF §TRACKMAN — rørt IKKE): CaddieLeak
- * → KPI-stripe → DispersionMap (hero) → findings (bøtte-bar) → tabell.
+ * → KPI-stripe → DispersionMap (hero) → bøtte-bar → «Funn»-liste → tabell.
+ *
+ * Fasit: designsystem/train-lock/TM-05 Tom og faa slag.dc.html —
+ * «Spredning»-radens «For få slag til spredning. Median står.»-setning ved
+ * lavt n (TM-05a). Selve caddie-setningens lavt-n-variant bor i
+ * `generateCaddieSentence` (dispersion-map.ts).
  *
  * Server-komponenten (page.tsx) gjør auth + Prisma-henting + regner
  * dispersion-resultatet (computeTrackManDispersionMap) og sender et rent,
@@ -19,6 +40,7 @@ import { TL } from "@/lib/v2/train-lock";
 import { Icon } from "@/components/v2/icon";
 import { DispersionMap, DispersionBucketBar, type SigmaLevel } from "./DispersionMap";
 import { ShotSheet } from "./ShotSheet";
+import { holeMapVariantFor } from "./HoleMap";
 import type { DispersionMapResult, DispersionMapShot } from "@/lib/trackman/dispersion-map";
 
 function komma(v: number | null, d: number): string {
@@ -67,23 +89,101 @@ function KpiTile({ label, value, unit }: { label: string; value: string; unit?: 
   );
 }
 
+/** TM-00 TmFindingList-radformen: tittel + caps-holder venstre, verdi høyre, delelinje mellom rader. */
+function FunnRad({
+  tittel,
+  holder,
+  verdi,
+  mutedVerdi,
+  beskrivelse,
+  siste,
+}: {
+  tittel: string;
+  holder: string;
+  verdi: string;
+  mutedVerdi?: boolean;
+  /** TM-05a: «For få slag til spredning. Median står.» — kort setning, ikke et tall (sans, ikke mono/bold). */
+  beskrivelse?: boolean;
+  siste?: boolean;
+}) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", padding: "13px 0", borderBottom: siste ? "none" : `1px solid ${TL.hair}` }}>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontFamily: TL.font.sans, fontSize: 14.5, fontWeight: 600, color: TL.text }}>{tittel}</div>
+        <div style={{ marginTop: 2, fontFamily: TL.font.mono, fontSize: 10.5, letterSpacing: TL.track.capsSm, textTransform: "uppercase", color: TL.mute }}>
+          {holder}
+        </div>
+      </div>
+      <span
+        style={{
+          fontFamily: beskrivelse ? TL.font.sans : TL.font.mono,
+          fontSize: beskrivelse ? 13 : 14.5,
+          fontWeight: beskrivelse ? 400 : 600,
+          color: mutedVerdi || beskrivelse ? TL.mute : TL.text,
+          fontVariantNumeric: "tabular-nums",
+          textAlign: "right",
+          maxWidth: beskrivelse ? 160 : undefined,
+        }}
+      >
+        {verdi}
+      </span>
+    </div>
+  );
+}
+
+/**
+ * «Funn»-lista — TM-00 komponent 4 / TM-02 «Funn»: lekkasjen står først,
+ * ALDRI rød. Rekkefølge låst (HANDOFF §TRACKMAN): Klynge → Spredning →
+ * Smash → Face mot path → Mot forrige.
+ */
+function FunnListe({ result, forrigeDeltaTekst }: { result: DispersionMapResult; forrigeDeltaTekst: string | null }) {
+  const klyngeVerdi =
+    result.offlineBias == null
+      ? "—"
+      : Math.abs(result.offlineBias) < 1
+        ? "midt på linja"
+        : `${komma(Math.abs(result.offlineBias), 1)} m ${result.offlineBias > 0 ? "høyre" : "venstre"}`;
+  return (
+    <div style={{ background: TL.elev, border: `1px solid ${TL.hair}`, borderRadius: TL.radius.card, padding: "0 16px" }}>
+      <FunnRad tittel="Klynge" holder="Lekkasje" verdi={klyngeVerdi} />
+      <FunnRad
+        tittel="Spredning"
+        holder={result.carrySpreadP90P10 != null ? "Holder" : "For få slag"}
+        verdi={result.carrySpreadP90P10 != null ? `${komma(result.carrySpreadP90P10, 0)} m P90−P10` : "For få slag til spredning. Median står."}
+        beskrivelse={result.carrySpreadP90P10 == null}
+      />
+      <FunnRad tittel="Smash" holder="Holder" verdi={komma(result.meanSmash, 2)} />
+      <FunnRad
+        tittel="Face mot path"
+        holder="Tall"
+        verdi={result.meanFaceToPath != null ? `${result.meanFaceToPath > 0 ? "+" : ""}${komma(result.meanFaceToPath, 1)}°` : "—"}
+      />
+      <FunnRad tittel="Mot forrige" holder="Tall" verdi={forrigeDeltaTekst ?? "Ingen tidligere økt"} mutedVerdi siste />
+    </div>
+  );
+}
+
 export interface TrackManSessionDetailProps {
   club: string;
   dateText: string;
   sourceLabel: string;
   result: DispersionMapResult;
   allShotsHref: string;
+  /** TM-02/TM-08 «Funn»-listas siste rad — ferdig norsk tekst, eller null uten tidligere økt med samme kølle. */
+  forrigeDeltaTekst?: string | null;
 }
 
-export function TrackManSessionDetail({ club, dateText, sourceLabel, result, allShotsHref }: TrackManSessionDetailProps) {
+export function TrackManSessionDetail({ club, dateText, sourceLabel, result, allShotsHref, forrigeDeltaTekst = null }: TrackManSessionDetailProps) {
   const [sigma, setSigma] = useState<SigmaLevel>(1);
   const [showBias, setShowBias] = useState(false);
   const [selectedShot, setSelectedShot] = useState<DispersionMapShot | null>(null);
+  const variant = holeMapVariantFor(club);
 
   const selectedIndex = selectedShot ? result.shots.findIndex((s) => s.id === selectedShot.id) : -1;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 18, maxWidth: 720, margin: "0 auto", width: "100%", minWidth: 0 }}>
+      <style>{`@media (min-width: 768px) { .tm-kpistripe { grid-template-columns: repeat(4, 1fr) !important; } }`}</style>
       <div>
         <span
           style={{
@@ -121,8 +221,11 @@ export function TrackManSessionDetail({ club, dateText, sourceLabel, result, all
         </div>
       )}
 
-      {/* KPI-stripe: Carry / Offline / 1σ / Smash */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8 }}>
+      {/* KPI-stripe: Carry / Offline / 1σ / Smash — TM-00 TmKpiStrip: 2×2 på iPhone, 4 i rad fra iPad/desktop. */}
+      <div
+        className="tm-kpistripe"
+        style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 8 }}
+      >
         <KpiTile label="Carry" value={komma(result.medianCarry, 0)} unit="m" />
         <KpiTile
           label="Offline"
@@ -205,6 +308,7 @@ export function TrackManSessionDetail({ club, dateText, sourceLabel, result, all
           selectedShotId={selectedShot?.id ?? null}
           onSelectShot={setSelectedShot}
           showBiasArrow={showBias}
+          variant={variant}
         />
 
         {!result.hasEllipse && (
@@ -218,6 +322,9 @@ export function TrackManSessionDetail({ club, dateText, sourceLabel, result, all
       {result.hasEllipse && (
         <DispersionBucketBar good={result.bucketShare.good} acceptable={result.bucketShare.acceptable} disaster={result.bucketShare.disaster} />
       )}
+
+      {/* «Funn» — TM-00 TmFindingList / TM-02 «Funn»-lista: lekkasjen står først. */}
+      <FunnListe result={result} forrigeDeltaTekst={forrigeDeltaTekst} />
 
       {/* Primær CTA */}
       <Link
@@ -290,7 +397,16 @@ export function TrackManSessionDetail({ club, dateText, sourceLabel, result, all
         </table>
       </div>
 
-      <ShotSheet shot={selectedShot} shotIndex={Math.max(selectedIndex, 0)} totalShots={result.shots.length} onClose={() => setSelectedShot(null)} />
+      <ShotSheet
+        shot={selectedShot}
+        shotIndex={Math.max(selectedIndex, 0)}
+        totalShots={result.shots.length}
+        allShots={result.shots}
+        variant={variant}
+        onClose={() => setSelectedShot(null)}
+        onPrev={() => selectedIndex > 0 && setSelectedShot(result.shots[selectedIndex - 1])}
+        onNext={() => selectedIndex >= 0 && selectedIndex < result.shots.length - 1 && setSelectedShot(result.shots[selectedIndex + 1])}
+      />
     </div>
   );
 }

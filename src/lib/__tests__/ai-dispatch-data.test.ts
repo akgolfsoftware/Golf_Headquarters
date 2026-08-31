@@ -12,7 +12,7 @@ test("tom kø: én NÅ til workbench + alltid-rader, maks 4", () => {
   });
   assert.ok(d.enTingNa);
   assert.match(d.enTingNa!.tekst, /Ingen kø/);
-  assert.equal(d.enTingNa!.href, "/admin/planlegge");
+  assert.equal(d.enTingNa!.href, "/admin/plan");
   assert.ok(d.rader.length <= 4);
   assert.ok(d.rader.length >= 1);
   assert.ok(d.rader.some((r) => r.id === "agent-team-start"));

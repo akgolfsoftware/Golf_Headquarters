@@ -7,7 +7,8 @@
  * v2-biblioteket (src/components/v2), ingen ad-hoc UI, ingen rå hex (kun T.*).
  *
  * Funksjon/data bevart 1:1 fra den ekte skjermen
- * (src/app/admin/teknisk-plan/page.tsx):
+ * (src/app/admin/plan/teknisk/page.tsx, flyttet fra admin/teknisk-plan
+ * i MASTERPLAN 15.9):
  *   - Spillerliste (PLAYER) med aktiv plan, antall TEK-økter + timer, og
  *     TEK-fullført-andel. Hver rad → /admin/spillere/[id]/plan (v2-flyten;
  *     gamle /admin/teknisk-plan/[spillerId] er legacy-design og pekes ikke til).
@@ -224,7 +225,7 @@ export function AdminTekniskPlanV2({ data }: { data: AdminTekniskPlanData }) {
       : medPlan === 0
         ? "Ingen spillere har en aktiv teknisk plan ennå — sett mål og periodisering i Workbench."
         : `${pl(medPlan, "spiller", "spillere")} med aktiv teknisk plan — juster mål, drills og periodisering samlet i Workbench.`;
-  const innsikt = <InnsiktChip cta="Planlegg i Workbench" href="/admin/planlegge">{innsiktTekst}</InnsiktChip>;
+  const innsikt = <InnsiktChip cta="Planlegg i Workbench" href="/admin/plan">{innsiktTekst}</InnsiktChip>;
 
   return (
     <div data-paper-wave-h="teknisk-plan-admin" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: 16 }}>
