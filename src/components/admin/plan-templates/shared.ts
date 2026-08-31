@@ -73,7 +73,7 @@ export const KATEGORI_LABEL: Record<NgfKategori, string> = {
 };
 
 // PYR_COLOR (rå hex-fallbacks) er fjernet 2026-07-17 (Team F1, v2-port):
-// aksefarger hentes nå fra T.ax i @/lib/v2/tokens der de vises.
+// aksefarger hentes nå fra AK.ax i @/lib/v2/tokens der de vises.
 
 export const PYR_LABEL: Record<PyramidArea, string> = {
   FYS: "Fysisk",

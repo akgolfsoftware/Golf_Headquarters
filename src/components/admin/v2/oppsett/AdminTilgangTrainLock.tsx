@@ -97,12 +97,21 @@ function TilgangTabell({ roller, rader }: { roller: UserRole[]; rader: AdminTilg
   );
 }
 
-export function AdminTilgangTrainLock({ roller, rader }: { roller: UserRole[]; rader: AdminTilgangV2Row[] }) {
+export function AdminTilgangTrainLock({
+  roller,
+  rader,
+  somFane = false,
+}: {
+  roller: UserRole[];
+  rader: AdminTilgangV2Row[];
+  /** True når komponenten står som «Tilgang»-fanen i /admin/oppsett (MASTERPLAN 15.3). */
+  somFane?: boolean;
+}) {
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
-        <TlTittel sub="AgencyOS">Tilgang</TlTittel>
-        <p style={{ marginTop: 10, fontSize: 13, color: TL.mute, lineHeight: 1.6 }}>Hvilke handlinger hver rolle kan utføre i plattformen.</p>
+        {!somFane && <TlTittel sub="AgencyOS">Tilgang</TlTittel>}
+        <p style={{ marginTop: somFane ? 0 : 10, fontSize: 13, color: TL.mute, lineHeight: 1.6 }}>Hvilke handlinger hver rolle kan utføre i plattformen.</p>
       </div>
       <TlBadge>Read-only</TlBadge>
     </div>

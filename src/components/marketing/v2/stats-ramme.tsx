@@ -14,7 +14,9 @@
  */
 import type { CSSProperties, ReactNode } from "react";
 import Link from "next/link";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+import { AK } from "@/lib/v2/ak-palett";
+
 import { Icon, Kort, Caps, KpiFlis, DataTabell, TomTilstand, FilterChips, StatusPill } from "@/components/v2";
 import type { DataTabellColumn, DataTabellRow, StatusTone } from "@/components/v2";
 import { MRamme, Eyebrow, HeroT, SeksT, Lede, Seksjon, useMobile } from "./marked-ramme";
@@ -48,11 +50,11 @@ export function StatsStatusBar({
       {meta ? (
         <span
           style={{
-            fontFamily: T.mono,
+            fontFamily: TL.font.mono,
             fontSize: 11,
             fontWeight: 600,
             letterSpacing: "0.04em",
-            color: T.mut,
+            color: TL.mute,
           }}
         >
           {meta}
@@ -85,54 +87,54 @@ export function StatsStatusBar({
 const STATS_LEGACY_VARS = {
   colorScheme: "dark",
   // 1) shadcn-trippel (HSL-triple, konsumeres via hsl(var(--x)))
-  "--background": "120 3.7% 5.3%", // T.bg
-  "--foreground": "90 11.8% 93.3%", // T.fg
-  "--card": "120 4.5% 8.6%", // T.panel
+  "--background": "120 3.7% 5.3%", // TL.scene
+  "--foreground": "90 11.8% 93.3%", // TL.text
+  "--card": "120 4.5% 8.6%", // TL.elev
   "--card-foreground": "90 11.8% 93.3%",
   "--popover": "120 4.5% 8.6%",
   "--popover-foreground": "90 11.8% 93.3%",
-  "--primary": "48 33% 97%", // #FAF9F5 = Paper --p-cta (mørk)
-  "--primary-foreground": "60 2.6% 7.6%", // #141413 = Paper --p-on-cta
-  "--accent": "87 23% 61%", // #9DB284 = Paper --p-up (mørk) — høydepunkt
-  "--accent-foreground": "60 2.6% 7.6%", // #141413 = blekk på fylt --p-up
-  "--secondary": "120 5% 7.8%", // T.panel2
+  "--primary": "48 33% 97%", // #FAF9F5 = Paper --tl-fill (mørk)
+  "--primary-foreground": "60 2.6% 7.6%", // #141413 = Paper --tl-on-fill
+  "--accent": "87 23% 61%", // #9DB284 = Paper --tl-ok (mørk) — høydepunkt
+  "--accent-foreground": "60 2.6% 7.6%", // #141413 = blekk på fylt --tl-ok
+  "--secondary": "120 5% 7.8%", // TL.dock
   "--secondary-foreground": "90 11.8% 93.3%",
   "--muted": "120 5% 7.8%",
-  "--muted-foreground": "90 3.4% 65.1%", // T.fg2
-  "--destructive": "14.2 85.6% 59.2%", // T.down
+  "--muted-foreground": "90 3.4% 65.1%", // TL.mute
+  "--destructive": "14.2 85.6% 59.2%", // TL.danger
   "--destructive-foreground": "0 0% 100%",
-  "--warning": "41.9 78.9% 57.3%", // T.warn
+  "--warning": "41.9 78.9% 57.3%", // TL.warn
   "--warning-foreground": "120 3.7% 5.3%",
-  "--border": "0 0% 100% / 0.08", // T.border
+  "--border": "0 0% 100% / 0.08", // TL.hair
   "--input": "0 0% 100% / 0.08",
-  "--ring": "15 63% 60%", // #D97757 = Paper --p-focus
+  "--ring": "15 63% 60%", // #D97757 = Paper --tl-viz-target
   // 3) DS-semantiske aliaser (rå verdier — det Tailwind-utilities faktisk bruker)
-  "--bg": T.bg,
-  "--surface": T.panel,
-  "--surface-2": T.panel2,
-  "--surface-hover": T.panel3,
-  "--border-strong": T.borderS,
-  "--text": T.fg,
-  "--text-2": T.fg2,
-  "--text-muted": T.mut,
-  "--text-faint": T.mut,
-  "--signal": T.lime,
-  "--on-signal": T.onLime,
-  "--on-signal-fill": T.onLime,
-  "--track": T.track,
+  "--bg": TL.scene,
+  "--surface": TL.elev,
+  "--surface-2": TL.dock,
+  "--surface-hover": TL.dim,
+  "--border-strong": TL.hair,
+  "--text": TL.text,
+  "--text-2": TL.mute,
+  "--text-muted": TL.mute,
+  "--text-faint": TL.mute,
+  "--signal": TL.fill,
+  "--on-signal": TL.onFill,
+  "--on-signal-fill": TL.onFill,
+  "--track": TL.hair,
   // 2) Stats-lokalt navnerom (rå verdier, konsumeres via var(--s-x))
-  "--s-bg": T.bg,
-  "--s-fg": T.fg,
-  "--s-card": T.panel,
-  "--s-primary": T.lime,
-  "--s-primary-fg": T.onLime,
-  "--s-secondary": T.panel2,
-  "--s-accent": T.lime,
-  "--s-accent-fg": T.onLime,
-  "--s-muted": T.panel2,
-  "--s-muted-fg": T.fg2,
-  "--s-tier-college-bg": T.tierCollegeBg,
-  "--s-tier-college-fg": T.forest,
+  "--s-bg": TL.scene,
+  "--s-fg": TL.text,
+  "--s-card": TL.elev,
+  "--s-primary": TL.fill,
+  "--s-primary-fg": TL.onFill,
+  "--s-secondary": TL.dock,
+  "--s-accent": TL.fill,
+  "--s-accent-fg": TL.onFill,
+  "--s-muted": TL.dock,
+  "--s-muted-fg": TL.mute,
+  "--s-tier-college-bg": AK.tierCollegeBg,
+  "--s-tier-college-fg": TL.fill,
   "--s-border": "rgba(255, 255, 255, 0.08)",
   "--s-border-strong": "rgba(255, 255, 255, 0.14)",
   "--s-shadow-sm": "0 1px 2px rgba(0, 0, 0, 0.28)",
@@ -200,7 +202,7 @@ export function StatsSubnav({ mobile, aktiv }: { mobile: boolean; aktiv?: StatsF
         alignItems: "center",
         gap: 8,
         padding: mobile ? "12px 22px" : "14px 64px",
-        borderBottom: `1px solid ${T.border}`,
+        borderBottom: `1px solid ${TL.hair}`,
         overflowX: "auto",
       }}
     >
@@ -210,12 +212,12 @@ export function StatsSubnav({ mobile, aktiv }: { mobile: boolean; aktiv?: StatsF
           display: "inline-flex",
           alignItems: "center",
           gap: 6,
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           fontSize: 10,
           fontWeight: 700,
           letterSpacing: "0.1em",
           textTransform: "uppercase",
-          color: T.mut,
+          color: TL.mute,
           textDecoration: "none",
           flex: "none",
           marginRight: 4,
@@ -234,19 +236,19 @@ export function StatsSubnav({ mobile, aktiv }: { mobile: boolean; aktiv?: StatsF
               alignItems: "center",
               gap: 6,
               flex: "none",
-              fontFamily: T.ui,
+              fontFamily: TL.font.sans,
               fontSize: 13,
               fontWeight: 600,
-              color: on ? T.fg : T.fg2,
-              background: on ? T.panel2 : "transparent",
-              border: `1px solid ${on ? T.borderS : "transparent"}`,
+              color: on ? TL.text : TL.mute,
+              background: on ? TL.dock : "transparent",
+              border: `1px solid ${on ? TL.hair : "transparent"}`,
               borderRadius: 9999,
               padding: "7px 14px",
               textDecoration: "none",
               whiteSpace: "nowrap",
             }}
           >
-            <Icon name={n.icon} size={13} style={{ color: on ? T.lime : T.mut }} />
+            <Icon name={n.icon} size={13} style={{ color: on ? TL.fill : TL.mute }} />
             {n.l}
           </Link>
         );
@@ -272,10 +274,10 @@ export function DataGolfAttribusjon() {
     >
       <span
         style={{
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           fontSize: 11,
           letterSpacing: "0.06em",
-          color: T.mut,
+          color: TL.mute,
         }}
       >
         Powered by{" "}
@@ -331,7 +333,7 @@ export function StatsSok({
       <Icon
         name="search"
         size={15}
-        style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: T.mut }}
+        style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: TL.mute }}
       />
       <input
         type="text"
@@ -342,13 +344,13 @@ export function StatsSok({
           width: "100%",
           boxSizing: "border-box",
           appearance: "none",
-          background: T.panel2,
-          border: `1px solid ${T.borderS}`,
+          background: TL.dock,
+          border: `1px solid ${TL.hair}`,
           borderRadius: 9999,
           padding: "11px 16px 11px 40px",
-          fontFamily: T.ui,
+          fontFamily: TL.font.sans,
           fontSize: 13.5,
-          color: T.fg,
+          color: TL.text,
           outline: "none",
         }}
       />
@@ -388,7 +390,7 @@ export function StatsListe({ mobile, eyebrow, tittel, tittelEm, lede, status, so
           </div>
         )}
         {meta && (
-          <div style={{ marginTop: 16, fontFamily: T.mono, fontSize: 11, letterSpacing: "0.06em", textTransform: "uppercase", color: T.mut }}>
+          <div style={{ marginTop: 16, fontFamily: TL.font.mono, fontSize: 11, letterSpacing: "0.06em", textTransform: "uppercase", color: TL.mute }}>
             {meta}
           </div>
         )}
@@ -448,7 +450,7 @@ export function StatsDetalj({ mobile, eyebrow, tittel, tittelEm, sub, action, st
             style={{
               display: "grid",
               gridTemplateColumns: mobile ? "1fr 1fr" : `repeat(${kpis.length}, 1fr)`,
-              gap: T.gap,
+              gap: AK.gap,
               marginTop: 32,
             }}
           >

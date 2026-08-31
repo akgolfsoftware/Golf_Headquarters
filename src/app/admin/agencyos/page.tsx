@@ -1,47 +1,38 @@
 /**
- * AgencyOS Cockpit — Train-lock (T2, 26.08.2026). Egen top-level route-group
- * (v2preview) som IKKE arver PortalShell/AdminShell — kun root-layout — så
- * V2Shell leverer all chrome (rail/dock) i mørk v2-scope.
+ * AgencyOS Hjem — Train-lock (STEG 15.10, 31.08.2026). Egen top-level
+ * route-group (v2preview) som IKKE arver PortalShell/AdminShell — kun
+ * root-layout — så V2Shell leverer all chrome (rail/dock) i mørk v2-scope.
  *
- * Fasit: AG-01 Cockpit, AG-01 Cockpit lys, AG-02 Cockpit Mac, AG-14 tom, AG-15 feil.
- * Erstatter KonsollChat (Caddie-tråd) — AG-01 har verken composer eller
- * chat-feed, kun Nå · live / Kø / neste økt. Se TrainLockCockpit.tsx-hodet
- * for hva som falt bort i porten.
+ * Fasit: designsystem/canvas/agencyos-ia/Hjem.dc.html + HjemMobil.dc.html.
+ * Slår sammen to tidligere adresser (MASTERPLAN 15.10): denne siden
+ * (tidligere «Konsoll»/AG-01) + /admin/brief (Daglig brief, nå redirect
+ * hit). Se TrainLockCockpit.tsx-hodet for hva som falt bort i
+ * sammenslåingen og hvorfor.
  *
- * Auth + data er identisk med den ekte /admin/agencyos-siden: samme
- * requirePortalUser-guard (ADMIN/COACH) og samme loadDailyBrief-loader.
- * innboks/fokus henger med KUN som telleverk til AI-dispatch-køen —
- * innholdet deres vises ikke her (Innboks/Stall er T3/T4-scope).
+ * Kø-kortet bruker EKSAKT samme lasting som /admin/ko (lastGodkjenninger +
+ * koTelling via `.totalt`) — ingen ny spørring, samme tall begge steder.
+ * «I dag»-kortet bruker samme timeline som før (loadDailyBrief), nå vist
+ * som FULL liste (ikke bare nå/neste).
  *
  * Server component.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { loadDailyBrief } from "@/lib/agencyos/daily-brief-data";
-import { loadInnboksSammendrag } from "@/lib/innboks/data";
-import { loadFokusSpillere } from "@/lib/agencyos/fokus-spillere";
-import { loadAiDispatch } from "@/lib/agencyos/ai-dispatch-data";
+import { lastGodkjenninger } from "@/lib/admin/ko/last-godkjenninger";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { AgencyCockpitTrainLock } from "@/components/admin/cockpit/TrainLockCockpit";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Cockpit · AgencyOS" };
+export const metadata = { title: "Hjem · AgencyOS" };
 
 export default async function V2CockpitPage() {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
 
-  const [data, innboks, fokus] = await Promise.all([
+  const [data, ko] = await Promise.all([
     loadDailyBrief({ id: user.id, name: user.name, avatarUrl: user.avatarUrl, role: user.role }),
-    loadInnboksSammendrag(),
-    loadFokusSpillere({ id: user.id, role: user.role }),
+    lastGodkjenninger({ id: user.id, role: user.role }),
   ]);
-
-  const aiDispatch = await loadAiDispatch({
-    id: user.id,
-    role: user.role,
-    innboksNye: innboks.antallNye,
-    fokusSpillere: fokus.forslag.length + fokus.pinnet.length,
-  });
 
   // Klokke + dag formateres server-side i Oslo-tid: Vercel kjører UTC, så en
   // klient-beregnet klokke ville gitt hydreringsavvik (gotchas §Tidssone).
@@ -61,7 +52,15 @@ export default async function V2CockpitPage() {
 
   return (
     <V2Shell bredde="full" hoyde="skjerm" aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <AgencyCockpitTrainLock data={data} aiDispatch={aiDispatch} dayLabel={dayLabel} klokke={klokke} />
+      <AgencyCockpitTrainLock
+        timeline={data.timeline}
+        now={data.now}
+        koTotalt={ko.totalt ?? ko.rows.length}
+        koRader={ko.rows}
+        dagLabel={dagRaa}
+        dayLabel={dayLabel}
+        klokke={klokke}
+      />
     </V2Shell>
   );
 }

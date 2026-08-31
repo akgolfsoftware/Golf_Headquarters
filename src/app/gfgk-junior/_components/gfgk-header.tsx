@@ -1,5 +1,5 @@
 "use client";
-import { T } from "@/lib/v2/tokens";
+import { AK } from "@/lib/v2/ak-palett";
 
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
@@ -29,7 +29,7 @@ export function GfgkHeader({ aktiv }: { aktiv?: AktivSide }) {
   return (
     <header
       className="sticky top-0 z-40 border-b backdrop-blur-md"
-      style={{ background: T.farge.hvitA92, borderColor: "var(--hairline)" }}
+      style={{ background: AK.farge.hvitA92, borderColor: "var(--hairline)" }}
     >
       <div className="mx-auto flex min-h-12 max-w-[1200px] items-center gap-4 px-5 py-3 sm:px-7">
         <Link
@@ -103,7 +103,7 @@ export function GfgkHeader({ aktiv }: { aktiv?: AktivSide }) {
       {apen ? (
         <nav
           className="border-t px-3 pb-4 pt-2 lg:hidden"
-          style={{ background: T.farge.hvitA98, borderColor: "var(--hairline)" }}
+          style={{ background: AK.farge.hvitA98, borderColor: "var(--hairline)" }}
         >
           {LENKER.map((l) => {
             const erAktiv = l.side != null && l.side === aktiv;

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Periodeplan — måned" description="Én periode i månedsrutenett: ukevis belastning, økter per dag, periodens mål og fordeling. 1440×900." -->
+<helmet><script src="./ds-base.js"></script></helmet>
+<div style="min-height:100vh;background:var(--surface-page);padding:28px;display:flex;justify-content:center;font-family:var(--font-body)">
+<div data-screen-label="Periodeplan måned" style="width:1440px;height:900px;flex-shrink:0;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-xl);box-shadow:var(--shadow-lg);overflow:hidden;display:flex">
+
+<div style="width:84px;flex-shrink:0;border-right:1px solid var(--border-subtle);background:var(--ink-50);display:flex;flex-direction:column;align-items:center;padding:20px 0;gap:8px">
+<img src="../../assets/logo/team-norway-golf.png" alt="Team Norway Golf" style="width:52px;height:auto;display:block;margin-bottom:14px">
+<div style="width:44px;height:44px;flex-shrink:0;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.06em;cursor:pointer;color:var(--ink-400)">HJEM</div>
+<div style="width:44px;height:44px;flex-shrink:0;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.06em;background:var(--navy-900);color:#fff;box-shadow:var(--shadow-sm)">PLAN</div>
+<div style="width:44px;height:44px;flex-shrink:0;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.06em;cursor:pointer;color:var(--ink-400)">KAL</div>
+<div style="width:44px;height:44px;flex-shrink:0;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.06em;cursor:pointer;color:var(--ink-400)">STALL</div>
+<div style="flex:1"></div>
+<div style="width:34px;height:34px;border-radius:var(--radius-full);background:var(--navy-600);color:#fff;font-family:var(--font-mono);font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center">ØR</div>
+</div>
+
+<div style="flex:1;min-width:0;display:flex;flex-direction:column">
+
+<div style="padding:22px 32px 18px;border-bottom:1px solid var(--border-subtle);display:flex;align-items:center;gap:16px">
+<div>
+<div style="font-family:var(--font-mono);font-size:10.5px;letter-spacing:.16em;color:var(--ink-500)">PERIODEPLAN · TURNERINGSPERIODE</div>
+<h1 style="font-family:var(--font-display);font-size:28px;font-weight:800;letter-spacing:-.03em;margin:6px 0 0">August 2026</h1>
+</div>
+<div style="display:flex;align-items:center;gap:12px">
+<span style="color:var(--ink-400);font-size:14px;cursor:pointer">‹</span>
+<span style="font-family:var(--font-mono);font-size:12.5px;color:var(--ink-500)">JUL</span>
+<span style="font-family:var(--font-mono);font-size:12.5px;color:var(--ink-500)">SEP</span>
+<span style="color:var(--ink-400);font-size:14px;cursor:pointer">›</span>
+</div>
+<div style="height:36px;background:var(--ink-100);border-radius:var(--radius-full);display:flex;align-items:center;padding:3px;gap:2px">
+<div style="height:30px;display:flex;align-items:center;padding:0 14px;border-radius:var(--radius-full);font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;color:var(--ink-500);cursor:pointer">ÅRSPLAN</div>
+<div style="height:30px;display:flex;align-items:center;padding:0 14px;border-radius:var(--radius-full);background:var(--navy-900);color:#fff;font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;box-shadow:var(--shadow-sm)">PERIODE</div>
+<div style="height:30px;display:flex;align-items:center;padding:0 14px;border-radius:var(--radius-full);font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;color:var(--ink-500);cursor:pointer">UKE</div>
+</div>
+<div style="flex:1"></div>
+<span style="font-family:var(--font-mono);font-size:11.5px;color:var(--ink-500)">18 økter · 27 t 30</span>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="secondary" size="sm" hint-size="110px,34px">Dupliser uke</x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="primary" size="sm" hint-size="96px,34px">Publiser</x-import>
+</div>
+
+<div style="flex:1;min-height:0;display:flex">
+
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden">
+
+<div style="display:flex;padding:0 24px;border-bottom:1px solid var(--border-subtle)">
+<div style="width:96px;flex-shrink:0"></div>
+<div style="flex:1;text-align:center;padding:11px 0;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.12em;color:var(--ink-500)">MAN</div>
+<div style="flex:1;text-align:center;padding:11px 0;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.12em;color:var(--ink-500)">TIR</div>
+<div style="flex:1;text-align:center;padding:11px 0;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.12em;color:var(--ink-500)">ONS</div>
+<div style="flex:1;text-align:center;padding:11px 0;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.12em;color:var(--ink-500)">TOR</div>
+<div style="flex:1;text-align:center;padding:11px 0;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.12em;color:var(--ink-500)">FRE</div>
+<div style="flex:1;text-align:center;padding:11px 0;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.12em;color:var(--ink-500)">LØR</div>
+<div style="flex:1;text-align:center;padding:11px 0;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.12em;color:var(--ink-500)">SØN</div>
+</div>
+
+<div style="flex:1;min-height:0;overflow:hidden;padding:0 24px 20px">
+<sc-for list="{{ weeks }}" as="week" hint-placeholder-count="5">
+<div style="display:flex;border-bottom:1px solid var(--ink-100);min-height:118px">
+<div style="width:96px;flex-shrink:0;padding:14px 12px 14px 0;display:flex;flex-direction:column;gap:6px">
+<span style="font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:var(--ink-900)">{{ week.no }}</span>
+<span style="font-family:var(--font-mono);font-size:10.5px;color:var(--ink-500)">{{ week.load }}</span>
+<div style="height:6px;border-radius:var(--radius-full);background:var(--ink-100);overflow:hidden;margin-top:2px">
+<div ref="{{ week.barRef }}" style="height:100%;border-radius:var(--radius-full);background:var(--navy-600)"></div>
+</div>
+<span style="font-family:var(--font-mono);font-size:9px;letter-spacing:.1em;color:var(--ink-500);margin-top:2px">{{ week.tag }}</span>
+</div>
+<sc-for list="{{ week.days }}" as="d" hint-placeholder-count="7">
+<div style="flex:1;min-width:0;padding:10px 4px;border-left:1px solid var(--ink-100);display:flex;flex-direction:column;gap:5px">
+<span style="font-family:var(--font-mono);font-size:10.5px;color:var(--ink-500);padding-left:4px">{{ d.date }}</span>
+<sc-for list="{{ d.items }}" as="it" hint-placeholder-count="1">
+<div ref="{{ it.ref }}" style="border-radius:var(--radius-xs);padding:5px 7px;background:var(--ink-50);border-left:3px solid var(--navy-600);overflow:hidden">
+<div style="font-family:var(--font-mono);font-size:8px;letter-spacing:.1em;color:var(--ink-500);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ it.cat }}</div>
+<div style="font-size:11.5px;font-weight:600;color:var(--ink-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ it.title }}</div>
+</div>
+</sc-for>
+</div>
+</sc-for>
+</div>
+</sc-for>
+</div>
+
+</div>
+
+<div style="width:320px;flex-shrink:0;border-left:1px solid var(--border-subtle);background:var(--ink-50);padding:26px 24px;display:flex;flex-direction:column;gap:20px;overflow:hidden">
+<div>
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-500)">PERIODENS HENSIKT</span>
+<p style="margin:10px 0 0;font-size:14px;line-height:1.6;color:var(--ink-700);text-wrap:pretty">Holde slagformen gjennom turneringsrekka. Volumet ned, kvaliteten opp — nærspill prioriteres foran ny teknikk.</p>
+</div>
+
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:18px;display:flex;flex-direction:column;gap:14px">
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-500)">FORDELING · TIMER</span>
+<sc-for list="{{ split }}" as="s" hint-placeholder-count="4">
+<div style="display:flex;flex-direction:column;gap:7px">
+<div style="display:flex;justify-content:space-between;align-items:baseline">
+<span style="font-size:13.5px;font-weight:500;color:var(--ink-700)">{{ s.name }}</span>
+<span style="font-family:var(--font-mono);font-size:12.5px;font-weight:600;color:var(--ink-900)">{{ s.value }}</span>
+</div>
+<div style="height:8px;border-radius:var(--radius-full);background:var(--ink-100);overflow:hidden">
+<div ref="{{ s.ref }}" style="height:100%;border-radius:var(--radius-full);background:var(--navy-600)"></div>
+</div>
+</div>
+</sc-for>
+</div>
+
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:18px;display:flex;flex-direction:column;gap:12px">
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-500)">HOLDEPUNKTER I PERIODEN</span>
+<sc-for list="{{ anchors }}" as="a" hint-placeholder-count="3">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:9px 0;border-top:1px solid var(--ink-100)">
+<span style="font-size:13.5px;font-weight:600;color:var(--ink-900)">{{ a.name }}</span>
+<span style="font-family:var(--font-mono);font-size:11.5px;color:var(--ink-500);white-space:nowrap">{{ a.when }}</span>
+</div>
+</sc-for>
+</div>
+
+<div style="flex:1"></div>
+<span style="font-size:11.5px;color:var(--ink-500);line-height:1.6;text-wrap:pretty">Periodeplanen setter rammen for ukene. Tider og innhold redigeres i Workbench.</span>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1496,&quot;height&quot;:956}}">
+const CAT = {
+  SLAG: 'var(--navy-600)',
+  FYS: 'var(--data-3)',
+  SPILL: 'var(--data-4)',
+  TEST: 'var(--red-600)',
+  HVILE: 'var(--ink-300)'
+};
+
+class Component extends DCLogic {
+  item(cat, title) {
+    const accent = CAT[cat.split(' ')[0]] || 'var(--navy-600)';
+    const rest = cat.startsWith('HVILE');
+    return {
+      cat, title,
+      ref: (el) => {
+        if (!el) return;
+        el.style.borderLeftColor = accent;
+        if (rest) el.style.background = 'transparent';
+      }
+    };
+  }
+  renderVals() {
+    const I = (c, t) => this.item(c, t);
+    const plan = [
+      { no: 'Uke 31', load: '6 t 00', pct: 45, tag: 'BYGGE', days: [
+        [I('FYS · STYRKE', 'Styrke')], [I('SLAG · CHIP', 'Nærspill')], [], [I('SLAG · INNSPILL', 'Innspill')],
+        [I('FYS · MOBILITET', 'Mobilitet')], [I('SPILL · BANE', '9 hull')], [I('HVILE', 'Hvile')] ] },
+      { no: 'Uke 32', load: '7 t 30', pct: 58, tag: 'BYGGE', days: [
+        [I('FYS · STYRKE', 'Styrke')], [I('SLAG · PUTT', 'Putt Gate')], [I('SLAG · CHIP', 'Nærspill')],
+        [I('SLAG · DRIVER', 'Driver')], [], [I('SPILL · BANE', '18 hull')], [I('HVILE', 'Hvile')] ] },
+      { no: 'Uke 33', load: '5 t 00', pct: 36, tag: 'AVLASTNING', days: [
+        [I('FYS · MOBILITET', 'Mobilitet')], [I('SLAG · CHIP', 'Nærspill')], [], [I('SLAG · PUTT', 'Putt')],
+        [], [I('SPILL · BANE', '9 hull')], [I('HVILE', 'Hvile')] ] },
+      { no: 'Uke 34', load: '8 t 00', pct: 62, tag: 'TEST · NÅ', days: [
+        [I('FYS · STYRKE', 'Styrke'), I('SLAG · PUTT', 'Putting')], [I('SLAG · CHIP', 'Nærspill')],
+        [I('SPILL · SIM', 'Simulator')], [I('SLAG · INNSPILL', 'Innspill')], [I('TEST · TN-BATTERI', 'Testdag Q3')],
+        [I('SPILL · BANE', '18 hull')], [I('SPILL · TURNERING', 'Onsøy Open')] ] },
+      { no: 'Uke 35', load: '4 t 30', pct: 32, tag: 'TAPER', days: [
+        [I('FYS · MOBILITET', 'Mobilitet')], [I('SLAG · PUTT', 'Putt')], [], [I('SLAG · CHIP', 'Kort spill')],
+        [I('HVILE', 'Hvile')], [I('SPILL · TURNERING', 'NM R1')], [I('SPILL · TURNERING', 'NM R2')] ] }
+    ];
+    let d = 3;
+    const weeks = plan.map(w => ({
+      no: w.no,
+      load: w.load,
+      tag: w.tag,
+      barRef: (el) => { if (el) { el.style.width = w.pct + '%'; if (w.tag.indexOf('NÅ') > -1) el.style.background = 'var(--red-600)'; } },
+      days: w.days.map(items => {
+        const date = String(d++).padStart(2, '0');
+        return { date, items };
+      })
+    }));
+    const bar = (name, value, p) => ({ name, value, ref: (el) => { if (el) el.style.width = p + '%'; } });
+    return {
+      weeks,
+      split: [
+        bar('Slag', '11 t 00', 40),
+        bar('Spill', '9 t 30', 35),
+        bar('Fysikk', '5 t 00', 18),
+        bar('Test', '2 t 00', 7)
+      ],
+      anchors: [
+        { name: 'Testbatteri Q3', when: 'Fre 21.08' },
+        { name: 'Onsøy Open', when: 'Søn 23.08' },
+        { name: 'NM · runde 1–2', when: '29.–30.08' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

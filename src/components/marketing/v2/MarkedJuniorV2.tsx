@@ -5,7 +5,7 @@
    COPY: uendret fra forrige versjon. */
 
 import Link from "next/link";
-import { PkShell } from "./paper/PkShell";
+import { PkShell } from "./kit/PkShell";
 
 type Gruppe = { gruppe: string; alder: string; krav: string; frekvens: string; sesong: string };
 

@@ -6,8 +6,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Icon } from "@/components/v2";
-import { PkShell } from "./paper/PkShell";
-import { PkSek, PkEyebrow, PkHero, PkCta, PkDetalj, PkFakta, PkLinje, PkSekt, PkKat } from "./paper/PkPrimitives";
+import { PkShell } from "./kit/PkShell";
+import { PkSek, PkEyebrow, PkHero, PkCta, PkDetalj, PkFakta, PkLinje, PkSekt, PkKat } from "./kit/PkPrimitives";
 
 export type AnleggHighlight = { icon: string; title: string; description: string };
 export type AnleggData = {
@@ -74,18 +74,18 @@ export function MarkedAnleggDetaljV2({ data }: { data: AnleggData }) {
         </nav>
         <PkDetalj>
           <div>
-            <div style={{ position: "relative", aspectRatio: "16 / 9", width: "100%", borderRadius: "var(--p-r-md)", overflow: "hidden", marginBottom: 24, background: "var(--p-soft)" }}>
+            <div style={{ position: "relative", aspectRatio: "16 / 9", width: "100%", borderRadius: "var(--tl-r-field)", overflow: "hidden", marginBottom: 24, background: "var(--tl-dock)" }}>
               <Image src={data.heroImage} alt={data.heroAlt} fill sizes="(max-width: 900px) 100vw, 760px" style={{ objectFit: "cover" }} priority />
             </div>
             <PkEyebrow>Anlegg</PkEyebrow>
             <div style={{ marginTop: 8 }}>
               <PkHero>{data.name}</PkHero>
             </div>
-            <p style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: "var(--p-ui)", fontSize: 14, color: "var(--p-muted)", margin: "12px 0 0" }}>
-              <Icon name="map-pin" size={15} style={{ color: "var(--p-accent-fg)", flex: "none" }} />
+            <p style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: "var(--tl-font-sans)", fontSize: 14, color: "var(--tl-mute)", margin: "12px 0 0" }}>
+              <Icon name="map-pin" size={15} style={{ color: "var(--tl-warm)", flex: "none" }} />
               {data.adresse}
             </p>
-            <p style={{ fontFamily: "var(--p-body)", fontSize: 18, color: "var(--p-muted)", lineHeight: 1.6, marginTop: 16, maxWidth: 520 }}>
+            <p style={{ fontFamily: "var(--tl-font-sans)", fontSize: 18, color: "var(--tl-mute)", lineHeight: 1.6, marginTop: 16, maxWidth: 520 }}>
               {data.tagline}
             </p>
 
@@ -100,21 +100,21 @@ export function MarkedAnleggDetaljV2({ data }: { data: AnleggData }) {
                       alignItems: "center",
                       justifyContent: "center",
                       borderRadius: 10,
-                      background: "var(--p-soft)",
+                      background: "var(--tl-dock)",
                     }}
                   >
-                    <Icon name={h.icon} size={17} style={{ color: "var(--p-accent-fg)" }} />
+                    <Icon name={h.icon} size={17} style={{ color: "var(--tl-warm)" }} />
                   </span>
                   <span
                     style={{
                       display: "block",
                       marginTop: 12,
-                      fontFamily: "var(--p-mono)",
+                      fontFamily: "var(--tl-font-mono)",
                       fontSize: 9.5,
                       fontWeight: 700,
                       letterSpacing: "0.1em",
                       textTransform: "uppercase",
-                      color: "var(--p-muted)",
+                      color: "var(--tl-mute)",
                     }}
                   >
                     0{i + 1} / 0{data.highlights.length}
@@ -133,11 +133,11 @@ export function MarkedAnleggDetaljV2({ data }: { data: AnleggData }) {
               style={{
                 display: "block",
                 marginBottom: 10,
-                fontFamily: "var(--p-mono)",
+                fontFamily: "var(--tl-font-mono)",
                 fontSize: 10,
                 letterSpacing: "0.09em",
                 textTransform: "uppercase",
-                color: "var(--p-muted)",
+                color: "var(--tl-mute)",
               }}
             >
               Kontakt
@@ -164,8 +164,8 @@ export function MarkedAnleggDetaljV2({ data }: { data: AnleggData }) {
             <a key={l.href} href={l.href} target="_blank" rel="noopener noreferrer" className="pk-kort pk-kort-hover">
               <div className="pk-kort-body">
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                  <span style={{ display: "inline-flex", width: 32, height: 32, alignItems: "center", justifyContent: "center", borderRadius: 9, background: "var(--p-soft)" }}>
-                    <Icon name={l.icon} size={15} style={{ color: "var(--p-accent-fg)" }} />
+                  <span style={{ display: "inline-flex", width: 32, height: 32, alignItems: "center", justifyContent: "center", borderRadius: 9, background: "var(--tl-dock)" }}>
+                    <Icon name={l.icon} size={15} style={{ color: "var(--tl-warm)" }} />
                   </span>
                   <span className="pk-meta">{l.eyebrow}</span>
                 </div>
@@ -180,11 +180,11 @@ export function MarkedAnleggDetaljV2({ data }: { data: AnleggData }) {
                     justifyContent: "space-between",
                     marginTop: 14,
                     paddingTop: 14,
-                    borderTop: "1px solid var(--p-hairline)",
+                    borderTop: "1px solid var(--tl-hair)",
                   }}
                 >
-                  <span style={{ fontFamily: "var(--p-mono)", fontSize: 11, fontWeight: 700 }}>{l.cta}</span>
-                  <Icon name="arrow-right" size={13} style={{ color: "var(--p-accent-fg)" }} />
+                  <span style={{ fontFamily: "var(--tl-font-mono)", fontSize: 11, fontWeight: 700 }}>{l.cta}</span>
+                  <Icon name="arrow-right" size={13} style={{ color: "var(--tl-warm)" }} />
                 </div>
               </div>
             </a>
@@ -198,12 +198,12 @@ export function MarkedAnleggDetaljV2({ data }: { data: AnleggData }) {
             <Image src={data.logo.src} alt={data.logo.alt} width={data.logo.width} height={data.logo.height} style={{ opacity: 0.85 }} />
             <span
               style={{
-                fontFamily: "var(--p-mono)",
+                fontFamily: "var(--tl-font-mono)",
                 fontSize: 10.5,
                 fontWeight: 700,
                 letterSpacing: "0.14em",
                 textTransform: "uppercase",
-                color: "var(--p-muted)",
+                color: "var(--tl-mute)",
                 marginTop: 18,
               }}
             >
@@ -212,7 +212,7 @@ export function MarkedAnleggDetaljV2({ data }: { data: AnleggData }) {
             <div style={{ marginTop: 8 }}>
               <PkSekt>Vi trener her</PkSekt>
             </div>
-            <p style={{ fontFamily: "var(--p-body)", fontSize: 14.5, color: "var(--p-muted)", margin: "12px auto 0", maxWidth: 480 }}>
+            <p style={{ fontFamily: "var(--tl-font-sans)", fontSize: 14.5, color: "var(--tl-mute)", margin: "12px auto 0", maxWidth: 480 }}>
               {data.ctaBlurb}
             </p>
             <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap", marginTop: 22 }}>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Mørk presentasjonsmal" description="Slidedekk på mørk flate — tittel, seksjonsskille, nøkkeltall, pyramide og avslutning. 1920×1080." -->
+<helmet><script src="./ds-base.js"></script></helmet>
+<x-import component-from-global-scope="deck-stage" from="./deck-stage.js" width="1920" height="1080" hint-size="100%,100%">
+
+<section data-screen-label="01 Tittel" style="width:1920px;height:1080px;position:relative;overflow:hidden;background:var(--dark-900);font-family:var(--font-body)">
+<div style="position:absolute;inset:0;background:linear-gradient(115deg,var(--navy-900) 0%,var(--dark-900) 60%,var(--dark-800) 100%)"></div>
+<div style="position:absolute;right:-6%;top:-25%;width:48%;height:150%;background:var(--navy-800);transform:skewX(-9deg);opacity:.55"></div>
+<div style="position:absolute;left:0;right:0;bottom:0;height:26px;background:var(--red-600);clip-path:polygon(0 100%,100% 0,100% 100%)"></div>
+<div style="position:relative;height:100%;display:flex;flex-direction:column;justify-content:center;padding:0 140px;gap:40px">
+<div style="display:flex;align-items:center;gap:30px">
+<div style="background:#fff;border-radius:16px;padding:22px 28px"><img src="../../assets/logo/team-norway-golf.png" alt="Team Norway Golf" style="height:86px;width:auto;display:block"></div>
+<span style="font-family:var(--font-mono);font-size:22px;letter-spacing:.22em;color:var(--navy-300)">SESONG 2026</span>
+</div>
+<h1 style="font-family:var(--font-display);font-size:150px;font-weight:800;letter-spacing:-.045em;line-height:.96;margin:0;color:#fff">Nøkkel<br>atferder</h1>
+<p style="margin:0;font-size:32px;line-height:1.5;color:#A9C0DA;max-width:900px;text-wrap:pretty">Hva som faktisk skiller utøvere som når topp 250 fra dem som stopper opp.</p>
+</div>
+</section>
+
+<section data-screen-label="02 Seksjonsskille" style="width:1920px;height:1080px;position:relative;overflow:hidden;background:var(--dark-900);font-family:var(--font-body)">
+<div style="position:absolute;inset:0;background:var(--navy-900);clip-path:polygon(0 0,100% 0,100% calc(100% - 180px),0 100%)"></div>
+<div style="position:relative;height:100%;display:flex;flex-direction:column;justify-content:center;padding:0 140px;gap:32px">
+<span style="font-family:var(--font-mono);font-size:26px;letter-spacing:.22em;color:var(--red-400)">(01)</span>
+<h2 style="font-family:var(--font-display);font-size:112px;font-weight:800;letter-spacing:-.04em;line-height:1;margin:0;color:#fff">Utviklings&shy;prosessen</h2>
+<div style="display:flex;gap:80px;margin-top:24px">
+<div style="display:flex;flex-direction:column;gap:10px"><span style="font-family:var(--font-mono);font-size:20px;letter-spacing:.18em;color:var(--navy-300)">01</span><span style="font-size:34px;font-weight:700;color:#fff;letter-spacing:-.02em">Målbilde</span></div>
+<div style="display:flex;flex-direction:column;gap:10px"><span style="font-family:var(--font-mono);font-size:20px;letter-spacing:.18em;color:var(--navy-300)">02</span><span style="font-size:34px;font-weight:700;color:#fff;letter-spacing:-.02em">Planer</span></div>
+<div style="display:flex;flex-direction:column;gap:10px"><span style="font-family:var(--font-mono);font-size:20px;letter-spacing:.18em;color:var(--navy-300)">03</span><span style="font-size:34px;font-weight:700;color:#fff;letter-spacing:-.02em">Gjennomføring</span></div>
+<div style="display:flex;flex-direction:column;gap:10px"><span style="font-family:var(--font-mono);font-size:20px;letter-spacing:.18em;color:var(--red-400)">04</span><span style="font-size:34px;font-weight:700;color:var(--red-400);letter-spacing:-.02em">Evaluering</span></div>
+</div>
+</div>
+</section>
+
+<section data-screen-label="03 Nøkkeltall" style="width:1920px;height:1080px;position:relative;overflow:hidden;background:var(--dark-900);font-family:var(--font-body);padding:120px 140px;display:flex;flex-direction:column;gap:70px">
+<div style="display:flex;flex-direction:column;gap:20px">
+<span style="font-family:var(--font-mono);font-size:22px;letter-spacing:.22em;color:var(--navy-300)">(02) · MÅLBILDET</span>
+<h2 style="font-family:var(--font-display);font-size:84px;font-weight:800;letter-spacing:-.035em;line-height:1.02;margin:0;color:#fff">Verdenstoppen, tallfestet</h2>
+</div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:40px">
+<div style="background:var(--dark-800);border:1px solid var(--border-dark);border-radius:28px;padding:52px 46px;display:flex;flex-direction:column;gap:20px">
+<span style="font-family:var(--font-mono);font-size:20px;letter-spacing:.18em;color:var(--text-on-dark-muted)">ROLEX RANKING</span>
+<span style="font-family:var(--font-display);font-size:132px;font-weight:800;letter-spacing:-.045em;line-height:.9;color:#fff">125</span>
+<span style="font-size:26px;color:#A9C0DA">Damer</span>
+</div>
+<div style="background:var(--dark-800);border:1px solid var(--border-dark);border-radius:28px;padding:52px 46px;display:flex;flex-direction:column;gap:20px">
+<span style="font-family:var(--font-mono);font-size:20px;letter-spacing:.18em;color:var(--text-on-dark-muted)">OWGR</span>
+<span style="font-family:var(--font-display);font-size:132px;font-weight:800;letter-spacing:-.045em;line-height:.9;color:#fff">250</span>
+<span style="font-size:26px;color:#A9C0DA">Menn</span>
+</div>
+<div style="background:var(--red-600);border-radius:28px;padding:52px 46px;display:flex;flex-direction:column;gap:20px">
+<span style="font-family:var(--font-mono);font-size:20px;letter-spacing:.18em;color:rgba(255,255,255,.8)">SATSINGEN GJELDER FRA</span>
+<span style="font-family:var(--font-display);font-size:132px;font-weight:800;letter-spacing:-.045em;line-height:.9;color:#fff">13</span>
+<span style="font-size:26px;color:rgba(255,255,255,.9)">år og eldre</span>
+</div>
+</div>
+<p style="margin:0;font-size:28px;line-height:1.5;color:#A9C0DA;max-width:1100px;text-wrap:pretty">Ranking er ikke et mål i seg selv, men en indikasjon på utøvers forutsetning for å kunne utvikle seg videre.</p>
+</section>
+
+<section data-screen-label="04 Pyramide" style="width:1920px;height:1080px;position:relative;overflow:hidden;background:var(--white);font-family:var(--font-body);padding:120px 140px;display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:center">
+<div style="display:flex;flex-direction:column;gap:28px">
+<span style="font-family:var(--font-mono);font-size:22px;letter-spacing:.22em;color:var(--ink-400)">(03) · UTVIKLINGSTRAPPEN</span>
+<h2 style="font-family:var(--font-display);font-size:84px;font-weight:800;letter-spacing:-.035em;line-height:1.02;margin:0;color:var(--ink-900)">Bygg nedenfra</h2>
+<p style="margin:0;font-size:28px;line-height:1.55;color:var(--ink-500);text-wrap:pretty">Et nivå står aldri sterkere enn det under. Turneringsresultater som ikke hviler på FYS og TEK, holder ikke over tid.</p>
+<div style="width:120px;height:5px;background:var(--red-600);margin-top:12px"></div>
+</div>
+<div style="display:flex;justify-content:center">
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.PyramidDiagram" active="{{ 4 }}" width="{{ 460 }}" hint-size="700px,340px"></x-import>
+</div>
+</section>
+
+<section data-screen-label="05 Avslutning" style="width:1920px;height:1080px;position:relative;overflow:hidden;background:var(--dark-900);font-family:var(--font-body)">
+<div style="position:absolute;inset:0;background:linear-gradient(115deg,var(--navy-900) 0%,var(--dark-900) 70%)"></div>
+<div style="position:absolute;left:0;right:0;bottom:0;height:120px;background:var(--red-600);clip-path:polygon(0 100%,100% 0,100% 100%)"></div>
+<div style="position:relative;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:44px;text-align:center">
+<div style="background:#fff;border-radius:18px;padding:26px 34px"><img src="../../assets/logo/team-norway-golf.png" alt="Team Norway Golf" style="height:104px;width:auto;display:block"></div>
+<h2 style="font-family:var(--font-display);font-size:96px;font-weight:800;letter-spacing:-.04em;line-height:1.02;margin:0;color:#fff;max-width:1200px">Det viktigste er den<br>indre drivkraften</h2>
+<span style="font-family:var(--font-mono);font-size:24px;letter-spacing:.22em;color:var(--navy-300)">#TEAMNORWAYGOLF</span>
+</div>
+</section>
+
+</x-import>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1920,&quot;height&quot;:1080}}"></script>
+</body>
+</html>

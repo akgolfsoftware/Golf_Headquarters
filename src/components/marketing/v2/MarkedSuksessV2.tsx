@@ -11,7 +11,7 @@
    /cases (MarkedCasesV2), som hadde «Marcus R.» / «Sofie L.». */
 
 import Link from "next/link";
-import { PkShell } from "./paper/PkShell";
+import { PkShell } from "./kit/PkShell";
 
 export function MarkedSuksessV2() {
   return (

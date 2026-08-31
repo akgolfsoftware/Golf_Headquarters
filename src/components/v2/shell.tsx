@@ -111,7 +111,7 @@ export const AGENCYOS_NAV: V2NavItem[] = [
   { id: "spillere", label: "Stall", icon: "users", href: "/admin/spillere" },
   { id: "planlegge", label: "Workbench", icon: "file-text", href: "/admin/planlegge" },
   { id: "innsikt", label: "Innsikt", icon: "bar-chart", href: "/admin/analyse" },
-  { id: "innstillinger", label: "Oppsett", icon: "settings", href: "/admin/settings" },
+  { id: "innstillinger", label: "Oppsett", icon: "settings", href: "/admin/oppsett" },
 ];
 
 /**
@@ -186,7 +186,7 @@ export const AGENCYOS_ROM: V2Rom[] = [
     beskrivelse: "Innstillinger, team, integrasjoner, sikkerhet",
     meta: "System",
     icon: "settings",
-    href: "/admin/settings",
+    href: "/admin/oppsett",
     adminOnly: true,
   },
 ];
@@ -587,11 +587,23 @@ function skallAktivFraPath(pathname: string): string {
     { prefix: "/admin/spillere", id: "stall" },
     { prefix: "/admin/planlegge", id: "workbench" },
     { prefix: "/admin/workbench", id: "workbench" },
-    { prefix: "/admin/queue", id: "ko" },
+    // MASTERPLAN 15.1/15.2: Kø er én adresse (/admin/ko). De gamle kø-adressene
+    // er redirects, men beholdes her så railen lyser riktig i det korte
+    // øyeblikket før redirecten lander.
+    { prefix: "/admin/ko", id: "ko" },
     { prefix: "/admin/godkjenninger", id: "ko" },
     { prefix: "/admin/innboks", id: "ko" },
     { prefix: "/admin/varsler", id: "ko" },
-    { prefix: "/admin/handlingssenter", id: "ko" },
+    // MASTERPLAN 15.7: Kommunikasjon (/admin/kommunikasjon) samler Innboks +
+    // e-post + maler — samme rail-plassering som Innboks hadde.
+    { prefix: "/admin/kommunikasjon", id: "ko" },
+    { prefix: "/admin/email-templates", id: "ko" },
+    // Oppfølging av spillere er IKKE Kø (beslutning 6.6) — den hører i Stall.
+    { prefix: "/admin/queue", id: "stall" },
+    // Oppgaver bor under Meg, som i canvasen (MASTERPLAN 15.2).
+    { prefix: "/admin/oppgaver", id: "meg" },
+    { prefix: "/admin/handlingssenter", id: "meg" },
+    { prefix: "/admin/workspace", id: "meg" },
     { prefix: "/admin/agenticos", id: "jarvis" },
     { prefix: "/admin/agent-team", id: "jarvis" },
     { prefix: "/admin/agents", id: "jarvis" },
@@ -934,7 +946,6 @@ function TrainLockPlayerDock({
       data-tl-player-dock
       style={{
         position: "fixed",
-        left: 0,
         right: 0,
         bottom: 0,
         zIndex: 40,
@@ -942,7 +953,10 @@ function TrainLockPlayerDock({
       }}
     >
       <style>{`
-        [data-tl-player-dock] { padding: 10px 16px 0; padding-bottom: calc(env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px)); }
+        /* left MÅ stå her, ikke inline: inline-stil vinner over media-queryen
+           under, så en hardkodet left:0 ville lagt doken under 72px-skinnen på
+           desktop (målt mot PH-01 Mac 30.08 — composeren startet på x=56). */
+        [data-tl-player-dock] { left: 0; padding: 10px 16px 0; padding-bottom: calc(env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px)); }
         [data-tl-player-pill] { display: flex; }
         [data-tl-player-caddie] { margin-bottom: 10px; }
         @media (min-width: 768px) {
@@ -1444,12 +1458,13 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
     let best: { id: string; href: string } | undefined;
     // Hub-ruter utenfor Mer → primær-seksjon (Kø / Kalender / Innsikt).
     const pathTilSeksjon: Array<{ prefix: string; id: string }> = [
+      { prefix: "/admin/ko", id: "innboks" },
       { prefix: "/admin/godkjenninger", id: "innboks" },
       { prefix: "/admin/innboks", id: "innboks" },
-      { prefix: "/admin/innboks", id: "innboks" },
       { prefix: "/admin/varsler", id: "innboks" },
-      { prefix: "/admin/queue", id: "innboks" },
-      { prefix: "/admin/handlingssenter", id: "innboks" },
+      { prefix: "/admin/queue", id: "spillere" },
+      { prefix: "/admin/oppgaver", id: "cockpit" },
+      { prefix: "/admin/handlingssenter", id: "cockpit" },
       { prefix: "/admin/kalender", id: "kalender" },
       { prefix: "/admin/bookinger", id: "kalender" },
       { prefix: "/admin/agencyos/uka", id: "kalender" },

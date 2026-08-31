@@ -35,7 +35,15 @@ export function AdminAgenticosGodkjenn({ data }: { data: AgenticosGodkjennData }
           <AoTittel size={20}>Godkjenn</AoTittel>
           <span style={{ fontSize: 12, color: TL.mute }}>Kun oppgaver med sideeffekt. Research lander i Cockpit.</span>
         </div>
-        <AoTom tittel="Ingen som venter" tekst="Ingen som venter. Research lander i Cockpit." />
+        <AoTom
+          tittel="Ingen som venter"
+          tekst="Ingen som venter. Research lander i Cockpit."
+          cta={
+            <AoKnapp variant="tertiaer" href="/admin/agenticos/ko">
+              Åpne kø
+            </AoKnapp>
+          }
+        />
         {data.godkjentIDag > 0 ? <GodkjentFot n={data.godkjentIDag} /> : null}
       </div>
     );
@@ -138,10 +146,10 @@ function UthevetSak({ rad }: { rad: AgenticosGodkjennRad }) {
         </div>
       ) : (
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-          <AoKnapp variant="primaer" disabled={pending} onClick={() => kjor(() => acceptPlanAction(rad.id))}>
+          <AoKnapp variant="primaer" full disabled={pending} onClick={() => kjor(() => acceptPlanAction(rad.id))}>
             Godkjenn
           </AoKnapp>
-          <AoKnapp onClick={() => setAvvis(true)}>Avvis</AoKnapp>
+          <AoKnapp full onClick={() => setAvvis(true)}>Avvis</AoKnapp>
           {rad.diff ? (
             <AoKnapp onClick={() => setVisDiff((v) => !v)}>{visDiff ? "Skjul diff" : "Se diff"}</AoKnapp>
           ) : null}

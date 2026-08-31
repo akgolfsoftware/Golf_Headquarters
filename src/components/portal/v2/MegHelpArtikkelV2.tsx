@@ -1,5 +1,6 @@
 "use client";
 import { TL } from "@/lib/v2/train-lock";
+import { AK } from "@/lib/v2/ak-palett";
 
 /**
  * PlayerHQ Meg · Hjelp · Artikkel — v2 Presis + B-pakke (klarspråk, T.* only).
@@ -7,17 +8,7 @@ import { TL } from "@/lib/v2/train-lock";
 
 import { useState } from "react";
 import Link from "next/link";
-import {
-  T,
-  Caps,
-  Kort,
-  Icon,
-  AkseBar,
-  InnsiktChip,
-  AvatarInit,
-  MikroMeta,
-  AKSE_NAVN,
-} from "@/components/v2";
+import { Caps, Kort, Icon, AkseBar, InnsiktChip, AvatarInit, MikroMeta, AKSE_NAVN } from "@/components/v2";
 import type { AkseKey } from "@/lib/v2/format";
 
 /* ── Datakontrakt ──────────────────────────────────────────────────── */
@@ -164,7 +155,7 @@ function Kode({ children }: { children: React.ReactNode }) {
 }
 
 /* Pyramide-figuren — redaksjonelt eksempel (ideal-fordeling). Lagene bruker
-   kanon-aksefargene (T.ax); etikettene ligger i en legende under figuren så
+   kanon-aksefargene (AK.ax); etikettene ligger i en legende under figuren så
    kontrasten holder i både lys og mørk modus. */
 const PYRAMIDE_LAG: { a: AkseKey; pct: number; points: string }[] = [
   { a: "FYS", pct: 15, points: "40,200 320,200 290,165 70,165" },
@@ -179,13 +170,13 @@ function PyramideFigur() {
     <Kort style={{ margin: "18px 0 0" }}>
       <svg viewBox="0 0 360 220" style={{ width: "100%", maxWidth: 420, height: "auto", margin: "0 auto", display: "block" }}>
         {PYRAMIDE_LAG.map((l) => (
-          <polygon key={l.a} points={l.points} fill={T.ax[l.a]} opacity={0.9} />
+          <polygon key={l.a} points={l.points} fill={AK.ax[l.a]} opacity={0.9} />
         ))}
       </svg>
       <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "6px 14px", marginTop: 12 }}>
         {PYRAMIDE_LAG.map((l) => (
           <span key={l.a} style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: TL.font.mono, fontSize: 9.5, fontWeight: 700, color: TL.mute }}>
-            <span style={{ width: 7, height: 7, borderRadius: 9999, background: T.ax[l.a] }} />
+            <span style={{ width: 7, height: 7, borderRadius: 9999, background: AK.ax[l.a] }} />
             {AKSE_NAVN[l.a]} · {l.pct}%
           </span>
         ))}

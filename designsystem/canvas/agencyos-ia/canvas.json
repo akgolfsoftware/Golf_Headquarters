@@ -1,0 +1,188 @@
+{
+  "artboards": [
+    {
+      "file": "Main.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "Konsolideringen — 47 adresser blir 13",
+      "page": "page-1"
+    },
+    {
+      "file": "Ko.dc.html",
+      "x": 1560,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "Kø — BYGGET (15.1)",
+      "page": "page-1"
+    },
+    {
+      "file": "Hjem.dc.html",
+      "x": 3120,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "Hjem (15.10)",
+      "page": "page-1"
+    },
+    {
+      "file": "Stall.dc.html",
+      "x": 0,
+      "y": 1060,
+      "w": 1440,
+      "h": 900,
+      "title": "Stall (15.11)",
+      "page": "page-1"
+    },
+    {
+      "file": "Oppgaver.dc.html",
+      "x": 1560,
+      "y": 1060,
+      "w": 1440,
+      "h": 900,
+      "title": "Oppgaver (15.2)",
+      "page": "page-1"
+    },
+    {
+      "file": "Jarvis.dc.html",
+      "x": 3120,
+      "y": 1060,
+      "w": 1440,
+      "h": 900,
+      "title": "Jarvis (15.5)",
+      "page": "page-1"
+    },
+    {
+      "file": "Kalender.dc.html",
+      "x": 0,
+      "y": 2120,
+      "w": 1440,
+      "h": 900,
+      "title": "Kalender (15.4)",
+      "page": "page-1"
+    },
+    {
+      "file": "Plan.dc.html",
+      "x": 1560,
+      "y": 2120,
+      "w": 1440,
+      "h": 900,
+      "title": "Plan (15.9)",
+      "page": "page-1"
+    },
+    {
+      "file": "Analyse.dc.html",
+      "x": 3120,
+      "y": 2120,
+      "w": 1440,
+      "h": 900,
+      "title": "Innsikt (15.8)",
+      "page": "page-1"
+    },
+    {
+      "file": "Turnering.dc.html",
+      "x": 0,
+      "y": 3180,
+      "w": 1440,
+      "h": 900,
+      "title": "Turnering (15.6)",
+      "page": "page-1"
+    },
+    {
+      "file": "Kommunikasjon.dc.html",
+      "x": 1560,
+      "y": 3180,
+      "w": 1440,
+      "h": 900,
+      "title": "Kommunikasjon (15.7)",
+      "page": "page-1"
+    },
+    {
+      "file": "Oppsett.dc.html",
+      "x": 3120,
+      "y": 3180,
+      "w": 1440,
+      "h": 900,
+      "title": "Oppsett (15.3)",
+      "page": "page-1"
+    },
+    {
+      "file": "Talent.dc.html",
+      "x": 0,
+      "y": 4240,
+      "w": 1440,
+      "h": 900,
+      "title": "Innsyn — talent flyttes (15.12)",
+      "page": "page-1"
+    },
+    {
+      "file": "HjemMobil.dc.html",
+      "x": 0,
+      "y": 5300,
+      "w": 390,
+      "h": 844,
+      "title": "Hjem — iPhone (den viktigste)",
+      "page": "page-2"
+    },
+    {
+      "file": "StallMobil.dc.html",
+      "x": 510,
+      "y": 5300,
+      "w": 390,
+      "h": 844,
+      "title": "Stall — iPhone",
+      "page": "page-2"
+    },
+    {
+      "file": "OppgaverMobil.dc.html",
+      "x": 1020,
+      "y": 5300,
+      "w": 390,
+      "h": 844,
+      "title": "Oppgaver — iPhone",
+      "page": "page-2"
+    }
+  ],
+  "pages": [
+    {
+      "id": "page-1",
+      "name": "Funksjonene"
+    },
+    {
+      "id": "page-2",
+      "name": "Mobil"
+    }
+  ],
+  "annotations": [
+    {
+      "id": "les-forst",
+      "x": 0,
+      "y": -230,
+      "w": 900,
+      "page": "page-1",
+      "text": "STEG 15 — én inngang per funksjon\n\nStart øverst til venstre: oversiktskartet. Deretter én skjerm per funksjon.\n\nKø er BYGGET (PR #689) — de tolv andre er utkast som venter på ditt ja.\nSi ja, nei eller «endre X» per skjerm, så bygges de i den rekkefølgen du vil."
+    },
+    {
+      "id": "hva-mangler",
+      "x": 4700,
+      "y": -230,
+      "w": 620,
+      "page": "page-1",
+      "text": "Dette er RETNINGSUTKAST, ikke byggeklare tegninger.\n\nHver skjerm får lys modus og tom tilstand tegnet i sin egen bygge-PR,\nder de faktisk trengs. Her er spørsmålet bare: er dette riktig inndeling?"
+    },
+    {
+      "id": "mobil-note",
+      "x": 0,
+      "y": 5100,
+      "w": 700,
+      "page": "page-2",
+      "text": "Mobil for de tre du møter daglig.\n\nBeslutning 6.1: morgenflaten er en mobilflate — den skal kunne skannes\nstående på treningsfeltet, ikke være en dashboard-vegg."
+    }
+  ],
+  "launch": {
+    "view": "canvas",
+    "page": "page-1"
+  }
+}

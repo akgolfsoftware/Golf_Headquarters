@@ -1,4 +1,5 @@
-import { T } from "@/lib/v2/tokens";
+import { AK } from "@/lib/v2/ak-palett";
+
 /**
  * PILOT — AgencyOS Plan-bygger · Wizard (6 steg)
  * Dynamic route: /demos/plan-bygger/[1..6] (under (internal) → ADMIN-only)
@@ -790,7 +791,7 @@ function Step4() {
         className="mb-6 flex items-center gap-4 rounded-lg border border-[rgba(20,20,19,0.18)] border-l-4 border-l-[var(--brand-primary,#141413)] px-4 py-4"
         style={{
           backgroundImage:
-            `linear-gradient(135deg, ${T.farge.forestMerkeA6} 0%, color-mix(in srgb, var(--v2-lime) 10%, transparent) 100%)`,
+            `linear-gradient(135deg, ${AK.farge.forestMerkeA6} 0%, color-mix(in srgb, var(--v2-lime) 10%, transparent) 100%)`,
         }}
       >
         <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-[var(--brand-primary,#141413)] font-mono text-[11px] font-bold text-[var(--brand-accent,#C46686)]">
@@ -1230,7 +1231,7 @@ function Step6() {
       <div
         className="mb-6 rounded-2xl px-8 py-8 text-white"
         style={{
-          background: `linear-gradient(135deg, ${T.farge.forestMerke} 0%, ${T.farge.forestVariant} 100%)`,
+          background: `linear-gradient(135deg, ${AK.farge.forestMerke} 0%, ${AK.farge.forestVariant} 100%)`,
         }}
       >
         <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] opacity-70">
@@ -1365,7 +1366,7 @@ function AgentStrip({ label, body }: { label: string; body: React.ReactNode }) {
       className="mb-6 flex items-center gap-4 rounded-lg border border-[rgba(20,20,19,0.18)] border-l-4 border-l-[var(--brand-primary,#141413)] px-4 py-4"
       style={{
         backgroundImage:
-          `linear-gradient(135deg, ${T.farge.forestMerkeA6} 0%, color-mix(in srgb, var(--v2-lime) 10%, transparent) 100%)`,
+          `linear-gradient(135deg, ${AK.farge.forestMerkeA6} 0%, color-mix(in srgb, var(--v2-lime) 10%, transparent) 100%)`,
       }}
     >
       <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-[var(--brand-primary,#141413)] font-mono text-[11px] font-bold text-[var(--brand-accent,#C46686)]">

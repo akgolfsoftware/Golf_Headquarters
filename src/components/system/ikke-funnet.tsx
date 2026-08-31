@@ -6,7 +6,7 @@
  * Rent presentasjonelt + props-drevet: ingen Prisma/DB/Supabase/auth.
  * Brukes av app-ruten (app/not-found.tsx).
  */
-import { PaperTilstand, PaperIkon } from "@/components/system/paper-tilstand";
+import { PaperTilstand, PaperIkon } from "@/components/system/side-tilstand";
 
 export type IkkeFunnetProps = {
   /** Lenke bak primær-CTA-en — vanligvis produktets hjem/oversikt. */

@@ -5,7 +5,7 @@
  */
 import Link from "next/link";
 import { Icon } from "@/components/v2";
-import { PkShell } from "./paper/PkShell";
+import { PkShell } from "./kit/PkShell";
 import {
   PkSek,
   PkEyebrow,
@@ -19,7 +19,7 @@ import {
   PkSekt,
   PkKat,
   PkKort,
-} from "./paper/PkPrimitives";
+} from "./kit/PkPrimitives";
 
 export type CoachProfil = {
   slug: string;
@@ -61,20 +61,20 @@ export function MarkedCoachDetaljV2({ c }: { c: CoachProfil }) {
                 display: "flex",
                 alignItems: "center",
                 gap: 8,
-                fontFamily: "var(--p-ui)",
+                fontFamily: "var(--tl-font-sans)",
                 fontSize: 14,
-                color: "var(--p-muted)",
+                color: "var(--tl-mute)",
                 margin: "12px 0 0",
               }}
             >
-              <Icon name="badge-check" size={15} style={{ color: "var(--p-accent-fg)" }} />
+              <Icon name="badge-check" size={15} style={{ color: "var(--tl-warm)" }} />
               {c.tittel}
             </p>
             <p
               style={{
-                fontFamily: "var(--p-body)",
+                fontFamily: "var(--tl-font-sans)",
                 fontSize: 18,
-                color: "var(--p-muted)",
+                color: "var(--tl-mute)",
                 lineHeight: 1.6,
                 marginTop: 20,
                 maxWidth: 640,
@@ -94,11 +94,11 @@ export function MarkedCoachDetaljV2({ c }: { c: CoachProfil }) {
               style={{
                 display: "block",
                 marginBottom: 10,
-                fontFamily: "var(--p-mono)",
+                fontFamily: "var(--tl-font-mono)",
                 fontSize: 10,
                 letterSpacing: "0.09em",
                 textTransform: "uppercase",
-                color: "var(--p-muted)",
+                color: "var(--tl-mute)",
               }}
             >
               Erfaring
@@ -110,11 +110,11 @@ export function MarkedCoachDetaljV2({ c }: { c: CoachProfil }) {
               style={{
                 display: "block",
                 margin: "18px 0 10px",
-                fontFamily: "var(--p-mono)",
+                fontFamily: "var(--tl-font-mono)",
                 fontSize: 10,
                 letterSpacing: "0.09em",
                 textTransform: "uppercase",
-                color: "var(--p-muted)",
+                color: "var(--tl-mute)",
               }}
             >
               Spesialiteter

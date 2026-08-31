@@ -1,5 +1,5 @@
 "use client";
-import { T } from "@/lib/v2/tokens";
+import { AK } from "@/lib/v2/ak-palett";
 
 // WANG Årsplan (Coach) — trenerens periodiserte årsplan. Desktop-skall
 // (navy sidebar + topbar) + Årsplan-oversikt og Periode-detalj. Portert fra
@@ -242,7 +242,7 @@ export function CoachArsplan({ live = null }: { live?: WangLiveData | null }) {
                         fontWeight: 600,
                         fontSize: 13.5,
                         cursor: "default",
-                        background: aktiv ? T.farge.hvitA14 : "transparent",
+                        background: aktiv ? AK.farge.hvitA14 : "transparent",
                         color: aktiv
                           ? "var(--white)"
                           : "var(--text-on-dark-dim)",
@@ -260,7 +260,7 @@ export function CoachArsplan({ live = null }: { live?: WangLiveData | null }) {
         <div
           style={{
             padding: 16,
-            borderTop: `1px solid ${T.farge.hvitA12}`,
+            borderTop: `1px solid ${AK.farge.hvitA12}`,
             display: "flex",
             alignItems: "center",
             gap: 11,

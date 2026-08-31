@@ -1,7 +1,7 @@
+import { AK } from "@/lib/v2/ak-palett";
 import type { Metadata } from "next";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { T } from "@/lib/v2/tokens";
 
 import { GfgkFooter } from "../_components/gfgk-footer";
 import { GfgkHeader } from "../_components/gfgk-header";
@@ -37,7 +37,7 @@ export default function VeilederPage() {
           <h1 className="mt-3 font-black uppercase leading-[0.98] text-white" style={{ fontSize: "clamp(38px, 6vw, 58px)" }}>
             Kunnskapsbase
           </h1>
-          <p className="mt-4 max-w-[620px] text-[16px] leading-relaxed sm:text-lg" style={{ color: T.farge.hvitA85 }}>
+          <p className="mt-4 max-w-[620px] text-[16px] leading-relaxed sm:text-lg" style={{ color: AK.farge.hvitA85 }}>
             Artikler og veiledning for spillere, foreldre og trenere.
           </p>
         </div>

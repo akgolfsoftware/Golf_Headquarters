@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap">
+  <style>
+    body { margin: 0; font-family: Poppins, Arial, system-ui, sans-serif; background: #000000; color: #F5F5F5; -webkit-font-smoothing: antialiased; }
+    * { box-sizing: border-box; }
+    a { color: #F5F5F5; text-decoration: none; } a:hover { color: #FFFFFF; }
+    .caps { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93; }
+    .num { font-variant-numeric: tabular-nums; }
+    .scroll::-webkit-scrollbar { width: 0; height: 0; }
+  </style>
+</helmet>
+
+<div style="width: 390px; height: 844px; background: #000000; display: flex; flex-direction: column; overflow: hidden; position: relative;">
+
+  <div class="scroll" style="flex: 1; min-height: 0; overflow-y: auto; padding: 24px 16px 104px;">
+    <div class="caps">Academy</div>
+    <h1 style="margin: 6px 0 0; font-size: 26px; font-weight: 700; letter-spacing: -0.01em;">Kø</h1>
+
+    <div class="scroll" style="display: flex; gap: 8px; margin: 18px -16px 0; padding: 0 16px; overflow-x: auto;">
+      <div style="flex: none; display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border-radius: 999px; background: #FFFFFF; color: #000000; font-size: 13px; font-weight: 600;"><span>Godkjenninger</span><span class="num" style="opacity: 0.75;">0</span></div>
+      <div style="flex: none; display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border-radius: 999px; background: #2C2C2E; color: #F5F5F5; font-size: 13px; font-weight: 600;"><span>Agent-kø</span><span class="num" style="opacity: 0.75;">0</span></div>
+      <div style="flex: none; display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border-radius: 999px; background: #2C2C2E; color: #F5F5F5; font-size: 13px; font-weight: 600;"><span>Agent-godkjenning</span><span class="num" style="opacity: 0.75;">0</span></div>
+      <div style="flex: none; display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border-radius: 999px; background: #2C2C2E; color: #F5F5F5; font-size: 13px; font-weight: 600;"><span>Foreslåtte tester</span><span class="num" style="opacity: 0.75;">0</span></div>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 12px; margin-top: 18px;">
+      <span class="num" style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 22px; font-weight: 600; color: #8E8E93;">0</span>
+      <span class="caps" style="font-size: 10px;">venter på deg</span>
+    </div>
+
+    <!-- Tom kø: fem tomme spor i dim + hel setning (GAP-2f) -->
+    <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 16px;">
+      <div style="height: 64px; border-radius: 20px; background: #161616;"></div>
+      <div style="height: 64px; border-radius: 20px; background: #161616; opacity: 0.7;"></div>
+      <div style="height: 64px; border-radius: 20px; background: #161616; opacity: 0.5;"></div>
+      <div style="height: 64px; border-radius: 20px; background: #161616; opacity: 0.35;"></div>
+      <div style="height: 64px; border-radius: 20px; background: #161616; opacity: 0.2;"></div>
+    </div>
+
+    <p style="margin: 22px 0 0; font-size: 15px; font-weight: 600; line-height: 1.5; color: #F5F5F5;">Køen er tom. Du er à jour.</p>
+    <p style="margin: 8px 0 0; font-size: 13px; line-height: 1.55; color: #8E8E93;">Nye forslag kommer når det lander runder, tester eller meldinger fra spillerne dine. Research-resultater lander i Konsoll, ikke her.</p>
+
+    <div style="display: flex; gap: 8px; margin-top: 18px;">
+      <span style="display: inline-flex; align-items: center; justify-content: center; height: 44px; padding: 0 20px; border-radius: 999px; background: #2C2C2E; color: #F5F5F5; font-size: 15px; font-weight: 600;">Gå til stallen</span>
+    </div>
+  </div>
+
+  <div style="position: absolute; left: 16px; right: 16px; bottom: 12px; height: 64px; background: #1C1C1E; border-radius: 999px; box-shadow: inset 0 0 0 1px #FFFFFF14; display: flex; align-items: center; padding: 8px 10px;">
+    <div style="flex: 1; height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;"><div style="width: 20px; height: 20px; border-radius: 5px; background: #8E8E93;"></div><span style="font-size: 10px; font-weight: 600; color: #8E8E93;">Stall</span></div>
+    <div style="flex: 1; height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;"><div style="width: 20px; height: 20px; border-radius: 5px; background: #8E8E93;"></div><span style="font-size: 10px; font-weight: 600; color: #8E8E93;">Workbench</span></div>
+    <div style="flex: 1; height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;"><div style="width: 20px; height: 20px; border-radius: 5px; background: #F5F5F5;"></div><span style="font-size: 10px; font-weight: 600; color: #F5F5F5;">Kø</span></div>
+    <div style="flex: 1; height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;"><div style="width: 20px; height: 20px; border-radius: 5px; background: #8E8E93;"></div><span style="font-size: 10px; font-weight: 600; color: #8E8E93;">Jarvis</span></div>
+    <div style="flex: 1; height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;"><div style="width: 20px; height: 20px; border-radius: 999px; background: #8E8E93;"></div><span style="font-size: 10px; font-weight: 600; color: #8E8E93;">Meg</span></div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

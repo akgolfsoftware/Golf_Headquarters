@@ -8,7 +8,9 @@
  * v2-komponenter.
  */
 import Link from "next/link";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+import { AK } from "@/lib/v2/ak-palett";
+
 import { Icon, Kort, TomTilstand } from "@/components/v2";
 import { StatsRamme, StatsDetalj, useMobile } from "./stats-ramme";
 
@@ -84,20 +86,20 @@ function TurnGruppeKort({ gruppe }: { gruppe: NorskeTurnGruppe }) {
   const erLive = gruppe.turnering.status === "IN_PROGRESS";
   return (
     <Kort pad="0" style={{ overflow: "hidden" }}>
-      <div style={{ padding: "20px 22px 16px", borderBottom: `1px solid ${T.border}`, display: "flex", flexDirection: "column", gap: 6 }}>
+      <div style={{ padding: "20px 22px 16px", borderBottom: `1px solid ${TL.hair}`, display: "flex", flexDirection: "column", gap: 6 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
           {erLive ? (
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: T.onHandling, background: T.up, borderRadius: 999, padding: "2px 8px" }}>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: TL.font.mono, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: TL.onFill, background: TL.ok, borderRadius: 999, padding: "2px 8px" }}>
               LIVE
             </span>
           ) : (
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: T.mono, fontSize: 9.5, letterSpacing: "0.12em", textTransform: "uppercase", color: T.mut, fontWeight: 600 }}>
-              <span style={{ width: 5, height: 5, borderRadius: "50%", background: T.mut, display: "inline-block" }} />
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: TL.font.mono, fontSize: 9.5, letterSpacing: "0.12em", textTransform: "uppercase", color: TL.mute, fontWeight: 600 }}>
+              <span style={{ width: 5, height: 5, borderRadius: "50%", background: TL.mute, display: "inline-block" }} />
               KOMMENDE
             </span>
           )}
-          <h2 style={{ fontFamily: T.disp, fontSize: 18, fontWeight: 600, margin: 0, letterSpacing: "-0.015em", color: T.fg }}>
-            <span style={{ display: "inline-block", marginRight: 8, padding: "1px 6px", borderRadius: 4, fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", verticalAlign: "middle", background: T.panel2, color: T.mut }}>
+          <h2 style={{ fontFamily: TL.font.sans, fontSize: 18, fontWeight: 600, margin: 0, letterSpacing: "-0.015em", color: TL.text }}>
+            <span style={{ display: "inline-block", marginRight: 8, padding: "1px 6px", borderRadius: 4, fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", verticalAlign: "middle", background: TL.dock, color: TL.mute }}>
               NOR
             </span>
             {gruppe.turnering.slug ? (
@@ -109,9 +111,9 @@ function TurnGruppeKort({ gruppe }: { gruppe: NorskeTurnGruppe }) {
             )}
           </h2>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", fontFamily: T.mono, fontSize: 11, letterSpacing: "0.05em", color: T.mut }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", fontFamily: TL.font.mono, fontSize: 11, letterSpacing: "0.05em", color: TL.mute }}>
           {gruppe.turnering.tour && (
-            <span style={{ background: T.panel2, padding: "2px 8px", borderRadius: 4, color: T.lime, fontWeight: 600 }}>{formaterTour(gruppe.turnering.tour)}</span>
+            <span style={{ background: TL.dock, padding: "2px 8px", borderRadius: 4, color: TL.fill, fontWeight: 600 }}>{formaterTour(gruppe.turnering.tour)}</span>
           )}
           {gruppe.turnering.location && (
             <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
@@ -126,11 +128,11 @@ function TurnGruppeKort({ gruppe }: { gruppe: NorskeTurnGruppe }) {
 
       {erLive ? (
         <div style={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: T.mono, fontSize: 13 }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: TL.font.mono, fontSize: 13 }}>
             <thead>
-              <tr style={{ background: T.panel2, borderBottom: `1px solid ${T.border}` }}>
+              <tr style={{ background: TL.dock, borderBottom: `1px solid ${TL.hair}` }}>
                 {["POS", "SPILLER", "SCORE", "RUNDER"].map((h, i) => (
-                  <th key={h} style={{ padding: i === 0 ? "10px 22px" : "10px 14px", textAlign: i >= 2 ? "right" : "left", fontFamily: T.mono, fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", color: T.mut, fontWeight: 600 }}>
+                  <th key={h} style={{ padding: i === 0 ? "10px 22px" : "10px 14px", textAlign: i >= 2 ? "right" : "left", fontFamily: TL.font.mono, fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", color: TL.mute, fontWeight: 600 }}>
                     {h}
                   </th>
                 ))}
@@ -140,19 +142,19 @@ function TurnGruppeKort({ gruppe }: { gruppe: NorskeTurnGruppe }) {
               {gruppe.spillere.map((s, i) => {
                 const underPar = s.scoreToPar !== null && s.scoreToPar !== undefined && s.scoreToPar < 0;
                 return (
-                  <tr key={s.id} style={{ borderBottom: i < gruppe.spillere.length - 1 ? `1px solid ${T.border}` : undefined }}>
-                    <td style={{ padding: "12px 22px", fontVariantNumeric: "tabular-nums", fontWeight: 600, color: (s.position ?? 99) <= 3 ? T.lime : T.mut }}>{formaterPos(s.position)}</td>
+                  <tr key={s.id} style={{ borderBottom: i < gruppe.spillere.length - 1 ? `1px solid ${TL.hair}` : undefined }}>
+                    <td style={{ padding: "12px 22px", fontVariantNumeric: "tabular-nums", fontWeight: 600, color: (s.position ?? 99) <= 3 ? TL.fill : TL.mute }}>{formaterPos(s.position)}</td>
                     <td style={{ padding: "12px 14px" }}>
-                      <Link href={`/stats/spillere/${s.slug}`} style={{ fontFamily: T.ui, fontWeight: 500, fontSize: 13.5, color: T.fg, textDecoration: "none" }}>
+                      <Link href={`/stats/spillere/${s.slug}`} style={{ fontFamily: TL.font.sans, fontWeight: 500, fontSize: 13.5, color: TL.text, textDecoration: "none" }}>
                         {s.name}
                       </Link>
                     </td>
                     <td style={{ padding: "12px 14px", textAlign: "right" }}>
-                      <span style={{ display: "inline-block", fontVariantNumeric: "tabular-nums", fontWeight: 600, fontSize: 13, padding: "2px 8px", borderRadius: 4, background: underPar ? T.lime : T.panel2, color: underPar ? T.onLime : T.fg }}>
+                      <span style={{ display: "inline-block", fontVariantNumeric: "tabular-nums", fontWeight: 600, fontSize: 13, padding: "2px 8px", borderRadius: 4, background: underPar ? TL.fill : TL.dock, color: underPar ? TL.onFill : TL.text }}>
                         {formaterScore(s.scoreToPar)}
                       </span>
                     </td>
-                    <td style={{ padding: "12px 22px 12px 14px", textAlign: "right", color: T.mut, fontSize: 12, fontVariantNumeric: "tabular-nums" }}>
+                    <td style={{ padding: "12px 22px 12px 14px", textAlign: "right", color: TL.mute, fontSize: 12, fontVariantNumeric: "tabular-nums" }}>
                       {s.rounds.length > 0 ? s.rounds.join("-") : "—"}
                     </td>
                   </tr>
@@ -164,24 +166,24 @@ function TurnGruppeKort({ gruppe }: { gruppe: NorskeTurnGruppe }) {
       ) : (
         <div style={{ padding: "16px 22px", display: "flex", flexWrap: "wrap", gap: 8 }}>
           {gruppe.spillere.map((s) => (
-            <Link key={s.id} href={`/stats/spillere/${s.slug}`} style={{ display: "inline-flex", alignItems: "center", padding: "6px 12px", borderRadius: 999, background: T.panel2, border: `1px solid ${T.border}`, fontFamily: T.ui, fontSize: 13, fontWeight: 500, color: T.fg, textDecoration: "none" }}>
+            <Link key={s.id} href={`/stats/spillere/${s.slug}`} style={{ display: "inline-flex", alignItems: "center", padding: "6px 12px", borderRadius: 999, background: TL.dock, border: `1px solid ${TL.hair}`, fontFamily: TL.font.sans, fontSize: 13, fontWeight: 500, color: TL.text, textDecoration: "none" }}>
               {s.name}
             </Link>
           ))}
         </div>
       )}
 
-      <div style={{ padding: "12px 22px", borderTop: `1px solid ${T.border}`, display: "flex", justifyContent: "flex-end" }}>
+      <div style={{ padding: "12px 22px", borderTop: `1px solid ${TL.hair}`, display: "flex", justifyContent: "flex-end" }}>
         {gruppe.turnering.slug ? (
-          <Link href={`/stats/turneringer/${gruppe.turnering.slug}`} style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: T.mono, fontSize: 12, letterSpacing: "0.05em", color: T.lime, textDecoration: "none", fontWeight: 500 }}>
+          <Link href={`/stats/turneringer/${gruppe.turnering.slug}`} style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: TL.font.mono, fontSize: 12, letterSpacing: "0.05em", color: TL.fill, textDecoration: "none", fontWeight: 500 }}>
             Se full leaderboard <Icon name="external-link" size={11} />
           </Link>
         ) : gruppe.turnering.officialUrl ? (
-          <a href={gruppe.turnering.officialUrl} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: T.mono, fontSize: 12, letterSpacing: "0.05em", color: T.lime, textDecoration: "none", fontWeight: 500 }}>
+          <a href={gruppe.turnering.officialUrl} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: TL.font.mono, fontSize: 12, letterSpacing: "0.05em", color: TL.fill, textDecoration: "none", fontWeight: 500 }}>
             Se turnering <Icon name="external-link" size={11} />
           </a>
         ) : (
-          <Link href="/stats/turneringer" style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: T.mono, fontSize: 12, letterSpacing: "0.05em", color: T.mut, textDecoration: "none" }}>
+          <Link href="/stats/turneringer" style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: TL.font.mono, fontSize: 12, letterSpacing: "0.05em", color: TL.mute, textDecoration: "none" }}>
             Se alle turneringer <Icon name="external-link" size={11} />
           </Link>
         )}
@@ -237,7 +239,7 @@ export function StatsNorskeV2({ grupper }: StatsNorskeV2Props) {
               <TomTilstand icon="flag" title="Ingen norske spillere i aksjon denne uken" sub="Neste oppdatering kl. 06:00, kom tilbake da!" />
             </Kort>
           ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: AK.gap }}>
               {grupper.map((gruppe) => (
                 <TurnGruppeKort key={gruppe.turnering.id} gruppe={gruppe} />
               ))}

@@ -2,7 +2,7 @@
  * /booking — Paper-port (PP-1.7, 10.08.2026). Fasit:
  * `designsystem/paper/fase1/booking.html` — én side med fire steg
  * (tjeneste → tid → deg → bekreft), i stedet for den gamle tre-siders flyten
- * via `/booking/[slug]`. Presentasjonen bor i MarkedBookingPaperV2.
+ * via `/booking/[slug]`. Presentasjonen bor i MarkedBookingV2.
  *
  * Acuity-pausen (kanBrukeInnebygdBooking) og Prisma-spørringen er beholdt fra
  * v2-porten 16. juli 2026. Undersidene `/booking/[slug]` består uendret —
@@ -12,12 +12,12 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { BOOKING_ACUITY_URL, kanBrukeInnebygdBooking } from "@/lib/booking/offentlig-booking";
 import { finnNesteLedige } from "./ledige-tider";
-import { MarkedBookingPauset } from "@/components/marketing/paper/MarkedBookingPauset";
+import { MarkedBookingPauset } from "@/components/marketing/landing/MarkedBookingPauset";
 import {
-  MarkedBookingPaperV2,
+  MarkedBookingV2,
   type PaperAbonnement,
   type PaperTjeneste,
-} from "@/components/marketing/v2/MarkedBookingPaperV2";
+} from "@/components/marketing/v2/MarkedBookingV2";
 
 export const metadata: Metadata = {
   title: "Book en time · AK Golf Academy",
@@ -126,7 +126,7 @@ export default async function BookingLanding() {
   const nesteLedig = tjenester.length ? await finnNesteLedige(tjenester[0].slug) : null;
 
   return (
-    <MarkedBookingPaperV2
+    <MarkedBookingV2
       tjenester={tjenester}
       abonnement={abonnement}
       lokasjon={lokasjonRad?.name ?? LOKASJON_FALLBACK}

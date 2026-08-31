@@ -4,7 +4,7 @@
    Skallet er PkShell (variant «side»). Ingen inline-stiler, ingen egne farger.
    COPY: uendret fra forrige versjon. */
 
-import { PkShell } from "./paper/PkShell";
+import { PkShell } from "./kit/PkShell";
 
 type Stilling = { tittel: string; sted: string; type: string; beskrivelse: string };
 

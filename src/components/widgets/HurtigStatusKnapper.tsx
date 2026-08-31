@@ -6,7 +6,8 @@
  * kontroll. Presentasjonell: kalleren eier markerOktStatus-kallet.
  */
 
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Icon } from "@/components/v2/icon";
 
 export type HurtigStatusOkt = { id: string; kilde: "v2" | "plan" };
@@ -32,12 +33,12 @@ export function HurtigStatusKnapper({
           display: "inline-flex",
           alignItems: "center",
           gap: 5,
-          fontFamily: T.ui,
+          fontFamily: TL.font.sans,
           fontSize: 11.5,
           fontWeight: 600,
-          color: T.fg,
-          background: T.panel3,
-          border: `1px solid ${T.borderS}`,
+          color: TL.text,
+          background: TL.dim,
+          border: `1px solid ${TL.hair}`,
           borderRadius: 9999,
           padding: "7px 12px",
           cursor: "pointer",
@@ -57,12 +58,12 @@ export function HurtigStatusKnapper({
           display: "inline-flex",
           alignItems: "center",
           gap: 5,
-          fontFamily: T.ui,
+          fontFamily: TL.font.sans,
           fontSize: 11.5,
           fontWeight: 600,
-          color: T.mut,
+          color: TL.mute,
           background: "transparent",
-          border: `1px solid ${T.border}`,
+          border: `1px solid ${TL.hair}`,
           borderRadius: 9999,
           padding: "7px 12px",
           cursor: "pointer",

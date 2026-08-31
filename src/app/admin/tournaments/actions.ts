@@ -39,7 +39,7 @@ export async function createTournament(input: TournamentInput) {
     target: `Tournament:${ny.id}`,
     metadata: { name: ny.name },
   });
-  revalidatePath("/admin/tournaments");
+  revalidatePath("/admin/turnering");
   return ny.id;
 }
 
@@ -61,7 +61,7 @@ export async function updateTournament(id: string, input: TournamentInput) {
     action: "tournament.updated",
     target: `Tournament:${id}`,
   });
-  revalidatePath("/admin/tournaments");
+  revalidatePath("/admin/turnering");
   revalidatePath(`/admin/tournaments/${id}`);
 }
 
@@ -73,8 +73,8 @@ export async function deleteTournament(id: string) {
     action: "tournament.deleted",
     target: `Tournament:${id}`,
   });
-  revalidatePath("/admin/tournaments");
-  redirect("/admin/tournaments");
+  revalidatePath("/admin/turnering");
+  redirect("/admin/turnering");
 }
 
 export type ResultInput = {
@@ -198,7 +198,7 @@ export async function meldPaSpillere(
     metadata: { opprettet, oppdatert, count: players.length },
   });
 
-  revalidatePath("/admin/tournaments");
+  revalidatePath("/admin/turnering");
   revalidatePath(`/admin/tournaments/${tournamentId}`);
   revalidatePath("/admin/agencyos");
   return { opprettet, oppdatert };
@@ -219,7 +219,7 @@ export async function fjernPamelding(entryId: string) {
   if (entry?.tournamentId) {
     revalidatePath(`/admin/tournaments/${entry.tournamentId}`);
   }
-  revalidatePath("/admin/tournaments");
+  revalidatePath("/admin/turnering");
   revalidatePath("/admin/agencyos");
 }
 
@@ -240,7 +240,7 @@ export async function oppdaterPrioritet(entryId: string, priority: string) {
   if (entry.tournamentId) {
     revalidatePath(`/admin/tournaments/${entry.tournamentId}`);
   }
-  revalidatePath("/admin/tournaments");
+  revalidatePath("/admin/turnering");
 }
 
 // ------------------------------------------------------------------
@@ -377,8 +377,7 @@ export async function mergeTurneringer(input: {
     },
   });
 
-  revalidatePath("/admin/tournaments");
-  revalidatePath("/admin/tournaments/dubletter");
+  revalidatePath("/admin/turnering");
   revalidatePath("/turneringer");
   revalidatePath("/portal/tren/turneringer");
 
@@ -412,8 +411,7 @@ export async function unmergeTurnering(sourceId: string): Promise<
     metadata: { name: t.name, hadMergedInto: t.mergedIntoId },
   });
 
-  revalidatePath("/admin/tournaments");
-  revalidatePath("/admin/tournaments/dubletter");
+  revalidatePath("/admin/turnering");
   return { ok: true };
 }
 

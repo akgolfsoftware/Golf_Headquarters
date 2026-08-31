@@ -1,0 +1,186 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap">
+  <style>
+    body { margin: 0; font-family: Poppins, Arial, system-ui, sans-serif; background: #FFFFFF; color: #111111; -webkit-font-smoothing: antialiased; }
+    * { box-sizing: border-box; }
+    a { color: #111111; text-decoration: none; } a:hover { color: #111111; }
+    .caps { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #6E6E73; }
+    .num { font-variant-numeric: tabular-nums; }
+    .mono { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+    .scroll::-webkit-scrollbar { width: 0; height: 0; }
+  </style>
+</helmet>
+<div style="width: 1440px; height: 900px; background: #FFFFFF; display: flex; overflow: hidden;">
+  <div style="width: 232px; flex: none; background: #E9E9EB; border-right: 1px solid #00000014; padding: 18px 12px; display: flex; flex-direction: column; gap: 4px;">
+    <div style="display: flex; align-items: center; gap: 9px; padding: 0 10px 14px;">
+      <div style="width: 8px; height: 8px; border-radius: 50%; background: #B85C3D;"></div>
+      <span style="font-size: 13px; font-weight: 700;">AK Golf Academy</span>
+    </div>
+    <div style="height: 40px; border-radius: 10px; background: #DDDDDE; display: flex; align-items: center; gap: 10px; padding: 0 12px;"><div style="width: 16px; height: 16px; border-radius: 4px; background: #111111;"></div><span style="font-size: 14px; font-weight: 600; color: #111111;">Stall</span></div>
+    <div style="height: 40px; border-radius: 10px; display: flex; align-items: center; gap: 10px; padding: 0 12px;"><div style="width: 16px; height: 16px; border-radius: 4px; background: #6E6E73;"></div><span style="font-size: 14px; font-weight: 600; color: #6E6E73;">Workbench</span></div>
+    <div style="height: 40px; border-radius: 10px; display: flex; align-items: center; gap: 10px; padding: 0 12px;"><div style="width: 16px; height: 16px; border-radius: 4px; background: #6E6E73;"></div><span style="font-size: 14px; font-weight: 600; color: #6E6E73;">Kø</span></div>
+    <div style="height: 40px; border-radius: 10px; display: flex; align-items: center; gap: 10px; padding: 0 12px;"><div style="width: 16px; height: 16px; border-radius: 4px; background: #6E6E73;"></div><span style="font-size: 14px; font-weight: 600; color: #6E6E73;">Jarvis</span></div>
+    <div style="height: 40px; border-radius: 10px; display: flex; align-items: center; gap: 10px; padding: 0 12px;"><div style="width: 16px; height: 16px; border-radius: 999px; background: #6E6E73;"></div><span style="font-size: 14px; font-weight: 600; color: #6E6E73;">Meg</span></div>
+    <div style="margin: 14px 10px 8px; height: 1px; background: #00000014;"></div>
+    <div style="padding: 0 10px 6px;" class="caps">Under Meg</div>
+    <div style="height: 34px; border-radius: 10px; display: flex; align-items: center; padding: 0 12px; font-size: 13px; color: #6E6E73;">Konsoll</div><div style="height: 34px; border-radius: 10px; display: flex; align-items: center; padding: 0 12px; font-size: 13px; color: #6E6E73;">Økonomi</div><div style="height: 34px; border-radius: 10px; display: flex; align-items: center; padding: 0 12px; font-size: 13px; color: #6E6E73;">Kalender</div>
+    <div style="flex: 1;"></div>
+  </div>
+  <div style="flex: 1; min-width: 0; display: flex; flex-direction: column;">
+
+    <div style="height: 56px; flex: none; display: flex; align-items: center; gap: 10px; padding: 0 22px; border-bottom: 1px solid #00000014;">
+      <span style="font-size: 13px; color: #6E6E73;">Stall</span>
+      <span style="font-size: 13px; color: #6E6E73;">/</span>
+      <span style="font-size: 15px; font-weight: 700;">Øyvind Rohjan</span>
+      <span style="font-size: 13px; color: #6E6E73;">/</span>
+      <span style="font-size: 13px; color: #6E6E73;">Innsikt</span>
+      <div style="margin-left: auto; display: flex; align-items: center; gap: 10px;"><span style="display: inline-flex; align-items: center; height: 24px; padding: 0 10px; border-radius: 999px; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #FFD60A; box-shadow: inset 0 0 0 1px #FFD60A5C;">Eksempeltall</span></div>
+    </div>
+
+    <div style="flex: 1; min-height: 0; display: flex;">
+
+      <div class="scroll" style="flex: 1; min-width: 0; overflow-y: auto; padding: 22px 22px 36px; display: flex; flex-direction: column; gap: 14px;">
+
+        <div>
+          <div class="caps">Innsikt</div>
+          <h1 style="margin: 6px 0 0; font-size: 26px; font-weight: 700; letter-spacing: -0.01em;">Han taper mest på innspill</h1>
+          <p style="margin: 8px 0 0; max-width: 62ch; font-size: 13px; line-height: 1.55; color: #6E6E73;">Målt mot ham selv de siste tre månedene, ikke mot proffnivå og ikke mot jevnaldrende.</p>
+        </div>
+
+        <section style="background: #F2F2F2; border-radius: 20px; padding: 20px 22px;"><div style="display: flex; align-items: center; gap: 10px;"><div><div class="caps" style="font-size: 10px;">Siste 90 dager mot egen basislinje</div><h2 style="margin: 4px 0 0; font-size: 17px; font-weight: 700; letter-spacing: -0.01em; color: #111111;">Hvor taper han slag</h2></div></div><div style="display: flex; flex-direction: column; gap: 12px; margin-top: 16px;"><div style="display: flex; align-items: center; gap: 12px;">
+          <span style="width: 78px; flex: none; font-size: 13px; font-weight: 600; color: #111111;">Innspill</span>
+          <div style="flex: 1; min-width: 0; height: 8px; border-radius: 999px; background: #00000014;">
+            <div style="width: 76%; height: 8px; border-radius: 999px; background: #B85C3D;"></div>
+          </div>
+          <span class="mono" style="width: 44px; flex: none; text-align: right; font-size: 13px; font-weight: 600; color: #111111;">-0,7</span>
+          <span style="width: 84px; flex: none; font-size: 11px; color: #6E6E73;">100-175 m</span>
+        </div><div style="display: flex; align-items: center; gap: 12px;">
+          <span style="width: 78px; flex: none; font-size: 13px; font-weight: 600; color: #111111;">Utslag</span>
+          <div style="flex: 1; min-width: 0; height: 8px; border-radius: 999px; background: #00000014;">
+            <div style="width: 11%; height: 8px; border-radius: 999px; background: #6E6E73;"></div>
+          </div>
+          <span class="mono" style="width: 44px; flex: none; text-align: right; font-size: 13px; font-weight: 600; color: #111111;">+0,1</span>
+          <span style="width: 84px; flex: none; font-size: 11px; color: #6E6E73;">driver</span>
+        </div><div style="display: flex; align-items: center; gap: 12px;">
+          <span style="width: 78px; flex: none; font-size: 13px; font-weight: 600; color: #111111;">Nærspill</span>
+          <div style="flex: 1; min-width: 0; height: 8px; border-radius: 999px; background: #00000014;">
+            <div style="width: 22%; height: 8px; border-radius: 999px; background: #6E6E73;"></div>
+          </div>
+          <span class="mono" style="width: 44px; flex: none; text-align: right; font-size: 13px; font-weight: 600; color: #111111;">+0,2</span>
+          <span style="width: 84px; flex: none; font-size: 11px; color: #6E6E73;">innenfor 30 m</span>
+        </div><div style="display: flex; align-items: center; gap: 12px;">
+          <span style="width: 78px; flex: none; font-size: 13px; font-weight: 600; color: #111111;">Putting</span>
+          <div style="flex: 1; min-width: 0; height: 8px; border-radius: 999px; background: #00000014;">
+            <div style="width: 44%; height: 8px; border-radius: 999px; background: #6E6E73;"></div>
+          </div>
+          <span class="mono" style="width: 44px; flex: none; text-align: right; font-size: 13px; font-weight: 600; color: #111111;">+0,4</span>
+          <span style="width: 84px; flex: none; font-size: 11px; color: #6E6E73;">alle lengder</span>
+        </div></div><p style="margin: 16px 0 0; font-size: 12px; color: #6E6E73;">Fordelingen finnes fordi han fører runder og har TrackMan-økter hos oss. Fra en GolfBox-runde alene ville vi bare sett totalen.</p></section>
+
+        <section style="background: #F2F2F2; border-radius: 20px; padding: 20px 22px;"><div style="display: flex; align-items: center; gap: 10px;"><div><div class="caps" style="font-size: 10px;">Feltstyrke-justert score, slag mot feltsnittet</div><h2 style="margin: 4px 0 0; font-size: 17px; font-weight: 700; letter-spacing: -0.01em; color: #111111;">Utvikler han seg raskt nok</h2></div></div><div style="display: flex; gap: 10px; align-items: flex-end; margin-top: 16px;"><div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+          <span class="mono" style="font-size: 13px; font-weight: 600; color: #111111;">+4,8</span>
+          <div style="width: 100%; height: 88px; display: flex; align-items: flex-end;">
+            <div style="width: 100%; height: 82px; border-radius: 12px 12px 0 0; background: #DDDDDE;"></div>
+          </div>
+          <span style="font-size: 12px; font-weight: 600; color: #111111;">2023</span>
+          <span style="font-size: 10px; color: #6E6E73;">9 turneringer</span>
+        </div><div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+          <span class="mono" style="font-size: 13px; font-weight: 600; color: #111111;">+3,1</span>
+          <div style="width: 100%; height: 88px; display: flex; align-items: flex-end;">
+            <div style="width: 100%; height: 58px; border-radius: 12px 12px 0 0; background: #DDDDDE;"></div>
+          </div>
+          <span style="font-size: 12px; font-weight: 600; color: #111111;">2024</span>
+          <span style="font-size: 10px; color: #6E6E73;">12 turneringer</span>
+        </div><div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+          <span class="mono" style="font-size: 13px; font-weight: 600; color: #111111;">+2,2</span>
+          <div style="width: 100%; height: 88px; display: flex; align-items: flex-end;">
+            <div style="width: 100%; height: 44px; border-radius: 12px 12px 0 0; background: #DDDDDE;"></div>
+          </div>
+          <span style="font-size: 12px; font-weight: 600; color: #111111;">2025</span>
+          <span style="font-size: 10px; color: #6E6E73;">14 turneringer</span>
+        </div><div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+          <span class="mono" style="font-size: 13px; font-weight: 600; color: #111111;">+1,4</span>
+          <div style="width: 100%; height: 88px; display: flex; align-items: flex-end;">
+            <div style="width: 100%; height: 30px; border-radius: 12px 12px 0 0; background: #DDDDDE;"></div>
+          </div>
+          <span style="font-size: 12px; font-weight: 600; color: #111111;">2026</span>
+          <span style="font-size: 10px; color: #6E6E73;">11 så langt</span>
+        </div></div><p style="margin: 16px 0 0; font-size: 12px; color: #6E6E73;">Lavere er bedre. Sammenlignbart på tvers av bane, tee og klasse — plassering brukes aldri.</p></section>
+
+        <section style="background: #F2F2F2; border-radius: 20px; padding: 20px 22px;"><div style="display: flex; align-items: center; gap: 10px;"><div><div class="caps" style="font-size: 10px;">SG-stigen — kalibrert mot DataGolf</div><h2 style="margin: 4px 0 0; font-size: 17px; font-weight: 700; letter-spacing: -0.01em; color: #111111;">Hvor på skalaen han står</h2></div><div style="margin-left: auto;"><span style="display: inline-flex; align-items: center; height: 22px; padding: 0 9px; border-radius: 999px; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #6E6E73; box-shadow: inset 0 0 0 1px #00000014;">Kun coach</span></div></div><div style="display: flex; align-items: baseline; gap: 12px; margin-top: 16px;"><span class="mono" style="font-size: 34px; font-weight: 600; color: #111111;">-4,3</span><span class="mono" style="font-size: 15px; color: #6E6E73;">± 0,9</span><span class="caps" style="font-size: 10px;">SG per runde mot PGA-snitt</span></div><div style="position: relative; height: 8px; border-radius: 999px; background: #00000014; margin-top: 18px;"><div style="position: absolute; left: 34%; width: 13%; height: 8px; border-radius: 999px; background: #B85C3D;"></div></div><div style="display: flex; justify-content: space-between; margin-top: 8px;"><span style="font-size: 11px; color: #6E6E73;">Klubbnivå</span><span style="font-size: 11px; color: #6E6E73;">Nordic League</span><span style="font-size: 11px; color: #6E6E73;">PGA Tour</span></div><p style="margin: 16px 0 0; font-size: 12px; line-height: 1.5; color: #6E6E73;">Kalibrert gjennom spillere som har spilt både norske turneringer og Nordic League. Spennet står fordi det er et estimat — det skal aldri vises som ett tall.</p></section>
+
+        <div style="display: flex; gap: 14px;">
+          <div style="flex: 1; min-width: 0;"><section style="background: #F2F2F2; border-radius: 20px; padding: 20px 22px;"><div style="display: flex; align-items: center; gap: 10px;"><div><div class="caps" style="font-size: 10px;">Turnering mot trening</div><h2 style="margin: 4px 0 0; font-size: 17px; font-weight: 700; letter-spacing: -0.01em; color: #111111;">Tåler han konkurranse</h2></div></div><div style="display: flex; align-items: baseline; gap: 10px; margin-top: 16px;"><span class="mono" style="font-size: 34px; font-weight: 600;">+2,1</span><span class="caps" style="font-size: 10px;">slag dårligere i turnering</span></div><p style="margin: 12px 0 0; font-size: 12px; line-height: 1.5; color: #6E6E73;">Gapet var +3,4 i fjor. Det minker — han flytter treningsnivået sitt inn i konkurranse.</p></section></div>
+          <div style="flex: 1; min-width: 0;"><section style="background: #F2F2F2; border-radius: 20px; padding: 20px 22px;"><div style="display: flex; align-items: center; gap: 10px;"><div><div class="caps" style="font-size: 10px;">Neste steg</div><h2 style="margin: 4px 0 0; font-size: 17px; font-weight: 700; letter-spacing: -0.01em; color: #111111;">Dette foreslår jeg</h2></div></div><p style="margin: 14px 0 0; font-size: 13px; line-height: 1.55; color: #111111;">Innspill fra 100–175 m er det eneste området som har gått feil vei. Legg to økter i uka der, og meld ham på Srixon Tour framfor Østlandstour.</p><div style="display: flex; gap: 8px; margin-top: 16px;"><span style="display: inline-flex; align-items: center; height: 44px; padding: 0 20px; border-radius: 999px; background: #000000; color: #FFFFFF; font-size: 15px; font-weight: 600;">Planlegg i Workbench</span></div></section></div>
+        </div>
+
+        <section style="background: #F2F2F2; border-radius: 20px; padding: 20px 22px;"><div style="display: flex; align-items: center; gap: 10px;"><div><div class="caps" style="font-size: 10px;">Feltstyrke er målt snitt til-par per nivå</div><h2 style="margin: 4px 0 0; font-size: 17px; font-weight: 700; letter-spacing: -0.01em; color: #111111;">Riktig turneringsprogram</h2></div></div><div style="margin-top: 14px;"><div style="display: flex; gap: 12px; padding-bottom: 6px;"><span class="caps" style="flex: 1; font-size: 9px;">Nivå</span><span class="caps" style="width: 52px; text-align: right; font-size: 9px;">Felt</span><span class="caps" style="width: 34px; text-align: right; font-size: 9px;">Runder</span><span class="caps" style="width: 200px; font-size: 9px;">Vurdering</span></div><div style="display: flex; align-items: center; gap: 12px; padding: 11px 0; border-top: 1px solid #00000014;">
+          <span style="flex: 1; min-width: 0; font-size: 13px; font-weight: 600; color: #111111;">Norgescup</span>
+          <span class="mono" style="width: 52px; text-align: right; font-size: 12px; color: #6E6E73;">6,32</span>
+          <span class="mono" style="width: 34px; text-align: right; font-size: 12px; color: #6E6E73;">2</span>
+          <span style="width: 200px; font-size: 12px; color: #6E6E73;">For tynt grunnlag</span>
+        </div><div style="display: flex; align-items: center; gap: 12px; padding: 11px 0; border-top: 1px solid #00000014;">
+          <span style="flex: 1; min-width: 0; font-size: 13px; font-weight: 600; color: #111111;">Srixon Tour</span>
+          <span class="mono" style="width: 52px; text-align: right; font-size: 12px; color: #6E6E73;">8,76</span>
+          <span class="mono" style="width: 34px; text-align: right; font-size: 12px; color: #6E6E73;">4</span>
+          <span style="width: 200px; font-size: 12px; color: #34C759;">Presterer over eget snitt</span>
+        </div><div style="display: flex; align-items: center; gap: 12px; padding: 11px 0; border-top: 1px solid #00000014;">
+          <span style="flex: 1; min-width: 0; font-size: 13px; font-weight: 600; color: #111111;">Olyo Tour</span>
+          <span class="mono" style="width: 52px; text-align: right; font-size: 12px; color: #6E6E73;">10,41</span>
+          <span class="mono" style="width: 34px; text-align: right; font-size: 12px; color: #6E6E73;">9</span>
+          <span style="width: 200px; font-size: 12px; color: #111111;">Hovedarenaen hans</span>
+        </div><div style="display: flex; align-items: center; gap: 12px; padding: 11px 0; border-top: 1px solid #00000014;">
+          <span style="flex: 1; min-width: 0; font-size: 13px; font-weight: 600; color: #111111;">Østlandstour</span>
+          <span class="mono" style="width: 52px; text-align: right; font-size: 12px; color: #6E6E73;">10,55</span>
+          <span class="mono" style="width: 34px; text-align: right; font-size: 12px; color: #6E6E73;">3</span>
+          <span style="width: 200px; font-size: 12px; color: #6E6E73;">Vokst fra nivået</span>
+        </div><div style="display: flex; align-items: center; gap: 12px; padding: 11px 0; border-top: 1px solid #00000014;">
+          <span style="flex: 1; min-width: 0; font-size: 13px; font-weight: 600; color: #111111;">Regiontour</span>
+          <span class="mono" style="width: 52px; text-align: right; font-size: 12px; color: #6E6E73;">13,64</span>
+          <span class="mono" style="width: 34px; text-align: right; font-size: 12px; color: #6E6E73;">0</span>
+          <span style="width: 200px; font-size: 12px; color: #6E6E73;">Ikke spilt siden 2024</span>
+        </div></div></section>
+
+      </div>
+
+  <div class="scroll" style="width: 380px; flex: none; overflow-y: auto; border-left: 1px solid #00000014; padding: 22px 22px 32px;">
+    <div class="caps" style="font-size: 10px;">Grunnlaget</div>
+    <h2 style="margin: 4px 0 0; font-size: 17px; font-weight: 700; letter-spacing: -0.01em;">Hvor tallene kommer fra</h2>
+    <p style="margin: 8px 0 14px; font-size: 12px; line-height: 1.5; color: #6E6E73;">Alt appen påstår om en spiller skal kunne spores til en måling med dato og kilde.</p>
+    <div style="padding: 12px 0; border-top: 1px solid #00000014;">
+          <div style="font-size: 13px; font-weight: 600; color: #111111;">Slagtap per område</div>
+          <div style="margin-top: 3px; font-size: 12px; color: #6E6E73;">TrackMan + 11 registrerte runder</div>
+          <div class="mono" style="margin-top: 2px; font-size: 11px; color: #6E6E73;">sist 28.08.2026</div>
+        </div><div style="padding: 12px 0; border-top: 1px solid #00000014;">
+          <div style="font-size: 13px; font-weight: 600; color: #111111;">Feltstyrke-justert score</div>
+          <div style="margin-top: 3px; font-size: 12px; color: #6E6E73;">mv_topar_grunnlag</div>
+          <div class="mono" style="margin-top: 2px; font-size: 11px; color: #6E6E73;">123 257 rader, 2014–2026</div>
+        </div><div style="padding: 12px 0; border-top: 1px solid #00000014;">
+          <div style="font-size: 13px; font-weight: 600; color: #111111;">Feltstyrke per nivå</div>
+          <div style="margin-top: 3px; font-size: 12px; color: #6E6E73;">Målt i basen</div>
+          <div class="mono" style="margin-top: 2px; font-size: 11px; color: #6E6E73;">30.08.2026</div>
+        </div><div style="padding: 12px 0; border-top: 1px solid #00000014;">
+          <div style="font-size: 13px; font-weight: 600; color: #111111;">SG-stigen</div>
+          <div style="margin-top: 3px; font-size: 12px; color: #6E6E73;">Nordic League-broen</div>
+          <div class="mono" style="margin-top: 2px; font-size: 11px; color: #6E6E73;">under bygging — STEG 16.10</div>
+        </div>
+    <div style="margin-top: 24px; padding-top: 18px; border-top: 1px solid #00000014;">
+      <div class="caps" style="font-size: 10px;">Dette kan vi ikke si</div>
+      <p style="margin: 10px 0 0; font-size: 12px; line-height: 1.5; color: #6E6E73;">Norsk turneringsdata har score, aldri SG-fordeling. Vi kan si hvor han står, ikke hvorfor — fordelingen over kommer fra hans egne økter.</p><p style="margin: 10px 0 0; font-size: 12px; line-height: 1.5; color: #6E6E73;">Aldersstigen gjelder fra 16 år. Under det er den ikke monoton, fordi juniorene spiller kortere tee.</p><p style="margin: 10px 0 0; font-size: 12px; line-height: 1.5; color: #6E6E73;">Proffreferansen finnes bare for gutter. Alle 26 tourer i lageret er herretourer.</p>
+    </div>
+  </div>
+
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

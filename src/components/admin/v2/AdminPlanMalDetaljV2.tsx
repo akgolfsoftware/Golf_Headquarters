@@ -1,12 +1,13 @@
 "use client";
 import { TL } from "@/lib/v2/train-lock";
+import { AK } from "@/lib/v2/ak-palett";
 
 /**
  * AgencyOS — Plan-mal-detalj (`/admin/plan-templates/[id]`) — v2.
  * v2-port 17. juli 2026 (Team F1): erstatter template-detail (golfdata).
  * Samme datakontrakt og samme server actions (duplicateTemplate,
  * archiveTemplate, unarchiveTemplate) — kun presentasjonslaget er nytt:
- * KpiFlis-strip, uke-grid med aksefarger fra T.ax, Pyramide for
+ * KpiFlis-strip, uke-grid med aksefarger fra AK.ax, Pyramide for
  * disiplin-fordeling mot anbefalt baseline, og v2-dialog for økt-detaljer.
  *
  * Ærlighetsavvik fra golfdata-versjonen: den gamle KPI-stripen viste en
@@ -26,7 +27,7 @@ import type {
 } from "@/generated/prisma/enums";
 import { archiveTemplate, duplicateTemplate, unarchiveTemplate } from "@/app/admin/(legacy)/plan-templates/actions";
 import { DAG_LABEL, ENV_LABEL, SKILL_LABEL, type DisciplinFordeling, type DrillEntry } from "@/components/admin/plan-templates/shared";
-import { Kort, Caps, Knapp, CTAPill, KpiFlis, Pyramide, TomTilstand, Icon, HjelpTips, AKSE_NAVN, T } from "@/components/v2";
+import { Kort, Caps, Knapp, CTAPill, KpiFlis, Pyramide, TomTilstand, Icon, HjelpTips, AKSE_NAVN } from "@/components/v2";
 
 /* ── Datakontrakt (mappes fra Prisma i ruten) ─────────── */
 
@@ -258,7 +259,7 @@ function UkeGrid({
                       type="button"
                       onClick={() => onSelect(s)}
                       className="v2-row-h v2-focus"
-                      style={{ appearance: "none", cursor: "pointer", display: "flex", height: "100%", width: "100%", flexDirection: "column", alignItems: "flex-start", gap: 4, borderRadius: 8, border: `1px solid ${TL.hair}`, borderLeft: `3px solid ${T.ax[s.pyramidArea]}`, background: TL.dock, padding: 8, textAlign: "left" }}
+                      style={{ appearance: "none", cursor: "pointer", display: "flex", height: "100%", width: "100%", flexDirection: "column", alignItems: "flex-start", gap: 4, borderRadius: 8, border: `1px solid ${TL.hair}`, borderLeft: `3px solid ${AK.ax[s.pyramidArea]}`, background: TL.dock, padding: 8, textAlign: "left" }}
                     >
                       <span style={{ fontFamily: TL.font.sans, fontSize: 11, fontWeight: 600, color: TL.text, lineHeight: 1.3, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
                         {s.title}
@@ -287,7 +288,7 @@ function AkseLegende() {
     <div style={{ marginTop: 14, display: "flex", flexWrap: "wrap", alignItems: "center", gap: 12 }}>
       {PYR_ALLE.map((o) => (
         <span key={o} style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: TL.mute }}>
-          <span aria-hidden style={{ width: 8, height: 8, borderRadius: 3, background: T.ax[o] }} />
+          <span aria-hidden style={{ width: 8, height: 8, borderRadius: 3, background: AK.ax[o] }} />
           {AKSE_NAVN[o]}
         </span>
       ))}
@@ -337,7 +338,7 @@ function OktDialog({ okt, onClose }: { okt: PlanMalOkt; onClose: () => void }) {
 
         <div style={{ marginTop: 14, display: "flex", flexWrap: "wrap", gap: 6 }}>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, color: TL.mute, background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: 5, padding: "3px 7px" }}>
-            <span aria-hidden style={{ width: 6, height: 6, borderRadius: 9999, background: T.ax[okt.pyramidArea] }} />
+            <span aria-hidden style={{ width: 6, height: 6, borderRadius: 9999, background: AK.ax[okt.pyramidArea] }} />
             {AKSE_NAVN[okt.pyramidArea]}
           </span>
           {okt.skillArea && (

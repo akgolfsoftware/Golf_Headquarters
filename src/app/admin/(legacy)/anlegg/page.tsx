@@ -13,5 +13,7 @@
 import { redirect } from "next/navigation";
 
 export default function AnleggPage() {
-  redirect("/admin/klubb/innstillinger");
+  // Klubb-fanen (MASTERPLAN 15.3) — /admin/klubb/innstillinger er selv en
+  // redirect dit nå, pek direkte for å unngå et unødvendig redirect-hopp.
+  redirect("/admin/oppsett?fane=klubb");
 }

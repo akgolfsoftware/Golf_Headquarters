@@ -1,5 +1,6 @@
 "use client";
 import { TL } from "@/lib/v2/train-lock";
+import { AK } from "@/lib/v2/ak-palett";
 
 /**
  * AgencyOS — Plan-mal-editor (`/admin/plan-templates/[id]/rediger`) — v2.
@@ -32,7 +33,7 @@ import type {
 import { addTemplateSession, copyTemplateWeek, deleteTemplateSession, setWeekDuration, updateTemplate, updateTemplateSession, type SessionInput, type TemplateUpdateInput } from "@/app/admin/(legacy)/plan-templates/actions";
 import { DAG_LABEL, ENV_LABEL, FASE_ALLE, FASE_LABEL, KATEGORI_ALLE, KATEGORI_LABEL, SKILL_LABEL, type DisciplinFordeling, type DrillEntry } from "@/components/admin/plan-templates/shared";
 import { beregnTemplateVolum } from "@/lib/plan-templates/beregn-volum";
-import { Kort, Caps, StatusPill, TomTilstand, Knapp, Inndata, Velger, Icon, HjelpTips, AKSE_NAVN, T } from "@/components/v2";
+import { Kort, Caps, StatusPill, TomTilstand, Knapp, Inndata, Velger, Icon, HjelpTips, AKSE_NAVN } from "@/components/v2";
 
 /* ── Datakontrakter (mappes fra Prisma i ruten) ───────── */
 
@@ -416,7 +417,7 @@ export function AdminPlanMalRedigerV2({
                 key={d.id}
                 style={{ display: "flex", alignItems: "center", gap: 7, borderRadius: 8, border: `1px solid ${TL.hair}`, background: TL.dock, padding: "6px 8px" }}
               >
-                <span aria-hidden style={{ width: 6, height: 6, borderRadius: 9999, background: T.ax[d.pyramidArea], flex: "none" }} />
+                <span aria-hidden style={{ width: 6, height: 6, borderRadius: 9999, background: AK.ax[d.pyramidArea], flex: "none" }} />
                 <span style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{d.name}</span>
               </div>
             ))}
@@ -493,7 +494,7 @@ export function AdminPlanMalRedigerV2({
                               type="button"
                               onClick={() => setModal({ kind: "edit", session: s })}
                               className="v2-row-h v2-focus"
-                              style={{ appearance: "none", cursor: "pointer", display: "flex", height: "100%", width: "100%", flexDirection: "column", gap: 4, borderRadius: 8, border: `1px solid ${TL.hair}`, borderLeft: `3px solid ${T.ax[s.pyramidArea]}`, background: TL.dock, padding: 6, textAlign: "left" }}
+                              style={{ appearance: "none", cursor: "pointer", display: "flex", height: "100%", width: "100%", flexDirection: "column", gap: 4, borderRadius: 8, border: `1px solid ${TL.hair}`, borderLeft: `3px solid ${AK.ax[s.pyramidArea]}`, background: TL.dock, padding: 6, textAlign: "left" }}
                             >
                               <span style={{ fontFamily: TL.font.sans, fontSize: 11, fontWeight: 600, color: TL.text, lineHeight: 1.3, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
                                 {s.title}
@@ -577,7 +578,7 @@ export function AdminPlanMalRedigerV2({
               <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 10 }}>
                 {PYR_ALLE.map((p) => (
                   <div key={p} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <span aria-hidden style={{ width: 7, height: 7, borderRadius: 3, background: T.ax[p], flex: "none" }} />
+                    <span aria-hidden style={{ width: 7, height: 7, borderRadius: 3, background: AK.ax[p], flex: "none" }} />
                     <span style={{ width: 56, flex: "none", fontFamily: TL.font.sans, fontSize: 11, fontWeight: 600, color: TL.mute }}>{AKSE_NAVN[p]}</span>
                     <input
                       type="range"
@@ -588,7 +589,7 @@ export function AdminPlanMalRedigerV2({
                         setFordeling({ ...fordeling, [p]: parseInt(e.target.value, 10) / 100 })
                       }
                       aria-label={`Andel ${AKSE_NAVN[p]}`}
-                      style={{ flex: 1, accentColor: T.ax[p], minWidth: 0 }}
+                      style={{ flex: 1, accentColor: AK.ax[p], minWidth: 0 }}
                     />
                     <span style={{ width: 36, flex: "none", textAlign: "right", fontFamily: TL.font.mono, fontSize: 10.5, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>
                       {Math.round(fordeling[p] * 100)}%
@@ -608,7 +609,7 @@ export function AdminPlanMalRedigerV2({
                 <div style={{ marginTop: 7, display: "flex", flexWrap: "wrap", gap: "3px 12px" }}>
                   {PYR_ALLE.map((p) => (
                     <span key={p} style={{ display: "inline-flex", alignItems: "center", gap: 4, fontFamily: TL.font.mono, fontSize: 9.5, fontWeight: 700, color: TL.mute }}>
-                      <span aria-hidden style={{ width: 6, height: 6, borderRadius: 9999, background: T.ax[p] }} />
+                      <span aria-hidden style={{ width: 6, height: 6, borderRadius: 9999, background: AK.ax[p] }} />
                       {AKSE_NAVN[p]} {volum.realisertProsent[p]}%
                     </span>
                   ))}
@@ -1166,7 +1167,7 @@ function OktRedigerDialog({
                     className="v2-row-h v2-focus"
                     style={{ appearance: "none", cursor: valgt ? "default" : "pointer", display: "flex", width: "100%", alignItems: "center", gap: 8, borderRadius: 8, border: 0, background: "transparent", padding: "6px 8px", textAlign: "left", opacity: valgt ? 0.5 : 1 }}
                   >
-                    <span aria-hidden style={{ width: 6, height: 6, borderRadius: 9999, background: T.ax[d.pyramidArea], flex: "none" }} />
+                    <span aria-hidden style={{ width: 6, height: 6, borderRadius: 9999, background: AK.ax[d.pyramidArea], flex: "none" }} />
                     <span style={{ flex: 1, minWidth: 0, fontFamily: TL.font.sans, fontSize: 11.5, color: TL.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{d.name}</span>
                     {valgt && <Icon name="check" size={12} style={{ color: TL.fill, flex: "none" }} />}
                   </button>

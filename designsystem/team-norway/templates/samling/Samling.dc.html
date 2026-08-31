@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Treningssamling — uke" description="Samling time for time: felles økter satt av Team Norway-treneren, og egentid spilleren planlegger selv. Bytt mellom trener- og spillerblikk. 1440×900." -->
+<helmet><script src="./ds-base.js"></script></helmet>
+<div style="min-height:100vh;background:var(--surface-page);padding:28px;display:flex;justify-content:center;font-family:var(--font-body)">
+<div data-screen-label="Treningssamling" style="width:1440px;height:900px;flex-shrink:0;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-xl);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;flex-direction:column">
+
+<div style="height:68px;flex-shrink:0;display:flex;align-items:center;gap:18px;padding:0 22px;border-bottom:1px solid var(--border-subtle)">
+<img src="../../assets/logo/team-norway-golf.png" alt="Team Norway Golf" style="height:32px;width:auto;display:block;flex-shrink:0">
+<div style="width:1px;height:26px;background:var(--border-subtle)"></div>
+<span style="font-family:var(--font-display);font-size:16px;font-weight:700;letter-spacing:-.02em">Workbench</span>
+<div style="height:34px;border-radius:var(--radius-full);background:var(--navy-100);display:flex;align-items:center;gap:10px;padding:0 14px;cursor:pointer">
+<span style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.14em;color:var(--navy-600)">SAMLING</span>
+<span style="font-size:13.5px;font-weight:600;color:var(--navy-800)">Team Norway Junior</span>
+<span style="font-size:10px;color:var(--navy-400)">▼</span>
+</div>
+<span style="font-family:var(--font-mono);font-size:13.5px;font-weight:500">12.–15. oktober · Fornebu</span>
+<div style="flex:1"></div>
+<div style="height:36px;background:var(--ink-100);border-radius:var(--radius-full);display:flex;align-items:center;padding:3px;gap:2px">
+<div onClick="{{ showCoach }}" ref="{{ coachTabRef }}" style="height:30px;display:flex;align-items:center;padding:0 16px;border-radius:var(--radius-full);font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;cursor:pointer">TRENER</div>
+<div onClick="{{ showPlayer }}" ref="{{ playerTabRef }}" style="height:30px;display:flex;align-items:center;padding:0 16px;border-radius:var(--radius-full);font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;cursor:pointer">SPILLER</div>
+</div>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="secondary" size="sm" hint-size="110px,34px">Ny fellesøkt</x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="primary" size="sm" hint-size="150px,34px">Publiser samling</x-import>
+</div>
+
+<div style="flex-shrink:0;display:flex;align-items:center;gap:16px;padding:14px 22px;background:var(--navy-50);border-bottom:1px solid var(--border-subtle)">
+<span style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.16em;color:var(--navy-600);flex-shrink:0">TO LAG</span>
+<div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+<span style="width:12px;height:12px;border-radius:3px;background:var(--navy-600);flex-shrink:0"></span>
+<span style="font-size:13px;color:var(--ink-700)"><b>Felles</b> — treneren setter, lik for alle 9</span>
+</div>
+<div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+<span style="width:12px;height:12px;border-radius:3px;border:1.5px dashed var(--ink-400);flex-shrink:0"></span>
+<span style="font-size:13px;color:var(--ink-700)"><b>Egentid</b> — spilleren planlegger selv innenfor rammen</span>
+</div>
+<div style="flex:1"></div>
+<span ref="{{ bannerRef }}" style="font-size:13px;color:var(--ink-500)">{{ bannerText }}</span>
+</div>
+
+<div style="flex:1;min-height:0;display:flex">
+
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden">
+<div style="display:flex;padding-left:56px;border-bottom:1px solid var(--border-subtle)">
+<div style="flex:1;text-align:center;padding:11px 0"><span style="font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;color:var(--ink-500)">MAN 12 · ANKOMST</span></div>
+<div style="flex:1;text-align:center;padding:11px 0"><span style="font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;color:var(--ink-500)">TIR 13</span></div>
+<div style="flex:1;text-align:center;padding:11px 0"><span style="font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;color:var(--ink-500)">ONS 14</span></div>
+<div style="flex:1;text-align:center;padding:11px 0"><span style="font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;color:var(--ink-500)">TOR 15 · AVREISE</span></div>
+</div>
+
+<div style="flex:1;min-height:0;display:flex;align-items:flex-start;overflow:hidden">
+<div style="width:56px;flex-shrink:0">
+<sc-for list="{{ hours }}" as="hour" hint-placeholder-count="15">
+<div style="height:46px;line-height:46px;font-family:var(--font-mono);font-size:10.5px;color:var(--ink-400);text-align:right;padding-right:10px">{{ hour }}</div>
+</sc-for>
+</div>
+<div style="flex:1;height:690px;display:flex;background:repeating-linear-gradient(to bottom,transparent 0 45px,var(--ink-100) 45px 46px)">
+<sc-for list="{{ columns }}" as="col" hint-placeholder-count="4">
+<div style="flex:1;position:relative;border-left:1px solid var(--ink-100)">
+
+<sc-for list="{{ col.blocks }}" as="b" hint-placeholder-count="6">
+
+<sc-if value="{{ b.isFelles }}" hint-placeholder-val="{{ true }}">
+<div ref="{{ b.ref }}" style="box-sizing:border-box;position:absolute;left:4px;right:4px;border-radius:var(--radius-sm);padding:8px 10px;overflow:hidden;cursor:pointer;background:var(--white);border:1px solid var(--border-subtle);border-left:3px solid var(--navy-600);box-shadow:var(--shadow-sm);z-index:2">
+<div style="font-family:var(--font-mono);font-size:8.5px;letter-spacing:.1em;color:var(--navy-600);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ b.cat }}</div>
+<div style="font-size:13px;font-weight:600;line-height:1.25;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink-900)">{{ b.title }}</div>
+<div style="font-family:var(--font-mono);font-size:10.5px;color:var(--ink-500);margin-top:2px;white-space:nowrap">{{ b.time }}</div>
+<div style="font-family:var(--font-mono);font-size:9px;letter-spacing:.1em;color:var(--ink-500);margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ b.meta }}</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ b.isFellesDense }}" hint-placeholder-val="{{ false }}">
+<div ref="{{ b.ref }}" style="box-sizing:border-box;position:absolute;left:4px;right:4px;border-radius:var(--radius-sm);padding:6px 9px;overflow:hidden;cursor:pointer;background:var(--white);border:1px solid var(--border-subtle);border-left:3px solid var(--navy-600);box-shadow:var(--shadow-sm);z-index:2">
+<div style="font-family:var(--font-mono);font-size:8.5px;letter-spacing:.1em;color:var(--navy-600);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ b.cat }}</div>
+<div style="display:flex;align-items:baseline;gap:7px;margin-top:1px;min-width:0">
+<span style="font-size:12.5px;font-weight:600;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink-900)">{{ b.title }}</span>
+<span style="font-family:var(--font-mono);font-size:10px;color:var(--ink-500);white-space:nowrap;flex-shrink:0">{{ b.short }}</span>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ b.isLogistikk }}" hint-placeholder-val="{{ false }}">
+<div ref="{{ b.ref }}" style="box-sizing:border-box;position:absolute;left:4px;right:4px;border-radius:var(--radius-sm);padding:7px 10px;overflow:hidden;background:var(--ink-100);border-left:3px solid var(--ink-300);z-index:2">
+<div style="font-family:var(--font-mono);font-size:8.5px;letter-spacing:.1em;color:var(--ink-500);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ b.cat }}</div>
+<div style="font-size:12.5px;font-weight:600;line-height:1.25;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink-700)">{{ b.title }}</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ b.isOpenCoach }}" hint-placeholder-val="{{ false }}">
+<div ref="{{ b.ref }}" style="box-sizing:border-box;position:absolute;left:4px;right:4px;border-radius:var(--radius-sm);padding:8px 10px;overflow:hidden;background:repeating-linear-gradient(135deg,var(--ink-50) 0 7px,transparent 7px 14px);border:1.5px dashed var(--ink-300);z-index:1">
+<div style="font-family:var(--font-mono);font-size:8.5px;letter-spacing:.14em;color:var(--ink-500);white-space:nowrap">EGENTID</div>
+<div style="font-family:var(--font-mono);font-size:10.5px;color:var(--ink-500);margin-top:3px;white-space:nowrap">{{ b.time }}</div>
+<div style="font-size:11.5px;color:var(--ink-500);margin-top:8px;line-height:1.4">{{ b.filled }}</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ b.isOpenCoachDense }}" hint-placeholder-val="{{ false }}">
+<div ref="{{ b.ref }}" style="box-sizing:border-box;position:absolute;left:4px;right:4px;border-radius:var(--radius-sm);padding:7px 9px;overflow:hidden;background:repeating-linear-gradient(135deg,var(--ink-50) 0 7px,transparent 7px 14px);border:1.5px dashed var(--ink-300);z-index:1">
+<div style="font-family:var(--font-mono);font-size:8.5px;letter-spacing:.14em;color:var(--ink-500);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">EGENTID · {{ b.time }}</div>
+<div style="font-size:11.5px;color:var(--ink-500);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ b.filled }}</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ b.isOpenPlayer }}" hint-placeholder-val="{{ false }}">
+<div ref="{{ b.ref }}" style="box-sizing:border-box;position:absolute;left:4px;right:4px;border-radius:var(--radius-sm);padding:7px;overflow:hidden;background:repeating-linear-gradient(135deg,var(--ink-50) 0 7px,transparent 7px 14px);border:1.5px dashed var(--ink-300);z-index:1;display:flex;flex-direction:column;gap:5px">
+<div style="font-family:var(--font-mono);font-size:8.5px;letter-spacing:.14em;color:var(--ink-500);white-space:nowrap;padding-left:3px">EGENTID · {{ b.time }}</div>
+<sc-for list="{{ b.own }}" as="o" hint-placeholder-count="1">
+<div style="border-radius:var(--radius-xs);padding:6px 8px;background:var(--white);border:1px solid var(--border-subtle);border-left:3px solid var(--red-600);box-shadow:var(--shadow-sm)">
+<div style="font-family:var(--font-mono);font-size:8px;letter-spacing:.1em;color:var(--red-700);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">DEG · {{ o.cat }}</div>
+<div style="font-size:12px;font-weight:600;color:var(--ink-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ o.title }}</div>
+</div>
+</sc-for>
+<div style="border-radius:var(--radius-xs);padding:6px 8px;border:1px dashed var(--ink-300);color:var(--ink-500);font-size:11.5px;font-weight:600;text-align:center;cursor:pointer">+ Legg til</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ b.isOpenPlayerDense }}" hint-placeholder-val="{{ false }}">
+<div ref="{{ b.ref }}" style="box-sizing:border-box;position:absolute;left:4px;right:4px;border-radius:var(--radius-sm);padding:7px 9px;overflow:hidden;background:repeating-linear-gradient(135deg,var(--ink-50) 0 7px,transparent 7px 14px);border:1.5px dashed var(--ink-300);z-index:1;display:flex;flex-direction:column;gap:4px">
+<div style="font-family:var(--font-mono);font-size:8.5px;letter-spacing:.14em;color:var(--ink-500);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">EGENTID · {{ b.time }}</div>
+<div style="border-radius:var(--radius-xs);padding:4px 8px;border:1px dashed var(--ink-300);color:var(--ink-500);font-size:11px;font-weight:600;text-align:center;cursor:pointer">+ Legg til</div>
+</div>
+</sc-if>
+
+</sc-for>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+
+<div style="width:330px;flex-shrink:0;border-left:1px solid var(--border-subtle);background:var(--ink-50);padding:24px 22px;display:flex;flex-direction:column;gap:18px;overflow:hidden">
+
+<div>
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-500)">SAMLINGENS RAMME</span>
+<h2 style="font-family:var(--font-display);font-size:22px;font-weight:800;letter-spacing:-.03em;margin:10px 0 0;line-height:1.15">Høstsamling Fornebu</h2>
+<div style="font-family:var(--font-mono);font-size:11.5px;color:var(--ink-500);margin-top:6px">4 dager · 9 spillere · 3 trenere</div>
+</div>
+
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:18px;display:flex;flex-direction:column;gap:14px">
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-500)">TIDSBRUK</span>
+<sc-for list="{{ split }}" as="s" hint-placeholder-count="3">
+<div style="display:flex;flex-direction:column;gap:7px">
+<div style="display:flex;justify-content:space-between;align-items:baseline">
+<span style="font-size:13.5px;font-weight:500;color:var(--ink-700)">{{ s.name }}</span>
+<span style="font-family:var(--font-mono);font-size:12.5px;font-weight:600;color:var(--ink-900)">{{ s.value }}</span>
+</div>
+<div style="height:8px;border-radius:var(--radius-full);background:var(--ink-100);overflow:hidden">
+<div ref="{{ s.ref }}" style="height:100%;border-radius:var(--radius-full);background:var(--navy-600)"></div>
+</div>
+</div>
+</sc-for>
+<span style="font-size:12px;color:var(--ink-500);line-height:1.55;text-wrap:pretty">{{ splitNote }}</span>
+</div>
+
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:18px;display:flex;flex-direction:column;gap:10px">
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-500)">EGENTID · STATUS</span>
+<sc-for list="{{ players }}" as="p" hint-placeholder-count="5">
+<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--ink-100)">
+<div style="width:24px;height:24px;flex-shrink:0;border-radius:var(--radius-full);background:var(--navy-100);color:var(--navy-800);font-family:var(--font-mono);font-size:8px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0">{{ p.initials }}</div>
+<span style="flex:1;min-width:0;font-size:13.5px;font-weight:600;color:var(--ink-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ p.name }}</span>
+<div style="display:flex;gap:3px">
+<sc-for list="{{ p.slots }}" as="s" hint-placeholder-count="7">
+<span ref="{{ s.ref }}" style="width:8px;height:8px;border-radius:2px;background:var(--ink-200)"></span>
+</sc-for>
+</div>
+</div>
+</sc-for>
+<span style="font-size:11.5px;color:var(--ink-500);line-height:1.55;margin-top:4px">Én rute per egentidsblokk. Fylt = spilleren har lagt inn noe.</span>
+</div>
+
+<div style="flex:1"></div>
+<span style="font-size:11.5px;color:var(--ink-500);line-height:1.6;text-wrap:pretty">Treneren kan ikke redigere egentid. Trenger en spiller å bli styrt tettere, gjøres blokken om til fellesøkt.</span>
+</div>
+
+</div>
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1496,&quot;height&quot;:956}}">
+const HOUR = 46, START = 7;
+
+class Component extends DCLogic {
+  state = { mode: 'coach' };
+
+  block(o, mode) {
+    const top = (o.from - START) * HOUR;
+    const height = o.hours * HOUR - 4;
+    const isOpen = o.kind === 'egentid';
+    const dense = o.hours < 2;
+    return {
+      ...o,
+      short: o.time ? String(o.time).split(' · ')[0] : '',
+      isFelles: o.kind === 'felles' && !dense,
+      isFellesDense: o.kind === 'felles' && dense,
+      isLogistikk: o.kind === 'logistikk',
+      isOpenCoach: isOpen && mode === 'coach' && !dense,
+      isOpenCoachDense: isOpen && mode === 'coach' && dense,
+      isOpenPlayer: isOpen && mode === 'spiller' && !dense,
+      isOpenPlayerDense: isOpen && mode === 'spiller' && dense,
+      own: o.own || [],
+      ref: (el) => {
+        if (!el) return;
+        el.style.top = top + 'px';
+        el.style.height = height + 'px';
+      }
+    };
+  }
+
+  renderVals() {
+    const mode = this.state.mode;
+    const hours = [];
+    for (let h = START; h <= 21; h++) hours.push(String(h).padStart(2, '0') + '.00');
+
+    const days = [
+      [
+        { kind: 'logistikk', cat: 'ANKOMST', title: 'Innsjekk', from: 8, hours: 1 },
+        { kind: 'felles', cat: 'FELLES · OPPSTART', title: 'Mål for samlingen', time: '09.00 · 1 t', from: 9, hours: 1, meta: '9 SPILLERE · 3 TRENERE' },
+        { kind: 'felles', cat: 'FELLES · TEST', title: 'Fysiske tester', time: '10.00 · 2 t', from: 10, hours: 2, meta: 'TN-BATTERI Q4' },
+        { kind: 'logistikk', cat: 'MÅLTID', title: 'Lunsj', from: 12, hours: 1 },
+        { kind: 'egentid', time: '13.00–16.00', from: 13, hours: 3, filled: '6 av 9 har fylt inn',
+          own: [{ cat: 'SLAG', title: 'Driver-økt' }] },
+        { kind: 'felles', cat: 'FELLES · SLAG', title: 'Nærspill', time: '16.00 · 2 t', from: 16, hours: 2, meta: 'STASJONER · 3 GRUPPER' },
+        { kind: 'logistikk', cat: 'MÅLTID', title: 'Middag', from: 18, hours: 1 },
+        { kind: 'egentid', time: '19.00–21.00', from: 19, hours: 2, filled: '4 av 9 har fylt inn', own: [] }
+      ],
+      [
+        { kind: 'logistikk', cat: 'MÅLTID', title: 'Frokost', from: 8, hours: 1 },
+        { kind: 'felles', cat: 'FELLES · SPILL', title: 'Banespill 18 hull', time: '09.00 · 4 t', from: 9, hours: 4, meta: 'TELLENDE · TRENER PER 3-BALL' },
+        { kind: 'logistikk', cat: 'MÅLTID', title: 'Lunsj', from: 13, hours: 1 },
+        { kind: 'egentid', time: '14.00–17.00', from: 14, hours: 3, filled: '8 av 9 har fylt inn',
+          own: [{ cat: 'SLAG', title: 'Putting 1–3 m' }, { cat: 'FYS', title: 'Restitusjon' }] },
+        { kind: 'felles', cat: 'FELLES · ANALYSE', title: 'Video & runde­gjennomgang', time: '17.00 · 1,5 t', from: 17, hours: 1.5, meta: 'SAMLET' },
+        { kind: 'logistikk', cat: 'MÅLTID', title: 'Middag', from: 18.5, hours: 1 },
+        { kind: 'egentid', time: '19.30–21.00', from: 19.5, hours: 1.5, filled: '3 av 9 har fylt inn', own: [] }
+      ],
+      [
+        { kind: 'logistikk', cat: 'MÅLTID', title: 'Frokost', from: 8, hours: 1 },
+        { kind: 'egentid', time: '09.00–12.00', from: 9, hours: 3, filled: '9 av 9 har fylt inn',
+          own: [{ cat: 'SLAG', title: 'Innspill 100–150' }] },
+        { kind: 'logistikk', cat: 'MÅLTID', title: 'Lunsj', from: 12, hours: 1 },
+        { kind: 'felles', cat: 'FELLES · SLAG', title: 'Driver & innspill', time: '13.00 · 2,5 t', from: 13, hours: 2.5, meta: 'TRACKMAN · 2 GRUPPER' },
+        { kind: 'egentid', time: '15.30–17.30', from: 15.5, hours: 2, filled: '5 av 9 har fylt inn', own: [] },
+        { kind: 'felles', cat: 'FELLES · MENTALT', title: 'Rutiner under press', time: '17.30 · 1 t', from: 17.5, hours: 1, meta: 'SAMLET' },
+        { kind: 'logistikk', cat: 'MÅLTID', title: 'Middag', from: 18.5, hours: 1 },
+        { kind: 'egentid', time: '19.30–21.00', from: 19.5, hours: 1.5, filled: '2 av 9 har fylt inn', own: [] }
+      ],
+      [
+        { kind: 'logistikk', cat: 'MÅLTID', title: 'Frokost', from: 8, hours: 1 },
+        { kind: 'felles', cat: 'FELLES · SPILL', title: 'Turneringsspill 18 hull', time: '09.00 · 4,5 t', from: 9, hours: 4.5, meta: 'SHOTGUN · RANKING' },
+        { kind: 'logistikk', cat: 'MÅLTID', title: 'Lunsj', from: 13.5, hours: 1 },
+        { kind: 'felles', cat: 'FELLES · EVALUERING', title: 'Oppsummering & IUP', time: '14.30 · 1,5 t', from: 14.5, hours: 1.5, meta: 'INDIVIDUELLE SAMTALER' },
+        { kind: 'logistikk', cat: 'AVREISE', title: 'Hjemreise', from: 16, hours: 1 }
+      ]
+    ];
+
+    const tab = (active) => (el) => {
+      if (!el) return;
+      if (active) {
+        el.style.background = 'var(--navy-900)';
+        el.style.color = '#fff';
+        el.style.boxShadow = 'var(--shadow-sm)';
+      } else {
+        el.style.background = 'transparent';
+        el.style.color = 'var(--ink-500)';
+        el.style.boxShadow = 'none';
+      }
+    };
+
+    const totals = { felles: 0, egentid: 0, logistikk: 0 };
+    days.forEach(d => d.forEach(b => { totals[b.kind] += b.hours; }));
+    const grand = totals.felles + totals.egentid + totals.logistikk;
+    const fmt = (h) => Math.floor(h) + ' t ' + String(Math.round((h % 1) * 60)).padStart(2, '0');
+    const bar = (name, h) => ({
+      name,
+      value: fmt(h),
+      ref: (el) => { if (el) el.style.width = Math.round((h / grand) * 100) + '%'; }
+    });
+    const egenPct = Math.round((totals.egentid / grand) * 100);
+
+    const player = (initials, name, pattern) => ({
+      initials, name,
+      slots: pattern.split('').map(ch => ({
+        ref: (el) => { if (el) el.style.background = ch === '1' ? 'var(--navy-600)' : 'var(--ink-200)'; }
+      }))
+    });
+
+    return {
+      hours,
+      columns: days.map(blocks => ({ blocks: blocks.map(b => this.block(b, mode)) })),
+      coachTabRef: tab(mode === 'coach'),
+      playerTabRef: tab(mode === 'spiller'),
+      showCoach: () => this.setState({ mode: 'coach' }),
+      showPlayer: () => this.setState({ mode: 'spiller' }),
+      bannerText: mode === 'coach'
+        ? 'Du redigerer fellestid. Egentid er spillerens — den kan du bare se.'
+        : 'Du planlegger egentiden din. Fellesøktene er satt av treneren.',
+      split: [
+        bar('Fellesøkter', totals.felles),
+        bar('Egentid', totals.egentid),
+        bar('Måltid & logistikk', totals.logistikk)
+      ],
+      splitNote: egenPct + ' % av samlingen er egentid. Det er med vilje — samlingen skal også trene evnen til å planlegge selv.',
+      players: [
+        player('MA', 'Mathias Aase', '1111011'),
+        player('OV', 'Ola Vikhals', '1101100'),
+        player('AKL', 'Ahre Ketil Lillehagen', '1111111'),
+        player('OB', 'Oscar Bach', '1000100'),
+        player('LAT', 'Lord Anders Thelberg', '1110110')
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

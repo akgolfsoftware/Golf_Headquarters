@@ -3,9 +3,7 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { reportClientError } from "@/lib/report-client-error";
-import { PaperIkon } from "@/components/system/paper-tilstand";
-import "@/styles/paper-system.css";
-
+import { PaperIkon } from "@/components/system/side-tilstand";
 /**
  * Segment-feilside (500) — Paper. Fasit: designsystem/paper/fase2/system/
  * system-tilstander.html (§500). Egen fil (ikke PaperTilstand) fordi denne

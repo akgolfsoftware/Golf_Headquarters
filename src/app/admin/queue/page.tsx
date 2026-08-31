@@ -15,7 +15,6 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { KoHubNav } from "@/components/admin/v2/agency-hub-subnav";
 import { TL } from "@/lib/v2/train-lock";
 
 import { Caps, Tittel, Kort, KpiFlis, MikroMeta, CTAPill } from "@/components/v2";
@@ -128,7 +127,7 @@ export default async function OppfolgingsKoPage() {
 
   return (
     <V2Shell bredde="kolonne" aktiv="innboks" nav={AGENCYOS_NAV} navn={coach.name} avatarUrl={coach.avatarUrl}>
-      <KoHubNav />
+      {/* Kø-pillene fjernet 30.08.2026: denne siden er ikke Kø — den hører i Stall (beslutning 6.6, MASTERPLAN 15.11). */}
       <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         {/* Hode */}
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>
@@ -142,7 +141,7 @@ export default async function OppfolgingsKoPage() {
             </p>
           </div>
           <div style={{ display: "flex", gap: 8 }}>
-            <Link href="/admin/settings" style={{ textDecoration: "none" }}>
+            <Link href="/admin/oppsett" style={{ textDecoration: "none" }}>
               <CTAPill ghost icon="settings">
                 Justere regler
               </CTAPill>

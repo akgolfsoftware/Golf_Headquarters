@@ -25,10 +25,10 @@
   --popover-foreground: 150 15.8% 7.5%;
 
   /* Brand */
-  --primary: 60 2.6% 7.6%;         /* #141413 = Paper --p-cta (blekk) */
-  --primary-foreground: 48 33% 97%; /* #FAF9F5 = Paper --p-on-cta (papir) */
-  --accent: 87 24% 38%;            /* #63784A = Paper --p-up (høydepunkt, tekst OG flate) */
-  --accent-foreground: 48 33% 97%; /* #FAF9F5 = papir på fylt --p-up */
+  --primary: 60 2.6% 7.6%;         /* #141413 = Paper --tl-fill (blekk) */
+  --primary-foreground: 48 33% 97%; /* #FAF9F5 = Paper --tl-on-fill (papir) */
+  --accent: 87 24% 38%;            /* #63784A = Paper --tl-ok (høydepunkt, tekst OG flate) */
+  --accent-foreground: 48 33% 97%; /* #FAF9F5 = papir på fylt --tl-ok */
 
   /* Neutrals */
   --secondary: 60 6.7% 94.1%;      /* #F1F1EF = DS --surface-2 (sand-100) */
@@ -49,7 +49,7 @@
   /* Form og fokus — DS --border er rgba(0,0,0,.08); trippel m/ alfa gir samme farge */
   --border: 0 0% 0% / 0.08;
   --input: 0 0% 0% / 0.08;
-  --ring: 15 63% 60%;              /* #D97757 = Paper --p-focus (clay) */
+  --ring: 15 63% 60%;              /* #D97757 = Paper --tl-viz-target (clay) */
 
   /* Radius — peker på DS --radius-card (16px); pill håndteres via rounded-full */
   --radius: 16px;
@@ -63,10 +63,10 @@ html[data-v2-tema="dark"] {
   --popover: 120 1.5% 12.7%;
   --popover-foreground: 0 0% 94.1%;
 
-  --primary: 48 33% 97%;           /* #FAF9F5 = Paper --p-cta (mørk = papir) */
-  --primary-foreground: 60 2.6% 7.6%; /* #141413 = Paper --p-on-cta */
-  --accent: 87 23% 61%;            /* #9DB284 = Paper --p-up (mørk) */
-  --accent-foreground: 60 2.6% 7.6%; /* #141413 = blekk på fylt --p-up */
+  --primary: 48 33% 97%;           /* #FAF9F5 = Paper --tl-fill (mørk = papir) */
+  --primary-foreground: 60 2.6% 7.6%; /* #141413 = Paper --tl-on-fill */
+  --accent: 87 23% 61%;            /* #9DB284 = Paper --tl-ok (mørk) */
+  --accent-foreground: 60 2.6% 7.6%; /* #141413 = blekk på fylt --tl-ok */
 
   --secondary: 70 7.9% 14.9%;      /* #282923 = DS --surface-2 (graphite-100) */
   --secondary-foreground: 0 0% 94.1%;
@@ -84,7 +84,7 @@ html[data-v2-tema="dark"] {
 
   --border: 0 0% 100% / 0.08;      /* DS --border (mørk) = rgba(255,255,255,.08) */
   --input: 0 0% 100% / 0.08;
-  --ring: 15 63% 60%;              /* #D97757 = Paper --p-focus (clay) */
+  --ring: 15 63% 60%;              /* #D97757 = Paper --tl-viz-target (clay) */
 
   /* ---- Mørk-overstyringer for DS-aliasene (varm nær-svart rampe, 2026-06-26).
    * («Terminal»-stacken --t-* er slettet 2026-08-03 — kun disse fire verdiene
@@ -95,7 +95,7 @@ html[data-v2-tema="dark"] {
   --muted-2:     #7E807A;
   --forest:      #00684A;
   --forest-deep: #004D37;
-  --lime:        #9DB284;   /* var Presis-lime — Paper --p-up (mørk) */
+  --lime:        #9DB284;   /* var Presis-lime — Paper --tl-ok (mørk) */
 }
 
 /* ---------- DS-tokens (v14) løftet til globalt nivå — Fase 1 token-konvergens ----------
@@ -111,8 +111,8 @@ html[data-v2-tema="dark"] {
  */
 :root {
   /* Råskalaer (tema-uavhengige) */
-  --lime-500: #63784A;      /* var Presis-lime — Paper --p-up (mater --compliance-on) */
-  --forest-700: #141413;    /* var Presis-grønn — Paper --p-cta (blekk) */
+  --lime-500: #63784A;      /* var Presis-lime — Paper --tl-ok (mater --compliance-on) */
+  --forest-700: #141413;    /* var Presis-grønn — Paper --tl-fill (blekk) */
   --graphite-0: #141513;
   --graphite-50: #202120;
   --graphite-100: #282923;
@@ -131,7 +131,7 @@ html[data-v2-tema="dark"] {
   --sand-900: #101613;
 
   /* Typografi */
-  --font-ui: var(--p-ui);
+  --font-ui: var(--tl-font-sans);
   --text-11: 0.6875rem;
   --text-12: 0.75rem;
   --text-13: 0.8125rem;
@@ -174,7 +174,7 @@ html[data-v2-tema="dark"] {
   --text-muted: var(--sand-600);
   --text-faint: #686A66;
   --signal: var(--forest-700);
-  --signal-press: var(--p-cta-hover); /* Paper: press på blekk-CTA (siste Presis-rest fjernet 16.08) */
+  --signal-press: var(--tl-text); /* Paper: press på blekk-CTA (siste Presis-rest fjernet 16.08) */
   --on-signal: #FFFFFF;
   --glow-signal: 0 0 0 1px rgba(217, 119, 87, 0.35);
   --primary-fill: var(--sand-900);
@@ -197,8 +197,8 @@ html[data-v2-tema="dark"] {
   --compliance-none: var(--sand-500);
 
   /* Pyramide-akser — LYS */
-  --axis-fys: #788C5D;              /* Paper --p-accent-olive */
-  --axis-fys-text: #63784A;         /* Paper --p-up */
+  --axis-fys: #788C5D;              /* Paper #788c5d */
+  --axis-fys-text: #63784A;         /* Paper --tl-ok */
   --axis-fys-soft: rgba(120, 140, 93, 0.13);
   --axis-tek: #B8852A;
   --axis-tek-text: #8A6316;
@@ -206,7 +206,7 @@ html[data-v2-tema="dark"] {
   --axis-slag: #2563EB;
   --axis-slag-text: #1D4FD0;
   --axis-slag-soft: rgba(37, 99, 235, 0.13);
-  --axis-spill: #C46686;            /* Paper --p-accent-fig */
+  --axis-spill: #C46686;            /* Paper #c46686 */
   --axis-spill-text: #9E4A67;
   --axis-spill-soft: rgba(196, 102, 134, 0.16);
   --axis-turn: #A32D2D;
@@ -233,7 +233,7 @@ html[data-v2-tema="dark"] {
   --text-muted: var(--graphite-600);
   --text-faint: #8A8C86;
   --signal: var(--lime-500);
-  --signal-press: var(--p-up); /* Paper mørk: lysere grønn press på signal-knappen */
+  --signal-press: var(--tl-ok); /* Paper mørk: lysere grønn press på signal-knappen */
   --on-signal: var(--graphite-0);
   --glow-signal: 0 0 0 1px rgba(217, 119, 87, 0.4);
   --primary-fill: var(--graphite-900);
@@ -454,11 +454,11 @@ html[data-v2-tema="dark"] {
    * Direkte fra wireframe/design-package — referert i HTML-designene.
    * Disse er TILLEGG til de semantiske tokens; bruk dem på cockpit-layouts.
    */
-  --color-brand-primary: #141413;        /* Paper --p-cta */
+  --color-brand-primary: #141413;        /* Paper --tl-fill */
   --color-brand-primary-hover: #26241F;
   --color-brand-primary-soft: #F0EEE6;
   --color-brand-primary-deep: #0E0D0C;
-  --color-brand-accent: #D97757;         /* Paper --p-accent (clay) */
+  --color-brand-accent: #D97757;         /* Paper --tl-warm (clay) */
   --color-brand-accent-hover: #C6613F;
   --color-brand-accent-on: #141413;
   --color-accent-bg: rgba(217, 119, 87, 0.12);
@@ -514,9 +514,9 @@ html[data-v2-tema="dark"] {
   --border-soft:  #EDEBE4;
   --ink:          #0A1F17;
   --muted-2:      #8A877F;
-  --forest:       #141413;  /* var Presis-grønn — Paper --p-cta */
+  --forest:       #141413;  /* var Presis-grønn — Paper --tl-fill */
   --forest-deep:  #00402F;
-  --lime:         #63784A;  /* var Presis-lime — Paper --p-up */
+  --lime:         #63784A;  /* var Presis-lime — Paper --tl-ok */
   --lime-deep:    #B9E022;
   --lime-dim:     #A9CF2E;
   --ok:           #1A7D56;
@@ -668,8 +668,6 @@ html[data-v2-tema="dark"] ::selection {
  * denne importen endrer null piksler før en komponent tar dem i bruk.
  * Se src/styles/paper-tokens.css for avviklingsbetingelsen for det gamle settet.
  */
-@import "../styles/paper-tokens.css";
-
 /* ---------- Train-lock-tokens (D2, 2026-08-25) ----------
  * Designfasit for ALLE skjermer i PlayerHQ OG AgencyOS (CLAUDE.md
  * invariant 2, Anders 25.08.2026). Kilde: designsystem/train-lock/.
@@ -794,34 +792,34 @@ em.editorial {
    *    pyramide-aksene. Paper har kun tre datafarger (opp/ned/info), se
    *    designsystem/paper/guidelines/farger-data.html. Aksefargene er AK-domene
    *    og krever Anders' beslutning — de står urørt til den er tatt. ── */
-  --v2-bg: var(--p-bg);
-  --v2-panel: var(--p-surface);
-  --v2-panel2: var(--p-soft);
-  --v2-panel3: var(--p-soft-hover);
+  --v2-bg: var(--tl-scene);
+  --v2-panel: var(--tl-elev);
+  --v2-panel2: var(--tl-dock);
+  --v2-panel3: var(--tl-dock);
   --v2-tint: linear-gradient(140deg, rgba(217, 119, 87, 0.10) 0%, rgba(255, 255, 255, 0) 55%);
   --v2-niva-grad: linear-gradient(90deg, #c9d4cc 0%, #63784a 45%, #788c5d 75%, #9db284 100%);
   --v2-vignett: rgba(217, 119, 87, 0.07);
-  --v2-border: var(--p-border);
-  --v2-border-s: var(--p-hairline);
-  --v2-track: var(--p-border);
-  --v2-fg: var(--p-fg);
-  --v2-fg2: var(--p-ink-soft);
-  --v2-mut: var(--p-muted);
+  --v2-border: var(--tl-hair);
+  --v2-border-s: var(--tl-hair);
+  --v2-track: var(--tl-hair);
+  --v2-fg: var(--tl-text);
+  --v2-fg2: var(--tl-mute);
+  --v2-mut: var(--tl-mute);
   /* Primær-CTA: Paper bruker blekk på papir, ikke forest. «forest»/«lime» beholder
    * navnene sine fordi 708 filer leser dem — verdien er nå Paper sin CTA. */
-  --v2-forest: var(--p-cta);
-  --v2-forest-soft: var(--p-soft);
-  --v2-lime: var(--p-cta);
-  --v2-on-lime: var(--p-on-cta);
+  --v2-forest: var(--tl-fill);
+  --v2-forest-soft: var(--tl-dock);
+  --v2-lime: var(--tl-fill);
+  --v2-on-lime: var(--tl-on-fill);
   /* C smalt: monopol på «Én ting nå». Paper sin accent er samme oransje — nå via token. */
-  --v2-handling: var(--p-accent);
-  --v2-on-handling: var(--p-on-accent);
-  --v2-handling-soft: var(--p-accent-soft);
+  --v2-handling: var(--tl-warm);
+  --v2-on-handling: var(--tl-on-fill);
+  --v2-handling-soft: color-mix(in srgb, var(--tl-warm) 12%, transparent);
   --handling: var(--v2-handling);
   --on-handling: var(--v2-on-handling);
-  --v2-up: var(--p-up);
-  --v2-down: var(--p-dn);
-  --v2-info: var(--p-info);
+  --v2-up: var(--tl-ok);
+  --v2-down: var(--tl-danger);
+  --v2-info: var(--tl-viz-target);
   /* IKKE portet — Paper har ingen warn-farge og ingen 5-akse datapalett.
    * Beholder dagens verdier til Anders har bestemt aksefargene. */
   --v2-warn: #8a6109;
@@ -832,41 +830,41 @@ em.editorial {
   --v2-ax-turn: #b4461c;
   /* Paper-port steg 5B (03.08.2026): kun overlays.tsx bruker --v2-shadow i
    * dag (verifisert med grep — 0 andre konsumenter), så repeking her endrer
-   * ingenting utenfor Modal/Popover/Verktøytips/Toast. Verdi = Paper --p-shadow. */
-  --v2-shadow: var(--p-shadow);
+   * ingenting utenfor Modal/Popover/Verktøytips/Toast. Verdi = Paper 0 1px 0 rgba(20,20,19,0.03), 0 18px 40px rgba(20,20,19,0.05). */
+  --v2-shadow: 0 1px 0 rgba(20,20,19,0.03), 0 18px 40px rgba(20,20,19,0.05);
   /* Valgt segment i .seg (showroom-fasit: segmentert løftes med skygge, ikke lime) */
   --v2-seg-skygge: 0 1px 4px rgba(23, 27, 24, 0.12);
   /* Radius/typografi eies av TS-speilet T (src/lib/v2/tokens.ts) — de døde
    * CSS-duplikatene (--v2-r-*, --v2-font-display/-ui, --v2-card-shadow) er
    * slettet 2026-08-03. --v2-font-mono beholdes (i bruk via var()). */
-  --v2-font-mono: var(--p-mono);
+  --v2-font-mono: var(--tl-font-mono);
   color-scheme: light;
 }
 html[data-v2-tema="dark"] {
   /* Paper-port steg 5A — mørk. Alle verdier fra Paper v3.1 sin mørk-blokk via
    * --p-*. Se kommentaren i :root over for hva som bevisst IKKE er portet. */
-  --v2-bg: var(--p-bg);
-  --v2-panel: var(--p-surface);
-  --v2-panel2: var(--p-soft);
-  --v2-panel3: var(--p-soft-hover);
+  --v2-bg: var(--tl-scene);
+  --v2-panel: var(--tl-elev);
+  --v2-panel2: var(--tl-dock);
+  --v2-panel3: var(--tl-dock);
   --v2-tint: linear-gradient(140deg, rgba(217, 119, 87, 0.20) 0%, rgba(29, 28, 26, 0) 55%);
   --v2-niva-grad: linear-gradient(90deg, #26332b 0%, #63784a 45%, #788c5d 75%, #9db284 100%);
   --v2-vignett: rgba(217, 119, 87, 0.12);
-  --v2-border: var(--p-border);
-  --v2-border-s: var(--p-hairline);
-  --v2-track: var(--p-border);
-  --v2-fg: var(--p-fg);
-  --v2-fg2: var(--p-ink-soft);
-  --v2-mut: var(--p-muted);
+  --v2-border: var(--tl-hair);
+  --v2-border-s: var(--tl-hair);
+  --v2-track: var(--tl-hair);
+  --v2-fg: var(--tl-text);
+  --v2-fg2: var(--tl-mute);
+  --v2-mut: var(--tl-mute);
   /* Paper snur CTA i mørk: papirhvit flate med blekk-tekst, ikke lime. */
-  --v2-forest: var(--p-cta);
-  --v2-forest-soft: var(--p-soft);
-  --v2-lime: var(--p-cta);
-  --v2-on-lime: var(--p-on-cta);
+  --v2-forest: var(--tl-fill);
+  --v2-forest-soft: var(--tl-dock);
+  --v2-lime: var(--tl-fill);
+  --v2-on-lime: var(--tl-on-fill);
   /* --v2-handling uendret i mørk (#D97757) — oransje er tema-uavhengig monopol */
-  --v2-up: var(--p-up);
-  --v2-down: var(--p-dn);
-  --v2-info: var(--p-info);
+  --v2-up: var(--tl-ok);
+  --v2-down: var(--tl-danger);
+  --v2-info: var(--tl-viz-target);
   /* IKKE portet — se :root. */
   --v2-warn: #e8b43c;
   --v2-ax-fys: #3dbe78;
@@ -874,9 +872,9 @@ html[data-v2-tema="dark"] {
   --v2-ax-slag: #5aa9f0;
   --v2-ax-spill: #d98aa3;
   --v2-ax-turn: #f0683e;
-  /* Paper-port steg 5B: Paper sin mørke --p-shadow er "none" (flate mørke
+  /* Paper-port steg 5B: Paper sin mørke 0 1px 0 rgba(20,20,19,0.03), 0 18px 40px rgba(20,20,19,0.05) er "none" (flate mørke
    * kort løftes ikke med skygge i Paper) — se src/styles/paper-tokens.css. */
-  --v2-shadow: var(--p-shadow);
+  --v2-shadow: 0 1px 0 rgba(20,20,19,0.03), 0 18px 40px rgba(20,20,19,0.05);
   --v2-seg-skygge: 0 1px 4px rgba(0, 0, 0, 0.25);
   color-scheme: dark;
 }
@@ -904,19 +902,19 @@ html[data-v2-tema="light"] {
     gap: 10px;
     padding: 24px;
     text-align: center;
-    background: var(--p-bg);
-    color: var(--p-fg);
+    background: var(--tl-scene);
+    color: var(--tl-text);
   }
 }
 .ak-vri-telefonen-tittel {
-  font-family: var(--p-font-sans);
+  font-family: var(--tl-font-sans);
   font-weight: 600;
   font-size: 17px;
   margin: 4px 0 0;
 }
 .ak-vri-telefonen-tekst {
-  font-family: var(--p-font-sans);
+  font-family: var(--tl-font-sans);
   font-size: 13.5px;
-  color: var(--p-muted);
+  color: var(--tl-mute);
   margin: 0;
 }

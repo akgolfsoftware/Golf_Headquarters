@@ -134,7 +134,7 @@ export function AdminAuditLogTrainLock({ data }: { data: AdminAuditLogV2Data }) 
         <KpiBrikke label="Mistenkelig · 7d" value={data.mistenkelige} varsle={data.mistenkelige > 0} />
       </div>
 
-      <TlKnapp icon="shield" variant="primaer" href="/admin/settings/sikkerhet" full>
+      <TlKnapp icon="shield" variant="primaer" href="/admin/oppsett?fane=sikkerhet" full>
         Åpne sikkerhet
       </TlKnapp>
 

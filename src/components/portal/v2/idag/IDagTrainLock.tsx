@@ -38,6 +38,12 @@ export type NaaKort = {
   sekundarHref?: string;
   /** Øktens pyramide-nivå (FYS/TEK/SLAG/SPILL/TURN) — styrer PH-01b-stripen. */
   pyramide?: string | null;
+  /**
+   * Illustrasjon øverst i «Nå»-kortet (PH-01b hero-felt).
+   * Fasitens hero er en BILDE-plassholder. Uten bilde tegnes feltet ikke —
+   * ellers står det igjen et 120px tomrom i kortfarge (målt 30.08 mot PH-01 Mac).
+   */
+  heroBilde?: string | null;
 };
 
 /** PH-01b: rekkefølgen i pyramide-indikatoren. */
@@ -61,6 +67,9 @@ export type IDagTrainLockProps = {
 const caps: CSSProperties = {
   fontSize: 11,
   fontWeight: 600,
+  // Fasiten setter ingen line-height og treffer SF Pros normal (~1.19). Poppins
+  // har ~1.5, som gjorde hvert kort 12–15px høyere enn PH-01 Mac (målt 30.08).
+  lineHeight: 1.2,
   letterSpacing: "0.08em",
   textTransform: "uppercase",
   color: TL.mute,
@@ -148,13 +157,23 @@ function PyramideStripe({ aktiv }: { aktiv: string }) {
 
 function NaaFlate({ naa }: { naa: NaaKort }) {
   const fys = naa.pyramide === "FYS";
+  // Hero-feltet er en bilde-plassholder i fasiten — uten bilde blir det bare et hull.
+  const hero = fys && Boolean(naa.heroBilde);
   return (
     <div
-      className={fys ? undefined : "ph01-naa"}
-      style={{ background: TL.elev, borderRadius: TL.radius.card, overflow: fys ? "hidden" : undefined }}
+      className={hero ? undefined : "ph01-naa"}
+      style={{ background: TL.elev, borderRadius: TL.radius.card, overflow: hero ? "hidden" : undefined }}
     >
-      {fys && (
-        <div style={{ height: 120, borderRadius: 12, background: TL.elev, position: "relative", overflow: "hidden" }}>
+      {hero && (
+        <div
+          style={{
+            height: 120,
+            borderRadius: 12,
+            background: `${TL.elev} center/cover no-repeat url(${JSON.stringify(naa.heroBilde)})`,
+            position: "relative",
+            overflow: "hidden",
+          }}
+        >
           <span
             style={{
               position: "absolute",
@@ -171,7 +190,7 @@ function NaaFlate({ naa }: { naa: NaaKort }) {
           </span>
         </div>
       )}
-      <div className={fys ? "ph01-naa" : undefined} style={fys ? undefined : { display: "contents" }}>
+      <div className={hero ? "ph01-naa" : undefined} style={hero ? undefined : { display: "contents" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
         <span style={{ ...caps, color: naa.live ? TL.text : TL.mute, display: "inline-flex", alignItems: "center", gap: 7 }}>
           {naa.live && (
@@ -206,7 +225,13 @@ function NaaFlate({ naa }: { naa: NaaKort }) {
           )}
         </>
       )}
-      {fys && naa.pyramide && <PyramideStripe aktiv={naa.pyramide} />}
+      {fys && naa.pyramide && (
+        /* PH-01b (telefon) har pyramide-stripen; PH-01 Mac har den ikke — der
+           står bare fremdriftsstreken. `.ph01-kun-telefon` skjuler den ≥1101px. */
+        <div className="ph01-kun-telefon">
+          <PyramideStripe aktiv={naa.pyramide} />
+        </div>
+      )}
       <Cta href={naa.ctaHref} barn={naa.ctaTekst} />
       {naa.sekundarTekst && naa.sekundarHref && <TekstLenke href={naa.sekundarHref} barn={naa.sekundarTekst} />}
       </div>
@@ -218,8 +243,8 @@ function NesteKort({ neste }: { neste: { tittel: string; meta: string } }) {
   return (
     <div style={{ ...kort, padding: "18px 20px" }}>
       <div style={caps}>{IDAG_UI.neste}</div>
-      <div style={{ marginTop: 7, fontSize: 15, fontWeight: 600, color: TL.text }}>{neste.tittel}</div>
-      <div style={{ marginTop: 3, fontSize: 13, fontWeight: 400, color: TL.mute }}>{neste.meta}</div>
+      <div style={{ marginTop: 7, fontSize: 15, fontWeight: 600, lineHeight: 1.2, color: TL.text }}>{neste.tittel}</div>
+      <div style={{ marginTop: 3, fontSize: 13, fontWeight: 400, lineHeight: 1.2, color: TL.mute }}>{neste.meta}</div>
     </div>
   );
 }
@@ -228,13 +253,13 @@ function Bento({ sg, okter }: { sg: string; okter: number }) {
   return (
     <div className="ph01-bento">
       <div style={kort}>
-        <div style={{ fontSize: 34, fontWeight: 700, letterSpacing: "-0.02em", fontVariantNumeric: "tabular-nums", color: TL.text }}>
+        <div style={{ fontSize: 34, fontWeight: 700, lineHeight: 1.2, letterSpacing: "-0.02em", fontVariantNumeric: "tabular-nums", color: TL.text }}>
           {sg}
         </div>
         <div style={{ ...caps, marginTop: 7 }}>{IDAG_UI.sgInnspill}</div>
       </div>
       <div style={kort}>
-        <div style={{ fontSize: 34, fontWeight: 700, letterSpacing: "-0.02em", fontVariantNumeric: "tabular-nums", color: TL.text }}>
+        <div style={{ fontSize: 34, fontWeight: 700, lineHeight: 1.2, letterSpacing: "-0.02em", fontVariantNumeric: "tabular-nums", color: TL.text }}>
           {okter}
         </div>
         <div style={{ ...caps, marginTop: 7 }}>{IDAG_UI.okterUken}</div>
@@ -261,11 +286,11 @@ function PrikkMaaned({ navn, prikker }: { navn: string; prikker: IDagPrikk[] }) 
           </div>
         ))}
         {prikker.map((p, i) => (
-          <div key={i} style={{ height: 38, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div key={i} style={{ height: 34, display: "flex", alignItems: "center", justifyContent: "center" }}>
             <div
               style={{
-                width: 32,
-                height: 32,
+                width: 28,
+                height: 28,
                 borderRadius: "50%",
                 background: p.tom ? "transparent" : p.idag ? "transparent" : p.fylt ? TL.text : TL.dim,
                 boxShadow: p.idag ? `inset 0 0 0 2.5px ${TL.text}` : "none",
@@ -433,6 +458,10 @@ export function IDagTrainLock(p: IDagTrainLockProps) {
       }}
     >
       <style>{`
+        /* Bunnklaring for den faste Caddie-linjen + bunn-navet. Fasiten løser det
+           samme med en 150px avstandsholder nederst (PH-01b). Uten den stakk
+           siste kalenderrad opp bak doken (målt 30.08 på 390px). */
+        .ph01-scroll { padding-bottom: 150px; }
         .ph01-bento { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .ph01-grid { display: flex; flex-direction: column; gap: 12px; }
         .ph01-kun-mac { display: none; }
@@ -468,7 +497,7 @@ export function IDagTrainLock(p: IDagTrainLockProps) {
         >
           {IDAG_UI.tittel}
         </h1>
-        <div className="ph01-grid" style={{ marginTop: 18 }}>
+        <div className="ph01-grid" style={{ marginTop: 20 }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {godkjenninger.map((okt) => (
               <GodkjenningKort key={okt.id} okt={okt} onFerdig={(id) => setBesvart((prev) => new Set(prev).add(id))} />

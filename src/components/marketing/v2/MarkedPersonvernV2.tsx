@@ -6,7 +6,7 @@
    JURIDISK TEKST: uendret fra forrige versjon — kun chrome og typografi
    er byttet. Ingen omskriving av juridisk innhold. */
 
-import { PkShell } from "./paper/PkShell";
+import { PkShell } from "./kit/PkShell";
 
 const SIST_OPPDATERT = "2. august 2026";
 

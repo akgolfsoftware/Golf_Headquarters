@@ -7,7 +7,8 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { StatsWrappedSlide, type WrappedSlideData } from "./stats-wrapped-slide";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+import { AK } from "@/lib/v2/ak-palett";
 
 interface StatsWrappedPlayerProps {
   slides: WrappedSlideData[];
@@ -67,10 +68,10 @@ export function StatsWrappedPlayer({ slides, delLenke }: StatsWrappedPlayerProps
   const slide = slides[current];
   const bgVariant = slide?.bgVariant ?? "forest";
   const bgStyles: Record<string, string> = {
-    forest: T.wrapped.bgForest,
-    "forest-dark": T.wrapped.bgForestDark,
-    lime: T.wrapped.bgLime,
-    offwhite: T.wrapped.bgOffwhite,
+    forest: AK.wrapped.bgForest,
+    "forest-dark": AK.wrapped.bgForestDark,
+    lime: AK.wrapped.bgLime,
+    offwhite: AK.wrapped.bgOffwhite,
   };
   const isDark = bgVariant === "forest" || bgVariant === "forest-dark";
   const uiColor = isDark ? "rgba(250,250,247,0.8)" : "rgba(10,31,23,0.6)";
@@ -113,10 +114,10 @@ export function StatsWrappedPlayer({ slides, delLenke }: StatsWrappedPlayerProps
               height: 3,
               borderRadius: 999,
               background: i < current
-                ? (isDark ? T.farge.sandLysA90 : T.farge.inkMerkeA70)
+                ? (isDark ? AK.farge.sandLysA90 : AK.farge.inkMerkeA70)
                 : i === current
-                ? (isDark ? T.lime : T.forest)
-                : (isDark ? T.farge.sandLysA30 : T.farge.inkMerkeA20),
+                ? (isDark ? TL.fill : TL.fill)
+                : (isDark ? AK.farge.sandLysA30 : AK.farge.inkMerkeA20),
               border: "none",
               cursor: "pointer",
               padding: 0,
@@ -217,7 +218,7 @@ export function StatsWrappedPlayer({ slides, delLenke }: StatsWrappedPlayerProps
             left: 16,
             bottom: 24,
             zIndex: 10,
-            background: T.farge.hvitA15,
+            background: AK.farge.hvitA15,
             border: "none",
             cursor: "pointer",
             color: uiColor,
@@ -239,7 +240,7 @@ export function StatsWrappedPlayer({ slides, delLenke }: StatsWrappedPlayerProps
             right: 16,
             bottom: 24,
             zIndex: 10,
-            background: T.farge.hvitA15,
+            background: AK.farge.hvitA15,
             border: "none",
             cursor: "pointer",
             color: uiColor,

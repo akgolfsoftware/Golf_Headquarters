@@ -1,5 +1,6 @@
 "use client";
 import { TL } from "@/lib/v2/train-lock";
+import { AK } from "@/lib/v2/ak-palett";
 
 /**
  * AgencyOS Plan-maler — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
@@ -8,22 +9,7 @@ import { TL } from "@/lib/v2/train-lock";
 
 import Link from "next/link";
 import { useState } from "react";
-import {
-  Kort,
-  Knapp,
-  StatusPill,
-  TomTilstand,
-  Icon,
-  AKSE_NAVN,
-  Inspektorpanel,
-  InspektorBlokk,
-  InspektorKpi,
-  InspektorLinje,
-  InspektorTom,
-  MasterDetalj,
-  useInspektorSynlig,
-  T,
-} from "@/components/v2";
+import { Kort, Knapp, StatusPill, TomTilstand, Icon, AKSE_NAVN, Inspektorpanel, InspektorBlokk, InspektorKpi, InspektorLinje, InspektorTom, MasterDetalj, useInspektorSynlig } from "@/components/v2";
 import type { AkseKey } from "@/lib/v2/format";
 import type { LPhase } from "@/generated/prisma/enums";
 
@@ -198,7 +184,7 @@ function MalRad({
               aria-hidden
             >
               {andeler.map((f) => (
-                <span key={f.akse} style={{ display: "block", flex: f.value, background: T.ax[f.akse] }} />
+                <span key={f.akse} style={{ display: "block", flex: f.value, background: AK.ax[f.akse] }} />
               ))}
             </span>
             <span

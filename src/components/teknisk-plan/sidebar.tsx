@@ -156,7 +156,7 @@ export function CoachActivityCard({ coachName, coachRole, coachInitials, items }
         <div>
           <div style={{ fontWeight: 700, fontSize: 13 }}>{coachName}</div>
           <div style={{
-            fontFamily: "var(--p-mono)",
+            fontFamily: "var(--tl-font-mono)",
             fontSize: 10,
             color: "hsl(var(--muted-foreground))",
             letterSpacing: "0.06em",

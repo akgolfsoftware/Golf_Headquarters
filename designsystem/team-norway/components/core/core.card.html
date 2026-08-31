@@ -1,0 +1,36 @@
+<!-- @dsCard group="05 Komponenter" viewport="700x340" name="Kjerne — Button, Badge, Input, Select, Card" subtitle="Pille-knapper, myke felt, tonede merker" -->
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin></script>
+<script src="../../_ds_bundle.js"></script>
+<div id="root"></div>
+<script>
+const {Button,Badge,Input,Select,Card}=window.ClawDesignTeamNorwayGolf_a03bf9;
+const e=React.createElement;
+function Demo(){
+const [v,setV]=React.useState('68.4');
+return e('div',{style:{padding:'26px',display:'flex',flexDirection:'column',gap:'20px',background:'var(--surface-page)',minHeight:'340px'}},
+e('div',{style:{display:'flex',gap:'10px',flexWrap:'wrap',alignItems:'center'}},
+e(Button,{variant:'primary'},'Lagre evaluering'),
+e(Button,{variant:'accent'},'Ta ut utøver'),
+e(Button,{variant:'secondary'},'Avbryt'),
+e(Button,{variant:'ghost'},'Se historikk'),
+e(Button,{variant:'primary',size:'sm'},'Small')
+),
+e('div',{style:{display:'flex',gap:'8px',flexWrap:'wrap'}},
+e(Badge,{tone:'navy'},'Team Norway'),
+e(Badge,{tone:'green',dot:true},'På plan'),
+e(Badge,{tone:'amber',dot:true},'Følges opp'),
+e(Badge,{tone:'red',dot:true},'Avvik'),
+e(Badge,{tone:'accent',solid:true},'IUP mangler')
+),
+e('div',{style:{display:'grid',gridTemplateColumns:'1fr 1fr 1.2fr',gap:'16px',alignItems:'start'}},
+e(Input,{label:'Snittscore',value:v,onChange:setV,type:'number',suffix:'slag'}),
+e(Select,{label:'Periode',options:['Fokusering 13–15','Investering 16–19','Senior']}),
+e(Card,{eyebrow:'RANKING',title:'WAGR 412',padding:'20px',elevation:'md'},
+e('div',{style:{fontSize:'13px',color:'var(--ink-500)'}},'Mål: topp 250 OWGR'))
+)
+);
+}
+ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(Demo));
+</script>

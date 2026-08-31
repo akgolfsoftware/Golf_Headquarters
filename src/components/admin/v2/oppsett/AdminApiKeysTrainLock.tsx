@@ -362,7 +362,14 @@ function NyNokkelModal({ onClose }: { onClose: () => void }) {
 }
 
 /* ── AdminApiKeysTrainLock ────────────────────────────────────── */
-export function AdminApiKeysTrainLock({ data }: { data: AdminApiKeysV2Data }) {
+export function AdminApiKeysTrainLock({
+  data,
+  somFane = false,
+}: {
+  data: AdminApiKeysV2Data;
+  /** True når komponenten står som «API»-fanen i /admin/oppsett (MASTERPLAN 15.3). */
+  somFane?: boolean;
+}) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [visModal, setVisModal] = useState(false);
@@ -383,7 +390,7 @@ export function AdminApiKeysTrainLock({ data }: { data: AdminApiKeysV2Data }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 18, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
-        <TlTittel sub="Integrasjoner">API-nøkler</TlTittel>
+        {somFane ? <span /> : <TlTittel sub="Integrasjoner">API-nøkler</TlTittel>}
         <TlKnapp variant="primaer" icon="plus" onClick={() => setVisModal(true)}>
           Ny API-nøkkel
         </TlKnapp>

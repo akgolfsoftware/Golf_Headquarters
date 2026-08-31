@@ -180,6 +180,15 @@ export async function proxy(request: NextRequest) {
   // e-post, bilde, initialer koblet til én elev), skal sperren utvides tilbake
   // til hele `/team-wang` i SAMME endring.
   const erTeamWangCoach = path === "/team-wang/coach" || path.startsWith("/team-wang/coach/");
+  // /stats/aargang: kohort-utforskeren er bygget for fødselsårene 2000–2012 og
+  // teller dermed nettopp de kullene barnevern-regelen forbyr åpent (Anders
+  // 30.08.2026, datakartleggingens svar 1). Siden slettes ikke og tømmes ikke —
+  // den flyttes til gratis-konto-laget. Per-årgang-detaljen `/stats/aargang/<aar>`
+  // fanges allerede av prototype-redirecten lenger oppe (fake roster).
+  //
+  // Merk at `offentligSpillerFilter()` ikke hjelper her: siden aggregerer
+  // antall per fødselsår, så selve kohort-strukturen ER det som skjules.
+  const erAargangHub = path === "/stats/aargang";
   const erBeskyttet =
     path.startsWith("/portal") ||
     path.startsWith("/admin") ||
@@ -187,7 +196,8 @@ export async function proxy(request: NextRequest) {
     // T8: /innsyn (ekstern leser) — capability-sjekken bor i layouten,
     // proxyen stopper kun uautentiserte (samme arbeidsdeling som /admin).
     path.startsWith("/innsyn") ||
-    erTeamWangCoach;
+    erTeamWangCoach ||
+    erAargangHub;
 
   if (erBeskyttet) {
     // Sjekk auth-status via samme cookies som updateSession nettopp refresjet.

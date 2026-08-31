@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { PaperTilstand, PaperIkon } from "@/components/system/paper-tilstand";
+import { PaperTilstand, PaperIkon } from "@/components/system/side-tilstand";
 
 export const metadata: Metadata = {
   title: "Du er offline",

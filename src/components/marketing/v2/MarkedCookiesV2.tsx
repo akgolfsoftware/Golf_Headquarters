@@ -6,7 +6,7 @@
    JURIDISK TEKST: uendret fra forrige versjon (som i sin tur var kopiert
    100 % fra (mlegacy)/cookies/page.tsx) — kun chrome og typografi er byttet. */
 
-import { PkShell } from "./paper/PkShell";
+import { PkShell } from "./kit/PkShell";
 
 const SIST_OPPDATERT = "12. mai 2026";
 

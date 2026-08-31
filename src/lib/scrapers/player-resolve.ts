@@ -11,6 +11,7 @@
  */
 
 import type { PrismaClient } from "../../generated/prisma/client";
+import { hentEntryAntall } from "../stats/entry-antall";
 
 type PlayerRow = {
   id: string;
@@ -46,6 +47,18 @@ export function cleanDisplayName(s: string): string {
 }
 
 /**
+ * Prosess-lokalt oppslag: samme spillernavn går igjen for hver runde og hver
+ * turnering i et scraper-løp. Uten dette kjørte `resolvePlayer` 251 656 ganger
+ * i produksjonsmålingen 30.08.2026. Cachen lever kun i den kjørende prosessen.
+ */
+const memo = new Map<string, PlayerRow>();
+
+/** Tøm oppslaget — for tester og for langtkjørende prosesser mellom løp. */
+export function tomResolveCache(): void {
+  memo.clear();
+}
+
+/**
  * Finn eksisterende spiller eller opprett ny. Matcher på NORMALISERT navn
  * (markør-strippet + ascii), så vi gjenbruker etablert profil i stedet for å
  * lage dubletter av "Navn (am)"-varianter. Disambiguerer på fødselsår.
@@ -57,17 +70,16 @@ export async function resolvePlayer(
   const cleaned = cleanDisplayName(input.name);
   const norm = normalizePlayerName(cleaned);
 
+  const memoNokkel = `${norm}|${input.birthYear ?? ""}`;
+  const memoTreff = memo.get(memoNokkel);
+  if (memoTreff) return { player: memoTreff, created: false };
+
   // Grovt filter på etternavn-token (insensitivt), så presis match på normalisert navn i JS.
+  // MERK: ingen `_count` her — se hentEntryAntall for hvorfor (Disk IO).
   const lastToken = cleaned.split(/\s+/).filter(Boolean).pop() ?? cleaned;
   const rough = await prisma.publicPlayer.findMany({
     where: { name: { contains: lastToken, mode: "insensitive" } },
-    select: {
-      id: true,
-      name: true,
-      slug: true,
-      birthYear: true,
-      _count: { select: { entries: true } },
-    },
+    select: { id: true, name: true, slug: true, birthYear: true },
   });
 
   let pool = rough.filter((p) => normalizePlayerName(p.name) === norm);
@@ -76,7 +88,15 @@ export async function resolvePlayer(
     if (byYear.length > 0) pool = byYear;
   }
   if (pool.length > 0) {
-    pool.sort((a, b) => b._count.entries - a._count.entries);
+    // Flest entries vinner — men tell KUN for kandidatene, ikke hele tabellen.
+    if (pool.length > 1) {
+      const antall = await hentEntryAntall(
+        prisma,
+        pool.map((p) => p.id),
+      );
+      pool.sort((a, b) => (antall.get(b.id) ?? 0) - (antall.get(a.id) ?? 0));
+    }
+    memo.set(memoNokkel, pool[0]);
     return { player: pool[0], created: false };
   }
 
@@ -97,6 +117,7 @@ export async function resolvePlayer(
       birthYear: input.birthYear ?? null,
     },
   });
+  memo.set(memoNokkel, player);
   return { player, created: true };
 }
 

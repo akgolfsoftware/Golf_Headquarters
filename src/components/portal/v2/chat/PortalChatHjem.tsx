@@ -1085,7 +1085,7 @@ export function PortalChatHjem({
             maksBredde={720}
             verktoy={
               mobil ? (
-                /* Paper .btn.now.mic — --p-tap-capture 60px; clay er mic-ens
+                /* Paper .btn.now.mic — 60px 60px; clay er mic-ens
                    monopol på Hjem-mobil (Kontrakt §3). */
                 <button
                   type="button"
