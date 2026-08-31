@@ -52,6 +52,14 @@ const REDIRECT_STUBBER: readonly string[] = [
   "src/app/admin/agenticos/ko/page.tsx", // → /admin/ko?fane=agentko (USE_AGENTS)
   "src/app/admin/agenticos/godkjenn/page.tsx", // → /admin/ko?fane=agentgodkjenn (USE_AGENTS)
   "src/app/admin/tester/foreslatte/page.tsx", // → /admin/ko?fane=tester (MANAGE_TESTS)
+  // MASTERPLAN 15.5: fire agenticos-adresser ble til faner på /admin/jarvis,
+  // som gater alle fire likt (USE_AGENTS — samme gate som de fire kildesidene
+  // hadde). Låst av src/lib/admin/jarvis/faner.test.ts, inkludert at siden
+  // faktisk bruker gaten.
+  "src/app/admin/agenticos/page.tsx", // → /admin/jarvis (USE_AGENTS)
+  "src/app/admin/agenticos/projects/page.tsx", // → /admin/jarvis?fane=prosjekter (USE_AGENTS)
+  "src/app/admin/agenticos/runtimes/page.tsx", // → /admin/jarvis?fane=runtimes (USE_AGENTS)
+  "src/app/admin/agenticos/skills/page.tsx", // → /admin/jarvis?fane=skills (USE_AGENTS)
 ] as const;
 
 function filerUnder(dir: string, pred: (f: string) => boolean, ut: string[] = []): string[] {
