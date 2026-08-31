@@ -43,5 +43,5 @@ export async function leggTilRessurs(formData: FormData) {
     data: parsed.data,
   });
 
-  revalidatePath("/admin/talent/ressurser");
+  revalidatePath("/innsyn/talent/ressurser");
 }

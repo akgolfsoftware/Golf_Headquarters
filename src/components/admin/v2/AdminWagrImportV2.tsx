@@ -12,7 +12,7 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { Caps, Kort, Knapp, StatusPill, AvatarInit, TomTilstand } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
-import { synkWagrNaa } from "@/app/admin/talent/wagr-import/actions";
+import { synkWagrNaa } from "@/app/innsyn/talent/wagr-import/actions";
 
 export interface WagrKobletRad {
   id: string;

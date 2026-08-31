@@ -119,12 +119,12 @@ export function mapCompareData(data: MultiCompareData): CompareData {
     },
     helper:
       "Tre nivåer: 2–4 spillere parallelt, hele stallen rangert på SG, og geografisk fordeling. Referanse er PGA Tour-baseline.",
-    backHref: "/admin/talent",
+    backHref: "/innsyn/talent",
 
     sideBySide: {
       heading: { lead: "Talent-kohort", rest: " · konkurranseprofiler" },
       sub: `${n} ${n === 1 ? "spiller" : "spillere"} i sammenligning · SG fra siste registrerte periode · referanse PGA Tour-baseline`,
-      editHref: "/admin/talent/sammenligning",
+      editHref: "/innsyn/talent/sammenligning",
       players,
       refTop: { label: "REFERANSE", value: "PGA Tour", valueSub: "BASELINE 0,0" },
       metrics,
