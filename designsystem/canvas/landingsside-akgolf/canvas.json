@@ -1,0 +1,17 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 1440, "h": 7600, "page": "page-1", "title": "Landingsside — Mac 1440" },
+    { "file": "Mobil.dc.html", "x": 1560, "y": 0, "w": 390, "h": 6600, "page": "page-1", "title": "Landingsside — iPhone 390" },
+    { "file": "RetningB.dc.html", "x": 0, "y": 0, "w": 720, "h": 940, "page": "page-2", "title": "Retning B — Datarommet" },
+    { "file": "RetningC.dc.html", "x": 840, "y": 0, "w": 720, "h": 940, "page": "page-2", "title": "Retning C — Én spiller om gangen" }
+  ],
+  "annotations": [
+    { "id": "brief", "x": 0, "y": -180, "w": 600, "text": "Retning A — «Målt sannhet».\nSamme merkevare som i dag (papir, blekk, clay, Poppins/Lora/IBM Plex Mono), ny struktur:\nmåling → plan → oppfølging, med kartleggingsøkta som eneste primære handling.\nAlt i [KLAMMER] er tall du må fylle inn — de er ikke funnet på." },
+    { "id": "retninger", "x": 0, "y": -180, "w": 600, "page": "page-2", "text": "To alternative retninger, lavoppløst med vilje — de er til for å velge retning, ikke for å bygges.\nSi hvilken du vil ha, så tegnes den ferdig." }
+  ],
+  "pages": [
+    { "id": "page-1", "name": "Landingsside" },
+    { "id": "page-2", "name": "Retninger" }
+  ],
+  "launch": { "view": "canvas", "page": "page-1" }
+}

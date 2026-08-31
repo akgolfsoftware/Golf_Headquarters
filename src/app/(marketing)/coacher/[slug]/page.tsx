@@ -15,7 +15,7 @@ const COACHER: CoachProfil[] = [
     intro:
       "Anders har bygget Academy rundt én idé: at coaching skal være tydelig, målbar og personlig. Ingen magi, bare struktur og oppfølging.",
     bio: [
-      "Anders har coachet golfspillere i mer enn et tiår, fra første time til nasjonale konkurranseutøvere. Bakgrunnen kombinerer egen turneringskarriere med formell trenerutdanning og en stadig læring fra Mac O'Grady, Trackman-data og moderne treningsmetodikk.",
+      "Anders har coachet golfspillere i mer enn et tiår, fra første time til nasjonale konkurranseutøvere. Bakgrunnen kombinerer egen turneringskarriere med formell trenerutdanning og en metodikk forankret i Trackman-data og målbar utvikling.",
       "I 2024 startet han AK Golf Group AS for å bygge en plattform der personlig coaching og digital oppfølging henger sammen. Resultatet er Academy slik det fungerer i dag: du møter coachen i timene, men jobber strukturert i PlayerHQ mellom dem.",
     ],
     erfaring: [

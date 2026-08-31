@@ -119,7 +119,7 @@ const SESONMAAL = [
 ];
 
 const COACHES = [
-  { initialer: "AK", navn: "Anders Kristiansen", rolle: "HEAD COACH", meta: "38 aktive spillere · Mac O'Grady-skolen" },
+  { initialer: "AK", navn: "Anders Kristiansen", rolle: "HEAD COACH", meta: "Trackman og målbar utvikling" },
   { initialer: "ES", navn: "Erik Solli", rolle: "PUTTING-SPESIALIST", meta: "Anbefales for nærspill-fokus" },
   { initialer: "MH", navn: "Maja Hagen", rolle: "JUNIOR / UTVIKLING", meta: "Anbefales for nybegynnere og 12–16 år" },
 ];

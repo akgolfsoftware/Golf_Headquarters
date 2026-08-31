@@ -28,6 +28,30 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
 
 ## Beslutningene (august 2026)
 
+- **MERKEPLATTFORMEN LÅST — JUNIOR- OG SPILLERUTVIKLING ER MÅLET, MORAD NEVNES ALDRI OFFENTLIG (Anders 31.08.2026, i økt):**
+  fire svar som lukker STEG 18.1. Fullt grunnlag: `docs/merkevare/ak-golf-merkeplattform-2026-08-31.md`.
+
+  1. **Junior- og spillerutvikling er det sentrale målet.** Primærpublikum er junioren og
+     forelderen som betaler; den ambisiøse voksne følger etter med samme løfte. **Konsekvens
+     som må håndteres i 18.9:** forelderen er kjøperen, ikke spilleren — tyngdepunktet i
+     prisingen flyttes fra 299 kr/mnd på egen hånd til gruppeplass, semesterpris og
+     foreldreportal, og foreldreflaten blir en salgsflate, ikke bare innsyn.
+  2. **Løftet er godkjent:** «Du skal aldri lure på hva du skal trene på, eller hvorfor.»
+     Alt markedsmateriell måles mot denne setningen.
+  3. **MORAD og Mac O'Grady skal ALDRI nevnes i publikumsvendt tekst** — ikke på nettsidene,
+     ikke i markedsføring, ikke i coach-biografier, ikke i onboarding. Tre brudd i produksjon
+     ble rettet samme dag: `src/app/(marketing)/om-oss/page.tsx` (meta-beskrivelse),
+     `src/app/(marketing)/coacher/[slug]/page.tsx` (bio) og
+     `src/app/auth/onboarding/onboarding-wizard.tsx` (coach-meta). **P-posisjoner og MORAD som
+     internt fagspråk i produktet består** — det er metodikk, ikke merkevarebygging. Denne
+     regelen gjelder også Claude Design-kanvaser og alt nytt markedsmateriell.
+  4. **Mulligan Indoor Golf knyttes IKKE direkte til AK Golf-merket.** Ingen «en del av
+     AK Golf»-avsender. Anlegget beholder egen identitet og egne kunder; AK Golf **promoterer**
+     Mulligan — lenker dit, anbefaler det som treningssted — men merkene blandes ikke.
+
+  **Krever kodeendring:** kun de tre rettelsene i punkt 3, utført 31.08. Resten er føringer for
+  STEG 18.3–18.10.
+
 - **AK GOLF BLIR PARAPLYMERKE FOR HELE KONSERNET — MERKELAGET LIGGER OVER TRAIN-LOCK (Anders 31.08.2026, i økt):**
   Tre valg tatt i samme økt, som ett svar på «videreutvikle konseptet AK Golf».
 

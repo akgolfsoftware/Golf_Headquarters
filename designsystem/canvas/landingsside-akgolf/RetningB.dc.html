@@ -1,0 +1,128 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Lora:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <style>
+    body { margin: 0; background: #141413; color: #FAF9F5;
+           font-family: 'Poppins', Arial, system-ui, sans-serif; }
+    a { color: #FAF9F5; } a:hover { color: #D97757; }
+    .mono { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10px;
+            letter-spacing: 0.2em; text-transform: uppercase; color: #B0AEA5; }
+    .serif { font-family: 'Lora', Georgia, serif; }
+    .box { background: rgba(250,249,245,0.07); border: 1px solid rgba(250,249,245,0.16); border-radius: 10px; }
+    .bar { background: rgba(250,249,245,0.22); border-radius: 3px; }
+    h2 { margin: 0; font-weight: 600; letter-spacing: -0.02em; }
+    p { margin: 0; }
+  </style>
+</helmet>
+
+<div style="width: 720px; min-height: 900px; background: #141413; padding: 32px;">
+
+  <p class="mono" style="color: #D97757;">Retning B · Datarommet</p>
+  <p class="serif" style="margin-top: 8px; font-size: 15px; line-height: 1.5; color: #B0AEA5;">
+    Mørk hele veien. Tallene er helten, foto er krydder. For deg som vil at
+    siden skal se ut som verktøyet den selger.
+  </p>
+
+  <!-- nav -->
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 28px; padding-bottom: 14px; border-bottom: 1px solid rgba(250,249,245,0.16);">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <div class="bar" style="width: 24px; height: 20px;"></div>
+      <div class="bar" style="width: 90px; height: 8px;"></div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <div class="bar" style="width: 46px; height: 7px;"></div>
+      <div class="bar" style="width: 46px; height: 7px;"></div>
+      <div style="width: 92px; height: 26px; border-radius: 999px; background: #FAF9F5;"></div>
+    </div>
+  </div>
+
+  <!-- hero: tall til venstre, graf til høyre -->
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 28px;">
+    <div>
+      <p class="mono">Hero — påstand i tall</p>
+      <h2 class="serif" style="margin-top: 12px; font-size: 44px; line-height: 1.02;">−4,1 slag<br>på 12 uker.</h2>
+      <div class="bar" style="width: 100%; height: 8px; margin-top: 18px;"></div>
+      <div class="bar" style="width: 78%; height: 8px; margin-top: 8px;"></div>
+      <div style="display: flex; gap: 10px; margin-top: 22px;">
+        <div style="width: 150px; height: 40px; border-radius: 999px; background: #FAF9F5;"></div>
+        <div style="width: 120px; height: 40px; border-radius: 999px; border: 1px solid rgba(250,249,245,0.4);"></div>
+      </div>
+      <p class="mono" style="margin-top: 14px;">[Tall må være ekte og målt]</p>
+    </div>
+    <div class="box" style="height: 260px; position: relative; overflow: hidden;">
+      <p class="mono" style="position: absolute; top: 14px; left: 16px;">Spredning · levende graf</p>
+      <div style="position: absolute; left: 50%; top: 46px; width: 150px; height: 130px; margin-left: -75px; border: 1px solid #D97757; border-radius: 50%; background: rgba(217,119,87,0.14);"></div>
+      <div style="position: absolute; left: 46%; top: 80px; width: 6px; height: 6px; border-radius: 999px; background: #FAF9F5;"></div>
+      <div style="position: absolute; left: 55%; top: 104px; width: 6px; height: 6px; border-radius: 999px; background: #FAF9F5;"></div>
+      <div style="position: absolute; left: 50%; top: 138px; width: 6px; height: 6px; border-radius: 999px; background: #FAF9F5;"></div>
+      <div style="position: absolute; left: 61%; top: 62px; width: 6px; height: 6px; border-radius: 999px; background: #B0AEA5;"></div>
+    </div>
+  </div>
+
+  <!-- tallrad -->
+  <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 28px; padding-top: 22px; border-top: 1px solid rgba(250,249,245,0.16);">
+    <div><p class="serif" style="font-size: 30px;">20</p><div class="bar" style="width: 70%; height: 6px; margin-top: 8px;"></div></div>
+    <div><p class="serif" style="font-size: 30px;">10</p><div class="bar" style="width: 60%; height: 6px; margin-top: 8px;"></div></div>
+    <div><p class="serif" style="font-size: 30px;">[N]</p><div class="bar" style="width: 80%; height: 6px; margin-top: 8px;"></div></div>
+    <div><p class="serif" style="font-size: 30px;">299</p><div class="bar" style="width: 55%; height: 6px; margin-top: 8px;"></div></div>
+  </div>
+
+  <!-- moduler -->
+  <p class="mono" style="margin-top: 30px;">Produktet vist som skjermer, ikke som løfter</p>
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 14px;">
+    <div class="box" style="height: 150px; padding: 14px;">
+      <div class="bar" style="width: 60%; height: 7px;"></div>
+      <div style="display: flex; align-items: flex-end; gap: 6px; height: 90px; margin-top: 20px;">
+        <div class="bar" style="width: 12px; height: 30%;"></div><div class="bar" style="width: 12px; height: 55%;"></div>
+        <div class="bar" style="width: 12px; height: 42%;"></div><div style="width: 12px; height: 80%; background: #D97757; border-radius: 3px;"></div>
+        <div class="bar" style="width: 12px; height: 60%;"></div><div class="bar" style="width: 12px; height: 35%;"></div>
+      </div>
+    </div>
+    <div class="box" style="height: 150px; padding: 14px;">
+      <div class="bar" style="width: 50%; height: 7px;"></div>
+      <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 16px;">
+        <div class="bar" style="width: 100%; height: 20px;"></div>
+        <div class="bar" style="width: 100%; height: 20px;"></div>
+        <div class="bar" style="width: 70%; height: 20px;"></div>
+      </div>
+    </div>
+    <div class="box" style="height: 150px; padding: 14px;">
+      <div class="bar" style="width: 55%; height: 7px;"></div>
+      <svg width="100%" height="90" viewBox="0 0 200 90" fill="none" style="margin-top: 14px;">
+        <polyline points="0,70 34,58 68,62 102,40 136,44 170,20 200,14" stroke="#D97757" stroke-width="2"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- foto som aksent -->
+  <div style="display: grid; grid-template-columns: 200px 1fr; gap: 16px; margin-top: 26px; align-items: center;">
+    <div class="box" style="height: 110px; display: flex; align-items: center; justify-content: center;">
+      <p class="mono">Ett foto</p>
+    </div>
+    <div>
+      <div class="bar" style="width: 85%; height: 9px;"></div>
+      <div class="bar" style="width: 65%; height: 9px; margin-top: 10px;"></div>
+      <p class="mono" style="margin-top: 14px;">Foto brukes sparsomt — som bevis, ikke som stemning</p>
+    </div>
+  </div>
+
+  <div style="margin-top: 30px; padding-top: 18px; border-top: 1px solid rgba(250,249,245,0.16);">
+    <p class="mono" style="color: #D97757;">Bytte</p>
+    <p class="serif" style="margin-top: 8px; font-size: 15px; line-height: 1.55; color: #B0AEA5;">
+      Vinner troverdighet hos den som allerede er nerd på tall. Taper på
+      varme — nybegynneren kan føle at dette ikke er for henne. Krever
+      dessuten ekte tall å fylle den med.
+    </p>
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>

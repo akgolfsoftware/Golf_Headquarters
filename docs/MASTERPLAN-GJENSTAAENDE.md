@@ -450,7 +450,7 @@ dokumentet som fantes lå i Paper og døde med det 30.08.
 
 | # | Oppgave | Detalj |
 |---|---|---|
-| 18.1 | **Merkeplattformen** | Én side: hvem AK Golf er til for, løftet, hva du er alternativet til, og tonen. Fundamentet både merkevaren og prisingen står på. **Ferdig når Anders har godkjent posisjonen og tonen** |
+| 18.1 | **Merkeplattformen — FERDIG 31.08.2026** | `docs/merkevare/ak-golf-merkeplattform-2026-08-31.md`. Godkjent av Anders med fire svar (se `.claude/rules/beslutninger.md` §MERKEPLATTFORMEN LÅST): junior- og spillerutvikling er målet · løftet «Du skal aldri lure på hva du skal trene på, eller hvorfor» · MORAD nevnes aldri offentlig · Mulligan knyttes ikke direkte |
 | 18.2 | **Prioritering 12 måneder** | De fem virksomhetene målt mot 500 000 USD-målet: hvor tid og penger går i dag, hva som dobles ned på, hva som parkeres. Beslutningsunderlag for Anders, ikke dokument til andre. Tall leses fra Tripletex-eksport, aldri estimeres |
 | 18.3 | **Merkearkitektur** | Hvordan Academy, Junior Academy, Mulligan, Skarpnord Golf Products og WANG-coachingen henger under paraplyen: navnebruk, logobruk, én identitetsfarge hver, felles skjelett. Lukker beslutningskøen punkt 22 helt |
 | 18.4 | **Kjerneverdiene** | Farge (ekte skala i oklch, ikke løse hex), typografi, romskala, geometri, bevegelse. Bygget videre på `--mk-*` og Poppins/Lora/IBM Plex Mono — ingen ny font, ingen ny palett fra bunnen |
@@ -458,7 +458,7 @@ dokumentet som fantes lå i Paper og døde med det 30.08.
 | 18.6 | **Retningslinjene** | Cirka 16 sider i samme format som `designsystem/team-norway/guidelines/`: merke, logoregler, farge, type, rom, radius og høyde, foto, bevegelse, terminologi, virksomhetsvarianter, og én side om hva som er forbudt |
 | 18.7 | **Pakken i repoet** | `designsystem/ak-golf/` med `tokens/`, `styles.css`, fonter, komponenter, maler og `readme.md` — speilbildet av masteren i Claude Design. Mønster: `designsystem/team-norway/` |
 | 18.8 | **Broen mellom de tre systemene** | Konfliktregelen (AK Golf → Train-lock → Claw) skrives inn i `CLAUDE.md` invariant 2, slik at ingen økt tror merkelaget overstyrer produktfasiten |
-| 18.9 | **Prising og pakketering** | Coaching-pakker, spillerlisenser, klubbavtaler, Mulligan. Lukker samtidig de ti manglende faktaene i `docs/marketing/tekstplan-landingsside-2026-08-31.md` §2 — særlig pris på kartleggingsøkt, som i dag sperrer lansering av landingssiden |
+| 18.9 | **Prising og pakketering** | Coaching-pakker, spillerlisenser, klubbavtaler, Mulligan. Lukker samtidig de ti manglende faktaene i `docs/marketing/tekstplan-landingsside-2026-08-31.md` §2 — særlig pris på kartleggingsøkt, som i dag sperrer lansering av landingssiden. **Må håndtere at forelderen er kjøperen** (18.1-beslutningen): gruppeplass og semesterpris veier tyngre enn 299 kr/mnd på egen hånd, og foreldreportalen blir en salgsflate |
 | 18.10 | **Formell businessplan** | For ekstern leser (investor/bank), bygget på 18.1, 18.2 og 18.9 |
 
 ---

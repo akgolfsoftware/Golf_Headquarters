@@ -2,7 +2,7 @@
 
 Utkast 31.08.2026. STEG 18.1 i `docs/MASTERPLAN-GJENSTAAENDE.md`.
 Fundamentet både merkevaresystemet (18.3–18.7) og prisingen (18.9) står på.
-**Ikke ferdig før Anders har godkjent posisjonen og tonen.**
+**Godkjent av Anders 31.08.2026** — se §8.
 
 ---
 
@@ -25,27 +25,26 @@ allerede gjør.**
 
 ## 2. Hvem det er til for
 
-Fem publikum. De er ikke likestilte — rekkefølgen er en anbefaling, ikke et
-faktum, og punkt 1 er det ene valget som får konsekvenser for alt annet.
+> **LÅST 31.08.2026: junior- og spillerutvikling er det sentrale målet.**
+> Merket handler om spilleren under utvikling — og juniorene står i sentrum.
 
-| # | Hvem | Hva de faktisk vil ha | Hva de betaler for i dag |
+| # | Hvem | Hva de faktisk vil ha | Betaler for i dag |
 |---|---|---|---|
-| 1 | **Den ambisiøse voksne som har stoppet opp** | Å forstå hvorfor det ikke går framover lenger. Har prøvd tips, video og YouTube. Vil ha en diagnose, ikke flere råd | 1:1-coaching · PlayerHQ 299 kr/mnd |
-| 2 | **Forelderen til en junior som vil noe** | Trygghet for at barnet utvikles etter en plan, ikke etter dagsform. Vil se fremgangen uten å måtte spørre | Junior Academy · gruppeplasser · foreldreportalen |
-| 3 | **Organisasjonen med talenter** (WANG, GFGK, Team Norway) | Et felles språk og et felles målesystem på tvers av trenere. Slippe Word, Excel og Messenger | Kontrakts-coaching · spillerlisenser fra 2027 |
+| 1 | **Junioren som vil noe — og forelderen som betaler** | Utvikling etter en plan, ikke etter dagsform. Forelderen vil se fremgangen uten å måtte spørre | Junior Academy · gruppeplasser · foreldreportalen |
+| 2 | **Den ambisiøse voksne som har stoppet opp** | Å forstå hvorfor det ikke går framover lenger. Vil ha en diagnose, ikke flere råd | 1:1-coaching · PlayerHQ 299 kr/mnd |
+| 3 | **Organisasjonen med talenter** (WANG, GFGK, Team Norway) | Felles språk og felles målesystem på tvers av trenere | Kontrakts-coaching · spillerlisenser fra 2027 |
 | 4 | **Spilleren som trener alene** | Struktur uten å måtte kjøpe en coach. Inngangen til alt det andre | Gratis PlayerHQ → 299 kr/mnd |
-| 5 | **Den lokale som vil slå baller i mørketiden** | Tilgang, pris og åpningstid. Bryr seg ikke om metodikk — ennå | Mulligan, timepris |
+| 5 | **Den lokale som vil slå baller i mørketiden** | Tilgang, pris og åpningstid. Bryr seg ikke om metodikk | Mulligan, timepris |
 
-**Anbefaling: publikum 1 er primærpublikum.** Tre grunner. Det er der pengene
-kommer fra i dag. Det er den samme personen som kjøper 299 kr/mnd, så merket og
-produktet peker på samme menneske. Og løftet til publikum 1 gjelder ordrett for
-publikum 2 og 4 — en forelder vil ha nøyaktig det samme på vegne av barnet sitt.
+Det gode med valget: løftet i §3 gjelder ordrett for alle fire første. En forelder
+vil ha nøyaktig det samme på vegne av barnet sitt som en voksen vil ha på egne
+vegne. Merket trenger derfor ikke to språk.
 
-**Publikum 5 er en annen samtale.** Mulligan selger tilgang, ikke utvikling. Det
-er en trakt inn, ikke et sted merkeløftet skal presses inn. Se §7.
-
-**Dette må Anders bekrefte** — hvis primærpublikummet er junior/forelder i stedet,
-endres tone, bildebruk og prisingen i 18.9.
+**Én konsekvens som må håndteres:** med junior som primærpublikum er det
+**forelderen som bestemmer og betaler**, ikke spilleren. Det flytter tyngdepunktet
+i prisingen fra 299 kr/mnd på egen hånd til gruppeplass, semesterpris og
+foreldreportal — og gjør foreldreflaten viktigere enn den er prioritert i dag.
+Tas videre i 18.9, ikke her.
 
 ---
 
@@ -84,19 +83,25 @@ i markedsmateriell skal aldri henge ut navngitte konkurrenter — den skal beskr
 
 ## 5. De fire bærebjelkene
 
-Det merket kan bevise, ikke det det påstår. Alt fire finnes allerede.
+Det merket kan bevise, ikke det det påstår. Alle fire finnes allerede.
 
 1. **Målingen.** Trackman i hver økt, tjue standardiserte testprotokoller,
    P1–P10 på svingen, spredning og slaglengder som tall.
-2. **Systemet.** En metodikk med et eget språk — pyramiden, områdene, periodene,
-   AK-stigen for junior. Ikke løse tips, men en struktur som gjentar seg fra
-   nybegynner til turneringsspiller.
-3. **Linjen.** Anders er coachet direkte av Mac O'Grady (MORAD, 2013–2014).
-   P-posisjonssystemet i appen kommer derfra. Dette er dybde, ikke overskrift —
-   det brukes der noen spør «hvorfor akkurat denne metoden».
+2. **Systemet.** En metodikk med eget språk — pyramiden, områdene, periodene.
+   Ikke løse tips, men en struktur som gjentar seg.
+3. **Utviklingsløpet.** AK-stigen tar junioren fra første golfskole til
+   turneringsspill i navngitte trinn. Få ting vil foreldre ha sterkere enn å se
+   hvilket trinn barnet står på, og hva som skal til for det neste.
 4. **Plassen i norsk golf.** Sportssjef i Gamle Fredrikstad GK, coach ved WANG
-   Toppidrett, tilknytning til Team Norway Golf. Det viser at systemet brukes
-   der det stilles krav, ikke bare på privattimer.
+   Toppidrett, tilknytning til Team Norway Golf. Viser at systemet brukes der det
+   stilles krav, ikke bare på privattimer.
+
+> **LÅST 31.08.2026 — MORAD nevnes ikke.** Mac O'Grady og MORAD skal **ikke**
+> nevnes i publikumsvendt tekst: ikke på nettsidene, ikke i markedsføring, ikke i
+> coach-biografier. Tre steder i produksjon brøt dette og er rettet 31.08:
+> `src/app/(marketing)/om-oss/page.tsx`, `src/app/(marketing)/coacher/[slug]/page.tsx`,
+> `src/app/auth/onboarding/onboarding-wizard.tsx`. P-posisjoner og MORAD som
+> **internt fagspråk** i produktet består — det er metodikk, ikke merkevarebygging.
 
 **Advarsel om bærebjelke 4:** WANG, GFGK og Team Norway er relasjoner, ikke
 produkter. De skal aldri framstilles slik at en leser tror hen kjøper tilgang til
@@ -135,16 +140,19 @@ Nei — skriv den om.
 
 ## 7. Virksomhetene under paraplyen
 
-Fem virksomheter, én paraply, ulike roller. Dette er innspillet til
-merkearkitekturen i 18.3 — ikke den ferdige arkitekturen.
-
 | Virksomhet | Rolle i merket | Hvor mye AK Golf skal synes |
 |---|---|---|
-| **AK Golf Academy** | Bærer løftet. Det er her merket defineres | Fullt ut. Dette *er* AK Golf |
-| **AK Golf Junior Academy** | Samme løfte, tilpasset alder. AK-stigen er dens eget språk | Fullt ut, med egen identitetsfarge |
+| **AK Golf Junior Academy** | Bærer det sentrale målet. AK-stigen er dens eget språk | Fullt ut, med egen identitetsfarge |
+| **AK Golf Academy** | Definerer løftet og metoden alt annet arver | Fullt ut. Dette *er* AK Golf |
 | **AK Golf HQ / PlayerHQ** | Beviset. Systemet gjort til noe du kan holde i hånda | Fullt ut, men produktflatene styres av Train-lock |
-| **Mulligan Indoor Golf** | Anlegget og trakten. Selger tilgang, ikke metodikk | Egen tone, tydelig eid av AK Golf. Ikke presset inn i rigor-språket |
-| **Skarpnord Golf Products** | Utstyr som følger metoden. Tidlig fase | Lav profil til det har omsetning. Ikke bygg en egen merkevare ennå |
+| **Mulligan Indoor Golf** | Anlegg som står på egne ben. Selger tilgang, ikke metodikk | **Ikke knyttet direkte til AK Golf-merket.** Promoteres av AK Golf |
+| **Skarpnord Golf Products** | Utstyr som følger metoden. Tidlig fase | Lav profil til det har omsetning |
+
+> **LÅST 31.08.2026 — Mulligan står for seg selv.** Ingen «en del av AK Golf»-avsender.
+> Anlegget beholder egen identitet og egne kunder. AK Golf **promoterer** Mulligan —
+> lenker dit, anbefaler det som treningssted, bruker det i egne økter — men merkene
+> blandes ikke. Det holder rigor-merket rent og lar Mulligan snakke til folk som bare
+> vil slå baller.
 
 **WANG-coachingen** er ikke en virksomhet, men en leveranse til en kunde. Den
 opptrer som en variant under paraplyen, ikke som et eget merke — det er dette som
@@ -152,19 +160,19 @@ lukker punkt 22 i beslutningskøen.
 
 ---
 
-## 8. Det jeg ikke kan avgjøre
+## 8. Hva som er låst, og hva som står igjen
 
-Fire spørsmål. Alle endrer arbeidet videre.
+Merkeplattformen er godkjent 31.08.2026. Fire svar fra Anders lukket den:
 
-1. **Er publikum 1 riktig primærpublikum?** (§2) Hvis junior/forelder er viktigere
-   for deg, endres tone, bilder og prising.
-2. **Godkjenner du løftet i §3?** «Du skal aldri lure på hva du skal trene på,
-   eller hvorfor.» Dette blir setningen alt annet måles mot.
-3. **Skal MORAD-linjen nevnes offentlig i det hele tatt?** (§5, bærebjelke 3) Den
-   er ekte og sjelden, men den er også elleve år gammel og smal. Jeg anbefaler ja,
-   som dybde — men det er ditt navn og din relasjon.
-4. **Hvor sterkt skal Mulligan knyttes til AK Golf?** (§7) «Mulligan Indoor Golf —
-   en del av AK Golf» styrker begge, men binder også rigor-merket til et
-   volumprodukt med helt andre kunder.
+1. **Junior- og spillerutvikling er det sentrale målet.** Primærpublikum er
+   junioren og forelderen; den voksne spilleren følger etter, med samme løfte.
+2. **Løftet er godkjent** — «Du skal aldri lure på hva du skal trene på, eller hvorfor.»
+3. **MORAD nevnes ikke offentlig.** Ute av all publikumsvendt tekst, består internt.
+4. **Mulligan knyttes ikke direkte, men promoteres.**
 
-Svar på disse fire, så er merkeplattformen låst og 18.3 kan starte.
+**Ett spørsmål junior-valget åpner:** når forelderen er den som bestemmer og
+betaler, blir foreldreportalen en salgsflate og ikke bare en innsynsflate. Det er
+en prioriteringsendring, ikke en merkevaresak — tas i 18.9.
+
+**Neste steg er 18.3: merkearkitekturen.** Hver virksomhet får sin plass, sin
+identitetsfarge og sine logoregler under paraplyen.
