@@ -2984,6 +2984,9 @@ model PublicPlayerEntry {
   position     Int?
   scoreToPar   Int?
   totalScore   Int?
+  // Klubb og klassenavn fra kilden (GolfBox) — tidligere kastet i scraperen (STEG 16.6).
+  clubName     String?
+  klasseNavn   String?
   // JSON blob med per-runde data
   rounds       Json?
   createdAt    DateTime @default(now())

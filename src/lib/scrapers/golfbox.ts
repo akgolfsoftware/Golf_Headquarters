@@ -239,6 +239,8 @@ export type GolfBoxLeaderboardEntry = {
   nationality: string | null;
   birthYear: number | null;
   clubName: string | null;
+  /** Klassenavn (f.eks. «Herrer», «Junior GU16») — hvitlisten for netto vs. brutto leser dette. */
+  klasseNavn: string | null;
   /** Brutto-score per runde (R1, R2, …). null der ikke spilt. */
   roundScores: (number | null)[];
 };
@@ -447,6 +449,9 @@ function collectClasses(
   for (const [, cls] of Object.entries(classes)) {
     const lb = (cls as { Leaderboard?: RawLeaderboard } | null)?.Leaderboard;
     if (!lb) continue;
+    // Dict-nøkkelen er en id («C123»), ikke et navn — kun klasseobjektets egne
+    // navnefelt (Name/ClassName/Title/DisplayName) er brukbare her.
+    const klasseNavn = golfboxKlasseNavn(cls) || null;
     if (Array.isArray(lb.RoundNames) && lb.RoundNames.length > acc.roundNames.length)
       acc.roundNames = lb.RoundNames;
     if (typeof lb.ActiveRoundNumber === "number") acc.activeRound = lb.ActiveRoundNumber;
@@ -480,6 +485,7 @@ function collectClasses(
         nationality: e.Nationality ?? null,
         birthYear: e.BirthYear ?? null,
         clubName: e.ClubName ?? null,
+        klasseNavn,
         roundScores: normalizeRounds(e.Rounds),
       });
     }

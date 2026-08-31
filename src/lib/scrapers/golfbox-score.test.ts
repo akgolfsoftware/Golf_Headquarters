@@ -10,7 +10,15 @@ import {
   sumHoleScores,
   parseCompetitionClasses,
   velgBruttoKlasser,
+  getLeaderboard,
 } from "./golfbox";
+
+function jsonResponse(body: unknown): Response {
+  return new Response(JSON.stringify(body), {
+    status: 200,
+    headers: { "content-type": "application/json" },
+  });
+}
 
 test("erNettoKlasse: ender på N / Net / Netto", () => {
   assert.equal(erNettoKlasse("Scratch N"), true);
@@ -123,4 +131,42 @@ test("golfboxKlasseNavn: Name-felt eller dict-nøkkel", () => {
   assert.equal(golfboxKlasseNavn({ Name: "Scratch N" }, "0"), "Scratch N");
   assert.equal(golfboxKlasseNavn({}, "Herrer"), "Herrer");
   assert.equal(golfboxKlasseNavn({ ClassName: "Junior" }), "Junior");
+});
+
+test("getLeaderboard: klubb og klassenavn følger med hver entry (STEG 16.6 — tidligere kastet)", async (t) => {
+  t.mock.method(globalThis, "fetch", async () =>
+    jsonResponse({
+      CompetitionData: {
+        Classes: [{ Id: 1, Name: "Herrer", ShortName: "H", ClassType: "PlayerClass" }],
+      },
+      Classes: {
+        C1: {
+          Name: "Herrer",
+          Leaderboard: {
+            RoundNames: ["R1"],
+            ActiveRoundNumber: 1,
+            IsScoringOpen: true,
+            Entries: {
+              e1: {
+                FirstName: "Ola",
+                LastName: "Nordmann",
+                Nationality: "NO",
+                BirthYear: 2008,
+                ClubName: "Fredrikstad GK",
+                ScoringToPar: { ToParText: "-2", TodayText: "-2" },
+                Position: { Actual: 1 },
+                Rounds: { R1: { Score: { Text: "70" } } },
+              },
+            },
+          },
+        },
+      },
+    }),
+  );
+
+  const lb = await getLeaderboard(123);
+  assert.ok(lb);
+  assert.equal(lb!.entries.length, 1);
+  assert.equal(lb!.entries[0].clubName, "Fredrikstad GK");
+  assert.equal(lb!.entries[0].klasseNavn, "Herrer");
 });

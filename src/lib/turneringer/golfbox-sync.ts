@@ -276,12 +276,16 @@ export async function processLeaderboardForTournament(
         status: entryStatus(e, completed),
         position: e.position,
         scoreToPar: e.toParValue,
+        clubName: e.clubName,
+        klasseNavn: e.klasseNavn,
         rounds: roundsJson,
       },
       update: {
         status: entryStatus(e, completed),
         position: e.position,
         scoreToPar: e.toParValue,
+        clubName: e.clubName,
+        klasseNavn: e.klasseNavn,
         rounds: roundsJson,
       },
     });
