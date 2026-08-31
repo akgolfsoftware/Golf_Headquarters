@@ -279,7 +279,19 @@ function MalDetalj({
   );
 }
 
-export function AdminEmailV2({ data }: { data: AdminEmailV2Data }) {
+export function AdminEmailV2({
+  data,
+  somFane = false,
+}: {
+  data: AdminEmailV2Data;
+  /**
+   * MASTERPLAN 15.7: denne komponenten er nå «Maler»-fanen i
+   * /admin/kommunikasjon. Som fane eier den nye siden overskriften — kun
+   * komponentens EGEN «E-post»-tittel skjules. «Ny mal»-CTA-en beholdes
+   * (en reell handling, ikke duplisert navigasjon). Lærdom fra 15.1/15.2.
+   */
+  somFane?: boolean;
+}) {
   const router = useRouter();
   const [sok, setSok] = useState("");
   const [grp, setGrp] = useState<string[]>([]);
@@ -311,13 +323,15 @@ export function AdminEmailV2({ data }: { data: AdminEmailV2Data }) {
 
   // ── Hode ──────────────────────────────────────────────────────
   const hode = (
-    <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
-      <div>
-        <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>E-post</h1>
-          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>Maler og utsending</span>
+    <div style={{ display: "flex", alignItems: "flex-end", justifyContent: somFane ? "flex-end" : "space-between", gap: 14, flexWrap: "wrap" }}>
+      {!somFane && (
+        <div>
+          <div data-paper-pattern-topp>
+            <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>E-post</h1>
+            <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>Maler og utsending</span>
+          </div>
         </div>
-      </div>
+      )}
       <div className="hidden md:inline-flex">
         <span onClick={() => setEditor({ modus: "ny" })} style={{ display: "inline-flex" }}>
           <CTAPill icon="plus">Ny mal</CTAPill>

@@ -7,7 +7,9 @@
  * fra legacy-siden og sendes inn som props fra page.tsx (server).
  */
 import Link from "next/link";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+import { AK } from "@/lib/v2/ak-palett";
+
 import { Icon, Kort, Caps, KpiFlis, DataTabell, TomTilstand } from "@/components/v2";
 import type { DataTabellRow } from "@/components/v2";
 import { StatsRamme, useMobile } from "./stats-ramme";
@@ -28,10 +30,10 @@ export interface StatsKlubbDetaljV2Props {
 }
 
 const FORDELING_FARGE: Record<string, string> = {
-  Pro: T.lime,
-  College: T.up,
-  Junior: T.fg2,
-  Amatør: T.mut,
+  Pro: TL.fill,
+  College: TL.ok,
+  Junior: TL.mute,
+  Amatør: TL.mute,
 };
 
 export function StatsKlubbDetaljV2({
@@ -61,7 +63,7 @@ export function StatsKlubbDetaljV2({
       <Seksjon mobile={mobile}>
         <Link
           href="/stats/klubber"
-          style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: T.mono, fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: T.mut, textDecoration: "none", marginBottom: 18 }}
+          style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: TL.font.mono, fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: TL.mute, textDecoration: "none", marginBottom: 18 }}
         >
           <Icon name="arrow-left" size={12} /> Klubbdatabase
         </Link>
@@ -73,7 +75,7 @@ export function StatsKlubbDetaljV2({
 
       {/* KPI-strip */}
       <Seksjon mobile={mobile} style={{ paddingTop: 0 }}>
-        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: T.gap }}>
+        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: AK.gap }}>
           <KpiFlis label="Spillere" value={spillere} />
           <KpiFlis label="Pro" value={pro} />
           <KpiFlis label="College" value={college} />
@@ -109,7 +111,7 @@ export function StatsKlubbDetaljV2({
 
       {/* Distribusjon + turneringer */}
       <Seksjon mobile={mobile} style={{ paddingTop: 0 }}>
-        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: T.gap }}>
+        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: AK.gap }}>
           <div>
             <Caps>Distribusjon</Caps>
             <div style={{ marginTop: 14, marginBottom: 20 }}>
@@ -119,15 +121,15 @@ export function StatsKlubbDetaljV2({
             </div>
             <Kort pad="20px 22px">
               {fordeling.map((f, i) => (
-                <div key={f.label} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "9px 0", borderTop: i === 0 ? "none" : `1px solid ${T.border}` }}>
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: T.ui, fontSize: 13, color: T.fg2 }}>
-                    <span style={{ width: 8, height: 8, borderRadius: 9999, background: FORDELING_FARGE[f.label] ?? T.mut }} />
+                <div key={f.label} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "9px 0", borderTop: i === 0 ? "none" : `1px solid ${TL.hair}` }}>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: TL.font.sans, fontSize: 13, color: TL.mute }}>
+                    <span style={{ width: 8, height: 8, borderRadius: 9999, background: FORDELING_FARGE[f.label] ?? TL.mute }} />
                     {f.label}
                   </span>
-                  <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: T.fg }}>{f.n}</span>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, color: TL.text }}>{f.n}</span>
                 </div>
               ))}
-              <div style={{ marginTop: 14, paddingTop: 14, borderTop: `1px dashed ${T.border}`, fontFamily: T.mono, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>
+              <div style={{ marginTop: 14, paddingTop: 14, borderTop: `1px dashed ${TL.hair}`, fontFamily: TL.font.mono, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>
                 {spillere} spillere totalt
               </div>
             </Kort>
@@ -144,8 +146,8 @@ export function StatsKlubbDetaljV2({
               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 {aktivitet.map((t) => (
                   <Kort key={t.id} pad="14px 18px">
-                    <div style={{ fontFamily: T.ui, fontSize: 14, fontWeight: 600, color: T.fg }}>{t.navn}</div>
-                    <div style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, marginTop: 4 }}>{t.dato}</div>
+                    <div style={{ fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600, color: TL.text }}>{t.navn}</div>
+                    <div style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, marginTop: 4 }}>{t.dato}</div>
                   </Kort>
                 ))}
               </div>
@@ -161,13 +163,13 @@ export function StatsKlubbDetaljV2({
       {/* Mersalg */}
       <Seksjon mobile={mobile}>
         <Kort tint pad={mobile ? "26px 22px" : "40px 44px"} style={{ textAlign: mobile ? "left" : "center" }}>
-          <Caps color={T.lime} style={{ marginBottom: 14 }}>
+          <Caps color={TL.fill} style={{ marginBottom: 14 }}>
             PlayerHQ
           </Caps>
           <SeksT mobile={mobile} em={navn}>
             Spill for
           </SeksT>
-          <p style={{ fontFamily: T.ui, fontSize: 14, color: T.fg2, margin: "14px auto 0", maxWidth: 480, lineHeight: 1.65 }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 14, color: TL.mute, margin: "14px auto 0", maxWidth: 480, lineHeight: 1.65 }}>
             Logg runder og hev klubbens snitt. Sammenlign deg med de beste fra din klubb.
           </p>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 22, justifyContent: mobile ? "flex-start" : "center" }}>

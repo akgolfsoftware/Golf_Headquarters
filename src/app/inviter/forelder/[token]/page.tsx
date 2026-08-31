@@ -4,7 +4,8 @@
 
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { VeiviserFlate } from "@/components/auth/onboarding/wizard-chrome";
 import { CTAPill, StatusPill, Caps } from "@/components/v2";
 import { AksepterForm } from "./form";
@@ -23,7 +24,7 @@ function StatusBoks({
   tone: "feil" | "info";
   children: React.ReactNode;
 }) {
-  const c = tone === "feil" ? T.down : T.mut;
+  const c = tone === "feil" ? TL.danger : TL.mute;
   return (
     <p
       style={{
@@ -33,10 +34,10 @@ function StatusBoks({
         border: `1px solid color-mix(in srgb, ${c} 30%, transparent)`,
         background: `color-mix(in srgb, ${c} 10%, transparent)`,
         padding: "14px 16px",
-        fontFamily: T.ui,
+        fontFamily: TL.font.sans,
         fontSize: 13.5,
         lineHeight: 1.55,
-        color: tone === "feil" ? T.down : T.fg2,
+        color: tone === "feil" ? TL.danger : TL.mute,
       }}
     >
       {children}
@@ -102,16 +103,16 @@ export default async function AksepterInvitasjonPage({
         <h1
           style={{
             margin: "10px 0 0",
-            fontFamily: T.disp,
+            fontFamily: TL.font.sans,
             fontSize: 30,
             fontWeight: 700,
             lineHeight: 1.05,
             letterSpacing: "-0.025em",
-            color: T.fg,
+            color: TL.text,
             textWrap: "balance",
           }}
         >
-          Bli <em style={{ fontStyle: "italic", fontWeight: 400, color: T.lime }}>forelder</em>{" "}
+          Bli <em style={{ fontStyle: "italic", fontWeight: 400, color: TL.fill }}>forelder</em>{" "}
           i AK Golf
         </h1>
 
@@ -149,13 +150,13 @@ export default async function AksepterInvitasjonPage({
               style={{
                 marginTop: 14,
                 marginBottom: 0,
-                fontFamily: T.ui,
+                fontFamily: TL.font.sans,
                 fontSize: 13.5,
                 lineHeight: 1.55,
-                color: T.mut,
+                color: TL.mute,
               }}
             >
-              <strong style={{ fontWeight: 600, color: T.fg }}>
+              <strong style={{ fontWeight: 600, color: TL.text }}>
                 {invitation.player.name}
               </strong>{" "}
               har invitert deg som foresatt. Fyll inn opplysningene under for å

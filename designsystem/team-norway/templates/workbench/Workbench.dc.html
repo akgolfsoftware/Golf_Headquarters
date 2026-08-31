@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Workbench — uke" description="Coach-modus: kilderail, ukerutenett med økter og utkast, publisering. 1440×900." -->
+<helmet><script src="./ds-base.js"></script></helmet>
+<div style="min-height:100vh;background:var(--surface-page);padding:28px;display:flex;justify-content:center;font-family:var(--font-body)">
+<div data-screen-label="Workbench uke" style="width:1440px;height:900px;flex-shrink:0;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-xl);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;flex-direction:column">
+
+<div style="height:68px;flex-shrink:0;display:flex;align-items:center;gap:18px;padding:0 22px;border-bottom:1px solid var(--border-subtle)">
+<img src="../../assets/logo/team-norway-golf.png" alt="Team Norway Golf" style="height:32px;width:auto;display:block;flex-shrink:0">
+<div style="width:1px;height:26px;background:var(--border-subtle)"></div>
+<span style="font-family:var(--font-display);font-size:16px;font-weight:700;letter-spacing:-.02em">Workbench</span>
+<div style="height:34px;border-radius:var(--radius-full);background:var(--ink-100);display:flex;align-items:center;gap:9px;padding:0 14px;cursor:pointer">
+<div style="width:22px;height:22px;border-radius:var(--radius-full);background:var(--navy-600);color:#fff;font-family:var(--font-mono);font-size:9px;font-weight:600;display:flex;align-items:center;justify-content:center">ØR</div>
+<span style="font-size:13.5px;font-weight:600">Øyvind Rojahn</span>
+<span style="font-size:10px;color:var(--ink-400)">▼</span>
+</div>
+<div style="height:36px;background:var(--ink-100);border-radius:var(--radius-full);display:flex;align-items:center;padding:3px;gap:2px">
+<div style="height:30px;display:flex;align-items:center;padding:0 14px;border-radius:var(--radius-full);font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;color:var(--ink-500);cursor:pointer">ÅRSPLAN</div>
+<div style="height:30px;display:flex;align-items:center;padding:0 14px;border-radius:var(--radius-full);font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;color:var(--ink-500);cursor:pointer">MÅNED</div>
+<div style="height:30px;display:flex;align-items:center;padding:0 14px;border-radius:var(--radius-full);background:var(--navy-900);color:#fff;font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;box-shadow:var(--shadow-sm)">UKE</div>
+<div style="height:30px;display:flex;align-items:center;padding:0 14px;border-radius:var(--radius-full);font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;color:var(--ink-500);cursor:pointer">AGENDA</div>
+</div>
+<div style="display:flex;align-items:center;gap:12px">
+<span style="color:var(--ink-400);font-size:14px;cursor:pointer">‹</span>
+<span style="font-family:var(--font-mono);font-size:13.5px;font-weight:500">Uke 35 · 24.08–30.08.2026</span>
+<span style="color:var(--ink-400);font-size:14px;cursor:pointer">›</span>
+<span style="font-family:var(--font-mono);font-size:10.5px;letter-spacing:.14em;color:var(--navy-600);cursor:pointer">I DAG</span>
+</div>
+<div style="flex:1"></div>
+<span style="font-family:var(--font-mono);font-size:11.5px;color:var(--ink-400)">3 utkast · 2 endret</span>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="secondary" size="sm" hint-size="96px,34px">Ny økt</x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="primary" size="sm" hint-size="110px,34px">Publiser 3</x-import>
+</div>
+
+<div style="flex:1;min-height:0;display:flex">
+
+<div style="width:240px;flex-shrink:0;border-right:1px solid var(--border-subtle);background:var(--ink-50);padding:18px 16px;display:flex;flex-direction:column;gap:20px;overflow:hidden">
+<div style="height:40px;border-radius:var(--radius-full);background:var(--white);border:1px solid var(--border-subtle);display:flex;align-items:center;padding:0 14px">
+<span style="font-size:13px;color:var(--ink-400)">Søk kilder</span>
+</div>
+<div>
+<div style="font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-400);margin-bottom:8px">KONTEKST</div>
+<sc-for list="{{ contextLayers }}" as="layer" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 2px;border-top:1px solid var(--border-subtle)">
+<span style="font-size:13px;font-weight:500;color:var(--ink-700)">{{ layer.name }}</span>
+<span style="font-family:var(--font-mono);font-size:10px;color:var(--ink-400)">{{ layer.state }}</span>
+</div>
+</sc-for>
+</div>
+<div>
+<div style="font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-400);margin-bottom:8px">SETT INN · DRA TIL RUTENETT</div>
+<sc-for list="{{ sources }}" as="src" hint-placeholder-count="6">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 2px;border-top:1px solid var(--border-subtle);cursor:pointer">
+<span style="font-size:13.5px;font-weight:600;color:var(--ink-900)">{{ src.name }}</span>
+<span style="font-family:var(--font-mono);font-size:11px;color:var(--ink-400)">{{ src.count }}</span>
+</div>
+</sc-for>
+</div>
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:14px">
+<div style="font-size:13.5px;font-weight:600">Grunnuke SLAG-tung</div>
+<div style="margin-top:5px;font-size:11.5px;color:var(--ink-500);line-height:1.5">6 økter · 9 t 30. Dra til rutenettet — bekreft før den lander.</div>
+</div>
+<div style="flex:1"></div>
+<div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:11.5px;color:var(--ink-400)">Kollaps</span><span style="font-family:var(--font-mono);font-size:11px;color:var(--ink-400)">⌘\</span></div>
+</div>
+
+<div style="flex:1;min-width:0;display:flex;flex-direction:column">
+
+<div style="display:flex;padding-left:52px;border-bottom:1px solid var(--border-subtle)">
+<sc-for list="{{ days }}" as="day" hint-placeholder-count="7">
+<div style="flex:1;text-align:center;padding:11px 0">
+<span style="font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;color:var(--ink-400)">{{ day.label }}</span>
+</div>
+</sc-for>
+</div>
+
+<div style="display:flex;padding-left:52px;height:34px;align-items:center;border-bottom:1px solid var(--border-subtle);background:var(--ink-50)">
+<div style="flex:5"></div>
+<div style="flex:2;padding:0 4px">
+<div style="height:24px;border-radius:var(--radius-xs);background:var(--red-100);display:flex;align-items:center;padding:0 10px;gap:8px">
+<span style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.12em;color:var(--red-700)">TURNERING</span>
+<span style="font-size:11.5px;font-weight:600;color:var(--red-700)">Onsøy Open</span>
+</div>
+</div>
+</div>
+
+<div style="flex:1;min-height:0;display:flex;overflow:hidden;align-items:flex-start">
+<div style="width:52px;flex-shrink:0">
+<sc-for list="{{ hours }}" as="hour" hint-placeholder-count="14">
+<div style="height:52px;line-height:52px;font-family:var(--font-mono);font-size:11px;color:var(--ink-400);text-align:right;padding-right:10px">{{ hour }}</div>
+</sc-for>
+</div>
+<div style="flex:1;height:728px;display:flex;background:repeating-linear-gradient(to bottom,transparent 0 51px,var(--ink-100) 51px 52px)">
+<sc-for list="{{ columns }}" as="col" hint-placeholder-count="7">
+<div style="flex:1;position:relative;border-left:1px solid var(--ink-100)">
+<sc-for list="{{ col.events }}" as="ev" hint-placeholder-count="1">
+<sc-if value="{{ ev.solid }}" hint-placeholder-val="{{ true }}">
+<div ref="{{ ev.ref }}" style="box-sizing:border-box;position:absolute;left:4px;right:4px;border-radius:var(--radius-sm);padding:9px 10px;overflow:hidden;cursor:pointer;background:var(--white);border:1px solid var(--border-subtle);border-left:3px solid var(--navy-600);box-shadow:var(--shadow-sm)">
+<div style="display:flex;justify-content:space-between;gap:6px;align-items:center">
+<span style="font-family:var(--font-mono);font-size:8.5px;letter-spacing:.1em;color:var(--ink-500);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ ev.cat }}</span>
+<span style="font-family:var(--font-mono);font-size:9px;color:var(--ink-300)">{{ ev.mark }}</span>
+</div>
+<div style="font-size:13.5px;font-weight:600;line-height:1.25;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink-900)">{{ ev.title }}</div>
+<div style="font-family:var(--font-mono);font-size:11px;color:var(--ink-500);margin-top:2px">{{ ev.time }}</div>
+<div style="font-family:var(--font-mono);font-size:9px;letter-spacing:.1em;color:var(--ink-400);margin-top:6px">{{ ev.note }}</div>
+</div>
+</sc-if>
+<sc-if value="{{ ev.draft }}" hint-placeholder-val="{{ false }}">
+<div ref="{{ ev.ref }}" style="box-sizing:border-box;position:absolute;left:4px;right:4px;border-radius:var(--radius-sm);padding:9px 10px;overflow:hidden;cursor:pointer;background:var(--white);border:1px dashed var(--border-default);border-left:3px solid var(--navy-600)">
+<div style="display:flex;justify-content:space-between;gap:6px;align-items:center">
+<span style="font-family:var(--font-mono);font-size:8.5px;letter-spacing:.1em;color:var(--ink-500);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ ev.cat }}</span>
+<span style="font-family:var(--font-mono);font-size:9px;color:var(--ink-300)">{{ ev.mark }}</span>
+</div>
+<div style="font-size:13.5px;font-weight:600;line-height:1.25;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink-900)">{{ ev.title }}</div>
+<div style="font-family:var(--font-mono);font-size:11px;color:var(--ink-500);margin-top:2px">{{ ev.time }}</div>
+<div style="font-family:var(--font-mono);font-size:9px;letter-spacing:.1em;color:var(--ink-400);margin-top:6px">{{ ev.note }}</div>
+</div>
+</sc-if>
+</sc-for>
+</div>
+</sc-for>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1496,&quot;height&quot;:956}}">
+const HOUR = 52, START = 7;
+const CAT = {
+  SLAG: 'var(--navy-600)',
+  FYS: 'var(--data-3)',
+  SPILL: 'var(--data-4)',
+  TEST: 'var(--red-600)'
+};
+
+class Component extends DCLogic {
+  ev(o) {
+    const top = (o.from - START) * HOUR;
+    const height = o.hours * HOUR - 4;
+    const accent = CAT[o.cat.split(' ')[0]] || 'var(--navy-600)';
+    return {
+      ...o,
+      solid: !o.draft,
+      draft: !!o.draft,
+      ref: (el) => {
+        if (!el) return;
+        el.style.top = top + 'px';
+        el.style.height = height + 'px';
+        el.style.borderLeftColor = accent;
+      }
+    };
+  }
+  renderVals() {
+    const hours = [];
+    for (let h = START; h <= 20; h++) hours.push(String(h).padStart(2, '0'));
+    const days = ['Man 24', 'Tir 25', 'Ons 26', 'Tor 27', 'Fre 28', 'Lør 29', 'Søn 30'];
+    const plan = [
+      [{ cat: 'FYS · STYRKE', title: 'Styrke', time: '09.00 · 1,5 t', from: 9, hours: 1.5, note: '' },
+       { cat: 'SLAG · CHIP · M3', title: 'Nærspill', time: '16.00 · 1,5 t', from: 16, hours: 1.5, mark: '↻', note: '' }],
+      [{ cat: 'SLAG · INNSPILL', title: 'Innspill 100–150', time: '15.00 · 2 t', from: 15, hours: 2, note: '' }],
+      [{ cat: 'FYS · MOBILITET', title: 'Mobilitet', time: '08.00 · 1 t', from: 8, hours: 1, note: '' },
+       { cat: 'SLAG · PUTT', title: 'Putt Gate', time: '17.00 · 1 t', from: 17, hours: 1, draft: true, note: 'UTKAST' }],
+      [{ cat: 'SPILL · BANE', title: 'Banespill 9 hull', time: '14.00 · 3 t', from: 14, hours: 3, note: '' }],
+      [{ cat: 'TEST · TN-BATTERI', title: 'Testdag Q3', time: '10.00 · 2,5 t', from: 10, hours: 2.5, note: 'FORFALL 19.08' }],
+      [{ cat: 'SPILL · TURNERING', title: 'Onsøy Open R1', time: '08.30 · 5 t', from: 8.5, hours: 5, note: '' }],
+      [{ cat: 'SPILL · TURNERING', title: 'Onsøy Open R2', time: '09.00 · 5 t', from: 9, hours: 5, draft: true, note: 'UTKAST' }]
+    ];
+    return {
+      hours,
+      days: days.map(label => ({ label })),
+      columns: plan.map(evts => ({ events: evts.map(e => this.ev(e)) })),
+      contextLayers: [
+        { name: 'Skole', state: 'LÅST' },
+        { name: 'Turneringer', state: 'PÅ' },
+        { name: 'Tester', state: 'PÅ' }
+      ],
+      sources: [
+        { name: 'Ukemaler', count: '6' },
+        { name: 'Standardøkter', count: '18' },
+        { name: 'Øvelsesbank', count: '142' },
+        { name: 'Programmer', count: '4' },
+        { name: 'Månedsplaner', count: '2' },
+        { name: 'Tidligere uker', count: '31' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

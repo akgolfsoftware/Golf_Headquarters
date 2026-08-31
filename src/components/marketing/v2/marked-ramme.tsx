@@ -11,7 +11,9 @@
  */
 import { useEffect, useState, type ReactNode, type CSSProperties } from "react";
 import Link from "next/link";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+import { AK } from "@/lib/v2/ak-palett";
+
 import { Icon, LogoAK, Caps } from "@/components/v2";
 
 /* ── Marketing-skala (litt større type, mer luft — samme palett) ── */
@@ -80,14 +82,14 @@ export function MMobilMeny({ aktiv }: { aktiv: string }) {
         className="v2-press v2-focus"
         style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 40, height: 40, background: "transparent", border: "none", cursor: "pointer", borderRadius: 10, padding: 0 }}
       >
-        <Icon name="menu" size={20} style={{ color: T.fg }} />
+        <Icon name="menu" size={20} style={{ color: TL.text }} />
       </button>
       {open && (
         <div
-          style={{ position: "fixed", inset: 0, zIndex: 80, background: `color-mix(in srgb, ${T.bg} 96%, transparent)`, backdropFilter: "blur(14px)", display: "flex", flexDirection: "column", padding: "16px 22px calc(24px + env(safe-area-inset-bottom))", colorScheme: "dark" }}
+          style={{ position: "fixed", inset: 0, zIndex: 80, background: `color-mix(in srgb, ${TL.scene} 96%, transparent)`, backdropFilter: "blur(14px)", display: "flex", flexDirection: "column", padding: "16px 22px calc(24px + env(safe-area-inset-bottom))", colorScheme: "dark" }}
         >
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <LogoAK size={24} surface="paper" />
+            <LogoAK size={24} />
             <button
               type="button"
               aria-label="Lukk meny"
@@ -95,7 +97,7 @@ export function MMobilMeny({ aktiv }: { aktiv: string }) {
               className="v2-press v2-focus"
               style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 40, height: 40, background: "transparent", border: "none", cursor: "pointer", borderRadius: 10, padding: 0 }}
             >
-              <Icon name="x" size={20} style={{ color: T.fg }} />
+              <Icon name="x" size={20} style={{ color: TL.text }} />
             </button>
           </div>
           <nav aria-label="Meny" style={{ display: "flex", flexDirection: "column", marginTop: 26 }}>
@@ -106,14 +108,14 @@ export function MMobilMeny({ aktiv }: { aktiv: string }) {
                 onClick={() => setOpen(false)}
                 className="v2-press"
                 style={{
-                  fontFamily: T.disp,
+                  fontFamily: TL.font.sans,
                   fontSize: 26,
                   fontWeight: 700,
                   letterSpacing: "-0.02em",
-                  color: aktiv === n.id ? T.lime : T.fg,
+                  color: aktiv === n.id ? TL.fill : TL.text,
                   textDecoration: "none",
                   padding: "13px 0",
-                  borderBottom: `1px solid ${T.border}`,
+                  borderBottom: `1px solid ${TL.hair}`,
                 }}
               >
                 {n.l}
@@ -125,7 +127,7 @@ export function MMobilMeny({ aktiv }: { aktiv: string }) {
               href="/auth/login"
               onClick={() => setOpen(false)}
               className="v2-press"
-              style={{ display: "flex", alignItems: "center", justifyContent: "center", fontFamily: T.ui, fontSize: 15, fontWeight: 600, color: T.fg, background: T.panel3, border: `1px solid ${T.borderS}`, borderRadius: 9999, padding: "14px 28px", textDecoration: "none" }}
+              style={{ display: "flex", alignItems: "center", justifyContent: "center", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text, background: TL.dim, border: `1px solid ${TL.hair}`, borderRadius: 9999, padding: "14px 28px", textDecoration: "none" }}
             >
               Logg inn (PlayerHQ)
             </Link>
@@ -133,7 +135,7 @@ export function MMobilMeny({ aktiv }: { aktiv: string }) {
               href={TALENTHQ_LOGIN_URL}
               onClick={() => setOpen(false)}
               className="v2-press"
-              style={{ display: "flex", alignItems: "center", justifyContent: "center", fontFamily: T.ui, fontSize: 15, fontWeight: 600, color: T.fg, background: T.panel2, border: `1px solid ${T.borderS}`, borderRadius: 9999, padding: "14px 28px", textDecoration: "none" }}
+              style={{ display: "flex", alignItems: "center", justifyContent: "center", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text, background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: 9999, padding: "14px 28px", textDecoration: "none" }}
             >
               Gratis testprofil
             </a>
@@ -141,7 +143,7 @@ export function MMobilMeny({ aktiv }: { aktiv: string }) {
               href="/auth/signup"
               onClick={() => setOpen(false)}
               className="v2-press"
-              style={{ display: "flex", alignItems: "center", justifyContent: "center", fontFamily: T.ui, fontSize: 15, fontWeight: 600, color: T.onHandling, background: T.handling, borderRadius: 9999, padding: "14px 28px", textDecoration: "none" }}
+              style={{ display: "flex", alignItems: "center", justifyContent: "center", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.onFill, background: TL.fill, borderRadius: 9999, padding: "14px 28px", textDecoration: "none" }}
             >
               Kom i gang gratis
             </Link>
@@ -169,12 +171,12 @@ export function MNav({ mobile, aktiv, cta = STANDARD_CTA }: { mobile: boolean; a
         justifyContent: "space-between",
         gap: 16,
         padding: mobile ? "16px 22px" : "20px 64px",
-        borderBottom: `1px solid ${T.border}`,
+        borderBottom: `1px solid ${TL.hair}`,
         position: "relative",
       }}
     >
       <Link href="/" style={{ display: "inline-flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
-        <LogoAK size={24} surface="paper" />
+        <LogoAK size={24} />
       </Link>
       {!mobile && (
         <div style={{ display: "flex", alignItems: "center", gap: 26 }}>
@@ -183,12 +185,12 @@ export function MNav({ mobile, aktiv, cta = STANDARD_CTA }: { mobile: boolean; a
               key={n.id}
               href={n.href}
               style={{
-                fontFamily: T.ui,
+                fontFamily: TL.font.sans,
                 fontSize: 14,
                 fontWeight: 600,
-                color: aktiv === n.id ? T.fg : T.fg2,
+                color: aktiv === n.id ? TL.text : TL.mute,
                 textDecoration: "none",
-                borderBottom: aktiv === n.id ? `2px solid ${T.lime}` : "2px solid transparent",
+                borderBottom: aktiv === n.id ? `2px solid ${TL.fill}` : "2px solid transparent",
                 paddingBottom: 2,
               }}
             >
@@ -202,13 +204,13 @@ export function MNav({ mobile, aktiv, cta = STANDARD_CTA }: { mobile: boolean; a
           <>
             <Link
               href="/auth/login"
-              style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg2, textDecoration: "none" }}
+              style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.mute, textDecoration: "none" }}
             >
               Logg inn
             </Link>
             <a
               href={TALENTHQ_LOGIN_URL}
-              style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg2, textDecoration: "none" }}
+              style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.mute, textDecoration: "none" }}
             >
               Gratis testprofil
             </a>
@@ -230,7 +232,7 @@ export function MFot({ mobile }: { mobile: boolean }) {
   return (
     <div
       style={{
-        borderTop: `1px solid ${T.border}`,
+        borderTop: `1px solid ${TL.hair}`,
         padding: mobile ? "32px 22px" : "40px 64px",
         display: "flex",
         flexDirection: mobile ? "column" : "row",
@@ -240,8 +242,8 @@ export function MFot({ mobile }: { mobile: boolean }) {
       }}
     >
       <span style={{ display: "inline-flex", alignItems: "center", gap: 9 }}>
-        <LogoAK size={18} surface="paper" color={T.mut} />
-        <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut }}>AK Golf Group AS · Fredrikstad</span>
+        <LogoAK size={18} color={TL.mute} />
+        <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute }}>AK Golf Group AS · Fredrikstad</span>
       </span>
       <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
         {[
@@ -251,13 +253,13 @@ export function MFot({ mobile }: { mobile: boolean }) {
           { l: "Book tid", href: "/booking" },
           { l: "Personvern", href: "/personvern" },
         ].map((f) => (
-          <Link key={f.l} href={f.href} style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, textDecoration: "none" }}>
+          <Link key={f.l} href={f.href} style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, textDecoration: "none" }}>
             {f.l}
           </Link>
         ))}
         <a
           href={TALENTHQ_LOGIN_URL}
-          style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, textDecoration: "none" }}
+          style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, textDecoration: "none" }}
         >
           Gratis testprofil
         </a>
@@ -274,9 +276,9 @@ export function MRamme({ mobile, aktiv, cta, children, waveId }: { mobile: boole
       style={{
         minHeight: "100vh",
         colorScheme: "dark",
-        color: T.fg,
-        fontFamily: T.ui,
-        background: `radial-gradient(1100px 520px at 30% -10%, ${T.farge.forestMerkeA20}, transparent 62%), ${T.bg}`,
+        color: TL.text,
+        fontFamily: TL.font.sans,
+        background: `radial-gradient(1100px 520px at 30% -10%, ${AK.farge.forestMerkeA20}, transparent 62%), ${TL.scene}`,
         display: "flex",
         flexDirection: "column",
       }}
@@ -294,7 +296,7 @@ export function MRamme({ mobile, aktiv, cta, children, waveId }: { mobile: boole
 /* ── Tekst- og CTA-primitiver (marketing-skala) ────────── */
 export function Eyebrow({ children }: { children: ReactNode }) {
   return (
-    <Caps size={11} color={T.lime} style={{ marginBottom: 18 }}>
+    <Caps size={11} color={TL.fill} style={{ marginBottom: 18 }}>
       {children}
     </Caps>
   );
@@ -304,11 +306,11 @@ export function HeroT({ mobile, children, em }: { mobile: boolean; children: Rea
   return (
     <h1
       style={{
-        fontFamily: T.disp,
+        fontFamily: TL.font.sans,
         fontWeight: 700,
         fontSize: mobile ? M.heroM : M.heroD,
         letterSpacing: "-0.035em",
-        color: T.fg,
+        color: TL.text,
         margin: 0,
         lineHeight: 1.02,
       }}
@@ -317,7 +319,7 @@ export function HeroT({ mobile, children, em }: { mobile: boolean; children: Rea
       {em && (
         <>
           {" "}
-          <em style={{ fontStyle: "italic", color: T.lime }}>{em}</em>
+          <em style={{ fontStyle: "italic", color: TL.fill }}>{em}</em>
         </>
       )}
     </h1>
@@ -328,11 +330,11 @@ export function SeksT({ mobile, children, em }: { mobile: boolean; children: Rea
   return (
     <h2
       style={{
-        fontFamily: T.disp,
+        fontFamily: TL.font.sans,
         fontWeight: 700,
         fontSize: mobile ? M.seksM : M.seksD,
         letterSpacing: "-0.03em",
-        color: T.fg,
+        color: TL.text,
         margin: 0,
         lineHeight: 1.08,
       }}
@@ -341,7 +343,7 @@ export function SeksT({ mobile, children, em }: { mobile: boolean; children: Rea
       {em && (
         <>
           {" "}
-          <em style={{ fontStyle: "italic", color: T.lime }}>{em}</em>
+          <em style={{ fontStyle: "italic", color: TL.fill }}>{em}</em>
         </>
       )}
     </h2>
@@ -350,7 +352,7 @@ export function SeksT({ mobile, children, em }: { mobile: boolean; children: Rea
 
 export function Lede({ children, style }: { children: ReactNode; style?: CSSProperties }) {
   return (
-    <p style={{ fontFamily: T.ui, fontSize: M.lede, color: T.fg2, lineHeight: 1.65, margin: 0, maxWidth: 560, ...style }}>
+    <p style={{ fontFamily: TL.font.sans, fontSize: M.lede, color: TL.mute, lineHeight: 1.65, margin: 0, maxWidth: 560, ...style }}>
       {children}
     </p>
   );
@@ -377,13 +379,13 @@ export function MCta({
     display: "inline-flex",
     alignItems: "center",
     gap: 8,
-    fontFamily: T.ui,
+    fontFamily: TL.font.sans,
     fontWeight: 600,
     fontSize: small ? 13 : 15,
-    color: ghost ? T.fg : T.onHandling,
+    color: ghost ? TL.text : TL.onFill,
     /* Paper: primær CTA = clay handling (ikke lime) */
-    background: ghost ? T.panel3 : T.handling,
-    border: ghost ? `1px solid ${T.borderS}` : "none",
+    background: ghost ? TL.dim : TL.fill,
+    border: ghost ? `1px solid ${TL.hair}` : "none",
     borderRadius: 12,
     padding: small ? "9px 18px" : "14px 28px",
     minHeight: small ? 40 : 56,

@@ -1,7 +1,7 @@
+import { AK } from "@/lib/v2/ak-palett";
 import { ArrowRight, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { T } from "@/lib/v2/tokens";
 
 import { GfgkFooter } from "./_components/gfgk-footer";
 import { GfgkHeader } from "./_components/gfgk-header";
@@ -82,7 +82,7 @@ export default async function GfgkJuniorForside() {
             </h1>
             <p
               className="mt-5 max-w-[540px] text-[17px] leading-relaxed sm:text-[19px]"
-              style={{ color: T.farge.hvitA88 }}
+              style={{ color: AK.farge.hvitA88 }}
             >
               Strukturert golftrening for barn og ungdom fra 6 til 19 år. Fire grupper
               tilpasset alder og nivå, erfarne trenere og et trygt fellesskap.
@@ -104,8 +104,8 @@ export default async function GfgkJuniorForside() {
                 href="#slik-starter-du"
                 className="inline-flex min-h-[48px] w-full items-center justify-center rounded-full px-6 py-3 text-base font-bold text-white no-underline backdrop-blur-sm transition-colors sm:w-auto"
                 style={{
-                  background: T.farge.hvitA12,
-                  border: `1.5px solid ${T.farge.hvitA40}`,
+                  background: AK.farge.hvitA12,
+                  border: `1.5px solid ${AK.farge.hvitA40}`,
                 }}
               >
                 Slik starter du
@@ -488,7 +488,7 @@ export default async function GfgkJuniorForside() {
         >
           <div
             className="absolute -bottom-16 -right-10 h-80 w-80 rounded-full"
-            style={{ border: `44px solid ${T.farge.hvitA28}` }}
+            style={{ border: `44px solid ${AK.farge.hvitA28}` }}
           />
           <div className="relative max-w-[580px]">
             <h2

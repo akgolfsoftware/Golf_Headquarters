@@ -1,5 +1,5 @@
 "use client";
-import { T } from "@/lib/v2/tokens";
+import { AK } from "@/lib/v2/ak-palett";
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
@@ -175,23 +175,23 @@ export function CoachWizard({
         <div className="ob-step-body">
           <div
             className="ob-illust"
-            style={{ background: `linear-gradient(160deg, ${T.farge.illuForestMork} 0%, ${T.farge.illuForestLys} 100%)` }}
+            style={{ background: `linear-gradient(160deg, ${AK.farge.illuForestMork} 0%, ${AK.farge.illuForestLys} 100%)` }}
           >
             <svg viewBox="0 0 520 180">
-              <rect x="160" y="40" width="200" height="100" rx="12" fill="var(--p-bg)" />
-              <circle cx="200" cy="78" r="22" fill={T.farge.limeMerke} />
-              <rect x="234" y="62" width="100" height="8" rx="3" fill="var(--p-fg)" opacity="0.30" />
-              <rect x="234" y="78" width="80" height="6" rx="2" fill="var(--p-fg)" opacity="0.20" />
-              <rect x="234" y="92" width="60" height="6" rx="2" fill="var(--p-fg)" opacity="0.20" />
-              <rect x="180" y="118" width="160" height="10" rx="5" fill={T.farge.limeMerke} />
+              <rect x="160" y="40" width="200" height="100" rx="12" fill="var(--tl-scene)" />
+              <circle cx="200" cy="78" r="22" fill={AK.farge.limeMerke} />
+              <rect x="234" y="62" width="100" height="8" rx="3" fill="var(--tl-text)" opacity="0.30" />
+              <rect x="234" y="78" width="80" height="6" rx="2" fill="var(--tl-text)" opacity="0.20" />
+              <rect x="234" y="92" width="60" height="6" rx="2" fill="var(--tl-text)" opacity="0.20" />
+              <rect x="180" y="118" width="160" height="10" rx="5" fill={AK.farge.limeMerke} />
               <text
                 x="260"
                 y="125"
                 textAnchor="middle"
-                style={{ fontFamily: "var(--p-mono)" }}
+                style={{ fontFamily: "var(--tl-font-mono)" }}
                 fontSize="7"
                 fontWeight="800"
-                fill="var(--p-fg)"
+                fill="var(--tl-text)"
                 letterSpacing="0.10em"
               >
                 COACH-INVITASJON
@@ -252,7 +252,7 @@ export function CoachWizard({
             <div>
               <div
                 style={{
-                  fontFamily: "var(--p-disp)",
+                  fontFamily: "var(--tl-font-sans)",
                   fontSize: 14,
                   fontWeight: 700,
                 }}
@@ -291,16 +291,16 @@ export function CoachWizard({
           <div
             className="ob-illust"
             style={{
-              background: `linear-gradient(160deg, ${T.farge.sandMerke} 0%, ${T.farge.linjeMerke} 100%)`,
+              background: `linear-gradient(160deg, ${AK.farge.sandMerke} 0%, ${AK.farge.linjeMerke} 100%)`,
             }}
           >
             <svg viewBox="0 0 520 180">
-              <rect x="120" y="30" width="280" height="120" rx="12" fill="var(--p-surface)" stroke="var(--p-fg)" strokeWidth="1.5" />
-              <rect x="140" y="50" width="80" height="8" rx="3" fill="var(--p-fg)" opacity="0.30" />
-              <rect x="140" y="68" width="240" height="6" rx="2" fill="var(--p-fg)" opacity="0.15" />
-              <rect x="140" y="92" width="60" height="8" rx="3" fill="var(--p-fg)" opacity="0.30" />
-              <rect x="140" y="110" width="180" height="6" rx="2" fill="var(--p-fg)" opacity="0.15" />
-              <rect x="140" y="130" width="120" height="6" rx="2" fill="var(--p-fg)" opacity="0.15" />
+              <rect x="120" y="30" width="280" height="120" rx="12" fill="var(--tl-elev)" stroke="var(--tl-text)" strokeWidth="1.5" />
+              <rect x="140" y="50" width="80" height="8" rx="3" fill="var(--tl-text)" opacity="0.30" />
+              <rect x="140" y="68" width="240" height="6" rx="2" fill="var(--tl-text)" opacity="0.15" />
+              <rect x="140" y="92" width="60" height="8" rx="3" fill="var(--tl-text)" opacity="0.30" />
+              <rect x="140" y="110" width="180" height="6" rx="2" fill="var(--tl-text)" opacity="0.15" />
+              <rect x="140" y="130" width="120" height="6" rx="2" fill="var(--tl-text)" opacity="0.15" />
             </svg>
           </div>
           <h2 className="ob-step-title">
@@ -376,7 +376,7 @@ export function CoachWizard({
         <div className="ob-step-body">
           <div
             className="ob-illust"
-            style={{ background: `linear-gradient(160deg, ${T.farge.illuOlivenLys} 0%, ${T.farge.illuOlivenMork} 100%)` }}
+            style={{ background: `linear-gradient(160deg, ${AK.farge.illuOlivenLys} 0%, ${AK.farge.illuOlivenMork} 100%)` }}
           >
             <svg viewBox="0 0 520 180">
               <ShieldCheckIllust />
@@ -461,13 +461,13 @@ export function CoachWizard({
         <div className="ob-step-body">
           <div
             className="ob-illust"
-            style={{ background: `linear-gradient(160deg, ${T.farge.illuForestMork} 0%, ${T.farge.illuForestLys} 100%)` }}
+            style={{ background: `linear-gradient(160deg, ${AK.farge.illuForestMork} 0%, ${AK.farge.illuForestLys} 100%)` }}
           >
             <svg viewBox="0 0 520 180">
-              <rect x="160" y="30" width="200" height="120" rx="12" fill="var(--p-bg)" />
-              <rect x="160" y="30" width="200" height="22" rx="12 12 0 0" fill="var(--p-fg)" />
-              <rect x="160" y="44" width="200" height="8" fill="var(--p-fg)" />
-              <g fill="var(--p-border)">
+              <rect x="160" y="30" width="200" height="120" rx="12" fill="var(--tl-scene)" />
+              <rect x="160" y="30" width="200" height="22" rx="12 12 0 0" fill="var(--tl-text)" />
+              <rect x="160" y="44" width="200" height="8" fill="var(--tl-text)" />
+              <g fill="var(--tl-hair)">
                 {[0, 1, 2, 3, 4, 5, 6].map((d) => (
                   <rect key={d} x={172 + d * 26} y={60} width={20} height={16} rx={2} />
                 ))}
@@ -478,16 +478,16 @@ export function CoachWizard({
                   <rect key={`r2${d}`} x={172 + d * 26} y={100} width={20} height={16} rx={2} />
                 ))}
               </g>
-              <rect x={172 + 2 * 26} y={80} width={20} height={16} rx={2} fill={T.farge.limeMerke} />
-              <rect x={172 + 4 * 26} y={100} width={20} height={16} rx={2} fill={T.farge.limeMerke} />
+              <rect x={172 + 2 * 26} y={80} width={20} height={16} rx={2} fill={AK.farge.limeMerke} />
+              <rect x={172 + 4 * 26} y={100} width={20} height={16} rx={2} fill={AK.farge.limeMerke} />
               <text
                 x="260"
                 y="142"
                 textAnchor="middle"
-                style={{ fontFamily: "var(--p-mono)" }}
+                style={{ fontFamily: "var(--tl-font-mono)" }}
                 fontSize="8"
                 fontWeight="800"
-                fill="var(--p-fg)"
+                fill="var(--tl-text)"
                 letterSpacing="0.10em"
               >
                 GOOGLE CALENDAR · LIVE-SYNC
@@ -509,7 +509,7 @@ export function CoachWizard({
               </div>
               <span
                 style={{
-                  fontFamily: "var(--p-disp)",
+                  fontFamily: "var(--tl-font-sans)",
                   fontSize: 22,
                   fontWeight: 800,
                   letterSpacing: "-0.02em",
@@ -551,9 +551,9 @@ export function CoachWizard({
             </button>
             <p
               style={{
-                fontFamily: "var(--p-mono)",
+                fontFamily: "var(--tl-font-mono)",
                 fontSize: 10,
-                color: T.farge.noytralGra,
+                color: AK.farge.noytralGra,
                 letterSpacing: "0.06em",
               }}
             >
@@ -625,14 +625,14 @@ export function CoachWizard({
 function ShieldCheckIllust() {
   return (
     <g>
-      <ellipse cx="260" cy="160" rx="120" ry="10" fill="var(--p-fg)" opacity="0.25" />
+      <ellipse cx="260" cy="160" rx="120" ry="10" fill="var(--tl-text)" opacity="0.25" />
       <path
         d="M260 30 L320 50 V100 Q320 145 260 160 Q200 145 200 100 V50 Z"
-        fill="var(--p-fg)"
+        fill="var(--tl-text)"
       />
       <path
         d="M230 95 L255 118 L295 78"
-        stroke={T.farge.limeMerke}
+        stroke={AK.farge.limeMerke}
         strokeWidth="6"
         fill="none"
         strokeLinecap="round"

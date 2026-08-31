@@ -82,7 +82,7 @@
   --tl-on-avatar: #201409;
   /* Warm: logo-prikk + fullført-hake/ring. ALDRI grønn for fullført.
      (HANDOFF §MAT + §A-01d, AX-01. Lys-variant er ikke tegnet i fasiten —
-     antatt uendret, samme som Paper --p-logo-dot. Se D2-TOKENS-DONE.) */
+     antatt uendret, samme som Paper --tl-warm. Se D2-TOKENS-DONE.) */
   --tl-warm: #B85C3D;
   /* Warn: varsel som IKKE sperrer (publiser med advarsel, «mangler drill»).
      Navngitt etter Anders' beslutning 25.08 (D2-UNDERLAG §5.1) — fasiten brukte

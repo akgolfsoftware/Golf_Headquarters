@@ -1,4 +1,5 @@
-import { T } from "@/lib/v2/tokens";
+import { AK } from "@/lib/v2/ak-palett";
+
 /**
  * /stats/sg-sammenlign — landingsside (offentlig)
  * Pixel-perfect port av design 07 fra design-handoff-stats-2026-05-25.
@@ -121,7 +122,7 @@ export default async function SgSammenlignLanding() {
                         display: "inline-block",
                         width: 10,
                         height: 10,
-                        background: "var(--p-info)",
+                        background: "var(--tl-viz-target)",
                         borderRadius: 2,
                       }}
                     />
@@ -133,7 +134,7 @@ export default async function SgSammenlignLanding() {
                         display: "inline-block",
                         width: 10,
                         height: 10,
-                        background: "var(--p-mid)",
+                        background: "var(--tl-mute)",
                         borderRadius: 2,
                       }}
                     />
@@ -433,7 +434,7 @@ export default async function SgSammenlignLanding() {
         className="stats-section"
         // Invers band: flaten er papir, ikke skinnesvart. Snu derfor --accent
         // til lys-verdien, ellers arver kursiv-aksenten scopets mørke
-        // --p-up (#9DB284) og lander på 2,2:1 mot papir.
+        // --tl-ok (#9DB284) og lander på 2,2:1 mot papir.
         style={
           {
             background: "hsl(var(--primary))",
@@ -477,7 +478,7 @@ export default async function SgSammenlignLanding() {
                   fontSize: 17,
                   lineHeight: 1.55,
                   marginTop: 20,
-                  color: T.farge.sandLysA80,
+                  color: AK.farge.sandLysA80,
                   maxWidth: 480,
                 }}
               >
@@ -498,7 +499,7 @@ export default async function SgSammenlignLanding() {
           <Reveal delay={100}>
             <div
               style={{
-                background: T.farge.hvitA6,
+                background: AK.farge.hvitA6,
                 border: "1px solid color-mix(in srgb, var(--v2-lime) 25%, transparent)",
                 borderRadius: 16,
                 padding: 28,
@@ -518,7 +519,7 @@ export default async function SgSammenlignLanding() {
                     alignItems: "flex-start",
                     marginBottom: 14,
                     fontSize: 14,
-                    color: T.farge.sandLysA90,
+                    color: AK.farge.sandLysA90,
                     lineHeight: 1.4,
                   }}
                 >

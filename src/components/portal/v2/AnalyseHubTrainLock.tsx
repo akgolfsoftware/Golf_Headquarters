@@ -55,7 +55,10 @@ const PIL = (
 );
 
 function SgBar({ verdi }: { verdi: number | null }) {
-  const cap = 2;
+  /* Fasitens skala, målt i PH-10/TM-04: +0,81 → 32px og −1,18 → 47px, altså
+     ~40px per SG-enhet mot halvhøyden 52. Appen brukte cap 2 (26px per enhet),
+     som gjorde ekte SG-verdier nesten usynlige. */
+  const cap = 1.3;
   const hMax = 52;
   if (verdi == null || !Number.isFinite(verdi) || verdi === 0) {
     return (
@@ -107,7 +110,7 @@ function VinduKort({ vindu }: { vindu: TmHubData["vindu"] }) {
   );
 }
 
-function BroadieKort({ data }: { data: TmHubData }) {
+function CaddieKort({ data }: { data: TmHubData }) {
   return (
     <>
       {data.lekkasje ? (
@@ -129,6 +132,12 @@ function BroadieKort({ data }: { data: TmHubData }) {
           </div>
         </Kort>
       )}
+    </>
+  );
+}
+
+function SgKort({ data }: { data: TmHubData }) {
+  return (
       <Kort mt={0}>
         <Caps>SG siste 5 runder</Caps>
         <div style={{ marginTop: 14, display: "grid", gridTemplateColumns: "repeat(4, 1fr)" }}>
@@ -156,7 +165,6 @@ function BroadieKort({ data }: { data: TmHubData }) {
           <div style={{ marginTop: 12, fontSize: 13, color: TL.mute }}>{data.lekkasjeLinje}</div>
         )}
       </Kort>
-    </>
   );
 }
 
@@ -334,7 +342,14 @@ export function AnalyseHubTrainLock({ data }: { data: TmHubData }) {
             <Caps>Broadie · SG</Caps>
           </div>
           <VinduKort vindu={data.vindu} />
-          <BroadieKort data={data} />
+          <CaddieKort data={data} />
+          {/* TM-04a (telefon) rekkefølge: vindu → Broadie → TrackMan-kort →
+              SG-stolper → Gå dypere. På desktop bor TrackMan i høyre kolonne
+              (HANDOFF §TM: «Broadie venstre / TrackMan høyre på desktop»). */}
+          <div className="min-[834px]:hidden">
+            <TrackManKort data={data} />
+          </div>
+          <SgKort data={data} />
           <div className="min-[834px]:hidden">
             <Dypere rader={data.dypere} />
           </div>
@@ -343,7 +358,9 @@ export function AnalyseHubTrainLock({ data }: { data: TmHubData }) {
           <div className="hidden min-[834px]:block">
             <Caps>TrackMan</Caps>
           </div>
-          <TrackManKort data={data} />
+          <div className="hidden min-[834px]:block">
+            <TrackManKort data={data} />
+          </div>
           <div className="hidden min-[834px]:block">
             <Dypere rader={data.dypere.filter((r) => r.tittel !== "Tester")} />
           </div>

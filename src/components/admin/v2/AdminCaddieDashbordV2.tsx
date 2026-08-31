@@ -1,5 +1,6 @@
 "use client";
 import { TL } from "@/lib/v2/train-lock";
+import { AK } from "@/lib/v2/ak-palett";
 
 /**
  * AgencyOS Caddie-dashbord — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
@@ -8,7 +9,7 @@ import { TL } from "@/lib/v2/train-lock";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Caps, Kort, Rad, StatusPill, Knapp, TomTilstand, CTAPill, Icon, T, type StatusTone } from "@/components/v2";
+import { Caps, Kort, Rad, StatusPill, Knapp, TomTilstand, CTAPill, Icon, type StatusTone } from "@/components/v2";
 import type {
   AuditRow,
   CoAgentDraft,
@@ -152,7 +153,7 @@ function DraftPanelV2({ draft }: { draft: CoAgentDraft }) {
             </span>
             <div style={{ fontFamily: TL.font.mono, fontSize: 9.5, fontWeight: 800, textTransform: "uppercase", lineHeight: 1.3, color: TL.fill }}>
               FRA <span style={{ color: TL.text }}>{draft.agentName}</span>
-              <span style={{ marginTop: 1, display: "block", fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, color: T.farge.taakeMerkeA60 }}>co-agent · alfa</span>
+              <span style={{ marginTop: 1, display: "block", fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, color: AK.farge.taakeMerkeA60 }}>co-agent · alfa</span>
             </div>
           </div>
 

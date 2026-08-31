@@ -1,5 +1,6 @@
 "use client";
 import { TL } from "@/lib/v2/train-lock";
+import { AK } from "@/lib/v2/ak-palett";
 
 /**
  * PlayerHQ · AI foreslår drills — v2 Presis + B-pakke (status + én vei per kort).
@@ -7,15 +8,7 @@ import { TL } from "@/lib/v2/train-lock";
  */
 
 import Link from "next/link";
-import {
-  T,
-  Caps,
-  Kort,
-  AkseChip,
-  CTAPill,
-  InnsiktChip,
-  TomTilstand,
-} from "@/components/v2";
+import { Caps, Kort, AkseChip, CTAPill, InnsiktChip, TomTilstand } from "@/components/v2";
 import type { AkseKey } from "@/lib/v2/format";
 import type { AxisKind } from "@/lib/portal-ai/ai-data";
 
@@ -43,7 +36,7 @@ function tilAkseKey(a: AxisKind): AkseKey {
 
 function ForslagKort({ drill }: { drill: DrillSuggestion }) {
   return (
-    <Kort hover style={{ borderLeft: `3px solid ${T.ax[tilAkseKey(drill.axis)]}` }}>
+    <Kort hover style={{ borderLeft: `3px solid ${AK.ax[tilAkseKey(drill.axis)]}` }}>
       <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
         <span
           style={{

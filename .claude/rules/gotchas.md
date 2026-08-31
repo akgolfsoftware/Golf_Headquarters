@@ -4,6 +4,28 @@ Flyttet fra CLAUDE.md 2026-06-14. Les denne FØR du skriver kode. Når noe brekk
 (Eldre PRISMA-7- og Supabase-detaljer finnes også i git-historikken.)
 Ingen låst designkanon per 2026-07-25 — nytt system utvikles i Open Design (CLAUDE.md invariant 2).
 
+### Prismas `_count` på en relasjon skanner HELE relasjonstabellen — hver gang (oppdaget 2026-08-30)
+- **Symptom:** Supabase varslet «Your project is depleting its Disk IO Budget».
+- **Rotårsak (målt i `pg_stat_statements` 30.08.2026):** `_count: { select: { entries: true } }`
+  på `publicPlayer` oversettes av Prisma til en UFILTRERT
+  `SELECT "playerId", COUNT(*) FROM public_player_entries GROUP BY "playerId"` som LEFT JOIN-es
+  mot resultatet — uansett om spørringen din har `take: 50` eller returnerer én rad.
+  `public_player_entries` er 398k rader / 150 MB, så hvert eneste kall dro ~14 700 blokker.
+  Verste enkeltspørring: 251 656 kall × 190 ms = **13,3 timer eksekvering og 3,7 MILLIARDER
+  bufferlesninger** — alene nok til å tømme IO-budsjettet på en instans med 224 MB shared_buffers.
+- **Regel:** bruk ALDRI `_count` på en stor relasjon i en liste-/oppslagsspørring. Hent tellingen
+  for idene du faktisk viser: `hentEntryAntall()` i `src/lib/stats/entry-antall.ts`
+  (`groupBy` med `playerId: { in: ider }`, treffer unik-indeksen). Målt: 14 743 → 826 blokker.
+- **Rammet:** `src/lib/scrapers/player-resolve.ts` (scraper-matching, kalt per resultatrad) og
+  `src/app/(marketing)/stats/spillere/page.tsx` (to lister per sidevisning). Begge rettet.
+  `src/lib/turneringer/dedupe-player-names.ts` beholder `_count` med vilje — den er et
+  engangsskript som trenger tellingen for alle spillere uansett.
+- **Samme økt:** `name ILIKE '%…%'` og `location ILIKE '%…%'` hadde ingen indeks (seq scan på
+  hvert kall). Fikset med GIN/pg_trgm — se `scripts/disk-io-trgm-indekser-2026-08-30.ts`.
+  Legger du et nytt `contains`-søk på en tabell, sjekk at det finnes en trigram-indeks først.
+- **Sjekk selv når noe føles tregt:**
+  `select left(query,120), calls, shared_blks_hit from pg_stat_statements order by shared_blks_hit desc limit 10`.
+
 ### Chat-autoscroll dro HELE dokumentet til bunn og gjemte innhold bak sticky toppbar (oppdaget 2026-08-14)
 - **Symptom:** `/admin/agencyos` på 390px — «Åpne AgenticOS» ble klippet på midten rett under
   toppbaren, i både lys og mørk, i både prod og PR-preview.

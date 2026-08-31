@@ -11,7 +11,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { PkShell } from "./paper/PkShell";
+import { PkShell } from "./kit/PkShell";
 
 const TJENESTER: {
   navn: string;

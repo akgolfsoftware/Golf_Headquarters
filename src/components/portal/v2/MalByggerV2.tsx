@@ -1,5 +1,6 @@
 "use client";
 import { TL } from "@/lib/v2/train-lock";
+import { AK } from "@/lib/v2/ak-palett";
 
 /**
  * PlayerHQ · AI mal-bygger (/portal/mal/bygger) — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
@@ -9,7 +10,7 @@ import { TL } from "@/lib/v2/train-lock";
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import type { CSSProperties } from "react";
-import { T, Icon, Kort, Caps, Knapp, KpiFlis, StatusPill, Rad, FordelingHode, FordelingRad, InnsiktChip, HjelpTips, AKSE_NAVN } from "@/components/v2";
+import { Icon, Kort, Caps, Knapp, KpiFlis, StatusPill, Rad, FordelingHode, FordelingRad, InnsiktChip, HjelpTips, AKSE_NAVN } from "@/components/v2";
 import type { AkseKey } from "@/lib/v2/format";
 import type { HjelpNokkel } from "@/lib/v2/hjelpetekster";
 import { anbefalMal, genererPlanForslag, lagrePlan, sendTilGodkjenning } from "@/app/portal/mal/bygger/actions";
@@ -1203,7 +1204,7 @@ function OktBoks(props: {
 }) {
   const { okt, aapen, onToggle, onFjern } = props;
   const akse = TYPE_TIL_AKSE[okt.type] ?? "TEK";
-  const farge = T.ax[akse] ?? TL.mute;
+  const farge = AK.ax[akse] ?? TL.mute;
   return (
     <div
       style={{
@@ -1335,7 +1336,7 @@ function beregnDisciplinFordeling(
   return out;
 }
 
-/* Visuell aggregering av økt-type-fordelingen til pyramide-akser (T.ax).
+/* Visuell aggregering av økt-type-fordelingen til pyramide-akser (AK.ax).
    Kun display — beregnDisciplinFordeling over er uendret fra legacy. */
 function tilAkseFordeling(
   fordeling: Record<string, number>,

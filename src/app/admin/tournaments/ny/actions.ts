@@ -117,6 +117,6 @@ export async function createTournament(
     metadata: { name: ny.name, type: v.type, format: v.format },
   });
 
-  revalidatePath("/admin/tournaments");
+  revalidatePath("/admin/turnering");
   return { ok: true, tournamentId: ny.id };
 }

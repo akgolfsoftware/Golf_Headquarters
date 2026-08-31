@@ -4,8 +4,8 @@
  * Ekte copy speilet fra (mlegacy)/cases/page.tsx. Turneringer hentes fra DB
  * i page.tsx (server) og sendes inn som prop.
  */
-import { PkShell } from "./paper/PkShell";
-import { PkSek, PkEyebrow, PkHero, PkIng, PkSekt, PkCta, PkTom } from "./paper/PkPrimitives";
+import { PkShell } from "./kit/PkShell";
+import { PkSek, PkEyebrow, PkHero, PkIng, PkSekt, PkCta, PkTom } from "./kit/PkPrimitives";
 
 export type CasesTournament = { day: string; mon: string; name: string; venue: string; format: string; pagar: boolean };
 
@@ -55,19 +55,19 @@ export function MarkedCasesV2({ tournaments }: { tournaments: CasesTournament[] 
                     width: 44,
                     height: 44,
                     borderRadius: 10,
-                    background: "var(--p-soft)",
+                    background: "var(--tl-dock)",
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
                     justifyContent: "center",
                   }}
                 >
-                  <span style={{ fontFamily: "var(--p-mono)", fontSize: 14, fontWeight: 700, color: "var(--p-accent-fg)", lineHeight: 1 }}>{t.day}</span>
-                  <span style={{ fontFamily: "var(--p-mono)", fontSize: 8, color: "var(--p-muted)", marginTop: 2 }}>{t.mon}</span>
+                  <span style={{ fontFamily: "var(--tl-font-mono)", fontSize: 14, fontWeight: 700, color: "var(--tl-warm)", lineHeight: 1 }}>{t.day}</span>
+                  <span style={{ fontFamily: "var(--tl-font-mono)", fontSize: 8, color: "var(--tl-mute)", marginTop: 2 }}>{t.mon}</span>
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontFamily: "var(--p-ui)", fontSize: 14, fontWeight: 700, color: "var(--p-fg)" }}>{t.name}</div>
-                  <div style={{ fontFamily: "var(--p-ui)", fontSize: 12.5, color: "var(--p-muted)", marginTop: 2 }}>
+                  <div style={{ fontFamily: "var(--tl-font-sans)", fontSize: 14, fontWeight: 700, color: "var(--tl-text)" }}>{t.name}</div>
+                  <div style={{ fontFamily: "var(--tl-font-sans)", fontSize: 12.5, color: "var(--tl-mute)", marginTop: 2 }}>
                     {t.venue} · {t.format}
                   </div>
                 </div>
@@ -75,8 +75,8 @@ export function MarkedCasesV2({ tournaments }: { tournaments: CasesTournament[] 
                   className="pk-tag"
                   style={
                     t.pagar
-                      ? { color: "var(--p-info)", background: "color-mix(in srgb, var(--p-info) 14%, transparent)" }
-                      : { color: "var(--p-accent-fg)", background: "var(--p-accent-soft)" }
+                      ? { color: "var(--tl-viz-target)", background: "color-mix(in srgb, var(--tl-viz-target) 14%, transparent)" }
+                      : { color: "var(--tl-warm)", background: "color-mix(in srgb, var(--tl-warm) 12%, transparent)" }
                   }
                 >
                   {t.pagar ? "Pågår" : "Kommende"}
@@ -94,7 +94,7 @@ export function MarkedCasesV2({ tournaments }: { tournaments: CasesTournament[] 
             <div style={{ marginTop: 10 }}>
               <PkSekt>Klar for din suksesshistorie?</PkSekt>
             </div>
-            <p style={{ fontFamily: "var(--p-body)", fontSize: 14.5, color: "var(--p-muted)", margin: "10px 0 0", maxWidth: 460 }}>
+            <p style={{ fontFamily: "var(--tl-font-sans)", fontSize: 14.5, color: "var(--tl-mute)", margin: "10px 0 0", maxWidth: 460 }}>
               Start med en gratis kartleggings-økt. Vi finner ut hva som stopper deg, og legger en plan for å komme videre.
             </p>
             <div style={{ marginTop: 22, display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "center" }}>

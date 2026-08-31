@@ -11,7 +11,9 @@
  */
 import type { ComponentType } from "react";
 import Link from "next/link";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+import { AK } from "@/lib/v2/ak-palett";
+
 import { Icon, Kort, Caps } from "@/components/v2";
 import type { BlogPostMeta, BlogPost } from "@/lib/blogg/posts";
 import { StatsRamme, useMobile } from "./stats-ramme";
@@ -34,14 +36,14 @@ function Plassholder({ tekst, height }: { tekst: string; height?: number }) {
       style={{
         height,
         minHeight: height ? undefined : 140,
-        background: `linear-gradient(135deg, ${T.panel2} 0%, ${T.panel3} 100%)`,
-        borderRadius: T.rRow,
+        background: `linear-gradient(135deg, ${TL.dock} 0%, ${TL.dim} 100%)`,
+        borderRadius: TL.radius.row,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        fontFamily: T.mono,
+        fontFamily: TL.font.mono,
         fontSize: 11,
-        color: T.mut,
+        color: TL.mute,
         letterSpacing: "0.08em",
         textTransform: "uppercase",
       }}
@@ -83,13 +85,13 @@ export function BloggListeV2({ alle, featured, rest }: BloggListeV2Props) {
                   <Caps>Denne uken · {featured.kategori}</Caps>
                   <Caps>{featured.lestid} min</Caps>
                 </div>
-                <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: mobile ? 24 : 30, color: T.fg, lineHeight: 1.15, letterSpacing: "-0.02em" }}>
+                <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: mobile ? 24 : 30, color: TL.text, lineHeight: 1.15, letterSpacing: "-0.02em" }}>
                   {featured.tittel}
                 </div>
-                <p style={{ fontFamily: T.ui, fontSize: 14.5, color: T.fg2, lineHeight: 1.55, marginTop: 14 }}>{featured.undertittel}</p>
-                <div style={{ marginTop: 18, fontFamily: T.mono, fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: T.mut, display: "flex", alignItems: "center", gap: 8 }}>
+                <p style={{ fontFamily: TL.font.sans, fontSize: 14.5, color: TL.mute, lineHeight: 1.55, marginTop: 14 }}>{featured.undertittel}</p>
+                <div style={{ marginTop: 18, fontFamily: TL.font.mono, fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: TL.mute, display: "flex", alignItems: "center", gap: 8 }}>
                   Av {featured.forfatter} · {formaterDato(featured.publisert)}
-                  <Icon name="arrow-right" size={12} style={{ color: T.lime }} />
+                  <Icon name="arrow-right" size={12} style={{ color: TL.fill }} />
                 </div>
               </div>
             </Kort>
@@ -105,10 +107,10 @@ export function BloggListeV2({ alle, featured, rest }: BloggListeV2Props) {
               style={{
                 padding: "7px 15px",
                 borderRadius: 9999,
-                border: `1px solid ${k === "Alle" ? "transparent" : T.borderS}`,
-                background: k === "Alle" ? T.lime : "transparent",
-                color: k === "Alle" ? T.onLime : T.fg2,
-                fontFamily: T.mono,
+                border: `1px solid ${k === "Alle" ? "transparent" : TL.hair}`,
+                background: k === "Alle" ? TL.fill : "transparent",
+                color: k === "Alle" ? TL.onFill : TL.mute,
+                fontFamily: TL.font.mono,
                 fontSize: 11,
                 fontWeight: 700,
                 letterSpacing: "0.08em",
@@ -120,7 +122,7 @@ export function BloggListeV2({ alle, featured, rest }: BloggListeV2Props) {
           ))}
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: T.gap }}>
+        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: AK.gap }}>
           {rest.map((p) => (
             <Link key={p.slug} href={`/stats/blogg/${p.slug}`} style={{ textDecoration: "none" }}>
               <Kort hover style={{ display: "flex", flexDirection: "column", gap: 0, minHeight: 280 }}>
@@ -129,11 +131,11 @@ export function BloggListeV2({ alle, featured, rest }: BloggListeV2Props) {
                   <Caps>{p.kategori} · {formaterDato(p.publisert)}</Caps>
                   <Caps>{p.lestid} min</Caps>
                 </div>
-                <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, color: T.fg, lineHeight: 1.2, letterSpacing: "-0.01em", marginTop: 10 }}>
+                <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 17, color: TL.text, lineHeight: 1.2, letterSpacing: "-0.01em", marginTop: 10 }}>
                   {p.tittel}
                 </div>
-                <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, marginTop: 8, lineHeight: 1.5 }}>{p.undertittel}</p>
-                <div style={{ marginTop: "auto", paddingTop: 16, display: "flex", alignItems: "center", gap: 6, fontFamily: T.mono, fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: T.lime }}>
+                <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, marginTop: 8, lineHeight: 1.5 }}>{p.undertittel}</p>
+                <div style={{ marginTop: "auto", paddingTop: 16, display: "flex", alignItems: "center", gap: 6, fontFamily: TL.font.mono, fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: TL.fill }}>
                   Lesetid {p.lestid} min
                   <Icon name="arrow-right" size={12} />
                 </div>
@@ -160,13 +162,13 @@ export function BloggDetaljV2({ post, relaterte, MDXContent }: BloggDetaljV2Prop
 
   return (
     <StatsRamme mobile={mobile} waveId="marked-stats-blogg">
-      <Seksjon mobile={mobile} style={{ borderBottom: `1px solid ${T.border}`, paddingBottom: mobile ? 32 : 48 }}>
+      <Seksjon mobile={mobile} style={{ borderBottom: `1px solid ${TL.hair}`, paddingBottom: mobile ? 32 : 48 }}>
         <MCta ghost small icon="arrow-left" href="/stats/blogg">Alle artikler</MCta>
         <div style={{ marginTop: 20 }}>
           <Eyebrow>{post.kategori} · {post.tags.slice(0, 2).join(" · ")}</Eyebrow>
           <HeroT mobile={mobile}>{post.tittel}</HeroT>
           <Lede style={{ marginTop: 18, maxWidth: 720 }}>{post.undertittel}</Lede>
-          <div style={{ marginTop: 22, fontFamily: T.mono, fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: T.mut, display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+          <div style={{ marginTop: 22, fontFamily: TL.font.mono, fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: TL.mute, display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
             <span>Av {post.forfatter}</span>
             <span>·</span>
             <span>{formaterDato(post.publisert)}</span>
@@ -181,33 +183,33 @@ export function BloggDetaljV2({ post, relaterte, MDXContent }: BloggDetaljV2Prop
 
       <Seksjon mobile={mobile}>
         <div style={{ maxWidth: 720, margin: "0 auto" }} className="stats-mdx-prose">
-          {MDXContent ? <MDXContent /> : <p style={{ color: T.mut, fontStyle: "italic" }}>Innhold ikke tilgjengelig.</p>}
+          {MDXContent ? <MDXContent /> : <p style={{ color: TL.mute, fontStyle: "italic" }}>Innhold ikke tilgjengelig.</p>}
         </div>
         <style>{`
-          .stats-mdx-prose { font-family: ${T.ui}; font-size: 15.5px; line-height: 1.75; color: ${T.fg2}; }
-          .stats-mdx-prose h2 { font-family: ${T.disp}; font-weight: 700; font-size: 26px; color: ${T.fg}; letter-spacing: -0.015em; margin: 40px 0 16px; }
-          .stats-mdx-prose h3 { font-family: ${T.disp}; font-weight: 700; font-size: 20px; color: ${T.fg}; letter-spacing: -0.01em; margin: 32px 0 12px; }
+          .stats-mdx-prose { font-family: ${TL.font.sans}; font-size: 15.5px; line-height: 1.75; color: ${TL.mute}; }
+          .stats-mdx-prose h2 { font-family: ${TL.font.sans}; font-weight: 700; font-size: 26px; color: ${TL.text}; letter-spacing: -0.015em; margin: 40px 0 16px; }
+          .stats-mdx-prose h3 { font-family: ${TL.font.sans}; font-weight: 700; font-size: 20px; color: ${TL.text}; letter-spacing: -0.01em; margin: 32px 0 12px; }
           .stats-mdx-prose p { margin: 0 0 18px; }
-          .stats-mdx-prose a { color: ${T.lime}; text-decoration: underline; text-underline-offset: 2px; }
-          .stats-mdx-prose strong { color: ${T.fg}; font-weight: 700; }
+          .stats-mdx-prose a { color: ${TL.fill}; text-decoration: underline; text-underline-offset: 2px; }
+          .stats-mdx-prose strong { color: ${TL.text}; font-weight: 700; }
           .stats-mdx-prose ul, .stats-mdx-prose ol { margin: 0 0 18px; padding-left: 22px; display: flex; flex-direction: column; gap: 8px; }
-          .stats-mdx-prose blockquote { border-left: 2px solid ${T.lime}; padding: 4px 0 4px 18px; margin: 24px 0; color: ${T.fg}; font-style: italic; }
-          .stats-mdx-prose code { font-family: ${T.mono}; font-size: 13.5px; background: ${T.panel2}; border: 1px solid ${T.border}; border-radius: 4px; padding: 1px 6px; color: ${T.fg}; }
+          .stats-mdx-prose blockquote { border-left: 2px solid ${TL.fill}; padding: 4px 0 4px 18px; margin: 24px 0; color: ${TL.text}; font-style: italic; }
+          .stats-mdx-prose code { font-family: ${TL.font.mono}; font-size: 13.5px; background: ${TL.dock}; border: 1px solid ${TL.hair}; border-radius: 4px; padding: 1px 6px; color: ${TL.text}; }
           .stats-mdx-prose table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 13.5px; }
-          .stats-mdx-prose th, .stats-mdx-prose td { border-bottom: 1px solid ${T.border}; padding: 10px 12px; text-align: left; }
-          .stats-mdx-prose th { font-family: ${T.mono}; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: ${T.mut}; }
+          .stats-mdx-prose th, .stats-mdx-prose td { border-bottom: 1px solid ${TL.hair}; padding: 10px 12px; text-align: left; }
+          .stats-mdx-prose th { font-family: ${TL.font.mono}; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: ${TL.mute}; }
         `}</style>
       </Seksjon>
 
       <Seksjon mobile={mobile}>
         <Kort pad={mobile ? "22px" : "28px"} style={{ maxWidth: 720, margin: "0 auto", display: "flex", gap: 20 }}>
-          <div style={{ width: 56, height: 56, borderRadius: "50%", background: T.handling, color: T.onHandling, display: "grid", placeItems: "center", fontFamily: T.mono, fontWeight: 700, fontSize: 18, flexShrink: 0 }}>
+          <div style={{ width: 56, height: 56, borderRadius: "50%", background: TL.fill, color: TL.onFill, display: "grid", placeItems: "center", fontFamily: TL.font.mono, fontWeight: 700, fontSize: 18, flexShrink: 0 }}>
             {initialer}
           </div>
           <div>
-            <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, color: T.fg }}>{post.forfatter}</div>
+            <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 16, color: TL.text }}>{post.forfatter}</div>
             <Caps style={{ marginTop: 4 }}>CEO, AK Golf Group · Stats-redaksjonen</Caps>
-            <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, marginTop: 8, lineHeight: 1.5 }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, marginTop: 8, lineHeight: 1.5 }}>
               Dataanalytiker og golf-coach. Bygger AK Golf Stats for å gi norske spillere tilgang til data de fortjener.
             </p>
           </div>
@@ -220,7 +222,7 @@ export function BloggDetaljV2({ post, relaterte, MDXContent }: BloggDetaljV2Prop
           <div style={{ marginTop: 14 }}>
             <SeksT mobile={mobile}>Andre analyser.</SeksT>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: T.gap, marginTop: 24 }}>
+          <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: AK.gap, marginTop: 24 }}>
             {relaterte.map((p) => (
               <Link key={p.slug} href={`/stats/blogg/${p.slug}`} style={{ textDecoration: "none" }}>
                 <Kort hover>
@@ -229,7 +231,7 @@ export function BloggDetaljV2({ post, relaterte, MDXContent }: BloggDetaljV2Prop
                     <Caps>{p.kategori} · {formaterDato(p.publisert)}</Caps>
                     <Caps>{p.lestid} min</Caps>
                   </div>
-                  <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, color: T.fg, lineHeight: 1.2, letterSpacing: "-0.01em", marginTop: 8 }}>
+                  <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 16, color: TL.text, lineHeight: 1.2, letterSpacing: "-0.01em", marginTop: 8 }}>
                     {p.tittel}
                   </div>
                 </Kort>

@@ -1,5 +1,5 @@
 "use client";
-import { T } from "@/lib/v2/tokens";
+import { AK } from "@/lib/v2/ak-palett";
 
 /**
  * SesongStickyNav — sticky smooth-scroll nav for sesongoversikt-sektioner.
@@ -52,7 +52,7 @@ export function SesongStickyNav() {
         position: "sticky",
         top: 0,
         zIndex: 40,
-        background: T.farge.sandLysA88,
+        background: AK.farge.sandLysA88,
         backdropFilter: "blur(12px) saturate(140%)",
         WebkitBackdropFilter: "blur(12px) saturate(140%)",
         borderBottom: "1px solid var(--s-border)",

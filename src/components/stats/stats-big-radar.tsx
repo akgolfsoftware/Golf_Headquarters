@@ -1,5 +1,6 @@
 "use client";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+import { AK } from "@/lib/v2/ak-palett";
 
 /**
  * StatsBigRadar — 4-axis radar chart with two overlapping polygons.
@@ -55,13 +56,13 @@ function RadarTooltip({
   return (
     <div
       style={{
-        background: T.onForest,
-        border: `1px solid ${T.farge.linjeMerke}`,
+        background: TL.onFill,
+        border: `1px solid ${AK.farge.linjeMerke}`,
         borderRadius: 8,
         padding: "10px 14px",
         fontSize: 12,
         fontFamily: "var(--font-mono)",
-        boxShadow: `0 2px 8px ${T.farge.inkMerkeA8}`,
+        boxShadow: `0 2px 8px ${AK.farge.inkMerkeA8}`,
       }}
     >
       <div
@@ -80,7 +81,7 @@ function RadarTooltip({
           ? (duRaw >= 0 ? "+" : "") + duRaw.toFixed(2)
           : "—"}
       </div>
-      <div style={{ color: T.farge.diagramOliven }}>
+      <div style={{ color: AK.farge.diagramOliven }}>
         {themLabel}:{" "}
         {refRaw !== undefined
           ? (refRaw >= 0 ? "+" : "") + refRaw.toFixed(2)
@@ -112,13 +113,13 @@ export function StatsBigRadar({
     <div style={{ width: "100%", maxWidth: 480, margin: "0 auto" }}>
       <ResponsiveContainer width="100%" height={360}>
         <RadarChart data={data} outerRadius="78%">
-          <PolarGrid stroke="var(--p-border)" strokeWidth={1} />
+          <PolarGrid stroke="var(--tl-hair)" strokeWidth={1} />
           <PolarAngleAxis
             dataKey="kategori"
             tick={{
               fill: "hsl(var(--muted-foreground))",
               fontSize: 13,
-              fontFamily: "var(--p-disp)",
+              fontFamily: "var(--tl-font-sans)",
               fontWeight: 600,
               letterSpacing: "0.04em",
             }}
@@ -127,16 +128,16 @@ export function StatsBigRadar({
           <Radar
             name={youLabel}
             dataKey="du"
-            stroke="var(--p-info)"
-            fill="var(--p-info)"
+            stroke="var(--tl-viz-target)"
+            fill="var(--tl-viz-target)"
             fillOpacity={0.35}
             strokeWidth={2}
           />
           <Radar
             name={themLabel}
             dataKey="ref"
-            stroke="var(--p-accent-olive)"
-            fill="var(--p-accent-olive)"
+            stroke="var(--mk-olive)"
+            fill="var(--mk-olive)"
             fillOpacity={0.2}
             strokeWidth={2}
             strokeDasharray="5 3"

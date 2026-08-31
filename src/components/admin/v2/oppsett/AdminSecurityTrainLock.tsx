@@ -32,14 +32,21 @@ function TlStat({ label, value, sub }: { label: string; value: string; sub?: str
   );
 }
 
-export function AdminSecurityTrainLock({ data }: { data: AdminSecurityV2Data }) {
+export function AdminSecurityTrainLock({
+  data,
+  somFane = false,
+}: {
+  data: AdminSecurityV2Data;
+  /** True når komponenten står som «Sikkerhet»-fanen i /admin/oppsett (MASTERPLAN 15.3). */
+  somFane?: boolean;
+}) {
   const rolleLabel = data.rolle === "ADMIN" ? "Administrator" : "Coach";
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 18, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       <div>
-        <TlTittel sub="AgencyOS">Sikkerhet</TlTittel>
-        <p style={{ fontSize: 13, color: TL.mute, lineHeight: 1.6, margin: "10px 0 0", maxWidth: 560 }}>
+        {!somFane && <TlTittel sub="AgencyOS">Sikkerhet</TlTittel>}
+        <p style={{ fontSize: 13, color: TL.mute, lineHeight: 1.6, margin: somFane ? 0 : "10px 0 0", maxWidth: 560 }}>
           Kontoen din virker grei. Sjekk likevel listen under — første gang du ser en rar
           IP er ofte siste sjanse.
         </p>

@@ -7,8 +7,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Icon } from "@/components/v2";
-import { PkShell } from "./paper/PkShell";
-import { PkSek, PkEyebrow, PkHero, PkIng, PkSekt, PkCta, PkKat, PkKort } from "./paper/PkPrimitives";
+import { PkShell } from "./kit/PkShell";
+import { PkSek, PkEyebrow, PkHero, PkIng, PkSekt, PkCta, PkKat, PkKort } from "./kit/PkPrimitives";
 
 export type AnleggLocation = {
   id: string;
@@ -62,7 +62,7 @@ export function MarkedAnleggListeV2({ locations }: { locations: AnleggLocation[]
         <PkKat>
           {locations.map((loc) => (
             <Link key={loc.id} href={`/anlegg/${loc.slug}`} className="pk-kort pk-kort-hover">
-              <div style={{ position: "relative", aspectRatio: "16 / 10", width: "100%", background: "var(--p-soft)" }}>
+              <div style={{ position: "relative", aspectRatio: "16 / 10", width: "100%", background: "var(--tl-dock)" }}>
                 <Image
                   src={HERO_IMAGES[loc.slug] ?? HERO_IMAGES.default}
                   alt={`Bilde fra ${loc.name}`}
@@ -78,7 +78,7 @@ export function MarkedAnleggListeV2({ locations }: { locations: AnleggLocation[]
                 </span>
                 <span className="pk-navn">{loc.name}</span>
                 <p style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  <Icon name="map-pin" size={13} style={{ color: "var(--p-accent-fg)", flex: "none" }} />
+                  <Icon name="map-pin" size={13} style={{ color: "var(--tl-warm)", flex: "none" }} />
                   {loc.address}
                 </p>
                 {loc.facilities.length > 0 && (
@@ -87,11 +87,11 @@ export function MarkedAnleggListeV2({ locations }: { locations: AnleggLocation[]
                       <div
                         key={f.id}
                         className="pk-linje"
-                        style={{ borderTop: i === 0 ? "none" : "1px solid var(--p-hairline)", borderBottom: "none" }}
+                        style={{ borderTop: i === 0 ? "none" : "1px solid var(--tl-hair)", borderBottom: "none" }}
                       >
-                        <Icon name={f.isIndoor ? "building-2" : "sprout"} size={13} style={{ color: "var(--p-accent-fg)", flex: "none" }} />
+                        <Icon name={f.isIndoor ? "building-2" : "sprout"} size={13} style={{ color: "var(--tl-warm)", flex: "none" }} />
                         {f.name}
-                        <span className="pk-v" style={{ fontFamily: "var(--p-mono)", fontSize: 10, textTransform: "uppercase" }}>
+                        <span className="pk-v" style={{ fontFamily: "var(--tl-font-mono)", fontSize: 10, textTransform: "uppercase" }}>
                           {f.isIndoor ? "Inne" : "Ute"}
                         </span>
                       </div>
@@ -105,7 +105,7 @@ export function MarkedAnleggListeV2({ locations }: { locations: AnleggLocation[]
 
           {/* Mulligan Indoor Golf — kuratert kort (ingen detaljside ennå) */}
           <div className="pk-kort">
-            <div style={{ position: "relative", aspectRatio: "16 / 10", width: "100%", background: "var(--p-soft)" }}>
+            <div style={{ position: "relative", aspectRatio: "16 / 10", width: "100%", background: "var(--tl-dock)" }}>
               <Image src={MULLIGAN.foto} alt={MULLIGAN.fotoAlt} fill sizes="(max-width: 860px) 100vw, 50vw" style={{ objectFit: "cover" }} />
             </div>
             <div className="pk-kort-body">
@@ -115,7 +115,7 @@ export function MarkedAnleggListeV2({ locations }: { locations: AnleggLocation[]
               </span>
               <span className="pk-navn">{MULLIGAN.navn}</span>
               <p style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <Icon name="map-pin" size={13} style={{ color: "var(--p-accent-fg)", flex: "none" }} />
+                <Icon name="map-pin" size={13} style={{ color: "var(--tl-warm)", flex: "none" }} />
                 Fredrikstad og Sarpsborg, årsåpent
               </p>
               <div style={{ display: "flex", flexDirection: "column", marginTop: 12 }}>
@@ -123,11 +123,11 @@ export function MarkedAnleggListeV2({ locations }: { locations: AnleggLocation[]
                   <div
                     key={sted.navn}
                     className="pk-linje"
-                    style={{ borderTop: i === 0 ? "none" : "1px solid var(--p-hairline)", borderBottom: "none" }}
+                    style={{ borderTop: i === 0 ? "none" : "1px solid var(--tl-hair)", borderBottom: "none" }}
                   >
-                    <Icon name="building-2" size={13} style={{ color: "var(--p-accent-fg)", flex: "none" }} />
+                    <Icon name="building-2" size={13} style={{ color: "var(--tl-warm)", flex: "none" }} />
                     {sted.navn} · {sted.by}
-                    <span className="pk-v" style={{ fontFamily: "var(--p-mono)", fontSize: 10, textTransform: "uppercase" }}>
+                    <span className="pk-v" style={{ fontFamily: "var(--tl-font-mono)", fontSize: 10, textTransform: "uppercase" }}>
                       Inne
                     </span>
                   </div>
@@ -145,7 +145,7 @@ export function MarkedAnleggListeV2({ locations }: { locations: AnleggLocation[]
         <PkKort tint>
           <div className="pk-kort-body" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             <PkSekt>Klar til å trene?</PkSekt>
-            <p style={{ fontFamily: "var(--p-body)", fontSize: 14.5, color: "var(--p-muted)", margin: 0, maxWidth: 480 }}>
+            <p style={{ fontFamily: "var(--tl-font-sans)", fontSize: 14.5, color: "var(--tl-mute)", margin: 0, maxWidth: 480 }}>
               Book en økt på GFGK, Miklagard eller hos Mulligan. Samme coach og samme plan uansett hvor du trener.
             </p>
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>

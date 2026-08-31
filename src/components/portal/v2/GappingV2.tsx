@@ -16,7 +16,7 @@ import Link from "next/link";
 import { TL } from "@/lib/v2/train-lock";
 
 import { TomTilstand } from "@/components/v2";
-import { PaperPage, PaperTopp, PaperKropp } from "@/components/portal/v2/PaperChrome";
+import { PaperPage, PaperTopp, PaperKropp } from "@/components/portal/v2/SideChrome";
 import { GAP_TERSKEL_M, MIN_SLAG } from "@/lib/domain/gapping";
 import type { GappingData } from "@/lib/portal/gapping-data";
 

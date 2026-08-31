@@ -1,14 +1,15 @@
 "use client";
 import { TL } from "@/lib/v2/train-lock";
+import { AK } from "@/lib/v2/ak-palett";
 
 /**
  * PlayerHQ · Del runde — v2 Presis + B-pakke (status + én primær last ned/kopier).
- * Format + synlighet. Delekort bruker T.wrapped. T.* only.
+ * Format + synlighet. Delekort bruker AK.wrapped. T.* only.
  */
 
 import Link from "next/link";
 import { useState } from "react";
-import { Kort, Knapp, PillVelger, Icon, T, fmtSg } from "@/components/v2";
+import { Kort, Knapp, PillVelger, Icon, fmtSg } from "@/components/v2";
 
 type Format = "story" | "post" | "pdf" | "link";
 type Synlighet = "privat" | "coach" | "offentlig";
@@ -96,15 +97,15 @@ export function DelRundeV2({ runde, spiller }: DelRundeV2Props) {
   // link = offwhite merkegrafikk, pdf = nøytral dokumentflate (panel).
   const morkKort = format === "story" || format === "post";
   const kortBg = morkKort
-    ? T.wrapped.bgForest
+    ? AK.wrapped.bgForest
     : format === "link"
-      ? T.wrapped.bgOffwhite
+      ? AK.wrapped.bgOffwhite
       : TL.elev;
-  const kortFg = morkKort ? T.wrapped.textOnDark : format === "link" ? T.wrapped.textOnLight : TL.text;
+  const kortFg = morkKort ? AK.wrapped.textOnDark : format === "link" ? AK.wrapped.textOnLight : TL.text;
   const kortMut = morkKort
-    ? `color-mix(in srgb, ${T.wrapped.textOnDark} 65%, transparent)`
+    ? `color-mix(in srgb, ${AK.wrapped.textOnDark} 65%, transparent)`
     : format === "link"
-      ? `color-mix(in srgb, ${T.wrapped.textOnLight} 60%, transparent)`
+      ? `color-mix(in srgb, ${AK.wrapped.textOnLight} 60%, transparent)`
       : TL.mute;
   const scoreFarge = morkKort ? TL.fill : format === "link" ? TL.fill : TL.text;
   const scoreSize = format === "story" ? 84 : format === "post" ? 72 : 56;
@@ -180,7 +181,7 @@ export function DelRundeV2({ runde, spiller }: DelRundeV2Props) {
                 height: 36,
                 borderRadius: 9999,
                 background: morkKort ? TL.fill : TL.fill,
-                color: morkKort ? T.wrapped.textOnLight : T.wrapped.textOnDark,
+                color: morkKort ? AK.wrapped.textOnLight : AK.wrapped.textOnDark,
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",

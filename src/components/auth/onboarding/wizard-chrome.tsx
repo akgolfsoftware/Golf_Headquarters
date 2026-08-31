@@ -17,7 +17,8 @@
 
 import { Fragment, useEffect } from "react";
 import { ArrowLeft, ArrowRight, Check, ChevronLeft, type LucideIcon } from "lucide-react";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 // LogoAK fra v2-kjernen; importen trigger også core.tsx sin ensureStyles
 // (v2-press/v2-focus-klassene som brukes under).
 import { LogoAK } from "@/components/v2/core";
@@ -38,9 +39,9 @@ export function VeiviserFlate({ children }: { children: React.ReactNode }) {
       className="light"
       style={{
         minHeight: "100svh",
-        background: `radial-gradient(900px 380px at 50% -10%, var(--v2-vignett), transparent 62%), ${T.bg}`,
-        color: T.fg,
-        fontFamily: T.ui,
+        background: `radial-gradient(900px 380px at 50% -10%, var(--v2-vignett), transparent 62%), ${TL.scene}`,
+        color: TL.text,
+        fontFamily: TL.font.sans,
         colorScheme: "light",
         paddingBottom: 28,
       }}
@@ -77,8 +78,8 @@ export function ProgressDots({
                   borderRadius: 2,
                   background:
                     done || now
-                      ? `color-mix(in srgb, ${T.lime} 45%, transparent)`
-                      : T.track,
+                      ? `color-mix(in srgb, ${TL.fill} 45%, transparent)`
+                      : TL.hair,
                   margin: "0 6px",
                 }}
               />
@@ -91,14 +92,14 @@ export function ProgressDots({
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontFamily: T.mono,
+                fontFamily: TL.font.mono,
                 fontSize: 11,
                 fontWeight: 700,
                 fontVariantNumeric: "tabular-nums",
                 flex: "none",
-                background: done ? T.lime : now ? "transparent" : T.panel2,
-                border: `2px solid ${done || now ? T.lime : T.borderS}`,
-                color: done ? T.onHandling : now ? T.lime : T.mut,
+                background: done ? TL.fill : now ? "transparent" : TL.dock,
+                border: `2px solid ${done || now ? TL.fill : TL.hair}`,
+                color: done ? TL.onFill : now ? TL.fill : TL.mute,
               }}
             >
               {done ? <Check size={13} strokeWidth={2.5} aria-hidden /> : n}
@@ -112,12 +113,12 @@ export function ProgressDots({
 
 // ── Steg-header (brukes av forelder-wizarden) ───────────────────
 const CAPS: React.CSSProperties = {
-  fontFamily: T.mono,
+  fontFamily: TL.font.mono,
   fontSize: 10,
   fontWeight: 700,
   letterSpacing: "0.1em",
   textTransform: "uppercase",
-  color: T.mut,
+  color: TL.mute,
 };
 
 export function StepHeader({
@@ -200,12 +201,12 @@ export function StepHeading({
       {eyebrow && <span style={{ ...CAPS, display: "block" }}>{eyebrow}</span>}
       <h2
         style={{
-          fontFamily: T.disp,
+          fontFamily: TL.font.sans,
           fontSize: 30,
           fontWeight: 700,
           lineHeight: 1.05,
           letterSpacing: "-0.025em",
-          color: T.fg,
+          color: TL.text,
           margin: 0,
           marginTop: eyebrow ? 8 : 0,
           textWrap: "balance",
@@ -213,7 +214,7 @@ export function StepHeading({
       >
         {title}{" "}
         {emphasis && (
-          <em style={{ fontStyle: "italic", fontWeight: 400, color: T.lime }}>
+          <em style={{ fontStyle: "italic", fontWeight: 400, color: TL.fill }}>
             {emphasis}
           </em>
         )}
@@ -224,10 +225,10 @@ export function StepHeading({
           style={{
             marginTop: 12,
             marginBottom: 0,
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 14,
             lineHeight: 1.55,
-            color: T.mut,
+            color: TL.mute,
           }}
         >
           {deck}
@@ -272,9 +273,9 @@ export function PrimaryCta({
             alignItems: "center",
             justifyContent: "center",
             borderRadius: 9999,
-            background: T.panel3,
-            border: `1px solid ${T.borderS}`,
-            color: T.fg,
+            background: TL.dim,
+            border: `1px solid ${TL.hair}`,
+            color: TL.text,
             cursor: backDisabled ? "default" : "pointer",
             opacity: backDisabled ? 0.4 : 1,
           }}
@@ -297,10 +298,10 @@ export function PrimaryCta({
           gap: 8,
           borderRadius: 9999,
           padding: "0 24px",
-          background: T.handling,
+          background: TL.fill,
           border: "1px solid transparent",
-          color: T.onHandling,
-          fontFamily: T.ui,
+          color: TL.onFill,
+          fontFamily: TL.font.sans,
           fontSize: 14.5,
           fontWeight: 600,
           cursor: disabled ? "default" : "pointer",

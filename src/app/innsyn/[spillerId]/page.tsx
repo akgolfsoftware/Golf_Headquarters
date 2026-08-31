@@ -18,7 +18,8 @@ import { Capability } from "@/lib/auth/cbac";
 import { harEksternLeserTilgang } from "@/lib/auth/ekstern-leser-scope";
 import { parseBenchmarks, achievedLevel } from "@/lib/admin/test-benchmarks";
 import { prisma } from "@/lib/prisma";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -112,13 +113,13 @@ export default async function InnsynSpillerPage({
       <div>
         <Link
           href="/innsyn"
-          style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, textDecoration: "none" }}
+          style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, textDecoration: "none" }}
         >
           Tilbake til oversikten
         </Link>
         <h1
           style={{
-            fontFamily: T.disp,
+            fontFamily: TL.font.sans,
             fontSize: 22,
             fontWeight: 700,
             letterSpacing: "-0.02em",
@@ -127,7 +128,7 @@ export default async function InnsynSpillerPage({
         >
           {spiller.name}
         </h1>
-        <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: "4px 0 0" }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: "4px 0 0" }}>
           {spiller.dateOfBirth
             ? `Årgang ${spiller.dateOfBirth.getFullYear()}`
             : "Årgang ukjent"}
@@ -137,17 +138,17 @@ export default async function InnsynSpillerPage({
       {kanSeStats && (
         <section
           style={{
-            background: T.panel,
-            border: `1px solid ${T.border}`,
+            background: TL.elev,
+            border: `1px solid ${TL.hair}`,
             borderRadius: 14,
             padding: "16px 18px",
           }}
         >
-          <h2 style={{ fontFamily: T.disp, fontSize: 15, fontWeight: 700, margin: 0 }}>
+          <h2 style={{ fontFamily: TL.font.sans, fontSize: 15, fontWeight: 700, margin: 0 }}>
             Statistikk
           </h2>
           {runder.length === 0 ? (
-            <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: "10px 0 0" }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: "10px 0 0" }}>
               Ingen registrerte runder ennå.
             </p>
           ) : (
@@ -160,21 +161,21 @@ export default async function InnsynSpillerPage({
               }}
             >
               <div>
-                <dt style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut }}>Runder</dt>
-                <dd style={{ fontFamily: T.mono, fontSize: 18, fontWeight: 600, margin: "2px 0 0" }}>
+                <dt style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute }}>Runder</dt>
+                <dd style={{ fontFamily: TL.font.mono, fontSize: 18, fontWeight: 600, margin: "2px 0 0" }}>
                   {runder.length}
                 </dd>
               </div>
               <div>
-                <dt style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut }}>Snittscore</dt>
-                <dd style={{ fontFamily: T.mono, fontSize: 18, fontWeight: 600, margin: "2px 0 0" }}>
+                <dt style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute }}>Snittscore</dt>
+                <dd style={{ fontFamily: TL.font.mono, fontSize: 18, fontWeight: 600, margin: "2px 0 0" }}>
                   {snittScore != null ? fmtTall(snittScore) : "—"}
                 </dd>
               </div>
               {sgRader.map((rad) => (
                 <div key={rad.label}>
-                  <dt style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut }}>{rad.label}</dt>
-                  <dd style={{ fontFamily: T.mono, fontSize: 18, fontWeight: 600, margin: "2px 0 0" }}>
+                  <dt style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute }}>{rad.label}</dt>
+                  <dd style={{ fontFamily: TL.font.mono, fontSize: 18, fontWeight: 600, margin: "2px 0 0" }}>
                     {rad.verdi != null
                       ? `${rad.verdi >= 0 ? "+" : ""}${fmtTall(rad.verdi, 2)}`
                       : "—"}
@@ -189,17 +190,17 @@ export default async function InnsynSpillerPage({
       {kanSeTester && (
         <section
           style={{
-            background: T.panel,
-            border: `1px solid ${T.border}`,
+            background: TL.elev,
+            border: `1px solid ${TL.hair}`,
             borderRadius: 14,
             padding: "16px 18px",
           }}
         >
-          <h2 style={{ fontFamily: T.disp, fontSize: 15, fontWeight: 700, margin: 0 }}>
+          <h2 style={{ fontFamily: TL.font.sans, fontSize: 15, fontWeight: 700, margin: 0 }}>
             Testresultater
           </h2>
           {testResultater.length === 0 ? (
-            <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: "10px 0 0" }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: "10px 0 0" }}>
               Ingen registrerte testresultater ennå.
             </p>
           ) : (
@@ -211,13 +212,13 @@ export default async function InnsynSpillerPage({
                       <th
                         key={h}
                         style={{
-                          fontFamily: T.ui,
+                          fontFamily: TL.font.sans,
                           fontSize: 11.5,
                           fontWeight: 600,
-                          color: T.mut,
+                          color: TL.mute,
                           textAlign: "left",
                           padding: "0 12px 8px 0",
-                          borderBottom: `1px solid ${T.border}`,
+                          borderBottom: `1px solid ${TL.hair}`,
                         }}
                       >
                         {h}
@@ -233,16 +234,16 @@ export default async function InnsynSpillerPage({
                       : null;
                     return (
                       <tr key={resultat.id}>
-                        <td style={{ fontFamily: T.ui, fontSize: 13, padding: "8px 12px 8px 0", borderBottom: `1px solid ${T.border}` }}>
+                        <td style={{ fontFamily: TL.font.sans, fontSize: 13, padding: "8px 12px 8px 0", borderBottom: `1px solid ${TL.hair}` }}>
                           {resultat.test.name}
                         </td>
-                        <td style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, padding: "8px 12px 8px 0", borderBottom: `1px solid ${T.border}`, whiteSpace: "nowrap" }}>
+                        <td style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, padding: "8px 12px 8px 0", borderBottom: `1px solid ${TL.hair}`, whiteSpace: "nowrap" }}>
                           {OSLO_DATO.format(resultat.takenAt)}
                         </td>
-                        <td style={{ fontFamily: T.mono, fontSize: 13, padding: "8px 12px 8px 0", borderBottom: `1px solid ${T.border}` }}>
+                        <td style={{ fontFamily: TL.font.mono, fontSize: 13, padding: "8px 12px 8px 0", borderBottom: `1px solid ${TL.hair}` }}>
                           {fmtTall(resultat.score)}
                         </td>
-                        <td style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, padding: "8px 0", borderBottom: `1px solid ${T.border}` }}>
+                        <td style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, padding: "8px 0", borderBottom: `1px solid ${TL.hair}` }}>
                           {nivaa?.label ?? "—"}
                         </td>
                       </tr>

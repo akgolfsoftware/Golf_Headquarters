@@ -61,7 +61,7 @@ const ROUTES: Omit<SearchRoute, "id">[] = [
   { label: "Grupper", description: "Grupper og timeplan", href: "/admin/grupper" },
   { label: "Talent", description: "Discovery, radar, WAGR", href: "/admin/talent" },
   { label: "Drills", description: "Kilder i Workbench (planlegging)", href: "/admin/planlegge" },
-  { label: "Turneringer", description: "Turneringer og resultater", href: "/admin/tournaments" },
+  { label: "Turneringer", description: "Turneringer og resultater", href: "/admin/turnering" },
   { label: "Tester", description: "Tester og benchmarks", href: "/admin/tester" },
   { label: "Analyse / Innsikt", description: "Stall-analyse, compliance, rapporter", href: "/admin/analysere" },
   { label: "Innboks / Forespørsler", description: "Meldinger, godkjenninger, oppgaver", href: "/admin/innboks" },

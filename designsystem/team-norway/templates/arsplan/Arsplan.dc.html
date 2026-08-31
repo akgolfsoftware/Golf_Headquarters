@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Årsplan — sesong, periode, uke, økt" description="Fire zoomnivåer på samme plan: sesongen som svømmebaner, perioden uke for uke, ukeplanen med egentid, og økta blokk for blokk. 1440×900." -->
+<helmet><script src="./ds-base.js"></script></helmet>
+<div style="min-height:100vh;background:var(--surface-page);padding:28px;display:flex;justify-content:center;font-family:var(--font-body)">
+<div data-screen-label="Årsplan sesong" style="width:1440px;height:900px;flex-shrink:0;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-xl);box-shadow:var(--shadow-lg);overflow:hidden;display:flex">
+
+<div style="width:84px;flex-shrink:0;border-right:1px solid var(--border-subtle);background:var(--ink-50);display:flex;flex-direction:column;align-items:center;padding:20px 0;gap:8px">
+<img src="../../assets/logo/team-norway-golf.png" alt="Team Norway Golf" style="width:52px;height:auto;display:block;margin-bottom:14px">
+<div style="width:44px;height:44px;flex-shrink:0;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.06em;cursor:pointer;color:var(--ink-400)">HJEM</div>
+<div style="width:44px;height:44px;flex-shrink:0;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.06em;background:var(--navy-900);color:#fff;box-shadow:var(--shadow-sm)">PLAN</div>
+<div style="width:44px;height:44px;flex-shrink:0;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.06em;cursor:pointer;color:var(--ink-400)">KAL</div>
+<div style="width:44px;height:44px;flex-shrink:0;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.06em;cursor:pointer;color:var(--ink-400)">STALL</div>
+<div style="flex:1"></div>
+<div style="width:34px;height:34px;border-radius:var(--radius-full);background:var(--navy-600);color:#fff;font-family:var(--font-mono);font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center">ØR</div>
+</div>
+
+<div style="flex:1;min-width:0;display:flex;flex-direction:column">
+
+<div style="padding:22px 32px 18px;border-bottom:1px solid var(--border-subtle);display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:16px">
+<div style="display:flex;align-items:baseline;gap:12px;cursor:pointer">
+<span style="font-family:var(--font-display);font-size:26px;font-weight:800;letter-spacing:-.03em">Øyvind Rojahn</span>
+<span style="font-size:11px;color:var(--ink-400)">▼</span>
+</div>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Badge" tone="amber" hint-size="72px,28px">Utkast</x-import>
+<div style="height:36px;background:var(--ink-100);border-radius:var(--radius-full);display:flex;align-items:center;padding:3px;gap:2px">
+<sc-for list="{{ tabs }}" as="tab" hint-placeholder-count="4">
+<sc-if value="{{ tab.active }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ tab.select }}" style="height:30px;display:flex;align-items:center;padding:0 14px;border-radius:var(--radius-full);background:var(--navy-900);color:#fff;font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;box-shadow:var(--shadow-sm);cursor:pointer">{{ tab.label }}</div>
+</sc-if>
+<sc-if value="{{ tab.inactive }}" hint-placeholder-val="{{ true }}">
+<div onClick="{{ tab.select }}" style="height:30px;display:flex;align-items:center;padding:0 14px;border-radius:var(--radius-full);font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;color:var(--ink-500);cursor:pointer">{{ tab.label }}</div>
+</sc-if>
+</sc-for>
+</div>
+<div style="flex:1"></div>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="secondary" size="sm" hint-size="96px,34px">Ny periode</x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="primary" size="sm" hint-size="96px,34px">Publiser</x-import>
+</div>
+<div style="font-size:13px;color:var(--ink-500)">{{ crumbLead }} › <span style="color:var(--ink-900);font-weight:600">{{ crumbTail }}</span></div>
+</div>
+
+<div style="flex:1;min-height:0;display:flex">
+
+<sc-if value="{{ isArsplan }}" hint-placeholder-val="{{ true }}">
+<div style="flex:1;min-width:0;display:flex">
+
+<div style="flex:1;min-width:0;overflow:hidden;padding:24px 32px 32px;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;align-items:baseline;justify-content:space-between">
+<h1 style="font-family:var(--font-display);font-size:28px;font-weight:800;letter-spacing:-.03em;margin:0">Sesong 2026</h1>
+<span style="font-family:var(--font-mono);font-size:12px;color:var(--ink-400)">NÅ-LINJE UKE 34</span>
+</div>
+
+<div style="display:flex;padding-left:150px">
+<sc-for list="{{ months }}" as="m" hint-placeholder-count="12">
+<div style="flex:1;text-align:center;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.12em;color:var(--ink-400)">{{ m }}</div>
+</sc-for>
+</div>
+
+<div style="position:relative;flex:1;min-height:0">
+<div ref="{{ nowRef }}" style="position:absolute;top:0;bottom:0;width:2px;background:var(--red-600);z-index:4;pointer-events:none"></div>
+
+<div style="display:flex;align-items:center;border-top:1px solid var(--border-subtle);padding:14px 0">
+<div style="width:150px;flex-shrink:0;font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-500)">PERIODISERING</div>
+<div style="flex:1;position:relative;height:38px">
+<sc-for list="{{ phases }}" as="p" hint-placeholder-count="5">
+<div ref="{{ p.ref }}" style="position:absolute;top:6px">
+<div ref="{{ p.barRef }}" style="height:6px;border-radius:var(--radius-full);background:var(--ink-200)"></div>
+<div ref="{{ p.labelRef }}" style="margin-top:8px;font-family:var(--font-mono);font-size:9px;letter-spacing:.1em;color:var(--ink-500);white-space:nowrap">{{ p.label }}</div>
+</div>
+</sc-for>
+<div ref="{{ evalWeekRef }}" style="position:absolute;top:-17px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:3px">
+<span style="font-family:var(--font-mono);font-size:8.5px;letter-spacing:.08em;color:var(--navy-900);white-space:nowrap">TEST/EVAL 43</span>
+<div style="width:3px;height:12px;background:var(--navy-900);border-radius:var(--radius-full)"></div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;align-items:center;border-top:1px solid var(--border-subtle);padding:12px 0">
+<div style="width:150px;flex-shrink:0;font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-500)">TURNERINGER</div>
+<div style="flex:1;position:relative;height:26px">
+<sc-for list="{{ tournaments }}" as="t" hint-placeholder-count="5">
+<div ref="{{ t.ref }}" style="position:absolute;top:50%;transform:translate(-50%,-50%);width:22px;height:22px;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:9.5px;font-weight:600;background:var(--ink-100);color:var(--ink-500)">{{ t.tier }}</div>
+</sc-for>
+</div>
+</div>
+
+<div style="display:flex;align-items:center;border-top:1px solid var(--border-subtle);padding:12px 0">
+<div style="width:150px;flex-shrink:0;font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-500)">SAMLINGER</div>
+<div style="flex:1;position:relative;height:22px">
+<sc-for list="{{ camps }}" as="c" hint-placeholder-count="4">
+<div ref="{{ c.ref }}" style="position:absolute;top:50%;transform:translate(-50%,-50%);width:9px;height:9px;border-radius:var(--radius-full);background:var(--data-3)"></div>
+</sc-for>
+</div>
+</div>
+
+<div style="display:flex;align-items:center;border-top:1px solid var(--border-subtle);padding:12px 0">
+<div style="width:150px;flex-shrink:0;font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-500)">TESTER</div>
+<div style="flex:1;position:relative;height:24px">
+<sc-for list="{{ tests }}" as="t" hint-placeholder-count="4">
+<div ref="{{ t.ref }}" style="position:absolute;top:50%;transform:translate(-50%,-50%);padding:3px 9px;border-radius:var(--radius-full);font-family:var(--font-mono);font-size:9.5px;font-weight:600;background:var(--navy-100);color:var(--navy-800);white-space:nowrap">{{ t.label }}</div>
+</sc-for>
+</div>
+</div>
+
+<div style="display:flex;align-items:center;border-top:1px solid var(--border-subtle);padding:12px 0">
+<div style="width:150px;flex-shrink:0;font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-500)">UTVIKLINGSPLAN</div>
+<div style="flex:1;position:relative;height:24px">
+<sc-for list="{{ milestones }}" as="m" hint-placeholder-count="6">
+<div ref="{{ m.ref }}" style="position:absolute;top:50%;transform:translate(-50%,-50%);font-family:var(--font-mono);font-size:9.5px;font-weight:600;color:var(--ink-500);white-space:nowrap">{{ m.label }}</div>
+</sc-for>
+</div>
+</div>
+
+<div style="display:flex;align-items:flex-end;border-top:1px solid var(--border-subtle);padding:12px 0">
+<div style="width:150px;flex-shrink:0;font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-500);padding-bottom:2px">VOLUM · TIMER/UKE</div>
+<div style="flex:1;display:flex;align-items:flex-end;gap:1.5px;height:56px">
+<sc-for list="{{ volume }}" as="v" hint-placeholder-count="52">
+<div ref="{{ v.ref }}" style="flex:1;border-radius:1.5px 1.5px 0 0;background:var(--data-4)"></div>
+</sc-for>
+</div>
+</div>
+
+<div style="display:flex;align-items:center;border-top:1px solid var(--border-subtle);border-bottom:1px solid var(--border-subtle);padding:14px 0">
+<div style="width:150px;flex-shrink:0;font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-500)">BELASTNING · ACWR</div>
+<div style="flex:1;display:flex;align-items:center;gap:14px">
+<span style="font-family:var(--font-mono);font-size:18px;font-weight:600;color:var(--ink-900)">1,02</span>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Badge" tone="green" dot="{{ true }}" hint-size="130px,28px">Innenfor sonen</x-import>
+<span style="font-size:12.5px;color:var(--ink-500)">Trygt vindu 0,8–1,3. Beregnes på rullerende fire uker.</span>
+</div>
+</div>
+
+</div>
+</div>
+
+<div style="width:320px;flex-shrink:0;border-left:1px solid var(--border-subtle);background:var(--ink-50);padding:26px 24px;display:flex;flex-direction:column;gap:22px;overflow:hidden">
+<div>
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-500)">NÅVÆRENDE PERIODE</span>
+<h2 style="font-family:var(--font-mono);font-size:26px;font-weight:700;letter-spacing:.02em;margin:10px 0 0;color:var(--navy-900)">{{ activePhaseShort }}</h2>
+<div style="font-size:14px;color:var(--ink-700);margin-top:4px">{{ activePhaseLong }}</div>
+<div style="font-family:var(--font-mono);font-size:12px;color:var(--ink-500);margin-top:8px">{{ activePhaseRange }}</div>
+</div>
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:18px;display:flex;flex-direction:column;gap:14px">
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-500)">PERIODENS MÅL</span>
+<sc-for list="{{ goals }}" as="g" hint-placeholder-count="3">
+<div style="display:flex;flex-direction:column;gap:7px">
+<div style="display:flex;justify-content:space-between;align-items:baseline">
+<span style="font-size:13.5px;font-weight:500;color:var(--ink-700)">{{ g.name }}</span>
+<span style="font-family:var(--font-mono);font-size:12.5px;font-weight:600;color:var(--ink-900)">{{ g.value }}</span>
+</div>
+<div style="height:8px;border-radius:var(--radius-full);background:var(--ink-100);overflow:hidden">
+<div ref="{{ g.ref }}" style="height:100%;border-radius:var(--radius-full);background:var(--navy-900)"></div>
+</div>
+</div>
+</sc-for>
+</div>
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:18px;display:flex;flex-direction:column;gap:12px">
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-500)">NESTE MERKEPUNKT</span>
+<div style="font-size:15px;font-weight:600">TN-batteri Q3</div>
+<div style="font-family:var(--font-mono);font-size:12px;color:var(--ink-500)">Uke 34 · fre 21.08</div>
+<div style="font-size:12.5px;color:var(--ink-500);line-height:1.55;text-wrap:pretty">{{ nextMilestoneNote }}</div>
+</div>
+<div style="flex:1"></div>
+<span style="font-size:11.5px;color:var(--ink-500);line-height:1.6;text-wrap:pretty">Årsplanen er rammen. Detaljene — drills, formel, reps — bor i periodeplanen og uka.</span>
+</div>
+
+</div>
+</sc-if>
+
+<sc-if value="{{ isPeriode }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;min-width:0;display:flex">
+<div style="flex:1;min-width:0;overflow:hidden;padding:24px 32px 32px;display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;align-items:baseline;justify-content:space-between">
+<div>
+<span style="font-family:var(--font-mono);font-size:10.5px;letter-spacing:.16em;color:var(--ink-400)">PERIODE · TURN · UKE 17–42</span>
+<h1 style="font-family:var(--font-display);font-size:28px;font-weight:800;letter-spacing:-.03em;margin:6px 0 0">Turneringsperiode</h1>
+</div>
+<span style="font-family:var(--font-mono);font-size:12px;color:var(--ink-400)">{{ periodeMeta }}</span>
+</div>
+
+<div style="display:flex;align-items:stretch;gap:4px">
+<div style="width:96px;flex-shrink:0;font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-500);padding-top:4px">BLOKKER</div>
+<sc-for list="{{ blocks }}" as="b" hint-placeholder-count="7">
+<div ref="{{ b.ref }}" style="border-radius:var(--radius-xs);background:var(--navy-50);padding:6px 8px;display:flex;flex-direction:column;gap:2px;min-width:0">
+<span style="font-family:var(--font-mono);font-size:9.5px;font-weight:700;letter-spacing:.1em;color:var(--navy-900)">{{ b.id }}</span>
+<span style="font-family:var(--font-mono);font-size:9px;color:var(--ink-500);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ b.focus }}</span>
+</div>
+</sc-for>
+</div>
+
+<div style="display:flex;align-items:flex-end;gap:4px">
+<div style="width:96px;flex-shrink:0;font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-500);padding-bottom:22px">UKER</div>
+<sc-for list="{{ periodWeeks }}" as="w" hint-placeholder-count="26">
+<div onClick="{{ w.openWeek }}" style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer">
+<div style="height:16px;display:flex;align-items:center;justify-content:center">
+<sc-if value="{{ w.hasMarker }}" hint-placeholder-val="{{ false }}">
+<span ref="{{ w.markerRef }}" style="font-family:var(--font-mono);font-size:8.5px;font-weight:700;letter-spacing:.06em;padding:1px 4px;border-radius:2px;white-space:nowrap">{{ w.marker }}</span>
+</sc-if>
+</div>
+<div style="width:100%;height:96px;display:flex;align-items:flex-end">
+<div ref="{{ w.barRef }}" style="width:100%;border-radius:2px 2px 0 0;background:var(--data-4)"></div>
+</div>
+<span ref="{{ w.numRef }}" style="font-family:var(--font-mono);font-size:9px;color:var(--ink-400)">{{ w.nr }}</span>
+</div>
+</sc-for>
+</div>
+
+<div style="display:flex;align-items:center;gap:16px;padding:12px 0;border-top:1px solid var(--border-subtle);border-bottom:1px solid var(--border-subtle)">
+<span style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.1em;color:var(--ink-400)">TIMER/UKE · SØYLE</span>
+<div style="display:flex;align-items:center;gap:6px"><span style="width:9px;height:9px;border-radius:2px;background:var(--red-600);display:block"></span><span style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.1em;color:var(--ink-500)">A-TURNERING</span></div>
+<div style="display:flex;align-items:center;gap:6px"><span style="width:9px;height:9px;border-radius:2px;background:var(--navy-800);display:block"></span><span style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.1em;color:var(--ink-500)">TEST</span></div>
+<div style="display:flex;align-items:center;gap:6px"><span style="width:9px;height:9px;border-radius:2px;background:var(--data-3);display:block"></span><span style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.1em;color:var(--ink-500)">SAMLING</span></div>
+<div style="flex:1"></div>
+<span style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.1em;color:var(--ink-400)">{{ periodeNowLabel }}</span>
+</div>
+
+<div>
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-500)">FORDELING I PERIODEN · ANDEL AV TIMER</span>
+<div style="margin-top:12px;display:flex;flex-direction:column;gap:10px">
+<sc-for list="{{ periodMix }}" as="m" hint-placeholder-count="5">
+<div style="display:flex;align-items:center;gap:14px">
+<span style="width:56px;flex-shrink:0;font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--navy-900)">{{ m.code }}</span>
+<span style="width:150px;flex-shrink:0;font-size:13px;color:var(--ink-700)">{{ m.name }}</span>
+<div style="flex:1;height:10px;border-radius:var(--radius-full);background:var(--ink-100);overflow:hidden">
+<div ref="{{ m.ref }}" style="height:100%;border-radius:var(--radius-full);background:var(--navy-800)"></div>
+</div>
+<span style="width:52px;flex-shrink:0;text-align:right;font-family:var(--font-mono);font-size:12px;font-weight:600;color:var(--ink-900)">{{ m.pct }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+
+<div style="width:320px;flex-shrink:0;border-left:1px solid var(--border-subtle);background:var(--ink-50);padding:26px 24px;display:flex;flex-direction:column;gap:20px;overflow:hidden">
+<div>
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-500)">PERIODENS HENSIKT</span>
+<p style="font-size:14px;line-height:1.6;color:var(--ink-700);margin:10px 0 0;text-wrap:pretty">Prestere i konkurranse. Volumet holdes nede, kvaliteten opp. Teknisk arbeid bare der testene peker.</p>
+</div>
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:18px;display:flex;flex-direction:column;gap:12px">
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-500)">NØKKELTALL</span>
+<sc-for list="{{ periodStats }}" as="s" hint-placeholder-count="4">
+<div style="display:flex;align-items:baseline;justify-content:space-between">
+<span style="font-size:13.5px;color:var(--ink-700)">{{ s.name }}</span>
+<span style="font-family:var(--font-mono);font-size:13px;font-weight:600;color:var(--ink-900)">{{ s.value }}</span>
+</div>
+</sc-for>
+</div>
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:18px;display:flex;flex-direction:column;gap:10px">
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-500)">TAPER-REGEL</span>
+<div style="font-size:13.5px;line-height:1.55;color:var(--ink-700);text-wrap:pretty">Uka før A-turnering kuttes volumet 30 %. Siste harde økt senest tre dager før første runde.</div>
+</div>
+<div style="flex:1"></div>
+<span style="font-size:11.5px;color:var(--ink-500);line-height:1.6;text-wrap:pretty">Klikk en uke for å åpne ukeplanen.</span>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isUke }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;min-width:0;display:flex">
+<div style="flex:1;min-width:0;overflow:hidden;padding:24px 32px 32px;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;align-items:baseline;justify-content:space-between">
+<div>
+<span style="font-family:var(--font-mono);font-size:10.5px;letter-spacing:.16em;color:var(--ink-400)">UKE 34 · 17.–23. AUGUST · TURN</span>
+<h1 style="font-family:var(--font-display);font-size:28px;font-weight:800;letter-spacing:-.03em;margin:6px 0 0">Ukeplan</h1>
+</div>
+<span style="font-family:var(--font-mono);font-size:12px;color:var(--ink-400)">{{ weekTotalLabel }}</span>
+</div>
+
+<div style="flex:1;min-height:0;display:grid;grid-template-columns:repeat(7,1fr);gap:8px">
+<sc-for list="{{ weekDays }}" as="d" hint-placeholder-count="7">
+<div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+<div style="display:flex;align-items:baseline;justify-content:space-between;padding-bottom:6px;border-bottom:1px solid var(--border-subtle)">
+<span ref="{{ d.nameRef }}" style="font-family:var(--font-mono);font-size:10.5px;font-weight:700;letter-spacing:.1em;color:var(--ink-900)">{{ d.name }}</span>
+<span style="font-family:var(--font-mono);font-size:10px;color:var(--ink-400)">{{ d.date }}</span>
+</div>
+<sc-for list="{{ d.items }}" as="s" hint-placeholder-count="2">
+<sc-if value="{{ s.isOwn }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ s.openOkt }}" style="border:1px dashed var(--border-strong);border-radius:var(--radius-sm);padding:9px 10px;display:flex;flex-direction:column;gap:5px;cursor:pointer;background:repeating-linear-gradient(135deg,transparent 0 5px,rgba(1,43,93,.05) 5px 10px)">
+<span style="font-family:var(--font-mono);font-size:8.5px;font-weight:700;letter-spacing:.12em;color:var(--ink-500)">{{ s.kind }}</span>
+<span style="font-size:12.5px;font-weight:600;color:var(--ink-700);line-height:1.3">{{ s.title }}</span>
+<span style="font-family:var(--font-mono);font-size:10px;color:var(--ink-500)">{{ s.time }}</span>
+</div>
+</sc-if>
+<sc-if value="{{ s.isCoach }}" hint-placeholder-val="{{ true }}">
+<div onClick="{{ s.openOkt }}" style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);box-shadow:var(--shadow-sm);padding:9px 10px;display:flex;flex-direction:column;gap:5px;cursor:pointer">
+<span ref="{{ s.kindRef }}" style="font-family:var(--font-mono);font-size:8.5px;font-weight:700;letter-spacing:.12em;color:var(--navy-900)">{{ s.kind }}</span>
+<span style="font-size:12.5px;font-weight:600;color:var(--ink-900);line-height:1.3">{{ s.title }}</span>
+<span style="font-family:var(--font-mono);font-size:10px;color:var(--ink-500)">{{ s.time }}</span>
+</div>
+</sc-if>
+</sc-for>
+<sc-if value="{{ d.isEmpty }}" hint-placeholder-val="{{ false }}">
+<div style="border-radius:var(--radius-sm);background:var(--ink-50);padding:10px;font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;color:var(--ink-400);text-align:center">FRI</div>
+</sc-if>
+<div style="flex:1"></div>
+<div style="padding-top:6px;border-top:1px solid var(--ink-100);font-family:var(--font-mono);font-size:10px;color:var(--ink-500);text-align:right">{{ d.total }}</div>
+</div>
+</sc-for>
+</div>
+
+<div style="display:flex;align-items:center;gap:18px;padding-top:14px;border-top:1px solid var(--border-subtle)">
+<div style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:10px;border:1px solid var(--border-subtle);border-radius:2px;background:var(--white);display:block"></span><span style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.1em;color:var(--ink-500)">SATT AV TRENER</span></div>
+<div style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:10px;border:1px dashed var(--border-strong);border-radius:2px;display:block;background:repeating-linear-gradient(135deg,transparent 0 3px,rgba(1,43,93,.08) 3px 6px)"></span><span style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.1em;color:var(--ink-500)">EGENTID · FYLLES AV SPILLER</span></div>
+<div style="flex:1"></div>
+<span style="font-size:12px;color:var(--ink-500)">Klikk en økt for å åpne økta.</span>
+</div>
+</div>
+
+<div style="width:320px;flex-shrink:0;border-left:1px solid var(--border-subtle);background:var(--ink-50);padding:26px 24px;display:flex;flex-direction:column;gap:20px;overflow:hidden">
+<div>
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-500)">UKAS HOVEDSAK</span>
+<h2 style="font-family:var(--font-display);font-size:22px;font-weight:800;letter-spacing:-.02em;margin:8px 0 0">TN-batteri Q3</h2>
+<div style="font-family:var(--font-mono);font-size:12px;color:var(--ink-500);margin-top:6px">Fredag 21.08 · 09:00 · Miklagard</div>
+</div>
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:18px;display:flex;flex-direction:column;gap:12px">
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-500)">TIMER PER OMRÅDE</span>
+<sc-for list="{{ weekMix }}" as="m" hint-placeholder-count="5">
+<div style="display:flex;align-items:center;gap:12px">
+<span style="width:44px;flex-shrink:0;font-family:var(--font-mono);font-size:10.5px;font-weight:700;letter-spacing:.08em;color:var(--navy-900)">{{ m.code }}</span>
+<div style="flex:1;height:8px;border-radius:var(--radius-full);background:var(--ink-100);overflow:hidden">
+<div ref="{{ m.ref }}" style="height:100%;border-radius:var(--radius-full);background:var(--navy-800)"></div>
+</div>
+<span style="width:48px;flex-shrink:0;text-align:right;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:var(--ink-900)">{{ m.value }}</span>
+</div>
+</sc-for>
+</div>
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:18px;display:flex;flex-direction:column;gap:8px">
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-500)">EGENTID</span>
+<div style="font-family:var(--font-mono);font-size:18px;font-weight:600;color:var(--ink-900)">{{ ownTimeLabel }}</div>
+<div style="font-size:12.5px;line-height:1.55;color:var(--ink-500);text-wrap:pretty">Treneren setter rammen. Innholdet i egentiden fyller spilleren selv, og det teller inn i uketotalen.</div>
+</div>
+<div style="flex:1"></div>
+<span style="font-size:11.5px;color:var(--ink-500);line-height:1.6;text-wrap:pretty">Belastning ACWR 1,02 — innenfor sonen 0,8–1,3.</span>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isOkt }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;min-width:0;display:flex">
+<div style="flex:1;min-width:0;overflow-y:auto;padding:24px 32px 32px;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;align-items:baseline;justify-content:space-between">
+<div>
+<span style="font-family:var(--font-mono);font-size:10.5px;letter-spacing:.16em;color:var(--ink-400)">ØKT · FREDAG 21.08 · 09:00–12:00 · MIKLAGARD</span>
+<h1 style="font-family:var(--font-display);font-size:28px;font-weight:800;letter-spacing:-.03em;margin:6px 0 0">TN-batteri Q3</h1>
+</div>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Badge" tone="navy" hint-size="110px,28px">Test · felles</x-import>
+</div>
+
+<div style="display:flex;gap:0;border-top:1px solid var(--border-subtle);border-bottom:1px solid var(--border-subtle)">
+<sc-for list="{{ oktFacts }}" as="f" hint-placeholder-count="4">
+<div style="flex:1;padding:14px 18px 14px 0;display:flex;flex-direction:column;gap:5px">
+<span style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.14em;color:var(--ink-400)">{{ f.label }}</span>
+<span style="font-size:14.5px;font-weight:600;color:var(--ink-900)">{{ f.value }}</span>
+</div>
+</sc-for>
+</div>
+
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-500)">{{ oktBlocksLabel }}</span>
+<div style="display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{ oktBlocks }}" as="b" hint-placeholder-count="7">
+<div style="display:flex;gap:14px;background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:14px 18px">
+<div style="width:96px;flex-shrink:0;display:flex;flex-direction:column;gap:3px">
+<span style="font-family:var(--font-mono);font-size:12.5px;font-weight:600;color:var(--ink-900)">{{ b.clock }}</span>
+<span style="font-family:var(--font-mono);font-size:10px;color:var(--ink-400)">{{ b.dur }}</span>
+</div>
+<div ref="{{ b.railRef }}" style="width:3px;flex-shrink:0;border-radius:var(--radius-full);background:var(--navy-800)"></div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:5px">
+<div style="display:flex;align-items:baseline;gap:10px">
+<span style="font-size:15px;font-weight:700;color:var(--ink-900)">{{ b.title }}</span>
+<span style="font-family:var(--font-mono);font-size:9.5px;font-weight:700;letter-spacing:.1em;color:var(--ink-400)">{{ b.code }}</span>
+</div>
+<span style="font-size:13px;line-height:1.5;color:var(--ink-700);text-wrap:pretty">{{ b.detail }}</span>
+</div>
+<div style="width:150px;flex-shrink:0;text-align:right;display:flex;flex-direction:column;gap:4px">
+<span style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.12em;color:var(--ink-400)">MÅLEPUNKT</span>
+<span style="font-family:var(--font-mono);font-size:11.5px;color:var(--ink-900)">{{ b.metric }}</span>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div style="width:320px;flex-shrink:0;border-left:1px solid var(--border-subtle);background:var(--ink-50);padding:26px 24px;display:flex;flex-direction:column;gap:20px;overflow:hidden">
+<div>
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-500)">ANSVARLIG</span>
+<div style="font-size:15px;font-weight:600;margin-top:8px">Øyvind Rojahn</div>
+<div style="font-family:var(--font-mono);font-size:12px;color:var(--ink-500);margin-top:4px">Fører for 6 spillere</div>
+</div>
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:18px;display:flex;flex-direction:column;gap:10px">
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-500)">UTSTYR</span>
+<sc-for list="{{ oktGear }}" as="g" hint-placeholder-count="5">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="width:5px;height:5px;border-radius:var(--radius-full);background:var(--navy-800);flex-shrink:0;display:block"></span>
+<span style="font-size:13.5px;color:var(--ink-700)">{{ g.name }}</span>
+</div>
+</sc-for>
+</div>
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:18px;display:flex;flex-direction:column;gap:10px">
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-500)">ATTESTERING</span>
+<div style="font-size:13.5px;line-height:1.55;color:var(--ink-700);text-wrap:pretty">Resultatene signeres av fører før de skrives til testloggen. Uattesterte forsøk vises som utkast.</div>
+</div>
+<div style="flex:1"></div>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="primary" size="lg" hint-size="272px,52px">Start føring</x-import>
+</div>
+</div>
+</sc-if>
+
+</div>
+</div>
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1496,&quot;height&quot;:956}}">
+const WEEKS = 52, NOW = 34;
+const pct = (w) => ((w - 1) / WEEKS) * 100;
+
+// Periode: TURN uke 17–42. Timer, markører og fordeling deriveres fra WEEK_PLAN.
+const TURN_FROM = 17, TURN_TO = 42;
+const A_TOURS = [35, 38], B_TOURS = [30, 41], TESTS = { 19: 'Q2', 34: 'Q3' }, CAMPS = [22, 33];
+const BLOCK_FOCUS = ['Kvalitet · slag', 'Turnering', 'Nærspill', 'Turnering', 'Vedlikehold', 'Turnering', 'Avlasting'];
+
+const MIX = [
+  { code: 'TURN', name: 'Turneringsspill', h: 46 },
+  { code: 'SPILL', name: 'Spill på bane', h: 38 },
+  { code: 'SLAG', name: 'Slagtrening', h: 30 },
+  { code: 'TEK', name: 'Teknisk arbeid', h: 16 },
+  { code: 'FYS', name: 'Fysisk', h: 22 }
+];
+
+// Uke 34. «kind» styrer merkelappen; own = egentid spilleren fyller selv.
+const WEEK_PLAN = [
+  { name: 'MAN', date: '17.08', items: [
+    { kind: 'FYS', title: 'Styrke · underkropp', time: '07:30 · 60 min', min: 60 },
+    { kind: 'EGENTID', title: 'Putting 1–3 m', time: 'Valgfritt · 45 min', min: 45, own: true } ] },
+  { name: 'TIR', date: '18.08', items: [
+    { kind: 'SLAG', title: 'Wedge 40–60 m · gate', time: '09:00 · 90 min', min: 90 },
+    { kind: 'EGENTID', title: 'Egen slagserie', time: 'Valgfritt · 40 min', min: 40, own: true } ] },
+  { name: 'ONS', date: '19.08', items: [
+    { kind: 'SPILL', title: '9 hull · scorekort', time: '10:00 · 150 min', min: 150 } ] },
+  { name: 'TOR', date: '20.08', items: [
+    { kind: 'FYS', title: 'Hurtighet · rotasjon', time: '07:30 · 45 min', min: 45 },
+    { kind: 'EGENTID', title: 'Nærspill fritt', time: 'Valgfritt · 60 min', min: 60, own: true } ] },
+  { name: 'FRE', date: '21.08', items: [
+    { kind: 'TEST', title: 'TN-batteri Q3', time: '09:00 · 180 min', min: 180 } ] },
+  { name: 'LØR', date: '22.08', items: [
+    { kind: 'TURN', title: 'Klubbmesterskap R1', time: '08:40 · 240 min', min: 240 } ] },
+  { name: 'SØN', date: '23.08', items: [] }
+];
+
+const OKT_BLOCKS = [
+  { clock: '09:00', dur: '20 min', min: 20, title: 'Oppvarming', code: 'FYS', detail: 'Dynamisk bevegelighet, deretter 20 slag stigende fra wedge til driver.', metric: 'ingen føring' },
+  { clock: '09:20', dur: '35 min', min: 35, title: 'Stasjon 1 · Utslag', code: 'GOLFSLAG', detail: 'Driver Basic 5 slag på Trackman, så Driver Gate 6 slag gjennom 2 m port.', metric: 'carry · side · OK/Bom' },
+  { clock: '09:55', dur: '35 min', min: 35, title: 'Stasjon 2 · Innspill', code: 'GOLFSLAG', detail: 'Inspill Basic 10 slag, så 5 slag fra 120 m og 5 fra 160 m.', metric: 'till mål · PEI' },
+  { clock: '10:30', dur: '30 min', min: 30, title: 'Stasjon 3 · Wedge', code: 'GOLFSLAG', detail: 'Wedge Variation over 9 mål-lengder, så Wedge Gate 9 slag mot launch og carry-sone.', metric: 'PEI · poeng av 27' },
+  { clock: '11:00', dur: '30 min', min: 30, title: 'Stasjon 4 · Nærspill', code: 'NÆRSPILL', detail: '8-Ball Variation: 24 slag chip, wedge, lobb og bunker i variert rekkefølge.', metric: 'PEI · poeng av 96' },
+  { clock: '11:30', dur: '25 min', min: 25, title: 'Stasjon 5 · Putting', code: 'PUTTING', detail: 'Putt Gate 10 putter, Putt 1–3 m 25 putter, Putt Speed 1×5.', metric: 'OK av 10 · sink %' },
+  { clock: '11:55', dur: '5 min', min: 5, title: 'Attestering', code: 'AVSLUTNING', detail: 'Fører går gjennom kortene med hver spiller og signerer.', metric: 'signatur' }
+];
+
+class Component extends DCLogic {
+  state = { view: 'ÅRSPLAN' };
+  renderVals() {
+    const view = this.state.view;
+    const go = (v) => () => this.setState({ view: v });
+    const tabs = ['ÅRSPLAN', 'PERIODE', 'UKE', 'ØKT'].map(label => ({
+      label, active: label === view, inactive: label !== view, select: go(label)
+    }));
+
+    const periodWeeks = [];
+    let periodHours = 0;
+    for (let w = TURN_FROM; w <= TURN_TO; w++) {
+      const base = 9 + Math.sin(((w - TURN_FROM) / 6) * Math.PI) * 2.2;
+      const pre = A_TOURS.some(t => t === w + 1);
+      const hours = Math.round((pre ? base * 0.7 : base) * 10) / 10;
+      periodHours += hours;
+      const isA = A_TOURS.includes(w), isB = B_TOURS.includes(w);
+      const test = TESTS[w], camp = CAMPS.includes(w), isNow = w === NOW;
+      const marker = isA ? 'A' : test ? test : camp ? '●' : isB ? 'B' : '';
+      periodWeeks.push({
+        nr: String(w), marker, hasMarker: !!marker,
+        openWeek: go('UKE'),
+        markerRef: (el) => {
+          if (!el) return;
+          if (isA) { el.style.background = 'var(--red-600)'; el.style.color = '#fff'; }
+          else if (test) { el.style.background = 'var(--navy-800)'; el.style.color = '#fff'; }
+          else if (camp) { el.style.background = 'var(--data-3)'; el.style.color = '#fff'; }
+          else { el.style.background = 'var(--ink-100)'; el.style.color = 'var(--ink-500)'; }
+        },
+        barRef: (el) => {
+          if (!el) return;
+          el.style.height = Math.round((hours / 13) * 96) + 'px';
+          if (isNow) el.style.background = 'var(--red-600)';
+          else if (isA) el.style.background = 'var(--navy-800)';
+        },
+        numRef: (el) => {
+          if (!el) return;
+          if (isNow) { el.style.color = 'var(--ink-900)'; el.style.fontWeight = '700'; }
+        }
+      });
+    }
+    const blockCount = 7;
+    const blocks = Array.from({ length: blockCount }, (_, i) => {
+      const from = TURN_FROM + i * 4;
+      const to = Math.min(from + 3, TURN_TO);
+      return {
+        id: 'B' + (i + 1) + ' · ' + from + '–' + to,
+        focus: BLOCK_FOCUS[i],
+        ref: (el) => { if (el) el.style.flex = String(to - from + 1); }
+      };
+    });
+    const mixTotal = MIX.reduce((s, m) => s + m.h, 0);
+    const periodMix = MIX.map(m => ({
+      code: m.code, name: m.name,
+      pct: Math.round((m.h / mixTotal) * 100) + ' %',
+      ref: (el) => { if (el) el.style.width = Math.round((m.h / mixTotal) * 100) + '%'; }
+    }));
+
+    const hhmm = (min) => min < 60 ? min + ' min' : Math.floor(min / 60) + ' t' + (min % 60 ? ' ' + (min % 60) + ' min' : '');
+    const weekDays = WEEK_PLAN.map(d => {
+      const total = d.items.reduce((s, i) => s + i.min, 0);
+      const isFri = d.name === 'FRE';
+      return {
+        name: d.name, date: d.date, isEmpty: d.items.length === 0,
+        total: total ? hhmm(total) : '—',
+        nameRef: (el) => { if (el && isFri) el.style.color = 'var(--red-600)'; },
+        items: d.items.map(i => ({
+          kind: i.kind, title: i.title, time: i.time,
+          isOwn: !!i.own, isCoach: !i.own, openOkt: go('ØKT'),
+          kindRef: (el) => {
+            if (!el) return;
+            if (i.kind === 'TEST') el.style.color = 'var(--red-600)';
+            else if (i.kind === 'TURN') el.style.color = 'var(--red-600)';
+          }
+        }))
+      };
+    });
+    const weekMin = WEEK_PLAN.reduce((s, d) => s + d.items.reduce((a, i) => a + i.min, 0), 0);
+    const ownMin = WEEK_PLAN.reduce((s, d) => s + d.items.filter(i => i.own).reduce((a, i) => a + i.min, 0), 0);
+    const kinds = ['TURN', 'SPILL', 'SLAG', 'TEST', 'FYS', 'EGENTID'];
+    const byKind = kinds.map(k => ({
+      code: k === 'EGENTID' ? 'EGEN' : k,
+      min: WEEK_PLAN.reduce((s, d) => s + d.items.filter(i => i.kind === k).reduce((a, i) => a + i.min, 0), 0)
+    })).filter(x => x.min > 0);
+    const kindMax = Math.max(...byKind.map(x => x.min));
+    const weekMix = byKind.map(x => ({
+      code: x.code, value: hhmm(x.min),
+      ref: (el) => { if (el) el.style.width = Math.round((x.min / kindMax) * 100) + '%'; }
+    }));
+
+    const oktMin = OKT_BLOCKS.reduce((s, b) => s + b.min, 0);
+    const oktBlocks = OKT_BLOCKS.map(b => ({
+      clock: b.clock, dur: b.dur, title: b.title, code: b.code, detail: b.detail, metric: b.metric,
+      railRef: (el) => {
+        if (!el) return;
+        if (b.code === 'AVSLUTNING' || b.code === 'FYS') el.style.background = 'var(--ink-200)';
+      }
+    }));
+
+    const crumbs = {
+      'ÅRSPLAN': ['Sesong 2026 › August', 'Uke 34'],
+      'PERIODE': ['Sesong 2026 › TURN uke 17–42', 'Uke 34'],
+      'UKE': ['Sesong 2026 › TURN › August', 'Uke 34'],
+      'ØKT': ['Sesong 2026 › Uke 34 › Fredag 21.08', 'TN-batteri Q3']
+    };
+
+    const extra = {
+      tabs,
+      isArsplan: view === 'ÅRSPLAN', isPeriode: view === 'PERIODE',
+      isUke: view === 'UKE', isOkt: view === 'ØKT',
+      crumbLead: crumbs[view][0], crumbTail: crumbs[view][1],
+      periodeMeta: (TURN_TO - TURN_FROM + 1) + ' uker · ' + Math.round(periodHours) + ' timer planlagt',
+      periodeNowLabel: 'NÅ · UKE ' + NOW,
+      periodWeeks, blocks, periodMix,
+      periodStats: [
+        { name: 'Turneringsuker', value: (A_TOURS.length + B_TOURS.length) + ' av ' + (TURN_TO - TURN_FROM + 1) },
+        { name: 'A-turneringer', value: 'Uke ' + A_TOURS.join(' og ') },
+        { name: 'Snitt timer/uke', value: (Math.round((periodHours / (TURN_TO - TURN_FROM + 1)) * 10) / 10).toString().replace('.', ',') + ' t' },
+        { name: 'Testpunkt', value: Object.values(TESTS).join(' · ') }
+      ],
+      weekDays,
+      weekTotalLabel: hhmm(weekMin) + ' planlagt · ' + WEEK_PLAN.filter(d => d.items.length).length + ' dager med økt',
+      weekMix, ownTimeLabel: hhmm(ownMin) + ' av ' + hhmm(weekMin),
+      oktBlocks, oktBlocksLabel: 'GJENNOMFØRING · ' + OKT_BLOCKS.length + ' BLOKKER · ' + hhmm(oktMin),
+      oktFacts: [
+        { label: 'VARIGHET', value: hhmm(oktMin) },
+        { label: 'STED', value: 'Miklagard · range og øvingsgreen' },
+        { label: 'DELTAKERE', value: '6 spillere · én kø' },
+        { label: 'PROTOKOLLER', value: '11 av 20 i batteriet' }
+      ],
+      oktGear: [
+        { name: 'Trackman · 2 enheter' }, { name: 'Gate-pinner 2 m og 40 cm' },
+        { name: 'Målmatter 40/50/60 m' }, { name: 'Avstandsmåler' }, { name: 'Scorekort · protokollversjon' }
+      ]
+    };
+    return Object.assign(extra, this.arsplanVals());
+  }
+  arsplanVals() {
+    const at = (week) => (el) => { if (el) el.style.left = pct(week) + '%'; };
+
+    const phase = (label, from, to, active) => ({
+      label,
+      ref: (el) => {
+        if (!el) return;
+        el.style.left = pct(from) + '%';
+        el.style.width = (pct(to + 1) - pct(from)) + '%';
+      },
+      barRef: (el) => { if (el) el.style.background = active ? 'var(--navy-900)' : 'var(--ink-200)'; },
+      labelRef: (el) => {
+        if (!el) return;
+        el.style.color = active ? 'var(--navy-900)' : 'var(--ink-500)';
+        el.style.fontWeight = active ? '700' : '400';
+      }
+    });
+
+    // Én kilde for både svømmebanen og sidepanelet — de kan ikke drifte fra hverandre.
+    const phaseDefs = [
+      { label: 'GRUNN', long: 'Grunnperiode', from: 1, to: 11 },
+      { label: 'SPES', long: 'Spesialiseringsperiode', from: 12, to: 16 },
+      { label: 'TURN', long: 'Turneringsperiode', from: 17, to: 42, active: true },
+      { label: '', from: 43, to: 43 },
+      { label: 'GRUNN', long: 'Grunnperiode', from: 44, to: 52 }
+    ];
+    const active = phaseDefs.find(d => d.active);
+    const activeWeeks = active.to - active.from + 1;
+    const activeInto = NOW - active.from + 1;
+    const nextSpes = phaseDefs.find(d => d.label === 'SPES');
+
+    const tour = (week, tier) => ({
+      tier,
+      ref: (el) => {
+        if (!el) return;
+        el.style.left = pct(week) + '%';
+        if (tier === 'A') {
+          el.style.background = 'var(--red-600)';
+          el.style.color = '#fff';
+        }
+      }
+    });
+
+    const volume = [];
+    for (let w = 1; w <= WEEKS; w++) {
+      const base = 6 + Math.sin((w / WEEKS) * Math.PI * 2.2) * 3 + (w / WEEKS) * 4;
+      const taper = w > 26 && w < 45 && w % 4 === 0 ? -3 : 0;
+      const hours = Math.max(3, base + taper);
+      const isNow = w === NOW;
+      volume.push({
+        ref: (el) => {
+          if (!el) return;
+          el.style.height = Math.round((hours / 14) * 56) + 'px';
+          if (isNow) el.style.background = 'var(--red-600)';
+        }
+      });
+    }
+
+    const goal = (name, value, done) => ({
+      name, value,
+      ref: (el) => { if (el) el.style.width = done + '%'; }
+    });
+
+    return {
+      months: ['JAN','FEB','MAR','APR','MAI','JUN','JUL','AUG','SEP','OKT','NOV','DES'],
+      nowRef: (el) => { if (el) el.style.left = 'calc(150px + (100% - 150px) * ' + (pct(NOW) / 100).toFixed(4) + ')'; },
+      phases: phaseDefs.map(d => phase(d.label, d.from, d.to, d.active)),
+      activePhaseShort: active.label,
+      activePhaseLong: active.long,
+      activePhaseRange: 'Uke ' + active.from + '–' + active.to + ' · ' + activeWeeks + ' uker · uke ' + activeInto + ' av ' + activeWeeks,
+      nextMilestoneNote: 'Fullt batteri før A-turneringene. Resultatet setter fokus for de gjenstående ' + (active.to - NOW) + ' turneringsukene, og går inn i grunnlaget for SPES uke ' + nextSpes.from + '–' + nextSpes.to + '.',
+      evalWeekRef: (el) => { if (el) el.style.left = pct(43) + '%'; },
+      tournaments: [tour(30, 'B'), tour(35, 'A'), tour(38, 'A'), tour(41, 'B'), tour(44, 'C')],
+      camps: [at(9), at(22), at(33), at(46)].map(ref => ({ ref })),
+      tests: [
+        { label: 'Q1', ref: at(6) },
+        { label: 'Q2', ref: at(19) },
+        { label: 'Q3', ref: at(34) },
+        { label: 'Q4', ref: at(48) }
+      ],
+      milestones: [
+        { label: 'P3', ref: at(12) },
+        { label: 'P4', ref: at(21) },
+        { label: 'P5', ref: at(30) },
+        { label: 'P6', ref: at(39) },
+        { label: 'P7', ref: at(46) },
+        { label: 'P8', ref: at(51) }
+      ],
+      volume,
+      goals: [
+        goal('Turneringsrunder', '18 / 24', 75),
+        goal('Snittscore under 71', '70,8', 100),
+        goal('Nærspill SG > 0', '−0,4', 42)
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

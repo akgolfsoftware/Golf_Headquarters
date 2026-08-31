@@ -1,5 +1,5 @@
 "use client";
-import { T } from "@/lib/v2/tokens";
+import { AK } from "@/lib/v2/ak-palett";
 
 import { useState } from "react";
 
@@ -33,7 +33,7 @@ export function Treningspyramide() {
           </h3>
           <p
             className="mt-2 max-w-md text-[15px] leading-relaxed"
-            style={{ color: T.farge.hvitA70 }}
+            style={{ color: AK.farge.hvitA70 }}
           >
             Vår treningsmodell fordeler tiden mellom fem områder. Fordelingen endres etter
             hvert som spilleren utvikler seg.
@@ -41,7 +41,7 @@ export function Treningspyramide() {
         </div>
         <div
           className="flex gap-1.5 rounded-full p-1.5"
-          style={{ background: T.farge.hvitA8 }}
+          style={{ background: AK.farge.hvitA8 }}
           role="tablist"
           aria-label="Velg gruppe"
         >
@@ -55,7 +55,7 @@ export function Treningspyramide() {
               style={{
                 fontFamily: "var(--font-jr-sans)",
                 background: k === valgt ? "var(--gfgk-white)" : "transparent",
-                color: k === valgt ? "var(--ink)" : T.farge.hvitA75,
+                color: k === valgt ? "var(--ink)" : AK.farge.hvitA75,
               }}
             >
               {k}
@@ -71,13 +71,13 @@ export function Treningspyramide() {
           >
             <span
               className="text-[14px] font-semibold sm:text-[15px]"
-              style={{ color: T.farge.hvitA85 }}
+              style={{ color: AK.farge.hvitA85 }}
             >
               {rad.navn}
             </span>
             <div
               className="h-[22px] overflow-hidden rounded-full"
-              style={{ background: T.farge.hvitA8 }}
+              style={{ background: AK.farge.hvitA8 }}
             >
               <div
                 className="h-full rounded-full transition-all duration-300"
@@ -86,17 +86,17 @@ export function Treningspyramide() {
             </div>
             <span
               className="text-right text-sm tabular-nums"
-              style={{ fontFamily: "var(--font-jr-mono)", color: T.farge.hvitA85 }}
+              style={{ fontFamily: "var(--font-jr-mono)", color: AK.farge.hvitA85 }}
             >
               {rad.pct}
-              <span style={{ color: T.farge.hvitA50 }}> %</span>
+              <span style={{ color: AK.farge.hvitA50 }}> %</span>
             </span>
           </div>
         ))}
       </div>
       <p
         className="mt-5 text-[12.5px]"
-        style={{ fontFamily: "var(--font-jr-mono)", color: T.farge.hvitA50 }}
+        style={{ fontFamily: "var(--font-jr-mono)", color: AK.farge.hvitA50 }}
       >
         Prosentfordeling for {valgt} – {GRUPPER[valgt].kat}
       </p>

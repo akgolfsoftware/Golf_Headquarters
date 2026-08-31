@@ -8,7 +8,9 @@
  * kun presentasjonen er byttet til StatsRamme/StatsListe + v2-komponenter.
  */
 import Link from "next/link";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+import { AK } from "@/lib/v2/ak-palett";
+
 import { Icon, Kort, TomTilstand } from "@/components/v2";
 import { StatsRamme, StatsListe, useMobile } from "./stats-ramme";
 import type { TurneringListeRad, TourFilter, TidFilter } from "@/lib/stats/turnering-queries";
@@ -91,28 +93,28 @@ function TurneringKort({ t }: { t: TurneringListeRad }) {
     <Link href={href} aria-label={`Se detaljer for ${t.name}`} style={{ textDecoration: "none", color: "inherit" }}>
       <Kort hover style={{ display: "flex", flexDirection: "column", gap: 12, minHeight: 168 }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-          <span style={{ fontFamily: T.mono, fontSize: 10, letterSpacing: "0.14em", textTransform: "uppercase", color: T.mut, fontWeight: 500 }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 10, letterSpacing: "0.14em", textTransform: "uppercase", color: TL.mute, fontWeight: 500 }}>
             {tourEtikett(t.tour)}
           </span>
           {live && (
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: T.mono, fontSize: 9.5, letterSpacing: "0.12em", textTransform: "uppercase", color: T.up, fontWeight: 600 }}>
-              <span style={{ width: 5, height: 5, borderRadius: "50%", background: T.up, display: "inline-block" }} />
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: TL.font.mono, fontSize: 9.5, letterSpacing: "0.12em", textTransform: "uppercase", color: TL.ok, fontWeight: 600 }}>
+              <span style={{ width: 5, height: 5, borderRadius: "50%", background: TL.ok, display: "inline-block" }} />
               LIVE
             </span>
           )}
         </div>
 
-        <div style={{ fontFamily: T.disp, fontSize: 17, fontWeight: 600, letterSpacing: "-0.015em", lineHeight: 1.25, color: T.fg }}>
+        <div style={{ fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, letterSpacing: "-0.015em", lineHeight: 1.25, color: TL.text }}>
           {t.shortName ?? t.name}
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 6, fontFamily: T.mono, fontSize: 11.5, color: T.mut }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, fontFamily: TL.font.mono, fontSize: 11.5, color: TL.mute }}>
             <Icon name="calendar" size={13} />
             <span style={{ fontVariantNumeric: "tabular-nums" }}>{formaterDatoSpenn(t.startDate, t.endDate)}</span>
           </div>
           {t.location && (
-            <div style={{ display: "flex", alignItems: "center", gap: 6, fontFamily: T.mono, fontSize: 11.5, color: T.mut }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, fontFamily: TL.font.mono, fontSize: 11.5, color: TL.mute }}>
               <Icon name="map-pin" size={13} />
               <span>{t.location}</span>
             </div>
@@ -120,7 +122,7 @@ function TurneringKort({ t }: { t: TurneringListeRad }) {
         </div>
 
         {t.purseUsd !== null && t.purseUsd > 0 && (
-          <div style={{ display: "flex", alignItems: "center", gap: 6, fontFamily: T.mono, fontSize: 11.5, color: T.mut }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, fontFamily: TL.font.mono, fontSize: 11.5, color: TL.mute }}>
             <Icon name="trophy" size={13} />
             <span>{formaterPremie(t.purseUsd)}</span>
           </div>
@@ -128,7 +130,7 @@ function TurneringKort({ t }: { t: TurneringListeRad }) {
 
         {t.norskeAntall > 0 && (
           <div style={{ marginTop: "auto", paddingTop: 8 }}>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 5, background: T.handling, color: T.onHandling, borderRadius: 999, padding: "3px 10px", fontFamily: T.mono, fontSize: 11, fontWeight: 600, letterSpacing: "0.06em" }}>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 5, background: TL.fill, color: TL.onFill, borderRadius: 999, padding: "3px 10px", fontFamily: TL.font.mono, fontSize: 11, fontWeight: 600, letterSpacing: "0.06em" }}>
               <span style={{ fontWeight: 700, letterSpacing: "0.08em", opacity: 0.85 }}>NOR</span> {t.norskeAntall} norsk{t.norskeAntall === 1 ? "" : "e"}
             </span>
           </div>
@@ -174,7 +176,7 @@ export function StatsTurneringerV2({ tour, tid, turneringer, counts, totaltNorsk
         lede="Alle tourer. Norske spillere fremhevet."
         meta={
           tid === "uke" && totaltNorske > 0 ? (
-            <Link href="/stats/norske" style={{ color: T.lime, textDecoration: "none" }}>
+            <Link href="/stats/norske" style={{ color: TL.fill, textDecoration: "none" }}>
               {totaltNorske} norske spiller{totaltNorske === 1 ? "" : "e"} i aksjon denne uken på {antallTurneringerMedNorske} turnering{antallTurneringerMedNorske === 1 ? "" : "er"} →
             </Link>
           ) : undefined
@@ -195,23 +197,23 @@ export function StatsTurneringerV2({ tour, tid, turneringer, counts, totaltNorsk
                   gap: 6,
                   padding: "7px 14px",
                   borderRadius: 999,
-                  fontFamily: T.ui,
+                  fontFamily: TL.font.sans,
                   fontSize: 13,
                   fontWeight: 500,
                   textDecoration: "none",
-                  border: `1px solid ${isActive ? T.lime : T.borderS}`,
-                  background: isActive ? T.panel2 : "transparent",
-                  color: isActive ? T.fg : T.fg2,
+                  border: `1px solid ${isActive ? TL.fill : TL.hair}`,
+                  background: isActive ? TL.dock : "transparent",
+                  color: isActive ? TL.text : TL.mute,
                 }}
               >
                 {TOUR_LABELS[key]}
-                <span style={{ fontFamily: T.mono, fontSize: 10, fontVariantNumeric: "tabular-nums", opacity: isActive ? 0.9 : 0.6 }}>{count}</span>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontVariantNumeric: "tabular-nums", opacity: isActive ? 0.9 : 0.6 }}>{count}</span>
               </Link>
             );
           })}
         </div>
 
-        <div style={{ display: "flex", gap: 0, marginBottom: 32, borderBottom: `1px solid ${T.border}` }} role="group" aria-label="Tidsfilter">
+        <div style={{ display: "flex", gap: 0, marginBottom: 32, borderBottom: `1px solid ${TL.hair}` }} role="group" aria-label="Tidsfilter">
           {TID_KEYS.map((key) => {
             const isActive = tid === key;
             return (
@@ -224,12 +226,12 @@ export function StatsTurneringerV2({ tour, tid, turneringer, counts, totaltNorsk
                   alignItems: "center",
                   gap: 6,
                   padding: "10px 16px",
-                  fontFamily: T.ui,
+                  fontFamily: TL.font.sans,
                   fontSize: 13.5,
                   fontWeight: isActive ? 600 : 500,
                   textDecoration: "none",
-                  color: isActive ? T.lime : T.mut,
-                  borderBottom: isActive ? `2px solid ${T.lime}` : "2px solid transparent",
+                  color: isActive ? TL.fill : TL.mute,
+                  borderBottom: isActive ? `2px solid ${TL.fill}` : "2px solid transparent",
                   marginBottom: -1,
                 }}
               >
@@ -241,10 +243,10 @@ export function StatsTurneringerV2({ tour, tid, turneringer, counts, totaltNorsk
 
         {harData ? (
           <>
-            <div style={{ fontFamily: T.mono, fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: T.mut, marginBottom: 16 }}>
+            <div style={{ fontFamily: TL.font.mono, fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: TL.mute, marginBottom: 16 }}>
               {turneringer.length} turnering{turneringer.length === 1 ? "" : "er"}
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: T.gap }}>
+            <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: AK.gap }}>
               {turneringer.map((t) => (
                 <TurneringKort key={t.id} t={t} />
               ))}

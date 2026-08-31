@@ -65,10 +65,17 @@ function StatusMerke({ status, label }: { status: IntegrasjonStatus; label: stri
   );
 }
 
-export function AdminIntegrasjonerTrainLock({ cards }: { cards: IntegrasjonKort[] }) {
+export function AdminIntegrasjonerTrainLock({
+  cards,
+  somFane = false,
+}: {
+  cards: IntegrasjonKort[];
+  /** True når komponenten står som «Integrasjoner»-fanen i /admin/oppsett (MASTERPLAN 15.3). */
+  somFane?: boolean;
+}) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 18, maxWidth: 1080, margin: "0 auto", width: "100%" }}>
-      <TlTittel sub="AgencyOS · Verktøy">Tilkoblede tjenester</TlTittel>
+      {!somFane && <TlTittel sub="AgencyOS · Verktøy">Tilkoblede tjenester</TlTittel>}
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 14 }}>
         {cards.map((card) => (

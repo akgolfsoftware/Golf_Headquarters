@@ -1,20 +1,12 @@
+import { redirect } from "next/navigation";
+
 /**
- * AgenticOS Skills — AO-09. Policy-visning, ingen persistente brytere.
+ * /admin/agenticos/skills → /admin/jarvis?fane=skills
+ *
+ * MASTERPLAN 15.5 (beslutning 6.9, «én inngang per funksjon»): fire
+ * agenticos-adresser ble til én. Adressen består som redirect — ingen lenke
+ * noe sted skal brekke.
  */
-
-import { requireCapability } from "@/lib/auth/requireCapability";
-import { Capability } from "@/lib/auth/cbac";
-import { AgenticosRamme } from "@/components/admin/v2/agenticos/AgenticosRamme";
-import { AdminAgenticosSkills } from "@/components/admin/v2/agenticos/AdminAgenticosSkills";
-
-export const dynamic = "force-dynamic";
-export const metadata = { title: "Skills · AgenticOS" };
-
-export default async function AdminAgenticosSkillsPage() {
-  const user = await requireCapability(Capability.USE_AGENTS);
-  return (
-    <AgenticosRamme user={user}>
-      <AdminAgenticosSkills />
-    </AgenticosRamme>
-  );
+export default function AgenticosSkillsRedirect(): never {
+  redirect("/admin/jarvis?fane=skills");
 }

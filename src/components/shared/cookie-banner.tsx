@@ -21,7 +21,7 @@
  *
  * Drakt (10.08.2026): portet til Claude Paper. Flater/tekst/avstand er `--p-*`
  * (src/styles/paper-tokens.css), knappene følger `.btn`/`.btn.ink` i
- * `designsystem/paper/fase1/_foundation.css` — 13px/500, radius `--p-r`, blekk
+ * `designsystem/paper/fase1/_foundation.css` — 13px/500, radius `--tl-r-card`, blekk
  * som primær. Ikke clay: aksenten er reservert «Én ting nå»
  * (docs/port/monsterdokument-paper.md §2 + §7). GFGK-micrositen beholder sin
  * egen drakt.
@@ -31,6 +31,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Cookie, X } from "lucide-react";
+import { AK } from "@/lib/v2/ak-palett";
 
 const CONSENT_KEY = "ak_cookie_consent";
 const CONSENT_ALL = "all";
@@ -77,7 +78,7 @@ export function CookieBanner() {
       pathname?.startsWith("/admin") ||
       pathname?.startsWith("/forelder")) ??
     false;
-  // Primærknappen er BLEKK (--p-cta) i Paper, ikke clay: aksenten #d97757 har
+  // Primærknappen er BLEKK (--tl-fill) i Paper, ikke clay: aksenten #d97757 har
   // monopol på «Én ting nå» (monsterdokument-paper.md §2 + §7). Blekk snur seg
   // selv i mørkt tema, så den gamle primary/accent-kollisjonen kan ikke
   // gjenoppstå her. Train-lock-drakten følger samme regel med TL.warm.
@@ -110,21 +111,21 @@ export function CookieBanner() {
           knapp2Border: "var(--tl-hair)",
         }
       : {
-          kortBg: "var(--p-surface)",
-          kortBorder: "var(--p-border)",
-          tittel: "var(--p-fg)",
-          tittelFont: "var(--p-font-sans)",
-          tekst: "var(--p-muted)",
-          ikon: "var(--p-muted)",
-          lenke: "var(--p-fg)",
-          knappBg: "var(--p-cta)",
-          knappFg: "var(--p-on-cta)",
-          knapp2Fg: "var(--p-fg)",
-          knapp2Border: "var(--p-border)",
+          kortBg: "var(--tl-elev)",
+          kortBorder: "var(--tl-hair)",
+          tittel: "var(--tl-text)",
+          tittelFont: "var(--tl-font-sans)",
+          tekst: "var(--tl-mute)",
+          ikon: "var(--tl-mute)",
+          lenke: "var(--tl-text)",
+          knappBg: "var(--tl-fill)",
+          knappFg: "var(--tl-on-fill)",
+          knapp2Fg: "var(--tl-text)",
+          knapp2Border: "var(--tl-hair)",
         };
   // Brødtekst er Lora i Paper (prosa-serif), sans i Train-lock (fasiten har
   // ingen serif) — GFGK-micrositen har egen prosa-font.
-  const brodFont = gfgk ? "var(--font-jr-sans)" : trainLock ? "var(--tl-font-sans)" : "var(--p-font-serif)";
+  const brodFont = gfgk ? "var(--font-jr-sans)" : trainLock ? "var(--tl-font-sans)" : "var(--tl-font-sans)";
 
   useEffect(() => {
     const stored = getStoredConsent();
@@ -198,23 +199,23 @@ export function CookieBanner() {
           background: farger.kortBg,
           border: `1px solid ${farger.kortBorder}`,
           borderBottom: "none",
-          borderRadius: "var(--p-r-md) var(--p-r-md) 0 0",
-          padding: "var(--p-s5) var(--p-s5) calc(var(--p-s5) + env(safe-area-inset-bottom, 0px))",
-          boxShadow: "var(--p-shadow)",
+          borderRadius: "var(--tl-r-field) var(--tl-r-field) 0 0",
+          padding: "24px 24px calc(24px + env(safe-area-inset-bottom, 0px))",
+          boxShadow: AK.skygge,
           display: "flex",
           flexDirection: "column",
-          gap: "var(--p-s3)",
+          gap: "12px",
           pointerEvents: "auto",
         }}
       >
         {/* Header */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "var(--p-s2)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <Cookie size={18} style={{ color: farger.ikon }} strokeWidth={1.75} />
             <span
               style={{
                 fontFamily: farger.tittelFont,
-                fontSize: "var(--p-text-panel)",
+                fontSize: "14.5px",
                 fontWeight: 600,
                 color: farger.tittel,
                 letterSpacing: "-0.01em",
@@ -231,9 +232,9 @@ export function CookieBanner() {
               background: "none",
               border: "none",
               cursor: "pointer",
-              // --p-tap: Paper sin gulvregel for alt interaktivt.
-              width: "var(--p-tap)",
-              height: "var(--p-tap)",
+              // 44px: Paper sin gulvregel for alt interaktivt.
+              width: "44px",
+              height: "44px",
               color: farger.tekst,
               display: "flex",
               alignItems: "center",
@@ -250,7 +251,7 @@ export function CookieBanner() {
           style={{
             // Lora 14px/1.62, maks 52ch — Paper sin prosa-anatomi.
             fontFamily: brodFont,
-            fontSize: "var(--p-text-body-player)",
+            fontSize: "14px",
             color: farger.tekst,
             lineHeight: 1.62,
             maxWidth: "52ch",
@@ -274,18 +275,18 @@ export function CookieBanner() {
         </p>
 
         {/* Knapper — Paper `.btn` / `.btn.ink` (_foundation.css): 13px/500,
-            min-høyde --p-tap, radius --p-r. Ingen pill, ingen fet skrift, og
+            min-høyde 44px, radius --tl-r-card. Ingen pill, ingen fet skrift, og
             ingen clay: dette er ikke «Én ting nå». */}
-        <div style={{ display: "flex", gap: "var(--p-s2)", flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
           <button
             type="button"
             onClick={onGodta}
             style={{
               flex: 1,
               minWidth: 140,
-              minHeight: "var(--p-tap)",
-              padding: "0 var(--p-s4)",
-              borderRadius: "var(--p-r)",
+              minHeight: "44px",
+              padding: "0 16px",
+              borderRadius: "var(--tl-r-card)",
               background: farger.knappBg,
               color: farger.knappFg,
               border: `1px solid ${farger.knappBg}`,
@@ -304,9 +305,9 @@ export function CookieBanner() {
             style={{
               flex: 1,
               minWidth: 140,
-              minHeight: "var(--p-tap)",
-              padding: "0 var(--p-s4)",
-              borderRadius: "var(--p-r)",
+              minHeight: "44px",
+              padding: "0 16px",
+              borderRadius: "var(--tl-r-card)",
               background: "transparent",
               color: farger.knapp2Fg,
               border: `1px solid ${farger.knapp2Border}`,

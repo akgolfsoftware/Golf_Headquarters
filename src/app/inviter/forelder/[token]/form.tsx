@@ -9,7 +9,8 @@
  */
 
 import { useState, useTransition } from "react";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Kort, Knapp } from "@/components/v2";
 import { Field, TextField } from "@/components/auth/onboarding/wizard-fields";
 import { aksepterInvitasjon } from "./actions";
@@ -49,7 +50,7 @@ export function AksepterForm({ token, email }: { token: string; email: string })
             name="email"
             defaultValue={email}
             disabled
-            style={{ background: T.panel3, color: T.mut }}
+            style={{ background: TL.dim, color: TL.mute }}
           />
         </Field>
 
@@ -73,12 +74,12 @@ export function AksepterForm({ token, email }: { token: string; email: string })
             role="alert"
             style={{
               borderRadius: 11,
-              border: `1px solid color-mix(in srgb, ${T.down} 30%, transparent)`,
-              background: `color-mix(in srgb, ${T.down} 10%, transparent)`,
+              border: `1px solid color-mix(in srgb, ${TL.danger} 30%, transparent)`,
+              background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`,
               padding: "10px 14px",
-              fontFamily: T.ui,
+              fontFamily: TL.font.sans,
               fontSize: 13,
-              color: T.down,
+              color: TL.danger,
             }}
           >
             {error}
@@ -99,9 +100,9 @@ export function AksepterForm({ token, email }: { token: string; email: string })
           style={{
             margin: 0,
             textAlign: "center",
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 11.5,
-            color: T.mut,
+            color: TL.mute,
           }}
         >
           Ved å fortsette godtar du AK Golfs vilkår for foresatte.

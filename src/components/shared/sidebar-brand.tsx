@@ -74,7 +74,7 @@ export function SidebarBrand({
       />
       <span
         style={{
-          fontFamily: "var(--p-mono)",
+          fontFamily: "var(--tl-font-mono)",
           fontSize: 10.5,
           fontWeight: 700,
           letterSpacing: "0.14em",

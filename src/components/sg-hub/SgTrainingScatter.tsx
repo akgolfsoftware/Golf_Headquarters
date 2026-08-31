@@ -1,4 +1,5 @@
-import { T } from "@/lib/v2/tokens";
+import { AK } from "@/lib/v2/ak-palett";
+
 /**
  * SgTrainingScatter — «Trener vi det riktige?»
  *
@@ -148,7 +149,7 @@ function HeroScatter({
           <line
             x1={H.px(0, maxHours)} y1={H.py(regression.intercept)}
             x2={H.px(maxHours, maxHours)} y2={H.py(regression.slope * maxHours + regression.intercept)}
-            stroke="var(--p-fg)" strokeWidth={2.4} fill="none"
+            stroke="var(--tl-text)" strokeWidth={2.4} fill="none"
           />
         )}
 
@@ -392,7 +393,7 @@ export function SgTrainingScatter({ data }: { data: SgScatterPayload }) {
               ].map(({ dot, label, isLine, isRect }) => (
                 <div key={label} className="grid grid-cols-[14px_1fr] items-center gap-2 font-mono text-[10px] font-bold text-foreground tracking-[0.04em]">
                   {isLine ? (
-                    <span className="block h-0.5 w-3 rounded-full" style={{ background: T.farge.illuForestMork }} />
+                    <span className="block h-0.5 w-3 rounded-full" style={{ background: AK.farge.illuForestMork }} />
                   ) : isRect ? (
                     <span className="block h-2 w-3 rounded-sm bg-[rgba(20,20,19,0.20)]" />
                   ) : (

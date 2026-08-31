@@ -1,22 +1,12 @@
+import { redirect } from "next/navigation";
+
 /**
- * AgenticOS Projects — AO-05. Gruppert på Area. Tom når cache er tom.
+ * /admin/agenticos/projects → /admin/jarvis?fane=prosjekter
+ *
+ * MASTERPLAN 15.5 (beslutning 6.9, «én inngang per funksjon»): fire
+ * agenticos-adresser ble til én. Adressen består som redirect — ingen lenke
+ * noe sted skal brekke.
  */
-
-import { requireCapability } from "@/lib/auth/requireCapability";
-import { Capability } from "@/lib/auth/cbac";
-import { lastAgenticosProjects } from "@/lib/agencyos/last-agenticos";
-import { AgenticosRamme } from "@/components/admin/v2/agenticos/AgenticosRamme";
-import { AdminAgenticosProjects } from "@/components/admin/v2/agenticos/AdminAgenticosProjects";
-
-export const dynamic = "force-dynamic";
-export const metadata = { title: "Projects · AgenticOS" };
-
-export default async function AdminAgenticosProjectsPage() {
-  const user = await requireCapability(Capability.USE_AGENTS);
-  const data = await lastAgenticosProjects();
-  return (
-    <AgenticosRamme user={user}>
-      <AdminAgenticosProjects data={data} />
-    </AgenticosRamme>
-  );
+export default function AgenticosProjectsRedirect(): never {
+  redirect("/admin/jarvis?fane=prosjekter");
 }

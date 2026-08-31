@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * Widget-pakke — «Dagens økter» (PlayerHQ).
@@ -17,17 +18,7 @@ import { useRouter } from "next/navigation";
 import { markerOktStatus } from "@/lib/portal-gjennomfore/okt-status-actions";
 import type { GjennomforeData, GjennomforeOkt } from "@/lib/portal-gjennomfore/gjennomfore-data";
 import type { ReactNode } from "react";
-import {
-  T,
-  Caps,
-  Kort,
-  Rad,
-  StatusPill,
-  AkseChip,
-  CTAPill,
-  Icon,
-  HjelpTips,
-} from "@/components/v2";
+import { Caps, Kort, Rad, StatusPill, AkseChip, CTAPill, Icon, HjelpTips } from "@/components/v2";
 import { HurtigStatusKnapper, type HurtigStatusOkt } from "./HurtigStatusKnapper";
 
 export function DagensOkterWidget({
@@ -62,13 +53,13 @@ export function DagensOkterWidget({
             style={{
               width: 26, height: 26, borderRadius: 9999, flex: "none",
               display: "inline-flex", alignItems: "center", justifyContent: "center",
-              background: T.panel2, border: "1px solid transparent",
+              background: TL.dock, border: "1px solid transparent",
             }}
           >
-            <Icon name="check" size={13} style={{ color: T.up }} />
+            <Icon name="check" size={13} style={{ color: TL.ok }} />
           </span>
         ) : (
-          <span style={{ width: 44, flex: "none", fontFamily: T.mono, fontSize: 11, fontWeight: 700, color: T.mut }}>
+          <span style={{ width: 44, flex: "none", fontFamily: TL.font.mono, fontSize: 11, fontWeight: 700, color: TL.mute }}>
             {o.tid}
           </span>
         )
@@ -109,10 +100,10 @@ export function DagensOkterWidget({
         <>
           {nesteOkt && (
             <>
-              <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, color: T.fg, lineHeight: 1.3 }}>
+              <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 17, color: TL.text, lineHeight: 1.3 }}>
                 {nesteOkt.tittel}
               </div>
-              <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.6, margin: "8px 0 0" }}>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.6, margin: "8px 0 0" }}>
                 {nesteOkt.meta} · {nesteOkt.coachNavn}
               </p>
               <div style={{ display: "flex", gap: 6, marginTop: 12, alignItems: "center", flexWrap: "wrap" }}>

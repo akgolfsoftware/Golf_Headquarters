@@ -1,8 +1,8 @@
 import { headers } from "next/headers";
 
 import { PlausibleScript } from "@/components/marketing/plausible";
-import { MarkedFot } from "@/components/marketing/paper/MarkedFot";
-import { MarkedNav } from "@/components/marketing/paper/MarkedNav";
+import { MarkedFot } from "@/components/marketing/landing/MarkedFot";
+import { MarkedNav } from "@/components/marketing/landing/MarkedNav";
 import { kanBrukeInnebygdBooking } from "@/lib/booking/offentlig-booking";
 
 /**
@@ -22,7 +22,7 @@ import { kanBrukeInnebygdBooking } from "@/lib/booking/offentlig-booking";
  *  - `/stats/*` (~45 ruter): eget produkt, egen mørk MRamme, egen designbølge
  *    (W7). Beholder sitt skall til den bølgen kjører.
  *  - `/booking` KUN når den innebygde bookingen er åpen: da rendres
- *    `MarkedBookingPaperV2`, som har egen topplinje fordi fasiten
+ *    `MarkedBookingV2`, som har egen topplinje fordi fasiten
  *    `designsystem/paper/fase1/booking.html` tegner en — pixel-signert av
  *    Anders 14.08.2026. Er bookingen pauset (dagens tilstand for alle utenom
  *    ADMIN), er `/booking` en helt vanlig landingsside og får skallet.

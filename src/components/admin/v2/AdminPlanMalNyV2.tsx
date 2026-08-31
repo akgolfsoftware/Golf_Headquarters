@@ -1,5 +1,6 @@
 "use client";
 import { TL } from "@/lib/v2/train-lock";
+import { AK } from "@/lib/v2/ak-palett";
 
 /**
  * AgencyOS — Ny plan-mal (`/admin/plan-templates/ny`) — v2.
@@ -15,7 +16,7 @@ import { useRouter } from "next/navigation";
 import type { LPhase, NgfKategori, PyramidArea } from "@/generated/prisma/enums";
 import { createTemplate, type TemplateCreateInput } from "@/app/admin/(legacy)/plan-templates/actions";
 import { ANBEFALT_FORDELING_PER_KATEGORI, FASE_ALLE, FASE_LABEL, KATEGORI_ALLE, KATEGORI_LABEL, type DisciplinFordeling } from "@/components/admin/plan-templates/shared";
-import { Kort, Caps, Knapp, Icon, HjelpTips, StatusPill, T, AKSE_NAVN } from "@/components/v2";
+import { Kort, Caps, Knapp, Icon, HjelpTips, StatusPill, AKSE_NAVN } from "@/components/v2";
 
 const PYR_ALLE: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
 
@@ -241,7 +242,7 @@ export function AdminPlanMalNyV2() {
         <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 14 }}>
           {PYR_ALLE.map((p) => (
             <div key={p} style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <span aria-hidden style={{ width: 8, height: 8, borderRadius: 3, background: T.ax[p], flex: "none" }} />
+              <span aria-hidden style={{ width: 8, height: 8, borderRadius: 3, background: AK.ax[p], flex: "none" }} />
               <span style={{ width: 76, flex: "none", fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 600, color: TL.mute }}>
                 {AKSE_NAVN[p]}
               </span>
@@ -254,7 +255,7 @@ export function AdminPlanMalNyV2() {
                   setFordeling({ ...fordeling, [p]: parseInt(e.target.value, 10) / 100 })
                 }
                 aria-label={`Andel ${AKSE_NAVN[p]}`}
-                style={{ flex: 1, accentColor: T.ax[p] }}
+                style={{ flex: 1, accentColor: AK.ax[p] }}
               />
               <span style={{ width: 42, flex: "none", textAlign: "right", fontFamily: TL.font.mono, fontSize: 12, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>
                 {Math.round(fordeling[p] * 100)}%

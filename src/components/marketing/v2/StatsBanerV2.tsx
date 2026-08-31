@@ -8,7 +8,9 @@
  */
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+import { AK } from "@/lib/v2/ak-palett";
+
 import { Icon, Kort, Caps, KpiFlis, FilterChips, TomTilstand } from "@/components/v2";
 import type { BaneListItem } from "@/lib/stats/bane-queries";
 import { StatsRamme, StatsSok, StatsStatusBar, useMobile } from "./stats-ramme";
@@ -64,7 +66,7 @@ export function StatsBanerV2({ baner, totalTurneringer, totalSpillere }: StatsBa
 
       {/* KPI-strip */}
       <Seksjon mobile={mobile} style={{ paddingTop: 0 }}>
-        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(3, 1fr)", gap: T.gap }}>
+        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(3, 1fr)", gap: AK.gap }}>
           <KpiFlis label="Baner" value={baner.length} />
           <KpiFlis label="Turneringer arrangert her" value={totalTurneringer} />
           <KpiFlis label="Spillere har spilt her" value={totalSpillere} />
@@ -83,24 +85,24 @@ export function StatsBanerV2({ baner, totalTurneringer, totalSpillere }: StatsBa
             <TomTilstand icon="flag" title="Ingen baner matcher søket" sub="Prøv et annet søk eller en annen region." />
           </Kort>
         ) : (
-          <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: T.gap }}>
+          <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: AK.gap }}>
             {filtrert.map((b) => (
               <Link key={b.slug} href={`/stats/baner/${b.slug}`} style={{ textDecoration: "none" }}>
                 <Kort hover pad="0">
                   <div
                     style={{
                       height: 96,
-                      borderBottom: `1px solid ${T.border}`,
-                      background: T.panel2,
+                      borderBottom: `1px solid ${TL.hair}`,
+                      background: TL.dock,
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      fontFamily: T.mono,
+                      fontFamily: TL.font.mono,
                       fontSize: 9,
                       fontWeight: 700,
                       letterSpacing: "0.1em",
                       textTransform: "uppercase",
-                      color: T.mut,
+                      color: TL.mute,
                       textAlign: "center",
                       padding: "0 12px",
                     }}
@@ -115,8 +117,8 @@ export function StatsBanerV2({ baner, totalTurneringer, totalSpillere }: StatsBa
                       </Caps>
                       {b.oppstartsaar && <Caps size={9}>{b.oppstartsaar}</Caps>}
                     </div>
-                    <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, color: T.fg, marginTop: 10 }}>{b.navn}</div>
-                    <div style={{ display: "flex", gap: 16, marginTop: 14, paddingTop: 14, borderTop: `1px solid ${T.border}`, flexWrap: "wrap" }}>
+                    <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 17, color: TL.text, marginTop: 10 }}>{b.navn}</div>
+                    <div style={{ display: "flex", gap: 16, marginTop: 14, paddingTop: 14, borderTop: `1px solid ${TL.hair}`, flexWrap: "wrap" }}>
                       {[
                         ["Lengde", b.lengdeMeter != null ? `${b.lengdeMeter} m` : "—"],
                         ["Slope", b.slope ?? "—"],
@@ -124,12 +126,12 @@ export function StatsBanerV2({ baner, totalTurneringer, totalSpillere }: StatsBa
                         ["Par", b.par],
                       ].map(([lbl, val]) => (
                         <div key={lbl}>
-                          <div style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>{lbl}</div>
-                          <div style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: T.fg, marginTop: 2 }}>{val}</div>
+                          <div style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>{lbl}</div>
+                          <div style={{ fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, color: TL.text, marginTop: 2 }}>{val}</div>
                         </div>
                       ))}
                     </div>
-                    <div style={{ fontFamily: T.mono, fontSize: 10, letterSpacing: "0.06em", textTransform: "uppercase", color: T.mut, marginTop: 12 }}>
+                    <div style={{ fontFamily: TL.font.mono, fontSize: 10, letterSpacing: "0.06em", textTransform: "uppercase", color: TL.mute, marginTop: 12 }}>
                       {b.totaltAntallTurneringer} turneringer arrangert
                     </div>
                   </div>
@@ -143,13 +145,13 @@ export function StatsBanerV2({ baner, totalTurneringer, totalSpillere }: StatsBa
       {/* Mersalg */}
       <Seksjon mobile={mobile}>
         <Kort tint pad={mobile ? "26px 22px" : "40px 44px"} style={{ textAlign: mobile ? "left" : "center" }}>
-          <Caps color={T.lime} style={{ marginBottom: 14 }}>
+          <Caps color={TL.fill} style={{ marginBottom: 14 }}>
             PlayerHQ
           </Caps>
           <SeksT mobile={mobile} em="din bane.">
             Spill smartere på
           </SeksT>
-          <p style={{ fontFamily: T.ui, fontSize: 14, color: T.fg2, margin: "14px auto 0", maxWidth: 480, lineHeight: 1.65 }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 14, color: TL.mute, margin: "14px auto 0", maxWidth: 480, lineHeight: 1.65 }}>
             Logg runder, mål Strokes Gained og se nøyaktig hvilke hull du taper strokes på. Automatisk baneanalyse inkludert.
           </p>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 22, justifyContent: mobile ? "flex-start" : "center" }}>

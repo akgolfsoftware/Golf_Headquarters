@@ -57,7 +57,7 @@
 }
 
 .ob-step-title {
-  font-family: var(--p-disp);
+  font-family: var(--tl-font-sans);
   font-size: 28px;
   font-weight: 700;
   letter-spacing: -0.02em;
@@ -66,7 +66,7 @@
 }
 
 .ob-step-title em {
-  font-family: var(--p-disp);
+  font-family: var(--tl-font-sans);
   font-style: italic;
   font-weight: 400;
   color: var(--v2-lime, #141413);
@@ -87,7 +87,7 @@
 }
 
 .ob-inspo {
-  background: var(--p-accent-soft);
+  background: color-mix(in srgb, var(--tl-warm) 12%, transparent);
   border-radius: 14px;
   padding: 20px 22px;
 }
@@ -97,7 +97,7 @@
 }
 
 .ob-inspo blockquote {
-  font-family: var(--p-disp);
+  font-family: var(--tl-font-sans);
   font-style: italic;
   font-size: 17px;
   line-height: 1.45;
@@ -107,10 +107,10 @@
 .ob-inspo cite {
   display: block;
   margin-top: 8px;
-  font-family: var(--p-mono);
+  font-family: var(--tl-font-mono);
   font-size: 10px;
   font-style: normal;
-  color: var(--p-fg);
+  color: var(--tl-text);
   letter-spacing: 0.10em;
   font-weight: 700;
   text-transform: uppercase;
@@ -145,7 +145,7 @@
 }
 
 .ob-label {
-  font-family: var(--p-mono);
+  font-family: var(--tl-font-mono);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.10em;
@@ -167,12 +167,12 @@
 }
 
 .ob-input:focus {
-  border-color: var(--p-focus);
-  box-shadow: 0 0 0 3px var(--p-accent-soft);
+  border-color: var(--tl-viz-target);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--tl-warm) 12%, transparent);
 }
 
 .ob-input-help {
-  font-family: var(--p-mono);
+  font-family: var(--tl-font-mono);
   font-size: 10px;
   color: #908D86;
 }
@@ -202,9 +202,9 @@
 
 .ob-radio-card:has(input:checked),
 .ob-radio-card.checked {
-  border-color: var(--p-cta);
+  border-color: var(--tl-fill);
   border-width: 2px;
-  background: var(--p-soft);
+  background: var(--tl-dock);
 }
 
 .ob-radio-grid {
@@ -240,7 +240,7 @@
 }
 
 .ob-coach-card.selected {
-  border-color: var(--p-cta);
+  border-color: var(--tl-fill);
   border-width: 2px;
 }
 
@@ -249,11 +249,11 @@
   height: 60px;
   border-radius: 50%;
   background: linear-gradient(140deg, #F1EEE5, #E5E3DD);
-  color: var(--p-fg);
+  color: var(--tl-text);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--p-disp);
+  font-family: var(--tl-font-sans);
   font-size: 18px;
   font-weight: 800;
 }
@@ -278,7 +278,7 @@
 }
 
 .ob-plan-card.selected {
-  border-color: var(--p-cta);
+  border-color: var(--tl-fill);
   border-width: 2px;
 }
 
@@ -304,7 +304,7 @@
 }
 
 .ob-summary-key {
-  font-family: var(--p-mono);
+  font-family: var(--tl-font-mono);
   font-size: 10px;
   color: #5E5C57;
   letter-spacing: 0.06em;
@@ -314,7 +314,7 @@
 }
 
 .ob-summary-val {
-  font-family: var(--p-disp);
+  font-family: var(--tl-font-sans);
   font-weight: 600;
   text-align: right;
 }
@@ -338,9 +338,9 @@
 }
 
 .ob-agree-item.checked {
-  border-color: var(--p-cta);
+  border-color: var(--tl-fill);
   border-width: 2px;
-  background: var(--p-soft);
+  background: var(--tl-dock);
 }
 
 .ob-agree-checkbox {
@@ -372,7 +372,7 @@
 }
 
 .ob-skip-link {
-  font-family: var(--p-mono);
+  font-family: var(--tl-font-mono);
   font-size: 11px;
   color: #5E5C57;
   text-decoration: underline;
@@ -407,7 +407,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--p-fg);
+  color: var(--tl-text);
 }
 
 .ob-success-wrap {
@@ -509,7 +509,7 @@
   border: 1.5px solid #E5E3DD;
   background: #ffffff;
   border-radius: 999px;
-  font-family: var(--p-mono);
+  font-family: var(--tl-font-mono);
   font-size: 11px;
   font-weight: 600;
   color: #5E5C57;
@@ -555,7 +555,7 @@
 }
 
 .ob-paymethod.selected {
-  border-color: var(--p-cta);
+  border-color: var(--tl-fill);
   border-width: 2px;
 }
 

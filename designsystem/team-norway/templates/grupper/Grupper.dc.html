@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Grupper — gruppeuke" description="Gruppemodus: felles uke som materialiseres til hver spiller, med medlemsliste og tilgang. 1440×760." -->
+<helmet><script src="./ds-base.js"></script></helmet>
+<div style="min-height:100vh;background:var(--surface-page);padding:28px;display:flex;justify-content:center;font-family:var(--font-body)">
+<div data-screen-label="Grupper gruppeuke" style="width:1440px;height:760px;flex-shrink:0;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-xl);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;flex-direction:column">
+
+<div style="height:68px;flex-shrink:0;display:flex;align-items:center;gap:18px;padding:0 22px;border-bottom:1px solid var(--border-subtle)">
+<img src="../../assets/logo/team-norway-golf.png" alt="Team Norway Golf" style="height:32px;width:auto;display:block;flex-shrink:0">
+<div style="width:1px;height:26px;background:var(--border-subtle)"></div>
+<span style="font-family:var(--font-display);font-size:16px;font-weight:700;letter-spacing:-.02em">Workbench</span>
+<div style="height:34px;border-radius:var(--radius-full);background:var(--navy-100);display:flex;align-items:center;gap:10px;padding:0 14px;cursor:pointer">
+<span style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.14em;color:var(--navy-600)">GRUPPE</span>
+<span style="font-size:13.5px;font-weight:600;color:var(--navy-800)">Team Norway Junior</span>
+<span style="font-size:10px;color:var(--navy-400)">▼</span>
+</div>
+<span style="font-family:var(--font-mono);font-size:13.5px;font-weight:500">Uke 36 · 31.08–06.09.2026</span>
+<div style="flex:1"></div>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="secondary" size="sm" hint-size="96px,34px">Ny økt</x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="primary" size="sm" hint-size="160px,34px">Lagre til gruppen</x-import>
+</div>
+
+<div style="flex-shrink:0;display:flex;align-items:center;gap:14px;padding:14px 22px;background:var(--navy-50);border-bottom:1px solid var(--border-subtle)">
+<span style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.16em;color:var(--navy-600);flex-shrink:0">GRUPPEMODUS</span>
+<span style="font-size:13.5px;color:var(--ink-700);text-wrap:pretty">Endringer her gjelder 9 medlemmer. Hver spiller får sin egen kopi — lokale endringer hos spillere gir valg, aldri overskriving.</span>
+<div style="flex:1"></div>
+<span style="font-size:12.5px;font-weight:600;color:var(--navy-600);cursor:pointer;white-space:nowrap">Vis medlemmer</span>
+</div>
+
+<div style="flex:1;min-height:0;display:flex">
+
+<div style="flex:1;min-width:0;display:flex;flex-direction:column">
+<div style="display:flex;padding-left:52px;border-bottom:1px solid var(--border-subtle)">
+<sc-for list="{{ days }}" as="day" hint-placeholder-count="7">
+<div style="flex:1;text-align:center;padding:11px 0">
+<span style="font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;color:var(--ink-400)">{{ day.label }}</span>
+</div>
+</sc-for>
+</div>
+<div style="flex:1;min-height:0;display:flex;align-items:flex-start;overflow:hidden">
+<div style="width:52px;flex-shrink:0">
+<sc-for list="{{ hours }}" as="hour" hint-placeholder-count="6">
+<div style="height:78px;line-height:78px;font-family:var(--font-mono);font-size:11px;color:var(--ink-400);text-align:right;padding-right:10px">{{ hour }}</div>
+</sc-for>
+</div>
+<div style="flex:1;height:468px;display:flex;background:repeating-linear-gradient(to bottom,transparent 0 77px,var(--ink-100) 77px 78px)">
+<sc-for list="{{ columns }}" as="col" hint-placeholder-count="7">
+<div style="flex:1;position:relative;border-left:1px solid var(--ink-100)">
+<sc-for list="{{ col.events }}" as="ev" hint-placeholder-count="1">
+<sc-if value="{{ ev.solid }}" hint-placeholder-val="{{ true }}">
+<div ref="{{ ev.ref }}" style="box-sizing:border-box;position:absolute;left:4px;right:4px;border-radius:var(--radius-sm);padding:9px 10px;overflow:hidden;cursor:pointer;background:var(--white);border:1px solid var(--border-subtle);border-left:3px solid var(--navy-600);box-shadow:var(--shadow-sm)">
+<div style="display:flex;justify-content:space-between;gap:6px;align-items:center">
+<span style="font-family:var(--font-mono);font-size:8.5px;letter-spacing:.1em;color:var(--ink-500);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ ev.cat }}</span>
+<span style="font-family:var(--font-mono);font-size:9px;color:var(--ink-300)">{{ ev.mark }}</span>
+</div>
+<div style="font-size:13.5px;font-weight:600;line-height:1.25;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink-900)">{{ ev.title }}</div>
+<div style="font-family:var(--font-mono);font-size:11px;color:var(--ink-500);margin-top:2px">{{ ev.time }}</div>
+<div style="font-family:var(--font-mono);font-size:9px;letter-spacing:.1em;color:var(--ink-400);margin-top:8px">{{ ev.note }}</div>
+</div>
+</sc-if>
+<sc-if value="{{ ev.draft }}" hint-placeholder-val="{{ false }}">
+<div ref="{{ ev.ref }}" style="box-sizing:border-box;position:absolute;left:4px;right:4px;border-radius:var(--radius-sm);padding:9px 10px;overflow:hidden;cursor:pointer;background:var(--white);border:1px dashed var(--border-default);border-left:3px solid var(--navy-600)">
+<div style="display:flex;justify-content:space-between;gap:6px;align-items:center">
+<span style="font-family:var(--font-mono);font-size:8.5px;letter-spacing:.1em;color:var(--ink-500);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ ev.cat }}</span>
+<span style="font-family:var(--font-mono);font-size:9px;color:var(--ink-300)">{{ ev.mark }}</span>
+</div>
+<div style="font-size:13.5px;font-weight:600;line-height:1.25;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink-900)">{{ ev.title }}</div>
+<div style="font-family:var(--font-mono);font-size:11px;color:var(--ink-500);margin-top:2px">{{ ev.time }}</div>
+<div style="font-family:var(--font-mono);font-size:9px;letter-spacing:.1em;color:var(--ink-400);margin-top:8px">{{ ev.note }}</div>
+</div>
+</sc-if>
+</sc-for>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+
+<div style="width:360px;flex-shrink:0;border-left:1px solid var(--border-subtle);background:var(--ink-50);padding:22px 20px;display:flex;flex-direction:column;gap:16px;overflow:hidden">
+<div style="display:flex;justify-content:space-between;align-items:baseline">
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-400)">MEDLEMMER</span>
+<span style="font-family:var(--font-mono);font-size:11px;color:var(--ink-500)">9 aktive</span>
+</div>
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);overflow:hidden">
+<sc-for list="{{ members }}" as="m" hint-placeholder-count="6">
+<div style="display:flex;align-items:center;gap:11px;padding:11px 14px;border-bottom:1px solid var(--ink-100)">
+<div style="width:26px;height:26px;flex-shrink:0;border-radius:var(--radius-full);background:var(--navy-100);color:var(--navy-800);font-family:var(--font-mono);font-size:8.5px;font-weight:600;display:flex;align-items:center;justify-content:center">{{ m.initials }}</div>
+<span style="flex:1;min-width:0;font-size:14px;font-weight:600;color:var(--ink-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ m.name }}</span>
+<span style="font-family:var(--font-mono);font-size:10px;color:var(--ink-400);white-space:nowrap">{{ m.tags }}</span>
+</div>
+</sc-for>
+</div>
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:16px;display:flex;flex-direction:column;gap:10px">
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--ink-400)">OPPRINNELSE I SPILLERENS PLAN</span>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Badge" tone="navy" hint-size="72px,28px">GRUPPE</x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Badge" tone="neutral" hint-size="68px,28px">COACH</x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Badge" tone="neutral" hint-size="54px,28px">DEG</x-import>
+</div>
+<span style="font-size:12.5px;color:var(--ink-500);line-height:1.55;text-wrap:pretty">Hver økt bærer med seg hvem som satte den. Spilleren ser alltid opphavet.</span>
+</div>
+<div style="flex:1"></div>
+<span style="font-size:12px;color:var(--ink-400);line-height:1.55;text-wrap:pretty">Kun spillere med aktiv tilgang vises. Utmeldte beholder sin historikk, men mottar ikke nye økter.</span>
+</div>
+
+</div>
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1496,&quot;height&quot;:816}}">
+const HOUR = 78, START = 15;
+const CAT = { SLAG: 'var(--navy-600)', FYS: 'var(--data-3)', SPILL: 'var(--data-4)', TEST: 'var(--red-600)' };
+
+class Component extends DCLogic {
+  ev(o) {
+    const top = (o.from - START) * HOUR;
+    const height = o.hours * HOUR - 6;
+    const accent = CAT[o.cat.split(' ')[0]] || 'var(--navy-600)';
+    return {
+      ...o,
+      solid: !o.draft,
+      draft: !!o.draft,
+      ref: (el) => {
+        if (!el) return;
+        el.style.top = top + 'px';
+        el.style.height = height + 'px';
+        el.style.borderLeftColor = accent;
+      }
+    };
+  }
+  renderVals() {
+    const hours = [];
+    for (let h = START; h <= 20; h++) hours.push(String(h).padStart(2, '0'));
+    const days = ['Man 31', 'Tir 01', 'Ons 02', 'Tor 03', 'Fre 04', 'Lør 05', 'Søn 06'];
+    const plan = [
+      [{ cat: 'SLAG · CHIP', title: 'Nærspill felles', time: '16.00 · 1,5 t', from: 16, hours: 1.5, mark: '↻', note: '9 MEDLEMMER' }],
+      [],
+      [{ cat: 'SLAG · INNSPILL', title: 'Innspill felles', time: '17.00 · 2 t', from: 17, hours: 2, draft: true, note: 'IKKE LAGRET' }],
+      [],
+      [{ cat: 'FYS · STYRKE', title: 'Styrke felles', time: '16.00 · 1,5 t', from: 16, hours: 1.5, note: '9 MEDLEMMER' }],
+      [{ cat: 'SPILL · BANE', title: 'Banespill felles', time: '15.00 · 3 t', from: 15, hours: 3, note: '6 PÅMELDT' }],
+      []
+    ];
+    return {
+      hours,
+      days: days.map(label => ({ label })),
+      columns: plan.map(evts => ({ events: evts.map(e => this.ev(e)) })),
+      members: [
+        { initials: 'MA', name: 'Mathias Aase', tags: 'NTG · WANG' },
+        { initials: 'OV', name: 'Ola Vikhals', tags: 'Oslo GK' },
+        { initials: 'AKL', name: 'Ahre Ketil Lillehagen', tags: 'Perf.' },
+        { initials: 'OB', name: 'Oscar Bach', tags: 'Bærum GK' },
+        { initials: 'LAT', name: 'Lord Anders Thelberg', tags: 'Trondheim GK' },
+        { initials: 'ØR', name: 'Øyvind Rojahn', tags: 'Oslo GK' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

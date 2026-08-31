@@ -6,9 +6,11 @@ import assert from "node:assert/strict";
 import { AGENCYOS_SKALL_TABS, AGENCYOS_UNDER_MEG } from "./skall-ia";
 
 describe("J-C: Kø-fanen er godkjenningskøen", () => {
-  it("rail Kø peker på /admin/godkjenninger", () => {
+  // MASTERPLAN 15.1 (30.08.2026): Kø ble én adresse med faner. Railen pekte
+  // tidligere på /admin/godkjenninger, som nå bare er én av fem faner der.
+  it("rail Kø peker på /admin/ko", () => {
     const ko = AGENCYOS_SKALL_TABS.find((t) => t.id === "ko");
-    assert.equal(ko?.href, "/admin/godkjenninger");
+    assert.equal(ko?.href, "/admin/ko");
   });
 });
 

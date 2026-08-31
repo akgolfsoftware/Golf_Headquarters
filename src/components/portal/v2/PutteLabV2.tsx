@@ -1,5 +1,6 @@
 "use client";
 import { TL } from "@/lib/v2/train-lock";
+import { AK } from "@/lib/v2/ak-palett";
 
 /**
  * PlayerHQ · Putte-laboratoriet — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
@@ -9,7 +10,7 @@ import { TL } from "@/lib/v2/train-lock";
 import { useState, useRef, useCallback, useEffect } from "react";
 import * as C from "@/lib/putt-core";
 import type { QVals, StageKey } from "@/lib/putt-core";
-import { T, Caps, Tittel, Kort, Knapp, Glider, HjelpTips } from "@/components/v2";
+import { Caps, Tittel, Kort, Knapp, Glider, HjelpTips } from "@/components/v2";
 
 // ─── Typer ─────────────────────────────────────────────────────────────────
 
@@ -430,7 +431,7 @@ function DirGreenen() {
               <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 20, lineHeight: 1.2, letterSpacing: "-0.02em", color: result.make ? TL.fill : TL.text }}>
                 {result.make ? "I hull" : result.tooShort ? "Kom ikke fram" : result.tooLong ? "Løp forbi" : Math.abs(result.missCm) > result.capCm * 1.8 ? `Bommet ${result.missCm > 0 ? "høyre" : "venstre"}` : "Lipp-out"}
               </div>
-              <div style={{ fontFamily: TL.font.sans, fontSize: 12.5, lineHeight: 1.55, marginTop: 8, color: result.make ? T.farge.hvitA85 : TL.mute }}>
+              <div style={{ fontFamily: TL.font.sans, fontSize: 12.5, lineHeight: 1.55, marginTop: 8, color: result.make ? AK.farge.hvitA85 : TL.mute }}>
                 {result.make && `Perfekt kjede: lest ${Math.round(result.sideBreakCm)} cm break, siktet riktig og doserte farten i sonen.`}
                 {!result.make && result.tooShort && <><strong>Lengde.</strong> For løs — putten døde før hullet og tok mer break på veien. Slå den forbi, ikke til.</>}
                 {!result.make && result.tooLong && <><strong>Lengde.</strong> For hard — ballen tok lite break og fór over. Mindre fart gir både snillere kant og mer fall.</>}
@@ -540,10 +541,10 @@ function DirKjeden() {
             <Caps size={10} color={TL.fill}>Make-sannsynlighet</Caps>
             <HjelpTips k="makeProsent" size={11} />
           </span>
-          <div style={{ fontFamily: TL.font.mono, fontWeight: 700, fontSize: 68, lineHeight: 1, letterSpacing: "-0.03em", marginTop: 10, color: T.farge.hvitA96, fontVariantNumeric: "tabular-nums" }}>
+          <div style={{ fontFamily: TL.font.mono, fontWeight: 700, fontSize: 68, lineHeight: 1, letterSpacing: "-0.03em", marginTop: 10, color: AK.farge.hvitA96, fontVariantNumeric: "tabular-nums" }}>
             {Math.round(make * 100)}<small style={{ fontSize: 26, fontWeight: 600, color: TL.fill }}> %</small>
           </div>
-          <p style={{ fontFamily: TL.font.mono, fontSize: 12.5, fontWeight: 700, color: T.farge.hvitA80, margin: "10px 0 0", lineHeight: 1.5 }}>
+          <p style={{ fontFamily: TL.font.mono, fontSize: 12.5, fontWeight: 700, color: AK.farge.hvitA80, margin: "10px 0 0", lineHeight: 1.5 }}>
             Perfekt utført topper på <strong style={{ color: TL.fill }}>{Math.round(geom * C.FLAX * 100)} %</strong> for denne putten — selv proffer bommer {C.LEN[len].m}. Flaks-taket spiser de siste {Math.round((1 - C.FLAX) * 100)} %.
           </p>
         </div>

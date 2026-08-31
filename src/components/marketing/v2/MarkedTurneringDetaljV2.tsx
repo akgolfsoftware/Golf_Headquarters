@@ -9,8 +9,8 @@
  */
 import { Icon, StatusPill } from "@/components/v2";
 import { FlagGlyph } from "@/components/stats/flag-glyph";
-import { PkShell } from "./paper/PkShell";
-import { PkSek, PkEyebrow, PkHero, PkCta, PkKpi, PkTom } from "./paper/PkPrimitives";
+import { PkShell } from "./kit/PkShell";
+import { PkSek, PkEyebrow, PkHero, PkCta, PkKpi, PkTom } from "./kit/PkPrimitives";
 
 export type EntrySpiller = { id: string; name: string; slug: string; country: string | null; tier: string; photoUrl: string | null };
 export type TurneringEntry = {
@@ -68,15 +68,15 @@ export function MarkedTurneringDetaljV2({ t }: { t: TurneringDetalj }) {
         <div style={{ marginTop: 8 }}>
           <PkHero>{t.name}</PkHero>
         </div>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 16, marginTop: 8, fontFamily: "var(--p-ui)", fontSize: 14, color: "var(--p-muted)" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 16, marginTop: 8, fontFamily: "var(--tl-font-sans)", fontSize: 14, color: "var(--tl-mute)" }}>
           {t.location && (
             <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <Icon name="map-pin" size={14} style={{ color: "var(--p-accent-fg)" }} />
+              <Icon name="map-pin" size={14} style={{ color: "var(--tl-warm)" }} />
               {t.location}
             </span>
           )}
           {t.officialUrl && (
-            <a href={t.officialUrl} target="_blank" rel="noopener noreferrer" style={{ display: "flex", alignItems: "center", gap: 4, color: "var(--p-accent-fg)", textDecoration: "none" }}>
+            <a href={t.officialUrl} target="_blank" rel="noopener noreferrer" style={{ display: "flex", alignItems: "center", gap: 4, color: "var(--tl-warm)", textDecoration: "none" }}>
               Offisiell side <Icon name="external-link" size={12} />
             </a>
           )}
@@ -87,9 +87,9 @@ export function MarkedTurneringDetaljV2({ t }: { t: TurneringDetalj }) {
           {erFerdig && <StatusPill tone="info">Ferdigspilt</StatusPill>}
           {erKommende && <StatusPill tone="lime">Kommende</StatusPill>}
           {t.winnerName && erFerdig && (
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: "var(--p-ui)", fontSize: 13, color: "var(--p-muted)", border: "1px solid var(--p-border)", borderRadius: 9999, padding: "5px 14px" }}>
-              <Icon name="trophy" size={13} style={{ color: "var(--p-accent-fg)" }} />
-              Vinner: <strong style={{ color: "var(--p-fg)" }}>{t.winnerName}</strong>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: "var(--tl-font-sans)", fontSize: 13, color: "var(--tl-mute)", border: "1px solid var(--tl-hair)", borderRadius: 9999, padding: "5px 14px" }}>
+              <Icon name="trophy" size={13} style={{ color: "var(--tl-warm)" }} />
+              Vinner: <strong style={{ color: "var(--tl-text)" }}>{t.winnerName}</strong>
             </span>
           )}
         </div>
@@ -112,21 +112,21 @@ export function MarkedTurneringDetaljV2({ t }: { t: TurneringDetalj }) {
               <div key={e.id} className="pk-kort pk-kort-tint pk-kort-pad">
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   <FlagGlyph code="no" size={16} />
-                  <span style={{ fontFamily: "var(--p-disp)", fontWeight: 600, fontSize: 19, color: "var(--p-fg)" }}>{e.player.name}</span>
+                  <span style={{ fontFamily: "var(--tl-font-sans)", fontWeight: 600, fontSize: 19, color: "var(--tl-text)" }}>{e.player.name}</span>
                 </div>
                 <div style={{ display: "flex", gap: 24, marginTop: 16, flexWrap: "wrap" }}>
                   {erLive && e.position !== null && (
                     <>
                       <div>
                         <span className="pk-eyebrow" style={{ fontSize: 9 }}>Posisjon</span>
-                        <span style={{ fontFamily: "var(--p-mono)", fontSize: 24, fontWeight: 700, color: "var(--p-accent-fg)", marginTop: 4, display: "block" }}>
+                        <span style={{ fontFamily: "var(--tl-font-mono)", fontSize: 24, fontWeight: 700, color: "var(--tl-warm)", marginTop: 4, display: "block" }}>
                           {e.tied ? `T${e.position}` : e.position}
                         </span>
                       </div>
                       {e.scoreToPar !== null && (
                         <div>
                           <span className="pk-eyebrow" style={{ fontSize: 9 }}>Score til par</span>
-                          <span style={{ fontFamily: "var(--p-mono)", fontSize: 24, fontWeight: 700, marginTop: 4, display: "block", color: e.scoreToPar < 0 ? "var(--p-up)" : e.scoreToPar > 0 ? "var(--p-dn)" : "var(--p-fg)" }}>
+                          <span style={{ fontFamily: "var(--tl-font-mono)", fontSize: 24, fontWeight: 700, marginTop: 4, display: "block", color: e.scoreToPar < 0 ? "var(--tl-ok)" : e.scoreToPar > 0 ? "var(--tl-danger)" : "var(--tl-text)" }}>
                             {formaterToPar(e.scoreToPar)}
                           </span>
                         </div>
@@ -149,7 +149,7 @@ export function MarkedTurneringDetaljV2({ t }: { t: TurneringDetalj }) {
           <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
             <div>
               <PkEyebrow>Leaderboard</PkEyebrow>
-              <span style={{ fontFamily: "var(--p-disp)", fontWeight: 600, fontSize: 22, color: "var(--p-fg)", marginTop: 6, display: "block" }}>Hele feltet: {alle.length} spillere</span>
+              <span style={{ fontFamily: "var(--tl-font-sans)", fontWeight: 600, fontSize: 22, color: "var(--tl-text)", marginTop: 6, display: "block" }}>Hele feltet: {alle.length} spillere</span>
             </div>
             {t.leaderboardSnapAt && <span className="pk-eyebrow">Sist oppdatert {NB_TIME.format(t.leaderboardSnapAt)}</span>}
           </div>
@@ -169,23 +169,23 @@ export function MarkedTurneringDetaljV2({ t }: { t: TurneringDetalj }) {
               <tbody>
                 {alle.map((e, i) => (
                   <tr key={e.id} className={e.player.country === "NO" ? "pk-tr-no" : undefined}>
-                    <td style={{ color: i < 3 ? "var(--p-accent-fg)" : "var(--p-muted)", fontWeight: i < 3 ? 700 : 500 }}>
+                    <td style={{ color: i < 3 ? "var(--tl-warm)" : "var(--tl-mute)", fontWeight: i < 3 ? 700 : 500 }}>
                       {e.tied && e.position !== null ? `T${e.position}` : (e.position ?? i + 1)}
                     </td>
-                    <td style={{ fontFamily: "var(--p-ui)", fontWeight: 600, fontSize: 13.5, color: "var(--p-fg)" }}>
+                    <td style={{ fontFamily: "var(--tl-font-sans)", fontWeight: 600, fontSize: 13.5, color: "var(--tl-text)" }}>
                       {e.player.name}
-                      {e.player.country === "NO" && <Icon name="star" size={11} style={{ color: "var(--p-accent-fg)", marginLeft: 6 }} />}
+                      {e.player.country === "NO" && <Icon name="star" size={11} style={{ color: "var(--tl-warm)", marginLeft: 6 }} />}
                     </td>
                     <td>
                       <FlagGlyph code={e.player.country?.toLowerCase() ?? "xx"} size={13} />
                     </td>
                     {erLive && (
-                      <td className="pk-td-right" style={{ fontWeight: 600, color: e.scoreToPar !== null ? (e.scoreToPar < 0 ? "var(--p-up)" : e.scoreToPar > 0 ? "var(--p-dn)" : "var(--p-fg)") : "var(--p-muted)" }}>
+                      <td className="pk-td-right" style={{ fontWeight: 600, color: e.scoreToPar !== null ? (e.scoreToPar < 0 ? "var(--tl-ok)" : e.scoreToPar > 0 ? "var(--tl-danger)" : "var(--tl-text)") : "var(--tl-mute)" }}>
                         {e.scoreToPar !== null ? formaterToPar(e.scoreToPar) : "—"}
                       </td>
                     )}
                     {erLive && (
-                      <td className="pk-td-right" style={{ color: "var(--p-muted)" }}>
+                      <td className="pk-td-right" style={{ color: "var(--tl-mute)" }}>
                         {e.status === "CUT" ? "—" : e.thru === null ? "—" : e.thru >= 18 ? "F" : e.thru}
                       </td>
                     )}
@@ -193,7 +193,7 @@ export function MarkedTurneringDetaljV2({ t }: { t: TurneringDetalj }) {
                       {e.status === "CUT" ? (
                         <span className="pk-tag">Cut</span>
                       ) : (
-                        <span style={{ color: "var(--p-muted)", fontSize: 11 }}>{formaterTier(e.player.tier)}</span>
+                        <span style={{ color: "var(--tl-mute)", fontSize: 11 }}>{formaterTier(e.player.tier)}</span>
                       )}
                     </td>
                   </tr>
@@ -212,8 +212,8 @@ export function MarkedTurneringDetaljV2({ t }: { t: TurneringDetalj }) {
         <div className="pk-kort pk-kort-tint">
           <div className="pk-kort-body" style={{ display: "flex", alignItems: "center", gap: 20, flexWrap: "wrap" }}>
             <div style={{ flex: 1, minWidth: 240 }}>
-              <span style={{ fontFamily: "var(--p-disp)", fontWeight: 600, fontSize: 22, color: "var(--p-fg)" }}>Følger du proffene? Lær av dem også.</span>
-              <p style={{ fontFamily: "var(--p-body)", fontSize: 14.5, color: "var(--p-muted)", margin: "10px 0 0", maxWidth: 480 }}>
+              <span style={{ fontFamily: "var(--tl-font-sans)", fontWeight: 600, fontSize: 22, color: "var(--tl-text)" }}>Følger du proffene? Lær av dem også.</span>
+              <p style={{ fontFamily: "var(--tl-font-sans)", fontSize: 14.5, color: "var(--tl-mute)", margin: "10px 0 0", maxWidth: 480 }}>
                 PlayerHQ gir deg treningsdagbok, statistikk og AI-coach. Bygd av coacher med 10+ års erfaring.
               </p>
             </div>

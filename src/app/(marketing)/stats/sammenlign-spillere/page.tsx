@@ -1,4 +1,5 @@
-import { T } from "@/lib/v2/tokens";
+import { AK } from "@/lib/v2/ak-palett";
+
 /**
  * /stats/sammenlign-spillere — head-to-head sammenligning av 2 norske spillere
  * Pixel-perfect port av design 10 fra design-handoff-stats-2026-05-25.
@@ -233,7 +234,7 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
         className="stats-section stats-section-divider"
         // Invers band: flaten er papir, ikke skinnesvart. Snu derfor --accent
         // til lys-verdien, ellers arver kursiv-aksenten scopets mørke
-        // --p-up (#9DB284) og lander på 2,2:1 mot papir.
+        // --tl-ok (#9DB284) og lander på 2,2:1 mot papir.
         style={
           {
             background: "hsl(var(--primary))",
@@ -278,7 +279,7 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
                 fontSize: 16,
                 lineHeight: 1.55,
                 marginTop: 16,
-                color: T.farge.sandLysA80,
+                color: AK.farge.sandLysA80,
                 maxWidth: 440,
               }}
             >
@@ -296,7 +297,7 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
           </div>
           <div
             style={{
-              background: T.farge.hvitA6,
+              background: AK.farge.hvitA6,
               border: "1px solid color-mix(in srgb, var(--v2-lime) 20%, transparent)",
               borderRadius: 14,
               padding: 24,
@@ -315,7 +316,7 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
                   gap: 10,
                   marginBottom: 12,
                   fontSize: 14,
-                  color: T.farge.sandLysA88,
+                  color: AK.farge.sandLysA88,
                 }}
               >
                 <span

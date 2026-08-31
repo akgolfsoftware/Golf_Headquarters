@@ -1,0 +1,11 @@
+:root{
+--font-display:'Schibsted Grotesk',system-ui,sans-serif;
+--font-body:'Schibsted Grotesk',system-ui,sans-serif;
+--font-mono:'IBM Plex Mono',ui-monospace,monospace;
+/* rem, ikke px — skalaen skal følge brukerens tekststørrelse */
+--text-display-xl:4rem;--text-display:3rem;--text-h1:2.25rem;--text-h2:1.75rem;--text-h3:1.3125rem;--text-lg:1.125rem;--text-base:1rem;--text-sm:.875rem;--text-xs:.8125rem;--text-micro:.6875rem;
+--weight-regular:400;--weight-medium:500;--weight-semibold:600;--weight-bold:700;--weight-black:900;
+/* Sperring er størrelsesspesifikk — stor tekst strammes, liten tekst åpnes */
+--tracking-display:-0.035em;--tracking-heading:-0.02em;--tracking-normal:-0.005em;--tracking-small:0.005em;--tracking-eyebrow:0.16em;
+--leading-tight:1.05;--leading-snug:1.25;--leading-normal:1.55;--leading-relaxed:1.7;
+}

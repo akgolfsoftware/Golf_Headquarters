@@ -1,5 +1,5 @@
 "use client";
-import { T } from "@/lib/v2/tokens";
+import { AK } from "@/lib/v2/ak-palett";
 
 /**
  * StatsRangeSlider — styled range input matching design bundle aesthetics.
@@ -38,7 +38,7 @@ export function StatsRangeSlider({
           appearance: "none",
           height: 6,
           borderRadius: 3,
-          background: `linear-gradient(to right, ${T.farge.forestMerke} ${pct}%, ${T.farge.linjeMerke} ${pct}%)`,
+          background: `linear-gradient(to right, ${AK.farge.forestMerke} ${pct}%, ${AK.farge.linjeMerke} ${pct}%)`,
           outline: "none",
           cursor: "pointer",
         }}
@@ -49,10 +49,10 @@ export function StatsRangeSlider({
           width: 22px;
           height: 22px;
           border-radius: 50%;
-          background: var(--p-cta);
-          border: 3px solid var(--p-bg);
+          background: var(--tl-fill);
+          border: 3px solid var(--tl-scene);
           cursor: pointer;
-          box-shadow: var(--p-shadow);
+          box-shadow: 0 1px 0 rgba(20,20,19,0.03), 0 18px 40px rgba(20,20,19,0.05);
           transition: transform 0.15s;
         }
         input[type="range"]::-webkit-slider-thumb:hover {
@@ -62,8 +62,8 @@ export function StatsRangeSlider({
           width: 22px;
           height: 22px;
           border-radius: 50%;
-          background: var(--p-cta);
-          border: 3px solid var(--p-bg);
+          background: var(--tl-fill);
+          border: 3px solid var(--tl-scene);
           cursor: pointer;
         }
       `}</style>

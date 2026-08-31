@@ -1,3 +1,4 @@
+import { AK } from "@/lib/v2/ak-palett";
 /**
  * /stats/2026 — Sesongoversikt "2026 i tall"
  * Magazine-spread feel. Server-rendered, ISR revalidate 86400.
@@ -14,7 +15,6 @@ import { CountUp } from "@/components/stats/count-up";
 import { StatsInitialAvatar } from "@/components/stats/stats-initial-avatar";
 import { SesongStickyNav } from "./sesong-sticky-nav";
 import { StatsLegacyShell } from "@/components/marketing/v2/stats-ramme";
-import { T } from "@/lib/v2/tokens";
 
 export const revalidate = 86400;
 
@@ -172,8 +172,8 @@ const HOVEDHISTORIER = [
 const MILEPAELE_FARGER: Record<string, string> = {
   vinst: "var(--s-primary)",
   rekord: "var(--s-accent)",
-  topp10: T.milepael.topp10,
-  "pro-debut": T.milepael.proDebut,
+  topp10: AK.milepael.topp10,
+  "pro-debut": AK.milepael.proDebut,
 };
 
 export default async function Sesong2026Page() {
@@ -452,7 +452,7 @@ export default async function Sesong2026Page() {
           <h2 style={{ fontFamily: "var(--font-display)", fontSize: 40, fontWeight: 600, color: "hsl(var(--background))", marginTop: 16, marginBottom: 16 }}>
             Logg dine egne runder i {AAR}.
           </h2>
-          <p style={{ fontSize: 16, color: T.farge.sandLysA70, maxWidth: 480, margin: "0 auto 32px", lineHeight: 1.6 }}>
+          <p style={{ fontSize: 16, color: AK.farge.sandLysA70, maxWidth: 480, margin: "0 auto 32px", lineHeight: 1.6 }}>
             Sa er du med i neste ars sesongoversikt, og du kan folge din egen utvikling gjennom hele sesongen.
           </p>
           <Link
