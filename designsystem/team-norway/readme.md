@@ -137,7 +137,7 @@ Praktisk betyr det:
 - Bor skjermen under `/team-norway/*`, er dette systemet fasit.
 - Ingen skjerm har to fasiter.
 
-Dette er en **anbefaling som må bekreftes** — N7 er i dag formulert som om Train-lock skal tegne hele organisasjonsflaten, inkludert TNs egne skjermer. Enten justeres N7, eller dette systemet reduseres til et fargeskinn.
+**Bekreftet av Anders 31.08.2026** (`.claude/rules/beslutninger.md` §ANALYSE OG DATAGOLF FOR TEAM NORWAY ER TRAIN-LOCK MED TN-SKINN) — nettopp denne arbeidsdelingen. Analyse og DataGolf er Train-lock med TN-skinn, `/team-norway/*`-skjermene er dette systemet. N7 i MASTERPLAN er presisert til å reflektere det.
 
 ## Åpne punkter
 
