@@ -196,7 +196,8 @@ export async function sendMeldingTilSpiller(
       );
 
       revalidatePath("/admin/messages");
-      revalidatePath("/admin/analysere/compliance");
+      // MASTERPLAN 15.8: Compliance-visningen bor nå på /admin/analyse (fane «etterlevelse»).
+      revalidatePath("/admin/analyse");
       return { ok: true, threadId };
     } catch (err) {
       const kode = (err as { code?: string } | null)?.code;

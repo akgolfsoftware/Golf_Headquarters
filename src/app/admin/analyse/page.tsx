@@ -1,128 +1,101 @@
 /**
- * AgencyOS Innsikt-hub — /admin/analyse (T11, 27.08.2026).
+ * Analyse (Innsikt) — ÉN adresse (MASTERPLAN 15.8, beslutning 6.9 «én
+ * inngang per funksjon»).
  *
- * Fasit: `AG-07 Innsikt-hub.dc.html`. Erstatter den gamle v2-preview-siden
- * (AdminAnalyseV2, Paper T.*-tokens) med Train-lock-porten (InnsiktHubV2).
- * Auth uendret: samme `requirePortalUser`-guard (ADMIN/COACH), samme
- * coach-scoping via `coachScopedPlayerWhere`.
+ * Slår sammen TRE adresser: `/admin/analyse` (fane «stall», InnsiktHubV2 —
+ * uendret standardvisning), `/admin/analyse/stall` (nestet `?visning=trend`
+ * under «stall», InnsiktStallV2) og `/admin/analysere/compliance` (fane
+ * «etterlevelse», AdminComplianceV2). Alle tre gamle adresser er nå
+ * redirects hit — se hver enkelt fil.
  *
- * Motor-skille: alle SG-tall her er Broadie-SG fra `Round` — aldri blandet
- * med DataGolf/TrackMan/PEI (se InnsiktHubV2 filhode).
+ * AVVIK FRA CANVASEN og fra en literal lesning av MASTERPLAN-raden — se
+ * `src/lib/admin/analyse/faner.ts` filhode for full begrunnelse:
+ *   - «Tester»-pillen i `Analyse.dc.html` er IKKE bygget som fane her.
+ *     `/admin/tester` er en egen, allerede fungerende funksjon utenfor
+ *     15.8s kildeliste (tre navngitte adresser) — å trekke den inn ville
+ *     vært scope creep.
+ *   - Standardfanen er «stall», ikke «spiller» slik canvasen tegner —
+ *     `V2Shell`s sitewide nav-destinasjon «Innsikt» og flere andre steder
+ *     lenker bart til `/admin/analyse` i forventning om stall-oversikten.
  *
- * Server component.
+ * TILGANG — IKKE UTVIDET: alle tre kildesider hadde IDENTISK gate
+ * (`requirePortalUser({ allow: ["ADMIN", "COACH"] })` + coach-scoping via
+ * `coachScopedPlayerWhere`). Sammenslåingen utvider derfor ikke tilgang for
+ * noen fane. Låst av `src/lib/admin/analyse/faner.test.ts`.
+ *
+ * Design: canvas godkjent 30.08.2026 —
+ * designsystem/canvas/agencyos-ia/Analyse.dc.html («Innsikt (15.8)»).
  */
 
-import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { prisma } from "@/lib/prisma";
-import { startOfWeek, endOfWeek } from "@/lib/uke-helpers";
+import { loadComplianceData } from "@/lib/admin-compliance/compliance-data";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { InnsiktHubV2, type InnsiktHubV2Data, type InnsiktHubV2Kategori } from "@/components/admin/v2/InnsiktHubV2";
+import { AnalyseHode } from "@/components/admin/v2/analyse/AnalyseHode";
+import { InnsiktHubV2 } from "@/components/admin/v2/InnsiktHubV2";
+import { InnsiktStallV2 } from "@/components/admin/v2/InnsiktStallV2";
+import { AdminComplianceV2 } from "@/components/admin/v2/AdminComplianceV2";
+import { InnsiktSpillerListe } from "@/components/admin/v2/analyse/InnsiktSpillerListe";
+import { ANALYSE_FANER, velgAnalyseFane } from "@/lib/admin/analyse/faner";
+import { lastInnsiktHub, lastInnsiktSpillere, lastInnsiktStall } from "@/lib/admin/analyse/lastere";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Innsikt · AgencyOS" };
 
-const DAG_MS = 86_400_000;
-const PERIODE_UKER = 8;
-/** Skala for søylehøyde — typisk SG-kategori-spenn i stallen (§ dokumentert i InnsiktHubV2). */
-const KATEGORI_SKALA = 0.8;
-
-/** «+0,21» / «−0,38» med typografisk minus (fasit-format). */
-function fmtSigned(n: number, decimals = 2): string {
-  const s = Math.abs(n).toFixed(decimals).replace(".", ",");
-  return `${n < 0 ? "−" : "+"}${s}`;
-}
-
-function kategoriRad(key: string, label: string, verdi: number | null): InnsiktHubV2Kategori | null {
-  if (verdi == null) return null;
-  return {
-    key,
-    label,
-    verdi: fmtSigned(verdi),
-    pct: Math.round(Math.min(Math.abs(verdi), KATEGORI_SKALA) * (100 / KATEGORI_SKALA)),
-    negativ: verdi < 0,
-  };
-}
-
-async function loadInnsiktHub(viewer: { id: string; role: string }): Promise<InnsiktHubV2Data> {
-  const naa = new Date();
-  const d8u = new Date(naa.getTime() - PERIODE_UKER * 7 * DAG_MS);
-  const ukeStart = startOfWeek(naa);
-  const ukeSlutt = endOfWeek(naa);
-
-  const spillere = await prisma.user.findMany({
-    where: { AND: [coachScopedPlayerWhere(viewer), { deletedAt: null }] },
-    select: { id: true },
-  });
-  const spillerIds = spillere.map((s) => s.id);
-
-  const [sgAgg, okterDenneUken, oktetIDenneUken, trackmanOkter] = await Promise.all([
-    prisma.round.aggregate({
-      _avg: { sgTotal: true, sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
-      _count: { sgTotal: true },
-      where: { userId: { in: spillerIds }, playedAt: { gte: d8u, lte: naa }, sgTotal: { not: null } },
-    }),
-    prisma.trainingPlanSession.count({
-      where: {
-        status: "COMPLETED",
-        scheduledAt: { gte: ukeStart, lt: ukeSlutt },
-        plan: { userId: { in: spillerIds } },
-      },
-    }),
-    prisma.trainingPlanSession.findMany({
-      where: {
-        status: { not: "CANCELLED" },
-        scheduledAt: { gte: ukeStart, lt: ukeSlutt },
-        plan: { userId: { in: spillerIds } },
-      },
-      select: { plan: { select: { userId: true } } },
-    }),
-    prisma.trackManSession.count({
-      where: { userId: { in: spillerIds }, recordedAt: { gte: d8u, lte: naa } },
-    }),
-  ]);
-
-  const dekketIds = new Set(oktetIDenneUken.map((o) => o.plan.userId));
-  const udekket = spillerIds.filter((id) => !dekketIds.has(id)).length;
-
-  const kategorier = [
-    kategoriRad("tee", "Tee", sgAgg._avg.sgOtt),
-    kategoriRad("innspill", "Innspill", sgAgg._avg.sgApp),
-    kategoriRad("rundt", "Rundt", sgAgg._avg.sgArg),
-    kategoriRad("putt", "Putt", sgAgg._avg.sgPutt),
-  ].filter((k): k is InnsiktHubV2Kategori => k != null);
-
-  let lekkasjeTekst: string | null = null;
-  if (kategorier.length === 4) {
-    const svakest = [...kategorier].sort((a, b) => {
-      const av = Number(a.verdi.replace("−", "-").replace(",", "."));
-      const bv = Number(b.verdi.replace("−", "-").replace(",", "."));
-      return av - bv;
-    })[0];
-    if (svakest.negativ) {
-      lekkasjeTekst = `Lekkasje i stallen: ${svakest.label} er stallens svakeste kategori.`;
-    }
+function windowDaysFra(periode: string | undefined): { days: number; label: string } {
+  switch (periode) {
+    case "7d":
+      return { days: 7, label: "Siste 7 dager" };
+    case "90d":
+      return { days: 90, label: "Siste 90 dager" };
+    case "365d":
+      return { days: 365, label: "Siste 365 dager" };
+    default:
+      return { days: 30, label: "Siste 30 dager" };
   }
-
-  return {
-    nSpillere: spillerIds.length,
-    periodeLabel: `siste ${PERIODE_UKER} uker`,
-    sgSnitt: sgAgg._count.sgTotal > 0 && sgAgg._avg.sgTotal != null ? fmtSigned(sgAgg._avg.sgTotal) : "—",
-    okterDenneUken,
-    udekket,
-    trackmanOkter,
-    kategorier,
-    harKategoriData: kategorier.length === 4,
-    lekkasjeTekst,
-  };
 }
 
-export default async function V2AdminAnalysePage() {
+type SearchParams = Promise<{ fane?: string; visning?: string; periode?: string; studentId?: string }>;
+
+export default async function V2AdminAnalysePage({ searchParams }: { searchParams: SearchParams }) {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
-  const data = await loadInnsiktHub(user);
+  const params = await searchParams;
+  const aktiv = velgAnalyseFane(params.fane);
+
+  const spillereForTeller = await lastInnsiktSpillere(user);
+  const antall = { stall: spillereForTeller.length, spiller: spillereForTeller.length };
+  const hode = <AnalyseHode faner={ANALYSE_FANER} aktiv={aktiv} antall={antall} />;
+
+  const innhold = await (async () => {
+    switch (aktiv) {
+      case "spiller":
+        return <InnsiktSpillerListe spillere={spillereForTeller} />;
+      case "stall": {
+        if (params.visning === "trend") {
+          const data = await lastInnsiktStall(user);
+          return <InnsiktStallV2 data={data} somFane />;
+        }
+        const data = await lastInnsiktHub(user);
+        return <InnsiktHubV2 data={data} somFane />;
+      }
+      case "etterlevelse": {
+        const { days, label } = windowDaysFra(params.periode);
+        const data = await loadComplianceData({
+          windowDays: days,
+          periodLabel: label,
+          selectedPlayerId: params.studentId,
+          viewer: user,
+        });
+        return <AdminComplianceV2 data={data} somFane />;
+      }
+    }
+  })();
+
   return (
     <V2Shell bredde="kolonne" aktiv="innsikt" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <InnsiktHubV2 data={data} />
+      <div style={{ display: "flex", flexDirection: "column", gap: 18, minWidth: 0 }}>
+        {hode}
+        {innhold}
+      </div>
     </V2Shell>
   );
 }
