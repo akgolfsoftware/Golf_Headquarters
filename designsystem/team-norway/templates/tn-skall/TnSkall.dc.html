@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="TN-01 Organisasjonsskall" description="Skallet rundt Team Norways flate: logo på hvit plate, navigasjonen i gruppene Daglig · Uttak · Skoler · Data, hvilken gruppe brukeren står i, organisasjonsbytte og avgrenset tilgang. Mac 1440 og mobil 390." -->
+<helmet><script src="./ds-base.js"></script></helmet>
+<div style="padding:48px;display:flex;flex-direction:column;gap:56px;background:var(--surface-page);min-height:100vh;font-family:var(--font-body)">
+
+<div style="display:flex;flex-direction:column;gap:8px;max-width:760px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TN-01 · SKALL</div>
+<h1 style="font-size:var(--text-h1);color:var(--navy-900);letter-spacing:var(--tracking-heading);margin:0">Organisasjonsskall</h1>
+<p style="margin:0;font-size:var(--text-lg);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Egen flate for Team Norway, aldri under AgencyOS. Skinnen er det eneste stedet merkevarerød opptrer utenfor logoen. Piloten høsten 2026 gir tilgang kun til egne grupper — skallet sier hvilket avgrenset utsnitt du ser.</p>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:20px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MAC 1440 · SKALL MED ÅPEN ORGANISASJONSBYTTER</div>
+<div style="width:1440px;height:900px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;font-variant-numeric:tabular-nums">
+
+<div style="width:252px;flex-shrink:0;background:var(--surface-card);border-right:1px solid var(--border-subtle);display:flex;flex-direction:column;padding:20px 14px 18px;gap:20px">
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:12px 14px;display:flex;align-items:center;gap:12px">
+<span style="width:10px;height:26px;border-radius:3px;background:var(--red-600);flex-shrink:0"></span>
+<div style="min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-normal)">Team Norway</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);margin-top:2px">NGF · JUNIORLANDSLAG</div>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:2px;flex:1;min-height:0;overflow:hidden">
+<sc-for list="{{ meny }}" as="m" hint-placeholder-count="13">
+<sc-if value="{{ m.isHeading }}" hint-placeholder-val="{{ false }}">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);padding:16px 12px 6px">{{ m.label }}</div>
+</sc-if>
+<sc-if value="{{ m.isItem }}" hint-placeholder-val="{{ true }}">
+<div ref="{{ m.ref }}" style="height:40px;border-radius:var(--radius-xs);padding:0 10px;display:flex;align-items:center;gap:10px">
+<span ref="{{ m.markRef }}" style="width:3px;height:18px;border-radius:var(--radius-full);flex-shrink:0"></span>
+<span style="font-size:var(--text-sm);font-weight:var(--weight-medium)">{{ m.label }}</span>
+<div style="flex:1"></div>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">{{ m.badge }}</span>
+</div>
+</sc-if>
+</sc-for>
+</div>
+<div style="border-top:1px solid var(--border-subtle);padding-top:14px;display:flex;align-items:center;gap:10px">
+<span style="width:32px;height:32px;border-radius:var(--radius-full);background:var(--navy-100);color:var(--navy-800);font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);display:flex;align-items:center;justify-content:center;flex-shrink:0">MB</span>
+<div style="min-width:0;flex:1"><div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Marte Berg</div><div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary);margin-top:1px">TRENER · 2 GRUPPER</div></div>
+<span style="font-size:14px;color:var(--text-tertiary)">⌃</span>
+</div>
+</div>
+
+<div style="flex:1;min-width:0;display:flex;flex-direction:column">
+<div style="height:64px;flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);display:flex;align-items:center;padding:0 28px;gap:16px">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">TEAM NORWAY</span>
+<span style="color:var(--ink-300)">/</span>
+<span style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Oversikt</span>
+</div>
+<div style="flex:1"></div>
+<div style="display:flex;align-items:center;gap:8px;padding:6px 12px;border-radius:var(--radius-full);background:var(--status-amber-bg)">
+<span style="width:7px;height:7px;border-radius:var(--radius-full);background:var(--status-amber);flex-shrink:0"></span>
+<span style="font-size:var(--text-xs);font-weight:var(--weight-semibold);color:var(--status-amber-text)">Avgrenset tilgang · du ser 2 av 6 grupper</span>
+</div>
+<div role="button" style="height:40px;padding:0 16px;border-radius:var(--radius-full);border:1px solid var(--border-default);display:flex;align-items:center;gap:8px;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Bytt organisasjon<span style="color:var(--text-tertiary)">⌄</span></div>
+</div>
+
+<div style="flex:1;min-height:0;display:flex">
+<div style="flex:1;min-width:0;padding:28px;display:flex;flex-direction:column;gap:20px">
+<div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DAGLIG · OVERSIKT</div>
+<h2 style="font-size:var(--text-h1);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:6px 0 0">Team Norway</h2>
+</div>
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:24px;display:flex;flex-direction:column;gap:14px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DITT UTSNITT</span>
+<div style="font-size:var(--text-lg);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Du er trener i <strong>Team Norway Junior</strong> og <strong>WANG Fredrikstad Vg2</strong>. Alt du ser i denne flaten er begrenset til disse to gruppene. Grupper du ikke er trener for finnes, men vises ikke.</div>
+<div style="display:flex;gap:10px;flex-wrap:wrap">
+<sc-for list="{{ mineGrupper }}" as="g" hint-placeholder-count="2">
+<div style="border:1px solid var(--navy-100);background:var(--navy-50);border-radius:var(--radius-sm);padding:12px 16px;display:flex;flex-direction:column;gap:3px;min-width:220px">
+<span style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ g.navn }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--navy-700)">{{ g.meta }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:22px;display:flex;flex-direction:column;gap:12px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">HVA SKALLET ALLTID VISER</span>
+<sc-for list="{{ skallregler }}" as="r" hint-placeholder-count="3">
+<div style="display:flex;gap:12px;align-items:flex-start">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-eyebrow);color:var(--text-tertiary);width:22px;flex-shrink:0;padding-top:3px">{{ r.nr }}</span>
+<div style="min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ r.tittel }}</div>
+<div style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty;margin-top:2px">{{ r.tekst }}</div>
+</div>
+</div>
+</sc-for>
+</div>
+<div style="flex:1;min-height:0"></div>
+</div>
+
+<div style="width:340px;flex-shrink:0;border-left:1px solid var(--border-subtle);background:var(--surface-card);padding:20px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:baseline;justify-content:space-between">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">BYTT ORGANISASJON</span>
+<span role="button" style="font-size:var(--text-xs);font-weight:var(--weight-semibold);color:var(--navy-600)">Lukk</span>
+</div>
+<sc-for list="{{ organisasjoner }}" as="o" hint-placeholder-count="3">
+<div role="button" ref="{{ o.rowRef }}" style="border-radius:var(--radius-md);padding:14px;display:flex;align-items:center;gap:12px;min-height:44px">
+<span ref="{{ o.markRef }}" style="width:8px;height:26px;border-radius:3px;flex-shrink:0"></span>
+<div style="flex:1;min-width:0">
+<div ref="{{ o.navnRef }}" style="font-size:var(--text-sm);font-weight:var(--weight-semibold);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ o.navn }}</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);margin-top:2px">{{ o.rolle }}</div>
+</div>
+<span ref="{{ o.merkeRef }}" style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;flex-shrink:0">{{ o.merke }}</span>
+</div>
+</sc-for>
+<div style="border-top:1px solid var(--border-subtle);padding-top:12px;font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Du bytter flate, ikke konto. Målingene følger spilleren, så en test du fører på WANG er den samme målingen Team Norway ser — hvis spilleren, eller foresatt, har samtykket.</div>
+<div style="flex:1"></div>
+<div style="background:var(--ink-50);border-radius:var(--radius-sm);padding:14px;display:flex;flex-direction:column;gap:6px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">PILOT HØSTEN 2026</span>
+<span style="font-size:var(--text-xs);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Anders K. og fem trenere. Utrulling først etter bevis på én samling.</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:20px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MOBIL 390 · SKALL, MENY OG ORGANISASJONSBYTTE</div>
+<div style="display:flex;gap:28px;flex-wrap:wrap">
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">TOPP OG FANERAD</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.41</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 14px;display:flex;align-items:center;gap:12px">
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:8px 10px;display:flex;align-items:center;gap:9px;flex:1;min-width:0">
+<span style="width:8px;height:20px;border-radius:3px;background:var(--red-600);flex-shrink:0"></span>
+<div style="min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--navy-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Team Norway</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">JUNIOR · 2 GRUPPER</div>
+</div>
+<div style="flex:1"></div>
+<span style="color:var(--text-tertiary);flex-shrink:0">⌄</span>
+</div>
+<div role="button" style="width:44px;height:44px;border-radius:var(--radius-sm);border:1px solid var(--border-default);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;color:var(--navy-900)">≡</div>
+</div>
+<div style="flex-shrink:0;background:var(--status-amber-bg);padding:10px 16px;display:flex;align-items:center;gap:10px">
+<span style="width:7px;height:7px;border-radius:var(--radius-full);background:var(--status-amber);flex-shrink:0"></span>
+<span style="font-size:var(--text-xs);font-weight:var(--weight-semibold);color:var(--status-amber-text);line-height:var(--leading-normal)">Avgrenset tilgang · du ser 2 av 6 grupper</span>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:16px;display:flex;flex-direction:column;gap:14px">
+<div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DAGLIG · OVERSIKT</div>
+<h2 style="font-size:var(--text-h2);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:4px 0 0">Team Norway</h2>
+</div>
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:18px;display:flex;flex-direction:column;gap:12px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DITT UTSNITT</span>
+<span style="font-size:var(--text-sm);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Alt du ser er begrenset til de to gruppene du er trener for.</span>
+<sc-for list="{{ mineGrupper2 }}" as="g" hint-placeholder-count="2">
+<div style="border:1px solid var(--navy-100);background:var(--navy-50);border-radius:var(--radius-sm);padding:12px 14px;display:flex;flex-direction:column;gap:3px">
+<span style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ g.navn }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--navy-700)">{{ g.meta }}</span>
+</div>
+</sc-for>
+</div>
+<div style="flex:1;min-height:0"></div>
+</div>
+<div style="height:76px;flex-shrink:0;background:var(--surface-card);border-top:1px solid var(--border-subtle);display:flex;align-items:flex-start;padding:8px 8px 0">
+<sc-for list="{{ tabs }}" as="t" hint-placeholder-count="5">
+<div ref="{{ t.ref }}" style="flex:1;min-width:0;height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
+<span ref="{{ t.barRef }}" style="width:22px;height:3px;border-radius:var(--radius-full)"></span>
+<span style="font-size:var(--text-xs);font-weight:var(--weight-semibold);white-space:nowrap">{{ t.label }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">MENY — ALLE FIRE GRUPPER</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.42</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 14px;display:flex;align-items:center;justify-content:space-between">
+<span style="font-size:var(--text-h3);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading)">Meny</span>
+<div role="button" style="width:44px;height:44px;margin-right:-10px;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--navy-600)">×</div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:8px 12px;display:flex;flex-direction:column;gap:2px">
+<sc-for list="{{ menyMobil }}" as="m" hint-placeholder-count="13">
+<sc-if value="{{ m.isHeading }}" hint-placeholder-val="{{ false }}">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);padding:12px 10px 4px">{{ m.label }}</div>
+</sc-if>
+<sc-if value="{{ m.isItem }}" hint-placeholder-val="{{ true }}">
+<div ref="{{ m.ref }}" style="min-height:48px;border-radius:var(--radius-sm);padding:0 12px;display:flex;align-items:center;gap:10px">
+<span ref="{{ m.markRef }}" style="width:3px;height:20px;border-radius:var(--radius-full);flex-shrink:0"></span>
+<span style="font-size:var(--text-base);font-weight:var(--weight-medium)">{{ m.label }}</span>
+<div style="flex:1"></div>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-tertiary)">{{ m.badge }}</span>
+</div>
+</sc-if>
+</sc-for>
+</div>
+<div style="flex-shrink:0;border-top:1px solid var(--border-subtle);background:var(--surface-card);padding:14px 16px;display:flex;align-items:center;gap:10px">
+<span style="width:36px;height:36px;border-radius:var(--radius-full);background:var(--navy-100);color:var(--navy-800);font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-semibold);display:flex;align-items:center;justify-content:center;flex-shrink:0">MB</span>
+<div style="flex:1;min-width:0"><div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Marte Berg</div><div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TRENER · 2 GRUPPER</div></div>
+<span role="button" style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-600);flex-shrink:0">Bytt</span>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">ORGANISASJONSBYTTE SOM ARK</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.43</span></div>
+<div style="flex:1;min-height:0;background:var(--ink-100);position:relative;overflow:hidden">
+<div style="position:absolute;left:0;right:0;bottom:0;background:var(--surface-card);border-radius:var(--radius-xl) var(--radius-xl) 0 0;box-shadow:var(--shadow-lg);padding:20px 16px 24px;display:flex;flex-direction:column;gap:14px">
+<div style="width:40px;height:4px;border-radius:var(--radius-full);background:var(--ink-200);align-self:center"></div>
+<div style="display:flex;flex-direction:column;gap:4px">
+<span style="font-size:var(--text-h3);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading)">Bytt organisasjon</span>
+<span style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Du bytter flate, ikke konto. Målingene følger spilleren.</span>
+</div>
+<sc-for list="{{ organisasjoner2 }}" as="o" hint-placeholder-count="3">
+<div role="button" ref="{{ o.rowRef }}" style="border-radius:var(--radius-md);padding:14px;display:flex;align-items:center;gap:12px;min-height:56px">
+<span ref="{{ o.markRef }}" style="width:8px;height:28px;border-radius:3px;flex-shrink:0"></span>
+<div style="flex:1;min-width:0">
+<div ref="{{ o.navnRef }}" style="font-size:var(--text-base);font-weight:var(--weight-semibold);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ o.navn }}</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);margin-top:2px">{{ o.rolle }}</div>
+</div>
+<span ref="{{ o.merkeRef }}" style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;flex-shrink:0">{{ o.merke }}</span>
+</div>
+</sc-for>
+<div role="button" style="height:52px;border-radius:var(--radius-full);border:1px solid var(--border-default);display:flex;align-items:center;justify-content:center;font-size:var(--text-base);font-weight:var(--weight-semibold);color:var(--navy-900)">Avbryt</div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div style="max-width:760px;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:28px;display:flex;flex-direction:column;gap:16px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DESIGNNOTAT</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Beslutningen skjermen løser</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Hvor er jeg, hva har jeg tilgang til, og hvordan kommer jeg dit jeg skal — uten å tro at jeg ser hele Team Norway når jeg ser to grupper. Den avgrensede tilgangen står som en rolig ravgul stripe i toppen, ikke som en feil.</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Tall som er eksempler</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Alle. «2 av 6 grupper», medlemstall og navnet Marte Berg er skjermtekst, ikke data. Menyens 13 rader og gruppestrukturen Daglig · Uttak · Skoler · Data er derimot lest ut av CoachShell.</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Usikkert</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Tre ting. <strong>Ett:</strong> ingen ikonsett — skinnen står uten ikoner, og hamburger, chevron og kryss er tegnet som tegn. Anbefaling Lucide, 20 px. <strong>To:</strong> logoen er en rød blokk som plassholder til ekte vektorlogo hentes fra NGF; talenthq-SVG-ene er flaggpaletter og bør ikke brukes. <strong>Tre:</strong> om en trener med to organisasjoner skal ha én samlet innboks på tvers, eller strengt én flate om gangen — jeg har tegnet det siste, fordi tilgangsavgrensningen ellers blir uleselig.</div>
+</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const setStyle = o => el => { if (el) Object.assign(el.style, o); };
+
+class Component extends DCLogic {
+  menySet(active) {
+    return [
+      { isHeading: true, label: 'Daglig' },
+      { isItem: true, label: 'Oversikt', badge: '' },
+      { isItem: true, label: 'Fellestesting', badge: '' },
+      { isItem: true, label: 'Treneroversikt', badge: '' },
+      { isItem: true, label: 'Spillerutvikling', badge: '' },
+      { isHeading: true, label: 'Uttak' },
+      { isItem: true, label: 'Uttaksliste', badge: '2' },
+      { isItem: true, label: 'Rangliste', badge: '' },
+      { isItem: true, label: 'Turneringer', badge: '' },
+      { isHeading: true, label: 'Skoler' },
+      { isItem: true, label: 'Skoleoversikt', badge: '5' },
+      { isHeading: true, label: 'Data' },
+      { isItem: true, label: 'Testbatteri', badge: '' },
+      { isItem: true, label: 'Analyse', badge: '' },
+      { isItem: true, label: 'DataGolf-terminal', badge: '' },
+      { isItem: true, label: 'Sannhetslag', badge: '' }
+    ].map(m => ({
+      ...m,
+      ref: setStyle({
+        background: m.label === active ? 'var(--navy-100)' : 'transparent',
+        color: m.label === active ? 'var(--navy-900)' : 'var(--text-secondary)'
+      }),
+      markRef: setStyle({ background: m.label === active ? 'var(--red-600)' : 'transparent' })
+    }));
+  }
+  menySetMobil(active) {
+    return [
+      { isHeading: true, label: 'Daglig' },
+      { isItem: true, label: 'Oversikt', badge: '' },
+      { isItem: true, label: 'Fellestesting', badge: '' },
+      { isItem: true, label: 'Treneroversikt', badge: '' },
+      { isItem: true, label: 'Spillerutvikling', badge: '' },
+      { isHeading: true, label: 'Uttak' },
+      { isItem: true, label: 'Uttaksliste', badge: '2' },
+      { isItem: true, label: 'Rangliste', badge: '' },
+      { isHeading: true, label: 'Skoler' },
+      { isItem: true, label: 'Skoleoversikt', badge: '5' },
+      { isHeading: true, label: 'Data' },
+      { isItem: true, label: 'Testbatteri', badge: '' },
+      { isItem: true, label: 'Analyse', badge: '' }
+    ].map(m => ({
+      ...m,
+      ref: setStyle({
+        background: m.label === active ? 'var(--navy-100)' : 'transparent',
+        color: m.label === active ? 'var(--navy-900)' : 'var(--text-secondary)'
+      }),
+      markRef: setStyle({ background: m.label === active ? 'var(--red-600)' : 'transparent' })
+    }));
+  }
+  orgs() {
+    return [
+      { navn: 'Team Norway', rolle: 'TRENER · 2 GRUPPER', merke: 'her nå', aktiv: true },
+      { navn: 'WANG Toppidrett Fredrikstad', rolle: 'TRENER · 1 GRUPPE', merke: '', aktiv: false },
+      { navn: 'AK Golf Academy', rolle: 'LESETILGANG · DELTE PROTOKOLLER', merke: '', aktiv: false }
+    ].map(o => ({
+      ...o,
+      rowRef: setStyle(o.aktiv
+        ? { background: 'var(--navy-50)', border: '1px solid var(--navy-100)' }
+        : { background: 'transparent', border: '1px solid var(--border-subtle)' }),
+      markRef: setStyle({ background: o.aktiv ? 'var(--red-600)' : 'var(--ink-200)' }),
+      navnRef: setStyle({ color: o.aktiv ? 'var(--navy-900)' : 'var(--text-primary)' }),
+      merkeRef: setStyle({ color: o.aktiv ? 'var(--navy-700)' : 'transparent' })
+    }));
+  }
+  renderVals() {
+    const grupper = [
+      { navn: 'Team Norway Junior', meta: '14 UTØVERE · 11 MED PROFIL' },
+      { navn: 'WANG Fredrikstad Vg2', meta: '12 UTØVERE · 8 MED PROFIL' }
+    ];
+    return {
+      meny: this.menySet('Oversikt'),
+      menyMobil: this.menySetMobil('Oversikt'),
+      organisasjoner: this.orgs(),
+      organisasjoner2: this.orgs(),
+      mineGrupper: grupper,
+      mineGrupper2: grupper,
+      tabs: ['Oversikt', 'Testing', 'Uttak', 'Skoler', 'Mer'].map(label => ({
+        label,
+        ref: setStyle({ color: label === 'Oversikt' ? 'var(--navy-900)' : 'var(--text-secondary)' }),
+        barRef: setStyle({ background: label === 'Oversikt' ? 'var(--red-600)' : 'transparent' })
+      })),
+      skallregler: [
+        { nr: '01', tittel: 'Hvilken organisasjon du står i', tekst: 'Logoen står på hvit plate øverst i skinnen, med undertittel som sier hvilket forbund flaten hører til.' },
+        { nr: '02', tittel: 'Hvilken gruppe i menyen du er inne i', tekst: 'Aktiv rad har rød markør og navy flate. Gruppeoverskriften over raden sier hvilken av de fire menygruppene du står i.' },
+        { nr: '03', tittel: 'Hvor stort utsnitt du ser', tekst: 'Stripen i toppen sier hvor mange grupper tilgangen din dekker av totalen. Den forsvinner først når tilgangen er full.' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

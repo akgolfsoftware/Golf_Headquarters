@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="TN-03 Fellestesting" description="Føringsskjerm for testdag: én trener fører mange spillere gjennom samme protokoll. Fire protokollarketyper (port, tall, stige, PEI), mobil 390 i fire tilstander og Mac 1440. Claw-stil, lys flate." -->
+<helmet><script src="./ds-base.js"></script></helmet>
+<div style="padding:48px;display:flex;flex-direction:column;gap:56px;background:var(--surface-page);min-height:100vh">
+
+<div style="display:flex;flex-direction:column;gap:8px;max-width:720px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TN-03 · /team-norway/fellestesting</div>
+<h1 style="font-size:var(--text-h1);color:var(--navy-900)">Fellestesting</h1>
+<p style="margin:0;font-size:var(--text-lg);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Én trener fører mange spillere gjennom samme protokoll på en testdag. Telefonen holdes i én hånd, ute. Ingen dialogboks mellom hver utøver.</p>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:20px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MOBIL 390 · FIRE PROTOKOLLARKETYPER</div>
+<div style="display:flex;gap:28px;flex-wrap:wrap">
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">A · TALL — SUKSESS</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;display:flex;align-items:flex-end;padding:0 20px 4px;background:var(--surface-card)"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium)">09.41</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 14px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:12px">
+<div role="button" style="width:44px;height:44px;flex-shrink:0;margin-left:-10px;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--navy-600)">‹</div>
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-base);font-weight:var(--weight-semibold);color:var(--navy-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Clubhead speed</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary);margin-top:3px">AK GOLF · v2 · TN-BATTERI Q3</div>
+</div>
+<div role="button" style="height:44px;padding:0 4px;display:flex;align-items:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-600);flex-shrink:0">Avslutt</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:7px">
+<div style="display:flex;align-items:baseline;justify-content:space-between">
+<span style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">7 av 14 ført</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary)">Team Norway Junior</span>
+</div>
+<div style="height:6px;border-radius:var(--radius-full);background:var(--ink-100);overflow:hidden"><div style="width:50%;height:100%;background:var(--navy-600)"></div></div>
+</div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:16px;display:flex;flex-direction:column;gap:14px">
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:18px;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;align-items:center;gap:12px">
+<span style="width:4px;height:40px;border-radius:var(--radius-full);background:var(--red-600);flex-shrink:0"></span>
+<div style="flex:1;min-width:0">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">STÅR FOR TUR · 8 AV 14</div>
+<div style="font-size:var(--text-h3);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading);margin-top:2px">Jonas Bratlie</div>
+</div>
+</div>
+<div style="display:flex;align-items:baseline;justify-content:center;gap:8px;padding:6px 0">
+<span style="font-family:var(--font-mono);font-size:56px;font-weight:var(--weight-semibold);color:var(--navy-900);letter-spacing:-.02em">112,4</span>
+<span style="font-size:var(--text-lg);font-weight:var(--weight-semibold);color:var(--text-secondary)">mph</span>
+</div>
+<div style="display:flex;gap:8px">
+<sc-for list="{{ nudge }}" as="n" hint-placeholder-count="4">
+<div role="button" style="flex:1;height:48px;border-radius:var(--radius-sm);background:var(--ink-50);border:1px solid var(--border-subtle);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ n.label }}</div>
+</sc-for>
+</div>
+<div style="display:flex;gap:8px;align-items:center">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary);flex-shrink:0">FORSØK</span>
+<sc-for list="{{ forsok }}" as="f" hint-placeholder-count="3">
+<div role="button" ref="{{ f.ref }}" style="flex:1;height:44px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-semibold)">{{ f.label }}</div>
+</sc-for>
+</div>
+</div>
+<div role="button" style="height:56px;flex-shrink:0;border-radius:var(--radius-full);background:var(--navy-900);color:var(--white);display:flex;align-items:center;justify-content:center;gap:10px;font-size:var(--text-base);font-weight:var(--weight-bold);box-shadow:var(--shadow-md)">Før og neste spiller</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+<div role="button" style="height:44px;border-radius:var(--radius-full);border:1px solid var(--border-default);display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Hopp over</div>
+<div role="button" style="height:44px;border-radius:var(--radius-full);border:1px solid var(--border-default);display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Rett opp forrige</div>
+<div role="button" style="height:44px;border-radius:var(--radius-full);border:1px solid var(--border-default);display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--status-red-text)">Ikke møtt</div>
+<div role="button" style="height:44px;border-radius:var(--radius-full);border:1px solid var(--border-default);display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Legg til utøver</div>
+</div>
+<div style="flex:1;min-height:0;background:var(--surface-card);border-radius:var(--radius-lg);border:1px solid var(--border-subtle);padding:14px 16px;display:flex;flex-direction:column;gap:10px;overflow:hidden">
+<div style="display:flex;align-items:baseline;justify-content:space-between">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">KØ</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary)">6 gjenstår</span>
+</div>
+<sc-for list="{{ ko }}" as="k" hint-placeholder-count="4">
+<div style="display:flex;align-items:center;gap:10px;min-height:32px">
+<span ref="{{ k.dotRef }}" style="width:8px;height:8px;border-radius:var(--radius-full);flex-shrink:0"></span>
+<span ref="{{ k.navnRef }}" style="flex:1;min-width:0;font-size:var(--text-sm);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ k.navn }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary);flex-shrink:0">{{ k.verdi }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">B · PORT — BESTÅTT / IKKE BESTÅTT</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;display:flex;align-items:flex-end;padding:0 20px 4px;background:var(--surface-card)"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium)">09.41</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 14px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:12px">
+<div role="button" style="width:44px;height:44px;flex-shrink:0;margin-left:-10px;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--navy-600)">‹</div>
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-base);font-weight:var(--weight-semibold);color:var(--navy-900)">Putt Gate</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary);margin-top:3px">TEAM NORWAY · v1 · TEKNIKKPORT</div>
+</div>
+<div role="button" style="height:44px;padding:0 4px;display:flex;align-items:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-600)">Avslutt</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:7px">
+<div style="display:flex;align-items:baseline;justify-content:space-between">
+<span style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">4 av 14 ført</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary)">Team Norway Junior</span>
+</div>
+<div style="height:6px;border-radius:var(--radius-full);background:var(--ink-100);overflow:hidden"><div style="width:28.5%;height:100%;background:var(--navy-600)"></div></div>
+</div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:16px;display:flex;flex-direction:column;gap:14px">
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:18px;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;align-items:center;gap:12px">
+<span style="width:4px;height:40px;border-radius:var(--radius-full);background:var(--red-600);flex-shrink:0"></span>
+<div style="flex:1;min-width:0">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">STÅR FOR TUR · 5 AV 14</div>
+<div style="font-size:var(--text-h3);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading);margin-top:2px">Amalie Vik</div>
+</div>
+</div>
+<sc-for list="{{ porter }}" as="p" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="width:62px;flex-shrink:0;font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary)">{{ p.label }}</span>
+<div role="button" ref="{{ p.jaRef }}" style="flex:1;height:52px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:var(--text-base);font-weight:var(--weight-semibold)">Bestått</div>
+<div role="button" ref="{{ p.neiRef }}" style="flex:1;height:52px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:var(--text-base);font-weight:var(--weight-semibold)">Ikke</div>
+</div>
+</sc-for>
+<div style="display:flex;align-items:baseline;justify-content:space-between;padding-top:2px;border-top:1px solid var(--border-subtle)">
+<span style="font-size:var(--text-sm);color:var(--text-secondary);padding-top:12px">Resultat</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-lg);font-weight:var(--weight-semibold);color:var(--navy-900);padding-top:12px">2 av 3 bestått</span>
+</div>
+</div>
+<div role="button" style="height:56px;flex-shrink:0;border-radius:var(--radius-full);background:var(--navy-900);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:var(--text-base);font-weight:var(--weight-bold);box-shadow:var(--shadow-md)">Før og neste spiller</div>
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);border:1px solid var(--border-subtle);padding:14px 16px;display:flex;flex-direction:column;gap:6px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">PORTEN KREVER</span>
+<span style="font-size:var(--text-sm);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Tre putter fra 3 m gjennom port på 1,5 ganger ballbredde. Porten er bestått når ballen passerer uten berøring.</span>
+</div>
+<div style="flex:1;min-height:0"></div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">C · STIGE — ØKENDE KRAV</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;display:flex;align-items:flex-end;padding:0 20px 4px;background:var(--surface-card)"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium)">09.41</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 14px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:12px">
+<div role="button" style="width:44px;height:44px;flex-shrink:0;margin-left:-10px;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--navy-600)">‹</div>
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-base);font-weight:var(--weight-semibold);color:var(--navy-900)">Putt Speed Control</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary);margin-top:3px">TEAM NORWAY · v3 · STIGE 1×5</div>
+</div>
+<div role="button" style="height:44px;padding:0 4px;display:flex;align-items:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-600)">Avslutt</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:7px">
+<div style="display:flex;align-items:baseline;justify-content:space-between">
+<span style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">11 av 14 ført</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary)">Team Norway Junior</span>
+</div>
+<div style="height:6px;border-radius:var(--radius-full);background:var(--ink-100);overflow:hidden"><div style="width:78.5%;height:100%;background:var(--navy-600)"></div></div>
+</div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:16px;display:flex;flex-direction:column;gap:14px">
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:18px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:center;gap:12px">
+<span style="width:4px;height:40px;border-radius:var(--radius-full);background:var(--red-600);flex-shrink:0"></span>
+<div style="flex:1;min-width:0">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">STÅR FOR TUR · 12 AV 14</div>
+<div style="font-size:var(--text-h3);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading);margin-top:2px">Sigrid Lunde</div>
+</div>
+<div style="text-align:right;flex-shrink:0">
+<div style="font-family:var(--font-mono);font-size:var(--text-h3);font-weight:var(--weight-semibold);color:var(--navy-900)">4</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);color:var(--text-secondary)">AV 6</div>
+</div>
+</div>
+<sc-for list="{{ steg }}" as="s" hint-placeholder-count="6">
+<div ref="{{ s.rowRef }}" style="border-radius:var(--radius-sm);padding:10px 12px;display:flex;align-items:center;gap:12px;min-height:48px">
+<span ref="{{ s.numRef }}" style="width:26px;height:26px;flex-shrink:0;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-semibold)">{{ s.nr }}</span>
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ s.krav }}</div>
+<div style="font-size:var(--text-xs);color:var(--text-secondary);margin-top:1px">{{ s.detalj }}</div>
+</div>
+<span ref="{{ s.merkeRef }}" style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-semibold);flex-shrink:0">{{ s.merke }}</span>
+</div>
+</sc-for>
+</div>
+<div role="button" style="height:56px;flex-shrink:0;border-radius:var(--radius-full);background:var(--navy-900);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:var(--text-base);font-weight:var(--weight-bold);box-shadow:var(--shadow-md)">Før og neste spiller</div>
+<div style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Stigen stopper ved første steg som ikke er nådd. Resultatet er høyeste nådde steg.</div>
+<div style="flex:1;min-height:0"></div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">D · PEI — LAVERE ER BEDRE</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;display:flex;align-items:flex-end;padding:0 20px 4px;background:var(--surface-card)"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium)">09.41</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 14px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:12px">
+<div role="button" style="width:44px;height:44px;flex-shrink:0;margin-left:-10px;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--navy-600)">‹</div>
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-base);font-weight:var(--weight-semibold);color:var(--navy-900)">Inspill Basis</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary);margin-top:3px">AK GOLF · v4 · PEI</div>
+</div>
+<div role="button" style="height:44px;padding:0 4px;display:flex;align-items:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-600)">Avslutt</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:7px">
+<div style="display:flex;align-items:baseline;justify-content:space-between">
+<span style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">9 av 14 ført</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary)">Team Norway Junior</span>
+</div>
+<div style="height:6px;border-radius:var(--radius-full);background:var(--ink-100);overflow:hidden"><div style="width:64%;height:100%;background:var(--navy-600)"></div></div>
+</div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:16px;display:flex;flex-direction:column;gap:14px">
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:18px;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;align-items:center;gap:12px">
+<span style="width:4px;height:40px;border-radius:var(--radius-full);background:var(--red-600);flex-shrink:0"></span>
+<div style="flex:1;min-width:0">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">STÅR FOR TUR · 10 AV 14</div>
+<div style="font-size:var(--text-h3);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading);margin-top:2px">Erik Nesheim</div>
+</div>
+</div>
+<div style="display:flex;gap:10px">
+<div style="flex:1;background:var(--ink-50);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:12px 14px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">NÆRHET</div>
+<div style="display:flex;align-items:baseline;gap:5px;margin-top:4px"><span style="font-family:var(--font-mono);font-size:28px;font-weight:var(--weight-semibold);color:var(--navy-900)">418</span><span style="font-size:var(--text-sm);color:var(--text-secondary)">cm</span></div>
+</div>
+<div style="flex:1;background:var(--ink-50);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:12px 14px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">LENGDE</div>
+<div style="display:flex;align-items:baseline;gap:5px;margin-top:4px"><span style="font-family:var(--font-mono);font-size:28px;font-weight:var(--weight-semibold);color:var(--navy-900)">137</span><span style="font-size:var(--text-sm);color:var(--text-secondary)">m</span></div>
+</div>
+</div>
+<div style="background:var(--navy-50);border-radius:var(--radius-md);padding:16px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:baseline;justify-content:space-between">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--navy-700)">PEI = NÆRHET ÷ LENGDE</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-h3);font-weight:var(--weight-semibold);color:var(--navy-900)">3,05</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:5px">
+<div style="height:8px;border-radius:var(--radius-full);background:linear-gradient(90deg,var(--data-1),var(--data-5));position:relative">
+<span style="position:absolute;left:26%;top:-4px;width:3px;height:16px;border-radius:var(--radius-full);background:var(--navy-900)"></span>
+</div>
+<div style="display:flex;justify-content:space-between">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);color:var(--navy-700)">← BEDRE</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);color:var(--text-secondary)">SVAKERE →</span>
+</div>
+</div>
+<div style="font-size:var(--text-xs);color:var(--navy-800);line-height:var(--leading-normal);text-wrap:pretty">Lav PEI er godt truffet. Skalaen går fra venstre mot høyre, og tallet ditt ligger til venstre for gruppens median på 3,4.</div>
+</div>
+</div>
+<div role="button" style="height:56px;flex-shrink:0;border-radius:var(--radius-full);background:var(--navy-900);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:var(--text-base);font-weight:var(--weight-bold);box-shadow:var(--shadow-md)">Før og neste spiller</div>
+<div style="flex:1;min-height:0"></div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:20px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MOBIL 390 · TOM, LASTER, FEIL</div>
+<div style="display:flex;gap:28px;flex-wrap:wrap">
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">TOM — INGEN HAR SAMTYKKET</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column">
+<div style="height:44px;flex-shrink:0;display:flex;align-items:flex-end;padding:0 20px 4px;background:var(--surface-card)"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium)">09.41</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 16px;display:flex;align-items:center;gap:12px">
+<div role="button" style="width:44px;height:44px;flex-shrink:0;margin-left:-10px;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--navy-600)">‹</div>
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-base);font-weight:var(--weight-semibold);color:var(--navy-900)">Fellestesting</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary);margin-top:3px">TEAM NORWAY JUNIOR</div>
+</div>
+</div>
+<div style="flex:1;min-height:0;padding:24px 20px;display:flex;flex-direction:column;gap:20px">
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);border:1px solid var(--border-subtle);padding:22px;display:flex;flex-direction:column;gap:14px">
+<div style="font-size:var(--text-h3);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading);line-height:var(--leading-snug);text-wrap:pretty">Ingen spillere har samtykket til testdeling ennå</div>
+<div style="font-size:var(--text-sm);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Du kan føre en testdag så snart minst én spiller, eller foresatt for mindreårige, har samtykket. Samtykket gis til AK Golf og følger spilleren — ikke gruppen.</div>
+<div style="font-size:var(--text-sm);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Dette er ikke en feil. Gruppen finnes, den er bare tom for delte målinger.</div>
+</div>
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);border:1px solid var(--border-subtle);padding:18px;display:flex;flex-direction:column;gap:10px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">STATUS I GRUPPEN</span>
+<sc-for list="{{ samtykke }}" as="s" hint-placeholder-count="3">
+<div style="display:flex;align-items:baseline;justify-content:space-between;min-height:28px">
+<span style="font-size:var(--text-sm);color:var(--text-primary)">{{ s.label }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ s.tall }}</span>
+</div>
+</sc-for>
+</div>
+<div role="button" style="height:56px;flex-shrink:0;border-radius:var(--radius-full);background:var(--navy-900);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:var(--text-base);font-weight:var(--weight-bold)">Send forespørsel om samtykke</div>
+<div role="button" style="height:44px;border-radius:var(--radius-full);border:1px solid var(--border-default);display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Les om samtykke</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">LASTER</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column">
+<div style="height:44px;flex-shrink:0;display:flex;align-items:flex-end;padding:0 20px 4px;background:var(--surface-card)"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium)">09.41</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 14px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:12px">
+<div style="width:44px;height:44px;flex-shrink:0;margin-left:-10px;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--navy-600)">‹</div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px">
+<span style="width:150px;height:14px;border-radius:var(--radius-xs);background:var(--ink-100)"></span>
+<span style="width:196px;height:9px;border-radius:var(--radius-xs);background:var(--ink-100)"></span>
+</div>
+</div>
+<div style="height:6px;border-radius:var(--radius-full);background:var(--ink-100)"></div>
+</div>
+<div style="flex:1;min-height:0;padding:16px;display:flex;flex-direction:column;gap:14px">
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:18px;display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;align-items:center;gap:12px">
+<span style="width:4px;height:40px;border-radius:var(--radius-full);background:var(--ink-100);flex-shrink:0"></span>
+<div style="flex:1;display:flex;flex-direction:column;gap:8px">
+<span style="width:130px;height:9px;border-radius:var(--radius-xs);background:var(--ink-100)"></span>
+<span style="width:180px;height:20px;border-radius:var(--radius-xs);background:var(--ink-100)"></span>
+</div>
+</div>
+<span style="align-self:center;width:200px;height:54px;border-radius:var(--radius-sm);background:var(--ink-100)"></span>
+<div style="display:flex;gap:8px">
+<span style="flex:1;height:48px;border-radius:var(--radius-sm);background:var(--ink-100)"></span>
+<span style="flex:1;height:48px;border-radius:var(--radius-sm);background:var(--ink-100)"></span>
+<span style="flex:1;height:48px;border-radius:var(--radius-sm);background:var(--ink-100)"></span>
+<span style="flex:1;height:48px;border-radius:var(--radius-sm);background:var(--ink-100)"></span>
+</div>
+</div>
+<span style="height:56px;border-radius:var(--radius-full);background:var(--ink-100);flex-shrink:0"></span>
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);border:1px solid var(--border-subtle);padding:16px;display:flex;flex-direction:column;gap:14px">
+<sc-for list="{{ skjelett }}" as="s" hint-placeholder-count="5">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="width:8px;height:8px;border-radius:var(--radius-full);background:var(--ink-100);flex-shrink:0"></span>
+<span ref="{{ s.ref }}" style="height:11px;border-radius:var(--radius-xs);background:var(--ink-100)"></span>
+</div>
+</sc-for>
+</div>
+<div style="text-align:center;font-size:var(--text-xs);color:var(--text-secondary);padding-top:4px">Henter protokoll og gruppe</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">FEIL — INGEN DEKNING</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;display:flex;align-items:flex-end;padding:0 20px 4px;background:var(--surface-card)"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium)">09.41</span></div>
+<div style="flex-shrink:0;background:var(--status-amber-bg);border-bottom:1px solid var(--border-subtle);padding:14px 16px;display:flex;align-items:flex-start;gap:12px">
+<span style="width:10px;height:10px;border-radius:var(--radius-full);background:var(--status-amber);flex-shrink:0;margin-top:5px"></span>
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--status-amber-text)">Ingen dekning — føringen fortsetter</div>
+<div style="font-size:var(--text-xs);color:var(--status-amber-text);line-height:var(--leading-normal);margin-top:3px;text-wrap:pretty">3 målinger ligger lagret på telefonen og sendes automatisk når du er på nett igjen.</div>
+</div>
+</div>
+<div style="flex:1;min-height:0;padding:16px;display:flex;flex-direction:column;gap:14px">
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:18px;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;align-items:center;gap:12px">
+<span style="width:4px;height:40px;border-radius:var(--radius-full);background:var(--red-600);flex-shrink:0"></span>
+<div style="flex:1;min-width:0">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">STÅR FOR TUR · 11 AV 14</div>
+<div style="font-size:var(--text-h3);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading);margin-top:2px">Ingrid Kvam</div>
+</div>
+</div>
+<div style="display:flex;align-items:baseline;justify-content:center;gap:8px;padding:6px 0">
+<span style="font-family:var(--font-mono);font-size:56px;font-weight:var(--weight-semibold);color:var(--navy-900);letter-spacing:-.02em">108,1</span>
+<span style="font-size:var(--text-lg);font-weight:var(--weight-semibold);color:var(--text-secondary)">mph</span>
+</div>
+<div style="display:flex;gap:8px">
+<sc-for list="{{ nudge2 }}" as="n" hint-placeholder-count="4">
+<div role="button" style="flex:1;height:48px;border-radius:var(--radius-sm);background:var(--ink-50);border:1px solid var(--border-subtle);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ n.label }}</div>
+</sc-for>
+</div>
+</div>
+<div role="button" style="height:56px;flex-shrink:0;border-radius:var(--radius-full);background:var(--navy-900);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:var(--text-base);font-weight:var(--weight-bold);box-shadow:var(--shadow-md)">Før og neste spiller</div>
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);border:1px solid var(--border-subtle);padding:16px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:baseline;justify-content:space-between">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">VENTER PÅ SENDING</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary)">3</span>
+</div>
+<sc-for list="{{ ventende }}" as="v" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:10px;min-height:32px">
+<span style="width:8px;height:8px;border-radius:var(--radius-full);background:var(--status-amber);flex-shrink:0"></span>
+<span style="flex:1;min-width:0;font-size:var(--text-sm);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ v.navn }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary)">{{ v.verdi }}</span>
+</div>
+</sc-for>
+<div role="button" style="height:44px;border-radius:var(--radius-full);border:1px solid var(--border-default);display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900);margin-top:2px">Prøv å sende nå</div>
+</div>
+<div style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Ingenting går tapt. Du kan føre hele testdagen uten dekning og lukke appen underveis.</div>
+<div style="flex:1;min-height:0"></div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:20px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MAC 1440 · SUKSESS</div>
+<div style="width:1440px;height:900px;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;font-variant-numeric:tabular-nums">
+<div style="width:232px;flex-shrink:0;background:var(--surface-card);border-right:1px solid var(--border-subtle);display:flex;flex-direction:column;padding:22px 14px 18px;gap:24px">
+<div style="display:flex;align-items:center;gap:10px;padding:0 8px">
+<span style="width:10px;height:22px;border-radius:3px;background:var(--red-600);flex-shrink:0"></span>
+<span style="font-family:var(--font-display);font-size:var(--text-base);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading)">Team Norway</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:14px">
+<sc-for list="{{ meny }}" as="m" hint-placeholder-count="8">
+<sc-if value="{{ m.isHeading }}" hint-placeholder-val="{{ false }}">
+<div style="padding:6px 10px 0;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">{{ m.label }}</div>
+</sc-if>
+<sc-if value="{{ m.isItem }}" hint-placeholder-val="{{ true }}">
+<div ref="{{ m.ref }}" style="height:40px;border-radius:var(--radius-sm);padding:0 10px;display:flex;align-items:center;gap:10px">
+<span ref="{{ m.markRef }}" style="width:3px;height:18px;border-radius:var(--radius-full);flex-shrink:0"></span>
+<span style="font-size:var(--text-sm);font-weight:var(--weight-semibold)">{{ m.label }}</span>
+</div>
+</sc-if>
+</sc-for>
+</div>
+<div style="flex:1"></div>
+<div style="border-top:1px solid var(--border-subtle);padding-top:14px;display:flex;align-items:center;gap:10px">
+<span style="width:32px;height:32px;border-radius:var(--radius-full);background:var(--navy-100);color:var(--navy-800);font-size:var(--text-xs);font-weight:var(--weight-bold);display:flex;align-items:center;justify-content:center;flex-shrink:0">AK</span>
+<div style="min-width:0"><div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Anders K.</div><div style="font-size:var(--text-xs);color:var(--text-secondary)">Kun egne grupper</div></div>
+</div>
+</div>
+
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;background:var(--surface-page)">
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:20px 28px;display:flex;align-items:center;gap:20px">
+<div style="min-width:0">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">FELLESTESTING · 25. AUGUST</div>
+<h2 style="font-size:var(--text-h2);color:var(--navy-900);margin-top:3px">Clubhead speed</h2>
+</div>
+<div style="display:flex;gap:8px;align-items:center">
+<span style="height:28px;padding:0 12px;border-radius:var(--radius-full);background:var(--navy-100);color:var(--navy-800);font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);display:flex;align-items:center">EIER AK GOLF</span>
+<span style="height:28px;padding:0 12px;border-radius:var(--radius-full);background:var(--ink-100);color:var(--ink-700);font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);display:flex;align-items:center">v2 · LÅST 12.01.2026</span>
+<span style="height:28px;padding:0 12px;border-radius:var(--radius-full);background:var(--ink-100);color:var(--ink-700);font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);display:flex;align-items:center">TN-BATTERI Q3</span>
+</div>
+<div style="flex:1"></div>
+<div style="text-align:right">
+<div style="font-family:var(--font-mono);font-size:var(--text-h3);font-weight:var(--weight-semibold);color:var(--navy-900)">7 / 14</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">FØRT</div>
+</div>
+<div role="button" style="height:44px;padding:0 20px;border-radius:var(--radius-full);border:1px solid var(--border-default);display:flex;align-items:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Avslutt testdag</div>
+</div>
+
+<div style="flex:1;min-height:0;display:flex;gap:20px;padding:20px 28px">
+<div style="width:300px;flex-shrink:0;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);display:flex;flex-direction:column;overflow:hidden">
+<div style="padding:16px 18px 12px;display:flex;align-items:baseline;justify-content:space-between;border-bottom:1px solid var(--border-subtle)">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">KØ</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary)">Team Norway Junior</span>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:8px">
+<sc-for list="{{ koMac }}" as="k" hint-placeholder-count="14">
+<div ref="{{ k.rowRef }}" style="border-radius:var(--radius-sm);padding:9px 10px;display:flex;align-items:center;gap:10px;min-height:44px">
+<span ref="{{ k.markRef }}" style="width:3px;height:24px;border-radius:var(--radius-full);flex-shrink:0"></span>
+<span ref="{{ k.dotRef }}" style="width:8px;height:8px;border-radius:var(--radius-full);flex-shrink:0"></span>
+<span ref="{{ k.navnRef }}" style="flex:1;min-width:0;font-size:var(--text-sm);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ k.navn }}</span>
+<span ref="{{ k.verdiRef }}" style="font-family:var(--font-mono);font-size:var(--text-xs);flex-shrink:0">{{ k.verdi }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:16px">
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:26px;display:flex;flex-direction:column;gap:22px">
+<div style="display:flex;align-items:center;gap:14px">
+<span style="width:4px;height:46px;border-radius:var(--radius-full);background:var(--red-600);flex-shrink:0"></span>
+<div style="flex:1;min-width:0">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">STÅR FOR TUR · 8 AV 14</div>
+<div style="font-size:var(--text-h2);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading);margin-top:2px">Jonas Bratlie</div>
+</div>
+<div style="text-align:right;flex-shrink:0">
+<div style="font-size:var(--text-sm);color:var(--text-secondary)">Forrige måling</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-lg);font-weight:var(--weight-semibold);color:var(--navy-900)">109,8 mph</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);color:var(--text-secondary);margin-top:2px">14.03.2026 · v2</div>
+</div>
+</div>
+<div style="display:flex;gap:20px;align-items:flex-end">
+<div style="flex:1;min-width:0;border:1px solid var(--border-default);border-radius:var(--radius-md);padding:18px 22px;display:flex;align-items:baseline;gap:10px">
+<span style="font-family:var(--font-mono);font-size:64px;font-weight:var(--weight-semibold);color:var(--navy-900);letter-spacing:-.03em;line-height:1">112,4</span>
+<span style="font-size:var(--text-h3);font-weight:var(--weight-semibold);color:var(--text-secondary)">mph</span>
+<div style="flex:1"></div>
+<div style="display:flex;gap:8px">
+<sc-for list="{{ nudgeMac }}" as="n" hint-placeholder-count="4">
+<div role="button" style="width:60px;height:52px;border-radius:var(--radius-sm);background:var(--ink-50);border:1px solid var(--border-subtle);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ n.label }}</div>
+</sc-for>
+</div>
+</div>
+<div role="button" style="width:260px;height:88px;flex-shrink:0;border-radius:var(--radius-md);background:var(--navy-900);color:var(--white);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;box-shadow:var(--shadow-md)">
+<span style="font-size:var(--text-lg);font-weight:var(--weight-bold)">Før og neste</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);opacity:.72">ENTER</span>
+</div>
+</div>
+<div style="display:flex;gap:10px;align-items:center">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">FORSØK</span>
+<sc-for list="{{ forsokMac }}" as="f" hint-placeholder-count="3">
+<div role="button" ref="{{ f.ref }}" style="height:44px;padding:0 22px;border-radius:var(--radius-sm);display:flex;align-items:center;font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-semibold)">{{ f.label }}</div>
+</sc-for>
+<div style="flex:1"></div>
+<div role="button" style="height:44px;padding:0 18px;border-radius:var(--radius-full);border:1px solid var(--border-default);display:flex;align-items:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Hopp over</div>
+<div role="button" style="height:44px;padding:0 18px;border-radius:var(--radius-full);border:1px solid var(--border-default);display:flex;align-items:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Rett opp forrige</div>
+</div>
+</div>
+
+<div style="flex:1;min-height:0;display:flex;gap:16px">
+<div style="flex:1;min-width:0;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:18px 20px;display:flex;flex-direction:column;gap:12px;overflow:hidden">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">FØRT I DAG</span>
+<sc-for list="{{ fort }}" as="f" hint-placeholder-count="5">
+<div style="display:flex;align-items:baseline;gap:12px;min-height:30px">
+<span style="width:150px;flex-shrink:0;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ f.navn }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900);width:80px;flex-shrink:0">{{ f.verdi }}</span>
+<span style="flex:1;min-width:0;font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ f.kilde }}</span>
+<span role="button" style="font-size:var(--text-xs);font-weight:var(--weight-semibold);color:var(--navy-600);flex-shrink:0">Rett</span>
+</div>
+</sc-for>
+</div>
+<div style="width:300px;flex-shrink:0;background:var(--navy-50);border:1px solid var(--navy-100);border-radius:var(--radius-lg);padding:18px 20px;display:flex;flex-direction:column;gap:10px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--navy-700)">HVEM KAN SE DETTE</span>
+<div style="font-size:var(--text-sm);color:var(--navy-900);line-height:var(--leading-normal);text-wrap:pretty">Målingen følger spilleren. AK Golf, WANG Toppidrett og Team Norway ser den der spilleren, eller foresatt, har samtykket.</div>
+<div style="font-size:var(--text-xs);color:var(--navy-800);line-height:var(--leading-normal);text-wrap:pretty">Attestering: Anders K. er vitne. Målingene står som <strong>venter</strong> til de er attestert.</div>
+<div style="flex:1"></div>
+<div style="display:flex;align-items:baseline;justify-content:space-between;border-top:1px solid var(--navy-100);padding-top:10px">
+<span style="font-size:var(--text-xs);color:var(--navy-800)">Venter på attestering</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">7</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:20px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MOBIL 390 · STEG 1 VELG PROTOKOLL · STEG 2 VELG GRUPPE</div>
+<div style="display:flex;gap:28px;flex-wrap:wrap">
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">STEG 1 · VELG PROTOKOLL</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;display:flex;align-items:flex-end;padding:0 20px 4px;background:var(--surface-card)"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium)">09.38</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 16px;display:flex;flex-direction:column;gap:4px">
+<div style="display:flex;align-items:center;gap:12px">
+<div role="button" style="width:44px;height:44px;flex-shrink:0;margin-left:-10px;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--navy-600)">‹</div>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">STEG 1 AV 3 · FELLESTESTING</span>
+</div>
+<div style="font-size:var(--text-h2);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading);padding-left:2px">Velg protokoll</div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:16px;display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;flex-direction:column;gap:8px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">NYLIG BRUKT</span>
+<sc-for list="{{ protokollerNylig }}" as="p" hint-placeholder-count="2">
+<div role="button" style="background:var(--surface-card);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:14px 16px;display:flex;align-items:center;gap:12px;min-height:56px">
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px">
+<span style="font-size:var(--text-base);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ p.navn }}</span>
+<span style="font-size:var(--text-xs);color:var(--text-secondary)">{{ p.maler }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">{{ p.kilde }}</span>
+</div>
+<span style="font-size:18px;color:var(--navy-600);flex-shrink:0">›</span>
+</div>
+</sc-for>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;flex:1;min-height:0;overflow:hidden">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TN-BATTERI Q3 · FYSISK OG TEKNISK</span>
+<sc-for list="{{ protokollerAlle }}" as="p" hint-placeholder-count="4">
+<div role="button" style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:12px 16px;display:flex;align-items:center;gap:12px;min-height:52px">
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+<span style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ p.navn }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">{{ p.kilde }}</span>
+</div>
+<span style="font-size:18px;color:var(--navy-600);flex-shrink:0">›</span>
+</div>
+</sc-for>
+</div>
+<div style="flex-shrink:0;background:var(--navy-50);border:1px solid var(--navy-100);border-radius:var(--radius-md);padding:12px 14px;font-size:var(--text-xs);color:var(--navy-800);line-height:var(--leading-normal);text-wrap:pretty">Versjonen låses når økten starter. Alle målingene i økten peker på samme versjon.</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">STEG 2 · VELG GRUPPE</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;display:flex;align-items:flex-end;padding:0 20px 4px;background:var(--surface-card)"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium)">09.39</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 16px;display:flex;flex-direction:column;gap:4px">
+<div style="display:flex;align-items:center;gap:12px">
+<div role="button" style="width:44px;height:44px;flex-shrink:0;margin-left:-10px;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--navy-600)">‹</div>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">STEG 2 AV 3 · CLUBHEAD SPEED v2</span>
+</div>
+<div style="font-size:var(--text-h2);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading);padding-left:2px">Velg gruppe</div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:16px;display:flex;flex-direction:column;gap:12px">
+<sc-for list="{{ grupper }}" as="g" hint-placeholder-count="4">
+<div role="button" style="background:var(--surface-card);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:16px;display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;gap:12px">
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+<span style="font-size:var(--text-base);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ g.navn }}</span>
+<span style="font-size:var(--text-xs);color:var(--text-secondary)">{{ g.antall }}</span>
+</div>
+<span style="font-size:18px;color:var(--navy-600);flex-shrink:0">›</span>
+</div>
+<div style="display:flex;align-items:center;gap:10px">
+<div style="flex:1;height:6px;border-radius:var(--radius-full);background:var(--ink-100);overflow:hidden"><div ref="{{ g.barRef }}" style="height:100%;background:var(--navy-600)"></div></div>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary);flex-shrink:0">{{ g.malt }}</span>
+</div>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">{{ g.status }}</span>
+</div>
+</sc-for>
+<div style="flex:1;min-height:0"></div>
+<div style="flex-shrink:0;background:var(--navy-50);border:1px solid var(--navy-100);border-radius:var(--radius-md);padding:12px 14px;font-size:var(--text-xs);color:var(--navy-800);line-height:var(--leading-normal);text-wrap:pretty">Du ser bare gruppene du har tilgang til. Tallet til høyre er hvor mange som allerede har en måling på denne protokollen i testperioden uke 34–36 — det avgjør om økten er ny runde eller opphenting.</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:20px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MOBIL 390 · STEG 4 FERDIG · REFERANSEVERDIER OG MANGLENDE NORM</div>
+<div style="display:flex;gap:28px;flex-wrap:wrap">
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">FERDIG — OPPSUMMERING OG ATTESTERING</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;display:flex;align-items:flex-end;padding:0 20px 4px;background:var(--surface-card)"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium)">10.24</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 16px;display:flex;flex-direction:column;gap:4px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">STEG 4 AV 3 FULLFØRT · CLUBHEAD SPEED</span>
+<div style="font-size:var(--text-h2);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading)">Køen er tom</div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:16px;display:flex;flex-direction:column;gap:14px">
+<div style="background:var(--status-green-bg);border-radius:var(--radius-lg);padding:18px;display:flex;flex-direction:column;gap:12px">
+<span style="font-size:var(--text-base);font-weight:var(--weight-bold);color:var(--status-green-text);line-height:var(--leading-snug);text-wrap:pretty">Alle 14 er gjennomgått. 12 målinger er ført.</span>
+<div style="display:flex;gap:16px">
+<div style="display:flex;flex-direction:column"><span style="font-family:var(--font-mono);font-size:var(--text-h3);font-weight:var(--weight-semibold);color:var(--status-green-text)">12</span><span style="font-size:var(--text-xs);color:var(--status-green-text)">ført</span></div>
+<div style="display:flex;flex-direction:column"><span style="font-family:var(--font-mono);font-size:var(--text-h3);font-weight:var(--weight-semibold);color:var(--status-amber-text)">1</span><span style="font-size:var(--text-xs);color:var(--status-amber-text)">hoppet over</span></div>
+<div style="display:flex;flex-direction:column"><span style="font-family:var(--font-mono);font-size:var(--text-h3);font-weight:var(--weight-semibold);color:var(--status-red-text)">1</span><span style="font-size:var(--text-xs);color:var(--status-red-text)">ikke møtt</span></div>
+</div>
+</div>
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);border:1px solid var(--border-subtle);padding:16px;display:flex;flex-direction:column;gap:12px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">ATTESTERING</span>
+<div style="font-size:var(--text-sm);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Vitne: <strong>Anders K.</strong> Ført av Marte Lien på Anders' vegne — forslag, ikke besluttet.</div>
+<sc-for list="{{ attest }}" as="a" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:10px;min-height:36px">
+<span ref="{{ a.badgeRef }}" style="padding:4px 9px;border-radius:var(--radius-full);font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;flex-shrink:0">{{ a.merke }}</span>
+<span style="flex:1;min-width:0;font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal)">{{ a.tekst }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900);flex-shrink:0">{{ a.tall }}</span>
+</div>
+</sc-for>
+</div>
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);border:1px solid var(--border-subtle);padding:14px 16px;display:flex;flex-direction:column;gap:6px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DETTE LAGRES PÅ HVER MÅLING</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-primary);line-height:var(--leading-normal)">25.08.2026 · Clubhead speed v2 · TN-batteri Q3 · Anders K.</span>
+</div>
+<div style="flex:1;min-height:0"></div>
+<div role="button" style="height:56px;flex-shrink:0;border-radius:var(--radius-full);background:var(--navy-900);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:var(--text-base);font-weight:var(--weight-bold);box-shadow:var(--shadow-md)">Avslutt økten</div>
+<div role="button" style="height:44px;flex-shrink:0;border-radius:var(--radius-full);border:1px solid var(--border-default);display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Tilbake til køen og rette</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">REFERANSE MÅLT VS. ANSLAG · OG NORM SOM MANGLER</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;display:flex;align-items:flex-end;padding:0 20px 4px;background:var(--surface-card)"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium)">09.52</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 16px;display:flex;flex-direction:column;gap:4px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">CLUBHEAD SPEED · KONTEKST MENS DU FØRER</span>
+<div style="font-size:var(--text-h2);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading)">112,4 mph</div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:16px;display:flex;flex-direction:column;gap:14px">
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);border:1px solid var(--border-subtle);padding:16px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:baseline;justify-content:space-between">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">REFERANSENIVÅ</span>
+<span style="font-size:var(--text-xs);color:var(--text-secondary)">høyere er bedre</span>
+</div>
+<sc-for list="{{ refNiva }}" as="r" hint-placeholder-count="4">
+<div style="display:flex;align-items:center;gap:10px;min-height:40px">
+<span style="flex:1;min-width:0;font-size:var(--text-sm);color:var(--text-primary)">{{ r.navn }}</span>
+<span ref="{{ r.badgeRef }}" style="padding:3px 8px;border-radius:var(--radius-xs);font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;flex-shrink:0">{{ r.merke }}</span>
+<span ref="{{ r.tallRef }}" style="width:66px;text-align:right;font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-semibold);flex-shrink:0">{{ r.verdi }}</span>
+</div>
+</sc-for>
+<div style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty;border-top:1px solid var(--border-subtle);padding-top:10px"><strong>Målt</strong> er hentet fra tourdata. <strong>Anslag</strong> er avledet og ikke en fasit — de to skal ikke leses likt.</div>
+</div>
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);border:1px dashed var(--border-default);padding:16px;display:flex;flex-direction:column;gap:8px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">BENKPRESS · NORM MANGLER</span>
+<span style="font-size:var(--text-sm);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Det finnes ingen referanseverdi for denne protokollen ennå. Tallet føres, men sammenlignes ikke.</span>
+<span style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Fysisk norm hentes fra NGF og Olympiatoppen i v2. Feltet står tomt med vilje — ingen tom graf, ingen null.</span>
+</div>
+<div style="flex:1;min-height:0"></div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div style="max-width:760px;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:28px;display:flex;flex-direction:column;gap:18px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DESIGNNOTAT</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Beslutningen skjermen løser</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Kan en hel testdag føres i appen, med telefonen i én hånd, uten at treneren mister oversikten over hvem som gjenstår? Køen er derfor alltid synlig, «før og neste» er ett trykk uten bekreftelsessteg, og «rett opp forrige» ligger permanent ved siden av — retting er en normal handling, ikke en feilsituasjon.</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Tall som er eksempler</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Alle. Navn, målinger, 7 av 14 ført, PEI 3,05 og medianen på 3,4 er oppdiktet skjermtekst. Protokollnavnene er hentet fra de 16 dokumenterte TN-protokollene; versjonsnumre og låsedatoer er eksempler.</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Usikkert</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Fire ting. <strong>Ett:</strong> systemet har ikke ikonsett, så tilbakepilen er tegnet som tegn. Trenger skjermen ikoner, foreslår jeg Lucide. <strong>To:</strong> tallinntastingen viser verdien, men ikke tastaturet — jeg antar systemets numeriske tastatur, ikke et eget. <strong>Tre:</strong> PEI-skalaen bruker <code>--data-1</code> til <code>--data-5</code> med lavt til venstre; det finnes ingen token for «retning på skala», og det bør det kanskje. <strong>Fire:</strong> stigen antar at den stopper ved første ikke-nådde steg — det er ikke bekreftet i kildene.</div>
+</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const GREEN = 'var(--status-green)', AMBER = 'var(--status-amber)', IDLE = 'var(--ink-300)';
+const setStyle = o => el => { if (el) Object.assign(el.style, o); };
+const pill = on => setStyle(on
+  ? { background: 'var(--navy-900)', color: 'var(--white)' }
+  : { background: 'var(--ink-50)', border: '1px solid var(--border-subtle)', color: 'var(--ink-700)' });
+
+class Component extends DCLogic {
+  attempts(active) {
+    return ['1', '2', '3'].map(label => ({ label, ref: pill(label === active) }));
+  }
+  queue() {
+    return [
+      { navn: 'Mathea Hovden', verdi: '104,2', st: 'ok' },
+      { navn: 'Amalie Vik', verdi: '111,7', st: 'ok' },
+      { navn: 'Live Borgen', verdi: '99,4', st: 'ok' },
+      { navn: 'Sigrid Lunde', verdi: '107,0', st: 'ok' },
+      { navn: 'Henrik Sæther', verdi: '118,3', st: 'ok' },
+      { navn: 'Theodor Gran', verdi: '113,9', st: 'ok' },
+      { navn: 'Ingrid Kvam', verdi: '108,1', st: 'ok' },
+      { navn: 'Jonas Bratlie', verdi: 'fører', st: 'na' },
+      { navn: 'Erik Nesheim', verdi: '—', st: 'venter' },
+      { navn: 'Oskar Aune', verdi: '—', st: 'venter' },
+      { navn: 'Nora Fjeld', verdi: '—', st: 'venter' },
+      { navn: 'Kasper Rud', verdi: 'ikke møtt', st: 'nm' },
+      { navn: 'Vilde Strand', verdi: 'hoppet over', st: 'hopp' },
+      { navn: 'Jakob Ness', verdi: '—', st: 'venter' }
+    ];
+  }
+  decorate(k) {
+    const dot = k.st === 'ok' ? GREEN : k.st === 'hopp' ? AMBER : k.st === 'nm' ? 'var(--status-red)' : k.st === 'na' ? 'var(--red-600)' : IDLE;
+    const aktiv = k.st === 'na';
+    return {
+      ...k,
+      dotRef: setStyle({ background: dot }),
+      navnRef: setStyle({
+        color: aktiv ? 'var(--navy-900)' : k.st === 'venter' ? 'var(--text-secondary)' : 'var(--text-primary)',
+        fontWeight: aktiv ? 'var(--weight-bold)' : 'var(--weight-regular)'
+      }),
+      verdiRef: setStyle({ color: aktiv ? 'var(--red-600)' : 'var(--text-secondary)' }),
+      rowRef: setStyle({ background: aktiv ? 'var(--ink-50)' : 'transparent' }),
+      markRef: setStyle({ background: aktiv ? 'var(--red-600)' : 'transparent' })
+    };
+  }
+  renderVals() {
+    const q = this.queue();
+    const nudges = ['−1', '−0,1', '+0,1', '+1'].map(label => ({ label }));
+    return {
+      nudge: nudges, nudge2: nudges, nudgeMac: nudges,
+      forsok: this.attempts('2'), forsokMac: this.attempts('2'),
+      ko: q.slice(8, 12).map(k => this.decorate(k)),
+      koMac: q.map(k => this.decorate(k)),
+      porter: [
+        { label: 'Forsøk 1', ja: true, jaRef: null, neiRef: null },
+        { label: 'Forsøk 2', ja: false },
+        { label: 'Forsøk 3', ja: true }
+      ].map(p => ({
+        label: p.label,
+        jaRef: setStyle(p.ja
+          ? { background: 'var(--status-green-bg)', border: '2px solid var(--status-green)', color: 'var(--status-green-text)' }
+          : { background: 'var(--surface-card)', border: '1px solid var(--border-default)', color: 'var(--text-secondary)' }),
+        neiRef: setStyle(!p.ja
+          ? { background: 'var(--ink-100)', border: '2px solid var(--ink-700)', color: 'var(--ink-900)' }
+          : { background: 'var(--surface-card)', border: '1px solid var(--border-default)', color: 'var(--text-secondary)' })
+      })),
+      steg: [
+        { nr: '1', krav: '5 av 5 innenfor 1,0 m', detalj: 'Fra 6 m', nadd: true },
+        { nr: '2', krav: '5 av 5 innenfor 0,8 m', detalj: 'Fra 8 m', nadd: true },
+        { nr: '3', krav: '4 av 5 innenfor 0,8 m', detalj: 'Fra 10 m', nadd: true },
+        { nr: '4', krav: '4 av 5 innenfor 0,6 m', detalj: 'Fra 12 m', nadd: true },
+        { nr: '5', krav: '3 av 5 innenfor 0,6 m', detalj: 'Fra 15 m', nadd: false, staar: true },
+        { nr: '6', krav: '3 av 5 innenfor 0,5 m', detalj: 'Fra 18 m', nadd: false }
+      ].map(s => ({
+        nr: s.nr, krav: s.krav, detalj: s.detalj,
+        merke: s.nadd ? 'NÅDD' : s.staar ? 'FØRES NÅ' : '',
+        rowRef: setStyle({ background: s.staar ? 'var(--navy-50)' : 'transparent' }),
+        numRef: setStyle(s.nadd
+          ? { background: 'var(--status-green-bg)', color: 'var(--status-green-text)' }
+          : s.staar
+            ? { background: 'var(--navy-900)', color: 'var(--white)' }
+            : { background: 'var(--ink-100)', color: 'var(--text-tertiary)' }),
+        merkeRef: setStyle({ color: s.nadd ? 'var(--status-green-text)' : s.staar ? 'var(--navy-700)' : 'transparent' })
+      })),
+      protokollerNylig: [
+        { navn: 'Clubhead speed', maler: 'Én måleverdi i mph. Høyere er bedre.', kilde: 'AK GOLF · v2 · SIST 25.08.2026' },
+        { navn: 'Putt Gate', maler: 'Antall gjennom av 10 putter, port 40 cm.', kilde: 'TEAM NORWAY · v1 · SIST 22.08.2026' }
+      ],
+      protokollerAlle: [
+        { navn: 'Benkpress', kilde: 'AK GOLF · v3 · KG · NORM MANGLER' },
+        { navn: 'Trapbarmarkløft', kilde: 'AK GOLF · v2 · KG · NORM MANGLER' },
+        { navn: 'Putt Speed Control 3×3', kilde: 'TEAM NORWAY · v3 · STIGE' },
+        { navn: '8-Ball Variation', kilde: 'TEAM NORWAY · v2 · STIGE · 24 SLAG' },
+        { navn: 'Inspill Basis', kilde: 'AK GOLF · v4 · PEI · LAVERE ER BEDRE' },
+        { navn: 'VISA Express', kilde: 'TEAM NORWAY · v1 · PORT PÅ TID' }
+      ],
+      grupper: [
+        { navn: 'Team Norway Junior', antall: '14 utøvere · 11 med profil', malt: '7 av 14', pct: 50, status: 'NY RUNDE PÅBEGYNT' },
+        { navn: 'Team Norway Elite', antall: '9 utøvere · 9 med profil', malt: '9 av 9', pct: 100, status: 'FERDIG DENNE TESTPERIODEN' },
+        { navn: 'WANG Fredrikstad Vg2', antall: '12 utøvere · 8 med profil', malt: '2 av 12', pct: 17, status: 'OPPHENTING' },
+        { navn: 'AK Golf Academy 16–19', antall: '11 utøvere · 11 med profil', malt: '0 av 11', pct: 0, status: 'IKKE STARTET' }
+      ].map(g => ({ ...g, barRef: setStyle({ width: g.pct + '%' }) })),
+      attest: [
+        { merke: 'venter', tekst: 'Sendt til vitne for bekreftelse', tall: '12', tone: 'amber' },
+        { merke: 'attestert', tekst: 'Bekreftet av vitne 25.08.2026', tall: '0', tone: 'green' },
+        { merke: 'avvist', tekst: 'Avvist måling må føres på nytt', tall: '0', tone: 'red' }
+      ].map(a => ({
+        ...a,
+        badgeRef: setStyle(a.tone === 'green'
+          ? { background: 'var(--status-green-bg)', color: 'var(--status-green-text)' }
+          : a.tone === 'red'
+            ? { background: 'var(--status-red-bg)', color: 'var(--status-red-text)' }
+            : { background: 'var(--status-amber-bg)', color: 'var(--status-amber-text)' })
+      })),
+      refNiva: [
+        { navn: 'PGA topp 40', verdi: '121', merke: 'målt', ref: true },
+        { navn: 'PGA-snitt', verdi: '115', merke: 'målt', ref: true },
+        { navn: 'Norsk elitejunior', verdi: '108', merke: 'anslag', ref: false },
+        { navn: 'Scratch', verdi: '102', merke: 'anslag', ref: false }
+      ].map(r => ({
+        ...r,
+        badgeRef: setStyle(r.ref
+          ? { background: 'var(--navy-900)', color: 'var(--white)', border: '1px solid var(--navy-900)' }
+          : { background: 'transparent', color: 'var(--text-tertiary)', border: '1px dashed var(--ink-300)' }),
+        tallRef: setStyle({ color: r.ref ? 'var(--navy-900)' : 'var(--text-tertiary)' })
+      })),
+      samtykke: [
+        { label: 'Spillere i gruppen', tall: '11' },
+        { label: 'Forespørsel sendt', tall: '0' },
+        { label: 'Samtykket', tall: '0' }
+      ],
+      skjelett: [190, 150, 205, 165, 180].map(w => ({ ref: setStyle({ width: w + 'px' }) })),
+      ventende: [
+        { navn: 'Henrik Sæther', verdi: '118,3' },
+        { navn: 'Theodor Gran', verdi: '113,9' },
+        { navn: 'Ingrid Kvam', verdi: '108,1' }
+      ],
+      fort: [
+        { navn: 'Henrik Sæther', verdi: '118,3 mph', kilde: '25.08.2026 · v2 · Anders K.' },
+        { navn: 'Amalie Vik', verdi: '111,7 mph', kilde: '25.08.2026 · v2 · Anders K.' },
+        { navn: 'Ingrid Kvam', verdi: '108,1 mph', kilde: '25.08.2026 · v2 · Anders K.' },
+        { navn: 'Sigrid Lunde', verdi: '107,0 mph', kilde: '25.08.2026 · v2 · Anders K.' },
+        { navn: 'Mathea Hovden', verdi: '104,2 mph', kilde: '25.08.2026 · v2 · Anders K.' }
+      ],
+      meny: [
+        { isHeading: true, label: 'Daglig' },
+        { isItem: true, label: 'Oversikt' },
+        { isItem: true, label: 'Fellestesting', aktiv: true },
+        { isHeading: true, label: 'Uttak' },
+        { isItem: true, label: 'Uttaksliste' },
+        { isItem: true, label: 'Rangliste' },
+        { isHeading: true, label: 'Skoler' },
+        { isItem: true, label: 'Skoleoversikt' },
+        { isHeading: true, label: 'Data' },
+        { isItem: true, label: 'Testbatteri' },
+        { isItem: true, label: 'Analyse' }
+      ].map(m => ({
+        ...m,
+        ref: setStyle({
+          background: m.aktiv ? 'var(--navy-100)' : 'transparent',
+          color: m.aktiv ? 'var(--navy-900)' : 'var(--text-secondary)'
+        }),
+        markRef: setStyle({ background: m.aktiv ? 'var(--red-600)' : 'transparent' })
+      }))
+    };
+  }
+}
+</script>
+</body>
+</html>
