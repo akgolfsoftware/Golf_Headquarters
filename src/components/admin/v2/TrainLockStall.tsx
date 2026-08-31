@@ -115,7 +115,19 @@ function SgVerdi({ verdi, size = 13 }: { verdi: string; size?: number }) {
   );
 }
 
-/** Rad — avatar, navn/meta, SG-verdi + statusflagg som caps mute (AG-04). */
+/** Radens ene varsel-prikk (15.11): fylt = trenger deg, åpen ring = følg med,
+ *  ingen = på planen. Tom span bevarer justeringen (canvas-fasiten). */
+function VarselPrikk({ prikk }: { prikk: StallV2Player["prikk"] }) {
+  const felles: React.CSSProperties = { width: 8, height: 8, borderRadius: 999, flexShrink: 0 };
+  if (prikk === "fylt") return <span aria-label="Trenger deg" style={{ ...felles, background: TL.text }} />;
+  if (prikk === "aapen")
+    return <span aria-label="Følg med" style={{ ...felles, boxShadow: `inset 0 0 0 1px ${TL.text}` }} />;
+  return <span aria-hidden style={felles} />;
+}
+
+/** Rad — fire ting: navn, neste økt, siste aktivitet, én prikk (MASTERPLAN
+ *  15.11, beslutning 6.5). SG-form, hcp, etterlevelse, pakke og skyldig er
+ *  lese-informasjon og bor i spillerkortet (SpillerDetalj + /admin/spillere/[id]). */
 function SpillerRad({
   s,
   onClick,
@@ -160,17 +172,22 @@ function SpillerRad({
             whiteSpace: "nowrap",
           }}
         >
-          Hcp {s.hcp} · {s.gruppe}
+          {s.nesteOktLabel}
         </div>
       </div>
-      <div style={{ textAlign: "right", flexShrink: 0 }}>
-        <SgVerdi verdi={s.sg} />
-        {s.trenger && (
-          <div style={{ marginTop: 3 }}>
-            <CapsLabel size={9}>{s.statusLabel}</CapsLabel>
-          </div>
-        )}
-      </div>
+      <span
+        style={{
+          flexShrink: 0,
+          fontFamily: TL.font.mono,
+          fontSize: 12.5,
+          color: TL.mute,
+          fontVariantNumeric: "tabular-nums",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {s.sisteAktivitetLabel}
+      </span>
+      <VarselPrikk prikk={s.prikk} />
     </button>
   );
 }
@@ -293,6 +310,9 @@ function SpillerDetalj({ s }: { s: StallV2Player }) {
           <div style={{ fontSize: 22, fontWeight: 700, letterSpacing: "-0.01em", color: TL.text }}>{s.navn}</div>
           <div style={{ marginTop: 2, fontSize: 13, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
             HCP {s.hcp} · SG <SgVerdi verdi={s.sg} size={13} /> · {s.gruppe}
+            {" · "}
+            {s.pakke}
+            {!s.pakkeAktiv && s.pakke !== "Drop-in" && " (inaktiv)"}
             {s.skylder && <span style={{ color: TL.warn }}> · skylder</span>}
           </div>
         </div>
@@ -541,7 +561,7 @@ export function TrainLockStall({ data }: { data: StallV2Data }) {
           AK-stigen
         </Link>
         <Link
-          href="/admin/stall/dag"
+          href="/admin/kalender?fane=stall"
           className={PRESS}
           style={{
             height: 36,

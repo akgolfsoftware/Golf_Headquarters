@@ -127,7 +127,7 @@ export function GruppeDetaljV2({
         <TlKnapp variant="sekundaer" href={`/admin/grupper/${data.id}/workbench`}>
           Workbench
         </TlKnapp>
-        <TlKnapp variant="tertiaer" href={`/admin/stall/dag`}>
+        <TlKnapp variant="tertiaer" href={`/admin/kalender?fane=stall`}>
           Stall-dag
         </TlKnapp>
         <A.LeggTilSpillerButton

@@ -75,6 +75,12 @@ export type StallenRow = {
   pakkeAktiv: boolean;
   /** Minst én FAILED betaling — «skylder»-flagget fra cockpit-lista. */
   skylder: boolean;
+  /** Neste planlagte økt (første ikke-avlyste med scheduledAt >= nå, inntil 14 d frem).
+   *  null = ingen planlagt i vinduet (15.11: raden sier da «Ingen økt planlagt»). */
+  nesteOkt: Date | null;
+  /** Siste GJENNOMFØRTE økt i lastevinduet (60 d bakover). null = ingen —
+   *  «siste aktivitet» faller da tilbake på innlogging (dagerSiden). */
+  sisteOkt: Date | null;
 };
 
 export type StallenData = {
@@ -205,6 +211,10 @@ export async function loadStallen(
   tretti.setDate(tretti.getDate() - 30);
   const seksti = new Date(now);
   seksti.setDate(seksti.getDate() - 60);
+  // 15.11: «neste økt» i raden trenger et vindu FREMOVER — 14 dager dekker
+  // både denne og neste uke uten å dra hele planen inn i lista.
+  const fjortenFrem = new Date(now);
+  fjortenFrem.setDate(fjortenFrem.getDate() + 14);
 
   // Where: spillere i coachens scope (ADMIN ser alle, COACH ser sine via enrollering).
   const where = {
@@ -274,7 +284,7 @@ export async function loadStallen(
       trainingPlans: {
         select: {
           sessions: {
-            where: { scheduledAt: { gte: seksti, lt: ukeSlutt } },
+            where: { scheduledAt: { gte: seksti, lt: fjortenFrem } },
             select: {
               scheduledAt: true,
               durationMin: true,
@@ -310,6 +320,18 @@ export async function loadStallen(
 
     // Flat ut alle planøkter
     const sessions = p.trainingPlans.flatMap((tp) => tp.sessions);
+
+    // 15.11: neste planlagte økt (første fremtidige som ikke er avlyst/hoppet
+    // over) og siste gjennomførte — radens «neste økt» og «siste aktivitet».
+    const AVLYST = new Set(["CANCELLED", "SKIPPED", "ABANDONED"]);
+    const nesteOkt =
+      sessions
+        .filter((s) => s.scheduledAt >= now && !AVLYST.has(s.status))
+        .sort((a, b) => a.scheduledAt.getTime() - b.scheduledAt.getTime())[0]?.scheduledAt ?? null;
+    const sisteOkt =
+      sessions
+        .filter((s) => s.scheduledAt < now && erOktGjennomfort(s.status))
+        .sort((a, b) => b.scheduledAt.getTime() - a.scheduledAt.getTime())[0]?.scheduledAt ?? null;
 
     // Timer siste 30 d (gjennomførte/planlagte i vinduet) i timer.
     const min30 = sessions
@@ -390,6 +412,8 @@ export async function loadStallen(
       pakke: p.subscriptions[0]?.tier ?? "Drop-in",
       pakkeAktiv: p.subscriptions[0]?.status === "ACTIVE",
       skylder: p._count.payments > 0,
+      nesteOkt,
+      sisteOkt,
     };
   });
 
