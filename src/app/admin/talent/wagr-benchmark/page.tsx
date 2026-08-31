@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-/** Legacy talent-underside → kanonisk Talent-radar (v2). */
-export default function LegacyTalentRedirect(): never {
-  redirect("/admin/talent/radar");
+/** /admin/talent/wagr-benchmark → /innsyn/talent/wagr-benchmark (MASTERPLAN 15.12). */
+export default function AdminTalentWagrBenchmarkRedirect(): never {
+  redirect("/innsyn/talent/wagr-benchmark");
 }

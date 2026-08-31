@@ -6,6 +6,11 @@
  * rolle-redirect-sløyfer (/portal → /admin/kalender), så denne layouten
  * sjekker selv getCurrentUserRaw + capability (effectiveCapabilities, G6).
  * Ingen PortalShell/V2Shell — minimal ramme med logo, tittel og utlogging.
+ *
+ * ADMIN/COACH slippes gjennom guarden (MASTERPLAN 15.12, /admin/talent/*
+ * flyttet hit) — men får INGEN av denne layoutens ramme. Talent-sidene
+ * render sin egen V2Shell (AgencyOS-chrome), og ville kollidert med
+ * header+760px-wrapperen under som er bygget for eksterne lesere.
  */
 
 import type { Metadata } from "next";
@@ -30,11 +35,15 @@ export default async function InnsynLayout({
   const user = await getCurrentUserRaw();
   if (!user) redirect("/auth/login");
 
+  const erInternStab = user.role === "ADMIN" || user.role === "COACH";
   const caps = await effectiveCapabilities(user);
   const harTilgang =
+    erInternStab ||
     caps.has(Capability.VIEW_SHARED_TEST_RESULTS) ||
     caps.has(Capability.VIEW_SHARED_STATS);
   if (!harTilgang) redirect("/auth/login");
+
+  if (erInternStab) return <>{children}</>;
 
   return (
     <div

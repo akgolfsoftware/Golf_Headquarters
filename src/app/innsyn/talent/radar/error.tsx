@@ -17,5 +17,5 @@ export default function Error({
     console.error("[v2/error]", error.digest, error);
   }, [error]);
 
-  return <V2Feil reset={reset} tilbakeHref="/admin/talent" />;
+  return <V2Feil reset={reset} tilbakeHref="/innsyn/talent" />;
 }
