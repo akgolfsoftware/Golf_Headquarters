@@ -54,6 +54,8 @@ export interface KalenderLagUkeData {
     manedHref: string;
     nyBookingHref: string;
     tilgjengelighetHref: string;
+    /** MASTERPLAN 15.13: /admin/kalender/hendelse/ny hadde ingen vei inn. */
+    nyHendelseHref: string;
   };
 }
 
@@ -338,6 +340,7 @@ export async function hentKalenderLagUke(
       manedHref: kalenderHref({ visning: "maned", maaned, lag }),
       nyBookingHref: "/admin/bookinger/ny",
       tilgjengelighetHref: "/admin/availability",
+      nyHendelseHref: "/admin/kalender/hendelse/ny",
     },
   };
 }
@@ -384,6 +387,7 @@ export async function hentKalenderLagManed(
       manedHref: kalenderHref({ visning: "maned", maaned: denneNokkel, lag }),
       nyBookingHref: "/admin/bookinger/ny",
       tilgjengelighetHref: "/admin/availability",
+      nyHendelseHref: "/admin/kalender/hendelse/ny",
     },
   };
 }

@@ -17,7 +17,8 @@ export type KoFaneId =
   | "agentko"
   | "agentgodkjenn"
   | "tester"
-  | "dubletter";
+  | "dubletter"
+  | "moderering";
 
 export type KoFane = {
   id: KoFaneId;
@@ -65,6 +66,14 @@ export const KO_FANER: KoFane[] = [
     // viser fortsatt dubletter som sak-type (deler loaderen med Turnering),
     // så feltet peker på verktøyets nye adresse, ikke en gammel Kø-kilde.
     gammelHref: "/admin/turnering?fane=dubletter",
+    krever: null,
+  },
+  {
+    id: "moderering",
+    label: "Moderering",
+    // MASTERPLAN 15.13: hadde ingen vei inn (arkitektur-kartlegging 30.08.2026).
+    // Samme ADMIN/COACH-basisgate som kildesiden hadde — ingen ekstra capability.
+    gammelHref: "/admin/stats/moderering",
     krever: null,
   },
 ];

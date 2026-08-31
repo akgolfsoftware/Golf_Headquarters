@@ -634,6 +634,13 @@ export function KalenderLagUkeV2({
       )}
       <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 12 }}>
         <Link
+          href={data.nav.nyHendelseHref}
+          className="v2-press v2-focus"
+          style={{ fontSize: 13, color: TL.mute, fontWeight: 600, textDecoration: "none" }}
+        >
+          Ny hendelse
+        </Link>
+        <Link
           href={data.nav.tilgjengelighetHref}
           className="v2-press v2-focus"
           style={{ fontSize: 13, color: TL.mute, fontWeight: 600, textDecoration: "none" }}

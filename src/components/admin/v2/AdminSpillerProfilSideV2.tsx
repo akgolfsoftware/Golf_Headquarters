@@ -165,9 +165,17 @@ export function AdminSpillerProfilSideV2({ data }: { data: AdminSpillerProfilSid
               Spillerprofil · stamdata
             </span>
           </div>
-          <Link href={`/admin/spillere/${data.spillerId}/rediger`} style={{ textDecoration: "none" }}>
-            <CTAPill icon="pencil">Rediger</CTAPill>
-          </Link>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+            <Link href="/admin/videoer" style={{ textDecoration: "none" }}>
+              <CTAPill icon="video" ghost>Videoer</CTAPill>
+            </Link>
+            <Link href={`/admin/spillere/${data.spillerId}/turnering-kobling`} style={{ textDecoration: "none" }}>
+              <CTAPill icon="link-2" ghost>Turneringskobling</CTAPill>
+            </Link>
+            <Link href={`/admin/spillere/${data.spillerId}/rediger`} style={{ textDecoration: "none" }}>
+              <CTAPill icon="pencil">Rediger</CTAPill>
+            </Link>
+          </div>
         </div>
       </div>
 
