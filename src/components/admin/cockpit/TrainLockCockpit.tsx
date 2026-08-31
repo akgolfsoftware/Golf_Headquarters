@@ -38,7 +38,7 @@
  * Tokens: KUN TL (train-lock.ts) — CLAUDE.md invariant 2.
  */
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import Link from "next/link";
 import { TL } from "@/lib/v2/train-lock";
 import type { CockpitTimelineSession } from "./agency-cockpit";
@@ -46,19 +46,24 @@ import type { AdminGodkjenningV2Row } from "@/components/admin/v2/AdminGodkjenni
 import { PrintButton } from "@/components/shared/print-button";
 import { EksportTrigger } from "@/components/shared/eksport-trigger";
 
+function subscribeOnline(callback: () => void) {
+  window.addEventListener("online", callback);
+  window.addEventListener("offline", callback);
+  return () => {
+    window.removeEventListener("online", callback);
+    window.removeEventListener("offline", callback);
+  };
+}
+
 function useOnline(): boolean {
-  const [online, setOnline] = useState(() => (typeof navigator === "undefined" ? true : navigator.onLine));
-  useEffect(() => {
-    const opp = () => setOnline(true);
-    const ned = () => setOnline(false);
-    window.addEventListener("online", opp);
-    window.addEventListener("offline", ned);
-    return () => {
-      window.removeEventListener("online", opp);
-      window.removeEventListener("offline", ned);
-    };
-  }, []);
-  return online;
+  // useSyncExternalStore: serverSnapshot (`true`) matcher klientens første
+  // render, ekte navigator.onLine leses først etter hydrering — unngår
+  // SSR/klient-mismatch uten setState-i-effect.
+  return useSyncExternalStore(
+    subscribeOnline,
+    () => navigator.onLine,
+    () => true,
+  );
 }
 
 function CapsLabel({ children }: { children: React.ReactNode }) {
