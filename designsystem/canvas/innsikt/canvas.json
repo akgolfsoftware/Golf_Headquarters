@@ -1,0 +1,16 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 1440, "h": 900, "title": "Innsikt — Mac, mørk" },
+    { "file": "InnsiktMobil.dc.html", "x": 1560, "y": 0, "w": 390, "h": 844, "title": "Innsikt — iPhone, mørk" },
+    { "file": "InnsiktTom.dc.html", "x": 2070, "y": 0, "w": 390, "h": 844, "title": "Innsikt tom — iPhone" },
+    { "file": "InnsiktLys.dc.html", "x": 0, "y": 1060, "w": 1440, "h": 900, "title": "Innsikt — Mac, lys" },
+    { "file": "InnsiktMobilLys.dc.html", "x": 1560, "y": 1060, "w": 390, "h": 844, "title": "Innsikt — iPhone, lys" }
+  ],
+  "annotations": [
+    { "id": "premiss", "x": 0, "y": -230, "w": 760, "text": "Innsikt per spiller — AgencyOS\n\nSkjermen svarer på coachens fire spørsmål, i den rekkefølgen Anders satte 30.08:\nhvor taper han slag (mot seg selv) · utvikler han seg raskt nok · tåler han konkurranse ·\nriktig turneringsprogram.\n\nSG-stigen er ny: MASTERPLAN STEG 16.10. Den står som «Kun coach» inntil beslutningskø\npunkt 24 er svart — kohort-persentil er coach-only, men «veien til de som lyktes» er godkjent\nfor spillerflaten, og stigen ligger mellom de to." },
+    { "id": "tall", "x": 1560, "y": -230, "w": 500, "text": "Tallene på skjermen er EKSEMPLER, ikke målt i basen — derfor pilla «Eksempeltall» i toppen.\n\nUnntak: feltstyrken per nivå (6,32 / 8,76 / 10,41 / 10,55 / 13,64 snitt til-par) er målt\n30.08.2026 og står i MASTERPLAN STEG 16." },
+    { "id": "lys", "x": 0, "y": 2000, "w": 660, "text": "Lys er samme skjerm, kun tokens snus — verdiene er hentet fra src/styles/train-lock-tokens.css,\nikke fra hukommelsen. Default på /admin er mørk (beslutning 25.08); begge må virke (26.08)." },
+    { "id": "tom", "x": 2070, "y": -230, "w": 420, "text": "Tom tilstand er den viktigste skjermen her.\n\nMed færre enn fem runder sier vi det rett ut i stedet for å tegne en kurve på to punkter.\nTruthLayer: et tall vi ikke kan stå inne for, er verre enn ingen skjerm." }
+  ],
+  "launch": { "view": "canvas" }
+}
