@@ -205,7 +205,7 @@ export function MonthCalendarV2(props: MonthCalendarV2Props) {
             {props.monthLabel}
           </h1>
         </div>
-        <Link href="/admin/planlegge">
+        <Link href="/admin/plan">
           <Knapp icon="plus">Ny økt</Knapp>
         </Link>
       </div>
