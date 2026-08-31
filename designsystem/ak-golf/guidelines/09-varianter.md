@@ -6,14 +6,22 @@ og **navnelåsen**.
 ## Navnelåsen
 
 Logoen står til venstre. En hårlinje `#D1CFC5` skiller. Virksomhetsnavnet står i
-Poppins 500, samme optiske høyde som ligaturen, i blekk `#141413`.
+**Poppins 400** i blekk `#141413`, satt i **40 % av logoens høyde**.
+
+Vekten er 400 og ikke tyngre med vilje: navnet skal underordne seg merket. Settes
+det tyngre eller større, begynner leseren å lese navnet først og logoen etterpå —
+og da er det ikke lenger en lås, men to elementer ved siden av hverandre.
+
+**Ferdige filer finnes** — bygg aldri en lås på nytt for hånd:
+`public/logos/ak-golf-laas-<variant>.svg`, én per variant, med teksten
+konvertert til former så de ikke er avhengige av at Poppins er installert.
 
 ```
 [ak●]  │  Junior Academy
 ```
 
-- Avstand logo → linje → navn: 16 px hver vei.
-- Linjen er 1 px, og går fra logoens overkant til underkant — ikke lenger.
+- Avstand logo → linje → navn: en tredjedel av logoens høyde, hver vei.
+- Linjen er 1 px og dekker 84 % av logoens høyde, optisk sentrert.
 - Navnet står **aldri** i identitetsfargen. Fargen bæres av flatene rundt, ikke
   av merkenavnet. Det holder låsen lesbar i én farge, på brodering og i faks.
 

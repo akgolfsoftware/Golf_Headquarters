@@ -28,6 +28,26 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
 
 ## Beslutningene (august 2026)
 
+- **LOGOEN RYDDES, TEGNES IKKE OM (Anders 31.08.2026, i økt):** ligaturen og ballen i
+  `public/logos/` er uendret. Det som manglet var ikke kvalitet — filene er ekte vektor og
+  skalerer rent — men **familien**. Utført samme økt, avledet fra nøyaktig samme former:
+  - `ak-golf-merke-kvadrat.svg` — profilbilder, 78 % dekning, **skarpe hjørner** (plattformen
+    runder selv; innebygd radius ville blitt rundet to ganger).
+  - `ak-golf-favicon.svg` — 94 % dekning på krem flate. Valgt etter test av fire utkast på
+    16/20/32/48/180 px mot lys, mørk og hvit fanebakgrunn. **Utslagsgivende: mørk strek på lys
+    flate holder seg lesbar der lys-på-mørk tetter seg igjen.** Den lyse flaten gjør også at
+    ikonet virker på en mørk fane, der en gjennomsiktig versjon ville forsvunnet.
+  - `ak-golf-laas-{academy,junior-academy,hq,products,organisasjon}.svg` — logo + navn låst
+    sammen, teksten konvertert til former så filene ikke krever at Poppins er installert.
+  **Navnelåsen er presisert:** navnet står i **Poppins 400 i 40 % av logoens høyde**, ikke 500.
+  Vekten er lettere med vilje — settes navnet tyngre, leser man navnet før merket, og da er det
+  ikke lenger en lås. Organisasjonslåsen snur rekkefølgen: kunden først, «coaching ved [logo]»
+  under.
+  **Klaringssonen er gjort målbar:** halve logoens høyde på alle fire sider (var «høyden av
+  ballen», som ikke stemte med tegningen i merkeboka). Minstemål 24 px skjerm / 12 mm trykk.
+  **Gjenstår, men haster ikke:** PNG-eksporter for flater uten SVG-støtte, og Pantone/CMYK for
+  clay og blekk — som skal måles mot et fysisk prøvetrykk, aldri konverteres fra RGB.
+
 - **KARTLEGGINGSØKTA ER IKKE GRATIS — 90 MINUTTER TIL VANLIG TIMEPRIS (Anders 31.08.2026, i økt):**
   førstegangsøkta bookes som en helt vanlig time. Anbefalt lengde er **90 minutter**, og prisen er
   den ordinære timeprisen for den lengden hos den aktuelle coachen — ingen egen kartleggingspris,
