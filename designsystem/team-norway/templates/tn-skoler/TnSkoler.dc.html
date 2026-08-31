@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="TN-08 Skoleoversikt" description="Toppidrettsgymnasene med antall TN-utøvere og dekningsgrad per skole. Aggregat på skolenivå — ingen navngitte mindreårige før man går inn i en gruppe man har tilgang til. Mac 1440 og mobil 390 i fire tilstander." -->
+<helmet><script src="./ds-base.js"></script></helmet>
+<div style="padding:48px;display:flex;flex-direction:column;gap:56px;background:var(--surface-page);min-height:100vh;font-family:var(--font-body)">
+
+<div style="display:flex;flex-direction:column;gap:8px;max-width:800px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TN-08 · /team-norway/skoler</div>
+<h1 style="font-size:var(--text-h1);color:var(--navy-900);letter-spacing:var(--tracking-heading);margin:0">Skoleoversikt</h1>
+<p style="margin:0;font-size:var(--text-lg);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Hvor TN-utøverne går, og hvor mye data hver skole faktisk bidrar med. Flaten viser aggregat på skolenivå — den kan stå framme i et møterom uten at et mindreårig navn er synlig. Navn først når du går inn i en gruppe du har tilgang til.</p>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:20px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MAC 1440 · SUKSESS</div>
+<div style="width:1440px;height:900px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;font-variant-numeric:tabular-nums">
+<div style="width:232px;flex-shrink:0;background:var(--surface-card);border-right:1px solid var(--border-subtle);display:flex;flex-direction:column;padding:20px 14px 18px;gap:20px">
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:11px 12px;display:flex;align-items:center;gap:10px">
+<span style="width:9px;height:24px;border-radius:3px;background:var(--red-600);flex-shrink:0"></span>
+<div style="min-width:0"><div style="font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--navy-900)">Team Norway</div><div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);color:var(--text-tertiary);margin-top:1px">JUNIOR</div></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:2px;flex:1;min-height:0;overflow:hidden">
+<sc-for list="{{ meny }}" as="m" hint-placeholder-count="12">
+<sc-if value="{{ m.isHeading }}" hint-placeholder-val="{{ false }}">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);padding:14px 12px 6px">{{ m.label }}</div>
+</sc-if>
+<sc-if value="{{ m.isItem }}" hint-placeholder-val="{{ true }}">
+<div ref="{{ m.ref }}" style="height:40px;border-radius:var(--radius-xs);padding:0 10px;display:flex;align-items:center;gap:10px">
+<span ref="{{ m.markRef }}" style="width:3px;height:18px;border-radius:var(--radius-full);flex-shrink:0"></span>
+<span style="font-size:var(--text-sm);font-weight:var(--weight-medium)">{{ m.label }}</span>
+</div>
+</sc-if>
+</sc-for>
+</div>
+</div>
+
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;padding:28px 32px 0;gap:18px;min-height:0">
+<div style="display:flex;align-items:flex-end;justify-content:space-between">
+<div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">SKOLER · AGGREGAT PÅ SKOLENIVÅ</div>
+<h2 style="font-size:var(--text-h1);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:6px 0 0">Skoleoversikt</h2>
+</div>
+<div style="display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:var(--radius-full);background:var(--navy-50);border:1px solid var(--navy-100)">
+<span style="width:7px;height:7px;border-radius:var(--radius-full);background:var(--navy-600);flex-shrink:0"></span>
+<span style="font-size:var(--text-xs);font-weight:var(--weight-semibold);color:var(--navy-900)">Ingen navn på denne flaten</span>
+</div>
+</div>
+
+<div style="display:flex;gap:14px;flex-shrink:0">
+<div style="flex:1;background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:20px;display:flex;flex-direction:column;gap:6px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TN-UTØVERE I ALT</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-h1);font-weight:var(--weight-semibold);color:var(--navy-900);letter-spacing:var(--tracking-heading)">37</span>
+<span style="font-size:var(--text-xs);color:var(--text-secondary)">Fordelt på 5 toppidrettsgymnas og 4 klubbutøvere</span>
+</div>
+<div style="flex:1;background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:20px;display:flex;flex-direction:column;gap:6px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MED KOMPLETT PROFIL</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-h1);font-weight:var(--weight-semibold);color:var(--navy-900);letter-spacing:var(--tracking-heading)">18</span>
+<span style="font-size:var(--text-xs);color:var(--text-secondary)">Dekningsgrad 49 % · talt 25.08.2026</span>
+</div>
+<div style="flex:1;background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:20px;display:flex;flex-direction:column;gap:6px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MÅLT I TESTPERIODEN</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-h1);font-weight:var(--weight-semibold);color:var(--navy-900);letter-spacing:var(--tracking-heading)">24</span>
+<span style="font-size:var(--text-xs);color:var(--text-secondary)">Uke 34–36 · minst én protokoll ført</span>
+</div>
+<div style="flex:1;background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:20px;display:flex;flex-direction:column;gap:6px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DU HAR TILGANG TIL</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-h1);font-weight:var(--weight-semibold);color:var(--navy-900);letter-spacing:var(--tracking-heading)">2</span>
+<span style="font-size:var(--text-xs);color:var(--text-secondary)">Skoler med gruppe du er trener for</span>
+</div>
+</div>
+
+<div style="flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;align-items:flex-end;gap:14px;padding:0 18px 2px;flex-shrink:0">
+<span style="width:300px;flex-shrink:0;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">SKOLE</span>
+<span style="width:76px;flex-shrink:0;text-align:right;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">UTØVERE</span>
+<span style="flex:1;min-width:0;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">DEKNINGSGRAD</span>
+<span style="width:120px;flex-shrink:0;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">MÅLT UKE 34–36</span>
+<span style="width:150px;flex-shrink:0;text-align:right;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">DIN TILGANG</span>
+</div>
+<sc-for list="{{ skoler }}" as="s" hint-placeholder-count="6">
+<div ref="{{ s.rowRef }}" style="border-radius:var(--radius-md);padding:14px 18px;display:flex;align-items:center;gap:14px;min-height:44px;flex-shrink:0">
+<div style="width:300px;flex-shrink:0;min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ s.navn }}</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);margin-top:2px">{{ s.sted }}</div>
+</div>
+<span style="width:76px;flex-shrink:0;text-align:right;font-family:var(--font-mono);font-size:var(--text-base);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ s.utovere }}</span>
+<div style="flex:1;min-width:0;display:flex;align-items:center;gap:12px">
+<div style="flex:1;min-width:0;height:8px;border-radius:var(--radius-full);background:var(--ink-100);overflow:hidden"><div ref="{{ s.barRef }}" style="height:100%;border-radius:var(--radius-full)"></div></div>
+<span style="width:74px;flex-shrink:0;font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary)">{{ s.dekning }}</span>
+</div>
+<span style="width:120px;flex-shrink:0;font-family:var(--font-mono);font-size:var(--text-sm);color:var(--text-primary)">{{ s.malt }}</span>
+<div style="width:150px;flex-shrink:0;display:flex;justify-content:flex-end">
+<span ref="{{ s.tilgangRef }}" style="font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;padding:4px 9px;border-radius:var(--radius-xs)">{{ s.tilgang }}</span>
+</div>
+</div>
+</sc-for>
+<div style="flex:1;min-height:0"></div>
+<div style="background:var(--navy-50);border:1px solid var(--navy-100);border-radius:var(--radius-md);padding:14px 18px;display:flex;align-items:flex-start;gap:12px;flex-shrink:0;margin-bottom:24px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--navy-700);flex-shrink:0;padding-top:2px">PERSONVERN</span>
+<span style="flex:1;min-width:0;font-size:var(--text-sm);color:var(--navy-900);line-height:var(--leading-normal);text-wrap:pretty">Tallene er aggregat. En skole med færre enn tre TN-utøvere vises som «under 3» framfor eksakt tall, fordi to av to lett kan identifiseres. Navn finnes bare inne i en gruppe du er trener for.</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:20px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MOBIL 390 · SUKSESS, TOM, LASTER, FEIL</div>
+<div style="display:flex;gap:28px;flex-wrap:wrap">
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">SUKSESS</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.41</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 14px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">SKOLER · 37 TN-UTØVERE</div>
+<h2 style="font-size:var(--text-h2);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:4px 0 0">Skoleoversikt</h2>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:14px 16px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;gap:8px">
+<div style="flex:1;background:var(--surface-card);border-radius:var(--radius-sm);box-shadow:var(--shadow-sm);padding:12px;display:flex;flex-direction:column;gap:2px"><span style="font-family:var(--font-mono);font-size:var(--text-h3);font-weight:var(--weight-semibold);color:var(--navy-900)">18</span><span style="font-size:var(--text-micro);color:var(--text-secondary);line-height:var(--leading-snug)">komplett profil</span></div>
+<div style="flex:1;background:var(--surface-card);border-radius:var(--radius-sm);box-shadow:var(--shadow-sm);padding:12px;display:flex;flex-direction:column;gap:2px"><span style="font-family:var(--font-mono);font-size:var(--text-h3);font-weight:var(--weight-semibold);color:var(--navy-900)">24</span><span style="font-size:var(--text-micro);color:var(--text-secondary);line-height:var(--leading-snug)">målt uke 34–36</span></div>
+<div style="flex:1;background:var(--surface-card);border-radius:var(--radius-sm);box-shadow:var(--shadow-sm);padding:12px;display:flex;flex-direction:column;gap:2px"><span style="font-family:var(--font-mono);font-size:var(--text-h3);font-weight:var(--weight-semibold);color:var(--navy-900)">2</span><span style="font-size:var(--text-micro);color:var(--text-secondary);line-height:var(--leading-snug)">din tilgang</span></div>
+</div>
+<sc-for list="{{ skolerMobil }}" as="s" hint-placeholder-count="5">
+<div role="button" ref="{{ s.kortRef }}" style="border-radius:var(--radius-md);padding:14px 16px;display:flex;flex-direction:column;gap:10px;min-height:44px;flex-shrink:0">
+<div style="display:flex;align-items:flex-start;gap:10px">
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900);line-height:var(--leading-snug);text-wrap:pretty">{{ s.navn }}</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);margin-top:2px">{{ s.sted }}</div>
+</div>
+<span style="font-family:var(--font-mono);font-size:var(--text-h3);font-weight:var(--weight-semibold);color:var(--navy-900);flex-shrink:0">{{ s.utovere }}</span>
+</div>
+<div style="display:flex;align-items:center;gap:10px">
+<div style="flex:1;min-width:0;height:7px;border-radius:var(--radius-full);background:var(--ink-100);overflow:hidden"><div ref="{{ s.barRef }}" style="height:100%;border-radius:var(--radius-full)"></div></div>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary);flex-shrink:0">{{ s.dekning }}</span>
+</div>
+<div style="display:flex;align-items:center;gap:8px;border-top:1px solid var(--border-subtle);padding-top:9px">
+<span ref="{{ s.tilgangRef }}" style="font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;padding:3px 8px;border-radius:var(--radius-xs)">{{ s.tilgang }}</span>
+<div style="flex:1"></div>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">{{ s.malt }} MÅLT</span>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">TOM — SKOLE UTEN TILGANG ÅPNET</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.45</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 14px;display:flex;align-items:center;gap:10px">
+<div role="button" style="width:44px;height:44px;flex-shrink:0;margin-left:-12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--navy-600)">‹</div>
+<div style="min-width:0">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TOPPIDRETT · BÆRUM</div>
+<h2 style="font-size:var(--text-h3);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:2px 0 0">NTG Bærum</h2>
+</div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:16px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;gap:8px">
+<div style="flex:1;background:var(--surface-card);border-radius:var(--radius-sm);box-shadow:var(--shadow-sm);padding:14px;display:flex;flex-direction:column;gap:2px"><span style="font-family:var(--font-mono);font-size:var(--text-h3);font-weight:var(--weight-semibold);color:var(--navy-900)">9</span><span style="font-size:var(--text-micro);color:var(--text-secondary)">TN-utøvere</span></div>
+<div style="flex:1;background:var(--surface-card);border-radius:var(--radius-sm);box-shadow:var(--shadow-sm);padding:14px;display:flex;flex-direction:column;gap:2px"><span style="font-family:var(--font-mono);font-size:var(--text-h3);font-weight:var(--weight-semibold);color:var(--navy-900)">4</span><span style="font-size:var(--text-micro);color:var(--text-secondary)">komplett profil</span></div>
+<div style="flex:1;background:var(--surface-card);border-radius:var(--radius-sm);box-shadow:var(--shadow-sm);padding:14px;display:flex;flex-direction:column;gap:2px"><span style="font-family:var(--font-mono);font-size:var(--text-h3);font-weight:var(--weight-semibold);color:var(--navy-900)">6</span><span style="font-size:var(--text-micro);color:var(--text-secondary)">målt i perioden</span></div>
+</div>
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:22px;display:flex;flex-direction:column;gap:12px">
+<div style="font-size:var(--text-h3);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading);line-height:var(--leading-snug);text-wrap:pretty">Ingen navn her</div>
+<div style="font-size:var(--text-sm);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Du er ikke trener for noen gruppe på NTG Bærum. Tallene over er aggregat og kan vises, men de ni utøverne står ikke oppført med navn.</div>
+<div style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Dette er ikke en feil. Piloten høsten 2026 gir tilgang kun til egne grupper, og en oversikt over mindreårige skal ikke kunne leses av rommet.</div>
+</div>
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:16px;display:flex;flex-direction:column;gap:8px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">SLIK FÅR DU TILGANG</span>
+<span style="font-size:var(--text-sm);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Anders K. legger deg til som trener på en gruppe ved skolen. Tilgangen gjelder gruppen, ikke skolen.</span>
+</div>
+<div role="button" style="height:48px;flex-shrink:0;border-radius:var(--radius-full);border:1px solid var(--border-default);display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Be om tilgang</div>
+<div style="flex:1;min-height:0"></div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">LASTER</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.41</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 14px;display:flex;flex-direction:column;gap:8px">
+<div style="width:170px;height:11px;border-radius:var(--radius-xs);background:var(--ink-100)"></div>
+<div style="width:210px;height:28px;border-radius:var(--radius-xs);background:var(--ink-100)"></div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:14px 16px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;gap:8px">
+<div style="flex:1;height:66px;border-radius:var(--radius-sm);background:var(--ink-100)"></div>
+<div style="flex:1;height:66px;border-radius:var(--radius-sm);background:var(--ink-100)"></div>
+<div style="flex:1;height:66px;border-radius:var(--radius-sm);background:var(--ink-100)"></div>
+</div>
+<sc-for list="{{ skjelettKort }}" as="s" hint-placeholder-count="4">
+<div style="background:var(--surface-card);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;gap:10px">
+<div ref="{{ s.ref }}" style="height:15px;border-radius:var(--radius-xs);background:var(--ink-100)"></div>
+<div style="flex:1"></div>
+<div style="width:32px;height:20px;border-radius:var(--radius-xs);background:var(--ink-100);flex-shrink:0"></div>
+</div>
+<div style="height:7px;border-radius:var(--radius-full);background:var(--ink-100)"></div>
+<div style="width:110px;height:16px;border-radius:var(--radius-xs);background:var(--ink-100)"></div>
+</div>
+</sc-for>
+<div style="display:flex;align-items:center;gap:10px;padding:2px">
+<span style="width:14px;height:14px;border-radius:var(--radius-full);border:2px solid var(--ink-200);border-top-color:var(--navy-600);flex-shrink:0"></span>
+<span style="font-size:var(--text-xs);color:var(--text-secondary)">Teller utøvere per skole</span>
+</div>
+<div style="flex:1;min-height:0"></div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">FEIL — ÉN SKOLES TALL KAN IKKE VISES</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.58</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 14px">
+<h2 style="font-size:var(--text-h2);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:4px 0 0">Skoleoversikt</h2>
+</div>
+<div style="flex-shrink:0;background:var(--status-amber-bg);padding:12px 16px;display:flex;align-items:flex-start;gap:10px">
+<span style="width:7px;height:7px;border-radius:var(--radius-full);background:var(--status-amber);flex-shrink:0;margin-top:6px"></span>
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--status-amber-text)">Én skole mangler tall</div>
+<div style="font-size:var(--text-xs);color:var(--status-amber-text);line-height:var(--leading-normal);margin-top:3px;text-wrap:pretty">Totalen 37 stemmer ikke med summen i listen. Differansen står oppgitt nederst.</div>
+</div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+<sc-for list="{{ skolerFeil }}" as="s" hint-placeholder-count="3">
+<div ref="{{ s.kortRef }}" style="border-radius:var(--radius-md);padding:14px 16px;display:flex;flex-direction:column;gap:10px;flex-shrink:0">
+<div style="display:flex;align-items:flex-start;gap:10px">
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ s.navn }}</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);margin-top:2px">{{ s.sted }}</div>
+</div>
+<span style="font-family:var(--font-mono);font-size:var(--text-h3);font-weight:var(--weight-semibold);color:var(--navy-900);flex-shrink:0">{{ s.utovere }}</span>
+</div>
+<div style="display:flex;align-items:center;gap:10px">
+<div style="flex:1;min-width:0;height:7px;border-radius:var(--radius-full);background:var(--ink-100);overflow:hidden"><div ref="{{ s.barRef }}" style="height:100%;border-radius:var(--radius-full)"></div></div>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary);flex-shrink:0">{{ s.dekning }}</span>
+</div>
+</div>
+</sc-for>
+<div style="background:var(--surface-card);border:1px dashed var(--status-amber);border-radius:var(--radius-md);padding:16px;display:flex;flex-direction:column;gap:10px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--status-amber-text)">WANG TOPPIDRETT FREDRIKSTAD</span>
+<span style="font-size:var(--text-sm);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Tallene kunne ikke hentes. Raden står tom framfor å vise et anslag — en dekningsgrad som er gjettet, er verre enn ingen dekningsgrad.</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary)">DIFFERANSE MOT TOTALEN: 12 UTØVERE</span>
+<div role="button" style="height:44px;border-radius:var(--radius-full);border:1px solid var(--border-default);display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Hent WANG på nytt</div>
+</div>
+<div style="flex:1;min-height:0"></div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div style="max-width:760px;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:28px;display:flex;flex-direction:column;gap:16px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DESIGNNOTAT</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Beslutningen skjermen løser</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Hvilke skoler bidrar, og hvor er dekningsgraden så lav at satsingen er blind? Flaten er bygget for å tåle å stå framme: alt er aggregat, og «Ingen navn på denne flaten» står som en rolig lapp i toppen framfor et varsel. Terskelen «under 3» hindrer at små kull kan identifiseres bakveien.</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Tall som er eksempler</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Alle tall og fire av fem skolenavn er skjermtekst. WANG Toppidrett Fredrikstad er ekte og bekreftet som én av skolene; de øvrige toppidrettsgymnasene er plassholdere til Anders' liste foreligger.</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Usikkert</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Fire ting. <strong>Ett:</strong> terskelen på tre utøvere er mitt forslag, ikke en besluttet regel — den bør settes av den som eier personvernvurderingen. <strong>To:</strong> «Be om tilgang» forutsetter en forespørselsflyt som ikke finnes i datamodellen. <strong>Tre:</strong> hvilke fem toppidrettsgymnas som faktisk har TN-utøvere er ikke kartlagt; jeg har brukt plassholdernavn framfor å finne på tall for ekte skoler. <strong>Fire:</strong> ingen ikonsett (anbefaling Lucide, 20 px).</div>
+</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const setStyle = o => el => { if (el) Object.assign(el.style, o); };
+const tilgangStil = t => t === 'TRENER'
+  ? { background: 'var(--navy-900)', color: 'var(--white)' }
+  : t === 'AGGREGAT'
+    ? { background: 'var(--ink-100)', color: 'var(--ink-700)' }
+    : { background: 'var(--status-amber-bg)', color: 'var(--status-amber-text)' };
+
+class Component extends DCLogic {
+  skoleData() {
+    return [
+      { navn: 'WANG Toppidrett Fredrikstad', sted: 'FREDRIKSTAD · VG1–VG3', utovere: '12', pct: 67, dekning: '8 av 12', malt: '9 av 12', tilgang: 'TRENER', min: true },
+      { navn: 'NTG Bærum', sted: 'BÆRUM · VG1–VG3', utovere: '9', pct: 44, dekning: '4 av 9', malt: '6 av 9', tilgang: 'AGGREGAT', min: false },
+      { navn: 'Toppidrettsgymnas Sør', sted: 'KRISTIANSAND · VG1–VG3', utovere: '6', pct: 50, dekning: '3 av 6', malt: '4 av 6', tilgang: 'AGGREGAT', min: false },
+      { navn: 'Toppidrettsgymnas Vest', sted: 'BERGEN · VG2–VG3', utovere: '4', pct: 25, dekning: '1 av 4', malt: '2 av 4', tilgang: 'AGGREGAT', min: false },
+      { navn: 'Toppidrettsgymnas Midt', sted: 'TRONDHEIM · VG1–VG2', utovere: 'under 3', pct: 0, dekning: 'skjult', malt: 'skjult', tilgang: 'UNDER TERSKEL', min: false },
+      { navn: 'Team Norway Junior · klubbutøvere', sted: 'UTEN TOPPIDRETTSLINJE', utovere: '4', pct: 50, dekning: '2 av 4', malt: '3 av 4', tilgang: 'TRENER', min: true }
+    ];
+  }
+  dekorer(s) {
+    return {
+      ...s,
+      barRef: setStyle({
+        width: s.pct + '%',
+        background: s.pct >= 60 ? 'var(--navy-900)' : s.pct >= 40 ? 'var(--navy-400)' : 'var(--status-amber)'
+      }),
+      tilgangRef: setStyle(tilgangStil(s.tilgang)),
+      rowRef: setStyle(s.min
+        ? { background: 'var(--surface-card)', boxShadow: 'var(--shadow-sm)' }
+        : { background: 'transparent', border: '1px solid var(--border-subtle)' }),
+      kortRef: setStyle(s.min
+        ? { background: 'var(--surface-card)', boxShadow: 'var(--shadow-sm)' }
+        : { background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' })
+    };
+  }
+  renderVals() {
+    const s = this.skoleData();
+    return {
+      meny: [
+        { isHeading: true, label: 'Daglig' },
+        { isItem: true, label: 'Oversikt' },
+        { isItem: true, label: 'Fellestesting' },
+        { isHeading: true, label: 'Uttak' },
+        { isItem: true, label: 'Uttaksliste' },
+        { isItem: true, label: 'Rangliste' },
+        { isHeading: true, label: 'Skoler' },
+        { isItem: true, label: 'Skoleoversikt', aktiv: true },
+        { isHeading: true, label: 'Data' },
+        { isItem: true, label: 'Testbatteri' },
+        { isItem: true, label: 'Analyse' },
+        { isItem: true, label: 'Sannhetslag' }
+      ].map(m => ({
+        ...m,
+        ref: setStyle({
+          background: m.aktiv ? 'var(--navy-100)' : 'transparent',
+          color: m.aktiv ? 'var(--navy-900)' : 'var(--text-secondary)'
+        }),
+        markRef: setStyle({ background: m.aktiv ? 'var(--red-600)' : 'transparent' })
+      })),
+      skoler: s.map(x => this.dekorer(x)),
+      skolerMobil: s.slice(0, 5).map(x => this.dekorer(x)),
+      skolerFeil: s.slice(1, 4).map(x => this.dekorer(x)),
+      skjelettKort: [58, 72, 64, 50].map(w => ({ ref: setStyle({ width: w + '%' }) }))
+    };
+  }
+}
+</script>
+</body>
+</html>
