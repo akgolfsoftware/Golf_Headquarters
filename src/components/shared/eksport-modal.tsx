@@ -4,7 +4,7 @@
  * Eksport-modal — gjenbrukbar modal for AgencyOS-eksporter.
  *
  * Tre varianter via `kind`-prop:
- *   - "brief"        Eksporter brief-rapport (/admin/brief)
+ *   - "brief"        Eksporter brief-rapport (/admin/agencyos, tidl. /admin/brief)
  *   - "analytics"    Eksporter analytics-rapport (/admin/analytics, /admin/stall)
  *   - "tournaments"  Eksporter turneringer (/admin/tournaments)
  *

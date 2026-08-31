@@ -1,38 +1,50 @@
 "use client";
 
 /**
- * AgencyOS Cockpit — Train-lock (T2, 26.08.2026).
+ * AgencyOS Hjem — Train-lock (STEG 15.10, 31.08.2026).
  *
- * Fasit: designsystem/train-lock/AG-01 Cockpit.dc.html,
- * AG-01 Cockpit lys.dc.html (samme kortspråk, inverterte flater — TL-tokens
- * bytter automatisk), AG-02 Cockpit Mac.dc.html, AG-14 Cockpit tom.dc.html,
- * AG-15 Cockpit feil.dc.html.
- * Erstatter KonsollChat (Caddie-tråd/artefaktpanel) på denne ruten — AG-01 har
- * verken composer eller chat-feed. Caddie-hooken (useCaddieChat) er urørt og
- * kan gjenbrukes et annet sted (Jarvis-sporet), men har ingen inngang herfra
- * etter denne porten.
+ * Fasit: designsystem/canvas/agencyos-ia/Hjem.dc.html (Mac 1440) +
+ * HjemMobil.dc.html (390, VIKTIGST — beslutning 6.1, Anders skanner denne
+ * stående på treningsfeltet mellom økter). Samme ett-kolonne-oppsett på
+ * begge bredder: Kø-kortet ØVERST, «I dag»-kortet UNDER (beslutning 6.5).
  *
- * Tre kort, i denne rekkefølgen på alle skjermstørrelser (Mac: to kolonner —
- * Nå + {navn} i dag til venstre, Kø til høyre, jf. AG-02):
- *   1. Nå · live   — aktiv økt nå, eller «Ingen i økt nå» + peker til neste
- *   2. Kø · N      — ekte ventende elementer (godkjenning, forespørsel …)
- *   3. {navn} i dag — neste økt i dag, uavhengig av om noen er live nå
+ * Slått sammen fra to tidligere adresser (MASTERPLAN 15.10):
+ *   - /admin/agencyos (Konsoll — tidligere AG-01 Train-lock-cockpit,
+ *     26.08.2026: Nå·live + Kø + neste økt)
+ *   - /admin/brief (Daglig brief — AI-generert tekst, KPI-strip,
+ *     «nyligste runder», «agentenes anbefalinger», «krever oppmerksomhet»)
  *
- * Tokens: KUN TL (train-lock.ts, --tl- i CSS) — se CLAUDE.md invariant 2.
- * Én hvit (lys: sort) primær CTA: «Åpne tavle» på Nå-kortet.
- * dataState «feil» (AG-15, danger KUN her) styres av navigator.onLine —
- * ingen ny data-motor, kun det nettleseren allerede vet.
+ * Hva som IKKE ble med hit, og hvorfor (dokumentert per beslutningens
+ * «lærdom fra 15.1/15.2» — ingen funksjonalitet fjernes stille):
+ *   - «Agentenes anbefalinger» + AI-dispatch/agent-team-status: duplikat av
+ *     dette Kø-kortet OG av Jarvis (/admin/agenticos, STEG 15.5 — AGENCYOS_
+ *     SKALL_TABS «Jarvis» peker allerede dit).
+ *   - «Krever oppmerksomhet» (FokusSpillerPanel) + KPI-strip (aktive
+ *     spillere/MRR) + «nyligste runder»: canvas-underteksten sier ordrett
+ *     «Avvik og fremgang nås via Stall — de haster aldri i minutter»
+ *     (beslutning 6.5). Naturlig hjem er den slankede Stall-lista
+ *     (MASTERPLAN 15.11, ikke bygget ennå) — ikke Hjem.
+ *   - AI-brief-teksten (Anthropic-generert oppsummering): dette var
+ *     rapport-konseptet i den gamle /admin/brief. Print/eksport-knappene
+ *     (samme underliggende `/admin/(legacy)/brief/actions` + EksportModal)
+ *     er bevart som sekundære handlinger i headeren — selve AI-avsnittet er
+ *     ikke en del av den godkjente canvasen og er derfor droppet fra Hjem.
+ *
+ * Kø-raden gjenbruker EKSAKT samme data som /admin/ko (lastGodkjenninger +
+ * koTelling via `data.totalt`) — ingen ny spørring, ingen nytt tall som kan
+ * sprike fra selve Kø-siden (lærdom fra 15.1: «et tall som ikke stemmer med
+ * innholdet er verre enn intet tall»).
+ *
+ * Tokens: KUN TL (train-lock.ts) — CLAUDE.md invariant 2.
  */
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { TL } from "@/lib/v2/train-lock";
-import { buildTrainLockCockpit } from "@/lib/agencyos/cockpit-view";
-import type { CockpitData } from "./agency-cockpit";
-import type { AiDispatchData } from "@/lib/agencyos/ai-dispatch-build";
-
-const PRESS =
-  "motion-safe:transition-transform motion-safe:duration-[180ms] motion-safe:ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.97]";
+import type { CockpitTimelineSession } from "./agency-cockpit";
+import type { AdminGodkjenningV2Row } from "@/components/admin/v2/AdminGodkjenningerV2";
+import { PrintButton } from "@/components/shared/print-button";
+import { EksportTrigger } from "@/components/shared/eksport-trigger";
 
 function useOnline(): boolean {
   const [online, setOnline] = useState(() => (typeof navigator === "undefined" ? true : navigator.onLine));
@@ -67,11 +79,7 @@ function CapsLabel({ children }: { children: React.ReactNode }) {
 }
 
 function Kort({ children }: { children: React.ReactNode }) {
-  return (
-    <div style={{ background: TL.elev, borderRadius: TL.radius.card, padding: 20 }}>
-      {children}
-    </div>
-  );
+  return <div style={{ background: TL.elev, borderRadius: TL.radius.card, padding: 20 }}>{children}</div>;
 }
 
 function TomKort({ tittel, undertekst }: { tittel: string; undertekst: string }) {
@@ -85,165 +93,168 @@ function TomKort({ tittel, undertekst }: { tittel: string; undertekst: string })
   );
 }
 
-function NaKort({
-  liveNow,
-}: {
-  liveNow: NonNullable<ReturnType<typeof buildTrainLockCockpit>["liveNow"]>;
-}) {
+function HasterPille() {
   return (
-    <Kort>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12 }}>
-        <CapsLabel>Nå · live</CapsLabel>
-        {liveNow.locationTag && (
-          <span
-            style={{
-              fontSize: TL.storrelse.caps,
-              fontWeight: TL.vekt.caps,
-              letterSpacing: TL.track.caps,
-              textTransform: "uppercase",
-              color: TL.mute,
-              fontVariantNumeric: "tabular-nums",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {liveNow.locationTag}
-          </span>
-        )}
-      </div>
-      <div
-        style={{
-          marginTop: 10,
-          fontSize: TL.storrelse.kortTittel,
-          fontWeight: TL.vekt.kortTittel,
-          letterSpacing: TL.track.kortTittel,
-          lineHeight: 1.15,
-          color: TL.text,
-        }}
-      >
-        {liveNow.playerName}
-      </div>
-      <div style={{ marginTop: 5, fontSize: TL.storrelse.meta, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
-        {liveNow.metaText}
-      </div>
-      <div style={{ marginTop: 18, height: 3, borderRadius: 2, background: TL.dim, overflow: "hidden" }}>
-        <div style={{ width: `${liveNow.progressPct}%`, height: "100%", background: TL.fill, borderRadius: 2 }} />
-      </div>
-      {liveNow.href ? (
-        <Link
-          href={liveNow.href}
-          className={PRESS}
-          style={{
-            marginTop: 18,
-            height: 48,
-            borderRadius: TL.radius.pill,
-            background: TL.fill,
-            color: TL.onFill,
-            fontSize: TL.storrelse.cta,
-            fontWeight: TL.vekt.cta,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          Åpne tavle
-        </Link>
-      ) : null}
-    </Kort>
+    <span
+      style={{
+        flex: "none",
+        fontSize: 10,
+        fontWeight: 700,
+        letterSpacing: "0.06em",
+        textTransform: "uppercase",
+        color: TL.warn,
+        boxShadow: `inset 0 0 0 1px ${TL.warnHair}`,
+        borderRadius: TL.radius.pill,
+        padding: "3px 8px",
+      }}
+    >
+      Haster
+    </span>
   );
 }
 
-function KoKort({
-  title,
-  meta,
-  href,
-  dimmed,
-}: {
-  title: string;
-  meta: string;
-  href: string;
-  dimmed: boolean;
-}) {
+function KoRad({ row, forst }: { row: AdminGodkjenningV2Row; forst: boolean }) {
   return (
-    <div style={{ background: TL.elev, borderRadius: TL.radius.card, padding: "18px 20px", opacity: dimmed ? TL.opasitet.sekundaer : 1 }}>
-      <div style={{ fontSize: TL.storrelse.kropp, fontWeight: TL.vekt.kropp, color: TL.text }}>{title}</div>
-      <div style={{ marginTop: 4, fontSize: TL.storrelse.meta, color: TL.mute, lineHeight: 1.45 }}>{meta}</div>
-      <div style={{ marginTop: 14, display: "flex", alignItems: "center" }}>
-        <Link
-          href={href}
-          className={PRESS}
+    <div
+      style={{
+        display: "flex",
+        alignItems: "flex-start",
+        gap: 12,
+        padding: "13px 0",
+        borderTop: forst ? "none" : `1px solid ${TL.hair}`,
+      }}
+    >
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: TL.storrelse.kropp, fontWeight: 600, color: TL.text }}>{row.who}</div>
+        <div
           style={{
-            height: 40,
-            padding: "0 24px",
-            borderRadius: TL.radius.pill,
-            background: TL.dim,
-            color: TL.text,
-            fontSize: TL.storrelse.kropp,
-            fontWeight: TL.vekt.kropp,
-            display: "flex",
-            alignItems: "center",
+            fontSize: TL.storrelse.meta,
+            color: TL.mute,
+            marginTop: 3,
+            lineHeight: 1.45,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
           }}
         >
-          Åpne
-        </Link>
+          {row.title}
+        </div>
       </div>
+      {row.urgent && <HasterPille />}
+      <span style={{ fontSize: 13, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>{row.when}</span>
     </div>
   );
 }
 
-function NesteOktKort({ next }: { next: NonNullable<ReturnType<typeof buildTrainLockCockpit>["next"]> }) {
-  const inner = (
-    <>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12 }}>
-        <CapsLabel>{next.firstName} i dag</CapsLabel>
+function KoKort({ totalt, rader }: { totalt: number; rader: AdminGodkjenningV2Row[] }) {
+  return (
+    <Kort>
+      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <CapsLabel>Kø</CapsLabel>
         <span
           style={{
-            fontSize: TL.storrelse.caps,
-            fontWeight: TL.vekt.caps,
-            letterSpacing: TL.track.caps,
-            textTransform: "uppercase",
-            color: TL.mute,
+            marginLeft: "auto",
+            fontFamily: TL.font.mono,
+            fontSize: 22,
+            fontWeight: 600,
+            color: TL.text,
             fontVariantNumeric: "tabular-nums",
+          }}
+        >
+          {totalt}
+        </span>
+      </div>
+      {rader.length === 0 ? (
+        <div style={{ marginTop: 10 }}>
+          <TomKort tittel="Ingenting venter på deg" undertekst="Godkjenninger og meldinger dukker opp her." />
+        </div>
+      ) : (
+        <div style={{ marginTop: 10 }}>
+          {rader.map((r, i) => (
+            <KoRad key={r.id} row={r} forst={i === 0} />
+          ))}
+        </div>
+      )}
+      <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
+        <Link
+          href="/admin/ko"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: 44,
+            padding: "0 20px",
+            borderRadius: TL.radius.pill,
+            background: TL.fill,
+            color: TL.onFill,
+            fontSize: 15,
+            fontWeight: 700,
+          }}
+        >
+          Åpne køen
+        </Link>
+      </div>
+    </Kort>
+  );
+}
+
+function IDagRad({ okt, now, forst }: { okt: CockpitTimelineSession; now: number; forst: boolean }) {
+  const erNa = now >= okt.startMin && now < okt.startMin + okt.durMin;
+  const metaTekst = [okt.title, ...okt.meta.map((m) => m.text)].filter(Boolean).join(" · ");
+  const inner = (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "flex-start",
+        gap: 12,
+        padding: "13px 0",
+        borderTop: forst ? "none" : `1px solid ${TL.hair}`,
+      }}
+    >
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: TL.storrelse.kropp, fontWeight: 600, color: TL.text }}>{okt.playerName}</div>
+        <div
+          style={{
+            fontSize: TL.storrelse.meta,
+            color: TL.mute,
+            marginTop: 3,
+            lineHeight: 1.45,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
             whiteSpace: "nowrap",
           }}
         >
-          {next.timeRange}
-        </span>
-      </div>
-      <div style={{ marginTop: 12, display: "flex", alignItems: "center", gap: 14 }}>
-        <div
-          style={{
-            width: 36,
-            height: 36,
-            borderRadius: "50%",
-            background: TL.avatar,
-            color: TL.onAvatar,
-            fontSize: 12,
-            fontWeight: 600,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
-          }}
-        >
-          {next.initials}
-        </div>
-        <div style={{ minWidth: 0 }}>
-          <div style={{ fontSize: TL.storrelse.kropp, fontWeight: TL.vekt.kropp, color: TL.text }}>{next.title}</div>
-          {next.meta && (
-            <div style={{ marginTop: 2, fontSize: TL.storrelse.meta, color: TL.mute }}>{next.meta}</div>
-          )}
+          {metaTekst}
         </div>
       </div>
-    </>
+      <span style={{ fontSize: 13, color: erNa ? TL.warm : TL.mute, fontVariantNumeric: "tabular-nums", fontWeight: erNa ? 700 : 400 }}>
+        {erNa ? "nå" : okt.time}
+      </span>
+    </div>
   );
+  return okt.href ? (
+    <Link href={okt.href} className="block">
+      {inner}
+    </Link>
+  ) : (
+    inner
+  );
+}
+
+function IDagKort({ dagLabel, timeline, now }: { dagLabel: string; timeline: CockpitTimelineSession[]; now: number }) {
   return (
     <Kort>
-      {next.href ? (
-        <Link href={next.href} className="block">
-          {inner}
-        </Link>
+      <CapsLabel>I dag · {dagLabel}</CapsLabel>
+      {timeline.length === 0 ? (
+        <div style={{ marginTop: 10 }}>
+          <TomKort tittel="Ingen økter i dag" undertekst="Bruk dagen til Workbench eller til å tømme køen." />
+        </div>
       ) : (
-        inner
+        <div style={{ marginTop: 10 }}>
+          {timeline.map((okt, i) => (
+            <IDagRad key={okt.id} okt={okt} now={now} forst={i === 0} />
+          ))}
+        </div>
       )}
     </Kort>
   );
@@ -259,7 +270,6 @@ function FeilKort({ oppdatert }: { oppdatert: string }) {
       <button
         type="button"
         onClick={() => window.location.reload()}
-        className={PRESS}
         style={{
           marginTop: 16,
           height: 48,
@@ -282,9 +292,9 @@ function FeilKort({ oppdatert }: { oppdatert: string }) {
   );
 }
 
-function CockpitHeader({ dayLabel, klokke }: { dayLabel: string; klokke: string }) {
+function HjemHeader({ dayLabel, klokke }: { dayLabel: string; klokke: string }) {
   return (
-    <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+    <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>
       <div>
         <CapsLabel>Academy</CapsLabel>
         <h1
@@ -297,107 +307,70 @@ function CockpitHeader({ dayLabel, klokke }: { dayLabel: string; klokke: string 
             color: TL.text,
           }}
         >
-          I dag
+          Hjem
         </h1>
+        <p style={{ margin: "8px 0 0", maxWidth: "62ch", fontSize: 13, lineHeight: 1.55, color: TL.mute }}>
+          Kø øverst, dagen under. Avvik og fremgang nås via Stall — de haster aldri i minutter.
+        </p>
+        <div
+          className="hidden min-[1101px]:block"
+          style={{ marginTop: 8, fontSize: TL.storrelse.meta, color: TL.mute, fontVariantNumeric: "tabular-nums" }}
+        >
+          {dayLabel} · {klokke}
+        </div>
       </div>
-      <div
-        className="hidden min-[1101px]:block"
-        style={{ fontSize: TL.storrelse.meta, color: TL.mute, fontVariantNumeric: "tabular-nums" }}
-      >
-        {dayLabel} · {klokke}
+      {/* Bevart fra gamle /admin/brief — samme underliggende rapport-modul
+          (src/app/admin/(legacy)/brief/actions + EksportModal), kun flyttet
+          hit som sekundære handlinger. Ikke en del av canvasen, men fjernet
+          ingen funksjonalitet stille. */}
+      <div className="hidden min-[1101px]:flex" style={{ gap: 8, flexWrap: "wrap" }}>
+        <PrintButton label="Skriv ut" />
+        <EksportTrigger kind="brief" />
       </div>
     </div>
   );
 }
 
-function TrainLockCockpit({
-  data,
-  aiDispatch,
-  sistSynkronisert,
+/** Toppnivå-siden — header + de to kortene. Eneste eksport ruta trenger. */
+export function AgencyCockpitTrainLock({
+  timeline,
+  now,
+  koTotalt,
+  koRader,
+  dagLabel,
+  dayLabel,
+  klokke,
 }: {
-  data: Pick<CockpitData, "timeline" | "now">;
-  aiDispatch: Pick<AiDispatchData, "rader">;
-  /** Server-formatert Oslo-klokke (samme mønster som andre v2-flater — gotchas §Tidssone). */
-  sistSynkronisert: string;
+  timeline: CockpitTimelineSession[];
+  now: number;
+  koTotalt: number;
+  koRader: AdminGodkjenningV2Row[];
+  /** Kort dag-etikett til «I dag ·»-kortet, f.eks. «fredag 30. august». */
+  dagLabel: string;
+  /** Lang dag-etikett til headerens sekundærlinje. */
+  dayLabel: string;
+  klokke: string;
 }) {
   const online = useOnline();
-  const view = buildTrainLockCockpit(data, aiDispatch);
 
   if (!online) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
-        <FeilKort oppdatert={sistSynkronisert} />
-        <div style={{ opacity: TL.opasitet.sekundaer, display: "flex", flexDirection: "column", gap: 10 }}>
-          {view.liveNow && (
-            <Kort>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-                <CapsLabel>Nå · live</CapsLabel>
-                {view.liveNow.locationTag && <CapsLabel>{view.liveNow.locationTag}</CapsLabel>}
-              </div>
-              <div style={{ marginTop: 10, fontSize: TL.storrelse.kortTittel, fontWeight: TL.vekt.kortTittel, color: TL.text }}>
-                {view.liveNow.playerName}
-              </div>
-              <div style={{ marginTop: 5, fontSize: TL.storrelse.meta, color: TL.mute }}>{view.liveNow.metaText}</div>
-            </Kort>
-          )}
-          {view.queue[0] && (
-            <div style={{ background: TL.elev, borderRadius: TL.radius.card, padding: "18px 20px" }}>
-              <div style={{ fontSize: TL.storrelse.kropp, fontWeight: TL.vekt.kropp, color: TL.text }}>{view.queue[0].title}</div>
-              <div style={{ marginTop: 4, fontSize: TL.storrelse.meta, color: TL.mute, lineHeight: 1.45 }}>{view.queue[0].meta}</div>
-            </div>
-          )}
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <HjemHeader dayLabel={dayLabel} klokke={klokke} />
+        <div style={{ maxWidth: 480 }}>
+          <FeilKort oppdatert={klokke} />
         </div>
       </div>
     );
   }
 
-  const naSeksjon = view.liveNow ? (
-    <NaKort liveNow={view.liveNow} />
-  ) : (
-    <TomKort
-      tittel="Ingen i økt nå"
-      undertekst={view.next ? `Neste: ${view.next.firstName} · ${view.next.timeRange.split("–")[0]}` : "Ingen flere økter i dag."}
-    />
-  );
-
-  const koSeksjon = (
-    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-      <CapsLabel>Kø · {view.queue.length}</CapsLabel>
-      {view.queue.length === 0 ? (
-        <TomKort tittel="Ingenting venter på deg" undertekst="Godkjenninger og meldinger dukker opp her." />
-      ) : (
-        view.queue.map((k) => <KoKort key={k.id} title={k.title} meta={k.meta} href={k.href} dimmed={k.dimmed} />)
-      )}
-    </div>
-  );
-
-  return (
-    <div className="flex flex-col gap-3 min-[1101px]:flex-row min-[1101px]:items-start min-[1101px]:gap-6">
-      <div className="flex min-w-0 flex-1 flex-col gap-3">
-        {naSeksjon}
-        {view.next && <NesteOktKort next={view.next} />}
-      </div>
-      <div className="min-w-0 flex-1">{koSeksjon}</div>
-    </div>
-  );
-}
-
-/** Toppnivå-siden — header + kort. Eneste eksport ruta trenger. */
-export function AgencyCockpitTrainLock({
-  data,
-  aiDispatch,
-  dayLabel,
-  klokke,
-}: {
-  data: Pick<CockpitData, "timeline" | "now">;
-  aiDispatch: Pick<AiDispatchData, "rader">;
-  dayLabel: string;
-  klokke: string;
-}) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-      <CockpitHeader dayLabel={dayLabel} klokke={klokke} />
-      <TrainLockCockpit data={data} aiDispatch={aiDispatch} sistSynkronisert={klokke} />
+      <HjemHeader dayLabel={dayLabel} klokke={klokke} />
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <KoKort totalt={koTotalt} rader={koRader.slice(0, 3)} />
+        <IDagKort dagLabel={dagLabel} timeline={timeline} now={now} />
+      </div>
     </div>
   );
 }
