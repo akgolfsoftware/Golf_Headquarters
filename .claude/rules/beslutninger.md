@@ -28,6 +28,42 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
 
 ## Beslutningene (august 2026)
 
+- **AK GOLF BLIR PARAPLYMERKE FOR HELE KONSERNET — MERKELAGET LIGGER OVER TRAIN-LOCK (Anders 31.08.2026, i økt):**
+  Tre valg tatt i samme økt, som ett svar på «videreutvikle konseptet AK Golf».
+
+  1. **Omfang: paraply over alt.** Ett AK Golf-merkevaresystem dekker hele konsernet —
+     AK Golf Academy, AK Golf Junior Academy, Mulligan Indoor Golf, Skarpnord Golf Products
+     og WANG-coachingen. Hver virksomhet er en **variant** under samme skjelett: egen
+     identitetsfarge og tone, felles logobruk, typografi, romskala og geometri. Ikke fem
+     merkevarer, og ikke ett uttrykk som viser bort forskjellene.
+  2. **Merkelaget ligger OVER Train-lock — produktskjermene røres ikke.** AK Golf-systemet
+     eier merket: logo, farge, typografi, tone, foto, marked og materiell. **Train-lock
+     består uendret som fasit for alle skjermer i PlayerHQ, AgencyOS og Forelder**
+     (CLAUDE.md invariant 2 gjelder som før). Ingen skjerm skal portes om av denne
+     beslutningen, og ingen `--tl-*`-verdi endres. Merkelaget er det som ligger utenpå og
+     rundt produktet, ikke inni det.
+  3. **Businessplanen bygges i tre trinn, i rekkefølge:** (a) prioritering av de fem
+     virksomhetene mot 500 000 USD-målet, (b) prising og pakketering, (c) formell plan for
+     ekstern leser. Trinn (a) er beslutningsunderlag for Anders selv, ikke et dokument til
+     andre.
+
+  **Masteren bor i Claude Design.** Anders oppretter selv designsystem-prosjektet som er
+  master for AK Golf; `designsystem/ak-golf/` i repoet er speilet koden leser — samme
+  arbeidsdeling som Claw/Team Norway (`designsystem/team-norway/`, 30.08).
+
+  **Tre systemer, én konfliktregel.** `AK Golf` (merket, alle flater) → `Train-lock`
+  (produktskjermene i PlayerHQ/AgencyOS/Forelder) → `Claw` (kun `/team-norway/*`).
+  Ved konflikt om en **produktskjerm** vinner Train-lock; om **merket** vinner AK Golf;
+  Team Norways egne skjermer er unntatt begge og følger Claw. **Ingen skjerm har to fasiter.**
+
+  **Konsekvens for beslutningskøen punkt 22 (WANG-flatens stil):** delvis løst. Muligheten
+  «WANG får eget merkevaresystem som Team Norway» er **ute** — WANG-coachingen er en variant
+  under AK Golf-paraplyen, ikke et eget merke. WANG-skjermene i produktet følger derfor
+  Train-lock som N7 opprinnelig sa. Gjenstår: om dagens `src/styles/wang-tokens.css` (10
+  skjermer i produksjon, enpalett lys) blir variantens identitetsfarge eller erstattes.
+
+  **Arbeidet:** `docs/MASTERPLAN-GJENSTAAENDE.md` STEG 18.
+
 - **TEAM NORWAY-SKJERMENE DESIGNES I CLAW-BRANDINGEN, IKKE TRAIN-LOCK (Anders 30.08.2026, i økt):**
   Anders leverte TN-brandingsystemet han varslet 30.08 (17.6), og valgte det som fasit for Team
   Norways egne skjermer. Fasit er Claude Design-prosjektet **«Claw Design — Team Norway Golf»**

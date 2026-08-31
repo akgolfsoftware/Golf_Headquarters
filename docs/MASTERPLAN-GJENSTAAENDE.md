@@ -426,6 +426,43 @@ i 2027. Forretningsmodell: gratis pilot 2026/27 → **spillerlisenser** fra 2027
 
 ---
 
+## STEG 18 — AK Golf merkevaresystem og konsept
+
+**Kilde:** `.claude/rules/beslutninger.md` §AK GOLF BLIR PARAPLYMERKE FOR HELE KONSERNET
+(Anders 31.08.2026).
+
+**Målet:** AK Golf får det Team Norway fikk 30.08 — et komplett, dokumentert merkevaresystem —
+men som paraply over hele konsernet, og med høyere håndverk enn Claw. Masteren bor i Anders'
+eget Claude Design-prosjekt; `designsystem/ak-golf/` er speilet koden leser.
+
+**Rører ikke produktet.** Train-lock består uendret som fasit for PlayerHQ, AgencyOS og
+Forelder. Ingen skjerm portes om av dette steget, ingen `--tl-*`-verdi endres.
+
+**Utgangspunktet som finnes i dag (målt 31.08.2026):** 21 `--mk-*`-verdier i
+`src/app/globals.css` (papir `#FAF9F5`, blekk `#141413`, clay `#D97757`/`#B85C3D`, oliven
+`#788C5D`, sky `#6A9BCC`) · seks logo-SVG-er à 2 kB i `public/brand/logo/` · 44 ekte foto i
+`public/brand/foto/` pluss action/detail/lifestyle/heroes · fotoregi-doktrinen i
+`docs/marketing/masterprompt-visuell.md` (Kinfolk/Monocle-tone, nordisk lys) · fontene
+Poppins, Lora og IBM Plex Mono. **Det finnes ingen skrevne retningslinjer** — merkevare-
+dokumentet som fantes lå i Paper og døde med det 30.08.
+
+**Rekkefølge:** 18.1 er fundamentet og må godkjennes før 18.3–18.7. 18.2 kan gå parallelt.
+
+| # | Oppgave | Detalj |
+|---|---|---|
+| 18.1 | **Merkeplattformen** | Én side: hvem AK Golf er til for, løftet, hva du er alternativet til, og tonen. Fundamentet både merkevaren og prisingen står på. **Ferdig når Anders har godkjent posisjonen og tonen** |
+| 18.2 | **Prioritering 12 måneder** | De fem virksomhetene målt mot 500 000 USD-målet: hvor tid og penger går i dag, hva som dobles ned på, hva som parkeres. Beslutningsunderlag for Anders, ikke dokument til andre. Tall leses fra Tripletex-eksport, aldri estimeres |
+| 18.3 | **Merkearkitektur** | Hvordan Academy, Junior Academy, Mulligan, Skarpnord Golf Products og WANG-coachingen henger under paraplyen: navnebruk, logobruk, én identitetsfarge hver, felles skjelett. Lukker beslutningskøen punkt 22 helt |
+| 18.4 | **Kjerneverdiene** | Farge (ekte skala i oklch, ikke løse hex), typografi, romskala, geometri, bevegelse. Bygget videre på `--mk-*` og Poppins/Lora/IBM Plex Mono — ingen ny font, ingen ny palett fra bunnen |
+| 18.5 | **Logoen** | Dagens SVG er 2 kB og tynn i store flater. Avgjør opprydding vs. nytegning, lever full variantfamilie: lys, mørk, monokrom, kvadrat, favicon, klaringssone, minstestørrelse. **Anders bestemmer om den skal tegnes om** |
+| 18.6 | **Retningslinjene** | Cirka 16 sider i samme format som `designsystem/team-norway/guidelines/`: merke, logoregler, farge, type, rom, radius og høyde, foto, bevegelse, terminologi, virksomhetsvarianter, og én side om hva som er forbudt |
+| 18.7 | **Pakken i repoet** | `designsystem/ak-golf/` med `tokens/`, `styles.css`, fonter, komponenter, maler og `readme.md` — speilbildet av masteren i Claude Design. Mønster: `designsystem/team-norway/` |
+| 18.8 | **Broen mellom de tre systemene** | Konfliktregelen (AK Golf → Train-lock → Claw) skrives inn i `CLAUDE.md` invariant 2, slik at ingen økt tror merkelaget overstyrer produktfasiten |
+| 18.9 | **Prising og pakketering** | Coaching-pakker, spillerlisenser, klubbavtaler, Mulligan. Lukker samtidig de ti manglende faktaene i `docs/marketing/tekstplan-landingsside-2026-08-31.md` §2 — særlig pris på kartleggingsøkt, som i dag sperrer lansering av landingssiden |
+| 18.10 | **Formell businessplan** | For ekstern leser (investor/bank), bygget på 18.1, 18.2 og 18.9 |
+
+---
+
 ## Samlet beslutningskø til Anders (alt på ett sted)
 
 1. **#490-merge (PII — haster)** + team-wang-tilgangen varig åpen eller sperret igjen.
@@ -449,5 +486,5 @@ i 2027. Forretningsmodell: gratis pilot 2026/27 → **spillerlisenser** fra 2027
 19. ~~Nivådefinisjonen i opprykksanalysen~~ **LUKKET 30.08.2026 — krever ingen beslutning fra Anders.** Målt i basen: effekten er ikke robust (skifter fortegn med alder, 10–96 spillere per trinn), og valget mellom de to definisjonene endrer den ikke. Opprykksanalysen er flyttet til «Ikke bygg» i STEG 16. Vil Anders ha den likevel, må den bygges med kontrollgruppe og aldersjustering — og oppgis med usikkerhet, ikke som ett tall.
 20. **MD-fila med turneringer og lenker (STEG 17.5d):** blokkerer nå KUN lenkene, ikke hele landskapsanalysen. 17.5a kan bygges i dag. `dashboard.tournament_links` er tom (0 rader) — det er den MD-fila skal fylle. **Trenger fortsatt Anders.**
 21. **Klubbdimensjonen (16.6 → 17.5b):** krever kun én pipeline-endring, ingen beslutning — men prioriteringen er Anders'. Uten den finnes ikke «hvilke klubber har flest spillere», som var et av de fire spørsmålene i TN-Workdesk punkt 7.
-22. **WANG-flatens stil (STEG 11 N7):** Team Norway er avgjort (Claw, 30.08). WANG er ikke. Tre muligheter: WANG beholder sitt eget system (`src/styles/wang-tokens.css`, `.wang-tp` — enpalett lys, 10 skjermer i produksjon), WANG porter til Train-lock som N7 opprinnelig sa, eller WANG får samme behandling som TN med et eget merkevaresystem. N7 kan ikke ferdigstilles for WANG før dette er svart. **Trenger Anders.**
+22. **WANG-flatens stil (STEG 11 N7) — DELVIS LØST 31.08.2026.** Paraply-beslutningen tar bort den tredje muligheten: WANG-coachingen er en **variant under AK Golf-paraplyen**, ikke et eget merkevaresystem som Team Norway. Produktskjermene følger derfor Train-lock, som N7 opprinnelig sa. **Gjenstår:** blir dagens `src/styles/wang-tokens.css` (10 skjermer i produksjon, enpalett lys) variantens identitetsfarge, eller erstattes den? Svares i STEG 18.3.
 23. **Ekte vektorlogo fra NGF (STEG 17.6):** dagens TN-logo er en PNG beskåret fra en JPEG med kompresjonsartefakter. `#D70232` er målt fra den, så en ekte vektorfil ville gjort fargen endelig og skalerbar. NGFs kontaktpunkt står under «Grafisk utforming / visuell profil» på golfforbundet.no. **Trenger Anders** — det er hans relasjon til forbundet.

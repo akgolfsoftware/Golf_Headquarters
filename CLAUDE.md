@@ -79,6 +79,12 @@ Bølge 2 (måned/år, stall, kalender uten Google, tester-live, runde-live, Jarv
      Train-lock (lys variant).** PR #650 porter den; ny booking-kode leser aldri `T`/`--p-*`-verdier
      direkte (broen i `booking-paper.css` peker dem til `--tl-*`).
    - Ingen nye tokens / parallelle designsystemer uten Anders' ja.
+   - **Merkelaget ligger OVER (Anders 31.08.2026):** AK Golf-merkevaresystemet
+     (`designsystem/ak-golf/`, STEG 18) eier logo, farge, tone, foto, marked og materiell for
+     hele konsernet. Det **overstyrer ikke** denne invarianten: Train-lock er fortsatt fasit
+     for hver skjerm i PlayerHQ, AgencyOS og Forelder. Konfliktregel — produktskjerm:
+     Train-lock vinner · merket: AK Golf vinner · `/team-norway/*`: Claw vinner.
+     Ingen skjerm har to fasiter.
    - Fullført = warm `#B85C3D` + hake. `#30D158` **kun** Godta / PUBLISERT-merke.
    - **DO NOT USE — Presis.** Ny skjermkode = `--tl-*` / `TL` (flate, tekst, handling)
      og `AK` fra `src/lib/v2/ak-palett.ts` (domeneverdier: pyramideakser, tee-farger,
