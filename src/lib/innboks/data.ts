@@ -44,6 +44,24 @@ export async function loadAlleEpost(): Promise<InnboksEpostVm[]> {
   return rader.map(tilVm);
 }
 
+/**
+ * Filtrert liste på status — samme datakilde som `loadAlleEpost`, brukt av
+ * Kommunikasjon-fanene Utkast/Sendt (MASTERPLAN 15.7) til å dele ÉN tabell i
+ * to visninger uten å laste hele lista i begge.
+ */
+export async function loadEpostVedStatus(statuser: string[]): Promise<InnboksEpostVm[]> {
+  const rader = await prisma.innboksEpost.findMany({
+    where: { status: { in: statuser } },
+    orderBy: { mottattAt: "desc" },
+  });
+  return rader.map(tilVm);
+}
+
+/** Billig telling for fanepillene — ikke last hele lista bare for et tall. */
+export async function tellEpostVedStatus(statuser: string[]): Promise<number> {
+  return prisma.innboksEpost.count({ where: { status: { in: statuser } } });
+}
+
 export type InnboksSammendrag = {
   antallNye: number;
   siste: InnboksEpostVm[];

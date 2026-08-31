@@ -594,6 +594,10 @@ function skallAktivFraPath(pathname: string): string {
     { prefix: "/admin/godkjenninger", id: "ko" },
     { prefix: "/admin/innboks", id: "ko" },
     { prefix: "/admin/varsler", id: "ko" },
+    // MASTERPLAN 15.7: Kommunikasjon (/admin/kommunikasjon) samler Innboks +
+    // e-post + maler — samme rail-plassering som Innboks hadde.
+    { prefix: "/admin/kommunikasjon", id: "ko" },
+    { prefix: "/admin/email-templates", id: "ko" },
     // Oppfølging av spillere er IKKE Kø (beslutning 6.6) — den hører i Stall.
     { prefix: "/admin/queue", id: "stall" },
     // Oppgaver bor under Meg, som i canvasen (MASTERPLAN 15.2).
