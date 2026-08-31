@@ -158,11 +158,11 @@ const ACTIONS: Action[] = [
   // --- Hub-handlinger ---
   {
     id: "daily-brief",
-    label: "Daglig brief",
-    description: "Morgens første-stop med agent-insights",
-    keywords: ["brief", "morgen", "daglig", "oversikt", "start", "dagen"],
+    label: "Hjem",
+    description: "Kø øverst, dagens plan under",
+    keywords: ["brief", "morgen", "daglig", "oversikt", "start", "dagen", "hjem"],
     icon: Sun,
-    kind: { type: "navigate", href: "/admin/brief" },
+    kind: { type: "navigate", href: "/admin/agencyos" },
   },
   {
     id: "open-caddie",
@@ -257,7 +257,7 @@ const ACTIONS: Action[] = [
   { id: "s-caddie", label: "Caddie", description: "Foldet inn i AgenticOS", keywords: ["caddie", "ai", "chat", "assistent"], icon: MessageSquare, kind: { type: "navigate", href: "/admin/agenticos" } },
   { id: "s-agent-team", label: "AgenticOS", description: "Agentene — status, kjøringer og godkjenninger", keywords: ["agent", "team", "oppdrag", "agenter", "agenticos"], icon: Bot, kind: { type: "navigate", href: "/admin/agenticos" } },
   { id: "s-jarvis-innboks", label: "Personlig innboks", description: "Jarvis på /meg — e-post, SMS, kalender", keywords: ["jarvis", "meg", "innboks", "gmail", "imessage"], icon: Mail, kind: { type: "navigate", href: "/meg" } },
-  { id: "s-brief", label: "Daglig brief", description: "Dagens oppsummering", keywords: ["brief", "daglig", "morgen", "oppsummering"], icon: FileText, kind: { type: "navigate", href: "/admin/brief" } },
+  { id: "s-brief", label: "Daglig brief", description: "Foldet inn i Hjem", keywords: ["brief", "daglig", "morgen", "oppsummering"], icon: FileText, kind: { type: "navigate", href: "/admin/agencyos" } },
   { id: "s-plan-maler", label: "Plan-maler", description: "Maler for treningsplaner", keywords: ["mal", "maler", "template", "plan"], icon: Copy, kind: { type: "navigate", href: "/admin/plan-templates" } },
   { id: "s-drills", label: "Drills", description: "Kilder i Workbench", keywords: ["drill", "drills", "ovelse", "øvelse", "bibliotek", "kilder"], icon: Dumbbell, kind: { type: "navigate", href: "/admin/planlegge" } },
   { id: "s-turneringer", label: "Turneringer", description: "Turneringsoversikt", keywords: ["turnering", "turneringer", "cup", "konkurranse"], icon: Trophy, kind: { type: "navigate", href: "/admin/tournaments" } },
