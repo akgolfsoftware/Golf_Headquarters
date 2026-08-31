@@ -28,6 +28,33 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
 
 ## Beslutningene (august 2026)
 
+- **SG-STIGEN: NORSK JUNIORSCORE KALIBRERES MOT EKTE DATAGOLF-SG (Anders 31.08.2026, i økt):**
+  norsk turneringsscore skal plasseres på **samme SG-skala som proffene**, kalibrert gjennom
+  spillere som faktisk har spilt begge steder — ikke gjennom en publisert tabell.
+  **Overstyrer bruken av `src/lib/stats/sg-estimator.ts` som referanse:** den bygger på
+  Broadie (2014) «Every Shot Counts», en hardkodet HCP-tabell med sju rader og forutsetning
+  «standard PGA-bane, par 72, ~7 200 yds» (verifisert i koden 31.08). Den er et ballpark-estimat
+  om en gjennomsnittlig amatør, ikke en måling av en norsk junior. Filen slettes ikke — den
+  beholdes til den er erstattet, og alt den produserer merkes **estimat** (TruthLayer, PRODUKTRETNING
+  pkt. 7) inntil kalibreringen er på plass.
+  - **Broen finnes allerede i basen (målt 30.08):** alle **22 529 Nordic League-rader har `dg_id`**,
+    og `dashboard.dg_rounds` har **komplett SG på 962 208 runder** fordelt på 21 tourer.
+    Kalibreringen går derfor gjennom ekte mennesker med data på begge sider, ikke gjennom antakelser.
+  - **Grunnvalutaen er feltstyrke-justert score:** spillerens til-par mot feltsnittet i samme
+    turnering, lest fra `dashboard.mv_topar_grunnlag` (STEG 16.1, 123 257 rader). Dette er den
+    eneste størrelsen som er sammenlignbar på tvers av bane, tee, klasse og år.
+    **Plassering er fortsatt forbudt som persentil** (uendret fra DATAKARTLEGGING).
+  - **Hvorfor dette er fortrinnet:** DataGolf kan kjøpes av hvem som helst og GolfBox-resultater er
+    offentlige. Det ingen andre har, er at begge lagene ligger i samme base om de samme menneskene.
+    Koblingen er produktet — ikke datakilden.
+  - **Tre grenser som SKAL sies i UI, ikke skjules:** (a) norsk data har score, aldri SG-fordeling —
+    vi kan si «hvor», aldri «hvorfor» fra en GolfBox-runde; fordelingen finnes kun for egne spillere
+    (TrackMan/runderegistrering) og for proffer. (b) Jenter har ingen proffreferanse: alle 26 tourer
+    i lageret er herretourer. (c) Aldersstigen gjelder fra 16 år og oppover.
+  - **Tallet oppgis alltid med usikkerhet.** Ett punktestimat uten spenn er TruthLayer-brudd —
+    samme grunn som opprykksanalysen ble lukket 30.08.
+  - **Arbeid:** `docs/MASTERPLAN-GJENSTAAENDE.md` STEG 16.9–16.11.
+
 - **TEAM NORWAY-SKJERMENE DESIGNES I CLAW-BRANDINGEN, IKKE TRAIN-LOCK (Anders 30.08.2026, i økt):**
   Anders leverte TN-brandingsystemet han varslet 30.08 (17.6), og valgte det som fasit for Team
   Norways egne skjermer. Fasit er Claude Design-prosjektet **«Claw Design — Team Norway Golf»**

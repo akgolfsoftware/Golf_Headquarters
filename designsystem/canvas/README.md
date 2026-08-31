@@ -59,10 +59,11 @@ ville i praksis stoppet bredden.
 | `ko/` | Kø — én adresse, fem faner | MASTERPLAN 15.1 | https://claude.ai/code/artifact/4df52812-fa4f-4654-8564-c46353fe430b |
 | `agencyos-ia/` | Hele STEG 15: 13 funksjoner (retningsutkast) | MASTERPLAN 15.2–15.12 | https://claude.ai/code/artifact/581d1668-c627-42eb-a59c-1ba40bfe3751 |
 | `team-norway/` | Team Norway Workdesk — 20 skjermer | MASTERPLAN STEG 17 | Ikke tegnet ennå — `BRIEF.md` + `PROMPT.md` er klare |
+| `innsikt/` | Innsikt per spiller — coachens fire spørsmål | MASTERPLAN 16.9–16.11 | https://claude.ai/code/artifact/1b8c837e-9fbe-4f3e-8427-789978a17afc |
 
 
 ## `gen.py`
 
-`agencyos-ia/gen.py` genererer artboards fra en datastruktur (rail, faner, rader,
+`agencyos-ia/gen.py` og `innsikt/gen.py` genererer artboards fra en datastruktur (rail, faner, rader,
 Mac- og mobilskall). Tegner du flere skjermer i samme språk, gjenbruk den framfor
 å skrive HTML for hånd — tokenverdiene står ett sted, og skallene blir like.
