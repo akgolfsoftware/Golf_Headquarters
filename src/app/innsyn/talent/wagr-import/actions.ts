@@ -131,8 +131,8 @@ export async function importerWagrSpiller(input: ManuellInput): Promise<
     },
   });
 
-  revalidatePath("/admin/talent/wagr-benchmark");
-  revalidatePath("/admin/talent");
+  revalidatePath("/innsyn/talent/wagr-benchmark");
+  revalidatePath("/innsyn/talent");
 
   return {
     ok: true,
@@ -164,9 +164,9 @@ export async function synkWagrNaa(): Promise<
       },
     });
 
-    revalidatePath("/admin/talent/wagr-import");
-    revalidatePath("/admin/talent/wagr-benchmark");
-    revalidatePath("/admin/talent");
+    revalidatePath("/innsyn/talent/wagr-import");
+    revalidatePath("/innsyn/talent/wagr-benchmark");
+    revalidatePath("/innsyn/talent");
 
     return { ok: true, resultat };
   } catch (err) {
@@ -197,6 +197,6 @@ export async function slettWagrSnapshot(id: string): Promise<void> {
     },
   });
 
-  revalidatePath("/admin/talent/wagr-benchmark");
-  redirect("/admin/talent/wagr-benchmark");
+  revalidatePath("/innsyn/talent/wagr-benchmark");
+  redirect("/innsyn/talent/wagr-benchmark");
 }

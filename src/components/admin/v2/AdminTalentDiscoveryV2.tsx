@@ -8,7 +8,7 @@ import { TL } from "@/lib/v2/train-lock";
 import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import { Caps, Kort, Rad, AvatarInit, StatusPill, KpiFlis, FilterChips, Knapp, Velger, Inndata, ValideringsChip, TomTilstand, CTAPill } from "@/components/v2";
-import { leggTilITalent, type LeggTilState } from "@/app/admin/talent/discovery/actions";
+import { leggTilITalent, type LeggTilState } from "@/app/innsyn/talent/discovery/actions";
 // ── Datakontrakt (mappes fra loaderen i ruten) ──────────────────
 export interface TalentKandidat {
   id: string;
@@ -193,7 +193,7 @@ export function AdminTalentDiscoveryV2({ data }: { data: TalentDiscoveryV2Data }
   );
 
   const primaerCta = (
-    <Link href="/admin/talent/radar" style={{ textDecoration: "none", display: "block" }}>
+    <Link href="/innsyn/talent/radar" style={{ textDecoration: "none", display: "block" }}>
       <CTAPill icon="radar" full>
         Åpne talent-radar
       </CTAPill>

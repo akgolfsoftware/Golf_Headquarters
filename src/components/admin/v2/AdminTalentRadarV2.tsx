@@ -82,7 +82,7 @@ export function AdminTalentRadarV2({ data }: { data: TalentRadarData }) {
             sub="Legg til spillere via Discovery for å vurdere dem på de fem aksene."
           />
         </Kort>
-        <Link href="/admin/talent/discovery" style={{ textDecoration: "none", display: "block" }}>
+        <Link href="/innsyn/talent/discovery" style={{ textDecoration: "none", display: "block" }}>
           <CTAPill icon="user-plus" full>
             Finn talenter
           </CTAPill>
@@ -137,7 +137,7 @@ export function AdminTalentRadarV2({ data }: { data: TalentRadarData }) {
   );
 
   const primaerCta = (
-    <Link href="/admin/talent/discovery" style={{ textDecoration: "none", display: "block" }}>
+    <Link href="/innsyn/talent/discovery" style={{ textDecoration: "none", display: "block" }}>
       <CTAPill icon="user-plus" full>
         Finn flere talenter
       </CTAPill>

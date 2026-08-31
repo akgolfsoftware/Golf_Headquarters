@@ -57,7 +57,7 @@ export async function leggTilITalent(
     data: { userId, niva, klubb, region },
   });
 
-  revalidatePath("/admin/talent/discovery");
-  revalidatePath("/admin/talent");
+  revalidatePath("/innsyn/talent/discovery");
+  revalidatePath("/innsyn/talent");
   return { ok: true };
 }
