@@ -2,8 +2,17 @@
 import { TL } from "@/lib/v2/train-lock";
 
 /**
- * PlayerHQ · Logg en runde (etterregistrering) — Paper-port PP-3 (fase 1).
- * Fasit: designsystem/paper/fase1/playerhq-runde-logg.html.
+ * PlayerHQ · Logg en runde (etterregistrering).
+ * Fasit: designsystem/train-lock/RU-04 Player Etterregistrering ark.dc.html.
+ * GAP (dokumentert, ikke løst her — utenfor PX-4-scope): fasiten tegner
+ * dette som et 4-felts bunn-ark (Dato/Bane/Slag/Putt) over «I dag» med
+ * scrim — å bygge det om til et faktisk ark krever å endre PH-01 (I dag),
+ * som er PH-familien (PX-1), ikke WB/P/RU/LO. Denne siden er derfor
+ * fortsatt en frittstående full skjerm; felt-geometri (44px/radius 12,
+ * caps-etiketter) og «Bare totalen»-modus matcher fasitens felter og
+ * SG-EST-varselteksten 1:1 — kun ramme-plasseringen (ark vs. side) avviker.
+ *
+ * Tidligere Paper-fasit (historikk): designsystem/paper/fase1/playerhq-runde-logg.html.
  *
  * ÉN skjerm (ingen stegmaskin): runde-fakta (Dato + Bane), modusveksler
  * «Hull for hull | Bare totalen», 18-cellers rutenett av number-inputs

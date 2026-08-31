@@ -7,6 +7,10 @@
  * Fasit: designsystem/train-lock/A-11 Mac Drag.dc.html (gyldig mål = ring 2 px)
  * Fasit: designsystem/train-lock/A-18 Mac Tom uke.dc.html (tom-tilstand)
  * Fasit: designsystem/train-lock/A-01c Mac Uke vegg.dc.html (delvis — se avvik)
+ * Fasit: designsystem/train-lock/WB-00 Komponenter.dc.html (blokk-tilstander:
+ * publisert/utkast 0.55/caddie-proveniens/ferdig-hake/live-ring/skole-dim 0.5/
+ * varsel-!/kollisjon 50-50/serie-↻/skole-varsel — samme kort brukes for
+ * Player-workbench, WB-familien er «Player + Agency» på samme motor)
  *
  * Økt-kort (A-01): #1C1C1E radius 12, padding 4/7, meta-linje 8/600/0.02em
  * mute (AK-formel-tekst, aldri status-tekst), tittel 13/600, tid «16.00 · 1,5 t»
