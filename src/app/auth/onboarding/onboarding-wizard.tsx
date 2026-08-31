@@ -118,10 +118,13 @@ const SESONMAAL = [
   "BLI PROFF",
 ];
 
+// De ekte coachene i AK Golf Academy. Holdes i synk med /coacher
+// (src/app/(marketing)/coacher/page.tsx) — nye brukere skal aldri møte navn
+// som ikke finnes. Ingen spillertall her: basen ble nullstilt 30.08.2026, og
+// et tall som ikke er målt er TruthLayer-brudd.
 const COACHES = [
-  { initialer: "AK", navn: "Anders Kristiansen", rolle: "HEAD COACH", meta: "38 aktive spillere · Mac O'Grady-skolen" },
-  { initialer: "ES", navn: "Erik Solli", rolle: "PUTTING-SPESIALIST", meta: "Anbefales for nærspill-fokus" },
-  { initialer: "MH", navn: "Maja Hagen", rolle: "JUNIOR / UTVIKLING", meta: "Anbefales for nybegynnere og 12–16 år" },
+  { initialer: "AK", navn: "Anders Kristiansen", rolle: "HEAD COACH", meta: "Trackman og målbar utvikling" },
+  { initialer: "MR", navn: "Markus Røinås Pedersen", rolle: "JUNIOR-ANSVARLIG", meta: "Nærspill, putting og juniorgrupper" },
 ];
 
 const FREKVENS_VALG = [3, 4, 5, 6, 7];
