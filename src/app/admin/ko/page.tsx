@@ -6,6 +6,12 @@
  *   /admin/tester/foreslatte · /admin/tournaments/dubletter
  * Alle fem er nå redirects hit. Ingen funksjonalitet er fjernet.
  *
+ * MASTERPLAN 15.13 (31.08.2026): en sjette fane, «Moderering», flyttet inn —
+ * /admin/stats/moderering hadde ingen vei inn (arkitektur-kartlegging 30.08).
+ * Den er også «noe som venter på Anders», så den hører hjemme her. Loaderen
+ * er flyttet ORDRETT til src/lib/admin/ko/last-moderering.ts; komponent og
+ * actions bor fortsatt i den gamle mappen.
+ *
  * IKKE her: /admin/queue (oppfølging av spillere). Den er ikke Kø — Kø er det
  * som krever deg i dag; oppfølging hører i Stall (beslutning 6.6).
  *
@@ -33,12 +39,14 @@ import { koFaneTellinger } from "@/lib/admin/ko/tellinger";
 import { lastGodkjenninger } from "@/lib/admin/ko/last-godkjenninger";
 import { lastForeslatteTester } from "@/lib/admin/ko/last-foreslatte-tester";
 import { lastDubletter } from "@/lib/admin/ko/last-dubletter";
+import { lastModerering } from "@/lib/admin/ko/last-moderering";
 import { lastAgenticosKo, lastAgenticosGodkjenn } from "@/lib/agencyos/last-agenticos";
 import { AdminGodkjenningerTrainLock } from "@/components/admin/v2/godkjenninger/AdminGodkjenningerTrainLock";
 import { AdminAgenticosKo } from "@/components/admin/v2/agenticos/AdminAgenticosKo";
 import { AdminAgenticosGodkjenn } from "@/components/admin/v2/agenticos/AdminAgenticosGodkjenn";
 import { AdminForeslatteTesterV2 } from "@/components/admin/v2/AdminForeslatteTesterV2";
 import { MergeDubletterListe } from "@/app/admin/tournaments/dubletter/merge-liste";
+import { ModeringClientV2 } from "@/components/admin/v2/AdminStatsModereringV2";
 import { TlRadGruppe, TlTomTilstand } from "@/components/admin/v2/oppsett/tl-kit";
 
 export const dynamic = "force-dynamic";
@@ -143,6 +151,10 @@ export default async function KoPage({
             <MergeDubletterListe liste={liste} />
           </>
         );
+      }
+      case "moderering": {
+        const { saker, historikk, stats, lasteFeil } = await lastModerering();
+        return <ModeringClientV2 saker={saker} historikk={historikk} stats={stats} lasteFeil={lasteFeil} />;
       }
     }
   })();

@@ -439,9 +439,47 @@ export function TrainLockStall({ data }: { data: StallV2Data }) {
   if (data.spillere.length === 0) {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-        <div>
-          <CapsLabel>Academy</CapsLabel>
-          <h1 style={{ margin: "6px 0 0", fontSize: 34, fontWeight: 700, letterSpacing: "-0.02em", color: TL.text }}>Stall</h1>
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
+          <div>
+            <CapsLabel>Academy</CapsLabel>
+            <h1 style={{ margin: "6px 0 0", fontSize: 34, fontWeight: 700, letterSpacing: "-0.02em", color: TL.text }}>Stall</h1>
+          </div>
+          <div style={{ flexShrink: 0, marginTop: 4, display: "flex", alignItems: "center", gap: 8 }}>
+            <Link
+              href="/admin/agencyos/ak-stigen"
+              className={PRESS}
+              style={{
+                height: 36,
+                padding: "0 14px",
+                borderRadius: TL.radius.pill,
+                background: TL.dock,
+                color: TL.text,
+                fontSize: 13,
+                fontWeight: 600,
+                display: "inline-flex",
+                alignItems: "center",
+              }}
+            >
+              AK-stigen
+            </Link>
+            <Link
+              href="/admin/kalender?fane=stall"
+              className={PRESS}
+              style={{
+                height: 36,
+                padding: "0 14px",
+                borderRadius: TL.radius.pill,
+                background: TL.dock,
+                color: TL.text,
+                fontSize: 13,
+                fontWeight: 600,
+                display: "inline-flex",
+                alignItems: "center",
+              }}
+            >
+              Dag
+            </Link>
+          </div>
         </div>
         <Tomtilstand tittel="Ingen spillere i stallen" sub="Legg til første spiller for å se tilstand, plan og oppfølging her." />
         <Link
@@ -542,25 +580,42 @@ export function TrainLockStall({ data }: { data: StallV2Data }) {
           {data.total} spillere · {trengerAntall} trenger deg
         </div>
       </div>
-      <Link
-        href="/admin/kalender?fane=stall"
-        className={PRESS}
-        style={{
-          flexShrink: 0,
-          marginTop: 4,
-          height: 36,
-          padding: "0 14px",
-          borderRadius: TL.radius.pill,
-          background: TL.dock,
-          color: TL.text,
-          fontSize: 13,
-          fontWeight: 600,
-          display: "inline-flex",
-          alignItems: "center",
-        }}
-      >
-        Dag
-      </Link>
+      <div style={{ flexShrink: 0, marginTop: 4, display: "flex", alignItems: "center", gap: 8 }}>
+        <Link
+          href="/admin/agencyos/ak-stigen"
+          className={PRESS}
+          style={{
+            height: 36,
+            padding: "0 14px",
+            borderRadius: TL.radius.pill,
+            background: TL.dock,
+            color: TL.text,
+            fontSize: 13,
+            fontWeight: 600,
+            display: "inline-flex",
+            alignItems: "center",
+          }}
+        >
+          AK-stigen
+        </Link>
+        <Link
+          href="/admin/kalender?fane=stall"
+          className={PRESS}
+          style={{
+            height: 36,
+            padding: "0 14px",
+            borderRadius: TL.radius.pill,
+            background: TL.dock,
+            color: TL.text,
+            fontSize: 13,
+            fontWeight: 600,
+            display: "inline-flex",
+            alignItems: "center",
+          }}
+        >
+          Dag
+        </Link>
+      </div>
     </div>
   );
 
