@@ -228,9 +228,9 @@ const ACTIONS: Action[] = [
     description: "Sammenlign spillere mot World Amateur ranking — i Talent-radar",
     keywords: ["wagr", "ranking", "benchmark", "amatør", "amateur", "talent"],
     icon: TrendingUp,
-    // WAGR-benchmark er slått sammen i Talent-radar; /admin/talent/wagr-benchmark
+    // WAGR-benchmark er slått sammen i Talent-radar; /innsyn/talent/wagr-benchmark
     // er nå kun en redirect dit. Pek direkte, så slipper søket et ekstra hopp.
-    kind: { type: "navigate", href: "/admin/talent/radar" },
+    kind: { type: "navigate", href: "/innsyn/talent/radar" },
   },
   {
     id: "export-report",
@@ -263,8 +263,8 @@ const ACTIONS: Action[] = [
   { id: "s-turneringer", label: "Turneringer", description: "Turneringsoversikt", keywords: ["turnering", "turneringer", "cup", "konkurranse"], icon: Trophy, kind: { type: "navigate", href: "/admin/tournaments" } },
   { id: "s-teknisk-plan", label: "Teknisk plan", description: "Teknisk arbeid per spiller", keywords: ["teknisk", "plan", "teknikk"], icon: Wrench, kind: { type: "navigate", href: "/admin/teknisk-plan" } },
   { id: "s-ny-spiller", label: "Ny spiller", description: "Legg til spiller i stallen", keywords: ["ny", "spiller", "legg til", "opprett"], icon: UserPlus, kind: { type: "navigate", href: "/admin/spillere/ny" } },
-  { id: "s-talent-radar", label: "Talent-radar", description: "Talentoversikt", keywords: ["talent", "radar", "potensial"], icon: Star, kind: { type: "navigate", href: "/admin/talent/radar" } },
-  { id: "s-talent-sml", label: "Talent-sammenligning", description: "Sammenlign talenter", keywords: ["talent", "sammenlign", "compare"], icon: Crosshair, kind: { type: "navigate", href: "/admin/talent/sammenligning" } },
+  { id: "s-talent-radar", label: "Talent-radar", description: "Talentoversikt", keywords: ["talent", "radar", "potensial"], icon: Star, kind: { type: "navigate", href: "/innsyn/talent/radar" } },
+  { id: "s-talent-sml", label: "Talent-sammenligning", description: "Sammenlign talenter", keywords: ["talent", "sammenlign", "compare"], icon: Crosshair, kind: { type: "navigate", href: "/innsyn/talent/sammenligning" } },
   { id: "s-okonomi", label: "Økonomi", description: "Belegg, inntekt, abonnement, faktura", keywords: ["okonomi", "økonomi", "penger", "inntekt", "faktura", "mrr", "abonnement", "belegg"], icon: CreditCard, kind: { type: "navigate", href: "/admin/agencyos/okonomi" } },
   { id: "s-tjenester", label: "Tjenester og priser", description: "Prisliste og tjenester", keywords: ["tjeneste", "pris", "priser", "service"], icon: CreditCard, kind: { type: "navigate", href: "/admin/services" } },
   { id: "s-team", label: "Team", description: "Coacher og roller", keywords: ["team", "coach", "ansatt", "rolle"], icon: Users, kind: { type: "navigate", href: "/admin/team" } },

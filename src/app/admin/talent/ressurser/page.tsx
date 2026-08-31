@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-/** Legacy talent-underside → kanonisk Talent-radar (v2). */
-export default function LegacyTalentRedirect(): never {
-  redirect("/admin/talent/radar");
+/** /admin/talent/ressurser → /innsyn/talent/ressurser (MASTERPLAN 15.12). */
+export default function AdminTalentRessurserRedirect(): never {
+  redirect("/innsyn/talent/ressurser");
 }
