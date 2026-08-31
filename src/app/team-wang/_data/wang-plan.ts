@@ -624,7 +624,7 @@ export const AK_TIPS = {
     "Miljø/kontekst fra M0 (isolert) til M5 (helt banelikt). Følger fasen.",
   press:
     "Konsekvens-trapp: Fri (feil er gratis) → Krav (score mot deg selv) → Utfordring (én sjanse) → Konkurranse (poeng teller).",
-  p: "MORAD svingposisjon P1–P10 (halvsteg tillatt). P1 Setup · P4 Top · P7 Impact er viktigst diagnostisk.",
+  p: "Svingposisjon P1–P10 (halvsteg tillatt). P1 Setup · P4 Top · P7 Impact er viktigst diagnostisk.",
 };
 
 export interface AkVerdier {
