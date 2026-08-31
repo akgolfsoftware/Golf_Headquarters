@@ -1,22 +1,12 @@
+import { redirect } from "next/navigation";
+
 /**
- * AgenticOS Runtimes — AO-02 / AO-10. Ærlig status, ingen oppdiktet helse.
+ * /admin/agenticos/runtimes → /admin/jarvis?fane=runtimes
+ *
+ * MASTERPLAN 15.5 (beslutning 6.9, «én inngang per funksjon»): fire
+ * agenticos-adresser ble til én. Adressen består som redirect — ingen lenke
+ * noe sted skal brekke.
  */
-
-import { requireCapability } from "@/lib/auth/requireCapability";
-import { Capability } from "@/lib/auth/cbac";
-import { lastAgenticosKjoringerIdag } from "@/lib/agencyos/last-agenticos";
-import { AgenticosRamme } from "@/components/admin/v2/agenticos/AgenticosRamme";
-import { AdminAgenticosRuntimes } from "@/components/admin/v2/agenticos/AdminAgenticosRuntimes";
-
-export const dynamic = "force-dynamic";
-export const metadata = { title: "Runtimes · AgenticOS" };
-
-export default async function AdminAgenticosRuntimesPage() {
-  const user = await requireCapability(Capability.USE_AGENTS);
-  const kjoringerIdag = await lastAgenticosKjoringerIdag();
-  return (
-    <AgenticosRamme user={user}>
-      <AdminAgenticosRuntimes kjoringerIdag={kjoringerIdag} />
-    </AgenticosRamme>
-  );
+export default function AgenticosRuntimesRedirect(): never {
+  redirect("/admin/jarvis?fane=runtimes");
 }
