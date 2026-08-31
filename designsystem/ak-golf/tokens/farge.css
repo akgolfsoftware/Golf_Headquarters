@@ -1,0 +1,91 @@
+/* AK Golf — merkefarger.
+   STEG 18.4. Fasit for MERKET (logo, marked, materiell, presentasjoner).
+   Produktskjermene i PlayerHQ/AgencyOS/Forelder styres av Train-lock
+   (CLAUDE.md invariant 2) — dette settet overstyrer dem ALDRI.
+
+   Alle kontrasttall er målt 31.08.2026 mot krem #FAF9F5 og blekk #141413,
+   ikke anslått. Regnestykket: designsystem/ak-golf/guidelines/04-farge.md.
+
+   Kilde for grunnpaletten: src/app/globals.css §--mk-* (i drift på
+   markedssidene). Verdiene under er de samme — ingen farge er endret der
+   den allerede var i bruk. Det som ER nytt: de fire variantfargene og de
+   tekstsikre variantene, som ikke fantes. */
+
+:root {
+  /* --- Grunn. Delt av alle virksomheter. --- */
+  --ak-krem:        #FAF9F5;  /* hovedflate, lys */
+  --ak-krem-senk:   #F0EEE6;  /* seksjon som skal skille seg fra flaten */
+  --ak-flate:       #FFFFFF;  /* kort som ligger PÅ krem */
+  --ak-blekk:       #141413;  /* tekst og mørk flate */
+  --ak-blekk-myk:   #3D3D3A;  /* underordnet tekst på krem */
+  --ak-dempet:      #5E5D59;  /* brødtekst-grå, 6.4:1 på krem */
+  --ak-svak:        #B0AEA5;  /* etiketter, aldri brødtekst */
+  --ak-linje:       #E8E6DC;  /* kant og skille */
+  --ak-harlinje:    #D1CFC5;  /* sterkere skille, tabellrader */
+
+  /* --- Identitet. Clay er merkets egen farge, i logoen. --- */
+  --ak-clay:        #D97757;  /* flate, grafikk, logoball */
+  --ak-clay-tekst:  #A9512F;  /* 5.10:1 på krem — clay som SMÅ tekst */
+  --ak-clay-lys:    #E08B69;  /* 7.08:1 på blekk — clay på mørk flate */
+  --ak-clay-myk:    rgba(217, 119, 87, 0.12);
+
+  /* --- Varianter. Én identitetsfarge per virksomhet. ---
+     Rekkefølgen er ikke tilfeldig: den følger spillerens vei gjennom huset.
+     Junior (vekst) → Academy (kjernen) → HQ (systemet) → Organisasjon (kravet)
+     → Products (utstyret). Fargen koder hvor i løpet du står. */
+
+  /* Junior Academy — vekst */
+  --ak-junior:        #5B8450;
+  --ak-junior-tekst:  #4F7343;  /* 5.16:1 på krem */
+  --ak-junior-lys:    #8FB37F;  /* 7.83:1 på blekk */
+
+  /* AK Golf Academy — kjernen. Arver clay: dette ER AK Golf. */
+  --ak-academy:       var(--ak-clay);
+  --ak-academy-tekst: var(--ak-clay-tekst);
+  --ak-academy-lys:   var(--ak-clay-lys);
+
+  /* AK Golf HQ / PlayerHQ — systemet, skjermen, tallene */
+  --ak-hq:            #3F7CB3;
+  --ak-hq-tekst:      #356B9C;  /* 5.34:1 på krem */
+  --ak-hq-lys:        #7FB0DA;  /* 8.01:1 på blekk */
+
+  /* Organisasjon — WANG-coaching, klubb, kontraktsarbeid. Kravet.
+     NB: dette er IKKE WANG Toppidretts egen navy (#17446F i
+     src/styles/wang-tokens.css). Skolen er kunde, ikke avsender. */
+  --ak-org:           #4E6A7E;
+  --ak-org-tekst:     #42596B;  /* 6.94:1 på krem */
+  --ak-org-lys:       #93AEC0;  /* 7.95:1 på blekk */
+
+  /* Skarpnord Golf Products — utstyret, materialet. Lav profil til
+     virksomheten har omsetning (merkeplattformen §7). */
+  --ak-produkt:       #9C7A33;
+  --ak-produkt-tekst: #8A6A2A;  /* 4.77:1 på krem */
+  --ak-produkt-lys:   #C9A755;  /* 8.03:1 på blekk */
+
+  /* --- Status. Aldri identitet, aldri merkefarge. ---
+     Skilt fra variantfargene med vilje: en grønn «godkjent» skal ikke kunne
+     forveksles med Junior Academy, og en rød feil skal ikke ligne clay. */
+  --ak-ok:      #2E7D51;
+  --ak-varsel:  #9A6B10;
+  --ak-feil:    #B3261E;
+}
+
+/* Mørk flate. Merkets mørke er blekk, ikke svart — samme varme som kremen.
+   Ren #000000 hører til Train-lock og produktskjermene, ikke til merket. */
+:root[data-ak-flate="mork"] {
+  --ak-krem:      #141413;
+  --ak-krem-senk: #1D1C1A;
+  --ak-flate:     #1D1C1A;
+  --ak-blekk:     #FAF9F5;
+  --ak-blekk-myk: #D6D3CA;
+  --ak-dempet:    #A5A29A;
+  --ak-svak:      #6E6C66;
+  --ak-linje:     #2C2B28;
+  --ak-harlinje:  #3A3936;
+
+  --ak-clay-tekst:    var(--ak-clay-lys);
+  --ak-junior-tekst:  var(--ak-junior-lys);
+  --ak-hq-tekst:      var(--ak-hq-lys);
+  --ak-org-tekst:     var(--ak-org-lys);
+  --ak-produkt-tekst: var(--ak-produkt-lys);
+}

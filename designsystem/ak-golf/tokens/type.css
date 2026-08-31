@@ -1,0 +1,40 @@
+/* AK Golf — typografi.
+   STEG 18.4. Tre fonter, låst av Anders 25.08.2026: ingen fjerde font.
+   Poppins (alt som skal leses raskt) · Lora (det som skal leses langsomt) ·
+   IBM Plex Mono (alt som er MÅLT).
+
+   Den tredelingen er ikke dekor — den er merkets løfte gjort synlig.
+   Et tall som kommer fra en måling skal se ut som en måling. Står det i
+   mono, er det etterprøvbart. Står det ikke i mono, er det en påstand. */
+
+:root {
+  --ak-sans:  'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  --ak-serif: 'Lora', Georgia, 'Times New Roman', serif;
+  --ak-mono:  'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Skala. Kvart-oktav (1,19), avrundet til hele piksler.
+     Ni trinn er nok til alt merket lager. Trenger du et tiende, er
+     problemet layouten, ikke skalaen. */
+  --ak-t-11: 11px;   /* etikett i caps, kun mono */
+  --ak-t-13: 13px;   /* bildetekst, fotnote */
+  --ak-t-15: 15px;   /* brødtekst, tett */
+  --ak-t-17: 17px;   /* brødtekst, standard */
+  --ak-t-21: 21px;   /* ingress */
+  --ak-t-26: 26px;   /* seksjonstittel */
+  --ak-t-33: 33px;   /* sidetittel */
+  --ak-t-42: 42px;   /* hero, mobil */
+  --ak-t-58: 58px;   /* hero, Mac */
+
+  --ak-v-400: 400;
+  --ak-v-500: 500;
+  --ak-v-600: 600;   /* tyngste vekt merket bruker. Aldri 700 eller 800. */
+
+  --ak-lh-tett:   1.12;  /* fra 26px og opp */
+  --ak-lh-normal: 1.5;   /* brødtekst */
+  --ak-lh-luftig: 1.65;  /* Lora, som trenger mer luft enn Poppins */
+
+  --ak-sp-tett:  -0.03em;  /* hero */
+  --ak-sp-titt:  -0.02em;  /* titler */
+  --ak-sp-null:   0;       /* brødtekst */
+  --ak-sp-vid:    0.2em;   /* caps-etiketter i mono */
+}

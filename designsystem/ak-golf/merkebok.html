@@ -1,0 +1,451 @@
+<title>AK Golf Merkebok</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  --krem:#FAF9F5; --senk:#F0EEE6; --flate:#FFFFFF; --blekk:#141413;
+  --myk:#3D3D3A; --dempet:#5E5D59; --svak:#B0AEA5; --linje:#E8E6DC; --haar:#D1CFC5;
+  --clay:#D97757; --claytekst:#A9512F;
+  --loft:0 1px 2px rgba(20,20,19,.04), 0 8px 24px rgba(20,20,19,.06);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --krem:#141413; --senk:#1D1C1A; --flate:#1D1C1A; --blekk:#FAF9F5;
+    --myk:#D6D3CA; --dempet:#A5A29A; --svak:#6E6C66; --linje:#2C2B28; --haar:#3A3936;
+    --claytekst:#E08B69;
+    --loft:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.32);
+  }
+}
+:root[data-theme="dark"] {
+  --krem:#141413; --senk:#1D1C1A; --flate:#1D1C1A; --blekk:#FAF9F5;
+  --myk:#D6D3CA; --dempet:#A5A29A; --svak:#6E6C66; --linje:#2C2B28; --haar:#3A3936;
+  --claytekst:#E08B69;
+  --loft:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.32);
+}
+* { box-sizing:border-box; }
+body {
+  margin:0; background:var(--krem); color:var(--blekk);
+  font-family:'Poppins',-apple-system,BlinkMacSystemFont,Arial,sans-serif;
+  line-height:1.5; -webkit-font-smoothing:antialiased;
+}
+.mono { font-family:'IBM Plex Mono',ui-monospace,monospace; }
+.lora { font-family:'Lora',Georgia,serif; }
+
+/* --- ark --- */
+.bok { max-width:1120px; margin:0 auto; padding:0 20px 120px; }
+.ark {
+  background:var(--flate); border:1px solid var(--linje); border-radius:16px;
+  padding:clamp(28px,4.5vw,56px); margin-top:20px; box-shadow:var(--loft);
+  position:relative; overflow:hidden;
+}
+.arknr {
+  position:absolute; top:22px; right:26px;
+  font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.18em;
+  color:var(--svak);
+}
+.eyebrow {
+  font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--claytekst); margin:0 0 14px;
+}
+.ark h2 { margin:0 0 10px; font-size:clamp(24px,3.4vw,33px); font-weight:600; letter-spacing:-.02em; text-wrap:balance; }
+.ark h3 { margin:0 0 6px; font-size:17px; font-weight:600; letter-spacing:-.01em; }
+.ark > p, .ledetekst { margin:0 0 26px; color:var(--dempet); font-size:16px; max-width:64ch; }
+.ark h4 { margin:0 0 10px; font-size:13px; font-weight:600; letter-spacing:.02em; }
+
+/* --- forside --- */
+.forside {
+  background:var(--blekk); color:var(--krem); border-color:var(--blekk);
+  padding:clamp(40px,7vw,88px); margin-top:36px;
+}
+.forside h1 {
+  margin:26px 0 0; font-size:clamp(38px,7vw,66px); font-weight:600;
+  letter-spacing:-.035em; line-height:1.02; text-wrap:balance;
+}
+.forside .loftet {
+  font-family:'Lora',Georgia,serif; font-size:clamp(19px,2.5vw,24px);
+  color:var(--krem); opacity:.82; margin:22px 0 0; max-width:30ch; line-height:1.5;
+}
+.forside .stempel {
+  display:flex; flex-wrap:wrap; gap:10px 26px; margin-top:44px;
+  font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.16em;
+  text-transform:uppercase; color:rgba(250,249,245,.5);
+}
+.forside .stempel b { color:var(--krem); font-weight:500; }
+
+/* --- innhold --- */
+.toc { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:1px; background:var(--linje); border:1px solid var(--linje); border-radius:10px; overflow:hidden; }
+.toc a { background:var(--flate); padding:14px 16px; text-decoration:none; color:var(--blekk); display:flex; gap:12px; align-items:baseline; transition:background .12s; }
+.toc a:hover { background:var(--senk); }
+.toc .n { font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--svak); }
+.toc span:last-child { font-size:14.5px; }
+
+/* --- logo --- */
+.logo { display:block; width:auto; }
+.logoscene {
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:2px;
+  background:var(--linje); border:1px solid var(--linje); border-radius:12px; overflow:hidden;
+}
+.logorute { padding:38px 20px; display:flex; flex-direction:column; align-items:center; gap:16px; }
+.logorute span { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--svak); }
+.pa-krem { background:#FAF9F5; } .pa-krem span { color:#B0AEA5; }
+.pa-blekk { background:#141413; } .pa-blekk span { color:#6E6C66; }
+.pa-clay { background:#D97757; } .pa-clay span { color:rgba(20,20,19,.55); }
+
+/* klaringssone */
+.klaring { display:flex; justify-content:center; padding:8px 0 4px; }
+.klaringboks {
+  position:relative; padding:28px; background:var(--senk); border-radius:10px;
+  border:1px dashed var(--claytekst);
+}
+.klaringinner { padding:10px 14px; background:var(--flate); border:1px solid var(--haar); border-radius:4px; }
+.klaringmaal {
+  position:absolute; font-family:'IBM Plex Mono',monospace; font-size:10px;
+  letter-spacing:.1em; color:var(--claytekst);
+}
+.klaringmaal.topp { top:16px; left:50%; transform:translateX(-50%); }
+.klaringmaal.side { top:50%; left:12px; transform:translateY(-50%); }
+.klaringnote { text-align:center; font-size:13.5px; color:var(--dempet); margin-top:16px; }
+
+/* --- variantkort --- */
+.varianter { display:grid; grid-template-columns:repeat(auto-fit,minmax(268px,1fr)); gap:16px; }
+.vkort { border:1px solid var(--linje); border-radius:12px; overflow:hidden; background:var(--flate); }
+.vflate { height:76px; }
+.vinnhold { padding:18px; }
+.vinnhold p { margin:0 0 16px; font-size:13.5px; color:var(--dempet); line-height:1.55; }
+.vfarger { display:grid; gap:8px; }
+.vf { display:flex; align-items:center; gap:9px; font-family:'IBM Plex Mono',monospace; font-size:11px; }
+.vf b { font-weight:500; color:var(--blekk); }
+.vf i { font-style:normal; color:var(--svak); margin-left:auto; letter-spacing:.06em; }
+.prikk { width:13px; height:13px; border-radius:3px; flex:0 0 13px; border:1px solid rgba(20,20,19,.12); }
+
+/* --- navnelås --- */
+.laaser { display:grid; gap:2px; background:var(--linje); border:1px solid var(--linje); border-radius:10px; overflow:hidden; }
+.laas { display:flex; align-items:center; gap:16px; padding:18px 22px; background:var(--flate); }
+.laaslinje { width:1px; height:26px; background:var(--haar); }
+.laasnavn { font-size:16px; font-weight:500; letter-spacing:-.01em; }
+
+/* --- type --- */
+.typerad { padding:18px 0; border-bottom:1px solid var(--linje); }
+.typerad:last-child { border-bottom:0; }
+.typeprove { color:var(--blekk); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.typemeta { display:flex; flex-wrap:wrap; gap:6px 18px; margin-top:10px; font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--svak); letter-spacing:.06em; }
+.typemeta .tok { color:var(--claytekst); }
+.typemeta .rolle { margin-left:auto; }
+.fontkort { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:14px; margin-bottom:30px; }
+.fk { border:1px solid var(--linje); border-radius:10px; padding:18px; }
+.fk .navn { font-size:26px; margin-bottom:8px; }
+.fk p { margin:0; font-size:13px; color:var(--dempet); line-height:1.55; }
+
+/* --- rom --- */
+.romrad { display:flex; align-items:center; gap:16px; padding:7px 0; }
+.romtok { font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--svak); width:88px; flex:0 0 88px; }
+.rombjelke { height:14px; background:var(--claytekst); border-radius:2px; opacity:.85; }
+.rompx { font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--dempet); }
+.geo { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; margin-top:30px; }
+.geokort { border:1px solid var(--linje); border-radius:10px; padding:18px; text-align:center; }
+.geoprove { height:56px; background:var(--senk); border:1px solid var(--haar); margin-bottom:12px; }
+.geokort span { font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--svak); letter-spacing:.1em; }
+
+/* --- favicon / sosialt --- */
+.faviconrad { display:flex; flex-wrap:wrap; gap:26px; align-items:flex-end; }
+.fav { text-align:center; }
+.favboks { display:flex; align-items:center; justify-content:center; background:var(--senk); border:1px solid var(--linje); border-radius:8px; }
+.fav span { display:block; margin-top:9px; font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--svak); letter-spacing:.12em; }
+.somekort { display:grid; grid-template-columns:repeat(auto-fit,minmax(212px,1fr)); gap:16px; }
+.some { border:1px solid var(--linje); border-radius:12px; overflow:hidden; }
+.some-topp { padding:22px; display:flex; align-items:center; gap:12px; }
+.some-tall { font-family:'IBM Plex Mono',monospace; font-size:34px; font-weight:500; letter-spacing:-.02em; }
+.some-bunn { padding:16px 22px 20px; border-top:1px solid var(--linje); }
+.some-bunn p { margin:0; font-size:13.5px; line-height:1.5; }
+.some-kilde { font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--svak); margin-top:10px; }
+
+/* --- tabell --- */
+.tabellramme { overflow-x:auto; }
+table { border-collapse:collapse; width:100%; font-size:14px; min-width:520px; }
+th, td { text-align:left; padding:11px 14px; border-bottom:1px solid var(--linje); vertical-align:top; }
+th { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--svak); font-weight:400; }
+td.mono { font-family:'IBM Plex Mono',monospace; font-size:12.5px; }
+
+/* --- forbudt --- */
+.forbudt { display:grid; grid-template-columns:repeat(auto-fit,minmax(248px,1fr)); gap:16px; }
+.fkort { border:1px solid var(--linje); border-radius:12px; padding:20px; }
+.fkort ul { margin:0; padding:0; list-style:none; display:grid; gap:9px; }
+.fkort li { font-size:13.5px; color:var(--dempet); line-height:1.5; padding-left:19px; position:relative; }
+.fkort li::before { content:"×"; position:absolute; left:0; top:-1px; color:#B3261E; font-size:15px; }
+
+/* --- system-tabell --- */
+.systemer { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:2px; background:var(--linje); border:1px solid var(--linje); border-radius:12px; overflow:hidden; }
+.sys { background:var(--flate); padding:22px; }
+.sys .navn { font-size:17px; font-weight:600; margin-bottom:6px; }
+.sys p { margin:0 0 12px; font-size:13.5px; color:var(--dempet); line-height:1.5; }
+.sys .sti { font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--claytekst); }
+.sys.aktiv { background:var(--senk); }
+
+.note { margin-top:26px; padding:18px 20px; background:var(--senk); border-radius:10px; font-size:14px; color:var(--myk); line-height:1.6; }
+.note b { color:var(--blekk); }
+
+@media (max-width:720px) {
+  .typemeta .rolle { margin-left:0; }
+  .typeprove { font-size:min(9vw, 42px) !important; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition:none !important; } }
+</style>
+
+<div class="bok">
+
+  <section class="ark forside">
+    <svg class="logo" viewBox="0 0 538 470" style="height:72px" role="img" aria-label="AK Golf"><g transform="translate(0,470) scale(0.1,-0.1)"><path d="M3190 4486 c-23 -13 -109 -48 -585 -241 -99 -40 -198 -81 -220 -91 l-40 -18 45 -7 c127 -19 217 -102 271 -249 l24 -65 3 -1772 2 -1773 280 0 280 0 2 721 3 720 71 -83 c40 -46 132 -155 205 -243 73 -88 185 -221 249 -295 64 -74 152 -178 195 -230 44 -52 137 -162 209 -245 71 -82 167 -194 213 -247 l84 -98 355 0 c194 0 354 2 354 4 0 2 -73 89 -162 194 -90 104 -219 256 -288 337 -319 376 -552 649 -790 925 -59 69 -130 153 -158 187 -28 34 -56 64 -62 68 -5 3 -10 10 -10 14 0 7 90 83 221 186 42 33 163 130 270 215 107 86 223 178 259 206 378 292 550 427 550 430 0 2 -126 4 -279 4 l-280 0 -25 -82 c-25 -83 -102 -228 -159 -303 -108 -139 -178 -205 -502 -470 -87 -71 -189 -156 -225 -187 -100 -85 -293 -238 -297 -234 -2 1 -3 618 -3 1369 0 1297 -1 1367 -17 1367 -10 -1 -29 -7 -43 -14z M1200 3110 c-155 -15 -305 -58 -435 -123 -225 -112 -384 -275 -446 -457 -28 -82 -30 -194 -6 -267 25 -71 88 -139 162 -174 49 -24 73 -29 135 -29 62 0 85 5 135 29 75 36 116 79 150 155 35 80 41 138 21 214 -30 116 -119 209 -223 233 -29 7 -53 14 -53 16 0 3 13 23 29 47 60 86 146 146 260 180 68 20 222 21 313 2 254 -54 462 -285 542 -601 34 -138 47 -250 44 -380 l-3 -110 -95 -21 c-291 -66 -546 -127 -630 -149 -450 -122 -720 -290 -829 -517 -44 -91 -71 -205 -71 -296 0 -100 29 -241 65 -312 70 -140 152 -223 279 -285 98 -48 172 -66 302 -72 316 -16 613 107 885 365 l99 94 0 -191 0 -191 275 0 275 0 1 338 c0 185 0 618 -1 962 -1 576 -3 632 -21 720 -28 138 -55 216 -108 314 -111 207 -274 352 -496 437 -155 61 -371 87 -555 69z m630 -1846 l0 -486 -60 -56 c-91 -84 -157 -131 -235 -167 -265 -123 -559 -66 -692 134 -62 92 -78 148 -78 271 0 76 5 119 19 158 24 71 106 191 163 242 95 83 231 162 410 236 81 34 432 150 461 153 9 1 12 -102 12 -485z" fill="#FAF9F5"></path><circle cx="4840" cy="3620" r="310" fill="#D97757"></circle></g></svg>
+    <h1>Merkebok</h1>
+    <p class="loftet">«Du skal aldri lure på hva du skal trene på, eller hvorfor.»</p>
+    <div class="stempel">
+      <span>Versjon <b>1.0</b></span>
+      <span><b>31. august 2026</b></span>
+      <span>Låst av <b>Anders Kristiansen</b></span>
+      <span>Gjelder <b>hele konsernet</b></span>
+    </div>
+  </section>
+
+  <section class="ark">
+    <span class="arknr">01</span>
+    <p class="eyebrow">Innhold</p>
+    <h2>Ti sider</h2>
+    <p>Merkeboka dekker merket — logo, farge, tone, foto, marked og materiell. Den styrer aldri hvordan en skjerm inne i appen ser ut.</p>
+    <nav class="toc">
+      <a href="#merket"><span class="n">02</span><span>Merket</span></a>
+      <a href="#arkitektur"><span class="n">03</span><span>Arkitekturen</span></a>
+      <a href="#logo"><span class="n">04</span><span>Logoen</span></a>
+      <a href="#klaring"><span class="n">05</span><span>Klaringssone</span></a>
+      <a href="#farge"><span class="n">06</span><span>Fargene</span></a>
+      <a href="#varianter"><span class="n">07</span><span>Variantene</span></a>
+      <a href="#type"><span class="n">08</span><span>Typografien</span></a>
+      <a href="#rom"><span class="n">09</span><span>Rom og form</span></a>
+      <a href="#bruk"><span class="n">10</span><span>Merket i bruk</span></a>
+      <a href="#forbudt"><span class="n">11</span><span>Forbudt</span></a>
+    </nav>
+  </section>
+
+  <section class="ark" id="merket">
+    <span class="arknr">02</span>
+    <p class="eyebrow">Merket</p>
+    <h2>Et utviklingssystem der hver anbefaling er forankret i en måling</h2>
+    <p>Ikke en golfpro som selger timer. Ikke en app. Et system der coachen tolker målingene, planen bærer arbeidet mellom øktene, og spilleren til enhver tid vet hva hen trener på og hvorfor.</p>
+    <div class="systemer">
+      <div class="sys"><div class="navn">Målingen</div><p>Trackman i hver økt. Tjue standardiserte testprotokoller. P1–P10 på svingen.</p></div>
+      <div class="sys"><div class="navn">Systemet</div><p>Én metodikk med eget språk: pyramiden, områdene, periodene.</p></div>
+      <div class="sys"><div class="navn">Utviklingsløpet</div><p>AK-stigen tar junioren fra golfskole til turnering, i navngitte trinn.</p></div>
+      <div class="sys"><div class="navn">Plassen</div><p>Sportssjef i GFGK. Coach ved WANG Toppidrett. Tilknytning til Team Norway.</p></div>
+    </div>
+    <div class="note"><b>Primærpublikum er junioren — men forelderen bestemmer og betaler.</b> Det er den ene opplysningen som får flest konsekvenser for hvordan materiell skrives.</div>
+  </section>
+
+  <section class="ark" id="arkitektur">
+    <span class="arknr">03</span>
+    <p class="eyebrow">Arkitekturen</p>
+    <h2>Én paraply, fem varianter</h2>
+    <p>Hver virksomhet arver samme skjelett — logobruk, typografi, romskala, geometri — og får én ting av sitt eget: en identitetsfarge og en tone. Ikke fem merkevarer, og ikke ett uttrykk som visker bort forskjellene.</p>
+    <div class="tabellramme"><table>
+      <thead><tr><th>Virksomhet</th><th>Skrives</th><th>Hvor mye AK Golf synes</th></tr></thead>
+      <tbody>
+        <tr><td>AK Golf Academy</td><td class="mono">AK Golf Academy</td><td>Fullt ut. Dette <em>er</em> AK Golf</td></tr>
+        <tr><td>AK Golf Junior Academy</td><td class="mono">Junior Academy</td><td>Fullt ut</td></tr>
+        <tr><td>AK Golf HQ</td><td class="mono">AK Golf HQ</td><td>Fullt ut — skjermene følger Train-lock</td></tr>
+        <tr><td>Organisasjon</td><td class="mono">WANG … — coaching ved AK Golf</td><td>Som leverandør, ikke eier</td></tr>
+        <tr><td>Skarpnord Golf Products</td><td class="mono">Skarpnord Golf Products</td><td>Lav profil til det bærer seg</td></tr>
+        <tr><td>Mulligan Indoor Golf</td><td class="mono">Mulligan Indoor Golf</td><td><b>Ingen.</b> Står på egne ben</td></tr>
+      </tbody>
+    </table></div>
+    <div class="note"><b>Tre systemer, én regel.</b> AK Golf eier merket. Train-lock eier hver skjerm i PlayerHQ, AgencyOS og Forelder. Claw eier <span class="mono">/team-norway/*</span>. Ved konflikt om en produktskjerm vinner Train-lock; om merket vinner AK Golf. <b>Ingen skjerm har to fasiter.</b></div>
+  </section>
+
+  <section class="ark" id="logo">
+    <span class="arknr">04</span>
+    <p class="eyebrow">Logoen</p>
+    <h2>En ligatur og en ball</h2>
+    <p>Merket er en <span class="mono">ak</span>-ligatur i blekk med en clay-sirkel over k-en. Sirkelen er ballen — det eneste fargede elementet, og det som bærer hele identiteten i én form.</p>
+    <div class="logoscene">
+      <div class="logorute pa-krem"><svg class="logo" viewBox="0 0 538 470" style="height:58px" role="img" aria-label="AK Golf"><g transform="translate(0,470) scale(0.1,-0.1)"><path d="M3190 4486 c-23 -13 -109 -48 -585 -241 -99 -40 -198 -81 -220 -91 l-40 -18 45 -7 c127 -19 217 -102 271 -249 l24 -65 3 -1772 2 -1773 280 0 280 0 2 721 3 720 71 -83 c40 -46 132 -155 205 -243 73 -88 185 -221 249 -295 64 -74 152 -178 195 -230 44 -52 137 -162 209 -245 71 -82 167 -194 213 -247 l84 -98 355 0 c194 0 354 2 354 4 0 2 -73 89 -162 194 -90 104 -219 256 -288 337 -319 376 -552 649 -790 925 -59 69 -130 153 -158 187 -28 34 -56 64 -62 68 -5 3 -10 10 -10 14 0 7 90 83 221 186 42 33 163 130 270 215 107 86 223 178 259 206 378 292 550 427 550 430 0 2 -126 4 -279 4 l-280 0 -25 -82 c-25 -83 -102 -228 -159 -303 -108 -139 -178 -205 -502 -470 -87 -71 -189 -156 -225 -187 -100 -85 -293 -238 -297 -234 -2 1 -3 618 -3 1369 0 1297 -1 1367 -17 1367 -10 -1 -29 -7 -43 -14z M1200 3110 c-155 -15 -305 -58 -435 -123 -225 -112 -384 -275 -446 -457 -28 -82 -30 -194 -6 -267 25 -71 88 -139 162 -174 49 -24 73 -29 135 -29 62 0 85 5 135 29 75 36 116 79 150 155 35 80 41 138 21 214 -30 116 -119 209 -223 233 -29 7 -53 14 -53 16 0 3 13 23 29 47 60 86 146 146 260 180 68 20 222 21 313 2 254 -54 462 -285 542 -601 34 -138 47 -250 44 -380 l-3 -110 -95 -21 c-291 -66 -546 -127 -630 -149 -450 -122 -720 -290 -829 -517 -44 -91 -71 -205 -71 -296 0 -100 29 -241 65 -312 70 -140 152 -223 279 -285 98 -48 172 -66 302 -72 316 -16 613 107 885 365 l99 94 0 -191 0 -191 275 0 275 0 1 338 c0 185 0 618 -1 962 -1 576 -3 632 -21 720 -28 138 -55 216 -108 314 -111 207 -274 352 -496 437 -155 61 -371 87 -555 69z m630 -1846 l0 -486 -60 -56 c-91 -84 -157 -131 -235 -167 -265 -123 -559 -66 -692 134 -62 92 -78 148 -78 271 0 76 5 119 19 158 24 71 106 191 163 242 95 83 231 162 410 236 81 34 432 150 461 153 9 1 12 -102 12 -485z" fill="#141413"></path><circle cx="4840" cy="3620" r="310" fill="#D97757"></circle></g></svg><span>Primær · på krem</span></div>
+      <div class="logorute pa-blekk"><svg class="logo" viewBox="0 0 538 470" style="height:58px" role="img" aria-label="AK Golf"><g transform="translate(0,470) scale(0.1,-0.1)"><path d="M3190 4486 c-23 -13 -109 -48 -585 -241 -99 -40 -198 -81 -220 -91 l-40 -18 45 -7 c127 -19 217 -102 271 -249 l24 -65 3 -1772 2 -1773 280 0 280 0 2 721 3 720 71 -83 c40 -46 132 -155 205 -243 73 -88 185 -221 249 -295 64 -74 152 -178 195 -230 44 -52 137 -162 209 -245 71 -82 167 -194 213 -247 l84 -98 355 0 c194 0 354 2 354 4 0 2 -73 89 -162 194 -90 104 -219 256 -288 337 -319 376 -552 649 -790 925 -59 69 -130 153 -158 187 -28 34 -56 64 -62 68 -5 3 -10 10 -10 14 0 7 90 83 221 186 42 33 163 130 270 215 107 86 223 178 259 206 378 292 550 427 550 430 0 2 -126 4 -279 4 l-280 0 -25 -82 c-25 -83 -102 -228 -159 -303 -108 -139 -178 -205 -502 -470 -87 -71 -189 -156 -225 -187 -100 -85 -293 -238 -297 -234 -2 1 -3 618 -3 1369 0 1297 -1 1367 -17 1367 -10 -1 -29 -7 -43 -14z M1200 3110 c-155 -15 -305 -58 -435 -123 -225 -112 -384 -275 -446 -457 -28 -82 -30 -194 -6 -267 25 -71 88 -139 162 -174 49 -24 73 -29 135 -29 62 0 85 5 135 29 75 36 116 79 150 155 35 80 41 138 21 214 -30 116 -119 209 -223 233 -29 7 -53 14 -53 16 0 3 13 23 29 47 60 86 146 146 260 180 68 20 222 21 313 2 254 -54 462 -285 542 -601 34 -138 47 -250 44 -380 l-3 -110 -95 -21 c-291 -66 -546 -127 -630 -149 -450 -122 -720 -290 -829 -517 -44 -91 -71 -205 -71 -296 0 -100 29 -241 65 -312 70 -140 152 -223 279 -285 98 -48 172 -66 302 -72 316 -16 613 107 885 365 l99 94 0 -191 0 -191 275 0 275 0 1 338 c0 185 0 618 -1 962 -1 576 -3 632 -21 720 -28 138 -55 216 -108 314 -111 207 -274 352 -496 437 -155 61 -371 87 -555 69z m630 -1846 l0 -486 -60 -56 c-91 -84 -157 -131 -235 -167 -265 -123 -559 -66 -692 134 -62 92 -78 148 -78 271 0 76 5 119 19 158 24 71 106 191 163 242 95 83 231 162 410 236 81 34 432 150 461 153 9 1 12 -102 12 -485z" fill="#FAF9F5"></path><circle cx="4840" cy="3620" r="310" fill="#E08B69"></circle></g></svg><span>På blekk</span></div>
+      <div class="logorute pa-clay"><svg class="logo" viewBox="0 0 538 470" style="height:58px" role="img" aria-label="AK Golf"><g transform="translate(0,470) scale(0.1,-0.1)"><path d="M3190 4486 c-23 -13 -109 -48 -585 -241 -99 -40 -198 -81 -220 -91 l-40 -18 45 -7 c127 -19 217 -102 271 -249 l24 -65 3 -1772 2 -1773 280 0 280 0 2 721 3 720 71 -83 c40 -46 132 -155 205 -243 73 -88 185 -221 249 -295 64 -74 152 -178 195 -230 44 -52 137 -162 209 -245 71 -82 167 -194 213 -247 l84 -98 355 0 c194 0 354 2 354 4 0 2 -73 89 -162 194 -90 104 -219 256 -288 337 -319 376 -552 649 -790 925 -59 69 -130 153 -158 187 -28 34 -56 64 -62 68 -5 3 -10 10 -10 14 0 7 90 83 221 186 42 33 163 130 270 215 107 86 223 178 259 206 378 292 550 427 550 430 0 2 -126 4 -279 4 l-280 0 -25 -82 c-25 -83 -102 -228 -159 -303 -108 -139 -178 -205 -502 -470 -87 -71 -189 -156 -225 -187 -100 -85 -293 -238 -297 -234 -2 1 -3 618 -3 1369 0 1297 -1 1367 -17 1367 -10 -1 -29 -7 -43 -14z M1200 3110 c-155 -15 -305 -58 -435 -123 -225 -112 -384 -275 -446 -457 -28 -82 -30 -194 -6 -267 25 -71 88 -139 162 -174 49 -24 73 -29 135 -29 62 0 85 5 135 29 75 36 116 79 150 155 35 80 41 138 21 214 -30 116 -119 209 -223 233 -29 7 -53 14 -53 16 0 3 13 23 29 47 60 86 146 146 260 180 68 20 222 21 313 2 254 -54 462 -285 542 -601 34 -138 47 -250 44 -380 l-3 -110 -95 -21 c-291 -66 -546 -127 -630 -149 -450 -122 -720 -290 -829 -517 -44 -91 -71 -205 -71 -296 0 -100 29 -241 65 -312 70 -140 152 -223 279 -285 98 -48 172 -66 302 -72 316 -16 613 107 885 365 l99 94 0 -191 0 -191 275 0 275 0 1 338 c0 185 0 618 -1 962 -1 576 -3 632 -21 720 -28 138 -55 216 -108 314 -111 207 -274 352 -496 437 -155 61 -371 87 -555 69z m630 -1846 l0 -486 -60 -56 c-91 -84 -157 -131 -235 -167 -265 -123 -559 -66 -692 134 -62 92 -78 148 -78 271 0 76 5 119 19 158 24 71 106 191 163 242 95 83 231 162 410 236 81 34 432 150 461 153 9 1 12 -102 12 -485z" fill="#141413"></path><circle cx="4840" cy="3620" r="310" fill="#141413"></circle></g></svg><span>Mono · på clay</span></div>
+      <div class="logorute pa-krem"><svg class="logo" viewBox="0 0 538 470" style="height:58px" role="img" aria-label="AK Golf"><g transform="translate(0,470) scale(0.1,-0.1)"><path d="M3190 4486 c-23 -13 -109 -48 -585 -241 -99 -40 -198 -81 -220 -91 l-40 -18 45 -7 c127 -19 217 -102 271 -249 l24 -65 3 -1772 2 -1773 280 0 280 0 2 721 3 720 71 -83 c40 -46 132 -155 205 -243 73 -88 185 -221 249 -295 64 -74 152 -178 195 -230 44 -52 137 -162 209 -245 71 -82 167 -194 213 -247 l84 -98 355 0 c194 0 354 2 354 4 0 2 -73 89 -162 194 -90 104 -219 256 -288 337 -319 376 -552 649 -790 925 -59 69 -130 153 -158 187 -28 34 -56 64 -62 68 -5 3 -10 10 -10 14 0 7 90 83 221 186 42 33 163 130 270 215 107 86 223 178 259 206 378 292 550 427 550 430 0 2 -126 4 -279 4 l-280 0 -25 -82 c-25 -83 -102 -228 -159 -303 -108 -139 -178 -205 -502 -470 -87 -71 -189 -156 -225 -187 -100 -85 -293 -238 -297 -234 -2 1 -3 618 -3 1369 0 1297 -1 1367 -17 1367 -10 -1 -29 -7 -43 -14z M1200 3110 c-155 -15 -305 -58 -435 -123 -225 -112 -384 -275 -446 -457 -28 -82 -30 -194 -6 -267 25 -71 88 -139 162 -174 49 -24 73 -29 135 -29 62 0 85 5 135 29 75 36 116 79 150 155 35 80 41 138 21 214 -30 116 -119 209 -223 233 -29 7 -53 14 -53 16 0 3 13 23 29 47 60 86 146 146 260 180 68 20 222 21 313 2 254 -54 462 -285 542 -601 34 -138 47 -250 44 -380 l-3 -110 -95 -21 c-291 -66 -546 -127 -630 -149 -450 -122 -720 -290 -829 -517 -44 -91 -71 -205 -71 -296 0 -100 29 -241 65 -312 70 -140 152 -223 279 -285 98 -48 172 -66 302 -72 316 -16 613 107 885 365 l99 94 0 -191 0 -191 275 0 275 0 1 338 c0 185 0 618 -1 962 -1 576 -3 632 -21 720 -28 138 -55 216 -108 314 -111 207 -274 352 -496 437 -155 61 -371 87 -555 69z m630 -1846 l0 -486 -60 -56 c-91 -84 -157 -131 -235 -167 -265 -123 -559 -66 -692 134 -62 92 -78 148 -78 271 0 76 5 119 19 158 24 71 106 191 163 242 95 83 231 162 410 236 81 34 432 150 461 153 9 1 12 -102 12 -485z" fill="#141413"></path><circle cx="4840" cy="3620" r="310" fill="#141413"></circle></g></svg><span>Mono · én farge</span></div>
+    </div>
+    <div class="note"><b>Anbefaling — rydd, ikke tegn om.</b> Filene er ekte vektor og skalerer rent. Det som mangler er ikke kvalitet, men familie: en kvadratisk variant til profilbilder, en favicon der ballen overlever 16 px, og låste filer der virksomhetsnavnet er en del av logoen. Tre nye filer, ikke en ny logo. <b>Dette er din beslutning.</b></div>
+  </section>
+
+  <section class="ark" id="klaring">
+    <span class="arknr">05</span>
+    <p class="eyebrow">Klaringssone og minstemål</p>
+    <h2>Luften rundt merket</h2>
+    <p>Rundt logoen skal det være fritt rom tilsvarende <b>halve logoens høyde</b>, på alle fire sider. Ingenting går inn i den sonen: ikke tekst, ikke kant, ikke et bildeutsnitt, ikke en annen logo.</p>
+    <div class="klaring"><div class="klaringboks">
+      <span class="klaringmaal topp">½h</span><span class="klaringmaal side">½h</span>
+      <div class="klaringinner"><svg class="logo" viewBox="0 0 538 470" style="height:56px" role="img" aria-label="AK Golf"><g transform="translate(0,470) scale(0.1,-0.1)"><path d="M3190 4486 c-23 -13 -109 -48 -585 -241 -99 -40 -198 -81 -220 -91 l-40 -18 45 -7 c127 -19 217 -102 271 -249 l24 -65 3 -1772 2 -1773 280 0 280 0 2 721 3 720 71 -83 c40 -46 132 -155 205 -243 73 -88 185 -221 249 -295 64 -74 152 -178 195 -230 44 -52 137 -162 209 -245 71 -82 167 -194 213 -247 l84 -98 355 0 c194 0 354 2 354 4 0 2 -73 89 -162 194 -90 104 -219 256 -288 337 -319 376 -552 649 -790 925 -59 69 -130 153 -158 187 -28 34 -56 64 -62 68 -5 3 -10 10 -10 14 0 7 90 83 221 186 42 33 163 130 270 215 107 86 223 178 259 206 378 292 550 427 550 430 0 2 -126 4 -279 4 l-280 0 -25 -82 c-25 -83 -102 -228 -159 -303 -108 -139 -178 -205 -502 -470 -87 -71 -189 -156 -225 -187 -100 -85 -293 -238 -297 -234 -2 1 -3 618 -3 1369 0 1297 -1 1367 -17 1367 -10 -1 -29 -7 -43 -14z M1200 3110 c-155 -15 -305 -58 -435 -123 -225 -112 -384 -275 -446 -457 -28 -82 -30 -194 -6 -267 25 -71 88 -139 162 -174 49 -24 73 -29 135 -29 62 0 85 5 135 29 75 36 116 79 150 155 35 80 41 138 21 214 -30 116 -119 209 -223 233 -29 7 -53 14 -53 16 0 3 13 23 29 47 60 86 146 146 260 180 68 20 222 21 313 2 254 -54 462 -285 542 -601 34 -138 47 -250 44 -380 l-3 -110 -95 -21 c-291 -66 -546 -127 -630 -149 -450 -122 -720 -290 -829 -517 -44 -91 -71 -205 -71 -296 0 -100 29 -241 65 -312 70 -140 152 -223 279 -285 98 -48 172 -66 302 -72 316 -16 613 107 885 365 l99 94 0 -191 0 -191 275 0 275 0 1 338 c0 185 0 618 -1 962 -1 576 -3 632 -21 720 -28 138 -55 216 -108 314 -111 207 -274 352 -496 437 -155 61 -371 87 -555 69z m630 -1846 l0 -486 -60 -56 c-91 -84 -157 -131 -235 -167 -265 -123 -559 -66 -692 134 -62 92 -78 148 -78 271 0 76 5 119 19 158 24 71 106 191 163 242 95 83 231 162 410 236 81 34 432 150 461 153 9 1 12 -102 12 -485z" fill="currentColor"></path><circle cx="4840" cy="3620" r="310" fill="#D97757"></circle></g></svg></div>
+    </div></div>
+    <p class="klaringnote">Den stiplede linjen er grensen. <span class="mono">h</span> er logoens høyde — klaringen er halvparten av den, lik på alle fire sider.</p>
+    <div class="faviconrad" style="margin-top:38px">
+      <div class="fav"><div class="favboks" style="width:96px;height:96px"><svg class="logo" viewBox="0 0 538 470" style="height:52px" role="img" aria-label="AK Golf"><g transform="translate(0,470) scale(0.1,-0.1)"><path d="M3190 4486 c-23 -13 -109 -48 -585 -241 -99 -40 -198 -81 -220 -91 l-40 -18 45 -7 c127 -19 217 -102 271 -249 l24 -65 3 -1772 2 -1773 280 0 280 0 2 721 3 720 71 -83 c40 -46 132 -155 205 -243 73 -88 185 -221 249 -295 64 -74 152 -178 195 -230 44 -52 137 -162 209 -245 71 -82 167 -194 213 -247 l84 -98 355 0 c194 0 354 2 354 4 0 2 -73 89 -162 194 -90 104 -219 256 -288 337 -319 376 -552 649 -790 925 -59 69 -130 153 -158 187 -28 34 -56 64 -62 68 -5 3 -10 10 -10 14 0 7 90 83 221 186 42 33 163 130 270 215 107 86 223 178 259 206 378 292 550 427 550 430 0 2 -126 4 -279 4 l-280 0 -25 -82 c-25 -83 -102 -228 -159 -303 -108 -139 -178 -205 -502 -470 -87 -71 -189 -156 -225 -187 -100 -85 -293 -238 -297 -234 -2 1 -3 618 -3 1369 0 1297 -1 1367 -17 1367 -10 -1 -29 -7 -43 -14z M1200 3110 c-155 -15 -305 -58 -435 -123 -225 -112 -384 -275 -446 -457 -28 -82 -30 -194 -6 -267 25 -71 88 -139 162 -174 49 -24 73 -29 135 -29 62 0 85 5 135 29 75 36 116 79 150 155 35 80 41 138 21 214 -30 116 -119 209 -223 233 -29 7 -53 14 -53 16 0 3 13 23 29 47 60 86 146 146 260 180 68 20 222 21 313 2 254 -54 462 -285 542 -601 34 -138 47 -250 44 -380 l-3 -110 -95 -21 c-291 -66 -546 -127 -630 -149 -450 -122 -720 -290 -829 -517 -44 -91 -71 -205 -71 -296 0 -100 29 -241 65 -312 70 -140 152 -223 279 -285 98 -48 172 -66 302 -72 316 -16 613 107 885 365 l99 94 0 -191 0 -191 275 0 275 0 1 338 c0 185 0 618 -1 962 -1 576 -3 632 -21 720 -28 138 -55 216 -108 314 -111 207 -274 352 -496 437 -155 61 -371 87 -555 69z m630 -1846 l0 -486 -60 -56 c-91 -84 -157 -131 -235 -167 -265 -123 -559 -66 -692 134 -62 92 -78 148 -78 271 0 76 5 119 19 158 24 71 106 191 163 242 95 83 231 162 410 236 81 34 432 150 461 153 9 1 12 -102 12 -485z" fill="currentColor"></path><circle cx="4840" cy="3620" r="310" fill="#D97757"></circle></g></svg></div><span>96 px</span></div>
+      <div class="fav"><div class="favboks" style="width:48px;height:48px"><svg class="logo" viewBox="0 0 538 470" style="height:26px" role="img" aria-label="AK Golf"><g transform="translate(0,470) scale(0.1,-0.1)"><path d="M3190 4486 c-23 -13 -109 -48 -585 -241 -99 -40 -198 -81 -220 -91 l-40 -18 45 -7 c127 -19 217 -102 271 -249 l24 -65 3 -1772 2 -1773 280 0 280 0 2 721 3 720 71 -83 c40 -46 132 -155 205 -243 73 -88 185 -221 249 -295 64 -74 152 -178 195 -230 44 -52 137 -162 209 -245 71 -82 167 -194 213 -247 l84 -98 355 0 c194 0 354 2 354 4 0 2 -73 89 -162 194 -90 104 -219 256 -288 337 -319 376 -552 649 -790 925 -59 69 -130 153 -158 187 -28 34 -56 64 -62 68 -5 3 -10 10 -10 14 0 7 90 83 221 186 42 33 163 130 270 215 107 86 223 178 259 206 378 292 550 427 550 430 0 2 -126 4 -279 4 l-280 0 -25 -82 c-25 -83 -102 -228 -159 -303 -108 -139 -178 -205 -502 -470 -87 -71 -189 -156 -225 -187 -100 -85 -293 -238 -297 -234 -2 1 -3 618 -3 1369 0 1297 -1 1367 -17 1367 -10 -1 -29 -7 -43 -14z M1200 3110 c-155 -15 -305 -58 -435 -123 -225 -112 -384 -275 -446 -457 -28 -82 -30 -194 -6 -267 25 -71 88 -139 162 -174 49 -24 73 -29 135 -29 62 0 85 5 135 29 75 36 116 79 150 155 35 80 41 138 21 214 -30 116 -119 209 -223 233 -29 7 -53 14 -53 16 0 3 13 23 29 47 60 86 146 146 260 180 68 20 222 21 313 2 254 -54 462 -285 542 -601 34 -138 47 -250 44 -380 l-3 -110 -95 -21 c-291 -66 -546 -127 -630 -149 -450 -122 -720 -290 -829 -517 -44 -91 -71 -205 -71 -296 0 -100 29 -241 65 -312 70 -140 152 -223 279 -285 98 -48 172 -66 302 -72 316 -16 613 107 885 365 l99 94 0 -191 0 -191 275 0 275 0 1 338 c0 185 0 618 -1 962 -1 576 -3 632 -21 720 -28 138 -55 216 -108 314 -111 207 -274 352 -496 437 -155 61 -371 87 -555 69z m630 -1846 l0 -486 -60 -56 c-91 -84 -157 -131 -235 -167 -265 -123 -559 -66 -692 134 -62 92 -78 148 -78 271 0 76 5 119 19 158 24 71 106 191 163 242 95 83 231 162 410 236 81 34 432 150 461 153 9 1 12 -102 12 -485z" fill="currentColor"></path><circle cx="4840" cy="3620" r="310" fill="#D97757"></circle></g></svg></div><span>48 px</span></div>
+      <div class="fav"><div class="favboks" style="width:32px;height:32px"><svg class="logo" viewBox="0 0 538 470" style="height:17px" role="img" aria-label="AK Golf"><g transform="translate(0,470) scale(0.1,-0.1)"><path d="M3190 4486 c-23 -13 -109 -48 -585 -241 -99 -40 -198 -81 -220 -91 l-40 -18 45 -7 c127 -19 217 -102 271 -249 l24 -65 3 -1772 2 -1773 280 0 280 0 2 721 3 720 71 -83 c40 -46 132 -155 205 -243 73 -88 185 -221 249 -295 64 -74 152 -178 195 -230 44 -52 137 -162 209 -245 71 -82 167 -194 213 -247 l84 -98 355 0 c194 0 354 2 354 4 0 2 -73 89 -162 194 -90 104 -219 256 -288 337 -319 376 -552 649 -790 925 -59 69 -130 153 -158 187 -28 34 -56 64 -62 68 -5 3 -10 10 -10 14 0 7 90 83 221 186 42 33 163 130 270 215 107 86 223 178 259 206 378 292 550 427 550 430 0 2 -126 4 -279 4 l-280 0 -25 -82 c-25 -83 -102 -228 -159 -303 -108 -139 -178 -205 -502 -470 -87 -71 -189 -156 -225 -187 -100 -85 -293 -238 -297 -234 -2 1 -3 618 -3 1369 0 1297 -1 1367 -17 1367 -10 -1 -29 -7 -43 -14z M1200 3110 c-155 -15 -305 -58 -435 -123 -225 -112 -384 -275 -446 -457 -28 -82 -30 -194 -6 -267 25 -71 88 -139 162 -174 49 -24 73 -29 135 -29 62 0 85 5 135 29 75 36 116 79 150 155 35 80 41 138 21 214 -30 116 -119 209 -223 233 -29 7 -53 14 -53 16 0 3 13 23 29 47 60 86 146 146 260 180 68 20 222 21 313 2 254 -54 462 -285 542 -601 34 -138 47 -250 44 -380 l-3 -110 -95 -21 c-291 -66 -546 -127 -630 -149 -450 -122 -720 -290 -829 -517 -44 -91 -71 -205 -71 -296 0 -100 29 -241 65 -312 70 -140 152 -223 279 -285 98 -48 172 -66 302 -72 316 -16 613 107 885 365 l99 94 0 -191 0 -191 275 0 275 0 1 338 c0 185 0 618 -1 962 -1 576 -3 632 -21 720 -28 138 -55 216 -108 314 -111 207 -274 352 -496 437 -155 61 -371 87 -555 69z m630 -1846 l0 -486 -60 -56 c-91 -84 -157 -131 -235 -167 -265 -123 -559 -66 -692 134 -62 92 -78 148 -78 271 0 76 5 119 19 158 24 71 106 191 163 242 95 83 231 162 410 236 81 34 432 150 461 153 9 1 12 -102 12 -485z" fill="currentColor"></path><circle cx="4840" cy="3620" r="310" fill="#D97757"></circle></g></svg></div><span>32 px</span></div>
+      <div class="fav"><div class="favboks" style="width:24px;height:24px"><svg class="logo" viewBox="0 0 538 470" style="height:13px" role="img" aria-label="AK Golf"><g transform="translate(0,470) scale(0.1,-0.1)"><path d="M3190 4486 c-23 -13 -109 -48 -585 -241 -99 -40 -198 -81 -220 -91 l-40 -18 45 -7 c127 -19 217 -102 271 -249 l24 -65 3 -1772 2 -1773 280 0 280 0 2 721 3 720 71 -83 c40 -46 132 -155 205 -243 73 -88 185 -221 249 -295 64 -74 152 -178 195 -230 44 -52 137 -162 209 -245 71 -82 167 -194 213 -247 l84 -98 355 0 c194 0 354 2 354 4 0 2 -73 89 -162 194 -90 104 -219 256 -288 337 -319 376 -552 649 -790 925 -59 69 -130 153 -158 187 -28 34 -56 64 -62 68 -5 3 -10 10 -10 14 0 7 90 83 221 186 42 33 163 130 270 215 107 86 223 178 259 206 378 292 550 427 550 430 0 2 -126 4 -279 4 l-280 0 -25 -82 c-25 -83 -102 -228 -159 -303 -108 -139 -178 -205 -502 -470 -87 -71 -189 -156 -225 -187 -100 -85 -293 -238 -297 -234 -2 1 -3 618 -3 1369 0 1297 -1 1367 -17 1367 -10 -1 -29 -7 -43 -14z M1200 3110 c-155 -15 -305 -58 -435 -123 -225 -112 -384 -275 -446 -457 -28 -82 -30 -194 -6 -267 25 -71 88 -139 162 -174 49 -24 73 -29 135 -29 62 0 85 5 135 29 75 36 116 79 150 155 35 80 41 138 21 214 -30 116 -119 209 -223 233 -29 7 -53 14 -53 16 0 3 13 23 29 47 60 86 146 146 260 180 68 20 222 21 313 2 254 -54 462 -285 542 -601 34 -138 47 -250 44 -380 l-3 -110 -95 -21 c-291 -66 -546 -127 -630 -149 -450 -122 -720 -290 -829 -517 -44 -91 -71 -205 -71 -296 0 -100 29 -241 65 -312 70 -140 152 -223 279 -285 98 -48 172 -66 302 -72 316 -16 613 107 885 365 l99 94 0 -191 0 -191 275 0 275 0 1 338 c0 185 0 618 -1 962 -1 576 -3 632 -21 720 -28 138 -55 216 -108 314 -111 207 -274 352 -496 437 -155 61 -371 87 -555 69z m630 -1846 l0 -486 -60 -56 c-91 -84 -157 -131 -235 -167 -265 -123 -559 -66 -692 134 -62 92 -78 148 -78 271 0 76 5 119 19 158 24 71 106 191 163 242 95 83 231 162 410 236 81 34 432 150 461 153 9 1 12 -102 12 -485z" fill="currentColor"></path><circle cx="4840" cy="3620" r="310" fill="#D97757"></circle></g></svg></div><span>24 px · minste</span></div>
+      <div class="fav"><div class="favboks" style="width:16px;height:16px"><svg class="logo" viewBox="0 0 538 470" style="height:9px" role="img" aria-label="AK Golf"><g transform="translate(0,470) scale(0.1,-0.1)"><path d="M3190 4486 c-23 -13 -109 -48 -585 -241 -99 -40 -198 -81 -220 -91 l-40 -18 45 -7 c127 -19 217 -102 271 -249 l24 -65 3 -1772 2 -1773 280 0 280 0 2 721 3 720 71 -83 c40 -46 132 -155 205 -243 73 -88 185 -221 249 -295 64 -74 152 -178 195 -230 44 -52 137 -162 209 -245 71 -82 167 -194 213 -247 l84 -98 355 0 c194 0 354 2 354 4 0 2 -73 89 -162 194 -90 104 -219 256 -288 337 -319 376 -552 649 -790 925 -59 69 -130 153 -158 187 -28 34 -56 64 -62 68 -5 3 -10 10 -10 14 0 7 90 83 221 186 42 33 163 130 270 215 107 86 223 178 259 206 378 292 550 427 550 430 0 2 -126 4 -279 4 l-280 0 -25 -82 c-25 -83 -102 -228 -159 -303 -108 -139 -178 -205 -502 -470 -87 -71 -189 -156 -225 -187 -100 -85 -293 -238 -297 -234 -2 1 -3 618 -3 1369 0 1297 -1 1367 -17 1367 -10 -1 -29 -7 -43 -14z M1200 3110 c-155 -15 -305 -58 -435 -123 -225 -112 -384 -275 -446 -457 -28 -82 -30 -194 -6 -267 25 -71 88 -139 162 -174 49 -24 73 -29 135 -29 62 0 85 5 135 29 75 36 116 79 150 155 35 80 41 138 21 214 -30 116 -119 209 -223 233 -29 7 -53 14 -53 16 0 3 13 23 29 47 60 86 146 146 260 180 68 20 222 21 313 2 254 -54 462 -285 542 -601 34 -138 47 -250 44 -380 l-3 -110 -95 -21 c-291 -66 -546 -127 -630 -149 -450 -122 -720 -290 -829 -517 -44 -91 -71 -205 -71 -296 0 -100 29 -241 65 -312 70 -140 152 -223 279 -285 98 -48 172 -66 302 -72 316 -16 613 107 885 365 l99 94 0 -191 0 -191 275 0 275 0 1 338 c0 185 0 618 -1 962 -1 576 -3 632 -21 720 -28 138 -55 216 -108 314 -111 207 -274 352 -496 437 -155 61 -371 87 -555 69z m630 -1846 l0 -486 -60 -56 c-91 -84 -157 -131 -235 -167 -265 -123 -559 -66 -692 134 -62 92 -78 148 -78 271 0 76 5 119 19 158 24 71 106 191 163 242 95 83 231 162 410 236 81 34 432 150 461 153 9 1 12 -102 12 -485z" fill="currentColor"></path><circle cx="4840" cy="3620" r="310" fill="#D97757"></circle></g></svg></div><span>16 px · for lite</span></div>
+    </div>
+    <div class="note"><b>Minstemål:</b> 24 px på skjerm, 12 mm i trykk. Under det forsvinner ballen, og merket blir en uleselig bokstavklump — se 16&nbsp;px-ruta over. Det er derfor faviconen trenger en egen fil der ballen er forstørret.</div>
+  </section>
+
+  <section class="ark" id="farge">
+    <span class="arknr">06</span>
+    <p class="eyebrow">Fargene</p>
+    <h2>Krem og blekk, aldri hvitt og svart</h2>
+    <p>Merket står på krem <span class="mono">#FAF9F5</span>. Den er varm nok til at foto av gress og hud ser riktig ut, og skiller AK Golf fra alle programvaremerker som står på rent hvitt. Merkets mørke er blekk <span class="mono">#141413</span> — samme varme. Ren <span class="mono">#000000</span> hører til produktskjermene, ikke til merket.</p>
+    <div class="tabellramme"><table>
+      <thead><tr><th>Rolle</th><th>Verdi</th><th>Merknad</th></tr></thead>
+      <tbody>
+        <tr><td>Flate, lys</td><td class="mono">#FAF9F5</td><td>Standard</td></tr>
+        <tr><td>Flate, senket</td><td class="mono">#F0EEE6</td><td>Seksjon som skal skille seg</td></tr>
+        <tr><td>Kort på krem</td><td class="mono">#FFFFFF</td><td></td></tr>
+        <tr><td>Tekst</td><td class="mono">#141413</td><td></td></tr>
+        <tr><td>Underordnet tekst</td><td class="mono">#5E5D59</td><td>6,4:1 på krem</td></tr>
+        <tr><td>Etikett</td><td class="mono">#B0AEA5</td><td><b>Aldri brødtekst</b></td></tr>
+        <tr><td>Kant</td><td class="mono">#E8E6DC</td><td></td></tr>
+      </tbody>
+    </table></div>
+    <div class="note"><b>Én rettelse mot dagens kode.</b> <span class="mono">--mk-accent-fg: #B85C3D</span> er i drift som clay-tekstfarge og gir målt <b>4,30:1</b> på krem — under kravet 4,5 for små tekster, og den brukes nettopp på små caps-etiketter. <span class="mono">#A9512F</span> gir 5,10:1 og er nesten ikke til å skille fra den. Nytt materiell bruker <span class="mono">#A9512F</span>.</div>
+  </section>
+
+  <section class="ark" id="varianter">
+    <span class="arknr">07</span>
+    <p class="eyebrow">Variantene</p>
+    <h2>Fargen sier hvor i løpet du står</h2>
+    <p>Rekkefølgen er ikke en fargevifte — den følger spillerens vei gjennom huset. Junior er vekst, Academy er kjernen, HQ er systemet, Organisasjon er kravet, Products er utstyret. Alle kontrasttall er målt, ikke anslått.</p>
+    <div class="varianter"><article class="vkort">
+      <div class="vflate" style="background:#5B8450"></div>
+      <div class="vinnhold">
+        <h3>Junior Academy</h3>
+        <p>Vekst. Første golfskole til turneringsspill.</p>
+        <div class="vfarger">
+          <div class="vf"><span class="prikk" style="background:#5B8450"></span><b>#5B8450</b><i>flate</i></div>
+          <div class="vf"><span class="prikk" style="background:#4F7343"></span><b>#4F7343</b><i>tekst · 5,16:1</i></div>
+          <div class="vf"><span class="prikk" style="background:#8FB37F"></span><b>#8FB37F</b><i>lys · 7,83:1</i></div>
+        </div>
+      </div>
+    </article><article class="vkort">
+      <div class="vflate" style="background:#D97757"></div>
+      <div class="vinnhold">
+        <h3>AK Golf Academy</h3>
+        <p>Kjernen. Dette <em>er</em> AK Golf.</p>
+        <div class="vfarger">
+          <div class="vf"><span class="prikk" style="background:#D97757"></span><b>#D97757</b><i>flate</i></div>
+          <div class="vf"><span class="prikk" style="background:#A9512F"></span><b>#A9512F</b><i>tekst · 5,10:1</i></div>
+          <div class="vf"><span class="prikk" style="background:#E08B69"></span><b>#E08B69</b><i>lys · 7,08:1</i></div>
+        </div>
+      </div>
+    </article><article class="vkort">
+      <div class="vflate" style="background:#3F7CB3"></div>
+      <div class="vinnhold">
+        <h3>AK Golf HQ</h3>
+        <p>Systemet. Skjermen og tallene.</p>
+        <div class="vfarger">
+          <div class="vf"><span class="prikk" style="background:#3F7CB3"></span><b>#3F7CB3</b><i>flate</i></div>
+          <div class="vf"><span class="prikk" style="background:#356B9C"></span><b>#356B9C</b><i>tekst · 5,34:1</i></div>
+          <div class="vf"><span class="prikk" style="background:#7FB0DA"></span><b>#7FB0DA</b><i>lys · 8,01:1</i></div>
+        </div>
+      </div>
+    </article><article class="vkort">
+      <div class="vflate" style="background:#4E6A7E"></div>
+      <div class="vinnhold">
+        <h3>Organisasjon</h3>
+        <p>Kravet. WANG-coaching og klubbarbeid.</p>
+        <div class="vfarger">
+          <div class="vf"><span class="prikk" style="background:#4E6A7E"></span><b>#4E6A7E</b><i>flate</i></div>
+          <div class="vf"><span class="prikk" style="background:#42596B"></span><b>#42596B</b><i>tekst · 6,94:1</i></div>
+          <div class="vf"><span class="prikk" style="background:#93AEC0"></span><b>#93AEC0</b><i>lys · 7,95:1</i></div>
+        </div>
+      </div>
+    </article><article class="vkort">
+      <div class="vflate" style="background:#9C7A33"></div>
+      <div class="vinnhold">
+        <h3>Skarpnord Products</h3>
+        <p>Utstyret. Lav profil til det bærer seg.</p>
+        <div class="vfarger">
+          <div class="vf"><span class="prikk" style="background:#9C7A33"></span><b>#9C7A33</b><i>flate</i></div>
+          <div class="vf"><span class="prikk" style="background:#8A6A2A"></span><b>#8A6A2A</b><i>tekst · 4,77:1</i></div>
+          <div class="vf"><span class="prikk" style="background:#C9A755"></span><b>#C9A755</b><i>lys · 8,03:1</i></div>
+        </div>
+      </div>
+    </article></div>
+    <h3 style="margin-top:38px">Navnelåsen</h3>
+    <p class="ledetekst">Logo til venstre, hårlinje, navn i Poppins 500. Navnet står <b>aldri</b> i identitetsfargen — det holder låsen lesbar i én farge, på brodering og i faks.</p>
+    <div class="laaser"><div class="laas"><svg class="logo" viewBox="0 0 538 470" style="height:28px" role="img" aria-label="AK Golf"><g transform="translate(0,470) scale(0.1,-0.1)"><path d="M3190 4486 c-23 -13 -109 -48 -585 -241 -99 -40 -198 -81 -220 -91 l-40 -18 45 -7 c127 -19 217 -102 271 -249 l24 -65 3 -1772 2 -1773 280 0 280 0 2 721 3 720 71 -83 c40 -46 132 -155 205 -243 73 -88 185 -221 249 -295 64 -74 152 -178 195 -230 44 -52 137 -162 209 -245 71 -82 167 -194 213 -247 l84 -98 355 0 c194 0 354 2 354 4 0 2 -73 89 -162 194 -90 104 -219 256 -288 337 -319 376 -552 649 -790 925 -59 69 -130 153 -158 187 -28 34 -56 64 -62 68 -5 3 -10 10 -10 14 0 7 90 83 221 186 42 33 163 130 270 215 107 86 223 178 259 206 378 292 550 427 550 430 0 2 -126 4 -279 4 l-280 0 -25 -82 c-25 -83 -102 -228 -159 -303 -108 -139 -178 -205 -502 -470 -87 -71 -189 -156 -225 -187 -100 -85 -293 -238 -297 -234 -2 1 -3 618 -3 1369 0 1297 -1 1367 -17 1367 -10 -1 -29 -7 -43 -14z M1200 3110 c-155 -15 -305 -58 -435 -123 -225 -112 -384 -275 -446 -457 -28 -82 -30 -194 -6 -267 25 -71 88 -139 162 -174 49 -24 73 -29 135 -29 62 0 85 5 135 29 75 36 116 79 150 155 35 80 41 138 21 214 -30 116 -119 209 -223 233 -29 7 -53 14 -53 16 0 3 13 23 29 47 60 86 146 146 260 180 68 20 222 21 313 2 254 -54 462 -285 542 -601 34 -138 47 -250 44 -380 l-3 -110 -95 -21 c-291 -66 -546 -127 -630 -149 -450 -122 -720 -290 -829 -517 -44 -91 -71 -205 -71 -296 0 -100 29 -241 65 -312 70 -140 152 -223 279 -285 98 -48 172 -66 302 -72 316 -16 613 107 885 365 l99 94 0 -191 0 -191 275 0 275 0 1 338 c0 185 0 618 -1 962 -1 576 -3 632 -21 720 -28 138 -55 216 -108 314 -111 207 -274 352 -496 437 -155 61 -371 87 -555 69z m630 -1846 l0 -486 -60 -56 c-91 -84 -157 -131 -235 -167 -265 -123 -559 -66 -692 134 -62 92 -78 148 -78 271 0 76 5 119 19 158 24 71 106 191 163 242 95 83 231 162 410 236 81 34 432 150 461 153 9 1 12 -102 12 -485z" fill="currentColor"></path><circle cx="4840" cy="3620" r="310" fill="#D97757"></circle></g></svg><span class="laaslinje"></span><span class="laasnavn">Junior Academy</span></div><div class="laas"><svg class="logo" viewBox="0 0 538 470" style="height:28px" role="img" aria-label="AK Golf"><g transform="translate(0,470) scale(0.1,-0.1)"><path d="M3190 4486 c-23 -13 -109 -48 -585 -241 -99 -40 -198 -81 -220 -91 l-40 -18 45 -7 c127 -19 217 -102 271 -249 l24 -65 3 -1772 2 -1773 280 0 280 0 2 721 3 720 71 -83 c40 -46 132 -155 205 -243 73 -88 185 -221 249 -295 64 -74 152 -178 195 -230 44 -52 137 -162 209 -245 71 -82 167 -194 213 -247 l84 -98 355 0 c194 0 354 2 354 4 0 2 -73 89 -162 194 -90 104 -219 256 -288 337 -319 376 -552 649 -790 925 -59 69 -130 153 -158 187 -28 34 -56 64 -62 68 -5 3 -10 10 -10 14 0 7 90 83 221 186 42 33 163 130 270 215 107 86 223 178 259 206 378 292 550 427 550 430 0 2 -126 4 -279 4 l-280 0 -25 -82 c-25 -83 -102 -228 -159 -303 -108 -139 -178 -205 -502 -470 -87 -71 -189 -156 -225 -187 -100 -85 -293 -238 -297 -234 -2 1 -3 618 -3 1369 0 1297 -1 1367 -17 1367 -10 -1 -29 -7 -43 -14z M1200 3110 c-155 -15 -305 -58 -435 -123 -225 -112 -384 -275 -446 -457 -28 -82 -30 -194 -6 -267 25 -71 88 -139 162 -174 49 -24 73 -29 135 -29 62 0 85 5 135 29 75 36 116 79 150 155 35 80 41 138 21 214 -30 116 -119 209 -223 233 -29 7 -53 14 -53 16 0 3 13 23 29 47 60 86 146 146 260 180 68 20 222 21 313 2 254 -54 462 -285 542 -601 34 -138 47 -250 44 -380 l-3 -110 -95 -21 c-291 -66 -546 -127 -630 -149 -450 -122 -720 -290 -829 -517 -44 -91 -71 -205 -71 -296 0 -100 29 -241 65 -312 70 -140 152 -223 279 -285 98 -48 172 -66 302 -72 316 -16 613 107 885 365 l99 94 0 -191 0 -191 275 0 275 0 1 338 c0 185 0 618 -1 962 -1 576 -3 632 -21 720 -28 138 -55 216 -108 314 -111 207 -274 352 -496 437 -155 61 -371 87 -555 69z m630 -1846 l0 -486 -60 -56 c-91 -84 -157 -131 -235 -167 -265 -123 -559 -66 -692 134 -62 92 -78 148 -78 271 0 76 5 119 19 158 24 71 106 191 163 242 95 83 231 162 410 236 81 34 432 150 461 153 9 1 12 -102 12 -485z" fill="currentColor"></path><circle cx="4840" cy="3620" r="310" fill="#D97757"></circle></g></svg><span class="laaslinje"></span><span class="laasnavn">AK Golf Academy</span></div><div class="laas"><svg class="logo" viewBox="0 0 538 470" style="height:28px" role="img" aria-label="AK Golf"><g transform="translate(0,470) scale(0.1,-0.1)"><path d="M3190 4486 c-23 -13 -109 -48 -585 -241 -99 -40 -198 -81 -220 -91 l-40 -18 45 -7 c127 -19 217 -102 271 -249 l24 -65 3 -1772 2 -1773 280 0 280 0 2 721 3 720 71 -83 c40 -46 132 -155 205 -243 73 -88 185 -221 249 -295 64 -74 152 -178 195 -230 44 -52 137 -162 209 -245 71 -82 167 -194 213 -247 l84 -98 355 0 c194 0 354 2 354 4 0 2 -73 89 -162 194 -90 104 -219 256 -288 337 -319 376 -552 649 -790 925 -59 69 -130 153 -158 187 -28 34 -56 64 -62 68 -5 3 -10 10 -10 14 0 7 90 83 221 186 42 33 163 130 270 215 107 86 223 178 259 206 378 292 550 427 550 430 0 2 -126 4 -279 4 l-280 0 -25 -82 c-25 -83 -102 -228 -159 -303 -108 -139 -178 -205 -502 -470 -87 -71 -189 -156 -225 -187 -100 -85 -293 -238 -297 -234 -2 1 -3 618 -3 1369 0 1297 -1 1367 -17 1367 -10 -1 -29 -7 -43 -14z M1200 3110 c-155 -15 -305 -58 -435 -123 -225 -112 -384 -275 -446 -457 -28 -82 -30 -194 -6 -267 25 -71 88 -139 162 -174 49 -24 73 -29 135 -29 62 0 85 5 135 29 75 36 116 79 150 155 35 80 41 138 21 214 -30 116 -119 209 -223 233 -29 7 -53 14 -53 16 0 3 13 23 29 47 60 86 146 146 260 180 68 20 222 21 313 2 254 -54 462 -285 542 -601 34 -138 47 -250 44 -380 l-3 -110 -95 -21 c-291 -66 -546 -127 -630 -149 -450 -122 -720 -290 -829 -517 -44 -91 -71 -205 -71 -296 0 -100 29 -241 65 -312 70 -140 152 -223 279 -285 98 -48 172 -66 302 -72 316 -16 613 107 885 365 l99 94 0 -191 0 -191 275 0 275 0 1 338 c0 185 0 618 -1 962 -1 576 -3 632 -21 720 -28 138 -55 216 -108 314 -111 207 -274 352 -496 437 -155 61 -371 87 -555 69z m630 -1846 l0 -486 -60 -56 c-91 -84 -157 -131 -235 -167 -265 -123 -559 -66 -692 134 -62 92 -78 148 -78 271 0 76 5 119 19 158 24 71 106 191 163 242 95 83 231 162 410 236 81 34 432 150 461 153 9 1 12 -102 12 -485z" fill="currentColor"></path><circle cx="4840" cy="3620" r="310" fill="#D97757"></circle></g></svg><span class="laaslinje"></span><span class="laasnavn">AK Golf HQ</span></div><div class="laas"><svg class="logo" viewBox="0 0 538 470" style="height:28px" role="img" aria-label="AK Golf"><g transform="translate(0,470) scale(0.1,-0.1)"><path d="M3190 4486 c-23 -13 -109 -48 -585 -241 -99 -40 -198 -81 -220 -91 l-40 -18 45 -7 c127 -19 217 -102 271 -249 l24 -65 3 -1772 2 -1773 280 0 280 0 2 721 3 720 71 -83 c40 -46 132 -155 205 -243 73 -88 185 -221 249 -295 64 -74 152 -178 195 -230 44 -52 137 -162 209 -245 71 -82 167 -194 213 -247 l84 -98 355 0 c194 0 354 2 354 4 0 2 -73 89 -162 194 -90 104 -219 256 -288 337 -319 376 -552 649 -790 925 -59 69 -130 153 -158 187 -28 34 -56 64 -62 68 -5 3 -10 10 -10 14 0 7 90 83 221 186 42 33 163 130 270 215 107 86 223 178 259 206 378 292 550 427 550 430 0 2 -126 4 -279 4 l-280 0 -25 -82 c-25 -83 -102 -228 -159 -303 -108 -139 -178 -205 -502 -470 -87 -71 -189 -156 -225 -187 -100 -85 -293 -238 -297 -234 -2 1 -3 618 -3 1369 0 1297 -1 1367 -17 1367 -10 -1 -29 -7 -43 -14z M1200 3110 c-155 -15 -305 -58 -435 -123 -225 -112 -384 -275 -446 -457 -28 -82 -30 -194 -6 -267 25 -71 88 -139 162 -174 49 -24 73 -29 135 -29 62 0 85 5 135 29 75 36 116 79 150 155 35 80 41 138 21 214 -30 116 -119 209 -223 233 -29 7 -53 14 -53 16 0 3 13 23 29 47 60 86 146 146 260 180 68 20 222 21 313 2 254 -54 462 -285 542 -601 34 -138 47 -250 44 -380 l-3 -110 -95 -21 c-291 -66 -546 -127 -630 -149 -450 -122 -720 -290 -829 -517 -44 -91 -71 -205 -71 -296 0 -100 29 -241 65 -312 70 -140 152 -223 279 -285 98 -48 172 -66 302 -72 316 -16 613 107 885 365 l99 94 0 -191 0 -191 275 0 275 0 1 338 c0 185 0 618 -1 962 -1 576 -3 632 -21 720 -28 138 -55 216 -108 314 -111 207 -274 352 -496 437 -155 61 -371 87 -555 69z m630 -1846 l0 -486 -60 -56 c-91 -84 -157 -131 -235 -167 -265 -123 -559 -66 -692 134 -62 92 -78 148 -78 271 0 76 5 119 19 158 24 71 106 191 163 242 95 83 231 162 410 236 81 34 432 150 461 153 9 1 12 -102 12 -485z" fill="currentColor"></path><circle cx="4840" cy="3620" r="310" fill="#D97757"></circle></g></svg><span class="laaslinje"></span><span class="laasnavn">Organisasjon</span></div><div class="laas"><svg class="logo" viewBox="0 0 538 470" style="height:28px" role="img" aria-label="AK Golf"><g transform="translate(0,470) scale(0.1,-0.1)"><path d="M3190 4486 c-23 -13 -109 -48 -585 -241 -99 -40 -198 -81 -220 -91 l-40 -18 45 -7 c127 -19 217 -102 271 -249 l24 -65 3 -1772 2 -1773 280 0 280 0 2 721 3 720 71 -83 c40 -46 132 -155 205 -243 73 -88 185 -221 249 -295 64 -74 152 -178 195 -230 44 -52 137 -162 209 -245 71 -82 167 -194 213 -247 l84 -98 355 0 c194 0 354 2 354 4 0 2 -73 89 -162 194 -90 104 -219 256 -288 337 -319 376 -552 649 -790 925 -59 69 -130 153 -158 187 -28 34 -56 64 -62 68 -5 3 -10 10 -10 14 0 7 90 83 221 186 42 33 163 130 270 215 107 86 223 178 259 206 378 292 550 427 550 430 0 2 -126 4 -279 4 l-280 0 -25 -82 c-25 -83 -102 -228 -159 -303 -108 -139 -178 -205 -502 -470 -87 -71 -189 -156 -225 -187 -100 -85 -293 -238 -297 -234 -2 1 -3 618 -3 1369 0 1297 -1 1367 -17 1367 -10 -1 -29 -7 -43 -14z M1200 3110 c-155 -15 -305 -58 -435 -123 -225 -112 -384 -275 -446 -457 -28 -82 -30 -194 -6 -267 25 -71 88 -139 162 -174 49 -24 73 -29 135 -29 62 0 85 5 135 29 75 36 116 79 150 155 35 80 41 138 21 214 -30 116 -119 209 -223 233 -29 7 -53 14 -53 16 0 3 13 23 29 47 60 86 146 146 260 180 68 20 222 21 313 2 254 -54 462 -285 542 -601 34 -138 47 -250 44 -380 l-3 -110 -95 -21 c-291 -66 -546 -127 -630 -149 -450 -122 -720 -290 -829 -517 -44 -91 -71 -205 -71 -296 0 -100 29 -241 65 -312 70 -140 152 -223 279 -285 98 -48 172 -66 302 -72 316 -16 613 107 885 365 l99 94 0 -191 0 -191 275 0 275 0 1 338 c0 185 0 618 -1 962 -1 576 -3 632 -21 720 -28 138 -55 216 -108 314 -111 207 -274 352 -496 437 -155 61 -371 87 -555 69z m630 -1846 l0 -486 -60 -56 c-91 -84 -157 -131 -235 -167 -265 -123 -559 -66 -692 134 -62 92 -78 148 -78 271 0 76 5 119 19 158 24 71 106 191 163 242 95 83 231 162 410 236 81 34 432 150 461 153 9 1 12 -102 12 -485z" fill="currentColor"></path><circle cx="4840" cy="3620" r="310" fill="#D97757"></circle></g></svg><span class="laaslinje"></span><span class="laasnavn">Skarpnord Products</span></div></div>
+    <div class="note"><b>Én identitetsfarge dekker sjelden mer enn 5 % av flaten.</b> Resten er krem, blekk og hårlinjer. Tommelfingerregel: fargen skal kunne fjernes uten at siden slutter å virke. Klarer den ikke det, bærer den for mye.</div>
+  </section>
+
+  <section class="ark" id="type">
+    <span class="arknr">08</span>
+    <p class="eyebrow">Typografien</p>
+    <h2>Tre fonter, og én regel som betyr noe</h2>
+    <div class="fontkort">
+      <div class="fk"><div class="navn" style="font-family:'Poppins';font-weight:600">Poppins</div><p>Titler, brødtekst, knapper. Alt som skal leses raskt.</p></div>
+      <div class="fk"><div class="navn lora">Lora</div><p>Ingress og sitat. Det som skal leses langsomt.</p></div>
+      <div class="fk"><div class="navn mono" style="font-size:22px">IBM Plex Mono</div><p><b>Alt som er målt.</b> Tall, etiketter, dato, kilde.</p></div>
+    </div>
+    <div class="note" style="margin-top:0;margin-bottom:30px"><b>Mono er merkets viktigste regel.</b> Et tall som kommer fra en måling settes i mono. Et tall som ikke gjør det, settes ikke i mono. Det er ikke en stilpreferanse — det er løftet gjort synlig. Står det i mono, er det etterprøvbart, med dato og kilde. Står det ikke i mono, er det en påstand.</div>
+    <div class="typerad"><div class="typeprove" style="font-family:'Poppins',serif;font-size:58px;font-weight:600;letter-spacing:-0.03em;line-height:1.15;">Målt sannhet</div><div class="typemeta"><span class="tok">--ak-t-58</span><span>58px · Poppins 600</span><span class="rolle">Hero, Mac</span></div></div><div class="typerad"><div class="typeprove" style="font-family:'Poppins',serif;font-size:42px;font-weight:600;letter-spacing:-0.03em;line-height:1.15;">Målt sannhet</div><div class="typemeta"><span class="tok">--ak-t-42</span><span>42px · Poppins 600</span><span class="rolle">Hero, mobil</span></div></div><div class="typerad"><div class="typeprove" style="font-family:'Poppins',serif;font-size:33px;font-weight:600;letter-spacing:-0.02em;line-height:1.15;">Målt sannhet</div><div class="typemeta"><span class="tok">--ak-t-33</span><span>33px · Poppins 600</span><span class="rolle">Sidetittel</span></div></div><div class="typerad"><div class="typeprove" style="font-family:'Poppins',serif;font-size:26px;font-weight:600;letter-spacing:-0.02em;line-height:1.15;">Målt sannhet</div><div class="typemeta"><span class="tok">--ak-t-26</span><span>26px · Poppins 600</span><span class="rolle">Seksjonstittel</span></div></div><div class="typerad"><div class="typeprove" style="font-family:'Lora',serif;font-size:21px;font-weight:400;letter-spacing:0;line-height:1.15;">Målt sannhet</div><div class="typemeta"><span class="tok">--ak-t-21</span><span>21px · Lora 400</span><span class="rolle">Ingress</span></div></div><div class="typerad"><div class="typeprove" style="font-family:'Poppins',serif;font-size:17px;font-weight:400;letter-spacing:0;line-height:1.15;">Målt sannhet</div><div class="typemeta"><span class="tok">--ak-t-17</span><span>17px · Poppins 400</span><span class="rolle">Brødtekst</span></div></div><div class="typerad"><div class="typeprove" style="font-family:'Poppins',serif;font-size:15px;font-weight:400;letter-spacing:0;line-height:1.15;">Målt sannhet</div><div class="typemeta"><span class="tok">--ak-t-15</span><span>15px · Poppins 400</span><span class="rolle">Brødtekst, tett</span></div></div><div class="typerad"><div class="typeprove" style="font-family:'Poppins',serif;font-size:13px;font-weight:400;letter-spacing:0;line-height:1.15;">Målt sannhet</div><div class="typemeta"><span class="tok">--ak-t-13</span><span>13px · Poppins 400</span><span class="rolle">Bildetekst</span></div></div><div class="typerad"><div class="typeprove" style="font-family:'IBM Plex Mono',serif;font-size:11px;font-weight:500;letter-spacing:0.2em;line-height:1.15;">MÅLT SANNHET</div><div class="typemeta"><span class="tok">--ak-t-11</span><span>11px · IBM Plex Mono 500</span><span class="rolle">Etikett, caps</span></div></div>
+    <div class="note"><b>Vekt 400, 500 og 600. Aldri 700 eller tyngre.</b> Poppins i 700 blir klumpete og begynner å ligne på et sportsmerke som roper. AK Golf roper ikke.</div>
+  </section>
+
+  <section class="ark" id="rom">
+    <span class="arknr">09</span>
+    <p class="eyebrow">Rom og form</p>
+    <h2>Fire-skalaen</h2>
+    <p>Hvert avstandsmål i merket er ett av disse ti tallene. Er svaret 22 px, er det feil — velg 20 eller 24. Regelen finnes fordi luft er den billigste måten å se dyr ut på, og den første tingen som ryker når noen har dårlig tid.</p>
+    <div class="romrad"><span class="romtok">--ak-r-1</span><span class="rombjelke" style="width:4px"></span><span class="rompx">4</span></div><div class="romrad"><span class="romtok">--ak-r-2</span><span class="rombjelke" style="width:8px"></span><span class="rompx">8</span></div><div class="romrad"><span class="romtok">--ak-r-3</span><span class="rombjelke" style="width:12px"></span><span class="rompx">12</span></div><div class="romrad"><span class="romtok">--ak-r-4</span><span class="rombjelke" style="width:16px"></span><span class="rompx">16</span></div><div class="romrad"><span class="romtok">--ak-r-5</span><span class="rombjelke" style="width:24px"></span><span class="rompx">24</span></div><div class="romrad"><span class="romtok">--ak-r-6</span><span class="rombjelke" style="width:32px"></span><span class="rompx">32</span></div><div class="romrad"><span class="romtok">--ak-r-7</span><span class="rombjelke" style="width:48px"></span><span class="rompx">48</span></div><div class="romrad"><span class="romtok">--ak-r-8</span><span class="rombjelke" style="width:64px"></span><span class="rompx">64</span></div><div class="romrad"><span class="romtok">--ak-r-9</span><span class="rombjelke" style="width:96px"></span><span class="rompx">96</span></div><div class="romrad"><span class="romtok">--ak-r-10</span><span class="rombjelke" style="width:128px"></span><span class="rompx">128</span></div>
+    <h3 style="margin-top:36px">Radius</h3>
+    <p class="ledetekst">Merket er rolig, ikke rundt. Jo større flaten er, desto mindre skal hjørnet merkes.</p>
+    <div class="geo">
+      <div class="geokort"><div class="geoprove" style="border-radius:6px"></div><span>6 · KNAPP</span></div>
+      <div class="geokort"><div class="geoprove" style="border-radius:10px"></div><span>10 · KORT</span></div>
+      <div class="geokort"><div class="geoprove" style="border-radius:16px"></div><span>16 · PANEL</span></div>
+      <div class="geokort"><div class="geoprove" style="border-radius:999px"></div><span>PILL · KUN KNAPP</span></div>
+    </div>
+  </section>
+
+  <section class="ark" id="bruk">
+    <span class="arknr">10</span>
+    <p class="eyebrow">Merket i bruk</p>
+    <h2>Slik ser et tall ut når det er sant</h2>
+    <p>Tre kort som viser reglene sammen: mono på det målte, identitetsfargen som signal og ikke bakgrunn, kilde og dato på alt som påstås om en spiller.</p>
+    <div class="somekort">
+      <div class="some">
+        <div class="some-topp" style="background:#F0EEE6">
+          <span class="prikk" style="background:#5B8450;width:9px;height:9px;border-radius:999px"></span>
+          <span class="some-tall" style="color:#4F7343">+12,4</span>
+          <span class="mono" style="font-size:10px;letter-spacing:.14em;color:#5E5D59;margin-left:auto">M · SNITT</span>
+        </div>
+        <div class="some-bunn"><p>Lengre driver etter 14 uker i Junior Academy.</p>
+          <p class="some-kilde">Trackman · 12.05–18.08.2026 · n=38</p></div>
+      </div>
+      <div class="some">
+        <div class="some-topp" style="background:#141413">
+          <span class="some-tall" style="color:#E08B69">8 av 10</span>
+        </div>
+        <div class="some-bunn"><p>7-jern lander høyre for pinnen. Det er diagnosen — ikke «du sliter med retningen».</p>
+          <p class="some-kilde">Kartleggingsøkt · 31.08.2026</p></div>
+      </div>
+      <div class="some">
+        <div class="some-topp" style="background:#F0EEE6">
+          <span class="some-tall" style="color:#356B9C">2 690</span>
+          <span class="mono" style="font-size:10px;letter-spacing:.14em;color:#5E5D59;margin-left:auto">KR / ÅR</span>
+        </div>
+        <div class="some-bunn"><p>AK Golf HQ, full tilgang. Grunnversjonen er gratis, uten utløpsdato.</p>
+          <p class="some-kilde">Pris pr. 31.08.2026</p></div>
+      </div>
+    </div>
+    <div class="note"><b>Legg merke til hva som ikke er der.</b> Ingen utropstegn. Ingen «ta golfen din til neste nivå». Ingen tall uten kilde. Prøven på all tekst: les setningen høyt — ville Anders sagt den til en spiller på rangen?</div>
+  </section>
+
+  <section class="ark" id="forbudt">
+    <span class="arknr">11</span>
+    <p class="eyebrow">Forbudt</p>
+    <h2>Alt på én side, så ingen trenger å lete</h2>
+    <div class="forbudt"><div class="fkort"><h4>Merket</h4><ul><li>MORAD eller Mac O'Grady i publikumsvendt tekst</li><li>«En del av AK Golf» på Mulligan Indoor Golf</li><li>Bilder av mindreårige uten skriftlig foreldresamtykke</li><li>WANG, GFGK eller Team Norway framstilt som noe man kan kjøpe</li><li>Navngitte konkurrenter hengt ut</li></ul></div><div class="fkort"><h4>Formen</h4><ul><li>En fjerde font</li><li>Farge utenfor paletten</li><li>Gradient over merkefarger</li><li>Skriftvekt over 600</li><li>Caps på en hel setning</li><li>Avstand utenfor 4-skalaen</li><li>Pill-radius på et kort</li><li>Emoji — ikoner er Lucide</li></ul></div><div class="fkort"><h4>Språket</h4><ul><li>Utropstegn</li><li>«Ta golfen din til neste nivå»</li><li>«Vi brenner for golf»</li><li>«Unlock your potential»</li><li>Garantier om resultat</li><li>Tall om en spiller uten dato og kilde</li></ul></div><div class="fkort"><h4>Grensene</h4><ul><li>AK Golf-tokens inne i en produktskjerm — der gjelder Train-lock</li><li>AK Golf-merket på /team-norway/* — der gjelder Claw</li><li>Paper: ingen --p-*, ingen T, ingen Paper-CSS</li></ul></div></div>
+  </section>
+
+</div>
