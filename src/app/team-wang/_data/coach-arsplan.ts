@@ -14,7 +14,7 @@ export const TIPS = {
     "Miljø/kontekst fra M0 (isolert) til M5 (helt banelikt). Følger fasen: Uten ball M0–M2, Lav M2–M4, Auto M4–M5.",
   press:
     "Konsekvens-trapp: 1 Fri (feil er gratis) → 2 Krav (score mot deg selv) → 3 Utfordring (én sjanse) → 4 Konkurranse (poeng teller).",
-  p: "MORAD svingposisjon P1–P10 (halvsteg tillatt). P1 Setup · P4 Top · P7 Impact er viktigst diagnostisk.",
+  p: "Svingposisjon P1–P10 (halvsteg tillatt). P1 Setup · P4 Top · P7 Impact er viktigst diagnostisk.",
 } as const;
 
 export interface CoachPeriode {
