@@ -105,6 +105,33 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
   skjermer i produksjon, enpalett lys) blir variantens identitetsfarge eller erstattes.
 
   **Arbeidet:** `docs/MASTERPLAN-GJENSTAAENDE.md` STEG 18.
+- **ANALYSE OG DATAGOLF FOR TEAM NORWAY ER TRAIN-LOCK MED TN-SKINN, IKKE EGNE CLAW-SKJERMER
+  (Anders 31.08.2026, i økt):** løser presist den uavklarte «arbeidsdelingen mot Train-lock» i
+  `designsystem/team-norway/readme.md` (skrevet der som «en anbefaling som må bekreftes»), og
+  presiserer N7/N12 i MASTERPLAN STEG 11.
+
+  **Analyse** (AnalyseTerminal, SpredningsAnalyse, KohortUtvikling, ResultatVsFelt) og **DataGolf**
+  (DataGolfProfil, TruthLayer) skal IKKE tegnes som egne Claw-skjermer for Team Norway. De er
+  Train-lock-fasit, som resten av PlayerHQ/AgencyOS — Team Norway arver kun logo, skinnefarge
+  (navy `#012B5D` / rød `#D70232`) og handlingsfarge oppå. Ingen egen tegning av selve
+  analyse-/DataGolf-innholdet.
+
+  **Begrunnelse (Anders' avveining, etter side-ved-side-sammenligning publisert som artifact
+  31.08.2026):** en TN-spiller er samtidig vanlig PlayerHQ-bruker med ett DataGolf-kort/én
+  analyseflate — to fasiter for samme funksjon ville gitt spilleren to ulike skjermer avhengig av
+  inngang (`/portal` vs. `/team-norway`), og dobbel vedlikeholdsjobb hver gang datamodellen
+  (f.eks. `hentDataGolf()`) endres. Train-lock-versjonen finnes allerede i kode og er live
+  (`src/components/portal/v2/DataGolfV2.tsx`, `src/app/portal/analysere/datagolf/page.tsx`,
+  levert som del av T6 16.08.2026) — «Train-lock med TN-skinn» krever ingen ny tegnejobb for
+  selve innholdet, kun at organisasjonens logo/aksentfarge legges oppå.
+
+  **Upåvirket:** de 8 TN-egne skjermene levert 31.08 (Oversikt, Fellestesting, Uttak, Rangliste,
+  Skoleoversikt, Protokollbibliotek/-detalj, org-skallet) har intet PlayerHQ/AgencyOS-motstykke —
+  de forblir egne Claw-tegninger, uendret av denne beslutningen.
+
+  **Arbeid:** `docs/MASTERPLAN-GJENSTAAENDE.md` STEG 11, rad N12 (utvidet) og ny rad N12b
+  (TN-skinn på Analyse/DataGolf-rutene).
+
 - **SG-STIGEN: NORSK JUNIORSCORE KALIBRERES MOT EKTE DATAGOLF-SG (Anders 31.08.2026, i økt):**
   norsk turneringsscore skal plasseres på **samme SG-skala som proffene**, kalibrert gjennom
   spillere som faktisk har spilt begge steder — ikke gjennom en publisert tabell.
@@ -152,6 +179,9 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
   - **Arbeidsdelingen mot Train-lock:** Train-lock eier plattformflatene (PlayerHQ, AgencyOS,
     Forelder). Claw eier `/team-norway/*`. **Ingen skjerm har to fasiter.** Dette overstyrer
     N7-formuleringen «tegn organisasjonsflaten i Train-lock» for Team Norways del.
+    **Presisert 31.08.2026** for Analyse og DataGolf spesifikt — se §ANALYSE OG DATAGOLF FOR
+    TEAM NORWAY ER TRAIN-LOCK MED TN-SKINN over: de er delte plattformflater (Train-lock), ikke
+    `/team-norway/*`-egne skjermer, selv om TN-menyen lenker til dem.
   - **`SKILL.md` i Claw-pakken er UTDATERT og skal ikke følges.** Den sier «ingen skygger, ingen
     piller» og oppgir Jost + Public Sans. Systemet slik det faktisk er bygget har tre skyggenivåer,
     `--radius-full` og Schibsted Grotesk. `readme.md` + `tokens/` er fasit.
