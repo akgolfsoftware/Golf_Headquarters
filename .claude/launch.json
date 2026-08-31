@@ -4,15 +4,38 @@
     {
       "name": "akgolf-hq-dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
       "port": 3000,
       "autoPort": true
     },
     {
       "name": "ak-golf-website",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--prefix", "/Users/anderskristiansen/Developer/ak-golf-website", "--", "-p", "3005"],
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--prefix",
+        "/Users/anderskristiansen/Developer/ak-golf-website",
+        "--",
+        "-p",
+        "3005"
+      ],
       "port": 3005
+    },
+    {
+      "name": "animert-landingsside",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8081",
+        "--directory",
+        "animated-sites/ak-golf"
+      ],
+      "port": 8081
     }
   ]
 }
