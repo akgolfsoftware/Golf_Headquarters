@@ -29,7 +29,8 @@ test("hver fane peker på adressen den erstattet", () => {
     "/admin/agenticos/ko",
     "/admin/agenticos/godkjenn",
     "/admin/tester/foreslatte",
-    "/admin/tournaments/dubletter",
+    // MASTERPLAN 15.6: verktøyet flyttet til Turnering — se kommentar i faner.ts.
+    "/admin/turnering?fane=dubletter",
   ]);
   assert.equal(new Set(gamle).size, gamle.length, "ingen adresse to ganger");
 });

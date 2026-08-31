@@ -156,7 +156,7 @@ export default async function TurneringDetalj({
 
   return (
     <V2Shell bredde="kolonne" aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TlTilbake href="/admin/tournaments">Turneringer</TlTilbake>
+      <TlTilbake href="/admin/turnering">Turneringer</TlTilbake>
       <div style={{ display: "flex", flexDirection: "column", gap: 18, marginTop: 14 }}>
         {/* Hode */}
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>

@@ -119,11 +119,11 @@ function TurneringerITall({ data }: { data: AdminTurneringerV2Data }) {
       </div>
 
       <TlInspektorBlokk label="Snarveier">
-        <Link href="/admin/turnering-kart" style={{ textDecoration: "none" }}>
+        <Link href="/admin/turnering?fane=kart" style={{ textDecoration: "none" }}>
           <TlInspektorLinje label="Norge-data · dekning og toppliste" verdi="→" />
         </Link>
         {dublettAntall > 0 && (
-          <Link href="/admin/tournaments/dubletter" style={{ textDecoration: "none" }}>
+          <Link href="/admin/turnering?fane=dubletter" style={{ textDecoration: "none" }}>
             <TlInspektorLinje label="Gå gjennom dubletter" verdi={String(dublettAntall)} />
           </Link>
         )}
@@ -132,7 +132,20 @@ function TurneringerITall({ data }: { data: AdminTurneringerV2Data }) {
   );
 }
 
-export function AdminTurneringerTrainLock({ data }: { data: AdminTurneringerV2Data }) {
+export function AdminTurneringerTrainLock({
+  data,
+  somFane = false,
+}: {
+  data: AdminTurneringerV2Data;
+  /**
+   * MASTERPLAN 15.6: denne komponenten er nå «Mine spillere»-fanen i
+   * /admin/turnering. Som fane eier den nye siden overskriften og
+   * «Ny turnering»-CTA-en (i toolbaren) — komponentens EGEN kopi av begge
+   * skjules da. Lærdom fra 15.1/15.2: en flyttet helside tar med seg sitt
+   * eget hode hvis ikke noen eksplisitt slår det av.
+   */
+  somFane?: boolean;
+}) {
   const mobile = useMobile();
   const { sesong, rader, dublettAntall } = data;
   const antall = rader.length;
@@ -163,7 +176,7 @@ export function AdminTurneringerTrainLock({ data }: { data: AdminTurneringerV2Da
           Slår du dem sammen, samles påmeldinger og resultater på ett sted.
         </p>
         <div>
-          <TlKnapp href="/admin/tournaments/dubletter" icon="git-compare">
+          <TlKnapp href="/admin/turnering?fane=dubletter" icon="git-compare">
             Gå gjennom {pl(dublettAntall, "dublett", "dubletter")}
           </TlKnapp>
         </div>
@@ -260,12 +273,14 @@ export function AdminTurneringerTrainLock({ data }: { data: AdminTurneringerV2Da
   return (
     <MasterDetalj panel={<TurneringerITall data={data} />}>
       <div style={{ display: "flex", flexDirection: "column", gap: 18, minWidth: 0 }}>
-        {hode}
-        <div>
-          <TlKnapp href="/admin/tournaments/ny" icon="plus" variant="primaer" full={mobile}>
-            Ny turnering
-          </TlKnapp>
-        </div>
+        {!somFane && hode}
+        {!somFane && (
+          <div>
+            <TlKnapp href="/admin/tournaments/ny" icon="plus" variant="primaer" full={mobile}>
+              Ny turnering
+            </TlKnapp>
+          </div>
+        )}
         {dublettBanner}
         {fanerad}
         {liste}
