@@ -75,6 +75,9 @@ export type StallenRow = {
   pakkeAktiv: boolean;
   /** Minst én FAILED betaling — «skylder»-flagget fra cockpit-lista. */
   skylder: boolean;
+  /** Neste planlagte økt (V1 TrainingPlanSession eller V2 TrainingSessionV2,
+   *  hva som kommer først) — MASTERPLAN 15.11, «Neste: …»-teksten i raden. */
+  nesteOkt: { tittel: string; startTime: Date } | null;
 };
 
 export type StallenData = {
@@ -288,6 +291,44 @@ export async function loadStallen(
     take: 400,
   });
 
+  // Neste planlagte økt per spiller (15.11-raden) — batchet på tvers av
+  // begge øktspor (Spor A TrainingPlanSession, Spor B TrainingSessionV2)
+  // i to spørringer totalt, aldri én per spiller (gotchas.md §N+1).
+  const ids = players.map((p) => p.id);
+  const nesteOktMap = new Map<string, { tittel: string; startTime: Date }>();
+  if (ids.length > 0) {
+    const [v1Neste, v2Neste] = await Promise.all([
+      prisma.trainingPlanSession.findMany({
+        where: {
+          plan: {
+            userId: { in: ids },
+            status: { in: ["PENDING_PLAYER", "ACCEPTED", "ACTIVE", "PAUSED"] },
+          },
+          scheduledAt: { gte: now },
+          status: "PLANNED",
+        },
+        orderBy: { scheduledAt: "asc" },
+        select: { title: true, scheduledAt: true, plan: { select: { userId: true } } },
+      }),
+      prisma.trainingSessionV2.findMany({
+        where: { studentId: { in: ids }, startTime: { gte: now }, status: "PLANNED" },
+        orderBy: { startTime: "asc" },
+        select: { title: true, startTime: true, studentId: true },
+      }),
+    ]);
+    for (const s of v1Neste) {
+      const uid = s.plan.userId;
+      if (!nesteOktMap.has(uid)) nesteOktMap.set(uid, { tittel: s.title, startTime: s.scheduledAt });
+    }
+    for (const s of v2Neste) {
+      if (!s.studentId) continue;
+      const eksisterende = nesteOktMap.get(s.studentId);
+      if (!eksisterende || s.startTime < eksisterende.startTime) {
+        nesteOktMap.set(s.studentId, { tittel: s.title, startTime: s.startTime });
+      }
+    }
+  }
+
   const rows: StallenRow[] = players.map((p) => {
     const days = p.lastLoginAt
       ? Math.floor((now.getTime() - p.lastLoginAt.getTime()) / 86_400_000)
@@ -390,6 +431,7 @@ export async function loadStallen(
       pakke: p.subscriptions[0]?.tier ?? "Drop-in",
       pakkeAktiv: p.subscriptions[0]?.status === "ACTIVE",
       skylder: p._count.payments > 0,
+      nesteOkt: nesteOktMap.get(p.id) ?? null,
     };
   });
 

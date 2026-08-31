@@ -29,6 +29,20 @@
  *   dag (ukentlig oppmøte, SG-nedbrutt-på-uke). Strukturen (avatar+navn,
  *   «I dag»-rad, CTA) er portet; de to bento-visualiseringene er erstattet
  *   av eksisterende akse-rader inntil datalaget utvides.
+ *
+ * MASTERPLAN 15.11 (raden slankes, beslutning 6.5) — se
+ * designsystem/canvas/agencyos-ia/Stall.dc.html:
+ * - Raden viser nå kun navn, neste økt, siste aktivitet og én prikk.
+ *   HCP, SG, plan-etterlevelse, pakke og skyldig beløp er IKKE fjernet —
+ *   de er lese-informasjon, ikke skanne-informasjon, og bor fortsatt i
+ *   `SpillerDetalj` (åpnes ved klikk på en rad; desktop = høyrepanel,
+ *   mobil = bunnark). Det er «spillerkortet» canvasen viser til.
+ * - Prikken (fylt = trenger deg, åpen ring = følg med, ingen = på planen)
+ *   utledes av sev-rangeringen (`prikkFraSev`) — ingen ny klassifisering.
+ * - `somFane`: skjuler eget Caps+H1 (SpillereHode i /admin/spillere eier
+ *   den når Stall er en fane ved siden av Oppfølging) — lærdom fra
+ *   15.1/15.2/15.6. Telleraden («X spillere · Y trenger deg») og
+ *   «Dag»-CTA-en er funksjon, ikke tittel, og beholdes uansett.
  */
 
 import Link from "next/link";
@@ -115,7 +129,24 @@ function SgVerdi({ verdi, size = 13 }: { verdi: string; size?: number }) {
   );
 }
 
-/** Rad — avatar, navn/meta, SG-verdi + statusflagg som caps mute (AG-04). */
+/** Radens prikk (MASTERPLAN 15.11): fylt = trenger deg, åpen ring = følg med, ingen = på planen. */
+function Prikk({ tilstand }: { tilstand: StallV2Player["prikk"] }) {
+  return (
+    <span
+      aria-hidden
+      style={{
+        flexShrink: 0,
+        width: 8,
+        height: 8,
+        borderRadius: "50%",
+        background: tilstand === "fylt" ? TL.text : "transparent",
+        boxShadow: tilstand === "ingen" ? "none" : `inset 0 0 0 1px ${TL.text}`,
+      }}
+    />
+  );
+}
+
+/** Rad — avatar, navn, neste økt, siste aktivitet, prikk. Ikke mer (6.5). */
 function SpillerRad({
   s,
   onClick,
@@ -151,26 +182,29 @@ function SpillerRad({
         <div
           style={{
             marginTop: 2,
-            fontSize: 13,
+            fontSize: 12.5,
             fontWeight: 400,
             color: TL.mute,
-            fontVariantNumeric: "tabular-nums",
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
           }}
         >
-          Hcp {s.hcp} · {s.gruppe}
+          {s.nesteOktTekst}
         </div>
       </div>
-      <div style={{ textAlign: "right", flexShrink: 0 }}>
-        <SgVerdi verdi={s.sg} />
-        {s.trenger && (
-          <div style={{ marginTop: 3 }}>
-            <CapsLabel size={9}>{s.statusLabel}</CapsLabel>
-          </div>
-        )}
-      </div>
+      <span
+        style={{
+          flexShrink: 0,
+          fontSize: 12.5,
+          color: TL.mute,
+          fontVariantNumeric: "tabular-nums",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {s.sisteAktivitetTekst}
+      </span>
+      <Prikk tilstand={s.prikk} />
     </button>
   );
 }
@@ -293,6 +327,11 @@ function SpillerDetalj({ s }: { s: StallV2Player }) {
           <div style={{ fontSize: 22, fontWeight: 700, letterSpacing: "-0.01em", color: TL.text }}>{s.navn}</div>
           <div style={{ marginTop: 2, fontSize: 13, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
             HCP {s.hcp} · SG <SgVerdi verdi={s.sg} size={13} /> · {s.gruppe}
+          </div>
+          {/* Pakke + skyldig beløp — flyttet inn hit fra raden (MASTERPLAN 15.11, 6.5). */}
+          <div style={{ marginTop: 2, fontSize: 12.5, color: TL.mute }}>
+            {s.pakke}
+            {!s.pakkeAktiv && s.pakke !== "Drop-in" && " · inaktivt"}
             {s.skylder && <span style={{ color: TL.warn }}> · skylder</span>}
           </div>
         </div>
@@ -374,7 +413,18 @@ function SpillerDetalj({ s }: { s: StallV2Player }) {
   );
 }
 
-export function TrainLockStall({ data }: { data: StallV2Data }) {
+export function TrainLockStall({
+  data,
+  somFane = false,
+}: {
+  data: StallV2Data;
+  /**
+   * MASTERPLAN 15.11: som fane i /admin/spillere eier `SpillereHode`
+   * Caps+H1 — komponentens egen kopi skjules. Telleraden og «Dag»-CTA-en
+   * er funksjon, ikke tittel, og vises uansett (lærdom fra 15.1/15.2/15.6).
+   */
+  somFane?: boolean;
+}) {
   const mobile = useMobile();
   const [filter, setFilter] = useState<FilterKey>("alle");
   const [sok, setSok] = useState("");
@@ -419,10 +469,12 @@ export function TrainLockStall({ data }: { data: StallV2Data }) {
   if (data.spillere.length === 0) {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-        <div>
-          <CapsLabel>Academy</CapsLabel>
-          <h1 style={{ margin: "6px 0 0", fontSize: 34, fontWeight: 700, letterSpacing: "-0.02em", color: TL.text }}>Stall</h1>
-        </div>
+        {!somFane && (
+          <div>
+            <CapsLabel>Academy</CapsLabel>
+            <h1 style={{ margin: "6px 0 0", fontSize: 34, fontWeight: 700, letterSpacing: "-0.02em", color: TL.text }}>Stall</h1>
+          </div>
+        )}
         <Tomtilstand tittel="Ingen spillere i stallen" sub="Legg til første spiller for å se tilstand, plan og oppfølging her." />
         <Link
           href="/admin/spillere/ny"
@@ -515,13 +567,19 @@ export function TrainLockStall({ data }: { data: StallV2Data }) {
 
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
-      <div>
-        <CapsLabel>Academy</CapsLabel>
-        <h1 style={{ margin: "6px 0 0", fontSize: mobile ? 34 : 26, fontWeight: 700, letterSpacing: "-0.02em", color: TL.text }}>Stall</h1>
-        <div style={{ marginTop: 4, fontSize: 11, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
+      {somFane ? (
+        <div style={{ fontSize: 11, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
           {data.total} spillere · {trengerAntall} trenger deg
         </div>
-      </div>
+      ) : (
+        <div>
+          <CapsLabel>Academy</CapsLabel>
+          <h1 style={{ margin: "6px 0 0", fontSize: mobile ? 34 : 26, fontWeight: 700, letterSpacing: "-0.02em", color: TL.text }}>Stall</h1>
+          <div style={{ marginTop: 4, fontSize: 11, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
+            {data.total} spillere · {trengerAntall} trenger deg
+          </div>
+        </div>
+      )}
       <Link
         href="/admin/stall/dag"
         className={PRESS}

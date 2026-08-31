@@ -63,6 +63,12 @@ export interface StallV2Player {
   pakkeAktiv: boolean;
   /** Minst én feilet betaling. */
   skylder: boolean;
+  /** «Neste: i dag 13.00» / «Ingen økt planlagt» — MASTERPLAN 15.11. */
+  nesteOktTekst: string;
+  /** «logget i dag» / «logget i går» / «8 dg siden» — MASTERPLAN 15.11. */
+  sisteAktivitetTekst: string;
+  /** Radens prikk (beslutning 6.5): fylt = trenger deg, åpen = følg med, ingen = på planen. */
+  prikk: "fylt" | "aapen" | "ingen";
 }
 export interface StallV2Data {
   total: number;

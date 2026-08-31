@@ -13,10 +13,15 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { loadStallen, type StatusKind, type Axis } from "@/lib/admin/stallen-data";
 import { fmtSg, type AkseKey } from "@/lib/v2/format";
+import { nesteOktRadTekst, sisteAktivitetTekst, prikkFraSev } from "@/lib/admin/stall-rad-tekst";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import type { StallV2Data, StallV2Player } from "@/components/admin/v2/StallV2";
 import { TrainLockStall } from "@/components/admin/v2/TrainLockStall";
 import type { SevKey } from "@/components/v2";
+import { SpillereHode } from "@/components/admin/v2/spillere/SpillereHode";
+import { OppfolgingsKoV2 } from "@/components/admin/v2/spillere/OppfolgingsKoV2";
+import { SPILLERE_FANER, velgSpillereFane } from "@/lib/admin/spillere/faner";
+import { loadOppfolgingsKo } from "@/lib/admin/spillere/last-oppfolging";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Stall · AgencyOS" };
@@ -56,42 +61,65 @@ const GRUPPE_LABEL: Record<string, string> = {
   AKA: "AK Golf Academy",
 };
 
-export default async function V2StallPage() {
+export default async function V2StallPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ fane?: string }>;
+}) {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
-  const stall = await loadStallen({ id: user.id, role: user.role }, {});
+  const { fane: onsket } = await searchParams;
+  const aktiv = velgSpillereFane(onsket);
+  const naa = new Date();
 
-  const spillere: StallV2Player[] = stall.rows.map((r) => {
-    const form = r.sgTrend.length > 0 ? r.sgTrend[r.sgTrend.length - 1] : null;
-    const visDelta = r.sgDelta != null && Math.abs(r.sgDelta) >= 0.05;
-    return {
-      id: r.id,
-      navn: r.name,
-      hcp: r.hcp,
-      gruppe: r.group ? (GRUPPE_LABEL[r.group] ?? r.group) : "Uten gruppe",
-      sg: form != null ? fmtSg(form) : "—",
-      delta: visDelta ? fmtSg(r.sgDelta as number) : null,
-      dir: (r.sgTone === "neg" ? "down" : "up") as "up" | "down",
-      sev: SEV_MAP[r.status],
-      statusLabel: r.statusLabel,
-      // «Hviler» teller ikke som noe som venter på coachen (fasitens ordlyd).
-      trenger: r.status !== "aktiv" && r.status !== "hviler",
-      bolk: GRUPPERING[r.status],
-      sgTrend: r.sgTrend,
-      adherence: r.adherence.map((a) => ({ akse: AKSE_MAP[a.axis], pct: a.pct })),
-      adhPct: r.adhPct,
-      venter: r.neverLoggedIn,
-      dagerSiden: r.dagerSiden,
-      pakke: r.pakke,
-      pakkeAktiv: r.pakkeAktiv,
-      skylder: r.skylder,
-    };
-  });
+  const innhold = await (async () => {
+    if (aktiv === "oppfolging") {
+      const data = await loadOppfolgingsKo({ id: user.id, role: user.role });
+      return <OppfolgingsKoV2 data={data} somFane />;
+    }
 
-  const data: StallV2Data = { total: stall.total, spillere };
+    const stall = await loadStallen({ id: user.id, role: user.role }, {});
+
+    const spillere: StallV2Player[] = stall.rows.map((r) => {
+      const form = r.sgTrend.length > 0 ? r.sgTrend[r.sgTrend.length - 1] : null;
+      const visDelta = r.sgDelta != null && Math.abs(r.sgDelta) >= 0.05;
+      const sev = SEV_MAP[r.status];
+      return {
+        id: r.id,
+        navn: r.name,
+        hcp: r.hcp,
+        gruppe: r.group ? (GRUPPE_LABEL[r.group] ?? r.group) : "Uten gruppe",
+        sg: form != null ? fmtSg(form) : "—",
+        delta: visDelta ? fmtSg(r.sgDelta as number) : null,
+        dir: (r.sgTone === "neg" ? "down" : "up") as "up" | "down",
+        sev,
+        statusLabel: r.statusLabel,
+        // «Hviler» teller ikke som noe som venter på coachen (fasitens ordlyd).
+        trenger: r.status !== "aktiv" && r.status !== "hviler",
+        bolk: GRUPPERING[r.status],
+        sgTrend: r.sgTrend,
+        adherence: r.adherence.map((a) => ({ akse: AKSE_MAP[a.axis], pct: a.pct })),
+        adhPct: r.adhPct,
+        venter: r.neverLoggedIn,
+        dagerSiden: r.dagerSiden,
+        pakke: r.pakke,
+        pakkeAktiv: r.pakkeAktiv,
+        skylder: r.skylder,
+        nesteOktTekst: nesteOktRadTekst(r.nesteOkt, naa),
+        sisteAktivitetTekst: sisteAktivitetTekst(r.dagerSiden),
+        prikk: prikkFraSev(sev),
+      };
+    });
+
+    const data: StallV2Data = { total: stall.total, spillere };
+    return <TrainLockStall data={data} somFane />;
+  })();
 
   return (
     <V2Shell bredde="full" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <TrainLockStall data={data} />
+      <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+        <SpillereHode faner={SPILLERE_FANER} aktiv={aktiv} />
+        {innhold}
+      </div>
     </V2Shell>
   );
 }

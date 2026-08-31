@@ -212,7 +212,7 @@ const ACTIONS: Action[] = [
     description: "Hvem trenger en samtale denne uka",
     keywords: ["oppfølging", "queue", "risiko", "watch", "sjekk inn"],
     icon: Users,
-    kind: { type: "navigate", href: "/admin/queue" },
+    kind: { type: "navigate", href: "/admin/spillere?fane=oppfolging" },
   },
   {
     id: "trackman-import",
