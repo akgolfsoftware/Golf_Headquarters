@@ -31,14 +31,30 @@ export const KALENDER_HUB_TABS: AgencyHubTab[] = [
   { href: "/admin/availability", label: "Tilgjengelighet" },
 ];
 
-/** Primær «Innsikt» — tall og analyse. */
+/**
+ * Primær «Innsikt» — tall og analyse.
+ *
+ * MASTERPLAN 15.8 (31.08.2026): «Etterlevelse» pekte tidligere på en egen
+ * adresse (`/admin/analysere/compliance`) — den er nå fanen `?fane=etterlevelse`
+ * på `/admin/analyse` (den gamle adressen lever videre som redirect).
+ * «Stall» er uendret: `/admin/analyse` uten `?fane=` er fortsatt standardfanen
+ * («stall», se `src/lib/admin/analyse/faner.ts`), så `exact: true` treffer
+ * fortsatt riktig.
+ * Kjent, akseptert kosmetisk avvik: `erAktiv()` sammenligner kun `pathname`
+ * (via `usePathname()`), ikke `?fane=` — «Stall» sin exact-match («path ===
+ * /admin/analyse») lyser derfor uansett hvilken fane som faktisk vises på
+ * `/admin/analyse` (inkl. «Etterlevelse»). Navigasjonen virker uendret; kun
+ * hvilken pille som lyser er unøyaktig. Samme klasse avvik som er akseptert
+ * i tidligere 15.x-rader (skjermbilde-gate-etterslep).
+ * Tester/TrackMan/Runder/Rapporter er UTENFOR 15.8s omfang og urørt.
+ */
 export const INNSIKT_HUB_TABS: AgencyHubTab[] = [
   { href: "/admin/analyse", label: "Stall", exact: true },
   { href: "/admin/tester", label: "Tester" },
   { href: "/admin/trackman", label: "TrackMan" },
   { href: "/admin/runder", label: "Runder" },
   { href: "/admin/agencyos/okonomi#rapporter", label: "Rapporter" },
-  { href: "/admin/analysere/compliance", label: "Etterlevelse" },
+  { href: "/admin/analyse?fane=etterlevelse", label: "Etterlevelse" },
 ];
 
 function erAktiv(path: string, tab: AgencyHubTab): boolean {

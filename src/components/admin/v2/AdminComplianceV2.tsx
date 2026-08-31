@@ -18,6 +18,12 @@ import { TL } from "@/lib/v2/train-lock";
  * TomTilstand — aldri fabrikerte tall. Periode- og spillervalg er server-drevet
  * (router.push med ?periode / ?studentId), fordi panelet + drill-økten kun
  * beregnes for valgt spiller i loaderen.
+ *
+ * MASTERPLAN 15.8 (31.08.2026): dette er nå «etterlevelse»-fanen på
+ * `/admin/analyse` (uendret spørring/innhold — `/admin/analysere/compliance`
+ * er en ren redirect dit, ?periode/?studentId bevart). `somFane` skjuler
+ * egen h1+«AgencyOS»-etikett når sidens `AnalyseHode` allerede viser tittelen
+ * — periodevelgeren (`PillVelger`) beholdes uendret.
  */
 
 import { usePathname, useRouter } from "next/navigation";
@@ -58,7 +64,7 @@ const RING_ZONER = [
   { from: 100, to: 100000, color: TL.fill, label: "Over plan" },
 ];
 
-export function AdminComplianceV2({ data }: { data: ComplianceData }) {
+export function AdminComplianceV2({ data, somFane }: { data: ComplianceData; somFane?: boolean }) {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -112,12 +118,14 @@ export function AdminComplianceV2({ data }: { data: ComplianceData }) {
   // ── Hode + periodevelger ──────────────────────────────────────
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
-      <div>
-        <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Compliance</h1>
-          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>AgencyOS</span>
+      {!somFane && (
+        <div>
+          <div data-paper-pattern-topp>
+            <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Compliance</h1>
+            <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>AgencyOS</span>
+          </div>
         </div>
-      </div>
+      )}
       <PillVelger
         options={PERIODER.map((p) => ({ v: p.v, l: p.l }))}
         value={curKode}
