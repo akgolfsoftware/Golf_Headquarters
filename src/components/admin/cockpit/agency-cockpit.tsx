@@ -524,7 +524,7 @@ export function AgencyCockpit({ data }: { data: CockpitData }) {
           <div className="mb-1.5 text-[10px] font-mono uppercase tracking-[0.12em] text-foreground/50">Ett klikk</div>
           <div className="flex flex-wrap gap-2">
             <Button as={Link} href="/admin/bookinger/ny" variant="secondary" size="sm" iconLeft={<Calendar size={16} />}>Ny booking</Button>
-            <Button as={Link} href="/admin/planlegge" variant="secondary" size="sm" iconLeft={<ClipboardList size={16} />}>Planlegge</Button>
+            <Button as={Link} href="/admin/plan" variant="secondary" size="sm" iconLeft={<ClipboardList size={16} />}>Planlegge</Button>
             <Button as={Link} href="/admin/spillere" variant="secondary" size="sm" iconLeft={<Users size={16} />}>Spillere</Button>
             <Button as={Link} href="/admin/kalender" variant="secondary" size="sm" iconLeft={<Play size={16} />}>Gjennomføre</Button>
             <Button as={Link} href="/admin/agenticos" variant="secondary" size="sm" iconLeft={<Bot size={16} />}>Agenter</Button>

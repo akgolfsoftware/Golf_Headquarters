@@ -194,7 +194,7 @@ export function KonsollArtefakt({ data }: { data: CockpitData }) {
 
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap", paddingTop: 4 }}>
         <Link
-          href="/admin/planlegge"
+          href="/admin/plan"
           className="v2-press v2-focus"
           data-od-id="artifact-workbench"
           style={{ ...lenkeStil, flex: 1, justifyContent: "center", background: TL.fill, color: TL.onFill, border: "none", fontWeight: 600 }}

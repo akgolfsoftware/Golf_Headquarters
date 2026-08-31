@@ -1,75 +1,77 @@
 /**
  * PlayerHQ · Tester (/portal/tren/tester).
- * Fasit: designsystem/train-lock/PH-15 Analyse tester.dc.html
+ * Fasit: designsystem/train-lock/TE-01 Tester hub iPhone.dc.html
+ * Fasit: designsystem/train-lock/TE-01L Tester hub lys.dc.html
  *
- * Struktur per fasit: «Én ting nå» (neste test — pågående/planlagt økt, ellers
- * åpen tildeling fra coach) → «testene dine · siste resultat» med akse, dato,
- * verdi og trend-tag → sync-note om Workbench/talentprofil → ærlig tom tilstand.
- * Antall protokoller vises ALLTID fra databasen (loadTesterScreen.totalTests)
- * — aldri hardkodet. Dataloadere gjenbrukt: loadTesterScreen + TestAssignment.
+ * IA-revisjon (PX-3-rest, 29.08.2026): erstatter den forrige
+ * pyramide-akse-hero+filtrert-liste-strukturen (PH-15) med fasitens FLATE
+ * liste av ALLE tilgjengelige protokoller, gruppert GOLFSLAG/TEKNIKK (aldri
+ * pyramide-aksene fys/tek/slag/spill/turn) — se
+ * src/lib/portal-tester/hub-gruppe.ts for gruppe-logikken og HANDOFF.md
+ * §TESTER for fasit-begrunnelsen («Hub = to grupper»). Ren sortering/
+ * gruppering av samme underliggende data (TestDefinition/TestResult via
+ * loadTesterScreen) — ingen ny datamodell. Samme data brukes fortsatt av
+ * admin-spillervisningen (AdminSpillerTesterV2), som er URØRT av denne
+ * porten.
+ *
+ * Fasitens hub har INGEN «Én ting nå»-hero (HANDOFF: «Live (TE-04/06) =
+ * artefakt over I dag uten dock») — pågående/live økter vises der, ikke her.
+ * Raden er alltid trykkbar inn til testens detaljside, som selv har «Start
+ * test» (TE-02/TE-13-detaljpanelet, PORTERT: 1:1 flat liste — split-pane
+ * inspektørpanelet fra TE-02/TE-13 er IKKE bygget her, se PR-notat).
+ *
+ * Tallformat på høyre side følger TE-00s korttype-copy per scoring-kind
+ * (formatHubVerdi) — PEI vises med ÉTT tall (prosent), ikke fasitens to
+ * («4,26 % · 0,04»): det andre tallet er en spredning som ikke finnes i
+ * dagens scoreTest()-aggregat, og fabrikkeres ikke her (anti-scope).
  */
 
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { prisma } from "@/lib/prisma";
-import { loadTesterScreen } from "@/lib/portal-tester/tester-data";
+import { loadTesterScreen, type TestRow } from "@/lib/portal-tester/tester-data";
+import { hubGruppeForNavn, formatHubVerdi, HUB_GRUPPE_LABEL, HUB_GRUPPE_REKKEFOLGE, type HubGruppe } from "@/lib/portal-tester/hub-gruppe";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { TL } from "@/lib/v2/train-lock";
-
 import { Caps, TilbakeLenke } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 
 export const dynamic = "force-dynamic";
-
-const TONE_FARGE: Record<"pos" | "neg" | "flat", string> = {
-  pos: TL.ok,
-  neg: TL.danger,
-  flat: TL.mute,
-};
 
 export default async function TesterHubPage() {
   const user = await requirePortalUser({ kreverTilgang: "TALENT" });
   if (user.role === "PARENT") redirect("/forelder");
   if (user.role === "GUEST") redirect("/admin/kalender");
 
-  const [screen, tildelinger] = await Promise.all([
-    loadTesterScreen({ id: user.id, name: user.name, hcp: user.hcp, tier: user.tier }),
-    prisma.testAssignment.findMany({
-      where: { playerId: user.id, status: "OPEN" },
-      orderBy: [{ dueDate: "asc" }, { createdAt: "desc" }],
-      take: 1,
-      select: { testId: true, test: { select: { name: true } }, coach: { select: { name: true } } },
-    }),
-  ]);
+  const screen = await loadTesterScreen({ id: user.id, name: user.name, hcp: user.hcp, tier: user.tier });
 
-  // «Én ting nå» — neste test: pågående/planlagt økt vinner, ellers åpen
-  // tildeling fra coach. Ingen av delene → ingen blokk (aldri fabrikkert).
-  const okt = screen.active ?? screen.planned[0] ?? null;
-  const tildelt = tildelinger[0] ?? null;
-  const neste = okt
-    ? { navn: okt.name, href: okt.href, meta: okt.state === "ongoing" ? "Pågår — fortsett der du slapp" : `Planlagt i Testbatteriet${okt.when ? ` · ${okt.when}` : ""}` }
-    : tildelt
-      ? { navn: tildelt.test.name, href: `/portal/tren/tester/${tildelt.testId}`, meta: `Tildelt av ${tildelt.coach.name}` }
-      : null;
+  // Flat liste av ALLE tester i spillerens univers, gruppert GOLFSLAG/TEKNIKK/Andre
+  // (rekkefølge innad i gruppen arves fra loadTesterScreen: gjort → ugjort, alfabetisk).
+  const alleRader = screen.groups.flatMap((g) => g.rows);
+  const grupper = new Map<HubGruppe, TestRow[]>();
+  for (const gruppe of HUB_GRUPPE_REKKEFOLGE) grupper.set(gruppe, []);
+  for (const rad of alleRader) {
+    const gruppe = rad.hubGruppe ?? hubGruppeForNavn(rad.name);
+    grupper.get(gruppe)!.push(rad);
+  }
 
-  // Liste: tester med minst ett resultat, nyeste-relevante først per akse-orden.
-  const medResultat = screen.groups.flatMap((g) => g.rows.filter((r) => r.attempts > 0));
+  const forfallerAntall = alleRader.filter((r) => r.forfallDato != null).length;
 
   return (
     <V2Shell bredde="kolonne" aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      {/* PH-15: Tester er push under Analyse. */}
+      {/* PH-15/TE-01: Tester er push under Analyse. */}
       <TilbakeLenke href="/portal/analysere">Analyse</TilbakeLenke>
       <div
         data-paper-slug="playerhq-tester-hub"
         data-od-id="playerhq-tester-hub"
-        style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}
+        style={{ display: "flex", flexDirection: "column", gap: 4, maxWidth: 720, margin: "0 auto", width: "100%" }}
       >
-        {/* PH-15-hode: «Tester» 34/700 + mute sub «N aktive» */}
-        <div>
+        {/* TE-01-hode: caps «Analyse · satt av Anders» → «Tester» 34/700 → mute «N forfaller» */}
+        <div style={{ marginBottom: 14 }}>
+          <Caps>Analyse · satt av Anders</Caps>
           <h1
             style={{
-              margin: 0,
+              margin: "6px 0 0",
               fontFamily: TL.font.sans,
               fontSize: 34,
               fontWeight: 700,
@@ -80,17 +82,8 @@ export default async function TesterHubPage() {
           >
             Tester
           </h1>
-          <span
-            style={{
-              display: "block",
-              fontFamily: TL.font.sans,
-              fontSize: 13,
-              color: TL.mute,
-              marginTop: 4,
-              fontVariantNumeric: "tabular-nums",
-            }}
-          >
-            {screen.totalTests} aktive · {screen.testedCount} testet
+          <span style={{ display: "block", marginTop: 4, fontFamily: TL.font.sans, fontSize: 13, color: TL.mute }}>
+            {forfallerAntall === 0 ? "Ingen forfaller" : forfallerAntall === 1 ? "1 forfaller" : `${forfallerAntall} forfaller`}
           </span>
         </div>
 
@@ -111,7 +104,6 @@ export default async function TesterHubPage() {
               Testene avtaler du med Anders i Workbench — legg dem inn som vanlige økter der,
               sammen med resten av planen din.
             </p>
-            {/* Kontrakt §3: skjermens ene aksenthandling */}
             <Link
               href="/portal/planlegge/workbench"
               data-od-id="tester-tom-workbench"
@@ -137,146 +129,48 @@ export default async function TesterHubPage() {
           </div>
         ) : (
           <>
-            {/* Én ting nå — neste test (kun når en faktisk står for tur) */}
-            {neste && (
-              <div
-                style={{
-                  background: TL.dim,
-                  border: `1px solid ${TL.hair}`,
-                  borderRadius: TL.radius.card,
-                  padding: 16,
-                }}
-              >
-                <Caps>Én ting nå</Caps>
-                <h3 style={{ margin: "8px 0", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
-                  {neste.navn} står for tur
-                </h3>
-                <p style={{ margin: "0 0 16px", fontFamily: TL.font.sans, fontSize: 14, color: TL.mute, maxWidth: "52ch" }}>
-                  {neste.meta}. Resultatet går rett inn i talentprofilen din når du logger det.
-                </p>
-                {/* Kontrakt §3: skjermens ene aksenthandling — starter testen */}
-                <Link
-                  href={`${neste.href}/gjennomfor`}
-                  data-od-id="tester-start-neste"
-                  data-paper-en-ting="true"
-                  className="v2-press v2-focus"
-                  style={{
-                    textDecoration: "none",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    minHeight: 56,
-                    width: "100%",
-                    borderRadius: TL.radius.card,
-                    background: TL.fill,
-                    color: TL.onFill,
-                    fontFamily: TL.font.sans,
-                    fontSize: 14,
-                    fontWeight: 600,
-                  }}
-                >
-                  Start {neste.navn}
-                </Link>
-              </div>
-            )}
+            {HUB_GRUPPE_REKKEFOLGE.map((gruppe) => {
+              const rader = grupper.get(gruppe)!;
+              if (rader.length === 0) return null;
+              return (
+                <div key={gruppe} style={{ marginTop: 18 }}>
+                  <Caps>{HUB_GRUPPE_LABEL[gruppe]}</Caps>
+                  <div style={{ marginTop: 4 }}>
+                    {rader.map((r, i) => (
+                      <TesterRad key={r.id} r={r} siste={i === rader.length - 1} />
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
 
-            {/* Testene dine · siste resultat — faktisk antall fra DB */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              <Caps>
-                testene dine · siste resultat · {screen.testedCount} av {screen.totalTests} testet
-              </Caps>
-              {medResultat.length === 0 ? (
-                <div
-                  style={{
-                    padding: "24px 16px",
-                    background: TL.dock,
-                    border: `1px dashed ${TL.hair}`,
-                    borderRadius: TL.radius.card,
-                  }}
-                >
-                  <h3 style={{ margin: "0 0 8px", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
-                    Ingen resultater ennå
-                  </h3>
-                  <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute }}>
-                    {screen.totalTests} tester ligger klare i batteriet — første måling blir
-                    referansen din.
-                  </p>
-                </div>
-              ) : (
-                /* PH-15: én elev-flate med hairline-delte rader */
-                <div style={{ background: TL.elev, borderRadius: TL.radius.card, padding: "4px 20px" }}>
-                  {medResultat.map((r, i) => (
-                    <Link
-                      key={r.id}
-                      href={r.href}
-                      data-od-id={`tester-rad-${i}`}
-                      className="v2-press"
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 14,
-                        padding: "15px 0",
-                        borderBottom: i < medResultat.length - 1 ? `1px solid ${TL.hair}` : "none",
-                        textDecoration: "none",
-                        color: "inherit",
-                        minWidth: 0,
-                      }}
-                    >
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
-                          {r.name}
-                        </span>
-                        <span
-                          style={{
-                            display: "block",
-                            fontFamily: TL.font.sans,
-                            fontSize: 13,
-                            color: TL.mute,
-                            marginTop: 2,
-                            fontVariantNumeric: "tabular-nums",
-                          }}
-                        >
-                          {r.axis.toUpperCase()}
-                          {r.latestDate ? ` · sist ${r.latestDate}` : ""}
-                        </span>
-                      </div>
-                      <div style={{ textAlign: "right", flex: "none" }}>
-                        <span
-                          style={{
-                            display: "block",
-                            fontFamily: TL.font.sans,
-                            fontSize: 15,
-                            fontWeight: 600,
-                            fontVariantNumeric: "tabular-nums",
-                            color: TL.text,
-                          }}
-                        >
-                          {r.latest}
-                        </span>
-                        {r.delta && (
-                          <span
-                            style={{
-                              display: "block",
-                              marginTop: 2,
-                              fontFamily: TL.font.sans,
-                              fontSize: 13,
-                              color: TONE_FARGE[r.delta.tone],
-                              fontVariantNumeric: "tabular-nums",
-                            }}
-                          >
-                            {r.delta.text} vs forrige
-                          </span>
-                        )}
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
+            {/* «+ egen test» — TE-01 fottrykk, leder til eksisterende opprett-flyt. */}
+            <Link
+              href="/portal/tren/tester/ny/egen"
+              data-od-id="tester-ny-egen"
+              className="v2-press v2-focus"
+              style={{
+                marginTop: 16,
+                textDecoration: "none",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: 44,
+                borderRadius: TL.radius.card,
+                boxShadow: `inset 0 0 0 1px ${TL.hair}`,
+                fontFamily: TL.font.sans,
+                fontSize: 13,
+                fontWeight: 600,
+                color: TL.text,
+              }}
+            >
+              + egen test
+            </Link>
 
             {/* Sync-note — Workbench planlegger, talentprofilen mottar */}
             <div
               style={{
+                marginTop: 18,
                 display: "flex",
                 gap: 12,
                 padding: "12px 16px",
@@ -298,5 +192,73 @@ export default async function TesterHubPage() {
         )}
       </div>
     </V2Shell>
+  );
+}
+
+/** TE-01 hub-rad: tittel + regel-undertekst venstre, verdi + FORFALL/PLANLAGT-caps høyre. */
+function TesterRad({ r, siste }: { r: TestRow; siste: boolean }) {
+  const verdi = r.attempts > 0 ? formatHubVerdi({ scoringKind: r.scoringKind, latestRaw: r.latestRaw, shotsCount: r.shotsCount }) : "—";
+  const capsTekst = r.forfallDato ? (r.attempts > 0 ? `FORFALL ${r.forfallDato}` : `PLANLAGT ${r.forfallDato}`) : null;
+
+  return (
+    <Link
+      href={r.href}
+      data-od-id={`tester-hub-rad-${r.id}`}
+      className="v2-press"
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 12,
+        padding: "13px 12px",
+        marginInline: -12,
+        borderRadius: TL.radius.card,
+        borderBottom: siste ? "none" : `1px solid ${TL.hair}`,
+        textDecoration: "none",
+        color: "inherit",
+        minWidth: 0,
+      }}
+    >
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
+          {r.name}
+        </span>
+        <span
+          style={{
+            display: "block",
+            marginTop: 2,
+            fontFamily: TL.font.sans,
+            fontSize: 13,
+            color: TL.mute,
+            fontVariantNumeric: "tabular-nums",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {r.rule}
+        </span>
+      </div>
+      <div style={{ textAlign: "right", flex: "none" }}>
+        <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, fontVariantNumeric: "tabular-nums", color: TL.text }}>
+          {verdi}
+        </span>
+        {capsTekst && (
+          <span
+            style={{
+              display: "block",
+              marginTop: 2,
+              fontFamily: TL.font.mono,
+              fontSize: 9,
+              fontWeight: 600,
+              letterSpacing: "0.08em",
+              color: TL.mute,
+              whiteSpace: "nowrap",
+            }}
+          >
+            {capsTekst}
+          </span>
+        )}
+      </div>
+    </Link>
   );
 }

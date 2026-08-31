@@ -127,7 +127,7 @@ export function AdminOkterV2({ data }: { data: AdminOkterData }) {
           : "Tom uke";
 
   // B: primær CTA — forfalt → planlegg, ellers kalender / planlegge
-  const primaerHref = kpi.forfalt > 0 || kpi.total === 0 ? "/admin/planlegge" : "/admin/kalender";
+  const primaerHref = kpi.forfalt > 0 || kpi.total === 0 ? "/admin/plan" : "/admin/kalender";
   const primaerTekst =
     kpi.forfalt > 0
       ? "Følg opp i Workbench"
@@ -302,7 +302,7 @@ export function AdminOkterV2({ data }: { data: AdminOkterData }) {
     : kpi.forfalt > 0
       ? `${pl(kpi.forfalt, "forfalt økt", "forfalte økter")} denne uka — følg opp og planlegg videre i Workbench.`
       : `${pl(kpi.total, "økt", "økter")} planlagt denne uka — juster uka i Workbench.`;
-  const innsikt = <InnsiktChip cta="Planlegg i Workbench" href="/admin/planlegge">{innsiktTekst}</InnsiktChip>;
+  const innsikt = <InnsiktChip cta="Planlegg i Workbench" href="/admin/plan">{innsiktTekst}</InnsiktChip>;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>

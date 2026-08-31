@@ -14,6 +14,11 @@
  * Fasiten viser kun mobil (390×844). Denne komponenten er responsiv utover
  * det (samme kortbredde skalerer opp), men uten egen iPad/Mac-fasit portes
  * layoutet 1:1 fra mobil-fasiten på alle bredder — ingen ny struktur oppfunnet.
+ *
+ * MASTERPLAN 15.8 (31.08.2026): dette er nå den nestede `?visning=trend`
+ * under «stall»-fanen på `/admin/analyse` (uendret spørring/innhold —
+ * `/admin/analyse/stall` er en ren redirect dit). `somFane` skjuler egen h1
+ * («Innsikt») når sidens `AnalyseHode` allerede viser den.
  */
 
 import { TL } from "@/lib/v2/train-lock";
@@ -115,12 +120,14 @@ function TrendSparkline({ verdier }: { verdier: number[] }) {
   );
 }
 
-export function InnsiktStallV2({ data }: { data: InnsiktStallV2Data }) {
+export function InnsiktStallV2({ data, somFane }: { data: InnsiktStallV2Data; somFane?: boolean }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 460 }}>
-      <div>
-        <h1 style={{ margin: 0, fontSize: 34, fontWeight: 700, letterSpacing: "-0.02em", color: TL.text }}>Innsikt</h1>
-      </div>
+      {!somFane && (
+        <div>
+          <h1 style={{ margin: 0, fontSize: 34, fontWeight: 700, letterSpacing: "-0.02em", color: TL.text }}>Innsikt</h1>
+        </div>
+      )}
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
         <KpiKort verdi={data.sgUke} label={`SG stall · uke ${data.ukenummer}`} />

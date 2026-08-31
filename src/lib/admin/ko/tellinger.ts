@@ -58,6 +58,18 @@ export async function koFaneTellinger(
             ut.dubletter = n;
           })
       : null,
+    // Moderering: teller det Kø-fanen viser — åpne saker + godkjente GDPR-
+    // saker som venter på utførelse, samme filter som last-moderering.ts.
+    vis.has("moderering")
+      ? prisma.moderationCase
+          .count({ where: { OR: [{ status: "OPEN" }, { status: "APPROVED", type: "GDPR_SLETTING" }] } })
+          .then((n) => {
+            ut.moderering = n;
+          })
+          .catch(() => {
+            /* tabellen finnes kanskje ikke i dette miljøet ennå — ingen telling, ikke krasj */
+          })
+      : null,
   ]);
 
   return ut;

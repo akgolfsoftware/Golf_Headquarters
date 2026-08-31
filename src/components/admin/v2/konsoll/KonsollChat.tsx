@@ -405,7 +405,7 @@ export function KonsollChat({
                   />
                   <Handlinger
                     lenker={[
-                      { label: "Planlegg i Workbench", href: "/admin/planlegge", odId: "act-workbench" },
+                      { label: "Planlegg i Workbench", href: "/admin/plan", odId: "act-workbench" },
                       { label: "Se stallen", href: "/admin/spillere", odId: "act-spillere" },
                       { label: "Kalender", href: "/admin/kalender", odId: "act-kalender" },
                       { label: "Opptak", href: "/admin/recording", odId: "act-opptak" },
@@ -540,7 +540,7 @@ export function KonsollChat({
                     beskrivelse="Dagens økter, stall-tall og sløyfen — åpne som panel."
                     handlinger={[
                       { label: "Åpne i panel", onClick: () => setArtefaktApen(true), odId: "art-open-panel" },
-                      { label: "Planlegg i Workbench", href: "/admin/planlegge", odId: "art-workbench" },
+                      { label: "Planlegg i Workbench", href: "/admin/plan", odId: "art-workbench" },
                     ]}
                   />
                 )}
@@ -738,7 +738,7 @@ function TomKonsoll({ kanChatte, onForslag }: { kanChatte: boolean; onForslag: (
       </div>
       <Handlinger
         lenker={[
-          { label: "Planlegg uka i Workbench", href: "/admin/planlegge", odId: "empty-workbench" },
+          { label: "Planlegg uka i Workbench", href: "/admin/plan", odId: "empty-workbench" },
           { label: "Se stallen", href: "/admin/spillere", odId: "empty-spillere" },
           { label: "Åpne kalenderen", href: "/admin/kalender", odId: "empty-kalender" },
         ]}

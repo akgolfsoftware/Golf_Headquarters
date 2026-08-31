@@ -160,7 +160,7 @@ export const AGENCYOS_ROM: V2Rom[] = [
     beskrivelse: "Workbench, maler, drills, turneringer, teknisk",
     meta: "Trening",
     icon: "target",
-    href: "/admin/planlegge",
+    href: "/admin/plan",
   },
   {
     id: "stall-pluss",
@@ -585,6 +585,10 @@ export { AGENCYOS_SKALL_TABS, AGENCYOS_UNDER_MEG };
 function skallAktivFraPath(pathname: string): string {
   const treff: Array<{ prefix: string; id: string }> = [
     { prefix: "/admin/spillere", id: "stall" },
+    // MASTERPLAN 15.9: Plan er én adresse (/admin/plan). /admin/planlegge er
+    // nå en redirect, men beholdes her så railen lyser riktig i det korte
+    // øyeblikket før redirecten lander (samme mønster som Kø 15.1/15.2).
+    { prefix: "/admin/plan", id: "workbench" },
     { prefix: "/admin/planlegge", id: "workbench" },
     { prefix: "/admin/workbench", id: "workbench" },
     // MASTERPLAN 15.1/15.2: Kø er én adresse (/admin/ko). De gamle kø-adressene
@@ -594,6 +598,10 @@ function skallAktivFraPath(pathname: string): string {
     { prefix: "/admin/godkjenninger", id: "ko" },
     { prefix: "/admin/innboks", id: "ko" },
     { prefix: "/admin/varsler", id: "ko" },
+    // MASTERPLAN 15.7: Kommunikasjon (/admin/kommunikasjon) samler Innboks +
+    // e-post + maler — samme rail-plassering som Innboks hadde.
+    { prefix: "/admin/kommunikasjon", id: "ko" },
+    { prefix: "/admin/email-templates", id: "ko" },
     // Oppfølging av spillere er IKKE Kø (beslutning 6.6) — den hører i Stall.
     { prefix: "/admin/queue", id: "stall" },
     // Oppgaver bor under Meg, som i canvasen (MASTERPLAN 15.2).
@@ -1473,6 +1481,10 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
       { prefix: "/admin/runder", id: "innsikt" },
       { prefix: "/admin/reports", id: "innsikt" },
       { prefix: "/admin/analysere", id: "innsikt" },
+      // MASTERPLAN 15.9: Plan er én adresse (/admin/plan). /admin/planlegge
+      // er nå en redirect, men beholdes her så railen lyser riktig i det
+      // korte øyeblikket før redirecten lander (samme mønster som Kø 15.1/15.2).
+      { prefix: "/admin/plan", id: "workbench" },
       { prefix: "/admin/planlegge", id: "workbench" },
       { prefix: "/admin/spillere", id: "spillere" },
       { prefix: "/admin/agencyos", id: "cockpit" },

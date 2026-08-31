@@ -158,11 +158,11 @@ const ACTIONS: Action[] = [
   // --- Hub-handlinger ---
   {
     id: "daily-brief",
-    label: "Daglig brief",
-    description: "Morgens første-stop med agent-insights",
-    keywords: ["brief", "morgen", "daglig", "oversikt", "start", "dagen"],
+    label: "Hjem",
+    description: "Kø øverst, dagens plan under",
+    keywords: ["brief", "morgen", "daglig", "oversikt", "start", "dagen", "hjem"],
     icon: Sun,
-    kind: { type: "navigate", href: "/admin/brief" },
+    kind: { type: "navigate", href: "/admin/agencyos" },
   },
   {
     id: "open-caddie",
@@ -228,9 +228,9 @@ const ACTIONS: Action[] = [
     description: "Sammenlign spillere mot World Amateur ranking — i Talent-radar",
     keywords: ["wagr", "ranking", "benchmark", "amatør", "amateur", "talent"],
     icon: TrendingUp,
-    // WAGR-benchmark er slått sammen i Talent-radar; /admin/talent/wagr-benchmark
+    // WAGR-benchmark er slått sammen i Talent-radar; /innsyn/talent/wagr-benchmark
     // er nå kun en redirect dit. Pek direkte, så slipper søket et ekstra hopp.
-    kind: { type: "navigate", href: "/admin/talent/radar" },
+    kind: { type: "navigate", href: "/innsyn/talent/radar" },
   },
   {
     id: "export-report",
@@ -257,14 +257,14 @@ const ACTIONS: Action[] = [
   { id: "s-caddie", label: "Caddie", description: "Foldet inn i AgenticOS", keywords: ["caddie", "ai", "chat", "assistent"], icon: MessageSquare, kind: { type: "navigate", href: "/admin/agenticos" } },
   { id: "s-agent-team", label: "AgenticOS", description: "Agentene — status, kjøringer og godkjenninger", keywords: ["agent", "team", "oppdrag", "agenter", "agenticos"], icon: Bot, kind: { type: "navigate", href: "/admin/agenticos" } },
   { id: "s-jarvis-innboks", label: "Personlig innboks", description: "Jarvis på /meg — e-post, SMS, kalender", keywords: ["jarvis", "meg", "innboks", "gmail", "imessage"], icon: Mail, kind: { type: "navigate", href: "/meg" } },
-  { id: "s-brief", label: "Daglig brief", description: "Dagens oppsummering", keywords: ["brief", "daglig", "morgen", "oppsummering"], icon: FileText, kind: { type: "navigate", href: "/admin/brief" } },
+  { id: "s-brief", label: "Daglig brief", description: "Foldet inn i Hjem", keywords: ["brief", "daglig", "morgen", "oppsummering"], icon: FileText, kind: { type: "navigate", href: "/admin/agencyos" } },
   { id: "s-plan-maler", label: "Plan-maler", description: "Maler for treningsplaner", keywords: ["mal", "maler", "template", "plan"], icon: Copy, kind: { type: "navigate", href: "/admin/plan-templates" } },
   { id: "s-drills", label: "Drills", description: "Kilder i Workbench", keywords: ["drill", "drills", "ovelse", "øvelse", "bibliotek", "kilder"], icon: Dumbbell, kind: { type: "navigate", href: "/admin/planlegge" } },
   { id: "s-turneringer", label: "Turneringer", description: "Turneringsoversikt", keywords: ["turnering", "turneringer", "cup", "konkurranse"], icon: Trophy, kind: { type: "navigate", href: "/admin/tournaments" } },
   { id: "s-teknisk-plan", label: "Teknisk plan", description: "Teknisk arbeid per spiller", keywords: ["teknisk", "plan", "teknikk"], icon: Wrench, kind: { type: "navigate", href: "/admin/teknisk-plan" } },
   { id: "s-ny-spiller", label: "Ny spiller", description: "Legg til spiller i stallen", keywords: ["ny", "spiller", "legg til", "opprett"], icon: UserPlus, kind: { type: "navigate", href: "/admin/spillere/ny" } },
-  { id: "s-talent-radar", label: "Talent-radar", description: "Talentoversikt", keywords: ["talent", "radar", "potensial"], icon: Star, kind: { type: "navigate", href: "/admin/talent/radar" } },
-  { id: "s-talent-sml", label: "Talent-sammenligning", description: "Sammenlign talenter", keywords: ["talent", "sammenlign", "compare"], icon: Crosshair, kind: { type: "navigate", href: "/admin/talent/sammenligning" } },
+  { id: "s-talent-radar", label: "Talent-radar", description: "Talentoversikt", keywords: ["talent", "radar", "potensial"], icon: Star, kind: { type: "navigate", href: "/innsyn/talent/radar" } },
+  { id: "s-talent-sml", label: "Talent-sammenligning", description: "Sammenlign talenter", keywords: ["talent", "sammenlign", "compare"], icon: Crosshair, kind: { type: "navigate", href: "/innsyn/talent/sammenligning" } },
   { id: "s-okonomi", label: "Økonomi", description: "Belegg, inntekt, abonnement, faktura", keywords: ["okonomi", "økonomi", "penger", "inntekt", "faktura", "mrr", "abonnement", "belegg"], icon: CreditCard, kind: { type: "navigate", href: "/admin/agencyos/okonomi" } },
   { id: "s-tjenester", label: "Tjenester og priser", description: "Prisliste og tjenester", keywords: ["tjeneste", "pris", "priser", "service"], icon: CreditCard, kind: { type: "navigate", href: "/admin/services" } },
   { id: "s-team", label: "Team", description: "Coacher og roller", keywords: ["team", "coach", "ansatt", "rolle"], icon: Users, kind: { type: "navigate", href: "/admin/team" } },

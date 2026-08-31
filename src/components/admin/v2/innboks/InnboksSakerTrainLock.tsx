@@ -248,7 +248,21 @@ function InnboksITall({ data }: { data: InnboksData }) {
   );
 }
 
-export function InnboksSakerTrainLock({ data }: { data: InnboksData }) {
+export function InnboksSakerTrainLock({
+  data,
+  somFane = false,
+}: {
+  data: InnboksData;
+  /**
+   * MASTERPLAN 15.7: denne komponenten er nå «Innboks»-fanen i
+   * /admin/kommunikasjon. Som fane eier den nye siden overskriften — kun
+   * komponentens EGEN «Academy · Innboks»-tittel skjules. Alle/Meldinger-
+   * filteret (en legitim underfane, samme prinsipp som Turneringes
+   * kommende/spilte) beholdes uendret. Lærdom fra 15.1/15.2: en flyttet
+   * helside tar med seg sitt eget hode hvis ikke noen eksplisitt slår det av.
+   */
+  somFane?: boolean;
+}) {
   const mobile = useMediaQuery("(max-width: 767px)");
   const visPanel = useInspektorSynlig();
   const searchParams = useSearchParams();
@@ -269,14 +283,16 @@ export function InnboksSakerTrainLock({ data }: { data: InnboksData }) {
   return (
     <MasterDetalj panel={valgtSak ? <SakInspektor sak={valgtSak} /> : <InnboksITall data={data} />}>
       <div style={{ display: "flex", flexDirection: "column", gap: 22, minWidth: 0 }}>
-        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-          <div>
-            <TlCaps>Academy</TlCaps>
-            <h1 style={{ margin: "6px 0 0", fontSize: 34, fontWeight: 700, letterSpacing: "-0.02em", lineHeight: 1.1, color: TL.text }}>Innboks</h1>
-          </div>
+        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: somFane ? "flex-end" : "space-between", gap: 12, flexWrap: "wrap" }}>
+          {!somFane && (
+            <div>
+              <TlCaps>Academy</TlCaps>
+              <h1 style={{ margin: "6px 0 0", fontSize: 34, fontWeight: 700, letterSpacing: "-0.02em", lineHeight: 1.1, color: TL.text }}>Innboks</h1>
+            </div>
+          )}
           <div role="group" aria-label="Filter" style={{ display: "flex", gap: 8 }}>
             <Link
-              href="/admin/innboks"
+              href={somFane ? "/admin/kommunikasjon" : "/admin/innboks"}
               className={PRESS}
               style={{
                 height: 36,
@@ -293,7 +309,7 @@ export function InnboksSakerTrainLock({ data }: { data: InnboksData }) {
               Alle
             </Link>
             <Link
-              href="/admin/innboks?filter=varsler"
+              href={somFane ? "/admin/kommunikasjon?filter=varsler" : "/admin/innboks?filter=varsler"}
               className={PRESS}
               style={{
                 height: 36,

@@ -1,10 +1,21 @@
 "use client";
 import { TL } from "@/lib/v2/train-lock";
 /**
- * WORKBENCH — v2 MOBIL-MOTPARTER (retning C «Presis»). Rene, dataminimale
- * komponenter for <md-visningen av WorkbenchV2.tsx: dag-agenda i stedet for
- * uke-tidslinje, kompakt sesong-liste i stedet for tett rad, og en generisk
- * utfellbar seksjon for Bibliotek/Balanse (erstatter side-kolonnene).
+ * WORKBENCH — v2 MOBIL-MOTPARTER. Rene, dataminimale komponenter for
+ * <md-visningen av WorkbenchV2.tsx: dag-agenda i stedet for uke-tidslinje,
+ * kompakt sesong-liste i stedet for tett rad, og en generisk utfellbar
+ * seksjon for Bibliotek/Balanse (erstatter side-kolonnene).
+ *
+ * Fasit: designsystem/train-lock/P-05 iPhone Agenda.dc.html — rad-geometrien
+ * i DagNivaa (WorkbenchV2.tsx) er justert til fasitens 44px tidskolonne +
+ * caps-metalinje + hairline-rader. GAP (dokumentert, ikke bygget — IA-
+ * endring utenfor en piksel-bølge): fasiten scroller ALLE 7 dagene i én
+ * liste med all-day TURN som egen caps-linje og «Start banespill»-CTA på
+ * turneringsdagen; denne komponenten beholder dag-stripe-velger + ett-dag-
+ * av-gangen (samme mønster som «I dag»/PH-familien) — å bygge om til
+ * full-ukes-scroll er en navigasjonsendring, ikke en pikseljustering.
+ * P-06/P-07 (dag+ark / ny økt-ark) er av samme grunn ikke portet her —
+ * de bruker WorkbenchV2Sheets.tsx sine eksisterende ark uendret.
  *
  * Ærlighet (prosjekt-regel): ingen egne data-antakelser — gjenbruker
  * WorkbenchV2s DagNivaa (samme agenda-rendering som desktop Økt-nivå) og

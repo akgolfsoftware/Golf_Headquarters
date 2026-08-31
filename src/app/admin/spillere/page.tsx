@@ -12,6 +12,7 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { loadStallen, type StatusKind, type Axis } from "@/lib/admin/stallen-data";
+import { nesteOktLabel, prikkForBolk, sisteAktivitetLabel } from "@/lib/admin/stall-rad";
 import { fmtSg, type AkseKey } from "@/lib/v2/format";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import type { StallV2Data, StallV2Player } from "@/components/admin/v2/StallV2";
@@ -60,9 +61,11 @@ export default async function V2StallPage() {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
   const stall = await loadStallen({ id: user.id, role: user.role }, {});
 
+  const naa = new Date();
   const spillere: StallV2Player[] = stall.rows.map((r) => {
     const form = r.sgTrend.length > 0 ? r.sgTrend[r.sgTrend.length - 1] : null;
     const visDelta = r.sgDelta != null && Math.abs(r.sgDelta) >= 0.05;
+    const bolk = GRUPPERING[r.status];
     return {
       id: r.id,
       navn: r.name,
@@ -75,7 +78,7 @@ export default async function V2StallPage() {
       statusLabel: r.statusLabel,
       // «Hviler» teller ikke som noe som venter på coachen (fasitens ordlyd).
       trenger: r.status !== "aktiv" && r.status !== "hviler",
-      bolk: GRUPPERING[r.status],
+      bolk,
       sgTrend: r.sgTrend,
       adherence: r.adherence.map((a) => ({ akse: AKSE_MAP[a.axis], pct: a.pct })),
       adhPct: r.adhPct,
@@ -84,6 +87,9 @@ export default async function V2StallPage() {
       pakke: r.pakke,
       pakkeAktiv: r.pakkeAktiv,
       skylder: r.skylder,
+      nesteOktLabel: nesteOktLabel(r.nesteOkt, naa),
+      sisteAktivitetLabel: sisteAktivitetLabel(r.sisteOkt, r.dagerSiden, naa),
+      prikk: prikkForBolk(bolk),
     };
   });
 

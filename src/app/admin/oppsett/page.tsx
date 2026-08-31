@@ -26,9 +26,16 @@
  *
  * Design: canvas godkjent av Anders 30.08.2026 —
  * designsystem/canvas/agencyos-ia/Oppsett.dc.html.
+ *
+ * MASTERPLAN 15.13 (31.08.2026): `/admin/gdpr` og `/admin/team/ekstern` hadde
+ * ingen vei inn (arkitektur-kartlegging 30.08). Ikke egne faner (det er
+ * arbeidsflater med egen tilgangslogikk, ikke innstillinger) — i stedet en
+ * lenke-rad i den nærmeste eksisterende fanen: GDPR under Sikkerhet
+ * (ADMIN-only, samme gate som målsiden), eksterne lesere under Tilgang.
  */
 
 import Link from "next/link";
+import { TlKort, TlRad, TlKnapp } from "@/components/admin/v2/oppsett/tl-kit";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { TL } from "@/lib/v2/train-lock";
@@ -129,12 +136,44 @@ export default async function OppsettPage({
           <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
             {faneVelger}
             <AdminTilgangTrainLock roller={roller} rader={rader} somFane />
+            <TlKort eyebrow="Eksterne lesere">
+              <TlRad
+                title="Team Norway og WANG"
+                sub="Gi utvalgte spillere synlig for eksterne lesere fra andre organisasjoner"
+                trailing={
+                  <TlKnapp variant="sekundaer" icon="arrow-right" href="/admin/team/ekstern">
+                    Åpne
+                  </TlKnapp>
+                }
+                chevron={false}
+                last
+              />
+            </TlKort>
           </div>
         );
       }
       case "sikkerhet": {
         const data = lastSikkerhetData(user);
-        return <AdminSecurityTrainLock data={data} somFane />;
+        return (
+          <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+            <AdminSecurityTrainLock data={data} somFane />
+            {user.role === "ADMIN" && (
+              <TlKort eyebrow="Personvern">
+                <TlRad
+                  title="GDPR-kø"
+                  sub="Behandle forespørsler om innsyn og sletting"
+                  trailing={
+                    <TlKnapp variant="sekundaer" icon="arrow-right" href="/admin/gdpr">
+                      Åpne
+                    </TlKnapp>
+                  }
+                  chevron={false}
+                  last
+                />
+              </TlKort>
+            )}
+          </div>
+        );
       }
       case "integrasjoner": {
         const cards = await lastIntegrasjonerData(user);

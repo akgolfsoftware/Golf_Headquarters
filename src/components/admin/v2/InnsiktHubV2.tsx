@@ -23,11 +23,19 @@
  * - DataGolf og Fys og last har ingen egen stall-nivå-flate i appen ennå —
  *   radene lenker til Spiller 360 (`/admin/spillere`) der per-spiller-data
  *   finnes, i påvente av egne flater.
+ *
+ * MASTERPLAN 15.8 (31.08.2026): dette er nå «stall»-fanen på `/admin/analyse`
+ * (standardfanen, uendret spørring/innhold). `somFane` skjuler egen
+ * caps+h1 («Academy · stallen» / «Innsikt») når sidens `AnalyseHode` allerede
+ * viser dem — kun brukt fra `/admin/analyse/page.tsx`. «Åpne stall-innsikt»
+ * peker nå på `?fane=stall&visning=trend` (samme adresse, nestet visning)
+ * i stedet for den nå-redirectede `/admin/analyse/stall`.
  */
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { TL, TL_BREKK } from "@/lib/v2/train-lock";
+import { ANALYSE_STALL_TREND_HREF } from "@/lib/admin/analyse/faner";
 
 const PRESS =
   "motion-safe:transition-transform motion-safe:duration-[180ms] motion-safe:ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.97]";
@@ -177,7 +185,7 @@ function PushListe({ rader }: { rader: PushRad[] }) {
   );
 }
 
-export function InnsiktHubV2({ data }: { data: InnsiktHubV2Data }) {
+export function InnsiktHubV2({ data, somFane }: { data: InnsiktHubV2Data; somFane?: boolean }) {
   const storrelse = useSkjermStorrelse();
   const wide = storrelse === "wide";
   const regular = storrelse === "regular";
@@ -192,7 +200,7 @@ export function InnsiktHubV2({ data }: { data: InnsiktHubV2Data }) {
   const fysRad: PushRad = { navn: "Fys og last", verdi: "ACWR", href: "/admin/spillere" };
   const testerRad: PushRad = { navn: "Tester", verdi: "TN-batteri", href: "/admin/tester" };
   const okonomiRad: PushRad = { navn: "Økonomi", verdi: "YTD", href: "/admin/agencyos/okonomi" };
-  const stallInnsiktRad: PushRad = { navn: "Stall-innsikt", verdi: "SG per kategori", href: "/admin/analyse/stall" };
+  const stallInnsiktRad: PushRad = { navn: "Stall-innsikt", verdi: "SG per kategori", href: ANALYSE_STALL_TREND_HREF };
 
   const dypereRader: PushRad[] = wide
     ? [spiller360Rad, dataGolfRad, trackmanRad, fysRad, testerRad, okonomiRad]
@@ -244,15 +252,17 @@ export function InnsiktHubV2({ data }: { data: InnsiktHubV2Data }) {
 
   const eyebrow = (
     <>
-      <CapsLabel>Academy · stallen</CapsLabel>
+      {!somFane && <CapsLabel>Academy · stallen</CapsLabel>}
       <div style={{ display: "flex", alignItems: "baseline", gap: 16, flexWrap: "wrap" }}>
-        <h1 style={{ margin: "6px 0 0", fontSize: 34, fontWeight: 700, letterSpacing: "-0.02em", color: TL.text }}>Innsikt</h1>
+        {!somFane && (
+          <h1 style={{ margin: "6px 0 0", fontSize: 34, fontWeight: 700, letterSpacing: "-0.02em", color: TL.text }}>Innsikt</h1>
+        )}
         <span style={{ fontSize: 13, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
           {data.nSpillere} spillere · {data.periodeLabel}
         </span>
         {wide && (
           <Link
-            href="/admin/analyse/stall"
+            href={ANALYSE_STALL_TREND_HREF}
             className={PRESS}
             style={{
               marginLeft: "auto",
@@ -313,7 +323,7 @@ export function InnsiktHubV2({ data }: { data: InnsiktHubV2Data }) {
         </div>
         <div style={{ marginTop: 18 }}>
           <Link
-            href="/admin/analyse/stall"
+            href={ANALYSE_STALL_TREND_HREF}
             className={PRESS}
             style={{
               display: "inline-flex",

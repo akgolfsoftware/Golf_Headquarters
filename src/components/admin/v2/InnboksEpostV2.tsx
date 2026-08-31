@@ -25,24 +25,44 @@ const STATUS_LABEL: Record<string, { tone: StatusTone; label: string } | undefin
   SENDT: { tone: "up", label: "Sendt" },
 };
 
-export function InnboksEpostV2({ epost }: { epost: InnboksEpostVm[] }) {
+export function InnboksEpostV2({
+  epost,
+  somFane = false,
+  tittel = "Innboks",
+  eyebrow = "Alle e-poster",
+}: {
+  epost: InnboksEpostVm[];
+  /**
+   * MASTERPLAN 15.7: denne komponenten bærer nå Utkast- OG Sendt-fanen i
+   * /admin/kommunikasjon (to instanser, hver med sin egen filtrerte liste).
+   * Som fane eier den nye siden overskriften — komponentens EGEN «Innboks»-
+   * tittel skjules. Lærdom fra 15.1/15.2.
+   */
+  somFane?: boolean;
+  /** Overstyrer «Innboks»-tittelen når den vises (ikke somFane). */
+  tittel?: string;
+  /** Overstyrer «Alle e-poster»-etiketten på listekortet. */
+  eyebrow?: string;
+}) {
   const [valgtId, setValgtId] = useState<string | null>(epost[0]?.id ?? null);
   const valgt = epost.find((e) => e.id === valgtId) ?? null;
   const antallNye = epost.filter((e) => e.status === "NY").length;
 
   return (
     <div data-paper-wave-e="innboks-epost" data-od-id="agencyos-innboks-epost" style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 1100, margin: "0 auto", width: "100%" }}>
-      <div>
-        <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Innboks</h1>
-        <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
-          E-post · post@akgolf.no · {pl(epost.length, "melding", "meldinger")}
-          {antallNye > 0 ? ` · ${antallNye} nye` : ""}
-        </span>
-      </div>
+      {!somFane && (
+        <div>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>{tittel}</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
+            E-post · post@akgolf.no · {pl(epost.length, "melding", "meldinger")}
+            {antallNye > 0 ? ` · ${antallNye} nye` : ""}
+          </span>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-[340px_1fr]" style={{ gap: 16 }}>
         <Kort
-          eyebrow="Alle e-poster"
+          eyebrow={eyebrow}
           pad="8px"
           action={epost.length > 0 ? <Caps size={9} color={antallNye > 0 ? TL.warn : TL.mute}>{pl(epost.length, "e-post", "e-poster")}</Caps> : undefined}
         >

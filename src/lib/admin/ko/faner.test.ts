@@ -31,6 +31,8 @@ test("hver fane peker på adressen den erstattet", () => {
     "/admin/tester/foreslatte",
     // MASTERPLAN 15.6: verktøyet flyttet til Turnering — se kommentar i faner.ts.
     "/admin/turnering?fane=dubletter",
+    // MASTERPLAN 15.13: sjette fane, hadde ingen vei inn.
+    "/admin/stats/moderering",
   ]);
   assert.equal(new Set(gamle).size, gamle.length, "ingen adresse to ganger");
 });
@@ -50,20 +52,21 @@ test("agent-fanene krever USE_AGENTS, testfanen MANAGE_TESTS", () => {
   // Disse to hadde kun ADMIN/COACH før — sammenslåingen skal ikke stramme heller.
   assert.equal(krav.godkjenninger, null);
   assert.equal(krav.dubletter, null);
+  assert.equal(krav.moderering, null);
 });
 
 test("uten capabilities ser du KUN fanene som aldri krevde noe", () => {
   const synlig = synligeFaner(INGENTING).map((f) => f.id);
-  assert.deepEqual(synlig, ["godkjenninger", "dubletter"]);
+  assert.deepEqual(synlig, ["godkjenninger", "dubletter", "moderering"]);
 });
 
-test("med alle capabilities ser du alle fem", () => {
-  assert.equal(synligeFaner(ALT).length, 5);
+test("med alle capabilities ser du alle seks", () => {
+  assert.equal(synligeFaner(ALT).length, 6);
 });
 
 test("bare USE_AGENTS åpner agent-fanene, ikke testfanen", () => {
   const synlig = synligeFaner((c) => c === Capability.USE_AGENTS).map((f) => f.id);
-  assert.deepEqual(synlig, ["godkjenninger", "agentko", "agentgodkjenn", "dubletter"]);
+  assert.deepEqual(synlig, ["godkjenninger", "agentko", "agentgodkjenn", "dubletter", "moderering"]);
 });
 
 test("?fane= kan ALDRI åpne en fane du ikke har tilgang til", () => {
@@ -84,6 +87,7 @@ test("gyldig ?fane= respekteres når du har tilgang", () => {
   const synlig = synligeFaner(ALT);
   assert.equal(velgFane("tester", synlig), "tester");
   assert.equal(velgFane("dubletter", synlig), "dubletter");
+  assert.equal(velgFane("moderering", synlig), "moderering");
 });
 
 test("faller til første synlige fane når standardfanen er borte", () => {
@@ -107,6 +111,7 @@ test("standardfanen har ren adresse, resten har ?fane=", () => {
   assert.equal(koHref("godkjenninger"), "/admin/ko");
   assert.equal(koHref("agentko"), "/admin/ko?fane=agentko");
   assert.equal(koHref("dubletter"), "/admin/ko?fane=dubletter");
+  assert.equal(koHref("moderering"), "/admin/ko?fane=moderering");
 });
 
 /**

@@ -82,15 +82,26 @@ export function AoKort({
   );
 }
 
-type AoKnappVariant = "primaer" | "dim" | "lenke";
+/**
+ * `dim` her er fasitens SEKUNDÆR (hairline-ring, mute tekst) — navnet er en
+ * historisk uheldig kollisjon med `TL.dim`-tokenet, ikke det samme. Fasitens
+ * TERTIÆR (dim-flate, `TL.text`) er egen variant: `tertiaer`.
+ */
+type AoKnappVariant = "primaer" | "dim" | "tertiaer" | "lenke";
+
+/**
+ * `full`: AO-01 Cockpit 393 / AO-12g Godkjenn 393 bruker en 44px
+ * full-bredde-CTA på telefon, som blir fasitens 40px auto-bredde-pille fra
+ * Mac-railens brekkpunkt (1101 — samme grense som AgenticosSkall bruker for
+ * rail vs. mobil-piller). Høyde/bredde styres da av Tailwind, ikke inline,
+ * så CSS-media-spørringen faktisk virker.
+ */
+const AO_FULL_CLASS = "w-full h-11 justify-center min-[1101px]:w-auto min-[1101px]:h-10";
 
 function knappStil(variant: AoKnappVariant, full?: boolean): CSSProperties {
   const base: CSSProperties = {
     display: "inline-flex",
     alignItems: "center",
-    justifyContent: full ? "center" : undefined,
-    height: 40,
-    minHeight: 40,
     padding: variant === "primaer" ? "0 20px" : "0 16px",
     borderRadius: 999,
     fontSize: variant === "lenke" ? 12 : 14,
@@ -100,10 +111,14 @@ function knappStil(variant: AoKnappVariant, full?: boolean): CSSProperties {
     textDecoration: "none",
     border: "none",
     background: "transparent",
-    width: full ? "100%" : undefined,
   };
+  if (!full) {
+    base.height = 40;
+    base.minHeight = 40;
+  }
   if (variant === "primaer") return { ...base, background: TL.fill, color: TL.onFill };
   if (variant === "lenke") return { ...base, height: "auto", minHeight: 0, padding: 0, color: TL.viz.target };
+  if (variant === "tertiaer") return { ...base, background: TL.dim, color: TL.text };
   return { ...base, color: TL.mute, boxShadow: `inset 0 0 0 1px ${TL.hair}` };
 }
 
@@ -125,15 +140,16 @@ export function AoKnapp({
   type?: "button" | "submit";
 }) {
   const style = { ...knappStil(variant, full), opacity: disabled ? 0.55 : 1 };
+  const className = full ? `${AO_PRESS} ${AO_FULL_CLASS}` : AO_PRESS;
   if (href && !disabled) {
     return (
-      <Link href={href} className={AO_PRESS} style={style}>
+      <Link href={href} className={className} style={style}>
         {children}
       </Link>
     );
   }
   return (
-    <button type={type} disabled={disabled} onClick={onClick} className={AO_PRESS} style={style}>
+    <button type={type} disabled={disabled} onClick={onClick} className={className} style={style}>
       {children}
     </button>
   );
@@ -220,6 +236,16 @@ export function AoTom({
   );
 }
 
+/**
+ * AO-11 «Runtime nede». I fasiten er dette en egen, eksklusiv skjerm — der
+ * har `primaer` lov til å være hvit. Overalt i denne appen vises kortet
+ * derimot som et varselbanner ØVERST på en skjerm som kan ha sin egen hvite
+ * primær lenger ned (Cockpits Kjør/Godkjenn, Run-detaljs Godkjenn resultat).
+ * Send derfor `primaer` inn med `AoKnapp`s default (hairline) variant når
+ * skjermen har en annen primær — kun når dette kortet er skjermens ENESTE
+ * handling skal `primaer` få `variant="primaer"` — ellers ender skjermen med
+ * to hvite knapper, som bryter regelen «én hvit primær per skjerm».
+ */
 export function AoFeilKort({
   tittel,
   tekst,

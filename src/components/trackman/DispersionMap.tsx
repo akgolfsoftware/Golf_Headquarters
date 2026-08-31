@@ -1,30 +1,40 @@
 "use client";
 
 /**
- * DispersionMap — TM-11 hero-komponenten. Topp-syn scatter av TrackMan-slag
- * med 1σ/2σ-ellipse, stiplet mållinje og tre bøtter (68/27/5-mønsteret).
- * Ren visning — all regning kommer ferdig fra
+ * DispersionMap — TM-11 hero-komponenten, samme visning som TM-08 (Innspill/
+ * Driver-økt) og TM-09. Topp-syn scatter av TrackMan-slag over et dekorativt
+ * hullkart (TM-07 HoleMapBase), med 1σ/2σ-ellipse, stiplet mållinje og tre
+ * bøtter (68/27/5-mønsteret). Ren visning — all regning kommer ferdig fra
  * `src/lib/trackman/dispersion-map.ts` (computeTrackManDispersionMap).
  *
+ * Fasit: designsystem/train-lock/TM-07 Hullkart komponenter.dc.html
+ * Fasit: designsystem/train-lock/TM-08 Okt med hullkart.dc.html
  * Fasit: designsystem/train-lock/HANDOFF.md §LANSERINGSKJERNE (TM-11) +
  * §TRACKMAN (TM-00 TmDispersionPlot) + TM-08f (slag-ark fra prikk).
- * Tokens: KUN TL.* (train-lock.ts) — aldri T.* (Paper).
+ * Tokens: KUN TL.* (train-lock.ts) — aldri T.* (Paper). Terreng-fargene bak
+ * kartet er komponent-scopet (HoleMap.tsx), se forklaring der.
  *
  * Prikker er ALLTID #B08968 (TL.viz.dot) uansett bøtte — bøtte-fargene
  * (good/acceptable/disaster) brukes KUN i bøtte-baren under kartet og ALDRI
  * som per-prikk-farge (HANDOFF: «ikke som generell fargekoding»). Valgt/siste
- * slag = TL.fill-ring (mørk: hvit, lys: sort). 1σ-ellipsen er KUN tegnet i
- * mørk fasit — C8 lar unntaket stå. Outliers dempes med TL.opasitet.outlier.
+ * slag = hvit ring (fasitens `#F5F5F5`, uendret i lys — samme som TM-07/08f
+ * tegner ringen i begge tema). 1σ-ellipsen er KUN tegnet i mørk fasit — C8
+ * lar unntaket stå. Outliers dempes med TL.opasitet.outlier.
  */
 
 import { useMemo } from "react";
 import { TL } from "@/lib/v2/train-lock";
+import {
+  HOLE_MAP_TARGET,
+  HOLE_MAP_VIEWBOX,
+  HoleMapTargetLine,
+  HoleMapTerrain,
+  HoleMapTerrainStyle,
+  holeMapProjection,
+  type HoleMapVariant,
+} from "./HoleMap";
 import type { DispersionMapShot } from "@/lib/trackman/dispersion-map";
 import type { DispersionEllipse } from "@/lib/gameplan/dispersion";
-
-const VIEW_W = 320;
-const VIEW_H = 260;
-const PAD = 28;
 
 export type SigmaLevel = 1 | 2;
 
@@ -38,6 +48,8 @@ export interface DispersionMapProps {
   onSelectShot: (shot: DispersionMapShot) => void;
   /** Vis bias-pil fra senter (0,0) til snitt-punkt. Toggle, AV som standard (HANDOFF). */
   showBiasArrow: boolean;
+  /** TM-07: "tee" (driver/tre — helhullkart) eller "approach" (jern/wedge — greenkart). */
+  variant?: HoleMapVariant;
 }
 
 export function DispersionMap({
@@ -49,32 +61,30 @@ export function DispersionMap({
   selectedShotId,
   onSelectShot,
   showBiasArrow,
+  variant = "approach",
 }: DispersionMapProps) {
   const ellipse = sigma === 1 ? oneSigmaEllipse : twoSigmaEllipse;
+  const anchor = HOLE_MAP_TARGET[variant];
 
   const { toX, toY, meanLateral, meanDistance } = useMemo(() => {
-    const lateralVals = shots.map((s) => s.point.lateral);
-    const distanceVals = shots.map((s) => s.point.distance);
+    const points = shots.map((s) => s.point);
     const ellipseReach = ellipse ? Math.max(ellipse.semiMajor, ellipse.semiMinor) : 0;
-    const maxLateral = Math.max(10, ellipseReach, ...lateralVals.map((v) => Math.abs(v)), 0);
-    const maxDistance = Math.max(10, ellipseReach, ...distanceVals.map((v) => Math.abs(v)), 0);
-    // Kvadratisk skala (samme meter/px begge retninger) — ellipsens form er ekte.
-    const scale = Math.min((VIEW_W - PAD * 2) / (maxLateral * 2), (VIEW_H - PAD * 2) / (maxDistance * 2));
-    const cx = VIEW_W / 2;
-    const cy = VIEW_H / 2;
+    const { toX, toY } = holeMapProjection(points, ellipseReach, variant);
+    const lateralVals = points.map((p) => p.lateral);
+    const distanceVals = points.map((p) => p.distance);
     return {
-      toX: (lateral: number) => cx + lateral * scale,
-      // Distance er "carry forbi snitt" — lang = opp på skjermen (mindre y).
-      toY: (distance: number) => cy - distance * scale,
+      toX,
+      toY,
       meanLateral: lateralVals.length > 0 ? lateralVals.reduce((a, b) => a + b, 0) / lateralVals.length : 0,
       meanDistance: distanceVals.length > 0 ? distanceVals.reduce((a, b) => a + b, 0) / distanceVals.length : 0,
     };
-  }, [shots, ellipse]);
+  }, [shots, ellipse, variant]);
 
   const lastShotId = shots.length > 0 ? shots[shots.length - 1].id : null;
 
   return (
     <div
+      className="tm-holemap-terrain"
       style={{
         background: TL.elev,
         border: `1px solid ${TL.hair}`,
@@ -82,24 +92,15 @@ export function DispersionMap({
         padding: 4,
       }}
     >
+      <HoleMapTerrainStyle />
       <svg
-        viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
-        width="100%"
-        height={240}
+        viewBox={HOLE_MAP_VIEWBOX}
         role="img"
         aria-label="Spredningskart for TrackMan-slag"
+        style={{ display: "block", width: "100%", aspectRatio: "240 / 170", borderRadius: TL.radius.card }}
       >
-        {/* Stiplet mållinje — vertikal, lateral = 0 (sikte-linjen). */}
-        <line
-          x1={toX(0)}
-          y1={PAD / 2}
-          x2={toX(0)}
-          y2={VIEW_H - PAD / 2}
-          stroke={TL.viz.target}
-          strokeOpacity={0.35}
-          strokeWidth={1}
-          strokeDasharray="4 5"
-        />
+        <HoleMapTerrain variant={variant} />
+        <HoleMapTargetLine variant={variant} target={{ x: anchor.x, y: anchor.y }} />
 
         {/* 1σ/2σ-ellipse — kun når hasEllipse. */}
         {hasEllipse && ellipse && (
