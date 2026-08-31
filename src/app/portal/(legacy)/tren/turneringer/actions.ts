@@ -508,7 +508,7 @@ export async function opprettManuellTurnering(input: {
   });
 
   revalidatePath("/portal/tren/turneringer");
-  revalidatePath("/admin/tournaments");
+  revalidatePath("/admin/turnering");
   revalidatePath("/turneringer");
   return { ok: true, id: turnering.id, slug: turnering.slug };
 }

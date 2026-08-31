@@ -60,7 +60,11 @@ export const KO_FANER: KoFane[] = [
   {
     id: "dubletter",
     label: "Dubletter",
-    gammelHref: "/admin/tournaments/dubletter",
+    // MASTERPLAN 15.6: selve dubletter-VERKTØYET flyttet til /admin/turnering
+    // — /admin/tournaments/dubletter redirecter dit nå, ikke hit. Denne fanen
+    // viser fortsatt dubletter som sak-type (deler loaderen med Turnering),
+    // så feltet peker på verktøyets nye adresse, ikke en gammel Kø-kilde.
+    gammelHref: "/admin/turnering?fane=dubletter",
     krever: null,
   },
 ];
