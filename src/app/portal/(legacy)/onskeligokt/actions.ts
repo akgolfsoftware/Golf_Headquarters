@@ -35,5 +35,5 @@ export async function sendOnskeligOkt(input: OnskeligOktInput) {
 
   revalidatePath("/portal");
   revalidatePath("/portal/onskeligokt");
-  redirect("/portal/onskeligokt?sent=1");
+  redirect("/portal/onskeligokt/bekreftet");
 }
