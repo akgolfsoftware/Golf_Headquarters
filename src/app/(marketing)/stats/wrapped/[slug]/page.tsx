@@ -26,10 +26,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const aar = new Date().getFullYear();
   return {
     title: `${player.name}s golfsesong ${aar} | AK Golf Stats`,
-    description: `Se ${player.name}s sesong ${aar} i tall: runder, snittscore, ranking og mer.`,
+    description: `Se ${player.name}s sesong ${aar} i tall: runder, snittscore, beste runde og mer.`,
     openGraph: {
       title: `${player.name}s golfsesong ${aar}`,
-      description: `Runder, snittscore, beste resultater og norsk ranking for ${player.name}.`,
+      description: `Runder, snittscore og beste resultater for ${player.name}.`,
       url: `https://akgolf.no/stats/wrapped/${slug}`,
     },
   };
@@ -103,11 +103,12 @@ export default async function WrappedPage({ params }: Props) {
     ? parseFloat((snittScore - fjoraarsSnitt).toFixed(1))
     : 0;
 
-  // Estimated HCP (simplified WHS formula)
+  // Estimert HCP (forenklet WHS-formel) — merkes eksplisitt som estimat i sliden (TruthLayer).
   const estimertHcp = snittScore > 0 ? Math.max(0, ((snittScore - 70) * 0.93)).toFixed(1) : "N/A";
-  const fodselsAar = player.birthYear;
 
-  // Build slides
+  // Build slides — kun slides med ekte datagrunnlag tas med (TruthLayer, 0.12):
+  // ranking-, sammenlignings- og streak-slidene viste hardkodede tall og er fjernet;
+  // kohort-persentil på åpen flate står dessuten på «Ikke bygg»-lista (STEG 16).
   const delLenke = `https://akgolf.no/stats/wrapped/${slug}`;
 
   const slides: WrappedSlideData[] = [
@@ -121,81 +122,65 @@ export default async function WrappedPage({ params }: Props) {
       type: "runder",
       bgVariant: "forest-dark",
       antall: antallRunder,
-      // Ekte fjorårstall fra DB. Mangler fjorårsdata → samme som i år (0 diff).
-      fjoraarsAntall: harFjoraar ? fjoraarsAntall : antallRunder,
-      norskSnitt: 28,
+      // Ekte fjorårstall fra DB; null når fjorårsdata mangler → setningen utelates.
+      fjoraarsAntall: harFjoraar ? fjoraarsAntall : null,
     },
-    {
+  ];
+
+  if (antallRunder > 0) {
+    slides.push({
       type: "snitt",
       bgVariant: "lime",
       snittScore: parseFloat(snittScore.toFixed(1)),
       estimertHcp,
-      norgeSnittHcp: "18",
-    },
-    {
+    });
+  }
+
+  if (besteEntry) {
+    slides.push({
       type: "beste",
       bgVariant: "forest",
-      score: besteScore || 72,
-      toPar: (besteScore || 72) - 72,
-      turnering: besteEntry?.tournament.name ?? "Ukjent turnering",
-      dato: besteEntry?.tournament.startDate
-        ? new Date(besteEntry.tournament.startDate).toLocaleDateString("nb-NO", { day: "numeric", month: "long" }).toUpperCase()
-        : "2026",
-      putterCount: 28,
-    },
-    {
+      score: besteScore,
+      // Til-par leses fra scoreToPar (banenormalisert), aldri utledet fra par 72
+      // (datakartleggingen 30.08). null → linjen utelates.
+      toPar: besteEntry.scoreToPar,
+      turnering: besteEntry.tournament.name,
+      dato: new Date(besteEntry.tournament.startDate)
+        .toLocaleDateString("nb-NO", { day: "numeric", month: "long" })
+        .toUpperCase(),
+    });
+  }
+
+  if (unikeKlubber.length > 0 && mestSpilte) {
+    slides.push({
       type: "klubber",
       bgVariant: "offwhite",
-      antallKlubber: unikeKlubber.length || 1,
+      antallKlubber: unikeKlubber.length,
       klubbListe: unikeKlubber.slice(0, 8),
-      mestSpilteKlubb: mestSpilte?.[0] ?? "Hjemmebane",
-      mestSpilteAntall: mestSpilte?.[1] ?? antallRunder,
-    },
-    {
+      mestSpilteKlubb: mestSpilte[0],
+      mestSpilteAntall: mestSpilte[1],
+    });
+  }
+
+  if (harFjoraar) {
+    slides.push({
       type: "utvikling",
       bgVariant: "forest",
-      // Ekte år-over-år-endring fra DB. 0 når fjorårsdata mangler.
       forbedring,
-      betterThanPercent: 68,
-      // Kun ekte datapunkter: i fjor + i år (når begge finnes).
-      data: harFjoraar
-        ? [
-            { aar: aar - 1, snitt: parseFloat(fjoraarsSnitt.toFixed(1)) },
-            { aar, snitt: parseFloat(snittScore.toFixed(1)) },
-          ]
-        : [{ aar, snitt: parseFloat(snittScore.toFixed(1)) }],
-    },
-    {
-      type: "streak",
-      bgVariant: "lime",
-      streak: 5,
-      kontekst: "I løpet av sommersesongen: turneringer rygg-i-rygg.",
-    },
-    {
-      type: "ranking",
-      bgVariant: "forest-dark",
-      rankNasjon: 47,
-      totalNasjon: 1547,
-      rankAldersgruppe: 12,
-      totalAldersgruppe: 142,
-      fodselsAar,
-    },
-    {
-      type: "sammenligning",
-      bgVariant: "forest",
-      ligneNavn: "Kris Ventura",
-      ligneAar: 2018,
-      ligneKontekst: "Lignende snittscore, alder og turneringsvolum. Kris ble pro 2 år etter dette.",
-      initials: "KV",
-    },
-    {
-      type: "avslutning",
-      bgVariant: "lime",
-      navn: player.name.split(" ")[0],
-      aar,
-      delLenke,
-    },
-  ];
+      data: [
+        { aar: aar - 1, snitt: parseFloat(fjoraarsSnitt.toFixed(1)) },
+        { aar, snitt: parseFloat(snittScore.toFixed(1)) },
+      ],
+    });
+  }
+
+  slides.push({
+    type: "avslutning",
+    bgVariant: "lime",
+    navn: player.name.split(" ")[0],
+    aar,
+    delLenke,
+  });
 
   return (
     <StatsLegacyShell>

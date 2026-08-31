@@ -16,9 +16,6 @@ export type SlideType =
   | "beste"
   | "klubber"
   | "utvikling"
-  | "streak"
-  | "ranking"
-  | "sammenligning"
   | "avslutning";
 
 interface SlideBase {
@@ -35,24 +32,24 @@ export interface IntroSlide extends SlideBase {
 export interface RundeSlide extends SlideBase {
   type: "runder";
   antall: number;
-  fjoraarsAntall: number;
-  norskSnitt: number;
+  /** Ekte fjorårstall fra basen; null når fjorårsdata mangler — setningen utelates da (TruthLayer). */
+  fjoraarsAntall: number | null;
 }
 
 export interface SnittSlide extends SlideBase {
   type: "snitt";
   snittScore: number;
+  /** Forenklet WHS-estimat — vises alltid merket som estimat (TruthLayer). */
   estimertHcp: string;
-  norgeSnittHcp: string;
 }
 
 export interface BesteSlide extends SlideBase {
   type: "beste";
   score: number;
-  toPar: number;
+  /** Fra scoreToPar (banenormalisert); null når den mangler — linjen utelates, aldri utledet fra par 72. */
+  toPar: number | null;
   turnering: string;
   dato: string;
-  putterCount: number;
 }
 
 export interface KlubberSlide extends SlideBase {
@@ -66,33 +63,7 @@ export interface KlubberSlide extends SlideBase {
 export interface UtviklingSlide extends SlideBase {
   type: "utvikling";
   forbedring: number;
-  betterThanPercent: number;
   data: { aar: number; snitt: number }[];
-}
-
-export interface StreakSlide extends SlideBase {
-  type: "streak";
-  streak: number;
-  kontekst: string;
-}
-
-export interface RankingSlide extends SlideBase {
-  type: "ranking";
-  rankNasjon: number;
-  totalNasjon: number;
-  rankAldersgruppe: number;
-  totalAldersgruppe: number;
-  /** Ekte fødselsår fra basen. `null` når det mangler — da utelates årskull-boksen
-   *  helt, aldri et gjettet år (TruthLayer, Anders 30.08.2026). */
-  fodselsAar: number | null;
-}
-
-export interface SammenligningSlide extends SlideBase {
-  type: "sammenligning";
-  ligneNavn: string;
-  ligneAar: number;
-  ligneKontekst: string;
-  initials: string;
 }
 
 export interface AvslutningSlide extends SlideBase {
@@ -109,9 +80,6 @@ export type WrappedSlideData =
   | BesteSlide
   | KlubberSlide
   | UtviklingSlide
-  | StreakSlide
-  | RankingSlide
-  | SammenligningSlide
   | AvslutningSlide;
 
 // Fargene under er BEVISST hardkodet, ikke tema-tokens: hvert "wrapped"-kort
@@ -208,15 +176,6 @@ export function StatsWrappedSlide({ slide, isActive, delLenke }: StatsWrappedSli
       {slide.type === "utvikling" && (
         <SlideUtvikling slide={slide} accentColor={accentColor} mutedColor={mutedColor} isActive={isActive} />
       )}
-      {slide.type === "streak" && (
-        <SlideStreak slide={slide} accentColor={accentColor} mutedColor={mutedColor} isActive={isActive} />
-      )}
-      {slide.type === "ranking" && (
-        <SlideRanking slide={slide} accentColor={accentColor} mutedColor={mutedColor} isActive={isActive} />
-      )}
-      {slide.type === "sammenligning" && (
-        <SlideSammenligning slide={slide} accentColor={accentColor} mutedColor={mutedColor} />
-      )}
       {slide.type === "avslutning" && (
         <SlideAvslutning slide={slide} accentColor={accentColor} mutedColor={mutedColor} delLenke={delLenke ?? slide.delLenke} />
       )}
@@ -260,12 +219,13 @@ function SlideRunder({ slide, accentColor, mutedColor, isActive }: { slide: Rund
       <div style={{ fontFamily: "var(--font-display)", fontSize: 24, fontWeight: 500, marginTop: 16, lineHeight: 1.3 }}>
         Du spilte {slide.antall} runder i {new Date().getFullYear()}.
       </div>
-      <div style={{ fontFamily: "var(--font-mono)", fontSize: 13, color: mutedColor, marginTop: 24, lineHeight: 1.6 }}>
-        {slide.antall > slide.fjoraarsAntall
-          ? `Det er ${slide.antall - slide.fjoraarsAntall} fler enn i fjor.`
-          : `Det er ${slide.fjoraarsAntall - slide.antall} færre enn i fjor.`}
-        {" "}Norske amatører spiller {slide.norskSnitt} i snitt.
-      </div>
+      {slide.fjoraarsAntall !== null && (
+        <div style={{ fontFamily: "var(--font-mono)", fontSize: 13, color: mutedColor, marginTop: 24, lineHeight: 1.6 }}>
+          {slide.antall >= slide.fjoraarsAntall
+            ? `Det er ${slide.antall - slide.fjoraarsAntall} fler enn i fjor.`
+            : `Det er ${slide.fjoraarsAntall - slide.antall} færre enn i fjor.`}
+        </div>
+      )}
     </div>
   );
 }
@@ -283,7 +243,7 @@ function SlideSnitt({ slide, accentColor, mutedColor, isActive }: { slide: Snitt
         Med en snittscore på {slide.snittScore}
       </div>
       <div style={{ fontFamily: "var(--font-mono)", fontSize: 13, color: mutedColor, marginTop: 24, lineHeight: 1.6 }}>
-        Det tilsvarer HCP {slide.estimertHcp}. Norge-snittet for menn er HCP {slide.norgeSnittHcp}.
+        Det tilsvarer omtrent HCP {slide.estimertHcp} (estimat fra snittscore).
       </div>
     </div>
   );
@@ -311,12 +271,11 @@ function SlideBeste({ slide, accentColor, mutedColor }: { slide: BesteSlide; acc
         <div style={{ fontFamily: "var(--font-mono)", fontSize: 80, fontWeight: 500, lineHeight: 1, color: accentColor, fontVariantNumeric: "tabular-nums" }}>
           {slide.score}
         </div>
-        <div style={{ fontFamily: "var(--font-mono)", fontSize: 14, color: accentColor, marginTop: 8 }}>
-          {slide.toPar < 0 ? `${slide.toPar}` : `+${slide.toPar}`} TOT PAR
-        </div>
-      </div>
-      <div style={{ fontFamily: "var(--font-mono)", fontSize: 13, color: mutedColor, lineHeight: 1.6 }}>
-        Du hadde {slide.putterCount} putter den runden — Tour-snitt er 28.5.
+        {slide.toPar !== null && (
+          <div style={{ fontFamily: "var(--font-mono)", fontSize: 14, color: accentColor, marginTop: 8 }}>
+            {slide.toPar < 0 ? `${slide.toPar}` : `+${slide.toPar}`} TOT PAR
+          </div>
+        )}
       </div>
     </div>
   );
@@ -375,9 +334,6 @@ function SlideUtvikling({ slide, accentColor, mutedColor, isActive }: { slide: U
           <MiniTrendLine data={slide.data} accentColor={accentColor} />
         </div>
       )}
-      <div style={{ fontFamily: "var(--font-mono)", fontSize: 13, color: mutedColor, marginTop: 24 }}>
-        Det er {isImproved ? "bedre" : "svakere"} enn {slide.betterThanPercent}% av spillerne i din aldersgruppe.
-      </div>
     </div>
   );
 }
@@ -402,87 +358,6 @@ function MiniTrendLine({ data, accentColor }: { data: { aar: number; snitt: numb
         </g>
       ))}
     </svg>
-  );
-}
-
-function SlideStreak({ slide, accentColor, mutedColor, isActive }: { slide: StreakSlide; accentColor: string; mutedColor: string; isActive: boolean }) {
-  return (
-    <div style={{ textAlign: "center", maxWidth: 480 }}>
-      <div style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.16em", textTransform: "uppercase", color: mutedColor, marginBottom: 16 }}>
-        LENGSTE STREAK
-      </div>
-      <div style={{ fontFamily: "var(--font-mono)", fontSize: "clamp(72px, 14vw, 140px)", fontWeight: 500, lineHeight: 1, color: accentColor, fontVariantNumeric: "tabular-nums" }}>
-        {isActive ? <CountUp value={slide.streak} duration={800} /> : "0"}
-      </div>
-      <div style={{ fontFamily: "var(--font-display)", fontSize: 22, fontWeight: 500, marginTop: 16 }}>
-        dager på rad med runde
-      </div>
-      <div style={{ fontFamily: "var(--font-mono)", fontSize: 13, color: mutedColor, marginTop: 24, lineHeight: 1.6 }}>
-        {slide.kontekst}
-      </div>
-    </div>
-  );
-}
-
-function SlideRanking({ slide, accentColor, mutedColor, isActive }: { slide: RankingSlide; accentColor: string; mutedColor: string; isActive: boolean }) {
-  return (
-    <div style={{ textAlign: "center", maxWidth: 480 }}>
-      <div style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.16em", textTransform: "uppercase", color: mutedColor, marginBottom: 16 }}>
-        NORSK RANKING
-      </div>
-      <div style={{ fontFamily: "var(--font-mono)", fontSize: 24, letterSpacing: "0.06em", color: mutedColor, marginBottom: 8 }}>
-        TOPP
-      </div>
-      <div style={{ fontFamily: "var(--font-mono)", fontSize: "clamp(80px, 16vw, 160px)", fontWeight: 500, lineHeight: 0.9, color: accentColor, fontVariantNumeric: "tabular-nums" }}>
-        {isActive ? <CountUp value={slide.rankNasjon} duration={800} /> : "0"}
-      </div>
-      <div style={{ fontFamily: "var(--font-mono)", fontSize: 18, color: mutedColor, marginTop: 12 }}>
-        av {slide.totalNasjon.toLocaleString("nb-NO")} norske spillere
-      </div>
-      {slide.fodselsAar !== null && (
-        <div style={{ marginTop: 32, background: AK.farge.hvitA12, borderRadius: 12, padding: "16px 24px", display: "inline-block" }}>
-          <div style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: mutedColor, marginBottom: 8 }}>
-            {slide.fodselsAar}-ÅRSKULLET
-          </div>
-          <div style={{ fontFamily: "var(--font-mono)", fontSize: 28, fontWeight: 500, color: accentColor }}>
-            #{slide.rankAldersgruppe} av {slide.totalAldersgruppe}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function SlideSammenligning({ slide, accentColor, mutedColor }: { slide: SammenligningSlide; accentColor: string; mutedColor: string }) {
-  return (
-    <div style={{ textAlign: "center", maxWidth: 480 }}>
-      <div style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.16em", textTransform: "uppercase", color: mutedColor, marginBottom: 32 }}>
-        SPILLINGEN DIN LIGNER
-      </div>
-      <div style={{
-        width: 96, height: 96,
-        borderRadius: "50%",
-        background: accentColor,
-        color: slide.bgVariant === "lime" ? TL.fill : AK.wrapped.textOnLight,
-        display: "grid",
-        placeItems: "center",
-        fontFamily: "var(--font-mono)",
-        fontSize: 32,
-        fontWeight: 600,
-        margin: "0 auto 24px",
-      }}>
-        {slide.initials}
-      </div>
-      <div style={{ fontFamily: "var(--font-display)", fontSize: 32, fontWeight: 600, fontStyle: "italic", lineHeight: 1.2 }}>
-        {slide.ligneNavn}
-      </div>
-      <div style={{ fontFamily: "var(--font-mono)", fontSize: 14, color: mutedColor, marginTop: 8 }}>
-        i {slide.ligneAar}
-      </div>
-      <div style={{ fontFamily: "var(--font-mono)", fontSize: 13, color: mutedColor, marginTop: 24, lineHeight: 1.7 }}>
-        {slide.ligneKontekst}
-      </div>
-    </div>
   );
 }
 
