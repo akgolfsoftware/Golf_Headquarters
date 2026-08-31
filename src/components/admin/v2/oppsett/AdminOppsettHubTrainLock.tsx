@@ -78,8 +78,8 @@ export interface AdminOppsettHubData {
 
 const RAD_HREF = "/admin/settings";
 
-function radHref(rad: OppsettRadKey): string {
-  return `${RAD_HREF}?rad=${rad}`;
+function radHref(rad: OppsettRadKey, baseHref: string): string {
+  return `${baseHref}?rad=${rad}`;
 }
 
 /** Akademi — organisasjonens identitet. Ingen redigerbare felter er tegnet i fasiten (Google-synk hører i Kalender-bølgen). */
@@ -173,17 +173,31 @@ function panelFor(rad: OppsettRadKey, data: AdminOppsettHubData) {
   return <AkademiPanel data={data.akademi} />;
 }
 
-function OppsettListe({ data, valgtRad }: { data: AdminOppsettHubData; valgtRad: OppsettRadKey }) {
+function OppsettListe({
+  data,
+  valgtRad,
+  somFane,
+  baseHref,
+}: {
+  data: AdminOppsettHubData;
+  valgtRad: OppsettRadKey;
+  somFane: boolean;
+  baseHref: string;
+}) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 18, minWidth: 0 }}>
-      <TlTittel sub="AK Golf Academy">Oppsett</TlTittel>
-      <div style={{ fontSize: 13, color: TL.mute }}>Kjedelig er riktig</div>
+      {!somFane && (
+        <>
+          <TlTittel sub="AK Golf Academy">Oppsett</TlTittel>
+          <div style={{ fontSize: 13, color: TL.mute }}>Kjedelig er riktig</div>
+        </>
+      )}
 
       <TlRadGruppe>
         <TlRad
           title="Akademi"
           sub="Navn, klubb, sesong"
-          href={radHref("akademi")}
+          href={radHref("akademi", baseHref)}
           last={false}
         />
         <TlRad
@@ -191,17 +205,26 @@ function OppsettListe({ data, valgtRad }: { data: AdminOppsettHubData; valgtRad:
           sub={data.varslerBeskrivelse}
           href="/admin/varsler"
         />
-        <TlRad
-          title="Tilgang og roller"
-          sub="Coach · spiller · forelder"
-          meta={String(data.tilgang.totalCount)}
-          href={radHref("tilgang")}
-        />
-        <TlRad
-          title="Klubb og steder"
-          sub={data.klubb.lokasjoner[0]?.navn ?? "Ingen registrert"}
-          href={radHref("klubb")}
-        />
+        {/*
+         * Tilgang og roller / Klubb og steder er egne faner i /admin/oppsett
+         * (MASTERPLAN 15.3) — vist her ville duplisert innholdet. Beholdes
+         * KUN når huben brukes utenfor Oppsett (somFane=false).
+         */}
+        {!somFane && (
+          <>
+            <TlRad
+              title="Tilgang og roller"
+              sub="Coach · spiller · forelder"
+              meta={String(data.tilgang.totalCount)}
+              href={radHref("tilgang", baseHref)}
+            />
+            <TlRad
+              title="Klubb og steder"
+              sub={data.klubb.lokasjoner[0]?.navn ?? "Ingen registrert"}
+              href={radHref("klubb", baseHref)}
+            />
+          </>
+        )}
         <TlRad
           title="Konto"
           sub={data.konto.navn}
@@ -220,7 +243,23 @@ function OppsettListe({ data, valgtRad }: { data: AdminOppsettHubData; valgtRad:
   );
 }
 
-export function AdminOppsettHubTrainLock({ data, rad }: { data: AdminOppsettHubData; rad: OppsettRadKey | null }) {
+export function AdminOppsettHubTrainLock({
+  data,
+  rad,
+  somFane = false,
+  baseHref = RAD_HREF,
+}: {
+  data: AdminOppsettHubData;
+  rad: OppsettRadKey | null;
+  /**
+   * True når komponenten står som «Akademi»-fanen i /admin/oppsett (MASTERPLAN
+   * 15.3). Da skjuler den egen «Oppsett»-tittel og rad-siden eier ikke lenger
+   * Tilgang/Klubb — de er blitt egne faner, og vises derfor ikke her.
+   */
+  somFane?: boolean;
+  /** Adressen radlenkene peker mot — `/admin/settings` alene, `/admin/oppsett` som fane. */
+  baseHref?: string;
+}) {
   const desktop = useInspektorSynlig();
   const valgtRad: OppsettRadKey = rad ?? "akademi";
 
@@ -228,7 +267,7 @@ export function AdminOppsettHubTrainLock({ data, rad }: { data: AdminOppsettHubD
     // Mobil, rad valgt → kun detaljen (fasitens push-mønster), med tilbake til hub-en.
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 14, minWidth: 0 }}>
-        <TlTilbake href={RAD_HREF}>Oppsett</TlTilbake>
+        <TlTilbake href={baseHref}>Oppsett</TlTilbake>
         {panelFor(valgtRad, data)}
       </div>
     );
@@ -236,7 +275,7 @@ export function AdminOppsettHubTrainLock({ data, rad }: { data: AdminOppsettHubD
 
   return (
     <MasterDetalj panel={panelFor(valgtRad, data)}>
-      <OppsettListe data={data} valgtRad={valgtRad} />
+      <OppsettListe data={data} valgtRad={valgtRad} somFane={somFane} baseHref={baseHref} />
     </MasterDetalj>
   );
 }

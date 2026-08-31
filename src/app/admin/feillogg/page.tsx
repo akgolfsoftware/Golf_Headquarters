@@ -72,7 +72,7 @@ export default async function AdminFeilloggPage() {
 
   return (
     <V2Shell bredde="kolonne" aktiv="innstillinger" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <TlTilbake href="/admin/settings">Innstillinger</TlTilbake>
+      <TlTilbake href="/admin/oppsett">Innstillinger</TlTilbake>
       <AdminFeilloggTrainLock data={data} />
     </V2Shell>
   );

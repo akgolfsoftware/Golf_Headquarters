@@ -1,10 +1,7 @@
 /**
- * /admin/team er FOLDET INN i Oppsett → «Tilgang og roller» (T13, 26.08.2026).
- *
- * Duplikatet mellom denne ruten og /admin/settings?tab=team (gammel Paper-
- * fane) er løst ved å samle begge i AdminOppsettHubTrainLock («Tilgang og
- * roller»-panelet i /admin/settings). Samme datakontrakt/spørring lever nå
- * i src/app/admin/settings/page.tsx.
+ * /admin/team er FOLDET INN i Oppsett → «Tilgang»-fanen (MASTERPLAN 15.3,
+ * tidligere T13 26.08.2026 mot /admin/settings?rad=tilgang — den fanen er nå
+ * eget toppnivå i /admin/oppsett, ikke en rad i Akademi-hub-en).
  */
 
 import { redirect } from "next/navigation";
@@ -12,5 +9,5 @@ import { redirect } from "next/navigation";
 export const dynamic = "force-dynamic";
 
 export default function AdminTeamRedirect() {
-  redirect("/admin/settings?rad=tilgang");
+  redirect("/admin/oppsett?fane=tilgang");
 }

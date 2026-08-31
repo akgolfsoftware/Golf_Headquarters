@@ -19,9 +19,12 @@ import type { PeriodeNavnLabel } from "@/app/admin/settings/periode-navn/labels"
 export function PeriodeNavnV2({
   oversikt,
   typer,
+  somFane = false,
 }: {
   oversikt: PeriodeNavnOversikt;
   typer: PeriodeNavnLabel[];
+  /** True når komponenten står som «Perioder»-fanen i /admin/oppsett (MASTERPLAN 15.3). */
+  somFane?: boolean;
 }) {
   const statusTone = oversikt.ukjente.length > 0 ? ("warn" as const) : ("lime" as const);
   const statusTekst =
@@ -33,9 +36,13 @@ export function PeriodeNavnV2({
     <div data-paper-slug="agencyos-oppsett" style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 900 }}>
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>
         <div>
-          <Caps>Metodikk</Caps>
-          <Tittel em="navn">Periode</Tittel>
-          <p style={{ fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute, lineHeight: 1.55, margin: "10px 0 0", maxWidth: 680 }}>
+          {!somFane && (
+            <>
+              <Caps>Metodikk</Caps>
+              <Tittel em="navn">Periode</Tittel>
+            </>
+          )}
+          <p style={{ fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute, lineHeight: 1.55, margin: somFane ? 0 : "10px 0 0", maxWidth: 680 }}>
             Et periodenavn som ikke gjenkjennes (f.eks. «Sommersamling») valideres aldri mot
             CANON — heller ikke, det gjettes ikke feil krav. Koble navnet til en periodetype her
             for å slå på validering for den perioden.
