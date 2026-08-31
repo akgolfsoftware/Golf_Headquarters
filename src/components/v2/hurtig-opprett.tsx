@@ -13,7 +13,7 @@
  * Tre valg:
  *  - «Ny booking» → /admin/bookinger/ny?start=<dato>T<klokkeslett>
  *    (wizarden leser ?start= og prefyller Dato & tid).
- *  - «Ny økt» → /admin/planlegge?start=YYYY-MM-DDTHH:mm (prefyller øktplanlegger).
+ *  - «Ny økt» → /admin/plan?start=YYYY-MM-DDTHH:mm (prefyller øktplanlegger).
  *  - «Ny hendelse» (I3) → /admin/kalender/hendelse/ny?start=<dato>T<klokkeslett>
  *    — ferie/stengt anlegg/møte som blokkerer booking i tidsrommet.
  */
@@ -297,7 +297,7 @@ export function HurtigOpprett({ dato, klokkeslett, onLukk }: HurtigOpprettProps)
             sub="Veiviser med dato og tid ferdig utfylt"
           />
           <Valg
-            href={`/admin/planlegge?start=${encodeURIComponent(startParam)}`}
+            href={`/admin/plan?start=${encodeURIComponent(startParam)}`}
             icon="plus"
             tittel="Ny økt"
             sub={`${datoLabel} · ${klokkeslett} — åpner planlegger med tid ferdig`}

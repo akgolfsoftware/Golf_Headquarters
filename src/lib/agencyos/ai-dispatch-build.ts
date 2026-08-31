@@ -193,7 +193,7 @@ export function byggAiDispatch(input: AiDispatchInput): AiDispatchData {
       tilLabel: TIL_LABEL.workbench,
       oppgave: "Planlegg neste uke i Workbench",
       ferdigNar: "Ukeplan publisert eller lagret som utkast",
-      href: "/admin/planlegge",
+      href: "/admin/plan",
       prioritet: "normal",
     });
   }
@@ -218,7 +218,7 @@ export function byggAiDispatch(input: AiDispatchInput): AiDispatchData {
                   }
                 : {
                     tekst: "Ingen kø — planlegg eller start agent-team",
-                    href: "/admin/planlegge",
+                    href: "/admin/plan",
                   };
 
   return {

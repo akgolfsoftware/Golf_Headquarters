@@ -101,7 +101,7 @@ export default async function PlanTemplateDetailPage({
   return (
     <div style={TL_SCOPE}>
       <V2Shell bredde="kolonne" aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>
-        <TilbakeLenke href="/admin/plan-templates">Plan-maler</TilbakeLenke>
+        <TilbakeLenke href="/admin/plan/maler">Plan-maler</TilbakeLenke>
         <AdminPlanMalDetaljV2 template={data} />
       </V2Shell>
     </div>

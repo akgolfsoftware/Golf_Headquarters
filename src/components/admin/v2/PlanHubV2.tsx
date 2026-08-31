@@ -7,9 +7,11 @@
  * AG-06b iPad, AG-06c Mac). Hub-prinsipp fra fasiten: «se og velg» — én hvit
  * primær CTA («Åpne uke i Workbench»), ingen redigering her. Mobil (AG-06a)
  * og desktop (AG-06b/c slått sammen til én md:/lg:-variant, se CLAUDE.md
- * §Design «port oppførsel/hierarki, ikke HTML 1:1») viser fem rader med
+ * §Design «port oppførsel/hierarki, ikke HTML 1:1») viser seks rader med
  * ekte tall (Ukemaler/Treningsprogram/Månedsplaner/Standardøkter/
- * Øvelsesbank) — datakontrakt bygget i `src/app/admin/planlegge/page.tsx`.
+ * Øvelsesbank/Teknisk plan) — datakontrakt bygget i
+ * `src/app/admin/plan/page.tsx` (MASTERPLAN 15.9, flyttet fra
+ * admin/planlegge/page.tsx — «Teknisk plan» lagt til som sjette rad).
  *
  * Månedsplaner har ingen modell i skjemaet ennå (måned/år er bevisst
  * utenfor bølge 1) — raden vises alltid med 0 og er aria-disabled, aldri
@@ -21,13 +23,15 @@
 import Link from "next/link";
 import { TL } from "@/lib/v2/train-lock";
 import { Icon } from "@/components/v2/icon";
+import { TlKnapp } from "@/components/admin/v2/oppsett/tl-kit";
 
 export type PlanHubRadId =
   | "ukemaler"
   | "program"
   | "maanedsplaner"
   | "standardokter"
-  | "ovelsesbank";
+  | "ovelsesbank"
+  | "tekniskplan";
 
 export interface PlanHubRad {
   id: PlanHubRadId;
@@ -221,19 +225,26 @@ export function PlanHubV2({ data }: { data: PlanHubData }) {
     <>
       {/* Mobil — AG-06a: hub-liste + primær CTA nederst i innholdsflyten. */}
       <div className="lg:hidden" style={{ padding: "4px 0 24px" }}>
-        <CapsLabel>Academy · sesong {new Date().getFullYear()}</CapsLabel>
-        <h1
-          style={{
-            margin: "6px 0 0",
-            fontFamily: TL.font.sans,
-            fontSize: 34,
-            fontWeight: TL.vekt.tittel,
-            letterSpacing: "-0.02em",
-            color: TL.text,
-          }}
-        >
-          Plan
-        </h1>
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
+          <div>
+            <CapsLabel>Academy · sesong {new Date().getFullYear()}</CapsLabel>
+            <h1
+              style={{
+                margin: "6px 0 0",
+                fontFamily: TL.font.sans,
+                fontSize: 34,
+                fontWeight: TL.vekt.tittel,
+                letterSpacing: "-0.02em",
+                color: TL.text,
+              }}
+            >
+              Plan
+            </h1>
+          </div>
+          <TlKnapp href="/admin/plan-templates/ny" icon="plus" variant="sekundaer">
+            Ny mal
+          </TlKnapp>
+        </div>
         <MetaLinje>{ukeMeta}</MetaLinje>
         <div style={{ marginTop: 18, borderRadius: TL.radius.card, background: TL.elev, padding: "4px 20px" }}>
           {data.rader.map((rad, i) => (
@@ -276,7 +287,10 @@ export function PlanHubV2({ data }: { data: PlanHubData }) {
           >
             {ukeMeta}
           </span>
-          <div style={{ marginLeft: "auto" }}>
+          <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 10 }}>
+            <TlKnapp href="/admin/plan-templates/ny" icon="plus" variant="sekundaer">
+              Ny mal
+            </TlKnapp>
             <PrimaerCta href={data.primaerHref} bredde="auto" />
           </div>
         </div>
