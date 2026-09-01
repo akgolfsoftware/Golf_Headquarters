@@ -35,6 +35,8 @@
 - Ingen utropstegn.
 - Ingen markedsføringsklisjéer (`08-sprak.md`).
 - Ingen engelske floskler i norsk tekst.
+- **Ingen norske oversettelser av TrackMan-parametere.** Det heter *attack
+  angle*, ikke «angrepsvinkel» — se `08-sprak.md`.
 - Ingen tall om en spiller uten dato og kilde, eller merking som estimat.
 - Ingen garantier om resultat.
 - **Ingen vitnesbyrd.** Ingen spillersitater, ingen anmeldelser, ingen

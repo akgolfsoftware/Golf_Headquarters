@@ -58,6 +58,18 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
   `designsystem/ak-golf/tekstkonsept.html` — ferdig tekst til seks markedssider, seks
   innleggstyper for sosiale medier, seks e-postmaler og seks toneregler. Ny hovedlinje:
   **«Uansett hvor du står, vet du hva du trener på.»**
+  **TRACKMAN-PARAMETERE SKRIVES PÅ ENGELSK (Anders 01.09.2026):** alle TrackMan-parametere
+  beholder sitt engelske navn, også i norsk løpende tekst. Det heter **attack angle**, aldri
+  «angrepsvinkel». Samme gjelder club path, face angle, dynamic loft, smash factor, ball speed,
+  club speed, launch angle, spin rate, spin axis, carry, dispersion, landing angle, low point,
+  swing direction. **Grunnen:** det engelske navnet ER navnet — spilleren ser det på skjermen i
+  økta og i rapporten, og en norsk oversettelse skaper et andre vokabular som ingen andre bruker.
+  **Slik gjøres det:** behold parameteren på engelsk, forklar hva den betyr på norsk i setningen
+  etter. Skrivemåte: små bokstaver i løpende tekst, TrackMans egen skrivemåte med stor forbokstav
+  i tabeller og dataflater. **Gjelder ikke golfspråket ellers** — kølle, sving, green, tee og
+  fairway skrives på norsk som før. Full liste: `designsystem/ak-golf/guidelines/08-sprak.md`.
+  Rettet fem steder i tekstkonseptet samme dag, deriblant en toneregel som sa det motsatte.
+
   **MERKET BRUKER IKKE VITNESBYRD (Anders 01.09.2026):** ingen spillersitater, ingen
   anmeldelser, ingen stjerner — ikke på nettsidene, ikke i sosiale medier, ikke i presentasjoner.
   Begrunnelsen er konsistens, ikke beskjedenhet: et sitat er per definisjon synsing, og et merke

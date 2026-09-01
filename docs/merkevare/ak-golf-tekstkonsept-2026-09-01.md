@@ -1,13 +1,14 @@
 # AK Golf Academy — konsept og tekst
 
 Skrevet 01.09.2026. STEG 18 i `docs/MASTERPLAN-GJENSTAAENDE.md`.
-Lesbar utgave, satt i merkets egen ramme: `designsystem/ak-golf/tekstkonsept.html`
+Lesbar utgave: `designsystem/ak-golf/tekstkonsept.html`
 
 Dette er tekst som kan limes rett inn. Ingen plassholdere.
 
-> **Merket bruker ikke vitnesbyrd** (Anders 01.09.2026). Ingen spillersitater, ingen
-> anmeldelser. Et sitat er per definisjon synsing, og et merke som sier «vi måler, vi
-> synser ikke» blir svakere av å be folk om ros. Vi viser målingen i stedet.
+> **To regler som gjelder alt under** (Anders 01.09.2026):
+> **TrackMan-parametere skrives på engelsk** — *attack angle*, aldri «angrepsvinkel».
+> **Merket bruker ikke vitnesbyrd** — ingen spillersitater, ingen anmeldelser.
+> Begge er forklart i `designsystem/ak-golf/guidelines/08-sprak.md`.
 
 ---
 
@@ -167,7 +168,7 @@ Spørsmål om coaching, juniorprogram eller bedriftsarrangement? Skriv noen ord,
 ```
 +12,4 m på driver etter 14 uker.
 
-Vi endret ikke svingen først. Vi målte i seks økter, fant at angrepsvinkelen var problemet, og jobbet bare med den.
+Vi endret ikke svingen først. Vi målte i seks økter, fant at attack angle var problemet, og jobbet bare med den.
 
 Trackman · 12.05–18.08 · 38 målinger
 ```
@@ -179,21 +180,21 @@ Trackman · 12.05–18.08 · 38 målinger
 *Én måling forklart. Gir bort fagkunnskap ingen kan kopiere uten å faktisk måle.*
 
 ```
-Angrepsvinkel −3,2° med driver.
+Attack angle −3,2° med driver.
 
-Det betyr at køllehodet går nedover i treffet. Ballen får for mye spinn og for lav utgangsvinkel — du taper lengde uten å slå svakere.
+Køllehodet går nedover i treffet. Det gir høy spin rate og lav launch angle — du taper lengde uten å slå svakere.
 
 Du kjenner det ikke. Det er derfor vi måler det.
 ```
 
-**Regel:** Forklar hva tallet BETYR, ikke bare hva det er. Aldri en måling uten oversettelse.
+**Regel:** TrackMan-parameteren beholdes på engelsk. Forklar hva den BETYR på norsk, i setningen etter.
 
 ### Før og etter
 
 *En konkret endring, vist som to tall.*
 
 ```
-Spredning på 7-jern, samme spiller:
+Dispersion på 7-jern, samme spiller:
 
 April: 14,2 m sideveis
 August: 6,8 m sideveis
@@ -353,7 +354,7 @@ Avmelding nederst, uten å gjøre det vanskelig.
 
 ## 5 · Tonen
 
-Prøven på hver setning: ville en erfaren coach sagt den til en spiller på rangen?
+Prøven: ville en erfaren coach sagt dette til en spiller på rangen?
 
 **Skriv tallet, ikke følelsen**
 
@@ -375,10 +376,10 @@ Prøven på hver setning: ville en erfaren coach sagt den til en spiller på ran
 - Slik: ««Book kartleggingsøkt»»
 - Ikke: ~~««Book · Les mer · Meld deg på · Se video»»~~
 
-**Oversett faguttrykket i samme setning**
+**Behold TrackMan-ordet, forklar det etter**
 
-- Slik: ««Angrepsvinkelen — om køllehodet går opp eller ned i treffet»»
-- Ikke: ~~««Vi jobber med angle of attack»»~~
+- Slik: ««Attack angle — om køllehodet går opp eller ned i treffet»»
+- Ikke: ~~««Angrepsvinkelen din er for negativ»»~~
 
 **Skriv som du snakker**
 
@@ -387,7 +388,7 @@ Prøven på hver setning: ville en erfaren coach sagt den til en spiller på ran
 
 **Vis målingen, ikke vitnesbyrdet**
 
-- Slik: ««Spredningen gikk fra 14,2 til 6,8 m»»
+- Slik: ««Dispersion gikk fra 14,2 til 6,8 m»»
 - Ikke: ~~««Beste coachen jeg har hatt!»»~~
 
 ---
