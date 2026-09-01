@@ -198,9 +198,10 @@ describe("velgSamtykkedeSpillerePerGruppe", () => {
 });
 
 describe("scope-kanon", () => {
-  it("erDelingScope godtar kun de to kjente scopene", () => {
+  it("erDelingScope godtar kun de kjente scopene", () => {
     assert.equal(erDelingScope("TEST_RESULTATER"), true);
     assert.equal(erDelingScope("STATS"), true);
+    assert.equal(erDelingScope("KOMPLETT_PROFIL"), true);
     assert.equal(erDelingScope("TRENINGSPLAN"), false);
     assert.equal(erDelingScope(""), false);
   });

@@ -26,13 +26,15 @@ import { logError } from "@/lib/error-tracking";
 const SCOPE_TIL_CAPABILITY: Record<DelingScope, Capability> = {
   TEST_RESULTATER: Capability.VIEW_SHARED_TEST_RESULTS,
   STATS: Capability.VIEW_SHARED_STATS,
+  KOMPLETT_PROFIL: Capability.VIEW_SHARED_FULL_PROFILE,
 };
 
 const OpprettEksternLeserSchema = z.object({
   email: email,
   name: nonEmpty(200),
   groupIds: z.array(z.string().min(1)).min(1, "Velg minst én gruppe").max(20),
-  scopes: z.array(z.enum(DELING_SCOPES)).min(1, "Velg minst ett innsyn").max(2),
+  // max = DELING_SCOPES.length (alle tre kan velges samtidig).
+  scopes: z.array(z.enum(DELING_SCOPES)).min(1, "Velg minst ett innsyn").max(3),
 });
 
 export type OpprettEksternLeserResult =

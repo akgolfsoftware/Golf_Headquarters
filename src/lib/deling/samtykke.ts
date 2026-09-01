@@ -110,6 +110,8 @@ export type DelingStatusPerGruppe = {
   gruppeId: string;
   testResultater: boolean;
   stats: boolean;
+  /** TN-12 (Claw batch 3) — den andre av de «to bryterne». */
+  komplettProfil: boolean;
 };
 
 /**
@@ -149,6 +151,11 @@ export async function hentDelingsStatus(
     }),
     stats: harGyldigSamtykke(rader, {
       scope: "STATS",
+      mottakerGruppeId: gruppeId,
+      kreverForesatt,
+    }),
+    komplettProfil: harGyldigSamtykke(rader, {
+      scope: "KOMPLETT_PROFIL",
       mottakerGruppeId: gruppeId,
       kreverForesatt,
     }),

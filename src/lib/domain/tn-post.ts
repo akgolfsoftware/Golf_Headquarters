@@ -22,6 +22,32 @@ async function erAktivtMedlem(groupId: string, userId: string): Promise<boolean>
   return rad !== null;
 }
 
+export type TnViewerRolle = "TRENER" | "SPILLER" | "FORESATT" | null;
+
+/**
+ * Viewerens rolle i gruppen — styrer om siden viser komponer-feltet (kun
+ * TRENER) og om posten skal auto-kvitteres ved visning (SPILLER/FORESATT,
+ * aldri TRENER for egen post). Returnerer null hvis viewer verken er
+ * medlem eller godkjent foresatt for et medlem — samme grense som
+ * `kanSeGruppepost`, men med rollen synlig for UI-et.
+ */
+export async function hentViewerRolleIGruppe(groupId: string, viewerId: string): Promise<TnViewerRolle> {
+  const medlemskap = await prisma.groupMember.findFirst({
+    where: { groupId, userId: viewerId, ...aktivtMedlemskapWhere() },
+    select: { role: true },
+  });
+  if (medlemskap?.role === "COACH" || medlemskap?.role === "ASSISTANT") return "TRENER";
+  if (medlemskap?.role === "PLAYER") return "SPILLER";
+
+  const spillerIder = await gruppensSpillerIder(groupId);
+  if (spillerIder.length === 0) return null;
+  const foresattFor = await prisma.parentRelation.findFirst({
+    where: { parentId: viewerId, childId: { in: spillerIder }, approved: true },
+    select: { id: true },
+  });
+  return foresattFor ? "FORESATT" : null;
+}
+
 async function erAktivTrenerIGruppeMedSpiller(trenerId: string, spillerId: string): Promise<boolean> {
   const rad = await prisma.groupMember.findFirst({
     where: {
@@ -87,15 +113,98 @@ export async function opprettSpillerpost(input: {
   });
 }
 
+/**
+ * Frittstående opplasting til gruppens dokumentbibliotek (TN-11 «Last opp
+ * fil») — en DOKUMENT-post uten tekst, kun bærer av ett vedlegg. Filen MÅ
+ * være lastet opp til bucket-en FØR dette kalles (path peker dit).
+ */
+export async function opprettGruppeDokument(input: {
+  forfatterId: string;
+  groupId: string;
+  fileName: string;
+  fileType: string | null;
+  fileSize: number | null;
+  path: string;
+}): Promise<{ id: string }> {
+  const lovlig = await erAktivtMedlem(input.groupId, input.forfatterId);
+  if (!lovlig) throw new Error("Du er ikke trener i denne gruppen");
+  const rolle = await prisma.groupMember.findFirst({
+    where: { groupId: input.groupId, userId: input.forfatterId, ...aktivtMedlemskapWhere() },
+    select: { role: true },
+  });
+  if (rolle?.role !== "COACH" && rolle?.role !== "ASSISTANT") {
+    throw new Error("Kun trenere kan laste opp dokumenter til gruppen");
+  }
+  return prisma.tnPost.create({
+    data: {
+      groupId: input.groupId,
+      authorUserId: input.forfatterId,
+      tekst: "",
+      kind: "DOKUMENT",
+      vedlegg: {
+        create: { fileName: input.fileName, fileType: input.fileType, fileSize: input.fileSize, path: input.path },
+      },
+    },
+    select: { id: true },
+  });
+}
+
+export type TnDokumentRad = {
+  postId: string;
+  attachmentId: string;
+  fileName: string;
+  fileType: string | null;
+  fileSize: number | null;
+  path: string;
+  opplasterNavn: string;
+  oppdatert: Date;
+  /** «FRA POST» hvis vedlegget lå på en tekstpost, «LASTET OPP» ved frittstående opplasting. */
+  kilde: "FRA_POST" | "LASTET_OPP";
+  kvittering: { totalt: number; apnet: number; manglerIder: string[] };
+};
+
+/** Dokumentbiblioteket for TN-11 — alle vedlegg i gruppen, uansett kilde. */
+export async function hentGruppeDokumenter(groupId: string, viewerId: string): Promise<TnDokumentRad[] | null> {
+  const tidslinje = await hentGruppetidslinje(groupId, viewerId);
+  if (!tidslinje) return null;
+
+  const rader: TnDokumentRad[] = [];
+  for (const post of tidslinje) {
+    for (const vedlegg of post.vedlegg) {
+      rader.push({
+        postId: post.id,
+        attachmentId: vedlegg.id,
+        fileName: vedlegg.fileName,
+        fileType: vedlegg.fileType,
+        fileSize: vedlegg.fileSize,
+        path: vedlegg.path,
+        opplasterNavn: post.authorNavn,
+        oppdatert: post.createdAt,
+        kilde: post.kind === "DOKUMENT" ? "LASTET_OPP" : "FRA_POST",
+        kvittering: post.kvittering ?? { totalt: 0, apnet: 0, manglerIder: [] },
+      });
+    }
+  }
+  return rader.sort((a, b) => b.oppdatert.getTime() - a.oppdatert.getTime());
+}
+
 export type TnPostMedKvittering = {
   id: string;
   authorUserId: string;
+  authorNavn: string;
   tekst: string;
   kind: string;
   createdAt: Date;
   vedlegg: { id: string; fileName: string; fileType: string | null; fileSize: number | null; path: string }[];
   kvittering: { totalt: number; apnet: number; manglerIder: string[] } | null;
 };
+
+async function forfatterNavnPerId(authorUserIds: readonly string[]): Promise<Map<string, string>> {
+  const unike = [...new Set(authorUserIds)];
+  if (unike.length === 0) return new Map();
+  const brukere = await prisma.user.findMany({ where: { id: { in: unike } }, select: { id: true, name: true } });
+  return new Map(brukere.map((b) => [b.id, b.name ?? "Ukjent"]));
+}
 
 /** Gruppens tidslinje — null hvis viewer ikke er aktivt medlem (IDOR-port). */
 export async function hentGruppetidslinje(groupId: string, viewerId: string): Promise<TnPostMedKvittering[] | null> {
@@ -110,10 +219,12 @@ export async function hentGruppetidslinje(groupId: string, viewerId: string): Pr
     }),
     gruppensSpillerIder(groupId),
   ]);
+  const navn = await forfatterNavnPerId(poster.map((p) => p.authorUserId));
 
   return poster.map((p) => ({
     id: p.id,
     authorUserId: p.authorUserId,
+    authorNavn: navn.get(p.authorUserId) ?? "Ukjent",
     tekst: p.tekst,
     kind: p.kind,
     createdAt: p.createdAt,
@@ -125,20 +236,36 @@ export async function hentGruppetidslinje(groupId: string, viewerId: string): Pr
   }));
 }
 
-/** 1:1-tidslinjen til en spiller — null hvis viewer verken er spilleren selv eller godkjent foresatt. */
+/**
+ * 1:1-tidslinjen til en spiller — null hvis viewer verken er spilleren selv,
+ * en godkjent foresatt, eller en trener med tilknytning til spilleren
+ * (TN-10 er primært en trener-flate for å POSTE — treneren må derfor også
+ * kunne se tidslinjen hen selv skriver til).
+ */
 export async function hentSpillerpostTidslinje(spillerId: string, viewerId: string): Promise<TnPostMedKvittering[] | null> {
   const erForesatt = viewerId === spillerId ? false : await erGodkjentForesattFor(viewerId, spillerId);
-  if (!kanSeSpillerpost({ viewerId, spillerId, viewerErGodkjentForesattForSpilleren: erForesatt })) return null;
+  const erTrener = viewerId === spillerId ? false : await erAktivTrenerIGruppeMedSpiller(viewerId, spillerId);
+  if (
+    !kanSeSpillerpost({
+      viewerId,
+      spillerId,
+      viewerErGodkjentForesattForSpilleren: erForesatt,
+      viewerErTrenerForSpilleren: erTrener,
+    })
+  )
+    return null;
 
   const poster = await prisma.tnPost.findMany({
     where: { mottakerUserId: spillerId },
     orderBy: { createdAt: "desc" },
     include: { vedlegg: true, lesekvittert: { select: { userId: true } } },
   });
+  const navn = await forfatterNavnPerId(poster.map((p) => p.authorUserId));
 
   return poster.map((p) => ({
     id: p.id,
     authorUserId: p.authorUserId,
+    authorNavn: navn.get(p.authorUserId) ?? "Ukjent",
     tekst: p.tekst,
     kind: p.kind,
     createdAt: p.createdAt,
@@ -178,4 +305,47 @@ export async function hentLesekvitteringNavn(
     .map((userId) => ({ userId, navn: navnPerId.get(userId) ?? "Ukjent" }));
 
   return { apnet, mangler };
+}
+
+/**
+ * IDOR-sikker inngang for «Se hvem» — slår opp posten selv, sjekker at
+ * viewer har lov til å se den, og regner ut riktig mottakerliste (gruppens
+ * spillere, eller den ene spilleren for 1:1-poster) FØR navn hentes.
+ * Returnerer null hvis posten ikke finnes eller viewer mangler tilgang.
+ */
+export async function hentPostLesekvitteringNavnForViewer(
+  postId: string,
+  viewerId: string,
+): Promise<{ apnet: { userId: string; navn: string; readAt: Date }[]; mangler: { userId: string; navn: string }[] } | null> {
+  const post = await prisma.tnPost.findUnique({
+    where: { id: postId },
+    select: { groupId: true, mottakerUserId: true },
+  });
+  if (!post) return null;
+
+  if (post.groupId) {
+    const erMedlem = await erAktivtMedlem(post.groupId, viewerId);
+    if (!kanSeGruppepost(erMedlem)) return null;
+    const mottakerIder = await gruppensSpillerIder(post.groupId);
+    return hentLesekvitteringNavn(postId, mottakerIder);
+  }
+
+  if (post.mottakerUserId) {
+    const spillerId = post.mottakerUserId;
+    const erForesatt = viewerId === spillerId ? false : await erGodkjentForesattFor(viewerId, spillerId);
+    const erTrener = viewerId === spillerId ? false : await erAktivTrenerIGruppeMedSpiller(viewerId, spillerId);
+    if (
+      !kanSeSpillerpost({
+        viewerId,
+        spillerId,
+        viewerErGodkjentForesattForSpilleren: erForesatt,
+        viewerErTrenerForSpilleren: erTrener,
+      })
+    ) {
+      return null;
+    }
+    return hentLesekvitteringNavn(postId, [spillerId]);
+  }
+
+  return null;
 }

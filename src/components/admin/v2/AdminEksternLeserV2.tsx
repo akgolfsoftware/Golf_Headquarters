@@ -13,6 +13,7 @@ import { opprettEksternLeser, trekkEksternLeser } from "@/app/admin/(legacy)/tea
 const SCOPE_LABEL: Record<DelingScope, string> = {
   TEST_RESULTATER: "Testresultater",
   STATS: "Statistikk",
+  KOMPLETT_PROFIL: "Komplett profil",
 };
 
 export type EksternLeserRad = {
