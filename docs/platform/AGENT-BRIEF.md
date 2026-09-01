@@ -81,7 +81,7 @@ docs/               # platform/ (NORDSTJERNE, AGENT-BRIEF, BUSINESS-RULES, DATA-
                     # design-system/TEMA-LYS-MORK.md (tema-oppførsel i kode) ·
                     # gdpr/ · juridisk/ · sikkerhet/ · arkiv/ (inkl. paper-port)
 designsystem/train-lock/  # GJELDENDE designfasit for PlayerHQ, AgencyOS, Forelder
-designsystem/paper/       # ARKIV — aldri bygg-fasit, aldri few-shot (se DEPRECATED.md)
+                    # (designsystem/paper/ er SLETTET 30.08.2026 — finnes ikke lenger)
 tests/e2e/          # Én samlet e2e-suite (32 specs, siden 2026-08-03): a11y, PWA, ruter, meta/OG,
                     # offline, ikoner + auth-guard, IDOR, booking, workbench (fra gamle e2e/)
 ```
@@ -94,20 +94,22 @@ Slettede mapper det ikke skal letes etter: `public/design-handover/`, `wireframe
 
 - **Designfasit:** Train-lock (`designsystem/train-lock/`) for ALLE skjermer i PlayerHQ,
   AgencyOS og Forelder. Les `DESIGN-SYSTEM.md` → `SCREEN-INDEX.md` → `PORTING.md`.
-  Claude Paper (`designsystem/paper/`) er ARKIV — aldri bygg-fasit, aldri few-shot.
-  Gammel Paper-plan: `docs/arkiv/paper-port/`. Ved konflikt **vinner Train-lock**.
+  Claude Paper (`designsystem/paper/`) er **fysisk slettet fra repoet 30.08.2026** — finnes
+  ikke lenger, ikke let etter den. Gammel Paper-plan (historikk, ikke kode): `docs/arkiv/paper-port/`.
+  Ved konflikt **vinner Train-lock**.
 - **Tokens (ny kode):** `--tl-*` i `src/styles/train-lock-tokens.css`, TS-speil `TL` i
   `src/lib/v2/train-lock.ts`. Scene `#000000` / lys `#FFFFFF`. Fullført = warm `#B85C3D`.
-- **Tokens (utgående):** `--p-*` (`src/styles/paper-tokens.css`) og `T` (`src/lib/v2/tokens.ts`)
-  lever i runtime for usportede rester og marketing. Ikke importer `T` i ny skjermkode.
-  `--v2-*` i `globals.css` peker fortsatt på `--p-*` — det er bro, ikke fasit.
+- **Tokens (utgående — rettet 01.09.2026):** `--p-*` (`src/styles/paper-tokens.css`) og `T`
+  (`src/lib/v2/tokens.ts`) er BEGGE slettet fra repoet 30.08.2026, ikke bare avviklet — de
+  finnes ikke lenger i runtime. `--v2-*` i `globals.css` peker nå på `--tl-*`, ikke `--p-*`.
 - **Komponenter:** primitiver fra `src/components/ui/` + `v2/`-mønstre; `athletic/golfdata/`
   er overgangslag. Sjekk ALLTID hva som finnes FØR du lager noe nytt.
 - **Fonter (live i `src/app/layout.tsx`):** Poppins (UI/titler) · Lora (prosa) · IBM Plex Mono
   (tall). Inter / Familjen Grotesk / JetBrains Mono / Inter Tight er FJERNET — ikke gjeninnfør.
-- **Ferdig-definisjon:** skjermbilde-gaten i `CLAUDE.md` §Skjermarbeid.
+- **Ferdig-definisjon:** skjermbilde-gaten, se `.claude/rules/beslutninger.md` §Skjermbilde-gate
+  (`CLAUDE.md` har ingen egen §Skjermarbeid — død referanse, ikke let der).
 
-**FORBUDT:** lage ny `tokens.css`, importere fra `wireframe/` eller `designsystem/paper/`,
+**FORBUDT:** lage ny `tokens.css`, importere fra `wireframe/` eller `designsystem/paper/` (begge slettet),
 lage `tokens.ts` i komponent-mapper, cream `#FAF9F5` / clay-CTA / Presis-skog/lime i produktflater.
 
 ---

@@ -42,14 +42,15 @@ AK Golf HQ er en helintegrert plattform som gir golfcoacher og spillere felles v
 
 ## Skjerm-gate (LÅST REGEL)
 
-> **ENDRET 25.08.2026:** Designfasit er **Train-lock** for alle skjermer i PlayerHQ og AgencyOS
-> (Anders, i økt). Claude Paper og port-dokumentene under er historikk. Fasit-zip er ikke
-> committet ennå — se `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md` D2/D3.
+> **ENDRET 25.08.2026, oppdatert 01.09.2026:** Designfasit er **Train-lock** for alle skjermer i
+> PlayerHQ og AgencyOS (Anders, i økt). Claude Paper og port-dokumentene under er historikk.
+> Fasit-zip er nå committet i `designsystem/train-lock/` — `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`
+> er slettet 30.08.2026; gjeldende plan er `docs/MASTERPLAN-GJENSTAAENDE.md`.
 
 **FØR** du bygger, endrer eller kobler en skjerm:
-1. Sjekk om skjermen har Train-lock-fasit (når zip-en er committet) — mangler den: STOPP og spør Anders.
-2. Sjekk `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md` — hvilken session hører skjermen til, og hva er status?
-3. Jobb mot ferdig-definisjonen der (DONE-fil + verify + skjermbilde-gate).
+1. Sjekk om skjermen har Train-lock-fasit i `designsystem/train-lock/SCREEN-INDEX.md` — mangler den: STOPP og spør Anders.
+2. Sjekk `docs/MASTERPLAN-GJENSTAAENDE.md` — hvilket STEG/session hører skjermen til, og hva er status?
+3. Jobb mot ferdig-definisjonen der (verify + skjermbilde-gate, se `.claude/rules/beslutninger.md`).
 
 En skjerm er **ikke ferdig** før ferdig-definisjonen er oppfylt og Anders har SETT skjermbildet:
 mobil 390px + desktop, lys og mørk, fasit ved siden av, alle fire tilstander, maks én oransje handling,

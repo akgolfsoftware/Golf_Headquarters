@@ -2,6 +2,14 @@
 
 Autoritativ referanse for alle fagbegreper, koder og systemord i AK Golf-konseptet. Felles språk for utviklere, trenere og AI-agenter. **Del A** = hva begrepene betyr. **Del B** = hvordan ord staves i UI.
 
+> **UTGÅTT (se `.claude/rules/beslutninger.md`, «ALLE TRENINGSPLANREGLER LÅST OPP», 2026-08-18):**
+> §2 (L-faser), §3 (CS-nivåer), §5 (Miljø/Press M0–M5/PR1–PR5) og §13 (invarianter) under
+> beskriver et system som er PENSJONERT — all regel-håndheving er slettet fra koden
+> (`src/lib/canon/` finnes ikke lenger), og L-faser/CS/M0–M5/PR1–PR5 er utgåtte UI-begreper.
+> Gjeldende v2-format er `PYRAMIDE_OMRADE_MOTORIKK_BELASTNING_PRESS` med motorikk
+> UTEN_BALL/LAV_HAST/AUTO og press ALENE/OBSERVERT/KONKURRANSE/TURNERING. Innholdet under er
+> historikk, aldri byggeordre.
+
 > **To ulike ordbøker (notis 2026-08-03):** denne fila er ordboken for **konsept- og
 > UI-vokabular** (genererer `docs/ordbok.json` via `scripts/ordbok-json.ts`). Den må ikke
 > forveksles med **fagkunnskaps-ordboken** i `src/lib/masterbrain/knowledge/entities/ordbok.json`
@@ -43,6 +51,9 @@ Endringer: oppdater canon → denne fila → kode (prosess nederst). Tabellforma
 
 ## 2. L-faser (læringsfaser)
 
+> **UTGÅTT (beslutninger.md 2026-08-18):** L-fasene er pensjonert som UI-begrep. Gjeldende
+> motorikk-akse er UTEN_BALL/LAV_HAST/AUTO i formatet `PYRAMIDE_OMRADE_MOTORIKK_BELASTNING_PRESS`.
+
 Hvor langt en bevegelse er innlært — fra kropp til automatisering. Fasit: canon v3.5 + l-faser.json. **Prioritetsregel: L-KROPP og L-ARM overstyrer ALL SG-prioritering — ingen SG-diagnostikk i disse fasene.** NB: `LFase` ≠ `LPhase` (periodisering, §9).
 
 | Norsk term | Teknisk term | Definisjon & bruk (canon v3.5) |
@@ -56,6 +67,9 @@ Hvor langt en bevegelse er innlært — fra kropp til automatisering. Fasit: can
 | Anbefalt CS per L-fase | `LFASE_ANBEFALT_CS` | Kart L-fase → anbefalte CS-nivåer. Kode-status: kodens CS50–100-mapper er nå FASIT (Anders 2026-07-07, CS50-gulv). CS-intervallene på L-radene over (CS20–40 m.fl.) er stale og venter rekalibrering mot CS50-gulvet — avklar nye bånd med Anders før de skrives om. |
 
 ## 3. CS — Club Speed
+
+> **UTGÅTT (beslutninger.md 2026-08-18):** CS-nivåene er utgått som UI-begrep — ingen
+> regel-håndheving av CS finnes lenger i koden.
 
 Køllehodehastighet i % av spillerens maks — én av de fire AK-formel-aksene. Fasit (Anders-beslutning
 2026-07-07): **seks nivåer CS50–CS100**. CS20/30/40 er utgått — canon v3.5 hadde ni nivåer, men
@@ -103,6 +117,10 @@ i §2 er ikke rekalibrert ennå (åpen oppgave — se kode-status på radene).
 | Fokus-mal | `TEMPLATE_FOCUS` | Forhåndsdefinerte øktfokus (Full bag, Nærspill, Putting, Langt spill, Tilnærming, Bunker, Turneringsprep) → sett av treningsområder via `getOmraaderForFokus()`. Kode-enum heter `KORT_SPILL`; UI-tekst «Nærspill». |
 
 ## 5. Miljø (M) og Press (PR)
+
+> **UTGÅTT (beslutninger.md 2026-08-18):** M0–M5 og PR1–PR5 er utgåtte UI-begreper.
+> Gjeldende press-akse er ALENE/OBSERVERT/KONKURRANSE/TURNERING i
+> `PYRAMIDE_OMRADE_MOTORIKK_BELASTNING_PRESS`.
 
 M = miljøets struktur/kontroll (M0 mest kontrollert → M5 konkurranse), PR = press/konsekvens. Fasit: canon v3.5.
 
@@ -267,6 +285,10 @@ Avledede analyser i SG-hub + innsiktsmotoren som genererer funn.
 | Innsiktsmotor | `insight-engine` | Kjører alle evaluatorene og produserer rangerte innsikter med severity. Driver «hva sier dataene mine». |
 
 ## 13. Invarianter (systemets harde regler — versjonert, kan endres)
+
+> **UTGÅTT (beslutninger.md 2026-08-18, «ALLE TRENINGSPLANREGLER LÅST OPP»):** all
+> regel-håndheving i planlegging er slettet fra koden — de 9 invariantene, `periode-constraints.ts`
+> og plan-validering finnes ikke lenger. Ingen invarianter håndheves i dag.
 
 Regler som håndheves for at plan/økt skal være gyldig (`periode-constraints.ts`, `taxonomy.ts`, planlogikken). **Ikke evige: versjonert i MasterBrain CANON (v3.5, 13 invarianter) og kan endres av Anders — endre canon → ordbok → kode.** Coach kan overstyre harde brudd i Workbench med begrunnelse (`InvariantOverride`).
 
@@ -754,6 +776,9 @@ ALLTID uppercase og i rekkefølgen `FYS · TEK · SLAG · SPILL · TURN` (dot-se
 | Eksport | eksport | «Eksporter til CSV/PDF» |
 
 ## B4. Treningsplanlegging — periodisering
+
+> **UTGÅTT (beslutninger.md 2026-08-18):** CS-maks/CS-nivåer-radene under er rettskriving for
+> et pensjonert begrep — CS finnes ikke lenger som UI-begrep, se §3.
 
 | Term | Bokmål | Notater |
 |---|---|---|

@@ -10,16 +10,23 @@ Marketing (`akgolf.no`) har egen fasit og omfattes ikke.
 
 ## Forbudt som bygg-fasit
 
-| Hva | Sti | Hvorfor det fortsatt ligger der |
+> **Rettet 01.09.2026 (revisjonsøkt):** Paper er fysisk SLETTET fra repoet 30.08.2026
+> (`.claude/rules/beslutninger.md` "PAPER ER FJERNET FRA HELE PLATTFORMEN"). Verifisert på nytt
+> 01.09: `designsystem/paper/`, `src/styles/paper-tokens.css`, `src/lib/v2/tokens.ts`,
+> `PaperChrome.tsx`, `paper-tilstand.tsx` og marketing-Paper-kit finnes IKKE lenger på disk —
+> tabellen under beskrev dem som «lever i runtime», noe som ikke lenger stemmer. Kun de to
+> siste radene (arkiv/tester) finnes fortsatt, med vilje.
+
+| Hva | Sti | Status |
 |---|---|---|
-| Paper-speil (HTML/JSX) | `designsystem/paper/` | Arkiv. `readme.md` der lyver hvis den kaller seg master. |
-| Paper-tokens | `src/styles/paper-tokens.css` (`--p-*`) | Maler **uportede** skjermer. Ikke slett før siste port. Ikke bruk i ny kode. |
-| Paper TS-speil | `src/lib/v2/tokens.ts` (`T`) | Bro til `--v2-*` / `--p-*`. Ny kode: `TL` i `src/lib/v2/train-lock.ts`. |
-| Paper-skall | `src/components/portal/v2/PaperChrome.tsx` | Lever i noen v2-sider. Ikke kopier til nye skjermer. |
-| Paper-tilstand | `src/components/system/paper-tilstand.tsx` | Error/offline. Port senere. |
-| Marketing Paper-kit | `src/components/marketing/paper/`, `src/components/marketing/v2/paper/` | Marketing-fasit, ikke produkt. |
-| Paper visuell-e2e | `tests/e2e/paper-visual/` | Tester mot **gammel** HTML-fasit. Ikke few-shot for nye porter. |
-| Paper-portplan | `docs/arkiv/paper-port/` | Historikk. |
+| Paper-speil (HTML/JSX) | `designsystem/paper/` | **Slettet 30.08.2026.** Ikke gjenskap. |
+| Paper-tokens | `src/styles/paper-tokens.css` (`--p-*`) | **Slettet 30.08.2026.** Ny kode bruker `--tl-*`. |
+| Paper TS-speil | `src/lib/v2/tokens.ts` (`T`) | **Slettet 30.08.2026.** Ny kode: `TL` i `src/lib/v2/train-lock.ts`. |
+| Paper-skall | `src/components/portal/v2/PaperChrome.tsx` | **Slettet 30.08.2026.** |
+| Paper-tilstand | `src/components/system/paper-tilstand.tsx` | **Slettet 30.08.2026.** |
+| Marketing Paper-kit | `src/components/marketing/paper/`, `src/components/marketing/v2/paper/` | **Slettet 30.08.2026.** Marketing har egen, separat fasit (ak-golf-website) — ikke gjeninnfør Paper der heller. |
+| Paper visuell-e2e | `tests/e2e/paper-visual/` | **Finnes fortsatt, med vilje** — tester mot gammel HTML-fasit. Ikke few-shot for nye porter. Vurder om denne fortsatt gir verdi nå som Paper er borte, eller om den bør slettes/arkiveres i en egen økt (spør Anders — utenfor scope for denne revisjonen). |
+| Paper-portplan | `docs/arkiv/paper-port/` | **Finnes fortsatt, med vilje** — historikk/arkiv. |
 
 ## Forbudte visuelle trekk i PlayerHQ / AgencyOS / Forelder
 
