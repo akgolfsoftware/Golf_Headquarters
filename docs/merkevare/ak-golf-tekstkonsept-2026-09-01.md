@@ -6,7 +6,8 @@ Lesbar utgave: `designsystem/ak-golf/tekstkonsept.html`
 Dette er tekst som kan limes rett inn. Ingen plassholdere.
 
 > **To regler som gjelder alt under** (Anders 01.09.2026):
-> **TrackMan-parametere skrives på engelsk** — *attack angle*, aldri «angrepsvinkel».
+> **TrackMan-parametere skrives på engelsk med stor forbokstav** — *Attack Angle*,
+> aldri «angrepsvinkel» og aldri «attack angle».
 > **Merket bruker ikke vitnesbyrd** — ingen spillersitater, ingen anmeldelser.
 > Begge er forklart i `designsystem/ak-golf/guidelines/08-sprak.md`.
 
@@ -168,7 +169,7 @@ Spørsmål om coaching, juniorprogram eller bedriftsarrangement? Skriv noen ord,
 ```
 +12,4 m på driver etter 14 uker.
 
-Vi endret ikke svingen først. Vi målte i seks økter, fant at attack angle var problemet, og jobbet bare med den.
+Vi endret ikke svingen først. Vi målte i seks økter, fant at Attack Angle var problemet, og jobbet bare med den.
 
 Trackman · 12.05–18.08 · 38 målinger
 ```
@@ -180,9 +181,9 @@ Trackman · 12.05–18.08 · 38 målinger
 *Én måling forklart. Gir bort fagkunnskap ingen kan kopiere uten å faktisk måle.*
 
 ```
-Attack angle −3,2° med driver.
+Attack Angle −3,2° med driver.
 
-Køllehodet går nedover i treffet. Det gir høy spin rate og lav launch angle — du taper lengde uten å slå svakere.
+Køllehodet går nedover i treffet. Det gir høy Spin Rate og lav Launch Angle — du taper lengde uten å slå svakere.
 
 Du kjenner det ikke. Det er derfor vi måler det.
 ```
@@ -378,7 +379,7 @@ Prøven: ville en erfaren coach sagt dette til en spiller på rangen?
 
 **Behold TrackMan-ordet, forklar det etter**
 
-- Slik: ««Attack angle — om køllehodet går opp eller ned i treffet»»
+- Slik: ««Attack Angle — om køllehodet går opp eller ned i treffet»»
 - Ikke: ~~««Angrepsvinkelen din er for negativ»»~~
 
 **Skriv som du snakker**

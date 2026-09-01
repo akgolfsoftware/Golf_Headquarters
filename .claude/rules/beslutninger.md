@@ -59,14 +59,15 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
   innleggstyper for sosiale medier, seks e-postmaler og seks toneregler. Ny hovedlinje:
   **«Uansett hvor du står, vet du hva du trener på.»**
   **TRACKMAN-PARAMETERE SKRIVES PÅ ENGELSK (Anders 01.09.2026):** alle TrackMan-parametere
-  beholder sitt engelske navn, også i norsk løpende tekst. Det heter **attack angle**, aldri
-  «angrepsvinkel». Samme gjelder club path, face angle, dynamic loft, smash factor, ball speed,
-  club speed, launch angle, spin rate, spin axis, carry, dispersion, landing angle, low point,
-  swing direction. **Grunnen:** det engelske navnet ER navnet — spilleren ser det på skjermen i
+  beholder sitt engelske navn OG skrives med **stor forbokstav overalt** — i løpende tekst, i
+  tabeller, i etiketter, i dataflater. Det heter **Attack Angle**, aldri «angrepsvinkel» og aldri
+  «attack angle». Samme gjelder Club Path, Face Angle, Face to Path, Dynamic Loft, Smash Factor,
+  Ball Speed, Club Speed, Launch Angle, Spin Rate, Spin Axis, Carry, Total, Dispersion,
+  Landing Angle, Low Point, Swing Direction. **Grunnen:** det engelske navnet ER navnet — spilleren ser det på skjermen i
   økta og i rapporten, og en norsk oversettelse skaper et andre vokabular som ingen andre bruker.
-  **Slik gjøres det:** behold parameteren på engelsk, forklar hva den betyr på norsk i setningen
-  etter. Skrivemåte: små bokstaver i løpende tekst, TrackMans egen skrivemåte med stor forbokstav
-  i tabeller og dataflater. **Gjelder ikke golfspråket ellers** — kølle, sving, green, tee og
+  **Slik gjøres det:** behold parameteren på engelsk med stor forbokstav, forklar hva den betyr på
+  norsk i setningen etter. Norsk bruker normalt ikke versaler i substantiv — det er et bevisst
+  brudd, fordi stor forbokstav viser at dette er navnet på en måling og ikke et vanlig ord. **Gjelder ikke golfspråket ellers** — kølle, sving, green, tee og
   fairway skrives på norsk som før. Full liste: `designsystem/ak-golf/guidelines/08-sprak.md`.
   Rettet fem steder i tekstkonseptet samme dag, deriblant en toneregel som sa det motsatte.
 

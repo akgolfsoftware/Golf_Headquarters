@@ -24,8 +24,8 @@ AK Golf høres ut som Anders. Det er den ene tingen ingen konkurrent kan kopiere
 ## TrackMan-parametere skrives på engelsk
 
 Låst av Anders 01.09.2026. **Alle TrackMan-parametere beholder sitt engelske
-navn**, også i norsk løpende tekst. Det heter *attack angle*, aldri
-«angrepsvinkel».
+navn og skrives med stor forbokstav**, også i norsk løpende tekst. Det heter
+**Attack Angle**, aldri «angrepsvinkel» og aldri «attack angle».
 
 Grunnen er at det engelske navnet er navnet. Spilleren ser det på skjermen i
 økta, det står i rapporten, og det er ordet coacher over hele verden bruker.
@@ -35,35 +35,40 @@ gjør spilleren dårligere rustet neste gang hen står foran en TrackMan.
 **Slik gjøres det:** behold parameteren på engelsk, forklar hva den betyr på
 norsk i setningen etter.
 
-> Attack angle −3,2° med driver. Køllehodet går nedover i treffet.
+> Attack Angle −3,2° med driver. Køllehodet går nedover i treffet.
 
 Ikke:
 
 > ~~Angrepsvinkelen din er −3,2°.~~
+> ~~attack angle −3,2°~~
 
 ### De vanligste
 
 | Parameter | Aldri |
 |---|---|
-| attack angle | angrepsvinkel, angle of attack |
-| club path | køllebane, svingbane |
-| face angle | bladvinkel, køllefjes |
-| face to path | — |
-| dynamic loft | dynamisk loft |
-| smash factor | treffprosent |
-| ball speed · club speed | ballfart, køllefart |
-| launch angle | utgangsvinkel |
-| spin rate | spinn, spinnmengde |
-| spin axis | spinnakse |
-| carry · total | bærelengde |
-| dispersion | spredning |
-| landing angle | landingsvinkel |
-| low point | lavpunkt |
-| swing direction | svingretning |
+| Attack Angle | angrepsvinkel, angle of attack |
+| Club Path | køllebane, svingbane |
+| Face Angle | bladvinkel, køllefjes |
+| Face to Path | — |
+| Dynamic Loft | dynamisk loft |
+| Smash Factor | treffprosent |
+| Ball Speed · Club Speed | ballfart, køllefart |
+| Launch Angle | utgangsvinkel |
+| Spin Rate | spinn, spinnmengde |
+| Spin Axis | spinnakse |
+| Carry · Total | bærelengde |
+| Dispersion | spredning |
+| Landing Angle | landingsvinkel |
+| Low Point | lavpunkt |
+| Swing Direction | svingretning |
 
-**Skrivemåte:** små bokstaver i løpende norsk tekst (*attack angle*), slik
-norsk ellers gjør med substantiv. I tabeller, etiketter og dataflater følges
-TrackMans egen skrivemåte med stor forbokstav (*Attack Angle*).
+**Skrivemåte: stor forbokstav overalt** (Anders 01.09.2026) — i løpende tekst,
+i tabeller, i etiketter, i dataflater. *Attack Angle*, ikke *attack angle*.
+
+Norsk bruker normalt ikke versaler i substantiv, og det er et bevisst brudd:
+stor forbokstav gjør det tydelig at dette er **navnet på en måling**, ikke et
+vanlig ord. Leseren ser på ett blikk hva som kommer fra instrumentet og hva
+som er vår forklaring.
 
 **Dette gjelder TrackMan-parametere — ikke golfspråket ellers.** Kølle, sving,
 green, tee og fairway skrives på norsk som før.
