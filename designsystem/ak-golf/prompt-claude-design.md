@@ -17,6 +17,10 @@ et system man kan lage ting med.
 Dette prosjektet blir **masteren**. Det speiles til `designsystem/ak-golf/` i
 kodebasen.
 
+**Kildefilene ligger i prosjektet.** Logoene som SVG, tokens som CSS, elleve
+kapitler retningslinjer, 43 foto med katalog, og ferdig tekst. Se `LES-MEG.md`
+for hva som er hvor. Bruk dem — ikke gjenskap noe som allerede finnes.
+
 ## 1 · Hva AK Golf er
 
 > **Langsiktig utvikling, oppfølging, og å trene optimalt og spesifikt —
@@ -208,7 +212,7 @@ farget om, strukket, rotert eller satt i annen skrift.
 - Navnelås: logo, hårlinje `#D2CCC0`, navn i **Plex Sans 400 satt i 40 % av
   logoens høyde**. Navnet står **aldri** i identitetsfargen.
 
-Ferdige filer finnes i `public/logos/` — bygg aldri en lås for hånd.
+Ferdige filer ligger i `logo/` — nitten SVG-er. **Bygg aldri en lås for hånd.**
 
 ## 5 · Språket
 
@@ -325,17 +329,20 @@ prøve: klarer det å se ut som én familie og fem forskjellige tilbud samtidig?
 ### D · Foto — arkivet finnes allerede
 
 **Ikke finn på fotoretning, og ikke bruk stockbilder.** Det ligger 43
-profesjonelle bilder i `public/brand/foto/`, katalogisert i
-`designsystem/ak-golf/foto/katalog.md` med motiv og bruksområde per bilde.
+profesjonelle bilder i `foto/`, katalogisert i `foto/katalog.md` med motiv og
+bruksområde per bilde. Filnavnene (`ak-golf-09`) matcher katalogens numre.
 
 De fem sterkeste: **#9** (coach og spiller foran Trackman — hele merket i ett
 bilde) · **#42** (analysen innendørs) · **#24** (ball i luften) · **#44**
 (ovenfra, lange skygger) · **#28** (mørk bakgrunn, bygget for tekst over).
 
+Bildene er nedskalert til 1600 px for pakkens skyld. Originalene er 2400 px.
+
 **To ting du må forholde deg til:**
 
-**PUMA-logoen er synlig på coach-klærne** i alle nærbilder. Et konkurrerende
-merke i AK Golfs eget materiell. Ta hensyn i bildevalget, og se leveranse 9.
+**PUMA-logoen er synlig på coach-klærne** i flere nærbilder — et konkurrerende
+merke i AK Golfs eget materiell. Den er retusjert bort i #3, #9, #12, #14 og
+#41; de øvrige kan fortsatt ha den. Ta hensyn i bildevalget, og se leveranse 9.
 
 **Arkivet mangler to ting:** ingen bilder av yngre juniorer — motivet som betyr
 mest når junior er primærpublikum. Og bare ett portrett (#41, Anders
@@ -400,5 +407,8 @@ et fysisk prøvetrykk.
 
 **Tekstgrunnlaget er skrevet.** Ferdig tekst for seks markedssider, seks
 innleggstyper, seks e-postmaler og sju toneregler ligger i
-`docs/merkevare/ak-golf-tekstkonsept-2026-09-01.md`. Bruk den — ikke skriv ny
-tekst der den allerede finnes.
+`tekst/tekstkonsept.md`. Bruk den — ikke skriv ny tekst der den allerede finnes.
+
+**Alle retningslinjene ligger i `retningslinjer/`**, og tokens som ferdig CSS i
+`tokens/`. Verdiene i denne prompten er de samme — filene er der så du kan lime
+dem rett inn, ikke skrive dem av.
