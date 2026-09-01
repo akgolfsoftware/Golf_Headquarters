@@ -28,6 +28,40 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
 
 ## Beslutningene (august 2026)
 
+- **AK GOLF HØRER HJEMME I ET VERKSTED — PALETTEN LAGT OM (Anders 01.09.2026, i økt):**
+  Anders presiserte hva Academy står for: **«langsiktig utvikling, oppfølging, og å trene
+  optimalt og spesifikt, uavhengig av hvilket nivå golfspilleren er på.»** Den siste delen
+  velter fargevalget.
+  **Hvorfor de forrige forslagene bommet:** åtte palettforslag ble avvist. De første fire var
+  alle mørke og premium — de sier «dette er for de seriøse». Det er stikk i strid med «uavhengig
+  av nivå». De fleste golfmerker signaliserer eksklusivitet (dyp grønn, gull, marmor, seriffer)
+  og sier dermed «her må du være god nok» før noen har lest et ord.
+  **Valget:** av fire rom — klubbhuset, laboratoriet, verkstedet, naturen — valgte Anders
+  **verkstedet**. Et sted der noe blir gjort, ikke der noen blir servert.
+  **Paletten (alle kontrasttall MÅLT 01.09):**
+  - Grunn **varm betonggrå `#E8E4DC`** · ark `#FFFFFF` · senket `#DDD8CE`
+  - Tekst `#1F1D1A` (13,3:1) · dempet `#57534B` (6,0:1) · svak `#8B857A` (2,9:1 — **aldri
+    brødtekst**)
+  - **Signal `#B83217`** (4,7:1), fyll `#C4361B`, hvit tekst på fyllet (6,0:1)
+  - Fag `#2C6E63` (4,7:1) — andrestemme for metoden, ikke for målingen
+  - Varianttoner: Junior `#4A6B33` · Academy låner signalet · HQ `#2B5F87` ·
+    Organisasjon `#4A4F58` · Products `#7A5A22`
+  - Mørk variant: varm mørk grå `#22201C` — verkstedet om kvelden. **Lys er standard.**
+  **REGELEN SOM BÆRER PALETTEN: rødt betyr «se her».** En måling, et tall, en handling. Aldri
+  dekor, aldri stemning, aldri fem røde ting på samme flate. Mister rødt den betydningen, mister
+  paletten poenget sitt.
+  **Fonten:** hele **IBM Plex-familien** — Sans Condensed (overskrift), Sans (brødtekst), Mono
+  (målt). Én familie, tre roller. Testet mot Archivo Narrow + Poppins: Plex Sans er tettere, og
+  brødtekst som bryter til tre linjer i Poppins klarer seg på to. **Poppins og Lora er ute av
+  merket.** Dette overstyrer font-delen av instrument-beslutningen samme dag.
+  **Tekstkonseptet er skrevet:** `docs/merkevare/ak-golf-tekstkonsept-2026-09-01.md` +
+  `designsystem/ak-golf/tekstkonsept.html` — ferdig tekst til seks markedssider, seks
+  innleggstyper for sosiale medier, seks e-postmaler og seks toneregler. Ny hovedlinje:
+  **«Uansett hvor du står, vet du hva du trener på.»**
+  **UENDRET:** instrumentlaget (rutenett, målestokk, kryss), romskalaen, radius, logoen og
+  logofamilien, og at merkelaget aldri rører produktskjermene. **Train-lock og CLAUDE.md
+  invariant 2 står — ingen skjerm bytter font eller farge av denne beslutningen.**
+
 - **AK GOLF-MERKET LEGGES OM TIL INSTRUMENT-RETNINGEN (Anders 01.09.2026, i økt):**
   merkevaresystemet fra 31.08 var bygget rolig og forsiktig. Anders leverte seksten
   referansebilder; opptalt ga de tolv med rust/rød som eneste aksent, ni med enorm kondensert

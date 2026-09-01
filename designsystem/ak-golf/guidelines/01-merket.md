@@ -40,13 +40,25 @@ merkevarebygging.
 på egne ben, med egen identitet og egne kunder. AK Golf *promoterer* Mulligan —
 lenker dit, anbefaler det, trener der — men merkene blandes ikke.
 
-## Formen
+## Hva Academy står for
 
-Merket er tegnet som et **instrument**, ikke som et sportsmerke. Stor
-kondensert typografi som bærer tall, et rutenett som konstruksjon, målestokk
-og kryss. Valgt 01.09.2026 etter gjennomgang av referanser Anders leverte.
+> **Langsiktig utvikling, oppfølging, og å trene optimalt og spesifikt —
+> uavhengig av hvilket nivå spilleren er på.**
 
-Grunnen er ikke smak: et merke som sier «vi måler, vi synser ikke» kan ikke
-rope. Formen må si det samme som ordene. Se `11-instrumentet.md`.
+Presisert av Anders 01.09.2026, og den siste delen er den viktigste for
+hvordan merket ser ut.
+
+## Formen: verkstedet
+
+Merket hører hjemme i et **verksted**, ikke i et klubbhus. Varm betonggrå
+grunn, rødt signal, stor kondensert typografi som bærer tall, og et rutenett
+som konstruksjon.
+
+Grunnen er ikke smak. De fleste golfmerker signaliserer eksklusivitet — dyp
+grønn, gull, marmor, seriffer — og sier dermed «her må du være god nok» før
+noen har lest et ord. Når merket sier *uavhengig av nivå*, kan ikke fargene
+motsi teksten.
+
+Se `04-farge.md` og `11-instrumentet.md`.
 
 Se `02-arkitektur.md` for hvordan de øvrige virksomhetene henger sammen.

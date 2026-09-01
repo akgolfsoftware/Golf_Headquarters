@@ -1,91 +1,94 @@
-/* AK Golf — merkefarger.
-   STEG 18.4. Fasit for MERKET (logo, marked, materiell, presentasjoner).
-   Produktskjermene i PlayerHQ/AgencyOS/Forelder styres av Train-lock
-   (CLAUDE.md invariant 2) — dette settet overstyrer dem ALDRI.
+/* AK Golf — farge.
+   STEG 18.4. Lagt om til VERKSTEDET 01.09.2026 (Anders).
 
-   Alle kontrasttall er målt 31.08.2026 mot krem #FAF9F5 og blekk #141413,
-   ikke anslått. Regnestykket: designsystem/ak-golf/guidelines/04-farge.md.
+   Merket hører hjemme i et verksted, ikke i et klubbhus. Det følger av det
+   Academy faktisk står for: langsiktig utvikling, oppfølging, og trening som
+   er optimal og spesifikk — **uavhengig av hvilket nivå spilleren er på.**
 
-   Kilde for grunnpaletten: src/app/globals.css §--mk-* (i drift på
-   markedssidene). Verdiene under er de samme — ingen farge er endret der
-   den allerede var i bruk. Det som ER nytt: de fire variantfargene og de
-   tekstsikre variantene, som ikke fantes. */
+   Den siste setningen er grunnen til at paletten ser ut som den gjør. De
+   fleste golfmerker signaliserer eksklusivitet: dyp grønn, gull, marmor,
+   seriffer. Det sier «her må du være god nok». AK Golf sier det motsatte, og
+   da kan ikke fargene motsi teksten.
+
+   Grunnen er varm betonggrå. Signalfargen er rød, og den brukes som en
+   markering på en måling — ikke som energi eller hausing. Ingenting her er
+   premium, og det er meningen. Et godt verktøy er ikke pyntet; det er nøyaktig.
+
+   Alle kontrasttall er MÅLT 01.09.2026 med WCAG-formelen, ikke anslått.
+
+   LYS ER STANDARD. Den mørke varianten er verkstedet om kvelden — den finnes,
+   men den er ikke utgangspunktet. */
 
 :root {
-  /* --- Grunn. Delt av alle virksomheter. --- */
-  --ak-krem:        #FAF9F5;  /* hovedflate, lys */
-  --ak-krem-senk:   #F0EEE6;  /* seksjon som skal skille seg fra flaten */
-  --ak-flate:       #FFFFFF;  /* kort som ligger PÅ krem */
-  --ak-blekk:       #141413;  /* tekst og mørk flate */
-  --ak-blekk-myk:   #3D3D3A;  /* underordnet tekst på krem */
-  --ak-dempet:      #5E5D59;  /* brødtekst-grå, 6.4:1 på krem */
-  --ak-svak:        #B0AEA5;  /* etiketter, aldri brødtekst */
-  --ak-linje:       #E8E6DC;  /* kant og skille */
-  --ak-harlinje:    #D1CFC5;  /* sterkere skille, tabellrader */
+  /* --- Grunn --- */
+  --ak-grunn:      #E8E4DC;  /* varm betonggrå — hovedflate */
+  --ak-grunn-senk: #DDD8CE;  /* seksjon som skal skille seg */
+  --ak-ark:        #FFFFFF;  /* kort og ark som ligger PÅ grunnen */
 
-  /* --- Identitet. Clay er merkets egen farge, i logoen. --- */
-  --ak-clay:        #D97757;  /* flate, grafikk, logoball */
-  --ak-clay-tekst:  #A9512F;  /* 5.10:1 på krem — clay som SMÅ tekst */
-  --ak-clay-lys:    #E08B69;  /* 7.08:1 på blekk — clay på mørk flate */
-  --ak-clay-myk:    rgba(217, 119, 87, 0.12);
+  /* --- Tekst --- */
+  --ak-tekst:      #1F1D1A;  /* 13,3:1 på grunn · 16,8:1 på ark */
+  --ak-dempet:     #57534B;  /* 6,0:1 · brødtekst som er underordnet */
+  --ak-svak:       #8B857A;  /* 2,9:1 — ALDRI brødtekst. Kun etiketter og kanter */
 
-  /* --- Varianter. Én identitetsfarge per virksomhet. ---
-     Rekkefølgen er ikke tilfeldig: den følger spillerens vei gjennom huset.
-     Junior (vekst) → Academy (kjernen) → HQ (systemet) → Organisasjon (kravet)
-     → Products (utstyret). Fargen koder hvor i løpet du står. */
+  /* --- Linjer --- */
+  --ak-linje:      #D2CCC0;
+  --ak-linje-hard: #B8B1A3;  /* der to flater møtes og skillet skal sees */
 
-  /* Junior Academy — vekst */
-  --ak-junior:        #5B8450;
-  --ak-junior-tekst:  #4F7343;  /* 5.16:1 på krem */
-  --ak-junior-lys:    #8FB37F;  /* 7.83:1 på blekk */
+  /* --- Signal. Merkets ene aksent. ---
+     Rødt betyr «se her» — en måling, et tall, en handling. Aldri dekor,
+     aldri en stemning, aldri fem røde ting på samme flate. */
+  --ak-signal:      #B83217;  /* 4,7:1 på grunn — tekstsikker */
+  --ak-signal-fyll: #C4361B;  /* mer mettet, for hele flater */
+  --ak-signal-tekst:#FFFFFF;  /* 6,0:1 på fyllet */
+  --ak-signal-myk:  rgba(184, 50, 23, 0.10);
 
-  /* AK Golf Academy — kjernen. Arver clay: dette ER AK Golf. */
-  --ak-academy:       var(--ak-clay);
-  --ak-academy-tekst: var(--ak-clay-tekst);
-  --ak-academy-lys:   var(--ak-clay-lys);
+  /* --- Fag. Andrestemme, sjelden brukt. ---
+     Dyp grønnblå for det som hører til metoden framfor til målingen:
+     pyramiden, periodene, langsiktige linjer i et diagram. */
+  --ak-fag:        #2C6E63;  /* 4,7:1 på grunn */
 
-  /* AK Golf HQ / PlayerHQ — systemet, skjermen, tallene */
-  --ak-hq:            #3F7CB3;
-  --ak-hq-tekst:      #356B9C;  /* 5.34:1 på krem */
-  --ak-hq-lys:        #7FB0DA;  /* 8.01:1 på blekk */
+  /* --- Varianttoner. ---
+     Dempede arbeidstoner, ikke fem glade farger. I et verksted er ikke
+     verktøyene fargekodet etter merke — de er merket for å skilles fra
+     hverandre. Det er alt disse gjør.
+     MERK: rødt er OPPTATT av signalet. Academy låner den, fordi Academy ER
+     kjernen — men ingen annen variant får noe som ligner. */
+  --ak-v-junior:  #4A6B33;  /* 4,8:1 */
+  --ak-v-academy: var(--ak-signal);
+  --ak-v-hq:      #2B5F87;  /* 5,4:1 */
+  --ak-v-org:     #4A4F58;  /* 6,5:1 */
+  --ak-v-produkt: #7A5A22;  /* 5,0:1 */
 
-  /* Organisasjon — WANG-coaching, klubb, kontraktsarbeid. Kravet.
-     NB: dette er IKKE WANG Toppidretts egen navy (#17446F i
-     src/styles/wang-tokens.css). Skolen er kunde, ikke avsender. */
-  --ak-org:           #4E6A7E;
-  --ak-org-tekst:     #42596B;  /* 6.94:1 på krem */
-  --ak-org-lys:       #93AEC0;  /* 7.95:1 på blekk */
-
-  /* Skarpnord Golf Products — utstyret, materialet. Lav profil til
-     virksomheten har omsetning (merkeplattformen §7). */
-  --ak-produkt:       #9C7A33;
-  --ak-produkt-tekst: #8A6A2A;  /* 4.77:1 på krem */
-  --ak-produkt-lys:   #C9A755;  /* 8.03:1 på blekk */
-
-  /* --- Status. Aldri identitet, aldri merkefarge. ---
-     Skilt fra variantfargene med vilje: en grønn «godkjent» skal ikke kunne
-     forveksles med Junior Academy, og en rød feil skal ikke ligne clay. */
-  --ak-ok:      #2E7D51;
-  --ak-varsel:  #9A6B10;
-  --ak-feil:    #B3261E;
+  /* --- Status. Aldri identitet. --- */
+  --ak-ok:     #2E6B45;
+  --ak-varsel: #8A6410;
+  --ak-feil:   #A62B1C;
 }
 
-/* Mørk flate. Merkets mørke er blekk, ikke svart — samme varme som kremen.
-   Ren #000000 hører til Train-lock og produktskjermene, ikke til merket. */
+/* Verkstedet om kvelden. Varm mørk grå — ikke sort, ikke premium.
+   Samme temperatur som betongen, bare skrudd ned. */
 :root[data-ak-flate="mork"] {
-  --ak-krem:      #141413;
-  --ak-krem-senk: #1D1C1A;
-  --ak-flate:     #1D1C1A;
-  --ak-blekk:     #FAF9F5;
-  --ak-blekk-myk: #D6D3CA;
-  --ak-dempet:    #A5A29A;
-  --ak-svak:      #6E6C66;
-  --ak-linje:     #2C2B28;
-  --ak-harlinje:  #3A3936;
+  --ak-grunn:      #22201C;
+  --ak-grunn-senk: #1A1815;
+  --ak-ark:        #2C2925;
 
-  --ak-clay-tekst:    var(--ak-clay-lys);
-  --ak-junior-tekst:  var(--ak-junior-lys);
-  --ak-hq-tekst:      var(--ak-hq-lys);
-  --ak-org-tekst:     var(--ak-org-lys);
-  --ak-produkt-tekst: var(--ak-produkt-lys);
+  --ak-tekst:      #F2EFE8;  /* 14,2:1 */
+  --ak-dempet:     #A8A196;  /* 6,4:1 */
+  --ak-svak:       #75706A;  /* 3,3:1 — samme regel: aldri brødtekst */
+
+  --ak-linje:      #38342E;
+  --ak-linje-hard: #4A453D;
+
+  --ak-signal:      #E8654A;  /* 5,0:1 */
+  --ak-signal-fyll: #C4361B;
+  --ak-signal-tekst:#FFFFFF;
+  --ak-signal-myk:  rgba(232, 101, 74, 0.14);
+
+  --ak-fag:        #5FA89A;  /* 5,9:1 */
+
+  --ak-v-junior:  #8FB37F;
+  --ak-v-academy: var(--ak-signal);
+  --ak-v-hq:      #7FB0DA;
+  --ak-v-org:     #A3AAB5;
+  --ak-v-produkt: #C9A755;
 }

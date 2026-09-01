@@ -2,68 +2,95 @@
 
 Fasit i kode: `designsystem/ak-golf/tokens/farge.css`.
 
+## Rommet
+
+Merket hører hjemme i et **verksted**, ikke i et klubbhus. Valgt av Anders
+01.09.2026, og det følger av hva Academy faktisk står for: langsiktig
+utvikling, oppfølging, og trening som er optimal og spesifikk — **uavhengig av
+hvilket nivå spilleren er på.**
+
+Den siste setningen er grunnen til at paletten ser ut som den gjør. De fleste
+golfmerker signaliserer eksklusivitet: dyp grønn, gull, marmor, seriffer. Det
+sier «her må du være god nok» før noen har lest et ord. AK Golf sier det
+motsatte, og da kan ikke fargene motsi teksten.
+
+**Ingenting i denne paletten er premium, og det er meningen.** Et godt verktøy
+er ikke pyntet. Det er nøyaktig.
+
 ## Grunnen
 
-Merket står på **krem `#FAF9F5`**, ikke hvitt. Kremen er varm nok til at foto av
-gress og hud ser riktig ut på den, og den skiller AK Golf fra alle
-programvaremerker som står på rent hvitt.
+**Varm betonggrå `#E8E4DC`.** Ikke hvitt, ikke krem, ikke grønt. Den ser ut som
+en arbeidsflate.
 
-Merkets mørke er **blekk `#141413`**, ikke svart. Samme varme som kremen.
-Ren `#000000` hører til Train-lock og produktskjermene — ikke til merket.
-
-| Rolle | Verdi | Merknad |
+| Rolle | Verdi | Kontrast |
 |---|---|---|
-| Flate, lys | `#FAF9F5` | Standard |
-| Flate, senket | `#F0EEE6` | Seksjon som skal skille seg |
-| Kort på krem | `#FFFFFF` | |
-| Tekst | `#141413` | |
-| Underordnet tekst | `#5E5D59` | 6,4:1 på krem |
-| Etikett | `#B0AEA5` | **Aldri brødtekst** |
-| Kant | `#E8E6DC` | |
+| Grunn | `#E8E4DC` | — |
+| Grunn, senket | `#DDD8CE` | — |
+| Ark og kort | `#FFFFFF` | — |
+| Tekst | `#1F1D1A` | 13,3:1 på grunn · 16,8:1 på ark |
+| Dempet tekst | `#57534B` | 6,0:1 |
+| Svak | `#8B857A` | 2,9:1 — **aldri brødtekst**, kun etiketter og kanter |
+| Linje | `#D2CCC0` | — |
+| Linje, hard | `#B8B1A3` | — |
 
-## Identitetsfargene
+## Signalet
 
-Hver virksomhet har tre verdier, ikke én: en **flatefarge**, en **tekstfarge**
-som er mørk nok til å leses på krem, og en **lys** som leses på blekk.
+**`#B83217` er merkets ene aksent.** Rødt betyr «se her»: en måling, et tall,
+en handling.
 
-| Variant | Flate | Tekst på krem | Lys på blekk |
-|---|---|---|---|
-| Academy | `#D97757` | `#A9512F` · 5,10:1 | `#E08B69` · 7,08:1 |
-| Junior | `#5B8450` | `#4F7343` · 5,16:1 | `#8FB37F` · 7,83:1 |
-| HQ | `#3F7CB3` | `#356B9C` · 5,34:1 | `#7FB0DA` · 8,01:1 |
-| Organisasjon | `#4E6A7E` | `#42596B` · 6,94:1 | `#93AEC0` · 7,95:1 |
-| Products | `#9C7A33` | `#8A6A2A` · 4,77:1 | `#C9A755` · 8,03:1 |
+Aldri dekor. Aldri en stemning. Aldri fem røde ting på samme flate. Rødt i et
+verksted er en markering — det er nøyaktig den betydningen merket trenger, og
+den ryker hvis fargen brukes til pynt.
 
-Alle tall er **målt 31.08.2026**, ikke anslått, med WCAG-formelen mot krem
-`#FAF9F5` og blekk `#141413`. Regnestykket ligger i historikken til denne PR-en.
+| Rolle | Verdi | Kontrast |
+|---|---|---|
+| Signal, tekst | `#B83217` | 4,7:1 på grunn |
+| Signal, fyll | `#C4361B` | for hele flater |
+| Tekst på fyllet | `#FFFFFF` | 6,0:1 |
 
-## Én rettelse mot dagens kode
+## Fagfargen
 
-`--mk-accent-fg: #B85C3D` er i drift på markedssidene som clay-tekstfarge. Målt
-gir den **4,30:1** på krem — under kravet på 4,5 for tekst under 24 px. Den er i
-bruk på nettopp små caps-etiketter, der den ikke holder.
+**`#2C6E63`**, dyp grønnblå. Andrestemme, sjelden brukt: for det som hører til
+**metoden** framfor til **målingen** — pyramiden, periodene, langsiktige linjer
+i et diagram. 4,7:1 på grunn.
 
-`--ak-clay-tekst: #A9512F` gir 5,10:1 og er visuelt nesten ikke til å skille fra
-den. **Nytt materiell bruker `#A9512F`.** Å bytte den i produksjonskoden er en
-egen liten jobb, ikke en del av merkevareleveransen.
+## Varianttonene
 
-## Status er ikke identitet
+Dempede arbeidstoner, ikke fem glade farger. I et verksted er ikke verktøyene
+fargekodet etter merke — de er merket for å skilles fra hverandre. Det er alt
+disse gjør.
 
-Grønn, gul og rød brukes til å si om noe er i orden — aldri som merkefarge:
+| Variant | Verdi | Kontrast |
+|---|---|---|
+| Junior Academy | `#4A6B33` | 4,8:1 |
+| AK Golf Academy | *låner signalet* | 4,7:1 |
+| AK Golf HQ | `#2B5F87` | 5,4:1 |
+| Organisasjon | `#4A4F58` | 6,5:1 |
+| Skarpnord Products | `#7A5A22` | 5,0:1 |
 
-| Rolle | Verdi |
-|---|---|
-| I orden | `#2E7D51` |
-| Følg med | `#9A6B10` |
-| Feil | `#B3261E` |
+**Rødt er opptatt av signalet.** Academy låner den fordi Academy *er* kjernen —
+men ingen annen variant får noe som ligner. Ser du rødt et sted, skal det bety
+«se her», ikke «dette er Junior».
 
-Statusgrønn `#2E7D51` er med vilje kjøligere og mørkere enn Junior `#5B8450`,
-så «godkjent» aldri kan forveksles med «juniorprogrammet».
+## Verkstedet om kvelden
+
+Den mørke varianten er varm mørk grå `#22201C` — ikke sort, ikke premium. Samme
+temperatur som betongen, bare skrudd ned. **Lys er standard**; mørk er
+varianten, ikke utgangspunktet.
+
+Alle verdier og kontrasttall står i `tokens/farge.css`.
+
+## Status er aldri identitet
+
+I orden `#2E6B45` · følg med `#8A6410` · feil `#A62B1C`.
+
+Feilrød `#A62B1C` er med vilje mørkere og mindre mettet enn signalet `#B83217`,
+så «noe er galt» ikke kan forveksles med «se her».
 
 ## Aldri
 
 - Aldri en farge som ikke står i `farge.css`.
-- Aldri to identitetsfarger i samme flate. Én variant om gangen.
-- Aldri gradienter over merkefarger. Merket er flatt.
-- Aldri clay på grønn, eller identitetsfarge på identitetsfarge.
-- Aldri farge som eneste bærer av informasjon — sett alltid et ord eller en form ved siden av.
+- Aldri rødt som dekor. Rødt betyr noe.
+- Aldri to varianttoner i samme visning.
+- Aldri gradienter. Verkstedet er flatt.
+- Aldri farge som eneste bærer av informasjon.
