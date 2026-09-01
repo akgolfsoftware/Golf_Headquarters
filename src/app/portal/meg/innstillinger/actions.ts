@@ -1,7 +1,6 @@
 "use server";
 
 import { z } from "zod";
-import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { assertNotAwaitingConsent } from "@/lib/auth/requireConsentingUser";
 import { audit } from "@/lib/audit";
@@ -318,26 +317,4 @@ export async function deleteUserAccount(
     await logError({ context: "gdpr.delete-account", error, userId: user.id });
     return { ok: false, error: "Sletting feilet. Kontakt support." };
   }
-}
-
-/**
- * @deprecated — Bruk exportUserData() istedenfor (returnerer faktisk data).
- */
-export async function requestDataExport(): Promise<void> {
-  const result = await exportUserData();
-  if (!result.ok) {
-    throw new Error(result.error ?? "export_failed");
-  }
-  redirect("/portal/meg/innstillinger?ok=eksport");
-}
-
-/**
- * @deprecated — Bruk deleteUserAccount(confirmation) istedenfor.
- */
-export async function requestAccountDeletion(): Promise<void> {
-  const result = await deleteUserAccount("SLETT");
-  if (!result.ok) {
-    throw new Error(result.error ?? "delete_failed");
-  }
-  redirect("/auth/login?deleted=1");
 }
