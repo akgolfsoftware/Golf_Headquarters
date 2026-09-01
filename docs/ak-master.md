@@ -244,7 +244,7 @@ Kort rutine ved start av en Claude Code-økt på dette prosjektet:
 - **Ett aktivt fasitsett:** Train-lock i repoet (`designsystem/train-lock/`). Claude Paper (`605a48cc`) er historikk. Ikke bygg nye produktskjermer mot Paper.
 - **Arbeidsmetode — låst:** audit → wireframe → godkjenning → hi-fi render, én skjerm om gangen. Dette er presisjonsforfining innenfor eksisterende visuelt språk, ikke redesign.
 - **Wireframe-fasen** bruker `akgolf-wireframe`-skillen (design-tokens.md, component-library.md, page-templates.md) — tre breakpoints alltid: 1440 / 1024 / 390px.
-- **Hi-fi-fasen** følger Train-lock `DESIGN-SYSTEM.md`. `ak-designekspert`-skillens Paper-kropp er historikk.
+- **Hi-fi-fasen** følger Train-lock `DESIGN-SYSTEM.md`. (`ak-designekspert`-skillen er slettet 01.09.2026 — fasiten ligger i `designsystem/train-lock/`.)
 - **Hver skjerm skal ha fast identitet før den regnes ferdig:** hvilken flate (AgencyOS: maks 5 flater — Konsoll · Innboks · Spillere · Kalender · Maskinrom. PlayerHQ: maks 4 — I dag · Plan · Analyse · Meg), lys OG mørk modus, alle tre breakpoints.
 - **Ordliste-sjekk:** all norsk UI-tekst skal matche `akordlistegjennomgang.html` (Del A+B, 506 termer) — ingen egne ord oppfinnes i Claude Design-fasen heller, ikke bare i koden.
 ### 11.2 Design-index, MASTER-SKJERMPLAN og porting-gate

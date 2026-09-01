@@ -12,7 +12,8 @@ description: |
   Trigger også uten ordet «design»: «finpuss», «juster», «ser dette riktig ut»,
   «sjekk mot merket», «kan vi skrive», «hvilket bilde».
   IKKE for produktskjermer i /portal, /admin eller /forelder — der gjelder
-  ak-designekspert og Train-lock. IKKE for /team-norway/* — der gjelder Claw.
+  Train-lock (designsystem/train-lock/). IKKE for /team-norway/* — der gjelder
+  Claw (designsystem/team-norway/).
 version: "1.0"
 updated: "2026-09-01"
 ---
@@ -20,8 +21,10 @@ updated: "2026-09-01"
 # AK Merkevare — verkstedet
 
 Du finjusterer AK Golfs merkevare. Ikke produktet. Grensen er absolutt, og den er
-det første du sjekker: **er dette en skjerm inne i appen?** Da er du feil skill —
-si det, og pek på `ak-designekspert`.
+det første du sjekker: **er dette en skjerm inne i appen?** Da er du feil skill.
+Si det, og pek på `designsystem/train-lock/` — `DESIGN-SYSTEM.md` for visuelle
+verdier, `SCREEN-INDEX.md` for å finne skjermen, `HANDOFF.md` for struktur.
+Ved konflikt vinner HANDOFF på struktur og DESIGN-SYSTEM på verdier.
 
 Fasit i repoet: `designsystem/ak-golf/`. Les `guidelines/` før du dømmer noe.
 
