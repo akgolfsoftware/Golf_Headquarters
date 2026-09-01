@@ -134,14 +134,30 @@ function kuttBunn(png, bottom) {
   return ut;
 }
 
-const fasitKuttet = kuttTopp(fasitPng, cropTop);
-const appKuttet = kuttBunn(appPng, cropTop);
+let fasitKuttet = kuttTopp(fasitPng, cropTop);
+let appKuttet = kuttBunn(appPng, cropTop);
 
-if (fasitKuttet.width !== appKuttet.width || fasitKuttet.height !== appKuttet.height) {
+// Sub-piksel avrundingsavvik (boundingBox() vs faktisk viewport-allokering,
+// sett opptil 1-2px på enkelte fasit-rammer) — klipp til minste felles mål
+// heller enn å feile. Større avvik enn det er en reell størrelsesfeil.
+const dW = Math.abs(fasitKuttet.width - appKuttet.width);
+const dH = Math.abs(fasitKuttet.height - appKuttet.height);
+if (dW > 2 || dH > 2) {
   console.error(
     `STØRRELSE MATCHER IKKE: fasit ${fasitKuttet.width}×${fasitKuttet.height} vs app ${appKuttet.width}×${appKuttet.height} (etter cropTop=${cropTop}).`
   );
   process.exit(1);
+}
+if (dW || dH) {
+  const w = Math.min(fasitKuttet.width, appKuttet.width);
+  const h = Math.min(fasitKuttet.height, appKuttet.height);
+  const beskjaer = (png) => {
+    const ut = new PNG({ width: w, height: h });
+    PNG.bitblt(png, ut, 0, 0, w, h, 0, 0);
+    return ut;
+  };
+  fasitKuttet = beskjaer(fasitKuttet);
+  appKuttet = beskjaer(appKuttet);
 }
 
 const diffPng = new PNG({ width: fasitKuttet.width, height: fasitKuttet.height });
