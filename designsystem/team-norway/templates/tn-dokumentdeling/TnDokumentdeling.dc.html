@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="TN-11 Dokumentdeling per gruppe" description="Filene delt til en gruppe: type, opplaster, sist oppdatert og lesekvittering som brøk — åpnes til navnelisten med hvem som mangler. Mindreårige med fornavn + forbokstav. Mac 1440 og mobil 390 i fire tilstander." -->
+<helmet><script src="./ds-base.js"></script></helmet>
+<div style="padding:48px;display:flex;flex-direction:column;gap:56px;background:var(--surface-page);min-height:100vh;font-family:var(--font-body)">
+
+<div style="display:flex;flex-direction:column;gap:8px;max-width:800px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TN-11 · /team-norway/[gruppeId]/dokumenter</div>
+<h1 style="font-size:var(--text-h1);color:var(--navy-900);letter-spacing:var(--tracking-heading);margin:0">Dokumentdeling</h1>
+<p style="margin:0;font-size:var(--text-lg);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Filene som er delt til gruppen, med lesekvittering som faktisk kan følges opp: brøken står i raden, og navnelisten åpnes i panelet ved siden av. Brøken alene forteller ikke hvem du skal ringe.</p>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:20px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MAC 1440 · SUKSESS · KVITTERING ÅPNET</div>
+<div style="width:1440px;height:900px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;font-variant-numeric:tabular-nums">
+
+<div style="width:232px;flex-shrink:0;background:var(--surface-card);border-right:1px solid var(--border-subtle);display:flex;flex-direction:column;padding:20px 14px 18px;gap:20px">
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:11px 12px;display:flex;align-items:center;gap:10px">
+<span style="width:9px;height:24px;border-radius:3px;background:var(--red-600);flex-shrink:0"></span>
+<div style="min-width:0"><div style="font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--navy-900)">Team Norway</div><div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);color:var(--text-tertiary);margin-top:1px">JUNIOR</div></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:2px;flex:1;min-height:0;overflow:hidden">
+<sc-for list="{{ meny }}" as="m" hint-placeholder-count="12">
+<sc-if value="{{ m.isHeading }}" hint-placeholder-val="{{ false }}">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);padding:14px 12px 6px">{{ m.label }}</div>
+</sc-if>
+<sc-if value="{{ m.isItem }}" hint-placeholder-val="{{ true }}">
+<div ref="{{ m.ref }}" style="height:40px;border-radius:var(--radius-xs);padding:0 10px;display:flex;align-items:center;gap:10px">
+<span ref="{{ m.markRef }}" style="width:3px;height:18px;border-radius:var(--radius-full);flex-shrink:0"></span>
+<span style="font-size:var(--text-sm);font-weight:var(--weight-medium)">{{ m.label }}</span>
+</div>
+</sc-if>
+</sc-for>
+</div>
+</div>
+
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;min-height:0">
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:20px 32px 16px;display:flex;align-items:flex-end;justify-content:space-between;gap:20px">
+<div style="min-width:0">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DOKUMENTER · LANDSLAGSSAMLING MARBELLA · 14 UTØVERE</div>
+<h2 style="font-size:var(--text-h1);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:4px 0 0">Delte filer</h2>
+</div>
+<div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+<div role="button" style="height:40px;padding:0 16px;border-radius:var(--radius-full);border:1px solid var(--border-default);display:flex;align-items:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Tilbake til poster</div>
+<div role="button" style="height:40px;padding:0 18px;border-radius:var(--radius-full);background:var(--navy-900);display:flex;align-items:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--white)">Last opp fil</div>
+</div>
+</div>
+
+<div style="flex:1;min-height:0;display:flex;overflow:hidden">
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;padding:18px 24px 0;gap:8px;overflow:hidden">
+<div style="display:flex;align-items:flex-end;gap:14px;padding:0 16px 2px;flex-shrink:0">
+<span style="flex:1;min-width:0;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">FIL</span>
+<span style="width:150px;flex-shrink:0;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">LASTET OPP AV</span>
+<span style="width:120px;flex-shrink:0;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">SIST OPPDATERT</span>
+<span style="width:190px;flex-shrink:0;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">LESEKVITTERING</span>
+</div>
+<sc-for list="{{ filer }}" as="f" hint-placeholder-count="5">
+<div ref="{{ f.radRef }}" style="border-radius:var(--radius-md);padding:12px 16px;display:flex;align-items:center;gap:14px;min-height:44px;flex-shrink:0">
+<div style="flex:1;min-width:0;display:flex;align-items:center;gap:12px">
+<span ref="{{ f.ikonRef }}" style="width:34px;height:34px;border-radius:var(--radius-xs);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-bold);flex-shrink:0">{{ f.type }}</span>
+<div style="min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ f.navn }}</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);margin-top:2px">{{ f.storrelse }} · {{ f.kilde }}</div>
+</div>
+</div>
+<span style="width:150px;flex-shrink:0;font-size:var(--text-sm);color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ f.opplaster }}</span>
+<span style="width:120px;flex-shrink:0;font-family:var(--font-mono);font-size:var(--text-sm);color:var(--text-secondary)">{{ f.oppdatert }}</span>
+<div style="width:190px;flex-shrink:0;display:flex;align-items:center;gap:10px">
+<div style="flex:1;min-width:0;height:8px;border-radius:var(--radius-full);background:var(--ink-100);overflow:hidden"><div ref="{{ f.barRef }}" style="height:100%;border-radius:var(--radius-full)"></div></div>
+<span style="width:76px;flex-shrink:0;font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary)">{{ f.brok }}</span>
+</div>
+</div>
+</sc-for>
+<div style="flex:1;min-height:0"></div>
+<div style="background:var(--navy-50);border:1px solid var(--navy-100);border-radius:var(--radius-md);padding:12px 16px;display:flex;align-items:flex-start;gap:12px;flex-shrink:0;margin-bottom:20px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--navy-700);flex-shrink:0;padding-top:2px">NAVNEREGEL</span>
+<span style="flex:1;min-width:0;font-size:var(--text-sm);color:var(--navy-900);line-height:var(--leading-normal);text-wrap:pretty">Utøvere under 18 står med fornavn og forbokstav. Denne flaten ses av 14 utøvere og 11 foresatte samtidig.</span>
+</div>
+</div>
+
+<div style="width:330px;flex-shrink:0;border-left:1px solid var(--border-subtle);background:var(--surface-card);padding:18px 20px;display:flex;flex-direction:column;gap:12px;overflow:hidden">
+<div style="display:flex;flex-direction:column;gap:4px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">LESEKVITTERING</span>
+<span style="font-size:var(--text-base);font-weight:var(--weight-bold);color:var(--navy-900);line-height:var(--leading-snug);text-wrap:pretty">uttakskriterier-host.pdf</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary)">12 AV 14 HAR ÅPNET · SIST 29.08 KL. 21.04</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;flex:1;min-height:0;overflow:hidden">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--status-amber-text);background:var(--status-amber-bg);border-radius:var(--radius-xs);padding:4px 8px;align-self:flex-start">MANGLER · 2</div>
+<sc-for list="{{ mangler }}" as="u" hint-placeholder-count="2">
+<div style="display:flex;align-items:center;gap:10px;min-height:36px">
+<span style="width:26px;height:26px;border-radius:var(--radius-full);background:var(--ink-100);color:var(--ink-700);font-family:var(--font-mono);font-size:var(--text-micro);display:flex;align-items:center;justify-content:center;flex-shrink:0">{{ u.init }}</span>
+<span style="flex:1;min-width:0;font-size:var(--text-sm);font-weight:var(--weight-medium);color:var(--navy-900)">{{ u.navn }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">{{ u.status }}</span>
+</div>
+</sc-for>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);margin-top:6px">ÅPNET · 12</div>
+<sc-for list="{{ apnet }}" as="u" hint-placeholder-count="6">
+<div style="display:flex;align-items:center;gap:10px;min-height:30px">
+<span style="width:7px;height:7px;border-radius:var(--radius-full);background:var(--status-green);flex-shrink:0"></span>
+<span style="flex:1;min-width:0;font-size:var(--text-sm);color:var(--text-primary)">{{ u.navn }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">{{ u.tid }}</span>
+</div>
+</sc-for>
+<div style="flex:1;min-height:0"></div>
+</div>
+<div role="button" style="height:40px;flex-shrink:0;border-radius:var(--radius-full);border:1px solid var(--border-default);display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Purr de to som mangler</div>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:20px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MOBIL 390 · SUKSESS, TOM, LASTER, FEIL</div>
+<div style="display:flex;gap:28px;flex-wrap:wrap">
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">SUKSESS</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.41</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:6px 16px 12px;display:flex;align-items:center;gap:8px">
+<div role="button" style="width:44px;height:44px;flex-shrink:0;margin-left:-12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--navy-600)">‹</div>
+<div style="min-width:0;flex:1">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">SAMLING MARBELLA</div>
+<h2 style="font-size:var(--text-h3);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:1px 0 0">Delte filer</h2>
+</div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:12px 16px;display:flex;flex-direction:column;gap:10px">
+<sc-for list="{{ filerMobil }}" as="f" hint-placeholder-count="4">
+<div role="button" style="background:var(--surface-card);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:12px 14px;display:flex;flex-direction:column;gap:9px;flex-shrink:0">
+<div style="display:flex;align-items:center;gap:10px">
+<span ref="{{ f.ikonRef }}" style="width:30px;height:30px;border-radius:var(--radius-xs);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-bold);flex-shrink:0">{{ f.type }}</span>
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ f.navn }}</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);margin-top:1px">{{ f.storrelse }} · {{ f.oppdatert }}</div>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:10px;border-top:1px solid var(--border-subtle);padding-top:8px">
+<div style="flex:1;min-width:0;height:7px;border-radius:var(--radius-full);background:var(--ink-100);overflow:hidden"><div ref="{{ f.barRef }}" style="height:100%;border-radius:var(--radius-full)"></div></div>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary);flex-shrink:0">{{ f.brok }}</span>
+<span style="font-size:var(--text-xs);font-weight:var(--weight-semibold);color:var(--navy-700);flex-shrink:0">Se hvem</span>
+</div>
+</div>
+</sc-for>
+<div style="flex:1;min-height:0"></div>
+</div>
+<div style="flex-shrink:0;border-top:1px solid var(--border-subtle);background:var(--surface-card);padding:12px 16px 20px;display:flex;align-items:center;gap:10px">
+<div style="flex:1;min-width:0;font-size:var(--text-xs);color:var(--text-tertiary);line-height:var(--leading-snug);text-wrap:pretty">Fornavn + forbokstav på delt flate</div>
+<div role="button" style="height:44px;padding:0 20px;border-radius:var(--radius-full);background:var(--navy-900);display:flex;align-items:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--white);flex-shrink:0">Last opp</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">TOM — INGEN FILER DELT</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">10.12</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:6px 16px 12px;display:flex;align-items:center;gap:8px">
+<div role="button" style="width:44px;height:44px;flex-shrink:0;margin-left:-12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--navy-600)">‹</div>
+<div style="min-width:0;flex:1">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TN JENTER 2009</div>
+<h2 style="font-size:var(--text-h3);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:1px 0 0">Delte filer</h2>
+</div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:16px;display:flex;flex-direction:column;gap:14px">
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:20px;display:flex;flex-direction:column;gap:12px">
+<div style="font-size:var(--text-h3);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading);line-height:var(--leading-snug);text-wrap:pretty">Ingen filer delt ennå</div>
+<div style="font-size:var(--text-sm);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Filer du legger ut her er tilgjengelige for gruppen så lenge den finnes — også for foresatte. Systemet viser hvem som har åpnet hver fil.</div>
+<div style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Vedlegg du legger på en post havner også her automatisk.</div>
+</div>
+<div style="background:var(--surface-card);border:1px dashed var(--border-default);border-radius:var(--radius-md);padding:22px 16px;display:flex;flex-direction:column;align-items:center;gap:8px">
+<span style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Slipp filer her</span>
+<span style="font-size:var(--text-xs);color:var(--text-secondary);text-align:center;text-wrap:pretty">PDF, bilde, video eller regneark. Maks 50 MB per fil.</span>
+</div>
+<div style="flex:1;min-height:0"></div>
+<div role="button" style="height:48px;flex-shrink:0;border-radius:var(--radius-full);background:var(--navy-900);display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--white)">Last opp første fil</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">LASTER</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.41</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:10px 16px 14px;display:flex;flex-direction:column;gap:9px">
+<div style="width:150px;height:11px;border-radius:var(--radius-xs);background:var(--ink-100)"></div>
+<div style="width:180px;height:26px;border-radius:var(--radius-xs);background:var(--ink-100)"></div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:12px 16px;display:flex;flex-direction:column;gap:10px">
+<sc-for list="{{ skjelett }}" as="s" hint-placeholder-count="5">
+<div style="background:var(--surface-card);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:12px 14px;display:flex;flex-direction:column;gap:9px">
+<div style="display:flex;align-items:center;gap:10px">
+<div style="width:30px;height:30px;border-radius:var(--radius-xs);background:var(--ink-100);flex-shrink:0"></div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px">
+<div ref="{{ s.ref }}" style="height:13px;border-radius:var(--radius-xs);background:var(--ink-100)"></div>
+<div style="width:52%;height:10px;border-radius:var(--radius-xs);background:var(--ink-100)"></div>
+</div>
+</div>
+<div style="height:1px;background:var(--border-subtle)"></div>
+<div style="height:7px;border-radius:var(--radius-full);background:var(--ink-100)"></div>
+</div>
+</sc-for>
+<div style="display:flex;align-items:center;gap:10px;padding:2px">
+<span style="width:14px;height:14px;border-radius:var(--radius-full);border:2px solid var(--ink-200);border-top-color:var(--navy-600);flex-shrink:0"></span>
+<span style="font-size:var(--text-xs);color:var(--text-secondary)">Henter filer og lesekvitteringer</span>
+</div>
+<div style="flex:1;min-height:0"></div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">FEIL — KVITTERING KAN IKKE HENTES</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">11.26</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:6px 16px 12px;display:flex;align-items:center;gap:8px">
+<div role="button" style="width:44px;height:44px;flex-shrink:0;margin-left:-12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--navy-600)">‹</div>
+<div style="min-width:0;flex:1">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">SAMLING MARBELLA</div>
+<h2 style="font-size:var(--text-h3);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:1px 0 0">Delte filer</h2>
+</div>
+</div>
+<div style="flex-shrink:0;background:var(--status-amber-bg);padding:12px 16px;display:flex;align-items:flex-start;gap:10px">
+<span style="width:7px;height:7px;border-radius:var(--radius-full);background:var(--status-amber);flex-shrink:0;margin-top:6px"></span>
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--status-amber-text)">Lesekvittering mangler</div>
+<div style="font-size:var(--text-xs);color:var(--status-amber-text);line-height:var(--leading-normal);margin-top:3px;text-wrap:pretty">Filene ligger her, men hvem som har åpnet dem kunne ikke hentes.</div>
+</div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:12px 16px;display:flex;flex-direction:column;gap:10px">
+<sc-for list="{{ filerFeil }}" as="f" hint-placeholder-count="3">
+<div style="background:var(--surface-card);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:12px 14px;display:flex;flex-direction:column;gap:9px;flex-shrink:0">
+<div style="display:flex;align-items:center;gap:10px">
+<span ref="{{ f.ikonRef }}" style="width:30px;height:30px;border-radius:var(--radius-xs);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-bold);flex-shrink:0">{{ f.type }}</span>
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ f.navn }}</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);margin-top:1px">{{ f.storrelse }} · {{ f.oppdatert }}</div>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:8px;border-top:1px solid var(--border-subtle);padding-top:8px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">KVITTERING UTILGJENGELIG</span>
+</div>
+</div>
+</sc-for>
+<div style="background:var(--surface-card);border:1px dashed var(--status-amber);border-radius:var(--radius-md);padding:14px;display:flex;flex-direction:column;gap:10px;flex-shrink:0">
+<span style="font-size:var(--text-sm);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Ingen brøk vises framfor en gammel eller gjettet. En kvittering du ikke kan stole på, er verre enn ingen.</span>
+<div role="button" style="height:44px;border-radius:var(--radius-full);border:1px solid var(--border-default);display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Hent kvitteringer på nytt</div>
+</div>
+<div style="flex:1;min-height:0"></div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div style="max-width:760px;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:28px;display:flex;flex-direction:column;gap:16px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DESIGNNOTAT</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Beslutningen skjermen løser</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">At «12 av 14» må kunne åpnes. Brøken står i raden for oversikt, og panelet ved siden av setter de som mangler øverst med egen ravgul etikett — de åpnede står under, som bekreftelse, ikke som hovedsak. Feiltilstanden viser filene uten brøk framfor en gammel brøk: kvitteringen er et grunnlag for å ringe noen, og da må den være riktig.</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Tall og navn som er eksempler</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Alle filnavn, størrelser, datoer og navn er skjermtekst. Utøvere står som fornavn + forbokstav fordi flaten ses av hele gruppen og foresatte samtidig — samme regel som TN-08 og TN-09. Trenere står med fullt navn; de er voksne og i en yrkesrolle.</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Usikkert</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty"><strong>Ett:</strong> «åpnet» er tegnet som at filen er lastet, ikke lest — om det skal kreves noe mer (bekreftelsesknapp på uttakskriterier, for eksempel) er en produktavgjørelse. <strong>To:</strong> teller foresattes åpning i brøken, eller bare utøverens? Jeg har talt utøvere, siden 14 er antall utøvere. <strong>Tre:</strong> versjonering — «sist oppdatert» antyder at en fil kan erstattes, men det er ikke tegnet hva som skjer med kvitteringen når versjon 2 lastes opp. <strong>Fire:</strong> ingen ikonsett; filtype vises som monotekst — anbefaling Lucide 20 px, 1,75 px strek.</div>
+</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1560,&quot;height&quot;:1000}}">
+const setStyle = o => el => { if (el) Object.assign(el.style, o); };
+const filStil = t => t === 'PDF'
+  ? { background: 'var(--status-red-bg)', color: 'var(--status-red-text)' }
+  : t === 'JPG'
+    ? { background: 'var(--navy-50)', color: 'var(--navy-700)' }
+    : t === 'XLSX'
+      ? { background: 'var(--status-green-bg)', color: 'var(--status-green-text)' }
+      : { background: 'var(--ink-100)', color: 'var(--ink-700)' };
+
+class Component extends DCLogic {
+  filData() {
+    return [
+      { type: 'PDF', navn: 'uttakskriterier-host.pdf', storrelse: '312 KB', kilde: 'FRA POST 21.08', opplaster: 'Sindre Dahl', oppdatert: '21.08.2026', pct: 86, brok: '12 av 14', valgt: true },
+      { type: 'PDF', navn: 'reiseplan-marbella.pdf', storrelse: '4,2 MB', kilde: 'LASTET OPP', opplaster: 'Sindre Dahl', oppdatert: '28.08.2026', pct: 100, brok: '14 av 14', valgt: false },
+      { type: 'PDF', navn: 'hotellbekreftelse.pdf', storrelse: '91 KB', kilde: 'FRA POST 28.08', opplaster: 'Sindre Dahl', oppdatert: '28.08.2026', pct: 64, brok: '9 av 14', valgt: false },
+      { type: 'XLSX', navn: 'romfordeling.xlsx', storrelse: '38 KB', kilde: 'LASTET OPP', opplaster: 'Ina L. Haug', oppdatert: '26.08.2026', pct: 50, brok: '7 av 14', valgt: false },
+      { type: 'JPG', navn: 'baneoversikt-los-naranjos.jpg', storrelse: '1,8 MB', kilde: 'FRA POST 24.08', opplaster: 'Ina L. Haug', oppdatert: '24.08.2026', pct: 29, brok: '4 av 14', valgt: false }
+    ];
+  }
+  dekorer(f) {
+    return {
+      ...f,
+      ikonRef: setStyle(filStil(f.type)),
+      barRef: setStyle({
+        width: f.pct + '%',
+        background: f.pct >= 85 ? 'var(--status-green)' : f.pct >= 50 ? 'var(--navy-400)' : 'var(--status-amber)'
+      }),
+      radRef: setStyle(f.valgt
+        ? { background: 'var(--surface-card)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--navy-100)' }
+        : { background: 'transparent', border: '1px solid var(--border-subtle)' })
+    };
+  }
+  renderVals() {
+    const f = this.filData().map(x => this.dekorer(x));
+    return {
+      meny: [
+        { isHeading: true, label: 'Daglig' },
+        { isItem: true, label: 'Oversikt' },
+        { isItem: true, label: 'Fellestesting' },
+        { isHeading: true, label: 'Kommunikasjon' },
+        { isItem: true, label: 'Gruppeposter' },
+        { isItem: true, label: 'Poster til utøver' },
+        { isItem: true, label: 'Dokumenter', aktiv: true },
+        { isHeading: true, label: 'Uttak' },
+        { isItem: true, label: 'Uttaksliste' },
+        { isItem: true, label: 'Rangliste' },
+        { isHeading: true, label: 'Skoler' },
+        { isItem: true, label: 'Skoleoversikt' }
+      ].map(m => ({
+        ...m,
+        ref: setStyle({
+          background: m.aktiv ? 'var(--navy-100)' : 'transparent',
+          color: m.aktiv ? 'var(--navy-900)' : 'var(--text-secondary)'
+        }),
+        markRef: setStyle({ background: m.aktiv ? 'var(--red-600)' : 'transparent' })
+      })),
+      filer: f,
+      filerMobil: f.slice(0, 4),
+      filerFeil: f.slice(0, 3),
+      mangler: [
+        { init: 'EH', navn: 'Emma H.', status: 'UTØVER' },
+        { init: 'TB', navn: 'Trym B.', status: 'UTØVER' }
+      ],
+      apnet: [
+        { navn: 'Jonas Ek', tid: '21.08 · 09.12' },
+        { navn: 'Mathea S.', tid: '21.08 · 09.40' },
+        { navn: 'Iver R.', tid: '21.08 · 12.03' },
+        { navn: 'Nora F.', tid: '22.08 · 07.55' },
+        { navn: 'Kasper V.', tid: '22.08 · 18.20' },
+        { navn: 'Live A.', tid: '23.08 · 20.41' }
+      ],
+      skjelett: [70, 84, 62, 78, 66].map(w => ({ ref: setStyle({ width: w + '%' }) }))
+    };
+  }
+}
+</script>
+</body>
+</html>
