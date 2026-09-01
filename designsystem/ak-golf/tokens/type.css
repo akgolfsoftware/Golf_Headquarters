@@ -1,28 +1,34 @@
 /* AK Golf — typografi.
-   STEG 18.4, lagt om til instrument-retningen 01.09.2026.
+   STEG 18.4. Lagt om til verkstedet 01.09.2026 (Anders).
 
-   Tre fonter. Ingen fjerde.
+   Hele IBM Plex-familien. Ingen andre fonter.
 
-   Archivo Narrow  — overskrifter. Alt som skal dominere en flate.
-   Poppins         — brødtekst, knapper, skjema. Alt som skal leses raskt.
-   IBM Plex Mono   — alt som er MÅLT.
+   IBM Plex Sans Condensed — overskrifter. Alt som skal dominere en flate.
+   IBM Plex Sans           — brødtekst, knapper, skjema.
+   IBM Plex Mono           — alt som er MÅLT.
 
-   Endringen 01.09: Lora er ute, Archivo Narrow er inn. Antallet er det samme;
-   rollen er byttet. En serif sier «les langsomt» — instrumentet sier «her er
-   tallet». Det er ikke plass til begge stemmene.
+   Én familie, tre roller. Plex er tegnet som et industrielt system, ikke som
+   et markedsføringsalfabet — det er verkstedets språk. Valgt etter test mot
+   Archivo Narrow + Poppins på verksted-grunnen: Plex Sans er tettere, og
+   brødtekst som bryter til tre linjer i Poppins klarer seg på to.
+
+   RETTET 01.09.2026 (sent): denne fila lå igjen på Archivo Narrow + Poppins
+   etter omleggingen, mens merkebok, tekstkonsept og bestilling sa IBM Plex.
+   Kildepakken til Claude Design tok fila som den var, så masteren ble bygget
+   på feil font. Se MASTERPLAN 18.26.
 
    MERK: dette gjelder MERKET — marked, materiell, presentasjon. Produktskjermene
    i PlayerHQ, AgencyOS og Forelder bruker fortsatt Poppins gjennom Train-lock
    (CLAUDE.md invariant 2). Ingen skjerm bytter font av denne endringen. */
 
 :root {
-  --ak-display: 'Archivo Narrow', 'Archivo', 'Helvetica Neue', Arial, sans-serif;
-  --ak-sans:    'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  --ak-display: 'IBM Plex Sans Condensed', 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
+  --ak-sans:    'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
   --ak-mono:    'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
   /* Skala. Ti trinn — ett mer enn før, fordi displayen nå går høyere.
      Kondensert type tåler å bli større uten å sprenge en mobilskjerm; det er
-     hele grunnen til at Archivo Narrow ble valgt framfor en bred grotesk. */
+     hele grunnen til at Condensed ble valgt framfor en bred grotesk. */
   --ak-t-11:  11px;   /* etikett i caps, kun mono */
   --ak-t-13:  13px;   /* bildetekst, fotnote */
   --ak-t-15:  15px;   /* brødtekst, tett */
@@ -39,7 +45,7 @@
   --ak-v-400: 400;
   --ak-v-500: 500;
   --ak-v-600: 600;
-  --ak-v-700: 700;   /* KUN Archivo Narrow. Aldri Poppins. */
+  --ak-v-700: 700;   /* KUN Plex Sans Condensed. Aldri Plex Sans. */
 
   --ak-lh-display: 0.94;  /* fra 48px og opp — linjene skal låse seg til hverandre */
   --ak-lh-tett:    1.12;

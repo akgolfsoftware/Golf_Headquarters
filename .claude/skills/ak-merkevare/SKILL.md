@@ -26,7 +26,27 @@ Si det, og pek på `designsystem/train-lock/` — `DESIGN-SYSTEM.md` for visuell
 verdier, `SCREEN-INDEX.md` for å finne skjermen, `HANDOFF.md` for struktur.
 Ved konflikt vinner HANDOFF på struktur og DESIGN-SYSTEM på verdier.
 
-Fasit i repoet: `designsystem/ak-golf/`. Les `guidelines/` før du dømmer noe.
+## Hvor fasiten bor
+
+**Masteren er Claude Design-prosjektet «AK Golf Designsystem»**
+(`3e5c851c-4b78-41ab-8ced-7b11048838f9`). Der ligger komponentbibliotek,
+ti UI-kits, retningslinjer og tokens. Repoet (`designsystem/ak-golf/`) er
+speilet.
+
+**Bygg aldri noe som allerede finnes der.** Sjekk i denne rekkefølgen:
+
+| Trenger du | Se etter |
+|---|---|
+| En knapp, et felt, et kort, en tabell | `components/` — sju kategorier |
+| En hel flate | `ui_kits/` — ti ferdige kits |
+| En regel | `guidelines/` — elleve kapitler |
+| En verdi | `tokens/` — åtte filer |
+| Ferdig tekst | `guidelines/tekstkonsept.md` |
+| Et bilde | `assets/foto/katalog.md` |
+| En logo | `assets/logo/` — nitten SVG-er |
+
+UI-kits som finnes: markedsside · kampanje · presentasjon · dokument · e-post ·
+sosialt · fysisk · foreldrerapport · varianter · plakat-temaer.
 
 ## Rommet
 
@@ -63,6 +83,29 @@ Fonter: **IBM Plex Sans Condensed** (600/700, overskrift) · **IBM Plex Sans**
 (400/500/600, brødtekst) · **IBM Plex Mono** (400/500, alt som er målt).
 700 er kun Condensed.
 
+## Skriv semantisk, ikke bokstavelig
+
+Grunntokens (`--ak-*`) er fasit. Men en komponent skal si **hva den vil ha**,
+ikke hvilken farge. Bruk aliasene fra `tokens/semantikk.css`:
+
+```
+--surface-base · --surface-sunken · --surface-card · --surface-accent · --surface-method
+--text-body · --text-muted · --text-faint · --text-signal · --text-on-accent
+--border-hair · --border-hard
+--font-display · --font-body · --font-measured
+--radius-control · --radius-card · --radius-panel · --radius-pill
+--shadow-rest · --shadow-raised · --shadow-overlay
+--motion-fast · --motion-mid · --motion-calm · --motion-curve
+```
+
+Alias-navnene er engelske med vilje — de leses av verktøy. Verdiene og reglene
+er norske.
+
+**To klasser fra `tokens/grunnlag.css` du skal bruke, ikke gjenskape:**
+
+- `.ak-maalt` — mono, `tabular-nums`, skråstrek-null. **Alt som er målt.**
+- `.ak-etikett` — mono-caps, 11 px, sperret. Tre ord eller mindre.
+
 Skala: `11 · 13 · 15 · 17 · 21 · 26 · 34 · 48 · 72 · 112`. Display fra 48 og opp
 har linjeavstand 0,94. Rom: 4-basis. Radius: knapp 6 · kort 10 · panel 16 ·
 pill kun på knapp.
@@ -97,8 +140,8 @@ viktigere enn de under.
    smakssak. `#8B857A` er aldri brødtekst.
 4. **Mono.** Står de målte tallene i mono? Står noe uten måling i mono?
 5. **Typografi.** Riktig font i riktig rolle? Condensed på overskrift, Sans på
-   brødtekst? Poppins over 600 er alltid feil (Poppins skal ikke være der i det
-   hele tatt).
+   brødtekst? Er Archivo Narrow eller Poppins inne, er det en rest fra
+   instrument-retningen — begge er ute av merket.
 6. **Rom.** Er hvert avstandsmål på 4-skalaen? 22 px er feil — velg 20 eller 24.
 7. **Mobil 390.** Fungerer det stående, ute, i sollys? Det er den viktigste
    visningen, ikke desktop.
@@ -125,14 +168,30 @@ bærer den for mye.
 
 ## Filene
 
+**I masteren** (Claude Design, `3e5c851c-4b78-41ab-8ced-7b11048838f9`):
+
 ```
-designsystem/ak-golf/tokens/       farge · type · rom · bevegelse · instrument
-designsystem/ak-golf/guidelines/   elleve kapitler, 04 og 11 er de viktigste
+tokens/        grunnlag · fonter · farge · type · rom · bevegelse · instrument · semantikk
+components/    flate · handling · maaling · melding · merke · navigasjon · skjema
+ui_kits/       ti ferdige flater
+guidelines/    elleve kapitler + merkeplattform + tekstkonsept
+assets/        logo (19 SVG) · foto (43 + katalog)
+readme.md      systemets egen dokumentasjon
+```
+
+**I repoet** (speilet):
+
+```
+designsystem/ak-golf/tokens/       fem token-filer
+designsystem/ak-golf/guidelines/   elleve kapitler
 designsystem/ak-golf/merkebok.html visuell fasit, tolv sider
-docs/merkevare/ak-golf-tekstkonsept-2026-09-01.md   ferdig tekst
-designsystem/ak-golf/foto/katalog.md               43 bilder beskrevet
-public/logos/                                       19 SVG-er
+designsystem/ak-golf/bygg-kildepakke.sh   bygger opplastingspakken på nytt
+docs/merkevare/ak-golf-tekstkonsept-2026-09-01.md
+public/logos/                      19 SVG-er
 ```
+
+**Speilet kan henge etter masteren.** Er du i tvil om en verdi, les fra Claude
+Design — og synk repoet etterpå.
 
 **Bygg aldri en logolås for hånd** — filene finnes. **Skriv aldri ny tekst der
 tekstkonseptet har den.** **Finn aldri på fotoretning** — katalogen beskriver
