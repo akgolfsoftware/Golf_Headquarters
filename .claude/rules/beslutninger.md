@@ -58,6 +58,14 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
   `designsystem/ak-golf/tekstkonsept.html` — ferdig tekst til seks markedssider, seks
   innleggstyper for sosiale medier, seks e-postmaler og seks toneregler. Ny hovedlinje:
   **«Uansett hvor du står, vet du hva du trener på.»**
+  **MERKET BRUKER IKKE VITNESBYRD (Anders 01.09.2026):** ingen spillersitater, ingen
+  anmeldelser, ingen stjerner — ikke på nettsidene, ikke i sosiale medier, ikke i presentasjoner.
+  Begrunnelsen er konsistens, ikke beskjedenhet: et sitat er per definisjon synsing, og et merke
+  som sier «vi måler, vi synser ikke» blir svakere av å be folk om ros. **Målingen vises i
+  stedet.** Konsekvens: innleggstypen «Sitat fra spiller» er byttet mot **«Slik leser du tallet»**
+  (én måling forklart — fagkunnskap ingen kan kopiere uten å faktisk måle), og kravet om ett ekte
+  spillersitat er **strøket** fra lanseringssperrene. Igjen står kun: fremgangstallene i
+  eksemplene må erstattes med målte tall fra basen.
   **UENDRET:** instrumentlaget (rutenett, målestokk, kryss), romskalaen, radius, logoen og
   logofamilien, og at merkelaget aldri rører produktskjermene. **Train-lock og CLAUDE.md
   invariant 2 står — ingen skjerm bytter font eller farge av denne beslutningen.**

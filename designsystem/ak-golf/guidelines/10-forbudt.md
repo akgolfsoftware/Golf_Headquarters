@@ -37,6 +37,8 @@
 - Ingen engelske floskler i norsk tekst.
 - Ingen tall om en spiller uten dato og kilde, eller merking som estimat.
 - Ingen garantier om resultat.
+- **Ingen vitnesbyrd.** Ingen spillersitater, ingen anmeldelser, ingen
+  stjerner. Vis målingen i stedet — se `08-sprak.md`.
 
 ## Grensene mot de andre systemene
 

@@ -1,10 +1,13 @@
 # AK Golf Academy — konsept og tekst
 
 Skrevet 01.09.2026. STEG 18 i `docs/MASTERPLAN-GJENSTAAENDE.md`.
-Lesbar utgave, satt i merkets egen ramme:
-`designsystem/ak-golf/tekstkonsept.html`
+Lesbar utgave, satt i merkets egen ramme: `designsystem/ak-golf/tekstkonsept.html`
 
 Dette er tekst som kan limes rett inn. Ingen plassholdere.
+
+> **Merket bruker ikke vitnesbyrd** (Anders 01.09.2026). Ingen spillersitater, ingen
+> anmeldelser. Et sitat er per definisjon synsing, og et merke som sier «vi måler, vi
+> synser ikke» blir svakere av å be folk om ros. Vi viser målingen i stedet.
 
 ---
 
@@ -171,19 +174,19 @@ Trackman · 12.05–18.08 · 38 målinger
 
 **Regel:** Tallet må være målt. Aldri rundet oppover, aldri «opptil».
 
-### Sitat fra spiller
+### Slik leser du tallet
 
-*Ekte ord fra en ekte spiller, med skriftlig samtykke.*
+*Én måling forklart. Gir bort fagkunnskap ingen kan kopiere uten å faktisk måle.*
 
 ```
-«Jeg visste ikke at jeg slo ned på ballen. Jeg trodde jeg slo opp.»
+Angrepsvinkel −3,2° med driver.
 
-— spiller i Academy, 34 år
+Det betyr at køllehodet går nedover i treffet. Ballen får for mye spinn og for lav utgangsvinkel — du taper lengde uten å slå svakere.
 
-Det er hele poenget med å måle. Følelsen din er ikke en løgn — den er bare ikke en måling.
+Du kjenner det ikke. Det er derfor vi måler det.
 ```
 
-**Regel:** Aldri sitat uten skriftlig samtykke. Aldri omskrevet til noe finere.
+**Regel:** Forklar hva tallet BETYR, ikke bare hva det er. Aldri en måling uten oversettelse.
 
 ### Før og etter
 
@@ -382,10 +385,16 @@ Prøven på hver setning: ville en erfaren coach sagt den til en spiller på ran
 - Slik: ««Vi måler før vi endrer noe»»
 - Ikke: ~~««Vår metodikk baserer seg på datadrevet analyse»»~~
 
+**Vis målingen, ikke vitnesbyrdet**
+
+- Slik: ««Spredningen gikk fra 14,2 til 6,8 m»»
+- Ikke: ~~««Beste coachen jeg har hatt!»»~~
+
 ---
 
 ## Før dette kan publiseres
 
-1. **Ett ekte spillersitat** med navn og skriftlig samtykke.
-2. **Alle fremgangstall erstattet med målte tall fra basen.** Tallene i
-   eksemplene er oppdiktede og skal ikke publiseres som de står.
+**Alle fremgangstall må erstattes med målte tall fra basen.** Tallene i eksemplene er
+oppdiktede og skal ikke publiseres som de står.
+
+Det er den eneste sperren som gjenstår.

@@ -21,6 +21,19 @@ AK Golf høres ut som Anders. Det er den ene tingen ingen konkurrent kan kopiere
 | «Garantert 5 slag lavere» | Umulig å måle rettferdig, og ulovlig å love |
 | Utropstegn og emoji | Skriker. AK Golf trenger ikke skrike |
 
+## Merket bruker ikke vitnesbyrd
+
+Låst av Anders 01.09.2026. **Ingen spillersitater, ingen anmeldelser, ingen
+«beste coachen jeg har hatt».** Ikke på nettsidene, ikke i sosiale medier,
+ikke i presentasjoner.
+
+Det er ikke beskjedenhet — det er konsistens. Et sitat er per definisjon
+synsing, og et merke som sier «vi måler, vi synser ikke» blir svakere av å be
+folk om ros.
+
+**Vi viser målingen i stedet.** «Spredningen gikk fra 14,2 til 6,8 m» gjør mer
+enn ti fornøyde kunder, og det kan etterprøves.
+
 ## Prøven
 
 Les setningen høyt. **Ville Anders sagt den til en spiller på rangen?**
