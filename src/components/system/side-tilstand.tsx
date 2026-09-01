@@ -1,5 +1,7 @@
+import "@/styles/marked-kit.css";
+
 /**
- * PaperTilstand — delt systemtilstand-flate (offline · 404 · 500 ·
+ * SideTilstand — delt systemtilstand-flate (offline · 404 · 500 ·
  * vedlikehold · ingen tilgang). Fasit: designsystem/paper/fase2/system/
  * system-tilstander.html. Ren presentasjonskomponent — ingen data-henting,
  * ingen auth. Regel fra fasiten: hver tilstand sier hva som skjedde, hva som
