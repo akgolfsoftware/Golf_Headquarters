@@ -1,199 +1,262 @@
 # Bestilling til Claude Design — AK Golf designsystem
 
 Kopier alt under streken inn i et nytt Claude Design-prosjekt. Prompten er
-selvstendig: den inneholder hver verdi designeren trenger, så ingenting må
-gjettes eller slås opp.
+selvstendig: hver låst verdi står i teksten, så ingenting må gjettes eller
+slås opp.
 
-Opprettet 01.09.2026. Grunnlag: `designsystem/ak-golf/` (STEG 18.3–18.7) og
-`.claude/rules/beslutninger.md`.
+Skrevet 01.09.2026, lagt om til verkstedet samme dag.
+Grunnlag: `designsystem/ak-golf/` og `.claude/rules/beslutninger.md`.
 
 ---
 
 Du skal bygge det komplette designsystemet for **AK Golf** — paraplymerket over
-et norsk golfkonsern. Fundamentet er allerede lagt og **låst**: farger,
-typografi, romskala og logoregler er bestemt og målt. Din jobb er å bygge det ut
-til et system man kan lage ting med: komponenter, maler og ekte flater.
+et norsk golfkonsern. Fundamentet er lagt og **låst**: rom, farger, typografi,
+romskala, logo og språkregler er bestemt og målt. Din jobb er å bygge det ut til
+et system man kan lage ting med.
 
 Dette prosjektet blir **masteren**. Det speiles til `designsystem/ak-golf/` i
 kodebasen.
 
 ## 1 · Hva AK Golf er
 
-Et utviklingssystem for golfspillere der hver anbefaling er forankret i en
-måling — ikke i en følelse. Ikke en golfpro som selger timer. Ikke en app.
+> **Langsiktig utvikling, oppfølging, og å trene optimalt og spesifikt —
+> uavhengig av hvilket nivå spilleren er på.**
 
 Løftet, ordrett:
 
 > **Du skal aldri lure på hva du skal trene på, eller hvorfor.**
 
-Alt du lager måles mot den setningen.
+Hovedlinjen som brukes i materiell:
+
+> **Uansett hvor du står, vet du hva du trener på.**
+
+Alt du lager måles mot disse tre.
 
 **Primærpublikum:** junioren som vil noe — og forelderen som betaler. Den
-ambisiøse voksne følger etter, med samme løfte. Forelderen er den som
-bestemmer, så materiell rettet mot foreldre er salgsmateriell, ikke bare
-informasjon.
+ambisiøse voksne følger etter, med samme løfte. Forelderen bestemmer, så
+materiell rettet mot foreldre er salgsmateriell, ikke bare informasjon.
 
-**Fire ting merket kan bevise, som alle finnes allerede:** Trackman i hver økt
-og tjue standardiserte testprotokoller · én metodikk med eget språk · AK-stigen
-som tar junioren fra golfskole til turnering i navngitte trinn · sportssjef i
-Gamle Fredrikstad GK, coach ved WANG Toppidrett, tilknytning til Team Norway
-Golf.
+**Fire ting merket kan bevise, som alle finnes allerede:**
 
-## 2 · Familien du designer for
+1. **Langsiktig, ikke time for time.** Arbeid over sesonger, ikke enkelttimer.
+2. **Oppfølging mellom øktene.** Spilleren vet hva som skal gjøres på onsdag.
+3. **Optimalt og spesifikt.** Målingene bestemmer neste steg, ikke hva som er vanlig.
+4. **Nivået er ikke en inngangsbillett.** Samme metode for nybegynner og
+   Norgescup-spiller. Bare ulikt innhold.
 
-Én paraply, fem varianter. Hver arver samme skjelett og får én identitetsfarge.
+## 2 · Rommet — les denne før du tegner noe
+
+Merket hører hjemme i et **verksted**, ikke i et klubbhus. Valgt av Anders
+01.09.2026, og det følger direkte av punkt 4 over.
+
+De fleste golfmerker signaliserer eksklusivitet: dyp grønn, gull, marmor,
+seriffer. Det sier «her må du være god nok» før noen har lest et ord. AK Golf
+sier det motsatte, og da kan ikke formen motsi teksten.
+
+**Ingenting i dette systemet er premium, og det er meningen.** Et godt verktøy
+er ikke pyntet. Det er nøyaktig.
+
+Praktisk betyr det:
+
+- Ser ut som et sted der noe blir **gjort**, ikke der noen blir **servert**.
+- Hard kontrast. Flate mot flate. Ingen forsiktige mellomtoner.
+- **Typografien er motivet**, ikke en etikett over et bilde.
+- **Tallene er hovedpersoner.** Et målt tall, stort, i mono, med dato og kilde.
+- Ingen energi-retorikk: ikke revet papir, ikke skrå bånd, ikke
+  bevegelsesuskarphet. Et merke som sier «vi måler, vi synser ikke» roper ikke.
+
+## 3 · Familien
+
+Én paraply, fem varianter. Hver arver samme skjelett.
 
 | Variant | Navn skrives | Rolle |
 |---|---|---|
 | **AK Golf Academy** | `AK Golf Academy` | Kjernen. Dette *er* AK Golf |
 | **AK Golf Junior Academy** | `Junior Academy` | Bærer det sentrale målet |
 | **AK Golf HQ** | `AK Golf HQ` | Plattformen. Beviset |
-| **Organisasjon** | `WANG Toppidrett Fredrikstad — coaching ved AK Golf` | Kontraktsarbeid. Kunden står FØRST |
+| **Organisasjon** | `WANG Toppidrett Fredrikstad — coaching ved AK Golf` | Kunden står FØRST |
 | **Skarpnord Golf Products** | `Skarpnord Golf Products` | Utstyr. Lav profil |
 
 **Mulligan Indoor Golf står UTENFOR paraplyen.** Ingen «en del av AK
-Golf»-avsender, ingen felles logobruk. AK Golf promoterer anlegget, men merkene
-blandes ikke. Lag ikke Mulligan-materiell i dette systemet.
+Golf»-avsender. AK Golf promoterer anlegget, men merkene blandes ikke. Lag ikke
+Mulligan-materiell i dette systemet.
 
-**Team Norway Golf er også utenfor.** De har eget designsystem. Rør dem ikke.
+**Team Norway Golf er også utenfor.** De har eget designsystem.
 
-## 3 · Låst fundament — endre ingenting her
+## 4 · Låst fundament — endre ingenting her
 
 ### Farge
 
-Grunnen er **krem `#FAF9F5`**, ikke hvitt. Merkets mørke er **blekk `#141413`**,
-ikke svart. Samme varme i begge. Ren `#000000` hører til produktskjermene og
-skal ikke brukes.
+Grunnen er **varm betonggrå `#E8E4DC`**. Ikke hvitt, ikke krem, ikke grønt.
 
 ```
-Flate, lys        #FAF9F5
-Flate, senket     #F0EEE6
-Kort på krem      #FFFFFF
-Tekst             #141413
-Underordnet       #5E5D59   (6,4:1 på krem)
-Etikett           #B0AEA5   ALDRI brødtekst
-Kant              #E8E6DC
-Hårlinje          #D1CFC5
+Grunn             #E8E4DC
+Grunn, senket     #DDD8CE
+Ark og kort       #FFFFFF
+Tekst             #1F1D1A   13,3:1 på grunn · 16,8:1 på ark
+Dempet tekst      #57534B   6,0:1
+Svak              #8B857A   2,9:1 — ALDRI brødtekst, kun etiketter og kanter
+Linje             #D2CCC0
+Linje, hard       #B8B1A3
 ```
 
-Identitetsfargene har tre verdier hver — flate, tekst (mørk nok for krem), og
-lys (for blekk). Alle kontrasttall er **målt**, ikke anslått:
+**Signalet — merkets ene aksent:**
 
 ```
-                flate      tekst/krem        lys/blekk
-Junior          #5B8450    #4F7343 5,16:1    #8FB37F 7,83:1
-Academy (clay)  #D97757    #A9512F 5,10:1    #E08B69 7,08:1
-HQ              #3F7CB3    #356B9C 5,34:1    #7FB0DA 8,01:1
-Organisasjon    #4E6A7E    #42596B 6,94:1    #93AEC0 7,95:1
-Products        #9C7A33    #8A6A2A 4,77:1    #C9A755 8,03:1
+Signal, tekst     #B83217   4,7:1 på grunn
+Signal, fyll      #C4361B   for hele flater
+Tekst på fyllet   #FFFFFF   6,0:1
 ```
 
-Rekkefølgen er ikke en fargevifte — den følger spillerens vei gjennom huset:
-Junior er vekst, Academy er kjernen, HQ er systemet, Organisasjon er kravet,
-Products er utstyret.
+> **Regelen som bærer paletten: rødt betyr «se her».** En måling, et tall, en
+> handling. Aldri dekor, aldri stemning, aldri fem røde ting på samme flate.
+> Mister rødt den betydningen, mister paletten poenget sitt.
 
-**Status er aldri identitet:** i orden `#2E7D51` · følg med `#9A6B10` · feil
-`#B3261E`. Statusgrønn er kjøligere enn Junior-grønn med vilje, så «godkjent»
-ikke kan forveksles med juniorprogrammet.
+**Fagfargen `#2C6E63`** (4,7:1), dyp grønnblå. Sjelden brukt, for det som hører
+til **metoden** framfor **målingen**: pyramiden, periodene, langsiktige linjer.
 
-**Aksentflatene er store.** Clay og de andre identitetsfargene bæres av hele
-flater — et panel, en kolonne, en seksjon — og dekker minst 18 % av visningen
-når de brukes. (Den tidligere 5 %-regelen ble opphevet 01.09.2026 med
-instrument-retningen.)
+**Varianttoner** — dempede arbeidstoner, ikke fem glade farger:
 
-Det som består: **én identitetsfarge om gangen**, aldri to i samme visning, og
-aldri farge som eneste bærer av informasjon.
+```
+Junior Academy    #4A6B33   4,8:1
+AK Golf Academy   låner signalet
+AK Golf HQ        #2B5F87   5,4:1
+Organisasjon      #4A4F58   6,5:1
+Skarpnord         #7A5A22   5,0:1
+```
+
+**Verkstedet om kvelden** — mørk variant, varm mørk grå. **Lys er standard:**
+
+```
+Grunn             #22201C      Ark #2C2925      Senket #1A1815
+Tekst             #F2EFE8      14,2:1
+Dempet            #A8A196      6,4:1
+Signal            #E8654A      5,0:1
+Fag               #5FA89A      5,9:1
+```
+
+**Status er aldri identitet:** i orden `#2E6B45` · følg med `#8A6410` · feil
+`#A62B1C`. Feilrød er mørkere enn signalet med vilje, så «noe er galt» ikke kan
+forveksles med «se her».
+
+Alle kontrasttall er **målt** med WCAG-formelen 01.09.2026, ikke anslått.
 
 ### Typografi
 
-Tre fonter. **Ingen fjerde, noensinne.**
+**Hele IBM Plex-familien. Ingen andre fonter.**
 
-- **Archivo Narrow** (600, 700) — overskrifter. Alt som skal dominere en flate.
-- **Poppins** (400, 500, 600) — brødtekst, knapper, skjema.
-- **IBM Plex Mono** (400, 500) — alt som er målt.
+- **IBM Plex Sans Condensed** (600, 700) — overskrifter
+- **IBM Plex Sans** (400, 500, 600) — brødtekst, knapper, skjema
+- **IBM Plex Mono** (400, 500) — alt som er målt
 
-Archivo Narrow ble valgt 01.09.2026 av en praktisk grunn: **kondensert type får
-plass til flere tegn per linje på 390 px**, og mobil er merkets viktigste flate.
-Testet mot Archivo, Barlow Condensed, Oswald, Saira Condensed, Chivo og Anton i
-norsk tekst.
+Én familie, tre roller. Plex er tegnet som et industrielt system, ikke som et
+markedsføringsalfabet — det er verkstedets språk.
 
-**Lora er ute.** En serif sier «les langsomt»; instrumentet sier «her er tallet».
-Det er ikke plass til begge stemmene. Ingress settes i Poppins 400 / 21 px, sitat
-i Archivo Narrow 600.
+**700 er kun Condensed.** Plex Sans går aldri over 600.
 
-**700 er kun Archivo Narrow.** Poppins går aldri over 600.
+Skala, ti trinn: `11 · 13 · 15 · 17 · 21 · 26 · 34 · 48 · 72 · 112`.
+11 px er kun mono-caps med `0.2em` sperring.
 
-**Den viktigste regelen i hele systemet:** et tall som kommer fra en måling
-settes i mono. Et tall som ikke gjør det, settes ikke i mono. Dette er ikke
-stil — det er løftet gjort synlig. Står det i mono, er det etterprøvbart, med
-dato og kilde. Står det ikke i mono, er det en påstand. Estimater merkes som
-estimat i teksten.
-
-Skala, ti trinn: `11 · 13 · 15 · 17 · 21 · 26 · 34 · 48 · 72 · 112`. 11 px er
-kun mono-caps med `0.2em` sperring.
-
-Display fra 48 px og opp har linjeavstand **0,94** — linjene skal låse seg til
-hverandre og bli en blokk. Brødtekst 1,5, og stopper på 65 tegn.
-Sperring `-0.035em` display, `-0.02em` titler, `0` brødtekst.
+Display fra 48 px og opp har linjeavstand **0,94**. Brødtekst 1,5, stopper på
+65 tegn. Sperring `-0.035em` display, `-0.02em` titler, `0` brødtekst.
 
 Display settes i **VERSALER** når den står alene som utsagn. Aldri caps på en
 hel setning i brødtekst.
 
-### Rom, form og bevegelse
+### Instrumentlaget
 
-Romskala, 4-basis: `4 · 8 · 12 · 16 · 24 · 32 · 48 · 64 · 96 · 128`. Er svaret
-22 px, er det feil — velg 20 eller 24.
-
-Radius — merket er **rolig, ikke rundt**. Jo større flaten er, desto mindre skal
-hjørnet merkes: knapp og felt 6 px · kort 10 px · panel 16 px · pill 999 px kun
-på knapper og filter.
-
-Tre dybdenivåer, alle bygget på blekk (ikke svart) så de ikke blir grå flekker
-på kremen.
-
-Bevegelse: 120 ms hover og fokus · 220 ms panel og innholdsbytte · 420 ms
-seksjon ved rull. Kurve `cubic-bezier(0.2, 0, 0.2, 1)`. Aldri `ease-in` alene.
-En animasjon skal svare på «hvor kom dette fra» eller «hva skjedde nå» — aldri
-på «se her».
-
-### Instrumentlaget — merkets grafiske element
-
-Dette er ikke dekor, og det er ikke valgfritt. **Rutenettet, målestokken og
-krysset er hentet fra det AK Golf faktisk gjør** — spredningsellipsen,
-pyramideaksene, avstanden fra pinnen.
+Merkets grafiske element. Ikke dekor, ikke valgfritt — hentet fra det AK Golf
+faktisk gjør: spredningsellipsen, pyramideaksene, avstanden fra pinnen.
 
 - **Rutenettet:** 56 px ruter (7 × 8, samme åtte-basis som romskalaen), én
-  piksel, svært lav styrke — `rgba(20,20,19,.075)` på krem,
-  `rgba(250,249,245,.11)` på blekk. 24 px på små flater og i kort.
+  piksel. `rgba(31,29,26,.075)` på lys grunn, `rgba(242,239,232,.11)` på mørk.
+  24 px på små flater og i kort.
 - **Målestokken:** merker hver 12 px, et langt hvert femte, 42 % styrke.
 - **Krysset:** 11 px, der to akser møtes.
 
-**Regelen som holder det ærlig:** instrumentlaget skal aldri gi inntrykk av å
-vise data som ikke finnes. Et rutenett i bakgrunnen er tekstur. Et rutenett
-**med tall på aksene** er en påstand — og da må tallene være målt, med dato og
-kilde. Ingen kurver uten data, ingen spredninger uten målinger, ingen akser uten
-enhet. Bryter du dette, er merket løgn i formen selv om teksten er sann.
+> **Regelen som holder det ærlig:** instrumentlaget skal aldri gi inntrykk av å
+> vise data som ikke finnes. Et rutenett i bakgrunnen er tekstur. Et rutenett
+> **med tall på aksene** er en påstand — og da må tallene være målt, med dato og
+> kilde. Ingen kurver uten data, ingen spredninger uten målinger, ingen akser
+> uten enhet.
 
 Én flate har sjelden mer enn **ett** instrumentelement.
 
+### Rom, form og bevegelse
+
+Romskala, 4-basis: `4 · 8 · 12 · 16 · 24 · 32 · 48 · 64 · 96 · 128`. Er svaret
+22 px, er det feil.
+
+Radius — merket er **rolig, ikke rundt**: knapp og felt 6 px · kort 10 px ·
+panel 16 px · pill 999 px kun på knapper og filter.
+
+Bevegelse: 120 ms hover og fokus · 220 ms panel · 420 ms seksjon ved rull.
+Kurve `cubic-bezier(0.2, 0, 0.2, 1)`. Aldri `ease-in` alene.
+
+Alt som kan trykkes er minst **44 × 44 px**.
+
 ### Logoen
 
-En `ak`-ligatur i blekk med en clay-sirkel over k-en. Sirkelen er ballen, og
-det eneste fargede elementet.
+En `ak`-ligatur i `#1F1D1A` med en signalrød sirkel `#B83217` over k-en.
+Sirkelen er ballen, og det eneste fargede elementet.
 
-**Logoen er ukrenkelig.** Den rendres fra fil, aldri gjenskapt i markup, aldri
+**Logoen er ukrenkelig.** Rendres fra fil, aldri gjenskapt i markup, aldri
 farget om, strukket, rotert eller satt i annen skrift.
 
 - Klaringssone: **halve logoens høyde** på alle fire sider.
-- Minstemål: 24 px skjerm, 12 mm trykk. Faviconen er en egen fil som tåler 16 px.
-- Navnelåsen: logo, hårlinje `#D1CFC5`, navn i **Poppins 400 satt i 40 % av
+- Minstemål: 24 px skjerm, 12 mm trykk. Faviconen er egen fil, tåler 16 px.
+- Navnelås: logo, hårlinje `#D2CCC0`, navn i **Plex Sans 400 satt i 40 % av
   logoens høyde**. Navnet står **aldri** i identitetsfargen.
 
-Ferdige filer finnes — bygg aldri en lås for hånd.
+Ferdige filer finnes i `public/logos/` — bygg aldri en lås for hånd.
 
-## 4 · Grensen mot produktet — les denne to ganger
+## 5 · Språket
 
-Huset har tre designsystemer:
+AK Golf høres ut som Anders Kristiansen. Det er den ene tingen ingen konkurrent
+kan kopiere.
+
+**Slik snakker vi:** Direkte, poenget først. Presist — «åtte av ti 7-jern lander
+høyre for pinnen» slår «du sliter med retningen». Faguttrykk beholdes, men
+forklares i setningen etter. Korte setninger.
+
+**Slik snakker vi aldri:**
+
+| Aldri | Fordi |
+|---|---|
+| «Ta golfen din til neste nivå» | Sier ingenting |
+| «Vi brenner for golf» | Alle sier det. Ingen tror det |
+| «Unlock your potential» | Engelsk floskel i norsk tekst |
+| «Garantert 5 slag lavere» | Umulig å måle rettferdig, og ulovlig å love |
+| Utropstegn og emoji | Skriker |
+
+### To harde språkregler
+
+**1 · TrackMan-parametere skrives på engelsk med STOR FORBOKSTAV.** Det heter
+**Attack Angle** — aldri «angrepsvinkel», og aldri «attack angle».
+
+Samme gjelder Club Path, Face Angle, Face to Path, Dynamic Loft, Smash Factor,
+Ball Speed, Club Speed, Launch Angle, Spin Rate, Spin Axis, Carry, Total,
+Dispersion, Landing Angle, Low Point, Swing Direction.
+
+Det engelske navnet ER navnet — spilleren ser det på skjermen i økta og i
+rapporten. Stor forbokstav bryter med norsk rettskriving med vilje: den viser at
+dette er navnet på en **måling**, ikke et vanlig ord.
+
+Behold parameteren, forklar hva den betyr i setningen etter:
+
+> Attack Angle −3,2° med driver. Køllehodet går nedover i treffet.
+
+Gjelder ikke golfspråket ellers — kølle, sving, green, tee og fairway er norsk.
+
+**2 · Merket bruker ikke vitnesbyrd.** Ingen spillersitater, ingen anmeldelser,
+ingen stjerner. Ikke fordi vi er beskjedne — fordi et sitat er per definisjon
+synsing, og et merke som sier «vi måler, vi synser ikke» blir svakere av å be
+folk om ros. **Vis målingen i stedet.**
+
+Alt skrives på **norsk bokmål**. **Aldri lorem ipsum** — bruk ekte tekst overalt.
+Tall som ikke er målt, merkes eksplisitt som eksempel.
+
+## 6 · Grensen mot produktet — les to ganger
 
 | System | Eier |
 |---|---|
@@ -202,92 +265,56 @@ Huset har tre designsystemer:
 | **Claw** | Team Norways egne skjermer |
 
 **Du designer ikke produktskjermer.** Ingen dashbord, ingen treningsplan, ingen
-spillerprofil, ingen coach-arbeidsflate. De finnes allerede i Train-lock og
-skal ikke røres.
+spillerprofil, ingen coach-arbeidsflate. De finnes i Train-lock og skal ikke røres.
 
-Du designer alt som ligger **utenpå og rundt** produktet: markedsflater,
-presentasjoner, materiell, dokumenter, annonser, skilt.
+Du designer alt som ligger **utenpå og rundt** produktet. Trenger du å vise
+appen, vis den som et bilde eller en ramme — tegn den ikke om.
 
-Trenger du å vise appen i en presentasjon eller på en markedsside, vis den som
-et **bilde eller en ramme** — tegn den ikke om i AK Golf-stil.
+## 7 · Absolutte forbud
 
-## 5 · Tonen — dette er halve merket
+- **MORAD og Mac O'Grady nevnes ALDRI** i noe publikumsvendt.
+- **Ingen bilder av mindreårige uten skriftlig foreldresamtykke** — hvert
+  identifiserbart barn, også i gruppebilder.
+- **WANG, GFGK og Team Norway er relasjoner, ikke produkter.** Aldri framstilt
+  som noe man kan kjøpe tilgang til.
+- Ingen vitnesbyrd. Ingen emoji — ikoner er Lucide.
+- Ingen farge utenfor paletten. Ingen gradienter. Ingen rødt som dekor.
+- Ingen falske instrumenter: kurver uten data, akser uten enhet.
+- Ingen navngitte konkurrenter hengt ut.
 
-AK Golf høres ut som Anders Kristiansen, og det er den ene tingen ingen
-konkurrent kan kopiere.
-
-**Slik snakker vi:** Direkte, poenget først. Presist — «åtte av ti 7-jern lander
-høyre for pinnen» slår «du sliter med retningen». Faguttrykk beholdes, men
-oversettes i samme setning. Vi sier ifra når noe ikke virker. Korte setninger,
-én tanke om gangen.
-
-**Slik snakker vi aldri:**
-
-| Aldri | Fordi |
-|---|---|
-| «Ta golfen din til neste nivå» | Sier ingenting. Kunne stått hos hvem som helst |
-| «Vi brenner for golf» | Alle sier det. Ingen tror det |
-| «Unlock your potential» | Engelsk floskel i norsk tekst |
-| «Garantert 5 slag lavere» | Umulig å måle rettferdig, og ulovlig å love |
-| Utropstegn og emoji | Skriker. AK Golf trenger ikke skrike |
-
-**Prøven:** les setningen høyt. Ville en erfaren coach sagt den til en spiller på
-rangen? Nei — skriv den om.
-
-**Alt skrives på norsk bokmål**, med æ, ø og å. **Aldri lorem ipsum** — bruk ekte
-norsk tekst overalt. Tall som ikke er målt, merkes eksplisitt som eksempel.
-
-## 6 · Absolutte forbud
-
-- **MORAD og Mac O'Grady skal ALDRI nevnes** i noe publikumsvendt: ikke
-  nettsider, ikke annonser, ikke coach-biografier, ikke presentasjoner. Dette er
-  en hard regel med forretningsbegrunnelse.
-- **Ingen bilder av mindreårige uten skriftlig foreldresamtykke** — i
-  gruppebilder gjelder det hvert identifiserbart barn.
-- **WANG, GFGK og Team Norway er relasjoner, ikke produkter.** De skal aldri
-  framstilles slik at en leser tror hen kjøper tilgang til dem.
-- Ingen emoji. Ikoner er Lucide.
-- Ingen farge utenfor paletten. Ingen gradient over merkefarger.
-- Ingen navngitte konkurrenter hengt ut — beskriv situasjonen, ikke personen.
-
-## 7 · Det du skal levere
+## 8 · Det du skal levere
 
 ### A · Komponentbibliotek
 
-Bygget på fundamentet over, i **lys og mørk**, med alle tilstander (hvile,
-hover, fokus, aktiv, deaktivert, laster, tom, feil):
+I **lys og mørk**, med alle tilstander (hvile, hover, fokus, aktiv, deaktivert,
+laster, tom, feil):
 
-Knapper (primær, sekundær, tekst, ikon) · felt og skjema med validering ·
-kort i tre tyngder · navigasjon (topp, mobilmeny, brødsmuler, faner) ·
-merkelapper og status · tabell og liste · sitat · fakta- og talleblokk (mono) ·
-akkordeon · varsel og melding · paginering · fotokort med bildetekst.
+Knapper (primær, sekundær, tekst, ikon) · felt og skjema med validering · kort i
+tre tyngder · navigasjon (topp, mobilmeny, brødsmuler, faner) · merkelapper og
+status · tabell og liste · fakta- og talleblokk i mono · akkordeon · varsel og
+melding · paginering · fotokort med bildetekst.
 
-**Alt som kan trykkes er minst 44 × 44 px.** Merket leses stående, ofte på et
-treningsfelt, ofte med hansker.
+### B · Maler
 
-### B · Maler — det systemet faktisk skal produsere
-
-Hver mal i **Mac 1440 og mobil 390**, i **lys og mørk**:
+Hver i **Mac 1440 og mobil 390**, i **lys og mørk**:
 
 1. **Markedsside** — hero, seksjoner, fotobruk, avslutning med én handling
 2. **Landingsside for én kampanje** — ett budskap, ett skjema
-3. **Presentasjon** — forside, innholdsside, tallside, sitatside, avslutning.
-   Til foreldremøter, klubbstyrer og forbund
+3. **Presentasjon** — forside, innholdsside, tallside, avslutning. Til
+   foreldremøter, klubbstyrer og forbund
 4. **Dokument** — brevark, tilbud, sportsplan. Det som sendes som PDF
-5. **E-postsignatur** — for hver variant
+5. **E-post** — nyhetsbrev, transaksjonsmal (bekreftelse, påminnelse,
+   kvittering), og signatur per variant
 6. **Sosiale medier** — kvadrat 1080, stående 1080×1350, story 1080×1920.
-   Minst seks innleggstyper: fremgangstall · sitat fra spiller · før/etter ·
-   tips fra coach · turneringsresultat · påmelding åpen. Med og uten foto
-7. **E-post** — nyhetsbrev (topp, artikkel, handling, bunn med avmelding),
-   transaksjonsmal (bekreftelse, påminnelse, kvittering), og signatur per variant
-8. **Fysisk** — roll-up 850×2000, skilt i simulatorhallen, plakat A3/A2,
+   Minst seks innleggstyper: fremgangstall · «slik leser du tallet» · før/etter ·
+   tips fra coach · turneringsresultat · påmelding åpen
+7. **Fysisk** — roll-up 850×2000, skilt i simulatorhallen, plakat A3/A2,
    visittkort 85×55, bag-tag
-9. **Kontor og salg** — brevark, tilbud, faktura, sportsplan som PDF,
-   presentasjonsmal for foreldremøte og klubbstyre
-10. **Profilklær** — plassering og størrelse av merket på pique, softshell,
-    caps og bag. Se punkt 11 om hvorfor dette haster
-11. **Rapportside for forelder** — vis hvordan et målt tall presenteres
-    utenfor appen, med dato og kilde
+8. **Kontor og salg** — brevark, tilbud, faktura, presentasjonsmal
+9. **Profilklær** — plassering og størrelse av merket på pique, softshell, caps
+   og bag. Se merknaden om PUMA under
+10. **Rapportside for forelder** — hvordan et målt tall presenteres utenfor
+    appen, med dato og kilde
 
 ### C · Variantene demonstrert
 
@@ -301,116 +328,77 @@ prøve: klarer det å se ut som én familie og fem forskjellige tilbud samtidig?
 profesjonelle bilder i `public/brand/foto/`, katalogisert i
 `designsystem/ak-golf/foto/katalog.md` med motiv og bruksområde per bilde.
 
-De fem sterkeste, om du trenger å velge raskt:
-
-- **#9** — coach og spiller foran Trackman. Hele merket i ett bilde
-- **#42** — analysen innendørs foran skjermen. Det ingen konkurrent har
-- **#24** — ball i luften. Bevegelse som overlever et lite format
-- **#44** — ovenfra, lange skygger. Eneste uventede vinkel i arkivet
-- **#28** — spiller mot mørk bakgrunn. Bygget for tekst over
+De fem sterkeste: **#9** (coach og spiller foran Trackman — hele merket i ett
+bilde) · **#42** (analysen innendørs) · **#24** (ball i luften) · **#44**
+(ovenfra, lange skygger) · **#28** (mørk bakgrunn, bygget for tekst over).
 
 **To ting du må forholde deg til:**
 
-**PUMA-logoen er synlig på coach-klærne** i alle nærbilder (tydeligst #3, #8,
-#9, #14, #41, #42). Et konkurrerende merke står på brystet i AK Golfs eget
-materiell. Ta hensyn til det i bildevalget der merket skal være tydelig, og se
-punkt 10 i leveransen om profilklær.
+**PUMA-logoen er synlig på coach-klærne** i alle nærbilder. Et konkurrerende
+merke i AK Golfs eget materiell. Ta hensyn i bildevalget, og se leveranse 9.
 
-**Arkivet mangler to ting.** Det finnes ingen bilder av yngre juniorer — altså
-motivet som betyr mest når junior er primærpublikum. Og det finnes bare ett
-portrett: **#41, Anders Kristiansen**. Markus Røinås Pedersen har ingen.
+**Arkivet mangler to ting:** ingen bilder av yngre juniorer — motivet som betyr
+mest når junior er primærpublikum. Og bare ett portrett (#41, Anders
+Kristiansen). Design juniormateriellet så det virker med det som finnes, og si
+tydelig hva en ny fotosesjon må skaffe.
 
-Design juniormateriellet og coach-flatene slik at de virker med det som
-faktisk finnes, og si tydelig hva en ny fotosesjon må skaffe.
-
-Vis også tekst på foto med mørkt sjikt, og hvordan kontrastkravet på 4,5:1
-holdes mot det bildepartiet teksten faktisk ligger på — ikke mot bildets
-gjennomsnitt.
+Vis også tekst på foto med mørkt sjikt, og hvordan kontrastkravet 4,5:1 holdes
+mot det bildepartiet teksten faktisk ligger på — ikke mot bildets gjennomsnitt.
 
 ### E · Trykk
 
-Fargene over er skjermverdier. For alt som skal trykkes på annet enn
-digitaltrykk trengs **CMYK og Pantone for clay `#D97757` og blekk `#141413`**,
-som minimum.
+Fargene over er skjermverdier. For alt som trykkes på annet enn digitaltrykk
+trengs **CMYK og Pantone for signal `#B83217` og tekst `#1F1D1A`**, som minimum.
 
-**Ikke konverter matematisk fra RGB og oppgi resultatet som fasit** — clay er en
-mettet oransje som skifter merkbart mellom skjerm og papir. Foreslå
-utgangsverdier, og skriv eksplisitt at de skal bekreftes mot et fysisk
-prøvetrykk før første opplag.
+**Ikke konverter matematisk fra RGB og oppgi resultatet som fasit** — en mettet
+rød skifter merkbart mellom skjerm og papir. Foreslå utgangsverdier, og skriv at
+de skal bekreftes mot et fysisk prøvetrykk før første opplag.
 
-Oppgi også: minste trykkstørrelse for logoen (12 mm), hvilke varianter som
-gjelder for brodering og gravering (enfarget, ingen halvtoner), og hvordan
-merket settes på mørkt tekstil.
+Oppgi også: minste trykkstørrelse for logoen (12 mm), varianter for brodering og
+gravering (enfarget, ingen halvtoner), og hvordan merket settes på mørkt tekstil.
 
 ### F · Pakke
 
-`readme.md` (hva som gjelder hvor) · `tokens/` · `components/` · `templates/` ·
-`guidelines/` — samme struktur som Team Norway-pakken, så de to kan leses av
-samme person uten omstilling.
-
-## 8 · Temperamentet
-
-Merket er **et instrument, ikke et sportsmerke.** Det er den viktigste
-enkeltføringen i hele bestillingen, valgt 01.09.2026 etter gjennomgang av
-seksten referanser Anders leverte.
-
-Praktisk betyr det:
-
-- **Hard kontrast.** Krem mot blekk, full flate mot full flate. Ingen
-  forsiktige mellomtoner.
-- **Typografien er motivet**, ikke en etikett over et bilde. En hero er en
-  tekstblokk i 112 px, ikke et foto med en linje på.
-- **Tallene er hovedpersoner.** Et målt tall i mono, stort, med dato og kilde
-  under — det er merkets signatur.
-- **Ingen energi-retorikk.** Ikke revet papir, ikke skrå bånd, ikke
-  bevegelsesuskarphet, ikke «PLAY LOUD». Et merke som sier «vi måler, vi synser
-  ikke» kan ikke rope.
-
-Referansene som traff: POLYMER 48, Thegrafx, Design Signals, Narka. Referansene
-som ble valgt bort, selv om de er godt håndverk: GRO, Nike «PLAY LOUD»,
-gym-plakatene.
+`readme.md` · `tokens/` · `components/` · `templates/` · `guidelines/` — samme
+struktur som Team Norway-pakken, så begge kan leses av samme person uten
+omstilling.
 
 ## 9 · Slik vil jeg at du jobber
 
 - **Mobil 390 er den viktigste visningen**, ikke desktop. Materiellet skannes
   stående, ute, ofte i sollys.
-- **Lys og mørk er begge obligatoriske.** Ikke lag mørk ved å invertere lys —
-  gi den samme omtanke.
+- **Lys og mørk er begge obligatoriske.** Ikke lag mørk ved å invertere lys.
 - **Vis alltid tom tilstand** der en flate kan være tom.
 - **Skriv ekte norsk tekst i hver eneste flate.**
 - **Foreslå, ikke gjett stille.** Er noe uavklart, still spørsmålet tydelig i
-  leveransen med et konkret forslag — ikke velg i det stille og la det se
-  bestemt ut.
+  leveransen med et konkret forslag.
 
 ## 10 · To ting jeg vil at du tar stilling til
 
-Disse er bevisst ikke avgjort. Foreslå, med begrunnelse:
-
 1. **Hvordan ser et målt tall ut når det står alene?** En KPI på en plakat, et
    resultat i en presentasjon, et fremgangstall til en forelder. Mono er gitt —
-   men hvordan bæres dato og kilde uten at det blir en fotnote ingen leser?
-   Dette er merkets signatur, og den finnes ikke ennå.
+   men hvordan bæres dato og kilde uten at det blir en fotnote ingen leser? Dette
+   er merkets signatur, og den finnes ikke ennå.
 
 2. **Hvor langt skal rutenettet gå på fysiske flater?** På skjerm er det tekstur
-   under innholdet. På en roll-up i en simulatorhall, på en bag-tag, på et
-   visittkort — skal det være der i det hele tatt, eller er det et skjermelement
-   som blir gimmick i trykk? Foreslå, med begrunnelse.
+   under innholdet. På en roll-up, en bag-tag, et visittkort — skal det være der
+   i det hele tatt, eller blir det gimmick i trykk? Foreslå med begrunnelse.
 
-*(Det tredje spørsmålet — om merket trenger et grafisk element utover logoen —
-er besvart 01.09.2026. Svaret er instrumentlaget, se §3.)*
+## 11 · Hva som IKKE er del av bestillingen
 
-## 11 · Hva som IKKE er del av denne bestillingen
+**Innhold og drift er ikke design.** Du lager *malen* for et innlegg — ikke
+innleggene, ikke publiseringskalenderen, ikke tekstene som skal ut uke for uke.
 
-Sagt eksplisitt, så det ikke oppstår tvil om hvem som eier hva:
+**Produktskjermene.** Se punkt 6.
 
-**Innhold og drift er ikke design.** Du lager *malen* for et innlegg i sosiale
-medier — ikke innleggene, ikke publiseringskalenderen, ikke tekstene som skal
-ut uke for uke. Det er en egen jobb med en egen rytme, og den bør ikke ligge i
-et designsystem som skal stå i årevis.
+**Mulligan Indoor Golf og Team Norway Golf.** Begge utenfor paraplyen.
 
-**Produktskjermene.** Se punkt 4. Dette er den enkleste feilen å gjøre.
+**Selve trykkbestillingen.** Du foreslår verdier; noen andre bekrefter dem mot
+et fysisk prøvetrykk.
 
-**Mulligan Indoor Golf og Team Norway Golf.** Begge står utenfor paraplyen.
+---
 
-**Selve trykkbestillingen.** Du foreslår CMYK- og Pantone-verdier; noen andre
-bekrefter dem mot et fysisk prøvetrykk.
+**Tekstgrunnlaget er skrevet.** Ferdig tekst for seks markedssider, seks
+innleggstyper, seks e-postmaler og sju toneregler ligger i
+`docs/merkevare/ak-golf-tekstkonsept-2026-09-01.md`. Bruk den — ikke skriv ny
+tekst der den allerede finnes.
