@@ -1,7 +1,8 @@
 # Fotokatalog — AK Golf
 
-44 profesjonelle bilder ligger i `public/brand/foto/`
-(`AK-Golf-Academy-1.jpg` … `-44.jpg`, 16 MB, 2400 px bredde).
+43 profesjonelle bilder ligger i `public/brand/foto/`
+(`AK-Golf-Academy-1.jpg` … `-44.jpg`, 2400 px bredde). Nummer 40 er slettet
+01.09.2026 — se «Portrettene» under.
 
 Katalogisert 01.09.2026 ved gjennomsyn av samtlige. Uten denne lista er arkivet
 ubrukelig for den som skal velge et bilde — filnavnene sier ingenting.
@@ -80,8 +81,7 @@ kameraet slås på — se `guidelines/07-foto.md`.
 | 37 | Nærbilde: driver og køller i bag | Utstyr |
 | 38 | Hånd plasserer ball på green ved flagg | Detalj, presisjon |
 | 39 | Spiller sett bakfra, coach peker | Instruksjon |
-| 40 | **Portrett** — yngre coach med caps, grå genser | Coach-profil |
-| 41 | **Portrett** — coach i mørk genser | Coach-profil |
+| 41 | **Portrett — Anders Kristiansen** | Coach-profil, om oss, presse |
 | 42 | Innendørs: to ved laptop, skjerm bak | **Analysen** — eneste innendørs |
 | 43 | Coach på kne ved matte, spiller putter | Putting, undervisning |
 | 44 | Ovenfra: to på green med lange skygger | **Uvanlig vinkel** — seksjonsskille |
@@ -96,12 +96,17 @@ Trenger du å velge raskt:
 4. **#44** — ovenfra, lange skygger. Det eneste bildet med en uventet vinkel.
 5. **#28** — mørk bakgrunn, spiller i blått. Bygget for tekst over.
 
-## Uavklart
+## Portrettene
 
-**Hvem er #40 og #41?** Begge er portretter, begge kan brukes på coach-profiler,
-men navnene er ikke bekreftet. Anders må si hvem som er hvem før de legges inn
-som `avatarUrl` — feil bilde på feil coach er verre enn ingen bilde.
+**#41 er Anders Kristiansen** (bekreftet 01.09.2026). Eneste portrett i arkivet.
 
-Dette henger sammen med at Markus mangler portrett på `/coacher` (verifisert i
-basen 01.09.2026: `avatarUrl` er null). Er ett av disse ham, er den saken løst
-med en opplasting.
+**#40 er slettet.** Bildet viste en person med caps som verken er Anders eller
+Markus, og som ikke hører hjemme i AK Golfs materiell. Filen var ikke i bruk
+noe sted i koden.
+
+**Det finnes ikke noe bilde av Markus Røinås Pedersen.** Derfor står det en
+plassholder på `/coacher` — komponenten er riktig, bildet mangler (verifisert i
+basen: `avatarUrl` er null). Det løses med et portrett, ikke med kode.
+
+**Neste fotosesjon trenger derfor to ting:** portrett av Markus, og juniorer
+med skriftlig foreldresamtykke.

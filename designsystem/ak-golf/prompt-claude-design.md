@@ -262,7 +262,7 @@ prøve: klarer det å se ut som én familie og fem forskjellige tilbud samtidig?
 
 ### D · Foto — arkivet finnes allerede
 
-**Ikke finn på fotoretning, og ikke bruk stockbilder.** Det ligger 44
+**Ikke finn på fotoretning, og ikke bruk stockbilder.** Det ligger 43
 profesjonelle bilder i `public/brand/foto/`, katalogisert i
 `designsystem/ak-golf/foto/katalog.md` med motiv og bruksområde per bilde.
 
@@ -277,14 +277,16 @@ De fem sterkeste, om du trenger å velge raskt:
 **To ting du må forholde deg til:**
 
 **PUMA-logoen er synlig på coach-klærne** i alle nærbilder (tydeligst #3, #8,
-#9, #14, #40, #41, #42). Et konkurrerende merke står på brystet i AK Golfs eget
+#9, #14, #41, #42). Et konkurrerende merke står på brystet i AK Golfs eget
 materiell. Ta hensyn til det i bildevalget der merket skal være tydelig, og se
 punkt 10 i leveransen om profilklær.
 
-**Det finnes ingen bilder av yngre juniorer.** Med junior- og spillerutvikling
-som det sentrale målet, mangler arkivet motivet som betyr mest. Design
-juniormateriellet slik at det virker med de bildene som finnes — og si tydelig
-hvilke bilder en ny sesjon må skaffe.
+**Arkivet mangler to ting.** Det finnes ingen bilder av yngre juniorer — altså
+motivet som betyr mest når junior er primærpublikum. Og det finnes bare ett
+portrett: **#41, Anders Kristiansen**. Markus Røinås Pedersen har ingen.
+
+Design juniormateriellet og coach-flatene slik at de virker med det som
+faktisk finnes, og si tydelig hva en ny fotosesjon må skaffe.
 
 Vis også tekst på foto med mørkt sjikt, og hvordan kontrastkravet på 4,5:1
 holdes mot det bildepartiet teksten faktisk ligger på — ikke mot bildets
