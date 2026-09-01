@@ -1,0 +1,206 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   AK Golf HQ · TEAM NORWAY-TOKENS — PRODUKSJONSSPEIL (Claw batch 3, 01.09.2026)
+
+   FASIT (verdiene er hentet herfra, aldri fra hukommelse):
+   · designsystem/team-norway/tokens/colors.css
+   · designsystem/team-norway/tokens/effects.css
+   · designsystem/team-norway/tokens/spacing.css
+   · designsystem/team-norway/tokens/typography.css
+   · designsystem/team-norway/readme.md — begrunnelse for verdiene
+
+   Claw-brandingen er designfasit for `/team-norway/*` ALENE (Anders
+   30.08.2026, .claude/rules/beslutninger.md §TEAM NORWAY-SKJERMENE DESIGNES
+   I CLAUDE-BRANDINGEN). Train-lock (--tl-*) og disse tokenene er to
+   parallelle, ikke-konkurrerende systemer — en skjerm bruker ALLTID bare
+   ett sett. Analyse/DataGolf under /team-norway/* er unntaket: de er
+   Train-lock med TN-skinn (logo/aksentfarge), ikke egne Claw-tegninger
+   (§ANALYSE OG DATAGOLF FOR TEAM NORWAY ER TRAIN-LOCK MED TN-SKINN).
+
+   BEVISST AVVIK FRA FASITEN — ingen verdiendring, kun navnerom:
+   Alle navn har prefikset `--tn-` (fasiten har ingen prefiks). Uten det
+   ville dette settet kollidert med --tl-*/--p-*/--v2-*/golfdata ved import
+   i samme globals.css.
+
+   MØRK ER EN ROLLE, IKKE ET TEMA (readme.md, bekreftet 30.08.2026): i
+   motsetning til Train-lock finnes INGEN html[data-tn-tema="dark"]-bryter
+   her. `--tn-dark-*` er egne, navngitte tokens for hero/seksjonsskille/
+   presentasjon — brukes eksplisitt på DE flatene, aldri som appens tema.
+   Lys (`--tn-surface-page` osv.) er standardflaten for alt annet.
+
+   REGEL FOR DENNE FILA (samme som train-lock-tokens.css): kun variabel-
+   deklarasjoner. Ingen selektorregler som setter color/background/border.
+
+   TS-speil: src/lib/v2/team-norway.ts (TN). Les derfra i TS/TSX.
+   ───────────────────────────────────────────────────────────────────────── */
+
+:root {
+  /* ── Merkevarefarger — TN-rødt låst til #D70232, navy til #012B5D
+         (målt fra logofilen, Anders 30.08.2026 — se beslutninger.md).
+         Merkevarerød er identitet (logo/skinne), ALDRI status. ── */
+  --tn-navy-900: #012B5D;
+  --tn-navy-800: #01234C;
+  --tn-navy-700: #033C7A;
+  --tn-navy-600: #0A5199;
+  --tn-navy-400: #4A85C0;
+  --tn-navy-300: #7FA3C9;
+  --tn-navy-100: #E3ECF6;
+  --tn-navy-50: #F2F7FC;
+
+  --tn-red-600: #D70232;
+  --tn-red-700: #A80126;
+  --tn-red-400: #E8506F;
+  --tn-red-100: #FCE3E8;
+
+  /* Mørk-som-rolle (hero/seksjonsskille/presentasjon) — ikke et tema. */
+  --tn-dark-900: #06111F;
+  --tn-dark-800: #0C1B2C;
+  --tn-dark-700: #16283C;
+  --tn-dark-600: #22374E;
+  --tn-dark-line: #23384F;
+
+  /* Nøytral gråskala. --tn-ink-400 er LYSESTE tone som får bære tekst
+     (--ink-300 og lysere er kun kanter/linjer, gjelder også 9–11px etiketter). */
+  --tn-ink-900: #0C1219;
+  --tn-ink-700: #33414F;
+  --tn-ink-500: #5E6E7F;
+  --tn-ink-400: #647280;
+  --tn-ink-300: #B9C4CE;
+  --tn-ink-200: #DCE2E8;
+  --tn-ink-100: #EDF1F4;
+  --tn-ink-50: #F6F8FA;
+  --tn-white: #FFFFFF;
+
+  /* Status — ALDRI merkevarerødt. Egen rød (#C2352B) skilt fra --tn-red-600. */
+  --tn-status-green: #0E8A43;
+  --tn-status-green-text: #076530;
+  --tn-status-green-bg: #E4F4EA;
+  --tn-status-amber: #B87503;
+  --tn-status-amber-text: #8A5602;
+  --tn-status-amber-bg: #FDF1DC;
+  --tn-status-red: #C2352B;
+  --tn-status-red-text: #96241C;
+  --tn-status-red-bg: #FBE8E6;
+  --tn-status-info: #0A5199;
+  --tn-status-info-text: #023B76;
+  --tn-status-info-bg: #E3ECF6;
+
+  --tn-data-1: #012B5D;
+  --tn-data-2: #0A5199;
+  --tn-data-3: #3E8FC4;
+  --tn-data-4: #7FBBD9;
+  --tn-data-5: #C3DDEC;
+  --tn-data-accent: #D70232;
+
+  /* ── Flater ── */
+  --tn-surface-page: var(--tn-ink-50);
+  --tn-surface-card: var(--tn-white);
+  --tn-surface-sunken: var(--tn-ink-100);
+  --tn-surface-inverse: var(--tn-navy-900);
+  --tn-surface-dark: var(--tn-dark-900);
+  --tn-surface-dark-card: var(--tn-dark-800);
+  --tn-surface-dark-raised: var(--tn-dark-700);
+
+  --tn-border-subtle: var(--tn-ink-200);
+  --tn-border-default: var(--tn-ink-300);
+  --tn-border-strong: var(--tn-ink-900);
+  --tn-border-dark: var(--tn-dark-line);
+
+  --tn-text-primary: var(--tn-ink-900);
+  --tn-text-secondary: var(--tn-ink-500);
+  --tn-text-tertiary: var(--tn-ink-400);
+  --tn-text-inverse: var(--tn-white);
+  --tn-text-on-dark: var(--tn-white);
+  --tn-text-on-dark-muted: #8FA3B8;
+
+  --tn-accent-primary: var(--tn-navy-900);
+  --tn-accent-secondary: var(--tn-red-600);
+
+  --tn-link: var(--tn-navy-600);
+  --tn-link-hover: var(--tn-navy-900);
+  --tn-focus-ring: 0 0 0 3px rgba(10, 81, 153, 0.28);
+
+  /* ── Geometri ── */
+  --tn-radius-xs: 6px;
+  --tn-radius-sm: 10px;
+  --tn-radius-md: 14px;
+  --tn-radius-lg: 20px;
+  --tn-radius-xl: 28px;
+  --tn-radius-full: 999px;
+
+  /* ── Skygger — tre nivåer, aldri Liquid Glass/backdrop-filter ── */
+  --tn-shadow-sm: 0 1px 2px rgba(6, 17, 31, 0.06), 0 1px 3px rgba(6, 17, 31, 0.05);
+  --tn-shadow-md: 0 2px 4px rgba(6, 17, 31, 0.05), 0 8px 20px -6px rgba(6, 17, 31, 0.12);
+  --tn-shadow-lg: 0 4px 8px rgba(6, 17, 31, 0.05), 0 20px 40px -12px rgba(6, 17, 31, 0.16);
+  --tn-shadow-dark: 0 20px 48px -16px rgba(0, 0, 0, 0.65);
+
+  /* Diagonalen (56px) — KUN hero/seksjonsskille, aldri kort eller kontroller. */
+  --tn-clip-diagonal-b: polygon(0 0, 100% 0, 100% calc(100% - 56px), 0 100%);
+  --tn-clip-diagonal-t: polygon(0 56px, 100% 0, 100% 100%, 0 100%);
+
+  /* ── Bevegelse — alt trykkbart under 300ms. Aldri ease-in på grensesnitt. ── */
+  --tn-duration-press: 120ms;
+  --tn-duration-fast: 160ms;
+  --tn-duration-base: 200ms;
+  --tn-duration-slow: 280ms;
+  --tn-duration-sheet: 420ms;
+  --tn-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --tn-ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --tn-ease-sheet: cubic-bezier(0.32, 0.72, 0, 1);
+  --tn-ease-hover: ease;
+  --tn-press-scale: 0.97;
+
+  /* ── Romskala (2 → 128) ── */
+  --tn-space-1: 2px;
+  --tn-space-2: 4px;
+  --tn-space-3: 8px;
+  --tn-space-4: 12px;
+  --tn-space-5: 16px;
+  --tn-space-6: 24px;
+  --tn-space-7: 32px;
+  --tn-space-8: 48px;
+  --tn-space-9: 64px;
+  --tn-space-10: 96px;
+  --tn-space-11: 128px;
+  --tn-gutter-card: 28px;
+  --tn-gutter-section: 64px;
+  --tn-max-content: 1160px;
+
+  /* ── Typografi — Schibsted Grotesk (display + body), IBM Plex Mono
+         (alt som måles: tall, etiketter, tidsstempler). rem, ikke px.
+         --font-schibsted-grotesk lastes av src/app/team-norway/layout.tsx
+         (next/font, scoped til /team-norway/*) — fallback til navngitt
+         font utenfor det skallet, aldri en tom var(). --font-ibm-plex-mono
+         er allerede lastet globalt (src/app/layout.tsx), samme font som
+         Train-lock bruker — gjenbrukes, lastes ikke på nytt. ── */
+  --tn-font-display: var(--font-schibsted-grotesk, "Schibsted Grotesk"), system-ui, sans-serif;
+  --tn-font-body: var(--font-schibsted-grotesk, "Schibsted Grotesk"), system-ui, sans-serif;
+  --tn-font-mono: var(--font-ibm-plex-mono, "IBM Plex Mono"), ui-monospace, monospace;
+
+  --tn-text-display-xl: 4rem;
+  --tn-text-display: 3rem;
+  --tn-text-h1: 2.25rem;
+  --tn-text-h2: 1.75rem;
+  --tn-text-h3: 1.3125rem;
+  --tn-text-lg: 1.125rem;
+  --tn-text-base: 1rem;
+  --tn-text-sm: 0.875rem;
+  --tn-text-xs: 0.8125rem;
+  --tn-text-micro: 0.6875rem;
+
+  --tn-weight-regular: 400;
+  --tn-weight-medium: 500;
+  --tn-weight-semibold: 600;
+  --tn-weight-bold: 700;
+  --tn-weight-black: 900;
+
+  --tn-tracking-display: -0.035em;
+  --tn-tracking-heading: -0.02em;
+  --tn-tracking-normal: -0.005em;
+  --tn-tracking-small: 0.005em;
+  --tn-tracking-eyebrow: 0.16em;
+
+  --tn-leading-tight: 1.05;
+  --tn-leading-snug: 1.25;
+  --tn-leading-normal: 1.55;
+  --tn-leading-relaxed: 1.7;
+}
