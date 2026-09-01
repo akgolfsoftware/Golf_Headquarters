@@ -240,10 +240,19 @@ Hver mal i **Mac 1440 og mobil 390**, i **lys og mørk**:
    Til foreldremøter, klubbstyrer og forbund
 4. **Dokument** — brevark, tilbud, sportsplan. Det som sendes som PDF
 5. **E-postsignatur** — for hver variant
-6. **Sosiale medier** — kvadrat, stående, story. Med og uten foto
-7. **Fysisk** — roll-up, skilt, plakat i simulatorhallen
-8. **Rapportside for forelder** — vis hvordan et målt tall presenteres
-   utenfor appen, med dato og kilde
+6. **Sosiale medier** — kvadrat 1080, stående 1080×1350, story 1080×1920.
+   Minst seks innleggstyper: fremgangstall · sitat fra spiller · før/etter ·
+   tips fra coach · turneringsresultat · påmelding åpen. Med og uten foto
+7. **E-post** — nyhetsbrev (topp, artikkel, handling, bunn med avmelding),
+   transaksjonsmal (bekreftelse, påminnelse, kvittering), og signatur per variant
+8. **Fysisk** — roll-up 850×2000, skilt i simulatorhallen, plakat A3/A2,
+   visittkort 85×55, bag-tag
+9. **Kontor og salg** — brevark, tilbud, faktura, sportsplan som PDF,
+   presentasjonsmal for foreldremøte og klubbstyre
+10. **Profilklær** — plassering og størrelse av merket på pique, softshell,
+    caps og bag. Se punkt 11 om hvorfor dette haster
+11. **Rapportside for forelder** — vis hvordan et målt tall presenteres
+    utenfor appen, med dato og kilde
 
 ### C · Variantene demonstrert
 
@@ -251,15 +260,52 @@ Vis **samme mal i tre varianter** — Junior Academy, Academy og Organisasjon �
 det er tydelig hva som endres og hva som består. Dette er systemets viktigste
 prøve: klarer det å se ut som én familie og fem forskjellige tilbud samtidig?
 
-### D · Fotoretning
+### D · Foto — arkivet finnes allerede
 
-Vis hvordan AK Golf-foto ser ut, med ekte eksempler: arbeid framfor seier, en
-spiller foran en skjerm, en coach som peker på en måling, utstyret synlig i
-rammen. Ingen tunge filtre, ingen sort-hvitt som stemning. Vis også tekst på
-foto med mørkt sjikt, og hvordan kontrastkravet holdes mot det bildepartiet
-teksten faktisk ligger på.
+**Ikke finn på fotoretning, og ikke bruk stockbilder.** Det ligger 44
+profesjonelle bilder i `public/brand/foto/`, katalogisert i
+`designsystem/ak-golf/foto/katalog.md` med motiv og bruksområde per bilde.
 
-### E · Pakke
+De fem sterkeste, om du trenger å velge raskt:
+
+- **#9** — coach og spiller foran Trackman. Hele merket i ett bilde
+- **#42** — analysen innendørs foran skjermen. Det ingen konkurrent har
+- **#24** — ball i luften. Bevegelse som overlever et lite format
+- **#44** — ovenfra, lange skygger. Eneste uventede vinkel i arkivet
+- **#28** — spiller mot mørk bakgrunn. Bygget for tekst over
+
+**To ting du må forholde deg til:**
+
+**PUMA-logoen er synlig på coach-klærne** i alle nærbilder (tydeligst #3, #8,
+#9, #14, #40, #41, #42). Et konkurrerende merke står på brystet i AK Golfs eget
+materiell. Ta hensyn til det i bildevalget der merket skal være tydelig, og se
+punkt 10 i leveransen om profilklær.
+
+**Det finnes ingen bilder av yngre juniorer.** Med junior- og spillerutvikling
+som det sentrale målet, mangler arkivet motivet som betyr mest. Design
+juniormateriellet slik at det virker med de bildene som finnes — og si tydelig
+hvilke bilder en ny sesjon må skaffe.
+
+Vis også tekst på foto med mørkt sjikt, og hvordan kontrastkravet på 4,5:1
+holdes mot det bildepartiet teksten faktisk ligger på — ikke mot bildets
+gjennomsnitt.
+
+### E · Trykk
+
+Fargene over er skjermverdier. For alt som skal trykkes på annet enn
+digitaltrykk trengs **CMYK og Pantone for clay `#D97757` og blekk `#141413`**,
+som minimum.
+
+**Ikke konverter matematisk fra RGB og oppgi resultatet som fasit** — clay er en
+mettet oransje som skifter merkbart mellom skjerm og papir. Foreslå
+utgangsverdier, og skriv eksplisitt at de skal bekreftes mot et fysisk
+prøvetrykk før første opplag.
+
+Oppgi også: minste trykkstørrelse for logoen (12 mm), hvilke varianter som
+gjelder for brodering og gravering (enfarget, ingen halvtoner), og hvordan
+merket settes på mørkt tekstil.
+
+### F · Pakke
 
 `readme.md` (hva som gjelder hvor) · `tokens/` · `components/` · `templates/` ·
 `guidelines/` — samme struktur som Team Norway-pakken, så de to kan leses av
@@ -296,3 +342,19 @@ Disse er bevisst ikke avgjort. Foreslå, med begrunnelse:
    skrevet for skjerm. En roll-up i en simulatorhall konkurrerer med et helt rom.
    Trenger fysisk materiell en egen, friere regel — eller er nettopp roen det som
    skiller AK Golf fra alt annet i den hallen?
+
+## 10 · Hva som IKKE er del av denne bestillingen
+
+Sagt eksplisitt, så det ikke oppstår tvil om hvem som eier hva:
+
+**Innhold og drift er ikke design.** Du lager *malen* for et innlegg i sosiale
+medier — ikke innleggene, ikke publiseringskalenderen, ikke tekstene som skal
+ut uke for uke. Det er en egen jobb med en egen rytme, og den bør ikke ligge i
+et designsystem som skal stå i årevis.
+
+**Produktskjermene.** Se punkt 4. Dette er den enkleste feilen å gjøre.
+
+**Mulligan Indoor Golf og Team Norway Golf.** Begge står utenfor paraplyen.
+
+**Selve trykkbestillingen.** Du foreslår CMYK- og Pantone-verdier; noen andre
+bekrefter dem mot et fysisk prøvetrykk.
