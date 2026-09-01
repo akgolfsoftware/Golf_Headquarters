@@ -1,0 +1,14 @@
+/* AK Golf — fonter.
+   Speilet fra masteren 01.09.2026.
+
+   Hele IBM Plex-familien, ingen andre: Plex Sans Condensed (display),
+   Plex Sans (brødtekst), Plex Mono (alt som er målt). Én familie, tre roller.
+
+   Plex er tegnet av IBM som et industrielt system, ikke som et
+   markedsføringsalfabet — det er verkstedets språk.
+
+   Alle tre finnes på Google Fonts i de vektene merket bruker, så pakken laster
+   dem derfra i stedet for å frakte binærfiler. Skal systemet selvhostes, byttes
+   denne importen ut med @font-face-regler mot woff2. */
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');

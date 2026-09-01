@@ -29,11 +29,14 @@ skjermer vinner Claw. **Ingen skjerm har to fasiter.**
 ## Kode
 
 ```
-tokens/farge.css      merkefarger + fem identitetsfarger, alle målt
-tokens/type.css       tre fonter, ti trinn
-tokens/rom.css        4-skala, radius, dybde
+tokens/grunnlag.css    minste sett som gjør en flate til AK Golf
+tokens/fonter.css      IBM Plex-familien fra Google Fonts
+tokens/farge.css       merkefarger + fem varianttoner, alle målt
+tokens/type.css        tre roller, ti trinn
+tokens/rom.css         4-skala, radius, dybde
 tokens/bevegelse.css   fart og kurver
 tokens/instrument.css  rutenett, målestokk, kryss
+tokens/semantikk.css   rolle-navn (--surface-*, --text-*, --radius-*)
 ```
 
 Logofilene ligger i `public/logos/` (sju vektorvarianter), ikke her — de er i
@@ -48,5 +51,24 @@ drift i appen og skal ha én adresse.
 
 ## Masteren
 
-Anders oppretter Claude Design-prosjektet som blir master for AK Golf. Denne
-mappen er speilet koden leser — samme arbeidsdeling som Claw/Team Norway.
+**Claude Design-prosjektet «AK Golf Designsystem»**
+(`3e5c851c-4b78-41ab-8ced-7b11048838f9`) er master. Denne mappen er speilet —
+samme arbeidsdeling som Claw/Team Norway.
+
+**Det som bare finnes i masteren:**
+
+```
+components/    sju kategorier — flate, handling, maaling, melding, merke,
+               navigasjon, skjema. Hver med .jsx, .d.ts og .prompt.md
+ui_kits/       ti ferdige flater — markedsside, kampanje, presentasjon,
+               dokument, epost, sosialt, fysisk, foreldrerapport, varianter,
+               plakat-temaer
+assets/        logo og foto, samme filer som public/logos og public/brand/foto
+SKILL.md       designerens egen inngang til systemet
+```
+
+**Bygg aldri noe som finnes der.** Trenger du en knapp, et kort eller en hel
+markedsside — hent den, ikke tegn den på nytt.
+
+**Ved konflikt vinner masteren.** Speilet kan henge etter; er du i tvil om en
+verdi, les fra Claude Design og synk hit etterpå.
