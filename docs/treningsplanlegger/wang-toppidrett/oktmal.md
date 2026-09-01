@@ -6,6 +6,11 @@
 > Gjeldende v2-format er `PYRAMIDE_OMRADE_MOTORIKK_BELASTNING_PRESS` med motorikk
 > UTEN_BALL/LAV_HAST/AUTO og press ALENE/OBSERVERT/KONKURRANSE/TURNERING — dette dokumentet
 > styrer aktivt WANG-arbeid og må leses mot v2-formatet, ikke mot feltene under.
+>
+> **Club Speed (Anders, 2026-09-01):** klassifiseres motorikk **AUTO** — «uten ball» er en
+> egenskap ved øvelsen (hastighetstrening med stav/kølle uten balltreff), ikke et eget
+> motorikk-steg. Gjelder «Intensitet (CS)»-feltet (rad 5 under) og CS50–70-tallene i
+> «Periodespesifikk vri» — ingen av dem skal lenger leses som CS-nivå-prosentskala.
 
 Kilde: `wang-treningsokt`-skillen (autoritativ) + AK-formel-feltene i AK Golf HQ.
 Formål: én felles øktstruktur som alle M/O/F-økter (08:00–10:00) følger, differensiert per VG-trinn

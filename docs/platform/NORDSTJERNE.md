@@ -59,7 +59,8 @@ i mellomtiden; kvalitetsstandarden (skal tåle å selges for millionsum) er uend
 
 > **UTGÅTT (beslutninger.md 2026-08-18):** CS-progresjon og «13 invarianter» er pensjonert —
 > ingen regel-håndheving i planlegging lenger. Vokabularet (pyramide, A–K, MORAD P-system) består
-> som frie merkelapper, aldri krav.
+> som frie merkelapper, aldri krav. Club Speed (Anders, 2026-09-01): motorikk AUTO, «uten ball»
+> er en egenskap ved øvelsen, ikke eget motorikk-steg — se `docs/ordbok-ak-golf-konsept.md` §3.
 
 Coaching-metodikken (AK-metodikken / CANON) er plattformens intellektuelle kjerne:
 A–K-kategorier, pyramide-fordeling, CS-progresjon, 13 invarianter, MORAD P-system.
