@@ -15,6 +15,7 @@ import { getTesterLiveKort } from "@/lib/portal-tester/tester-live-kort";
 import { formatSg } from "@/lib/sg";
 import { formatMinutes } from "@/lib/domain/workbench/labels";
 import { hentIDagKalender } from "@/lib/portal/idag-data";
+import { hentEffektivNaa } from "@/lib/testing/dato-override";
 import {
   byggMaanedPrikker,
   erHvileTittel,
@@ -46,7 +47,7 @@ export default async function PortalHjemPage() {
   if (user.role === "PARENT") redirect("/forelder");
   if (user.role === "GUEST") redirect("/admin/kalender");
 
-  const naa = new Date();
+  const naa = await hentEffektivNaa(user.email);
   const iDag = OSLO_ISO_FMT.format(naa);
   const naaMinutt = osloMinuttAvDogen(naa);
   const osloDeler = iDag.split("-").map(Number);

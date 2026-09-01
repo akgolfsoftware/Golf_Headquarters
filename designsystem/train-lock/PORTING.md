@@ -120,20 +120,37 @@ Kun `transform` og `opacity`. Respekter `prefers-reduced-motion` ved å nulle va
 
 ## 5 · Verifikasjon — det som faktisk gir pikselnærhet
 
-Uten en maskinell sammenligning drifter porten. Gjør dette per skjerm:
+**Riggen er bygget (01.09.2026) — se `tests/visual/README.md` for fullstendig
+oppskrift, kjente feller og hvorfor 0,1 % IKKE er en realistisk terskel i
+praksis.** Kort versjon:
 
-1. **Referansebilde.** Åpne `.dc.html`-filen, screenshot rammen med gitt `data-screen-label` ved 2× på 390 bredde. Lagre som `tests/visual/ref/<label>.png`.
-2. **Storybook/route-story** for den porterede skjermen med **samme faste data** som design-filen (samme navn, samme beløp, samme klokkeslett — ellers sammenligner du innhold, ikke layout).
-3. **Playwright + pixelmatch**, terskel 0,1 % piksler ved `maxDiffPixelRatio`. Diff over terskel = feil, ikke «nær nok».
-4. **Assert-test på reglene**, ikke bare bildet:
+1. **Finn riktig datakilde FØR du seeder.** Øktdata er fragmentert over flere
+   tabeller (`WorkbenchSession` ≠ `TrainingSessionV2` ≠ `PlanSession`) — anta
+   ALDRI hvilken, verifiser mot loaderen skjermen faktisk kaller.
+2. **Seed en fixture** som matcher fasitens tilstand (skjermnavn, klokkeslett,
+   status — status styrer ofte HELE kort-varianten, ikke bare tall).
+   Mønster: `scripts/seed-ph01-signoff-fixture.ts`.
+3. **Fryser dato/tid** for datoavhengige skjermer via
+   `src/lib/testing/dato-override.ts` (header `x-screentest-naa`, kun for
+   screentest-kontoen) — appen viser ellers alltid ekte `Date.now()`.
+4. **`node scripts/train-lock-pixel-diff.mjs <label> <rute> <tema> <cropTop>`**
+   (`npm run signoff:train-lock -- ...`) — trekker ut fasit-rammen isolert i
+   ekte pikselstørrelse, tar app-skjermbilde i samme størrelse, kutter
+   fasitens bakte statuslinje (mobil) og pixelmatcher resten.
+5. **Terskel er PER SKJERM, kalibrert, ikke en universell 0,1 %.** Følg
+   `paper-visual`s presedens (4 % — «fonter/anti-aliasing varierer selv når
+   layout er identisk») og legg til dataavhengig varians der det gjelder.
+   PH-01s kalibrerte baseline: ~11 %. Se `tests/visual/skjerm-mapping.ts`.
+6. **Assert-test på reglene** i tillegg til bildet — ikke i stedet for:
    - nøyaktig én `variant="primary"` per skjerm
    - ingen hex-litteral i `.tsx` (ESLint `no-restricted-syntax` på `/#[0-9A-Fa-f]{6}/`)
    - ingen `backdrop-filter`, `blur`, `linear-gradient` utenfor godkjent rutenett-liste
    - ingen emoji i strenger
    - alle tallformater gjennom `nb-NO`-helper
-5. **Fest referansebildet i PR-en.** Diff-bildet i PR-beskrivelsen er det som holder porten ærlig over tid.
+7. **Fest referansebildet i PR-en.** Diff-bildet i PR-beskrivelsen er det som holder porten ærlig over tid.
 
-Sett terskelen én gang og senk den aldri. Er diffen for stor, er det designfilen som er fasit.
+Riggen kjører IKKE i CI (samme begrunnelse som `paper-visual`: lokalt verktøy
+for designporten, ikke en automatisk gate) — se `tests/visual/README.md`.
 
 ---
 
