@@ -73,16 +73,44 @@ brukere kan aldri sette sin egen dato. Foreløpig koblet inn kun i
 `src/app/portal/page.tsx` (PH-01) — koble inn per skjerm etter behov, ikke
 forhåndsinnfør på skjermer som ikke trenger det.
 
+## Status etter 8-skjermers kalibreringsrunde (01.09.2026 kveld)
+
+Alle ni skjermer i `skjerm-mapping.ts` er nå undersøkt. Fem er kalibrert
+(PH-01, TE-01, TM-04a, TM-01a — 5,6–14,4 % restavvik, alle med kjent,
+dokumentert årsak). **Fire kunne IKKE kalibreres — ikke fordi riggen mangler
+noe, men fordi det de skulle måles mot ikke var klart til å måles mot:**
+
+- **P-05 og AO-01: fasiten selv er utdatert.** P-05 bruker CS/M-vokabular fra
+  før 18.08-opplåsingen og en helt annen IA enn dagens `/portal/planlegge`.
+  AO-01 viser en pensjonert AgenticOS-rail — appen har alt AX-01s fem
+  destinasjoner (dagens kanon). Pixel-diff mot en fasit ingen lenger bygger
+  mot, er ikke et signal — det er støy. Disse må tegnes om FØR de er
+  kalibrerbare.
+- **RU-04: allerede kjent, dokumentert avvik** (revisjonsrapportens
+  statusmatrise, kategori c) — bunn-ark i fasit vs. egen helside i koden.
+  Ikke noe nytt denne runden fant.
+- **AO-03 og AO-08: metodikkhull i RIGGEN, ikke i appen.** Disse
+  fasit-rammene er tegnet som INNEBYGDE PANELER (760×640 / 620px bred, ingen
+  full enhets-viewport) ment å vises inni en større canvas — ikke som en hel
+  skjerm. Satt direkte som browser-viewport trigger feil breakpoint i appen
+  (mobil bunn-nav i stedet for sidebar ved 760px). Riggen må utvides til å
+  rendre appen ved sin EKTE viewport og klippe ut det tilsvarende panelet,
+  ikke bruke fasit-rammens egen (mindre) deklarerte størrelse direkte.
+
+**SHOT_BRUKER=coachtest@akgolf.test** kobler inn for AgencyOS-skjermer (krever
+ADMIN) — default er `screentest@akgolf.test` (PLAYER).
+
 ## Neste skjermer
 
-De åtte andre allerede rute-kartlagte skjermene (`scripts/signoff-trainlock.mjs`
-sine `px3`/`px4`/`ao`-bølger) har IKKE fixture-seed. Oppskriften herfra:
-1. Finn hvilken tabell/loader skjermen faktisk leser (ikke anta — se felle 1).
+For nye skjermer utover disse ni, oppskriften er:
+1. Finn hvilken tabell/loader skjermen faktisk leser (ikke anta — se felle 1
+   under, og AO-01/P-05 over: sjekk OGSÅ at fasiten selv er dagens kanon,
+   ikke bare at ruta finnes).
 2. Skriv et idempotent seed-script i `scripts/` (mønster:
-   `seed-ph01-signoff-fixture.ts`).
+   `seed-ph01-signoff-fixture.ts`) hvis skjermen er dataavhengig.
 3. Koble `hentEffektivNaa()` inn i den skjermens `page.tsx` hvis den viser
    dato/tid.
 4. Kjør `train-lock-pixel-diff.mjs` med økende `cropTop` til avviket
    flater ut (ikke gjett — søk, som PH-01s kalibrering over).
 5. Legg inn i `skjerm-mapping.ts` med `status: "kalibrert"` og målt
-   restavvik.
+   restavvik + notat om hva som gjenstår.
