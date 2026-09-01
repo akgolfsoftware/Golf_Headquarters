@@ -2,56 +2,82 @@
 
 Fasit i kode: `designsystem/ak-golf/tokens/type.css`.
 
-Tre fonter, låst av Anders 25.08.2026. **Ingen fjerde font, noensinne.**
+Tre fonter. **Ingen fjerde.**
 
 | Font | Bærer | Hvorfor |
 |---|---|---|
-| **Poppins** | Titler, brødtekst, knapper, alt som skal leses raskt | Nøytral, geometrisk, holder på små størrelser |
-| **Lora** | Ingress, sitat, det som skal leses langsomt | Gir tekst en stemme uten å rope |
-| **IBM Plex Mono** | **Alt som er målt** — tall, etiketter, dato, kilde | Se under |
+| **Archivo Narrow** | Overskrifter. Alt som skal dominere en flate | Kondensert grotesk. Teknisk uten å være kald |
+| **Poppins** | Brødtekst, knapper, skjema | Nøytral, holder på små størrelser |
+| **IBM Plex Mono** | **Alt som er målt** | Se under |
+
+## Hvorfor Archivo Narrow
+
+Valget ble tatt 01.09.2026 av en praktisk grunn: **kondensert type får plass
+til flere tegn per linje på 390 px.** Mobil er merkets viktigste flate — det
+er der en forelder skanner mens hun står på et treningsfelt. En bred grotesk
+i 72 px sprenger den skjermen; Archivo Narrow gjør det ikke.
+
+Den ble testet mot Archivo, Barlow Condensed, Oswald, Saira Condensed, Chivo
+og Anton, i norsk tekst med Æ, Ø og Å. Oswald og Anton er for mye plakat.
+Chivo og Archivo er for brede for mobil. Barlow mangler autoritet i store
+grader.
+
+## Lora er ute
+
+Serifen bar «det som skal leses langsomt» — ingress og sitat. Den rollen
+finnes ikke lenger. En serif sier *les langsomt*; instrumentet sier *her er
+tallet*. Det er ikke plass til begge stemmene i samme merke.
+
+Ingressen settes nå i Poppins 400 på 21 px. Sitatet settes i Archivo Narrow
+600, ikke i kursiv serif.
 
 ## Mono er merkets viktigste regel
 
-Et tall som kommer fra en måling settes i mono. Et tall som ikke kommer fra en
-måling settes ikke i mono.
+Et tall som kommer fra en måling settes i mono. Et tall som ikke gjør det,
+settes ikke i mono.
 
-Det er ikke en stilpreferanse. Det er TruthLayer gjort synlig: står det i mono,
-er det etterprøvbart, med dato og kilde. Står det ikke i mono, er det en
-påstand. En leser trenger aldri å lære regelen for at den skal virke — men den
-som bryter den, undergraver det ene løftet merket har.
-
+Det er ikke stil — det er løftet gjort synlig. Står det i mono, er det
+etterprøvbart, med dato og kilde. Står det ikke i mono, er det en påstand.
 **Estimater merkes som estimat i teksten**, selv når de står i mono.
 
 ## Skalaen
 
-Kvart-oktav (1,19), avrundet til hele piksler. Ni trinn.
+Ti trinn. Displayen går høyere enn før, fordi kondensert type tåler det.
 
 | Token | Størrelse | Rolle |
 |---|---|---|
-| `--ak-t-11` | 11 px | Caps-etikett — **kun mono**, med `0.2em` sperring |
+| `--ak-t-11` | 11 px | Caps-etikett — **kun mono**, `0.2em` sperring |
 | `--ak-t-13` | 13 px | Bildetekst, fotnote |
 | `--ak-t-15` | 15 px | Brødtekst, tett |
 | `--ak-t-17` | 17 px | Brødtekst, standard |
-| `--ak-t-21` | 21 px | Ingress — ofte Lora |
-| `--ak-t-26` | 26 px | Seksjonstittel |
-| `--ak-t-33` | 33 px | Sidetittel |
-| `--ak-t-42` | 42 px | Hero, mobil |
-| `--ak-t-58` | 58 px | Hero, Mac |
-
-Trenger du et tiende trinn, er problemet layouten — ikke skalaen.
+| `--ak-t-21` | 21 px | Ingress |
+| `--ak-t-26` | 26 px | Seksjonstittel, mobil |
+| `--ak-t-34` | 34 px | Seksjonstittel |
+| `--ak-t-48` | 48 px | Sidetittel |
+| `--ak-t-72` | 72 px | Hero, mobil |
+| `--ak-t-112` | 112 px | Hero, Mac |
 
 ## Vekter
 
-400, 500 og 600. **Aldri 700 eller tyngre.** Poppins i 700 blir klumpete og
-begynner å ligne på et sportsmerke som roper. AK Golf roper ikke.
+| Font | Vekter |
+|---|---|
+| Archivo Narrow | 600, 700 |
+| Poppins | 400, 500, 600 |
+| IBM Plex Mono | 400, 500 |
+
+**700 er kun Archivo Narrow.** Poppins i 700 blir klumpete — det var grunnen
+til regelen før, og den gjelder fortsatt for brødtekstfonten.
 
 ## Regler som holder teksten lesbar
 
-- Brødtekst stopper på **65 tegn** (`--ak-lesebredde`), uansett skjermbredde.
-- Linjeavstand: 1,5 for brødtekst, 1,12 fra 26 px og opp, 1,65 for Lora.
-- Sperring: `-0.03em` på hero, `-0.02em` på titler, `0` på brødtekst,
-  `0.2em` på caps-etiketter.
-- Titler får `text-wrap: balance`.
-- Tall som står i kolonne får `font-variant-numeric: tabular-nums`.
-- **Aldri caps på en hel setning.** Caps er for etiketter på tre ord eller
-  mindre.
+- Display fra 48 px og opp har linjeavstand **0,94** — linjene skal låse seg
+  til hverandre og bli en blokk, ikke en liste.
+- Brødtekst er 1,5 og stopper på **65 tegn**, uansett skjermbredde.
+- Sperring: `-0.035em` på display, `-0.02em` på titler, `0` på brødtekst,
+  `0.2em` på caps-etiketter (`0.24em` på mørk flate, der lyset spiser
+  mellomrommene).
+- Display settes i **VERSALER** når den står alene som utsagn. I løpende
+  overskrifter over brødtekst settes den normalt.
+- **Aldri caps på en hel setning i brødtekst.** Caps er for display og for
+  etiketter på tre ord eller mindre.
+- Tall i kolonne får `font-variant-numeric: tabular-nums`.

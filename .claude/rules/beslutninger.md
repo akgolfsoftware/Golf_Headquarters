@@ -28,6 +28,37 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
 
 ## Beslutningene (august 2026)
 
+- **AK GOLF-MERKET LEGGES OM TIL INSTRUMENT-RETNINGEN (Anders 01.09.2026, i økt):**
+  merkevaresystemet fra 31.08 var bygget rolig og forsiktig. Anders leverte seksten
+  referansebilder; opptalt ga de tolv med rust/rød som eneste aksent, ni med enorm kondensert
+  typografi, sju med synlige tekniske markører og fjorten med hard kontrast. **Bare to av sytten
+  var rolige — og begge var golfklubber.** Anders valgte full omlegging.
+  **Skillet som ble gjort:** referansene delte seg i «ropet» (GRO, Nike «PLAY LOUD», gym-plakater
+  — energi og revet papir) og «instrumentet» (POLYMER 48, Thegrafx, Design Signals, Narka — stor
+  type som bærer data, rutenett som konstruksjon). **Instrumentet ble valgt fordi ropet motsier
+  løftet:** et merke som sier «vi måler, vi synser ikke» kan ikke rope.
+  **Fire endringer, alle i `designsystem/ak-golf/`:**
+  1. **Archivo Narrow (600/700) er ny display-font. Lora er ute.** Fortsatt tre fonter — rollen er
+     byttet. Valgt fordi kondensert type får plass til flere tegn per linje på 390 px, og mobil er
+     merkets viktigste flate. Testet mot Archivo, Barlow Condensed, Oswald, Saira Condensed, Chivo
+     og Anton i norsk tekst. **700 er kun Archivo Narrow; Poppins går aldri over 600.**
+  2. **Instrumentlaget innført** (`tokens/instrument.css`, `guidelines/11-instrumentet.md`):
+     rutenett 56 px (7 × 8, samme åtte-basis som romskalaen), målestokk, kryss. Dette **besvarer
+     det åpne spørsmålet** fra merkeboka om merket trenger et grafisk element utover logoen.
+     **Regelen som holder det ærlig:** instrumentlaget skal aldri gi inntrykk av å vise data som
+     ikke finnes — rutenett med tall på aksene er en påstand og krever målte tall med dato og
+     kilde. Ingen kurver uten data, ingen akser uten enhet.
+  3. **5 %-regelen for identitetsfarge er OPPHEVET.** Clay bæres nå av hele flater og dekker minst
+     18 % av visningen. Består: én identitetsfarge om gangen, aldri farge alene som informasjon.
+  4. **Typeskalaen utvidet til ti trinn** (opp til 112 px), display-linjeavstand 0,94.
+  **UENDRET:** krem `#FAF9F5`, blekk `#141413`, clay `#D97757`, de fem identitetsfargene med sine
+  målte kontrasttall, romskalaen, radius, logoen og logofamilien. **Fundamentet står — det er
+  temperamentet som er lagt om.**
+  **GJELDER KUN MERKET.** Produktskjermene i PlayerHQ, AgencyOS og Forelder bruker fortsatt
+  Poppins gjennom Train-lock. **Ingen skjerm bytter font av denne beslutningen** — CLAUDE.md
+  invariant 2 står uendret. Dette overstyrer «ingen fjerde font»-formuleringen fra 25.08 kun for
+  merkelaget: Lora byttes mot Archivo Narrow, antallet er det samme.
+
 - **LOGOEN RYDDES, TEGNES IKKE OM (Anders 31.08.2026, i økt):** ligaturen og ballen i
   `public/logos/` er uendret. Det som manglet var ikke kvalitet — filene er ekte vektor og
   skalerer rent — men **familien**. Utført samme økt, avledet fra nøyaktig samme former:

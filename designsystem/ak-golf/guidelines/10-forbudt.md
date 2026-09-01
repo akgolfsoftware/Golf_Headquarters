@@ -15,11 +15,16 @@
 
 ## Formen
 
-- Ingen fjerde font.
+- Ingen fjerde font. (Archivo Narrow, Poppins, IBM Plex Mono. Lora er ute.)
 - Ingen farge utenfor `tokens/farge.css`.
 - Ingen gradient over merkefarger.
-- Ingen skriftvekt over 600.
-- Ingen caps på en hel setning.
+- Ingen Poppins over vekt 600. 700 er kun Archivo Narrow.
+- Ingen caps på en hel setning i brødtekst.
+- **Ingen serif.** Instrument-retningen har ingen.
+- **Ingen falske instrumenter:** rutenett med tall på aksene, kurver uten
+  data, spredninger uten målinger, akser uten enhet. Formen skal ikke påstå
+  noe teksten ikke kan dekke.
+- Ingen to instrumentelementer på samme flate.
 - Ingen avstand utenfor 4-skalaen.
 - Ingen pill-radius på et kort.
 - Ingen animasjon som bare skal få oppmerksomhet.

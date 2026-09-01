@@ -1,24 +1,24 @@
 <title>AK Golf Merkebok</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@600;700&family=Poppins:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
 :root {
   --krem:#FAF9F5; --senk:#F0EEE6; --flate:#FFFFFF; --blekk:#141413;
   --myk:#3D3D3A; --dempet:#5E5D59; --svak:#B0AEA5; --linje:#E8E6DC; --haar:#D1CFC5;
-  --clay:#D97757; --claytekst:#A9512F;
+  --clay:#D97757; --claytekst:#A9512F; --rutefarge:rgba(20,20,19,.075);
   --loft:0 1px 2px rgba(20,20,19,.04), 0 8px 24px rgba(20,20,19,.06);
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --krem:#141413; --senk:#1D1C1A; --flate:#1D1C1A; --blekk:#FAF9F5;
     --myk:#D6D3CA; --dempet:#A5A29A; --svak:#6E6C66; --linje:#2C2B28; --haar:#3A3936;
-    --claytekst:#E08B69;
+    --claytekst:#E08B69; --rutefarge:rgba(250,249,245,.11);
     --loft:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.32);
   }
 }
 :root[data-theme="dark"] {
   --krem:#141413; --senk:#1D1C1A; --flate:#1D1C1A; --blekk:#FAF9F5;
   --myk:#D6D3CA; --dempet:#A5A29A; --svak:#6E6C66; --linje:#2C2B28; --haar:#3A3936;
-  --claytekst:#E08B69;
+  --claytekst:#E08B69; --rutefarge:rgba(250,249,245,.11);
   --loft:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.32);
 }
 * { box-sizing:border-box; }
@@ -28,12 +28,29 @@ body {
   line-height:1.5; -webkit-font-smoothing:antialiased;
 }
 .mono { font-family:'IBM Plex Mono',ui-monospace,monospace; }
-.lora { font-family:'Lora',Georgia,serif; }
+.disp { font-family:'Archivo Narrow','Archivo',Arial,sans-serif; }
+
+/* instrumentlaget */
+.rutenett { position:absolute; inset:0; z-index:0; pointer-events:none;
+  background-image:
+    linear-gradient(var(--rutefarge) 1px, transparent 1px),
+    linear-gradient(90deg, var(--rutefarge) 1px, transparent 1px);
+  background-size:56px 56px; }
+.maalestokk { height:14px; opacity:.42; color:var(--dempet);
+  background-image:repeating-linear-gradient(90deg, currentColor 0, currentColor 1px,
+    transparent 1px, transparent 12px);
+  background-size:100% 8px; background-repeat:no-repeat; background-position:0 100%; }
+.kryss { position:absolute; width:11px; height:11px; opacity:.45; pointer-events:none; }
+.kryss::before, .kryss::after { content:""; position:absolute; background:currentColor; }
+.kryss::before { left:5px; top:0; width:1px; height:11px; }
+.kryss::after { top:5px; left:0; height:1px; width:11px; }
+.disp { font-family:'Archivo Narrow','Archivo',Arial,sans-serif; }
 
 /* --- ark --- */
 .bok { max-width:1120px; margin:0 auto; padding:0 20px 120px; }
 .ark {
   background:var(--flate); border:1px solid var(--linje); border-radius:16px;
+  isolation:isolate;
   padding:clamp(28px,4.5vw,56px); margin-top:20px; box-shadow:var(--loft);
   position:relative; overflow:hidden;
 }
@@ -46,22 +63,28 @@ body {
   font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.2em;
   text-transform:uppercase; color:var(--claytekst); margin:0 0 14px;
 }
-.ark h2 { margin:0 0 10px; font-size:clamp(24px,3.4vw,33px); font-weight:600; letter-spacing:-.02em; text-wrap:balance; }
-.ark h3 { margin:0 0 6px; font-size:17px; font-weight:600; letter-spacing:-.01em; }
+.ark h2 { margin:0 0 10px; font-family:'Archivo Narrow','Archivo',Arial,sans-serif;
+  font-size:clamp(28px,4.4vw,48px); font-weight:700; letter-spacing:-.03em; line-height:1.0;
+  text-transform:uppercase; text-wrap:balance; }
+.ark h3 { margin:0 0 6px; font-family:'Archivo Narrow','Archivo',Arial,sans-serif;
+  font-size:20px; font-weight:600; letter-spacing:-.01em; text-transform:uppercase; }
 .ark > p, .ledetekst { margin:0 0 26px; color:var(--dempet); font-size:16px; max-width:64ch; }
 .ark h4 { margin:0 0 10px; font-size:13px; font-weight:600; letter-spacing:.02em; }
 
 /* --- forside --- */
 .forside {
   background:var(--blekk); color:var(--krem); border-color:var(--blekk);
-  padding:clamp(40px,7vw,88px); margin-top:36px;
+  padding:clamp(40px,7vw,88px); margin-top:36px; --rutefarge:rgba(250,249,245,.13);
 }
+.forside > *:not(.rutenett) { position:relative; z-index:1; }
 .forside h1 {
-  margin:26px 0 0; font-size:clamp(38px,7vw,66px); font-weight:600;
-  letter-spacing:-.035em; line-height:1.02; text-wrap:balance;
+  margin:26px 0 0; font-family:'Archivo Narrow','Archivo',Arial,sans-serif;
+  font-size:clamp(56px,12vw,112px); font-weight:700;
+  letter-spacing:-.04em; line-height:.92; text-transform:uppercase; text-wrap:balance;
 }
+.forside h1 em { font-style:normal; color:var(--clay); }
 .forside .loftet {
-  font-family:'Lora',Georgia,serif; font-size:clamp(19px,2.5vw,24px);
+  font-family:'Poppins',sans-serif; font-size:clamp(17px,2.2vw,21px);
   color:var(--krem); opacity:.82; margin:22px 0 0; max-width:30ch; line-height:1.5;
 }
 .forside .stempel {
@@ -186,6 +209,13 @@ td.mono { font-family:'IBM Plex Mono',monospace; font-size:12.5px; }
 .sys .sti { font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--claytekst); }
 .sys.aktiv { background:var(--senk); }
 
+.instrumentdeler { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:18px; }
+.idel .iprove { position:relative; height:150px; background:var(--senk);
+  border:1px solid var(--linje); border-radius:10px; margin-bottom:14px; overflow:hidden;
+  color:var(--blekk); }
+.idel h3 { margin-bottom:5px; }
+.idel p { margin:0; font-size:13.5px; color:var(--dempet); line-height:1.55; }
+
 .note { margin-top:26px; padding:18px 20px; background:var(--senk); border-radius:10px; font-size:14px; color:var(--myk); line-height:1.6; }
 .note b { color:var(--blekk); }
 
@@ -199,21 +229,23 @@ td.mono { font-family:'IBM Plex Mono',monospace; font-size:12.5px; }
 <div class="bok">
 
   <section class="ark forside">
+    <div class="rutenett"></div>
     <svg class="logo" viewBox="0 0 538 470" style="height:72px" role="img" aria-label="AK Golf"><g transform="translate(0,470) scale(0.1,-0.1)"><path d="M3190 4486 c-23 -13 -109 -48 -585 -241 -99 -40 -198 -81 -220 -91 l-40 -18 45 -7 c127 -19 217 -102 271 -249 l24 -65 3 -1772 2 -1773 280 0 280 0 2 721 3 720 71 -83 c40 -46 132 -155 205 -243 73 -88 185 -221 249 -295 64 -74 152 -178 195 -230 44 -52 137 -162 209 -245 71 -82 167 -194 213 -247 l84 -98 355 0 c194 0 354 2 354 4 0 2 -73 89 -162 194 -90 104 -219 256 -288 337 -319 376 -552 649 -790 925 -59 69 -130 153 -158 187 -28 34 -56 64 -62 68 -5 3 -10 10 -10 14 0 7 90 83 221 186 42 33 163 130 270 215 107 86 223 178 259 206 378 292 550 427 550 430 0 2 -126 4 -279 4 l-280 0 -25 -82 c-25 -83 -102 -228 -159 -303 -108 -139 -178 -205 -502 -470 -87 -71 -189 -156 -225 -187 -100 -85 -293 -238 -297 -234 -2 1 -3 618 -3 1369 0 1297 -1 1367 -17 1367 -10 -1 -29 -7 -43 -14z M1200 3110 c-155 -15 -305 -58 -435 -123 -225 -112 -384 -275 -446 -457 -28 -82 -30 -194 -6 -267 25 -71 88 -139 162 -174 49 -24 73 -29 135 -29 62 0 85 5 135 29 75 36 116 79 150 155 35 80 41 138 21 214 -30 116 -119 209 -223 233 -29 7 -53 14 -53 16 0 3 13 23 29 47 60 86 146 146 260 180 68 20 222 21 313 2 254 -54 462 -285 542 -601 34 -138 47 -250 44 -380 l-3 -110 -95 -21 c-291 -66 -546 -127 -630 -149 -450 -122 -720 -290 -829 -517 -44 -91 -71 -205 -71 -296 0 -100 29 -241 65 -312 70 -140 152 -223 279 -285 98 -48 172 -66 302 -72 316 -16 613 107 885 365 l99 94 0 -191 0 -191 275 0 275 0 1 338 c0 185 0 618 -1 962 -1 576 -3 632 -21 720 -28 138 -55 216 -108 314 -111 207 -274 352 -496 437 -155 61 -371 87 -555 69z m630 -1846 l0 -486 -60 -56 c-91 -84 -157 -131 -235 -167 -265 -123 -559 -66 -692 134 -62 92 -78 148 -78 271 0 76 5 119 19 158 24 71 106 191 163 242 95 83 231 162 410 236 81 34 432 150 461 153 9 1 12 -102 12 -485z" fill="#FAF9F5"></path><circle cx="4840" cy="3620" r="310" fill="#D97757"></circle></g></svg>
-    <h1>Merkebok</h1>
+    <h1>Merke<em>bok</em></h1>
     <p class="loftet">«Du skal aldri lure på hva du skal trene på, eller hvorfor.»</p>
     <div class="stempel">
-      <span>Versjon <b>1.0</b></span>
-      <span><b>31. august 2026</b></span>
+      <span>Versjon <b>2.0</b></span>
+      <span><b>1. september 2026</b></span>
       <span>Låst av <b>Anders Kristiansen</b></span>
       <span>Gjelder <b>hele konsernet</b></span>
+      <span>Retning <b>instrument</b></span>
     </div>
   </section>
 
   <section class="ark">
     <span class="arknr">01</span>
     <p class="eyebrow">Innhold</p>
-    <h2>Ti sider</h2>
+    <h2>Tolv sider</h2>
     <p>Merkeboka dekker merket — logo, farge, tone, foto, marked og materiell. Den styrer aldri hvordan en skjerm inne i appen ser ut.</p>
     <nav class="toc">
       <a href="#merket"><span class="n">02</span><span>Merket</span></a>
@@ -224,8 +256,9 @@ td.mono { font-family:'IBM Plex Mono',monospace; font-size:12.5px; }
       <a href="#varianter"><span class="n">07</span><span>Variantene</span></a>
       <a href="#type"><span class="n">08</span><span>Typografien</span></a>
       <a href="#rom"><span class="n">09</span><span>Rom og form</span></a>
-      <a href="#bruk"><span class="n">10</span><span>Merket i bruk</span></a>
-      <a href="#forbudt"><span class="n">11</span><span>Forbudt</span></a>
+      <a href="#instrument"><span class="n">10</span><span>Instrumentet</span></a>
+      <a href="#bruk"><span class="n">11</span><span>Merket i bruk</span></a>
+      <a href="#forbudt"><span class="n">12</span><span>Forbudt</span></a>
     </nav>
   </section>
 
@@ -395,7 +428,7 @@ td.mono { font-family:'IBM Plex Mono',monospace; font-size:12.5px; }
 </div><span class="laasfil">ak-golf-laas-organisasjon<br>ak-golf-laas-organisasjon-pa-morkt</span></div><div class="laas"><div class="laasflate lys"><svg height="34" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 319.6 48" role="img" aria-labelledby="t"><title id="t">AK Golf — Skarpnord Golf Products</title><g transform="translate(0.000,0.000) scale(0.111369) translate(-20,-20)"><g transform="translate(0,470) scale(0.1,-0.1)"><path d="M3190 4486 c-23 -13 -109 -48 -585 -241 -99 -40 -198 -81 -220 -91 l-40 -18 45 -7 c127 -19 217 -102 271 -249 l24 -65 3 -1772 2 -1773 280 0 280 0 2 721 3 720 71 -83 c40 -46 132 -155 205 -243 73 -88 185 -221 249 -295 64 -74 152 -178 195 -230 44 -52 137 -162 209 -245 71 -82 167 -194 213 -247 l84 -98 355 0 c194 0 354 2 354 4 0 2 -73 89 -162 194 -90 104 -219 256 -288 337 -319 376 -552 649 -790 925 -59 69 -130 153 -158 187 -28 34 -56 64 -62 68 -5 3 -10 10 -10 14 0 7 90 83 221 186 42 33 163 130 270 215 107 86 223 178 259 206 378 292 550 427 550 430 0 2 -126 4 -279 4 l-280 0 -25 -82 c-25 -83 -102 -228 -159 -303 -108 -139 -178 -205 -502 -470 -87 -71 -189 -156 -225 -187 -100 -85 -293 -238 -297 -234 -2 1 -3 618 -3 1369 0 1297 -1 1367 -17 1367 -10 -1 -29 -7 -43 -14z M1200 3110 c-155 -15 -305 -58 -435 -123 -225 -112 -384 -275 -446 -457 -28 -82 -30 -194 -6 -267 25 -71 88 -139 162 -174 49 -24 73 -29 135 -29 62 0 85 5 135 29 75 36 116 79 150 155 35 80 41 138 21 214 -30 116 -119 209 -223 233 -29 7 -53 14 -53 16 0 3 13 23 29 47 60 86 146 146 260 180 68 20 222 21 313 2 254 -54 462 -285 542 -601 34 -138 47 -250 44 -380 l-3 -110 -95 -21 c-291 -66 -546 -127 -630 -149 -450 -122 -720 -290 -829 -517 -44 -91 -71 -205 -71 -296 0 -100 29 -241 65 -312 70 -140 152 -223 279 -285 98 -48 172 -66 302 -72 316 -16 613 107 885 365 l99 94 0 -191 0 -191 275 0 275 0 1 338 c0 185 0 618 -1 962 -1 576 -3 632 -21 720 -28 138 -55 216 -108 314 -111 207 -274 352 -496 437 -155 61 -371 87 -555 69z m630 -1846 l0 -486 -60 -56 c-91 -84 -157 -131 -235 -167 -265 -123 -559 -66 -692 134 -62 92 -78 148 -78 271 0 76 5 119 19 158 24 71 106 191 163 242 95 83 231 162 410 236 81 34 432 150 461 153 9 1 12 -102 12 -485z" fill="#141413"/><circle cx="4840" cy="3620" r="310" fill="#D97757"/></g></g><rect x="71.57" y="3.84" width="1" height="40.32" fill="#D1CFC5"/><g transform="translate(87.57,30.72)" fill="#141413"><path transform="translate(0.000,0) scale(0.019200,-0.019200)" d="M57 186H154Q159 137 194.5 103.5Q230 70 298 70Q363 70 400.5 102.5Q438 135 438 186Q438 226 416.0 251.0Q394 276 361.0 289.0Q328 302 272 317Q203 335 161.5 353.0Q120 371 90.5 409.5Q61 448 61 513Q61 570 90.0 614.0Q119 658 171.5 682.0Q224 706 292 706Q390 706 452.5 657.0Q515 608 523 527H423Q418 567 381.0 597.5Q344 628 283 628Q226 628 190.0 598.5Q154 569 154 516Q154 478 175.5 454.0Q197 430 228.5 417.5Q260 405 317 389Q386 370 428.0 351.5Q470 333 500.0 294.5Q530 256 530 190Q530 139 503.0 94.0Q476 49 423.0 21.0Q370 -7 298 -7Q229 -7 174.5 17.5Q120 42 89.0 85.5Q58 129 57 186Z"/><path transform="translate(11.270,0) scale(0.019200,-0.019200)" d="M383 0 168 242V0H77V740H168V305L379 548H506L248 275L507 0Z"/><path transform="translate(21.158,0) scale(0.019200,-0.019200)" d="M303 557Q375 557 428.0 526.0Q481 495 507 448V548H599V0H507V102Q480 54 426.5 22.5Q373 -9 302 -9Q229 -9 170.0 27.0Q111 63 77.0 128.0Q43 193 43 276Q43 360 77.0 423.5Q111 487 170.5 522.0Q230 557 303 557ZM321 478Q270 478 228.0 454.0Q186 430 161.0 384.0Q136 338 136 276Q136 213 161.0 166.5Q186 120 228.0 95.5Q270 71 321 71Q372 71 414.5 95.5Q457 120 482.0 166.5Q507 213 507 275Q507 337 482.0 383.0Q457 429 414.5 453.5Q372 478 321 478Z"/><path transform="translate(34.138,0) scale(0.019200,-0.019200)" d="M345 558V464H321Q168 464 168 298V0H77V548H168V459Q192 506 236.5 532.0Q281 558 345 558Z"/><path transform="translate(41.299,0) scale(0.019200,-0.019200)" d="M373 557Q446 557 505.5 522.0Q565 487 599.0 423.5Q633 360 633 276Q633 193 599.0 128.0Q565 63 505.5 27.0Q446 -9 373 -9Q303 -9 249.5 22.5Q196 54 168 101V-260H77V548H168V447Q195 494 248.5 525.5Q302 557 373 557ZM354 478Q304 478 261.5 453.5Q219 429 193.5 382.5Q168 336 168 275Q168 213 193.5 166.5Q219 120 261.5 95.5Q304 71 354 71Q405 71 447.5 95.5Q490 120 515.0 166.5Q540 213 540 276Q540 338 515.0 384.0Q490 430 447.5 454.0Q405 478 354 478Z"/><path transform="translate(54.278,0) scale(0.019200,-0.019200)" d="M568 323V0H478V310Q478 392 437.0 435.5Q396 479 325 479Q253 479 210.5 434.0Q168 389 168 303V0H77V548H168V470Q195 512 241.5 535.0Q288 558 344 558Q444 558 506.0 497.5Q568 437 568 323Z"/><path transform="translate(66.566,0) scale(0.019200,-0.019200)" d="M43 275Q43 359 79.5 423.5Q116 488 179.0 522.5Q242 557 320 557Q398 557 461.0 522.5Q524 488 560.5 424.0Q597 360 597 275Q597 190 559.5 125.5Q522 61 458.0 26.0Q394 -9 316 -9Q239 -9 176.5 26.0Q114 61 78.5 125.5Q43 190 43 275ZM504 275Q504 341 478.0 387.0Q452 433 410.0 455.5Q368 478 319 478Q269 478 227.5 455.5Q186 433 161.0 387.0Q136 341 136 275Q136 208 160.5 162.0Q185 116 226.0 93.5Q267 71 316 71Q365 71 408.0 94.0Q451 117 477.5 163.0Q504 209 504 275Z"/><path transform="translate(78.854,0) scale(0.019200,-0.019200)" d="M345 558V464H321Q168 464 168 298V0H77V548H168V459Q192 506 236.5 532.0Q281 558 345 558Z"/><path transform="translate(86.016,0) scale(0.019200,-0.019200)" d="M304 557Q368 557 423.0 527.5Q478 498 507 450V740H599V0H507V103Q480 54 427.0 22.5Q374 -9 303 -9Q230 -9 170.5 27.0Q111 63 77.0 128.0Q43 193 43 276Q43 360 77.0 423.5Q111 487 170.5 522.0Q230 557 304 557ZM321 478Q270 478 228.0 454.0Q186 430 161.0 384.0Q136 338 136 276Q136 213 161.0 166.5Q186 120 228.0 95.5Q270 71 321 71Q372 71 414.5 95.5Q457 120 482.0 166.5Q507 213 507 275Q507 337 482.0 383.0Q457 429 414.5 453.5Q372 478 321 478Z"/><path transform="translate(104.122,0) scale(0.019200,-0.019200)" d="M605 495Q576 556 521.0 589.5Q466 623 393 623Q320 623 261.5 589.5Q203 556 169.5 493.5Q136 431 136 349Q136 267 169.5 205.0Q203 143 261.5 109.5Q320 76 393 76Q495 76 561.0 137.0Q627 198 638 302H360V376H735V306Q727 220 681.0 148.5Q635 77 560.0 35.5Q485 -6 393 -6Q296 -6 216.0 39.5Q136 85 89.5 166.0Q43 247 43 349Q43 451 89.5 532.5Q136 614 216.0 659.5Q296 705 393 705Q504 705 589.5 650.0Q675 595 714 495Z"/><path transform="translate(119.059,0) scale(0.019200,-0.019200)" d="M43 275Q43 359 79.5 423.5Q116 488 179.0 522.5Q242 557 320 557Q398 557 461.0 522.5Q524 488 560.5 424.0Q597 360 597 275Q597 190 559.5 125.5Q522 61 458.0 26.0Q394 -9 316 -9Q239 -9 176.5 26.0Q114 61 78.5 125.5Q43 190 43 275ZM504 275Q504 341 478.0 387.0Q452 433 410.0 455.5Q368 478 319 478Q269 478 227.5 455.5Q186 433 161.0 387.0Q136 341 136 275Q136 208 160.5 162.0Q185 116 226.0 93.5Q267 71 316 71Q365 71 408.0 94.0Q451 117 477.5 163.0Q504 209 504 275Z"/><path transform="translate(131.347,0) scale(0.019200,-0.019200)" d="M168 740V0H77V740Z"/><path transform="translate(136.070,0) scale(0.019200,-0.019200)" d="M300 473H185V0H94V473H23V548H94V587Q94 679 141.5 721.5Q189 764 294 764V688Q234 688 209.5 664.5Q185 641 185 587V548H300Z"/><path transform="translate(147.514,0) scale(0.019200,-0.019200)" d="M302 291H168V0H77V697H302Q420 697 481.5 640.0Q543 583 543 493Q543 406 483.5 348.5Q424 291 302 291ZM450 493Q450 622 302 622H168V366H302Q378 366 414.0 399.0Q450 432 450 493Z"/><path transform="translate(158.630,0) scale(0.019200,-0.019200)" d="M345 558V464H321Q168 464 168 298V0H77V548H168V459Q192 506 236.5 532.0Q281 558 345 558Z"/><path transform="translate(165.792,0) scale(0.019200,-0.019200)" d="M43 275Q43 359 79.5 423.5Q116 488 179.0 522.5Q242 557 320 557Q398 557 461.0 522.5Q524 488 560.5 424.0Q597 360 597 275Q597 190 559.5 125.5Q522 61 458.0 26.0Q394 -9 316 -9Q239 -9 176.5 26.0Q114 61 78.5 125.5Q43 190 43 275ZM504 275Q504 341 478.0 387.0Q452 433 410.0 455.5Q368 478 319 478Q269 478 227.5 455.5Q186 433 161.0 387.0Q136 341 136 275Q136 208 160.5 162.0Q185 116 226.0 93.5Q267 71 316 71Q365 71 408.0 94.0Q451 117 477.5 163.0Q504 209 504 275Z"/><path transform="translate(178.080,0) scale(0.019200,-0.019200)" d="M304 557Q368 557 423.0 527.5Q478 498 507 450V740H599V0H507V103Q480 54 427.0 22.5Q374 -9 303 -9Q230 -9 170.5 27.0Q111 63 77.0 128.0Q43 193 43 276Q43 360 77.0 423.5Q111 487 170.5 522.0Q230 557 304 557ZM321 478Q270 478 228.0 454.0Q186 430 161.0 384.0Q136 338 136 276Q136 213 161.0 166.5Q186 120 228.0 95.5Q270 71 321 71Q372 71 414.5 95.5Q457 120 482.0 166.5Q507 213 507 275Q507 337 482.0 383.0Q457 429 414.5 453.5Q372 478 321 478Z"/><path transform="translate(191.059,0) scale(0.019200,-0.019200)" d="M563 548V0H472V81Q446 39 399.5 15.5Q353 -8 297 -8Q233 -8 182.0 18.5Q131 45 101.5 98.0Q72 151 72 227V548H162V239Q162 158 203.0 114.5Q244 71 315 71Q388 71 430.0 116.0Q472 161 472 247V548Z"/><path transform="translate(203.347,0) scale(0.019200,-0.019200)" d="M310 557Q411 557 476.5 508.0Q542 459 563 372H465Q451 422 410.5 451.0Q370 480 310 480Q232 480 184.0 426.5Q136 373 136 275Q136 176 184.0 122.0Q232 68 310 68Q370 68 410.0 96.0Q450 124 465 176H563Q541 92 475.0 41.5Q409 -9 310 -9Q232 -9 171.5 26.0Q111 61 77.0 125.0Q43 189 43 275Q43 360 77.0 423.5Q111 487 171.5 522.0Q232 557 310 557Z"/><path transform="translate(215.002,0) scale(0.019200,-0.019200)" d="M188 473V150Q188 110 205.0 93.5Q222 77 264 77H331V0H249Q173 0 135.0 35.0Q97 70 97 150V473H26V548H97V686H188V548H331V473Z"/><path transform="translate(221.990,0) scale(0.019200,-0.019200)" d="M47 161H141Q145 120 179.5 94.0Q214 68 270 68Q322 68 352.0 91.0Q382 114 382 149Q382 185 350.0 202.5Q318 220 251 237Q190 253 151.5 269.5Q113 286 85.5 318.5Q58 351 58 404Q58 446 83.0 481.0Q108 516 154.0 536.5Q200 557 259 557Q350 557 406.0 511.0Q462 465 466 385H375Q372 428 340.5 454.0Q309 480 256 480Q207 480 178.0 459.0Q149 438 149 404Q149 377 166.5 359.5Q184 342 210.5 331.5Q237 321 284 308Q343 292 380.0 276.5Q417 261 443.5 230.0Q470 199 471 149Q471 104 446.0 68.0Q421 32 375.5 11.5Q330 -9 271 -9Q208 -9 158.0 12.5Q108 34 79.0 72.5Q50 111 47 161Z"/></g></svg>
 </div><div class="laasflate mork"><svg height="34" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 319.6 48" role="img" aria-labelledby="t"><title id="t">AK Golf — Skarpnord Golf Products</title><g transform="translate(0.000,0.000) scale(0.111369) translate(-20,-20)"><g transform="translate(0,470) scale(0.1,-0.1)"><path d="M3190 4486 c-23 -13 -109 -48 -585 -241 -99 -40 -198 -81 -220 -91 l-40 -18 45 -7 c127 -19 217 -102 271 -249 l24 -65 3 -1772 2 -1773 280 0 280 0 2 721 3 720 71 -83 c40 -46 132 -155 205 -243 73 -88 185 -221 249 -295 64 -74 152 -178 195 -230 44 -52 137 -162 209 -245 71 -82 167 -194 213 -247 l84 -98 355 0 c194 0 354 2 354 4 0 2 -73 89 -162 194 -90 104 -219 256 -288 337 -319 376 -552 649 -790 925 -59 69 -130 153 -158 187 -28 34 -56 64 -62 68 -5 3 -10 10 -10 14 0 7 90 83 221 186 42 33 163 130 270 215 107 86 223 178 259 206 378 292 550 427 550 430 0 2 -126 4 -279 4 l-280 0 -25 -82 c-25 -83 -102 -228 -159 -303 -108 -139 -178 -205 -502 -470 -87 -71 -189 -156 -225 -187 -100 -85 -293 -238 -297 -234 -2 1 -3 618 -3 1369 0 1297 -1 1367 -17 1367 -10 -1 -29 -7 -43 -14z M1200 3110 c-155 -15 -305 -58 -435 -123 -225 -112 -384 -275 -446 -457 -28 -82 -30 -194 -6 -267 25 -71 88 -139 162 -174 49 -24 73 -29 135 -29 62 0 85 5 135 29 75 36 116 79 150 155 35 80 41 138 21 214 -30 116 -119 209 -223 233 -29 7 -53 14 -53 16 0 3 13 23 29 47 60 86 146 146 260 180 68 20 222 21 313 2 254 -54 462 -285 542 -601 34 -138 47 -250 44 -380 l-3 -110 -95 -21 c-291 -66 -546 -127 -630 -149 -450 -122 -720 -290 -829 -517 -44 -91 -71 -205 -71 -296 0 -100 29 -241 65 -312 70 -140 152 -223 279 -285 98 -48 172 -66 302 -72 316 -16 613 107 885 365 l99 94 0 -191 0 -191 275 0 275 0 1 338 c0 185 0 618 -1 962 -1 576 -3 632 -21 720 -28 138 -55 216 -108 314 -111 207 -274 352 -496 437 -155 61 -371 87 -555 69z m630 -1846 l0 -486 -60 -56 c-91 -84 -157 -131 -235 -167 -265 -123 -559 -66 -692 134 -62 92 -78 148 -78 271 0 76 5 119 19 158 24 71 106 191 163 242 95 83 231 162 410 236 81 34 432 150 461 153 9 1 12 -102 12 -485z" fill="#FAF9F5"/><circle cx="4840" cy="3620" r="310" fill="#E08B69"/></g></g><rect x="71.57" y="3.84" width="1" height="40.32" fill="#3A3936"/><g transform="translate(87.57,30.72)" fill="#FAF9F5"><path transform="translate(0.000,0) scale(0.019200,-0.019200)" d="M57 186H154Q159 137 194.5 103.5Q230 70 298 70Q363 70 400.5 102.5Q438 135 438 186Q438 226 416.0 251.0Q394 276 361.0 289.0Q328 302 272 317Q203 335 161.5 353.0Q120 371 90.5 409.5Q61 448 61 513Q61 570 90.0 614.0Q119 658 171.5 682.0Q224 706 292 706Q390 706 452.5 657.0Q515 608 523 527H423Q418 567 381.0 597.5Q344 628 283 628Q226 628 190.0 598.5Q154 569 154 516Q154 478 175.5 454.0Q197 430 228.5 417.5Q260 405 317 389Q386 370 428.0 351.5Q470 333 500.0 294.5Q530 256 530 190Q530 139 503.0 94.0Q476 49 423.0 21.0Q370 -7 298 -7Q229 -7 174.5 17.5Q120 42 89.0 85.5Q58 129 57 186Z"/><path transform="translate(11.270,0) scale(0.019200,-0.019200)" d="M383 0 168 242V0H77V740H168V305L379 548H506L248 275L507 0Z"/><path transform="translate(21.158,0) scale(0.019200,-0.019200)" d="M303 557Q375 557 428.0 526.0Q481 495 507 448V548H599V0H507V102Q480 54 426.5 22.5Q373 -9 302 -9Q229 -9 170.0 27.0Q111 63 77.0 128.0Q43 193 43 276Q43 360 77.0 423.5Q111 487 170.5 522.0Q230 557 303 557ZM321 478Q270 478 228.0 454.0Q186 430 161.0 384.0Q136 338 136 276Q136 213 161.0 166.5Q186 120 228.0 95.5Q270 71 321 71Q372 71 414.5 95.5Q457 120 482.0 166.5Q507 213 507 275Q507 337 482.0 383.0Q457 429 414.5 453.5Q372 478 321 478Z"/><path transform="translate(34.138,0) scale(0.019200,-0.019200)" d="M345 558V464H321Q168 464 168 298V0H77V548H168V459Q192 506 236.5 532.0Q281 558 345 558Z"/><path transform="translate(41.299,0) scale(0.019200,-0.019200)" d="M373 557Q446 557 505.5 522.0Q565 487 599.0 423.5Q633 360 633 276Q633 193 599.0 128.0Q565 63 505.5 27.0Q446 -9 373 -9Q303 -9 249.5 22.5Q196 54 168 101V-260H77V548H168V447Q195 494 248.5 525.5Q302 557 373 557ZM354 478Q304 478 261.5 453.5Q219 429 193.5 382.5Q168 336 168 275Q168 213 193.5 166.5Q219 120 261.5 95.5Q304 71 354 71Q405 71 447.5 95.5Q490 120 515.0 166.5Q540 213 540 276Q540 338 515.0 384.0Q490 430 447.5 454.0Q405 478 354 478Z"/><path transform="translate(54.278,0) scale(0.019200,-0.019200)" d="M568 323V0H478V310Q478 392 437.0 435.5Q396 479 325 479Q253 479 210.5 434.0Q168 389 168 303V0H77V548H168V470Q195 512 241.5 535.0Q288 558 344 558Q444 558 506.0 497.5Q568 437 568 323Z"/><path transform="translate(66.566,0) scale(0.019200,-0.019200)" d="M43 275Q43 359 79.5 423.5Q116 488 179.0 522.5Q242 557 320 557Q398 557 461.0 522.5Q524 488 560.5 424.0Q597 360 597 275Q597 190 559.5 125.5Q522 61 458.0 26.0Q394 -9 316 -9Q239 -9 176.5 26.0Q114 61 78.5 125.5Q43 190 43 275ZM504 275Q504 341 478.0 387.0Q452 433 410.0 455.5Q368 478 319 478Q269 478 227.5 455.5Q186 433 161.0 387.0Q136 341 136 275Q136 208 160.5 162.0Q185 116 226.0 93.5Q267 71 316 71Q365 71 408.0 94.0Q451 117 477.5 163.0Q504 209 504 275Z"/><path transform="translate(78.854,0) scale(0.019200,-0.019200)" d="M345 558V464H321Q168 464 168 298V0H77V548H168V459Q192 506 236.5 532.0Q281 558 345 558Z"/><path transform="translate(86.016,0) scale(0.019200,-0.019200)" d="M304 557Q368 557 423.0 527.5Q478 498 507 450V740H599V0H507V103Q480 54 427.0 22.5Q374 -9 303 -9Q230 -9 170.5 27.0Q111 63 77.0 128.0Q43 193 43 276Q43 360 77.0 423.5Q111 487 170.5 522.0Q230 557 304 557ZM321 478Q270 478 228.0 454.0Q186 430 161.0 384.0Q136 338 136 276Q136 213 161.0 166.5Q186 120 228.0 95.5Q270 71 321 71Q372 71 414.5 95.5Q457 120 482.0 166.5Q507 213 507 275Q507 337 482.0 383.0Q457 429 414.5 453.5Q372 478 321 478Z"/><path transform="translate(104.122,0) scale(0.019200,-0.019200)" d="M605 495Q576 556 521.0 589.5Q466 623 393 623Q320 623 261.5 589.5Q203 556 169.5 493.5Q136 431 136 349Q136 267 169.5 205.0Q203 143 261.5 109.5Q320 76 393 76Q495 76 561.0 137.0Q627 198 638 302H360V376H735V306Q727 220 681.0 148.5Q635 77 560.0 35.5Q485 -6 393 -6Q296 -6 216.0 39.5Q136 85 89.5 166.0Q43 247 43 349Q43 451 89.5 532.5Q136 614 216.0 659.5Q296 705 393 705Q504 705 589.5 650.0Q675 595 714 495Z"/><path transform="translate(119.059,0) scale(0.019200,-0.019200)" d="M43 275Q43 359 79.5 423.5Q116 488 179.0 522.5Q242 557 320 557Q398 557 461.0 522.5Q524 488 560.5 424.0Q597 360 597 275Q597 190 559.5 125.5Q522 61 458.0 26.0Q394 -9 316 -9Q239 -9 176.5 26.0Q114 61 78.5 125.5Q43 190 43 275ZM504 275Q504 341 478.0 387.0Q452 433 410.0 455.5Q368 478 319 478Q269 478 227.5 455.5Q186 433 161.0 387.0Q136 341 136 275Q136 208 160.5 162.0Q185 116 226.0 93.5Q267 71 316 71Q365 71 408.0 94.0Q451 117 477.5 163.0Q504 209 504 275Z"/><path transform="translate(131.347,0) scale(0.019200,-0.019200)" d="M168 740V0H77V740Z"/><path transform="translate(136.070,0) scale(0.019200,-0.019200)" d="M300 473H185V0H94V473H23V548H94V587Q94 679 141.5 721.5Q189 764 294 764V688Q234 688 209.5 664.5Q185 641 185 587V548H300Z"/><path transform="translate(147.514,0) scale(0.019200,-0.019200)" d="M302 291H168V0H77V697H302Q420 697 481.5 640.0Q543 583 543 493Q543 406 483.5 348.5Q424 291 302 291ZM450 493Q450 622 302 622H168V366H302Q378 366 414.0 399.0Q450 432 450 493Z"/><path transform="translate(158.630,0) scale(0.019200,-0.019200)" d="M345 558V464H321Q168 464 168 298V0H77V548H168V459Q192 506 236.5 532.0Q281 558 345 558Z"/><path transform="translate(165.792,0) scale(0.019200,-0.019200)" d="M43 275Q43 359 79.5 423.5Q116 488 179.0 522.5Q242 557 320 557Q398 557 461.0 522.5Q524 488 560.5 424.0Q597 360 597 275Q597 190 559.5 125.5Q522 61 458.0 26.0Q394 -9 316 -9Q239 -9 176.5 26.0Q114 61 78.5 125.5Q43 190 43 275ZM504 275Q504 341 478.0 387.0Q452 433 410.0 455.5Q368 478 319 478Q269 478 227.5 455.5Q186 433 161.0 387.0Q136 341 136 275Q136 208 160.5 162.0Q185 116 226.0 93.5Q267 71 316 71Q365 71 408.0 94.0Q451 117 477.5 163.0Q504 209 504 275Z"/><path transform="translate(178.080,0) scale(0.019200,-0.019200)" d="M304 557Q368 557 423.0 527.5Q478 498 507 450V740H599V0H507V103Q480 54 427.0 22.5Q374 -9 303 -9Q230 -9 170.5 27.0Q111 63 77.0 128.0Q43 193 43 276Q43 360 77.0 423.5Q111 487 170.5 522.0Q230 557 304 557ZM321 478Q270 478 228.0 454.0Q186 430 161.0 384.0Q136 338 136 276Q136 213 161.0 166.5Q186 120 228.0 95.5Q270 71 321 71Q372 71 414.5 95.5Q457 120 482.0 166.5Q507 213 507 275Q507 337 482.0 383.0Q457 429 414.5 453.5Q372 478 321 478Z"/><path transform="translate(191.059,0) scale(0.019200,-0.019200)" d="M563 548V0H472V81Q446 39 399.5 15.5Q353 -8 297 -8Q233 -8 182.0 18.5Q131 45 101.5 98.0Q72 151 72 227V548H162V239Q162 158 203.0 114.5Q244 71 315 71Q388 71 430.0 116.0Q472 161 472 247V548Z"/><path transform="translate(203.347,0) scale(0.019200,-0.019200)" d="M310 557Q411 557 476.5 508.0Q542 459 563 372H465Q451 422 410.5 451.0Q370 480 310 480Q232 480 184.0 426.5Q136 373 136 275Q136 176 184.0 122.0Q232 68 310 68Q370 68 410.0 96.0Q450 124 465 176H563Q541 92 475.0 41.5Q409 -9 310 -9Q232 -9 171.5 26.0Q111 61 77.0 125.0Q43 189 43 275Q43 360 77.0 423.5Q111 487 171.5 522.0Q232 557 310 557Z"/><path transform="translate(215.002,0) scale(0.019200,-0.019200)" d="M188 473V150Q188 110 205.0 93.5Q222 77 264 77H331V0H249Q173 0 135.0 35.0Q97 70 97 150V473H26V548H97V686H188V548H331V473Z"/><path transform="translate(221.990,0) scale(0.019200,-0.019200)" d="M47 161H141Q145 120 179.5 94.0Q214 68 270 68Q322 68 352.0 91.0Q382 114 382 149Q382 185 350.0 202.5Q318 220 251 237Q190 253 151.5 269.5Q113 286 85.5 318.5Q58 351 58 404Q58 446 83.0 481.0Q108 516 154.0 536.5Q200 557 259 557Q350 557 406.0 511.0Q462 465 466 385H375Q372 428 340.5 454.0Q309 480 256 480Q207 480 178.0 459.0Q149 438 149 404Q149 377 166.5 359.5Q184 342 210.5 331.5Q237 321 284 308Q343 292 380.0 276.5Q417 261 443.5 230.0Q470 199 471 149Q471 104 446.0 68.0Q421 32 375.5 11.5Q330 -9 271 -9Q208 -9 158.0 12.5Q108 34 79.0 72.5Q50 111 47 161Z"/></g></svg>
 </div><span class="laasfil">ak-golf-laas-products<br>ak-golf-laas-products-pa-morkt</span></div></div>
-    <div class="note"><b>Én identitetsfarge dekker sjelden mer enn 5 % av flaten.</b> Resten er krem, blekk og hårlinjer. Tommelfingerregel: fargen skal kunne fjernes uten at siden slutter å virke. Klarer den ikke det, bærer den for mye.</div>
+    <div class="note"><b>Endret 01.09.2026 med instrument-retningen:</b> 5 %-regelen er opphevet. Clay bæres nå av HELE flater — et panel, en kolonne, en seksjon — og dekker minst 18 % av visningen når den brukes. Det som består: én identitetsfarge om gangen, aldri to i samme visning, og aldri farge som eneste bærer av informasjon.</div>
   </section>
 
   <section class="ark" id="type">
@@ -403,12 +436,12 @@ td.mono { font-family:'IBM Plex Mono',monospace; font-size:12.5px; }
     <p class="eyebrow">Typografien</p>
     <h2>Tre fonter, og én regel som betyr noe</h2>
     <div class="fontkort">
-      <div class="fk"><div class="navn" style="font-family:'Poppins';font-weight:600">Poppins</div><p>Titler, brødtekst, knapper. Alt som skal leses raskt.</p></div>
-      <div class="fk"><div class="navn lora">Lora</div><p>Ingress og sitat. Det som skal leses langsomt.</p></div>
+      <div class="fk"><div class="navn disp" style="font-weight:700">Archivo Narrow</div><p>Overskrifter. Alt som skal dominere en flate.</p></div>
+      <div class="fk"><div class="navn" style="font-family:'Poppins';font-weight:600">Poppins</div><p>Brødtekst, knapper, skjema. Alt som leses raskt.</p></div>
       <div class="fk"><div class="navn mono" style="font-size:22px">IBM Plex Mono</div><p><b>Alt som er målt.</b> Tall, etiketter, dato, kilde.</p></div>
     </div>
     <div class="note" style="margin-top:0;margin-bottom:30px"><b>Mono er merkets viktigste regel.</b> Et tall som kommer fra en måling settes i mono. Et tall som ikke gjør det, settes ikke i mono. Det er ikke en stilpreferanse — det er løftet gjort synlig. Står det i mono, er det etterprøvbart, med dato og kilde. Står det ikke i mono, er det en påstand.</div>
-    <div class="typerad"><div class="typeprove" style="font-family:'Poppins',serif;font-size:58px;font-weight:600;letter-spacing:-0.03em;line-height:1.15;">Målt sannhet</div><div class="typemeta"><span class="tok">--ak-t-58</span><span>58px · Poppins 600</span><span class="rolle">Hero, Mac</span></div></div><div class="typerad"><div class="typeprove" style="font-family:'Poppins',serif;font-size:42px;font-weight:600;letter-spacing:-0.03em;line-height:1.15;">Målt sannhet</div><div class="typemeta"><span class="tok">--ak-t-42</span><span>42px · Poppins 600</span><span class="rolle">Hero, mobil</span></div></div><div class="typerad"><div class="typeprove" style="font-family:'Poppins',serif;font-size:33px;font-weight:600;letter-spacing:-0.02em;line-height:1.15;">Målt sannhet</div><div class="typemeta"><span class="tok">--ak-t-33</span><span>33px · Poppins 600</span><span class="rolle">Sidetittel</span></div></div><div class="typerad"><div class="typeprove" style="font-family:'Poppins',serif;font-size:26px;font-weight:600;letter-spacing:-0.02em;line-height:1.15;">Målt sannhet</div><div class="typemeta"><span class="tok">--ak-t-26</span><span>26px · Poppins 600</span><span class="rolle">Seksjonstittel</span></div></div><div class="typerad"><div class="typeprove" style="font-family:'Lora',serif;font-size:21px;font-weight:400;letter-spacing:0;line-height:1.15;">Målt sannhet</div><div class="typemeta"><span class="tok">--ak-t-21</span><span>21px · Lora 400</span><span class="rolle">Ingress</span></div></div><div class="typerad"><div class="typeprove" style="font-family:'Poppins',serif;font-size:17px;font-weight:400;letter-spacing:0;line-height:1.15;">Målt sannhet</div><div class="typemeta"><span class="tok">--ak-t-17</span><span>17px · Poppins 400</span><span class="rolle">Brødtekst</span></div></div><div class="typerad"><div class="typeprove" style="font-family:'Poppins',serif;font-size:15px;font-weight:400;letter-spacing:0;line-height:1.15;">Målt sannhet</div><div class="typemeta"><span class="tok">--ak-t-15</span><span>15px · Poppins 400</span><span class="rolle">Brødtekst, tett</span></div></div><div class="typerad"><div class="typeprove" style="font-family:'Poppins',serif;font-size:13px;font-weight:400;letter-spacing:0;line-height:1.15;">Målt sannhet</div><div class="typemeta"><span class="tok">--ak-t-13</span><span>13px · Poppins 400</span><span class="rolle">Bildetekst</span></div></div><div class="typerad"><div class="typeprove" style="font-family:'IBM Plex Mono',serif;font-size:11px;font-weight:500;letter-spacing:0.2em;line-height:1.15;">MÅLT SANNHET</div><div class="typemeta"><span class="tok">--ak-t-11</span><span>11px · IBM Plex Mono 500</span><span class="rolle">Etikett, caps</span></div></div>
+    <div class="typerad"><div class="typeprove" style="font-family:'Archivo Narrow',serif;font-size:112px;font-weight:700;letter-spacing:-0.035em;line-height:0.94;">MÅLT SANNHET</div><div class="typemeta"><span class="tok">--ak-t-112</span><span>112px · Archivo Narrow 700</span><span class="rolle">Hero, Mac</span></div></div><div class="typerad"><div class="typeprove" style="font-family:'Archivo Narrow',serif;font-size:72px;font-weight:700;letter-spacing:-0.035em;line-height:0.94;">MÅLT SANNHET</div><div class="typemeta"><span class="tok">--ak-t-72</span><span>72px · Archivo Narrow 700</span><span class="rolle">Hero, mobil</span></div></div><div class="typerad"><div class="typeprove" style="font-family:'Archivo Narrow',serif;font-size:48px;font-weight:700;letter-spacing:-0.035em;line-height:0.94;">MÅLT SANNHET</div><div class="typemeta"><span class="tok">--ak-t-48</span><span>48px · Archivo Narrow 700</span><span class="rolle">Sidetittel</span></div></div><div class="typerad"><div class="typeprove" style="font-family:'Archivo Narrow',serif;font-size:34px;font-weight:600;letter-spacing:-0.02em;line-height:1.15;">MÅLT SANNHET</div><div class="typemeta"><span class="tok">--ak-t-34</span><span>34px · Archivo Narrow 600</span><span class="rolle">Seksjonstittel</span></div></div><div class="typerad"><div class="typeprove" style="font-family:'Archivo Narrow',serif;font-size:26px;font-weight:600;letter-spacing:-0.02em;line-height:1.15;">MÅLT SANNHET</div><div class="typemeta"><span class="tok">--ak-t-26</span><span>26px · Archivo Narrow 600</span><span class="rolle">Seksjonstittel, mobil</span></div></div><div class="typerad"><div class="typeprove" style="font-family:'Poppins',serif;font-size:21px;font-weight:400;letter-spacing:0;line-height:1.15;">Målt sannhet</div><div class="typemeta"><span class="tok">--ak-t-21</span><span>21px · Poppins 400</span><span class="rolle">Ingress</span></div></div><div class="typerad"><div class="typeprove" style="font-family:'Poppins',serif;font-size:17px;font-weight:400;letter-spacing:0;line-height:1.15;">Målt sannhet</div><div class="typemeta"><span class="tok">--ak-t-17</span><span>17px · Poppins 400</span><span class="rolle">Brødtekst</span></div></div><div class="typerad"><div class="typeprove" style="font-family:'Poppins',serif;font-size:15px;font-weight:400;letter-spacing:0;line-height:1.15;">Målt sannhet</div><div class="typemeta"><span class="tok">--ak-t-15</span><span>15px · Poppins 400</span><span class="rolle">Brødtekst, tett</span></div></div><div class="typerad"><div class="typeprove" style="font-family:'Poppins',serif;font-size:13px;font-weight:400;letter-spacing:0;line-height:1.15;">Målt sannhet</div><div class="typemeta"><span class="tok">--ak-t-13</span><span>13px · Poppins 400</span><span class="rolle">Bildetekst</span></div></div><div class="typerad"><div class="typeprove" style="font-family:'IBM Plex Mono',serif;font-size:11px;font-weight:500;letter-spacing:0.2em;line-height:1.15;">MÅLT SANNHET</div><div class="typemeta"><span class="tok">--ak-t-11</span><span>11px · IBM Plex Mono 500</span><span class="rolle">Etikett, caps</span></div></div>
     <div class="note"><b>Vekt 400, 500 og 600. Aldri 700 eller tyngre.</b> Poppins i 700 blir klumpete og begynner å ligne på et sportsmerke som roper. AK Golf roper ikke.</div>
   </section>
 
@@ -428,8 +461,41 @@ td.mono { font-family:'IBM Plex Mono',monospace; font-size:12.5px; }
     </div>
   </section>
 
-  <section class="ark" id="bruk">
+  <section class="ark" id="instrument">
     <span class="arknr">10</span>
+    <div class="rutenett" style="opacity:.85"></div>
+    <div style="position:relative;z-index:1">
+    <p class="eyebrow">Instrumentet</p>
+    <h2>Rutenettet er ikke pynt</h2>
+    <p>Merket trengte et grafisk element utover logoen. Det måtte ikke finnes opp: spredningsellipsen, pyramideaksene og avstanden fra pinnen er allerede det AK Golf gjør. Elementet er hentet fra arbeidet, ikke lagt oppå det. Denne siden ligger på rutenettet — se etter det bak teksten.</p>
+    <div class="instrumentdeler">
+      <div class="idel">
+        <div class="iprove"><div class="rutenett" style="position:absolute;inset:0"></div></div>
+        <h3>Rutenettet</h3>
+        <p>56 px ruter, én piksel. 56 er 7 × 8 — samme åtte-basis som all annen avstand, så innhold legger seg på nettet uten justering.</p>
+      </div>
+      <div class="idel">
+        <div class="iprove"><div class="maalestokk" style="position:absolute;left:16px;right:16px;bottom:22px"></div></div>
+        <h3>Målestokken</h3>
+        <p>Merker hver 12 px, et langt hvert femte. Den sier «dette er målt» uten å skrive det.</p>
+      </div>
+      <div class="idel">
+        <div class="iprove">
+          <span class="kryss" style="left:22px;top:20px"></span>
+          <span class="kryss" style="right:22px;top:20px"></span>
+          <span class="kryss" style="left:22px;bottom:20px"></span>
+          <span class="kryss" style="right:22px;bottom:20px"></span>
+        </div>
+        <h3>Krysset</h3>
+        <p>11 px, der to akser møtes. Ett kryss er en presisjon. Fire kryss er en ramme.</p>
+      </div>
+    </div>
+    <div class="note" style="border-left:3px solid var(--clay);border-radius:0 10px 10px 0"><b>Regelen som holder det ærlig:</b> instrumentlaget skal aldri gi inntrykk av å vise data som ikke finnes. Et rutenett i bakgrunnen er tekstur. Et rutenett <b>med tall på aksene</b> er en påstand — og da må tallene være målt, med dato og kilde. Bryter du den, er merket løgn i formen selv om teksten er sann. Ingen kurver uten data. Ingen spredninger uten målinger. Ingen akser uten enhet.</div>
+    </div>
+  </section>
+
+  <section class="ark" id="bruk">
+    <span class="arknr">11</span>
     <p class="eyebrow">Merket i bruk</p>
     <h2>Slik ser et tall ut når det er sant</h2>
     <p>Tre kort som viser reglene sammen: mono på det målte, identitetsfargen som signal og ikke bakgrunn, kilde og dato på alt som påstås om en spiller.</p>
@@ -463,7 +529,7 @@ td.mono { font-family:'IBM Plex Mono',monospace; font-size:12.5px; }
   </section>
 
   <section class="ark" id="forbudt">
-    <span class="arknr">11</span>
+    <span class="arknr">12</span>
     <p class="eyebrow">Forbudt</p>
     <h2>Alt på én side, så ingen trenger å lete</h2>
     <div class="forbudt"><div class="fkort"><h4>Merket</h4><ul><li>MORAD eller Mac O'Grady i publikumsvendt tekst</li><li>«En del av AK Golf» på Mulligan Indoor Golf</li><li>Bilder av mindreårige uten skriftlig foreldresamtykke</li><li>WANG, GFGK eller Team Norway framstilt som noe man kan kjøpe</li><li>Navngitte konkurrenter hengt ut</li></ul></div><div class="fkort"><h4>Formen</h4><ul><li>En fjerde font</li><li>Farge utenfor paletten</li><li>Gradient over merkefarger</li><li>Skriftvekt over 600</li><li>Caps på en hel setning</li><li>Avstand utenfor 4-skalaen</li><li>Pill-radius på et kort</li><li>Emoji — ikoner er Lucide</li></ul></div><div class="fkort"><h4>Språket</h4><ul><li>Utropstegn</li><li>«Ta golfen din til neste nivå»</li><li>«Vi brenner for golf»</li><li>«Unlock your potential»</li><li>Garantier om resultat</li><li>Tall om en spiller uten dato og kilde</li></ul></div><div class="fkort"><h4>Grensene</h4><ul><li>AK Golf-tokens inne i en produktskjerm — der gjelder Train-lock</li><li>AK Golf-merket på /team-norway/* — der gjelder Claw</li><li>Paper: ingen --p-*, ingen T, ingen Paper-CSS</li></ul></div></div>

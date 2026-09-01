@@ -51,3 +51,11 @@ Trenger noe et fjerde nivå, er det egentlig et eget lag — ikke en dypere skyg
 
 Alt som kan trykkes er minst **44 × 44 px** på mobil, også når det ser mindre ut.
 Merket leses stående, ofte på et treningsfelt, ofte med hansker.
+
+## Rutenettet
+
+Romskalaen og instrumentets rutenett henger sammen: ruten er **56 px**, som er
+7 × 8 — samme 8-basis som all annen avstand. Det er derfor innhold kan legge
+seg på rutenettet uten at noe må justeres med en halv piksel.
+
+Se `11-instrumentet.md`.

@@ -45,7 +45,12 @@ coaching ved [ak●] AK Golf
 Tommelfingerregel: fargen skal kunne fjernes uten at siden slutter å virke.
 Klarer den ikke det, bærer fargen for mye.
 
-## Mengden
+## Mengden — endret 01.09.2026
 
-Én identitetsfarge dekker sjelden mer enn **5 % av flaten**. Resten er krem,
-blekk og hårlinjer. Merket er rolig; fargen er signalet, ikke bakgrunnen.
+5 %-regelen er **opphevet** med instrument-retningen. Clay og de andre
+identitetsfargene bæres nå av hele flater: et panel, en kolonne, en seksjon.
+En aksentflate dekker minst 18 % av visningen når den brukes. Se
+`11-instrumentet.md`.
+
+Det som består: **én identitetsfarge om gangen**, aldri to i samme visning, og
+aldri farge som eneste bærer av informasjon.

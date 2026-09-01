@@ -24,14 +24,16 @@ skjermer vinner Claw. **Ingen skjerm har to fasiter.**
 | `guidelines/08-sprak.md` | Tone, skrivemåte, det vi aldri sier |
 | `guidelines/09-varianter.md` | Hvordan en virksomhet settes opp |
 | `guidelines/10-forbudt.md` | Alt som er forbudt, på én side |
+| `guidelines/11-instrumentet.md` | Rutenettet, målestokken, krysset — og regelen som holder dem ærlige |
 
 ## Kode
 
 ```
 tokens/farge.css      merkefarger + fem identitetsfarger, alle målt
-tokens/type.css       tre fonter, ni trinn
+tokens/type.css       tre fonter, ti trinn
 tokens/rom.css        4-skala, radius, dybde
-tokens/bevegelse.css  fart og kurver
+tokens/bevegelse.css   fart og kurver
+tokens/instrument.css  rutenett, målestokk, kryss
 ```
 
 Logofilene ligger i `public/logos/` (sju vektorvarianter), ikke her — de er i

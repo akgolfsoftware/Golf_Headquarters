@@ -40,4 +40,13 @@ merkevarebygging.
 på egne ben, med egen identitet og egne kunder. AK Golf *promoterer* Mulligan —
 lenker dit, anbefaler det, trener der — men merkene blandes ikke.
 
+## Formen
+
+Merket er tegnet som et **instrument**, ikke som et sportsmerke. Stor
+kondensert typografi som bærer tall, et rutenett som konstruksjon, målestokk
+og kryss. Valgt 01.09.2026 etter gjennomgang av referanser Anders leverte.
+
+Grunnen er ikke smak: et merke som sier «vi måler, vi synser ikke» kan ikke
+rope. Formen må si det samme som ordene. Se `11-instrumentet.md`.
+
 Se `02-arkitektur.md` for hvordan de øvrige virksomhetene henger sammen.

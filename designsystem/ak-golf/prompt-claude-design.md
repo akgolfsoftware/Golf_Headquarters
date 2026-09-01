@@ -96,17 +96,32 @@ Products er utstyret.
 `#B3261E`. Statusgrønn er kjøligere enn Junior-grønn med vilje, så «godkjent»
 ikke kan forveksles med juniorprogrammet.
 
-**En identitetsfarge dekker sjelden mer enn 5 % av flaten.** Resten er krem,
-blekk og hårlinjer. Prøven: fargen skal kunne fjernes uten at flaten slutter å
-virke.
+**Aksentflatene er store.** Clay og de andre identitetsfargene bæres av hele
+flater — et panel, en kolonne, en seksjon — og dekker minst 18 % av visningen
+når de brukes. (Den tidligere 5 %-regelen ble opphevet 01.09.2026 med
+instrument-retningen.)
+
+Det som består: **én identitetsfarge om gangen**, aldri to i samme visning, og
+aldri farge som eneste bærer av informasjon.
 
 ### Typografi
 
 Tre fonter. **Ingen fjerde, noensinne.**
 
-- **Poppins** — titler, brødtekst, knapper. Alt som skal leses raskt.
-- **Lora** — ingress og sitat. Det som skal leses langsomt.
-- **IBM Plex Mono** — alt som er målt.
+- **Archivo Narrow** (600, 700) — overskrifter. Alt som skal dominere en flate.
+- **Poppins** (400, 500, 600) — brødtekst, knapper, skjema.
+- **IBM Plex Mono** (400, 500) — alt som er målt.
+
+Archivo Narrow ble valgt 01.09.2026 av en praktisk grunn: **kondensert type får
+plass til flere tegn per linje på 390 px**, og mobil er merkets viktigste flate.
+Testet mot Archivo, Barlow Condensed, Oswald, Saira Condensed, Chivo og Anton i
+norsk tekst.
+
+**Lora er ute.** En serif sier «les langsomt»; instrumentet sier «her er tallet».
+Det er ikke plass til begge stemmene. Ingress settes i Poppins 400 / 21 px, sitat
+i Archivo Narrow 600.
+
+**700 er kun Archivo Narrow.** Poppins går aldri over 600.
 
 **Den viktigste regelen i hele systemet:** et tall som kommer fra en måling
 settes i mono. Et tall som ikke gjør det, settes ikke i mono. Dette er ikke
@@ -114,15 +129,15 @@ stil — det er løftet gjort synlig. Står det i mono, er det etterprøvbart, m
 dato og kilde. Står det ikke i mono, er det en påstand. Estimater merkes som
 estimat i teksten.
 
-Skala, ni trinn: `11 · 13 · 15 · 17 · 21 · 26 · 33 · 42 · 58`. 11 px er kun
-mono-caps med `0.2em` sperring.
+Skala, ti trinn: `11 · 13 · 15 · 17 · 21 · 26 · 34 · 48 · 72 · 112`. 11 px er
+kun mono-caps med `0.2em` sperring.
 
-Vekter: **400, 500, 600. Aldri 700 eller tyngre** — Poppins i 700 blir klumpete
-og begynner å ligne på et sportsmerke som roper.
+Display fra 48 px og opp har linjeavstand **0,94** — linjene skal låse seg til
+hverandre og bli en blokk. Brødtekst 1,5, og stopper på 65 tegn.
+Sperring `-0.035em` display, `-0.02em` titler, `0` brødtekst.
 
-Linjeavstand 1,5 for brødtekst · 1,12 fra 26 px og opp · 1,65 for Lora.
-Sperring `-0.03em` hero, `-0.02em` titler, `0` brødtekst.
-Brødtekst stopper på 65 tegn. Aldri caps på en hel setning.
+Display settes i **VERSALER** når den står alene som utsagn. Aldri caps på en
+hel setning i brødtekst.
 
 ### Rom, form og bevegelse
 
@@ -140,6 +155,26 @@ Bevegelse: 120 ms hover og fokus · 220 ms panel og innholdsbytte · 420 ms
 seksjon ved rull. Kurve `cubic-bezier(0.2, 0, 0.2, 1)`. Aldri `ease-in` alene.
 En animasjon skal svare på «hvor kom dette fra» eller «hva skjedde nå» — aldri
 på «se her».
+
+### Instrumentlaget — merkets grafiske element
+
+Dette er ikke dekor, og det er ikke valgfritt. **Rutenettet, målestokken og
+krysset er hentet fra det AK Golf faktisk gjør** — spredningsellipsen,
+pyramideaksene, avstanden fra pinnen.
+
+- **Rutenettet:** 56 px ruter (7 × 8, samme åtte-basis som romskalaen), én
+  piksel, svært lav styrke — `rgba(20,20,19,.075)` på krem,
+  `rgba(250,249,245,.11)` på blekk. 24 px på små flater og i kort.
+- **Målestokken:** merker hver 12 px, et langt hvert femte, 42 % styrke.
+- **Krysset:** 11 px, der to akser møtes.
+
+**Regelen som holder det ærlig:** instrumentlaget skal aldri gi inntrykk av å
+vise data som ikke finnes. Et rutenett i bakgrunnen er tekstur. Et rutenett
+**med tall på aksene** er en påstand — og da må tallene være målt, med dato og
+kilde. Ingen kurver uten data, ingen spredninger uten målinger, ingen akser uten
+enhet. Bryter du dette, er merket løgn i formen selv om teksten er sann.
+
+Én flate har sjelden mer enn **ett** instrumentelement.
 
 ### Logoen
 
@@ -313,7 +348,29 @@ merket settes på mørkt tekstil.
 `guidelines/` — samme struktur som Team Norway-pakken, så de to kan leses av
 samme person uten omstilling.
 
-## 8 · Slik vil jeg at du jobber
+## 8 · Temperamentet
+
+Merket er **et instrument, ikke et sportsmerke.** Det er den viktigste
+enkeltføringen i hele bestillingen, valgt 01.09.2026 etter gjennomgang av
+seksten referanser Anders leverte.
+
+Praktisk betyr det:
+
+- **Hard kontrast.** Krem mot blekk, full flate mot full flate. Ingen
+  forsiktige mellomtoner.
+- **Typografien er motivet**, ikke en etikett over et bilde. En hero er en
+  tekstblokk i 112 px, ikke et foto med en linje på.
+- **Tallene er hovedpersoner.** Et målt tall i mono, stort, med dato og kilde
+  under — det er merkets signatur.
+- **Ingen energi-retorikk.** Ikke revet papir, ikke skrå bånd, ikke
+  bevegelsesuskarphet, ikke «PLAY LOUD». Et merke som sier «vi måler, vi synser
+  ikke» kan ikke rope.
+
+Referansene som traff: POLYMER 48, Thegrafx, Design Signals, Narka. Referansene
+som ble valgt bort, selv om de er godt håndverk: GRO, Nike «PLAY LOUD»,
+gym-plakatene.
+
+## 9 · Slik vil jeg at du jobber
 
 - **Mobil 390 er den viktigste visningen**, ikke desktop. Materiellet skannes
   stående, ute, ofte i sollys.
@@ -325,27 +382,24 @@ samme person uten omstilling.
   leveransen med et konkret forslag — ikke velg i det stille og la det se
   bestemt ut.
 
-## 9 · Tre ting jeg vil at du tar stilling til
+## 10 · To ting jeg vil at du tar stilling til
 
 Disse er bevisst ikke avgjort. Foreslå, med begrunnelse:
 
-1. **Trenger merket et grafisk element utover logoen?** Claw har en diagonal;
-   Team Norway har to streker. AK Golf har bare ballen. Et gjentakende element —
-   en linje, et rutenett, en form hentet fra spredningsellipsen eller
-   pyramiden — kunne bundet materiellet sammen. Eller det kunne bli støy på et
-   merke som allerede er rolig. **Din vurdering.**
-
-2. **Hvordan ser et målt tall ut når det står alene?** En KPI på en plakat, et
+1. **Hvordan ser et målt tall ut når det står alene?** En KPI på en plakat, et
    resultat i en presentasjon, et fremgangstall til en forelder. Mono er gitt —
    men hvordan bæres dato og kilde uten at det blir en fotnote ingen leser?
    Dette er merkets signatur, og den finnes ikke ennå.
 
-3. **Hvor langt skal identitetsfargen få gå på fysiske flater?** 5 %-regelen er
-   skrevet for skjerm. En roll-up i en simulatorhall konkurrerer med et helt rom.
-   Trenger fysisk materiell en egen, friere regel — eller er nettopp roen det som
-   skiller AK Golf fra alt annet i den hallen?
+2. **Hvor langt skal rutenettet gå på fysiske flater?** På skjerm er det tekstur
+   under innholdet. På en roll-up i en simulatorhall, på en bag-tag, på et
+   visittkort — skal det være der i det hele tatt, eller er det et skjermelement
+   som blir gimmick i trykk? Foreslå, med begrunnelse.
 
-## 10 · Hva som IKKE er del av denne bestillingen
+*(Det tredje spørsmålet — om merket trenger et grafisk element utover logoen —
+er besvart 01.09.2026. Svaret er instrumentlaget, se §3.)*
+
+## 11 · Hva som IKKE er del av denne bestillingen
 
 Sagt eksplisitt, så det ikke oppstår tvil om hvem som eier hva:
 
