@@ -96,7 +96,7 @@ Dette er *ikke* det samme som `~/.claude/CLAUDE.md` (den globale masteren for id
 - Paper-cream, Presis-skog/lime (#005840, #D1F843) og Inter/Familjen er utgått — bruk aldri.
 ## Fagterminologi (ikke forenkle)
 - Økt-ID-format: PYRAMIDE_OMRÅDE_L-FASE_CS_M_PR — gyldige områder: TEE, INNSPILL, NÆRSPILL, PUTT, BANE
-- AK-formel v2 gjelder fra 03.08.2026 — 17 områder. L-faser/M/PR er UTGÅTT i ny formel — spør Anders før CS brukes i nytt.
+- AK-formel v2 gjelder fra 03.08.2026 — 17 områder. L-faser/M/PR er UTGÅTT i ny formel. Club Speed (Anders, 2026-09-01): motorikk AUTO, «uten ball» er en egenskap ved øvelsen, ikke eget motorikk-steg — se `docs/ordbok-ak-golf-konsept.md` §3.
 - Golf-data: alltid brutto score, aldri netto. Putt i fot (ft), aldri meter.
 - Ordliste for norsk UI-tekst: akordlistegjennomgang.html (Del A+B, 506 termer) — ingen nye ord/uttrykk oppfinnes.
 ## Data og PII

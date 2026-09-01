@@ -96,7 +96,9 @@ Merk: versjon B legger **NGF/testuker i august (uke 34–35)** og en **intern te
 - **Fasestruktur GRUNN:** BUILD → STAB → TEST, koblet til CS-nivå og L-fase (L-KROPP/L-BALL/L-AUTO).
   **UTGÅTT (se `.claude/rules/beslutninger.md`, «ALLE TRENINGSPLANREGLER LÅST OPP», 2026-08-18):**
   CS-nivå og L-fase er pensjonerte UI-begreper — gjeldende v2-format er
-  `PYRAMIDE_OMRADE_MOTORIKK_BELASTNING_PRESS`. Research-notat, ikke byggeordre.
+  `PYRAMIDE_OMRADE_MOTORIKK_BELASTNING_PRESS`. Research-notat, ikke byggeordre. Club Speed
+  (Anders, 2026-09-01): motorikk AUTO, «uten ball» er en egenskap ved øvelsen, ikke eget
+  motorikk-steg.
 - **Teknisk plan (MORAD P1–P10)** per VG-år: VG1 GRUNN-prioritet P1–P4 (nøkkel P4), VG2 P5–P7 (nøkkel P7 impact), VG3 P8–P10 + mentalt spill (nøkkel P10 finish). Full prioriteringsmatrise P1–P10 (BUILD/STAB/AUTO) per VG-år finnes.
 - **TrackMan-referansetall** per kategori D/E/F (club speed, ball speed, smash factor, carry driver/7-jern).
 - **NGF Team Norway testbatteri** (11 tester, 3 kjøringer = 33 pr spiller) med normtall for D/E/F.

@@ -9,6 +9,11 @@ Autoritativ referanse for alle fagbegreper, koder og systemord i AK Golf-konsept
 > Gjeldende v2-format er `PYRAMIDE_OMRADE_MOTORIKK_BELASTNING_PRESS` med motorikk
 > UTEN_BALL/LAV_HAST/AUTO og press ALENE/OBSERVERT/KONKURRANSE/TURNERING. Innholdet under er
 > historikk, aldri byggeordre.
+>
+> **Unntak — Club Speed (Anders, 2026-09-01):** Club Speed lever videre som konsept i v2, men
+> IKKE som CS-nivå-prosentskala. Klassifiseres motorikk **AUTO**; «uten ball» er en egenskap ved
+> øvelsen (hastighetstrening med stav/kølle uten balltreff), ikke et eget motorikk-steg — ikke
+> forveksle med UTEN_BALL-steget, som gjelder andre, saktere teknikkøvelser. Se §3.
 
 > **To ulike ordbøker (notis 2026-08-03):** denne fila er ordboken for **konsept- og
 > UI-vokabular** (genererer `docs/ordbok.json` via `scripts/ordbok-json.ts`). Den må ikke
@@ -68,10 +73,17 @@ Hvor langt en bevegelse er innlært — fra kropp til automatisering. Fasit: can
 
 ## 3. CS — Club Speed
 
-> **UTGÅTT (beslutninger.md 2026-08-18):** CS-nivåene er utgått som UI-begrep — ingen
-> regel-håndheving av CS finnes lenger i koden.
+> **UTGÅTT (beslutninger.md 2026-08-18):** CS-nivåene (CS50–CS100, prosent av maks) er utgått
+> som UI-begrep — ingen regel-håndheving av CS finnes lenger i koden. Tabellen under er historikk.
+>
+> **Gjeldende (Anders, 2026-09-01):** Club Speed lever videre i v2, men som
+> motorikk-klassifisering, ikke som prosent-skala. I formatet
+> `PYRAMIDE_OMRADE_MOTORIKK_BELASTNING_PRESS` klassifiseres Club Speed-øvelser motorikk **AUTO**
+> — «uten ball» er en egenskap ved øvelsen (hastighetstrening med stav/kølle uten balltreff), ikke
+> et eget motorikk-steg. Ikke forveksle med UTEN_BALL-steget, som gjelder andre, saktere
+> teknikkøvelser.
 
-Køllehodehastighet i % av spillerens maks — én av de fire AK-formel-aksene. Fasit (Anders-beslutning
+Køllehodehastighet i % av spillerens maks — én av de fire AK-formel-aksene i v1. Fasit (Anders-beslutning
 2026-07-07): **seks nivåer CS50–CS100**. CS20/30/40 er utgått — canon v3.5 hadde ni nivåer, men
 Prisma-enumen (CS50–CS100) er nå bekreftet som fasit; ingen migrering kommer. CS betyr Club Speed —
 ikke «Capacity Stress», ikke «Confidence Score». NB: canon-filene i MasterBrain + L-fase-CS-båndene
