@@ -396,7 +396,20 @@ Prøven: ville en erfaren coach sagt dette til en spiller på rangen?
 
 ## Før dette kan publiseres
 
-**Alle fremgangstall må erstattes med målte tall fra basen.** Tallene i eksemplene er
-oppdiktede og skal ikke publiseres som de står.
+**Alle fremgangstall må erstattes med målte tall.** Tallene i eksemplene er oppdiktede
+og skal ikke publiseres som de står.
 
-Det er den eneste sperren som gjenstår.
+**Sjekket i produksjonsbasen 01.09.2026: tallene finnes ikke ennå.** Det er 431
+TrackMan-slag i 16 økter, men kun `carryDistance` har verdier — alle femten øvrige
+parametere er tomme på hvert eneste slag. All data tilhører demo-brukeren; de 37
+øvrige kontoene ligger på et testdomene uten data.
+
+Attack Angle, Spin Rate og Launch Angle — parametrene eksemplene bygger på — er ikke
+lagret i det hele tatt. `attackAngle` brukes heller ikke noe sted i appkoden.
+
+**Sperren løses derfor ikke ved å hente tall.** Den løses når ekte spillere har trent
+noen uker OG importen faktisk fyller feltene. Se `docs/MASTERPLAN-GJENSTAAENDE.md`
+0.14 og 0.15.
+
+**Til da:** bruk eksemplene som formatmal, og merk hvert tall som eksempel. Formatet
+er riktig selv om tallet ikke er ekte.
