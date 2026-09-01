@@ -20,10 +20,17 @@
 export const SAMTYKKE_TEKST_VERSJON = "2026-08-16";
 
 /**
- * De to tingene det kan samtykkes til, hver for seg. En ekstern leser med
+ * De tingene det kan samtykkes til, hver for seg. En ekstern leser med
  * begge capabilities ser fortsatt bare det scopet spilleren har sagt ja til.
+ *
+ * KOMPLETT_PROFIL (TN-12, Claw batch 3, 01.09.2026): den andre av de «to
+ * bryterne, aldri ti» i §FORRETNINGSMODELL: SPILLERLISENSER — i tillegg til
+ * TEST_RESULTATER/STATS: treningsplan, TrackMan, analyse og fremgang.
+ * Kommer alltid sammen med TEST_RESULTATER/STATS i UI-et (TnSamtykkeSide) —
+ * en organisasjon som får komplett profil ser også testene, aldri omvendt —
+ * men lagres som eget scope her, uavhengig av UI-koblingen.
  */
-export const DELING_SCOPES = ["TEST_RESULTATER", "STATS"] as const;
+export const DELING_SCOPES = ["TEST_RESULTATER", "STATS", "KOMPLETT_PROFIL"] as const;
 export type DelingScope = (typeof DELING_SCOPES)[number];
 
 /** Hvem som utførte samtykke-handlingen. */
@@ -60,6 +67,17 @@ export const DELING_SAMTYKKE_TEKST: Record<
     punkter: [
       "De ser: antall runder, snittscore og SG-hovedtall (total, tee, innspill, nærspill, putting).",
       "De ser ikke: treningsplanen din, enkeltslag, notater eller helsedata.",
+      "Delingen gjelder kun dette miljøet — ikke andre grupper eller tredjeparter.",
+      "Du kan trekke samtykket når som helst, og delingen stopper umiddelbart.",
+    ],
+  },
+  KOMPLETT_PROFIL: {
+    tittel: "Del komplett profil",
+    forklaring:
+      "I tillegg til testresultater og statistikk: ansvarlige i dette miljøet får se treningsplanen din, TrackMan-data, analyse og fremgang over tid. Du kan trekke samtykket når som helst, og treningen din påvirkes aldri av hva du velger her.",
+    punkter: [
+      "De ser: treningsplanen din, TrackMan-økter, analyse og fremgang — i tillegg til testresultater og statistikk.",
+      "De ser ikke: helsedata, private notater eller innhold utenfor dette miljøet.",
       "Delingen gjelder kun dette miljøet — ikke andre grupper eller tredjeparter.",
       "Du kan trekke samtykket når som helst, og delingen stopper umiddelbart.",
     ],

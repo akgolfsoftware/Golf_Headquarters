@@ -40,6 +40,18 @@ describe("kanSeSpillerpost", () => {
     );
   });
 
+  it("treneren som eier tilknytningen ser posten (TN-10 er en trener-flate)", () => {
+    assert.equal(
+      kanSeSpillerpost({
+        viewerId: "trener-1",
+        spillerId: "spiller-1",
+        viewerErGodkjentForesattForSpilleren: false,
+        viewerErTrenerForSpilleren: true,
+      }),
+      true,
+    );
+  });
+
   it("en tilfeldig bruker ser ikke posten", () => {
     assert.equal(
       kanSeSpillerpost({ viewerId: "annen-bruker", spillerId: "spiller-1", viewerErGodkjentForesattForSpilleren: false }),

@@ -9,7 +9,11 @@
  * til her, jf. schema-kommentaren på TnPost.
  */
 
-export const TN_POST_KINDER = ["TEKST", "REISE", "MOTE", "OKT"] as const;
+// DOKUMENT = frittstående opplasting til dokumentbiblioteket (TN-11 «Last opp
+// fil»), aldri vist i selve tidslinjen — en post uten tekst hvis eneste
+// formål er å bære ett vedlegg. Skiller «FRA POST»/«LASTET OPP»-kilden i
+// TnDokumentdeling.dc.html uten en egen dokument-tabell.
+export const TN_POST_KINDER = ["TEKST", "REISE", "MOTE", "OKT", "DOKUMENT"] as const;
 export type TnPostKind = (typeof TN_POST_KINDER)[number];
 
 export function erTnPostKind(v: string): v is TnPostKind {
@@ -33,20 +37,22 @@ export function kanSeGruppepost(
 }
 
 /**
- * Kan denne brukeren se en 1:1-post til en spiller? Enten er brukeren
- * spilleren selv, ELLER en godkjent foresatt for spilleren — 1:1-poster til
- * mindreårige er ALDRI private mellom trener og barn (idrettens
- * åpenhetsprinsipp, prompt-batch-3.md). Dette er et krav til datalaget,
- * ikke en UI-innstilling brukeren kan skru av.
+ * Kan denne brukeren se en 1:1-post til en spiller? Spilleren selv, en
+ * godkjent foresatt (1:1-poster til mindreårige er ALDRI private mellom
+ * trener og barn — idrettens åpenhetsprinsipp, prompt-batch-3.md, håndhevet
+ * på datalaget, ikke en UI-innstilling), ELLER treneren som har lov til å
+ * poste til akkurat denne spilleren (TN-10 er primært en trener-flate).
  */
 export function kanSeSpillerpost(input: {
   viewerId: string;
   spillerId: string;
   viewerErGodkjentForesattForSpilleren: boolean;
+  viewerErTrenerForSpilleren?: boolean;
 }): boolean {
   return (
     input.viewerId === input.spillerId ||
-    input.viewerErGodkjentForesattForSpilleren
+    input.viewerErGodkjentForesattForSpilleren ||
+    input.viewerErTrenerForSpilleren === true
   );
 }
 

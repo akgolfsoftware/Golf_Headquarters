@@ -17,7 +17,7 @@ import { TL } from "@/lib/v2/train-lock";
 import { useState, useTransition } from "react";
 import { Kort, Icon, StatusPill } from "@/components/v2";
 import { Bryter } from "@/components/v2/skjema";
-import { DELING_SAMTYKKE_TEKST, type DelingScope } from "@/lib/deling/samtykke-regler";
+import { DELING_SAMTYKKE_TEKST } from "@/lib/deling/samtykke-regler";
 import { giDelingsSamtykke, trekkDelingsSamtykke } from "@/app/portal/meg/innstillinger/personvern/deling-samtykke-actions";
 import { settDelingsSamtykkeForBarn } from "@/app/forelder/samtykke/actions";
 
@@ -36,7 +36,12 @@ export type DelingSamtykkeKortProps = {
   modus: { type: "spiller" } | { type: "foresatt"; childId: string };
 };
 
-const SCOPE_FELT: Record<DelingScope, "testResultater" | "stats"> = {
+// Dette kortet viser kun de to opprinnelige scopene — KOMPLETT_PROFIL
+// (TN-12, Claw batch 3) har sin egen fullside (TnSamtykkeSide), ikke en
+// tredje bryter her. EmbedScope er derfor en bevisst SNEVRERE type enn
+// DelingScope, ikke en glipp.
+type EmbedScope = "TEST_RESULTATER" | "STATS";
+const SCOPE_FELT: Record<EmbedScope, "testResultater" | "stats"> = {
   TEST_RESULTATER: "testResultater",
   STATS: "stats",
 };
@@ -51,7 +56,7 @@ export function DelingSamtykkeKort({
   const [feil, setFeil] = useState<string | null>(null);
   const [lagret, setLagret] = useState(false);
 
-  function endre(gruppeId: string, scope: DelingScope, nyVerdi: boolean) {
+  function endre(gruppeId: string, scope: EmbedScope, nyVerdi: boolean) {
     if (pending) return;
     // Spiller under 16 kan ikke slå PÅ selv — foresatt gjør det i foreldreportalen.
     if (modus.type === "spiller" && krevesForesatt && nyVerdi) return;
@@ -159,7 +164,7 @@ export function DelingSamtykkeKort({
             <div style={{ fontFamily: TL.font.sans, fontSize: 14, fontWeight: 700, color: TL.text }}>
               {gruppe.gruppeNavn}
             </div>
-            {(Object.keys(SCOPE_FELT) as DelingScope[]).map((scope) => {
+            {(Object.keys(SCOPE_FELT) as EmbedScope[]).map((scope) => {
               const tekst = DELING_SAMTYKKE_TEKST[scope];
               return (
                 <div key={scope} style={{ marginTop: 12 }}>
