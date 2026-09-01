@@ -439,3 +439,11 @@ Datafundamentet (TrackMan-parametere, Strokes Gained, DECADE) fikk sine tre flat
 - To filer med Ø i filnavn (`B2 PH-04 Økt-ark iPad Mac`, `PH-04 Økt-ark`, `B3 Lys nøkkelskjermer`) krevde str_replace_edit i stedet for run_script pga. sandbox-tegnfilter — samme sluttresultat.
 - Ingen `ease-in`, `transition: all` eller `scale(0)` finnes noe sted i prosjektet (bekreftet med grep før og etter).
 - Gjenstår, bevisst ikke gjort blindt: å legge NY press-feedback (data-press) på elementer som i dag har `cursor: pointer` uten noen interaksjonsstil (rail-nav, enkelte ikonknapper) — dette krever et øye på hver skjerm, ikke en regex, og tas i egne verifiserte batcher videre.
+
+## 30.08.2026 — Min kurve, Innsikt, Data Golf
+
+- `PH-21 Min kurve` (+ lys): spillerens egen til-par-kurve med bånd for beste/verste runde i turneringen, ett tall med dato og kilde, turneringshistorikk med plassering «innen klasse». Ingen persentil, ingen kullrangering på spillerflaten — bevisst produktbeslutning. Tom tilstand er tomt akseskall + hel setning.
+- `A-19 Innsikt` (+ lys): coachens fire spørsmål (vekstrate, tak, konkurranse, program), én graf per skjermbilde på mobil. Kullets snitt er kun tillatt her, tegnet grått/stiplet; sekundær CTA «Del med Øyvind uten kullsnitt» gjør grensen synlig.
+- `DG-01 DataGolf topplister og SG-profil` (+ lys): toppliste over 446 spillere med kategorifaner og retningskurve per rad, merket åpent som **vår egen** rangering regnet fra SG. Profil med fem SG-kategorier, de sju innspillsbøttene (samme bøtter som TrackMan-øktene), køllelengde og treff. Turneringshistorikk og premiepenger står som ærlig tom tilstand fordi arrangementsdatoene ikke er hentet. «Powered by Data Golf» på alle fire rammer (lisenskrav).
+- Negative SG-verdier er dempet (`opacity: 0.45`), aldri røde. Nullpunkt i SG-stolper er tourgjennomsnittet.
+- **Fargegrammatikk innført** (variant A + target på aktivt valg, warm-hake forkastet): `shot #B08968` = spillerens egne data, `target` = satt eller valgt, `mute` = referanse, hvit er hierarki og ikke lenger en dataserie. Rullet ut på PH-21, A-19 og DG-01 i begge moduser; skrevet inn i DESIGN-SYSTEM.md §1 som fasit for resten av systemet.

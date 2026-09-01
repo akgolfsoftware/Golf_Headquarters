@@ -204,6 +204,11 @@ fangstId        String?   // hvilken fangst forslaget kom fra
 
 ### Skjermen
 
+> **UTGÅTT (se `.claude/rules/beslutninger.md`, «ALLE TRENINGSPLANREGLER LÅST OPP», 2026-08-18):**
+> mockupen under bruker CS40/M1/PR1-formatet, som er pensjonert. Gjeldende v2-format er
+> `PYRAMIDE_OMRADE_MOTORIKK_BELASTNING_PRESS` (motorikk UTEN_BALL/LAV_HAST/AUTO, press
+> ALENE/OBSERVERT/KONKURRANSE/TURNERING) — historikk, ikke byggeordre.
+
 Godkjenningskortet lever i `/admin/queue`, i «Løst»-kolonnen som allerede står
 tom og venter. Kortet:
 
@@ -278,6 +283,11 @@ Ny flyt:
 er skjermer. Dette er data som forsvinner hvis det er feil.
 
 ### Skjermen
+
+> **UTGÅTT (se `.claude/rules/beslutninger.md`, «ALLE TRENINGSPLANREGLER LÅST OPP», 2026-08-18):**
+> mockupen under viser L-fase/CS/M/PR-formatet, som er pensjonert. Gjeldende v2-format er
+> `PYRAMIDE_OMRADE_MOTORIKK_BELASTNING_PRESS` (motorikk UTEN_BALL/LAV_HAST/AUTO, press
+> ALENE/OBSERVERT/KONKURRANSE/TURNERING) — skjermbildet under er historikk, ikke byggeordre.
 
 Én skjerm, én hånd, ingen scrolling.
 
@@ -383,6 +393,11 @@ tråden mellom to økter uten å huske den selv?** Den måles ved å spørre ett
 ---
 
 ## 9. Talegjenkjenning — billig fiks først
+
+> **UTGÅTT (se `.claude/rules/beslutninger.md`, «ALLE TRENINGSPLANREGLER LÅST OPP», 2026-08-18):**
+> CS20–CS100, L-fasene, M0–M5 og PR1–PR5 er pensjonerte UI-begreper — utvid IKKE glossaret med
+> disse. Gjeldende v2-format er `PYRAMIDE_OMRADE_MOTORIKK_BELASTNING_PRESS` med motorikk
+> UTEN_BALL/LAV_HAST/AUTO og press ALENE/OBSERVERT/KONKURRANSE/TURNERING.
 
 `GOLF_PROMPT` i `src/lib/transcribe.ts` inneholder generiske golftermer på engelsk
 («swing path», «low point», «smash factor») og **null AK/MORAD-terminologi**.

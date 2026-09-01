@@ -15,7 +15,7 @@ innholdet ligger nå i masterplanen.
 
 | Fil | Bruk |
 |-----|------|
-| `LAUNCH-PLAN-FULL-2026-08-25.md` | **Gjeldende plan**: inventory, opprydding, bølger, session-tabell |
+| `LAUNCH-PLAN-FULL-2026-08-25.md` | **SLETTET 30.08.2026** — var: inventory, opprydding, bølger, session-tabell. Innholdet ligger nå i `docs/MASTERPLAN-GJENSTAAENDE.md`, som er gjeldende plan. |
 | `BOLGE-N-TALENTHQ-INN-2026-08-26.md` | **TalentHQ inn i PlayerHQ** — levende plan, 10 steg. Eget spor, ikke lansering |
 | `LEVERANSELOGG.md` | Komprimert kvittering for hver leverte loop/rad (erstatter 24 enkelt-DONE-filer + LOOP-1-PROMPT, opprydding 27.08) |
 | `KOMPLETT-PLAN.md` | Historikk — rydd v1 vs greenfield, publisering, horisonter (supersedert av LAUNCH-PLAN) |

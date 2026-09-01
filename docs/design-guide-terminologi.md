@@ -10,7 +10,7 @@
 > `#005840`, lime `#D1F843`, Inter / Familjen Grotesk / JetBrains Mono. Paper-henvisningen som
 > sto her («Claude Paper vinner alltid») er OGSÅ historikk: **Train-lock er designfasit for alle
 > PlayerHQ/AgencyOS-skjermer (Anders 25.08.2026)** — se CLAUDE.md invariant 2 +
-> `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`. Ikke bruk verdiene under til nye skjermer.
+> `designsystem/train-lock/`. Ikke bruk verdiene under til nye skjermer.
 > (`.claude/rules/designsystem.md`, som denne fila tidligere pekte på, finnes ikke.)
 >
 > Resten — særlig **§2 tall, enheter og formatering** — er fortsatt gjeldende og
@@ -98,7 +98,10 @@ KPI-tall, tabulære tall, eyebrows, koder (CS80, M2, PR3, P4.0). Inter Tight er 
   «Performance»/«Performance Pro» som app-nivå (coaching-pakker!). Elite vises aldri.
 - **Spillerkategori A–K (canon v3.5):** A = nybegynner → K = tour-proff. Vis som mono-badge
   «KAT G» e.l. NB: eldre skjermer med A=elite-retning skal migreres — følg canon i alt nytt.
-- **AK-formel-koder** som chips: mono uppercase — `TEK · INN150 · L-BALL · CS70 · M2 · PR2`.
+- **AK-formel-koder** som chips: mono uppercase — v2-format (gjeldende, se `.claude/rules/beslutninger.md` 18.08.2026):
+  `PYRAMIDE_OMRADE_MOTORIKK_BELASTNING_PRESS`, f.eks. `TEK_CHIP_LAV_HAST_TRENINGSOMRADE_ALENE`.
+  L-fase/CS-nivå/M0–M5/PR1–PR5 (gammel `TEK · INN150 · L-BALL · CS70 · M2 · PR2`) er slettet fra koden
+  og skal IKKE brukes i nytt UI.
 
 ## 5. Knapper & CTA-er (flyttet fra ordbok B13)
 

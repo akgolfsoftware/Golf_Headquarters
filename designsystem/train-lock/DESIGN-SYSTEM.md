@@ -31,7 +31,7 @@ Skal skjermene porteres til kode: les `PORTING.md`.
 | warn | `#FFD60A` | Varsel som ikke er feil |
 | danger | `#FF453A` | **Kun** faktisk feil |
 | warm | `#B85C3D` | Logo-prikk + fullført-hake/ring |
-| shot | `#B08968` | Spredningsprikker |
+| shot | `#B08968` | **Spillerens egne data**: spredningsprikker, egen kurve, egne stolper |
 | avatar | `#B08968` / tekst `#201409` | ØR-sirkelen, alle initialer |
 
 ### Lys (samme geometri, inverterte flater)
@@ -39,6 +39,20 @@ Skal skjermene porteres til kode: les `PORTING.md`.
 scene `#FFFFFF` · elev `#F2F2F2` · dock `#E9E9EB` · hair `#00000014` · dim `#DDDDDE` · text `#111111` · mute `#6E6E73` · fill `#000000` / on-fill `#FFFFFF` · danger `#FF3B30` · ok `#34C759` · avatar/warm/shot uendret.
 
 Rammechrome i lys modus: bezel `#E9E9EB`, ytre bezel `#D3D3D6`, notch `#E5E5E7`, slagskygge `rgba(0,0,0,0.18)`, sidebakgrunn `#F7F7F8`.
+
+### Fargegrammatikk (fasit fra 30.08.2026)
+
+Hver farge har **én jobb**. Maks tre farger i én ramme, og aldri to av dem på samme datatype.
+
+| Farge | Betydning | Eksempel |
+|---|---|---|
+| shot `#B08968` | Spillerens egne data | Egen kurve, eget spredningsbånd, egne stolper, SG-profil for den spilleren du er inne på |
+| target `#0A84FF` | Noe som er satt eller valgt | Målvindu, aktiv fane/pille, valgt rad, framskrevet bane |
+| mute `#8E8E93` | Referanse og kontekst | Kullets snitt, referanseløp, tourgjennomsnitt, testnivå |
+| text `#F5F5F5` | Hierarki, ikke farge | Primærtekst og store tall — aldri en dataserie |
+| fill `#FFFFFF` | Én primær CTA | Uendret |
+
+warn / ok / danger står utenfor grammatikken — de er varsler, ikke farger. Negative tall er fortsatt `opacity: 0.45`, aldri rødt.
 
 ### Forbudt
 

@@ -3,6 +3,12 @@
 Målgruppe: Claude Code i AK Golf HQ-repoet (Next.js 16.2 · React 19 · TS strict · Tailwind v4 · shadcn).
 Mål: porten skal være **pikselnær mot .dc.html-filen**, ikke «inspirert av». Design-filen er fasit; er koden uenig, er koden feil.
 
+> **Rettet 01.09.2026 (revisjonsøkt).** Denne fila ble skrevet før tokenlaget (D2) landet i faktisk
+> kode 25.08.2026, og §1 beskrev fortsatt et FIKTIVT tokensett (`--color-*`, `[data-theme="light"]`)
+> som aldri ble bygget slik. Fasit er `src/styles/train-lock-tokens.css` (`--tl-*`) med TS-speil
+> `src/lib/v2/train-lock.ts` (`TL`) — les DERFRA, ikke fra kodeeksempelet som pleide å stå her.
+> §1 under er rettet til å peke dit i stedet for å gjenta et eksempel som drifter fra sannheten.
+
 ---
 
 ## 0 · Regel nummer én
@@ -20,50 +26,20 @@ Rekkefølge per skjerm:
 
 ## 1 · Tokenlaget først — alltid
 
-Ingen hex i komponentkode. Ett tokenlag, én gang, i `globals.css` med Tailwind v4 `@theme`:
+Ingen hex i komponentkode. Tokenlaget finnes ALLEREDE — bruk det, ikke lag et nytt:
 
-```css
-@theme {
-  --color-scene: #000000;
-  --color-elev: #161616;
-  --color-dock: #1C1C1E;
-  --color-hair: #FFFFFF14;
-  --color-dim: #2C2C2E;
-  --color-text: #F5F5F5;
-  --color-mute: #8E8E93;
-  --color-fill: #FFFFFF;
-  --color-onfill: #000000;
-  --color-target: #0A84FF;
-  --color-ok: #30D158;
-  --color-warn: #FFD60A;
-  --color-danger: #FF453A;
-  --color-warm: #B85C3D;
-  --color-shot: #B08968;
-  --color-avatar: #B08968;
-  --color-avatar-ink: #201409;
-
-  --radius-card: 20px;
-  --radius-field: 16px;
-  --radius-pill: 999px;
-  --radius-sheet: 24px;
-
-  --ease-train: cubic-bezier(0.32, 0.72, 0, 1);
-}
-
-[data-theme="light"] {
-  --color-scene: #FFFFFF;
-  --color-elev: #F2F2F2;
-  --color-dock: #E9E9EB;
-  --color-hair: #00000014;
-  --color-dim: #DDDDDE;
-  --color-text: #111111;
-  --color-mute: #6E6E73;
-  --color-fill: #000000;
-  --color-onfill: #FFFFFF;
-  --color-danger: #FF3B30;
-  --color-ok: #34C759;
-}
-```
+- CSS-variabler: `src/styles/train-lock-tokens.css`, alle prefikset `--tl-*` (prefikset bevisst,
+  så laget kan ligge ved siden av det utgåtte Paper-settet uten kollisjon — se filhodet der).
+- TS-speil: `src/lib/v2/train-lock.ts`, eksportert som `TL`. Les derfra i `.tsx`, ikke rå CSS-var-strenger.
+- **Tema-mekanismen er `html[data-v2-tema="dark"]`, ALDRI `[data-theme="light"]` eller en ny
+  attributt/klasse.** Lys ligger på `:root` (default), mørk under `[data-v2-tema="dark"]` —
+  omvendt av hva fasit-HTML-en isolert antyder («mørk er default» i designfilene), fordi
+  default-modus per rute er en SKJERM-beslutning (`src/lib/v2/tema-default.ts`), ikke en
+  token-beslutning. Se `.claude/rules/gotchas.md` §Tema.
+- **Font: Poppins/Lora/IBM Plex Mono, ALDRI SF Pro** — selv om enkelte `.dc.html`-filer og
+  Claude Design-prosjektets egen `CLAUDE.md` sier SF Pro. `--tl-font-sans` peker allerede til
+  `var(--font-poppins)`, `--tl-font-mono` til `var(--font-ibm-plex-mono)`. Ikke overstyr dette
+  ved porting av en enkeltskjerm (`.claude/rules/beslutninger.md`, 25.08.2026).
 
 Lys modus er **kun** en overstyring av disse variablene. Aldri `dark:`-varianter spredt i komponentene — da divergerer de to modusene innen en måned. Alle FO-skjermene er bygget på nøyaktig dette prinsippet (lys = samme markup, byttede flater), så porten arver det gratis.
 
@@ -119,6 +95,11 @@ Fallgruver som ødelegger pikselnærhet:
 - **Telefonramme.** 390×844 / 393×852 med radius 54 er *presentasjonschrome*, ikke app-UI. Port innholdet, ikke rammen. Ramme kun i Storybook/visuell-diff-oppsettet.
 - **Tall.** `tabular-nums` mangler oftere enn noe annet. Legg det på `<Screen>` som default og overstyr aldri.
 - **Norsk format.** `Intl.NumberFormat('nb-NO')` for beløp (`1 450,00`), `Intl.DateTimeFormat('nb-NO')` for dato (`22.08.2026`) — Oslo-tid. Aldri manuell strengbygging.
+- **Sticky toppbar over dokument-rullen.** Enhver `position: sticky; top: 0`-toppbar SKAL publisere sin målte høyde som `--ak-topbar-h` (`useToppbarHoyde()` fra `src/components/v2/toppbar-hoyde.tsx`), ellers lander `scrollIntoView`/`#fragment`/tastaturfokus bak den. Autoscroll-til-bunn hører hjemme i en EGEN scroll-container, aldri på dokumentet. Se `.claude/rules/gotchas.md` §Chat-autoscroll.
+- **Bunn-forankret `fixed`/`sticky`-flate.** Bunn-padding SKAL inkludere `+ var(--ak-cookie-h, 0px)` ved siden av `env(safe-area-inset-bottom)`, ellers dekker cookie-banneret den mens den ser klikkbar ut. Se `.claude/rules/gotchas.md` §Cookie-banneret.
+- **Grid/flex-kolonne med `Rad`/`nowrap`-tekst.** MÅ ha `min-width: 0` (`min-w-0`) på beholderen rundt, ellers sprenger lange strenger skjermbredden i stedet for å trigge ellipsen. Se `.claude/rules/gotchas.md` §Rutenett-kolonne.
+- **`-foreground`-paret på primary-flater.** `bg-primary text-primary-foreground` (eller `--tl-fill`/`--tl-on-fill` i par) — aldri `accent`/`--tl-target` som tekstfarge på en `primary`/`fill`-flate. Se `.claude/rules/gotchas.md` §.dark-tema.
+- **En portert skjerm som skal leve som fane i en konsolidert side** (STEG 15-mønsteret, f.eks. Kø/Oppsett-hub): sjekk om målsiden trenger en `somFane`-prop som fjerner skjermens egen tabbrad/overskrift FØR du porter — ellers får du dobbel navigasjon som kun skjermbilde-gaten fanger, ikke `npm run verify`.
 
 ---
 

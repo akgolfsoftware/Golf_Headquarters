@@ -5,6 +5,10 @@
 > `docs/platform/BUSINESS-RULES.md` (låste forretningsregler) og
 > `src/lib/masterbrain/rag-corpus/morad/canon-invariants-13.md` (metodikk-invarianter).
 
+> **UTGÅTT (se `.claude/rules/beslutninger.md`, «ALLE TRENINGSPLANREGLER LÅST OPP», 2026-08-18):**
+> `canon-invariants-13.md` finnes ikke lenger i repoet — invariant-håndhevingen er slettet fra
+> koden. Referansen over er historisk og skal ikke leses som en gjeldende fasit-kilde.
+
 ---
 
 ## Produktet
@@ -52,6 +56,10 @@ i mellomtiden; kvalitetsstandarden (skal tåle å selges for millionsum) er uend
 - Detaljer: `docs/platform/BUSINESS-RULES.md`.
 
 ## Metodikk
+
+> **UTGÅTT (beslutninger.md 2026-08-18):** CS-progresjon og «13 invarianter» er pensjonert —
+> ingen regel-håndheving i planlegging lenger. Vokabularet (pyramide, A–K, MORAD P-system) består
+> som frie merkelapper, aldri krav.
 
 Coaching-metodikken (AK-metodikken / CANON) er plattformens intellektuelle kjerne:
 A–K-kategorier, pyramide-fordeling, CS-progresjon, 13 invarianter, MORAD P-system.

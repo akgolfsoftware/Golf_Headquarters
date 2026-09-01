@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+  html, body { margin: 0; padding: 0; background: #000000; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; color: #F5F5F5; }
+  a { color: #0A84FF; text-decoration: none; }
+  a:hover { color: #F5F5F5; }
+  ::-webkit-scrollbar { display: none; }
+  :root { --ease-out: cubic-bezier(0.23, 1, 0.32, 1); --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1); --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1); }
+  [data-press] { transition: transform 220ms var(--ease-out), background-color 220ms var(--ease-out), opacity 220ms var(--ease-out); }
+  [data-press]:active { transition-duration: 110ms; }
+  @media (hover: hover) and (pointer: fine) { [data-press]:hover { background-color: #1C1C1E; } [data-sub]:hover { opacity: 0.75; } }
+  @media (prefers-reduced-motion: reduce) { [data-press] { transition: opacity 200ms ease, background-color 200ms ease; } [data-press]:active { transform: none !important; } }
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #000000; display: flex; align-items: flex-start; justify-content: safe center; gap: 48px; padding: 56px 32px; flex-wrap: wrap;">
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+  <div data-screen-label="DG-01a Toppliste iPhone" style="width: 390px; height: 844px; background: #000000; border-radius: 54px; overflow: hidden; position: relative; box-shadow: 0 0 0 3px #1C1C1E, 0 0 0 10px #050505, 0 32px 90px rgba(0, 0, 0, 0.85); flex-shrink: 0;">
+    <div style="position: absolute; top: 11px; left: 50%; transform: translateX(-50%); width: 122px; height: 36px; border-radius: 20px; background: #0D0D0D; z-index: 5;"></div>
+    <div style="position: relative; height: 54px; display: flex; align-items: flex-end; padding: 0 32px 4px;"><span style="font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">07.40</span></div>
+    <div style="position: absolute; top: 54px; bottom: 0; left: 0; right: 0; overflow-y: auto; padding: 4px 16px 110px;">
+      <div data-sub="1" style="height: 44px; display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; color: #8E8E93; cursor: pointer;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5 L8 12 L15 19"></path></svg>Analyse</div>
+      <h1 style="margin: 2px 0 0; font-size: 34px; font-weight: 700; letter-spacing: -0.02em;">Verdenseliten</h1>
+      <div style="margin-top: 6px; font-size: 15px; font-weight: 600; color: #8E8E93; line-height: 1.45;">446 spillere med komplett strokes gained i alle fem kategorier.</div>
+
+      <div style="margin-top: 12px; display: flex; gap: 8px; overflow-x: auto;">
+        <span style="height: 44px; padding: 0 18px; border-radius: 999px; background: #1C1C1E; color: #0A84FF; display: flex; align-items: center; font-size: 13px; font-weight: 600; white-space: nowrap; flex-shrink: 0;">Total</span>
+        <span data-press="1" style="height: 44px; padding: 0 18px; border-radius: 999px; color: #8E8E93; display: flex; align-items: center; font-size: 13px; font-weight: 600; white-space: nowrap; flex-shrink: 0; cursor: pointer;" style-active="transform: scale(0.97); background: #1C1C1E">Off the tee</span>
+        <span data-press="1" style="height: 44px; padding: 0 18px; border-radius: 999px; color: #8E8E93; display: flex; align-items: center; font-size: 13px; font-weight: 600; white-space: nowrap; flex-shrink: 0; cursor: pointer;" style-active="transform: scale(0.97); background: #1C1C1E">Innspill</span>
+        <span data-press="1" style="height: 44px; padding: 0 18px; border-radius: 999px; color: #8E8E93; display: flex; align-items: center; font-size: 13px; font-weight: 600; white-space: nowrap; flex-shrink: 0; cursor: pointer;" style-active="transform: scale(0.97); background: #1C1C1E">Nærspill</span>
+        <span data-press="1" style="height: 44px; padding: 0 18px; border-radius: 999px; color: #8E8E93; display: flex; align-items: center; font-size: 13px; font-weight: 600; white-space: nowrap; flex-shrink: 0; cursor: pointer;" style-active="transform: scale(0.97); background: #1C1C1E">Putting</span>
+        <span data-press="1" style="height: 44px; padding: 0 18px; border-radius: 999px; color: #8E8E93; display: flex; align-items: center; font-size: 13px; font-weight: 600; white-space: nowrap; flex-shrink: 0; cursor: pointer;" style-active="transform: scale(0.97); background: #1C1C1E">Tee-to-green</span>
+      </div>
+
+      <div style="margin-top: 12px; display: flex; align-items: center; gap: 10px;">
+        <span data-press="1" style="height: 44px; padding: 0 16px; border-radius: 999px; border: 1px solid #FFFFFF14; color: #F5F5F5; display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; cursor: pointer;" style-active="transform: scale(0.97); background: #1C1C1E"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="2" stroke-linecap="round"><path d="M4 6 H20 M7 12 H17 M10 18 H14"></path></svg>Alle tourer</span>
+        <span style="font-size: 13px; color: #8E8E93; font-variant-numeric: tabular-nums;">446 spillere</span>
+      </div>
+
+      <div style="margin-top: 12px; background: #161616; border-radius: 20px; padding: 16px 18px;">
+        <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Vår rangering</div>
+        <div style="margin-top: 6px; font-size: 13px; color: #8E8E93; line-height: 1.5;">Plasseringene under er regnet ut av oss fra SG-verdiene. Det er ikke Data Golfs offisielle ranking.</div>
+      </div>
+
+      <div style="margin-top: 12px; background: #161616; border-radius: 20px; padding: 4px 18px;">
+        <div data-press="1" style="display: flex; align-items: center; gap: 12px; padding: 13px 0; border-bottom: 1px solid #FFFFFF14; cursor: pointer; border-radius: 12px;" style-active="transform: scale(0.98); background: #1C1C1E"><span style="width: 24px; font-size: 15px; font-weight: 700; color: #8E8E93; font-variant-numeric: tabular-nums;">1</span><div style="flex: 1; min-width: 0;"><div style="font-size: 15px; font-weight: 600;">Scottie Scheffler</div><div style="margin-top: 2px; font-size: 13px; color: #8E8E93;">USA · PGA</div></div><svg width="44" height="18" viewBox="0 0 44 18" fill="none" style="flex-shrink: 0;"><path d="M2 12 L12 10 L22 11 L32 6 L42 4" stroke="#8E8E93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg><span style="width: 56px; text-align: right; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;">+2,81</span></div>
+        <div data-press="1" style="display: flex; align-items: center; gap: 12px; padding: 13px 0; border-bottom: 1px solid #FFFFFF14; cursor: pointer; border-radius: 12px;" style-active="transform: scale(0.98); background: #1C1C1E"><span style="width: 24px; font-size: 15px; font-weight: 700; color: #8E8E93; font-variant-numeric: tabular-nums;">2</span><div style="flex: 1; min-width: 0;"><div style="font-size: 15px; font-weight: 600;">Rory McIlroy</div><div style="margin-top: 2px; font-size: 13px; color: #8E8E93;">Nord-Irland · PGA</div></div><svg width="44" height="18" viewBox="0 0 44 18" fill="none" style="flex-shrink: 0;"><path d="M2 6 L12 8 L22 7 L32 10 L42 9" stroke="#8E8E93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg><span style="width: 56px; text-align: right; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;">+2,34</span></div>
+        <div data-press="1" style="display: flex; align-items: center; gap: 12px; padding: 13px 0; border-bottom: 1px solid #FFFFFF14; cursor: pointer; border-radius: 12px;" style-active="transform: scale(0.98); background: #1C1C1E"><span style="width: 24px; font-size: 15px; font-weight: 700; color: #8E8E93; font-variant-numeric: tabular-nums;">3</span><div style="flex: 1; min-width: 0;"><div style="font-size: 15px; font-weight: 600;">Jon Rahm</div><div style="margin-top: 2px; font-size: 13px; color: #8E8E93;">Spania · LIV</div></div><svg width="44" height="18" viewBox="0 0 44 18" fill="none" style="flex-shrink: 0;"><path d="M2 9 L12 9 L22 8 L32 7 L42 7" stroke="#8E8E93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg><span style="width: 56px; text-align: right; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;">+2,05</span></div>
+        <div data-press="1" style="display: flex; align-items: center; gap: 12px; padding: 13px 0; border-bottom: 1px solid #FFFFFF14; cursor: pointer; border-radius: 12px;" style-active="transform: scale(0.98); background: #1C1C1E"><span style="width: 24px; font-size: 15px; font-weight: 700; color: #8E8E93; font-variant-numeric: tabular-nums;">4</span><div style="flex: 1; min-width: 0;"><div style="font-size: 15px; font-weight: 600;">Ludvig Åberg</div><div style="margin-top: 2px; font-size: 13px; color: #8E8E93;">Sverige · PGA</div></div><svg width="44" height="18" viewBox="0 0 44 18" fill="none" style="flex-shrink: 0;"><path d="M2 11 L12 9 L22 8 L32 6 L42 5" stroke="#8E8E93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg><span style="width: 56px; text-align: right; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;">+1,88</span></div>
+        <div data-press="1" style="display: flex; align-items: center; gap: 12px; padding: 13px 0; border-bottom: 1px solid #FFFFFF14; cursor: pointer; border-radius: 12px; background: #1C1C1E;" style-active="transform: scale(0.98); background: #2C2C2E"><span style="width: 24px; font-size: 15px; font-weight: 700; color: #8E8E93; font-variant-numeric: tabular-nums;">5</span><div style="flex: 1; min-width: 0;"><div style="font-size: 15px; font-weight: 600;">Viktor Hovland</div><div style="margin-top: 2px; font-size: 13px; color: #8E8E93;">Norge · PGA</div></div><svg width="44" height="18" viewBox="0 0 44 18" fill="none" style="flex-shrink: 0;"><path d="M2 10 L12 12 L22 9 L32 7 L42 6" stroke="#0A84FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg><span style="width: 56px; text-align: right; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;">+1,74</span></div>
+        <div data-press="1" style="display: flex; align-items: center; gap: 12px; padding: 13px 0; border-bottom: 1px solid #FFFFFF14; cursor: pointer; border-radius: 12px;" style-active="transform: scale(0.98); background: #1C1C1E"><span style="width: 24px; font-size: 15px; font-weight: 700; color: #8E8E93; font-variant-numeric: tabular-nums;">6</span><div style="flex: 1; min-width: 0;"><div style="font-size: 15px; font-weight: 600;">Xander Schauffele</div><div style="margin-top: 2px; font-size: 13px; color: #8E8E93;">USA · PGA</div></div><svg width="44" height="18" viewBox="0 0 44 18" fill="none" style="flex-shrink: 0;"><path d="M2 5 L12 7 L22 9 L32 9 L42 11" stroke="#8E8E93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg><span style="width: 56px; text-align: right; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;">+1,61</span></div>
+        <div data-press="1" style="display: flex; align-items: center; gap: 12px; padding: 13px 0; border-bottom: 1px solid #FFFFFF14; cursor: pointer; border-radius: 12px;" style-active="transform: scale(0.98); background: #1C1C1E"><span style="width: 24px; font-size: 15px; font-weight: 700; color: #8E8E93; font-variant-numeric: tabular-nums;">7</span><div style="flex: 1; min-width: 0;"><div style="font-size: 15px; font-weight: 600;">Collin Morikawa</div><div style="margin-top: 2px; font-size: 13px; color: #8E8E93;">USA · PGA</div></div><svg width="44" height="18" viewBox="0 0 44 18" fill="none" style="flex-shrink: 0;"><path d="M2 8 L12 8 L22 10 L32 8 L42 8" stroke="#8E8E93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg><span style="width: 56px; text-align: right; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;">+1,52</span></div>
+        <div data-press="1" style="display: flex; align-items: center; gap: 12px; padding: 13px 0; cursor: pointer; border-radius: 12px;" style-active="transform: scale(0.98); background: #1C1C1E"><span style="width: 24px; font-size: 15px; font-weight: 700; color: #8E8E93; font-variant-numeric: tabular-nums;">8</span><div style="flex: 1; min-width: 0;"><div style="font-size: 15px; font-weight: 600;">Tommy Fleetwood</div><div style="margin-top: 2px; font-size: 13px; color: #8E8E93;">England · PGA</div></div><svg width="44" height="18" viewBox="0 0 44 18" fill="none" style="flex-shrink: 0;"><path d="M2 7 L12 9 L22 8 L32 10 L42 10" stroke="#8E8E93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg><span style="width: 56px; text-align: right; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;">+1,44</span></div>
+      </div>
+
+      <div data-press="1" style="margin-top: 16px; height: 48px; border-radius: 999px; background: #FFFFFF; color: #000000; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; cursor: pointer;" style-active="transform: scale(0.97)">Sammenlign med Øyvind</div>
+      <div style="margin-top: 14px; display: flex; flex-direction: column; gap: 4px;">
+        <div style="font-size: 13px; color: #8E8E93; font-variant-numeric: tabular-nums;">Kilde: Data Golf · oppdatert 30.08.2026</div>
+        <div style="font-size: 13px; color: #8E8E93;">Powered by <a href="https://datagolf.com">Data Golf</a></div>
+      </div>
+    </div>
+    <div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 10px 16px 0;">
+      <div style="height: 64px; background: #1C1C1E; border-radius: 999px; display: flex; align-items: center; padding: 8px; gap: 2px;">
+        <div data-press="1" style="flex: 1; height: 48px; border-radius: 999px; display: flex; align-items: center; justify-content: center; cursor: pointer;" style-active="transform: scale(0.97)"><span style="font-size: 9px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #8E8E93;">Cockpit</span></div>
+        <div data-press="1" style="flex: 1; height: 48px; border-radius: 999px; display: flex; align-items: center; justify-content: center; cursor: pointer;" style-active="transform: scale(0.97)"><span style="font-size: 9px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #8E8E93;">Uke</span></div>
+        <div style="flex: 1; height: 48px; background: #2C2C2E; border-radius: 999px; display: flex; align-items: center; justify-content: center;"><span style="font-size: 9px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #F5F5F5;">Stall</span></div>
+        <div data-press="1" style="flex: 1; height: 48px; border-radius: 999px; display: flex; align-items: center; justify-content: center; cursor: pointer;" style-active="transform: scale(0.97)"><span style="font-size: 9px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #8E8E93;">Innboks</span></div>
+        <div data-press="1" style="flex: 1; height: 48px; border-radius: 999px; display: flex; align-items: center; justify-content: center; cursor: pointer;" style-active="transform: scale(0.97)"><span style="font-size: 9px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #8E8E93;">Meg</span></div>
+      </div>
+      <div style="height: 30px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 8px;"><div style="width: 140px; height: 5px; border-radius: 3px; background: #F5F5F5;"></div></div>
+    </div>
+  </div>
+  <div style="font-family: 'SF Mono', ui-monospace, Menlo, monospace; font-size: 11px; color: #8E8E93;">DG-01a · Toppliste iPhone — egen rangering merket åpent, retningskurve per rad, lisenslinje nederst</div>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+  <div data-screen-label="DG-01b Toppliste desktop 1280" style="width: 1280px; height: 800px; background: #000000; border-radius: 14px; overflow: hidden; position: relative; box-shadow: 0 0 0 1px #2C2C2E, 0 32px 90px rgba(0, 0, 0, 0.85); flex-shrink: 0; display: flex;">
+    <div style="width: 64px; border-right: 1px solid #FFFFFF14; display: flex; flex-direction: column; align-items: center; padding: 14px 0 16px; gap: 6px; flex-shrink: 0;">
+      <div style="display: flex; gap: 6px; margin-bottom: 16px;"><span style="width: 10px; height: 10px; border-radius: 50%; background: #2C2C2E;"></span><span style="width: 10px; height: 10px; border-radius: 50%; background: #2C2C2E;"></span><span style="width: 10px; height: 10px; border-radius: 50%; background: #2C2C2E;"></span></div>
+      <div data-press="1" style="width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer;" style-active="transform: scale(0.94)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="2" stroke-linecap="round"><path d="M4 16.5 a8 8 0 0 1 16 0"></path><path d="M12 16.5 L16.5 11.5"></path></svg></div>
+      <div data-press="1" style="width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer;" style-active="transform: scale(0.94)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3.1"></circle><path d="M3.5 19.5 a5.5 5.5 0 0 1 11 0"></path><circle cx="17.2" cy="9" r="2.5"></circle><path d="M16.2 14 a4.8 4.8 0 0 1 4.6 4.7"></path></svg></div>
+      <div style="width: 44px; height: 44px; border-radius: 12px; background: #FFFFFF; display: flex; align-items: center; justify-content: center;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round"><path d="M5 20 V13 M12 20 V6 M19 20 V10"></path></svg></div>
+      <div style="margin-top: auto; width: 32px; height: 32px; border-radius: 50%; background: #B08968; color: #201409; font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center;">AK</div>
+    </div>
+
+    <div style="flex: 1; min-width: 0; display: flex; flex-direction: column;">
+      <div style="height: 58px; border-bottom: 1px solid #FFFFFF14; display: flex; align-items: center; gap: 14px; padding: 0 26px; flex-shrink: 0;">
+        <span style="font-size: 15px; font-weight: 600; color: #8E8E93;">Referanser</span>
+        <span style="font-size: 15px; font-weight: 600; color: #8E8E93;">·</span>
+        <span style="font-size: 15px; font-weight: 600;">Verdenseliten</span>
+        <span style="margin-left: auto; display: flex; gap: 8px;">
+          <span style="height: 44px; padding: 0 18px; border-radius: 999px; background: #1C1C1E; color: #0A84FF; display: flex; align-items: center; font-size: 13px; font-weight: 600;">Total</span>
+          <span data-press="1" style="height: 44px; padding: 0 18px; border-radius: 999px; color: #8E8E93; display: flex; align-items: center; font-size: 13px; font-weight: 600; cursor: pointer;" style-active="transform: scale(0.97); background: #1C1C1E">Off the tee</span>
+          <span data-press="1" style="height: 44px; padding: 0 18px; border-radius: 999px; color: #8E8E93; display: flex; align-items: center; font-size: 13px; font-weight: 600; cursor: pointer;" style-active="transform: scale(0.97); background: #1C1C1E">Innspill</span>
+          <span data-press="1" style="height: 44px; padding: 0 18px; border-radius: 999px; color: #8E8E93; display: flex; align-items: center; font-size: 13px; font-weight: 600; cursor: pointer;" style-active="transform: scale(0.97); background: #1C1C1E">Nærspill</span>
+          <span data-press="1" style="height: 44px; padding: 0 18px; border-radius: 999px; color: #8E8E93; display: flex; align-items: center; font-size: 13px; font-weight: 600; cursor: pointer;" style-active="transform: scale(0.97); background: #1C1C1E">Putting</span>
+          <span data-press="1" style="height: 44px; padding: 0 18px; border-radius: 999px; color: #8E8E93; display: flex; align-items: center; font-size: 13px; font-weight: 600; cursor: pointer;" style-active="transform: scale(0.97); background: #1C1C1E">Tee-to-green</span>
+        </span>
+      </div>
+
+      <div style="flex: 1; min-height: 0; display: flex;">
+        <div style="flex: 1; min-width: 0; padding: 22px 26px; overflow-y: auto;">
+          <div style="display: flex; align-items: flex-end; gap: 16px;">
+            <div style="flex: 1;">
+              <h1 style="margin: 0; font-size: 34px; font-weight: 700; letter-spacing: -0.02em;">SG total · vår rangering</h1>
+              <div style="margin-top: 6px; font-size: 15px; font-weight: 600; color: #8E8E93;">Regnet ut fra SG-verdiene, ikke Data Golfs offisielle ranking.</div>
+            </div>
+            <span data-press="1" style="height: 44px; padding: 0 16px; border-radius: 999px; border: 1px solid #FFFFFF14; color: #F5F5F5; display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; cursor: pointer;" style-active="transform: scale(0.97); background: #1C1C1E"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="2" stroke-linecap="round"><path d="M4 6 H20 M7 12 H17 M10 18 H14"></path></svg>Alle tourer</span>
+          </div>
+
+          <div style="margin-top: 18px; background: #161616; border-radius: 20px; padding: 4px 22px;">
+            <div style="display: flex; align-items: center; gap: 16px; padding: 10px 0; border-bottom: 1px solid #FFFFFF14;"><span style="width: 40px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">#</span><span style="flex: 1; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Spiller</span><span style="width: 110px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Land</span><span style="width: 80px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Tour</span><span style="width: 90px; text-align: center; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Retning</span><span style="width: 100px; text-align: right; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #F5F5F5;">SG total</span></div>
+            <div data-press="1" style="display: flex; align-items: center; gap: 16px; padding: 13px 0; border-bottom: 1px solid #FFFFFF14; cursor: pointer; border-radius: 12px;" style-active="transform: scale(0.995); background: #1C1C1E"><span style="width: 40px; font-size: 15px; font-weight: 700; color: #8E8E93; font-variant-numeric: tabular-nums;">1</span><span style="flex: 1; font-size: 15px; font-weight: 600;">Scottie Scheffler</span><span style="width: 110px; font-size: 15px; font-weight: 600; color: #8E8E93;">USA</span><span style="width: 80px; font-size: 13px; font-weight: 600; color: #8E8E93;">PGA</span><span style="width: 90px; display: flex; justify-content: center;"><svg width="60" height="18" viewBox="0 0 60 18" fill="none"><path d="M2 12 L16 10 L30 11 L44 6 L58 4" stroke="#8E8E93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><span style="width: 100px; text-align: right; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;">+2,81</span></div>
+            <div data-press="1" style="display: flex; align-items: center; gap: 16px; padding: 13px 0; border-bottom: 1px solid #FFFFFF14; cursor: pointer; border-radius: 12px;" style-active="transform: scale(0.995); background: #1C1C1E"><span style="width: 40px; font-size: 15px; font-weight: 700; color: #8E8E93; font-variant-numeric: tabular-nums;">2</span><span style="flex: 1; font-size: 15px; font-weight: 600;">Rory McIlroy</span><span style="width: 110px; font-size: 15px; font-weight: 600; color: #8E8E93;">Nord-Irland</span><span style="width: 80px; font-size: 13px; font-weight: 600; color: #8E8E93;">PGA</span><span style="width: 90px; display: flex; justify-content: center;"><svg width="60" height="18" viewBox="0 0 60 18" fill="none"><path d="M2 6 L16 8 L30 7 L44 10 L58 9" stroke="#8E8E93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><span style="width: 100px; text-align: right; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;">+2,34</span></div>
+            <div data-press="1" style="display: flex; align-items: center; gap: 16px; padding: 13px 0; border-bottom: 1px solid #FFFFFF14; cursor: pointer; border-radius: 12px;" style-active="transform: scale(0.995); background: #1C1C1E"><span style="width: 40px; font-size: 15px; font-weight: 700; color: #8E8E93; font-variant-numeric: tabular-nums;">3</span><span style="flex: 1; font-size: 15px; font-weight: 600;">Jon Rahm</span><span style="width: 110px; font-size: 15px; font-weight: 600; color: #8E8E93;">Spania</span><span style="width: 80px; font-size: 13px; font-weight: 600; color: #8E8E93;">LIV</span><span style="width: 90px; display: flex; justify-content: center;"><svg width="60" height="18" viewBox="0 0 60 18" fill="none"><path d="M2 9 L16 9 L30 8 L44 7 L58 7" stroke="#8E8E93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><span style="width: 100px; text-align: right; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;">+2,05</span></div>
+            <div data-press="1" style="display: flex; align-items: center; gap: 16px; padding: 13px 0; border-bottom: 1px solid #FFFFFF14; cursor: pointer; border-radius: 12px;" style-active="transform: scale(0.995); background: #1C1C1E"><span style="width: 40px; font-size: 15px; font-weight: 700; color: #8E8E93; font-variant-numeric: tabular-nums;">4</span><span style="flex: 1; font-size: 15px; font-weight: 600;">Ludvig Åberg</span><span style="width: 110px; font-size: 15px; font-weight: 600; color: #8E8E93;">Sverige</span><span style="width: 80px; font-size: 13px; font-weight: 600; color: #8E8E93;">PGA</span><span style="width: 90px; display: flex; justify-content: center;"><svg width="60" height="18" viewBox="0 0 60 18" fill="none"><path d="M2 11 L16 9 L30 8 L44 6 L58 5" stroke="#8E8E93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><span style="width: 100px; text-align: right; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;">+1,88</span></div>
+            <div data-press="1" style="display: flex; align-items: center; gap: 16px; padding: 13px 0; border-bottom: 1px solid #FFFFFF14; cursor: pointer; border-radius: 12px; background: #1C1C1E;" style-active="transform: scale(0.995); background: #2C2C2E"><span style="width: 40px; font-size: 15px; font-weight: 700; color: #8E8E93; font-variant-numeric: tabular-nums;">5</span><span style="flex: 1; font-size: 15px; font-weight: 600;">Viktor Hovland</span><span style="width: 110px; font-size: 15px; font-weight: 600; color: #8E8E93;">Norge</span><span style="width: 80px; font-size: 13px; font-weight: 600; color: #8E8E93;">PGA</span><span style="width: 90px; display: flex; justify-content: center;"><svg width="60" height="18" viewBox="0 0 60 18" fill="none"><path d="M2 10 L16 12 L30 9 L44 7 L58 6" stroke="#0A84FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><span style="width: 100px; text-align: right; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;">+1,74</span></div>
+            <div data-press="1" style="display: flex; align-items: center; gap: 16px; padding: 13px 0; border-bottom: 1px solid #FFFFFF14; cursor: pointer; border-radius: 12px;" style-active="transform: scale(0.995); background: #1C1C1E"><span style="width: 40px; font-size: 15px; font-weight: 700; color: #8E8E93; font-variant-numeric: tabular-nums;">6</span><span style="flex: 1; font-size: 15px; font-weight: 600;">Xander Schauffele</span><span style="width: 110px; font-size: 15px; font-weight: 600; color: #8E8E93;">USA</span><span style="width: 80px; font-size: 13px; font-weight: 600; color: #8E8E93;">PGA</span><span style="width: 90px; display: flex; justify-content: center;"><svg width="60" height="18" viewBox="0 0 60 18" fill="none"><path d="M2 5 L16 7 L30 9 L44 9 L58 11" stroke="#8E8E93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><span style="width: 100px; text-align: right; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;">+1,61</span></div>
+            <div data-press="1" style="display: flex; align-items: center; gap: 16px; padding: 13px 0; border-bottom: 1px solid #FFFFFF14; cursor: pointer; border-radius: 12px;" style-active="transform: scale(0.995); background: #1C1C1E"><span style="width: 40px; font-size: 15px; font-weight: 700; color: #8E8E93; font-variant-numeric: tabular-nums;">7</span><span style="flex: 1; font-size: 15px; font-weight: 600;">Collin Morikawa</span><span style="width: 110px; font-size: 15px; font-weight: 600; color: #8E8E93;">USA</span><span style="width: 80px; font-size: 13px; font-weight: 600; color: #8E8E93;">PGA</span><span style="width: 90px; display: flex; justify-content: center;"><svg width="60" height="18" viewBox="0 0 60 18" fill="none"><path d="M2 8 L16 8 L30 10 L44 8 L58 8" stroke="#8E8E93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><span style="width: 100px; text-align: right; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;">+1,52</span></div>
+            <div data-press="1" style="display: flex; align-items: center; gap: 16px; padding: 13px 0; border-bottom: 1px solid #FFFFFF14; cursor: pointer; border-radius: 12px;" style-active="transform: scale(0.995); background: #1C1C1E"><span style="width: 40px; font-size: 15px; font-weight: 700; color: #8E8E93; font-variant-numeric: tabular-nums;">8</span><span style="flex: 1; font-size: 15px; font-weight: 600;">Tommy Fleetwood</span><span style="width: 110px; font-size: 15px; font-weight: 600; color: #8E8E93;">England</span><span style="width: 80px; font-size: 13px; font-weight: 600; color: #8E8E93;">PGA</span><span style="width: 90px; display: flex; justify-content: center;"><svg width="60" height="18" viewBox="0 0 60 18" fill="none"><path d="M2 7 L16 9 L30 8 L44 10 L58 10" stroke="#8E8E93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><span style="width: 100px; text-align: right; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;">+1,44</span></div>
+            <div data-press="1" style="display: flex; align-items: center; gap: 16px; padding: 13px 0; border-bottom: 1px solid #FFFFFF14; cursor: pointer; border-radius: 12px;" style-active="transform: scale(0.995); background: #1C1C1E"><span style="width: 40px; font-size: 15px; font-weight: 700; color: #8E8E93; font-variant-numeric: tabular-nums;">9</span><span style="flex: 1; font-size: 15px; font-weight: 600;">Hideki Matsuyama</span><span style="width: 110px; font-size: 15px; font-weight: 600; color: #8E8E93;">Japan</span><span style="width: 80px; font-size: 13px; font-weight: 600; color: #8E8E93;">PGA</span><span style="width: 90px; display: flex; justify-content: center;"><svg width="60" height="18" viewBox="0 0 60 18" fill="none"><path d="M2 9 L16 7 L30 8 L44 9 L58 8" stroke="#8E8E93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><span style="width: 100px; text-align: right; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;">+1,36</span></div>
+            <div data-press="1" style="display: flex; align-items: center; gap: 16px; padding: 13px 0; cursor: pointer; border-radius: 12px;" style-active="transform: scale(0.995); background: #1C1C1E"><span style="width: 40px; font-size: 15px; font-weight: 700; color: #8E8E93; font-variant-numeric: tabular-nums;">10</span><span style="flex: 1; font-size: 15px; font-weight: 600;">Robert MacIntyre</span><span style="width: 110px; font-size: 15px; font-weight: 600; color: #8E8E93;">Skottland</span><span style="width: 80px; font-size: 13px; font-weight: 600; color: #8E8E93;">DPWT</span><span style="width: 90px; display: flex; justify-content: center;"><svg width="60" height="18" viewBox="0 0 60 18" fill="none"><path d="M2 12 L16 11 L30 9 L44 8 L58 7" stroke="#8E8E93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><span style="width: 100px; text-align: right; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;">+1,29</span></div>
+          </div>
+          <div style="margin-top: 12px; display: flex; align-items: center; gap: 16px;">
+            <span style="font-size: 13px; color: #8E8E93; font-variant-numeric: tabular-nums;">Viser 10 av 446 · SG total spenner fra +2,81 til −3,87</span>
+            <span data-sub="1" style="font-size: 13px; font-weight: 600; color: #0A84FF; cursor: pointer;">Vis flere</span>
+          </div>
+        </div>
+
+        <div style="width: 340px; border-left: 1px solid #FFFFFF14; padding: 22px 24px; flex-shrink: 0; overflow-y: auto;">
+          <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Grunnlaget</div>
+          <div style="margin-top: 10px; background: #161616; border-radius: 20px; padding: 4px 18px;">
+            <div style="display: flex; align-items: center; gap: 12px; padding: 13px 0; border-bottom: 1px solid #FFFFFF14;"><span style="flex: 1; font-size: 15px; font-weight: 600;">Spillere</span><span style="font-size: 15px; font-weight: 600; color: #8E8E93; font-variant-numeric: tabular-nums;">446</span></div>
+            <div style="display: flex; align-items: center; gap: 12px; padding: 13px 0; border-bottom: 1px solid #FFFFFF14;"><span style="flex: 1; font-size: 15px; font-weight: 600;">Runder med full SG</span><span style="font-size: 15px; font-weight: 600; color: #8E8E93; font-variant-numeric: tabular-nums;">995 832</span></div>
+            <div style="display: flex; align-items: center; gap: 12px; padding: 13px 0; border-bottom: 1px solid #FFFFFF14;"><span style="flex: 1; font-size: 15px; font-weight: 600;">Spenn i SG total</span><span style="font-size: 15px; font-weight: 600; color: #8E8E93; font-variant-numeric: tabular-nums;">+2,81 … −3,87</span></div>
+            <div style="display: flex; align-items: center; gap: 12px; padding: 13px 0;"><span style="flex: 1; font-size: 15px; font-weight: 600;">Oppdatert</span><span style="font-size: 15px; font-weight: 600; color: #8E8E93; font-variant-numeric: tabular-nums;">30.08.2026</span></div>
+          </div>
+
+          <div style="margin-top: 22px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Sesongtidslinje</div>
+          <div style="margin-top: 10px; background: #161616; border-radius: 20px; padding: 20px;">
+            <div style="font-size: 15px; font-weight: 600; line-height: 1.5;">Vi har ikke datoene på arrangementene ennå, så turneringshistorikk og premiepenger kan vi ikke vise her.</div>
+            <div style="margin-top: 8px; font-size: 13px; color: #8E8E93; line-height: 1.5;">SG-verdiene står på egne bein — de er per runde, ikke per uke.</div>
+          </div>
+
+          <div data-press="1" style="margin-top: 18px; height: 48px; border-radius: 999px; background: #FFFFFF; color: #000000; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; cursor: pointer;" style-active="transform: scale(0.97)">Sammenlign med Øyvind</div>
+          <div style="margin-top: 14px; display: flex; flex-direction: column; gap: 4px;">
+            <div style="font-size: 13px; color: #8E8E93; font-variant-numeric: tabular-nums;">Kilde: Data Golf · oppdatert 30.08.2026</div>
+            <div style="font-size: 13px; color: #8E8E93;">Powered by <a href="https://datagolf.com">Data Golf</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="font-family: 'SF Mono', ui-monospace, Menlo, monospace; font-size: 11px; color: #8E8E93;">DG-01b · Toppliste desktop 1280 — sorterbar tabell, ærlig tom tilstand på sesongtidslinje</div>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+  <div data-screen-label="DG-02a SG-profil iPhone" style="width: 390px; height: 844px; background: #000000; border-radius: 54px; overflow: hidden; position: relative; box-shadow: 0 0 0 3px #1C1C1E, 0 0 0 10px #050505, 0 32px 90px rgba(0, 0, 0, 0.85); flex-shrink: 0;">
+    <div style="position: absolute; top: 11px; left: 50%; transform: translateX(-50%); width: 122px; height: 36px; border-radius: 20px; background: #0D0D0D; z-index: 5;"></div>
+    <div style="position: relative; height: 54px; display: flex; align-items: flex-end; padding: 0 32px 4px;"><span style="font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">07.42</span></div>
+    <div style="position: absolute; top: 54px; bottom: 0; left: 0; right: 0; overflow-y: auto; padding: 4px 16px 110px;">
+      <div data-sub="1" style="height: 44px; display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; color: #8E8E93; cursor: pointer;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5 L8 12 L15 19"></path></svg>Verdenseliten</div>
+      <h1 style="margin: 2px 0 0; font-size: 34px; font-weight: 700; letter-spacing: -0.02em;">Viktor Hovland</h1>
+      <div style="margin-top: 6px; font-size: 15px; font-weight: 600; color: #8E8E93; font-variant-numeric: tabular-nums;">Norge · PGA · 5. på vår SG-rangering</div>
+
+      <div style="margin-top: 16px; background: #161616; border-radius: 20px; padding: 20px;">
+        <div style="display: flex; align-items: baseline; gap: 10px;"><span style="font-size: 56px; font-weight: 700; line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">+1,74</span><span style="font-size: 15px; font-weight: 600; color: #8E8E93;">SG total per runde</span></div>
+        <div style="margin-top: 6px; font-size: 13px; color: #8E8E93; line-height: 1.5; font-variant-numeric: tabular-nums;">Kilde: Data Golf · oppdatert 30.08.2026</div>
+
+        <div style="margin-top: 18px; display: flex; flex-direction: column; gap: 12px;">
+          <div style="display: flex; align-items: center; gap: 12px;"><span style="width: 92px; font-size: 13px; font-weight: 600; color: #8E8E93;">Off the tee</span><span style="flex: 1; height: 12px; border-radius: 999px; background: #2C2C2E; overflow: hidden;"><span style="display: block; margin-left: 33%; width: 31%; height: 12px; border-radius: 999px; background: #B08968;"></span></span><span style="width: 52px; text-align: right; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;">+0,92</span></div>
+          <div style="display: flex; align-items: center; gap: 12px;"><span style="width: 92px; font-size: 13px; font-weight: 600; color: #8E8E93;">Innspill</span><span style="flex: 1; height: 12px; border-radius: 999px; background: #2C2C2E; overflow: hidden;"><span style="display: block; margin-left: 33%; width: 24%; height: 12px; border-radius: 999px; background: #B08968;"></span></span><span style="width: 52px; text-align: right; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;">+0,71</span></div>
+          <div style="display: flex; align-items: center; gap: 12px;"><span style="width: 92px; font-size: 13px; font-weight: 600; color: #8E8E93;">Nærspill</span><span style="flex: 1; height: 12px; border-radius: 999px; background: #2C2C2E; overflow: hidden;"><span style="display: block; margin-left: 30%; width: 3%; height: 12px; border-radius: 999px; background: #B08968; opacity: 0.45;"></span></span><span style="width: 52px; text-align: right; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; opacity: 0.45;">−0,08</span></div>
+          <div style="display: flex; align-items: center; gap: 12px;"><span style="width: 92px; font-size: 13px; font-weight: 600; color: #8E8E93;">Putting</span><span style="flex: 1; height: 12px; border-radius: 999px; background: #2C2C2E; overflow: hidden;"><span style="display: block; margin-left: 33%; width: 7%; height: 12px; border-radius: 999px; background: #B08968;"></span></span><span style="width: 52px; text-align: right; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;">+0,19</span></div>
+          <div style="display: flex; align-items: center; gap: 12px;"><span style="width: 92px; font-size: 13px; font-weight: 600; color: #8E8E93;">Tee-to-green</span><span style="flex: 1; height: 12px; border-radius: 999px; background: #2C2C2E; overflow: hidden;"><span style="display: block; margin-left: 33%; width: 52%; height: 12px; border-radius: 999px; background: #B08968;"></span></span><span style="width: 52px; text-align: right; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;">+1,55</span></div>
+        </div>
+        <div style="margin-top: 14px; padding-top: 14px; border-top: 1px solid #FFFFFF14; font-size: 13px; color: #8E8E93; line-height: 1.5;">Nullpunktet i stolpene er tourgjennomsnittet. Negative tall er dempet, ikke røde.</div>
+      </div>
+
+      <div style="margin-top: 22px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Innspill per avstand</div>
+      <div style="margin-top: 10px; background: #161616; border-radius: 20px; padding: 4px 20px;">
+        <div style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #FFFFFF14;"><span style="width: 88px; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">50–75 y</span><span style="flex: 1; height: 10px; border-radius: 999px; background: #2C2C2E; overflow: hidden;"><span style="display: block; width: 24%; height: 10px; border-radius: 999px; background: #B08968;"></span></span><span style="width: 52px; text-align: right; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">+0,06</span></div>
+        <div style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #FFFFFF14;"><span style="width: 88px; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">75–100 y</span><span style="flex: 1; height: 10px; border-radius: 999px; background: #2C2C2E; overflow: hidden;"><span style="display: block; width: 36%; height: 10px; border-radius: 999px; background: #B08968;"></span></span><span style="width: 52px; text-align: right; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">+0,09</span></div>
+        <div style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #FFFFFF14;"><span style="width: 88px; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">100–125 y</span><span style="flex: 1; height: 10px; border-radius: 999px; background: #2C2C2E; overflow: hidden;"><span style="display: block; width: 56%; height: 10px; border-radius: 999px; background: #B08968;"></span></span><span style="width: 52px; text-align: right; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">+0,14</span></div>
+        <div style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #FFFFFF14;"><span style="width: 88px; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">125–150 y</span><span style="flex: 1; height: 10px; border-radius: 999px; background: #2C2C2E; overflow: hidden;"><span style="display: block; width: 72%; height: 10px; border-radius: 999px; background: #B08968;"></span></span><span style="width: 52px; text-align: right; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">+0,18</span></div>
+        <div style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #FFFFFF14;"><span style="width: 88px; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">150–175 y</span><span style="flex: 1; height: 10px; border-radius: 999px; background: #2C2C2E; overflow: hidden;"><span style="display: block; width: 44%; height: 10px; border-radius: 999px; background: #B08968;"></span></span><span style="width: 52px; text-align: right; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">+0,11</span></div>
+        <div style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #FFFFFF14;"><span style="width: 88px; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">175–200 y</span><span style="flex: 1; height: 10px; border-radius: 999px; background: #2C2C2E; overflow: hidden;"><span style="display: block; width: 32%; height: 10px; border-radius: 999px; background: #B08968;"></span></span><span style="width: 52px; text-align: right; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">+0,08</span></div>
+        <div style="display: flex; align-items: center; gap: 12px; padding: 12px 0;"><span style="width: 88px; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">200+ y</span><span style="flex: 1; height: 10px; border-radius: 999px; background: #2C2C2E; overflow: hidden;"><span style="display: block; width: 20%; height: 10px; border-radius: 999px; background: #B08968;"></span></span><span style="width: 52px; text-align: right; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">+0,05</span></div>
+      </div>
+      <div style="margin-top: 10px; font-size: 13px; color: #8E8E93; line-height: 1.5;">Samme sju bøtter som TrackMan-øktene til Øyvind. Tallene kan legges rett ved siden av hverandre.</div>
+
+      <div style="margin-top: 22px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Køllelengde og treff</div>
+      <div style="margin-top: 10px; display: flex; gap: 12px;">
+        <div style="flex: 1; background: #161616; border-radius: 20px; padding: 18px;"><div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Driver</div><div style="margin-top: 6px; font-size: 34px; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">302,4</div><div style="margin-top: 2px; font-size: 13px; color: #8E8E93;">yards i snitt</div></div>
+        <div style="flex: 1; background: #161616; border-radius: 20px; padding: 18px;"><div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Fairway</div><div style="margin-top: 6px; font-size: 34px; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">61,8</div><div style="margin-top: 2px; font-size: 13px; color: #8E8E93;">prosent treff</div></div>
+      </div>
+
+      <div style="margin-top: 12px; background: #161616; border-radius: 20px; padding: 20px;">
+        <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Turneringshistorikk</div>
+        <div style="margin-top: 8px; font-size: 15px; font-weight: 600; line-height: 1.5;">Datoene på arrangementene er ikke hentet inn ennå, så vi kan ikke vise sesongen hans uke for uke.</div>
+      </div>
+
+      <div data-press="1" style="margin-top: 16px; height: 48px; border-radius: 999px; background: #FFFFFF; color: #000000; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; cursor: pointer;" style-active="transform: scale(0.97)">Bruk som referanse for Øyvind</div>
+      <div style="margin-top: 14px; display: flex; flex-direction: column; gap: 4px;">
+        <div style="font-size: 13px; color: #8E8E93; font-variant-numeric: tabular-nums;">Kilde: Data Golf · oppdatert 30.08.2026</div>
+        <div style="font-size: 13px; color: #8E8E93;">Powered by <a href="https://datagolf.com">Data Golf</a></div>
+      </div>
+    </div>
+    <div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 10px 16px 0;">
+      <div style="height: 64px; background: #1C1C1E; border-radius: 999px; display: flex; align-items: center; padding: 8px; gap: 2px;">
+        <div data-press="1" style="flex: 1; height: 48px; border-radius: 999px; display: flex; align-items: center; justify-content: center; cursor: pointer;" style-active="transform: scale(0.97)"><span style="font-size: 9px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #8E8E93;">Cockpit</span></div>
+        <div data-press="1" style="flex: 1; height: 48px; border-radius: 999px; display: flex; align-items: center; justify-content: center; cursor: pointer;" style-active="transform: scale(0.97)"><span style="font-size: 9px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #8E8E93;">Uke</span></div>
+        <div style="flex: 1; height: 48px; background: #2C2C2E; border-radius: 999px; display: flex; align-items: center; justify-content: center;"><span style="font-size: 9px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #F5F5F5;">Stall</span></div>
+        <div data-press="1" style="flex: 1; height: 48px; border-radius: 999px; display: flex; align-items: center; justify-content: center; cursor: pointer;" style-active="transform: scale(0.97)"><span style="font-size: 9px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #8E8E93;">Innboks</span></div>
+        <div data-press="1" style="flex: 1; height: 48px; border-radius: 999px; display: flex; align-items: center; justify-content: center; cursor: pointer;" style-active="transform: scale(0.97)"><span style="font-size: 9px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #8E8E93;">Meg</span></div>
+      </div>
+      <div style="height: 30px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 8px;"><div style="width: 140px; height: 5px; border-radius: 3px; background: #F5F5F5;"></div></div>
+    </div>
+  </div>
+  <div style="font-family: 'SF Mono', ui-monospace, Menlo, monospace; font-size: 11px; color: #8E8E93;">DG-02a · SG-profil iPhone — fem kategorier på to sekunder, sju avstandsbøtter, ærlig hull i historikken</div>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+  <div data-screen-label="DG-02b SG-profil desktop 1280" style="width: 1280px; height: 800px; background: #000000; border-radius: 14px; overflow: hidden; position: relative; box-shadow: 0 0 0 1px #2C2C2E, 0 32px 90px rgba(0, 0, 0, 0.85); flex-shrink: 0; display: flex;">
+    <div style="width: 64px; border-right: 1px solid #FFFFFF14; display: flex; flex-direction: column; align-items: center; padding: 14px 0 16px; gap: 6px; flex-shrink: 0;">
+      <div style="display: flex; gap: 6px; margin-bottom: 16px;"><span style="width: 10px; height: 10px; border-radius: 50%; background: #2C2C2E;"></span><span style="width: 10px; height: 10px; border-radius: 50%; background: #2C2C2E;"></span><span style="width: 10px; height: 10px; border-radius: 50%; background: #2C2C2E;"></span></div>
+      <div data-press="1" style="width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer;" style-active="transform: scale(0.94)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="2" stroke-linecap="round"><path d="M4 16.5 a8 8 0 0 1 16 0"></path><path d="M12 16.5 L16.5 11.5"></path></svg></div>
+      <div data-press="1" style="width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer;" style-active="transform: scale(0.94)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3.1"></circle><path d="M3.5 19.5 a5.5 5.5 0 0 1 11 0"></path><circle cx="17.2" cy="9" r="2.5"></circle><path d="M16.2 14 a4.8 4.8 0 0 1 4.6 4.7"></path></svg></div>
+      <div style="width: 44px; height: 44px; border-radius: 12px; background: #FFFFFF; display: flex; align-items: center; justify-content: center;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round"><path d="M5 20 V13 M12 20 V6 M19 20 V10"></path></svg></div>
+      <div style="margin-top: auto; width: 32px; height: 32px; border-radius: 50%; background: #B08968; color: #201409; font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center;">AK</div>
+    </div>
+
+    <div style="flex: 1; min-width: 0; display: flex; flex-direction: column;">
+      <div style="height: 58px; border-bottom: 1px solid #FFFFFF14; display: flex; align-items: center; gap: 14px; padding: 0 26px; flex-shrink: 0;">
+        <span data-sub="1" style="display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; color: #8E8E93; cursor: pointer;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5 L8 12 L15 19"></path></svg>Verdenseliten</span>
+        <span style="font-size: 15px; font-weight: 600; color: #8E8E93;">·</span>
+        <span style="font-size: 15px; font-weight: 600;">Viktor Hovland</span>
+        <span style="margin-left: auto; font-size: 13px; color: #8E8E93; font-variant-numeric: tabular-nums;">5. på vår SG-rangering · 446 spillere</span>
+      </div>
+
+      <div style="flex: 1; min-height: 0; display: flex;">
+        <div style="flex: 1; min-width: 0; padding: 22px 26px; overflow-y: auto;">
+          <div style="display: flex; align-items: flex-end; gap: 16px;">
+            <div style="flex: 1;">
+              <h1 style="margin: 0; font-size: 34px; font-weight: 700; letter-spacing: -0.02em;">Viktor Hovland</h1>
+              <div style="margin-top: 6px; font-size: 15px; font-weight: 600; color: #8E8E93;">Norge · PGA Tour</div>
+            </div>
+            <span style="font-size: 13px; color: #8E8E93; font-variant-numeric: tabular-nums;">Kilde: Data Golf · oppdatert 30.08.2026</span>
+          </div>
+
+          <div style="margin-top: 18px; background: #161616; border-radius: 20px; padding: 22px;">
+            <div style="display: flex; align-items: baseline; justify-content: space-between;">
+              <div>
+                <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">SG total per runde</div>
+                <div style="margin-top: 8px; font-size: 56px; font-weight: 700; line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">+1,74</div>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Tee-to-green</div>
+                <div style="margin-top: 8px; font-size: 26px; font-weight: 700; letter-spacing: -0.01em; font-variant-numeric: tabular-nums;">+1,55</div>
+              </div>
+            </div>
+            <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 14px;">
+              <div style="display: flex; align-items: center; gap: 16px;"><span style="width: 120px; font-size: 15px; font-weight: 600; color: #8E8E93;">Off the tee</span><span style="flex: 1; height: 14px; border-radius: 999px; background: #2C2C2E; overflow: hidden;"><span style="display: block; margin-left: 33%; width: 31%; height: 14px; border-radius: 999px; background: #B08968;"></span></span><span style="width: 70px; text-align: right; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;">+0,92</span></div>
+              <div style="display: flex; align-items: center; gap: 16px;"><span style="width: 120px; font-size: 15px; font-weight: 600; color: #8E8E93;">Innspill</span><span style="flex: 1; height: 14px; border-radius: 999px; background: #2C2C2E; overflow: hidden;"><span style="display: block; margin-left: 33%; width: 24%; height: 14px; border-radius: 999px; background: #B08968;"></span></span><span style="width: 70px; text-align: right; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;">+0,71</span></div>
+              <div style="display: flex; align-items: center; gap: 16px;"><span style="width: 120px; font-size: 15px; font-weight: 600; color: #8E8E93;">Nærspill</span><span style="flex: 1; height: 14px; border-radius: 999px; background: #2C2C2E; overflow: hidden;"><span style="display: block; margin-left: 30%; width: 3%; height: 14px; border-radius: 999px; background: #B08968; opacity: 0.45;"></span></span><span style="width: 70px; text-align: right; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; opacity: 0.45;">−0,08</span></div>
+              <div style="display: flex; align-items: center; gap: 16px;"><span style="width: 120px; font-size: 15px; font-weight: 600; color: #8E8E93;">Putting</span><span style="flex: 1; height: 14px; border-radius: 999px; background: #2C2C2E; overflow: hidden;"><span style="display: block; margin-left: 33%; width: 7%; height: 14px; border-radius: 999px; background: #B08968;"></span></span><span style="width: 70px; text-align: right; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;">+0,19</span></div>
+            </div>
+            <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #FFFFFF14; font-size: 13px; color: #8E8E93;">Nullpunktet er tourgjennomsnittet. Nærspillet er hans eneste kategori under snitt.</div>
+          </div>
+
+          <div style="margin-top: 22px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Innspill per avstand · det coachen sammenligner med</div>
+          <div style="margin-top: 10px; background: #161616; border-radius: 20px; padding: 22px;">
+            <svg width="100%" height="200" viewBox="0 0 860 200" preserveAspectRatio="none" style="display: block;">
+              <path d="M20 180 H840" stroke="#FFFFFF" stroke-opacity="0.14" stroke-width="1.5"></path>
+              <rect x="40" y="122" width="80" height="58" rx="6" fill="#B08968"></rect>
+              <rect x="152" y="94" width="80" height="86" rx="6" fill="#B08968"></rect>
+              <rect x="264" y="52" width="80" height="128" rx="6" fill="#B08968"></rect>
+              <rect x="376" y="24" width="80" height="156" rx="6" fill="#B08968"></rect>
+              <rect x="488" y="76" width="80" height="104" rx="6" fill="#B08968"></rect>
+              <rect x="600" y="108" width="80" height="72" rx="6" fill="#B08968"></rect>
+              <rect x="712" y="136" width="80" height="44" rx="6" fill="#B08968"></rect>
+            </svg>
+            <div style="margin-top: 10px; display: flex;">
+              <div style="flex: 1; text-align: center;"><div style="font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;">+0,06</div><div style="margin-top: 2px; font-size: 11px; font-weight: 600; color: #8E8E93; font-variant-numeric: tabular-nums;">50–75</div></div>
+              <div style="flex: 1; text-align: center;"><div style="font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;">+0,09</div><div style="margin-top: 2px; font-size: 11px; font-weight: 600; color: #8E8E93; font-variant-numeric: tabular-nums;">75–100</div></div>
+              <div style="flex: 1; text-align: center;"><div style="font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;">+0,14</div><div style="margin-top: 2px; font-size: 11px; font-weight: 600; color: #8E8E93; font-variant-numeric: tabular-nums;">100–125</div></div>
+              <div style="flex: 1; text-align: center;"><div style="font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;">+0,18</div><div style="margin-top: 2px; font-size: 11px; font-weight: 600; color: #F5F5F5; font-variant-numeric: tabular-nums;">125–150</div></div>
+              <div style="flex: 1; text-align: center;"><div style="font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;">+0,11</div><div style="margin-top: 2px; font-size: 11px; font-weight: 600; color: #8E8E93; font-variant-numeric: tabular-nums;">150–175</div></div>
+              <div style="flex: 1; text-align: center;"><div style="font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;">+0,08</div><div style="margin-top: 2px; font-size: 11px; font-weight: 600; color: #8E8E93; font-variant-numeric: tabular-nums;">175–200</div></div>
+              <div style="flex: 1; text-align: center;"><div style="font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;">+0,05</div><div style="margin-top: 2px; font-size: 11px; font-weight: 600; color: #8E8E93; font-variant-numeric: tabular-nums;">200+</div></div>
+            </div>
+            <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #FFFFFF14; font-size: 13px; color: #8E8E93;">SG per innspill i yards. Samme sju bøtter som TrackMan-øktene, så tallene kan legges side om side med Øyvinds.</div>
+          </div>
+        </div>
+
+        <div style="width: 340px; border-left: 1px solid #FFFFFF14; padding: 22px 24px; flex-shrink: 0; overflow-y: auto;">
+          <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Køllelengde og treff</div>
+          <div style="margin-top: 10px; background: #161616; border-radius: 20px; padding: 4px 18px;">
+            <div style="display: flex; align-items: center; gap: 12px; padding: 13px 0; border-bottom: 1px solid #FFFFFF14;"><span style="flex: 1; font-size: 15px; font-weight: 600;">Driver</span><span style="font-size: 15px; font-weight: 600; color: #8E8E93; font-variant-numeric: tabular-nums;">302,4 y</span></div>
+            <div style="display: flex; align-items: center; gap: 12px; padding: 13px 0; border-bottom: 1px solid #FFFFFF14;"><span style="flex: 1; font-size: 15px; font-weight: 600;">Fairwaytreff</span><span style="font-size: 15px; font-weight: 600; color: #8E8E93; font-variant-numeric: tabular-nums;">61,8 %</span></div>
+            <div style="display: flex; align-items: center; gap: 12px; padding: 13px 0; border-bottom: 1px solid #FFFFFF14;"><span style="flex: 1; font-size: 15px; font-weight: 600;">Greenstreff</span><span style="font-size: 15px; font-weight: 600; color: #8E8E93; font-variant-numeric: tabular-nums;">71,2 %</span></div>
+            <div style="display: flex; align-items: center; gap: 12px; padding: 13px 0;"><span style="flex: 1; font-size: 15px; font-weight: 600;">Runder i grunnlaget</span><span style="font-size: 15px; font-weight: 600; color: #8E8E93; font-variant-numeric: tabular-nums;">412</span></div>
+          </div>
+
+          <div style="margin-top: 22px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Utvikling i målingene</div>
+          <div style="margin-top: 10px; background: #161616; border-radius: 20px; padding: 20px;">
+            <svg width="100%" height="120" viewBox="0 0 280 120" preserveAspectRatio="none" style="display: block;">
+              <path d="M10 108 H270" stroke="#FFFFFF" stroke-opacity="0.14" stroke-width="1.5"></path>
+              <path d="M10 40 H270 M10 74 H270" stroke="#FFFFFF" stroke-opacity="0.06" stroke-width="1"></path>
+              <path d="M10 78 L75 84 L140 62 L205 48 L268 40" stroke="#B08968" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+              <circle cx="268" cy="40" r="6" fill="#B08968"></circle>
+            </svg>
+            <div style="margin-top: 10px; font-size: 13px; color: #8E8E93; line-height: 1.5; font-variant-numeric: tabular-nums;">SG total over de fem siste målingene: +1,41 → +1,74</div>
+          </div>
+
+          <div style="margin-top: 22px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Premiepenger</div>
+          <div style="margin-top: 10px; background: #161616; border-radius: 20px; padding: 20px;">
+            <div style="font-size: 15px; font-weight: 600; line-height: 1.5;">Premiepenger og turneringshistorikk mangler i grunnlaget, fordi datoene på arrangementene ikke er hentet inn.</div>
+          </div>
+
+          <div data-press="1" style="margin-top: 18px; height: 48px; border-radius: 999px; background: #FFFFFF; color: #000000; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; cursor: pointer;" style-active="transform: scale(0.97)">Bruk som referanse for Øyvind</div>
+          <div style="margin-top: 14px; display: flex; flex-direction: column; gap: 4px;">
+            <div style="font-size: 13px; color: #8E8E93; font-variant-numeric: tabular-nums;">Kilde: Data Golf · oppdatert 30.08.2026</div>
+            <div style="font-size: 13px; color: #8E8E93;">Powered by <a href="https://datagolf.com">Data Golf</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="font-family: 'SF Mono', ui-monospace, Menlo, monospace; font-size: 11px; color: #8E8E93;">DG-02b · SG-profil desktop 1280 — avstandsbøttene som stolper, ærlige hull der data mangler</div>
+</div>
+
+</div>
+</x-dc>
+</body>
+</html>

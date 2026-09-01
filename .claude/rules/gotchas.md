@@ -2,7 +2,7 @@
 
 Flyttet fra CLAUDE.md 2026-06-14. Les denne FØR du skriver kode. Når noe brekker, legg gotcha-en til her.
 (Eldre PRISMA-7- og Supabase-detaljer finnes også i git-historikken.)
-Ingen låst designkanon per 2026-07-25 — nytt system utvikles i Open Design (CLAUDE.md invariant 2).
+Designfasit er Train-lock (låst 25.08.2026, CLAUDE.md invariant 2) — se `designsystem/train-lock/`. Open Design-sporet fra 2026-07-25 er forlatt.
 
 ### Prismas `_count` på en relasjon skanner HELE relasjonstabellen — hver gang (oppdaget 2026-08-30)
 - **Symptom:** Supabase varslet «Your project is depleting its Disk IO Budget».

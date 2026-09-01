@@ -38,9 +38,17 @@ dashbordet. Speil tabellen over (samme navn, beskrivelser og priser).
 
 ## 1b. Design på betalingssidene — SATT 2026-08-16 (test-modus)
 
-Merkevare-innstillingene er satt til Paper-fasitens farger via connectoren
+> **Flagget 01.09.2026 (revisjonsøkt) — IKKE verifisert, kun observert:** tabellen under satte
+> Stripe checkout-brandingen til Paper-fasitens farger 16.08.2026. Paper (inkl. `--p-*`-tokens)
+> er fysisk slettet fra repoet 30.08.2026, og designfasit er nå Train-lock (`--tl-*`). Ingen i
+> denne revisjonen har sjekket om noen har oppdatert selve Stripe-checkout-siden etter det —
+> dette er en driftsrisiko (checkout kan fortsatt vise Paper-farger i produksjon), ikke en
+> bekreftet feil. Sjekk faktisk Stripe-innstillingen (`/v1/_unstable/settings/brand`) før neste
+> betalingsrelaterte endring, og oppdater denne tabellen deretter.
+
+Merkevare-innstillingene ble satt til Paper-fasitens farger via connectoren
 (`/v1/_unstable/settings/brand`), verifisert med skjermbilde av en ekte
-testbetalingsside:
+testbetalingsside — status 16.08.2026, se varsel over:
 
 | Innstilling | Verdi | Kilde |
 |---|---|---|
