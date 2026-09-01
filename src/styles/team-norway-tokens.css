@@ -18,7 +18,7 @@
 
    BEVISST AVVIK FRA FASITEN — ingen verdiendring, kun navnerom:
    Alle navn har prefikset `--tn-` (fasiten har ingen prefiks). Uten det
-   ville dette settet kollidert med --tl-*/--p-*/--v2-*/golfdata ved import
+   ville dette settet kollidert med --tl-*, --p-*, --v2-*, golfdata ved import
    i samme globals.css.
 
    MØRK ER EN ROLLE, IKKE ET TEMA (readme.md, bekreftet 30.08.2026): i
