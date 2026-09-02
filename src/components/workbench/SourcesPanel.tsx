@@ -3,9 +3,13 @@
 /**
  * SourcesPanel — venstrekolonnen «Sett inn» (natt-plan Loop 2T/B5, PX-2).
  *
- * Fasit: designsystem/train-lock/A-04 Kilder Ovelsesbank.dc.html
- * Fasit: designsystem/train-lock/A-01b Mac Uke kollapset.dc.html (avvik)
- * Fasit: designsystem/train-lock/A-04b Program ghost.dc.html (avvik)
+ * Fasit (kanon, D2 02.09.2026): designsystem/train-lock/WB-01 Uke minimum.dc.html
+ * — kolonnen heter «Kilder» der og grupperer Ukemaler/Standardøkter/
+ * Øvelsesbank (tre grupper). Denne panelet bruker fortsatt de eldre gruppene
+ * Drills/Maler/Tidligere uker (A-04-arven) — ulik gruppering av kildene,
+ * samme dra-inn-mønster. Ikke rettet i denne økten (Ø9 = kun WorkbenchUke.tsx
+ * sin fasit-sitering, se der).
+ * Fasit (kun Mac-piksel): designsystem/train-lock/A-04 Kilder Ovelsesbank.dc.html.
  *
  * Fasit-stilen (A-01/A-04): caps-overskrift «Sett inn» 11/600/0.08em, rader
  * med border-top hairline (aldri kort-ramme), gruppetittel 13/600 + antall
