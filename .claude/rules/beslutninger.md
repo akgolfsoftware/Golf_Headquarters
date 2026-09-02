@@ -28,6 +28,41 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
 
 ## Beslutningene (september 2026)
 
+- **WANG FÅR EGET MERKEVARESYSTEM — OVERSTYRER PARAPLY-BESLUTNINGENS WANG-KLAUSUL (Anders
+  02.09.2026, i økt):** under avklaring av PORTPLAN §A1.5 (gruppe-fane-arkitektur) ble
+  beslutningskø punkt 22 (WANG-flatens stil) lagt frem på nytt med tre valg. Anders valgte
+  **eget merkevaresystem, samme skala som Team Norway** (`designsystem/team-norway/`, Claw) —
+  og bekreftet eksplisitt, da konflikten ble flagget, at dette er en bevisst omgjøring av
+  31.08-vedtaket, ikke en glipp.
+  **Overstyrer:** §AK GOLF BLIR PARAPLYMERKE FOR HELE KONSERNET (31.08.2026), punktet
+  «Konsekvens for beslutningskøen punkt 22» — der het det at «muligheten WANG får eget
+  merkevaresystem som Team Norway er UTE», og at WANG-coachingen skulle være variant
+  «Organisasjon» `#4E6A7E` under paraplyen. Den klausulen er
+  **[SUPERSEDERT 02.09.2026 — se dette punktet]**. Resten av paraply-beslutningen (Academy,
+  Junior Academy, Mulligan, Skarpnord Golf Products som varianter; merkelaget ligger uendret
+  over Train-lock; tre-systemer-konfliktregelen AK Golf → Train-lock → Claw) står ved lag —
+  kun WANG er tatt ut av paraplyen igjen.
+  **Ingen kode før en egen designrunde er kjørt** — samme mønster som Team Norway (Anders
+  oppretter et eget Claude Design-prosjekt, master der, `designsystem/wang/` som speil i
+  repoet), jf. «TEGN SKJERMEN FØR DU BYGGER DEN» (30.08.2026). Produktskjermene i
+  PlayerHQ/AgencyOS/Forelder er urørt — dette gjelder kun merkelaget for WANG som ekstern
+  flate/materiell, ikke Train-lock.
+  **Arbeidet:** `docs/MASTERPLAN-GJENSTAAENDE.md` STEG 18.32 (ny rad), STEG 18.3 (WANG-delen
+  merket supersedert), beslutningskø punkt 22 oppdatert.
+
+- **AK-FORMEL V3 SKROTET (Anders 02.09.2026, i økt):** v3-strukturen (full datamodell
+  pyramide → område → delferdighet → betinget P-posisjon-slot → motorikk/belastning/press,
+  dokumentert 03.08.2026) bygges ikke. Bekreftet under avklaring av beslutningskø punkt 15,
+  etter at det ble verifisert i kode at v3 aldri er implementert (0 treff på
+  `PYRAMIDE_OMRADE_MOTORIKK`/tilsvarende i `src/`). Formelen består som **fri merkelapp** —
+  pyramide, område, motorikk, belastning og press er vokabular appen kan vise, ikke en fast,
+  håndhevet struktur. Konsistent med §ALLE TRENINGSPLANREGLER LÅST OPP (18.08.2026): å bygge
+  en ny fast datamodell for formelen nå ville gått imot ånden i den opplåsingen.
+  **Krever ingen kodeendring.** De 13 tidligere åpne punktene rundt v3 (innspill-
+  navnekonvensjon, P-format `P1.0` vs `P1`, m.fl.) er dermed også moot.
+  **Arbeidet:** `docs/MASTERPLAN-GJENSTAAENDE.md` STEG 14.3 (rettet), beslutningskø punkt 15
+  lukket.
+
 - **PLAN-FASIT, WORKBENCH-KANON OG BETALINGSTEST (Anders 02.09.2026, i økt):** tre svar som låser
   datoene i MASTERPLAN STEG 1B (veien til «FULL lanserbar», milepæl 24.09.2026).
   1. **`/portal/planlegge` porter mot `PH-07 Plan` + `PH-08 Plan tom uke`, ikke `P-05 iPhone Agenda`.**
