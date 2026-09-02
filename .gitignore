@@ -129,3 +129,7 @@ tests/visual/ut/
 # Generert kodeindeks (graphify) — 817 filer / 32 MB, regenereres lokalt.
 # Ble dratt med i #673 ved et uhell.
 graphify-out/
+
+# Impeccable design-hook (maskinlokalt)
+.impeccable/config.local.json
+.impeccable/hook.cache.json
