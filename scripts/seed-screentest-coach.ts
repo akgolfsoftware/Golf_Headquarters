@@ -152,6 +152,29 @@ async function ensureAuthUser(): Promise<string> {
 
 // ---------- Main ----------
 
+/**
+ * 10b. Enrollering (lagt til 02.09.2026, MASTERPLAN Ø14). Stall-lista
+ * (`loadStallen`) viser KUN spillere med en aktiv PlayerEnrollment som ikke
+ * er PLATFORM_ONLY — uten den var stallen tom for coachtest selv med 37
+ * demo-spillere i basen (målt i prod 02.09). Idempotent: rører ikke spillere
+ * som allerede har en aktiv enrollering.
+ */
+async function seedEnrolleringer(coachId: string): Promise<number> {
+  const stall = await prisma.user.findMany({
+    where: { email: { endsWith: `@${STALL_DOMAIN}` }, role: "PLAYER" },
+    select: { id: true, school: true, enrollmentsAsPlayer: { where: { endedAt: null }, select: { id: true } } },
+  });
+  let lagt = 0;
+  for (const p of stall) {
+    if (p.enrollmentsAsPlayer.length > 0) continue;
+    await prisma.playerEnrollment.create({
+      data: { userId: p.id, program: p.school ? "WANG_TOPPIDRETT" : "AK_ACADEMY", coachId, notes: "demo-stall (seed-screentest-coach)" },
+    });
+    lagt++;
+  }
+  return lagt;
+}
+
 async function main() {
   console.log("Seeder skjermtest-coach (Anders Kristiansen, ADMIN) + demo-stall...");
   const authId = await ensureAuthUser();
@@ -422,11 +445,15 @@ async function main() {
   const proCount = await prisma.subscription.count({ where: { tier: "PRO", status: { in: ["ACTIVE", "TRIALING", "PAST_DUE"] } } });
   console.log(`Abonnement: ${stallPlayers.length} stall-spillere PRO → totalt ${proCount} aktive PRO (MRR ${proCount * 300} kr)`);
 
+  // ── 10b. Enrollering (Stall-lista krever aktiv enrollering) ───────────
+  const nyeEnr = await seedEnrolleringer(coach.id);
+  console.log(`Enrollering: ${nyeEnr} nye (spillere uten aktiv enrollering før kjøring)`);
+
   // ── Verifikasjon ────────────────────────────────────────────────────────
   const now = new Date();
   const dagStart = at(0, 0);
   const dagSlutt = at(0, 0, 1);
-  const [players, myGroups, upcoming, pendingReq, todayBookings, pendingActions, cacheCount, unread] = await Promise.all([
+  const [players, myGroups, upcoming, pendingReq, todayBookings, pendingActions, cacheCount, unread, aktiveEnr] = await Promise.all([
     prisma.user.count({ where: { role: "PLAYER" } }),
     prisma.group.count({ where: { coachId: coach.id } }),
     prisma.booking.count({ where: { startAt: { gte: now } } }),
@@ -435,6 +462,7 @@ async function main() {
     prisma.planAction.count({ where: { status: "PENDING" } }),
     prisma.oppgaveCache.count(),
     prisma.notification.count({ where: { userId: coach.id, readAt: null } }),
+    prisma.playerEnrollment.count({ where: { coachId: coach.id, endedAt: null } }),
   ]);
   console.log("\n── Verifikasjon ──");
   console.log(`Spillere (PLAYER):        ${players}  (mål: 38)`);
@@ -445,10 +473,23 @@ async function main() {
   console.log(`Godkjenninger PENDING:    ${pendingActions}  (mål: 3)`);
   console.log(`Oppgaver i cache:         ${cacheCount}  (mål: 5)`);
   console.log(`Uleste varsler (coach):   ${unread}  (mål: 3)`);
+  console.log(`Aktive enrolleringer:     ${aktiveEnr}  (mål: 37 — Stall-lista)`);
   console.log(`Øyvind Rohjan user-id:    ${oyvind.id}`);
 
   console.log(`\n✓ Ferdig. Login: ${EMAIL} (passord = SCREENTEST_PASSWORD i .env.local)`);
   await prisma.$disconnect();
 }
 
-main().catch((e) => { console.error(e); process.exit(1); });
+// `--kun-enrollering`: kjør bare 10b mot eksisterende demo-stall (trygt å
+// gjenta; resten av seeden lager bookinger/samtaler med `create` og skal ikke
+// kjøres på nytt bare for å fylle enrolleringer).
+async function kunEnrollering() {
+  const coach = await prisma.user.findUnique({ where: { email: EMAIL }, select: { id: true } });
+  if (!coach) throw new Error(`${EMAIL} finnes ikke — kjør full seed først`);
+  const nye = await seedEnrolleringer(coach.id);
+  const aktive = await prisma.playerEnrollment.count({ where: { coachId: coach.id, endedAt: null } });
+  console.log(`Enrollering: ${nye} nye, ${aktive} aktive for coachtest`);
+  await prisma.$disconnect();
+}
+
+(process.argv.includes("--kun-enrollering") ? kunEnrollering() : main()).catch((e) => { console.error(e); process.exit(1); });
