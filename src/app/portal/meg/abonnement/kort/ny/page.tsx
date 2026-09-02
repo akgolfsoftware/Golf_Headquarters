@@ -10,7 +10,7 @@ import { TL } from "@/lib/v2/train-lock";
 
 import { Caps, Tittel, Kort, TilbakeLenke, StatusPill, Icon } from "@/components/v2";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { AapneStripePortal } from "./aapne-stripe-portal";
+import { KortSkjemaStripe } from "./kort-skjema-stripe";
 
 export const dynamic = "force-dynamic";
 
@@ -62,7 +62,7 @@ export default async function NyttKortPage() {
               <Tittel em="kort">Administrer</Tittel>
             </div>
             <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: "8px 0 0", lineHeight: 1.45 }}>
-              Legg til eller endre kort i Stripes sikre portal. Vi lagrer aldri kortdata.
+              Legg til eller endre kort direkte her. Kortfeltet driftes av Stripe — vi lagrer aldri kortdata selv.
             </p>
           </div>
           <StatusPill tone={betalingFeilet ? "down" : "up"}>
@@ -86,7 +86,7 @@ export default async function NyttKortPage() {
         </Kort>
 
         <Kort>
-          <AapneStripePortal />
+          <KortSkjemaStripe />
           <div
             style={{
               marginTop: 14,
