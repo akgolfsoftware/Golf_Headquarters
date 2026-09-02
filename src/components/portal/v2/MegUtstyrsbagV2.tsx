@@ -84,7 +84,14 @@ function UtstyrRad({ felt, verdi, last }: { felt: Felt; verdi: string; last: boo
 
 /* ── Skjerm ────────────────────────────────────────────────────────── */
 
-export function MegUtstyrsbagV2({ data }: { data: MegUtstyrsbagData }) {
+export function MegUtstyrsbagV2({
+  data,
+  somFane,
+}: {
+  data: MegUtstyrsbagData;
+  /** Skjuler eget «Utstyr»-hode når komponenten er montert inne i en annen side (utstyr-siden eier hodet der). */
+  somFane?: boolean;
+}) {
   const router = useRouter();
   const [redigerer, setRedigerer] = useState(false);
 
@@ -92,6 +99,7 @@ export function MegUtstyrsbagV2({ data }: { data: MegUtstyrsbagData }) {
     return (
       <UtstyrsbagRediger
         initial={data.utstyr}
+        somFane={somFane}
         onFerdig={() => setRedigerer(false)}
         onLagret={() => router.refresh()}
       />
@@ -107,15 +115,17 @@ export function MegUtstyrsbagV2({ data }: { data: MegUtstyrsbagData }) {
 
   return (
     <div data-paper-wave-g="megutstyrsbag" data-paper-portal-meg-utstyrsbag style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
-      <div>
-        <div data-paper-pattern-topp>
-        <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Utstyr</h1>
-        <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>Meg</span>
-      </div>
-        <Caps size={9} style={{ marginTop: 10 }}>
-          Køller, ball og bag
-        </Caps>
-      </div>
+      {!somFane && (
+        <div>
+          <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Utstyr</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>Meg</span>
+        </div>
+          <Caps size={9} style={{ marginTop: 10 }}>
+            Køller, ball og bag
+          </Caps>
+        </div>
+      )}
 
       {/* B: status først */}
       <div className="grid grid-cols-2" style={{ gap: 8 }}>
@@ -187,10 +197,12 @@ export function MegUtstyrsbagV2({ data }: { data: MegUtstyrsbagData }) {
 
 function UtstyrsbagRediger({
   initial,
+  somFane,
   onFerdig,
   onLagret,
 }: {
   initial: UtstyrsbagInput;
+  somFane?: boolean;
   onFerdig: () => void;
   onLagret: () => void;
 }) {
@@ -262,7 +274,13 @@ function UtstyrsbagRediger({
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div>
-        <Tittel mobile={mobile}>Rediger utstyr</Tittel>
+        {somFane ? (
+          <h2 style={{ margin: 0, fontFamily: TL.font.sans, fontWeight: 600, fontSize: mobile ? 20 : 24, letterSpacing: "-0.01em", color: TL.text, lineHeight: 1.1 }}>
+            Rediger utstyr
+          </h2>
+        ) : (
+          <Tittel mobile={mobile}>Rediger utstyr</Tittel>
+        )}
         <Caps size={9} style={{ marginTop: 10 }}>Alle felter er valgfrie</Caps>
       </div>
 

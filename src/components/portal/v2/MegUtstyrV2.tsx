@@ -13,8 +13,10 @@
  *    målte køllene og bag-feltene som to ærlige seksjoner, ikke én
  *    sammensmeltet tabell med skaft/loft per målt kølle.
  *  - Kølle-detalj (/utstyr/[kolle]-arket) er ikke bygget — radene er lesing.
- *  - Registrering/endring skjer i den eksisterende bag-flaten
- *    (/portal/meg/utstyrsbag) — «Legg til kølle» lenker dit.
+ *  - Registrering/endring skjer i redigeringsseksjonen lenger ned på samme
+ *    side (MegUtstyrsbagV2, montert med `somFane`) — «Legg til kølle»
+ *    o.l. hopper til `#rediger-utstyr` i stedet for en egen rute
+ *    (PORTPLAN §A1.9, avgjort 02.09.2026; gammel rute er nå redirect).
  */
 
 import type { ReactNode } from "react";
@@ -226,7 +228,7 @@ export function MegUtstyrV2({ data }: { data: UtstyrFlateData }) {
                   fylles automatisk fra TrackMan-øktene dine. Du trenger ikke fylle inn lengder
                   selv.
                 </p>
-                <KnappLenke href="/portal/meg/utstyrsbag" odId="utstyr-tom-legg-til">
+                <KnappLenke href="#rediger-utstyr" odId="utstyr-tom-legg-til">
                   Legg til første kølle
                 </KnappLenke>
               </div>
@@ -352,7 +354,7 @@ export function MegUtstyrV2({ data }: { data: UtstyrFlateData }) {
                     Bagen er ikke registrert ennå. Registrer den én gang, så kan gameplan
                     foreslå kølle per hull.
                   </p>
-                  <KnappLenke href="/portal/meg/utstyrsbag" odId="utstyr-bag-registrer">
+                  <KnappLenke href="#rediger-utstyr" odId="utstyr-bag-registrer">
                     Registrer bagen
                   </KnappLenke>
                 </Kort>
@@ -371,7 +373,7 @@ export function MegUtstyrV2({ data }: { data: UtstyrFlateData }) {
               )}
 
               {bagFelter.length > 0 && (
-                <KnappLenke href="/portal/meg/utstyrsbag" odId="utstyr-legg-til">
+                <KnappLenke href="#rediger-utstyr" odId="utstyr-legg-til">
                   Legg til eller endre køller
                 </KnappLenke>
               )}
