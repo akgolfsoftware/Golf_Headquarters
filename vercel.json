@@ -79,6 +79,10 @@
       "schedule": "30 4 * * *"
     },
     {
+      "path": "/api/cron/refresh-topar-grunnlag",
+      "schedule": "0 5 * * *"
+    },
+    {
       "path": "/api/cron/dedupe-player-names",
       "schedule": "0 5 * * 0"
     },
