@@ -2120,12 +2120,10 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
   }, [alleEvents]);
 
   // PP-3 fasit: Publiser eier clay og bor i bunnsonen — «Publiser uke N til [fornavn]».
-  const publiserSynlig =
-    !!actions && !(role === "player" && (optimisticStatus ?? planStatus) === "PENDING_PLAYER");
-  const publiserLabel =
-    role === "coach"
-      ? `Publiser uke ${weekNumber} til ${playerName.split(" ")[0]}`
-      : `Publiser uke ${weekNumber}`;
+  // P-01 (spillerens Workbench): fasiten har INGEN Publiser-knapp for spiller
+  // — spilleren redigerer egen plan direkte, uten en godkjenningsrunde.
+  const publiserSynlig = !!actions && role === "coach";
+  const publiserLabel = `Publiser uke ${weekNumber} til ${playerName.split(" ")[0]}`;
 
   // PP-3 fasit: avvik-chips i bunnsonen — fra compliance-logikken.
   const bruddChips = useMemo(() => {
