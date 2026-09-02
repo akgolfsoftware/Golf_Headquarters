@@ -3,11 +3,21 @@
 /**
  * PublishConfirmDialog — bekreftelse før publisering (natt-plan Loop 2, PX-2).
  *
- * Fasit: designsystem/train-lock/A-01d Publish confirm.dc.html (ramme A-01d1):
- * caps-kicker «Uke 36 · Øyvind Rohjan», tittel 26/700/−0.02em «Publiser N
- * økter?», brødtekst 15 mute, økt-liste som #161616-kort radius 16 med rader
- * «Tir 16.00» (13 mute, 88 px) + tittel 15/600, footer = Avbryt som ren tekst
- * + den ene hvite «Publiser»-pillen (48 px).
+ * Fasit (kun Mac-piksel, D2 02.09.2026): designsystem/train-lock/A-01d Publish
+ * confirm.dc.html — caps-kicker «Uke 36 · Øyvind Rohjan», tittel 26/700/
+ * −0.02em «Publiser N økter?», brødtekst 15 mute, økt-liste som #161616-kort
+ * radius 16 med rader «Tir 16.00» (13 mute, 88 px) + tittel 15/600, footer =
+ * Avbryt som ren tekst + den ene hvite «Publiser»-pillen (48 px).
+ *
+ * Fasit (kanon for struktur, ikke bygget her — Ø10, 02.09.2026):
+ * designsystem/train-lock/WB-03 Publish confirm 3 skall.dc.html tegner en
+ * STØRRE funksjon enn denne dialogen: checkbox per økt, «Velg alle» med
+ * tellelinje, status-caps per rad (UTKAST/ENDRET/OPPTATT), et gult
+ * ikke-sperrende varsel («Mangler drill»), en økt som holdes automatisk
+ * tilbake ved overlapp, og to separate handlinger «Publiser valgte N» /
+ * «Publiser alle N». Denne dialogen publiserer i dag ALLE utkast samlet —
+ * ingen per-økt-utvelgelse. Reell, ikke-triviell funksjonsutvidelse
+ * (endrer publishSessions-kontrakten); ikke bygget i denne økten.
  *
  * Publisering er øyeblikket spilleren ser økten, derfor egen bekreftelse med
  * full liste. Gjelder en økt i dag advares det ekstra: den dukker opp i
