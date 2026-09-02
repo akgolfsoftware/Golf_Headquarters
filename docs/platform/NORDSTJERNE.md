@@ -40,19 +40,20 @@ God nok er ikke god nok. Hver flate skal tåle gransking fra en krevende coach,
 en krevende spiller og en krevende investor. Ved tvil: ville Anders vist dette
 frem som bevis på at systemet er bedre enn konkurrentene?
 
-## Design (åpent — nytt system under arbeid)
+## Design (RETTET 02.09.2026 — designfasit er låst)
 
-Et komplett nytt designsystem utvikles parallelt i Open Design (2026-07-25).
-Den gamle v2-kanonen (retning C «Presis», FASIT, hex-gate, 8pt-grid,
-designdommer) er bevisst avviklet — **ingen designregler er låst** inntil det
-nye systemet er klart og godkjent av Anders. Det som er bygget i koden gjelder
-i mellomtiden; kvalitetsstandarden (skal tåle å selges for millionsum) er uendret.
+> Denne seksjonen beskrev Open Design-sporet fra 07.2026 som fortsatt åpent. Det er forlatt.
+> **Designfasit er Train-lock** (`designsystem/train-lock/`), låst av Anders 25.08.2026 — se
+> CLAUDE.md invariant 2 og `.claude/rules/beslutninger.md`. Kvalitetsstandarden (skal tåle å
+> selges for millionsum) er uendret.
 
 ## Forretningsramme
 
-- Abonnement: gratis (prøve/pakke/gruppe) eller 299 kr/mnd. Coaching-pakker
-  (Performance / Performance Pro) er økt-credits, ikke app-nivåer. ELITE vises aldri.
-- Betaling slås på 1. august 2026. Før det: produksjonsherding.
+- Abonnement: gratis (prøve/TALENT/pakke/gruppe) eller 299 kr/mnd (2 690 kr/år). Coaching-pakker
+  (Performance / Performance Pro) er økt-credits, ikke app-nivåer. ELITE vises aldri. Se
+  `docs/platform/BUSINESS-RULES.md` §Abonnement og tilgang for fasit (tre nivåer FULL/TALENT/INGEN).
+- **Betaling startet 1. september 2026** (rettet fra "1. august" 02.09.2026 — datoen var feil;
+  se `src/lib/feature-flags.ts` `BETALING_STARTER` og `docs/platform/BUSINESS-RULES.md`).
 - Detaljer: `docs/platform/BUSINESS-RULES.md`.
 
 ## Metodikk

@@ -3,6 +3,13 @@
 **Generert 2026-07-30** · Verktøy: `scripts/rute-graf.mjs` · Rådata: `docs/platform/rute-graf-data.json`
 **Regenerer:** `node scripts/rute-graf.mjs`
 
+> **ADVARSEL (lagt til 02.09.2026):** Grafen og rutetallene under er over en måned gamle.
+> Faktisk `page.tsx`-antall i dag: **343** (168 portal · 163 admin · 12 forelder) mot 330
+> (166 · 153 · 11) da grafen ble generert — og STEG 15-konsolideringen (30.–31.08.2026, se
+> `docs/MASTERPLAN-GJENSTAAENDE.md`) har siden erstattet store deler av AgencyOS-navigasjonen
+> under med redirects til nye samleflater. Kjør `node scripts/rute-graf.mjs` og lim inn fersk
+> output før du stoler på diagrammene eller tallene under.
+
 ## Metode og begrensninger
 
 Grafen er bygget ved å lese alle `page.tsx` under `src/app/{portal,admin,forelder}` og trekke ut alle strenge-literals som peker på interne ruter (`href=`, `redirect()`, `router.push()`, `Link`). Det betyr:

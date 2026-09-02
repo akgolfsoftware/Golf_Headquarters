@@ -28,13 +28,14 @@ AK Golf HQ er en monorepo-plattform som samler fire produkter under ett Next.js-
 
 (Flyttet hit fra CLAUDE.md 2026-08-16 — denne filen eier strukturkartet.)
 
-Størrelsesorden: ~449 `page.tsx`-ruter, ~161 filer med server actions, 158 Prisma-modeller, 81 migrasjoner,
-110 enhetstest-filer, 54 agent-filer. Sjekk filsystemet før du oppretter nye ruter — det finnes flere
+Størrelsesorden (målt på nytt 02.09.2026 — tallene drifter raskt, sjekk med `find`/`grep` ved
+tvil): ~470 `page.tsx`-ruter, ~175 filer med server actions, 193 Prisma-modeller, 87 migrasjoner,
+277 enhetstest-filer, 64 agent-filer. Sjekk filsystemet før du oppretter nye ruter — det finnes flere
 top-level-mapper enn de fire «offisielle» produktene.
 
 ```
 src/
-├── app/            # App Router — ~449 ruter
+├── app/            # App Router — ~470 ruter
 │   ├── page.tsx              # Marketing (landing)
 │   ├── (marketing)/          # Offentlige sider (layout med markeds-header)
 │   ├── (internal)/           # Interne demoer/labs — ikke prod-flater
@@ -43,8 +44,13 @@ src/
 │   │   ├── (legacy)/         # Eldre flater under migrering
 │   │   ├── (fullscreen)/     # Fullskjerm-moduser (live/gjennomføring)
 │   │   └── …hovedflater      # planlegge · gjennomfore · analysere · meg · trackman · gameplan m.fl.
-│   ├── admin/                # AgencyOS (coach/admin) — agencyos (cockpit), grupper,
-│   │                         # godkjenninger, kalender, innboks, finance, agent-team m.fl.
+│   ├── admin/                # AgencyOS (coach/admin) — agencyos (cockpit), grupper, godkjenninger,
+│   │                         # kalender, innboks, agenticos (AI-hub — /admin/agent-team og
+│   │                         # /admin/agents er redirect-stubs hit), agencyos/okonomi
+│   │                         # (/admin/finance er redirect-stub hit) m.fl. Etter STEG 15-
+│   │                         # konsolideringen (30.–31.08.2026) er kø, oppgaver, oppsett,
+│   │                         # kalender, turnering, kommunikasjon, analyse og plan hver sin
+│   │                         # ene fanet adresse — se docs/MASTERPLAN-GJENSTAAENDE.md STEG 15
 │   ├── forelder/             # Foreldreportal (lese-først)
 │   ├── booking-flyt          # /booking under (marketing) + /portal/booking + /admin/bookinger
 │   ├── team-wang/  team-gfgk/  gfgk-junior/   # Klubb-/skolespesifikke flater
@@ -68,10 +74,11 @@ src/
 ├── proxy.ts        # Next 16 «middleware» — auth-guards (proxy.ts, IKKE middleware.ts)
 └── app/globals.css # Tailwind v4-tema
 prisma/
-├── schema.prisma   # 158 modeller: User · TrainingPlan(+Session) · Round → Shot → HoleScore ·
+├── schema.prisma   # 193 modeller (målt 02.09.2026): User · TrainingPlan(+Session) · Round → Shot → HoleScore ·
 │                   # Subscription · Booking · Lead · CoachAvailability · TestDefinition/TestResult ·
-│                   # DrillMal/OktMal · TrackManSession/TrackManShot · SeasonPlan · PeriodBlock · KommandoTask …
-├── migrations/     # 81 kjørte SQL-migrasjoner
+│                   # DrillMal/OktMal · TrackManSession/TrackManShot · SeasonPlan · PeriodBlock · KommandoTask ·
+│                   # TnPost/TnPostAttachment/TnPostLesekvittering (Team Norway Workdesk) …
+├── migrations/     # 87 kjørte SQL-migrasjoner
 ├── sql/  scripts/  seed-data/
 └── seed.ts · seed-drills.ts · seed-gfgk-facilities.ts …
 scripts/            # Engangs-/driftsscript: seed-screentest*.ts (Øyvind Rohjan) · drill-qa ·
@@ -82,7 +89,7 @@ docs/               # platform/ (NORDSTJERNE, AGENT-BRIEF, BUSINESS-RULES, DATA-
                     # gdpr/ · juridisk/ · sikkerhet/ · arkiv/ (inkl. paper-port)
 designsystem/train-lock/  # GJELDENDE designfasit for PlayerHQ, AgencyOS, Forelder
                     # (designsystem/paper/ er SLETTET 30.08.2026 — finnes ikke lenger)
-tests/e2e/          # Én samlet e2e-suite (32 specs, siden 2026-08-03): a11y, PWA, ruter, meta/OG,
+tests/e2e/          # Én samlet e2e-suite (145 specs per 02.09.2026, opp fra 32 siden 2026-08-03): a11y, PWA, ruter, meta/OG,
                     # offline, ikoner + auth-guard, IDOR, booking, workbench (fra gamle e2e/)
 ```
 

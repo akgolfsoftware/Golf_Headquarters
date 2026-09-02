@@ -16,7 +16,7 @@ AK Golf HQ er en helintegrert plattform som gir golfcoacher og spillere felles v
 | React | 19 |
 | Prisma | 7 + Supabase (Postgres) |
 | Tailwind CSS | v4, CSS-first via `@theme` i `globals.css` — INGEN `tailwind.config.ts` |
-| Fonts | Poppins + Lora + IBM Plex Mono (fra Paper-porten; Train-lock-fasitens typografi er ikke levert ennå — LAUNCH-PLAN D2/D3). Inter Tight er fjernet |
+| Fonts | Poppins + Lora + IBM Plex Mono — endelig beslutning (Anders 25.08.2026, se `.claude/rules/beslutninger.md` §Font). Train-lock arver skala/vekter/tracking fra fasiten, ikke fontfamilien. Inter/Inter Tight/Familjen Grotesk/JetBrains Mono er fjernet |
 | Ikoner | Lucide React — eneste tillatte bibliotek |
 | Pakkebehandler | npm |
 
@@ -31,12 +31,15 @@ AK Golf HQ er en helintegrert plattform som gir golfcoacher og spillere felles v
 
 ## Tema
 
-| Produkt | Tema | Regel |
-|---|---|---|
-| **PlayerHQ** (`/portal`) | Lyst | Aldri `.dark`-klasse på root. Alltid lyst tema. |
-| **AgencyOS** (`/admin`) | Mørkt | `.dark`-klasse settes på root-elementet. Alltid mørkt tema. |
-
-**Ingen tema-toggle** — verken nå eller i MVP. Begge paletter finnes i `globals.css`, men valget er låst per produkt og skal ikke eksponeres som brukervalg.
+> **UTDATERT TABELL FJERNET 02.09.2026 — tema er IKKE lenger låst per produkt.** Denne
+> seksjonen beskrev en binær, ulåst tema-modell fra før designrevisjonen. Gjeldende regel
+> (verifisert i kode `src/lib/v2/tema-default.ts` og `.claude/rules/beslutninger.md`
+> §«MØRK DEFAULT PÅ /portal OG /admin» + §«ALLE SKJERMER I PLAYERHQ, AGENCYOS OG FORELDER
+> SKAL HA LYS OG MØRK MODUS»): `/portal` og `/admin` er **mørk default**, `/auth` er lys
+> (låst), landingssidene alltid lyse. Alle produktflater — inkludert `/forelder` — SKAL ha en
+> fungerende lys/mørk-bryter (cookie `ak-v2-tema`), som alltid vinner over defaulten. Ingen
+> `className="dark"` noe sted — se `.claude/rules/gotchas.md` §«Tema: `data-v2-tema` på
+> `<html>` er ENESTE mekanisme».
 
 ---
 
@@ -143,12 +146,17 @@ klikk-verifisert.
 ## Forretningsmodell
 
 ### Abonnement — PlayerHQ-tilgang
-**Gratis** i tre tilfeller:
-1. Første 30 dager (prøveperiode — alle nye brukere)
-2. Aktiv coaching-pakke (Performance eller Performance Pro)
-3. Deltaker i en gruppecoaching via AK Golf
 
-**299 kr/mnd** for alle andre som ønsker full PlayerHQ-tilgang etter prøveperioden.
+> **RETTET 02.09.2026 — modellen under er utdatert.** Den gamle "30 dager uten kort, alle nye
+> brukere"-prøven er FJERNET fra `resolveTilgang` (kommentar i `src/lib/feature-flags.ts`).
+> Gjeldende regler, verifisert mot kode: tre tilgangsnivåer **FULL / TALENT / INGEN**
+> (`resolveTilgang`), se `docs/platform/BUSINESS-RULES.md` §Abonnement og tilgang for full
+> fasit. Kort oppsummert:
+> - **TALENT** (gratis, låst profil, utløper aldri): testbatteri, stats-/analyse-lesing,
+>   SG-/runderegistrering, DataGolf-sammenligning, talent-flatene, booking av enkelttimer, konto.
+> - **FULL** (299 kr/mnd eller 2 690 kr/år): gratis ved 7-dagers Stripe-prøveperiode (krever
+>   kort, `PROVEPERIODE_DAGER = 7`), aktiv coaching-pakke, eller AK Golf-administrert gruppe.
+> - Det gamle lanseringsvinduet (`gratisForAlle`, alle gratis frem til 1. sep 2026) er UTLØPT.
 
 ### Coaching-pakker
 - **Performance:** 2 credits/mnd — individuelle coachingøkter
