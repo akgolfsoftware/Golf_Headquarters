@@ -3,20 +3,26 @@
 /**
  * WorkbenchUke — orkestreringen av Agency-uka (natt-plan Loop 2, PX-2).
  *
- * Fasit: designsystem/train-lock/A-01 Mac Uke Pro.dc.html (topplinje + skall)
- * Fasit: designsystem/train-lock/A-12 iPad Uke.dc.html (delvis — se avvik)
- * Fasit: designsystem/train-lock/A-13 iPhone Agenda.dc.html (delvis — se avvik)
- * Fasit: designsystem/train-lock/A-07 Mac Standard.dc.html (avvik — se under)
- * Fasit: designsystem/train-lock/A-08 Mac Rolle Spiller.dc.html (avvik)
+ * Fasit (kanon for struktur og brekkpunkter, Anders 02.09.2026, D2):
+ * designsystem/train-lock/WB-01 Uke minimum.dc.html — Mac (WB-01a), iPad
+ * (WB-01b), iPhone (WB-01c) og etter-publisering (WB-01d).
+ * Fasit (kun Mac-pikselnivå der WB-01 mangler detalj — border, radius,
+ * skygge, eksakte px): designsystem/train-lock/A-01 Mac Uke Pro.dc.html.
  *
- * Kjente avvik mot fasit (PX-2, dokumentert i PR):
- * - A-07/A-01: Standard/Pro-toggle og Balanse-kolonnen (Neste viktig, ACWR,
- *   SG, Pyramide · uke) er ikke bygget — høyrekolonnen her er inspektøren.
- * - A-08: Coach/Spiller-rolletoggle (read-only Player-forhåndsvisning) er
- *   ikke bygget.
- * - A-12: iPad-bruddpunktet bruker lg-terskelen, ikke egen 250 px-skinne
- *   med inspektør-overlay.
- * - A-13: mobil viser rutenettet, ikke fasitens agenda-liste med «+»-ark.
+ * A-07 (Standard/Pro-toggle + Balanse-kolonne) og A-08 (Coach/Spiller-
+ * rolletoggle) er IKKE lenger fasit for denne skjermen — WB-01 tegner
+ * verken en tredje Balanse-kolonne eller noen rolle-/nivåtoggle i topplinjen.
+ * De to «avvikene» PX-2 dokumenterte mot dem er dermed ikke avvik lenger,
+ * bare et supersedert fasit-valg (D2 avgjorde WB- vs. A-serien 02.09.2026).
+ *
+ * Kjente avvik mot WB-01 (verifisert 02.09.2026):
+ * - Kilder-panelet (SourcesPanel) grupperer Drills/Maler/Tidligere uker —
+ *   WB-01a viser Ukemaler/Standardøkter/Øvelsesbank. Ulik gruppering, samme
+ *   dra-inn-mønster.
+ * - A-12/WB-01b: iPad-bruddpunktet bruker lg-terskelen og full uke-rutenett,
+ *   ikke WB-01bs egen 250 px-skinne med tellinger i kildepanelet.
+ * - A-13/WB-01c: mobil viser rutenettet, ikke WB-01cs dagstripe + agenda-
+ *   liste med «+»-ark og «Flytt økt»-kort (Velg dag/Velg tid).
  *
  * Eier tilstanden (valgt økt, dialoger, laster/feil) og oversetter
  * `WbResultat` fra server-actions til norsk copy + toast. Domenet er rent,
