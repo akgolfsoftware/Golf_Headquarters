@@ -1,0 +1,518 @@
+{
+  "plugins": [
+    "react",
+    "import"
+  ],
+  "rules": {
+    "react/forbid-elements": [
+      "warn",
+      {
+        "forbid": []
+      }
+    ],
+    "no-restricted-imports": [
+      "warn",
+      {
+        "patterns": [
+          {
+            "group": [
+              "components/flate/**",
+              "components/handling/**",
+              "components/maaling/**",
+              "components/melding/**",
+              "components/merke/**",
+              "components/navigasjon/**",
+              "components/skjema/**",
+              "ui_kits/foreldrerapport/**",
+              "ui_kits/kampanje/**",
+              "ui_kits/markedsside/**"
+            ],
+            "message": "Import design-system components from 'index.js', not component internals."
+          }
+        ]
+      }
+    ],
+    "no-restricted-syntax": [
+      "warn",
+      {
+        "selector": "Literal[value=/#[0-9a-fA-F]{3,8}\\b/]",
+        "message": "Raw hex color — use a design-system color token via var()."
+      },
+      {
+        "selector": "Literal[value=/\\b\\d+px\\b/]",
+        "message": "Raw px value — use a design-system spacing token via var()."
+      },
+      {
+        "selector": "Literal[value=/font-family\\s*:\\s*(?!['\\\"]?(?:IBM Plex Sans Condensed|IBM Plex Sans|IBM Plex Mono))/i]",
+        "message": "Font not provided by the design system. Available: IBM Plex Sans Condensed, IBM Plex Sans, IBM Plex Mono."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Akkordeonpost'] > JSXAttribute > JSXIdentifier[name!=/^(?:tittel|innhold|key|ref|className|style|children)$/]",
+        "message": "<Akkordeonpost> doesn't accept that prop. Declared props: tittel, innhold."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Avkrysning'] > JSXAttribute > JSXIdentifier[name!=/^(?:merkelapp|hjelp|feil|avkrysset|onEndre|deaktivert|id|style|key|ref|className|style|children)$/]",
+        "message": "<Avkrysning> doesn't accept that prop. Declared props: merkelapp, hjelp, feil, avkrysset, onEndre, deaktivert, id, style."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Smule'] > JSXAttribute > JSXIdentifier[name!=/^(?:tekst|href|key|ref|className|style|children)$/]",
+        "message": "<Smule> doesn't accept that prop. Declared props: tekst, href."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Faktapost'] > JSXAttribute > JSXIdentifier[name!=/^(?:etikett|verdi|enhet|note|fremhevet|key|ref|className|style|children)$/]",
+        "message": "<Faktapost> doesn't accept that prop. Declared props: etikett, verdi, enhet, note, fremhevet."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Fane'] > JSXAttribute > JSXIdentifier[name!=/^(?:noekkel|tekst|antall|key|ref|className|style|children)$/]",
+        "message": "<Fane> doesn't accept that prop. Declared props: noekkel, tekst, antall."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Felt'] > JSXAttribute > JSXIdentifier[name!=/^(?:merkelapp|hjelp|feil|enhet|verdi|onEndre|type|plassholder|flerlinje|paakrevd|deaktivert|maalt|id|style|key|ref|className|style|children)$/]",
+        "message": "<Felt> doesn't accept that prop. Declared props: merkelapp, hjelp, feil, enhet, verdi, onEndre, type, plassholder, flerlinje, paakrevd, deaktivert, maalt, id, style."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Felt'] > JSXAttribute[name.name='type'] > Literal[value!=/^(?:text|email|tel|number|date|password)$/]",
+        "message": "<Felt> type must be one of 'text' | 'email' | 'tel' | 'number' | 'date' | 'password'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Fotokort'] > JSXAttribute > JSXIdentifier[name!=/^(?:bilde|alt|bildetekst|kilde|tekstOver|forhold|hoyde|style|key|ref|className|style|children)$/]",
+        "message": "<Fotokort> doesn't accept that prop. Declared props: bilde, alt, bildetekst, kilde, tekstOver, forhold, hoyde, style."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='IkonKnapp'] > JSXAttribute > JSXIdentifier[name!=/^(?:merkelapp|variant|storrelse|aktiv|deaktivert|onClick|children|style|key|ref|className|style|children)$/]",
+        "message": "<IkonKnapp> doesn't accept that prop. Declared props: merkelapp, variant, storrelse, aktiv, deaktivert, onClick, children, style."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='IkonKnapp'] > JSXAttribute[name.name='variant'] > Literal[value!=/^(?:stille|fylt)$/]",
+        "message": "<IkonKnapp> variant must be one of 'stille' | 'fylt'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Instrumentflate'] > JSXAttribute > JSXIdentifier[name!=/^(?:tett|mork|kryss|styrke|som|children|style|key|ref|className|style|children)$/]",
+        "message": "<Instrumentflate> doesn't accept that prop. Declared props: tett, mork, kryss, styrke, som, children, style."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Knapp'] > JSXAttribute > JSXIdentifier[name!=/^(?:variant|storrelse|pill|fullBredde|deaktivert|laster|ikon|href|onClick|children|style|key|ref|className|style|children)$/]",
+        "message": "<Knapp> doesn't accept that prop. Declared props: variant, storrelse, pill, fullBredde, deaktivert, laster, ikon, href, onClick, children, style."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Knapp'] > JSXAttribute[name.name='variant'] > Literal[value!=/^(?:primaer|sekundaer|tekst)$/]",
+        "message": "<Knapp> variant must be one of 'primaer' | 'sekundaer' | 'tekst'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Knapp'] > JSXAttribute[name.name='storrelse'] > Literal[value!=/^(?:sm|md|lg)$/]",
+        "message": "<Knapp> storrelse must be one of 'sm' | 'md' | 'lg'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Kort'] > JSXAttribute > JSXIdentifier[name!=/^(?:tyngde|trykkbar|aksent|rutenett|som|onClick|children|style|key|ref|className|style|children)$/]",
+        "message": "<Kort> doesn't accept that prop. Declared props: tyngde, trykkbar, aksent, rutenett, som, onClick, children, style."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Listepost'] > JSXAttribute > JSXIdentifier[name!=/^(?:tittel|note|verdi|merke|key|ref|className|style|children)$/]",
+        "message": "<Listepost> doesn't accept that prop. Declared props: tittel, note, verdi, merke."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Logo'] > JSXAttribute > JSXIdentifier[name!=/^(?:variant|hoyde|klaring|rot|style|key|ref|className|style|children)$/]",
+        "message": "<Logo> doesn't accept that prop. Declared props: variant, hoyde, klaring, rot, style."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Logo'] > JSXAttribute[name.name='variant'] > Literal[value!=/^(?:primaer-lys|primaer-mork|hvit-mork|hvit-mono|sort-mono|signal-mono|kvadrat|favicon)$/]",
+        "message": "<Logo> variant must be one of 'primaer-lys' | 'primaer-mork' | 'hvit-mork' | 'hvit-mono' | 'sort-mono' | 'signal-mono' | 'kvadrat' | 'favicon'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Maalestokk'] > JSXAttribute > JSXIdentifier[name!=/^(?:retning|lengde|style|key|ref|className|style|children)$/]",
+        "message": "<Maalestokk> doesn't accept that prop. Declared props: retning, lengde, style."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Maalestokk'] > JSXAttribute[name.name='retning'] > Literal[value!=/^(?:vannrett|staaende)$/]",
+        "message": "<Maalestokk> retning must be one of 'vannrett' | 'staaende'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Merkelapp'] > JSXAttribute > JSXIdentifier[name!=/^(?:variant|fylt|children|style|key|ref|className|style|children)$/]",
+        "message": "<Merkelapp> doesn't accept that prop. Declared props: variant, fylt, children, style."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Merkelapp'] > JSXAttribute[name.name='variant'] > Literal[value!=/^(?:junior|academy|hq|organisasjon|produkt|fag|noytral)$/]",
+        "message": "<Merkelapp> variant must be one of 'junior' | 'academy' | 'hq' | 'organisasjon' | 'produkt' | 'fag' | 'noytral'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Mobilmeny'] > JSXAttribute > JSXIdentifier[name!=/^(?:apen|lenker|aktiv|handling|onLukk|logoRot|style|key|ref|className|style|children)$/]",
+        "message": "<Mobilmeny> doesn't accept that prop. Declared props: apen, lenker, aktiv, handling, onLukk, logoRot, style."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Navnelaas'] > JSXAttribute > JSXIdentifier[name!=/^(?:variant|paaMorkt|hoyde|rot|style|key|ref|className|style|children)$/]",
+        "message": "<Navnelaas> doesn't accept that prop. Declared props: variant, paaMorkt, hoyde, rot, style."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Navnelaas'] > JSXAttribute[name.name='variant'] > Literal[value!=/^(?:academy|junior-academy|hq|organisasjon|products)$/]",
+        "message": "<Navnelaas> variant must be one of 'academy' | 'junior-academy' | 'hq' | 'organisasjon' | 'products'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Paginering'] > JSXAttribute > JSXIdentifier[name!=/^(?:side|antallSider|onBytt|style|key|ref|className|style|children)$/]",
+        "message": "<Paginering> doesn't accept that prop. Declared props: side, antallSider, onBytt, style."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='RadioValg'] > JSXAttribute > JSXIdentifier[name!=/^(?:verdi|tekst|note|key|ref|className|style|children)$/]",
+        "message": "<RadioValg> doesn't accept that prop. Declared props: verdi, tekst, note."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Status'] > JSXAttribute > JSXIdentifier[name!=/^(?:tilstand|children|style|key|ref|className|style|children)$/]",
+        "message": "<Status> doesn't accept that prop. Declared props: tilstand, children, style."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Status'] > JSXAttribute[name.name='tilstand'] > Literal[value!=/^(?:ok|varsel|feil|noytral)$/]",
+        "message": "<Status> tilstand must be one of 'ok' | 'varsel' | 'feil' | 'noytral'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='TabellKolonne'] > JSXAttribute > JSXIdentifier[name!=/^(?:noekkel|tittel|maalt|dempet|key|ref|className|style|children)$/]",
+        "message": "<TabellKolonne> doesn't accept that prop. Declared props: noekkel, tittel, maalt, dempet."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Talleblokk'] > JSXAttribute > JSXIdentifier[name!=/^(?:tall|enhet|etikett|forklaring|kilde|dato|antall|estimat|storrelse|fremhevet|maalestokk|style|key|ref|className|style|children)$/]",
+        "message": "<Talleblokk> doesn't accept that prop. Declared props: tall, enhet, etikett, forklaring, kilde, dato, antall, estimat, storrelse, fremhevet, maalestokk, style."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Talleblokk'] > JSXAttribute[name.name='storrelse'] > Literal[value!=/^(?:sm|md|lg|xl)$/]",
+        "message": "<Talleblokk> storrelse must be one of 'sm' | 'md' | 'lg' | 'xl'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='TomTilstand'] > JSXAttribute > JSXIdentifier[name!=/^(?:tittel|forklaring|handling|style|key|ref|className|style|children)$/]",
+        "message": "<TomTilstand> doesn't accept that prop. Declared props: tittel, forklaring, handling, style."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Navlenke'] > JSXAttribute > JSXIdentifier[name!=/^(?:href|tekst|key|ref|className|style|children)$/]",
+        "message": "<Navlenke> doesn't accept that prop. Declared props: href, tekst."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Varsel'] > JSXAttribute > JSXIdentifier[name!=/^(?:tilstand|tittel|handling|onLukk|children|style|key|ref|className|style|children)$/]",
+        "message": "<Varsel> doesn't accept that prop. Declared props: tilstand, tittel, handling, onLukk, children, style."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Varsel'] > JSXAttribute[name.name='tilstand'] > Literal[value!=/^(?:info|ok|varsel|feil)$/]",
+        "message": "<Varsel> tilstand must be one of 'info' | 'ok' | 'varsel' | 'feil'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='VelgerValg'] > JSXAttribute > JSXIdentifier[name!=/^(?:verdi|tekst|key|ref|className|style|children)$/]",
+        "message": "<VelgerValg> doesn't accept that prop. Declared props: verdi, tekst."
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": [
+        "**/index.js"
+      ],
+      "rules": {
+        "no-restricted-imports": "off"
+      }
+    }
+  ],
+  "x-omelette": {
+    "components": {
+      "Akkordeonpost": {
+        "replaces": []
+      },
+      "Avkrysning": {
+        "replaces": []
+      },
+      "Smule": {
+        "replaces": []
+      },
+      "Faktapost": {
+        "replaces": []
+      },
+      "Fane": {
+        "replaces": []
+      },
+      "Felt": {
+        "replaces": []
+      },
+      "Fotokort": {
+        "replaces": []
+      },
+      "IkonKnapp": {
+        "replaces": []
+      },
+      "Instrumentflate": {
+        "replaces": []
+      },
+      "Knapp": {
+        "replaces": []
+      },
+      "Kort": {
+        "replaces": []
+      },
+      "Listepost": {
+        "replaces": []
+      },
+      "Logo": {
+        "replaces": []
+      },
+      "Maalestokk": {
+        "replaces": []
+      },
+      "Merkelapp": {
+        "replaces": []
+      },
+      "Mobilmeny": {
+        "replaces": []
+      },
+      "Navnelaas": {
+        "replaces": []
+      },
+      "Paginering": {
+        "replaces": []
+      },
+      "RadioValg": {
+        "replaces": []
+      },
+      "Status": {
+        "replaces": []
+      },
+      "TabellKolonne": {
+        "replaces": []
+      },
+      "Talleblokk": {
+        "replaces": []
+      },
+      "TomTilstand": {
+        "replaces": []
+      },
+      "Navlenke": {
+        "replaces": []
+      },
+      "Varsel": {
+        "replaces": []
+      },
+      "VelgerValg": {
+        "replaces": []
+      }
+    },
+    "tokens": [
+      "--ak-ark",
+      "--ak-dempet",
+      "--ak-display",
+      "--ak-fag",
+      "--ak-fart-mid",
+      "--ak-fart-rask",
+      "--ak-fart-rolig",
+      "--ak-feil",
+      "--ak-flate-min",
+      "--ak-grunn",
+      "--ak-grunn-senk",
+      "--ak-hjorne-0",
+      "--ak-hjorne-lg",
+      "--ak-hjorne-md",
+      "--ak-hjorne-pill",
+      "--ak-hjorne-sm",
+      "--ak-kryss",
+      "--ak-kurve",
+      "--ak-kurve-inn",
+      "--ak-lesebredde",
+      "--ak-lh-display",
+      "--ak-lh-normal",
+      "--ak-lh-tett",
+      "--ak-linje",
+      "--ak-linje-hard",
+      "--ak-loft-1",
+      "--ak-loft-2",
+      "--ak-loft-3",
+      "--ak-maal-hel",
+      "--ak-maal-merke",
+      "--ak-maal-steg",
+      "--ak-maal-tykk",
+      "--ak-mono",
+      "--ak-ok",
+      "--ak-r-1",
+      "--ak-r-10",
+      "--ak-r-2",
+      "--ak-r-3",
+      "--ak-r-4",
+      "--ak-r-5",
+      "--ak-r-6",
+      "--ak-r-7",
+      "--ak-r-8",
+      "--ak-r-9",
+      "--ak-rute",
+      "--ak-rute-linje",
+      "--ak-rute-lys",
+      "--ak-rute-mork",
+      "--ak-rute-tett",
+      "--ak-sans",
+      "--ak-sidebredde",
+      "--ak-signal",
+      "--ak-signal-fyll",
+      "--ak-signal-myk",
+      "--ak-signal-tekst",
+      "--ak-sp-display",
+      "--ak-sp-null",
+      "--ak-sp-titt",
+      "--ak-sp-vid",
+      "--ak-sp-vidt",
+      "--ak-svak",
+      "--ak-t-11",
+      "--ak-t-112",
+      "--ak-t-13",
+      "--ak-t-15",
+      "--ak-t-17",
+      "--ak-t-21",
+      "--ak-t-26",
+      "--ak-t-34",
+      "--ak-t-48",
+      "--ak-t-72",
+      "--ak-tekst",
+      "--ak-treff",
+      "--ak-v-400",
+      "--ak-v-500",
+      "--ak-v-600",
+      "--ak-v-700",
+      "--ak-v-academy",
+      "--ak-v-hq",
+      "--ak-v-junior",
+      "--ak-v-org",
+      "--ak-v-produkt",
+      "--ak-varsel",
+      "--border-hair",
+      "--border-hard",
+      "--font-body",
+      "--font-display",
+      "--font-measured",
+      "--motion-calm",
+      "--motion-curve",
+      "--motion-fast",
+      "--motion-mid",
+      "--radius-card",
+      "--radius-control",
+      "--radius-panel",
+      "--radius-pill",
+      "--shadow-overlay",
+      "--shadow-raised",
+      "--shadow-rest",
+      "--surface-accent",
+      "--surface-base",
+      "--surface-card",
+      "--surface-method",
+      "--surface-sunken",
+      "--text-body",
+      "--text-faint",
+      "--text-muted",
+      "--text-on-accent",
+      "--text-signal"
+    ],
+    "tokenKinds": {
+      "--ak-grunn": "color",
+      "--ak-grunn-senk": "color",
+      "--ak-ark": "color",
+      "--ak-tekst": "color",
+      "--ak-dempet": "color",
+      "--ak-svak": "color",
+      "--ak-linje": "color",
+      "--ak-linje-hard": "color",
+      "--ak-signal": "color",
+      "--ak-signal-fyll": "color",
+      "--ak-signal-tekst": "color",
+      "--ak-signal-myk": "color",
+      "--ak-fag": "color",
+      "--ak-v-junior": "color",
+      "--ak-v-academy": "color",
+      "--ak-v-hq": "color",
+      "--ak-v-org": "color",
+      "--ak-v-produkt": "color",
+      "--ak-ok": "color",
+      "--ak-varsel": "color",
+      "--ak-feil": "color",
+      "--ak-display": "font",
+      "--ak-sans": "font",
+      "--ak-mono": "font",
+      "--ak-t-11": "spacing",
+      "--ak-t-13": "spacing",
+      "--ak-t-15": "spacing",
+      "--ak-t-17": "spacing",
+      "--ak-t-21": "spacing",
+      "--ak-t-26": "spacing",
+      "--ak-t-34": "spacing",
+      "--ak-t-48": "spacing",
+      "--ak-t-72": "spacing",
+      "--ak-t-112": "spacing",
+      "--ak-v-400": "font",
+      "--ak-v-500": "font",
+      "--ak-v-600": "font",
+      "--ak-v-700": "font",
+      "--ak-lh-display": "other",
+      "--ak-lh-tett": "other",
+      "--ak-lh-normal": "other",
+      "--ak-sp-display": "other",
+      "--ak-sp-titt": "other",
+      "--ak-sp-null": "other",
+      "--ak-sp-vid": "other",
+      "--ak-sp-vidt": "other",
+      "--ak-r-1": "spacing",
+      "--ak-r-2": "spacing",
+      "--ak-r-3": "spacing",
+      "--ak-r-4": "spacing",
+      "--ak-r-5": "spacing",
+      "--ak-r-6": "spacing",
+      "--ak-r-7": "spacing",
+      "--ak-r-8": "spacing",
+      "--ak-r-9": "spacing",
+      "--ak-r-10": "spacing",
+      "--ak-hjorne-0": "radius",
+      "--ak-hjorne-sm": "spacing",
+      "--ak-hjorne-md": "spacing",
+      "--ak-hjorne-lg": "spacing",
+      "--ak-hjorne-pill": "spacing",
+      "--ak-loft-1": "shadow",
+      "--ak-loft-2": "shadow",
+      "--ak-loft-3": "shadow",
+      "--ak-lesebredde": "other",
+      "--ak-sidebredde": "other",
+      "--ak-treff": "other",
+      "--ak-fart-rask": "other",
+      "--ak-fart-mid": "other",
+      "--ak-fart-rolig": "other",
+      "--ak-kurve": "other",
+      "--ak-kurve-inn": "other",
+      "--ak-rute": "spacing",
+      "--ak-rute-tett": "spacing",
+      "--ak-rute-linje": "spacing",
+      "--ak-rute-lys": "color",
+      "--ak-rute-mork": "color",
+      "--ak-maal-tykk": "spacing",
+      "--ak-maal-merke": "spacing",
+      "--ak-maal-hel": "spacing",
+      "--ak-maal-steg": "spacing",
+      "--ak-kryss": "spacing",
+      "--ak-flate-min": "other",
+      "--surface-base": "color",
+      "--surface-sunken": "color",
+      "--surface-card": "color",
+      "--surface-accent": "color",
+      "--surface-method": "color",
+      "--text-body": "font",
+      "--text-muted": "font",
+      "--text-faint": "font",
+      "--text-signal": "font",
+      "--text-on-accent": "font",
+      "--border-hair": "color",
+      "--border-hard": "color",
+      "--font-display": "font",
+      "--font-body": "font",
+      "--font-measured": "font",
+      "--radius-control": "radius",
+      "--radius-card": "radius",
+      "--radius-panel": "radius",
+      "--radius-pill": "radius",
+      "--shadow-rest": "shadow",
+      "--shadow-raised": "shadow",
+      "--shadow-overlay": "shadow",
+      "--motion-fast": "color",
+      "--motion-mid": "color",
+      "--motion-calm": "color",
+      "--motion-curve": "color"
+    },
+    "fontFamilies": [
+      "IBM Plex Mono",
+      "IBM Plex Sans",
+      "IBM Plex Sans Condensed"
+    ]
+  }
+}

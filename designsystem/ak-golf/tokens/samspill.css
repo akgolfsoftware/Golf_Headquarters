@@ -1,0 +1,109 @@
+/* AK Golf — samspill.
+   Tilstandene som ikke kan uttrykkes inline: hover, trykk, og det som kommer
+   til syne. Lagt til 01.09.2026 etter en gjennomgang av bevegelseslaget.
+
+   Hvorfor dette er en CSS-fil og ikke JS i komponentene: hover satt med
+   onMouseEnter utløses av et trykk på mobil, og blir hengende til neste
+   trykk et annet sted. Mobil 390 er merkets viktigste visning, så det var
+   feil sted å ha den logikken. CSS kan spørre om enheten faktisk har en
+   peker; JS kan ikke.
+
+   Regelen fra bevegelse.css gjelder fortsatt: en animasjon skal svare på
+   «hvor kom dette fra» eller «hva skjedde nå» — aldri på «se her». */
+
+/* ---- Trykk ------------------------------------------------------------
+   Alt som kan trykkes svarer i det fingeren treffer, ikke når den slipper.
+   Bekreftelsen er FARGESKIFTET — ingen krymp, ingen sprett. Rettet
+   02.09.2026: en tidligere versjon satte scale(0.98) på :active, i strid
+   med 12-bevegelse.md («Trykk: ingen shrink, ingen bounce»). Et instrument
+   gir ikke etter når du trykker på det; det svarer. */
+
+.ak-trykk {
+  transition:
+    background-color var(--ak-fart-rask) var(--ak-kurve),
+    border-color var(--ak-fart-rask) var(--ak-kurve),
+    color var(--ak-fart-rask) var(--ak-kurve),
+    box-shadow var(--ak-fart-rask) var(--ak-kurve);
+}
+
+.ak-trykk:active:not(:disabled):not([aria-disabled='true']) {
+  background: var(--ak-a-bg, var(--ak-h-bg, inherit));
+  border-color: var(--ak-a-kant, var(--ak-h-kant, currentColor));
+  color: var(--ak-a-tekst, var(--ak-h-tekst, inherit));
+}
+
+/* Hover kun der det finnes en ekte peker. */
+@media (hover: hover) and (pointer: fine) {
+  .ak-trykk:hover:not(:disabled):not([aria-disabled='true']) {
+    background: var(--ak-h-bg, inherit);
+    border-color: var(--ak-h-kant, currentColor);
+    color: var(--ak-h-tekst, inherit);
+  }
+  .ak-rad-trykk:hover { background: var(--ak-ark) }
+  .ak-kort-trykk:hover { box-shadow: var(--ak-loft-2) }
+}
+
+/* ---- Fokus ------------------------------------------------------------
+   Én ring, overalt: 2 px signal med 2 px avstand. Kun ved tastatur
+   (:focus-visible) — museklikk gir ingen ring, fordi pekeren allerede
+   viser hvor du er. Komponenter skal aldri sette outline: none uten å
+   sette denne i stedet. */
+
+.ak-trykk:focus-visible,
+.ak-felt:focus-visible {
+  outline: 2px solid var(--ak-signal);
+  outline-offset: 2px;
+}
+
+/* ---- Snurre -----------------------------------------------------------
+   Én definisjon, ikke én per knapp som laster. Under redusert bevegelse
+   pulser den i stedet for å rotere: brukeren trenger fortsatt å vite at noe
+   skjer, men rotasjon er den delen som gir ubehag. */
+
+@keyframes ak-snurr { to { transform: rotate(360deg) } }
+@keyframes ak-puls  { 50% { opacity: 0.3 } }
+
+.ak-snurre {
+  width: 12px; height: 12px; flex: 0 0 auto;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: ak-snurr 700ms linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ak-snurre {
+    border-top-color: currentColor;
+    animation: ak-puls 1200ms ease-in-out infinite;
+  }
+}
+
+/* ---- Det som kommer til syne ------------------------------------------
+   Én regel, brukt to steder: mobilmenyen og varselet. Begge svarer på
+   «hva skjedde nå». Ingen skala fra 0 — ingenting i den fysiske verden
+   dukker opp fra ingenting. */
+
+.ak-kommer {
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity var(--ak-fart-mid) var(--ak-kurve),
+    transform var(--ak-fart-mid) var(--ak-kurve);
+}
+
+@starting-style {
+  .ak-kommer { opacity: 0; transform: translateY(-8px) }
+}
+
+.ak-kommer[data-ak-fra='bunn'] { transform: translateY(0) }
+@starting-style {
+  .ak-kommer[data-ak-fra='bunn'] { opacity: 0; transform: translateY(8px) }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ak-kommer { transition: opacity var(--ak-fart-mid) var(--ak-kurve) }
+  @starting-style {
+    .ak-kommer,
+    .ak-kommer[data-ak-fra='bunn'] { opacity: 0; transform: none }
+  }
+}

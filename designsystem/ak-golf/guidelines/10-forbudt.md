@@ -15,10 +15,11 @@
 
 ## Formen
 
-- Ingen fjerde font. (Archivo Narrow, Poppins, IBM Plex Mono. Lora er ute.)
+- Ingen fjerde font. (IBM Plex Sans Condensed, IBM Plex Sans, IBM Plex Mono —
+  én familie, tre roller. Archivo Narrow, Poppins og Lora er ute.)
 - Ingen farge utenfor `tokens/farge.css`.
 - Ingen gradient over merkefarger.
-- Ingen Poppins over vekt 600. 700 er kun Archivo Narrow.
+- Ingen IBM Plex Sans over vekt 600. 700 er kun Plex Sans Condensed.
 - Ingen caps på en hel setning i brødtekst.
 - **Ingen serif.** Instrument-retningen har ingen.
 - **Ingen falske instrumenter:** rutenett med tall på aksene, kurver uten

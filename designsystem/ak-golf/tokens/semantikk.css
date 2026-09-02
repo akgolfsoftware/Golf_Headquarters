@@ -1,10 +1,8 @@
 /* AK Golf — semantiske alias.
-   Speilet fra masteren (Claude Design «AK Golf Designsystem») 01.09.2026.
-
-   Grunntokens er fasit. Disse gir dem rolle-navn, så en komponent kan si hva
-   den vil ha framfor hvilken farge den vil ha. Ingen nye verdier her — bare
-   peker videre. Alias-navnene er engelske med vilje: de leses av verktøy, ikke
-   av mennesker. Verdiene og reglene er norske. */
+   Grunntokens over er fasit. Disse gir dem rolle-navn, så en komponent kan si
+   hva den vil ha framfor hvilken farge den vil ha. Ingen nye verdier her —
+   bare peker videre. Alias-navnene er engelske med vilje: de leses av
+   verktøy, ikke av mennesker. Verdiene og reglene er norske. */
 
 :root {
   /* Flater */

@@ -9,11 +9,11 @@ identitetsfarge og en tone.
 
 | Virksomhet | Hvordan navnet skrives | Identitetsfarge | Hvor mye AK Golf synes |
 |---|---|---|---|
-| **AK Golf Academy** | `AK Golf Academy` | Clay `#D97757` | Fullt ut. Dette *er* AK Golf |
-| **AK Golf Junior Academy** | `AK Golf Junior Academy`, kort: `Junior Academy` | Grønn `#5B8450` | Fullt ut |
-| **AK Golf HQ** (PlayerHQ / AgencyOS) | `AK Golf HQ` | Blå `#3F7CB3` | Fullt ut — men skjermene styres av Train-lock |
-| **Organisasjon** (WANG-coaching, klubbarbeid) | Kundens navn først: `WANG Toppidrett Fredrikstad — coaching ved AK Golf` | Skifer `#4E6A7E` | Som leverandør, ikke som eier |
-| **Skarpnord Golf Products** | `Skarpnord Golf Products` | Oker `#9C7A33` | Lav profil til virksomheten har omsetning |
+| **AK Golf Academy** | `AK Golf Academy` | Låner signalet `#B83217` | Fullt ut. Dette *er* AK Golf |
+| **AK Golf Junior Academy** | `AK Golf Junior Academy`, kort: `Junior Academy` | Grønn `#4A6B33` | Fullt ut |
+| **AK Golf HQ** (PlayerHQ / AgencyOS) | `AK Golf HQ` | Blå `#2B5F87` | Fullt ut — men skjermene styres av Train-lock |
+| **Organisasjon** (WANG-coaching, klubbarbeid) | Kundens navn først: `WANG Toppidrett Fredrikstad — coaching ved AK Golf` | Grå `#4A4F58` | Som leverandør, ikke som eier |
+| **Skarpnord Golf Products** | `Skarpnord Golf Products` | Brun `#7A5A22` | Lav profil til virksomheten har omsetning |
 | **Mulligan Indoor Golf** | `Mulligan Indoor Golf` | *Egen, utenfor systemet* | **Ingen.** Se `01-merket.md` |
 
 **Team Norway Golf er ikke i denne tabellen.** Team Norway har sitt eget
@@ -24,11 +24,14 @@ AK Golf-merket gjelder ikke der.
 
 Rekkefølgen følger spillerens vei gjennom huset, ikke en fargevifte:
 
-**Junior (grønn, vekst) → Academy (clay, kjernen) → HQ (blå, systemet) →
-Organisasjon (skifer, kravet) → Products (oker, utstyret).**
+**Junior (grønn, vekst) → Academy (signalrødt, kjernen) → HQ (blå, systemet) →
+Organisasjon (grå, kravet) → Products (brun, utstyret).**
+
+Alle fem er målt mot betonggrå `#E8E4DC` i `tokens/farge.css` (01.09.2026).
+Academy har ingen egen tone: den låner signalet, fordi Academy *er* kjernen.
 
 Fargen koder hvor i utviklingsløpet du står. Det gjør at en forelder som ser
-grønt og et forbund som ser skifer, begge leser noe sant — uten at det må
+grønt og et forbund som ser grå, begge leser noe sant — uten at det må
 forklares.
 
 ## Tre systemer, én konfliktregel

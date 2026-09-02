@@ -1,5 +1,5 @@
 /* AK Golf — rom, geometri og dybde.
-   STEG 18.4.
+   GENERERT fra tokens.json — ikke rediger her.
 
    Romskalaen er en 4-basis. Alt avstandsmål i merket er et av disse tallene.
    Er svaret «22px», er det feil — velg 20 eller 24. Regelen finnes fordi
@@ -7,33 +7,28 @@
    når noen har dårlig tid. */
 
 :root {
-  --ak-r-1:   4px;
-  --ak-r-2:   8px;
-  --ak-r-3:  12px;
-  --ak-r-4:  16px;
-  --ak-r-5:  24px;
-  --ak-r-6:  32px;
-  --ak-r-7:  48px;
-  --ak-r-8:  64px;
-  --ak-r-9:  96px;   /* mellom seksjoner, mobil */
+  --ak-r-1: 4px;
+  --ak-r-2: 8px;
+  --ak-r-3: 12px;
+  --ak-r-4: 16px;
+  --ak-r-5: 24px;
+  --ak-r-6: 32px;
+  --ak-r-7: 48px;
+  --ak-r-8: 64px;
+  --ak-r-9: 96px;  /* mellom seksjoner, mobil */
   --ak-r-10: 128px;  /* mellom seksjoner, Mac */
-
-  /* Radius. Merket er rolig, ikke rundt. Store flater er nesten rette —
-     jo større flaten er, desto mindre skal hjørnet merkes. */
-  --ak-hjorne-0:    0;
-  --ak-hjorne-sm:   6px;   /* knapp, merkelapp, felt */
-  --ak-hjorne-md:  10px;   /* kort */
-  --ak-hjorne-lg:  16px;   /* panel, stor flate */
-  --ak-hjorne-pill: 999px; /* KUN knapper og filter-piller */
-
-  /* Dybde. Tre nivåer, ikke flere. Skyggene er varme (blekk, ikke svart)
-     så de ikke blir grå flekker på kremen. */
-  --ak-loft-1: 0 1px 2px rgba(20, 20, 19, 0.05);
+  --ak-hjorne-0: 0; /* @kind radius */
+  --ak-hjorne-sm: 6px;  /* knapp, merkelapp, felt */
+  --ak-hjorne-md: 10px;  /* kort */
+  --ak-hjorne-lg: 16px;  /* panel, stor flate */
+  --ak-hjorne-pill: 999px;  /* KUN knapper og filter-piller */
+  --ak-loft-1: 0 1px 2px rgba(20, 20, 19, 0.05);  /* Dybde: tre nivåer, ikke flere. Skyggene er varme (blekk, ikke svart) så de ikke blir grå flekker på betongen */
   --ak-loft-2: 0 1px 2px rgba(20, 20, 19, 0.04), 0 8px 24px rgba(20, 20, 19, 0.06);
   --ak-loft-3: 0 2px 4px rgba(20, 20, 19, 0.05), 0 18px 48px rgba(20, 20, 19, 0.10);
-
-  /* Mål. */
-  --ak-lesebredde: 65ch;   /* brødtekst slutter her, uansett skjermbredde */
-  --ak-sidebredde: 1180px;
-  --ak-treff:      44px;   /* minste trykkflate, mobil */
+  --ak-lesebredde: 65ch; /* @kind other */  /* brødtekst slutter her, uansett skjermbredde */
+  --ak-sidebredde: 1180px; /* @kind other */
+  --ak-treff: 44px; /* @kind other */  /* minste trykkflate, mobil */
+  --ak-bp-mobil: 390px; /* @kind other */  /* Brekkpunkter. Lagt til 02.09.2026 — før fantes bare 390 og 1440. Mobil er den viktigste visningen */
+  --ak-bp-tablet: 768px; /* @kind other */  /* iPad stående — flaten foreldre leser rapporter på */
+  --ak-bp-mac: 1180px; /* @kind other */  /* fra her gjelder full sidebredde */
 }
