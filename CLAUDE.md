@@ -130,8 +130,30 @@ ikke bare denne maskinen.
    **high-end-visual-design** (kvalitetskrav til spacing, skygger, kort og bevegelse). De tre
    ligger globalt i `~/.claude/skills/` (skrudd på i `~/.claude/settings.json` 02.09.2026 —
    var «off» i `skillOverrides`, sammen med web-design-guidelines og react-best-practices).
+   **Motion og bevegelse (emilkowalski/skills, installert 02.09.2026, globalt):** `animate`
+   (bygg én animasjon fra bunnen — skal den i det hele tatt animere, hvilken kurve/varighet,
+   hvordan den avbrytes), `review-animations` (kritikk av motion i en diff), `improve-animations`
+   (audit av all motion i kodebasen → prioritert plan), `find-animation-opportunities` (hva
+   burde bevege seg, hva skal ikke), `animation-vocabulary` (riktig navn på effekten),
+   `apple-design` (fysisk, avbrytbar motion, sheets/swipe, reduced-motion), `emil-design-eng`
+   (Emil Kowalskis polish-filosofi), `vercel-react-view-transitions` (React View Transition API
+   for rute-/tilstandsskift uten tredjepartsbibliotek). Motion i produktet følger Train-lock
+   sine varigheter/kurver der de finnes; skillene fyller ut der fasiten er taus.
+   **Konsistens og designsystem:** `extract-design-system` (les tokens ut av en ferdig flate og
+   sammenlign), `ui-ux-pro-max` + `design-system` + `ui-styling` (nextlevelbuilder — UX-regler,
+   token-arkitektur, shadcn/Tailwind-mønstre), `vercel-composition-patterns` (komponent-API-er
+   uten boolean-prop-eksplosjon), `minimalist-ui`, `brandkit`, `image-to-code`, `prototype`,
+   `pick-ui-library` (leonxlnx/taste-skill + emilkowalski). Alle ligger i `~/.claude/skills/`.
+   **Fra research 02.09.2026 (GitHub-stjerner, skills.sh-installs, X):** `hallmark` (nutlope,
+   27,9k stjerner — bruk KUN `audit`-kommandoen som uavhengig slop-sjekk), `better-ui` +
+   `interface-review` (jakubkrehel — pikselnivå-polish: konsentrisk radius, optisk justering,
+   trykkflater), `anti-ui-slop` (uizze, 630k installs — leser eksisterende tokens FØR endring,
+   passer Train-lock), `gsap-core`/`gsap-react`/`gsap-performance` (offisielt fra GSAP —
+   **GSAP er IKKE en avhengighet i repoet per 02.09.2026**; skillene brukes bare om Anders sier
+   ja til biblioteket, jf. «ingen nye avhengigheter uten begrunnelse» i pkt. 8).
    Rekkefølge ved skjermarbeid: canvas først (§TEGN SKJERMEN FØR DU BYGGER DEN) → bygg mot
-   Train-lock → `/impeccable audit` på den ferdige skjermen → rett funnene → skjermbilde-gaten.
+   Train-lock → `/impeccable audit` + `review-animations` på den ferdige skjermen → rett
+   funnene → skjermbilde-gaten.
    Train-lock-tokene (`--tl-*`/`TL`) og designsystemet i `designsystem/train-lock/`
    overstyrer ALLTID skillenes egne designvalg, uendret av dette (invariant 2) — et
    impeccable-funn som ber om annen font, farge eller radius enn Train-lock avvises, alt
