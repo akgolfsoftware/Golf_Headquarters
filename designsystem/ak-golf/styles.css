@@ -1,0 +1,13 @@
+/* AK Golf — designsystemets ene inngang.
+   Kun @import. Ingen regler i denne filen.
+   Rekkefølgen er avhengighetsrekkefølge, ikke alfabetisk. */
+
+@import url('tokens/fonter.css');
+@import url('tokens/farge.css');
+@import url('tokens/type.css');
+@import url('tokens/rom.css');
+@import url('tokens/bevegelse.css');
+@import url('tokens/instrument.css');
+@import url('tokens/semantikk.css');
+@import url('tokens/grunnlag.css');
+@import url('tokens/samspill.css');
