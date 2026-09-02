@@ -249,3 +249,42 @@ export async function getCoachTilbakemeldingData(
     kanSvare: okt.studentId === user.id,
   };
 }
+
+// ── Tilbakemeldinger — liste (ME-04 Coach-hub-raden «Tilbakemeldinger») ─────
+
+export type TilbakemeldingListeItem = {
+  oktId: string;
+  tittel: string;
+  dato: string;
+  snippet: string;
+};
+
+/**
+ * Alle økter for spilleren med en faktisk skrevet coach-tilbakemelding —
+ * samme «skrevet»-betingelse som detaljsiden (coachRatedAt finnes +
+ * notat ikke tomt). Ingen sesong-avgrensning finnes som ekte datafelt her,
+ * så tallet er alt-tid, aldri en oppdiktet sesongstart.
+ */
+export async function getTilbakemeldingerListe(studentId: string): Promise<TilbakemeldingListeItem[]> {
+  const okter = await prisma.trainingSessionV2.findMany({
+    where: { studentId, status: "COMPLETED", notes: { not: null } },
+    select: { id: true, title: true, startTime: true, notes: true, completedSummary: true },
+    orderBy: { startTime: "desc" },
+    take: 100,
+  });
+
+  const resultat: TilbakemeldingListeItem[] = [];
+  for (const okt of okter) {
+    const summary = somObjekt(okt.completedSummary);
+    const coachRatedAt = lesDato(summary.coachRatedAt);
+    const notat = (okt.notes ?? "").trim();
+    if (coachRatedAt == null || notat.length === 0) continue;
+    resultat.push({
+      oktId: okt.id,
+      tittel: okt.title,
+      dato: fmtDato(okt.startTime),
+      snippet: notat.length > 90 ? `${notat.slice(0, 90)}…` : notat,
+    });
+  }
+  return resultat;
+}

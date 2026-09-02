@@ -21,6 +21,8 @@ export type CoachHubData = {
   meldinger: { id: string; role: "me" | "coach"; body: string; ts: string }[];
   /** Kommende bookinger + planøkter med coach (sortert stigende). */
   kommende: { id: string; title: string; startAt: Date; endAt: Date; locationName: string | null; status: string }[];
+  /** Antall økter med skrevet coach-tilbakemelding (ME-04-raden «Tilbakemeldinger»). */
+  tilbakemeldingerCount: number;
 };
 
 /* ── Rene hjelpere (norsk bokmål) ──────────────────────────────────── */
@@ -58,7 +60,7 @@ function naerhet(d: Date): { l: string; tone: StatusTone } | null {
 /* ── Skjerm ────────────────────────────────────────────────────────── */
 
 export function CoachHubV2({ data }: { data: CoachHubData }) {
-  const { coach, fokus, meldinger, kommende } = data;
+  const { coach, fokus, meldinger, kommende, tilbakemeldingerCount } = data;
 
   const nyeFraCoach = meldinger.filter((m) => m.role === "coach").length;
   const timeline = kommende.slice(0, 4);
@@ -109,17 +111,28 @@ export function CoachHubV2({ data }: { data: CoachHubData }) {
         </Kort>
       )}
 
-      {/* Meldinger — én rad, fasit har ikke forhåndsvisning av bobler på hub-nivå */}
+      {/* Meldinger + Tilbakemeldinger — to rader (ME-04: «Send melding» og
+          «Tilbakemeldinger · N i sesong», her uten oppdiktet sesongstart). */}
       <Kort pad="4px 6px">
         <Link href="/portal/coach/melding" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
           <Rad
-            last
+            last={!coach}
             leading={<Icon name="message-circle" size={16} style={{ color: TL.mute }} />}
             title="Meldinger"
             sub={meldingerSub}
             meta={nyeFraCoach > 0 ? <StatusPill tone="lime">{nyeFraCoach}</StatusPill> : undefined}
           />
         </Link>
+        {coach && (
+          <Link href="/portal/coach/tilbakemelding" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
+            <Rad
+              last
+              leading={<Icon name="message-square" size={16} style={{ color: TL.mute }} />}
+              title="Tilbakemeldinger"
+              sub={tilbakemeldingerCount > 0 ? `${tilbakemeldingerCount} totalt` : "Ingen ennå"}
+            />
+          </Link>
+        )}
       </Kort>
 
       {!coach && (

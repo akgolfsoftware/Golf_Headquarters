@@ -285,6 +285,7 @@ export const UI = {
   approvalAccepted: "Godtatt",
   approvalRejected: "Avvist — skjult i planen din",
   approvalRejectHint: "Skjuler økten hos deg. Den slettes ikke, og coachen/gruppen ser ingen endring.",
+  approvalDrillsCount: (n: number) => `${n} ${n === 1 ? "øvelse" : "øvelser"}`,
 
   // Godkjenning — agency-visning (SessionInspector, A-09-mønster)
   approvalStatusLabel: "Godkjenning",
