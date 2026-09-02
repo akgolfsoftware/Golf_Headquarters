@@ -67,6 +67,26 @@ export function GodkjenningKort({ okt, onFerdig }: { okt: PlayerDaySession; onFe
           {PYRAMID_LABEL[okt.pyramid as keyof typeof PYRAMID_LABEL] ?? okt.pyramid}
         </p>
       </div>
+      {okt.drillsCount > 0 && (
+        <p style={{ margin: 0, fontSize: 13, color: TL.mute }}>
+          {WB_UI.approvalDrillsCount(okt.drillsCount)}
+        </p>
+      )}
+      {okt.notes && (
+        <p
+          style={{
+            margin: 0,
+            background: TL.dock,
+            borderRadius: TL.radius.row,
+            padding: "10px 12px",
+            fontSize: 13,
+            color: TL.text,
+            lineHeight: 1.5,
+          }}
+        >
+          «{okt.notes}»
+        </p>
+      )}
       <p style={{ margin: 0, fontSize: 13, color: TL.mute, lineHeight: 1.5 }}>{WB_UI.approvalRejectHint}</p>
       <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
         <button
@@ -103,7 +123,7 @@ export function GodkjenningKort({ okt, onFerdig }: { okt: PlayerDaySession; onFe
             borderRadius: TL.radius.pill,
             border: `1px solid ${TL.hair}`,
             background: "transparent",
-            color: TL.text,
+            color: TL.mute,
             fontFamily: TL.font.sans,
             fontSize: 15,
             fontWeight: 600,
