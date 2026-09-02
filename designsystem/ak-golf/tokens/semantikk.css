@@ -1,0 +1,48 @@
+/* AK Golf — semantiske alias.
+   Speilet fra masteren (Claude Design «AK Golf Designsystem») 01.09.2026.
+
+   Grunntokens er fasit. Disse gir dem rolle-navn, så en komponent kan si hva
+   den vil ha framfor hvilken farge den vil ha. Ingen nye verdier her — bare
+   peker videre. Alias-navnene er engelske med vilje: de leses av verktøy, ikke
+   av mennesker. Verdiene og reglene er norske. */
+
+:root {
+  /* Flater */
+  --surface-base:    var(--ak-grunn);
+  --surface-sunken:  var(--ak-grunn-senk);
+  --surface-card:    var(--ak-ark);
+  --surface-accent:  var(--ak-signal-fyll);
+  --surface-method:  var(--ak-fag);
+
+  /* Tekst */
+  --text-body:       var(--ak-tekst);
+  --text-muted:      var(--ak-dempet);
+  --text-faint:      var(--ak-svak);
+  --text-signal:     var(--ak-signal);
+  --text-on-accent:  var(--ak-signal-tekst);
+
+  /* Kanter */
+  --border-hair:     var(--ak-linje);
+  --border-hard:     var(--ak-linje-hard);
+
+  /* Type */
+  --font-display:    var(--ak-display);
+  --font-body:       var(--ak-sans);
+  --font-measured:   var(--ak-mono);
+
+  /* Form */
+  --radius-control:  var(--ak-hjorne-sm);
+  --radius-card:     var(--ak-hjorne-md);
+  --radius-panel:    var(--ak-hjorne-lg);
+  --radius-pill:     var(--ak-hjorne-pill);
+
+  --shadow-rest:     var(--ak-loft-1);
+  --shadow-raised:   var(--ak-loft-2);
+  --shadow-overlay:  var(--ak-loft-3);
+
+  /* Bevegelse */
+  --motion-fast:     var(--ak-fart-rask);
+  --motion-mid:      var(--ak-fart-mid);
+  --motion-calm:     var(--ak-fart-rolig);
+  --motion-curve:    var(--ak-kurve);
+}

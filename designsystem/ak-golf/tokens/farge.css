@@ -1,0 +1,94 @@
+/* AK Golf — farge.
+   STEG 18.4. Lagt om til VERKSTEDET 01.09.2026 (Anders).
+
+   Merket hører hjemme i et verksted, ikke i et klubbhus. Det følger av det
+   Academy faktisk står for: langsiktig utvikling, oppfølging, og trening som
+   er optimal og spesifikk — **uavhengig av hvilket nivå spilleren er på.**
+
+   Den siste setningen er grunnen til at paletten ser ut som den gjør. De
+   fleste golfmerker signaliserer eksklusivitet: dyp grønn, gull, marmor,
+   seriffer. Det sier «her må du være god nok». AK Golf sier det motsatte, og
+   da kan ikke fargene motsi teksten.
+
+   Grunnen er varm betonggrå. Signalfargen er rød, og den brukes som en
+   markering på en måling — ikke som energi eller hausing. Ingenting her er
+   premium, og det er meningen. Et godt verktøy er ikke pyntet; det er nøyaktig.
+
+   Alle kontrasttall er MÅLT 01.09.2026 med WCAG-formelen, ikke anslått.
+
+   LYS ER STANDARD. Den mørke varianten er verkstedet om kvelden — den finnes,
+   men den er ikke utgangspunktet. */
+
+:root {
+  /* --- Grunn --- */
+  --ak-grunn:      #E8E4DC;  /* varm betonggrå — hovedflate */
+  --ak-grunn-senk: #DDD8CE;  /* seksjon som skal skille seg */
+  --ak-ark:        #FFFFFF;  /* kort og ark som ligger PÅ grunnen */
+
+  /* --- Tekst --- */
+  --ak-tekst:      #1F1D1A;  /* 13,3:1 på grunn · 16,8:1 på ark */
+  --ak-dempet:     #57534B;  /* 6,0:1 · brødtekst som er underordnet */
+  --ak-svak:       #8B857A;  /* 2,9:1 — ALDRI brødtekst. Kun etiketter og kanter */
+
+  /* --- Linjer --- */
+  --ak-linje:      #D2CCC0;
+  --ak-linje-hard: #B8B1A3;  /* der to flater møtes og skillet skal sees */
+
+  /* --- Signal. Merkets ene aksent. ---
+     Rødt betyr «se her» — en måling, et tall, en handling. Aldri dekor,
+     aldri en stemning, aldri fem røde ting på samme flate. */
+  --ak-signal:      #B83217;  /* 4,7:1 på grunn — tekstsikker */
+  --ak-signal-fyll: #C4361B;  /* mer mettet, for hele flater */
+  --ak-signal-tekst:#FFFFFF;  /* 6,0:1 på fyllet */
+  --ak-signal-myk:  rgba(184, 50, 23, 0.10);
+
+  /* --- Fag. Andrestemme, sjelden brukt. ---
+     Dyp grønnblå for det som hører til metoden framfor til målingen:
+     pyramiden, periodene, langsiktige linjer i et diagram. */
+  --ak-fag:        #2C6E63;  /* 4,7:1 på grunn */
+
+  /* --- Varianttoner. ---
+     Dempede arbeidstoner, ikke fem glade farger. I et verksted er ikke
+     verktøyene fargekodet etter merke — de er merket for å skilles fra
+     hverandre. Det er alt disse gjør.
+     MERK: rødt er OPPTATT av signalet. Academy låner den, fordi Academy ER
+     kjernen — men ingen annen variant får noe som ligner. */
+  --ak-v-junior:  #4A6B33;  /* 4,8:1 */
+  --ak-v-academy: var(--ak-signal);
+  --ak-v-hq:      #2B5F87;  /* 5,4:1 */
+  --ak-v-org:     #4A4F58;  /* 6,5:1 */
+  --ak-v-produkt: #7A5A22;  /* 5,0:1 */
+
+  /* --- Status. Aldri identitet. --- */
+  --ak-ok:     #2E6B45;
+  --ak-varsel: #8A6410;
+  --ak-feil:   #A62B1C;
+}
+
+/* Verkstedet om kvelden. Varm mørk grå — ikke sort, ikke premium.
+   Samme temperatur som betongen, bare skrudd ned. */
+:root[data-ak-flate="mork"] {
+  --ak-grunn:      #22201C;
+  --ak-grunn-senk: #1A1815;
+  --ak-ark:        #2C2925;
+
+  --ak-tekst:      #F2EFE8;  /* 14,2:1 */
+  --ak-dempet:     #A8A196;  /* 6,4:1 */
+  --ak-svak:       #75706A;  /* 3,3:1 — samme regel: aldri brødtekst */
+
+  --ak-linje:      #38342E;
+  --ak-linje-hard: #4A453D;
+
+  --ak-signal:      #E8654A;  /* 5,0:1 */
+  --ak-signal-fyll: #C4361B;
+  --ak-signal-tekst:#FFFFFF;
+  --ak-signal-myk:  rgba(232, 101, 74, 0.14);
+
+  --ak-fag:        #5FA89A;  /* 5,9:1 */
+
+  --ak-v-junior:  #8FB37F;
+  --ak-v-academy: var(--ak-signal);
+  --ak-v-hq:      #7FB0DA;
+  --ak-v-org:     #A3AAB5;
+  --ak-v-produkt: #C9A755;
+}

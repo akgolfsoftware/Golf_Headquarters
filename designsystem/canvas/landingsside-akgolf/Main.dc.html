@@ -1,0 +1,463 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <style>
+    body { margin: 0; background: #FAF9F5; color: #141413;
+           font-family: 'Poppins', Arial, system-ui, sans-serif;
+           -webkit-font-smoothing: antialiased; }
+    a { color: #141413; text-decoration: none; }
+    a:hover { color: #B85C3D; }
+    .mono { font-family: 'IBM Plex Mono', ui-monospace, monospace;
+            font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; }
+    .serif { font-family: 'Lora', Georgia, serif; }
+    h1, h2, h3 { margin: 0; font-weight: 600; letter-spacing: -0.02em; text-wrap: pretty; }
+    p { margin: 0; }
+    .rule { height: 1px; background: #E8E6DC; }
+  </style>
+</helmet>
+
+<div style="width: 1440px; background: #FAF9F5;">
+
+  <!-- NAV -->
+  <div style="display: flex; align-items: center; justify-content: space-between; height: 72px; padding: 0 80px; border-bottom: 1px solid #E8E6DC; background: #FAF9F5;">
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <img src="logo.svg" alt="AK Golf" style="width: 34px; height: 30px;">
+      <span style="font-size: 14px; font-weight: 600; letter-spacing: 0.01em;">AK Golf Academy</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 32px; font-size: 14px;">
+      <a href="#">Coaching</a>
+      <a href="#">AK Golf HQ</a>
+      <a href="#">Mulligan Indoor Golf</a>
+      <a href="#" style="border: 1px solid #D1CFC5; border-radius: 999px; padding: 9px 20px; font-weight: 500;">Logg inn</a>
+      <a href="#" style="background: #141413; color: #FAF9F5; border-radius: 999px; padding: 10px 22px; font-weight: 500;">Book kartleggingsøkt</a>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <div style="position: relative; height: 720px; overflow: hidden;">
+    <img src="hero-trackman.jpg" alt="Trackman-måling på rangen" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;">
+    <div style="position: absolute; inset: 0; background: linear-gradient(100deg, rgba(20,20,19,0.92) 0%, rgba(20,20,19,0.72) 38%, rgba(20,20,19,0.15) 72%, rgba(20,20,19,0.05) 100%);"></div>
+    <div style="position: relative; display: flex; flex-direction: column; justify-content: center; height: 100%; padding: 0 80px; max-width: 860px;">
+      <p class="mono" style="color: #D97757; margin-bottom: 24px;">Fredrikstad · Coaching siden 2013</p>
+      <h1 class="serif" style="font-size: 76px; line-height: 1.02; color: #FAF9F5; max-width: 720px;">
+        Slutt å gjette hvor<br>slagene forsvinner.
+      </h1>
+      <p style="margin-top: 28px; max-width: 520px; font-size: 19px; line-height: 1.6; color: rgba(250,249,245,0.86);">
+        Vi måler svingen, slagene og scoren din — og bygger en plan som viser
+        nøyaktig hvor du taper slag, og hva du skal gjøre med det.
+      </p>
+      <div style="display: flex; align-items: center; gap: 16px; margin-top: 44px;">
+        <a href="#" style="background: #FAF9F5; color: #141413; border-radius: 999px; padding: 17px 34px; font-size: 15px; font-weight: 500;">Book kartleggingsøkt</a>
+        <a href="#" style="border: 1px solid rgba(250,249,245,0.45); color: #FAF9F5; border-radius: 999px; padding: 16px 30px; font-size: 15px; font-weight: 500;">Slik måler vi</a>
+      </div>
+      <p class="mono" style="margin-top: 24px; color: rgba(250,249,245,0.6); letter-spacing: 0.16em;">Første økt: 90 minutter · vanlig timepris</p>
+    </div>
+  </div>
+
+  <!-- TILLITSBÅND -->
+  <div style="border-bottom: 1px solid #E8E6DC;">
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 26px 80px;">
+      <span class="mono" style="color: #5E5D59;">Coach — WANG Toppidrett Fredrikstad</span>
+      <span style="color: #D1CFC5;">·</span>
+      <span class="mono" style="color: #5E5D59;">Sportssjef — Gamle Fredrikstad GK</span>
+      <span style="color: #D1CFC5;">·</span>
+      <span class="mono" style="color: #5E5D59;">Team Norway Golf-tilknytning</span>
+    </div>
+  </div>
+
+  <!-- METODEN — tre steg -->
+  <div style="padding: 120px 80px 110px;">
+    <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 64px; margin-bottom: 72px;">
+      <div style="max-width: 620px;">
+        <p class="mono" style="color: #B85C3D; margin-bottom: 18px;">Metoden</p>
+        <h2 class="serif" style="font-size: 52px; line-height: 1.08;">
+          Tre steg. Ingen synsing<br>i noen av dem.
+        </h2>
+      </div>
+      <p class="serif" style="max-width: 400px; font-size: 18px; line-height: 1.65; color: #5E5D59;">
+        De fleste trener på det de liker. Vi trener på det som faktisk koster
+        deg slag — fordi vi vet hva det er før vi begynner.
+      </p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px;">
+
+      <div style="display: flex; flex-direction: column; gap: 20px; padding-top: 28px; border-top: 2px solid #141413;">
+        <span class="mono" style="color: #B85C3D;">01 — Måling</span>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#141413" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 20h18"/><path d="M6 20V9"/><path d="M11 20V4"/><path d="M16 20v-7"/><path d="M21 20v-11"/>
+        </svg>
+        <h3 style="font-size: 22px;">Vi kartlegger deg</h3>
+        <p class="serif" style="font-size: 16px; line-height: 1.65; color: #5E5D59;">
+          90 minutter med Trackman, video og fysiske tester. Du går ut med tall
+          på ballflukt, slaglengder og hvor slagene forsvinner — ikke en følelse.
+        </p>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 20px; padding-top: 28px; border-top: 1px solid #E8E6DC;">
+        <span class="mono" style="color: #B85C3D;">02 — Plan</span>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#141413" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4"/><path d="M16 2v4"/><path d="M3 10h18"/><path d="M8 15h4"/>
+        </svg>
+        <h3 style="font-size: 22px;">Du får en plan som lever</h3>
+        <p class="serif" style="font-size: 16px; line-height: 1.65; color: #5E5D59;">
+          Øktene legges i uker og perioder fram mot det du faktisk skal spille.
+          Planen ligger i appen din — den endrer seg når tallene dine endrer seg.
+        </p>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 20px; padding-top: 28px; border-top: 1px solid #E8E6DC;">
+        <span class="mono" style="color: #B85C3D;">03 — Oppfølging</span>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#141413" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>
+        </svg>
+        <h3 style="font-size: 22px;">Vi ser om det virker</h3>
+        <p class="serif" style="font-size: 16px; line-height: 1.65; color: #5E5D59;">
+          Runder, tester og turneringer måles mot utgangspunktet ditt. Blir du
+          bedre, ser du det. Stopper det opp, gjør vi noe med det neste økt.
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MÅLEBÅND — mørkt -->
+  <div style="background: #141413; color: #FAF9F5; padding: 96px 80px;">
+    <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 80px;">
+      <div style="max-width: 380px;">
+        <p class="mono" style="color: #D97757; margin-bottom: 18px;">Målt, ikke påstått</p>
+        <h2 class="serif" style="font-size: 40px; line-height: 1.12;">
+          Alt vi sier om spillet ditt, kan spores til en måling.
+        </h2>
+        <p class="serif" style="margin-top: 22px; font-size: 16px; line-height: 1.7; color: #B0AEA5;">
+          Hvert tall har en dato og en kilde. Er noe et estimat, står det at det
+          er et estimat.
+        </p>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 48px; flex: 1; max-width: 760px;">
+        <div style="border-left: 1px solid rgba(250,249,245,0.18); padding-left: 24px;">
+          <p class="serif" style="font-size: 54px; line-height: 1;">20</p>
+          <p class="mono" style="margin-top: 14px; color: #B0AEA5; letter-spacing: 0.14em;">Standardiserte<br>testprotokoller</p>
+        </div>
+        <div style="border-left: 1px solid rgba(250,249,245,0.18); padding-left: 24px;">
+          <p class="serif" style="font-size: 54px; line-height: 1;">10</p>
+          <p class="mono" style="margin-top: 14px; color: #B0AEA5; letter-spacing: 0.14em;">P-posisjoner<br>i svinganalysen</p>
+        </div>
+        <div style="border-left: 1px solid rgba(250,249,245,0.18); padding-left: 24px;">
+          <p class="serif" style="font-size: 54px; line-height: 1;">[N]</p>
+          <p class="mono" style="margin-top: 14px; color: #B0AEA5; letter-spacing: 0.14em;">Spillere fulgt<br>gjennom sesongen</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KARTLEGGINGSØKTEN — foto + liste -->
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0;">
+    <img src="kartlegging.jpg" alt="Coach og spiller gjennomgår svingdata mellom slagene" style="width: 100%; height: 620px; object-fit: cover;">
+    <div style="display: flex; flex-direction: column; justify-content: center; padding: 80px 80px 80px 72px;">
+      <p class="mono" style="color: #B85C3D; margin-bottom: 18px;">Første økt</p>
+      <h2 class="serif" style="font-size: 44px; line-height: 1.1;">Dette skjer på 90 minutter.</h2>
+      <div style="display: flex; flex-direction: column; gap: 0; margin-top: 36px;">
+        <div style="display: flex; gap: 20px; padding: 20px 0; border-top: 1px solid #E8E6DC;">
+          <span class="mono" style="color: #B0AEA5; padding-top: 4px;">00–20</span>
+          <div>
+            <p style="font-size: 16px; font-weight: 500;">Vi snakker om målet ditt</p>
+            <p class="serif" style="margin-top: 6px; font-size: 15px; line-height: 1.6; color: #5E5D59;">Hva du vil oppnå, hvor mye tid du faktisk har, og hva som har stoppet opp.</p>
+          </div>
+        </div>
+        <div style="display: flex; gap: 20px; padding: 20px 0; border-top: 1px solid #E8E6DC;">
+          <span class="mono" style="color: #B0AEA5; padding-top: 4px;">20–60</span>
+          <div>
+            <p style="font-size: 16px; font-weight: 500;">Måling på Trackman og video</p>
+            <p class="serif" style="margin-top: 6px; font-size: 15px; line-height: 1.6; color: #5E5D59;">Ballflukt, slaglengder og svingposisjoner tas opp — vi ser på tallene sammen.</p>
+          </div>
+        </div>
+        <div style="display: flex; gap: 20px; padding: 20px 0; border-top: 1px solid #E8E6DC;">
+          <span class="mono" style="color: #B0AEA5; padding-top: 4px;">60–80</span>
+          <div>
+            <p style="font-size: 16px; font-weight: 500;">Fysisk screening</p>
+            <p class="serif" style="margin-top: 6px; font-size: 15px; line-height: 1.6; color: #5E5D59;">Bevegelighet og kraft, slik at planen passer kroppen du faktisk har.</p>
+          </div>
+        </div>
+        <div style="display: flex; gap: 20px; padding: 20px 0; border-top: 1px solid #E8E6DC; border-bottom: 1px solid #E8E6DC;">
+          <span class="mono" style="color: #B0AEA5; padding-top: 4px;">80–90</span>
+          <div>
+            <p style="font-size: 16px; font-weight: 500;">Du får planen</p>
+            <p class="serif" style="margin-top: 6px; font-size: 15px; line-height: 1.6; color: #5E5D59;">Konkrete steg for de neste ukene, lagt inn i appen din før du går ut døra.</p>
+          </div>
+        </div>
+      </div>
+      <a href="#" style="display: inline-block; align-self: flex-start; margin-top: 36px; background: #141413; color: #FAF9F5; border-radius: 999px; padding: 15px 30px; font-size: 15px; font-weight: 500;">Book kartleggingsøkt</a>
+    </div>
+  </div>
+
+  <!-- SITAT -->
+  <div style="background: #F0EEE6; padding: 110px 80px;">
+    <div style="max-width: 900px; margin: 0 auto; text-align: center;">
+      <p class="mono" style="color: #B85C3D; margin-bottom: 28px;">Fra en spiller</p>
+      <p class="serif" style="font-size: 34px; line-height: 1.35; font-style: italic;">
+        [SITAT FRA SPILLER — 2–3 setninger om hva som endret seg. Bytt ut denne teksten.]
+      </p>
+      <p class="mono" style="margin-top: 32px; color: #5E5D59;">[NAVN] · [KLUBB] · [HCP FØR → ETTER]</p>
+    </div>
+  </div>
+
+  <!-- TRE VEIER INN -->
+  <div style="padding: 120px 80px;">
+    <p class="mono" style="color: #B85C3D; margin-bottom: 18px;">Veien inn</p>
+    <h2 class="serif" style="font-size: 52px; line-height: 1.08; max-width: 620px;">Tre måter å jobbe med oss på.</h2>
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; margin-top: 64px;">
+
+      <div style="display: flex; flex-direction: column; background: #FFFFFF; border: 1px solid #E8E6DC; border-radius: 20px; padding: 40px 36px;">
+        <span class="mono" style="color: #B85C3D;">1:1</span>
+        <h3 style="margin-top: 20px; font-size: 24px;">Personlig coaching</h3>
+        <p class="serif" style="margin-top: 16px; flex: 1; font-size: 16px; line-height: 1.65; color: #5E5D59;">
+          Fast coach, faste økter og en plan som lever mellom øktene. For deg som
+          vil senke scoren med system, ikke med tips.
+        </p>
+        <p class="mono" style="margin-top: 28px; color: #141413;">Fra [PRIS] kr / økt</p>
+        <a href="#" style="margin-top: 20px; font-size: 15px; font-weight: 500; border-bottom: 1px solid #D1CFC5; padding-bottom: 3px; align-self: flex-start;">Se coachingtilbudet</a>
+      </div>
+
+      <div style="display: flex; flex-direction: column; background: #FFFFFF; border: 1px solid #E8E6DC; border-radius: 20px; padding: 40px 36px;">
+        <span class="mono" style="color: #B85C3D;">Junior</span>
+        <h3 style="margin-top: 20px; font-size: 24px;">Junior og elite</h3>
+        <p class="serif" style="margin-top: 16px; flex: 1; font-size: 16px; line-height: 1.65; color: #5E5D59;">
+          Strukturert utvikling fra første golfskole til turneringsspill — samme
+          metodikk som i toppidretts- og klubbsatsingen.
+        </p>
+        <p class="mono" style="margin-top: 28px; color: #141413;">Grupper · [ALDERSTRINN]</p>
+        <a href="#" style="margin-top: 20px; font-size: 15px; font-weight: 500; border-bottom: 1px solid #D1CFC5; padding-bottom: 3px; align-self: flex-start;">Les om juniorsatsingen</a>
+      </div>
+
+      <div style="display: flex; flex-direction: column; background: #141413; color: #FAF9F5; border-radius: 20px; padding: 40px 36px;">
+        <span class="mono" style="color: #D97757;">På egen hånd</span>
+        <h3 style="margin-top: 20px; font-size: 24px;">AK Golf HQ</h3>
+        <p class="serif" style="margin-top: 16px; flex: 1; font-size: 16px; line-height: 1.65; color: #B0AEA5;">
+          Plan, økter, tester og Trackman-tall samlet ett sted. Gratis å komme i
+          gang — uten coach, uten binding.
+        </p>
+        <p class="mono" style="margin-top: 28px; color: #FAF9F5;">Gratis · 299 kr / mnd for alt</p>
+        <a href="#" style="margin-top: 20px; font-size: 15px; font-weight: 500; color: #FAF9F5; border-bottom: 1px solid rgba(250,249,245,0.4); padding-bottom: 3px; align-self: flex-start;">Utforsk plattformen</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PLATTFORM -->
+  <div style="border-top: 1px solid #E8E6DC; border-bottom: 1px solid #E8E6DC; background: #F0EEE6;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 80px; padding: 110px 80px; align-items: center;">
+      <div>
+        <p class="mono" style="color: #B85C3D; margin-bottom: 18px;">AK Golf HQ</p>
+        <h2 class="serif" style="font-size: 46px; line-height: 1.08;">Treningen din slutter ikke når økta gjør det.</h2>
+        <p class="serif" style="margin-top: 24px; font-size: 18px; line-height: 1.65; color: #5E5D59; max-width: 460px;">
+          Alt du og coachen din gjør, ligger i samme app. Du ser dagens økt,
+          fører runden din, tar testene — og ser utviklingen svart på hvitt.
+        </p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px 32px; margin-top: 40px; max-width: 480px;">
+          <div style="display: flex; gap: 12px; align-items: center;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#788C5D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+            <span style="font-size: 15px;">Dagens økt på mobilen</span>
+          </div>
+          <div style="display: flex; gap: 12px; align-items: center;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#788C5D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+            <span style="font-size: 15px;">Trackman-tall og spredning</span>
+          </div>
+          <div style="display: flex; gap: 12px; align-items: center;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#788C5D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+            <span style="font-size: 15px;">Runder og statistikk</span>
+          </div>
+          <div style="display: flex; gap: 12px; align-items: center;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#788C5D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+            <span style="font-size: 15px;">Testbatteri med historikk</span>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 18px; margin-top: 44px;">
+          <a href="#" style="background: #141413; color: #FAF9F5; border-radius: 999px; padding: 15px 30px; font-size: 15px; font-weight: 500;">Kom i gang gratis</a>
+          <span class="mono" style="color: #5E5D59; letter-spacing: 0.14em;">299 kr/mnd · 2 690 kr/år for alt</span>
+        </div>
+      </div>
+      <div style="background: #FAF9F5; border: 1px solid #E8E6DC; border-radius: 24px; padding: 32px;">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <span class="mono" style="color: #5E5D59;">I dag · Torsdag 4. sep</span>
+          <span class="mono" style="color: #B85C3D;">Uke 36</span>
+        </div>
+        <div class="rule" style="margin: 20px 0;"></div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="display: flex; align-items: center; gap: 16px; background: #FFFFFF; border: 1px solid #E8E6DC; border-radius: 14px; padding: 18px 20px;">
+            <div style="width: 8px; height: 8px; border-radius: 999px; background: #B85C3D;"></div>
+            <div style="flex: 1;">
+              <p style="font-size: 15px; font-weight: 500;">Wedge — 40 til 90 meter</p>
+              <p class="mono" style="margin-top: 5px; color: #5E5D59; letter-spacing: 0.12em;">45 min · Trackman · Kontroll</p>
+            </div>
+            <span class="mono" style="color: #B0AEA5;">09:00</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 16px; background: #FFFFFF; border: 1px solid #E8E6DC; border-radius: 14px; padding: 18px 20px;">
+            <div style="width: 8px; height: 8px; border-radius: 999px; background: #D1CFC5;"></div>
+            <div style="flex: 1;">
+              <p style="font-size: 15px; font-weight: 500;">Putting — 2 til 4 meter</p>
+              <p class="mono" style="margin-top: 5px; color: #5E5D59; letter-spacing: 0.12em;">30 min · Press: konkurranse</p>
+            </div>
+            <span class="mono" style="color: #B0AEA5;">17:30</span>
+          </div>
+        </div>
+        <div class="rule" style="margin: 24px 0 20px;"></div>
+        <p class="mono" style="color: #5E5D59; margin-bottom: 16px;">Spredning — 7-jern, siste 30 slag</p>
+        <div style="position: relative; height: 150px; background: #FFFFFF; border: 1px solid #E8E6DC; border-radius: 14px; overflow: hidden;">
+          <div style="position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: #E8E6DC;"></div>
+          <div style="position: absolute; left: 50%; top: 22px; width: 118px; height: 100px; margin-left: -55px; border: 1px solid #B85C3D; border-radius: 50%; background: rgba(217,119,87,0.10);"></div>
+          <div style="position: absolute; left: 44%; top: 46px; width: 5px; height: 5px; border-radius: 999px; background: #141413;"></div>
+          <div style="position: absolute; left: 53%; top: 62px; width: 5px; height: 5px; border-radius: 999px; background: #141413;"></div>
+          <div style="position: absolute; left: 49%; top: 80px; width: 5px; height: 5px; border-radius: 999px; background: #141413;"></div>
+          <div style="position: absolute; left: 57%; top: 96px; width: 5px; height: 5px; border-radius: 999px; background: #141413;"></div>
+          <div style="position: absolute; left: 41%; top: 108px; width: 5px; height: 5px; border-radius: 999px; background: #141413;"></div>
+          <div style="position: absolute; left: 62%; top: 34px; width: 5px; height: 5px; border-radius: 999px; background: #B0AEA5;"></div>
+        </div>
+        <p class="serif" style="margin-top: 14px; font-size: 14px; line-height: 1.55; color: #5E5D59;">
+          Åtte av ti 7-jern lander høyre for pinnen. Vi tar det på torsdag.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- JUNIOR -->
+  <div style="display: grid; grid-template-columns: 1fr 1fr;">
+    <div style="display: flex; flex-direction: column; justify-content: center; padding: 100px 72px 100px 80px;">
+      <p class="mono" style="color: #B85C3D; margin-bottom: 18px;">Junior</p>
+      <h2 class="serif" style="font-size: 44px; line-height: 1.1;">Utvikling som tåler å bli målt.</h2>
+      <p class="serif" style="margin-top: 24px; font-size: 18px; line-height: 1.65; color: #5E5D59; max-width: 480px;">
+        Juniorsatsingen bygger på samme metodikk som elitecoachingen, tilpasset
+        alder og nivå. Foreldre ser planen og fremgangen i sin egen portal —
+        uten å måtte spørre.
+      </p>
+      <a href="#" style="align-self: flex-start; margin-top: 36px; border: 1px solid #141413; border-radius: 999px; padding: 15px 30px; font-size: 15px; font-weight: 500;">Les om juniorsatsingen</a>
+    </div>
+    <img src="junior.jpg" alt="Ung spiller trener nærspill med coach" style="width: 100%; height: 560px; object-fit: cover;">
+  </div>
+
+  <!-- MULLIGAN -->
+  <div style="display: grid; grid-template-columns: 1fr 1fr; background: #141413; color: #FAF9F5;">
+    <img src="mulligan.jpg" alt="Venner spiller golfsimulator en kveld hos Mulligan" style="width: 100%; height: 540px; object-fit: cover;">
+    <div style="display: flex; flex-direction: column; justify-content: center; padding: 100px 80px 100px 72px;">
+      <p class="mono" style="color: #D97757; margin-bottom: 18px;">Mulligan Indoor Golf</p>
+      <h2 class="serif" style="font-size: 44px; line-height: 1.1;">Seks simulatorer. Åpent 07–24.</h2>
+      <p class="serif" style="margin-top: 24px; font-size: 18px; line-height: 1.65; color: #B0AEA5; max-width: 460px;">
+        Trackman-simulatorer i Fredrikstad og Sarpsborg. Tren når banen er
+        stengt, spill verdens beste baner, eller ta kvelden med venner.
+      </p>
+      <a href="#" style="align-self: flex-start; margin-top: 36px; background: #FAF9F5; color: #141413; border-radius: 999px; padding: 15px 30px; font-size: 15px; font-weight: 500;">Se anlegg og priser</a>
+    </div>
+  </div>
+
+  <!-- SPØRSMÅL -->
+  <div style="padding: 110px 80px;">
+    <div style="display: grid; grid-template-columns: 380px 1fr; gap: 80px;">
+      <div>
+        <p class="mono" style="color: #B85C3D; margin-bottom: 18px;">Før du booker</p>
+        <h2 class="serif" style="font-size: 42px; line-height: 1.1;">Det folk lurer på.</h2>
+      </div>
+      <div style="display: flex; flex-direction: column;">
+        <div style="padding: 28px 0; border-top: 1px solid #E8E6DC;">
+          <h3 style="font-size: 20px;">Må jeg være god for å begynne?</h3>
+          <p class="serif" style="margin-top: 12px; font-size: 16px; line-height: 1.7; color: #5E5D59; max-width: 640px;">
+            Nei. Kartleggingsøkta finner ut hvor du står, uansett om du spiller
+            på 12 eller 30 i handicap. Planen bygges derfra — ikke fra et nivå
+            du burde hatt.
+          </p>
+        </div>
+        <div style="padding: 28px 0; border-top: 1px solid #E8E6DC;">
+          <h3 style="font-size: 20px;">Hvor foregår treningen?</h3>
+          <p class="serif" style="margin-top: 12px; font-size: 16px; line-height: 1.7; color: #5E5D59; max-width: 640px;">
+            Ute på bane og range i sesongen, og innendørs på Trackman hos
+            Mulligan resten av året. Adresser og åpningstider: [ANLEGG].
+          </p>
+        </div>
+        <div style="padding: 28px 0; border-top: 1px solid #E8E6DC;">
+          <h3 style="font-size: 20px;">Må jeg binde meg?</h3>
+          <p class="serif" style="margin-top: 12px; font-size: 16px; line-height: 1.7; color: #5E5D59; max-width: 640px;">
+            Nei. Du kan kjøpe enkelttimer, og appen er gratis å bruke uten
+            coaching. Coaching-pakker finnes for deg som vil ha fast oppfølging.
+          </p>
+        </div>
+        <div style="padding: 28px 0; border-top: 1px solid #E8E6DC; border-bottom: 1px solid #E8E6DC;">
+          <h3 style="font-size: 20px;">Hva koster det?</h3>
+          <p class="serif" style="margin-top: 12px; font-size: 16px; line-height: 1.7; color: #5E5D59; max-width: 640px;">
+            Kartleggingsøkta er 90 minutter til vanlig timepris. Appen er gratis i
+            grunnversjonen og 299 kr/mnd (2 690 kr/år) med alt. Coaching-pakker
+            prises separat — se [PRISSIDEN].
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SISTE CTA -->
+  <div style="padding: 0 80px 120px;">
+    <div style="background: #141413; color: #FAF9F5; border-radius: 28px; padding: 96px 80px; display: flex; align-items: center; justify-content: space-between; gap: 64px;">
+      <div style="max-width: 620px;">
+        <p class="mono" style="color: #D97757; margin-bottom: 20px;">Neste steg</p>
+        <h2 class="serif" style="font-size: 50px; line-height: 1.06;">Én økt. Så vet du hvor slagene ligger.</h2>
+        <p class="serif" style="margin-top: 22px; font-size: 18px; line-height: 1.65; color: #B0AEA5;">
+          Velg en tid som passer. Du går ut med tall, en plan og et tydelig
+          neste steg — uansett om du fortsetter med oss etterpå.
+        </p>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 16px; align-items: flex-start;">
+        <a href="#" style="background: #FAF9F5; color: #141413; border-radius: 999px; padding: 18px 38px; font-size: 16px; font-weight: 500; white-space: nowrap;">Book kartleggingsøkt</a>
+        <a href="mailto:akgolfgroup@gmail.com" class="mono" style="color: #B0AEA5; letter-spacing: 0.14em;">akgolfgroup@gmail.com</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div style="background: #F0EEE6; border-top: 1px solid #E8E6DC; padding: 72px 80px 40px;">
+    <div style="display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 48px;">
+      <div>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <img src="logo.svg" alt="AK Golf" style="width: 28px; height: 24px;">
+          <span style="font-size: 14px; font-weight: 600;">AK Golf Academy</span>
+        </div>
+        <p class="serif" style="margin-top: 16px; max-width: 280px; font-size: 15px; line-height: 1.65; color: #5E5D59;">
+          Coaching, plattform og fasiliteter under samme tak — bygget på måling,
+          ikke synsing.
+        </p>
+      </div>
+      <div>
+        <p class="mono" style="color: #5E5D59;">Utforsk</p>
+        <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 18px; font-size: 15px; color: #5E5D59;">
+          <a href="#">Coaching</a><a href="#">AK Golf HQ</a><a href="#">Mulligan Indoor Golf</a><a href="#">Junior</a><a href="#">Priser</a>
+        </div>
+      </div>
+      <div>
+        <p class="mono" style="color: #5E5D59;">Mer</p>
+        <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 18px; font-size: 15px; color: #5E5D59;">
+          <a href="#">Coacher</a><a href="#">Anlegg</a><a href="#">Slik trener vi</a><a href="#">Resultater</a><a href="#">Om oss</a>
+        </div>
+      </div>
+      <div>
+        <p class="mono" style="color: #5E5D59;">Kontakt</p>
+        <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 18px; font-size: 15px; color: #5E5D59;">
+          <a href="mailto:akgolfgroup@gmail.com">akgolfgroup@gmail.com</a>
+          <span>Fredrikstad, Norge</span>
+        </div>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 56px; padding-top: 24px; border-top: 1px solid #D1CFC5; font-size: 13px; color: #5E5D59;">
+      <span>AK Golf Group AS</span>
+      <div style="display: flex; gap: 24px;">
+        <a href="#">Vilkår</a><a href="#">Personvern</a><a href="#">Informasjonskapsler</a><a href="#">Kontakt</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>

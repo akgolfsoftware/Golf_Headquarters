@@ -1,0 +1,313 @@
+<title>AK Golf Academy — konsept og tekst</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  --grunn:#E8E4DC; --flate:#FFFFFF; --hevet:#DDD8CE;
+  --krem:#1F1D1A; --krem-dempet:#57534B; --krem-svak:#8B857A;
+  --clay:#B83217; --clay-dyp:#C4361B; --clay-tekst:#FFFFFF;
+  --linje:#D2CCC0; --linje-sterk:#B8B1A3;
+  --rute:rgba(31,29,26,.075);
+}
+/* Verkstedet om kvelden. Lys er standard — dette er varianten. */
+:root[data-theme="dark"] {
+  --grunn:#22201C; --flate:#2C2925; --hevet:#1A1815;
+  --krem:#F2EFE8; --krem-dempet:#A8A196; --krem-svak:#75706A;
+  --clay:#E8654A; --clay-dyp:#C4361B; --clay-tekst:#FFFFFF;
+  --linje:#38342E; --linje-sterk:#4A453D;
+  --rute:rgba(242,239,232,.085);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --grunn:#22201C; --flate:#2C2925; --hevet:#1A1815;
+    --krem:#F2EFE8; --krem-dempet:#A8A196; --krem-svak:#75706A;
+    --clay:#E8654A; --clay-dyp:#C4361B; --clay-tekst:#FFFFFF;
+    --linje:#38342E; --linje-sterk:#4A453D;
+    --rute:rgba(242,239,232,.085);
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--grunn);color:var(--krem);
+ font-family:'IBM Plex Sans',-apple-system,system-ui,Arial,sans-serif;
+ line-height:1.55;-webkit-font-smoothing:antialiased}
+.disp{font-family:'IBM Plex Sans Condensed','IBM Plex Sans',Arial,sans-serif}
+.mono{font-family:'IBM Plex Mono',ui-monospace,monospace}
+.skall{max-width:1080px;margin:0 auto;padding:0 20px 120px}
+
+.hero{position:relative;padding:76px 0 60px;overflow:hidden}
+.rutenett{position:absolute;inset:0;pointer-events:none;
+ background-image:linear-gradient(var(--rute) 1px,transparent 1px),
+   linear-gradient(90deg,var(--rute) 1px,transparent 1px);background-size:56px 56px}
+.hero>*:not(.rutenett){position:relative;z-index:1}
+.merk{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.22em;
+ text-transform:uppercase;color:var(--clay);margin:0 0 24px}
+h1{font-family:'IBM Plex Sans Condensed',Arial,sans-serif;font-weight:700;margin:0;
+ font-size:clamp(38px,7.4vw,78px);line-height:1.04;letter-spacing:-.035em;
+ text-transform:uppercase;text-wrap:balance}
+h1 em{font-style:normal;color:var(--clay)}
+.ing{margin:24px 0 0;max-width:56ch;font-size:18px;color:var(--krem-dempet)}
+
+h2{font-family:'IBM Plex Sans Condensed',Arial,sans-serif;font-weight:700;
+ text-transform:uppercase;letter-spacing:-.025em;line-height:1;
+ font-size:clamp(28px,5vw,54px);margin:0 0 12px}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.22em;
+ text-transform:uppercase;color:var(--clay);margin:74px 0 10px}
+.ledetekst{margin:0 0 32px;color:var(--krem-dempet);font-size:16.5px;max-width:64ch}
+
+.loftet{background:var(--clay-dyp);color:#FFFFFF;padding:38px 34px;border-radius:4px;margin:30px 0 0}
+.loftet p{margin:0;font-family:'IBM Plex Sans Condensed',Arial,sans-serif;font-weight:700;
+ font-size:clamp(26px,4.4vw,44px);line-height:1.12;letter-spacing:-.025em;text-transform:uppercase}
+.loftet span{display:block;margin-top:14px;font-family:'IBM Plex Mono',monospace;
+ font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;opacity:.72}
+
+.bevisrad{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1px;
+ background:var(--linje);border:1px solid var(--linje);margin-top:26px}
+.bevis{background:var(--grunn);padding:24px}
+.bevis h4{margin:0 0 8px;font-family:'IBM Plex Sans Condensed',Arial,sans-serif;
+ font-weight:600;font-size:19px;text-transform:uppercase;letter-spacing:-.01em}
+.bevis p{margin:0;font-size:14.5px;color:var(--krem-dempet);line-height:1.55}
+
+table{width:100%;border-collapse:collapse;font-size:15px;margin-top:22px}
+td{padding:15px 16px 15px 0;border-bottom:1px solid var(--linje);vertical-align:top;
+ color:var(--krem-dempet)}
+.alt-navn{width:34%;color:var(--krem);font-weight:500}
+
+.side{border:1px solid var(--linje);margin-top:22px}
+.shode{display:flex;align-items:baseline;gap:14px;padding:18px 22px;
+ border-bottom:1px solid var(--linje);background:var(--flate);flex-wrap:wrap}
+.shode code{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--clay)}
+.shode h3{margin:0;font-family:'IBM Plex Sans Condensed',Arial,sans-serif;font-weight:600;
+ font-size:20px;text-transform:uppercase;letter-spacing:-.01em}
+.srad{display:grid;grid-template-columns:150px 1fr;gap:0;border-bottom:1px solid var(--linje)}
+.srad:last-child{border-bottom:0}
+.srolle{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em;
+ text-transform:uppercase;color:var(--krem-svak);padding:22px 16px;border-right:1px solid var(--linje)}
+.sinnhold{padding:22px}
+.b-tittel{margin:0 0 10px;font-family:'IBM Plex Sans Condensed',Arial,sans-serif;font-weight:700;
+ letter-spacing:-.025em;line-height:1.12}
+.b-hero .b-tittel{font-size:clamp(28px,4.6vw,44px);text-transform:uppercase}
+.b-seksjon .b-tittel{font-size:clamp(22px,3.2vw,30px);text-transform:uppercase}
+.b-cta .b-tittel{font-size:clamp(21px,3vw,28px);text-transform:uppercase}
+.b-brod .b-tittel{font-size:17px}
+.b-brod{color:var(--krem-dempet)}
+.b-brod .b-brod, .b-hero .b-brod, .b-seksjon .b-brod, .b-cta .b-brod{margin:0;font-size:16px;
+ color:var(--krem-dempet);max-width:60ch;line-height:1.6}
+.b-cta-knapp{display:inline-block;margin-top:16px;background:var(--clay-dyp);color:#FFFFFF;
+ font-weight:600;font-size:14.5px;padding:12px 22px;border-radius:3px}
+
+.somerad{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px;margin-top:26px}
+.somekort{border:1px solid var(--linje);display:flex;flex-direction:column}
+.somekort header{padding:18px 20px;border-bottom:1px solid var(--linje);background:var(--flate)}
+.somekort h4{margin:0 0 4px;font-family:'IBM Plex Sans Condensed',Arial,sans-serif;
+ font-weight:600;font-size:17px;text-transform:uppercase;letter-spacing:-.01em}
+.hva{margin:0;font-size:13px;color:var(--krem-svak);line-height:1.5}
+.innlegg{padding:22px 20px;font-size:15.5px;line-height:1.62;flex:1;white-space:normal}
+.regel{margin:0;padding:14px 20px;border-top:1px solid var(--linje);
+ font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--clay);line-height:1.55}
+
+.epost{border:1px solid var(--linje);margin-top:16px}
+.epost header{padding:16px 20px;border-bottom:1px solid var(--linje);background:var(--flate);
+ display:flex;gap:16px;align-items:baseline;flex-wrap:wrap}
+.epost h4{margin:0;font-family:'IBM Plex Sans Condensed',Arial,sans-serif;font-weight:600;
+ font-size:17px;text-transform:uppercase;letter-spacing:-.01em}
+.epost pre{margin:0;padding:22px 20px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;
+ line-height:1.75;white-space:pre-wrap;color:var(--krem-dempet);overflow-x:auto}
+
+.grad{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--linje);
+ border:1px solid var(--linje);margin-top:16px}
+.gtittel{grid-column:1/-1;background:var(--flate);padding:14px 18px;
+ font-family:'IBM Plex Sans Condensed',Arial,sans-serif;font-weight:600;font-size:16px;
+ text-transform:uppercase;letter-spacing:-.01em}
+.gja,.gnei{background:var(--grunn);padding:18px}
+.gmerk{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:9.5px;
+ letter-spacing:.16em;text-transform:uppercase;padding:3px 8px;margin-bottom:10px;border-radius:3px}
+.gmerk.ja{color:var(--clay);border:1px solid var(--clay)}
+.gmerk.nei{color:var(--krem-svak);border:1px solid var(--krem-svak)}
+.gja p,.gnei p{margin:0;font-size:15px;line-height:1.55}
+.gnei p{color:var(--krem-svak);text-decoration:line-through;text-decoration-thickness:1px}
+
+.note{margin-top:32px;padding:24px;border-left:3px solid var(--clay);background:var(--flate);
+ font-size:15.5px;color:var(--krem-dempet);line-height:1.65}
+.note b{color:var(--krem)}
+.palett{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;
+ background:var(--linje);border:1px solid var(--linje);margin-top:24px}
+.pf{background:var(--grunn);padding:0}
+.pf .prove{height:76px}
+.pf .tekst{padding:14px 16px}
+.pf b{display:block;font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:500}
+.pf span{font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.1em;
+ text-transform:uppercase;color:var(--krem-svak)}
+@media (max-width:760px){
+  .srad{grid-template-columns:1fr}
+  .srolle{border-right:0;border-bottom:1px solid var(--linje);padding:14px 18px}
+  .grad{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="skall">
+  <header class="hero">
+    <div class="rutenett"></div>
+    <p class="merk">AK Golf Academy · konsept og tekst · 1. september 2026</p>
+    <h1>Uansett hvor du står,<br>vet du hva du <em>trener på</em>.</h1>
+    <p class="ing">AK Golf Academy driver langsiktig utvikling og oppfølging — og lar deg trene optimalt og spesifikt, uavhengig av hvilket nivå du er på.</p>
+    <div class="loftet">
+      <p>Du skal aldri lure på hva du skal trene på, eller hvorfor.</p>
+      <span>Løftet · alt materiell måles mot denne setningen</span>
+    </div>
+  </header>
+
+  <p class="eyebrow">Fundamentet</p>
+  <h2>Fire ting vi kan bevise</h2>
+  <p class="ledetekst">Ikke fire ting vi påstår. Fire ting som allerede finnes i måten det jobbes på.</p>
+  <div class="bevisrad"><div class="bevis"><h4>Langsiktig, ikke time for time</h4><p>Vi jobber over sesonger, ikke over enkelttimer. Planen bygger på forrige måling og peker mot neste.</p></div><div class="bevis"><h4>Oppfølging mellom øktene</h4><p>Arbeidet slutter ikke når timen er over. Du vet hva du skal gjøre på onsdag, og vi ser om det ble gjort.</p></div><div class="bevis"><h4>Optimalt og spesifikt for deg</h4><p>Ikke en standardplan med navnet ditt på. Målingene bestemmer hva som er ditt neste steg — ikke hva som er vanlig.</p></div><div class="bevis"><h4>Nivået er ikke en inngangsbillett</h4><p>Samme metode for den som slår sine første baller og den som spiller Norgescup. Bare ulikt innhold.</p></div></div>
+
+  <p class="eyebrow">Posisjonen</p>
+  <h2>Hva vi er alternativet til</h2>
+  <p class="ledetekst">Merket defineres like mye av hva det ikke er. Beskriv situasjonen leseren kjenner seg igjen i — aldri en navngitt konkurrent.</p>
+  <table><tbody><tr><td class="alt-navn">Timen hos proffen</td><td>Slutter når timen slutter. Neste gang begynner på nytt, ofte med et nytt fokus.</td></tr><tr><td class="alt-navn">Å lære av video</td><td>Uendelig med råd, null diagnose. Du vet ikke hvilket av tusen råd som gjelder deg.</td></tr><tr><td class="alt-navn">En app uten coach</td><td>Registrerer hva du gjorde. Sier ingenting om hva du burde gjort.</td></tr></tbody></table>
+
+  <p class="eyebrow">Markedssidene</p>
+  <h2>Ferdig tekst, side for side</h2>
+  <p class="ledetekst">Dette er tekst som kan limes rett inn. Ingen plassholdere, ingen «her kommer noe».</p>
+  <article class="side">
+      <header class="shode"><code>/</code><h3>Forsiden</h3></header>
+      <div class="srad"><div class="srolle">Hero</div><div class="sinnhold"><div class="b-hero"><p class="b-tittel">Uansett hvor du står, vet du hva du trener på.</p><p class="b-brod">Vi måler svingen din, tallene dine og spillet ditt. Så får du en plan som holder mellom øktene — og oppfølging som gjør at den faktisk blir fulgt.</p><span class="b-cta-knapp">Book kartleggingsøkt</span></div></div></div><div class="srad"><div class="srolle">Under heroen</div><div class="sinnhold"><div class="b-brod"><p class="b-brod">Første økt er 90 minutter, til vanlig timepris. Vi kartlegger hvor du står, og du går derfra med en skriftlig plan.</p></div></div></div><div class="srad"><div class="srolle">Seksjon: problemet</div><div class="sinnhold"><div class="b-seksjon"><p class="b-tittel">De fleste vet ikke hva de trener på.</p><p class="b-brod">Ikke fordi de er late. Fordi ingen har målt. Du slår en bøtte baller, det føles bedre eller verre, og neste uke starter du på nytt. Det er ikke trening — det er håp.</p></div></div></div><div class="srad"><div class="srolle">Seksjon: løsningen</div><div class="sinnhold"><div class="b-seksjon"><p class="b-tittel">Vi begynner med et tall.</p><p class="b-brod">Trackman måler hva køllehodet faktisk gjør. Testbatteriet viser hvor du står i forhold til deg selv sist. Deretter legger vi planen — og den ligger i appen, så du vet hva onsdagsøkta skal inneholde.</p></div></div></div><div class="srad"><div class="srolle">Seksjon: nivå</div><div class="sinnhold"><div class="b-seksjon"><p class="b-tittel">Det spiller ingen rolle hvor du starter.</p><p class="b-brod">Metoden er den samme for den som slår sine første baller og for den som spiller Norgescup. Det som er ulikt, er innholdet i planen — ikke hvor grundig vi jobber.</p></div></div></div><div class="srad"><div class="srolle">Avslutning</div><div class="sinnhold"><div class="b-cta"><p class="b-tittel">Klar for å finne ut hvor du faktisk står?</p><p class="b-brod">90 minutter, vanlig timepris. Du går derfra med en plan.</p><span class="b-cta-knapp">Book kartleggingsøkt</span></div></div></div></article><article class="side">
+      <header class="shode"><code>/coaching</code><h3>Coaching</h3></header>
+      <div class="srad"><div class="srolle">Hero</div><div class="sinnhold"><div class="b-hero"><p class="b-tittel">En coach som følger deg over år.</p><p class="b-brod">Ikke én time på rangen. Måling, plan og økter som henger sammen — over sesonger, ikke over uker.</p><span class="b-cta-knapp">Se pakkene</span></div></div></div><div class="srad"><div class="srolle">Seksjon</div><div class="sinnhold"><div class="b-seksjon"><p class="b-tittel">Slik jobber vi</p><p class="b-brod">Første økt kartlegger. Så setter vi ett mål av gangen, med et tall som viser om vi nærmer oss. Planen justeres når målingene sier at den bør justeres — ikke når det har gått en måned.</p></div></div></div><div class="srad"><div class="srolle">Avslutning</div><div class="sinnhold"><div class="b-cta"><p class="b-tittel">Vil du vite om dette passer deg?</p><p class="b-brod">Book en kartleggingsøkt, så finner vi det ut sammen. Ingen binding.</p><span class="b-cta-knapp">Book kartleggingsøkt</span></div></div></div></article><article class="side">
+      <header class="shode"><code>/junior</code><h3>Junior</h3></header>
+      <div class="srad"><div class="srolle">Hero</div><div class="sinnhold"><div class="b-hero"><p class="b-tittel">Barnet ditt skal vite hva det jobber med.</p><p class="b-brod">AK Golf Junior Academy tar spilleren fra første golfskole til turneringsspill, i trinn med navn. Du ser hvilket trinn barnet står på, og hva som skal til for det neste.</p><span class="b-cta-knapp">Meld interesse</span></div></div></div><div class="srad"><div class="srolle">Seksjon: for forelderen</div><div class="sinnhold"><div class="b-seksjon"><p class="b-tittel">Du slipper å spørre hvordan det går.</p><p class="b-brod">Foreldreportalen viser hva som er trent, hva som er målt og hva som er neste steg. Ingen ukentlige meldinger fra deg som må besvares — du ser det selv.</p></div></div></div><div class="srad"><div class="srolle">Seksjon: gruppene</div><div class="sinnhold"><div class="b-seksjon"><p class="b-tittel">Fire veier inn</p><p class="b-brod">Gruppene er satt etter alder og erfaring, ikke etter hvem som meldte seg først. Vi finner riktig gruppe i en samtale før oppstart.</p></div></div></div><div class="srad"><div class="srolle">Avslutning</div><div class="sinnhold"><div class="b-cta"><p class="b-tittel">Lurer du på hvilken gruppe som passer?</p><p class="b-brod">Send oss alder og litt om erfaringen, så tar vi kontakt innen én virkedag.</p><span class="b-cta-knapp">Meld interesse</span></div></div></div></article><article class="side">
+      <header class="shode"><code>/priser</code><h3>Priser</h3></header>
+      <div class="srad"><div class="srolle">Hero</div><div class="sinnhold"><div class="b-hero"><p class="b-tittel">Enkelt og ærlig.</p><p class="b-brod">Testbatteriet, statistikken og verktøyene er gratis, uten utløpsdato. Resten av appen koster 299 kr i måneden. Coaching kjøpes separat, i pakker.</p></div></div></div><div class="srad"><div class="srolle">Presisering</div><div class="sinnhold"><div class="b-brod"><p class="b-brod">Coaching-pakkene er antall økter — ikke nivåer i appen. Har du pakke, følger appen med.</p></div></div></div><div class="srad"><div class="srolle">Avslutning</div><div class="sinnhold"><div class="b-cta"><p class="b-tittel">Usikker på hva du trenger?</p><p class="b-brod">Start med kartleggingsøkta. Etterpå vet både du og vi hva som er riktig.</p><span class="b-cta-knapp">Book kartleggingsøkt</span></div></div></div></article><article class="side">
+      <header class="shode"><code>/om-oss</code><h3>Om oss</h3></header>
+      <div class="srad"><div class="srolle">Hero</div><div class="sinnhold"><div class="b-hero"><p class="b-tittel">Coaching bygget på måling.</p><p class="b-brod">AK Golf Academy drives av Anders Kristiansen — golfcoach, sportssjef i Gamle Fredrikstad Golfklubb og coach ved WANG Toppidrett Fredrikstad.</p></div></div></div><div class="srad"><div class="srolle">Seksjon</div><div class="sinnhold"><div class="b-seksjon"><p class="b-tittel">Hvorfor vi jobber slik</p><p class="b-brod">Det finnes ingen mangel på golfråd. Det finnes en mangel på diagnose. Vi bruker Trackman og standardiserte tester for å finne ut hva som gjelder akkurat deg — og lar tallene bestemme rekkefølgen.</p></div></div></div></article><article class="side">
+      <header class="shode"><code>/kontakt</code><h3>Kontakt</h3></header>
+      <div class="srad"><div class="srolle">Hero</div><div class="sinnhold"><div class="b-hero"><p class="b-tittel">Vi svarer innen én virkedag.</p><p class="b-brod">Spørsmål om coaching, juniorprogram eller bedriftsarrangement? Skriv noen ord, så tar vi kontakt.</p></div></div></div></article>
+
+  <p class="eyebrow">Sosiale medier</p>
+  <h2>Seks innleggstyper</h2>
+  <p class="ledetekst">Hver type har en regel under seg. Regelen er viktigere enn eksempelet — den er det som gjør at innlegg nummer hundre fortsatt høres ut som AK Golf.</p>
+  <div class="somerad"><article class="somekort">
+   <header><h4>Fremgangstall</h4><p class="hva">Målt fremgang hos en spiller. Alltid med dato, kilde og antall.</p></header>
+   <div class="innlegg">+12,4 m på driver etter 14 uker.<br><br>Vi endret ikke svingen først. Vi målte i seks økter, fant at Attack Angle var problemet, og jobbet bare med den.<br><br>Trackman · 12.05–18.08 · 38 målinger</div>
+   <p class="regel">Tallet må være målt. Aldri rundet oppover, aldri «opptil».</p></article><article class="somekort">
+   <header><h4>Slik leser du tallet</h4><p class="hva">Én måling forklart. Gir bort fagkunnskap ingen kan kopiere uten å faktisk måle.</p></header>
+   <div class="innlegg">Attack Angle −3,2° med driver.<br><br>Køllehodet går nedover i treffet. Det gir høy Spin Rate og lav Launch Angle — du taper lengde uten å slå svakere.<br><br>Du kjenner det ikke. Det er derfor vi måler det.</div>
+   <p class="regel">TrackMan-parameteren beholdes på engelsk. Forklar hva den BETYR på norsk, i setningen etter.</p></article><article class="somekort">
+   <header><h4>Før og etter</h4><p class="hva">En konkret endring, vist som to tall.</p></header>
+   <div class="innlegg">Dispersion på 7-jern, samme spiller:<br><br>April: 14,2 m sideveis<br>August: 6,8 m sideveis<br><br>Ingenting av dette er magi. Det er én ting av gangen, målt hver gang.<br><br>Trackman · 22 økter</div>
+   <p class="regel">Begge tall fra samme måleoppsett. Ellers er sammenligningen verdiløs.</p></article><article class="somekort">
+   <header><h4>Tips fra coach</h4><p class="hva">Fagkunnskap gitt bort. Ingen salgslinje til slutt.</p></header>
+   <div class="innlegg">Åtte av ti amatører sikter feil på puttene under to meter.<br><br>Ikke fordi de leser greenen galt. Fordi de stiller opp skuldrene mot hullet i stedet for mot startlinja.<br><br>Test det: legg en kølle langs skuldrene og se hvor den peker.</div>
+   <p class="regel">Skal kunne brukes uten å kjøpe noe. Det er hele poenget.</p></article><article class="somekort">
+   <header><h4>Turneringsresultat</h4><p class="hva">Resultat for spillere i programmet.</p></header>
+   <div class="innlegg">Tre spillere fra Academy spilte NM junior denne helga.<br><br>Resultatene ligger i turneringsoversikten vår — vi legger dem ut uansett hvordan det gikk.<br><br>Det er også en del av å måle.</div>
+   <p class="regel">Legg ut svake runder også. Ellers er det reklame, ikke måling.</p></article><article class="somekort">
+   <header><h4>Påmelding åpen</h4><p class="hva">Praktisk beskjed. Ingen hausing.</p></header>
+   <div class="innlegg">Juniorgruppene starter 1. mai. Vi har plass i U10 og U14.<br><br>Send alder og litt om erfaringen, så finner vi riktig gruppe. Svar innen én virkedag.</div>
+   <p class="regel">Si hva som faktisk er ledig. Aldri «få plasser igjen» hvis det ikke stemmer.</p></article></div>
+
+  <p class="eyebrow">E-post</p>
+  <h2>Seks maler</h2>
+  <p class="ledetekst">Krøllparenteser er felter som fylles automatisk. Alt annet er ferdig tekst.</p>
+  <article class="epost">
+   <header><h4>Velkommen — ny gratis konto</h4><p class="hva">Sendes ved registrering.</p></header>
+   <pre>Emne: Kontoen din er klar
+
+Hei {fornavn},
+
+Du har nå tilgang til testbatteriet, statistikken og verktøyene. Det koster ingenting, og det utløper ikke.
+
+Det enkleste første steget: kjør én test. Da har du et tall å måle mot senere.
+
+{lenke: Start en test}
+
+Anders</pre></article><article class="epost">
+   <header><h4>Etter kartleggingsøkta</h4><p class="hva">Sendes samme dag som økta.</p></header>
+   <pre>Emne: Planen din fra i dag
+
+Hei {fornavn},
+
+Her er det vi fant i dag, og hva vi gjør med det:
+
+{tre punkter fra økta}
+
+Planen ligger i appen. Neste måling er {dato} — da ser vi om vi er på rett vei.
+
+Spør hvis noe er uklart.
+
+Anders</pre></article><article class="epost">
+   <header><h4>Til forelder — ukentlig</h4><p class="hva">Sendes søndag kveld, kun når det finnes noe å si.</p></header>
+   <pre>Emne: {barnets fornavn} denne uka
+
+Hei,
+
+{Barnets fornavn} har trent {antall} økter denne uka. Vi har jobbet med {område}.
+
+Neste steg på stigen er {trinn}. Det som gjenstår: {krav}.
+
+Du ser detaljene i foreldreportalen.
+
+Hilsen Anders</pre></article><article class="epost">
+   <header><h4>Påminnelse om økt</h4><p class="hva">Sendes dagen før.</p></header>
+   <pre>Emne: Økt i morgen kl. {tid}
+
+Hei {fornavn},
+
+Vi møtes {sted} kl. {tid} i morgen.
+
+Ta med {det som trengs}. Må du flytte, svar på denne så finner vi ny tid.
+
+Anders</pre></article><article class="epost">
+   <header><h4>Ingen aktivitet på en stund</h4><p class="hva">Sendes etter 30 dager uten innlogging. Én gang.</p></header>
+   <pre>Emne: Alt ligger der fortsatt
+
+Hei {fornavn},
+
+Det er en måned siden sist. Ingen bekymring — planen og tallene dine ligger der de lå.
+
+Skal vi ta en ny måling og se hvor du står nå? Det er ofte enklere å komme i gang når man har et tall å forholde seg til.
+
+Anders</pre></article><article class="epost">
+   <header><h4>Nyhetsbrev</h4><p class="hva">Månedlig. Én sak, ikke fem.</p></header>
+   <pre>Emne: {én konkret ting, ikke «Nyhetsbrev mars»}
+
+Én sak per utsendelse. Den saken skal være noe leseren kan bruke — en måling vi har gjort, noe vi har lært, en endring i programmet.
+
+Avslutt med én lenke. Ikke fem.
+
+Avmelding nederst, uten å gjøre det vanskelig.</pre></article>
+
+  <p class="eyebrow">Tonen</p>
+  <h2>Sju regler som avgjør alt</h2>
+  <p class="ledetekst">Prøven på hver setning: ville en erfaren coach sagt den til en spiller på rangen? Nei — skriv om.</p>
+  <div class="note" style="margin:0 0 24px"><b>TrackMan-parametere skrives på engelsk</b>, også i norsk tekst. Det heter <em>Attack Angle</em> — aldri «angrepsvinkel», og aldri liten forbokstav. Det engelske navnet er navnet: spilleren ser det på skjermen i økta og i rapporten. Stor forbokstav er et bevisst brudd med norsk rettskriving, fordi det viser at dette er navnet på en <b>måling</b> og ikke et vanlig ord. Behold parameteren, forklar hva den betyr i setningen etter. Full liste i <span class="mono">guidelines/08-sprak.md</span>.</div>
+  <div class="grad"><div class="gtittel">Skriv tallet, ikke følelsen</div>
+   <div class="gja"><span class="gmerk ja">Slik</span><p>«Åtte av ti 7-jern lander høyre for pinnen»</p></div>
+   <div class="gnei"><span class="gmerk nei">Ikke</span><p>«Du sliter med retningen»</p></div></div><div class="grad"><div class="gtittel">Sett kilden ved siden av</div>
+   <div class="gja"><span class="gmerk ja">Slik</span><p>«+12,4 m · Trackman · 38 målinger»</p></div>
+   <div class="gnei"><span class="gmerk nei">Ikke</span><p>«Opptil 15 meter lengre»</p></div></div><div class="grad"><div class="gtittel">Si hva det koster</div>
+   <div class="gja"><span class="gmerk ja">Slik</span><p>«90 minutter, vanlig timepris»</p></div>
+   <div class="gnei"><span class="gmerk nei">Ikke</span><p>«Kontakt oss for pris»</p></div></div><div class="grad"><div class="gtittel">Én handling per flate</div>
+   <div class="gja"><span class="gmerk ja">Slik</span><p>«Book kartleggingsøkt»</p></div>
+   <div class="gnei"><span class="gmerk nei">Ikke</span><p>«Book · Les mer · Meld deg på · Se video»</p></div></div><div class="grad"><div class="gtittel">Behold TrackMan-ordet, forklar det etter</div>
+   <div class="gja"><span class="gmerk ja">Slik</span><p>«Attack Angle — om køllehodet går opp eller ned i treffet»</p></div>
+   <div class="gnei"><span class="gmerk nei">Ikke</span><p>«Angrepsvinkelen din er for negativ»</p></div></div><div class="grad"><div class="gtittel">Skriv som du snakker</div>
+   <div class="gja"><span class="gmerk ja">Slik</span><p>«Vi måler før vi endrer noe»</p></div>
+   <div class="gnei"><span class="gmerk nei">Ikke</span><p>«Vår metodikk baserer seg på datadrevet analyse»</p></div></div><div class="grad"><div class="gtittel">Vis målingen, ikke vitnesbyrdet</div>
+   <div class="gja"><span class="gmerk ja">Slik</span><p>«Dispersion gikk fra 14,2 til 6,8 m»</p></div>
+   <div class="gnei"><span class="gmerk nei">Ikke</span><p>«Beste coachen jeg har hatt!»</p></div></div>
+
+  <p class="eyebrow">Rammen</p>
+  <h2>Fargene og fonten</h2>
+  <p class="ledetekst">Verkstedet. Varm betonggrå grunn, rødt signal. Rødt betyr «se her» — en måling, et tall, en handling — aldri dekor. Ingenting her er premium, og det er meningen: et godt verktøy er ikke pyntet, det er nøyaktig. Alle kontrasttall er målt.</p>
+  <div class="palett">
+    <div class="pf"><div class="prove" style="background:#E8E4DC"></div><div class="tekst"><b>#E8E4DC</b><span>Grunn</span></div></div>
+    <div class="pf"><div class="prove" style="background:#FFFFFF;border-bottom:1px solid #D2CCC0"></div><div class="tekst"><b>#FFFFFF</b><span>Ark</span></div></div>
+    <div class="pf"><div class="prove" style="background:#1F1D1A"></div><div class="tekst"><b>#1F1D1A</b><span>Tekst · 13,3:1</span></div></div>
+    <div class="pf"><div class="prove" style="background:#B83217"></div><div class="tekst"><b>#B83217</b><span>Signal · 4,7:1</span></div></div>
+    <div class="pf"><div class="prove" style="background:#2C6E63"></div><div class="tekst"><b>#2C6E63</b><span>Fag · 4,7:1</span></div></div>
+  </div>
+  <div class="note"><b>Fonten er hele IBM Plex-familien:</b> Sans Condensed for overskrifter, Sans for brødtekst, Mono for alt som er målt. Én familie, tre roller — det er så sammenhengende et system kan bli, og Plex er tegnet som et industrielt system, ikke som et markedsføringsalfabet.<br><br>Denne siden er satt i rammen. Alt du leser her er forslaget, ikke en beskrivelse av det. Lys er standard — bytt til mørk modus for å se verkstedet om kvelden.</div>
+
+  <div class="note"><b>Merket bruker ikke vitnesbyrd</b> (Anders 01.09.2026). Ingen spillersitater, ingen anmeldelser, ingen «beste coachen jeg har hatt». Det er ikke beskjedenhet — det er konsistens: et sitat er per definisjon synsing, og et merke som sier «vi måler, vi synser ikke» blir svakere av å be folk om ros. Vi viser målingen i stedet.<br><br><b>Det som mangler før dette kan gå live:</b> fremgangstallene i eksemplene må erstattes med målte tall fra basen. Alle tall på denne siden er <b>eksempler</b> — de er ikke hentet fra en måling, og skal ikke publiseres som de står.</div>
+</div>

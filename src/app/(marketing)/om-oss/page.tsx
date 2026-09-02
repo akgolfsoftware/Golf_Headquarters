@@ -8,7 +8,7 @@ import { MarkedOmOssV2 } from "@/components/marketing/v2/MarkedOmOssV2";
 export const metadata: Metadata = {
   title: "Om oss | AK Golf Academy",
   description:
-    "Les om Anders Kristiansen og filosofien bak AK Golf Academy: personlig coaching bygd på internasjonal svingmetodikk og moderne data-analyse.",
+    "Les om Anders Kristiansen og filosofien bak AK Golf Academy: personlig coaching bygd på måling, Trackman-data og en tydelig metodikk.",
 };
 
 export default function OmOssPage() {

@@ -1,0 +1,59 @@
+/* AK Golf — typografi.
+   STEG 18.4. Lagt om til verkstedet 01.09.2026 (Anders).
+
+   Hele IBM Plex-familien. Ingen andre fonter.
+
+   IBM Plex Sans Condensed — overskrifter. Alt som skal dominere en flate.
+   IBM Plex Sans           — brødtekst, knapper, skjema.
+   IBM Plex Mono           — alt som er MÅLT.
+
+   Én familie, tre roller. Plex er tegnet som et industrielt system, ikke som
+   et markedsføringsalfabet — det er verkstedets språk. Valgt etter test mot
+   Archivo Narrow + Poppins på verksted-grunnen: Plex Sans er tettere, og
+   brødtekst som bryter til tre linjer i Poppins klarer seg på to.
+
+   RETTET 01.09.2026 (sent): denne fila lå igjen på Archivo Narrow + Poppins
+   etter omleggingen, mens merkebok, tekstkonsept og bestilling sa IBM Plex.
+   Kildepakken til Claude Design tok fila som den var, så masteren ble bygget
+   på feil font. Se MASTERPLAN 18.26.
+
+   MERK: dette gjelder MERKET — marked, materiell, presentasjon. Produktskjermene
+   i PlayerHQ, AgencyOS og Forelder bruker fortsatt Poppins gjennom Train-lock
+   (CLAUDE.md invariant 2). Ingen skjerm bytter font av denne endringen. */
+
+:root {
+  --ak-display: 'IBM Plex Sans Condensed', 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
+  --ak-sans:    'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  --ak-mono:    'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Skala. Ti trinn — ett mer enn før, fordi displayen nå går høyere.
+     Kondensert type tåler å bli større uten å sprenge en mobilskjerm; det er
+     hele grunnen til at Condensed ble valgt framfor en bred grotesk. */
+  --ak-t-11:  11px;   /* etikett i caps, kun mono */
+  --ak-t-13:  13px;   /* bildetekst, fotnote */
+  --ak-t-15:  15px;   /* brødtekst, tett */
+  --ak-t-17:  17px;   /* brødtekst, standard */
+  --ak-t-21:  21px;   /* ingress */
+  --ak-t-26:  26px;   /* seksjonstittel, mobil */
+  --ak-t-34:  34px;   /* seksjonstittel */
+  --ak-t-48:  48px;   /* sidetittel */
+  --ak-t-72:  72px;   /* hero, mobil */
+  --ak-t-112: 112px;  /* hero, Mac */
+
+  /* Vekter. Display bruker 600 og 700 — den ER merkets stemme, og skal ha
+     tyngde. Brødtekst holder seg på 400 og 500 som før. */
+  --ak-v-400: 400;
+  --ak-v-500: 500;
+  --ak-v-600: 600;
+  --ak-v-700: 700;   /* KUN Plex Sans Condensed. Aldri Plex Sans. */
+
+  --ak-lh-display: 0.94;  /* fra 48px og opp — linjene skal låse seg til hverandre */
+  --ak-lh-tett:    1.12;
+  --ak-lh-normal:  1.5;
+
+  --ak-sp-display: -0.035em;
+  --ak-sp-titt:    -0.02em;
+  --ak-sp-null:     0;
+  --ak-sp-vid:      0.2em;   /* caps-etiketter i mono */
+  --ak-sp-vidt:     0.24em;  /* samme, på mørk flate der lyset spiser mellomrom */
+}

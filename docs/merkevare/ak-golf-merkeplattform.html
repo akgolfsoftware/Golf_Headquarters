@@ -1,0 +1,375 @@
+<title>AK Golf merkeplattform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Poppins:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --ground:#FAF9F5; --surface:#FFFFFF; --sunk:#F0EEE6;
+  --text:#141413; --muted:#5E5D59; --faint:#8B8880;
+  --hair:#E4E1D8; --hair-strong:#CFCCC2;
+  --accent:#B85C3D; --accent-bright:#D97757; --accent-wash:rgba(217,119,87,.09);
+  --olive:#5F7049; --olive-wash:rgba(120,140,93,.12);
+  --shadow:0 1px 2px rgba(20,20,19,.04),0 8px 28px rgba(20,20,19,.05);
+  --display:'Lora',Georgia,serif;
+  --body:'Poppins',-apple-system,BlinkMacSystemFont,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#141413; --surface:#1D1C1A; --sunk:#221F1C;
+    --text:#FAF9F5; --muted:#B0AEA5; --faint:#8A857C;
+    --hair:#2E2B27; --hair-strong:#3D3A34;
+    --accent:#D97757; --accent-bright:#E08D6F; --accent-wash:rgba(217,119,87,.12);
+    --olive:#9BB07A; --olive-wash:rgba(155,176,122,.13);
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 28px rgba(0,0,0,.28);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#141413; --surface:#1D1C1A; --sunk:#221F1C;
+  --text:#FAF9F5; --muted:#B0AEA5; --faint:#8A857C;
+  --hair:#2E2B27; --hair-strong:#3D3A34;
+  --accent:#D97757; --accent-bright:#E08D6F; --accent-wash:rgba(217,119,87,.12);
+  --olive:#9BB07A; --olive-wash:rgba(155,176,122,.13);
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 28px rgba(0,0,0,.28);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--text);
+  font-family:var(--body);font-weight:300;font-size:16.5px;line-height:1.7;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:860px;margin:0 auto;padding:72px 28px 120px}
+.mono{font-family:var(--mono);font-size:10.5px;font-weight:500;
+  letter-spacing:.22em;text-transform:uppercase}
+
+/* topp */
+.masthead{border-bottom:2px solid var(--text);padding-bottom:26px;margin-bottom:14px}
+.masthead .kicker{color:var(--accent);margin-bottom:22px}
+.masthead h1{font-family:var(--display);font-weight:500;font-size:clamp(38px,6vw,58px);
+  line-height:1.04;letter-spacing:-.02em;margin:0;text-wrap:balance}
+.masthead .sub{margin-top:20px;font-size:18px;line-height:1.65;color:var(--muted);max-width:56ch}
+.meta{display:flex;flex-wrap:wrap;gap:8px 26px;padding:14px 0 0;color:var(--faint)}
+
+/* seksjon */
+section{margin-top:64px;scroll-margin-top:24px}
+.shead{display:flex;align-items:baseline;gap:16px;border-top:1px solid var(--hair-strong);
+  padding-top:16px;margin-bottom:24px}
+.shead .num{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--accent);
+  font-variant-numeric:tabular-nums;flex:none;padding-top:5px}
+h2{font-family:var(--display);font-weight:500;font-size:clamp(25px,3.4vw,33px);
+  line-height:1.18;letter-spacing:-.015em;margin:0;text-wrap:balance}
+h3{font-family:var(--body);font-weight:500;font-size:15px;margin:34px 0 12px;
+  letter-spacing:.005em}
+p{margin:0 0 17px;max-width:66ch}
+p:last-child{margin-bottom:0}
+strong{font-weight:500;color:var(--text)}
+em{font-style:italic}
+
+/* sitat / løfte */
+.claim{margin:26px 0;padding:26px 30px;background:var(--surface);border:1px solid var(--hair);
+  border-left:3px solid var(--accent);border-radius:4px;box-shadow:var(--shadow)}
+.claim p{font-family:var(--display);font-size:clamp(20px,2.7vw,25px);line-height:1.42;
+  margin:0;max-width:none;font-weight:500}
+.claim .tag{margin-bottom:14px;color:var(--accent)}
+
+/* lister */
+ol.steps{list-style:none;counter-reset:s;padding:0;margin:24px 0 0;
+  display:flex;flex-direction:column;gap:16px}
+ol.steps li{counter-increment:s;display:flex;gap:16px;align-items:flex-start}
+ol.steps li::before{content:counter(s);font-family:var(--mono);font-size:11px;font-weight:500;
+  color:var(--accent);flex:none;width:20px;padding-top:5px;font-variant-numeric:tabular-nums}
+ol.steps li>div{max-width:62ch}
+ul.plain{list-style:none;padding:0;margin:16px 0 0;display:flex;flex-direction:column;gap:11px}
+ul.plain li{display:flex;gap:13px;align-items:flex-start;max-width:64ch}
+ul.plain li::before{content:"";flex:none;width:5px;height:5px;border-radius:50%;
+  background:var(--accent);margin-top:11px}
+
+/* tabell */
+.tw{overflow-x:auto;margin:26px 0 0;border:1px solid var(--hair);border-radius:6px;
+  background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14.5px;line-height:1.6}
+th{font-family:var(--mono);font-size:9.5px;font-weight:500;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--faint);text-align:left;padding:15px 18px;
+  border-bottom:1px solid var(--hair-strong);white-space:nowrap;background:var(--sunk)}
+td{padding:15px 18px;border-bottom:1px solid var(--hair);vertical-align:top;color:var(--muted)}
+tr:last-child td{border-bottom:0}
+td:first-child{color:var(--text);font-weight:400}
+td.n{font-family:var(--mono);font-size:11px;color:var(--accent);
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+td strong{font-weight:500}
+
+/* varsel */
+.note{margin:26px 0 0;padding:18px 22px;background:var(--accent-wash);
+  border-radius:6px;font-size:14.5px;line-height:1.65}
+.note .tag{color:var(--accent);margin-bottom:9px}
+.note p{max-width:64ch;margin-bottom:0}
+.note.good{background:var(--olive-wash)}
+.note.good .tag{color:var(--olive)}
+
+/* spørsmål */
+.asks{display:flex;flex-direction:column;gap:2px;margin-top:26px;
+  border:1px solid var(--hair-strong);border-radius:6px;overflow:hidden}
+.ask{background:var(--surface);padding:22px 24px;display:flex;gap:18px;align-items:flex-start}
+.ask+.ask{border-top:1px solid var(--hair)}
+.ask .q{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--accent);
+  flex:none;padding-top:4px;font-variant-numeric:tabular-nums}
+.ask .t{font-weight:400;color:var(--text);margin-bottom:6px}
+.ask .d{font-size:14.5px;color:var(--muted);line-height:1.6;max-width:58ch}
+
+footer{margin-top:76px;padding-top:22px;border-top:1px solid var(--hair-strong);
+  color:var(--faint);display:flex;flex-wrap:wrap;gap:8px 24px}
+
+@media (max-width:620px){
+  .wrap{padding:44px 20px 84px}
+  body{font-size:16px}
+  .claim{padding:22px 20px}
+  .shead{gap:12px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="wrap">
+
+<div class="masthead">
+  <div class="mono kicker">Steg 18.1 · Godkjent 31. august 2026</div>
+  <h1>AK Golf<br>merkeplattform</h1>
+  <p class="sub">Fundamentet både merkevaresystemet og prisingen står på.
+    Låst av fire svar fra Anders — se seksjon 08.</p>
+</div>
+<div class="meta mono">
+  <span>Paraply over hele konsernet</span>
+  <span>Merkelaget ligger over Train-lock</span>
+  <span>Junior- og spillerutvikling er målet</span>
+</div>
+
+<section>
+  <div class="shead"><span class="num">01</span><h2>Hva AK Golf er</h2></div>
+  <div class="claim">
+    <div class="mono tag">Kjernen</div>
+    <p>AK Golf er et utviklingssystem for golfspillere der hver anbefaling er
+      forankret i en måling — ikke i en følelse.</p>
+  </div>
+  <p>Ikke en golfpro som selger timer. Ikke en app. Et system der coachen tolker
+    målingene, planen bærer arbeidet mellom øktene, og spilleren til enhver tid
+    vet hva hen trener på og hvorfor.</p>
+  <p>Dette er ikke en ny idé påført utenfra. Det er allerede måten alt i huset er
+    bygget: TruthLayer-prinsippet, de tjue standardiserte testprotokollene,
+    P-posisjonene, Trackman i hver økt. <strong>Merkevaren skal si høyt det
+    systemet allerede gjør.</strong></p>
+</section>
+
+<section>
+  <div class="shead"><span class="num">02</span><h2>Hvem det er til for</h2></div>
+  <div class="note good">
+    <div class="mono tag">Låst 31.08.2026</div>
+    <p><strong>Junior- og spillerutvikling er det sentrale målet.</strong> Merket
+      handler om spilleren under utvikling — og juniorene står i sentrum. Det er
+      denne setningen alt under her er sortert etter.</p>
+  </div>
+  <div class="tw">
+    <table>
+      <thead><tr><th></th><th>Hvem</th><th>Hva de faktisk vil ha</th><th>Betaler for i dag</th></tr></thead>
+      <tbody>
+        <tr><td class="n">1</td><td><strong>Junioren som vil noe — og forelderen som betaler</strong></td>
+          <td>Utvikling etter en plan, ikke etter dagsform. Forelderen vil se fremgangen uten å måtte spørre</td>
+          <td>Junior Academy · gruppeplasser · foreldreportalen</td></tr>
+        <tr><td class="n">2</td><td><strong>Den ambisiøse voksne som har stoppet opp</strong></td>
+          <td>Å forstå hvorfor det ikke går framover lenger. Vil ha en diagnose, ikke flere råd</td>
+          <td>1:1-coaching · PlayerHQ 299 kr/mnd</td></tr>
+        <tr><td class="n">3</td><td><strong>Organisasjonen med talenter</strong><br>WANG · GFGK · Team Norway</td>
+          <td>Felles språk og felles målesystem på tvers av trenere. Slippe Word, Excel og Messenger</td>
+          <td>Kontrakts-coaching · spillerlisenser fra 2027</td></tr>
+        <tr><td class="n">4</td><td><strong>Spilleren som trener alene</strong></td>
+          <td>Struktur uten å måtte kjøpe en coach. Inngangen til alt det andre</td>
+          <td>Gratis PlayerHQ → 299 kr/mnd</td></tr>
+        <tr><td class="n">5</td><td><strong>Den lokale som vil slå baller i mørketiden</strong></td>
+          <td>Tilgang, pris og åpningstid. Bryr seg ikke om metodikk</td>
+          <td>Mulligan, timepris</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="margin-top:22px">Det gode med valget: løftet i seksjon 03 gjelder ordrett
+    for alle fire første. En forelder vil ha nøyaktig det samme på vegne av barnet
+    sitt som en voksen vil ha på egne vegne. Merket trenger derfor ikke to språk.</p>
+  <div class="note">
+    <div class="mono tag">Én konsekvens du bør kjenne til</div>
+    <p>Med junior som primærpublikum er det <strong>forelderen som bestemmer og
+      betaler</strong>, ikke spilleren. Det flytter tyngdepunktet i prisingen fra
+      299 kr/mnd på egen hånd til gruppeplass, semesterpris og foreldreportal — og
+      det gjør foreldreflaten viktigere enn den er prioritert i dag. Dette tas videre
+      i steg 18.9, ikke her.</p>
+  </div>
+</section>
+
+<section>
+  <div class="shead"><span class="num">03</span><h2>Løftet</h2></div>
+  <div class="claim">
+    <div class="mono tag">Løftet</div>
+    <p>Du skal aldri lure på hva du skal trene på, eller hvorfor.</p>
+  </div>
+  <p>Under det, tre ting som gjør løftet konkret:</p>
+  <ol class="steps">
+    <li><div><strong>Vi måler før vi endrer noe.</strong> Ingen svingendring uten et tall som viser hvorfor.</div></li>
+    <li><div><strong>Planen lever mellom øktene.</strong> Arbeidet slutter ikke når timen er over.</div></li>
+    <li><div><strong>Alt vi sier om spillet ditt kan etterprøves.</strong> Dato og kilde på hvert tall. Er noe et estimat, står det.</div></li>
+  </ol>
+  <p style="margin-top:22px">Det tredje punktet er det ingen konkurrent kan kopiere
+    uten å bygge om hele måten de jobber på.</p>
+</section>
+
+<section>
+  <div class="shead"><span class="num">04</span><h2>Hva AK Golf er alternativet til</h2></div>
+  <p>Merket defineres like mye av hva det ikke er. Tre reelle alternativer
+    spilleren faktisk velger mellom:</p>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Alternativet</th><th>Hva som er galt med det</th><th>Hva AK Golf gjør i stedet</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Timen hos proffen</strong></td>
+          <td>Slutter når timen slutter. Neste gang starter på nytt, ofte med nytt fokus. Ingen måling mellom gangene</td>
+          <td>Planen og målingene bærer videre. Neste økt bygger på forrige</td></tr>
+        <tr><td><strong>Å lære selv fra video</strong></td>
+          <td>Uendelig med råd, null diagnose. Du vet ikke hvilket av tusen råd som gjelder deg</td>
+          <td>Kartleggingen sier hvilket problem som faktisk er ditt</td></tr>
+        <tr><td><strong>En treningsapp uten coach</strong></td>
+          <td>Registrerer hva du gjorde. Sier ingenting om hva du burde gjort</td>
+          <td>Tallene tolkes av en coach, og blir til økter</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    <div class="mono tag">Regel for markedsmateriell</div>
+    <p>Ingen av disse er «dårlige mennesker som gjør en dårlig jobb». Teksten skal
+      aldri henge ut navngitte konkurrenter — den skal beskrive situasjonen
+      spilleren kjenner seg igjen i.</p>
+  </div>
+</section>
+
+<section>
+  <div class="shead"><span class="num">05</span><h2>De fire bærebjelkene</h2></div>
+  <p>Det merket kan bevise, ikke det det påstår. Alle fire finnes allerede.</p>
+  <ol class="steps">
+    <li><div><strong>Målingen.</strong> Trackman i hver økt, tjue standardiserte
+      testprotokoller, P1–P10 på svingen, spredning og slaglengder som tall.</div></li>
+    <li><div><strong>Systemet.</strong> En metodikk med eget språk — pyramiden,
+      områdene, periodene. Ikke løse tips, men en struktur som gjentar seg.</div></li>
+    <li><div><strong>Utviklingsløpet.</strong> AK-stigen tar junioren fra første
+      golfskole til turneringsspill i navngitte trinn. Det er få ting foreldre vil
+      ha sterkere enn å se hvilket trinn barnet står på, og hva som skal til for
+      det neste.</div></li>
+    <li><div><strong>Plassen i norsk golf.</strong> Sportssjef i Gamle Fredrikstad GK,
+      coach ved WANG Toppidrett, tilknytning til Team Norway Golf. Viser at systemet
+      brukes der det stilles krav, ikke bare på privattimer.</div></li>
+  </ol>
+  <div class="note">
+    <div class="mono tag">Låst 31.08.2026 — MORAD nevnes ikke</div>
+    <p>Mac O'Grady og MORAD skal <strong>ikke</strong> nevnes i publikumsvendt tekst:
+      ikke på nettsidene, ikke i markedsføring, ikke i coach-biografier. Tre steder i
+      produksjon brøt dette og er rettet 31.08 (om oss, coach-profilen, onboarding).
+      P-posisjoner og MORAD som <em>internt fagspråk</em> i produktet består — det er
+      metodikk, ikke merkevarebygging.</p>
+  </div>
+  <div class="note">
+    <div class="mono tag">Advarsel om bærebjelke 4</div>
+    <p>WANG, GFGK og Team Norway er relasjoner, ikke produkter. De skal aldri
+      framstilles slik at en leser tror hen kjøper tilgang til dem. Nevnes som
+      troverdighet, med presis ordbruk — og aldri med bilder av mindreårige uten
+      samtykke.</p>
+  </div>
+</section>
+
+<section>
+  <div class="shead"><span class="num">06</span><h2>Tonen</h2></div>
+  <p>AK Golf høres ut som Anders. Det er ikke tilfeldig — det er den ene tingen
+    som ikke kan kopieres.</p>
+  <h3>Slik snakker vi</h3>
+  <ul class="plain">
+    <li>Direkte. Poenget først, forklaringen etter.</li>
+    <li>Presist. «Åtte av ti 7-jern lander høyre for pinnen» slår «du sliter med retningen».</li>
+    <li>Faguttrykk beholdes, men oversettes i samme setning.</li>
+    <li>Vi sier ifra når noe ikke virker. Nyttig motstand foran høflig enighet.</li>
+    <li>Korte setninger. Én tanke om gangen.</li>
+  </ul>
+  <h3>Slik snakker vi aldri</h3>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Aldri</th><th>Fordi</th></tr></thead>
+      <tbody>
+        <tr><td>«Ta golfen din til neste nivå»</td><td>Sier ingenting. Kunne stått hos hvem som helst</td></tr>
+        <tr><td>«Vi brenner for golf»</td><td>Alle sier det. Ingen tror det</td></tr>
+        <tr><td>«Unlock your potential»</td><td>Engelsk floskel i norsk tekst</td></tr>
+        <tr><td>«Garantert 5 slag lavere»</td><td>Umulig å måle rettferdig, og ulovlig å love</td></tr>
+        <tr><td>Utropstegn og emoji</td><td>Skriker. AK Golf trenger ikke skrike</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note good">
+    <div class="mono tag">Prøven</div>
+    <p>Les setningen høyt. Ville Anders sagt den til en spiller på rangen? Nei —
+      skriv den om.</p>
+  </div>
+</section>
+
+<section>
+  <div class="shead"><span class="num">07</span><h2>Virksomhetene under paraplyen</h2></div>
+  <p>Fem virksomheter, én paraply, ulike roller. Dette er innspillet til
+    merkearkitekturen i steg 18.3 — ikke den ferdige arkitekturen.</p>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Virksomhet</th><th>Rolle i merket</th><th>Hvor mye AK Golf skal synes</th></tr></thead>
+      <tbody>
+        <tr><td><strong>AK Golf Junior Academy</strong></td><td>Bærer det sentrale målet. AK-stigen er dens eget språk</td><td>Fullt ut, med egen identitetsfarge</td></tr>
+        <tr><td><strong>AK Golf Academy</strong></td><td>Definerer løftet og metoden alt annet arver</td><td>Fullt ut. Dette <em>er</em> AK Golf</td></tr>
+        <tr><td><strong>AK Golf HQ / PlayerHQ</strong></td><td>Beviset. Systemet gjort til noe du kan holde i hånda</td><td>Fullt ut — men produktflatene styres av Train-lock</td></tr>
+        <tr><td><strong>Mulligan Indoor Golf</strong></td><td>Anlegg som står på egne ben. Selger tilgang, ikke metodikk</td><td><strong>Ikke knyttet direkte til AK Golf-merket.</strong> Promoteres av AK Golf</td></tr>
+        <tr><td><strong>Skarpnord Golf Products</strong></td><td>Utstyr som følger metoden. Tidlig fase</td><td>Lav profil til det har omsetning. Ikke bygg en egen merkevare ennå</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    <div class="mono tag">Låst 31.08.2026 — Mulligan står for seg selv</div>
+    <p>Ingen «en del av AK Golf»-avsender på Mulligan. Anlegget beholder sin egen
+      identitet og sine egne kunder. AK Golf <em>promoterer</em> Mulligan — lenker
+      dit, anbefaler det som treningssted, bruker det i egne økter — men merkene
+      blandes ikke. Det holder rigor-merket rent og lar Mulligan snakke til folk som
+      bare vil slå baller.</p>
+  </div>
+  <p style="margin-top:22px"><strong>WANG-coachingen</strong> er ikke en virksomhet,
+    men en leveranse til en kunde. Den opptrer som en variant under paraplyen, ikke
+    som et eget merke — det er dette som lukker punkt 22 i beslutningskøen.</p>
+</section>
+
+<section>
+  <div class="shead"><span class="num">08</span><h2>Hva som er låst, og hva som står igjen</h2></div>
+  <p>Merkeplattformen er godkjent 31.08.2026. Fire svar fra Anders lukket den:</p>
+  <div class="asks">
+    <div class="ask"><span class="q">01</span><div>
+      <div class="t">Junior- og spillerutvikling er det sentrale målet</div>
+      <div class="d">Primærpublikum er junioren og forelderen. Den voksne spilleren følger etter, med samme løfte.</div>
+    </div></div>
+    <div class="ask"><span class="q">02</span><div>
+      <div class="t">Løftet er godkjent</div>
+      <div class="d">«Du skal aldri lure på hva du skal trene på, eller hvorfor.» Alt annet måles mot denne setningen.</div>
+    </div></div>
+    <div class="ask"><span class="q">03</span><div>
+      <div class="t">MORAD nevnes ikke offentlig</div>
+      <div class="d">Ute av all publikumsvendt tekst. Består som internt fagspråk i produktet.</div>
+    </div></div>
+    <div class="ask"><span class="q">04</span><div>
+      <div class="t">Mulligan knyttes ikke direkte, men promoteres</div>
+      <div class="d">Eget merke, egne kunder. AK Golf anbefaler og lenker, men blander ikke avsender.</div>
+    </div></div>
+  </div>
+  <h3>Ett spørsmål junior-valget åpner</h3>
+  <p>Når forelderen er den som bestemmer og betaler, blir foreldreportalen en
+    salgsflate og ikke bare en innsynsflate. Det er en prioriteringsendring, ikke en
+    merkevaresak — og det tas i steg 18.9, prising og pakketering.</p>
+  <p><strong>Neste steg er 18.3: merkearkitekturen.</strong> Hver virksomhet får sin
+    plass, sin identitetsfarge og sine logoregler under paraplyen.</p>
+</section>
+
+<footer class="mono">
+  <span>AK Golf Group AS</span>
+  <span>docs/merkevare/ak-golf-merkeplattform</span>
+  <span>Masterplan steg 18.1</span>
+</footer>
+
+</div>

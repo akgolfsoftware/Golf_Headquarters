@@ -1,0 +1,62 @@
+/* AK Golf — grunnlag.
+   Speilet fra masteren 01.09.2026.
+
+   Det minste settet med regler som gjør at en flate ser ut som AK Golf før
+   noen har skrevet en linje CSS: grunnfarge, brødtekstfont, lenkefarge,
+   fokusring, tabellsiffer. Ingen komponentstil her. */
+
+*, *::before, *::after { box-sizing: border-box }
+
+body {
+  margin: 0;
+  background: var(--ak-grunn);
+  color: var(--ak-tekst);
+  font-family: var(--ak-sans);
+  font-size: var(--ak-t-17);
+  line-height: var(--ak-lh-normal);
+  -webkit-font-smoothing: antialiased;
+  text-wrap: pretty;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--ak-display);
+  font-weight: var(--ak-v-700);
+  letter-spacing: var(--ak-sp-titt);
+  line-height: var(--ak-lh-tett);
+  margin: 0;
+}
+h1 { font-size: var(--ak-t-48); letter-spacing: var(--ak-sp-display); line-height: var(--ak-lh-display) }
+h2 { font-size: var(--ak-t-34) }
+h3 { font-size: var(--ak-t-26) }
+h4 { font-size: var(--ak-t-21) }
+p { margin: 0; max-width: var(--ak-lesebredde) }
+
+a { color: var(--ak-signal); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; transition: color var(--ak-fart-rask) var(--ak-kurve) }
+a:hover { color: var(--ak-tekst); text-decoration-color: var(--ak-signal) }
+a:active { color: var(--ak-signal-fyll) }
+
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--ak-signal);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Alt som er målt. Mono, tabellsiffer, aldri kursiv. */
+.ak-maalt {
+  font-family: var(--ak-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'zero' 1;
+}
+
+/* Caps-etikett. Kun mono, kun tre ord eller mindre. */
+.ak-etikett {
+  font-family: var(--ak-mono);
+  font-size: var(--ak-t-11);
+  font-weight: var(--ak-v-500);
+  letter-spacing: var(--ak-sp-vid);
+  text-transform: uppercase;
+  color: var(--ak-dempet);
+}
+[data-ak-flate="mork"] .ak-etikett { letter-spacing: var(--ak-sp-vidt) }
+
+::selection { background: var(--ak-signal); color: var(--ak-signal-tekst) }

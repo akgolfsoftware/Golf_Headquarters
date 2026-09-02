@@ -51,8 +51,16 @@ export default async function CoacherSideV2() {
   });
 
   const coacher: CoachKort[] = FALLBACK_COACHER.map((f) => {
-    const db = dbCoacher.find((u) => u.name === f.navn || utledSlug(u.name) === f.slug);
-    return db?.avatarUrl ? { ...f, foto: db.avatarUrl } : f;
+    // Flere rader kan matche samme coach: den ekte kontoen, en testbruker, og
+    // navnevarianter («Anders Skarpnord Kristiansen» gir slug «anders» på lik
+    // linje med «Anders Kristiansen»). `find` tok første treff i en rekkefølge
+    // Postgres ikke garanterer, så portrettet forsvant når testraden kom først.
+    // Vi tar alle treff og velger den som faktisk HAR et bilde. (2026-09-01)
+    const treff = dbCoacher.filter(
+      (u) => u.name === f.navn || utledSlug(u.name) === f.slug,
+    );
+    const medFoto = treff.find((u) => u.avatarUrl);
+    return medFoto?.avatarUrl ? { ...f, foto: medFoto.avatarUrl } : f;
   });
 
   return <MarkedCoacherListeV2 coacher={coacher} />;

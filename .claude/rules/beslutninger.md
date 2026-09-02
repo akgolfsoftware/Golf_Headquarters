@@ -28,6 +28,189 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
 
 ## Beslutningene (august 2026)
 
+- **AK GOLF HØRER HJEMME I ET VERKSTED — PALETTEN LAGT OM (Anders 01.09.2026, i økt):**
+  Anders presiserte hva Academy står for: **«langsiktig utvikling, oppfølging, og å trene
+  optimalt og spesifikt, uavhengig av hvilket nivå golfspilleren er på.»** Den siste delen
+  velter fargevalget.
+  **Hvorfor de forrige forslagene bommet:** åtte palettforslag ble avvist. De første fire var
+  alle mørke og premium — de sier «dette er for de seriøse». Det er stikk i strid med «uavhengig
+  av nivå». De fleste golfmerker signaliserer eksklusivitet (dyp grønn, gull, marmor, seriffer)
+  og sier dermed «her må du være god nok» før noen har lest et ord.
+  **Valget:** av fire rom — klubbhuset, laboratoriet, verkstedet, naturen — valgte Anders
+  **verkstedet**. Et sted der noe blir gjort, ikke der noen blir servert.
+  **Paletten (alle kontrasttall MÅLT 01.09):**
+  - Grunn **varm betonggrå `#E8E4DC`** · ark `#FFFFFF` · senket `#DDD8CE`
+  - Tekst `#1F1D1A` (13,3:1) · dempet `#57534B` (6,0:1) · svak `#8B857A` (2,9:1 — **aldri
+    brødtekst**)
+  - **Signal `#B83217`** (4,7:1), fyll `#C4361B`, hvit tekst på fyllet (6,0:1)
+  - Fag `#2C6E63` (4,7:1) — andrestemme for metoden, ikke for målingen
+  - Varianttoner: Junior `#4A6B33` · Academy låner signalet · HQ `#2B5F87` ·
+    Organisasjon `#4A4F58` · Products `#7A5A22`
+  - Mørk variant: varm mørk grå `#22201C` — verkstedet om kvelden. **Lys er standard.**
+  **REGELEN SOM BÆRER PALETTEN: rødt betyr «se her».** En måling, et tall, en handling. Aldri
+  dekor, aldri stemning, aldri fem røde ting på samme flate. Mister rødt den betydningen, mister
+  paletten poenget sitt.
+  **Fonten:** hele **IBM Plex-familien** — Sans Condensed (overskrift), Sans (brødtekst), Mono
+  (målt). Én familie, tre roller. Testet mot Archivo Narrow + Poppins: Plex Sans er tettere, og
+  brødtekst som bryter til tre linjer i Poppins klarer seg på to. **Poppins og Lora er ute av
+  merket.** Dette overstyrer font-delen av instrument-beslutningen samme dag.
+  **Tekstkonseptet er skrevet:** `docs/merkevare/ak-golf-tekstkonsept-2026-09-01.md` +
+  `designsystem/ak-golf/tekstkonsept.html` — ferdig tekst til seks markedssider, seks
+  innleggstyper for sosiale medier, seks e-postmaler og seks toneregler. Ny hovedlinje:
+  **«Uansett hvor du står, vet du hva du trener på.»**
+  **TRACKMAN-PARAMETERE SKRIVES PÅ ENGELSK (Anders 01.09.2026):** alle TrackMan-parametere
+  beholder sitt engelske navn OG skrives med **stor forbokstav overalt** — i løpende tekst, i
+  tabeller, i etiketter, i dataflater. Det heter **Attack Angle**, aldri «angrepsvinkel» og aldri
+  «attack angle». Samme gjelder Club Path, Face Angle, Face to Path, Dynamic Loft, Smash Factor,
+  Ball Speed, Club Speed, Launch Angle, Spin Rate, Spin Axis, Carry, Total, Dispersion,
+  Landing Angle, Low Point, Swing Direction. **Grunnen:** det engelske navnet ER navnet — spilleren ser det på skjermen i
+  økta og i rapporten, og en norsk oversettelse skaper et andre vokabular som ingen andre bruker.
+  **Slik gjøres det:** behold parameteren på engelsk med stor forbokstav, forklar hva den betyr på
+  norsk i setningen etter. Norsk bruker normalt ikke versaler i substantiv — det er et bevisst
+  brudd, fordi stor forbokstav viser at dette er navnet på en måling og ikke et vanlig ord. **Gjelder ikke golfspråket ellers** — kølle, sving, green, tee og
+  fairway skrives på norsk som før. Full liste: `designsystem/ak-golf/guidelines/08-sprak.md`.
+  Rettet fem steder i tekstkonseptet samme dag, deriblant en toneregel som sa det motsatte.
+
+  **MERKET BRUKER IKKE VITNESBYRD (Anders 01.09.2026):** ingen spillersitater, ingen
+  anmeldelser, ingen stjerner — ikke på nettsidene, ikke i sosiale medier, ikke i presentasjoner.
+  Begrunnelsen er konsistens, ikke beskjedenhet: et sitat er per definisjon synsing, og et merke
+  som sier «vi måler, vi synser ikke» blir svakere av å be folk om ros. **Målingen vises i
+  stedet.** Konsekvens: innleggstypen «Sitat fra spiller» er byttet mot **«Slik leser du tallet»**
+  (én måling forklart — fagkunnskap ingen kan kopiere uten å faktisk måle), og kravet om ett ekte
+  spillersitat er **strøket** fra lanseringssperrene. Igjen står kun: fremgangstallene i
+  eksemplene må erstattes med målte tall fra basen.
+  **UENDRET:** instrumentlaget (rutenett, målestokk, kryss), romskalaen, radius, logoen og
+  logofamilien, og at merkelaget aldri rører produktskjermene. **Train-lock og CLAUDE.md
+  invariant 2 står — ingen skjerm bytter font eller farge av denne beslutningen.**
+
+- **AK GOLF-MERKET LEGGES OM TIL INSTRUMENT-RETNINGEN (Anders 01.09.2026, i økt):**
+  merkevaresystemet fra 31.08 var bygget rolig og forsiktig. Anders leverte seksten
+  referansebilder; opptalt ga de tolv med rust/rød som eneste aksent, ni med enorm kondensert
+  typografi, sju med synlige tekniske markører og fjorten med hard kontrast. **Bare to av sytten
+  var rolige — og begge var golfklubber.** Anders valgte full omlegging.
+  **Skillet som ble gjort:** referansene delte seg i «ropet» (GRO, Nike «PLAY LOUD», gym-plakater
+  — energi og revet papir) og «instrumentet» (POLYMER 48, Thegrafx, Design Signals, Narka — stor
+  type som bærer data, rutenett som konstruksjon). **Instrumentet ble valgt fordi ropet motsier
+  løftet:** et merke som sier «vi måler, vi synser ikke» kan ikke rope.
+  **Fire endringer, alle i `designsystem/ak-golf/`:**
+  1. **Archivo Narrow (600/700) er ny display-font. Lora er ute.** Fortsatt tre fonter — rollen er
+     byttet. Valgt fordi kondensert type får plass til flere tegn per linje på 390 px, og mobil er
+     merkets viktigste flate. Testet mot Archivo, Barlow Condensed, Oswald, Saira Condensed, Chivo
+     og Anton i norsk tekst. **700 er kun Archivo Narrow; Poppins går aldri over 600.**
+  2. **Instrumentlaget innført** (`tokens/instrument.css`, `guidelines/11-instrumentet.md`):
+     rutenett 56 px (7 × 8, samme åtte-basis som romskalaen), målestokk, kryss. Dette **besvarer
+     det åpne spørsmålet** fra merkeboka om merket trenger et grafisk element utover logoen.
+     **Regelen som holder det ærlig:** instrumentlaget skal aldri gi inntrykk av å vise data som
+     ikke finnes — rutenett med tall på aksene er en påstand og krever målte tall med dato og
+     kilde. Ingen kurver uten data, ingen akser uten enhet.
+  3. **5 %-regelen for identitetsfarge er OPPHEVET.** Clay bæres nå av hele flater og dekker minst
+     18 % av visningen. Består: én identitetsfarge om gangen, aldri farge alene som informasjon.
+  4. **Typeskalaen utvidet til ti trinn** (opp til 112 px), display-linjeavstand 0,94.
+  **UENDRET:** krem `#FAF9F5`, blekk `#141413`, clay `#D97757`, de fem identitetsfargene med sine
+  målte kontrasttall, romskalaen, radius, logoen og logofamilien. **Fundamentet står — det er
+  temperamentet som er lagt om.**
+  **GJELDER KUN MERKET.** Produktskjermene i PlayerHQ, AgencyOS og Forelder bruker fortsatt
+  Poppins gjennom Train-lock. **Ingen skjerm bytter font av denne beslutningen** — CLAUDE.md
+  invariant 2 står uendret. Dette overstyrer «ingen fjerde font»-formuleringen fra 25.08 kun for
+  merkelaget: Lora byttes mot Archivo Narrow, antallet er det samme.
+
+- **LOGOEN RYDDES, TEGNES IKKE OM (Anders 31.08.2026, i økt):** ligaturen og ballen i
+  `public/logos/` er uendret. Det som manglet var ikke kvalitet — filene er ekte vektor og
+  skalerer rent — men **familien**. Utført samme økt, avledet fra nøyaktig samme former:
+  - `ak-golf-merke-kvadrat.svg` — profilbilder, 78 % dekning, **skarpe hjørner** (plattformen
+    runder selv; innebygd radius ville blitt rundet to ganger).
+  - `ak-golf-favicon.svg` — 94 % dekning på krem flate. Valgt etter test av fire utkast på
+    16/20/32/48/180 px mot lys, mørk og hvit fanebakgrunn. **Utslagsgivende: mørk strek på lys
+    flate holder seg lesbar der lys-på-mørk tetter seg igjen.** Den lyse flaten gjør også at
+    ikonet virker på en mørk fane, der en gjennomsiktig versjon ville forsvunnet.
+  - `ak-golf-laas-{academy,junior-academy,hq,products,organisasjon}.svg` — logo + navn låst
+    sammen, teksten konvertert til former så filene ikke krever at Poppins er installert.
+  **Navnelåsen er presisert:** navnet står i **Poppins 400 i 40 % av logoens høyde**, ikke 500.
+  Vekten er lettere med vilje — settes navnet tyngre, leser man navnet før merket, og da er det
+  ikke lenger en lås. Organisasjonslåsen snur rekkefølgen: kunden først, «coaching ved [logo]»
+  under.
+  **Klaringssonen er gjort målbar:** halve logoens høyde på alle fire sider (var «høyden av
+  ballen», som ikke stemte med tegningen i merkeboka). Minstemål 24 px skjerm / 12 mm trykk.
+  **Gjenstår, men haster ikke:** PNG-eksporter for flater uten SVG-støtte, og Pantone/CMYK for
+  clay og blekk — som skal måles mot et fysisk prøvetrykk, aldri konverteres fra RGB.
+
+- **KARTLEGGINGSØKTA ER IKKE GRATIS — 90 MINUTTER TIL VANLIG TIMEPRIS (Anders 31.08.2026, i økt):**
+  førstegangsøkta bookes som en helt vanlig time. Anbefalt lengde er **90 minutter**, og prisen er
+  den ordinære timeprisen for den lengden hos den aktuelle coachen — ingen egen kartleggingspris,
+  ingen rabatt, ingen gratisøkt. **Ordet «gratis» skal ut av all publikumsvendt tekst om
+  kartleggingsøkt.**
+  **Prisen skal ikke hardkodes i markedstekst.** `ServiceType.priceOre` i basen er eneste
+  priskilde, og booking-flaten viser den. Markedssidene sier «90 minutter, til vanlig timepris»
+  og lenker til `/booking`. Verifisert i basen 31.08: eneste aktive 90-minutters enkelttime er
+  `anders-flex-90` (2 500 kr); Markus har ingen aktiv 90-minutters, så ett fast tall på forsiden
+  ville vært feil for halve staben.
+  **Utført i samme økt:** «gratis» fjernet fire steder i produksjon
+  (`src/components/marketing/v2/MarkedCasesV2.tsx` ×3, `MarkedKontaktV2.tsx` ×1), 90-minutters-
+  anbefalingen lagt inn i kartleggingsavsnittet på begge forsidevariantene
+  (`MarkedForside.tsx`, `MarkedForsideReise.tsx`), og `[DIN PRIS] kr`-plassholderen fjernet fra
+  landingsside-kanvasen (`designsystem/canvas/landingsside-akgolf/`).
+  **Konsekvens:** «pris på kartleggingsøkt» var én av to ting som sperret lansering av den nye
+  landingssiden. Den sperren er borte. Igjen står ett ekte spillersitat med samtykke.
+
+- **MERKEPLATTFORMEN LÅST — JUNIOR- OG SPILLERUTVIKLING ER MÅLET, MORAD NEVNES ALDRI OFFENTLIG (Anders 31.08.2026, i økt):**
+  fire svar som lukker STEG 18.1. Fullt grunnlag: `docs/merkevare/ak-golf-merkeplattform-2026-08-31.md`.
+
+  1. **Junior- og spillerutvikling er det sentrale målet.** Primærpublikum er junioren og
+     forelderen som betaler; den ambisiøse voksne følger etter med samme løfte. **Konsekvens
+     som må håndteres i 18.9:** forelderen er kjøperen, ikke spilleren — tyngdepunktet i
+     prisingen flyttes fra 299 kr/mnd på egen hånd til gruppeplass, semesterpris og
+     foreldreportal, og foreldreflaten blir en salgsflate, ikke bare innsyn.
+  2. **Løftet er godkjent:** «Du skal aldri lure på hva du skal trene på, eller hvorfor.»
+     Alt markedsmateriell måles mot denne setningen.
+  3. **MORAD og Mac O'Grady skal ALDRI nevnes i publikumsvendt tekst** — ikke på nettsidene,
+     ikke i markedsføring, ikke i coach-biografier, ikke i onboarding. Tre brudd i produksjon
+     ble rettet samme dag: `src/app/(marketing)/om-oss/page.tsx` (meta-beskrivelse),
+     `src/app/(marketing)/coacher/[slug]/page.tsx` (bio) og
+     `src/app/auth/onboarding/onboarding-wizard.tsx` (coach-meta). **P-posisjoner og MORAD som
+     internt fagspråk i produktet består** — det er metodikk, ikke merkevarebygging. Denne
+     regelen gjelder også Claude Design-kanvaser og alt nytt markedsmateriell.
+  4. **Mulligan Indoor Golf knyttes IKKE direkte til AK Golf-merket.** Ingen «en del av
+     AK Golf»-avsender. Anlegget beholder egen identitet og egne kunder; AK Golf **promoterer**
+     Mulligan — lenker dit, anbefaler det som treningssted — men merkene blandes ikke.
+
+  **Krever kodeendring:** kun de tre rettelsene i punkt 3, utført 31.08. Resten er føringer for
+  STEG 18.3–18.10.
+
+- **AK GOLF BLIR PARAPLYMERKE FOR HELE KONSERNET — MERKELAGET LIGGER OVER TRAIN-LOCK (Anders 31.08.2026, i økt):**
+  Tre valg tatt i samme økt, som ett svar på «videreutvikle konseptet AK Golf».
+
+  1. **Omfang: paraply over alt.** Ett AK Golf-merkevaresystem dekker hele konsernet —
+     AK Golf Academy, AK Golf Junior Academy, Mulligan Indoor Golf, Skarpnord Golf Products
+     og WANG-coachingen. Hver virksomhet er en **variant** under samme skjelett: egen
+     identitetsfarge og tone, felles logobruk, typografi, romskala og geometri. Ikke fem
+     merkevarer, og ikke ett uttrykk som viser bort forskjellene.
+  2. **Merkelaget ligger OVER Train-lock — produktskjermene røres ikke.** AK Golf-systemet
+     eier merket: logo, farge, typografi, tone, foto, marked og materiell. **Train-lock
+     består uendret som fasit for alle skjermer i PlayerHQ, AgencyOS og Forelder**
+     (CLAUDE.md invariant 2 gjelder som før). Ingen skjerm skal portes om av denne
+     beslutningen, og ingen `--tl-*`-verdi endres. Merkelaget er det som ligger utenpå og
+     rundt produktet, ikke inni det.
+  3. **Businessplanen bygges i tre trinn, i rekkefølge:** (a) prioritering av de fem
+     virksomhetene mot 500 000 USD-målet, (b) prising og pakketering, (c) formell plan for
+     ekstern leser. Trinn (a) er beslutningsunderlag for Anders selv, ikke et dokument til
+     andre.
+
+  **Masteren bor i Claude Design.** Anders oppretter selv designsystem-prosjektet som er
+  master for AK Golf; `designsystem/ak-golf/` i repoet er speilet koden leser — samme
+  arbeidsdeling som Claw/Team Norway (`designsystem/team-norway/`, 30.08).
+
+  **Tre systemer, én konfliktregel.** `AK Golf` (merket, alle flater) → `Train-lock`
+  (produktskjermene i PlayerHQ/AgencyOS/Forelder) → `Claw` (kun `/team-norway/*`).
+  Ved konflikt om en **produktskjerm** vinner Train-lock; om **merket** vinner AK Golf;
+  Team Norways egne skjermer er unntatt begge og følger Claw. **Ingen skjerm har to fasiter.**
+
+  **Konsekvens for beslutningskøen punkt 22 (WANG-flatens stil):** delvis løst. Muligheten
+  «WANG får eget merkevaresystem som Team Norway» er **ute** — WANG-coachingen er en variant
+  under AK Golf-paraplyen, ikke et eget merke. WANG-skjermene i produktet følger derfor
+  Train-lock som N7 opprinnelig sa. Gjenstår: om dagens `src/styles/wang-tokens.css` (10
+  skjermer i produksjon, enpalett lys) blir variantens identitetsfarge eller erstattes.
+
+  **Arbeidet:** `docs/MASTERPLAN-GJENSTAAENDE.md` STEG 18.
 - **ANALYSE OG DATAGOLF FOR TEAM NORWAY ER TRAIN-LOCK MED TN-SKINN, IKKE EGNE CLAW-SKJERMER
   (Anders 31.08.2026, i økt):** løser presist den uavklarte «arbeidsdelingen mot Train-lock» i
   `designsystem/team-norway/readme.md` (skrevet der som «en anbefaling som må bekreftes»), og

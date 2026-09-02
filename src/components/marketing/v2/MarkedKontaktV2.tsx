@@ -38,7 +38,7 @@ const KONTAKT_FAQ: { q: string; a: string }[] = [
   },
   {
     q: "Trenger jeg medlemskap for å booke?",
-    a: "Nei. Du kan booke enkelttimer eller en gratis kartleggings-økt uten medlemskap. Abonnement gir bedre pris per time.",
+    a: "Nei. Du kan booke enkelttimer eller en kartleggings-økt uten medlemskap — kartleggingen anbefales som 90 minutter, til vanlig timepris. Abonnement gir bedre pris per time.",
   },
   {
     q: "Hvor holder dere til?",

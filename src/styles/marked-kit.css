@@ -1,0 +1,841 @@
+/* ─────────────────────────────────────────────────────────────
+   Markedssidenes komponentlag — .pk-* (markedssider) og .pks-* (systemsider).
+
+   GJENOPPRETTET 01.09.2026. PR #680 slettet src/styles/paper-katalog.css,
+   paper-side.css og paper-system.css, men 21 komponenter i
+   src/components/marketing/v2/ og de fire systemsidene brukte dem fortsatt.
+   Resultatet var 21 markedssider uten noen styling i produksjon fra 30.08 til
+   01.09.2026 — se MASTERPLAN 0.13. Kvalitetsgaten fanget det ikke: den måler
+   typer og bygg, ikke utseende.
+
+   Innholdet er de tre slettede filene, ordrett, med tokennavnene byttet fra
+   --mkit-* til --mkit-*. Ingen verdi er endret.
+
+   ÉN endring mot det som var: systemsidene (.pks-*) hadde ingen egen
+   tokenblokk — de arvet fra en :root som ble slettet sammen med filene. De
+   deler nå skallblokken med .pk-page, så de ikke kan miste tokenene igjen.
+
+   Scopet, ikke globalt: tokenene bor på skallet og lekker ikke ut i appen —
+   samme mønster som wang-tokens.css og golfdata-tokens.css. Den faste lyse
+   paletten er et bevisst valg, ikke en forglemmelse: markedsflaten er lys, og
+   uten låsen arver den produkt-mørk fra rot-layouten.
+
+   Dette er ikke det gamle designsystemet som ble fjernet. Det er
+   markedssidenes eget komponentlag, som tilfeldigvis ble født i den mappa.
+   Nye markedsflater bør bruke --mk-* fra globals.css direkte.
+   ───────────────────────────────────────────────────────────── */
+
+.pk-page,
+.pks-side {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--mkit-bg);
+  color: var(--mkit-fg);
+  font-family: var(--mkit-ui);
+
+  /* Fast lys palett — fasiten: «Marketing er primært LYS — ingen tema-toggle»
+     (marketing-side.html §skall + marketing-katalog.html). Skjer med
+     scope-tokens, IKKE med tema-klassen — samme mønster som wang-tokens.css,
+     jf. gotchas §Tema. Rot-layoutens default for marketing er mørk, og uten
+     denne låsen arver hele marketing-flaten produkt-mørk.
+     Verdiene er de samme som --mk-* i globals.css. */
+  color-scheme: light;
+  --mkit-bg: #faf9f5;
+  --mkit-surface: #ffffff;
+  --mkit-soft: #f0eee6;
+  --mkit-soft-hover: #e8e6dc;
+  --mkit-surface-warm: #e3dacc;
+  --mkit-border: #e8e6dc;
+  --mkit-hairline: #d1cfc5;
+  --mkit-inverse: #000000;
+  --mkit-fg: #141413;
+  --mkit-ink-soft: #3d3d3a;
+  --mkit-muted: #5e5d59;
+  --mkit-mid: #b0aea5;
+  --mkit-text-tertiary: #87867f;
+  --mkit-cta: #141413;
+  --mkit-on-cta: #faf9f5;
+  --mkit-cta-hover: #3d3d3a;
+  --mkit-accent: #d97757;
+  --mkit-accent-soft: rgba(217, 119, 87, 0.12);
+  --mkit-accent-fg: #b85c3d;
+  --mkit-on-accent: #141413;
+  --mkit-up: #63784a;
+  --mkit-dn: #a85536;
+  --mkit-info: #46719f;
+  --mkit-shadow: 0 1px 0 rgba(20, 20, 19, 0.03), 0 18px 40px rgba(20, 20, 19, 0.05);
+  --mkit-focus: #d97757;
+  --mkit-logo-mark: #141413;
+  --mkit-logo-dot: #d97757;
+  --mkit-accent-deep: #c6613f;
+
+  /* Skrift. Lå i :root i det slettede tokensettet — flyttet hit 01.09.2026
+     sammen med resten, så skallet er selvforsynt og ikke kan miste dem igjen. */
+  --mkit-ui: var(--font-poppins), Arial, system-ui, sans-serif;
+  --mkit-disp: var(--mkit-ui);
+  --mkit-body: var(--font-lora), Georgia, "Times New Roman", serif;
+  --mkit-mono: var(--font-ibm-plex-mono), ui-monospace, monospace;
+
+  /* Typeskala */
+  --mkit-text-hero: 56px;
+  --mkit-text-section: 40px;
+  --mkit-text-prose-lg: 22px;
+  --mkit-text-prose: 18px;
+  --mkit-text-nav: 16px;
+  --mkit-text-eyebrow: 12px;
+
+  /* Rom */
+  --mkit-s1: 4px;
+  --mkit-s2: 8px;
+  --mkit-s3: 12px;
+  --mkit-s4: 16px;
+  --mkit-s5: 24px;
+  --mkit-s6: 32px;
+  --mkit-s7: 48px;
+  --mkit-s8: 64px;
+  --mkit-s9: 96px;
+
+  /* Form */
+  --mkit-r: 12px;
+  --mkit-r-md: 16px;
+  --mkit-r-pill: 999px;
+
+  /* Trykkflate og lagdeling */
+  --mkit-tap: 44px;
+  --mkit-tap-lg: 48px;
+  --mkit-z-sticky: 10;
+}
+
+/* ── Katalog: nav, footer, wrap, seksjon, hero, kort ── */
+
+/* ── Nav ── */
+.pk-nav {
+  position: sticky;
+  top: 0;
+  z-index: var(--mkit-z-sticky);
+  display: flex;
+  align-items: center;
+  gap: var(--mkit-s5);
+  padding: var(--mkit-s3) var(--mkit-s6);
+  background: var(--mkit-bg);
+  border-bottom: 1px solid var(--mkit-border);
+}
+.pk-nav-logo {
+  flex: none;
+  white-space: nowrap;
+  font-family: var(--mkit-disp);
+  font-size: 18px;
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--mkit-logo-mark);
+}
+.pk-nav-logo span { color: var(--mkit-logo-dot); }
+.pk-nav-links { display: flex; gap: var(--mkit-s5); margin-left: var(--mkit-s5); }
+.pk-nav-links a {
+  font-size: var(--mkit-text-nav);
+  text-decoration: none;
+  color: var(--mkit-muted);
+}
+.pk-nav-links a:hover { color: var(--mkit-fg); }
+.pk-nav-links a[aria-current="page"] { color: var(--mkit-fg); font-weight: 600; }
+.pk-nav-right { margin-left: auto; display: flex; align-items: center; gap: var(--mkit-s2); }
+
+/* ── Knapper ── */
+.pk-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--mkit-s2);
+  min-height: var(--mkit-tap-lg);
+  padding: 0 var(--mkit-s5);
+  font-size: 15px;
+  font-weight: 500;
+  background: transparent;
+  border: 1px solid var(--mkit-border);
+  border-radius: var(--mkit-r);
+  cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none;
+  color: inherit;
+}
+.pk-btn:hover { background: var(--mkit-soft); border-color: var(--mkit-mid); color: inherit; }
+.pk-btn.pk-btn-ink { background: var(--mkit-cta); color: var(--mkit-on-cta); border-color: var(--mkit-cta); }
+.pk-btn.pk-btn-ink:hover { background: var(--mkit-cta-hover); border-color: var(--mkit-cta-hover); color: var(--mkit-on-cta); }
+.pk-btn.pk-btn-clay { background: var(--mkit-accent); color: var(--mkit-on-accent); border-color: var(--mkit-accent); }
+.pk-btn.pk-btn-clay:hover { background: var(--mkit-accent-deep); border-color: var(--mkit-accent-deep); color: var(--mkit-on-accent); }
+.pk-btn.pk-btn-sm { min-height: var(--mkit-tap); padding: 0 var(--mkit-s4); font-size: 13.5px; }
+.pk-btn.pk-btn-full { width: 100%; }
+
+/* ── Layout ── */
+.pk-wrap { max-width: 1120px; margin: 0 auto; padding: 0 var(--mkit-s6); }
+.pk-sek { padding: var(--mkit-s9) 0; }
+.pk-sek.pk-sek-tett { padding: var(--mkit-s7) 0; }
+.pk-sek.pk-sek-notop { padding-top: 0; }
+
+.pk-eyebrow {
+  font-family: var(--mkit-mono);
+  font-size: var(--mkit-text-eyebrow);
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  /* Clay, ikke muted. AVVIK fra w5-base.css i Paper-speilet (som har
+     `color: var(--muted)`), bevisst valgt 20.08.2026: landingssidenes fasit er
+     `ak-golf-website`, der eyebrow er accent-fg. Forsiden, /mulligan, /playerhq
+     og /booking er bygget slik — uten denne linja ville de fire hatt clay
+     eyebrow og de nitten andre sidene grå, på samme nettsted. */
+  color: var(--mkit-accent-fg);
+}
+h1.pk-hero {
+  margin: 0 0 var(--mkit-s4);
+  font-family: var(--mkit-disp);
+  font-size: var(--mkit-text-hero);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  max-width: 18ch;
+  text-wrap: balance;
+}
+h2.pk-sekt {
+  margin: 0 0 var(--mkit-s4);
+  font-family: var(--mkit-disp);
+  font-size: var(--mkit-text-section);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  max-width: 22ch;
+  text-wrap: balance;
+}
+p.pk-ing {
+  margin: 0 0 var(--mkit-s5);
+  font-family: var(--mkit-body);
+  font-size: var(--mkit-text-prose-lg);
+  line-height: 1.6;
+  color: var(--mkit-muted);
+  max-width: 48ch;
+  text-wrap: pretty;
+}
+.pk-prosa { font-family: var(--mkit-body); font-size: var(--mkit-text-prose); line-height: 1.7; max-width: 62ch; }
+.pk-prosa p { margin: 0 0 var(--mkit-s5); text-wrap: pretty; }
+.pk-prosa h2 { font-family: var(--mkit-disp); font-size: 26px; font-weight: 600; margin: var(--mkit-s7) 0 var(--mkit-s3); }
+.pk-prosa ul { padding-left: var(--mkit-s5); margin: 0 0 var(--mkit-s5); }
+.pk-prosa li { margin-bottom: var(--mkit-s2); }
+
+/* ── Katalog-grid ── */
+.pk-kat { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--mkit-s5); }
+.pk-kat a.pk-kort { text-decoration: none; color: inherit; display: block; }
+.pk-kort {
+  background: var(--mkit-surface);
+  border: 1px solid var(--mkit-border);
+  border-radius: var(--mkit-r-md);
+  overflow: hidden;
+}
+.pk-kort.pk-kort-hover:hover { border-color: var(--mkit-mid); }
+.pk-kort.pk-kort-tint { background: var(--mkit-accent-soft); border-color: transparent; }
+.pk-kort.pk-kort-pad { padding: var(--mkit-s5); }
+.pk-kort-body { padding: var(--mkit-s5); }
+.pk-navn { display: block; margin-top: var(--mkit-s3); font-family: var(--mkit-disp); font-size: 19px; font-weight: 600; }
+.pk-meta { display: block; margin-top: var(--mkit-s1); font-family: var(--mkit-mono); font-size: 11.5px; color: var(--mkit-muted); letter-spacing: 0.04em; text-transform: uppercase; }
+.pk-kat p { margin: var(--mkit-s2) 0 0; font-family: var(--mkit-body); font-size: 15px; color: var(--mkit-muted); max-width: 40ch; }
+.pk-lesmer { display: inline-flex; align-items: center; gap: 6px; font-family: var(--mkit-ui); font-size: 13.5px; font-weight: 600; color: var(--mkit-accent-fg); margin-top: var(--mkit-s4); }
+
+.pk-bilde {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  background: repeating-linear-gradient(135deg, var(--mkit-soft) 0 10px, var(--mkit-soft-hover) 10px 20px);
+  display: grid;
+  place-items: center;
+  font-family: var(--mkit-mono);
+  font-size: 11px;
+  color: var(--mkit-muted);
+  text-align: center;
+  padding: var(--mkit-s4);
+}
+
+.pk-filterrad { display: flex; gap: var(--mkit-s2); flex-wrap: wrap; margin-bottom: var(--mkit-s5); }
+.pk-filterrad button,
+.pk-filterrad a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--mkit-tap);
+  padding: 0 var(--mkit-s4);
+  font-size: 14px;
+  font-family: var(--mkit-ui);
+  background: var(--mkit-surface);
+  border: 1px solid var(--mkit-border);
+  border-radius: var(--mkit-r-pill);
+  cursor: pointer;
+  color: var(--mkit-fg);
+  text-decoration: none;
+  gap: 6px;
+}
+.pk-filterrad button[aria-pressed="true"],
+.pk-filterrad a[aria-current="true"] { background: var(--mkit-fg); color: var(--mkit-bg); border-color: var(--mkit-fg); }
+
+/* ── Featured-kort (blogg) ── */
+.pk-featured { display: grid; grid-template-columns: 1.2fr 1fr; }
+@media (max-width: 900px) {
+  .pk-featured { grid-template-columns: 1fr; }
+}
+
+/* ── Detalj (bilde/prosa + sticky fakta) ── */
+.pk-detalj { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: var(--mkit-s7); align-items: start; }
+.pk-fakta { padding: var(--mkit-s5); background: var(--mkit-soft); border-radius: var(--mkit-r-md); position: sticky; top: 88px; }
+.pk-fakta .pk-linje { border-bottom-color: var(--mkit-hairline); }
+@media (max-width: 900px) {
+  .pk-detalj { grid-template-columns: 1fr; }
+  .pk-fakta { position: static; }
+}
+
+.pk-linje {
+  display: flex;
+  align-items: baseline;
+  gap: var(--mkit-s3);
+  padding: var(--mkit-s2) 0;
+  border-bottom: 1px solid var(--mkit-hairline);
+  font-family: var(--mkit-ui);
+  font-size: 13.5px;
+}
+.pk-linje:last-child { border-bottom: 0; }
+.pk-linje .pk-v { margin-left: auto; font-family: var(--mkit-mono); font-variant-numeric: tabular-nums; text-align: right; }
+
+/* ── Tom-tilstand ── */
+.pk-tom {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--mkit-s3);
+  padding: var(--mkit-s6) var(--mkit-s5);
+  background: var(--mkit-soft);
+  border: 1px dashed var(--mkit-border);
+  border-radius: var(--mkit-r);
+}
+.pk-tom h3 { margin: 0; font-family: var(--mkit-disp); font-size: 16px; font-weight: 600; }
+.pk-tom p { margin: 0; max-width: 48ch; font-family: var(--mkit-body); font-size: 14px; color: var(--mkit-muted); }
+
+/* ── KPI-strip (turneringer) ── */
+.pk-kpirad { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: var(--mkit-s2); }
+.pk-kpi { padding: var(--mkit-s4); background: var(--mkit-surface); border: 1px solid var(--mkit-border); border-radius: var(--mkit-r); }
+.pk-kpi .pk-k { display: block; font-family: var(--mkit-mono); font-size: 9.5px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--mkit-muted); }
+.pk-kpi .pk-v { display: block; font-family: var(--mkit-mono); font-size: 26px; font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1.25; margin-top: var(--mkit-s2); }
+.pk-kpi .pk-w { display: block; font-family: var(--mkit-mono); font-size: 10.5px; color: var(--mkit-muted); margin-top: 2px; }
+
+.pk-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px var(--mkit-s2);
+  border-radius: var(--mkit-r-pill);
+  font-family: var(--mkit-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--mkit-soft);
+  color: var(--mkit-muted);
+  border: 1px solid var(--mkit-border);
+}
+.pk-tag.pk-tag-accent { color: var(--mkit-accent-fg); background: var(--mkit-accent-soft); border-color: transparent; }
+
+/* ── Leaderboard-tabell (turneringer) ── */
+.pk-tabell { width: 100%; border-collapse: collapse; font-family: var(--mkit-mono); font-size: 12.5px; }
+.pk-tabell th { padding: 10px 16px 10px 0; text-align: left; font-weight: 500; font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mkit-muted); border-bottom: 2px solid var(--mkit-hairline); }
+.pk-tabell th.pk-th-right { text-align: right; padding: 10px 0; }
+.pk-tabell td { padding: 12px 16px 12px 0; border-bottom: 1px solid var(--mkit-hairline); }
+.pk-tabell td.pk-td-right { text-align: right; padding: 12px 0; }
+.pk-tabell tr.pk-tr-no { background: var(--mkit-accent-soft); }
+
+/* ── Footer ── */
+.pk-footer { padding: var(--mkit-s7) 0; border-top: 1px solid var(--mkit-border); font-size: 13.5px; color: var(--mkit-muted); }
+.pk-footer .pk-lenker { display: flex; flex-wrap: wrap; gap: var(--mkit-s4); margin-bottom: var(--mkit-s4); }
+.pk-footer a { color: var(--mkit-muted); text-decoration: none; }
+.pk-footer a:hover { color: var(--mkit-fg); }
+
+@media (max-width: 800px) {
+  .pk-nav { padding: var(--mkit-s3) var(--mkit-s4); gap: var(--mkit-s3); }
+  .pk-nav-links { display: none; }
+  .pk-wrap { padding: 0 var(--mkit-s4); }
+  .pk-sek { padding: var(--mkit-s7) 0; }
+  h1.pk-hero { font-size: 36px; }
+  h2.pk-sekt { font-size: 28px; }
+  p.pk-ing { font-size: 18px; }
+}
+
+/* Skallet (header/footer) flyttet til src/app/(marketing)/layout.tsx 20.08.2026.
+   .pk-page er da et innholdslag inne i skallet — full viewport-høyde her ville
+   dyttet footeren under folden på hver eneste side. */
+.pk-page.pk-innhold {
+  min-height: 0;
+}
+
+/* ── Side: tillegg til katalogen ── */
+
+/* ── Smal tekstkolonne (prosa/juridisk + sentrerte avslutninger) ── */
+.pk-wrap.pk-wrap-smal { max-width: 720px; }
+
+/* ── Prosa-tittel (fasit: `h1.hero` med seksjonsstørrelse, 24ch) ── */
+h1.pk-hero.pk-hero-prosa { font-size: var(--mkit-text-section); max-width: 24ch; }
+@media (max-width: 800px) {
+  h1.pk-hero.pk-hero-prosa { font-size: 30px; }
+}
+
+/* ── Notis i prosa (utkast-/varselnotat) ── */
+p.pk-notis {
+  margin: 0;
+  font-family: var(--mkit-body);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--mkit-muted);
+}
+p.pk-notis strong { color: var(--mkit-fg); }
+
+/* ── Inverse bånd (fasit `.band`) ── */
+.pk-band { background: var(--mkit-inverse); color: var(--mkit-bg); }
+.pk-band a { color: var(--mkit-bg); }
+.pk-band .pk-eyebrow { color: var(--mkit-mid); }
+.pk-band .pk-bevis .pk-u { color: var(--mkit-mid); }
+
+/* ── Bevis-tall (fasit `.bevis`) ── */
+.pk-bevis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--mkit-s5);
+}
+.pk-bevis .pk-t {
+  display: block;
+  font-family: var(--mkit-mono);
+  font-size: 34px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.pk-bevis .pk-u {
+  display: block;
+  font-family: var(--mkit-body);
+  font-size: 15px;
+  color: var(--mkit-muted);
+}
+.pk-bevis.pk-bevis-topp { margin-top: var(--mkit-s5); }
+.pk-bevis .pk-t.pk-t-tekst {
+  font-family: var(--mkit-disp);
+  font-size: 19px;
+  letter-spacing: -0.01em;
+}
+
+/* ── Kort-rutenett (fasit `.rutenett` + `.mkort`) ── */
+.pk-rutenett {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--mkit-s4);
+}
+.pk-mkort {
+  display: block;
+  padding: var(--mkit-s5);
+  background: var(--mkit-surface);
+  border: 1px solid var(--mkit-border);
+  border-radius: var(--mkit-r-md);
+  text-decoration: none;
+  color: inherit;
+}
+a.pk-mkort:hover { border-color: var(--mkit-mid); color: inherit; }
+.pk-mkort .pk-eyebrow { display: block; margin-bottom: var(--mkit-s2); }
+.pk-mkort .pk-und {
+  margin: 0;
+  font-family: var(--mkit-disp);
+  font-size: 19px;
+  font-weight: 600;
+}
+.pk-mkort p {
+  margin: var(--mkit-s2) 0 0;
+  font-family: var(--mkit-body);
+  font-size: 15px;
+  color: var(--mkit-muted);
+}
+
+/* ── Prispakker (fasit `.prisrad` / `.pris`) ── */
+.pk-prisrad {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--mkit-s4);
+}
+.pk-pris {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mkit-s3);
+  padding: var(--mkit-s5);
+  background: var(--mkit-surface);
+  border: 1px solid var(--mkit-border);
+  border-radius: var(--mkit-r-md);
+}
+.pk-pris.pk-pris-valgt {
+  border-color: var(--mkit-fg);
+  box-shadow: var(--mkit-shadow);
+}
+.pk-pris .pk-tall {
+  font-family: var(--mkit-mono);
+  font-size: 34px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.pk-pris .pk-tall small { font-size: 13px; font-weight: 400; color: var(--mkit-muted); }
+.pk-pris ul {
+  margin: 0;
+  padding-left: var(--mkit-s5);
+  font-family: var(--mkit-body);
+  font-size: 15px;
+  color: var(--mkit-muted);
+}
+.pk-pris li { margin-bottom: var(--mkit-s2); }
+.pk-pris .pk-btn { margin-top: auto; }
+.pk-pris .pk-pris-lede {
+  margin: 0;
+  font-family: var(--mkit-body);
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--mkit-muted);
+}
+
+/* Fotnote i priskortet: de tre veiene til full app gratis, under hovedlista.
+   Nedtonet, fordi hovedbudskapet er det permanent gratise over. */
+.pk-pris .pk-pris-fot {
+  margin: var(--mkit-s3) 0 0;
+  font-family: var(--mkit-body);
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--mkit-muted);
+}
+
+/* Sluttnote under en seksjon (fasit: `.ing` i 15px med toppluft) */
+p.pk-ing.pk-ing-fot { font-size: 15px; margin-top: var(--mkit-s5); max-width: 62ch; }
+
+/* ── Sitat (fasit `.sitat`) ── */
+.pk-sitat {
+  margin: 0;
+  font-family: var(--mkit-body);
+  font-size: var(--mkit-text-prose-lg);
+  line-height: 1.55;
+  max-width: 34ch;
+}
+
+/* ── Foto i Paper-ramme (fasitens `.bilde` med ekte bilde) ── */
+.pk-foto {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  border: 1px solid var(--mkit-border);
+  border-radius: var(--mkit-r-md);
+  background: var(--mkit-soft);
+}
+.pk-foto.pk-foto-bred { aspect-ratio: 16 / 7; }
+.pk-foto img { object-fit: cover; }
+@media (max-width: 800px) {
+  .pk-foto.pk-foto-bred { aspect-ratio: 4 / 3; }
+}
+
+/* ── Faktalinjer (org.nr, adresse …) ── */
+.pk-fakta-liste {
+  margin-top: var(--mkit-s4);
+  border-top: 1px solid var(--mkit-border);
+}
+.pk-fakta-liste .pk-linje {
+  padding: var(--mkit-s3) 0;
+  font-size: 14.5px;
+}
+.pk-fakta-liste .pk-linje:last-child { border-bottom: 1px solid var(--mkit-hairline); }
+
+/* Inne i et kort er verdiene setninger, ikke tall — stables under etiketten
+   i stedet for å høyrestilles (høyrestilt løpende tekst er uleselig). */
+.pk-mkort .pk-fakta-liste .pk-linje {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+.pk-mkort .pk-fakta-liste .pk-linje > span:first-child {
+  font-family: var(--mkit-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--mkit-muted);
+}
+.pk-mkort .pk-fakta-liste .pk-v {
+  margin-left: 0;
+  text-align: left;
+  font-family: var(--mkit-ui);
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
+/* ── Sitatrad (tall til venstre, sitat til høyre) ── */
+.pk-sitatrad {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: var(--mkit-s7);
+  align-items: start;
+  padding: var(--mkit-s6) 0;
+  border-top: 1px solid var(--mkit-border);
+}
+.pk-sitatrad .pk-t {
+  display: block;
+  margin-top: var(--mkit-s2);
+  font-family: var(--mkit-mono);
+  font-size: 30px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.pk-sitatrad .pk-u {
+  display: block;
+  margin-top: var(--mkit-s1);
+  font-family: var(--mkit-body);
+  font-size: 15px;
+  color: var(--mkit-muted);
+}
+.pk-sitatrad .pk-sitat { max-width: 46ch; }
+@media (max-width: 900px) {
+  .pk-sitatrad { grid-template-columns: 1fr; gap: var(--mkit-s4); }
+}
+
+/* ── Todelt seksjon (bilde + sitat/tekst) ── */
+.pk-todelt {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--mkit-s7);
+  align-items: center;
+}
+.pk-todelt.pk-todelt-skjema { grid-template-columns: 3fr 2fr; align-items: start; }
+@media (max-width: 900px) {
+  .pk-todelt,
+  .pk-todelt.pk-todelt-skjema { grid-template-columns: 1fr; }
+}
+
+/* ── Spørsmål og svar (fasit `.qa`) ── */
+.pk-qa { border-bottom: 1px solid var(--mkit-border); }
+.pk-qa summary {
+  display: flex;
+  align-items: center;
+  min-height: 56px;
+  cursor: pointer;
+  list-style: none;
+  font-size: 17px;
+  font-weight: 500;
+}
+.pk-qa summary::-webkit-details-marker { display: none; }
+.pk-qa summary::after {
+  content: "+";
+  margin-left: auto;
+  font-family: var(--mkit-mono);
+  color: var(--mkit-muted);
+}
+.pk-qa[open] summary::after { content: "−"; }
+.pk-qa p {
+  margin: 0 0 var(--mkit-s5);
+  font-family: var(--mkit-body);
+  font-size: 16px;
+  color: var(--mkit-muted);
+  max-width: 62ch;
+}
+
+.pk-qa-gruppe { margin-top: var(--mkit-s7); }
+h2.pk-sekt.pk-sekt-liten { font-size: 26px; margin-bottom: var(--mkit-s2); }
+
+/* ── Skjemafelt (fasit: felles/w5-base.css `.felt`, brukt av auth og kontakt) ── */
+.pk-felt { display: block; margin-bottom: var(--mkit-s4); }
+.pk-felt > span {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: var(--mkit-s1);
+}
+.pk-felt input,
+.pk-felt select,
+.pk-felt textarea {
+  width: 100%;
+  min-height: var(--mkit-tap-lg);
+  padding: 0 var(--mkit-s4);
+  background: var(--mkit-surface);
+  color: var(--mkit-fg);
+  border: 1px solid var(--mkit-border);
+  border-radius: var(--mkit-r);
+  font: inherit;
+}
+.pk-felt textarea {
+  padding: var(--mkit-s3) var(--mkit-s4);
+  min-height: 104px;
+  resize: vertical;
+  font-family: var(--mkit-body);
+}
+.pk-felt .pk-hjelp {
+  display: block;
+  margin-top: var(--mkit-s1);
+  font-size: 12.5px;
+  color: var(--mkit-muted);
+}
+.pk-felt.pk-felt-feil input,
+.pk-felt.pk-felt-feil select,
+.pk-felt.pk-felt-feil textarea { border-color: var(--mkit-dn); }
+
+.pk-feltpar { display: grid; grid-template-columns: 1fr 1fr; gap: var(--mkit-s4); }
+@media (max-width: 600px) {
+  .pk-feltpar { grid-template-columns: 1fr; gap: 0; }
+}
+
+/* Kvittering og feil står i skjemaet, aldri bare i en toast (fasitkrav). */
+.pk-kvittering,
+.pk-feilmelding {
+  margin: 0 0 var(--mkit-s4);
+  padding: var(--mkit-s3) var(--mkit-s4);
+  border-radius: var(--mkit-r);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+.pk-kvittering { background: var(--mkit-soft); border: 1px solid var(--mkit-border); }
+.pk-feilmelding { background: var(--mkit-soft); border: 1px solid var(--mkit-dn); color: var(--mkit-dn); }
+
+/* ── Knapperad under hero ── */
+.pk-knapperad { display: flex; gap: var(--mkit-s3); flex-wrap: wrap; }
+.pk-knapperad.pk-knapperad-midt { justify-content: center; }
+.pk-knapp-topp { margin-top: var(--mkit-s4); }
+.pk-mkort.pk-mkort-foto { padding: 0; overflow: hidden; }
+.pk-mkort.pk-mkort-foto > *:not(.pk-foto) { margin-left: var(--mkit-s5); margin-right: var(--mkit-s5); }
+.pk-mkort.pk-mkort-foto .pk-foto { border: 0; border-radius: 0; }
+.pk-mkort.pk-mkort-foto .pk-eyebrow { margin-top: var(--mkit-s4); }
+.pk-mkort.pk-mkort-foto .pk-fakta-liste { margin-bottom: var(--mkit-s5); }
+.pk-kort-tint .pk-und { margin: var(--mkit-s2) 0 var(--mkit-s3); font-family: var(--mkit-disp); font-size: 19px; font-weight: 600; }
+
+/* ── Sentrert avslutning ── */
+.pk-midtstilt { text-align: center; }
+.pk-midtstilt h2.pk-sekt { max-width: none; margin-inline: auto; }
+.pk-midtstilt p.pk-ing { margin-inline: auto; }
+
+@media (max-width: 800px) {
+  .pk-bevis .pk-t,
+  .pk-pris .pk-tall { font-size: 30px; }
+}
+
+/* ── Systemtilstander: offline, 404, 500, vedlikehold ── */
+
+.pks-side {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--mkit-bg);
+  color: var(--mkit-fg);
+  font-family: var(--mkit-ui);
+}
+.pks-kolonne {
+  width: 100%;
+  max-width: 430px;
+  margin: 0 auto;
+  /* --ak-cookie-h: cookie-banneret er `position: fixed; bottom: 0` og ~284px høyt
+     på 390px. Uten denne forskyvningen ligger systemsidenes CTA-er (Ring …,
+     Prøv igjen, Til hjem) bak banneret og kan ikke trykkes — samme feil som
+     gotchas.md §«Cookie-banneret lå oppå sticky bunn-chrome på mobil».
+     Variabelen nullstilles av banneret selv når samtykke er gitt. */
+  padding: var(--mkit-s5) var(--mkit-s4)
+    calc(var(--mkit-s8) + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px));
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.pks-merke {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--mkit-s2);
+  padding: 0 0 var(--mkit-s5);
+  font-family: var(--mkit-disp);
+  font-size: 20px;
+  font-weight: 700;
+}
+.pks-merke span { color: var(--mkit-logo-dot); }
+
+.pks-figur {
+  width: 64px;
+  height: 64px;
+  margin-bottom: var(--mkit-s5);
+  border-radius: var(--mkit-r-md);
+  border: 1px solid var(--mkit-border);
+  background: var(--mkit-soft);
+  display: grid;
+  place-items: center;
+}
+.pks-figur svg {
+  width: 28px;
+  height: 28px;
+  fill: none;
+  stroke: var(--mkit-muted);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+h1.pks-tittel {
+  margin: 0 0 var(--mkit-s3);
+  font-family: var(--mkit-disp);
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+p.pks-tekst {
+  margin: 0 0 var(--mkit-s5);
+  font-family: var(--mkit-body);
+  font-size: 15.5px;
+  color: var(--mkit-muted);
+  max-width: 46ch;
+  text-wrap: pretty;
+}
+.pks-virker {
+  padding: var(--mkit-s4);
+  background: var(--mkit-soft);
+  border-radius: var(--mkit-r);
+  margin-bottom: var(--mkit-s5);
+}
+.pks-virker .pks-flab {
+  display: block;
+  font-family: var(--mkit-mono);
+  font-size: 10px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--mkit-muted);
+  margin-bottom: var(--mkit-s2);
+}
+.pks-linje {
+  display: flex;
+  align-items: baseline;
+  gap: var(--mkit-s3);
+  padding: var(--mkit-s2) 0;
+  border-bottom: 1px solid var(--mkit-hairline);
+  font-size: 13.5px;
+}
+.pks-linje:last-child { border-bottom: 0; }
+.pks-linje .pks-v { margin-left: auto; font-family: var(--mkit-mono); font-variant-numeric: tabular-nums; }
+
+.pks-knapper { display: flex; gap: var(--mkit-s2); flex-wrap: wrap; }
+.pks-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--mkit-s2);
+  min-height: var(--mkit-tap-lg);
+  padding: 0 var(--mkit-s5);
+  font-size: 15px;
+  font-weight: 500;
+  font-family: var(--mkit-ui);
+  background: transparent;
+  border: 1px solid var(--mkit-border);
+  border-radius: var(--mkit-r);
+  cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none;
+  color: inherit;
+}
+.pks-btn:hover { background: var(--mkit-soft); border-color: var(--mkit-mid); color: inherit; }
+.pks-btn.pks-btn-ink { background: var(--mkit-cta); color: var(--mkit-on-cta); border-color: var(--mkit-cta); }
+.pks-btn.pks-btn-ink:hover { background: var(--mkit-cta-hover); border-color: var(--mkit-cta-hover); color: var(--mkit-on-cta); }
+
+.pks-kode {
+  margin-top: var(--mkit-s5);
+  font-family: var(--mkit-mono);
+  font-size: 11px;
+  color: var(--mkit-muted);
+}

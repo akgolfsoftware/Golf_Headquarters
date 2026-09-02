@@ -1,5 +1,7 @@
+import "@/styles/marked-kit.css";
+
 /**
- * PkShell — delt Paper marketing-skall. To nav-varianter, samme skall:
+ * PkShell — delt marketing-skall. To nav-varianter, samme skall:
  *  - `katalog` (default): coacher, anlegg, blogg, cases, turneringer.
  *    Fasit: designsystem/paper/fase2/marketing/marketing-katalog.html.
  *  - `side`: forside, coaching, playerhq, junior, priser, om-oss,
