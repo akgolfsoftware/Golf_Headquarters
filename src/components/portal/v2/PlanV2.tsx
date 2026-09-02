@@ -57,13 +57,20 @@ function erHvile(okt: TodaySession): boolean {
   return okt.title.trim().toLowerCase() === "hvile";
 }
 
+/** PH-07: hoppet over — nedtonet rad, ikke åpnbar. */
+function erSkippet(okt: TodaySession): boolean {
+  return okt.status === "SKIPPED";
+}
+
 function erApnbar(okt: TodaySession): boolean {
-  return !erHvile(okt) && okt.status !== "COMPLETED" && okt.status !== "CANCELLED";
+  return !erHvile(okt) && !erSkippet(okt) && okt.status !== "COMPLETED" && okt.status !== "CANCELLED";
 }
 
 /** PH-07: økt-rad — tid · hairline-skille · tittel/meta · chevron. */
 function OktRad({ okt }: { okt: TodaySession }) {
   const hvile = erHvile(okt);
+  const skippet = erSkippet(okt);
+  const dempet = hvile || skippet;
   const rad = (
     <div
       style={{
@@ -74,6 +81,7 @@ function OktRad({ okt }: { okt: TodaySession }) {
         display: "flex",
         alignItems: "center",
         gap: 16,
+        opacity: skippet ? 0.5 : 1,
       }}
     >
       <div
@@ -83,24 +91,26 @@ function OktRad({ okt }: { okt: TodaySession }) {
           fontVariantNumeric: "tabular-nums",
           width: 48,
           flexShrink: 0,
-          color: hvile ? TL.mute : TL.text,
+          color: dempet ? TL.mute : TL.text,
         }}
       >
-        {hvile ? "—" : klokkePunkt(okt.startTime)}
+        {dempet ? "—" : klokkePunkt(okt.startTime)}
       </div>
       <div style={{ width: 1, alignSelf: "stretch", background: TL.hair }} />
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 15, fontWeight: 600, color: TL.text }}>{okt.title}</div>
+        <div style={{ fontSize: 15, fontWeight: 600, color: skippet ? TL.mute : TL.text }}>{okt.title}</div>
         <div style={{ marginTop: 2, fontSize: 13, fontWeight: 400, color: TL.mute }}>
           {hvile
             ? "Programmert av Anders"
-            : [okt.sted, varighet(okt.durationMin)].filter(Boolean).join(" · ")}
+            : skippet
+              ? "Ikke i dag"
+              : [okt.sted, varighet(okt.durationMin)].filter(Boolean).join(" · ")}
         </div>
       </div>
-      {!hvile && <ChevronRight size={16} strokeWidth={2} style={{ color: TL.mute, flex: "none" }} />}
+      {!dempet && <ChevronRight size={16} strokeWidth={2} style={{ color: TL.mute, flex: "none" }} />}
     </div>
   );
-  if (hvile) return rad;
+  if (dempet) return rad;
   return (
     <Link href={okt.href} className="v2-press" style={{ display: "block", textDecoration: "none", color: "inherit" }}>
       {rad}
