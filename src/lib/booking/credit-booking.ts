@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { sjekkKollisjon, erKollisjonsfeil } from "@/lib/booking/kollisjonsvern";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { hentBarnHvisTilhoerer } from "@/lib/forelder";
 import { kanBrukeCredits } from "@/lib/booking/credits-tilgang";
 import { isSlotStillAvailable } from "@/lib/booking/availability";
 import { audit } from "@/lib/audit";
@@ -17,6 +18,8 @@ export type CreditBookingInput = {
   coachId: string;
   start: string; // ISO datetime
   notes?: string;
+  /** STEG 9.8: forelder booker for barnet — barnets id, verifisert på nytt her (aldri stolt på fra klienten). */
+  barnId?: string;
 };
 
 export type CreditBookingResult = {
@@ -41,8 +44,18 @@ export async function createCreditBooking(
 ): Promise<CreditBookingResult> {
   const user = await requirePortalUser();
 
+  // STEG 9.8: eierId er PERSONEN bookingen gjelder for — barnet ved
+  // forelder-booking, ellers den innloggede selv. Koblingen verifiseres her,
+  // uavhengig av hva klienten allerede har sjekket.
+  let eierId = user.id;
+  if (input.barnId) {
+    const barn = await hentBarnHvisTilhoerer(user.id, input.barnId);
+    if (!barn) throw new Error("Barnet er ikke koblet til kontoen din.");
+    eierId = barn.id;
+  }
+
   const subscription = await prisma.subscription.findUnique({
-    where: { userId_kind: { userId: user.id, kind: "COACHING" } },
+    where: { userId_kind: { userId: eierId, kind: "COACHING" } },
   });
 
   if (!subscription) {
@@ -128,7 +141,7 @@ export async function createCreditBooking(
       const booking = await tx.booking.create({
         data: {
           plassNr: vern.plassNr,
-          userId: user.id,
+          userId: eierId,
           serviceTypeId: service.id,
           coachId: service.coachUserId,
           locationId: lokasjon.id,
@@ -163,6 +176,7 @@ export async function createCreditBooking(
       serviceSlug: service.slug,
       coachId: input.coachId,
       startAt: startAt.toISOString(),
+      ...(input.barnId ? { paaVegneAv: eierId } : {}),
     },
   });
 
@@ -198,7 +212,7 @@ export async function createCreditBooking(
     timeStyle: "short",
   });
   await notify({
-    userId: user.id,
+    userId: eierId,
     type: "booking",
     title: `Booking bekreftet — ${service.name}`,
     body: `${tidStr}. Trukket fra månedlig saldo (${subscription.creditsRemaining - 1} igjen).`,
@@ -211,6 +225,7 @@ export async function createCreditBooking(
 
   revalidatePath("/portal/meg/bookinger");
   revalidatePath("/portal");
+  if (input.barnId) revalidatePath("/forelder/bookinger");
 
   return { bookingId: result.id };
 }

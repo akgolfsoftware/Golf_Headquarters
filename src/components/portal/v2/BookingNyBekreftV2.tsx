@@ -23,6 +23,14 @@ import { PolicyBanner } from "@/components/booking/PolicyBanner";
 export type BekreftRad = { label: string; verdi: string };
 
 export type BookingNyBekreftV2Data = {
+  /** Barnet bookingen gjelder for (STEG 9.8, forelder booker for barnet) — sendes
+   *  videre til createCreditBooking/opprettBookingMedKort som verifiserer
+   *  forelder→barn-koblingen på nytt server-side. Undefined = spilleren booker for seg selv. */
+  barnId?: string;
+  /** Base-rute til kvitteringssiden etter fullført booking. Default («/portal/booking/bekreftet») bevarer dagens oppførsel. */
+  bekreftetBase?: string;
+  /** Caps-etikett øverst — «PlayerHQ» (spiller) eller «Foreldreportal» (STEG 9.8). */
+  merkelapp?: string;
   /** «credits» = trekk fra forhåndsbetalte timer. «betaling» = kort via Stripe Checkout. */
   modus: "credits" | "betaling";
   /** Pris i øre — vises kun i betaling-modus. */
@@ -50,7 +58,7 @@ function FeilBoks({ children }: { children: React.ReactNode }) {
 }
 
 export function BookingNyBekreftV2({ data }: { data: BookingNyBekreftV2Data }) {
-  const { modus, prisOre, serviceTypeId, coachId, startIso, backHref, ledig, rader, creditsRemaining, saldoEtter } = data;
+  const { barnId, bekreftetBase = "/portal/booking/bekreftet", merkelapp = "PlayerHQ", modus, prisOre, serviceTypeId, coachId, startIso, backHref, ledig, rader, creditsRemaining, saldoEtter } = data;
   const erBetaling = modus === "betaling";
   const router = useRouter();
   const [notes, setNotes] = useState("");
@@ -71,6 +79,8 @@ export function BookingNyBekreftV2({ data }: { data: BookingNyBekreftV2Data }) {
             coachId,
             startIso,
             notes: notes.trim() || undefined,
+            barnId,
+            retururlBase: barnId ? "/forelder/bookinger" : undefined,
           });
           if (!res.ok) {
             setError(res.grunn);
@@ -84,8 +94,9 @@ export function BookingNyBekreftV2({ data }: { data: BookingNyBekreftV2Data }) {
           coachId,
           start: startIso,
           notes: notes.trim() || undefined,
+          barnId,
         });
-        router.push(`/portal/booking/bekreftet?bookingId=${result.bookingId}`);
+        router.push(`${bekreftetBase}?bookingId=${result.bookingId}`);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Noe gikk galt.");
       }
@@ -96,7 +107,7 @@ export function BookingNyBekreftV2({ data }: { data: BookingNyBekreftV2Data }) {
     <div data-paper-portal-booking-ny-bekreft style={{ width: "100%", maxWidth: 560, margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
       {/* Hode */}
       <div>
-        <Caps>PlayerHQ · Book ny time</Caps>
+        <Caps>{merkelapp} · Book ny time</Caps>
         <div style={{ marginTop: 10 }}>
           <Tittel em="booking.">Bekreft</Tittel>
         </div>

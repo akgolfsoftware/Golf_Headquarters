@@ -15,6 +15,7 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { hentBarnHvisTilhoerer } from "@/lib/forelder";
 import { beregnSlotVindu, type SlotVindu } from "@/lib/portal-booking/slot-vindu";
 import { createCreditBooking } from "@/lib/booking/credit-booking";
 import { kanBrukeCredits } from "@/lib/booking/credits-tilgang";
@@ -117,6 +118,10 @@ export type KortBetalingInput = {
   /** Eksakt starttidspunkt fra availability-engine (slot.start.toISOString()). */
   startIso: string;
   notes?: string;
+  /** STEG 9.8: forelder booker for barnet — barnets id, verifisert på nytt her. */
+  barnId?: string;
+  /** Hvor Stripe sender brukeren tilbake etter betaling — default «/portal/booking». */
+  retururlBase?: string;
 };
 
 /**
@@ -129,7 +134,16 @@ export type KortBetalingInput = {
 export async function opprettBookingMedKort(
   input: KortBetalingInput,
 ): Promise<KortBetalingResult> {
-  const user = await requirePortalUser({ kreverTilgang: "TALENT", allow: ["PLAYER", "COACH", "ADMIN"] });
+  const user = await requirePortalUser({ kreverTilgang: "TALENT", allow: ["PLAYER", "COACH", "ADMIN", "PARENT"] });
+
+  // STEG 9.8: eierId er PERSONEN bookingen gjelder for — barnet ved
+  // forelder-booking, ellers den innloggede selv. Koblingen verifiseres her.
+  let eierId = user.id;
+  if (input.barnId) {
+    const barn = await hentBarnHvisTilhoerer(user.id, input.barnId);
+    if (!barn) return { ok: false, grunn: "Barnet er ikke koblet til kontoen din." };
+    eierId = barn.id;
+  }
 
   const startAt = new Date(input.startIso);
   if (Number.isNaN(startAt.getTime())) return { ok: false, grunn: "Ugyldig tidspunkt." };
@@ -181,7 +195,7 @@ export async function opprettBookingMedKort(
       return tx.booking.create({
         data: {
           plassNr: vern.plassNr,
-          userId: user.id,
+          userId: eierId,
           serviceTypeId: service.id,
           locationId: lokasjon.id,
           coachId,
@@ -216,9 +230,9 @@ export async function opprettBookingMedKort(
         quantity: 1,
       },
     ],
-    metadata: { bookingId: booking.id, kilde: "portal" },
-    success_url: `${appUrl}/portal/booking?betalt=1`,
-    cancel_url: `${appUrl}/portal/booking?avbrutt=1`,
+    metadata: { bookingId: booking.id, kilde: "portal", ...(input.barnId ? { paaVegneAv: eierId } : {}) },
+    success_url: `${appUrl}${input.retururlBase ?? "/portal/booking"}?betalt=1`,
+    cancel_url: `${appUrl}${input.retururlBase ?? "/portal/booking"}?avbrutt=1`,
     expires_at: Math.floor(Date.now() / 1000) + 30 * 60,
   });
   await prisma.booking.update({
