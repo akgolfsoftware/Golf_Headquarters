@@ -137,8 +137,8 @@ export function OppgraderFlytWizard() {
                 fontSize: 10,
                 fontWeight: 700,
                 letterSpacing: "0.04em",
-                color: TL.fill,
-                background: TL.fill,
+                color: TL.onFill,
+                background: "color-mix(in srgb, var(--tl-on-fill) 16%, transparent)",
                 borderRadius: 9999,
                 padding: "4px 9px",
               }}

@@ -114,3 +114,19 @@ For nye skjermer utover disse ni, oppskriften er:
    flater ut (ikke gjett — søk, som PH-01s kalibrering over).
 5. Legg inn i `skjerm-mapping.ts` med `status: "kalibrert"` og målt
    restavvik + notat om hva som gjenstår.
+
+## ME-03 Abonnement (Ø3, 02.09.2026) — tiende skjerm, ukalibrert
+
+Samme klasse funn som P-05/AO-01: fasiten («AK Academy · Elite», egen
+kr/måned-pris på pakken) er fra FØR 16.08.2026-omleggingen av
+abonnementsmodellen — «Elite» er et dødt enum CLAUDE.md forbyr i UI. Målt
+pixel-diff (9,93 %) er misvisende lav og skal ikke tolkes som nært; se notat
+i `skjerm-mapping.ts`. Ingen ny fasit-tegning bestilt ennå.
+
+`/oppgrader/flyt` (selve kjøpsflyten) mangler egen fasit-ramme og kunne ikke
+skjermbildes for `screentest` (allerede PRO+pakke → redirectes bort) uten
+TALENT-tier-sonden — den krever Anders' ja (se MASTERPLAN Ø1) og ble derfor
+ikke forsøkt. Kodegjennomgang av `oppgrader-flyt-wizard.tsx` fant og rettet
+én reell feil uavhengig av fasit-spørsmålet: funksjons-chippene hadde
+identisk tekst- og bakgrunnsfarge (`color: TL.fill` på `background: TL.fill`)
+— usynlig tekst i enhver rendering, uavhengig av brukertilstand.
