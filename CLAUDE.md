@@ -122,9 +122,20 @@ ikke bare denne maskinen.
 6. Frontend: **vercel-react-best-practices** (fra vercel-labs, `.claude/skills/`) for
    datahenting, caching, Server/Client Components og ytelse — merk at `vercel`-pluginets
    egen, lettere `react-best-practices`-skill også kjører automatisk på TSX-filer; de to
-   utfyller hverandre, ikke motsier. **frontend-design** + **web-design-guidelines** for UI —
-   men Train-lock-tokene (`--tl-*`/`TL`) og designsystemet i `designsystem/train-lock/`
-   overstyrer ALLTID skillenes egne designvalg, uendret av dette (invariant 2).
+   utfyller hverandre, ikke motsier. **frontend-design** + **web-design-guidelines** for UI,
+   og fra 02.09.2026 også designkvalitets-skillene **impeccable** (`/impeccable audit|polish|
+   critique|…` — auditer og finpusser en skjerm, og har en design-detektor-hook som varsler om
+   mekaniske feil som kontrast, overflow og glow-skygger rett etter hver UI-edit),
+   **design-taste-frontend** (anti-slop: retning og struktur som ikke ser malbasert ut) og
+   **high-end-visual-design** (kvalitetskrav til spacing, skygger, kort og bevegelse). De tre
+   ligger globalt i `~/.claude/skills/` (skrudd på i `~/.claude/settings.json` 02.09.2026 —
+   var «off» i `skillOverrides`, sammen med web-design-guidelines og react-best-practices).
+   Rekkefølge ved skjermarbeid: canvas først (§TEGN SKJERMEN FØR DU BYGGER DEN) → bygg mot
+   Train-lock → `/impeccable audit` på den ferdige skjermen → rett funnene → skjermbilde-gaten.
+   Train-lock-tokene (`--tl-*`/`TL`) og designsystemet i `designsystem/train-lock/`
+   overstyrer ALLTID skillenes egne designvalg, uendret av dette (invariant 2) — et
+   impeccable-funn som ber om annen font, farge eller radius enn Train-lock avvises, alt
+   annet (kontrast, overflow, hierarki, tom tilstand, kopi) rettes.
    *Uverifisert: en ordliste-fil nevnt som `akordlistegjennomgang.html` finnes ikke i repoet
    per 02.09.2026 — si fra hvor den ligger, så legges riktig sti inn.*
    Én skjerm om gangen mot referansebilde; aldri batch. Lys modus default, mørk modus toggle,
