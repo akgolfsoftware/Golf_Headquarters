@@ -45,22 +45,108 @@ se STEG 13) · `docs/jarvis-shortcut.md` (driftshåndbok for Jarvis-snarveien) �
 | 0.11 | ~~**`/stats/aargang` bak innlogging**~~ **GJORT 30.08.2026, PR #679.** Sperret i `src/proxy.ts` (`erAargangHub`) — siden er verken slettet eller tømt, den ligger nå på gratis-konto-laget per datakartleggingens svar 1. `offentligSpillerFilter()` hjalp ikke her: siden aggregerer antall per fødselsår, så kohort-strukturen ER det som skjules. Verifisert i koden 30.08 | — | PR #679 |
 | 0.12 | ~~`/stats/wrapped`: resten av de fabrikkerte tallene~~ **GJORT 31.08.2026.** Ranking- (47/1 547 + 12/142), sammenlignings- («Kris Ventura») og streak-slidene (5) er FJERNET (ekte persentil på åpen flate står uansett på «Ikke bygg»-lista). Fjernet også: «Norske amatører spiller 28 i snitt», «Norge-snittet er HCP 18», putte-setningen (28), «bedre enn 68 %», `besteScore \|\| 72`-fabrikasjonen og `toPar = score − 72` (til-par leses nå fra `scoreToPar`, linjen utelates når den mangler — datakartleggingsregelen). HCP-estimatet er merket «(estimat fra snittscore)». Slides uten datagrunnlag utelates i stedet for å fylles med oppdiktede verdier | — | Gjort 31.08 |
 
-## STEG 1 — Lansering P0 (uendret spor, fasene i masterplan-lansering-12.08)
+## STEG 1 — Veien til «FULL lanserbar» (datert 02.09.2026, verifisert mot kode og prod-miljø)
 
-| # | Oppgave | Eier |
-|---|---|---|
-| 1.1 | Resend DKIM for `send.akgolf.no` | **Anders (panel)** |
-| 1.2 | `akgolf.no` DNS → Vercel | **Anders (panel)** |
-| 1.3 | Stripe live-nøkler + webhook-sjekk (13 event-typer) — testmodus komplett 16.08 (#538); følg `stripe-cutover-sjekkliste.md` | **Anders (panel)** |
-| 1.4 | Google Calendar re-kobling (tokens PAUSED) | **Anders (panel)** |
-| 1.5 | **Ekte spiller-e-poster inn** (dry-run 13.08: 14 «ok» gikk til syntetiske adresser) + aktiverings-e-post til de 13 spillerne uten auth/invitasjon | Anders + agent |
-| 1.6 | Push-opt-in: motor + banner finnes, 0 abonnementer — verifiser i prod etter aktivering | Agent |
-| 1.7 | **Betalings-cutover 1. september:** `BETALING_STARTER` slår av `gratisForAlle()` automatisk — verifiser uken før at TALENT-gaten + Stripe-flyten oppfører seg riktig for ikke-betalende | Agent (verifisering) |
+> **Hva dette er:** den daterte veien fra dagens kode til at FULL-nivået (299 kr/mnd · 2 690 kr/år —
+> `resolveTilgang` i `src/lib/feature-flags.ts`, omfang i `docs/platform/BUSINESS-RULES.md`
+> §Abonnement) kan selges og leveres i PlayerHQ og AgencyOS. **Én økt = én skjerm = canvas + bygging
+> + skjermbilde** (390 og 1280 px, lys og mørk). Statusene under er lest fra kode og
+> `vercel env ls production` 02.09.2026 — ikke fra eldre dokumenter. De 29 uporterte skjermene står
+> i **STEG 2.12**; FULL-omfanget skjerm for skjerm i **STEG 5**. Fire kategorier brukes konsekvent og
+> blandes aldri: **lanserbart nå · krever bygging · krever Anders-beslutning · krever datamodell.**
 
-## STEG 2 — Designporten til 100 % (detaljer: PORTPLAN + PAPER-ZIP-CHECKLIST)
+### 1A · Lanserbart i dag (02.09.2026) — hva en FULL-bruker faktisk kan gjøre
 
-Status 17.08: **40/88 rader signert · 44 bygget-uventer-signering · 4 ubygget (2 blokkert) ·
-0/72 varianter kvittert.** Signering er flaskehalsen, ikke bygging.
+Betalingen slo seg på 1. september: `gratisForAlle()` er nå usann, alle brukere ligger på ekte nivå,
+og en ny spiller lander på TALENT (gratis) til hen legger inn kort.
+
+- **Kjøpe månedsabonnement (299 kr):** knappen finnes (`/portal/oppgrader` → `/portal/meg/abonnement/oppgrader/flyt`), prøveuka bor i Stripe og krever kort. **Om Stripe står i live- eller testmodus kan ikke avgjøres fra kode** — nøkkelen ligger ikke i klientbundelen, og 1.3 står fortsatt på Anders. STATUS-NÅ 30.08 sa «kun live-nøkler gjenstår».
+- **Kjøpe årsabonnement (2 690 kr): VIRKER IKKE I DAG.** `STRIPE_PRICE_ID_PRO_AAR` mangler i Vercel production (målt 02.09 — de tre andre pris-id-ene finnes). `/api/stripe/checkout` svarer da 500 `no-price-id-for-pro_aar`. Fikses i Ø1.
+- **Etter kjøp åpnes hele appen automatisk** (webhook → `tier = PRO` → FULL). Oppsigelse går via Stripe (`cancel_at_period_end`), aldri bare egen DB.
+- **Kan gjøre i PlayerHQ:** se dagens økt (I dag), planlegge egen uke/måned/år i Workbench, åpne økt-ark, kjøre live-økt og fullføre, godta/avvise coachens forslag, skrive til coach, se TrackMan-økter med spredning, tester, runder, DataGolf-kort, booke timer, styre abonnement.
+- **Coach kan gjøre i AgencyOS:** planlegge og publisere uke per spiller, se stall med varsel-prikk, håndtere Kø, svare i Kommunikasjon, se spillerprofil (fortsatt gammel struktur — se S3 i STEG 2.12).
+- **Ikke verifisert:** ingen av FULL-skjermene er signert i sign-off-riggen (`tests/visual/skjerm-mapping.ts` har fire kalibrerte skjermer — PH-01, TE-01, TM-04a, TM-01a — alle TALENT-åpne). Ingen har kjøpt i prod. Talent-gate-kontrakttestene (`src/lib/__tests__/tilgang/portal-tilgang-kontrakt.test.ts`) er aldri kjørt mot prod (0.4). E-post fra `send.akgolf.no` mangler DKIM (1.1). Stripe-checkout-brandingen kan fortsatt stå i Paper-farger (flagget 01.09 i `docs/platform/stripe-cutover-sjekkliste.md`, ikke sjekket i Stripe).
+
+### 1B · Datert rekkefølge — milepæl «FULL lanserbar» torsdag 24.09.2026
+
+**Antakelse for datoene:** én økt per virkedag fra torsdag 03.09 (maks 2 timer, Anders' rytme), serielt.
+Anders' panel-jobber (1.1–1.3) og beslutningene D1, D2 og D10 må være svart **innen fredag 04.09** —
+hver dag forsinkelse der flytter milepælen én dag. Øktene etter lansering (F3) kan kjøres parallelt
+(maks 3 økter samtidig).
+
+| Økt | Dato | Fase | Skjerm / jobb | Rute | Fasit (SCREEN-INDEX) | Eier |
+|---|---|---|---|---|---|---|
+| Ø1 | tor 03.09 | F0 betaling | `STRIPE_PRICE_ID_PRO_AAR` inn i Vercel prod + redeploy · test-clock-løypen (8 steg) i testmodus · talent-gate-kontrakttestene mot prod (0.4) · Stripe-checkout-branding Paper → Train-lock (testmodus via connector; live = Anders) | `/api/stripe/checkout`, `/portal/oppgrader` | — (ikke skjerm) | Agent (+ Anders gir live-pris-id) |
+| Ø2 | fre 04.09 | F0 betaling | **Ekte kjøp i prod:** 299 kr med ekte kort → webhook → FULL → oppsigelse → TALENT. Refunderes. Forutsetter 1.3 (live-nøkler + fire live-priser) og D10 | `/portal/meg/abonnement` | ME-03 | Anders + agent |
+| Ø3 | man 07.09 | F1 PlayerHQ | Abonnement + kjøpsflyt (pengeskjermen først): kalibrer riggen, rett avvik, skjermbilde | `/portal/meg/abonnement` (+ `/oppgrader/flyt`) | `ME-03 Abonnement.dc.html` | Agent |
+| Ø4 | tir 08.09 | F1 PlayerHQ | Plan (krever D1) | `/portal/planlegge` | `PH-07 Plan.dc.html` · `PH-08 Plan tom uke.dc.html` | Agent |
+| Ø5 | ons 09.09 | F1 PlayerHQ | Spillerens Workbench: fjern Publiser-knappen (fasiten har ingen for spiller), mobil = dag-ark + ny økt | `/portal/planlegge/workbench` | `P-01 Mac Uke.dc.html` · `P-06 iPhone Dag ark.dc.html` · `P-07 iPhone Ny okt ark.dc.html` | Agent |
+| Ø6 | tor 10.09 | F1 PlayerHQ | Økt-ark, med godta/avvis-kortet i I dag som inngang | `/portal/tren/wb/[sessionId]` + `/portal` | `PH-04 Økt-ark.dc.html` · `WB-04` (rammen «iPhone forslag/godtatt/avvist») | Agent |
+| Ø7 | fre 11.09 | F1 PlayerHQ | Live-økt + Økt ferdig | `/portal/live/[sessionId]/…` | `PH-05 Live.dc.html` · `PH-06 Live ferdig.dc.html` | Agent |
+| Ø8 | man 14.09 | F1 PlayerHQ | Coach-hub + melding til coach | `/portal/coach`, `/portal/coach/melding` | `ME-04 Coach-hub.dc.html` | Agent |
+| Ø9 | tir 15.09 | F2 AgencyOS | Coachens Workbench uke (krever D2) | `/admin/workbench/[playerId]` | `WB-01 Uke minimum.dc.html` / `A-01 Mac Uke Pro.dc.html` — D2 avgjør | Agent |
+| Ø10 | ons 16.09 | F2 AgencyOS | Publiser-bekreftelse + proveniens-banner (coach publiserer → spiller ser) | samme | `WB-03 Publish confirm 3 skall.dc.html` · `A-01d Publish confirm.dc.html` · `A-09 Mac Filip Godkjenn.dc.html` | Agent |
+| Ø11 | tor 17.09 | F2 AgencyOS | **Spiller 360 — canvas** (S3-03 landing + S3-01 arbeidsvisning + AG-08 mobil-ark på ÉN adresse). Anders sier ja samme dag (D3) | `/admin/spillere/[id]` | `S3-03`, `S3-01` (+L), `S3-02`, `AG-08` | Agent + Anders |
+| Ø12 | fre 18.09 | F2 AgencyOS | Spiller 360 — bygg landingssiden | samme | `S3-03 Spiller profil bento.dc.html` | Agent |
+| Ø13 | man 21.09 | F2 AgencyOS | Spiller 360 — bygg arbeidsvisning Mac/iPad + mobil-ark | samme | `S3-01 Agency Spiller 360 Mac.dc.html` (+ `S3-01L`) · `S3-02 Agency Spiller 360 iPad.dc.html` · `AG-08 Spiller-ark.dc.html` | Agent |
+| Ø14 | tir 22.09 | F2 AgencyOS | Stall — sign-off (15.11-etterkontroll; bolker vs. flat liste dokumenteres som bevisst avvik eller rettes) | `/admin/spillere` | `AG-04 Stall.dc.html` · `AG-16 iPad Stall split.dc.html` | Agent |
+| Ø15 | ons 23.09 | F2 AgencyOS | Kommunikasjon — sign-off (15.7-etterkontroll) | `/admin/kommunikasjon` | `AG-03 Innboks.dc.html` | Agent |
+| Ø16 | tor 24.09 | Milepæl | **Menneskelig røyk-test (10.9):** Anders klikker kjøp → plan → publiser → spiller ser → live → ferdig → melding, på iPhone og Mac. Push-opt-in (1.6) sjekkes samtidig. Grønn = **FULL LANSERBAR** | hele kjeden | — | Anders |
+
+**Etter lansering (F3) — resten av de 29, i denne rekkefølgen** (kategori og blokkering per skjerm i STEG 2.12):
+
+| Økt | Dato | Skjerm | Rute | Fasit |
+|---|---|---|---|---|
+| Ø17 | fre 25.09 | WB-06 Årsplan, coach (3 skall) | `/admin/workbench/[playerId]?vis=aar` | `WB-06 Arsplan 3 skall.dc.html` |
+| Ø18 | man 28.09 | A-15 Årsplan, spiller (sign-off — allerede portert) | `/portal/planlegge/workbench` | `A-15 iPhone Arsplan.dc.html` |
+| Ø19 | tir 29.09 | PH-21 Min kurve (+ refresh-cron for `mv_topar_grunnlag`, 16.1) | `/portal/analysere/turneringer` | `PH-21 Min kurve.dc.html` (+ `PH-21L`) |
+| Ø20 | ons 30.09 | A-19a Innsikt vekstrate (canvas finnes i `designsystem/canvas/innsikt/`) | `/admin/spillere/[id]/analyse` | `A-19 Innsikt.dc.html` (+ `A-19L`) |
+| Ø21 | tor 01.10 | TE-08 Driver Basic | `/portal/tren/tester/[testId]` | `TE-08 Driver Basic.dc.html` |
+| Ø22 | fre 02.10 | TE-07 Wedge Variation | samme | `TE-07 Wedge Variation Mac.dc.html` |
+| Ø23 | man 05.10 | TE-10 GS-18 resultat | samme | `TE-10 GS-18 resultat.dc.html` |
+| Ø24 | tir 06.10 | TE-12 Egen test (flytt `/ny/egen` ut av legacy) | `/portal/tren/tester/ny` | `TE-12 Egen test.dc.html` |
+| Ø25 | ons 07.10 | TE-09 Gapping (siterer slettet Paper-fasit i dag) | `/portal/mal/trackman/gapping` | `TE-09 Gapping-stige.dc.html` |
+| Ø26 | tor 08.10 | TE-03 Putt Gate detalj (sign-off — allerede portert) | `/portal/tren/tester/[testId]` | `TE-03 TN Putt Gate detalj.dc.html` |
+| Ø27 | fre 09.10 | TM-03 Ingest-tilstander (krever D4) | `src/components/shared/trackman-import-modal.tsx` | `TM-03 Ingest-tilstander.dc.html` |
+| — | etter beslutning | DG-01/02 (D5) · WB-04 coach-side (avgjøres i D3-canvasen) · AG-19 (D6) · JV-01–03 + AO-13 (D7) | se 2.12 | se 2.12 |
+| — | etter datamodell | TM-08/09 (banedata, 3.5) · TM-12/13/14 (D9) · WB-08 (D8) · A-19b/c (16.10/16.11) | se 2.12 | se 2.12 |
+
+### 1C · Beslutningskø som låser datoene (maks 10, én anbefaling hver)
+
+| # | Spørsmål | Anbefaling | Låser | Frist |
+|---|---|---|---|---|
+| D1 | Plan på telefon: `PH-07/08 Plan` eller `P-05 iPhone Agenda` som fasit for `/portal/planlegge`? Riggen fant P-05 utdatert (CS/M-vokabular fra før 18.08, annen IA) | **PH-07/08.** P-05 merkes utgått i SCREEN-INDEX; ingen omtegning | Ø4 | fre 04.09 |
+| D2 | Coachens Workbench: WB-serien (3 skall, 24.08) eller A-serien (Mac, eldre) som kanon? Koden siterer A-serien; HANDOFF kaller WB-02–07 «komplett Workbench» | **WB-serien for struktur og brekkpunkter**, A-serien kun som Mac-pikselfasit der WB mangler detalj | Ø9–Ø10 | fre 04.09 |
+| D3 | Spiller 360: én adresse `/admin/spillere/[id]` = S3-03 (landing), S3-01 som arbeidsvisning (`?vis=360`), AG-08 som mobil-ark? | **Ja, én adresse** (regel 6.9). Canvas i Ø11, ja samme dag | Ø11–Ø13 | tor 17.09 |
+| D4 | TM-03: beholde dagens 4-stegs modal (774 linjer, fungerer) eller bygge fasitens helskjerm-tilstander C1–C4? | **Behold modalen**, port de fire tilstandene inn i den; fasiten justeres, ikke koden | Ø27 | etter lansering |
+| D5 | DataGolf ny fasit (446-toppliste + SG-profil): egen flate eller faner i Analyse? (= beslutningskø 4, PR-F) | **Faner i `/portal/analysere/datagolf`** (én inngang); `/stats` beholdes som åpent lag | DG-01/02 | etter lansering |
+| D6 | AG-19: fasiten tegner låseskjerm + SMS-godkjenning; koden har bevisst redirect til Innboks (26.08) | **Merk AG-19a–e som push-godkjenning i STEG 12**, ikke lanseringsomfang. Ingen kode nå | AG-19 | etter lansering |
+| D7 | Jarvis-merge JV-01–03 + AO-13 routing: bygges i høst eller parkeres? | **Parkér til etter TN-piloten**; J-A–J-D (beslutningskø 7) først | JV, AO-13 | etter lansering |
+| D8 | WB-08 gruppeendring/venter: krever GROUP-materialisering (anti-scope i Loop 3T) | **Egen økt-serie i oktober** når WANG/GFGK-elevene er inne som PlayerHQ-brukere (7.2-svaret) — ikke før FULL | WB-08 | oktober |
+| D9 | TM-12/13/14 datamodeller (teknikk-tagging per slag, målvindu, bag): egne oppgaver eller «ikke bygg»? | **«Ikke bygg»** til TrackMan-importen faktisk fyller de 15 parameterne (0.14: kun `carryDistance` i dag). Hullkart TM-08/09 følger banedata (3.5) | TM-12/13/14 | når 0.14 er svart |
+| D10 | Ø2: ekte kjøp med Anders' eget kort i prod (og refusjon), eller kun Stripe test-clock? | **Ekte kjøp.** Test-clock dekker ikke live-nøkler, webhook-URL og e-postkvittering | Ø2 | fre 04.09 |
+
+### 1D · P0-radene fra 12.08 (status 02.09.2026)
+
+| # | Oppgave | Eier | Status 02.09 |
+|---|---|---|---|
+| 1.1 | Resend DKIM for `send.akgolf.no` | **Anders (panel)** | Åpen |
+| 1.2 | `akgolf.no` DNS → Vercel | **Anders (panel)** | Åpen |
+| 1.3 | Stripe live-nøkler + fire live-priser + webhook-sjekk (13 event-typer) — testmodus komplett 16.08 (#538); følg `docs/platform/stripe-cutover-sjekkliste.md`. **NYTT 02.09:** `STRIPE_PRICE_ID_PRO_AAR` mangler i Vercel production (de tre andre finnes) — årsprisen kan ikke kjøpes før den er inne | **Anders (panel)** + agent (env og redeploy) | Åpen — **blokkerer Ø2** |
+| 1.4 | Google Calendar re-kobling | — | **UTFØRT** per STATUS-NÅ 28.08 (ikke re-verifisert 02.09) |
+| 1.5 | ~~Ekte spiller-e-poster + aktiverings-e-post til 13 spillere~~ | — | **BORTFALT 30.08** — brukerbasen ble nullstilt (42 brukere slettet). Erstattes av WANG/GFGK-onboarding i september (beslutning 7.2, 30.08) |
+| 1.6 | Push-opt-in: motor + banner finnes, 0 abonnementer — verifiser i prod | Agent | Åpen — tas i Ø16 |
+| 1.7 | ~~Betalings-cutover 1. september~~ | Agent | **Slått på automatisk 01.09** — men verifiseringen «uken før» ble aldri kjørt (10.8). Gjøres nå i Ø1–Ø2 |
+
+## STEG 2 — Designporten til 100 % (status 01.09-revisjonen · sign-off-rigg i `tests/visual/`)
+
+Status 17.08: 40/88 rader signert · 44 bygget-uventer-signering · 4 ubygget (2 blokkert) ·
+0/72 varianter kvittert. **Status 01.09.2026 (designrevisjonen, ~150 fasit-skjermer krysset mot
+kode): 8 verifisert pikselnært · 81 portert men uverifisert · 28 portert med kjent avvik · 29 ikke
+portert · 3 fasit utgått · 21 ruter uten fasit.** Signering er fortsatt flaskehalsen — og verktøyet
+er nå sign-off-riggen (`scripts/train-lock-pixel-diff.mjs` + `tests/visual/skjerm-mapping.ts`,
+PR #731/#732), som måler restavvik per skjerm i stedet for øyemål. Fire skjermer er kalibrert
+(PH-01, TE-01, TM-04a, TM-01a); de FULL-kritiske øktene i STEG 1B kalibrerer resten, én per økt.
 
 | # | Oppgave | Blokkert av |
 |---|---|---|
@@ -75,6 +161,56 @@ Status 17.08: **40/88 rader signert · 44 bygget-uventer-signering · 4 ubygget 
 | 2.9 | **Vaktene F1–F8:** kun F4 (bredde-gate) er levert; F2 (clay-gate i CI) hindrer at 2.3-sweepen eroderer | Etter 2.3 |
 | 2.10 | **Jarvis-skjermene 5–12** (8 stk., fasit klar) — eget spor, se STEG 12 (fase J1) | Ingen |
 | 2.11 | **Canvas-først som fast arbeidsmåte** (`.claude/rules/beslutninger.md` §TEGN SKJERMEN FØR DU BYGGER DEN, Anders 30.08.2026). Hver skjermrad i denne planen får et tegne-steg FØR kode: canvas med Mac 1440 + mobil 390, lys + mørk, tom tilstand, ekte norsk tekst, verdier lest fra `src/styles/train-lock-tokens.css`. Arbeidsfilene bor i `designsystem/canvas/<skjerm>/`, oppskrift i `designsystem/canvas/README.md`. **Ferdig når** hver skjermrad som starter, har en godkjent canvas-URL notert. Første canvas levert: Kø (15.1). Skjermbilde-gaten (04.08) gjelder uendret ETTER bygging | Ingen |
+
+### 2.12 — De 29 uporterte skjermene (revisjonen 01.09, verifisert mot kode 02.09.2026)
+
+Hver rad har ÉN kategori: **lanserbart nå** (kode finnes, kun sign-off) · **krever bygging** ·
+**krever Anders-beslutning** · **krever datamodell**. Skjermer med to halvdeler er delt i to rader.
+Øktnummer viser til STEG 1B. Tre av revisjonens «ikke portert»-rader var feil og er rettet her etter
+lesing av koden: **A-15** (siteres i `WorkbenchAarsplan.tsx`), **TE-03** (siteres i
+`tester/[testId]/page.tsx`) og **WB-04 spillersiden** (siteres i `PortalChatHjem.tsx`).
+
+| ID | Rute | Fasitfil | Kategori | Blokkering / merknad | Økt |
+|---|---|---|---|---|---|
+| S3-01 | `/admin/spillere/[id]` | `S3-01 Agency Spiller 360 Mac.dc.html` (+ `S3-01L`) | krever bygging | Visningslaget (`SpillerProfilPanel.tsx`) følger Paper-fasitens struktur — TL-tokens, men ikke S3-IA-en. D3 avgjør adressestruktur | Ø11, Ø13 |
+| S3-02 | samme | `S3-02 Agency Spiller 360 iPad.dc.html` | krever bygging | Som S3-01 | Ø13 |
+| S3-03 | samme | `S3-03 Spiller profil bento.dc.html` | krever bygging | HANDOFF 28.08: landingssiden ved trykk på navn i stall/gruppe. D3 | Ø11, Ø12 |
+| WB-04 (spiller) | `/portal` (I dag) | `WB-04 Player godkjenning 3 skall.dc.html` — rammene «iPhone forslag/godtatt/avvist» | lanserbart nå | Godta/avvis-kortet finnes og siterer fasiten; kun sign-off sammen med økt-arket | Ø6 |
+| WB-04 (coach) | `/admin/workbench/[playerId]` | samme fil — rammene «Mac player godkjenn» / «iPad godkjenn» | krever Anders-beslutning | Coach-siden (forslag-status i uke + inspektør) er ikke bygget; avgjøres som del av D2/D3 (én inngang) | etter D3 |
+| WB-06 | `/admin/workbench/[playerId]?vis=aar` | `WB-06 Arsplan 3 skall.dc.html` | krever bygging | `YearGrid.tsx` (149 linjer) uten fasit-sitering; periodebånd + månedsrader mangler | Ø17 |
+| WB-08 | ingen | `WB-08 Gruppeendring og venter.dc.html` | krever datamodell | GROUP-materialisering og VENTER-status finnes ikke (grep 02.09: 0 treff i `src/lib/domain/workbench/`). D8 | etter D8 |
+| A-15 | `/portal/planlegge/workbench` (årsplan) + `/admin/grupper/[id]/workbench` | `A-15 iPhone Arsplan.dc.html` | lanserbart nå | `WorkbenchAarsplan.tsx` siterer A-06 + A-15 — revisjonen 01.09 tok feil. Kun sign-off | Ø18 |
+| A-19a | `/admin/spillere/[id]/analyse` | `A-19 Innsikt.dc.html` (+ `A-19L`) — rammen «vekstrate» | krever bygging | Canvas finnes (`designsystem/canvas/innsikt/`); steg 1 «mot seg selv» er bygget (#666) | Ø20 |
+| A-19b/c | samme | samme — rammene «tak» og «konkurranse» | krever datamodell | Aldersbaner (16.11) og SG-stigen (16.10) må finnes først | etter 16.10/16.11 |
+| PH-21 | `/portal/analysere/turneringer` (utvides) | `PH-21 Min kurve.dc.html` (+ `PH-21L`) | krever bygging | Turneringshistorikken finnes (#666); kurven trenger refresh-cron for `mv_topar_grunnlag` (16.1) og `User.publicPlayerId` satt | Ø19 |
+| AG-19 | `/admin/varsler` → redirect `/admin/kommunikasjon?filter=varsler` | `AG-19 Notifikasjonssenter.dc.html` | krever Anders-beslutning | Bevisst redirect 26.08 (én inngang). Fasitens låseskjerm/SMS-godkjenning er en push-funksjon uten kode. D6 | etter D6 |
+| AO-13 | ingen | `AO-13 Routing-hub.dc.html` | krever Anders-beslutning | Routing lokal/sky-policy + Ollama-runtime. D7 | etter D7 |
+| JV-01 | `/admin/jarvis` (Kø-fanen viser generisk kø) | `JV-01 Jarvis-ko.dc.html` | krever Anders-beslutning | Domene finnes (`src/lib/domain/jarvis-merge/`), ingen UI. D7 | etter D7 |
+| JV-02 | ingen | `JV-02 Eval rod merge stengt.dc.html` | krever Anders-beslutning | `eval.ts` + test, ingen UI. D7 | etter D7 |
+| JV-03 | ingen | `JV-03 Merge utfort proveniens.dc.html` | krever Anders-beslutning | `proveniens.ts`, ingen UI. D7 | etter D7 |
+| TM-03 | `src/components/shared/trackman-import-modal.tsx` (fra `/portal/analysere/trackman`) | `TM-03 Ingest-tilstander.dc.html` | krever Anders-beslutning | 774 linjer fungerende 4-stegs modal; fasiten tegner helskjerm C1–C4. D4 | Ø27 |
+| TM-08 | ingen (TM-08f slag-ark finnes: `ShotSheet.tsx`) | `TM-08 Okt med hullkart.dc.html` | krever datamodell | Hullkart krever hulldata i `CourseDefinition` (3.5) | etter 3.5 |
+| TM-09 | ingen | `TM-09 Mini-kart og runde.dc.html` | krever datamodell | Samme hulldata + runde↔TrackMan-kobling | etter 3.5 |
+| TM-12 | ingen | `TM-12 Okt teknikk og slag.dc.html` | krever datamodell | Teknikk-tagging per slag finnes ikke; importen fyller kun `carryDistance` (0.14). D9 | etter D9 |
+| TM-13 | ingen | `TM-13 Progresjon maalvindu.dc.html` | krever datamodell | Trenerens målvindu per parameter finnes ikke. D9 | etter D9 |
+| TM-14 | ingen | `TM-14 Bag mapping og DECADE.dc.html` | krever datamodell | Bag/kølle-modell finnes ikke. D9 | etter D9 |
+| DG-01 | `/portal/analysere/datagolf` (`DataGolfV2.tsx` siterer den GAMLE «DG-01 DataGolf spiller») + `/stats/*` | `DG-01 DataGolf topplister og SG-profil.dc.html` (+ `DG-01L`) — rammene DG-01a/b | krever Anders-beslutning | PR-F-plassering (beslutningskø 4). D5 | etter D5 |
+| DG-02 | samme | samme fil — rammene DG-02a/b (SG-profil) | krever Anders-beslutning | D5 | etter D5 |
+| TE-03 | `/portal/tren/tester/[testId]` | `TE-03 TN Putt Gate detalj.dc.html` | lanserbart nå | Siteres i `page.tsx` (type A-protokoller) — revisjonen 01.09 tok feil. Kun sign-off | Ø26 |
+| TE-07 | `/portal/tren/tester/[testId]` (type B) | `TE-07 Wedge Variation Mac.dc.html` | krever bygging | Filhodet sier selv: type B/C/D ikke portert | Ø22 |
+| TE-08 | samme | `TE-08 Driver Basic.dc.html` | krever bygging | PEI vises som to tall («3,91 % · 0,04») | Ø21 |
+| TE-09 | `/portal/mal/trackman/gapping` | `TE-09 Gapping-stige.dc.html` | krever bygging | `GappingV2` siterer slettet Paper-fasit | Ø25 |
+| TE-10 | `/portal/tren/tester/[testId]` (resultat) | `TE-10 GS-18 resultat.dc.html` | krever bygging | Snitt-PEI, ikke dagsstasjoner | Ø23 |
+| TE-12 | `/portal/tren/tester/ny` (+ `/ny/egen` i legacy) | `TE-12 Egen test.dc.html` | krever bygging | `/ny/egen` ligger fortsatt i `(legacy)` | Ø24 |
+
+TE-11 finnes ikke i SCREEN-INDEX (revisjonen telte «TE-07–12» som seks; det er fem filer). Summen over
+er 30 rader for 29 skjermer fordi WB-04 og A-19 er delt i to.
+
+**Kategorisum (30 rader):** lanserbart nå 3 (WB-04 spiller, A-15, TE-03 — kun sign-off) · krever bygging 11 ·
+krever Anders-beslutning 9 · krever datamodell 7. Ingen av de 29 er FULL-blokkerende alene — det som
+blokkerer FULL er betalingskjeden (Ø1–Ø2) og sign-off på de allerede porterte FULL-skjermene (Ø3–Ø15),
+pluss S3 (Ø11–Ø13) som er den eneste av de 29 på den kritiske veien.
+
 
 ## STEG 3 — Funksjoner og datakobling (punkt 3 i bestillingen)
 
@@ -106,14 +242,48 @@ head-to-head, `/portal/analysere/datagolf` for spilleren) kjører alle mot ekte 
 | 4.6 | **Historikk-importen** (`import-norske-turneringer.ts`, 2016–2026) krever lokale filer — flytt til Supabase Storage om den skal kunne kjøres igjen |
 | 4.7 | Åpne datakilde-hull (bevisst): dame-tourene, college/Clippd, Nordic Golf League — egne beslutninger i `turnering-datakilder.md` |
 
-## STEG 5 — Skjermer for alle funksjoner (punkt 5)
+## STEG 5 — Skjermer for alle funksjoner (punkt 5) — FULL-omfanget skjerm for skjerm
 
 - Dekningen ER tegnet for alt in-scope (79 fasit + 12 Jarvis + maler for 164 ruter) —
-  gapet er ikke design-mangel men (a) signering (steg 2.1), (b) W5-design (2.6),
+  gapet er ikke design-mangel men (a) signering (steg 2.1 → nå riggen i STEG 1B), (b) W5-design (2.6),
   (c) 25 rader som stryker én-linje-testen og trenger A1-svar (2.5).
 - **#542** (innganger til 13 skjulte flater) er MERGET (verifisert 31.08.2026) — gjenstår kun
   skjermbilde-gate på de berørte flatene.
-- Skjermbilde-gaten (CLAUDE.md §Skjermarbeid) gjelder hver eneste skjerm-PR — ingen unntak.
+- Skjermbilde-gaten (beslutninger.md 04.08) gjelder hver eneste skjerm-PR — ingen unntak.
+
+**FULL-omfanget = alt under `/portal` som IKKE står i `src/lib/auth/talent-allowlist.ts`** (fail-closed
+i `requirePortalUser`). Tabellen viser hver FULL-funksjon, ruten, fasiten, status per 01.09-revisjonen
+(a verifisert · b portert uverifisert · c kjent avvik · d ikke portert · e uten fasit) og hvilken økt i
+STEG 1B som signerer den. Ingen skjerm planlegges uten fasit-ID — mangler den, står det «trenger canvas».
+
+| Funksjon (FULL) | Rute | Fasit (SCREEN-INDEX) | Status | Økt |
+|---|---|---|---|---|
+| Plan (uke) | `/portal/planlegge` | PH-07 / PH-08 (D1) | b | Ø4 |
+| Workbench, spiller — uke/måned/år, ny økt, Caddie-forslag | `/portal/planlegge/workbench` | P-01…P-09 | c (Publiser-knapp), ellers b | Ø5 (uke/dag/ny økt) · Ø18 (årsplan A-15) |
+| Økt-ark (start/fullfør/hopp over) | `/portal/tren/wb/[sessionId]` | PH-04 | b | Ø6 |
+| Godta/avvis coachens forslag | `/portal` (I dag) | WB-04 (iPhone forslag/godtatt/avvist) | c (spillersiden bygget, coach-siden ikke) | Ø6 |
+| Live-økt + Økt ferdig | `/portal/live/[sessionId]/…` | PH-05, PH-06 | b | Ø7 |
+| Coach-hub, melding, spørsmål, tilbakemelding | `/portal/coach/*` | ME-04 | b | Ø8 |
+| Abonnement + oppgradering | `/portal/meg/abonnement`, `/portal/oppgrader` | ME-03 | b | Ø3 |
+| Gjennomføre planlagt økt (eldre løype) | `/portal/gjennomfore/[id]`, `/portal/tren/[sessionId]/planlagt` | PH-04 / PH-05 (delt) | b | dekkes av Ø6–Ø7 |
+| Øvelser / drills | `/portal/tren/ovelser`, `/portal/drills` | ingen spillerfasit (A-04 er coachens øvelsesbank) | e | **trenger canvas** — etter lansering |
+| Fysisk + fys-plan | `/portal/fysisk`, `/portal/tren/fys-plan` | MAT-01 (kun hero); FY-01 er utgått | e | **trenger canvas** — etter lansering |
+| Gameplan / baneguide | `/portal/gameplan/*`, `/portal/baneguide/*` | GP-01, GP-02 | b | etter lansering (STEG 13) |
+| Kalender, spiller + opptatt | `/portal/kalender`, `/portal/kalender/opptatt`, `/portal/tren/kalender` | KA-04 | b | etter lansering |
+| Turneringer, spiller | `/portal/tren/turneringer` | TU-01, TU-02 | b | etter lansering |
+| Teknisk plan | `/portal/tren/teknisk-plan/[planId]` | ingen | e | **trenger canvas** |
+| Mål + mål-bygger | `/portal/mal`, `/portal/mal/bygger`, `/portal/mal/goal/[id]` | ingen | e | **trenger canvas** |
+| TrackMan, gammel adresse | `/portal/mal/trackman/*` | TM-01 / TM-11 finnes på `/portal/analysere/trackman` | duplikat | redirect til analysere (én inngang) — etter lansering |
+| Utfordringer, venner, ukesdigest, utenfor banen, ønsket økt, AI-forslag | `/portal/utfordringer`, `/portal/venner`, `/portal/ukesdigest`, `/portal/utenfor-banen`, `/portal/onskeligokt`, `/portal/ai/*` | ingen | e | **trenger canvas** — fungerer, markedsføres ikke før tegnet |
+
+**AgencyOS-siden som må virke for at FULL kan LEVERES** (coach planlegger, publiserer, svarer):
+Workbench uke (Ø9), Publiser (Ø10), Spiller 360 (Ø11–Ø13), Stall (Ø14), Kommunikasjon (Ø15). Kø,
+Kalender, Jarvis, Oppsett, Turnering, Plan-hub og Hjem er levert i STEG 15 og trenger kun
+etterkontroll-skjermbilder.
+
+**Ikke i FULL-lanseringsomfanget** (TALENT-åpent eller intern drift): Analyse, TrackMan, tester, runder
+og DataGolf (åpne for gratisnivået — fire av dem er allerede kalibrert i riggen), Jarvis/AgenticOS (JV,
+AO), Team Norway (STEG 17), Forelder (10.3).
 
 ## STEG 6 — TalentHQ / WANG / Team Norway 100 % operativ (punkt 6)
 
