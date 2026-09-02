@@ -170,6 +170,13 @@ export const UI = {
   publishTodayWarnMany: (antall: number) =>
     `${antall} av øktene er i dag og dukker opp i spillerens «I dag» med en gang.`,
   publishOverlapWarnTitle: "Overlapp i valgte økter",
+  // WB-03: per-økt-utvelgelse i publiser-dialogen
+  publishVelgAlle: "Velg alle",
+  publishValgtAvTotalt: (valgt: number, totalt: number) => `${valgt} av ${totalt} valgt`,
+  publishRadUtkast: "Utkast",
+  publishRadOpptatt: "Opptatt",
+  publishValgte: (n: number) => `Publiser valgte · ${n}`,
+  publishAlle: (n: number) => `Publiser alle · ${n}`,
 
   // Budget
   budgetLabel: (plannedH: string, targetH: string) =>

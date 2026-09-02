@@ -66,6 +66,7 @@ export function WorkbenchUke({ playerId, spillerNavn, uke, kilder }: Props) {
   const [valgtId, setValgtId] = useState<string | null>(null);
   const [nyOkt, setNyOkt] = useState<{ dato: string; startMinutt: number } | null>(null);
   const [publiserApen, setPubliserApen] = useState(false);
+  const [valgtePubliser, setValgtePubliser] = useState<Set<string>>(new Set());
   const [feil, setFeil] = useState<string | null>(null);
   const [travel, start] = useTransition();
 
@@ -74,6 +75,11 @@ export function WorkbenchUke({ playerId, spillerNavn, uke, kilder }: Props) {
   const utkast = useMemo(() => alleOkter.filter((s) => s.status === "DRAFT"), [alleOkter]);
   /** Overlapp-VARSEL for hele uka (aldri en sperre — invariant 1). Vises i publiser-dialogen. */
   const valideringsnotater = useMemo(() => validateWeek(alleOkter), [alleOkter]);
+  /** Øktene et overlapp-varsel peker på — WB-03: holdes automatisk utenfor "Publiser valgte". */
+  const opptattIder = useMemo(
+    () => new Set(valideringsnotater.map((n) => n.sessionId).filter((id): id is string => !!id)),
+    [valideringsnotater],
+  );
   const valgt = useMemo(
     () => alleOkter.find((s) => s.id === valgtId) ?? null,
     [alleOkter, valgtId],
@@ -249,7 +255,11 @@ export function WorkbenchUke({ playerId, spillerNavn, uke, kilder }: Props) {
         onNeste={() => byttUke(1)}
         onIdag={() => router.push(`/admin/workbench/${playerId}?uke=${mondayOf(idag)}`)}
         onNyOkt={() => setNyOkt({ dato: week.days[0]?.date ?? idag, startMinutt: 16 * 60 })}
-        onPubliser={() => setPubliserApen(true)}
+        onPubliser={() => {
+          // WB-03: alle utkast er forhåndsvalgt, unntatt de med et overlapp-varsel.
+          setValgtePubliser(new Set(utkast.filter((s) => !opptattIder.has(s.id)).map((s) => s.id)));
+          setPubliserApen(true);
+        }}
       />
 
       {feil && (
@@ -367,9 +377,39 @@ export function WorkbenchUke({ playerId, spillerNavn, uke, kilder }: Props) {
         idag={idag}
         spillerNavn={spillerNavn}
         notater={valideringsnotater}
+        opptattIder={opptattIder}
+        valgte={valgtePubliser}
+        onVeksle={(id) =>
+          setValgtePubliser((prev) => {
+            const neste = new Set(prev);
+            if (neste.has(id)) neste.delete(id);
+            else neste.add(id);
+            return neste;
+          })
+        }
+        onVelgAlle={() =>
+          setValgtePubliser((prev) =>
+            prev.size === utkast.length ? new Set() : new Set(utkast.map((s) => s.id)),
+          )
+        }
         publiserer={travel}
         onLukk={() => setPubliserApen(false)}
-        onBekreft={() => {
+        onPubliserValgte={() => {
+          const ider = utkast.filter((s) => valgtePubliser.has(s.id)).map((s) => s.id);
+          if (ider.length === 0) return;
+          kjor(
+            () => publishSessions(ider),
+            (publiserte: WorkbenchSession[]) => {
+              setPubliserApen(false);
+              toast.success(
+                publiserte.length === 1
+                  ? UI.toastPublishedOne
+                  : UI.toastPublishedMany(publiserte.length),
+              );
+            },
+          );
+        }}
+        onPubliserAlle={() => {
           kjor(
             () => publishSessions(utkast.map((s) => s.id)),
             (publiserte: WorkbenchSession[]) => {
