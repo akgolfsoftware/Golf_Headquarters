@@ -1,44 +1,13 @@
+import { redirect } from "next/navigation";
+
 /**
- * v2 — PlayerHQ Meg · Utstyrsbag (retning C). V2Shell leverer chrome-en
- * (IkonRail/BunnNav), MegUtstyrsbagV2 rendrer innholds-stacken.
- *
- * Auth + dataloader gjenbruker den tidligere /portal/meg/utstyrsbag-siden:
- * requirePortalUser (PLAYER/COACH/ADMIN) + EquipmentBag-oppslag. Ingen
- * fabrikerte verdier — tomme felter forblir tomme.
+ * /portal/meg/utstyrsbag (gammel adresse) → /portal/meg/utstyr#rediger-utstyr.
+ * Utstyr-siden er kanonisk (PORTPLAN §A1.9, avgjort av Anders 02.09.2026).
+ * Redigeringsskjemaet (MegUtstyrsbagV2) er montert der som egen seksjon —
+ * ingen funksjonalitet tapt, kun én adresse igjen.
  */
-
-import { TilbakeLenke } from "@/components/v2";
-import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { MegUtstyrsbagV2, type MegUtstyrsbagData } from "@/components/portal/v2/MegUtstyrsbagV2";
-import type { UtstyrsbagInput } from "./actions";
-
 export const dynamic = "force-dynamic";
 
-export default async function UtstyrsbagPage() {
-  const user = await requirePortalUser({ kreverTilgang: "INGEN", allow: ["PLAYER", "COACH", "ADMIN"] });
-
-  const bag = await prisma.equipmentBag.findUnique({ where: { userId: user.id } });
-
-  const utstyr: UtstyrsbagInput = {
-    driver: bag?.driver ?? undefined,
-    fairwayWoods: bag?.fairwayWoods ?? undefined,
-    hybrids: bag?.hybrids ?? undefined,
-    irons: bag?.irons ?? undefined,
-    wedges: bag?.wedges ?? undefined,
-    putter: bag?.putter ?? undefined,
-    ball: bag?.ball ?? undefined,
-    bag: bag?.bag ?? undefined,
-    notes: bag?.notes ?? undefined,
-  };
-
-  const data: MegUtstyrsbagData = { utstyr };
-
-  return (
-    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
-      <MegUtstyrsbagV2 data={data} />
-    </V2Shell>
-  );
+export default async function UtstyrsbagRedirect(): Promise<never> {
+  redirect("/portal/meg/utstyr#rediger-utstyr");
 }
