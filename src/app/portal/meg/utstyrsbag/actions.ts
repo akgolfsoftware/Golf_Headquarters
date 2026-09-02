@@ -58,5 +58,5 @@ export async function lagreUtstyrsbag(data: UtstyrsbagInput): Promise<void> {
     target: user.id,
   });
 
-  revalidatePath("/portal/meg/utstyrsbag");
+  revalidatePath("/portal/meg/utstyr");
 }

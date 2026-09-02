@@ -20,33 +20,21 @@ Ikke les hele repoet. Åpne filer etter behov. Lange kommandoer → redirect til
 
 ---
 
-## Nåværende spor: A1–A4 (bølge 1)
+## Nåværende spor
 
-**Mål-smoke (må være grønn før bølge 2):**
+> **RETTET 02.09.2026:** denne seksjonen beskrev tidligere «A1–A4 (bølge 1)» — en
+> smoke-test-gate for en tidlig Workbench-leveranse, med et loop-oppsett og branch-/PR-
+> referanser (`claude/agency-workbench-uke-ui-c4d2a4`, PR #577/#575). Verifisert: PR #577 og
+> #575 er begge lukket uten merge, `docs/STATUS-NÅ.md` bekrefter «Bølge 1 FERDIG i main» og
+> «Bølge 2: … inne» allerede fra 28.08.2026, og «session B2» i `docs/MASTERPLAN-GJENSTAAENDE.md`
+> som teksten viste til, finnes ikke lenger (kilden — det gamle LAUNCH-PLAN-dokumentet — er
+> slettet 30.08). Seksjonen beskrev altså noe fullført for uker siden som om det var dagens
+> spor. Fjernet i stedet for rettet, siden innholdet uansett er dødt.
 
-```
-Coach: opprett økt → UTKAST → flytt → Publiser
-Spiller: ser økten i «I dag», ser ikke DRAFT
-Spiller: Start → IN_PROGRESS → Ferdig (warm hake)
-TrackMan-detalj: 1σ-ellipse + én caddie-setning + prikk → slag-ark
-```
-
-| Loop | Jobb | Anti-scope |
-|------|------|------------|
-| 1 | Domain + server actions (ingen UI) | UI, drag-lib, kilder-innhold |
-| 2 | Agency uke + create/move/publish | måned/år, stall, Google |
-| 2S | Inspector + drill komplett/MANGLER | serie, Player-ark |
-| 2T | Kilder, drag, serie | Google, Player live |
-| 3 | I dag ← `loadPlayerDay` | composer/dock |
-| 3S | Økt-ark + start/complete | live *runde* RU |
-| 3T | Godta/Avvis + ikke delta | full GROUP-materialisering |
-| 4 | DispersionMap | ingest, DataGolf, stall-preview |
-
-**Én Claude-session per loop.** Ny chat. Commit + leveranserapport for loopen. Ikke start neste loop uten grønn forrige.
-
-Gren for kode: `claude/agency-workbench-uke-ui-c4d2a4`-linjen (Loop 1+2+3S); Loop 2S ligger på PR #577, RLS på `claude/workbench-rls-policies-8b054b` — samles i release-gren per session-tabellen i `docs/MASTERPLAN-GJENSTAAENDE.md` (session B2, tidligere `natt/LAUNCH-PLAN-FULL-2026-08-25.md`, slettet 30.08 i doc-konsolideringen). PR #575 er superseded.
-
-Bølge 2 (måned/år, stall, kalender uten Google, tester-live, runde-live, Jarvis, AgenticOS, lys, Forelder, DataGolf/økonomi): se `docs/MASTERPLAN-GJENSTAAENDE.md` — **kun etter** bølge 1-smoke.
+Nåværende spor er alltid det `docs/MASTERPLAN-GJENSTAAENDE.md` viser som gjenstående — se
+«Start her» over. Per 02.09.2026: STEG 15 (AgencyOS «én inngang per funksjon») er 12 av 13
+rader levert, STEG 17 (Team Norway Workdesk) er i gang, STEG 16 (datagrunnlag/kjønn/måling)
+er stort sett ikke startet.
 
 ---
 

@@ -280,3 +280,5 @@ Les **DESIGN-SYSTEM.md** før du endrer noe. Endrer du en fil, oppdater raden he
 - `GAP-00 Kart.dc.html`, `TRAIN LOCK.dc.html`, `TRAIN VIZ.dc.html` mangler `data-screen-label` — de er referansebrett, ikke skjermer. Bruk dem som fasit, ikke som mal.
 - Filer med æ/ø/å eller tankestrek i navnet leses ikke av batch-verktøy. Ved nye filer: bruk ASCII i filnavn (`Okt`, `Okonomi`) slik som FO-07 og resten av AO-serien.
 - Lys modus finnes for: FO-01L–FO-10L, KA-01L, RU-01L, S3-01L, LO-01L, A-16, B3. Alt annet er kun mørkt.
+- `P-05 iPhone Agenda.dc.html` er **utgått som fasit for `/portal/planlegge`** (Anders 02.09.2026, D1) — Plan porter mot `PH-07 Plan.dc.html` + `PH-08 Plan tom uke.dc.html`. P-05 gjelder kun telefon-Workbench (agenda). Årsak: CS/M-vokabular fra før 18.08 og annen IA.
+- Workbench har to serier: **WB-01–WB-10 er kanon for struktur og brekkpunkter**, A-01–A-18 er Mac-pikselfasit der WB mangler detalj (Anders 02.09.2026, D2).

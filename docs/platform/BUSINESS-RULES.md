@@ -38,7 +38,11 @@ Sist oppdatert: 2026-08-17 (dato rettet — §Abonnement og tilgang er fra 2026-
 3. **Gruppe via AK Golf:** Spiller har AKTIVT spiller-medlemskap (`GroupMember.endedAt`
    null) i en AK Golf-administrert gruppe (`Group.managedByAkGolf` — GFGK-stigen,
    WANG Toppidrett, WANG UNG, AK Golf Academy, AK Golf Junior Academy).
-4. **Lanseringsvinduet:** alle frem til 1. september 2026 (`gratisForAlle`).
+4. ~~**Lanseringsvinduet:** alle frem til 1. september 2026 (`gratisForAlle`)~~ **UTLØPT
+   01.09.2026** (verifisert i kode 02.09.2026: `BETALING_STARTER` er satt til
+   `2026-09-01T00:00:00+02:00` i `src/lib/feature-flags.ts`, `gratisForAlle(now)` returnerer nå
+   alltid `false`). De tre gjenstående veiene over (prøveperiode, coaching-pakke, AK-gruppe) er
+   de eneste aktive fra og med 2. september.
 
 ### TALENT — gratis, låst profil (Anders 2026-08-16)
 

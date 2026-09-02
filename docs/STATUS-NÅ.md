@@ -2,14 +2,43 @@
 
 > **Hva dette er:** ett snapshot av hvor plattformen står akkurat nå. Oppdater datoen + relevante linjer når noe vesentlig endrer seg.
 
-**Sist oppdatert:** 2026-08-30 natt (PR #664–#667). **Betalingen er teknisk klar — kun
-Stripe live-nøkler gjenstår, og betalingen slås på 1. september.**
+**Sist oppdatert:** 2026-09-02 (målt mot `origin/main` @ `c40d57b40`, PR #734).
+**Betaling:** koden er klar siden 30.08 (Stripe-cutover 1. september). Live-nøkler/DNS/DKIM er
+Anders-oppgaver i Vercel/Stripe-panelet og kan ikke verifiseres fra kode/git — se
+`docs/MASTERPLAN-GJENSTAAENDE.md` STEG 1 og 10.8.
 **Samlet lanseringsplan: `docs/MASTERPLAN-GJENSTAAENDE.md`** — den ENE oversikten
 over alt gjenstående (konsolidert 30.08 fra det tidligere LANSERINGSPLAN-KOMPLETT + LAUNCH-PLAN-FULL, begge slettet).
 **Produktretning låst 30.08:** `.claude/rules/beslutninger.md` §«PRODUKTRETNING — åtte svar».
 Den blokken er fasit for Innsikt og Analyse og vinner over eldre dokumenter.
 
-## Hovedbildet 30.08 natt (målt mot origin/main @ 5102448a9)
+## Hovedbildet 02.09 (målt mot origin/main @ c40d57b40)
+
+- **STEG 15 FERDIG (12 av 13 rader, PR #689–#713):** AgencyOS konsolidert til «én inngang per
+  funksjon» — Kø, Oppgaver, Oppsett, Kalender, Jarvis, Turnering, Kommunikasjon, Analyse, Plan,
+  Hjem og Stall-lista er nå hver sin ene adresse med faner, gamle adresser er redirects.
+  Talent-flatene er flyttet ut av AgencyOS-menyen til `/innsyn` (PR #713). Gjenstår: 15.13, de
+  36 skjermene uten vei inn — tre deler levert, resten (talent-kjeden i PlayerHQ, SG-hub
+  coach-modus, booking-detaljer, ~7 uverifiserte «redirect til seg selv»-endepunkter) står igjen.
+- **Team Norway Workdesk-grunnmur levert (STEG 17, PR #726/#727, 01.09):** poster til gruppe og
+  enkeltspiller (`TnPost`/`TnPostAttachment`/`TnPostLesekvittering`, `src/lib/domain/tn-post.ts`),
+  dokumentdeling med lesekvittering, samtykke-brytere (tester/resultater vs. komplett profil) på
+  `/portal/meg/innstillinger/personvern/deling` og `/forelder/samtykke/deling/[childId]`. TN-
+  branding-mappa vokst til 152 filer etter Claw batch 3 (PR #725).
+- **16.6/17.5b: klubb og klassekode sluttet å bli kastet i GolfBox-scraperen (PR #723).**
+  `PublicPlayerEntry.clubName`/`klasseNavn` er additive kolonner, fylles fra neste synk.
+- **Train-lock sign-off-riggen bygget (PR #731/#732, 01.09):** kvantitativ pixel-diff mot fasit
+  (`scripts/train-lock-pixel-diff.mjs`, `tests/visual/`) — 5 av 9 rutekartlagte skjermer
+  kalibrert med målt restavvik, 4 dokumentert ukalibrerbare (bl.a. AO-01 mot pensjonert
+  AgenticOS-rail). Kjører ikke i CI. Erstatter ikke skjermbilde-galleriet, supplerer det.
+- **Fasit-dekning (piksel-nærhet): 148/210 sitert** (opp fra 114/204 30.08 — kjør
+  `node scripts/maal-fasit-dekning.mjs` for fersk status).
+- **Diverse opprydding (PR #729/#730/#733/#734):** synk av Train-lock-zip og pensjonerte
+  doc-referanser rettet, Club Speed-klassifisering presisert i v2-vokabularet, tre stale
+  MASTERPLAN-rader rettet, feilmelding lagt til når bytt-tid på booking avvises (i stedet for
+  stille redirect).
+- **Én åpen PR:** #716 (paraplymerke/MORAD ut av publikumsvendt tekst), åpnet 31.08, ikke merget.
+
+## Hovedbildet 30.08 natt (historikk — målt mot origin/main @ 5102448a9)
 
 - **Betaling omlagt (#664, #667-kjeden).** Prøveuka bor nå i STRIPE og krever kort
   (`trial_period_days`, kun ved første PlayerHQ-abonnement). Den usynlige prøven
@@ -56,40 +85,49 @@ Den blokken er fasit for Innsikt og Analyse og vinner over eldre dokumenter.
 - **F1 mandags-bug** fikset i #631 (økter telles ikke lenger to ganger).
 - **QA-1** merget #629 (admin-toast, tel-lenke m.m.).
 - **P0:** Google Calendar UTFØRT. Åpent: DKIM, DNS, Stripe live, aktiverings-e-post,
-  `SCREENTEST_PASSWORD`. **Betaling starter automatisk 1. september.**
+  `SCREENTEST_PASSWORD`. **Betaling starter automatisk 1. september.** (Rotert av Anders
+  17.08 — se MASTERPLAN STEG 0.2. Denne linjen sto som «åpent» lenge etter at det var gjort.)
 - **Bølge N (TalentHQ inn i PlayerHQ):** N1–N3 og N5 inne. Plan gjenopprettet
   (`docs/MASTERPLAN-GJENSTAAENDE.md` STEG 11). Neste: N4 merge + N6-kvitter.
 
-## Neste steg (lansering)
+## Neste steg
 
-1. **Anders (kan bare du):** **Stripe live** ← eneste som blokkerer betalingen ·
-   DNS `akgolf.no` · e-post-signatur (DKIM) · aktiverings-e-post · se skjermene ·
-   lukk #656–#661 (se under).
-2. **Kode:** C10 (DataGolf-kort + økonomiside) · C8 lys-pass · T12 visuell AgenticOS ·
-   V2 menneskelig røyk-test.
+1. **Anders (kan bare du):** Stripe live-nøkler · DNS `akgolf.no` · Resend DKIM ·
+   aktiverings-e-post til gjenværende spillere · WANG B4/B5 · PORTPLAN §A1 (9 av 10
+   beslutninger gjenstår) · MD-fil med turneringer/lenker (STEG 17.5d). Full liste:
+   MASTERPLAN «Samlet beslutningskø».
+2. **Kode:** STEG 16 (datagrunnlag/kjønn/måling — stort sett ikke startet), STEG 17-resten
+   (17.3 driftsmodell delte protokoller, 17.4 pilot, 17.5a/c landskapsanalyse), 15.13-resten
+   (talent-kjeden, SG-hub coach-modus, booking-detaljer), videre pixel-diff-kalibrering av de
+   ~140 gjenværende skjermene.
 
-## Åpne PR-er per 30.08 natt
+## PR-status fra 30.08-pikselbølgen (avsluttet)
 
-| PR | Hva | Status |
-|---|---|---|
-| #668 | PX-6 samlet (erstatter #659 + #661) | Venter CI, konflikt mot ny main løst |
-| #659, #661 | PX-6, to parallelle økter | **Lukk uten merge** når #668 er inne |
-| #658, #660 | PX-7, to parallelle økter | **Lukk uten merge** — innholdet er i #667 |
-| #656 | PX-3 TM/TE | Konflikt + rød CI. Egen jobb. |
-| #657 | PX-4 (7/27 sitert) | Konflikt + designspørsmål i PR-teksten til Anders |
+Alle PR-ene fra PX-3/PX-4/PX-6/PX-7-bølgen (30.08) er avsluttet: #656, #657, #668 merget;
+#658–#661 lukket uten merge (innholdet dekket av #667/#668, som planlagt — se lærdommen
+under). Ingen åpne PR-er gjenstår fra denne bølgen. Se `git log`/`gh pr list` for arbeidet
+landet 31.08–02.09 (STEG 15-konsolideringen og TN-bølgen, PR #689–#734).
 
-**Lærdom å ta med:** fire av PR-ene over var to par der to økter kjørte samme bølge
+**Lærdom å ta med:** fire av PR-ene i 30.08-bølgen var to par der to økter kjørte samme bølge
 parallelt. Ingen var en delmengde av den andre, så begge måtte slås sammen manuelt
 (#667, #668). Start aldri to økter på samme PX-bølge.
 
-## ⚠ Åpne risikopunkter
+## Åpne risikopunkter
 
-1. **Betaling 1. september** — koden er klar, Stripe live-nøklene er ikke satt.
-2. **Skjermbilde-gaten** er ikke kjørt på noe av pikselporten, inkludert #667/#668.
-   Design er kodet, ikke sett.
-3. **`SCREENTEST_PASSWORD`** — e2e-spillertester hoppes over i CI til det er avklart.
-4. **Datagrunnlaget er skjevt:** kun 1 av 38 spillere har runder med slagfordeling.
-   Bygg mot turneringsdata (rikt) før rundedata (nesten tomt).
+1. **Betaling 1. september** — koden er klar siden 30.08. Stripe live-nøklenes faktiske status
+   er IKKE verifiserbar fra kode/git (ingen Stripe-relaterte commits etter 30.08) — sjekk
+   Vercel-panelet direkte.
+2. **Skjermbilde-gaten er delvis kjørt (PR #731/#732, 01.09.2026):** pixel-diff-riggen har
+   kalibrert 5 av 9 rutekartlagte skjermer med målt restavvik; 4 er dokumentert
+   ukalibrerbare (se `tests/visual/skjerm-mapping.ts`). Av 210 fasitfiler totalt er 148 sitert
+   i kode (STEG 10.10) — resten er fortsatt design kodet, ikke pikselverifisert mot fasit.
+3. **`SCREENTEST_PASSWORD`** — rotert av Anders 17.08.2026 (MASTERPLAN STEG 0.2), ikke lenger
+   et åpent risikopunkt for signering generelt. Gjenstående nyanse: kjør
+   `scripts/roter-screentest-passord.ts` én gang til for å inkludere
+   `screentest-parent@akgolf.test` (foreldreportal-innlogging feiler til da).
+4. **Datagrunnlaget er skjevt:** kun 1 av 38 spillere har runder med slagfordeling (målt
+   30.08, ikke reverifisert mot databasen i denne runden). Bygg mot turneringsdata (rikt) før
+   rundedata (nesten tomt).
 
 ## Levende kilder (én av hver rolle — start her)
 
@@ -98,6 +136,7 @@ parallelt. Ingen var en delmengde av den andre, så begge måtte slås sammen ma
 | **Snapshot (denne)** | `docs/STATUS-NÅ.md` |
 | **Samlet gjenstående-plan** | `docs/MASTERPLAN-GJENSTAAENDE.md` (konsolidert 30.08 — inkluderer tidligere LANSERINGSPLAN-KOMPLETT og LAUNCH-PLAN-FULL, T-/C-rad-detaljer og alt uavklart/parkert som lå i AAPNE-SPORSMAAL) |
 | **TalentHQ inn i PlayerHQ** | `docs/MASTERPLAN-GJENSTAAENDE.md` STEG 11 (10 steg; eget spor) |
+| **Team Norway Workdesk** | `docs/MASTERPLAN-GJENSTAAENDE.md` STEG 17 |
 | **Designfasit (alle skjermer)** | `designsystem/train-lock/DESIGN-SYSTEM.md` + `SCREEN-INDEX.md` |
 | **Låste forretningsregler** (fasit) | `docs/platform/BUSINESS-RULES.md` |
 | **Full plattformkontekst** (5 min) | `docs/platform/AGENT-BRIEF.md` |
@@ -118,21 +157,27 @@ planen; PR-tabellen og steg 0-listen der er utdatert (alle PR-ene merget 17.08).
   utstyr), Workbench V2 (uke + kilder/drag/serie + godta/avvis), live-økt, runde-føring
   (live-artefakt fra C5, hull/slag, SG server-side m/ EST-merking), testbatteri med live
   `TestSession`-scoring + Gate/Innspill-artefakt (C4), TrackMan DispersionMap (B7).
-- **AgencyOS:** TL-skall (AX-01, 5 destinasjoner), cockpit, innboks + godkjenninger, stall
-  (+ dag-visning C2), Spiller 360, kalender-lag (C3), live-tavle + TrackMan (T9), turneringer
-  (T10), Innsikt-hub (T11), plan-hub (T6), oppsett + Meg (T13) — alt Train-lock.
+- **AgencyOS — konsolidert til én inngang per funksjon (STEG 15, PR #689–#713):** Kø, Oppgaver,
+  Oppsett, Kalender, Jarvis, Turnering, Kommunikasjon, Analyse, Plan, Hjem og Stall-lista er
+  hver sin ene adresse med faner; gamle adresser er redirects. Talent-flatene flyttet til
+  `/innsyn`. Alt Train-lock.
+- **Team Norway Workdesk-grunnmur (STEG 17, PR #726/#727):** poster til gruppe/enkeltspiller,
+  dokumentdeling med lesekvittering, samtykke-brytere (tester/resultater vs. komplett profil).
 - **Domenemotorer m/ tester:** SG (Broadie + Team Norway IUP PUTT), fys-score v1 (stall-relativ,
   plassholder-merket i UI), ak-kategori, test-scoring (15 ScoringKind), talent-sync,
-  plan-builder, uke-helpers (Oslo-korrekt), PEI/scorekort (N3), Tripletex-klient (read-only).
-- **Datapipelines:** GolfBox (timesvis) + GJGT (daglig) + DataGolf (schedule daglig, live hvert
-  10. min, skills ukentlig) + sync-vaktbikkje mandager. Se `docs/turnering-datakilder.md`.
+  plan-builder, uke-helpers (Oslo-korrekt), PEI/scorekort (N3), Tripletex-klient (read-only,
+  to agenter for lønnssjekkliste/månedsavslutning).
+- **Datapipelines:** GolfBox (timesvis, klubb+klassenavn fra 31.08) + GJGT (daglig) + DataGolf
+  (schedule daglig, live hvert 10. min, skills ukentlig) + sync-vaktbikkje mandager. Se
+  `docs/turnering-datakilder.md`.
 - **Foreldreportal** 11/11 ruter ekte data (design-port gjenstår, F1) · **GDPR/moderering**
   bygget · **ekstern lesetilgang** (Team Norway/WANG, samtykke-håndhevet) bygget 16.08.
 
 ## Verifisert vs. antatt
 
-- **Verifisert 27.08 (kode/git):** merge-status, skjermdekning, QA-punktene og PR-tilstand er
-  målt mot `origin/main` @ `4a7e7987` + `gh pr list`.
-- **DB-tall** er fra målingen 13.08 (mot `DIRECT_URL`, prod) — remåles ved neste aktiveringspush.
+- **Verifisert 02.09 (kode/git):** MASTERPLAN-radene er krysset mot `src/`, `prisma/schema.prisma`
+  og `gh pr list`/`gh pr view` for PR-status, målt mot `origin/main` @ `c40d57b40`.
+- **DB-tall** er fortsatt fra målingen 13.08/30.08 (mot `DIRECT_URL`, prod) — ikke reverifisert
+  i denne runden, remåles ved neste aktiveringspush.
 - **Antatt / panel (kun Anders kan verifisere):** Stripe live-nøkler, Resend DKIM,
-  DNS `akgolf.no`, SCREENTEST-rotasjonens faktiske tilstand.
+  DNS `akgolf.no`, SCREENTEST-rotasjonens faktiske tilstand for `screentest-parent`.
