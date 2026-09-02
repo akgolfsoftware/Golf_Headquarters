@@ -1,5 +1,6 @@
 import { PortalProviders } from "@/components/portal/portal-providers";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { registrerDagligAktivitet } from "@/lib/analytics/daglig-aktivitet";
 
 // TOPP-layout for /portal — auth-guard (Phase 0 security) + providers.
 // INGEN visuell chrome (sidebar/topbar/BottomNav).
@@ -24,6 +25,9 @@ export default async function PortalLayout({
 }: {
   children: React.ReactNode;
 }) {
-  await requirePortalUser({ kreverTilgang: "INGEN" });
+  const user = await requirePortalUser({ kreverTilgang: "INGEN" });
+  // STEG 16.3 (bruksmåling): én rad per bruker per Oslo-dag, skrevet ved hver
+  // innlasting av /portal. Idempotent (upsert), feiler aldri sidevisningen.
+  await registrerDagligAktivitet(user.id);
   return <PortalProviders>{children}</PortalProviders>;
 }

@@ -5875,6 +5875,23 @@ model UserCapability {
   @@map("user_capabilities")
 }
 
+// Daglig aktiv-måling (STEG 16.3, grillingen 1.7 — "bygges nå", besluttet
+// 30.08.2026). Én rad per bruker per dag brukeren faktisk åpnet /portal —
+// Oslo-kalenderdag (samme lokal-midnatt-konvensjon som uke-helpers.ts).
+// Skrevet idempotent (upsert på @@unique) fra portal-rot-layouten, ikke fra
+// hver underside. Plain userId, ingen @relation, per gotcha-regelen
+// (scripts/add-daily-active-users-2026-09-02.ts).
+model DailyActiveUser {
+  id        String   @id @default(cuid())
+  userId    String
+  dato      DateTime
+  createdAt DateTime @default(now())
+
+  @@unique([userId, dato])
+  @@index([dato])
+  @@map("daily_active_users")
+}
+
 // Coach-satt pyramide-fordeling per periode (fase 1, godkjent 2026-07-18).
 // Global akademi-standard: én rad per PeriodeType med min/maks-% per pyramide-
 // område. Overstyrer de hardkodede defaultene i periode-constraints.ts via en
