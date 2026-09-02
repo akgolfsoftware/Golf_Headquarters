@@ -84,7 +84,10 @@ Each session holds `TrainingDrillV2` records with all coaching parameters: `lFas
 
 ## Abonnement og betaling
 
-`Subscription` is one-per-player. `tier` is GRATIS or PRO (ELITE is dead). `stripeSubscriptionId` links to Stripe. `monthlyCredits` / `creditsRemaining` track coaching-session credits granted by coaching packages (Performance = 2 credits/mnd, Performance Pro = 4 credits/mnd). These are package grants, NOT Subscription tier differences — tier is only GRATIS or PRO.
+`Subscription` is one-per-(player, `kind`) — `kind` is `COACHING` or `PLAYERHQ`
+(`@@unique([userId, kind])`, `prisma/schema.prisma:2317`), so a player can have both
+simultaneously since 2026-08-16 (win-back offer, plan A1/A4). Rettet 02.09.2026 — teksten sa
+tidligere "one-per-player", som motsier både schemaet og BUSINESS-RULES.md. `tier` is GRATIS or PRO (ELITE is dead). `stripeSubscriptionId` links to Stripe. `monthlyCredits` / `creditsRemaining` track coaching-session credits granted by coaching packages (Performance = 2 credits/mnd, Performance Pro = 4 credits/mnd). These are package grants, NOT Subscription tier differences — tier is only GRATIS or PRO.
 
 `Payment` is an append-only ledger entry for every transaction: bookings, subscriptions, invoices. Status follows Stripe lifecycle (PENDING/SUCCEEDED/FAILED/REFUNDED).
 
