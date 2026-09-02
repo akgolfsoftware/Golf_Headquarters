@@ -7,7 +7,7 @@ import { TL } from "@/lib/v2/train-lock";
  */
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, useTransition, type ReactNode } from "react";
 import { markerOktStatus } from "@/lib/portal-gjennomfore/okt-status-actions";
 import type { GjennomforeData } from "@/lib/portal-gjennomfore/gjennomfore-data";
@@ -72,9 +72,15 @@ function SekundarHandlinger() {
   );
 }
 
+const LAGRET_TEKST: Record<string, string> = {
+  trening: "Treningsøkten er lagret.",
+};
+
 export function GjorV2({ data }: { data: GjennomforeData }) {
   const mobile = useMobile();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const lagretTekst = LAGRET_TEKST[searchParams.get("lagret") ?? ""];
   const { antall, totalMin, nesteOkt, resteAvDagen, fullfortIdag } = data;
   const [oppdaterer, startOppdatering] = useTransition();
   const [oppdatererId, setOppdatererId] = useState<string | null>(null);
@@ -118,6 +124,15 @@ export function GjorV2({ data }: { data: GjennomforeData }) {
         </div>
         {headerStatus}
       </div>
+
+      {lagretTekst && (
+        <Kort tint>
+          <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
+            <StatusPill tone="up">Lagret</StatusPill>
+            <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text }}>{lagretTekst}</span>
+          </div>
+        </Kort>
+      )}
 
       {antall === 0 ? (
         <>
