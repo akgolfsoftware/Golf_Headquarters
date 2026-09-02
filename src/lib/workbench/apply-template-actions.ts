@@ -10,6 +10,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { assertCapability } from "@/lib/auth/effective-capabilities";
 import { Capability } from "@/lib/auth/cbac";
 import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
+import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { upsertV2ForPlanSession } from "@/lib/workbench/v2-sync";
 import { logError } from "@/lib/error-tracking";
@@ -48,14 +49,18 @@ export type AppliedTemplateSession = ScheduledTemplateSession & { sessionId: str
 /** Økt hoppet over av G3-dedupen i en gruppeutrulling (KRYSSKILDE rapporteres, IDEMPOTENT er stille). */
 export type HoppetOkt = { title: string; grunn: "KRYSSKILDE" };
 
-async function ensurePlanForPlayer(playerId: string, createdById?: string) {
-  let plan = await prisma.trainingPlan.findFirst({
+async function ensurePlanForPlayer(
+  tx: Prisma.TransactionClient,
+  playerId: string,
+  createdById?: string,
+) {
+  let plan = await tx.trainingPlan.findFirst({
     where: { userId: playerId },
     orderBy: [{ isActive: "desc" }, { updatedAt: "desc" }],
     select: { id: true },
   });
   if (!plan) {
-    plan = await prisma.trainingPlan.create({
+    plan = await tx.trainingPlan.create({
       data: {
         userId: playerId,
         name: "Treningsplan",
@@ -135,100 +140,108 @@ async function applyTemplateCore(
   const scheduled = scheduleTemplateWeek(tilpassetOkter, weekNr);
   if (scheduled.length === 0) return { ok: false, error: "Ingen gyldige økter i malen" };
 
-  const plan = await ensurePlanForPlayer(playerId, coachId ?? undefined);
   const created: AppliedTemplateSession[] = [];
   const hoppetOkter: HoppetOkt[] = [];
 
-  // G3 per-økt-dedup (kun gruppeutrulling): hent spillerens eksisterende
-  // plan-økter i målvinduet ÉN gang, og sjekk EKTE tidsoverlapp per ny økt —
-  // aldri «hopp hele uka». Samme dag uten overlapp (WANG morgen + GFGK kveld)
-  // er legitimt. 24 t bakover-buffer fanger økter som starter før vinduet men
-  // strekker seg inn i det.
-  let eksisterende: { scheduledAt: Date; durationMin: number; sourceGroupId: string | null }[] = [];
-  if (sourceGroupId && scheduled.length > 0) {
-    const starter = scheduled.map((r) =>
-      dateForDayIndex(r.dayIndex, r.hour, r.minute, weekOffset).getTime(),
-    );
-    const slutter = scheduled.map(
-      (r, i) => starter[i] + r.durMin * 60_000,
-    );
-    eksisterende = await prisma.trainingPlanSession.findMany({
-      where: {
-        plan: { userId: playerId },
-        scheduledAt: {
-          gte: new Date(Math.min(...starter) - 24 * 60 * 60_000),
-          lt: new Date(Math.max(...slutter)),
-        },
-      },
-      select: { scheduledAt: true, durationMin: true, sourceGroupId: true },
-    });
-  }
+  // Hele utrullingen (plan-opprettelse + per-rad create/upsert + usageCount)
+  // kjører i ÉN transaksjon (14.5A) — feiler én rad midt i uka, ruller alt
+  // tilbake i stedet for å etterlate en halvferdig uke. Gruppeutrulling var
+  // allerede re-kjørbar via G3-dedupen; enkeltspiller-utrulling var det ikke.
+  await prisma.$transaction(async (tx) => {
+    const plan = await ensurePlanForPlayer(tx, playerId, coachId ?? undefined);
 
-  for (const row of scheduled) {
-    const area = PYRAMID_AREAS.includes(row.area as (typeof PYRAMID_AREAS)[number])
-      ? row.area
-      : "TEK";
-    const scheduledAt = dateForDayIndex(row.dayIndex, row.hour, row.minute, weekOffset);
-
-    if (sourceGroupId) {
-      const nyStart = scheduledAt;
-      const nySlutt = new Date(scheduledAt.getTime() + row.durMin * 60_000);
-      const kollisjon = eksisterende.find((e) =>
-        overlapper(
-          e.scheduledAt,
-          new Date(e.scheduledAt.getTime() + e.durationMin * 60_000),
-          nyStart,
-          nySlutt,
-        ),
+    // G3 per-økt-dedup (kun gruppeutrulling): hent spillerens eksisterende
+    // plan-økter i målvinduet ÉN gang, og sjekk EKTE tidsoverlapp per ny økt —
+    // aldri «hopp hele uka». Samme dag uten overlapp (WANG morgen + GFGK kveld)
+    // er legitimt. 24 t bakover-buffer fanger økter som starter før vinduet men
+    // strekker seg inn i det.
+    let eksisterende: { scheduledAt: Date; durationMin: number; sourceGroupId: string | null }[] = [];
+    if (sourceGroupId && scheduled.length > 0) {
+      const starter = scheduled.map((r) =>
+        dateForDayIndex(r.dayIndex, r.hour, r.minute, weekOffset).getTime(),
       );
-      if (kollisjon) {
-        // Samme gruppe → stille idempotens (re-kjøring). Annen kilde → rapporter.
-        if (kollisjon.sourceGroupId !== sourceGroupId) {
-          hoppetOkter.push({ title: row.title, grunn: "KRYSSKILDE" });
-        }
-        continue;
-      }
+      const slutter = scheduled.map(
+        (r, i) => starter[i] + r.durMin * 60_000,
+      );
+      eksisterende = await tx.trainingPlanSession.findMany({
+        where: {
+          plan: { userId: playerId },
+          scheduledAt: {
+            gte: new Date(Math.min(...starter) - 24 * 60 * 60_000),
+            lt: new Date(Math.max(...slutter)),
+          },
+        },
+        select: { scheduledAt: true, durationMin: true, sourceGroupId: true },
+      });
     }
 
-    const session = await prisma.trainingPlanSession.create({
-      data: {
-        planId: plan.id,
-        title: row.title.slice(0, 120),
-        scheduledAt,
-        durationMin: row.durMin,
-        pyramidArea: area,
-        status: "PLANNED",
+    for (const row of scheduled) {
+      const area = PYRAMID_AREAS.includes(row.area as (typeof PYRAMID_AREAS)[number])
+        ? row.area
+        : "TEK";
+      const scheduledAt = dateForDayIndex(row.dayIndex, row.hour, row.minute, weekOffset);
+
+      if (sourceGroupId) {
+        const nyStart = scheduledAt;
+        const nySlutt = new Date(scheduledAt.getTime() + row.durMin * 60_000);
+        const kollisjon = eksisterende.find((e) =>
+          overlapper(
+            e.scheduledAt,
+            new Date(e.scheduledAt.getTime() + e.durationMin * 60_000),
+            nyStart,
+            nySlutt,
+          ),
+        );
+        if (kollisjon) {
+          // Samme gruppe → stille idempotens (re-kjøring). Annen kilde → rapporter.
+          if (kollisjon.sourceGroupId !== sourceGroupId) {
+            hoppetOkter.push({ title: row.title, grunn: "KRYSSKILDE" });
+          }
+          continue;
+        }
+      }
+
+      const session = await tx.trainingPlanSession.create({
+        data: {
+          planId: plan.id,
+          title: row.title.slice(0, 120),
+          scheduledAt,
+          durationMin: row.durMin,
+          pyramidArea: area,
+          status: "PLANNED",
+          sourceGroupId,
+        },
+        select: {
+          id: true,
+          title: true,
+          scheduledAt: true,
+          durationMin: true,
+          pyramidArea: true,
+        },
+      });
+
+      await upsertV2ForPlanSession({
+        planSessionId: session.id,
+        playerId,
+        title: session.title,
+        scheduledAt: session.scheduledAt,
+        durationMin: session.durationMin,
+        pyramidArea: session.pyramidArea,
+        coachId: coachId ?? undefined,
         sourceGroupId,
-      },
-      select: {
-        id: true,
-        title: true,
-        scheduledAt: true,
-        durationMin: true,
-        pyramidArea: true,
-      },
-    });
+        db: tx,
+      });
 
-    await upsertV2ForPlanSession({
-      planSessionId: session.id,
-      playerId,
-      title: session.title,
-      scheduledAt: session.scheduledAt,
-      durationMin: session.durationMin,
-      pyramidArea: session.pyramidArea,
-      coachId: coachId ?? undefined,
-      sourceGroupId,
-    });
+      created.push({
+        ...row,
+        sessionId: session.id,
+      });
+    }
 
-    created.push({
-      ...row,
-      sessionId: session.id,
+    await tx.planTemplate.update({
+      where: { id: templateId },
+      data: { usageCount: { increment: 1 } },
     });
-  }
-
-  await prisma.planTemplate.update({
-    where: { id: templateId },
-    data: { usageCount: { increment: 1 } },
   });
 
   revalidateWorkbench(playerId);
