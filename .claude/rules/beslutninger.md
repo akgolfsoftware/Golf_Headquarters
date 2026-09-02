@@ -28,6 +28,19 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
 
 ## Beslutningene (september 2026)
 
+- **DESIGNKVALITET: MASTEREN ER KILDE, PRINSIPPER INN, TOKENS ALDRI (Anders 03.09.2026, i økt):**
+  etter impeccable-audit av tre tilfeldige skjermer (14/12/16 av 20) spurte Claude hvilket
+  designsystem som skulle brukes til å heve hele appen. Anders svarte **«Master AK Golf»** —
+  Claude Design-prosjektet `3e5c851c-4b78-41ab-8ced-7b11048838f9`, speilet i `designsystem/ak-golf/`.
+  **Kanalen avgjøres av masteren selv:** `guidelines/10-forbudt.md` sier «AK Golf-tokens skal
+  aldri inn i en produktskjerm». Derfor tas kun *prinsippene* inn (målt kontrast, én kilde med
+  vakt, redusert bevegelse uten tapt tilbakemelding, hover aldri i JavaScript, tall alltid med
+  dato og kilde), aldri farge, font, radius eller avstand. **Ingen `--tl-*`-verdi endres av
+  denne beslutningen** — CLAUDE.md invariant 2 står. Bygget samme dag: `scripts/design-audit.mjs`
+  (mekanisk poeng per skjermfamilie), `scripts/check-tl-kontrast.mjs` (måler Train-lock, fant 12
+  brudd — se beslutningskø pkt. 25) og `docs/design-audit/ak-golf-til-train-lock-bro-2026-09-03.md`.
+  **Arbeidet:** `docs/MASTERPLAN-GJENSTAAENDE.md` STEG 19.
+
 - **WANG FÅR EGET MERKEVARESYSTEM — OVERSTYRER PARAPLY-BESLUTNINGENS WANG-KLAUSUL (Anders
   02.09.2026, i økt):** under avklaring av PORTPLAN §A1.5 (gruppe-fane-arkitektur) ble
   beslutningskø punkt 22 (WANG-flatens stil) lagt frem på nytt med tre valg. Anders valgte

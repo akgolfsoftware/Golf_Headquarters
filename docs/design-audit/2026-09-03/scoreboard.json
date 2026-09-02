@@ -1,0 +1,2082 @@
+[
+  {
+    "familie": "portal/planlegge",
+    "skjermer": 3,
+    "redirects": 0,
+    "filer": 9,
+    "fasit": "ukalibrert",
+    "halveFont": 86,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 9,
+    "paperRester": 17,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 4,
+      "advisory": 0
+    },
+    "poeng": 3.2
+  },
+  {
+    "familie": "admin/plan-templates",
+    "skjermer": 3,
+    "redirects": 1,
+    "filer": 11,
+    "fasit": "ingen",
+    "halveFont": 25,
+    "fokusHull": 1,
+    "alert": 6,
+    "hexInline": 0,
+    "divOnClick": 3,
+    "paperRester": 19,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 2,
+      "advisory": 0
+    },
+    "poeng": 4.2
+  },
+  {
+    "familie": "admin/marketing",
+    "skjermer": 1,
+    "redirects": 0,
+    "filer": 3,
+    "fasit": "ingen",
+    "halveFont": 3,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 4,
+    "paperRester": 7,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 5.4
+  },
+  {
+    "familie": "admin/gjennomfore",
+    "skjermer": 1,
+    "redirects": 1,
+    "filer": 4,
+    "fasit": "ingen",
+    "halveFont": 15,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 3,
+    "paperRester": 7,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 6.4
+  },
+  {
+    "familie": "forelder/innstillinger",
+    "skjermer": 1,
+    "redirects": 0,
+    "filer": 3,
+    "fasit": "ingen",
+    "halveFont": 3,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 3,
+    "paperRester": 7,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 6.4
+  },
+  {
+    "familie": "admin/kommunikasjon",
+    "skjermer": 1,
+    "redirects": 0,
+    "filer": 6,
+    "fasit": "ukalibrert",
+    "halveFont": 10,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 5,
+    "paperRester": 11,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 6.7
+  },
+  {
+    "familie": "admin/trackman",
+    "skjermer": 2,
+    "redirects": 0,
+    "filer": 6,
+    "fasit": "ingen",
+    "halveFont": 14,
+    "fokusHull": 1,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 7,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 7.1
+  },
+  {
+    "familie": "admin/hjelp",
+    "skjermer": 1,
+    "redirects": 0,
+    "filer": 4,
+    "fasit": "ingen",
+    "halveFont": 5,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 3,
+    "paperRester": 7,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 7.1
+  },
+  {
+    "familie": "admin/queue",
+    "skjermer": 1,
+    "redirects": 0,
+    "filer": 3,
+    "fasit": "ingen",
+    "halveFont": 5,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 9,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 7.1
+  },
+  {
+    "familie": "admin/videoer",
+    "skjermer": 1,
+    "redirects": 0,
+    "filer": 3,
+    "fasit": "ingen",
+    "halveFont": 6,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 7,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 7.1
+  },
+  {
+    "familie": "portal/kalender",
+    "skjermer": 2,
+    "redirects": 0,
+    "filer": 6,
+    "fasit": "ingen",
+    "halveFont": 10,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 4,
+    "paperRester": 10,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 7.3
+  },
+  {
+    "familie": "portal/utenfor-banen",
+    "skjermer": 1,
+    "redirects": 0,
+    "filer": 4,
+    "fasit": "ingen",
+    "halveFont": 12,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 8,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 7.3
+  },
+  {
+    "familie": "admin/audit-log",
+    "skjermer": 1,
+    "redirects": 0,
+    "filer": 4,
+    "fasit": "ingen",
+    "halveFont": 3,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 3,
+    "paperRester": 7,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 7.3
+  },
+  {
+    "familie": "admin/feillogg",
+    "skjermer": 1,
+    "redirects": 0,
+    "filer": 4,
+    "fasit": "ingen",
+    "halveFont": 3,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 3,
+    "paperRester": 7,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 7.3
+  },
+  {
+    "familie": "portal/ukesdigest",
+    "skjermer": 1,
+    "redirects": 0,
+    "filer": 3,
+    "fasit": "ingen",
+    "halveFont": 3,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 7,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 7.4
+  },
+  {
+    "familie": "admin/gdpr",
+    "skjermer": 1,
+    "redirects": 0,
+    "filer": 3,
+    "fasit": "ingen",
+    "halveFont": 3,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 7,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 7.4
+  },
+  {
+    "familie": "admin/profile",
+    "skjermer": 1,
+    "redirects": 0,
+    "filer": 3,
+    "fasit": "ingen",
+    "halveFont": 3,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 7,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 7.4
+  },
+  {
+    "familie": "forelder/coach",
+    "skjermer": 1,
+    "redirects": 0,
+    "filer": 3,
+    "fasit": "ingen",
+    "halveFont": 3,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 7,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 7.4
+  },
+  {
+    "familie": "forelder/fakturaer",
+    "skjermer": 1,
+    "redirects": 0,
+    "filer": 3,
+    "fasit": "ingen",
+    "halveFont": 3,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 7,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 7.4
+  },
+  {
+    "familie": "forelder/okonomi",
+    "skjermer": 1,
+    "redirects": 0,
+    "filer": 3,
+    "fasit": "ingen",
+    "halveFont": 3,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 7,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 7.4
+  },
+  {
+    "familie": "forelder/ukerapport",
+    "skjermer": 1,
+    "redirects": 0,
+    "filer": 3,
+    "fasit": "ingen",
+    "halveFont": 3,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 7,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 7.4
+  },
+  {
+    "familie": "forelder/varsler",
+    "skjermer": 1,
+    "redirects": 0,
+    "filer": 3,
+    "fasit": "ingen",
+    "halveFont": 3,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 7,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 7.4
+  },
+  {
+    "familie": "portal/drills",
+    "skjermer": 2,
+    "redirects": 0,
+    "filer": 5,
+    "fasit": "ingen",
+    "halveFont": 16,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 11,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 7.5
+  },
+  {
+    "familie": "portal/spiller",
+    "skjermer": 1,
+    "redirects": 0,
+    "filer": 4,
+    "fasit": "ingen",
+    "halveFont": 9,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 7,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 7.6
+  },
+  {
+    "familie": "admin/oppgaver",
+    "skjermer": 1,
+    "redirects": 0,
+    "filer": 6,
+    "fasit": "ingen",
+    "halveFont": 12,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 3,
+    "paperRester": 11,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 7.6
+  },
+  {
+    "familie": "portal/trening",
+    "skjermer": 3,
+    "redirects": 0,
+    "filer": 8,
+    "fasit": "ingen",
+    "halveFont": 22,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 11,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 3,
+      "advisory": 0
+    },
+    "poeng": 7.7
+  },
+  {
+    "familie": "forelder/barn",
+    "skjermer": 2,
+    "redirects": 0,
+    "filer": 5,
+    "fasit": "ingen",
+    "halveFont": 13,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 10,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 7.7
+  },
+  {
+    "familie": "portal/fysisk",
+    "skjermer": 1,
+    "redirects": 0,
+    "filer": 4,
+    "fasit": "ingen",
+    "halveFont": 4,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 14,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 7.7
+  },
+  {
+    "familie": "admin/runder",
+    "skjermer": 1,
+    "redirects": 0,
+    "filer": 4,
+    "fasit": "ingen",
+    "halveFont": 5,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 10,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 7.8
+  },
+  {
+    "familie": "admin/turnering",
+    "skjermer": 1,
+    "redirects": 0,
+    "filer": 7,
+    "fasit": "ingen",
+    "halveFont": 8,
+    "fokusHull": 1,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 7,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 7.8
+  },
+  {
+    "familie": "portal/gjennomfore",
+    "skjermer": 2,
+    "redirects": 0,
+    "filer": 6,
+    "fasit": "ingen",
+    "halveFont": 15,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 15,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 7.9
+  },
+  {
+    "familie": "portal/venner",
+    "skjermer": 2,
+    "redirects": 0,
+    "filer": 4,
+    "fasit": "ingen",
+    "halveFont": 4,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 8,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 7.9
+  },
+  {
+    "familie": "admin/analyse",
+    "skjermer": 1,
+    "redirects": 1,
+    "filer": 8,
+    "fasit": "ingen",
+    "halveFont": 10,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 4,
+    "paperRester": 10,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 7.9
+  },
+  {
+    "familie": "portal/utviklingsplan",
+    "skjermer": 1,
+    "redirects": 0,
+    "filer": 4,
+    "fasit": "ingen",
+    "halveFont": 3,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 8,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 8
+  },
+  {
+    "familie": "portal/varsler",
+    "skjermer": 1,
+    "redirects": 0,
+    "filer": 4,
+    "fasit": "ingen",
+    "halveFont": 3,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 7,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 8
+  },
+  {
+    "familie": "forelder/(rot)",
+    "skjermer": 1,
+    "redirects": 0,
+    "filer": 4,
+    "fasit": "ingen",
+    "halveFont": 3,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 7,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 8
+  },
+  {
+    "familie": "admin/workspace",
+    "skjermer": 1,
+    "redirects": 3,
+    "filer": 7,
+    "fasit": "ingen",
+    "halveFont": 12,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 3,
+    "paperRester": 7,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 8.1
+  },
+  {
+    "familie": "portal/statistikk",
+    "skjermer": 2,
+    "redirects": 0,
+    "filer": 6,
+    "fasit": "ingen",
+    "halveFont": 11,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 10,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 8.2
+  },
+  {
+    "familie": "admin/ko",
+    "skjermer": 1,
+    "redirects": 0,
+    "filer": 10,
+    "fasit": "ingen",
+    "halveFont": 13,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 4,
+    "paperRester": 12,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 8.2
+  },
+  {
+    "familie": "portal/ai",
+    "skjermer": 3,
+    "redirects": 0,
+    "filer": 8,
+    "fasit": "ingen",
+    "halveFont": 12,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 16,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 1,
+      "advisory": 0
+    },
+    "poeng": 8.3
+  },
+  {
+    "familie": "admin/tournaments",
+    "skjermer": 2,
+    "redirects": 2,
+    "filer": 11,
+    "fasit": "ingen",
+    "halveFont": 22,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 3,
+    "paperRester": 11,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 1,
+      "advisory": 0
+    },
+    "poeng": 8.3
+  },
+  {
+    "familie": "forelder/samtykke",
+    "skjermer": 2,
+    "redirects": 0,
+    "filer": 7,
+    "fasit": "ingen",
+    "halveFont": 15,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 8,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 8.3
+  },
+  {
+    "familie": "admin/email-templates",
+    "skjermer": 1,
+    "redirects": 1,
+    "filer": 5,
+    "fasit": "ingen",
+    "halveFont": 4,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 9,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 8.3
+  },
+  {
+    "familie": "admin/spillere",
+    "skjermer": 8,
+    "redirects": 2,
+    "filer": 23,
+    "fasit": "ukalibrert",
+    "halveFont": 31,
+    "fokusHull": 2,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 4,
+    "paperRester": 29,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 8.4
+  },
+  {
+    "familie": "portal/onskeligokt",
+    "skjermer": 2,
+    "redirects": 0,
+    "filer": 6,
+    "fasit": "ingen",
+    "halveFont": 9,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 8,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 8.4
+  },
+  {
+    "familie": "admin/team",
+    "skjermer": 2,
+    "redirects": 1,
+    "filer": 7,
+    "fasit": "ingen",
+    "halveFont": 4,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 3,
+    "paperRester": 7,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 8.4
+  },
+  {
+    "familie": "admin/oppsett",
+    "skjermer": 1,
+    "redirects": 0,
+    "filer": 13,
+    "fasit": "ingen",
+    "halveFont": 14,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 5,
+    "paperRester": 8,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 8.4
+  },
+  {
+    "familie": "admin/recording",
+    "skjermer": 1,
+    "redirects": 0,
+    "filer": 5,
+    "fasit": "ingen",
+    "halveFont": 3,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 7,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 8.4
+  },
+  {
+    "familie": "admin/tester",
+    "skjermer": 1,
+    "redirects": 1,
+    "filer": 5,
+    "fasit": "ingen",
+    "halveFont": 3,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 8,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 8.4
+  },
+  {
+    "familie": "forelder/bookinger",
+    "skjermer": 5,
+    "redirects": 0,
+    "filer": 12,
+    "fasit": "ingen",
+    "halveFont": 15,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 4,
+    "paperRester": 9,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 8.5
+  },
+  {
+    "familie": "portal/utfordringer",
+    "skjermer": 2,
+    "redirects": 0,
+    "filer": 6,
+    "fasit": "ingen",
+    "halveFont": 6,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 9,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 8.5
+  },
+  {
+    "familie": "admin/bookinger",
+    "skjermer": 2,
+    "redirects": 1,
+    "filer": 6,
+    "fasit": "ingen",
+    "halveFont": 4,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 11,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 8.5
+  },
+  {
+    "familie": "admin/workbench",
+    "skjermer": 1,
+    "redirects": 0,
+    "filer": 6,
+    "fasit": "ingen",
+    "halveFont": 4,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 7,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 8.6
+  },
+  {
+    "familie": "portal/tren",
+    "skjermer": 9,
+    "redirects": 4,
+    "filer": 26,
+    "fasit": "ingen",
+    "halveFont": 65,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 31,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 1,
+      "advisory": 0
+    },
+    "poeng": 8.8
+  },
+  {
+    "familie": "portal/booking",
+    "skjermer": 7,
+    "redirects": 0,
+    "filer": 16,
+    "fasit": "ingen",
+    "halveFont": 29,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 19,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 1,
+      "advisory": 0
+    },
+    "poeng": 8.8
+  },
+  {
+    "familie": "portal/talent",
+    "skjermer": 4,
+    "redirects": 1,
+    "filer": 13,
+    "fasit": "ingen",
+    "halveFont": 22,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 23,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 8.8
+  },
+  {
+    "familie": "portal/gameplan",
+    "skjermer": 3,
+    "redirects": 0,
+    "filer": 8,
+    "fasit": "ingen",
+    "halveFont": 7,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 12,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 8.8
+  },
+  {
+    "familie": "admin/plan",
+    "skjermer": 3,
+    "redirects": 0,
+    "filer": 9,
+    "fasit": "ingen",
+    "halveFont": 9,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 15,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 8.8
+  },
+  {
+    "familie": "admin/grupper",
+    "skjermer": 6,
+    "redirects": 0,
+    "filer": 16,
+    "fasit": "ingen",
+    "halveFont": 6,
+    "fokusHull": 1,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 3,
+    "paperRester": 7,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 8.9
+  },
+  {
+    "familie": "admin/agencyos",
+    "skjermer": 5,
+    "redirects": 5,
+    "filer": 19,
+    "fasit": "ingen",
+    "halveFont": 18,
+    "fokusHull": 1,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 3,
+    "paperRester": 7,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 8.9
+  },
+  {
+    "familie": "portal/(rot)",
+    "skjermer": 1,
+    "redirects": 0,
+    "filer": 7,
+    "fasit": "kalibrert",
+    "halveFont": 3,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 7,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 8.9
+  },
+  {
+    "familie": "admin/jarvis",
+    "skjermer": 1,
+    "redirects": 0,
+    "filer": 7,
+    "fasit": "ingen",
+    "halveFont": 3,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 7,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 8.9
+  },
+  {
+    "familie": "portal/mal",
+    "skjermer": 12,
+    "redirects": 3,
+    "filer": 27,
+    "fasit": "ingen",
+    "halveFont": 37,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 17,
+    "eliteTier": 1,
+    "detektor": {
+      "error": 0,
+      "warning": 1,
+      "advisory": 0
+    },
+    "poeng": 9
+  },
+  {
+    "familie": "admin/kalender",
+    "skjermer": 3,
+    "redirects": 1,
+    "filer": 10,
+    "fasit": "ingen",
+    "halveFont": 8,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 7,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 9.1
+  },
+  {
+    "familie": "portal/meg",
+    "skjermer": 30,
+    "redirects": 4,
+    "filer": 64,
+    "fasit": "ingen",
+    "halveFont": 90,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 3,
+    "paperRester": 78,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 2,
+      "advisory": 0
+    },
+    "poeng": 9.2
+  },
+  {
+    "familie": "portal/coach",
+    "skjermer": 13,
+    "redirects": 0,
+    "filer": 27,
+    "fasit": "ingen",
+    "halveFont": 30,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 53,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 9.2
+  },
+  {
+    "familie": "portal/analysere",
+    "skjermer": 7,
+    "redirects": 0,
+    "filer": 19,
+    "fasit": "kalibrert",
+    "halveFont": 25,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 2,
+    "paperRester": 12,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 9.2
+  },
+  {
+    "familie": "portal/(fullscreen)",
+    "skjermer": 9,
+    "redirects": 3,
+    "filer": 20,
+    "fasit": "ingen",
+    "halveFont": 19,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 0,
+    "paperRester": 8,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 9.7
+  },
+  {
+    "familie": "admin/agents",
+    "skjermer": 1,
+    "redirects": 1,
+    "filer": 5,
+    "fasit": "ingen",
+    "halveFont": 0,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 0,
+    "paperRester": 1,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 10
+  },
+  {
+    "familie": "portal/analyse",
+    "skjermer": 0,
+    "redirects": 1,
+    "filer": 1,
+    "fasit": "ingen",
+    "halveFont": 0,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 0,
+    "paperRester": 0,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 10
+  },
+  {
+    "familie": "portal/baneguide",
+    "skjermer": 0,
+    "redirects": 3,
+    "filer": 3,
+    "fasit": "ingen",
+    "halveFont": 0,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 0,
+    "paperRester": 0,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 10
+  },
+  {
+    "familie": "portal/datagolf",
+    "skjermer": 0,
+    "redirects": 1,
+    "filer": 1,
+    "fasit": "ingen",
+    "halveFont": 0,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 0,
+    "paperRester": 0,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 10
+  },
+  {
+    "familie": "portal/oppgrader",
+    "skjermer": 0,
+    "redirects": 1,
+    "filer": 1,
+    "fasit": "ingen",
+    "halveFont": 0,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 0,
+    "paperRester": 0,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 10
+  },
+  {
+    "familie": "portal/stats",
+    "skjermer": 0,
+    "redirects": 1,
+    "filer": 1,
+    "fasit": "ingen",
+    "halveFont": 0,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 0,
+    "paperRester": 0,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 10
+  },
+  {
+    "familie": "portal/trackman",
+    "skjermer": 0,
+    "redirects": 2,
+    "filer": 2,
+    "fasit": "ingen",
+    "halveFont": 0,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 0,
+    "paperRester": 0,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 10
+  },
+  {
+    "familie": "admin/(rot)",
+    "skjermer": 0,
+    "redirects": 1,
+    "filer": 4,
+    "fasit": "ingen",
+    "halveFont": 0,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 0,
+    "paperRester": 0,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 10
+  },
+  {
+    "familie": "admin/agent-team",
+    "skjermer": 0,
+    "redirects": 1,
+    "filer": 1,
+    "fasit": "ingen",
+    "halveFont": 0,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 0,
+    "paperRester": 0,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 10
+  },
+  {
+    "familie": "admin/agenticos",
+    "skjermer": 0,
+    "redirects": 6,
+    "filer": 6,
+    "fasit": "ukalibrert",
+    "halveFont": 0,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 0,
+    "paperRester": 0,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 10
+  },
+  {
+    "familie": "admin/analysere",
+    "skjermer": 0,
+    "redirects": 1,
+    "filer": 1,
+    "fasit": "ingen",
+    "halveFont": 0,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 0,
+    "paperRester": 0,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 10
+  },
+  {
+    "familie": "admin/approvals",
+    "skjermer": 0,
+    "redirects": 2,
+    "filer": 2,
+    "fasit": "ingen",
+    "halveFont": 0,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 0,
+    "paperRester": 0,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 10
+  },
+  {
+    "familie": "admin/brief",
+    "skjermer": 0,
+    "redirects": 1,
+    "filer": 1,
+    "fasit": "ingen",
+    "halveFont": 0,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 0,
+    "paperRester": 0,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 10
+  },
+  {
+    "familie": "admin/calendar",
+    "skjermer": 0,
+    "redirects": 2,
+    "filer": 2,
+    "fasit": "ingen",
+    "halveFont": 0,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 0,
+    "paperRester": 0,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 10
+  },
+  {
+    "familie": "admin/drills",
+    "skjermer": 0,
+    "redirects": 1,
+    "filer": 1,
+    "fasit": "ingen",
+    "halveFont": 0,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 0,
+    "paperRester": 0,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 10
+  },
+  {
+    "familie": "admin/finance",
+    "skjermer": 0,
+    "redirects": 1,
+    "filer": 1,
+    "fasit": "ingen",
+    "halveFont": 0,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 0,
+    "paperRester": 0,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 10
+  },
+  {
+    "familie": "admin/godkjenninger",
+    "skjermer": 0,
+    "redirects": 1,
+    "filer": 1,
+    "fasit": "ingen",
+    "halveFont": 0,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 0,
+    "paperRester": 0,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 10
+  },
+  {
+    "familie": "admin/handlingssenter",
+    "skjermer": 0,
+    "redirects": 1,
+    "filer": 1,
+    "fasit": "ingen",
+    "halveFont": 0,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 0,
+    "paperRester": 0,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 10
+  },
+  {
+    "familie": "admin/innboks",
+    "skjermer": 0,
+    "redirects": 1,
+    "filer": 1,
+    "fasit": "ingen",
+    "halveFont": 0,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 0,
+    "paperRester": 0,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 10
+  },
+  {
+    "familie": "admin/innboks-epost",
+    "skjermer": 0,
+    "redirects": 1,
+    "filer": 1,
+    "fasit": "ingen",
+    "halveFont": 0,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 0,
+    "paperRester": 0,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 10
+  },
+  {
+    "familie": "admin/integrasjoner",
+    "skjermer": 0,
+    "redirects": 1,
+    "filer": 1,
+    "fasit": "ingen",
+    "halveFont": 0,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 0,
+    "paperRester": 0,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 10
+  },
+  {
+    "familie": "admin/klubb",
+    "skjermer": 0,
+    "redirects": 1,
+    "filer": 1,
+    "fasit": "ingen",
+    "halveFont": 0,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 0,
+    "paperRester": 0,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 10
+  },
+  {
+    "familie": "admin/messages",
+    "skjermer": 0,
+    "redirects": 1,
+    "filer": 1,
+    "fasit": "ingen",
+    "halveFont": 0,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 0,
+    "paperRester": 0,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 10
+  },
+  {
+    "familie": "admin/okter",
+    "skjermer": 0,
+    "redirects": 1,
+    "filer": 1,
+    "fasit": "ingen",
+    "halveFont": 0,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 0,
+    "paperRester": 0,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 10
+  },
+  {
+    "familie": "admin/oppfolging",
+    "skjermer": 0,
+    "redirects": 1,
+    "filer": 1,
+    "fasit": "ingen",
+    "halveFont": 0,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 0,
+    "paperRester": 0,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 10
+  },
+  {
+    "familie": "admin/organisasjon",
+    "skjermer": 0,
+    "redirects": 1,
+    "filer": 1,
+    "fasit": "ingen",
+    "halveFont": 0,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 0,
+    "paperRester": 0,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 10
+  },
+  {
+    "familie": "admin/planlegge",
+    "skjermer": 0,
+    "redirects": 1,
+    "filer": 1,
+    "fasit": "ingen",
+    "halveFont": 0,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 0,
+    "paperRester": 0,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 10
+  },
+  {
+    "familie": "admin/plans",
+    "skjermer": 0,
+    "redirects": 6,
+    "filer": 6,
+    "fasit": "ingen",
+    "halveFont": 0,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 0,
+    "paperRester": 0,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 10
+  },
+  {
+    "familie": "admin/reports",
+    "skjermer": 0,
+    "redirects": 1,
+    "filer": 1,
+    "fasit": "ingen",
+    "halveFont": 0,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 0,
+    "paperRester": 0,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 10
+  },
+  {
+    "familie": "admin/settings",
+    "skjermer": 0,
+    "redirects": 6,
+    "filer": 6,
+    "fasit": "ingen",
+    "halveFont": 0,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 0,
+    "paperRester": 0,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 10
+  },
+  {
+    "familie": "admin/stall",
+    "skjermer": 0,
+    "redirects": 1,
+    "filer": 1,
+    "fasit": "ingen",
+    "halveFont": 0,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 0,
+    "paperRester": 0,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 10
+  },
+  {
+    "familie": "admin/talent",
+    "skjermer": 0,
+    "redirects": 9,
+    "filer": 9,
+    "fasit": "ingen",
+    "halveFont": 0,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 0,
+    "paperRester": 0,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 10
+  },
+  {
+    "familie": "admin/teknisk-plan",
+    "skjermer": 0,
+    "redirects": 1,
+    "filer": 1,
+    "fasit": "ingen",
+    "halveFont": 0,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 0,
+    "paperRester": 0,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 10
+  },
+  {
+    "familie": "admin/turnering-kart",
+    "skjermer": 0,
+    "redirects": 1,
+    "filer": 1,
+    "fasit": "ingen",
+    "halveFont": 0,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 0,
+    "paperRester": 0,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 10
+  },
+  {
+    "familie": "admin/uka",
+    "skjermer": 0,
+    "redirects": 1,
+    "filer": 1,
+    "fasit": "ingen",
+    "halveFont": 0,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 0,
+    "paperRester": 0,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 10
+  },
+  {
+    "familie": "admin/varsler",
+    "skjermer": 0,
+    "redirects": 1,
+    "filer": 1,
+    "fasit": "ingen",
+    "halveFont": 0,
+    "fokusHull": 0,
+    "alert": 0,
+    "hexInline": 0,
+    "divOnClick": 0,
+    "paperRester": 0,
+    "eliteTier": 0,
+    "detektor": {
+      "error": 0,
+      "warning": 0,
+      "advisory": 0
+    },
+    "poeng": 10
+  }
+]
