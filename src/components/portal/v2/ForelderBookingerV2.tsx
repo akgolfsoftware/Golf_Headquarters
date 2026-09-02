@@ -11,6 +11,7 @@
  */
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { TL } from "@/lib/v2/train-lock";
 import {
   FoSkjerm,
@@ -201,6 +202,30 @@ export function ForelderBookingerV2({ data }: { data: ForelderBookingerData }) {
         tittel="Bookinger"
         under={`${kommende.length} kommende${venter > 0 ? ` · ${venter} venter svar` : ""}`}
       />
+
+      {/* Book ny time — CTA lagt til STEG 9.8 (foreldreportalen hadde ingen
+          bookingsvei inn, kun lesevisning). FoCtaPrimar-stilen (samme som
+          FO-04/06/08/10 allerede bruker), ikke en ny visuell komponent. */}
+      {antallBarn > 0 && (
+        <Link href="/forelder/bookinger/ny" style={{ textDecoration: "none", display: "block", marginTop: 14 }}>
+          <span
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              height: 48,
+              borderRadius: 999,
+              background: TL.fill,
+              color: TL.onFill,
+              fontFamily: TL.font.sans,
+              fontSize: 16,
+              fontWeight: 700,
+            }}
+          >
+            Book ny time
+          </span>
+        </Link>
+      )}
 
       {/* Sticky filterlag — translucent per FO-03 (fasit-tegnet unntak) */}
       {barnNavn.length > 1 && (

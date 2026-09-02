@@ -23,9 +23,15 @@ export type BookingBekreftetV2Data = {
   varighetMin: number;
   /** Google Kalender-URL generert i page.tsx (uendret logikk). */
   kalenderUrl: string;
+  /** «Se alle bookinger»-lenken. Default («/portal/meg/bookinger») bevarer dagens
+   *  oppførsel — forelderportalen (STEG 9.8) sender inn «/forelder/bookinger». */
+  mineBookingerHref?: string;
+  /** Caps-etikett øverst — «PlayerHQ» (spiller) eller «Foreldreportal» (STEG 9.8). */
+  merkelapp?: string;
 };
 
 export function BookingBekreftetV2({ data }: { data: BookingBekreftetV2Data }) {
+  const merkelapp = data.merkelapp ?? "PlayerHQ";
   return (
     <div data-paper-portal-booking-bekreftet style={{ maxWidth: 440, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
       {/* Hero */}
@@ -44,7 +50,7 @@ export function BookingBekreftetV2({ data }: { data: BookingBekreftetV2Data }) {
         >
           <Icon name="check-circle" size={28} style={{ color: TL.fill }} />
         </span>
-        <Caps>PlayerHQ · Booking</Caps>
+        <Caps>{merkelapp} · Booking</Caps>
         <Tittel em="bekreftet">Booking</Tittel>
         <p style={{ fontFamily: TL.font.sans, fontSize: 13.5, lineHeight: 1.55, color: TL.mute, maxWidth: 320, margin: 0 }}>
           {data.linje}
@@ -74,7 +80,7 @@ export function BookingBekreftetV2({ data }: { data: BookingBekreftetV2Data }) {
             borderRadius: 10, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
           }}>Legg i kalender</span>
         </a>
-        <Link href="/portal/meg/bookinger" style={{ textDecoration: "none", display: "block" }}>
+        <Link href={data.mineBookingerHref ?? "/portal/meg/bookinger"} style={{ textDecoration: "none", display: "block" }}>
           <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
             borderRadius: 10, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,

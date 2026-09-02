@@ -38,6 +38,25 @@ export async function hentBarnForForelder(parentUserId: string) {
   }));
 }
 
+/**
+ * Autorisasjonssjekk for «forelder booker for barnet» (STEG 9.8): finnes det
+ * en ParentRelation mellom denne forelderen og dette barnet? Returnerer
+ * barnets bookingsrelevante felter (id/navn/e-post/tier), eller null.
+ * Samme filter (kun parentId, ingen `approved`-sjekk) som hentBarnForForelder
+ * over, for konsistent autorisasjon på tvers av forelderflatene.
+ */
+export async function hentBarnHvisTilhoerer(parentUserId: string, barnId: string) {
+  const link = await prisma.parentRelation.findFirst({
+    where: { parentId: parentUserId, childId: barnId },
+    select: {
+      child: {
+        select: { id: true, name: true, email: true, tier: true, avatarUrl: true },
+      },
+    },
+  });
+  return link?.child ?? null;
+}
+
 /** Alder fra fødselsdato (kun hvis kjent — aldri gjettet). Delt av barn-lista og barn-detalj. */
 export function alderFraFodselsdato(dateOfBirth: Date | null): number | null {
   if (!dateOfBirth) return null;

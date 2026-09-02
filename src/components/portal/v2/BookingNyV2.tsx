@@ -24,7 +24,6 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Caps, Tittel, Kort, TomTilstand, Icon, HjelpTips } from "@/components/v2";
 import { CreditMeter } from "@/components/portal/abonnement/credit-meter";
-const WIZARD = "/portal/booking/ny";
 
 /* ── Datakontrakt (alt serialiserbart — server-pagen eier queries/format) ── */
 
@@ -47,6 +46,11 @@ export type NySlot = {
 };
 
 export type BookingNyV2Data = {
+  /** Base-rute for wizardens egne lenker — «/portal/booking/ny» (spiller) eller
+   *  «/forelder/bookinger/ny/<barnId>» (forelder booker for barnet, STEG 9.8). */
+  wizardBase: string;
+  /** Caps-etikett øverst — «PlayerHQ» (spiller) eller «Foreldreportal» (STEG 9.8). */
+  merkelapp?: string;
   /** «credits» = forhåndsbetalte timer (som før). «betaling» = betal per time med kort. */
   modus: "credits" | "betaling";
   /** Hvorfor betaling-modus: VALGT (?betaling=1), BRUKT_OPP, INGEN_PAKKE. Null i credits-modus. */
@@ -128,7 +132,8 @@ function StegTittel({ nr, children }: { nr: number; children: React.ReactNode })
 
 const UKEDAG = ["Sø", "Ma", "Ti", "On", "To", "Fr", "Lø"];
 
-function DagStripe({ valgtDatoIso, serviceSlug, dager, ekstraQuery }: {
+function DagStripe({ wizardBase, valgtDatoIso, serviceSlug, dager, ekstraQuery }: {
+  wizardBase: string;
   valgtDatoIso: string;
   serviceSlug: string;
   dager: number;
@@ -157,7 +162,7 @@ function DagStripe({ valgtDatoIso, serviceSlug, dager, ekstraQuery }: {
         return (
           <Link
             key={iso}
-            href={`${WIZARD}?service=${serviceSlug}&dato=${iso}${ekstraQuery}`}
+            href={`${wizardBase}?service=${serviceSlug}&dato=${iso}${ekstraQuery}`}
             scroll={false}
             className="v2-press v2-focus"
             style={{ display: "flex", minWidth: 60, flex: "none", flexDirection: "column", alignItems: "center", gap: 1, padding: "8px 0 9px", borderRadius: 12, textDecoration: "none", background: aktiv ? TL.fill : TL.dock, border: `1px solid ${aktiv ? "transparent" : TL.hair}` }}
@@ -180,7 +185,7 @@ function DagStripe({ valgtDatoIso, serviceSlug, dager, ekstraQuery }: {
 
 /* ── Slot-lenker gruppert per coach — href-kontrakt identisk med legacy ──── */
 
-function SlotLenker({ slots, serviceSlug, ekstraQuery }: { slots: NySlot[]; serviceSlug: string; ekstraQuery: string }) {
+function SlotLenker({ wizardBase, slots, serviceSlug, ekstraQuery }: { wizardBase: string; slots: NySlot[]; serviceSlug: string; ekstraQuery: string }) {
   const perCoach = new Map<string, { coachNavn: string; slots: { startIso: string }[] }>();
   for (const s of slots) {
     const eksisterende = perCoach.get(s.coachId);
@@ -202,7 +207,7 @@ function SlotLenker({ slots, serviceSlug, ekstraQuery }: { slots: NySlot[]; serv
               return (
                 <Link
                   key={s.startIso}
-                  href={`${WIZARD}/bekreft?service=${serviceSlug}&start=${encodeURIComponent(s.startIso)}&coach=${coachId}${ekstraQuery}`}
+                  href={`${wizardBase}/bekreft?service=${serviceSlug}&start=${encodeURIComponent(s.startIso)}&coach=${coachId}${ekstraQuery}`}
                   className="v2-press v2-focus"
                   style={{ display: "flex", minHeight: 44, alignItems: "center", justifyContent: "center", fontFamily: TL.font.mono, fontSize: 12.5, fontWeight: 700, color: TL.text, textDecoration: "none", background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: 10, fontVariantNumeric: "tabular-nums" }}
                 >
@@ -235,7 +240,7 @@ function OppsumRad({ label, verdi, mono, last }: { label: React.ReactNode; verdi
 export function BookingNyV2({ data }: { data: BookingNyV2Data }) {
   const mobile = useMobile();
   const {
-    modus, betalingGrunn,
+    wizardBase, merkelapp = "PlayerHQ", modus, betalingGrunn,
     tjenester, valgtServiceId, valgtServiceNavn, valgtServiceVarighetMin,
     valgtServicePrisOre,
     datoParam, serviceParamSatt, valgtDatoIso, valgtDatoLang, aktivtSteg,
@@ -250,7 +255,7 @@ export function BookingNyV2({ data }: { data: BookingNyV2Data }) {
     <div style={{ width: "100%", maxWidth: 680, margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
       {/* Hode */}
       <div>
-        <Caps>PlayerHQ · Book ny time</Caps>
+        <Caps>{merkelapp} · Book ny time</Caps>
         <div style={{ marginTop: 10 }}>
           {erBetaling ? (
             <Tittel mobile={mobile} em="per time.">Betal</Tittel>
@@ -332,7 +337,7 @@ export function BookingNyV2({ data }: { data: BookingNyV2Data }) {
             return (
               <Link
                 key={s.id}
-                href={`${WIZARD}?service=${s.slug}${datoParam ? `&dato=${datoParam}` : ""}${betalingQ}`}
+                href={`${wizardBase}?service=${s.slug}${datoParam ? `&dato=${datoParam}` : ""}${betalingQ}`}
                 scroll={false}
                 aria-pressed={aktiv}
                 className="v2-press v2-focus"
@@ -388,7 +393,7 @@ export function BookingNyV2({ data }: { data: BookingNyV2Data }) {
               <Icon name="clock" size={11} style={{ color: TL.mute }} />
               {valgtServiceVarighetMin} min
             </span>
-            <Link href={WIZARD} scroll={false} className="v2-focus" style={{ marginLeft: "auto", fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.fill, textDecoration: "none" }}>
+            <Link href={wizardBase} scroll={false} className="v2-focus" style={{ marginLeft: "auto", fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.fill, textDecoration: "none" }}>
               Endre
             </Link>
           </div>
@@ -404,7 +409,7 @@ export function BookingNyV2({ data }: { data: BookingNyV2Data }) {
           <Caps size={9}>Velg dag</Caps>
           <Caps size={9}>Neste 14 dager</Caps>
         </div>
-        <DagStripe valgtDatoIso={valgtDatoIso} serviceSlug={valgtSlug} dager={14} ekstraQuery={betalingQ} />
+        <DagStripe wizardBase={wizardBase} valgtDatoIso={valgtDatoIso} serviceSlug={valgtSlug} dager={14} ekstraQuery={betalingQ} />
 
         <div style={{ marginTop: 16 }}>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
@@ -417,7 +422,7 @@ export function BookingNyV2({ data }: { data: BookingNyV2Data }) {
                 <TomTilstand icon="calendar" title="Ingen ledige tider denne dagen" sub="Prøv en annen dag over." />
               </Kort>
             ) : (
-              <SlotLenker slots={slots} serviceSlug={valgtSlug} ekstraQuery={betalingQ} />
+              <SlotLenker wizardBase={wizardBase} slots={slots} serviceSlug={valgtSlug} ekstraQuery={betalingQ} />
             )}
           </div>
         </div>

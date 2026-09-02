@@ -10,15 +10,10 @@
 
 import { notFound, redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { prisma } from "@/lib/prisma";
-import { kanBrukeCredits } from "@/lib/booking/credits-tilgang";
-import { isSlotStillAvailable } from "@/lib/booking/availability";
+import { byggBookingBekreftData } from "@/lib/portal-booking/bekreft-data";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { TilbakeLenke } from "@/components/v2";
-import {
-  BookingNyBekreftV2,
-  type BookingNyBekreftV2Data,
-} from "@/components/portal/v2/BookingNyBekreftV2";
+import { BookingNyBekreftV2 } from "@/components/portal/v2/BookingNyBekreftV2";
 
 type Props = {
   searchParams: Promise<{ service?: string; start?: string; coach?: string; betaling?: string }>;
@@ -33,85 +28,23 @@ export default async function BekreftCreditBookingPage({
 
   const user = await requirePortalUser({ kreverTilgang: "TALENT", allow: ["PLAYER", "COACH", "ADMIN"] });
 
-  const erBetaling = betaling === "1";
-
-  const subscription = await prisma.subscription.findUnique({
-    where: { userId_kind: { userId: user.id, kind: "COACHING" } },
-  });
-  // Credits-modus krever brukbare credits — mangler de, tar wizarden
-  // spilleren videre i betaling-modus i stedet (aldri ut av appen).
-  if (!erBetaling) {
-    if (
-      !subscription ||
-      !kanBrukeCredits(subscription) ||
-      subscription.monthlyCredits === 0 ||
-      subscription.creditsRemaining <= 0
-    ) {
-      redirect("/portal/booking/ny");
-    }
-  }
-
-  const service = await prisma.serviceType.findUnique({
-    where: { slug: serviceSlug },
-  });
-  if (!service || !service.active) notFound();
-
-  const startAt = new Date(start);
-  if (isNaN(startAt.getTime())) notFound();
-
-  const coachUser = await prisma.user.findUnique({
-    where: { id: coachId },
-    select: { id: true, name: true },
-  });
-  if (!coachUser) notFound();
-
-  // Sjekk slot fortsatt ledig — vis feilmelding hvis ikke
-  const ledig = await isSlotStillAvailable(service.id, startAt, coachId);
-
-  const dato = startAt.toLocaleDateString("nb-NO", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-  });
-  const klokkeslett = startAt.toLocaleTimeString("nb-NO", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-  const datoTid = `${dato.charAt(0).toUpperCase()}${dato.slice(1)} · ${klokkeslett}`;
-
-  const creditsRemaining = subscription?.creditsRemaining ?? 0;
-  const saldoEtter = creditsRemaining - 1;
-
-  const backHref = `/portal/booking/ny?service=${serviceSlug}&dato=${
-    startAt.toISOString().split("T")[0]
-  }${erBetaling ? "&betaling=1" : ""}`;
-
-  const data: BookingNyBekreftV2Data = {
-    modus: erBetaling ? "betaling" : "credits",
-    prisOre: service.priceOre,
-    serviceTypeId: service.id,
+  const resultat = await byggBookingBekreftData({
+    eierId: user.id,
+    wizardBase: "/portal/booking/ny",
+    bekreftetBase: "/portal/booking/bekreftet",
+    serviceSlug,
+    start,
     coachId,
-    startIso: startAt.toISOString(),
-    backHref,
-    ledig,
-    rader: [
-      { label: "Økt-type", verdi: service.name },
-      { label: "Coach", verdi: coachUser.name ?? "Coach" },
-      { label: "Dato/tid", verdi: datoTid },
-      { label: "Varighet", verdi: `${service.durationMin} min` },
-      {
-        label: erBetaling ? "Pris" : "Kostnad",
-        verdi: erBetaling ? `${service.priceOre / 100} kr` : "1 av månedens timer",
-      },
-    ],
-    creditsRemaining,
-    saldoEtter,
-  };
+    betaling,
+  });
+
+  if (resultat.status === "krever_credits_redirect") redirect("/portal/booking/ny");
+  if (resultat.status === "ikke_funnet") notFound();
 
   return (
     <V2Shell bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href={backHref}>Velg annen tid</TilbakeLenke>
-      <BookingNyBekreftV2 data={data} />
+      <TilbakeLenke href={resultat.data.backHref}>Velg annen tid</TilbakeLenke>
+      <BookingNyBekreftV2 data={resultat.data} />
     </V2Shell>
   );
 }
