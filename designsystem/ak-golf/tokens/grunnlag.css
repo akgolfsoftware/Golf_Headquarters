@@ -33,9 +33,13 @@ a { color: var(--ak-signal); text-decoration: underline; text-decoration-thickne
 a:hover { color: var(--ak-tekst); text-decoration-color: var(--ak-signal) }
 a:active { color: var(--ak-signal-fyll) }
 
+/* Fokusringen er den ene regelen som vinner over alt — også over en komponent
+   som setter outline: none inline. Derfor !important, det eneste stedet i
+   systemet. Ringen skal aldri kunne fjernes ved et uhell (12-bevegelse.md).
+   Lagt til 02.09.2026 etter at vakten fant et skjemafelt uten ring i et kit. */
 :where(a, button, input, select, textarea, [tabindex]):focus-visible {
-  outline: 2px solid var(--ak-signal);
-  outline-offset: 2px;
+  outline: 2px solid var(--ak-signal) !important;
+  outline-offset: 2px !important;
   border-radius: 2px;
 }
 
