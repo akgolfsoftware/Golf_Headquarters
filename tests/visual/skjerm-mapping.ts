@@ -84,6 +84,15 @@ export const SKJERM_MAPPING: SkjermMapping[] = [
     notat: "Allerede dokumentert kjent avvik (revisjonsrapportens statusmatrise, kategori c): fasiten er et bunn-ark over «I dag», koden er en egen helside med hull-for-hull-rutenett. Feltgeometrien matcher — layout-typen gjør ikke.",
   },
   {
+    label: "ME-03 Abonnement",
+    rute: "/portal/meg/abonnement",
+    tema: "dark",
+    cropTop: 54,
+    bruker: "screentest",
+    status: "ukalibrert",
+    notat: "Fasiten viser pakken «AK Academy · Elite» med egen kr/måned-pris og fornyelsesdato, som en Stripe-lignende enkeltfaktura. «Elite» er et dødt Prisma-enum CLAUDE.md eksplisitt forbyr i UI, og ingen pakke har egen kr/måned-visning i dagens modell (16.08.2026-omleggingen: coaching-pakke gir gratis PlayerHQ-tilgang UTEN pris vist på denne siden, PlayerHQ alene koster 299/2690 kr). Fasiten er altså fra FØR omleggingen — samme klasse avvik som P-05 og AO-01. Målt pixel-diff (9,93 %) ser lavt/normalt ut, men er IKKE et meningsfullt tall her: strukturen matcher tilfeldig (mørkt kort øverst, linjeliste under), ikke fordi innholdsmodellen er den samme. /oppgrader/flyt (kjøpsflyten) har ingen egen fasit-ramme og kunne ikke vises for screentest (som allerede er PRO+pakke → redirectes til denne siden) uten TALENT-tier-sonden Anders ikke har godkjent ennå (se docs/MASTERPLAN-GJENSTAAENDE.md Ø1). Kodegjennomgang av oppgrader-flyt-wizard.tsx fant og rettet én reell feil: funksjons-chippene (\"AI-coach\" m.fl.) hadde identisk tekst- og bakgrunnsfarge (usynlig tekst) — se PR.",
+  },
+  {
     label: "AO-01 Cockpit 1440",
     rute: "/admin/agenticos",
     tema: "dark",
