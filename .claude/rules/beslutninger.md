@@ -26,6 +26,26 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
 > ⚠ **FYS-formel + A–K-nivåtall** er ikke avklart (deltråder: onboarding steg 6 + drill-retag) —
 > ikke håndhev som låst. De tre andre klyngene fra 2026-06-22 er avklart og bygget.
 
+## Beslutningene (september 2026)
+
+- **PLAN-FASIT, WORKBENCH-KANON OG BETALINGSTEST (Anders 02.09.2026, i økt):** tre svar som låser
+  datoene i MASTERPLAN STEG 1B (veien til «FULL lanserbar», milepæl 24.09.2026).
+  1. **`/portal/planlegge` porter mot `PH-07 Plan` + `PH-08 Plan tom uke`, ikke `P-05 iPhone Agenda`.**
+     P-05 er UTGÅTT som fasit for Plan-skjermen: den tegner CS/M-vokabular (CS60·M3) fra før
+     opplåsingen 18.08 og en annen IA (ukenavigasjon, ÅRSPLAN/MÅNED/UKE/ØKT-faner) — målt i
+     sign-off-riggen 01.09 (`tests/visual/skjerm-mapping.ts`, status «ukalibrert»). Ingen omtegning.
+     P-05 består kun som fasit for telefon-*Workbench* (agenda med «Start banespill»), ikke for Plan.
+  2. **Coachens Workbench: WB-serien (WB-01–WB-10, «komplett Workbench» 24.08) er kanon for struktur
+     og brekkpunkter; A-serien (A-01…A-18) er kun Mac-pikselfasit der WB mangler detalj.** Overstyrer
+     dagens kode, som siterer A-01/A-12/A-13/A-07/A-08 som fasit (`src/components/workbench/WorkbenchUke.tsx`).
+     Løser revisjonens åpne «WB- vs. A-serien»-spørsmål (01.09).
+  3. **Betalingskjeden verifiseres med ekte kjøp i prod** (Anders' eget kort, 299 kr, refunderes) —
+     ikke kun Stripe test-clock, som ikke dekker live-nøkler, webhook-URL og e-postkvittering. Kjøres
+     som Ø2 (fredag 04.09). Målt 02.09: prod-Stripe står allerede i LIVE.
+  **Arbeid:** MASTERPLAN STEG 1B Ø2, Ø4, Ø9–Ø10 (ublokkert) og STEG 1C D1/D2/D10 (svart). Ingen kode
+  følger av selve beslutningen — Ø4 bytter riggens P-05-rad til PH-07, Ø9 bytter fasit-siteringene i
+  `WorkbenchUke.tsx`. SCREEN-INDEX «Kjente hull» er oppdatert.
+
 ## Beslutningene (august 2026)
 
 - **AK GOLF HØRER HJEMME I ET VERKSTED — PALETTEN LAGT OM (Anders 01.09.2026, i økt):**
