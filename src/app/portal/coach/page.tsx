@@ -14,6 +14,7 @@ import { Kort, TomTilstand, Knapp, TilbakeLenke } from "@/components/v2";
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getCoachProfile, getMessages, getUpcomingSessions, getCoachNotes } from "@/app/portal/(legacy)/coach/actions";
+import { getTilbakemeldingerListe } from "@/lib/portal-okt/coach-tilbakemelding-data";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { CoachHubV2, type CoachHubData } from "@/components/portal/v2/CoachHubV2";
 
@@ -53,10 +54,11 @@ export default async function V2CoachPreviewPage() {
 
   const coach = await getCoachProfile();
 
-  const [messages, upcoming, notes] = await Promise.all([
+  const [messages, upcoming, notes, tilbakemeldinger] = await Promise.all([
     coach ? getMessages(coach.id) : Promise.resolve([]),
     getUpcomingSessions(),
     getCoachNotes(),
+    getTilbakemeldingerListe(user.id),
   ]);
 
   const data: CoachHubData = {
@@ -72,6 +74,7 @@ export default async function V2CoachPreviewPage() {
       locationName: s.locationName,
       status: s.status,
     })),
+    tilbakemeldingerCount: tilbakemeldinger.length,
   };
 
   return (
