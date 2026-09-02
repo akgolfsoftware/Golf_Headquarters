@@ -2,7 +2,7 @@
 
 > **Hva dette er:** ett snapshot av hvor plattformen står akkurat nå. Oppdater datoen + relevante linjer når noe vesentlig endrer seg.
 
-**Sist oppdatert:** 2026-09-02 (målt mot `origin/main` @ `c40d57b40`, PR #734).
+**Sist oppdatert:** 2026-09-02 kveld (målt mot `origin/main` @ `0675752e3`, PR #752).
 **Betaling:** koden er klar siden 30.08 (Stripe-cutover 1. september). Live-nøkler/DNS/DKIM er
 Anders-oppgaver i Vercel/Stripe-panelet og kan ikke verifiseres fra kode/git — se
 `docs/MASTERPLAN-GJENSTAAENDE.md` STEG 1 og 10.8.
@@ -11,7 +11,35 @@ over alt gjenstående (konsolidert 30.08 fra det tidligere LANSERINGSPLAN-KOMPLE
 **Produktretning låst 30.08:** `.claude/rules/beslutninger.md` §«PRODUKTRETNING — åtte svar».
 Den blokken er fasit for Innsikt og Analyse og vinner over eldre dokumenter.
 
-## Hovedbildet 02.09 (målt mot origin/main @ c40d57b40)
+## Hovedbildet 02.09 kveld (målt mot origin/main @ 0675752e3 — 17 PR-er merget denne dagen, #737–#753)
+
+- **Veien til «FULL lanserbar» (STEG 1B, milepæl 24.09) ligger FORAN skjema:** Ø1 (delvis),
+  Ø3, Ø4–Ø8 (PR #750), Ø9 (PR #751) og Ø10 (docs, PR #754) er levert 02.09 — datert til
+  8.–16.09. Gjenstår i F0/F1/F2: Ø2 (ekte kjøp fre 04.09, Anders), Ø11–Ø13 (Spiller 360,
+  venter på D3-canvas-ja 17.09), Ø14–Ø15 (Stall/Kommunikasjon sign-off), Ø16 (røyktest).
+- **Betaling (Ø1, målt i prod 02.09):** Stripe står i LIVE. `STRIPE_PRICE_ID_PRO_AAR` mangler
+  fortsatt i Vercel production → årsplanen gir 500. Innebygd Stripe Elements-kortskjema (PR #745)
+  er verifisert isolert, ikke gjennom innlogget flyt (0 aktive abonnement etter nullstillingen).
+- **PORTPLAN §A1 lukket (PR #738–#745):** A1.4 (5 bookingsteg beholdt), A1.5 (GruppeFaner
+  beholdt), A1.7 (Stripe Elements), A1.9 (`/portal/meg/utstyr` kanonisk).
+- **Levert samme kveld av parallelle økter:** dobbel V2-speil-økt ved samtidige kall fikset
+  (14.5A, #747) · daglig aktiv-måling `daily_active_users` (16.3, #748) · nattlig refresh-cron
+  for `mv_topar_grunnlag` (16.1, #749) · foreldre booker time for barnet (9.8, #752) ·
+  Claude Code-plugins + skill-regler i CLAUDE.md (#753).
+- **Beslutninger 02.09 (PR #739, #746):** D1 Plan = PH-07/08 · D2 Workbench = WB-serien ·
+  D10 Ø2 = ekte kjøp · WANG får eget merkevaresystem (overstyrer paraply-klausulen) ·
+  AK-formel v3 skrotet.
+- **AK Golf-designsystemet (PR #742):** revidert 5,9/10 og løftet — `tokens.json` er eneste
+  kilde, `ak-golf-tokens.mjs` + `check-ak-golf-kits.mjs` kjører i `npm run verify`.
+- **Dokumentrevisjon (PR #737):** MASTERPLAN, STATUS-NÅ, CLAUDE.md, gotchas.md og alle
+  `docs/platform/*.md` rettet mot kode/git (~25 avvik).
+- **PR #716 (paraplymerke/MORAD ut av publikumsvendt tekst) er MERGET 02.09** — ingen åpne
+  PR-er fra før 02.09 igjen. Grenen `feat/steg-15-11-stall` (PR #709, lukket uten merge —
+  innholdet kom via #710) er slettet lokalt og på GitHub.
+- **15.13 del 4 (PR #755):** talent-kjeden har faner, booking-detaljene har lenker inn.
+  Gjenstår i 15.13: SG-hub coach-modus (krever Anders).
+
+## Hovedbildet 02.09 morgen (historikk — målt mot origin/main @ c40d57b40)
 
 - **STEG 15 FERDIG (12 av 13 rader, PR #689–#713):** AgencyOS konsolidert til «én inngang per
   funksjon» — Kø, Oppgaver, Oppsett, Kalender, Jarvis, Turnering, Kommunikasjon, Analyse, Plan,
@@ -36,7 +64,7 @@ Den blokken er fasit for Innsikt og Analyse og vinner over eldre dokumenter.
   doc-referanser rettet, Club Speed-klassifisering presisert i v2-vokabularet, tre stale
   MASTERPLAN-rader rettet, feilmelding lagt til når bytt-tid på booking avvises (i stedet for
   stille redirect).
-- **Én åpen PR:** #716 (paraplymerke/MORAD ut av publikumsvendt tekst), åpnet 31.08, ikke merget.
+- **Én åpen PR:** #716 (paraplymerke/MORAD ut av publikumsvendt tekst), åpnet 31.08 — **merget 02.09 07:04**.
 
 ## Hovedbildet 30.08 natt (historikk — målt mot origin/main @ 5102448a9)
 

@@ -14,6 +14,7 @@ import { FEATURES } from "@/lib/features";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { TilbakeLenke } from "@/components/v2";
+import { TalentFaner } from "@/components/portal/v2/TalentFaner";
 import { testNivaaerSchema } from "@/lib/domain/talent-sync";
 import { PYRAMID_LABEL } from "@/lib/domain/workbench/labels";
 import {
@@ -66,7 +67,7 @@ export default async function MittNivaPage() {
   if (!tracking) {
     return (
       <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-        <TilbakeLenke href="/portal/talent">Talent</TilbakeLenke>
+        <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
         <TalentIkkeIProgrammet />
       </V2Shell>
     );
@@ -119,7 +120,8 @@ export default async function MittNivaPage() {
 
   return (
     <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/talent">Talent</TilbakeLenke>
+      <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
+      <TalentFaner aktiv="mitt-niva" />
       <TalentMittNivaV2 data={data} />
     </V2Shell>
   );

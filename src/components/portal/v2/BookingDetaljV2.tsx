@@ -10,6 +10,7 @@ import { TL } from "@/lib/v2/train-lock";
  * øktplaner). All formatering (Oslo-tid) skjer i page.tsx.
  */
 
+import Link from "next/link";
 import { Caps, Tittel, Kort, StatusPill, MikroMeta, type StatusTone } from "@/components/v2";
 import { BookingAvbestillKnapp } from "./BookingAvbestillKnapp";
 
@@ -24,7 +25,11 @@ export type BookingDetaljV2Data = {
   tid: string;
   varighetMin: number;
   sted: string;
+  /** Location.id — lenker «Sted» til /portal/booking/anlegg/[id] (15.13: anleggssiden hadde ingen vei inn). */
+  stedId: string;
   coachNavn: string | null;
+  /** Coach-brukerens id — lenker «Coach» til /portal/booking/coach/[id] (15.13). Null uten fast coach. */
+  coachId: string | null;
   notat: string | null;
   /** Kan avbestilles (status PENDING/CONFIRMED og starter i fremtiden). */
   kanAvbestille: boolean;
@@ -41,7 +46,13 @@ function DetaljRad({ label, verdi, last }: { label: string; verdi: React.ReactNo
   );
 }
 
+const LENKE_STIL: React.CSSProperties = { color: "inherit", textDecoration: "underline", textUnderlineOffset: 3, textDecorationColor: TL.hair };
+
 export function BookingDetaljV2({ data }: { data: BookingDetaljV2Data }) {
+  const stedLenke = <Link href={`/portal/booking/anlegg/${data.stedId}`} className="v2-focus" style={LENKE_STIL}>{data.sted}</Link>;
+  const coachLenke = data.coachNavn && data.coachId
+    ? <Link href={`/portal/booking/coach/${data.coachId}`} className="v2-focus" style={LENKE_STIL}>{data.coachNavn}</Link>
+    : data.coachNavn;
   return (
     <div data-paper-portal-booking-detalj data-paper-slug="playerhq-booking-mine" style={{ maxWidth: 560, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
       {/* Hero — ekte status + tjeneste */}
@@ -71,8 +82,8 @@ export function BookingDetaljV2({ data }: { data: BookingDetaljV2Data }) {
               </span>
             }
           />
-          <DetaljRad label="Sted" verdi={data.sted} />
-          {data.coachNavn && <DetaljRad label="Coach" verdi={data.coachNavn} />}
+          <DetaljRad label="Sted" verdi={stedLenke} />
+          {coachLenke && <DetaljRad label="Coach" verdi={coachLenke} />}
           <DetaljRad label="Status" verdi={<StatusPill tone={data.statusTone}>{data.statusLabel}</StatusPill>} last />
         </div>
       </Kort>

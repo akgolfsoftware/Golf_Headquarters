@@ -15,6 +15,7 @@ import { FEATURES } from "@/lib/features";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { TilbakeLenke } from "@/components/v2";
+import { TalentFaner } from "@/components/portal/v2/TalentFaner";
 import {
   TalentSammenligningV2,
   type TalentSammenligningData,
@@ -67,7 +68,7 @@ export default async function SammenligningPage({
   if (!mineData) {
     return (
       <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-        <TilbakeLenke href="/portal/talent">Talent</TilbakeLenke>
+        <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
         <TalentIkkeIProgrammet />
       </V2Shell>
     );
@@ -164,7 +165,8 @@ export default async function SammenligningPage({
 
   return (
     <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/talent">Talent</TilbakeLenke>
+      <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
+      <TalentFaner aktiv="sammenligning" />
       <TalentSammenligningV2 data={data} />
     </V2Shell>
   );
