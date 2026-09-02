@@ -113,7 +113,7 @@ export function WorkbenchLeseflate({
       </div>
       <div style={{ fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600 }}>{tittel}</div>
       {visning === "maned" && maned && <MonthGrid playerId={playerId} maned={maned} />}
-      {visning === "aar" && aar && <YearGrid playerId={playerId} aar={aar} />}
+      {visning === "aar" && aar && <YearGrid playerId={playerId} aar={aar} idag={idag} />}
     </div>
   );
 }

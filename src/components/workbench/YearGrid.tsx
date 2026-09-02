@@ -1,5 +1,19 @@
 "use client";
 
+/**
+ * YearGrid — årsplan-tabellen (Måned/Timer/Volum og dominant pyramide).
+ *
+ * Fasit (kanon, D2 02.09.2026): designsystem/train-lock/WB-06 Arsplan 3
+ * skall.dc.html — måned-tabellen her matcher fasitens kolonner og
+ * volumstolpe/pyramide-mønster. Fasiten tegner i tillegg periode-bånd øverst
+ * (Grunn/Spesialisering/Turnering/Evaluering, klikkbare), en fjerde kolonne
+ * «Turnering · test» per måned, og et 360 px høyresidepanel med valgt
+ * periodes balanse + turneringer i perioden. Ingen av delene finnes i koden
+ * — det krever en periode-datamodell (start/slutt-dato per periode) som ikke
+ * finnes i `YearViewModel` i dag. Ikke bygget (Ø17, 02.09.2026) — reell,
+ * ikke-triviell funksjonsutvidelse, ikke en portefeil.
+ */
+
 import Link from "next/link";
 import { TL } from "@/lib/v2/train-lock";
 import { formatHours, PYRAMID_LABEL, UI } from "@/lib/domain/workbench/labels";
@@ -9,10 +23,14 @@ import { workbenchUrl } from "@/lib/workbench/visning-url";
 export function YearGrid({
   playerId,
   aar,
+  idag,
 }: {
   playerId: string;
   aar: YearViewModel;
+  /** Oslo-dato i dag (YYYY-MM-DD) — styrer hvilken måned som er fremhevet (WB-06). */
+  idag?: string;
 }) {
+  const inneverendeManed = idag?.slice(0, 7);
   return (
     <div
       style={{
@@ -72,6 +90,7 @@ export function YearGrid({
       </div>
       {aar.months.map((m) => {
         const maned = m.monthStart.slice(0, 7);
+        const erInneverende = maned === inneverendeManed;
         return (
           <Link
             key={m.monthStart}
@@ -84,10 +103,14 @@ export function YearGrid({
               borderBottom: `1px solid ${TL.hair}`,
               textDecoration: "none",
               color: TL.text,
+              background: erInneverende ? `color-mix(in srgb, ${TL.text} 3%, transparent)` : "transparent",
             }}
           >
-            <span style={{ width: 96, fontSize: 14, fontWeight: 600 }}>
+            <span style={{ width: 96, fontSize: 14, fontWeight: erInneverende ? 700 : 600, display: "flex", alignItems: "center", gap: 7 }}>
               {UI.monthNames[m.monthIndex - 1]}
+              {erInneverende && (
+                <span aria-hidden style={{ width: 6, height: 6, borderRadius: "50%", background: TL.warm, flex: "none" }} />
+              )}
             </span>
             <span
               style={{
