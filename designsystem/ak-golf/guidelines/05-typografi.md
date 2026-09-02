@@ -2,25 +2,32 @@
 
 Fasit i kode: `designsystem/ak-golf/tokens/type.css`.
 
-Tre fonter. **Ingen fjerde.**
+Én familie, tre roller. **Ingen fjerde font.** Fastsatt 01.09.2026 (verkstedet).
 
 | Font | Bærer | Hvorfor |
 |---|---|---|
-| **Archivo Narrow** | Overskrifter. Alt som skal dominere en flate | Kondensert grotesk. Teknisk uten å være kald |
-| **Poppins** | Brødtekst, knapper, skjema | Nøytral, holder på små størrelser |
+| **IBM Plex Sans Condensed** | Overskrifter. Alt som skal dominere en flate | Kondensert, får plass til flere tegn per linje på 390 px |
+| **IBM Plex Sans** | Brødtekst, knapper, skjema | Tettere enn Poppins — tekst som brøt til tre linjer klarer seg på to |
 | **IBM Plex Mono** | **Alt som er målt** | Se under |
 
-## Hvorfor Archivo Narrow
+## Hvorfor IBM Plex
 
-Valget ble tatt 01.09.2026 av en praktisk grunn: **kondensert type får plass
-til flere tegn per linje på 390 px.** Mobil er merkets viktigste flate — det
-er der en forelder skanner mens hun står på et treningsfelt. En bred grotesk
-i 72 px sprenger den skjermen; Archivo Narrow gjør det ikke.
+To grunner, begge praktiske.
 
-Den ble testet mot Archivo, Barlow Condensed, Oswald, Saira Condensed, Chivo
-og Anton, i norsk tekst med Æ, Ø og Å. Oswald og Anton er for mye plakat.
-Chivo og Archivo er for brede for mobil. Barlow mangler autoritet i store
-grader.
+**Kondensert display får plass til flere tegn per linje på 390 px.** Mobil
+er merkets viktigste flate — det er der en forelder skanner mens hun står på
+et treningsfelt. En bred grotesk i 72 px sprenger den skjermen; Plex Sans
+Condensed gjør det ikke. Målt 01.09.2026: hero-linjen gikk fra fire til tre
+linjer.
+
+**Én familie holder flaten rolig.** Display, brødtekst og mono er tegnet
+sammen, med samme x-høyde og samme temperament. Plex ble testet mot Archivo
+Narrow + Poppins (valget fram til kvelden 01.09): Plex Sans er tettere, og
+brødtekst som brøt til tre linjer i Poppins klarer seg på to.
+
+Archivo Narrow, Poppins og Lora er ute av merket. Produktskjermene i
+PlayerHQ, AgencyOS og Forelder bruker fortsatt Poppins gjennom Train-lock —
+det er en annen fasit og røres ikke av dette kapitlet.
 
 ## Lora er ute
 
@@ -28,8 +35,8 @@ Serifen bar «det som skal leses langsomt» — ingress og sitat. Den rollen
 finnes ikke lenger. En serif sier *les langsomt*; instrumentet sier *her er
 tallet*. Det er ikke plass til begge stemmene i samme merke.
 
-Ingressen settes nå i Poppins 400 på 21 px. Sitatet settes i Archivo Narrow
-600, ikke i kursiv serif.
+Ingressen settes nå i IBM Plex Sans 400 på 21 px. Sitatet settes i IBM Plex
+Sans Condensed 600, ikke i kursiv serif.
 
 ## Mono er merkets viktigste regel
 
@@ -61,12 +68,12 @@ Ti trinn. Displayen går høyere enn før, fordi kondensert type tåler det.
 
 | Font | Vekter |
 |---|---|
-| Archivo Narrow | 600, 700 |
-| Poppins | 400, 500, 600 |
+| IBM Plex Sans Condensed | 600, 700 |
+| IBM Plex Sans | 400, 500, 600 |
 | IBM Plex Mono | 400, 500 |
 
-**700 er kun Archivo Narrow.** Poppins i 700 blir klumpete — det var grunnen
-til regelen før, og den gjelder fortsatt for brødtekstfonten.
+**700 er kun Plex Sans Condensed.** Brødtekstfonten går aldri over 600 —
+i 700 blir den klumpete på 15 og 17 px.
 
 ## Regler som holder teksten lesbar
 

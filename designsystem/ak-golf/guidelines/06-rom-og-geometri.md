@@ -37,7 +37,7 @@ Aldri pill på et kort. Aldri 16 px på en knapp.
 ## Dybde
 
 Tre nivåer. Skyggene er varme — bygget på blekk, ikke svart, så de ikke blir
-grå flekker på kremen.
+grå flekker på betongen.
 
 | Token | Brukes på |
 |---|---|

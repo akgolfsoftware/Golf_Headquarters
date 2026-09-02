@@ -48,8 +48,8 @@ målestokk *og* kryss på samme visning er støy.
 Merkeboka sa 31.08 at en identitetsfarge sjelden dekker mer enn 5 % av flaten.
 **Det gjelder ikke lenger.**
 
-I instrument-retningen bæres clay av **hele flater** — et panel, en kolonne,
-en seksjon. En clay-flate dekker minst 18 % av visningen når den brukes.
+I instrument-retningen bæres identitetsfargen av **hele flater** — et panel, en kolonne,
+en seksjon. En aksentflate dekker minst 18 % av visningen når den brukes.
 
 Det som består: **én identitetsfarge om gangen**, aldri to i samme visning, og
 aldri farge som eneste bærer av informasjon.

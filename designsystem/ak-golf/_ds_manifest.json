@@ -1,0 +1,1484 @@
+{
+  "namespace": "AKGolfDesignsystem_3e5c85",
+  "components": [
+    {
+      "name": "Akkordeon",
+      "sourcePath": "components/flate/Akkordeon.jsx"
+    },
+    {
+      "name": "Dialog",
+      "sourcePath": "components/flate/Dialog.jsx"
+    },
+    {
+      "name": "Fotokort",
+      "sourcePath": "components/flate/Fotokort.jsx"
+    },
+    {
+      "name": "Kort",
+      "sourcePath": "components/flate/Kort.jsx"
+    },
+    {
+      "name": "Skjelett",
+      "sourcePath": "components/flate/Skjelett.jsx"
+    },
+    {
+      "name": "IkonKnapp",
+      "sourcePath": "components/handling/IkonKnapp.jsx"
+    },
+    {
+      "name": "Knapp",
+      "sourcePath": "components/handling/Knapp.jsx"
+    },
+    {
+      "name": "Paginering",
+      "sourcePath": "components/handling/Paginering.jsx"
+    },
+    {
+      "name": "Akse",
+      "sourcePath": "components/maaling/Akse.jsx"
+    },
+    {
+      "name": "Faktarad",
+      "sourcePath": "components/maaling/Faktarad.jsx"
+    },
+    {
+      "name": "Fordeling",
+      "sourcePath": "components/maaling/Fordeling.jsx"
+    },
+    {
+      "name": "Liste",
+      "sourcePath": "components/maaling/Liste.jsx"
+    },
+    {
+      "name": "Spredning",
+      "sourcePath": "components/maaling/Spredning.jsx"
+    },
+    {
+      "name": "Tabell",
+      "sourcePath": "components/maaling/Tabell.jsx"
+    },
+    {
+      "name": "Talleblokk",
+      "sourcePath": "components/maaling/Talleblokk.jsx"
+    },
+    {
+      "name": "Tidsserie",
+      "sourcePath": "components/maaling/Tidsserie.jsx"
+    },
+    {
+      "name": "Hint",
+      "sourcePath": "components/melding/Hint.jsx"
+    },
+    {
+      "name": "Melding",
+      "sourcePath": "components/melding/Melding.jsx"
+    },
+    {
+      "name": "Merkelapp",
+      "sourcePath": "components/melding/Merkelapp.jsx"
+    },
+    {
+      "name": "Status",
+      "sourcePath": "components/melding/Status.jsx"
+    },
+    {
+      "name": "TomTilstand",
+      "sourcePath": "components/melding/TomTilstand.jsx"
+    },
+    {
+      "name": "Varsel",
+      "sourcePath": "components/melding/Varsel.jsx"
+    },
+    {
+      "name": "Ikon",
+      "sourcePath": "components/merke/Ikon.jsx"
+    },
+    {
+      "name": "Initialer",
+      "sourcePath": "components/merke/Initialer.jsx"
+    },
+    {
+      "name": "Instrumentflate",
+      "sourcePath": "components/merke/Instrumentflate.jsx"
+    },
+    {
+      "name": "Logo",
+      "sourcePath": "components/merke/Logo.jsx"
+    },
+    {
+      "name": "Maalestokk",
+      "sourcePath": "components/merke/Maalestokk.jsx"
+    },
+    {
+      "name": "Navnelaas",
+      "sourcePath": "components/merke/Navnelaas.jsx"
+    },
+    {
+      "name": "Brodsmuler",
+      "sourcePath": "components/navigasjon/Brodsmuler.jsx"
+    },
+    {
+      "name": "Faner",
+      "sourcePath": "components/navigasjon/Faner.jsx"
+    },
+    {
+      "name": "Mobilmeny",
+      "sourcePath": "components/navigasjon/Mobilmeny.jsx"
+    },
+    {
+      "name": "Toppnav",
+      "sourcePath": "components/navigasjon/Toppnav.jsx"
+    },
+    {
+      "name": "Avkrysning",
+      "sourcePath": "components/skjema/Avkrysning.jsx"
+    },
+    {
+      "name": "Datovelger",
+      "sourcePath": "components/skjema/Datovelger.jsx"
+    },
+    {
+      "name": "Felt",
+      "sourcePath": "components/skjema/Felt.jsx"
+    },
+    {
+      "name": "Radiogruppe",
+      "sourcePath": "components/skjema/Radiogruppe.jsx"
+    },
+    {
+      "name": "Velger",
+      "sourcePath": "components/skjema/Velger.jsx"
+    }
+  ],
+  "startingPoints": [],
+  "cards": [
+    {
+      "path": "guidelines/kort-foto.html",
+      "group": "Brand",
+      "viewport": "700x230",
+      "subtitle": "Ekte økter, utstyret i rammen, rom rundt motivet. 43 bilder i arkivet",
+      "name": "Foto"
+    },
+    {
+      "path": "guidelines/kort-instrument.html",
+      "group": "Brand",
+      "viewport": "700x180",
+      "subtitle": "Rutenett 56 px, målestokk hver 12 px, kryss 11 px. Ett per flate",
+      "name": "Instrumentlaget"
+    },
+    {
+      "path": "guidelines/kort-klaring.html",
+      "group": "Brand",
+      "viewport": "700x180",
+      "subtitle": "Halve logoens høyde på alle fire sider. Ingenting går inn i sonen",
+      "name": "Klaringssone"
+    },
+    {
+      "path": "guidelines/kort-logo.html",
+      "group": "Brand",
+      "viewport": "700x170",
+      "subtitle": "ak-ligatur med signalrød ball. Rendres fra fil, aldri gjenskapt",
+      "name": "Logoen"
+    },
+    {
+      "path": "guidelines/kort-navnelaas.html",
+      "group": "Brand",
+      "viewport": "700x230",
+      "subtitle": "Fem ferdige filer. Navnet står aldri i identitetsfargen",
+      "name": "Navnelåsene"
+    },
+    {
+      "path": "guidelines/kort-tekstpaafoto.html",
+      "group": "Brand",
+      "viewport": "700x240",
+      "subtitle": "Hvit tekst, hvit logo, mørkt sjikt fra bunnen — ikke et lag over hele bildet",
+      "name": "Tekst på foto"
+    },
+    {
+      "path": "guidelines/kort-farge-fag.html",
+      "group": "Colors",
+      "viewport": "700x150",
+      "subtitle": "Metoden, ikke målingen. Sjelden brukt",
+      "name": "Fagfargen"
+    },
+    {
+      "path": "guidelines/kort-farge-grunn.html",
+      "group": "Colors",
+      "viewport": "700x150",
+      "subtitle": "Varm betonggrå. Ikke hvitt, ikke krem, ikke grønt",
+      "name": "Grunnen"
+    },
+    {
+      "path": "guidelines/kort-farge-mork.html",
+      "group": "Colors",
+      "viewport": "700x170",
+      "subtitle": "Mørk variant. Varm mørk grå, ikke sort. Lys er standard",
+      "name": "Verkstedet om kvelden"
+    },
+    {
+      "path": "guidelines/kort-farge-signal.html",
+      "group": "Colors",
+      "viewport": "700x190",
+      "subtitle": "Rødt betyr «se her». Aldri dekor",
+      "name": "Signalet"
+    },
+    {
+      "path": "guidelines/kort-farge-status.html",
+      "group": "Colors",
+      "viewport": "700x150",
+      "subtitle": "Aldri identitet. Feilrød er mørkere enn signalet med vilje",
+      "name": "Status"
+    },
+    {
+      "path": "guidelines/kort-farge-tekst.html",
+      "group": "Colors",
+      "viewport": "700x160",
+      "subtitle": "Målte kontrasttall. Svak er aldri brødtekst",
+      "name": "Tekst og linjer"
+    },
+    {
+      "path": "guidelines/kort-farge-varianter.html",
+      "group": "Colors",
+      "viewport": "700x170",
+      "subtitle": "Dempede arbeidstoner. Én per visning, aldri to",
+      "name": "Varianttoner"
+    },
+    {
+      "path": "components/flate/flate.card.html",
+      "group": "Components",
+      "viewport": "1000x460",
+      "subtitle": "Tre tyngder, tekst på foto med mørkt sjikt",
+      "name": "Flate — kort, fotokort, akkordeon"
+    },
+    {
+      "path": "components/flate/primitiver.card.html",
+      "group": "Components",
+      "viewport": "1000x900",
+      "subtitle": "Tastatur og fokus verifisert. Ingen blur, ingen sirkler",
+      "name": "Primitiver — dialog, melding, hint, skjelett, datovelger, initialer, sortering"
+    },
+    {
+      "path": "components/handling/handling.card.html",
+      "group": "Components",
+      "viewport": "1000x320",
+      "subtitle": "Primær, sekundær, tekst, ikon, laster, deaktivert",
+      "name": "Handling — knapper og paginering"
+    },
+    {
+      "path": "components/maaling/maaling.card.html",
+      "group": "Components",
+      "viewport": "1000x590",
+      "subtitle": "Merkets signatur: mono, målestokk, dato og kilde",
+      "name": "Måling — talleblokk, faktarad, tabell, liste"
+    },
+    {
+      "path": "components/maaling/maaling-graf.card.html",
+      "group": "Components",
+      "viewport": "1000x900",
+      "subtitle": "Målinger som grafikk. Rendres ikke uten kilde og dato",
+      "name": "Måling — spredning, tidsserie, fordeling, akse"
+    },
+    {
+      "path": "components/melding/melding.card.html",
+      "group": "Components",
+      "viewport": "1000x515",
+      "subtitle": "Status er aldri identitet. Farge er aldri eneste bærer",
+      "name": "Melding — merkelapp, status, varsel, tom tilstand"
+    },
+    {
+      "path": "components/merke/merke.card.html",
+      "group": "Components",
+      "viewport": "1000x330",
+      "subtitle": "Rendres fra fil. Rutenett, kryss og målestokk",
+      "name": "Merke — logo, navnelås, instrument"
+    },
+    {
+      "path": "components/merke/ikon.card.html",
+      "group": "Components",
+      "viewport": "1000x420",
+      "subtitle": "Strek 2, aldri rundt. Alene krever de merkelapp",
+      "name": "Ikoner — 24 fra Lucide, square og miter"
+    },
+    {
+      "path": "components/navigasjon/navigasjon.card.html",
+      "group": "Components",
+      "viewport": "1000x385",
+      "subtitle": "Aktiv flate merkes med 2 px strek, ikke med farget flate",
+      "name": "Navigasjon — toppnav, mobilmeny, brødsmuler, faner"
+    },
+    {
+      "path": "components/skjema/skjema.card.html",
+      "group": "Components",
+      "viewport": "1000x480",
+      "subtitle": "Hvile, fokus, feil, deaktivert og enhet i mono",
+      "name": "Skjema — felt, velger, avkrysning, radio"
+    },
+    {
+      "path": "ui_kits/booking/index.html",
+      "group": "Booking",
+      "viewport": "1440x1100",
+      "subtitle": "Velg økt, velg dag og tid, kontakt, bekreftelse. Sendt- og feiltilstand. Prisen hentes fra basen",
+      "name": "Booking — kartleggingsøkt i fire steg"
+    },
+    {
+      "path": "ui_kits/dokument/brevark.html",
+      "group": "Dokument",
+      "viewport": "794x1123",
+      "subtitle": "A4. Målestokk i venstremargen, aldri rutenett i tekstpartiet",
+      "name": "Brevark"
+    },
+    {
+      "path": "ui_kits/dokument/tilbud.html",
+      "group": "Dokument",
+      "viewport": "794x1123",
+      "subtitle": "Pris i mono, hva som inngår, gyldighet. Uten «fra»",
+      "name": "Tilbud"
+    },
+    {
+      "path": "ui_kits/epost/nyhetsbrev.html",
+      "group": "E-post",
+      "viewport": "600x900",
+      "subtitle": "Én sak, én lenke. Avmelding nederst",
+      "name": "Nyhetsbrev"
+    },
+    {
+      "path": "ui_kits/epost/signaturer.html",
+      "group": "E-post",
+      "viewport": "600x620",
+      "subtitle": "Én per variant. Navnet står aldri i identitetsfargen",
+      "name": "Signaturer"
+    },
+    {
+      "path": "ui_kits/epost/transaksjon.html",
+      "group": "E-post",
+      "viewport": "600x760",
+      "subtitle": "Bekreftelse, påminnelse og kvittering. Detaljene i mono",
+      "name": "Transaksjonsmal"
+    },
+    {
+      "path": "ui_kits/foreldrerapport/index.html",
+      "group": "Foreldrerapport",
+      "viewport": "900x900",
+      "subtitle": "Ett målt tall som hovedperson, med dato og kilde per rad",
+      "name": "Rapportside for forelder"
+    },
+    {
+      "path": "ui_kits/fysisk/roll-up-og-skilt.html",
+      "group": "Fysisk",
+      "viewport": "700x620",
+      "subtitle": "Rutenett i 24 px rute. Ett tall, én handling",
+      "name": "Roll-up 850×2000 og skilt"
+    },
+    {
+      "path": "ui_kits/fysisk/visittkort-og-bagtag.html",
+      "group": "Fysisk",
+      "viewport": "700x480",
+      "subtitle": "Ingen rutenett under A5. Målestokk langs én kant i stedet",
+      "name": "Visittkort 85×55 og bag-tag"
+    },
+    {
+      "path": "ui_kits/kampanje/index.html",
+      "group": "Kampanje",
+      "viewport": "1440x900",
+      "subtitle": "Ett budskap, ett skjema. Sendt-, feil- og samtykketilstand",
+      "name": "Landingsside, én kampanje"
+    },
+    {
+      "path": "ui_kits/markedsside/index.html",
+      "group": "Markedsside",
+      "viewport": "1440x900",
+      "subtitle": "Mac 1440 og mobil 390, lys og mørk. Tekst fra tekstkonsept.md",
+      "name": "Forsiden"
+    },
+    {
+      "path": "ui_kits/markedsside/junior.html",
+      "group": "Markedsside",
+      "viewport": "1440x900",
+      "subtitle": "Primærpublikummet. Fire trinn, foreldreportalen, ingen bilder av barn uten samtykke",
+      "name": "Junior"
+    },
+    {
+      "path": "ui_kits/feilside/index.html",
+      "group": "Markedsside",
+      "viewport": "1400x560",
+      "subtitle": "Feilkoden i mono med tidspunkt. Én vei videre. Ingen humor",
+      "name": "Feilsider — 404 og 500"
+    },
+    {
+      "path": "ui_kits/plakat-retninger/index.html",
+      "group": "Retninger",
+      "viewport": "1440x820",
+      "subtitle": "Hentet fra referansene, oversatt til verkstedet. Med to avviste retninger",
+      "name": "Plakatretninger — tre forslag"
+    },
+    {
+      "path": "ui_kits/plakat-temaer/index.html",
+      "group": "Retninger",
+      "viewport": "1920x1500",
+      "subtitle": "Ett tema per variantfarge og per bildetype. Én identitetsfarge om gangen",
+      "name": "Åtte temaer — bilde og farge"
+    },
+    {
+      "path": "ui_kits/presentasjon/01-forside.html",
+      "group": "Slides",
+      "viewport": "1280x720",
+      "subtitle": "Tittel, dato, avsender. Rutenettet som konstruksjon",
+      "name": "Forside"
+    },
+    {
+      "path": "ui_kits/presentasjon/02-innhold.html",
+      "group": "Slides",
+      "viewport": "1280x720",
+      "subtitle": "Tekst og maks fem punkter. Tallene i mono",
+      "name": "Innholdsside"
+    },
+    {
+      "path": "ui_kits/presentasjon/03-tallside.html",
+      "group": "Slides",
+      "viewport": "1280x720",
+      "subtitle": "Ett målt tall som fyller flaten. Dato og kilde bæres av målestokken",
+      "name": "Tallside"
+    },
+    {
+      "path": "ui_kits/presentasjon/04-fotoside.html",
+      "group": "Slides",
+      "viewport": "1280x720",
+      "subtitle": "Bilde i full flate, mørkt sjikt fra bunnen, tekst over",
+      "name": "Fotoside"
+    },
+    {
+      "path": "ui_kits/presentasjon/05-avslutning.html",
+      "group": "Slides",
+      "viewport": "1280x720",
+      "subtitle": "Én handling. Ingen oppsummering, ingen takk for oppmerksomheten",
+      "name": "Avslutning"
+    },
+    {
+      "path": "ui_kits/sosialt/kvadrat.html",
+      "group": "Sosialt",
+      "viewport": "700x1180",
+      "subtitle": "Vist i halv størrelse. Fremgangstall, tallforklaring, før/etter, tips, resultat, påmelding",
+      "name": "Kvadrat 1080 — seks innleggstyper"
+    },
+    {
+      "path": "ui_kits/sosialt/staaende-og-story.html",
+      "group": "Sosialt",
+      "viewport": "700x600",
+      "subtitle": "Foto med mørkt sjikt, tekst over. Vist i 37,5 % og 26,7 %",
+      "name": "Stående 1080×1350 og story 1080×1920"
+    },
+    {
+      "path": "guidelines/kort-bevegelse.html",
+      "group": "Spacing",
+      "viewport": "700x150",
+      "subtitle": "120 ms hover · 220 ms panel · 420 ms seksjon. Aldri ease-in alene",
+      "name": "Bevegelse"
+    },
+    {
+      "path": "guidelines/kort-dybde.html",
+      "group": "Spacing",
+      "viewport": "700x170",
+      "subtitle": "Tre nivåer. Varme skygger bygget på blekk, ikke sort",
+      "name": "Dybde"
+    },
+    {
+      "path": "guidelines/kort-radius.html",
+      "group": "Spacing",
+      "viewport": "700x160",
+      "subtitle": "Rolig, ikke rundt. 6 knapp · 10 kort · 16 panel · pill kun knapper",
+      "name": "Radius"
+    },
+    {
+      "path": "guidelines/kort-rom-bruk.html",
+      "group": "Spacing",
+      "viewport": "700x170",
+      "subtitle": "Mobil / Mac: seksjon 96/128 · tittel 24/32 · kort 16/24 · ikon 8/8",
+      "name": "Rom i bruk"
+    },
+    {
+      "path": "guidelines/kort-rom-skala.html",
+      "group": "Spacing",
+      "viewport": "700x160",
+      "subtitle": "4-basis: 4 · 8 · 12 · 16 · 24 · 32 · 48 · 64 · 96 · 128. Er svaret 22 px, er det feil",
+      "name": "Romskalaen"
+    },
+    {
+      "path": "guidelines/kort-treffflate.html",
+      "group": "Spacing",
+      "viewport": "700x150",
+      "subtitle": "Minst 44 × 44 px. Merket leses stående, ute, ofte med hansker",
+      "name": "Trykkflate"
+    },
+    {
+      "path": "guidelines/kort-type-brodtekst.html",
+      "group": "Type",
+      "viewport": "700x200",
+      "subtitle": "400 og 500 på 15 og 17 px. Linjeavstand 1,5, stopper på 65 tegn",
+      "name": "Brødtekst — IBM Plex Sans"
+    },
+    {
+      "path": "guidelines/kort-type-display.html",
+      "group": "Type",
+      "viewport": "700x200",
+      "subtitle": "600 og 700. Linjeavstand 0,94 fra 48 px. VERSALER når den står alene",
+      "name": "Display — IBM Plex Sans Condensed"
+    },
+    {
+      "path": "guidelines/kort-type-etikett.html",
+      "group": "Type",
+      "viewport": "700x150",
+      "subtitle": "11 px mono, 0.2em sperring. Tre ord eller mindre",
+      "name": "Caps-etikett"
+    },
+    {
+      "path": "guidelines/kort-type-mono.html",
+      "group": "Type",
+      "viewport": "700x210",
+      "subtitle": "Alt som er målt. Står det ikke i mono, er det en påstand",
+      "name": "Mono — IBM Plex Mono"
+    },
+    {
+      "path": "guidelines/kort-type-skala.html",
+      "group": "Type",
+      "viewport": "700x170",
+      "subtitle": "Ti trinn: 11 · 13 · 15 · 17 · 21 · 26 · 34 · 48 · 72 · 112",
+      "name": "Skalaen"
+    },
+    {
+      "path": "guidelines/kort-type-titler.html",
+      "group": "Type",
+      "viewport": "700x210",
+      "subtitle": "IBM Plex Sans Condensed 600/700 på 26, 34 og 48 px. Sperring −0.02em",
+      "name": "Titler"
+    },
+    {
+      "path": "ui_kits/varianter/index.html",
+      "group": "Varianter",
+      "viewport": "1100x900",
+      "subtitle": "Junior Academy, Academy og Organisasjon. To ting endres, resten består",
+      "name": "Samme mal, tre varianter"
+    }
+  ],
+  "templates": [
+    {
+      "name": "AK Golf — presentasjon",
+      "description": "Fire sidetyper til foreldremøter, klubbstyrer og forbund. 1280 × 720, tall i mono med dato og kilde.",
+      "folder": "templates/presentasjon",
+      "entryPath": "templates/presentasjon/Presentasjon.dc.html",
+      "thumbnail": {
+        "path": "templates/presentasjon/.thumbnail",
+        "kind": "captured"
+      }
+    }
+  ],
+  "hasThumbnailHtml": true,
+  "globalCssPaths": [
+    "tokens/fonter.css",
+    "tokens/farge.css",
+    "tokens/type.css",
+    "tokens/rom.css",
+    "tokens/bevegelse.css",
+    "tokens/instrument.css",
+    "tokens/semantikk.css",
+    "tokens/grunnlag.css",
+    "tokens/samspill.css",
+    "styles.css"
+  ],
+  "tokens": [
+    {
+      "name": "--ak-grunn",
+      "value": "#E8E4DC",
+      "kind": "color",
+      "definedIn": "tokens/farge.css"
+    },
+    {
+      "name": "--ak-grunn-senk",
+      "value": "#DDD8CE",
+      "kind": "color",
+      "definedIn": "tokens/farge.css"
+    },
+    {
+      "name": "--ak-ark",
+      "value": "#FFFFFF",
+      "kind": "color",
+      "definedIn": "tokens/farge.css"
+    },
+    {
+      "name": "--ak-tekst",
+      "value": "#1F1D1A",
+      "kind": "color",
+      "definedIn": "tokens/farge.css"
+    },
+    {
+      "name": "--ak-dempet",
+      "value": "#57534B",
+      "kind": "color",
+      "definedIn": "tokens/farge.css"
+    },
+    {
+      "name": "--ak-svak",
+      "value": "#8B857A",
+      "kind": "color",
+      "definedIn": "tokens/farge.css"
+    },
+    {
+      "name": "--ak-linje",
+      "value": "#D2CCC0",
+      "kind": "color",
+      "definedIn": "tokens/farge.css"
+    },
+    {
+      "name": "--ak-linje-hard",
+      "value": "#B8B1A3",
+      "kind": "color",
+      "definedIn": "tokens/farge.css"
+    },
+    {
+      "name": "--ak-signal",
+      "value": "#B83217",
+      "kind": "color",
+      "definedIn": "tokens/farge.css"
+    },
+    {
+      "name": "--ak-signal-fyll",
+      "value": "#C4361B",
+      "kind": "color",
+      "definedIn": "tokens/farge.css"
+    },
+    {
+      "name": "--ak-signal-tekst",
+      "value": "#FFFFFF",
+      "kind": "color",
+      "definedIn": "tokens/farge.css"
+    },
+    {
+      "name": "--ak-signal-myk",
+      "value": "rgba(184, 50, 23, 0.10)",
+      "kind": "color",
+      "definedIn": "tokens/farge.css"
+    },
+    {
+      "name": "--ak-fag",
+      "value": "#2C6E63",
+      "kind": "color",
+      "definedIn": "tokens/farge.css"
+    },
+    {
+      "name": "--ak-v-junior",
+      "value": "#4A6B33",
+      "kind": "color",
+      "definedIn": "tokens/farge.css"
+    },
+    {
+      "name": "--ak-v-academy",
+      "value": "var(--ak-signal)",
+      "kind": "color",
+      "definedIn": "tokens/farge.css"
+    },
+    {
+      "name": "--ak-v-hq",
+      "value": "#2B5F87",
+      "kind": "color",
+      "definedIn": "tokens/farge.css"
+    },
+    {
+      "name": "--ak-v-org",
+      "value": "#4A4F58",
+      "kind": "color",
+      "definedIn": "tokens/farge.css"
+    },
+    {
+      "name": "--ak-v-produkt",
+      "value": "#7A5A22",
+      "kind": "color",
+      "definedIn": "tokens/farge.css"
+    },
+    {
+      "name": "--ak-ok",
+      "value": "#2E6B45",
+      "kind": "color",
+      "definedIn": "tokens/farge.css"
+    },
+    {
+      "name": "--ak-varsel",
+      "value": "#755608",
+      "kind": "color",
+      "definedIn": "tokens/farge.css"
+    },
+    {
+      "name": "--ak-feil",
+      "value": "#A62B1C",
+      "kind": "color",
+      "definedIn": "tokens/farge.css"
+    },
+    {
+      "name": "--ak-grunn",
+      "value": "#22201C",
+      "kind": "color",
+      "definedIn": "tokens/farge.css",
+      "scope": ":root[data-ak-flate=\"mork\"]"
+    },
+    {
+      "name": "--ak-grunn-senk",
+      "value": "#1A1815",
+      "kind": "color",
+      "definedIn": "tokens/farge.css",
+      "scope": ":root[data-ak-flate=\"mork\"]"
+    },
+    {
+      "name": "--ak-ark",
+      "value": "#2C2925",
+      "kind": "color",
+      "definedIn": "tokens/farge.css",
+      "scope": ":root[data-ak-flate=\"mork\"]"
+    },
+    {
+      "name": "--ak-tekst",
+      "value": "#F2EFE8",
+      "kind": "color",
+      "definedIn": "tokens/farge.css",
+      "scope": ":root[data-ak-flate=\"mork\"]"
+    },
+    {
+      "name": "--ak-dempet",
+      "value": "#A8A196",
+      "kind": "color",
+      "definedIn": "tokens/farge.css",
+      "scope": ":root[data-ak-flate=\"mork\"]"
+    },
+    {
+      "name": "--ak-svak",
+      "value": "#75706A",
+      "kind": "color",
+      "definedIn": "tokens/farge.css",
+      "scope": ":root[data-ak-flate=\"mork\"]"
+    },
+    {
+      "name": "--ak-linje",
+      "value": "#38342E",
+      "kind": "color",
+      "definedIn": "tokens/farge.css",
+      "scope": ":root[data-ak-flate=\"mork\"]"
+    },
+    {
+      "name": "--ak-linje-hard",
+      "value": "#4A453D",
+      "kind": "color",
+      "definedIn": "tokens/farge.css",
+      "scope": ":root[data-ak-flate=\"mork\"]"
+    },
+    {
+      "name": "--ak-signal",
+      "value": "#E8654A",
+      "kind": "color",
+      "definedIn": "tokens/farge.css",
+      "scope": ":root[data-ak-flate=\"mork\"]"
+    },
+    {
+      "name": "--ak-signal-fyll",
+      "value": "#C4361B",
+      "kind": "color",
+      "definedIn": "tokens/farge.css",
+      "scope": ":root[data-ak-flate=\"mork\"]"
+    },
+    {
+      "name": "--ak-signal-tekst",
+      "value": "#FFFFFF",
+      "kind": "color",
+      "definedIn": "tokens/farge.css",
+      "scope": ":root[data-ak-flate=\"mork\"]"
+    },
+    {
+      "name": "--ak-signal-myk",
+      "value": "rgba(232, 101, 74, 0.14)",
+      "kind": "color",
+      "definedIn": "tokens/farge.css",
+      "scope": ":root[data-ak-flate=\"mork\"]"
+    },
+    {
+      "name": "--ak-fag",
+      "value": "#5FA89A",
+      "kind": "color",
+      "definedIn": "tokens/farge.css",
+      "scope": ":root[data-ak-flate=\"mork\"]"
+    },
+    {
+      "name": "--ak-v-junior",
+      "value": "#8FB37F",
+      "kind": "color",
+      "definedIn": "tokens/farge.css",
+      "scope": ":root[data-ak-flate=\"mork\"]"
+    },
+    {
+      "name": "--ak-v-academy",
+      "value": "var(--ak-signal)",
+      "kind": "color",
+      "definedIn": "tokens/farge.css",
+      "scope": ":root[data-ak-flate=\"mork\"]"
+    },
+    {
+      "name": "--ak-v-hq",
+      "value": "#7FB0DA",
+      "kind": "color",
+      "definedIn": "tokens/farge.css",
+      "scope": ":root[data-ak-flate=\"mork\"]"
+    },
+    {
+      "name": "--ak-v-org",
+      "value": "#A3AAB5",
+      "kind": "color",
+      "definedIn": "tokens/farge.css",
+      "scope": ":root[data-ak-flate=\"mork\"]"
+    },
+    {
+      "name": "--ak-v-produkt",
+      "value": "#C9A755",
+      "kind": "color",
+      "definedIn": "tokens/farge.css",
+      "scope": ":root[data-ak-flate=\"mork\"]"
+    },
+    {
+      "name": "--ak-ok",
+      "value": "#7FBF98",
+      "kind": "color",
+      "definedIn": "tokens/farge.css",
+      "scope": ":root[data-ak-flate=\"mork\"]"
+    },
+    {
+      "name": "--ak-varsel",
+      "value": "#D9B25A",
+      "kind": "color",
+      "definedIn": "tokens/farge.css",
+      "scope": ":root[data-ak-flate=\"mork\"]"
+    },
+    {
+      "name": "--ak-feil",
+      "value": "#F08A73",
+      "kind": "color",
+      "definedIn": "tokens/farge.css",
+      "scope": ":root[data-ak-flate=\"mork\"]"
+    },
+    {
+      "name": "--ak-display",
+      "value": "'IBM Plex Sans Condensed', 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif",
+      "kind": "font",
+      "definedIn": "tokens/type.css",
+      "annotation": "font"
+    },
+    {
+      "name": "--ak-sans",
+      "value": "'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif",
+      "kind": "font",
+      "definedIn": "tokens/type.css",
+      "annotation": "font"
+    },
+    {
+      "name": "--ak-mono",
+      "value": "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
+      "kind": "font",
+      "definedIn": "tokens/type.css",
+      "annotation": "font"
+    },
+    {
+      "name": "--ak-t-11",
+      "value": "11px",
+      "kind": "spacing",
+      "definedIn": "tokens/type.css"
+    },
+    {
+      "name": "--ak-t-13",
+      "value": "13px",
+      "kind": "spacing",
+      "definedIn": "tokens/type.css"
+    },
+    {
+      "name": "--ak-t-15",
+      "value": "15px",
+      "kind": "spacing",
+      "definedIn": "tokens/type.css"
+    },
+    {
+      "name": "--ak-t-17",
+      "value": "17px",
+      "kind": "spacing",
+      "definedIn": "tokens/type.css"
+    },
+    {
+      "name": "--ak-t-21",
+      "value": "21px",
+      "kind": "spacing",
+      "definedIn": "tokens/type.css"
+    },
+    {
+      "name": "--ak-t-26",
+      "value": "26px",
+      "kind": "spacing",
+      "definedIn": "tokens/type.css"
+    },
+    {
+      "name": "--ak-t-34",
+      "value": "34px",
+      "kind": "spacing",
+      "definedIn": "tokens/type.css"
+    },
+    {
+      "name": "--ak-t-48",
+      "value": "48px",
+      "kind": "spacing",
+      "definedIn": "tokens/type.css"
+    },
+    {
+      "name": "--ak-t-72",
+      "value": "72px",
+      "kind": "spacing",
+      "definedIn": "tokens/type.css"
+    },
+    {
+      "name": "--ak-t-112",
+      "value": "112px",
+      "kind": "spacing",
+      "definedIn": "tokens/type.css"
+    },
+    {
+      "name": "--ak-t-hero",
+      "value": "clamp(72px, 4vw + 56px, 112px)",
+      "kind": "other",
+      "definedIn": "tokens/type.css",
+      "annotation": "other"
+    },
+    {
+      "name": "--ak-t-seksjon",
+      "value": "clamp(26px, 0.76vw + 23px, 34px)",
+      "kind": "other",
+      "definedIn": "tokens/type.css",
+      "annotation": "other"
+    },
+    {
+      "name": "--ak-v-400",
+      "value": "400",
+      "kind": "font",
+      "definedIn": "tokens/type.css",
+      "annotation": "font"
+    },
+    {
+      "name": "--ak-v-500",
+      "value": "500",
+      "kind": "font",
+      "definedIn": "tokens/type.css",
+      "annotation": "font"
+    },
+    {
+      "name": "--ak-v-600",
+      "value": "600",
+      "kind": "font",
+      "definedIn": "tokens/type.css",
+      "annotation": "font"
+    },
+    {
+      "name": "--ak-v-700",
+      "value": "700",
+      "kind": "font",
+      "definedIn": "tokens/type.css",
+      "annotation": "font"
+    },
+    {
+      "name": "--ak-lh-display",
+      "value": "0.94",
+      "kind": "other",
+      "definedIn": "tokens/type.css",
+      "annotation": "other"
+    },
+    {
+      "name": "--ak-lh-tett",
+      "value": "1.12",
+      "kind": "other",
+      "definedIn": "tokens/type.css",
+      "annotation": "other"
+    },
+    {
+      "name": "--ak-lh-normal",
+      "value": "1.5",
+      "kind": "other",
+      "definedIn": "tokens/type.css",
+      "annotation": "other"
+    },
+    {
+      "name": "--ak-sp-display",
+      "value": "-0.035em",
+      "kind": "other",
+      "definedIn": "tokens/type.css",
+      "annotation": "other"
+    },
+    {
+      "name": "--ak-sp-titt",
+      "value": "-0.02em",
+      "kind": "other",
+      "definedIn": "tokens/type.css",
+      "annotation": "other"
+    },
+    {
+      "name": "--ak-sp-null",
+      "value": "0",
+      "kind": "other",
+      "definedIn": "tokens/type.css",
+      "annotation": "other"
+    },
+    {
+      "name": "--ak-sp-vid",
+      "value": "0.2em",
+      "kind": "other",
+      "definedIn": "tokens/type.css",
+      "annotation": "other"
+    },
+    {
+      "name": "--ak-sp-vidt",
+      "value": "0.24em",
+      "kind": "other",
+      "definedIn": "tokens/type.css",
+      "annotation": "other"
+    },
+    {
+      "name": "--ak-r-1",
+      "value": "4px",
+      "kind": "spacing",
+      "definedIn": "tokens/rom.css"
+    },
+    {
+      "name": "--ak-r-2",
+      "value": "8px",
+      "kind": "spacing",
+      "definedIn": "tokens/rom.css"
+    },
+    {
+      "name": "--ak-r-3",
+      "value": "12px",
+      "kind": "spacing",
+      "definedIn": "tokens/rom.css"
+    },
+    {
+      "name": "--ak-r-4",
+      "value": "16px",
+      "kind": "spacing",
+      "definedIn": "tokens/rom.css"
+    },
+    {
+      "name": "--ak-r-5",
+      "value": "24px",
+      "kind": "spacing",
+      "definedIn": "tokens/rom.css"
+    },
+    {
+      "name": "--ak-r-6",
+      "value": "32px",
+      "kind": "spacing",
+      "definedIn": "tokens/rom.css"
+    },
+    {
+      "name": "--ak-r-7",
+      "value": "48px",
+      "kind": "spacing",
+      "definedIn": "tokens/rom.css"
+    },
+    {
+      "name": "--ak-r-8",
+      "value": "64px",
+      "kind": "spacing",
+      "definedIn": "tokens/rom.css"
+    },
+    {
+      "name": "--ak-r-9",
+      "value": "96px",
+      "kind": "spacing",
+      "definedIn": "tokens/rom.css"
+    },
+    {
+      "name": "--ak-r-10",
+      "value": "128px",
+      "kind": "spacing",
+      "definedIn": "tokens/rom.css"
+    },
+    {
+      "name": "--ak-hjorne-0",
+      "value": "0",
+      "kind": "radius",
+      "definedIn": "tokens/rom.css",
+      "annotation": "radius"
+    },
+    {
+      "name": "--ak-hjorne-sm",
+      "value": "6px",
+      "kind": "spacing",
+      "definedIn": "tokens/rom.css"
+    },
+    {
+      "name": "--ak-hjorne-md",
+      "value": "10px",
+      "kind": "spacing",
+      "definedIn": "tokens/rom.css"
+    },
+    {
+      "name": "--ak-hjorne-lg",
+      "value": "16px",
+      "kind": "spacing",
+      "definedIn": "tokens/rom.css"
+    },
+    {
+      "name": "--ak-hjorne-pill",
+      "value": "999px",
+      "kind": "spacing",
+      "definedIn": "tokens/rom.css"
+    },
+    {
+      "name": "--ak-loft-1",
+      "value": "0 1px 2px rgba(20, 20, 19, 0.05)",
+      "kind": "shadow",
+      "definedIn": "tokens/rom.css"
+    },
+    {
+      "name": "--ak-loft-2",
+      "value": "0 1px 2px rgba(20, 20, 19, 0.04), 0 8px 24px rgba(20, 20, 19, 0.06)",
+      "kind": "shadow",
+      "definedIn": "tokens/rom.css"
+    },
+    {
+      "name": "--ak-loft-3",
+      "value": "0 2px 4px rgba(20, 20, 19, 0.05), 0 18px 48px rgba(20, 20, 19, 0.10)",
+      "kind": "shadow",
+      "definedIn": "tokens/rom.css"
+    },
+    {
+      "name": "--ak-lesebredde",
+      "value": "65ch",
+      "kind": "other",
+      "definedIn": "tokens/rom.css",
+      "annotation": "other"
+    },
+    {
+      "name": "--ak-sidebredde",
+      "value": "1180px",
+      "kind": "other",
+      "definedIn": "tokens/rom.css",
+      "annotation": "other"
+    },
+    {
+      "name": "--ak-treff",
+      "value": "44px",
+      "kind": "other",
+      "definedIn": "tokens/rom.css",
+      "annotation": "other"
+    },
+    {
+      "name": "--ak-bp-mobil",
+      "value": "390px",
+      "kind": "other",
+      "definedIn": "tokens/rom.css",
+      "annotation": "other"
+    },
+    {
+      "name": "--ak-bp-tablet",
+      "value": "768px",
+      "kind": "other",
+      "definedIn": "tokens/rom.css",
+      "annotation": "other"
+    },
+    {
+      "name": "--ak-bp-mac",
+      "value": "1180px",
+      "kind": "other",
+      "definedIn": "tokens/rom.css",
+      "annotation": "other"
+    },
+    {
+      "name": "--ak-fart-rask",
+      "value": "120ms",
+      "kind": "other",
+      "definedIn": "tokens/bevegelse.css",
+      "annotation": "other"
+    },
+    {
+      "name": "--ak-fart-mid",
+      "value": "220ms",
+      "kind": "other",
+      "definedIn": "tokens/bevegelse.css",
+      "annotation": "other"
+    },
+    {
+      "name": "--ak-fart-rolig",
+      "value": "420ms",
+      "kind": "other",
+      "definedIn": "tokens/bevegelse.css",
+      "annotation": "other"
+    },
+    {
+      "name": "--ak-kurve",
+      "value": "cubic-bezier(0.2, 0, 0.2, 1)",
+      "kind": "other",
+      "definedIn": "tokens/bevegelse.css",
+      "annotation": "other"
+    },
+    {
+      "name": "--ak-kurve-inn",
+      "value": "cubic-bezier(0, 0, 0.2, 1)",
+      "kind": "other",
+      "definedIn": "tokens/bevegelse.css",
+      "annotation": "other"
+    },
+    {
+      "name": "--ak-rute",
+      "value": "56px",
+      "kind": "spacing",
+      "definedIn": "tokens/instrument.css"
+    },
+    {
+      "name": "--ak-rute-tett",
+      "value": "24px",
+      "kind": "spacing",
+      "definedIn": "tokens/instrument.css"
+    },
+    {
+      "name": "--ak-rute-linje",
+      "value": "1px",
+      "kind": "spacing",
+      "definedIn": "tokens/instrument.css"
+    },
+    {
+      "name": "--ak-rute-lys",
+      "value": "rgba(20, 20, 19, 0.07)",
+      "kind": "color",
+      "definedIn": "tokens/instrument.css"
+    },
+    {
+      "name": "--ak-rute-mork",
+      "value": "rgba(250, 249, 245, 0.13)",
+      "kind": "color",
+      "definedIn": "tokens/instrument.css"
+    },
+    {
+      "name": "--ak-maal-tykk",
+      "value": "1px",
+      "kind": "spacing",
+      "definedIn": "tokens/instrument.css"
+    },
+    {
+      "name": "--ak-maal-merke",
+      "value": "8px",
+      "kind": "spacing",
+      "definedIn": "tokens/instrument.css"
+    },
+    {
+      "name": "--ak-maal-hel",
+      "value": "14px",
+      "kind": "spacing",
+      "definedIn": "tokens/instrument.css"
+    },
+    {
+      "name": "--ak-maal-steg",
+      "value": "12px",
+      "kind": "spacing",
+      "definedIn": "tokens/instrument.css"
+    },
+    {
+      "name": "--ak-kryss",
+      "value": "11px",
+      "kind": "spacing",
+      "definedIn": "tokens/instrument.css"
+    },
+    {
+      "name": "--ak-flate-min",
+      "value": "0.18",
+      "kind": "other",
+      "definedIn": "tokens/instrument.css",
+      "annotation": "other"
+    },
+    {
+      "name": "--surface-base",
+      "value": "var(--ak-grunn)",
+      "kind": "color",
+      "definedIn": "tokens/semantikk.css"
+    },
+    {
+      "name": "--surface-sunken",
+      "value": "var(--ak-grunn-senk)",
+      "kind": "color",
+      "definedIn": "tokens/semantikk.css"
+    },
+    {
+      "name": "--surface-card",
+      "value": "var(--ak-ark)",
+      "kind": "color",
+      "definedIn": "tokens/semantikk.css"
+    },
+    {
+      "name": "--surface-accent",
+      "value": "var(--ak-signal-fyll)",
+      "kind": "color",
+      "definedIn": "tokens/semantikk.css"
+    },
+    {
+      "name": "--surface-method",
+      "value": "var(--ak-fag)",
+      "kind": "color",
+      "definedIn": "tokens/semantikk.css"
+    },
+    {
+      "name": "--text-body",
+      "value": "var(--ak-tekst)",
+      "kind": "font",
+      "definedIn": "tokens/semantikk.css"
+    },
+    {
+      "name": "--text-muted",
+      "value": "var(--ak-dempet)",
+      "kind": "font",
+      "definedIn": "tokens/semantikk.css"
+    },
+    {
+      "name": "--text-faint",
+      "value": "var(--ak-svak)",
+      "kind": "font",
+      "definedIn": "tokens/semantikk.css"
+    },
+    {
+      "name": "--text-signal",
+      "value": "var(--ak-signal)",
+      "kind": "font",
+      "definedIn": "tokens/semantikk.css"
+    },
+    {
+      "name": "--text-on-accent",
+      "value": "var(--ak-signal-tekst)",
+      "kind": "font",
+      "definedIn": "tokens/semantikk.css"
+    },
+    {
+      "name": "--border-hair",
+      "value": "var(--ak-linje)",
+      "kind": "color",
+      "definedIn": "tokens/semantikk.css"
+    },
+    {
+      "name": "--border-hard",
+      "value": "var(--ak-linje-hard)",
+      "kind": "color",
+      "definedIn": "tokens/semantikk.css"
+    },
+    {
+      "name": "--font-display",
+      "value": "var(--ak-display)",
+      "kind": "font",
+      "definedIn": "tokens/semantikk.css"
+    },
+    {
+      "name": "--font-body",
+      "value": "var(--ak-sans)",
+      "kind": "font",
+      "definedIn": "tokens/semantikk.css"
+    },
+    {
+      "name": "--font-measured",
+      "value": "var(--ak-mono)",
+      "kind": "font",
+      "definedIn": "tokens/semantikk.css"
+    },
+    {
+      "name": "--radius-control",
+      "value": "var(--ak-hjorne-sm)",
+      "kind": "radius",
+      "definedIn": "tokens/semantikk.css"
+    },
+    {
+      "name": "--radius-card",
+      "value": "var(--ak-hjorne-md)",
+      "kind": "radius",
+      "definedIn": "tokens/semantikk.css"
+    },
+    {
+      "name": "--radius-panel",
+      "value": "var(--ak-hjorne-lg)",
+      "kind": "radius",
+      "definedIn": "tokens/semantikk.css"
+    },
+    {
+      "name": "--radius-pill",
+      "value": "var(--ak-hjorne-pill)",
+      "kind": "radius",
+      "definedIn": "tokens/semantikk.css"
+    },
+    {
+      "name": "--shadow-rest",
+      "value": "var(--ak-loft-1)",
+      "kind": "shadow",
+      "definedIn": "tokens/semantikk.css"
+    },
+    {
+      "name": "--shadow-raised",
+      "value": "var(--ak-loft-2)",
+      "kind": "shadow",
+      "definedIn": "tokens/semantikk.css"
+    },
+    {
+      "name": "--shadow-overlay",
+      "value": "var(--ak-loft-3)",
+      "kind": "shadow",
+      "definedIn": "tokens/semantikk.css"
+    },
+    {
+      "name": "--motion-fast",
+      "value": "var(--ak-fart-rask)",
+      "kind": "color",
+      "definedIn": "tokens/semantikk.css"
+    },
+    {
+      "name": "--motion-mid",
+      "value": "var(--ak-fart-mid)",
+      "kind": "color",
+      "definedIn": "tokens/semantikk.css"
+    },
+    {
+      "name": "--motion-calm",
+      "value": "var(--ak-fart-rolig)",
+      "kind": "color",
+      "definedIn": "tokens/semantikk.css"
+    },
+    {
+      "name": "--motion-curve",
+      "value": "var(--ak-kurve)",
+      "kind": "color",
+      "definedIn": "tokens/semantikk.css"
+    }
+  ],
+  "themes": [
+    {
+      "selector": ":root[data-ak-flate=\"mork\"]",
+      "label": "Root Ak Flate Mork"
+    }
+  ],
+  "fonts": [],
+  "brandFonts": [
+    {
+      "family": "IBM Plex Sans Condensed",
+      "status": "ok",
+      "tokens": [
+        "--ak-display"
+      ],
+      "path": "tokens/type.css"
+    },
+    {
+      "family": "IBM Plex Sans",
+      "status": "ok",
+      "tokens": [
+        "--ak-sans"
+      ],
+      "path": "tokens/type.css"
+    },
+    {
+      "family": "IBM Plex Mono",
+      "status": "ok",
+      "tokens": [
+        "--ak-mono"
+      ],
+      "path": "tokens/type.css"
+    }
+  ],
+  "source": "spa"
+}

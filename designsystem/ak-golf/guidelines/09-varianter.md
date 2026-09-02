@@ -5,8 +5,8 @@ og **navnelåsen**.
 
 ## Navnelåsen
 
-Logoen står til venstre. En hårlinje `#D1CFC5` skiller. Virksomhetsnavnet står i
-**Poppins 400** i blekk `#141413`, satt i **40 % av logoens høyde**.
+Logoen står til venstre. En hårlinje `#D2CCC0` skiller. Virksomhetsnavnet står i
+**IBM Plex Sans 400** i tekstfargen `#1F1D1A`, satt i **40 % av logoens høyde**.
 
 Vekten er 400 og ikke tyngre med vilje: navnet skal underordne seg merket. Settes
 det tyngre eller større, begynner leseren å lese navnet først og logoen etterpå —
@@ -14,7 +14,7 @@ og da er det ikke lenger en lås, men to elementer ved siden av hverandre.
 
 **Ferdige filer finnes** — bygg aldri en lås på nytt for hånd:
 `public/logos/ak-golf-laas-<variant>.svg`, én per variant, med teksten
-konvertert til former så de ikke er avhengige av at Poppins er installert.
+konvertert til former så de ikke er avhengige av at IBM Plex Sans er installert.
 
 ```
 [ak●]  │  Junior Academy
@@ -47,7 +47,7 @@ Klarer den ikke det, bærer fargen for mye.
 
 ## Mengden — endret 01.09.2026
 
-5 %-regelen er **opphevet** med instrument-retningen. Clay og de andre
+5 %-regelen er **opphevet** med instrument-retningen. Signalet og de andre
 identitetsfargene bæres nå av hele flater: et panel, en kolonne, en seksjon.
 En aksentflate dekker minst 18 % av visningen når den brukes. Se
 `11-instrumentet.md`.
