@@ -76,6 +76,8 @@ export type BookingNyV2Data = {
   fornyerLabel: string | null;
   /** Oppløst sted for valgt tjeneste (steg 3-oppsummeringen). */
   stedNavn: string | null;
+  /** Location.id for stedet — lenker «Sted» til anleggssiden (15.13). Null når stedet ikke er løst. */
+  stedId: string | null;
   saldoEtter: number;
   sisteCredit: boolean;
 };
@@ -185,7 +187,7 @@ function DagStripe({ wizardBase, valgtDatoIso, serviceSlug, dager, ekstraQuery }
 
 /* ── Slot-lenker gruppert per coach — href-kontrakt identisk med legacy ──── */
 
-function SlotLenker({ wizardBase, slots, serviceSlug, ekstraQuery }: { wizardBase: string; slots: NySlot[]; serviceSlug: string; ekstraQuery: string }) {
+function SlotLenker({ wizardBase, slots, serviceSlug, ekstraQuery, coachLenker }: { wizardBase: string; slots: NySlot[]; serviceSlug: string; ekstraQuery: string; coachLenker: boolean }) {
   const perCoach = new Map<string, { coachNavn: string; slots: { startIso: string }[] }>();
   for (const s of slots) {
     const eksisterende = perCoach.get(s.coachId);
@@ -197,7 +199,13 @@ function SlotLenker({ wizardBase, slots, serviceSlug, ekstraQuery }: { wizardBas
     <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
       {Array.from(perCoach.entries()).map(([coachId, gruppe]) => (
         <div key={coachId}>
-          <Caps size={9}>{gruppe.coachNavn}</Caps>
+          {coachLenker ? (
+            <Link href={`/portal/booking/coach/${coachId}`} className="v2-focus" style={{ color: "inherit", textDecoration: "none" }}>
+              <Caps size={9}>{gruppe.coachNavn} →</Caps>
+            </Link>
+          ) : (
+            <Caps size={9}>{gruppe.coachNavn}</Caps>
+          )}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(84px, 1fr))", gap: 6, marginTop: 10 }}>
             {gruppe.slots.map((s) => {
               const klokke = new Date(s.startIso).toLocaleTimeString("nb-NO", {
@@ -224,7 +232,7 @@ function SlotLenker({ wizardBase, slots, serviceSlug, ekstraQuery }: { wizardBas
 
 /* ── Oppsummeringsrad (steg 3) ───────────────────────────────────────────── */
 
-function OppsumRad({ label, verdi, mono, last }: { label: React.ReactNode; verdi: string; mono?: boolean; last?: boolean }) {
+function OppsumRad({ label, verdi, mono, last }: { label: React.ReactNode; verdi: React.ReactNode; mono?: boolean; last?: boolean }) {
   return (
     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14, padding: "11px 0", borderBottom: last ? "none" : `1px solid ${TL.hair}` }}>
       <Caps size={9}>{label}</Caps>
@@ -245,8 +253,11 @@ export function BookingNyV2({ data }: { data: BookingNyV2Data }) {
     valgtServicePrisOre,
     datoParam, serviceParamSatt, valgtDatoIso, valgtDatoLang, aktivtSteg,
     isFree, slots, creditsRemaining, monthlyCredits, fornyerLabel,
-    stedNavn, saldoEtter, sisteCredit,
+    stedNavn, stedId, saldoEtter, sisteCredit,
   } = data;
+  // Anleggs- og coach-sidene ligger under /portal og krever spillerrolle —
+  // forelder-wizarden (STEG 9.8) deler denne komponenten og får ingen lenker.
+  const detaljLenker = wizardBase.startsWith("/portal/");
   const valgtSlug = tjenester.find((t) => t.id === valgtServiceId)?.slug ?? "";
   const erBetaling = modus === "betaling";
   const betalingQ = erBetaling ? "&betaling=1" : "";
@@ -422,7 +433,7 @@ export function BookingNyV2({ data }: { data: BookingNyV2Data }) {
                 <TomTilstand icon="calendar" title="Ingen ledige tider denne dagen" sub="Prøv en annen dag over." />
               </Kort>
             ) : (
-              <SlotLenker wizardBase={wizardBase} slots={slots} serviceSlug={valgtSlug} ekstraQuery={betalingQ} />
+              <SlotLenker wizardBase={wizardBase} slots={slots} serviceSlug={valgtSlug} ekstraQuery={betalingQ} coachLenker={detaljLenker} />
             )}
           </div>
         </div>
@@ -438,7 +449,12 @@ export function BookingNyV2({ data }: { data: BookingNyV2Data }) {
             <OppsumRad label="Tjeneste" verdi={valgtServiceNavn} />
             <OppsumRad label="Varighet" verdi={`${valgtServiceVarighetMin} min`} mono />
             <OppsumRad label="Dato" verdi={valgtDatoLang} mono />
-            {stedNavn !== null && <OppsumRad label="Sted" verdi={stedNavn} />}
+            {stedNavn !== null && (
+              <OppsumRad
+                label="Sted"
+                verdi={detaljLenker && stedId ? <Link href={`/portal/booking/anlegg/${stedId}`} className="v2-focus" style={{ color: "inherit", textDecoration: "underline", textUnderlineOffset: 3, textDecorationColor: TL.hair }}>{stedNavn}</Link> : stedNavn}
+              />
+            )}
             {erBetaling ? (
               <OppsumRad label="Pris" verdi={`${valgtServicePrisOre / 100} kr`} mono last />
             ) : (

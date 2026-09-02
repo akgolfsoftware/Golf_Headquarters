@@ -16,6 +16,7 @@ import { prisma } from "@/lib/prisma";
 import type { LPhase } from "@/generated/prisma/client";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { TilbakeLenke } from "@/components/v2";
+import { TalentFaner } from "@/components/portal/v2/TalentFaner";
 import {
   TalentRoadmapV2,
   type TalentRoadmapData,
@@ -93,7 +94,7 @@ export default async function RoadmapPage() {
   if (!tracking) {
     return (
       <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-        <TilbakeLenke href="/portal/talent">Talent</TilbakeLenke>
+        <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
         <TalentIkkeIProgrammet />
       </V2Shell>
     );
@@ -136,7 +137,8 @@ export default async function RoadmapPage() {
 
   return (
     <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/talent">Talent</TilbakeLenke>
+      <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
+      <TalentFaner aktiv="roadmap" />
       <TalentRoadmapV2 data={data} />
     </V2Shell>
   );

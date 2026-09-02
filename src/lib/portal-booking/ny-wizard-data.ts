@@ -153,6 +153,7 @@ export async function byggBookingNyData(params: NyWizardParams): Promise<NyWizar
         })
       : null,
     stedNavn: resolvedLocation?.name ?? null,
+    stedId: resolvedLocation?.id ?? null,
     saldoEtter,
     sisteCredit,
   };

@@ -14,6 +14,7 @@ import { FEATURES } from "@/lib/features";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { TilbakeLenke } from "@/components/v2";
+import { TalentFaner } from "@/components/portal/v2/TalentFaner";
 import {
   TalentMinPlanV2,
   type TalentMinPlanData,
@@ -68,7 +69,7 @@ export default async function MinPlanPage() {
   if (!tracking) {
     return (
       <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-        <TilbakeLenke href="/portal/talent">Talent</TilbakeLenke>
+        <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
         <TalentIkkeIProgrammet />
       </V2Shell>
     );
@@ -112,7 +113,8 @@ export default async function MinPlanPage() {
 
   return (
     <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/talent">Talent</TilbakeLenke>
+      <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
+      <TalentFaner aktiv="min-plan" />
       <TalentMinPlanV2 data={data} />
     </V2Shell>
   );

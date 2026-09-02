@@ -74,7 +74,7 @@ export default async function OktDetalj({ params }: Props) {
     booking.serviceType.coachUserId
       ? await prisma.user.findUnique({
           where: { id: booking.serviceType.coachUserId },
-          select: { name: true },
+          select: { id: true, name: true },
         })
       : null;
 
@@ -93,7 +93,9 @@ export default async function OktDetalj({ params }: Props) {
           tid: `${formatTid(booking.startAt)}–${formatTid(booking.endAt)}`,
           varighetMin: booking.serviceType.durationMin,
           sted: booking.location.name,
+          stedId: booking.location.id,
           coachNavn: coach?.name ?? null,
+          coachId: coach?.id ?? null,
           notat: booking.notes,
           kanAvbestille,
           kanFaaRefusjon,
