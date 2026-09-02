@@ -14,6 +14,7 @@ Ved konflikt: `docs/ak-master.md` > denne filen — **unntatt design**: for alt 
 4. **`docs/platform/AGENT-BRIEF.md`** — stack, versjoner, mappestruktur.
 5. **`docs/platform/BUSINESS-RULES.md`** — abonnement, GDPR, booking (ikke utledbart fra kode).
 6. **`.claude/rules/gotchas.md`** — les FØR koding.
+7. **`designsystem/train-lock/README.md` + `PORTING.md`** — designfasiten (invariant 2 under) og hvordan en skjerm faktisk porter til kode. Les FØR du bygger eller endrer UI, ikke bare når «design» nevnes eksplisitt.
 
 Ikke les hele repoet. Åpne filer etter behov. Lange kommandoer → redirect til fil, tail/grep.
 

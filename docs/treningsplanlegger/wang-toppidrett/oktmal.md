@@ -1,5 +1,17 @@
 # WANG Toppidrett — øktmal (felles struktur for alle økter)
 
+> **UTGÅTT (se `.claude/rules/beslutninger.md`, «ALLE TRENINGSPLANREGLER LÅST OPP», 2026-08-18):**
+> `lFase`, `csNivaa`, `miljo` (M0–M5) og `prPress` (PR1–PR5) er IKKE aktive databasefelt/UI-begreper
+> lenger — all regel-håndheving (inkl. «minimum CS50 for balltrening») er slettet fra koden.
+> Gjeldende v2-format er `PYRAMIDE_OMRADE_MOTORIKK_BELASTNING_PRESS` med motorikk
+> UTEN_BALL/LAV_HAST/AUTO og press ALENE/OBSERVERT/KONKURRANSE/TURNERING — dette dokumentet
+> styrer aktivt WANG-arbeid og må leses mot v2-formatet, ikke mot feltene under.
+>
+> **Club Speed (Anders, 2026-09-01):** klassifiseres motorikk **AUTO** — «uten ball» er en
+> egenskap ved øvelsen (hastighetstrening med stav/kølle uten balltreff), ikke et eget
+> motorikk-steg. Gjelder «Intensitet (CS)»-feltet (rad 5 under) og CS50–70-tallene i
+> «Periodespesifikk vri» — ingen av dem skal lenger leses som CS-nivå-prosentskala.
+
 Kilde: `wang-treningsokt`-skillen (autoritativ) + AK-formel-feltene i AK Golf HQ.
 Formål: én felles øktstruktur som alle M/O/F-økter (08:00–10:00) følger, differensiert per VG-trinn
 og lenket til kompetansemål. Feltene finnes allerede i databasen — denne malen mapper dem.
@@ -19,6 +31,9 @@ og lenket til kompetansemål. Feltene finnes allerede i databasen — denne male
 | 05 | **Hoveddel** | Nummererte øvelser (1, 2, 3 …), hver med 8 felter + differensieringstabell |
 | 06 | **KPI + dagbok-prompt** | Én målbar verdi + ett refleksjonsspørsmål |
 | 07 | **Notater fra trener** | Tom seksjon Anders fyller inn |
+
+> **UTGÅTT (beslutninger.md 2026-08-18):** kolonnen «Finnes i AK Golf HQ som» under
+> (`lFase`/`csNivaa`/`miljo`/`prPress`) beskriver pensjonerte felt — se varselet øverst i fila.
 
 ## De 8 obligatoriske øvelsesfeltene → mapping til AK-formel i AK Golf HQ
 Hver øvelse (oppvarming og hoveddel) har alle 8. Kolonnen til høyre viser at feltet **allerede finnes**
@@ -61,12 +76,19 @@ TI-kodene fylles inn fra Udir-læreplanen når den er lastet ([kompetansemaal-to
 | 09:50–10:00 | Evaluering — KPI + dagbok |
 
 ## Periodespesifikk vri
+
+> **UTGÅTT (beslutninger.md 2026-08-18):** CS-tall (CS50–60, CS70) under er pensjonerte
+> UI-begreper — se varselet øverst i fila.
 - **GRUNN:** Øvelse 1 = teknikk uten ball (Kropp/Arm/Kølle) · Øvelse 2 = Ball CS50–60 · Øvelse 3 = anvendelse range CS70.
 - **SPES:** Øvelse 1 = teknisk vedlikehold CS70 · Øvelse 2 = SLAG kjente avstander/lies · Øvelse 3 = SPILL korthull/9 hull.
 - **TURN (pre-turnering):** Øvelse 1 = aktivering · Øvelse 2 = scoring under press · Øvelse 3 = mental rutine. Ingen tung teknikk siste 48t.
 - **Testuke (uke 43 + aug/sep):** øktmal brukes ikke — `wang-tester` overtar.
 
 ## Regler (fra skillen)
+
+> **UTGÅTT (beslutninger.md 2026-08-18):** «Minimum CS50 for balltrening» er IKKE en gjeldende
+> hard regel — all regel-håndheving i planlegging er slettet fra koden. Se varselet øverst i fila.
+
 - KPI + dagbok-prompt obligatorisk i hver økt. Notat-seksjon legges tom.
 - Ny teknikk starter i Kropp/Arm — aldri direkte Ball/Auto. Minimum CS50 for balltrening.
 - Differensier alltid via kompetansemål, ikke vanskelighetsgrad.

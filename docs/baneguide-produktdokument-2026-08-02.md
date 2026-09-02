@@ -179,8 +179,8 @@ COACH  /admin/spillere/[id]/baneguide        (NY fase 2)
 
 **Designfasit er Train-lock (endret 25.08.2026)** — for alle PlayerHQ/AgencyOS-skjermer,
 Baneguide inkludert. Claude Paper-avsnittet som sto her (05.08) er supersedert; se CLAUDE.md
-invariant 2 + `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`. Fasit-zip er ikke committet ennå
-(D3) — mangler skjermen fasit: spør Anders, ikke bruk monsterdokumentet.
+invariant 2 + `designsystem/train-lock/SCREEN-INDEX.md`. Mangler skjermen fasit der: spør
+Anders, ikke bruk monsterdokumentet.
 
 1. **Én ting nå.** Under runden finnes nøyaktig én primærhandling per øyeblikk: «Logg slag»
    (`--handling`-oransje). Alt annet er sekundært. ADHD-vennlig, hanske-vennlig, sol-vennlig.

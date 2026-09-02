@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="TN-05 Protokolldetalj" description="Hva protokollen måler, stegene, gjeldende versjon, versjonshistorikk med låsedato og antall målinger per versjon, hvilke organisasjoner som bruker den, og attestering. Eierens flate har «Ny versjon»; mottakerens har ingen handling. Mac 1440 i to roller, mobil 390 i fire tilstander." -->
+<helmet><script src="./ds-base.js"></script></helmet>
+<div style="padding:48px;display:flex;flex-direction:column;gap:56px;background:var(--surface-page);min-height:100vh;font-family:var(--font-body)">
+
+<div style="display:flex;flex-direction:column;gap:8px;max-width:800px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TN-05 · /testbatteri/inspill-basis</div>
+<h1 style="font-size:var(--text-h1);color:var(--navy-900);letter-spacing:var(--tracking-heading);margin:0">Protokolldetalj</h1>
+<p style="margin:0;font-size:var(--text-lg);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Forskjellen mellom å eie en protokoll og å bruke den er tegnet inn i selve flaten, ikke forklart i en hjelpetekst. Eieren har én handling — ny versjon. Mottakeren har ingen.</p>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:20px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MAC 1440 · SETT AV EIEREN (AK GOLF)</div>
+<div style="width:1440px;height:900px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;font-variant-numeric:tabular-nums">
+<div style="width:232px;flex-shrink:0;background:var(--surface-card);border-right:1px solid var(--border-subtle);display:flex;flex-direction:column;padding:20px 14px 18px;gap:20px">
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:11px 12px;display:flex;align-items:center;gap:10px">
+<span style="width:9px;height:24px;border-radius:3px;background:var(--red-600);flex-shrink:0"></span>
+<div style="min-width:0"><div style="font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--navy-900)">Team Norway</div><div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);color:var(--text-tertiary);margin-top:1px">JUNIOR</div></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:2px;flex:1;min-height:0;overflow:hidden">
+<sc-for list="{{ meny }}" as="m" hint-placeholder-count="12">
+<sc-if value="{{ m.isHeading }}" hint-placeholder-val="{{ false }}">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);padding:14px 12px 6px">{{ m.label }}</div>
+</sc-if>
+<sc-if value="{{ m.isItem }}" hint-placeholder-val="{{ true }}">
+<div ref="{{ m.ref }}" style="height:40px;border-radius:var(--radius-xs);padding:0 10px;display:flex;align-items:center;gap:10px">
+<span ref="{{ m.markRef }}" style="width:3px;height:18px;border-radius:var(--radius-full);flex-shrink:0"></span>
+<span style="font-size:var(--text-sm);font-weight:var(--weight-medium)">{{ m.label }}</span>
+</div>
+</sc-if>
+</sc-for>
+</div>
+</div>
+
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;min-height:0">
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:24px 32px;display:flex;align-items:flex-start;gap:20px">
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">TESTBATTERI</span>
+<span style="color:var(--ink-300)">/</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">GOLFSLAG</span>
+</div>
+<h2 style="font-size:var(--text-h1);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:0">Inspill Basis</h2>
+<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;background:var(--navy-900);color:var(--white);padding:4px 9px;border-radius:var(--radius-xs)">DU EIER DENNE</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary)">AK GOLF ACADEMY · GJELDENDE v4 · LÅST 12.08.2026</span>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;flex-shrink:0">
+<div role="button" style="height:44px;padding:0 22px;border-radius:var(--radius-full);background:var(--navy-900);color:var(--white);font-size:var(--text-sm);font-weight:var(--weight-bold);display:flex;align-items:center">Ny versjon</div>
+<span style="font-size:var(--text-xs);color:var(--text-secondary);text-align:right;max-width:220px;line-height:var(--leading-normal);text-wrap:pretty">v4 er låst. En endring blir v5; de 412 målingene på v4 flytter seg ikke.</span>
+</div>
+</div>
+
+<div style="flex:1;min-height:0;display:flex;overflow:hidden">
+<div style="flex:1;min-width:0;padding:24px 32px;display:flex;flex-direction:column;gap:18px;overflow:hidden">
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:22px;display:flex;flex-direction:column;gap:14px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">HVA PROTOKOLLEN MÅLER</span>
+<div style="font-size:var(--text-lg);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Nærhet delt på lengde for hvert innspill. Resultatet er en prosent — <strong>lavere er bedre</strong>. En junior på 8,2 % ligger på elitenivå for sin gruppe.</div>
+<div style="display:flex;gap:12px;flex-wrap:wrap">
+<div style="background:var(--ink-50);border-radius:var(--radius-sm);padding:12px 16px;display:flex;flex-direction:column;gap:2px;min-width:130px"><span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">ENHET</span><span style="font-family:var(--font-mono);font-size:var(--text-base);font-weight:var(--weight-semibold);color:var(--navy-900)">prosent</span></div>
+<div style="background:var(--ink-50);border-radius:var(--radius-sm);padding:12px 16px;display:flex;flex-direction:column;gap:2px;min-width:130px"><span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">RETNING</span><span style="font-family:var(--font-mono);font-size:var(--text-base);font-weight:var(--weight-semibold);color:var(--navy-900)">lavere = bedre</span></div>
+<div style="background:var(--ink-50);border-radius:var(--radius-sm);padding:12px 16px;display:flex;flex-direction:column;gap:2px;min-width:130px"><span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">BATTERI</span><span style="font-family:var(--font-mono);font-size:var(--text-base);font-weight:var(--weight-semibold);color:var(--navy-900)">TN-batteri Q3</span></div>
+</div>
+</div>
+<div style="flex:1;min-height:0;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:22px;display:flex;flex-direction:column;gap:12px;overflow:hidden">
+<div style="display:flex;align-items:baseline;justify-content:space-between">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">STEGENE I v4</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary)">6 STASJONER</span>
+</div>
+<sc-for list="{{ steg }}" as="s" hint-placeholder-count="6">
+<div style="display:flex;align-items:center;gap:14px;min-height:44px;border-bottom:1px solid var(--border-subtle)">
+<span style="width:28px;height:28px;flex-shrink:0;border-radius:var(--radius-xs);background:var(--navy-50);color:var(--navy-800);font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);display:flex;align-items:center;justify-content:center">{{ s.nr }}</span>
+<span style="flex:1;min-width:0;font-size:var(--text-sm);font-weight:var(--weight-medium);color:var(--text-primary)">{{ s.navn }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary);width:130px;text-align:right;flex-shrink:0">{{ s.krav }}</span>
+</div>
+</sc-for>
+<div style="flex:1;min-height:0"></div>
+</div>
+</div>
+
+<div style="width:400px;flex-shrink:0;border-left:1px solid var(--border-subtle);background:var(--surface-card);padding:24px;display:flex;flex-direction:column;gap:16px;overflow:hidden">
+<div style="display:flex;flex-direction:column;gap:10px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">VERSJONSHISTORIKK</span>
+<sc-for list="{{ versjoner }}" as="v" hint-placeholder-count="4">
+<div ref="{{ v.rowRef }}" style="border-radius:var(--radius-sm);padding:12px 14px;display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;align-items:baseline;gap:10px">
+<span ref="{{ v.nrRef }}" style="font-family:var(--font-mono);font-size:var(--text-base);font-weight:var(--weight-semibold)">{{ v.nr }}</span>
+<span ref="{{ v.merkeRef }}" style="font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;padding:2px 7px;border-radius:var(--radius-xs)">{{ v.merke }}</span>
+<div style="flex:1"></div>
+<span style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ v.malinger }}</span>
+</div>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">{{ v.last }}</span>
+<span style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">{{ v.endring }}</span>
+</div>
+</sc-for>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">BRUKES AV</span>
+<sc-for list="{{ brukere }}" as="b" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:10px;min-height:36px">
+<span ref="{{ b.markRef }}" style="width:3px;height:18px;border-radius:var(--radius-full);flex-shrink:0"></span>
+<span style="flex:1;min-width:0;font-size:var(--text-sm);color:var(--text-primary)">{{ b.navn }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary)">{{ b.antall }}</span>
+</div>
+</sc-for>
+</div>
+<div style="background:var(--navy-50);border:1px solid var(--navy-100);border-radius:var(--radius-sm);padding:14px;display:flex;flex-direction:column;gap:8px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--navy-700)">ATTESTERING PÅ v4</span>
+<sc-for list="{{ attest }}" as="a" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:10px;min-height:32px">
+<span ref="{{ a.badgeRef }}" style="padding:3px 8px;border-radius:var(--radius-full);font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;flex-shrink:0">{{ a.merke }}</span>
+<span style="flex:1;min-width:0;font-size:var(--text-xs);color:var(--navy-800)">{{ a.tekst }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900);flex-shrink:0">{{ a.tall }}</span>
+</div>
+</sc-for>
+</div>
+<div style="flex:1"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:20px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MAC 1440 · SAMME PROTOKOLL SETT AV MOTTAKEREN (TEAM NORWAY) — INGEN HANDLING</div>
+<div style="width:1440px;height:520px;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="flex-shrink:0;border-bottom:1px solid var(--border-subtle);padding:24px 32px;display:flex;align-items:flex-start;gap:20px">
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:8px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">TESTBATTERI / GOLFSLAG</span>
+<h2 style="font-size:var(--text-h1);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:0">Inspill Basis</h2>
+<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;background:var(--ink-100);color:var(--ink-700);padding:4px 9px;border-radius:var(--radius-xs)">EID AV AK GOLF ACADEMY</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary)">DU BRUKER v4 · LÅST 12.08.2026</span>
+</div>
+</div>
+<div style="width:280px;flex-shrink:0;background:var(--ink-50);border-radius:var(--radius-md);padding:16px;display:flex;flex-direction:column;gap:6px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">INGEN HANDLING HER</span>
+<span style="font-size:var(--text-sm);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Team Norway bruker protokollen, men endrer den ikke. Trenger dere en annen variant, opprett en egen TN-protokoll — da eier dere versjonene selv.</span>
+</div>
+</div>
+<div style="flex:1;min-height:0;display:flex">
+<div style="flex:1;min-width:0;padding:22px 32px;display:flex;flex-direction:column;gap:12px;overflow:hidden">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">STEGENE I v4 — LESES, ENDRES IKKE</span>
+<sc-for list="{{ stegLite }}" as="s" hint-placeholder-count="4">
+<div style="display:flex;align-items:center;gap:14px;min-height:40px;border-bottom:1px solid var(--border-subtle)">
+<span style="width:26px;height:26px;flex-shrink:0;border-radius:var(--radius-xs);background:var(--ink-100);color:var(--text-secondary);font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);display:flex;align-items:center;justify-content:center">{{ s.nr }}</span>
+<span style="flex:1;min-width:0;font-size:var(--text-sm);color:var(--text-primary)">{{ s.navn }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary);flex-shrink:0">{{ s.krav }}</span>
+</div>
+</sc-for>
+<div style="flex:1;min-height:0"></div>
+</div>
+<div style="width:400px;flex-shrink:0;border-left:1px solid var(--border-subtle);padding:22px 24px;display:flex;flex-direction:column;gap:12px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">VERSJONSHISTORIKK · KUN LESING</span>
+<sc-for list="{{ versjonerLite }}" as="v" hint-placeholder-count="3">
+<div style="display:flex;align-items:baseline;gap:10px;min-height:36px;border-bottom:1px solid var(--border-subtle);padding-bottom:8px">
+<span style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900);width:30px;flex-shrink:0">{{ v.nr }}</span>
+<span style="flex:1;min-width:0;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">{{ v.last }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-sm);color:var(--text-secondary);flex-shrink:0">{{ v.malinger }}</span>
+</div>
+</sc-for>
+<span style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Deres 96 målinger ligger på v4. Hvis AK Golf lager v5, blir de liggende på v4 — de flytter seg aldri.</span>
+<div style="flex:1"></div>
+</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:20px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MOBIL 390 · SUKSESS, TOM (NY VERSJON UTEN MÅLINGER), LASTER, FEIL</div>
+<div style="display:flex;gap:28px;flex-wrap:wrap">
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">SUKSESS — MOTTAKERENS FLATE</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.41</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 16px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;align-items:center;gap:8px">
+<div role="button" style="width:44px;height:44px;flex-shrink:0;margin-left:-12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--navy-600)">‹</div>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TESTBATTERI · GOLFSLAG</span>
+</div>
+<h2 style="font-size:var(--text-h2);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:0">Inspill Basis</h2>
+<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;background:var(--ink-100);color:var(--ink-700);padding:3px 8px;border-radius:var(--radius-xs)">EID AV AK GOLF</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">DU BRUKER v4</span>
+</div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:16px;display:flex;flex-direction:column;gap:14px">
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:18px;display:flex;flex-direction:column;gap:10px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">HVA DEN MÅLER</span>
+<span style="font-size:var(--text-sm);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Nærhet delt på lengde per innspill. Prosent — <strong>lavere er bedre</strong>.</span>
+<div style="display:flex;gap:8px">
+<div style="flex:1;background:var(--ink-50);border-radius:var(--radius-xs);padding:10px"><div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);color:var(--text-tertiary)">ENHET</div><div style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">prosent</div></div>
+<div style="flex:1;background:var(--ink-50);border-radius:var(--radius-xs);padding:10px"><div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);color:var(--text-tertiary)">RETNING</div><div style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">lavere</div></div>
+</div>
+</div>
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:16px;display:flex;flex-direction:column;gap:10px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">VERSJONSHISTORIKK</span>
+<sc-for list="{{ versjonerMobil }}" as="v" hint-placeholder-count="4">
+<div style="display:flex;align-items:baseline;gap:10px;min-height:34px">
+<span ref="{{ v.nrRef2 }}" style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-semibold);width:28px;flex-shrink:0">{{ v.nr }}</span>
+<span style="flex:1;min-width:0;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">{{ v.last }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary);flex-shrink:0">{{ v.malinger }}</span>
+</div>
+</sc-for>
+<span style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty;border-top:1px solid var(--border-subtle);padding-top:9px">Et resultat peker alltid på versjonen det ble målt med.</span>
+</div>
+<div style="background:var(--navy-50);border:1px solid var(--navy-100);border-radius:var(--radius-md);padding:16px;display:flex;flex-direction:column;gap:8px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--navy-700)">ATTESTERING</span>
+<sc-for list="{{ attest2 }}" as="a" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:10px;min-height:32px">
+<span ref="{{ a.badgeRef }}" style="padding:3px 8px;border-radius:var(--radius-full);font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;flex-shrink:0">{{ a.merke }}</span>
+<span style="flex:1;min-width:0;font-size:var(--text-xs);color:var(--navy-800)">{{ a.tekst }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900);flex-shrink:0">{{ a.tall }}</span>
+</div>
+</sc-for>
+</div>
+<div style="flex:1;min-height:0"></div>
+<div role="button" style="height:52px;flex-shrink:0;border-radius:var(--radius-full);background:var(--navy-900);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:var(--text-base);font-weight:var(--weight-bold)">Start fellestesting på v4</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">TOM — v5 HAR INGEN MÅLINGER ENNÅ</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">10.02</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 16px;display:flex;flex-direction:column;gap:8px">
+<h2 style="font-size:var(--text-h2);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:0">Inspill Basis</h2>
+<div style="display:flex;align-items:center;gap:8px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;background:var(--navy-900);color:var(--white);padding:3px 8px;border-radius:var(--radius-xs)">v5 GJELDENDE</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">LÅST 31.08.2026</span>
+</div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:16px;display:flex;flex-direction:column;gap:14px">
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:20px;display:flex;flex-direction:column;gap:12px">
+<div style="font-size:var(--text-h3);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading);line-height:var(--leading-snug);text-wrap:pretty">Ingen målinger på v5 ennå</div>
+<div style="font-size:var(--text-sm);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Versjonen ble låst i dag. Den første målingen som føres, blir stående her. De 412 målingene på v4 er uendret og fortsatt lesbare.</div>
+<div style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Dette er ikke en feil, og ikke et tomt tall. En ny versjon starter alltid uten historikk.</div>
+</div>
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:16px;display:flex;flex-direction:column;gap:10px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">HVA SOM ENDRET SEG FRA v4</span>
+<sc-for list="{{ endringer }}" as="e" hint-placeholder-count="2">
+<div style="display:flex;gap:10px;align-items:flex-start">
+<span style="width:3px;height:16px;border-radius:var(--radius-full);background:var(--navy-600);flex-shrink:0;margin-top:3px"></span>
+<span style="flex:1;min-width:0;font-size:var(--text-sm);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">{{ e.tekst }}</span>
+</div>
+</sc-for>
+</div>
+<div style="flex:1;min-height:0"></div>
+<div role="button" style="height:52px;flex-shrink:0;border-radius:var(--radius-full);background:var(--navy-900);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:var(--text-base);font-weight:var(--weight-bold)">Før første måling på v5</div>
+<div role="button" style="height:44px;flex-shrink:0;border-radius:var(--radius-full);border:1px solid var(--border-default);display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Se de 412 målingene på v4</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">LASTER</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.41</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 16px;display:flex;flex-direction:column;gap:10px">
+<div style="width:210px;height:30px;border-radius:var(--radius-xs);background:var(--ink-100)"></div>
+<div style="display:flex;gap:8px"><div style="width:110px;height:18px;border-radius:var(--radius-xs);background:var(--ink-100)"></div><div style="width:80px;height:18px;border-radius:var(--radius-xs);background:var(--ink-100)"></div></div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:16px;display:flex;flex-direction:column;gap:14px">
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:18px;display:flex;flex-direction:column;gap:10px">
+<div style="width:110px;height:11px;border-radius:var(--radius-xs);background:var(--ink-100)"></div>
+<sc-for list="{{ skjelett }}" as="s" hint-placeholder-count="3">
+<div ref="{{ s.ref }}" style="height:14px;border-radius:var(--radius-xs);background:var(--ink-100)"></div>
+</sc-for>
+<div style="display:flex;gap:8px"><div style="flex:1;height:56px;border-radius:var(--radius-xs);background:var(--ink-100)"></div><div style="flex:1;height:56px;border-radius:var(--radius-xs);background:var(--ink-100)"></div></div>
+</div>
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:16px;display:flex;flex-direction:column;gap:12px">
+<div style="width:150px;height:11px;border-radius:var(--radius-xs);background:var(--ink-100)"></div>
+<div style="height:13px;border-radius:var(--radius-xs);background:var(--ink-100)"></div>
+<div style="width:70%;height:13px;border-radius:var(--radius-xs);background:var(--ink-100)"></div>
+<div style="width:84%;height:13px;border-radius:var(--radius-xs);background:var(--ink-100)"></div>
+</div>
+<div style="display:flex;align-items:center;gap:10px;padding:2px">
+<span style="width:14px;height:14px;border-radius:var(--radius-full);border:2px solid var(--ink-200);border-top-color:var(--navy-600);flex-shrink:0"></span>
+<span style="font-size:var(--text-xs);color:var(--text-secondary)">Henter versjonshistorikk fra eieren</span>
+</div>
+<div style="flex:1;min-height:0"></div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">FEIL — VERSJONEN KUNNE IKKE BEKREFTES</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.49</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 16px">
+<h2 style="font-size:var(--text-h2);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:0">Inspill Basis</h2>
+</div>
+<div style="flex-shrink:0;background:var(--status-red-bg);padding:14px 16px;display:flex;align-items:flex-start;gap:10px">
+<span style="width:7px;height:7px;border-radius:var(--radius-full);background:var(--status-red);flex-shrink:0;margin-top:6px"></span>
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--status-red-text)">Kan ikke bekrefte gjeldende versjon</div>
+<div style="font-size:var(--text-xs);color:var(--status-red-text);line-height:var(--leading-normal);margin-top:3px;text-wrap:pretty">Eieren AK Golf svarer ikke. Uten bekreftet versjon kan en måling ikke knyttes til riktig protokoll — og da skal den ikke føres.</div>
+</div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:16px;display:flex;flex-direction:column;gap:14px">
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:18px;display:flex;flex-direction:column;gap:10px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">SIST BEKREFTET</span>
+<div style="display:flex;align-items:baseline;gap:10px">
+<span style="font-family:var(--font-mono);font-size:var(--text-h2);font-weight:var(--weight-semibold);color:var(--text-secondary)">v4</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--status-amber-text);border:1px dashed var(--status-amber);border-radius:var(--radius-xs);padding:2px 7px">IKKE BEKREFTET NÅ</span>
+</div>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary)">Lest 24.08.2026 kl. 18.40</span>
+<span style="font-size:var(--text-sm);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Stegene under er fra v4 slik den ble lest da. De kan være utdaterte.</span>
+</div>
+<div role="button" style="height:52px;flex-shrink:0;border-radius:var(--radius-full);background:var(--navy-900);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:var(--text-base);font-weight:var(--weight-bold)">Prøv å bekrefte på nytt</div>
+<div style="background:var(--surface-card);border:1px dashed var(--border-default);border-radius:var(--radius-md);padding:16px;display:flex;flex-direction:column;gap:8px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">FELLESTESTING ER SPERRET</span>
+<span style="font-size:var(--text-sm);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Du kan lese protokollen, men ikke starte en økt på den før versjonen er bekreftet. En måling uten kjent versjon er en måling uten kilde.</span>
+</div>
+<div style="flex:1;min-height:0"></div>
+<div role="button" style="height:44px;flex-shrink:0;border-radius:var(--radius-full);border:1px solid var(--border-default);display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Velg en annen protokoll</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div style="max-width:760px;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:28px;display:flex;flex-direction:column;gap:16px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DESIGNNOTAT</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Beslutningen skjermen løser</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Kan jeg endre denne protokollen, og hva skjer med målingene om noen gjør det? Eierskapet er tegnet inn tre steder: lappen under tittelen (fylt navy for «du eier», nøytral grå for «eid av»), knappen «Ny versjon» som bare finnes for eieren, og et eget kort på mottakerflaten som sier hva som er alternativet — opprett en egen TN-protokoll.</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Tall som er eksempler</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Målingstallene (412, 96, 188), låsedatoene og versjonsnumrene er skjermtekst. PEI-definisjonen, retningen «lavere er bedre» og referansen «leave under 0,5 m» er ekte.</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Usikkert</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Tre ting. <strong>Ett:</strong> feiltilstanden sperrer føring når versjonen ikke kan bekreftes. Det er strengt, og står i motsetning til offline-føringen i TN-03 — forskjellen jeg forutsetter er at offline har en <em>kjent</em> versjon lokalt, mens denne ikke har. Bør bekreftes. <strong>To:</strong> «avvist» attestering har ingen definert konsekvens ennå — må målingen føres på nytt, eller kan vitnet rette? Jeg har skrevet «må føres på nytt» som forslag. <strong>Tre:</strong> ingen ikonsett; lås, chevron og tilbakepil er tegn (anbefaling Lucide, 20 px).</div>
+</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const setStyle = o => el => { if (el) Object.assign(el.style, o); };
+
+class Component extends DCLogic {
+  versjonSet() {
+    return [
+      { nr: 'v4', merke: 'gjeldende', last: 'LÅST 12.08.2026 · AK GOLF', malinger: '412', endring: 'Stasjon 5 flyttet fra 40 til 45 meter etter innspill fra WANG.', aktiv: true },
+      { nr: 'v3', merke: 'historisk', last: 'LÅST 03.02.2026 · AK GOLF', malinger: '188', endring: 'Antall innspill per stasjon økt fra 3 til 5.', aktiv: false },
+      { nr: 'v2', merke: 'historisk', last: 'LÅST 14.09.2025 · AK GOLF', malinger: '96', endring: 'Måling av nærhet endret fra meter til centimeter.', aktiv: false },
+      { nr: 'v1', merke: 'historisk', last: 'LÅST 21.04.2025 · AK GOLF', malinger: '34', endring: 'Første versjon, låst ved første bruk.', aktiv: false }
+    ];
+  }
+  attestSet() {
+    return [
+      { merke: 'venter', tekst: 'Sendt til vitne', tall: '19', tone: 'amber' },
+      { merke: 'attestert', tekst: 'Bekreftet av vitne', tall: '381', tone: 'green' },
+      { merke: 'avvist', tekst: 'Må føres på nytt', tall: '12', tone: 'red' }
+    ].map(a => ({
+      ...a,
+      badgeRef: setStyle(a.tone === 'green'
+        ? { background: 'var(--status-green-bg)', color: 'var(--status-green-text)' }
+        : a.tone === 'red'
+          ? { background: 'var(--status-red-bg)', color: 'var(--status-red-text)' }
+          : { background: 'var(--status-amber-bg)', color: 'var(--status-amber-text)' })
+    }));
+  }
+  renderVals() {
+    const v = this.versjonSet();
+    const steg = [
+      { nr: '01', navn: 'Innspill 60 meter', krav: '5 slag · nærhet i cm' },
+      { nr: '02', navn: 'Innspill 80 meter', krav: '5 slag · nærhet i cm' },
+      { nr: '03', navn: 'Innspill 100 meter', krav: '5 slag · nærhet i cm' },
+      { nr: '04', navn: 'Innspill 120 meter', krav: '5 slag · nærhet i cm' },
+      { nr: '05', navn: 'Innspill 145 meter', krav: '5 slag · nærhet i cm' },
+      { nr: '06', navn: 'Innspill 165 meter', krav: '5 slag · nærhet i cm' }
+    ];
+    return {
+      meny: [
+        { isHeading: true, label: 'Daglig' },
+        { isItem: true, label: 'Oversikt' },
+        { isItem: true, label: 'Fellestesting' },
+        { isHeading: true, label: 'Uttak' },
+        { isItem: true, label: 'Uttaksliste' },
+        { isItem: true, label: 'Rangliste' },
+        { isHeading: true, label: 'Skoler' },
+        { isItem: true, label: 'Skoleoversikt' },
+        { isHeading: true, label: 'Data' },
+        { isItem: true, label: 'Testbatteri', aktiv: true },
+        { isItem: true, label: 'Analyse' },
+        { isItem: true, label: 'Sannhetslag' }
+      ].map(m => ({
+        ...m,
+        ref: setStyle({
+          background: m.aktiv ? 'var(--navy-100)' : 'transparent',
+          color: m.aktiv ? 'var(--navy-900)' : 'var(--text-secondary)'
+        }),
+        markRef: setStyle({ background: m.aktiv ? 'var(--red-600)' : 'transparent' })
+      })),
+      steg,
+      stegLite: steg.slice(0, 4),
+      versjoner: v.map(x => ({
+        ...x,
+        rowRef: setStyle(x.aktiv
+          ? { background: 'var(--navy-50)', border: '1px solid var(--navy-100)' }
+          : { background: 'var(--ink-50)', border: '1px solid var(--border-subtle)' }),
+        nrRef: setStyle({ color: x.aktiv ? 'var(--navy-900)' : 'var(--text-secondary)' }),
+        merkeRef: setStyle(x.aktiv
+          ? { background: 'var(--navy-900)', color: 'var(--white)' }
+          : { background: 'var(--ink-100)', color: 'var(--text-secondary)' })
+      })),
+      versjonerLite: v.slice(0, 3),
+      versjonerMobil: v.map(x => ({ ...x, nrRef2: setStyle({ color: x.aktiv ? 'var(--navy-900)' : 'var(--text-secondary)' }) })),
+      brukere: [
+        { navn: 'AK Golf Academy', antall: '221 målinger', eier: true },
+        { navn: 'WANG Toppidrett Fredrikstad', antall: '95 målinger', eier: false },
+        { navn: 'Team Norway', antall: '96 målinger', eier: false }
+      ].map(b => ({ ...b, markRef: setStyle({ background: b.eier ? 'var(--navy-900)' : 'var(--ink-200)' }) })),
+      attest: this.attestSet(),
+      attest2: this.attestSet(),
+      endringer: [
+        { tekst: 'Stasjon 6 er ny: innspill fra 165 meter, fem slag.' },
+        { tekst: 'Nærhet rundes nå til hele centimeter, ikke halve.' }
+      ],
+      skjelett: [230, 180, 205].map(w => ({ ref: setStyle({ width: w + 'px' }) }))
+    };
+  }
+}
+</script>
+</body>
+</html>

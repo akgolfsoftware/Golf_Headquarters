@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="TN-09 Gruppeposter" description="Tidslinjen for én gruppe: trenerens poster med tekst, bilde, lenke og vedlegg. Oppslagstavle, ikke samtale — spilleren kvitterer, svarer ikke. Mac 1440 og mobil 390 i fire tilstander." -->
+<helmet><script src="./ds-base.js"></script></helmet>
+<div style="padding:48px;display:flex;flex-direction:column;gap:56px;background:var(--surface-page);min-height:100vh;font-family:var(--font-body)">
+
+<div style="display:flex;flex-direction:column;gap:8px;max-width:800px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TN-09 · /team-norway/[gruppeId]</div>
+<h1 style="font-size:var(--text-h1);color:var(--navy-900);letter-spacing:var(--tracking-heading);margin:0">Gruppeposter</h1>
+<p style="margin:0;font-size:var(--text-lg);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Alt treneren sender til en gruppe, samlet ett sted og søkbart i ettertid. Samme postmekanikk som TN-10, men mottakeren er gruppen — derfor står medlemslisten som antall, ikke som navn, og lesekvitteringen er en brøk du kan åpne.</p>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:20px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MAC 1440 · SUKSESS</div>
+<div style="width:1440px;height:900px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;font-variant-numeric:tabular-nums">
+
+<div style="width:232px;flex-shrink:0;background:var(--surface-card);border-right:1px solid var(--border-subtle);display:flex;flex-direction:column;padding:20px 14px 18px;gap:20px">
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:11px 12px;display:flex;align-items:center;gap:10px">
+<span style="width:9px;height:24px;border-radius:3px;background:var(--red-600);flex-shrink:0"></span>
+<div style="min-width:0"><div style="font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--navy-900)">Team Norway</div><div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);color:var(--text-tertiary);margin-top:1px">JUNIOR</div></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:2px;flex:1;min-height:0;overflow:hidden">
+<sc-for list="{{ meny }}" as="m" hint-placeholder-count="12">
+<sc-if value="{{ m.isHeading }}" hint-placeholder-val="{{ false }}">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);padding:14px 12px 6px">{{ m.label }}</div>
+</sc-if>
+<sc-if value="{{ m.isItem }}" hint-placeholder-val="{{ true }}">
+<div ref="{{ m.ref }}" style="height:40px;border-radius:var(--radius-xs);padding:0 10px;display:flex;align-items:center;gap:10px">
+<span ref="{{ m.markRef }}" style="width:3px;height:18px;border-radius:var(--radius-full);flex-shrink:0"></span>
+<span style="font-size:var(--text-sm);font-weight:var(--weight-medium)">{{ m.label }}</span>
+</div>
+</sc-if>
+</sc-for>
+</div>
+</div>
+
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;min-height:0">
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:20px 32px 16px;display:flex;align-items:flex-end;justify-content:space-between;gap:20px">
+<div style="min-width:0">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">GRUPPE · 14 UTØVERE · 3 TRENERE</div>
+<h2 style="font-size:var(--text-h1);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:4px 0 0">Landslagssamling Marbella</h2>
+</div>
+<div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+<div role="button" style="height:40px;padding:0 16px;border-radius:var(--radius-full);border:1px solid var(--border-default);display:flex;align-items:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Medlemmer</div>
+<div role="button" style="height:40px;padding:0 16px;border-radius:var(--radius-full);border:1px solid var(--border-default);display:flex;align-items:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Dokumenter</div>
+<div role="button" style="height:40px;padding:0 18px;border-radius:var(--radius-full);background:var(--navy-900);display:flex;align-items:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--white)">Ny post</div>
+</div>
+</div>
+
+<div style="flex:1;min-height:0;display:flex;overflow:hidden">
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;padding:18px 32px 0;gap:12px;overflow:hidden">
+
+<div style="flex-shrink:0;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:12px 14px;display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">NY POST TIL GRUPPEN</span>
+<div style="flex:1"></div>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--navy-700);background:var(--navy-50);border-radius:var(--radius-xs);padding:3px 8px">14 UTØVERE + FORESATTE TIL 9 MINDREÅRIGE</span>
+</div>
+<div style="min-height:44px;border:1px solid var(--border-default);border-radius:var(--radius-md);padding:10px 14px;font-size:var(--text-sm);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Oppmøte søndag 06.09 kl. 05.30 i avgangshallen, Gardermoen. Ta med eget utstyr til fysøkt.</div>
+<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+<div role="button" style="height:32px;padding:0 12px 0 8px;border-radius:var(--radius-full);border:1px solid var(--navy-100);background:var(--navy-50);display:flex;align-items:center;gap:8px;flex-shrink:0">
+<span style="width:20px;height:20px;border-radius:4px;background:var(--white);border:1px solid var(--navy-100);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:9px;font-weight:var(--weight-bold);color:var(--navy-700)">T</span>
+<span style="font-size:var(--text-xs);font-weight:var(--weight-semibold);color:var(--navy-900)">Opprett Teams-møte</span>
+</div>
+<sc-for list="{{ handlinger }}" as="v" hint-placeholder-count="3">
+<span style="height:32px;padding:0 12px;border-radius:var(--radius-full);border:1px solid var(--border-default);display:flex;align-items:center;font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--text-secondary)">{{ v.label }}</span>
+</sc-for>
+<div style="flex:1"></div>
+<div role="button" style="height:38px;padding:0 20px;border-radius:var(--radius-full);background:var(--navy-900);display:flex;align-items:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--white)">Publiser</div>
+</div>
+</div>
+
+<div style="flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:12px">
+<sc-for list="{{ poster }}" as="p" hint-placeholder-count="2">
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:14px 18px;display:flex;flex-direction:column;gap:10px;flex-shrink:0">
+<div style="display:flex;align-items:flex-start;gap:12px">
+<span style="width:30px;height:30px;border-radius:var(--radius-full);background:var(--ink-200);color:var(--ink-700);font-family:var(--font-mono);font-size:var(--text-xs);display:flex;align-items:center;justify-content:center;flex-shrink:0">{{ p.init }}</span>
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ p.avsender }}</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);margin-top:2px">{{ p.tid }} · TIL: {{ p.til }}</div>
+</div>
+<span ref="{{ p.merkeRef }}" style="font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;padding:4px 9px;border-radius:var(--radius-xs);flex-shrink:0">{{ p.merke }}</span>
+</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">{{ p.tekst }}</div>
+<sc-if value="{{ p.harVedlegg }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;gap:10px;flex-wrap:wrap">
+<sc-for list="{{ p.vedlegg }}" as="f" hint-placeholder-count="2">
+<div role="button" style="display:flex;align-items:center;gap:10px;border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:8px 14px 8px 8px;min-width:210px;background:var(--surface-page)">
+<span ref="{{ f.ikonRef }}" style="width:30px;height:30px;border-radius:var(--radius-xs);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-bold);flex-shrink:0">{{ f.type }}</span>
+<div style="min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-medium);color:var(--navy-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ f.navn }}</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary);margin-top:1px">{{ f.storrelse }}</div>
+</div>
+</div>
+</sc-for>
+</div>
+</sc-if>
+<div style="display:flex;align-items:center;gap:10px;border-top:1px solid var(--border-subtle);padding-top:10px">
+<span ref="{{ p.settRef }}" style="width:8px;height:8px;border-radius:var(--radius-full);flex-shrink:0"></span>
+<span style="font-size:var(--text-xs);color:var(--text-secondary)">{{ p.kvittering }}</span>
+<span role="button" style="font-size:var(--text-xs);font-weight:var(--weight-semibold);color:var(--navy-700)">Se hvem</span>
+<div style="flex:1"></div>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">{{ p.kilde }}</span>
+</div>
+</div>
+</sc-for>
+<div style="flex:1;min-height:0"></div>
+</div>
+</div>
+
+<div style="width:296px;flex-shrink:0;border-left:1px solid var(--border-subtle);background:var(--surface-card);padding:18px 20px;display:flex;flex-direction:column;gap:14px;overflow:hidden">
+<div style="display:flex;flex-direction:column;gap:9px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">SISTE POST · IKKE ÅPNET</div>
+<sc-for list="{{ mangler }}" as="u" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="width:26px;height:26px;border-radius:var(--radius-full);background:var(--ink-100);color:var(--ink-700);font-family:var(--font-mono);font-size:var(--text-micro);display:flex;align-items:center;justify-content:center;flex-shrink:0">{{ u.init }}</span>
+<span style="flex:1;min-width:0;font-size:var(--text-sm);color:var(--navy-900)">{{ u.navn }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">{{ u.rolle }}</span>
+</div>
+</sc-for>
+<div role="button" style="height:36px;margin-top:4px;border-radius:var(--radius-full);border:1px solid var(--border-default);display:flex;align-items:center;justify-content:center;font-size:var(--text-xs);font-weight:var(--weight-semibold);color:var(--navy-900)">Purr de to som mangler</div>
+</div>
+<div style="background:var(--navy-50);border:1px solid var(--navy-100);border-radius:var(--radius-md);padding:12px;display:flex;flex-direction:column;gap:6px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--navy-700)">GRUPPEN SER HVERANDRE</span>
+<span style="font-size:var(--text-xs);color:var(--navy-900);line-height:var(--leading-normal);text-wrap:pretty">Mindreårige står med fornavn og forbokstav på gruppeflaten. Fullt navn finnes bare i enkeltvisning.</span>
+</div>
+<div style="border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:12px;display:flex;flex-direction:column;gap:7px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MEDLEMMER</span>
+<div style="display:flex;align-items:baseline;gap:8px"><span style="font-family:var(--font-mono);font-size:var(--text-h3);font-weight:var(--weight-semibold);color:var(--navy-900)">14</span><span style="font-size:var(--text-xs);color:var(--text-secondary)">utøvere, 9 under 18 år</span></div>
+<div style="display:flex;align-items:baseline;gap:8px"><span style="font-family:var(--font-mono);font-size:var(--text-h3);font-weight:var(--weight-semibold);color:var(--navy-900)">11</span><span style="font-size:var(--text-xs);color:var(--text-secondary)">foresatte med innsyn</span></div>
+</div>
+<div style="flex:1;min-height:0"></div>
+<div style="font-size:var(--text-xs);color:var(--text-tertiary);line-height:var(--leading-normal);text-wrap:pretty">Utøverne kan kvittere, ikke svare. Gruppen er en oppslagstavle.</div>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:20px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MOBIL 390 · SUKSESS, TOM, LASTER, FEIL</div>
+<div style="display:flex;gap:28px;flex-wrap:wrap">
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">SUKSESS</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.41</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:6px 16px 12px;display:flex;align-items:center;gap:8px">
+<div role="button" style="width:44px;height:44px;flex-shrink:0;margin-left:-12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--navy-600)">‹</div>
+<div style="min-width:0;flex:1">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">GRUPPE · 14 UTØVERE</div>
+<h2 style="font-size:var(--text-h3);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:1px 0 0">Samling Marbella</h2>
+</div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:12px 16px;display:flex;flex-direction:column;gap:10px">
+<sc-for list="{{ posterMobil }}" as="p" hint-placeholder-count="2">
+<div style="background:var(--surface-card);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:12px 14px;display:flex;flex-direction:column;gap:9px;flex-shrink:0">
+<div style="display:flex;align-items:flex-start;gap:10px">
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ p.avsender }}</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);margin-top:2px">{{ p.tid }}</div>
+</div>
+<span ref="{{ p.merkeRef }}" style="font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;padding:3px 8px;border-radius:var(--radius-xs);flex-shrink:0">{{ p.merke }}</span>
+</div>
+<div style="font-size:var(--text-sm);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">{{ p.tekst }}</div>
+<sc-if value="{{ p.harVedlegg }}" hint-placeholder-val="{{ false }}">
+<sc-for list="{{ p.vedlegg }}" as="f" hint-placeholder-count="1">
+<div role="button" style="display:flex;align-items:center;gap:10px;border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:8px 12px 8px 8px;background:var(--surface-page);min-height:44px">
+<span ref="{{ f.ikonRef }}" style="width:28px;height:28px;border-radius:var(--radius-xs);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-bold);flex-shrink:0">{{ f.type }}</span>
+<div style="min-width:0;flex:1"><div style="font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ f.navn }}</div><div style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">{{ f.storrelse }}</div></div>
+</div>
+</sc-for>
+</sc-if>
+<div style="display:flex;align-items:center;gap:8px;border-top:1px solid var(--border-subtle);padding-top:8px">
+<span ref="{{ p.settRef }}" style="width:7px;height:7px;border-radius:var(--radius-full);flex-shrink:0"></span>
+<span style="flex:1;min-width:0;font-size:var(--text-xs);color:var(--text-secondary)">{{ p.kvitteringKort }}</span>
+<span role="button" style="font-size:var(--text-xs);font-weight:var(--weight-semibold);color:var(--navy-700);flex-shrink:0">Se hvem</span>
+</div>
+</div>
+</sc-for>
+<div style="flex:1;min-height:0"></div>
+</div>
+<div style="flex-shrink:0;border-top:1px solid var(--border-subtle);background:var(--surface-card);padding:12px 16px 20px;display:flex;align-items:center;gap:10px">
+<div style="flex:1;min-width:0;font-size:var(--text-xs);color:var(--text-tertiary);line-height:var(--leading-snug);text-wrap:pretty">Oppslagstavle — ingen svar</div>
+<div role="button" style="height:44px;padding:0 20px;border-radius:var(--radius-full);background:var(--navy-900);display:flex;align-items:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--white);flex-shrink:0">Ny post</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">TOM — HELT NY GRUPPE</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">10.12</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:6px 16px 12px;display:flex;align-items:center;gap:8px">
+<div role="button" style="width:44px;height:44px;flex-shrink:0;margin-left:-12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--navy-600)">‹</div>
+<div style="min-width:0;flex:1">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">NY GRUPPE · 8 UTØVERE</div>
+<h2 style="font-size:var(--text-h3);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:1px 0 0">TN Jenter 2009</h2>
+</div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:16px;display:flex;flex-direction:column;gap:14px">
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:20px;display:flex;flex-direction:column;gap:12px">
+<div style="font-size:var(--text-h3);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading);line-height:var(--leading-snug);text-wrap:pretty">Ingen poster ennå</div>
+<div style="font-size:var(--text-sm);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Her samles postene dine til gruppen — beskjeder, reiseinfo, filer og møtelenker. Alt blir liggende og kan søkes opp senere av både utøvere og foresatte.</div>
+<div style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Gruppen ble opprettet 30.08.2026. De 8 utøverne ser flaten allerede.</div>
+</div>
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:16px;display:flex;flex-direction:column;gap:10px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">VANLIGE FØRSTEPOSTER</span>
+<sc-for list="{{ forslag }}" as="f" hint-placeholder-count="3">
+<div role="button" style="min-height:44px;display:flex;align-items:center;gap:10px;border-top:1px solid var(--border-subtle);padding-top:10px">
+<span style="flex:1;min-width:0;font-size:var(--text-sm);color:var(--navy-900);line-height:var(--leading-snug);text-wrap:pretty">{{ f.label }}</span>
+<span style="font-size:16px;color:var(--text-tertiary);flex-shrink:0">›</span>
+</div>
+</sc-for>
+</div>
+<div style="flex:1;min-height:0"></div>
+<div role="button" style="height:48px;flex-shrink:0;border-radius:var(--radius-full);background:var(--navy-900);display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--white)">Skriv første post</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">LASTER</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.41</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:10px 16px 14px;display:flex;flex-direction:column;gap:9px">
+<div style="width:140px;height:11px;border-radius:var(--radius-xs);background:var(--ink-100)"></div>
+<div style="width:200px;height:26px;border-radius:var(--radius-xs);background:var(--ink-100)"></div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:12px 16px;display:flex;flex-direction:column;gap:10px">
+<sc-for list="{{ skjelett }}" as="s" hint-placeholder-count="3">
+<div style="background:var(--surface-card);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:12px 14px;display:flex;flex-direction:column;gap:9px">
+<div style="display:flex;align-items:center;gap:10px">
+<div style="width:120px;height:14px;border-radius:var(--radius-xs);background:var(--ink-100)"></div>
+<div style="flex:1"></div>
+<div style="width:54px;height:18px;border-radius:var(--radius-xs);background:var(--ink-100);flex-shrink:0"></div>
+</div>
+<div ref="{{ s.ref }}" style="height:12px;border-radius:var(--radius-xs);background:var(--ink-100)"></div>
+<div style="width:68%;height:12px;border-radius:var(--radius-xs);background:var(--ink-100)"></div>
+<div style="height:1px;background:var(--border-subtle)"></div>
+<div style="width:150px;height:12px;border-radius:var(--radius-xs);background:var(--ink-100)"></div>
+</div>
+</sc-for>
+<div style="display:flex;align-items:center;gap:10px;padding:2px">
+<span style="width:14px;height:14px;border-radius:var(--radius-full);border:2px solid var(--ink-200);border-top-color:var(--navy-600);flex-shrink:0"></span>
+<span style="font-size:var(--text-xs);color:var(--text-secondary)">Henter gruppens poster</span>
+</div>
+<div style="flex:1;min-height:0"></div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">FEIL — VEDLEGG BLE IKKE LASTET OPP</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">11.03</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:6px 16px 12px;display:flex;align-items:center;gap:8px">
+<div role="button" style="width:44px;height:44px;flex-shrink:0;margin-left:-12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--navy-600)">‹</div>
+<div style="min-width:0;flex:1">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">GRUPPE · 14 UTØVERE</div>
+<h2 style="font-size:var(--text-h3);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:1px 0 0">Samling Marbella</h2>
+</div>
+</div>
+<div style="flex-shrink:0;background:var(--status-red-bg);padding:12px 16px;display:flex;align-items:flex-start;gap:10px">
+<span style="width:7px;height:7px;border-radius:var(--radius-full);background:var(--status-red);flex-shrink:0;margin-top:6px"></span>
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--status-red-text)">Posten ble ikke publisert</div>
+<div style="font-size:var(--text-xs);color:var(--status-red-text);line-height:var(--leading-normal);margin-top:3px;text-wrap:pretty">Ett av vedleggene stoppet under opplasting. Teksten er lagret som utkast.</div>
+</div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:16px;display:flex;flex-direction:column;gap:14px">
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:16px;display:flex;flex-direction:column;gap:10px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">UTKAST · 11.02</span>
+<div style="font-size:var(--text-sm);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Oppmøte søndag 06.09 kl. 05.30 i avgangshallen, Gardermoen.</div>
+<div style="display:flex;align-items:center;gap:10px;border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:8px 12px 8px 8px">
+<span style="width:28px;height:28px;border-radius:var(--radius-xs);background:var(--status-red-bg);color:var(--status-red-text);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-bold);flex-shrink:0">PDF</span>
+<div style="min-width:0;flex:1"><div style="font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">reiseplan-marbella.pdf</div><div style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--status-red-text)">STOPPET PÅ 68 % · 4,2 MB</div></div>
+</div>
+</div>
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:16px;display:flex;flex-direction:column;gap:8px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">HVORFOR IKKE DELVIS?</span>
+<span style="font-size:var(--text-sm);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Posten publiseres ikke uten vedlegget. En halv beskjed til 14 utøvere er verre enn ingen.</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div role="button" style="height:48px;border-radius:var(--radius-full);background:var(--navy-900);display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--white)">Prøv opplasting på nytt</div>
+<div role="button" style="height:48px;border-radius:var(--radius-full);border:1px solid var(--border-default);display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Publiser uten vedlegg</div>
+</div>
+<div style="flex:1;min-height:0"></div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div style="max-width:760px;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:28px;display:flex;flex-direction:column;gap:16px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DESIGNNOTAT</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Beslutningen skjermen løser</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">At en beskjed til en gruppe er sporbar uten å bli en samtale. Postene ligger kronologisk med avsender, tid og «Til:», og lesekvitteringen står som brøk med «Se hvem» ved siden av — treneren skal se på ett blikk at 12 av 14 har åpnet, og med ett trykk hvem de to er. Høyre skinne løfter de manglende opp av listen, fordi det er den eneste handlingen brøken faktisk fører til.</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Tall og navn som er eksempler</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Alle tall, navn og filstørrelser er skjermtekst. Mindreårige står som fornavn + forbokstav («Emma H.») fordi gruppeflaten ses av 14 utøvere og 11 foresatte samtidig — samme regel som TN-08 og TN-11.</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Usikkert</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty"><strong>Ett:</strong> ser foresatte gruppeflaten i sin helhet, eller bare postene? Jeg har tegnet full innsyn, men det er en avgjørelse. <strong>To:</strong> «Purr de to som mangler» sender et varsel som ikke er spesifisert — tekst, kanal og hvem den treffer (utøver, foresatt eller begge) mangler. <strong>Tre:</strong> kan andre trenere i gruppen poste, og skal utøverne se hvem av trenerne som postet? Tegnet med avsender synlig. <strong>Fire:</strong> ingen ikonsett; filtype vises som monotekst — anbefaling Lucide 20 px, 1,75 px strek.</div>
+</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1560,&quot;height&quot;:1000}}">
+const setStyle = o => el => { if (el) Object.assign(el.style, o); };
+const merkeStil = m => m === 'MØTE'
+  ? { background: 'var(--navy-50)', color: 'var(--navy-700)', border: '1px solid var(--navy-100)' }
+  : m === 'REISE'
+    ? { background: 'var(--navy-900)', color: 'var(--white)' }
+    : { background: 'var(--ink-100)', color: 'var(--ink-700)' };
+const settStil = s => s === 'alle'
+  ? { background: 'var(--status-green)' }
+  : s === 'delvis'
+    ? { background: 'var(--status-amber)' }
+    : { background: 'var(--ink-300)' };
+const filStil = t => t === 'PDF'
+  ? { background: 'var(--status-red-bg)', color: 'var(--status-red-text)' }
+  : t === 'JPG'
+    ? { background: 'var(--navy-50)', color: 'var(--navy-700)' }
+    : { background: 'var(--ink-100)', color: 'var(--ink-700)' };
+
+class Component extends DCLogic {
+  postData() {
+    return [
+      {
+        init: 'SD', avsender: 'Sindre Dahl · trener', tid: '29.08 · 11.10', til: 'HELE GRUPPEN',
+        merke: 'REISE',
+        tekst: 'Uttakskriteriene for samlingen ligger vedlagt. Les punktet om prosess og adferd før vi møtes.',
+        harVedlegg: true,
+        vedlegg: [
+          { type: 'PDF', navn: 'uttakskriterier-host.pdf', storrelse: '312 KB' },
+          { type: 'PDF', navn: 'reiseplan-marbella.pdf', storrelse: '4,2 MB' }
+        ],
+        sett: 'delvis', kvittering: '12 av 14 har åpnet', kvitteringKort: '12 av 14 har åpnet',
+        kilde: 'POSTET FRA WORKDESK'
+      },
+      {
+        init: 'ILH', avsender: 'Ina L. Haug · fystrener', tid: '27.08 · 16.05', til: 'HELE GRUPPEN',
+        merke: 'ØKT',
+        tekst: 'Fysøkta flyttes til onsdag kl. 07.00 fordi banen er stengt tirsdag. Samme program.',
+        harVedlegg: false, vedlegg: [],
+        sett: 'alle', kvittering: '14 av 14 har åpnet', kvitteringKort: '14 av 14 har åpnet',
+        kilde: 'POSTET FRA MOBIL'
+      }
+    ];
+  }
+  renderVals() {
+    const p = this.postData().map(x => ({
+      ...x,
+      merkeRef: setStyle(merkeStil(x.merke)),
+      settRef: setStyle(settStil(x.sett)),
+      vedlegg: x.vedlegg.map(f => ({ ...f, ikonRef: setStyle(filStil(f.type)) }))
+    }));
+    return {
+      meny: [
+        { isHeading: true, label: 'Daglig' },
+        { isItem: true, label: 'Oversikt' },
+        { isItem: true, label: 'Fellestesting' },
+        { isHeading: true, label: 'Kommunikasjon' },
+        { isItem: true, label: 'Gruppeposter', aktiv: true },
+        { isItem: true, label: 'Poster til utøver' },
+        { isItem: true, label: 'Dokumenter' },
+        { isHeading: true, label: 'Uttak' },
+        { isItem: true, label: 'Uttaksliste' },
+        { isItem: true, label: 'Rangliste' },
+        { isHeading: true, label: 'Skoler' },
+        { isItem: true, label: 'Skoleoversikt' }
+      ].map(m => ({
+        ...m,
+        ref: setStyle({
+          background: m.aktiv ? 'var(--navy-100)' : 'transparent',
+          color: m.aktiv ? 'var(--navy-900)' : 'var(--text-secondary)'
+        }),
+        markRef: setStyle({ background: m.aktiv ? 'var(--red-600)' : 'transparent' })
+      })),
+      poster: p,
+      posterMobil: p,
+      handlinger: [{ label: 'Legg ved fil' }, { label: 'Bilde eller video' }, { label: 'Lenke' }],
+      mangler: [
+        { init: 'EH', navn: 'Emma H.', rolle: 'UTØVER' },
+        { init: 'TB', navn: 'Trym B.', rolle: 'UTØVER' }
+      ],
+      forslag: [
+        { label: 'Velkommen og hva gruppen er' },
+        { label: 'Terminliste for høsten' },
+        { label: 'Praktisk om reise og utstyr' }
+      ],
+      skjelett: [86, 70, 92].map(w => ({ ref: setStyle({ width: w + '%' }) }))
+    };
+  }
+}
+</script>
+</body>
+</html>

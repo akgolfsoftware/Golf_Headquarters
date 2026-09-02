@@ -142,6 +142,13 @@ const IKKE_HANDHEVET: readonly string[] = [
   "VIEW_CHILDREN",
   "VIEW_OWN_BOOKINGS",
   "VIEW_OWN_PROFILE",
+  // TN-12 (Claw batch 3, 01.09.2026): capabilityen finnes og kan grantes fra
+  // admin-UI-et (samme sted som VIEW_SHARED_TEST_RESULTS/VIEW_SHARED_STATS),
+  // men selve dataleveransen (treningsplan/TrackMan/analyse til /innsyn) er
+  // ikke bygget ennå. TN-09–TN-12 var poster/dokumenter/samtykke-UI-et —
+  // ikke ekstern-leser-datalaget. Fjern herfra når /innsyn får en
+  // .has(Capability.VIEW_SHARED_FULL_PROFILE)-gate.
+  "VIEW_SHARED_FULL_PROFILE",
 ] as const;
 
 test("alle capabilities er enten håndhevet et sted, eller kjent uhåndhevet", () => {

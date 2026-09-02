@@ -177,7 +177,7 @@ samtykkeskjermen for forelder og spiller, med de to delingstrinnene per organisa
 
 1. **TN-rødt.** Designsystemet bruker `#D70232`, målt fra logofilen. `.claude/rules/beslutninger.md`
    N-D2 sier `#D50431` uten oppgitt kilde. To gjeldende verdier for samme farge er en driftsfelle.
-2. **Hvem eier `/team-norway/*`?** Train-lock (CLAUDE.md invariant 2) eller dette systemet
-   (N-D1: egne skjermer). Designsystemet foreslår arbeidsdelingen der Train-lock eier
-   plattformflatene og dette systemet eier TNs egne. Må registreres med `/beslutning`.
+2. ~~Hvem eier `/team-norway/*`?~~ **AVGJORT 31.08.2026** — Train-lock eier plattformflatene
+   (Analyse, DataGolf), dette systemet eier `/team-norway/*` og alle TN-egne skjermer. Se
+   `.claude/rules/beslutninger.md` §ANALYSE OG DATAGOLF FOR TEAM NORWAY ER TRAIN-LOCK MED TN-SKINN.
 3. **16 protokoller eller 11 tester?** Kildene spriker. Avstemmes før føringsskjermen kodes.

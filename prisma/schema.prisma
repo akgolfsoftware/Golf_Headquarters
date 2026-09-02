@@ -567,7 +567,7 @@ model User {
   gameplanHull         GameplanHull[]
   gameplanSoner        GameplanSone[]
   testResults          TestResult[]
-  testResultsAsWitness TestResult[]          @relation("TestWitness")
+  testResultsAsWitness TestResult[]      @relation("TestWitness")
   testSessions         TestSession[]
   testAssignments      TestAssignment[]  @relation("PlayerTestAssignments")
   coachTestAssignments TestAssignment[]  @relation("CoachTestAssignments")
@@ -838,6 +838,62 @@ model EksternLeserGruppe {
   @@unique([userId, groupId])
   @@index([userId, revokedAt])
   @@map("ekstern_leser_grupper")
+}
+
+// Team Norway-poster (Claw batch 3, TN-09/TN-10): oppslagstavle, ikke chat.
+// Nøyaktig én av groupId/mottakerUserId er satt — CHECK-constraint i
+// migrasjonsscriptet, aldri kun håndhevet i domenelaget. groupId = post til
+// hele gruppen (TN-09); mottakerUserId = post til én spiller (TN-10), der
+// 1:1-poster til mindreårige ALLTID er synlige for foresatt (håndheves i
+// src/lib/domain/tn-post.ts, aldri bare i UI). Ingen @relation — additiv isolasjon.
+model TnPost {
+  id             String   @id @default(cuid())
+  groupId        String?
+  mottakerUserId String?
+  authorUserId   String
+  tekst          String
+  // TEKST | REISE | MOTE | OKT — badge-merket i TN-09/TN-10-designet.
+  kind           String   @default("TEKST")
+  createdAt      DateTime @default(now())
+
+  vedlegg      TnPostAttachment[]
+  lesekvittert TnPostLesekvittering[]
+
+  @@index([groupId, createdAt])
+  @@index([mottakerUserId, createdAt])
+  @@map("tn_posts")
+}
+
+// Vedlegg på en TnPost. Fil ligger i privat Supabase-bucket "tn-post-vedlegg"
+// (src/lib/storage/buckets.ts). Mønster: MessageAttachment.
+model TnPostAttachment {
+  id        String   @id @default(cuid())
+  postId    String
+  fileName  String
+  fileType  String?
+  fileSize  Int?
+  path      String
+  createdAt DateTime @default(now())
+
+  post TnPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@index([postId])
+  @@map("tn_post_vedlegg")
+}
+
+// Lesekvittering per (post, bruker) — brøken i TN-09/TN-10/TN-11-designet.
+// Én rad per bruker som har åpnet posten; ingen rad = ikke åpnet.
+model TnPostLesekvittering {
+  id     String   @id @default(cuid())
+  postId String
+  userId String
+  readAt DateTime @default(now())
+
+  post TnPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userId])
+  @@index([postId])
+  @@map("tn_post_lesekvitteringer")
 }
 
 // Ressurs-bibliotek for talent-program. Videoer, artikler, podcasts.
@@ -2984,6 +3040,9 @@ model PublicPlayerEntry {
   position     Int?
   scoreToPar   Int?
   totalScore   Int?
+  // Klubb og klassenavn fra kilden (GolfBox) — tidligere kastet i scraperen (STEG 16.6).
+  clubName     String?
+  klasseNavn   String?
   // JSON blob med per-runde data
   rounds       Json?
   createdAt    DateTime @default(now())
@@ -5568,30 +5627,34 @@ model KommandoTask {
 /**
  * Driftsrutine — gjentakende arbeid som holder virksomheten i gang
  * (MASTERPLAN 15.2, beslutning 6.6 fra GRILLINGEN RUNDE 6, Anders 30.08.2026).
- *
  * Skilt fra KommandoTask med vilje: en oppgave gjøres ferdig og forsvinner,
  * en rutine kommer tilbake. «Rydd driving range» er ikke en oppgave — den er
  * hver dag, for alltid.
- *
  * `automatiserbar` er hele poenget med modellen: Anders skal se hvilke
  * rutiner en agent kan overta og hvilke som krever et menneske på stedet.
  * Uten det feltet er lista bare enda en oppgaveliste.
  */
 model DriftRutine {
-  id        String   @id @default(cuid())
-  userId    String
-  tittel    String
-  detalj    String?
-  /** "daglig" | "ukentlig" | "manedlig" */
-  frekvens  String
-  /** Fritekst: «torsdag 20.00», «den 3.», «rullering Anders/Christoffer». */
-  naar      String?
-  /** true = en agent kan overta. false = krever et menneske fysisk til stede. */
-  automatiserbar Boolean @default(false)
-  aktiv     Boolean  @default(true)
-  sistUtfort DateTime?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id             String    @id @default(cuid())
+  userId         String
+  tittel         String
+  detalj         String?
+  /**
+   * "daglig" | "ukentlig" | "manedlig"
+   */
+  frekvens       String
+  /**
+   * Fritekst: «torsdag 20.00», «den 3.», «rullering Anders/Christoffer».
+   */
+  naar           String?
+  /**
+   * true = en agent kan overta. false = krever et menneske fysisk til stede.
+   */
+  automatiserbar Boolean   @default(false)
+  aktiv          Boolean   @default(true)
+  sistUtfort     DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
   @@index([userId, aktiv, frekvens])
   @@map("drift_rutiner")
@@ -6071,17 +6134,17 @@ model WorkbenchSession {
   // Serie (Loop 2T/B5, 26.08.2026): økter opprettet med "gjenta" deler samme
   // seriesId. seriesIndex er 0-basert rekkefølge innad i serien — brukes til
   // endre-policy (DENNE / DENNE_OG_FREMOVER / HELE_SERIEN). Additiv, nullable.
-  seriesId             String?
-  seriesIndex          Int?
+  seriesId    String?
+  seriesIndex Int?
   // Mal (kilder-panelet, Loop 2T/B5): coach kan lagre en økt som mal —
   // dukker da opp i kildepanelet under "Maler" for gjenbruk.
-  isTemplate           Boolean   @default(false)
+  isTemplate  Boolean @default(false)
 
   // Godkjenning (Loop 3T/B6, 26.08.2026): spilleren har avvist et forslag
   // fra coach/gruppe, eller valgt "Ikke delta" på en gruppeøkt (WB-10).
   // Skjuler økten i Agenda/"I dag" og listevisninger for spilleren — SLETTER
   // aldri. Agency ser den fortsatt, markert SKJULT.
-  hiddenByPlayer       Boolean   @default(false)
+  hiddenByPlayer Boolean @default(false)
 
   drills WorkbenchDrill[]
 

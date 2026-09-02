@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+  html, body { margin: 0; padding: 0; background: #F7F7F8; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; color: #111111; }
+  a { color: #0A84FF; text-decoration: none; }
+  a:hover { color: #111111; }
+  ::-webkit-scrollbar { display: none; }
+  :root { --ease-out: cubic-bezier(0.23, 1, 0.32, 1); --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1); --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1); }
+  [data-press] { transition: transform 220ms var(--ease-out), background-color 220ms var(--ease-out), opacity 220ms var(--ease-out); }
+  [data-press]:active { transition-duration: 110ms; }
+  @media (hover: hover) and (pointer: fine) { [data-press]:hover { background-color: #E9E9EB; } [data-sub]:hover { opacity: 0.75; } }
+  @media (prefers-reduced-motion: reduce) { [data-press] { transition: opacity 200ms ease, background-color 200ms ease; } [data-press]:active { transform: none !important; } }
+  @keyframes dcRise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  @keyframes dcFade { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes dcWipe { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+  [data-in] { animation: dcRise 520ms var(--ease-out) both; }
+  [data-wipe] { animation: dcWipe 820ms var(--ease-out) 200ms both; }
+  @media (prefers-reduced-motion: reduce) { [data-in] { animation: dcFade 240ms ease both; } [data-wipe] { animation: dcFade 240ms ease both; clip-path: none !important; } }
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F7F7F8; display: flex; align-items: flex-start; justify-content: safe center; gap: 48px; padding: 56px 32px; flex-wrap: wrap;">
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+  <div data-screen-label="Lys PH-21a Min kurve iPhone" style="width: 390px; height: 844px; background: #FFFFFF; border-radius: 54px; overflow: hidden; position: relative; box-shadow: 0 0 0 3px #E9E9EB, 0 0 0 10px #D3D3D6, 0 32px 90px rgba(0, 0, 0, 0.18); flex-shrink: 0;">
+    <div style="position: absolute; top: 11px; left: 50%; transform: translateX(-50%); width: 122px; height: 36px; border-radius: 20px; background: #E5E5E7; z-index: 5;"></div>
+    <div style="position: relative; height: 54px; display: flex; align-items: flex-end; padding: 0 32px 4px;"><span style="font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">09.00</span></div>
+    <div style="position: absolute; top: 54px; bottom: 0; left: 0; right: 0; overflow-y: auto; padding: 4px 16px 110px;">
+      <div data-sub="1" style="height: 44px; display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; color: #6E6E73; cursor: pointer;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6E6E73" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5 L8 12 L15 19"></path></svg>Analyse</div>
+      <h1 style="margin: 2px 0 0; font-size: 34px; font-weight: 700; letter-spacing: -0.02em;">Min kurve</h1>
+      <div style="margin-top: 6px; font-size: 15px; font-weight: 600; color: #6E6E73; line-height: 1.45;">Til-par per runde, turnering for turnering. Bare din egen linje.</div>
+
+      <div data-in="1" style="margin-top: 16px; background: #F2F2F2; border-radius: 20px; padding: 20px;">
+        <div style="display: flex; align-items: baseline; gap: 10px;"><span style="font-size: 56px; font-weight: 700; line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">+8,4</span><span style="font-size: 15px; font-weight: 600; color: #6E6E73;">snitt til-par</span></div>
+        <div style="margin-top: 6px; font-size: 13px; color: #6E6E73; line-height: 1.5; font-variant-numeric: tabular-nums;">Snitt per runde i de fem siste turneringene · sist 24.08.2026<br>Kilde: Norsk turneringsdata · oppdatert 30.08.2026</div>
+
+        <div style="margin-top: 18px; display: flex; gap: 10px;">
+          <div style="width: 30px; display: flex; flex-direction: column; justify-content: space-between; padding: 2px 0 30px;">
+            <span style="font-size: 11px; font-weight: 600; color: #6E6E73; font-variant-numeric: tabular-nums;">+18</span>
+            <span style="font-size: 11px; font-weight: 600; color: #6E6E73; font-variant-numeric: tabular-nums;">+11</span>
+            <span style="font-size: 11px; font-weight: 600; color: #6E6E73; font-variant-numeric: tabular-nums;">+4</span>
+          </div>
+          <div data-wipe="1" style="flex: 1; min-width: 0;">
+            <svg width="100%" height="180" viewBox="0 0 340 180" preserveAspectRatio="none" style="display: block;">
+              <path d="M14 20 H330 M14 95 H330" stroke="#000000" stroke-opacity="0.08" stroke-width="1"></path>
+              <path d="M14 170 H330" stroke="#000000" stroke-opacity="0.14" stroke-width="1.5"></path>
+              <path d="M14 9 L67 28 L120 40 L172 64 L225 84 L278 102 L330 114 L330 132 L278 126 L225 114 L172 102 L120 88 L67 80 L14 69 Z" fill="#B08968" fill-opacity="0.22"></path>
+              <path d="M14 39 L67 54 L120 64 L172 83 L225 99 L278 114 L330 123" stroke="#B08968" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+              <circle cx="14" cy="39" r="4.5" fill="#B08968"></circle>
+              <circle cx="120" cy="64" r="4.5" fill="#B08968"></circle>
+              <circle cx="225" cy="99" r="4.5" fill="#B08968"></circle>
+              <circle cx="330" cy="123" r="7" fill="#B08968"></circle>
+            </svg>
+            <div style="display: flex; justify-content: space-between; padding-top: 8px;">
+              <span style="font-size: 11px; font-weight: 600; color: #6E6E73; font-variant-numeric: tabular-nums;">APR</span>
+              <span style="font-size: 11px; font-weight: 600; color: #6E6E73; font-variant-numeric: tabular-nums;">JUN</span>
+              <span style="font-size: 11px; font-weight: 600; color: #6E6E73; font-variant-numeric: tabular-nums;">JUL</span>
+              <span style="font-size: 11px; font-weight: 600; color: #111111; font-variant-numeric: tabular-nums;">AUG</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 14px; padding-top: 14px; border-top: 1px solid #00000014; display: flex; flex-direction: column; gap: 8px;">
+          <span style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #6E6E73;"><span style="width: 16px; height: 3px; border-radius: 2px; background: #B08968;"></span>Snitt til-par i turneringen</span>
+          <span style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #6E6E73;"><span style="width: 16px; height: 10px; border-radius: 2px; background: #B08968; opacity: 0.42;"></span>Beste og verste runde i samme turnering</span>
+        </div>
+      </div>
+
+      <div data-in="1" style="animation-delay: 90ms; margin-top: 12px; background: #F2F2F2; border-radius: 20px; padding: 20px;">
+        <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #6E6E73;">Båndet</div>
+        <div style="margin-top: 8px; font-size: 15px; font-weight: 600; line-height: 1.5;">Båndet er blitt smalere gjennom sesongen. Rundene dine ligner mer på hverandre nå.</div>
+      </div>
+
+      <div style="margin-top: 22px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #6E6E73;">Turneringer 2026</div>
+      <div style="margin-top: 10px; background: #F2F2F2; border-radius: 20px; padding: 4px 20px;">
+        <div data-press="1" style="display: flex; align-items: center; gap: 12px; padding: 14px 0; border-bottom: 1px solid #00000014; cursor: pointer; border-radius: 12px;" style-active="transform: scale(0.98); background: #E9E9EB"><div style="flex: 1; min-width: 0;"><div style="font-size: 15px; font-weight: 600;">NM junior Losby</div><div style="margin-top: 2px; font-size: 13px; color: #6E6E73; font-variant-numeric: tabular-nums;">24.08.2026 · 3 runder · 4. innen klasse</div></div><span style="font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">+8,4</span></div>
+        <div data-press="1" style="display: flex; align-items: center; gap: 12px; padding: 14px 0; border-bottom: 1px solid #00000014; cursor: pointer; border-radius: 12px;" style-active="transform: scale(0.98); background: #E9E9EB"><div style="flex: 1; min-width: 0;"><div style="font-size: 15px; font-weight: 600;">Titleist Tour #6 Miklagard</div><div style="margin-top: 2px; font-size: 13px; color: #6E6E73; font-variant-numeric: tabular-nums;">09.08.2026 · 2 runder · 7. innen klasse</div></div><span style="font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">+9,2</span></div>
+        <div data-press="1" style="display: flex; align-items: center; gap: 12px; padding: 14px 0; border-bottom: 1px solid #00000014; cursor: pointer; border-radius: 12px;" style-active="transform: scale(0.98); background: #E9E9EB"><div style="flex: 1; min-width: 0;"><div style="font-size: 15px; font-weight: 600;">Srixon Tour Oslo GK</div><div style="margin-top: 2px; font-size: 13px; color: #6E6E73; font-variant-numeric: tabular-nums;">12.07.2026 · 2 runder · 11. innen klasse</div></div><span style="font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">+10,6</span></div>
+        <div data-press="1" style="display: flex; align-items: center; gap: 12px; padding: 14px 0; border-bottom: 1px solid #00000014; cursor: pointer; border-radius: 12px;" style-active="transform: scale(0.98); background: #E9E9EB"><div style="flex: 1; min-width: 0;"><div style="font-size: 15px; font-weight: 600;">Titleist Tour #3 Bogstad</div><div style="margin-top: 2px; font-size: 13px; color: #6E6E73; font-variant-numeric: tabular-nums;">21.06.2026 · 2 runder · 9. innen klasse</div></div><span style="font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">+12,1</span></div>
+        <div data-press="1" style="display: flex; align-items: center; gap: 12px; padding: 14px 0; border-bottom: 1px solid #00000014; cursor: pointer; border-radius: 12px;" style-active="transform: scale(0.98); background: #E9E9EB"><div style="flex: 1; min-width: 0;"><div style="font-size: 15px; font-weight: 600;">Narvesen Junior Open</div><div style="margin-top: 2px; font-size: 13px; color: #6E6E73; font-variant-numeric: tabular-nums;">31.05.2026 · 2 runder · 16. innen klasse</div></div><span style="font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">+13,9</span></div>
+        <div data-press="1" style="display: flex; align-items: center; gap: 12px; padding: 14px 0; cursor: pointer; border-radius: 12px;" style-active="transform: scale(0.98); background: #E9E9EB"><div style="flex: 1; min-width: 0;"><div style="font-size: 15px; font-weight: 600;">Sesongåpning Onsøy</div><div style="margin-top: 2px; font-size: 13px; color: #6E6E73; font-variant-numeric: tabular-nums;">26.04.2026 · 2 runder · 22. innen klasse</div></div><span style="font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">+16,2</span></div>
+      </div>
+
+      <div data-press="1" style="margin-top: 16px; height: 48px; border-radius: 999px; background: #000000; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; cursor: pointer;" style-active="transform: scale(0.97)">Se alle sesonger</div>
+      <div style="margin-top: 12px; font-size: 13px; color: #6E6E73; line-height: 1.5;">Plasseringen er innen din klasse i den turneringen — den sier ingenting om hvor du står i årskullet.</div>
+    </div>
+    <div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 10px 16px 0;">
+      <div style="height: 64px; background: #E9E9EB; border-radius: 999px; display: flex; align-items: center; padding: 8px; gap: 2px;">
+        <div data-press="1" style="flex: 1; height: 48px; border-radius: 999px; display: flex; align-items: center; justify-content: center; cursor: pointer;" style-active="transform: scale(0.97)"><span style="font-size: 9px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #6E6E73;">I dag</span></div>
+        <div data-press="1" style="flex: 1; height: 48px; border-radius: 999px; display: flex; align-items: center; justify-content: center; cursor: pointer;" style-active="transform: scale(0.97)"><span style="font-size: 9px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #6E6E73;">Plan</span></div>
+        <div style="flex: 1; height: 48px; background: #DDDDDE; border-radius: 999px; display: flex; align-items: center; justify-content: center;"><span style="font-size: 9px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #111111;">Analyse</span></div>
+        <div data-press="1" style="flex: 1; height: 48px; border-radius: 999px; display: flex; align-items: center; justify-content: center; cursor: pointer;" style-active="transform: scale(0.97)"><span style="font-size: 9px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #6E6E73;">Meg</span></div>
+      </div>
+      <div style="height: 30px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 8px;"><div style="width: 140px; height: 5px; border-radius: 3px; background: #111111;"></div></div>
+    </div>
+  </div>
+  <div style="font-family: 'SF Mono', ui-monospace, Menlo, monospace; font-size: 11px; color: #6E6E73;">Lys PH-21a · Min kurve iPhone — egen linje + spredningsbånd, ingen persentil, ingen kullrangering</div>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+  <div data-screen-label="Lys PH-21b Min kurve desktop 1280" style="width: 1280px; height: 800px; background: #FFFFFF; border-radius: 14px; overflow: hidden; position: relative; box-shadow: 0 0 0 1px #D3D3D6, 0 32px 90px rgba(0, 0, 0, 0.18); flex-shrink: 0; display: flex;">
+    <div style="width: 64px; border-right: 1px solid #00000014; display: flex; flex-direction: column; align-items: center; padding: 14px 0 16px; gap: 6px; flex-shrink: 0;">
+      <div style="display: flex; gap: 6px; margin-bottom: 16px;"><span style="width: 10px; height: 10px; border-radius: 50%; background: #DDDDDE;"></span><span style="width: 10px; height: 10px; border-radius: 50%; background: #DDDDDE;"></span><span style="width: 10px; height: 10px; border-radius: 50%; background: #DDDDDE;"></span></div>
+      <div data-press="1" style="width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer;" style-active="transform: scale(0.94)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#6E6E73" stroke-width="2" stroke-linecap="round"><path d="M4 16.5 a8 8 0 0 1 16 0"></path><path d="M12 16.5 L16.5 11.5"></path></svg></div>
+      <div data-press="1" style="width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer;" style-active="transform: scale(0.94)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#6E6E73" stroke-width="2" stroke-linecap="round"><rect x="4" y="5" width="16" height="15" rx="3"></rect><path d="M8 3 V6 M16 3 V6 M4 10 H20"></path></svg></div>
+      <div style="width: 44px; height: 44px; border-radius: 12px; background: #000000; display: flex; align-items: center; justify-content: center;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"><path d="M5 20 V13 M12 20 V6 M19 20 V10"></path></svg></div>
+      <div style="margin-top: auto; width: 32px; height: 32px; border-radius: 50%; background: #B08968; color: #201409; font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center;">ØR</div>
+    </div>
+
+    <div style="flex: 1; min-width: 0; display: flex; flex-direction: column;">
+      <div style="height: 58px; border-bottom: 1px solid #00000014; display: flex; align-items: center; gap: 14px; padding: 0 26px; flex-shrink: 0;">
+        <span style="font-size: 15px; font-weight: 600; color: #6E6E73;">Analyse</span>
+        <span style="font-size: 15px; font-weight: 600; color: #6E6E73;">·</span>
+        <span style="font-size: 15px; font-weight: 600;">Min kurve</span>
+        <span style="margin-left: auto; display: flex; gap: 8px;">
+          <span style="height: 44px; padding: 0 18px; border-radius: 999px; background: #E9E9EB; color: #0A84FF; display: flex; align-items: center; font-size: 13px; font-weight: 600;">2026</span>
+          <span data-press="1" style="height: 44px; padding: 0 18px; border-radius: 999px; color: #6E6E73; display: flex; align-items: center; font-size: 13px; font-weight: 600; cursor: pointer;" style-active="transform: scale(0.97); background: #E9E9EB">2025</span>
+          <span data-press="1" style="height: 44px; padding: 0 18px; border-radius: 999px; color: #6E6E73; display: flex; align-items: center; font-size: 13px; font-weight: 600; cursor: pointer;" style-active="transform: scale(0.97); background: #E9E9EB">Alle sesonger</span>
+        </span>
+      </div>
+
+      <div style="flex: 1; min-height: 0; display: flex;">
+        <div style="flex: 1; min-width: 0; padding: 22px 26px; overflow-y: auto;">
+          <div style="display: flex; align-items: flex-end; gap: 16px;">
+            <div style="flex: 1;">
+              <h1 style="margin: 0; font-size: 34px; font-weight: 700; letter-spacing: -0.02em;">Min kurve</h1>
+              <div style="margin-top: 6px; font-size: 15px; font-weight: 600; color: #6E6E73;">Til-par per runde, målt turnering for turnering.</div>
+            </div>
+            <span style="font-size: 13px; color: #6E6E73; font-variant-numeric: tabular-nums;">Kilde: Norsk turneringsdata · oppdatert 30.08.2026</span>
+          </div>
+
+          <div data-in="1" style="margin-top: 18px; background: #F2F2F2; border-radius: 20px; padding: 22px;">
+            <div style="display: flex; align-items: baseline; justify-content: space-between;">
+              <div>
+                <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #6E6E73;">Snitt til-par · siste 5 turneringer</div>
+                <div style="margin-top: 8px; display: flex; align-items: baseline; gap: 12px;"><span style="font-size: 56px; font-weight: 700; line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums;">+8,4</span><span style="font-size: 15px; font-weight: 600; color: #6E6E73; font-variant-numeric: tabular-nums;">sist 24.08.2026</span></div>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #6E6E73;">Bredden på båndet</div>
+                <div style="margin-top: 8px; font-size: 26px; font-weight: 700; letter-spacing: -0.01em; font-variant-numeric: tabular-nums;">5,6 → 1,8 slag</div>
+              </div>
+            </div>
+
+            <div style="margin-top: 18px; display: flex; gap: 12px;">
+              <div style="width: 34px; display: flex; flex-direction: column; justify-content: space-between; padding: 24px 0 40px;">
+                <span style="font-size: 11px; font-weight: 600; color: #6E6E73; font-variant-numeric: tabular-nums;">+18</span>
+                <span style="font-size: 11px; font-weight: 600; color: #6E6E73; font-variant-numeric: tabular-nums;">+11</span>
+                <span style="font-size: 11px; font-weight: 600; color: #6E6E73; font-variant-numeric: tabular-nums;">+4</span>
+              </div>
+              <div data-wipe="1" style="flex: 1; min-width: 0;">
+                <svg width="100%" height="320" viewBox="0 0 900 320" preserveAspectRatio="none" style="display: block;">
+                  <path d="M60 30 H860 M60 160 H860" stroke="#000000" stroke-opacity="0.08" stroke-width="1"></path>
+                  <path d="M60 290 H860" stroke="#000000" stroke-opacity="0.14" stroke-width="1.5"></path>
+                  <path d="M60 30 V290" stroke="#000000" stroke-opacity="0.14" stroke-width="1.5"></path>
+                  <path d="M60 11 L193 44 L327 65 L460 106 L593 141 L727 171 L860 191 L860 225 L727 215 L593 193 L460 172 L327 147 L193 134 L60 115 Z" fill="#B08968" fill-opacity="0.22"></path>
+                  <path d="M60 63 L193 89 L327 106 L460 139 L593 167 L727 193 L860 208" stroke="#B08968" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <circle cx="60" cy="63" r="5" fill="#B08968"></circle>
+                  <circle cx="193" cy="89" r="5" fill="#B08968"></circle>
+                  <circle cx="327" cy="106" r="5" fill="#B08968"></circle>
+                  <circle cx="460" cy="139" r="5" fill="#B08968"></circle>
+                  <circle cx="593" cy="167" r="5" fill="#B08968"></circle>
+                  <circle cx="727" cy="193" r="5" fill="#B08968"></circle>
+                  <circle cx="860" cy="208" r="8" fill="#B08968"></circle>
+                </svg>
+                <div style="display: flex; justify-content: space-between; padding-top: 10px;">
+                  <span style="font-size: 11px; font-weight: 600; color: #6E6E73; font-variant-numeric: tabular-nums;">26.04</span>
+                  <span style="font-size: 11px; font-weight: 600; color: #6E6E73; font-variant-numeric: tabular-nums;">10.05</span>
+                  <span style="font-size: 11px; font-weight: 600; color: #6E6E73; font-variant-numeric: tabular-nums;">31.05</span>
+                  <span style="font-size: 11px; font-weight: 600; color: #6E6E73; font-variant-numeric: tabular-nums;">21.06</span>
+                  <span style="font-size: 11px; font-weight: 600; color: #6E6E73; font-variant-numeric: tabular-nums;">12.07</span>
+                  <span style="font-size: 11px; font-weight: 600; color: #6E6E73; font-variant-numeric: tabular-nums;">09.08</span>
+                  <span style="font-size: 11px; font-weight: 600; color: #111111; font-variant-numeric: tabular-nums;">24.08</span>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #00000014; display: flex; align-items: center; gap: 24px;">
+              <span style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #6E6E73;"><span style="width: 16px; height: 3px; border-radius: 2px; background: #B08968;"></span>Snitt til-par i turneringen</span>
+              <span style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #6E6E73;"><span style="width: 16px; height: 10px; border-radius: 2px; background: #B08968; opacity: 0.42;"></span>Beste og verste runde i samme turnering</span>
+            </div>
+          </div>
+
+          <div style="margin-top: 22px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #6E6E73;">Turneringshistorikk</div>
+          <div style="margin-top: 10px; background: #F2F2F2; border-radius: 20px; padding: 4px 22px;">
+            <div style="display: flex; align-items: center; gap: 16px; padding: 10px 0; border-bottom: 1px solid #00000014;"><span style="width: 100px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #6E6E73;">Dato</span><span style="flex: 1; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #6E6E73;">Turnering</span><span style="width: 90px; text-align: right; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #6E6E73;">Runder</span><span style="width: 120px; text-align: right; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #6E6E73;">Snitt til-par</span><span style="width: 150px; text-align: right; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #6E6E73;">Plassering</span></div>
+            <div data-press="1" style="display: flex; align-items: center; gap: 16px; padding: 14px 0; border-bottom: 1px solid #00000014; cursor: pointer; border-radius: 12px;" style-active="transform: scale(0.995); background: #E9E9EB"><span style="width: 100px; font-size: 15px; font-weight: 600; color: #6E6E73; font-variant-numeric: tabular-nums;">24.08.2026</span><span style="flex: 1; font-size: 15px; font-weight: 600;">NM junior Losby</span><span style="width: 90px; text-align: right; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">3</span><span style="width: 120px; text-align: right; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">+8,4</span><span style="width: 150px; text-align: right; font-size: 15px; font-weight: 600; color: #6E6E73; font-variant-numeric: tabular-nums;">4. innen klasse</span></div>
+            <div data-press="1" style="display: flex; align-items: center; gap: 16px; padding: 14px 0; border-bottom: 1px solid #00000014; cursor: pointer; border-radius: 12px;" style-active="transform: scale(0.995); background: #E9E9EB"><span style="width: 100px; font-size: 15px; font-weight: 600; color: #6E6E73; font-variant-numeric: tabular-nums;">09.08.2026</span><span style="flex: 1; font-size: 15px; font-weight: 600;">Titleist Tour #6 Miklagard</span><span style="width: 90px; text-align: right; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">2</span><span style="width: 120px; text-align: right; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">+9,2</span><span style="width: 150px; text-align: right; font-size: 15px; font-weight: 600; color: #6E6E73; font-variant-numeric: tabular-nums;">7. innen klasse</span></div>
+            <div data-press="1" style="display: flex; align-items: center; gap: 16px; padding: 14px 0; border-bottom: 1px solid #00000014; cursor: pointer; border-radius: 12px;" style-active="transform: scale(0.995); background: #E9E9EB"><span style="width: 100px; font-size: 15px; font-weight: 600; color: #6E6E73; font-variant-numeric: tabular-nums;">12.07.2026</span><span style="flex: 1; font-size: 15px; font-weight: 600;">Srixon Tour Oslo GK</span><span style="width: 90px; text-align: right; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">2</span><span style="width: 120px; text-align: right; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">+10,6</span><span style="width: 150px; text-align: right; font-size: 15px; font-weight: 600; color: #6E6E73; font-variant-numeric: tabular-nums;">11. innen klasse</span></div>
+            <div data-press="1" style="display: flex; align-items: center; gap: 16px; padding: 14px 0; border-bottom: 1px solid #00000014; cursor: pointer; border-radius: 12px;" style-active="transform: scale(0.995); background: #E9E9EB"><span style="width: 100px; font-size: 15px; font-weight: 600; color: #6E6E73; font-variant-numeric: tabular-nums;">21.06.2026</span><span style="flex: 1; font-size: 15px; font-weight: 600;">Titleist Tour #3 Bogstad</span><span style="width: 90px; text-align: right; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">2</span><span style="width: 120px; text-align: right; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">+12,1</span><span style="width: 150px; text-align: right; font-size: 15px; font-weight: 600; color: #6E6E73; font-variant-numeric: tabular-nums;">9. innen klasse</span></div>
+            <div data-press="1" style="display: flex; align-items: center; gap: 16px; padding: 14px 0; border-bottom: 1px solid #00000014; cursor: pointer; border-radius: 12px;" style-active="transform: scale(0.995); background: #E9E9EB"><span style="width: 100px; font-size: 15px; font-weight: 600; color: #6E6E73; font-variant-numeric: tabular-nums;">31.05.2026</span><span style="flex: 1; font-size: 15px; font-weight: 600;">Narvesen Junior Open</span><span style="width: 90px; text-align: right; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">2</span><span style="width: 120px; text-align: right; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">+13,9</span><span style="width: 150px; text-align: right; font-size: 15px; font-weight: 600; color: #6E6E73; font-variant-numeric: tabular-nums;">16. innen klasse</span></div>
+            <div data-press="1" style="display: flex; align-items: center; gap: 16px; padding: 14px 0; cursor: pointer; border-radius: 12px;" style-active="transform: scale(0.995); background: #E9E9EB"><span style="width: 100px; font-size: 15px; font-weight: 600; color: #6E6E73; font-variant-numeric: tabular-nums;">26.04.2026</span><span style="flex: 1; font-size: 15px; font-weight: 600;">Sesongåpning Onsøy</span><span style="width: 90px; text-align: right; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">2</span><span style="width: 120px; text-align: right; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">+16,2</span><span style="width: 150px; text-align: right; font-size: 15px; font-weight: 600; color: #6E6E73; font-variant-numeric: tabular-nums;">22. innen klasse</span></div>
+          </div>
+          <div style="margin-top: 12px; font-size: 13px; color: #6E6E73; line-height: 1.5;">Tallet i kolonnen er snittet av rundene dine i den turneringen, ikke én enkelt runde.</div>
+        </div>
+
+        <div style="width: 340px; border-left: 1px solid #00000014; padding: 22px 24px; flex-shrink: 0; overflow-y: auto;">
+          <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #6E6E73;">Sesongen din</div>
+          <div data-in="1" style="animation-delay: 140ms; margin-top: 10px; background: #F2F2F2; border-radius: 20px; padding: 20px;">
+            <div style="font-size: 22px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.35;">Snittet har falt 7,8 slag siden sesongåpningen.</div>
+            <div style="margin-top: 8px; font-size: 15px; font-weight: 600; color: #6E6E73; line-height: 1.5;">Og båndet mellom beste og verste runde er nesten tre ganger smalere.</div>
+          </div>
+
+          <div style="margin-top: 22px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #6E6E73;">Grunnlaget</div>
+          <div style="margin-top: 10px; background: #F2F2F2; border-radius: 20px; padding: 4px 18px;">
+            <div style="display: flex; align-items: center; gap: 12px; padding: 13px 0; border-bottom: 1px solid #00000014;"><span style="flex: 1; font-size: 15px; font-weight: 600;">Turneringer</span><span style="font-size: 15px; font-weight: 600; color: #6E6E73; font-variant-numeric: tabular-nums;">6</span></div>
+            <div style="display: flex; align-items: center; gap: 12px; padding: 13px 0; border-bottom: 1px solid #00000014;"><span style="flex: 1; font-size: 15px; font-weight: 600;">Runder</span><span style="font-size: 15px; font-weight: 600; color: #6E6E73; font-variant-numeric: tabular-nums;">13</span></div>
+            <div style="display: flex; align-items: center; gap: 12px; padding: 13px 0; border-bottom: 1px solid #00000014;"><span style="flex: 1; font-size: 15px; font-weight: 600;">Beste runde</span><span style="font-size: 15px; font-weight: 600; color: #6E6E73; font-variant-numeric: tabular-nums;">+7,0 · 24.08.2026</span></div>
+            <div style="display: flex; align-items: center; gap: 12px; padding: 13px 0;"><span style="flex: 1; font-size: 15px; font-weight: 600;">Sist oppdatert</span><span style="font-size: 15px; font-weight: 600; color: #6E6E73; font-variant-numeric: tabular-nums;">30.08.2026</span></div>
+          </div>
+
+          <div data-press="1" style="margin-top: 18px; height: 48px; border-radius: 999px; background: #000000; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; cursor: pointer;" style-active="transform: scale(0.97)">Se alle sesonger</div>
+          <div style="margin-top: 14px; font-size: 13px; color: #6E6E73; line-height: 1.5;">Kurven sammenligner deg med deg selv. Vi viser deg ikke plassering i årskullet.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="font-family: 'SF Mono', ui-monospace, Menlo, monospace; font-size: 11px; color: #6E6E73;">Lys PH-21b · Min kurve desktop 1280 — kurve + historikk, ett tall med dato og kilde, «innen klasse» aldri som persentil</div>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+  <div data-screen-label="Lys PH-21c Min kurve tom iPhone" style="width: 390px; height: 844px; background: #FFFFFF; border-radius: 54px; overflow: hidden; position: relative; box-shadow: 0 0 0 3px #E9E9EB, 0 0 0 10px #D3D3D6, 0 32px 90px rgba(0, 0, 0, 0.18); flex-shrink: 0;">
+    <div style="position: absolute; top: 11px; left: 50%; transform: translateX(-50%); width: 122px; height: 36px; border-radius: 20px; background: #E5E5E7; z-index: 5;"></div>
+    <div style="position: relative; height: 54px; display: flex; align-items: flex-end; padding: 0 32px 4px;"><span style="font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">09.00</span></div>
+    <div style="position: absolute; top: 54px; bottom: 0; left: 0; right: 0; overflow-y: auto; padding: 4px 16px 110px;">
+      <div data-sub="1" style="height: 44px; display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; color: #6E6E73; cursor: pointer;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6E6E73" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5 L8 12 L15 19"></path></svg>Analyse</div>
+      <h1 style="margin: 2px 0 0; font-size: 34px; font-weight: 700; letter-spacing: -0.02em;">Min kurve</h1>
+
+      <div data-in="1" style="margin-top: 16px; background: #F2F2F2; border-radius: 20px; padding: 22px 20px;">
+        <svg width="100%" height="140" viewBox="0 0 320 140" preserveAspectRatio="none" style="display: block;">
+          <path d="M10 130 H310" stroke="#000000" stroke-opacity="0.14" stroke-width="1.5"></path>
+          <path d="M10 20 V130" stroke="#000000" stroke-opacity="0.14" stroke-width="1.5"></path>
+          <path d="M10 40 H310 M10 85 H310" stroke="#000000" stroke-opacity="0.06" stroke-width="1"></path>
+          <circle cx="10" cy="130" r="6" fill="#DDDDDE"></circle>
+        </svg>
+        <div style="margin-top: 18px; font-size: 22px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.35;">Ingen turneringer er registrert på deg ennå.</div>
+        <div style="margin-top: 8px; font-size: 15px; font-weight: 600; color: #6E6E73; line-height: 1.5;">Kurven begynner på den første runden du spiller i klasse. Da har du et punkt — og etter to turneringer har du en retning.</div>
+      </div>
+
+      <div style="margin-top: 12px; background: #F2F2F2; border-radius: 20px; padding: 20px;">
+        <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #6E6E73;">Hva som havner her</div>
+        <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 12px;">
+          <div style="display: flex; align-items: center; gap: 12px;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #DDDDDE; flex-shrink: 0;"></span><span style="font-size: 15px; font-weight: 600; color: #6E6E73;">Snitt til-par per runde i hver turnering</span></div>
+          <div style="display: flex; align-items: center; gap: 12px;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #DDDDDE; flex-shrink: 0;"></span><span style="font-size: 15px; font-weight: 600; color: #6E6E73;">Beste og verste runde som et bånd rundt linja</span></div>
+          <div style="display: flex; align-items: center; gap: 12px;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #DDDDDE; flex-shrink: 0;"></span><span style="font-size: 15px; font-weight: 600; color: #6E6E73;">Plassering innen din klasse i turneringen</span></div>
+        </div>
+      </div>
+
+      <div data-press="1" style="margin-top: 16px; height: 48px; border-radius: 999px; background: #000000; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; cursor: pointer;" style-active="transform: scale(0.97)">Se turneringsprogrammet</div>
+      <div style="margin-top: 12px; font-size: 13px; color: #6E6E73; line-height: 1.5;">Kilde: Norsk turneringsdata · oppdatert 30.08.2026</div>
+    </div>
+    <div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 10px 16px 0;">
+      <div style="height: 64px; background: #E9E9EB; border-radius: 999px; display: flex; align-items: center; padding: 8px; gap: 2px;">
+        <div data-press="1" style="flex: 1; height: 48px; border-radius: 999px; display: flex; align-items: center; justify-content: center; cursor: pointer;" style-active="transform: scale(0.97)"><span style="font-size: 9px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #6E6E73;">I dag</span></div>
+        <div data-press="1" style="flex: 1; height: 48px; border-radius: 999px; display: flex; align-items: center; justify-content: center; cursor: pointer;" style-active="transform: scale(0.97)"><span style="font-size: 9px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #6E6E73;">Plan</span></div>
+        <div style="flex: 1; height: 48px; background: #DDDDDE; border-radius: 999px; display: flex; align-items: center; justify-content: center;"><span style="font-size: 9px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #111111;">Analyse</span></div>
+        <div data-press="1" style="flex: 1; height: 48px; border-radius: 999px; display: flex; align-items: center; justify-content: center; cursor: pointer;" style-active="transform: scale(0.97)"><span style="font-size: 9px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #6E6E73;">Meg</span></div>
+      </div>
+      <div style="height: 30px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 8px;"><div style="width: 140px; height: 5px; border-radius: 3px; background: #111111;"></div></div>
+    </div>
+  </div>
+  <div style="font-family: 'SF Mono', ui-monospace, Menlo, monospace; font-size: 11px; color: #6E6E73;">Lys PH-21c · Min kurve tom — tomt akseskall, hel setning, ingen oppdiktede tall</div>
+</div>
+
+</div>
+</x-dc>
+</body>
+</html>

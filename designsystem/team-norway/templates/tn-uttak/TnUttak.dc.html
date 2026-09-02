@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="TN-06 Uttaksliste" description="Vurderingsmatrisen på kriteriene Resultater · Prestasjoner · Prosess/adferd. Ingen totalscore, ingen konklusjon — uttak er underlag for en menneskelig beslutning. Hver rad kan åpnes til hva vurderingen bygger på, med dato og kilde. Mac 1440 og mobil 390 i fire tilstander." -->
+<helmet><script src="./ds-base.js"></script></helmet>
+<div style="padding:48px;display:flex;flex-direction:column;gap:56px;background:var(--surface-page);min-height:100vh;font-family:var(--font-body)">
+
+<div style="display:flex;flex-direction:column;gap:8px;max-width:800px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TN-06 · /team-norway/uttak</div>
+<h1 style="font-size:var(--text-h1);color:var(--navy-900);letter-spacing:var(--tracking-heading);margin:0">Uttaksliste</h1>
+<p style="margin:0;font-size:var(--text-lg);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Tre kriterier, ingen sum. Systemet rangerer ikke utøvere mot hverandre og setter ingen totalscore som kan leses som en dom. Vurderingene er trenerens ord, med dato og kilde bak hvert av dem.</p>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:20px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MAC 1440 · SUKSESS MED ÉN RAD ÅPNET</div>
+<div style="width:1440px;height:900px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;font-variant-numeric:tabular-nums">
+<div style="width:232px;flex-shrink:0;background:var(--surface-card);border-right:1px solid var(--border-subtle);display:flex;flex-direction:column;padding:20px 14px 18px;gap:20px">
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:11px 12px;display:flex;align-items:center;gap:10px">
+<span style="width:9px;height:24px;border-radius:3px;background:var(--red-600);flex-shrink:0"></span>
+<div style="min-width:0"><div style="font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--navy-900)">Team Norway</div><div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);color:var(--text-tertiary);margin-top:1px">JUNIOR</div></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:2px;flex:1;min-height:0;overflow:hidden">
+<sc-for list="{{ meny }}" as="m" hint-placeholder-count="12">
+<sc-if value="{{ m.isHeading }}" hint-placeholder-val="{{ false }}">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);padding:14px 12px 6px">{{ m.label }}</div>
+</sc-if>
+<sc-if value="{{ m.isItem }}" hint-placeholder-val="{{ true }}">
+<div ref="{{ m.ref }}" style="height:40px;border-radius:var(--radius-xs);padding:0 10px;display:flex;align-items:center;gap:10px">
+<span ref="{{ m.markRef }}" style="width:3px;height:18px;border-radius:var(--radius-full);flex-shrink:0"></span>
+<span style="font-size:var(--text-sm);font-weight:var(--weight-medium)">{{ m.label }}</span>
+</div>
+</sc-if>
+</sc-for>
+</div>
+</div>
+
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;padding:28px 32px 0;gap:18px;min-height:0">
+<div style="display:flex;align-items:flex-end;justify-content:space-between">
+<div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">UTTAK · VINTERSAMLING SPANIA · FRIST 15.09.2026</div>
+<h2 style="font-size:var(--text-h1);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:6px 0 0">Uttaksliste</h2>
+</div>
+<div style="display:flex;gap:10px;align-items:center">
+<div role="button" style="height:44px;padding:0 18px;border-radius:var(--radius-full);border:1px solid var(--border-default);font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900);display:flex;align-items:center">Del underlaget</div>
+<div role="button" style="height:44px;padding:0 20px;border-radius:var(--radius-full);background:var(--navy-900);color:var(--white);font-size:var(--text-sm);font-weight:var(--weight-bold);display:flex;align-items:center">Registrer beslutning</div>
+</div>
+</div>
+
+<div style="background:var(--navy-50);border:1px solid var(--navy-100);border-radius:var(--radius-md);padding:14px 18px;display:flex;align-items:center;gap:16px;flex-shrink:0">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--navy-700);flex-shrink:0">UNDERLAG</span>
+<span style="flex:1;min-width:0;font-size:var(--text-sm);color:var(--navy-900);line-height:var(--leading-normal);text-wrap:pretty">Denne listen er underlag for en beslutning tatt av mennesker. Systemet regner ingen totalscore, rangerer ingen utøvere mot hverandre og anbefaler ingen. Sorteringen er alfabetisk.</span>
+</div>
+
+<div style="flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column">
+<div style="display:flex;align-items:flex-end;gap:14px;padding:0 18px 10px;flex-shrink:0">
+<span style="width:210px;flex-shrink:0;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">UTØVER</span>
+<span style="flex:1;min-width:0;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">RESULTATER</span>
+<span style="flex:1;min-width:0;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">PRESTASJONER</span>
+<span style="flex:1;min-width:0;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">PROSESS/ADFERD</span>
+<span style="width:120px;flex-shrink:0;text-align:right;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">SIST VURDERT</span>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:6px">
+<sc-for list="{{ rader }}" as="r" hint-placeholder-count="6">
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-md);overflow:hidden;flex-shrink:0">
+<div style="display:flex;align-items:center;gap:14px;padding:14px 18px;min-height:44px">
+<div style="width:210px;flex-shrink:0;display:flex;align-items:center;gap:10px;min-width:0">
+<span style="width:32px;height:32px;border-radius:var(--radius-full);background:var(--navy-100);color:var(--navy-800);font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);display:flex;align-items:center;justify-content:center;flex-shrink:0">{{ r.init }}</span>
+<div style="min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.navn }}</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">{{ r.skole }}</div>
+</div>
+</div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+<span ref="{{ r.k1Ref }}" style="font-size:var(--text-sm);font-weight:var(--weight-medium);line-height:var(--leading-snug);text-wrap:pretty">{{ r.k1 }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">{{ r.k1kilde }}</span>
+</div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+<span ref="{{ r.k2Ref }}" style="font-size:var(--text-sm);font-weight:var(--weight-medium);line-height:var(--leading-snug);text-wrap:pretty">{{ r.k2 }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">{{ r.k2kilde }}</span>
+</div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+<span ref="{{ r.k3Ref }}" style="font-size:var(--text-sm);font-weight:var(--weight-medium);line-height:var(--leading-snug);text-wrap:pretty">{{ r.k3 }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">{{ r.k3kilde }}</span>
+</div>
+<div style="width:120px;flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary)">{{ r.sist }}</span>
+<span role="button" style="font-size:var(--text-xs);font-weight:var(--weight-semibold);color:var(--navy-600)">{{ r.handling }}</span>
+</div>
+</div>
+<sc-if value="{{ r.apen }}" hint-placeholder-val="{{ false }}">
+<div style="border-top:1px solid var(--border-subtle);background:var(--ink-50);padding:18px;display:flex;gap:20px">
+<div style="width:210px;flex-shrink:0;display:flex;flex-direction:column;gap:6px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">HVA VURDERINGEN BYGGER PÅ</span>
+<span style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Hvert punkt har dato og kilde. Ingenting her er regnet ut av systemet.</span>
+</div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:10px">
+<sc-for list="{{ grunnlag }}" as="g" hint-placeholder-count="4">
+<div style="display:flex;align-items:flex-start;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border-subtle)">
+<span ref="{{ g.merkeRef }}" style="font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;padding:3px 8px;border-radius:var(--radius-xs);flex-shrink:0;width:120px;text-align:center">{{ g.kriterium }}</span>
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-sm);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">{{ g.tekst }}</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);margin-top:3px">{{ g.kilde }}</div>
+</div>
+<span ref="{{ g.artRef }}" style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;flex-shrink:0;padding:2px 7px;border-radius:var(--radius-xs)">{{ g.art }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:20px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MOBIL 390 · SUKSESS, TOM, LASTER, FEIL</div>
+<div style="display:flex;gap:28px;flex-wrap:wrap">
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">SUKSESS</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.41</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 14px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">VINTERSAMLING SPANIA · FRIST 15.09</div>
+<h2 style="font-size:var(--text-h2);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:4px 0 0">Uttaksliste</h2>
+</div>
+<div style="flex-shrink:0;background:var(--navy-50);border-bottom:1px solid var(--navy-100);padding:12px 16px">
+<span style="font-size:var(--text-xs);color:var(--navy-900);line-height:var(--leading-normal);text-wrap:pretty"><strong>Underlag.</strong> Ingen totalscore, ingen anbefaling. Beslutningen tas av mennesker.</span>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+<sc-for list="{{ raderMobil }}" as="r" hint-placeholder-count="4">
+<div role="button" style="background:var(--surface-card);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="width:32px;height:32px;border-radius:var(--radius-full);background:var(--navy-100);color:var(--navy-800);font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);display:flex;align-items:center;justify-content:center;flex-shrink:0">{{ r.init }}</span>
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ r.navn }}</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">{{ r.skole }}</div>
+</div>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary);flex-shrink:0">{{ r.sist }}</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--border-subtle);padding-top:10px">
+<div style="display:flex;gap:10px;align-items:flex-start">
+<span style="width:96px;flex-shrink:0;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);padding-top:2px">RESULTATER</span>
+<span ref="{{ r.k1Ref }}" style="flex:1;min-width:0;font-size:var(--text-sm);line-height:var(--leading-normal);text-wrap:pretty">{{ r.k1 }}</span>
+</div>
+<div style="display:flex;gap:10px;align-items:flex-start">
+<span style="width:96px;flex-shrink:0;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);padding-top:2px">PRESTASJON</span>
+<span ref="{{ r.k2Ref }}" style="flex:1;min-width:0;font-size:var(--text-sm);line-height:var(--leading-normal);text-wrap:pretty">{{ r.k2 }}</span>
+</div>
+<div style="display:flex;gap:10px;align-items:flex-start">
+<span style="width:96px;flex-shrink:0;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);padding-top:2px">PROSESS</span>
+<span ref="{{ r.k3Ref }}" style="flex:1;min-width:0;font-size:var(--text-sm);line-height:var(--leading-normal);text-wrap:pretty">{{ r.k3 }}</span>
+</div>
+</div>
+<span style="font-size:var(--text-xs);font-weight:var(--weight-semibold);color:var(--navy-600)">Åpne underlaget · 7 kilder</span>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">TOM — INGEN VURDERINGER FØRT</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.41</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 14px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">VINTERSAMLING SPANIA · FRIST 15.09</div>
+<h2 style="font-size:var(--text-h2);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:4px 0 0">Uttaksliste</h2>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:20px 16px;display:flex;flex-direction:column;gap:14px">
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:22px;display:flex;flex-direction:column;gap:12px">
+<div style="font-size:var(--text-h3);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading);line-height:var(--leading-snug);text-wrap:pretty">Ingen vurderinger er ført ennå</div>
+<div style="font-size:var(--text-sm);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Uttaket har 14 kandidater, men ingen av de tre kriteriene er fylt ut. Listen er tom fordi ingen har skrevet noe — ikke fordi utøverne mangler data.</div>
+<div style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Vurderingen er trenerens ord. Systemet fyller den ikke ut automatisk fra målinger, og skal ikke gjøre det.</div>
+</div>
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:16px;display:flex;flex-direction:column;gap:12px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DE TRE KRITERIENE</span>
+<sc-for list="{{ kriterier }}" as="k" hint-placeholder-count="3">
+<div style="display:flex;flex-direction:column;gap:3px">
+<span style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ k.navn }}</span>
+<span style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">{{ k.tekst }}</span>
+</div>
+</sc-for>
+</div>
+<div role="button" style="height:52px;flex-shrink:0;border-radius:var(--radius-full);background:var(--navy-900);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:var(--text-base);font-weight:var(--weight-bold)">Begynn med første kandidat</div>
+<div style="flex:1;min-height:0"></div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">LASTER</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.41</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 14px;display:flex;flex-direction:column;gap:8px">
+<div style="width:200px;height:11px;border-radius:var(--radius-xs);background:var(--ink-100)"></div>
+<div style="width:170px;height:28px;border-radius:var(--radius-xs);background:var(--ink-100)"></div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+<sc-for list="{{ skjelettKort }}" as="s" hint-placeholder-count="4">
+<div style="background:var(--surface-card);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;gap:10px">
+<div style="width:32px;height:32px;border-radius:var(--radius-full);background:var(--ink-100);flex-shrink:0"></div>
+<div ref="{{ s.ref }}" style="height:14px;border-radius:var(--radius-xs);background:var(--ink-100)"></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:7px;border-top:1px solid var(--border-subtle);padding-top:10px">
+<div style="height:12px;border-radius:var(--radius-xs);background:var(--ink-100)"></div>
+<div style="width:78%;height:12px;border-radius:var(--radius-xs);background:var(--ink-100)"></div>
+<div style="width:62%;height:12px;border-radius:var(--radius-xs);background:var(--ink-100)"></div>
+</div>
+</div>
+</sc-for>
+<div style="display:flex;align-items:center;gap:10px;padding:2px">
+<span style="width:14px;height:14px;border-radius:var(--radius-full);border:2px solid var(--ink-200);border-top-color:var(--navy-600);flex-shrink:0"></span>
+<span style="font-size:var(--text-xs);color:var(--text-secondary)">Henter vurderinger og kildene bak dem</span>
+</div>
+<div style="flex:1;min-height:0"></div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">FEIL — VURDERINGEN BLE IKKE LAGRET</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.53</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 14px">
+<h2 style="font-size:var(--text-h2);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:4px 0 0">Uttaksliste</h2>
+</div>
+<div style="flex-shrink:0;background:var(--status-amber-bg);padding:12px 16px;display:flex;align-items:flex-start;gap:10px">
+<span style="width:7px;height:7px;border-radius:var(--radius-full);background:var(--status-amber);flex-shrink:0;margin-top:6px"></span>
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--status-amber-text)">Vurderingen er ikke lagret</div>
+<div style="font-size:var(--text-xs);color:var(--status-amber-text);line-height:var(--leading-normal);margin-top:3px;text-wrap:pretty">Teksten du skrev ligger her og forsvinner ikke. Den sendes når nettet er tilbake.</div>
+</div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:16px;display:flex;flex-direction:column;gap:14px">
+<div style="background:var(--surface-card);border:2px solid var(--status-amber);border-radius:var(--radius-lg);padding:18px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="width:32px;height:32px;border-radius:var(--radius-full);background:var(--navy-100);color:var(--navy-800);font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);display:flex;align-items:center;justify-content:center;flex-shrink:0">SL</span>
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Sigrid Lunde</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--status-amber-text)">IKKE SENDT · LAGRET LOKALT 09.51</div>
+</div>
+</div>
+<div style="background:var(--ink-50);border-radius:var(--radius-sm);padding:14px;display:flex;flex-direction:column;gap:6px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">PROSESS/ADFERD · DIN TEKST</span>
+<span style="font-size:var(--text-sm);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Møter presis, tar ansvar for oppvarming i gruppa, og har levert egentrening hver uke siden mai. Tar imot korreksjon uten å diskutere den bort.</span>
+</div>
+<span style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Du kan fortsette å skrive på de andre kandidatene. Alt som ikke er sendt, er merket slik som dette.</span>
+</div>
+<div role="button" style="height:52px;flex-shrink:0;border-radius:var(--radius-full);background:var(--navy-900);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:var(--text-base);font-weight:var(--weight-bold)">Prøv å sende 1 vurdering nå</div>
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:14px 16px;display:flex;flex-direction:column;gap:6px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">HVA SOM ER LAGRET</span>
+<span style="font-size:var(--text-sm);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">1 vurdering venter · 13 er sendt. Ingen tekst er mistet i denne økten.</span>
+</div>
+<div style="flex:1;min-height:0"></div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div style="max-width:760px;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:28px;display:flex;flex-direction:column;gap:16px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DESIGNNOTAT</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Beslutningen skjermen løser</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Hva vet vi om denne utøveren, sagt med ord, og hvor kommer det fra? De to harde reglene er tegnet inn, ikke fotnoter: det finnes ingen sum-kolonne og ingen sortering på «best», og underlagsbanneret står over tabellen der en totalscore ellers ville ligget. Sorteringen er alfabetisk med vilje — enhver annen rekkefølge ville lest som en rangering.</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Tall som er eksempler</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Alle navn, vurderingstekster, datoer og turneringsplasseringer er skjermtekst. Kriterienavnene Resultater · Prestasjoner · Prosess/adferd er ordrett fra bestillingen, og skillet mellom målt og vurdert i grunnlagslisten følger TruthLayer.</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Usikkert</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Fire ting. <strong>Ett:</strong> vurderingene er farget svakt etter tone (nøytral, positiv, bekymring) for å være skannbare. Det er nær en karakter, og kan fjernes hvis Anders mener fargen leses som score — teksten står uansett først. <strong>To:</strong> «Registrer beslutning» forutsetter at den menneskelige avgjørelsen skrives ned et sted i systemet; det finnes ingen datamodell for uttak til en enkelt samling ennå. <strong>Tre:</strong> ingen ikonsett (anbefaling Lucide, 20 px). <strong>Fire:</strong> hvem som kan se en vurdering — utøveren selv, foresatt? — er ikke avklart, og jeg har ikke tegnet noen synlighetsmerking på vurderingsteksten.</div>
+</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const setStyle = o => el => { if (el) Object.assign(el.style, o); };
+const tone = t => t === 'god'
+  ? { color: 'var(--status-green-text)' }
+  : t === 'obs'
+    ? { color: 'var(--status-amber-text)' }
+    : { color: 'var(--text-primary)' };
+
+class Component extends DCLogic {
+  kandidater() {
+    return [
+      {
+        init: 'AV', navn: 'Amalie Vik', skole: 'WANG FREDRIKSTAD', sist: '24.08.2026', handling: 'Lukk underlag', apen: true,
+        k1: 'T4 Sørlandsopen, T2 NM-kvalifisering', k1kilde: 'GolfBox · 08.08.2026', t1: 'god',
+        k2: 'Holder scoringssnitt under press i siste runde', k2kilde: 'Trenervurdering · 24.08.2026', t2: 'god',
+        k3: 'Leverer egentrening ukentlig, tar korreksjon godt', k3kilde: 'Trenervurdering · 24.08.2026', t3: 'god'
+      },
+      {
+        init: 'EN', navn: 'Erik Nesheim', skole: 'NTG BÆRUM', sist: '23.08.2026', handling: 'Åpne underlag', apen: false,
+        k1: 'T11 Titleist Tour, T18 Srixon Tour', k1kilde: 'GolfBox · 19.06.2026', t1: 'nøytral',
+        k2: 'Sterk driving, mister fem slag på nærspill', k2kilde: 'Trenervurdering · 23.08.2026', t2: 'obs',
+        k3: 'Møter forberedt, men avlyser samlinger sent', k3kilde: 'Trenervurdering · 23.08.2026', t3: 'obs'
+      },
+      {
+        init: 'IK', navn: 'Ingrid Kvam', skole: 'WANG FREDRIKSTAD', sist: '22.08.2026', handling: 'Åpne underlag', apen: false,
+        k1: 'T7 NM junior, vinner klubbmesterskap', k1kilde: 'GolfBox · 08.08.2026', t1: 'god',
+        k2: 'Jevn utvikling på PEI gjennom sesongen', k2kilde: 'Målt · Inspill Basis v4 · 24.08.2026', t2: 'god',
+        k3: 'Tar ansvar i gruppa, følger opp yngre utøvere', k3kilde: 'Trenervurdering · 22.08.2026', t3: 'god'
+      },
+      {
+        init: 'JB', navn: 'Jonas Bratlie', skole: 'NTG BÆRUM', sist: '18.08.2026', handling: 'Åpne underlag', apen: false,
+        k1: 'T22 Sørlandsopen, ingen topp-10 i 2026', k1kilde: 'GolfBox · 06.06.2026', t1: 'obs',
+        k2: 'Høyest clubhead speed i gruppa, spredning stor', k2kilde: 'Målt · Clubhead speed v2 · 25.08.2026', t2: 'nøytral',
+        k3: 'Har ikke svart på to samlingsforespørsler', k3kilde: 'Systemhendelse · 21.08.2026', t3: 'obs'
+      },
+      {
+        init: 'SL', navn: 'Sigrid Lunde', skole: 'WANG FREDRIKSTAD', sist: '20.08.2026', handling: 'Åpne underlag', apen: false,
+        k1: 'T9 NM junior, T5 Olyo Tour Losby', k1kilde: 'GolfBox · 08.08.2026', t1: 'god',
+        k2: 'Beste putting i gruppa målt på Putt Gate', k2kilde: 'Målt · Putt Gate v1 · 22.08.2026', t2: 'god',
+        k3: 'Møter presis, tar ansvar for oppvarming', k3kilde: 'Trenervurdering · 20.08.2026', t3: 'god'
+      },
+      {
+        init: 'ØR', navn: 'Øyvind Rohjan', skole: 'OSLO GK · IKKE TOPPIDRETT', sist: '14.03.2026', handling: 'Åpne underlag', apen: false,
+        k1: 'Ingen turneringsresultater delt for 2026', k1kilde: 'Ikke delt · trinn 2', t1: 'nøytral',
+        k2: 'Kun fysiske tester delt. Ikke delt er ikke ikke målt.', k2kilde: 'Målt · AK Golf FYS v3 · 14.03.2026', t2: 'nøytral',
+        k3: 'Vurdering ikke ført denne sesongen', k3kilde: 'Mangler', t3: 'nøytral'
+      }
+    ];
+  }
+  dekorer(k) {
+    return {
+      ...k,
+      k1Ref: setStyle(tone(k.t1)),
+      k2Ref: setStyle(tone(k.t2)),
+      k3Ref: setStyle(tone(k.t3))
+    };
+  }
+  renderVals() {
+    const k = this.kandidater();
+    return {
+      meny: [
+        { isHeading: true, label: 'Daglig' },
+        { isItem: true, label: 'Oversikt' },
+        { isItem: true, label: 'Fellestesting' },
+        { isHeading: true, label: 'Uttak' },
+        { isItem: true, label: 'Uttaksliste', aktiv: true },
+        { isItem: true, label: 'Rangliste' },
+        { isItem: true, label: 'Turneringer' },
+        { isHeading: true, label: 'Skoler' },
+        { isItem: true, label: 'Skoleoversikt' },
+        { isHeading: true, label: 'Data' },
+        { isItem: true, label: 'Testbatteri' },
+        { isItem: true, label: 'Analyse' }
+      ].map(m => ({
+        ...m,
+        ref: setStyle({
+          background: m.aktiv ? 'var(--navy-100)' : 'transparent',
+          color: m.aktiv ? 'var(--navy-900)' : 'var(--text-secondary)'
+        }),
+        markRef: setStyle({ background: m.aktiv ? 'var(--red-600)' : 'transparent' })
+      })),
+      rader: k.map(x => this.dekorer(x)),
+      raderMobil: k.slice(0, 4).map(x => this.dekorer(x)),
+      grunnlag: [
+        { kriterium: 'RESULTATER', tekst: 'T4 Sørlandsopen junior. 71-74-70, felt på 96 spillere.', kilde: 'GOLFBOX · 06.06.2026', art: 'målt' },
+        { kriterium: 'RESULTATER', tekst: 'T2 NM junior kvalifisering. Ledet etter runde 2.', kilde: 'GOLFBOX · 08.08.2026', art: 'målt' },
+        { kriterium: 'PRESTASJONER', tekst: 'Clubhead speed 111,7 mph. Over norsk elitejunior-anslag på 108.', kilde: 'CLUBHEAD SPEED v2 · 25.08.2026 · ANDERS K.', art: 'målt' },
+        { kriterium: 'PRESTASJONER', tekst: 'Holder scoringssnittet i siste runde. Tre av fire turneringer i 2026 har beste runde til slutt.', kilde: 'TRENERVURDERING · 24.08.2026 · ANDERS K.', art: 'vurdert' },
+        { kriterium: 'PROSESS/ADFERD', tekst: 'Egentrening levert hver uke siden 4. mai. Ingen manglende oppmøte.', kilde: 'SYSTEMHENDELSE · 24.08.2026', art: 'målt' },
+        { kriterium: 'PROSESS/ADFERD', tekst: 'Tar korreksjon uten å diskutere den bort. Løfter nivået i gruppa.', kilde: 'TRENERVURDERING · 24.08.2026 · MARTE L.', art: 'vurdert' }
+      ].map(g => ({
+        ...g,
+        merkeRef: setStyle(g.kriterium === 'RESULTATER'
+          ? { background: 'var(--navy-900)', color: 'var(--white)' }
+          : g.kriterium === 'PRESTASJONER'
+            ? { background: 'var(--navy-100)', color: 'var(--navy-800)' }
+            : { background: 'var(--ink-100)', color: 'var(--ink-700)' }),
+        artRef: setStyle(g.art === 'målt'
+          ? { background: 'transparent', border: '1px solid var(--ink-200)', color: 'var(--text-secondary)' }
+          : { background: 'transparent', border: '1px dashed var(--ink-300)', color: 'var(--text-tertiary)' })
+      })),
+      kriterier: [
+        { navn: 'Resultater', tekst: 'Turneringsplasseringer og scorer, hentet fra GolfBox. Målt, ikke vurdert.' },
+        { navn: 'Prestasjoner', tekst: 'Hva utøveren faktisk får til, med målinger som underlag og trenerens ord som tolkning.' },
+        { navn: 'Prosess/adferd', tekst: 'Hvordan utøveren jobber. Utelukkende trenerens vurdering — systemet måler ikke dette.' }
+      ],
+      skjelettKort: [64, 78, 58, 72].map(w => ({ ref: setStyle({ width: w + '%' }) }))
+    };
+  }
+}
+</script>
+</body>
+</html>

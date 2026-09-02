@@ -108,7 +108,9 @@ Kort per periode (auto-fit grid, min 290 px) med venstre/topp fargestripe i fase
 øktkode-chips per øvelse (`pyramide_område_motorikk_belastning_press`), reps, varighet,
 teknikkdimensjon og mål per trinn (VG1/VG2/VG3 eller valgt trinn).
 Fotnote: faste regler (ny teknikk starter i kropp/arm, minimum CS50, KPI + dagbok,
-testuker overtar hele økten).
+testuker overtar hele økten). **UTGÅTT (se `.claude/rules/beslutninger.md`, «ALLE
+TRENINGSPLANREGLER LÅST OPP», 2026-08-18):** «minimum CS50» er ikke en gjeldende hard regel —
+all regel-håndheving i planlegging er slettet fra koden.
 
 ### Skole: 01 Timeplan (`#skoleplan`)
 Klassepiller VG1A/VG1B/VG2A/VG2B/VG3A/VG3B + «Kontaktlærer: …».

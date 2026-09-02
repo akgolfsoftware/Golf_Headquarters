@@ -4,8 +4,8 @@
 for alt design/look vinner Train-lock-beslutningen (Anders 25.08.2026 — Train-lock er fasit
 for ALLE skjermer i PlayerHQ og AgencyOS) + `docs/natt/` over dette dokumentet. Alle
 Paper-referanser under er historikk.*
-*Sist oppdatert: 25.08.2026 (design-unntak); innhold ellers fra 06.08.2026*
-**Første mål:** lansere AK Golf HQ per `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md` — Workbench/økt-sporet ferdig, design portert til Train-lock. (Tidligere mål «implementere Claude Paper» er supersedert 25.08.2026.)
+*Sist oppdatert: 01.09.2026 (rettet død fil-referanse); design-unntak fra 25.08.2026, innhold ellers fra 06.08.2026*
+**Første mål:** lansere AK Golf HQ per `docs/MASTERPLAN-GJENSTAAENDE.md` — Workbench/økt-sporet ferdig, design portert til Train-lock. (`docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md` er slettet 30.08.2026; tidligere mål «implementere Claude Paper» er supersedert 25.08.2026.)
 **Grunnregel for all Claude-bruk:** Claude spør Anders KUN om hva som skal lages (funksjoner, innhold, tekst i produktet). Aldri om innstillinger, konfigurasjon, modellvalg, tekniske valg eller kompliserte spørsmål — der bestemmer Claude selv, flagger bekymringer i rapporten, og kjører. Unntak: nummerert plan ved store byggeoppgaver skal fortsatt godkjennes før bygging starter (det er en scope-sjekk, ikke et innstillingsspørsmål).
 ---
 ## 0. Forutsetning før du starter
@@ -96,7 +96,7 @@ Dette er *ikke* det samme som `~/.claude/CLAUDE.md` (den globale masteren for id
 - Paper-cream, Presis-skog/lime (#005840, #D1F843) og Inter/Familjen er utgått — bruk aldri.
 ## Fagterminologi (ikke forenkle)
 - Økt-ID-format: PYRAMIDE_OMRÅDE_L-FASE_CS_M_PR — gyldige områder: TEE, INNSPILL, NÆRSPILL, PUTT, BANE
-- AK-formel v2 gjelder fra 03.08.2026 — 17 områder. L-faser/M/PR er UTGÅTT i ny formel — spør Anders før CS brukes i nytt.
+- AK-formel v2 gjelder fra 03.08.2026 — 17 områder. L-faser/M/PR er UTGÅTT i ny formel. Club Speed (Anders, 2026-09-01): motorikk AUTO, «uten ball» er en egenskap ved øvelsen, ikke eget motorikk-steg — se `docs/ordbok-ak-golf-konsept.md` §3.
 - Golf-data: alltid brutto score, aldri netto. Putt i fot (ft), aldri meter.
 - Ordliste for norsk UI-tekst: akordlistegjennomgang.html (Del A+B, 506 termer) — ingen nye ord/uttrykk oppfinnes.
 ## Data og PII

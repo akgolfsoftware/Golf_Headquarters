@@ -1,17 +1,49 @@
 # Train-lock — synkstatus
 
-**Sist synket: 28.08.2026 fra «Player HQ Train lock (1).zip» (ny leveranse 28.08, 220 filer)
-— import styrt av zip-ens `CLAUDE-CODE-IMPORT-PROMPT.md` (arkivert i cowork
-`innkommende/train-lock-uploads-2026-08-28/`).**
+**Sist synket: 01.09.2026 kl 10:05 fra «Player HQ Train lock.zip» (218 designfiler i
+prosjektet) — verifisert med CRC/sha256 mot repoets forrige tilstand, ikke bare tatt på
+tro. Del av revisjonsøkten 01.09.2026 (designstatus-kartlegging + doc-opprydding).**
 
 ## Innhold
 
-204 `.dc.html`-skjermfiler + `DESIGN-SYSTEM.md`, `SCREEN-INDEX.md`, `PORTING.md`,
+213 `.dc.html`-skjermfiler + `DESIGN-SYSTEM.md`, `SCREEN-INDEX.md`, `PORTING.md`,
 `HANDOFF.md`, `support.js`, `three-d-stage.js`. `README.md` og denne fila er repoets egne
-og finnes ikke i zip-en. Zip-ens `CLAUDE.md` er flettet inn i rot-`CLAUDE.md`
-(§Train-lock designfasit) per import-instruksen — ikke lagt her som andre CLAUDE.md.
+og finnes ikke i zip-en. Zip-ens `CLAUDE.md` og `CLAUDE-CODE-IMPORT-PROMPT.md` ligger nå i
+`referanse/` (se §Bevisst avvik fra import-prompten under) — **flettes IKKE inn i
+rot-CLAUDE.md**, i motsetning til hva en tidligere synk-runde (28.08) gjorde. Grunn: zip-ens
+CLAUDE.md er Claude Design-PROSJEKTETS tegneinstruks (bl.a. sier den «SF Pro» — feil for
+dette repoet, se under), ikke repoets kode-instruks. Der de to spriker vinner alltid
+repoets `.claude/rules/beslutninger.md`.
 
-## Siste synk (28.08) — hva som endret seg
+## Siste synk (01.09) — hva som endret seg
+
+- **3 nye skjermer (6 filer med lys-par):** `PH-21 Min kurve` (+L) — spillerens egen
+  til-par-kurve, ingen persentil/kullrangering på spillerflaten (bevisst). `A-19 Innsikt`
+  (+L) — coachens fire spørsmål (vekstrate/tak/konkurranse/program), kullsnitt kun tillatt
+  her, grått/stiplet. `DG-01 DataGolf topplister og SG-profil` (+L) — ny, større DG-01 som
+  ERSTATTER (i fasit-forstand) den gamle `DG-01 DataGolf spiller.dc.html`, som forblir i
+  repoet men nå står under «Uklassifisert» i SCREEN-INDEX.md, ikke i «## DG · Data Golf»
+  — behandle den gamle filen som utgått referanse, ikke fasit.
+- **Ny fargegrammatikk innført som fasit** (`DESIGN-SYSTEM.md` §1, `HANDOFF.md`
+  30.08.2026-oppføring): `shot #B08968` = spillerens egne data (kurve/spredning/stolper),
+  `target #0A84FF` = noe satt/valgt (målvindu, aktiv fane, valgt rad), `mute #8E8E93` =
+  referanse/kontekst (kullsnitt, tourgjennomsnitt), `text #F5F5F5` = hierarki, aldri
+  dataserie. Maks tre farger i én ramme, aldri to på samme datatype. Rullet ut på PH-21,
+  A-19, DG-01 i begge moduser — **ikke ennå verifisert at eldre skjermer (TM-serien m.fl.)
+  følger denne grammatikken**, se prioritert liste i revisjonsrapporten.
+- **`.thumbnail` oppdatert.** Øvrige 207 filer er byte-identiske med forrige leveranse
+  (verifisert med sha256 fil for fil, python zipfile mot repoets filer).
+- **Ingen filer fjernet.**
+
+## Bevisst avvik fra import-prompten (bekreftet på nytt 01.09)
+
+Zip-ens `CLAUDE-CODE-IMPORT-PROMPT.md` sier fortsatt `design/train-lock/` som målsti —
+repoet beholder `designsystem/train-lock/` (etablert kanon, CLAUDE.md invariant 2). Dette
+er andre gang samme avvik dukker opp (også notert 26.08) — Claude Design-prosjektets egen
+eksport-mal er ikke rettet på prosjektsiden. Neste zip-import: forvent samme avvik, ikke
+flytt mappen.
+
+## Forrige synk (28.08) — hva som endret seg
 
 - **8 nye skjermfiler:** `AG-19 Notifikasjonssenter` (varselkjede/godkjenn-ark),
   `AO-13 Routing-hub` (AgenticOS lokal vs. sky), `EC-02 AS Compliance` (AS-frister),

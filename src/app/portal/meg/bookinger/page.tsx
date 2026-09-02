@@ -8,9 +8,21 @@ import { BookingerTabs } from "./bookinger-tabs";
 
 import { Caps, Tittel, CTAPill, Kort, StatusPill } from "@/components/v2";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { TL } from "@/lib/v2/train-lock";
 
-export default async function MineBookinger() {
+const BYTT_FEIL_TEKST: Record<string, string> = {
+  "24t": "Kunne ikke bytte tid — det er under 24 timer til start, og bytting er da stengt.",
+  cancelled: "Denne bookingen er kansellert og kan ikke lenger byttes.",
+};
+
+export default async function MineBookinger({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
   const user = await requirePortalUser({ kreverTilgang: "INGEN", allow: ["PLAYER", "COACH", "ADMIN"] });
+  const { error } = await searchParams;
+  const feilTekst = error ? BYTT_FEIL_TEKST[error] : undefined;
 
   // Alle bookinger skjer i appen — wizarden velger selv credits/betaling.
   const nyBookingHref = "/portal/booking/ny";
@@ -48,6 +60,15 @@ export default async function MineBookinger() {
             {kommende.length > 0 ? `${kommende.length} kommende` : "Ingen planlagt"}
           </StatusPill>
         </div>
+
+        {feilTekst && (
+          <Kort tint>
+            <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
+              <StatusPill tone="warn">Kunne ikke bytte</StatusPill>
+              <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text }}>{feilTekst}</span>
+            </div>
+          </Kort>
+        )}
 
         <Link href={nyBookingHref} style={{ textDecoration: "none", display: "block" }}>
           <CTAPill icon="calendar-plus" full>

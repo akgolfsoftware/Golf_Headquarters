@@ -55,6 +55,8 @@ Les **DESIGN-SYSTEM.md** før du endrer noe. Endrer du en fil, oppdater raden he
 | `PH-18 Meg samtykke.dc.html` | 1 | 390 | PH-18 Meg samtykke |
 | `PH-19 Onboarding.dc.html` | 3 | 390 | PH-19a Onboarding hvem / PH-19b Onboarding hvor / PH-19c Onboarding coach-kode |
 | `PH-20 Varsel-ark.dc.html` | 2 | 390 | PH-20 Varsel-ark liste / PH-20 Varsel-ark tom |
+| `PH-21 Min kurve.dc.html` | 3 | 390,1280 | PH-21a Min kurve iPhone / PH-21b Min kurve desktop 1280 / PH-21c Min kurve tom iPhone |
+| `PH-21L Min kurve lys.dc.html` | 3 | 390,1280 | Lys PH-21a / Lys PH-21b / Lys PH-21c |
 
 ## WB · Workbench (Player + Agency)
 
@@ -102,6 +104,8 @@ Les **DESIGN-SYSTEM.md** før du endrer noe. Endrer du en fil, oppdater raden he
 | `A-16 Mac Uke lys.dc.html` | 1 | 1440 | A-16 Agency Uke lys |
 | `A-17 Mac Okt lys.dc.html` | 1 | 380,1440 | A-17 Agency Økt lys |
 | `A-18 Mac Tom uke.dc.html` | 1 | 1440 | A-18 Tom uke |
+| `A-19 Innsikt.dc.html` | 4 | 390,1280 | A-19a Innsikt vekstrate iPhone / A-19b Innsikt tak iPhone / A-19c Innsikt konkurranse iPhone / A-19d Innsikt desktop 1280 |
+| `A-19L Innsikt lys.dc.html` | 4 | 390,1280 | Lys A-19a / Lys A-19b / Lys A-19c / Lys A-19d |
 
 ## AO · AgenticOS
 
@@ -148,6 +152,13 @@ Les **DESIGN-SYSTEM.md** før du endrer noe. Endrer du en fil, oppdater raden he
 | `TM-13 Progresjon maalvindu.dc.html` | 3 | 390,1440 | TM-13a Progresjon i maal Mac / TM-13b Progresjon avvik Mac / TM-13c Progresjon iPhone |
 | `TM-14 Bag mapping og DECADE.dc.html` | 3 | 390,1440 | TM-14a Bag mapping Mac / TM-14b DECADE kjegle Mac / TM-14c DECADE kjegle iPhone |
 | `TM-11 Okt-detalj komplett.dc.html` | 4 | 380,393,834,1440 | TM-11a Økt-detalj iPhone / TM-11b Økt-detalj tom iPhone / TM-11c Økt-detalj iPad / TM-11d Økt-detalj Mac |
+
+## DG · Data Golf
+
+| Fil | Rammer | Bredder | Skjermer |
+|---|---|---|---|
+| `DG-01 DataGolf topplister og SG-profil.dc.html` | 4 | 390,1280 | DG-01a Toppliste iPhone / DG-01b Toppliste desktop 1280 / DG-02a SG-profil iPhone / DG-02b SG-profil desktop 1280 |
+| `DG-01L DataGolf topplister og SG-profil lys.dc.html` | 4 | 390,1280 | Lys DG-01a / Lys DG-01b / Lys DG-02a / Lys DG-02b |
 
 ## FO · Foreldreportal
 

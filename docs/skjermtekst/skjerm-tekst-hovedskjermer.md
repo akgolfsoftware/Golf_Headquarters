@@ -15,6 +15,12 @@ Skrevet 5. juli 2026. Kopier rett inn i design/implementasjon.
 > skjermer; 05.08-regelen «Claude Paper vinner alltid» er historikk). Bruk denne fila kun til
 > ordlyd, tallformat og rolle-regler.
 
+> **UTGÅTT (se `.claude/rules/beslutninger.md`, «ALLE TRENINGSPLANREGLER LÅST OPP», 2026-08-18):**
+> drill-kode-eksemplene med L-BALL/CS70/M2/PR2 under viser et pensjonert format. Gjeldende
+> v2-format er `PYRAMIDE_OMRADE_MOTORIKK_BELASTNING_PRESS` (motorikk UTEN_BALL/LAV_HAST/AUTO,
+> press ALENE/OBSERVERT/KONKURRANSE/TURNERING). Club Speed (Anders, 2026-09-01): motorikk AUTO,
+> «uten ball» er en egenskap ved øvelsen, ikke eget motorikk-steg.
+
 **Rolle-regel (viktig):** Spiller ser KUN klarspråk (Innspill/Nærspill, «% av maksfart»).
 Coach ser kode + navn (`TEK · INN150 · L-BALL · CS70 · M2 · PR2`). Markedsflatene bruker
 ekte coach **Markus Røinås Pedersen** (aldri demo-spilleren), humanisert tekst uten em-strek.
@@ -171,7 +177,8 @@ Mørkt tema, data-tett (Bloomberg-tetthet), desktop-først. Coach ser fagkoder +
 **Hero-tittel:** Min *workbench*
 **Undertekst:** Bygg og følg planer for hele stallen.
 **7 hub-faner:** Teknisk plan · Sesongmål · Maler · Standardøkter · Gantt · Uke · Økt
-**Drill-koder (coach ser fagkode):** `TEK · INN150 · L-BALL · CS70 · M2 · PR2`
+**Drill-koder (coach ser fagkode):** `TEK · INN150 · L-BALL · CS70 · M2 · PR2` — UTGÅTT format,
+se `.claude/rules/beslutninger.md` 2026-08-18. Gjeldende: `PYRAMIDE_OMRADE_MOTORIKK_BELASTNING_PRESS`.
 **Compliance-badge:** hake (på plan) · kryss (avvik) · minus (ikke gjennomført)
 **Knapper:** Lagre · Dupliser uke · Legg til drill
 

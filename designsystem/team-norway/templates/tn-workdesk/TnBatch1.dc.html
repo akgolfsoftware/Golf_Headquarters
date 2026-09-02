@@ -7,7 +7,450 @@
 </head>
 <body>
 <x-dc>
+<!-- @template name="TN-00 Workdesk pulje 1 — Claw" description="TN Hjem, spillerliste og spiller-ark omtegnet fra Train-lock mørk til Claw lys. Samme informasjonsarkitektur, ny form: Schibsted Grotesk, navy #012B5D, merkevarerød kun på logo og skinne. Mobil 390 og Mac 1440." -->
+<helmet><script src="./ds-base.js"></script></helmet>
+<div style="padding:48px;display:flex;flex-direction:column;gap:56px;background:var(--surface-page);min-height:100vh;font-family:var(--font-body)">
 
+<div style="display:flex;flex-direction:column;gap:8px;max-width:760px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TN-00 · OMTEGNET PULJE 1</div>
+<h1 style="font-size:var(--text-h1);color:var(--navy-900);letter-spacing:var(--tracking-heading);margin:0">Hjem, spillerliste, spiller-ark</h1>
+<p style="margin:0;font-size:var(--text-lg);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Informasjonsarkitekturen er beholdt fra pulje 1. Formen er ny: lys flate, Schibsted Grotesk, navy som handlingsfarge. Merkevarerød opptrer kun i logomerket og på aktiv rad i skinnen. Alle tall er eksempeltall.</p>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:20px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MOBIL 390</div>
+<div style="display:flex;gap:28px;flex-wrap:wrap">
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">HJEM</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;justify-content:space-between;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.41</span><span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);color:var(--text-tertiary)">TEAM NORWAY</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 20px 16px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TIRSDAG 25. AUGUST</div>
+<h2 style="font-size:var(--text-h1);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:4px 0 0;line-height:var(--leading-tight)">Hjem</h2>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:16px 16px 0;display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;flex-direction:column;gap:8px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">KREVER DEG NÅ</div>
+<sc-for list="{{ krever }}" as="k" hint-placeholder-count="3">
+<div style="background:var(--surface-card);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:14px 16px;display:flex;gap:12px;align-items:flex-start;min-height:44px">
+<span ref="{{ k.dotRef }}" style="width:8px;height:8px;border-radius:var(--radius-full);flex-shrink:0;margin-top:6px"></span>
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900);line-height:var(--leading-snug);text-wrap:pretty">{{ k.title }}</div>
+<div style="font-size:var(--text-xs);color:var(--text-secondary);margin-top:4px">{{ k.meta }}</div>
+</div>
+<span style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--text-secondary);flex-shrink:0">{{ k.count }}</span>
+</div>
+</sc-for>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">NESTE SAMLING</div>
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:18px;display:flex;flex-direction:column;gap:16px">
+<div>
+<div style="font-size:var(--text-h3);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);line-height:var(--leading-snug)">Høstsamling Fornebu</div>
+<div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--text-primary);margin-top:6px">12.–15. oktober · Oslo GK</div>
+</div>
+<div style="display:flex;gap:20px">
+<div><div style="font-family:var(--font-mono);font-size:var(--text-h3);font-weight:var(--weight-semibold);color:var(--navy-900)">14</div><div style="font-size:var(--text-xs);color:var(--text-secondary)">påmeldt</div></div>
+<div><div style="font-family:var(--font-mono);font-size:var(--text-h3);font-weight:var(--weight-semibold);color:var(--navy-900)">11</div><div style="font-size:var(--text-xs);color:var(--text-secondary)">bekreftet</div></div>
+<div><div style="font-family:var(--font-mono);font-size:var(--text-h3);font-weight:var(--weight-semibold);color:var(--text-tertiary)">3</div><div style="font-size:var(--text-xs);color:var(--text-secondary)">mangler svar</div></div>
+</div>
+<div role="button" style="height:48px;border-radius:var(--radius-full);background:var(--navy-900);color:var(--white);font-size:var(--text-base);font-weight:var(--weight-bold);display:flex;align-items:center;justify-content:center">Åpne samlingen</div>
+</div>
+</div>
+<div style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Eksempeltall. Deltakerantall hentet fra påmelding 24.08.2026.</div>
+</div>
+<div style="height:76px;flex-shrink:0;background:var(--surface-card);border-top:1px solid var(--border-subtle);display:flex;align-items:flex-start;padding:8px 8px 0">
+<sc-for list="{{ tabs }}" as="t" hint-placeholder-count="5">
+<div ref="{{ t.ref }}" style="flex:1;min-width:0;height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
+<span ref="{{ t.barRef }}" style="width:22px;height:3px;border-radius:var(--radius-full)"></span>
+<span style="font-size:var(--text-xs);font-weight:var(--weight-semibold);white-space:nowrap">{{ t.label }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">SPILLERLISTE</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.41</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 20px 16px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TEAM NORWAY JUNIOR</div>
+<h2 style="font-size:var(--text-h1);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:4px 0 0">Spillere</h2>
+<div style="font-size:var(--text-xs);color:var(--text-secondary);margin-top:6px">14 spillere · 3 trenger deg</div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:12px 16px;display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{ spillere }}" as="s" hint-placeholder-count="9">
+<div style="background:var(--surface-card);border-radius:var(--radius-sm);border:1px solid var(--border-subtle);padding:10px 12px;display:flex;align-items:center;gap:10px;min-height:44px;flex-shrink:0">
+<span style="width:34px;height:34px;border-radius:var(--radius-full);background:var(--navy-100);color:var(--navy-800);font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-semibold);display:flex;align-items:center;justify-content:center;flex-shrink:0">{{ s.init }}</span>
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ s.navn }}</div>
+<div style="font-size:var(--text-xs);color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ s.sist }}</div>
+</div>
+<span ref="{{ s.trinnRef }}" style="font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-eyebrow);padding:4px 8px;border-radius:var(--radius-full);flex-shrink:0">{{ s.trinn }}</span>
+<span ref="{{ s.dotRef }}" style="width:8px;height:8px;border-radius:var(--radius-full);flex-shrink:0"></span>
+</div>
+</sc-for>
+</div>
+<div style="height:76px;flex-shrink:0;background:var(--surface-card);border-top:1px solid var(--border-subtle);display:flex;align-items:flex-start;padding:8px 8px 0">
+<sc-for list="{{ tabs2 }}" as="t" hint-placeholder-count="5">
+<div ref="{{ t.ref }}" style="flex:1;min-width:0;height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
+<span ref="{{ t.barRef }}" style="width:22px;height:3px;border-radius:var(--radius-full)"></span>
+<span style="font-size:var(--text-xs);font-weight:var(--weight-semibold)">{{ t.label }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">SPILLER-ARK</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.41</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 20px 16px;display:flex;align-items:center;gap:14px">
+<div role="button" style="width:44px;height:44px;flex-shrink:0;margin-left:-12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--navy-600)">‹</div>
+<span style="width:52px;height:52px;border-radius:var(--radius-full);background:var(--navy-100);color:var(--navy-800);font-family:var(--font-mono);font-size:var(--text-base);font-weight:var(--weight-semibold);display:flex;align-items:center;justify-content:center;flex-shrink:0">ØR</span>
+<div style="min-width:0">
+<h2 style="font-size:var(--text-h3);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:0">Øyvind Rohjan</h2>
+<div style="font-size:var(--text-xs);color:var(--text-secondary);margin-top:3px">Oslo GK · 17 år · trinn 1 delt</div>
+</div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:16px;display:flex;flex-direction:column;gap:14px">
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:18px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:baseline;justify-content:space-between">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">FYSISKE TESTER</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">AK GOLF · FYS v3</span>
+</div>
+<sc-for list="{{ testrader }}" as="t" hint-placeholder-count="4">
+<div style="display:flex;align-items:baseline;gap:10px">
+<span style="flex:1;min-width:0;font-size:var(--text-sm);font-weight:var(--weight-medium);color:var(--text-primary)">{{ t.navn }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ t.verdi }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);color:var(--text-tertiary);width:64px;text-align:right;flex-shrink:0">{{ t.kilde }}</span>
+</div>
+</sc-for>
+<div style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty;border-top:1px solid var(--border-subtle);padding-top:10px">Målt 14.03.2026 · testdag Bærum · Anders K. Protokollen låses ved første bruk.</div>
+</div>
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);border:1px solid var(--border-subtle);padding:18px;display:flex;flex-direction:column;gap:12px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TURNERINGER 2026</span>
+<sc-for list="{{ turneringer }}" as="t" hint-placeholder-count="3">
+<div style="display:flex;align-items:baseline;gap:10px">
+<span style="flex:1;min-width:0;font-size:var(--text-sm);font-weight:var(--weight-medium);color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ t.navn }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ t.res }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary);width:44px;text-align:right;flex-shrink:0">{{ t.dato }}</span>
+</div>
+</sc-for>
+</div>
+<div style="background:var(--navy-50);border:1px solid var(--navy-100);border-radius:var(--radius-lg);padding:18px;display:flex;flex-direction:column;gap:8px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--navy-700)">TRINN 2 · IKKE DELT</span>
+<div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900);line-height:var(--leading-normal);text-wrap:pretty">Treningsplan og analyse er ikke delt med Team Norway.</div>
+<div style="font-size:var(--text-xs);color:var(--navy-800);line-height:var(--leading-normal);text-wrap:pretty">Spilleren, eller foresatt for mindreårige, styrer dette selv. Ikke delt er ikke det samme som ikke målt.</div>
+</div>
+<div style="flex:1;min-height:0"></div>
+</div>
+<div style="height:76px;flex-shrink:0;background:var(--surface-card);border-top:1px solid var(--border-subtle);display:flex;align-items:flex-start;padding:8px 8px 0">
+<sc-for list="{{ tabs3 }}" as="t" hint-placeholder-count="5">
+<div ref="{{ t.ref }}" style="flex:1;min-width:0;height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
+<span ref="{{ t.barRef }}" style="width:22px;height:3px;border-radius:var(--radius-full)"></span>
+<span style="font-size:var(--text-xs);font-weight:var(--weight-semibold)">{{ t.label }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:20px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MAC 1440 · HJEM</div>
+<div style="width:1440px;height:900px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;font-variant-numeric:tabular-nums">
+<div style="width:232px;flex-shrink:0;background:var(--surface-card);border-right:1px solid var(--border-subtle);display:flex;flex-direction:column;padding:22px 14px 18px;gap:24px">
+<div style="display:flex;align-items:center;gap:10px;padding:0 8px">
+<span style="width:8px;height:22px;border-radius:3px;background:var(--red-600);flex-shrink:0"></span>
+<span style="font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-normal)">Team Norway</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:2px">
+<sc-for list="{{ meny }}" as="m" hint-placeholder-count="11">
+<sc-if value="{{ m.isHeading }}" hint-placeholder-val="{{ false }}">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);padding:14px 12px 6px">{{ m.label }}</div>
+</sc-if>
+<sc-if value="{{ m.isItem }}" hint-placeholder-val="{{ true }}">
+<div ref="{{ m.ref }}" style="height:40px;border-radius:var(--radius-xs);padding:0 10px;display:flex;align-items:center;gap:10px">
+<span ref="{{ m.markRef }}" style="width:3px;height:18px;border-radius:var(--radius-full);flex-shrink:0"></span>
+<span style="font-size:var(--text-sm);font-weight:var(--weight-medium)">{{ m.label }}</span>
+<div style="flex:1"></div>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">{{ m.badge }}</span>
+</div>
+</sc-if>
+</sc-for>
+</div>
+<div style="flex:1"></div>
+<div style="border-top:1px solid var(--border-subtle);padding-top:14px;display:flex;align-items:center;gap:10px">
+<span style="width:32px;height:32px;border-radius:var(--radius-full);background:var(--navy-100);color:var(--navy-800);font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);display:flex;align-items:center;justify-content:center;flex-shrink:0">AK</span>
+<div style="min-width:0"><div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Anders K.</div><div style="font-size:var(--text-micro);color:var(--text-secondary)">Sportssjef · Team Norway</div></div>
+</div>
+</div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;padding:28px 32px;gap:22px">
+<div style="display:flex;align-items:flex-end;justify-content:space-between">
+<div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TIRSDAG 25. AUGUST</div>
+<h2 style="font-size:var(--text-h1);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:6px 0 0">Hjem</h2>
+</div>
+<div role="button" style="height:44px;padding:0 22px;border-radius:var(--radius-full);background:var(--navy-900);color:var(--white);font-size:var(--text-sm);font-weight:var(--weight-bold);display:flex;align-items:center">Ny post</div>
+</div>
+<div style="flex:1;min-height:0;display:flex;gap:20px;align-items:stretch">
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">KREVER DEG NÅ</div>
+<sc-for list="{{ kreverMac }}" as="k" hint-placeholder-count="4">
+<div style="background:var(--surface-card);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:16px 18px;display:flex;gap:14px;align-items:center;min-height:44px">
+<span ref="{{ k.dotRef }}" style="width:8px;height:8px;border-radius:var(--radius-full);flex-shrink:0"></span>
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ k.title }}</div>
+<div style="font-size:var(--text-xs);color:var(--text-secondary);margin-top:3px">{{ k.meta }}</div>
+</div>
+<span style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--text-secondary)">{{ k.count }}</span>
+<span role="button" style="height:40px;padding:0 16px;border-radius:var(--radius-full);border:1px solid var(--border-default);font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900);display:flex;align-items:center;white-space:nowrap">{{ k.action }}</span>
+</div>
+</sc-for>
+<div style="font-size:var(--text-xs);color:var(--text-secondary)">Eksempeltall. Sortert etter hvor lenge saken har ventet.</div>
+<div style="flex:1;min-height:0"></div>
+</div>
+<div style="width:380px;flex-shrink:0;background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-md);padding:24px;display:flex;flex-direction:column;gap:18px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">NESTE SAMLING</div>
+<div>
+<div style="font-size:var(--text-h3);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);line-height:var(--leading-snug)">Høstsamling Fornebu</div>
+<div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--text-primary);margin-top:8px">12.–15. oktober · Oslo GK</div>
+<div style="font-size:var(--text-xs);color:var(--text-secondary);margin-top:4px">Fire dager · tre trenere</div>
+</div>
+<div style="display:flex;gap:10px">
+<div style="flex:1;background:var(--ink-50);border-radius:var(--radius-sm);padding:12px"><div style="font-family:var(--font-mono);font-size:var(--text-h3);font-weight:var(--weight-semibold);color:var(--navy-900)">14</div><div style="font-size:var(--text-xs);color:var(--text-secondary)">påmeldt</div></div>
+<div style="flex:1;background:var(--ink-50);border-radius:var(--radius-sm);padding:12px"><div style="font-family:var(--font-mono);font-size:var(--text-h3);font-weight:var(--weight-semibold);color:var(--navy-900)">11</div><div style="font-size:var(--text-xs);color:var(--text-secondary)">bekreftet</div></div>
+<div style="flex:1;background:var(--ink-50);border-radius:var(--radius-sm);padding:12px"><div style="font-family:var(--font-mono);font-size:var(--text-h3);font-weight:var(--weight-semibold);color:var(--text-tertiary)">3</div><div style="font-size:var(--text-xs);color:var(--text-secondary)">mangler</div></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">REISEDOKUMENTER</div>
+<sc-for list="{{ reisedok }}" as="d" hint-placeholder-count="3">
+<div style="min-height:44px;background:var(--ink-50);border-radius:var(--radius-sm);padding:0 14px;display:flex;align-items:center;gap:10px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-eyebrow);color:var(--text-tertiary);flex-shrink:0;width:62px">{{ d.type }}</span>
+<span style="flex:1;min-width:0;font-size:var(--text-sm);font-weight:var(--weight-medium);color:var(--navy-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ d.name }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary);flex-shrink:0">{{ d.read }}</span>
+</div>
+</sc-for>
+</div>
+<div style="flex:1"></div>
+<div role="button" style="height:48px;border-radius:var(--radius-full);background:var(--navy-900);color:var(--white);font-size:var(--text-base);font-weight:var(--weight-bold);display:flex;align-items:center;justify-content:center">Åpne samlingen</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:20px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MAC 1440 · SPILLERLISTE OG SPILLER-ARK (MASTER–DETALJ)</div>
+<div style="width:1440px;height:900px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;font-variant-numeric:tabular-nums">
+<div style="width:232px;flex-shrink:0;background:var(--surface-card);border-right:1px solid var(--border-subtle);display:flex;flex-direction:column;padding:22px 14px 18px;gap:24px">
+<div style="display:flex;align-items:center;gap:10px;padding:0 8px">
+<span style="width:8px;height:22px;border-radius:3px;background:var(--red-600);flex-shrink:0"></span>
+<span style="font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--navy-900)">Team Norway</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:2px">
+<sc-for list="{{ meny2 }}" as="m" hint-placeholder-count="11">
+<sc-if value="{{ m.isHeading }}" hint-placeholder-val="{{ false }}">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);padding:14px 12px 6px">{{ m.label }}</div>
+</sc-if>
+<sc-if value="{{ m.isItem }}" hint-placeholder-val="{{ true }}">
+<div ref="{{ m.ref }}" style="height:40px;border-radius:var(--radius-xs);padding:0 10px;display:flex;align-items:center;gap:10px">
+<span ref="{{ m.markRef }}" style="width:3px;height:18px;border-radius:var(--radius-full);flex-shrink:0"></span>
+<span style="font-size:var(--text-sm);font-weight:var(--weight-medium)">{{ m.label }}</span>
+<div style="flex:1"></div>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">{{ m.badge }}</span>
+</div>
+</sc-if>
+</sc-for>
+</div>
+<div style="flex:1"></div>
+<div style="border-top:1px solid var(--border-subtle);padding-top:14px;display:flex;align-items:center;gap:10px">
+<span style="width:32px;height:32px;border-radius:var(--radius-full);background:var(--navy-100);color:var(--navy-800);font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);display:flex;align-items:center;justify-content:center;flex-shrink:0">AK</span>
+<div style="min-width:0"><div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Anders K.</div><div style="font-size:var(--text-micro);color:var(--text-secondary)">Sportssjef · Team Norway</div></div>
+</div>
+</div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;padding:28px 32px 0;gap:20px;min-height:0">
+<div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TEAM NORWAY JUNIOR · 14 SPILLERE</div>
+<h2 style="font-size:var(--text-h1);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:6px 0 0">Spillere</h2>
+</div>
+<div style="flex:1;min-height:0;display:flex;gap:20px">
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;overflow:hidden">
+<sc-for list="{{ spillereMac }}" as="s" hint-placeholder-count="10">
+<div ref="{{ s.rowRef }}" style="border-radius:var(--radius-sm);padding:10px 14px;display:flex;align-items:center;gap:14px;min-height:44px;flex-shrink:0">
+<span style="width:34px;height:34px;border-radius:var(--radius-full);background:var(--navy-100);color:var(--navy-800);font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-semibold);display:flex;align-items:center;justify-content:center;flex-shrink:0">{{ s.init }}</span>
+<span style="width:190px;flex-shrink:0;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ s.navn }}</span>
+<span style="flex:1;min-width:0;font-size:var(--text-xs);color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ s.sist }}</span>
+<span ref="{{ s.trinnRef }}" style="font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-eyebrow);padding:4px 8px;border-radius:var(--radius-full);flex-shrink:0">{{ s.trinn }}</span>
+<span ref="{{ s.dotRef }}" style="width:8px;height:8px;border-radius:var(--radius-full);flex-shrink:0"></span>
+</div>
+</sc-for>
+</div>
+<div style="width:380px;flex-shrink:0;background:var(--surface-card);border-radius:var(--radius-lg) var(--radius-lg) 0 0;box-shadow:var(--shadow-md);padding:24px;display:flex;flex-direction:column;gap:16px;overflow:hidden">
+<div style="display:flex;align-items:center;gap:14px">
+<span style="width:52px;height:52px;border-radius:var(--radius-full);background:var(--navy-100);color:var(--navy-800);font-family:var(--font-mono);font-size:var(--text-base);font-weight:var(--weight-semibold);display:flex;align-items:center;justify-content:center;flex-shrink:0">ØR</span>
+<div style="min-width:0">
+<div style="font-size:var(--text-h3);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900)">Øyvind Rohjan</div>
+<div style="font-size:var(--text-xs);color:var(--text-secondary);margin-top:2px">Oslo GK · 17 år</div>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:baseline;justify-content:space-between">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">FYSISKE TESTER</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">AK GOLF · FYS v3</span>
+</div>
+<sc-for list="{{ testraderMac }}" as="t" hint-placeholder-count="4">
+<div style="display:flex;align-items:baseline;gap:10px">
+<span style="flex:1;min-width:0;font-size:var(--text-sm);font-weight:var(--weight-medium);color:var(--text-primary)">{{ t.navn }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ t.verdi }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);color:var(--text-tertiary);width:64px;text-align:right;flex-shrink:0">{{ t.kilde }}</span>
+</div>
+</sc-for>
+<div style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Målt 14.03.2026 · testdag Bærum · Anders K.</div>
+</div>
+<div style="background:var(--navy-50);border:1px solid var(--navy-100);border-radius:var(--radius-sm);padding:16px;display:flex;flex-direction:column;gap:6px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--navy-700)">TRINN 2 · IKKE DELT</span>
+<div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900);line-height:var(--leading-normal);text-wrap:pretty">Treningsplan og analyse er ikke delt.</div>
+<div style="font-size:var(--text-xs);color:var(--navy-800);line-height:var(--leading-normal);text-wrap:pretty">Ikke delt er ikke det samme som ikke målt.</div>
+</div>
+<div style="flex:1"></div>
+<div role="button" style="height:48px;border-radius:var(--radius-full);background:var(--navy-900);color:var(--white);font-size:var(--text-base);font-weight:var(--weight-bold);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-bottom:24px">Åpne fullt spiller-ark</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div style="max-width:760px;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:28px;display:flex;flex-direction:column;gap:16px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DESIGNNOTAT</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Hva som er endret</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Bare formen. Innholdet, rekkefølgen og hierarkiet er identisk med pulje 1. Flaten er lys, skriften er Schibsted Grotesk, handlingsfargen er navy, og rødt er nå den målte <strong>#D70232</strong> — brukt to steder: logomerket i skinnen og markøren på aktiv rad. Statusprikkene bruker status-paletten, ikke merkevarerød, så en rød prikk aldri kan forveksles med identitet.</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Menyen</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Skinnen er skiftet fra pulje 1s flate liste til den faktiske gruppestrukturen <strong>Daglig · Uttak · Skoler · Data</strong>, lest ut av CoachShell. Mobilens fanerad beholder de fem daglige stedene — hele menyen hører ikke på en telefon i regnvær.</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Usikkert</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Systemet har ikke ikonsett, så skinnen og fanene står uten ikoner og tilbakepilen er tegnet som et tegn. Anbefaling: Lucide, 20 px, 1,75 px strek. Initialene i avatarene er plassholdere for foto; mindreårige vises kun innlogget.</div>
+</div>
+</div>
+
+</div>
 </x-dc>
+<script type="text/x-dc" data-dc-script>
+const setStyle = o => el => { if (el) Object.assign(el.style, o); };
+const AMBER = 'var(--status-amber)', RED = 'var(--status-red)', GREEN = 'var(--status-green)';
+
+class Component extends DCLogic {
+  tabSet(active) {
+    return ['Hjem', 'Spillere', 'Poster', 'Samling', 'Mer'].map(label => ({
+      label,
+      ref: setStyle({ color: label === active ? 'var(--navy-900)' : 'var(--text-secondary)' }),
+      barRef: setStyle({ background: label === active ? 'var(--red-600)' : 'transparent' })
+    }));
+  }
+  menySet(active) {
+    return [
+      { isHeading: true, label: 'Daglig' },
+      { isItem: true, label: 'Oversikt', badge: '' },
+      { isItem: true, label: 'Spillere', badge: '14' },
+      { isItem: true, label: 'Poster', badge: '3' },
+      { isItem: true, label: 'Fellestesting', badge: '' },
+      { isHeading: true, label: 'Uttak' },
+      { isItem: true, label: 'Uttaksliste', badge: '2' },
+      { isItem: true, label: 'Rangliste', badge: '' },
+      { isHeading: true, label: 'Skoler' },
+      { isItem: true, label: 'Skoleoversikt', badge: '' },
+      { isHeading: true, label: 'Data' },
+      { isItem: true, label: 'Testbatteri', badge: '' },
+      { isItem: true, label: 'Analyse', badge: '' }
+    ].map(m => ({
+      ...m,
+      ref: setStyle({
+        background: m.label === active ? 'var(--navy-100)' : 'transparent',
+        color: m.label === active ? 'var(--navy-900)' : 'var(--text-secondary)'
+      }),
+      markRef: setStyle({ background: m.label === active ? 'var(--red-600)' : 'transparent' })
+    }));
+  }
+  players() {
+    return [
+      { init: 'ØR', navn: 'Øyvind Rohjan', sist: 'Testdag Bærum · 14.03', trinn: 'T1', flag: AMBER },
+      { init: 'MH', navn: 'Mathea Hovden', sist: 'Svarte på samling · i går', trinn: 'T1+T2', flag: '' },
+      { init: 'JB', navn: 'Jonas Bratlie', sist: 'Mangler svar på samling', trinn: 'T1', flag: RED },
+      { init: 'SL', navn: 'Sigrid Lunde', sist: 'Ny test lagt inn · 22.08', trinn: 'T1+T2', flag: '' },
+      { init: 'EN', navn: 'Erik Nesheim', sist: 'Uttak til NM venter svar', trinn: 'T1', flag: AMBER },
+      { init: 'AV', navn: 'Amalie Vik', sist: 'Bekreftet samling · 23.08', trinn: 'T1+T2', flag: GREEN },
+      { init: 'TG', navn: 'Theodor Gran', sist: 'Ingen aktivitet på 21 dager', trinn: 'T1', flag: RED },
+      { init: 'IK', navn: 'Ingrid Kvam', sist: 'Bekreftet samling · 23.08', trinn: 'T1+T2', flag: GREEN },
+      { init: 'HS', navn: 'Henrik Sæther', sist: 'Testdag Bærum · 14.03', trinn: 'T1', flag: '' },
+      { init: 'LB', navn: 'Live Borgen', sist: 'Bekreftet samling · 24.08', trinn: 'T1+T2', flag: GREEN }
+    ];
+  }
+  tests() {
+    return [
+      { navn: 'CMJ', verdi: '38,4 cm', kilde: 'FYS v3' },
+      { navn: 'Sittende kast', verdi: '6,10 m', kilde: 'FYS v3' },
+      { navn: '10 m sprint', verdi: '1,78 s', kilde: 'FYS v3' },
+      { navn: 'Rotasjon H/V', verdi: '52° / 47°', kilde: 'FYS v3' }
+    ];
+  }
+  renderVals() {
+    const withRefs = s => ({
+      ...s,
+      dotRef: setStyle({ background: s.flag || 'transparent' }),
+      trinnRef: setStyle(s.trinn === 'T1+T2'
+        ? { background: 'var(--navy-100)', color: 'var(--navy-800)' }
+        : { background: 'var(--ink-100)', color: 'var(--text-secondary)' })
+    });
+    return {
+      tabs: this.tabSet('Hjem'),
+      tabs2: this.tabSet('Spillere'),
+      tabs3: this.tabSet('Spillere'),
+      meny: this.menySet('Oversikt'),
+      meny2: this.menySet('Spillere'),
+      krever: [
+        { title: '3 spillere har ikke svart på samlingen', meta: 'Frist 01.09 · Høstsamling Fornebu', count: '3', flag: RED },
+        { title: 'Uttak til NM junior mangler bekreftelse', meta: 'Sendt 21.08 · 4 av 6 har svart', count: '2', flag: AMBER },
+        { title: 'Testdata fra Bærum venter på godkjenning', meta: 'Lagt inn 22.08 av Marte L.', count: '9', flag: AMBER }
+      ].map(k => ({ ...k, dotRef: setStyle({ background: k.flag }) })),
+      kreverMac: [
+        { title: '3 spillere har ikke svart på samlingen', meta: 'Frist 01.09 · Høstsamling Fornebu', count: '3', action: 'Purr', flag: RED },
+        { title: 'Uttak til NM junior mangler bekreftelse', meta: 'Sendt 21.08 · 4 av 6 har svart', count: '2', action: 'Se uttak', flag: AMBER },
+        { title: 'Testdata fra Bærum venter på godkjenning', meta: 'Lagt inn 22.08 av Marte L.', count: '9', action: 'Godkjenn', flag: AMBER },
+        { title: 'Theodor Gran har vært stille i 21 dager', meta: 'Siste aktivitet 04.08', count: '1', action: 'Åpne', flag: AMBER }
+      ].map(k => ({ ...k, dotRef: setStyle({ background: k.flag }) })),
+      reisedok: [
+        { type: 'FLY', name: 'SK4267 OSL–BGO', read: '11/14' },
+        { type: 'HOTELL', name: 'Scandic Fornebu', read: '9/14' },
+        { type: 'PROGRAM', name: 'Dagsplan alle fire dager', read: '14/14' }
+      ],
+      spillere: this.players().slice(0, 9).map(withRefs),
+      spillereMac: this.players().map(s => ({
+        ...withRefs(s),
+        rowRef: setStyle({
+          background: s.init === 'ØR' ? 'var(--surface-card)' : 'transparent',
+          boxShadow: s.init === 'ØR' ? 'var(--shadow-sm)' : 'none'
+        })
+      })),
+      testrader: this.tests(),
+      testraderMac: this.tests(),
+      turneringer: [
+        { navn: 'Sørlandsopen junior', res: 'T4', dato: '06.06' },
+        { navn: 'Titleist Tour Losby', res: 'T11', dato: '19.06' },
+        { navn: 'NM junior kval.', res: 'T2', dato: '08.08' }
+      ]
+    };
+  }
+}
+</script>
 </body>
 </html>

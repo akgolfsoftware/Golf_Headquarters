@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="TN-12 Samtykke — deling per organisasjon" description="Spillerens (eller foresattes) egen skjerm: hvilke organisasjoner som er koblet, de to bryterne tester/resultater og komplett profil, hva som faktisk deles akkurat nå, og trekk tilbake. Mac 1440 og mobil 390 i fire tilstander." -->
+<helmet><script src="./ds-base.js"></script></helmet>
+<div style="padding:48px;display:flex;flex-direction:column;gap:56px;background:var(--surface-page);min-height:100vh;font-family:var(--font-body)">
+
+<div style="display:flex;flex-direction:column;gap:8px;max-width:800px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TN-12 · SPILLERSIDEN · /profil/deling</div>
+<h1 style="font-size:var(--text-h1);color:var(--navy-900);letter-spacing:var(--tracking-heading);margin:0">Samtykke og deling</h1>
+<p style="margin:0;font-size:var(--text-lg);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">To brytere per organisasjon, aldri ti: tester og resultater, eller komplett profil. Skjermen viser hva som faktisk deles akkurat nå — ikke hva som er mulig å dele — og samtykket kan trekkes tilbake når som helst.</p>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:20px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MAC 1440 · SUKSESS · FORESATT INNLOGGET</div>
+<div style="width:1440px;height:900px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+
+<div style="flex-shrink:0;height:60px;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);display:flex;align-items:center;padding:0 32px;gap:14px">
+<span style="width:8px;height:22px;border-radius:3px;background:var(--red-600);flex-shrink:0"></span>
+<span style="font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--navy-900)">Player HQ</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">FORELDREVISNING</span>
+<div style="flex:1"></div>
+<span style="font-size:var(--text-sm);color:var(--text-secondary)">Marit Hovden · foresatt for Emma (16)</span>
+</div>
+
+<div style="flex:1;min-height:0;display:flex;justify-content:center;overflow:hidden;padding:28px 32px 0">
+<div style="width:900px;display:flex;flex-direction:column;gap:18px;min-height:0">
+
+<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-shrink:0">
+<div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DELING · 1 ORGANISASJON KOBLET</div>
+<h2 style="font-size:var(--text-h1);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:5px 0 0">Hvem ser Emmas data</h2>
+</div>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">SIST ENDRET 12.08.2026</span>
+</div>
+
+<div style="flex-shrink:0;background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);overflow:hidden;display:flex;flex-direction:column">
+<div style="padding:20px 24px;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--border-subtle)">
+<span style="width:6px;height:38px;border-radius:var(--radius-full);background:var(--red-600);flex-shrink:0"></span>
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-h3);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading)">Team Norway Junior</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);margin-top:2px">NORGES GOLFFORBUND · KOBLET 04.03.2026</div>
+</div>
+<span style="display:flex;align-items:center;gap:8px;background:var(--status-green-bg);border-radius:var(--radius-full);padding:6px 14px;flex-shrink:0">
+<span style="width:7px;height:7px;border-radius:var(--radius-full);background:var(--status-green)"></span>
+<span style="font-size:var(--text-xs);font-weight:var(--weight-semibold);color:var(--status-green-text)">Deler nå</span>
+</span>
+</div>
+
+<sc-for list="{{ brytere }}" as="b" hint-placeholder-count="2">
+<div style="padding:18px 24px;display:flex;align-items:flex-start;gap:20px;border-bottom:1px solid var(--border-subtle)">
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-base);font-weight:var(--weight-bold);color:var(--navy-900)">{{ b.tittel }}</div>
+<div style="font-size:var(--text-sm);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">{{ b.beskrivelse }}</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:2px">
+<sc-for list="{{ b.punkter }}" as="p" hint-placeholder-count="4">
+<span ref="{{ p.ref }}" style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;padding:4px 9px;border-radius:var(--radius-xs)">{{ p.label }}</span>
+</sc-for>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:12px;flex-shrink:0;padding-top:2px">
+<span ref="{{ b.tekstRef }}" style="font-size:var(--text-sm);font-weight:var(--weight-semibold);width:56px;text-align:right">{{ b.status }}</span>
+<div role="button" ref="{{ b.sporRef }}" style="width:52px;height:30px;border-radius:var(--radius-full);padding:3px;display:flex;align-items:center">
+<span ref="{{ b.knappRef }}" style="width:24px;height:24px;border-radius:var(--radius-full);background:var(--white);box-shadow:var(--shadow-sm);display:block"></span>
+</div>
+</div>
+</div>
+</sc-for>
+
+<div style="padding:16px 24px;display:flex;align-items:center;gap:16px;background:var(--surface-page)">
+<span style="flex:1;min-width:0;font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Trekker du tilbake, mister Team Norway tilgang umiddelbart. Data som allerede er ført i en testprotokoll blir stående hos forbundet som dokumentasjon på gjennomført test.</span>
+<div role="button" style="height:40px;padding:0 18px;border-radius:var(--radius-full);border:1px solid var(--status-red);display:flex;align-items:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--status-red-text);flex-shrink:0">Trekk tilbake all deling</div>
+</div>
+</div>
+
+<div style="flex:1;min-height:0;display:flex;gap:16px;overflow:hidden;padding-bottom:24px">
+<div style="flex:1;min-width:0;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:18px 20px;display:flex;flex-direction:column;gap:12px;overflow:hidden">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DETTE DELES AKKURAT NÅ</span>
+<sc-for list="{{ deles }}" as="d" hint-placeholder-count="4">
+<div style="display:flex;align-items:flex-start;gap:10px">
+<span style="width:7px;height:7px;border-radius:var(--radius-full);background:var(--status-green);flex-shrink:0;margin-top:7px"></span>
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-medium);color:var(--navy-900)">{{ d.navn }}</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);margin-top:1px">{{ d.detalj }}</div>
+</div>
+</div>
+</sc-for>
+<div style="flex:1;min-height:0"></div>
+</div>
+<div style="flex:1;min-width:0;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:18px 20px;display:flex;flex-direction:column;gap:12px;overflow:hidden">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DETTE DELES IKKE</span>
+<sc-for list="{{ delesIkke }}" as="d" hint-placeholder-count="4">
+<div style="display:flex;align-items:flex-start;gap:10px">
+<span style="width:7px;height:7px;border-radius:var(--radius-full);background:var(--ink-300);flex-shrink:0;margin-top:7px"></span>
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-medium);color:var(--text-secondary)">{{ d.navn }}</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);margin-top:1px">{{ d.detalj }}</div>
+</div>
+</div>
+</sc-for>
+<div style="flex:1;min-height:0"></div>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:20px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MOBIL 390 · SUKSESS, TOM, LASTER, FEIL</div>
+<div style="display:flex;gap:28px;flex-wrap:wrap">
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">SUKSESS</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.41</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:6px 16px 12px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DELING · EMMA, 16 ÅR</div>
+<h2 style="font-size:var(--text-h3);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:2px 0 0">Hvem ser dataene</h2>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:14px 16px;display:flex;flex-direction:column;gap:12px">
+<div style="background:var(--surface-card);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);overflow:hidden;display:flex;flex-direction:column">
+<div style="padding:14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border-subtle)">
+<span style="width:5px;height:30px;border-radius:var(--radius-full);background:var(--red-600);flex-shrink:0"></span>
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--navy-900)">Team Norway Junior</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);margin-top:1px">KOBLET 04.03.2026</div>
+</div>
+<span style="width:8px;height:8px;border-radius:var(--radius-full);background:var(--status-green);flex-shrink:0"></span>
+</div>
+<sc-for list="{{ bryterMobil }}" as="b" hint-placeholder-count="2">
+<div style="padding:14px;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--border-subtle);min-height:44px">
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900);line-height:var(--leading-snug)">{{ b.tittel }}</div>
+<div style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-snug);margin-top:3px;text-wrap:pretty">{{ b.kort }}</div>
+</div>
+<div role="button" ref="{{ b.sporRef }}" style="width:52px;height:30px;border-radius:var(--radius-full);padding:3px;display:flex;align-items:center;flex-shrink:0">
+<span ref="{{ b.knappRef }}" style="width:24px;height:24px;border-radius:var(--radius-full);background:var(--white);box-shadow:var(--shadow-sm);display:block"></span>
+</div>
+</div>
+</sc-for>
+<div role="button" style="min-height:48px;display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--status-red-text)">Trekk tilbake all deling</div>
+</div>
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:14px;display:flex;flex-direction:column;gap:10px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DELES AKKURAT NÅ</span>
+<sc-for list="{{ delesMobil }}" as="d" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="width:7px;height:7px;border-radius:var(--radius-full);background:var(--status-green);flex-shrink:0"></span>
+<span style="flex:1;min-width:0;font-size:var(--text-sm);color:var(--navy-900)">{{ d.navn }}</span>
+</div>
+</sc-for>
+<div style="height:1px;background:var(--border-subtle)"></div>
+<sc-for list="{{ delesIkkeMobil }}" as="d" hint-placeholder-count="2">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="width:7px;height:7px;border-radius:var(--radius-full);background:var(--ink-300);flex-shrink:0"></span>
+<span style="flex:1;min-width:0;font-size:var(--text-sm);color:var(--text-secondary)">{{ d.navn }}</span>
+</div>
+</sc-for>
+</div>
+<div style="flex:1;min-height:0"></div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">TOM — INGEN ORGANISASJON KOBLET</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">10.08</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:6px 16px 12px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DELING</div>
+<h2 style="font-size:var(--text-h3);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:2px 0 0">Hvem ser dataene</h2>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:16px;display:flex;flex-direction:column;gap:14px">
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:20px;display:flex;flex-direction:column;gap:12px">
+<div style="font-size:var(--text-h3);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading);line-height:var(--leading-snug);text-wrap:pretty">Ingen deler dataene dine</div>
+<div style="font-size:var(--text-sm);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Ingen klubb, krets eller forbund har tilgang til testene, resultatene eller profilen din. Blir du tatt inn i en satsing, dukker organisasjonen opp her og du bestemmer selv hva de får se.</div>
+</div>
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:16px;display:flex;flex-direction:column;gap:10px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DE TO NIVÅENE, NÅR DET BLIR AKTUELT</span>
+<div style="display:flex;flex-direction:column;gap:3px"><span style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Tester og resultater</span><span style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-snug);text-wrap:pretty">Testresultater, turneringer og statistikk.</span></div>
+<div style="display:flex;flex-direction:column;gap:3px"><span style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Komplett profil</span><span style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-snug);text-wrap:pretty">I tillegg treningsplan, TrackMan, analyse og fremgang.</span></div>
+</div>
+<div style="flex:1;min-height:0"></div>
+<div style="font-size:var(--text-xs);color:var(--text-tertiary);line-height:var(--leading-normal);text-wrap:pretty">Du får alltid spørsmål før noe deles. Ingenting kobles på uten at du sier ja.</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">LASTER</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.41</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:10px 16px 14px;display:flex;flex-direction:column;gap:9px">
+<div style="width:120px;height:11px;border-radius:var(--radius-xs);background:var(--ink-100)"></div>
+<div style="width:190px;height:24px;border-radius:var(--radius-xs);background:var(--ink-100)"></div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:14px 16px;display:flex;flex-direction:column;gap:12px">
+<div style="background:var(--surface-card);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:14px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:center;gap:10px">
+<div style="width:5px;height:30px;border-radius:var(--radius-full);background:var(--ink-100);flex-shrink:0"></div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px">
+<div style="width:60%;height:14px;border-radius:var(--radius-xs);background:var(--ink-100)"></div>
+<div style="width:40%;height:10px;border-radius:var(--radius-xs);background:var(--ink-100)"></div>
+</div>
+</div>
+<sc-for list="{{ skjelett }}" as="s" hint-placeholder-count="2">
+<div style="display:flex;align-items:center;gap:14px;border-top:1px solid var(--border-subtle);padding-top:14px">
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px">
+<div ref="{{ s.ref }}" style="height:13px;border-radius:var(--radius-xs);background:var(--ink-100)"></div>
+<div style="width:80%;height:10px;border-radius:var(--radius-xs);background:var(--ink-100)"></div>
+</div>
+<div style="width:52px;height:30px;border-radius:var(--radius-full);background:var(--ink-100);flex-shrink:0"></div>
+</div>
+</sc-for>
+</div>
+<div style="display:flex;align-items:center;gap:10px;padding:2px">
+<span style="width:14px;height:14px;border-radius:var(--radius-full);border:2px solid var(--ink-200);border-top-color:var(--navy-600);flex-shrink:0"></span>
+<span style="font-size:var(--text-xs);color:var(--text-secondary)">Henter dine samtykker</span>
+</div>
+<div style="flex:1;min-height:0"></div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">FEIL — ENDRINGEN BLE IKKE LAGRET</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">11.47</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:6px 16px 12px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DELING · EMMA, 16 ÅR</div>
+<h2 style="font-size:var(--text-h3);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:2px 0 0">Hvem ser dataene</h2>
+</div>
+<div style="flex-shrink:0;background:var(--status-red-bg);padding:12px 16px;display:flex;align-items:flex-start;gap:10px">
+<span style="width:7px;height:7px;border-radius:var(--radius-full);background:var(--status-red);flex-shrink:0;margin-top:6px"></span>
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--status-red-text)">Endringen ble ikke lagret</div>
+<div style="font-size:var(--text-xs);color:var(--status-red-text);line-height:var(--leading-normal);margin-top:3px;text-wrap:pretty">«Komplett profil» står fortsatt på. Team Norway ser fremdeles alt.</div>
+</div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:14px 16px;display:flex;flex-direction:column;gap:12px">
+<div style="background:var(--surface-card);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:16px;display:flex;flex-direction:column;gap:12px">
+<div style="font-size:var(--text-base);font-weight:var(--weight-bold);color:var(--navy-900);line-height:var(--leading-snug);text-wrap:pretty">Tilstanden på skjermen er den ekte</div>
+<div style="font-size:var(--text-sm);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Bryteren er satt tilbake til slik den faktisk står hos forbundet. Et samtykke som ser avslått ut mens det er på, er den verste feilen denne skjermen kan gjøre.</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary)">FORSØKT 11.47 · INGEN SVAR FRA TJENESTEN</div>
+</div>
+<div style="background:var(--surface-card);border:1px solid var(--status-red);border-radius:var(--radius-md);padding:14px;display:flex;align-items:center;gap:14px">
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Komplett profil</div>
+<div style="font-size:var(--text-xs);color:var(--status-red-text);line-height:var(--leading-snug);margin-top:3px">Fremdeles på — endringen gikk ikke gjennom</div>
+</div>
+<div role="button" style="width:52px;height:30px;border-radius:var(--radius-full);padding:3px;display:flex;align-items:center;justify-content:flex-end;background:var(--navy-900);flex-shrink:0">
+<span style="width:24px;height:24px;border-radius:var(--radius-full);background:var(--white);box-shadow:var(--shadow-sm);display:block"></span>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div role="button" style="height:48px;border-radius:var(--radius-full);background:var(--navy-900);display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--white)">Prøv å skru av igjen</div>
+<div role="button" style="height:48px;border-radius:var(--radius-full);border:1px solid var(--border-default);display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Kontakt support</div>
+</div>
+<div style="flex:1;min-height:0"></div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div style="max-width:760px;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:28px;display:flex;flex-direction:column;gap:16px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DESIGNNOTAT</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Beslutningen skjermen løser</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">At samtykket er forståelig uten å leses som jus. To brytere per organisasjon, og under dem to lister side om side: hva som deles nå, og hva som ikke gjør det. Den andre listen er poenget — uten den må brukeren gjette hva bryteren ikke dekker. Feiltilstanden setter bryteren tilbake til sannheten framfor å vise ønsket tilstand; et samtykke som ser avslått ut mens det står på, er verre enn en feilmelding.</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Hvor skjermen hører hjemme</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Denne er tegnet i TN-stil fordi det er TN-relasjonen den forklarer, men den skal til slutt leve i PlayerHQ / Forelder — ikke under /team-norway/*. Toppskinnen sier «Player HQ» av samme grunn. Er den mindreårig, er det foresatt som styrer bryterne; skjermen er tegnet i foreldrevisning.</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Usikkert</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty"><strong>Ett:</strong> hva som skjer med allerede delte data ved tilbaketrekking er formulert som at testprotokoller blir stående — det må bekreftes juridisk, ikke av meg. <strong>To:</strong> kan en 16-åring selv styre bryterne, eller bare foresatt? Jeg har tegnet foresatt som eier, med utøveren som leser. <strong>Tre:</strong> «komplett profil» forutsetter «tester og resultater» i min tegning (den øverste kan ikke skrus av mens den nederste står på) — det bør bekreftes. <strong>Fire:</strong> ingen ikonsett; grønn/grå prikk brukes som statusmarkør — anbefaling Lucide 20 px, 1,75 px strek.</div>
+</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1560,&quot;height&quot;:1000}}">
+const setStyle = o => el => { if (el) Object.assign(el.style, o); };
+const punktStil = pa => pa
+  ? { background: 'var(--navy-50)', color: 'var(--navy-700)' }
+  : { background: 'var(--ink-100)', color: 'var(--ink-700)' };
+
+class Component extends DCLogic {
+  bryterData() {
+    return [
+      {
+        tittel: 'Tester og resultater',
+        kort: 'Testresultater, turneringer og statistikk',
+        beskrivelse: 'Team Norway ser testresultatene dine, turneringsresultater og statistikk fra spilte runder.',
+        status: 'PÅ', pa: true,
+        punkter: [
+          { label: 'TN-BATTERI', pa: true },
+          { label: 'TURNERINGER', pa: true },
+          { label: 'RUNDESTATISTIKK', pa: true }
+        ]
+      },
+      {
+        tittel: 'Komplett profil',
+        kort: 'I tillegg treningsplan, TrackMan, analyse og fremgang',
+        beskrivelse: 'I tillegg til testene: treningsplan, TrackMan-data, analyse og fremgang over tid.',
+        status: 'AV', pa: false,
+        punkter: [
+          { label: 'TRENINGSPLAN', pa: false },
+          { label: 'TRACKMAN', pa: false },
+          { label: 'ANALYSE', pa: false },
+          { label: 'FREMGANG', pa: false }
+        ]
+      }
+    ];
+  }
+  dekorer(b) {
+    return {
+      ...b,
+      tekstRef: setStyle({ color: b.pa ? 'var(--navy-900)' : 'var(--text-tertiary)' }),
+      sporRef: setStyle({
+        background: b.pa ? 'var(--navy-900)' : 'var(--ink-200)',
+        justifyContent: b.pa ? 'flex-end' : 'flex-start'
+      }),
+      knappRef: setStyle({}),
+      punkter: b.punkter.map(p => ({ ...p, ref: setStyle(punktStil(p.pa)) }))
+    };
+  }
+  renderVals() {
+    const b = this.bryterData().map(x => this.dekorer(x));
+    return {
+      brytere: b,
+      bryterMobil: b,
+      deles: [
+        { navn: 'TN-batteri Q2 og Q3', detalj: '2 TESTER · SIST 18.08.2026' },
+        { navn: 'Turneringsresultater', detalj: '11 STARTER I 2026' },
+        { navn: 'Rundestatistikk', detalj: 'SCORE, FAIRWAY, GIR, PUTT' },
+        { navn: 'Kontaktinfo til foresatt', detalj: 'PÅKREVD FOR UTØVERE UNDER 18' }
+      ],
+      delesIkke: [
+        { navn: 'Treningsplan og økter', detalj: 'KREVER KOMPLETT PROFIL' },
+        { navn: 'TrackMan-data', detalj: 'KREVER KOMPLETT PROFIL' },
+        { navn: 'Analyse og fremgang', detalj: 'KREVER KOMPLETT PROFIL' },
+        { navn: 'Helse og skadehistorikk', detalj: 'DELES ALDRI VIA DENNE FLATEN' }
+      ],
+      delesMobil: [
+        { navn: 'TN-batteri Q2 og Q3' },
+        { navn: 'Turneringsresultater' },
+        { navn: 'Rundestatistikk' }
+      ],
+      delesIkkeMobil: [
+        { navn: 'Treningsplan og TrackMan' },
+        { navn: 'Analyse og fremgang' }
+      ],
+      skjelett: [76, 88].map(w => ({ ref: setStyle({ width: w + '%' }) }))
+    };
+  }
+}
+</script>
+</body>
+</html>

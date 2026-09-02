@@ -32,6 +32,11 @@ export const Capability = {
   // capability åpner /innsyn-flaten, samtykke (DelingsSamtykke) åpner dataene.
   VIEW_SHARED_TEST_RESULTS: "view_shared_test_results",
   VIEW_SHARED_STATS: "view_shared_stats",
+  // KOMPLETT_PROFIL (TN-12, Claw batch 3, 01.09.2026) — den andre av de «to
+  // bryterne» i §FORRETNINGSMODELL: SPILLERLISENSER. Kun capabilityen —
+  // selve dataleveransen (treningsplan/TrackMan/analyse til /innsyn) er ikke
+  // bygget ennå, dette er samtykke- og tilgangsgrunnlaget for den.
+  VIEW_SHARED_FULL_PROFILE: "view_shared_full_profile",
 } as const;
 
 export type Capability = (typeof Capability)[keyof typeof Capability];
@@ -62,6 +67,7 @@ export const CAPABILITY_BESKRIVELSER: Record<Capability, string> = {
   [Capability.VIEW_REPORTS]: "Se rapporter",
   [Capability.VIEW_SHARED_TEST_RESULTS]: "Se delte testresultater (ekstern leser)",
   [Capability.VIEW_SHARED_STATS]: "Se delt statistikk (ekstern leser)",
+  [Capability.VIEW_SHARED_FULL_PROFILE]: "Se delt komplett profil (ekstern leser)",
 };
 
 export const ROLE_CAPABILITIES: Record<UserRole, Capability[]> = {

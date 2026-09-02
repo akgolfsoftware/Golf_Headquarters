@@ -34,6 +34,10 @@ const STAFF_ONLY_BUCKETS: StorageBucket[] = [
   STORAGE_BUCKETS.REPORTS,
   STORAGE_BUCKETS.INVOICES,
   STORAGE_BUCKETS.COACH_AVATARS,
+  // Kun trenere poster/laster opp til Team Norway-grupper (TN-09/TN-11).
+  // Fingranulert sjekk (er trener i DENNE gruppen) skjer i
+  // opprettGruppeDokument/opprettGruppepost — denne er kun det grove gjerdet.
+  STORAGE_BUCKETS.TN_POST_VEDLEGG,
 ];
 
 const ALL_BUCKET_NAMES = Object.values(STORAGE_BUCKETS) as StorageBucket[];

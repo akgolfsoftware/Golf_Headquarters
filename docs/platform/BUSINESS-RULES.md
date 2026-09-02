@@ -346,6 +346,13 @@ Implementasjon: `src/lib/v2/tema-default.ts` + `src/app/layout.tsx` + `src/compo
 
 ## CANON-invariantene — de 13 (metodikk)
 
+> **UTGÅTT (se `.claude/rules/beslutninger.md`, «ALLE TRENINGSPLANREGLER LÅST OPP», 2026-08-18):**
+> all regel-håndheving i planlegging er slettet fra koden — `src/lib/canon/` og
+> `canon-invariants-13.md` finnes ikke lenger i repoet. CANON som overstyrende fasit-begrep er
+> pensjonert; L-fase (#4) og CS50-minimum (#2) er utgåtte begreper. Listen under er historikk.
+> Club Speed (Anders, 2026-09-01): motorikk AUTO, «uten ball» er en egenskap ved øvelsen, ikke
+> eget motorikk-steg — se `docs/ordbok-ak-golf-konsept.md` §3.
+
 > Navngitt kanonisk liste (A4, forankret 2026-07-18). Kilde: `src/lib/masterbrain/rag-corpus/morad/canon-invariants-13.md`
 > (CANON v3.5). **Invariantene er ANBEFALINGER som varsler ved avvik — aldri harde sperrer.**
 > Ingenting i appen blokkerer trening; sterkt avvik vises i klarspråk og kan varsle coach.
