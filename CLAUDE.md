@@ -79,3 +79,68 @@ er stort sett ikke startet.
      og `AK` fra `src/lib/v2/ak-palett.ts` (domeneverdier: pyramideakser, tee-farger,
      merkefarger). Ikke Presis-skog/lime. Paper er slettet fra repoet 30.08.2026 og
      kan ikke lenger brukes som few-shot — hverken tokens, CSS eller fasitfiler.
+
+---
+
+## Skill-bruk i AK Golf HQ (fast rekkefølge)
+
+Prosjektfakta som styrer alt: Next.js App Router + Prisma/Postgres (Supabase) + Vercel +
+Stripe + Anthropic API. Flater: AgencyOS (`/admin`, coach), PlayerHQ (`/portal`, spiller),
+Forelderportal (`/forelder`), Marketing (`/`). Designsystem: **Train-lock** — eneste fasit
+(se invariant 2). Repoet (`akgolfsoftware/Golf_Headquarters`) er **offentlig** på GitHub
+(verifisert 02.09.2026) — behandle all kode som synlig for hvem som helst.
+
+Pluginene/skillene under er installert på prosjektnivå (`.claude/settings.json`,
+`enabledPlugins` + `extraKnownMarketplaces`) — de følger med alle økter i dette repoet,
+ikke bare denne maskinen.
+
+### Før hver oppgave
+1. **superpowers**: brainstorm → skriftlig plan med maks 3 sjekkbare ferdig-punkter → vent
+   på OK fra Anders → deretter test-først (TDD). Ingen kode før planen er godkjent. Gjelder
+   ikke rene tekst-/docs-endringer. (Dette er samme prinsipp som den globale «nummerert plan,
+   vent på godkjenning»-regelen — superpowers gir verktøyene, regelen var allerede fast.)
+2. Scope-endring underveis besvares med kostnad (tid/omfang) før den gjøres.
+
+### Under bygging
+3. **security-guidance** kjører automatisk (rene vakter — ingen skill å påkalle) på hver
+   endring og ved øktslutt. Alt den flagger rettes i samme økt — aldri utsettes. Ekstra krav
+   utover default: all spillerdata bak auth-gate og Supabase RLS; ingen PII i logger,
+   feilmeldinger eller commits; hemmeligheter kun i env/Supabase-secrets, aldri i kode.
+4. Database: **supabase**-pluginet for RLS, policies, storage, edge functions og for å lese
+   faktisk skjema før du skriver spørringer — aldri gjett tabell- eller kolonnenavn, slå opp.
+   Namespace `me_*` er privat for Anders og røres ikke fra app-koden.
+   **`prisma`-pluginet er IKKE en skill for skjema/migrasjoner — det er to MCP-verktøy**
+   (Prisma-Local kjører den samme lokale `prisma`-kommandoen som allerede er blokkert for
+   dette prosjektet, se `.claude/rules/gotchas.md` §Schema-endringer; Prisma-Remote er for
+   Prismas EGEN hostede database «Prisma Postgres», som dette prosjektet ikke bruker — vi
+   kjører på Supabase). **Bruk det aldri til `migrate`/`db push` her.** Skjemaendringer følger
+   fortsatt kun den kirurgiske `db execute`-oppskriften i gotchas.md.
+5. Stripe: **stripe**-pluginet for alt betalingsrelatert. Kun to nivåer — **TALENT** (gratis)
+   og **FULL** (299 kr/mnd eller 2 690 kr/år) — ikke «PRO»/«GRATIS», det er ikke navnene
+   koden og BUSINESS-RULES.md bruker. Webhooks skal være verifiserte og idempotente. Ingen
+   simulatortid selges — booking er kun coachingtjenester.
+6. Frontend: **vercel-react-best-practices** (fra vercel-labs, `.claude/skills/`) for
+   datahenting, caching, Server/Client Components og ytelse — merk at `vercel`-pluginets
+   egen, lettere `react-best-practices`-skill også kjører automatisk på TSX-filer; de to
+   utfyller hverandre, ikke motsier. **frontend-design** + **web-design-guidelines** for UI —
+   men Train-lock-tokene (`--tl-*`/`TL`) og designsystemet i `designsystem/train-lock/`
+   overstyrer ALLTID skillenes egne designvalg, uendret av dette (invariant 2).
+   *Uverifisert: en ordliste-fil nevnt som `akordlistegjennomgang.html` finnes ikke i repoet
+   per 02.09.2026 — si fra hvor den ligger, så legges riktig sti inn.*
+   Én skjerm om gangen mot referansebilde; aldri batch. Lys modus default, mørk modus toggle,
+   desktop/iPad/mobil. «Sim 1/2/3» vises aldri i UI.
+
+### Før commit og PR
+7. **commit-commands**: checkpoint-commit minst hvert 30. minutt. Ucommittet arbeid ved
+   øktslutt = feilet økt. Dette er for hyppige mellom-commits — selve PR-flyten
+   (`/pr`-kommandoen + `verify-og-commit`-skillen, som krever grønn `npm run verify`) er
+   uendret.
+8. **pr-review-toolkit** på hver PR før den merges. Sjekkliste i tillegg til default: ingen
+   nye byggevarsler, tsc grønn, ingen nye avhengigheter uten begrunnelse, ingen endring i
+   `vercel.json` uten eksplisitt OK. Dette kommer i TILLEGG til — erstatter ikke — den
+   eksisterende `npm run verify`-porten, som fortsatt er obligatorisk før merge.
+9. **vercel**-pluginet: deploy kun etter grønn review. Ved feil: les faktiske deploy-/
+   runtime-logger via pluginets verktøy FØR du endrer kode — ikke gjett.
+
+### Øktslutt
+10. Retro i `docs/feillogg.md` (hva gikk galt, hvilket skill burde fanget det).

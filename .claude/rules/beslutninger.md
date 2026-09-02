@@ -880,4 +880,7 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
 - **Skill-rensing (2026-07-19, Agentic OS):** generiske design-skills (`frontend-design`,
   `design-vendor`) er fjernet fra repoets `.claude/skills/`. **Oppdatering 2026-07-25:** også
   `ak-designekspert` og `ak-design-evolution` er fjernet — de var låst til den gamle kanonen.
-  `webapp-testing` beholdes for e2e.
+  `webapp-testing` beholdes for e2e. **Delvis omgjort 02.09.2026:** `frontend-design` er lagt
+  tilbake (fra anthropics/skills) som del av plugin-oppsettet i CLAUDE.md §Skill-bruk —
+  brukes nå for generell designretning, men Train-lock overstyrer alltid dens konkrete valg.
+  `design-vendor` er fortsatt fjernet.
