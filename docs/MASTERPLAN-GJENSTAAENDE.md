@@ -672,6 +672,27 @@ dokumentet som fantes lå i Paper og døde med det 30.08.
 
 ---
 
+## STEG 19 — Designkvalitet til 10/10 (audit-programmet, beslutning 03.09)
+
+**Kilde:** `.claude/rules/beslutninger.md` §DESIGNKVALITET: MASTEREN ER KILDE, PRINSIPPER INN,
+TOKENS ALDRI (Anders 03.09.2026). Grunnlag og målinger: `docs/design-audit/ak-golf-til-train-lock-bro-2026-09-03.md`.
+
+**Målet:** hver skjermfamilie i PlayerHQ, AgencyOS og Forelder til minst 18/20 i manuell audit
+og ≥ 8,0 mekanisk, uten å endre én `--tl-*`-verdi. Train-lock er fasit (invariant 2); AK
+Golf-masteren bidrar med prinsipper og vakter. **Starter etter 24.09 (STEG 1B)**, unntatt
+19.2a og 19.2c.
+
+| # | Hva | Status |
+|---|---|---|
+| 19.1 | ~~Rigg~~ **GJORT 03.09.2026.** `scripts/design-audit.mjs` (104 familier, 196 skjermer, mekanisk poeng 0–10 per familie → `docs/design-audit/<dato>/scoreboard.md`) og `scripts/check-tl-kontrast.mjs` (40 par, 12 brudd → `docs/design-audit/train-lock-kontrast.md`, rapporterer uten å stoppe verify). Bro-dokumentet skrevet. | Gjort |
+| 19.2 | **Systemgrep** (løfter alle familier): (a) felt-primitiv med fokusring + feiltekst + `aria-invalid`, erstatter `alert()` (6) og fokus-hull (7) · (b) vakt mot halve tekststørrelser (904) · (c) `tierEtikett()` — enum aldri i UI (`"PRO"`/`"ELITE"` vist i `ForelderOkonomiV2`) · (d) `hjelpetekster.ts` mot vokabularet 18.08 (`lFase`, `csNivaa` ut; `AdminPlanMalNyV2` peker «Fase» til feil nøkkel) · (e) `<div onClick>` uten rolle (172) → `<button>`/`role="button"` | Ikke startet. 2a + 2c før 24.09 |
+| 19.3 | **P0 fra auditen 03.09:** `src/app/forelder/okonomi/page.tsx` summerer «Betalt i år» fra de 30 siste betalingene på tvers av alle barn — summen blir stille for lav. Fjern taket eller summer i basen. Én fil, én test | Ikke startet — bør inn før 24.09 |
+| 19.4 | **Manuell audit per familie**, fem dimensjoner 0–4, `docs/design-audit/<dato>/<familie>.md`. Fem arbeidere × fem familier i parallell, Sonnet i bredden. Start med de fem laveste: `portal/planlegge`, `admin/plan-templates`, `admin/marketing`, `admin/gjennomfore`, `forelder/innstillinger` | Ikke startet |
+| 19.5 | **Skjermløkke per familie** i CLAUDE.md-rekkefølgen: canvas der fasit mangler (91 av 104 familier har ingen rad i `skjerm-mapping.ts`) → bygg → `/impeccable audit` + `review-animations` → `better-ui` → `hallmark audit`/`anti-ui-slop` → skjermbilde-gate | Ikke startet |
+| 19.6 | **Beslutning fra Anders — kontrast i lys modus:** `danger`/`ok`/`warn`/`viz-target` som tekst på hvitt måler 1,4–3,6:1 (krav 4,5). Vei A: regel «signalfarge er aldri brødtekst i lys», ingen token endres (anbefalt). Vei B: mørkere lys-varianter, ny fasit-tegning. Se broen §Funn 1 og beslutningskøen pkt. 25 | Venter på Anders |
+| 19.7 | **Beslutning fra Anders — telling i `TallHero`:** masteren avviser tall som teller oppover; `useCountUp` brukes i 16 filer. Anbefalt: fjern tellingen, behold inn-animasjonen | Venter på Anders |
+| 19.8 | Terskel og gjenaudit: familie er ferdig ved 18/20 manuelt og ≥ 8,0 mekanisk, bekreftet av ny kjøring. Retro i `docs/feillogg.md` per batch | Løpende |
+
 ## Samlet beslutningskø til Anders (alt på ett sted)
 
 1. ~~#490-merge~~ **MERGET 31.08.** ~~Gjenstår kun: team-wang-tilgangen varig åpen eller sperret igjen (= punkt 13)~~ — punkt 13 er avgjort, se der.
@@ -698,3 +719,5 @@ dokumentet som fantes lå i Paper og døde med det 30.08.
 22. ~~**WANG-flatens stil (STEG 11 N7) — DELVIS LØST 31.08.2026** (paraply-variant)~~ **OMGJORT 02.09.2026 — se STEG 18.32.** Anders overstyrte paraply-beslutningens WANG-klausul: WANG får eget merkevaresystem som Team Norway likevel, ikke en variantfarge under AK Golf-paraplyen. Produktskjermene (Train-lock) er urørt. Gjenstår: Anders oppretter Claude Design-prosjektet for WANG-merket — ingen kode før den designrunden er kjørt.
 23. **Ekte vektorlogo fra NGF (STEG 17.6):** dagens TN-logo er en PNG beskåret fra en JPEG med kompresjonsartefakter. `#D70232` er målt fra den, så en ekte vektorfil ville gjort fargen endelig og skalerbar. NGFs kontaktpunkt står under «Grafisk utforming / visuell profil» på golfforbundet.no. **Trenger Anders** — det er hans relasjon til forbundet.
 24. **Hvem ser SG-stigen (STEG 16.10)?** Kalibrert plassering på proff-skalaen ligger mellom to vedtak: kohort-persentil er coach-only (PRODUKTRETNING pkt. 3), mens «veien til de som lyktes» er godkjent for spillerflaten (pkt. 4). En SG-stige er nærmere pkt. 4, men den rangerer også indirekte. **Trenger Anders** — bygges coach-only inntil han sier noe annet.
+25. **Kontrast i Train-lock lys modus (STEG 19.6):** signalfargene som tekst på hvitt bryter 4,5:1. Vei A (regel, ingen token endres) eller vei B (mørkere lys-varianter, ny fasit)? **Trenger Anders** — anbefalt A.
+26. **Telling i `TallHero` (STEG 19.7):** beholde `useCountUp`, eller fjerne tellingen slik AK Golf-masteren gjør for målte tall? **Trenger Anders** — anbefalt fjerne.
