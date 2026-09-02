@@ -49,7 +49,7 @@ export function TreningLoggV2() {
         }),
       });
       if (!res.ok) throw new Error("Kunne ikke lagre");
-      router.push("/portal/gjennomfore");
+      router.push("/portal/gjennomfore?lagret=trening");
     } catch {
       setFeil("Noe gikk galt. Prøv igjen.");
     } finally {
