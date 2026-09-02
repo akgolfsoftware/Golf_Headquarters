@@ -1,23 +1,23 @@
 # 3 · Logoen
 
-Merket er en `ak`-ligatur i blekk `#141413` med en clay-sirkel `#B85C3D` over
-k-en. Sirkelen er ballen. Den er det eneste fargede elementet, og den bærer hele
-merkets identitet i én form.
+Merket er en `ak`-ligatur i tekstfargen `#1F1D1A` med en signalrød sirkel
+`#B83217` over k-en (`#E8654A` på mørk flate). Sirkelen er ballen. Den er det
+eneste fargede elementet, og den bærer hele merkets identitet i én form.
 
-Filene ligger i `public/logos/`, sju varianter, alle vektor:
+Filene ligger i `public/logos/`, nitten filer, alle vektor:
 
 | Fil | Brukes på |
 |---|---|
-| `ak-golf-logo-primary-on-light.svg` | Krem og hvit flate — **standardvalget** |
-| `ak-golf-logo-primary-on-dark.svg` | Blekk og mørk flate |
+| `ak-golf-logo-primary-on-light.svg` | Betonggrå og hvit flate — **standardvalget** |
+| `ak-golf-logo-primary-on-dark.svg` | Mørk flate |
 | `ak-golf-logo-white-on-dark.svg` | Foto og film, mørk bakgrunn |
 | `ak-golf-logo-white-mono.svg` | Én farge, hvit — brodering, gravering, trykk |
 | `ak-golf-logo-black-mono.svg` | Én farge, sort — faks, stempel, avis |
-| `ak-golf-logo-primary-mono.svg` | Én farge, clay |
+| `ak-golf-logo-primary-mono.svg` | Én farge, signalrød |
 | `ak-golf-logo-white-on-green.svg` | Historisk. **Bruk ikke i nytt materiell** |
 | `ak-golf-merke-kvadrat.svg` | Profilbilder — 78 % dekning, skarpe hjørner |
 | `ak-golf-favicon.svg` | Nettleserfane — 94 % dekning, leses ned til 16 px |
-| `ak-golf-laas-<variant>.svg` | Logo + virksomhetsnavn, låst sammen. Seks filer |
+| `ak-golf-laas-<variant>[-pa-morkt].svg` | Logo + virksomhetsnavn, låst sammen. Fem varianter × lys/mørk = ti filer |
 
 ## Klaringssone
 
@@ -42,7 +42,7 @@ Under det forsvinner ballen, og merket blir en uleselig bokstavklump.
   bruk hvit variant med et mørkt sjikt under.
 - Aldri sette logoen rett ved siden av en annen logo uten klaringssone mellom.
 - Aldri bygge et nytt merke ved å sette et ord etter logoen. Virksomhetsnavn
-  settes i Poppins 500 ved siden av, adskilt av en hårlinje — se `10-varianter.md`.
+  settes i IBM Plex Sans 400 ved siden av, adskilt av en hårlinje — se `09-varianter.md`.
 
 ## Familien — bygget 31.08.2026
 
@@ -54,15 +54,16 @@ beskjærer. Merket dekker 78 % av flaten og er optisk sentrert. **Skarpe hjørne
 med vilje:** plattformen runder selv, og en innebygd radius ville blitt rundet to
 ganger.
 
-**`ak-golf-favicon.svg`** — 94 % dekning på krem flate. Valgt etter test av fire
+**`ak-golf-favicon.svg`** — 94 % dekning på betonggrå flate. Valgt etter test av fire
 utkast på 16, 20, 32, 48 og 180 px, mot lys, mørk og hvit fanebakgrunn.
 Utslagsgivende: **mørk strek på lys flate holder seg lesbar der lys-på-mørk
 tetter seg igjen.** Den lyse flaten gjør dessuten at ikonet fungerer på en mørk
 fane, der en gjennomsiktig versjon ville forsvunnet.
 
-**`ak-golf-laas-<variant>.svg`** — seks filer: `academy`, `junior-academy`, `hq`,
-`products`, `organisasjon`. Teksten er konvertert til former, så filene ikke er
-avhengige av at Poppins er installert. Oppbyggingen står i `09-varianter.md`.
+**`ak-golf-laas-<variant>.svg`** — fem varianter (`academy`, `junior-academy`,
+`hq`, `products`, `organisasjon`), hver i lys og mørk utgave. Teksten er
+konvertert til former, så filene ikke er avhengige av at IBM Plex Sans er
+installert. Oppbyggingen står i `09-varianter.md`.
 
 ## Det som fortsatt kan gjøres
 
@@ -70,6 +71,7 @@ Ingenting som haster. To ting hvis merket skal ut i trykk i stort format:
 
 - **PNG-eksporter** i faste størrelser for flater som ikke tar SVG (enkelte
   sosiale plattformer, e-postsignaturer).
-- **Pantone- og CMYK-verdier** for clay og blekk, hvis det skal trykkes på annet
-  enn digitaltrykk. Skal måles av trykkeriet mot et fysisk prøvetrykk, ikke
-  konverteres matematisk fra RGB.
+- **Pantone- og CMYK-verdier** for signalrødt og tekstfargen, hvis det skal
+  trykkes på annet enn digitaltrykk. Utgangsverdier står i masterens readme §7.
+  Skal måles av trykkeriet mot et fysisk prøvetrykk, ikke konverteres
+  matematisk fra RGB.

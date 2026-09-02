@@ -35,11 +35,12 @@ tokens/farge.css       merkefarger + fem varianttoner, alle målt
 tokens/type.css        tre roller, ti trinn
 tokens/rom.css         4-skala, radius, dybde
 tokens/bevegelse.css   fart og kurver
+tokens/samspill.css    hover, trykk, fokusring, det som kommer til syne
 tokens/instrument.css  rutenett, målestokk, kryss
 tokens/semantikk.css   rolle-navn (--surface-*, --text-*, --radius-*)
 ```
 
-Logofilene ligger i `public/logos/` (sju vektorvarianter), ikke her — de er i
+Logofilene ligger i `public/logos/` (nitten vektorfiler), ikke her — de er i
 drift i appen og skal ha én adresse.
 
 ## Grunnlaget

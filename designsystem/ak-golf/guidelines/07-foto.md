@@ -17,7 +17,7 @@ Foto er der merket enten blir troverdig eller blir en brosjyre.
 ## Behandling
 
 Ingen tunge filtre. Ingen sterk vignett. Ingen sort-hvitt som «stemning». Løft
-skyggene lett så bildet møter kremen uten å bli et hull i siden. Farger som er
+skyggene lett så bildet møter betongen uten å bli et hull i siden. Farger som er
 der, skal bli værende.
 
 ## Tekst på foto

@@ -22,8 +22,8 @@
 
   /* Styrke. Rutenettet er tekstur, aldri innhold — det skal kunne fjernes
      uten at noe informasjon går tapt. */
-  --ak-rute-lys:    rgba(20, 20, 19, 0.07);   /* på krem */
-  --ak-rute-mork:   rgba(250, 249, 245, 0.13); /* på blekk */
+  --ak-rute-lys:    rgba(20, 20, 19, 0.07);   /* på lys grunn */
+  --ak-rute-mork:   rgba(250, 249, 245, 0.13); /* på mørk grunn */
 
   /* Målestokken. Streken med merker langs en kant — merket sier «dette er
      målt» uten å skrive det. */
@@ -35,9 +35,9 @@
   /* Krysset. Settes der to akser møtes, i hjørner og ved forankringspunkter. */
   --ak-kryss:       11px;
 
-  /* Aksentflate. Instrument-retningen bruker clay på HELE flater, ikke som
+  /* Aksentflate. Instrument-retningen bruker identitetsfargen på HELE flater, ikke som
      tynn strek. Dette overstyrer 5 %-regelen fra 31.08. */
-  --ak-flate-min:   0.18;   /* en clay-flate dekker minst 18 % av visningen */
+  --ak-flate-min:   0.18;  /* @kind other */    /* en aksentflate dekker minst 18 % av visningen */
 }
 
 /* Rutenett som bakgrunn. Legg på en seksjon, aldri på brødtekst. */
