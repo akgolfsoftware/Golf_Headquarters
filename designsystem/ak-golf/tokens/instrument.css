@@ -1,43 +1,26 @@
 /* AK Golf — instrumentlaget.
-   STEG 18.4, innført 01.09.2026 sammen med instrument-retningen.
+   GENERERT fra tokens.json — ikke rediger her.
 
-   Dette er merkets grafiske element, og svaret på spørsmålet merkeboka stilte
-   åpent: trenger AK Golf noe utover logoen?
-
-   Ja — og det måtte ikke finnes opp. Rutenettet, aksen og målestokken er
-   allerede det AK Golf gjør: spredningsellipsen, pyramideaksene, avstanden
-   fra pinnen. Elementet er hentet fra arbeidet, ikke lagt oppå det.
+   Merkets grafiske element, hentet fra det AK Golf gjør: spredningsellipsen,
+   pyramideaksene, avstanden fra pinnen.
 
    REGELEN SOM HOLDER DET ÆRLIG: instrumentlaget skal aldri gi inntrykk av å
-   vise data det ikke finnes. Et rutenett i bakgrunnen er tekstur. Et rutenett
+   vise data som ikke finnes. Et rutenett i bakgrunnen er tekstur. Et rutenett
    med tall på aksene er en påstand — og da må tallene være målt, med dato og
-   kilde. Bryter du den, er merket løgn i formen selv om teksten er sann. */
+   kilde. */
 
 :root {
-  /* Rutenettet. 56px følger 8-basisen (7 × 8) og gir en rute som leses på
-     Mac uten å bli støy på 390px. */
-  --ak-rute:        56px;
-  --ak-rute-tett:   24px;   /* på små flater og i kort */
-  --ak-rute-linje:  1px;
-
-  /* Styrke. Rutenettet er tekstur, aldri innhold — det skal kunne fjernes
-     uten at noe informasjon går tapt. */
-  --ak-rute-lys:    rgba(20, 20, 19, 0.07);   /* på lys grunn */
-  --ak-rute-mork:   rgba(250, 249, 245, 0.13); /* på mørk grunn */
-
-  /* Målestokken. Streken med merker langs en kant — merket sier «dette er
-     målt» uten å skrive det. */
-  --ak-maal-tykk:   1px;
-  --ak-maal-merke:  8px;    /* korte merker */
-  --ak-maal-hel:    14px;   /* hvert femte, det lange */
-  --ak-maal-steg:   12px;   /* avstand mellom merker */
-
-  /* Krysset. Settes der to akser møtes, i hjørner og ved forankringspunkter. */
-  --ak-kryss:       11px;
-
-  /* Aksentflate. Instrument-retningen bruker identitetsfargen på HELE flater, ikke som
-     tynn strek. Dette overstyrer 5 %-regelen fra 31.08. */
-  --ak-flate-min:   0.18;  /* @kind other */    /* en aksentflate dekker minst 18 % av visningen */
+  --ak-rute: 56px;  /* Rutenettet. 56px følger 8-basisen (7 × 8) og gir en rute som leses på Mac uten å bli støy på 390px */
+  --ak-rute-tett: 24px;  /* på små flater og i kort */
+  --ak-rute-linje: 1px;
+  --ak-rute-lys: rgba(20, 20, 19, 0.07);  /* Styrke. Rutenettet er tekstur, aldri innhold — det skal kunne fjernes uten at noe informasjon går tapt. På lys grunn */
+  --ak-rute-mork: rgba(250, 249, 245, 0.13);  /* på mørk grunn */
+  --ak-maal-tykk: 1px;  /* Målestokken. Streken med merker langs en kant — merket sier «dette er målt» uten å skrive det */
+  --ak-maal-merke: 8px;  /* korte merker */
+  --ak-maal-hel: 14px;  /* hvert femte, det lange */
+  --ak-maal-steg: 12px;  /* avstand mellom merker */
+  --ak-kryss: 11px;  /* Krysset. Settes der to akser møtes, i hjørner og ved forankringspunkter */
+  --ak-flate-min: 0.18; /* @kind other */  /* Aksentflate: en identitetsfarge dekker minst 18 % av visningen når den brukes. Overstyrer 5 %-regelen fra 31.08 */
 }
 
 /* Rutenett som bakgrunn. Legg på en seksjon, aldri på brødtekst. */

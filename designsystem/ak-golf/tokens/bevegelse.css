@@ -1,24 +1,22 @@
 /* AK Golf — bevegelse.
-   STEG 18.4.
+   GENERERT fra tokens.json — ikke rediger her.
 
    Merket beveger seg lite, og alltid av en grunn. En animasjon skal svare
    på «hvor kom dette fra» eller «hva skjedde nå» — aldri på «se her».
    Et system som påstår at det måler, kan ikke oppføre seg som en reklame. */
 
 :root {
-  --ak-fart-rask:  120ms;  /* hover, fokus, trykk */
-  --ak-fart-mid:   220ms;  /* panel åpner, innhold bytter */
-  --ak-fart-rolig: 420ms;  /* seksjon kommer til syne ved rull */
-
-  /* Aldri ease-in alene: det får grensesnittet til å føles tregt i starten. */
-  --ak-kurve:     cubic-bezier(0.2, 0, 0.2, 1);
-  --ak-kurve-inn: cubic-bezier(0, 0, 0.2, 1);
+  --ak-fart-rask: 120ms; /* @kind other */  /* hover, fokus, trykk */
+  --ak-fart-mid: 220ms; /* @kind other */  /* panel åpner, innhold bytter */
+  --ak-fart-rolig: 420ms; /* @kind other */  /* seksjon kommer til syne ved rull */
+  --ak-kurve: cubic-bezier(0.2, 0, 0.2, 1); /* @kind other */  /* Aldri ease-in alene: det får grensesnittet til å føles tregt i starten */
+  --ak-kurve-inn: cubic-bezier(0, 0, 0.2, 1); /* @kind other */
 }
 
 @media (prefers-reduced-motion: reduce) {
   :root {
-    --ak-fart-rask:  0ms;
-    --ak-fart-mid:   0ms;
-    --ak-fart-rolig: 0ms;
+    --ak-fart-rask: 0ms; /* @kind other */
+    --ak-fart-mid: 0ms; /* @kind other */
+    --ak-fart-rolig: 0ms; /* @kind other */
   }
 }
