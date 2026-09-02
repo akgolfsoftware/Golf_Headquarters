@@ -60,30 +60,36 @@ export async function duplicateSessionCore(
   const newAt = new Date(s.scheduledAt);
   newAt.setDate(newAt.getDate() + 1);
 
-  const created = await prisma.trainingPlanSession.create({
-    data: {
-      planId: s.planId,
-      title: s.title,
-      scheduledAt: newAt,
-      durationMin: s.durationMin,
-      pyramidArea: s.pyramidArea,
-      skillArea: s.skillArea,
-      environment: s.environment,
-      lPhase: s.lPhase,
-      lFase: s.lFase,
-      miljo: s.miljo,
-      csNivaa: s.csNivaa,
-      pressureLevel: s.pressureLevel,
-      pPosisjoner: s.pPosisjoner,
-      status: "PLANNED",
-    },
-    select: { id: true, title: true, scheduledAt: true, durationMin: true, pyramidArea: true, miljo: true },
-  });
-  if (s.drills.length > 0) {
-    await prisma.sessionDrill.createMany({
-      data: s.drills.map((d) => ({ ...d, sessionId: created.id })),
+  // Selve plan-økten og drillene den kommer med hører sammen — én
+  // udelelig operasjon, ellers kan en feil midtveis gi en økt uten
+  // innhold (14.5A).
+  const created = await prisma.$transaction(async (tx) => {
+    const nySesjon = await tx.trainingPlanSession.create({
+      data: {
+        planId: s.planId,
+        title: s.title,
+        scheduledAt: newAt,
+        durationMin: s.durationMin,
+        pyramidArea: s.pyramidArea,
+        skillArea: s.skillArea,
+        environment: s.environment,
+        lPhase: s.lPhase,
+        lFase: s.lFase,
+        miljo: s.miljo,
+        csNivaa: s.csNivaa,
+        pressureLevel: s.pressureLevel,
+        pPosisjoner: s.pPosisjoner,
+        status: "PLANNED",
+      },
+      select: { id: true, title: true, scheduledAt: true, durationMin: true, pyramidArea: true, miljo: true },
     });
-  }
+    if (s.drills.length > 0) {
+      await tx.sessionDrill.createMany({
+        data: s.drills.map((d) => ({ ...d, sessionId: nySesjon.id })),
+      });
+    }
+    return nySesjon;
+  });
   await upsertV2ForPlanSession({
     planSessionId: created.id,
     playerId,
