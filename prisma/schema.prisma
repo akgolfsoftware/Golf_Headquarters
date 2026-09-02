@@ -3700,6 +3700,7 @@ model TrainingSessionV2 {
   createdAt       DateTime               @default(now())
   updatedAt       DateTime               @updatedAt
 
+  @@unique([generertFra, generertFraId])
   @@index([studentId, startTime])
   @@index([coachId, startTime])
   @@index([hostId])

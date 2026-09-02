@@ -55,11 +55,6 @@ export async function upsertV2ForPlanSession(input: {
   const coachId = await resolveCoachIdForPlayer(input.playerId, input.coachId);
   const endTime = new Date(input.scheduledAt.getTime() + input.durationMin * 60_000);
 
-  const existing = await prisma.trainingSessionV2.findFirst({
-    where: { generertFra: GENERERT_FRA, generertFraId: input.planSessionId },
-    select: { id: true, status: true },
-  });
-
   // Felles data for create + update. Status settes KUN ved create — en
   // update skal aldri nullstille COMPLETED/CANCELLED/SKIPPED til PLANNED.
   // groupId settes KUN når kilden faktisk er en gruppeutrulling (G3) —
@@ -80,21 +75,24 @@ export async function upsertV2ForPlanSession(input: {
     ...(input.sourceGroupId ? { groupId: input.sourceGroupId } : {}),
   };
 
-  let v2Id: string;
-  if (existing) {
-    await prisma.trainingSessionV2.update({ where: { id: existing.id }, data });
-    v2Id = existing.id;
-  } else {
-    const opprettet = await prisma.trainingSessionV2.create({
-      data: { ...data, status: "PLANNED" },
-      select: { id: true },
-    });
-    v2Id = opprettet.id;
-  }
+  // Atomisk opprett-eller-oppdater på databasens unike nøkkel
+  // (generertFra, generertFraId) — hindrer at to samtidige kall (dobbel-
+  // klikk, gruppeutrulling som krysser en synk) begge lager sin egen
+  // speil-økt for samme planøkt (14.5A).
+  const v2 = await prisma.trainingSessionV2.upsert({
+    where: { generertFra_generertFraId: { generertFra: GENERERT_FRA, generertFraId: input.planSessionId } },
+    update: data,
+    create: { ...data, status: "PLANNED" },
+    select: { id: true, status: true, createdAt: true, updatedAt: true },
+  });
 
   // Drill-speiling: kun for PLANNED-økter — en påbegynt/logget økt røres aldri.
-  if (!existing || existing.status === "PLANNED") {
-    await syncDrillsToV2(v2Id, input.planSessionId, input.pyramidArea);
+  // (createdAt === updatedAt) er den atomiske erstatningen for "eksisterte
+  // ikke fra før" siden upsert ikke selv forteller om det opprettet eller
+  // oppdaterte raden.
+  const varOpprettetNaa = v2.createdAt.getTime() === v2.updatedAt.getTime();
+  if (varOpprettetNaa || v2.status === "PLANNED") {
+    await syncDrillsToV2(v2.id, input.planSessionId, input.pyramidArea);
   }
 }
 
