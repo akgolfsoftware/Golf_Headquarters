@@ -73,7 +73,7 @@ export const SKJERM_MAPPING: SkjermMapping[] = [
     tema: "dark",
     cropTop: 54,
     status: "ukalibrert",
-    notat: "Fasiten bruker CS/M-vokabular (CS60·M3, CS90·M3) fra FØR 18.08.2026-beslutningen «ALLE TRENINGSPLANREGLER LÅST OPP», og tegner en helt annen IA (ukenavigasjon 33/34/35, dag-grupperte økter, ÅRSPLAN/MÅNED/UKE/ØKT-faner) enn dagens enkle ukestripe på /portal/planlegge. Fasiten må tegnes om FØR pixel-diff gir mening her — ikke noe seeding kan lukke gapet.",
+    notat: "Fasiten bruker CS/M-vokabular (CS60·M3, CS90·M3) fra FØR 18.08.2026-beslutningen «ALLE TRENINGSPLANREGLER LÅST OPP», og tegner en helt annen IA (ukenavigasjon 33/34/35, dag-grupperte økter, ÅRSPLAN/MÅNED/UKE/ØKT-faner) enn dagens enkle ukestripe på /portal/planlegge. Fasiten må tegnes om FØR pixel-diff gir mening her — ikke noe seeding kan lukke gapet. Beslutning D1 (Anders 02.09.2026): PH-07/PH-08 er fasit for /portal/planlegge — raden byttes til «PH-07 Plan» og kalibreres i Ø4.",
   },
   {
     label: "RU-04 Etterregistrering",
