@@ -1,6 +1,6 @@
 # Train-lock — kontrast, målt
 
-GENERERT av `scripts/check-tl-kontrast.mjs` fra `src/styles/train-lock-tokens.css`. Ikke rediger. Målt 2026-09-03: 40 par, 12 brudd.
+GENERERT av `scripts/check-tl-kontrast.mjs` fra `src/styles/train-lock-tokens.css`. Ikke rediger. Datoen står i git-loggen, ikke her — ellers ville hver `npm run verify` skitnet til arbeidstreet. 40 par, 12 brudd.
 
 Et brudd her er IKKE en ordre om å endre tokenet — Train-lock er fasit (CLAUDE.md invariant 2). Det er en ordre om å ikke bruke paret som brødtekst: bruk fargen som grafikk, som stor tekst (fra 21 px), eller bytt til `text`/`mute`. Endres et token, er det etter beslutning fra Anders.
 

@@ -75,7 +75,7 @@ Train-lock bruker `cubic-bezier(0.32, 0.72, 0, 1)` (Apple-sheet-kurven) og `--tl
 Rekkefølgen står i CLAUDE.md §Skill-bruk og gjelder uendret. Dette er hvordan den kjøres i bredden.
 
 1. **Riggen først.** `node scripts/design-audit.mjs` → `docs/design-audit/<dato>/scoreboard.md`.
-   104 familier, 196 skjermer (03.09). Laveste fem: `portal/planlegge` 3,2 · `admin/plan-templates`
+   104 familier, 199 skjermer (03.09). Laveste fem: `portal/planlegge` 3,2 · `admin/plan-templates`
    4,2 · `admin/marketing` 5,4 · `admin/gjennomfore` 6,4 · `forelder/innstillinger` 6,4.
 2. **Systemgrep før skjermer** — de løfter alle familier samtidig, i denne rekkefølgen:
    (a) felt-primitiv i v2 med fokusring, feiltekst og `aria-invalid` — erstatter `alert()` (6)
@@ -89,7 +89,7 @@ Rekkefølgen står i CLAUDE.md §Skill-bruk og gjelder uendret. Dette er hvordan
    arbeidere i parallell på egne grener, fem familier hver. Sonnet gjør bredden; vurderinger
    og canvas-beslutninger tas i hovedøkten.
 4. **Skjermløkke per familie:** canvas der fasit mangler (`skjerm-mapping.ts` sier «ingen» for
-   91 av 104) → bygg mot Train-lock → `/impeccable audit` + `review-animations` →
+   98 av 104) → bygg mot Train-lock → `/impeccable audit` + `review-animations` →
    `better-ui` → `hallmark audit` eller `anti-ui-slop` som uavhengig sjekk → skjermbilde-gate
    (390 + 1280, lys + mørk) til Anders.
 5. **Terskel:** 18/20 manuelt og ≥ 8,0 mekanisk. Gjenaudit bekrefter. Under det er familien

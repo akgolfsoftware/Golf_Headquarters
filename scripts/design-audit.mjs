@@ -23,13 +23,17 @@
  * ikke en dom. Formelen står i `mekaniskPoeng()`.
  */
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, statSync } from "node:fs";
-import { resolve, join, dirname } from "node:path";
+import { resolve, join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { homedir } from "node:os";
 
 const rot = resolve(import.meta.dirname, "..");
 const args = process.argv.slice(2);
 const kunFamilie = args.includes("--familie") ? args[args.indexOf("--familie") + 1] : null;
+if (args.includes("--familie") && !kunFamilie) {
+  console.error("design-audit: --familie trenger et navn, f.eks. --familie portal/meg");
+  process.exit(2);
+}
 const utenDetektor = args.includes("--uten-detektor");
 
 const DETEKTOR = [
@@ -51,7 +55,7 @@ function walk(dir, ut = []) {
 const les = (p) => readFileSync(p, "utf8");
 
 function erRedirectSide(kilde) {
-  return /\b(permanentRedirect|redirect)\(/.test(kilde) && !/return\s*\(\s*</.test(kilde);
+  return /\b(permanentRedirect|redirect)\(/.test(kilde) && !/return\s*\(?\s*</.test(kilde);
 }
 
 function losImport(spec) {
@@ -80,6 +84,7 @@ function familier() {
   const ut = [];
   for (const flate of FLATER) {
     const base = join(rot, "src/app", flate);
+    if (!existsSync(base)) continue;
     const rotSider = ["page.tsx", "layout.tsx"].map((n) => join(base, n)).filter(existsSync);
     if (rotSider.length) ut.push({ id: `${flate}/(rot)`, dir: base, filer: rotSider });
     for (const navn of readdirSync(base)) {
@@ -127,8 +132,10 @@ function fasitStatus(id) {
   if (!existsSync(mapping)) return "ukjent";
   const k = les(mapping);
   const rute = "/" + id.replace("/(rot)", "");
-  if (!k.includes(`"${rute}`)) return "ingen";
-  return new RegExp(`"${rute.replace(/[/]/g, "\\/")}[^}]*status:\\s*"kalibrert"`, "s").test(k) ? "kalibrert" : "ukalibrert";
+  /* Lukkende anførselstegn er viktig: uten det treffer «/admin/ko» også
+     «/admin/kommunikasjon» (funnet i review 03.09). */
+  if (!k.includes(`"${rute}"`)) return "ingen";
+  return new RegExp(`"${rute.replace(/[/]/g, "\\/")}"[^}]*status:\\s*"kalibrert"`, "s").test(k) ? "kalibrert" : "ukalibrert";
 }
 
 /* Mekanisk poeng 0–10: 10 minus straff per fil. Vektene speiler alvoret fra

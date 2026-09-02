@@ -1,6 +1,6 @@
 # Design-audit — mekanisk scoreboard 2026-09-03
 
-Kjørt av `scripts/design-audit.mjs`. 104 familier, 196 skjermer (redirect-sider ikke medregnet). Poeng 0–10 er et mekanisk utgangspunkt; den manuelle auditen (fem dimensjoner, 0–4) kommer i tillegg per familie.
+Kjørt av `scripts/design-audit.mjs`. 104 familier, 199 skjermer (redirect-sider ikke medregnet). Poeng 0–10 er et mekanisk utgangspunkt; den manuelle auditen (fem dimensjoner, 0–4) kommer i tillegg per familie.
 
 Kolonner: **fokus** = filer med `outline: none` uten fokus-erstatning · **alert** = `alert()`-kall · **hex** = hardkodede farger i tsx · **div-klikk** = `<div onClick>` uten rolle · **halve** = tekststørrelser på ,5 · **paper** = `data-paper`-rester · **elite** = `"ELITE"` i UI · **det.** = impeccable-detektor (feil/advarsler) · **fasit** = status i `tests/visual/skjerm-mapping.ts`.
 
@@ -44,7 +44,7 @@ Kolonner: **fokus** = filer med `outline: none` uten fokus-erstatning · **alert
 | `forelder/(rot)` | 1 | 4 | **8** | 0 | 0 | 0 | 2 | 3 | 7 | 0 | 0/0 | ingen |
 | `admin/workspace` | 1 | 7 | **8,1** | 0 | 0 | 0 | 3 | 12 | 7 | 0 | 0/0 | ingen |
 | `portal/statistikk` | 2 | 6 | **8,2** | 0 | 0 | 0 | 2 | 11 | 10 | 0 | 0/0 | ingen |
-| `admin/ko` | 1 | 10 | **8,2** | 0 | 0 | 0 | 4 | 13 | 12 | 0 | 0/0 | ukalibrert |
+| `admin/ko` | 1 | 10 | **8,2** | 0 | 0 | 0 | 4 | 13 | 12 | 0 | 0/0 | ingen |
 | `portal/ai` | 3 | 8 | **8,3** | 0 | 0 | 0 | 2 | 12 | 16 | 0 | 0/1 | ingen |
 | `admin/tournaments` | 2 | 11 | **8,3** | 0 | 0 | 0 | 3 | 22 | 11 | 0 | 0/1 | ingen |
 | `forelder/samtykke` | 2 | 7 | **8,3** | 0 | 0 | 0 | 2 | 15 | 8 | 0 | 0/0 | ingen |
@@ -59,7 +59,7 @@ Kolonner: **fokus** = filer med `outline: none` uten fokus-erstatning · **alert
 | `portal/utfordringer` | 2 | 6 | **8,5** | 0 | 0 | 0 | 2 | 6 | 9 | 0 | 0/0 | ingen |
 | `admin/bookinger` | 2 | 6 | **8,5** | 0 | 0 | 0 | 2 | 4 | 11 | 0 | 0/0 | ingen |
 | `admin/workbench` | 1 | 6 | **8,6** | 0 | 0 | 0 | 2 | 4 | 7 | 0 | 0/0 | ingen |
-| `portal/tren` | 9 | 26 | **8,8** | 0 | 0 | 0 | 2 | 65 | 31 | 0 | 0/1 | kalibrert |
+| `portal/tren` | 9 | 26 | **8,8** | 0 | 0 | 0 | 2 | 65 | 31 | 0 | 0/1 | ingen |
 | `portal/booking` | 7 | 16 | **8,8** | 0 | 0 | 0 | 2 | 29 | 19 | 0 | 0/1 | ingen |
 | `portal/talent` | 4 | 13 | **8,8** | 0 | 0 | 0 | 2 | 22 | 23 | 0 | 0/0 | ingen |
 | `portal/gameplan` | 3 | 8 | **8,8** | 0 | 0 | 0 | 2 | 7 | 12 | 0 | 0/0 | ingen |
@@ -70,18 +70,18 @@ Kolonner: **fokus** = filer med `outline: none` uten fokus-erstatning · **alert
 | `admin/jarvis` | 1 | 7 | **8,9** | 0 | 0 | 0 | 2 | 3 | 7 | 0 | 0/0 | ingen |
 | `portal/mal` | 12 | 27 | **9** | 0 | 0 | 0 | 2 | 37 | 17 | 1 | 0/1 | ingen |
 | `admin/kalender` | 3 | 10 | **9,1** | 0 | 0 | 0 | 2 | 8 | 7 | 0 | 0/0 | ingen |
-| `portal/meg` | 29 | 64 | **9,2** | 0 | 0 | 0 | 3 | 90 | 78 | 0 | 0/2 | ukalibrert |
+| `portal/meg` | 30 | 64 | **9,2** | 0 | 0 | 0 | 3 | 90 | 78 | 0 | 0/2 | ingen |
 | `portal/coach` | 13 | 27 | **9,2** | 0 | 0 | 0 | 2 | 30 | 53 | 0 | 0/0 | ingen |
 | `portal/analysere` | 7 | 19 | **9,2** | 0 | 0 | 0 | 2 | 25 | 12 | 0 | 0/0 | kalibrert |
-| `portal/(fullscreen)` | 7 | 20 | **9,7** | 0 | 0 | 0 | 0 | 19 | 8 | 0 | 0/0 | ingen |
+| `portal/(fullscreen)` | 9 | 20 | **9,7** | 0 | 0 | 0 | 0 | 19 | 8 | 0 | 0/0 | ingen |
 | `admin/agents` | 1 | 5 | **10** | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0/0 | ingen |
-| `portal/analyse` | 0 | 1 | **10** | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0/0 | kalibrert |
+| `portal/analyse` | 0 | 1 | **10** | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0/0 | ingen |
 | `portal/baneguide` | 0 | 3 | **10** | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0/0 | ingen |
 | `portal/datagolf` | 0 | 1 | **10** | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0/0 | ingen |
 | `portal/oppgrader` | 0 | 1 | **10** | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0/0 | ingen |
 | `portal/stats` | 0 | 1 | **10** | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0/0 | ingen |
 | `portal/trackman` | 0 | 2 | **10** | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0/0 | ingen |
-| `admin/(rot)` | 0 | 4 | **10** | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0/0 | ukalibrert |
+| `admin/(rot)` | 0 | 4 | **10** | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0/0 | ingen |
 | `admin/agent-team` | 0 | 1 | **10** | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0/0 | ingen |
 | `admin/agenticos` | 0 | 6 | **10** | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0/0 | ukalibrert |
 | `admin/analysere` | 0 | 1 | **10** | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0/0 | ingen |
