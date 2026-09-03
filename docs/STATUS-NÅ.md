@@ -2,7 +2,7 @@
 
 > **Hva dette er:** ett snapshot av hvor plattformen står akkurat nå. Oppdater datoen + relevante linjer når noe vesentlig endrer seg.
 
-**Sist oppdatert:** 2026-09-02 kveld (målt mot `origin/main` @ `0675752e3`, PR #752).
+**Sist oppdatert:** 2026-09-03 (målt mot `origin/main` @ `8197eb3`, PR #768).
 **Betaling:** koden er klar siden 30.08 (Stripe-cutover 1. september). Live-nøkler/DNS/DKIM er
 Anders-oppgaver i Vercel/Stripe-panelet og kan ikke verifiseres fra kode/git — se
 `docs/MASTERPLAN-GJENSTAAENDE.md` STEG 1 og 10.8.
@@ -11,7 +11,34 @@ over alt gjenstående (konsolidert 30.08 fra det tidligere LANSERINGSPLAN-KOMPLE
 **Produktretning låst 30.08:** `.claude/rules/beslutninger.md` §«PRODUKTRETNING — åtte svar».
 Den blokken er fasit for Innsikt og Analyse og vinner over eldre dokumenter.
 
-## Hovedbildet 02.09 kveld (målt mot origin/main @ 0675752e3 — 17 PR-er merget denne dagen, #737–#753)
+## Hovedbildet 03.09 (målt mot origin/main @ 8197eb3 — 14 PR-er merget siden 02.09 kveld, #754–#768)
+
+- **D1–D4 (beslutningskø fra 02.09) alle svart og gjennomført samme dag:** D1 Plan-fasit
+  (PH-07/08) → Ø4 sign-off gjort (#767, restavvik forklart: `getDashboardData()` bruker ikke
+  `hentEffektivNaa()`, ikke en layout-feil). D2 Workbench-kanon (WB-serien) → Ø9–Ø10 gjort
+  (#762, #764). D3 Spiller 360 = én adresse `/admin/spillere/[id]` → Ø11–Ø12 gjort (#766,
+  bento-landing med identitet/nøkkeltall/ukeaktivitet/plan-fremdrift/«Nå»-kort — skjermbilde
+  med ekte data mangler fortsatt, ingen spillere i stallen ved byggetidspunktet). D4 TM-03
+  (behold 4-stegs-modalen) → tredje importkilde levert (#768): «Foto av skjerm» sender bildet
+  til Claude vision (`parseTrackManPhoto`, TruthLayer-strengt — null ved usikkerhet), gjenbruker
+  resten av import-flyten uendret.
+- **STEG 19 (designkvalitet, Anders-beslutning 03.09) bygget samme økt (#763, #765):**
+  `scripts/design-audit.mjs` (mekanisk poeng per skjermfamilie) + `check-tl-kontrast.mjs`
+  (fant 12 kontrastbrudd i Train-lock lys modus — Vei A valgt: regel om hvor signalfarger kan
+  stå, ingen `--tl-*`-verdi endret) + bro-dokument fra AK Golf-masteren. `TallHero` slutter å
+  telle opp (`useCountUp` fjernet der, urørt tre andre steder).
+  Beslutningskø punkt 25 og 26 lukket.
+  **Design-skills skrudd på globalt (#757, #761):** impeccable, design-taste-frontend,
+  high-end-visual-design + 25 motion/konsistens-skills — se CLAUDE.md §Skill-bruk.
+- **14.5A (gruppe→spiller-utsending pålitelig) FERDIG (#764):** siste del A — løkken i
+  `apply-template-actions.ts` kjører nå i én `prisma.$transaction`, med rollback-regresjonstest.
+- **Ø14/Ø15 re-verifisert (#758):** stallen var tom fordi 37 demo-spillere manglet
+  `PlayerEnrollment` — ikke fordi basen var nullstilt. Seed-scriptet utvidet, 37 aktive
+  enrolleringer kjørt inn.
+- **Ø17 (WB-06 årsplan) rettet (#756):** inneværende måned fremheves i coachens årsplan.
+- **Retro ført (#760):** Ø14/Ø15-dobbeltarbeid, tom demo-stall, gh-merge-støy — se `docs/feillogg.md`.
+
+## Hovedbildet 02.09 kveld (historikk — målt mot origin/main @ 0675752e3, PR #737–#753)
 
 - **Veien til «FULL lanserbar» (STEG 1B, milepæl 24.09) ligger FORAN skjema:** Ø1 (delvis),
   Ø3, Ø4–Ø8 (PR #750), Ø9 (PR #751) og Ø10 (docs, PR #754) er levert 02.09 — datert til
@@ -126,8 +153,9 @@ Den blokken er fasit for Innsikt og Analyse og vinner over eldre dokumenter.
    MASTERPLAN «Samlet beslutningskø».
 2. **Kode:** STEG 16 (datagrunnlag/kjønn/måling — stort sett ikke startet), STEG 17-resten
    (17.3 driftsmodell delte protokoller, 17.4 pilot, 17.5a/c landskapsanalyse), 15.13-resten
-   (talent-kjeden, SG-hub coach-modus, booking-detaljer), videre pixel-diff-kalibrering av de
-   ~140 gjenværende skjermene.
+   (SG-hub coach-modus, krever Anders), Ø13 (Spiller 360 — resten av D3), Ø17 (WB-06 årsplan,
+   fasit-siteringen selv), videre pixel-diff-kalibrering av de ~140 gjenværende skjermene,
+   STEG 19-resten (audit-programmet, se MASTERPLAN §STEG 19).
 
 ## PR-status fra 30.08-pikselbølgen (avsluttet)
 
@@ -184,7 +212,8 @@ planen; PR-tabellen og steg 0-listen der er utdatert (alle PR-ene merget 17.08).
 - **PlayerHQ-kjernen:** Hjem/chat, Plan, Analyse (m/ DataGolf-fane + SG-bro), Meg (+ profil,
   utstyr), Workbench V2 (uke + kilder/drag/serie + godta/avvis), live-økt, runde-føring
   (live-artefakt fra C5, hull/slag, SG server-side m/ EST-merking), testbatteri med live
-  `TestSession`-scoring + Gate/Innspill-artefakt (C4), TrackMan DispersionMap (B7).
+  `TestSession`-scoring + Gate/Innspill-artefakt (C4), TrackMan DispersionMap (B7), TrackMan-import
+  med tre kilder — CSV/HTML/foto med AI-vision (D4, PR #768).
 - **AgencyOS — konsolidert til én inngang per funksjon (STEG 15, PR #689–#713):** Kø, Oppgaver,
   Oppsett, Kalender, Jarvis, Turnering, Kommunikasjon, Analyse, Plan, Hjem og Stall-lista er
   hver sin ene adresse med faner; gamle adresser er redirects. Talent-flatene flyttet til
