@@ -11,8 +11,12 @@ import {
   type MatchOptions,
 } from "@/lib/teknisk-plan/match-shot";
 import { updateTmGoalsFromSessionAggregate } from "@/lib/teknisk-plan/update-tm-goals";
-import { parseTrackManCsv } from "@/lib/trackman/parse-csv";
+import { parseTrackManCsv, type TrackManShot } from "@/lib/trackman/parse-csv";
 import { parseTrackManHtmlReport } from "@/lib/trackman/parse-html-report";
+import {
+  parseTrackManPhoto,
+  type TrackManPhotoMediaType,
+} from "@/lib/trackman/parse-photo";
 import {
   csvShotsToCanonical,
   htmlReportToCanonical,
@@ -28,7 +32,7 @@ export type ImportTrackManResult = {
   shotCount: number;
   matchedCount: number;
   goalsUpdated: number;
-  source: "csv-import" | "html-import";
+  source: "csv-import" | "html-import" | "photo-import";
   /** Satt når vi stoppet pga lignende økt — kall på nytt med forceImport. */
   needsConfirm?: boolean;
   similarSessionId?: string;
@@ -36,8 +40,16 @@ export type ImportTrackManResult = {
 };
 
 export type ImportTrackManInput = {
-  format: "csv" | "html";
+  format: "csv" | "html" | "photo";
+  /** CSV/HTML: rå filtekst. Foto: ubrukt (se photoShots). */
   content: string;
+  /**
+   * Kun for format "photo": slagene AI-vision allerede leste av i steg 2/3
+   * (parseTrackManPhotoForPreview). Importeres uten å kalle Anthropic på
+   * nytt, slik at det brukeren faktisk så og valgte i steg 3 er det som
+   * lagres — ikke et nytt, potensielt avvikende vision-kall.
+   */
+  photoShots?: TrackManShot[];
   recordedAt: string;
   environment: TrackManEnvironment;
   onBehalfOfUserId?: string;
@@ -47,6 +59,22 @@ export type ImportTrackManInput = {
   /** Overstyr advarsel om lignende økt samme dag. */
   forceImport?: boolean;
 };
+
+/**
+ * Egen server-action for steg 2 i modalen (fotokilde): parser bildet med
+ * AI-vision og returnerer preview-slag — importeres først i steg 4 via
+ * importTrackMan (format: "photo"), akkurat som CSV/HTML gjør synkront
+ * på klienten. Adskilt fra importTrackMan fordi selve avlesningen (kall til
+ * Anthropic) må skje server-side, i motsetning til CSV/HTML som parses i
+ * nettleseren.
+ */
+export async function parseTrackManPhotoForPreview(
+  base64: string,
+  mediaType: TrackManPhotoMediaType,
+) {
+  await requireConsentingUser();
+  return parseTrackManPhoto(base64, mediaType);
+}
 
 /** Oppgaver i aktiv teknisk plan — til manuell match i import-modal. */
 export async function listMatchTasksForImport(onBehalfOfUserId?: string) {
@@ -84,9 +112,27 @@ export async function importTrackMan(
 
   let shots: CanonicalShot[];
   let rawJson: Prisma.InputJsonValue;
-  let source: "csv-import" | "html-import";
+  let source: "csv-import" | "html-import" | "photo-import";
 
-  if (input.format === "csv") {
+  if (input.format === "photo") {
+    const photoShots = input.photoShots ?? [];
+    if (photoShots.length === 0) {
+      throw new Error("Ingen slag lest fra bildet. Prøv på nytt.");
+    }
+    shots = csvShotsToCanonical(photoShots);
+    rawJson = {
+      summary: {
+        avgClubSpeed: avg(shots.map((s) => s.clubSpeedMph)),
+        avgBallSpeed: avg(shots.map((s) => s.ballSpeedMph)),
+        avgSmash: avg(shots.map((s) => s.smashFactor)),
+        avgCarry: avg(shots.map((s) => s.carryMeters)),
+        maxCarry: maxNum(shots.map((s) => s.carryMeters)),
+        clubs: [...new Set(shots.map((s) => s.club))],
+      },
+      shots: photoShots,
+    } as Prisma.InputJsonValue;
+    source = "photo-import";
+  } else if (input.format === "csv") {
     const parsed = parseTrackManCsv(input.content);
     if (!parsed.ok) throw new Error(parsed.error);
     if (parsed.sessions.length === 0) {
