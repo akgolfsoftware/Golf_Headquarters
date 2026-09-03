@@ -25,7 +25,7 @@ Workbench = der coach og spiller PLANLEGGER TRENING. Kalender = oversikt og gjen
 - Gjenta = serie (ikke Dupliser): Av · Hver uke · Annenhver uke · Hver måned · Egendefinert (N uker + ukedager) · Slutt Aldri/Etter N/På dato. Serie-caps ↻ på blokken. Endre/slett: Kun denne · Denne og fremover · Hele serien. Serie mot TURN/TEST: default Hopp over (· Behold · Flytt). Gjenta kopierer økta + alle drills; manuell drill i én forekomst = Kun denne. Mal ≠ gjenta. Skole er serie eid av skolelaget.
 - Kollisjon 3 nivå: VEGG (to redigerbare overlapper, eller slipp på live/ferdig/låst — avvis, ghost 0.25, caps OPPTATT, ingen ring; sperrer Publiser) · VARSEL (mot skole/turnering/test — lagring tillatt, 50/50 + caps, aldri rød; summeres «2 overlapper · 1 turnering») · KALENDER (rom/sim/møte/Google-busy — ikke i rutenettet, «Vis i kalender» i inspektør). Skole = varsel, ikke vegg. Inspektør-kort: KOLLISJON + × per treff + Bytt tid · Åpne den andre · Vis i kalender. Stall: konflikt per navn + Hopp over/Behold før Bekreft.
 - Ny økt = beholder (tid, sted, varighet, deltakere i Agency) — formelen settes på første drill (A-03b/c).
-- PH-07 (dagstripe) er UT — Player Plan = P-01 Mac / P-05 iPhone. Balanse-etikett «ACWR 1,22» — ordet «belastning» vises aldri.
+- PH-07 (dagstripe) er UT — Player Plan = P-01 Mac / P-05 iPhone. Balanse-etikett «ACWR 1,22» — ordet «belastning» vises aldri. [RETTET 03.09.2026: overstyrt av beslutning D1 (Anders 02.09.2026) — Player Plan (`/portal/planlegge`) er PH-07/PH-08, ikke P-05. Se tabellrad PH-07/08 lenger ned i denne filen og SCREEN-INDEX.md.]
 
 ## GAP-1 (Paper-innhold i Train-look)
 - GAP-00 Kart.dc.html = mapping Paper → ny plass (tabellen er sannhet; bølge 2/3 listet der).

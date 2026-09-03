@@ -68,12 +68,14 @@ export const SKJERM_MAPPING: SkjermMapping[] = [
     notat: "Strukturelt tett — kortlayout matcher. Avvik er reelt datavolum: screentest har 16 ekte TrackMan-økter i historikken mot fasitens eksempel på 2.",
   },
   {
-    label: "P-05 Player agenda",
+    label: "PH-07 Plan",
     rute: "/portal/planlegge",
     tema: "dark",
     cropTop: 54,
-    status: "ukalibrert",
-    notat: "Fasiten bruker CS/M-vokabular (CS60·M3, CS90·M3) fra FØR 18.08.2026-beslutningen «ALLE TRENINGSPLANREGLER LÅST OPP», og tegner en helt annen IA (ukenavigasjon 33/34/35, dag-grupperte økter, ÅRSPLAN/MÅNED/UKE/ØKT-faner) enn dagens enkle ukestripe på /portal/planlegge. Fasiten må tegnes om FØR pixel-diff gir mening her — ikke noe seeding kan lukke gapet. Beslutning D1 (Anders 02.09.2026): PH-07/PH-08 er fasit for /portal/planlegge — raden byttes til «PH-07 Plan» og kalibreres i Ø4.",
+    bruker: "screentest",
+    kalibrertAvvikPst: 17.26,
+    status: "kalibrert",
+    notat: "Ø4 (MASTERPLAN, D1 02.09.2026): erstatter utgåtte «P-05 Player agenda» — PH-07/PH-08 er fasit for /portal/planlegge, og PlanV2.tsx er allerede bygget mot dem. Restavvik er IKKE en layout-feil (uke-stripe, kort, «Åpne økt»-knapp og bunn-nav treffer piksel-for-piksel): `getDashboardData()`/`getWeekOverview()` (src/app/portal/actions.ts) leser rå `new Date()` og har `hentEffektivNaa()`-dato-overstyringen (kun koblet inn i /portal/page.tsx) IKKE koblet inn — samme kjente gap som TM-04a. Riggens frosne testdato (22.08.2026) treffer derfor en tom, ekte uke i stedet for PH-01-fixturens fylte uke, og appen viser PH-08s tomme-uke-kort i stedet for PH-07s fylte kort. Å koble inn overstyringen ville krevd å tre en valgfri dato gjennom `getDashboardData` og alle underfunksjonene som bruker `new Date()` — større endring enn selve sign-off-en, ikke gjort her.",
   },
   {
     label: "RU-04 Etterregistrering",
