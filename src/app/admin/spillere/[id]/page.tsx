@@ -1,7 +1,9 @@
 /**
- * AgencyOS — Spiller 360 (`/admin/spillere/[id]`), konsolidert (T4, 26.08.2026).
+ * AgencyOS — Spiller 360 (`/admin/spillere/[id]`), konsolidert (T4, 26.08.2026;
+ * Oversikt-bento D3, 03.09.2026).
  *
- * Fasit: `AG-08 Spiller-ark.dc.html` + `S3-01 Agency Spiller 360 Mac.dc.html`
+ * Fasit: `S3-03 Spiller profil bento.dc.html` (Oversikt-fanen, landingen) +
+ * `AG-08 Spiller-ark.dc.html` + `S3-01 Agency Spiller 360 Mac.dc.html`
  * (+ S3-01L lys, S3-02 iPad). Denne siden er ÉN spillerprofil — tre tidligere
  * ruter er slått sammen hit, med redirects fra de gamle adressene:
  *   - `/admin/(legacy)/spillere/[id]/profil` → hit (PII: personalia, forelder-
@@ -16,24 +18,25 @@
  * `/admin/spillere/[id]/analyse` er IKKE flettet inn her — den forblir egen
  * rute (egen fasit S3-01-mønsteret + Analyse Gapping + DG-01, se dens page.tsx).
  *
- * AVVIK FRA TRAIN-LOCK (dokumentert, se docs/natt/T4-DONE.md §Spiller 360):
- * Denne sesjonen porter Stall (`TrainLockStall`) fullt til TL-tokens, men
- * IKKE selve visningslaget for Spiller 360 — de tre eksisterende komponentene
- * (`SpillerProfilFull`, `AdminSpillerProfilSideV2`, `AdminSpillerFremgangV2`)
- * bruker Paper-tokens (`--p-*`/`T.*`) og beholdes UENDRET i denne omgang.
- * Grunn: å bygge AG-08/S3-01 pixel-riktig for alle tre (DNA-radar, mål-kort,
- * skade/permisjon-tabell, SG-fremgangsgrafer, korrelasjon) er et eget,
- * betydelig arbeid som ikke fikk plass i denne økten uten å love noe som ikke
- * ble levert. Å blande TL og Paper i den SAMME komponenten er forbudt
- * (CLAUDE.md invariant 2) — derfor er hele denne sidens INNHOLD fortsatt
- * konsekvent Paper, slik det var før konsolideringen (kun URL-en/dataflyten
- * er ny). Skjermens ytre skall (V2Shell/rail) er allerede Train-lock via T2 —
- * det er uendret av dette valget. Neste session bør porte disse tre
- * komponentene til TL og fjerne denne merknaden.
+ * D3 (03.09.2026): `SpillerOversiktV2` (S3-03-bentoen) er nå lagt til øverst
+ * som ny landing — identitet, nøkkeltall, ukeaktivitet, teknisk plan,
+ * sesong og «I dag», alt fra ekte spørringer (se
+ * `src/lib/admin-spiller/spiller-oversikt-data.ts`). De tre eldre
+ * komponentene under (`SpillerProfilFull`, `AdminSpillerProfilSideV2`,
+ * `AdminSpillerFremgangV2`) er UENDRET — de var allerede portet til TL i en
+ * tidligere Paper-fjerningsøkt (30.08), men er ikke lagt om til bento-
+ * formatet. Fanenavigasjonen (Plan/Analyse/Tester) lenker til eksisterende
+ * ruter; «Turneringer» og «Notater» har ingen egen per-spiller-liste-rute i
+ * dag og er derfor ikke lenket (turneringene vises i Oversikt-bentoen).
+ *
+ * Ikke live-testet med ekte data i denne økten — ingen spillere i stallen
+ * for coachtest (basen nullstilt 30.08.2026). tsc/eslint grønt, kode
+ * gjennomgått mot skjemaet felt for felt.
  *
  * Server component.
  */
 
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
@@ -45,9 +48,12 @@ import { beregnGoalProgress } from "@/lib/portal/goals/progress";
 import { hentTreningsVolum } from "@/lib/training/volum";
 import { beregnKorrelasjon } from "@/lib/training/korrelasjon";
 import type { SgCategory } from "@/generated/prisma/client";
+import { TL } from "@/lib/v2/train-lock";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { SpillerProfilFull } from "@/components/admin/v2/SpillerProfilPanel";
 import { loadSpillerProfilPanel } from "@/lib/admin-spiller/spiller-profil-panel-data";
+import { SpillerOversiktV2 } from "@/components/admin/v2/SpillerOversiktV2";
+import { lastSpillerOversikt } from "@/lib/admin-spiller/spiller-oversikt-data";
 import {
   AdminSpillerProfilSideV2,
   type AdminSpillerProfilSideV2Data,
@@ -114,7 +120,10 @@ export default async function SpillerProfilPage({
   });
   if (!player || player.role !== "PLAYER") notFound();
 
-  const profilPanelData = await loadSpillerProfilPanel({ id: user.id, role: user.role }, id);
+  const [profilPanelData, oversikt] = await Promise.all([
+    loadSpillerProfilPanel({ id: user.id, role: user.role }, id),
+    lastSpillerOversikt(id),
+  ]);
 
   const ageYears = calcAge(player.dateOfBirth);
   const coachNote = player.coachNotesAbout[0] ?? null;
@@ -270,9 +279,62 @@ export default async function SpillerProfilPage({
     korrelasjon: korr,
   };
 
+  // S3-03: fanenavigasjon til de andre spiller-flatene. «Turneringer» og
+  // «Notater» har ingen egen per-spiller-liste-rute i dag (kun en
+  // koblingsside for turneringsidentitet) — ikke lenket, fremfor å peke på
+  // noe som ikke finnes. Turneringene vises uansett i «Neste turneringer»-
+  // kortet i Oversikt.
+  const faner: { navn: string; href: string }[] = [
+    { navn: "Plan", href: `/admin/workbench/${id}` },
+    { navn: "Analyse", href: `/admin/spillere/${id}/analyse` },
+    { navn: "Tester", href: `/admin/spillere/${id}/tester` },
+  ];
+
   return (
     <V2Shell bredde="full" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          <span
+            style={{
+              height: 36,
+              padding: "0 14px",
+              borderRadius: TL.radius.pill,
+              background: TL.dock,
+              color: TL.text,
+              display: "flex",
+              alignItems: "center",
+              fontFamily: TL.font.sans,
+              fontSize: 13,
+              fontWeight: 600,
+            }}
+          >
+            Oversikt
+          </span>
+          {faner.map((f) => (
+            <Link
+              key={f.href}
+              href={f.href}
+              className="v2-press v2-focus"
+              style={{
+                height: 36,
+                padding: "0 14px",
+                borderRadius: TL.radius.pill,
+                color: TL.mute,
+                display: "flex",
+                alignItems: "center",
+                fontFamily: TL.font.sans,
+                fontSize: 13,
+                fontWeight: 600,
+                textDecoration: "none",
+              }}
+            >
+              {f.navn}
+            </Link>
+          ))}
+        </div>
+
+        <SpillerOversiktV2 data={oversikt} workbenchHref={`/admin/workbench/${id}`} />
+
         {profilPanelData && <SpillerProfilFull data={profilPanelData} />}
         <AdminSpillerProfilSideV2 data={profilData} />
         <AdminSpillerFremgangV2 data={fremgangData} />

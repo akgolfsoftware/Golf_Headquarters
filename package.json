@@ -12,7 +12,7 @@
     "check:ak-golf-tokens": "node scripts/ak-golf-tokens.mjs",
     "ak-golf-tokens:write": "node scripts/ak-golf-tokens.mjs --write",
     "check:doc-lenker": "node scripts/check-doc-lenker.mjs",
-    "verify": "prisma validate && prisma generate && tsc --noEmit && eslint --quiet src && node scripts/check-action-auth.mjs && node scripts/check-token-gap.mjs && node scripts/check-critical-imports.mjs && node scripts/check-ingen-paper.mjs && node scripts/ak-golf-tokens.mjs && node scripts/check-ak-golf-kits.mjs --rask && node scripts/check-doc-lenker.mjs && npm run build",
+    "verify": "prisma validate && prisma generate && tsc --noEmit && eslint --quiet src && node scripts/check-action-auth.mjs && node scripts/check-token-gap.mjs && node scripts/check-critical-imports.mjs && node scripts/check-ingen-paper.mjs && node scripts/ak-golf-tokens.mjs && node scripts/check-ak-golf-kits.mjs --rask && node scripts/check-doc-lenker.mjs && node scripts/check-tl-kontrast.mjs && npm run build",
     "postinstall": "prisma generate",
     "db:seed": "tsx prisma/seed.ts",
     "kart": "tsx scripts/skjerm-kart.ts",

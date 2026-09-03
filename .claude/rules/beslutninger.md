@@ -28,6 +28,36 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
 
 ## Beslutningene (september 2026)
 
+- **KONTRAST-REGEL I STEDET FOR NY FASIT + TALLHERO SLUTTER Å TELLE (Anders 03.09.2026, i økt):**
+  svar på beslutningskø punkt 25 og 26 (STEG 19.6/19.7), begge anbefalt vei valgt.
+  1. **Kontrast i Train-lock lys modus — Vei A (regel, ingen token endres).** `check-tl-kontrast.mjs`
+     fant 12 par under kravet i lys modus (verst: `ok` på scene/elev 2,2:1/2,0:1, `warn` på
+     scene/elev 1,4:1/1,3:1 — krav 4,5:1/3,0:1). Disse signalfargene (`danger`/`ok`/`warn`/
+     `viz-target`/`mute`/`dim`) skal aldri brukes som ren tekst på hvit/nøytral bunn — kun i
+     par som allerede består (hvit tekst på fylt flate, ikon+bakgrunnsflate). **Ingen
+     `--tl-*`-verdi endres** — CLAUDE.md invariant 2 og Train-lock-fasiten står uendret.
+  2. **`TallHero` (`src/components/v2/core.tsx`, 13 bruksfiler) slutter å telle opp.** Fjern
+     `useCountUp`-kallet i `TallHero` — målte tall vises direkte, ikke med 600ms opptelling fra
+     0, jf. AK Golf-masterens prinsipp «målt tall er et faktum, ikke dramatisert»
+     (§DESIGNKVALITET-beslutningen under). `useCountUp` (`src/lib/v2/hooks.ts`) har tre andre
+     kallere (`KpiTile.tsx`, `MegV2.tsx`, `WorkbenchV2.tsx`) — de er IKKE del av denne
+     beslutningen og røres ikke; hooken beholdes til de er vurdert separat.
+  **Krever kodeendring** — ført inn som STEG 19.6/19.7 i MASTERPLAN (rader oppdatert fra
+  «venter på Anders» til klar for bygging). Beslutningskø punkt 25 og 26 er lukket.
+
+- **DESIGNKVALITET: MASTEREN ER KILDE, PRINSIPPER INN, TOKENS ALDRI (Anders 03.09.2026, i økt):**
+  etter impeccable-audit av tre tilfeldige skjermer (14/12/16 av 20) spurte Claude hvilket
+  designsystem som skulle brukes til å heve hele appen. Anders svarte **«Master AK Golf»** —
+  Claude Design-prosjektet `3e5c851c-4b78-41ab-8ced-7b11048838f9`, speilet i `designsystem/ak-golf/`.
+  **Kanalen avgjøres av masteren selv:** `guidelines/10-forbudt.md` sier «AK Golf-tokens skal
+  aldri inn i en produktskjerm». Derfor tas kun *prinsippene* inn (målt kontrast, én kilde med
+  vakt, redusert bevegelse uten tapt tilbakemelding, hover aldri i JavaScript, tall alltid med
+  dato og kilde), aldri farge, font, radius eller avstand. **Ingen `--tl-*`-verdi endres av
+  denne beslutningen** — CLAUDE.md invariant 2 står. Bygget samme dag: `scripts/design-audit.mjs`
+  (mekanisk poeng per skjermfamilie), `scripts/check-tl-kontrast.mjs` (måler Train-lock, fant 12
+  brudd — se beslutningskø pkt. 25) og `docs/design-audit/ak-golf-til-train-lock-bro-2026-09-03.md`.
+  **Arbeidet:** `docs/MASTERPLAN-GJENSTAAENDE.md` STEG 19.
+
 - **WANG FÅR EGET MERKEVARESYSTEM — OVERSTYRER PARAPLY-BESLUTNINGENS WANG-KLAUSUL (Anders
   02.09.2026, i økt):** under avklaring av PORTPLAN §A1.5 (gruppe-fane-arkitektur) ble
   beslutningskø punkt 22 (WANG-flatens stil) lagt frem på nytt med tre valg. Anders valgte

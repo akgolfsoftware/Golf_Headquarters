@@ -44,7 +44,7 @@ const BOLGER = {
   ],
   px4: [
     { id: "PH-01", navn: "I dag (hjem)", rute: "/portal", fasit: "PH-01 I dag.dc.html" },
-    { id: "P-05", navn: "Plan / agenda", rute: "/portal/planlegge", fasit: "P-05 iPhone Agenda.dc.html" },
+    { id: "PH-07", navn: "Plan / agenda", rute: "/portal/planlegge", fasit: "PH-07 Plan.dc.html" },
     { id: "RU-04", navn: "Etterregistrering", rute: "/portal/runde/logg", fasit: "RU-04 Player Etterregistrering ark.dc.html" },
   ],
 };
