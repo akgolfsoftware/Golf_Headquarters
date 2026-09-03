@@ -1,6 +1,6 @@
 import "server-only";
 
-import type { PyramidArea, MMiljo } from "@/generated/prisma/client";
+import type { Prisma, PrismaClient, PyramidArea, MMiljo } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { resolveValgtCoachIdEllerAdmin } from "@/lib/domain/valgt-coach";
 import { GENERERT_FRA, syncDrillsToV2 } from "./v2-drill-mirror";
@@ -51,7 +51,12 @@ export async function upsertV2ForPlanSession(input: {
   /** G3: satt når kilden er en gruppeutrulling — speiles til TrainingSessionV2.groupId.
    *  Utelatt/null = individuell økt; et eksisterende groupId røres da IKKE. */
   sourceGroupId?: string | null;
+  /** 14.5A: valgfri tx-klient — lar mal-utrullingens transaksjon i apply-template-actions.ts
+   *  dele samme transaksjon som denne upserten (og drill-speilingen den trigger). Default
+   *  modul-`prisma` for alle andre kallere. */
+  db?: PrismaClient | Prisma.TransactionClient;
 }): Promise<void> {
+  const db = input.db ?? prisma;
   const coachId = await resolveCoachIdForPlayer(input.playerId, input.coachId);
   const endTime = new Date(input.scheduledAt.getTime() + input.durationMin * 60_000);
 
@@ -79,7 +84,7 @@ export async function upsertV2ForPlanSession(input: {
   // (generertFra, generertFraId) — hindrer at to samtidige kall (dobbel-
   // klikk, gruppeutrulling som krysser en synk) begge lager sin egen
   // speil-økt for samme planøkt (14.5A).
-  const v2 = await prisma.trainingSessionV2.upsert({
+  const v2 = await db.trainingSessionV2.upsert({
     where: { generertFra_generertFraId: { generertFra: GENERERT_FRA, generertFraId: input.planSessionId } },
     update: data,
     create: { ...data, status: "PLANNED" },
@@ -92,7 +97,7 @@ export async function upsertV2ForPlanSession(input: {
   // oppdaterte raden.
   const varOpprettetNaa = v2.createdAt.getTime() === v2.updatedAt.getTime();
   if (varOpprettetNaa || v2.status === "PLANNED") {
-    await syncDrillsToV2(v2.id, input.planSessionId, input.pyramidArea);
+    await syncDrillsToV2(v2.id, input.planSessionId, input.pyramidArea, db);
   }
 }
 

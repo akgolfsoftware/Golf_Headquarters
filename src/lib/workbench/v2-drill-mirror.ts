@@ -2,7 +2,7 @@
 // backfill-scriptet (tsx). Bevisst UTEN "server-only" — scripts kan ikke
 // importere react-server-moduler.
 
-import type { PyramidArea } from "@/generated/prisma/client";
+import type { Prisma, PrismaClient, PyramidArea } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 
 /** Kobling plan-økt ↔ V2-speil. Reverse-synker MÅ matche samme streng. */
@@ -12,22 +12,27 @@ export const GENERERT_FRA = "WORKBENCH_PLAN";
  * Speil plan-øktas SessionDrill-rader til TrainingDrillV2 (replace-semantikk),
  * så live-avspilleren viser samme driller som planen. Felt-kontrakten er delt
  * (bølge 2 · 2026-07-04); navn/beskrivelse hentes fra øvelsesbanken.
+ *
+ * `db` (default modul-`prisma`) lar 14.5A-transaksjonen i apply-template-actions.ts
+ * tråde sin egen tx-klient gjennom slik at delete+create her deler samme transaksjon
+ * som resten av mal-utrullingen.
  */
 export async function syncDrillsToV2(
   v2SessionId: string,
   planSessionId: string,
   fallbackPyramide: PyramidArea,
+  db: PrismaClient | Prisma.TransactionClient = prisma,
 ): Promise<void> {
-  const drills = await prisma.sessionDrill.findMany({
+  const drills = await db.sessionDrill.findMany({
     where: { sessionId: planSessionId },
     orderBy: { orderIndex: "asc" },
     include: { exercise: { select: { name: true, description: true, durationMin: true } } },
   });
 
-  await prisma.trainingDrillV2.deleteMany({ where: { sessionId: v2SessionId } });
+  await db.trainingDrillV2.deleteMany({ where: { sessionId: v2SessionId } });
   if (drills.length === 0) return;
 
-  await prisma.trainingDrillV2.createMany({
+  await db.trainingDrillV2.createMany({
     data: drills.map((d, i) => ({
       sessionId: v2SessionId,
       sortOrder: d.orderIndex ?? i,
