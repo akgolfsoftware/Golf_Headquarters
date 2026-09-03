@@ -28,6 +28,28 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
 
 ## Beslutningene (september 2026)
 
+- **TM-03: MODALEN BESTÅR — OG FÅR AI-VISION (Anders 03.09.2026, i økt):** svar på beslutningskø
+  D4. Spørsmålet var om TrackMan-importen skulle beholde dagens 4-stegs modal
+  (`src/components/shared/trackman-import-modal.tsx`, 774 linjer, fungerer) eller bygges om til
+  fasitens helskjerm-tilstander C1–C4. **Svar: behold modalen** — de fire tilstandene portes inn i
+  den, og det er `TM-03 Ingest-tilstander.dc.html` som justeres, ikke koden.
+  **Omfanget ble utvidet i samme økt:** da det viste seg at D4 ikke var en restyle av CSV/HTML-flyten,
+  men krevde en helt ny kapasitet, valgte Anders **«Bygg også bilde-avlesning (AI-vision)»** framfor
+  det smale alternativet. Levert samme dag som PR
+  [#768](https://github.com/akgolfsoftware/Golf_Headquarters/pull/768): ny «Foto av skjerm»-kilde i
+  modalen, `src/lib/trackman/parse-photo.ts` (Claude vision via `src/lib/ai/client.ts` + zod-validering),
+  HEIC/HEIF avvist client-side. **TruthLayer-kravet er bygget inn:** system-prompten forbyr å gjette
+  tall — en parameter som ikke kan leses av bildet returneres som `null`, aldri som et anslag.
+  Feilteksten er fasitens ordrett («Fant ingen tall. Rett på kortet. HEIC → JPG.»).
+  **Bevisst ikke bygget:** fasitens C4-suksesskjerm (median-fliser, scatter-plot, Kilde/Funn-panel) —
+  gjenbruker modalens generiske steg 3 og 4, samme mønster som CSV/HTML allerede bruker.
+  **Krever ingen ytterligere kodeendring** — beslutningen er implementert.
+  **Registrert i ettertid (03.09 kveld):** beslutningen ble tatt muntlig i økt og bygget samme dag,
+  men aldri skrevet inn her — den lå kun i en øktlogg og i MASTERPLAN-raden. Fanget under
+  statusgjennomgangen 03.09. Samme feilklasse som `/beslutning`-regelen er laget for å hindre, bare
+  motsatt vei: her ble noe bygget uten registrert beslutning, mens D8/D9 samme døgn IKKE ble bygget
+  fordi beslutningen manglet. **Arbeidet:** `docs/MASTERPLAN-GJENSTAAENDE.md` Ø27 og 1C rad D4.
+
 - **KONTRAST-REGEL I STEDET FOR NY FASIT + TALLHERO SLUTTER Å TELLE (Anders 03.09.2026, i økt):**
   svar på beslutningskø punkt 25 og 26 (STEG 19.6/19.7), begge anbefalt vei valgt.
   1. **Kontrast i Train-lock lys modus — Vei A (regel, ingen token endres).** `check-tl-kontrast.mjs`
