@@ -25,6 +25,7 @@ import {
 import { useRouter } from "next/navigation";
 import {
   AlertTriangle,
+  Camera,
   Check,
   ChevronLeft,
   ChevronRight,
@@ -35,6 +36,7 @@ import {
 import {
   importTrackMan,
   listMatchTasksForImport,
+  parseTrackManPhotoForPreview,
   type TrackManEnvironment,
 } from "@/app/portal/mal/trackman/actions";
 import { ENVIRONMENT_OPTIONS } from "@/lib/sg-hub/environment-labels";
@@ -44,7 +46,7 @@ import { htmlReportToCanonical } from "@/lib/trackman/canonical";
 import { useToast } from "@/components/shared/toast-provider";
 
 type Steg = 1 | 2 | 3 | 4;
-type Kilde = "csv" | "html";
+type Kilde = "csv" | "html" | "photo";
 
 type Props = {
   /**
@@ -89,7 +91,38 @@ const KILDER: Array<{
     icon: FileCode,
     ready: true,
   },
+  {
+    id: "photo",
+    title: "Foto av skjerm",
+    desc: "Bilde av TrackMan-skjermen — AI leser av tallene.",
+    icon: Camera,
+    ready: true,
+  },
 ];
+
+/** Fasit TM-03: HEIC skal alltid avvises med samme feiltekst som «ingen tall». */
+const FANT_INGEN_TALL_KOPI = "Fant ingen tall. Rett på kortet. HEIC → JPG.";
+
+function erHeic(fil: File): boolean {
+  const navn = fil.name.toLowerCase();
+  return (
+    fil.type === "image/heic" ||
+    fil.type === "image/heif" ||
+    navn.endsWith(".heic") ||
+    navn.endsWith(".heif")
+  );
+}
+
+async function filTilBase64(fil: File): Promise<string> {
+  const buffer = await fil.arrayBuffer();
+  const bytes = new Uint8Array(buffer);
+  let binary = "";
+  const chunkSize = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
+  }
+  return btoa(binary);
+}
 
 export function TrackmanImportModal({
   variant = "primary",
@@ -125,6 +158,11 @@ export function TrackmanImportModal({
   const [shots, setShots] = useState<TrackManShot[]>([]);
   const [valgt, setValgt] = useState<Set<number>>(new Set());
 
+  // Foto-kilde: AI-vision-avlesning kjører server-side, så steg 2 trenger en
+  // egen busy-tilstand (TM-03 C1 «Leser og analyserer…») mens CSV/HTML
+  // parses synkront i nettleseren.
+  const [photoBusy, setPhotoBusy] = useState(false);
+
   useEffect(() => {
     if (open) {
       dialogRef.current?.showModal();
@@ -148,6 +186,7 @@ export function TrackmanImportModal({
     setPreferredTaskId("");
     setForceImport(false);
     setFeil(null);
+    setPhotoBusy(false);
   }
 
   function lukk() {
@@ -160,6 +199,37 @@ export function TrackmanImportModal({
     if (!fil) return;
     setFilename(fil.name);
     setFeil(null);
+
+    if (kilde === "photo") {
+      setShots([]);
+      setValgt(new Set());
+      if (erHeic(fil)) {
+        setFeil(FANT_INGEN_TALL_KOPI);
+        return;
+      }
+      setPhotoBusy(true);
+      try {
+        const base64 = await filTilBase64(fil);
+        const mediaType = (fil.type || "image/jpeg") as
+          | "image/jpeg"
+          | "image/png"
+          | "image/webp"
+          | "image/gif";
+        const result = await parseTrackManPhotoForPreview(base64, mediaType);
+        if (!result.ok) {
+          setFeil(result.error);
+          return;
+        }
+        setShots(result.shots);
+        setValgt(new Set(result.shots.map((_, i) => i)));
+      } catch {
+        setFeil(FANT_INGEN_TALL_KOPI);
+      } finally {
+        setPhotoBusy(false);
+      }
+      return;
+    }
+
     const tekst = await fil.text();
 
     if (kilde === "csv") {
@@ -229,6 +299,10 @@ export function TrackmanImportModal({
         setFeil("Last opp en gyldig HTML-fil med slag først.");
         return;
       }
+      if (kilde === "photo" && shots.length === 0) {
+        setFeil("Last opp et bilde med lesbare tall først.");
+        return;
+      }
       setSteg(3);
       return;
     }
@@ -255,10 +329,16 @@ export function TrackmanImportModal({
       try {
         if (!kilde) throw new Error("Velg kilde først.");
         const content =
-          kilde === "csv" ? byggCsvFraValgte(csvContent, valgt) : htmlContent;
+          kilde === "csv"
+            ? byggCsvFraValgte(csvContent, valgt)
+            : kilde === "html"
+              ? htmlContent
+              : "";
         const result = await importTrackMan({
           format: kilde,
           content,
+          photoShots:
+            kilde === "photo" ? shots.filter((_, i) => valgt.has(i)) : undefined,
           recordedAt,
           environment,
           forceImport,
@@ -371,6 +451,7 @@ export function TrackmanImportModal({
               preferredTaskId={preferredTaskId}
               setPreferredTaskId={setPreferredTaskId}
               matchTasks={matchTasks}
+              photoBusy={photoBusy}
             />
           )}
           {steg === 3 && (
@@ -418,7 +499,7 @@ export function TrackmanImportModal({
             <button
               type="button"
               onClick={neste}
-              disabled={pending}
+              disabled={pending || photoBusy}
               className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
             >
               Neste
@@ -516,6 +597,7 @@ function Steg2({
   preferredTaskId,
   setPreferredTaskId,
   matchTasks,
+  photoBusy,
 }: {
   kilde: Kilde | null;
   recordedAt: string;
@@ -528,14 +610,22 @@ function Steg2({
   preferredTaskId: string;
   setPreferredTaskId: (s: string) => void;
   matchTasks: Array<{ id: string; label: string }>;
+  photoBusy: boolean;
 }) {
-  const accept = kilde === "csv" ? ".csv,text/csv" : ".html,text/html";
+  const accept =
+    kilde === "csv"
+      ? ".csv,text/csv"
+      : kilde === "html"
+        ? ".html,text/html"
+        : "image/jpeg,image/png,image/webp,image/gif";
   return (
     <div className="space-y-4">
       <p className="text-sm text-muted-foreground">
         {kilde === "csv"
           ? "Last opp CSV eksportert fra TrackMan-appen. Vi parser hver rad som ett slag."
-          : "Last opp HTML-rapporten fra Multi Group Report."}
+          : kilde === "html"
+            ? "Last opp HTML-rapporten fra Multi Group Report."
+            : "Last opp et bilde av TrackMan-skjermen. AI leser av tallene — HEIC/HEIF støttes ikke, bruk JPG eller PNG."}
       </p>
 
       <label className="block">
@@ -585,11 +675,15 @@ function Steg2({
         {filename && (
           <span className="mt-1 block text-xs text-muted-foreground">
             Valgt: {filename}
-            {shotsCount > 0 && (
-              <span className="text-foreground">
-                {" "}
-                · {shotsCount} slag parset
-              </span>
+            {photoBusy ? (
+              <span className="text-foreground"> · Leser og analyserer…</span>
+            ) : (
+              shotsCount > 0 && (
+                <span className="text-foreground">
+                  {" "}
+                  · {shotsCount} slag {kilde === "photo" ? "lest" : "parset"}
+                </span>
+              )
             )}
           </span>
         )}
