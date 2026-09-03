@@ -18,6 +18,12 @@
  * `/admin/spillere/[id]/analyse` er IKKE flettet inn her — den forblir egen
  * rute (egen fasit S3-01-mønsteret + Analyse Gapping + DG-01, se dens page.tsx).
  *
+ * Ø13 (03.09.2026): `?vis=360` bytter innholdet til `SpillerArbeidsvisningV2`
+ * — fasitens faktiske S3-01/S3-02/AG-08 master-detalj-arbeidsvindu (smal
+ * spillerliste + ett 360-panel), ved siden av Oversikt-bentoen (default,
+ * S3-03) heller enn å erstatte den — samme fane-mønster som Plan/Analyse/
+ * Tester under.
+ *
  * D3 (03.09.2026): `SpillerOversiktV2` (S3-03-bentoen) er nå lagt til øverst
  * som ny landing — identitet, nøkkeltall, ukeaktivitet, teknisk plan,
  * sesong og «I dag», alt fra ekte spørringer (se
@@ -54,6 +60,8 @@ import { SpillerProfilFull } from "@/components/admin/v2/SpillerProfilPanel";
 import { loadSpillerProfilPanel } from "@/lib/admin-spiller/spiller-profil-panel-data";
 import { SpillerOversiktV2 } from "@/components/admin/v2/SpillerOversiktV2";
 import { lastSpillerOversikt } from "@/lib/admin-spiller/spiller-oversikt-data";
+import { SpillerArbeidsvisningV2 } from "@/components/admin/v2/SpillerArbeidsvisningV2";
+import { lastSpillerArbeidsvisning } from "@/lib/admin-spiller/spiller-arbeidsvisning-data";
 import {
   AdminSpillerProfilSideV2,
   type AdminSpillerProfilSideV2Data,
@@ -96,11 +104,15 @@ const kortUke = (uke: string): string => uke.replace(/^\d{4}-/, "");
 
 export default async function SpillerProfilPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ vis?: string }>;
 }) {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
   const { id } = await params;
+  const { vis } = await searchParams;
+  const visArbeidsvisning = vis === "360";
 
   // Én coach-scopet spiller-oppslag med alt profil+fremgang-siden trenger av
   // felt — erstatter de to separate `prisma.user.findFirst`-kallene de gamle
@@ -120,9 +132,10 @@ export default async function SpillerProfilPage({
   });
   if (!player || player.role !== "PLAYER") notFound();
 
-  const [profilPanelData, oversikt] = await Promise.all([
+  const [profilPanelData, oversikt, arbeidsvisning] = await Promise.all([
     loadSpillerProfilPanel({ id: user.id, role: user.role }, id),
     lastSpillerOversikt(id),
+    visArbeidsvisning ? lastSpillerArbeidsvisning(user, id) : Promise.resolve(null),
   ]);
 
   const ageYears = calcAge(player.dateOfBirth);
@@ -294,22 +307,44 @@ export default async function SpillerProfilPage({
     <V2Shell bredde="full" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          <span
+          <Link
+            href={`/admin/spillere/${id}`}
+            className="v2-press v2-focus"
             style={{
               height: 36,
               padding: "0 14px",
               borderRadius: TL.radius.pill,
-              background: TL.dock,
-              color: TL.text,
+              background: visArbeidsvisning ? "transparent" : TL.dock,
+              color: visArbeidsvisning ? TL.mute : TL.text,
               display: "flex",
               alignItems: "center",
               fontFamily: TL.font.sans,
               fontSize: 13,
               fontWeight: 600,
+              textDecoration: "none",
             }}
           >
             Oversikt
-          </span>
+          </Link>
+          <Link
+            href={`/admin/spillere/${id}?vis=360`}
+            className="v2-press v2-focus"
+            style={{
+              height: 36,
+              padding: "0 14px",
+              borderRadius: TL.radius.pill,
+              background: visArbeidsvisning ? TL.dock : "transparent",
+              color: visArbeidsvisning ? TL.text : TL.mute,
+              display: "flex",
+              alignItems: "center",
+              fontFamily: TL.font.sans,
+              fontSize: 13,
+              fontWeight: 600,
+              textDecoration: "none",
+            }}
+          >
+            Arbeidsvisning
+          </Link>
           {faner.map((f) => (
             <Link
               key={f.href}
@@ -333,11 +368,16 @@ export default async function SpillerProfilPage({
           ))}
         </div>
 
-        <SpillerOversiktV2 data={oversikt} workbenchHref={`/admin/workbench/${id}`} />
-
-        {profilPanelData && <SpillerProfilFull data={profilPanelData} />}
-        <AdminSpillerProfilSideV2 data={profilData} />
-        <AdminSpillerFremgangV2 data={fremgangData} />
+        {visArbeidsvisning && arbeidsvisning ? (
+          <SpillerArbeidsvisningV2 data={arbeidsvisning} workbenchHref={`/admin/workbench/${id}`} basePath="/admin/spillere" />
+        ) : (
+          <>
+            <SpillerOversiktV2 data={oversikt} workbenchHref={`/admin/workbench/${id}`} />
+            {profilPanelData && <SpillerProfilFull data={profilPanelData} />}
+            <AdminSpillerProfilSideV2 data={profilData} />
+            <AdminSpillerFremgangV2 data={fremgangData} />
+          </>
+        )}
       </div>
     </V2Shell>
   );
