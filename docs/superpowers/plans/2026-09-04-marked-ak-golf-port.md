@@ -65,7 +65,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 
-const ROT = path.resolve(import.meta.dirname, "../../../..");
+const ROT = process.cwd(); // npm test kjører fra repo-roten; tsx laster CJS uten import.meta.dirname
 const les = (p: string) => readFileSync(path.join(ROT, p), "utf8");
 
 describe("ak-golf.css — masterens tokens inn på markedsflaten", () => {
@@ -1423,7 +1423,7 @@ import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import path from "node:path";
 
-const ROT = path.resolve(import.meta.dirname, "../../../..");
+const ROT = process.cwd(); // npm test kjører fra repo-roten; tsx laster CJS uten import.meta.dirname
 
 describe("check-ingen-paper.mjs vokter også de gamle markedssystemene", () => {
   it("stopper --mk-, --mkit- og pk-/mk-klasser i src", () => {
