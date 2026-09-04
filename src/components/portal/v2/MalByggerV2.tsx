@@ -13,6 +13,7 @@ import type { CSSProperties } from "react";
 import { Icon, Kort, Caps, Knapp, KpiFlis, StatusPill, Rad, FordelingHode, FordelingRad, InnsiktChip, HjelpTips, AKSE_NAVN } from "@/components/v2";
 import type { AkseKey } from "@/lib/v2/format";
 import type { HjelpNokkel } from "@/lib/v2/hjelpetekster";
+import { LPHASE_LABEL } from "@/lib/labels/taxonomy";
 import { anbefalMal, genererPlanForslag, lagrePlan, sendTilGodkjenning } from "@/app/portal/mal/bygger/actions";
 import type {
   AnbefalingerResultat,
@@ -411,10 +412,10 @@ function Steg1VelgMal(props: {
           tittel="Generell utvikling"
           beskrivelse={
             kontekst.aktivLPhase
-              ? `Følger din aktive fase: ${kontekst.aktivLPhase}.`
+              ? `Følger din aktive fase: ${LPHASE_LABEL[kontekst.aktivLPhase]}.`
               : "Balansert utvikling på tvers av pyramiden."
           }
-          hjelp="lFase"
+          hjelp="periodetype"
           valgt={maltype === "GENERELL"}
           onClick={() => setMaltype("GENERELL")}
         />
@@ -768,7 +769,7 @@ function Steg3AiTilpasser(props: {
     });
   }
   if (kontekst.aktivLPhase) {
-    bullets.push({ tekst: `Aktiv L-fase: ${kontekst.aktivLPhase}`, hjelp: "lFase" });
+    bullets.push({ tekst: `Aktiv fase: ${LPHASE_LABEL[kontekst.aktivLPhase]}`, hjelp: "periodetype" });
   }
   if (valgtTemplate) {
     bullets.push({
