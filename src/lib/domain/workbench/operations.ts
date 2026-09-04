@@ -21,6 +21,8 @@ import type {
   MonthDayCell,
   YearViewModel,
   YearMonthRow,
+  YearPeriodBand,
+  PeriodType,
   WorkbenchMode,
   RecurrencePolicy,
   SeriesContentPatch,
@@ -437,12 +439,45 @@ export function buildMonthViewModel(
   };
 }
 
+/** Rå dager fra 1970-01-01 (UTC) for en YYYY-MM-DD-streng — kun for avstandsmatte, aldri vist. */
+function dagNummer(isoDato: string): number {
+  const [y, m, d] = isoDato.split("-").map(Number);
+  return Math.round(Date.UTC(y, m - 1, d) / 86_400_000);
+}
+
+export interface YearPeriodInput {
+  id: string;
+  type: PeriodType;
+  startDate: string; // YYYY-MM-DD
+  endDate: string; // YYYY-MM-DD
+  focus: string | null;
+}
+
+export interface YearEventInput {
+  navn: string;
+  dato: string; // YYYY-MM-DD
+}
+
+const TOM_BALANSE: Record<PyramidArea, number> = { FYS: 0, TEK: 0, SLAG: 0, SPILL: 0, TURN: 0 };
+
 export function buildYearViewModel(
   year: number,
   sessions: WorkbenchSession[],
   mode: WorkbenchMode,
   targetMinutes = 0,
+  periodInput: YearPeriodInput[] = [],
+  tournaments: YearEventInput[] = [],
+  tests: YearEventInput[] = [],
+  idagIso?: string,
 ): YearViewModel {
+  const events = [...tournaments, ...tests].sort((a, b) => (a.dato < b.dato ? -1 : 1));
+  const eventsByMonth = new Map<number, string[]>();
+  for (const e of events) {
+    const m = Number(e.dato.slice(5, 7));
+    if (!eventsByMonth.has(m)) eventsByMonth.set(m, []);
+    eventsByMonth.get(m)!.push(`${e.navn} ${e.dato.slice(8, 10)}.${e.dato.slice(5, 7)}`);
+  }
+
   const months: YearMonthRow[] = [];
   let maxMin = 1;
   const perMonth: { start: string; list: WorkbenchSession[] }[] = [];
@@ -464,11 +499,46 @@ export function buildYearViewModel(
       sessionCount: list.length,
       dominantPyramid: dominantPyramid(list),
       volumePct: Math.round((minutes / maxMin) * 100),
+      eventLabels: eventsByMonth.get(i + 1) ?? [],
     });
   }
   const budget = computeBudget(aktiveOkter(sessions));
   budget.targetMinutes = targetMinutes;
-  return { year, months, budget, mode };
+
+  const yearStartDag = dagNummer(`${year}-01-01`);
+  const yearDager = dagNummer(`${year + 1}-01-01`) - yearStartDag;
+  const idagDag = idagIso ? dagNummer(idagIso) : dagNummer(`${year}-01-01`) - 1; // aldri aktiv uten idag
+
+  const periods: YearPeriodBand[] = [...periodInput]
+    .sort((a, b) => (a.startDate < b.startDate ? -1 : 1))
+    .map((p) => {
+      const startDag = dagNummer(p.startDate);
+      const endDag = dagNummer(p.endDate);
+      const widthPct = Math.max(0, ((endDag - startDag + 1) / yearDager) * 100);
+      const balanseTimer = { ...TOM_BALANSE };
+      const turneringer: { navn: string; dato: string }[] = [];
+      for (const s of aktiveOkter(sessions)) {
+        if (s.date >= p.startDate && s.date <= p.endDate) {
+          balanseTimer[s.pyramid] += s.durationMinutes / 60;
+        }
+      }
+      for (const e of tournaments) {
+        if (e.dato >= p.startDate && e.dato <= p.endDate) turneringer.push(e);
+      }
+      return {
+        id: p.id,
+        type: p.type,
+        startDate: p.startDate,
+        endDate: p.endDate,
+        focus: p.focus,
+        widthPct,
+        aktiv: startDag <= idagDag && idagDag <= endDag,
+        balanseTimer,
+        turneringer: turneringer.sort((a, b) => (a.dato < b.dato ? -1 : 1)),
+      };
+    });
+
+  return { year, months, periods, budget, mode };
 }
 
 // ─── Validation (soft — never blocks) ───────────────────────────────────────

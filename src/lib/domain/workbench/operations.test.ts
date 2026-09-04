@@ -298,6 +298,57 @@ describe("måned og år", () => {
     assert.equal(year.months[2].dominantPyramid, "TEK");
     assert.equal(year.months[0].sessionCount, 0);
   });
+
+  it("buildYearViewModel: periodebånd, balanse og turnering·test-kolonne (WB-06)", () => {
+    const tekMars = createSession({
+      ...baseCmd,
+      date: "2026-03-10",
+      pyramid: "TEK",
+      durationMinutes: 120,
+    });
+    const slagJuli = createSession({
+      ...baseCmd,
+      date: "2026-07-15",
+      pyramid: "SLAG",
+      durationMinutes: 180,
+    });
+    const year = buildYearViewModel(
+      2026,
+      [tekMars, slagJuli],
+      mode,
+      0,
+      [
+        { id: "grunn", type: "GRUNN", startDate: "2026-01-01", endDate: "2026-06-30", focus: null },
+        {
+          id: "turn",
+          type: "TURNERING",
+          startDate: "2026-07-01",
+          endDate: "2026-09-30",
+          focus: "Feltet",
+        },
+      ],
+      [{ navn: "Sommertour Moss", dato: "2026-07-15" }],
+      [{ navn: "Vintertest", dato: "2026-01-24" }],
+      "2026-08-01",
+    );
+
+    assert.equal(year.periods.length, 2);
+    const [grunn, turn] = year.periods;
+    // Halvparten av årets ~365 dager, ±rundingsfeil.
+    assert.ok(grunn.widthPct > 48 && grunn.widthPct < 51);
+    assert.equal(grunn.aktiv, false); // idag = august, utenfor grunn-perioden
+    assert.equal(turn.aktiv, true);
+    assert.equal(grunn.balanseTimer.TEK, 2); // 120 min = 2t, i mars → grunn
+    assert.equal(turn.balanseTimer.SLAG, 3); // 180 min = 3t, i juli → turnering
+    assert.equal(turn.turneringer.length, 1);
+    assert.equal(turn.turneringer[0].navn, "Sommertour Moss");
+    assert.equal(grunn.turneringer.length, 0); // turneringen er i juli, ikke i grunn-vinduet
+
+    // Månedskolonnen slår sammen turnering + test, kronologisk.
+    assert.deepEqual(year.months[0].eventLabels, ["Vintertest 24.01"]);
+    assert.deepEqual(year.months[6].eventLabels, ["Sommertour Moss 15.07"]);
+    assert.deepEqual(year.months[1].eventLabels, []);
+  });
 });
 
 describe("validateWeek", () => {

@@ -67,6 +67,7 @@ import {
   SPILLER_SYNLIGE_STATUSER,
   mapSession,
   tilDatoKolonne,
+  fraDatoKolonne,
   type WbRow,
 } from "@/lib/workbench/wb-map";
 import {
@@ -333,12 +334,56 @@ export async function loadYear(params: {
   const viewer = await kreverTilgangTilSpiller(params.playerId);
   if (!viewer) return { ok: false, error: INGEN_TILGANG };
 
-  const sessions = await lastOkterIVindu(
-    params.playerId,
-    `${params.year}-01-01`,
-    `${params.year}-12-31`,
-    viewer.id,
-  );
+  const yearStart = new Date(Date.UTC(params.year, 0, 1));
+  const yearEnd = new Date(Date.UTC(params.year, 11, 31, 23, 59, 59));
+
+  const [sessions, seasonPlan, tournamentEntries, testResults] = await Promise.all([
+    lastOkterIVindu(params.playerId, `${params.year}-01-01`, `${params.year}-12-31`, viewer.id),
+    prisma.seasonPlan.findFirst({
+      where: { userId: params.playerId, year: params.year },
+      include: { periodBlocks: { orderBy: { startDate: "asc" } } },
+    }),
+    prisma.tournamentEntry.findMany({
+      where: {
+        userId: params.playerId,
+        entryStatus: { not: "WITHDRAWN" },
+        OR: [
+          { tournament: { startDate: { gte: yearStart, lte: yearEnd } } },
+          { manualDate: { gte: yearStart, lte: yearEnd } },
+        ],
+      },
+      select: {
+        tournament: { select: { name: true, startDate: true } },
+        manualName: true,
+        manualDate: true,
+      },
+    }),
+    prisma.testResult.findMany({
+      where: { userId: params.playerId, takenAt: { gte: yearStart, lte: yearEnd } },
+      select: { takenAt: true, test: { select: { name: true } } },
+    }),
+  ]);
+
+  const idagIso = new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Oslo" }).format(new Date());
+  const periodInput = (seasonPlan?.periodBlocks ?? []).map((b) => ({
+    id: b.id,
+    type: b.lPhase,
+    startDate: fraDatoKolonne(b.startDate),
+    endDate: fraDatoKolonne(b.endDate),
+    focus: b.focus,
+  }));
+  const tournamentEvents = tournamentEntries
+    .map((e) => {
+      const navn = e.tournament?.name ?? e.manualName;
+      const dato = e.tournament?.startDate ?? e.manualDate;
+      return navn && dato ? { navn, dato: fraDatoKolonne(dato) } : null;
+    })
+    .filter((x): x is { navn: string; dato: string } => x !== null);
+  const testEvents = testResults.map((t) => ({
+    navn: t.test.name,
+    dato: fraDatoKolonne(t.takenAt),
+  }));
+
   return {
     ok: true,
     data: buildYearViewModel(
@@ -346,6 +391,10 @@ export async function loadYear(params: {
       sessions,
       params.mode,
       params.targetMinutes ?? 0,
+      periodInput,
+      tournamentEvents,
+      testEvents,
+      idagIso,
     ),
   };
 }
