@@ -12,16 +12,14 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentBarnForForelder } from "@/lib/forelder";
 import { prisma } from "@/lib/prisma";
+import { hentBarnOkonomiSummer } from "@/lib/forelder-okonomi";
 import { V2Shell, FORELDER_NAV, FORELDER_MER } from "@/components/v2/shell";
 import {
   ForelderOkonomiV2,
   type ForelderOkonomiData,
 } from "@/components/portal/v2/ForelderOkonomiV2";
-import type { PaymentStatus } from "@/generated/prisma/client";
 
 export const dynamic = "force-dynamic";
-
-const UBETALT: PaymentStatus[] = ["PENDING", "FAILED"];
 
 export default async function V2ForelderOkonomiPreviewPage() {
   const user = await requirePortalUser({ allow: ["PARENT"] });
@@ -42,7 +40,10 @@ export default async function V2ForelderOkonomiPreviewPage() {
     );
   }
 
-  const [abonnementer, betalinger] = await Promise.all([
+  /* FO-07: tallene grupperes PER BARN — neste trekk, betalt i år, utestående.
+   * Betalt-i-år/utestående kommer fra `hentBarnOkonomiSummer` (STEG 19.3-fiks,
+   * se den fila for begrunnelse). */
+  const [abonnementer, okonomiPerBarn] = await Promise.all([
     prisma.subscription.findMany({
       where: { userId: { in: childIds } },
       select: {
@@ -54,26 +55,11 @@ export default async function V2ForelderOkonomiPreviewPage() {
         creditsRemaining: true,
       },
     }),
-    prisma.payment.findMany({
-      where: { userId: { in: childIds } },
-      orderBy: { createdAt: "desc" },
-      take: 30,
-      select: {
-        id: true,
-        userId: true,
-        amountOre: true,
-        status: true,
-        type: true,
-        description: true,
-        createdAt: true,
-      },
-    }),
+    hentBarnOkonomiSummer(childIds),
   ]);
 
   const abonnementPerBarn = new Map(abonnementer.map((a) => [a.userId, a]));
 
-  /* FO-07: tallene grupperes PER BARN — neste trekk, betalt i år, utestående. */
-  const naa = new Date();
   const NB_DATO = new Intl.DateTimeFormat("nb-NO", {
     timeZone: "Europe/Oslo",
     day: "2-digit",
@@ -87,17 +73,9 @@ export default async function V2ForelderOkonomiPreviewPage() {
     abonnement: barn.map((b) => {
       const fornavn = b.child.name.split(" ")[0] ?? b.child.name;
       const ab = abonnementPerBarn.get(b.child.id);
-      const barnetsBetalinger = betalinger.filter((p) => p.userId === b.child.id);
-      const betaltIAarOre = barnetsBetalinger
-        .filter(
-          (p) =>
-            p.status === "SUCCEEDED" &&
-            p.createdAt.getFullYear() === naa.getFullYear()
-        )
-        .reduce((s, p) => s + p.amountOre, 0);
-      const utestaaendeOre = barnetsBetalinger
-        .filter((p) => UBETALT.includes(p.status))
-        .reduce((s, p) => s + p.amountOre, 0);
+      const okonomi = okonomiPerBarn.get(b.child.id);
+      const betaltIAarOre = okonomi?.betaltIAarOre ?? 0;
+      const utestaaendeOre = okonomi?.utestaaendeOre ?? 0;
       return {
         childId: b.child.id,
         fornavn,
