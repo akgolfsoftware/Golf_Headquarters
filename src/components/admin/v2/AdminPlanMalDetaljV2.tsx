@@ -67,29 +67,53 @@ const PYR_ALLE: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
 // Pyramide-rekkefølge topp→base (samme som mal-lista).
 const AKSE_ORDEN: PyramidArea[] = ["TURN", "SPILL", "SLAG", "TEK", "FYS"];
 
+function FeilBoks({ children }: { children: React.ReactNode }) {
+  return (
+    <p
+      role="alert"
+      style={{
+        margin: 0,
+        borderRadius: 10,
+        border: `1px solid color-mix(in srgb, ${TL.danger} 40%, transparent)`,
+        background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`,
+        padding: "9px 12px",
+        fontFamily: TL.font.sans,
+        fontSize: 12,
+        color: TL.danger,
+        lineHeight: 1.5,
+      }}
+    >
+      {children}
+    </p>
+  );
+}
+
 export function AdminPlanMalDetaljV2({ template }: { template: PlanMalDetalj }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [aktivOkt, setAktivOkt] = useState<PlanMalOkt | null>(null);
+  const [feil, setFeil] = useState<string | null>(null);
 
   function onDuplicate() {
+    setFeil(null);
     startTransition(async () => {
       const res = await duplicateTemplate(template.id);
       if (res.ok) {
         router.push(`/admin/plan-templates/${res.data.templateId}`);
       } else {
-        alert(`Kunne ikke duplisere: ${res.error}`);
+        setFeil(`Kunne ikke duplisere: ${res.error}`);
       }
     });
   }
 
   function onToggleArchive() {
+    setFeil(null);
     startTransition(async () => {
       const res = template.approved
         ? await archiveTemplate(template.id)
         : await unarchiveTemplate(template.id);
       if (!res.ok) {
-        alert(res.error);
+        setFeil(res.error);
       } else {
         router.refresh();
       }
@@ -205,6 +229,7 @@ export function AdminPlanMalDetaljV2({ template }: { template: PlanMalDetalj }) 
           <CTAPill ghost icon="line-chart">Se effekt-historikk</CTAPill>
         </Link>
       </div>
+      {feil && <FeilBoks>{feil}</FeilBoks>}
 
       {aktivOkt && <OktDialog okt={aktivOkt} onClose={() => setAktivOkt(null)} />}
     </div>

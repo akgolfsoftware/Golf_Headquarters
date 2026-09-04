@@ -89,6 +89,7 @@ export function AdminPlanMalNyV2() {
   );
   const [minAlder, setMinAlder] = useState("");
   const [maxAlder, setMaxAlder] = useState("");
+  const [feil, setFeil] = useState<string | null>(null);
 
   const sum = Math.round(
     (fordeling.FYS + fordeling.TEK + fordeling.SLAG + fordeling.SPILL + fordeling.TURN) * 100,
@@ -100,12 +101,13 @@ export function AdminPlanMalNyV2() {
   }
 
   function submit() {
+    setFeil(null);
     if (!name.trim()) {
-      alert("Navn er påkrevd.");
+      setFeil("Navn er påkrevd.");
       return;
     }
     if (sum !== 100) {
-      alert(`Fordelingen må summere til 100% (er nå ${sum}%).`);
+      setFeil(`Fordelingen må summere til 100% (er nå ${sum}%).`);
       return;
     }
     const input: TemplateCreateInput = {
@@ -125,7 +127,7 @@ export function AdminPlanMalNyV2() {
       if (res.ok) {
         router.push(`/admin/plan-templates/${res.data.templateId}/rediger`);
       } else {
-        alert(res.error);
+        setFeil(res.error);
       }
     });
   }
@@ -153,6 +155,7 @@ export function AdminPlanMalNyV2() {
           <Felt label="Navn" required>
             <input
               type="text"
+              className="v2-focus"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="F.eks. E Konkurranse Standard"
@@ -162,6 +165,7 @@ export function AdminPlanMalNyV2() {
           <Felt label="Beskrivelse">
             <textarea
               rows={3}
+              className="v2-focus"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               style={{ ...FELT_STIL, resize: "vertical", lineHeight: 1.55 }}
@@ -170,6 +174,7 @@ export function AdminPlanMalNyV2() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12 }}>
             <Felt label="Kategori">
               <select
+                className="v2-focus"
                 value={kategori}
                 onChange={(e) => setKategoriAndFordeling(e.target.value as NgfKategori)}
                 style={FELT_STIL}
@@ -181,6 +186,7 @@ export function AdminPlanMalNyV2() {
             </Felt>
             <Felt label="Fase" hjelp="lFase">
               <select
+                className="v2-focus"
                 value={lPhase}
                 onChange={(e) => setLPhase(e.target.value as LPhase)}
                 style={FELT_STIL}
@@ -195,6 +201,7 @@ export function AdminPlanMalNyV2() {
             <Felt label="Varighet (uker)">
               <input
                 type="number"
+                className="v2-focus"
                 min={1}
                 max={52}
                 value={varighetUker}
@@ -205,6 +212,7 @@ export function AdminPlanMalNyV2() {
             <Felt label="Økt per uke">
               <input
                 type="number"
+                className="v2-focus"
                 min={1}
                 max={14}
                 value={ukentligOktAntall}
@@ -215,6 +223,7 @@ export function AdminPlanMalNyV2() {
             <Felt label="Min alder">
               <input
                 type="number"
+                className="v2-focus"
                 value={minAlder}
                 onChange={(e) => setMinAlder(e.target.value)}
                 style={FELT_STIL}
@@ -223,6 +232,7 @@ export function AdminPlanMalNyV2() {
             <Felt label="Maks alder">
               <input
                 type="number"
+                className="v2-focus"
                 value={maxAlder}
                 onChange={(e) => setMaxAlder(e.target.value)}
                 style={FELT_STIL}
@@ -275,6 +285,12 @@ export function AdminPlanMalNyV2() {
         <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, margin: 0, textAlign: "right" }}>
           <Icon name="alert-triangle" size={12} style={{ verticalAlign: "-2px", marginRight: 4 }} />
           Fordelingen summerer til {sum} % — må være 100 % før malen kan opprettes.
+        </p>
+      )}
+      {feil && (
+        <p role="alert" style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, margin: 0, textAlign: "right" }}>
+          <Icon name="alert-triangle" size={12} style={{ verticalAlign: "-2px", marginRight: 4 }} />
+          {feil}
         </p>
       )}
     </div>

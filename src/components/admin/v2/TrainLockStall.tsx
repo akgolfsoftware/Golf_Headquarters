@@ -271,6 +271,7 @@ function SokFelt({ verdi, onEndre }: { verdi: string; onEndre: (v: string) => vo
       </svg>
       <input
         type="search"
+        className="v2-focus"
         value={verdi}
         onChange={(e) => onEndre(e.target.value)}
         placeholder="Søk i stallen"

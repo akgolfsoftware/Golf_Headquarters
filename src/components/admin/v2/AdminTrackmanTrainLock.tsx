@@ -210,6 +210,7 @@ export function AdminTrackmanTrainLock({ data }: { data: AdminTrackmanTLData }) 
         <Icon name="search" size={15} style={{ color: TL.mute }} />
         <input
           type="search"
+          className="v2-focus"
           value={sok}
           onChange={(e) => setSok(e.target.value)}
           placeholder="Søk spiller"

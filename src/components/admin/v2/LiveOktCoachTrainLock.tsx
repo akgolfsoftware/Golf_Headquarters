@@ -120,6 +120,7 @@ function LiveMeldingSeksjon({ sessionId }: { sessionId: string }) {
         <div style={{ position: "relative", flex: 1, display: "flex", alignItems: "center" }}>
           <input
             type="text"
+            className="v2-focus"
             value={tekst}
             onChange={(e) => {
               setTekst(e.target.value);
@@ -190,6 +191,7 @@ function BriefSeksjon({ sessionId, initialMelding }: { sessionId: string; initia
   return (
     <Kort eyebrow="Fokuspunkt før økten">
       <textarea
+        className="v2-focus"
         value={tekst}
         onChange={(e) => {
           setTekst(e.target.value);
@@ -267,6 +269,7 @@ function VurderingSeksjon({ sessionId, initialRating, initialNotat }: { sessionI
         ))}
       </div>
       <textarea
+        className="v2-focus"
         value={notat}
         onChange={(e) => {
           setNotat(e.target.value);
