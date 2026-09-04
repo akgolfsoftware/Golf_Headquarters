@@ -161,6 +161,7 @@ function Inndata({
   return (
     <input
       type={type}
+      className="v2-focus"
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
@@ -172,6 +173,7 @@ function Inndata({
 function TekstOmraade({ value, onChange, rows = 5 }: { value: string; onChange: (v: string) => void; rows?: number }) {
   return (
     <textarea
+      className="v2-focus"
       value={value}
       onChange={(e) => onChange(e.target.value)}
       rows={rows}
@@ -190,7 +192,7 @@ function Velger({
   onChange: (v: string) => void;
 }) {
   return (
-    <select value={value} onChange={(e) => onChange(e.target.value)} style={{ ...inputStil(), appearance: "none" }}>
+    <select className="v2-focus" value={value} onChange={(e) => onChange(e.target.value)} style={{ ...inputStil(), appearance: "none" }}>
       {options.map((o) => (
         <option key={o} value={o}>
           {o}

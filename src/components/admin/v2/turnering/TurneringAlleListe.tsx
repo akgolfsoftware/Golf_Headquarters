@@ -49,6 +49,7 @@ export function TurneringAlleListe({ data }: { data: TurneringAlleData }) {
           </svg>
           <input
             type="search"
+            className="v2-focus"
             name="sok"
             defaultValue={sok}
             placeholder="Søk i alle turneringer"

@@ -124,7 +124,7 @@ function TimeplanSeksjon({
                   }}
                   style={{ display: "flex", alignItems: "flex-end", gap: 6 }}
                 >
-                  <input type="datetime-local" name="newStart" required defaultValue={defaultNewStart} style={{ ...inputStyle, width: 180 }} />
+                  <input type="datetime-local" name="newStart" className="v2-focus" required defaultValue={defaultNewStart} style={{ ...inputStyle, width: 180 }} />
                   <TlKnapp type="submit" variant="tertiaer">
                     Dupliser
                   </TlKnapp>
@@ -164,17 +164,17 @@ export function GruppeTimeplanV2({
           className="grid grid-cols-1 md:grid-cols-2"
           style={{ gap: 10 }}
         >
-          <input name="title" placeholder="Tittel (f.eks. Gruppetrening)" required style={inputStyle} />
-          <input name="description" placeholder="Beskrivelse" style={inputStyle} />
-          <input type="date" name="dato" required style={inputStyle} />
-          <input type="time" name="tid" required style={inputStyle} />
-          <input type="number" name="varighetMin" placeholder="Varighet min" defaultValue="60" required style={inputStyle} />
-          <input name="location" placeholder="Sted" style={inputStyle} />
-          <select name="recurring" style={inputStyle}>
+          <input name="title" className="v2-focus" placeholder="Tittel (f.eks. Gruppetrening)" required style={inputStyle} />
+          <input name="description" className="v2-focus" placeholder="Beskrivelse" style={inputStyle} />
+          <input type="date" name="dato" className="v2-focus" required style={inputStyle} />
+          <input type="time" name="tid" className="v2-focus" required style={inputStyle} />
+          <input type="number" name="varighetMin" className="v2-focus" placeholder="Varighet min" defaultValue="60" required style={inputStyle} />
+          <input name="location" className="v2-focus" placeholder="Sted" style={inputStyle} />
+          <select name="recurring" className="v2-focus" style={inputStyle}>
             <option value="NONE">Engang (spesifikt tidspunkt)</option>
             <option value="WEEKLY">Ukentlig</option>
           </select>
-          <input type="number" name="maxParticipants" placeholder="Antall deltagere (max)" style={inputStyle} />
+          <input type="number" name="maxParticipants" className="v2-focus" placeholder="Antall deltagere (max)" style={inputStyle} />
           <div style={{ gridColumn: "1 / -1", display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
             <TlKnapp type="submit" variant="primaer">
               Opprett
