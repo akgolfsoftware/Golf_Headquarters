@@ -114,6 +114,17 @@ export const UI = {
   yearHint: "Klikk en måned for å åpne den. Årscellen kan ikke redigeres.",
   openWeek: "Åpne uke",
 
+  // Årsplan — periodebånd og valgt-periode-panel (WB-06)
+  periodsTitle: "Perioder",
+  periodsHint: "Klikk et bånd for å se balanse og turneringer",
+  noPeriods: "Ingen perioder lagt inn for dette året.",
+  eventColumnTitle: "Turnering · test",
+  selectedPeriodTitle: "Valgt periode",
+  periodBalanceTitle: "Balanse i perioden",
+  periodTournamentsTitle: "Turneringer i perioden",
+  noPeriodTournaments: "Ingen turneringer i perioden.",
+  periodWeeks: (n: number) => `${n} ${n === 1 ? "uke" : "uker"}`,
+
   // Actions
   createSession: "Ny økt",
   moveSession: "Flytt",

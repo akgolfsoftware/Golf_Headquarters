@@ -494,11 +494,40 @@ export interface YearMonthRow {
   sessionCount: number;
   dominantPyramid: PyramidArea | null;
   volumePct: number;
+  /** «Turnering · test»-kolonnen (WB-06) — klartekst-navn, kronologisk. */
+  eventLabels: string[];
+}
+
+// Samme sju verdier som Prisma-enumen LPhase — literal union her for å
+// holde domenelaget Prisma-fritt (mønster fra PyramidArea over).
+export type PeriodType =
+  | "GRUNN"
+  | "SPESIAL"
+  | "TURNERING"
+  | "TESTUKE"
+  | "FERIE"
+  | "TRENINGSSAMLING"
+  | "HELDAGSSAMLING";
+
+export interface YearPeriodBand {
+  id: string;
+  type: PeriodType;
+  startDate: string; // YYYY-MM-DD
+  endDate: string; // YYYY-MM-DD
+  focus: string | null;
+  /** 0–100, andel av årets dager — WB-06 periodebånd-segmentbredde. */
+  widthPct: number;
+  /** Var perioden aktiv på «i dag» ved bygging. */
+  aktiv: boolean;
+  /** Timer per pyramideområde innenfor perioden — WB-06 høyrepanel «Balanse». */
+  balanseTimer: Record<PyramidArea, number>;
+  turneringer: { navn: string; dato: string }[];
 }
 
 export interface YearViewModel {
   year: number;
   months: YearMonthRow[];
+  periods: YearPeriodBand[];
   budget: WeekBudget;
   mode: WorkbenchMode;
 }
