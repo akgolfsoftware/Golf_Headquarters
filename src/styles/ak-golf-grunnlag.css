@@ -1,0 +1,73 @@
+/* src/styles/ak-golf-grunnlag.css
+   designsystem/ak-golf/tokens/grunnlag.css scopet under .ak-marked.
+   Masterens fil setter body/h1/a globalt — i Next er all CSS global og ville
+   truffet /portal ved klientnavigasjon. Reglene er de samme, selektorene
+   er prefikset. Endres masteren, endres denne. */
+
+.ak-marked {
+  background: var(--ak-grunn);
+  color: var(--ak-tekst);
+  font-family: var(--ak-sans);
+  font-size: var(--ak-t-17);
+  line-height: var(--ak-lh-normal);
+  -webkit-font-smoothing: antialiased;
+  text-wrap: pretty;
+}
+
+.ak-marked *,
+.ak-marked *::before,
+.ak-marked *::after { box-sizing: border-box }
+
+/* BRO (04.09.2026): masteren skriver `h1 { … }` og `p { … }` uten klasse-
+   forbehold. Fila er ulagd CSS og vinner over Tailwind-utilities (som ligger i
+   @layer utilities) uansett spesifisitet — så på de gamle sidene ville
+   `text-6xl`/`max-w-xl` tapt. Derfor `:not([class])` til siste gamle side er
+   portert; fjernes i plan Task 8, sammen med lenkeregelen under. */
+.ak-marked h1:not([class]), .ak-marked h2:not([class]), .ak-marked h3:not([class]), .ak-marked h4:not([class]) {
+  font-family: var(--ak-display);
+  font-weight: var(--ak-v-700);
+  letter-spacing: var(--ak-sp-titt);
+  line-height: var(--ak-lh-tett);
+  margin: 0;
+}
+.ak-marked h1:not([class]) { font-size: var(--ak-t-48); letter-spacing: var(--ak-sp-display); line-height: var(--ak-lh-display) }
+.ak-marked h2:not([class]) { font-size: var(--ak-t-34) }
+.ak-marked h3:not([class]) { font-size: var(--ak-t-26) }
+.ak-marked h4:not([class]) { font-size: var(--ak-t-21) }
+.ak-marked p:not([class]) { margin: 0; max-width: var(--ak-lesebredde) }
+
+/* BRO (04.09.2026): masteren skriver `a { … }`. Så lenge de gamle sidene
+   (pk- og mk-klasser) står, gjelder regelen kun lenker UTEN klasse — ellers
+   får hver gammel knapp understrek. Masterens komponenter (Knapp m.fl.) setter
+   sin egen dekorasjon inline. Fjern `:not([class])` i opprydding-PR-en
+   (plan, Task 8) når siste gamle side er borte. */
+.ak-marked a:not([class]) { color: var(--ak-signal); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; transition: color var(--ak-fart-rask) var(--ak-kurve) }
+.ak-marked a:not([class]):hover { color: var(--ak-tekst); text-decoration-color: var(--ak-signal) }
+.ak-marked a:not([class]):active { color: var(--ak-signal-fyll) }
+
+/* Fokusringen vinner over alt — eneste !important i systemet (12-bevegelse.md). */
+.ak-marked :where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--ak-signal) !important;
+  outline-offset: 2px !important;
+  border-radius: 2px;
+}
+
+/* Alt som er målt. Mono, tabellsiffer, aldri kursiv. */
+.ak-marked .ak-maalt {
+  font-family: var(--ak-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'zero' 1;
+}
+
+/* Caps-etikett. Kun mono, kun tre ord eller mindre. */
+.ak-marked .ak-etikett {
+  font-family: var(--ak-mono);
+  font-size: var(--ak-t-11);
+  font-weight: var(--ak-v-500);
+  letter-spacing: var(--ak-sp-vid);
+  text-transform: uppercase;
+  color: var(--ak-dempet);
+}
+.ak-marked[data-ak-flate="mork"] .ak-etikett { letter-spacing: var(--ak-sp-vidt) }
+
+.ak-marked ::selection { background: var(--ak-signal); color: var(--ak-signal-tekst) }

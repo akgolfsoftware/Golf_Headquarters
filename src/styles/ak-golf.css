@@ -1,0 +1,23 @@
+/* src/styles/ak-golf.css
+   AK Golf-merket på markedsflaten. ENESTE inngang — lastes av
+   src/app/(marketing)/layout.tsx, aldri av globals.css.
+
+   Token-filene importeres UENDRET fra masterens speil (designsystem/ak-golf/),
+   generert fra tokens.json av scripts/ak-golf-tokens.mjs. Ingen verdi
+   kopieres hit. Rekkefølgen er masterens (designsystem/ak-golf/styles.css).
+
+   Utelatt med vilje:
+   - fonter.css: Google-Fonts-@import. Fontene lastes med next/font i layouten.
+   - semantikk.css: --text-muted, --font-display m.fl. kolliderer med produktet.
+   - grunnlag.css: setter body/h1/a globalt. Gjenskapt scopet i ak-golf-grunnlag.css.
+
+   Gjelder MERKET (marked). Produktskjermer bruker Train-lock (--tl-*).
+   Spec: docs/superpowers/specs/2026-09-04-marked-ak-golf-port-design.md */
+
+@import "../../designsystem/ak-golf/tokens/farge.css";
+@import "../../designsystem/ak-golf/tokens/type.css";
+@import "../../designsystem/ak-golf/tokens/rom.css";
+@import "../../designsystem/ak-golf/tokens/bevegelse.css";
+@import "../../designsystem/ak-golf/tokens/instrument.css";
+@import "../../designsystem/ak-golf/tokens/samspill.css";
+@import "./ak-golf-grunnlag.css";

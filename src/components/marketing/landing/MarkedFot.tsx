@@ -1,127 +1,122 @@
-import Image from "next/image";
 import Link from "next/link";
+
+import { Logo, Merkelapp } from "@/components/marketing/ak";
 
 /**
  * MarkedFot — ENESTE footer på landingssidene.
  *
- * Fasit: `Footer` i ak-golf-website `app/layout.tsx`. Fasiten har tre
- * kolonner og tre utforsk-lenker fordi den bare har tre sider. HQ har over
- * tjue, og de lovpålagte (vilkår, personvern, cookies) MÅ være nåbare — så
- * kolonne to er delt i «Utforsk» og «Mer», og en juridisk rad ligger nederst.
- * Ingenting annet er endret fra fasiten.
+ * Fasit: `Bunn` i `designsystem/ak-golf/ui_kits/markedsside/Deler.jsx` (tre
+ * kolonner: merke, Tilbud, Kontakt). Kitet har tre sider; HQ har over tjue,
+ * og vilkår, personvern og cookies MÅ være nåbare — derfor en fjerde kolonne
+ * «Mer» og en juridisk rad nederst. Ingenting annet er endret fra kitet.
  */
 
-const UTFORSK = [
-  { href: "/coaching", label: "Coaching" },
-  { href: "/playerhq", label: "AK Golf HQ" },
-  { href: "/mulligan", label: "Mulligan Indoor Golf" },
-  { href: "/junior", label: "Junior" },
-  { href: "/priser", label: "Priser" },
+const TILBUD = [
+  { href: "/coaching", tekst: "Coaching" },
+  { href: "/junior", tekst: "Junior Academy" },
+  { href: "/priser", tekst: "Priser" },
+  { href: "/kontakt", tekst: "Kontakt" },
 ];
 
 const MER = [
-  { href: "/coacher", label: "Coacher" },
-  { href: "/anlegg", label: "Anlegg" },
-  { href: "/treningsfilosofi", label: "Slik trener vi" },
-  { href: "/cases", label: "Resultater" },
-  { href: "/turneringer", label: "Turneringer" },
-  { href: "/blogg", label: "Blogg" },
-  { href: "/om-oss", label: "Om oss" },
-  { href: "/faq", label: "Spørsmål og svar" },
-  { href: "/jobb", label: "Jobb hos oss" },
+  { href: "/playerhq", tekst: "AK Golf HQ" },
+  { href: "/mulligan", tekst: "Mulligan Indoor Golf" },
+  { href: "/coacher", tekst: "Coacher" },
+  { href: "/anlegg", tekst: "Anlegg" },
+  { href: "/treningsfilosofi", tekst: "Slik trener vi" },
+  { href: "/turneringer", tekst: "Turneringer" },
+  { href: "/blogg", tekst: "Blogg" },
+  { href: "/faq", tekst: "Spørsmål og svar" },
+  { href: "/jobb", tekst: "Jobb hos oss" },
+  { href: "/auth/login", tekst: "Logg inn" },
 ];
 
 const JURIDISK = [
-  { href: "/vilkar", label: "Vilkår" },
-  { href: "/personvern", label: "Personvern" },
-  { href: "/cookies", label: "Informasjonskapsler" },
-  { href: "/kontakt", label: "Kontakt" },
+  { href: "/vilkar", tekst: "Vilkår" },
+  { href: "/personvern", tekst: "Personvern" },
+  { href: "/cookies", tekst: "Informasjonskapsler" },
 ];
+
+const LENKE = {
+  fontSize: "var(--ak-t-15)",
+  color: "var(--ak-tekst)",
+  textDecoration: "none",
+} as const;
 
 export function MarkedFot() {
   return (
-    <footer className="border-t border-mk-border bg-mk-soft">
-      <div className="mx-auto max-w-6xl px-6 py-16">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
-          <div>
-            <div className="flex items-center gap-3">
-              <Image
-                src="/brand/logo/ak-golf-logo-on-paper.svg"
-                alt="AK Golf"
-                width={28}
-                height={24}
-              />
-              <span className="text-sm font-semibold">AK Golf Academy</span>
-            </div>
-            <p className="mt-4 max-w-xs font-mk-serif text-sm leading-relaxed text-mk-muted">
-              Coaching, plattform og fasiliteter under samme tak — bygget på
-              måling, ikke synsing.
-            </p>
-          </div>
-
-          <div className="text-sm">
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-mk-muted">
-              Utforsk
-            </p>
-            <div className="mt-4 flex flex-col gap-3">
-              {UTFORSK.map((l) => (
-                <Link
-                  key={l.href}
-                  href={l.href}
-                  className="text-mk-muted transition-colors hover:text-mk-fg"
-                >
-                  {l.label}
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          <div className="text-sm">
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-mk-muted">
-              Mer
-            </p>
-            <div className="mt-4 flex flex-col gap-3">
-              {MER.map((l) => (
-                <Link
-                  key={l.href}
-                  href={l.href}
-                  className="text-mk-muted transition-colors hover:text-mk-fg"
-                >
-                  {l.label}
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          <div className="text-sm">
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-mk-muted">
-              Kontakt
-            </p>
-            <div className="mt-4 flex flex-col gap-3 text-mk-muted">
-              <a
-                href="mailto:akgolfgroup@gmail.com"
-                className="transition-colors hover:text-mk-fg"
-              >
-                akgolfgroup@gmail.com
-              </a>
-              <span>Fredrikstad, Norge</span>
-            </div>
+    <footer style={{ borderTop: "1px solid var(--ak-linje)", background: "var(--ak-grunn)" }}>
+      <div
+        className="mx-auto grid gap-ak-6 px-ak-4 py-ak-6 md:grid-cols-[1.4fr_1fr_1fr_1fr] md:px-ak-6 md:py-ak-7"
+        style={{ maxWidth: "var(--ak-sidebredde)" }}
+      >
+        <div>
+          <Logo hoyde={32} />
+          <p
+            style={{
+              marginTop: "var(--ak-r-4)",
+              fontSize: "var(--ak-t-15)",
+              color: "var(--ak-dempet)",
+              maxWidth: "34ch",
+            }}
+          >
+            AK Golf Academy drives av Anders Kristiansen — golfcoach, sportssjef i
+            Gamle Fredrikstad Golfklubb og coach ved WANG Toppidrett Fredrikstad.
+          </p>
+          <div className="mt-ak-4 flex flex-wrap gap-ak-2">
+            <Merkelapp variant="junior">Junior Academy</Merkelapp>
+            <Merkelapp variant="hq">AK Golf HQ</Merkelapp>
+            <Merkelapp variant="produkt">Skarpnord</Merkelapp>
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col gap-4 border-t border-mk-hairline pt-6 text-xs text-mk-muted sm:flex-row sm:items-center sm:justify-between">
-          <p>AK Golf Group AS</p>
-          <div className="flex flex-wrap gap-x-5 gap-y-2">
-            {JURIDISK.map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                className="transition-colors hover:text-mk-fg"
-              >
-                {l.label}
-              </Link>
-            ))}
-          </div>
+        <nav className="flex flex-col gap-ak-3" aria-label="Tilbud">
+          <span className="ak-etikett">Tilbud</span>
+          {TILBUD.map((l) => (
+            <Link key={l.href} href={l.href} style={LENKE}>
+              {l.tekst}
+            </Link>
+          ))}
+        </nav>
+
+        <nav className="flex flex-col gap-ak-3" aria-label="Mer">
+          <span className="ak-etikett">Mer</span>
+          {MER.map((l) => (
+            <Link key={l.href} href={l.href} style={LENKE}>
+              {l.tekst}
+            </Link>
+          ))}
+        </nav>
+
+        <div className="flex flex-col gap-ak-3">
+          <span className="ak-etikett">Kontakt</span>
+          <a href="mailto:post@akgolf.no" className="ak-maalt" style={LENKE}>
+            post@akgolf.no
+          </a>
+          <span style={{ fontSize: "var(--ak-t-15)", color: "var(--ak-dempet)" }}>
+            Vi svarer innen én virkedag.
+          </span>
+          <span style={{ fontSize: "var(--ak-t-13)", color: "var(--ak-dempet)" }}>
+            Gamle Fredrikstad GK, Fredrikstad
+          </span>
+        </div>
+      </div>
+
+      <div
+        className="mx-auto flex flex-col gap-ak-3 px-ak-4 pb-ak-5 md:flex-row md:items-center md:justify-between md:px-ak-6"
+        style={{
+          maxWidth: "var(--ak-sidebredde)",
+          fontSize: "var(--ak-t-13)",
+          color: "var(--ak-dempet)",
+        }}
+      >
+        <span>AK Golf Group AS</span>
+        <div className="flex flex-wrap gap-x-ak-5 gap-y-ak-2">
+          {JURIDISK.map((l) => (
+            <Link key={l.href} href={l.href} style={{ color: "var(--ak-dempet)", textDecoration: "none" }}>
+              {l.tekst}
+            </Link>
+          ))}
         </div>
       </div>
     </footer>

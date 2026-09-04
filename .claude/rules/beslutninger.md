@@ -28,6 +28,28 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
 
 ## Beslutningene (september 2026)
 
+- **MARKEDSSIDENE PORTERES TIL MASTER AK GOLF — ALLE 22, FULL PORT (Anders 04.09.2026, i økt):**
+  de 22 markedssidene under `src/app/(marketing)/` bygges om til AK Golf-masteren
+  (`designsystem/ak-golf/`, speil av Claude Design-prosjektet `3e5c851c`): verkstedpalett, IBM
+  Plex, instrumentlag og masterens komponenter. Målt 04.09 før beslutningen: **ingen** `--ak-*`
+  brukt i `src/`; sidene sto på to Paper-tidens systemer (`--mk-*` i `globals.css` for forside/
+  skall, `pk-*`/`--mkit-*` i `marked-kit.css` for de 21 andre). Anders valgte **full port** framfor
+  rent fargebytte og framfor hybrid (fargebytte + seks sider). Omfanget er kun markedsflaten —
+  alternativet «hele plattformen» ble lagt fram og avvist.
+  **Utenfor:** `/stats/*` (W7, eget skall), `/booking` når åpen (Train-lock, 28.08), produktet
+  (invariant 2 og «tokens aldri» 03.09 står uendret), `/team-norway/*` (Claw).
+  **Lys er standard, ingen bryter** — landingssidene er låst lyse i `tema-default.ts`; mørk finnes
+  i tokene (`data-ak-flate="mork"`) men kobles ikke til.
+  **Overstyrer:** «Marketing/landingssider har egen fasit (ak-golf-website)» i CLAUDE.md
+  invariant 2 — masteren er nå fasit for landingssidene. Rettet samme dag.
+  **To ting avgjøres når Anders ser dem, ikke nå:** forsiden («Reisen» 28.08 mot kitets stillere
+  forside — begge vises på preview) og `/cases` (masteren forbyr sitater/vitnesbyrd, 01.09).
+  **Løkke per side:** canvas → ja → bygg → `/impeccable audit` → skjermbilde 390+1440 → merge.
+  Aldri batch. Spec: `docs/superpowers/specs/2026-09-04-marked-ak-golf-port-design.md`, plan:
+  `docs/superpowers/plans/2026-09-04-marked-ak-golf-port.md`.
+  **Arbeidet:** `docs/MASTERPLAN-GJENSTAAENDE.md` STEG 18.33 (fundament levert 04.09, 18 sider +
+  opprydding gjenstår).
+
 - **TM-03: MODALEN BESTÅR — OG FÅR AI-VISION (Anders 03.09.2026, i økt):** svar på beslutningskø
   D4. Spørsmålet var om TrackMan-importen skulle beholde dagens 4-stegs modal
   (`src/components/shared/trackman-import-modal.tsx`, 774 linjer, fungerer) eller bygges om til

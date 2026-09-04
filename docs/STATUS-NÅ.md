@@ -2,7 +2,7 @@
 
 > **Hva dette er:** ett snapshot av hvor plattformen står akkurat nå. Oppdater datoen + relevante linjer når noe vesentlig endrer seg.
 
-**Sist oppdatert:** 2026-09-03 (målt mot `origin/main` @ `8197eb3`, PR #768).
+**Sist oppdatert:** 2026-09-04 (målt mot `origin/main` @ `cd170d2`, PR #774; pluss fundament-PR-en for markedssidene → Master AK Golf, STEG 18.33 — 18 sider + opprydding gjenstår).
 **Betaling:** koden er klar siden 30.08 (Stripe-cutover 1. september). Live-nøkler/DNS/DKIM er
 Anders-oppgaver i Vercel/Stripe-panelet og kan ikke verifiseres fra kode/git — se
 `docs/MASTERPLAN-GJENSTAAENDE.md` STEG 1 og 10.8.

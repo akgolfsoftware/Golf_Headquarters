@@ -1,5 +1,12 @@
+import "@/styles/ak-golf.css";
 import "@/styles/marked-kit.css";
 
+/* BRO (04.09.2026): marked-kit.css sine --mkit-* peker nå på --ak-* (AK Golf-
+ * masteren). Systemsidene (error.tsx, not-found, /offline, /vedlikehold) rendres
+ * UTENFOR (marketing)/layout.tsx, som ellers er eneste laster av ak-golf.css —
+ * uten denne importen ville --mkit-bg m.fl. blitt ugyldige her. Tokenene er
+ * ak-prefikset og rører ikke produktet. Fjernes når SideTilstand porteres til
+ * masterens feilside-kit (plan Task 8). */
 /**
  * SideTilstand — delt systemtilstand-flate (offline · 404 · 500 ·
  * vedlikehold · ingen tilgang). Fasit: designsystem/paper/fase2/system/
