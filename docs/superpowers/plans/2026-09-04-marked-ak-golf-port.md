@@ -1462,7 +1462,7 @@ og i feilmeldingen: «Bruk --tl-* / TL (produkt) eller --ak-* / ak-* (marked) i 
 
 - [ ] **Step 5: Kjør testen, se den passere.** Deretter `npm run verify`.
 
-- [ ] **Step 5b: Lenkeregelen tilbake til masterens.** I `src/styles/ak-golf-grunnlag.css`: fjern `:not([class])` på de tre `a`-reglene (broen fra 04.09) så `.ak-marked a { … }` gjelder alle lenker, som i masterens `grunnlag.css`. Kjør røyktesten og se på et par sider at ingen knapp får understrek (alle skal nå være `Knapp`).
+- [ ] **Step 5b: Grunnlaget tilbake til masterens.** I `src/styles/ak-golf-grunnlag.css`: fjern `:not([class])` på `a`-, `h1`–`h4`- og `p`-reglene (broen fra 04.09) så de gjelder alle elementer, som i masterens `grunnlag.css`. Fjern også `import "@/styles/ak-golf.css"` fra `side-tilstand.tsx` når den er portert til feilside-kitet (den importen er samme bro). Kjør røyktesten og se på et par sider at ingen knapp får understrek (alle skal nå være `Knapp`).
 
 - [ ] **Step 6: Dokumentasjon.** CLAUDE.md invariant 2: bytt setningen om ak-golf-website til: «Marketing/landingssider (`/`, `(marketing)/*` unntatt `/stats` og åpen `/booking`) følger **AK Golf-masteren** (`designsystem/ak-golf/`), ikke Train-lock. Vakt: `scripts/check-ingen-paper.mjs`.» Samme i `arkitektur.md` Marketing-raden. Lukk STEG 18.8 og 18.33 i MASTERPLAN. Oppdater `docs/STATUS-NÅ.md`.
 

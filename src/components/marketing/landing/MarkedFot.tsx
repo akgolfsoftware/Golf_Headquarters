@@ -96,7 +96,7 @@ export function MarkedFot() {
           <span style={{ fontSize: "var(--ak-t-15)", color: "var(--ak-dempet)" }}>
             Vi svarer innen én virkedag.
           </span>
-          <span style={{ fontSize: "var(--ak-t-13)", color: "var(--ak-svak)" }}>
+          <span style={{ fontSize: "var(--ak-t-13)", color: "var(--ak-dempet)" }}>
             Gamle Fredrikstad GK, Fredrikstad
           </span>
         </div>

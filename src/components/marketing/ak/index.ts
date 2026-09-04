@@ -5,5 +5,5 @@ export { Logo, type LogoVariant } from "./Logo";
 export { Knapp } from "./Knapp";
 export { IkonKnapp } from "./IkonKnapp";
 export { Merkelapp, type MerkelappVariant } from "./Merkelapp";
-export { Toppnav, type Lenke } from "./Toppnav";
+export { Toppnav, MOBILMENY_ID, type Lenke } from "./Toppnav";
 export { Mobilmeny } from "./Mobilmeny";

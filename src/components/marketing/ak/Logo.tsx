@@ -13,6 +13,7 @@ const FILER = {
   "sort-mono": "ak-golf-logo-black-mono.svg",
   "signal-mono": "ak-golf-logo-primary-mono.svg",
   kvadrat: "ak-golf-merke-kvadrat.svg",
+  favicon: "ak-golf-favicon.svg",
 } as const;
 
 export type LogoVariant = keyof typeof FILER;
@@ -27,6 +28,7 @@ const FORHOLD: Record<LogoVariant, number> = {
   "sort-mono": 1.16,
   "signal-mono": 1.16,
   kvadrat: 1,
+  favicon: 1,
 };
 
 export function Logo({
@@ -54,6 +56,7 @@ export function Logo({
         height: h,
         width: "auto",
         display: "block",
+        alignSelf: "flex-start",
         flex: "0 0 auto",
         maxWidth: "100%",
         objectFit: "contain",

@@ -13,16 +13,22 @@ import { Logo } from "./Logo";
 
 export type Lenke = { href: string; tekst: string };
 
+/** id på Mobilmeny-dialogen — brukes av hamburgerens aria-controls. */
+export const MOBILMENY_ID = "ak-mobilmeny";
+
 export function Toppnav({
   lenker,
   aktiv,
   handling,
   onMeny,
+  menyApen = false,
 }: {
   lenker: Lenke[];
   aktiv?: string;
   handling?: ReactNode;
   onMeny: () => void;
+  /** Speiler Mobilmeny-tilstanden i aria-expanded på hamburgeren. */
+  menyApen?: boolean;
 }) {
   return (
     <header
@@ -91,7 +97,12 @@ export function Toppnav({
         <span className="flex-1 md:hidden" />
         <div className="hidden md:block">{handling}</div>
         <div className="md:hidden">
-          <IkonKnapp merkelapp="Åpne meny" onClick={onMeny}>
+          <IkonKnapp
+            merkelapp="Åpne meny"
+            onClick={onMeny}
+            utvidet={menyApen}
+            styrer={MOBILMENY_ID}
+          >
             <svg
               width="22"
               height="22"

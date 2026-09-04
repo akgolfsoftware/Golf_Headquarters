@@ -18,18 +18,23 @@
 .ak-marked *::before,
 .ak-marked *::after { box-sizing: border-box }
 
-.ak-marked h1, .ak-marked h2, .ak-marked h3, .ak-marked h4 {
+/* BRO (04.09.2026): masteren skriver `h1 { … }` og `p { … }` uten klasse-
+   forbehold. Fila er ulagd CSS og vinner over Tailwind-utilities (som ligger i
+   @layer utilities) uansett spesifisitet — så på de gamle sidene ville
+   `text-6xl`/`max-w-xl` tapt. Derfor `:not([class])` til siste gamle side er
+   portert; fjernes i plan Task 8, sammen med lenkeregelen under. */
+.ak-marked h1:not([class]), .ak-marked h2:not([class]), .ak-marked h3:not([class]), .ak-marked h4:not([class]) {
   font-family: var(--ak-display);
   font-weight: var(--ak-v-700);
   letter-spacing: var(--ak-sp-titt);
   line-height: var(--ak-lh-tett);
   margin: 0;
 }
-.ak-marked h1 { font-size: var(--ak-t-48); letter-spacing: var(--ak-sp-display); line-height: var(--ak-lh-display) }
-.ak-marked h2 { font-size: var(--ak-t-34) }
-.ak-marked h3 { font-size: var(--ak-t-26) }
-.ak-marked h4 { font-size: var(--ak-t-21) }
-.ak-marked p { margin: 0; max-width: var(--ak-lesebredde) }
+.ak-marked h1:not([class]) { font-size: var(--ak-t-48); letter-spacing: var(--ak-sp-display); line-height: var(--ak-lh-display) }
+.ak-marked h2:not([class]) { font-size: var(--ak-t-34) }
+.ak-marked h3:not([class]) { font-size: var(--ak-t-26) }
+.ak-marked h4:not([class]) { font-size: var(--ak-t-21) }
+.ak-marked p:not([class]) { margin: 0; max-width: var(--ak-lesebredde) }
 
 /* BRO (04.09.2026): masteren skriver `a { … }`. Så lenge de gamle sidene
    (pk- og mk-klasser) står, gjelder regelen kun lenker UTEN klasse — ellers

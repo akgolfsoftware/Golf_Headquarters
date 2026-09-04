@@ -16,6 +16,8 @@ export function IkonKnapp({
   children,
   className,
   style,
+  utvidet,
+  styrer,
 }: {
   merkelapp: string;
   variant?: "stille" | "fylt";
@@ -26,6 +28,10 @@ export function IkonKnapp({
   children: ReactNode;
   className?: string;
   style?: CSSProperties;
+  /** aria-expanded — for knapper som åpner noe (mobilmenyen). */
+  utvidet?: boolean;
+  /** aria-controls — id på det knappen åpner. */
+  styrer?: string;
 }) {
   const tone: ToneStil =
     variant === "fylt"
@@ -50,6 +56,8 @@ export function IkonKnapp({
       type="button"
       aria-label={merkelapp}
       aria-pressed={aktiv || undefined}
+      aria-expanded={utvidet}
+      aria-controls={styrer}
       disabled={deaktivert}
       aria-disabled={deaktivert || undefined}
       onClick={onClick}

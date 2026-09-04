@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Knapp, Mobilmeny, Toppnav, type Lenke } from "@/components/marketing/ak";
 
@@ -23,16 +23,32 @@ const LENKER: Lenke[] = [
   { href: "/kontakt", tekst: "Kontakt" },
 ];
 
+/** Samme brekkpunkt som `md:hidden` på menyen og hamburgeren (--ak-bp-tablet). */
+const MAC_BREKK = "(min-width: 768px)";
+
 export function MarkedNav() {
   const [apen, setApen] = useState(false);
   const sti = usePathname() ?? "";
   const aktiv = LENKER.find((l) => sti === l.href || sti.startsWith(`${l.href}/`))?.href;
+
+  // Menyen og hamburgeren skjules av CSS over 768 px. Passeres brekkpunktet
+  // mens menyen er åpen (rotasjon, vindu dras), må tilstanden følge med —
+  // ellers står rullelåsen igjen uten noen synlig knapp for å lukke.
+  useEffect(() => {
+    const mq = window.matchMedia(MAC_BREKK);
+    const lukkVedMac = () => {
+      if (mq.matches) setApen(false);
+    };
+    mq.addEventListener("change", lukkVedMac);
+    return () => mq.removeEventListener("change", lukkVedMac);
+  }, []);
 
   return (
     <>
       <Toppnav
         lenker={LENKER}
         aktiv={aktiv}
+        menyApen={apen}
         handling={
           <Knapp storrelse="sm" href="/booking">
             Book kartleggingsøkt

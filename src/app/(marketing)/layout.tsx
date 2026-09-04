@@ -80,10 +80,15 @@ export default async function MarketingLayout({
     (erBookingFlate && (await kanBrukeInnebygdBooking()));
 
   if (harEgetSkall) {
+    // Eget skall, men merkets fonter må finnes også her: broen i marked-kit.css
+    // og --font-mk-serif peker på --ak-sans, og next/font laster bare der
+    // klassen står. Ingen .ak-marked — flaten tegner sitt eget skall.
     return (
       <>
         <PlausibleScript />
-        {children}
+        <div className={FONT_KLASSER} style={FONT_VARS}>
+          {children}
+        </div>
       </>
     );
   }

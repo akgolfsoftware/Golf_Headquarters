@@ -1,16 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useRef, type KeyboardEvent, type ReactNode } from "react";
 
 import { IkonKnapp } from "./IkonKnapp";
 import { Logo } from "./Logo";
-import type { Lenke } from "./Toppnav";
+import { MOBILMENY_ID, type Lenke } from "./Toppnav";
 
 /* Kilde: designsystem/ak-golf/components/navigasjon/Mobilmeny.jsx. Masteren
    bruker position:absolute inne i en relativ ramme; her er den fixed over hele
-   skjermen og låser dokumentrullen mens den er åpen — samme oppførsel som den
-   forrige MarkedNav, som var laget for nettopp det. */
+   skjermen og låser dokumentrullen mens den er åpen. Da er den en ekte modal,
+   og får det masteren ikke trengte: fokus inn ved åpning, Escape lukker,
+   Tab holder seg inne i dialogen, fokus tilbake til hamburgeren ved lukking. */
+
+const FOKUSERBART =
+  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 export function Mobilmeny({
   apen,
@@ -25,19 +29,50 @@ export function Mobilmeny({
   handling?: ReactNode;
   onLukk: () => void;
 }) {
+  const dialogRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    document.documentElement.style.overflow = apen ? "hidden" : "";
+    if (!apen) return;
+    const forrige = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    document.documentElement.style.overflow = "hidden";
+    // Fokus inn: første fokuserbare er lukkeknappen.
+    dialogRef.current?.querySelector<HTMLElement>(FOKUSERBART)?.focus();
     return () => {
       document.documentElement.style.overflow = "";
+      forrige?.focus();
     };
   }, [apen]);
 
   if (!apen) return null;
+
+  const paaTast = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Escape") {
+      e.preventDefault();
+      onLukk();
+      return;
+    }
+    if (e.key !== "Tab" || !dialogRef.current) return;
+    const alle = Array.from(dialogRef.current.querySelectorAll<HTMLElement>(FOKUSERBART));
+    if (alle.length === 0) return;
+    const forste = alle[0];
+    const siste = alle[alle.length - 1];
+    if (e.shiftKey && document.activeElement === forste) {
+      e.preventDefault();
+      siste.focus();
+    } else if (!e.shiftKey && document.activeElement === siste) {
+      e.preventDefault();
+      forste.focus();
+    }
+  };
+
   return (
     <div
+      ref={dialogRef}
+      id={MOBILMENY_ID}
       role="dialog"
       aria-modal="true"
       aria-label="Meny"
+      onKeyDown={paaTast}
       className="ak-kommer fixed inset-0 z-[60] flex flex-col md:hidden"
       style={{ background: "var(--ak-grunn)" }}
     >
