@@ -287,32 +287,35 @@ html[data-v2-tema="dark"] {
  * bg-mk-bg, text-mk-fg, border-mk-border, bg-mk-cta, ...
  */
 :root {
-  --mk-bg: #faf9f5;
-  --mk-surface: #ffffff;
-  --mk-soft: #f0eee6;
-  --mk-soft-hover: #e8e6dc;
-  --mk-border: #e8e6dc;
-  --mk-hairline: #d1cfc5;
-  --mk-inverse: #000000;
+  /* BRO (04.09.2026): --mk-* peker på AK Golf-masteren til hver markedsside er
+   * portert til --ak-* direkte. Blokken SLETTES i siste PR i
+   * docs/superpowers/plans/2026-09-04-marked-ak-golf-port.md. Ikke bygg nytt mot --mk-*. */
+  --mk-bg: var(--ak-grunn);
+  --mk-surface: var(--ak-ark);
+  --mk-soft: var(--ak-grunn-senk);
+  --mk-soft-hover: var(--ak-linje);
+  --mk-border: var(--ak-linje);
+  --mk-hairline: var(--ak-linje-hard);
+  --mk-inverse: var(--ak-tekst);
 
-  --mk-fg: #141413;
-  --mk-ink-soft: #3d3d3a;
-  --mk-muted: #5e5d59;
-  --mk-mid: #b0aea5;
+  --mk-fg: var(--ak-tekst);
+  --mk-ink-soft: var(--ak-dempet);
+  --mk-muted: var(--ak-dempet);
+  --mk-mid: var(--ak-svak);
 
-  --mk-ink: #141413;
-  --mk-ink-2: #1d1c1a;
+  --mk-ink: var(--ak-tekst);
+  --mk-ink-2: var(--ak-tekst);
 
-  --mk-cta: #141413;
-  --mk-on-cta: #faf9f5;
-  --mk-cta-hover: #3d3d3a;
+  --mk-cta: var(--ak-signal-fyll);
+  --mk-on-cta: var(--ak-signal-tekst);
+  --mk-cta-hover: var(--ak-signal);
 
-  --mk-accent: #d97757;
-  --mk-accent-fg: #b85c3d;
-  --mk-accent-soft: rgba(217, 119, 87, 0.12);
+  --mk-accent: var(--ak-signal);
+  --mk-accent-fg: var(--ak-signal);
+  --mk-accent-soft: var(--ak-signal-myk);
 
-  --mk-olive: #788c5d;
-  --mk-sky: #6a9bcc;
+  --mk-olive: var(--ak-fag);
+  --mk-sky: var(--ak-v-hq);
 }
 
 @theme inline {
@@ -340,7 +343,7 @@ html[data-v2-tema="dark"] {
   --color-mk-olive: var(--mk-olive);
   --color-mk-sky: var(--mk-sky);
 
-  --font-mk-serif: var(--font-lora), Georgia, serif;
+  --font-mk-serif: var(--ak-sans); /* BRO 04.09: Lora er ute av merket */
 
   /* Fase 1 token-konvergens: aliasene peker nå på DS-tokenene (var(--bg) osv.)
    * der navnene er løftet globalt. border/input/destructive/success/warning

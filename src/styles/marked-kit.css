@@ -41,68 +41,71 @@
      denne låsen arver hele marketing-flaten produkt-mørk.
      Verdiene er de samme som --mk-* i globals.css. */
   color-scheme: light;
-  --mkit-bg: #faf9f5;
-  --mkit-surface: #ffffff;
-  --mkit-soft: #f0eee6;
-  --mkit-soft-hover: #e8e6dc;
-  --mkit-surface-warm: #e3dacc;
-  --mkit-border: #e8e6dc;
-  --mkit-hairline: #d1cfc5;
-  --mkit-inverse: #000000;
-  --mkit-fg: #141413;
-  --mkit-ink-soft: #3d3d3a;
-  --mkit-muted: #5e5d59;
-  --mkit-mid: #b0aea5;
-  --mkit-text-tertiary: #87867f;
-  --mkit-cta: #141413;
-  --mkit-on-cta: #faf9f5;
-  --mkit-cta-hover: #3d3d3a;
-  --mkit-accent: #d97757;
-  --mkit-accent-soft: rgba(217, 119, 87, 0.12);
-  --mkit-accent-fg: #b85c3d;
-  --mkit-on-accent: #141413;
-  --mkit-up: #63784a;
-  --mkit-dn: #a85536;
-  --mkit-info: #46719f;
-  --mkit-shadow: 0 1px 0 rgba(20, 20, 19, 0.03), 0 18px 40px rgba(20, 20, 19, 0.05);
-  --mkit-focus: #d97757;
-  --mkit-logo-mark: #141413;
-  --mkit-logo-dot: #d97757;
-  --mkit-accent-deep: #c6613f;
+  /* BRO (04.09.2026): --mkit-* peker på AK Golf-masteren (--ak-*, lastet av
+     (marketing)/layout.tsx) til hver side er portert. Hele fila SLETTES i siste
+     PR i docs/superpowers/plans/2026-09-04-marked-ak-golf-port.md. */
+  --mkit-bg: var(--ak-grunn);
+  --mkit-surface: var(--ak-ark);
+  --mkit-soft: var(--ak-grunn-senk);
+  --mkit-soft-hover: var(--ak-linje);
+  --mkit-surface-warm: var(--ak-grunn-senk);
+  --mkit-border: var(--ak-linje);
+  --mkit-hairline: var(--ak-linje-hard);
+  --mkit-inverse: var(--ak-tekst);
+  --mkit-fg: var(--ak-tekst);
+  --mkit-ink-soft: var(--ak-dempet);
+  --mkit-muted: var(--ak-dempet);
+  --mkit-mid: var(--ak-svak);
+  --mkit-text-tertiary: var(--ak-dempet);
+  --mkit-cta: var(--ak-signal-fyll);
+  --mkit-on-cta: var(--ak-signal-tekst);
+  --mkit-cta-hover: var(--ak-signal);
+  --mkit-accent: var(--ak-signal);
+  --mkit-accent-soft: var(--ak-signal-myk);
+  --mkit-accent-fg: var(--ak-signal);
+  --mkit-on-accent: var(--ak-signal-tekst);
+  --mkit-up: var(--ak-ok);
+  --mkit-dn: var(--ak-feil);
+  --mkit-info: var(--ak-v-hq);
+  --mkit-shadow: var(--ak-loft-2);
+  --mkit-focus: var(--ak-signal);
+  --mkit-logo-mark: var(--ak-tekst);
+  --mkit-logo-dot: var(--ak-signal);
+  --mkit-accent-deep: var(--ak-signal-fyll);
 
   /* Skrift. Lå i :root i det slettede tokensettet — flyttet hit 01.09.2026
      sammen med resten, så skallet er selvforsynt og ikke kan miste dem igjen. */
-  --mkit-ui: var(--font-poppins), Arial, system-ui, sans-serif;
-  --mkit-disp: var(--mkit-ui);
-  --mkit-body: var(--font-lora), Georgia, "Times New Roman", serif;
-  --mkit-mono: var(--font-ibm-plex-mono), ui-monospace, monospace;
+  --mkit-ui: var(--ak-sans);
+  --mkit-disp: var(--ak-display);
+  --mkit-body: var(--ak-sans);
+  --mkit-mono: var(--ak-mono);
 
   /* Typeskala */
-  --mkit-text-hero: 56px;
-  --mkit-text-section: 40px;
-  --mkit-text-prose-lg: 22px;
-  --mkit-text-prose: 18px;
-  --mkit-text-nav: 16px;
-  --mkit-text-eyebrow: 12px;
+  --mkit-text-hero: var(--ak-t-hero);
+  --mkit-text-section: var(--ak-t-seksjon);
+  --mkit-text-prose-lg: var(--ak-t-21);
+  --mkit-text-prose: var(--ak-t-17);
+  --mkit-text-nav: var(--ak-t-15);
+  --mkit-text-eyebrow: var(--ak-t-11);
 
   /* Rom */
-  --mkit-s1: 4px;
-  --mkit-s2: 8px;
-  --mkit-s3: 12px;
-  --mkit-s4: 16px;
-  --mkit-s5: 24px;
-  --mkit-s6: 32px;
-  --mkit-s7: 48px;
-  --mkit-s8: 64px;
-  --mkit-s9: 96px;
+  --mkit-s1: var(--ak-r-1);
+  --mkit-s2: var(--ak-r-2);
+  --mkit-s3: var(--ak-r-3);
+  --mkit-s4: var(--ak-r-4);
+  --mkit-s5: var(--ak-r-5);
+  --mkit-s6: var(--ak-r-6);
+  --mkit-s7: var(--ak-r-7);
+  --mkit-s8: var(--ak-r-8);
+  --mkit-s9: var(--ak-r-9);
 
   /* Form */
-  --mkit-r: 12px;
-  --mkit-r-md: 16px;
-  --mkit-r-pill: 999px;
+  --mkit-r: var(--ak-hjorne-md);
+  --mkit-r-md: var(--ak-hjorne-lg);
+  --mkit-r-pill: var(--ak-hjorne-pill);
 
   /* Trykkflate og lagdeling */
-  --mkit-tap: 44px;
+  --mkit-tap: var(--ak-treff);
   --mkit-tap-lg: 48px;
   --mkit-z-sticky: 10;
 }
