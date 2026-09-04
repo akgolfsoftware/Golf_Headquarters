@@ -43,7 +43,7 @@ function Etikett({
   required,
 }: {
   children: React.ReactNode;
-  hjelp?: "lFase" | "pyramideAkse";
+  hjelp?: "lFase" | "pyramideAkse" | "periodetype";
   required?: boolean;
 }) {
   return (
@@ -62,7 +62,7 @@ function Felt({
   children,
 }: {
   label: React.ReactNode;
-  hjelp?: "lFase" | "pyramideAkse";
+  hjelp?: "lFase" | "pyramideAkse" | "periodetype";
   required?: boolean;
   children: React.ReactNode;
 }) {
@@ -184,7 +184,7 @@ export function AdminPlanMalNyV2() {
                 ))}
               </select>
             </Felt>
-            <Felt label="Fase" hjelp="lFase">
+            <Felt label="Fase" hjelp="periodetype">
               <select
                 className="v2-focus"
                 value={lPhase}

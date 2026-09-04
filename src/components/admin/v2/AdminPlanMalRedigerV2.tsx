@@ -111,7 +111,7 @@ const FELT_STIL: React.CSSProperties = {
   boxSizing: "border-box",
 };
 
-type HjelpKey = "lFase" | "pyramideAkse" | "skillArea" | "miljo" | "csNivaa";
+type HjelpKey = "lFase" | "pyramideAkse" | "skillArea" | "miljo" | "csNivaa" | "periodetype";
 
 function Etikett({ children, hjelp }: { children: React.ReactNode; hjelp?: HjelpKey }) {
   return (
@@ -543,7 +543,7 @@ export function AdminPlanMalRedigerV2({
                 ))}
               </select>
             </Felt>
-            <Felt label="Fase" hjelp="lFase">
+            <Felt label="Fase" hjelp="periodetype">
               <select value={lPhase} onChange={(e) => setLPhase(e.target.value as LPhase)} style={FELT_STIL}>
                 {FASE_ALLE.map((f) => (
                   <option key={f} value={f}>{FASE_LABEL[f]}</option>
