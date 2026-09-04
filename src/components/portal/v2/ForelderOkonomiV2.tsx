@@ -10,6 +10,7 @@
  */
 
 import { TL } from "@/lib/v2/train-lock";
+import { tierEtikett } from "@/lib/tier-etikett";
 import {
   FoSkjerm,
   FoHode,
@@ -51,7 +52,7 @@ function belop(ore: number): string {
 }
 
 function tierTekst(b: ForelderOkonomiBarn): string {
-  const deler: string[] = [b.tier === "GRATIS" ? "Uten abonnement" : b.tier];
+  const deler: string[] = [b.tier === "GRATIS" ? "Uten abonnement" : tierEtikett(b.tier)];
   if (b.monthlyCredits > 0) {
     deler.push(`${b.creditsRemaining} av ${b.monthlyCredits} timer igjen`);
   }
