@@ -1,5 +1,6 @@
 "use client";
 import { TL } from "@/lib/v2/train-lock";
+import { tierEtikett } from "@/lib/tier-etikett";
 /**
  * AgencyOS Spiller-tester — v2 (retning C «Presis»). Coach-view av EN spillers
  * testprofil, rekomponert fra /admin/spillere/[id]/tester mot v2-biblioteket
@@ -69,7 +70,7 @@ export function AdminSpillerTesterV2({
                 padding: "3px 7px",
               }}
             >
-              {player.tier}
+              {tierEtikett(player.tier)}
             </span>
           </div>
           <div style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, marginTop: 4 }}>
