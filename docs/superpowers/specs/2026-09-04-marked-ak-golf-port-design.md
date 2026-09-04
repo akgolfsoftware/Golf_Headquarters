@@ -24,16 +24,24 @@ kommer tilbake.
 
 ### 2.1 Tokens
 `src/styles/ak-golf.css` importerer token-filene **direkte fra masterens speil**, i masterens
-egen rekkefølge (`designsystem/ak-golf/styles.css`), minus `fonter.css` (fonter lastes med
-next/font, se 2.2):
+egen rekkefølge (`designsystem/ak-golf/styles.css`):
 
 ```
-farge → type → rom → bevegelse → instrument → semantikk → grunnlag → samspill → tailwind-theme
+farge → type → rom → bevegelse → instrument → samspill → (scopet grunnlag)
 ```
+
+Tre av masterens filer holdes ute, målt 04.09.2026:
+- `fonter.css` — Google-Fonts-`@import`; fontene lastes med next/font (2.2).
+- `semantikk.css` — fem navn uten prefiks kolliderer med produktet (`--font-display`,
+  `--radius-card`, `--radius-pill`, `--text-faint`, `--text-muted`).
+- `grunnlag.css` — setter `body`, `h1`–`h4` og `a` globalt; i Next er all CSS global og ville
+  truffet `/portal` ved klientnavigasjon. Gjenskapes som `src/styles/ak-golf-grunnlag.css`
+  med hver regel scopet under `.ak-marked`. Endres masteren, endres denne.
 
 Filene er generert fra `tokens.json` av `scripts/ak-golf-tokens.mjs`, som allerede feiler
 `npm run verify` ved skli eller kontrastbrudd. Å importere dem uendret gjør at samme vakt dekker
-koden. Ingen verdi kopieres inn i `src/`.
+koden. Ingen verdi kopieres inn i `src/`. Ingen `--ak-*`-navn kolliderer med produktet (målt:
+produktet har kun `--ak-cookie-h`, `--ak-topbar-h`, `--ak-sd-*`).
 
 `ak-golf.css` importeres i `src/app/(marketing)/layout.tsx`, ikke i `globals.css`, så tokene
 lever kun på markedsflaten. Tailwind-klassene `ak-*` (`bg-ak-grunn`, `text-ak-signal`,
