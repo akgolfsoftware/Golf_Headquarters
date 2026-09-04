@@ -684,6 +684,11 @@ html[data-v2-tema="dark"] ::selection {
  * Kilde: designsystem/team-norway/. Se src/styles/team-norway-tokens.css.
  */
 @import "../styles/team-norway-tokens.css";
+
+/* AK Golf-merket (marked). Kun @theme-aliasene — selve --ak-*-verdiene lastes
+ * av src/styles/ak-golf.css i (marketing)/layout.tsx, aldri her. Klassene er
+ * ak-prefikset og kolliderer ikke med produktet. */
+@import "../../designsystem/ak-golf/tokens/tailwind-theme.css";
 @import "../components/athletic/golfdata/golfdata.css";
 
 /* ---------- AK Golf type helpers ----------
