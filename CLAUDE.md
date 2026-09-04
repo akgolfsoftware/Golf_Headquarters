@@ -63,7 +63,10 @@ er stort sett ikke startet.
      porter til Train-lock med toggle, ikke bare ett kort. Default (lys/mørk uten cookie)
      er ikke endret av denne beslutningen — kun at begge moduser MÅ virke. Selve
      skjermporten gjenstår (B8 = Player, bølge T = AgencyOS, forelder-porten ubestemt
-     session ennå). Marketing/landingssider har egen fasit (ak-golf-website) og omfattes ikke —
+     session ennå). Marketing/landingssider (`(marketing)/*` unntatt `/stats` og åpen `/booking`) følger
+     **AK Golf-masteren** (`designsystem/ak-golf/`, Anders 04.09.2026 — se beslutninger.md
+     §MARKEDSSIDENE PORTERES TIL MASTER AK GOLF), ikke Train-lock; `ak-golf-website` er utgått
+     som fasit —
      **UNNTAK (Anders 28.08.2026): hele booking-flyten, også `/booking` på marketing, er
      Train-lock (lys variant).** PR #650 porter den; ny booking-kode leser aldri `T`/`--p-*`-verdier
      direkte (broen i `booking-paper.css` peker dem til `--tl-*`).
