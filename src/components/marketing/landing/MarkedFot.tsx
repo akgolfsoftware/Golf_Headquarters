@@ -60,8 +60,9 @@ export function MarkedFot() {
               maxWidth: "34ch",
             }}
           >
-            AK Golf Academy drives av Anders Kristiansen — golfcoach, sportssjef i
-            Gamle Fredrikstad Golfklubb og coach ved WANG Toppidrett Fredrikstad.
+            AK Golf Academy drives av Anders Kristiansen — golfcoach, sportslig
+            ansvarlig i Gamle Fredrikstad Golfklubb og sportssjef ved WANG Toppidrett
+            Fredrikstad.
           </p>
           <div className="mt-ak-4 flex flex-wrap gap-ak-2">
             <Merkelapp variant="junior">Junior Academy</Merkelapp>
@@ -93,9 +94,6 @@ export function MarkedFot() {
           <a href="mailto:post@akgolf.no" className="ak-maalt" style={LENKE}>
             post@akgolf.no
           </a>
-          <span style={{ fontSize: "var(--ak-t-15)", color: "var(--ak-dempet)" }}>
-            Vi svarer innen én virkedag.
-          </span>
           <span style={{ fontSize: "var(--ak-t-13)", color: "var(--ak-dempet)" }}>
             Gamle Fredrikstad GK, Fredrikstad
           </span>

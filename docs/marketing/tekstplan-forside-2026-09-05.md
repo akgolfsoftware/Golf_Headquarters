@@ -17,6 +17,9 @@ hva som er bekreftet, og hva som fortsatt venter på Anders.
 - **Tegningen:** `designsystem/ak-golf/ui_kits/markedsside/Deler.jsx` (Mac 1440 + mobil
   390, lys). Teksten under er hentet ordrett derfra.
 - **Reglene:** tekstkonseptet §5 «Tonen» + `designsystem/ak-golf/guidelines/08-sprak.md`.
+- **Der kitet og denne planen spriker (bunnens roller, svartidsløftet, bildeteksten),
+  vinner planen** (Anders 05.09). Masteren i Claude Design rettes av Anders; speilet i
+  repoet (`designsystem/ak-golf/ui_kits/`) redigeres ikke, det overskrives ved neste speiling.
 - **Reisen mot kitet:** avgjøres av Anders på preview (spec §3, plan Task 7 runde 1).
   Denne planen gjelder teksten uansett hvilken struktur som velges — spec §3 rad 1 låser
   tekstkilden til tekstkonseptet, ikke til kitets layout.
@@ -33,8 +36,8 @@ Status: **FERDIG** (kan stå live) · **BEKREFT** (venter på Anders, se §2) ·
 | Overskrift | Uansett hvor du står, vet du hva du trener på. | FERDIG |
 | Ingress | Vi måler svingen din, tallene dine og spillet ditt. Så får du en plan som holder mellom øktene — og oppfølging som gjør at den faktisk blir fulgt. | FERDIG |
 | Knapp | Book kartleggingsøkt | FERDIG |
-| Under heroen | Første økt er 90 minutter, til vanlig timepris. Vi kartlegger hvor du står, og du går derfra med en skriftlig plan. | BEKREFT — spørsmål 4 |
-| Bildetekst | Trackman står i hver økt. Det er der planen begynner. | BEKREFT — spørsmål 7 |
+| Under heroen | Første økt er 90 minutter, til vanlig timepris. Vi kartlegger hvor du står, og du går derfra med en skriftlig plan. | FERDIG — bekreftet 05.09 |
+| Bildetekst | ~~Trackman står i hver økt. Det er der planen begynner.~~ Tatt ut (Anders 05.09). Bildet står uten bildetekst; alt-teksten beholdes. | FERDIG |
 
 ### 1.2 Problemet
 
@@ -60,14 +63,17 @@ onsdagsøkta skal inneholde.
 
 | Felt | Tekst | Status |
 |---|---|---|
-| Talleblokk | Carry, driver · **+12,4 m** · Trackman · 12.05–18.08.2026 · 38 målinger | EKSEMPEL — spørsmål 5 |
-| Forklaring under tallet | Vi endret ikke svingen først. Vi målte i seks økter, fant at Attack Angle var problemet, og jobbet bare med den. | EKSEMPEL — spørsmål 5 |
+| Talleblokk | Carry, driver · **+12,4 m** · Trackman · 12.05–18.08.2026 · 38 målinger | EKSEMPEL — bygges med synlig «Eksempel»-merke (Anders 05.09) |
+| Forklaring under tallet | Vi endret ikke svingen først. Vi målte i seks økter, fant at Attack Angle var problemet, og jobbet bare med den. | EKSEMPEL — bygges med synlig «Eksempel»-merke (Anders 05.09) |
 | Fagtekst | Attack Angle beskriver om køllehodet går opp eller ned i treffet. Går det nedover med driver, får du høy Spin Rate og lav Launch Angle — du taper lengde uten å slå svakere. | FERDIG |
 | Avslutning | Du kjenner det ikke. Det er derfor vi måler det. | FERDIG |
 
 Tallet, datoene og antallet er oppdiktet. Tekstkonseptet §«Før dette kan publiseres»
 slår fast (målt i basen 01.09) at Attack Angle ikke lagres i det hele tatt — kun
 `carryDistance` har verdier. Fagteksten er sann uavhengig av tallet.
+
+**Avgjort 05.09:** blokken vises, med merkelappen «Eksempel» synlig ved tallet. Byttes til
+målt tall når basen har det (MASTERPLAN 0.14 og 0.15).
 
 ### 1.5 Junior Academy
 
@@ -85,8 +91,8 @@ publikum (forelderen) — det bryter ikke «én handling per flate».
 
 | Spørsmål | Svar | Status |
 |---|---|---|
-| Hva koster kartleggingsøkta? | 90 minutter til vanlig timepris. Du går derfra med en skriftlig plan. Ingen binding etterpå. | BEKREFT — spørsmål 4 (samme løfte som 1.1) |
-| Må barnet ha eget utstyr? | Nei. Vi har køller til lån i alle gruppene til og med U12. | BEKREFT — spørsmål 6 |
+| Hva koster kartleggingsøkta? | 90 minutter til vanlig timepris. Du går derfra med en skriftlig plan. Ingen binding etterpå. | FERDIG — bekreftet 05.09 |
+| Må barnet ha eget utstyr? | Nei. Vi har køller til lån i alle gruppene til og med U12. | FERDIG — bekreftet 05.09 |
 | Hva koster appen? | Testbatteriet, statistikken og verktøyene er gratis, uten utløpsdato. Resten av appen koster 299 kr i måneden. Har du coaching-pakke, følger appen med. | FERDIG — stemmer med `docs/platform/BUSINESS-RULES.md` §Abonnement |
 | Hvordan settes gruppene? | Etter alder og erfaring, ikke etter hvem som meldte seg først. Vi finner riktig gruppe i en samtale før oppstart. | FERDIG |
 
@@ -104,26 +110,27 @@ publikum (forelderen) — det bryter ikke «én handling per flate».
 
 | Felt | Tekst | Status |
 |---|---|---|
-| Beskrivelse | AK Golf Academy drives av Anders Kristiansen — golfcoach, sportssjef i Gamle Fredrikstad Golfklubb og coach ved WANG Toppidrett Fredrikstad. | BEKREFT — spørsmål 1 |
+| Beskrivelse | AK Golf Academy drives av Anders Kristiansen — golfcoach, sportslig ansvarlig i Gamle Fredrikstad Golfklubb og sportssjef ved WANG Toppidrett Fredrikstad. | FERDIG — Anders 05.09. Kitet sier «sportssjef i GFGK og coach ved WANG»; planen vinner. Rettet i live bunn samme dag |
 | Lenker | AK Golf HQ · Skarpnord · Kontakt | FERDIG |
-| E-post | post@akgolf.no | BEKREFT — spørsmål 2 |
-| Svartid | Vi svarer innen én virkedag. | BEKREFT — spørsmål 3 |
-| Sted | Gamle Fredrikstad GK, Fredrikstad | BEKREFT — spørsmål 1 |
-| Telefon / org.nr | ikke i kitet | BEKREFT — spørsmål 2 |
+| E-post | post@akgolf.no | FERDIG — adressen finnes (05.09) |
+| Svartid | ~~Vi svarer innen én virkedag.~~ Holdes tilbake til Jarvis er i drift (Anders 05.09). Tatt ut av live bunn samme dag. | UTSATT — MASTERPLAN 18.34 |
+| Sted | Gamle Fredrikstad GK, Fredrikstad | FERDIG — bekreftet 05.09 |
+| Telefon / org.nr | ikke i kitet | Ikke svart 05.09. Holdes ute som i kitet til Anders sier noe annet |
 
-## 2. Sju spørsmål til Anders — én runde, korte svar
+## 2. Sju spørsmål — svart av Anders 05.09.2026
 
-| # | Spørsmål | Hvor det treffer |
-|---|---|---|
-| 1 | Skal GFGK og WANG stå i bunnen som Anders' roller, slik kitet tegner det? De er B2B-relasjoner, ikke tilbud til publikum. | 1.8 |
-| 2 | Finnes `post@akgolf.no`? Live i dag er `akgolfgroup@gmail.com`. Skal telefon og org.nr inn i bunnen? | 1.8 |
-| 3 | «Vi svarer innen én virkedag» — et løfte du kan holde? | 1.8 |
-| 4 | «Du går derfra med en skriftlig plan» — hver gang, uansett hvem som coacher? | 1.1, 1.6 |
-| 5 | Talleblokken i 1.4: (a) vis den med synlig «Eksempel»-merke, eller (b) hold seksjonen tilbake til ekte tall finnes. **Anbefalt: (a)** — seksjonen bærer «vi måler»-løftet, og merket er ærlig. | 1.4 |
-| 6 | «Køller til lån i alle gruppene til og med U12» — stemmer det? | 1.6 |
-| 7 | «Trackman står i hver økt» — også ute på bane og range? | 1.1 |
+| # | Spørsmål | Svar | Konsekvens |
+|---|---|---|---|
+| 1 | GFGK og WANG i bunnen? | Ja: **sportslig ansvarlig GFGK, sportssjef WANG Toppidrett Fredrikstad** | 1.8 rettet; live bunn og hero-rollene i Reisen rettet samme dag |
+| 2 | Finnes `post@akgolf.no`? Telefon og org.nr? | Ja, adressen finnes. Telefon/org.nr ikke svart | 1.8; telefon/org.nr holdes ute |
+| 3 | «Vi svarer innen én virkedag»? | «Når komplette Jarvis-systemet er oppe så gjør vi det» | Løftet holdes tilbake på alle markedsflater, MASTERPLAN 18.34 |
+| 4 | Skriftlig plan hver gang? | Ja | 1.1 og 1.6 FERDIG |
+| 5 | Talleblokk med «Eksempel»-merke eller vent? | Anbefalingen: merke | 1.4 bygges med synlig merke |
+| 6 | Køller til lån t.o.m. U12? | Ja | 1.6 FERDIG |
+| 7 | «Trackman står i hver økt»? | Ta bort | 1.1 bildetekst ut |
 
-Ingen av disse blokkerer Reisen-mot-kitet-valget. Alle blokkerer merge av runde 1.
+Teksten er låst. Ingenting i §2 blokkerer runde 1 lenger. Registrert i
+`.claude/rules/beslutninger.md` §FORSIDETEKSTEN LÅST.
 
 ## 3. Tatt ut fra planen 31.08, og hvorfor
 
@@ -142,6 +149,10 @@ Ingen av disse blokkerer Reisen-mot-kitet-valget. Alle blokkerer merge av runde 
 - **«angrepsvinkel».** Nå Attack Angle, med norsk forklaring etter (08-sprak.md).
 - **Pris per økt og pakkepriser.** STEG 18.9. Forsiden sier «vanlig timepris» og
   lenker til booking — ingen tall hardkodes.
+- **Svartidsløftet på de gamle sidene.** «Innen 1 virkedag» står fortsatt live i
+  `MarkedKontaktV2.tsx`, `MarkedJuniorV2.tsx`, `kontakt/page.tsx` (meta) og
+  `kontakt/actions.ts` (kvittering). De bygges om i runde 2 og 6 — løftet tas ut der,
+  se MASTERPLAN 18.34.
 
 ## 4. Skal ikke skrives (uendret fra 31.08, gjelder fortsatt)
 
@@ -154,7 +165,7 @@ Ingen av disse blokkerer Reisen-mot-kitet-valget. Alle blokkerer merge av runde 
 
 ## 5. Rekkefølge
 
-1. Anders svarer på de sju i §2.
+1. ~~Anders svarer på de sju i §2.~~ Gjort 05.09.
 2. Reisen mot kitet avgjøres på preview (plan Task 7, runde 1-særregelen).
 3. Teksten bygges inn ordrett fra denne fila. Ingen ny tekst diktes opp i koden.
 4. Siden leses høyt én gang. Skurrer en setning når den sies, skrives den om her først.
