@@ -1,5 +1,13 @@
 # Tekstplan — forsiden akgolf.no
 
+> **PENSJONERT 05.09.2026.** Erstattet av `docs/marketing/tekstplan-forside-2026-09-05.md`.
+> Denne planen pekte på en animert side (`animated-sites/ak-golf/`) som ikke finnes i
+> repoet, ble aldri lenket fra MASTERPLAN eller spec, og tre punkter ble overstyrt av
+> beslutninger tatt etterpå: spillersitat (strøket 01.09, ingen vitnesbyrd),
+> «angrepsvinkel» (skal være Attack Angle), og sju knapper (én handling per flate).
+> Tekstkilden for forsiden er nå tekstkonseptet 01.09 §2, tegnet i masterens kit.
+> Alt under er historikk, ikke byggeordre.
+
 Skrevet 31.08.2026. Gjelder den animerte landingssiden (`animated-sites/ak-golf/`)
 og Claude Design-lerretet «AK Golf landingsside». Én plan, to flater — samme tekst.
 
