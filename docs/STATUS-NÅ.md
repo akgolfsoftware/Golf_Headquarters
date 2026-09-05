@@ -2,7 +2,7 @@
 
 > **Hva dette er:** ett snapshot av hvor plattformen står akkurat nå. Oppdater datoen + relevante linjer når noe vesentlig endrer seg.
 
-**Sist oppdatert:** 2026-09-04 (målt mot `origin/main` @ `cd170d2`, PR #774; pluss fundament-PR-en for markedssidene → Master AK Golf, STEG 18.33 — 18 sider + opprydding gjenstår).
+**Sist oppdatert:** 2026-09-05 (prosjektrevisjon — målt mot `origin/main` @ `a653a3afd`, PR #783, prod-DB lesende, Vercel env-navn, GitHub. Fullt grunnlag: `docs/beslutningsgrunnlag/prosjektrevisjon-2026-09-05.md`).
 **Betaling:** koden er klar siden 30.08 (Stripe-cutover 1. september). Live-nøkler/DNS/DKIM er
 Anders-oppgaver i Vercel/Stripe-panelet og kan ikke verifiseres fra kode/git — se
 `docs/MASTERPLAN-GJENSTAAENDE.md` STEG 1 og 10.8.
@@ -11,7 +11,31 @@ over alt gjenstående (konsolidert 30.08 fra det tidligere LANSERINGSPLAN-KOMPLE
 **Produktretning låst 30.08:** `.claude/rules/beslutninger.md` §«PRODUKTRETNING — åtte svar».
 Den blokken er fasit for Innsikt og Analyse og vinner over eldre dokumenter.
 
-## Hovedbildet 03.09 (målt mot origin/main @ 8197eb3 — 14 PR-er merget siden 02.09 kveld, #754–#768)
+## Hovedbildet 05.09 (prosjektrevisjon — målt mot origin/main @ a653a3afd, 57 PR-er merget siden 01.09)
+
+- **Milepælen «FULL lanserbar» er flyttet fra tor 24.09 til tor 11.09** (24.09 = siste frist).
+  13 av 16 økter i STEG 1B var levert 04.09. Gjenstår: Ø1-rest (årspris-id), 0.4 (TALENT-sonde),
+  **Ø2 ekte kjøp — IKKE gjort** (0 abonnement med Stripe-id i prod 05.09), Ø13 (PR #771 draft,
+  urørt siden 03.09) og Ø16 (røyk-test, Anders). Ny dato per økt i MASTERPLAN 1B.
+- **`STRIPE_PRICE_ID_PRO_AAR` mangler fortsatt i Vercel production** (remålt 05.09) — årsplanen
+  kan ikke kjøpes.
+- **Prod-basen 05.09:** 41 brukere (39 test, 2 ekte: Anders + Markus), 0 ekte spillere,
+  33 PLAYERHQ + 6 COACHING aktive abonnement (alle seedet), 0 kjøp, `daily_active_users` sist
+  02.09, TrackMan 431 slag med 0 Ball Speed (0.14 uendret), `test_shots` finnes ikke (N4),
+  `drift_rutiner` 6 rader, `tn_posts` 0, `clubName` fylt på 382 av 398 497 entries, 2 push-abonnement.
+- **Kodehelse:** `tsc` grønn, `eslint` grønn, `npm test` 2030/2030, 475 ruter.
+- **Design 05.09:** 146/210 fasiter sitert (ned fra 148), 5/12 rigg-rader kalibrert, 98/104
+  familier uten rigg-rad, mekanisk audit uendret siden 04.09 (laveste `portal/planlegge` 3,2),
+  markedssider **0 av 18 portert** etter fundamentet #775. Datert designplan i fire spor:
+  MASTERPLAN **2.13**.
+- **STRANDET ARBEID — STEG 19.6/19.7:** grenen `feat/steg-19-6-19-7-kontrast-tallhero` finnes
+  kun lokalt i hovedmappa (`~/Developer/akgolf-hq`): én upushet commit (03.09) + **150
+  ukommitterte filer**. Ingen PR. `useCountUp` står fortsatt i `core.tsx:284` i main — linjen
+  under (03.09) om at TallHero «slutter å telle opp» var feil. Sweepen bytter signalfarge til
+  `TL.text` i stedet for til et par som består — må gjennomgås før PR (beslutningskø 30).
+- **Ingen retro i `docs/feillogg.md` etter 02.09** tross 15 PR-er 03.–05.09.
+
+## Hovedbildet 03.09 (historikk — målt mot origin/main @ 8197eb3 — 14 PR-er merget siden 02.09 kveld, #754–#768)
 
 - **D1–D4 (beslutningskø fra 02.09) alle svart og gjennomført samme dag:** D1 Plan-fasit
   (PH-07/08) → Ø4 sign-off gjort (#767, restavvik forklart: `getDashboardData()` bruker ikke
@@ -25,8 +49,7 @@ Den blokken er fasit for Innsikt og Analyse og vinner over eldre dokumenter.
 - **STEG 19 (designkvalitet, Anders-beslutning 03.09) bygget samme økt (#763, #765):**
   `scripts/design-audit.mjs` (mekanisk poeng per skjermfamilie) + `check-tl-kontrast.mjs`
   (fant 12 kontrastbrudd i Train-lock lys modus — Vei A valgt: regel om hvor signalfarger kan
-  stå, ingen `--tl-*`-verdi endret) + bro-dokument fra AK Golf-masteren. `TallHero` slutter å
-  telle opp (`useCountUp` fjernet der, urørt tre andre steder).
+  stå, ingen `--tl-*`-verdi endret) + bro-dokument fra AK Golf-masteren. ~~`TallHero` slutter å telle opp (`useCountUp` fjernet der, urørt tre andre steder).~~ **RETTET 05.09: dette ble aldri merget** — arbeidet ligger upushet i hovedmappa (se 05.09 over); kun beslutningen (#765, docs) er i main.
   Beslutningskø punkt 25 og 26 lukket.
   **Design-skills skrudd på globalt (#757, #761):** impeccable, design-taste-frontend,
   high-end-visual-design + 25 motion/konsistens-skills — se CLAUDE.md §Skill-bruk.
@@ -145,17 +168,20 @@ Den blokken er fasit for Innsikt og Analyse og vinner over eldre dokumenter.
 - **Bølge N (TalentHQ inn i PlayerHQ):** N1–N3 og N5 inne. Plan gjenopprettet
   (`docs/MASTERPLAN-GJENSTAAENDE.md` STEG 11). Neste: N4 merge + N6-kvitter.
 
-## Neste steg
+## Neste steg (05.09)
 
-1. **Anders (kan bare du):** Stripe live-nøkler · DNS `akgolf.no` · Resend DKIM ·
-   aktiverings-e-post til gjenværende spillere · WANG B4/B5 · PORTPLAN §A1 (9 av 10
-   beslutninger gjenstår) · MD-fil med turneringer/lenker (STEG 17.5d). Full liste:
-   MASTERPLAN «Samlet beslutningskø».
-2. **Kode:** STEG 16 (datagrunnlag/kjønn/måling — stort sett ikke startet), STEG 17-resten
-   (17.3 driftsmodell delte protokoller, 17.4 pilot, 17.5a/c landskapsanalyse), 15.13-resten
-   (SG-hub coach-modus, krever Anders), Ø13 (Spiller 360 — resten av D3), Ø17 (WB-06 årsplan,
-   fasit-siteringen selv), videre pixel-diff-kalibrering av de ~140 gjenværende skjermene,
-   STEG 19-resten (audit-programmet, se MASTERPLAN §STEG 19).
+1. **Anders, man 08.09 (én økt, alt i betaling):** gi `price_`-id for årsplanen · si ja til
+   TALENT-sonden · **ekte kjøp 299 kr** med eget kort (Ø2) → verifiser webhook → FULL → oppsigelse
+   → TALENT → refusjon. Deretter: godkjenn ny milepæl 11.09 (beslutningskø 29) og hva som skjer
+   med 19.6/19.7-arbeidet i hovedmappa (beslutningskø 30). Panel: DNS `akgolf.no`, Resend DKIM.
+2. **Agent, tir 09.09:** PR #771 (Ø13) ferdig og merget · 19.6/19.7-redning fra hovedmappa.
+3. **Agent, ons 10.09:** skjermbilde S3-03 med ekte data + etterkontroll-skjermbilder på
+   15.4/15.5/15.6/15.8/15.9.
+4. **Anders, tor 11.09:** Ø16 røyk-test → **FULL lanserbar**. Uka etter: WANG/GFGK-onboarding (7.2).
+5. **Parallelt fra man 08.09:** markedssidene én per økt (spor B i 2.13). Fra man 14.09:
+   produktskjermene Ø19–Ø26 (spor A). Fra 24.09: STEG 19-auditen (spor C).
+6. **Uendret bakteppe:** STEG 16 (datagrunnlag/kjønn), STEG 17-resten (TN pilot), 15.13-resten,
+   STEG 13 (SG-app) — ingen av dem på lanseringens kritiske vei.
 
 ## PR-status fra 30.08-pikselbølgen (avsluttet)
 
@@ -170,9 +196,13 @@ parallelt. Ingen var en delmengde av den andre, så begge måtte slås sammen ma
 
 ## Åpne risikopunkter
 
-1. **Betaling 1. september** — koden er klar siden 30.08. Stripe live-nøklenes faktiske status
-   er IKKE verifiserbar fra kode/git (ingen Stripe-relaterte commits etter 30.08) — sjekk
-   Vercel-panelet direkte.
+1. **Betalingskjeden er aldri kjørt ekte (05.09).** Live-nøkler er inne (`cs_live_` målt 02.09),
+   men 0 abonnement har Stripe-id i prod — webhook → FULL → oppsigelse er kun testet i testmodus.
+   Ø2 (Anders' eget kort) er den ene handlingen som avgjør om 1. september-lanseringen virker.
+   Årsplanen kan uansett ikke kjøpes før `STRIPE_PRICE_ID_PRO_AAR` er satt.
+1b. **Strandet 19.6/19.7-arbeid i hovedmappa** (150 ukommitterte filer + én upushet commit)
+   tapes ved neste `git checkout` der, eller merges ukritisk. Se beslutningskø 30.
+1c. **Null ekte brukere fem dager etter lansering.** WANG/GFGK-onboarding (7.2) er ikke startet.
 2. **Skjermbilde-gaten er delvis kjørt (PR #731/#732, 01.09.2026):** pixel-diff-riggen har
    kalibrert 5 av 9 rutekartlagte skjermer med målt restavvik; 4 er dokumentert
    ukalibrerbare (se `tests/visual/skjerm-mapping.ts`). Av 210 fasitfiler totalt er 148 sitert
@@ -232,9 +262,10 @@ planen; PR-tabellen og steg 0-listen der er utdatert (alle PR-ene merget 17.08).
 
 ## Verifisert vs. antatt
 
-- **Verifisert 02.09 (kode/git):** MASTERPLAN-radene er krysset mot `src/`, `prisma/schema.prisma`
-  og `gh pr list`/`gh pr view` for PR-status, målt mot `origin/main` @ `c40d57b40`.
-- **DB-tall** er fortsatt fra målingen 13.08/30.08 (mot `DIRECT_URL`, prod) — ikke reverifisert
-  i denne runden, remåles ved neste aktiveringspush.
-- **Antatt / panel (kun Anders kan verifisere):** Stripe live-nøkler, Resend DKIM,
-  DNS `akgolf.no`, SCREENTEST-rotasjonens faktiske tilstand for `screentest-parent`.
+- **Verifisert 05.09 (kode/git/prod):** STATUS-NÅ og MASTERPLAN 1B/1D/10.10/15.2/19.6/19.7/
+  0.14/N4/18.33 krysset mot `src/`, `gh pr list`/`gh pr view`, lokale og eksterne grener, prod-DB
+  (lesende tellinger via `DIRECT_URL`) og `vercel env ls production` (kun navn), målt mot
+  `origin/main` @ `a653a3afd`. `tsc`/`eslint`/`npm test` kjørt i arbeidskopien.
+- **Antatt / panel (kun Anders kan verifisere):** Stripe-checkout-branding, Resend DKIM,
+  DNS `akgolf.no`, SCREENTEST-rotasjonens faktiske tilstand for `screentest-parent`, om
+  hovedmappa-økten (19.6/19.7) fortsatt er aktiv.
