@@ -121,6 +121,9 @@ Gruppene er satt etter alder og erfaring, ikke etter hvem som meldte seg først.
 
 Send oss alder og litt om erfaringen, så tar vi kontakt innen én virkedag.
 
+> *Svartidsløftet holdes tilbake til Jarvis er i drift (Anders 05.09.2026, MASTERPLAN 18.34).
+> Bygg runde 2 med: «Send oss alder og litt om erfaringen, så tar vi kontakt.»*
+
 *Knapp:* Meld interesse
 
 ### Priser — `/priser`
@@ -157,6 +160,9 @@ Det finnes ingen mangel på golfråd. Det finnes en mangel på diagnose. Vi bruk
 
 **Hero**
 > Vi svarer innen én virkedag.
+
+> *Holdes tilbake til Jarvis er i drift (Anders 05.09.2026, MASTERPLAN 18.34). Runde 6
+> trenger en annen hero — forslag, ikke vedtatt: «Skriv noen ord, så tar vi kontakt.»*
 
 Spørsmål om coaching, juniorprogram eller bedriftsarrangement? Skriv noen ord, så tar vi kontakt.
 
@@ -242,8 +248,11 @@ Det er også en del av å måle.
 ```
 Juniorgruppene starter 1. mai. Vi har plass i U10 og U14.
 
-Send alder og litt om erfaringen, så finner vi riktig gruppe. Svar innen én virkedag.
+Send alder og litt om erfaringen, så finner vi riktig gruppe.
 ```
+
+*«Svar innen én virkedag» er tatt ut av malen 05.09.2026 — løftet holdes tilbake til Jarvis
+er i drift (MASTERPLAN 18.34).*
 
 **Regel:** Si hva som faktisk er ledig. Aldri «få plasser igjen» hvis det ikke stemmer.
 

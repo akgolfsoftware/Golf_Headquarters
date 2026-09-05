@@ -105,9 +105,9 @@ export function MarkedForside() {
       {/* Troverdighetsbånd */}
       <section className="border-b border-mk-border">
         <div className="mx-auto flex max-w-6xl flex-col gap-3 px-6 py-8 font-mono text-xs uppercase tracking-[0.18em] text-mk-muted sm:flex-row sm:items-center sm:justify-between">
-          <span>Coach — WANG Toppidrett Fredrikstad</span>
+          <span>Sportssjef — WANG Toppidrett Fredrikstad</span>
           <span className="hidden text-mk-hairline sm:inline">·</span>
-          <span>Sportssjef — Gamle Fredrikstad GK</span>
+          <span>Sportslig ansvarlig — Gamle Fredrikstad GK</span>
           <span className="hidden text-mk-hairline sm:inline">·</span>
           <span>Team Norway Golf-tilknytning</span>
         </div>

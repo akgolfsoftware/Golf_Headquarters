@@ -28,6 +28,22 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
 
 ## Beslutningene (september 2026)
 
+- **FORSIDETEKSTEN LÅST — SVARTIDSLØFTET VENTER PÅ JARVIS (Anders 05.09.2026, i økt):** sju
+  svar på `docs/marketing/tekstplan-forside-2026-09-05.md` §2. (1) Bunnen oppgir rollene
+  **«sportslig ansvarlig i Gamle Fredrikstad Golfklubb og sportssjef ved WANG Toppidrett
+  Fredrikstad»** — overstyrer kitets «sportssjef i GFGK og coach ved WANG». (2) `post@akgolf.no`
+  finnes og brukes. (3) **«Vi svarer innen én virkedag» loves ikke før Jarvis er i drift** —
+  Anders: «Når komplette Jarvis-systemet er oppe så gjør vi det.» Gjelder alle markedsflater
+  (bunn, `/kontakt`-hero, `/junior`-avslutning, e-postmalen «Påmelding åpen»), ikke bare forsiden.
+  (4) «Skriftlig plan» etter kartleggingsøkta står. (5) Talleblokken «Slik leser du tallet»
+  bygges med synlig «Eksempel»-merke til basen har målte tall (MASTERPLAN 0.14/0.15). (6) Køller
+  til lån t.o.m. U12 stemmer. (7) Bildeteksten «Trackman står i hver økt» tas ut.
+  **Kitet i masteren (`designsystem/ak-golf/ui_kits/markedsside/`) avviker på 1, 3 og 7 —
+  planen vinner; masteren rettes av Anders i Claude Design, speilet redigeres ikke.**
+  **Gjort 05.09:** bunnen (`MarkedFot.tsx`) rettet på 1 og 3, hero-rollene i
+  `MarkedForsideReise.tsx`/`MarkedForside.tsx` rettet på 1. **Arbeidet:** MASTERPLAN 18.33 rad 1
+  (teksten låst) og ny rad 18.34 (løftet inn igjen når Jarvis er i drift).
+
 - **MARKEDSSIDENE PORTERES TIL MASTER AK GOLF — ALLE 22, FULL PORT (Anders 04.09.2026, i økt):**
   de 22 markedssidene under `src/app/(marketing)/` bygges om til AK Golf-masteren
   (`designsystem/ak-golf/`, speil av Claude Design-prosjektet `3e5c851c`): verkstedpalett, IBM
