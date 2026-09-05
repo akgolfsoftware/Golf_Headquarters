@@ -1082,10 +1082,11 @@ export function DagNivaa({ dag, valgt, onVelg, dager, onFlytt }: {
   }
   const denneDagIndex = dager?.findIndex((d) => d.dato === dag.dato && d.dow === dag.dow) ?? -1;
   return (
-    // Fasit: designsystem/train-lock/P-05 iPhone Agenda.dc.html (rad-geometri:
+    // Fasit: designsystem/train-lock/P-06 iPhone Dag ark.dc.html (rad-geometri:
     // fast 44px tidskolonne, caps-metalinje, hairline mellom rader i én kortflate
     // i stedet for egen boks per rad — dag-velger + ett-dag-av-gangen beholdt,
-    // fasiten scroller alle 7 dagene i ett — se GAP-notat i WorkbenchV2Mobil.tsx).
+    // fasiten tegner dagen som ark over uken — se GAP-notat i WorkbenchV2Mobil.tsx).
+    // Desktop: designsystem/train-lock/P-01 Mac Uke.dc.html. P-05 er utgått (02.09.2026).
     <Kort eyebrow={`${dag.dow} ${dag.dato} · tidslinje`} action={<Caps size={9}>{dag.events.length} økter</Caps>} pad="4px 16px">
       <div style={{ display: "flex", flexDirection: "column" }}>
         {dag.events.map((o, j) => {
