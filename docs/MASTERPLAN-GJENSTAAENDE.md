@@ -225,6 +225,10 @@ pluss S3 (Ø11–Ø13) som er den eneste av de 29 på den kritiske veien.
 
 ### 2.13 — Datert designplan, fire spor (05.09.2026)
 
+> **05.09 kveld:** STEG 20 (komplett designport, åtte faser) er nå overbygget over sporene her —
+> spor A/C/D fortsetter innenfor fasene, spor B er uendret. Se STEG 20 og beslutninger.md
+> §KOMPLETT DESIGNPORT.
+
 Fra prosjektrevisjonen 05.09 (`docs/beslutningsgrunnlag/prosjektrevisjon-2026-09-05.md` §9).
 Målt utgangspunkt 05.09: 146/210 fasiter sitert · 5/12 rigg-rader kalibrert · 98/104
 skjermfamilier uten rigg-rad · mekanisk audit uendret 04.09 → 05.09 (laveste `portal/planlegge`
@@ -725,6 +729,25 @@ Golf-masteren bidrar med prinsipper og vakter. **Starter etter 24.09 (STEG 1B)**
 | 19.7 | **AVGJORT 03.09.2026 (fjern telling) — se samme beslutning.** Fjern `useCountUp`-kallet i `TallHero` (`src/components/v2/core.tsx:284`, 13 bruksfiler) — vis målt tall direkte. `useCountUp` sine tre andre kallere (`KpiTile.tsx`, `MegV2.tsx`, `WorkbenchV2.tsx`) røres IKKE, egen vurdering senere | **STRANDET — samme lokale commit som 19.6** (`58782d944`, ikke pushet). `useCountUp` står fortsatt i `core.tsx:284` og `:332` i main per 05.09 — STATUS-NÅ 03.09 påsto feilaktig at dette var levert. Redning tir 09.09 (2.13) |
 | 19.8 | Terskel og gjenaudit: familie er ferdig ved 18/20 manuelt og ≥ 8,0 mekanisk, bekreftet av ny kjøring. Retro i `docs/feillogg.md` per batch | Løpende |
 
+## STEG 20 — Komplett designport (plan 05.09, beslutning §KOMPLETT DESIGNPORT)
+
+Planen: `docs/superpowers/plans/2026-09-05-komplett-designport.md` (+ vedlegg med alle 197 skjermrader).
+Målt 05.09: 5 skjermer målt mot tegning · 34 bygget ikke målt · 65 kjent avvik · 33 delvis · 40 ikke
+bygget · 6 kun filhode byttet. Prinsipp: lansering først; «sitert er ikke bygget»; canvas → bygg →
+audit → skjermbilde 390/1280 × lys/mørk → riggrad, én skjerm om gangen. Ferdig-punktene står i
+planens §5. Kalender: 91 økter à 2 t — Ø16 rundt 24.09 med to spor; 11.09 (kø 29) krever tre.
+
+| # | Fase | Økter | Blokkert av |
+|---|---|---|---|
+| 20.1 | **Fase 1 — Grunnmur:** vakter i verify/CI (ingen-paper, bredde, kontrast-rapport, dekningsvakt, signalfarge-tellevakt), TallHero 19.7, datofrys gjennom Plan/Analyse, riggfelt (fasitDato/minutter/aarsak/viewport/selector) + AO-radene, filhode-konvensjon + `check-fasit-sitering.mjs`, nattlig måling + lys/mørk-røyk i `playwright.yml`, døde Paper-verktøy slettes, dokumentrydding (D3 registreres, HANDOFF:263–266, proto-batchene, 2.12-rader). Oppgaveplan: `docs/superpowers/plans/2026-09-05-designport-fase-1.md`, én økt per fil-seksjon | 8 | Ingen — kan starte nå |
+| 20.2 | **Fase 2 — Lanseringskjeden PlayerHQ:** PH-01, PH-07, PH-08, PH-17, ME-04, WB-04 (spiller), B1, B3, PH-04 (som side), PH-05, PH-06 (+ Lukk → I dag), KA-04, auth/PH-19 røyk + gate, ME-03 (ny canvas) | 8 | Kø 28 (handling), kø 29, kø 31 |
+| 20.3 | **Fase 3 — Lanseringskjeden AgencyOS + krysslenke 3:** AX-01-hull, WB-01 (mot WB-07), WB-03, WB-06 riggrad, S3-01/AG-08 (PR #771), AG-10, AG-04/AG-03 (ukalibrert m/ dato), WB-04 coach, demo-sløyfe som e2e uten Stripe-kall. Ø16 krever fase 1+2+3 | 8 | Kø 31 pkt 9 (ikke blokkerende) |
+| 20.4 | **Fase 4 — F3 (Ø18–Ø26):** ~~PH-21~~ (levert #789) · A-19a · TE-08 · TE-07 (canvas 390+lys) · TE-10 · TE-12 · TE-09/Analyse Gapping · TE-03 · TE-04/05-tekst · A-15 (kø 27) | 15 | PEI-tall, gapping-valg, kø 27 |
+| 20.5 | **Fase 5 — Resten av PlayerHQ:** bulk-sign-off 28 skjermer (tre rader per økt, hver med gate), reell port av BO-01/BO-03/åpen `/booking`/ME-02/ME-01/GP-01, beslutningsskjermer (BO-02, PH-18, GP-02, TU-01/02, RU-04/PH-20, PH-09, Runder, `/portal/kalender`), spillerens Workbench (P-02/P-03/P-04/P-06/P-07, WB-05) | 18 | Kø 31 pkt 13–17 |
+| 20.6 | **Fase 6 — Resten av AgencyOS + AgenticOS:** omtegning AG-04/AG-03/AO-01 mot AX-01 (etter kø 32), A-serien (inspektør → A-17 + A-02c, drill-felt, drag, måned), AG-huber, AO-paneler, KA-01/02/05, GAP-1/2 | 16 | **Kø 32** + Ø15 + kø 31 pkt 18–21 |
+| 20.7 | **Fase 7 — Forelder:** FO-01–FO-10 riggrad i lys+mørk, barn/[childId] canvas, 9.8-rutene signeres, `side-tilstand.tsx` uten AK Golf-tokens, død kode ut, security-review | 6 | Kø 31 pkt 22–24 |
+| 20.8 | **Fase 8 — iPad som tredje skall:** TL_BREKK samles, ett skall i `shell.tsx`, de 45 filene med iPad-ramme | 12 | Kø 31 pkt 25–27 (etter FULL) |
+
 ## Samlet beslutningskø til Anders (alt på ett sted)
 
 1. ~~#490-merge~~ **MERGET 31.08.** ~~Gjenstår kun: team-wang-tilgangen varig åpen eller sperret igjen (= punkt 13)~~ — punkt 13 er avgjort, se der.
@@ -757,3 +780,5 @@ Golf-masteren bidrar med prinsipper og vakter. **Starter etter 24.09 (STEG 1B)**
 29. **Ny milepæl for FULL lanserbar: tor 11.09 (senest 24.09) — godkjennes?** Foreslått 05.09 fordi 13 av 16 økter i 1B var levert 04.09. **Trenger Anders.**
 30. **19.6/19.7-arbeidet i hovedmappa (150 ukommitterte filer + én upushet commit):** godkjenn at neste økt i `~/Developer/akgolf-hq` gjennomgår sweepen mot Vei A og pusher — eller at den forkastes og gjøres på nytt. **Trenger Anders** (det er en annen økts arbeid).
 27. **Ø18/A-15 — spillerens årsplan (spurt 04.09.2026):** `WorkbenchV2.tsx` har allerede en ferdig, fungerende årsplan-canvas (`WorkbenchAarsplan.tsx`, drag-and-drop mot ekte `SeasonPlan`-data) — men KUN synlig når `proMode` (`wbMode !== "standard"`) er på. Er denne canvasen den reelle årsplanen fra nå av (og evt. bør `proMode`-defaulten endres), eller skal fasitens A-15 (seks separate lesbare spor: periodisering/turneringer A-B-C/samlinger/tester/utviklingsplan/volum+ACWR) bygges som en NY, egen lesevisning? Fire av seks A-15-spor har ekte datakilder allerede identifisert (04.09): `TournamentEntry.planTier` (A/B/C), `GroupSchedule.kind` (samlinger), `TestResult` (tester), `src/lib/health/belastning.ts` (ACWR). Kun P-posisjon-historikk over tid mangler helt — bygges eventuelt kun som «nå»-markør, ikke progresjon. **Trenger Anders.**
+31. **Designport-planens beslutninger (planen §6, spurt 05.09.2026):** stilles én fase om gangen. Før fase 2: (1) kø 28 årspris-id + ekte kjøp (handling) · (2) kø 29 milepæl — anbefalt 24.09, 11.09 krever tre spor · (3) TALENT-sonde ja · (4) ME-03 ny canvas · (5) flyt for coach-publisert økt fra I dag — anbefalt behold dagens side før lansering · (6) merk PH-15, gammel DG-01, A-07, A-08, AG-05, AG-13 som utgått. Før fase 3–8: punkt 9–27 i planen (PEI-tall, gapping-tegning, kø 27, booking-adresse, PH-09, ark vs side, IA-svar, kø 30, A-serie-nyansen, AO-brytere, forelder, iPad). **Trenger Anders — én melding per fase.**
+32. **Coach-menyen i AgencyOS — AX-01 eller prototypens fem faner? (spurt 05.09.2026, trengs før fase 6):** prototypen fra Claude Design (02.09) har Cockpit · Innboks · Stall · Kalender · Workbench + Mer-ark og 72 px rail; AX-01 (låst 25.08) og koden (`src/lib/agencyos/skall-ia.ts`, `shell.tsx`) har Stall · Workbench · Kø · Jarvis · Meg og 232 px rail. Valg: (A) AX-01 står, prototypen rettes — **anbefalt** (låst beslutning, bygget, STEG 15 levert) · (B) prototypen vinner — reverserer 25.08 og 15.1/15.4/15.7/15.10 · (C) AX-01 står, prototypen merkes «demo». Samme melding: Ø15 (Kommunikasjon under Kø eller Meg). Blokkerer omtegning av AG-04/AG-03/AO-01 (20.6) og synk av `proto/`. **Trenger Anders.**
