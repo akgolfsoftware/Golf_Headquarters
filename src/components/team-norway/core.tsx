@@ -177,12 +177,12 @@ export function TnRail({
 }) {
   return (
     <div
+      className="hidden lg:flex"
       style={{
         width: 232,
         flexShrink: 0,
         background: TN.surfaceCard,
         borderRight: `1px solid ${TN.borderSubtle}`,
-        display: "flex",
         flexDirection: "column",
         padding: "20px 14px 18px",
         gap: 20,
