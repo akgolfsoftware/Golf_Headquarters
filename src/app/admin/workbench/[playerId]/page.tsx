@@ -57,7 +57,7 @@ export default async function WorkbenchUkePage({ params, searchParams }: Props) 
     const manedRes = await loadMonth({ monthStart: raw, mode, playerId });
     return (
       <div style={TL_SCOPE}>
-        <V2Shell aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name ?? undefined}>
+        <V2Shell bredde="full" aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name ?? undefined}>
           {manedRes.ok ? (
             <WorkbenchLeseflate
               playerId={playerId}
@@ -79,7 +79,7 @@ export default async function WorkbenchUkePage({ params, searchParams }: Props) 
     const aarRes = await loadYear({ year, mode, playerId });
     return (
       <div style={TL_SCOPE}>
-        <V2Shell aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name ?? undefined}>
+        <V2Shell bredde="full" aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name ?? undefined}>
           {aarRes.ok ? (
             <WorkbenchLeseflate
               playerId={playerId}
@@ -105,7 +105,7 @@ export default async function WorkbenchUkePage({ params, searchParams }: Props) 
 
   return (
     <div style={TL_SCOPE}>
-      <V2Shell aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name ?? undefined}>
+      <V2Shell bredde="full" aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name ?? undefined}>
         {ukeRes.ok ? (
           <WorkbenchUke
             playerId={playerId}

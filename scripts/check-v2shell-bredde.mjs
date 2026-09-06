@@ -4,8 +4,8 @@
 // Kjør: node scripts/check-v2shell-bredde.mjs
 // Exit 0 = OK, 1 = filer uten bredde.
 //
-// Merk: kobles inn i `npm run verify` FØRST når antall feilende filer er lavt
-// (~≤20). Ellers blir main rød. Se docs/port/GROK-NATTORDRE-2026-08-06.md §4b B.
+// I `npm run verify` og CI fra 06.09.2026 (designport fase 1, økt 1) — null filer
+// feilet da den ble koblet inn. Rødt her betyr en ny <V2Shell> uten bredde-prop.
 
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
