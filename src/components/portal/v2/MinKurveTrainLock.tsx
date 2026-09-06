@@ -78,9 +78,21 @@ const meta13: React.CSSProperties = { fontSize: 13, color: TL.mute, lineHeight: 
 const kropp15: React.CSSProperties = { fontSize: 15, fontWeight: 600, lineHeight: 1.5 };
 const tab: React.CSSProperties = { fontVariantNumeric: "tabular-nums" };
 
-function Flate({ children, pad = 20, style }: { children: React.ReactNode; pad?: number | string; style?: React.CSSProperties }) {
+function Flate({
+  children,
+  pad = 20,
+  style,
+  role,
+  "aria-label": ariaLabel,
+}: {
+  children: React.ReactNode;
+  pad?: number | string;
+  style?: React.CSSProperties;
+  role?: string;
+  "aria-label"?: string;
+}) {
   return (
-    <div style={{ background: TL.elev, borderRadius: TL.radius.card, padding: pad, minWidth: 0, ...style }}>
+    <div role={role} aria-label={ariaLabel} style={{ background: TL.elev, borderRadius: TL.radius.card, padding: pad, minWidth: 0, ...style }}>
       {children}
     </div>
   );
@@ -239,10 +251,11 @@ function plasseringTekst(p: KurvePunkt): string {
 function TurneringslisteMobil({ punkter }: { punkter: KurvePunkt[] }) {
   const nyesteForst = [...punkter].reverse();
   return (
-    <Flate pad="4px 20px">
+    <Flate pad="4px 20px" role="list">
       {nyesteForst.map((p, i) => (
         <div
           key={p.turneringId}
+          role="listitem"
           style={{
             display: "flex",
             alignItems: "center",
@@ -275,10 +288,10 @@ function TurneringstabellDesktop({ punkter }: { punkter: KurvePunkt[] }) {
     { width: 150, textAlign: "right" },
   ];
   return (
-    <Flate pad="4px 22px">
-      <div style={{ display: "flex", alignItems: "center", gap: 16, padding: "10px 0", borderBottom: `1px solid ${TL.hair}` }}>
+    <Flate pad="4px 22px" role="table" aria-label="Turneringshistorikk">
+      <div role="row" style={{ display: "flex", alignItems: "center", gap: 16, padding: "10px 0", borderBottom: `1px solid ${TL.hair}` }}>
         {["Dato", "Turnering", "Runder", "Snitt til-par", "Plassering"].map((t, i) => (
-          <span key={t} style={{ ...caps, ...kol[i] }}>
+          <span key={t} role="columnheader" style={{ ...caps, ...kol[i] }}>
             {t}
           </span>
         ))}
@@ -286,6 +299,7 @@ function TurneringstabellDesktop({ punkter }: { punkter: KurvePunkt[] }) {
       {nyesteForst.map((p, i) => (
         <div
           key={p.turneringId}
+          role="row"
           style={{
             display: "flex",
             alignItems: "center",
@@ -294,11 +308,11 @@ function TurneringstabellDesktop({ punkter }: { punkter: KurvePunkt[] }) {
             borderBottom: i < nyesteForst.length - 1 ? `1px solid ${TL.hair}` : "none",
           }}
         >
-          <span style={{ ...kol[0], fontSize: 15, fontWeight: 600, color: TL.mute, ...tab }}>{fmtDato(p.dato)}</span>
-          <span style={{ ...kol[1], fontSize: 15, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.navn}</span>
-          <span style={{ ...kol[2], fontSize: 15, fontWeight: 600, ...tab }}>{p.runder}</span>
-          <span style={{ ...kol[3], fontSize: 15, fontWeight: 600, ...tab }}>{fmtToPar(p.snitt)}</span>
-          <span style={{ ...kol[4], fontSize: 15, fontWeight: 600, color: TL.mute, ...tab }}>{plasseringTekst(p)}</span>
+          <span role="cell" style={{ ...kol[0], fontSize: 15, fontWeight: 600, color: TL.mute, ...tab }}>{fmtDato(p.dato)}</span>
+          <span role="cell" style={{ ...kol[1], fontSize: 15, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.navn}</span>
+          <span role="cell" style={{ ...kol[2], fontSize: 15, fontWeight: 600, ...tab }}>{p.runder}</span>
+          <span role="cell" style={{ ...kol[3], fontSize: 15, fontWeight: 600, ...tab }}>{fmtToPar(p.snitt)}</span>
+          <span role="cell" style={{ ...kol[4], fontSize: 15, fontWeight: 600, color: TL.mute, ...tab }}>{plasseringTekst(p)}</span>
         </div>
       ))}
     </Flate>
@@ -386,7 +400,7 @@ export function MinKurveTrainLock({ kurve, dataSistHentet, sesongLenker, program
                 padding: "0 18px",
                 borderRadius: TL.radius.pill,
                 background: l.aktiv ? TL.dock : "transparent",
-                color: l.aktiv ? TL.viz.target : TL.mute,
+                color: l.aktiv ? TL.text : TL.mute,
                 display: "flex",
                 alignItems: "center",
                 fontSize: 13,
