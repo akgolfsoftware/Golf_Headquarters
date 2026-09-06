@@ -12,11 +12,14 @@
  * V2Shell (montert i ruten) eier chrome-en.
  */
 
+import { useState } from "react";
 import Link from "next/link";
 import { AnalysereV2, type AnalysereData } from "@/components/portal/v2/AnalysereV2";
 import { Caps, Kort, Tittel, StatusPill, TilbakeLenke, CTAPill, HjelpTips, type StatusTone } from "@/components/v2";
 import { TL } from "@/lib/v2/train-lock";
 import { MIN_MERKBAR_ENDRING, type SgMotSegSelv } from "@/lib/domain/sg-mot-seg-selv";
+import { fmtToPar } from "@/lib/domain/min-kurve";
+import type { VekstrateData } from "@/lib/admin/vekstrate-data";
 import type { Turneringshistorikk } from "@/lib/domain/turneringshistorikk";
 
 /** Norsk eieform: «Rohjan» → «Rohjans», «Alex» → «Alex'». Holder navnet helt. */
@@ -170,6 +173,198 @@ function MotSegSelv({ d }: { d: SgMotSegSelv }) {
   );
 }
 
+/* ── Innsikt — de fire spørsmålene (Anders 2026-08-30) ───────────────────── */
+
+type InnsiktFaneId = "vekstrate" | "tak" | "konkurranse" | "program";
+
+const INNSIKT_FANER: { id: InnsiktFaneId; navn: string; nr: number; sporsmal: string }[] = [
+  { id: "vekstrate", navn: "Vekstrate", nr: 1, sporsmal: "Utvikler hen seg raskt nok?" },
+  { id: "tak", navn: "Tak", nr: 2, sporsmal: "Hvor kan hen nå?" },
+  { id: "konkurranse", navn: "Konkurranse", nr: 3, sporsmal: "Tåler hen konkurranse?" },
+  { id: "program", navn: "Program", nr: 4, sporsmal: "Riktig turneringsprogram?" },
+];
+
+/** Fasitens tekst for de tre fanene som ennå ikke har datamodell (A-19b/c/d). */
+const INNSIKT_KOMMER: Record<Exclude<InnsiktFaneId, "vekstrate">, string> = {
+  tak: "Kommer når aldersbaner (historiske løp for navngitte spillere, MASTERPLAN STEG 16.11) er bygget.",
+  konkurranse: "Kommer når SG-stigen (MASTERPLAN STEG 16.10) er bygget.",
+  program: "Ikke bygget ennå.",
+};
+
+const VEKSTRATE_GEO = { w: 900, h: 220, venstre: 40, hoyre: 860, topp: 20, bunn: 190 };
+
+/** Bygg en path-streng som brytes der serien har hull (`null`), aldri en rett strek over dem. */
+function seriePath(verdier: (number | null)[], x: (i: number) => number, y: (v: number) => number): string {
+  const biter: string[] = [];
+  let forrige = false;
+  verdier.forEach((v, i) => {
+    if (v == null) {
+      forrige = false;
+      return;
+    }
+    biter.push(`${forrige ? "L" : "M"}${x(i)} ${y(v)}`);
+    forrige = true;
+  });
+  return biter.join(" ");
+}
+
+function VekstrateGraf({ punkter }: { punkter: VekstrateData["punkter"] }) {
+  const n = punkter.length;
+  const verdier = punkter.flatMap((p) => [p.spiller, p.kohort]).filter((v): v is number => v != null);
+  const min = Math.floor(Math.min(...verdier)) - 1;
+  const maks = Math.ceil(Math.max(...verdier)) + 1;
+  const spenn = Math.max(1, maks - min);
+  const g = VEKSTRATE_GEO;
+  const x = (i: number) => (n <= 1 ? (g.venstre + g.hoyre) / 2 : g.venstre + (i * (g.hoyre - g.venstre)) / (n - 1));
+  const y = (v: number) => g.topp + ((maks - v) / spenn) * (g.bunn - g.topp);
+
+  const spillerPath = seriePath(
+    punkter.map((p) => p.spiller),
+    x,
+    y,
+  );
+  const kohortPath = seriePath(
+    punkter.map((p) => p.kohort),
+    x,
+    y,
+  );
+
+  return (
+    <svg width="100%" height={g.h} viewBox={`0 0 ${g.w} ${g.h}`} preserveAspectRatio="none" style={{ display: "block", color: TL.text }} aria-hidden="true">
+      <path d={`M${g.venstre} ${g.topp} H${g.hoyre}`} stroke="currentColor" strokeOpacity={0.08} strokeWidth={1} />
+      <path d={`M${g.venstre} ${g.bunn} H${g.hoyre}`} stroke="currentColor" strokeOpacity={0.14} strokeWidth={1.5} />
+      {kohortPath && <path d={kohortPath} stroke={TL.mute} strokeWidth={2.2} strokeDasharray="6 6" fill="none" strokeLinecap="round" />}
+      {punkter.map(
+        (p, i) => p.kohort != null && <circle key={`k${p.aar}`} cx={x(i)} cy={y(p.kohort)} r={5} fill={TL.mute} />,
+      )}
+      {spillerPath && <path d={spillerPath} stroke={TL.viz.dot} strokeWidth={3.2} fill="none" strokeLinecap="round" strokeLinejoin="round" />}
+      {punkter.map(
+        (p, i) =>
+          p.spiller != null && (
+            <circle key={`s${p.aar}`} cx={x(i)} cy={y(p.spiller)} r={i === n - 1 ? 8 : 6} fill={TL.viz.dot} />
+          ),
+      )}
+    </svg>
+  );
+}
+
+/**
+ * «Utvikler hen seg raskt nok» — Innsikt spørsmål 1 av 4 (A-19a/d).
+ *
+ * Kullets vekstrate (grå, stiplet) er coachens egen referanse — PRODUKTRETNING
+ * pkt. 3 sier den vises ALDRI på spillerflaten. Denne komponenten står kun i
+ * AgencyOS. Fane 2–4 mangler datamodell ennå (STEG 16.10/16.11 for tak og
+ * konkurranse) og viser en klarspråk «kommer»-tekst i stedet for tomme tall —
+ * en fane uten innhold er verre enn ingen fane.
+ */
+function Innsikt({ navn, v }: { navn: string; v: VekstrateData }) {
+  const [fane, setFane] = useState<InnsiktFaneId>("vekstrate");
+  const aktiv = INNSIKT_FANER.find((f) => f.id === fane)!;
+
+  return (
+    <Kort
+      eyebrow={`Innsikt · Spørsmål ${aktiv.nr} av 4`}
+      action={
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", justifyContent: "flex-end" }}>
+          {INNSIKT_FANER.map((f) => (
+            <button
+              key={f.id}
+              type="button"
+              onClick={() => setFane(f.id)}
+              className="v2-press v2-focus"
+              style={{
+                height: 36,
+                padding: "0 14px",
+                borderRadius: TL.radius.pill,
+                background: f.id === fane ? TL.dock : "transparent",
+                color: f.id === fane ? TL.text : TL.mute,
+                border: "none",
+                fontSize: 12,
+                fontWeight: 600,
+                cursor: "pointer",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {f.navn}
+            </button>
+          ))}
+        </div>
+      }
+    >
+      <p style={{ margin: "0 0 14px", fontSize: 18, fontWeight: 700, letterSpacing: "-0.01em", color: TL.text }}>{aktiv.sporsmal}</p>
+
+      {fane !== "vekstrate" ? (
+        <p style={{ margin: 0, color: TL.mute, fontSize: 14, lineHeight: 1.55 }}>{INNSIKT_KOMMER[fane]}</p>
+      ) : !v.harSvar ? (
+        <p style={{ margin: 0, color: TL.mute, fontSize: 14, lineHeight: 1.55 }}>{v.grunnlag}</p>
+      ) : (
+        <>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 24, alignItems: "baseline", justifyContent: "space-between" }}>
+            <div>
+              <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>
+                Egen vekstrate
+              </span>
+              <div style={{ marginTop: 6, display: "flex", alignItems: "baseline", gap: 10 }}>
+                <span style={{ fontSize: 40, fontWeight: 700, letterSpacing: "-0.02em", color: TL.text, fontVariantNumeric: "tabular-nums" }}>
+                  {fmtToPar(v.egenRate!)}
+                </span>
+                <span style={{ fontSize: 14, fontWeight: 600, color: TL.mute }}>slag per sesong</span>
+              </div>
+            </div>
+            {v.harKohort && (
+              <div style={{ textAlign: "right" }}>
+                <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>
+                  Kullets vekstrate
+                </span>
+                <div style={{ marginTop: 6, fontSize: 22, fontWeight: 700, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
+                  {fmtToPar(v.kohortRate!)} slag per sesong
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div style={{ marginTop: 16 }}>
+            <VekstrateGraf punkter={v.punkter} />
+            <div style={{ display: "flex", justifyContent: "space-between", paddingTop: 8 }}>
+              {v.punkter.map((p) => (
+                <span
+                  key={p.aar}
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: p.aar === v.tilAar ? TL.text : TL.mute,
+                    fontVariantNumeric: "tabular-nums",
+                  }}
+                >
+                  {p.aar}
+                  {p.spiller != null ? ` · ${fmtToPar(p.spiller)}` : ""}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div style={{ marginTop: 14, paddingTop: 14, borderTop: `1px solid ${TL.hair}`, display: "flex", flexWrap: "wrap", gap: 18 }}>
+            <span style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: TL.mute }}>
+              <span style={{ width: 16, height: 3, borderRadius: 2, background: TL.viz.dot, flexShrink: 0 }} />
+              {navn}
+            </span>
+            {v.harKohort && (
+              <span style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: TL.mute }}>
+                <span style={{ width: 16, height: 3, borderRadius: 2, background: TL.mute, flexShrink: 0 }} />
+                Kullets snitt
+              </span>
+            )}
+          </div>
+
+          <p style={{ margin: "12px 0 0", fontSize: 12, color: TL.mute, fontFamily: TL.font.mono }}>
+            {v.grunnlag} Kilde: Norsk turneringsdata.
+          </p>
+        </>
+      )}
+    </Kort>
+  );
+}
+
 export interface AdminSpillerAnalyseV2Props {
   /** Fullt spillernavn (kanon: alltid fullt navn). */
   navn: string;
@@ -178,11 +373,13 @@ export interface AdminSpillerAnalyseV2Props {
   data: AnalysereData;
   /** «Hvor taper hen slag, mot seg selv» — beslutning 2026-08-30. */
   motSegSelv: SgMotSegSelv;
+  /** «Utvikler hen seg raskt nok» — Innsikt spørsmål 1 av 4 (A-19a). */
+  vekstrate: VekstrateData;
   /** Spillerens egne turneringsresultater — samme visning som spilleren ser. */
   turneringer?: Turneringshistorikk;
 }
 
-export function AdminSpillerAnalyseV2({ navn, spillerId, data, motSegSelv, turneringer }: AdminSpillerAnalyseV2Props) {
+export function AdminSpillerAnalyseV2({ navn, spillerId, data, motSegSelv, vekstrate, turneringer }: AdminSpillerAnalyseV2Props) {
   const kat = data.minGolf.kategori;
   const aar = new Date().getFullYear();
   const eyebrow = kat
@@ -225,6 +422,8 @@ export function AdminSpillerAnalyseV2({ navn, spillerId, data, motSegSelv, turne
           </div>
           {/* Coachens hovedspørsmål, over fanene: hvor taper hen slag. */}
           <MotSegSelv d={motSegSelv} />
+          {/* Innsikt — de fire spørsmålene, fane 1 (Vekstrate) med ekte data. */}
+          <Innsikt navn={navn} v={vekstrate} />
           {/* B: én primær CTA — Workbench / plan */}
           <Link href={`/admin/spillere/${spillerId}/plan`} style={{ textDecoration: "none", display: "block" }}>
             <CTAPill icon="layout-dashboard" full={mobile}>
