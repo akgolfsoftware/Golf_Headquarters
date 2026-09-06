@@ -35,7 +35,7 @@ export default async function GruppepostPage({ params }: { params: Promise<{ gro
   const aktivId = tnAktivFraPath(`/team-norway/${groupId}`);
   const punkter: TnMenyPunkt[] = [
     { type: "overskrift", label: "Kommunikasjon" },
-    { type: "lenke", label: "Gruppeposter", href: `/team-norway/${groupId}`, aktiv: aktivId === "gruppeposter" },
+    { type: "lenke", label: "Gruppeposter", href: `/team-norway/${groupId}`, aktiv: aktivId === "oversikt" },
     { type: "lenke", label: "Dokumenter", href: `/team-norway/${groupId}/dokumenter` },
   ];
 

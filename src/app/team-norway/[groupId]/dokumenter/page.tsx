@@ -37,7 +37,7 @@ export default async function DokumenterPage({ params }: { params: Promise<{ gro
   const punkter: TnMenyPunkt[] = [
     { type: "overskrift", label: "Kommunikasjon" },
     { type: "lenke", label: "Gruppeposter", href: `/team-norway/${groupId}` },
-    { type: "lenke", label: "Dokumenter", href: `/team-norway/${groupId}/dokumenter`, aktiv: aktivId === "dokumenter" },
+    { type: "lenke", label: "Dokumenter", href: `/team-norway/${groupId}/dokumenter`, aktiv: aktivId === "oversikt" },
   ];
 
   const rader: TnDokumentRadVisning[] = dokumenter.map((d) => ({
