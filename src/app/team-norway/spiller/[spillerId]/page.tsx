@@ -67,7 +67,7 @@ export default async function SpillerpostPage({ params }: { params: Promise<{ sp
 
   return (
     <div style={{ display: "flex", minHeight: "100vh", background: TN.surfacePage, fontFamily: TN.font.body }}>
-      <TnRail punkter={punkter} bruker={{ navn: bruker.name ?? "Ukjent", rolle: erTrenerHer ? "Trener" : "Spiller/foresatt" }} />
+      <TnRail punkter={punkter} bruker={{ navn: bruker.name ?? "Ukjent", rolle: erTrenerHer ? "Trener" : "Spiller/foresatt"  }} orgNavn="Team Norway" orgUndertittel="Junior" />
       <div style={{ flex: 1, minWidth: 0, padding: "28px 32px", display: "flex", flexDirection: "column", gap: 20, maxWidth: 900 }}>
         <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
           <span style={{ width: 4, height: 46, borderRadius: TN.radius.full, background: TN.red600, flexShrink: 0, marginTop: 2 }} />

@@ -56,6 +56,8 @@ export default async function DokumenterPage({ params }: { params: Promise<{ gro
       <TnRail
         punkter={punkter}
         bruker={{ navn: bruker.name ?? "Ukjent", rolle: rolle === "TRENER" ? "Trener" : rolle === "SPILLER" ? "Spiller" : "Foresatt" }}
+        orgNavn="Team Norway"
+        orgUndertittel="Junior"
       />
       <div style={{ flex: 1, minWidth: 0, padding: "28px 32px", display: "flex", flexDirection: "column", gap: 20, maxWidth: 900 }}>
         <div>
