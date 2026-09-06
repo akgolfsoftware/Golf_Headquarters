@@ -6,16 +6,21 @@ import { TL } from "@/lib/v2/train-lock";
  * kompakt sesong-liste i stedet for tett rad, og en generisk utfellbar
  * seksjon for Bibliotek/Balanse (erstatter side-kolonnene).
  *
- * Fasit: designsystem/train-lock/P-05 iPhone Agenda.dc.html — rad-geometrien
- * i DagNivaa (WorkbenchV2.tsx) er justert til fasitens 44px tidskolonne +
- * caps-metalinje + hairline-rader. GAP (dokumentert, ikke bygget — IA-
- * endring utenfor en piksel-bølge): fasiten scroller ALLE 7 dagene i én
- * liste med all-day TURN som egen caps-linje og «Start banespill»-CTA på
- * turneringsdagen; denne komponenten beholder dag-stripe-velger + ett-dag-
- * av-gangen (samme mønster som «I dag»/PH-familien) — å bygge om til
- * full-ukes-scroll er en navigasjonsendring, ikke en pikseljustering.
- * P-06/P-07 (dag+ark / ny økt-ark) er av samme grunn ikke portet her —
- * de bruker WorkbenchV2Sheets.tsx sine eksisterende ark uendret.
+ * Fasit (telefon): designsystem/train-lock/P-06 iPhone Dag ark.dc.html (dag +
+ * ark — rad-geometrien i DagNivaa (WorkbenchV2.tsx) følger fasitens 44px
+ * tidskolonne + caps-metalinje + hairline-rader) og
+ * designsystem/train-lock/P-07 iPhone Ny okt ark.dc.html (ny økt-arket, som
+ * WorkbenchV2Sheets.tsx bærer). Desktop-fasiten er P-01 Mac Uke.dc.html
+ * (se WorkbenchV2.tsx).
+ *
+ * `P-05` (iPhone Agenda) er UTGÅTT som fasit for spillerens Workbench
+ * (Anders 02.09.2026, beslutninger.md §PLAN-FASIT, WORKBENCH-KANON OG
+ * BETALINGSTEST): den tegner CS/M-vokabular fra før opplåsingen 18.08 og en
+ * annen IA. Siteringen ble byttet 05.09.2026 (A1) — layouten er uendret.
+ * GAP-notatet fra Ø5 står fortsatt: fasiten (P-06) tegner dagen som ett ark
+ * over uken; denne komponenten beholder dag-stripe-velger + ett-dag-av-gangen
+ * (samme mønster som «I dag»/PH-familien) — å bygge om til fasitens
+ * ark-navigasjon er en IA-endring, ikke en pikseljustering.
  *
  * Ærlighet (prosjekt-regel): ingen egne data-antakelser — gjenbruker
  * WorkbenchV2s DagNivaa (samme agenda-rendering som desktop Økt-nivå) og
