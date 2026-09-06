@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { hentGruppetidslinje, hentViewerRolleIGruppe } from "@/lib/domain/tn-post";
+import { tnAktivFraPath } from "@/lib/domain/tn-skall";
 import { TN } from "@/lib/v2/team-norway";
 import { TnRail, type TnMenyPunkt } from "@/components/team-norway/core";
 import { TnPostKomponer } from "@/components/team-norway/tn-post-komponer";
@@ -31,9 +32,10 @@ export default async function GruppepostPage({ params }: { params: Promise<{ gro
     return opprettGruppepostAction(groupId, input);
   }
 
+  const aktivId = tnAktivFraPath(`/team-norway/${groupId}`);
   const punkter: TnMenyPunkt[] = [
     { type: "overskrift", label: "Kommunikasjon" },
-    { type: "lenke", label: "Gruppeposter", href: `/team-norway/${groupId}`, aktiv: true },
+    { type: "lenke", label: "Gruppeposter", href: `/team-norway/${groupId}`, aktiv: aktivId === "gruppeposter" },
     { type: "lenke", label: "Dokumenter", href: `/team-norway/${groupId}/dokumenter` },
   ];
 

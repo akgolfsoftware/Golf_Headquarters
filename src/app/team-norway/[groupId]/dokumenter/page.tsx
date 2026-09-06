@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { hentGruppeDokumenter, hentViewerRolleIGruppe } from "@/lib/domain/tn-post";
+import { tnAktivFraPath } from "@/lib/domain/tn-skall";
 import { TN } from "@/lib/v2/team-norway";
 import { TnRail, type TnMenyPunkt } from "@/components/team-norway/core";
 import { TnDokumentOpplasting } from "@/components/team-norway/tn-dokument-opplasting";
@@ -32,10 +33,11 @@ export default async function DokumenterPage({ params }: { params: Promise<{ gro
     return opprettGruppeDokumentAction(groupId, form);
   }
 
+  const aktivId = tnAktivFraPath(`/team-norway/${groupId}/dokumenter`);
   const punkter: TnMenyPunkt[] = [
     { type: "overskrift", label: "Kommunikasjon" },
     { type: "lenke", label: "Gruppeposter", href: `/team-norway/${groupId}` },
-    { type: "lenke", label: "Dokumenter", href: `/team-norway/${groupId}/dokumenter`, aktiv: true },
+    { type: "lenke", label: "Dokumenter", href: `/team-norway/${groupId}/dokumenter`, aktiv: aktivId === "dokumenter" },
   ];
 
   const rader: TnDokumentRadVisning[] = dokumenter.map((d) => ({

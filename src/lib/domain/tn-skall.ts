@@ -3,21 +3,24 @@
  * (AgencyOS). Egen fil fordi Claw og Train-lock aldri deler kode
  * (beslutninger.md §TEAM NORWAY-SKJERMENE DESIGNES I CLAW-BRANDINGEN).
  *
- * Prefiks-tabellen er bevisst kort - kun rutene som faktisk ligger i
- * TnSkall sin meny (`menySet()` i designfilen) skal gi et treff. Ruter
- * utenfor menyen (spillerpost) gir `null`, ikke en gjetning.
+ * Differensierer mellom:
+ * - /team-norway/spiller/[id] → null (eget skall, ingen shared menu)
+ * - /team-norway/[groupId]/dokumenter → "dokumenter"
+ * - /team-norway/[groupId] → "gruppeposter"
  */
 
-const PREFIKSER: { prefix: string; id: string }[] = [
-  { prefix: "/team-norway/spiller", id: "" }, // sjekkes FØR /team-norway under - mer spesifikk vinner
-  { prefix: "/team-norway", id: "oversikt" },
-];
-
 export function tnAktivFraPath(pathname: string): string | null {
-  for (const { prefix, id } of PREFIKSER) {
-    if (pathname === prefix || pathname.startsWith(`${prefix}/`)) {
-      return id || null;
-    }
+  // Sjekk spiller-ruter først (mest spesifikk)
+  if (pathname.startsWith("/team-norway/spiller")) {
+    return null;
+  }
+  // Sjekk dokumenter-ruter (mer spesifikk enn gruppeposter)
+  if (pathname.endsWith("/dokumenter") || (pathname.startsWith("/team-norway") && pathname.includes("/dokumenter/"))) {
+    return "dokumenter";
+  }
+  // Gruppeposter-ruter (gruppe-oversikt)
+  if (pathname.startsWith("/team-norway")) {
+    return "gruppeposter";
   }
   return null;
 }

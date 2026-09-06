@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { hentSpillerpostTidslinje } from "@/lib/domain/tn-post";
+import { tnAktivFraPath } from "@/lib/domain/tn-skall";
 import { TN } from "@/lib/v2/team-norway";
 import { TnRail, TnAvatarInitialer, TnPille, type TnMenyPunkt } from "@/components/team-norway/core";
 import { TnPostKomponer } from "@/components/team-norway/tn-post-komponer";
@@ -50,9 +51,10 @@ export default async function SpillerpostPage({ params }: { params: Promise<{ sp
     return opprettSpillerpostAction(spillerId, input);
   }
 
+  const aktivId = tnAktivFraPath(`/team-norway/spiller/${spillerId}`);
   const punkter: TnMenyPunkt[] = [
     { type: "overskrift", label: "Kommunikasjon" },
-    { type: "lenke", label: "Poster til utøver", href: `/team-norway/spiller/${spillerId}`, aktiv: true },
+    { type: "lenke", label: "Poster til utøver", href: `/team-norway/spiller/${spillerId}`, aktiv: aktivId === null },
   ];
 
   const poster: TnTidslinjePost[] = tidslinje.map((p) => ({
