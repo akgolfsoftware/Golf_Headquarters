@@ -1,8 +1,15 @@
 # Komplett designport — Train-lock inn i kode, skjerm for skjerm
 
-Dato: 2026-09-05 · Status: **UTKAST — venter på Anders' ja før fase 1 starter.**
+Dato: 2026-09-05 · Status: **GODKJENT FOR FASE 1 (Anders 05.09.2026: «Fiks slik at vi kan starte
+fase 1 i ny session»).** Registrert i `.claude/rules/beslutninger.md` §KOMPLETT DESIGNPORT og
+MASTERPLAN STEG 20. Fase 1 kjøres etter oppgaveplanen `2026-09-05-designport-fase-1.md` (én økt
+per seksjon). Beslutningene fasene trenger stilles én fase om gangen (beslutningskø 31–32).
 Bestilling (Anders, 05.09): «analyser den komplette zip-en og alle filene, og lag en plan for å
 implementere komplett design … portere skjermene og design til kode.»
+
+**Levert av en parallell økt 05.09 (PR #787–#789, ikke merget ennå):** S3-03a/b-riggrader +
+etterkontroll-skjermbilder for 15.4/15.5/15.6/15.8/15.9 (fase 3 blir tilsvarende kortere),
+P-05-siteringene byttet (tatt ut av fase 1), og Ø19 PH-21 Min kurve bygget (tatt ut av fase 4).
 
 Grunnlag: 210 Train-lock-tegninger (451 rammer) i `designsystem/train-lock/`, zip-en «Player HQ
 Train lock» lastet opp 05.09 (kopi i Drive: `claude-cowork/akgolf-hq/innkommende/2026-09-05-player-hq-train-lock.zip`),
