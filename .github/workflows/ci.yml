@@ -67,6 +67,8 @@ jobs:
       - name: Fasitdekning-vakt (aldri færre siterte tegninger enn den committede baselinen)
         run: node scripts/check-fasitdekning-baseline.mjs
 
+      - name: "Signalfarge-vakt (color: TL.<signal> som tekst øker aldri per fil)"
+        run: node scripts/check-signalfarge-tekst.mjs
 
       - name: Unit tests (node:test + tsx)
         run: npm test
