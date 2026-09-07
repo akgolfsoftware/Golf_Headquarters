@@ -13,6 +13,7 @@
  */
 
 import "./_env";
+import { losKjoredato } from "./_dato-flagg";
 
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@/generated/prisma/client";
@@ -20,7 +21,19 @@ import type { Prisma } from "@/generated/prisma/client";
 const OYVIND_EMAIL = "screentest@akgolf.test";
 const ANDERS_EMAIL = "coachtest@akgolf.test";
 
-const NOW = new Date();
+/**
+ * "Kjøredato" — `--dato=YYYY-MM-DD` fryser den til en bestemt dag (brukt
+ * til å seede en fylt uke rundt sign-off-riggens frosne testdato, se
+ * scripts/_dato-flagg.ts). Uten flagget: uendret oppførsel, ekte kjøredato.
+ */
+const NOW: Date = (() => {
+  try {
+    return losKjoredato(process.argv);
+  } catch (e) {
+    console.error((e as Error).message);
+    return process.exit(1);
+  }
+})();
 
 // ---------- Hjelpefunksjoner ----------
 
