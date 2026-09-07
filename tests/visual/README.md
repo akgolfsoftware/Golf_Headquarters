@@ -69,9 +69,17 @@ Appen viser alltid ekte `Date.now()` server-side — en fasit tegnet for en
 fastdatert eksempeldag («22. august») kan aldri matches uten å fryse «i dag»
 for testkjøringen. Løst i `src/lib/testing/dato-override.ts`: header
 `x-screentest-naa` overstyrer KUN for `screentest@akgolf.test`-kontoen — ekte
-brukere kan aldri sette sin egen dato. Foreløpig koblet inn kun i
-`src/app/portal/page.tsx` (PH-01) — koble inn per skjerm etter behov, ikke
-forhåndsinnfør på skjermer som ikke trenger det.
+brukere kan aldri sette sin egen dato. Koblet inn i `src/app/portal/page.tsx`
+(PH-01) og, via `getDashboardData()`s `naa`-parameter (fase 1, økt 3),
+`src/app/portal/planlegge/page.tsx` (PH-07) — koble inn per skjerm etter
+behov, ikke forhåndsinnfør på skjermer som ikke trenger det. Kjent, IKKE
+koblet unntak: `/portal/analysere/actions.ts` har sine egne tre `new Date()`
+og påvirker TM-04a-radens restavvik (se raden i `skjerm-mapping.ts`).
+
+`train-lock-pixel-diff.mjs` sin `TEST_NAA`-konstant kan overstyres med
+miljøvariabelen `SHOT_DATO=<ISO-datotid>` for en rad med et `testDato` ulikt
+standarden 22.08.2026 (`tests/visual/skjerm-mapping.ts`, fase 1 økt 3) — de
+fleste rader trenger den aldri (mønster: `SHOT_BRUKER`/`SHOT_BASE`).
 
 ## Status etter 8-skjermers kalibreringsrunde (01.09.2026 kveld)
 
