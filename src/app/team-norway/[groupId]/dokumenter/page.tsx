@@ -5,6 +5,7 @@ import { hentGruppeDokumenter, hentViewerRolleIGruppe } from "@/lib/domain/tn-po
 import { tnAktivFraPath } from "@/lib/domain/tn-skall";
 import { TN } from "@/lib/v2/team-norway";
 import { TnRail, type TnMenyPunkt } from "@/components/team-norway/core";
+import { TnRailMobil } from "@/components/team-norway/rail-mobil";
 import { TnDokumentOpplasting } from "@/components/team-norway/tn-dokument-opplasting";
 import { TnDokumentTabell, type TnDokumentRadVisning } from "@/components/team-norway/tn-dokument-tabell";
 import { opprettGruppeDokumentAction } from "@/app/team-norway/tn-post-actions";
@@ -61,41 +62,44 @@ export default async function DokumenterPage({ params }: { params: Promise<{ gro
         orgNavn="Team Norway"
         orgUndertittel="Junior"
       />
-      <div style={{ flex: 1, minWidth: 0, padding: "28px 32px", display: "flex", flexDirection: "column", gap: 20, maxWidth: 900 }}>
-        <div>
+      <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
+        <TnRailMobil punkter={punkter} orgNavn="Team Norway" />
+        <div style={{ flex: 1, minWidth: 0, padding: "28px 32px", display: "flex", flexDirection: "column", gap: 20, maxWidth: 900 }}>
+          <div>
+            <div
+              style={{
+                fontFamily: TN.font.mono,
+                fontSize: TN.text.micro,
+                letterSpacing: TN.tracking.eyebrow,
+                textTransform: "uppercase",
+                color: TN.textSecondary,
+              }}
+            >
+              Dokumenter · {gruppe.name}
+            </div>
+            <h1 style={{ fontSize: TN.text.h1, fontWeight: TN.weight.bold, letterSpacing: TN.tracking.heading, color: TN.navy900, margin: "4px 0 0" }}>
+              Delte filer
+            </h1>
+          </div>
+
+          {rolle === "TRENER" && <TnDokumentOpplasting last={lastOppDokument} />}
+
+          <TnDokumentTabell rader={rader} />
+
           <div
             style={{
-              fontFamily: TN.font.mono,
-              fontSize: TN.text.micro,
-              letterSpacing: TN.tracking.eyebrow,
-              textTransform: "uppercase",
-              color: TN.textSecondary,
+              background: TN.navy50,
+              border: `1px solid ${TN.navy100}`,
+              borderRadius: TN.radius.md,
+              padding: "12px 16px",
+              fontFamily: TN.font.body,
+              fontSize: TN.text.sm,
+              color: TN.navy900,
+              lineHeight: TN.leading.normal,
             }}
           >
-            Dokumenter · {gruppe.name}
+            Utøvere under 18 står med fornavn og etternavn her — denne flaten ses av gruppens medlemmer og foresatte.
           </div>
-          <h1 style={{ fontSize: TN.text.h1, fontWeight: TN.weight.bold, letterSpacing: TN.tracking.heading, color: TN.navy900, margin: "4px 0 0" }}>
-            Delte filer
-          </h1>
-        </div>
-
-        {rolle === "TRENER" && <TnDokumentOpplasting last={lastOppDokument} />}
-
-        <TnDokumentTabell rader={rader} />
-
-        <div
-          style={{
-            background: TN.navy50,
-            border: `1px solid ${TN.navy100}`,
-            borderRadius: TN.radius.md,
-            padding: "12px 16px",
-            fontFamily: TN.font.body,
-            fontSize: TN.text.sm,
-            color: TN.navy900,
-            lineHeight: TN.leading.normal,
-          }}
-        >
-          Utøvere under 18 står med fornavn og etternavn her — denne flaten ses av gruppens medlemmer og foresatte.
         </div>
       </div>
     </div>
