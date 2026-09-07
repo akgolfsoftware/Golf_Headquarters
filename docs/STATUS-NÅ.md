@@ -2,7 +2,7 @@
 
 > **Hva dette er:** ett snapshot av hvor plattformen står akkurat nå. Oppdater datoen + relevante linjer når noe vesentlig endrer seg.
 
-**Sist oppdatert:** 2026-09-05 (prosjektrevisjon — målt mot `origin/main` @ `a653a3afd`, PR #783, prod-DB lesende, Vercel env-navn, GitHub. Fullt grunnlag: `docs/beslutningsgrunnlag/prosjektrevisjon-2026-09-05.md`).
+**Sist oppdatert:** 2026-09-07 (status målt i økt — fasit-dekning, rigg, PR-liste, `git log origin/main` @ `8ca1d66ae`; forrige fulle revisjon 05.09: `docs/beslutningsgrunnlag/prosjektrevisjon-2026-09-05.md`). Historikk under: 05.09 (prosjektrevisjon — målt mot `origin/main` @ `a653a3afd`, PR #783, prod-DB lesende, Vercel env-navn, GitHub. Fullt grunnlag: `docs/beslutningsgrunnlag/prosjektrevisjon-2026-09-05.md`).
 **Betaling:** koden er klar siden 30.08 (Stripe-cutover 1. september). Live-nøkler/DNS/DKIM er
 Anders-oppgaver i Vercel/Stripe-panelet og kan ikke verifiseres fra kode/git — se
 `docs/MASTERPLAN-GJENSTAAENDE.md` STEG 1 og 10.8.
@@ -11,7 +11,27 @@ over alt gjenstående (konsolidert 30.08 fra det tidligere LANSERINGSPLAN-KOMPLE
 **Produktretning låst 30.08:** `.claude/rules/beslutninger.md` §«PRODUKTRETNING — åtte svar».
 Den blokken er fasit for Innsikt og Analyse og vinner over eldre dokumenter.
 
-## Hovedbildet 05.09 (prosjektrevisjon — målt mot origin/main @ a653a3afd, 57 PR-er merget siden 01.09)
+## Hovedbildet 07.09 (målt i økt mot origin/main @ 8ca1d66ae — 8 PR-er merget siden 05.09, #787–#794)
+
+- **Svar på «er Claude Design-fasiten komplett og pikselnært portert?»: nei.** 150/210
+  Train-lock-tegninger sitert fra kode (opp fra 146), **11 skjermer kalibrert i sign-off-riggen**
+  (opp fra 5; 7 ukalibrerte med kjent årsak). STEG 20-tellingen fra 05.09 står: 5 målt · 34 bygget
+  ikke målt · 65 kjent avvik · 33 delvis · 40 ikke bygget. Mekanisk audit uendret. Estimat for
+  komplett port: 91 økter (planen 05.09). Alt gjenstående før lansering står samlet i
+  MASTERPLAN §STATUS 07.09.2026 (rett under innledningen).
+- **Levert siden 05.09:** Ø13 Spiller 360 arbeidsvisning (#771), Ø19 PH-21 Min kurve (#789) +
+  impeccable-audit (#791), A0 skjermbilde-gate (#787), A1 (#788), komplett designport-plan (#790)
+  og fase 1 som åtte øktplaner (#793/#794).
+- **Fem åpne PR-er, alle grønn `verify`, ingen merget:** #797 fase 1 økt 1 (fem vakter i verify/CI)
+  · #792 Ø20 A-19a Innsikt (venter skjermbilde-gate, kø 34) · #798 marked runde 1–2 (forsiden på
+  `/forside-ak` + `/junior`; venter forsidevalg, kø 33) · #795 TN-implementasjonsplan (docs) ·
+  #796 TN-rail (draft).
+- **Markedssider: 2 av 22** i AK Golf-masteren. **19.6/19.7 fortsatt strandet** (151 ukommitterte
+  filer i hovedmappa, remålt 07.09 — kø 30).
+- **Betaling uendret siden 05.09:** årspris-id mangler i prod, Ø2 ekte kjøp ikke gjort — begge er
+  Anders' handlinger (kø 28). Milepælen tor 11.09 holder kun hvis de skjer man 08.09.
+
+## Hovedbildet 05.09 (historikk — prosjektrevisjon — målt mot origin/main @ a653a3afd, 57 PR-er merget siden 01.09)
 
 - **Milepælen «FULL lanserbar» er flyttet fra tor 24.09 til tor 11.09** (24.09 = siste frist).
   13 av 16 økter i STEG 1B var levert 04.09. Gjenstår: Ø1-rest (årspris-id), 0.4 (TALENT-sonde),
