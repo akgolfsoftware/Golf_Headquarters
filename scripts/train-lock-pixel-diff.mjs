@@ -23,7 +23,9 @@ const OUT_DIR = "tests/visual/ut";
 const [label, rute, tema = "dark", cropTopArg = "0", BASE = process.env.SHOT_BASE || "https://akgolf-hq.vercel.app"] = process.argv.slice(2);
 const cropTop = Number(cropTopArg);
 // Fryser "i dag" til fasitens dato (kun screentest, se src/lib/testing/dato-override.ts).
-const TEST_NAA = "2026-08-22T07:10:00Z"; // 09:10 Oslo, midt i den seedede 09:00-09:50-økten
+// Overstyres med SHOT_DATO=<ISO-datotid> for en rad med et testDato ulikt
+// denne standarden (tests/visual/skjerm-mapping.ts, fase 1 økt 3).
+const TEST_NAA = process.env.SHOT_DATO || "2026-08-22T07:10:00Z"; // 09:10 Oslo, midt i den seedede 09:00-09:50-økten
 const PASSWORD = process.env.SHOT_PASSWORD || process.env.SCREENTEST_PASSWORD;
 const BRUKER = process.env.SHOT_BRUKER || "screentest@akgolf.test";
 

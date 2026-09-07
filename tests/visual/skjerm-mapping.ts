@@ -23,6 +23,16 @@ export type SkjermMapping = {
   kalibrertAvvikPst?: number;
   status: "kalibrert" | "ukalibrert";
   notat: string;
+  /**
+   * "Nå"-tidspunktet raden er MÅLT/SKAL måles med, som ISO-datotid i samme
+   * format som TEST_NAA i scripts/train-lock-pixel-diff.mjs (f.eks.
+   * "2026-08-22T07:10:00Z"). Dokumentasjon, ikke automatikk: riggen leser
+   * IKKE dette feltet selv ennå — sett miljøvariabelen SHOT_DATO til samme
+   * verdi manuelt før du kjører pixel-diff for raden (mønster: SHOT_BRUKER).
+   * Mangler feltet: raden måles med riggens egen TEST_NAA-standard
+   * (22.08.2026) — de fleste rader trenger derfor ALDRI dette eksplisitt.
+   */
+  testDato?: string;
 };
 
 export const SKJERM_MAPPING: SkjermMapping[] = [

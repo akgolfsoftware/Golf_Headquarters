@@ -23,6 +23,7 @@
  */
 
 import "./_env";
+import { losKjoredato } from "./_dato-flagg";
 
 import { PrismaPg } from "@prisma/adapter-pg";
 import { createClient } from "@supabase/supabase-js";
@@ -45,6 +46,19 @@ const NAME = "Anders Kristiansen";
 const STALL_DOMAIN = "stall.akgolf.test";
 const TARGET_PLAYERS = 38;
 
+/**
+ * "Kjøredato" — `--dato=YYYY-MM-DD` fryser den (se scripts/_dato-flagg.ts).
+ * Uten flagget: uendret oppførsel, ekte kjøredato.
+ */
+const NAA: Date = (() => {
+  try {
+    return losKjoredato(process.argv);
+  } catch (e) {
+    console.error((e as Error).message);
+    return process.exit(1);
+  }
+})();
+
 // ---------- Hjelpere ----------
 
 function slugify(name: string): string {
@@ -57,17 +71,17 @@ function slugify(name: string): string {
     .replace(/^-|-$/g, "");
 }
 
-/** Lokal dato i dag kl h:m (+ dayOffset dager). */
+/** "Kjøredato" (NAA) kl h:m (+ dayOffset dager). */
 function at(h: number, m: number, dayOffset = 0): Date {
-  const d = new Date();
+  const d = new Date(NAA);
   d.setDate(d.getDate() + dayOffset);
   d.setHours(h, m, 0, 0);
   return d;
 }
 
-/** Neste forekomst av ukedag (JS getDay: søn=0 … lør=6). I dag teller hvis samme dag. */
+/** Neste forekomst av ukedag fra NAA (JS getDay: søn=0 … lør=6). NAA teller hvis samme dag. */
 function nextWeekday(target: number, h = 12): Date {
-  const d = new Date();
+  const d = new Date(NAA);
   const diff = (target - d.getDay() + 7) % 7;
   d.setDate(d.getDate() + diff);
   d.setHours(h, 0, 0, 0);
@@ -75,7 +89,7 @@ function nextWeekday(target: number, h = 12): Date {
 }
 
 function hoursAgo(n: number): Date {
-  return new Date(Date.now() - n * 3_600_000);
+  return new Date(NAA.getTime() - n * 3_600_000);
 }
 
 // ---------- Kanon-data ----------
@@ -450,7 +464,7 @@ async function main() {
   console.log(`Enrollering: ${nyeEnr} nye (spillere uten aktiv enrollering før kjøring)`);
 
   // ── Verifikasjon ────────────────────────────────────────────────────────
-  const now = new Date();
+  const now = NAA;
   const dagStart = at(0, 0);
   const dagSlutt = at(0, 0, 1);
   const [players, myGroups, upcoming, pendingReq, todayBookings, pendingActions, cacheCount, unread, aktiveEnr] = await Promise.all([

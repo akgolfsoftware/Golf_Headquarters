@@ -175,8 +175,8 @@ function fornavn(name: string): string {
   return name.trim().split(/\s+/)[0] || "spiller";
 }
 
-function greeting(): string {
-  const hour = new Date().getHours();
+function greeting(naa: Date): string {
+  const hour = naa.getHours();
   if (hour < 5) return "God natt";
   if (hour < 11) return "God morgen";
   if (hour < 17) return "Hei";
@@ -189,9 +189,9 @@ function initialer(name: string): string {
 
 // ── Today's session ───────────────────────────────────────────────
 
-export async function getTodaysSession(userId: string): Promise<TodaySession | null> {
+export async function getTodaysSession(userId: string, naa: Date = new Date()): Promise<TodaySession | null> {
   await assertCanViewPlayerData(userId);
-  const now = new Date();
+  const now = naa;
   const sessions = await prisma.trainingSessionV2.findMany({
     where: { studentId: userId, startTime: { gte: startOfDay(now), lte: endOfDay(now) } },
     orderBy: { startTime: "asc" },
@@ -230,9 +230,9 @@ export async function getTodaysSession(userId: string): Promise<TodaySession | n
 
 // ── Week overview ─────────────────────────────────────────────────
 
-export async function getWeekOverview(userId: string): Promise<WeekDay[]> {
+export async function getWeekOverview(userId: string, naa: Date = new Date()): Promise<WeekDay[]> {
   await assertCanViewPlayerData(userId);
-  const now = new Date();
+  const now = naa;
   const start = startOfWeek(now);
   const end = endOfWeek(now);
 
@@ -341,7 +341,7 @@ export async function getRecentActivity(userId: string, limit = 5): Promise<Rece
 
 // ── Goals ─────────────────────────────────────────────────────────
 
-export async function getGoals(userId: string, limit = 3): Promise<GoalItem[]> {
+export async function getGoals(userId: string, limit = 3, naa: Date = new Date()): Promise<GoalItem[]> {
   await assertCanViewPlayerData(userId);
   const [goals, bruker] = await Promise.all([
     prisma.goal.findMany({
@@ -358,7 +358,7 @@ export async function getGoals(userId: string, limit = 3): Promise<GoalItem[]> {
   ]);
   const hcp = bruker?.hcp ?? null;
 
-  const now = new Date();
+  const now = naa;
   return Promise.all(
     goals.map(async (g) => {
       const daysLeft = g.targetDate ? Math.ceil((g.targetDate.getTime() - now.getTime()) / 86_400_000) : null;
@@ -452,9 +452,9 @@ export async function getLatestCoachMessage(userId: string): Promise<CoachMessag
 
 // ── Stats snapshot ────────────────────────────────────────────────
 
-export async function getStatsSnapshot(userId: string): Promise<StatsSnapshot> {
+export async function getStatsSnapshot(userId: string, naa: Date = new Date()): Promise<StatsSnapshot> {
   await assertCanViewPlayerData(userId);
-  const now = new Date();
+  const now = naa;
   const weekStart = startOfWeek(now);
 
   const [todaySessions, weekSessions, weekRounds, todayLogs] = await Promise.all([
@@ -489,9 +489,9 @@ export async function getStatsSnapshot(userId: string): Promise<StatsSnapshot> {
 
 // ── Next tournament ───────────────────────────────────────────────
 
-export async function getNextTournament(userId: string): Promise<NextTournament | null> {
+export async function getNextTournament(userId: string, naa: Date = new Date()): Promise<NextTournament | null> {
   await assertCanViewPlayerData(userId);
-  const now = startOfDay(new Date());
+  const now = startOfDay(naa);
 
   const entries = await prisma.tournamentEntry.findMany({
     where: {
@@ -543,9 +543,9 @@ export async function getNextTournament(userId: string): Promise<NextTournament 
 
 // ── Week plan progress (planned vs completed by pyramid axis) ───────
 
-export async function getWeekPlanProgress(userId: string): Promise<WeekPlanProgress> {
+export async function getWeekPlanProgress(userId: string, naa: Date = new Date()): Promise<WeekPlanProgress> {
   await assertCanViewPlayerData(userId);
-  const now = new Date();
+  const now = naa;
   const weekStart = startOfWeek(now);
   const weekEnd = endOfWeek(now);
 
@@ -599,9 +599,9 @@ export type KpiStats = {
   sgTrend: number[];
 };
 
-export async function getKpiStats(userId: string): Promise<KpiStats> {
+export async function getKpiStats(userId: string, naa: Date = new Date()): Promise<KpiStats> {
   await assertCanViewPlayerData(userId);
-  const now = new Date();
+  const now = naa;
   const weekStart = startOfWeek(now);
   const since90 = new Date(now.getTime() - 90 * 86_400_000);
 
@@ -655,9 +655,9 @@ export type TrainingHeatmap = {
   totalSessions: number;
 };
 
-export async function getTrainingHeatmap(userId: string): Promise<TrainingHeatmap> {
+export async function getTrainingHeatmap(userId: string, naa: Date = new Date()): Promise<TrainingHeatmap> {
   await assertCanViewPlayerData(userId);
-  const now = new Date();
+  const now = naa;
   const weeksBack = 12;
   const rangeStart = startOfWeek(new Date(now.getTime() - (weeksBack - 1) * 7 * 86_400_000));
 
@@ -688,9 +688,9 @@ export async function getTrainingHeatmap(userId: string): Promise<TrainingHeatma
 
 // ── All today's sessions (for second-session compact row) ─────────
 
-export async function getAllTodaysSessions(userId: string): Promise<TodaySession[]> {
+export async function getAllTodaysSessions(userId: string, naa: Date = new Date()): Promise<TodaySession[]> {
   await assertCanViewPlayerData(userId);
-  const now = new Date();
+  const now = naa;
   const sessions = await prisma.trainingSessionV2.findMany({
     where: { studentId: userId, startTime: { gte: startOfDay(now), lte: endOfDay(now) } },
     orderBy: { startTime: "asc" },
@@ -746,7 +746,7 @@ export type DashboardData = {
   nesteHandling: NesteHandlingData;
 };
 
-export async function getDashboardData(userId: string): Promise<DashboardData> {
+export async function getDashboardData(userId: string, naa: Date = new Date()): Promise<DashboardData> {
   await assertCanViewPlayerData(userId);
   const user = await prisma.user.findUniqueOrThrow({
     where: { id: userId },
@@ -755,17 +755,17 @@ export async function getDashboardData(userId: string): Promise<DashboardData> {
 
   const [todayAll, week, recentActivity, goals, { count: unreadCount, notifications }, coachMessage, stats, kpiStats, nextTournament, weekProgress, trainingHeatmap, optimalSession, harPlanTilGodkjenning] =
     await Promise.all([
-      getAllTodaysSessions(userId),
-      getWeekOverview(userId),
+      getAllTodaysSessions(userId, naa),
+      getWeekOverview(userId, naa),
       getRecentActivity(userId, 5),
-      getGoals(userId, 3),
+      getGoals(userId, 3, naa),
       getUnreadNotifications(userId, 5),
       getLatestCoachMessage(userId),
-      getStatsSnapshot(userId),
-      getKpiStats(userId),
-      getNextTournament(userId),
-      getWeekPlanProgress(userId),
-      getTrainingHeatmap(userId),
+      getStatsSnapshot(userId, naa),
+      getKpiStats(userId, naa),
+      getNextTournament(userId, naa),
+      getWeekPlanProgress(userId, naa),
+      getTrainingHeatmap(userId, naa),
       hentOptimalOktHint(userId),
       prisma.trainingPlan
         .findFirst({ where: { userId, status: "PENDING_PLAYER" }, select: { id: true } })
@@ -784,8 +784,8 @@ export async function getDashboardData(userId: string): Promise<DashboardData> {
 
   return {
     user: { id: user.id, name: user.name, fornavn: fornavn(user.name), initialer: initialer(user.name), avatarUrl: user.avatarUrl, hcp: user.hcp, tier: user.tier === "GRATIS" ? "GRATIS" : "PRO" },
-    greeting: greeting(),
-    weekNumber: ukenummer(new Date()),
+    greeting: greeting(naa),
+    weekNumber: ukenummer(naa),
     today: todayAll[0] ?? null,
     todayAll,
     week,

@@ -56,7 +56,7 @@ export default async function PortalHjemPage() {
   const dagNr = osloDeler[2] ?? naa.getDate();
 
   const [data, gjennomfore, workbenchDay, trackman, testerLive, kalender] = await Promise.all([
-    getDashboardData(user.id),
+    getDashboardData(user.id, naa),
     getGjennomforeData(user.id),
     loadPlayerDay({ playerId: user.id, date: iDag }),
     getTrackManTeaser(user.id),
