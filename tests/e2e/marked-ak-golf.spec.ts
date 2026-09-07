@@ -10,7 +10,7 @@ import { expectNoConsoleErrors, gotoAndWait } from "./_helpers";
  * Plan: docs/superpowers/plans/2026-09-04-marked-ak-golf-port.md.
  */
 
-const SIDER = ["/", "/coaching", "/junior", "/priser", "/om-oss", "/kontakt", "/vilkar"];
+const SIDER = ["/", "/forside-ak", "/coaching", "/junior", "/priser", "/om-oss", "/kontakt", "/vilkar"];
 const BREDDER = [390, 1440] as const;
 
 for (const sti of SIDER) {
