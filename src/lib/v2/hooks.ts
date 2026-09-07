@@ -46,6 +46,16 @@ function fmtLike(n: number, m: Extract<NumMeta, { ok: true }>): string {
 }
 
 /**
+ * fmtSluttverdi: samme format som useCountUp viser NÅR tellingen er ferdig (komma-desimal,
+ * unicode-minus, «+» kun når kilden har det) — men uten telling. Brukes der målte tall skal
+ * stå som fakta fra første ramme (TallHero, STEG 19.7 — Anders 03.09.2026).
+ */
+export function fmtSluttverdi(value: number | string): string {
+  const m = parseNum(value);
+  return m.ok ? fmtLike(m.n, m) : String(value);
+}
+
+/**
  * useCountUp: teller 0 → mål på ~600ms ved mount/endring. Kun numerisk;
  * ikke-numerisk (f.eks. "68%") returneres uendret. Reduced-motion → målet direkte.
  */

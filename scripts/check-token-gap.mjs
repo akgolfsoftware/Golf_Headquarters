@@ -25,6 +25,27 @@ const ALLOW_FILES = new Set([
   "src/app/global-error.tsx",
 ]);
 
+/**
+ * Kataloger der rå farger er legitime fordi flaten IKKE er Train-lock.
+ *
+ * Markedssidene står på AK Golf-masteren (Anders 04.09.2026, beslutninger.md
+ * §MARKEDSSIDENE PORTERES TIL MASTER AK GOLF), ikke på --tl-*. Denne gaten
+ * ber om T.farge.* fra src/lib/v2/tokens.ts — en fil som ble SLETTET 30.08
+ * sammen med Paper. Den kan altså ikke være svaret her.
+ *
+ * De rå verdiene som står igjen i disse to mappene er masterens egne, og
+ * ingen --ak-*-token dekker dem: hvit tekst på en variantflate (junior grønn),
+ * og de graderte rgba-sjiktene over foto. Å låne --ak-signal-tekst til
+ * variantflater ville vært å bruke en token utenfor det den betyr.
+ *
+ * Presis-vakten lenger opp i denne fila filtreres IKKE av unntak og dekker
+ * fortsatt begge mappene — skog/lime kommer ikke inn her.
+ */
+const ALLOW_KATALOGER = [
+  "src/components/marketing/ak/",
+  "src/components/marketing/ak-sider/",
+];
+
 function* walk(dir, exts = [".tsx", ".ts"]) {
   for (const name of readdirSync(dir)) {
     const p = path.join(dir, name);
@@ -153,6 +174,7 @@ const offenders = [];
 for (const file of walk(ROOT)) {
   const rel = file.replace(/\\/g, "/");
   if (ALLOW_FILES.has(rel)) continue;
+  if (ALLOW_KATALOGER.some((k) => rel.startsWith(k))) continue;
   const src = readFileSync(file, "utf8");
   if (!src.includes("style={{")) continue;
   for (const block of extractStyleBlocks(src)) {

@@ -39,6 +39,9 @@ side om side. Skript: ad hoc Playwright (samme innloggingsmønster som
    (alle tre faner). Chunken lastes uten nonce. Skjermene rendrer likevel, men noe klientkode
    kjører ikke. Kun synlig i nettleserkonsollen — verken verify, CI eller e2e fanger det.
    Fulgt opp som egen oppgave, utenfor A0.
+   **Rettet 07.09.2026:** rotårsak er Next 16.3 (loading.tsx-grensens klient-chunks får ikke nonce);
+   V2Laster er nå ren serverkomponent (`src/components/v2/laster.tsx`), vakt i
+   `tests/e2e/csp-konsoll.spec.ts`. Detaljer: `.claude/rules/gotchas.md` §Next 16.3 loading.tsx-nonce.
 
 ## Rigg — S3-03
 

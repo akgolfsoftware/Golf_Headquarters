@@ -28,6 +28,21 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
 
 ## Beslutningene (september 2026)
 
+- **KOMPLETT DESIGNPORT — PLANEN GJELDER, FASE 1 STARTER (Anders 05.09.2026, i økt):** planen
+  `docs/superpowers/plans/2026-09-05-komplett-designport.md` (åtte faser, 91 økter, lansering først,
+  tre ferdig-punkter) er grunnlaget for all videre Train-lock-porting av produktskjermene. Anders:
+  «Fiks slik at vi kan starte fase 1 i ny session.» Fase 1 (grunnmur: vakter i verify/CI, TallHero
+  19.7, datofrys, riggfelt, filhode-vakt, nattlig måling, døde Paper-verktøy, dokumentrydding) krever
+  ingen beslutning og kjøres etter `docs/superpowers/plans/2026-09-05-designport-fase-1.md`, én økt
+  om gangen. **Låst samtidig:** (1) «sitert er ikke bygget» — bevis for portert skjerm er riggrad
+  eller eksplisitt avviksliste i filhodet, aldri dekningstallet; (2) prototypen fra Claude Design
+  (zip 05.09, `proto/`) synkes IKKE inn som fasit før beslutning 7 (coach-menyen: AX-01 vs
+  prototypens fem faner) er svart — kun PROTOTYPE-PLAN og HANDOFF-batchene ligger som referanse i
+  `designsystem/train-lock/referanse/`; (3) zip-ens PORTING/HANDOFF/SCREEN-INDEX kopieres aldri over
+  repoets (de mangler D1/D2 og 03.09-rettelsen). Overstyrer ingenting: MASTERPLAN 2.13 (spor A–D)
+  fortsetter innenfor fasene. Beslutningene fasene trenger (27 stk.) stilles én fase om gangen — se
+  beslutningskø 31–32. **Arbeidet:** `docs/MASTERPLAN-GJENSTAAENDE.md` STEG 20.
+
 - **FORSIDETEKSTEN LÅST — SVARTIDSLØFTET VENTER PÅ JARVIS (Anders 05.09.2026, i økt):** sju
   svar på `docs/marketing/tekstplan-forside-2026-09-05.md` §2. (1) Bunnen oppgir rollene
   **«sportslig ansvarlig i Gamle Fredrikstad Golfklubb og sportssjef ved WANG Toppidrett

@@ -46,4 +46,5 @@ CLAUDE.md invariant 2, `.claude/rules/beslutninger.md` øverste beslutning). Pap
 
 - Port til fasit — aldri kreativ redesign. MAL (IA) vinner over PIXEL ved konflikt (HANDOFF.md).
 - Skjermbilde-gaten gjelder: Anders skal SE hver portet skjerm (390px + 1280px, ALLTID mørk + lys — beslutning 26.08: alle skjermer i PlayerHQ, AgencyOS og forelder har begge moduser; mekanisk avledet lys fra tokensettet er godkjent der tegnet lys-fasit mangler).
+- **Signalfarger er aldri ren tekst på nøytral bunn i lys modus** (Anders 03.09.2026, Vei A — bruksregel, ingen `--tl-*`-verdi endres): `danger`, `ok`, `warn` og `viz-target` bærer ikke `color:` på `scene`/`elev`; `mute` ikke på `dock`; `dim` bærer aldri tekst. Bruk paret som består — hvit tekst på fylt flate i samme farge, eller ikon/grafikk med egen farget bakgrunnsflate. Målt: `docs/design-audit/train-lock-kontrast.md` (`node scripts/check-tl-kontrast.mjs`). Full regel: `.claude/rules/gotchas.md` §Signalfarger som ren tekst.
 - `uploads/`-kildematerialet fra zipen er BEVISST holdt utenfor repoet (offentlig repo; NGF/Team Norway-materiale) — se SYNC-STATUS.md.
