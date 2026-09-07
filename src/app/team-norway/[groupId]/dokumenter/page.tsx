@@ -38,6 +38,11 @@ export default async function DokumenterPage({ params }: { params: Promise<{ gro
   const punkter: TnMenyPunkt[] = [
     { type: "overskrift", label: "Kommunikasjon" },
     { type: "lenke", label: "Gruppeposter", href: `/team-norway/${groupId}` },
+    // I dag har denne siden kun ÉN rad i egen lokal meny, så sammenligningen
+    // er reelt sett alltid sann (ingen reell differensiering ennå). Blir
+    // meningsfull når en senere oppgave kobler inn TnSkall sin faktiske,
+    // delte meny (Oversikt/Fellestesting/... fra menySet() i
+    // designsystem/team-norway/templates/tn-skall/TnSkall.dc.html).
     { type: "lenke", label: "Dokumenter", href: `/team-norway/${groupId}/dokumenter`, aktiv: aktivId === "oversikt" },
   ];
 

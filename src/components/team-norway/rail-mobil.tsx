@@ -6,10 +6,13 @@ import { Icon } from "@/components/v2";
 import type { TnMenyPunkt } from "./core";
 
 /**
- * Mobil-erstatning for `TnRail` under `TN_BREKK.rail` (1101px - samme
- * brekkpunkt som Train-lock sin `TL_BREKK.macRail`, for konsistent følelse
- * på tvers av de to designsystemene selv om de aldri deler kode). Ingen
- * organisasjons-switcher her - se Task 1.4s hode-kommentar i planen.
+ * Mobil-erstatning for `TnRail` under Tailwind sitt default `lg`-brekkpunkt
+ * (1024px, se `className="flex lg:hidden"` under - ingen
+ * `tailwind.config.*` eller `@theme`-override i dette prosjektet endrer
+ * det). Nær, men ikke identisk med Train-lock sin `TL_BREKK.macRail`
+ * (1101px) - samme følelse på tvers av de to designsystemene selv om de
+ * aldri deler kode. Ingen organisasjons-switcher her - se Task 1.4s
+ * hode-kommentar i planen.
  */
 export function TnRailMobil({ punkter, orgNavn }: { punkter: TnMenyPunkt[]; orgNavn: string }) {
   const [apen, setApen] = useState(false);

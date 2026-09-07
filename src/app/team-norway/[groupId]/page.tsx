@@ -36,6 +36,11 @@ export default async function GruppepostPage({ params }: { params: Promise<{ gro
   const aktivId = tnAktivFraPath(`/team-norway/${groupId}`);
   const punkter: TnMenyPunkt[] = [
     { type: "overskrift", label: "Kommunikasjon" },
+    // I dag har denne siden kun ÉN rad i egen lokal meny, så sammenligningen
+    // er reelt sett alltid sann (ingen reell differensiering ennå). Blir
+    // meningsfull når en senere oppgave kobler inn TnSkall sin faktiske,
+    // delte meny (Oversikt/Fellestesting/... fra menySet() i
+    // designsystem/team-norway/templates/tn-skall/TnSkall.dc.html).
     { type: "lenke", label: "Gruppeposter", href: `/team-norway/${groupId}`, aktiv: aktivId === "oversikt" },
     { type: "lenke", label: "Dokumenter", href: `/team-norway/${groupId}/dokumenter` },
   ];
@@ -52,7 +57,7 @@ export default async function GruppepostPage({ params }: { params: Promise<{ gro
 
   return (
     <div style={{ display: "flex", minHeight: "100vh", background: TN.surfacePage, fontFamily: TN.font.body }}>
-      <TnRail punkter={punkter} bruker={{ navn: bruker.name ?? "Ukjent", rolle: rolle === "TRENER" ? "Trener" : rolle === "SPILLER" ? "Spiller" : "Foresatt"  }} orgNavn="Team Norway" orgUndertittel="Junior" />
+      <TnRail punkter={punkter} bruker={{ navn: bruker.name ?? "Ukjent", rolle: rolle === "TRENER" ? "Trener" : rolle === "SPILLER" ? "Spiller" : "Foresatt" }} orgNavn="Team Norway" orgUndertittel="Junior" />
       <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
         <TnRailMobil punkter={punkter} orgNavn="Team Norway" />
         <div style={{ flex: 1, minWidth: 0, padding: "28px 32px", display: "flex", flexDirection: "column", gap: 20, maxWidth: 900 }}>
