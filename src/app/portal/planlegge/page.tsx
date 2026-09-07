@@ -14,6 +14,7 @@ import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { PlanV2 } from "@/components/portal/v2/PlanV2";
 import { getPlayerDepthMode } from "@/lib/player-depth-mode";
 import { hentUkePeriode } from "@/lib/portal-plan/uke-periode";
+import { hentEffektivNaa } from "@/lib/testing/dato-override";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Plan · PlayerHQ" };
@@ -23,8 +24,9 @@ export default async function V2PlanPreviewPage() {
   if (user.role === "PARENT") redirect("/forelder");
   if (user.role === "GUEST") redirect("/admin/kalender");
 
+  const naa = await hentEffektivNaa(user.email);
   const [data, depthMode, periode] = await Promise.all([
-    getDashboardData(user.id),
+    getDashboardData(user.id, naa),
     getPlayerDepthMode(),
     hentUkePeriode(user.id),
   ]);
