@@ -64,6 +64,18 @@ export function finnBrudd(par) {
   return par.filter((p) => p.head > p.base);
 }
 
+/**
+ * Skiller "fila finnes faktisk ikke i denne referansen" (git sin vanlige
+ * feilmelding for det) fra andre `git show`-feil (feil cwd, grunt klone,
+ * korrupt objekt) — sistnevnte skal kaste, ikke stille telles som "ny fil".
+ * Ren funksjon.
+ * @param {string | undefined} stderr
+ * @returns {boolean}
+ */
+export function erFilManglendeIRef(stderr) {
+  return /does not exist in|invalid object name|exists on disk, but not in/.test(stderr ?? "");
+}
+
 function* tsxFiler(dir) {
   for (const e of readdirSync(dir, { withFileTypes: true })) {
     const p = join(dir, e.name);
@@ -81,57 +93,64 @@ function git(args, rot) {
 /** Innholdet av en fil på origin/main, eller null hvis den ikke finnes der. */
 function baseInnhold(sti, rot) {
   const r = spawnSync("git", ["show", `${BASE}:${sti}`], { cwd: rot, encoding: "utf8" });
-  return r.status === 0 ? r.stdout : null;
+  if (r.status === 0) return r.stdout;
+  if (erFilManglendeIRef(r.stderr)) return null;
+  throw new Error(`git show ${BASE}:${sti} feilet av en annen grunn enn "fila finnes ikke der":\n${r.stderr}`);
 }
 
 function main() {
-  const rot = process.cwd();
-  if (spawnSync("git", ["rev-parse", "--verify", "--quiet", BASE], { cwd: rot }).status !== 0) {
+  if (spawnSync("git", ["rev-parse", "--verify", "--quiet", BASE], { cwd: process.cwd() }).status !== 0) {
     console.error(`check-signalfarge-tekst: fant ikke ${BASE} lokalt. Kjør \`git fetch origin\` først.`);
     process.exit(2);
   }
+  try {
+    const rot = process.cwd();
 
-  // Summen i HEAD — kun til rapportlinjen.
-  let sum = 0;
-  let filer = 0;
-  for (const f of tsxFiler(join(rot, "src"))) {
-    const n = tellSignalfarge(readFileSync(f, "utf8"));
-    if (n) {
-      sum += n;
-      filer++;
+    // Summen i HEAD — kun til rapportlinjen.
+    let sum = 0;
+    let filer = 0;
+    for (const f of tsxFiler(join(rot, "src"))) {
+      const n = tellSignalfarge(readFileSync(f, "utf8"));
+      if (n) {
+        sum += n;
+        filer++;
+      }
     }
-  }
 
-  // Bare filer som er endret mot origin/main kan ha fått flere — uendrede filer har
-  // per definisjon samme tall. Untracked filer tas med (git diff ser dem ikke).
-  const endret = parseNameStatus(git(["diff", "--name-status", "-z", "-M", BASE, "--", "src"], rot)).filter(
-    (r) => r.status !== "D" && r.ny.endsWith(".tsx"),
-  );
-  const nye = git(["ls-files", "--others", "--exclude-standard", "-z", "--", "src"], rot)
-    .split("\0")
-    .filter((s) => s.endsWith(".tsx"))
-    .map((s) => ({ status: "A", gammel: null, ny: s }));
-
-  const par = [...endret, ...nye].map((r) => {
-    const head = tellSignalfarge(readFileSync(join(rot, r.ny), "utf8"));
-    const b = baseInnhold(r.gammel ?? r.ny, rot);
-    return { sti: r.ny, head, base: b === null ? 0 : tellSignalfarge(b) };
-  });
-  const brudd = finnBrudd(par);
-
-  if (brudd.length) {
-    console.error(`check-signalfarge-tekst: signalfarge som tekstfarge har ØKT i ${brudd.length} fil(er) (Vei A, 03.09.2026):`);
-    for (const b of brudd) console.error(`  ${b.sti}: ${b.base} → ${b.head} (${BASE} → HEAD)`);
-    console.error(
-      "\nBruk fargen som fylt flate med on-*-tekst, som ikon/grafikk, eller bytt tekstfargen til " +
-        "TL.text / TL.mute. Målingene står i docs/design-audit/train-lock-kontrast.md.",
+    // Bare filer som er endret mot origin/main kan ha fått flere — uendrede filer har
+    // per definisjon samme tall. Untracked filer tas med (git diff ser dem ikke).
+    const endret = parseNameStatus(git(["diff", "--name-status", "-z", "-M", BASE, "--", "src"], rot)).filter(
+      (r) => r.status !== "D" && r.ny.endsWith(".tsx"),
     );
+    const nye = git(["ls-files", "--others", "--exclude-standard", "-z", "--", "src"], rot)
+      .split("\0")
+      .filter((s) => s.endsWith(".tsx"))
+      .map((s) => ({ status: "A", gammel: null, ny: s }));
+
+    const par = [...endret, ...nye].map((r) => {
+      const head = tellSignalfarge(readFileSync(join(rot, r.ny), "utf8"));
+      const b = baseInnhold(r.gammel ?? r.ny, rot);
+      return { sti: r.ny, head, base: b === null ? 0 : tellSignalfarge(b) };
+    });
+    const brudd = finnBrudd(par);
+
+    if (brudd.length) {
+      console.error(`check-signalfarge-tekst: signalfarge som tekstfarge har ØKT i ${brudd.length} fil(er) (Vei A, 03.09.2026):`);
+      for (const b of brudd) console.error(`  ${b.sti}: ${b.base} → ${b.head} (${BASE} → HEAD)`);
+      console.error(
+        "\nBruk fargen som fylt flate med on-*-tekst, som ikon/grafikk, eller bytt tekstfargen til " +
+          "TL.text / TL.mute. Målingene står i docs/design-audit/train-lock-kontrast.md.",
+      );
+      process.exit(1);
+    }
+    console.log(
+      `check-signalfarge-tekst: OK — ${sum} forekomster i ${filer} filer i HEAD; ` +
+        `${par.length} endret(e) fil(er) sammenlignet mot ${BASE}, ingen har fått flere.`,
+    );
+  } catch (err) {
+    console.error(`check-signalfarge-tekst: uventet feil: ${err.message}`);
     process.exit(1);
   }
-  console.log(
-    `check-signalfarge-tekst: OK — ${sum} forekomster i ${filer} filer i HEAD; ` +
-      `${par.length} endret(e) fil(er) sammenlignet mot ${BASE}, ingen har fått flere.`,
-  );
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) main();

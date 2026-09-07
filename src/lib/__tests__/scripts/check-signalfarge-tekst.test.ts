@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { tellSignalfarge, finnBrudd, parseNameStatus } from "../../../../scripts/check-signalfarge-tekst.mjs";
+import { tellSignalfarge, finnBrudd, parseNameStatus, erFilManglendeIRef } from "../../../../scripts/check-signalfarge-tekst.mjs";
 
 test("teller color: TL.<signal> i alle skrivemåter, men ikke kant/flate", () => {
   assert.equal(tellSignalfarge("style={{ color: TL.danger }}"), 1);
@@ -31,4 +31,16 @@ test("parseNameStatus: én sti per rad, to for rename", () => {
     { status: "D", gammel: null, ny: "src/borte.tsx" },
   ]);
   assert.deepEqual(parseNameStatus(""), []);
+});
+
+test("parseNameStatus: A (lagt til/ny fil)", () => {
+  const ut = "A\0src/ny-fil.tsx\0";
+  assert.deepEqual(parseNameStatus(ut), [{ status: "A", gammel: null, ny: "src/ny-fil.tsx" }]);
+});
+
+test("erFilManglendeIRef: skiller gits 'finnes ikke i ref' fra andre git-feil", () => {
+  assert.equal(erFilManglendeIRef("fatal: path 'src/x.tsx' does not exist in 'origin/main'"), true);
+  assert.equal(erFilManglendeIRef("fatal: invalid object name 'origin/main'."), true);
+  assert.equal(erFilManglendeIRef("fatal: some other unrelated error"), false);
+  assert.equal(erFilManglendeIRef(undefined), false);
 });
