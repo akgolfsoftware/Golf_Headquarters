@@ -22,12 +22,16 @@ import { test, expect, type Page } from "@playwright/test";
 import { loginAsCoach, hasCoachAuth } from "./_auth-helpers";
 
 const CSP_MONSTER = /content security policy|script-src/i;
+// Vercel-verktøylinjen (kommentarer/feedback) finnes KUN på preview-deploys og
+// prøver å ramme inn vercel.live — det stopper vår `frame-src` med vilje. Det
+// er ikke appens script-src-bug, og det finnes ikke i prod. Ignoreres.
+const PREVIEW_STOY = /vercel\.live/i;
 
 async function cspBruddPaa(page: Page, rute: string): Promise<string[]> {
   const brudd: string[] = [];
   const paaKonsoll = (m: { text: () => string }) => {
     const tekst = m.text();
-    if (CSP_MONSTER.test(tekst)) brudd.push(`konsoll: ${tekst.slice(0, 240)}`);
+    if (CSP_MONSTER.test(tekst) && !PREVIEW_STOY.test(tekst)) brudd.push(`konsoll: ${tekst.slice(0, 240)}`);
   };
   const paaFeilet = (r: { url: () => string; failure: () => { errorText: string } | null }) => {
     const aarsak = r.failure()?.errorText ?? "";
