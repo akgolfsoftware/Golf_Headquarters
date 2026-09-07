@@ -26,8 +26,8 @@ Den blokken er fasit for Innsikt og Analyse og vinner over eldre dokumenter.
   · #792 Ø20 A-19a Innsikt (venter skjermbilde-gate, kø 34) · #798 marked runde 1–2 (forsiden på
   `/forside-ak` + `/junior`; venter forsidevalg, kø 33) · #795 TN-implementasjonsplan (docs) ·
   #796 TN-rail (draft).
-- **Markedssider: 2 av 22** i AK Golf-masteren. **19.6/19.7 fortsatt strandet** (151 ukommitterte
-  filer i hovedmappa, remålt 07.09 — kø 30).
+- **Markedssider: 2 av 22** i AK Golf-masteren. **19.7 og 19.6-regelen LEVERT 07.09 (PR #801,
+  fase 1 økt 2)** — kun 19.6-sweepen (151 ukommitterte filer i hovedmappa) står igjen, kø 30.
 - **Betaling uendret siden 05.09:** årspris-id mangler i prod, Ø2 ekte kjøp ikke gjort — begge er
   Anders' handlinger (kø 28). Milepælen tor 11.09 holder kun hvis de skjer man 08.09.
 
@@ -193,8 +193,8 @@ Den blokken er fasit for Innsikt og Analyse og vinner over eldre dokumenter.
 1. **Anders, man 08.09 (én økt, alt i betaling):** gi `price_`-id for årsplanen · si ja til
    TALENT-sonden · **ekte kjøp 299 kr** med eget kort (Ø2) → verifiser webhook → FULL → oppsigelse
    → TALENT → refusjon. Deretter: godkjenn ny milepæl 11.09 (beslutningskø 29) og hva som skjer
-   med 19.6/19.7-arbeidet i hovedmappa (beslutningskø 30). Panel: DNS `akgolf.no`, Resend DKIM.
-2. **Agent, tir 09.09:** PR #771 (Ø13) ferdig og merget · 19.6/19.7-redning fra hovedmappa.
+   med 19.6-sweepen i hovedmappa (beslutningskø 30). Panel: DNS `akgolf.no`, Resend DKIM.
+2. **Agent, tir 09.09:** PR #771 (Ø13) ferdig og merget · 19.6-sweep-redning fra hovedmappa (19.7 levert 07.09, PR #801).
 3. **Agent, ons 10.09:** skjermbilde S3-03 med ekte data + etterkontroll-skjermbilder på
    15.4/15.5/15.6/15.8/15.9.
 4. **Anders, tor 11.09:** Ø16 røyk-test → **FULL lanserbar**. Uka etter: WANG/GFGK-onboarding (7.2).
@@ -220,8 +220,8 @@ parallelt. Ingen var en delmengde av den andre, så begge måtte slås sammen ma
    men 0 abonnement har Stripe-id i prod — webhook → FULL → oppsigelse er kun testet i testmodus.
    Ø2 (Anders' eget kort) er den ene handlingen som avgjør om 1. september-lanseringen virker.
    Årsplanen kan uansett ikke kjøpes før `STRIPE_PRICE_ID_PRO_AAR` er satt.
-1b. **Strandet 19.6/19.7-arbeid i hovedmappa** (150 ukommitterte filer + én upushet commit)
-   tapes ved neste `git checkout` der, eller merges ukritisk. Se beslutningskø 30.
+1b. **Strandet 19.6-sweep i hovedmappa** (150 ukommitterte filer + én upushet commit; 19.7 levert
+   07.09, PR #801) tapes ved neste `git checkout` der, eller merges ukritisk. Se beslutningskø 30.
 1c. **Null ekte brukere fem dager etter lansering.** WANG/GFGK-onboarding (7.2) er ikke startet.
 2. **Skjermbilde-gaten er delvis kjørt (PR #731/#732, 01.09.2026):** pixel-diff-riggen har
    kalibrert 5 av 9 rutekartlagte skjermer med målt restavvik; 4 er dokumentert
@@ -288,4 +288,4 @@ planen; PR-tabellen og steg 0-listen der er utdatert (alle PR-ene merget 17.08).
   `origin/main` @ `a653a3afd`. `tsc`/`eslint`/`npm test` kjørt i arbeidskopien.
 - **Antatt / panel (kun Anders kan verifisere):** Stripe-checkout-branding, Resend DKIM,
   DNS `akgolf.no`, SCREENTEST-rotasjonens faktiske tilstand for `screentest-parent`, om
-  hovedmappa-økten (19.6/19.7) fortsatt er aktiv.
+  hovedmappa-økten (19.6-sweepen) fortsatt er aktiv.

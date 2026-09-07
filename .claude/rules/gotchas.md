@@ -31,6 +31,24 @@ Designfasit er Train-lock (låst 25.08.2026, CLAUDE.md invariant 2) — se `desi
   dokument-HTML-en: ligger det i `self.__next_f.push(...)`-payloaden under
   `"loading":[…,[["$","script","script-0",…` er det denne bugen. Chunken selv er offentlig
   (`curl .../_next/static/immutable/chunks/<hash>.js`) og røper hvilken modul det er.
+### Signalfarger som ren tekst på lys `scene`/`elev`/`dock` — bruksregel, ikke tokenendring (03.09.2026)
+- **Kilde:** `.claude/rules/beslutninger.md` §KONTRAST-REGEL I STEDET FOR NY FASIT (Vei A), målt av
+  `scripts/check-tl-kontrast.mjs` → `docs/design-audit/train-lock-kontrast.md` (12 brudd, 11 i lys
+  modus + 1 felles for begge). **Ingen `--tl-*`-verdi endres** — dette er en bruksregel oppå
+  Train-lock, ikke en ny fasit (CLAUDE.md invariant 2 står).
+- **Regel:** `danger`, `ok`, `warn`, `viz-target` skal ALDRI være `color:` på ren `scene`/`elev`-bunn
+  i lys modus (2,0–3,6:1, krav 4,5:1/3,0:1). Bruk dem i stedet som: hvit tekst PÅ en fylt flate i
+  samme farge (`on-fill`-mønsteret), eller ikon/grafikk med egen farget bakgrunnsflate rundt seg —
+  aldri løs tekstfarge på appens nøytrale bunn.
+- **`mute` på `dock`** (4,2:1, krav 4,5:1) er eneste `mute`-brudd — `mute` på `scene`/`elev` holder
+  fint (5,1:1/4,5:1) og er fortsatt normal sekundærtekst der. Unngå kun paret `mute`-tekst direkte
+  på `dock`-bunn i lys modus.
+- **`dim`** er kun spor/skjelett (loading-state) — skal aldri bære lesbar tekst, uansett modus.
+- **`on-danger` på `danger`** (3,5:1 lys / 3,4:1 mørk, krav 4,5:1) er hvit tekst i selve
+  Kø-badge-fyllet — under kravet i BEGGE moduser. Bruk kun for kort tallmerking (badge-count), aldri
+  for løpende tekst i det fyllet.
+- Se full tabell i `docs/design-audit/train-lock-kontrast.md` (generert av scriptet — ikke rediger
+  filen for hånd, kjør `node scripts/check-tl-kontrast.mjs` på nytt om tokens endres).
 
 ### Prismas `_count` på en relasjon skanner HELE relasjonstabellen — hver gang (oppdaget 2026-08-30)
 - **Symptom:** Supabase varslet «Your project is depleting its Disk IO Budget».
