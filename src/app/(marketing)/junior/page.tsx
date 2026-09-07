@@ -1,16 +1,18 @@
 /**
- * MARKEDSSIDE Junior (/junior, retning C). OFFENTLIG: ingen auth-guard, egen
- * marketing-chrome (MRamme), IKKE V2Shell.
+ * MARKEDSSIDE Junior (/junior). OFFENTLIG: ingen auth-guard.
+ * Skallet (nav/bunn) eies av `(marketing)/layout.tsx` — siden tegner aldri
+ * eget chrome. Master AK Golf, MASTERPLAN 18.33 runde 2.
  */
 import type { Metadata } from "next";
-import { MarkedJuniorV2 } from "@/components/marketing/v2/MarkedJuniorV2";
+
+import { JuniorAK } from "@/components/marketing/ak-sider/JuniorAK";
 
 export const metadata: Metadata = {
   title: "Junior · AK Golf Academy",
   description:
-    "Golf for unge talenter. AK Golf Academy tilbyr strukturert juniortrening for U10, U14, U18 og Talent-gruppen.",
+    "AK Golf Junior Academy tar spilleren fra første golfskole til turneringsspill, i fem trinn med navn: Mini, Knøtt, Basis, Utvikling og Elite.",
 };
 
 export default function JuniorPage() {
-  return <MarkedJuniorV2 />;
+  return <JuniorAK />;
 }
