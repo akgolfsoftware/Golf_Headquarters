@@ -158,7 +158,6 @@ function Losningen() {
           bilde={`${FOTO}renset/AK-Golf-Academy-9.jpg`}
           alt="Coach og spiller ser på Trackman-skjermen sammen"
           bildetekst="Målingen tolkes i økta, ikke i etterkant."
-          kilde="Foto #9"
           forhold="4 / 3"
         />
       </div>
@@ -173,7 +172,9 @@ function Tallet() {
         <div>
           {/* Tallet er ikke målt. Merket står synlig ved blokken til basen har
               et ekte tall (Anders 05.09, MASTERPLAN 0.14/0.15). */}
-          <Merkelapp variant="fag">Eksempel</Merkelapp>
+          <Merkelapp variant="fag" fylt>
+            Eksempel
+          </Merkelapp>
           <Talleblokk
             style={{ marginTop: "var(--ak-r-3)" }}
             etikett="Carry, driver"
