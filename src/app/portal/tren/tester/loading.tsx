@@ -2,7 +2,7 @@
    Fasit: playerhq-tester-hub.html — enkle skjelettlinjer i avtagende bredde.
    Ligger på tester-nivået (ikke tren/) så fys-plan ikke arver den. */
 
-import { V2Laster } from "@/components/v2/feil-laste";
+import { V2Laster } from "@/components/v2/laster";
 
 export default function Loading() {
   return <V2Laster variant="liste" />;

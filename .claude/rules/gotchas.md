@@ -4,6 +4,52 @@ Flyttet fra CLAUDE.md 2026-06-14. Les denne FØR du skriver kode. Når noe brekk
 (Eldre PRISMA-7- og Supabase-detaljer finnes også i git-historikken.)
 Designfasit er Train-lock (låst 25.08.2026, CLAUDE.md invariant 2) — se `designsystem/train-lock/`. Open Design-sporet fra 2026-07-25 er forlatt.
 
+### Next 16.3: loading.tsx-/error.tsx-grensens klient-chunks får IKKE CSP-nonce (oppdaget 2026-09-05, rettet 07.09)
+- **Symptom:** nettleserkonsollen i prod: «Loading the script '/_next/static/immutable/chunks/<hash>.js'
+  violates … script-src 'self' 'nonce-…' 'strict-dynamic'» på `/admin/spillere/[id]` og `/admin/analyse`.
+  Skjermen rendret likevel — Flight-klienten hentet chunken på nytt via et DOM-innsatt script, som
+  'strict-dynamic' tillater. Kun synlig i konsollen; verken verify, CI eller e2e fanget det.
+- **Rotårsak (lest i `node_modules/next/dist/server/app-render/`):** `create-component-styles-and-scripts.js`
+  lager `<script async src>` for loading-/error-/template-grensenes klient-chunks UTEN `nonce`, mens
+  `get-layer-assets.js` (layout/page) sender `nonce: ctx.nonce`. Scriptene ligger i Suspense-fallbacken,
+  så de havner i HTML-en bare når siden suspenderer lenge nok til at loading-fallbacken streames —
+  derfor traff det de to tregeste rutene, ikke alle 80 med samme loading.tsx. Chunker Flight allerede
+  hadde registrert MED nonce ble dedupet riktig; bare `feil-laste`-chunken (brukt kun av loading/error)
+  manglet. Verifisert uendret i next 16.3.4 og 16.4.0-canary.19, og bugen ligger også i de minifiserte
+  `compiled/next-server/app-page*.runtime.prod.js` — en patch-package-patch ville vært skjør.
+- **Fiks:** `V2Laster` bor i `src/components/v2/laster.tsx` UTEN `"use client"`. loading.tsx bærer da
+  ingen klient-JS, og Next har ingen tag å skrive. `V2Feil` (trenger onClick) er igjen i `feil-laste.tsx`.
+- **Regel:** en `loading.tsx` (eller `template.tsx`) importerer ALDRI fra en `"use client"`-modul —
+  skeletons er ren markup. Trenger du en klientkomponent i en laste-tilstand, legg den i page.tsx bak
+  `<Suspense>`. Rest-risiko: `error.tsx` er alltid klient, så samme nonse-løse tag kan dukke opp når en
+  feilside SSR-es — da laster Flight chunken via DOM uansett, og det gir kun én konsollinje på en side
+  som allerede feiler.
+- **Vakt:** `tests/e2e/csp-konsoll.spec.ts` feiler på «Content Security Policy» i konsollen på de to
+  rutene. Mot prod: `PLAYWRIGHT_BASE_URL=https://akgolf-hq.vercel.app npx playwright test tests/e2e/csp-konsoll.spec.ts --project=chromium`.
+- **Slik finner du synderen neste gang:** CDP `Network.requestWillBeSent` gir `initiator.type` —
+  `parser` betyr at taggen lå i HTML-en fra serveren, ikke JS-innsatt. Grep så etter chunk-navnet i
+  dokument-HTML-en: ligger det i `self.__next_f.push(...)`-payloaden under
+  `"loading":[…,[["$","script","script-0",…` er det denne bugen. Chunken selv er offentlig
+  (`curl .../_next/static/immutable/chunks/<hash>.js`) og røper hvilken modul det er.
+### Signalfarger som ren tekst på lys `scene`/`elev`/`dock` — bruksregel, ikke tokenendring (03.09.2026)
+- **Kilde:** `.claude/rules/beslutninger.md` §KONTRAST-REGEL I STEDET FOR NY FASIT (Vei A), målt av
+  `scripts/check-tl-kontrast.mjs` → `docs/design-audit/train-lock-kontrast.md` (12 brudd, 11 i lys
+  modus + 1 felles for begge). **Ingen `--tl-*`-verdi endres** — dette er en bruksregel oppå
+  Train-lock, ikke en ny fasit (CLAUDE.md invariant 2 står).
+- **Regel:** `danger`, `ok`, `warn`, `viz-target` skal ALDRI være `color:` på ren `scene`/`elev`-bunn
+  i lys modus (2,0–3,6:1, krav 4,5:1/3,0:1). Bruk dem i stedet som: hvit tekst PÅ en fylt flate i
+  samme farge (`on-fill`-mønsteret), eller ikon/grafikk med egen farget bakgrunnsflate rundt seg —
+  aldri løs tekstfarge på appens nøytrale bunn.
+- **`mute` på `dock`** (4,2:1, krav 4,5:1) er eneste `mute`-brudd — `mute` på `scene`/`elev` holder
+  fint (5,1:1/4,5:1) og er fortsatt normal sekundærtekst der. Unngå kun paret `mute`-tekst direkte
+  på `dock`-bunn i lys modus.
+- **`dim`** er kun spor/skjelett (loading-state) — skal aldri bære lesbar tekst, uansett modus.
+- **`on-danger` på `danger`** (3,5:1 lys / 3,4:1 mørk, krav 4,5:1) er hvit tekst i selve
+  Kø-badge-fyllet — under kravet i BEGGE moduser. Bruk kun for kort tallmerking (badge-count), aldri
+  for løpende tekst i det fyllet.
+- Se full tabell i `docs/design-audit/train-lock-kontrast.md` (generert av scriptet — ikke rediger
+  filen for hånd, kjør `node scripts/check-tl-kontrast.mjs` på nytt om tokens endres).
+
 ### Prismas `_count` på en relasjon skanner HELE relasjonstabellen — hver gang (oppdaget 2026-08-30)
 - **Symptom:** Supabase varslet «Your project is depleting its Disk IO Budget».
 - **Rotårsak (målt i `pg_stat_statements` 30.08.2026):** `_count: { select: { entries: true } }`

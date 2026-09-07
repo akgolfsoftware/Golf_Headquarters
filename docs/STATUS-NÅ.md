@@ -2,7 +2,7 @@
 
 > **Hva dette er:** ett snapshot av hvor plattformen står akkurat nå. Oppdater datoen + relevante linjer når noe vesentlig endrer seg.
 
-**Sist oppdatert:** 2026-09-05 (prosjektrevisjon — målt mot `origin/main` @ `a653a3afd`, PR #783, prod-DB lesende, Vercel env-navn, GitHub. Fullt grunnlag: `docs/beslutningsgrunnlag/prosjektrevisjon-2026-09-05.md`).
+**Sist oppdatert:** 2026-09-07 (status målt i økt — fasit-dekning, rigg, PR-liste, `git log origin/main` @ `8ca1d66ae`; forrige fulle revisjon 05.09: `docs/beslutningsgrunnlag/prosjektrevisjon-2026-09-05.md`). Historikk under: 05.09 (prosjektrevisjon — målt mot `origin/main` @ `a653a3afd`, PR #783, prod-DB lesende, Vercel env-navn, GitHub. Fullt grunnlag: `docs/beslutningsgrunnlag/prosjektrevisjon-2026-09-05.md`).
 **Betaling:** koden er klar siden 30.08 (Stripe-cutover 1. september). Live-nøkler/DNS/DKIM er
 Anders-oppgaver i Vercel/Stripe-panelet og kan ikke verifiseres fra kode/git — se
 `docs/MASTERPLAN-GJENSTAAENDE.md` STEG 1 og 10.8.
@@ -11,7 +11,27 @@ over alt gjenstående (konsolidert 30.08 fra det tidligere LANSERINGSPLAN-KOMPLE
 **Produktretning låst 30.08:** `.claude/rules/beslutninger.md` §«PRODUKTRETNING — åtte svar».
 Den blokken er fasit for Innsikt og Analyse og vinner over eldre dokumenter.
 
-## Hovedbildet 05.09 (prosjektrevisjon — målt mot origin/main @ a653a3afd, 57 PR-er merget siden 01.09)
+## Hovedbildet 07.09 (målt i økt mot origin/main @ 8ca1d66ae — 8 PR-er merget siden 05.09, #787–#794)
+
+- **Svar på «er Claude Design-fasiten komplett og pikselnært portert?»: nei.** 150/210
+  Train-lock-tegninger sitert fra kode (opp fra 146), **11 skjermer kalibrert i sign-off-riggen**
+  (opp fra 5; 7 ukalibrerte med kjent årsak). STEG 20-tellingen fra 05.09 står: 5 målt · 34 bygget
+  ikke målt · 65 kjent avvik · 33 delvis · 40 ikke bygget. Mekanisk audit uendret. Estimat for
+  komplett port: 91 økter (planen 05.09). Alt gjenstående før lansering står samlet i
+  MASTERPLAN §STATUS 07.09.2026 (rett under innledningen).
+- **Levert siden 05.09:** Ø13 Spiller 360 arbeidsvisning (#771), Ø19 PH-21 Min kurve (#789) +
+  impeccable-audit (#791), A0 skjermbilde-gate (#787), A1 (#788), komplett designport-plan (#790)
+  og fase 1 som åtte øktplaner (#793/#794).
+- **Fem åpne PR-er, alle grønn `verify`, ingen merget:** #797 fase 1 økt 1 (fem vakter i verify/CI)
+  · #792 Ø20 A-19a Innsikt (venter skjermbilde-gate, kø 34) · #798 marked runde 1–2 (forsiden på
+  `/forside-ak` + `/junior`; venter forsidevalg, kø 33) · #795 TN-implementasjonsplan (docs) ·
+  #796 TN-rail (draft).
+- **Markedssider: 2 av 22** i AK Golf-masteren. **19.7 og 19.6-regelen LEVERT 07.09 (PR #801,
+  fase 1 økt 2)** — kun 19.6-sweepen (151 ukommitterte filer i hovedmappa) står igjen, kø 30.
+- **Betaling uendret siden 05.09:** årspris-id mangler i prod, Ø2 ekte kjøp ikke gjort — begge er
+  Anders' handlinger (kø 28). Milepælen tor 11.09 holder kun hvis de skjer man 08.09.
+
+## Hovedbildet 05.09 (historikk — prosjektrevisjon — målt mot origin/main @ a653a3afd, 57 PR-er merget siden 01.09)
 
 - **Milepælen «FULL lanserbar» er flyttet fra tor 24.09 til tor 11.09** (24.09 = siste frist).
   13 av 16 økter i STEG 1B var levert 04.09. Gjenstår: Ø1-rest (årspris-id), 0.4 (TALENT-sonde),
@@ -173,8 +193,8 @@ Den blokken er fasit for Innsikt og Analyse og vinner over eldre dokumenter.
 1. **Anders, man 08.09 (én økt, alt i betaling):** gi `price_`-id for årsplanen · si ja til
    TALENT-sonden · **ekte kjøp 299 kr** med eget kort (Ø2) → verifiser webhook → FULL → oppsigelse
    → TALENT → refusjon. Deretter: godkjenn ny milepæl 11.09 (beslutningskø 29) og hva som skjer
-   med 19.6/19.7-arbeidet i hovedmappa (beslutningskø 30). Panel: DNS `akgolf.no`, Resend DKIM.
-2. **Agent, tir 09.09:** PR #771 (Ø13) ferdig og merget · 19.6/19.7-redning fra hovedmappa.
+   med 19.6-sweepen i hovedmappa (beslutningskø 30). Panel: DNS `akgolf.no`, Resend DKIM.
+2. **Agent, tir 09.09:** PR #771 (Ø13) ferdig og merget · 19.6-sweep-redning fra hovedmappa (19.7 levert 07.09, PR #801).
 3. **Agent, ons 10.09:** skjermbilde S3-03 med ekte data + etterkontroll-skjermbilder på
    15.4/15.5/15.6/15.8/15.9.
 4. **Anders, tor 11.09:** Ø16 røyk-test → **FULL lanserbar**. Uka etter: WANG/GFGK-onboarding (7.2).
@@ -200,8 +220,8 @@ parallelt. Ingen var en delmengde av den andre, så begge måtte slås sammen ma
    men 0 abonnement har Stripe-id i prod — webhook → FULL → oppsigelse er kun testet i testmodus.
    Ø2 (Anders' eget kort) er den ene handlingen som avgjør om 1. september-lanseringen virker.
    Årsplanen kan uansett ikke kjøpes før `STRIPE_PRICE_ID_PRO_AAR` er satt.
-1b. **Strandet 19.6/19.7-arbeid i hovedmappa** (150 ukommitterte filer + én upushet commit)
-   tapes ved neste `git checkout` der, eller merges ukritisk. Se beslutningskø 30.
+1b. **Strandet 19.6-sweep i hovedmappa** (150 ukommitterte filer + én upushet commit; 19.7 levert
+   07.09, PR #801) tapes ved neste `git checkout` der, eller merges ukritisk. Se beslutningskø 30.
 1c. **Null ekte brukere fem dager etter lansering.** WANG/GFGK-onboarding (7.2) er ikke startet.
 2. **Skjermbilde-gaten er delvis kjørt (PR #731/#732, 01.09.2026):** pixel-diff-riggen har
    kalibrert 5 av 9 rutekartlagte skjermer med målt restavvik; 4 er dokumentert
@@ -268,4 +288,4 @@ planen; PR-tabellen og steg 0-listen der er utdatert (alle PR-ene merget 17.08).
   `origin/main` @ `a653a3afd`. `tsc`/`eslint`/`npm test` kjørt i arbeidskopien.
 - **Antatt / panel (kun Anders kan verifisere):** Stripe-checkout-branding, Resend DKIM,
   DNS `akgolf.no`, SCREENTEST-rotasjonens faktiske tilstand for `screentest-parent`, om
-  hovedmappa-økten (19.6/19.7) fortsatt er aktiv.
+  hovedmappa-økten (19.6-sweepen) fortsatt er aktiv.

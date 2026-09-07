@@ -21,7 +21,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { TL } from "@/lib/v2/train-lock";
 import { fmtSg, TOM_TALL, type AkseKey } from "@/lib/v2/format";
-import { useCountUp, useMount, EASE, reduced } from "@/lib/v2/hooks";
+import { useCountUp, useMount, EASE, reduced, fmtSluttverdi } from "@/lib/v2/hooks";
 import { Icon } from "@/components/v2/icon";
 import { HjelpTips } from "@/components/v2/hjelp";
 import type { HjelpNokkel } from "@/lib/v2/hjelpetekster";
@@ -281,8 +281,8 @@ export interface TallHeroProps {
 }
 export function TallHero({ label, value, unit, delta, dir, sub, size = 56, accent, action, hjelp }: TallHeroProps) {
   const tom = value === null || value === undefined || value === "";
-  const shown = useCountUp(tom ? 0 : (value as number | string));
-  const display = tom ? TOM_TALL : shown;
+  // Målt tall er et faktum — vises fra første ramme, ingen opptelling (Anders 03.09.2026, STEG 19.7).
+  const display = tom ? TOM_TALL : fmtSluttverdi(value as number | string);
   return (
     <div>
       {(label || action) && (
