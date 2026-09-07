@@ -82,6 +82,20 @@ er stort sett ikke startet.
      og `AK` fra `src/lib/v2/ak-palett.ts` (domeneverdier: pyramideakser, tee-farger,
      merkefarger). Ikke Presis-skog/lime. Paper er slettet fra repoet 30.08.2026 og
      kan ikke lenger brukes som few-shot — hverken tokens, CSS eller fasitfiler.
+3. **Vendor-agenter er gjester, aldri kanon.** Eksterne agentkataloger (f.eks.
+   `msitarzewski/agency-agents`) installeres kun til `~/.claude/agents/` på egen maskin.
+   De kopieres aldri inn i dette repoet, er aldri AgenticOS-runtime, og kan aldri skrive
+   `Signal`, `PlanAction` eller `AgentRun`.
+   - **Konfliktregel:** `src/lib/masterbrain/` vinner over enhver vendor-tekst om golf, SG,
+     drills, MORAD og periodisering. Train-lock vinner på skjerm,
+     `docs/platform/BUSINESS-RULES.md` på produkt- og forretningsregler, og
+     `.claude/rules/beslutninger.md` på arbeids- og designprosess. Sier en vendor-agent noe
+     annet, taper vendoren.
+   - **Hva som absorberes:** kun struktur (frontmatter, Critical Rules, Workflow,
+     Success Metrics, testtilfeller) og navngitte enkeltregler — aldri personlighet, og
+     aldri US-spesifikk finance/CMS.
+   - **Én AK-agent per jobb.** Finnes jobben i `.claude/skills/` eller `src/lib/agents/`,
+     oppdateres den i stedet for at det lages en parallell.
 
 ---
 
