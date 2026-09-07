@@ -164,15 +164,25 @@ export type TnBrukerFot = { navn: string; rolle: string };
  * TnSkall.dc.html §rail. Ikke ansvarlig for ruting — kall-siden gir `href`
  * og avgjør `aktiv` selv (unngår en client-side routing-avhengighet her).
  */
-export function TnRail({ punkter, bruker }: { punkter: TnMenyPunkt[]; bruker: TnBrukerFot }) {
+export function TnRail({
+  punkter,
+  bruker,
+  orgNavn,
+  orgUndertittel,
+}: {
+  punkter: TnMenyPunkt[];
+  bruker: TnBrukerFot;
+  orgNavn: string;
+  orgUndertittel: string;
+}) {
   return (
     <div
+      className="hidden lg:flex"
       style={{
         width: 232,
         flexShrink: 0,
         background: TN.surfaceCard,
         borderRight: `1px solid ${TN.borderSubtle}`,
-        display: "flex",
         flexDirection: "column",
         padding: "20px 14px 18px",
         gap: 20,
@@ -192,7 +202,7 @@ export function TnRail({ punkter, bruker }: { punkter: TnMenyPunkt[]; bruker: Tn
         <span style={{ width: 9, height: 24, borderRadius: 3, background: TN.red600, flexShrink: 0 }} />
         <div style={{ minWidth: 0 }}>
           <div style={{ fontFamily: TN.font.body, fontSize: TN.text.sm, fontWeight: TN.weight.bold, color: TN.navy900 }}>
-            Team Norway
+            {orgNavn}
           </div>
           <div
             style={{
@@ -204,7 +214,7 @@ export function TnRail({ punkter, bruker }: { punkter: TnMenyPunkt[]; bruker: Tn
               textTransform: "uppercase",
             }}
           >
-            Junior
+            {orgUndertittel}
           </div>
         </div>
       </div>
