@@ -111,7 +111,6 @@ export function BookingCoachV2({ data }: { data: BookingCoachV2Data }) {
                       </span>
                     }
                     last={i === data.tjenester.length - 1}
-                    onClick={() => {}}
                   />
                 </Link>
               ))}
