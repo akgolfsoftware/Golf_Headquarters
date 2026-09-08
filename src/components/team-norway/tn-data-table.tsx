@@ -6,6 +6,10 @@ import { TN } from "@/lib/v2/team-norway";
  * Ren presentasjon (ingen hooks) — kan brukes fra en server component.
  * `loading` tegner skjelettrader i tabellens egen rytme; `empty` er et
  * gyldig svar fra loaderen, ikke en feil. Skjermene skal ikke tegne dette selv.
+ *
+ * Avvik:
+ *   - Ingen riggrad: den visuelle riggen dekker Train-lock, ikke Claw ennå
+ *     (PORTING.md §0b, ingen Claw-skjerm har det per 08.09.2026).
  */
 
 export type TnDataTableKolonne = {

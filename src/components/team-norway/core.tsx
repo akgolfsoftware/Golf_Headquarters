@@ -14,6 +14,12 @@ import { Icon } from "@/components/v2";
  *
  * `Icon` gjenbrukes fra @/components/v2 — den er generisk (Lucide-wrapper),
  * ikke Train-lock-spesifikk.
+ *
+ * Avvik:
+ *   - Ingen riggrad: den visuelle riggen (tests/visual/skjerm-mapping.ts) dekker
+ *     Train-lock, ikke Claw ennå (PORTING.md §0b, ingen Claw-skjerm har det per 08.09.2026).
+ *   - TnKnapp/TnRail rettet 08.09.2026 (44/48/56px, 252px) mot components/core/Button.jsx
+ *     i Claw-designsystemet a03bf94a — se commit-melding for kilden.
  */
 
 // ───────────────────────── Kort ─────────────────────────
