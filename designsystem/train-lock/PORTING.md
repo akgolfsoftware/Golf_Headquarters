@@ -137,9 +137,9 @@ praksis.** Kort versjon:
    (`npm run signoff:train-lock -- ...`) — trekker ut fasit-rammen isolert i
    ekte pikselstørrelse, tar app-skjermbilde i samme størrelse, kutter
    fasitens bakte statuslinje (mobil) og pixelmatcher resten.
-5. **Terskel er PER SKJERM, kalibrert, ikke en universell 0,1 %.** Følg
-   `paper-visual`s presedens (4 % — «fonter/anti-aliasing varierer selv når
-   layout er identisk») og legg til dataavhengig varians der det gjelder.
+5. **Terskel er PER SKJERM, kalibrert, ikke en universell 0,1 %.** Lærdommen fra
+   den slettede `paper-visual`-riggen står (4 % — «fonter/anti-aliasing varierer
+   selv når layout er identisk»); legg til dataavhengig varians der det gjelder.
    PH-01s kalibrerte baseline: ~11 %. Se `tests/visual/skjerm-mapping.ts`.
 6. **Assert-test på reglene** i tillegg til bildet — ikke i stedet for:
    - nøyaktig én `variant="primary"` per skjerm
@@ -149,8 +149,8 @@ praksis.** Kort versjon:
    - alle tallformater gjennom `nb-NO`-helper
 7. **Fest referansebildet i PR-en.** Diff-bildet i PR-beskrivelsen er det som holder porten ærlig over tid.
 
-Riggen kjører IKKE i CI (samme begrunnelse som `paper-visual`: lokalt verktøy
-for designporten, ikke en automatisk gate) — se `tests/visual/README.md`.
+Riggen kjører ikke i CI per 05.09.2026 (lokalt verktøy for designporten, ikke en
+automatisk gate; nattlig kjøring er planlagt som fase 1 økt 6) — se `tests/visual/README.md`.
 
 ---
 

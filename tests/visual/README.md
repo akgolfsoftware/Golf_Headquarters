@@ -5,7 +5,7 @@ Train-lock-fasit (`.dc.html`) og den faktisk bygde skjermen — ikke bare
 øyemål på et rått galleri-skjermbilde (`scripts/signoff-trainlock.mjs`, som
 fortsatt er nyttig for RASK visuell oversikt, men ikke måler noe).
 
-## Hvorfor ikke Playwright `toHaveScreenshot()` (som `tests/e2e/paper-visual/`)?
+## Hvorfor ikke Playwright `toHaveScreenshot()` (som den slettede `tests/e2e/paper-visual/` gjorde)?
 
 To grunner:
 1. **Asymmetrisk beskjæring.** Fasit-rammene for telefon baker inn en falsk
@@ -16,9 +16,9 @@ To grunner:
    `train-lock-pixel-diff.mjs`) — `toHaveScreenshot()` sammenligner hele
    elementet, ikke et beskåret utsnitt av to ulike kilder.
 2. **Fasiten rendres på nytt hver kjøring**, ikke lagres som delt
-   snapshot-fil. `paper-visual/README.md` dokumenterer at delte
+   snapshot-fil. Paper-riggen (slettet 05.09.2026) lærte oss at delte
    snapshot-PNG-er ikke er bærbare mellom maskiner (font-rendering varierer) —
-   derfor er de gitignorerte og lokale. Å rendre `.dc.html`-fasiten FERSK i
+   derfor var de gitignorerte og lokale. Å rendre `.dc.html`-fasiten FERSK i
    samme kjøring (samme Chromium, samme maskin, samme øyeblikk) unngår
    akkurat det problemet uten å måtte lagre og committe bilder.
 
@@ -36,7 +36,7 @@ prosenttallet og se på diff-bildet selv.
 ## Realistisk terskel — IKKE 0,1 %
 
 Opprinnelig plan antok en streng 0,1 %-terskel (PORTING.md §5s tekst). Det
-holder ikke i praksis, av samme grunn som `paper-visual` selv satte sin
+holder ikke i praksis, av samme grunn som den gamle Paper-riggen satte sin
 terskel til 4 % («fonter/anti-aliasing varierer selv når layout er
 identisk»): PH-01 er i tillegg en DATAAVHENGIG skjerm — SG-verdi, antall
 økter denne uken og «neste økt»-kortet er avledet fra annen historikk enn
