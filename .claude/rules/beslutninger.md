@@ -28,6 +28,37 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
 
 ## Beslutningene (september 2026)
 
+- **DESIGNPORT FASE 2 — SEKS BESLUTNINGER, MILEPÆL 11.09 (Anders 08.09.2026, i økt):** svar på
+  planens §6 kø-punkter 1–6 (`docs/superpowers/plans/2026-09-05-komplett-designport.md`), spurt
+  samme dag fase 1 (grunnmuren) ble ferdigstilt (8/8 økter merget).
+  1. **Kø 28 (årspris-id + ekte kjøp) — PRESISERT, IKKE LØST.** Verifisert i økt: de fire
+     Stripe-prisene (299 kr/mnd · 2 690 kr/år · 1 200 kr/mnd Performance · 2 220 kr/mnd
+     Performance Pro) er kun opprettet i TEST-modus (16.08.2026,
+     `docs/platform/stripe-cutover-sjekkliste.md`) — live-modus krever egne price-ID-er, og
+     sjekklistens punkt «Opprett de fire prisene i live-modus» er fortsatt uavkrysset. Anders
+     sjekker Stripe-dashbordet (Produkter → PlayerHQ, live) — finnes årsprisen der, gir han
+     Claude price-ID-en; finnes den ikke, oppretter han den (speil test-oppsettet) og gir Claude
+     IDen. Claude setter da `STRIPE_PRICE_ID_PRO_AAR` i Vercel production. Selve kjøpet (299 kr,
+     Anders' eget kort, refunderes) gjøres av Anders selv — uendret fra §PLAN-FASIT,
+     WORKBENCH-KANON OG BETALINGSTEST (02.09.2026).
+  2. **Kø 29 (milepæl): 11.09 valgt — OVERSTYRER planens anbefaling (24.09).** Krever tre
+     parallelle spor og at kø 28 løses NÅ, ikke senere — holder ikke hvis Stripe-live-oppsettet
+     drar ut over få dager.
+  3. **TALENT-sonde for skjermbilde av `/oppgrader/flyt`: Ja.** Midlertidig TALENT-nivå på
+     screentest-brukeren, reverseres etter skjermbildet er tatt.
+  4. **ME-03 (abonnements-/pris-skjermen): dagens kode signeres som sin egen fasit — IKKE ny
+     canvas.** Unntak fra «TEGN SKJERMEN FØR DU BYGGER DEN» (30.08.2026) — skjermen er allerede
+     bygget og fungerende, kun den gamle tegningen er utgått (dødt «Elite»-navn, gammel pris).
+  5. **Flyt for coach-publisert økt fra «I dag»: koble «Start» til live-tapperen + bygg
+     «Fullført + Se recap» på I dag NÅ, i fase 2 — OVERSTYRER planens anbefaling («behold dagens
+     side»).** Legger til ca. 2 økter i fase 2-omfanget (8 → ~10).
+  6. **Utgått-merking: Ja.** PH-15, gammel DG-01, A-07, A-08, AG-05, AG-13 merkes utgått i
+     SCREEN-INDEX §Kjente hull, telles ikke lenger som «mangler port».
+  **Krever kodeendring:** punkt 1 (Vercel env, når ID foreligger) og punkt 5 (live-tapper-kobling,
+  +2 økter). Punkt 2, 3, 4, 6 er retningsbeslutninger som styrer selve fase 2-økten, ingen egen
+  kode utover den. **Arbeidet:** `docs/MASTERPLAN-GJENSTAAENDE.md` STEG 20.2 (Fase 2, økt-tallet
+  oppdatert 8→~10), beslutningskø punkt 28 (fortsatt åpen, presisert), 29 og 31 pkt 1–6 (svart).
+
 - **KOMPLETT DESIGNPORT — PLANEN GJELDER, FASE 1 STARTER (Anders 05.09.2026, i økt):** planen
   `docs/superpowers/plans/2026-09-05-komplett-designport.md` (åtte faser, 91 økter, lansering først,
   tre ferdig-punkter) er grunnlaget for all videre Train-lock-porting av produktskjermene. Anders:
