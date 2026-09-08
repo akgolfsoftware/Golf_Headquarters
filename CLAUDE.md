@@ -42,8 +42,8 @@ er stort sett ikke startet.
 
 1. **Ingen treningsregler** (2026-08-18). Vokabular (pyramide, formel, perioder) er merkelapper. Gjeninnfør aldri metodikk-sperrer uten Anders' beslutning.
 2. **Design — Train-lock er fasit for ALLE skjermer i PlayerHQ OG AgencyOS (Anders 25.08.2026).**
-   - **Fasiten ligger i repoet: `designsystem/train-lock/`** (196 skjermfiler, sist synket
-     26.08 fra zip (6) — les `DESIGN-SYSTEM.md` der først (look-fasit), finn skjermen i
+   - **Fasiten ligger i repoet: `designsystem/train-lock/`** (219 skjermfiler, sist synket
+     08.09 fra «Player HQ Train lock» — les `DESIGN-SYSTEM.md` der først (look-fasit), finn skjermen i
      `SCREEN-INDEX.md`, og bruk `HANDOFF.md` som IA-/beslutningshistorikk. Ved konflikt:
      HANDOFF vinner på struktur, DESIGN-SYSTEM på visuelle verdier. Porting til kode styres
      av `PORTING.md` samme sted). Scene `#000000` (lys-varianter `#FFFFFF`).

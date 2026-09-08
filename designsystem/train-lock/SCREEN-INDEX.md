@@ -1,6 +1,6 @@
 # SCREEN-INDEX — Player HQ Train lock
 
-Autogenerert 2026-08-26. 196 filer. Kolonner: fil · rammer i filen · breakpoints funnet i markup · skjermetiketter (`data-screen-label`).
+Autogenerert 2026-08-26. Oppdatert 08.09.2026: **219 skjermfiler** (DG-10–DG-17 inn). Kolonner: fil · rammer i filen · breakpoints funnet i markup · skjermetiketter (`data-screen-label`).
 
 Les **DESIGN-SYSTEM.md** før du endrer noe. Endrer du en fil, oppdater raden her.
 
@@ -159,6 +159,15 @@ Les **DESIGN-SYSTEM.md** før du endrer noe. Endrer du en fil, oppdater raden he
 |---|---|---|---|
 | `DG-01 DataGolf topplister og SG-profil.dc.html` | 4 | 390,1280 | DG-01a Toppliste iPhone / DG-01b Toppliste desktop 1280 / DG-02a SG-profil iPhone / DG-02b SG-profil desktop 1280 |
 | `DG-01L DataGolf topplister og SG-profil lys.dc.html` | 4 | 390,1280 | Lys DG-01a / Lys DG-01b / Lys DG-02a / Lys DG-02b |
+| `DG-10 Meg vs tak.dc.html` | 2 | 390,1280 | DG-10a Meg vs tak 390 / DG-10b Meg vs tak 1280 |
+| `DG-11 Velg tak.dc.html` | 2 | 390,1280 | DG-11a Velg tak 390 / DG-11b Velg tak 1280 |
+| `DG-12 SG-profil.dc.html` | 2 | 390,1280 | DG-12a SG-profil 390 / DG-12b SG-profil 1280 |
+| `DG-13 Innspill-band.dc.html` | 2 | 390,1280 | DG-13a Innspill-bånd 390 / DG-13b Innspill-bånd 1280 |
+| `DG-14 Stasjon.dc.html` | 2 | 390,1280 | DG-14a Stasjon 390 / DG-14b Stasjon 1280 |
+| `DG-14L Stasjon lys.dc.html` | 2 | 390,1280 | Lys DG-14a / Lys DG-14b |
+| `DG-15 Okt ferdig.dc.html` | 2 | 390,1280 | DG-15a Økt ferdig 390 / DG-15b Økt ferdig 1280 |
+| `DG-16 Ingen DataGolf.dc.html` | 2 | 390,1280 | DG-16a Ingen DataGolf 390 / DG-16b Ingen DataGolf 1280 |
+| `DG-17 Putting unntak.dc.html` | 2 | 390,1280 | DG-17a Putting-unntak 390 / DG-17b Putting-unntak 1280 |
 
 ## FO · Foreldreportal
 
@@ -279,7 +288,7 @@ Les **DESIGN-SYSTEM.md** før du endrer noe. Endrer du en fil, oppdater raden he
 
 - `GAP-00 Kart.dc.html`, `TRAIN LOCK.dc.html`, `TRAIN VIZ.dc.html` mangler `data-screen-label` — de er referansebrett, ikke skjermer. Bruk dem som fasit, ikke som mal.
 - Filer med æ/ø/å eller tankestrek i navnet leses ikke av batch-verktøy. Ved nye filer: bruk ASCII i filnavn (`Okt`, `Okonomi`) slik som FO-07 og resten av AO-serien.
-- Lys modus finnes som egne filer for 28 skjermer (talt 05.09.2026 med `ls designsystem/train-lock | grep -E ' lys\.dc\.html$|^B[345] Lys'`): A-16, A-17, A-19L, AG-01 lys, B3 (to filer), B4, B5, DG-01L, FO-01L–FO-10L, KA-01L, LO-01L, P-09 lys, PH-21L, RU-01L, S3-01L, TE-00L, TE-01L, TE-04L. I tillegg finnes lys-rammer inne i mørke filer: EC-02d/EC-02e, AG-19g, AO-13e, GAP-2f. Alt annet er kun mørkt — der gjelder mekanisk avledet lys fra `--tl-*` (beslutning 26.08.2026).
+- Lys modus finnes som egne filer for 29 skjermer (talt 08.09.2026 med `ls designsystem/train-lock | grep -E ' lys\.dc\.html$|^B[345] Lys'`): A-16, A-17, A-19L, AG-01 lys, B3 (to filer), B4, B5, DG-01L, DG-14L, FO-01L–FO-10L, KA-01L, LO-01L, P-09 lys, PH-21L, RU-01L, S3-01L, TE-00L, TE-01L, TE-04L. I tillegg finnes lys-rammer inne i mørke filer: EC-02d/EC-02e, AG-19g, AO-13e, GAP-2f. Alt annet er kun mørkt — der gjelder mekanisk avledet lys fra `--tl-*` (beslutning 26.08.2026).
 - `P-05 iPhone Agenda.dc.html` er **utgått som fasit for `/portal/planlegge`** (Anders 02.09.2026, D1) — Plan porter mot `PH-07 Plan.dc.html` + `PH-08 Plan tom uke.dc.html`. P-05 gjelder kun telefon-Workbench (agenda). Årsak: CS/M-vokabular fra før 18.08 og annen IA.
 - `PH-15 Analyse tester.dc.html` er **utgått** (Anders 08.09.2026) — Tester porter mot `TE-01 Tester hub iPhone.dc.html`. PH-15s pyramide-akse-hero + filtrert liste er erstattet av TE-01s flate liste GOLFSLAG/TEKNIKK.
 - `DG-01 DataGolf spiller.dc.html` er **utgått** (gammel; erstattet av `DG-01 DataGolf topplister og SG-profil.dc.html`)

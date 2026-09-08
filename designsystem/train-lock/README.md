@@ -18,7 +18,7 @@ CLAUDE.md invariant 2, `.claude/rules/beslutninger.md` øverste beslutning). Pap
 | `AX-01 Skall rail og tabbar.dc.html` | **SKALL-FASIT (kanon fra 25.08.2026).** Ny, komplett leveranse (11 431 byte) erstattet den avkuttede versjonen. **Fem destinasjoner, identisk på mobil og Mac:** Stall · Workbench · Kø · Jarvis · Meg. Konsoll, Økonomi og Kalender er rader under Meg — aldri en sjette fane. Mac-rail 232 px med tekst. Ved konflikt vinner denne over `AG-00` og over rail-en i A-/AG-skjermene (som viser 7 ikoner i 64 px og er utdatert). |
 | `B1 Tilstander laster feil.dc.html` | Tilstands-fasiten (laster/feil) |
 
-## Familier (196 skjermfiler)
+## Familier (219 skjermfiler, synket 08.09.2026)
 
 | Prefiks | Antall | Dekker |
 |---|---|---|
@@ -40,7 +40,7 @@ CLAUDE.md invariant 2, `.claude/rules/beslutninger.md` øverste beslutning). Pap
 | BO-01…BO-03 | 3 | Booking |
 | TU-01/02 · GP-01/02 · GAP-00/1 · MAT-00/01 | 8 | Turneringer, Gameplan, GAP, materialer |
 | FO-01…FO-10 (+L-varianter) | 20 | Foreldreportal komplett (les, barn, bookinger, coach, fakturaer, innstillinger, økonomi, samtykke, ukerapport, varsler) — mørk + lys, levert 26.08 |
-| FY-01 · EC-01 · DG-01 · Analyse Gapping | 4 | Fys stall, Økonomi, DataGolf, gapping-analyse |
+| FY-01 · EC-01 · DG-01 + DG-10–17 · Analyse Gapping | 15 | Fys stall, Økonomi, DataGolf (topplister + spillerverktøy), gapping-analyse |
 
 ## Regler
 
