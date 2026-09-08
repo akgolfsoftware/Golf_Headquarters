@@ -11,8 +11,9 @@
  * `rad.merke`/`rad.merkeLabel` i samme kort, ikke som fem separate
  * hardkodede layouter. AO-12g (mobil 393) er samme kort på smalere bredde.
  *
- * Rigg: AO-08 Godkjenn 1440 (tests/visual/skjerm-mapping.ts, panel-modus; rammen ligger i
- *   AO-01 Cockpit ko godkjenning.dc.html, ikke i AO-12-fila).
+ * Rigg: AO-08 Godkjenn 1440
+ * (tests/visual/skjerm-mapping.ts, panel-modus; rammen ligger i
+ *   AO-01 Cockpit ko godkjenning.dc.html, ikke i AO-12-fila.)
  * Avvik: fasitrammen har padding 20 px innenfor en 620 px ramme — appens panel starter på
  *   x=0 i skallets innhold, så alt innhold ligger 20 px lenger opp og til venstre.
  * Avvik: appens panel er bredere enn fasitens 620 px, så kortenes høyre kant faller

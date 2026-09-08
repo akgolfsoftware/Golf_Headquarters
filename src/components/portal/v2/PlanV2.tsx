@@ -4,6 +4,7 @@
  * PlayerHQ Plan — Train-lock-porten.
  * Fasit: designsystem/train-lock/PH-07 Plan.dc.html
  * Fasit: designsystem/train-lock/PH-08 Plan tom uke.dc.html
+ * Rigg: PH-07 Plan
  *
  * Caps «Uke N · måned» + «Plan» 34/700, sticky uke-stripe (46×58-piller,
  * valgt = hvit), dag-seksjoner med økt-rader (tid · skille · tittel/meta ·

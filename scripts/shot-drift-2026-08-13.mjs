@@ -1,6 +1,6 @@
 // Engangs skjermbilder for drift-PR 13.08: agenticos-hub (AI-kost-panel),
 // workspace (KommandoTask), brief, recording, meg-hub. m390 + d1280, lys + mørk.
-// Gjenbruker innloggingsmønsteret fra signoff-gallery.mjs.
+// Samme innloggingsmønster som signoff-trainlock.mjs. Engangsskript, datert.
 // Kjør: node scripts/shot-drift-2026-08-13.mjs   (krever dev-server på :3000)
 import { config as loadEnv } from "dotenv";
 import { chromium } from "playwright";
@@ -9,7 +9,7 @@ import { mkdir } from "node:fs/promises";
 loadEnv({ path: ".env.local" });
 
 const BASE = process.env.SHOT_BASE || "http://localhost:3000";
-const OUT = "screenshots/paper/drift-2026-08-13";
+const OUT = "screenshots/drift-2026-08-13";
 const PASSWORD = process.env.SHOT_PASSWORD || process.env.SCREENTEST_PASSWORD;
 const COACH = "coachtest@akgolf.test";
 

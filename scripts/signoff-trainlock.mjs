@@ -1,8 +1,9 @@
-// Sign-off-galleri mot TRAIN-LOCK-fasiten (ikke Paper).
+// Sign-off-galleri mot Train-lock-fasiten: rask VISUELL oversikt (app + fasit,
+// m390/d1280, lys/mørk) — måler ingenting. Tallet per skjerm kommer fra
+// scripts/train-lock-pixel-diff.mjs + tests/visual/skjerm-mapping.ts.
 //
-// signoff-gallery.mjs sammenligner mot designsystem/paper/fase1/, som er arkiv
-// siden 25.08.2026. PX-portene måles mot designsystem/train-lock/*.dc.html.
-// Dette skriptet er samme motor med riktig fasitkatalog.
+// Fasit er designsystem/train-lock/*.dc.html. (Det gamle Paper-galleriet
+// signoff-gallery.mjs er slettet 05.09.2026 — dette er eneste galleri igjen.)
 //
 // Kjør:  node scripts/signoff-trainlock.mjs <BOLGE> [BASE_URL]
 //   BOLGE = px3 | px4        (skjermlistene under)

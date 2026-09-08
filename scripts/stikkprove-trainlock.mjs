@@ -1,6 +1,6 @@
 // Stikkprøve for Train-lock-statusmålingen 26.08.2026: fotograferer de skjermene
 // token-målingen klassifiserte som PORTET (+ skallet T1 og PlayerHQ-hjem som referanse)
-// mot prod, 390+1280, lys+mørk. Basert på login-/shot-mønsteret i signoff-gallery.mjs.
+// mot prod, 390+1280, lys+mørk. Samme login-/shot-mønster som signoff-trainlock.mjs.
 // Kjør: SHOT_PASSWORD=… node scripts/stikkprove-trainlock.mjs [BASE_URL]
 import { chromium } from "playwright";
 import { mkdir } from "node:fs/promises";

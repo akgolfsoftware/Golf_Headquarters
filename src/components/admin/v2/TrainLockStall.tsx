@@ -6,6 +6,7 @@
  * Fasit: `AG-04 Stall.dc.html` (mobil), `AG-16 iPad Stall split.dc.html`
  * (iPad/desktop skinne 380 + detalj), `B5 Lys Agency.dc.html` (lys-variant —
  * ingen egne literal-farger her, TL.* løser lys/mørk via CSS-variablene).
+ * Rigg: AG-04 Stall
  *
  * Tokens: KUN TL (src/lib/v2/train-lock.ts) — se CLAUDE.md invariant 2.
  * Erstatter `StallV2` (Paper T.*-tokens) på denne ruten. Datakontrakten

@@ -4,6 +4,7 @@
  * TrackMan-liste.
  * Fasit: designsystem/train-lock/TM-01 TrackMan liste.dc.html
  * Fasit: designsystem/train-lock/PH-13 TrackMan liste.dc.html
+ * Rigg: TM-01a Liste iPhone
  * Én hvit primær: Last opp. Tom tilstand uten fabrikkerte tall.
  */
 

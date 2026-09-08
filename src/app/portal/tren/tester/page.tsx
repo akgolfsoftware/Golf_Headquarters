@@ -2,6 +2,7 @@
  * PlayerHQ · Tester (/portal/tren/tester).
  * Fasit: designsystem/train-lock/TE-01 Tester hub iPhone.dc.html
  * Fasit: designsystem/train-lock/TE-01L Tester hub lys.dc.html
+ * Rigg: TE-01 Tester hub
  *
  * IA-revisjon (PX-3-rest, 29.08.2026): erstatter den forrige
  * pyramide-akse-hero+filtrert-liste-strukturen (PH-15) med fasitens FLATE
