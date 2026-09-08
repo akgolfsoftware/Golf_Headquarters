@@ -279,6 +279,6 @@ Les **DESIGN-SYSTEM.md** før du endrer noe. Endrer du en fil, oppdater raden he
 
 - `GAP-00 Kart.dc.html`, `TRAIN LOCK.dc.html`, `TRAIN VIZ.dc.html` mangler `data-screen-label` — de er referansebrett, ikke skjermer. Bruk dem som fasit, ikke som mal.
 - Filer med æ/ø/å eller tankestrek i navnet leses ikke av batch-verktøy. Ved nye filer: bruk ASCII i filnavn (`Okt`, `Okonomi`) slik som FO-07 og resten av AO-serien.
-- Lys modus finnes for: FO-01L–FO-10L, KA-01L, RU-01L, S3-01L, LO-01L, A-16, B3. Alt annet er kun mørkt.
+- Lys modus finnes som egne filer for 28 skjermer (talt 05.09.2026 med `ls designsystem/train-lock | grep -E ' lys\.dc\.html$|^B[345] Lys'`): A-16, A-17, A-19L, AG-01 lys, B3 (to filer), B4, B5, DG-01L, FO-01L–FO-10L, KA-01L, LO-01L, P-09 lys, PH-21L, RU-01L, S3-01L, TE-00L, TE-01L, TE-04L. I tillegg finnes lys-rammer inne i mørke filer: EC-02d/EC-02e, AG-19g, AO-13e, GAP-2f. Alt annet er kun mørkt — der gjelder mekanisk avledet lys fra `--tl-*` (beslutning 26.08.2026).
 - `P-05 iPhone Agenda.dc.html` er **utgått som fasit for `/portal/planlegge`** (Anders 02.09.2026, D1) — Plan porter mot `PH-07 Plan.dc.html` + `PH-08 Plan tom uke.dc.html`. P-05 gjelder kun telefon-Workbench (agenda). Årsak: CS/M-vokabular fra før 18.08 og annen IA.
 - Workbench har to serier: **WB-01–WB-10 er kanon for struktur og brekkpunkter**, A-01–A-18 er Mac-pikselfasit der WB mangler detalj (Anders 02.09.2026, D2).
