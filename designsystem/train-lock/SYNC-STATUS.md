@@ -1,21 +1,45 @@
 # Train-lock — synkstatus
 
-**Sist synket: 01.09.2026 kl 10:05 fra «Player HQ Train lock.zip» (218 designfiler i
-prosjektet) — verifisert med CRC/sha256 mot repoets forrige tilstand, ikke bare tatt på
-tro. Del av revisjonsøkten 01.09.2026 (designstatus-kartlegging + doc-opprydding).**
+**Sist synket: 08.09.2026 kl 15:47 fra mappa «Player HQ Train lock» i Nedlastinger
+(samme innhold som `Player HQ Train lock.zip`, tidsstemplet 08.09 15:47) — verifisert
+med sha256 fil for fil mot repoets forrige tilstand (synk 01.09). Destinasjon er
+`designsystem/train-lock/` (ikke zip-ens `design/train-lock/`).**
 
 ## Innhold
 
-213 `.dc.html`-skjermfiler + `DESIGN-SYSTEM.md`, `SCREEN-INDEX.md`, `PORTING.md`,
+219 `.dc.html`-skjermfiler + `DESIGN-SYSTEM.md`, `SCREEN-INDEX.md`, `PORTING.md`,
 `HANDOFF.md`, `support.js`, `three-d-stage.js`. `README.md` og denne fila er repoets egne
-og finnes ikke i zip-en. Zip-ens `CLAUDE.md` og `CLAUDE-CODE-IMPORT-PROMPT.md` ligger nå i
-`referanse/` (se §Bevisst avvik fra import-prompten under) — **flettes IKKE inn i
-rot-CLAUDE.md**, i motsetning til hva en tidligere synk-runde (28.08) gjorde. Grunn: zip-ens
-CLAUDE.md er Claude Design-PROSJEKTETS tegneinstruks (bl.a. sier den «SF Pro» — feil for
-dette repoet, se under), ikke repoets kode-instruks. Der de to spriker vinner alltid
-repoets `.claude/rules/beslutninger.md`.
+og finnes ikke i zip-en. Zip-ens `CLAUDE.md` og `CLAUDE-CODE-IMPORT-PROMPT.md` ligger i
+`referanse/` (uendret byte mot 01.09) — **flettes IKKE inn i rot-CLAUDE.md**. Zip-ens
+`github.md` og `PROTOTYPE-PLAN.md` ligger i `referanse/` som
+`github-synk-2026-09-08.md` og `PROTOTYPE-PLAN-2026-09-08.md`. Der zip og repo spriker
+vinner alltid repoets `.claude/rules/beslutninger.md`.
 
-## Siste synk (01.09) — hva som endret seg
+## Siste synk (08.09) — hva som endret seg
+
+Anders: «Alt design skal deretter matche dette.» Leveransen er fasit for alle
+produktskjermer fra denne datoen.
+
+- **9 nye skjermer:** `DG-10 Meg vs tak` · `DG-11 Velg tak` · `DG-12 SG-profil` ·
+  `DG-13 Innspill-band` · `DG-14 Stasjon` · `DG-14L Stasjon lys` · `DG-15 Okt ferdig` ·
+  `DG-16 Ingen DataGolf` · `DG-17 Putting unntak`. Spillerverktøy mot byttbart tak
+  (Scheffler/McIlroy/Hovland/Reitan). DG-01 topplister består som fil, men er
+  innholdsmessig avløst som spillerverktøy (HANDOFF 08.09).
+- **212 `.dc.html` byte-identiske** med 01.09-leveransen (sha256 fil for fil).
+  `PH-12 Analyse én runde.dc.html` er samme innhold; zip-en hadde NFD-filnavn, repoet
+  beholder NFC.
+- **`.thumbnail` oppdatert.**
+- **SCREEN-INDEX og HANDOFF** fikk DG-10–17-radene / 08.09-linjen. Zip-ens versjoner ble
+  **ikke** kopiert over i sin helhet: repoets utgått-liste (P-05, PH-15, gammel DG-01,
+  A-07, A-08, AG-05, AG-13) og lys-tellingen står. Zip-ens `PORTING.md` (8,4 kB, fiktivt
+  `--color-*`-tokensett) overskriver ikke repoets (14,7 kB, D2 + §0b Fasit/Rigg/Avvik) —
+  låst 05.09, punkt 3 i §KOMPLETT DESIGNPORT.
+- **Ikke importert:** `uploads/` (offentlig repo), `proto/` (fortsatt ikke fasit før
+  beslutningskø 32 / coach-menyen AX-01 vs prototypens fem faner), zip-`CLAUDE.md` inn i
+  rot-CLAUDE.md.
+- **Ingen filer fjernet.**
+
+## Forrige synk (01.09) — hva som endret seg
 
 - **3 nye skjermer (6 filer med lys-par):** `PH-21 Min kurve` (+L) — spillerens egen
   til-par-kurve, ingen persentil/kullrangering på spillerflaten (bevisst). `A-19 Innsikt`

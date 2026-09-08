@@ -2,7 +2,7 @@
 
 > **Hva dette er:** ett snapshot av hvor plattformen står akkurat nå. Oppdater datoen + relevante linjer når noe vesentlig endrer seg.
 
-**Sist oppdatert:** 2026-09-07 (status målt i økt — fasit-dekning, rigg, PR-liste, `git log origin/main` @ `8ca1d66ae`; forrige fulle revisjon 05.09: `docs/beslutningsgrunnlag/prosjektrevisjon-2026-09-05.md`). Historikk under: 05.09 (prosjektrevisjon — målt mot `origin/main` @ `a653a3afd`, PR #783, prod-DB lesende, Vercel env-navn, GitHub. Fullt grunnlag: `docs/beslutningsgrunnlag/prosjektrevisjon-2026-09-05.md`).
+**Sist oppdatert:** 2026-09-08 (Train-lock-synk fra «Player HQ Train lock» 15:47 — 219 skjermfiler, ni nye DG-10–17; sitert 149/219. Forrige status 07.09 mot `8ca1d66ae`). Historikk under: 07.09, 05.09 (prosjektrevisjon — `docs/beslutningsgrunnlag/prosjektrevisjon-2026-09-05.md`).
 **Betaling:** koden er klar siden 30.08 (Stripe-cutover 1. september). Live-nøkler/DNS/DKIM er
 Anders-oppgaver i Vercel/Stripe-panelet og kan ikke verifiseres fra kode/git — se
 `docs/MASTERPLAN-GJENSTAAENDE.md` STEG 1 og 10.8.
@@ -13,8 +13,9 @@ Den blokken er fasit for Innsikt og Analyse og vinner over eldre dokumenter.
 
 ## Hovedbildet 07.09 (målt i økt mot origin/main @ 8ca1d66ae — 8 PR-er merget siden 05.09, #787–#794)
 
-- **Svar på «er Claude Design-fasiten komplett og pikselnært portert?»: nei.** 150/210
-  Train-lock-tegninger sitert fra kode (opp fra 146), **11 skjermer kalibrert i sign-off-riggen**
+- **Svar på «er Claude Design-fasiten komplett og pikselnært portert?»: nei.** 149/219
+  Train-lock-tegninger sitert fra kode (08.09-synk la inn ni usiterte DG-10–17; sitert-tallet
+  er 149 etter utgått-merking #820). **11 skjermer kalibrert i sign-off-riggen**
   (opp fra 5; 7 ukalibrerte med kjent årsak). STEG 20-tellingen fra 05.09 står: 5 målt · 34 bygget
   ikke målt · 65 kjent avvik · 33 delvis · 40 ikke bygget. Mekanisk audit uendret. Estimat for
   komplett port: 91 økter (planen 05.09). Alt gjenstående før lansering står samlet i

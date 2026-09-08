@@ -28,6 +28,21 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
 
 ## Beslutningene (september 2026)
 
+- **TRAIN-LOCK 08.09 ER FASIT — ALT DESIGN MATCHER DENNE LEVERANSEN (Anders 08.09.2026, i økt):**
+  mappa `/Users/anderskristiansen/Downloads/Player HQ Train lock` (zip-søsken samme
+  tidsstempel 15:47) er designfasiten fra nå. Destinasjon i repoet er
+  `designsystem/train-lock/` (ikke zip-ens `design/train-lock/`). Målt mot forrige synk
+  (01.09): 212 skjermfiler byte-identiske, 9 nye (`DG-10`–`DG-17` inkl. `DG-14L`) —
+  spillerverktøy mot byttbart tak. Ingen eksisterende `.dc.html` fjernet.
+  **Bevisst ikke kopiert fra zip:** `PORTING.md` (repoet har D2 + §0b; zip-en har det
+  fiktive `--color-*`-settet), hele SCREEN-INDEX/HANDOFF (kun DG-radene og 08.09-linjen
+  tatt inn — utgått-lista fra 08.09 pkt 6 står), `proto/` (fortsatt ikke fasit før
+  beslutningskø 32), `uploads/`, zip-`CLAUDE.md` inn i rot. **Overstyrer** «ingen ny
+  skjermtegning» i designport-planen 05.09 for DataGolf-spillerverktøyet — DG-10–17 er
+  tegnet og er fasit. **Overstyrer ikke** AX-01 som skall, Train-lock-tokens, eller at
+  Anders skal SE hver portert skjerm. **Arbeidet:** synk i `designsystem/train-lock/`
+  (denne PR-en); port av DG-10–17 er STEG 20.5.
+
 - **DESIGNPORT FASE 2 — SEKS BESLUTNINGER, MILEPÆL 11.09 (Anders 08.09.2026, i økt):** svar på
   planens §6 kø-punkter 1–6 (`docs/superpowers/plans/2026-09-05-komplett-designport.md`), spurt
   samme dag fase 1 (grunnmuren) ble ferdigstilt (8/8 økter merget).

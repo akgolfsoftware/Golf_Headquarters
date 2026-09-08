@@ -484,3 +484,12 @@ Datafundamentet (TrackMan-parametere, Strokes Gained, DECADE) fikk sine tre flat
 - `DG-01 DataGolf topplister og SG-profil` (+ lys): toppliste over 446 spillere med kategorifaner og retningskurve per rad, merket åpent som **vår egen** rangering regnet fra SG. Profil med fem SG-kategorier, de sju innspillsbøttene (samme bøtter som TrackMan-øktene), køllelengde og treff. Turneringshistorikk og premiepenger står som ærlig tom tilstand fordi arrangementsdatoene ikke er hentet. «Powered by Data Golf» på alle fire rammer (lisenskrav).
 - Negative SG-verdier er dempet (`opacity: 0.45`), aldri røde. Nullpunkt i SG-stolper er tourgjennomsnittet.
 - **Fargegrammatikk innført** (variant A + target på aktivt valg, warm-hake forkastet): `shot #B08968` = spillerens egne data, `target` = satt eller valgt, `mute` = referanse, hvit er hierarki og ikke lenger en dataserie. Rullet ut på PH-21, A-19 og DG-01 i begge moduser; skrevet inn i DESIGN-SYSTEM.md §1 som fasit for resten av systemet.
+
+## 08.09.2026 — DataGolf som spillerverktøy (DG-10…DG-17)
+
+- Nye IDer, DG-01 (topplister) er urørt som fil men **innholdsmessig superseder** som spillerverktøy: DG-10 Meg vs tak · DG-11 Velg tak · DG-12 SG-profil · DG-13 Innspill-bånd · DG-14 Stasjon (+ DG-14L lys) · DG-15 Økt ferdig · DG-16 Ingen DataGolf · DG-17 Putting-unntak. Hver fil 390 + 1280, mørk (kun DG-14 har egen lysfil).
+- Fasit for verktøyet: taket er byttbart (Scheffler/McIlroy/Hovland/Reitan, tall fra DataGolf Scratch Plus 22.06.2026). Stasjonen står på elevens carry og bare sirkelen skaleres (`sirkel_m = tak_nærhet_m × elev_carry_m / tak_slag_m`; 10-åring 50 m SW → 2,5 m mot Rory, 2,4 mot Scheffler/Hovland, 2,8 mot Reitan).
+- Eleven har ingen SG i DataGolf — stolpene hans står som tomme dim-spor med «mangler», aldri lånte tour-tall. Innspill i meter, putting i fot med lag-putt-regel og prosentkolonne som «mangler».
+- Fargegrammatikk: shot = elevens carry/sirkel/treff, mute = tak og tour, target = valgt tak og målsirkel. Negative SG på 0,45 opacity. Footer «Data powered by DataGolf» + dato på alle DG-flater, «Turneringsresultater via GolfBox» der score vises.
+- Gjenstår i tegningen: Familie B (TU-10/TU-11/TU-12), C (coach ser stallen mot tak) og D (åpen profil for myndige).
+- Synket inn i repoet 08.09.2026 fra «Player HQ Train lock» (Downloads, 15:47). `proto/` synkes fortsatt ikke som fasit (beslutningskø 32). `PORTING.md` i zip-en overskriver ikke repoets (D2 + §0b).

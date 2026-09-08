@@ -169,7 +169,7 @@ Beholdt kun som historikk:
 
 ## Kvalitetsgate per skjerm (ingen snarvei)
 
-Fasiten er Train-lock (`designsystem/train-lock/`, 196 skjermfiler). Mangler fasit for
+Fasiten er Train-lock (`designsystem/train-lock/`, 219 skjermfiler, synket 08.09.2026). Mangler fasit for
 skjermen: STOPP og spør Anders — ikke fall tilbake til Paper.
 Deretter: bygg fra fasiten (element-liste først), screenshot med Playwright (PlayerHQ 430px,
 AgencyOS ~1280px, full-page), spawn en adversarial diff-subagent som FINNER avvik (ikke bekrefter),

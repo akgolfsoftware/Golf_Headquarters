@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+  html, body { margin: 0; padding: 0; background: #000000; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; color: #F5F5F5; }
+  a { color: #F5F5F5; text-decoration: none; }
+  a:hover { color: #FFFFFF; }
+  ::-webkit-scrollbar { display: none; }
+  :root { --ease-out: cubic-bezier(0.23, 1, 0.32, 1); --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1); --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1); }
+  [data-press] { transition: transform 220ms var(--ease-out), background-color 220ms var(--ease-out), opacity 220ms var(--ease-out); }
+  [data-press]:active { transition-duration: 110ms; }
+  @media (hover: hover) and (pointer: fine) { [data-press]:hover { background-color: #1C1C1E; } [data-sub]:hover { opacity: 0.75; } }
+  @media (prefers-reduced-motion: reduce) { [data-press] { transition: opacity 200ms ease, background-color 200ms ease; } [data-press]:active { transform: none !important; } }
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #000000; display: flex; align-items: flex-start; justify-content: safe center; gap: 48px; padding: 56px 32px; flex-wrap: wrap;">
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+  <div data-screen-label="DG-16a Ingen DataGolf 390" style="width: 390px; height: 844px; background: #000000; border-radius: 54px; overflow: hidden; position: relative; box-shadow: 0 0 0 3px #1C1C1E, 0 0 0 10px #050505, 0 32px 90px rgba(0, 0, 0, 0.85); flex-shrink: 0;">
+    <div style="position: absolute; top: 11px; left: 50%; transform: translateX(-50%); width: 122px; height: 36px; border-radius: 20px; background: #0D0D0D; z-index: 5;"></div>
+    <div style="position: relative; height: 54px; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 32px 4px; z-index: 4;">
+      <span style="font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">09.00</span>
+      <span style="display: flex; align-items: center; gap: 7px;">
+        <svg width="17" height="12" viewBox="0 0 17 12" fill="none" stroke="#F5F5F5" stroke-width="1.6" stroke-linecap="round"><path d="M1.5 4.2 a10.5 10.5 0 0 1 14 0"></path><path d="M4.2 7 a6.5 6.5 0 0 1 8.6 0"></path><path d="M7 9.8 a3 3 0 0 1 3 0"></path></svg>
+        <svg width="26" height="13" viewBox="0 0 26 13"><rect x="0.5" y="0.5" width="21" height="12" rx="3.5" fill="none" stroke="#F5F5F5" stroke-opacity="0.5"></rect><rect x="2" y="2" width="15" height="9" rx="2" fill="#F5F5F5"></rect><path d="M23.5 4.5 v4 a2.2 2.2 0 0 0 0 -4 Z" fill="#F5F5F5" fill-opacity="0.5"></path></svg>
+      </span>
+    </div>
+    <div style="position: absolute; top: 54px; bottom: 0; left: 0; right: 0; overflow-y: auto; padding: 8px 20px 128px;">
+      <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Analyse · DataGolf</div>
+      <h1 style="margin: 6px 0 0; font-size: 34px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1;">Meg vs tak</h1>
+      <div style="margin-top: 20px; background: #161616; border-radius: 20px; padding: 20px;">
+        <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Ingen proff-SG på deg</div>
+        <div style="margin-top: 10px; font-size: 20px; font-weight: 700; line-height: 1.35; text-wrap: pretty;">Du kan likevel slå et tak. Mål hvor langt du slår SW, så setter vi stasjonen.</div>
+        <div style="margin-top: 12px; font-size: 15px; font-weight: 600; color: #8E8E93; line-height: 1.45;">DataGolf måler proffer runde for runde. Din side fylles av carry og stasjoner.</div>
+      </div>
+      <div style="margin-top: 14px; background: #161616; border-radius: 20px; padding: 4px 18px;">
+        <div style="display: flex; align-items: center; gap: 12px; padding: 16px 0; border-bottom: 1px solid #FFFFFF14;"><span style="flex: 1; font-size: 15px; font-weight: 600; color: #8E8E93;">SG per runde</span><span style="font-size: 15px; color: #8E8E93;">mangler</span></div>
+        <div style="display: flex; align-items: center; gap: 12px; padding: 16px 0; border-bottom: 1px solid #FFFFFF14;"><span style="flex: 1; font-size: 15px; font-weight: 600; color: #8E8E93;">Nærhet per bånd</span><span style="font-size: 15px; color: #8E8E93;">mangler</span></div>
+        <div style="display: flex; align-items: center; gap: 12px; padding: 16px 0; border-bottom: 1px solid #FFFFFF14;"><span style="flex: 1; font-size: 15px; font-weight: 600;">Turneringsscore</span><span style="font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">11 runder</span></div>
+        <div style="display: flex; align-items: center; gap: 12px; padding: 16px 0;"><span style="flex: 1; font-size: 15px; font-weight: 600; color: #8E8E93;">SW-carry</span><span style="font-size: 15px; color: #8E8E93;">ikke satt</span></div>
+      </div>
+      <div style="margin-top: 12px; font-size: 13px; color: #8E8E93; line-height: 1.5;">Turneringsresultater via GolfBox. DataGolf har ingen junior- eller amatørtall — vi låner ingen.</div>
+    </div>
+    <div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 12px 20px 0; background: #000000; z-index: 6;">
+      <div data-press="1" style="height: 48px; border-radius: 999px; background: #FFFFFF; color: #000000; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; cursor: pointer;" style-active="transform: scale(0.97)">Sett carry</div>
+      <div data-press="1" data-sub="1" style="margin-top: 10px; height: 48px; border-radius: 999px; border: 1px solid #FFFFFF14; color: #8E8E93; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 600; cursor: pointer;" style-active="transform: scale(0.97)">Se mine turneringer</div>
+      <div style="height: 34px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 8px;"><div style="width: 140px; height: 5px; border-radius: 3px; background: #F5F5F5;"></div></div>
+    </div>
+  </div>
+  <div style="font-family: 'SF Mono', ui-monospace, Menlo, monospace; font-size: 11px; color: #8E8E93;">DG-16a · Ingen DataGolf 390 — «mangler» i klartekst, aldri 0,0 · to veier ut: sett carry eller se turneringer</div>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+  <div data-screen-label="DG-16b Ingen DataGolf 1280" style="width: 1280px; height: 800px; background: #000000; border-radius: 14px; overflow: hidden; position: relative; box-shadow: 0 0 0 1px #2C2C2E, 0 32px 90px rgba(0, 0, 0, 0.85); flex-shrink: 0; display: flex;">
+    <div style="width: 64px; border-right: 1px solid #FFFFFF14; display: flex; flex-direction: column; align-items: center; padding: 14px 0 16px; gap: 6px; flex-shrink: 0;">
+      <div style="display: flex; gap: 6px; margin-bottom: 16px;"><span style="width: 10px; height: 10px; border-radius: 50%; background: #2C2C2E;"></span><span style="width: 10px; height: 10px; border-radius: 50%; background: #2C2C2E;"></span><span style="width: 10px; height: 10px; border-radius: 50%; background: #2C2C2E;"></span></div>
+      <div data-press="1" style="width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer;" style-active="transform: scale(0.94)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5 L12 4 L20 10.5 V20 H14.5 V14.5 H9.5 V20 H4 Z"></path></svg></div>
+      <div data-press="1" style="width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer;" style-active="transform: scale(0.94)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="2" stroke-linecap="round"><rect x="4" y="5" width="16" height="15" rx="3"></rect><path d="M8 3 V6 M16 3 V6 M4 10 H20"></path></svg></div>
+      <div style="width: 44px; height: 44px; border-radius: 12px; background: #FFFFFF; display: flex; align-items: center; justify-content: center;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round"><path d="M5 20 V13 M12 20 V6 M19 20 V10"></path></svg></div>
+      <div style="margin-top: auto; width: 32px; height: 32px; border-radius: 50%; background: #B08968; color: #201409; font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center;">ØR</div>
+    </div>
+    <div style="flex: 1; min-width: 0; display: flex; flex-direction: column;">
+      <div style="height: 58px; border-bottom: 1px solid #FFFFFF14; display: flex; align-items: center; gap: 14px; padding: 0 26px; flex-shrink: 0;">
+        <span style="font-size: 15px; font-weight: 600; color: #8E8E93;">Analyse · DataGolf</span><span style="font-size: 15px; font-weight: 600; color: #8E8E93;">·</span><span style="font-size: 15px; font-weight: 600;">Meg vs tak</span>
+        <span style="margin-left: auto; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Ingen kilde på spilleren</span>
+      </div>
+      <div style="flex: 1; min-height: 0; padding: 22px 26px; overflow-y: auto;">
+        <div style="max-width: 720px;">
+          <h1 style="margin: 0; font-size: 34px; font-weight: 700; letter-spacing: -0.02em;">Ingen proff-SG på deg</h1>
+          <div style="margin-top: 12px; font-size: 26px; font-weight: 700; line-height: 1.3; text-wrap: pretty;">Du kan likevel slå et tak. Mål hvor langt du slår SW, så setter vi stasjonen.</div>
+          <div style="margin-top: 12px; font-size: 15px; font-weight: 600; color: #8E8E93; line-height: 1.5;">DataGolf måler proffer runde for runde, og har verken junior- eller amatørtall. Vi låner ikke tour-tall og kaller dem dine.</div>
+        </div>
+        <div style="margin-top: 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 860px;">
+          <div style="background: #161616; border-radius: 20px; padding: 20px;">
+            <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Det vi ikke har</div>
+            <div style="margin-top: 14px; display: flex; flex-direction: column; gap: 12px;">
+              <div style="display: flex; justify-content: space-between; font-size: 15px;"><span style="color: #8E8E93;">SG per runde</span><span style="color: #8E8E93;">mangler</span></div>
+              <div style="display: flex; justify-content: space-between; font-size: 15px;"><span style="color: #8E8E93;">Nærhet per bånd</span><span style="color: #8E8E93;">mangler</span></div>
+              <div style="display: flex; justify-content: space-between; font-size: 15px;"><span style="color: #8E8E93;">Putting per avstand</span><span style="color: #8E8E93;">mangler</span></div>
+            </div>
+          </div>
+          <div style="background: #161616; border-radius: 20px; padding: 20px;">
+            <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Det vi har</div>
+            <div style="margin-top: 14px; display: flex; flex-direction: column; gap: 12px;">
+              <div style="display: flex; justify-content: space-between; font-size: 15px;"><span style="color: #8E8E93;">Turneringsrunder</span><span style="font-weight: 600; font-variant-numeric: tabular-nums;">11</span></div>
+              <div style="display: flex; justify-content: space-between; font-size: 15px;"><span style="color: #8E8E93;">Kilde</span><span style="font-weight: 600;">GolfBox</span></div>
+              <div style="display: flex; justify-content: space-between; font-size: 15px;"><span style="color: #8E8E93;">SW-carry</span><span style="color: #8E8E93;">ikke satt</span></div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top: 22px; display: flex; gap: 12px;">
+          <div data-press="1" style="height: 48px; padding: 0 26px; border-radius: 999px; background: #FFFFFF; color: #000000; display: flex; align-items: center; font-size: 16px; font-weight: 700; cursor: pointer;" style-active="transform: scale(0.97)">Sett carry</div>
+          <div data-press="1" data-sub="1" style="height: 48px; padding: 0 26px; border-radius: 999px; border: 1px solid #FFFFFF14; color: #8E8E93; display: flex; align-items: center; font-size: 15px; font-weight: 600; cursor: pointer;" style-active="transform: scale(0.97)">Se mine turneringer</div>
+        </div>
+        <div style="margin-top: 20px; font-size: 13px; color: #8E8E93;">Turneringsresultater via GolfBox · Data powered by DataGolf for takets tall</div>
+      </div>
+    </div>
+  </div>
+  <div style="font-family: 'SF Mono', ui-monospace, Menlo, monospace; font-size: 11px; color: #8E8E93;">DG-16b · Ingen DataGolf 1280 — «det vi ikke har» og «det vi har» side om side · én hvit CTA, sekundær hairline</div>
+</div>
+
+</div>
+</x-dc>
+</body>
+</html>
