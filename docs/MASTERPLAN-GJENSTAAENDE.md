@@ -26,9 +26,12 @@ se STEG 13) · `docs/jarvis-shortcut.md` (driftshåndbok for Jarvis-snarveien) �
 > **STATUS 08.09.2026 — målt i økt (fasit-dekning-skript, rigg-fil, PR-liste, `git log origin/main` @ `1a281793b`):**
 > **Er Claude Design-fasiten komplett og pikselnært portert? Nei, men fase 1 (grunnmuren) er over
 > halvveis.** **151/210** Train-lock-tegninger er sitert fra kode (opp fra 150 · 59 mangler: TE 9 ·
-> A 7 · AG 6 · P 6 · WB 6 · B2 5 · JV/LO/TM 3 · resten 1–2), men «sitert er ikke bygget» — **12
-> skjermer kalibrert i sign-off-riggen** (opp fra 11, 9 ukalibrerte med kjent årsak — begge tall
-> opp fra 07.09 via PR #802). STEG 20-tellingen fra 05.09 (5 målt · 34 bygget ikke målt · 65 kjent
+> A 7 · AG 6 · P 6 · WB 6 · B2 5 · JV/LO/TM 3 · resten 1–2), men «sitert er ikke bygget» — **10
+> skjermer kalibrert i sign-off-riggen** (`tests/visual/skjerm-mapping.ts`, uendret fra 07.09 —
+> tidligere «11» var en telle-feil i teksten selv, ikke et reelt tall; filen har og har hatt 10
+> kalibrerte + 7 ukalibrerte = 17 rutekartlagte skjermer totalt — PR #802 la kun til et
+> dokumentasjonsfelt (`testDato`) i filen, endret ingen status-rader).
+> STEG 20-tellingen fra 05.09 (5 målt · 34 bygget ikke målt · 65 kjent
 > avvik · 33 delvis · 40 ikke bygget · 6 kun filhode) er ikke remålt siden — økt 3 sitt datofrys-
 > arbeid endrer trolig noen av «kjent avvik»-radene, men ingen ny mekanisk kjøring er gjort.
 > Markedssider: fortsatt 2 av 22 i AK Golf-masteren (dette sporet er separat fra Train-lock —
