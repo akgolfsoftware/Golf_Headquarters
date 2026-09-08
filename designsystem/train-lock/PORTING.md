@@ -24,6 +24,66 @@ Rekkefølge per skjerm:
 
 ---
 
+## 0b · Filhode — Fasit, Rigg, Avvik
+
+Innført 05.09.2026 (designport fase 1, økt 5). Håndheves av `scripts/check-fasit-sitering.mjs`
+i `npm run verify` og CI. Bakgrunn: «sitert er ikke bygget» (planens regel 1) — et filhode
+som bare sier `Fasit:` beviser ingenting. Filhodet skal si HVA som er fasit og HVORDAN det er
+bevist (målt i riggen) eller HVA som bevisst avviker.
+
+Hver `.tsx`-fil som porterer en Train-lock-skjerm har i sin første blokkommentar:
+
+```ts
+/**
+ * <Én linje om hva fila er.>
+ * Fasit: designsystem/train-lock/PH-01 I dag.dc.html
+ * Fasit: designsystem/train-lock/PH-02 I dag hvile.dc.html (hvile-tilstanden)
+ * Rigg: PH-01 I dag
+ */
+```
+
+eller, når skjermen ikke har en riggrad ennå:
+
+```ts
+/**
+ * <Én linje om hva fila er.>
+ * Fasit: designsystem/train-lock/A-06 Mac Arsplan.dc.html
+ * Avvik:
+ *   - Ingen riggrad: årsplan-rutenettet er dataavhengig og har ingen fixture ennå.
+ *   - Fasiten tegner Balanse-kolonnen (A-07); koden har den ikke (D2 02.09.2026).
+ */
+```
+
+Reglene, slik skriptet leser dem:
+
+1. **`Fasit:`** — ett eksakt filnavn per linje, alltid som `designsystem/train-lock/<filnavn>.dc.html`
+   (full sti) eller `` `<filnavn>.dc.html` `` i backticks. Filnavnet er nøyaktig slik det ligger i
+   `designsystem/train-lock/` (æ/ø/å/é normaliseres til NFC, ellers ingen slingring). Tekst i
+   parentes etter filnavnet er fritt. Kortkoder uten `.dc.html` (`(+ FO-01L lys)`, `A-13/WB-01c`)
+   valideres ikke — skriv full fil hvis den skal telle. Linjeformene `* Fasit:`, `// Fasit:` og
+   `Fasit (kanon …):` gjenkjennes alle som Fasit-linje.
+2. **Filen må finnes** i `designsystem/train-lock/`, og må ikke stå som utgått i
+   `SCREEN-INDEX.md` §Kjente hull (der teller `.dc.html`-navn i backticks som står FØR ordet
+   «utgått» på kulepunktet). Begge deler er blokkerende.
+3. **`Rigg:`** — én `label` fra `tests/visual/skjerm-mapping.ts`, ordrett. Flere rader = flere
+   `Rigg:`-linjer. Ukjent label er blokkerende. Riggraden er beviset; se `tests/visual/README.md`
+   for hva «kalibrert» krever.
+4. **`Avvik:`** — linjen står alene, og neste linje er første punkt på formen ` *   - …`. Minst ett
+   punkt. Punktene sier hva som bevisst avviker fra tegningen, eller hvorfor det ikke finnes rigg.
+   `Avvik:` uten punkt er blokkerende.
+5. **Baseline-vakt:** en `.tsx`-fil med Fasit uten Rigg/Avvik rapporteres (tall i verify-loggen),
+   men blokkerer bare når fila er ENDRET mot `origin/main`. Rører du en skjermfil, legger du til
+   Rigg eller Avvik samtidig — det er hele prisen. `.ts`-filer (domene/loader) får siteringene
+   validert (regel 1–2), men trenger ikke Rigg/Avvik.
+6. **Paper-siteringer** (`designsystem/paper/…`) telles og rapporteres. De blokkeres ikke ennå:
+   filene er ikke portert, og porten er fase 2–7 i planen. En endret Paper-fil trenger likevel en
+   `Avvik:`-blokk («fasiten er Paper, slettet 30.08.2026 — ikke portert til Train-lock»).
+
+Kjør selv: `node scripts/check-fasit-sitering.mjs` (rapport + feil), `--liste` for å se filene
+uten Rigg/Avvik, `--endret <sti …>` for å simulere baseline-vakten på navngitte filer.
+
+---
+
 ## 1 · Tokenlaget først — alltid
 
 Ingen hex i komponentkode. Tokenlaget finnes ALLEREDE — bruk det, ikke lag et nytt:

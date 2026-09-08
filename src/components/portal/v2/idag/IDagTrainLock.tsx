@@ -8,6 +8,7 @@
  * Fasit: designsystem/train-lock/PH-01e I dag tilstander laast.dc.html (tilstandene)
  * Fasit: designsystem/train-lock/PH-02 I dag hvile.dc.html
  * Fasit: designsystem/train-lock/PH-03 I dag tom uke.dc.html
+ * Rigg: PH-01 I dag
  */
 
 import { useState, type CSSProperties, type ReactNode } from "react";

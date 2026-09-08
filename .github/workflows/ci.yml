@@ -61,8 +61,11 @@ jobs:
       - name: Train-lock kontrast (rapport — blokkerer ikke, Train-lock er fasit)
         run: node scripts/check-tl-kontrast.mjs
 
-      - name: Hent origin/main (baseline for signalfarge-vakten i oppgave 1.4)
+      - name: Hent origin/main (baseline for signalfarge-vakten i oppgave 1.4 og fasit-siteringsvakten i økt 5)
         run: git fetch --no-tags --depth=1 origin +refs/heads/main:refs/remotes/origin/main
+
+      - name: Fasit-sitering gate (designport fase 1 økt 5 — Fasit må finnes, Rigg/Avvik på endrede skjermfiler)
+        run: npm run check:fasit-sitering
 
       - name: Fasitdekning-vakt (aldri færre siterte tegninger enn den committede baselinen)
         run: node scripts/check-fasitdekning-baseline.mjs

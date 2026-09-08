@@ -7,6 +7,7 @@
  * (Paper T.*, ArtefaktPanel-basert) på denne ruten. Samme datakilde
  * (loadInnboksSaker/InnboksData) og SAME server action (avgjorInnboksSak) —
  * designport, ikke funksjonsendring.
+ * Rigg: AG-03 Innboks
  *
  * Fasitens to seksjoner er generalisert fra InnboksSakType (forslag ·
  * forespørsel · drift · varsel), ikke hardkodet til "kun ukeplaner":
