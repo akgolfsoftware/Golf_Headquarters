@@ -1,6 +1,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import {
+  oktArkLiveHref,
   planSessionStartHref,
   planSessionUiStatus,
   v2DbSessionHref,
@@ -75,5 +76,10 @@ describe("session-hrefs", () => {
       planSessionStartHref(id, wbStatusTilPlanStatus("COMPLETED")),
       "/portal/live/wb-1/summary",
     );
+  });
+
+  it("oktArkLiveHref: pågående → tapper, ferdig → recap", () => {
+    assert.equal(oktArkLiveHref("wb-1", "IN_PROGRESS"), "/portal/live/wb-1/tapper");
+    assert.equal(oktArkLiveHref("wb-1", "COMPLETED"), "/portal/live/wb-1/summary");
   });
 });
