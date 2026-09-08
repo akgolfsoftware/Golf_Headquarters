@@ -11,7 +11,7 @@ export type PyramideFordeling = Record<PyramidArea, number>;
 // A-C = elite, mer spill/turnering, lite teknisk grunnarbeid.
 // D-F = sterk amateur, balansert teknisk + spill.
 // G-I = god klubbspiller, mer teknikk og nærspill.
-// J-L = begynner/junior, mye teknikk og grunnlag.
+// J-K = begynner/junior, mye teknikk og grunnlag.
 export const STANDARD_PYRAMIDE: Record<NgfKategori, PyramideFordeling> = {
   A: { FYS: 10, TEK: 15, SLAG: 25, SPILL: 30, TURN: 20 },
   B: { FYS: 10, TEK: 18, SLAG: 27, SPILL: 28, TURN: 17 },
@@ -24,7 +24,6 @@ export const STANDARD_PYRAMIDE: Record<NgfKategori, PyramideFordeling> = {
   I: { FYS: 15, TEK: 30, SLAG: 33, SPILL: 15, TURN: 7 },
   J: { FYS: 15, TEK: 32, SLAG: 35, SPILL: 13, TURN: 5 },
   K: { FYS: 15, TEK: 33, SLAG: 37, SPILL: 10, TURN: 5 },
-  L: { FYS: 15, TEK: 35, SLAG: 38, SPILL: 7, TURN: 5 },
 };
 
 // Typiske antall økter per uke per kategori × LPhase.
@@ -41,7 +40,6 @@ export const STANDARD_OKT_ANTALL: Record<NgfKategori, Record<LPhase, number>> = 
   I: { GRUNN: 3, SPESIAL: 4, TURNERING: 3, TESTUKE: 3, FERIE: 0, TRENINGSSAMLING: 3, HELDAGSSAMLING: 1 },
   J: { GRUNN: 3, SPESIAL: 3, TURNERING: 2, TESTUKE: 2, FERIE: 0, TRENINGSSAMLING: 3, HELDAGSSAMLING: 1 },
   K: { GRUNN: 3, SPESIAL: 3, TURNERING: 2, TESTUKE: 2, FERIE: 0, TRENINGSSAMLING: 3, HELDAGSSAMLING: 1 },
-  L: { GRUNN: 2, SPESIAL: 3, TURNERING: 2, TESTUKE: 2, FERIE: 0, TRENINGSSAMLING: 2, HELDAGSSAMLING: 1 },
 };
 
 // Typisk øktlengde (minutter) per kategori — elite trener lengre økter.
@@ -49,7 +47,7 @@ export const STANDARD_VARIGHET_MIN: Record<NgfKategori, number> = {
   A: 90, B: 90, C: 90,
   D: 75, E: 75, F: 75, G: 75,
   H: 60, I: 60, J: 60,
-  K: 60, L: 45,
+  K: 60,
 };
 
 export const FASE_BESKRIVELSE: Record<LPhase, string> = {

@@ -33,7 +33,6 @@ const KategoriEnum = z.enum([
   "I",
   "J",
   "K",
-  "L",
 ]);
 
 const LPhaseEnum = z.enum(["GRUNN", "SPESIAL", "TURNERING", "TESTUKE", "FERIE", "TRENINGSSAMLING", "HELDAGSSAMLING"]);

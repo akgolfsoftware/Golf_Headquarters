@@ -222,7 +222,7 @@ describe("adaptTemplateWeek", () => {
 
 describe("standard-fordeling", () => {
   it("fordelOkterPaaOmrader: summerer alltid til antall økter", () => {
-    for (const kategori of ["A", "E", "L"] as const) {
+    for (const kategori of ["A", "E", "K"] as const) {
       for (const antall of [2, 3, 4, 5, 6]) {
         const omrader = fordelOkterPaaOmrader(STANDARD_PYRAMIDE[kategori], antall);
         assert.equal(omrader.length, antall, `${kategori} × ${antall}`);

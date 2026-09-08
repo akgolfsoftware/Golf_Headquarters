@@ -189,8 +189,7 @@ export function kategoriFraHcp(hcp: number | null): NgfKategori | null {
   if (hcp < 15) return "H";
   if (hcp < 20) return "I";
   if (hcp < 28) return "J";
-  if (hcp < 36) return "K";
-  return "L";
+  return "K";
 }
 
 function parseCsTargetByKategori(
@@ -232,7 +231,6 @@ async function hentAktivLPhase(userId: string): Promise<LPhase | null> {
 //
 // Konvensjon på ExerciseDefinition: minKategori = beste spiller (A), maxKategori = svakeste (K).
 // Prisma støtter ikke lte/gte på enum — vi materialiserer tillatte bokstaver og bruker `in`.
-// Legacy L på drills behandles som K i filteret.
 async function hentTilgjengeligeDrills(
   kategori: AkKategori | null,
   fasilitetProfil: DrillFasilitet[] = [],
@@ -243,10 +241,7 @@ async function hentTilgjengeligeDrills(
       : (() => {
           const idx = akKategoriIdx(kategori);
           const tillattMin = AK_KATEGORI_ORDER.slice(0, idx + 1).map(akTilNgfKategori);
-          const tillattMax: NgfKategori[] = [
-            ...AK_KATEGORI_ORDER.slice(idx).map(akTilNgfKategori),
-            "L", // legacy-tagger etter retag — L = K
-          ];
+          const tillattMax: NgfKategori[] = AK_KATEGORI_ORDER.slice(idx).map(akTilNgfKategori);
           return {
             AND: [
               {
