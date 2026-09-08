@@ -6,13 +6,18 @@
  * Lys: designsystem/train-lock/B3 Lys nøkkelskjermer.dc.html (Lys PH-04
  * Økt-ark) — mekanisk (PX-7, 29.08.2026): filen leser konsekvent TL.* uten
  * hardkodet hex, verifisert med grep — ingen manuell lys-finpuss utover det.
- * Start → IN_PROGRESS, Fullfør → COMPLETED, Hopp over → SKIPPED.
+ * Avvik:
+ *   - tegningen er et ark; koden er en side (fase 2, Anders 08.09). Ingen
+ *     riggrad ennå. Start går til live-tapper (samme beslutning som I dag).
+ * Start → IN_PROGRESS + `/portal/live/{id}/tapper`. Pågående: Fortsett til
+ * tapper (primær) + Fullfør på arket. Ferdig: Se recap til summary.
  * Kaller wb-actions direkte (server actions) — WbResultat + toast ved feil,
  * lokal state oppdateres optimistisk fra returnert økt (ingen full reload).
  */
 
 import { useState, useTransition, type CSSProperties } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { TL } from "@/lib/v2/train-lock";
 import { Icon } from "@/components/v2/icon";
@@ -22,6 +27,7 @@ import {
   formatMinutes,
 } from "@/lib/domain/workbench/labels";
 import { formatIntervallPunkt } from "@/lib/portal/idag-visning";
+import { oktArkLiveHref } from "@/lib/portal/session-hrefs";
 import type { WorkbenchSession } from "@/lib/domain/workbench/types";
 import { startSession, completeSession, skipSession } from "@/lib/workbench/wb-actions";
 import { STATUS_CAPS, WARM } from "@/components/workbench/wb-visuelt";
@@ -58,6 +64,8 @@ const primærKnapp: CSSProperties = {
   fontSize: 16,
   fontWeight: 700,
   cursor: "pointer",
+  textDecoration: "none",
+  boxSizing: "border-box",
 };
 
 const sekundærKnapp: CSSProperties = {
@@ -76,6 +84,7 @@ const sekundærKnapp: CSSProperties = {
 };
 
 export function OktArk({ session: initial }: { session: WorkbenchSession }) {
+  const router = useRouter();
   const [session, setSession] = useState(initial);
   const [travel, startTravel] = useTransition();
   const [aktivHandling, setAktivHandling] = useState<Handling | null>(null);
@@ -91,6 +100,10 @@ export function OktArk({ session: initial }: { session: WorkbenchSession }) {
             : await skipSession(session.id);
       if (!res.ok) {
         toast.error(res.error);
+        return;
+      }
+      if (handling === "start") {
+        router.push(oktArkLiveHref(session.id, "IN_PROGRESS"));
         return;
       }
       setSession(res.data);
@@ -197,7 +210,10 @@ export function OktArk({ session: initial }: { session: WorkbenchSession }) {
 
       {session.status === "IN_PROGRESS" && (
         <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-          <button type="button" style={primærKnapp} onClick={() => utfor("fullfor")} disabled={travel}>
+          <Link href={oktArkLiveHref(session.id, "IN_PROGRESS")} style={primærKnapp}>
+            {UI.continueSession}
+          </Link>
+          <button type="button" style={sekundærKnapp} onClick={() => utfor("fullfor")} disabled={travel}>
             {laster("fullfor") ? "Fullfører …" : UI.completeSession}
           </button>
           <button type="button" style={sekundærKnapp} onClick={() => utfor("hopp-over")} disabled={travel}>
@@ -240,6 +256,12 @@ export function OktArk({ session: initial }: { session: WorkbenchSession }) {
               {UI.sessionCompletedTitle}
             </span>
           </div>
+          <Link
+            href={oktArkLiveHref(session.id, "COMPLETED")}
+            style={{ ...primærKnapp, marginTop: 16 }}
+          >
+            {UI.seRecap}
+          </Link>
         </div>
       )}
 

@@ -82,3 +82,17 @@ export function v2DbSessionHref(sessionId: string, status: string): string {
         : "upcoming";
   return v2SessionStartHref(sessionId, ui);
 }
+
+/**
+ * PH-04 økt-ark: etter Start og ved IN_PROGRESS → tapper,
+ * COMPLETED → recap. Samme live-ruter som I dag (Anders 08.09).
+ */
+export function oktArkLiveHref(
+  sessionId: string,
+  status: "IN_PROGRESS" | "COMPLETED",
+): string {
+  return planSessionStartHref(
+    sessionId,
+    status === "COMPLETED" ? "COMPLETED" : "ACTIVE",
+  );
+}
