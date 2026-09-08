@@ -116,14 +116,20 @@ export function TnAvatarInitialer({
 
 // ───────────────────────── Knapp ─────────────────────────
 
+// 44/48/56px (sm/md/lg) — hevet 08.09.2026, 40px var under minste trykkmål.
+// Fasit: components/core/Button.jsx i Claw-designsystemet (a03bf94a…).
+const TN_KNAPP_HOYDE = { sm: 44, md: 48, lg: 56 } as const;
+
 export function TnKnapp({
   children,
   variant = "sekundaer",
+  size = "md",
   onClick,
   type = "button",
 }: {
   children: ReactNode;
   variant?: "primaer" | "sekundaer";
+  size?: "sm" | "md" | "lg";
   onClick?: () => void;
   type?: "button" | "submit";
 }) {
@@ -133,7 +139,7 @@ export function TnKnapp({
       type={type}
       onClick={onClick}
       style={{
-        height: 40,
+        height: TN_KNAPP_HOYDE[size],
         padding: "0 18px",
         borderRadius: TN.radius.full,
         background: primaer ? TN.navy900 : "transparent",
@@ -179,7 +185,7 @@ export function TnRail({
     <div
       className="hidden lg:flex"
       style={{
-        width: 232,
+        width: 252,
         flexShrink: 0,
         background: TN.surfaceCard,
         borderRight: `1px solid ${TN.borderSubtle}`,
