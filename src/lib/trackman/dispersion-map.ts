@@ -22,10 +22,12 @@
  * `generateCaddieSentence` fikk en forsiktigere lavt-n-variant («To slag
  * høyre. Median står — vent med å flytte siktet.», TM-05a viser den
  * eksakt ved n=2) i stedet for bare `null` under 8 slag. TM-05b (tom
- * TrackMan-tilstand med «CSV, PDF eller foto») er IKKE dekket her — appen
- * har kun CSV/HTML-parsing (src/lib/trackman/parse-*.ts), ingen
- * PDF/foto-OCR ennå, så den delen av fasiten er en funksjonsgap, ikke en
- * visningsjobb (anti-scope PX-3: bygges ikke på sparket).
+ * TrackMan-tilstand med «CSV, PDF eller foto»): CSV/HTML (parse-csv.ts,
+ * parse-html-report.ts) og foto (parse-photo.ts, AI-vision — TM-03/D4,
+ * PR #768, 03.09.2026) er bygget; PDF-import finnes fortsatt ikke. Selve
+ * tom-tilstanden tegnes av importmodalen, ikke av dette laget.
+ * Avvik: ingen riggrad for TM-05 — dette er domenelogikk uten egen rute;
+ * skjermen måles via TM-11/økt-detalj (TrackManSessionDetail.tsx).
  */
 
 import {

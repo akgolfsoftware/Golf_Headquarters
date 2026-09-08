@@ -1,13 +1,17 @@
 "use client";
 import { TL } from "@/lib/v2/train-lock";
 /**
- * AgencyOS Compliance — Train-lock EC-02 (PX-6, 29.08.2026).
+ * AgencyOS Compliance — treningsetterlevelse i stallen (PX-6, 29.08.2026).
  *
- * Fasit: designsystem/train-lock/EC-02 AS Compliance.dc.html (EC-02a
- * iPhone / EC-02b iPad / EC-02c Mac / EC-02d tom lys / EC-02e Mac lys).
- * Plan møter virkelighet på tvers av stallen, drevet av EKTE ComplianceData
- * fra loadComplianceData (Prisma). Bygget utelukkende av `TL.*`
- * (train-lock.ts) — ingen ad-hoc UI, ingen rå hex.
+ * Ingen Train-lock-fasit — etterlevelse er ikke tegnet. Filhodet siterte
+ * tidligere EC-02 (rettet 05.09.2026, fase 1 økt 8): den tegningen er
+ * selskapets MVA-terminer, årsregnskap og skattemelding (AS-etterlevelse i
+ * Økonomi), ikke plan-mot-virkelighet for spillere. Skjermen er bygget av
+ * `TL.*` (train-lock.ts) + DESIGN-SYSTEM.md-komponentene — ingen ad-hoc UI,
+ * ingen rå hex — og tegnes som canvas før neste omtegning (beslutning
+ * 30.08 «tegn skjermen før du bygger den»). Plan møter virkelighet på
+ * tvers av stallen, drevet av EKTE ComplianceData fra loadComplianceData
+ * (Prisma).
  *
  * Tre nivåer i samme språk (bevart fra v10-flaten):
  *   1) spillerpanel  — plan-fullføring for ÉN spiller (ring + uke-strip + akse-barometer + diagnose)
