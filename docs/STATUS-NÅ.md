@@ -249,6 +249,7 @@ parallelt. Ingen var en delmengde av den andre, så begge måtte slås sammen ma
 | **Stripe-cutover** | `docs/platform/stripe-cutover-sjekkliste.md` |
 | **AgenticOS + Jarvis** | `docs/MASTERPLAN-GJENSTAAENDE.md` STEG 12 |
 | **Arkiv: den avsluttede Paper-porten** | `docs/arkiv/paper-port/` (rutekartlegging med referanseverdi) |
+| **Plan: WANG styrkeprogram inn i FYS-søylen** | `docs/plan-styrkeprogram-fys.md` (utkast, venter på Anders' godkjenning — ikke kodet) |
 
 Historiske bygg-spor, nattrapporter, gallerier og erstattede planer er slettet 05.08, 17.08
 og 27.08.2026 (opprydding) — de lever i git-historikken, ikke bygg mot dem.
