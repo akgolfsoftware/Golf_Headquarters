@@ -282,3 +282,4 @@ Les **DESIGN-SYSTEM.md** før du endrer noe. Endrer du en fil, oppdater raden he
 - Lys modus finnes for: FO-01L–FO-10L, KA-01L, RU-01L, S3-01L, LO-01L, A-16, B3. Alt annet er kun mørkt.
 - `P-05 iPhone Agenda.dc.html` er **utgått som fasit for `/portal/planlegge`** (Anders 02.09.2026, D1) — Plan porter mot `PH-07 Plan.dc.html` + `PH-08 Plan tom uke.dc.html`. P-05 gjelder kun telefon-Workbench (agenda). Årsak: CS/M-vokabular fra før 18.08 og annen IA.
 - Workbench har to serier: **WB-01–WB-10 er kanon for struktur og brekkpunkter**, A-01–A-18 er Mac-pikselfasit der WB mangler detalj (Anders 02.09.2026, D2).
+- **Utgått-lista leses maskinelt** (`scripts/check-fasit-sitering.mjs`, 05.09.2026): på et kulepunkt i denne seksjonen teller hvert `` `<fil>.dc.html` ``-navn som står FØR ordet «utgått» som utgått fasit — koden får ikke sitere den. Skal en ny tegning ut: skriv `` - `<fil>.dc.html` er **utgått** … `` på samme mønster som P-05-linjen over. I dag: kun P-05.
