@@ -2,8 +2,12 @@
  * AgencyOS Konto (Min coach-profil) — Train-lock (T13, 26.08.2026).
  *
  * Porter fra AdminProfilV2 (Paper T.*) til AdminProfilTrainLock (TL.*) —
- * Fasit: designsystem/train-lock/AG-18 Oppsett-hub.dc.html («Konto»-raden),
- * se AdminProfilTrainLock for avviksliste (ingen riggrad, skjema uten fasit). Samme requirePortalUser-guard,
+ * Fasit: designsystem/train-lock/AG-18 Oppsett-hub.dc.html («Konto»-raden).
+ * Avvik:
+ *   - ingen riggrad; selve profilskjemaet er ikke tegnet i Train-lock —
+ *     full avviksliste står i AdminProfilTrainLock.
+ *
+ * Samme requirePortalUser-guard,
  * samme felt-kilde (User-modellen + preferences-JSON) og samme mutasjoner
  * (oppdaterCoachProfil, uploadAvatar) — designport, ikke funksjonsendring.
  * Nav-punktet lever i Cmd+K-søket («Min coach-profil»), ikke i hovedrailen —

@@ -7,7 +7,8 @@
  * spiller-rammene «WB-04 iPhone forslag» / «WB-04 iPhone godtatt» /
  * «WB-04 iPhone avvist». Mac/iPad-rammene («WB-04 Mac player godkjenn»,
  * «WB-04 iPad godkjenn») er coach-siden (MASTERPLAN STEG 20.3), ikke dette kortet.
- * Avvik (05.09.2026, ingen riggrad ennå — fase 2):
+ * Avvik:
+ *   - ingen riggrad ennå (fase 2), så avvikene under er ikke målt;
  *   - fasitens drill-liste med reps («Stige 50–70–90 3 × 9» …) vises som
  *     antall (approvalDrillsCount), ikke som liste;
  *   - fasitens tredje handling «Foreslå ny tid» finnes ikke — kun Godta/Avvis;

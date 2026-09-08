@@ -8,11 +8,13 @@
  * inngangen til denne siden) + DESIGN-SYSTEM.md §5 Liste-rad/
  * Kort. Rettet 05.09.2026: siterte tidligere AG-05, som tegner Mer-arket
  * (Plan/Innsikt/Oppsett/Klubb) — ikke konto-skjemaet.
- * Avvik: ingen Train-lock-fil tegner selve coach-profil-skjemaet. Felt-
- * layouten er en mønster-port av den gamle AdminProfilV2 (Paper, slettet
- * 30.08), ikke pixel; ingen riggrad. Samme datakontrakt (AdminProfilV2Data)
- * og SAMME server actions (oppdaterCoachProfil, uploadAvatar, skalerAvatar)
- * — designport, ikke funksjonsendring.
+ * Avvik:
+ *   - ingen Train-lock-fil tegner selve coach-profil-skjemaet, og det
+ *     finnes ingen riggrad;
+ *   - feltlayouten er en mønster-port av den gamle AdminProfilV2 (Paper,
+ *     slettet 30.08), ikke pixel. Samme datakontrakt (AdminProfilV2Data) og
+ *     SAMME server actions (oppdaterCoachProfil, uploadAvatar, skalerAvatar)
+ *     — designport, ikke funksjonsendring.
  *
  * Tokens: KUN TL — CLAUDE.md invariant 2.
  */
