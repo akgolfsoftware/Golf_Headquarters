@@ -3,6 +3,7 @@
 /**
  * Analyse-hub. Broadie venstre, TrackMan høyre på desktop.
  * Fasit: designsystem/train-lock/TM-04 Analyse-hub TrackMan.dc.html
+ * Rigg: TM-04a Analyse-hub iPhone
  * Fasit: designsystem/train-lock/PH-10 Analyse.dc.html (én flate, innganger under fold)
  * Fasit: designsystem/train-lock/PH-16 Analyse tom.dc.html (tom: én setning + CTA)
  * Fasit: designsystem/train-lock/TM-09 Mini-kart og runde.dc.html (TM-09a/b/f
