@@ -1,10 +1,11 @@
 #!/usr/bin/env node
-// Designport steg 10 — lint-porten mot nye hardkodede farger.
-// Steg 6 (PR #274) sentraliserte alle 419 daværende fargeliteraler i
-// style={{}} til T.farge.* (src/lib/v2/tokens.ts). Denne gaten hindrer at
-// nye rå fargeverdier siger inn igjen og overstyrer Paper-paletten.
-// Metode fra docs/port/fase4-token-gap-analyse.md §6-8 (tmp-gap-3-match.mjs,
-// aldri committet — dette er den permanente varianten).
+// Lint-porten mot nye hardkodede farger (designport steg 10, PR #274).
+// All farge i src/ går via Train-lock-tokenene: `--tl-*` i CSS/className
+// (src/styles/train-lock-tokens.css) og `TL` i TS (src/lib/v2/train-lock.ts),
+// pluss domeneverdiene i `AK` (src/lib/v2/ak-palett.ts). Denne gaten hindrer
+// at rå fargeverdier siger inn igjen og overstyrer Train-lock-paletten.
+// (Det gamle tokensettet fra før 30.08.2026 er slettet — scripts/check-ingen-paper.mjs
+// vokter at det ikke kommer tilbake.)
 // Kjør: node scripts/check-token-gap.mjs
 
 import { readdirSync, readFileSync, statSync } from "node:fs";
@@ -14,14 +15,17 @@ const ROOT = "src";
 const COLOR_RE =
   /#[0-9a-fA-F]{3,8}\b|\b(?:rgb|rgba|hsl|hsla)\(\s*[\d.]/g;
 
-/** Filer/mønstre der rå farger er legitime (tokendefinisjonen selv, ikke bruk av den). */
+/**
+ * Filer der rå farger i style={{}} er legitime. Tokendefinisjonene selv trenger
+ * ikke unntak: gaten leser bare style={{}}-blokker (og className/SVG under
+ * src/components + src/app), og src/lib/v2/train-lock.ts / ak-palett.ts har
+ * ingen slike. src/styles/train-lock-tokens.css er .css, utenfor vandringen.
+ */
 const ALLOW_FILES = new Set([
-  "src/lib/v2/tokens.ts",
-  "src/styles/paper-tokens.css", // ikke .tsx, men listet for lesbarhet
-  // global-error rendrer sin egen <html> UTEN root-layout — globals.css/
-  // paper-tokens.css lastes ikke garantert der, så var(--p-*) kan være
-  // udefinert. Fila MÅ bære Paper-paletten som rå verdier (samme hex som
-  // tokenfila). Gaten skal ikke tvinge en feilside som mister fargene sine.
+  // global-error rendrer sin egen <html> UTEN root-layout — globals.css og
+  // train-lock-tokens.css lastes ikke garantert der, så var(--tl-*) kan være
+  // udefinert. Fila MÅ bære fargene sine som rå verdier. Gaten skal ikke
+  // tvinge en feilside som mister fargene sine.
   "src/app/global-error.tsx",
 ]);
 
@@ -29,9 +33,9 @@ const ALLOW_FILES = new Set([
  * Kataloger der rå farger er legitime fordi flaten IKKE er Train-lock.
  *
  * Markedssidene står på AK Golf-masteren (Anders 04.09.2026, beslutninger.md
- * §MARKEDSSIDENE PORTERES TIL MASTER AK GOLF), ikke på --tl-*. Denne gaten
- * ber om T.farge.* fra src/lib/v2/tokens.ts — en fil som ble SLETTET 30.08
- * sammen med Paper. Den kan altså ikke være svaret her.
+ * §MARKEDSSIDENE PORTERES TIL MASTER AK GOLF), ikke på --tl-*. Gatens forslag
+ * (TL fra src/lib/v2/train-lock.ts, eller --tl- tokens) er derfor ikke svaret
+ * for disse to mappene.
  *
  * De rå verdiene som står igjen i disse to mappene er masterens egne, og
  * ingen --ak-*-token dekker dem: hvit tekst på en variantflate (junior grønn),
@@ -57,7 +61,7 @@ function* walk(dir, exts = [".tsx", ".ts"]) {
 
 /* ─────────────────────────────────────────────────────────────────────────
  * PORT 2 (steg 10) — de to avviklede Presis-fargene, i ALLE notasjoner.
- * Forest #005840 og lime #D1F843 er den gamle Presis-paletten. Paper er
+ * Forest #005840 og lime #D1F843 er den gamle Presis-paletten. Train-lock er
  * eneste designfasit (CLAUDE.md invariant 2), så disse to skal ikke finnes
  * noe sted i src/ — heller ikke som fallback inne i var(), i en kommentar
  * eller i e-post-HTML. INGEN allowlist: dukker en av dem opp igjen, er det
@@ -114,7 +118,8 @@ const ALLOW_MARKUP = [
   // docs/natt/T13-DETALJER-DONE.md) — samme unntak, ny fil.
   "src/components/admin/v2/workspace/AdminWorkspaceNotionTrainLock.tsx",
   // Delekortet eksporteres som bilde og fanges utenfor tema-konteksten;
-  // gradienten må derfor være faste Paper-verdier (= T.wrapped.bgForest).
+  // gradienten må derfor være faste hex-verdier (#141413 → #26241f), ikke
+  // tema-tokens som kan være udefinert i eksportkonteksten.
   "src/components/shared/del-runde-modal.tsx",
   // Feilsiden rendrer sin egen <html> uten root-layout — se ALLOW_FILES.
   "src/app/global-error.tsx",
@@ -193,8 +198,8 @@ if (presisTreff.length) {
   rødt = true;
   console.error(
     "check-token-gap: avviklede Presis-farger funnet (hex, rgb() eller hsl-triplett).\n" +
-      "Paper er eneste designfasit — bruk et semantisk --p-*-token valgt etter\n" +
-      "FUNKSJON (opp/ned/info/kategori), ikke etter fargelikhet.\n"
+      "Train-lock er eneste designfasit — bruk et semantisk --tl-*-token (CSS) eller\n" +
+      "TL.* (TS) valgt etter FUNKSJON (opp/ned/info/kategori), ikke etter fargelikhet.\n"
   );
   skriv(presisTreff);
 }
@@ -203,8 +208,9 @@ if (offenders.length) {
   rødt = true;
   console.error(
     "check-token-gap: nye hardkodede fargeliteraler i style={{}} funnet.\n" +
-      "Bruk T.farge.* (src/lib/v2/tokens.ts) i stedet — legg til en navngitt\n" +
-      "konstant der om verdien mangler. Se docs/port/steg6-farge-literaler.md.\n"
+      "Bruk TL.* (src/lib/v2/train-lock.ts) eller var(--tl-*) i stedet; domeneverdier\n" +
+      "(pyramideakser, tee-farger, merkefarger) ligger i AK (src/lib/v2/ak-palett.ts).\n" +
+      "Ingen nye tokens uten Anders' ja (CLAUDE.md invariant 2).\n"
   );
   skriv(offenders);
 }
