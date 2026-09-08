@@ -12,14 +12,11 @@ export default defineConfig({
     "**/.next/**",
     "**/.vercel/**",
     "**/_arkiv/**",
-    // Paper-visuelle tester er et LOKALT verktøy for designporten: de
-    // sammenligner mot referansebilder som er gitignorert (og bare finnes for
-    // -darwin), og flere av dem krever innlogget spiller. I CI finnes verken
-    // bildene eller credentials. 06.–15.08.2026 sto prod-røyktesten rød i 195
-    // kjøringer på rad fordi ÉN slik spec manglet skip-vakten sin — signalet
-    // «produksjon er ødelagt» ble dermed verdiløst. Denne linja gjør det
-    // strukturelt umulig å gjenta, uavhengig av vakter i den enkelte fila.
-    ...(isCI ? ["**/paper-visual/**"] : []),
+    // Lærdom 06.–15.08.2026: prod-røyktesten sto rød i 195 kjøringer fordi én
+    // lokal snapshot-spec (paper-visual, slettet 05.09.2026) manglet skip-vakt.
+    // Regel: tester som trenger credentials eller gitignorerte referansebilder
+    // hører ALDRI hjemme under tests/e2e/ — de ligger i tests/visual/ og
+    // kjører ikke i CI.
   ],
 
   fullyParallel: true,
