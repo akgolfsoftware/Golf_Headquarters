@@ -132,10 +132,15 @@ function fasitStatus(id) {
   if (!existsSync(mapping)) return "ukjent";
   const k = les(mapping);
   const rute = "/" + id.replace("/(rot)", "");
-  /* Lukkende anførselstegn er viktig: uten det treffer «/admin/ko» også
-     «/admin/kommunikasjon» (funnet i review 03.09). */
-  if (!k.includes(`"${rute}"`)) return "ingen";
-  return new RegExp(`"${rute.replace(/[/]/g, "\\/")}"[^}]*status:\\s*"kalibrert"`, "s").test(k) ? "kalibrert" : "ukalibrert";
+  /* Lukkende anførselstegn (eller «?» for fane-adresser som «/admin/ko?fane=agentko»,
+     økt 4 05.09) er viktig: uten det treffer «/admin/ko» også «/admin/kommunikasjon»
+     (funnet i review 03.09). */
+  const ruteRe = `"${rute.replace(/[.*+?^${}()|[\]\\/]/g, "\\$&")}(\\?[^"]*)?"`;
+  if (!new RegExp(ruteRe).test(k)) return "ingen";
+  /* Første status-felt ETTER ruten, non-greedy — et nøstet objekt (viewport)
+     mellom rute og status stoppet det gamle [^}]*-søket. */
+  const m = new RegExp(`${ruteRe}[\\s\\S]*?status:\\s*"(kalibrert|ukalibrert)"`).exec(k);
+  return m?.[2] === "kalibrert" ? "kalibrert" : "ukalibrert";
 }
 
 /* Mekanisk poeng 0–10: 10 minus straff per fil. Vektene speiler alvoret fra

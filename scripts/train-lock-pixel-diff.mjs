@@ -7,6 +7,7 @@
 // Selve CI-testen er tests/visual/train-lock-pixelnaerhet.spec.ts.
 //
 // Kjør:  node scripts/train-lock-pixel-diff.mjs <label> <rute> [tema] [cropTop] [BASE_URL]
+//        … [--viewport=<bredde>x<hoyde> --selector='<css>']   panel-modus, se tests/visual/README.md
 import { config as loadEnv } from "dotenv";
 import { chromium } from "playwright";
 import { PNG } from "pngjs";
@@ -20,8 +21,26 @@ loadEnv({ path: ".env.local" });
 const FASIT_DIR = "designsystem/train-lock";
 const OUT_DIR = "tests/visual/ut";
 
-const [label, rute, tema = "dark", cropTopArg = "0", BASE = process.env.SHOT_BASE || "https://akgolf-hq.vercel.app"] = process.argv.slice(2);
+// Flagg (--navn=verdi) skilles fra posisjonelle argumenter — rekkefølgen på de
+// posisjonelle er uendret, så eksisterende kall virker som før.
+const flagg = Object.fromEntries(
+  process.argv.slice(2).filter((a) => a.startsWith("--")).map((a) => {
+    const i = a.indexOf("=");
+    return i === -1 ? [a.slice(2), "true"] : [a.slice(2, i), a.slice(i + 1)];
+  })
+);
+const posisjonelle = process.argv.slice(2).filter((a) => !a.startsWith("--"));
+const [label, rute, tema = "dark", cropTopArg = "0", BASE = process.env.SHOT_BASE || "https://akgolf-hq.vercel.app"] = posisjonelle;
 const cropTop = Number(cropTopArg);
+// Panel-modus (tests/visual/README.md §Panel-modus): appen rendres i --viewport,
+// og utsnittet klippes fra --selector-elementets øvre venstre hjørne med
+// fasit-rammens bredde/høyde. Begge eller ingen.
+const selector = flagg.selector ?? null;
+const viewportFlagg = flagg.viewport ? flagg.viewport.split("x").map(Number) : null;
+if (Boolean(selector) !== Boolean(viewportFlagg) || (viewportFlagg && (viewportFlagg.length !== 2 || viewportFlagg.some((n) => !Number.isInteger(n) || n <= 0)))) {
+  console.error("Panel-modus krever BÅDE --viewport=<bredde>x<hoyde> (heltall) OG --selector='<css>'.");
+  process.exit(1);
+}
 // Fryser "i dag" til fasitens dato (kun screentest, se src/lib/testing/dato-override.ts).
 // Overstyres med SHOT_DATO=<ISO-datotid> for en rad med et testDato ulikt
 // denne standarden (tests/visual/skjerm-mapping.ts, fase 1 økt 3).
@@ -30,7 +49,7 @@ const PASSWORD = process.env.SHOT_PASSWORD || process.env.SCREENTEST_PASSWORD;
 const BRUKER = process.env.SHOT_BRUKER || "screentest@akgolf.test";
 
 if (!label || !rute) {
-  console.error("Bruk: node scripts/train-lock-pixel-diff.mjs <label> <rute> [tema=dark] [cropTop=0] [BASE_URL]");
+  console.error("Bruk: node scripts/train-lock-pixel-diff.mjs <label> <rute> [tema=dark] [cropTop=0] [BASE_URL] [--viewport=BxH --selector='css']");
   process.exit(1);
 }
 if (!PASSWORD) {
@@ -71,8 +90,11 @@ await fasitEl.screenshot({ path: fasitFilSti });
 await fasitPage.close();
 
 // 2) App-skjermbilde, samme bredde/høyde som fasit-rammen, innlogget.
-const width = Math.round(box.width);
-const height = Math.round(box.height);
+// Uten panel-modus: samme bredde/høyde som fasit-rammen. Med panel-modus:
+// radens viewport — fasit-rammen er et panel, ikke en skjerm, og satt som
+// viewport ville den truffet feil brekkpunkt.
+const width = viewportFlagg ? viewportFlagg[0] : Math.round(box.width);
+const height = viewportFlagg ? viewportFlagg[1] : Math.round(box.height);
 const isMobile = width < 700;
 const ctx = await browser.newContext({
   viewport: { width, height },
@@ -111,7 +133,28 @@ const appPage = await ctx.newPage();
 await appPage.goto(`${BASE}${rute}`, { waitUntil: "domcontentloaded", timeout: 90000 });
 await appPage.waitForTimeout(3000);
 const appFilSti = `${OUT_DIR}/${slug(label)}-app.png`;
-await appPage.screenshot({ path: appFilSti, fullPage: false });
+if (selector) {
+  const el = appPage.locator(selector).first();
+  const synlig = await el.waitFor({ state: "visible", timeout: 30000 }).then(() => true, () => false);
+  if (!synlig) {
+    console.error(`Fant ikke ${selector} på ${rute}. Viser appen en annen tilstand (f.eks. tom) enn fasiten? Seed først (se raden i skjerm-mapping.ts).`);
+    await browser.close();
+    process.exit(1);
+  }
+  const elBox = await el.boundingBox();
+  // Utsnitt = fasit-rammens mål fra elementets øvre venstre hjørne. Ikke
+  // el.screenshot(): elementet er ofte bredere enn rammen (AO-03: 1144 vs
+  // 760 px), og da ville størrelsessjekken under feile.
+  const clip = { x: Math.round(elBox.x), y: Math.round(elBox.y), width: Math.round(box.width), height: Math.round(box.height) };
+  if (clip.x + clip.width > width || clip.y + clip.height > height) {
+    console.error(`Panelet (${clip.x},${clip.y} ${clip.width}×${clip.height}) stikker utenfor viewporten ${width}×${height} — øk --viewport.`);
+    await browser.close();
+    process.exit(1);
+  }
+  await appPage.screenshot({ path: appFilSti, clip });
+} else {
+  await appPage.screenshot({ path: appFilSti, fullPage: false });
+}
 await browser.close();
 
 // 3) Diff — fasiten har en bakt-inn statuslinje øverst (dynamic island, klokke)
