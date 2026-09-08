@@ -4195,6 +4195,53 @@ model PgaApproachDistance {
   @@map("pga_approach_distance")
 }
 
+// Tak-pakke: 15–25 navngitte proffer som økt-referanse («slå Scheffler»).
+// Skill + innspill-nærhet per spiller, datert. Ukentlig synk. Ikke 3 500 spillere.
+model DatagolfTak {
+  id           String   @id @default(cuid())
+  dgPlayerId   Int      @unique
+  name         String
+  country      String?
+  sortOrder    Int      @default(100)
+  formLabel    String?
+  isActive     Boolean  @default(true)
+  asOf         DateTime
+  sgTotal      Float?
+  sgOtt        Float?
+  sgApp        Float?
+  sgArg        Float?
+  sgPutt       Float?
+  drivingDistY Float?
+  drivingAcc   Float?
+  dgRank       Int?
+  owgrRank     Int?
+  primaryTour  String?
+  source       String   @default("datagolf")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  bands        DatagolfTakBand[]
+
+  @@index([isActive, sortOrder])
+  @@map("datagolf_tak")
+}
+
+model DatagolfTakBand {
+  id               String      @id @default(cuid())
+  takId            String
+  band             String
+  lie              String
+  proximityMeters  Float?
+  sgPerShot        Float?
+  girRate          Float?
+  goodShotRate     Float?
+  shotCount        Int?
+  tak              DatagolfTak @relation(fields: [takId], references: [id], onDelete: Cascade)
+
+  @@unique([takId, band, lie])
+  @@index([takId])
+  @@map("datagolf_tak_band")
+}
+
 // ---------- Stats Fase 4 — SG-sammenligning + estimater ----------
 // Brukerens egne SG-innskudd (manuell, TrackMan eller import).
 // Brukes til /stats/sg-sammenlign for å sammenligne mot proffer

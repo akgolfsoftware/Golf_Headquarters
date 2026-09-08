@@ -29,6 +29,7 @@ import { runDedupePlayerNames } from "@/lib/turneringer/dedupe-player-names";
 import { runNorgeMandagSync } from "@/lib/turneringer/norge-mandag-sync";
 import { prisma } from "@/lib/prisma";
 import { syncPgaSkillRatings, syncPgaPuttDistance, syncPgaApproach } from "@/lib/stats/pga-sync";
+import { syncDatagolfTak } from "@/lib/datagolf/tak-sync";
 import {
   runMorgenbrief,
   runKveldsjournal,
@@ -97,6 +98,7 @@ const AGENTS: Record<string, () => Promise<unknown>> = {
   "pga-skill-ratings": syncPgaSkillRatings,
   "pga-putt-distance": syncPgaPuttDistance,
   "pga-approach": syncPgaApproach,
+  "datagolf-tak": syncDatagolfTak,
   // Meg-assistent proaktive briefer (Fase 6)
   "meg-morgenbrief": runMorgenbrief,
   "meg-kveldsjournal": runKveldsjournal,
