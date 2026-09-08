@@ -3,8 +3,10 @@
 /**
  * AgencyOS Oppsett-hub — Train-lock (T13, 26.08.2026).
  *
- * Fasit: designsystem/train-lock/AG-18 Oppsett-hub.dc.html (3 skall) +
- * AG-13 Oppsett.dc.html (eldre variant, HANDOFF §16: AG-18 er gjeldende).
+ * Fasit: designsystem/train-lock/AG-18 Oppsett-hub.dc.html (3 skall).
+ * AG-13 er historikk (eldre variant, HANDOFF §16); AG-18 er gjeldende.
+ * Avvik:
+ *   - AG-13 (eldre variant) er historikk, ikke fasit.
  * Fem rader — Akademi, Varsler, Tilgang og roller, Klubb og steder, Konto —
  * INGEN hvit primær-CTA («kjedelig er riktig», ingenting å utføre på
  * hub-nivå). Varsler og Konto navigerer ut til egne, eksisterende ruter

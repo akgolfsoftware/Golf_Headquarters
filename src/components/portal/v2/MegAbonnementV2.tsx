@@ -3,6 +3,10 @@
 /**
  * PlayerHQ Meg · Abonnement — Train-lock (status-hero, én grønn CTA).
  * Fasit: designsystem/train-lock/ME-03 Abonnement.dc.html
+ * Rigg: ME-03 Abonnement
+ * Avvik:
+ *   - Tegningen har dødt «Elite»-navn og gammel pris.
+ *   - Koden (TALENT/FULL, 299 kr/mnd, 2 690 kr/år) er fasit.
  */
 
 import { useEffect, useState, type ReactNode } from "react";
