@@ -163,11 +163,11 @@ hver dag forsinkelse der flytter milepælen én dag. Øktene etter lansering (F3
 | Ø21 | ~~tor 01.10~~ **ons 16.09** | TE-08 Driver Basic | `/portal/tren/tester/[testId]` | `TE-08 Driver Basic.dc.html` |
 | Ø22 | ~~fre 02.10~~ **tor 17.09** | TE-07 Wedge Variation | samme | `TE-07 Wedge Variation Mac.dc.html` |
 | Ø23 | ~~man 05.10~~ **fre 18.09** | TE-10 GS-18 resultat | samme | `TE-10 GS-18 resultat.dc.html` |
-| Ø24 | ~~tir 06.10~~ **man 21.09** | TE-12 Egen test (flytt `/ny/egen` ut av legacy) | `/portal/tren/tester/ny` | `TE-12 Egen test.dc.html` |
+| Ø24 | ~~tir 06.10~~ **man 21.09** | TE-12 Egen test (`/ny/egen` er allerede utenfor legacy, #631 — kun port) | `/portal/tren/tester/ny` | `TE-12 Egen test.dc.html` |
 | Ø25 | ~~ons 07.10~~ **tir 22.09** | TE-09 Gapping (siterer slettet Paper-fasit i dag) | `/portal/mal/trackman/gapping` | `TE-09 Gapping-stige.dc.html` |
 | Ø26 | ~~tor 08.10~~ **ons 23.09** | TE-03 Putt Gate detalj (sign-off — allerede portert) | `/portal/tren/tester/[testId]` | `TE-03 TN Putt Gate detalj.dc.html` |
 | Ø27 | ~~fre 09.10~~ **delvis gjort 03.09** | D4 svart 03.09: full-scope (AI-vision bilde-avlesning), ikke bare restyle. **Gjort (PR #768):** ny «Foto av skjerm»-kilde i modalen, C1 busy («Leser og analyserer…»), C2/C3 feiltekst ordrett fra fasit («Fant ingen tall. Rett på kortet. HEIC → JPG.»), HEIC/HEIF avvist client-side. **Bevisst forenklet, ikke bygget:** fasitens C4-suksesskjerm (median carry/smash/side/spredning-fliser + scatter-plot + Kilde/Funn-panel) — gjenbruker i stedet modalens generiske steg 3 (slaglisten) og steg 4 (bekreftelse), samme mønster som CSV/HTML allerede bruker. To separate feilknapper («Ta bilde på nytt»/«Velg fil i stedet») er også ikke bygget — gjenbruker feilbanneret + samme filinput | `src/components/shared/trackman-import-modal.tsx` | `TM-03 Ingest-tilstander.dc.html` |
-| — | etter beslutning | DG-01/02 (D5) · WB-04 coach-side (avgjøres i D3-canvasen) · AG-19 (D6) · JV-01–03 + AO-13 (D7) | se 2.12 | se 2.12 |
+| — | etter beslutning | DG-01/02 (D5) · WB-04 coach-side (D3 svart 03.09 — bygges i STEG 20.3, fase 3) · AG-19 (D6) · JV-01–03 + AO-13 (D7) | se 2.12 | se 2.12 |
 | — | etter datamodell | TM-08/09 (banedata, 3.5) · TM-12/13/14 (D9) · WB-08 (D8) · A-19b/c (16.10/16.11) | se 2.12 | se 2.12 |
 
 ### 1C · Beslutningskø som låser datoene (maks 10, én anbefaling hver)
@@ -176,7 +176,7 @@ hver dag forsinkelse der flytter milepælen én dag. Øktene etter lansering (F3
 |---|---|---|---|---|
 | D1 | Plan på telefon: `PH-07/08 Plan` eller `P-05 iPhone Agenda` som fasit for `/portal/planlegge`? Riggen fant P-05 utdatert (CS/M-vokabular fra før 18.08, annen IA) | **PH-07/08.** P-05 merkes utgått i SCREEN-INDEX; ingen omtegning | Ø4 | **SVART 02.09: PH-07/08** (`.claude/rules/beslutninger.md` §PLAN-FASIT, WORKBENCH-KANON OG BETALINGSTEST) |
 | D2 | Coachens Workbench: WB-serien (3 skall, 24.08) eller A-serien (Mac, eldre) som kanon? Koden siterer A-serien; HANDOFF kaller WB-02–07 «komplett Workbench» | **WB-serien for struktur og brekkpunkter**, A-serien kun som Mac-pikselfasit der WB mangler detalj | Ø9–Ø10 | **SVART 02.09: WB-serien for struktur** |
-| D3 | Spiller 360: én adresse `/admin/spillere/[id]` = S3-03 (landing), S3-01 som arbeidsvisning (`?vis=360`), AG-08 som mobil-ark? | **Ja, én adresse** (regel 6.9). Canvas i Ø11, ja samme dag | Ø11–Ø13 | tor 17.09 |
+| D3 | Spiller 360: én adresse `/admin/spillere/[id]` = S3-03 (landing), S3-01 som arbeidsvisning (`?vis=360`), AG-08 som mobil-ark? | **Ja, én adresse** (regel 6.9). Canvas i Ø11, ja samme dag | Ø11–Ø13 | **SVART 03.09: én adresse** (registrert fase 1 økt 8 i `.claude/rules/beslutninger.md` §SPILLER 360 PÅ ÉN ADRESSE — D3; Ø11–Ø12 gjort #766, rigg #787, Ø13 = PR #771) |
 | D4 | TM-03: beholde dagens 4-stegs modal (774 linjer, fungerer) eller bygge fasitens helskjerm-tilstander C1–C4? | **Behold modalen**, port de fire tilstandene inn i den; fasiten justeres, ikke koden | Ø27 | **SVART 03.09: behold modalen** (registrert i `.claude/rules/beslutninger.md` §TM-03: MODALEN BESTÅR — OG FÅR AI-VISION, skrevet 03.09 kveld etter at denne raden avdekket at beslutningen kun lå i en øktlogg) **+ utvidet omfang: full AI-vision bilde-avlesning bygget** (Anders valgte «Bygg også bilde-avlesning» da omfanget viste seg å kreve ny AI-kapasitet, ikke bare restyle). Levert PR #768 |
 | D5 | DataGolf ny fasit (446-toppliste + SG-profil): egen flate eller faner i Analyse? (= beslutningskø 4, PR-F) | **Faner i `/portal/analysere/datagolf`** (én inngang); `/stats` beholdes som åpent lag | DG-01/02 | etter lansering |
 | D6 | AG-19: fasiten tegner låseskjerm + SMS-godkjenning; koden har bevisst redirect til Innboks (26.08) | **Merk AG-19a–e som push-godkjenning i STEG 12**, ikke lanseringsomfang. Ingen kode nå | AG-19 | etter lansering |
@@ -231,11 +231,11 @@ lesing av koden: **A-15** (siteres i `WorkbenchAarsplan.tsx`), **TE-03** (sitere
 
 | ID | Rute | Fasitfil | Kategori | Blokkering / merknad | Økt |
 |---|---|---|---|---|---|
-| S3-01 | `/admin/spillere/[id]` | `S3-01 Agency Spiller 360 Mac.dc.html` (+ `S3-01L`) | krever bygging | Visningslaget (`SpillerProfilPanel.tsx`) følger Paper-fasitens struktur — TL-tokens, men ikke S3-IA-en. D3 avgjør adressestruktur | Ø11, Ø13 |
-| S3-02 | samme | `S3-02 Agency Spiller 360 iPad.dc.html` | krever bygging | Som S3-01 | Ø13 |
-| S3-03 | samme | `S3-03 Spiller profil bento.dc.html` | krever bygging | HANDOFF 28.08: landingssiden ved trykk på navn i stall/gruppe. D3 | Ø11, Ø12 |
+| S3-01 | `/admin/spillere/[id]` | `S3-01 Agency Spiller 360 Mac.dc.html` (+ `S3-01L`) | krever bygging | D3 svart 03.09: arbeidsvisning `?vis=360` på samme rute — PR #771 (draft, urørt siden 03.09). Visningslaget (`SpillerProfilPanel.tsx`) er TL-tokens, ikke S3-IA-en | Ø13 |
+| S3-02 | samme | `S3-02 Agency Spiller 360 iPad.dc.html` | krever bygging | Som S3-01 (iPad-rammen i PR #771) | Ø13 |
+| S3-03 | samme | `S3-03 Spiller profil bento.dc.html` | lanserbart nå | **LEVERT 03.09 (PR #766)**, rigg S3-03a 14,34 % / S3-03b 15,15 % kalibrert + skjermbilder mot prod (PR #787). Kun sign-off i Ø16 | Ø11, Ø12 |
 | WB-04 (spiller) | `/portal` (I dag) | `WB-04 Player godkjenning 3 skall.dc.html` — rammene «iPhone forslag/godtatt/avvist» | lanserbart nå | Godta/avvis-kortet finnes og siterer fasiten; kun sign-off sammen med økt-arket | Ø6 |
-| WB-04 (coach) | `/admin/workbench/[playerId]` | samme fil — rammene «Mac player godkjenn» / «iPad godkjenn» | krever Anders-beslutning | Coach-siden (forslag-status i uke + inspektør) er ikke bygget; avgjøres som del av D2/D3 (én inngang) | etter D3 |
+| WB-04 (coach) | `/admin/workbench/[playerId]` | samme fil — rammene «Mac player godkjenn» / «iPad godkjenn» | krever bygging | Coach-siden (forslag-status i uke + inspektør) er ikke bygget. D2 (02.09) og D3 (03.09) er svart — bygges i STEG 20.3 (fase 3) | fase 3 |
 | WB-06 | `/admin/workbench/[playerId]?vis=aar` | `WB-06 Arsplan 3 skall.dc.html` | lanserbart nå | **LEVERT 04.09 (PR #776).** Periodebånd, «Turnering · test»-kolonne og høyrepanel bygget mot eksisterende `SeasonPlan`-data — se Ø17-raden for full begrunnelse | Ø17 |
 | WB-08 | ingen | `WB-08 Gruppeendring og venter.dc.html` | krever datamodell | GROUP-materialisering og VENTER-status finnes ikke (grep 02.09: 0 treff i `src/lib/domain/workbench/`). D8 | etter D8 |
 | A-15 | `/portal/planlegge/workbench` (årsplan) + `/admin/grupper/[id]/workbench` | `A-15 iPhone Arsplan.dc.html` | lanserbart nå | `WorkbenchAarsplan.tsx` siterer A-06 + A-15 — revisjonen 01.09 tok feil. Kun sign-off | Ø18 |
@@ -247,7 +247,7 @@ lesing av koden: **A-15** (siteres i `WorkbenchAarsplan.tsx`), **TE-03** (sitere
 | JV-01 | `/admin/jarvis` (Kø-fanen viser generisk kø) | `JV-01 Jarvis-ko.dc.html` | krever Anders-beslutning | Domene finnes (`src/lib/domain/jarvis-merge/`), ingen UI. D7 | etter D7 |
 | JV-02 | ingen | `JV-02 Eval rod merge stengt.dc.html` | krever Anders-beslutning | `eval.ts` + test, ingen UI. D7 | etter D7 |
 | JV-03 | ingen | `JV-03 Merge utfort proveniens.dc.html` | krever Anders-beslutning | `proveniens.ts`, ingen UI. D7 | etter D7 |
-| TM-03 | `src/components/shared/trackman-import-modal.tsx` (fra `/portal/analysere/trackman`) | `TM-03 Ingest-tilstander.dc.html` | krever Anders-beslutning | 774 linjer fungerende 4-stegs modal; fasiten tegner helskjerm C1–C4. D4 | Ø27 |
+| TM-03 | `src/components/shared/trackman-import-modal.tsx` (fra `/portal/analysere/trackman`) | `TM-03 Ingest-tilstander.dc.html` | lanserbart nå | **D4 svart 03.09 (behold modalen), levert PR #768:** «Foto av skjerm»-kilde med AI-vision (`parse-photo.ts`), C1 busy + C2/C3 feiltekst ordrett i modalen; C4-suksesskjerm bevisst ikke bygget. Sign-off/riggrad gjenstår (Ø27) | Ø27 |
 | TM-08 | ingen (TM-08f slag-ark finnes: `ShotSheet.tsx`) | `TM-08 Okt med hullkart.dc.html` | krever datamodell | Hullkart krever hulldata i `CourseDefinition` (3.5) | etter 3.5 |
 | TM-09 | ingen | `TM-09 Mini-kart og runde.dc.html` | krever datamodell | Samme hulldata + runde↔TrackMan-kobling | etter 3.5 |
 | TM-12 | ingen | `TM-12 Okt teknikk og slag.dc.html` | krever datamodell | Teknikk-tagging per slag finnes ikke; importen fyller kun `carryDistance` (0.14). D9 | etter D9 |
@@ -260,15 +260,12 @@ lesing av koden: **A-15** (siteres i `WorkbenchAarsplan.tsx`), **TE-03** (sitere
 | TE-08 | samme | `TE-08 Driver Basic.dc.html` | krever bygging | PEI vises som to tall («3,91 % · 0,04») | Ø21 |
 | TE-09 | `/portal/mal/trackman/gapping` | `TE-09 Gapping-stige.dc.html` | krever bygging | `GappingV2` siterer slettet Paper-fasit | Ø25 |
 | TE-10 | `/portal/tren/tester/[testId]` (resultat) | `TE-10 GS-18 resultat.dc.html` | krever bygging | Snitt-PEI, ikke dagsstasjoner | Ø23 |
-| TE-12 | `/portal/tren/tester/ny` (+ `/ny/egen` i legacy) | `TE-12 Egen test.dc.html` | krever bygging | `/ny/egen` ligger fortsatt i `(legacy)` | Ø24 |
+| TE-12 | `/portal/tren/tester/ny` + `/ny/egen` | `TE-12 Egen test.dc.html` | krever bygging | **RETTET 05.09:** `/ny/egen` ligger IKKE i `(legacy)` — `src/app/portal/tren/tester/ny/egen/page.tsx` (flyttet i #631). Gjenstår: selve porten mot TE-12 | Ø24 |
 
 TE-11 finnes ikke i SCREEN-INDEX (revisjonen telte «TE-07–12» som seks; det er fem filer). Summen over
 er 30 rader for 29 skjermer fordi WB-04 og A-19 er delt i to.
 
-**Kategorisum (30 rader):** lanserbart nå 3 (WB-04 spiller, A-15, TE-03 — kun sign-off) · krever bygging 11 ·
-krever Anders-beslutning 9 · krever datamodell 7. Ingen av de 29 er FULL-blokkerende alene — det som
-blokkerer FULL er betalingskjeden (Ø1–Ø2) og sign-off på de allerede porterte FULL-skjermene (Ø3–Ø15),
-pluss S3 (Ø11–Ø13) som er den eneste av de 29 på den kritiske veien.
+**Kategorisum (30 rader, talt på nytt 05.09 — økt 8):** lanserbart nå / levert 7 (WB-04 spiller, A-15, TE-03 — kun sign-off; S3-03 #766, WB-06 #776, PH-21 #789, TM-03 #768 — levert, sign-off/riggrad gjenstår) · krever bygging 9 (S3-01, S3-02, WB-04 coach, A-19a, TE-07, TE-08, TE-09, TE-10, TE-12) · krever Anders-beslutning 7 (AG-19, AO-13, JV-01–03, DG-01, DG-02) · krever datamodell 7. Summen 3/11/9/7 fra 02.09 var utdatert etter WB-06 (04.09) og telte WB-04 coach som beslutning etter at D2/D3 var svart. Ingen av de 29 er FULL-blokkerende alene — det som blokkerer FULL er betalingskjeden (Ø1–Ø2) og sign-off på de allerede porterte FULL-skjermene (Ø3–Ø15), pluss Ø13 (PR #771) som er den eneste av de 29 på den kritiske veien.
 
 
 ### 2.13 — Datert designplan, fire spor (05.09.2026)
@@ -438,7 +435,7 @@ Flettet inn fra `LANSERINGSPLAN-KOMPLETT-2026-08-27.md` og `natt/PIKSELPLAN-2026
 |---|---|---|
 | 10.1 | **P-bølgen (Player-porten), fire sesjoner:** P1 Meg-familien (~19 underruter: innstillinger, abonnement+faktura, bookinger, profil, utstyr, 2fa, varsler) · P2 Analyse-familien (mal/runder+trackman, analysere+historikk, gameplan, drills) · P3 Tren+planlegge+resten (tester/turneringer/fys-plan/teknisk-plan, planlegge/workbench, booking, venner, kalender, varsler, coach, utenfor-banen, ai/foreslå-drill) · P4 Live-løypa+gjennomføring (live-rutene, gjennomfore/[id], offline-siden). Alle fire: tokens portet (#631), men fasit-1:1-port + skjermbilde-gate gjenstår |
 | 10.2 | **AD-1 Admin-rest:** spillere/[id]-detaljrest (fremgang/analyse/tester/turnering-kobling), `runder`, `teknisk-plan`, `admin/queue` (signal-ekstraksjon, se 15.11), `bookinger/[id]` (hvis ikke tatt i T7). **RETTET 02.09.2026:** fire punkter falt bort som egen jobb i STEG 15-konsolideringen (30.–31.08) — `tester/foreslatte` er nå fane i `/admin/ko` (PR #689), `brief` redirecter til `/admin/agencyos` (PR #703), `innboks-epost` er fane i `/admin/kommunikasjon` (PR #702), `analysere/compliance` er fane i `/admin/analyse` (PR #706). Verifiser at faneinnholdet er 1:1-portet mot fasit og har kjørt skjermbilde-gaten, ikke bare flyttet adresse |
-| 10.3 | **F1 Forelder-helporten:** alle 9 seksjoner + `barn/[childId]` til Train-lock med lys+mørk (T4-beslutning 26.08). Mandagstelling-bugen (`hentForelderUkerapport`) er fikset — fasit-1:1-porten gjenstår |
+| 10.3 | **F1 Forelder-helporten:** alle 9 seksjoner + `barn/[childId]` til Train-lock med lys+mørk (T4-beslutning 26.08). Mandagstelling-bugen (`hentForelderUkerapport`) er fikset. **RETTET 05.09 (økt 8):** komponentporten er LEVERT 29.08 (PR #648 — alle 20 FO-filer sitert, lys+mørk kun via `--tl-*`, `src/components/forelder/fo-kit.tsx`). Det som gjenstår er riggrader FO-01–FO-10 i lys+mørk, `barn/[childId]`-canvas og lys-verifisering → STEG 20.7 (fase 7) |
 | 10.4 | **C8 Lys-pass:** 8 nøkkelskjermer (I dag, Plan-uke, TM-detalj, Workbench-uke, Kalender-uke, Live runde, Gate, Login) + mekanisk avledet lys der tegnet fasit mangler. KUN `data-v2-tema`. ~~Rydd død `PuttModell`-komponent samtidig~~ (verifisert borte 01.09.2026, se 6.4). Kjøres SIST, aldri parallelt — rører manges filer |
 | 10.5 | **C10 DataGolf+økonomi:** kode LEVERT — skjermbilde-gate gjenstår |
 | 10.6 | **T12 visuell-rest (AgenticOS/Jarvis):** IA levert (#630), AO-00/01-piksel likeså (#628). Gjenstår: AO-12a–e start-/pause-/avvist-dialoger (krever start-status i data) · AO-06/07 project-ark og task-ark (krever project/task-modell utover Notion-cache — se J-D) · piksel-diff mot `.dc.html` + skjermbilde-gate (**NB 02.09.2026:** AO-01/03/08 forsøkt kalibrert i sign-off-riggen #731/#732 — ukalibrerbare: AO-01s fasit viser den pensjonerte AgenticOS-spesifikke railen (Cockpit/Kø/Godkjenn/Projects/Runtimes/Skills) mot appens faktiske AX-01 fem-destinasjonsrail, AO-03/AO-08 er innebygde paneler riggen ikke håndterer ennå — se `tests/visual/skjerm-mapping.ts`). ~~fjern død `AdminAgenticosHubV2` (Paper-hub, ubrukt)~~ **VERIFISERT LEVERT 01.09.2026** — `grep -rn "AdminAgenticosHubV2" src/` gir null treff, allerede fjernet i en tidligere økt |

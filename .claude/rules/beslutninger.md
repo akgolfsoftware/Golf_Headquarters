@@ -43,6 +43,22 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
   fortsetter innenfor fasene. Beslutningene fasene trenger (27 stk.) stilles én fase om gangen — se
   beslutningskø 31–32. **Arbeidet:** `docs/MASTERPLAN-GJENSTAAENDE.md` STEG 20.
 
+- **SPILLER 360 PÅ ÉN ADRESSE — D3 (Anders 03.09.2026, i økt; registrert i ettertid, fase 1 økt 8):** svar på
+  beslutningskø 1C D3. `/admin/spillere/[id]` er den ene adressen for spillerprofilen (regel 6.9
+  «én inngang per funksjon»): `S3-03 Spiller profil bento` er landingen (Oversikt), `S3-01`/`S3-02`
+  er arbeidsvisningen på samme rute (`?vis=360`, Mac/iPad), `AG-08 Spiller-ark` er mobilvarianten
+  av arbeidsvisningen. Ingen egen canvas-runde — fasit fantes fra 28.08 (HANDOFF §S3-03).
+  **Bygget:** Ø11–Ø12 samme dag, PR #766 (`SpillerOversiktV2` + `spiller-oversikt-data.ts`, ekte
+  spørringer); riggrader S3-03a Mac 14,34 % / S3-03b iPhone 15,15 % kalibrert og skjermbilder
+  390/1280 × lys/mørk mot prod 05.09 (PR #787). Ø13 arbeidsvisning + mobil-ark: PR #771 (draft).
+  **Bevisst forenklet i #766:** minikalender utelatt, ukeaktivitet som prosentbue (ikke 24-tikks
+  klokke), teknisk plan med ekte P-posisjoner i stedet for «blokk N av M». `/admin/spillere/[id]/
+  analyse` forblir egen rute (A-19). **Kjent avvik:** to hvite primær-CTA-er på samme skjerm
+  (bentoens «Åpne uke i Workbench» + den gamle profilheaderens) — løses i Ø13, ikke som egen rad.
+  **Registrert i ettertid:** beslutningen ble tatt muntlig og bygget 03.09, men sto kun i Ø11-raden
+  — samme feilklasse som TM-03 (03.09). **Arbeidet:** `docs/MASTERPLAN-GJENSTAAENDE.md` 1B Ø11–Ø13,
+  1C D3 (svart), 2.12 S3-01/S3-02/S3-03 og WB-04 (coach). Krever ingen kodeendring utover Ø13.
+
 - **FORSIDETEKSTEN LÅST — SVARTIDSLØFTET VENTER PÅ JARVIS (Anders 05.09.2026, i økt):** sju
   svar på `docs/marketing/tekstplan-forside-2026-09-05.md` §2. (1) Bunnen oppgir rollene
   **«sportslig ansvarlig i Gamle Fredrikstad Golfklubb og sportssjef ved WANG Toppidrett

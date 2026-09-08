@@ -3,13 +3,18 @@
 /**
  * AgencyOS Konto (Min coach-profil) — Train-lock (T13, 26.08.2026).
  *
- * Fasit: designsystem/train-lock/AG-05 Mer-ark.dc.html (kontoraden/avatar-
- * behandlingen — «Meg»-mønsteret: avatar + navn øverst, felter under, som
- * i AG-18 «Konto»-raden) + DESIGN-SYSTEM.md §5 Liste-rad/Kort. Ingen egen
- * fasit tegner et fullt coach-profil-skjema, så feltlayouten er en
- * mønster-port av AdminProfilV2 (Paper), ikke pixel — samme datakontrakt
- * (AdminProfilV2Data) og SAMME server actions (oppdaterCoachProfil,
- * uploadAvatar, skalerAvatar) — designport, ikke funksjonsendring.
+ * Fasit: designsystem/train-lock/AG-18 Oppsett-hub.dc.html — «Konto»-raden
+ * (AG-18a iPhone / AG-18b iPad / AG-18c Mac: avatar + navn + chevron er
+ * inngangen til denne siden) + DESIGN-SYSTEM.md §5 Liste-rad/
+ * Kort. Rettet 05.09.2026: siterte tidligere AG-05, som tegner Mer-arket
+ * (Plan/Innsikt/Oppsett/Klubb) — ikke konto-skjemaet.
+ * Avvik:
+ *   - ingen Train-lock-fil tegner selve coach-profil-skjemaet, og det
+ *     finnes ingen riggrad;
+ *   - feltlayouten er en mønster-port av den gamle AdminProfilV2 (Paper,
+ *     slettet 30.08), ikke pixel. Samme datakontrakt (AdminProfilV2Data) og
+ *     SAMME server actions (oppdaterCoachProfil, uploadAvatar, skalerAvatar)
+ *     — designport, ikke funksjonsendring.
  *
  * Tokens: KUN TL — CLAUDE.md invariant 2.
  */

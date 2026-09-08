@@ -1,5 +1,26 @@
 "use client";
 
+/**
+ * PlayerHQ I dag — godkjenningskort for forslag fra coach eller gruppe.
+ *
+ * Fasit: designsystem/train-lock/WB-04 Player godkjenning 3 skall.dc.html —
+ * spiller-rammene «WB-04 iPhone forslag» / «WB-04 iPhone godtatt» /
+ * «WB-04 iPhone avvist». Mac/iPad-rammene («WB-04 Mac player godkjenn»,
+ * «WB-04 iPad godkjenn») er coach-siden (MASTERPLAN STEG 20.3), ikke dette kortet.
+ * Avvik:
+ *   - ingen riggrad ennå (fase 2), så avvikene under er ikke målt;
+ *   - fasitens drill-liste med reps («Stige 50–70–90 3 × 9» …) vises som
+ *     antall (approvalDrillsCount), ikke som liste;
+ *   - fasitens tredje handling «Foreslå ny tid» finnes ikke — kun Godta/Avvis;
+ *   - fasitens etter-tilstander (egne kort «Godtatt»/«Avvist» med melding
+ *     til coach) er toast + kortet forsvinner; Avvis skjuler økten
+ *     (hiddenByPlayer) og sender ingen melding;
+ *   - fasitens caps-chips (SLAG · INNSPILL_50 · M3) er én metalinje
+ *     «tid · varighet · pyramide» — M-nivåer er utgått vokabular (18.08.2026).
+ * «Godta» er eneste sted TL.ok (#30D158) brukes i flyten (CLAUDE.md
+ * invariant 2); «Avvis» er nøytral ghost, aldri rød.
+ */
+
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";

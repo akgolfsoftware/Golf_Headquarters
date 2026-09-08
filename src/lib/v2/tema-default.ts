@@ -20,8 +20,11 @@
  *   AAPNE-SPORSMAAL) er LØST 26.08.2026: hele forelder-appen skal ha BÅDE lys og
  *   mørk modus (som resten av produktet) — men det endrer ikke *defaulten* her,
  *   kun at bryteren (mørk-valget) faktisk må fungere visuelt der også, ikke bare
- *   på /portal og /admin. Skjermporten er ikke gjort ennå.
- * - Landingssidene er alltid lyse (egen fasit, ak-golf-website).
+ *   på /portal og /admin. Komponentporten er levert 29.08.2026 (PR #648, alle
+ *   20 FO-filer sitert, lys+mørk kun via `--tl-*`); riggrader og lys-
+ *   verifisering gjenstår (MASTERPLAN STEG 20.7, fase 7).
+ * - Landingssidene er alltid lyse (fasit: AK Golf-masteren `designsystem/ak-golf/`,
+ *   Anders 04.09.2026 — `ak-golf-website` er utgått som fasit).
  * - Resten (stats, team-flatene, interne) er mørke som før.
  * - Bryteren vinner alltid: cookien `ak-v2-tema` overstyrer defaulten begge
  *   veier, så en bruker som velger lys på /portal beholder lys.
