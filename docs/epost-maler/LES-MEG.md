@@ -48,11 +48,18 @@ inn automatisk når e-posten sendes):
 
 Samme visuelle ramme som resten av AK Golfs transaksjons-e-poster
 (`emailLayout()` i `src/lib/email/templates/shared.ts`): hvit kort-boks på
-krem bakgrunn, forest-grønn knapp med lime-tekst, AK Golf Academy-footer med
-adresse og kontakt-e-post. Fordi Supabase sine maler ikke kan importere kode
-fra repoet, er HTML-en i disse tre filene en frittstående kopi av samme
-ramme — hvis fargene/adressen i `emailLayout()` endres senere, må disse tre
-filene oppdateres manuelt og limes inn på nytt.
+krem bakgrunn, blekk knapp (`#141413`) med krem tekst, clay-fargede lenker
+(`#B85C3D`), AK Golf Academy-footer med adresse og kontakt-e-post. Fordi
+Supabase sine maler ikke kan importere kode fra repoet, er HTML-en i disse
+tre filene en frittstående kopi av samme ramme — hvis fargene/adressen i
+`emailLayout()` endres senere, må disse tre filene oppdateres manuelt og
+limes inn på nytt.
+
+**Rettet 08.09.2026:** de tre filene brukte fortsatt den avviklede
+forest-grønn/lime-paletten (`#005840`/`#D1F843`) og `JetBrains Mono` —
+oppdatert til gjeldende AK Golf-palett over. **Handling som gjenstår, kun du
+kan gjøre den:** lim de rettede filene inn i Supabase-dashbordet på nytt
+(steg under) — koden i repoet endrer ikke det som faktisk ligger i Supabase.
 
 ## Test
 

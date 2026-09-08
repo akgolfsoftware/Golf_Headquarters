@@ -1,6 +1,6 @@
 # WANG Toppidrett — treningsplanlegger-notater
 
-Del av [treningsplanlegger-prosjektet](../spec-design.md).
+Del av treningsplanlegger-prosjektet. Vokabular: `docs/ORDBOK-TRENINGSPLANLEGGING-2026-09-08.md`.
 
 ## Status
 - Planlegges direkte i **AgencyOS** som gruppe (partner `"WANG Toppidrett"` finnes allerede).

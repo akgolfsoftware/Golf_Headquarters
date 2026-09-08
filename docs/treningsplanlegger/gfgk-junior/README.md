@@ -1,6 +1,6 @@
 # GFGK Junior — treningsplanlegger-notater
 
-Del av [treningsplanlegger-prosjektet](../spec-design.md).
+Del av treningsplanlegger-prosjektet. Vokabular: `docs/ORDBOK-TRENINGSPLANLEGGING-2026-09-08.md`.
 
 ## Status
 - Grupper: gfgkjunior.no bruker **Mini · Basis · Utvikling · Elite**; basen bruker enum

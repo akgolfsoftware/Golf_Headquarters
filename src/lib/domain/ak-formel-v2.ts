@@ -2,7 +2,7 @@
  * AK-formel v2 — kanonisk vokabular for treningsplanlegging.
  *
  * Fasit: `docs/FASIT-AK-GOLF-HQ.md` (levert av Anders 19.08.2026) og
- * `docs/spec-treningsplanlegging-2026-08-19.md`. Formelen er en MERKELAPP,
+ * `docs/ORDBOK-TRENINGSPLANLEGGING-2026-09-08.md`. Formelen er en MERKELAPP,
  * aldri et krav — ingen regel håndheves noe sted (beslutning 18.08.2026).
  *
  *     PYRAMIDE_OMRAADE_MOTORIKK_BELASTNING_PRESS
