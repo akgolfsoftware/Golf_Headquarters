@@ -1,4 +1,4 @@
-/* @ds-bundle: {"format":4,"namespace":"ClawDesignTeamNorwayGolf_a03bf9","components":[{"name":"Hero","sourcePath":"components/brand/Hero.jsx"},{"name":"Logo","sourcePath":"components/brand/Logo.jsx"},{"name":"PyramidDiagram","sourcePath":"components/brand/PyramidDiagram.jsx"},{"name":"SectionHeader","sourcePath":"components/brand/SectionHeader.jsx"},{"name":"Badge","sourcePath":"components/core/Badge.jsx"},{"name":"Button","sourcePath":"components/core/Button.jsx"},{"name":"Card","sourcePath":"components/core/Card.jsx"},{"name":"Input","sourcePath":"components/core/Input.jsx"},{"name":"Select","sourcePath":"components/core/Select.jsx"},{"name":"DataTable","sourcePath":"components/data/DataTable.jsx"},{"name":"MetricTile","sourcePath":"components/data/MetricTile.jsx"},{"name":"ScaleRating","sourcePath":"components/data/ScaleRating.jsx"},{"name":"StatBar","sourcePath":"components/data/StatBar.jsx"}],"sourceHashes":{"components/brand/Hero.jsx":"71e3db941531","components/brand/Logo.jsx":"bf1e0fd533c4","components/brand/PyramidDiagram.jsx":"9c3f28ffa810","components/brand/SectionHeader.jsx":"5a9b55b1ecd1","components/core/Badge.jsx":"85b1e9229568","components/core/Button.jsx":"73e5fe6c580e","components/core/Card.jsx":"4108bf7e36a4","components/core/Input.jsx":"a7331c543d6a","components/core/Select.jsx":"8ee1314ed9ea","components/data/DataTable.jsx":"44eb5823f418","components/data/MetricTile.jsx":"b5a751c1a79f","components/data/ScaleRating.jsx":"2466dec8c105","components/data/StatBar.jsx":"d8e1726406b7"},"inlinedExternals":[],"unexposedExports":[]} */
+/* @ds-bundle: {"format":4,"namespace":"ClawDesignTeamNorwayGolf_a03bf9","components":[{"name":"Hero","sourcePath":"components/brand/Hero.jsx"},{"name":"Logo","sourcePath":"components/brand/Logo.jsx"},{"name":"PyramidDiagram","sourcePath":"components/brand/PyramidDiagram.jsx"},{"name":"SectionHeader","sourcePath":"components/brand/SectionHeader.jsx"},{"name":"Badge","sourcePath":"components/core/Badge.jsx"},{"name":"Button","sourcePath":"components/core/Button.jsx"},{"name":"Card","sourcePath":"components/core/Card.jsx"},{"name":"Input","sourcePath":"components/core/Input.jsx"},{"name":"Select","sourcePath":"components/core/Select.jsx"},{"name":"CoverageCard","sourcePath":"components/data/CoverageCard.jsx"},{"name":"DataTable","sourcePath":"components/data/DataTable.jsx"},{"name":"MetricTile","sourcePath":"components/data/MetricTile.jsx"},{"name":"ScaleRating","sourcePath":"components/data/ScaleRating.jsx"},{"name":"StatBar","sourcePath":"components/data/StatBar.jsx"}],"sourceHashes":{"components/brand/Hero.jsx":"a3cff34ac9f2","components/brand/Logo.jsx":"5f4973a2bb6e","components/brand/PyramidDiagram.jsx":"9c3f28ffa810","components/brand/SectionHeader.jsx":"2bc18879979e","components/core/Badge.jsx":"136308b302bd","components/core/Button.jsx":"1e8f1dce97e4","components/core/Card.jsx":"4108bf7e36a4","components/core/Input.jsx":"a7331c543d6a","components/core/Select.jsx":"0a1f6e9f6acd","components/data/CoverageCard.jsx":"4836b0b4de07","components/data/DataTable.jsx":"cda7fb6d517d","components/data/MetricTile.jsx":"353820edb51f","components/data/ScaleRating.jsx":"51a6aca12fc2","components/data/StatBar.jsx":"d8e1726406b7"},"inlinedExternals":[],"unexposedExports":[]} */
 
 (() => {
 
@@ -17,7 +17,10 @@ function Hero({
   actions,
   meta,
   height = 380,
-  align = 'left'
+  align = 'left',
+  avatar,
+  avatarInitials,
+  avatarSize = 96
 }) {
   return React.createElement('div', {
     style: {
@@ -69,7 +72,37 @@ function Hero({
       alignItems: align === 'center' ? 'center' : 'flex-start',
       textAlign: align
     }
-  }, eyebrow ? React.createElement('div', {
+  }, avatar || avatarInitials ? React.createElement('div', {
+    style: {
+      width: avatarSize + 'px',
+      height: avatarSize + 'px',
+      borderRadius: 'var(--radius-full)',
+      flexShrink: 0,
+      overflow: 'hidden',
+      background: 'var(--navy-800)',
+      boxShadow: '0 0 0 2px var(--navy-400)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
+    }
+  }, avatar ? React.createElement('img', {
+    src: avatar,
+    alt: title ? String(title) : '',
+    style: {
+      width: '100%',
+      height: '100%',
+      objectFit: 'cover',
+      display: 'block'
+    }
+  }) : React.createElement('span', {
+    style: {
+      fontFamily: 'var(--font-display)',
+      fontSize: Math.round(avatarSize * 0.34) + 'px',
+      fontWeight: 'var(--weight-bold)',
+      letterSpacing: '-.02em',
+      color: 'var(--white)'
+    }
+  }, String(avatarInitials).toUpperCase())) : null, eyebrow ? React.createElement('div', {
     style: {
       display: 'flex',
       alignItems: 'center',
@@ -85,7 +118,7 @@ function Hero({
   }), React.createElement('span', {
     style: {
       fontFamily: 'var(--font-mono)',
-      fontSize: '11px',
+      fontSize: 'var(--text-micro)',
       letterSpacing: '.18em',
       color: 'var(--navy-300)'
     }
@@ -93,18 +126,18 @@ function Hero({
     style: {
       fontFamily: 'var(--font-display)',
       fontSize: 'clamp(38px,5vw,60px)',
-      fontWeight: 800,
+      fontWeight: 'var(--weight-black)',
       letterSpacing: '-.04em',
       lineHeight: 1.02,
       margin: 0,
-      color: '#fff'
+      color: 'var(--white)'
     }
   }, title) : null, description ? React.createElement('p', {
     style: {
       margin: 0,
       fontSize: '16.5px',
       lineHeight: 1.6,
-      color: '#A9C0DA',
+      color: 'var(--text-on-dark-muted)',
       maxWidth: '520px',
       textWrap: 'pretty'
     }
@@ -132,7 +165,7 @@ function Hero({
   }, React.createElement('span', {
     style: {
       fontFamily: 'var(--font-mono)',
-      fontSize: '10.5px',
+      fontSize: 'var(--text-micro)',
       letterSpacing: '.16em',
       color: 'var(--navy-300)'
     }
@@ -140,25 +173,44 @@ function Hero({
     style: {
       fontFamily: 'var(--font-display)',
       fontSize: '22px',
-      fontWeight: 700,
+      fontWeight: 'var(--weight-bold)',
       letterSpacing: '-.02em',
-      color: '#fff'
+      color: 'var(--white)'
     }
-  }, m.value)))) : null));
+  }, m.value),
+  // TruthLayer: hvert tall om en utøver kan bære sin egen kildelinje.
+  m.source ? React.createElement('span', {
+    style: {
+      fontFamily: 'var(--font-mono)',
+      fontSize: 'var(--text-micro)',
+      color: 'var(--text-on-dark-muted)',
+      letterSpacing: '.04em'
+    }
+  }, m.source) : null))) : null));
 }
 Object.assign(__ds_scope, { Hero });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/brand/Hero.jsx", error: String((e && e.message) || e) }); }
 
 // components/brand/Logo.jsx
 try { (() => {
-const SRC = '/assets/logo/team-norway-golf.png';
+const FILE = 'assets/logo/team-norway-golf.png';
+
+// Merket rendres alltid fra fil. Løses relativt til bundle-scriptet, slik at
+// logoen ikke brekker når komponenten brukes fra en undermappe (templates/*).
+function resolveSrc() {
+  try {
+    const s = document.querySelector('script[src*="_ds_bundle.js"]');
+    if (s) return new URL(FILE, new URL('./', s.src)).href;
+  } catch (e) {}
+  return '/' + FILE;
+}
 function Logo({
   height = 40,
   onDark = false,
   src,
   plate = 'auto'
 }) {
-  const file = src || SRC;
+  const file = src || resolveSrc();
   const img = React.createElement('img', {
     src: file,
     alt: 'Team Norway Golf',
@@ -176,7 +228,7 @@ function Logo({
       display: 'inline-flex',
       alignItems: 'center',
       justifyContent: 'center',
-      background: '#fff',
+      background: 'var(--white)',
       borderRadius: 'var(--radius-md)',
       padding: pad + 'px ' + Math.round(pad * 1.2) + 'px',
       boxShadow: 'var(--shadow-sm)'
@@ -338,7 +390,7 @@ function SectionHeader({
       alignItems: 'center',
       gap: '12px',
       fontFamily: 'var(--font-mono)',
-      fontSize: '11px',
+      fontSize: 'var(--text-micro)',
       letterSpacing: '.18em',
       color: onDark ? 'var(--navy-300)' : 'var(--ink-400)'
     }
@@ -350,16 +402,16 @@ function SectionHeader({
     style: {
       fontFamily: 'var(--font-display)',
       fontSize: '32px',
-      fontWeight: 800,
+      fontWeight: 'var(--weight-black)',
       letterSpacing: '-.035em',
       lineHeight: 1.08,
       margin: 0,
-      color: onDark ? '#fff' : 'var(--ink-900)'
+      color: onDark ? 'var(--white)' : 'var(--ink-900)'
     }
   }, title) : null, description ? React.createElement('p', {
     style: {
       margin: 0,
-      fontSize: '15px',
+      fontSize: 'var(--text-base)',
       lineHeight: 1.55,
       color: muted,
       textWrap: 'pretty'
@@ -423,10 +475,10 @@ function Badge({
       padding: '5px 11px',
       borderRadius: 'var(--radius-full)',
       background: solid ? t.solid : t.bg,
-      color: solid ? '#fff' : t.fg,
+      color: solid ? 'var(--white)' : t.fg,
       fontFamily: 'var(--font-body)',
-      fontSize: '12.5px',
-      fontWeight: 600,
+      fontSize: 'var(--text-xs)',
+      fontWeight: 'var(--weight-semibold)',
       letterSpacing: '-0.005em',
       whiteSpace: 'nowrap'
     }
@@ -435,7 +487,7 @@ function Badge({
       width: '6px',
       height: '6px',
       borderRadius: '50%',
-      background: solid ? '#fff' : t.solid,
+      background: solid ? 'var(--white)' : t.solid,
       flexShrink: 0
     }
   }) : null, children);
@@ -454,33 +506,34 @@ function Button({
   fullWidth,
   onClick
 }) {
+  // Alle tre størrelser tåler berøring: 44px er minste trykkmål.
   const sizes = {
     sm: {
-      padding: '8px 14px',
-      fontSize: '13px',
-      height: '34px'
+      padding: '10px 16px',
+      fontSize: 'var(--text-xs)',
+      height: '44px'
     },
     md: {
-      padding: '11px 20px',
-      fontSize: '14px',
-      height: '42px'
+      padding: '12px 20px',
+      fontSize: 'var(--text-sm)',
+      height: '48px'
     },
     lg: {
-      padding: '14px 28px',
-      fontSize: '16px',
-      height: '52px'
+      padding: '16px 28px',
+      fontSize: 'var(--text-base)',
+      height: '56px'
     }
   };
   const variants = {
     primary: {
       background: 'var(--navy-900)',
-      color: '#fff',
+      color: 'var(--white)',
       border: '1px solid transparent',
       boxShadow: 'var(--shadow-sm)'
     },
     accent: {
       background: 'var(--red-600)',
-      color: '#fff',
+      color: 'var(--white)',
       border: '1px solid transparent',
       boxShadow: 'var(--shadow-sm)'
     },
@@ -497,7 +550,7 @@ function Button({
     },
     onDark: {
       background: 'rgba(255,255,255,.1)',
-      color: '#fff',
+      color: 'var(--white)',
       border: '1px solid rgba(255,255,255,.24)'
     }
   };
@@ -535,7 +588,7 @@ function Button({
       gap: '8px',
       width: fullWidth ? '100%' : 'auto',
       fontFamily: 'var(--font-body)',
-      fontWeight: 600,
+      fontWeight: 'var(--weight-semibold)',
       letterSpacing: '-0.005em',
       borderRadius: 'var(--radius-full)',
       cursor: disabled ? 'not-allowed' : 'pointer',
@@ -711,6 +764,7 @@ function Select({
   onChange,
   options = [],
   hint,
+  error,
   disabled
 }) {
   const [focus, setFocus] = React.useState(false);
@@ -723,8 +777,8 @@ function Select({
     }
   }, label ? React.createElement('span', {
     style: {
-      fontSize: '13px',
-      fontWeight: 600,
+      fontSize: 'var(--text-xs)',
+      fontWeight: 'var(--weight-semibold)',
       color: 'var(--ink-700)'
     }
   }, label) : null, React.createElement('div', {
@@ -744,11 +798,11 @@ function Select({
       appearance: 'none',
       WebkitAppearance: 'none',
       background: disabled ? 'var(--ink-50)' : 'var(--white)',
-      border: '1px solid ' + (focus ? 'var(--navy-600)' : 'var(--border-subtle)'),
+      border: '1px solid ' + (error ? 'var(--status-red)' : focus ? 'var(--navy-600)' : 'var(--border-subtle)'),
       borderRadius: 'var(--radius-sm)',
       boxShadow: focus ? 'var(--focus-ring)' : 'var(--shadow-sm)',
       fontFamily: 'var(--font-body)',
-      fontSize: '15px',
+      fontSize: 'var(--text-base)',
       color: 'var(--ink-900)',
       outline: 'none',
       cursor: disabled ? 'not-allowed' : 'pointer',
@@ -769,11 +823,17 @@ function Select({
       transform: 'translateY(-50%)',
       pointerEvents: 'none',
       color: 'var(--ink-400)',
-      fontSize: '11px'
+      fontSize: 'var(--text-micro)'
     }
-  }, '▼')), hint ? React.createElement('span', {
+  }, '▼')), error ? React.createElement('span', {
     style: {
-      fontSize: '12px',
+      fontSize: 'var(--text-micro)',
+      color: 'var(--status-red-text)',
+      fontWeight: 'var(--weight-semibold)'
+    }
+  }, error) : hint ? React.createElement('span', {
+    style: {
+      fontSize: 'var(--text-micro)',
       color: 'var(--ink-400)'
     }
   }, hint) : null);
@@ -781,15 +841,283 @@ function Select({
 Object.assign(__ds_scope, { Select });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/core/Select.jsx", error: String((e && e.message) || e) }); }
 
+// components/data/CoverageCard.jsx
+try { (() => {
+const DEFAULT_COLORS = ['var(--navy-900)', 'var(--navy-400)', 'var(--status-amber)', 'var(--ink-200)'];
+function CoverageCard({
+  segments = [],
+  total,
+  unitLabel = 'med profil',
+  source,
+  staleNote,
+  state = 'ready',
+  layout = 'wide'
+}) {
+  const e = React.createElement;
+  const segs = segments.map((s, i) => ({
+    ...s,
+    color: s.color || DEFAULT_COLORS[i % DEFAULT_COLORS.length]
+  }));
+  const sum = total != null ? total : segs.reduce((a, s) => a + (Number(s.count) || 0), 0);
+  const covered = Number(segs.length ? segs[0].count : 0) || 0;
+  const compact = layout === 'compact';
+  const loading = state === 'loading';
+  const stale = state === 'error';
+  const empty = state === 'ready' && covered === 0;
+  const eyebrow = e('div', {
+    style: {
+      display: 'flex',
+      alignItems: 'baseline',
+      justifyContent: 'space-between',
+      gap: '12px'
+    }
+  }, e('span', {
+    style: {
+      fontFamily: 'var(--font-mono)',
+      fontSize: 'var(--text-micro)',
+      letterSpacing: 'var(--tracking-eyebrow)',
+      textTransform: 'uppercase',
+      color: 'var(--text-secondary)'
+    }
+  }, 'DEKNINGSGRAD'), stale ? e('span', {
+    style: {
+      fontFamily: 'var(--font-mono)',
+      fontSize: 'var(--text-micro)',
+      letterSpacing: 'var(--tracking-eyebrow)',
+      textTransform: 'uppercase',
+      color: 'var(--status-amber-text)',
+      border: '1px dashed var(--status-amber)',
+      borderRadius: 'var(--radius-full)',
+      padding: '3px 9px',
+      whiteSpace: 'nowrap'
+    }
+  }, 'IKKE OPPDATERT') : null);
+  const numberTone = loading ? 'var(--text-tertiary)' : stale ? 'var(--text-secondary)' : empty ? 'var(--text-tertiary)' : 'var(--navy-900)';
+  const number = loading ? e('div', {
+    style: {
+      width: '190px',
+      height: compact ? '44px' : '58px',
+      borderRadius: 'var(--radius-xs)',
+      background: 'var(--ink-100)'
+    }
+  }) : e('div', {
+    style: {
+      display: 'flex',
+      alignItems: 'baseline',
+      gap: compact ? '8px' : '10px'
+    }
+  }, e('span', {
+    style: {
+      fontFamily: 'var(--font-mono)',
+      fontSize: compact ? '52px' : 'var(--text-display)',
+      fontWeight: 'var(--weight-semibold)',
+      color: numberTone,
+      letterSpacing: compact ? '-.02em' : 'var(--tracking-display)',
+      lineHeight: 1,
+      fontVariantNumeric: 'tabular-nums'
+    }
+  }, String(covered)), e('span', {
+    style: {
+      fontSize: compact ? 'var(--text-lg)' : 'var(--text-h3)',
+      fontWeight: 'var(--weight-semibold)',
+      color: 'var(--text-secondary)'
+    }
+  }, 'av ' + sum + ' ' + unitLabel));
+  const bar = loading ? e('div', {
+    style: {
+      height: compact ? '10px' : '12px',
+      borderRadius: 'var(--radius-full)',
+      background: 'var(--ink-100)'
+    }
+  }) : e('div', {
+    style: {
+      display: 'flex',
+      height: compact ? '10px' : '12px',
+      borderRadius: 'var(--radius-full)',
+      overflow: 'hidden',
+      background: 'var(--ink-100)'
+    }
+  }, segs.map((s, i) => (Number(s.count) || 0) > 0 && s.color !== 'var(--ink-200)' ? e('div', {
+    key: i,
+    style: {
+      width: (sum ? Number(s.count) / sum * 100 : 0) + '%',
+      background: stale ? 'var(--ink-300)' : s.color
+    }
+  }) : null));
+  const legend = loading ? null : e('div', {
+    style: compact ? {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '7px'
+    } : {
+      display: 'flex',
+      gap: '22px',
+      flexWrap: 'wrap'
+    }
+  }, segs.map((s, i) => e('div', {
+    key: i,
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '8px'
+    }
+  }, e('span', {
+    style: {
+      width: '9px',
+      height: '9px',
+      borderRadius: '2px',
+      background: stale ? 'var(--ink-300)' : s.color,
+      flexShrink: 0
+    }
+  }), e('span', {
+    style: {
+      fontSize: 'var(--text-sm)',
+      color: 'var(--text-primary)',
+      flex: compact ? 1 : 'none',
+      minWidth: 0
+    }
+  }, s.label), e('span', {
+    style: {
+      fontFamily: 'var(--font-mono)',
+      fontSize: 'var(--text-sm)',
+      fontWeight: 'var(--weight-semibold)',
+      color: 'var(--navy-900)',
+      fontVariantNumeric: 'tabular-nums'
+    }
+  }, String(s.count)))));
+  const foot = loading ? e('span', {
+    style: {
+      fontSize: 'var(--text-xs)',
+      color: 'var(--text-tertiary)'
+    }
+  }, 'Henter dekningsgrad') : stale ? e('span', {
+    style: {
+      fontFamily: 'var(--font-mono)',
+      fontSize: 'var(--text-xs)',
+      color: 'var(--status-amber-text)'
+    }
+  }, staleNote || 'Sist lest fra serveren') : source ? e('span', {
+    style: {
+      fontSize: 'var(--text-xs)',
+      color: 'var(--text-secondary)',
+      lineHeight: 'var(--leading-normal)'
+    }
+  }, source) : null;
+  const shell = {
+    background: 'var(--surface-card)',
+    borderRadius: 'var(--radius-lg)',
+    boxShadow: compact ? 'var(--shadow-sm)' : 'var(--shadow-md)',
+    padding: compact ? '20px' : '26px 28px',
+    fontFamily: 'var(--font-body)'
+  };
+  if (compact) {
+    return e('div', {
+      style: {
+        ...shell,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '12px'
+      }
+    }, eyebrow, number, bar, legend, foot);
+  }
+  return e('div', {
+    style: {
+      ...shell,
+      display: 'flex',
+      gap: '36px',
+      alignItems: 'center'
+    }
+  }, e('div', {
+    style: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '6px',
+      flexShrink: 0
+    }
+  }, eyebrow, number, foot), e('div', {
+    style: {
+      flex: 1,
+      minWidth: 0,
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '10px'
+    }
+  }, bar, legend));
+}
+Object.assign(__ds_scope, { CoverageCard });
+})(); } catch (e) { __ds_ns.__errors.push({ path: "components/data/CoverageCard.jsx", error: String((e && e.message) || e) }); }
+
 // components/data/DataTable.jsx
 try { (() => {
 function DataTable({
   columns = [],
   rows = [],
   highlightRow,
-  dense = false
+  dense = false,
+  empty,
+  loading = false
 }) {
   const pad = dense ? '10px 14px' : '14px 18px';
+  const skall = {
+    overflow: 'hidden',
+    borderRadius: 'var(--radius-lg)',
+    border: '1px solid var(--border-subtle)',
+    background: 'var(--white)',
+    boxShadow: 'var(--shadow-sm)'
+  };
+  // Laster: skjelettrader i tabellens egen rytme — skjermene skal ikke tegne dette selv.
+  if (loading) return React.createElement('div', {
+    style: skall
+  }, React.createElement('div', {
+    style: {
+      display: 'flex',
+      gap: '12px',
+      padding: pad,
+      background: 'var(--ink-50)',
+      borderBottom: '1px solid var(--border-subtle)'
+    }
+  }, columns.map((c, i) => React.createElement('div', {
+    key: i,
+    style: {
+      flex: 1,
+      height: '11px',
+      borderRadius: 'var(--radius-xs)',
+      background: 'var(--ink-200)'
+    }
+  }))), [0, 1, 2, 3].map(r => React.createElement('div', {
+    key: r,
+    style: {
+      display: 'flex',
+      gap: '12px',
+      padding: pad,
+      borderBottom: r === 3 ? 'none' : '1px solid var(--ink-100)'
+    }
+  }, columns.map((c, i) => React.createElement('div', {
+    key: i,
+    style: {
+      flex: 1,
+      height: '13px',
+      borderRadius: 'var(--radius-xs)',
+      background: 'var(--ink-100)'
+    }
+  })))));
+  // Tom: én setning som forklarer hvorfor, ikke en tom tabell.
+  if (!loading && rows.length === 0) return React.createElement('div', {
+    style: {
+      ...skall,
+      padding: '26px 20px',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '6px'
+    }
+  }, React.createElement('span', {
+    style: {
+      fontFamily: 'var(--font-body)',
+      fontSize: 'var(--text-base)',
+      fontWeight: 'var(--weight-semibold)',
+      color: 'var(--ink-900)'
+    }
+  }, typeof empty === 'string' ? empty : 'Ingen rader'), typeof empty !== 'string' && empty ? empty : null);
   return React.createElement('div', {
     style: {
       overflow: 'hidden',
@@ -814,9 +1142,9 @@ function DataTable({
         padding: pad,
         background: 'var(--ink-50)',
         fontFamily: 'var(--font-mono)',
-        fontSize: '10.5px',
+        fontSize: 'var(--text-micro)',
         letterSpacing: '.14em',
-        fontWeight: 500,
+        fontWeight: 'var(--weight-medium)',
         color: 'var(--ink-500)',
         borderBottom: '1px solid var(--border-subtle)',
         whiteSpace: 'nowrap'
@@ -859,6 +1187,7 @@ function MetricTile({
   delta,
   deltaTone,
   caption,
+  source,
   dark = false
 }) {
   const tones = {
@@ -881,7 +1210,7 @@ function MetricTile({
   }, React.createElement('span', {
     style: {
       fontFamily: 'var(--font-mono)',
-      fontSize: '10.5px',
+      fontSize: 'var(--text-micro)',
       letterSpacing: '.16em',
       color: dark ? 'var(--text-on-dark-muted)' : 'var(--ink-400)'
     }
@@ -895,32 +1224,41 @@ function MetricTile({
     style: {
       fontFamily: 'var(--font-display)',
       fontSize: '40px',
-      fontWeight: 800,
+      fontWeight: 'var(--weight-black)',
       letterSpacing: '-.035em',
       lineHeight: 1,
-      color: dark ? '#fff' : 'var(--ink-900)'
+      color: dark ? 'var(--white)' : 'var(--ink-900)'
     }
   }, value), unit ? React.createElement('span', {
     style: {
       fontFamily: 'var(--font-mono)',
-      fontSize: '14px',
+      fontSize: 'var(--text-sm)',
       color: dark ? 'var(--text-on-dark-muted)' : 'var(--ink-400)'
     }
   }, unit) : null, delta ? React.createElement('span', {
     style: {
       fontFamily: 'var(--font-mono)',
-      fontSize: '13px',
-      fontWeight: 600,
+      fontSize: 'var(--text-xs)',
+      fontWeight: 'var(--weight-semibold)',
       color: tones[deltaTone] || tones.flat,
       marginLeft: '2px'
     }
   }, delta) : null), caption ? React.createElement('span', {
     style: {
-      fontSize: '12.5px',
+      fontSize: 'var(--text-xs)',
       color: dark ? 'var(--text-on-dark-muted)' : 'var(--ink-500)',
       lineHeight: 1.45
     }
-  }, caption) : null);
+  }, caption) : null,
+  // TruthLayer: kilden er sin egen linje, aldri smuglet inn i caption.
+  source ? React.createElement('span', {
+    style: {
+      fontFamily: 'var(--font-mono)',
+      fontSize: 'var(--text-micro)',
+      color: dark ? 'var(--text-on-dark-muted)' : 'var(--ink-400)',
+      lineHeight: 1.4
+    }
+  }, source) : null);
 }
 Object.assign(__ds_scope, { MetricTile });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/data/MetricTile.jsx", error: String((e && e.message) || e) }); }
@@ -966,10 +1304,10 @@ function ScaleRating({
         borderRadius: 'var(--radius-sm)',
         border: '1px solid ' + (isCur ? 'var(--navy-900)' : active ? 'transparent' : 'var(--border-subtle)'),
         background: active ? 'var(--navy-900)' : 'var(--white)',
-        color: active ? '#fff' : 'var(--ink-400)',
+        color: active ? 'var(--white)' : 'var(--ink-400)',
         fontFamily: 'var(--font-mono)',
         fontSize: size === 'sm' ? '12px' : '14px',
-        fontWeight: 600,
+        fontWeight: 'var(--weight-semibold)',
         boxShadow: isCur ? 'var(--shadow-md)' : 'var(--shadow-sm)',
         cursor: readOnly ? 'default' : 'pointer',
         transform: isPress ? 'scale(0.94)' : isCur ? 'translateY(-2px)' : 'none',
@@ -1095,6 +1433,8 @@ __ds_ns.Card = __ds_scope.Card;
 __ds_ns.Input = __ds_scope.Input;
 
 __ds_ns.Select = __ds_scope.Select;
+
+__ds_ns.CoverageCard = __ds_scope.CoverageCard;
 
 __ds_ns.DataTable = __ds_scope.DataTable;
 

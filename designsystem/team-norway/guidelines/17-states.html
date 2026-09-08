@@ -1,0 +1,39 @@
+<!-- @dsCard group="06 Praksis" viewport="700x330" name="Tom · laster · feil" subtitle="Hver skjerm skylder tre tilstander utover den som lykkes" -->
+<link rel="stylesheet" href="../styles.css">
+<div style="height:330px;padding:24px 28px;background:var(--white);font-family:var(--font-body);display:flex;flex-direction:column;gap:16px">
+<div>
+<div style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-500)">TILSTANDER PER SKJERM</div>
+<div style="font-size:19px;font-weight:700;color:var(--ink-900);letter-spacing:-.01em;margin-top:3px">Tom, laster og feil tegnes, ikke antas</div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+<div style="border:1px solid var(--border-subtle);border-radius:var(--radius-sm);overflow:hidden;display:flex;flex-direction:column">
+<div style="padding:8px 12px;background:var(--ink-50);font-family:var(--font-mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-500)">TOM</div>
+<div style="padding:13px;display:flex;flex-direction:column;gap:7px">
+<span style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-500)">INGEN TURNERINGER I VINDUET</span>
+<span style="font-size:12px;color:var(--ink-900);line-height:1.5;text-wrap:pretty">Sesongen er slutt. Neste terminliste legges ut i januar.</span>
+<span style="font-size:11px;color:var(--ink-400);line-height:1.5">Dette er ikke en feil.</span>
+<div style="height:34px;border:1px solid var(--border-default);border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:600;color:var(--navy-900);margin-top:2px">Se historikk</div>
+</div>
+</div>
+<div style="border:1px solid var(--border-subtle);border-radius:var(--radius-sm);overflow:hidden;display:flex;flex-direction:column">
+<div style="padding:8px 12px;background:var(--ink-50);font-family:var(--font-mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-500)">LASTER</div>
+<div style="padding:13px;display:flex;flex-direction:column;gap:9px">
+<div style="display:flex;flex-direction:column;gap:6px"><div style="width:70px;height:8px;border-radius:var(--radius-full);background:var(--surface-sunken)"></div><div style="width:100%;height:12px;border-radius:var(--radius-full);background:var(--surface-sunken)"></div></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="width:70px;height:8px;border-radius:var(--radius-full);background:var(--surface-sunken)"></div><div style="width:78%;height:12px;border-radius:var(--radius-full);background:var(--surface-sunken)"></div></div>
+<span style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-500);text-align:center;margin-top:2px">HENTER FRA GOLFBOX</span>
+</div>
+</div>
+<div style="border:1px solid var(--border-subtle);border-radius:var(--radius-sm);overflow:hidden;display:flex;flex-direction:column">
+<div style="padding:8px 12px;background:var(--status-red-bg);font-family:var(--font-mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--status-red-text)">FEIL</div>
+<div style="padding:13px;display:flex;flex-direction:column;gap:7px">
+<div style="display:flex;align-items:flex-start;gap:8px"><span style="width:6px;height:6px;border-radius:var(--radius-full);background:var(--status-red);flex-shrink:0;margin-top:5px"></span><span style="font-size:11.5px;font-weight:600;color:var(--status-red-text);line-height:1.5;text-wrap:pretty">GolfBox svarte ikke 06.12. Du ser forrige synk, 05.09.</span></div>
+<span style="font-size:11px;color:var(--ink-500);line-height:1.5;text-wrap:pretty">Ingen tall er gjettet.</span>
+<div style="height:34px;border-radius:var(--radius-full);background:var(--navy-900);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:600;margin-top:2px">Forsøk på nytt</div>
+</div>
+</div>
+</div>
+<div style="border-top:1px solid var(--border-subtle);padding-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:26px">
+<div style="font-size:12.5px;color:var(--ink-500);line-height:1.6;text-wrap:pretty"><b style="color:var(--ink-900)">Tom sier hvorfor, ikke bare hva.</b> «Ingen data» er ubrukelig. Tomtilstanden navngir årsaken, sier om det er en feil eller ikke, og gir én vei videre. <b style="color:var(--ink-900)">Laster etterlikner innholdets egen rytme</b> — skjelettrader i tabellens takt, ikke en spinner midt på flaten. <span style="font-family:var(--font-mono);color:var(--ink-900)">DataTable.loading</span> gjør dette; skjermer skal ikke tegne tabellskjelett selv.</div>
+<div style="font-size:12.5px;color:var(--ink-500);line-height:1.6;text-wrap:pretty"><b style="color:var(--ink-900)">Feil viser sist kjente verdi med dato</b> og sier eksplisitt at ingenting er gjettet. Flaten tømmes aldri fordi en kilde svarte sent. Statusrød (<span style="font-family:var(--font-mono);color:var(--ink-900)">--status-red</span>) bærer feil — merkevarerød er identitet og brukes aldri som advarsel. Er tilstanden «ingen tilgang» eller «ingen gruppe», er den ravgul, ikke rød: det er en grense, ikke en feil.</div>
+</div>
+</div>

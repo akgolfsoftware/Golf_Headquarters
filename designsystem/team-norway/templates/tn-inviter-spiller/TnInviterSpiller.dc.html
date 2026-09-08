@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="TN-19 Inviter spiller" description="Invitasjonen ut av Team Norway: e-post eller telefon, gruppe, avsender, utløpsdato, og status sendt · åpnet · fullført · utløpt. Selve registreringen skjer i PlayerHQ og tegnes ikke her — skjermen slutter der invitasjonen forlater flaten. Mac 1440 og mobil 390 med tom, laster og feil." -->
+<helmet><script src="./ds-base.js"></script></helmet>
+<div style="padding:48px;display:flex;flex-direction:column;gap:56px;background:var(--surface-page);min-height:100vh;font-family:var(--font-body)">
+
+<div style="display:flex;flex-direction:column;gap:8px;max-width:760px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TN-19 · INVITER SPILLER</div>
+<h1 style="font-size:var(--text-h1);color:var(--navy-900);letter-spacing:var(--tracking-heading);margin:0">Inviter spiller</h1>
+<p style="margin:0;font-size:var(--text-lg);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">En invitasjon på e-post eller telefon, til én gruppe, fra en navngitt avsender, med utløpsdato. Skjermen følger invitasjonen til den er <strong>fullført</strong> — men <strong>registreringen skjer i PlayerHQ</strong> og tegnes ikke her. Team Norway inviterer; PlayerHQ oppretter kontoen.</p>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:20px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MAC 1440 · NY INVITASJON OG SPORING</div>
+<div style="width:1440px;height:1024px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;font-variant-numeric:tabular-nums">
+
+<div style="width:252px;flex-shrink:0;background:var(--surface-card);border-right:1px solid var(--border-subtle);display:flex;flex-direction:column;padding:20px 14px 18px;gap:18px">
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:14px;display:flex;flex-direction:column;align-items:flex-start;gap:9px">
+<img src="../../assets/logo/team-norway-golf.png" alt="Team Norway Golf" style="height:46px;width:auto;display:block">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">NGF · JUNIORLANDSLAG</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:2px;flex:1;min-height:0;overflow:hidden">
+<sc-for list="{{ meny }}" as="m" hint-placeholder-count="10">
+<sc-if value="{{ m.isHeading }}" hint-placeholder-val="{{ false }}">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);padding:14px 12px 6px">{{ m.label }}</div>
+</sc-if>
+<sc-if value="{{ m.isItem }}" hint-placeholder-val="{{ true }}">
+<div ref="{{ m.ref }}" style="height:40px;border-radius:var(--radius-xs);padding:0 10px;display:flex;align-items:center;gap:10px">
+<span ref="{{ m.markRef }}" style="width:3px;height:18px;border-radius:var(--radius-full);flex-shrink:0"></span>
+<span style="font-size:var(--text-sm);font-weight:var(--weight-medium)">{{ m.label }}</span>
+</div>
+</sc-if>
+</sc-for>
+</div>
+</div>
+
+<div style="flex:1;min-width:0;display:flex;flex-direction:column">
+<div style="height:64px;flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);display:flex;align-items:center;padding:0 28px;gap:16px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">TEAM NORWAY</span>
+<span style="color:var(--ink-300)">/</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">ADMINISTRASJON</span>
+<span style="color:var(--ink-300)">/</span>
+<span style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Inviter spiller</span>
+<div style="flex:1"></div>
+<div style="display:flex;align-items:center;gap:8px;padding:6px 12px;border-radius:var(--radius-full);background:var(--ink-50);border:1px solid var(--border-subtle)">
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary)">REGISTRERING SKJER I PLAYERHQ</span>
+</div>
+</div>
+
+<div style="flex:1;min-height:0;overflow:hidden;display:flex">
+
+<div style="width:400px;flex-shrink:0;border-right:1px solid var(--border-subtle);background:var(--surface-card);padding:26px 24px;display:flex;flex-direction:column;gap:18px;overflow:hidden">
+<div style="display:flex;flex-direction:column;gap:4px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">NY INVITASJON</span>
+<span style="font-size:var(--text-h3);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading)">Én person, én gruppe</span>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:8px">
+<label style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">KANAL</label>
+<div style="display:flex;gap:8px">
+<sc-for list="{{ kanaler }}" as="k" hint-placeholder-count="2">
+<div role="button" onClick="{{ k.onClick }}" ref="{{ k.ref }}" style="flex:1;min-height:44px;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:var(--weight-semibold)">{{ k.label }}</div>
+</sc-for>
+</div>
+<input value="{{ f.mottaker }}" onChange="{{ onMottaker }}" placeholder="{{ mottakerHint }}" style="height:48px;border:1px solid var(--border-default);border-radius:var(--radius-sm);padding:0 14px;font-family:var(--font-mono);font-size:var(--text-base);color:var(--ink-900);background:var(--white);outline:none;width:100%;box-sizing:border-box">
+<span style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">{{ kanalNote }}</span>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:8px">
+<label style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">GRUPPE</label>
+<sc-for list="{{ grupper }}" as="g" hint-placeholder-count="3">
+<div role="button" onClick="{{ g.onClick }}" ref="{{ g.ref }}" style="min-height:52px;border-radius:var(--radius-sm);padding:0 14px;display:flex;align-items:center;gap:12px">
+<span ref="{{ g.markRef }}" style="width:8px;height:24px;border-radius:3px;flex-shrink:0"></span>
+<span style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ g.navn }}</span>
+<div style="flex:1"></div>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);flex-shrink:0">{{ g.meta }}</span>
+</div>
+</sc-for>
+<span style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Én gruppe per invitasjon. Flere grupper gis etterpå i <strong>Trenere og tilgang</strong> — samme regel som for trenere: tilgangen bor på gruppen.</span>
+</div>
+
+<div style="display:grid;grid-template-columns:minmax(0,1fr) 150px;gap:12px">
+<div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+<label style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">AVSENDER</label>
+<div style="height:48px;border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:0 14px;background:var(--ink-50);display:flex;align-items:center;gap:10px">
+<span style="width:26px;height:26px;border-radius:var(--radius-full);background:var(--navy-100);color:var(--navy-800);font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);display:flex;align-items:center;justify-content:center;flex-shrink:0">AK</span>
+<span style="font-size:var(--text-sm);font-weight:var(--weight-medium);color:var(--navy-900);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Anders K. — eksempel</span>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<label style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">UTLØPER</label>
+<input value="{{ f.utloper }}" onChange="{{ onUtloper }}" placeholder="dd.mm.åååå" style="height:48px;border:1px solid var(--border-default);border-radius:var(--radius-sm);padding:0 14px;font-family:var(--font-mono);font-size:var(--text-base);color:var(--ink-900);background:var(--white);outline:none;width:100%;box-sizing:border-box">
+</div>
+</div>
+<span style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Avsenderen er den som står i invitasjonen og den som får svaret. Den kan ikke settes til «Team Norway» — en invitasjon uten navngitt menneske blir behandlet som spam av foresatte.</span>
+
+<div style="flex:1;min-height:0"></div>
+
+<div role="button" ref="{{ sendRef }}" style="min-height:48px;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;font-size:var(--text-base);font-weight:var(--weight-semibold)">Send invitasjon</div>
+<span ref="{{ sendHintRef }}" style="font-size:var(--text-xs);line-height:var(--leading-normal);text-wrap:pretty">{{ sendHint }}</span>
+</div>
+
+<div style="flex:1;min-width:0;padding:26px 28px;display:flex;flex-direction:column;gap:18px;overflow:hidden">
+<div style="display:flex;align-items:flex-end;gap:20px;flex-wrap:wrap">
+<div style="min-width:0">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">ADMINISTRASJON · INVITASJONER</div>
+<h2 style="font-size:var(--text-h2);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:6px 0 0">Sendt de siste 30 dagene</h2>
+</div>
+<div style="flex:1"></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<sc-for list="{{ filtre }}" as="x" hint-placeholder-count="5">
+<div role="button" onClick="{{ x.onClick }}" ref="{{ x.ref }}" style="min-height:44px;padding:0 16px;border-radius:var(--radius-full);display:flex;align-items:center;gap:8px;font-size:var(--text-sm);font-weight:var(--weight-semibold)">{{ x.label }}<span style="font-family:var(--font-mono);font-size:var(--text-xs)">{{ x.antall }}</span></div>
+</sc-for>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px">
+<sc-for list="{{ trakt }}" as="t" hint-placeholder-count="4">
+<div ref="{{ t.ref }}" style="border-radius:var(--radius-md);padding:16px;display:flex;flex-direction:column;gap:6px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">{{ t.label }}</span>
+<span ref="{{ t.tallRef }}" style="font-family:var(--font-mono);font-size:var(--text-h1);font-weight:var(--weight-bold);line-height:1">{{ t.antall }}</span>
+<span style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">{{ t.note }}</span>
+</div>
+</sc-for>
+</div>
+
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);display:flex;flex-direction:column;overflow:hidden;flex:1;min-height:0">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) 132px 82px 86px 152px;gap:0 14px;padding:10px 20px;border-bottom:1px solid var(--border-subtle);background:var(--ink-50)">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MOTTAKER</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">GRUPPE</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">SENDT</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">UTLØPER</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary);text-align:right">STATUS</span>
+</div>
+<div style="overflow:hidden">
+<sc-for list="{{ rader }}" as="r" hint-placeholder-count="8">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) 132px 82px 86px 152px;gap:0 14px;padding:13px 20px;border-bottom:1px solid var(--border-subtle);align-items:center;min-height:56px">
+<div style="min-width:0;display:flex;align-items:center;gap:10px">
+<span ref="{{ r.kanalRef }}" style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;padding:3px 7px;border-radius:var(--radius-xs);flex-shrink:0">{{ r.kanal }}</span>
+<div style="min-width:0">
+<div style="font-family:var(--font-mono);font-size:var(--text-sm);color:var(--navy-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.mottaker }}</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);margin-top:1px">FRA {{ r.avsender }}</div>
+</div>
+</div>
+<span style="font-size:var(--text-xs);color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.gruppe }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary)">{{ r.sendt }}</span>
+<span ref="{{ r.utloperRef }}" style="font-family:var(--font-mono);font-size:var(--text-xs)">{{ r.utloper }}</span>
+<div style="justify-self:end;display:flex;align-items:center;gap:8px">
+<span ref="{{ r.statusRef }}" style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;padding:4px 8px;border-radius:var(--radius-xs);font-weight:var(--weight-semibold)">{{ r.status }}</span>
+<span role="button" ref="{{ r.handlingRef }}" style="font-size:var(--text-xs);font-weight:var(--weight-semibold);color:var(--navy-600);white-space:nowrap">{{ r.handling }}</span>
+</div>
+</div>
+</sc-for>
+</div>
+<div style="padding:12px 20px;border-top:1px solid var(--border-subtle);background:var(--ink-50);display:flex;align-items:center;gap:10px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TALT 08.09.2026 · INVITASJONSLOGG V1 · AK</span>
+<div style="flex:1"></div>
+<span style="font-size:var(--text-xs);color:var(--text-secondary)"><strong>Fullført</strong> betyr at PlayerHQ har opprettet kontoen. Team Norway ser statusen, ikke registreringsskjemaet.</span>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:20px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MOBIL 390 · SPORING, TOM, LASTER, FEIL</div>
+<div style="display:flex;gap:24px;flex-wrap:wrap">
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">SPORING</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.41</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 14px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">ADMINISTRASJON</div>
+<div style="font-size:var(--text-h3);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading);margin-top:2px">Invitasjoner</div>
+</div>
+<div style="flex-shrink:0;display:flex;gap:8px;padding:12px 16px;overflow:hidden">
+<div style="min-height:44px;padding:0 16px;border-radius:var(--radius-full);background:var(--navy-900);color:var(--white);display:flex;align-items:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);flex-shrink:0">Alle 8</div>
+<div style="min-height:44px;padding:0 16px;border-radius:var(--radius-full);border:1px solid var(--border-default);color:var(--text-secondary);display:flex;align-items:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);flex-shrink:0">Utløper snart 2</div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:0 16px 16px;display:flex;flex-direction:column;gap:10px">
+<sc-for list="{{ mobilRader }}" as="r" hint-placeholder-count="5">
+<div style="background:var(--surface-card);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:14px;display:flex;flex-direction:column;gap:9px">
+<div style="display:flex;align-items:center;gap:8px">
+<span ref="{{ r.kanalRef }}" style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;padding:3px 7px;border-radius:var(--radius-xs);flex-shrink:0">{{ r.kanal }}</span>
+<div style="flex:1"></div>
+<span ref="{{ r.statusRef }}" style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;padding:4px 8px;border-radius:var(--radius-xs);font-weight:var(--weight-semibold);flex-shrink:0">{{ r.status }}</span>
+</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-sm);color:var(--navy-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.mottaker }}</div>
+<div style="display:flex;align-items:center;gap:10px">
+<span style="font-size:var(--text-xs);color:var(--text-secondary);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.gruppe }}</span>
+<div style="flex:1"></div>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);flex-shrink:0">UTLØPER {{ r.utloper }}</span>
+</div>
+</div>
+</sc-for>
+<div style="flex:1;min-height:0"></div>
+<div role="button" style="min-height:48px;border-radius:var(--radius-full);background:var(--navy-900);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:var(--text-base);font-weight:var(--weight-semibold)">Ny invitasjon</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">TOM</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.41</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 14px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">ADMINISTRASJON</div>
+<div style="font-size:var(--text-h3);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading);margin-top:2px">Invitasjoner</div>
+</div>
+<div style="flex:1;min-height:0;padding:16px;display:flex;flex-direction:column;gap:14px;justify-content:center">
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:22px;display:flex;flex-direction:column;gap:10px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">INGEN INVITASJONER UTE</span>
+<span style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Alle inviterte har fullført registreringen i PlayerHQ. Ingenting venter på svar.</span>
+<span style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Fullførte invitasjoner ligger i loggen i 12 måneder, også når kontoen er opprettet.</span>
+<div role="button" style="min-height:44px;margin-top:4px;border-radius:var(--radius-full);background:var(--navy-900);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:var(--weight-semibold)">Inviter spiller</div>
+</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">LASTER</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.41</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 14px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">ADMINISTRASJON</div>
+<div style="font-size:var(--text-h3);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading);margin-top:2px">Invitasjoner</div>
+</div>
+<div style="flex:1;min-height:0;padding:16px;display:flex;flex-direction:column;gap:10px">
+<sc-for list="{{ skjelett }}" as="s" hint-placeholder-count="5">
+<div style="background:var(--surface-card);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:14px;display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;gap:8px;align-items:center">
+<div style="width:52px;height:16px;border-radius:var(--radius-xs);background:var(--surface-sunken)"></div>
+<div style="flex:1"></div>
+<div style="width:64px;height:18px;border-radius:var(--radius-xs);background:var(--surface-sunken)"></div>
+</div>
+<div ref="{{ s.wRef }}" style="height:13px;border-radius:var(--radius-full);background:var(--surface-sunken)"></div>
+</div>
+</sc-for>
+<div style="flex:1;min-height:0"></div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary);text-align:center">HENTER STATUS FRA PLAYERHQ</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">FEIL · INVITASJONEN KOM IKKE FREM</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.41</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 14px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">ADMINISTRASJON · INVITASJON</div>
+<div style="font-size:var(--text-h3);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading);margin-top:2px">Ikke levert</div>
+</div>
+<div style="flex-shrink:0;background:var(--status-red-bg);padding:12px 16px;display:flex;align-items:flex-start;gap:10px">
+<span style="width:7px;height:7px;border-radius:var(--radius-full);background:var(--status-red);flex-shrink:0;margin-top:5px"></span>
+<span style="font-size:var(--text-xs);font-weight:var(--weight-semibold);color:var(--status-red-text);line-height:var(--leading-normal);text-wrap:pretty">E-posten til emil.haug@eksempel.no ble avvist av mottakerens server 06.09 kl. 14.22. Invitasjonen står som <strong>ikke levert</strong>, ikke som sendt.</span>
+</div>
+<div style="flex:1;min-height:0;padding:16px;display:flex;flex-direction:column;gap:14px">
+<div style="background:var(--surface-card);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:14px;display:flex;flex-direction:column;gap:8px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">SERVERENS SVAR</span>
+<div style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-primary);line-height:var(--leading-normal)">550 5.1.1 — adressen finnes ikke</div>
+</div>
+<span style="font-size:var(--text-sm);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Rett adressen, eller send på SMS i stedet. Statusen står som ikke levert til noe er sendt på nytt — den blir aldri stille «sendt».</span>
+<div style="flex:1;min-height:0"></div>
+<div role="button" style="min-height:48px;border-radius:var(--radius-full);background:var(--navy-900);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:var(--text-base);font-weight:var(--weight-semibold)">Rett adressen og send på nytt</div>
+<div role="button" style="min-height:48px;border-radius:var(--radius-full);border:1px solid var(--border-default);display:flex;align-items:center;justify-content:center;font-size:var(--text-base);font-weight:var(--weight-semibold);color:var(--navy-900)">Send på SMS i stedet</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div style="max-width:760px;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:28px;display:flex;flex-direction:column;gap:16px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DESIGNNOTAT</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Beslutningen skjermen løser</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Hvordan en spiller kommer inn i en gruppe. TN-02s dekningsgrad «4 av 11» er en konsekvens av invitasjoner som ikke er fullført — uten denne skjermen er det umulig å se hvem som mangler og hvorfor.</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Skjermen slutter ved PlayerHQ</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Registreringen — konto, passord, samtykke fra foresatt — skjer i PlayerHQ, som er Train-locks fasit. Denne skjermen sender invitasjonen og viser status tilbake: <strong>sendt</strong>, <strong>åpnet</strong>, <strong>fullført</strong>, <strong>utløpt</strong>. Den fjerde statusen <strong>ikke levert</strong> er lagt til fordi en avvist e-post ellers ville stått som sendt i ukevis.</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Tall som er eksempler</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Alle navn, adresser, telefonnumre og datoer er skjermtekst merket «eksempel». Statusnavnene, 14-dagers utløp og at avsenderen må være et navngitt menneske er derimot beslutninger i systemet.</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Usikkert</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty"><strong>ANTAKELSE:</strong> at «åpnet» kan måles. På e-post krever det sporingspiksel, som er tvilsomt overfor mindreårige og deres foresatte; på SMS finnes det ikke i det hele tatt. Alternativet er tre statuser i stedet for fire — sendt, fullført, utløpt — og at «åpnet» bare settes når lenken faktisk er klikket. Jeg har tegnet lenkeklikk som kilde til «åpnet», ikke sporingspiksel. Spørsmål til Anders om hvem invitasjonen skal gå til når spilleren er under 15: spilleren, foresatt, eller begge.</div>
+</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1536,&quot;height&quot;:1120}}">
+const setStyle = o => el => { if (el) Object.assign(el.style, o); };
+
+const STATUS_TONE = {
+  'SENDT': { background: 'var(--navy-50)', color: 'var(--navy-700)' },
+  'ÅPNET': { background: 'var(--status-amber-bg)', color: 'var(--status-amber-text)' },
+  'FULLFØRT': { background: 'var(--status-green-bg)', color: 'var(--status-green-text)' },
+  'UTLØPT': { background: 'var(--ink-100)', color: 'var(--text-secondary)' },
+  'IKKE LEVERT': { background: 'var(--status-red-bg)', color: 'var(--status-red-text)' }
+};
+
+const KANAL_TONE = {
+  'E-POST': { background: 'var(--ink-100)', color: 'var(--text-secondary)' },
+  'SMS': { background: 'var(--navy-100)', color: 'var(--navy-800)' }
+};
+
+const GRUPPER = [
+  { navn: 'Team Norway Junior — eksempel', meta: '14 UTØVERE' },
+  { navn: 'Team Norway Elite — eksempel', meta: '9 UTØVERE' },
+  { navn: 'Collegegruppen — eksempel', meta: '6 UTØVERE' }
+];
+
+const RADER = [
+  { mottaker: 'ingrid.bakke@eksempel.no', kanal: 'E-POST', gruppe: 'Team Norway Junior', sendt: '02.09', utloper: '16.09', status: 'FULLFØRT', avsender: 'AK' },
+  { mottaker: 'jonas.vik@eksempel.no', kanal: 'E-POST', gruppe: 'Team Norway Junior', sendt: '02.09', utloper: '16.09', status: 'ÅPNET', avsender: 'AK' },
+  { mottaker: '+47 900 00 001', kanal: 'SMS', gruppe: 'Collegegruppen', sendt: '04.09', utloper: '18.09', status: 'SENDT', avsender: 'MB' },
+  { mottaker: 'sara.lund@eksempel.no', kanal: 'E-POST', gruppe: 'Team Norway Elite', sendt: '28.08', utloper: '11.09', status: 'ÅPNET', avsender: 'MB' },
+  { mottaker: 'emil.haug@eksempel.no', kanal: 'E-POST', gruppe: 'Team Norway Junior', sendt: '06.09', utloper: '20.09', status: 'IKKE LEVERT', avsender: 'AK' },
+  { mottaker: '+47 900 00 002', kanal: 'SMS', gruppe: 'Collegegruppen', sendt: '20.08', utloper: '03.09', status: 'UTLØPT', avsender: 'MB' },
+  { mottaker: 'nora.dahl@eksempel.no', kanal: 'E-POST', gruppe: 'Team Norway Elite', sendt: '25.08', utloper: '08.09', status: 'SENDT', avsender: 'AK' },
+  { mottaker: 'lars.moen@eksempel.no', kanal: 'E-POST', gruppe: 'Team Norway Junior', sendt: '18.08', utloper: '01.09', status: 'UTLØPT', avsender: 'AK' }
+];
+
+class Component extends DCLogic {
+  state = { kanal: 'E-post', mottaker: '', gruppe: 'Team Norway Junior — eksempel', utloper: '22.09.2026', filter: 'Alle' };
+
+  meny() {
+    const aktiv = 'Inviter spiller';
+    return [
+      { isHeading: true, label: 'Daglig' },
+      { isItem: true, label: 'Oversikt' },
+      { isItem: true, label: 'Fellestesting' },
+      { isHeading: true, label: 'Kommunikasjon' },
+      { isItem: true, label: 'Gruppeposter' },
+      { isHeading: true, label: 'Administrasjon' },
+      { isItem: true, label: 'Trenere og tilgang' },
+      { isItem: true, label: 'Inviter spiller' },
+      { isItem: true, label: 'Trenerkatalog' }
+    ].map(m => ({
+      ...m,
+      ref: setStyle({
+        background: m.label === aktiv ? 'var(--navy-100)' : 'transparent',
+        color: m.label === aktiv ? 'var(--navy-900)' : 'var(--text-secondary)'
+      }),
+      markRef: setStyle({ background: m.label === aktiv ? 'var(--red-600)' : 'transparent' })
+    }));
+  }
+
+  renderVals() {
+    const s = this.state;
+    const epost = s.kanal === 'E-post';
+    const klar = s.mottaker.trim().length > 3;
+    const antall = st => RADER.filter(r => r.status === st).length;
+    const synlige = s.filter === 'Alle' ? RADER : RADER.filter(r => r.status === s.filter.toUpperCase());
+
+    return {
+      meny: this.meny(),
+      f: s,
+      kanaler: ['E-post', 'SMS'].map(label => ({
+        label,
+        onClick: () => this.setState({ kanal: label }),
+        ref: setStyle(label === s.kanal
+          ? { background: 'var(--navy-900)', color: 'var(--white)' }
+          : { background: 'var(--white)', border: '1px solid var(--border-default)', color: 'var(--text-secondary)' })
+      })),
+      mottakerHint: epost ? 'navn@eksempel.no' : '+47 000 00 000',
+      kanalNote: epost
+        ? 'E-post går til spilleren, med foresatt i kopi når spilleren er under 18.'
+        : 'SMS har ingen kopimottaker. Er spilleren under 18, må nummeret være foresattes.',
+      onMottaker: e => this.setState({ mottaker: e.target.value }),
+      onUtloper: e => this.setState({ utloper: e.target.value }),
+      grupper: GRUPPER.map(g => ({
+        navn: g.navn.replace(' — eksempel', ''),
+        meta: g.meta,
+        onClick: () => this.setState({ gruppe: g.navn }),
+        ref: setStyle(g.navn === s.gruppe
+          ? { background: 'var(--navy-50)', border: '1px solid var(--navy-100)' }
+          : { background: 'transparent', border: '1px solid var(--border-subtle)' }),
+        markRef: setStyle({ background: g.navn === s.gruppe ? 'var(--red-600)' : 'var(--ink-200)' })
+      })),
+      sendRef: setStyle(klar
+        ? { background: 'var(--navy-900)', color: 'var(--white)' }
+        : { background: 'var(--navy-900)', color: 'var(--white)', opacity: '.45' }),
+      sendHintRef: setStyle({ color: klar ? 'var(--text-secondary)' : 'var(--status-amber-text)' }),
+      sendHint: klar
+        ? 'Invitasjonen sendes fra Anders K. og utløper ' + s.utloper + '. Statusen kommer tilbake hit.'
+        : 'Fyll inn ' + (epost ? 'e-postadresse' : 'telefonnummer') + ' før invitasjonen kan sendes.',
+      filtre: [
+        { label: 'Alle', antall: String(RADER.length) },
+        { label: 'Sendt', antall: String(antall('SENDT')) },
+        { label: 'Åpnet', antall: String(antall('ÅPNET')) },
+        { label: 'Fullført', antall: String(antall('FULLFØRT')) },
+        { label: 'Utløpt', antall: String(antall('UTLØPT')) }
+      ].map(x => ({
+        ...x,
+        onClick: () => this.setState({ filter: x.label }),
+        ref: setStyle(x.label === s.filter
+          ? { background: 'var(--navy-900)', color: 'var(--white)' }
+          : { background: 'transparent', border: '1px solid var(--border-default)', color: 'var(--text-secondary)' })
+      })),
+      trakt: [
+        { label: 'SENDT', antall: String(antall('SENDT')), note: 'Levert, ikke åpnet.', tone: 'navy' },
+        { label: 'ÅPNET', antall: String(antall('ÅPNET')), note: 'Lenken er klikket, registreringen ikke fullført.', tone: 'amber' },
+        { label: 'FULLFØRT', antall: String(antall('FULLFØRT')), note: 'PlayerHQ har opprettet kontoen.', tone: 'green' },
+        { label: 'UTLØPT', antall: String(antall('UTLØPT')), note: 'Over 14 dager. Må sendes på nytt.', tone: 'grey' }
+      ].map(t => ({
+        ...t,
+        ref: setStyle({
+          navy: { background: 'var(--navy-50)', border: '1px solid var(--navy-100)' },
+          amber: { background: 'var(--status-amber-bg)', border: '1px solid transparent' },
+          green: { background: 'var(--status-green-bg)', border: '1px solid transparent' },
+          grey: { background: 'var(--ink-50)', border: '1px solid var(--border-subtle)' }
+        }[t.tone]),
+        tallRef: setStyle({
+          color: { navy: 'var(--navy-900)', amber: 'var(--status-amber-text)', green: 'var(--status-green-text)', grey: 'var(--text-secondary)' }[t.tone]
+        })
+      })),
+      rader: synlige.map(r => ({
+        ...r,
+        kanalRef: setStyle(KANAL_TONE[r.kanal]),
+        statusRef: setStyle(STATUS_TONE[r.status]),
+        utloperRef: setStyle({
+          color: (r.status === 'UTLØPT' || r.status === 'IKKE LEVERT') ? 'var(--status-amber-text)' : 'var(--text-primary)',
+          fontWeight: (r.status === 'UTLØPT' || r.status === 'IKKE LEVERT') ? 'var(--weight-semibold)' : 'var(--weight-regular)'
+        }),
+        handling: r.status === 'FULLFØRT' ? '' : (r.status === 'IKKE LEVERT' ? 'Rett' : 'Send igjen'),
+        handlingRef: setStyle({ display: r.status === 'FULLFØRT' ? 'none' : 'inline' })
+      })),
+      mobilRader: RADER.slice(0, 5).map(r => ({
+        ...r,
+        kanalRef: setStyle(KANAL_TONE[r.kanal]),
+        statusRef: setStyle(STATUS_TONE[r.status])
+      })),
+      skjelett: ['82%', '68%', '90%', '74%', '86%'].map(w => ({ wRef: setStyle({ width: w }) }))
+    };
+  }
+}
+</script>
+</body>
+</html>

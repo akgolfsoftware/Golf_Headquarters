@@ -7,7 +7,7 @@
 </head>
 <body>
 <x-dc>
-<!-- @template name="TN-01 Organisasjonsskall" description="Skallet rundt Team Norways flate: logo på hvit plate, navigasjonen i gruppene Daglig · Uttak · Skoler · Data, hvilken gruppe brukeren står i, organisasjonsbytte og avgrenset tilgang. Mac 1440 og mobil 390." -->
+<!-- @template name="TN-01 Organisasjonsskall" description="Skallet rundt Team Norways flate: logo på hvit plate, navigasjonen i de seks gruppene Daglig · Uttak · Skoler · Kommunikasjon · Data · Administrasjon, hvilken gruppe brukeren står i, organisasjonsbytte og avgrenset tilgang. Mac 1440 og mobil 390 med tom, laster og feil." -->
 <helmet><script src="./ds-base.js"></script></helmet>
 <div style="padding:48px;display:flex;flex-direction:column;gap:56px;background:var(--surface-page);min-height:100vh;font-family:var(--font-body)">
 
@@ -19,18 +19,15 @@
 
 <div style="display:flex;flex-direction:column;gap:20px">
 <div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MAC 1440 · SKALL MED ÅPEN ORGANISASJONSBYTTER</div>
-<div style="width:1440px;height:900px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;font-variant-numeric:tabular-nums">
+<div style="width:1440px;height:1024px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;font-variant-numeric:tabular-nums">
 
 <div style="width:252px;flex-shrink:0;background:var(--surface-card);border-right:1px solid var(--border-subtle);display:flex;flex-direction:column;padding:20px 14px 18px;gap:20px">
-<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:12px 14px;display:flex;align-items:center;gap:12px">
-<span style="width:10px;height:26px;border-radius:3px;background:var(--red-600);flex-shrink:0"></span>
-<div style="min-width:0">
-<div style="font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-normal)">Team Norway</div>
-<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);margin-top:2px">NGF · JUNIORLANDSLAG</div>
-</div>
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:14px;display:flex;flex-direction:column;align-items:flex-start;gap:9px">
+<img src="../../assets/logo/team-norway-golf.png" alt="Team Norway Golf" style="height:46px;width:auto;display:block">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">NGF · JUNIORLANDSLAG</div>
 </div>
 <div style="display:flex;flex-direction:column;gap:2px;flex:1;min-height:0;overflow:hidden">
-<sc-for list="{{ meny }}" as="m" hint-placeholder-count="13">
+<sc-for list="{{ meny }}" as="m" hint-placeholder-count="21">
 <sc-if value="{{ m.isHeading }}" hint-placeholder-val="{{ false }}">
 <div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);padding:16px 12px 6px">{{ m.label }}</div>
 </sc-if>
@@ -46,7 +43,7 @@
 </div>
 <div style="border-top:1px solid var(--border-subtle);padding-top:14px;display:flex;align-items:center;gap:10px">
 <span style="width:32px;height:32px;border-radius:var(--radius-full);background:var(--navy-100);color:var(--navy-800);font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);display:flex;align-items:center;justify-content:center;flex-shrink:0">MB</span>
-<div style="min-width:0;flex:1"><div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Marte Berg</div><div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary);margin-top:1px">TRENER · 2 GRUPPER</div></div>
+<div style="min-width:0;flex:1"><div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Marte Berg — eksempel</div><div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary);margin-top:1px">TRENER · 2 GRUPPER</div></div>
 <span style="font-size:14px;color:var(--text-tertiary)">⌃</span>
 </div>
 </div>
@@ -63,7 +60,7 @@
 <span style="width:7px;height:7px;border-radius:var(--radius-full);background:var(--status-amber);flex-shrink:0"></span>
 <span style="font-size:var(--text-xs);font-weight:var(--weight-semibold);color:var(--status-amber-text)">Avgrenset tilgang · du ser 2 av 6 grupper</span>
 </div>
-<div role="button" style="height:40px;padding:0 16px;border-radius:var(--radius-full);border:1px solid var(--border-default);display:flex;align-items:center;gap:8px;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Bytt organisasjon<span style="color:var(--text-tertiary)">⌄</span></div>
+<div role="button" style="min-height:44px;padding:0 16px;border-radius:var(--radius-full);border:1px solid var(--border-default);display:flex;align-items:center;gap:8px;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Bytt organisasjon<span style="color:var(--text-tertiary)">⌄</span></div>
 </div>
 
 <div style="flex:1;min-height:0;display:flex">
@@ -136,11 +133,9 @@
 <div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.41</span></div>
 <div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 14px;display:flex;align-items:center;gap:12px">
 <div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:8px 10px;display:flex;align-items:center;gap:9px;flex:1;min-width:0">
-<span style="width:8px;height:20px;border-radius:3px;background:var(--red-600);flex-shrink:0"></span>
-<div style="min-width:0">
-<div style="font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--navy-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Team Norway</div>
-<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">JUNIOR · 2 GRUPPER</div>
-</div>
+<img src="../../assets/logo/team-norway-golf.png" alt="Team Norway Golf" style="height:30px;width:auto;display:block;flex-shrink:0">
+<div style="width:1px;height:22px;background:var(--border-subtle);flex-shrink:0"></div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">JUNIOR · 2 GRUPPER</div>
 <div style="flex:1"></div>
 <span style="color:var(--text-tertiary);flex-shrink:0">⌄</span>
 </div>
@@ -179,7 +174,7 @@
 </div>
 
 <div style="display:flex;flex-direction:column;gap:10px">
-<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">MENY — ALLE FIRE GRUPPER</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">MENY — SEKS GRUPPER, MOBILT UTSNITT</div>
 <div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
 <div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.42</span></div>
 <div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 14px;display:flex;align-items:center;justify-content:space-between">
@@ -187,12 +182,12 @@
 <div role="button" style="width:44px;height:44px;margin-right:-10px;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--navy-600)">×</div>
 </div>
 <div style="flex:1;min-height:0;overflow:hidden;padding:8px 12px;display:flex;flex-direction:column;gap:2px">
-<sc-for list="{{ menyMobil }}" as="m" hint-placeholder-count="13">
+<sc-for list="{{ menyMobil }}" as="m" hint-placeholder-count="14">
 <sc-if value="{{ m.isHeading }}" hint-placeholder-val="{{ false }}">
-<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);padding:12px 10px 4px">{{ m.label }}</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);padding:8px 10px 4px">{{ m.label }}</div>
 </sc-if>
 <sc-if value="{{ m.isItem }}" hint-placeholder-val="{{ true }}">
-<div ref="{{ m.ref }}" style="min-height:48px;border-radius:var(--radius-sm);padding:0 12px;display:flex;align-items:center;gap:10px">
+<div ref="{{ m.ref }}" style="min-height:46px;border-radius:var(--radius-sm);padding:0 12px;display:flex;align-items:center;gap:10px">
 <span ref="{{ m.markRef }}" style="width:3px;height:20px;border-radius:var(--radius-full);flex-shrink:0"></span>
 <span style="font-size:var(--text-base);font-weight:var(--weight-medium)">{{ m.label }}</span>
 <div style="flex:1"></div>
@@ -203,8 +198,8 @@
 </div>
 <div style="flex-shrink:0;border-top:1px solid var(--border-subtle);background:var(--surface-card);padding:14px 16px;display:flex;align-items:center;gap:10px">
 <span style="width:36px;height:36px;border-radius:var(--radius-full);background:var(--navy-100);color:var(--navy-800);font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-semibold);display:flex;align-items:center;justify-content:center;flex-shrink:0">MB</span>
-<div style="flex:1;min-width:0"><div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Marte Berg</div><div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TRENER · 2 GRUPPER</div></div>
-<span role="button" style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-600);flex-shrink:0">Bytt</span>
+<div style="flex:1;min-width:0"><div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Marte Berg — eksempel</div><div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TRENER · 2 GRUPPER</div></div>
+<span role="button" style="min-height:44px;padding:0 12px;display:flex;align-items:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-600);flex-shrink:0">Bytt</span>
 </div>
 </div>
 </div>
@@ -239,6 +234,119 @@
 </div>
 </div>
 
+<div style="display:flex;flex-direction:column;gap:20px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MOBIL 390 · TOM, LASTER, FEIL</div>
+<div style="display:flex;gap:24px;flex-wrap:wrap">
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">TOM · INGEN GRUPPER TILDELT</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.41</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 14px;display:flex;align-items:center;gap:12px">
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:8px 10px;display:flex;align-items:center;gap:9px;flex:1;min-width:0">
+<img src="../../assets/logo/team-norway-golf.png" alt="Team Norway Golf" style="height:30px;width:auto;display:block;flex-shrink:0">
+<div style="width:1px;height:22px;background:var(--border-subtle);flex-shrink:0"></div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);white-space:nowrap">INGEN GRUPPER</div>
+</div>
+</div>
+<div style="flex-shrink:0;background:var(--status-amber-bg);padding:10px 16px;display:flex;align-items:flex-start;gap:10px">
+<span style="width:7px;height:7px;border-radius:var(--radius-full);background:var(--status-amber);flex-shrink:0;margin-top:5px"></span>
+<span style="font-size:var(--text-xs);font-weight:var(--weight-semibold);color:var(--status-amber-text);line-height:var(--leading-normal);text-wrap:pretty">Ingen grupper tildelt · du ser 0 av 6 grupper</span>
+</div>
+<div style="flex:1;min-height:0;padding:16px;display:flex;flex-direction:column;gap:14px;justify-content:center">
+<div style="background:var(--surface-card);border:1px solid var(--status-amber);border-radius:var(--radius-lg);padding:22px;display:flex;flex-direction:column;gap:10px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--status-amber-text);font-weight:var(--weight-semibold)">INGEN GRUPPER TILDELT</span>
+<span style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Du er logget inn i Team Norway, men rollen din er ikke knyttet til en gruppe ennå. Derfor er menyen tom — det finnes ingen utøvere, økter eller målinger du kan se.</span>
+<span style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Dette er ikke en feil, og ikke noe du kan rette selv. Rollen settes alltid per gruppe, av sportssjef, i <strong>Trenere og tilgang</strong>.</span>
+<div role="button" style="min-height:44px;margin-top:4px;border-radius:var(--radius-full);background:var(--navy-900);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:var(--weight-semibold)">Be om tilgang</div>
+<div role="button" style="min-height:44px;border-radius:var(--radius-full);border:1px solid var(--border-default);display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Bytt organisasjon</div>
+</div>
+</div>
+<div style="height:76px;flex-shrink:0;background:var(--surface-card);border-top:1px solid var(--border-subtle);display:flex;align-items:flex-start;padding:8px 8px 0">
+<sc-for list="{{ tabsTom }}" as="t" hint-placeholder-count="5">
+<div style="flex:1;min-width:0;height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;opacity:.4">
+<span style="width:22px;height:3px;border-radius:var(--radius-full);background:transparent"></span>
+<span style="font-size:var(--text-xs);font-weight:var(--weight-semibold);color:var(--text-secondary);white-space:nowrap">{{ t.label }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">LASTER · SKALLET FØR TILGANGEN ER LEST</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.41</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 14px;display:flex;align-items:center;gap:12px">
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:8px 10px;display:flex;align-items:center;gap:9px;flex:1;min-width:0">
+<img src="../../assets/logo/team-norway-golf.png" alt="Team Norway Golf" style="height:30px;width:auto;display:block;flex-shrink:0">
+<div style="width:1px;height:22px;background:var(--border-subtle);flex-shrink:0"></div>
+<div style="width:110px;height:9px;border-radius:var(--radius-full);background:var(--surface-sunken)"></div>
+</div>
+<div style="width:44px;height:44px;border-radius:var(--radius-sm);background:var(--surface-sunken);flex-shrink:0"></div>
+</div>
+<div style="flex-shrink:0;height:38px;background:var(--surface-sunken)"></div>
+<div style="flex:1;min-height:0;padding:16px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;flex-direction:column;gap:8px">
+<div style="width:120px;height:9px;border-radius:var(--radius-full);background:var(--surface-sunken)"></div>
+<div style="width:190px;height:24px;border-radius:var(--radius-xs);background:var(--surface-sunken)"></div>
+</div>
+<sc-for list="{{ skjelett }}" as="s" hint-placeholder-count="3">
+<div style="background:var(--surface-card);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:18px;display:flex;flex-direction:column;gap:10px">
+<div style="width:96px;height:9px;border-radius:var(--radius-full);background:var(--surface-sunken)"></div>
+<div ref="{{ s.wRef }}" style="height:14px;border-radius:var(--radius-full);background:var(--surface-sunken)"></div>
+<div style="width:150px;height:9px;border-radius:var(--radius-full);background:var(--surface-sunken)"></div>
+</div>
+</sc-for>
+<div style="flex:1;min-height:0"></div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary);text-align:center">LESER TILGANGEN DIN</div>
+</div>
+<div style="height:76px;flex-shrink:0;background:var(--surface-card);border-top:1px solid var(--border-subtle);display:flex;align-items:center;padding:0 8px;gap:8px">
+<sc-for list="{{ tabsTom }}" as="t" hint-placeholder-count="5">
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:7px">
+<div style="width:22px;height:3px;border-radius:var(--radius-full);background:transparent"></div>
+<div style="width:38px;height:9px;border-radius:var(--radius-full);background:var(--surface-sunken)"></div>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">FEIL · TILGANGEN KUNNE IKKE BEKREFTES</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.41</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 14px;display:flex;align-items:center;gap:12px">
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:8px 10px;display:flex;align-items:center;gap:9px;flex:1;min-width:0">
+<img src="../../assets/logo/team-norway-golf.png" alt="Team Norway Golf" style="height:30px;width:auto;display:block;flex-shrink:0">
+<div style="width:1px;height:22px;background:var(--border-subtle);flex-shrink:0"></div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);white-space:nowrap">SIST KJENTE UTSNITT</div>
+</div>
+</div>
+<div style="flex-shrink:0;background:var(--status-red-bg);padding:12px 16px;display:flex;align-items:flex-start;gap:10px">
+<span style="width:7px;height:7px;border-radius:var(--radius-full);background:var(--status-red);flex-shrink:0;margin-top:5px"></span>
+<span style="font-size:var(--text-xs);font-weight:var(--weight-semibold);color:var(--status-red-text);line-height:var(--leading-normal);text-wrap:pretty">Tilgangstjenesten svarte ikke 08.09 kl. 09.41. Du ser utsnittet fra forrige innlogging, 07.09 kl. 18.02. Ingen tilgang er utvidet.</span>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:16px;display:flex;flex-direction:column;gap:14px">
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:18px;display:flex;flex-direction:column;gap:12px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">SIST KJENTE UTSNITT · 07.09.2026</span>
+<sc-for list="{{ mineGrupper3 }}" as="g" hint-placeholder-count="2">
+<div style="border:1px solid var(--border-subtle);background:var(--ink-50);border-radius:var(--radius-sm);padding:12px 14px;display:flex;flex-direction:column;gap:3px">
+<span style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ g.navn }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">{{ g.meta }}</span>
+</div>
+</sc-for>
+</div>
+<span style="font-size:var(--text-sm);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Du kan lese, men ikke publisere eller endre tilgang, før tjenesten svarer. Publisering med et utsnitt som kan være utdatert er verre enn å vente.</span>
+<div style="flex:1;min-height:0"></div>
+<div role="button" style="min-height:48px;border-radius:var(--radius-full);background:var(--navy-900);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:var(--text-base);font-weight:var(--weight-semibold)">Forsøk på nytt</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
 <div style="max-width:760px;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:28px;display:flex;flex-direction:column;gap:16px">
 <div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DESIGNNOTAT</div>
 <div style="display:flex;flex-direction:column;gap:6px">
@@ -247,7 +355,7 @@
 </div>
 <div style="display:flex;flex-direction:column;gap:6px">
 <div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Tall som er eksempler</div>
-<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Alle. «2 av 6 grupper», medlemstall og navnet Marte Berg er skjermtekst, ikke data. Menyens 13 rader og gruppestrukturen Daglig · Uttak · Skoler · Data er derimot lest ut av CoachShell.</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Alle. «2 av 6 grupper», medlemstall og navnet Marte Berg — eksempel er skjermtekst, ikke data. Gruppestrukturen Daglig · Uttak · Skoler · Kommunikasjon · Data · Administrasjon er derimot lest ut av CoachShell, med tre rettelser: Turneringer flyttet fra Uttak til Data (07.09, TN-13), Kommunikasjon skilt ut som egen gruppe fordi repoets egne TN-ruter allerede setter den overskriften over Gruppeposter og Dokumenter, og <strong>Administrasjon</strong> lagt til som sjette gruppe 08.09 for Trenere og tilgang (TN-18), Inviter spiller (TN-19) og Trenerkatalog (TN-20). Collegegruppen (TN-15) og Månedsplan (TN-16) ligger under Daglig.</div>
 </div>
 <div style="display:flex;flex-direction:column;gap:6px">
 <div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Usikkert</div>
@@ -266,19 +374,30 @@ class Component extends DCLogic {
       { isHeading: true, label: 'Daglig' },
       { isItem: true, label: 'Oversikt', badge: '' },
       { isItem: true, label: 'Fellestesting', badge: '' },
-      { isItem: true, label: 'Treneroversikt', badge: '' },
+      { isItem: true, label: 'Samlingspunkt', badge: '1' },
+      { isItem: true, label: 'Collegegruppen', badge: '' },
+      { isItem: true, label: 'Månedsplan', badge: '2' },
       { isItem: true, label: 'Spillerutvikling', badge: '' },
       { isHeading: true, label: 'Uttak' },
       { isItem: true, label: 'Uttaksliste', badge: '2' },
       { isItem: true, label: 'Rangliste', badge: '' },
-      { isItem: true, label: 'Turneringer', badge: '' },
       { isHeading: true, label: 'Skoler' },
       { isItem: true, label: 'Skoleoversikt', badge: '5' },
+      { isHeading: true, label: 'Kommunikasjon' },
+      { isItem: true, label: 'Gruppeposter', badge: '3' },
+      { isItem: true, label: 'Poster til utøver', badge: '' },
+      { isItem: true, label: 'Dokumenter', badge: '2' },
+      { isItem: true, label: 'Samtykke', badge: '' },
       { isHeading: true, label: 'Data' },
       { isItem: true, label: 'Testbatteri', badge: '' },
+      { isItem: true, label: 'Turneringer', badge: '' },
       { isItem: true, label: 'Analyse', badge: '' },
       { isItem: true, label: 'DataGolf-terminal', badge: '' },
-      { isItem: true, label: 'Sannhetslag', badge: '' }
+      { isItem: true, label: 'Sannhetslag', badge: '' },
+      { isHeading: true, label: 'Administrasjon' },
+      { isItem: true, label: 'Trenere og tilgang', badge: '' },
+      { isItem: true, label: 'Inviter spiller', badge: '2' },
+      { isItem: true, label: 'Trenerkatalog', badge: '' }
     ].map(m => ({
       ...m,
       ref: setStyle({
@@ -293,16 +412,23 @@ class Component extends DCLogic {
       { isHeading: true, label: 'Daglig' },
       { isItem: true, label: 'Oversikt', badge: '' },
       { isItem: true, label: 'Fellestesting', badge: '' },
-      { isItem: true, label: 'Treneroversikt', badge: '' },
-      { isItem: true, label: 'Spillerutvikling', badge: '' },
+      { isItem: true, label: 'Samlingspunkt', badge: '1' },
+      { isItem: true, label: 'Collegegruppen', badge: '' },
+      { isItem: true, label: 'Månedsplan', badge: '2' },
       { isHeading: true, label: 'Uttak' },
       { isItem: true, label: 'Uttaksliste', badge: '2' },
       { isItem: true, label: 'Rangliste', badge: '' },
       { isHeading: true, label: 'Skoler' },
       { isItem: true, label: 'Skoleoversikt', badge: '5' },
+      { isHeading: true, label: 'Kommunikasjon' },
+      { isItem: true, label: 'Gruppeposter', badge: '3' },
+      { isItem: true, label: 'Dokumenter', badge: '2' },
       { isHeading: true, label: 'Data' },
       { isItem: true, label: 'Testbatteri', badge: '' },
-      { isItem: true, label: 'Analyse', badge: '' }
+      { isItem: true, label: 'Turneringer', badge: '' },
+      { isHeading: true, label: 'Administrasjon' },
+      { isItem: true, label: 'Trenere og tilgang', badge: '' },
+      { isItem: true, label: 'Inviter spiller', badge: '2' }
     ].map(m => ({
       ...m,
       ref: setStyle({
@@ -329,8 +455,8 @@ class Component extends DCLogic {
   }
   renderVals() {
     const grupper = [
-      { navn: 'Team Norway Junior', meta: '14 UTØVERE · 11 MED PROFIL' },
-      { navn: 'WANG Fredrikstad Vg2', meta: '12 UTØVERE · 8 MED PROFIL' }
+      { navn: 'Team Norway Junior — eksempel', meta: '14 UTØVERE · 11 MED PROFIL' },
+      { navn: 'WANG Fredrikstad Vg2 — eksempel', meta: '12 UTØVERE · 8 MED PROFIL' }
     ];
     return {
       meny: this.menySet('Oversikt'),
@@ -339,14 +465,17 @@ class Component extends DCLogic {
       organisasjoner2: this.orgs(),
       mineGrupper: grupper,
       mineGrupper2: grupper,
-      tabs: ['Oversikt', 'Testing', 'Uttak', 'Skoler', 'Mer'].map(label => ({
+      mineGrupper3: grupper,
+      tabsTom: ['Oversikt', 'Samling', 'Uttak', 'Poster', 'Mer'].map(label => ({ label })),
+      skjelett: ['82%', '68%', '90%'].map(w => ({ wRef: setStyle({ width: w }) })),
+      tabs: ['Oversikt', 'Samling', 'Uttak', 'Poster', 'Mer'].map(label => ({
         label,
         ref: setStyle({ color: label === 'Oversikt' ? 'var(--navy-900)' : 'var(--text-secondary)' }),
         barRef: setStyle({ background: label === 'Oversikt' ? 'var(--red-600)' : 'transparent' })
       })),
       skallregler: [
         { nr: '01', tittel: 'Hvilken organisasjon du står i', tekst: 'Logoen står på hvit plate øverst i skinnen, med undertittel som sier hvilket forbund flaten hører til.' },
-        { nr: '02', tittel: 'Hvilken gruppe i menyen du er inne i', tekst: 'Aktiv rad har rød markør og navy flate. Gruppeoverskriften over raden sier hvilken av de fire menygruppene du står i.' },
+        { nr: '02', tittel: 'Hvilken gruppe i menyen du er inne i', tekst: 'Aktiv rad har rød markør og navy flate. Gruppeoverskriften over raden sier hvilken av de fem menygruppene du står i.' },
         { nr: '03', tittel: 'Hvor stort utsnitt du ser', tekst: 'Stripen i toppen sier hvor mange grupper tilgangen din dekker av totalen. Den forsvinner først når tilgangen er full.' }
       ]
     };

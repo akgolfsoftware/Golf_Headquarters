@@ -72,6 +72,10 @@
         "message": "<Card> accent must be one of 'navy' | 'red'."
       },
       {
+        "selector": "JSXOpeningElement[name.name='CoverageSegment'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|count|color|key|ref|className|style|children)$/]",
+        "message": "<CoverageSegment> doesn't accept that prop. Declared props: label, count, color."
+      },
+      {
         "selector": "JSXOpeningElement[name.name='DataTableColumn'] > JSXAttribute > JSXIdentifier[name!=/^(?:key|label|align|key|ref|className|style|children)$/]",
         "message": "<DataTableColumn> doesn't accept that prop. Declared props: key, label, align."
       },
@@ -80,8 +84,8 @@
         "message": "<DataTableColumn> align must be one of 'left' | 'right'."
       },
       {
-        "selector": "JSXOpeningElement[name.name='HeroMeta'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|value|key|ref|className|style|children)$/]",
-        "message": "<HeroMeta> doesn't accept that prop. Declared props: label, value."
+        "selector": "JSXOpeningElement[name.name='HeroMeta'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|value|source|key|ref|className|style|children)$/]",
+        "message": "<HeroMeta> doesn't accept that prop. Declared props: label, value, source."
       },
       {
         "selector": "JSXOpeningElement[name.name='Input'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|value|onChange|placeholder|error|hint|type|suffix|disabled|key|ref|className|style|children)$/]",
@@ -100,8 +104,8 @@
         "message": "<Logo> plate must be one of 'auto' | 'never'."
       },
       {
-        "selector": "JSXOpeningElement[name.name='MetricTile'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|value|unit|delta|deltaTone|caption|dark|key|ref|className|style|children)$/]",
-        "message": "<MetricTile> doesn't accept that prop. Declared props: label, value, unit, delta, deltaTone, caption, dark."
+        "selector": "JSXOpeningElement[name.name='MetricTile'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|value|unit|delta|deltaTone|caption|source|dark|key|ref|className|style|children)$/]",
+        "message": "<MetricTile> doesn't accept that prop. Declared props: label, value, unit, delta, deltaTone, caption, source, dark."
       },
       {
         "selector": "JSXOpeningElement[name.name='MetricTile'] > JSXAttribute[name.name='deltaTone'] > Literal[value!=/^(?:up|down|flat)$/]",
@@ -124,8 +128,8 @@
         "message": "<SectionHeader> doesn't accept that prop. Declared props: eyebrow, title, description, index, action, onDark."
       },
       {
-        "selector": "JSXOpeningElement[name.name='Select'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|value|onChange|options|hint|disabled|key|ref|className|style|children)$/]",
-        "message": "<Select> doesn't accept that prop. Declared props: label, value, onChange, options, hint, disabled."
+        "selector": "JSXOpeningElement[name.name='Select'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|value|onChange|options|hint|error|disabled|key|ref|className|style|children)$/]",
+        "message": "<Select> doesn't accept that prop. Declared props: label, value, onChange, options, hint, error, disabled."
       },
       {
         "selector": "JSXOpeningElement[name.name='StatBar'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|value|max|unit|tone|target|compact|key|ref|className|style|children)$/]",
@@ -156,6 +160,9 @@
         "replaces": []
       },
       "Card": {
+        "replaces": []
+      },
+      "CoverageSegment": {
         "replaces": []
       },
       "DataTableColumn": {

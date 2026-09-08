@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="TN-17 Legg til turnering manuelt" description="Skjemaet som fyller hullene GolfBox-synken ikke fikk med seg: turnering, dato, sted, score per runde. Raden merkes «lagt inn selv» og kan aldri forveksles med et hentet resultat — eget merke, eget kildeformat, og «mot felt» forblir tomt fordi feltsnitt ikke finnes. Mac 1440 og mobil 390 med tom, laster og feil." -->
+<helmet><script src="./ds-base.js"></script></helmet>
+<div style="padding:48px;display:flex;flex-direction:column;gap:56px;background:var(--surface-page);min-height:100vh;font-family:var(--font-body)">
+
+<div style="display:flex;flex-direction:column;gap:8px;max-width:760px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TN-17 · LEGG TIL TURNERING MANUELT</div>
+<h1 style="font-size:var(--text-h1);color:var(--navy-900);letter-spacing:var(--tracking-heading);margin:0">Legg inn turnering selv</h1>
+<p style="margin:0;font-size:var(--text-lg);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">TN-13 viser turneringer hentet automatisk fra GolfBox. Denne skjermen er for de som mangler: college-turneringer, utenlandske tourer, klubbmesterskap uten maskinlesbart resultat. Spilleren eller treneren fyller hullene — og raden bærer for alltid merket <strong>lagt inn selv</strong>.</p>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:20px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MAC 1440 · SKJEMA MED FORHÅNDSVISNING AV RADEN</div>
+<div style="width:1440px;height:1024px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;font-variant-numeric:tabular-nums">
+
+<div style="width:252px;flex-shrink:0;background:var(--surface-card);border-right:1px solid var(--border-subtle);display:flex;flex-direction:column;padding:20px 14px 18px;gap:18px">
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:14px;display:flex;flex-direction:column;align-items:flex-start;gap:9px">
+<img src="../../assets/logo/team-norway-golf.png" alt="Team Norway Golf" style="height:46px;width:auto;display:block">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">NGF · JUNIORLANDSLAG</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:2px;flex:1;min-height:0;overflow:hidden">
+<sc-for list="{{ meny }}" as="m" hint-placeholder-count="12">
+<sc-if value="{{ m.isHeading }}" hint-placeholder-val="{{ false }}">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);padding:14px 12px 6px">{{ m.label }}</div>
+</sc-if>
+<sc-if value="{{ m.isItem }}" hint-placeholder-val="{{ true }}">
+<div ref="{{ m.ref }}" style="height:40px;border-radius:var(--radius-xs);padding:0 10px;display:flex;align-items:center;gap:10px">
+<span ref="{{ m.markRef }}" style="width:3px;height:18px;border-radius:var(--radius-full);flex-shrink:0"></span>
+<span style="font-size:var(--text-sm);font-weight:var(--weight-medium)">{{ m.label }}</span>
+</div>
+</sc-if>
+</sc-for>
+</div>
+</div>
+
+<div style="flex:1;min-width:0;display:flex;flex-direction:column">
+<div style="height:64px;flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);display:flex;align-items:center;padding:0 28px;gap:16px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">TEAM NORWAY</span>
+<span style="color:var(--ink-300)">/</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">DATA</span>
+<span style="color:var(--ink-300)">/</span>
+<span role="button" style="font-size:var(--text-sm);font-weight:var(--weight-medium);color:var(--navy-600)">Turneringer</span>
+<span style="color:var(--ink-300)">/</span>
+<span style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Legg til manuelt</span>
+<div style="flex:1"></div>
+<div style="display:flex;align-items:center;gap:8px;padding:6px 12px;border-radius:var(--radius-full);background:var(--status-amber-bg)">
+<span style="width:7px;height:7px;border-radius:var(--radius-full);background:var(--status-amber);flex-shrink:0"></span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--status-amber-text)">MANUELL REGISTRERING · IKKE GOLFBOX</span>
+</div>
+</div>
+
+<div style="flex:1;min-height:0;overflow:hidden;display:flex">
+
+<div style="flex:1;min-width:0;padding:26px 28px;display:flex;flex-direction:column;gap:18px;overflow:hidden">
+<div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DATA · TURNERINGER · NY RAD</div>
+<h2 style="font-size:var(--text-h2);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:6px 0 0">Turnering som ikke ble hentet</h2>
+</div>
+
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:24px;display:flex;flex-direction:column;gap:20px;overflow:hidden">
+
+<div style="display:grid;grid-template-columns:minmax(0,1fr) 168px;gap:16px">
+<div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+<label style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TURNERING</label>
+<input value="{{ f.navn }}" onChange="{{ onNavn }}" placeholder="Navn slik det står i resultatlisten" style="height:48px;border:1px solid var(--border-default);border-radius:var(--radius-sm);padding:0 14px;font-family:var(--font-body);font-size:var(--text-base);color:var(--ink-900);background:var(--white);outline:none;width:100%;box-sizing:border-box">
+<span style="font-size:var(--text-xs);color:var(--text-secondary)">Skriv navnet uforkortet. Det kan ikke slås sammen med en GolfBox-rad senere.</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<label style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DATO</label>
+<input value="{{ f.dato }}" onChange="{{ onDato }}" placeholder="dd.mm.åååå" style="height:48px;border:1px solid var(--border-default);border-radius:var(--radius-sm);padding:0 14px;font-family:var(--font-mono);font-size:var(--text-base);color:var(--ink-900);background:var(--white);outline:none;width:100%;box-sizing:border-box">
+<span style="font-size:var(--text-xs);color:var(--text-secondary)">Første rundedag.</span>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:minmax(0,1fr) 168px;gap:16px">
+<div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+<label style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">STED</label>
+<input value="{{ f.sted }}" onChange="{{ onSted }}" placeholder="Bane, sted, land" style="height:48px;border:1px solid var(--border-default);border-radius:var(--radius-sm);padding:0 14px;font-family:var(--font-body);font-size:var(--text-base);color:var(--ink-900);background:var(--white);outline:none;width:100%;box-sizing:border-box">
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<label style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">PLASSERING</label>
+<input value="{{ f.plass }}" onChange="{{ onPlass }}" placeholder="valgfri" style="height:48px;border:1px solid var(--border-default);border-radius:var(--radius-sm);padding:0 14px;font-family:var(--font-mono);font-size:var(--text-base);color:var(--ink-900);background:var(--white);outline:none;width:100%;box-sizing:border-box">
+<span style="font-size:var(--text-xs);color:var(--text-secondary)">Står den ikke i resultatlisten, la den stå tom.</span>
+</div>
+</div>
+
+<div style="border-top:1px solid var(--border-subtle);padding-top:20px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:baseline;gap:10px">
+<span style="font-size:var(--text-base);font-weight:var(--weight-bold);color:var(--navy-900)">Score per runde</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">BRUTTO · IKKE TIL PAR</span>
+</div>
+<div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end">
+<sc-for list="{{ runder }}" as="r" hint-placeholder-count="4">
+<div style="display:flex;flex-direction:column;gap:6px;width:104px">
+<label style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">{{ r.label }}</label>
+<input value="{{ r.verdi }}" onChange="{{ r.onChange }}" placeholder="—" style="height:48px;border:1px solid var(--border-default);border-radius:var(--radius-sm);padding:0 14px;font-family:var(--font-mono);font-size:var(--text-lg);font-weight:var(--weight-semibold);color:var(--ink-900);background:var(--white);outline:none;width:100%;box-sizing:border-box;text-align:center">
+</div>
+</sc-for>
+<div role="button" onClick="{{ leggTilRunde }}" style="min-height:48px;padding:0 18px;border-radius:var(--radius-full);border:1px dashed var(--border-default);display:flex;align-items:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-600)">Legg til runde</div>
+<div style="flex:1;min-width:0"></div>
+<div style="display:flex;flex-direction:column;gap:6px;width:132px">
+<label style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">BANENS PAR</label>
+<input value="{{ f.par }}" onChange="{{ onPar }}" placeholder="72" style="height:48px;border:1px solid var(--border-default);border-radius:var(--radius-sm);padding:0 14px;font-family:var(--font-mono);font-size:var(--text-lg);font-weight:var(--weight-semibold);color:var(--ink-900);background:var(--white);outline:none;width:100%;box-sizing:border-box;text-align:center">
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:12px;background:var(--ink-50);border-radius:var(--radius-sm);padding:12px 14px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TIL PAR REGNES UT</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-h3);font-weight:var(--weight-bold);color:var(--navy-900)">{{ tilPar }}</span>
+<div style="flex:1"></div>
+<span style="font-size:var(--text-xs);color:var(--text-secondary);text-align:right;max-width:340px;text-wrap:pretty"><strong>Mot felt</strong> kan ikke regnes ut. Den krever feltets snitt per runde, som bare finnes for maskinlesbare kilder.</span>
+</div>
+</div>
+
+<div style="border-top:1px solid var(--border-subtle);padding-top:20px;display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:baseline;gap:10px">
+<span style="font-size:var(--text-base);font-weight:var(--weight-bold);color:var(--navy-900)">Hvor kommer tallene fra?</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--status-amber-text)">PÅKREVD</span>
+</div>
+<div style="display:flex;gap:10px;flex-wrap:wrap">
+<sc-for list="{{ belegg }}" as="b" hint-placeholder-count="3">
+<div role="button" onClick="{{ b.onClick }}" ref="{{ b.ref }}" style="min-height:44px;padding:0 16px;border-radius:var(--radius-full);display:flex;align-items:center;font-size:var(--text-sm);font-weight:var(--weight-semibold)">{{ b.label }}</div>
+</sc-for>
+</div>
+<input value="{{ f.belegglenke }}" onChange="{{ onBelegglenke }}" placeholder="Lenke eller filnavn på resultatlisten" style="height:48px;border:1px solid var(--border-default);border-radius:var(--radius-sm);padding:0 14px;font-family:var(--font-mono);font-size:var(--text-sm);color:var(--ink-900);background:var(--white);outline:none;width:100%;box-sizing:border-box">
+<span style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Belegget lagres sammen med raden. Uten belegg blir raden liggende som utkast og teller ikke i rangliste eller uttak.</span>
+</div>
+
+</div>
+
+<div style="display:flex;gap:12px;align-items:center">
+<div role="button" ref="{{ lagreRef }}" style="min-height:48px;padding:0 24px;border-radius:var(--radius-full);display:flex;align-items:center;font-size:var(--text-base);font-weight:var(--weight-semibold)">Lagre som lagt inn selv</div>
+<div role="button" style="min-height:48px;padding:0 20px;border-radius:var(--radius-full);border:1px solid var(--border-default);display:flex;align-items:center;font-size:var(--text-base);font-weight:var(--weight-semibold);color:var(--navy-900)">Avbryt</div>
+<div style="flex:1"></div>
+<span ref="{{ lagreHintRef }}" style="font-size:var(--text-xs);text-align:right;max-width:280px;line-height:var(--leading-normal);text-wrap:pretty">{{ lagreHint }}</span>
+</div>
+</div>
+
+<div style="width:452px;flex-shrink:0;border-left:1px solid var(--border-subtle);background:var(--surface-card);padding:26px 24px;display:flex;flex-direction:column;gap:16px;overflow:hidden">
+<div style="display:flex;flex-direction:column;gap:4px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">SLIK BLIR RADEN I TN-13</span>
+<span style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Ravgul markør, eget merke og eget kildeformat. Den kan aldri leses som et hentet resultat.</span>
+</div>
+
+<div style="border:1px solid var(--status-amber);border-radius:var(--radius-md);overflow:hidden">
+<div style="background:var(--status-amber-bg);padding:8px 12px;display:flex;align-items:center;gap:8px">
+<span style="width:3px;height:14px;border-radius:var(--radius-full);background:var(--status-amber);flex-shrink:0"></span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--status-amber-text);font-weight:var(--weight-semibold)">LAGT INN SELV</span>
+</div>
+<div style="background:var(--white);padding:14px 12px;display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary)">{{ visDato }}</span>
+<span style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ visNavn }}</span>
+</div>
+<div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px">
+<div style="display:flex;flex-direction:column;gap:2px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">PLASS</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-base);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ visPlass }}</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:2px;min-width:0">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">RUNDER</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-primary)">{{ visRunder }}</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:2px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TIL PAR</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-base);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ tilPar }}</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:2px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MOT FELT</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-semibold);color:var(--status-amber-text)">ikke mulig</span>
+</div>
+</div>
+<div style="border-top:1px solid var(--border-subtle);padding-top:8px;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--status-amber-text)">{{ kildelinje }}</div>
+</div>
+</div>
+
+<div style="background:var(--ink-50);border-radius:var(--radius-sm);padding:14px;display:flex;flex-direction:column;gap:8px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TIL SAMMENLIGNING · HENTET RAD</span>
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:12px;display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary)">29.08</span>
+<span style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Srixon Tour #6 — eksempel</span>
+</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">MÅLT 29.08.2026 · GOLFBOX V2 · SYNK</div>
+</div>
+<span style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Hentede rader har grå kildelinje som starter med <strong>MÅLT</strong>. Manuelle starter med <strong>LAGT INN SELV</strong> i ravgult. Formatene deler aldri farge eller førsteord.</span>
+</div>
+
+<div style="flex:1;min-height:0"></div>
+
+<div style="border-top:1px solid var(--border-subtle);padding-top:14px;display:flex;flex-direction:column;gap:6px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">HVA RADEN IKKE FÅR</span>
+<sc-for list="{{ begrensninger }}" as="b" hint-placeholder-count="3">
+<div style="display:flex;align-items:flex-start;gap:9px">
+<span style="width:3px;height:14px;border-radius:var(--radius-full);background:var(--status-amber);flex-shrink:0;margin-top:4px"></span>
+<span style="font-size:var(--text-xs);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">{{ b }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:20px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MOBIL 390 · SKJEMA, TOM, LASTER, FEIL</div>
+<div style="display:flex;gap:24px;flex-wrap:wrap">
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">SKJEMA</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.41</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 14px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TURNERINGER · NY RAD</div>
+<div style="font-size:var(--text-h3);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading);margin-top:2px">Legg inn selv</div>
+</div>
+<div style="flex-shrink:0;background:var(--status-amber-bg);padding:10px 16px;display:flex;align-items:flex-start;gap:10px">
+<span style="width:7px;height:7px;border-radius:var(--radius-full);background:var(--status-amber);flex-shrink:0;margin-top:5px"></span>
+<span style="font-size:var(--text-xs);font-weight:var(--weight-semibold);color:var(--status-amber-text);line-height:var(--leading-normal);text-wrap:pretty">Raden blir merket «lagt inn selv» og teller ikke som et hentet resultat.</span>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:16px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;flex-direction:column;gap:6px">
+<label style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TURNERING</label>
+<div style="min-height:48px;border:1px solid var(--border-default);border-radius:var(--radius-sm);padding:13px 14px;background:var(--white);font-size:var(--text-base);color:var(--ink-900)">Big Ten Match Play — eksempel</div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+<div style="display:flex;flex-direction:column;gap:6px">
+<label style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DATO</label>
+<div style="min-height:48px;border:1px solid var(--border-default);border-radius:var(--radius-sm);padding:13px 14px;background:var(--white);font-family:var(--font-mono);font-size:var(--text-base);color:var(--ink-900)">12.04.2026</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<label style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">PLASS</label>
+<div style="min-height:48px;border:1px solid var(--border-default);border-radius:var(--radius-sm);padding:13px 14px;background:var(--white);font-family:var(--font-mono);font-size:var(--text-base);color:var(--text-tertiary)">tom</div>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<label style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">STED</label>
+<div style="min-height:48px;border:1px solid var(--border-default);border-radius:var(--radius-sm);padding:13px 14px;background:var(--white);font-size:var(--text-base);color:var(--ink-900)">Scarlet Course, Ohio — eksempel</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<label style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">SCORE PER RUNDE</label>
+<div style="display:flex;gap:8px">
+<div style="flex:1;min-height:48px;border:1px solid var(--border-default);border-radius:var(--radius-sm);background:var(--white);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:var(--text-lg);font-weight:var(--weight-semibold);color:var(--ink-900)">73</div>
+<div style="flex:1;min-height:48px;border:1px solid var(--border-default);border-radius:var(--radius-sm);background:var(--white);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:var(--text-lg);font-weight:var(--weight-semibold);color:var(--ink-900)">70</div>
+<div style="flex:1;min-height:48px;border:1px dashed var(--border-default);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:var(--text-lg);color:var(--text-tertiary)">+</div>
+</div>
+</div>
+<div style="background:var(--surface-card);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:14px;display:flex;flex-direction:column;gap:8px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">SLIK BLIR RADEN</span>
+<div style="display:flex;align-items:center;gap:8px">
+<span style="width:3px;height:16px;border-radius:var(--radius-full);background:var(--status-amber);flex-shrink:0"></span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--status-amber-text);font-weight:var(--weight-semibold)">LAGT INN SELV · MOT FELT IKKE MULIG</span>
+</div>
+</div>
+<div style="flex:1;min-height:0"></div>
+<div role="button" style="min-height:48px;border-radius:var(--radius-full);background:var(--navy-900);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:var(--text-base);font-weight:var(--weight-semibold)">Lagre som lagt inn selv</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">TOM</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.41</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 14px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TURNERINGER · LAGT INN SELV</div>
+<div style="font-size:var(--text-h3);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading);margin-top:2px">Egne rader</div>
+</div>
+<div style="flex:1;min-height:0;padding:16px;display:flex;flex-direction:column;gap:14px;justify-content:center">
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:22px;display:flex;flex-direction:column;gap:10px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">INGEN MANUELLE RADER</span>
+<span style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Alt du har spilt er hentet automatisk. Det er den beste tilstanden — manuelle rader er en nødløsning, ikke et mål.</span>
+<span style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Mangler noe i TN-13, legg det inn her. Da må du oppgi hvor tallene kommer fra.</span>
+<div role="button" style="min-height:44px;margin-top:4px;border-radius:var(--radius-full);background:var(--navy-900);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:var(--weight-semibold)">Legg inn turnering</div>
+</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">LASTER</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.41</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 14px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TURNERINGER · NY RAD</div>
+<div style="font-size:var(--text-h3);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading);margin-top:2px">Lagrer raden</div>
+</div>
+<div style="flex:1;min-height:0;padding:16px;display:flex;flex-direction:column;gap:12px">
+<sc-for list="{{ skjelett }}" as="s" hint-placeholder-count="4">
+<div style="background:var(--surface-card);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:14px;display:flex;flex-direction:column;gap:10px">
+<div style="width:96px;height:9px;border-radius:var(--radius-full);background:var(--surface-sunken)"></div>
+<div ref="{{ s.wRef }}" style="height:14px;border-radius:var(--radius-full);background:var(--surface-sunken)"></div>
+</div>
+</sc-for>
+<div style="flex:1;min-height:0"></div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary);text-align:center">SJEKKER OM TURNERINGEN FINNES I GOLFBOX</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">FEIL · TURNERINGEN FINNES ALLEREDE</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.41</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 14px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TURNERINGER · NY RAD</div>
+<div style="font-size:var(--text-h3);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading);margin-top:2px">Ikke lagret</div>
+</div>
+<div style="flex-shrink:0;background:var(--status-red-bg);padding:12px 16px;display:flex;align-items:flex-start;gap:10px">
+<span style="width:7px;height:7px;border-radius:var(--radius-full);background:var(--status-red);flex-shrink:0;margin-top:5px"></span>
+<span style="font-size:var(--text-xs);font-weight:var(--weight-semibold);color:var(--status-red-text);line-height:var(--leading-normal);text-wrap:pretty">GolfBox har allerede en rad på 12.04.2026 med samme spiller. To rader for samme runde ville doblet tallene i rangliste og uttak.</span>
+</div>
+<div style="flex:1;min-height:0;padding:16px;display:flex;flex-direction:column;gap:14px">
+<div style="background:var(--surface-card);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:14px;display:flex;flex-direction:column;gap:8px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">HENTET RAD SOM KOLLIDERER</span>
+<div style="font-size:var(--text-base);font-weight:var(--weight-semibold);color:var(--navy-900);line-height:var(--leading-tight);text-wrap:pretty">Big Ten Match Play — eksempel</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">MÅLT 12.04.2026 · GOLFBOX V2 · SYNK</div>
+</div>
+<span style="font-size:var(--text-sm);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Er det samme turnering, behold den hentede — den har feltsnitt. Er det en annen turnering samme dag, endre dato eller navn og lagre på nytt.</span>
+<div style="flex:1;min-height:0"></div>
+<div role="button" style="min-height:48px;border-radius:var(--radius-full);background:var(--navy-900);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:var(--text-base);font-weight:var(--weight-semibold)">Behold den hentede raden</div>
+<div role="button" style="min-height:48px;border-radius:var(--radius-full);border:1px solid var(--border-default);display:flex;align-items:center;justify-content:center;font-size:var(--text-base);font-weight:var(--weight-semibold);color:var(--navy-900)">Endre min rad</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div style="max-width:760px;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:28px;display:flex;flex-direction:column;gap:16px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DESIGNNOTAT</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Beslutningen skjermen løser</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Hva gjør vi med turneringen roboten ikke fikk med seg. Alternativet til denne skjermen er at spilleren sender en melding og treneren skriver tallet inn et sted uten spor — da er kildeprinsippet i TN-13 verdiløst.</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Merket kan ikke forsvinne</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Tre lag skiller de to radtypene: markørfargen (ravgul mot grå), førsteordet i kildelinjen (<strong>LAGT INN SELV</strong> mot <strong>MÅLT</strong>), og at «mot felt» står som <strong>ikke mulig</strong> i stedet for et tall. Ingen av dem kan slås av, og en manuell rad kan ikke konverteres til hentet — bare erstattes av en hentet rad når synken finner den.</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Tall som er eksempler</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Alle. Navn, bane, datoer og score er skjermtekst merket «eksempel». Kolonnene, kildeformatet og regelen om at «mot felt» krever feltsnitt er derimot lest ut av turneringspipelinen.</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Usikkert</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty"><strong>ANTAKELSE:</strong> at spilleren selv får legge inn, ikke bare treneren. Jeg har tegnet det slik fordi college-turneringer er spillerens eget felt og treneren ikke ser dem — men det åpner for at en spiller pynter på egne tall. Motvekten er belegg-kravet: uten lenke eller fil blir raden utkast og teller ikke i rangliste eller uttak. Spørsmål til Anders om utkast-rader skal være synlige for treneren umiddelbart eller først når belegget er lagt inn.</div>
+</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1536,&quot;height&quot;:1120}}">
+const setStyle = o => el => { if (el) Object.assign(el.style, o); };
+
+class Component extends DCLogic {
+  state = {
+    navn: 'Big Ten Match Play — eksempel',
+    dato: '12.04.2026',
+    sted: 'Scarlet Course, Ohio — eksempel',
+    plass: '',
+    par: '72',
+    runder: ['73', '70', ''],
+    belegg: 'Resultatliste på nett',
+    belegglenke: ''
+  };
+
+  meny() {
+    const aktiv = 'Turneringer';
+    return [
+      { isHeading: true, label: 'Daglig' },
+      { isItem: true, label: 'Oversikt' },
+      { isItem: true, label: 'Fellestesting' },
+      { isItem: true, label: 'Collegegruppen' },
+      { isItem: true, label: 'Månedsplan' },
+      { isHeading: true, label: 'Uttak' },
+      { isItem: true, label: 'Uttaksliste' },
+      { isItem: true, label: 'Rangliste' },
+      { isHeading: true, label: 'Data' },
+      { isItem: true, label: 'Testbatteri' },
+      { isItem: true, label: 'Turneringer' },
+      { isItem: true, label: 'Referansenivåer' }
+    ].map(m => ({
+      ...m,
+      ref: setStyle({
+        background: m.label === aktiv ? 'var(--navy-100)' : 'transparent',
+        color: m.label === aktiv ? 'var(--navy-900)' : 'var(--text-secondary)'
+      }),
+      markRef: setStyle({ background: m.label === aktiv ? 'var(--red-600)' : 'transparent' })
+    }));
+  }
+
+  tilPar() {
+    const par = parseInt(this.state.par, 10);
+    const spilte = this.state.runder.map(r => parseInt(r, 10)).filter(n => !isNaN(n));
+    if (!par || spilte.length === 0) return '—';
+    const diff = spilte.reduce((a, b) => a + b, 0) - par * spilte.length;
+    return diff === 0 ? 'E' : (diff > 0 ? '+' + diff : '\u2212' + Math.abs(diff));
+  }
+
+  renderVals() {
+    const s = this.state;
+    const harBelegg = s.belegglenke.trim().length > 0;
+    const spilte = s.runder.filter(r => r.trim());
+    return {
+      meny: this.meny(),
+      f: s,
+      onNavn: e => this.setState({ navn: e.target.value }),
+      onDato: e => this.setState({ dato: e.target.value }),
+      onSted: e => this.setState({ sted: e.target.value }),
+      onPlass: e => this.setState({ plass: e.target.value }),
+      onPar: e => this.setState({ par: e.target.value }),
+      onBelegglenke: e => this.setState({ belegglenke: e.target.value }),
+      leggTilRunde: () => this.setState({ runder: [...s.runder, ''] }),
+      runder: s.runder.map((verdi, i) => ({
+        label: 'RUNDE ' + (i + 1),
+        verdi,
+        onChange: e => {
+          const neste = [...this.state.runder];
+          neste[i] = e.target.value;
+          this.setState({ runder: neste });
+        }
+      })),
+      belegg: ['Resultatliste på nett', 'Skjermbilde eller PDF', 'Trener bekrefter'].map(label => ({
+        label,
+        onClick: () => this.setState({ belegg: label }),
+        ref: setStyle(label === s.belegg
+          ? { background: 'var(--navy-900)', color: 'var(--white)' }
+          : { background: 'transparent', border: '1px solid var(--border-default)', color: 'var(--text-secondary)' })
+      })),
+      tilPar: this.tilPar(),
+      visNavn: s.navn || 'Uten navn',
+      visDato: s.dato ? s.dato.slice(0, 5) : '—',
+      visPlass: s.plass || '—',
+      visRunder: spilte.length ? spilte.join(' · ') : 'venter på data',
+      kildelinje: 'LAGT INN SELV 08.09.2026 · MANUELT SKJEMA V1 · MB',
+      lagreRef: setStyle(harBelegg
+        ? { background: 'var(--navy-900)', color: 'var(--white)' }
+        : { background: 'var(--navy-900)', color: 'var(--white)', opacity: '.45' }),
+      lagreHintRef: setStyle({ color: harBelegg ? 'var(--text-secondary)' : 'var(--status-amber-text)' }),
+      lagreHint: harBelegg
+        ? 'Raden lagres med belegg og teller i rangliste og uttak.'
+        : 'Legg inn lenke eller filnavn på resultatlisten før raden kan lagres som mer enn utkast.',
+      begrensninger: [
+        'Ingen «mot felt» — feltets snitt per runde finnes ikke uten maskinlesbar kilde.',
+        'Ingen WAGR-vekting. WAGR leses fra turneringens egen entry, ikke fra en manuell rad.',
+        'Raden kan redigeres av den som la den inn, og hver endring får ny kildelinje med dato og initialer.'
+      ],
+      skjelett: ['82%', '68%', '90%', '74%'].map(w => ({ wRef: setStyle({ width: w }) }))
+    };
+  }
+}
+</script>
+</body>
+</html>

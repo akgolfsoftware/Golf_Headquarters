@@ -1,0 +1,27 @@
+<!-- @dsCard group="05 Komponenter" viewport="980x420" name="CoverageCard — dekningsgrad" subtitle="Obligatorisk øverst på TN-oversikten. Bred, kompakt, gammel og henter." -->
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin></script>
+<script src="../../_ds_bundle.js"></script>
+<div id="root"></div>
+<script>
+const {CoverageCard}=window.ClawDesignTeamNorwayGolf_a03bf9;
+const e=React.createElement;
+const segs=[{label:'Komplett profil',count:4},{label:'Delvis profil',count:3},{label:'Samtykket, ingen data',count:2},{label:'Ikke samtykket',count:2}];
+const eyebrow=t=>e('span',{style:{fontFamily:'var(--font-mono)',fontSize:'var(--text-micro)',letterSpacing:'var(--tracking-eyebrow)',textTransform:'uppercase',color:'var(--text-tertiary)'}},t);
+function Demo(){
+return e('div',{style:{padding:'24px',display:'flex',flexDirection:'column',gap:'18px',background:'var(--surface-page)',minHeight:'420px'}},
+e('div',{style:{display:'flex',flexDirection:'column',gap:'8px'}},eyebrow('BRED — MAC 1440'),
+e(CoverageCard,{segments:segs,total:11,source:'Talt 25.08.2026 · komplett PlayerHQ kreves for TN-utøvere'})),
+e('div',{style:{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'16px',alignItems:'start'}},
+e('div',{style:{display:'flex',flexDirection:'column',gap:'8px'}},eyebrow('KOMPAKT — MOBIL 390'),
+e(CoverageCard,{layout:'compact',segments:segs,total:11,source:'Talt 25.08.2026'})),
+e('div',{style:{display:'flex',flexDirection:'column',gap:'8px'}},eyebrow('IKKE OPPDATERT'),
+e(CoverageCard,{layout:'compact',state:'error',segments:segs,total:11,staleNote:'Lest 25.08.2026 kl. 09.12'})),
+e('div',{style:{display:'flex',flexDirection:'column',gap:'8px'}},eyebrow('HENTER'),
+e(CoverageCard,{layout:'compact',state:'loading',segments:segs,total:11}))
+)
+);
+}
+ReactDOM.createRoot(document.getElementById('root')).render(e(Demo));
+</script>

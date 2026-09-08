@@ -272,7 +272,7 @@ a{color:#226f67}a:hover{color:#17446f}
     <div key="{{ trinnKey }}" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:18px;margin-top:28px;animation:wangFadeUp 320ms cubic-bezier(0.22,1,0.36,1)">
       <sc-for list="{{ okter }}" as="o" hint-placeholder-count="3">
         <div class="wang-card" style="border-radius:20px;overflow:hidden;display:flex;flex-direction:column">
-          <div style="padding:16px 22px;background:var(--neutral-50);box-shadow:inset 0 3px 0 {{ o.stripe }};display:flex;justify-content:space-between;align-items:center;gap:10px">
+          <div style="padding:16px 22px;background:{{ o.tint }};display:flex;justify-content:space-between;align-items:center;gap:10px">
             <div style="min-width:0">
               <div style="font-family:var(--font-brand);font-weight:700;font-size:16px">{{ o.tittel }}</div>
               <div class="wang-num" style="font-size:12px;color:var(--text-secondary);margin-top:2px">{{ o.meta }}</div>
@@ -508,7 +508,8 @@ a{color:#226f67}a:hover{color:#17446f}
     </div>
     <div style="display:flex;gap:8px 16px;flex-wrap:wrap;margin-top:18px">
       <x-import component-from-global-scope="WANGTreningsplattformDesignSystem_be77fc.EventChip" type="okt" label="Økt og samling" size="sm" hint-size="110,22"></x-import>
-      <x-import component-from-global-scope="WANGTreningsplattformDesignSystem_be77fc.EventChip" type="prove" label="Test" size="sm" hint-size="70,22"></x-import>
+      <x-import component-from-global-scope="WANGTreningsplattformDesignSystem_be77fc.EventChip" type="konkurranse" label="Konkurranse" size="sm" hint-size="100,22"></x-import>
+      <x-import component-from-global-scope="WANGTreningsplattformDesignSystem_be77fc.EventChip" type="prove" label="Test og prøve" size="sm" hint-size="100,22"></x-import>
       <x-import component-from-global-scope="WANGTreningsplattformDesignSystem_be77fc.EventChip" type="skole" label="Skole og ferie" size="sm" hint-size="110,22"></x-import>
       <x-import component-from-global-scope="WANGTreningsplattformDesignSystem_be77fc.EventChip" type="hendelse" label="Merkedag" size="sm" hint-size="90,22"></x-import>
     </div>
@@ -556,7 +557,7 @@ a{color:#226f67}a:hover{color:#17446f}
         </div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:clamp(10px,1.6vw,14px)">
           <sc-for list="{{ aarManeder }}" as="am" hint-placeholder-count="12">
-            <button onClick="{{ am.apne }}" class="wang-pressable" style="text-align:left;border:none;cursor:pointer;font-family:var(--font-body);background:var(--neutral-50);border-radius:18px;padding:14px 15px;display:flex;flex-direction:column;gap:10px;box-shadow:inset 0 3px 0 {{ am.stripe }}">
+            <button onClick="{{ am.apne }}" class="wang-pressable" style="text-align:left;border:none;cursor:pointer;font-family:var(--font-body);background:{{ am.tint }};border-radius:18px;padding:14px 15px;display:flex;flex-direction:column;gap:10px">
               <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px">
                 <span style="font-family:var(--font-brand);font-weight:700;font-size:14.5px;color:var(--text-primary)">{{ am.navn }}</span>
                 <span class="wang-num" style="font-family:var(--font-brand);font-weight:800;font-size:15px;color:{{ am.tallFarge }}">{{ am.antall }}</span>
@@ -695,7 +696,7 @@ a{color:#226f67}a:hover{color:#17446f}
     <p style="font-size:clamp(14.5px,2vw,16.5px);line-height:1.6;color:var(--text-secondary);max-width:660px;margin:12px 0 0">Alle møter starter kl. 17:00 på WANG Toppidrett Fredrikstad. VG1 har flest møter — første året krever tettest kontakt mellom skole, trener og hjem.</p>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:24px">
       <sc-for list="{{ foreldreTrinn }}" as="ft" hint-placeholder-count="3">
-        <div class="wang-card" style="border-radius:20px;padding:22px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;gap:12px;border-top:3px solid {{ ft.farge }}">
+        <div class="wang-card" style="border-radius:20px;padding:22px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;gap:12px">
           <div style="display:flex;align-items:baseline;gap:10px">
             <span style="font-family:var(--font-brand);font-weight:800;font-size:17px;color:{{ ft.farge }}">{{ ft.trinn }}</span>
             <span class="wang-num" style="font-size:12px;color:var(--text-secondary);margin-left:auto">{{ ft.antall }}</span>
@@ -1223,16 +1224,16 @@ function byggEvents() {
     ['2027-06-18', 'skole', 'Siste skoledag'],
   ];
   for (const [iso, type, label] of SKOLE_EVENTS) add(iso, { type, label });
-  add('2026-09-05', { type: 'prove', label: 'Olyo KP3 · Mjøsen GK · frist 2. sep' });
-  add('2026-09-19', { type: 'prove', label: 'Olyo KP3 · Skjeberg GK · frist 16. sep' });
-  add('2026-09-20', { type: 'prove', label: 'Olyo · Gamle Fredrikstad GK' });
-  add('2026-09-20', { type: 'prove', label: 'Olyo finale KP3 · Gamle Fredrikstad GK · frist 17. sep' });
-  add('2026-08-29', { type: 'prove', label: 'Østlandstour 9 · Mørk Open' });
-  add('2026-08-30', { type: 'prove', label: 'Østlandstour 9 · Mørk Open' });
-  add('2026-09-12', { type: 'prove', label: 'Østlandstour 10 · Asker Open' });
-  add('2026-09-13', { type: 'prove', label: 'Østlandstour 10 · Asker Open' });
-  add('2026-09-19', { type: 'prove', label: 'Østlandstour 11 · finale, Kjekstad GK' });
-  add('2026-09-20', { type: 'prove', label: 'Østlandstour 11 · finale, Kjekstad GK' });
+  add('2026-09-05', { type: 'konkurranse', label: 'Olyo KP3 · Mjøsen GK · frist 2. sep' });
+  add('2026-09-19', { type: 'konkurranse', label: 'Olyo KP3 · Skjeberg GK · frist 16. sep' });
+  add('2026-09-20', { type: 'konkurranse', label: 'Olyo · Gamle Fredrikstad GK' });
+  add('2026-09-20', { type: 'konkurranse', label: 'Olyo finale KP3 · Gamle Fredrikstad GK · frist 17. sep' });
+  add('2026-08-29', { type: 'konkurranse', label: 'Østlandstour 9 · Mørk Open' });
+  add('2026-08-30', { type: 'konkurranse', label: 'Østlandstour 9 · Mørk Open' });
+  add('2026-09-12', { type: 'konkurranse', label: 'Østlandstour 10 · Asker Open' });
+  add('2026-09-13', { type: 'konkurranse', label: 'Østlandstour 10 · Asker Open' });
+  add('2026-09-19', { type: 'konkurranse', label: 'Østlandstour 11 · finale, Kjekstad GK' });
+  add('2026-09-20', { type: 'konkurranse', label: 'Østlandstour 11 · finale, Kjekstad GK' });
   return ev;
 }
 const EVENTS = byggEvents();
@@ -1315,9 +1316,10 @@ class Component extends DCLogic {
     const pyrTotal = nTimer(beregnet.sum) + ' planlagt trening per uke';
     const TYPER = {
       trening: { navn: 'Trening og samling', farge: 'var(--wang-teal-text)', tint: 'var(--tint-teal)' },
-      konkurranse: { navn: 'Konkurranse', farge: 'var(--cat-orange)', tint: 'var(--tint-orange)' },
+      konkurranse: { navn: 'Konkurranse', farge: 'var(--cat-orange-text)', tint: 'var(--tint-orange)' },
       prove: { navn: 'Test og prøve', farge: 'var(--cat-purple)', tint: 'var(--tint-purple)' },
-      skole: { navn: 'Skole og ferie', farge: 'var(--cat-blue)', tint: 'var(--tint-blue)' },
+      skole: { navn: 'Skole og ferie', farge: 'var(--cat-blue-text)', tint: 'var(--tint-blue)' },
+      hendelse: { navn: 'Merkedag', farge: 'var(--cat-pink)', tint: 'var(--tint-pink)' },
     };
     const MND_RADER = [
       [['trening','Uke 34','Skolestart — 3 golføkter i uken på GFGK'],['prove','Uke 35','NGF/Team Norway-tester starter'],['skole','Uke 34','Oppstartssamtaler og IUP-gjennomgang']],
@@ -1383,9 +1385,10 @@ class Component extends DCLogic {
     const kalTabs = ['Tidslinje', 'Uke', 'Måned', 'År'];
     const EV_FARGE = {
       okt: { navn: 'Trening og samling', farge: 'var(--wang-teal-text)', tint: 'var(--tint-teal)' },
-      prove: { navn: 'Test og konkurranse', farge: 'var(--cat-purple)', tint: 'var(--tint-purple)' },
-      skole: { navn: 'Skole og ferie', farge: 'var(--cat-blue)', tint: 'var(--tint-blue)' },
-      hendelse: { navn: 'Merkedag', farge: 'var(--cat-orange)', tint: 'var(--tint-orange)' },
+      konkurranse: { navn: 'Konkurranse', farge: 'var(--cat-orange-text)', tint: 'var(--tint-orange)' },
+      prove: { navn: 'Test og prøve', farge: 'var(--cat-purple)', tint: 'var(--tint-purple)' },
+      skole: { navn: 'Skole og ferie', farge: 'var(--cat-blue-text)', tint: 'var(--tint-blue)' },
+      hendelse: { navn: 'Merkedag', farge: 'var(--cat-pink)', tint: 'var(--tint-pink)' },
     };
     const AAR_MND_NAVN = ['Januar', 'Februar', 'Mars', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Desember'];
     const aarLegend = Object.values(EV_FARGE).map((v) => ({ navn: v.navn, farge: v.farge }));
@@ -1401,17 +1404,17 @@ class Component extends DCLogic {
         const evs = EVENTS[iso] || [];
         antall += evs.length;
         for (const e of evs) tell[e.type] = (tell[e.type] || 0) + 1;
-        const pri = evs.find((e) => e.type === 'prove') || evs.find((e) => e.type === 'hendelse') || evs.find((e) => e.type === 'okt') || evs[0];
+        const pri = evs.find((e) => e.type === 'konkurranse') || evs.find((e) => e.type === 'prove') || evs.find((e) => e.type === 'hendelse') || evs.find((e) => e.type === 'okt') || evs[0];
         dager.push({
           bg: pri ? (EV_FARGE[pri.type] || EV_FARGE.okt).farge : 'var(--border-subtle)',
           ring: evs.length > 1 ? '0 0 0 1.5px var(--surface-card)' : 'none',
         });
       }
-      const rekkefolge = ['okt', 'prove', 'skole', 'hendelse'];
+      const rekkefolge = ['okt', 'konkurranse', 'prove', 'skole', 'hendelse'];
       const summer = rekkefolge.filter((t) => tell[t]).map((t) => ({ antall: tell[t], farge: EV_FARGE[t].farge, tint: EV_FARGE[t].tint }));
       const faseIdx = AAR_MND_NAVN.indexOf(navn);
       const stripe = antall ? (summer[0] ? summer[0].farge : 'var(--wang-teal)') : 'var(--border-subtle)';
-      return { navn, antall, dager, summer, stripe, tallFarge: antall ? stripe : 'var(--text-secondary)',
+      return { navn, antall, dager, summer, stripe, tint: antall && summer[0] ? summer[0].tint : 'var(--neutral-50)', tallFarge: antall ? stripe : 'var(--text-secondary)',
         apne: () => this.setState({ kalValg: 'Måned', kalVisning: 'Måned', kalDato: new Date(this.state.kalAar, faseIdx, 1) }) };
     });
     const OKTER_TXT2 = { TURN: 'Man · ons · fre 08:00–10:00 · ute (GFGK)', TEST: 'Man · ons · fre 08:00–10:00 · testbatteri', GRUNN: 'Man · ons · fre 08:00–10:00 · inne', SPES: 'Man · ons · fre 08:00–10:00 · inne/ute', TURN2: 'Man · ons · fre 08:00–10:00 · ute (GFGK)' };

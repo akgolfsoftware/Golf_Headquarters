@@ -21,9 +21,9 @@
 <div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MAC 1440 · SUKSESS MED ÉN RAD ÅPNET</div>
 <div style="width:1440px;height:900px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;font-variant-numeric:tabular-nums">
 <div style="width:232px;flex-shrink:0;background:var(--surface-card);border-right:1px solid var(--border-subtle);display:flex;flex-direction:column;padding:20px 14px 18px;gap:20px">
-<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:11px 12px;display:flex;align-items:center;gap:10px">
-<span style="width:9px;height:24px;border-radius:3px;background:var(--red-600);flex-shrink:0"></span>
-<div style="min-width:0"><div style="font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--navy-900)">Team Norway</div><div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);color:var(--text-tertiary);margin-top:1px">JUNIOR</div></div>
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:14px;display:flex;flex-direction:column;align-items:flex-start;gap:9px">
+<img src="../../assets/logo/team-norway-golf.png" alt="Team Norway Golf" style="height:42px;width:auto;display:block">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">JUNIOR</div>
 </div>
 <div style="display:flex;flex-direction:column;gap:2px;flex:1;min-height:0;overflow:hidden">
 <sc-for list="{{ meny }}" as="m" hint-placeholder-count="12">
@@ -247,7 +247,7 @@
 <div style="display:flex;align-items:center;gap:10px">
 <span style="width:32px;height:32px;border-radius:var(--radius-full);background:var(--navy-100);color:var(--navy-800);font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);display:flex;align-items:center;justify-content:center;flex-shrink:0">SL</span>
 <div style="flex:1;min-width:0">
-<div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Sigrid Lunde</div>
+<div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Sigrid Lunde — eksempel</div>
 <div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--status-amber-text)">IKKE SENDT · LAGRET LOKALT 09.51</div>
 </div>
 </div>
@@ -300,37 +300,37 @@ class Component extends DCLogic {
   kandidater() {
     return [
       {
-        init: 'AV', navn: 'Amalie Vik', skole: 'WANG FREDRIKSTAD', sist: '24.08.2026', handling: 'Lukk underlag', apen: true,
+        init: 'AV', navn: 'Amalie Vik — eksempel', skole: 'WANG FREDRIKSTAD', sist: '24.08.2026', handling: 'Lukk underlag', apen: true,
         k1: 'T4 Sørlandsopen, T2 NM-kvalifisering', k1kilde: 'GolfBox · 08.08.2026', t1: 'god',
         k2: 'Holder scoringssnitt under press i siste runde', k2kilde: 'Trenervurdering · 24.08.2026', t2: 'god',
         k3: 'Leverer egentrening ukentlig, tar korreksjon godt', k3kilde: 'Trenervurdering · 24.08.2026', t3: 'god'
       },
       {
-        init: 'EN', navn: 'Erik Nesheim', skole: 'NTG BÆRUM', sist: '23.08.2026', handling: 'Åpne underlag', apen: false,
+        init: 'EN', navn: 'Erik Nesheim — eksempel', skole: 'NTG BÆRUM', sist: '23.08.2026', handling: 'Åpne underlag', apen: false,
         k1: 'T11 Titleist Tour, T18 Srixon Tour', k1kilde: 'GolfBox · 19.06.2026', t1: 'nøytral',
         k2: 'Sterk driving, mister fem slag på nærspill', k2kilde: 'Trenervurdering · 23.08.2026', t2: 'obs',
         k3: 'Møter forberedt, men avlyser samlinger sent', k3kilde: 'Trenervurdering · 23.08.2026', t3: 'obs'
       },
       {
-        init: 'IK', navn: 'Ingrid Kvam', skole: 'WANG FREDRIKSTAD', sist: '22.08.2026', handling: 'Åpne underlag', apen: false,
+        init: 'IK', navn: 'Ingrid Kvam — eksempel', skole: 'WANG FREDRIKSTAD', sist: '22.08.2026', handling: 'Åpne underlag', apen: false,
         k1: 'T7 NM junior, vinner klubbmesterskap', k1kilde: 'GolfBox · 08.08.2026', t1: 'god',
         k2: 'Jevn utvikling på PEI gjennom sesongen', k2kilde: 'Målt · Inspill Basis v4 · 24.08.2026', t2: 'god',
         k3: 'Tar ansvar i gruppa, følger opp yngre utøvere', k3kilde: 'Trenervurdering · 22.08.2026', t3: 'god'
       },
       {
-        init: 'JB', navn: 'Jonas Bratlie', skole: 'NTG BÆRUM', sist: '18.08.2026', handling: 'Åpne underlag', apen: false,
+        init: 'JB', navn: 'Jonas Bratlie — eksempel', skole: 'NTG BÆRUM', sist: '18.08.2026', handling: 'Åpne underlag', apen: false,
         k1: 'T22 Sørlandsopen, ingen topp-10 i 2026', k1kilde: 'GolfBox · 06.06.2026', t1: 'obs',
         k2: 'Høyest clubhead speed i gruppa, spredning stor', k2kilde: 'Målt · Clubhead speed v2 · 25.08.2026', t2: 'nøytral',
         k3: 'Har ikke svart på to samlingsforespørsler', k3kilde: 'Systemhendelse · 21.08.2026', t3: 'obs'
       },
       {
-        init: 'SL', navn: 'Sigrid Lunde', skole: 'WANG FREDRIKSTAD', sist: '20.08.2026', handling: 'Åpne underlag', apen: false,
+        init: 'SL', navn: 'Sigrid Lunde — eksempel', skole: 'WANG FREDRIKSTAD', sist: '20.08.2026', handling: 'Åpne underlag', apen: false,
         k1: 'T9 NM junior, T5 Olyo Tour Losby', k1kilde: 'GolfBox · 08.08.2026', t1: 'god',
         k2: 'Beste putting i gruppa målt på Putt Gate', k2kilde: 'Målt · Putt Gate v1 · 22.08.2026', t2: 'god',
         k3: 'Møter presis, tar ansvar for oppvarming', k3kilde: 'Trenervurdering · 20.08.2026', t3: 'god'
       },
       {
-        init: 'ØR', navn: 'Øyvind Rohjan', skole: 'OSLO GK · IKKE TOPPIDRETT', sist: '14.03.2026', handling: 'Åpne underlag', apen: false,
+        init: 'ØR', navn: 'Øyvind Rohjan — eksempel', skole: 'OSLO GK · IKKE TOPPIDRETT', sist: '14.03.2026', handling: 'Åpne underlag', apen: false,
         k1: 'Ingen turneringsresultater delt for 2026', k1kilde: 'Ikke delt · trinn 2', t1: 'nøytral',
         k2: 'Kun fysiske tester delt. Ikke delt er ikke ikke målt.', k2kilde: 'Målt · AK Golf FYS v3 · 14.03.2026', t2: 'nøytral',
         k3: 'Vurdering ikke ført denne sesongen', k3kilde: 'Mangler', t3: 'nøytral'

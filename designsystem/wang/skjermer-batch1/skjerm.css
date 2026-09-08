@@ -1,0 +1,119 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Quattrocento+Sans:wght@400;700&display=swap");
+*{box-sizing:border-box}
+body{margin:0;padding:36px 28px 60px;background:#e6eaee;color:var(--text-primary,#1e293b);font-family:var(--font-body,"Quattrocento Sans",system-ui,sans-serif);-webkit-font-smoothing:antialiased}
+.page{max-width:1460px;margin:0 auto}
+h1{font-family:var(--font-brand,"Montserrat",system-ui,sans-serif);font-weight:800;font-size:26px;letter-spacing:-.015em;margin:0 0 6px}
+.lede{color:var(--text-secondary,#475569);font-size:15px;line-height:1.6;max-width:68ch;margin:0 0 26px}
+.t-label{font-family:var(--font-brand,Montserrat);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-secondary,#475569);margin:0 0 12px}
+.frames{display:flex;gap:30px;align-items:flex-start;flex-wrap:wrap}
+.cap{font-family:var(--font-brand,Montserrat);font-weight:700;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--text-secondary,#475569);margin:0 0 9px}
+.phone{width:390px;height:820px;background:var(--bg-app,#f4f6f8);border-radius:30px;box-shadow:0 18px 40px rgba(15,23,42,.22);overflow:hidden;display:flex;flex-direction:column;flex:none}
+.desk{width:980px;background:var(--bg-app,#f4f6f8);border-radius:18px;box-shadow:0 18px 40px rgba(15,23,42,.22);overflow:hidden;display:flex;flex-direction:column;flex:none;min-width:0}
+.hd{background:#fff;box-shadow:0 4px 14px rgba(23,68,111,.06);flex:none;z-index:3}
+.hd-row{display:flex;align-items:center;gap:12px;padding:13px 18px;min-width:0}
+.crest{width:34px;height:34px;border-radius:9px;background:var(--wang-navy,#17446f);display:grid;place-items:center;flex:none;font-family:var(--font-brand,Montserrat);font-weight:800;font-size:13px;color:#fff}
+.hd-txt{min-width:0;flex:1}
+.hd-txt b{display:block;font-family:var(--font-brand,Montserrat);font-weight:800;font-size:14.5px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hd-txt span{display:block;font-family:var(--font-brand,Montserrat);font-weight:700;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--text-secondary,#475569);margin-top:2px}
+.season{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 12px;border-radius:999px;background:color-mix(in srgb,#2e857d 13%,white);color:var(--wang-teal-text,#226f67);font-family:var(--font-brand,Montserrat);font-weight:700;font-size:11px;white-space:nowrap;flex:none}
+.dot{width:6px;height:6px;border-radius:999px;background:var(--wang-mint,#49ca9f);flex:none}
+.scroll{flex:1;overflow:hidden;padding:15px 16px 18px;display:flex;flex-direction:column;gap:12px;min-height:0}
+.titel{display:flex;align-items:baseline;justify-content:space-between;gap:10px;min-width:0;flex:none}
+.titel h2{font-family:var(--font-brand,Montserrat);font-weight:800;font-size:21px;letter-spacing:-.015em;margin:0;min-width:0}
+.titel .yr{font-family:var(--font-brand,Montserrat);font-weight:700;font-size:11.5px;color:var(--text-secondary,#475569);white-space:nowrap;flex:none;font-variant-numeric:tabular-nums}
+.hero{background:var(--wang-navy,#17446f);color:#fff;border-radius:26px;padding:16px 17px;flex:none;box-shadow:0 8px 24px rgba(23,68,111,.18)}
+.hero .k{font-family:var(--font-brand,Montserrat);font-weight:700;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--wang-mint,#49ca9f)}
+.hero .v{font-family:var(--font-brand,Montserrat);font-weight:800;font-size:22px;line-height:1.15;margin-top:7px;letter-spacing:-.01em}
+.hero .m{font-size:12.5px;line-height:1.55;color:rgba(255,255,255,.82);margin-top:7px}
+.card{background:#fff;border-radius:20px;box-shadow:0 4px 14px rgba(23,68,111,.06);padding:13px 14px;min-width:0;flex:none}
+.card-t{font-family:var(--font-brand,Montserrat);font-weight:700;font-size:14px;margin:0 0 3px}
+.card-s{font-size:12.5px;color:var(--text-secondary,#475569);line-height:1.55}
+.seg{display:flex;background:#e5eaf0;border-radius:999px;padding:3px;gap:2px;flex:none}
+.seg button{flex:1;font-family:var(--font-brand,Montserrat);font-weight:700;font-size:12px;padding:13px 4px;border-radius:999px;border:0;background:transparent;color:var(--text-secondary,#475569);min-width:0}
+.seg button.on{background:#fff;color:var(--wang-navy,#17446f);box-shadow:0 4px 14px rgba(23,68,111,.06)}
+.pill{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 22px;border-radius:999px;border:0;background:var(--wang-navy,#17446f);color:#fff;font-family:var(--font-brand,Montserrat);font-weight:600;font-size:14px;transition:transform 140ms cubic-bezier(.22,1,.36,1)}
+.pill:active{transform:scale(.97)}
+.pill.sec{background:color-mix(in srgb,#2e857d 13%,white);color:var(--wang-teal-text,#226f67)}
+.pill.sm{min-height:44px;padding:0 14px;font-size:12.5px}
+.chip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:5px 11px;font-family:var(--font-brand,Montserrat);font-weight:700;font-size:11px;background:#eef2f6;color:var(--text-secondary,#475569);white-space:nowrap}
+.chip.mint{background:color-mix(in srgb,#49ca9f 22%,white);color:#0f5c46}
+.chip.orange{background:color-mix(in srgb,#f47b20 14%,white);color:#9d4a10}
+.chip.blue{background:color-mix(in srgb,#007db1 12%,white);color:#005a80}
+.chip.purple{background:color-mix(in srgb,#7f1975 12%,white);color:#6a1462}
+.chip.pink{background:color-mix(in srgb,#d12a5c 12%,white);color:#a01e45}
+.mini{font-family:var(--font-brand,Montserrat);font-weight:700;font-size:9.5px;letter-spacing:.04em;text-transform:uppercase;padding:3px 7px;border-radius:6px;background:#eef2f6;color:var(--text-secondary,#475569);white-space:nowrap}
+.row{display:flex;gap:11px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--border-subtle,#e9edf1);min-width:0}
+.row:last-child{border-bottom:0;padding-bottom:0}
+.row:first-child{padding-top:2px}
+.row-b{width:4px;border-radius:999px;flex:none;align-self:stretch;min-height:38px}
+.row-t{min-width:0;flex:1}
+.row-t b{font-family:var(--font-brand,Montserrat);font-weight:700;font-size:13.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row-m{font-family:var(--font-brand,Montserrat);font-weight:700;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--text-secondary,#475569);margin-top:3px;font-variant-numeric:tabular-nums}
+.row-x{font-size:12.5px;color:var(--text-secondary,#475569);line-height:1.5;margin-top:4px}
+.num{font-family:var(--font-brand,Montserrat);font-weight:800;font-size:17px;font-variant-numeric:tabular-nums;flex:none;text-align:right;min-width:64px}
+.src{display:flex;align-items:flex-start;gap:6px;font-size:10.5px;line-height:1.45;color:var(--text-secondary,#475569);margin-top:6px;font-variant-numeric:tabular-nums}
+.src svg{width:12px;height:12px;flex:none;margin-top:1px;stroke:var(--wang-teal-text,#226f67);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.inp{min-height:44px;border-radius:16px;background:#f1f4f8;border:1px solid var(--border-subtle,#e9edf1);display:flex;align-items:center;padding:0 13px;font-size:14px;color:var(--text-primary,#1e293b);font-family:var(--font-brand,Montserrat);font-weight:700;font-variant-numeric:tabular-nums}
+.inp.ph{color:#94a3b8;font-weight:400;font-family:var(--font-body,inherit)}
+.ta{border-radius:16px;background:#f1f4f8;border:1px solid var(--border-subtle,#e9edf1);padding:11px 13px;font-size:13px;line-height:1.6;color:var(--text-primary,#1e293b)}
+.prog{height:8px;border-radius:999px;background:#e5eaf0;overflow:hidden;margin-top:9px}
+.prog i{display:block;height:100%;background:var(--wang-mint,#49ca9f)}
+.ico{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.av{width:34px;height:34px;border-radius:999px;background:#e5eaf0;display:grid;place-items:center;flex:none;font-family:var(--font-brand,Montserrat);font-weight:700;font-size:11.5px;color:var(--text-secondary,#475569)}
+.bn{flex:none;background:#fff;box-shadow:0 -6px 20px rgba(23,68,111,.09);display:grid;grid-template-columns:repeat(4,1fr);padding:8px 6px 14px}
+.bn-i{display:flex;flex-direction:column;align-items:center;gap:4px;padding:5px 2px;border:0;background:transparent;color:var(--text-secondary,#475569);min-width:0;min-height:48px}
+.bn-i svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.bn-i span{font-family:var(--font-brand,Montserrat);font-weight:700;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.bn-i.on{color:var(--wang-navy,#17446f)}
+.empty{text-align:center;padding:30px 20px}
+.empty .circ{width:58px;height:58px;border-radius:999px;background:color-mix(in srgb,#2e857d 13%,white);display:grid;place-items:center;margin:0 auto}
+.empty .circ svg{width:26px;height:26px;stroke:var(--wang-teal-text,#226f67);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.empty b{display:block;font-family:var(--font-brand,Montserrat);font-weight:700;font-size:17px;margin-top:14px}
+.empty p{font-size:13px;color:var(--text-secondary,#475569);line-height:1.6;margin:7px 0 0}
+.skel{background:linear-gradient(90deg,#eef1f4 25%,#e3e8ed 50%,#eef1f4 75%);border-radius:8px;height:12px}
+.note{background:#fff;border-radius:26px;box-shadow:0 8px 24px rgba(23,68,111,.08);padding:22px 24px;font-size:14px;line-height:1.65;color:var(--text-secondary,#475569);margin-top:30px}
+.note b{color:var(--text-primary,#1e293b)}
+.note ul{margin:10px 0 0;padding-left:20px}
+.note li{margin-bottom:8px}
+.note code{font-family:ui-monospace,monospace;font-size:12.5px}
+.hull{border-radius:20px;background:color-mix(in srgb,#d12a5c 8%,white);padding:14px 16px;margin-top:16px}
+.hull b{font-family:var(--font-brand,Montserrat);font-weight:700;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:#a01e45;display:block;margin-bottom:6px}
+.hull p{margin:0;font-size:13.5px;line-height:1.6;color:var(--text-primary,#1e293b)}
+.rute{font-family:ui-monospace,monospace;font-size:12.5px;color:var(--text-secondary,#475569);background:#eef2f6;border-radius:8px;padding:3px 8px;display:inline-block;margin:0 0 18px}
+table.g{width:100%;border-collapse:collapse;font-size:12.5px}
+table.g th{font-family:var(--font-brand,Montserrat);font-weight:700;font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--text-secondary,#475569);text-align:left;padding:0 8px 8px;white-space:nowrap}
+table.g td{padding:8px;border-top:1px solid var(--border-subtle,#e9edf1);font-variant-numeric:tabular-nums;color:var(--text-primary,#1e293b)}
+table.g td.n{font-family:var(--font-brand,Montserrat);font-weight:700}
+.swb{display:flex;align-items:center;gap:7px;padding:0 18px 11px;min-width:0}
+.swb-b{display:inline-flex;align-items:center;gap:7px;min-height:34px;padding:0 12px;border-radius:999px;border:1px solid var(--border-subtle,#e9edf1);background:#f1f4f8;font-family:var(--font-brand,Montserrat);font-weight:700;font-size:12px;color:var(--wang-navy,#17446f);min-width:0;flex:1}
+.swb-b svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.swb-b b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.swb-n{font-family:var(--font-brand,Montserrat);font-weight:700;font-size:10.5px;color:var(--text-secondary,#475569);white-space:nowrap;flex:none;font-variant-numeric:tabular-nums}
+.eier{display:inline-flex;align-items:center;gap:5px;font-family:var(--font-brand,Montserrat);font-weight:700;font-size:9.5px;letter-spacing:.04em;text-transform:uppercase;padding:4px 9px;border-radius:999px;white-space:nowrap}
+.eier.skole{background:color-mix(in srgb,#007db1 12%,white);color:#005a80}
+.eier.felles{background:color-mix(in srgb,#7f1975 10%,white);color:#6a1462}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.kpi{background:#fff;border-radius:16px;box-shadow:0 4px 14px rgba(23,68,111,.06);padding:11px 12px;min-width:0}
+.kpi .k{font-family:var(--font-brand,Montserrat);font-weight:700;font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-secondary,#475569)}
+.kpi .v{font-family:var(--font-brand,Montserrat);font-weight:800;font-size:22px;font-variant-numeric:tabular-nums;margin-top:4px;letter-spacing:-.01em}
+.dots{display:flex;gap:3px;margin-top:6px;flex-wrap:wrap}
+.dots i{width:7px;height:7px;border-radius:999px;background:#e0e6ec;flex:none}
+.dots i.on{background:var(--wang-mint,#49ca9f)}
+.msg{border-radius:14px;padding:9px 11px;font-size:12.5px;line-height:1.55;background:#f1f4f8;margin-bottom:8px}
+.msg.me{background:color-mix(in srgb,#2e857d 10%,white)}
+.msg .who{font-family:var(--font-brand,Montserrat);font-weight:700;font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--text-secondary,#475569);margin-bottom:4px;font-variant-numeric:tabular-nums}
+.aapent{border-radius:20px;background:color-mix(in srgb,#f47b20 12%,white);padding:14px 16px;margin-top:16px}
+.aapent b{font-family:var(--font-brand,Montserrat);font-weight:700;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:#9d4a10;display:block;margin-bottom:6px}
+.aapent p{margin:0;font-size:13.5px;line-height:1.6;color:var(--text-primary,#1e293b)}
+.trinn{display:flex;gap:5px;flex-wrap:wrap}
+.trinn button{border:1px solid var(--border-subtle,#e9edf1);background:#fff;border-radius:999px;min-height:34px;padding:0 12px;font-family:var(--font-brand,Montserrat);font-weight:700;font-size:11.5px;color:var(--text-secondary,#475569)}
+.trinn button.on{background:var(--wang-navy,#17446f);border-color:var(--wang-navy,#17446f);color:#fff}
+.trinn .sk{font-family:var(--font-brand,Montserrat);font-weight:700;font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--text-secondary,#475569);align-self:center;padding-right:3px}
+a{color:var(--wang-teal-text,#226f67)}
+a:hover{color:var(--wang-navy,#17446f)}.ev{display:inline-flex;align-items:center;height:26px;padding:0 11px;border-radius:999px;font-family:var(--font-brand,Montserrat);font-weight:700;font-size:11px;white-space:nowrap}
+.ev-okt{background:color-mix(in srgb,#49ca9f 22%,white);color:#0f5c46}
+.ev-test{background:color-mix(in srgb,#7f1975 12%,white);color:#6a1462}
+.ev-konk{background:color-mix(in srgb,#f47b20 18%,white);color:#8f4210}
+.ev-skole{background:#eef2f6;color:var(--text-secondary,#475569)}
+.ev-hendelse{background:color-mix(in srgb,#d12a5c 12%,white);color:#a01e45}

@@ -28,6 +28,20 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
 
 ## Beslutningene (september 2026)
 
+- **CLAW OG WANG-SPEIL 08.09 ER FASIT FOR SINE FLATER (Anders 08.09.2026, i økt):** to zip-er
+  i Nedlastinger (22:03 / 22:05) er designfasiten fra nå for `/team-norway/*` (Claw) og
+  `/team-wang` (WANG-merket). Destinasjon: `designsystem/team-norway/` og
+  `designsystem/wang/`. **Overstyrer ikke** Train-lock for PlayerHQ/AgencyOS/Forelder
+  (invariant 2) og ikke AK Golf-merket. Navy `#012B5D` / TN-rød `#D70232` uendret.
+  WANG-tokenene i speilet er byte-eksakte mot `src/styles/wang-tokens.css` — ingen
+  produkt-token endret. **Bevisst ikke kopiert:** TN `uploads/` (IUP-regneark med
+  trenernavn + skjermbilder, offentlig repo), WANG `eksport/` (duplikat av samme mappe).
+  **18.32 er dermed levert som speil** — designrunden Anders skulle opprette, er denne
+  zip-en. Ingen produktkode i denne PR-en. Port følger `handover/PORTING.md` (TN) og
+  `PORTING.md` (WANG), én skjerm om gangen, etter at Anders har sett. Åpne spørsmål i
+  hver pakkes `APNE-BESLUTNINGER.md`. **Arbeidet:** synk (denne PR-en); port er STEG 17
+  (TN) og STEG 18.32 (WANG-flaten).
+
 - **TRAIN-LOCK 08.09 ER FASIT — ALT DESIGN MATCHER DENNE LEVERANSEN (Anders 08.09.2026, i økt):**
   mappa `/Users/anderskristiansen/Downloads/Player HQ Train lock` (zip-søsken samme
   tidsstempel 15:47) er designfasiten fra nå. Destinasjon i repoet er
