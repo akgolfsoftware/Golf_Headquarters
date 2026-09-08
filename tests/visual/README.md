@@ -195,3 +195,54 @@ Begge står som `ukalibrert` / `kjent-layoutavvik`: appens panel er bredere enn
 fasitrammen og har annen seksjons-/datasammensetning, så tallet er dokumentasjon,
 ikke et signal. Kommandoer, bilder og begrunnelse:
 [`docs/design-audit/2026-09-08/rigg-panelmodus-ao/`](../../docs/design-audit/2026-09-08/rigg-panelmodus-ao/README.md).
+
+## Nattlig kjøring (fase 1, økt 6 — 08.09.2026)
+
+Riggen kjører hver natt mot prod fra `.github/workflows/playwright.yml`, jobben
+`nattlig` (cron `0 1 * * *` UTC = 03:00 Oslo om sommeren, 02:00 om vinteren).
+Den er IKKE en PR-gate — den måler den deployede prod-en, ikke koden i en PR
+(samme grunn som prod-røyktesten, se toppen av `playwright.yml`). Manuelt:
+Actions → «Playwright E2E (prod-røyktest)» → Run workflow → huk av `nattlig`.
+
+To spec-er, egen konfig `playwright.nattlig.config.ts` (ikke et prosjekt i
+`playwright.config.ts`, ellers hadde `npx playwright test` etter hver push dratt
+med seg 20+ minutter måling):
+
+- `train-lock-pixelnaerhet.spec.ts` — én test per rad med `status: "kalibrert"`
+  i `skjerm-mapping.ts`, samme motor som CLI-en (`scripts/lib/train-lock-maal.mjs`).
+  Feiler når målt avvik > `kalibrertAvvikPst` + `PIXEL_TOLERANSE_PP` (default 2;
+  jobben setter 5 første uke, se under). Rader som ikke kan måles om natten står
+  i `HOPP_OVER` i spec-en med grunn (i dag PH-21c: samme rute som PH-21a/b i en
+  annen datatilstand, `--tom`). CI seeder ingenting — datatilstanden er radenes
+  `seedScript`, kjørt fra hovedmaskinen.
+- `lys-morkt-royk.spec.ts` — hver rute under `/portal`, `/admin`, `/forelder`
+  (utledet fra `src/app` ved kjøring, `produkt-ruter.ts`; `[param]`- og rene
+  redirect-sider hoppes over), lys og mørk, 390 og 1280, innlogget som
+  screentest / coachtest / screentest-parent: tema faktisk satt, 0 konsollfeil,
+  ingen horisontal overflyt, ingen tekst under 21 px i et blokkerende kontrastpar.
+  Kontrastparene er de 12 bruddene i `docs/design-audit/train-lock-kontrast.md`:
+  åtte blokkerer (`danger`/`ok`/`warn`/`viz-target` på `scene`/`elev` — Vei A,
+  03.09), to rapporteres uten å feile (`mute` på `dock` er fasitens inaktive
+  faner, `dim` på `scene` er skjelett), to er utenfor (`on-danger` på `danger`
+  er hvit tekst på fylt flate, tillatt). Kjente avvik per rute står i
+  `KJENTE_AVVIK` med grunn — lista skal krympe.
+
+Kjøre lokalt (krever `.env.local` med `SCREENTEST_PASSWORD` — hovedmaskinen,
+aldri kopiert inn i en worktree):
+
+```bash
+npm run nattlig                                                                   # begge spec-ene mot prod
+npx playwright test -c playwright.nattlig.config.ts tests/visual/lys-morkt-royk.spec.ts -g "portal · light · 390"
+PIXEL_TOLERANSE_PP=5 npx playwright test -c playwright.nattlig.config.ts tests/visual/train-lock-pixelnaerhet.spec.ts
+```
+
+Bildene havner i `tests/visual/ut/nattlig/` (gitignorert); i CI lastes de opp
+som artifact `nattlig-maaling` sammen med `playwright-report/`.
+
+**Terskelen er +5 pp første uke, deretter +2.** Fasitene bruker
+`-apple-system … "SF Pro Display"` — på Ubuntu-runneren finnes ingen av dem, så
+fasit-rammen rendres med Linux-fallbackfont, mens appen laster Poppins likt
+begge steder. Baseline-tallene i `skjerm-mapping.ts` er målt på macOS og
+treffer derfor ikke eksakt i CI. Etter sju netter (annotasjonen `avvik` per rad
+i rapporten) senkes `PIXEL_TOLERANSE_PP` til 2 i `playwright.yml` — eller raden
+får egen CI-baseline hvis gapet er systematisk. Ikke stram før tallene finnes.
