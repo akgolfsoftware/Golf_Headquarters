@@ -7,6 +7,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@/generated/prisma/client";
 import { triggerLiveSessionAgent, triggerSwingVideoAnalyst } from "@/lib/agents/triggers";
+import { startSession as startWorkbenchSession } from "@/lib/workbench/wb-actions";
 
 /** Starter plan-økt fra brief (PLANNED → ACTIVE) og sender til tapper. */
 export async function startPlanSession(sessionId: string): Promise<void> {
@@ -23,35 +24,60 @@ export async function startPlanSession(sessionId: string): Promise<void> {
       plan: { select: { userId: true } },
     },
   });
-  if (!session || session.plan.userId !== user.id) {
+
+  if (session) {
+    if (session.plan.userId !== user.id) {
+      redirect("/portal/planlegge/workbench");
+    }
+
+    if (session.status === "COMPLETED") {
+      redirect(`/portal/live/${sessionId}/summary`);
+    }
+    if (session.status === "SKIPPED") {
+      redirect(`/portal/tren/${sessionId}`);
+    }
+
+    if (session.status === "PLANNED") {
+      const nowISO = new Date().toISOString();
+      await prisma.trainingPlanSession.update({
+        where: { id: sessionId },
+        data: {
+          status: "ACTIVE",
+          liveSnapshot: {
+            startedAtISO: nowISO,
+            totalSec: 0,
+            updatedAtISO: nowISO,
+            drills: [],
+          } as unknown as Prisma.InputJsonValue,
+        },
+      });
+      void triggerLiveSessionAgent({ userId: user.id, sessionId, kind: "plan-session" });
+    }
+
+    revalidatePath("/portal/planlegge/workbench");
+    revalidatePath(`/portal/live/${sessionId}/brief`);
+    redirect(`/portal/live/${sessionId}/tapper`);
+  }
+
+  const wb = await prisma.workbenchSession.findUnique({
+    where: { id: sessionId },
+    select: { id: true, playerId: true, status: true },
+  });
+  if (!wb || wb.playerId !== user.id) {
     redirect("/portal/planlegge/workbench");
   }
-
-  if (session.status === "COMPLETED") {
+  if (wb.status === "COMPLETED") {
     redirect(`/portal/live/${sessionId}/summary`);
   }
-  if (session.status === "SKIPPED") {
-    redirect(`/portal/tren/${sessionId}`);
+  if (wb.status === "SKIPPED" || wb.status === "CANCELLED" || wb.status === "DRAFT") {
+    redirect("/portal/planlegge/workbench");
+  }
+  if (wb.status === "PUBLISHED" || wb.status === "SCHEDULED") {
+    const res = await startWorkbenchSession(sessionId);
+    if (!res.ok) redirect("/portal");
   }
 
-  if (session.status === "PLANNED") {
-    const nowISO = new Date().toISOString();
-    await prisma.trainingPlanSession.update({
-      where: { id: sessionId },
-      data: {
-        status: "ACTIVE",
-        liveSnapshot: {
-          startedAtISO: nowISO,
-          totalSec: 0,
-          updatedAtISO: nowISO,
-          drills: [],
-        } as unknown as Prisma.InputJsonValue,
-      },
-    });
-    void triggerLiveSessionAgent({ userId: user.id, sessionId, kind: "plan-session" });
-  }
-
-  revalidatePath("/portal/planlegge/workbench");
+  revalidatePath("/portal");
   revalidatePath(`/portal/live/${sessionId}/brief`);
   redirect(`/portal/live/${sessionId}/tapper`);
 }

@@ -12,6 +12,8 @@ import type { LiveV2Summary } from "@/components/portal/live";
 import type { PyramidArea } from "@/generated/prisma/client";
 import { loadNesteOkt } from "@/lib/portal/load-neste-okt";
 import { nesteOktTekst } from "@/lib/portal/neste-okt-tekst";
+import { loadWorkbenchForLive } from "@/lib/portal-live/resolve-live-session";
+import { mapWbToLiveSummary } from "@/lib/portal-live/wb-live-map";
 
 export default async function LiveSummaryPage({
   params,
@@ -23,8 +25,50 @@ export default async function LiveSummaryPage({
 
   const result = await loadLiveSession(sessionId);
   if (!result.ok) {
-    if (result.reason === "notfound") notFound();
-    redirect("/portal/planlegge");
+    if (result.reason === "forbidden") redirect("/portal/planlegge");
+    const wb = await loadWorkbenchForLive(sessionId);
+    if (!wb) {
+      if (result.reason === "notfound") notFound();
+      redirect("/portal/planlegge");
+    }
+    const erEier = wb.playerId === user.id;
+    const isCoach = user.role === "COACH" || user.role === "ADMIN";
+    if (!erEier && !isCoach) redirect("/portal/planlegge/workbench");
+    if (wb.status === "IN_PROGRESS") redirect(`/portal/live/${sessionId}/tapper`);
+    if (wb.status !== "COMPLETED") redirect(`/portal/live/${sessionId}`);
+
+    const summaryData = mapWbToLiveSummary({
+      id: wb.id,
+      title: wb.title,
+      status: wb.status,
+      pyramid: wb.pyramid,
+      durationMinutes: wb.durationMinutes,
+      date: wb.date,
+      startMinute: wb.startMinute,
+      location: wb.location,
+      notes: wb.notes,
+      publishedAt: wb.publishedAt,
+      createdAt: wb.createdAt,
+      drills: wb.drills,
+    });
+    const naa = new Date();
+    const { okt, href } = await loadNesteOkt(user.id, naa);
+    const nesteOkt = nesteOktTekst(okt, href, naa);
+    return (
+      <LiveSessionShell
+        odId="playerhq-live-summary"
+        title="Etter økta"
+        subtitle={wb.title}
+        backHref="/portal"
+        closeHref="/portal"
+      >
+        <SessionSummary
+          data={summaryData}
+          nesteOkt={nesteOkt}
+          lagredeOrd="Økt gjennomført."
+        />
+      </LiveSessionShell>
+    );
   }
 
   const { data } = result;
