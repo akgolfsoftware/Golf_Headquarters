@@ -36,6 +36,7 @@
     "test:e2e:pilot": "playwright test tests/e2e/pilot-recording-smoke.spec.ts --project=chromium",
     "pilot:flyt-smoke": "node scripts/pilot-flyt-smoke.mjs",
     "signoff:train-lock": "node scripts/train-lock-pixel-diff.mjs",
+    "nattlig": "playwright test -c playwright.nattlig.config.ts",
     "test:all": "npm test && npm run test:e2e",
     "prepare": "husky",
     "meg:tilbakeskriv": "tsx scripts/meg-tilbakeskriving/run.ts",

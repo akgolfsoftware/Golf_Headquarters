@@ -9,15 +9,28 @@ name: Playwright E2E (prod-røyktest)
 on:
   push:
     branches: [main]
+  # Nattlig måling (jobben `nattlig` under, fase 1 økt 6 i designporten 05.09.2026).
+  # GitHub cron er alltid UTC: 01:00 UTC = 03:00 Oslo om sommeren (CEST), 02:00 om
+  # vinteren (CET). Det er greit — poenget er «etter midnatt, før arbeidsdagen».
+  schedule:
+    - cron: "0 1 * * *"
   workflow_dispatch:
     inputs:
       base_url:
         description: "Base URL å teste mot (default = Vercel prod)"
         required: false
         default: "https://akgolf-hq.vercel.app"
+      nattlig:
+        description: "Kjør den nattlige målingen (pixelnærhet + lys/mørk-røyk) i stedet for prod-røyktesten"
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   e2e:
+    # Prod-røyktesten kjører etter push til main og ved manuell kjøring uten
+    # `nattlig`-haken. På schedule kjører bare den nattlige jobben under.
+    if: github.event_name != 'schedule' && github.event.inputs.nattlig != 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
@@ -72,5 +85,74 @@ jobs:
           curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
             --data-urlencode chat_id="${TELEGRAM_CHAT_ID}" \
             --data-urlencode text="Prod-røyktesten er RØD (akgolf-hq). Produksjonen kan ha en feil brukerne ser. Kjøring: ${RUN_URL}" \
+            > /dev/null
+          echo "Telegram-varsel sendt."
+
+  # Nattlig måling mot prod (tests/visual/README.md §Nattlig kjøring):
+  #  - train-lock-pixelnaerhet.spec.ts: alle kalibrerte riggrader mot Train-lock-fasiten
+  #  - lys-morkt-royk.spec.ts: hver produktrute i lys+mørk på 390/1280
+  # Ikke en PR-gate — den måler den deployede prod-en, som prod-røyktesten over.
+  nattlig:
+    if: github.event_name == 'schedule' || github.event.inputs.nattlig == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      # Dummy DB-URLer så `postinstall: prisma generate` (kjøres av `npm ci`) har dem.
+      DATABASE_URL: postgresql://dummy:dummy@localhost:5432/dummy?pgbouncer=true
+      DIRECT_URL: postgresql://dummy:dummy@localhost:5432/dummy
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browser
+        run: npx playwright install chromium --with-deps
+
+      - name: Nattlig måling mot prod (pixelnærhet + lys/mørk-røyk)
+        run: npx playwright test -c playwright.nattlig.config.ts
+        env:
+          CI: "true"
+          PLAYWRIGHT_BASE_URL: ${{ github.event.inputs.base_url || 'https://akgolf-hq.vercel.app' }}
+          # Samme secret som scripts/roter-screentest-passord.ts setter (finnes siden 26.08.2026).
+          SCREENTEST_PASSWORD: ${{ secrets.SCREENTEST_PASSWORD }}
+          # Første uke +5 prosentpoeng: fasitene bruker SF Pro, som ikke finnes på
+          # Ubuntu-runneren — fasit-rammen rendres med fallbackfont, appen laster
+          # Poppins likt begge steder, så baseline fra macOS treffer ikke eksakt.
+          # Senkes til "2" etter sju netter med tall (README §Nattlig kjøring).
+          PIXEL_TOLERANSE_PP: "5"
+
+      - name: Last opp bilder og rapport
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nattlig-maaling
+          path: |
+            tests/visual/ut/nattlig/
+            playwright-report/
+          retention-days: 14
+
+      # Samme varsel som prod-røyktesten — en rød natt skal ikke stå uoppdaget.
+      - name: Varsle Telegram ved rød nattlig måling
+        if: failure()
+        continue-on-error: true
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.MEG_TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.MEG_TELEGRAM_ALLOWED_CHAT_ID }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then
+            echo "::warning::Telegram-secrets mangler (MEG_TELEGRAM_BOT_TOKEN / MEG_TELEGRAM_ALLOWED_CHAT_ID) — ingen varsel sendt."
+            exit 0
+          fi
+          curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode chat_id="${TELEGRAM_CHAT_ID}" \
+            --data-urlencode text="Den nattlige designmålingen er RØD (akgolf-hq): pixelnærhet eller lys/mørk-røyk. Bilder og rapport ligger som artifact. Kjøring: ${RUN_URL}" \
             > /dev/null
           echo "Telegram-varsel sendt."
