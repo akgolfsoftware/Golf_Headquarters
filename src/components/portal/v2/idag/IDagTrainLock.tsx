@@ -9,11 +9,14 @@
  * Fasit: designsystem/train-lock/PH-02 I dag hvile.dc.html
  * Fasit: designsystem/train-lock/PH-03 I dag tom uke.dc.html
  * Rigg: PH-01 I dag
+ * Avvik:
+ *   - Klokke-knapp «I dag i tiden» (KA-04) står ikke i PH-01-tegningen; Player
+ *     har ingen kalender-fane, så inngangen ligger her (fase 2).
  */
 
 import { useState, type CSSProperties, type ReactNode } from "react";
 import Link from "next/link";
-import { Check, ChevronRight } from "lucide-react";
+import { Check, ChevronRight, Clock } from "lucide-react";
 import { TL } from "@/lib/v2/train-lock";
 import {
   IDAG_UI,
@@ -24,6 +27,8 @@ import {
 import type { PlayerDaySession } from "@/lib/workbench/wb-actions";
 import type { TrackManTeaser } from "@/lib/trackman/teaser";
 import type { TesterLiveKort as TesterLiveKortData } from "@/lib/portal-tester/tester-live-kort";
+import type { KalenderHendelse } from "@/lib/domain/kalender-lag";
+import { IDagITidenArk } from "@/components/portal/v2/kalender/IDagITidenArk";
 import { GodkjenningKort } from "./GodkjenningKort";
 
 export type NaaKort = {
@@ -65,6 +70,9 @@ export type IDagTrainLockProps = {
   trackman: TrackManTeaser | null;
   testerLive: TesterLiveKortData | null;
   godkjenninger: PlayerDaySession[];
+  /** KA-04: norsk ukedag + dato, f.eks. «Lørdag 22.» (ingen måned). */
+  dagLabel: string;
+  hendelser: KalenderHendelse[];
 };
 
 const caps: CSSProperties = {
@@ -361,6 +369,7 @@ function TesterKort({ testerLive }: { testerLive: TesterLiveKortData }) {
 
 export function IDagTrainLock(p: IDagTrainLockProps) {
   const [besvart, setBesvart] = useState<Set<string>>(() => new Set());
+  const [idagItidenApen, setIdagItidenApen] = useState(false);
   const godkjenninger = p.godkjenninger.filter((g) => !besvart.has(g.id));
 
   let hero: ReactNode = null;
@@ -496,19 +505,53 @@ export function IDagTrainLock(p: IDagTrainLockProps) {
           overflowY: "auto",
         }}
       >
-        <div style={{ ...caps }}>{p.datoLinje}</div>
-        <h1
+        <div
           style={{
-            margin: "6px 0 0",
-            fontSize: 34,
-            fontWeight: 700,
-            letterSpacing: "-0.02em",
-            lineHeight: 1.1,
-            color: TL.text,
+            display: "flex",
+            alignItems: "flex-start",
+            justifyContent: "space-between",
+            gap: 12,
           }}
         >
-          {IDAG_UI.tittel}
-        </h1>
+          <div style={{ minWidth: 0 }}>
+            <div style={{ ...caps }}>{p.datoLinje}</div>
+            <h1
+              style={{
+                margin: "6px 0 0",
+                fontSize: 34,
+                fontWeight: 700,
+                letterSpacing: "-0.02em",
+                lineHeight: 1.1,
+                color: TL.text,
+              }}
+            >
+              {IDAG_UI.tittel}
+            </h1>
+          </div>
+          {/* KA-04: «I dag i tiden» — hele dagen på tvers av lagene
+              (økt/skole/turnering/tester/booking), lesevisning. Ingen egen
+              kalender-fane for spilleren — dette er inngangen. */}
+          <button
+            type="button"
+            onClick={() => setIdagItidenApen(true)}
+            className="v2-press v2-focus"
+            aria-label="I dag i tiden"
+            style={{
+              width: 44,
+              height: 44,
+              display: "grid",
+              placeItems: "center",
+              borderRadius: TL.radius.card,
+              border: `1px solid ${TL.hair}`,
+              background: "transparent",
+              color: TL.text,
+              cursor: "pointer",
+              flex: "none",
+            }}
+          >
+            <Clock size={18} strokeWidth={1.8} aria-hidden />
+          </button>
+        </div>
         <div className="ph01-grid" style={{ marginTop: 20 }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {godkjenninger.map((okt) => (
@@ -529,6 +572,12 @@ export function IDagTrainLock(p: IDagTrainLockProps) {
           </div>
         </div>
       </div>
+      <IDagITidenArk
+        open={idagItidenApen}
+        onClose={() => setIdagItidenApen(false)}
+        dagLabel={p.dagLabel}
+        hendelser={p.hendelser}
+      />
     </div>
   );
 }

@@ -15,6 +15,7 @@ import { getTesterLiveKort } from "@/lib/portal-tester/tester-live-kort";
 import { formatSg } from "@/lib/sg";
 import { formatMinutes } from "@/lib/domain/workbench/labels";
 import { hentIDagKalender } from "@/lib/portal/idag-data";
+import { hentSpillerDagITiden } from "@/lib/kalender-lag/player-dag";
 import { hentEffektivNaa } from "@/lib/testing/dato-override";
 import {
   byggMaanedPrikker,
@@ -56,14 +57,16 @@ export default async function PortalHjemPage() {
   const manedNr = osloDeler[1] ?? naa.getMonth() + 1;
   const dagNr = osloDeler[2] ?? naa.getDate();
 
-  const [data, gjennomfore, workbenchDay, trackman, testerLive, kalender] = await Promise.all([
-    getDashboardData(user.id, naa),
-    getGjennomforeData(user.id),
-    loadPlayerDay({ playerId: user.id, date: iDag }),
-    getTrackManTeaser(user.id),
-    getTesterLiveKort(user.id),
-    hentIDagKalender(user.id, naa),
-  ]);
+  const [data, gjennomfore, workbenchDay, trackman, testerLive, kalender, dagITidenHendelser] =
+    await Promise.all([
+      getDashboardData(user.id, naa),
+      getGjennomforeData(user.id),
+      loadPlayerDay({ playerId: user.id, date: iDag }),
+      getTrackManTeaser(user.id),
+      getTesterLiveKort(user.id),
+      hentIDagKalender(user.id, naa),
+      hentSpillerDagITiden(user.id, iDag),
+    ]);
 
   const feil = !workbenchDay.ok;
   const sessions: PlayerDaySession[] = workbenchDay.ok ? workbenchDay.data.sessions : [];
@@ -208,6 +211,8 @@ export default async function PortalHjemPage() {
         trackman={trackman}
         testerLive={testerLive}
         godkjenninger={godkjenninger}
+        dagLabel={`${dagNavnLang(naa)} ${dagNr}.`}
+        hendelser={dagITidenHendelser}
       />
     </V2Shell>
   );

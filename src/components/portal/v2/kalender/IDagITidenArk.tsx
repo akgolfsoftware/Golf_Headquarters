@@ -2,10 +2,12 @@
 
 /**
  * KA-04 — «I dag i tiden» (Loop 7/C3, natt-plan bølge 2).
+ * Fasit: designsystem/train-lock/KA-04 Player I dag i tiden ark.dc.html
+ * Avvik:
+ *   - Ingen riggrad ennå (fase 2) — KA-04 finnes ikke i tests/visual/skjerm-mapping.ts.
  *
- * Fasit: `designsystem/train-lock/KA-04 Player I dag i tiden ark.dc.html» —
- * «Player har ingen kalender-fane — "I dag i tiden" er ark fra I dag: dagen
- * som lesevisning, økter redigeres i Plan.»
+ * Player har ingen kalender-fane — «I dag i tiden» er ark fra I dag: dagen
+ * som lesevisning, økter redigeres i Plan.
  *
  * Selvstendig TL-ark (scrim + bunn-forankret sheet). Bruker IKKE
  * `src/components/v2/bunn-ark.tsx` — den er bygget på `T` (Paper-tokens), og
