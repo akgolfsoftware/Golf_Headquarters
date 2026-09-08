@@ -183,3 +183,15 @@ ikke forsøkt. Kodegjennomgang av `oppgrader-flyt-wizard.tsx` fant og rettet
 én reell feil uavhengig av fasit-spørsmålet: funksjons-chippene hadde
 identisk tekst- og bakgrunnsfarge (`color: TL.fill` på `background: TL.fill`)
 — usynlig tekst i enhver rendering, uavhengig av brukertilstand.
+
+## AO-03 / AO-08 — panel-modus, målt 08.09.2026 (fase 1, økt 4)
+
+Første måling av innebygde fasitpaneler, mot prod som `coachtest@akgolf.test`:
+
+- **AO-03 Ko 1440** — 4,76 % (23 140/486 400 px, ramme 760×640)
+- **AO-08 Godkjenn 1440** — 6,65 % (24 377/366 300 px, ramme 660×555)
+
+Begge står som `ukalibrert` / `kjent-layoutavvik`: appens panel er bredere enn
+fasitrammen og har annen seksjons-/datasammensetning, så tallet er dokumentasjon,
+ikke et signal. Kommandoer, bilder og begrunnelse:
+[`docs/design-audit/2026-09-08/rigg-panelmodus-ao/`](../../docs/design-audit/2026-09-08/rigg-panelmodus-ao/README.md).
