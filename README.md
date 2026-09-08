@@ -2,6 +2,8 @@
 
 Hele plattformen for AK Golf Group — ett monorepo, ett Next.js-prosjekt, fire produkter under samme tak.
 
+**Hvor står vi, og hvordan henger det sammen?** Les [`docs/PLATTFORM-KART.md`](docs/PLATTFORM-KART.md) — planlagt / kodet / ferdig / mangler design / mangler for komplett, pluss Masterbrain. Oppgavelista er fortsatt [`docs/MASTERPLAN-GJENSTAAENDE.md`](docs/MASTERPLAN-GJENSTAAENDE.md).
+
 | Produkt | Rute | Beskrivelse |
 |---|---|---|
 | **Marketing** (akgolf.no) | `/`, `/(marketing)` | Offentlige sider |
