@@ -1,0 +1,76 @@
+<!-- @dsCard group="Skjermkart" viewport="1000x620" name="Skjermkart WANG" subtitle="Alle 35 skjermer · fasit, batch 1, 2 og 3" -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skjermkart — WANG Toppidrett golf</title>
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="skjermer-batch1/skjerm.css">
+<style>.grp{margin-top:34px}.lst{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}.it{background:#fff;border-radius:20px;box-shadow:0 4px 14px rgba(23,68,111,.06);padding:14px 16px;text-decoration:none;color:inherit;display:block}.it:hover{box-shadow:0 8px 24px rgba(23,68,111,.14);color:inherit}.it b{font-family:var(--font-brand,Montserrat);font-weight:700;font-size:14.5px;display:block}.it>code{font-family:ui-monospace,monospace;font-size:11.5px;color:var(--text-secondary,#475569);display:block;margin-top:4px}.it p{font-size:12.5px;line-height:1.55;color:var(--text-secondary,#475569);margin:8px 0 0}.it .st{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:22px 0 0}</style>
+<div class="page">
+<h1>Skjermkart — WANG Toppidrett golf</h1>
+<p class="lede">Alle 35 interne skjermer flaten trenger, i fire lag: <b>fasit</b> (bygget og godkjent), <b>batch 1</b> (de ni skjermene behovslista manglet helt), <b>batch 2</b> (detaljer, tilgang og tilstander) og <b>batch 3</b> (skole-og-trenerrollen: rekruttering, planlegging, koordinering, roller). Alle er tegnet i <b>mobil 390 og desktop 1280</b> — skjermbilde-gaten krever begge bredder før en skjerm kan merges. Alt i batch 1, 2 og 3 er forslag: hver skjerm navngir datamodell-hullet den forutsetter.</p>
+<p class="lede" style="margin-top:-14px">Porteringspakken: <a href="SKJERMREGISTER.md">skjermregisteret</a> · <a href="TILGANGSMATRISE.md">tilgangsmatrisen</a> · <a href="PORTING.md">PORTING</a> · <a href="DATAMODELL.md">datamodellen</a> · <a href="APNE-BESLUTNINGER.md">åpne beslutninger</a>. Bakgrunn i <a href="docs/vurdering-wang-2026-09-02.md">vurderingen 02.09</a>.</p>
+
+<div class="sum">
+<div class="kpi"><div class="k">Skjermer totalt</div><div class="v">35</div></div>
+<div class="kpi"><div class="k">Bygget</div><div class="v" style="color:var(--wang-teal-text,#226f67)">5</div></div>
+<div class="kpi"><div class="k">Kan bygges nå</div><div class="v" style="color:var(--wang-teal-text,#226f67)">9</div></div>
+<div class="kpi"><div class="k">Venter på datamodell</div><div class="v" style="color:#9d4a10">19</div></div>
+<div class="kpi"><div class="k">Venter på beslutning</div><div class="v" style="color:#a01e45">2</div></div>
+</div>
+
+<div class="grp"><p class="t-label">Fasit — bygget 1:1 etter 25.08</p><div class="lst">
+<a class="it" href="skjermer/a2-hjem.html"><b>A2 Fellesside · hjem</b><code>/team-wang</code><p>Hero, årshjul, fanepiller. Eneste ferdige flate.</p><div class="st"><span class="chip mint">Bygget</span></div></a>
+<a class="it" href="skjermer/a3-arsplan.html"><b>A3 Årsplan</b><code>?fane=trening</code><p>Årshjul, periodisering, månedsplan, ukeplan.</p><div class="st"><span class="chip mint">Bygget</span></div></a>
+<a class="it" href="skjermer/a4-periode.html"><b>A4 Periode</b><code>?fane=trening</code><p>Fasepanel med mål og innhold per periode.</p><div class="st"><span class="chip mint">Bygget</span></div></a>
+<a class="it" href="skjermer/a6-uke.html"><b>A6 Uke</b><code>?fane=kalender</code><p>Ukevisning med dagrader og øktrader.</p><div class="st"><span class="chip mint">Bygget</span><span class="chip orange">«I dag» hardkodet</span></div></a>
+<a class="it" href="skjermer/a1-skall.html"><b>A1 Skall</b><code>/team-wang</code><p>Topplinje, fanenavigasjon, bunnmeny.</p><div class="st"><span class="chip mint">Bygget</span></div></a>
+</div></div>
+
+<div class="grp"><p class="t-label">Batch 1 — behovslistas manglende skjermer</p><div class="lst">
+<a class="it" href="skjermer-batch1/b1-testdag-foring.html"><b>B1 Testdag-føring</b><code>/team-wang/testdag/[id]</code><p>10+ elever etter tur på samme øvelse. Må virke uten nett.</p><div class="st"><span class="chip purple">Behov 1</span><span class="chip orange">Venter på datamodell</span></div></a>
+<a class="it" href="skjermer-batch1/b2-protokoller.html"><b>B2 Protokoller</b><code>/team-wang/protokoll</code><p>Versjonert, låst ved første førte tall, eier oppført.</p><div class="st"><span class="chip purple">Behov 1</span><span class="chip orange">Venter på datamodell</span></div></a>
+<a class="it" href="skjermer-batch1/b3-resultater-elev.html"><b>B3 Resultater per elev</b><code>/team-wang/elev/[id]/tester</code><p>Alle tall med protokoll, versjon og målt av.</p><div class="st"><span class="chip purple">Behov 1</span><span class="chip mint">Kan bygges nå</span></div></a>
+<a class="it" href="skjermer-batch1/b4-ukessammendrag.html"><b>B4 Ukessammendrag</b><code>/team-wang/coach/ukessammendrag</code><p>Trener skriver, foresatt leser. Frist fredag kl. 16.</p><div class="st"><span class="chip blue">Behov 2</span><span class="chip orange">Venter på datamodell</span></div></a>
+<a class="it" href="skjermer-batch1/b5-dokumenter.html"><b>B5 Dokumenter</b><code>/team-wang/dokumenter</code><p>Deling med rekkevidde oppført per dokument.</p><div class="st"><span class="chip blue">Behov 2</span><span class="chip orange">Venter på datamodell</span></div></a>
+<a class="it" href="skjermer-batch1/b6-statistikk-skinn.html"><b>B6 Statistikk-skinn</b><code>/team-wang/statistikk</code><p>Train-lock-visning scopet under <code>.wang-tp</code>.</p><div class="st"><span class="chip">Behov 3</span><span class="chip mint">Kan bygges nå</span></div></a>
+<a class="it" href="skjermer-batch1/b7-turneringer.html"><b>B7 Turneringer</b><code>/team-wang/turneringer</code><p>Historikk og kommende i samme liste.</p><div class="st"><span class="chip orange">Behov 4</span><span class="chip mint">Kan bygges nå</span></div></a>
+<a class="it" href="skjermer-batch1/b8-elev-ark.html"><b>B8 Elev-ark</b><code>/team-wang/elev/[id]</code><p>Fokus, tall med kildelinje, oppmøte, IUP-lenke.</p><div class="st"><span class="chip pink">Behov 5</span><span class="chip orange">Venter · oppmøte</span></div></a>
+<a class="it" href="skjermer-batch1/b9-samlinger.html"><b>B9 Samlinger</b><code>/team-wang/samlinger</code><p>Oversikt over samlingene i skoleåret, med uttak.</p><div class="st"><span class="chip">Behov 6</span><span class="chip orange">Venter på datamodell</span></div></a>
+</div></div>
+
+<div class="grp"><p class="t-label">Batch 2 — detaljer, tilgang og tilstander</p><div class="lst">
+<a class="it" href="skjermer-batch2/c1-elevliste.html"><b>C1 Elevliste</b><code>/team-wang/elever</code><p>Roster med søk, flervalg til testdag og uttak, tom gruppe.</p><div class="st"><span class="chip pink">Behov 5</span><span class="chip mint">Kan bygges nå</span></div></a>
+<a class="it" href="skjermer-batch2/c2-samling-uttak.html"><b>C2 Samling med uttak</b><code>/team-wang/samling/[id]</code><p>Kriterium før navn. Publisert, kladd, elevens visning.</p><div class="st"><span class="chip">Behov 6</span><span class="chip orange">Venter på datamodell</span></div></a>
+<a class="it" href="skjermer-batch2/c3-okt-detalj.html"><b>C3 Økt-detalj</b><code>?fane=kalender&amp;okt=[id]</code><p>Overlegg, sideflate, og økt uten publisert plan.</p><div class="st"><span class="chip orange">Urutet kode</span><span class="chip mint">Kan bygges nå</span></div></a>
+<a class="it" href="skjermer-batch2/c4-turnering-detalj.html"><b>C4 Turnering-detalj</b><code>/team-wang/turnering/[id]</code><p>Gjennomført, kommende, og resultat ikke importert.</p><div class="st"><span class="chip orange">Behov 4</span><span class="chip mint">Kan bygges nå</span></div></a>
+<a class="it" href="skjermer-batch2/c5-iup-kildelinje.html"><b>C5 IUP med kildelinje</b><code>/team-wang/coach/iup/[elevId]</code><p>TruthLayer oppfylt der ekte elevtall vises.</p><div class="st"><span class="chip purple">Behov 1</span><span class="chip orange">Venter · kildefelter</span></div></a>
+<a class="it" href="skjermer-batch2/c6-trenerflate.html"><b>C6 Trenerflate</b><code>/team-wang/coach</code><p>Lesevisning mot redirect — spørsmål B4 tegnet som valg.</p><div class="st"><span class="chip pink">Venter på beslutning</span></div></a>
+<a class="it" href="skjermer-batch2/c7-logg-inn.html"><b>C7 Logg inn og tilgang</b><code>/team-wang/logg-inn</code><p>Hvem ser hva, per rolle. Ingen «elevens navn»-felt.</p><div class="st"><span class="chip blue">Behov 2</span><span class="chip mint">Kan bygges nå</span></div></a>
+<a class="it" href="skjermer-batch2/c8-systemtilstander.html"><b>C8 Systemtilstander</b><code>alle ruter</code><p>Laster, delvis feil, uten nett på testdag, 403.</p><div class="st"><span class="chip mint">Kan bygges nå</span></div></a>
+<a class="it" href="skjermer-batch2/c9-skole-390.html"><b>C9 Skole-fanen</b><code>?fane=skole</code><p>Timeplan uten horisontal scroll. Prøver, kompetansemål.</p><div class="st"><span class="chip orange">Venter · timeplan</span></div></a>
+</div></div>
+
+<div class="grp"><p class="t-label">Batch 3 — skole-og-trenerrollen</p><div class="lst">
+<a class="it" href="skjermer-batch3/d1-rekruttering.html"><b>D1 Rekruttering</b><code>/team-wang/rekruttering</code><p>Kandidatliste, vurdering med kilde, punktsett som editor.</p><div class="st"><span class="chip pink">Venter på beslutning</span><span class="chip orange">Mest følsomme skjerm</span></div></a>
+<a class="it" href="skjermer-batch3/d2-plasser.html"><b>D2 Plasser</b><code>/team-wang/plasser</code><p>Kapasitet per skole og trinn, venteliste, sentral oversikt.</p><div class="st"><span class="chip orange">Venter · skoleregister</span></div></a>
+<a class="it" href="skjermer-batch3/d3-koordinering.html"><b>D3 Koordinering</b><code>/rekruttering/koordinering</code><p>Én kandidat, flere skoler. Tråd mellom sportssjefene.</p><div class="st"><span class="chip orange">Venter på datamodell</span><span class="chip pink">Personvern åpent</span></div></a>
+<a class="it" href="skjermer-batch3/d4-timeplan.html"><b>D4 Timeplan-føring</b><code>/team-wang/skole/timeplan</code><p>Ukemal pluss unntak. Konflikter flagges, aldri sperres.</p><div class="st"><span class="chip orange">Venter · timeplan</span></div></a>
+<a class="it" href="skjermer-batch3/d5-proveplan.html"><b>D5 Prøveplan</b><code>/team-wang/skole/proveplan</code><p>Prøver mot treningsvolum. Belastning uke for uke.</p><div class="st"><span class="chip orange">Venter · timeplan</span></div></a>
+<a class="it" href="skjermer-batch3/d6-foreldremote.html"><b>D6 Foreldremøte</b><code>/team-wang/foreldremote</code><p>Invitasjon, påmelding per hjem, oppmøte, referat.</p><div class="st"><span class="chip orange">Venter · foresatt</span></div></a>
+<a class="it" href="skjermer-batch3/d7-gruppeposter.html"><b>D7 Gruppeposter</b><code>/team-wang/gruppe/poster</code><p>Enveis oppslagstavle med vedlegg og lesekvittering.</p><div class="st"><span class="chip orange">Venter på datamodell</span></div></a>
+<a class="it" href="skjermer-batch3/d8-post-elev.html"><b>D8 Post til én elev</b><code>/team-wang/post</code><p>Uslettbare meldinger. Sperret uten registrert foresatt.</p><div class="st"><span class="chip orange">Venter · foresatt</span></div></a>
+<a class="it" href="skjermer-batch3/d9-periodeplan.html"><b>D9 Periodeplan</b><code>/team-wang/plan/periode</code><p>Perioder med mål og planlagt volum. Overlapp tillatt.</p><div class="st"><span class="chip orange">Venter · periode</span></div></a>
+<a class="it" href="skjermer-batch3/d10-manedsplan.html"><b>D10 Månedsplan</b><code>/team-wang/plan/maned</code><p>Ukene og avviket mot periodeplanen. Ingen godkjenning.</p><div class="st"><span class="chip orange">Venter · periode</span></div></a>
+<a class="it" href="skjermer-batch3/d11-trenere.html"><b>D11 Trenere og roller</b><code>/team-wang/tilgang/trenere</code><p>Hver rolle ved hver skole — også hva personen ikke når.</p><div class="st"><span class="chip mint">Kan bygges nå</span></div></a>
+<a class="it" href="skjermer-batch3/d12-inviter-elev.html"><b>D12 Inviter elev</b><code>/team-wang/tilgang/inviter</code><p>Engangsnøkkel, status per invitasjon, grensen mot PlayerHQ.</p><div class="st"><span class="chip orange">Venter på datamodell</span></div></a>
+</div></div>
+
+<div class="note"><b>Hva som fortsatt ikke er tegnet, med vilje.</b>
+<ul><li><b>Samtykkebryterne.</b> Train-lock. B6 viser skinn-mekanismen, ikke samtykket.</li>
+<li><b>Hendelse-detalj.</b> Anbefalingen er å slette den; dagkortet bærer innholdet.</li>
+<li><b>Mørk modus.</b> Tokens finnes i speilet, men 26.08-beslutningen gjelder ikke <code>/team-wang</code>.</li>
+<li><b>Analyse og DataGolf.</b> Utenfor omfang — hører i Train-lock.</li>
+<li><b>VG-filterets beregning.</b> Fortsatt åpent spørsmål, ikke tegnet i denne pakken.</li></ul>
+<div class="hull"><b>Rettet i denne runden</b><p>Farget topplinje er fjernet fra hvite kort tre steder i fasiten — merkevareregelen er «aldri ramme på kort». Hendelsestypene er skilt i fem: <code>konkurranse</code> er tatt i bruk med oransje, <code>prove</code> er lilla, og <code>hendelse</code> er rosa som i designsystemet. Turneringer i årshjulet var typet som prøve og er nå konkurranse.</p></div>
+<div class="aapent"><b>Ni beslutninger venter</b><p>Vurderingspunktene i rekrutteringen, om en skole kan ha egne punkter, B4 (trenerflatens skjebne), timeplanens eierskap, volumkategoriene, personvern i koordineringen, grensen mot PlayerHQ, sletteregler for filer, og om foreldremøte-referatet er obligatorisk. Alle står i <a href="APNE-BESLUTNINGER.md">APNE-BESLUTNINGER.md</a> med hvilke skjermer hver enkelt blokkerer.</p></div></div>
+</div>

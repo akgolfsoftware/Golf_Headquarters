@@ -1,12 +1,13 @@
 # `designsystem/team-norway/` — lokalt speil
 
 Speil av Claude Design-prosjektet **«Claw Design — Team Norway Golf»**
-(namespace `ClawDesignTeamNorwayGolf_a03bf9`). Importert 30.08.2026 fra
-`~/Downloads/Claw Design — Team Norway Golf.zip`.
+(namespace `ClawDesignTeamNorwayGolf_a03bf9`). Sist synket **08.09.2026** fra
+`~/Downloads/Claw Design — Team Norway Golf.zip` (22:03). Forrige synk: 30.08.2026.
 
 **Dette er IKKE kilden.** Samme regel som `designsystem/wang/`: Claude Design-prosjektet er
 fasiten, dette speilet ligger her for rask lesing og for at designet skal være synlig i PR-en.
-Det oppdateres ikke automatisk. `uploads/` (6 MB skjermbilder) og thumbnails er utelatt.
+Det oppdateres ikke automatisk. `uploads/` (6,6 MB: IUP-regneark med trenernavn + skjermbilder)
+er holdt utenfor — repoet er offentlig.
 
 ## Hva som gjelder hvor
 
@@ -19,6 +20,7 @@ Det oppdateres ikke automatisk. `uploads/` (6 MB skjermbilder) og thumbnails er 
 | `guidelines/` | 15 foundation-kort |
 | `templates/` | 12 skjermmaler, `.dc.html` |
 | `docs/team-norway-workdesk-skjermplan.md` | Skjermplanen — hva som er bestilt, hva som gjenstår |
+| `handover/` | Porteringspakke 08.09: PORTING, skjermregister TN-00–TN-21, datamodell, tilgang, åpne beslutninger |
 | `assets/logo/` | Offisiell logo (PNG beskåret fra JPEG) |
 
 ## Kjerneverdier (målt i `tokens/`, ikke gjenfortalt)
@@ -36,12 +38,10 @@ Det oppdateres ikke automatisk. `uploads/` (6 MB skjermbilder) og thumbnails er 
 
 ## TRE KONFLIKTER — alle avgjort 30.08.2026
 
-**1. `SKILL.md` motsier `readme.md` og tokens. Readme + tokens vinner.**
-`SKILL.md` sier «ingen skygger, ingen gradienter, ingen avrundede piller» og oppgir Jost +
-Public Sans som skrifter. Ingen av delene stemmer med systemet slik det faktisk er bygget:
-`tokens/effects.css` har tre skyggenivaer og `--radius-full`, og `tokens/typography.css` har
-Schibsted Grotesk + IBM Plex Mono. `SKILL.md` er en tidligere generasjon av samme prosjekt.
-Koden er fasit — ikke bygg etter `SKILL.md`.
+**1. `SKILL.md` motsa `readme.md` og tokens. RETTET 08.09.2026 (ferdigstilling A1).**
+`SKILL.md` peker nå bare til `tokens/`, `components/` og `readme.md`. De gamle påstandene
+(Jost + Public Sans, «ingen skygger, ingen piller») er borte. Readme + tokens vinner fortsatt
+ved konflikt.
 
 **2. TN-rødt — AVGJORT: `#D70232`.** (Anders 30.08.2026.) Målt fra logofilen, eneste verdi med
 sporbar opprinnelse i merket. Overstyrer `#D50431` i N-D2, som er rettet i MASTERPLAN.
@@ -53,18 +53,19 @@ Train-lock eier plattformflatene (PlayerHQ, AgencyOS, Forelder). Ingen skjerm ha
 Overstyrer N7-formuleringen «tegn organisasjonsflaten i Train-lock» for Team Norways del.
 **WANG-flatens stil er IKKE avgjort av dette** — se MASTERPLAN beslutningskø punkt 22.
 
-## Status per 30.08.2026
+## Status per 08.09.2026
 
-Bygget i Claw-stil: årsplan · periodeplan · samling · workbench · grupper · tester · kalender ·
-utøverdashboard · evaluering · presentasjon. Skallet (`templates/app/`) og kommunikasjon er tynne.
+Synket inn: ferdigstilling (token-pass i malene, trykkmål 44 px, kildelinje, tom/laster/feil),
+handover-pakke, nye skjermer (bl.a. TN-13 turneringer, TN-14 samlingspunkt, TN-15/TN-20
+trenerkatalog, TN-16/TN-21 referansenivåer, TN-17 manuell turnering, TN-18 trenere/tilgang,
+systemkart, inviter, månedsplan). Navy `#012B5D` og merkevarerød `#D70232` uendret (målt
+identisk mot forrige speil).
 
-**`templates/tn-workdesk/TnBatch1.dc.html` er i FEIL STIL.** Speilet i denne mappen er fra
-zip-en (206 bytes, tom), men live i Claude Design er filen 21 741 bytes og inneholder tre
-skjermer — TN-01 Hjem, TN-02 Gruppe/spillerliste, TN-03 Spiller-ark — tegnet i **Train-lock
-mørk** (`#000000`, Poppins, `#8E8E93`, rail 232px). De skal tegnes om i Claw-stil, se
-MASTERPLAN STEG 11 rad N7b.
+Beholdt fra repoet, fantes ikke i zip: `prompt-batch-2.md`, `prompt-batch-3.md`,
+`prompt-tn03-fellestesting.md`, `templates/app/`, `templates/kommunikasjon/` (tynne maler).
 
 **Speilet kan henge etter det levende prosjektet.** Verifiser mot Claude Design
 (`a03bf94a-c923-4c04-82ff-415773557e37`) før du stoler på en fil her.
 
-Neste bestilling: `prompt-batch-2.md` i denne mappen.
+Porteringskontrakt: `handover/PORTING.md` + `handover/SKJERMREGISTER.md`. Åpne spørsmål til
+Anders: `handover/APNE-BESLUTNINGER.md`.

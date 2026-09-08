@@ -1,0 +1,38 @@
+<!-- @dsCard group="06 Praksis" viewport="700x330" name="Kildelinjen" subtitle="«Målt dd.mm.åååå · protokoll vN · initialer» — ett format, ingen unntak" -->
+<link rel="stylesheet" href="../styles.css">
+<div style="height:330px;padding:24px 28px;background:var(--white);font-family:var(--font-body);display:flex;flex-direction:column;gap:16px">
+<div>
+<div style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-500)">SANNHETSLAGET</div>
+<div style="font-size:19px;font-weight:700;color:var(--ink-900);letter-spacing:-.01em;margin-top:3px">Hvert tall bærer sin egen kilde</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:9px">
+<div style="background:var(--ink-50);border-radius:var(--radius-sm);padding:13px 15px;display:flex;align-items:center;gap:14px">
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-500);width:74px;flex-shrink:0">MÅLT</span>
+<span style="font-family:var(--font-mono);font-size:12px;color:var(--ink-900);letter-spacing:.06em">MÅLT 14.03.2026 · TN-BATTERI Q1 V3 · AK</span>
+<div style="flex:1"></div>
+<span style="font-size:11.5px;color:var(--ink-500)">dato · protokoll med versjon · initialer</span>
+</div>
+<div style="background:var(--status-amber-bg);border-radius:var(--radius-sm);padding:13px 15px;display:flex;align-items:center;gap:14px">
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--status-amber-text);width:74px;flex-shrink:0">MANUELT</span>
+<span style="font-family:var(--font-mono);font-size:12px;color:var(--status-amber-text);letter-spacing:.06em;font-weight:600">LAGT INN SELV 08.09.2026 · MANUELT SKJEMA V1 · MB</span>
+<div style="flex:1"></div>
+<span style="font-size:11.5px;color:var(--status-amber-text)">aldri ordet «målt»</span>
+</div>
+<div style="background:var(--ink-50);border-radius:var(--radius-sm);padding:13px 15px;display:flex;align-items:center;gap:14px">
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-500);width:74px;flex-shrink:0">SYNK</span>
+<span style="font-family:var(--font-mono);font-size:12px;color:var(--ink-900);letter-spacing:.06em">MÅLT 29.08.2026 · GOLFBOX V2 · SYNK</span>
+<div style="flex:1"></div>
+<span style="font-size:11.5px;color:var(--ink-500)">maskinkilde står som protokoll</span>
+</div>
+<div style="background:var(--ink-50);border-radius:var(--radius-sm);padding:13px 15px;display:flex;align-items:center;gap:14px">
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-500);width:74px;flex-shrink:0">TALT</span>
+<span style="font-family:var(--font-mono);font-size:12px;color:var(--ink-900);letter-spacing:.06em">TALT 08.09.2026 · INVITASJONSLOGG V1 · AK</span>
+<div style="flex:1"></div>
+<span style="font-size:11.5px;color:var(--ink-500)">antall telles, det måles ikke</span>
+</div>
+</div>
+<div style="border-top:1px solid var(--border-subtle);padding-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:26px">
+<div style="font-size:12.5px;color:var(--ink-500);line-height:1.6;text-wrap:pretty"><b style="color:var(--ink-900)">Ingen kilde, ingen tall.</b> Mangler den maskinlesbare kilden, står feltet som <span style="font-family:var(--font-mono);color:var(--status-amber-text)">venter på data</span> — aldri en plassholder, aldri et snitt, aldri en strek som kan leses som null. Linjen settes i mono, <span style="font-family:var(--font-mono);color:var(--ink-900)">--text-micro</span>, og bor på <span style="font-family:var(--font-mono);color:var(--ink-900)">MetricTile.source</span> eller <span style="font-family:var(--font-mono);color:var(--ink-900)">HeroMeta.source</span> — aldri smuglet inn i <span style="font-family:var(--font-mono);color:var(--ink-900)">caption</span>.</div>
+<div style="font-size:12.5px;color:var(--ink-500);line-height:1.6;text-wrap:pretty"><b style="color:var(--ink-900)">Førsteordet er kontrakten.</b> <span style="font-family:var(--font-mono);color:var(--ink-900)">MÅLT</span> betyr sporbar protokoll. <span style="font-family:var(--font-mono);color:var(--ink-900)">TALT</span> betyr opptelling i systemet selv. <span style="font-family:var(--font-mono);color:var(--status-amber-text)">LAGT INN SELV</span> betyr menneske uten protokoll, og står alltid i ravgult slik at fargen skiller radtypene før teksten leses. Ordene byttes ikke om, og en manuell rad blir aldri konvertert til målt.</div>
+</div>
+</div>

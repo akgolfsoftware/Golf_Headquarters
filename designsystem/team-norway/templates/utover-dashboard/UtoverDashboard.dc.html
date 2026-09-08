@@ -20,7 +20,7 @@
 </div>
 </div>
 
-<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Hero" eyebrow="Investeringsperioden · 16–19 år" title="{{ athleteName }}" description="{{ athleteSummary }}" meta="{{ heroMeta }}" height="{{ 300 }}" hint-size="100%,300px"></x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Hero" eyebrow="Investeringsperioden · 16–19 år" title="{{ athleteName }}" description="{{ athleteSummary }}" meta="{{ heroMeta }}" avatar-initials="{{ athleteInitials }}" avatar-size="{{ 88 }}" height="{{ 300 }}" hint-size="100%,300px"></x-import>
 
 <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px">
 <x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.MetricTile" label="Snittscore" value="70.8" delta="−1.4" delta-tone="up" caption="Siste 20 runder" hint-size="100%,150px"></x-import>
@@ -83,6 +83,7 @@ class Component extends DCLogic {
     ];
     return {
       athleteName: this.props.athleteName ?? 'Øyvind Rojahn',
+      athleteInitials: (this.props.athleteName ?? 'Øyvind Rojahn').split(' ').map(w => w[0]).slice(0, 2).join(''),
       athleteSummary: this.props.athleteSummary ?? 'Andre år i Team Norway Golf. Fokus denne sesongen er nærspill innenfor 100 meter og konsistens i turneringsrunder.',
       heroMeta: [
         { label: 'Klubb', value: 'Oslo GK' },

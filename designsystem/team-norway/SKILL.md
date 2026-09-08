@@ -1,22 +1,50 @@
-<!-- ADVARSEL lagt til av AK Golf HQ 30.08.2026 — GJELDER IKKE.
-     Denne fila er fra en tidligere generasjon av designsystemet og motsier både readme.md og
-     tokens/. Den sier «ingen skygger, ingen gradienter, ingen avrundede piller» og oppgir
-     Jost + Public Sans; systemet slik det faktisk er bygget har tre skyggenivåer,
-     --radius-full, Schibsted Grotesk og IBM Plex Mono. Bygg etter readme.md + tokens/.
-     Se LES-MEG.md i denne mappen. -->
-
 ---
 name: claw-design
-description: Use this skill to generate well-branded interfaces and assets for Team Norway Golf's Claw Design system, either for production or throwaway prototypes/mocks/etc. Contains essential design guidelines, colors, type, fonts, assets, and UI kit components for prototyping.
+description: Claw Design — designsystemet til Team Norway Golf. Bruk denne skillen når du skal tegne grensesnitt, maler eller ressurser i Team Norway-drakt, enten for produksjon eller for prototyper og mockups.
 user-invocable: true
 ---
 
-Read the README.md file within this skill, and explore the other available files.
-If creating visual artifacts (slides, mocks, throwaway prototypes, etc), copy assets out and create static HTML files for the user to view. If working on production code, you can copy assets and read the rules here to become an expert in designing with this brand.
-If the user invokes this skill without any other guidance, ask them what they want to build or design, ask some questions, and act as an expert designer who outputs HTML artifacts _or_ production code, depending on the need.
+# Fasit
 
-Key things to remember about this brand:
-- Marineblå (#012B5D) + rød (#D70232) er identitet only. Fagbetydning (trygg/risikosone på green) bruker en egen palett (#007F24 / #C2410C) — bland aldri disse.
-- Den vertikale navy+rød-streken er merkevarens signaturelement — gjenbruk den, oppfinn ikke nye venstre-kant-aksenter.
-- Ingen skygger, ingen gradienter, ingen avrundede piller. Flatt, seriøst, forbundstungt.
-- Brix Sans Black og Gotham Book er de ekte merkevareskriftene men er ulisensierte for web her — Jost + Public Sans er substituert. Be om ekte fontfiler hvis nøyaktig match er nødvendig.
+Denne filen inneholder **ingen** designverdier. Den peker på de tre stedene som er
+fasit, i denne rekkefølgen ved uenighet:
+
+1. **`tokens/`** — farger, typografi, rom, effekter. Alle verdier hentes herfra som
+   `var(--token)`. Rå hex og rå px er avvik, ikke stil.
+2. **`components/`** — komponentkoden med sine `.d.ts`. Hvordan en knapp, et merke
+   eller et nøkkeltall faktisk ser ut, er definert der og ikke beskrevet noe annet sted.
+3. **`readme.md`** — beslutningene og begrunnelsene: hva som er identitet, hva som er
+   status, hva som er rolle.
+
+`guidelines/`-kortene viser praksisen. `templates/` viser den anvendt.
+
+Tidligere utgaver av denne filen oppgav egne fontnavn og egne formregler. Det var en
+andre fasit som motsa `tokens/`, og er fjernet. Finner du en designverdi skrevet ut i
+prosa noe sted, er den utdatert per definisjon — les tokenet.
+
+# Slik jobber du
+
+Les `readme.md` først, så `tokens/`, så komponenten du trenger. Skal du lage et visuelt
+artefakt, kopier ressursene du refererer og skriv statisk HTML. Skal du inn i
+produksjonskode, kopier ressursene og les reglene her for å bli ekspert på merkevaren.
+
+Blir skillen kalt uten annen beskjed: spør hva som skal bygges, still oppfølgings-
+spørsmål, og opptre som designer som leverer HTML-artefakter eller produksjonskode
+avhengig av behovet.
+
+# De fem reglene som ikke står i et token
+
+Alt annet leses fra `tokens/`. Disse fem er beslutninger, ikke verdier:
+
+- **Merkevarerød er identitet, aldri status.** Logo, den vertikale skinnen, og «denne
+  utøveren». Status bruker `--status-red`, `--status-green`, `--status-amber`.
+- **Den vertikale navy-og-rød-streken er signaturelementet.** Gjenbruk den. Ikke oppfinn
+  nye venstrekant-aksenter.
+- **Mørk flate er en rolle, ikke et tema.** Hero, seksjonsskille, presentasjon. Det
+  finnes ingen mørk modus.
+- **`--ink-400` er lyseste gråtone som får bære tekst**, også i etiketter på 9–11 px.
+  `--ink-300` og lysere er streker og flater.
+- **Hvert tall har en kildelinje.** Format: «Målt dd.mm.åååå · protokoll vN · initialer».
+  En rad uten maskinlesbar kilde sier «venter på data» — aldri et tall.
+
+Aldri emoji. Aldri `ease-in` på grensesnitt. Norsk bokmål.

@@ -22,9 +22,9 @@
 <div style="width:1440px;height:900px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;font-variant-numeric:tabular-nums">
 
 <div style="width:232px;flex-shrink:0;background:var(--surface-card);border-right:1px solid var(--border-subtle);display:flex;flex-direction:column;padding:20px 14px 18px;gap:20px">
-<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:11px 12px;display:flex;align-items:center;gap:10px">
-<span style="width:9px;height:24px;border-radius:3px;background:var(--red-600);flex-shrink:0"></span>
-<div style="min-width:0"><div style="font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--navy-900)">Team Norway</div><div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);color:var(--text-tertiary);margin-top:1px">JUNIOR</div></div>
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:14px;display:flex;flex-direction:column;align-items:flex-start;gap:9px">
+<img src="../../assets/logo/team-norway-golf.png" alt="Team Norway Golf" style="height:42px;width:auto;display:block">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">JUNIOR</div>
 </div>
 <div style="display:flex;flex-direction:column;gap:2px;flex:1;min-height:0;overflow:hidden">
 <sc-for list="{{ meny }}" as="m" hint-placeholder-count="12">
@@ -293,11 +293,11 @@ const filStil = t => t === 'PDF'
 class Component extends DCLogic {
   filData() {
     return [
-      { type: 'PDF', navn: 'uttakskriterier-host.pdf', storrelse: '312 KB', kilde: 'FRA POST 21.08', opplaster: 'Sindre Dahl', oppdatert: '21.08.2026', pct: 86, brok: '12 av 14', valgt: true },
-      { type: 'PDF', navn: 'reiseplan-marbella.pdf', storrelse: '4,2 MB', kilde: 'LASTET OPP', opplaster: 'Sindre Dahl', oppdatert: '28.08.2026', pct: 100, brok: '14 av 14', valgt: false },
-      { type: 'PDF', navn: 'hotellbekreftelse.pdf', storrelse: '91 KB', kilde: 'FRA POST 28.08', opplaster: 'Sindre Dahl', oppdatert: '28.08.2026', pct: 64, brok: '9 av 14', valgt: false },
-      { type: 'XLSX', navn: 'romfordeling.xlsx', storrelse: '38 KB', kilde: 'LASTET OPP', opplaster: 'Ina L. Haug', oppdatert: '26.08.2026', pct: 50, brok: '7 av 14', valgt: false },
-      { type: 'JPG', navn: 'baneoversikt-los-naranjos.jpg', storrelse: '1,8 MB', kilde: 'FRA POST 24.08', opplaster: 'Ina L. Haug', oppdatert: '24.08.2026', pct: 29, brok: '4 av 14', valgt: false }
+      { type: 'PDF', navn: 'uttakskriterier-host.pdf', storrelse: '312 KB', kilde: 'FRA POST 21.08', opplaster: 'Sindre Dahl — eksempel', oppdatert: '21.08.2026', pct: 86, brok: '12 av 14', valgt: true },
+      { type: 'PDF', navn: 'reiseplan-marbella.pdf', storrelse: '4,2 MB', kilde: 'LASTET OPP', opplaster: 'Sindre Dahl — eksempel', oppdatert: '28.08.2026', pct: 100, brok: '14 av 14', valgt: false },
+      { type: 'PDF', navn: 'hotellbekreftelse.pdf', storrelse: '91 KB', kilde: 'FRA POST 28.08', opplaster: 'Sindre Dahl — eksempel', oppdatert: '28.08.2026', pct: 64, brok: '9 av 14', valgt: false },
+      { type: 'XLSX', navn: 'romfordeling.xlsx', storrelse: '38 KB', kilde: 'LASTET OPP', opplaster: 'Ina L. Haug — eksempel', oppdatert: '26.08.2026', pct: 50, brok: '7 av 14', valgt: false },
+      { type: 'JPG', navn: 'baneoversikt-los-naranjos.jpg', storrelse: '1,8 MB', kilde: 'FRA POST 24.08', opplaster: 'Ina L. Haug — eksempel', oppdatert: '24.08.2026', pct: 29, brok: '4 av 14', valgt: false }
     ];
   }
   dekorer(f) {
@@ -341,16 +341,16 @@ class Component extends DCLogic {
       filerMobil: f.slice(0, 4),
       filerFeil: f.slice(0, 3),
       mangler: [
-        { init: 'EH', navn: 'Emma H.', status: 'UTØVER' },
-        { init: 'TB', navn: 'Trym B.', status: 'UTØVER' }
+        { init: 'EH', navn: 'Emma H. — eksempel', status: 'UTØVER' },
+        { init: 'TB', navn: 'Trym B. — eksempel', status: 'UTØVER' }
       ],
       apnet: [
-        { navn: 'Jonas Ek', tid: '21.08 · 09.12' },
-        { navn: 'Mathea S.', tid: '21.08 · 09.40' },
-        { navn: 'Iver R.', tid: '21.08 · 12.03' },
-        { navn: 'Nora F.', tid: '22.08 · 07.55' },
-        { navn: 'Kasper V.', tid: '22.08 · 18.20' },
-        { navn: 'Live A.', tid: '23.08 · 20.41' }
+        { navn: 'Jonas Ek — eksempel', tid: '21.08 · 09.12' },
+        { navn: 'Mathea S. — eksempel', tid: '21.08 · 09.40' },
+        { navn: 'Iver R. — eksempel', tid: '21.08 · 12.03' },
+        { navn: 'Nora F. — eksempel', tid: '22.08 · 07.55' },
+        { navn: 'Kasper V. — eksempel', tid: '22.08 · 18.20' },
+        { navn: 'Live A. — eksempel', tid: '23.08 · 20.41' }
       ],
       skjelett: [70, 84, 62, 78, 66].map(w => ({ ref: setStyle({ width: w + '%' }) }))
     };

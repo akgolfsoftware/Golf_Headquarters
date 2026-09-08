@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><script src="./ds-base.js"></script></helmet>
+<div style="min-height:100vh;background:var(--surface-page);padding:24px;display:flex;justify-content:center;font-family:var(--font-body)">
+<div data-screen-label="Workbench mobil" style="width:390px;height:844px;flex-shrink:0;position:relative;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:38px;box-shadow:var(--shadow-lg);overflow:hidden;display:flex;flex-direction:column">
+
+<div style="height:44px;flex-shrink:0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:5px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--ink-400)">09.41</span>
+</div>
+
+<div style="flex-shrink:0;padding:6px 18px 12px;border-bottom:1px solid var(--border-subtle)">
+<div style="display:flex;align-items:center;gap:11px">
+<a href="../tn-oversikt/TnOversiktMobil.dc.html" style="display:block;flex-shrink:0"><img src="../../assets/logo/team-norway-golf.png" alt="Team Norway Golf" style="height:26px;width:auto;display:block"></a>
+<span style="font-family:var(--font-display);font-size:var(--text-base);font-weight:var(--weight-bold);letter-spacing:-.02em">Workbench</span>
+<div style="flex:1"></div>
+<div onClick="{{ openSubject }}" role="button" data-pressable style="height:44px;border-radius:var(--radius-full);background:var(--ink-100);display:flex;align-items:center;gap:7px;padding:0 11px;cursor:pointer">
+<div style="width:19px;height:19px;border-radius:var(--radius-full);background:var(--navy-600);color:var(--white);font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);display:flex;align-items:center;justify-content:center">EL</div>
+<span style="font-size:var(--text-xs);font-weight:var(--weight-semibold)">Emma</span>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:8px;margin-top:12px">
+<div style="flex:1;height:34px;background:var(--ink-100);border-radius:var(--radius-full);display:flex;align-items:center;padding:3px;gap:2px">
+<sc-for list="{{ tabs }}" as="tab" hint-placeholder-count="3">
+<div ref="{{ tab.ref }}" onClick="{{ tab.select }}" role="button" style="flex:1;height:28px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-full);font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.1em;cursor:pointer">{{ tab.label }}</div>
+</sc-for>
+</div>
+</div>
+<div style="display:flex;align-items:center;justify-content:space-between;margin-top:11px">
+<span onClick="{{ prev }}" role="button" data-pressable style="width:30px;height:26px;display:flex;align-items:center;color:var(--ink-400);font-size:var(--text-base);cursor:pointer">‹</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium)">{{ periodLabel }}</span>
+<div style="display:flex;align-items:center;gap:10px">
+<span onClick="{{ today }}" role="button" style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.12em;color:var(--navy-600);cursor:pointer">I DAG</span>
+<span onClick="{{ next }}" role="button" data-pressable style="width:20px;height:26px;display:flex;align-items:center;justify-content:flex-end;color:var(--ink-400);font-size:var(--text-base);cursor:pointer">›</span>
+</div>
+</div>
+</div>
+
+<div style="flex:1;min-height:0;overflow:auto">
+
+<sc-if value="{{ isDay }}" hint-placeholder-val="{{ true }}">
+<div style="padding:14px 18px 90px">
+<sc-if value="{{ day.empty }}" hint-placeholder-val="{{ false }}">
+<div style="padding:34px 0;text-align:center">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--ink-700)">Ingen økter denne dagen</div>
+<div style="font-size:var(--text-xs);color:var(--ink-500);margin-top:5px;line-height:1.5">Hviledag, eller ikke planlagt ennå.</div>
+<div onClick="{{ openNew }}" role="button" style="margin-top:14px;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.12em;color:var(--navy-600);cursor:pointer">LEGG TIL ØKT</div>
+</div>
+</sc-if>
+<sc-for list="{{ day.rows }}" as="r" hint-placeholder-count="3">
+<div onClick="{{ r.open }}" role="button" data-pressable style="display:flex;gap:12px;margin-bottom:10px;cursor:pointer">
+<div style="width:52px;flex-shrink:0;padding-top:12px">
+<div style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-semibold)">{{ r.start }}</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--ink-400);margin-top:2px">{{ r.dur }}</div>
+</div>
+<div ref="{{ r.cardRef }}" style="flex:1;min-width:0;border-radius:var(--radius-md);padding:12px 13px;background:var(--white);border-left-width:3px;border-left-style:solid">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.1em;color:var(--ink-500);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.cat }}</span>
+<span ref="{{ r.statusRef }}" style="flex-shrink:0;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.1em;padding:3px 7px;border-radius:var(--radius-full)">{{ r.status }}</span>
+</div>
+<div style="font-size:var(--text-base);font-weight:var(--weight-semibold);margin-top:4px;line-height:1.25">{{ r.title }}</div>
+<div style="font-size:var(--text-xs);color:var(--ink-500);margin-top:3px">{{ r.place }}</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.08em;color:var(--ink-400);margin-top:7px">{{ r.content }}</div>
+</div>
+</div>
+</sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{ isWeek }}" hint-placeholder-val="{{ false }}">
+<div style="padding:6px 18px 90px">
+<sc-for list="{{ weekDays }}" as="d" hint-placeholder-count="7">
+<div style="padding:13px 0;border-bottom:1px solid var(--border-subtle)">
+<div onClick="{{ d.open }}" role="button" style="display:flex;align-items:baseline;gap:9px;cursor:pointer">
+<span ref="{{ d.labelRef }}" style="font-size:var(--text-sm);font-weight:var(--weight-bold);font-family:var(--font-display);letter-spacing:-.01em">{{ d.label }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--ink-400)">{{ d.summary }}</span>
+</div>
+<sc-for list="{{ d.rows }}" as="r" hint-placeholder-count="2">
+<div onClick="{{ r.open }}" role="button" style="display:flex;align-items:center;gap:10px;margin-top:9px;cursor:pointer">
+<span style="width:44px;flex-shrink:0;font-family:var(--font-mono);font-size:var(--text-xs);color:var(--ink-500)">{{ r.start }}</span>
+<span ref="{{ r.dotRef }}" style="width:7px;height:7px;border-radius:var(--radius-full);flex-shrink:0"></span>
+<span style="flex:1;min-width:0;font-size:var(--text-sm);font-weight:var(--weight-semibold);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.title }}</span>
+<span ref="{{ r.statusRef }}" style="flex-shrink:0;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.1em;padding:3px 7px;border-radius:var(--radius-full)">{{ r.status }}</span>
+</div>
+</sc-for>
+<sc-if value="{{ d.empty }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:7px;font-size:var(--text-xs);color:var(--ink-400)">Hviledag</div>
+</sc-if>
+</div>
+</sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{ isMonth }}" hint-placeholder-val="{{ false }}">
+<div style="padding:10px 14px 90px">
+<div style="display:flex">
+<sc-for list="{{ dow }}" as="d" hint-placeholder-count="7">
+<div style="flex:1;text-align:center;padding-bottom:7px"><span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.1em;color:var(--ink-400)">{{ d.label }}</span></div>
+</sc-for>
+</div>
+<sc-for list="{{ monthRows }}" as="wk" hint-placeholder-count="6">
+<div style="display:flex">
+<sc-for list="{{ wk.cells }}" as="c" hint-placeholder-count="7">
+<div ref="{{ c.ref }}" onClick="{{ c.open }}" role="button" style="flex:1;min-width:0;height:64px;border-top:1px solid var(--border-subtle);padding:5px 3px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer">
+<span ref="{{ c.dateRef }}" style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-semibold)">{{ c.date }}</span>
+<div style="display:flex;gap:3px;flex-wrap:wrap;justify-content:center">
+<sc-for list="{{ c.dots }}" as="dot" hint-placeholder-count="2">
+<span ref="{{ dot.ref }}" style="width:5px;height:5px;border-radius:var(--radius-full);display:block"></span>
+</sc-for>
+</div>
+</div>
+</sc-for>
+</div>
+</sc-for>
+<div style="margin-top:14px;font-size:var(--text-xs);color:var(--ink-500);line-height:1.55">Trykk en dag for å åpne dagslisten. Åpne prikker er utkast.</div>
+</div>
+</sc-if>
+
+</div>
+
+<div style="position:absolute;left:0;right:0;bottom:0;flex-shrink:0;background:var(--white);border-top:1px solid var(--border-subtle);padding:11px 18px 26px;display:flex;align-items:center;gap:10px;z-index:12">
+<span style="flex:1;font-family:var(--font-mono);font-size:var(--text-micro);color:var(--ink-400)">{{ draftLine }}</span>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="secondary" size="sm" onClick="{{ openNew }}" hint-size="86px,34px">Ny økt</x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="primary" size="sm" onClick="{{ openPublish }}" hint-size="110px,34px">{{ publishLabel }}</x-import>
+</div>
+
+<sc-if value="{{ hasSheet }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ close }}" role="button" style="position:absolute;inset:0;background:rgba(6,17,31,.36);z-index:20;display:flex;align-items:flex-end">
+<div onClick="{{ stop }}" style="width:100%;max-height:86%;background:var(--white);border-radius:26px 26px 0 0;box-shadow:var(--shadow-lg);display:flex;flex-direction:column;overflow:hidden;cursor:default">
+<div style="flex-shrink:0;padding:11px 0 4px;display:flex;justify-content:center"><div style="width:38px;height:4px;border-radius:2px;background:var(--ink-200)"></div></div>
+<div style="flex-shrink:0;padding:8px 20px 13px;border-bottom:1px solid var(--border-subtle)">
+<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">
+<div style="min-width:0">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.12em;color:var(--ink-500)">{{ sheet.kicker }}</div>
+<div style="font-family:var(--font-display);font-size:var(--text-h3);font-weight:var(--weight-bold);letter-spacing:-.02em;margin-top:4px">{{ sheet.title }}</div>
+</div>
+<span onClick="{{ close }}" role="button" style="font-size:var(--text-lg);color:var(--ink-400);cursor:pointer;line-height:1;flex-shrink:0">×</span>
+</div>
+<div style="font-size:var(--text-xs);color:var(--ink-500);line-height:1.5;margin-top:5px">{{ sheet.sub }}</div>
+</div>
+<div style="flex:1;min-height:0;overflow:auto;padding:14px 20px 18px">
+
+<sc-if value="{{ sheet.isOkt }}" hint-placeholder-val="{{ false }}">
+<sc-for list="{{ sheet.meta }}" as="m" hint-placeholder-count="4">
+<div style="display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--border-subtle)">
+<span style="font-size:var(--text-xs);color:var(--ink-500)">{{ m.k }}</span>
+<span style="font-size:var(--text-xs);font-weight:var(--weight-semibold);text-align:right">{{ m.v }}</span>
+</div>
+</sc-for>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.14em;color:var(--ink-400);margin:16px 0 6px">INNHOLD</div>
+<sc-for list="{{ sheet.drills }}" as="d" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--border-subtle)">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--ink-400);width:13px">{{ d.n }}</span>
+<span style="flex:1;font-size:var(--text-xs);font-weight:var(--weight-medium)">{{ d.title }}</span>
+<span onClick="{{ d.remove }}" role="button" style="font-size:var(--text-xs);color:var(--ink-400);cursor:pointer">×</span>
+</div>
+</sc-for>
+<div onClick="{{ openBank }}" role="button" style="margin-top:11px;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.12em;color:var(--navy-600);cursor:pointer">+ LEGG TIL ØVELSE</div>
+<div onClick="{{ toggleExample }}" role="button" style="display:flex;align-items:flex-start;gap:10px;margin-top:16px;padding:12px;border:1px solid var(--border-subtle);border-radius:var(--radius-sm);cursor:pointer">
+<div ref="{{ sheet.exRef }}" style="width:18px;height:18px;border-radius:var(--radius-xs);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:var(--text-micro);color:var(--white)">{{ sheet.exMark }}</div>
+<div>
+<div style="font-size:var(--text-xs);font-weight:var(--weight-semibold)">Eksempeløkt for spillere</div>
+<div style="font-size:var(--text-xs);color:var(--ink-500);line-height:1.5;margin-top:2px">Vises som forbilde i spillernes bibliotek, uten dato.</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ sheet.isNy }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:13px">
+<div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.12em;color:var(--ink-500);margin-bottom:6px">TITTEL</div>
+<input value="{{ form.title }}" onChange="{{ form.onTitle }}" placeholder="f.eks. Nærspill under 30 m" style="width:100%;height:44px;border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:0 12px;font-family:var(--font-body);font-size:var(--text-base);outline:none">
+</div>
+<div style="display:flex;gap:10px">
+<div style="flex:1">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.12em;color:var(--ink-500);margin-bottom:6px">DATO</div>
+<input value="{{ form.date }}" onChange="{{ form.onDate }}" type="date" style="width:100%;height:44px;border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:0 10px;font-family:var(--font-mono);font-size:var(--text-xs);outline:none">
+</div>
+<div style="width:96px;flex-shrink:0">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.12em;color:var(--ink-500);margin-bottom:6px">START</div>
+<input value="{{ form.time }}" onChange="{{ form.onTime }}" type="time" style="width:100%;height:44px;border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:0 10px;font-family:var(--font-mono);font-size:var(--text-xs);outline:none">
+</div>
+</div>
+<div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.12em;color:var(--ink-500);margin-bottom:6px">PYRAMIDE · PÅKREVD</div>
+<div style="display:flex;gap:6px">
+<sc-for list="{{ form.pyramids }}" as="p" hint-placeholder-count="5">
+<div ref="{{ p.ref }}" onClick="{{ p.select }}" role="button" style="flex:1;height:44px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.06em;cursor:pointer">{{ p.label }}</div>
+</sc-for>
+</div>
+</div>
+<div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.12em;color:var(--ink-500);margin-bottom:6px">MINUTTER</div>
+<div style="display:flex;gap:6px">
+<sc-for list="{{ form.durs }}" as="d" hint-placeholder-count="4">
+<div ref="{{ d.ref }}" onClick="{{ d.select }}" role="button" style="flex:1;height:44px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:var(--text-xs);cursor:pointer">{{ d.label }}</div>
+</sc-for>
+</div>
+</div>
+<div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.12em;color:var(--ink-500);margin-bottom:6px">STED</div>
+<input value="{{ form.place }}" onChange="{{ form.onPlace }}" placeholder="Bogstad — nærområde" style="width:100%;height:44px;border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:0 12px;font-family:var(--font-body);font-size:var(--text-base);outline:none">
+</div>
+<div ref="{{ form.warnRef }}" style="padding:11px 13px;border-radius:var(--radius-sm);background:var(--status-amber-bg);font-size:var(--text-xs);color:var(--status-amber-text);line-height:1.5">{{ form.warn }}</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ sheet.isPub }}" hint-placeholder-val="{{ false }}">
+<sc-for list="{{ pub.rows }}" as="r" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border-subtle)">
+<span style="width:78px;flex-shrink:0;font-family:var(--font-mono);font-size:var(--text-xs);color:var(--ink-500)">{{ r.when }}</span>
+<span style="flex:1;min-width:0;font-size:var(--text-sm);font-weight:var(--weight-semibold);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.title }}</span>
+<span ref="{{ r.flagRef }}" style="flex-shrink:0;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.1em">{{ r.flag }}</span>
+</div>
+</sc-for>
+<div onClick="{{ pub.toggleNotify }}" role="button" style="display:flex;align-items:center;gap:10px;margin-top:14px;cursor:pointer">
+<div ref="{{ pub.notifyRef }}" style="width:18px;height:18px;border-radius:var(--radius-xs);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:var(--text-micro);color:var(--white)">{{ pub.notifyMark }}</div>
+<span style="font-size:var(--text-xs)">Varsle spillerne i Player HQ</span>
+</div>
+</sc-if>
+
+<sc-if value="{{ sheet.isDel }}" hint-placeholder-val="{{ false }}">
+<sc-for list="{{ del.players }}" as="p" hint-placeholder-count="6">
+<div onClick="{{ p.toggle }}" role="button" style="display:flex;align-items:center;gap:11px;padding:12px 0;border-bottom:1px solid var(--border-subtle);cursor:pointer">
+<div ref="{{ p.boxRef }}" style="width:20px;height:20px;border-radius:var(--radius-xs);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:var(--text-xs);color:var(--white)">{{ p.mark }}</div>
+<div style="flex:1;min-width:0">
+<div ref="{{ p.nameRef }}" style="font-size:var(--text-sm);font-weight:var(--weight-semibold)">{{ p.name }}</div>
+<div style="font-size:var(--text-xs);color:var(--ink-500);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ p.group }}</div>
+</div>
+<span ref="{{ p.tagRef }}" style="flex-shrink:0;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.1em;padding:4px 8px;border-radius:var(--radius-full)">{{ p.tag }}</span>
+</div>
+</sc-for>
+<div style="margin-top:14px;padding:12px 13px;border:1px solid var(--border-subtle);border-radius:var(--radius-sm);background:var(--ink-50)">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.12em;color:var(--ink-500)">TILGANGSREGEL</div>
+<div style="font-size:var(--text-xs);color:var(--ink-700);line-height:1.55;margin-top:5px">Kun spillere med aktivt gruppemedlemskap eller kjøpt trenertilgang i Player HQ kan motta delt økt.</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ sheet.isBank }}" hint-placeholder-val="{{ false }}">
+<input value="{{ search }}" onChange="{{ onSearch }}" placeholder="Søk i øvelsesbanken" style="width:100%;height:42px;border:1px solid var(--border-subtle);border-radius:var(--radius-full);padding:0 14px;font-family:var(--font-body);font-size:var(--text-sm);outline:none;margin-bottom:6px">
+<sc-for list="{{ bank }}" as="b" hint-placeholder-count="8">
+<div onClick="{{ b.add }}" role="button" style="display:flex;align-items:center;gap:11px;padding:13px 0;border-bottom:1px solid var(--border-subtle);cursor:pointer">
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-semibold)">{{ b.title }}</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.08em;color:var(--ink-400);margin-top:2px">{{ b.cat }}</div>
+</div>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.1em;color:var(--navy-600);flex-shrink:0">LEGG TIL</span>
+</div>
+</sc-for>
+</sc-if>
+
+</div>
+<div style="flex-shrink:0;padding:12px 20px 26px;border-top:1px solid var(--border-subtle);display:flex;gap:9px">
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="secondary" size="md" fullWidth="{{ true }}" onClick="{{ sheet.secondary }}" hint-size="100%,42px">{{ sheet.secondaryLabel }}</x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="primary" size="md" fullWidth="{{ true }}" onClick="{{ sheet.primary }}" hint-size="100%,42px">{{ sheet.primaryLabel }}</x-import>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;left:16px;right:16px;bottom:96px;z-index:30;background:var(--navy-900);color:var(--white);border-radius:var(--radius-md);box-shadow:var(--shadow-lg);padding:13px 15px;display:flex;align-items:center;gap:12px">
+<span style="flex:1;font-size:var(--text-xs);font-weight:var(--weight-medium);line-height:1.4">{{ toast }}</span>
+<span onClick="{{ clearToast }}" role="button" style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.12em;color:var(--navy-300);cursor:pointer;flex-shrink:0">LUKK</span>
+</div>
+</sc-if>
+
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:438,&quot;height&quot;:892}}">
+const CAT = { SLAG:'var(--navy-600)', FYS:'var(--data-3)', SPILL:'var(--data-4)', TEST:'var(--red-600)', MENTAL:'var(--ink-500)' };
+const DOW = ['Man','Tir','Ons','Tor','Fre','Lør','Søn'];
+const MND = ['januar','februar','mars','april','mai','juni','juli','august','september','oktober','november','desember'];
+const STATUS = {
+  DRAFT:     { label:'UTKAST',    bg:'var(--ink-100)',         fg:'var(--ink-500)' },
+  PUBLISHED: { label:'PUBLISERT', bg:'var(--status-green-bg)', fg:'var(--status-green-text)' },
+  PENDING:   { label:'VENTER',    bg:'var(--status-amber-bg)', fg:'var(--status-amber-text)' },
+  COMPLETED: { label:'FULLFØRT',  bg:'var(--navy-100)',        fg:'var(--navy-900)' }
+};
+const ACCESS = {
+  FULL:    { tag:'GRUPPE',         bg:'var(--status-green-bg)', fg:'var(--status-green-text)', ok:true },
+  KJOPT:   { tag:'KJØPT',          bg:'var(--status-green-bg)', fg:'var(--status-green-text)', ok:true },
+  INGEN:   { tag:'UTEN PHQ',       bg:'var(--status-amber-bg)', fg:'var(--status-amber-text)', ok:false },
+  USYNLIG: { tag:'INGEN TILGANG',  bg:'var(--status-red-bg)',   fg:'var(--status-red-text)',   ok:false }
+};
+const PLAYERS = [
+  { id:'p1', name:'Emma Lien',     group:'TN Elite · GFGK',        access:'FULL' },
+  { id:'p2', name:'Jonas Berg',    group:'TN Elite · Bogstad',     access:'FULL' },
+  { id:'p3', name:'Selma Haug',    group:'TN Junior · Losby',      access:'KJOPT' },
+  { id:'p4', name:'Mathias Rud',   group:'TN Junior · Onsøy',      access:'INGEN' },
+  { id:'p5', name:'Ingrid Sæther', group:'Ikke i aktiv TN-gruppe', access:'USYNLIG' },
+  { id:'p6', name:'Oliver Kvam',   group:'TN Elite · Miklagard',   access:'FULL' }
+];
+const BANK = [
+  ['Gate 1 m × 40','SLAG · PUTT'], ['Klokke 2 m','SLAG · PUTT'], ['Chip til gate 30 slag','SLAG · CHIP'],
+  ['Bunker høyde 20 slag','SLAG · BUNKER'], ['Avstandskontroll 9 kølle','SLAG · INNSPILL'],
+  ['Knebøy 4×6','FYS · STYRKE'], ['Rotasjon 90/90','FYS · MOBILITET'], ['Pre-shot rutine 20 slag','MENTAL']
+];
+const fmtH = (h) => (h % 1 ? String(h).replace('.', ',') : String(h)) + ' t';
+const clock = (f) => String(Math.floor(f)).padStart(2, '0') + '.' + (f % 1 ? '30' : '00');
+const iso = (d) => d.toISOString().slice(0, 10);
+const MON35 = new Date(Date.UTC(2026, 7, 24));
+
+class Component extends DCLogic {
+  state = {
+    view: 'dag', dayOffset: 2, weekOffset: 0, monthIdx: 7,
+    sheet: null, selId: null, search: '', notify: true, shareSel: ['p1'], examples: ['s2'], toast: null,
+    form: { title:'', date:'2026-08-26', time:'16:00', dur:90, pyr:'', place:'' },
+    sessions: [
+      { id:'s1', date:'2026-08-24', from:9,   hours:1.5, cat:'FYS',   sub:'STYRKE',     title:'Styrke',           status:'PUBLISHED', place:'Bogstad — gym',        drills:['Knebøy 4×6','Rumensk mark 3×8','Kjerne 3×40 s'] },
+      { id:'s2', date:'2026-08-24', from:16,  hours:1.5, cat:'SLAG',  sub:'CHIP',       title:'Nærspill',         status:'PUBLISHED', place:'Bogstad — nærområde',  drills:['Chip til gate 30 slag','Bunker høyde 20 slag'], serie:true },
+      { id:'s3', date:'2026-08-25', from:15,  hours:2,   cat:'SLAG',  sub:'INNSPILL',   title:'Innspill 100–150', status:'PUBLISHED', place:'Bogstad — range',      drills:['Avstandskontroll 9 kølle','Trackman spredning'] },
+      { id:'s4', date:'2026-08-26', from:8,   hours:1,   cat:'FYS',   sub:'MOBILITET',  title:'Mobilitet',        status:'PUBLISHED', place:'Hjemme',               drills:['Hofteserie','Rotasjon 90/90'] },
+      { id:'s5', date:'2026-08-26', from:17,  hours:1,   cat:'SLAG',  sub:'PUTT',       title:'Putt Gate',        status:'DRAFT',     place:'Bogstad — puttegreen', drills:['Gate 1 m × 40','Klokke 2 m'] },
+      { id:'s6', date:'2026-08-27', from:14,  hours:3,   cat:'SPILL', sub:'BANE',       title:'Banespill 9 hull', status:'PUBLISHED', place:'Bogstad — hull 1–9',   drills:['Gameplan hull for hull'] },
+      { id:'s7', date:'2026-08-28', from:10,  hours:2.5, cat:'TEST',  sub:'TN-BATTERI', title:'Testdag Q3',       status:'PENDING',   place:'Bogstad — testområde', drills:['Fystest 5 øvelser','Slagtest 60 slag'] },
+      { id:'s8', date:'2026-08-29', from:8.5, hours:5,   cat:'SPILL', sub:'TURNERING',  title:'Onsøy Open R1',    status:'PUBLISHED', place:'Onsøy GK',             drills:['Oppvarming 45 min','Runde'] },
+      { id:'s9', date:'2026-08-30', from:9,   hours:5,   cat:'SPILL', sub:'TURNERING',  title:'Onsøy Open R2',    status:'DRAFT',     place:'Onsøy GK',             drills:['Oppvarming 45 min','Runde'] },
+      { id:'s10',date:'2026-08-20', from:13,  hours:3,   cat:'SPILL', sub:'BANE',       title:'Banespill 18 hull',status:'COMPLETED', place:'Bogstad',              drills:['Runde'] },
+      { id:'s11',date:'2026-08-18', from:16,  hours:1.5, cat:'SLAG',  sub:'PUTT',       title:'Puttblokk',        status:'COMPLETED', place:'Bogstad',              drills:['Gate 1 m × 40'] },
+      { id:'s12',date:'2026-08-31', from:9,   hours:1.5, cat:'FYS',   sub:'STYRKE',     title:'Styrke',           status:'DRAFT',     place:'Bogstad — gym',        drills:[] }
+    ]
+  };
+
+  set(p) { this.setState(p); }
+  say(m) { this.setState({ toast: m }); }
+  paint(el, css) { if (el) Object.assign(el.style, css); }
+  field(k, v) { this.setState(s => ({ form: { ...s.form, [k]: v } })); }
+  mut(id, fn, msg) {
+    this.setState(s => ({ sessions: s.sessions.map(x => x.id === id ? { ...x, ...fn(x) } : x), toast: msg || s.toast }));
+  }
+  dayDate() {
+    const d = new Date(MON35.getTime());
+    d.setUTCDate(d.getUTCDate() + this.state.dayOffset + this.state.weekOffset * 7);
+    return d;
+  }
+  weekDates() {
+    const s = new Date(MON35.getTime());
+    s.setUTCDate(s.getUTCDate() + this.state.weekOffset * 7);
+    return Array.from({ length: 7 }, (_, i) => { const d = new Date(s.getTime()); d.setUTCDate(d.getUTCDate() + i); return d; });
+  }
+  on(date) { return this.state.sessions.filter(s => s.date === date).sort((a, b) => a.from - b.from); }
+  drafts() { return this.state.sessions.filter(s => s.status === 'DRAFT'); }
+
+  row(s) {
+    const stt = STATUS[s.status];
+    return {
+      start: clock(s.from), dur: fmtH(s.hours), cat: s.cat + ' · ' + s.sub, title: s.title, place: s.place,
+      status: stt.label, content: (s.drills || []).length ? (s.drills.length + ' øvelser') : 'INGEN ØVELSER',
+      cardRef: (el) => this.paint(el, {
+        borderLeftColor: CAT[s.cat],
+        border: s.status === 'DRAFT' ? '1px dashed var(--border-default)' : '1px solid var(--border-subtle)',
+        borderLeft: '3px solid ' + CAT[s.cat],
+        boxShadow: s.status === 'DRAFT' ? 'none' : 'var(--shadow-sm)'
+      }),
+      dotRef: (el) => this.paint(el, { background: CAT[s.cat], opacity: s.status === 'DRAFT' ? '.4' : '1' }),
+      statusRef: (el) => this.paint(el, { background: stt.bg, color: stt.fg }),
+      open: () => this.set({ selId: s.id, sheet: 'okt' })
+    };
+  }
+
+  commitForm(status) {
+    const f = this.state.form;
+    if (!f.pyr) return this.say('Velg pyramide først.');
+    if (!f.title.trim()) return this.say('Gi økten en tittel.');
+    const [hh, mm] = f.time.split(':').map(Number);
+    const s = {
+      id: 'n' + Date.now(), date: f.date, from: hh + (mm >= 30 ? 0.5 : 0), hours: Math.max(0.5, Number(f.dur) / 60),
+      cat: f.pyr, sub:'NY', title: f.title.trim(), status, place: f.place || 'Ikke satt', drills: []
+    };
+    this.setState(p => ({ sessions: [...p.sessions, s], sheet: null, toast: status === 'DRAFT' ? 'Utkast lagret.' : 'Økten er opprettet og publisert.' }));
+  }
+
+  renderVals() {
+    const st = this.state;
+    const okt = st.sessions.find(s => s.id === st.selId) || null;
+    const dd = this.dayDate();
+    const dates = this.weekDates();
+    const wkNo = 35 + st.weekOffset;
+    const periodLabel =
+      st.view === 'dag'   ? DOW[(dd.getUTCDay() + 6) % 7] + ' ' + dd.getUTCDate() + '. ' + MND[dd.getUTCMonth()] :
+      st.view === 'uke'   ? 'Uke ' + wkNo + ' · ' + dates[0].getUTCDate() + '.–' + dates[6].getUTCDate() + '.' :
+                            MND[st.monthIdx].charAt(0).toUpperCase() + MND[st.monthIdx].slice(1) + ' 2026';
+
+    const dayRows = this.on(iso(dd));
+    const nDraft = this.drafts().length;
+    const pubRows = this.drafts();
+    const shareOk = st.shareSel.length > 0;
+    const q = st.search.trim().toLowerCase();
+
+    const first = new Date(Date.UTC(2026, st.monthIdx, 1));
+    const gridStart = new Date(first.getTime());
+    gridStart.setUTCDate(1 - ((first.getUTCDay() + 6) % 7));
+
+    const SHEETS = {
+      okt: {
+        isOkt: true, kicker: okt ? okt.cat + ' · ' + okt.sub : '', title: okt ? okt.title : '',
+        sub: okt ? okt.date.split('-').reverse().join('.') + ' · ' + clock(okt.from) + ' · ' + fmtH(okt.hours) + ' · ' + okt.place : '',
+        primaryLabel: okt && okt.status === 'PUBLISHED' ? 'Avpubliser' : okt && okt.status === 'PENDING' ? 'Purr' : 'Publiser',
+        primary: () => {
+          if (!okt) return;
+          if (okt.status === 'PUBLISHED') return this.mut(okt.id, () => ({ status:'DRAFT' }), 'Tilbake som utkast.');
+          if (okt.status === 'PENDING') return this.say('Påminnelse sendt i Player HQ.');
+          this.mut(okt.id, () => ({ status:'PUBLISHED' }), 'Publisert.');
+        },
+        secondaryLabel: 'Del', secondary: () => this.set({ sheet: 'del' }),
+        meta: okt ? [
+          { k:'Sted', v: okt.place },
+          { k:'Varighet', v: fmtH(okt.hours) },
+          { k:'Status', v: STATUS[okt.status].label },
+          { k:'Serie', v: okt.serie ? 'Gjentas hver uke' : 'Enkeltøkt' }
+        ] : [],
+        drills: okt ? (okt.drills || []).map((title, i) => ({
+          n: i + 1, title,
+          remove: () => this.mut(okt.id, s => ({ drills: s.drills.filter((_, j) => j !== i) }), 'Øvelse fjernet.')
+        })) : [],
+        exMark: okt && st.examples.includes(okt.id) ? '✓' : '',
+        exRef: (el) => this.paint(el, {
+          background: okt && st.examples.includes(okt.id) ? 'var(--navy-900)' : 'var(--white)',
+          border: '1px solid ' + (okt && st.examples.includes(okt.id) ? 'var(--navy-900)' : 'var(--border-default)')
+        })
+      },
+      ny: {
+        isNy: true, kicker:'NY ØKT', title:'Ny økt', sub:'Pyramide er påkrevd. Økten lagres som utkast til du publiserer.',
+        primaryLabel:'Opprett og publiser', primary: () => this.commitForm('PUBLISHED'),
+        secondaryLabel:'Lagre utkast', secondary: () => this.commitForm('DRAFT')
+      },
+      pub: {
+        isPub: true, kicker:'PUBLISER', title: nDraft + ' utkast',
+        sub:'Blir synlige i Player HQ. Økter på en annen spillers plan lander som forslag.',
+        primaryLabel:'Publiser', primary: () => this.setState(s => ({
+          sessions: s.sessions.map(x => x.status === 'DRAFT' ? { ...x, status:'PUBLISHED' } : x),
+          sheet: null, toast: nDraft + ' økter publisert' + (s.notify ? ' — spillerne er varslet.' : '.')
+        })),
+        secondaryLabel:'Avbryt', secondary: () => this.set({ sheet: null })
+      },
+      del: {
+        isDel: true, kicker:'DELING', title:'Del med spillere',
+        sub: okt ? '«' + okt.title + '» deles som forslag spilleren må godta.' : 'Velg hvem som skal få økten.',
+        primaryLabel: shareOk ? 'Del med ' + st.shareSel.length : 'Del',
+        primary: () => shareOk
+          ? this.set({ sheet: null, toast: 'Delt med ' + st.shareSel.length + ' spillere — venter på at de godtar.' })
+          : this.say('Velg minst én spiller.'),
+        secondaryLabel:'Avbryt', secondary: () => this.set({ sheet: 'okt' })
+      },
+      bank: {
+        isBank: true, kicker:'ØVELSESBANK', title:'Legg til øvelse',
+        sub: okt ? 'Legges i «' + okt.title + '».' : 'Velg en økt først.',
+        primaryLabel:'Ferdig', primary: () => this.set({ sheet: 'okt' }),
+        secondaryLabel:'Avbryt', secondary: () => this.set({ sheet: 'okt' })
+      }
+    };
+    const sheet = SHEETS[st.sheet] || {};
+
+    return {
+      isDay: st.view === 'dag', isWeek: st.view === 'uke', isMonth: st.view === 'maned',
+      periodLabel, search: st.search, toast: st.toast, hasToast: !!st.toast,
+      hasSheet: !!st.sheet,
+      draftLine: nDraft ? nDraft + ' utkast' : 'alt publisert',
+      publishLabel: nDraft ? 'Publiser ' + nDraft : 'Publiser',
+      dow: DOW.map(label => ({ label })),
+
+      tabs: [['dag','DAG'],['uke','UKE'],['maned','MÅNED']].map(([id, label]) => ({
+        label,
+        ref: (el) => this.paint(el, {
+          background: st.view === id ? 'var(--navy-900)' : 'transparent',
+          color: st.view === id ? 'var(--white)' : 'var(--ink-500)',
+          boxShadow: st.view === id ? 'var(--shadow-sm)' : 'none'
+        }),
+        select: () => this.set({ view: id })
+      })),
+
+      day: { empty: dayRows.length === 0, rows: dayRows.map(s => this.row(s)) },
+
+      weekDays: dates.map((d, i) => {
+        const rows = this.on(iso(d));
+        return {
+          label: DOW[i] + ' ' + d.getUTCDate() + '.',
+          summary: rows.length ? rows.length + ' økter · ' + fmtH(rows.reduce((n, s) => n + s.hours, 0)) : '',
+          empty: rows.length === 0,
+          labelRef: (el) => this.paint(el, { color: iso(d) === '2026-08-26' ? 'var(--navy-600)' : 'var(--ink-900)' }),
+          open: () => this.set({ view: 'dag', dayOffset: i }),
+          rows: rows.map(s => this.row(s))
+        };
+      }),
+
+      monthRows: Array.from({ length: 6 }, (_, r) => ({
+        cells: Array.from({ length: 7 }, (_, c) => {
+          const d = new Date(gridStart.getTime());
+          d.setUTCDate(d.getUTCDate() + r * 7 + c);
+          const key = iso(d), inMonth = d.getUTCMonth() === st.monthIdx;
+          const list = this.on(key);
+          return {
+            date: d.getUTCDate(),
+            ref: (el) => this.paint(el, { opacity: inMonth ? '1' : '.3' }),
+            dateRef: (el) => this.paint(el, { color: key === '2026-08-26' ? 'var(--navy-600)' : 'var(--ink-700)' }),
+            dots: list.slice(0, 4).map(s => ({
+              ref: (el) => this.paint(el, {
+                background: s.status === 'DRAFT' ? 'transparent' : CAT[s.cat],
+                boxShadow: s.status === 'DRAFT' ? 'inset 0 0 0 1px ' + CAT[s.cat] : 'none'
+              })
+            })),
+            open: () => {
+              const off = Math.round((d - MON35) / 86400000);
+              this.set({ view: 'dag', weekOffset: Math.floor(off / 7), dayOffset: ((off % 7) + 7) % 7 });
+            }
+          };
+        })
+      })),
+
+      sheet,
+      close: () => this.set({ sheet: null }),
+      stop: (e) => e.stopPropagation(),
+      clearToast: () => this.set({ toast: null }),
+      openSubject: () => this.say('Spillervelger åpnes i Stall — pulje 2.'),
+      openNew: () => this.setState(s => ({ sheet: 'ny', selId: null, form: { title:'', date: iso(dd), time:'16:00', dur:90, pyr:'', place:'' } })),
+      openPublish: () => this.set(nDraft ? { sheet: 'pub' } : { toast: 'Ingen utkast å publisere.' }),
+      openBank: () => this.set({ sheet: 'bank', search: '' }),
+      onSearch: (e) => this.set({ search: e.target.value }),
+
+      meta: [], drills: [],
+      toggleExample: () => this.setState(s => ({
+        examples: s.examples.includes(s.selId) ? s.examples.filter(x => x !== s.selId) : [...s.examples, s.selId],
+        toast: s.examples.includes(s.selId) ? 'Fjernet som eksempeløkt.' : 'Lagt ut som eksempeløkt for TN-spillere.'
+      })),
+
+      form: {
+        title: st.form.title, date: st.form.date, time: st.form.time, place: st.form.place,
+        onTitle: (e) => this.field('title', e.target.value),
+        onDate: (e) => this.field('date', e.target.value),
+        onTime: (e) => this.field('time', e.target.value),
+        onPlace: (e) => this.field('place', e.target.value),
+        warn: st.form.pyr ? '' : 'Velg pyramide — økten kan ikke opprettes uten.',
+        warnRef: (el) => this.paint(el, { display: st.form.pyr ? 'none' : 'block' }),
+        pyramids: ['SLAG','FYS','SPILL','TEST','MENTAL'].map(label => ({
+          label,
+          ref: (el) => this.paint(el, {
+            background: st.form.pyr === label ? 'var(--navy-900)' : 'var(--ink-100)',
+            color: st.form.pyr === label ? 'var(--white)' : 'var(--ink-500)'
+          }),
+          select: () => this.field('pyr', label)
+        })),
+        durs: [45, 60, 90, 120].map(v => ({
+          label: v,
+          ref: (el) => this.paint(el, {
+            background: Number(st.form.dur) === v ? 'var(--navy-900)' : 'var(--ink-100)',
+            color: Number(st.form.dur) === v ? 'var(--white)' : 'var(--ink-500)'
+          }),
+          select: () => this.field('dur', v)
+        }))
+      },
+
+      pub: {
+        rows: pubRows.map(s => ({
+          when: s.date.slice(8) + '.' + s.date.slice(5, 7) + ' · ' + clock(s.from),
+          title: s.title,
+          flag: (s.drills || []).length ? '' : 'UTEN INNHOLD',
+          flagRef: (el) => this.paint(el, { color: 'var(--status-amber-text)' })
+        })),
+        notifyMark: st.notify ? '✓' : '',
+        notifyRef: (el) => this.paint(el, {
+          background: st.notify ? 'var(--navy-900)' : 'var(--white)',
+          border: '1px solid ' + (st.notify ? 'var(--navy-900)' : 'var(--border-default)')
+        }),
+        toggleNotify: () => this.set({ notify: !st.notify })
+      },
+
+      del: {
+        players: PLAYERS.map(p => {
+          const a = ACCESS[p.access], on = st.shareSel.includes(p.id);
+          return {
+            name: p.name, group: p.group, tag: a.tag, mark: on ? '✓' : '',
+            nameRef: (el) => this.paint(el, { color: a.ok ? 'var(--ink-900)' : 'var(--ink-400)' }),
+            tagRef: (el) => this.paint(el, { background: a.bg, color: a.fg }),
+            boxRef: (el) => this.paint(el, {
+              background: on ? 'var(--navy-900)' : 'var(--white)',
+              border: '1px solid ' + (on ? 'var(--navy-900)' : 'var(--border-default)'),
+              opacity: a.ok ? '1' : '.4'
+            }),
+            toggle: () => a.ok
+              ? this.setState(s => ({ shareSel: on ? s.shareSel.filter(x => x !== p.id) : [...s.shareSel, p.id] }))
+              : this.say(p.name + ' har ikke full Player HQ-tilgang.')
+          };
+        })
+      },
+
+      bank: BANK.filter(b => !q || b[0].toLowerCase().includes(q)).map(b => ({
+        title: b[0], cat: b[1],
+        add: () => st.selId
+          ? this.mut(st.selId, s => ({ drills: [...s.drills, b[0]] }), '«' + b[0] + '» lagt i økten.')
+          : this.say('Velg en økt først.')
+      }))
+    };
+  }
+}
+
+</script>
+</body>
+</html>

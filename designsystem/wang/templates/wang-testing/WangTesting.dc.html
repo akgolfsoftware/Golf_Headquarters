@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="WANG · Testing" description="Behov 1: testdag-føring for 10+ elever etter tur, protokollbibliotek, protokoll-detalj og resultater per elev med kildelinje. Mobil 390 først, desktop 1280. WANG-skinn, lys flate." -->
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Quattrocento+Sans:wght@400;700&display=swap">
+<link rel="stylesheet" href="../../tokens/wang-tokens.css">
+<style>body{margin:0}</style>
+</helmet>
+<div class="wang-tp" style="min-height:100vh;padding:clamp(20px,4vw,48px);display:flex;flex-direction:column;gap:44px;font-family:var(--font-body);color:var(--text-primary);font-variant-numeric:tabular-nums">
+
+<div style="display:flex;flex-direction:column;gap:10px;max-width:720px">
+<div style="font-family:var(--font-brand);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--wang-teal-text)">Behov 1 · Testing · innlogget COACH</div>
+<h1 style="font-family:var(--font-brand);font-weight:800;font-size:clamp(28px,5vw,40px);line-height:1.05;margin:0">Testdag, protokoller og resultater</h1>
+<p style="margin:0;font-size:16px;line-height:1.6;color:var(--text-secondary);text-wrap:pretty">Én trener fører 10+ elever etter tur på samme øvelse, ute, med telefonen i én hånd. Hvert tall lagres med eier, protokollversjon, hvem som målte og hvem som kan se det. Fysiske tester er primærcase.</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<span style="display:inline-flex;align-items:center;border-radius:999px;padding:6px 13px;font-family:var(--font-brand);font-weight:700;font-size:12px;background:var(--cat-purple);color:#fff">ANTAKELSE</span>
+<span style="display:inline-flex;align-items:center;border-radius:999px;padding:6px 13px;font-family:var(--font-brand);font-weight:700;font-size:12px;background:var(--tint-pink);color:var(--cat-pink)">Forutsetter: testResult utvidet med protokoll · versjon · målt av</span>
+<span style="display:inline-flex;align-items:center;border-radius:999px;padding:6px 13px;font-family:var(--font-brand);font-weight:700;font-size:12px;background:var(--tint-teal);color:var(--wang-teal-text)">TN-struktur gjenbrukt med WANG-skinn — Anders bekrefter</span>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:18px">
+<div style="font-family:var(--font-brand);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-secondary)">Mobil 390 · fire skjermer</div>
+<div style="display:flex;gap:28px;flex-wrap:wrap;align-items:flex-start">
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-brand);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-secondary)">A · Testdag-føring · /team-wang/coach/test/[dagId]</div>
+<div data-screen-label="Testdag-føring 390" style="width:390px;height:844px;flex-shrink:0;background:var(--bg-app);border-radius:26px;box-shadow:var(--shadow-card);overflow:hidden;display:flex;flex-direction:column">
+<div style="height:44px;flex-shrink:0;display:flex;align-items:flex-end;justify-content:space-between;padding:0 22px 4px"><span style="font-family:var(--font-brand);font-weight:600;font-size:12px">09.41</span><span style="font-family:var(--font-brand);font-weight:600;font-size:12px">WANG Fredrikstad</span></div>
+<div style="flex-shrink:0;padding:6px 16px 10px;display:flex;align-items:center;gap:10px">
+<div role="button" style="width:44px;height:44px;border-radius:999px;background:#fff;box-shadow:var(--shadow-card-sm);display:grid;place-items:center;font-size:22px;color:var(--wang-navy);flex-shrink:0">‹</div>
+<div style="flex:1;min-width:0"><div style="font-family:var(--font-brand);font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Testdag · uke 35</div><div style="font-size:12.5px;color:var(--text-secondary)">Fysisk · NGF-testbatteri · 14 elever</div></div>
+<div role="button" style="height:44px;padding:0 16px;border-radius:999px;background:#fff;box-shadow:var(--shadow-card-sm);display:flex;align-items:center;font-family:var(--font-brand);font-weight:700;font-size:13px;color:var(--wang-navy)">Avslutt</div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:4px 16px 16px;display:flex;flex-direction:column;gap:12px">
+<div style="background:var(--grad-hero-line);color:#fff;border-radius:26px;box-shadow:var(--shadow-hero);padding:18px 20px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+<span style="font-family:var(--font-brand);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--wang-mint)">Står for tur · 8 av 14</span>
+<span style="display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:999px;background:rgba(255,255,255,.14);font-family:var(--font-brand);font-weight:700;font-size:11.5px">VG2A</span>
+</div>
+<div style="font-family:var(--font-brand);font-weight:800;font-size:26px;line-height:1.1">Elev 08</div>
+<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+<span style="display:inline-flex;align-items:center;height:28px;padding:0 11px;border-radius:999px;background:rgba(255,255,255,.14);font-family:var(--font-brand);font-weight:700;font-size:12px">Countermovement jump</span>
+<span style="font-size:12.5px;color:rgba(255,255,255,.78)">NGF v3 · låst</span>
+</div>
+<div style="height:6px;border-radius:999px;background:rgba(255,255,255,.18);overflow:hidden"><div style="width:50%;height:100%;background:var(--wang-mint);border-radius:999px"></div></div>
+</div>
+<div style="background:#fff;border-radius:20px;box-shadow:var(--shadow-card-sm);padding:16px 18px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:baseline;justify-content:center;gap:8px"><span style="font-family:var(--font-brand);font-weight:800;font-size:56px;line-height:1;letter-spacing:-.02em">38,5</span><span style="font-family:var(--font-brand);font-weight:700;font-size:18px;color:var(--text-secondary)">cm</span></div>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+<div role="button" style="height:48px;border-radius:16px;background:var(--neutral-50);display:grid;place-items:center;font-family:var(--font-brand);font-weight:700;font-size:14px">−1</div>
+<div role="button" style="height:48px;border-radius:16px;background:var(--neutral-50);display:grid;place-items:center;font-family:var(--font-brand);font-weight:700;font-size:14px">−0,1</div>
+<div role="button" style="height:48px;border-radius:16px;background:var(--neutral-50);display:grid;place-items:center;font-family:var(--font-brand);font-weight:700;font-size:14px">+0,1</div>
+<div role="button" style="height:48px;border-radius:16px;background:var(--neutral-50);display:grid;place-items:center;font-family:var(--font-brand);font-weight:700;font-size:14px">+1</div>
+</div>
+<div style="display:flex;align-items:center;gap:8px">
+<span style="font-family:var(--font-brand);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-secondary);flex-shrink:0">Forsøk</span>
+<div style="flex:1;height:44px;border-radius:999px;background:var(--tint-teal);color:var(--wang-teal-text);display:grid;place-items:center;font-family:var(--font-brand);font-weight:700;font-size:13.5px">1 · 36,9</div>
+<div style="flex:1;height:44px;border-radius:999px;background:var(--wang-navy);color:#fff;display:grid;place-items:center;font-family:var(--font-brand);font-weight:700;font-size:13.5px">2</div>
+<div style="flex:1;height:44px;border-radius:999px;background:var(--neutral-50);color:var(--text-secondary);display:grid;place-items:center;font-family:var(--font-brand);font-weight:700;font-size:13.5px">3</div>
+</div>
+</div>
+<div role="button" style="height:56px;flex-shrink:0;border-radius:999px;background:var(--wang-navy);color:#fff;display:grid;place-items:center;font-family:var(--font-brand);font-weight:700;font-size:15px;box-shadow:var(--shadow-float)">Før og neste elev</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+<div role="button" style="height:44px;border-radius:999px;background:#fff;box-shadow:var(--shadow-card-sm);display:grid;place-items:center;font-family:var(--font-brand);font-weight:700;font-size:13px;color:var(--wang-navy)">Hopp over</div>
+<div role="button" style="height:44px;border-radius:999px;background:#fff;box-shadow:var(--shadow-card-sm);display:grid;place-items:center;font-family:var(--font-brand);font-weight:700;font-size:13px;color:var(--wang-navy)">Rett opp forrige</div>
+<div role="button" style="height:44px;border-radius:999px;background:#fff;box-shadow:var(--shadow-card-sm);display:grid;place-items:center;font-family:var(--font-brand);font-weight:700;font-size:13px;color:var(--cat-pink)">Ikke møtt</div>
+<div role="button" style="height:44px;border-radius:999px;background:#fff;box-shadow:var(--shadow-card-sm);display:grid;place-items:center;font-family:var(--font-brand);font-weight:700;font-size:13px;color:var(--wang-navy)">Legg til elev</div>
+</div>
+<div style="flex:1;min-height:0;background:#fff;border-radius:20px;box-shadow:var(--shadow-card-sm);padding:14px 16px;display:flex;flex-direction:column;gap:9px;overflow:hidden">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-family:var(--font-brand);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-secondary)">Kø</span><span style="font-size:12.5px;color:var(--text-secondary)">6 gjenstår</span></div>
+<div style="display:flex;align-items:center;gap:10px;min-height:28px"><span style="width:8px;height:8px;border-radius:999px;background:var(--wang-teal)"></span><span style="flex:1;font-size:14px">Elev 07 · VG3B</span><span style="font-size:13px;color:var(--text-secondary)">41,2 cm</span></div>
+<div style="display:flex;align-items:center;gap:10px;min-height:28px"><span style="width:8px;height:8px;border-radius:999px;background:var(--wang-navy)"></span><span style="flex:1;font-size:14px;font-weight:700">Elev 08 · VG2A</span><span style="font-size:13px;color:var(--text-secondary)">fører</span></div>
+<div style="display:flex;align-items:center;gap:10px;min-height:28px"><span style="width:8px;height:8px;border-radius:999px;background:var(--neutral-300)"></span><span style="flex:1;font-size:14px">Elev 09 · VG1A</span><span style="font-size:13px;color:var(--text-secondary)">—</span></div>
+<div style="display:flex;align-items:center;gap:10px;min-height:28px"><span style="width:8px;height:8px;border-radius:999px;background:var(--cat-pink)"></span><span style="flex:1;font-size:14px">Elev 03 · VG2B</span><span style="font-size:13px;color:var(--cat-pink)">ikke møtt</span></div>
+</div>
+<div style="font-size:12px;color:var(--text-secondary);line-height:1.5;padding:0 4px"><span style="font-family:var(--font-brand);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:11px;color:var(--wang-teal-text)">Lagres som</span> NGF v3 · målt av deg · 27.08.2026 · synlig for WANG og foresatt</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-brand);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-secondary)">B · Protokoller · /team-wang/protokoll</div>
+<div data-screen-label="Protokoller 390" style="width:390px;height:844px;flex-shrink:0;background:var(--bg-app);border-radius:26px;box-shadow:var(--shadow-card);overflow:hidden;display:flex;flex-direction:column">
+<div style="height:44px;flex-shrink:0;display:flex;align-items:flex-end;justify-content:space-between;padding:0 22px 4px"><span style="font-family:var(--font-brand);font-weight:600;font-size:12px">09.41</span><span style="font-family:var(--font-brand);font-weight:600;font-size:12px">WANG Fredrikstad</span></div>
+<div style="flex-shrink:0;padding:6px 16px 10px;display:flex;align-items:center;gap:10px">
+<div role="button" style="width:44px;height:44px;border-radius:999px;background:#fff;box-shadow:var(--shadow-card-sm);display:grid;place-items:center;font-size:22px;color:var(--wang-navy);flex-shrink:0">‹</div>
+<div style="flex:1;min-width:0"><div style="font-family:var(--font-brand);font-weight:700;font-size:15px">Protokoller</div><div style="font-size:12.5px;color:var(--text-secondary)">Delt med AK Golf og Team Norway</div></div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:4px 16px 16px;display:flex;flex-direction:column;gap:12px">
+<div style="background:var(--grad-hero-line);color:#fff;border-radius:26px;box-shadow:var(--shadow-hero);padding:18px 20px;display:flex;flex-direction:column;gap:10px">
+<span style="font-family:var(--font-brand);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--wang-mint)">Protokollbibliotek</span>
+<div style="display:flex;gap:18px">
+<div><div style="font-family:var(--font-brand);font-weight:800;font-size:34px;line-height:1">12</div><div style="font-size:12.5px;color:rgba(255,255,255,.78)">protokoller</div></div>
+<div><div style="font-family:var(--font-brand);font-weight:800;font-size:34px;line-height:1">3</div><div style="font-size:12.5px;color:rgba(255,255,255,.78)">eiere</div></div>
+<div><div style="font-family:var(--font-brand);font-weight:800;font-size:34px;line-height:1">9</div><div style="font-size:12.5px;color:rgba(255,255,255,.78)">låst</div></div>
+</div>
+<div style="font-size:12.5px;color:rgba(255,255,255,.78);line-height:1.5">Opprettes én gang, versjoneres, låses ved første bruk.</div>
+</div>
+<div style="display:flex;gap:6px;flex-wrap:wrap">
+<span style="display:inline-flex;align-items:center;height:36px;padding:0 14px;border-radius:999px;background:var(--wang-navy);color:#fff;font-family:var(--font-brand);font-weight:700;font-size:12.5px">Alle</span>
+<span style="display:inline-flex;align-items:center;height:36px;padding:0 14px;border-radius:999px;background:#fff;box-shadow:var(--shadow-card-sm);color:var(--text-secondary);font-family:var(--font-brand);font-weight:700;font-size:12.5px">NGF</span>
+<span style="display:inline-flex;align-items:center;height:36px;padding:0 14px;border-radius:999px;background:#fff;box-shadow:var(--shadow-card-sm);color:var(--text-secondary);font-family:var(--font-brand);font-weight:700;font-size:12.5px">AK Golf</span>
+<span style="display:inline-flex;align-items:center;height:36px;padding:0 14px;border-radius:999px;background:#fff;box-shadow:var(--shadow-card-sm);color:var(--text-secondary);font-family:var(--font-brand);font-weight:700;font-size:12.5px">WANG</span>
+</div>
+<div style="font-family:var(--font-brand);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-secondary);padding:4px 4px 0">FYS</div>
+<div role="button" style="background:#fff;border-radius:20px;box-shadow:var(--shadow-card-sm);padding:14px 16px;display:flex;align-items:center;gap:12px;min-height:64px"><span style="width:44px;height:44px;border-radius:14px;background:var(--tint-purple);color:var(--cat-purple);display:grid;place-items:center;font-family:var(--font-brand);font-weight:800;font-size:11px">FYS</span><div style="flex:1;min-width:0"><div style="font-family:var(--font-brand);font-weight:700;font-size:14px">Countermovement jump</div><div style="font-size:12.5px;color:var(--text-secondary)">NGF · cm · beste av 3</div></div><span style="display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:999px;background:var(--tint-teal);color:var(--wang-teal-text);font-family:var(--font-brand);font-weight:700;font-size:11.5px">v3 låst</span></div>
+<div role="button" style="background:#fff;border-radius:20px;box-shadow:var(--shadow-card-sm);padding:14px 16px;display:flex;align-items:center;gap:12px;min-height:64px"><span style="width:44px;height:44px;border-radius:14px;background:var(--tint-purple);color:var(--cat-purple);display:grid;place-items:center;font-family:var(--font-brand);font-weight:800;font-size:11px">FYS</span><div style="flex:1;min-width:0"><div style="font-family:var(--font-brand);font-weight:700;font-size:14px">Med-ball kast</div><div style="font-size:12.5px;color:var(--text-secondary)">NGF · m · beste av 3</div></div><span style="display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:999px;background:var(--tint-teal);color:var(--wang-teal-text);font-family:var(--font-brand);font-weight:700;font-size:11.5px">v2 låst</span></div>
+<div role="button" style="background:#fff;border-radius:20px;box-shadow:var(--shadow-card-sm);padding:14px 16px;display:flex;align-items:center;gap:12px;min-height:64px"><span style="width:44px;height:44px;border-radius:14px;background:var(--tint-purple);color:var(--cat-purple);display:grid;place-items:center;font-family:var(--font-brand);font-weight:800;font-size:11px">FYS</span><div style="flex:1;min-width:0"><div style="font-family:var(--font-brand);font-weight:700;font-size:14px">3000 m løp</div><div style="font-size:12.5px;color:var(--text-secondary)">WANG · mm:ss · ett forsøk</div></div><span style="display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:999px;background:var(--tint-orange);color:var(--cat-orange-text);font-family:var(--font-brand);font-weight:700;font-size:11.5px">v1 utkast</span></div>
+<div style="font-family:var(--font-brand);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-secondary);padding:4px 4px 0">SLAG</div>
+<div role="button" style="background:#fff;border-radius:20px;box-shadow:var(--shadow-card-sm);padding:14px 16px;display:flex;align-items:center;gap:12px;min-height:64px"><span style="width:44px;height:44px;border-radius:14px;background:var(--tint-blue);color:var(--cat-blue-text);display:grid;place-items:center;font-family:var(--font-brand);font-weight:800;font-size:11px">SLAG</span><div style="flex:1;min-width:0"><div style="font-family:var(--font-brand);font-weight:700;font-size:14px">Køllehastighet driver</div><div style="font-size:12.5px;color:var(--text-secondary)">AK Golf · mph · snitt av 5</div></div><span style="display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:999px;background:var(--tint-teal);color:var(--wang-teal-text);font-family:var(--font-brand);font-weight:700;font-size:11.5px">v2 låst</span></div>
+<div role="button" style="background:#fff;border-radius:20px;box-shadow:var(--shadow-card-sm);padding:14px 16px;display:flex;align-items:center;gap:12px;min-height:64px"><span style="width:44px;height:44px;border-radius:14px;background:var(--tint-teal);color:var(--wang-teal-text);display:grid;place-items:center;font-family:var(--font-brand);font-weight:800;font-size:11px">SPILL</span><div style="flex:1;min-width:0"><div style="font-family:var(--font-brand);font-weight:700;font-size:14px">Putt 2 m · 20 baller</div><div style="font-size:12.5px;color:var(--text-secondary)">Team Norway · antall · ett forsøk</div></div><span style="display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:999px;background:var(--tint-teal);color:var(--wang-teal-text);font-family:var(--font-brand);font-weight:700;font-size:11.5px">v1 låst</span></div>
+<div style="margin-top:auto"><div role="button" style="height:48px;border-radius:999px;background:#fff;box-shadow:var(--shadow-card-sm);display:grid;place-items:center;font-family:var(--font-brand);font-weight:700;font-size:13.5px;color:var(--wang-navy)">Ny protokoll</div></div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-brand);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-secondary)">C · Protokoll-detalj · /team-wang/protokoll/[id]</div>
+<div data-screen-label="Protokoll-detalj 390" style="width:390px;height:844px;flex-shrink:0;background:var(--bg-app);border-radius:26px;box-shadow:var(--shadow-card);overflow:hidden;display:flex;flex-direction:column">
+<div style="height:44px;flex-shrink:0;display:flex;align-items:flex-end;justify-content:space-between;padding:0 22px 4px"><span style="font-family:var(--font-brand);font-weight:600;font-size:12px">09.41</span><span style="font-family:var(--font-brand);font-weight:600;font-size:12px">WANG Fredrikstad</span></div>
+<div style="flex-shrink:0;padding:6px 16px 10px;display:flex;align-items:center;gap:10px">
+<div role="button" style="width:44px;height:44px;border-radius:999px;background:#fff;box-shadow:var(--shadow-card-sm);display:grid;place-items:center;font-size:22px;color:var(--wang-navy);flex-shrink:0">‹</div>
+<div style="flex:1;min-width:0"><div style="font-family:var(--font-brand);font-weight:700;font-size:15px">Countermovement jump</div><div style="font-size:12.5px;color:var(--text-secondary)">Protokoll · FYS</div></div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:4px 16px 16px;display:flex;flex-direction:column;gap:12px">
+<div style="background:var(--grad-hero-line);color:#fff;border-radius:26px;box-shadow:var(--shadow-hero);padding:18px 20px;display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-family:var(--font-brand);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--wang-mint)">Eier · NGF</span><span style="display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:999px;background:var(--wang-mint);color:#0d3050;font-family:var(--font-brand);font-weight:700;font-size:11.5px">v3 låst</span></div>
+<div style="font-family:var(--font-brand);font-weight:800;font-size:24px;line-height:1.1">Låst 12.08.2026 ved første bruk</div>
+<div style="font-size:13px;color:rgba(255,255,255,.78);line-height:1.5">Brukt i 41 målinger på 3 testdager. Endringer gir v4 — eksisterende resultater beholder v3.</div>
+</div>
+<div style="background:#fff;border-radius:20px;box-shadow:var(--shadow-card-sm);padding:16px 18px;display:grid;grid-template-columns:1fr 1fr;gap:12px">
+<div><div style="font-family:var(--font-brand);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-secondary)">Enhet</div><div style="font-family:var(--font-brand);font-weight:700;font-size:16px;margin-top:3px">cm</div></div>
+<div><div style="font-family:var(--font-brand);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-secondary)">Forsøk</div><div style="font-family:var(--font-brand);font-weight:700;font-size:16px;margin-top:3px">3 · beste teller</div></div>
+<div><div style="font-family:var(--font-brand);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-secondary)">Pyramide</div><div style="font-family:var(--font-brand);font-weight:700;font-size:16px;margin-top:3px">FYS</div></div>
+<div><div style="font-family:var(--font-brand);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-secondary)">Presisjon</div><div style="font-family:var(--font-brand);font-weight:700;font-size:16px;margin-top:3px">0,1</div></div>
+</div>
+<div style="background:#fff;border-radius:20px;box-shadow:var(--shadow-card-sm);padding:16px 18px;display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-brand);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-secondary)">Utførelse</div>
+<div style="font-size:14px;line-height:1.55">Stå på kraftplate eller matte, hender på hoftene. Hopp maksimalt uten forberedende steg. Tre forsøk med 30 sekunders pause.</div>
+</div>
+<div style="background:#fff;border-radius:20px;box-shadow:var(--shadow-card-sm);padding:16px 18px;display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-brand);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-secondary)">Delt med</div>
+<div style="display:flex;gap:6px;flex-wrap:wrap">
+<span style="display:inline-flex;align-items:center;height:30px;padding:0 12px;border-radius:999px;background:var(--tint-navy);color:var(--wang-navy);font-family:var(--font-brand);font-weight:700;font-size:12px">WANG Fredrikstad</span>
+<span style="display:inline-flex;align-items:center;height:30px;padding:0 12px;border-radius:999px;background:var(--tint-navy);color:var(--wang-navy);font-family:var(--font-brand);font-weight:700;font-size:12px">AK Golf</span>
+<span style="display:inline-flex;align-items:center;height:30px;padding:0 12px;border-radius:999px;background:var(--tint-navy);color:var(--wang-navy);font-family:var(--font-brand);font-weight:700;font-size:12px">Team Norway</span>
+</div>
+</div>
+<div style="background:#fff;border-radius:20px;box-shadow:var(--shadow-card-sm);padding:16px 18px;display:flex;flex-direction:column;gap:8px">
+<div style="font-family:var(--font-brand);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-secondary)">Versjoner</div>
+<div style="display:flex;justify-content:space-between;min-height:28px;align-items:center"><span style="font-size:14px;font-weight:700">v3 · gjeldende</span><span style="font-size:12.5px;color:var(--text-secondary)">12.08.2026 · 41 målinger</span></div>
+<div style="display:flex;justify-content:space-between;min-height:28px;align-items:center"><span style="font-size:14px">v2 · pause 30 s → 20 s</span><span style="font-size:12.5px;color:var(--text-secondary)">2025 · 118 målinger</span></div>
+<div style="display:flex;justify-content:space-between;min-height:28px;align-items:center"><span style="font-size:14px">v1</span><span style="font-size:12.5px;color:var(--text-secondary)">2024 · 64 målinger</span></div>
+</div>
+<div style="margin-top:auto"><div role="button" style="height:48px;border-radius:999px;background:var(--wang-navy);color:#fff;display:grid;place-items:center;font-family:var(--font-brand);font-weight:700;font-size:13.5px">Start testdag med denne</div></div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-brand);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-secondary)">D · Resultater per elev · /team-wang/elev/[id]/tester</div>
+<div data-screen-label="Resultater per elev 390" style="width:390px;height:844px;flex-shrink:0;background:var(--bg-app);border-radius:26px;box-shadow:var(--shadow-card);overflow:hidden;display:flex;flex-direction:column">
+<div style="height:44px;flex-shrink:0;display:flex;align-items:flex-end;justify-content:space-between;padding:0 22px 4px"><span style="font-family:var(--font-brand);font-weight:600;font-size:12px">09.41</span><span style="font-family:var(--font-brand);font-weight:600;font-size:12px">WANG Fredrikstad</span></div>
+<div style="flex-shrink:0;padding:6px 16px 10px;display:flex;align-items:center;gap:10px">
+<div role="button" style="width:44px;height:44px;border-radius:999px;background:#fff;box-shadow:var(--shadow-card-sm);display:grid;place-items:center;font-size:22px;color:var(--wang-navy);flex-shrink:0">‹</div>
+<div style="flex:1;min-width:0"><div style="font-family:var(--font-brand);font-weight:700;font-size:15px">Elev 08 · tester</div><div style="font-size:12.5px;color:var(--text-secondary)">VG2A · innlogget trener</div></div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:4px 16px 16px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;gap:6px">
+<span style="display:inline-flex;align-items:center;height:36px;padding:0 14px;border-radius:999px;background:var(--wang-navy);color:#fff;font-family:var(--font-brand);font-weight:700;font-size:12.5px">FYS</span>
+<span style="display:inline-flex;align-items:center;height:36px;padding:0 14px;border-radius:999px;background:#fff;box-shadow:var(--shadow-card-sm);color:var(--text-secondary);font-family:var(--font-brand);font-weight:700;font-size:12.5px">TEK</span>
+<span style="display:inline-flex;align-items:center;height:36px;padding:0 14px;border-radius:999px;background:#fff;box-shadow:var(--shadow-card-sm);color:var(--text-secondary);font-family:var(--font-brand);font-weight:700;font-size:12.5px">SLAG</span>
+<span style="display:inline-flex;align-items:center;height:36px;padding:0 14px;border-radius:999px;background:#fff;box-shadow:var(--shadow-card-sm);color:var(--text-secondary);font-family:var(--font-brand);font-weight:700;font-size:12.5px">SPILL</span>
+</div>
+<div style="background:var(--grad-hero-line);color:#fff;border-radius:26px;box-shadow:var(--shadow-hero);padding:18px 20px;display:flex;flex-direction:column;gap:8px">
+<span style="font-family:var(--font-brand);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--wang-mint)">Siste test · uke 35</span>
+<div style="display:flex;align-items:baseline;gap:8px"><span style="font-family:var(--font-brand);font-weight:800;font-size:44px;line-height:1">38,5</span><span style="font-family:var(--font-brand);font-weight:700;font-size:16px;color:rgba(255,255,255,.78)">cm · Countermovement jump</span></div>
+<div style="font-size:13px;color:rgba(255,255,255,.78)">+1,6 cm siden uke 43 i fjor · beste av 3</div>
+<div style="border-top:1px solid rgba(255,255,255,.14);padding-top:10px;font-size:12px;color:rgba(255,255,255,.78);line-height:1.5"><span style="font-family:var(--font-brand);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:11px;color:var(--wang-mint)">Kilde</span> NGF v3 · målt av trener WANG · 27.08.2026 · synlig for WANG, foresatt, Team Norway (samtykke)</div>
+</div>
+<div style="background:#fff;border-radius:20px;box-shadow:var(--shadow-card-sm);padding:14px 16px;display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-family:var(--font-brand);font-weight:700;font-size:14px">Med-ball kast</span><span style="font-family:var(--font-brand);font-weight:800;font-size:20px">9,4 <span style="font-size:13px;font-weight:700;color:var(--text-secondary)">m</span></span></div>
+<div style="font-size:12px;color:var(--text-secondary);line-height:1.5"><span style="font-family:var(--font-brand);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:11px;color:var(--wang-teal-text)">Kilde</span> NGF v2 · målt av trener WANG · 27.08.2026 · WANG, foresatt</div>
+</div>
+<div style="background:#fff;border-radius:20px;box-shadow:var(--shadow-card-sm);padding:14px 16px;display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-family:var(--font-brand);font-weight:700;font-size:14px">3000 m løp</span><span style="font-family:var(--font-brand);font-weight:800;font-size:20px">12:48</span></div>
+<div style="font-size:12px;color:var(--text-secondary);line-height:1.5"><span style="font-family:var(--font-brand);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:11px;color:var(--wang-teal-text)">Kilde</span> WANG v1 utkast · målt av trener WANG · 26.08.2026 · WANG</div>
+</div>
+<div style="background:#fff;border-radius:20px;box-shadow:var(--shadow-card-sm);padding:14px 16px;display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-family:var(--font-brand);font-weight:700;font-size:14px">Køllehastighet driver</span><span style="display:flex;align-items:center;gap:6px"><span style="display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:999px;background:var(--tint-orange);color:var(--cat-orange-text);font-family:var(--font-brand);font-weight:700;font-size:11px">estimat</span><span style="font-family:var(--font-brand);font-weight:800;font-size:20px">104 <span style="font-size:13px;font-weight:700;color:var(--text-secondary)">mph</span></span></span></div>
+<div style="font-size:12px;color:var(--text-secondary);line-height:1.5"><span style="font-family:var(--font-brand);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:11px;color:var(--wang-teal-text)">Kilde</span> AK Golf v2 · beregnet fra ballhastighet · 19.06.2026 · AK Golf, WANG</div>
+</div>
+<div style="background:#fff;border-radius:20px;box-shadow:var(--shadow-card-sm);padding:16px;display:grid;place-items:center;text-align:center;min-height:96px">
+<div><div style="font-family:var(--font-brand);font-weight:700;font-size:14px">Ingen TEK-tester registrert</div><div style="font-size:12.5px;color:var(--text-secondary);margin-top:4px">Første TEK-protokoll kjøres i uke 43.</div></div>
+</div>
+<div style="font-size:12px;color:var(--text-secondary);line-height:1.5;padding:0 4px;margin-top:auto">Resultatet følger eleven, ikke organisasjonen. Underlag for samtalen — systemet konkluderer ikke.</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:18px">
+<div style="font-family:var(--font-brand);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-secondary)">Desktop 1280 · testdag-føring</div>
+<div style="overflow-x:auto;padding-bottom:12px">
+<div data-screen-label="Testdag-føring 1280" style="width:1280px;height:760px;flex-shrink:0;background:var(--bg-app);border-radius:26px;box-shadow:var(--shadow-card);overflow:hidden;display:flex;flex-direction:column">
+<div style="height:64px;flex-shrink:0;display:flex;align-items:center;gap:16px;padding:0 32px;background:#fff">
+<img src="../../assets/wang-logo-horizontal.svg" alt="WANG Toppidrett Fredrikstad" style="height:28px;width:auto">
+<span style="width:1px;height:24px;background:var(--neutral-200)"></span>
+<span style="font-family:var(--font-brand);font-weight:700;font-size:14px">Testdag · uke 35 · Fysisk</span>
+<span style="margin-left:auto;font-size:13px;color:var(--text-secondary)">Innlogget trener · WANG Fredrikstad</span>
+<div role="button" style="height:40px;padding:0 18px;border-radius:999px;background:var(--neutral-50);display:flex;align-items:center;font-family:var(--font-brand);font-weight:700;font-size:13px;color:var(--wang-navy)">Avslutt testdag</div>
+</div>
+<div style="flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:24px;padding:24px 32px 32px">
+<div style="display:flex;flex-direction:column;gap:16px;min-height:0">
+<div style="background:var(--grad-hero-line);color:#fff;border-radius:26px;box-shadow:var(--shadow-hero);padding:26px 28px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-family:var(--font-brand);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--wang-mint)">Står for tur · 8 av 14</span><span style="display:inline-flex;align-items:center;height:28px;padding:0 11px;border-radius:999px;background:rgba(255,255,255,.14);font-family:var(--font-brand);font-weight:700;font-size:12px">Countermovement jump · NGF v3</span></div>
+<div style="font-family:var(--font-brand);font-weight:800;font-size:34px;line-height:1.05">Elev 08 <span style="font-size:18px;font-weight:700;color:rgba(255,255,255,.78)">· VG2A</span></div>
+<div style="display:flex;align-items:baseline;gap:10px;padding:6px 0"><span style="font-family:var(--font-brand);font-weight:800;font-size:88px;line-height:1;letter-spacing:-.03em">38,5</span><span style="font-family:var(--font-brand);font-weight:700;font-size:24px;color:rgba(255,255,255,.78)">cm</span></div>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+<div role="button" style="height:52px;border-radius:16px;background:rgba(255,255,255,.14);display:grid;place-items:center;font-family:var(--font-brand);font-weight:700;font-size:16px">−1</div>
+<div role="button" style="height:52px;border-radius:16px;background:rgba(255,255,255,.14);display:grid;place-items:center;font-family:var(--font-brand);font-weight:700;font-size:16px">−0,1</div>
+<div role="button" style="height:52px;border-radius:16px;background:rgba(255,255,255,.14);display:grid;place-items:center;font-family:var(--font-brand);font-weight:700;font-size:16px">+0,1</div>
+<div role="button" style="height:52px;border-radius:16px;background:rgba(255,255,255,.14);display:grid;place-items:center;font-family:var(--font-brand);font-weight:700;font-size:16px">+1</div>
+</div>
+<div style="display:flex;align-items:center;gap:10px">
+<span style="font-family:var(--font-brand);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.78)">Forsøk</span>
+<div style="flex:1;height:44px;border-radius:999px;background:rgba(255,255,255,.14);display:grid;place-items:center;font-family:var(--font-brand);font-weight:700;font-size:14px">1 · 36,9</div>
+<div style="flex:1;height:44px;border-radius:999px;background:var(--wang-mint);color:#0d3050;display:grid;place-items:center;font-family:var(--font-brand);font-weight:700;font-size:14px">2</div>
+<div style="flex:1;height:44px;border-radius:999px;background:rgba(255,255,255,.14);display:grid;place-items:center;font-family:var(--font-brand);font-weight:700;font-size:14px;color:rgba(255,255,255,.6)">3</div>
+</div>
+</div>
+<div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px">
+<div role="button" style="height:56px;border-radius:999px;background:var(--wang-navy);color:#fff;display:grid;place-items:center;font-family:var(--font-brand);font-weight:700;font-size:15px;box-shadow:var(--shadow-float)">Før og neste elev</div>
+<div role="button" style="height:56px;border-radius:999px;background:#fff;box-shadow:var(--shadow-card-sm);display:grid;place-items:center;font-family:var(--font-brand);font-weight:700;font-size:14px;color:var(--wang-navy)">Hopp over</div>
+<div role="button" style="height:56px;border-radius:999px;background:#fff;box-shadow:var(--shadow-card-sm);display:grid;place-items:center;font-family:var(--font-brand);font-weight:700;font-size:14px;color:var(--cat-pink)">Ikke møtt</div>
+</div>
+<div style="background:#fff;border-radius:20px;box-shadow:var(--shadow-card-sm);padding:16px 20px;font-size:13px;color:var(--text-secondary);line-height:1.6"><span style="font-family:var(--font-brand);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:11px;color:var(--wang-teal-text)">Lagres som</span> eier NGF · protokoll v3 låst · målt av innlogget trener · 27.08.2026 · synlig for WANG Fredrikstad og foresatt; Team Norway-trener ved samtykke (bryteren bor i PlayerHQ/Forelder).</div>
+</div>
+<div style="background:#fff;border-radius:26px;box-shadow:var(--shadow-card);padding:22px 24px;display:flex;flex-direction:column;gap:10px;min-height:0;overflow:hidden">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-family:var(--font-brand);font-weight:700;font-size:16px">Alle 14 elever</span><span style="font-size:13px;color:var(--text-secondary)">7 ført · 1 ikke møtt · 6 gjenstår</span></div>
+<div style="display:grid;grid-template-columns:32px 1fr 70px 70px 70px 84px;gap:10px;padding:6px 0;font-family:var(--font-brand);font-weight:700;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-secondary)"><span>#</span><span>Elev</span><span style="text-align:right">F1</span><span style="text-align:right">F2</span><span style="text-align:right">F3</span><span style="text-align:right">Beste</span></div>
+<div style="display:grid;grid-template-columns:32px 1fr 70px 70px 70px 84px;gap:10px;min-height:38px;align-items:center;font-size:14px"><span style="color:var(--text-secondary)">01</span><span>Elev 01 · VG1A</span><span style="text-align:right">31,0</span><span style="text-align:right">32,4</span><span style="text-align:right">31,8</span><span style="text-align:right;font-family:var(--font-brand);font-weight:700">32,4</span></div>
+<div style="display:grid;grid-template-columns:32px 1fr 70px 70px 70px 84px;gap:10px;min-height:38px;align-items:center;font-size:14px"><span style="color:var(--text-secondary)">02</span><span>Elev 02 · VG1A</span><span style="text-align:right">29,7</span><span style="text-align:right">30,1</span><span style="text-align:right">—</span><span style="text-align:right;font-family:var(--font-brand);font-weight:700">30,1</span></div>
+<div style="display:grid;grid-template-columns:32px 1fr 70px 70px 70px 84px;gap:10px;min-height:38px;align-items:center;font-size:14px"><span style="color:var(--text-secondary)">03</span><span>Elev 03 · VG2B</span><span style="grid-column:span 4;text-align:right;color:var(--cat-pink);font-weight:700">ikke møtt</span></div>
+<div style="display:grid;grid-template-columns:32px 1fr 70px 70px 70px 84px;gap:10px;min-height:38px;align-items:center;font-size:14px"><span style="color:var(--text-secondary)">04</span><span>Elev 04 · VG2B</span><span style="text-align:right">36,2</span><span style="text-align:right">35,8</span><span style="text-align:right">37,0</span><span style="text-align:right;font-family:var(--font-brand);font-weight:700">37,0</span></div>
+<div style="display:grid;grid-template-columns:32px 1fr 70px 70px 70px 84px;gap:10px;min-height:38px;align-items:center;font-size:14px"><span style="color:var(--text-secondary)">05</span><span>Elev 05 · VG3A</span><span style="text-align:right">40,1</span><span style="text-align:right">41,3</span><span style="text-align:right">40,9</span><span style="text-align:right;font-family:var(--font-brand);font-weight:700">41,3</span></div>
+<div style="display:grid;grid-template-columns:32px 1fr 70px 70px 70px 84px;gap:10px;min-height:38px;align-items:center;font-size:14px"><span style="color:var(--text-secondary)">06</span><span>Elev 06 · VG3A</span><span style="text-align:right">33,5</span><span style="text-align:right">34,0</span><span style="text-align:right">33,2</span><span style="text-align:right;font-family:var(--font-brand);font-weight:700">34,0</span></div>
+<div style="display:grid;grid-template-columns:32px 1fr 70px 70px 70px 84px;gap:10px;min-height:38px;align-items:center;font-size:14px"><span style="color:var(--text-secondary)">07</span><span>Elev 07 · VG3B</span><span style="text-align:right">39,8</span><span style="text-align:right">41,2</span><span style="text-align:right">40,4</span><span style="text-align:right;font-family:var(--font-brand);font-weight:700">41,2</span></div>
+<div style="display:grid;grid-template-columns:32px 1fr 70px 70px 70px 84px;gap:10px;min-height:38px;align-items:center;font-size:14px;background:var(--tint-navy);border-radius:12px;padding:0 8px;margin:0 -8px"><span style="color:var(--wang-navy);font-weight:700">08</span><span style="font-weight:700">Elev 08 · VG2A</span><span style="text-align:right">36,9</span><span style="text-align:right;font-weight:700;color:var(--wang-navy)">38,5</span><span style="text-align:right;color:var(--text-secondary)">·</span><span style="text-align:right;font-family:var(--font-brand);font-weight:700;color:var(--wang-navy)">fører</span></div>
+<div style="display:grid;grid-template-columns:32px 1fr 70px 70px 70px 84px;gap:10px;min-height:38px;align-items:center;font-size:14px;color:var(--text-secondary)"><span>09</span><span>Elev 09 · VG1A</span><span style="text-align:right">—</span><span style="text-align:right">—</span><span style="text-align:right">—</span><span style="text-align:right">venter</span></div>
+<div style="display:grid;grid-template-columns:32px 1fr 70px 70px 70px 84px;gap:10px;min-height:38px;align-items:center;font-size:14px;color:var(--text-secondary)"><span>10</span><span>Elev 10 · VG1B</span><span style="text-align:right">—</span><span style="text-align:right">—</span><span style="text-align:right">—</span><span style="text-align:right">venter</span></div>
+<div style="display:grid;grid-template-columns:32px 1fr 70px 70px 70px 84px;gap:10px;min-height:38px;align-items:center;font-size:14px;color:var(--text-secondary)"><span>11</span><span>Elev 11 · VG1B</span><span style="text-align:right">—</span><span style="text-align:right">—</span><span style="text-align:right">—</span><span style="text-align:right">venter</span></div>
+<div style="display:grid;grid-template-columns:32px 1fr 70px 70px 70px 84px;gap:10px;min-height:38px;align-items:center;font-size:14px;color:var(--text-secondary)"><span>12</span><span>Elev 12 · VG2A</span><span style="text-align:right">—</span><span style="text-align:right">—</span><span style="text-align:right">—</span><span style="text-align:right">venter</span></div>
+<div style="display:grid;grid-template-columns:32px 1fr 70px 70px 70px 84px;gap:10px;min-height:38px;align-items:center;font-size:14px;color:var(--text-secondary)"><span>13</span><span>Elev 13 · VG2B</span><span style="text-align:right">—</span><span style="text-align:right">—</span><span style="text-align:right">—</span><span style="text-align:right">venter</span></div>
+<div style="display:grid;grid-template-columns:32px 1fr 70px 70px 70px 84px;gap:10px;min-height:38px;align-items:center;font-size:14px;color:var(--text-secondary)"><span>14</span><span>Elev 14 · VG3B</span><span style="text-align:right">—</span><span style="text-align:right">—</span><span style="text-align:right">—</span><span style="text-align:right">venter</span></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div style="font-size:12.5px;color:var(--text-secondary);line-height:1.7;max-width:760px">Alle elever er eksempler (Elev 01–14). Ingen ekte navn. Roster og resultater finnes kun innlogget. Testdag-føring og rangliste antas gjenbrukt fra TN-strukturen (TN-03, TN-05) med WANG-skinn — Anders bekrefter.</div>
+</div>
+</x-dc>
+</body>
+</html>

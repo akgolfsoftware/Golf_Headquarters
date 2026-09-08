@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="TN-21 Referansenivåer" description="Tour-referansen utøveren måles mot: median PEI per avstandsbånd for innspill og nærspill, treff på green og fringe, og forventet antall slag per underlag. Tre referansesett, ett om gangen, med kilde og populasjon i stripen over tabellen. Mac 1440 og mobil 390 i fire tilstander." -->
+<helmet><script src="./ds-base.js"></script></helmet>
+<div style="padding:48px;display:flex;flex-direction:column;gap:56px;background:var(--surface-page);min-height:100vh;font-family:var(--font-body)">
+
+<div style="display:flex;flex-direction:column;gap:8px;max-width:800px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TN-21 · /team-norway/referansenivaer (ANTATT RUTE)</div>
+<h1 style="font-size:var(--text-h1);color:var(--navy-900);letter-spacing:var(--tracking-heading);margin:0">Referansenivåer</h1>
+<p style="margin:0;font-size:var(--text-lg);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Hva som er godt nok, sagt i tall og med kilde. Skjermen viser ett referansesett om gangen, aldri to nivåer i samme kolonne, og sier alltid om raden er målt eller anslått. Uten dette står «mot referansenivå» andre steder i systemet uten fasit.</p>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:20px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MAC 1440 · SUKSESS · INNSPILL</div>
+<div style="width:1440px;height:900px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;font-variant-numeric:tabular-nums">
+
+<div style="width:232px;flex-shrink:0;background:var(--surface-card);border-right:1px solid var(--border-subtle);display:flex;flex-direction:column;padding:20px 14px 18px;gap:20px">
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:14px;display:flex;flex-direction:column;align-items:flex-start;gap:9px">
+<img src="../../assets/logo/team-norway-golf.png" alt="Team Norway Golf" style="height:42px;width:auto;display:block">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">JUNIOR</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:2px;flex:1;min-height:0;overflow:hidden">
+<sc-for list="{{ meny }}" as="m" hint-placeholder-count="12">
+<sc-if value="{{ m.isHeading }}" hint-placeholder-val="{{ false }}">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);padding:14px 12px 6px">{{ m.label }}</div>
+</sc-if>
+<sc-if value="{{ m.isItem }}" hint-placeholder-val="{{ true }}">
+<div ref="{{ m.ref }}" style="height:40px;border-radius:var(--radius-xs);padding:0 10px;display:flex;align-items:center;gap:10px">
+<span ref="{{ m.markRef }}" style="width:3px;height:18px;border-radius:var(--radius-full);flex-shrink:0"></span>
+<span style="font-size:var(--text-sm);font-weight:var(--weight-medium)">{{ m.label }}</span>
+</div>
+</sc-if>
+</sc-for>
+</div>
+</div>
+
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;padding:28px 32px 0;gap:16px;min-height:0">
+<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:24px">
+<div style="min-width:0">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DATA · REFERANSE</div>
+<h2 style="font-size:var(--text-h1);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:6px 0 0">Referansenivåer</h2>
+</div>
+<div style="display:flex;gap:8px;flex-shrink:0">
+<sc-for list="{{ sett }}" as="s" hint-placeholder-count="3">
+<div role="button" ref="{{ s.ref }}" style="height:44px;padding:0 18px;border-radius:var(--radius-full);font-size:var(--text-sm);font-weight:var(--weight-semibold);display:flex;align-items:center">{{ s.label }}</div>
+</sc-for>
+</div>
+</div>
+
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:20px 24px;display:flex;align-items:center;gap:28px;flex-shrink:0">
+<div style="display:flex;flex-direction:column;gap:4px;min-width:0">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">REFERANSESETT</span>
+<span style="font-size:var(--text-h3);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading)">Innspill · median PEI</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary)">NÆRHET ÷ LENGDE · PROSENT</span>
+</div>
+<div style="width:1px;height:52px;background:var(--border-subtle);flex-shrink:0"></div>
+<div style="display:flex;flex-direction:column;gap:4px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">POPULASJON</span>
+<span style="font-size:var(--text-base);font-weight:var(--weight-semibold);color:var(--navy-900)">PGA Tour · 43 spillere</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary)">TOPP 40 + TOURSNITT</span>
+</div>
+<div style="width:1px;height:52px;background:var(--border-subtle);flex-shrink:0"></div>
+<div style="display:flex;align-items:center;gap:10px;background:var(--navy-50);border:1px solid var(--navy-100);border-radius:var(--radius-sm);padding:10px 14px">
+<span style="font-size:18px;color:var(--navy-700);flex-shrink:0">↓</span>
+<div style="min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--navy-900)">Lavere er bedre</div>
+<div style="font-size:var(--text-xs);color:var(--navy-800);line-height:var(--leading-normal)">PEI måler avvik. Null er treff i hullet.</div>
+</div>
+</div>
+<div style="flex:1"></div>
+<div style="display:flex;align-items:center;gap:10px;background:var(--status-amber-bg);border-radius:var(--radius-sm);padding:10px 14px;flex-shrink:0">
+<span style="width:7px;height:7px;border-radius:var(--radius-full);background:var(--status-amber);flex-shrink:0"></span>
+<div style="min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--status-amber-text)">Sesong ikke oppgitt</div>
+<div style="font-size:var(--text-xs);color:var(--status-amber-text);line-height:var(--leading-normal)">Kilden mangler årstall</div>
+</div>
+</div>
+</div>
+
+<div style="flex:1;min-height:0;display:flex;gap:20px;overflow:hidden">
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:16px;overflow:hidden">
+
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:20px 24px;display:flex;flex-direction:column;gap:12px;flex-shrink:0">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MEDIAN PEI PER AVSTANDSBÅND</span>
+<div style="display:flex;align-items:flex-end;gap:16px;padding-bottom:6px;border-bottom:1px solid var(--border-subtle)">
+<span style="width:150px;flex-shrink:0;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">BÅND</span>
+<span style="width:96px;flex-shrink:0;text-align:right;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">TOPP 40</span>
+<span style="width:96px;flex-shrink:0;text-align:right;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">TOURSNITT</span>
+<span style="flex:1;min-width:0;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">SPENNET TOPP 40 → SNITT</span>
+<span style="width:118px;flex-shrink:0;text-align:right;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">TN JUNIOR</span>
+</div>
+<sc-for list="{{ innspill }}" as="r" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:16px;min-height:44px">
+<div style="width:150px;flex-shrink:0;min-width:0">
+<div style="font-size:var(--text-base);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ r.band }}</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">{{ r.klubb }}</div>
+</div>
+<span style="width:96px;flex-shrink:0;text-align:right;font-family:var(--font-mono);font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">{{ r.topp }}</span>
+<span style="width:96px;flex-shrink:0;text-align:right;font-family:var(--font-mono);font-size:var(--text-lg);color:var(--text-primary)">{{ r.snitt }}</span>
+<div style="flex:1;min-width:0;display:flex;align-items:center;gap:10px">
+<div style="flex:1;min-width:0;height:8px;border-radius:var(--radius-full);background:var(--ink-100);position:relative;overflow:hidden">
+<div ref="{{ r.spennRef }}" style="position:absolute;top:0;bottom:0;border-radius:var(--radius-full);background:var(--navy-700)"></div>
+</div>
+<span style="width:60px;flex-shrink:0;font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary)">{{ r.diff }}</span>
+</div>
+<span style="width:118px;flex-shrink:0;text-align:right;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);border:1px dashed var(--ink-300);border-radius:var(--radius-xs);padding:3px 0">IKKE SATT</span>
+</div>
+</sc-for>
+</div>
+
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:20px 24px;display:flex;flex-direction:column;gap:12px;flex-shrink:0">
+<div style="display:flex;align-items:center;gap:12px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TREFF PÅ GREEN ELLER FRINGE</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--navy-700);background:var(--navy-100);padding:2px 7px;border-radius:var(--radius-xs)">HØYERE = BEDRE</span>
+</div>
+<div style="display:flex;gap:24px;flex-wrap:wrap">
+<sc-for list="{{ green }}" as="g" hint-placeholder-count="2">
+<div style="flex:1;min-width:220px;display:flex;flex-direction:column;gap:8px">
+<span style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ g.band }}</span>
+<div style="display:flex;align-items:baseline;gap:14px">
+<div style="display:flex;flex-direction:column;gap:2px">
+<span style="font-family:var(--font-mono);font-size:var(--text-h2);font-weight:var(--weight-bold);color:var(--navy-900);line-height:1">{{ g.topp }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">TOPP 40</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:2px">
+<span style="font-family:var(--font-mono);font-size:var(--text-h3);color:var(--text-primary);line-height:1">{{ g.snitt }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">TOURSNITT</span>
+</div>
+</div>
+<div style="height:8px;border-radius:var(--radius-full);background:var(--ink-100);overflow:hidden"><div ref="{{ g.barRef }}" style="height:100%;border-radius:var(--radius-full);background:var(--navy-700)"></div></div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div style="flex:1;min-height:0"></div>
+</div>
+
+<div style="width:300px;flex-shrink:0;display:flex;flex-direction:column;gap:14px">
+<div style="background:var(--navy-50);border:1px solid var(--navy-100);border-radius:var(--radius-lg);padding:18px;display:flex;flex-direction:column;gap:8px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--navy-700)">HVA DETTE IKKE ER</span>
+<span style="font-size:var(--text-sm);color:var(--navy-900);line-height:var(--leading-normal);text-wrap:pretty">Ikke et mål for en 15-åring. Tallene er hva verdens beste gjør, og de står her for å gi retning — ikke for å settes som krav i en utviklingsplan.</span>
+</div>
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:20px;display:flex;flex-direction:column;gap:12px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">HVOR TALLENE KOMMER FRA</span>
+<sc-for list="{{ kilder }}" as="k" hint-placeholder-count="3">
+<div style="display:flex;flex-direction:column;gap:3px;border-top:1px solid var(--border-subtle);padding-top:10px">
+<div style="display:flex;align-items:center;gap:8px">
+<span style="flex:1;min-width:0;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ k.navn }}</span>
+<span ref="{{ k.badgeRef }}" style="padding:2px 7px;border-radius:var(--radius-xs);font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;flex-shrink:0">{{ k.merke }}</span>
+</div>
+<span style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">{{ k.note }}</span>
+</div>
+</sc-for>
+<div style="border-top:1px dashed var(--ink-300);padding-top:10px;display:flex;flex-direction:column;gap:4px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">ENHET IKKE BEKREFTET</span>
+<span style="font-size:var(--text-xs);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Båndene står som «100–150» i kilden uten enhet. Vi viser meter, fordi resten av systemet måler i meter — men det må bekreftes før tallene brukes i uttak.</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:20px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MOBIL 390 · SUKSESS (NÆRSPILL), FORVENTET SLAG, LASTER, FEIL</div>
+<div style="display:flex;gap:28px;flex-wrap:wrap">
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">SUKSESS · NÆRSPILL</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.41</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 14px;display:flex;flex-direction:column;gap:10px">
+<div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DATA · REFERANSE</div>
+<h2 style="font-size:var(--text-h2);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:4px 0 0">Referansenivåer</h2>
+</div>
+<div style="background:var(--ink-50);border-radius:var(--radius-sm);padding:12px;display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px">
+<span style="font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--navy-900)">Nærspill · median PEI</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--navy-700);background:var(--navy-100);padding:2px 7px;border-radius:var(--radius-xs);flex-shrink:0">LAVERE = BEDRE</span>
+</div>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">PGA TOUR · SESONG IKKE OPPGITT</span>
+</div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:12px 16px;display:flex;flex-direction:column;gap:6px">
+<sc-for list="{{ naerspill }}" as="r" hint-placeholder-count="5">
+<div style="background:var(--surface-card);border-radius:var(--radius-sm);box-shadow:var(--shadow-sm);padding:12px 14px;display:flex;flex-direction:column;gap:8px;flex-shrink:0">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="flex:1;min-width:0;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ r.band }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-base);font-weight:var(--weight-bold);color:var(--navy-900);flex-shrink:0">{{ r.topp }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-sm);color:var(--text-tertiary);flex-shrink:0">{{ r.snitt }}</span>
+</div>
+<div style="height:6px;border-radius:var(--radius-full);background:var(--ink-100);position:relative;overflow:hidden">
+<div ref="{{ r.spennRef }}" style="position:absolute;top:0;bottom:0;border-radius:var(--radius-full);background:var(--navy-700)"></div>
+</div>
+</div>
+</sc-for>
+<div style="background:var(--ink-50);border-radius:var(--radius-sm);padding:12px;display:flex;align-items:center;gap:14px;flex-shrink:0">
+<div style="display:flex;flex-direction:column;gap:2px">
+<span style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--navy-900)">FET</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">TOPP 40</span>
+</div>
+<div style="width:1px;height:30px;background:var(--border-subtle)"></div>
+<div style="display:flex;flex-direction:column;gap:2px">
+<span style="font-family:var(--font-mono);font-size:var(--text-sm);color:var(--text-tertiary)">GRÅ</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">TOURSNITT</span>
+</div>
+</div>
+<div style="flex:1;min-height:0"></div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">FORVENTET SLAG PER UNDERLAG</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.44</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 14px;display:flex;flex-direction:column;gap:10px">
+<h2 style="font-size:var(--text-h2);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:4px 0 0">Forventet slag</h2>
+<span style="font-size:var(--text-sm);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Antall slag en tourspiller bruker inn fra avstanden, per underlag. Grunnlaget under alle SG-tall i systemet.</span>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:12px 16px;display:flex;flex-direction:column;gap:3px">
+<div style="display:flex;align-items:flex-end;gap:8px;padding:0 10px 6px;flex-shrink:0">
+<span style="width:52px;flex-shrink:0;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">METER</span>
+<span style="flex:1;text-align:right;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">TEE</span>
+<span style="flex:1;text-align:right;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">FAIRW.</span>
+<span style="flex:1;text-align:right;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">RUFF</span>
+<span style="flex:1;text-align:right;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">SAND</span>
+</div>
+<sc-for list="{{ forventet }}" as="f" hint-placeholder-count="9">
+<div ref="{{ f.rowRef }}" style="border-radius:var(--radius-xs);padding:9px 10px;display:flex;align-items:center;gap:8px;min-height:40px;flex-shrink:0">
+<span style="width:52px;flex-shrink:0;font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ f.m }}</span>
+<span style="flex:1;text-align:right;font-family:var(--font-mono);font-size:var(--text-sm);color:var(--text-primary)">{{ f.tee }}</span>
+<span style="flex:1;text-align:right;font-family:var(--font-mono);font-size:var(--text-sm);color:var(--text-primary)">{{ f.fairway }}</span>
+<span style="flex:1;text-align:right;font-family:var(--font-mono);font-size:var(--text-sm);color:var(--text-primary)">{{ f.ruff }}</span>
+<span style="flex:1;text-align:right;font-family:var(--font-mono);font-size:var(--text-sm);color:var(--text-primary)">{{ f.sand }}</span>
+</div>
+</sc-for>
+<div style="background:var(--ink-50);border-radius:var(--radius-sm);padding:11px 12px;flex-shrink:0">
+<span style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Recovery-kolonnen finnes i kilden, men bare fra 90 meter og opp. Den er utelatt her framfor å vises halvtom.</span>
+</div>
+<div style="flex:1;min-height:0"></div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">LASTER</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.41</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 14px;display:flex;flex-direction:column;gap:10px">
+<div style="width:190px;height:26px;border-radius:var(--radius-xs);background:var(--ink-100)"></div>
+<div style="height:64px;border-radius:var(--radius-sm);background:var(--ink-100)"></div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:12px 16px;display:flex;flex-direction:column;gap:6px">
+<sc-for list="{{ skjelettRad }}" as="s" hint-placeholder-count="6">
+<div style="background:var(--surface-card);border-radius:var(--radius-sm);box-shadow:var(--shadow-sm);padding:12px 14px;display:flex;flex-direction:column;gap:8px;flex-shrink:0">
+<div style="display:flex;align-items:center;gap:10px">
+<div ref="{{ s.ref }}" style="height:14px;border-radius:var(--radius-xs);background:var(--ink-100)"></div>
+<div style="flex:1"></div>
+<div style="width:44px;height:16px;border-radius:var(--radius-xs);background:var(--ink-100);flex-shrink:0"></div>
+</div>
+<div style="height:6px;border-radius:var(--radius-full);background:var(--ink-100)"></div>
+</div>
+</sc-for>
+<div style="display:flex;align-items:center;gap:10px;padding:2px 4px">
+<span style="width:14px;height:14px;border-radius:var(--radius-full);border:2px solid var(--ink-200);border-top-color:var(--navy-600);flex-shrink:0"></span>
+<span style="font-size:var(--text-xs);color:var(--text-secondary)">Henter referansesettet</span>
+</div>
+<div style="flex:1;min-height:0"></div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">FEIL — SETTET ER UDATERT</div>
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.57</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 16px 14px">
+<h2 style="font-size:var(--text-h2);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:4px 0 0">Referansenivåer</h2>
+</div>
+<div style="flex-shrink:0;background:var(--status-red-bg);padding:14px 16px;display:flex;align-items:flex-start;gap:10px">
+<span style="width:7px;height:7px;border-radius:var(--radius-full);background:var(--status-red);flex-shrink:0;margin-top:6px"></span>
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--status-red-text)">Referansesettet kan ikke brukes til uttak</div>
+<div style="font-size:var(--text-xs);color:var(--status-red-text);line-height:var(--leading-normal);margin-top:3px;text-wrap:pretty">Navnelisten i kilden peker på sesonger rundt 2010–2013. Tourens nivå har flyttet seg siden. Tallene vises, men er sperret for bruk som krav.</div>
+</div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:14px 16px;display:flex;flex-direction:column;gap:12px">
+<div style="background:var(--surface-card);border:1px dashed var(--status-red);border-radius:var(--radius-md);padding:16px;display:flex;flex-direction:column;gap:10px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--status-red-text)">HVA SOM DATERER SETTET</span>
+<sc-for list="{{ datering }}" as="d" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:10px;min-height:36px">
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ d.navn }}</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">{{ d.hva }}</div>
+</div>
+<span style="font-family:var(--font-mono);font-size:var(--text-base);font-weight:var(--weight-semibold);color:var(--text-tertiary);flex-shrink:0">{{ d.verdi }}</span>
+</div>
+</sc-for>
+<span style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Settet slettes ikke. Historiske tall er nyttige til å se retning — de er bare ikke fasit for i år.</span>
+</div>
+<div role="button" style="height:52px;flex-shrink:0;border-radius:var(--radius-full);background:var(--navy-900);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:var(--text-base);font-weight:var(--weight-bold)">Hent nytt sett fra DataGolf</div>
+<div role="button" style="height:44px;flex-shrink:0;border-radius:var(--radius-full);border:1px solid var(--border-default);display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Vis tallene likevel</div>
+<div style="flex:1;min-height:0"></div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div style="max-width:760px;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:28px;display:flex;flex-direction:column;gap:16px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DESIGNNOTAT</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Beslutningen skjermen løser</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Er tallet til denne utøveren godt, og målt mot hva. Andre skjermer i systemet sier «mot referansenivå» uten at referansen finnes noe sted — denne skjermen er det stedet. Ett sett om gangen, tre knapper for å bytte, og populasjonen i stripen framfor i en fotnote.</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Spennsøylen</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Søylen viser <em>avstanden mellom topp 40 og toursnittet</em>, ikke verdien. Det er den avstanden som forteller hvor mye som står på spill i båndet: 0,2 prosentpoeng mellom beste og snitt betyr at båndet skiller lite, 1,1 betyr at det skiller mye. En søyle som viste selve PEI-verdien ville bare gjentatt tallet ved siden av.</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Ekte data, med forbehold</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Alle tall er lest fra fanen «Statistics» i IUP-arket: median PEI per bånd for innspill og nærspill, treffprosent på green og fringe, og forventet-slag-tabellen per underlag. To forbehold ligger i kilden og er tegnet inn: den oppgir ingen sesong, og båndene mangler enhet. Navnelisten daterer settet til rundt 2010–2013 — derfor er feiltilstanden «udatert sett», ikke «manglende data».</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Usikkert</div>
+<div style="font-size:var(--text-base);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Fire ting. <strong>Ett — ANTAKELSE:</strong> ruten under <strong>Data</strong>. <strong>To:</strong> TN-junior-kolonnen står tom med vilje. Alternativet — å regne den ut som en prosentandel av tournivået — ville vært å oppfinne et krav. Idrettssjefen må sette den. <strong>Tre:</strong> om utøveren skal se denne skjermen. Jeg heller mot ja, fordi retning motiverer mer enn den skremmer, men da må «hva dette ikke er» stå like tydelig der. <strong>Fire:</strong> om nytt sett skal hentes fra DataGolf automatisk eller lastes inn manuelt per sesong. Knappen i feiltilstanden forutsetter det første.</div>
+</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const setStyle = o => el => { if (el) Object.assign(el.style, o); };
+const pst = v => (v * 100).toFixed(1).replace('.', ',') + ' %';
+
+class Component extends DCLogic {
+  spenn(topp, snitt, maks) {
+    const a = Math.min(topp, snitt), b = Math.max(topp, snitt);
+    const start = Math.round((a / maks) * 100);
+    const bredde = Math.max(2, Math.round(((b - a) / maks) * 100));
+    return setStyle({ left: start + '%', width: bredde + '%' });
+  }
+  renderVals() {
+    const innspillRaa = [
+      { band: '100–150 m', klubb: 'JERN 6–9', topp: 0.053, snitt: 0.055 },
+      { band: '150–200 m', klubb: 'JERN 3–5 · HYBRID', topp: 0.056, snitt: 0.059 },
+      { band: '200–250 m', klubb: 'TRE · LANGT JERN', topp: 0.069, snitt: 0.073 }
+    ];
+    const naerRaa = [
+      { band: '0–20 m', topp: 0.125, snitt: 0.136 },
+      { band: '20–60 m', topp: 0.099, snitt: 0.109 },
+      { band: '60–100 m', topp: 0.059, snitt: 0.063 },
+      { band: '0–100 m samlet', topp: 0.094, snitt: 0.102 },
+      { band: 'Greenside bunker', topp: 0.145, snitt: 0.161 }
+    ];
+    return {
+      meny: [
+        { isHeading: true, label: 'Daglig' },
+        { isItem: true, label: 'Oversikt' },
+        { isItem: true, label: 'Fellestesting' },
+        { isItem: true, label: 'Samlingspunkt' },
+        { isHeading: true, label: 'Uttak' },
+        { isItem: true, label: 'Uttaksliste' },
+        { isItem: true, label: 'Rangliste' },
+        { isHeading: true, label: 'Skoler' },
+        { isItem: true, label: 'Skoleoversikt' },
+        { isHeading: true, label: 'Kommunikasjon' },
+        { isItem: true, label: 'Gruppeposter' },
+        { isItem: true, label: 'Trenerkatalog' },
+        { isHeading: true, label: 'Data' },
+        { isItem: true, label: 'Testbatteri' },
+        { isItem: true, label: 'Turneringer' },
+        { isItem: true, label: 'Referansenivåer', aktiv: true }
+      ].map(m => ({
+        ...m,
+        ref: setStyle({
+          background: m.aktiv ? 'var(--navy-100)' : 'transparent',
+          color: m.aktiv ? 'var(--navy-900)' : 'var(--text-secondary)'
+        }),
+        markRef: setStyle({ background: m.aktiv ? 'var(--red-600)' : 'transparent' })
+      })),
+      sett: [
+        { label: 'Innspill', aktiv: true },
+        { label: 'Nærspill' },
+        { label: 'Forventet slag' }
+      ].map(s => ({
+        ...s,
+        ref: setStyle(s.aktiv
+          ? { background: 'var(--navy-900)', color: 'var(--white)', border: '1px solid var(--navy-900)' }
+          : { background: 'transparent', color: 'var(--navy-900)', border: '1px solid var(--border-default)' })
+      })),
+      innspill: innspillRaa.map(r => ({
+        ...r,
+        topp: pst(r.topp),
+        snitt: pst(r.snitt),
+        diff: '+' + ((r.snitt - r.topp) * 100).toFixed(1).replace('.', ','),
+        spennRef: this.spenn(r.topp, r.snitt, 0.09)
+      })),
+      green: [
+        { band: '100–150 m', topp: 0.82, snitt: 0.80 },
+        { band: '150–200 m', topp: 0.70, snitt: 0.67 }
+      ].map(g => ({
+        band: g.band,
+        topp: Math.round(g.topp * 100) + ' %',
+        snitt: Math.round(g.snitt * 100) + ' %',
+        barRef: setStyle({ width: Math.round(g.topp * 100) + '%' })
+      })),
+      naerspill: naerRaa.map(r => ({
+        ...r,
+        topp: pst(r.topp),
+        snitt: pst(r.snitt),
+        spennRef: this.spenn(r.topp, r.snitt, 0.18)
+      })),
+      forventet: [
+        { m: '18', tee: '2,40', fairway: '2,59', ruff: '2,53', sand: '—' },
+        { m: '36', tee: '2,60', fairway: '2,78', ruff: '2,82', sand: '—' },
+        { m: '54', tee: '2,70', fairway: '2,91', ruff: '3,15', sand: '—' },
+        { m: '72', tee: '2,75', fairway: '2,96', ruff: '3,24', sand: '—' },
+        { m: '90', tee: '2,92', fairway: '2,80', ruff: '3,02', sand: '3,23' },
+        { m: '108', tee: '2,99', fairway: '2,85', ruff: '3,08', sand: '3,21' },
+        { m: '126', tee: '2,97', fairway: '2,91', ruff: '3,15', sand: '3,22' },
+        { m: '144', tee: '2,99', fairway: '2,98', ruff: '3,23', sand: '3,28' },
+        { m: '162', tee: '3,05', fairway: '3,08', ruff: '3,31', sand: '3,40' },
+        { m: '180', tee: '3,12', fairway: '3,19', ruff: '3,42', sand: '3,55' },
+        { m: '198', tee: '3,17', fairway: '3,32', ruff: '3,53', sand: '3,70' },
+        { m: '216', tee: '3,25', fairway: '3,45', ruff: '3,64', sand: '3,84' }
+      ].map((f, i) => ({
+        ...f,
+        rowRef: setStyle({ background: i % 2 === 1 ? 'var(--ink-50)' : 'transparent' })
+      })),
+      kilder: [
+        { navn: 'Median PEI per bånd', merke: 'målt', ekte: true, note: 'Topp 40 og toursnitt fra PGA Tour-materialet i arket. Enhet på båndene ikke oppgitt.' },
+        { navn: 'Treff green og fringe', merke: 'målt', ekte: true, note: 'Andel innspill som ender på green eller fringe, per bånd.' },
+        { navn: 'Team Norway junior', merke: 'ikke satt', ekte: false, note: 'Settes av idrettssjefen. Regnes ikke ut fra tournivået.' }
+      ].map(k => ({
+        ...k,
+        badgeRef: setStyle(k.ekte
+          ? { background: 'var(--navy-900)', color: 'var(--white)', border: '1px solid var(--navy-900)' }
+          : { background: 'transparent', color: 'var(--text-tertiary)', border: '1px dashed var(--ink-300)' })
+      })),
+      datering: [
+        { navn: 'Tiger Woods', hva: 'ØVERST PÅ SG-INNSPILL', verdi: '1,28' },
+        { navn: 'Robert Allenby', hva: 'NR. 2 · SLUTTET PÅ TOUR 2015', verdi: '0,88' },
+        { navn: 'Steve Stricker', hva: 'ØVERST PÅ SG-NÆRSPILL', verdi: '0,63' }
+      ],
+      skjelettRad: [150, 180, 130, 165, 145, 175].map(w => ({ ref: setStyle({ width: w + 'px' }) }))
+    };
+  }
+}
+</script>
+</body>
+</html>

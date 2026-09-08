@@ -14,9 +14,9 @@ const t=tones[tone]||tones.neutral;
 return React.createElement('span',{style:{
 display:'inline-flex',alignItems:'center',gap:'6px',
 padding:'5px 11px',borderRadius:'var(--radius-full)',
-background:solid?t.solid:t.bg,color:solid?'#fff':t.fg,
-fontFamily:'var(--font-body)',fontSize:'12.5px',fontWeight:600,letterSpacing:'-0.005em',whiteSpace:'nowrap'
+background:solid?t.solid:t.bg,color:solid?'var(--white)':t.fg,
+fontFamily:'var(--font-body)',fontSize:'var(--text-xs)',fontWeight:'var(--weight-semibold)',letterSpacing:'-0.005em',whiteSpace:'nowrap'
 }},
-dot?React.createElement('span',{style:{width:'6px',height:'6px',borderRadius:'50%',background:solid?'#fff':t.solid,flexShrink:0}}):null,
+dot?React.createElement('span',{style:{width:'6px',height:'6px',borderRadius:'50%',background:solid?'var(--white)':t.solid,flexShrink:0}}):null,
 children);
 }

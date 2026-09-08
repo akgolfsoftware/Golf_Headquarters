@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><script src="./ds-base.js"></script></helmet>
+<div style="min-height:100vh;background:var(--surface-page);padding:24px;display:flex;justify-content:center;font-family:var(--font-body)">
+<div data-screen-label="TN Mer mobil" style="width:390px;height:844px;flex-shrink:0;position:relative;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:38px;box-shadow:var(--shadow-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.41</span></div>
+
+<div style="flex-shrink:0;background:var(--surface-card);padding:8px 16px 12px;display:flex;align-items:flex-end;gap:12px">
+<div style="flex:1;min-width:0">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TEAM NORWAY · JUNIOR</div>
+<h2 style="font-size:var(--text-h2);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:4px 0 0">Mer</h2>
+</div>
+<img src="../../assets/logo/team-norway-golf.png" alt="Team Norway Golf" style="height:26px;width:auto;display:block;flex-shrink:0">
+</div>
+
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:0 16px 14px">
+<div style="height:40px;border-radius:var(--radius-full);background:var(--ink-50);border:1px solid var(--border-subtle);display:flex;align-items:center;padding:0 14px;gap:10px">
+<input value="{{ sok }}" onChange="{{ onSok }}" placeholder="Søk i Team Norway" style="border:0;outline:none;background:transparent;font-family:var(--font-body);font-size:var(--text-sm);color:var(--ink-900);width:100%">
+<span ref="{{ tomSok.ref }}" onClick="{{ tomSok.clear }}" role="button" style="font-size:15px;color:var(--ink-400);cursor:pointer;flex-shrink:0;line-height:1">×</span>
+</div>
+</div>
+
+<div style="flex:1;min-height:0;overflow:auto;padding:12px 16px 100px;display:flex;flex-direction:column;gap:16px">
+
+<sc-if value="{{ ingenTreff }}" hint-placeholder-val="{{ false }}">
+<div style="padding:36px 4px;display:flex;flex-direction:column;gap:8px">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-semibold);color:var(--navy-900)">Ingen treff på «{{ sok }}»</div>
+<div style="font-size:var(--text-sm);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Søket dekker menypunktene, ikke innholdet i dem. Åpne gruppen du tror det ligger i, eller tøm søket for å se alt.</div>
+</div>
+</sc-if>
+
+<sc-for list="{{ grupper }}" as="g" hint-placeholder-count="6">
+<div style="display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;align-items:baseline;gap:9px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">{{ g.label }}</span>
+<span ref="{{ g.nyRef }}" style="font-family:var(--font-mono);font-size:8.5px;letter-spacing:.1em;padding:2px 6px;border-radius:var(--radius-xs);background:var(--navy-100);color:var(--navy-800)">{{ g.nyMerke }}</span>
+</div>
+<div style="background:var(--surface-card);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);overflow:hidden">
+<sc-for list="{{ g.punkter }}" as="p" hint-placeholder-count="3">
+<a href="{{ p.href }}" data-hoverable ref="{{ p.ref }}" style="display:flex;align-items:center;gap:12px;min-height:52px;padding:11px 15px;text-decoration:none;border-top:1px solid var(--border-subtle)">
+<span ref="{{ p.markRef }}" style="width:3px;height:20px;border-radius:var(--radius-full);flex-shrink:0"></span>
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ p.label }}</div>
+<div ref="{{ p.statusRef }}" style="font-size:var(--text-xs);margin-top:2px">{{ p.status }}</div>
+</div>
+<span ref="{{ p.badgeRef }}" style="flex-shrink:0;font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);min-width:20px;height:20px;padding:0 6px;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center">{{ p.badge }}</span>
+<span style="flex-shrink:0;color:var(--ink-300);font-size:15px">›</span>
+</a>
+</sc-for>
+</div>
+</div>
+</sc-for>
+
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:14px 16px;display:flex;align-items:center;gap:12px">
+<span style="width:34px;height:34px;border-radius:var(--radius-full);background:var(--navy-100);color:var(--navy-800);font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);display:flex;align-items:center;justify-content:center;flex-shrink:0">AK</span>
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Anders K.</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);color:var(--text-secondary);margin-top:1px">SPORTSSJEF · SER 4 GRUPPER</div>
+</div>
+<a href="../tn-samtykke/TnSamtykke.dc.html" style="flex-shrink:0;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);color:var(--navy-600);text-decoration:none">TILGANG</a>
+</div>
+
+<div style="font-size:var(--text-xs);color:var(--ink-400);line-height:var(--leading-normal);text-wrap:pretty">Menyen viser bare gruppene rollen din når. Analyse og DataGolf ligger i AK Golf HQ og åpnes i eget vindu.</div>
+</div>
+
+<div style="position:absolute;left:0;right:0;bottom:0;height:84px;background:var(--surface-card);border-top:1px solid var(--border-subtle);display:flex;align-items:flex-start;padding:8px 8px 0;z-index:10">
+<sc-for list="{{ tabs }}" as="t" hint-placeholder-count="5">
+<a href="{{ t.href }}" style="flex:1;min-width:0;height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-decoration:none">
+<span ref="{{ t.barRef }}" style="width:22px;height:3px;border-radius:var(--radius-full)"></span>
+<span ref="{{ t.labelRef }}" style="font-size:var(--text-xs);font-weight:var(--weight-semibold)">{{ t.label }}</span>
+</a>
+</sc-for>
+</div>
+
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:438,&quot;height&quot;:892}}">
+const setStyle = o => el => { if (el) Object.assign(el.style, o); };
+const TABS = [
+  ['Oversikt', '../tn-oversikt/TnOversiktMobil.dc.html'],
+  ['Samling', '../tn-samlingspunkt/TnSamlingspunkt.dc.html'],
+  ['Uttak', '../tn-uttak/TnUttak.dc.html'],
+  ['Poster', '../tn-gruppeposter/TnGruppeposter.dc.html'],
+  ['Mer', './TnMerMobil.dc.html']
+];
+
+/* Menystrukturen etter TN-17 til TN-21: Collegegruppen og Månedsplan under Daglig,
+   ny sjette gruppe Administrasjon med Trenere og tilgang + Inviter spiller. */
+const GRUPPER = [
+  { label: 'Daglig', punkter: [
+    { label: 'Oversikt',        status: 'Dekningsgrad 4 av 11',        badge: '',  href: '../tn-oversikt/TnOversiktMobil.dc.html' },
+    { label: 'Fellestesting',   status: 'Testperiode uke 34–36',       badge: '',  href: '../tn-fellestesting/TnFellestesting.dc.html' },
+    { label: 'Spillerutvikling',status: '14 utøvere',                  badge: '',  href: '../utover-dashboard/UtoverDashboard.dc.html' },
+    { label: 'Collegegruppen',  status: '6 spillere · 4 studieår',     badge: '',  href: '../tn-collegegruppen/TnCollegegruppen.dc.html', ny: true },
+    { label: 'Månedsplan',      status: 'August 2026 · 2 avvik',       badge: '2', href: '../tn-manedsplan/TnManedsplan.dc.html', ny: true },
+    { label: 'Workbench',       status: 'Planlegging · 3 utkast',      badge: '',  href: '../workbench/WorkbenchMobil.dc.html' }
+  ]},
+  { label: 'Uttak', punkter: [
+    { label: 'Uttaksliste',   status: 'NM junior · 4 av 6 har svart', badge: '2', href: '../tn-uttak/TnUttak.dc.html' },
+    { label: 'Rangliste',     status: 'Sist talt 25.08.2026',         badge: '',  href: '../tn-rangliste/TnRangliste.dc.html' },
+    { label: 'Samlingspunkt', status: 'Høstsamling Fornebu 12.–15.10',badge: '',  href: '../tn-samlingspunkt/TnSamlingspunkt.dc.html' }
+  ]},
+  { label: 'Skoler', punkter: [
+    { label: 'Skoleoversikt', status: '5 skoler · aggregat', badge: '5', href: '../tn-skoler/TnSkoler.dc.html' }
+  ]},
+  { label: 'Kommunikasjon', punkter: [
+    { label: 'Gruppeposter',         status: 'Siste 24.08',        badge: '', href: '../tn-gruppeposter/TnGruppeposter.dc.html' },
+    { label: 'Post til enkeltspiller',status: 'Foresatt som mottaker', badge: '', href: '../tn-post-enkeltspiller/TnPostEnkeltspiller.dc.html' },
+    { label: 'Dokumentdeling',       status: 'Lesekvittering per fil', badge: '', href: '../tn-dokumentdeling/TnDokumentdeling.dc.html' }
+  ]},
+  { label: 'Data', punkter: [
+    { label: 'Testbatteri',       status: 'TN-batteri Q3',            badge: '', href: '../tester/Tester.dc.html' },
+    { label: 'Protokollbibliotek',status: 'Delt med 3 organisasjoner',badge: '', href: '../tn-protokollbibliotek/TnProtokollbibliotek.dc.html' },
+    { label: 'Turneringer',       status: 'GolfBox · 3 venter på data',badge: '', href: '../tn-turneringer/TnTurneringer.dc.html' },
+    { label: 'Legg til turnering',status: 'Manuell rad · krever belegg',badge: '', href: '../tn-turnering-manuell/TnTurneringManuell.dc.html', ny: true },
+    { label: 'Referansenivåer',   status: 'Tour-benchmark',           badge: '', href: '../tn-referansenivaer/TnReferansenivaer.dc.html' },
+    { label: 'Analyse',           status: 'Åpnes i AK Golf HQ',       badge: '', href: '../tn-systemkart/TnSystemkart.dc.html', ekstern: true }
+  ]},
+  { label: 'Administrasjon', ny: true, punkter: [
+    { label: 'Trenere og tilgang', status: 'Rolle settes per gruppe', badge: '',  href: '../tn-trenere-tilgang/TnTrenereTilgang.dc.html', ny: true },
+    { label: 'Inviter spiller',    status: '2 invitasjoner utløper snart', badge: '2', href: '../tn-inviter-spiller/TnInviterSpiller.dc.html', ny: true },
+    { label: 'Trenerkatalog',      status: '9 roller med kontaktinfo', badge: '', href: '../tn-trenerkatalog/TnTrenerkatalog.dc.html' }
+  ]}
+];
+
+class Component extends DCLogic {
+  state = { sok: '' };
+
+  renderVals() {
+    const q = this.state.sok.trim().toLowerCase();
+    const grupper = GRUPPER
+      .map(g => ({ ...g, punkter: g.punkter.filter(p => !q || p.label.toLowerCase().includes(q) || p.status.toLowerCase().includes(q)) }))
+      .filter(g => g.punkter.length > 0);
+
+    return {
+      sok: this.state.sok,
+      onSok: (e) => this.setState({ sok: e.target.value }),
+      tomSok: {
+        ref: setStyle({ display: this.state.sok ? 'block' : 'none' }),
+        clear: () => this.setState({ sok: '' })
+      },
+      ingenTreff: grupper.length === 0,
+      grupper: grupper.map(g => ({
+        label: g.label,
+        nyMerke: g.ny ? 'NY' : '',
+        nyRef: setStyle({ display: g.ny ? 'inline-flex' : 'none' }),
+        punkter: g.punkter.map((p, i) => ({
+          label: p.label, status: p.status, badge: p.badge, href: p.href,
+          ref: setStyle({ borderTop: i === 0 ? 'none' : '1px solid var(--border-subtle)' }),
+          markRef: setStyle({ background: p.ny ? 'var(--red-600)' : 'transparent' }),
+          statusRef: setStyle({ color: p.ekstern ? 'var(--ink-400)' : 'var(--text-secondary)' }),
+          badgeRef: setStyle({
+            display: p.badge ? 'flex' : 'none',
+            background: 'var(--status-amber-bg)',
+            color: 'var(--status-amber-text)'
+          })
+        }))
+      })),
+      tabs: TABS.map(([label, href]) => ({
+        label, href,
+        barRef: setStyle({ background: label === 'Mer' ? 'var(--red-600)' : 'transparent' }),
+        labelRef: setStyle({ color: label === 'Mer' ? 'var(--navy-900)' : 'var(--text-secondary)' })
+      }))
+    };
+  }
+}
+
+</script>
+</body>
+</html>

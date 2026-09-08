@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="TN Systemkart" description="Hele systemet på ett sted: tokens, 14 komponenter i alle tilstander, 21 TN-skjermer gruppert etter menyen med TN-nummer, rute og status, og de 10 generelle malene. Sammensetning av det som finnes — ingen ny skjerm." -->
+<helmet><script src="./ds-base.js"></script></helmet>
+<div style="padding:var(--space-7) var(--space-6) var(--space-9);display:flex;flex-direction:column;gap:var(--space-8);background:var(--surface-page);min-height:100vh;font-family:var(--font-body);color:var(--text-primary)">
+
+<div style="display:flex;flex-direction:column;gap:var(--space-3);max-width:var(--max-content)">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">SYSTEMKART · 08.09.2026 · LEST FRA TOKENS/, COMPONENTS/ OG TEMPLATES/</span>
+<h1 style="font-size:var(--text-h1);font-weight:var(--weight-bold);letter-spacing:var(--tracking-display);color:var(--navy-900);line-height:var(--leading-tight);margin:0">Claw Design — Team Norway Golf</h1>
+<p style="margin:0;font-size:var(--text-base);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty;max-width:60ch">Syv rader: farger, typografi og rom · komponenter i alle deklarerte tilstander · de 21 TN-skjermene gruppert etter menyens seks grupper · de generelle malene. Skjermbildene er de faktiske malfilene, forminsket. Alle navn og tall i skjermene er eksempler.</p>
+<div style="display:flex;gap:var(--space-4);flex-wrap:wrap;align-items:center">
+<a href="../../docs/vurdering-2026-09-02.md" style="font-size:var(--text-sm);font-weight:var(--weight-semibold)">Vurderingen 02.09.2026 →</a>
+<span style="display:inline-flex;align-items:center;gap:var(--space-3);font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);color:var(--text-secondary)"><span style="width:10px;height:10px;border-radius:var(--radius-full);background:var(--status-green)"></span>FERDIG<span style="width:10px;height:10px;border-radius:var(--radius-full);background:var(--status-amber);margin-left:var(--space-3)"></span>GAP<span style="width:10px;height:10px;border-radius:var(--radius-full);border:2px dashed var(--ink-400);box-sizing:border-box;margin-left:var(--space-3)"></span>ANTAKELSE</span>
+</div>
+</div>
+
+<!-- RAD 1 · TOKENS -->
+<section style="display:flex;flex-direction:column;gap:var(--space-5)">
+<div style="display:flex;align-items:baseline;gap:var(--space-4)"><span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);color:var(--red-600)">(01)</span><h2 style="font-size:var(--text-h3);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:0">Tokens</h2><span style="font-size:var(--text-sm);color:var(--text-secondary)">tokens/colors.css · typography.css · spacing.css</span></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:var(--space-5)">
+
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-4);box-shadow:var(--shadow-sm)">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">FARGE</span>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-3)">
+<div style="display:flex;flex-direction:column;gap:var(--space-2)"><div style="height:36px;border-radius:var(--radius-xs);background:var(--navy-900);border:1px solid var(--border-subtle)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-primary);line-height:var(--leading-snug);word-break:break-all">--navy-900</span><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">#012B5D</span></div>
+<div style="display:flex;flex-direction:column;gap:var(--space-2)"><div style="height:36px;border-radius:var(--radius-xs);background:var(--navy-700);border:1px solid var(--border-subtle)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-primary);line-height:var(--leading-snug);word-break:break-all">--navy-700</span><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">#033C7A</span></div>
+<div style="display:flex;flex-direction:column;gap:var(--space-2)"><div style="height:36px;border-radius:var(--radius-xs);background:var(--navy-600);border:1px solid var(--border-subtle)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-primary);line-height:var(--leading-snug);word-break:break-all">--navy-600</span><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">#0A5199</span></div>
+<div style="display:flex;flex-direction:column;gap:var(--space-2)"><div style="height:36px;border-radius:var(--radius-xs);background:var(--navy-400);border:1px solid var(--border-subtle)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-primary);line-height:var(--leading-snug);word-break:break-all">--navy-400</span><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">#4A85C0</span></div>
+<div style="display:flex;flex-direction:column;gap:var(--space-2)"><div style="height:36px;border-radius:var(--radius-xs);background:var(--navy-300);border:1px solid var(--border-subtle)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-primary);line-height:var(--leading-snug);word-break:break-all">--navy-300</span><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">#7FA3C9</span></div>
+<div style="display:flex;flex-direction:column;gap:var(--space-2)"><div style="height:36px;border-radius:var(--radius-xs);background:var(--navy-100);border:1px solid var(--border-subtle)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-primary);line-height:var(--leading-snug);word-break:break-all">--navy-100</span><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">#E3ECF6</span></div>
+<div style="display:flex;flex-direction:column;gap:var(--space-2)"><div style="height:36px;border-radius:var(--radius-xs);background:var(--navy-50);border:1px solid var(--border-subtle)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-primary);line-height:var(--leading-snug);word-break:break-all">--navy-50</span><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">#F2F7FC</span></div>
+<div style="display:flex;flex-direction:column;gap:var(--space-2)"><div style="height:36px;border-radius:var(--radius-xs);background:var(--red-600);border:1px solid var(--border-subtle)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-primary);line-height:var(--leading-snug);word-break:break-all">--red-600</span><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">#D70232</span></div>
+<div style="display:flex;flex-direction:column;gap:var(--space-2)"><div style="height:36px;border-radius:var(--radius-xs);background:var(--red-700);border:1px solid var(--border-subtle)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-primary);line-height:var(--leading-snug);word-break:break-all">--red-700</span><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">#A80126</span></div>
+<div style="display:flex;flex-direction:column;gap:var(--space-2)"><div style="height:36px;border-radius:var(--radius-xs);background:var(--red-400);border:1px solid var(--border-subtle)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-primary);line-height:var(--leading-snug);word-break:break-all">--red-400</span><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">#E8506F</span></div>
+<div style="display:flex;flex-direction:column;gap:var(--space-2)"><div style="height:36px;border-radius:var(--radius-xs);background:var(--red-100);border:1px solid var(--border-subtle)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-primary);line-height:var(--leading-snug);word-break:break-all">--red-100</span><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">#FCE3E8</span></div>
+<div style="display:flex;flex-direction:column;gap:var(--space-2)"><div style="height:36px;border-radius:var(--radius-xs);background:var(--dark-900);border:1px solid var(--border-subtle)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-primary);line-height:var(--leading-snug);word-break:break-all">--dark-900</span><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">#06111F</span></div>
+<div style="display:flex;flex-direction:column;gap:var(--space-2)"><div style="height:36px;border-radius:var(--radius-xs);background:var(--ink-900);border:1px solid var(--border-subtle)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-primary);line-height:var(--leading-snug);word-break:break-all">--ink-900</span><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">#0C1219</span></div>
+<div style="display:flex;flex-direction:column;gap:var(--space-2)"><div style="height:36px;border-radius:var(--radius-xs);background:var(--ink-700);border:1px solid var(--border-subtle)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-primary);line-height:var(--leading-snug);word-break:break-all">--ink-700</span><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">#33414F</span></div>
+<div style="display:flex;flex-direction:column;gap:var(--space-2)"><div style="height:36px;border-radius:var(--radius-xs);background:var(--ink-500);border:1px solid var(--border-subtle)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-primary);line-height:var(--leading-snug);word-break:break-all">--ink-500</span><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">#5E6E7F</span></div>
+<div style="display:flex;flex-direction:column;gap:var(--space-2)"><div style="height:36px;border-radius:var(--radius-xs);background:var(--ink-400);border:1px solid var(--border-subtle)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-primary);line-height:var(--leading-snug);word-break:break-all">--ink-400</span><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">#647280</span></div>
+<div style="display:flex;flex-direction:column;gap:var(--space-2)"><div style="height:36px;border-radius:var(--radius-xs);background:var(--ink-300);border:1px solid var(--border-subtle)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-primary);line-height:var(--leading-snug);word-break:break-all">--ink-300</span><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">#B9C4CE</span></div>
+<div style="display:flex;flex-direction:column;gap:var(--space-2)"><div style="height:36px;border-radius:var(--radius-xs);background:var(--ink-200);border:1px solid var(--border-subtle)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-primary);line-height:var(--leading-snug);word-break:break-all">--ink-200</span><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">#DCE2E8</span></div>
+<div style="display:flex;flex-direction:column;gap:var(--space-2)"><div style="height:36px;border-radius:var(--radius-xs);background:var(--ink-100);border:1px solid var(--border-subtle)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-primary);line-height:var(--leading-snug);word-break:break-all">--ink-100</span><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">#EDF1F4</span></div>
+<div style="display:flex;flex-direction:column;gap:var(--space-2)"><div style="height:36px;border-radius:var(--radius-xs);background:var(--ink-50);border:1px solid var(--border-subtle)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-primary);line-height:var(--leading-snug);word-break:break-all">--ink-50</span><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">#F6F8FA</span></div>
+<div style="display:flex;flex-direction:column;gap:var(--space-2)"><div style="height:36px;border-radius:var(--radius-xs);background:var(--status-green);border:1px solid var(--border-subtle)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-primary);line-height:var(--leading-snug);word-break:break-all">--status-green</span><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">#0E8A43</span></div>
+<div style="display:flex;flex-direction:column;gap:var(--space-2)"><div style="height:36px;border-radius:var(--radius-xs);background:var(--status-amber);border:1px solid var(--border-subtle)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-primary);line-height:var(--leading-snug);word-break:break-all">--status-amber</span><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">#B87503</span></div>
+<div style="display:flex;flex-direction:column;gap:var(--space-2)"><div style="height:36px;border-radius:var(--radius-xs);background:var(--status-red);border:1px solid var(--border-subtle)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-primary);line-height:var(--leading-snug);word-break:break-all">--status-red</span><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">#C2352B</span></div>
+<div style="display:flex;flex-direction:column;gap:var(--space-2)"><div style="height:36px;border-radius:var(--radius-xs);background:var(--status-info);border:1px solid var(--border-subtle)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-primary);line-height:var(--leading-snug);word-break:break-all">--status-info</span><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">#0A5199</span></div>
+</div>
+<span style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Merkevarerød er identitet. Status bruker <span style="font-family:var(--font-mono)">--status-red</span>. <span style="font-family:var(--font-mono)">--ink-400</span> er lyseste tekstgrå (4,9:1 på hvit).</span>
+</div>
+
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-4);box-shadow:var(--shadow-sm)">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TYPOGRAFI · SCHIBSTED GROTESK + IBM PLEX MONO</span>
+<div style="display:flex;flex-direction:column;gap:var(--space-2)">
+<div style="display:flex;align-items:baseline;gap:var(--space-4)"><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary);width:120px;flex-shrink:0">--text-display-xl · 4rem</span><span style="font-size:var(--text-display-xl);font-weight:var(--weight-bold);letter-spacing:var(--tracking-display);line-height:var(--leading-tight);color:var(--navy-900)">Aa</span></div>
+<div style="display:flex;align-items:baseline;gap:var(--space-4)"><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary);width:120px;flex-shrink:0">--text-display · 3rem</span><span style="font-size:var(--text-display);font-weight:var(--weight-bold);letter-spacing:var(--tracking-display);line-height:var(--leading-tight);color:var(--navy-900)">Målbilde</span></div>
+<div style="display:flex;align-items:baseline;gap:var(--space-4)"><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary);width:120px;flex-shrink:0">--text-h1 · 2.25rem</span><span style="font-size:var(--text-h1);font-weight:var(--weight-bold);letter-spacing:var(--tracking-display);line-height:var(--leading-snug)">Planer</span></div>
+<div style="display:flex;align-items:baseline;gap:var(--space-4)"><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary);width:120px;flex-shrink:0">--text-h2 · 1.75rem</span><span style="font-size:var(--text-h2);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading)">Gjennomføring</span></div>
+<div style="display:flex;align-items:baseline;gap:var(--space-4)"><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary);width:120px;flex-shrink:0">--text-h3 · 1.3125rem</span><span style="font-size:var(--text-h3);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading)">Evaluering</span></div>
+<div style="display:flex;align-items:baseline;gap:var(--space-4)"><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary);width:120px;flex-shrink:0">--text-lg · 1.125rem</span><span style="font-size:var(--text-lg)">Utviklingsprosessen</span></div>
+<div style="display:flex;align-items:baseline;gap:var(--space-4)"><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary);width:120px;flex-shrink:0">--text-base · 1rem</span><span style="font-size:var(--text-base)">Brødtekst og kontroller</span></div>
+<div style="display:flex;align-items:baseline;gap:var(--space-4)"><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary);width:120px;flex-shrink:0">--text-sm · .875rem</span><span style="font-size:var(--text-sm)">Sekundær tekst</span></div>
+<div style="display:flex;align-items:baseline;gap:var(--space-4)"><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary);width:120px;flex-shrink:0">--text-xs · .8125rem</span><span style="font-size:var(--text-xs);color:var(--text-secondary)">Kildelinje: Målt 14.08.2026 · TN-batteri Q3 v2 · A.K.</span></div>
+<div style="display:flex;align-items:baseline;gap:var(--space-4)"><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary);width:120px;flex-shrink:0">--text-micro · .6875rem</span><span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">EYEBROW · 4,9:1</span></div>
+<div style="display:flex;align-items:baseline;gap:var(--space-4);border-top:1px solid var(--border-subtle);padding-top:var(--space-3)"><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary);width:120px;flex-shrink:0">--font-mono</span><span style="font-family:var(--font-mono);font-size:var(--text-lg);font-variant-numeric:tabular-nums">70.8 · −1.4 · WAGR 412 · 14.08.2026</span></div>
+</div>
+</div>
+
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-4);box-shadow:var(--shadow-sm)">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">ROM · 4PX-BASE</span>
+<div style="display:flex;flex-direction:column;gap:var(--space-3)">
+<div style="display:flex;align-items:center;gap:var(--space-4)"><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary);width:90px;flex-shrink:0">--space-1</span><div style="height:14px;border-radius:var(--radius-xs);background:var(--navy-600);width:var(--space-1)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-primary)">2px</span></div>
+<div style="display:flex;align-items:center;gap:var(--space-4)"><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary);width:90px;flex-shrink:0">--space-2</span><div style="height:14px;border-radius:var(--radius-xs);background:var(--navy-600);width:var(--space-2)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-primary)">4px</span></div>
+<div style="display:flex;align-items:center;gap:var(--space-4)"><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary);width:90px;flex-shrink:0">--space-3</span><div style="height:14px;border-radius:var(--radius-xs);background:var(--navy-600);width:var(--space-3)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-primary)">8px</span></div>
+<div style="display:flex;align-items:center;gap:var(--space-4)"><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary);width:90px;flex-shrink:0">--space-4</span><div style="height:14px;border-radius:var(--radius-xs);background:var(--navy-600);width:var(--space-4)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-primary)">12px</span></div>
+<div style="display:flex;align-items:center;gap:var(--space-4)"><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary);width:90px;flex-shrink:0">--space-5</span><div style="height:14px;border-radius:var(--radius-xs);background:var(--navy-600);width:var(--space-5)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-primary)">16px</span></div>
+<div style="display:flex;align-items:center;gap:var(--space-4)"><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary);width:90px;flex-shrink:0">--space-6</span><div style="height:14px;border-radius:var(--radius-xs);background:var(--navy-600);width:var(--space-6)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-primary)">24px</span></div>
+<div style="display:flex;align-items:center;gap:var(--space-4)"><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary);width:90px;flex-shrink:0">--space-7</span><div style="height:14px;border-radius:var(--radius-xs);background:var(--navy-600);width:var(--space-7)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-primary)">32px</span></div>
+<div style="display:flex;align-items:center;gap:var(--space-4)"><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary);width:90px;flex-shrink:0">--space-8</span><div style="height:14px;border-radius:var(--radius-xs);background:var(--navy-600);width:var(--space-8)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-primary)">48px</span></div>
+<div style="display:flex;align-items:center;gap:var(--space-4)"><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary);width:90px;flex-shrink:0">--space-9</span><div style="height:14px;border-radius:var(--radius-xs);background:var(--navy-600);width:var(--space-9)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-primary)">64px</span></div>
+<div style="display:flex;align-items:center;gap:var(--space-4)"><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary);width:90px;flex-shrink:0">--space-10</span><div style="height:14px;border-radius:var(--radius-xs);background:var(--navy-600);width:var(--space-10)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-primary)">96px</span></div>
+<div style="display:flex;align-items:center;gap:var(--space-4)"><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary);width:90px;flex-shrink:0">--space-11</span><div style="height:14px;border-radius:var(--radius-xs);background:var(--navy-600);width:var(--space-11)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-primary)">128px</span></div>
+</div>
+<div style="display:flex;gap:var(--space-4);flex-wrap:wrap;border-top:1px solid var(--border-subtle);padding-top:var(--space-4)">
+<div style="display:flex;flex-direction:column;gap:var(--space-2);align-items:center"><div style="width:44px;height:44px;background:var(--navy-100);border:1px solid var(--navy-300);border-radius:var(--radius-xs)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">xs 6</span></div>
+<div style="display:flex;flex-direction:column;gap:var(--space-2);align-items:center"><div style="width:44px;height:44px;background:var(--navy-100);border:1px solid var(--navy-300);border-radius:var(--radius-sm)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">sm 10</span></div>
+<div style="display:flex;flex-direction:column;gap:var(--space-2);align-items:center"><div style="width:44px;height:44px;background:var(--navy-100);border:1px solid var(--navy-300);border-radius:var(--radius-md)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">md 14</span></div>
+<div style="display:flex;flex-direction:column;gap:var(--space-2);align-items:center"><div style="width:44px;height:44px;background:var(--navy-100);border:1px solid var(--navy-300);border-radius:var(--radius-lg)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">lg 20</span></div>
+<div style="display:flex;flex-direction:column;gap:var(--space-2);align-items:center"><div style="width:44px;height:44px;background:var(--navy-100);border:1px solid var(--navy-300);border-radius:var(--radius-xl)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">xl 28</span></div>
+<div style="display:flex;flex-direction:column;gap:var(--space-2);align-items:center"><div style="width:44px;height:44px;background:var(--white);border-radius:var(--radius-md);box-shadow:var(--shadow-sm)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">sh-sm</span></div>
+<div style="display:flex;flex-direction:column;gap:var(--space-2);align-items:center"><div style="width:44px;height:44px;background:var(--white);border-radius:var(--radius-md);box-shadow:var(--shadow-md)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">sh-md</span></div>
+<div style="display:flex;flex-direction:column;gap:var(--space-2);align-items:center"><div style="width:44px;height:44px;background:var(--white);border-radius:var(--radius-md);box-shadow:var(--shadow-lg)"></div><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">sh-lg</span></div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- RAD 2 · KOMPONENTER -->
+<section style="display:flex;flex-direction:column;gap:var(--space-5)">
+<div style="display:flex;align-items:baseline;gap:var(--space-4);flex-wrap:wrap"><span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);color:var(--red-600)">(02)</span><h2 style="font-size:var(--text-h3);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:0">14 komponenter · alle deklarerte tilstander</h2><span style="font-size:var(--text-sm);color:var(--text-secondary)">components/core · data · brand — props fra .d.ts</span></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:var(--space-5)">
+
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-4);box-shadow:var(--shadow-sm)">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">BUTTON · 5 VARIANTER × 3 STØRRELSER + DISABLED</span>
+<div style="display:flex;gap:var(--space-3);flex-wrap:wrap;align-items:center">
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="primary" hint-size="120px,42px">Lagre vurdering</x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="accent" hint-size="100px,42px">Ta ut</x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="secondary" hint-size="90px,42px">Avbryt</x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="ghost" hint-size="110px,42px">Se historikk</x-import>
+</div>
+<div style="display:flex;gap:var(--space-3);flex-wrap:wrap;align-items:center">
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="primary" size="sm" hint-size="70px,34px">sm 34</x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="primary" size="md" hint-size="80px,42px">md 42</x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="primary" size="lg" hint-size="90px,52px">lg 52</x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="primary" disabled="{{ true }}" hint-size="100px,42px">Deaktivert</x-import>
+</div>
+<div style="background:var(--surface-dark);border-radius:var(--radius-md);padding:var(--space-4);display:flex;gap:var(--space-3);align-items:center">
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="onDark" hint-size="110px,42px">onDark</x-import>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);color:var(--text-on-dark-muted)">KUN I HERO</span>
+</div>
+</div>
+
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-4);box-shadow:var(--shadow-sm)">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">BADGE · 7 TONER · DOT · SOLID</span>
+<div style="display:flex;gap:var(--space-3);flex-wrap:wrap">
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Badge" tone="neutral" hint-size="70px,26px">Nøytral</x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Badge" tone="navy" hint-size="90px,26px">Team Norway</x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Badge" tone="accent" hint-size="90px,26px">Denne utøveren</x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Badge" tone="green" dot="{{ true }}" hint-size="80px,26px">Attestert</x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Badge" tone="amber" dot="{{ true }}" hint-size="80px,26px">Venter</x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Badge" tone="red" dot="{{ true }}" hint-size="70px,26px">Avvist</x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Badge" tone="info" hint-size="70px,26px">Estimat</x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Badge" tone="navy" solid="{{ true }}" hint-size="70px,26px">Solid</x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Badge" tone="accent" solid="{{ true }}" hint-size="90px,26px">IUP mangler</x-import>
+</div>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary);margin-top:var(--space-3)">INPUT · DEFAULT · HINT · SUFFIX · ERROR · DISABLED</span>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4)">
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Input" label="Clubhead speed" value="111.7" suffix="mph" type="number" hint="TN-batteri Q3 v2" hint-size="100%,78px"></x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Input" label="Stille lengde" value="" placeholder="cm" error="Verdien mangler" hint-size="100%,78px"></x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Input" label="Låst felt" value="Inspill Basis v4" disabled="{{ true }}" hint-size="100%,78px"></x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Select" label="Periode" options="{{ perioder }}" hint="GRUNN · SPES · TURN" hint-size="100%,78px"></x-import>
+</div>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Select" label="Select · disabled" options="{{ perioder }}" disabled="{{ true }}" hint-size="100%,62px"></x-import>
+</div>
+
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-4);box-shadow:var(--shadow-sm)">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">CARD · FLAT / SM / MD / LG · ACCENT · DARK</span>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4)">
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Card" eyebrow="FLAT" title="Uten skygge" elevation="flat" padding="16px" hint-size="100%,90px"><span style="font-size:var(--text-xs);color:var(--text-secondary)">Kant, ingen dybde</span></x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Card" eyebrow="SM" title="Standard" elevation="sm" padding="16px" hint-size="100%,90px"><span style="font-size:var(--text-xs);color:var(--text-secondary)">Liste og tabell</span></x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Card" eyebrow="MD · ACCENT NAVY" title="Fremhevet" elevation="md" accent="navy" padding="16px" hint-size="100%,90px"><span style="font-size:var(--text-xs);color:var(--text-secondary)">Krever meg nå</span></x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Card" eyebrow="LG · ACCENT RED" title="Denne utøveren" elevation="lg" accent="red" padding="16px" hint-size="100%,90px"><span style="font-size:var(--text-xs);color:var(--text-secondary)">Identitet, ikke status</span></x-import>
+</div>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Card" eyebrow="DARK" title="Kun i hero og presentasjon" dark="{{ true }}" padding="16px" hint-size="100%,80px"><span style="font-size:var(--text-xs);color:var(--text-on-dark-muted)">Aldri skjema eller tabell</span></x-import>
+</div>
+
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-4);box-shadow:var(--shadow-sm)">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">METRICTILE · UP / DOWN / FLAT / DARK</span>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3)">
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.MetricTile" label="Snittscore" value="70.8" delta="−1.4" delta-tone="up" caption="Målt 14.08.2026 · GolfBox v2 · synk" hint-size="100%,110px"></x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.MetricTile" label="PEI" value="0.062" delta="+0.004" delta-tone="down" caption="Lavere er bedre · Inspill Basis v4" hint-size="100%,110px"></x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.MetricTile" label="Runder" value="46" unit="stk" delta="0" delta-tone="flat" caption="Eksempel" hint-size="100%,110px"></x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.MetricTile" label="WAGR" value="412" delta="+38" delta-tone="up" dark="{{ true }}" caption="Eksempel" hint-size="100%,110px"></x-import>
+</div>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary);margin-top:var(--space-3)">STATBAR · 5 TONER · TARGET · COMPACT</span>
+<div style="display:flex;flex-direction:column;gap:var(--space-3)">
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.StatBar" label="Driving (SG)" value="{{ 72 }}" target="{{ 80 }}" tone="navy" hint-size="100%,32px"></x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.StatBar" label="Denne utøveren" value="{{ 64 }}" tone="accent" hint-size="100%,32px"></x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.StatBar" label="Putting (SG)" value="{{ 88 }}" target="{{ 80 }}" tone="green" hint-size="100%,32px"></x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.StatBar" label="Nærspill (SG)" value="{{ 54 }}" target="{{ 80 }}" tone="amber" hint-size="100%,32px"></x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.StatBar" label="Avvik" value="{{ 31 }}" tone="red" compact="{{ true }}" hint-size="100%,24px"></x-import>
+</div>
+</div>
+
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-4);box-shadow:var(--shadow-sm)">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">SCALERATING · SM / MD / LG · READONLY</span>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.ScaleRating" value="{{ 3 }}" size="sm" labels="{{ skalaEtiketter }}" hint-size="100%,60px"></x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.ScaleRating" value="{{ 4 }}" size="md" labels="{{ skalaEtiketter }}" hint-size="100%,70px"></x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.ScaleRating" value="{{ 2 }}" size="lg" read-only="{{ true }}" labels="{{ skalaEtiketter }}" hint-size="100%,80px"></x-import>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary);margin-top:var(--space-3)">DATATABLE · HIGHLIGHTROW · DENSE</span>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.DataTable" columns="{{ kolonner }}" rows="{{ rader }}" highlight-row="{{ 1 }}" dense="{{ true }}" hint-size="100%,160px"></x-import>
+<span style="font-size:var(--text-xs);color:var(--text-secondary)">Eksempeldata. Rød stripe = «denne utøveren». Ingen tom-/laster-tilstand deklarert (F9).</span>
+</div>
+
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-4);box-shadow:var(--shadow-sm);grid-column:1 / -1">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">COVERAGECARD · WIDE / COMPACT × READY / LOADING / ERROR</span>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.CoverageCard" segments="{{ segmenter }}" total="{{ 11 }}" source="Talt 25.08.2026 · komplett PlayerHQ kreves for TN-utøvere · eksempel" hint-size="100%,140px"></x-import>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:var(--space-4)">
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.CoverageCard" layout="compact" segments="{{ segmenter }}" total="{{ 11 }}" source="Talt 25.08.2026 · profilkrav v2 · AK" hint-size="100%,200px"></x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.CoverageCard" layout="compact" state="loading" segments="{{ segmenter }}" total="{{ 11 }}" hint-size="100%,200px"></x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.CoverageCard" layout="compact" state="error" segments="{{ segmenter }}" total="{{ 11 }}" stale-note="Lest 25.08.2026 kl. 09.12" hint-size="100%,200px"></x-import>
+</div>
+</div>
+
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-4);box-shadow:var(--shadow-sm)">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">LOGO · FRA FIL · PÅ LYS OG PÅ HVIT PLATE</span>
+<div style="display:flex;gap:var(--space-4);align-items:center;flex-wrap:wrap">
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Logo" height="{{ 40 }}" src="../../assets/logo/team-norway-golf.png" hint-size="120px,56px"></x-import>
+<div style="background:var(--surface-dark);border-radius:var(--radius-md);padding:var(--space-4)"><x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Logo" height="{{ 40 }}" on-dark="{{ true }}" src="../../assets/logo/team-norway-golf.png" hint-size="120px,56px"></x-import></div>
+</div>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary);margin-top:var(--space-3)">SECTIONHEADER · INDEX · ONDARK</span>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.SectionHeader" index="03" eyebrow="Testing" title="TN-batteri Q3" description="Kvartalstesten. Eksempel." hint-size="100%,100px"></x-import>
+<div style="background:var(--surface-dark);border-radius:var(--radius-md);padding:var(--space-5)"><x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.SectionHeader" index="04" eyebrow="Presentasjon" title="På mørk flate" on-dark="{{ true }}" hint-size="100%,80px"></x-import></div>
+</div>
+
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-4);box-shadow:var(--shadow-sm)">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">PYRAMIDDIAGRAM · FYS → TEK → SLAG → SPILL → TURN · ACTIVE</span>
+<div style="display:flex;justify-content:center"><x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.PyramidDiagram" active="{{ 2 }}" width="{{ 280 }}" hint-size="280px,220px"></x-import></div>
+</div>
+
+<div style="grid-column:1 / -1;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-md)">
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Hero" eyebrow="Hero · diagonalen" title="Nøkkelatferder" description="Mørk flate er en rolle, ikke et tema. Meta-tallene er eksempler og mangler kildefelt (F7)." height="{{ 240 }}" meta="{{ heroMeta }}" hint-size="100%,240px"></x-import>
+</div>
+</div>
+</section>
+
+<!-- RAD 3–6 · TN-SKJERMER -->
+<sc-for list="{{ grupper }}" as="g" hint-placeholder-count="3">
+<section style="display:flex;flex-direction:column;gap:var(--space-5)">
+<div style="display:flex;align-items:baseline;gap:var(--space-4);flex-wrap:wrap"><span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);color:var(--red-600)">{{ g.nr }}</span><h2 style="font-size:var(--text-h3);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:0">{{ g.tittel }}</h2><span style="font-size:var(--text-sm);color:var(--text-secondary)">{{ g.under }}</span></div>
+<div style="display:flex;gap:var(--space-5);flex-wrap:wrap;align-items:flex-start">
+<sc-for list="{{ g.skjermer }}" as="s" hint-placeholder-count="4">
+<div style="width:343px;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm);display:flex;flex-direction:column">
+<div style="padding:var(--space-4) var(--space-5);display:flex;flex-direction:column;gap:var(--space-2);border-bottom:1px solid var(--border-subtle)">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:var(--space-3)">
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ s.nr }}</span>
+<sc-if value="{{ s.ferdig }}" hint-placeholder-val="{{ true }}"><span style="display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);color:var(--status-green-text);background:var(--status-green-bg);padding:3px 9px;border-radius:var(--radius-full)"><span style="width:6px;height:6px;border-radius:var(--radius-full);background:var(--status-green)"></span>FERDIG</span></sc-if>
+<sc-if value="{{ s.gap }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);color:var(--status-amber-text);background:var(--status-amber-bg);padding:3px 9px;border-radius:var(--radius-full)"><span style="width:6px;height:6px;border-radius:var(--radius-full);background:var(--status-amber)"></span>GAP</span></sc-if>
+<sc-if value="{{ s.antakelse }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);color:var(--text-primary);border:1px dashed var(--ink-400);padding:2px 9px;border-radius:var(--radius-full)">ANTAKELSE</span></sc-if>
+</div>
+<span style="font-size:var(--text-base);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading);line-height:var(--leading-snug)">{{ s.navn }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">{{ s.rute }}</span>
+<span style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">{{ s.notat }}</span>
+</div>
+<sc-if value="{{ s.harFil }}" hint-placeholder-val="{{ true }}">
+<div style="position:relative;overflow:hidden;background:var(--surface-page);height:968px">
+<iframe src="{{ s.src }}" title="{{ s.navn }}" loading="lazy" tabindex="-1" style="position:absolute;top:0;left:0;width:1560px;height:4400px;border:0;transform:scale(.22);transform-origin:0 0;pointer-events:none;background:var(--surface-page)"></iframe>
+</div>
+<a href="{{ s.src }}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;min-height:44px;font-size:var(--text-sm);font-weight:var(--weight-semibold);border-top:1px solid var(--border-subtle)">Åpne {{ s.fil }} →</a>
+</sc-if>
+<sc-if value="{{ s.manglerFil }}" hint-placeholder-val="{{ false }}">
+<div style="height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--space-3);border:2px dashed var(--ink-300);margin:var(--space-5);border-radius:var(--radius-md);padding:var(--space-5);text-align:center">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);color:var(--text-tertiary)">IKKE TEGNET</span>
+<span style="font-size:var(--text-sm);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">{{ s.mangler }}</span>
+</div>
+</sc-if>
+</div>
+</sc-for>
+</div>
+</section>
+</sc-for>
+
+<!-- RAD 7 · GENERELLE MALER -->
+<section style="display:flex;flex-direction:column;gap:var(--space-5)">
+<div style="display:flex;align-items:baseline;gap:var(--space-4);flex-wrap:wrap"><span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);color:var(--red-600)">(06)</span><h2 style="font-size:var(--text-h3);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:0">10 generelle maler</h2><span style="font-size:var(--text-sm);color:var(--text-secondary)">ikke TN-egne · F14/F15 gjelder ni av dem</span></div>
+<div style="display:flex;gap:var(--space-4);flex-wrap:wrap;align-items:flex-start">
+<sc-for list="{{ maler }}" as="m" hint-placeholder-count="10">
+<div style="width:240px;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-md);overflow:hidden;box-shadow:var(--shadow-sm);display:flex;flex-direction:column">
+<div style="position:relative;overflow:hidden;background:var(--surface-page);height:160px">
+<iframe src="{{ m.src }}" title="{{ m.navn }}" loading="lazy" tabindex="-1" style="position:absolute;top:0;left:0;width:1500px;height:1000px;border:0;transform:scale(.16);transform-origin:0 0;pointer-events:none;background:var(--surface-page)"></iframe>
+</div>
+<a href="{{ m.src }}" target="_blank" rel="noopener" style="display:flex;flex-direction:column;gap:2px;padding:var(--space-3) var(--space-4);min-height:44px;justify-content:center;border-top:1px solid var(--border-subtle)"><span style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ m.navn }}</span><span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">{{ m.mappe }}</span></a>
+</div>
+</sc-for>
+</div>
+</section>
+
+<div style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty;max-width:70ch">Systemkartet tegner ingen ny skjerm og ingen nye tokens. Analyse- og DataGolf-skjermer er Train-lock med TN-skinn og vises ikke her. Alle spillernavn i skjermene er eksempler.</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;visGenerelle&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Rader&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const visGen = this.props.visGenerelle ?? true;
+    const sk = (nr, navn, rute, mappe, fil, notat, status) => ({
+      nr, navn, rute, fil, notat,
+      src: '../' + mappe + '/' + fil,
+      harFil: true, manglerFil: false,
+      ferdig: status === 'ferdig', gap: status === 'gap', antakelse: status === 'antakelse'
+    });
+    const mangler = (nr, navn, rute, notat, tekst, status) => ({ nr, navn, rute, notat, mangler: tekst, harFil: false, manglerFil: true, ferdig: false, gap: status === 'gap', antakelse: status === 'antakelse' });
+    const grupper = [
+      { nr: '(03)', tittel: 'Daglig', under: 'Oversikt · Fellestesting · Samlingspunkt · Collegegruppen · Månedsplan · skallet rundt alt', skjermer: [
+        sk('TN-01', 'Organisasjonsskall', '/team-norway/* (ramme)', 'tn-skall', 'TnSkall.dc.html', 'Logo på hvit plate, rød skinne, seks menygrupper: Kommunikasjon skilt ut 07.09, Turneringer flyttet til Data, Administrasjon lagt til 08.09. Tom (ingen grupper tildelt), laster og feil er tegnet.', 'ferdig'),
+        sk('TN-02', 'Oversikt', '/team-norway', 'tn-oversikt', 'TnOversikt.dc.html', 'Dekningsgrad først. Forutsetter uttaksmodell per samling for «kommende samlinger».', 'ferdig'),
+        sk('TN-03', 'Fellestesting', '/team-norway/fellestesting', 'tn-fellestesting', 'TnFellestesting.dc.html', 'Port · tall · stige · PEI (lavere er bedre). Forutsetter coach-eierskap som tilgangsvei.', 'ferdig'),
+        sk('TN-14', 'Samlingspunkt', '/team-norway/samlinger (antatt rute)', 'tn-samlingspunkt', 'TnSamlingspunkt.dc.html', 'Uttatte med bekreftet/venter/meldt av, program time for time, spillerblikk. Merket hull: uttaksmodell per samling og samling↔økt-kobling finnes ikke.', 'antakelse'),
+        sk('TN-00', 'Workdesk pulje 1 — hjem, spillerliste, spiller-ark', '/team-norway/spillere', 'tn-workdesk', 'TnBatch1.dc.html', 'Omtegnet fra Train-lock mørk. Tom, laster og feil tegnet 08.09; kildelinjen står nå som «MÅLT 14.03.2026 · TN-BATTERI Q1 V3 · AK».', 'ferdig'),
+        sk('TN-15', 'Collegegruppen', '/team-norway/college (antatt rute)', 'tn-collegegruppen', 'TnCollegegruppen.dc.html', 'Seks spillere over fire studieår. NCAA-kollisjonen mot norsk sesong er dokumentert i skjermen, ikke skjult.', 'antakelse'),
+        sk('TN-16', 'Månedsplan', '/team-norway/manedsplan (antatt rute)', 'tn-manedsplan', 'TnManedsplan.dc.html', 'Måned · uke · fokus · avvik. Begrepene er faste; avvik er målt mot publisert plan, ikke vurdert.', 'antakelse')
+      ] },
+      { nr: '(04)', tittel: 'Uttak · Skoler', under: 'Uttaksliste · Rangliste · Skoleoversikt', skjermer: [
+        sk('TN-06', 'Uttaksliste', '/team-norway/uttak', 'tn-uttak', 'TnUttak.dc.html', 'Resultater · Prestasjoner · Prosess/adferd. Ingen totalscore. Alltid underlag.', 'ferdig'),
+        sk('TN-07', 'Rangliste', '/team-norway/view', 'tn-rangliste', 'TnRangliste.dc.html', 'Kildelinje per tall. Rødt = denne utøveren. Kun trenerens flate.', 'ferdig'),
+        sk('TN-08', 'Skoleoversikt', '/team-norway/skoler', 'tn-skoler', 'TnSkoler.dc.html', 'Aggregat på skolenivå. Forutsetter PlayerProgram-verdi for TN.', 'ferdig')
+      ] },
+      { nr: '(05)', tittel: 'Data · Kommunikasjon', under: 'Protokoller · Samtykke · Turneringer · Poster · Dokumenter · Samling', skjermer: [
+        sk('TN-04', 'Testprotokollbibliotek', '/team-norway/protokoller (antatt rute)', 'tn-protokollbibliotek', 'TnProtokollbibliotek.dc.html', 'Eier · versjon · brukes av · batteri. Spriket 16/11 er synlig.', 'ferdig'),
+        sk('TN-05', 'Protokolldetalj', '/team-norway/protokoller/:id (antatt rute)', 'tn-protokolldetalj', 'TnProtokolldetalj.dc.html', 'Versjonshistorikk, låsedato, attestering venter/attestert/avvist.', 'ferdig'),
+        sk('TN-12', 'Samtykke', 'spillerens/foresattes flate', 'tn-samtykke', 'TnSamtykke.dc.html', 'To brytere per organisasjon. Hva som ikke deles står eksplisitt.', 'ferdig'),
+        sk('TN-13', 'Turneringsoversikt', '/team-norway/turneringer (antatt rute)', 'tn-turneringer', 'TnTurneringer.dc.html', 'Kommende med påmeldte og GolfBox-lenke, historikk med runder, til par og mot felt. Rader uten kilde sier «venter på data». Antakelse: bor i Claw under Data — Anders bekrefter.', 'antakelse'),
+        sk('TN-09', 'Gruppeposter', '/team-norway/:groupId', 'tn-gruppeposter', 'TnGruppeposter.dc.html', 'Oppslagstavle, ikke samtale. Vedlegg og lesekvittering.', 'ferdig'),
+        sk('TN-10', 'Post til enkeltspiller', '/team-norway/spiller/:spillerId', 'tn-post-enkeltspiller', 'TnPostEnkeltspiller.dc.html', 'Foresatt i mottakerlinjen. Posting sperret uten foresatt.', 'ferdig'),
+        sk('TN-11', 'Dokumentdeling', '/team-norway/:groupId/dokumenter', 'tn-dokumentdeling', 'TnDokumentdeling.dc.html', 'Kvitteringsbrøk, «mangler» øverst. Ruten er bygget i repoet.', 'ferdig'),
+        sk('TN-17', 'Legg til turnering manuelt', '/team-norway/turneringer/ny (antatt rute)', 'tn-turnering-manuell', 'TnTurneringManuell.dc.html', 'Fyller hullene synken ikke fikk med seg. Raden merkes «lagt inn selv» i ravgult, kildelinjen starter aldri med MÅLT, og «mot felt» står som ikke mulig. Antakelse: spilleren selv får legge inn, med belegg-krav som motvekt.', 'antakelse'),
+        sk('TN-20', 'Trenerkatalog', '/team-norway/apparatet (antatt rute)', 'tn-trenerkatalog', 'TnTrenerkatalog.dc.html', 'Ni roller fra IUP-arkets «TN Coaches», sortert på rolle. Trykkbar kontakt. To datafunn tegnet inn: laglege uten e-post, Coach Junior med 11 sifret nummer. Katalogen gir ingen tilgang — det gjør TN-18.', 'ferdig'),
+        sk('TN-21', 'Referansenivåer', '/team-norway/referansenivaer (antatt rute)', 'tn-referansenivaer', 'TnReferansenivaer.dc.html', 'Median PEI per bånd, treff green/fringe, forventet slag per underlag — fra IUP-arkets «Statistics». Settet mangler sesong i kilden; TN-junior-kolonnen står tom med vilje.', 'ferdig')
+      ] },
+      { nr: '(06)', tittel: 'Administrasjon', under: 'Trenere og tilgang · Inviter spiller — sjette menygruppe, lagt til 08.09.2026', skjermer: [
+        sk('TN-18', 'Trenere og tilgang', '/team-norway/tilgang (antatt rute)', 'tn-trenere-tilgang', 'TnTrenereTilgang.dc.html', 'Rollen settes alltid per gruppe — trener eller hjelpetrener — aldri på brukeren. Kolonnen heter «grupper personen når», og en person uten gruppe står som «ingen grupper tildelt · når ingenting». Antakelse: bare sportssjef kan gi tilgang.', 'antakelse'),
+        sk('TN-19', 'Inviter spiller', '/team-norway/inviter (antatt rute)', 'tn-inviter-spiller', 'TnInviterSpiller.dc.html', 'E-post eller SMS, én gruppe, navngitt avsender, utløpsdato. Status sendt · åpnet · fullført · utløpt, pluss «ikke levert». Registreringen skjer i PlayerHQ og tegnes ikke her. Antakelse: «åpnet» måles på lenkeklikk, ikke sporingspiksel.', 'antakelse')
+      ] }
+    ];
+    const maler = [
+      ['Årsplan', 'arsplan', 'Arsplan.dc.html'], ['Periodeplan', 'periodeplan', 'Periodeplan.dc.html'], ['Samling', 'samling', 'Samling.dc.html'],
+      ['Workbench', 'workbench', 'Workbench.dc.html'], ['Grupper', 'grupper', 'Grupper.dc.html'], ['Tester', 'tester', 'Tester.dc.html'],
+      ['Kalender', 'kalender', 'Kalender.dc.html'], ['Utøverdashboard', 'utover-dashboard', 'UtoverDashboard.dc.html'],
+      ['Evaluering', 'evaluering', 'Evaluering.dc.html'], ['Presentasjon', 'presentasjon', 'Presentasjon.dc.html']
+    ].map(([navn, mappe, fil]) => ({ navn, mappe: 'templates/' + mappe, src: '../' + mappe + '/' + fil }));
+    return {
+      grupper,
+      maler: visGen ? maler : [],
+      perioder: ['GRUNN · uke 44–11', 'SPES · uke 12–16', 'TURN · uke 17–42'],
+      skalaEtiketter: ['Ikke etablert', 'Automatisert'],
+      kolonner: [{ key: 'n', label: 'Utøver' }, { key: 'v', label: 'Clubhead', align: 'right' }, { key: 'k', label: 'Kilde' }],
+      rader: [
+        { n: 'Utøver A (eksempel)', v: '108,2', k: 'Målt 25.08.2026 · clubhead v2 · AK' },
+        { n: 'Utøver B (eksempel)', v: '111,7', k: 'Målt 25.08.2026 · clubhead v2 · AK' },
+        { n: 'Utøver C (eksempel)', v: '104,9', k: 'Målt 25.08.2026 · clubhead v2 · AK' }
+      ],
+      segmenter: [{ label: 'Komplett profil', count: 4 }, { label: 'Delvis profil', count: 3 }, { label: 'Samtykket, ingen data', count: 2 }, { label: 'Ikke samtykket', count: 2 }],
+      heroMeta: [{ label: 'Utøvere', value: '11' }, { label: 'Med profil', value: '4' }, { label: 'Protokoller', value: '16 / 11' }]
+    };
+  }
+}
+</script>
+</body>
+</html>

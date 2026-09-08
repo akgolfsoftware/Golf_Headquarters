@@ -21,9 +21,9 @@
 <div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MAC 1440 · SUKSESS · PEI (LAVERE ER BEDRE)</div>
 <div style="width:1440px;height:900px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;font-variant-numeric:tabular-nums">
 <div style="width:232px;flex-shrink:0;background:var(--surface-card);border-right:1px solid var(--border-subtle);display:flex;flex-direction:column;padding:20px 14px 18px;gap:20px">
-<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:11px 12px;display:flex;align-items:center;gap:10px">
-<span style="width:9px;height:24px;border-radius:3px;background:var(--red-600);flex-shrink:0"></span>
-<div style="min-width:0"><div style="font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--navy-900)">Team Norway</div><div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);color:var(--text-tertiary);margin-top:1px">JUNIOR</div></div>
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:14px;display:flex;flex-direction:column;align-items:flex-start;gap:9px">
+<img src="../../assets/logo/team-norway-golf.png" alt="Team Norway Golf" style="height:42px;width:auto;display:block">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">JUNIOR</div>
 </div>
 <div style="display:flex;flex-direction:column;gap:2px;flex:1;min-height:0;overflow:hidden">
 <sc-for list="{{ meny }}" as="m" hint-placeholder-count="12">
@@ -74,7 +74,7 @@
 <span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DENNE UTØVEREN</span>
 <div style="display:flex;align-items:center;gap:8px">
 <span style="width:3px;height:18px;border-radius:var(--radius-full);background:var(--red-600);flex-shrink:0"></span>
-<span style="font-size:var(--text-base);font-weight:var(--weight-bold);color:var(--navy-900)">Amalie Vik</span>
+<span style="font-size:var(--text-base);font-weight:var(--weight-bold);color:var(--navy-900)">Amalie Vik — eksempel</span>
 </div>
 </div>
 </div>
@@ -307,18 +307,18 @@ const setStyle = o => el => { if (el) Object.assign(el.style, o); };
 class Component extends DCLogic {
   liste() {
     return [
-      { plass: '1', navn: 'Ingrid Kvam', verdi: '7,4', kilde: '24.08.2026 · v4 · ANDERS K.' },
-      { plass: '2', navn: 'Sigrid Lunde', verdi: '7,9', kilde: '24.08.2026 · v4 · ANDERS K.' },
-      { plass: '3', navn: 'Amalie Vik', verdi: '8,2', kilde: '24.08.2026 · v4 · ANDERS K.', denne: true },
-      { plass: '4', navn: 'Live Borgen', verdi: '8,6', kilde: '23.08.2026 · v4 · MARTE L.' },
-      { plass: '5', navn: 'Mathea Hovden', verdi: '8,8', kilde: '23.08.2026 · v4 · MARTE L.' },
-      { plass: '6', navn: 'Henrik Sæther', verdi: '9,1', kilde: '22.08.2026 · v4 · ANDERS K.' },
-      { plass: '7', navn: 'Erik Nesheim', verdi: '9,4', kilde: '22.08.2026 · v4 · ANDERS K.' },
-      { plass: '8', navn: 'Theodor Gran', verdi: '9,8', kilde: '21.08.2026 · v4 · MARTE L.' },
-      { plass: '9', navn: 'Jonas Bratlie', verdi: '10,2', kilde: '21.08.2026 · v4 · MARTE L.' },
-      { plass: '10', navn: 'Jakob Ness', verdi: '10,7', kilde: '20.08.2026 · v4 · ANDERS K.' },
-      { plass: '11', navn: 'Vilde Strand', verdi: '11,3', kilde: '20.08.2026 · v4 · ANDERS K.' },
-      { plass: '12', navn: 'Øyvind Rohjan', verdi: '11,9', kilde: '18.08.2026 · v4 · MARTE L.' }
+      { plass: '1', navn: 'Ingrid Kvam — eksempel', verdi: '7,4', kilde: '24.08.2026 · v4 · ANDERS K.' },
+      { plass: '2', navn: 'Sigrid Lunde — eksempel', verdi: '7,9', kilde: '24.08.2026 · v4 · ANDERS K.' },
+      { plass: '3', navn: 'Amalie Vik — eksempel', verdi: '8,2', kilde: '24.08.2026 · v4 · ANDERS K.', denne: true },
+      { plass: '4', navn: 'Live Borgen — eksempel', verdi: '8,6', kilde: '23.08.2026 · v4 · MARTE L.' },
+      { plass: '5', navn: 'Mathea Hovden — eksempel', verdi: '8,8', kilde: '23.08.2026 · v4 · MARTE L.' },
+      { plass: '6', navn: 'Henrik Sæther — eksempel', verdi: '9,1', kilde: '22.08.2026 · v4 · ANDERS K.' },
+      { plass: '7', navn: 'Erik Nesheim — eksempel', verdi: '9,4', kilde: '22.08.2026 · v4 · ANDERS K.' },
+      { plass: '8', navn: 'Theodor Gran — eksempel', verdi: '9,8', kilde: '21.08.2026 · v4 · MARTE L.' },
+      { plass: '9', navn: 'Jonas Bratlie — eksempel', verdi: '10,2', kilde: '21.08.2026 · v4 · MARTE L.' },
+      { plass: '10', navn: 'Jakob Ness — eksempel', verdi: '10,7', kilde: '20.08.2026 · v4 · ANDERS K.' },
+      { plass: '11', navn: 'Vilde Strand — eksempel', verdi: '11,3', kilde: '20.08.2026 · v4 · ANDERS K.' },
+      { plass: '12', navn: 'Øyvind Rohjan — eksempel', verdi: '11,9', kilde: '18.08.2026 · v4 · MARTE L.' }
     ];
   }
   dekorer(r) {
@@ -382,8 +382,8 @@ class Component extends DCLogic {
         tallRef: setStyle({ color: r.ref ? 'var(--navy-900)' : 'var(--text-tertiary)' })
       })),
       utenKilde: [
-        { navn: 'Kasper Rud', arsak: 'MANGLER PROTOKOLLVERSJON', verdi: '8,4' },
-        { navn: 'Nora Fjeld', arsak: 'MANGLER DATO OG MÅLER', verdi: '9,0' }
+        { navn: 'Kasper Rud — eksempel', arsak: 'MANGLER PROTOKOLLVERSJON', verdi: '8,4' },
+        { navn: 'Nora Fjeld — eksempel', arsak: 'MANGLER DATO OG MÅLER', verdi: '9,0' }
       ],
       skjelettRad: [130, 160, 145, 170, 120, 155, 140].map(w => ({ ref: setStyle({ width: w + 'px' }) }))
     };

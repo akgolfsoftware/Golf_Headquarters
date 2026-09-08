@@ -10,5 +10,9 @@ export interface DataTableProps {
   /** Indeks på raden som markeres med rød kantstripe (typisk 'deg'). */
   highlightRow?: number;
   dense?: boolean;
+  /** Vises når rows er tom. Streng gir én overskriftslinje; en node rendres under den. */
+  empty?: string | React.ReactNode;
+  /** Skjelettrader i tabellens egen rytme. Skjermene skal ikke tegne dette selv. */
+  loading?: boolean;
 }
 export declare function DataTable(props: DataTableProps): JSX.Element;

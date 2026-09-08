@@ -1,5 +1,11 @@
 # WANG-fasit — synkstatus
 
+**Speil oppdatert 08.09.2026** fra `~/Downloads/Design System.zip` (22:05). Hele
+`designsystem/wang/` er nå speilet av prosjektet «WANG Toppidrett Fredrikstad — golf»:
+35 skjermer (a1–a6 + batch 1–3), porteringspakke (`PORTING.md`, `SKJERMREGISTER.md`,
+`TILGANGSMATRISE.md`, `DATAMODELL.md`, `APNE-BESLUTNINGER.md`). `tokens/wang-tokens.css`
+er byte-eksakt mot `src/styles/wang-tokens.css`. Se rot-`LES-MEG.md`.
+
 ## GJELDENDE FASIT (25.08.2026) — overstyrer alt under denne linjen
 
 `arsplan-2026-27/WANG Arsplan 2026-27.dc.html` — levert av Anders som ferdig zip
