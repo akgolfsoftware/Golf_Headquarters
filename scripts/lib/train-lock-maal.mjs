@@ -181,7 +181,7 @@ export function diffBilder(fasitPng, appPng, cropTop = 0) {
 
 // Hele målingen for én riggrad (tests/visual/skjerm-mapping.ts). Skriver
 // <utDir>/<slug>-fasit.png, -app.png og -diff.png. Kaster Error ved feil.
-export async function maalSkjerm(browser, rad, { base, passord, naa, utDir = UT_DIR }) {
+export async function maalSkjerm(browser, rad, { base, passord, naa = null, utDir = UT_DIR }) {
   const fasitFil = await finnFasitFil(rad.label);
   if (!fasitFil) throw new Error(`Fant ingen .dc.html med data-screen-label="${rad.label}"`);
   await mkdir(utDir, { recursive: true });
