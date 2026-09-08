@@ -14,8 +14,8 @@ Marketing (`akgolf.no`) har egen fasit og omfattes ikke.
 > (`.claude/rules/beslutninger.md` "PAPER ER FJERNET FRA HELE PLATTFORMEN"). Verifisert på nytt
 > 01.09: `designsystem/paper/`, `src/styles/paper-tokens.css`, `src/lib/v2/tokens.ts`,
 > `PaperChrome.tsx`, `paper-tilstand.tsx` og marketing-Paper-kit finnes IKKE lenger på disk —
-> tabellen under beskrev dem som «lever i runtime», noe som ikke lenger stemmer. Kun de to
-> siste radene (arkiv/tester) finnes fortsatt, med vilje.
+> tabellen under beskrev dem som «lever i runtime», noe som ikke lenger stemmer. Kun den
+> siste raden (arkiv) finnes fortsatt, med vilje.
 
 | Hva | Sti | Status |
 |---|---|---|
@@ -25,7 +25,7 @@ Marketing (`akgolf.no`) har egen fasit og omfattes ikke.
 | Paper-skall | `src/components/portal/v2/PaperChrome.tsx` | **Slettet 30.08.2026.** |
 | Paper-tilstand | `src/components/system/paper-tilstand.tsx` | **Slettet 30.08.2026.** |
 | Marketing Paper-kit | `src/components/marketing/paper/`, `src/components/marketing/v2/paper/` | **Slettet 30.08.2026.** Marketing har egen, separat fasit (ak-golf-website) — ikke gjeninnfør Paper der heller. |
-| Paper visuell-e2e | `tests/e2e/paper-visual/` | **Finnes fortsatt, med vilje** — tester mot gammel HTML-fasit. Ikke few-shot for nye porter. Vurder om denne fortsatt gir verdi nå som Paper er borte, eller om den bør slettes/arkiveres i en egen økt (spør Anders — utenfor scope for denne revisjonen). |
+| Paper visuell-e2e | `tests/e2e/paper-visual/` + `tests/e2e/_paper-fasit-helpers.ts` | **Slettet 05.09.2026** (fase 1 økt 7 i designporten), sammen med galleri-skriptene `scripts/signoff-gallery.mjs`, `signoff-gallery-bolger.mjs`, `signoff-side.mjs`, `paper-diff-maal.mjs` og typografi-vakten `check-typografi.mjs`/`typografi-skala.mjs`. Sign-off måles nå med `scripts/train-lock-pixel-diff.mjs` + `tests/visual/skjerm-mapping.ts` (se `tests/visual/README.md`). |
 | Paper-portplan | `docs/arkiv/paper-port/` | **Finnes fortsatt, med vilje** — historikk/arkiv. |
 
 ## Forbudte visuelle trekk i PlayerHQ / AgencyOS / Forelder
