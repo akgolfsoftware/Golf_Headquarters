@@ -5,7 +5,8 @@
  *
  * Fasit: designsystem/train-lock/AO-01 Cockpit ko godkjenning.dc.html
  * (§AO-03 Ko).
- * Rigg: AO-03 Ko 1440 (tests/visual/skjerm-mapping.ts, panel-modus).
+ * Rigg: AO-03 Ko 1440
+ * (tests/visual/skjerm-mapping.ts, panel-modus.)
  * Avvik: panelet er 1144 px bredt i V2Shell ved 1440 (rail 232 + px-8) mot fasitens
  *   760 — «Ny oppgave» (flex-end) og radenes høyre metadata/handling ligger utenfor
  *   riggens utsnitt.
