@@ -6,6 +6,8 @@ import {
   formatIntervallPunkt,
   formatKlokkePunkt,
   fremdriftPst,
+  IDAG_UI,
+  idagNaaCta,
   minutterIgjen,
   velgIDagTilstand,
 } from "./idag-visning";
@@ -63,4 +65,57 @@ describe("idag-visning", () => {
     assert.equal(erHvileTittel("  hvile "), true);
     assert.equal(erHvileTittel("Innspill 50–80 m"), false);
   });
+
+  it("fullført-økt vinner over tom-dag", () => {
+    assert.equal(
+      velgIDagTilstand({
+        feil: false,
+        pagaende: false,
+        harStartbarOkt: false,
+        harFullfortOkt: true,
+        harHvile: false,
+        ukeHarOkter: true,
+      }),
+      "okt",
+    );
+  });
+
+  it("IDAG_UI har recap-copy", () => {
+    assert.equal(IDAG_UI.seRecap, "Se recap");
+    assert.equal(IDAG_UI.fullfort, "Fullført");
+  });
+
+  it("idagNaaCta: coach-publisert PLANNED → Start til live, ikke tren/wb", () => {
+    const cta = idagNaaCta({ id: "wb-1", modell: "wb", status: "PUBLISHED" });
+    assert.equal(cta.ctaTekst, IDAG_UI.startOkt);
+    assert.equal(cta.ctaHref, "/portal/live/wb-1");
+    assert.equal(cta.live, false);
+    assert.equal(cta.fullfort, false);
+  });
+
+  it("idagNaaCta: IN_PROGRESS → Fortsett + Avslutt til tapper", () => {
+    const cta = idagNaaCta({ id: "wb-1", modell: "wb", status: "IN_PROGRESS" });
+    assert.equal(cta.ctaTekst, IDAG_UI.fortsett);
+    assert.equal(cta.ctaHref, "/portal/live/wb-1/tapper");
+    assert.equal(cta.sekundarTekst, IDAG_UI.avslutt);
+    assert.equal(cta.sekundarHref, "/portal/live/wb-1/tapper");
+    assert.equal(cta.live, true);
+  });
+
+  it("idagNaaCta: COMPLETED → Se recap til summary", () => {
+    const cta = idagNaaCta({ id: "wb-1", modell: "wb", status: "COMPLETED" });
+    assert.equal(cta.ctaTekst, IDAG_UI.seRecap);
+    assert.equal(cta.ctaHref, "/portal/live/wb-1/summary");
+    assert.equal(cta.fullfort, true);
+    assert.equal(cta.live, false);
+    assert.equal(cta.sekundarHref, undefined);
+  });
+
+  it("idagNaaCta: v2 done → recap", () => {
+    const cta = idagNaaCta({ id: "v2-1", modell: "v2", status: "done" });
+    assert.equal(cta.ctaHref, "/portal/live/v2-1/summary");
+    assert.equal(cta.ctaTekst, IDAG_UI.seRecap);
+    assert.equal(cta.fullfort, true);
+  });
 });
+

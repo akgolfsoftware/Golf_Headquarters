@@ -25,7 +25,7 @@ export function v2SessionDetailHref(
     : `/portal/gjennomfore/${sessionId}`;
 }
 
-type PlanSessionStatus =
+export type PlanSessionStatus =
   | "PLANNED"
   | "ACTIVE"
   | "PAUSED"
@@ -34,12 +34,27 @@ type PlanSessionStatus =
   | "SKIPPED"
   | "CANCELLED";
 
+/**
+ * WorkbenchSession-status (og UI-status done/now) → TrainingPlanSession-status
+ * for `planSessionStartHref`. PUBLISHED/SCHEDULED starter live-flyten.
+ */
+export function wbStatusTilPlanStatus(status: string): PlanSessionStatus {
+  if (status === "IN_PROGRESS" || status === "ACTIVE" || status === "PAUSED" || status === "now") {
+    return "ACTIVE";
+  }
+  if (status === "COMPLETED" || status === "done") return "COMPLETED";
+  if (status === "SKIPPED") return "SKIPPED";
+  if (status === "CANCELLED") return "CANCELLED";
+  if (status === "ABANDONED") return "ABANDONED";
+  return "PLANNED";
+}
+
 /** CTA for TrainingPlanSession (Spor A / Workbench). */
 export function planSessionStartHref(
   sessionId: string,
   status: PlanSessionStatus,
 ): string {
-  if (status === "COMPLETED") return `/portal/tren/${sessionId}`;
+  if (status === "COMPLETED") return `/portal/live/${sessionId}/summary`;
   if (status === "ABANDONED" || status === "SKIPPED" || status === "CANCELLED") {
     return `/portal/tren/${sessionId}`;
   }

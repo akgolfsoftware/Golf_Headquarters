@@ -29,14 +29,21 @@ export async function saveTapperCounts(
   const parsed = CountsSchema.safeParse(counts);
   if (!parsed.success) return { ok: false, error: "Ugyldig tapper-data." };
 
-  const session = await prisma.trainingPlanSession.findUnique({
+  const erCoach = user.role === "COACH" || user.role === "ADMIN";
+  const plan = await prisma.trainingPlanSession.findUnique({
     where: { id: sessionId },
     select: { id: true, plan: { select: { userId: true } } },
   });
-  if (!session) return { ok: false, error: "Økt ikke funnet." };
+  const wb = plan
+    ? null
+    : await prisma.workbenchSession.findUnique({
+        where: { id: sessionId },
+        select: { id: true, playerId: true },
+      });
+  if (!plan && !wb) return { ok: false, error: "Økt ikke funnet." };
 
-  const erEier = session.plan.userId === user.id;
-  const erCoach = user.role === "COACH" || user.role === "ADMIN";
+  const eierId = plan?.plan.userId ?? wb?.playerId;
+  const erEier = eierId === user.id;
   if (!erEier && !erCoach) return { ok: false, error: "Ingen tilgang." };
 
   for (const rad of parsed.data) {

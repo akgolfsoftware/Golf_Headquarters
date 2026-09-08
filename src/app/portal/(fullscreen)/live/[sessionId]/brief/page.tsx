@@ -11,6 +11,7 @@ import { prisma } from "@/lib/prisma";
 import { loadLiveSession as loadPlanLiveSession } from "@/lib/portal-live/data";
 import { loadLiveSession as loadV2LiveSession } from "@/app/portal/(fullscreen)/live/[sessionId]/actions";
 import { LiveBrief, PlanSessionBrief } from "@/components/portal/live";
+import { mapWbToLiveSessionData } from "@/lib/portal-live/wb-live-map";
 
 export default async function LiveBriefPage({
   params,
@@ -21,7 +22,7 @@ export default async function LiveBriefPage({
   const { sessionId } = await params;
   const isCoach = user.role === "COACH" || user.role === "ADMIN";
 
-  const [v2, planSession] = await Promise.all([
+  const [v2, planSession, wbRow] = await Promise.all([
     prisma.trainingSessionV2.findUnique({
       where: { id: sessionId },
       select: { id: true },
@@ -30,7 +31,47 @@ export default async function LiveBriefPage({
       where: { id: sessionId },
       select: { id: true },
     }),
+    prisma.workbenchSession.findUnique({
+      where: { id: sessionId },
+      include: { drills: { orderBy: { sortOrder: "asc" } } },
+    }),
   ]);
+
+  if (!v2 && !planSession && wbRow) {
+    const erEier = wbRow.playerId === user.id;
+    if (!erEier && !isCoach) {
+      redirect("/portal/planlegge/workbench");
+    }
+    if (wbRow.status === "COMPLETED") {
+      redirect(`/portal/live/${sessionId}/summary`);
+    }
+    if (wbRow.status === "IN_PROGRESS") {
+      redirect(`/portal/live/${sessionId}/tapper`);
+    }
+    const data = mapWbToLiveSessionData({
+      id: wbRow.id,
+      title: wbRow.title,
+      status: wbRow.status,
+      pyramid: wbRow.pyramid,
+      durationMinutes: wbRow.durationMinutes,
+      date: wbRow.date,
+      startMinute: wbRow.startMinute,
+      location: wbRow.location,
+      notes: wbRow.notes,
+      publishedAt: wbRow.publishedAt,
+      createdAt: wbRow.createdAt,
+      drills: wbRow.drills,
+    });
+    const canStart = erEier && user.tier !== "GRATIS" && !data.completed;
+    const blockReason: "completed" | "tier" | "coach" | null = data.completed
+      ? "completed"
+      : isCoach && !erEier
+        ? "coach"
+        : user.tier === "GRATIS"
+          ? "tier"
+          : null;
+    return <PlanSessionBrief data={data} canStart={canStart} blockReason={blockReason} />;
+  }
 
   if (planSession && !v2) {
     const result = await loadPlanLiveSession(sessionId, user.id, isCoach);

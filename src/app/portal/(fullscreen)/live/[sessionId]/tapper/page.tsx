@@ -8,9 +8,13 @@ import { TL } from "@/lib/v2/train-lock";
 import { TapperShell } from "./tapper-shell";
 
 /**
- * PlayerHQ · Slagteller (/portal/(fullscreen)/live/[sessionId]/tapper) —
- * Paper-port W1 (fase2).
- * Fasit: designsystem/paper/fase2/playerhq/playerhq-live-tapper.html.
+ * PlayerHQ · Slagteller (/portal/(fullscreen)/live/[sessionId]/tapper).
+ * Fasit: designsystem/train-lock/PH-05 Live.dc.html
+ * Avvik:
+ *   - Ingen riggrad: PH-05 er ikke i tests/visual/skjerm-mapping.ts ennå (fase 2).
+ *   - Gammel Paper-sitering (playerhq-live-tapper.html) er slettet 30.08 — koden
+ *     er slagtelleren i live-sløyfa, ikke en 1:1-port av den slettede fila.
+ *   - Tar også WorkbenchSession-id fra I dag (Anders 08.09), ikke bare plan-økt.
  *
  * Kølleknappene bygges av spillerens utstyrsbag (EquipmentBag — fritekst per
  * kategori, så knappene er kategoriene som faktisk er fylt ut). Tom bag →
@@ -46,16 +50,52 @@ export default async function LiveTapperPage({
     allow: ["PLAYER", "COACH", "ADMIN"],
   });
   const { sessionId } = await params;
+  const erCoach = user.role === "COACH" || user.role === "ADMIN";
 
-  const session = await prisma.trainingPlanSession.findUnique({
+  const plan = await prisma.trainingPlanSession.findUnique({
     where: { id: sessionId },
     include: {
       plan: { select: { userId: true, name: true } },
     },
   });
 
+  let playerId: string | null = null;
+  let oktLabel: string | null = null;
+
+  if (plan) {
+    const erEier = plan.plan.userId === user.id;
+    if (!erEier && !erCoach) {
+      redirect("/portal/planlegge/workbench");
+    }
+    playerId = plan.plan.userId;
+    oktLabel = plan.title || plan.plan.name;
+  } else {
+    const wb = await prisma.workbenchSession.findUnique({
+      where: { id: sessionId },
+      select: { id: true, playerId: true, title: true, status: true },
+    });
+    if (wb) {
+      if (wb.playerId !== user.id && !erCoach) {
+        redirect("/portal/planlegge/workbench");
+      }
+      if (wb.status === "COMPLETED") {
+        redirect(`/portal/live/${sessionId}/summary`);
+      }
+      const startbar =
+        wb.status === "IN_PROGRESS" ||
+        wb.status === "PUBLISHED" ||
+        wb.status === "SCHEDULED";
+      if (!startbar) {
+        playerId = null;
+      } else {
+        playerId = wb.playerId;
+        oktLabel = wb.title;
+      }
+    }
+  }
+
   // Tom tilstand — fasit-copy: slagtelleren hører til en pågående økt.
-  if (!session) {
+  if (!playerId || !oktLabel) {
     return (
       <main
         data-paper-slug="playerhq-live-tapper"
@@ -80,7 +120,7 @@ export default async function LiveTapperPage({
           </p>
           {/* Kontrakt §3: tom tilstand — én aksenthandling, én vei videre. */}
           <Link
-            href="/portal/gjennomfore"
+            href="/portal"
             data-od-id="tapper-tom-start"
             data-paper-en-ting="true"
             className="v2-press v2-focus"
@@ -106,12 +146,6 @@ export default async function LiveTapperPage({
     );
   }
 
-  const erEier = session.plan.userId === user.id;
-  const erCoach = user.role === "COACH" || user.role === "ADMIN";
-  if (!erEier && !erCoach) {
-    redirect("/portal/planlegge/workbench");
-  }
-
   const thread = await prisma.coachingSession.findUnique({
     where: { userId_liveSessionId: { userId: user.id, liveSessionId: sessionId } },
     select: { messages: true },
@@ -133,7 +167,7 @@ export default async function LiveTapperPage({
   // Kølleknapper fra SPILLERENS (øktseierens) utstyrsbag — aldri en
   // hardkodet liste når bagen finnes.
   const bag = await prisma.equipmentBag.findUnique({
-    where: { userId: session.plan.userId },
+    where: { userId: playerId },
     select: {
       driver: true,
       fairwayWoods: true,
@@ -152,15 +186,15 @@ export default async function LiveTapperPage({
 
   // Gjenopptak: tidligere lagrede tellinger for økten (session_ball_logs).
   const lagrede = await prisma.sessionBallLog.findMany({
-    where: { planSessionId: session.id },
+    where: { planSessionId: sessionId },
     select: { club: true, count: true },
   });
   const initialCounts = Object.fromEntries(lagrede.map((r) => [r.club, r.count]));
 
   return (
     <TapperShell
-      sessionId={session.id}
-      oktLabel={session.title || session.plan.name}
+      sessionId={sessionId}
+      oktLabel={oktLabel}
       clubs={clubs}
       coachPanel={coachPanel}
       initialCounts={initialCounts}

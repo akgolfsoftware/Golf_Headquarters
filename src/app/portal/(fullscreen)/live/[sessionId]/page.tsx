@@ -1,13 +1,14 @@
 /**
  * PlayerHQ · Live-økt — status-router.
  *
- * Støtter TrainingSessionV2 (brief/active/summary) og TrainingPlanSession
- * (økt fra Workbench → /portal/tren/[id] eller tapper).
+ * Støtter TrainingSessionV2, TrainingPlanSession og WorkbenchSession
+ * (coach-publisert økt fra I dag).
  */
 
 import { notFound, redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { prisma } from "@/lib/prisma";
+import { resolveLiveSession } from "@/lib/portal-live/resolve-live-session";
+import { liveRouteForResolved } from "@/lib/portal-live/live-route";
 
 export default async function LiveSessionPage({
   params,
@@ -22,64 +23,9 @@ export default async function LiveSessionPage({
     redirect("/portal/meg/abonnement");
   }
 
-  const v2 = await prisma.trainingSessionV2.findUnique({
-    where: { id: sessionId },
-    select: {
-      status: true,
-      studentId: true,
-      coachId: true,
-      hostId: true,
-      participants: { where: { userId: user.id } },
-    },
-  });
-
-  if (v2) {
-    const isOwner =
-      v2.studentId === user.id ||
-      v2.coachId === user.id ||
-      v2.hostId === user.id;
-    const isParticipant = v2.participants.some((p) =>
-      ["ACCEPTED", "ATTENDED"].includes(p.status),
-    );
-    if (!isOwner && !isParticipant && !isCoach) {
-      redirect("/portal/planlegge/workbench");
-    }
-
-    switch (v2.status) {
-      case "COMPLETED":
-        redirect(`/portal/live/${sessionId}/summary`);
-      case "IN_PROGRESS":
-        redirect(`/portal/live/${sessionId}/active`);
-      case "CANCELLED":
-      case "SKIPPED":
-        redirect("/portal/planlegge/workbench");
-      default:
-        redirect(`/portal/live/${sessionId}/brief`);
-    }
-  }
-
-  const planSession = await prisma.trainingPlanSession.findUnique({
-    where: { id: sessionId },
-    select: {
-      status: true,
-      plan: { select: { userId: true } },
-    },
-  });
-
-  if (!planSession) notFound();
-
-  const erEier = planSession.plan.userId === user.id;
-  if (!erEier && !isCoach) {
-    redirect("/portal/planlegge/workbench");
-  }
-
-  switch (planSession.status) {
-    case "COMPLETED":
-      redirect(`/portal/tren/${sessionId}`);
-    case "ACTIVE":
-    case "PAUSED":
-      redirect(`/portal/live/${sessionId}/tapper`);
-    default:
-      redirect(`/portal/live/${sessionId}/brief`);
-  }
+  const resolved = await resolveLiveSession(sessionId, user.id);
+  const rute = liveRouteForResolved(resolved, { userId: user.id, isCoach });
+  if (rute.type === "notfound") notFound();
+  if (rute.type === "forbidden") redirect("/portal/planlegge/workbench");
+  redirect(rute.href);
 }

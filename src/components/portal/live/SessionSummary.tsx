@@ -115,6 +115,9 @@ function Tag({ tekst, tone }: { tekst: string; tone: "up" | "info" }) {
 /**
  * ETTER-skjermen i live-sløyfa.
  * Fasit: designsystem/train-lock/PH-06 Live ferdig.dc.html
+ * Avvik:
+ *   - Ingen riggrad: PH-06 er ikke i tests/visual/skjerm-mapping.ts ennå (fase 2).
+ *   - Primær CTA er «Tilbake til I dag» (`/portal`), ikke Plan — Anders 08.09.
  * Caps «Økt ferdig · varighet» + tittel, tallkort, recap («dine ord»),
  * kvittering med neste økt. Ingen konfetti/XP.
  */
@@ -257,6 +260,19 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }:
           )}
 
           <div className="mt-4 flex flex-col gap-2">
+            <Link
+              href="/portal"
+              data-od-id="etter-kvitt-idag"
+              className="flex w-full items-center justify-center font-sans text-[14px] font-semibold no-underline"
+              style={{
+                minHeight: 48,
+                borderRadius: 12,
+                background: "var(--tl-fill)",
+                color: "var(--tl-on-fill)",
+              }}
+            >
+              Tilbake til I dag
+            </Link>
             <Link
               href="/portal/planlegge"
               data-od-id="etter-kvitt-plan"

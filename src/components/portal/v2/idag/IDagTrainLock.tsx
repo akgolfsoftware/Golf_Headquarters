@@ -13,7 +13,7 @@
 
 import { useState, type CSSProperties, type ReactNode } from "react";
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import { Check, ChevronRight } from "lucide-react";
 import { TL } from "@/lib/v2/train-lock";
 import {
   IDAG_UI,
@@ -35,6 +35,8 @@ export type NaaKort = {
   fremdriftPst: number | null;
   fremdriftTekst: string | null;
   live: boolean;
+  /** Ferdig økt — visningsmerke Fullført (warm + hake), CTA Se recap. */
+  fullfort?: boolean;
   sekundarTekst?: string;
   sekundarHref?: string;
   /** Øktens pyramide-nivå (FYS/TEK/SLAG/SPILL/TURN) — styrer PH-01b-stripen. */
@@ -193,11 +195,20 @@ function NaaFlate({ naa }: { naa: NaaKort }) {
       )}
       <div className={hero ? "ph01-naa" : undefined} style={hero ? undefined : { display: "contents" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-        <span style={{ ...caps, color: naa.live ? TL.text : TL.mute, display: "inline-flex", alignItems: "center", gap: 7 }}>
-          {naa.live && (
+        <span
+          style={{
+            ...caps,
+            color: naa.fullfort ? TL.warm : naa.live ? TL.text : TL.mute,
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 7,
+          }}
+        >
+          {naa.fullfort && <Check size={12} color={TL.warm} strokeWidth={2.5} aria-hidden />}
+          {naa.live && !naa.fullfort && (
             <span aria-hidden style={{ width: 6, height: 6, borderRadius: "50%", background: TL.text }} />
           )}
-          {naa.live ? IDAG_UI.live : IDAG_UI.naa}
+          {naa.fullfort ? IDAG_UI.fullfort : naa.live ? IDAG_UI.live : IDAG_UI.naa}
         </span>
         <span style={{ ...caps, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>{naa.tid}</span>
       </div>
