@@ -8,9 +8,13 @@ import { TL } from "@/lib/v2/train-lock";
 import { TapperShell } from "./tapper-shell";
 
 /**
- * PlayerHQ · Slagteller (/portal/(fullscreen)/live/[sessionId]/tapper) —
- * Paper-port W1 (fase2).
- * Fasit: designsystem/paper/fase2/playerhq/playerhq-live-tapper.html.
+ * PlayerHQ · Slagteller (/portal/(fullscreen)/live/[sessionId]/tapper).
+ * Fasit: designsystem/train-lock/PH-05 Live.dc.html
+ * Avvik:
+ *   - Ingen riggrad: PH-05 er ikke i tests/visual/skjerm-mapping.ts ennå (fase 2).
+ *   - Gammel Paper-sitering (playerhq-live-tapper.html) er slettet 30.08 — koden
+ *     er slagtelleren i live-sløyfa, ikke en 1:1-port av den slettede fila.
+ *   - Tar også WorkbenchSession-id fra I dag (Anders 08.09), ikke bare plan-økt.
  *
  * Kølleknappene bygges av spillerens utstyrsbag (EquipmentBag — fritekst per
  * kategori, så knappene er kategoriene som faktisk er fylt ut). Tom bag →
