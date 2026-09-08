@@ -9,6 +9,9 @@
  * - /preds/live-tournament-stats — live leaderboard (under aktiv turnering)
  * - /preds/pre-tournament — pre-turnering odds + felt (vi bruker for deltakerliste)
  * - /player-list        — alle spillere i DataGolf-systemet (for å mappe nordmenn)
+ * - /preds/skill-ratings — ferdighetskort (tak-pakke + /stats/pga)
+ * - /preds/approach-skill — innspill-nærhet per spiller (tak-pakke)
+ * - /preds/get-dg-rankings — rangering for tak-pakke
  *
  * Anti-pattern: Aldri cache disse svarene utenfor cron-jobben.
  * Bruk LeaderboardSnapshot-tabellen som DB-cache, og les fra DB i UI.
@@ -201,4 +204,43 @@ export async function getSkillRatings(
     `/preds/skill-ratings?tour=${tour}&display=value`,
   );
   return data.players ?? [];
+}
+
+export type DGRankingRow = {
+  dg_id: number;
+  player_name: string;
+  country?: string;
+  datagolf_rank?: number;
+  owgr_rank?: number;
+  primary_tour?: string;
+};
+
+export type DGRankingsResponse = {
+  last_updated?: string;
+  rankings?: DGRankingRow[];
+};
+
+export async function getDgRankings(): Promise<DGRankingsResponse> {
+  return fetchJson<DGRankingsResponse>("/preds/get-dg-rankings");
+}
+
+export type DGApproachSkillRow = {
+  dg_id: number;
+  player_name?: string;
+  [key: string]: number | string | undefined;
+};
+
+export type DGApproachSkillResponse = {
+  last_updated?: string;
+  meta?: { last_updated?: string; time_period?: string };
+  players?: DGApproachSkillRow[];
+  data?: DGApproachSkillRow[];
+};
+
+export async function getApproachSkill(
+  period: "l24" | "l12" | "ytd" = "l24",
+): Promise<DGApproachSkillResponse> {
+  return fetchJson<DGApproachSkillResponse>(
+    `/preds/approach-skill?period=${period}`,
+  );
 }

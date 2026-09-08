@@ -107,6 +107,10 @@
       "schedule": "30 7 * * 1"
     },
     {
+      "path": "/api/cron/datagolf-tak",
+      "schedule": "0 8 * * 1"
+    },
+    {
       "path": "/api/cron/meg-morgenbrief",
       "schedule": "0 5 * * *"
     },
