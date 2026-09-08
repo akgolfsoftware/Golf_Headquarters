@@ -1,6 +1,6 @@
 "use client";
 
-import type { CSSProperties, ReactNode } from "react";
+import { useState, type CSSProperties, type ReactNode } from "react";
 import { TN } from "@/lib/v2/team-norway";
 import { Icon } from "@/components/v2";
 
@@ -299,5 +299,85 @@ export function TnRail({
         <Icon name="chevron-up" size={14} style={{ color: TN.ink400 }} />
       </div>
     </div>
+  );
+}
+
+// ───────────────────────── Input ─────────────────────────
+
+/**
+ * Fasit: components/core/Input.jsx i Claw-designsystemet (a03bf94a…).
+ * `error` setter rød kant og ERSTATTER hint-teksten — de vises aldri samtidig.
+ */
+export function TnInput({
+  label,
+  value,
+  onChange,
+  placeholder,
+  error,
+  hint,
+  type = "text",
+  suffix,
+  disabled,
+  name,
+}: {
+  label?: string;
+  value?: string;
+  onChange?: (verdi: string) => void;
+  placeholder?: string;
+  error?: string;
+  hint?: string;
+  type?: "text" | "number" | "date" | "email";
+  suffix?: string;
+  disabled?: boolean;
+  name?: string;
+}) {
+  const [fokus, setFokus] = useState(false);
+  const kant = error ? TN.status.red : fokus ? TN.navy600 : TN.borderSubtle;
+  return (
+    <label style={{ display: "flex", flexDirection: "column", gap: 7, fontFamily: TN.font.body }}>
+      {label && (
+        <span style={{ fontSize: TN.text.xs, fontWeight: TN.weight.semibold, color: TN.textPrimary }}>{label}</span>
+      )}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+          background: disabled ? TN.ink50 : TN.white,
+          border: `1px solid ${kant}`,
+          borderRadius: TN.radius.sm,
+          padding: "0 14px",
+          height: 48,
+          boxShadow: fokus ? TN.focusRing : TN.shadow.sm,
+        }}
+      >
+        <input
+          type={type}
+          name={name}
+          value={value ?? ""}
+          placeholder={placeholder}
+          disabled={disabled}
+          onChange={(e) => onChange?.(e.target.value)}
+          onFocus={() => setFokus(true)}
+          onBlur={() => setFokus(false)}
+          style={{
+            flex: 1,
+            minWidth: 0,
+            border: "none",
+            outline: "none",
+            background: "transparent",
+            fontFamily: type === "number" ? TN.font.mono : TN.font.body,
+            fontSize: TN.text.base,
+            color: TN.ink900,
+          }}
+        />
+        {suffix && <span style={{ fontFamily: TN.font.mono, fontSize: TN.text.xs, color: TN.ink400 }}>{suffix}</span>}
+      </div>
+      {error ? (
+        <span style={{ fontSize: TN.text.xs, color: TN.status.redText }}>{error}</span>
+      ) : hint ? (
+        <span style={{ fontSize: TN.text.xs, color: TN.ink400 }}>{hint}</span>
+      ) : null}
+    </label>
   );
 }
