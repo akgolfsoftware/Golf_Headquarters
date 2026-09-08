@@ -22,11 +22,56 @@ To grunner:
    samme kjøring (samme Chromium, samme maskin, samme øyeblikk) unngår
    akkurat det problemet uten å måtte lagre og committe bilder.
 
+## Gyldighetssjekk før måling
+
+Fire av sju mislykkede målinger (01.–02.09.2026) skyldtes tegningen, ikke koden.
+Derfor: sjekk at fasiten er dagens kanon FØR du måler. Hver rad har `fasitDato`
+(git-dato for fasitfila; 25.08.2026 er bulk-importdatoen fra PR #581, så en fil med
+den datoen kan være tegnet 23.–24.08 — datoen betyr «ikke nyere enn»). Datoen alene
+avgjør ikke; se på innholdet med kommandoen i tabellen.
+
+| Gjelder | Regel | Sjekk | Kilde |
+|---|---|---|---|
+| Rail/tabbar i en AgencyOS-fasit | Tegnet før 25.08.2026 = utdatert. AX-01 har fem destinasjoner: Stall · Workbench · Kø · Jarvis · Meg | `grep -L "Jarvis" "designsystem/train-lock/<fil>"` skriver filnavnet hvis railen mangler Jarvis (69 av AgencyOS-filene gjør det per 05.09) | `.claude/rules/beslutninger.md` §A1, overstyrt 25.08 |
+| Pris/tier (ME-03, oppgrader, abonnement) | Tegnet før 16.08.2026 = utdatert. Kun TALENT (gratis) og FULL (299 kr/mnd, 2 690 kr/år). «Elite» og «PRO» finnes ikke | `grep -c "Elite\|PRO" "designsystem/train-lock/<fil>"` skal gi 0 | `docs/platform/BUSINESS-RULES.md` §Abonnement |
+| Stall-rad (AG-04 og alt som lister spillere) | Tegnet før 30.08.2026 (beslutning 6.5) = utdatert: raden er navn · neste økt · siste aktivitet · én prikk — ikke HCP/SG | `grep -c "HCP\|SG" "designsystem/train-lock/<fil>"` > 0 i en spillerliste = utdatert | `.claude/rules/beslutninger.md` §GRILLINGEN RUNDE 6 pkt 5 |
+
+Treffer en regel: raden får `status: "ukalibrert"` og `aarsak: "fasit-utdatert"`. Mål
+gjerne likevel — tallet er dokumentasjon, ikke signal — og bestill omtegning. Tilpass
+aldri koden til en utdatert tegning.
+
+**Ingen rad får `status: "kalibrert"` uten eksplisitt avviksliste i filhodet til
+komponenten raden måler:** ` * Avvik: …`-linjer rett under ` * Fasit: …` i
+komponentens JSDoc-hode, én linje per kjent avvik. Prosenttallet sier ikke HVA som
+avviker; lista gjør. Mangler lista, står raden som ukalibrert til den er skrevet.
+Eksempel: `src/components/admin/v2/agenticos/AdminAgenticosKo.tsx` (økt 4).
+
+## Panel-modus — innebygde paneler (AO-03, AO-08 m.fl.)
+
+Noen fasitrammer er tegnet som paneler (AO-03: 760×640, AO-08: 620 px bred) ment å
+stå inni en større canvas, ikke som hel skjerm. Satt som viewport trigger de appens
+mobil-brekkpunkt (bredde < 700). Raden setter derfor `viewport` (appens ekte visning)
+og `selector` (elementet som tilsvarer rammen); riggen rendrer appen i den
+viewporten og klipper et utsnitt fra elementets øvre venstre hjørne med
+fasitrammens bredde og høyde:
+
+```bash
+node scripts/train-lock-pixel-diff.mjs "AO-03 Ko 1440" "/admin/ko?fane=agentko" dark 0 \
+  --viewport=1440x900 --selector='[data-screen-label="AO-03 Ko"]'
+```
+
+`cropTop` er alltid 0 i panel-modus (ingen bakt statuslinje). Er appens element
+bredere enn fasitrammen (AO-03: 1144 px i V2Shell ved 1440 mot 760 i fasiten), faller
+høyre del utenfor utsnittet — det er et avvik som skal stå i notatet og avvikslista,
+ikke en feil i riggen. Finnes ikke selectoren (appen viser f.eks. tom tilstand med
+en annen `data-screen-label`), stopper riggen og sier det: seed først.
+
 ## Kjøre en kalibrert skjerm
 
 ```bash
 npx tsx scripts/seed-ph01-signoff-fixture.ts      # én gang, idempotent
 node scripts/train-lock-pixel-diff.mjs "PH-01 I dag" "/portal" dark 54
+SHOT_BRUKER=coachtest@akgolf.test node scripts/train-lock-pixel-diff.mjs "AO-03 Ko 1440" "/admin/ko?fane=agentko" dark 0 --viewport=1440x900 --selector='[data-screen-label="AO-03 Ko"]'   # panel-modus, AgencyOS
 ```
 
 Bildene havner i `tests/visual/ut/` (gitignorert — arbeidsfiler, ikke fasit).
