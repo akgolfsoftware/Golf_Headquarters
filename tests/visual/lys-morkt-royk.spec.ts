@@ -58,7 +58,53 @@ const IGNORERT_KONSOLL = [
  * skal krympe, aldri vokse; fjern linjen når ruten er fikset. Fylles fra
  * tørrkjøringen i fase 1 økt 6 (oppgave 6.4).
  */
-const KJENTE_AVVIK: Record<string, string> = {};
+const KJENTE_AVVIK: Record<string, string> = {
+  // Signalfarge som ren tekst på scene/elev i lys modus — bryter beslutningen
+  // 03.09 («Vei A», gotchas.md §Signalfarger). Målt i tørrkjøringen 08.09 mot
+  // prod: 22 ruter, ingen av dem rørt av denne økten. Hver rute fikses i sin
+  // egen designport-PR (mønsteret er `on-fill`: hvit tekst på fylt flate).
+  "/admin/ko": "Tørrkjøring 08.09: «Avvis»/«Forkast»/«Kan ikke» (button) er danger som tekstfarge på elev, pluss warn på elev.",
+  "/admin/workspace/tildelt-meg": "Tørrkjøring 08.09: «Avvis»/«Forkast»/«Kan ikke» (button) er danger som tekstfarge på elev, pluss warn på elev.",
+  "/admin/drills/forslag": "Tørrkjøring 08.09: «Avvis»/«Forkast»/«Kan ikke» (button) er danger som tekstfarge på elev, pluss warn på elev.",
+  "/admin/agencyos/caddie/dashbord": "Tørrkjøring 08.09: «Avvis»/«Forkast»/«Kan ikke» (button) er danger som tekstfarge på elev, pluss warn på elev.",
+  "/admin/kommunikasjon": "Tørrkjøring 08.09: «Avvis»/«Avslå» (button) er danger på elev, og «fristen er ute» (div) er warn på elev.",
+  "/admin/foresporsler": "Tørrkjøring 08.09: «Avvis»/«Avslå» (button) er danger på elev, og «fristen er ute» (div) er warn på elev.",
+  "/admin/feillogg": "Tørrkjøring 08.09: «Feil» (span) er danger som tekstfarge på både elev og scene.",
+  "/admin/agencyos/okonomi": "Tørrkjøring 08.09: «Forfalt» (div) er danger som tekstfarge på elev.",
+  "/admin/audit-log": "Tørrkjøring 08.09: danger som tekstfarge på elev.",
+  "/admin/plan-templates/ny": "Tørrkjøring 08.09: danger og ok som tekstfarge på elev.",
+  "/admin/runder": "Tørrkjøring 08.09: danger og ok som tekstfarge på elev.",
+  "/admin/queue": "Tørrkjøring 08.09: ok som tekstfarge på elev.",
+  "/admin/workspace/notion": "Tørrkjøring 08.09: «OK» (span) er ok på elev og scene, pluss danger og warn på elev.",
+  "/admin/tester/benchmarks": "Tørrkjøring 08.09: warn som tekstfarge på elev, og 1 konsollfeil (React #418, hydration).",
+  "/admin/videoer": "Tørrkjøring 08.09: warn som tekstfarge på scene.",
+  "/admin/caddie": "Tørrkjøring 08.09: viz-target som tekstfarge på elev og scene.",
+  "/admin/jarvis": "Tørrkjøring 08.09: viz-target som tekstfarge på elev og scene.",
+  "/admin/agencyos/caddie": "Tørrkjøring 08.09: viz-target som tekstfarge på elev og scene.",
+  "/admin/agencyos/caddie/aktivitet": "Tørrkjøring 08.09: viz-target som tekstfarge på elev og scene.",
+  "/portal/meg": "Tørrkjøring 08.09: danger som tekstfarge på elev.",
+  "/portal/meg/feedback": "Tørrkjøring 08.09: «Påkrevd» (span) er danger som tekstfarge på elev.",
+  "/portal/analysere/hull": "Tørrkjøring 08.09: danger og ok som tekstfarge på elev.",
+  "/portal/mal/trackman/gapping": "Tørrkjøring 08.09: danger som tekstfarge på elev.",
+  // React #418 = hydration mismatch (server- og klientmarkup er ulik). Egen
+  // fiks per skjerm, ikke riggens jobb.
+  "/admin/availability": "Tørrkjøring 08.09: 1 konsollfeil — pageerror «Minified React error #418» (hydration mismatch).",
+  "/portal/analysere/historikk": "Tørrkjøring 08.09: 1 konsollfeil — pageerror «Minified React error #418» (hydration mismatch).",
+  "/portal/kalender/opptatt": "Tørrkjøring 08.09: 1 konsollfeil — pageerror «Minified React error #418» (hydration mismatch).",
+  "/portal/mal/runder": "Tørrkjøring 08.09: 1 konsollfeil — pageerror «Minified React error #418» (hydration mismatch).",
+  "/portal/meg/bookinger": "Tørrkjøring 08.09: 1 konsollfeil — pageerror «Minified React error #418» (hydration mismatch).",
+};
+
+/**
+ * Flater der testbrukeren ikke finnes i prod ennå — flate → hvorfor. HELE
+ * flaten hoppes over, fordi innloggingen feiler før noen rute nås: alternativet
+ * er fire permanent røde tester hver natt, som avstumper Telegram-varselet.
+ * Fjern linjen når brukeren er seedet (kommandoen står i BRUKER[flate].seed).
+ */
+const MANGLENDE_TESTBRUKER: Partial<Record<Flate, string>> = {
+  forelder:
+    "screentest-parent@akgolf.test finnes ikke i prod etter nullstillingen 30.08 — målt i tørrkjøringen 08.09. Seeding krever SUPABASE_SERVICE_ROLE_KEY og må kjøres fra hovedmaskinen.",
+};
 
 /* Kontrastparene, lest fra tokenfila med samme regex som check-tl-kontrast.mjs:24–35. */
 function lysTokens(): Record<string, string> {
@@ -127,11 +173,43 @@ async function laLayoutSetteSeg(page: Page): Promise<void> {
   await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
 }
 
+/**
+ * App Router navigerer videre på klientsiden etter `load` (redirect i en server
+ * component, auth-gate, tema-script), og da rives evaluate-konteksten bort midt
+ * i målingen: «Execution context was destroyed». Målt på ALLE åtte flate/tema/
+ * bredde-kombinasjonene i tørrkjøringen 08.09 — det er riggen som er for rask,
+ * ikke sidene som er ødelagte. Vent derfor til URL-en har stått stille to
+ * strekk, og prøv målingen på nytt hvis den likevel treffer et navigasjonsvindu.
+ */
+async function ventTilUrlStaarStille(page: Page): Promise<void> {
+  let forrige = "";
+  for (let i = 0; i < 10 && page.url() !== forrige; i++) {
+    forrige = page.url();
+    await page.waitForTimeout(300);
+  }
+}
+
+async function maalStabilSide(page: Page, par: Par[]): Promise<Maal> {
+  let sisteFeil: unknown;
+  for (let forsok = 1; forsok <= 3; forsok++) {
+    try {
+      await laLayoutSetteSeg(page);
+      return await page.evaluate(maalISiden, par);
+    } catch (e) {
+      sisteFeil = e;
+      if (!/Execution context was destroyed|frame was detached/i.test(String(e))) throw e;
+      await page.waitForTimeout(1000);
+    }
+  }
+  throw sisteFeil;
+}
+
 for (const flate of FLATER) {
   for (const tema of TEMAER) {
     for (const bredde of BREDDER) {
       test(`${flate} · ${tema} · ${bredde.navn}`, async ({ browser }) => {
         test.skip(!PASSORD, "SCREENTEST_PASSWORD mangler (.env.local lokalt, secret i CI)");
+        test.skip(Boolean(MANGLENDE_TESTBRUKER[flate]), MANGLENDE_TESTBRUKER[flate] ?? "");
         const ruter = finnProduktRuter(flate).filter((r) => !KJENTE_AVVIK[r]);
         expect(ruter.length, `${flate}: fant ingen page.tsx under src/app/${flate}`).toBeGreaterThan(0);
         const mobil = bredde.width < 700;
@@ -169,10 +247,16 @@ for (const flate of FLATER) {
               continue;
             }
             if (status >= 400) { feil.push(`${rute}: HTTP ${status}`); continue; }
+            await ventTilUrlStaarStille(page);
             const landet = new URL(page.url()).pathname;
             if (!landet.startsWith(`/${flate}`)) { feil.push(`${rute}: landet utenfor flaten (${landet})`); continue; }
-            await laLayoutSetteSeg(page);
-            const m = await page.evaluate(maalISiden, par);
+            let m: Maal;
+            try {
+              m = await maalStabilSide(page, par);
+            } catch (e) {
+              feil.push(`${rute}: måling feilet — ${(e as Error).message.slice(0, 120)}`);
+              continue;
+            }
             if ((m.tema === "dark") !== (tema === "dark")) {
               feil.push(`${rute}: tema ikke satt (data-v2-tema=${m.tema ?? "mangler"}, ventet ${tema})`);
             }
