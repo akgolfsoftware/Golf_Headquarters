@@ -24,7 +24,7 @@ import { onsketTema } from "@/lib/v2/tema-default";
 import { SpillerVeksler, type VekslerData } from "./spiller-veksler";
 import { useErAdmin } from "./rolle";
 import { GlobalSearchModal } from "@/components/admin/global-search-modal";
-import { AGENCYOS_SKALL_TABS, AGENCYOS_UNDER_MEG } from "@/lib/agencyos/skall-ia";
+import { AGENCYOS_SKALL_TABS, AGENCYOS_UNDER_MEG, skallAktivFraPath } from "@/lib/agencyos/skall-ia";
 
 // D2 (17. juli): re-eksporter veksler-datakontrakten fra shellen så kallsteder
 // (cockpit m.fl.) kan importere den fra samme sted som V2Shell.
@@ -578,48 +578,7 @@ function MerPanel({ grupper, rom, onClose, mobil, full, erAgency }: { grupper?: 
  * bruker derfor en frittstående tab-liste og leser aktiv fane av
  * `pathname`, ikke av `aktiv`-propen.
  */
-export { AGENCYOS_SKALL_TABS, AGENCYOS_UNDER_MEG };
-
-/** Aktiv fane av URL — AGENCYOS_SKALL_TABS-idene, «» hvis ingen treffer
- *  (typisk en under-Meg-side; radene der har egen, uavhengig aktiv-sjekk). */
-function skallAktivFraPath(pathname: string): string {
-  const treff: Array<{ prefix: string; id: string }> = [
-    { prefix: "/admin/spillere", id: "stall" },
-    // MASTERPLAN 15.9: Plan er én adresse (/admin/plan). /admin/planlegge er
-    // nå en redirect, men beholdes her så railen lyser riktig i det korte
-    // øyeblikket før redirecten lander (samme mønster som Kø 15.1/15.2).
-    { prefix: "/admin/plan", id: "workbench" },
-    { prefix: "/admin/planlegge", id: "workbench" },
-    { prefix: "/admin/workbench", id: "workbench" },
-    // MASTERPLAN 15.1/15.2: Kø er én adresse (/admin/ko). De gamle kø-adressene
-    // er redirects, men beholdes her så railen lyser riktig i det korte
-    // øyeblikket før redirecten lander.
-    { prefix: "/admin/ko", id: "ko" },
-    { prefix: "/admin/godkjenninger", id: "ko" },
-    { prefix: "/admin/innboks", id: "ko" },
-    { prefix: "/admin/varsler", id: "ko" },
-    // MASTERPLAN 15.7: Kommunikasjon (/admin/kommunikasjon) samler Innboks +
-    // e-post + maler — samme rail-plassering som Innboks hadde.
-    { prefix: "/admin/kommunikasjon", id: "ko" },
-    { prefix: "/admin/email-templates", id: "ko" },
-    // Oppfølging av spillere er IKKE Kø (beslutning 6.6) — den hører i Stall.
-    { prefix: "/admin/queue", id: "stall" },
-    // Oppgaver bor under Meg, som i canvasen (MASTERPLAN 15.2).
-    { prefix: "/admin/oppgaver", id: "meg" },
-    { prefix: "/admin/handlingssenter", id: "meg" },
-    { prefix: "/admin/workspace", id: "meg" },
-    { prefix: "/admin/agenticos", id: "jarvis" },
-    { prefix: "/admin/agent-team", id: "jarvis" },
-    { prefix: "/admin/agents", id: "jarvis" },
-    { prefix: "/admin/agencyos/caddie", id: "jarvis" },
-    { prefix: "/admin/profile", id: "meg" },
-    { prefix: "/meg", id: "meg" },
-  ];
-  for (const t of treff) {
-    if (pathname === t.prefix || pathname.startsWith(t.prefix + "/")) return t.id;
-  }
-  return "";
-}
+export { AGENCYOS_SKALL_TABS, AGENCYOS_UNDER_MEG, skallAktivFraPath };
 
 /**
  * AgencyOS Mac-rail — Train-lock AX-01b: 232 px, tekst+ikon-rader (ikke

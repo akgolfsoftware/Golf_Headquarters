@@ -10,7 +10,6 @@
 
 import Link from "next/link";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { TL } from "@/lib/v2/train-lock";
 import { Icon } from "@/components/v2/icon";
 import { LiveTavleTrainLock } from "@/components/admin/v2/LiveTavleTrainLock";
@@ -24,7 +23,7 @@ export default async function V2LivePage() {
   const data = await hentLiveTavle(user.id, user.role === "ADMIN");
 
   return (
-    <V2Shell bredde="full" aktiv="live" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <>
       <Link
         href="/admin/agencyos"
         style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, textDecoration: "none", marginBottom: 12 }}
@@ -33,6 +32,6 @@ export default async function V2LivePage() {
         Cockpit
       </Link>
       <LiveTavleTrainLock data={data} />
-    </V2Shell>
+    </>
   );
 }
