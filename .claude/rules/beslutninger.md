@@ -31,7 +31,11 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
 - **DESIGNPORT FASE 2 — SEKS BESLUTNINGER, MILEPÆL 11.09 (Anders 08.09.2026, i økt):** svar på
   planens §6 kø-punkter 1–6 (`docs/superpowers/plans/2026-09-05-komplett-designport.md`), spurt
   samme dag fase 1 (grunnmuren) ble ferdigstilt (8/8 økter merget).
-  1. **Kø 28 (årspris-id + ekte kjøp) — PRESISERT, IKKE LØST.** Verifisert i økt: de fire
+  **Presisert samme dag, senere i økten: «La oss ta Stripe til slutt».** Kø 28 er dermed IKKE
+  lenger en forutsetning for å starte fase 2 — ingen av fase 2-skjermene bruker price-IDen.
+  Kø 28 flyttes til rett før Ø16 (røyktesten), som er der betalingskjeden faktisk må verifiseres
+  end-to-end. Fase 2-byggingen starter nå, uavhengig av når Anders sjekker Stripe-dashbordet.
+  1. **Kø 28 (årspris-id + ekte kjøp) — PRESISERT, IKKE LØST, UTSATT TIL SIST.** Verifisert i økt: de fire
      Stripe-prisene (299 kr/mnd · 2 690 kr/år · 1 200 kr/mnd Performance · 2 220 kr/mnd
      Performance Pro) er kun opprettet i TEST-modus (16.08.2026,
      `docs/platform/stripe-cutover-sjekkliste.md`) — live-modus krever egne price-ID-er, og
@@ -64,8 +68,9 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
   tre ferdig-punkter) er grunnlaget for all videre Train-lock-porting av produktskjermene. Anders:
   «Fiks slik at vi kan starte fase 1 i ny session.» Fase 1 (grunnmur: vakter i verify/CI, TallHero
   19.7, datofrys, riggfelt, filhode-vakt, nattlig måling, døde Paper-verktøy, dokumentrydding) krever
-  ingen beslutning og kjøres etter `docs/superpowers/plans/2026-09-05-designport-fase-1.md`, én økt
-  om gangen. **Låst samtidig:** (1) «sitert er ikke bygget» — bevis for portert skjerm er riggrad
+  ingen beslutning og kjøres etter de åtte øktplanene fra PR #793 (fase 1, økt 1–8 — slettet fra
+  `docs/superpowers/plans/` 08.09.2026 etter at 7 av 8 var merget, se git-historikk for innholdet),
+  én økt om gangen. **Låst samtidig:** (1) «sitert er ikke bygget» — bevis for portert skjerm er riggrad
   eller eksplisitt avviksliste i filhodet, aldri dekningstallet; (2) prototypen fra Claude Design
   (zip 05.09, `proto/`) synkes IKKE inn som fasit før beslutning 7 (coach-menyen: AX-01 vs
   prototypens fem faner) er svart — kun PROTOTYPE-PLAN og HANDOFF-batchene ligger som referanse i
