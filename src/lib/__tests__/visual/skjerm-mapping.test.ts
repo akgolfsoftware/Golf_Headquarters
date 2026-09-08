@@ -28,3 +28,9 @@ test("panel-modus: selector og viewport settes sammen, cropTop er 0", () => {
     }
   }
 });
+
+test("ingen rad peker på en redirect-adresse under /admin/agenticos (MASTERPLAN 15.1/15.5)", () => {
+  for (const rad of SKJERM_MAPPING) {
+    assert.ok(!rad.rute.startsWith("/admin/agenticos"), `${rad.label}: ${rad.rute} er en redirect`);
+  }
+});
