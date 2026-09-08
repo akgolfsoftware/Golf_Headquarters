@@ -5,6 +5,16 @@
  *
  * Fasit: designsystem/train-lock/AO-01 Cockpit ko godkjenning.dc.html
  * (§AO-03 Ko).
+ * Rigg: AO-03 Ko 1440 (tests/visual/skjerm-mapping.ts, panel-modus).
+ * Avvik: panelet er 1144 px bredt i V2Shell ved 1440 (rail 232 + px-8) mot fasitens
+ *   760 — «Ny oppgave» (flex-end) og radenes høyre metadata/handling ligger utenfor
+ *   riggens utsnitt.
+ * Avvik: fasitrammens 1px inset-hairline og radius 18 tegnes ikke — panelet ligger
+ *   rett i skallets innhold, uten egen ramme.
+ * Avvik: Klar-listen er MANUELLE_AGENTER fra agent-registry (antall og navn styres av
+ *   registeret), fasiten viser seks eksempelrader; Pågår/Venter er PlanAction/AgentRun-
+ *   data for coachtest (seed gir 0 pågår), fasiten viser 2/4. Uten Pågår-seksjonen
+ *   forskyves alt under Klar-listen i forhold til fasiten.
  *
  * Tom-tilstand (AoTom) dekker i tillegg GAP-2c «Jarvis-kø tom»
  * (Fasit: designsystem/train-lock/GAP-2 Tilstander drift.dc.html) — ingen
