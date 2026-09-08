@@ -27,7 +27,10 @@ export async function startPlanSession(sessionId: string): Promise<void> {
     redirect("/portal/planlegge/workbench");
   }
 
-  if (session.status === "COMPLETED" || session.status === "SKIPPED") {
+  if (session.status === "COMPLETED") {
+    redirect(`/portal/live/${sessionId}/summary`);
+  }
+  if (session.status === "SKIPPED") {
     redirect(`/portal/tren/${sessionId}`);
   }
 

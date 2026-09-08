@@ -22,6 +22,7 @@ import {
   formatIntervallPunkt,
   fremdriftPst,
   IDAG_UI,
+  idagNaaCta,
   minutterIgjen,
   osloMinuttAvDogen,
   velgIDagTilstand,
@@ -71,6 +72,9 @@ export default async function PortalHjemPage() {
   const pagaende = synlige.find((s) => s.status === "IN_PROGRESS") ?? null;
   const startbar =
     synlige.find((s) => s.status === "PUBLISHED" || s.status === "SCHEDULED") ?? null;
+  const fullfortWb =
+    synlige.find((s) => s.status === "COMPLETED" && !erHvileTittel(s.title)) ?? null;
+  const fullfortGjennomfore = gjennomfore.fullfortIdag.at(-1) ?? null;
   const hvile = synlige.find((s) => erHvileTittel(s.title)) ?? null;
 
   const ukeHarOkter =
@@ -80,47 +84,72 @@ export default async function PortalHjemPage() {
     feil,
     pagaende: pagaende != null,
     harStartbarOkt: startbar != null || (pagaende == null && gjennomfore.nesteOkt != null && gjennomfore.nesteOkt.status !== "done"),
-    harHvile: hvile != null && startbar == null && pagaende == null,
+    harFullfortOkt: fullfortWb != null || fullfortGjennomfore != null,
+    harHvile: hvile != null && startbar == null && pagaende == null && fullfortWb == null,
     ukeHarOkter,
   });
 
   let naaKort: NaaKort | null = null;
-  const wbOkt = pagaende ?? startbar;
+  const wbOkt = pagaende ?? startbar ?? fullfortWb;
   if (wbOkt) {
     const igjen = minutterIgjen(wbOkt.startMinute, wbOkt.durationMinutes, naaMinutt);
-    const live = wbOkt.status === "IN_PROGRESS";
+    const cta = idagNaaCta({ id: wbOkt.id, modell: "wb", status: wbOkt.status });
     const sted = wbOkt.location?.trim();
     naaKort = {
       tittel: wbOkt.title,
-      tid: live && igjen != null ? `${igjen} min igjen` : formatIntervallPunkt(wbOkt.startMinute, wbOkt.durationMinutes),
+      tid: cta.live && igjen != null ? `${igjen} min igjen` : formatIntervallPunkt(wbOkt.startMinute, wbOkt.durationMinutes),
       meta: [sted, formatMinutes(wbOkt.durationMinutes)].filter(Boolean).join(" · "),
-      ctaTekst: live ? IDAG_UI.fortsett : IDAG_UI.startOkt,
-      ctaHref: `/portal/tren/wb/${wbOkt.id}`,
+      ctaTekst: cta.ctaTekst,
+      ctaHref: cta.ctaHref,
       fremdriftPst:
-        live || (igjen != null && igjen > 0)
+        !cta.fullfort && (cta.live || (igjen != null && igjen > 0))
           ? fremdriftPst(wbOkt.startMinute, wbOkt.durationMinutes, naaMinutt)
           : null,
       fremdriftTekst:
-        igjen != null && igjen > 0
+        !cta.fullfort && igjen != null && igjen > 0
           ? [`${igjen} min igjen`, wbOkt.notes?.trim()].filter(Boolean).join(" · ")
           : null,
-      live,
-      sekundarTekst: live ? IDAG_UI.avslutt : undefined,
-      sekundarHref: live ? `/portal/tren/wb/${wbOkt.id}` : undefined,
+      live: cta.live,
+      fullfort: cta.fullfort,
+      sekundarTekst: cta.sekundarTekst,
+      sekundarHref: cta.sekundarHref,
       pyramide: wbOkt.pyramid || null,
     };
   } else if (gjennomfore.nesteOkt && gjennomfore.nesteOkt.status !== "done") {
     const o = gjennomfore.nesteOkt;
-    const live = o.status === "now";
+    const cta = idagNaaCta({
+      id: o.id,
+      modell: o.kilde === "plan" ? "plan" : "v2",
+      status: o.status,
+    });
     naaKort = {
       tittel: o.tittel,
       tid: o.tid.replace(":", ".").replace("–", "–").replace("-", "–"),
       meta: [o.sted, formatMinutes(o.varighet)].filter(Boolean).join(" · "),
-      ctaTekst: live ? IDAG_UI.fortsett : IDAG_UI.startOkt,
-      ctaHref: o.href,
+      ctaTekst: cta.ctaTekst,
+      ctaHref: cta.ctaHref,
       fremdriftPst: null,
       fremdriftTekst: null,
-      live,
+      live: cta.live,
+      fullfort: cta.fullfort,
+    };
+  } else if (fullfortGjennomfore) {
+    const o = fullfortGjennomfore;
+    const cta = idagNaaCta({
+      id: o.id,
+      modell: o.kilde === "plan" ? "plan" : "v2",
+      status: o.status,
+    });
+    naaKort = {
+      tittel: o.tittel,
+      tid: o.tid.replace(":", ".").replace("–", "–").replace("-", "–"),
+      meta: [o.sted, formatMinutes(o.varighet)].filter(Boolean).join(" · "),
+      ctaTekst: cta.ctaTekst,
+      ctaHref: cta.ctaHref,
+      fremdriftPst: null,
+      fremdriftTekst: null,
+      live: false,
+      fullfort: true,
     };
   }
 

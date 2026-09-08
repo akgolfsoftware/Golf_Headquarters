@@ -258,6 +258,19 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }:
 
           <div className="mt-4 flex flex-col gap-2">
             <Link
+              href="/portal"
+              data-od-id="etter-kvitt-idag"
+              className="flex w-full items-center justify-center font-sans text-[14px] font-semibold no-underline"
+              style={{
+                minHeight: 48,
+                borderRadius: 12,
+                background: "var(--tl-fill)",
+                color: "var(--tl-on-fill)",
+              }}
+            >
+              Tilbake til I dag
+            </Link>
+            <Link
               href="/portal/planlegge"
               data-od-id="etter-kvitt-plan"
               className="flex w-full items-center justify-center font-sans text-[14px] font-medium no-underline"

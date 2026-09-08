@@ -5,6 +5,13 @@
  * Fasit: designsystem/train-lock/PH-01e I dag tilstander laast.dc.html (feil-copy PH-01e4)
  */
 
+import {
+  planSessionStartHref,
+  v2SessionStartHref,
+  wbStatusTilPlanStatus,
+  type V2OktUiStatus,
+} from "./session-hrefs";
+
 export type IDagTilstand = "feil" | "pagar" | "okt" | "hvile" | "tom-dag" | "tom-uke";
 
 export type IDagPrikk = {
@@ -24,6 +31,8 @@ export const IDAG_UI = {
   startOkt: "Start økt",
   fortsett: "Fortsett",
   avslutt: "Avslutt",
+  seRecap: "Se recap",
+  fullfort: "Fullført",
   startEgen: "Start egen økt",
   apnePlan: "Åpne plan",
   sporCaddie: "Spør Caddie",
@@ -98,16 +107,68 @@ export function erHvileTittel(tittel: string): boolean {
   return tittel.trim().toLowerCase() === "hvile";
 }
 
+export type IDagNaaCta = {
+  ctaTekst: string;
+  ctaHref: string;
+  live: boolean;
+  fullfort: boolean;
+  sekundarTekst?: string;
+  sekundarHref?: string;
+};
+
+/** Start / Fortsett / Se recap for Nå-kortet — begge øktmodeller. */
+export function idagNaaCta(input: {
+  id: string;
+  modell: "wb" | "v2" | "plan";
+  status: string;
+}): IDagNaaCta {
+  if (input.modell === "v2") {
+    const ui: V2OktUiStatus =
+      input.status === "done" || input.status === "COMPLETED"
+        ? "done"
+        : input.status === "now" || input.status === "IN_PROGRESS"
+          ? "now"
+          : "upcoming";
+    const href = v2SessionStartHref(input.id, ui);
+    const fullfort = ui === "done";
+    const live = ui === "now";
+    return {
+      ctaTekst: fullfort ? IDAG_UI.seRecap : live ? IDAG_UI.fortsett : IDAG_UI.startOkt,
+      ctaHref: href,
+      live,
+      fullfort,
+      sekundarTekst: live ? IDAG_UI.avslutt : undefined,
+      sekundarHref: live ? href : undefined,
+    };
+  }
+
+  const planStatus = wbStatusTilPlanStatus(input.status);
+  const href = planSessionStartHref(input.id, planStatus);
+  const fullfort = planStatus === "COMPLETED";
+  const live = planStatus === "ACTIVE" || planStatus === "PAUSED";
+  return {
+    ctaTekst: fullfort ? IDAG_UI.seRecap : live ? IDAG_UI.fortsett : IDAG_UI.startOkt,
+    ctaHref: href,
+    live,
+    fullfort,
+    sekundarTekst: live ? IDAG_UI.avslutt : undefined,
+    sekundarHref: live ? href : undefined,
+  };
+}
+
 export function velgIDagTilstand(input: {
   feil: boolean;
   pagaende: boolean;
   harStartbarOkt: boolean;
   harHvile: boolean;
   ukeHarOkter: boolean;
+  /** Ferdig økt i dag — vis Nå-kortet med recap, ikke tom-dag. */
+  harFullfortOkt?: boolean;
 }): IDagTilstand {
   if (input.feil) return "feil";
   if (input.pagaende) return "pagar";
   if (input.harStartbarOkt) return "okt";
+  if (input.harFullfortOkt) return "okt";
   if (input.harHvile) return "hvile";
   if (input.ukeHarOkter) return "tom-dag";
   return "tom-uke";

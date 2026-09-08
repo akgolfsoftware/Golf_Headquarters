@@ -75,7 +75,7 @@ export default async function LiveSessionPage({
 
   switch (planSession.status) {
     case "COMPLETED":
-      redirect(`/portal/tren/${sessionId}`);
+      redirect(`/portal/live/${sessionId}/summary`);
     case "ACTIVE":
     case "PAUSED":
       redirect(`/portal/live/${sessionId}/tapper`);
