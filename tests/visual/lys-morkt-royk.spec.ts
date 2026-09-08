@@ -55,8 +55,9 @@ const IGNORERT_KONSOLL = [
 
 /**
  * KJENTE, ÅPNE AVVIK — rute → grunn. Ruten hoppes over i sin helhet. Lista
- * skal krympe, aldri vokse; fjern linjen når ruten er fikset. Fylles fra
- * tørrkjøringen i fase 1 økt 6 (oppgave 6.4).
+ * skal krympe, aldri vokse; fjern linjen når ruten er fikset.
+ * Tørrkjøring 08.09 mot prod, re-kjørt etter lista: 8 passed, 4 skipped
+ * (forelder = MANGLENDE_TESTBRUKER).
  */
 const KJENTE_AVVIK: Record<string, string> = {
   // Signalfarge som ren tekst på scene/elev i lys modus — bryter beslutningen
@@ -89,7 +90,7 @@ const KJENTE_AVVIK: Record<string, string> = {
   // React #418 = hydration mismatch (server- og klientmarkup er ulik). Egen
   // fiks per skjerm, ikke riggens jobb.
   "/admin/availability": "Tørrkjøring 08.09: 1 konsollfeil — pageerror «Minified React error #418» (hydration mismatch).",
-  "/portal/analysere/historikk": "Tørrkjøring 08.09: 1 konsollfeil — pageerror «Minified React error #418» (hydration mismatch).",
+  "/portal/analysere/historikk": "Tørrkjøring 08.09: 2 konsollfeil — Minified React error #441 (ikke hydration #418).",
   "/portal/kalender/opptatt": "Tørrkjøring 08.09: 1 konsollfeil — pageerror «Minified React error #418» (hydration mismatch).",
   "/portal/mal/runder": "Tørrkjøring 08.09: 1 konsollfeil — pageerror «Minified React error #418» (hydration mismatch).",
   "/portal/meg/bookinger": "Tørrkjøring 08.09: 1 konsollfeil — pageerror «Minified React error #418» (hydration mismatch).",
