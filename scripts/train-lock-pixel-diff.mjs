@@ -4,22 +4,16 @@
 //
 // Brukes til å KALIBRERE mapping (rute, viewport, evt. cropTop for baked-in
 // statuslinje) skjerm for skjerm, før den låses i tests/visual/skjerm-mapping.ts.
-// Selve CI-testen er tests/visual/train-lock-pixelnaerhet.spec.ts.
+// Selve motoren bor i scripts/lib/train-lock-maal.mjs og deles med den nattlige
+// testen tests/visual/train-lock-pixelnaerhet.spec.ts (fase 1, økt 6).
 //
 // Kjør:  node scripts/train-lock-pixel-diff.mjs <label> <rute> [tema] [cropTop] [BASE_URL]
 //        … [--viewport=<bredde>x<hoyde> --selector='<css>']   panel-modus, se tests/visual/README.md
 import { config as loadEnv } from "dotenv";
 import { chromium } from "playwright";
-import { PNG } from "pngjs";
-import pixelmatch from "pixelmatch";
-import { readdir, readFile, mkdir } from "node:fs/promises";
-import { existsSync } from "node:fs";
-import path from "node:path";
+import { maalSkjerm, STANDARD_NAA } from "./lib/train-lock-maal.mjs";
 
 loadEnv({ path: ".env.local" });
-
-const FASIT_DIR = "designsystem/train-lock";
-const OUT_DIR = "tests/visual/ut";
 
 // Flagg (--navn=verdi) skilles fra posisjonelle argumenter — rekkefølgen på de
 // posisjonelle er uendret, så eksisterende kall virker som før.
@@ -32,9 +26,7 @@ const flagg = Object.fromEntries(
 const posisjonelle = process.argv.slice(2).filter((a) => !a.startsWith("--"));
 const [label, rute, tema = "dark", cropTopArg = "0", BASE = process.env.SHOT_BASE || "https://akgolf-hq.vercel.app"] = posisjonelle;
 const cropTop = Number(cropTopArg);
-// Panel-modus (tests/visual/README.md §Panel-modus): appen rendres i --viewport,
-// og utsnittet klippes fra --selector-elementets øvre venstre hjørne med
-// fasit-rammens bredde/høyde. Begge eller ingen.
+// Panel-modus (tests/visual/README.md §Panel-modus): begge flagg eller ingen.
 const selector = flagg.selector ?? null;
 const viewportFlagg = flagg.viewport ? flagg.viewport.split("x").map(Number) : null;
 if (Boolean(selector) !== Boolean(viewportFlagg) || (viewportFlagg && (viewportFlagg.length !== 2 || viewportFlagg.some((n) => !Number.isInteger(n) || n <= 0)))) {
@@ -44,7 +36,7 @@ if (Boolean(selector) !== Boolean(viewportFlagg) || (viewportFlagg && (viewportF
 // Fryser "i dag" til fasitens dato (kun screentest, se src/lib/testing/dato-override.ts).
 // Overstyres med SHOT_DATO=<ISO-datotid> for en rad med et testDato ulikt
 // denne standarden (tests/visual/skjerm-mapping.ts, fase 1 økt 3).
-const TEST_NAA = process.env.SHOT_DATO || "2026-08-22T07:10:00Z"; // 09:10 Oslo, midt i den seedede 09:00-09:50-økten
+const TEST_NAA = process.env.SHOT_DATO || STANDARD_NAA;
 const PASSWORD = process.env.SHOT_PASSWORD || process.env.SCREENTEST_PASSWORD;
 const BRUKER = process.env.SHOT_BRUKER || "screentest@akgolf.test";
 
@@ -57,175 +49,29 @@ if (!PASSWORD) {
   process.exit(1);
 }
 
-async function finnFasitFil(label) {
-  const filer = (await readdir(FASIT_DIR)).filter((f) => f.endsWith(".dc.html"));
-  for (const fil of filer) {
-    const innhold = await readFile(path.join(FASIT_DIR, fil), "utf8");
-    if (innhold.includes(`data-screen-label="${label}"`)) return fil;
-  }
-  return null;
-}
-
-const fasitFil = await finnFasitFil(label);
-if (!fasitFil) {
-  console.error(`Fant ingen .dc.html med data-screen-label="${label}"`);
-  process.exit(1);
-}
-
-await mkdir(OUT_DIR, { recursive: true });
 const browser = await chromium.launch();
-
-// 1) Fasit-ramme, isolert, ekte pikselstørrelse.
-const fasitPage = await (await browser.newContext({ viewport: { width: 1600, height: 1200 }, deviceScaleFactor: 1 })).newPage();
-await fasitPage.goto(`file://${path.resolve(FASIT_DIR, fasitFil)}`, { waitUntil: "domcontentloaded", timeout: 60000 });
-await fasitPage.waitForTimeout(800);
-const fasitEl = await fasitPage.$(`[data-screen-label="${label}"]`);
-if (!fasitEl) {
-  console.error(`"${fasitFil}" har ikke data-screen-label="${label}" i DOM-en (helmet/script-feil?).`);
-  process.exit(1);
-}
-const box = await fasitEl.boundingBox();
-const fasitFilSti = `${OUT_DIR}/${slug(label)}-fasit.png`;
-await fasitEl.screenshot({ path: fasitFilSti });
-await fasitPage.close();
-
-// 2) App-skjermbilde, samme bredde/høyde som fasit-rammen, innlogget.
-// Uten panel-modus: samme bredde/høyde som fasit-rammen. Med panel-modus:
-// radens viewport — fasit-rammen er et panel, ikke en skjerm, og satt som
-// viewport ville den truffet feil brekkpunkt.
-const width = viewportFlagg ? viewportFlagg[0] : Math.round(box.width);
-const height = viewportFlagg ? viewportFlagg[1] : Math.round(box.height);
-const isMobile = width < 700;
-const ctx = await browser.newContext({
-  viewport: { width, height },
-  isMobile,
-  hasTouch: isMobile,
-  deviceScaleFactor: 1,
-});
-const url = new URL(BASE);
-await ctx.addCookies([{ name: "ak-v2-tema", value: tema, domain: url.hostname, path: "/" }]);
-await ctx.addInitScript(() => { try { localStorage.setItem("ak_cookie_consent", "all"); } catch {} });
-
-let innlogget = false;
-for (let i = 1; i <= 2 && !innlogget; i++) {
-  const p = await ctx.newPage();
-  try {
-    await p.goto(`${BASE}/auth/login`, { waitUntil: "domcontentloaded", timeout: 90000 });
-    await p.waitForSelector('input[type="email"]', { timeout: 90000 });
-    await p.fill('input[type="email"]', BRUKER);
-    await p.fill('input[type="password"]', PASSWORD);
-    await Promise.all([
-      p.waitForURL(/\/(portal|admin|forelder)/, { timeout: 45000 }).catch(() => {}),
-      p.click('button[type="submit"]'),
-    ]);
-    await p.waitForTimeout(1500);
-    innlogget = /\/(portal|admin|forelder)/.test(p.url());
-    await p.close();
-  } catch (e) { await p.close().catch(() => {}); }
-}
-if (!innlogget) {
-  console.error("Innlogging feilet.");
-  process.exit(1);
-}
-
-await ctx.setExtraHTTPHeaders({ "x-screentest-naa": TEST_NAA });
-const appPage = await ctx.newPage();
-await appPage.goto(`${BASE}${rute}`, { waitUntil: "domcontentloaded", timeout: 90000 });
-await appPage.waitForTimeout(3000);
-const appFilSti = `${OUT_DIR}/${slug(label)}-app.png`;
-if (selector) {
-  const el = appPage.locator(selector).first();
-  const synlig = await el.waitFor({ state: "visible", timeout: 30000 }).then(() => true, () => false);
-  if (!synlig) {
-    console.error(`Fant ikke ${selector} på ${rute}. Viser appen en annen tilstand (f.eks. tom) enn fasiten? Seed først (se raden i skjerm-mapping.ts).`);
-    await browser.close();
-    process.exit(1);
-  }
-  const elBox = await el.boundingBox();
-  // Utsnitt = fasit-rammens mål fra elementets øvre venstre hjørne. Ikke
-  // el.screenshot(): elementet er ofte bredere enn rammen (AO-03: 1144 vs
-  // 760 px), og da ville størrelsessjekken under feile.
-  const clip = { x: Math.round(elBox.x), y: Math.round(elBox.y), width: Math.round(box.width), height: Math.round(box.height) };
-  if (clip.x + clip.width > width || clip.y + clip.height > height) {
-    console.error(`Panelet (${clip.x},${clip.y} ${clip.width}×${clip.height}) stikker utenfor viewporten ${width}×${height} — øk --viewport.`);
-    await browser.close();
-    process.exit(1);
-  }
-  await appPage.screenshot({ path: appFilSti, clip });
-} else {
-  await appPage.screenshot({ path: appFilSti, fullPage: false });
-}
-await browser.close();
-
-// 3) Diff — fasiten har en bakt-inn statuslinje øverst (dynamic island, klokke)
-// som appen ikke har (ekte enhets-statuslinje ligger UTENFOR siden, ikke i
-// DOM-en). Kutt cropTop px fra TOPPEN av fasiten (hopp over den bakte linja),
-// og cropTop px fra BUNNEN av appen (samme resulterende høyde, men innholdet
-// starter på reelt y=0 i appen — kutter man toppen der i stedet, forskyver
-// man alt appinnhold cropTop px og får falsk spøkelses-diff).
-const fasitPng = PNG.sync.read(await readFile(fasitFilSti));
-const appPng = PNG.sync.read(await readFile(appFilSti));
-
-function kuttTopp(png, top) {
-  if (!top) return png;
-  const ut = new PNG({ width: png.width, height: png.height - top });
-  PNG.bitblt(png, ut, 0, top, png.width, png.height - top, 0, 0);
-  return ut;
-}
-function kuttBunn(png, bottom) {
-  if (!bottom) return png;
-  const ut = new PNG({ width: png.width, height: png.height - bottom });
-  PNG.bitblt(png, ut, 0, 0, png.width, png.height - bottom, 0, 0);
-  return ut;
-}
-
-let fasitKuttet = kuttTopp(fasitPng, cropTop);
-let appKuttet = kuttBunn(appPng, cropTop);
-
-// Sub-piksel avrundingsavvik (boundingBox() vs faktisk viewport-allokering,
-// sett opptil 1-2px på enkelte fasit-rammer) — klipp til minste felles mål
-// heller enn å feile. Større avvik enn det er en reell størrelsesfeil.
-const dW = Math.abs(fasitKuttet.width - appKuttet.width);
-const dH = Math.abs(fasitKuttet.height - appKuttet.height);
-if (dW > 2 || dH > 2) {
-  console.error(
-    `STØRRELSE MATCHER IKKE: fasit ${fasitKuttet.width}×${fasitKuttet.height} vs app ${appKuttet.width}×${appKuttet.height} (etter cropTop=${cropTop}).`
+try {
+  const r = await maalSkjerm(
+    browser,
+    {
+      label,
+      rute,
+      tema,
+      cropTop,
+      bruker: BRUKER,
+      viewport: viewportFlagg ? { bredde: viewportFlagg[0], hoyde: viewportFlagg[1] } : undefined,
+      selector: selector ?? undefined,
+    },
+    { base: BASE, passord: PASSWORD, naa: TEST_NAA }
   );
-  process.exit(1);
-}
-if (dW || dH) {
-  const w = Math.min(fasitKuttet.width, appKuttet.width);
-  const h = Math.min(fasitKuttet.height, appKuttet.height);
-  const beskjaer = (png) => {
-    const ut = new PNG({ width: w, height: h });
-    PNG.bitblt(png, ut, 0, 0, w, h, 0, 0);
-    return ut;
-  };
-  fasitKuttet = beskjaer(fasitKuttet);
-  appKuttet = beskjaer(appKuttet);
-}
-
-const diffPng = new PNG({ width: fasitKuttet.width, height: fasitKuttet.height });
-const avvikPiksler = pixelmatch(
-  fasitKuttet.data,
-  appKuttet.data,
-  diffPng.data,
-  fasitKuttet.width,
-  fasitKuttet.height,
-  { threshold: 0.1 }
-);
-const totalPiksler = fasitKuttet.width * fasitKuttet.height;
-const andel = avvikPiksler / totalPiksler;
-
-const diffFilSti = `${OUT_DIR}/${slug(label)}-diff.png`;
-await import("node:fs/promises").then((fs) => fs.writeFile(diffFilSti, PNG.sync.write(diffPng)));
-
-console.log(`${label} (${rute}, ${tema}, cropTop=${cropTop})`);
-console.log(`  fasit: ${fasitFilSti}`);
-console.log(`  app:   ${appFilSti}`);
-console.log(`  diff:  ${diffFilSti}`);
-console.log(`  avvik: ${avvikPiksler}/${totalPiksler} px = ${(andel * 100).toFixed(2)}%`);
-
-function slug(s) {
-  return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  console.log(`${label} (${rute}, ${tema}, cropTop=${cropTop})`);
+  console.log(`  fasit: ${r.filer.fasit}`);
+  console.log(`  app:   ${r.filer.app}`);
+  console.log(`  diff:  ${r.filer.diff}`);
+  console.log(`  avvik: ${r.avvikPiksler}/${r.totalPiksler} px = ${r.avvikPst.toFixed(2)}%`);
+} catch (e) {
+  console.error(e instanceof Error ? e.message : String(e));
+  process.exitCode = 1;
+} finally {
+  await browser.close();
 }
