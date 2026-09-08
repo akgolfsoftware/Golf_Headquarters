@@ -6,7 +6,15 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 
-import { beregnLesekvittering, erTnPostKind, kanSeGruppepost, kanSeSpillerpost } from "./tn-post-regler";
+import {
+  beregnLesekvittering,
+  erMindrearigIAr,
+  erTnPostKind,
+  fodselsarOslo,
+  gruppeflateVisningsnavn,
+  kanSeGruppepost,
+  kanSeSpillerpost,
+} from "./tn-post-regler";
 
 describe("erTnPostKind", () => {
   it("godtar kanoniske kinder", () => {
@@ -15,6 +23,23 @@ describe("erTnPostKind", () => {
   });
   it("avviser ukjent kind", () => {
     assert.equal(erTnPostKind("CHAT"), false);
+  });
+});
+
+describe("gruppeflateVisningsnavn", () => {
+  it("korter mindreårig til fornavn og initial", () => {
+    assert.equal(gruppeflateVisningsnavn("Emma Hansen", 2010, 2026), "Emma H.");
+  });
+  it("beholder fullt navn for myndig med kjent år", () => {
+    assert.equal(gruppeflateVisningsnavn("Sindre Dahl", 1994, 2026), "Sindre Dahl");
+  });
+  it("fail-closed: mangler år → kort form", () => {
+    assert.equal(erMindrearigIAr(null, 2026), true);
+    assert.equal(gruppeflateVisningsnavn("Kari Nes", null, 2026), "Kari N.");
+  });
+  it("leser fødselsår fra dateOfBirth i Oslo-tid", () => {
+    assert.equal(fodselsarOslo(new Date("2010-06-15T00:00:00.000Z")), 2010);
+    assert.equal(fodselsarOslo(null), null);
   });
 });
 

@@ -91,3 +91,37 @@ export function beregnLesekvittering(
     manglerIder,
   };
 }
+
+/** Kalenderår i Europe/Oslo — aldri serverens lokale tid. */
+export function osloKalenderar(dato: Date = new Date()): number {
+  return Number(
+    new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Oslo", year: "numeric" }).format(dato),
+  );
+}
+
+/** Fødselsår fra User.dateOfBirth. null hvis dato mangler. */
+export function fodselsarOslo(dateOfBirth: Date | null): number | null {
+  if (!dateOfBirth) return null;
+  const ar = osloKalenderar(dateOfBirth);
+  return Number.isFinite(ar) ? ar : null;
+}
+
+/**
+ * Gruppeflaten (TN-09) vises av hele gruppen samtidig. Mindreårige og
+ * spillere uten fødselsår står som fornavn + etternavn-initial
+ * («Emma H.») — fail-closed: mangler år, behandles som mindreårig.
+ * Fasit: TnGruppeposter.dc.html designnotat.
+ */
+export function erMindrearigIAr(birthYear: number | null, iAr: number): boolean {
+  if (birthYear == null) return true;
+  return iAr - birthYear < 18;
+}
+
+export function gruppeflateVisningsnavn(navn: string, birthYear: number | null, iAr: number): string {
+  const deler = navn.trim().split(/\s+/).filter(Boolean);
+  const fornavn = deler[0] ?? "Ukjent";
+  if (!erMindrearigIAr(birthYear, iAr)) return navn.trim() || fornavn;
+  const etternavn = deler.length > 1 ? deler[deler.length - 1] : "";
+  const initial = etternavn[0];
+  return initial ? `${fornavn} ${initial.toUpperCase()}.` : fornavn;
+}

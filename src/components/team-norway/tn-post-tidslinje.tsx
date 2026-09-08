@@ -11,22 +11,31 @@ export type TnTidslinjePost = {
   createdAtIso: string;
   kind: string;
   tekst: string;
-  vedlegg: { id: string; fileName: string; fileType: string | null }[];
+  vedlegg: { id: string; fileName: string; fileType: string | null; fileSize?: number | null }[];
   /** null = ingen kvittering-brøk (individuelle poster viser i stedet et boolsk sett/ikke-sett). */
   kvittering: { totalt: number; apnet: number } | null;
 };
 
 const KIND_MERKE: Record<string, { label: string; tone: TnPilleTone }> = {
   TEKST: { label: "TEKST", tone: "nøytral" },
-  REISE: { label: "REISE", tone: "navy" },
-  MOTE: { label: "MØTE", tone: "info" },
+  REISE: { label: "REISE", tone: "invers" },
+  MOTE: { label: "MØTE", tone: "navy" },
   OKT: { label: "ØKT", tone: "nøytral" },
   DOKUMENT: { label: "DOKUMENT", tone: "nøytral" },
 };
 
+const OSLO = { timeZone: "Europe/Oslo" as const };
+
 function formatterTid(iso: string): string {
   const d = new Date(iso);
-  return `${d.toLocaleDateString("nb-NO", { day: "2-digit", month: "2-digit" })} · ${d.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" })}`;
+  return `${d.toLocaleDateString("nb-NO", { day: "2-digit", month: "2-digit", ...OSLO })} · ${d.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit", ...OSLO })}`;
+}
+
+function filstorrelse(bytes: number | null | undefined): string | null {
+  if (bytes == null || bytes <= 0) return null;
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} kB`;
+  return `${(bytes / (1024 * 1024)).toLocaleString("nb-NO", { maximumFractionDigits: 1 })} MB`;
 }
 
 export function TnSeHvem({ postId }: { postId: string }) {
@@ -99,8 +108,18 @@ export function TnSeHvem({ postId }: { postId: string }) {
   );
 }
 
-function VedleggChip({ fileName, fileType }: { fileName: string; fileType: string | null }) {
-  const type = fileType?.includes("pdf") ? "PDF" : fileType?.includes("image") ? "BILDE" : fileType?.includes("sheet") ? "XLSX" : "FIL";
+function VedleggChip({
+  fileName,
+  fileType,
+  fileSize,
+}: {
+  fileName: string;
+  fileType: string | null;
+  fileSize?: number | null;
+}) {
+  const type = fileType?.includes("pdf") ? "PDF" : fileType?.includes("image") ? "JPG" : fileType?.includes("sheet") ? "XLSX" : "FIL";
+  const pdf = type === "PDF";
+  const storrelse = filstorrelse(fileSize);
   return (
     <div
       style={{
@@ -110,6 +129,7 @@ function VedleggChip({ fileName, fileType }: { fileName: string; fileType: strin
         border: `1px solid ${TN.borderSubtle}`,
         borderRadius: TN.radius.md,
         padding: "8px 14px 8px 8px",
+        minWidth: 210,
         background: TN.surfacePage,
       }}
     >
@@ -118,8 +138,8 @@ function VedleggChip({ fileName, fileType }: { fileName: string; fileType: strin
           width: 30,
           height: 30,
           borderRadius: TN.radius.xs,
-          background: TN.ink100,
-          color: TN.ink700,
+          background: pdf ? TN.status.redBg : type === "JPG" ? TN.navy50 : TN.ink100,
+          color: pdf ? TN.status.redText : type === "JPG" ? TN.navy700 : TN.ink700,
           fontFamily: TN.font.mono,
           fontSize: TN.text.micro,
           fontWeight: TN.weight.bold,
@@ -131,9 +151,26 @@ function VedleggChip({ fileName, fileType }: { fileName: string; fileType: strin
       >
         {type}
       </span>
-      <span style={{ fontFamily: TN.font.body, fontSize: TN.text.sm, color: TN.navy900, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-        {fileName}
-      </span>
+      <div style={{ minWidth: 0 }}>
+        <div
+          style={{
+            fontFamily: TN.font.body,
+            fontSize: TN.text.sm,
+            fontWeight: TN.weight.medium,
+            color: TN.navy900,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
+          {fileName}
+        </div>
+        {storrelse && (
+          <div style={{ fontFamily: TN.font.mono, fontSize: TN.text.micro, color: TN.textTertiary, marginTop: 1 }}>
+            {storrelse}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -149,10 +186,22 @@ function MarkerLestVedVisning({ postId }: { postId: string }) {
 export function TnPostTidslinje({
   poster,
   kvitterVedVisning = false,
+  visSeHvem = true,
+  tilLinje,
+  tomTittel,
+  tomTekst,
+  tomMeta,
 }: {
   poster: TnTidslinjePost[];
   /** true for spiller/foresatt-visning — false for trenerens egen visning (skal ikke kvittere egne poster). */
   kvitterVedVisning?: boolean;
+  /** TILGANGSMATRISE TN-09: spiller ser brøken, ikke hvem som mangler. */
+  visSeHvem?: boolean;
+  /** F.eks. «TIL: HELE GRUPPEN» på gruppeposter. */
+  tilLinje?: string;
+  tomTittel?: string;
+  tomTekst?: string;
+  tomMeta?: string;
 }) {
   if (poster.length === 0) {
     return (
@@ -161,13 +210,33 @@ export function TnPostTidslinje({
           background: TN.surfaceCard,
           borderRadius: TN.radius.lg,
           boxShadow: TN.shadow.sm,
-          padding: 24,
+          padding: 20,
+          display: "flex",
+          flexDirection: "column",
+          gap: 12,
           fontFamily: TN.font.body,
-          fontSize: TN.text.sm,
-          color: TN.textSecondary,
         }}
       >
-        Ingen poster ennå.
+        <div
+          style={{
+            fontSize: TN.text.h3,
+            fontWeight: TN.weight.bold,
+            color: TN.navy900,
+            letterSpacing: TN.tracking.heading,
+            lineHeight: TN.leading.snug,
+          }}
+        >
+          {tomTittel ?? "Ingen poster ennå"}
+        </div>
+        {tomTekst && (
+          <div style={{ fontSize: TN.text.sm, color: TN.textPrimary, lineHeight: TN.leading.normal }}>{tomTekst}</div>
+        )}
+        {tomMeta && (
+          <div style={{ fontSize: TN.text.xs, color: TN.textSecondary, lineHeight: TN.leading.normal }}>{tomMeta}</div>
+        )}
+        {!tomTekst && !tomMeta && (
+          <div style={{ fontSize: TN.text.sm, color: TN.textSecondary }}>Ingen poster ennå.</div>
+        )}
       </div>
     );
   }
@@ -207,6 +276,7 @@ export function TnPostTidslinje({
                   }}
                 >
                   {formatterTid(p.createdAtIso)}
+                  {tilLinje ? ` · ${tilLinje}` : ""}
                 </div>
               </div>
               <TnPille tone={merke.tone}>{merke.label}</TnPille>
@@ -221,7 +291,7 @@ export function TnPostTidslinje({
             {p.vedlegg.length > 0 && (
               <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
                 {p.vedlegg.map((v) => (
-                  <VedleggChip key={v.id} fileName={v.fileName} fileType={v.fileType} />
+                  <VedleggChip key={v.id} fileName={v.fileName} fileType={v.fileType} fileSize={v.fileSize} />
                 ))}
               </div>
             )}
@@ -247,7 +317,7 @@ export function TnPostTidslinje({
                 <span style={{ fontFamily: TN.font.body, fontSize: TN.text.xs, color: TN.textSecondary }}>
                   {p.kvittering.apnet} av {p.kvittering.totalt} har åpnet
                 </span>
-                <TnSeHvem postId={p.id} />
+                {visSeHvem && <TnSeHvem postId={p.id} />}
               </div>
             )}
           </div>
