@@ -62,7 +62,7 @@ Den blokken er fasit for Innsikt og Analyse og vinner over eldre dokumenter.
   `hentEffektivNaa()`, ikke en layout-feil). D2 Workbench-kanon (WB-serien) → Ø9–Ø10 gjort
   (#762, #764). D3 Spiller 360 = én adresse `/admin/spillere/[id]` → Ø11–Ø12 gjort (#766,
   bento-landing med identitet/nøkkeltall/ukeaktivitet/plan-fremdrift/«Nå»-kort — skjermbilde
-  med ekte data mangler fortsatt, ingen spillere i stallen ved byggetidspunktet). D4 TM-03
+  med ekte data tatt 05.09, PR #787, rigg S3-03a/b kalibrert; registrert i beslutninger.md, fase 1 økt 8). D4 TM-03
   (behold 4-stegs-modalen) → tredje importkilde levert (#768): «Foto av skjerm» sender bildet
   til Claude vision (`parseTrackManPhoto`, TruthLayer-strengt — null ved usikkerhet), gjenbruker
   resten av import-flyten uendret.
@@ -85,8 +85,8 @@ Den blokken er fasit for Innsikt og Analyse og vinner over eldre dokumenter.
 
 - **Veien til «FULL lanserbar» (STEG 1B, milepæl 24.09) ligger FORAN skjema:** Ø1 (delvis),
   Ø3, Ø4–Ø8 (PR #750), Ø9 (PR #751) og Ø10 (docs, PR #754) er levert 02.09 — datert til
-  8.–16.09. Gjenstår i F0/F1/F2: Ø2 (ekte kjøp fre 04.09, Anders), Ø11–Ø13 (Spiller 360,
-  venter på D3-canvas-ja 17.09), Ø14–Ø15 (Stall/Kommunikasjon sign-off), Ø16 (røyktest).
+  8.–16.09. Gjenstår i F0/F1/F2: Ø2 (ekte kjøp fre 04.09, Anders), Ø13 (Spiller 360
+  arbeidsvisning, PR #771 draft; Ø11–Ø12 gjort #766), Ø14–Ø15 (Stall/Kommunikasjon sign-off), Ø16 (røyktest).
 - **Betaling (Ø1, målt i prod 02.09):** Stripe står i LIVE. `STRIPE_PRICE_ID_PRO_AAR` mangler
   fortsatt i Vercel production → årsplanen gir 500. Innebygd Stripe Elements-kortskjema (PR #745)
   er verifisert isolert, ikke gjennom innlogget flyt (0 aktive abonnement etter nullstillingen).
@@ -195,8 +195,7 @@ Den blokken er fasit for Innsikt og Analyse og vinner over eldre dokumenter.
    → TALENT → refusjon. Deretter: godkjenn ny milepæl 11.09 (beslutningskø 29) og hva som skjer
    med 19.6-sweepen i hovedmappa (beslutningskø 30). Panel: DNS `akgolf.no`, Resend DKIM.
 2. **Agent, tir 09.09:** PR #771 (Ø13) ferdig og merget · 19.6-sweep-redning fra hovedmappa (19.7 levert 07.09, PR #801).
-3. **Agent, ons 10.09:** skjermbilde S3-03 med ekte data + etterkontroll-skjermbilder på
-   15.4/15.5/15.6/15.8/15.9.
+3. ~~**Agent, ons 10.09:** skjermbilde S3-03 med ekte data + etterkontroll-skjermbilder på 15.4/15.5/15.6/15.8/15.9.~~ **LEVERT 05.09 (PR #787, A0 — `docs/design-audit/2026-09-05/skjermbilde-gate-a0/`).**
 4. **Anders, tor 11.09:** Ø16 røyk-test → **FULL lanserbar**. Uka etter: WANG/GFGK-onboarding (7.2).
 5. **Parallelt fra man 08.09:** markedssidene én per økt (spor B i 2.13). Fra man 14.09:
    produktskjermene Ø19–Ø26 (spor A). Fra 24.09: STEG 19-auditen (spor C).
