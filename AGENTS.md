@@ -31,6 +31,9 @@ Marketing (`/` og `/(marketing)`) har egen fasit og får beholde Paper-katalogen
 # Enkelhet (LÅST 2026-07-21)
 Behold alle funksjoner, men minst mulig trykk og super enkelt UI. Vanskelig å forstå = feil design. Se `docs/platform/BUSINESS-RULES.md`.
 
+# Vendor-agenter
+Eksterne agentkataloger (f.eks. `msitarzewski/agency-agents`) er gjester i editoren — installert til `~/.claude/agents/` på egen maskin, aldri kopiert inn i repoet og aldri AgenticOS-runtime. Reglene for hva som kan absorberes og hvem som vinner ved konflikt står i `CLAUDE.md` invariant 3.
+
 ## Cursor Cloud specific instructions
 
 Standard-kommandoene (dev/build/lint/test/verify) står i `CLAUDE.md` → «Kommandoer». Under er kun det som er ikke-åpenbart for å kjøre appen i Cursor Cloud-VM-en (ingen hostet Supabase / ingen secrets).
