@@ -187,7 +187,6 @@ enum NgfKategori {
   I
   J
   K
-  L
 }
 
 enum SubscriptionStatus {

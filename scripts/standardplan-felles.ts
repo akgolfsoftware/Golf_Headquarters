@@ -15,7 +15,7 @@ import {
   type SkjelettOkt,
 } from "../src/lib/plan-engine/standard-fordeling";
 
-export const KATEGORIER: NgfKategori[] = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"];
+export const KATEGORIER: NgfKategori[] = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"];
 export const FASER: LPhase[] = ["GRUNN", "SPESIAL", "TURNERING"];
 export const SKILL_AREAS = ["TEE_TOTAL", "TILNAERMING", "AROUND_GREEN", "PUTTING", "SPILL"] as const;
 export const ENVIRONMENTS = ["RANGE", "BANE", "STUDIO", "HJEM", "SIMULATOR", "GYM"] as const;

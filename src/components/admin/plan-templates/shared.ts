@@ -39,11 +39,12 @@ export const KATEGORI_ALLE: NgfKategori[] = [
   "I",
   "J",
   "K",
-  "L",
 ];
 
-// Primær-rad i 5x3-grid — Anders sin hovedakse
-export const KATEGORI_PRIMARY: NgfKategori[] = ["B", "E", "H", "K", "L"];
+// Primær-rad i grid — Anders sin hovedakse. Var 5 (B,E,H,K,L) — L fjernet 08.09.2026
+// (kategori L finnes ikke lenger, se AUDIT-DOCS-2026-09-08.md). Spør Anders om
+// grid-oppsettet skal ha en 4. eller 5. rad før dette låses videre.
+export const KATEGORI_PRIMARY: NgfKategori[] = ["B", "E", "H", "K"];
 
 export const FASE_ALLE: LPhase[] = ["GRUNN", "SPESIAL", "TURNERING", "TESTUKE", "FERIE", "TRENINGSSAMLING", "HELDAGSSAMLING"];
 
@@ -69,7 +70,6 @@ export const KATEGORI_LABEL: Record<NgfKategori, string> = {
   I: "I — HCP 9-12",
   J: "J — HCP 12-15",
   K: "K — HCP 15-25",
-  L: "L — Junior klubb",
 };
 
 // PYR_COLOR (rå hex-fallbacks) er fjernet 2026-07-17 (Team F1, v2-port):
@@ -115,7 +115,6 @@ export const ANBEFALT_FORDELING_PER_KATEGORI: Record<NgfKategori, DisciplinForde
   I: { FYS: 0.10, TEK: 0.35, SLAG: 0.25, SPILL: 0.20, TURN: 0.10 },
   J: { FYS: 0.10, TEK: 0.38, SLAG: 0.22, SPILL: 0.20, TURN: 0.10 },
   K: { FYS: 0.10, TEK: 0.40, SLAG: 0.20, SPILL: 0.20, TURN: 0.10 },
-  L: { FYS: 0.10, TEK: 0.45, SLAG: 0.15, SPILL: 0.25, TURN: 0.05 },
 };
 
 export function readFordeling(value: unknown): DisciplinFordeling {

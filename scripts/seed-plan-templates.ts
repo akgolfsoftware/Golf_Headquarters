@@ -81,7 +81,7 @@ async function main() {
         data: {
           name: navn,
           description: `${FASE_BESKRIVELSE[fase]} Pyramid-standard for kategori ${kat}.`,
-          kategori: kat as "A"|"B"|"C"|"D"|"E"|"F"|"G"|"H"|"I"|"J"|"K"|"L",
+          kategori: kat as "A"|"B"|"C"|"D"|"E"|"F"|"G"|"H"|"I"|"J"|"K",
           lPhase: fase as "GRUNN"|"SPESIAL"|"TURNERING",
           varighetUker: 4,
           ukentligOktAntall: OKT_ANTALL[kat][fase],

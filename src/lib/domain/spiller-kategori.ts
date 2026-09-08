@@ -15,7 +15,7 @@ import {
 } from "@/lib/domain/ak-kategori";
 import { avgScoreFromHcp } from "@/lib/stats/sg-estimator";
 
-/** A (best) → K (nybegynner). L finnes ikke i A–K — mappes til K. */
+/** A (best) → K (nybegynner). */
 export const AK_KATEGORI_ORDER: readonly AkKategori[] = [
   "A",
   "B",
@@ -34,10 +34,9 @@ export function akKategoriIdx(k: AkKategori): number {
   return AK_KATEGORI_ORDER.indexOf(k);
 }
 
-/** Prisma enum → A–K (L dødt → K). */
+/** Prisma enum → A–K. */
 export function ngfKategoriTilAk(k: NgfKategori | null): AkKategori | null {
   if (!k) return null;
-  if (k === "L") return "K";
   return k as AkKategori;
 }
 
@@ -60,7 +59,7 @@ export async function hentSesongSnittscore(userId: string): Promise<number | nul
 
 /**
  * Spillerens A–K-kategori for drill-filter og AI-plan.
- * WAGR ngfCategory brukes hvis satt (allerede A–K/L skala), ellers sesong-snittscore,
+ * WAGR ngfCategory brukes hvis satt (allerede A–K-skala), ellers sesong-snittscore,
  * ellers HCP→snittscore-estimat.
  */
 export async function hentSpillerAkKategori(
@@ -68,7 +67,7 @@ export async function hentSpillerAkKategori(
   opts?: { wagrNgfCategory?: string | null; hcp?: number | null },
 ): Promise<AkKategori | null> {
   const fraWagr = opts?.wagrNgfCategory?.trim().toUpperCase();
-  if (fraWagr && /^[A-KL]$/.test(fraWagr)) {
+  if (fraWagr && /^[A-K]$/.test(fraWagr)) {
     return ngfKategoriTilAk(fraWagr as NgfKategori);
   }
 
@@ -107,13 +106,13 @@ export function drillMatcherSpiller(
   return true;
 }
 
-/** Normaliser drill-tags: swap omvendt range, map L→K. */
+/** Normaliser drill-tags: swap omvendt range. */
 export function normaliserDrillKategoriRange(
   minKategori: NgfKategori | null,
   maxKategori: NgfKategori | null,
 ): { minKategori: NgfKategori | null; maxKategori: NgfKategori | null; swapped: boolean } {
-  let min = minKategori === "L" ? ("K" as NgfKategori) : minKategori;
-  let max = maxKategori === "L" ? ("K" as NgfKategori) : maxKategori;
+  let min = minKategori;
+  let max = maxKategori;
   let swapped = false;
 
   const minAk = ngfKategoriTilAk(min);

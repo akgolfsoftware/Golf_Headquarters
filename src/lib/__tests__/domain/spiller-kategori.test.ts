@@ -8,8 +8,8 @@ import {
 } from "@/lib/domain/spiller-kategori";
 
 describe("spiller-kategori", () => {
-  it("ngfKategoriTilAk mapper L til K", () => {
-    assert.equal(ngfKategoriTilAk("L"), "K");
+  it("ngfKategoriTilAk returnerer samme bokstav (A–K)", () => {
+    assert.equal(ngfKategoriTilAk("K"), "K");
     assert.equal(ngfKategoriTilAk("B"), "B");
   });
 

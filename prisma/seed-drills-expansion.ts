@@ -102,10 +102,10 @@ async function main() {
             | "SPILL",
           minKategori: d.minKategori as
             | "A" | "B" | "C" | "D" | "E" | "F"
-            | "G" | "H" | "I" | "J" | "K" | "L",
+            | "G" | "H" | "I" | "J" | "K",
           maxKategori: d.maxKategori as
             | "A" | "B" | "C" | "D" | "E" | "F"
-            | "G" | "H" | "I" | "J" | "K" | "L",
+            | "G" | "H" | "I" | "J" | "K",
           minHcp: d.minHcp,
           maxHcp: d.maxHcp,
           environment: d.environment as ("RANGE" | "BANE" | "STUDIO" | "HJEM" | "SIMULATOR")[],
