@@ -261,4 +261,15 @@ export const SKJERM_MAPPING: SkjermMapping[] = [
     status: "kalibrert",
     notat: "A0/Ø12-rest, målt 05.09.2026 mot prod: 15,15 %. Samme tre årsaker som S3-03a, pluss: fasiten har fire nøkkeltall (Handicap/SG 12 uker/Økter/Snittrunde) og appen tre (SG og snittrunde mangler datagrunnlag for demo-spilleren → utelatt, ikke plassholdertall); fasitens bunn-tabbar er den pensjonerte (Cockpit/Innboks/Stall/Kalender/Mer), appen AX-01.",
   },
+  {
+    label: "PH-17 Meg",
+    rute: "/portal/meg",
+    tema: "dark",
+    cropTop: 54,
+    bruker: "screentest",
+    fasitDato: "2026-08-25",
+    kalibrertAvvikPst: 13.38,
+    status: "kalibrert",
+    notat: "STEG 20.2, batch 2 (09.09.2026): kalibrert mot prod. Ikke sjekket linje for linje mot HANDOFF ennå — restavviket er sannsynligvis screentest-fixturens ekte profil-/måldata (HCP, program, klubb) vs. fasitens eksempeldata, ikke en layoutfeil.",
+  },
 ];

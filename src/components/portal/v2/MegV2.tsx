@@ -20,9 +20,9 @@ import { TL } from "@/lib/v2/train-lock";
  * allerede reelle — å bygge en ny, forenklet variant av dem inline her ville
  * dupliserte tested logikk uten sikkerhetsnett.
  * Avvik:
- *   - ingen riggrad ennå (STEG 20 batch 2, 09.09.2026) — ikke kalibrert mot
- *     kjørende app i denne økten (worktree uten .env.local/DB-tilgang, se
- *     .claude/rules/gotchas.md §Aldri kopier .env* inn i en worktree).
+ *   - Kalibrert 09.09.2026 mot prod: 13,38 % restavvik. Ikke sjekket linje for
+ *     linje mot HANDOFF ennå — sannsynligvis screentest-fixturens ekte
+ *     profil-/måldata vs. fasitens eksempeldata, ikke en layoutfeil.
  */
 
 import { useRef, useState, useTransition } from "react";
