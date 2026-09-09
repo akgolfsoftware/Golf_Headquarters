@@ -51,7 +51,7 @@ export function TnKort({
 
 // ───────────────────────── Pille (status/merke) ─────────────────────────
 
-export type TnPilleTone = "navy" | "green" | "amber" | "red" | "info" | "nøytral";
+export type TnPilleTone = "navy" | "green" | "amber" | "red" | "info" | "nøytral" | "invers";
 
 const PILLE_TONE: Record<TnPilleTone, { bg: string; fg: string }> = {
   navy: { bg: TN.navy50, fg: TN.navy700 },
@@ -60,6 +60,7 @@ const PILLE_TONE: Record<TnPilleTone, { bg: string; fg: string }> = {
   red: { bg: TN.status.redBg, fg: TN.status.redText },
   info: { bg: TN.status.infoBg, fg: TN.status.infoText },
   nøytral: { bg: TN.ink100, fg: TN.ink700 },
+  invers: { bg: TN.navy900, fg: TN.white },
 };
 
 export function TnPille({ children, tone = "nøytral" }: { children: ReactNode; tone?: TnPilleTone }) {

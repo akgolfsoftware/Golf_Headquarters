@@ -12,7 +12,16 @@ import "server-only";
 
 import { prisma } from "@/lib/prisma";
 import { aktivtMedlemskapWhere, aktivtSpillerMedlemskapWhere, aktivtTrenerMedlemskapWhere } from "@/lib/domain/grupper";
-import { beregnLesekvittering, kanSeGruppepost, kanSeSpillerpost, type TnPostKind } from "@/lib/domain/tn-post-regler";
+import {
+  beregnLesekvittering,
+  erMindrearigIAr,
+  fodselsarOslo,
+  gruppeflateVisningsnavn,
+  kanSeGruppepost,
+  kanSeSpillerpost,
+  osloKalenderar,
+  type TnPostKind,
+} from "@/lib/domain/tn-post-regler";
 
 async function erAktivtMedlem(groupId: string, userId: string): Promise<boolean> {
   const rad = await prisma.groupMember.findFirst({
@@ -236,6 +245,81 @@ export async function hentGruppetidslinje(groupId: string, viewerId: string): Pr
   }));
 }
 
+export type TnGruppepostMangler = { userId: string; visningsnavn: string; rolleEtikett: string };
+
+export type TnGruppepostSide = {
+  gruppeNavn: string;
+  opprettet: Date;
+  rolle: Exclude<TnViewerRolle, null>;
+  utovere: number;
+  trenere: number;
+  under18: number;
+  foresatte: number;
+  tidslinje: TnPostMedKvittering[];
+  /** Tom hvis viewer ikke er trener, eller siste post er åpnet av alle. */
+  sistePostMangler: TnGruppepostMangler[];
+};
+
+/** Samlet oppslag for TN-09 — én IDOR-port, deretter tellere til header/skinne. */
+export async function hentGruppepostSide(groupId: string, viewerId: string): Promise<TnGruppepostSide | null> {
+  const rolle = await hentViewerRolleIGruppe(groupId, viewerId);
+  if (!rolle) return null;
+  const tidslinje = await hentGruppetidslinje(groupId, viewerId);
+  if (!tidslinje) return null;
+
+  const [gruppe, medlemmer] = await Promise.all([
+    prisma.group.findUnique({ where: { id: groupId }, select: { name: true, createdAt: true } }),
+    prisma.groupMember.findMany({
+      where: { groupId, ...aktivtMedlemskapWhere() },
+      select: { role: true, user: { select: { id: true, name: true, dateOfBirth: true } } },
+    }),
+  ]);
+  if (!gruppe) return null;
+
+  const spillere = medlemmer.filter((m) => m.role === "PLAYER");
+  const trenere = medlemmer.filter((m) => m.role === "COACH" || m.role === "ASSISTANT");
+  const iAr = osloKalenderar();
+  const under18 = spillere.filter((s) => erMindrearigIAr(fodselsarOslo(s.user.dateOfBirth), iAr)).length;
+
+  const spillerIder = spillere.map((s) => s.user.id);
+  const foresatteUnike =
+    spillerIder.length === 0
+      ? []
+      : await prisma.parentRelation.findMany({
+          where: { childId: { in: spillerIder }, approved: true },
+          select: { parentId: true },
+          distinct: ["parentId"],
+        });
+
+  let sistePostMangler: TnGruppepostMangler[] = [];
+  const manglerIder = rolle === "TRENER" ? (tidslinje[0]?.kvittering?.manglerIder ?? []) : [];
+  if (manglerIder.length > 0) {
+    const visning = new Map(
+      spillere.map((s) => [
+        s.user.id,
+        gruppeflateVisningsnavn(s.user.name ?? "Ukjent", fodselsarOslo(s.user.dateOfBirth), iAr),
+      ]),
+    );
+    sistePostMangler = manglerIder.map((id) => ({
+      userId: id,
+      visningsnavn: visning.get(id) ?? "Ukjent",
+      rolleEtikett: "Utøver",
+    }));
+  }
+
+  return {
+    gruppeNavn: gruppe.name,
+    opprettet: gruppe.createdAt,
+    rolle,
+    utovere: spillere.length,
+    trenere: trenere.length,
+    under18,
+    foresatte: foresatteUnike.length,
+    tidslinje,
+    sistePostMangler,
+  };
+}
+
 /**
  * 1:1-tidslinjen til en spiller — null hvis viewer verken er spilleren selv,
  * en godkjent foresatt, eller en trener med tilknytning til spilleren
@@ -287,12 +371,24 @@ export async function merkPostLest(postId: string, userId: string): Promise<void
 export async function hentLesekvitteringNavn(
   postId: string,
   mottakerIder: readonly string[],
+  opts?: { kortNavnForMindrearige?: boolean },
 ): Promise<{ apnet: { userId: string; navn: string; readAt: Date }[]; mangler: { userId: string; navn: string }[] }> {
   const [kvitteringer, brukere] = await Promise.all([
     prisma.tnPostLesekvittering.findMany({ where: { postId }, select: { userId: true, readAt: true } }),
-    prisma.user.findMany({ where: { id: { in: [...mottakerIder] } }, select: { id: true, name: true } }),
+    prisma.user.findMany({
+      where: { id: { in: [...mottakerIder] } },
+      select: { id: true, name: true, dateOfBirth: true },
+    }),
   ]);
-  const navnPerId = new Map(brukere.map((b) => [b.id, b.name ?? "Ukjent"]));
+  const iAr = osloKalenderar();
+  const navnPerId = new Map(
+    brukere.map((b) => [
+      b.id,
+      opts?.kortNavnForMindrearige
+        ? gruppeflateVisningsnavn(b.name ?? "Ukjent", fodselsarOslo(b.dateOfBirth), iAr)
+        : (b.name ?? "Ukjent"),
+    ]),
+  );
   const lestPerId = new Map(kvitteringer.map((k) => [k.userId, k.readAt]));
 
   const apnet = [...lestPerId.entries()]
@@ -324,10 +420,10 @@ export async function hentPostLesekvitteringNavnForViewer(
   if (!post) return null;
 
   if (post.groupId) {
-    const erMedlem = await erAktivtMedlem(post.groupId, viewerId);
-    if (!kanSeGruppepost(erMedlem)) return null;
+    const rolle = await hentViewerRolleIGruppe(post.groupId, viewerId);
+    if (rolle !== "TRENER") return null;
     const mottakerIder = await gruppensSpillerIder(post.groupId);
-    return hentLesekvitteringNavn(postId, mottakerIder);
+    return hentLesekvitteringNavn(postId, mottakerIder, { kortNavnForMindrearige: true });
   }
 
   if (post.mottakerUserId) {
