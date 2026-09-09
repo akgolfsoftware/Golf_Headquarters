@@ -19,6 +19,10 @@ import { TL } from "@/lib/v2/train-lock";
  * i /portal/meg/innstillinger/personvern og /portal/meg/abonnement og er
  * allerede reelle — å bygge en ny, forenklet variant av dem inline her ville
  * dupliserte tested logikk uten sikkerhetsnett.
+ * Avvik:
+ *   - ingen riggrad ennå (STEG 20 batch 2, 09.09.2026) — ikke kalibrert mot
+ *     kjørende app i denne økten (worktree uten .env.local/DB-tilgang, se
+ *     .claude/rules/gotchas.md §Aldri kopier .env* inn i en worktree).
  */
 
 import { useRef, useState, useTransition } from "react";
