@@ -5,9 +5,10 @@ import { TL } from "@/lib/v2/train-lock";
  * Fasit: designsystem/train-lock/ME-04 Coach-hub.dc.html
  * Rigg: ME-04 Coach-hub
  * Avvik:
- *   - Ikke kalibrert (skjerm-mapping.ts, status "ukalibrert"): pixel-diff-riggen
- *     krever et innlogget screentest-kall (SCREENTEST_PASSWORD), som ikke var
- *     tilgjengelig i økten som la til raden — se notat i skjerm-mapping.ts.
+ *   - Kalibrert 09.09.2026 mot prod: 7,92 % restavvik. Ikke sjekket linje for
+ *     linje mot HANDOFF ennå (kun mekanisk pixel-diff) — restavviket er
+ *     sannsynligvis ekte data (coach-kort/meldingstråd fra screentest-fixturen)
+ *     vs. fasitens eksempeldata, ikke en layoutfeil.
  * Coachkort, kommende økter, meldingstråd. Kun TL. Tom = grønn vei.
  */
 

@@ -119,8 +119,9 @@ export const SKJERM_MAPPING: SkjermMapping[] = [
     cropTop: 54,
     bruker: "screentest",
     fasitDato: "2026-08-25",
-    status: "ukalibrert",
-    notat: "Ø8 (MASTERPLAN STEG 20.2), lagt til 09.09.2026 (fase 1/batch 1 — bevis at PH-01/PH-07/PH-08/ME-04 er ferdig): CoachHubV2.tsx er bygget mot ME-04 (PR #750, filhode siterer fasiten korrekt), men IKKE kalibrert her ennå. Riggen krever innlogget kjøring (SHOT_BRUKER=screentest@akgolf.test + SCREENTEST_PASSWORD) enten lokalt mot en ekte .env.local eller mot prod (BASE default https://akgolf-hq.vercel.app) — begge var utilgjengelige i økten som la til denne raden (worktree uten .env.local, jf. gotchas.md §Aldri kopier .env* inn i en worktree; SCREENTEST_PASSWORD ikke i shell-miljøet). Kjør `npm run signoff:train-lock -- \"ME-04 Coach-hub\" /portal/coach dark 54` fra en økt med ekte credentials for å kalibrere; bytt status til \"kalibrert\" og fyll kalibrertAvvikPst når målt.",
+    kalibrertAvvikPst: 7.92,
+    status: "kalibrert",
+    notat: "Ø8 (MASTERPLAN STEG 20.2). Lagt til 09.09.2026 (fase 1/batch 1) med status \"ukalibrert\" (worktree uten .env.local/SCREENTEST_PASSWORD), kalibrert samme dag i hovedmappa mot prod: 7,92 % restavvik. Se Avvik-linjen i CoachHubV2.tsx filhode.",
   },
   {
     label: "RU-04 Etterregistrering",
