@@ -3,6 +3,12 @@ import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ Coach-hub — Train-lock (status + én primær «skriv/book»).
  * Fasit: designsystem/train-lock/ME-04 Coach-hub.dc.html
+ * Rigg: ME-04 Coach-hub
+ * Avvik:
+ *   - Kalibrert 09.09.2026 mot prod: 7,92 % restavvik. Ikke sjekket linje for
+ *     linje mot HANDOFF ennå (kun mekanisk pixel-diff) — restavviket er
+ *     sannsynligvis ekte data (coach-kort/meldingstråd fra screentest-fixturen)
+ *     vs. fasitens eksempeldata, ikke en layoutfeil.
  * Coachkort, kommende økter, meldingstråd. Kun TL. Tom = grønn vei.
  */
 

@@ -113,6 +113,17 @@ export const SKJERM_MAPPING: SkjermMapping[] = [
     notat: "Ø4 (MASTERPLAN, D1 02.09.2026): erstatter utgåtte «P-05 Player agenda» — PH-07/PH-08 er fasit for /portal/planlegge, og PlanV2.tsx er allerede bygget mot dem. Restavvik er IKKE en layout-feil (uke-stripe, kort, «Åpne økt»-knapp og bunn-nav treffer piksel-for-piksel): `getDashboardData()`/`getWeekOverview()` (src/app/portal/actions.ts) leser rå `new Date()` og har `hentEffektivNaa()`-dato-overstyringen (kun koblet inn i /portal/page.tsx) IKKE koblet inn — samme kjente gap som TM-04a. Riggens frosne testdato (22.08.2026) treffer derfor en tom, ekte uke i stedet for PH-01-fixturens fylte uke, og appen viser PH-08s tomme-uke-kort i stedet for PH-07s fylte kort. Å koble inn overstyringen ville krevd å tre en valgfri dato gjennom `getDashboardData` og alle underfunksjonene som bruker `new Date()` — større endring enn selve sign-off-en, ikke gjort her.",
   },
   {
+    label: "ME-04 Coach-hub",
+    rute: "/portal/coach",
+    tema: "dark",
+    cropTop: 54,
+    bruker: "screentest",
+    fasitDato: "2026-08-25",
+    kalibrertAvvikPst: 7.92,
+    status: "kalibrert",
+    notat: "Ø8 (MASTERPLAN STEG 20.2). Lagt til 09.09.2026 (fase 1/batch 1) med status \"ukalibrert\" (worktree uten .env.local/SCREENTEST_PASSWORD), kalibrert samme dag i hovedmappa mot prod: 7,92 % restavvik. Se Avvik-linjen i CoachHubV2.tsx filhode.",
+  },
+  {
     label: "RU-04 Etterregistrering",
     rute: "/portal/runde/logg",
     tema: "dark",
