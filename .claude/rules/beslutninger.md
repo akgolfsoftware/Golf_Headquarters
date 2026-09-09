@@ -28,6 +28,21 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
 
 ## Beslutningene (september 2026)
 
+- **PH-05/PH-06 OG RESTEN AV STEG 20.2 UTSETTES TIL EGEN CLAUDE DESIGN-ØKT (Anders 09.09.2026,
+  i økt):** batch 3 (PR #831) fant at PH-05 «Live» og PH-06 «Live ferdig» har STRUKTURELLE avvik
+  mot fasiten, ikke bare piksel-småting — appen viser sjekkliste-først (LiveLoopNav +
+  modusveksler), fasiten tegner et «Nå»-kort med Treff/Kant/Bom; PH-06 viser en
+  Gjennomført-tabell + «Plan mot gjort» + selvvurdering, fasiten har tre kort og «Lukk». I
+  stedet for å avgjøre inline om appen skal re-portes eller fasiten tegnes om, tar Anders dette
+  i en egen Claude Design-økt. **Samme utsettelse gjelder resten av STEG 20.2-batch 4-listen**
+  (PH-09, PH-19, B3, KA-04, ME-03, auth/PH-19-røyk) — ingen av disse startes før Claude
+  Design-runden er kjørt, jf. §TEGN SKJERMEN FØR DU BYGGER DEN (30.08.2026), som allerede sier
+  at en skjerm med usikker/manglende fasit skal tegnes/bekreftes i Claude Design før koding.
+  **PR #831 berøres ikke** — den dokumenterer avviket (riggrad + avviksliste, `npm run verify`
+  grønt), løser det ikke, og kan merges som planlagt uansett utfallet av Claude Design-runden.
+  **Krever ingen kodeendring av selve beslutningen** — den stopper videre STEG 20.2-bygging
+  inntil Anders har kjørt Claude Design-økten.
+
 - **CLAW OG WANG-SPEIL 08.09 ER FASIT FOR SINE FLATER (Anders 08.09.2026, i økt):** to zip-er
   i Nedlastinger (22:03 / 22:05) er designfasiten fra nå for `/team-norway/*` (Claw) og
   `/team-wang` (WANG-merket). Destinasjon: `designsystem/team-norway/` og
