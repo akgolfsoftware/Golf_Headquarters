@@ -113,6 +113,16 @@ export const SKJERM_MAPPING: SkjermMapping[] = [
     notat: "Ø4 (MASTERPLAN, D1 02.09.2026): erstatter utgåtte «P-05 Player agenda» — PH-07/PH-08 er fasit for /portal/planlegge, og PlanV2.tsx er allerede bygget mot dem. Restavvik er IKKE en layout-feil (uke-stripe, kort, «Åpne økt»-knapp og bunn-nav treffer piksel-for-piksel): `getDashboardData()`/`getWeekOverview()` (src/app/portal/actions.ts) leser rå `new Date()` og har `hentEffektivNaa()`-dato-overstyringen (kun koblet inn i /portal/page.tsx) IKKE koblet inn — samme kjente gap som TM-04a. Riggens frosne testdato (22.08.2026) treffer derfor en tom, ekte uke i stedet for PH-01-fixturens fylte uke, og appen viser PH-08s tomme-uke-kort i stedet for PH-07s fylte kort. Å koble inn overstyringen ville krevd å tre en valgfri dato gjennom `getDashboardData` og alle underfunksjonene som bruker `new Date()` — større endring enn selve sign-off-en, ikke gjort her.",
   },
   {
+    label: "ME-04 Coach-hub",
+    rute: "/portal/coach",
+    tema: "dark",
+    cropTop: 54,
+    bruker: "screentest",
+    fasitDato: "2026-08-25",
+    status: "ukalibrert",
+    notat: "Ø8 (MASTERPLAN STEG 20.2), lagt til 09.09.2026 (fase 1/batch 1 — bevis at PH-01/PH-07/PH-08/ME-04 er ferdig): CoachHubV2.tsx er bygget mot ME-04 (PR #750, filhode siterer fasiten korrekt), men IKKE kalibrert her ennå. Riggen krever innlogget kjøring (SHOT_BRUKER=screentest@akgolf.test + SCREENTEST_PASSWORD) enten lokalt mot en ekte .env.local eller mot prod (BASE default https://akgolf-hq.vercel.app) — begge var utilgjengelige i økten som la til denne raden (worktree uten .env.local, jf. gotchas.md §Aldri kopier .env* inn i en worktree; SCREENTEST_PASSWORD ikke i shell-miljøet). Kjør `npm run signoff:train-lock -- \"ME-04 Coach-hub\" /portal/coach dark 54` fra en økt med ekte credentials for å kalibrere; bytt status til \"kalibrert\" og fyll kalibrertAvvikPst når målt.",
+  },
+  {
     label: "RU-04 Etterregistrering",
     rute: "/portal/runde/logg",
     tema: "dark",

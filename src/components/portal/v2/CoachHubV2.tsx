@@ -3,6 +3,11 @@ import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ Coach-hub — Train-lock (status + én primær «skriv/book»).
  * Fasit: designsystem/train-lock/ME-04 Coach-hub.dc.html
+ * Rigg: ME-04 Coach-hub
+ * Avvik:
+ *   - Ikke kalibrert (skjerm-mapping.ts, status "ukalibrert"): pixel-diff-riggen
+ *     krever et innlogget screentest-kall (SCREENTEST_PASSWORD), som ikke var
+ *     tilgjengelig i økten som la til raden — se notat i skjerm-mapping.ts.
  * Coachkort, kommende økter, meldingstråd. Kun TL. Tom = grønn vei.
  */
 
