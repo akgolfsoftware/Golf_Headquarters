@@ -28,6 +28,26 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
 
 ## Beslutningene (september 2026)
 
+- **COACH-MENYEN: PROTOTYPEN VINNER — AX-01 REVERSERES (Anders 09.09.2026, i økt):** svar på
+  beslutningskø punkt 32. Valget sto mellom AX-01 (`AX-01 Skall rail og tabbar.dc.html`, låst
+  25.08.2026 — Stall · Workbench · Kø · Jarvis · Meg, 232px Mac-rail med tekst) og prototypen
+  fra Claude Design 02.09.2026 (`designsystem/train-lock/referanse/PROTOTYPE-PLAN-2026-09-02.md`
+  + `proto-handoff-batch-1-4-2026-09-02.md` — Cockpit · Innboks · Stall · Kalender · Workbench
+  + Mer-ark, 72px rail). Anders valgte **prototypen**.
+  **[SUPERSEDERT 09.09.2026 — se dette punktet] A1 · Admin-rail = AX-01** (§Beslutningsgaten
+  PP-A, 16.08/25.08.2026, lenger ned i denne fila) — AX-01 er ikke lenger fasit for
+  admin-railen. Prototypen fra 02.09 er ny fasit for coach-menyen/railen i AgencyOS.
+  **Konsekvens — reverserer levert arbeid, ikke bare en fremtidig fase:** STEG 15.1 (Kø),
+  15.4 (Kalender), 15.7 (Kommunikasjon) og 15.10 (Hjem) i `docs/MASTERPLAN-GJENSTAAENDE.md`
+  ble alle bygget og merget mot AX-01s fem-fane-struktur (`AGENCYOS_SKALL_TABS` i
+  `src/lib/agencyos/skall-ia.ts`: Stall/Workbench/Kø/Jarvis/Meg). Disse må bygges om mot
+  prototypens seks-destinasjoners struktur (Cockpit/Innboks/Stall/Kalender/Workbench +
+  Mer-ark) — se ny STEG 21 i MASTERPLAN.
+  **Ikke rørt av denne beslutningen:** Train-lock som fasit for selve INNHOLDET i hver
+  skjerm (CLAUDE.md invariant 2 står) — dette gjelder kun skallet/navigasjonen rundt
+  innholdet. PlayerHQ (`PLAYERHQ_NAV`), Team Norway (Claw) og WANG (eget system) er upåvirket.
+  **Krever kodeendring — se STEG 21.** Beslutningskø punkt 32 er lukket.
+
 - **PH-05/PH-06 OG RESTEN AV STEG 20.2 UTSETTES TIL EGEN CLAUDE DESIGN-ØKT (Anders 09.09.2026,
   i økt):** batch 3 (PR #831) fant at PH-05 «Live» og PH-06 «Live ferdig» har STRUKTURELLE avvik
   mot fasiten, ikke bare piksel-småting — appen viser sjekkliste-først (LiveLoopNav +
@@ -956,7 +976,8 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
   `PYRAMIDE_OMRADE_MOTORIKK_BELASTNING_PRESS` med motorikk UTEN_BALL/LAV_HAST/AUTO og press
   ALENE/OBSERVERT/KONKURRANSE/TURNERING.
 - **Beslutningsgaten PP-A besvart (Anders 2026-08-16, i økt — låser pixel-portens systemfikser):**
-  - **A1 · Admin-rail = FASE2-railen.** ⚠ **HELT OVERSTYRT 25.08.2026 (kveld):** railen
+  - **A1 · Admin-rail = FASE2-railen.** [SUPERSEDERT 09.09.2026 — se §COACH-MENYEN: PROTOTYPEN
+    VINNER — AX-01 REVERSERES øverst i denne fila] ⚠ **HELT OVERSTYRT 25.08.2026 (kveld):** railen
     følger nå **`AX-01 Skall rail og tabbar.dc.html`** i Train-lock-fasiten, ikke fase2-railen.
     **Fem destinasjoner, identisk på mobil og Mac: Stall · Workbench · Kø · Jarvis · Meg.**
     Konsoll, Økonomi og Kalender er rader under Meg, aldri faner. **Mac-rail 232 px med
