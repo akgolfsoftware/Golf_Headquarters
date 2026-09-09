@@ -8,7 +8,9 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentDataGolf } from "@/lib/portal-stats/datagolf-data";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { DataGolfV2 } from "@/components/portal/v2/DataGolfV2";
+import Link from "next/link";
 import { TilbakeLenke } from "@/components/v2";
+import { TL } from "@/lib/v2/train-lock";
 
 export const dynamic = "force-dynamic";
 
@@ -21,7 +23,26 @@ export default async function AnalysereDataGolfPage() {
 
   return (
     <V2Shell bredde="full" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/analysere">Analyse</TilbakeLenke>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+        <TilbakeLenke href="/portal/analysere">Analyse</TilbakeLenke>
+        <Link
+          href="/portal/analysere/datagolf/stasjon"
+          style={{
+            height: 48,
+            padding: "0 20px",
+            borderRadius: TL.radius.pill,
+            background: TL.fill,
+            color: TL.onFill,
+            display: "flex",
+            alignItems: "center",
+            fontSize: 16,
+            fontWeight: 700,
+            textDecoration: "none",
+          }}
+        >
+          Slå på trening
+        </Link>
+      </div>
       <DataGolfV2 data={data} spillerNavn={user.name ?? undefined} />
     </V2Shell>
   );
