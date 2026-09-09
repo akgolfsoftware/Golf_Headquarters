@@ -6,6 +6,21 @@
  * Lys: designsystem/train-lock/B3 Lys resterende skjermer.dc.html (Lys PH-05
  * Live) — mekanisk (PX-7, 29.08.2026): filen leser konsekvent var(--tl-*)
  * uten hardkodet hex, verifisert med grep — ingen manuell lys-finpuss utover det.
+ * Rigg: PH-05 Live
+ * (9,19 % mot prod 09.09.2026 — fixture: scripts/seed-ph05-ph06-signoff-fixture.ts)
+ * Avvik:
+ *   - Fasiten tegner Nå-kortet (aktiv drill + ballteller + Treff/Kant/Bom)
+ *     som førstevisning. Appen åpner i «Sjekkliste» med alle stegene, og
+ *     ballelogging ligger i «Reps»-modus. Bevisst: økta kan ha flere steg enn
+ *     fasitens ene, og spilleren må kunne se hele rekka før hen starter.
+ *   - LiveLoopNav (FØR · UNDER · ETTER) står over klokka. Fasiten har den ikke;
+ *     den er felles for hele live-sløyfa og fjernes ikke for én skjerm.
+ *   - Pause-knapp til høyre i meta-linja under klokka. Ikke i fasiten —
+ *     pause stopper telleren, aldri økta, og må være innen rekkevidde.
+ *   - «Logg med Caddie» er en flytende knapp nederst til høyre (Caddie-panelet),
+ *     ikke fasitens sentrerte mikrofon med caps-etikett under.
+ *   - Øktklokka teller ekte tid fra mount. Fasitens 23.12 / «27 min igjen» er
+ *     en tegnet tilstand og kan aldri matches i riggen.
  * Faner skjult, caps «Live · tittel» + Avslutt i toppen, 72px øktklokke.
  */
 

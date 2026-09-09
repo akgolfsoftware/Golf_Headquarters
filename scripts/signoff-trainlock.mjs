@@ -43,6 +43,13 @@ const BOLGER = {
     { id: "AO-ko", navn: "Kø", rute: "/admin/agenticos/ko", fasit: "AO-01 Cockpit ko godkjenning.dc.html" },
     { id: "AO-godkjenn", navn: "Godkjenn", rute: "/admin/agenticos/godkjenn", fasit: "AO-12 Godkjenningspolicy A3 B1 C3.dc.html" },
   ],
+  // STEG 20.2 batch 3 — live-sløyfa. Krever fixture:
+  //   npx tsx scripts/seed-ph05-ph06-signoff-fixture.ts
+  px5: [
+    { id: "PH-05", navn: "Live", rute: "/portal/live/signoff-ph05-live/active", fasit: "PH-05 Live.dc.html" },
+    { id: "PH-06", navn: "Live ferdig", rute: "/portal/live/signoff-ph06-ferdig/summary", fasit: "PH-06 Live ferdig.dc.html" },
+    { id: "PH-01", navn: "I dag (Start-kjeden)", rute: "/portal", fasit: "PH-01 I dag.dc.html" },
+  ],
   px4: [
     { id: "PH-01", navn: "I dag (hjem)", rute: "/portal", fasit: "PH-01 I dag.dc.html" },
     { id: "PH-07", navn: "Plan / agenda", rute: "/portal/planlegge", fasit: "PH-07 Plan.dc.html" },

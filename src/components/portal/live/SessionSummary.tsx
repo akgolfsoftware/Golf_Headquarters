@@ -115,9 +115,20 @@ function Tag({ tekst, tone }: { tekst: string; tone: "up" | "info" }) {
 /**
  * ETTER-skjermen i live-sløyfa.
  * Fasit: designsystem/train-lock/PH-06 Live ferdig.dc.html
+ * Lys: designsystem/train-lock/B3 Lys resterende skjermer.dc.html
+ *   (Lys PH-06 Live ferdig) — filen leser var(--tl-*) uten hardkodet hex.
+ * Rigg: PH-06 Live ferdig
+ * (11,97 % mot prod 09.09.2026 — fixture: scripts/seed-ph05-ph06-signoff-fixture.ts)
  * Avvik:
- *   - Ingen riggrad: PH-06 er ikke i tests/visual/skjerm-mapping.ts ennå (fase 2).
  *   - Primær CTA er «Tilbake til I dag» (`/portal`), ikke Plan — Anders 08.09.
+ *     Fasitens ene «Lukk» er dermed tre lenker (I dag · Planen · Analyse).
+ *   - Fasitens tre kort (I vindu 8/12 · SG innspill +0,18 · Recap) er i appen
+ *     «Gjennomført»-tabellen (varighet, drills, reps, treff) + «Plan mot gjort»
+ *     per steg. SG-kortet krever SG-grunnlag som ikke finnes for en enkeltøkt.
+ *   - Selvvurdering (kvalitet 1–5, neste fokus, RPE) står under tallkortene.
+ *     Ikke i fasiten, men er kilden til vurderingsfeltene på økta.
+ *   - LiveSessionShell-topplinje («Etter økta» + tilbake/lukk) og LiveLoopNav
+ *     over hodet — felles for hele live-sløyfa, ikke tegnet i fasiten.
  * Caps «Økt ferdig · varighet» + tittel, tallkort, recap («dine ord»),
  * kvittering med neste økt. Ingen konfetti/XP.
  */

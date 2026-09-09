@@ -283,4 +283,30 @@ export const SKJERM_MAPPING: SkjermMapping[] = [
     status: "kalibrert",
     notat: "STEG 20.2, batch 2 (09.09.2026): kalibrert mot prod. Ikke sjekket linje for linje mot HANDOFF ennå — restavviket er sannsynligvis screentest-fixturens ekte profil-/måldata (HCP, program, klubb) vs. fasitens eksempeldata, ikke en layoutfeil.",
   },
+  {
+    label: "PH-05 Live",
+    rute: "/portal/live/signoff-ph05-live/active",
+    tema: "dark",
+    cropTop: 54,
+    bruker: "screentest",
+    seedScript: "scripts/seed-ph05-ph06-signoff-fixture.ts",
+    fasitDato: "2026-08-28",
+    kalibrertAvvikPst: 9.19,
+    status: "kalibrert",
+    notat:
+      "STEG 20.2, batch 3 (09.09.2026): kalibrert mot prod med fast fixture-økt (IN_PROGRESS, 3 steg, ett logget → «steg 2 av 3» som fasiten). Restavviket er STRUKTURELT og listet i LiveActive.tsx sitt filhode: appen viser LiveLoopNav + modusveksleren (Sjekkliste/Reps/Logg) og starter i sjekkliste, mens fasiten tegner Nå-kortet med ballteller og Treff/Kant/Bom direkte. Øktklokka teller ekte tid fra mount og kan aldri treffe fasitens 23.12.",
+  },
+  {
+    label: "PH-06 Live ferdig",
+    rute: "/portal/live/signoff-ph06-ferdig/summary",
+    tema: "dark",
+    cropTop: 54,
+    bruker: "screentest",
+    seedScript: "scripts/seed-ph05-ph06-signoff-fixture.ts",
+    fasitDato: "2026-08-28",
+    kalibrertAvvikPst: 11.97,
+    status: "kalibrert",
+    notat:
+      "STEG 20.2, batch 3 (09.09.2026): kalibrert mot prod med fast fixture-økt (COMPLETED, 3/3 logget, completedSummary.liveSummary.durationSec = 3000 → «Økt ferdig · 50 min» som fasiten). Restavviket er STRUKTURELT og listet i SessionSummary.tsx sitt filhode: appen har LiveSessionShell-topplinje + LiveLoopNav og viser Gjennomført-tabell, «Plan mot gjort» og selvvurdering, mens fasiten tegner tre kort (I vindu / SG innspill / Recap) og «Lukk».",
+  },
 ];

@@ -11,7 +11,9 @@ import { TapperShell } from "./tapper-shell";
  * PlayerHQ · Slagteller (/portal/(fullscreen)/live/[sessionId]/tapper).
  * Fasit: designsystem/train-lock/PH-05 Live.dc.html
  * Avvik:
- *   - Ingen riggrad: PH-05 er ikke i tests/visual/skjerm-mapping.ts ennå (fase 2).
+ *   - Ingen egen riggrad: PH-05-raden måler /portal/live/<id>/active
+ *     (LiveActive.tsx), som er skjermen fasiten faktisk tegner. Slagtelleren
+ *     her er en egen inngang i samme live-sløyfe uten egen fasitramme.
  *   - Gammel Paper-sitering (playerhq-live-tapper.html) er slettet 30.08 — koden
  *     er slagtelleren i live-sløyfa, ikke en 1:1-port av den slettede fila.
  *   - Tar også WorkbenchSession-id fra I dag (Anders 08.09), ikke bare plan-økt.
