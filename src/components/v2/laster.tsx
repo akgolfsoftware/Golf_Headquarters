@@ -10,7 +10,16 @@
    klient-JS, og Next har ingen tag å skrive.
    IKKE legg "use client", hooks eller klientkomponenter (Knapp, Icon, Link)
    inn her — da kommer feilen tilbake. Vakt: tests/e2e/csp-konsoll.spec.ts.
-   V2Feil (feilinnhold, trenger onClick) bor fortsatt i feil-laste.tsx. */
+   V2Feil (feilinnhold, trenger onClick) bor fortsatt i feil-laste.tsx.
+
+   Fasit: designsystem/train-lock/B1 Tilstander laster feil.dc.html — variant
+   "hjem"/"plan"/"analyse"/"meg" dekker «I dag laster»/«Plan laster»/
+   «Analyse laster»/«Meg laster».
+   * Avvik:
+   *   - ingen riggrad — pixel-diff-riggen krever en levende app-instans mot
+   *     ekte data (screentest-bruker); denne økten (STEG 20 batch 2,
+   *     09.09.2026) hadde ingen DB-tilgang i worktreen. Fasit-samsvaret
+   *     (skjelettgeometri per skjerm) er lest av koden, ikke målt visuelt. */
 
 import type { CSSProperties } from "react";
 import { TL } from "@/lib/v2/train-lock";

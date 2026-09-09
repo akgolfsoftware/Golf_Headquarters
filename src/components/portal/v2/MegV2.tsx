@@ -19,6 +19,10 @@ import { TL } from "@/lib/v2/train-lock";
  * i /portal/meg/innstillinger/personvern og /portal/meg/abonnement og er
  * allerede reelle — å bygge en ny, forenklet variant av dem inline her ville
  * dupliserte tested logikk uten sikkerhetsnett.
+ * Avvik:
+ *   - Kalibrert 09.09.2026 mot prod: 13,38 % restavvik. Ikke sjekket linje for
+ *     linje mot HANDOFF ennå — sannsynligvis screentest-fixturens ekte
+ *     profil-/måldata vs. fasitens eksempeldata, ikke en layoutfeil.
  */
 
 import { useRef, useState, useTransition } from "react";

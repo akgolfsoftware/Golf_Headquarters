@@ -22,7 +22,13 @@
    gjelder KA-01/RU-01/S3-01/BO-01 — se
    designsystem/train-lock/GAP-1 Tilstander.dc.html, portet i egne
    error.tsx/loading.tsx per rute (admin/kalender,
-   portal/(fullscreen)/runde/live, admin/spillere/[id], portal/booking). */
+   portal/(fullscreen)/runde/live, admin/spillere/[id], portal/booking).
+   * Avvik:
+   *   - ingen riggrad for de åtte B1-tilstandene (I dag/Plan/Analyse/Meg ×
+   *     laster/feil) — pixel-diff-riggen krever en levende app-instans mot
+   *     ekte data (screentest-bruker), og denne økten (STEG 20 batch 2,
+   *     09.09.2026) hadde ingen DB-tilgang i worktreen. Fasit-samsvaret over
+   *     (variant, kopi, chrome) er lest av koden, ikke målt visuelt. */
 
 import Link from "next/link";
 import { TL } from "@/lib/v2/train-lock";
