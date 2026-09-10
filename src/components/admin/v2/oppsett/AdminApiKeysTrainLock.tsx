@@ -341,7 +341,7 @@ function NyNokkelModal({ onClose }: { onClose: () => void }) {
             </div>
 
             {feil && (
-              <p role="alert" style={{ marginTop: 14, fontSize: 13, color: TL.danger }}>
+              <p role="alert" style={{ marginTop: 14, fontSize: 13, color: TL.text }}>
                 {feil}
               </p>
             )}

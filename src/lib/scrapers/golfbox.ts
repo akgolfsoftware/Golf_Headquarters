@@ -154,9 +154,14 @@ export function parseGolfBoxDate(s: string | undefined | null): Date | null {
 
 export async function getSchedule(
   customerId: number,
+  season?: number,
 ): Promise<GolfBoxScheduleEvent[]> {
+  if (season !== undefined && (!Number.isSafeInteger(season) || season < 1000 || season > 9999)) {
+    throw new Error("GolfBox-sesongen må være et firesifret årstall.");
+  }
+  const seasonSegment = season === undefined ? "" : `/Season/${season}`;
   const raw = await fetchHandler<{ CompetitionData?: unknown }>(
-    `/Handlers/ScheduleHandler/GetSchedule/CustomerId/${customerId}/language/${LANG_NO}`,
+    `/Handlers/ScheduleHandler/GetSchedule/CustomerId/${customerId}${seasonSegment}/language/${LANG_NO}`,
   );
 
   const events: GolfBoxScheduleEvent[] = [];

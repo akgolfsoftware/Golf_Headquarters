@@ -452,7 +452,7 @@ export function NyTestV2({ tests, sistePerTest, spillerNavn }: Props) {
         {feil && (
           <div
             role="alert"
-            style={{ marginTop: 18, borderRadius: 11, border: `1px solid color-mix(in srgb, ${TL.danger} 35%, transparent)`, background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`, padding: "10px 14px", fontFamily: TL.font.sans, fontSize: 13, color: TL.danger }}
+            style={{ marginTop: 18, borderRadius: 11, border: `1px solid color-mix(in srgb, ${TL.danger} 35%, transparent)`, background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`, padding: "10px 14px", fontFamily: TL.font.sans, fontSize: 13, color: TL.text }}
           >
             {feil}
           </div>

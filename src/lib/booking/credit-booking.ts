@@ -71,7 +71,7 @@ export async function createCreditBooking(
   }
   if (subscription.creditsRemaining <= 0) {
     throw new Error(
-      "Du har brukt opp denne månedens coaching-timer. Saldoen resettes ved neste fakturering.",
+      "Du har brukt opp denne månedens coaching-timer. Saldoen fornyes ved neste fakturering.",
     );
   }
 
@@ -87,7 +87,7 @@ export async function createCreditBooking(
     throw new Error("Ugyldig dato.");
   }
 
-  // Samme coach-id som lagres på bookingen (service-eier, ikke vilkårlig input).
+  // Fast coach vinner; ellers beholdes valgt coach gjennom kontroll og lagring.
   const coachForSlot = service.coachUserId ?? input.coachId;
   const ok = await isSlotStillAvailable(service.id, startAt, coachForSlot);
   if (!ok) {
@@ -107,7 +107,7 @@ export async function createCreditBooking(
     },
   });
   if (!lokasjon) {
-    throw new Error("Mangler lokasjon i seed-data.");
+    throw new Error("Stedet for timen er ikke satt opp. Kontakt oss for å bestille.");
   }
 
   // Atomisk: dekrementer credits + opprett booking i samme transaksjon.
@@ -118,7 +118,7 @@ export async function createCreditBooking(
       // Kollisjonsvern (A-pakken): sjekk INNE i transaksjonen med
       // advisory-lås — atomisk sammen med credit-trekk og opprettelse.
       const vern = await sjekkKollisjon(tx, {
-        coachId: service.coachUserId,
+        coachId: coachForSlot,
         serviceTypeId: service.id,
         startAt,
         endAt,
@@ -130,20 +130,17 @@ export async function createCreditBooking(
 
       if (updated.count === 0) {
         throw new Error(
-          "Kunne ikke trekke fra credit — saldoen er allerede tom. Last siden på nytt.",
+          "Ingen coaching-timer igjen i pakken. Last siden på nytt for å se oppdatert saldo.",
         );
       }
 
-      // coachId settes med samme semantikk som drop-in (service.coachUserId) slik
-      // at unique-constraintet [coachId, startAt, serviceTypeId] hindrer at to
-      // abonnenter dobbeltbooker samme coach-slot. Gruppe-tjenester (coachUserId
-      // = null) tillates fortsatt med flere deltakere.
+      // Samme coach og plass i tilgjengelighet, kollisjonsvern og lagret booking.
       const booking = await tx.booking.create({
         data: {
           plassNr: vern.plassNr,
           userId: eierId,
           serviceTypeId: service.id,
-          coachId: service.coachUserId,
+          coachId: coachForSlot,
           locationId: lokasjon.id,
           startAt,
           endAt,
@@ -174,11 +171,11 @@ export async function createCreditBooking(
     metadata: {
       subscriptionId: subscription.id,
       serviceSlug: service.slug,
-      coachId: input.coachId,
+      coachId: coachForSlot,
       startAt: startAt.toISOString(),
       ...(input.barnId ? { paaVegneAv: eierId } : {}),
     },
-  });
+  }).catch(error => logError({ context: "booking.creditBooking.audit", error, meta: { bookingId: result.id } }).catch(() => undefined));
 
   // Best-effort: push til coachens Google Calendar (oppdaterer Booking.googleEventId)
   try {
@@ -189,7 +186,7 @@ export async function createCreditBooking(
       error,
       meta: { bookingId: result.id },
       severity: "warn",
-    });
+    }).catch(() => undefined);
   }
 
   // Best-effort: send bekreftelses-e-post (samme mal som drop-in,
@@ -203,7 +200,7 @@ export async function createCreditBooking(
       error,
       meta: { bookingId: result.id },
       severity: "warn",
-    });
+    }).catch(() => undefined);
   }
 
   // In-app-varsel
@@ -217,11 +214,11 @@ export async function createCreditBooking(
     title: `Booking bekreftet — ${service.name}`,
     body: `${tidStr}. Trukket fra månedlig saldo (${subscription.creditsRemaining - 1} igjen).`,
     link: "/portal/meg/bookinger",
-  });
+  }).catch(error => logError({ context: "booking.creditBooking.notification", error, meta: { bookingId: result.id } }).catch(() => undefined));
 
   // Coach/admin skal også vite om abonnements-bookinger — de gikk tidligere
   // helt stille forbi (kun spilleren ble varslet).
-  await varsleNyBooking(result.id, "abonnement");
+  await varsleNyBooking(result.id, "abonnement").catch(error => logError({ context: "booking.creditBooking.coachNotification", error, meta: { bookingId: result.id } }).catch(() => undefined));
 
   revalidatePath("/portal/meg/bookinger");
   revalidatePath("/portal");

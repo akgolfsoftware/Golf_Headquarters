@@ -1,4 +1,13 @@
 /**
+ * Avvik:
+ *   - Kontrastretting fra tidligere arbeidsgren er avstemt 10.09.2026. Eldre
+ *     visuelle referanser nedenfor er historikk; helskjermkontroll mot en ny
+ *     valgt Claude Design-versjon gjenstår. Denne endringen justerer fargebruk,
+ *     ikke skjermens funksjon eller oppsett. Se grener-og-main-2026-09-10.md
+ *     under docs/beslutningsgrunnlag for faktisk kontrollomfang.
+ */
+
+/**
  * Gapping-kart (D5).
  * Fasit: designsystem/paper/fase2/playerhq/playerhq-gapping.html
  *
@@ -149,7 +158,7 @@ export function GappingV2({ data }: { data: GappingData }) {
                 <span>midtre halvdel</span>
                 <span style={{ width: 2, height: 12, background: TL.text, marginLeft: 6 }} />
                 <span>median</span>
-                <span style={{ color: TL.danger, marginLeft: 6 }}>gap over terskel</span>
+                <span style={{ color: TL.text, marginLeft: 6 }}>gap over terskel</span>
               </div>
             </Kort>
 
@@ -275,7 +284,7 @@ export function GappingV2({ data }: { data: GappingData }) {
                           borderRadius: TL.radius.row,
                           fontFamily: TL.font.mono,
                           fontSize: 10,
-                          color: TL.danger,
+                          color: TL.text,
                         }}
                       >
                         gap {gapEtter.meter} m · {gapEtter.under} → {gapEtter.over} · over
@@ -313,7 +322,7 @@ export function GappingV2({ data }: { data: GappingData }) {
                       Mellom{" "}
                       <strong style={{ fontWeight: 600 }}>{g.under}</strong> og{" "}
                       <strong style={{ fontWeight: 600 }}>{g.over}</strong> er det{" "}
-                      <span style={{ fontFamily: TL.font.mono, color: TL.danger }}>{g.meter} m</span> —
+                      <span style={{ fontFamily: TL.font.mono, color: TL.text }}>{g.meter} m</span> —
                       over terskelen. Det betyr at innspill rundt {g.hullMidt} m mangler en
                       kølle å lande på.
                     </Brodtekst>

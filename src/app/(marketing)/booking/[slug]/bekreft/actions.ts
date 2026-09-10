@@ -4,11 +4,11 @@ import { z } from "zod";
 import { sjekkKollisjon, erKollisjonsfeil, kollisjonsmelding } from "@/lib/booking/kollisjonsvern";
 import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
-import { stripeKlient } from "@/lib/stripe";
+import { startBookingPayment } from "@/lib/booking/payment-start";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { kanBrukeInnebygdBooking } from "@/lib/booking/offentlig-booking";
 import { isSlotStillAvailable } from "@/lib/booking/availability";
-import { acquireHold, DEFAULT_HOLD_TTL_MS } from "@/lib/booking/slot-hold";
+import { acquireHold, releaseHold, DEFAULT_HOLD_TTL_MS } from "@/lib/booking/slot-hold";
 import { recordBookingMetric } from "@/lib/booking/metrics";
 import { audit } from "@/lib/audit";
 
@@ -142,7 +142,7 @@ export async function createBookingCheckout(
       endAt,
       status: "PENDING" as const,
       priceOre: service.priceOre,
-      coachId: service.coachUserId ?? null,
+      coachId,
       guestName: user ? null : data.name.trim(),
       guestEmail: user ? null : data.email.trim().toLowerCase(),
       guestPhone: data.phone.trim() || null,
@@ -170,9 +170,8 @@ export async function createBookingCheckout(
     }
 
     const appUrl = APP_URL;
-    const stripe = stripeKlient();
 
-    const session = await stripe.checkout.sessions.create({
+    const payment = await startBookingPayment(booking.id, {
       mode: "payment",
       customer_email: user?.email ?? data.email.trim().toLowerCase(),
       line_items: [
@@ -181,7 +180,7 @@ export async function createBookingCheckout(
             currency: "nok",
             product_data: {
               name: service.name,
-              description: `${startAt.toLocaleString("nb-NO", { dateStyle: "full", timeStyle: "short", timeZone: "Europe/Oslo" })} hos ${lokasjon.name}`,
+              description: `${startAt.toLocaleString("nb-NO", { dateStyle: "full", timeStyle: "short" })} hos ${lokasjon.name}`,
             },
             unit_amount: service.priceOre,
           },
@@ -190,7 +189,7 @@ export async function createBookingCheckout(
       ],
       metadata: {
         bookingId: booking.id,
-        coachId: data.coachId,
+        coachId,
         serviceSlug: service.slug,
       },
       success_url: `${appUrl}/booking/kvittering/${booking.id}?session_id={CHECKOUT_SESSION_ID}`,
@@ -198,23 +197,19 @@ export async function createBookingCheckout(
       expires_at: Math.floor(Date.now() / 1000) + 30 * 60,
     });
 
-    await prisma.booking.update({
-      where: { id: booking.id },
-      data: { stripeCheckoutSessionId: session.id },
-    });
+    if (!payment.ok) {
+      if (payment.releaseHold) await releaseHold({ serviceTypeId: service.id, coachId, startIso: startAt.toISOString() }, holderId);
+      return { ok: false, error: payment.error };
+    }
 
     await audit({
       actorId: user?.id ?? null,
       action: "booking.checkout_started",
       target: `Booking:${booking.id}`,
       metadata: { serviceSlug: service.slug, priceOre: service.priceOre },
-    });
+    }).catch((error) => logError({ context: "booking.checkout-audit", error }).catch(() => undefined));
 
-    if (!session.url) {
-      return { ok: false, error: "Stripe checkout URL mangler. Prøv igjen." };
-    }
-
-    return { ok: true, url: session.url };
+    return { ok: true, url: payment.url };
   } catch (err) {
     await logError({ context: "booking.createBookingCheckout", error: err });
     // S-12: Fang Prisma unique constraint violation (P2002) fra bookings_slot_unique.
@@ -226,13 +221,10 @@ export async function createBookingCheckout(
         error: "Denne tiden ble dessverre booket av noen andre akkurat nå. Velg en annen tid.",
       };
     }
-    const msg = err instanceof Error ? err.message : "Ukjent feil";
     // Ikke leak interne feilmeldinger til klienten i produksjon
     return {
       ok: false,
-      error: msg.startsWith("STRIPE")
-        ? "Betalingsfeil. Prøv igjen eller kontakt oss."
-        : msg,
+      error: "Bestillingen kunne ikke fullføres. Prøv igjen eller kontakt oss.",
     };
   }
 }

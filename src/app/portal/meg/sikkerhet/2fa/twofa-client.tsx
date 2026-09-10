@@ -219,7 +219,7 @@ export function TwoFaClient() {
                   flex: "none",
                 }}
               >
-                <Icon name="shield-check" size={20} style={{ color: TL.ok }} />
+                <Icon name="shield-check" size={20} style={{ color: TL.text }} />
               </span>
               <div style={{ minWidth: 0, flex: 1 }}>
                 <div style={{ fontFamily: TL.font.sans, fontSize: 16, fontWeight: 700, color: TL.text }}>
@@ -265,7 +265,7 @@ export function TwoFaClient() {
                   fontFamily: TL.font.sans,
                   fontSize: 12.5,
                   fontWeight: 600,
-                  color: TL.danger,
+                  color: TL.text,
                   cursor: deaktiverer ? "default" : "pointer",
                   opacity: deaktiverer ? 0.5 : 1,
                 }}
@@ -425,7 +425,7 @@ export function TwoFaClient() {
               padding: "10px 12px",
             }}
           >
-            <Icon name="lock" size={14} style={{ color: TL.warn, marginTop: 2, flex: "none" }} />
+            <Icon name="lock" size={14} style={{ color: TL.text, marginTop: 2, flex: "none" }} />
             <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 13, color: TL.text, lineHeight: 1.5 }}>
               Hver kode kan brukes <strong>én gang</strong> hvis du mister appen. Lagre dem trygt — du får ikke se dem igjen.
             </p>
@@ -526,7 +526,7 @@ function FeilBoks({ msg }: { msg: string }) {
         padding: "10px 12px",
         fontFamily: TL.font.sans,
         fontSize: 13,
-        color: TL.danger,
+        color: TL.text,
       }}
     >
       {msg}
@@ -589,7 +589,7 @@ function StegIndikator({ steg }: { steg: Steg }) {
                 fontWeight: 700,
                 border: `1px solid ${aktiv || ferdig ? "transparent" : TL.hair}`,
                 background: aktiv ? TL.fill : ferdig ? `color-mix(in srgb, ${TL.ok} 14%, ${TL.elev})` : TL.dock,
-                color: aktiv ? TL.onFill : ferdig ? TL.ok : TL.mute,
+                color: aktiv ? TL.onFill : ferdig ? TL.text : TL.mute,
               }}
             >
               {ferdig ? <Icon name="check" size={12} /> : s.id}

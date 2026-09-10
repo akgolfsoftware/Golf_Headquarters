@@ -123,7 +123,7 @@ export function AdminEksternLeserV2({
               Grupper
             </div>
             {fieldErrors.groupIds && (
-              <div style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, marginTop: 4 }}>
+              <div style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.text, marginTop: 4 }}>
                 {fieldErrors.groupIds}
               </div>
             )}
@@ -144,7 +144,7 @@ export function AdminEksternLeserV2({
               Innsyn
             </div>
             {fieldErrors.scopes && (
-              <div style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, marginTop: 4 }}>
+              <div style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.text, marginTop: 4 }}>
                 {fieldErrors.scopes}
               </div>
             )}
@@ -161,10 +161,10 @@ export function AdminEksternLeserV2({
           </div>
 
           {error && (
-            <div style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.danger }}>{error}</div>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.text }}>{error}</div>
           )}
           {success && (
-            <div style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.ok }}>{success}</div>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.text }}>{success}</div>
           )}
 
           <Knapp type="submit" disabled={pending}>

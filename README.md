@@ -1,63 +1,39 @@
 # AK Golf HQ
 
-Hele plattformen for AK Golf Group — ett monorepo, ett Next.js-prosjekt, fire produkter under samme tak.
+Plattform for coaching, spillerutvikling og booking. Ett Next.js-prosjekt samler offentlig nettsted, booking, PlayerHQ og AgencyOS, med egne foreldre-, klubb- og skoleflater.
 
-**Hvor står vi, og hvordan henger det sammen?** Les [`docs/PLATTFORM-KART.md`](docs/PLATTFORM-KART.md) — planlagt / kodet / ferdig / mangler design / mangler for komplett, pluss Masterbrain. Oppgavelista er fortsatt [`docs/MASTERPLAN-GJENSTAAENDE.md`](docs/MASTERPLAN-GJENSTAAENDE.md).
+**[Start her](START-HER.md)** for gjeldende status, designarbeid og neste arbeid. **[Prosjektkart](docs/vedlikehold/prosjektkart.md)** forklarer alle mapper.
 
-| Produkt | Rute | Beskrivelse |
+| Flate | Adresse | Kode |
 |---|---|---|
-| **Marketing** (akgolf.no) | `/`, `/(marketing)` | Offentlige sider |
-| **Booking** | `/booking` | Booking av coaching/fasiliteter |
-| **PlayerHQ** | `/portal` | Spillerportal |
-| **AgencyOS** | `/admin` | Coach/admin-grensesnitt (het tidligere «CoachHQ») |
+| Nettsted | `/` og offentlige undersider | `src/app/page.tsx`, `src/app/(marketing)/` |
+| Booking av coaching | `/booking`, `/portal/booking` | booking-rutene og `src/lib/booking/` |
+| PlayerHQ | `/portal` | `src/app/portal/` |
+| AgencyOS | `/admin` | `src/app/admin/` |
+| Forelder | `/forelder` | `src/app/forelder/` |
+| WANG / Team Norway | `/team-wang`, `/team-norway` | de respektive rutemappene |
 
-## Stack
+## Lokal utvikling
 
-- Next.js 16 (App Router, TypeScript strict, Turbopack)
-- React 19
-- Prisma 7 + Supabase (Postgres)
-- Tailwind CSS v4 (CSS-first via `@theme` i `src/app/globals.css`)
-- Lucide React (eneste icon-bibliotek). Designfasit for PlayerHQ / AgencyOS / Forelder er **Train-lock** (`designsystem/train-lock/`). Fonter i produktet: Poppins / Lora / IBM Plex Mono. Inter, Familjen Grotesk, JetBrains Mono og Inter Tight er fjernet. Claude Paper er arkiv. Se `CLAUDE.md` invariant 2.
-- npm
-
-## Kom i gang
+Node-versjonen står i [.nvmrc](.nvmrc). Bruk npm og den innlåste [package-lock.json](package-lock.json).
 
 ```bash
-npm install                # postinstall kjører prisma generate
-cp .env.example .env.local # fyll inn verdier (se under)
-npm run dev                # http://localhost:3000
+npm ci
+npm run dev
 ```
 
-## Miljøvariabler
+Et nytt lokalt oppsett trenger miljøvariablene beskrevet i [.env.example](.env.example). Bevar en eksisterende `.env.local`; ikke overskriv den med malen. Bruk en isolert testdatabase når du skal teste skriving. Ingen dataimport eller migrasjon inngår i vanlig oppstart.
 
-Valideres ved oppstart i `src/lib/env.ts`. Kritiske (appen starter ikke uten): Supabase-URL/nøkler, `DATABASE_URL`, `DIRECT_URL`. Anbefalte (advarsel i prod): Stripe, Resend, `CRON_SECRET`, `ANTHROPIC_API_KEY`, krypteringsnøkler. Se `.env.example` for full liste.
-
-## Verifikasjon før commit
+## Kontroller
 
 ```bash
-npx prisma validate && npx prisma generate
-npx tsc --noEmit
-npm run build
+npm run prosjekt:sjekk
+npm run verify
+npm test
 ```
 
-## Dokumentasjon
+`verify` kontrollerer typer, kildekode, designregler og bygg. Det beviser ikke en komplett kundereise, produksjonsbetaling eller visuell godkjenning. Nettlesertester beskrives i [docs/testing.md](docs/testing.md); skjermmåling i [tests/visual/README.md](tests/visual/README.md).
 
-**START HER (kanon):** [`docs/platform/AGENT-BRIEF.md`](docs/platform/AGENT-BRIEF.md) — full plattformkontekst på 5 min. Les FØR du rører kode.
+## Kilder
 
-- **`docs/platform/BUSINESS-RULES.md`** — låste produktbeslutninger (eneste fasit)
-- **`docs/platform/PLATFORM-PRD.md`** + **`docs/platform/DATA-MODEL.md`** — produkt- og dataspec
-- **`designsystem/train-lock/`** — designfasit (les `DESIGN-SYSTEM.md` + `SCREEN-INDEX.md` før skjerm-arbeid). Paper-portplanen ligger arkivert i `docs/arkiv/paper-port/`
-- **`docs/STATUS-NÅ.md`** — hvor vi er akkurat nå (oppdatert snapshot)
-- **`docs/AAPNE-SPORSMAAL.md`** — uavklarte beslutninger (ÅPEN / LØST / PARKERT)
-- **`CLAUDE.md`** — arbeidsregler, designsystem, gotchas
-- **`SECURITY.md`** — sikkerhetsprinsipper og RLS
-- **`docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`** — lanseringsplanen (design: Train-lock, 25.08)
-- **`docs/MASTERPLAN-GJENSTAAENDE.md`** — gjenstående-plan for spor utenfor lanseringen (+ `docs/platform/stripe-cutover-sjekkliste.md`; gammel lanseringsplan arkivert i `docs/port/arkiv/`)
-- Historikk og superseterte planer: slettet 05.08 og 17.08.2026 — ligger i git-historikken
-
-## Test
-
-```bash
-npm test          # enhetstester (lib)
-npm run e2e       # Playwright e2e
-```
+[Produktregler](docs/platform/BUSINESS-RULES.md) · [design per flate](designsystem/README.md) · [dokumentoversikt](docs/README.md) · [sikkerhet](SECURITY.md) · [drift](docs/runbook.md).

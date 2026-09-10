@@ -344,7 +344,7 @@ function Feilboks({ children }: { children: ReactNode }) {
       }}
     >
       <Icon name="triangle-alert" size={14} style={{ color: TL.danger, marginTop: 1, flex: "none" }} />
-      <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 500, color: TL.danger }}>
+      <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 500, color: TL.text }}>
         {children}
       </span>
     </div>

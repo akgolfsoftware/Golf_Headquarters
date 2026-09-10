@@ -1046,7 +1046,7 @@ function Steg4Forhandsvis(props: {
             padding: "10px 14px",
             fontFamily: TL.font.sans,
             fontSize: 12.5,
-            color: TL.danger,
+            color: TL.text,
           }}
         >
           {feil}
@@ -1307,7 +1307,7 @@ function OktBoks(props: {
               fontWeight: 700,
               letterSpacing: "0.06em",
               textTransform: "uppercase",
-              color: TL.danger,
+              color: TL.text,
             }}
           >
             <Icon name="trash-2" size={11} />

@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { SKJERM_MAPPING } from "../../../../tests/visual/skjerm-mapping";
 
-// Vakt for sign-off-riggen (fase 1, økt 4 — docs/superpowers/plans/2026-09-05-komplett-designport.md §3 regel 2):
+// Vakt for sign-off-riggen (fase 1, økt 4 — docs/planer/design/2026-09-05-komplett-designport.md §3 regel 2):
 // ingen måling mot en tegning uten dato, ingen «ukalibrert» uten årsak, panel-modus alltid komplett.
 
 const ISO_DATO = /^\d{4}-\d{2}-\d{2}$/;

@@ -504,7 +504,7 @@ export function ForelderWizard() {
               borderRadius: 11,
               border: `1px solid color-mix(in srgb, ${TL.danger} 30%, transparent)`,
               background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`,
-              color: TL.danger,
+              color: TL.text,
             }}
             role="alert"
           >

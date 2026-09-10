@@ -37,9 +37,11 @@ import { triggerTestAgent } from "@/lib/agents/triggers";
 import { scoreTest } from "@/lib/portal-tester/test-scoring";
 import { syncTalentEtterTest } from "@/lib/talent/test-sync";
 import { notify } from "@/lib/notifications";
+import { isTnTestName } from "@/lib/portal-tester/tn-catalog";
+import { validateCompletion } from "@/lib/portal-tester/validate-completion";
 
 /** «V»/«H» = registrert miss-retning (kun Gate-protokoller med miss_side, TE-04). */
-const VerdiSchema = z.union([z.number().finite(), z.boolean(), z.enum(["V", "H"]), z.null()]);
+const VerdiSchema = z.union([z.number().finite(), z.boolean(), z.string().max(200), z.null()]);
 
 /** Per-slag-verdier slik scorekortet fører dem (rå — ingen forhåndsregnet score). */
 const ForsokSchema = z.object({
@@ -81,7 +83,7 @@ export type LagreStegInput = z.infer<typeof LagreStegSchema>;
 
 const AvbrytSchema = z.object({ sessionId: z.string().min(1) });
 
-function harVerdi(verdier: Record<string, number | boolean | "V" | "H" | null>): boolean {
+function harVerdi(verdier: Record<string, number | boolean | string | null>): boolean {
   return Object.values(verdier).some((v) => v !== null);
 }
 
@@ -102,9 +104,10 @@ export async function startTestSession(
   // Tilgang: CANON + egne tester — samme regel som katalogen (K6).
   const test = await prisma.testDefinition.findFirst({
     where: { id: testId, AND: [testTilgangWhere(user.id)] },
-    select: { id: true },
+    select: { id: true, name: true, isCustom: true },
   });
   if (!test) return { ok: false, error: "Testen finnes ikke." };
+  if (!test.isCustom && isTnTestName(test.name)) return { ok: false, error: "Bruk det oppdaterte Team Norway-scorekortet i testoversikten." };
 
   const eksisterende = await prisma.testSession.findFirst({
     where: { userId: user.id, testId, status: "IN_PROGRESS" },
@@ -178,9 +181,12 @@ export async function fullforTestSession(
   // Tilgang: samme regel som katalogen — kan ikke lagre mot andres/skjulte tester (K6).
   const test = await prisma.testDefinition.findFirst({
     where: { id: testId, AND: [testTilgangWhere(user.id)] },
-    select: { id: true, name: true, protocol: true },
+    select: { id: true, name: true, protocol: true, isCustom: true },
   });
   if (!test) return { ok: false, error: "Testen finnes ikke." };
+  if (!test.isCustom && isTnTestName(test.name)) return { ok: false, error: "Bruk det oppdaterte Team Norway-scorekortet i testoversikten. Eldre treff/bom-resultater kan ikke lagres som den nye testen." };
+  const completionError = validateCompletion(test.protocol, forsok, test.isCustom);
+  if (completionError) return { ok: false, error: completionError };
 
   // Fasit-score regnes server-side fra protokollen + de rå slag-verdiene.
   const { score, details } = scoreTest(test.protocol, forsok);

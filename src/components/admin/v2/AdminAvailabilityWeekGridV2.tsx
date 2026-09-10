@@ -153,7 +153,7 @@ export function AvailabilityWeekGridV2({ locations, windows }: { locations: Loca
           {windows.map((w) => (
             <span
               key={w.id}
-              style={{ display: "inline-flex", alignItems: "center", gap: 6, borderRadius: 9999, border: `1px solid color-mix(in srgb, ${TL.ok} 30%, transparent)`, background: `color-mix(in srgb, ${TL.ok} 8%, transparent)`, padding: "4px 10px", fontFamily: TL.font.mono, fontSize: 10, color: TL.ok }}
+              style={{ display: "inline-flex", alignItems: "center", gap: 6, borderRadius: 9999, border: `1px solid color-mix(in srgb, ${TL.ok} 30%, transparent)`, background: `color-mix(in srgb, ${TL.ok} 8%, transparent)`, padding: "4px 10px", fontFamily: TL.font.mono, fontSize: 10, color: TL.text }}
             >
               {DAGER[w.weekday]} {w.startTime}–{w.endTime}
               <span style={{ color: TL.mute }}>· {w.locationName ?? "Alle steder"}</span>
@@ -181,7 +181,7 @@ export function AvailabilityWeekGridV2({ locations, windows }: { locations: Loca
               </select>
             </label>
             {feil && (
-              <div role="alert" style={{ marginTop: 12, borderRadius: 10, border: `1px solid color-mix(in srgb, ${TL.danger} 30%, transparent)`, background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`, padding: "10px 14px", fontSize: 13, color: TL.danger }}>
+              <div role="alert" style={{ marginTop: 12, borderRadius: 10, border: `1px solid color-mix(in srgb, ${TL.danger} 30%, transparent)`, background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`, padding: "10px 14px", fontSize: 13, color: TL.text }}>
                 {feil}
               </div>
             )}

@@ -170,12 +170,12 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }:
       `${tidTekst(varighetMin)}${planlagtMin > 0 ? ` (plan ${tidTekst(planlagtMin)})` : ""}`,
     ]);
   }
-  if (data.drills.length > 0) {
+  if (data.drills.length > 0 && data.logSource !== "tapper") {
     tallRader.push(["Drills", `${data.drillsCompleted} av ${data.drills.length}`]);
   }
-  if (data.totalReps > 0 || plannedRepsTotal > 0) {
+  if (data.totalReps > 0 || plannedRepsTotal > 0 || data.logSource === "tapper") {
     tallRader.push([
-      "Reps totalt",
+      data.logSource === "tapper" ? "Slag totalt" : "Reps totalt",
       plannedRepsTotal > 0 ? `${data.totalReps} av ${plannedRepsTotal}` : String(data.totalReps),
     ]);
   }
@@ -249,9 +249,23 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }:
               Økta er logget som gjennomført.
               {data.coachName
                 ? ` ${data.coachName.split(" ")[0]} ser oppsummeringen — han skal ikke godkjenne noe, bare vite hva som skjedde.`
-                : " Coachen din ser oppsummeringen — ingen godkjenning, bare informasjon."}
+                : ""}
             </p>
           </div>
+
+          {tallRader.length > 0 && (
+            <div className="mt-4" style={KORT}>
+              <h2 className="m-0 font-sans text-[16px] font-semibold">Registrert i økta</h2>
+              <dl className="mb-0">
+                {tallRader.map(([navn, verdi]) => <div key={navn} className="flex justify-between gap-4 py-2">
+                  <dt>{navn}</dt><dd className="m-0 font-mono">{verdi}</dd>
+                </div>)}
+              </dl>
+              {data.logSource === "tapper" && <p className="mb-0 text-[13px]">
+                Kilde: lagrede tellinger per kølle. Tid, treffkvalitet og fullføring per øvelse er ikke registrert her.
+              </p>}
+            </div>
+          )}
 
           {/* Neste steg — én vei videre, aldri blank flate */}
           {nesteOkt && (

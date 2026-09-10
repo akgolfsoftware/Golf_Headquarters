@@ -1,0 +1,38 @@
+# Kopier denne malen til designleveransens manuelle register. Ikke rediger generert inventar.
+id: null
+navn: null
+versjon: null
+status: kartlagt
+reise_id: null
+brukermaal: null
+roller: []
+tilgangsgrunnlag: ikke-verifisert
+ruter_og_kildefiler: []
+# egen-skjerm | felles-monster | overlegg | videresending | intern-flate | avventer-avklaring
+type: egen-skjerm
+monster_id: null
+hovedhandling: null
+sekundaere_handlinger: []
+innganger: []
+utganger_og_tilbakevei: []
+datafelt_og_kilder: []
+syntetisk_datasett: null
+komponenter_og_varianter: []
+wireframe: null
+ui_referanse: null
+prototype_referanse: null
+formater:
+  mobil: ikke-vurdert
+  nettbrett: ikke-vurdert
+  desktop: ikke-vurdert
+  stor_tekst: ikke-vurdert
+  liggende_og_tastatur: ikke-vurdert
+temaer: []
+tilstander: []
+# Hver relevant tilstand/format: referanse, kontroll, bevis eller begrunnet ikke-relevant.
+dekningsbevis: []
+vurdert_av_anders: null
+valgt_for_bygging: null
+implementeringsstatus: ikke-bestilt
+kjente_avvik: []
+aapne_beslutninger: []

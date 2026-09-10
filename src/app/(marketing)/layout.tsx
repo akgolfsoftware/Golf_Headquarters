@@ -19,7 +19,7 @@ import { kanBrukeInnebygdBooking } from "@/lib/booking/offentlig-booking";
  * speil av Claude Design-prosjektet 3e5c851c). Layouten laster merkets
  * tokens (`ak-golf.css`) og fonter (IBM Plex-familien) og legger `.ak-marked`
  * rundt innholdet — alt under er merket, ingenting utenfor er det.
- * Spec: docs/superpowers/specs/2026-09-04-marked-ak-golf-port-design.md.
+ * Spec: docs/referanse/design/2026-09-04-marked-ak-golf-port-design.md.
  *
  * Skallet (MarkedNav + MarkedFot) eies fortsatt her — ett skall for alle
  * landingssider (siden 20.08.2026, da fire ulike menyer ble målt på samme

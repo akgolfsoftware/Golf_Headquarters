@@ -108,7 +108,8 @@ export function beregnSgCelle(
     const n = num(vals.antallSlag);
     if (n == null || maal == null) return null;
     const exp = forventedePutter(maal);
-    return exp == null ? null : n - exp;
+    // Scorekort GolfslagTester!CI5: forventet antall slag minus faktisk antall.
+    return exp == null ? null : exp - n;
   }
   return null;
 }

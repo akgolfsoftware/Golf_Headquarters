@@ -341,7 +341,7 @@ function Feilboks({ children }: { children: ReactNode }) {
       }}
     >
       <Icon name="triangle-alert" size={15} style={{ color: TL.danger, flex: "none", marginTop: 1 }} />
-      <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.danger }}>{children}</span>
+      <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.text }}>{children}</span>
     </div>
   );
 }
@@ -446,7 +446,7 @@ function ExpiredKort({ email }: { email: string }) {
         gap: 4,
       }}
     >
-      <Icon name="triangle-alert" size={30} style={{ color: TL.warn, marginBottom: 6 }} />
+      <Icon name="triangle-alert" size={30} style={{ color: TL.text, marginBottom: 6 }} />
       <h2 style={{ fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text, margin: 0 }}>
         Invitasjonen er utløpt
       </h2>
@@ -476,7 +476,7 @@ function SuccessKort({ playerName }: { playerName: string }) {
         gap: 4,
       }}
     >
-      <Icon name="check" size={30} style={{ color: TL.ok, marginBottom: 6 }} />
+      <Icon name="check" size={30} style={{ color: TL.text, marginBottom: 6 }} />
       <h2 style={{ fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text, margin: 0 }}>
         Samtykke allerede gitt
       </h2>

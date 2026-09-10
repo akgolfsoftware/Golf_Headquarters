@@ -159,7 +159,7 @@ function IkonKnappLiten({
 
 // Destruktiv ghost-Knapp (samme idiom som «Slett økt» i økt-dialogen)
 const KNAPP_FARE_STIL: React.CSSProperties = {
-  color: TL.danger,
+  color: TL.text,
   borderColor: `color-mix(in srgb, ${TL.danger} 40%, transparent)`,
 };
 
@@ -167,7 +167,7 @@ function FeilBoks({ children }: { children: React.ReactNode }) {
   return (
     <p
       role="alert"
-      style={{ margin: 0, borderRadius: 10, border: `1px solid color-mix(in srgb, ${TL.danger} 40%, transparent)`, background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`, padding: "9px 12px", fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, lineHeight: 1.5 }}
+      style={{ margin: 0, borderRadius: 10, border: `1px solid color-mix(in srgb, ${TL.danger} 40%, transparent)`, background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`, padding: "9px 12px", fontFamily: TL.font.sans, fontSize: 12, color: TL.text, lineHeight: 1.5 }}
     >
       {children}
     </p>
@@ -616,12 +616,12 @@ export function AdminPlanMalRedigerV2({
                 </div>
               )}
               {fordelingSum !== 100 && (
-                <p style={{ margin: "7px 0 0", fontFamily: TL.font.sans, fontSize: 10.5, color: TL.danger, lineHeight: 1.5 }}>
+                <p style={{ margin: "7px 0 0", fontFamily: TL.font.sans, fontSize: 10.5, color: TL.text, lineHeight: 1.5 }}>
                   Fordelingen summerer til {fordelingSum} % — må være 100 %.
                 </p>
               )}
               {volum.storsteAvvik && volum.storsteAvvik.diffPp > AVVIK_TERSKEL_PP && (
-                <p style={{ margin: "5px 0 0", fontFamily: TL.font.sans, fontSize: 10.5, color: TL.danger, lineHeight: 1.5 }}>
+                <p style={{ margin: "5px 0 0", fontFamily: TL.font.sans, fontSize: 10.5, color: TL.text, lineHeight: 1.5 }}>
                   Øktene gir {AKSE_NAVN[volum.storsteAvvik.omrade]} {volum.realisertProsent[volum.storsteAvvik.omrade]} % —
                   glideren sier {Math.round(fordeling[volum.storsteAvvik.omrade] * 100)} %.
                 </p>

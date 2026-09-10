@@ -13,12 +13,14 @@ import {
   getSchedule,
   getLeaderboard,
   type GolfBoxLeaderboardEntry,
+  type GolfBoxScheduleEvent,
 } from "@/lib/scrapers/golfbox";
 import {
   NO_TOUR_CUSTOMERS,
   classifyTour,
   golfboxSlugify,
   deriveStatus,
+  type GolfBoxCustomerSource,
 } from "@/lib/scrapers/golfbox-customers";
 import { resolvePlayer } from "@/lib/scrapers/player-resolve";
 import {
@@ -89,6 +91,77 @@ function buildNotes(opts: {
   return JSON.stringify(blob);
 }
 
+/** Felles kalenderlagring for løpende sync og manuell sesongimport. Resultatdatoen endres ikke. */
+export async function upsertScheduleEvent(
+  prisma: PrismaClient,
+  src: Pick<GolfBoxCustomerSource, "customerId" | "defaultTour" | "region" | "onlyMatching">,
+  e: GolfBoxScheduleEvent,
+  now: Date = new Date(),
+): Promise<{ upserted: boolean; status: ReturnType<typeof deriveStatus> | null }> {
+  if (!e.startDate) return { upserted: false, status: null };
+  if (src.onlyMatching && !src.onlyMatching.test(e.name)) return { upserted: false, status: null };
+
+  const cls = classifyTour(e.name, src.defaultTour);
+  const year = e.startDate.getUTCFullYear();
+  const existing = await prisma.tournament.findFirst({
+    where: { sourceOrigin: { in: [...GOLFBOX_ORIGINS] }, sourceId: String(e.competitionId) },
+    orderBy: { createdAt: "asc" }, select: { id: true, slug: true, mergedIntoId: true },
+  });
+  if (existing?.mergedIntoId) return { upserted: false, status: null };
+  const slug = existing?.slug ?? `${golfboxSlugify(e.name)}-${year}-golfbox-${e.competitionId}`;
+  const status = deriveStatus(e.startDate, e.endDate, now);
+  const format = e.type === "MatchPlay" ? "MATCH" : "STROKE";
+  const notes = buildNotes({
+    region: src.region,
+    entryCloses: e.entryCloses,
+    entryOpens: e.entryOpens,
+  });
+
+  // Avled rundedatoer (én per dag i vindu) for planlegger-visning.
+  const roundDates = deriveRoundDates(e.startDate, e.endDate);
+  const registrationUrl = `https://scores.golfbox.dk/Components/Pages/Competition.aspx?CompetitionId=${e.competitionId}`;
+
+  await prisma.tournament.upsert({
+    where: existing ? { id: existing.id } : { slug },
+    create: {
+      name: e.name,
+      slug,
+      startDate: e.startDate,
+      endDate: e.endDate,
+      format,
+      sourceOrigin: cls.sourceOrigin,
+      sourceId: String(e.competitionId),
+      tour: cls.tour,
+      country: "NO",
+      location: e.venue,
+      status,
+      notes,
+      entryCloses: e.entryCloses,
+      registrationUrl,
+      roundDates,
+      officialUrl: registrationUrl,
+    },
+    update: {
+      name: e.name,
+      startDate: e.startDate,
+      endDate: e.endDate,
+      format,
+      sourceOrigin: cls.sourceOrigin,
+      sourceId: String(e.competitionId),
+      tour: cls.tour,
+      location: e.venue,
+      status,
+      // notes: always refresh when we have structured data
+      ...(notes !== undefined ? { notes } : {}),
+      entryCloses: e.entryCloses,
+      registrationUrl,
+      roundDates,
+      officialUrl: registrationUrl,
+    },
+  });
+  return { upserted: true, status };
+}
+
 /**
  * Hent terminliste fra alle norske GolfBox-tour-kunder og upsert Tournament.
  */
@@ -105,70 +178,9 @@ export async function syncGolfBoxSchedules(
     try { sched = await getSchedule(src.customerId); }
     catch { failedCustomers.push(src.customerId); continue; }
     for (const e of sched) {
-      if (!e.startDate) continue;
-      if (src.onlyMatching && !src.onlyMatching.test(e.name)) continue;
-
-      const cls = classifyTour(e.name, src.defaultTour);
-      const year = e.startDate.getUTCFullYear();
-      const existing = await prisma.tournament.findFirst({
-        where: { sourceOrigin: { in: [...GOLFBOX_ORIGINS] }, sourceId: String(e.competitionId) },
-        orderBy: { createdAt: "asc" }, select: { id: true, slug: true, mergedIntoId: true },
-      });
-      if (existing?.mergedIntoId) continue;
-      const slug = existing?.slug ?? `${golfboxSlugify(e.name)}-${year}-golfbox-${e.competitionId}`;
-      const status = deriveStatus(e.startDate, e.endDate, now);
-      const format = e.type === "MatchPlay" ? "MATCH" : "STROKE";
-      const notes = buildNotes({
-        region: src.region,
-        entryCloses: e.entryCloses,
-        entryOpens: e.entryOpens,
-      });
-
-      if (status === "UPCOMING") upcoming++;
-
-      // Avled rundedatoer (én per dag i vindu) for planlegger-visning.
-      const roundDates = deriveRoundDates(e.startDate, e.endDate);
-      const registrationUrl = `https://scores.golfbox.dk/Components/Pages/Competition.aspx?CompetitionId=${e.competitionId}`;
-
-      await prisma.tournament.upsert({
-        where: existing ? { id: existing.id } : { slug },
-        create: {
-          name: e.name,
-          slug,
-          startDate: e.startDate,
-          endDate: e.endDate,
-          format,
-          sourceOrigin: cls.sourceOrigin,
-          sourceId: String(e.competitionId),
-          tour: cls.tour,
-          country: "NO",
-          location: e.venue,
-          status,
-          notes,
-          entryCloses: e.entryCloses,
-          registrationUrl,
-          roundDates,
-          officialUrl: registrationUrl,
-        },
-        update: {
-          name: e.name,
-          startDate: e.startDate,
-          endDate: e.endDate,
-          format,
-          sourceOrigin: cls.sourceOrigin,
-          sourceId: String(e.competitionId),
-          tour: cls.tour,
-          location: e.venue,
-          status,
-          // notes: always refresh when we have structured data
-          ...(notes !== undefined ? { notes } : {}),
-          entryCloses: e.entryCloses,
-          registrationUrl,
-          roundDates,
-          officialUrl: registrationUrl,
-        },
-      });
-      events++;
+      const result = await upsertScheduleEvent(prisma, src, e, now);
+      if (result.upserted) events++;
+      if (result.upserted && result.status === "UPCOMING") upcoming++;
     }
   }
 

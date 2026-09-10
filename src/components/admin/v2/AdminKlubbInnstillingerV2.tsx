@@ -511,7 +511,7 @@ function KlubbDialog({ mode, klubb, onClose }: DialogProps) {
 
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 22 }}>
         {mode === "edit" && klubb && (
-          <Knapp ghost icon="x-circle" disabled={pending} onClick={deaktiver} style={{ color: TL.danger, borderColor: `color-mix(in srgb, ${TL.danger} 35%, transparent)` }}>
+          <Knapp ghost icon="x-circle" disabled={pending} onClick={deaktiver} style={{ color: TL.text, borderColor: `color-mix(in srgb, ${TL.danger} 35%, transparent)` }}>
             Deaktiver
           </Knapp>
         )}
@@ -542,7 +542,7 @@ function DialogFeil({ children }: { children: React.ReactNode }) {
         padding: "10px 14px",
         fontFamily: TL.font.sans,
         fontSize: 13,
-        color: TL.danger,
+        color: TL.text,
       }}
     >
       {children}

@@ -105,7 +105,7 @@ export function RescheduleSlotPicker({ bookingId, slots }: Props) {
             padding: "10px 12px",
             fontFamily: TL.font.sans,
             fontSize: 13,
-            color: TL.danger,
+            color: TL.text,
           }}
         >
           {error}

@@ -7,6 +7,8 @@ description: >
   FORBUDT i UI: CoachHQ. Les ALLTID før admin-kode. Versjon 2026-07-23.
 ---
 
+Prosjektkilder: `AGENTS.md` → `docs/platform/AGENT-BRIEF.md`. Design velges i `designsystem/README.md`; historiske skill-eksempler overstyrer ikke disse kildene.
+
 # AgencyOS — arkitektur
 
 **App-navn i UI:** AgencyOS. Aldri «CoachHQ».
@@ -23,10 +25,7 @@ Coach/eier-flaten for å drive stallen: spillere, planer (Workbench), bookinger,
 
 Next.js 16 App Router · Prisma 7 · Supabase · Tailwind v4 · v2-komponenter (`src/components/v2`) · Lucide · npm
 
-Kanon: `docs/platform/AGENT-BRIEF.md`. **Design (endret 25.08.2026): Train-lock er fasit
-for ALLE AgencyOS-skjermer** — se CLAUDE.md invariant 2 + `.claude/rules/beslutninger.md`
-(øverste beslutning) + `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`. Claude Paper
-(`605a48cc` / `docs/port/fasit-liste-paper.md` / PORTPLAN) er HISTORIKK — aldri bygg-fasit.
+Kanon: `docs/platform/AGENT-BRIEF.md`. Design og meny følger `designsystem/README.md` og siste beslutning i `.claude/rules/beslutninger.md`.
 
 ## Navigasjon (praktisk)
 

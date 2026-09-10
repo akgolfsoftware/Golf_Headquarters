@@ -10,7 +10,8 @@
  * er ETT skjermbilde — protokoll + scorekort på samme flate, ingen stegmaskin.
  */
 
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
+import { isTnTestName } from "@/lib/portal-tester/tn-catalog";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { testTilgangWhere } from "@/lib/portal-tester/test-tilgang";
@@ -99,9 +100,11 @@ export default async function GjennomforTestPage({
       pyramidArea: true,
       scoringRule: true,
       protocol: true,
+      isCustom: true,
     },
   });
   if (!test) notFound();
+  if (!test.isCustom && isTnTestName(test.name)) redirect("/portal/tren/tester/team-norway");
 
   // Forrige resultat for samme test — kilden til «Foreslått mål» og
   // «Hvorfor dette tallet» (fasit: forrige resultat + IUP + forbehold).

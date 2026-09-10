@@ -288,7 +288,7 @@ export default async function SpillerPlanDetaljPage({
                   <StatusPill tone={KATEGORI_TONE[d.category]}>{d.category}</StatusPill>
                   <div style={{ fontFamily: TL.font.sans, fontSize: 15, fontWeight: 700, color: TL.text, marginTop: 10 }}>{d.name}</div>
                   <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: 10 }}>
-                    <span style={{ fontFamily: TL.font.mono, fontSize: 30, fontWeight: 700, color: TL.ok }}>{d.rate}</span>
+                    <span style={{ fontFamily: TL.font.mono, fontSize: 30, fontWeight: 700, color: TL.text }}>{d.rate}</span>
                     <span style={{ fontFamily: TL.font.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.04em", color: TL.mute }}>
                       hit-rate · siste vindu
                     </span>

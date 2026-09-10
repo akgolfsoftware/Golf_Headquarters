@@ -335,7 +335,7 @@ export function StabilitetSeksjon({ data }: { data: StabilitetData }) {
                   display: "flex", alignItems: "center", justifyContent: "flex-end",
                   background: TL.elev, padding: "10px 8px",
                   fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, fontVariantNumeric: "tabular-nums",
-                  color: k.stabilitetScore >= 8 ? TL.ok : k.stabilitetScore < 5 ? TL.danger : TL.text,
+                  color: TL.text,
                 }}
               >
                 {k.stabilitetScore.toFixed(1)}
@@ -415,7 +415,7 @@ export function StabilitetSeksjon({ data }: { data: StabilitetData }) {
 
         {/* Diagnosepanel */}
         <div style={{ marginTop: 16, display: "flex", alignItems: "flex-start", gap: 10, borderRadius: TL.radius.card, border: `1px solid ${TL.hair}`, background: TL.scene, padding: "12px 16px" }}>
-          <TrendingUp style={{ marginTop: 2, height: 16, width: 16, flexShrink: 0, color: TL.warn }} />
+          <TrendingUp style={{ marginTop: 2, height: 16, width: 16, flexShrink: 0, color: TL.text }} />
           <p style={{ margin: 0, fontFamily: TL.font.mono, fontSize: 11, lineHeight: 1.6, color: TL.mute }}>
             <strong style={{ fontWeight: 700, color: TL.text }}>Diagnose-prinsipp:</strong>{" "}
             Bias = tren på sikte. Spredning = tren på teknikk. Begge = prioriter teknikk

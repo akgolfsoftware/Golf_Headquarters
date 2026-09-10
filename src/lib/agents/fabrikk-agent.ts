@@ -7,7 +7,7 @@
 //
 // Når banken er fylt: agenten kan igjen vurdere inspirasjon — men skal da
 // knyttes til eksisterende fasit-drills / godkjenningsflyt, ikke frie navn
-// uten promote-gate. Se masterbrain-rebuild/03-DRILL-BANK-RESTART.md.
+// uten promote-gate. Se docs/referanse/masterbrain-rebuild/03-DRILL-BANK-RESTART.md.
 
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";

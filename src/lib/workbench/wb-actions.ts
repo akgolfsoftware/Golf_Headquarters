@@ -128,8 +128,9 @@ async function kreverTilgangTilSpiller(playerId: string): Promise<Viewer | null>
 /** Henter økten og verifiserer at innloggede har lov til å røre den. */
 async function hentMedTilgang(
   sessionId: string,
+  db: Pick<Prisma.TransactionClient, "workbenchSession"> = prisma,
 ): Promise<{ row: WbRow; viewer: Viewer } | { feil: string }> {
-  const row = await prisma.workbenchSession.findUnique({
+  const row = await db.workbenchSession.findUnique({
     where: { id: sessionId },
     include: { drills: true },
   });
@@ -573,8 +574,7 @@ export async function loadPlayerDay(params: {
 
   // Venter-på-godkjenning-økter kan ikke startes ennå — regnes ikke som «neste».
   const neste =
-    sessions.find((s) => s.status !== "COMPLETED" && !s.needsPlayerApproval)?.id ??
-    sessions[0]?.id ??
+    sessions.find((s) => s.status !== "COMPLETED" && !s.needsPlayerApproval && s.approvalStatus !== "REJECTED")?.id ??
     null;
 
   return { ok: true, data: { date: dato.data, sessions, nextSessionId: neste } };
@@ -595,7 +595,7 @@ export async function loadPlayerSession(
     where: { id: sessionId },
     include: { drills: true },
   });
-  if (!row || row.playerId !== user.id) return { ok: true, data: null };
+  if (!row || row.playerId !== user.id || row.hiddenByPlayer) return { ok: true, data: null };
 
   const session = mapSession(row);
   const synligStatuser: readonly string[] = SPILLER_SYNLIGE_STATUSER;
@@ -624,7 +624,7 @@ export async function createSession(
 ): Promise<WbResultat<WorkbenchSession>> {
   const parsed = CreateSessionSchema.safeParse(input);
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.issues[0]?.message ?? "Ugyldige felter." };
+    return { ok: false, error: "Ugyldige felter." };
   }
   const cmd = parsed.data;
 
@@ -666,7 +666,7 @@ export async function createSessionSeries(
 ): Promise<WbResultat<WorkbenchSession[]>> {
   const parsed = CreateSessionSeriesSchema.safeParse(input);
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.issues[0]?.message ?? "Ugyldige felter." };
+    return { ok: false, error: "Ugyldige felter." };
   }
   const cmd = parsed.data;
 
@@ -719,7 +719,7 @@ export async function createSessionFromSource(input: {
 }): Promise<WbResultat<WorkbenchSession>> {
   const parsed = CreateFromSourceSchema.safeParse(input);
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.issues[0]?.message ?? "Ugyldig kilde." };
+    return { ok: false, error: "Ugyldig kilde." };
   }
 
   const viewer = await kreverTilgangTilSpiller(parsed.data.playerId);
@@ -797,7 +797,7 @@ export async function addDrillFromSource(input: {
 }): Promise<WbResultat<WorkbenchSession>> {
   const parsed = AddDrillFromSourceSchema.safeParse(input);
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.issues[0]?.message ?? "Ugyldig kilde." };
+    return { ok: false, error: "Ugyldig kilde." };
   }
 
   const kilde = parseSourceId(parsed.data.sourceId);
@@ -822,7 +822,7 @@ export async function moveSession(input: {
 }): Promise<WbResultat<WorkbenchSession>> {
   const parsed = MoveSessionInputSchema.safeParse(input);
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.issues[0]?.message ?? "Ugyldig flytting." };
+    return { ok: false, error: "Ugyldig flytting." };
   }
 
   const treff = await hentMedTilgang(parsed.data.sessionId);
@@ -853,37 +853,39 @@ export async function publishSessions(
 ): Promise<WbResultat<WorkbenchSession[]>> {
   if (sessionIds.length === 0) return { ok: true, data: [] };
 
-  const publiserte: WorkbenchSession[] = [];
-  for (const id of sessionIds) {
-    const treff = await hentMedTilgang(id);
-    if ("feil" in treff) return { ok: false, error: treff.feil };
-
-    let neste: WorkbenchSession;
-    try {
-      neste = publishSessionPure(mapSession(treff.row), {
-        sessionId: id,
-        publishedBy: treff.viewer.id,
-      });
-    } catch (e) {
-      return {
-        ok: false,
-        error: e instanceof Error ? e.message : "Kunne ikke publisere økten.",
-      };
-    }
-
-    const rad = await prisma.workbenchSession.update({
-      where: { id },
-      data: {
-        status: neste.status,
-        publishedAt: neste.publishedAt ? new Date(neste.publishedAt) : null,
-        publishedBy: neste.publishedBy ?? null,
-      },
-      include: { drills: true },
+  let publiserte: WorkbenchSession[];
+  try {
+    publiserte = await prisma.$transaction(async (tx) => {
+      const klargjorte = [];
+      // Hele utvalget må være gyldig før første skriving.
+      for (const id of new Set(sessionIds)) {
+        const treff = await hentMedTilgang(id, tx);
+        if ("feil" in treff) throw new Error(treff.feil);
+        const neste = publishSessionPure(mapSession(treff.row), {
+          sessionId: id,
+          publishedBy: treff.viewer.id,
+        });
+        klargjorte.push({ row: treff.row, neste });
+      }
+      const rows = [];
+      for (const { row, neste } of klargjorte) {
+        rows.push(await tx.workbenchSession.update({
+          // Avbryt hele utvalget dersom en annen klient har endret en økt.
+          where: { id: row.id, updatedAt: row.updatedAt },
+          data: {
+            status: neste.status,
+            publishedAt: neste.publishedAt ? new Date(neste.publishedAt) : null,
+            publishedBy: neste.publishedBy ?? null,
+          },
+          include: { drills: true },
+        }));
+      }
+      return rows.map(mapSession);
     });
-    publiserte.push(mapSession(rad));
-    revalider(rad.playerId);
+  } catch {
+    return { ok: false, error: "Ingen økter ble publisert. Kontroller tilgang og øktstatus, og prøv igjen." };
   }
-
+  for (const playerId of new Set(publiserte.map((s) => s.playerId))) revalider(playerId);
   return { ok: true, data: publiserte };
 }
 
@@ -911,7 +913,7 @@ export async function addDrill(input: {
 }): Promise<WbResultat<WorkbenchSession>> {
   const parsed = DrillInputSchema.safeParse(input.drill);
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.issues[0]?.message ?? "Ugyldig øvelse." };
+    return { ok: false, error: "Ugyldig øvelse." };
   }
 
   const treff = await hentMedTilgang(input.sessionId);
@@ -954,7 +956,7 @@ export async function reorderDrills(input: {
 }): Promise<WbResultat<WorkbenchSession>> {
   const parsed = ReorderDrillsInputSchema.safeParse(input);
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.issues[0]?.message ?? "Ugyldig rekkefølge." };
+    return { ok: false, error: "Ugyldig rekkefølge." };
   }
 
   const treff = await hentMedTilgang(parsed.data.sessionId);
@@ -1047,7 +1049,7 @@ export async function updateSeriesSession(input: {
 }): Promise<WbResultat<WorkbenchSession[]>> {
   const parsed = UpdateSeriesSessionInputSchema.safeParse(input);
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.issues[0]?.message ?? "Ugyldig endring." };
+    return { ok: false, error: "Ugyldig endring." };
   }
 
   const treff = await hentMedTilgang(parsed.data.sessionId);
@@ -1094,7 +1096,7 @@ export async function deleteSessionSeries(input: {
 }): Promise<WbResultat<{ slettet: number }>> {
   const parsed = DeleteSeriesSessionInputSchema.safeParse(input);
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.issues[0]?.message ?? "Ugyldig sletting." };
+    return { ok: false, error: "Ugyldig sletting." };
   }
 
   const treff = await hentMedTilgang(parsed.data.sessionId);
@@ -1125,19 +1127,25 @@ export async function setSessionTemplate(
 async function settStatus(
   sessionId: string,
   status: "IN_PROGRESS" | "COMPLETED" | "SKIPPED",
-  kreverPublisert: boolean,
 ): Promise<WbResultat<WorkbenchSession>> {
   const treff = await hentMedTilgang(sessionId);
   if ("feil" in treff) return { ok: false, error: treff.feil };
 
-  if (kreverPublisert && treff.row.status === "DRAFT") {
-    return { ok: false, error: "Økten er ikke publisert ennå." };
+  const row = treff.row;
+  if (row.hiddenByPlayer || row.needsPlayerApproval || row.approvalStatus === "REJECTED") {
+    return { ok: false, error: "Økten må være synlig og godkjent før gjennomføring." };
   }
-
-  await prisma.workbenchSession.update({
-    where: { id: sessionId },
+  // Gjentatte forespørsler er ufarlige; avsluttet historikk kan ikke gjenåpnes her.
+  if (row.status === status) return { ok: true, data: mapSession(row) };
+  if (!["PUBLISHED", "IN_PROGRESS"].includes(row.status)) {
+    return { ok: false, error: "Økten kan ikke endres fra denne statusen." };
+  }
+  const result = await prisma.workbenchSession.updateMany({
+    where: { id: sessionId, playerId: row.playerId, status: row.status, updatedAt: row.updatedAt,
+      hiddenByPlayer: false, needsPlayerApproval: false },
     data: { status },
   });
+  if (result.count !== 1) return { ok: false, error: "Økten ble endret samtidig. Last inn på nytt før du fortsetter." };
   return lagreOgHent(sessionId);
 }
 
@@ -1145,19 +1153,19 @@ async function settStatus(
 export async function startSession(
   sessionId: string,
 ): Promise<WbResultat<WorkbenchSession>> {
-  return settStatus(sessionId, "IN_PROGRESS", true);
+  return settStatus(sessionId, "IN_PROGRESS");
 }
 
 export async function completeSession(
   sessionId: string,
 ): Promise<WbResultat<WorkbenchSession>> {
-  return settStatus(sessionId, "COMPLETED", true);
+  return settStatus(sessionId, "COMPLETED");
 }
 
 export async function skipSession(
   sessionId: string,
 ): Promise<WbResultat<WorkbenchSession>> {
-  return settStatus(sessionId, "SKIPPED", false);
+  return settStatus(sessionId, "SKIPPED");
 }
 
 // ─── Godkjenning (Loop 3T / B6) ─────────────────────────────────────────────
@@ -1178,7 +1186,7 @@ export async function resolvePlayerApproval(
 ): Promise<WbResultat<WorkbenchSession>> {
   const parsed = ResolvePlayerApprovalInputSchema.safeParse(input);
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.issues[0]?.message ?? "Ugyldige felter." };
+    return { ok: false, error: "Ugyldige felter." };
   }
 
   const treff = await hentMedTilgang(parsed.data.sessionId);

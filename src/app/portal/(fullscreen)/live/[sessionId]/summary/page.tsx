@@ -1,3 +1,5 @@
+import { prisma } from "@/lib/prisma";
+import { canAccessPlayer } from "@/lib/auth/own-or-coached";
 /**
  * PlayerHQ · Live-økt oppsummering V2 — TrainingSessionV2.
  *
@@ -28,15 +30,34 @@ export default async function LiveSummaryPage({
     if (result.reason === "forbidden") redirect("/portal/planlegge");
     const wb = await loadWorkbenchForLive(sessionId);
     if (!wb) {
+      const plan = await prisma.trainingPlanSession.findUnique({
+        where: { id: sessionId },
+        include: { plan: { select: { userId: true } }, drills: { include: { exercise: true } } },
+      });
+      if (plan) {
+        if (!(await canAccessPlayer(user, plan.plan.userId))) redirect("/portal/planlegge");
+        if (plan.status !== "COMPLETED") redirect(`/portal/live/${sessionId}`);
+        const counts = await prisma.sessionBallLog.findMany({ where: { planSessionId: sessionId }, select: { count: true } });
+        const summary = mapWbToLiveSummary({
+          id: plan.id, title: plan.title, status: plan.status, pyramid: plan.pyramidArea,
+          durationMinutes: plan.durationMin, date: plan.scheduledAt,
+          startMinute: plan.scheduledAt.getUTCHours() * 60 + plan.scheduledAt.getUTCMinutes(),
+          location: plan.location, notes: plan.rationale, publishedAt: null, createdAt: plan.createdAt,
+          drills: plan.drills.map((d) => ({ id: d.id, title: d.exercise.name, description: d.notes,
+            durationMinutes: d.exercise.durationMin ?? 0, sortOrder: d.orderIndex })),
+        }, counts);
+        return <LiveSessionShell odId="playerhq-live-summary" title="Etter økta" subtitle={plan.title} backHref="/portal" closeHref="/portal">
+          <SessionSummary data={summary} lagredeOrd="Økt gjennomført." />
+        </LiveSessionShell>;
+      }
       if (result.reason === "notfound") notFound();
       redirect("/portal/planlegge");
     }
-    const erEier = wb.playerId === user.id;
-    const isCoach = user.role === "COACH" || user.role === "ADMIN";
-    if (!erEier && !isCoach) redirect("/portal/planlegge/workbench");
+    if (!(await canAccessPlayer(user, wb.playerId))) redirect("/portal/planlegge/workbench");
     if (wb.status === "IN_PROGRESS") redirect(`/portal/live/${sessionId}/tapper`);
     if (wb.status !== "COMPLETED") redirect(`/portal/live/${sessionId}`);
 
+    const ballCounts = await prisma.sessionBallLog.findMany({ where: { planSessionId: sessionId }, select: { count: true } });
     const summaryData = mapWbToLiveSummary({
       id: wb.id,
       title: wb.title,
@@ -50,7 +71,7 @@ export default async function LiveSummaryPage({
       publishedAt: wb.publishedAt,
       createdAt: wb.createdAt,
       drills: wb.drills,
-    });
+    }, ballCounts);
     const naa = new Date();
     const { okt, href } = await loadNesteOkt(user.id, naa);
     const nesteOkt = nesteOktTekst(okt, href, naa);

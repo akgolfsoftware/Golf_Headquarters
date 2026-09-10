@@ -26,6 +26,7 @@ export const testNivaaSchema = z.object({
   benchmarkLabel: z.string().nullable(),
   trend: z.enum(["opp", "ned", "flat"]).nullable(),
   testNavn: z.string(),
+  unit: z.string().optional(),
 });
 
 export const testNivaaerSchema = z.record(z.string(), testNivaaSchema);
@@ -40,6 +41,9 @@ export interface CanonResultat {
   score: number;
   takenAt: Date;
   benchmarks: Benchmarks | null;
+  comparisonKey?: string;
+  direction?: "lower" | "higher";
+  unit?: string;
 }
 
 /** Beste nivå i stigen som er nådd — null når under hele skalaen. */
@@ -76,11 +80,11 @@ export function beregnTestNivaaer(resultater: CanonResultat[]): TestNivaaer {
     const nyeste = sortert[0];
 
     // Trend: innen samme test som det nyeste resultatet.
-    const sammeTest = sortert.filter((r) => r.testId === nyeste.testId);
+    const sammeTest = sortert.filter((r) => r.testId === nyeste.testId && r.comparisonKey === nyeste.comparisonKey);
     let trend: TestNivaa["trend"] = null;
     if (sammeTest.length >= 2) {
       const forrige = sammeTest[1];
-      const retning = nyeste.benchmarks?.direction === "lower" ? -1 : 1;
+      const retning = (nyeste.direction ?? nyeste.benchmarks?.direction) === "lower" ? -1 : 1;
       const diff = (nyeste.score - forrige.score) * retning;
       trend = diff > 0 ? "opp" : diff < 0 ? "ned" : "flat";
     }
@@ -94,6 +98,7 @@ export function beregnTestNivaaer(resultater: CanonResultat[]): TestNivaaer {
       benchmarkLabel: nivaa?.label ?? null,
       trend,
       testNavn: nyeste.testNavn,
+      ...(nyeste.unit ? { unit: nyeste.unit } : {}),
     };
   }
   return ut;

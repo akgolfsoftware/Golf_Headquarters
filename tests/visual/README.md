@@ -32,7 +32,7 @@ avgjør ikke; se på innholdet med kommandoen i tabellen.
 
 | Gjelder | Regel | Sjekk | Kilde |
 |---|---|---|---|
-| Rail/tabbar i en AgencyOS-fasit | Tegnet før 25.08.2026 = utdatert. AX-01 har fem destinasjoner: Stall · Workbench · Kø · Jarvis · Meg | `grep -L "Jarvis" "designsystem/train-lock/<fil>"` skriver filnavnet hvis railen mangler Jarvis (69 av AgencyOS-filene gjør det per 05.09) | `.claude/rules/beslutninger.md` §A1, overstyrt 25.08 |
+| Rail/tabbar i en AgencyOS-fasit | Prototypens meny vinner etter beslutningen 09.09.2026; eldre AX-01-krav er overstyrt | Les siste beslutning før måling og registrer valgt referanse i riggraden | `.claude/rules/beslutninger.md` |
 | Pris/tier (ME-03, oppgrader, abonnement) | Tegnet før 16.08.2026 = utdatert. Kun TALENT (gratis) og FULL (299 kr/mnd, 2 690 kr/år). «Elite» og «PRO» finnes ikke | `grep -c "Elite\|PRO" "designsystem/train-lock/<fil>"` skal gi 0 | `docs/platform/BUSINESS-RULES.md` §Abonnement |
 | Stall-rad (AG-04 og alt som lister spillere) | Tegnet før 30.08.2026 (beslutning 6.5) = utdatert: raden er navn · neste økt · siste aktivitet · én prikk — ikke HCP/SG | `grep -c "HCP\|SG" "designsystem/train-lock/<fil>"` > 0 i en spillerliste = utdatert | `.claude/rules/beslutninger.md` §GRILLINGEN RUNDE 6 pkt 5 |
 
@@ -99,7 +99,7 @@ reelt signal — men jag ALDRI mot 0 % uten å seede alt PH-01 faktisk viser.
 1. **Feil tabell.** `/portal` («I dag») leser `WorkbenchSession`
    (`loadPlayerDay()` i `wb-actions.ts`), IKKE `TrainingSessionV2` — økt-data
    er fragmentert over flere tabeller (kjent fra
-   `docs/arkitektur-kartlegging-2026-08-30.md`). Første seed-forsøk denne
+   `docs/arkiv/opprydding-2026-09-10/arkitektur-kartlegging-2026-08-30.md`). Første seed-forsøk denne
    økten traff feil tabell og ga et resultat som så riktig ut i loggen, men
    aldri viste seg i appen.
 2. **Status styrer HELE kort-varianten, ikke bare et tall.**

@@ -14,13 +14,13 @@ import type {
 export const PYRAMID_LABEL: Record<PyramidArea, string> = {
   FYS: "Fysisk",
   TEK: "Teknisk",
-  SLAG: "Slag",
+  SLAG: "Golfslag",
   SPILL: "Spill",
   TURN: "Turnering",
 };
 
 export const AREA_LABEL: Record<TrainingArea, string> = {
-  TEE: "Tee",
+  TEE: "Utslag",
   INNSPILL_200: "Innspill 200 m",
   INNSPILL_150: "Innspill 150 m",
   INNSPILL_100: "Innspill 100 m",
@@ -29,16 +29,16 @@ export const AREA_LABEL: Record<TrainingArea, string> = {
   PITCH: "Pitch",
   LOB: "Lob",
   BUNKER: "Bunker",
-  PUTT_0_3: "Putt 0–3 m",
-  PUTT_3_5: "Putt 3–5 m",
-  PUTT_5_10: "Putt 5–10 m",
-  PUTT_10_25: "Putt 10–25 m",
-  PUTT_25_40: "Putt 25–40 m",
-  PUTT_40_PLUSS: "Putt 40 m+",
+  PUTT_0_3: "Putt 0–3 fot",
+  PUTT_3_5: "Putt 3–5 fot",
+  PUTT_5_10: "Putt 5–10 fot",
+  PUTT_10_25: "Putt 10–25 fot",
+  PUTT_25_40: "Putt 25–40 fot",
+  PUTT_40_PLUSS: "Putt 40+ fot",
   STYRKE: "Styrke",
   KONDISJON: "Kondisjon",
   BEVEGELIGHET: "Bevegelighet",
-  BANE: "Bane",
+  BANE: "Banespill",
 };
 
 export const STATUS_LABEL: Record<SessionStatus, string> = {

@@ -113,7 +113,7 @@ export function CoachSporsmalNyV2({
               placeholder={`Spør coachen din om ${tema.toLowerCase()} …`}
             />
           </div>
-          {feil && <div style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, marginTop: 10 }}>{feil}</div>}
+          {feil && <div style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.text, marginTop: 10 }}>{feil}</div>}
         </Kort>
       )}
 

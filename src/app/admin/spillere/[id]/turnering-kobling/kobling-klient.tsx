@@ -159,7 +159,7 @@ export function TurneringKoblingKlient({
                 fontFamily: TL.font.sans,
                 fontSize: 12,
                 fontWeight: 600,
-                color: TL.warn,
+                color: TL.text,
                 background: "transparent",
                 border: `1px solid color-mix(in srgb, ${TL.warn} 40%, ${TL.hair})`,
                 borderRadius: 999,

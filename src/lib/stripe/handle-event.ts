@@ -328,6 +328,7 @@ export async function handleStripeEvent(
       break;
     }
 
+    case "checkout.session.async_payment_succeeded":
     case "checkout.session.completed": {
       const session = event.data.object as Stripe.Checkout.Session;
       const bookingId = session.metadata?.bookingId;
@@ -336,12 +337,18 @@ export async function handleStripeEvent(
           ? session.payment_intent
           : session.payment_intent?.id ?? null;
 
-      // Bare denne oppdateringen skjer synkront — resten etter 200 OK til Stripe.
+      // Payment recording is durable before acknowledgement; failures enter the existing retry queue.
+      await recordCheckoutSession(session);
       let bookingBleBekreftet = false;
-      if (bookingId && session.payment_status === "paid") {
+      if (bookingId && (session.payment_status === "paid" || (session.payment_status === "no_payment_required" && session.amount_total === 0))) {
+        const booking = await prisma.booking.findUnique({ where: { id: bookingId }, select: { priceOre: true } });
+        if (!booking || session.currency !== "nok" || session.amount_total !== booking.priceOre) {
+          throw new Error("Betalingen samsvarer ikke med bestillingens beløp og valuta.");
+        }
         const result = await prisma.booking.updateMany({
           where: {
             id: bookingId,
+            priceOre: booking.priceOre,
             status: "PENDING",
             OR: [
               { stripeCheckoutSessionId: null },
@@ -356,20 +363,15 @@ export async function handleStripeEvent(
         });
         bookingBleBekreftet = result.count > 0;
         if (!bookingBleBekreftet) {
-          console.warn(
-            "[stripe-webhook] checkout.session.completed: ukjent/ikke-PENDING bookingId",
-            bookingId,
-          );
+          const existing = await prisma.booking.findUnique({ where: { id: bookingId }, select: { status: true, stripeCheckoutSessionId: true } });
+          if (!existing || !["CONFIRMED", "COMPLETED"].includes(existing.status) || existing.stripeCheckoutSessionId !== session.id) {
+            // Paid but cancelled/mismatched: keep the actual payment and queue manual reconciliation.
+            throw new Error("Betaling mottatt, men bestillingen kunne ikke bekreftes. Krever oppfølging.");
+          }
         }
       }
 
       await kjørSenere(async () => {
-        try {
-          await recordCheckoutSession(session);
-        } catch (err) {
-          console.error("[stripe-webhook] recordCheckoutSession failed", err);
-        }
-
         // Vinn-tilbake (A4): checkout med winback-metadata = tilbudet akseptert.
         const winbackUserId = session.metadata?.userId;
         const winbackPlan = session.metadata?.plan;
@@ -428,9 +430,11 @@ export async function handleStripeEvent(
       break;
     }
 
+    case "checkout.session.async_payment_failed":
     case "checkout.session.expired": {
       const session = event.data.object as Stripe.Checkout.Session;
       const bookingId = session.metadata?.bookingId;
+      if (event.type === "checkout.session.async_payment_failed") await recordCheckoutSession(session, true);
       if (bookingId) {
         // Aldri overskriv CONFIRMED/COMPLETED ved race med completed-event.
         const result = await prisma.booking.updateMany({

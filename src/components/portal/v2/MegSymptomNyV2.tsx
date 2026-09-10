@@ -390,7 +390,7 @@ export function MegSymptomNyV2() {
             fontFamily: TL.font.sans,
             fontSize: 12.5,
             fontWeight: 500,
-            color: TL.danger,
+            color: TL.text,
             background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`,
             border: `1px solid color-mix(in srgb, ${TL.danger} 35%, transparent)`,
             borderRadius: 12,

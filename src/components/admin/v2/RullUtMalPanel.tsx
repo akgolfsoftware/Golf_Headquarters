@@ -123,11 +123,11 @@ export function RullUtMalPanel({ groupId, maler, antallMedlemmer }: {
             Økter som kolliderer med noe spilleren alt har hoppes over — ingenting overskrives.
           </span>
 
-          {feil && <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger }}>{feil}</span>}
+          {feil && <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.text }}>{feil}</span>}
           {resultat && (
             <div style={{ display: "flex", flexDirection: "column", gap: 6, padding: "10px 12px", borderRadius: 11, background: `color-mix(in srgb, ${TL.ok} 8%, ${TL.elev})`, border: `1px solid color-mix(in srgb, ${TL.ok} 28%, transparent)` }}>
               <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.text }}>
-                <Icon name="check" size={12} style={{ color: TL.ok, marginRight: 6 }} />{resultat}
+                <Icon name="check" size={12} style={{ color: TL.text, marginRight: 6 }} />{resultat}
               </span>
               {hoppet.length > 0 && (
                 <span style={{ fontFamily: TL.font.mono, fontSize: 9.5, color: TL.mute }}>

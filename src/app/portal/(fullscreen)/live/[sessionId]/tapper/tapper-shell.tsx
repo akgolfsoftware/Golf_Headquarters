@@ -2,7 +2,10 @@
 
 /**
  * PlayerHQ · Slagteller-shell — Paper-port W1 (fase2).
- * Fasit: designsystem/paper/fase2/playerhq/playerhq-live-tapper.html.
+ * Fasit: designsystem/train-lock/PH-05 Live.dc.html
+ * Avvik:
+ *   - Kølleteller med aggregert telling, ikke PH-05s øvelsesregistrering.
+ *   - Teknisk retting av lagring/avslutning; ny visuell retning avventer Claude Design.
  *
  * Struktur per fasit: topp (tilbake + Slagteller + økt-sub) → stort tellertall
  * «slag denne økta» → «siste slag kl. X» med Angre → fordeling per kølle →
@@ -23,7 +26,7 @@ import { TL } from "@/lib/v2/train-lock";
 import { Icon } from "@/components/v2/icon";
 import { LiveCoachPanel } from "@/components/portal/live/LiveCoachPanel";
 import type { LiveCoachPanelData } from "@/components/portal/live/types";
-import { saveTapperCounts } from "./actions";
+import { saveTapperCounts, finishTapperSession } from "./actions";
 import { leggIKo, tomKo } from "@/lib/offline-queue/tapper-queue";
 
 type Club = { id: string; name: string };
@@ -54,6 +57,8 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
     ...Object.fromEntries(clubs.map((c) => [c.id, 0])),
     ...(initialCounts ?? {}),
   }));
+  const [finishing, setFinishing] = useState(false);
+  const [finishError, setFinishError] = useState<string | null>(null);
   const [tapp, setTapp] = useState<Tapp[]>([]);
   const [lagreStatus, setLagreStatus] = useState<"ok" | "kolagt" | "gitt-opp">("ok");
 
@@ -109,11 +114,27 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
   }, [sessionId]);
 
   async function avslutt() {
-    await lagre();
-    router.push(`/portal/live/${sessionId}`);
+    if (finishing) return;
+    setFinishing(true);
+    setFinishError(null);
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+    try {
+      const result = await finishTapperSession(sessionId,
+        Object.entries(countsRef.current).map(([club, count]) => ({ club, count })));
+      if (!result.ok) {
+        setFinishError(result.error ?? "Økten ble ikke avsluttet. Prøv igjen.");
+        return;
+      }
+      router.push(`/portal/live/${sessionId}/summary`);
+    } catch {
+      setFinishError("Økten ble ikke avsluttet. Behold siden åpen og prøv igjen når nettet er tilbake.");
+    } finally {
+      setFinishing(false);
+    }
   }
 
   function tappKolle(clubId: string) {
+    if (finishing) return;
     setCounts((prev) => ({ ...prev, [clubId]: (prev[clubId] ?? 0) + 1 }));
     setTapp((prev) => [{ clubId, kl: OSLO_KL.format(new Date()) }, ...prev]);
     planleggLagring();
@@ -127,6 +148,7 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
   }
 
   function angre() {
+    if (finishing) return;
     const siste = tapp[0];
     if (!siste) return;
     setCounts((prev) => ({
@@ -203,6 +225,7 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
 
       {/* Kropp */}
       <main style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: 16, width: "100%", maxWidth: 720, margin: "0 auto" }}>
+        {finishError && <p role="alert">{finishError}</p>}
         {/* Feil — slagene ligger trygt lokalt (offline-køen bærer dem) */}
         {lagreStatus !== "ok" && (
           <div
@@ -393,6 +416,7 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
               og lagrer slagene i økta. Kølletappene er selve fangstflaten. */}
           <button
             type="button"
+            disabled={finishing}
             onClick={() => void avslutt()}
             data-od-id="tapper-avslutt"
             data-paper-en-ting="true"
@@ -413,7 +437,7 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
               cursor: "pointer",
             }}
           >
-            Avslutt og lagre
+            {finishing ? "Lagrer …" : "Avslutt og lagre"}
           </button>
         </div>
       </div>

@@ -1,6 +1,15 @@
 "use client";
 
 /**
+ * Avvik:
+ *   - Kontrastretting fra tidligere arbeidsgren er avstemt 10.09.2026. Eldre
+ *     visuelle referanser nedenfor er historikk; helskjermkontroll mot en ny
+ *     valgt Claude Design-versjon gjenstår. Denne endringen justerer fargebruk,
+ *     ikke skjermens funksjon eller oppsett. Se grener-og-main-2026-09-10.md
+ *     under docs/beslutningsgrunnlag for faktisk kontrollomfang.
+ */
+
+/**
  * Fasit: designsystem/train-lock/AO-02 Runtimes og Ollama.dc.html
  * (AO-02 Runtimes + AO-10 Ollama, samme fil). Status er ærlig: bare Claude
  * er koblet i appen. Hvit prikk = på. Ok-grønn brukes ikke.
@@ -34,7 +43,7 @@ export function AdminAgenticosRuntimes({ kjoringerIdag }: { kjoringerIdag: numbe
                 fontWeight: 600,
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
-                color: TL.danger,
+                color: TL.text,
               }}
             >
               Ingen motor svarer

@@ -194,7 +194,7 @@ export function NivaStige({
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <span style={{ ...mono(12.5, er ? TL.text : over ? TL.mute : TL.mute) }}>{t}</span>
                 {er && <StatusPill>Nå</StatusPill>}
-                {naadd && <Icon name="check" size={12} style={{ color: TL.ok }} />}
+                {naadd && <Icon name="check" size={12} style={{ color: TL.mute }} />}
               </div>
               {beskrivelser && beskrivelser[t] && <span style={{ fontFamily: TL.font.sans, fontSize: 10.5, color: TL.mute, display: "block", marginTop: 3 }}>{beskrivelser[t]}</span>}
             </div>

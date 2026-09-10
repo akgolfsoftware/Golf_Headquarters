@@ -58,7 +58,7 @@ export function BookingAvbestillKnapp({ bookingId, canRefund }: { bookingId: str
           ? "Sikker? Timen frigis og krediten din betales tilbake."
           : "Sikker? Mindre enn 24 timer til timen — krediten refunderes ikke."}
       </p>
-      {feil && <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12, color: TL.danger }}>{feil}</p>}
+      {feil && <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12, color: TL.text }}>{feil}</p>}
       <div style={{ display: "flex", gap: 8 }}>
         <Knapp ghost onClick={() => setBekreft(false)} disabled={pending} style={{ flex: 1 }}>
           Behold timen

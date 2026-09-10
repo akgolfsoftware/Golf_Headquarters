@@ -1,4 +1,14 @@
 "use client";
+
+/**
+ * Avvik:
+ *   - Kontrastretting fra tidligere arbeidsgren er avstemt 10.09.2026. Eldre
+ *     visuelle referanser nedenfor er historikk; helskjermkontroll mot en ny
+ *     valgt Claude Design-versjon gjenstår. Denne endringen justerer fargebruk,
+ *     ikke skjermens funksjon eller oppsett. Se grener-og-main-2026-09-10.md
+ *     under docs/beslutningsgrunnlag for faktisk kontrollomfang.
+ */
+
 import { TL } from "@/lib/v2/train-lock";
 
 /**
@@ -385,7 +395,7 @@ export function WorkbenchAarsplan({ data, handlers, onEndret }: {
               const major = t.priority === "MAJOR";
               return (
                 <span key={i} title={`${t.title} · ${datoKort(d)}`} style={{ position: "absolute", left: `${pct}%`, top: 2, transform: "translateX(-50%)", display: "inline-flex", flexDirection: "column", alignItems: "center", gap: 1 }}>
-                  <Icon name="trophy" size={major ? 14 : 11} style={{ color: major ? TL.warn : TL.mute }} />
+                  <Icon name="trophy" size={major ? 14 : 11} style={{ color: major ? TL.text : TL.mute }} />
                 </span>
               );
             })}
@@ -409,7 +419,7 @@ export function WorkbenchAarsplan({ data, handlers, onEndret }: {
               <span style={{ fontFamily: TL.font.mono, fontSize: 8, color: TL.mute }}>turnering / høy volum</span>
             </span>
             <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-              <Icon name="trophy" size={10} style={{ color: TL.warn }} />
+              <Icon name="trophy" size={10} style={{ color: TL.text }} />
               <span style={{ fontFamily: TL.font.mono, fontSize: 8, color: TL.mute }}>turnering i kalender</span>
             </span>
           </div>
@@ -487,7 +497,7 @@ export function WorkbenchAarsplan({ data, handlers, onEndret }: {
               )}
             </div>
 
-            {feil && <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, display: "block", marginTop: 10 }}>{feil}</span>}
+            {feil && <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.text, display: "block", marginTop: 10 }}>{feil}</span>}
 
             {bekreftSlett ? (
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginTop: 16, padding: "10px 12px", borderRadius: 11, background: `color-mix(in srgb, ${TL.danger} 8%, ${TL.dock})`, border: `1px solid color-mix(in srgb, ${TL.danger} 35%, transparent)` }}>

@@ -164,7 +164,7 @@ export function MegFortsettV2({
             padding: 12,
             fontFamily: TL.font.sans,
             fontSize: 13,
-            color: TL.danger,
+            color: TL.text,
           }}
         >
           {error}

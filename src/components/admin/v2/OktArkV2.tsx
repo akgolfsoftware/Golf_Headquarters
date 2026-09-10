@@ -1,6 +1,15 @@
 "use client";
 
 /**
+ * Avvik:
+ *   - Kontrastretting fra tidligere arbeidsgren er avstemt 10.09.2026. Eldre
+ *     visuelle referanser nedenfor er historikk; helskjermkontroll mot en ny
+ *     valgt Claude Design-versjon gjenstår. Denne endringen justerer fargebruk,
+ *     ikke skjermens funksjon eller oppsett. Se grener-og-main-2026-09-10.md
+ *     under docs/beslutningsgrunnlag for faktisk kontrollomfang.
+ */
+
+/**
  * OktArkV2 — AgencyOS økt-ark for coach (T6, 27.08.2026).
  *
  * Fasit: `A-14 iPhone Okt-ark Filip.dc.html` — bunnark-look (mørk flate,
@@ -116,7 +125,7 @@ const sekundærKnapp: CSSProperties = {
   width: "100%",
   border: "none",
   background: "none",
-  color: TL.danger,
+  color: TL.text,
   fontFamily: TL.font.sans,
   fontSize: 14,
   fontWeight: 600,
@@ -326,7 +335,7 @@ export function OktArkV2({ data }: { data: OktArkData }) {
       </div>
 
       {feil && (
-        <p role="alert" style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 13, color: TL.danger }}>
+        <p role="alert" style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 13, color: TL.text }}>
           {feil}
         </p>
       )}
@@ -340,7 +349,7 @@ export function OktArkV2({ data }: { data: OktArkData }) {
             <Link href="/admin/bookinger" style={{ textDecoration: "none", flex: 1 }}>
               <span style={ghostKnapp}>Reschedule</span>
             </Link>
-            <button type="button" style={{ ...ghostKnapp, flex: 1, color: TL.danger }} onClick={() => setAvlysApen(true)}>
+            <button type="button" style={{ ...ghostKnapp, flex: 1, color: TL.text }} onClick={() => setAvlysApen(true)}>
               Avlys
             </button>
           </div>

@@ -1,6 +1,8 @@
 # AK Golf — Ordbok / Glossary (konsept & system)
 
-Autoritativ referanse for alle fagbegreper, koder og systemord i AK Golf-konseptet. Felles språk for utviklere, trenere og AI-agenter. **Del A** = hva begrepene betyr. **Del B** = hvordan ord staves i UI.
+Referanse for fagbegreper, koder og systemord i AK Golf-konseptet. **Del A** = hva begrepene betyr. **Del B** = hvordan ord staves i UI.
+
+> **Kildeavklaring 10.09.2026:** [Treningsfaglig fasit](FASIT-AK-GOLF-HQ.md) vinner ved konflikt om treningsmodellen. Denne ordboken inneholder fortsatt eldre regler, avstandsbånd og kategorier. Dagens modell bruker 19 treningsområder, putting i fot og øvrige treningsavstander i meter, A–K med A som best og fri planlegging. Eldre prosentkrav, fasebegrensninger og kildehierarkiet nedenfor skal ikke innføres fra denne filen. Senere, uttrykkelig daterte fagbeslutninger (som Club Speed 01.09) beholdes. Full språkrevisjon pågår; se [gjennomgangen](beslutningsgrunnlag/sprak-og-treningskvalitet-2026-09-10.md).
 
 > **UTGÅTT (se `.claude/rules/beslutninger.md`, «ALLE TRENINGSPLANREGLER LÅST OPP», 2026-08-18):**
 > §2 (L-faser), §3 (CS-nivåer), §5 (Miljø/Press M0–M5/PR1–PR5) og §13 (invarianter) under

@@ -1,6 +1,15 @@
 "use client";
 
 /**
+ * Avvik:
+ *   - Kontrastretting fra tidligere arbeidsgren er avstemt 10.09.2026. Eldre
+ *     visuelle referanser nedenfor er historikk; helskjermkontroll mot en ny
+ *     valgt Claude Design-versjon gjenstår. Denne endringen justerer fargebruk,
+ *     ikke skjermens funksjon eller oppsett. Se grener-og-main-2026-09-10.md
+ *     under docs/beslutningsgrunnlag for faktisk kontrollomfang.
+ */
+
+/**
  * AgencyOS Innboks — én liste, ett detaljpanel (PP-2.2).
  *
  * Fasit: designsystem/paper/fase1/agencyos-innboks.html + -mobil.html.
@@ -689,7 +698,7 @@ function InnboksDetalj({
       {feil && (
         <p
           role="alert"
-          style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.danger }}
+          style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.text }}
         >
           {feil}
         </p>

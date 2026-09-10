@@ -1,0 +1,65 @@
+{
+  "project": "Golf_Headquarters",
+  "projectRef": "dcnxoztjtdqoidaekxry",
+  "migration": "20260910095823_launch_server_tables_rls",
+  "approval": "Anders: Godkjent",
+  "tables": [
+    "datagolf_tak",
+    "datagolf_tak_band",
+    "position_task_maal",
+    "tn_posts",
+    "tn_post_vedlegg",
+    "tn_post_lesekvitteringer",
+    "kondisjon_segmenter",
+    "daily_active_users",
+    "drift_rutiner"
+  ],
+  "rlsEnabled": 9,
+  "clientRolesTested": [
+    "anon",
+    "authenticated"
+  ],
+  "clientReadChecksReturningZeroRows": 18,
+  "serverRoleAccessChecks": 9,
+  "actualApplicationConnectionVerified": true,
+  "allFourServerPermissionsPreserved": true,
+  "customerRowsReturnedOrWritten": 0,
+  "remainingAdvisors": [
+    {
+      "name": "rls_enabled_no_policy",
+      "level": "INFO",
+      "count": 223,
+      "remediation": "https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy"
+    },
+    {
+      "name": "function_search_path_mutable",
+      "level": "WARN",
+      "count": 4,
+      "remediation": "https://supabase.com/docs/guides/database/database-linter?lint=0011_function_search_path_mutable"
+    },
+    {
+      "name": "extension_in_public",
+      "level": "WARN",
+      "count": 5,
+      "remediation": "https://supabase.com/docs/guides/database/database-linter?lint=0014_extension_in_public"
+    },
+    {
+      "name": "anon_security_definer_function_executable",
+      "level": "WARN",
+      "count": 17,
+      "remediation": "https://supabase.com/docs/guides/database/database-linter?lint=0028_anon_security_definer_function_executable"
+    },
+    {
+      "name": "authenticated_security_definer_function_executable",
+      "level": "WARN",
+      "count": 17,
+      "remediation": "https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable"
+    },
+    {
+      "name": "auth_leaked_password_protection",
+      "level": "WARN",
+      "count": 1,
+      "remediation": "https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection"
+    }
+  ]
+}

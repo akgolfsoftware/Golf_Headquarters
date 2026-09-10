@@ -7,12 +7,14 @@ description: >
   MCP: https://api.mobbin.com/mcp — krever OAuth. Versjon 2026-07-23.
 ---
 
+Prosjektkilder: `AGENTS.md` → `docs/platform/AGENT-BRIEF.md`. Design velges i `designsystem/README.md`; historiske skill-eksempler overstyrer ikke disse kildene.
+
 # Mobbin design-inspo
 
 ## Hva
 Mobbin = 600k+ **ekte** skjermer. Bruk for struktur og flyt — **ikke** kopier farger.
 AK-fasit (endret 25.08.2026): **Train-lock** for ALLE skjermer i PlayerHQ og AgencyOS — se
-CLAUDE.md invariant 2 + `.claude/rules/beslutninger.md` (øverste beslutning). Train-lock
+AGENTS.md §Skjermarbeid + `.claude/rules/beslutninger.md` (øverste beslutning). Train-lock
 vinner alltid over Mobbin-referansen. Claude Paper (`605a48cc`) er historikk, ikke fasit.
 lime/forest er avviklet.
 

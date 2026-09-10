@@ -138,7 +138,7 @@ export function CoachMeldingNyV2({
           rows={6}
           placeholder={`Skriv en melding til ${coach.name.split(" ")[0]} …`}
         />
-        {feil && <div style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, marginTop: 8 }}>{feil}</div>}
+        {feil && <div style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.text, marginTop: 8 }}>{feil}</div>}
       </Kort>
 
       <Veiviser steg={["Skriv til coachen"]} aktiv={0} sisteTekst={pending ? "Sender …" : "Send melding"} onNeste={pending ? undefined : handleSend} />

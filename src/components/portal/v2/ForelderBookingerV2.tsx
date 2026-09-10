@@ -1,6 +1,15 @@
 "use client";
 
 /**
+ * Avvik:
+ *   - Kontrastretting fra tidligere arbeidsgren er avstemt 10.09.2026. Eldre
+ *     visuelle referanser nedenfor er historikk; helskjermkontroll mot en ny
+ *     valgt Claude Design-versjon gjenstår. Denne endringen justerer fargebruk,
+ *     ikke skjermens funksjon eller oppsett. Se grener-og-main-2026-09-10.md
+ *     under docs/beslutningsgrunnlag for faktisk kontrollomfang.
+ */
+
+/**
  * Foreldreportal · Bookinger — pikselport PX-5.
  * Fasit: designsystem/train-lock/FO-03 Bookinger.dc.html
  * (+ FO-03L Bookinger lys.dc.html — lys/mørk gjøres av tokens).
@@ -152,7 +161,7 @@ function BookingKort({ b }: { b: ForelderBookingRad }) {
             fontWeight: 600,
             letterSpacing: "0.08em",
             textTransform: "uppercase",
-            color: TL.warn,
+            color: TL.text,
             flexShrink: 0,
           }}
         >

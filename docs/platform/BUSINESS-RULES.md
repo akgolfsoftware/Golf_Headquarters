@@ -5,13 +5,7 @@
 Dokumenterer forretningsregler som ikke kan utledes fra kode alene.
 Sist oppdatert: 2026-08-17 (dato rettet — §Abonnement og tilgang er fra 2026-08-16; headeren sa 2026-06-14 og fikk fila til å se gammel ut).
 
-> ⚠ **Status per 2026-07-06** (fulgte opp 2026-06-22-opplåsingen — historikken lever i git
-> for full historikk): 3 av 4 daværende «låst opp»-regler er nå **avklart og bygget** — tema-toggle
-> (AgencyOS lys/mørk-bryter), abonnement/pris-modell (299 kr/mnd, ingen årlig — se under) og cockpit
-> stall-SG/plan-etterlevelse. Kun **FYS-formel + A–K-nivåtall** har én gjenstående deltråd: onboarding
-> steg 6 og en beslutning om hvordan gammelt HCP-basert A–K og nytt snittscore-basert A–K skal henge sammen
-> i drill-filtrering (`kategoriFraHcp` vs. `kategoriFraSnittscore` gir ulik bokstav i dag).
-> Seksjonene under i denne fila er oppdatert til å reflektere den faktiske, bygde tilstanden.
+> Les de konkrete reglene under. Den tidligere statusoppsummeringen fra juli er fjernet fordi den motsa den senere årsprisen og tilgangsmodellen. Produktregler beskriver ønsket oppførsel; faktisk ferdigstatus står i `docs/STATUS-NÅ.md`.
 
 ---
 
@@ -21,7 +15,7 @@ Sist oppdatert: 2026-08-17 (dato rettet — §Abonnement og tilgang er fra 2026-
 > FULL, TALENT (gratis låst profil) og INGEN. Eneste sannhetskilde i kode:
 > `resolveTilgang` i `src/lib/feature-flags.ts`.
 
-### FULL tilgang gratis — fire eksakte tilfeller
+### FULL tilgang gratis — tre aktive veier
 
 1. **Prøveperiode:** 1 uke full app, **starter i Stripe og krever kort**
    (Anders 2026-08-29). Går automatisk over til betaling på dag 8 med mindre

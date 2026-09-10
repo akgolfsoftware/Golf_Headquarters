@@ -43,7 +43,7 @@ export function TrainLockSlettSpillerKnapp({ spillerId, spillerNavn }: { spiller
           padding: "10px 18px",
           fontSize: 13,
           fontWeight: 600,
-          color: TL.danger,
+          color: TL.text,
           cursor: "pointer",
         }}
       >
@@ -77,7 +77,7 @@ export function TrainLockSlettSpillerKnapp({ spillerId, spillerNavn }: { spiller
             <p style={{ marginTop: 14, fontSize: 13, lineHeight: 1.55, color: TL.text }}>
               Spilleren fjernes fra stallen og mister tilgang. Dataene beholdes og kan gjenopprettes via support. Vil du fortsette?
             </p>
-            {error && <p style={{ marginTop: 10, fontSize: 13, color: TL.danger }}>{error}</p>}
+            {error && <p style={{ marginTop: 10, fontSize: 13, color: TL.text }}>{error}</p>}
             <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 20 }}>
               <button
                 type="button"

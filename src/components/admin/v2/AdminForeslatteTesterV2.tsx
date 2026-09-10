@@ -146,7 +146,7 @@ function ForslagKort({ test }: { test: ForeslattTestV2 }) {
           style={{
             fontFamily: TL.font.sans,
             fontSize: 12,
-            color: TL.danger,
+            color: TL.text,
             background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`,
             border: `1px solid color-mix(in srgb, ${TL.danger} 30%, transparent)`,
             borderRadius: 10,
@@ -171,7 +171,7 @@ function ForslagKort({ test }: { test: ForeslattTestV2 }) {
         <Knapp icon={pending ? "loader" : "check"} disabled={pending} onClick={godkjenn} full style={{ minHeight: 44 }}>
           Godkjenn
         </Knapp>
-        <Knapp ghost icon="trash" disabled={pending} onClick={avvis} style={{ minHeight: 44, color: TL.danger }}>
+        <Knapp ghost icon="trash" disabled={pending} onClick={avvis} style={{ minHeight: 44, color: TL.text }}>
           Avvis
         </Knapp>
       </div>

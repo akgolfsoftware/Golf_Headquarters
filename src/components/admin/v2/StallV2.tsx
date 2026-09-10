@@ -210,7 +210,7 @@ function SpillerSammendrag({ s }: { s: StallV2Player }) {
             Hcp{" "}
             <span style={{ fontFamily: TL.font.mono, fontVariantNumeric: "tabular-nums" }}>{s.hcp}</span> · {s.gruppe} ·{" "}
             <span style={{ color: s.pakkeAktiv ? TL.mute : TL.mute }}>{s.pakke}</span>
-            {s.skylder && <span style={{ color: TL.danger, fontWeight: 600 }}> · skylder</span>}
+            {s.skylder && <span style={{ color: TL.text, fontWeight: 600 }}> · skylder</span>}
           </div>
         </div>
       </div>

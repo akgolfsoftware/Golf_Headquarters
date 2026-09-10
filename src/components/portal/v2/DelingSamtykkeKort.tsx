@@ -188,13 +188,13 @@ export function DelingSamtykkeKort({
           borderTop: `1px solid ${TL.hair}`,
           fontFamily: TL.font.sans,
           fontSize: 11.5,
-          color: feil ? TL.danger : lagret ? TL.ok : TL.mute,
+          color: feil ? TL.text : lagret ? TL.mute : TL.mute,
           display: "flex",
           alignItems: "center",
           gap: 6,
         }}
       >
-        {lagret && !feil && <Icon name="check-circle" size={13} style={{ color: TL.ok }} />}
+        {lagret && !feil && <Icon name="check-circle" size={13} style={{ color: TL.mute }} />}
         <span>
           {pending
             ? "Lagrer …"

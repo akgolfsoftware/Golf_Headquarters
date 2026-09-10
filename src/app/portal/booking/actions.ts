@@ -19,9 +19,10 @@ import { hentBarnHvisTilhoerer } from "@/lib/forelder";
 import { beregnSlotVindu, type SlotVindu } from "@/lib/portal-booking/slot-vindu";
 import { createCreditBooking } from "@/lib/booking/credit-booking";
 import { kanBrukeCredits } from "@/lib/booking/credits-tilgang";
-import { stripeKlient } from "@/lib/stripe";
+import { isSlotStillAvailable } from "@/lib/booking/availability";
+import { startBookingPayment } from "@/lib/booking/payment-start";
 import { sjekkKollisjon, erKollisjonsfeil, kollisjonsmelding } from "@/lib/booking/kollisjonsvern";
-import { acquireHold, DEFAULT_HOLD_TTL_MS } from "@/lib/booking/slot-hold";
+import { acquireHold, releaseHold, DEFAULT_HOLD_TTL_MS } from "@/lib/booking/slot-hold";
 import { recordBookingMetric } from "@/lib/booking/metrics";
 import { APP_URL } from "@/lib/app-url";
 
@@ -147,16 +148,16 @@ export async function opprettBookingMedKort(
 
   const startAt = new Date(input.startIso);
   if (Number.isNaN(startAt.getTime())) return { ok: false, grunn: "Ugyldig tidspunkt." };
-  if (startAt.getTime() <= Date.now()) return { ok: false, grunn: "Tidspunktet er passert." };
 
   const service = await prisma.serviceType.findUnique({
     where: { id: input.serviceTypeId },
-    select: { id: true, name: true, slug: true, priceOre: true, durationMin: true, coachUserId: true },
+    select: { id: true, name: true, slug: true, active: true, priceOre: true, durationMin: true, coachUserId: true },
   });
-  if (!service) return { ok: false, grunn: "Tjenesten finnes ikke." };
+  if (!service?.active) return { ok: false, grunn: "Tjenesten er ikke tilgjengelig." };
   if (service.priceOre < 300) return { ok: false, grunn: "Tjenesten mangler gyldig pris — kontakt oss." };
   const endAt = new Date(startAt.getTime() + service.durationMin * 60_000);
   const coachId = service.coachUserId ?? input.coachId;
+  if (!(await isSlotStillAvailable(service.id, startAt, coachId, user.id))) return { ok: false, grunn: "Tidspunktet er ikke tilgjengelig. Velg en annen tid." };
 
   const hold = await acquireHold(
     {
@@ -214,7 +215,7 @@ export async function opprettBookingMedKort(
   }
 
   const appUrl = APP_URL;
-  const session = await stripeKlient().checkout.sessions.create({
+  const payment = await startBookingPayment(booking.id, {
     mode: "payment",
     customer_email: user.email,
     line_items: [
@@ -223,7 +224,7 @@ export async function opprettBookingMedKort(
           currency: "nok",
           product_data: {
             name: service.name,
-            description: `${startAt.toLocaleString("nb-NO", { dateStyle: "full", timeStyle: "short", timeZone: "Europe/Oslo" })} hos ${lokasjon.name}`,
+            description: `${startAt.toLocaleString("nb-NO", { dateStyle: "full", timeStyle: "short" })} hos ${lokasjon.name}`,
           },
           unit_amount: service.priceOre,
         },
@@ -231,14 +232,13 @@ export async function opprettBookingMedKort(
       },
     ],
     metadata: { bookingId: booking.id, kilde: "portal", ...(input.barnId ? { paaVegneAv: eierId } : {}) },
-    success_url: `${appUrl}${input.retururlBase ?? "/portal/booking"}?betalt=1`,
-    cancel_url: `${appUrl}${input.retururlBase ?? "/portal/booking"}?avbrutt=1`,
+    success_url: `${appUrl}${input.retururlBase === "/forelder/bookinger" ? "/forelder/bookinger" : "/portal/booking"}?betalt=1`,
+    cancel_url: `${appUrl}${input.retururlBase === "/forelder/bookinger" ? "/forelder/bookinger" : "/portal/booking"}?avbrutt=1`,
     expires_at: Math.floor(Date.now() / 1000) + 30 * 60,
   });
-  await prisma.booking.update({
-    where: { id: booking.id },
-    data: { stripeCheckoutSessionId: session.id },
-  });
-  if (!session.url) return { ok: false, grunn: "Betalingssiden kunne ikke åpnes — prøv igjen." };
-  return { ok: true, url: session.url };
+  if (!payment.ok) {
+    if (payment.releaseHold) await releaseHold({ serviceTypeId: service.id, coachId, startIso: startAt.toISOString() }, user.id);
+    return { ok: false, grunn: payment.error };
+  }
+  return { ok: true, url: payment.url };
 }

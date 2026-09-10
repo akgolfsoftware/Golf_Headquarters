@@ -201,7 +201,7 @@ function Fotknapper({
           disabled={pending}
           style={
             sekundaer.farlig
-              ? { borderRadius: 9999, border: `1px solid color-mix(in srgb, ${TL.danger} 35%, transparent)`, background: `color-mix(in srgb, ${TL.danger} 6%, transparent)`, padding: "8px 16px", fontSize: 12, fontWeight: 600, color: TL.danger, cursor: "pointer", opacity: pending ? 0.6 : 1 }
+              ? { borderRadius: 9999, border: `1px solid color-mix(in srgb, ${TL.danger} 35%, transparent)`, background: `color-mix(in srgb, ${TL.danger} 6%, transparent)`, padding: "8px 16px", fontSize: 12, fontWeight: 600, color: TL.text, cursor: "pointer", opacity: pending ? 0.6 : 1 }
               : { borderRadius: 9999, border: `1px solid ${TL.hair}`, background: TL.dock, padding: "8px 16px", fontSize: 12, fontWeight: 600, color: TL.text, cursor: "pointer", opacity: pending ? 0.6 : 1 }
           }
         >
@@ -220,7 +220,7 @@ function Fotknapper({
 
 function FeilBoks({ children }: { children: React.ReactNode }) {
   return (
-    <div role="alert" style={{ marginTop: 14, borderRadius: 10, border: `1px solid color-mix(in srgb, ${TL.danger} 30%, transparent)`, background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`, padding: "10px 14px", fontSize: 13, color: TL.danger }}>
+    <div role="alert" style={{ marginTop: 14, borderRadius: 10, border: `1px solid color-mix(in srgb, ${TL.danger} 30%, transparent)`, background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`, padding: "10px 14px", fontSize: 13, color: TL.text }}>
       {children}
     </div>
   );

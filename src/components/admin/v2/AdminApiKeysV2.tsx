@@ -110,7 +110,7 @@ function NokkelRad({ n, last, onRevoke, pending }: { n: AdminApiKeysV2Nokkel; la
           n.revokert ? (
             <span style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>—</span>
           ) : (
-            <Knapp ghost icon="trash-2" disabled={pending} onClick={() => onRevoke(n.id)} style={{ color: TL.danger }}>
+            <Knapp ghost icon="trash-2" disabled={pending} onClick={() => onRevoke(n.id)} style={{ color: TL.text }}>
               Revoker
             </Knapp>
           )
@@ -229,7 +229,7 @@ function NyNokkelModal({ onClose }: { onClose: () => void }) {
             </div>
 
             {feil && (
-              <div role="alert" style={{ marginTop: 14, borderRadius: 10, border: `1px solid color-mix(in srgb, ${TL.danger} 30%, transparent)`, background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`, padding: "10px 14px", fontFamily: TL.font.sans, fontSize: 13, color: TL.danger }}>
+              <div role="alert" style={{ marginTop: 14, borderRadius: 10, border: `1px solid color-mix(in srgb, ${TL.danger} 30%, transparent)`, background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`, padding: "10px 14px", fontFamily: TL.font.sans, fontSize: 13, color: TL.text }}>
                 {feil}
               </div>
             )}

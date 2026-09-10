@@ -18,11 +18,11 @@
 import { z } from "zod";
 
 /** «V»/«H» = registrert miss-retning (kun Gate-protokoller med miss_side, TE-04). */
-export type StegVerdi = number | boolean | "V" | "H" | null;
+export type StegVerdi = number | boolean | string | null;
 export type StegVerdier = Record<string, StegVerdi>;
 export type SessionScoring = { forsok: Record<string, StegVerdier> };
 
-const StegVerdiSchema = z.union([z.number().finite(), z.boolean(), z.enum(["V", "H"]), z.null()]);
+const StegVerdiSchema = z.union([z.number().finite(), z.boolean(), z.string().max(200), z.null()]);
 
 export const SessionScoringSchema = z.object({
   forsok: z.record(

@@ -3,7 +3,7 @@
  * v2-port 17. juli 2026: `MalDetaljV2` erstatter hybrid-designet
  * (page + goal-client), ruten flyttet ut av (legacy). Auth/eierskaps-sjekk,
  * Prisma-queries, fremdrifts-/ETA-utregningen og A–K-stigen (buildLadder)
- * er uendret — kun presentasjonslaget er nytt. Handlinger (endre/oppnådd/
+ * beskriver den tidligere porten. Tilgang og eierens HCP er rettet 10.09.2026. Handlinger (endre/oppnådd/
  * avbryt) går fortsatt via goals-actions.ts, nå fra MalDetaljV2s modaler.
  * Not-found-fallback beholdt (ærlig melding, aldri demo-mål).
  */
@@ -11,6 +11,7 @@
 import Link from "next/link";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { loadGoalForViewer } from "@/lib/portal/goals/detail-data";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { TilbakeLenke, TomTilstand, CTAPill, Kort } from "@/components/v2";
@@ -101,13 +102,11 @@ export default async function GoalDetailPage({
   const user = await requirePortalUser();
   const { id } = await params;
 
-  const goal = await prisma.goal.findUnique({ where: { id } });
-  const isOwner =
-    !!goal &&
-    (goal.userId === user.id || user.role === "ADMIN" || user.role === "COACH");
+  const detail = await loadGoalForViewer(id, user);
+  const goal = detail?.goal;
 
   // Ingen ekte mål — eller ikke tilgang. Vis ærlig "ikke funnet", aldri demo-mål.
-  if (!goal || !isOwner) {
+  if (!goal || !detail) {
     return (
       <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
         <TilbakeLenke href="/portal/mal">Mine mål</TilbakeLenke>
@@ -130,7 +129,7 @@ export default async function GoalDetailPage({
   const isOwnGoal = goal.userId === user.id;
 
   const [progress, linkedTest, testOptions] = await Promise.all([
-    beregnGoalProgress(goal, { hcp: user.hcp }),
+    beregnGoalProgress(goal, { hcp: detail.hcp }),
     goal.linkedTestId
       ? prisma.testDefinition.findUnique({ where: { id: goal.linkedTestId }, select: { name: true } })
       : Promise.resolve(null),
@@ -174,7 +173,7 @@ export default async function GoalDetailPage({
     fristTekst: goal.targetDate ? formatDeadline(goal.targetDate) : null,
     etaUker: etaWeeks,
     dagerIgjen: daysUntil(goal.targetDate),
-    stige: buildLadder(user.hcp ?? 0, goal.type),
+    stige: detail.hcp == null ? [] : buildLadder(detail.hcp, goal.type),
     avbruttGrunn: abandonReason,
     achievedAtTekst: goal.achievedAt
       ? formatAchievedDato(goal.achievedAt)

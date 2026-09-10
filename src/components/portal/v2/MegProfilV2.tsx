@@ -1,4 +1,14 @@
 "use client";
+
+/**
+ * Avvik:
+ *   - Kontrastretting fra tidligere arbeidsgren er avstemt 10.09.2026. Eldre
+ *     visuelle referanser nedenfor er historikk; helskjermkontroll mot en ny
+ *     valgt Claude Design-versjon gjenstår. Denne endringen justerer fargebruk,
+ *     ikke skjermens funksjon eller oppsett. Se grener-og-main-2026-09-10.md
+ *     under docs/beslutningsgrunnlag for faktisk kontrollomfang.
+ */
+
 import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ · Meg · Profil (W3-port).
@@ -476,12 +486,12 @@ export function MegProfilV2({ data, lagre }: { data: MegProfilData; lagre: Lagre
           </button>
           <div aria-live="polite" style={{ minHeight: 16, textAlign: "center" }}>
             {lagret && (
-              <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.ok }}>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>
                 Lagret
               </span>
             )}
             {feil && (
-              <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.danger }}>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.text }}>
                 {feil}
               </span>
             )}

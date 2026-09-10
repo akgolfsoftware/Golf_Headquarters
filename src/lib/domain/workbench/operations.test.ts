@@ -120,6 +120,22 @@ describe("moveSession", () => {
 });
 
 describe("publish / unpublish", () => {
+  for (const status of ["IN_PROGRESS", "COMPLETED", "SKIPPED"] as const) {
+    it(`publisering overskriver ikke ${status}`, () => {
+      const s = { ...createSession(baseCmd), status };
+      assert.throws(() => publishSession(s, { sessionId: s.id, publishedBy: "c1" }));
+      assert.equal(s.status, status);
+    });
+  }
+
+  it("planlagt økt kan publiseres og gjentatt publisering beholder tidspunktet", () => {
+    const s = { ...createSession(baseCmd), status: "SCHEDULED" as const };
+    const cmd = { sessionId: s.id, publishedBy: "c1" };
+    const pub = publishSession(s, cmd, "2026-09-10T09:00:00Z");
+    assert.equal(pub.status, "PUBLISHED");
+    assert.equal(publishSession(pub, cmd, "2026-09-10T10:00:00Z"), pub);
+  });
+
   it("publishes DRAFT → PUBLISHED", () => {
     const s = createSession(baseCmd);
     const pub = publishSession(s, {

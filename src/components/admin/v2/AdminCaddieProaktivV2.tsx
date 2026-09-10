@@ -53,8 +53,8 @@ export function AdminCaddieProaktivV2({ forslag }: { forslag: ProaktivtForslag[]
       </div>
 
       {statusTekst && (
-        <p style={{ marginBottom: 12, display: "flex", alignItems: "center", gap: 6, fontFamily: TL.font.mono, fontSize: 11, color: TL.ok }}>
-          <Icon name="check" size={13} style={{ color: TL.ok }} /> {statusTekst}
+        <p style={{ marginBottom: 12, display: "flex", alignItems: "center", gap: 6, fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>
+          <Icon name="check" size={13} style={{ color: TL.text }} /> {statusTekst}
         </p>
       )}
 

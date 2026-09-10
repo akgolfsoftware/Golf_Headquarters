@@ -44,7 +44,7 @@ function VentendeKort({
   return (
     <Kort style={{ borderColor: `color-mix(in srgb, ${TL.warn} 45%, ${TL.hair})` }}>
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8 }}>
-        <Icon name="triangle-alert" size={16} style={{ color: TL.warn }} />
+        <Icon name="triangle-alert" size={16} style={{ color: TL.text }} />
         <span style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 15, color: TL.text }}>{rad.navn}</span>
         <StatusPill tone="warn">
           Venter godkjenning · {rad.endringPct} % endring · {rad.årsak}

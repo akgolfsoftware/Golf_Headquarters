@@ -6,7 +6,7 @@ kodebasen 30.08.2026 før spørsmålene ble stilt.
 
 Konsolideringslista (42 skjermer → 10 funksjoner) er nå ført inn som arbeid i
 `docs/MASTERPLAN-GJENSTAAENDE.md` **STEG 15** — bygg derfra, ikke herfra.
-Målt tilstand: `docs/arkitektur-kartlegging-2026-08-30.md`.
+Målt tilstand: `docs/arkiv/opprydding-2026-09-10/arkitektur-kartlegging-2026-08-30.md`.
 
 ---
 

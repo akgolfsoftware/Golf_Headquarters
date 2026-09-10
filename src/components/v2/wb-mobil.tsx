@@ -116,7 +116,7 @@ export function FlyttTilArk({
       </div>
       {valgtDag && valgtDag.varsel && (
         <div style={{ display: "flex", gap: 7, alignItems: "flex-start", marginTop: 10, padding: "8px 11px", borderRadius: 10, background: `color-mix(in srgb,${TL.warn} 10%,transparent)` }}>
-          <Icon name="info" size={12} style={{ color: TL.warn, flex: "none", marginTop: 1 }} />
+          <Icon name="info" size={12} style={{ color: TL.text, flex: "none", marginTop: 1 }} />
           <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, lineHeight: 1.45 }}>{valgtDag.varsel} — du velger selv.</span>
         </div>
       )}

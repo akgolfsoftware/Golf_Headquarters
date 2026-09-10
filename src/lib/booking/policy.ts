@@ -4,9 +4,11 @@
  * Brukes av server-actions (cancel/reschedule) og kan eksporteres til UI
  * (PolicyBanner) uten å duplisere 24t-reglen.
  *
- * Tidssone: sammenlign alltid med Date (UTC-ms). Visning formateres i UI
- * med Europe/Oslo.
+ * Lagret start er Oslo-veggklokke. Frister sammenlignes som faktiske tidspunkt,
+ * slik at 24 timer også betyr 24 timer ved overgang til sommer-/vintertid.
  */
+
+import { naivOsloTilTidspunkt, tilNaivVeggklokke } from "@/lib/google-calendar-tid";
 
 export const AVBESTILLING_FRIST_TIMER = 24;
 
@@ -52,8 +54,13 @@ export type RescheduleOutcome = {
   hoursUntilStart: number;
 };
 
+/** Frist som Oslo-veggklokke til visning; regnes i faktiske timer. */
+export function cancellationDeadline(startAt: Date): Date {
+  return tilNaivVeggklokke(new Date(naivOsloTilTidspunkt(startAt).getTime() - AVBESTILLING_FRIST_TIMER * 3_600_000));
+}
+
 export function hoursUntil(startAt: Date, now: Date = new Date()): number {
-  return (startAt.getTime() - now.getTime()) / (60 * 60 * 1000);
+  return (naivOsloTilTidspunkt(startAt).getTime() - now.getTime()) / (60 * 60 * 1000);
 }
 
 export function isStaffForBooking(
@@ -124,13 +131,13 @@ export function cancelOutcome(
 
   let playerMessage: string;
   if (staff) {
-    playerMessage = "Staff: full kompensasjon (credit/refusjon) uavhengig av frist.";
+    playerMessage = "Coach og administrator kan tilbakeføre coaching-timer eller refundere betaling uavhengig av fristen.";
   } else if (restoreCredit) {
-    playerMessage = "Credit returneres til abonnementet.";
+    playerMessage = "En coaching-time føres tilbake til pakken.";
   } else if (refundStripe) {
     playerMessage = "Refusjon via betaling — vanligvis 5–10 bankdager.";
   } else if (lateCancelNoRefund) {
-    playerMessage = `Mindre enn ${AVBESTILLING_FRIST_TIMER} timer til start — ingen credit/refusjon.`;
+    playerMessage = `${AVBESTILLING_FRIST_TIMER} timer eller mindre til start — ingen tilbakeføring eller refusjon.`;
   } else {
     playerMessage = "Avbestilling registreres.";
   }
@@ -183,7 +190,7 @@ export function rescheduleOutcome(
       allowed: true,
       reasonIfDenied: null,
       requiresStaffOverride: false,
-      playerMessage: "Staff kan flytte uten 24t-frist.",
+      playerMessage: "Coach og administrator kan flytte timen uavhengig av fristen.",
       hoursUntilStart: h,
     };
   }
@@ -193,7 +200,7 @@ export function rescheduleOutcome(
       allowed: false,
       reasonIfDenied: `Ombooking krever mer enn ${AVBESTILLING_FRIST_TIMER} timer til start. Kontakt coach.`,
       requiresStaffOverride: true,
-      playerMessage: `Under ${AVBESTILLING_FRIST_TIMER}t — be coach flytte timen.`,
+      playerMessage: `${AVBESTILLING_FRIST_TIMER} timer eller mindre til start — kontakt coach for å flytte timen.`,
       hoursUntilStart: h,
     };
   }
@@ -214,7 +221,7 @@ export function policyBannerTexts(): {
   creditsSeparate: string;
 } {
   return {
-    cancel: `Avbestilling mer enn ${AVBESTILLING_FRIST_TIMER} timer før start: credit eller refusjon. Under ${AVBESTILLING_FRIST_TIMER} timer: ingen kompensasjon (coach/admin kan overstyre).`,
+    cancel: `Avbestilling mer enn ${AVBESTILLING_FRIST_TIMER} timer før start: coaching-timen tilbakeføres eller betalingen refunderes. ${AVBESTILLING_FRIST_TIMER} timer eller mindre: ingen kompensasjon. Coach og administrator kan gjøre unntak.`,
     reschedule: `Ombooking mer enn ${AVBESTILLING_FRIST_TIMER} timer før start. Nærmere: kontakt coach.`,
     creditsSeparate:
       "Coaching-timer (credits) kommer fra Performance-pakke — ikke fra app-abonnementet alene.",

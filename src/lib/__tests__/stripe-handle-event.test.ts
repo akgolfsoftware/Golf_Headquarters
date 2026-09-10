@@ -22,6 +22,10 @@ type UpdateManyArgs = { where: unknown; data: unknown };
 
 test("stripe handle-event — dedup og sideeffekter", async (t) => {
   // --- mutérbar mock-tilstand ---
+  let storedStatus = "CONFIRMED";
+  let storedPrice = 10000;
+  let paymentRecordError = false;
+  let paymentRecorded = 0;
   let bookingUpdateCount = 0; // hva updateMany later som den traff
   const epostSendt: string[] = [];
   const kalenderPush: string[] = [];
@@ -39,6 +43,9 @@ test("stripe handle-event — dedup og sideeffekter", async (t) => {
           },
           findUnique: async () => ({
             id: "booking-1",
+            priceOre: storedPrice,
+            status: storedStatus,
+            stripeCheckoutSessionId: "cs_test_1",
             userId: "user-1",
             guestName: null,
             startAt: new Date("2026-08-10T10:00:00Z"),
@@ -88,7 +95,7 @@ test("stripe handle-event — dedup og sideeffekter", async (t) => {
   t.mock.module("@/lib/payments/record", {
     namedExports: {
       recordPaymentIntent: async () => undefined,
-      recordCheckoutSession: async () => undefined,
+      recordCheckoutSession: async () => { if (paymentRecordError) throw new Error("payment persistence failed"); paymentRecorded++; },
       recordInvoice: async () => undefined,
       recordChargeRefund: async () => undefined,
     },
@@ -145,6 +152,8 @@ test("stripe handle-event — dedup og sideeffekter", async (t) => {
           id: "cs_test_1",
           object: "checkout.session",
           payment_status: "paid",
+          amount_total: 10000,
+          currency: "nok",
           payment_intent: "pi_test_1",
           metadata: { bookingId: "booking-1" },
           subscription: null,
@@ -155,6 +164,13 @@ test("stripe handle-event — dedup og sideeffekter", async (t) => {
 
   // --- 1. Første levering: bookingen går PENDING → CONFIRMED, sideeffektene skal kjøre.
   bookingUpdateCount = 1;
+  for (const patch of [{ amount_total: 9999 }, { currency: "eur" }]) {
+    const event = checkoutEvent("evt_wrong_amount");
+    Object.assign(event.data.object, patch);
+    await assert.rejects(() => handleStripeEvent(event, { stripe, ventPaaSideeffekter: true }), /beløp og valuta/);
+  }
+  assert.equal(bookingUpdates.length, 0, "feil beløp eller valuta må ikke bekrefte en booking");
+
   assert.equal(
     await markerBehandlet("evt_1", "checkout.session.completed"),
     true,
@@ -216,6 +232,50 @@ test("stripe handle-event — dedup og sideeffekter", async (t) => {
     "annen DB-feil enn unique-brudd skal kastes videre",
   );
   processedRader = original;
+
+  await t.test("betalt etter kansellering beholdes som betaling og krever oppfølging", async () => {
+    storedStatus = "CANCELLED"; bookingUpdateCount = 0;
+    const before = paymentRecorded;
+    await assert.rejects(() => handleStripeEvent(checkoutEvent("evt_late_paid"), { stripe, ventPaaSideeffekter: true }), /Krever oppfølging/);
+    assert.equal(paymentRecorded, before + 1);
+    assert.equal(epostSendt.length, 1);
+    storedStatus = "CONFIRMED";
+  });
+  await t.test("feilet betalingslagring stopper bekreftelsen og gir ny behandling", async () => {
+    paymentRecordError = true;
+    const before = bookingUpdates.length;
+    await assert.rejects(() => handleStripeEvent(checkoutEvent("evt_db_fail"), { stripe, ventPaaSideeffekter: true }), /payment persistence failed/);
+    assert.equal(bookingUpdates.length, before);
+    paymentRecordError = false;
+  });
+  await t.test("utsatt betaling bekreftes ved async_payment_succeeded", async () => {
+    bookingUpdateCount = 1;
+    const e = checkoutEvent("evt_async_paid"); e.type = "checkout.session.async_payment_succeeded";
+    await handleStripeEvent(e, { stripe, ventPaaSideeffekter: true });
+    assert.equal(epostSendt.length, 2);
+  });
+  await t.test("ubetalt ferdig checkout bekrefter ikke bestillingen", async () => {
+    const e = checkoutEvent("evt_unpaid"); Object.assign(e.data.object, { payment_status: "unpaid" });
+    const before = bookingUpdates.length;
+    await handleStripeEvent(e, { stripe, ventPaaSideeffekter: true });
+    assert.equal(bookingUpdates.length, before);
+  });
+  await t.test("mislykket utsatt betaling kansellerer bare ventende bestilling", async () => {
+    const e = checkoutEvent("evt_async_failed"); e.type = "checkout.session.async_payment_failed";
+    Object.assign(e.data.object, { payment_status: "unpaid" });
+    await handleStripeEvent(e, { stripe, ventPaaSideeffekter: true });
+    assert.deepEqual(bookingUpdates.at(-1)?.data, { status: "CANCELLED" });
+    assert.equal(epostSendt.length, 2);
+  });
+  await t.test("nullpris krever no_payment_required og samsvarende nullpris i bestillingen", async () => {
+    const e = checkoutEvent("evt_free");
+    Object.assign(e.data.object, { payment_status: "no_payment_required", amount_total: 0 });
+    await assert.rejects(() => handleStripeEvent(e, { stripe, ventPaaSideeffekter: true }), /beløp og valuta/);
+    storedPrice = 0;
+    await handleStripeEvent(e, { stripe, ventPaaSideeffekter: true });
+    assert.equal(epostSendt.length, 3);
+    storedPrice = 10000;
+  });
 
   // --- 6. Bookingen oppdateres alltid med PENDING-guard (aldri blind overskriving).
   for (const u of bookingUpdates) {

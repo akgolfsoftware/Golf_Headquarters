@@ -10,6 +10,7 @@
  * påvirker hvilke slots som får plass).
  */
 
+import { fraNaivVeggklokke, tilNaivVeggklokke } from "@/lib/google-calendar-tid";
 import { getAvailableSlots } from "@/lib/booking/availability";
 
 export type SlotTid = { kl: string; coachId: string; coachNavn: string };
@@ -38,7 +39,7 @@ export async function beregnSlotVindu(
   tjenesteId: string,
   antallDager = 28,
 ): Promise<SlotVindu> {
-  const iDag = startOfDay(new Date());
+  const iDag = startOfDay(tilNaivVeggklokke(new Date()));
   const datoer: Date[] = Array.from({ length: antallDager }, (_, i) => {
     const d = new Date(iDag);
     d.setDate(d.getDate() + i);
@@ -58,7 +59,7 @@ export async function beregnSlotVindu(
           if (!sett.has(kl)) sett.set(kl, { kl, coachId: s.coachId, coachNavn: s.coachName });
         }
         const tider = Array.from(sett.values());
-        return tider.length > 0 ? { datoIso: dato.toISOString(), tider } : null;
+        return tider.length > 0 ? { datoIso: fraNaivVeggklokke(dato), tider } : null;
       }),
     );
     for (const r of resultater) if (r) dager.push(r);

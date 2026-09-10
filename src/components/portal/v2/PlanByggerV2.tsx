@@ -485,7 +485,7 @@ export function PlanByggerV2({ kontekst, actions }: PlanByggerV2Props) {
         )
       )}
 
-      {feil && <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger }}>{feil}</span>}
+      {feil && <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.text }}>{feil}</span>}
 
       {!lagretPlanId && (
         <div style={{ display: "flex", justifyContent: "space-between" }}>

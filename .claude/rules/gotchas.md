@@ -90,10 +90,7 @@ Designfasit er Train-lock (låst 25.08.2026, CLAUDE.md invariant 2) — se `desi
   `--ak-cookie-h` i bunnen: forskyv rullen, aldri legg noe oppå.
   Autoscroll-til-bunn hører hjemme i en EGEN scroll-container (mønsteret i
   `portal/v2/chat/PortalChatHjem.tsx`, som scroller `trådRef`), ikke på dokumentet.
-- **Alle 12 dokument-sticky toppbarene bruker mekanismen** (14.08): PaperTopp (delt av alle
-  PlayerHQ-skjermer med `PaperPage`), PlanV2, AnalysereV2, PortalChatHjem, KonsollChat,
-  InnboksSaker, AdminSpillerRedigerV2, sesong-sticky-nav, leaderboards-client,
-  sammenlign-spillere/resultat, wang-fellesside, coach-arsplan.
+- Den daterte komponentlisten fra 14.08 er fjernet: flere komponenter er siden byttet ut. Finn dagens bruk av `useToppbarHoyde` og `ToppbarHoyde` før du endrer en toppbar.
 - **De øvrige `position: sticky`-forekomstene er noe annet og skal IKKE ha den:** sidepaneler
   (`top: 16`), tabellhoder og lister inne i en egen scroll-container, dialoghoder, og alle
   bunn-dokker (de bruker `--ak-cookie-h`). Måler du dem, blir `--ak-topbar-h` for stor og
@@ -163,7 +160,7 @@ dette handler kun om HVORDAN output håndteres, ikke om å hoppe over steg):
    ruter og `npm ci` logger hver pakke — la det gå til en loggfil
    (`npm run build > /tmp/.../build.log 2>&1; tail -60 build.log`) i stedet for å la det strømme rått
    inn i samtalen. Feilsøk med `grep -n "error\|Error" build.log` fremfor å lese hele loggen.
-2. **Store dokumenter (`docs/ak-master.md`, `CLAUDE.md`, denne fila) leses med Grep eller
+2. **Store dokumenter (`docs/arkiv/opprydding-2026-09-10/ak-master.md`, `CLAUDE.md`, denne fila) leses med Grep eller
    Read+offset/limit** når du bare trenger én seksjon — ikke hele filen på nytt for hvert oppslag.
 3. **Ikke les en fil rett etter egen Edit/Write «for å verifisere»** med mindre korrekthet faktisk
    avhenger av eksakt formatering (YAML-frontmatter i skills, JSON). Edit/Write-verktøyet bekrefter

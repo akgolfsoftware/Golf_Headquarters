@@ -97,7 +97,7 @@ export function PushOptInBanner() {
             Slå på push-varsler for nye økter, godkjenninger og påminnelser. Du kan endre dette når som helst under Meg → Innstillinger.
           </p>
           {feil ? (
-            <p style={{ margin: "0 0 10px", fontFamily: TL.font.sans, fontSize: 12, color: TL.danger }}>{feil}</p>
+            <p style={{ margin: "0 0 10px", fontFamily: TL.font.sans, fontSize: 12, color: TL.text }}>{feil}</p>
           ) : null}
           <div
             style={{

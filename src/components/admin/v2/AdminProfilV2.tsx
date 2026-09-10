@@ -61,7 +61,7 @@ function useMobile(): boolean {
 }
 
 function FeltFeil({ children }: { children: ReactNode }) {
-  return <p style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.danger, margin: "6px 0 0" }}>{children}</p>;
+  return <p style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.text, margin: "6px 0 0" }}>{children}</p>;
 }
 
 /* ── Skjerm ────────────────────────────────────────────────────────── */
@@ -176,7 +176,7 @@ export function AdminProfilV2({ data }: { data: AdminProfilV2Data }) {
         />
       </div>
       {avatarFeil && (
-        <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, margin: "12px 0 0" }}>{avatarFeil}</p>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.text, margin: "12px 0 0" }}>{avatarFeil}</p>
       )}
     </Kort>
   );
@@ -243,10 +243,10 @@ export function AdminProfilV2({ data }: { data: AdminProfilV2Data }) {
       {topp}
 
       {generellFeil && (
-        <p role="alert" style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, margin: 0 }}>{generellFeil}</p>
+        <p role="alert" style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.text, margin: 0 }}>{generellFeil}</p>
       )}
       {lagret && !generellFeil && (
-        <p role="status" style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.ok, margin: 0 }}>Lagret.</p>
+        <p role="status" style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, margin: 0 }}>Lagret.</p>
       )}
 
       {mobile ? (

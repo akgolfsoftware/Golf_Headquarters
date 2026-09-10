@@ -33,7 +33,7 @@ export function PortalStegListe({ steg }: { steg: PortalToolCall[] }) {
             {feilet ? (
               <X size={14} style={{ color: TL.danger, flex: "none" }} />
             ) : ferdig ? (
-              <Check size={14} style={{ color: TL.ok, flex: "none" }} />
+              <Check size={14} style={{ color: TL.text, flex: "none" }} />
             ) : (
               <Loader2 size={14} style={{ color: TL.mute, flex: "none" }} className="animate-spin" />
             )}
@@ -44,7 +44,7 @@ export function PortalStegListe({ steg }: { steg: PortalToolCall[] }) {
               </span>
             )}
             {feilet && (
-              <span style={{ marginLeft: "auto", fontFamily: TL.font.mono, fontSize: 11.5, color: TL.danger }}>Feilet</span>
+              <span style={{ marginLeft: "auto", fontFamily: TL.font.mono, fontSize: 11.5, color: TL.text }}>Feilet</span>
             )}
           </li>
         );

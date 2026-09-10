@@ -208,7 +208,7 @@ export function MinProfilV2({ data }: { data: MinProfilData }) {
         />
       </div>
       {avatarFeil && (
-        <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, margin: "12px 0 0" }}>{avatarFeil}</p>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.text, margin: "12px 0 0" }}>{avatarFeil}</p>
       )}
     </Kort>
   );
@@ -233,10 +233,10 @@ export function MinProfilV2({ data }: { data: MinProfilData }) {
       </div>
       <Inndata label="Klubb" value={klubbFelt} onChange={setKlubbFelt} placeholder="Ikke satt" />
       {feil && (
-        <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, margin: 0 }}>{feil}</p>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.text, margin: 0 }}>{feil}</p>
       )}
       {lagret && !feil && (
-        <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.ok, margin: 0 }}>Lagret.</p>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, margin: 0 }}>Lagret.</p>
       )}
     </Kort>
   );

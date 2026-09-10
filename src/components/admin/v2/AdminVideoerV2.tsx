@@ -176,7 +176,7 @@ function OpplastingsSkjema({ spillere }: { spillere: AdminVideoSpiller[] }) {
               gap: 8,
               fontFamily: TL.font.sans,
               fontSize: 12.5,
-              color: TL.danger,
+              color: TL.text,
               background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`,
               border: `1px solid color-mix(in srgb, ${TL.danger} 30%, transparent)`,
               borderRadius: 11,
@@ -196,14 +196,14 @@ function OpplastingsSkjema({ spillere }: { spillere: AdminVideoSpiller[] }) {
               gap: 8,
               fontFamily: TL.font.sans,
               fontSize: 12.5,
-              color: TL.ok,
+              color: TL.text,
               background: `color-mix(in srgb, ${TL.ok} 10%, transparent)`,
               border: `1px solid color-mix(in srgb, ${TL.ok} 30%, transparent)`,
               borderRadius: 11,
               padding: "10px 13px",
             }}
           >
-            <Icon name="check-circle" size={14} style={{ color: TL.ok, flex: "none" }} />
+            <Icon name="check-circle" size={14} style={{ color: TL.text, flex: "none" }} />
             Video lastet opp og delt med spilleren.
           </div>
         )}
@@ -316,7 +316,7 @@ function VideoRad({ video, last }: { video: AdminVideoRad; last: boolean }) {
           style={{
             fontFamily: TL.font.sans,
             fontSize: 12,
-            color: TL.danger,
+            color: TL.text,
             background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`,
             border: `1px solid color-mix(in srgb, ${TL.danger} 30%, transparent)`,
             borderRadius: 10,

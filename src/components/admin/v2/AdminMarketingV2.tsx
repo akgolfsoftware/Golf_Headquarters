@@ -67,7 +67,7 @@ function StatusSykleChip({ id, status }: { id: string; status: MarketingStatus }
   const meta = STATUS_META[lokal];
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 8, flex: "none" }}>
-      {feil && <span style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.danger }}>Feilet — prøv igjen</span>}
+      {feil && <span style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.text }}>Feilet — prøv igjen</span>}
       <button
         type="button"
         onClick={sykle}
@@ -186,7 +186,7 @@ function NyPostPopup({ onLukk }: { onLukk: () => void }) {
               onChange={setBrief}
             />
 
-            {feil && <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger }}>{feil}</span>}
+            {feil && <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.text }}>{feil}</span>}
 
             <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, opacity: pending ? 0.6 : 1 }}>
               <Knapp ghost disabled={pending} onClick={onLukk}>

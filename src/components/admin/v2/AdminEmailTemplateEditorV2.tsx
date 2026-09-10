@@ -171,7 +171,7 @@ export function AdminEmailTemplateEditorV2({ template, testRecipient }: Props) {
           <Knapp ghost icon="star" disabled={pending || active} onClick={settStandard}>
             Sett som standard
           </Knapp>
-          <Knapp ghost icon="archive" disabled={pending} onClick={arkiver} style={{ color: TL.danger }}>
+          <Knapp ghost icon="archive" disabled={pending} onClick={arkiver} style={{ color: TL.text }}>
             Arkiver
           </Knapp>
           <Knapp icon="check" disabled={pending || !dirty} onClick={lagre}>

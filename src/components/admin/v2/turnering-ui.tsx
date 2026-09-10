@@ -83,7 +83,7 @@ export function TurneringModal({
 /** Feilbanner inne i modaler — konsistent med resten av v2-skjemaene. */
 export function ModalFeil({ children }: { children: ReactNode }) {
   return (
-    <div role="alert" style={{ marginTop: 16, borderRadius: 11, background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`, border: `1px solid color-mix(in srgb, ${TL.danger} 35%, transparent)`, padding: "10px 13px", fontFamily: TL.font.sans, fontSize: 12.5, color: TL.danger }}>
+    <div role="alert" style={{ marginTop: 16, borderRadius: 11, background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`, border: `1px solid color-mix(in srgb, ${TL.danger} 35%, transparent)`, padding: "10px 13px", fontFamily: TL.font.sans, fontSize: 12.5, color: TL.text }}>
       {children}
     </div>
   );
@@ -121,7 +121,7 @@ export function ModalFooter({
           onClick={onSlett}
           disabled={busy || slettBusy}
           className="v2-press v2-focus"
-          style={{ appearance: "none", cursor: "pointer", borderRadius: 9999, padding: "9px 16px", fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 600, color: TL.danger, background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`, border: `1px solid color-mix(in srgb, ${TL.danger} 30%, transparent)`, opacity: busy || slettBusy ? 0.6 : 1 }}
+          style={{ appearance: "none", cursor: "pointer", borderRadius: 9999, padding: "9px 16px", fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 600, color: TL.text, background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`, border: `1px solid color-mix(in srgb, ${TL.danger} 30%, transparent)`, opacity: busy || slettBusy ? 0.6 : 1 }}
         >
           {slettBusy ? "Sletter…" : slettTekst}
         </button>

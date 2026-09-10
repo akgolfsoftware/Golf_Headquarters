@@ -1059,7 +1059,7 @@ function OktArkSkjema({
           </div>
         </div>
 
-        {feil && <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, display: "block", marginTop: 10 }}>{feil}</span>}
+        {feil && <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.text, display: "block", marginTop: 10 }}>{feil}</span>}
 
         <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 20 }}>
           <Knapp ghost onClick={onLukk} disabled={lagrer}>Avbryt</Knapp>
@@ -1193,7 +1193,7 @@ export function ForslagArk({ suggestions, usedAi, onLukk, onBruk }: ForslagArkPr
         </div>
 
         {feil && (
-          <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, display: "block", marginTop: 12 }}>
+          <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.text, display: "block", marginTop: 12 }}>
             {feil}
           </span>
         )}
@@ -1508,7 +1508,7 @@ export function ValgtOktSeksjon({
         </div>
       )}
 
-      {okt.id && feil && <span style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.danger, display: "block", marginTop: 8 }}>{feil}</span>}
+      {okt.id && feil && <span style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.text, display: "block", marginTop: 8 }}>{feil}</span>}
 
       {okt.id && erPlan && (
         <div style={{ marginTop: 10 }} data-wb-inspektordrills>

@@ -1,5 +1,53 @@
-# OBLIGATORISK LES FØRST
-`docs/platform/AGENT-BRIEF.md` — full plattformkontekst på 5 min. Les dette før du rører en eneste fil.
+# AK Golf HQ — felles prosjektinstruks
+
+Les `docs/platform/AGENT-BRIEF.md` før du endrer filer. `START-HER.md` er inngangen for både mennesker og AI-verktøy.
+
+**Designstatus 10.09.2026:** Anders optimaliserer alle skjermer i Claude Design og har presisert at ingenting i prosjektet er låst. Eksisterende design, navigasjon, fonter, farger og komponentvalg er arbeidsunderlag under revisjon. Tidligere «låst», «fasit» og «godkjent» er ikke bindende for det videre designarbeidet. Se `designsystem/README.md`.
+
+## Kildeorden
+
+- Anders' gjeldende beskjed styrer oppgaven. Tidligere bestillinger i arkiv er ikke nye kjøreordrer.
+- Produkt og forretningsregler: `docs/platform/BUSINESS-RULES.md`.
+- Treningsfag og begreper: `docs/FASIT-AK-GOLF-HQ.md` og ordbøkene i `docs/`.
+- Designstatus og eksisterende referanser: `designsystem/README.md`. Bruk den konkrete versjonen Anders velger for den aktuelle byggeoppgaven; gamle tegninger og beslutninger er ikke automatisk gjeldende fasit.
+- Faktisk oppførsel: koden og testene. Dokumentert intensjon er ikke bevis på ferdig funksjon.
+- Nåstatus: `docs/STATUS-NÅ.md`. Arbeidsliste: `docs/MASTERPLAN-GJENSTAAENDE.md`. Historikk ligger under `docs/arkiv/`.
+
+## Arbeidsmåte
+
+Svar kort på norsk bokmål. Forklar faguttrykk. Utfør allerede bestilt arbeid uten å be om samme godkjenning igjen. Ved endring av omfang eller en uavklart produktbeslutning: avklar den konkrete beslutningen før avhengig arbeid.
+
+Behold alle funksjoner, med minst mulig trykk og et enkelt grensesnitt. Vanskelig å forstå er et designproblem. Les berørt kode før du endrer den. Ikke gjeninnfør en gammel modell fordi et eldre dokument beskriver den.
+
+Koden ligger i dette prosjektet. Ikke kopier eksterne agentkataloger inn i repoet eller gjør editor-agenter til AgenticOS-runtime. Bruk relevante tilgjengelige skills; de overstyrer aldri godkjent design eller produktregler.
+
+## Skjermarbeid
+
+Bruk den prosjektspesifikke skillen [AK HQ Design](.claude/skills/ak-hq-design/SKILL.md) ved brukerreiser, komponenter, wireframes, UI og designoverlevering. Den samler arbeidsmåte og kvalitetskrav; visuelle valg forblir åpne til Anders velger en versjon for den aktuelle byggeoppgaven. Startpakken og hovedprompten nås fra [designarbeidet](docs/design-system/ak-hq-designarbeid.md).
+
+Bruk `designsystem/README.md` til å forstå dagens kilder og status. Train-lock, AK Golf, WANG, Team Norway og Canvas er eksisterende referanser, ikke låste valg. Ikke gjennomfør gamle porteringsplaner automatisk mens Anders reviderer designet i Claude Design.
+
+Før skjermbygging: identifiser valgt designversjon, brukerreise, skjermer og tilstander. En bestilt versjon kan bygges selv om andre deler fortsatt utforskes. Bruk felles komponenter og designverdier for den valgte retningen. Avklar manglende designvalg før avhengig bygging; tekniske feil kan behandles uavhengig når rettingen er bestilt.
+
+En skjerm er ferdig når funksjonen virker og Anders har sett appen ved siden av den valgte designversjonen: mobil 390 px og desktop, avtalte temaer og relevante tomme, lastende og feiltilstander. Registrer referanse, kontroll og avvik. Eksisterende Train-lock-kontrakter og kontroller beskriver dagens implementasjon; de må vurderes mot en ny bestilt retning. En token-import, en sitering eller grønn byggkontroll er ikke en visuell godkjenning.
+
+## Data og sikkerhet
+
+Hemmeligheter hører hjemme i ignorerte miljøfiler. Ikke skriv ut, kopier til dokumentasjon eller commit verdiene. Persondata skal ikke inn i sky-prompts, logger eller offentlig Git. Bruk syntetiske testdata. Ikke kjør seed-, import-, betalings-, e-post- eller databaseendringer som del av en dokumentkontroll.
+
+Ikke endre databaseskjema, tilgangsregler, produksjonsoppsett eller `vercel.json` uten autorisasjon for den konkrete endringen. Les `.claude/rules/gotchas.md` før databasearbeid. Migrasjonshistorikken bygger ikke en tom database korrekt; ikke kjør `migrate dev`, `db push` eller `migrate deploy` mot den hostede basen. Oppskriften i `docs/utvikling/lokal-testdatabase.md` gjelder kun en separat, tom testdatabase.
+
+## Git-arbeidsflyt
+
+Arbeid på egen gren (`codex/` for Codex). Bevar andres endringer. Kontroller diffen før commit. Ikke push til main, merge, publiser eller deploy uten Anders' uttrykkelige bestilling. Aldri omgå kontrollene med `--no-verify`.
+
+`npm run verify` er kvalitetskontrollen; `npm test` kjører testene. De gjeldende kommandoene står i `package.json`. For dokument- og mappearbeid: kjør også `npm run prosjekt:sjekk`. Rapporter hva som faktisk er testet, og hva som fortsatt er uverifisert.
+
+## Vedlikehold av prosjektet
+
+Felles skills vedlikeholdes i `.claude/skills/`; `.agents/skills` peker dit. Felles hook-kode ligger i `.claude/hooks/`; `.codex/hooks` peker dit. Ikke lag redigerte kopier med verktøynavn byttet ut. CLAUDE.md og QWEN.md er innganger til denne filen.
+
+Nye planer: `docs/planer/`. Daterte målinger: `docs/design-audit/` eller `docs/beslutningsgrunnlag/`. Utgåtte instrukser: `docs/arkiv/`. Lokale skjermbilder og private sikkerhetskopier skal aldri legges i `public/` eller Git. Se `docs/vedlikehold/prosjektkart.md`.
 
 <!-- BEGIN:nextjs-agent-rules -->
 
@@ -10,57 +58,3 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
-
-# Skjermarbeid — les FØR skjerm-arbeid
-Designfasit er **Train-lock** (`designsystem/train-lock/` — les `DESIGN-SYSTEM.md`, finn skjermen i `SCREEN-INDEX.md`), for ALLE skjermer i PlayerHQ, AgencyOS og Forelder. Claude Paper (`designsystem/paper/`) er historikk/arkiv, aldri bygg-fasit. En skjerm er ferdig når Anders har SETT skjermbildet (mobil 390px + desktop, lys + mørk, fasit ved siden av) — ikke når CI er grønn. Se `CLAUDE.md` invariant 2 og `.claude/rules/beslutninger.md`.
-
-## DO NOT USE — Paper og Presis
-Ny kode og nye skjermporter bruker KUN Train-lock: `--tl-*` / `TL` (`src/styles/train-lock-tokens.css`, `src/lib/v2/train-lock.ts`). Scene `#000000` (lys `#FFFFFF`). Fonter i produktet: Poppins / Lora / IBM Plex Mono.
-
-Ikke les, ikke kopier, ikke few-shot fra:
-- `designsystem/paper/` (arkiv — se `DEPRECATED.md` der)
-- `T` fra `src/lib/v2/tokens.ts` og `--p-*` i `src/styles/paper-tokens.css` (utgående runtime)
-- cream/ivory `#FAF9F5` `#F0EEE6`, «varmt papir», clay `#D97757` som generell CTA
-- Inter, Familjen Grotesk, JetBrains Mono, Inter Tight
-- Presis-skog `#005840` / lime `#D1F843`
-- `public/design/akhq-tokens.css`, `docs/arkiv/paper-port/`
-- Skills `akgolf-claude-paper` og Paper-kroppen i `ak-designekspert` (historikk)
-
-Marketing (`/` og `/(marketing)`) har egen fasit og får beholde Paper-katalogen. Ikke kopier den inn i `/portal` eller `/admin`.
-
-# Enkelhet (LÅST 2026-07-21)
-Behold alle funksjoner, men minst mulig trykk og super enkelt UI. Vanskelig å forstå = feil design. Se `docs/platform/BUSINESS-RULES.md`.
-
-# Vendor-agenter
-Eksterne agentkataloger (f.eks. `msitarzewski/agency-agents`) er gjester i editoren — installert til `~/.claude/agents/` på egen maskin, aldri kopiert inn i repoet og aldri AgenticOS-runtime. Reglene for hva som kan absorberes og hvem som vinner ved konflikt står i `CLAUDE.md` invariant 3.
-
-## Cursor Cloud specific instructions
-
-Standard-kommandoene (dev/build/lint/test/verify) står i `CLAUDE.md` → «Kommandoer». Under er kun det som er ikke-åpenbart for å kjøre appen i Cursor Cloud-VM-en (ingen hostet Supabase / ingen secrets).
-
-### Database + auth = lokal Supabase-stack (Docker)
-Repoet har ingen `supabase/`-config og bruker normalt hostet Supabase. I VM-en kjører vi en **lokal Supabase-stack** (Postgres + GoTrue Auth + Storage) via Supabase CLI + Docker. Oppdaterings-scriptet (`npm ci`) installerer KUN npm-avhengigheter — tjenester må startes manuelt:
-
-1. Start Docker-daemon (kjører ikke automatisk ved boot): `sudo dockerd > /tmp/dockerd.log 2>&1 &` og gjør soketen tilgjengelig for `ubuntu`: `sudo chmod 666 /var/run/docker.sock`.
-2. Start stacken: `cd /home/ubuntu/supabase-local && supabase start`. Gir API på `54321`, Postgres på `54322`, Studio `54323`, Mailpit `54324`. Data ligger i Docker-volumer og overlever restart av stacken.
-3. `.env.local` i repo-roten peker på denne stacken (Supabase-URL/nøkler + `DATABASE_URL`/`DIRECT_URL` mot `127.0.0.1:54322`, `BOOKING_ACTIVE=true`). Filen er gitignored og røres ALDRI av agent-fil-verktøy (blokkert av `.claude/hooks`). Mangler den, må den gjenskapes fra `supabase start`-outputen + `.env.example`.
-
-### Skjema provisjoneres med `prisma db push`, IKKE `migrate deploy`
-`prisma/migrations/0_baseline` er en placeholder (`SELECT 1;`) — ekte skjema ble påført hostet Supabase direkte, så migrasjonshistorikken kan IKKE bygge en tom DB fra bunn (senere migrasjoner feiler med f.eks. `type "UserRole" does not exist`). For en fersk lokal DB:
-```
-npx prisma db push --accept-data-loss   # skaper alle tabeller/enums fra schema.prisma
-npm run db:seed                          # locations, service-typer, coacher, grupper, spillere
-```
-RLS-policyer fra migrasjonene påføres ikke av `db push`, men Prisma kjører som `postgres`-superuser og bypasser RLS lokalt — greit for dev.
-
-### Test-innlogging (for portal/admin end-to-end)
-Seed lager Prisma-brukere med placeholder-`authId`. For å logge inn må en Supabase Auth-bruker kobles: opprett auth-bruker via service-role (`supabase.auth.admin.createUser`, `email_confirm:true`) og sett `UPDATE public.users SET "authId"=<uuid> WHERE email=...`. Etablert test-coach: **anders@akgolf.no / Passord123!** (rolle COACH → lander på `/admin/agencyos`).
-
-### GOTCHA: CSP blokkerer nettleser-auth mot lokal Supabase
-`src/proxy.ts` `buildCsp()` tillater i dev `connect-src` mot origin fra `NEXT_PUBLIC_SUPABASE_URL` (pluss localhost/127.0.0.1). Sett den til Tailscale-IP-en når du åpner appen fra egen maskin, f.eks. `http://100.115.94.1:54321` — **server-side** `DATABASE_URL`/`DIRECT_URL` skal fortsatt peke på `127.0.0.1:54322` på VM-en. Uten dev-CSP-tillegget får nettleseren «Failed to fetch» ved login mot lokal Supabase.
-
-### GOTCHA: ikke source `.env.local` inn i shellen før `npm test`
-Enhetstestene leser `process.env` direkte. `NEXT_PUBLIC_APP_URL=http://localhost:3000` fra `.env.local` får `src/lib/security/same-origin.test.ts` til å feile (forventer default `https://akgolf.no`). Kjør `npm test` i et rent miljø.
-
-### Porter
-App `3000` · Supabase API `54321` · Postgres `54322` · Studio `54323` · Mailpit `54324`.

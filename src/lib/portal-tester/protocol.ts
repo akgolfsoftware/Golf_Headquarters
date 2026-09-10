@@ -13,8 +13,7 @@
  * Ukjent/ugyldig protocol → null; kallere bruker fallbackScorekortSpec().
  *
  * Normaliserings-valg (verifisert mot alle 36 protokoller i DB):
- *  - `select`-felter (kvalitative valg, f.eks. launch Lav/Medium/Høy) utelates —
- *    de kan ikke representeres i scorekortets felt-typer og inngår ikke i score.
+ *  - `select`-felter beholder både verdi og valgmuligheter gjennom registrering og lagring.
  *  - Felter uten egen enhet arver protokollens enhet KUN når den er «poeng»
  *    (TN-gate-tester) — slik at sum-beregningen blir riktig. Andre enheter
  *    (PEI, mph, %) arves ikke, de beskriver totalscoren og ikke feltet.
@@ -22,7 +21,7 @@
 
 import { z } from "zod";
 
-export type ScorekortFeltType = "checkbox" | "number" | "meter" | "poeng";
+export type ScorekortFeltType = "checkbox" | "number" | "meter" | "poeng" | "select";
 
 export type ScorekortFelt = {
   key: string;
@@ -30,6 +29,10 @@ export type ScorekortFelt = {
   label: string;
   /** Visningsenhet for tallfelt (m, kg, cm, sek …) — alltid fra protokollen, aldri hardkodet. */
   unit?: string;
+  options?: string[];
+  min?: number;
+  max?: number;
+  optional?: boolean;
 };
 
 export type ScorekortForsok = {
@@ -53,6 +56,10 @@ const FeltASchema = z.looseObject({
   label: z.string().min(1),
   type: z.string().optional(),
   unit: z.string().optional(),
+  options: z.array(z.string()).optional(),
+  min: z.number().optional(),
+  max: z.number().optional(),
+  optional: z.boolean().optional(),
 });
 
 const StegASchema = z.looseObject({
@@ -81,6 +88,11 @@ const FeltBSchema = z.looseObject({
   key: z.string().min(1),
   label: z.string().min(1),
   unit: z.string().optional(),
+  type: z.string().optional(),
+  options: z.array(z.string()).optional(),
+  min: z.number().optional(),
+  max: z.number().optional(),
+  optional: z.boolean().optional(),
 });
 
 const ProtokollBSchema = z.looseObject({
@@ -95,6 +107,7 @@ const ProtokollBSchema = z.looseObject({
  * checkbox eller «ja/nei» → checkbox · distance/«m» → meter · «poeng» → poeng · ellers number.
  */
 function feltType(type: string | undefined, unit: string | undefined): ScorekortFeltType {
+  if (type === "select") return "select";
   if (type === "checkbox" || unit === "ja/nei") return "checkbox";
   if (type === "distance" || unit === "m") return "meter";
   if (unit === "poeng") return "poeng";
@@ -102,13 +115,17 @@ function feltType(type: string | undefined, unit: string | undefined): Scorekort
 }
 
 function tilFelt(
-  raw: { key: string; label: string; type?: string; unit?: string },
+  raw: { key: string; label: string; type?: string; unit?: string; options?: string[]; min?: number; max?: number; optional?: boolean },
   arvetEnhet?: string,
 ): ScorekortFelt {
   const unit = raw.unit ?? arvetEnhet;
   const type = feltType(raw.type, unit);
   const felt: ScorekortFelt = { key: raw.key, type, label: raw.label };
   if (unit && unit !== "ja/nei") felt.unit = unit;
+  if (raw.options) felt.options = raw.options;
+  if (raw.min !== undefined) felt.min = raw.min;
+  if (raw.max !== undefined) felt.max = raw.max;
+  if (raw.optional !== undefined) felt.optional = raw.optional;
   return felt;
 }
 
@@ -135,7 +152,6 @@ export function parseProtocol(json: unknown): ScorekortSpec | null {
     const forsok: ScorekortForsok[] = [];
     for (const steg of a.data.steps) {
       const felter = steg.inputFields
-        .filter((f) => f.type !== "select")
         .map((f) => tilFelt(f, f.unit === undefined ? arvetEnhet : undefined));
       const stegFelter = felter.length > 0 ? felter : [{ ...FALLBACK_FELT }];
       for (let i = 0; i < steg.shots; i++) {

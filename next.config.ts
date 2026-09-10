@@ -132,7 +132,6 @@ const nextConfig: NextConfig = {
       { source: "/portal/trackman", destination: "/portal/analysere?tab=trackman", permanent: true },
       { source: "/portal/trackman/:path*", destination: "/portal/analysere?tab=trackman", permanent: true },
       // /portal/booking: dedikert booking-hub m/ credits (redesign 2026-06-01) — loop-redirect fjernet.
-      { source: "/portal/ny-okt", destination: "/portal/gjennomfore/ny-okt", permanent: true },
 
       // ============================================================
       // Nye IA-URL-er → eksisterende ruter (2026-05-23)

@@ -158,6 +158,7 @@ export type DrillRepState = {
 
 /** Sammendragsdata for fullført økt. */
 export type LiveV2Summary = LiveV2Session & {
+  logSource?: "tapper";
   durationSec: number;
   totalReps: number;
   drillsCompleted: number;

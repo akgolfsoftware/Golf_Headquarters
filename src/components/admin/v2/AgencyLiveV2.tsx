@@ -21,8 +21,8 @@ import { Caps, Kort, Rad, KpiFlis, StatusPill, Knapp, TomTilstand, Icon } from "
 import { ANTALL_AVTALER, DAGENS_TRE, type CalEvent, type Email, EMAILS, EVENTS, EVENTS_MORE, INCOMING, type Message, MESSAGES, MODULES, NOTION, type Priority, type Task, TASKS } from "@/lib/agencyos/live-data";
 /* ---------- prioritet ---------- */
 const PRIO: Record<Priority, { label: string; color: string; icon: string }> = {
-  urgent: { label: "Haster", color: TL.danger, icon: "flame" },
-  followup: { label: "Følg opp", color: TL.warn, icon: "flag" },
+  urgent: { label: "Haster", color: TL.text, icon: "flame" },
+  followup: { label: "Følg opp", color: TL.text, icon: "flag" },
   open: { label: "Ubesvart", color: TL.mute, icon: "circle" },
 };
 
@@ -222,8 +222,8 @@ export function AgencyLiveV2({ coachFirstName: _coachFirstName = "Anders" }: { c
       {/* DEMO-banner */}
       <Kort pad="10px 16px" style={{ borderColor: `color-mix(in srgb, ${TL.warn} 35%, ${TL.hair})`, background: `color-mix(in srgb, ${TL.warn} 8%, ${TL.elev})` }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <Icon name="alert-triangle" size={15} style={{ color: TL.warn, flex: "none" }} />
-          <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.warn, lineHeight: 1.5 }}>
+          <Icon name="alert-triangle" size={15} style={{ color: TL.text, flex: "none" }} />
+          <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.text, lineHeight: 1.5 }}>
             DEMO — visuelt skall, ikke ekte sanntidsdata. Tallene og hendelsene er statiske eksempler; kobles til ekte kilder (Gmail · Beeper · Notion · Kalender) senere.
           </span>
         </div>
@@ -381,7 +381,7 @@ export function AgencyLiveV2({ coachFirstName: _coachFirstName = "Anders" }: { c
           {/* Gmail */}
           <Kort>
             <KortHode icon="mail" title="Gmail">
-              <span style={{ marginLeft: 4, fontFamily: TL.font.mono, fontSize: 10, fontWeight: 800, color: TL.danger }}>{emails.length} UBESVART</span>
+              <span style={{ marginLeft: 4, fontFamily: TL.font.mono, fontSize: 10, fontWeight: 800, color: TL.text }}>{emails.length} UBESVART</span>
             </KortHode>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 10 }}>
               {(

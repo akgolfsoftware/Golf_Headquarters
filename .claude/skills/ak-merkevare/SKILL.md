@@ -18,6 +18,8 @@ version: "1.0"
 updated: "2026-09-01"
 ---
 
+Prosjektkilder: `AGENTS.md` → `docs/platform/AGENT-BRIEF.md`. Design velges i `designsystem/README.md`; historiske skill-eksempler overstyrer ikke disse kildene.
+
 # AK Merkevare — verkstedet
 
 Du finjusterer AK Golfs merkevare. Ikke produktet. Grensen er absolutt, og den er

@@ -1,6 +1,8 @@
-# FASIT — AK Golf HQ
+# Treningsfaglig fasit — AK Golf HQ
 
-**Status: GJELDENDE FASIT.** Redigert og levert av Anders 19.08.2026 (via Google Doc).
+**Omfang: treningsfag og begreper, ikke visuelt design eller lanseringsstatus.** Design velges i `designsystem/README.md`.
+
+**Status: GJELDENDE FAGLIG FASIT.** Redigert og levert av Anders 19.08.2026 (via Google Doc).
 Appen, Masterbrain og ak-second-brain rettes etter denne. Ingenting under er en regel eller
 et krav — spilleren og coachen planlegger fritt (bestemt 18.08.2026).
 

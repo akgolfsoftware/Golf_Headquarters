@@ -1,0 +1,254 @@
+{
+  "dato": "2026-09-10",
+  "utgangspunkt": "a619ec5dfdab8519ace5db6b28a8d7c2909a188b",
+  "flyttet": [
+    {
+      "fra": "docs/AUDIT-DOCS-2026-09-08.md",
+      "til": "docs/arkiv/opprydding-2026-09-10/audit-docs-2026-09-08.md",
+      "sha256Foer": "cc16a8f0ff91e7296c5cdea5256df5d580ba559a393c5613c50877febd2951ca",
+      "sha256Etter": "026080bae5b8bde8079016c2dacd3eb190f4529981143a094d7ef3b345104f7a"
+    },
+    {
+      "fra": "docs/arkitektur-kartlegging-2026-08-30.md",
+      "til": "docs/arkiv/opprydding-2026-09-10/arkitektur-kartlegging-2026-08-30.md",
+      "sha256Foer": "c0792368acf59b743ee33c62f4890f58809f1fdcf8a4aad82fee06385631424c",
+      "sha256Etter": "5ec83eec878b261cc5ab7a139c02e9928cad6e9fa31f14cb065d53a06b2124fb"
+    },
+    {
+      "fra": "docs/superpowers/plans/2026-09-04-marked-ak-golf-port.md",
+      "til": "docs/planer/design/2026-09-04-marked-ak-golf-port.md",
+      "sha256Foer": "5ec1f725e282bec413da4df5aab1359c0c26a0eabb03dcf014ae8a645ba00531",
+      "sha256Etter": "60bf197d549d53824b501aa30f6f3a80ea039a5f32b5327d5d9e27d63f9e2d7d"
+    },
+    {
+      "fra": "docs/superpowers/plans/2026-09-05-komplett-designport-vedlegg-skjermer.md",
+      "til": "docs/planer/design/2026-09-05-komplett-designport-vedlegg-skjermer.md",
+      "sha256Foer": "0f909a8283e41522295cca1557cb9a6d027fff6c2bdbd024374a60c892e7b203",
+      "sha256Etter": "8f3825e9894b7691e0249818ead9f0bf0bd4b6bafa14007c1e51e99b6eb0f246"
+    },
+    {
+      "fra": "docs/superpowers/plans/2026-09-05-komplett-designport.md",
+      "til": "docs/planer/design/2026-09-05-komplett-designport.md",
+      "sha256Foer": "a584fccd430535baae0e0641f6295ed3b041467e2d24b46b99021444be3edc17",
+      "sha256Etter": "a584fccd430535baae0e0641f6295ed3b041467e2d24b46b99021444be3edc17"
+    },
+    {
+      "fra": "docs/superpowers/plans/2026-09-06-team-norway-skjermer.md",
+      "til": "docs/planer/design/2026-09-06-team-norway-skjermer.md",
+      "sha256Foer": "1e339527e7e41d6b33d3705c60bd315bd6a6414c4dcce64e256554778b33dc42",
+      "sha256Etter": "1e339527e7e41d6b33d3705c60bd315bd6a6414c4dcce64e256554778b33dc42"
+    },
+    {
+      "fra": "docs/superpowers/plans/2026-09-08-wang-tn-port.md",
+      "til": "docs/planer/design/2026-09-08-wang-tn-port.md",
+      "sha256Foer": "35c6d11520b52c8087ea14f109284aea36c3fae2b7387fd220d31cfb5558407d",
+      "sha256Etter": "35c6d11520b52c8087ea14f109284aea36c3fae2b7387fd220d31cfb5558407d"
+    },
+    {
+      "fra": "docs/superpowers/plans/2026-09-09-train-lock-full-port.md",
+      "til": "docs/planer/design/2026-09-09-train-lock-full-port.md",
+      "sha256Foer": "d9c2c12f280735d27205dabcb90466a3dfb6b848d61615d1b1d379cb7b0361a8",
+      "sha256Etter": "47d5de2a6ce16c0983a2430a5ac20cf68545948dac4c27916dbbe4572d0462a3"
+    },
+    {
+      "fra": "docs/superpowers/specs/2026-09-04-marked-ak-golf-port-design.md",
+      "til": "docs/referanse/design/2026-09-04-marked-ak-golf-port-design.md",
+      "sha256Foer": "8e51c994cc1deaadd4c1666371ccc2ecd4dc8a07632525880924778ee448e6f3",
+      "sha256Etter": "8e51c994cc1deaadd4c1666371ccc2ecd4dc8a07632525880924778ee448e6f3"
+    },
+    {
+      "fra": "masterbrain-rebuild/00-SOURCE-INVENTORY.md",
+      "til": "docs/referanse/masterbrain-rebuild/00-SOURCE-INVENTORY.md",
+      "sha256Foer": "fcc5ea9b282fe3c8fbe69931aee5eb066e8bf9e14943001e210eec114079d86f",
+      "sha256Etter": "fcc5ea9b282fe3c8fbe69931aee5eb066e8bf9e14943001e210eec114079d86f"
+    },
+    {
+      "fra": "masterbrain-rebuild/01-MASTERBRAIN-ARCHITECTURE.md",
+      "til": "docs/referanse/masterbrain-rebuild/01-MASTERBRAIN-ARCHITECTURE.md",
+      "sha256Foer": "dd9d40f1433435c4e9e31f18067616438ee48d1438246a5a993507a1e62d3ee9",
+      "sha256Etter": "dd9d40f1433435c4e9e31f18067616438ee48d1438246a5a993507a1e62d3ee9"
+    },
+    {
+      "fra": "masterbrain-rebuild/02-PUTTING-BRAIN.md",
+      "til": "docs/referanse/masterbrain-rebuild/02-PUTTING-BRAIN.md",
+      "sha256Foer": "99754a4f9e45bee89551bf8c4d11b343c57cd2bf152e200b784c44384f7cd74c",
+      "sha256Etter": "99754a4f9e45bee89551bf8c4d11b343c57cd2bf152e200b784c44384f7cd74c"
+    },
+    {
+      "fra": "masterbrain-rebuild/03-DRILL-BANK-RESTART.md",
+      "til": "docs/referanse/masterbrain-rebuild/03-DRILL-BANK-RESTART.md",
+      "sha256Foer": "aea27b1c7fc904215724478236cf2675840efe8b1ebb32b69773b829360719c8",
+      "sha256Etter": "aea27b1c7fc904215724478236cf2675840efe8b1ebb32b69773b829360719c8"
+    },
+    {
+      "fra": "masterbrain-rebuild/04-CANDIDATE-DRILLS.json",
+      "til": "docs/referanse/masterbrain-rebuild/04-CANDIDATE-DRILLS.json",
+      "sha256Foer": "cfd224cb7278415bf3f5e13e5086e20511b32d7802df0583a6ff9ac780830603",
+      "sha256Etter": "cfd224cb7278415bf3f5e13e5086e20511b32d7802df0583a6ff9ac780830603"
+    },
+    {
+      "fra": "masterbrain-rebuild/05-AGENT-WIRING.md",
+      "til": "docs/referanse/masterbrain-rebuild/05-AGENT-WIRING.md",
+      "sha256Foer": "bfa11861db6202addc281f163a71ca0dfbdb9f653ee00f2fa3b323a6eb923804",
+      "sha256Etter": "bfa11861db6202addc281f163a71ca0dfbdb9f653ee00f2fa3b323a6eb923804"
+    },
+    {
+      "fra": "masterbrain-rebuild/06-MIGRATION-PLAN.md",
+      "til": "docs/referanse/masterbrain-rebuild/06-MIGRATION-PLAN.md",
+      "sha256Foer": "24c2d623815b643a721763c0764b4e0de5ce958f2b0a9072e92033c9901a92bb",
+      "sha256Etter": "24c2d623815b643a721763c0764b4e0de5ce958f2b0a9072e92033c9901a92bb"
+    },
+    {
+      "fra": "masterbrain-rebuild/07-OPEN-QUESTIONS.md",
+      "til": "docs/referanse/masterbrain-rebuild/07-OPEN-QUESTIONS.md",
+      "sha256Foer": "94504799aeb1c62f47ee1e142fbed4add0f72769b0347d04f931e5742aa61530",
+      "sha256Etter": "94504799aeb1c62f47ee1e142fbed4add0f72769b0347d04f931e5742aa61530"
+    },
+    {
+      "fra": "masterbrain-rebuild/08-COACH-CLONE-VISION.md",
+      "til": "docs/referanse/masterbrain-rebuild/08-COACH-CLONE-VISION.md",
+      "sha256Foer": "6eadc58b19bdcb3413fcd7182f13c9bda2e54db2ddf0b3f5cca3f77b9e735ab0",
+      "sha256Etter": "6eadc58b19bdcb3413fcd7182f13c9bda2e54db2ddf0b3f5cca3f77b9e735ab0"
+    },
+    {
+      "fra": "masterbrain-rebuild/09-SOURCE-TIL-MASTERBRAIN-SESSION.md",
+      "til": "docs/referanse/masterbrain-rebuild/09-SOURCE-TIL-MASTERBRAIN-SESSION.md",
+      "sha256Foer": "564333f47965431fcb9cd66f3819f59594ea2ff794246b991d2e90720c8ca6a1",
+      "sha256Etter": "79c5a6d6e58d02d7a0064139b9d7075a6a32cd69a0580bcc7c851bbedfca7c8d"
+    },
+    {
+      "fra": "masterbrain-rebuild/10-AUDIO-INVENTORY-HOWTO.md",
+      "til": "docs/referanse/masterbrain-rebuild/10-AUDIO-INVENTORY-HOWTO.md",
+      "sha256Foer": "709dcb96f7169b7ff563fd743e2624005a76b3fb5ccbbc9f82e3ae01c86bd5ea",
+      "sha256Etter": "2c8a64c1e9a61a5e27aff916fba9aaad5cbc93f7cf6980bcf9cad2b887555f81"
+    },
+    {
+      "fra": "masterbrain-rebuild/audio-inventory-summary-snapshot.md",
+      "til": "docs/referanse/masterbrain-rebuild/audio-inventory-summary-snapshot.md",
+      "sha256Foer": "ce86383491ec5929199af81bc619a37fcf5fae92defc4470d2d223b503975bd4",
+      "sha256Etter": "ce86383491ec5929199af81bc619a37fcf5fae92defc4470d2d223b503975bd4"
+    },
+    {
+      "fra": "masterbrain-rebuild/scripts/README.md",
+      "til": "docs/referanse/masterbrain-rebuild/scripts/README.md",
+      "sha256Foer": "afcbb334abba074c23c473d075c0f544e3fb82e730f88ea2ffe1291b953a98a1",
+      "sha256Etter": "ec5b5d0a2260dbc44dc693da2b0516da2a38f5757bc513c3708d67babee352cc"
+    },
+    {
+      "fra": "masterbrain-rebuild/scripts/inventory_audio.py",
+      "til": "docs/referanse/masterbrain-rebuild/scripts/inventory_audio.py",
+      "sha256Foer": "ab9f8280f9dd5591d82346fe80261cc851c1a2edbfbeb877e27bb49bdc0e5c77",
+      "sha256Etter": "ab9f8280f9dd5591d82346fe80261cc851c1a2edbfbeb877e27bb49bdc0e5c77"
+    },
+    {
+      "fra": "docs/ak-master.md",
+      "til": "docs/arkiv/opprydding-2026-09-10/ak-master.md",
+      "sha256Foer": "9b5109e498eb60b57eb7196f9511b258ac003fd1e439b5cc638ceebc5be8010b",
+      "sha256Etter": "f7f375689b3675aece8c05c15445461ca9621cb7c0d1468a0cb2ffca0465ebaf"
+    },
+    {
+      "fra": "scripts/speil-designsystem.mjs",
+      "til": "scripts/arkiv/design-foer-train-lock/speil-designsystem.mjs",
+      "sha256Foer": "2dbbb42d6b6f5bf1a28e421427b4251a2cc9f2cb3ff74df3f9dc6e4ea942ce44",
+      "sha256Etter": "966ed5fa437bbcef9d1779f105a9cf6a3e8f9ed29e82dfb11460138e69800408"
+    },
+    {
+      "fra": "scripts/bygg-bundle.mjs",
+      "til": "scripts/arkiv/design-foer-train-lock/bygg-bundle.mjs",
+      "sha256Foer": "0dacdc96ef25326c3c39a820bde4a17d07daa1c397369cd00cc93a899d68ca05",
+      "sha256Etter": "cbac676a96bc59e42ab12c8b3d0b2d25d6876775570e1240a4620bbc5fba8e9e"
+    },
+    {
+      "fra": "scripts/paper-port-triage.mjs",
+      "til": "scripts/arkiv/design-foer-train-lock/paper-port-triage.mjs",
+      "sha256Foer": "ebe36764bf9dbb180d0aa4d20724881cf59eeb321173b0e362f7ab1071063c94",
+      "sha256Etter": "2b02702b635f7437581f577a3522889088ef8283b50b773a8bd733061ac3a8f5"
+    },
+    {
+      "fra": "scripts/port-t-til-tl.mjs",
+      "til": "scripts/arkiv/design-foer-train-lock/port-t-til-tl.mjs",
+      "sha256Foer": "8b8a88eb7165e3f9d725265b1fc1ed9c51e67ad711daa4863034dfd5e6764c6d",
+      "sha256Etter": "f489bf7a11bdba9448af3ac447229b629f36a1fae44ad8feda5b022d74b060ef"
+    },
+    {
+      "fra": "scripts/fiks-tl-import.mjs",
+      "til": "scripts/arkiv/design-foer-train-lock/fiks-tl-import.mjs",
+      "sha256Foer": "34d36e7368aa9aa0fa73157253c126bb2a621681daa4fa64bab97ddeffd0946b",
+      "sha256Etter": "8f93e429158e6564fcad4715b1d37a26b5d405c02dd18f68324e3c30610091fd"
+    },
+    {
+      "fra": "scripts/agencyos-shot.mjs",
+      "til": "scripts/arkiv/design-foer-train-lock/agencyos-shot.mjs",
+      "sha256Foer": "d77648ba2ae8b336b08fe332bec66500b9c05879ce970cdd0979a98b584d2f15",
+      "sha256Etter": "244e2d1cd11ff2d637fb48cecb519c5b7379711c98292a4c283019e24c9d9386"
+    },
+    {
+      "fra": "scripts/fasit-shot.mjs",
+      "til": "scripts/arkiv/design-foer-train-lock/fasit-shot.mjs",
+      "sha256Foer": "04499edc16c160d521bb179b4ab6354cac562ff20c3c7e3e3c98d5d92ed11ce9",
+      "sha256Etter": "7db45b9707e0b8ceb8a677aaf8a932fbe45b13d02c5b2f4fde598770654d62ce"
+    },
+    {
+      "fra": "scripts/shot-screens.mjs",
+      "til": "scripts/arkiv/design-foer-train-lock/shot-screens.mjs",
+      "sha256Foer": "9b466a35a67852ec0657d830165c1864f29ce435c0bc7c59c6f61d4fa5cf9901",
+      "sha256Etter": "5f2f9dceb166213140a06e8ba19f8ba7dcc97c798f8f98f68f2c5ca9652c7a03"
+    },
+    {
+      "fra": "public/file.svg",
+      "til": "docs/arkiv/opprydding-2026-09-10/startmal-assets/file.svg",
+      "sha256Foer": "2b67812c325c199a02536cdbeea0c593a72f707d323b72ee3e08dbab06753bd4",
+      "sha256Etter": "2b67812c325c199a02536cdbeea0c593a72f707d323b72ee3e08dbab06753bd4"
+    },
+    {
+      "fra": "public/globe.svg",
+      "til": "docs/arkiv/opprydding-2026-09-10/startmal-assets/globe.svg",
+      "sha256Foer": "b614b9bf183925957661ac851498fe1d8029fd43a62fbfed86f9e2624a57e7cf",
+      "sha256Etter": "b614b9bf183925957661ac851498fe1d8029fd43a62fbfed86f9e2624a57e7cf"
+    },
+    {
+      "fra": "public/next.svg",
+      "til": "docs/arkiv/opprydding-2026-09-10/startmal-assets/next.svg",
+      "sha256Foer": "55995dfad6ecb4945a1e856ddca03c5e16aa5bf13fd21b4df6a74ae79357bcfc",
+      "sha256Etter": "55995dfad6ecb4945a1e856ddca03c5e16aa5bf13fd21b4df6a74ae79357bcfc"
+    },
+    {
+      "fra": "public/vercel.svg",
+      "til": "docs/arkiv/opprydding-2026-09-10/startmal-assets/vercel.svg",
+      "sha256Foer": "f081337b2fee635b455b63275406a3e7f39d6a014e25ad90dab5a67e62a12ac4",
+      "sha256Etter": "f081337b2fee635b455b63275406a3e7f39d6a014e25ad90dab5a67e62a12ac4"
+    },
+    {
+      "fra": "public/window.svg",
+      "til": "docs/arkiv/opprydding-2026-09-10/startmal-assets/window.svg",
+      "sha256Foer": "644768c4aaeb4767bce293344eeb0c125fb804a94d801440424072202d85e3a1",
+      "sha256Etter": "644768c4aaeb4767bce293344eeb0c125fb804a94d801440424072202d85e3a1"
+    },
+    {
+      "fra": "public/design/akhq-tokens.css",
+      "til": "docs/arkiv/opprydding-2026-09-10/paper/akhq-tokens.css",
+      "sha256Foer": "9258bcef70f69fedda688a14f48c405f88391607a4b32ec4c7d3ad0bc11b2070",
+      "sha256Etter": "9258bcef70f69fedda688a14f48c405f88391607a4b32ec4c7d3ad0bc11b2070"
+    },
+    {
+      "fra": "docs/natt/N6-PROMPT.md",
+      "til": "docs/arkiv/opprydding-2026-09-10/n6-prompt.md",
+      "sha256Foer": "4cd41689abfabf033d31c0ac1a5eca752e050471739209d4d774945b4f8cc29f",
+      "sha256Etter": "c63632d23a25730b0455e6c8522d0aeb28ad5d3ae591284b7d9f599f79d91103"
+    },
+    {
+      "fra": "verify.mjs",
+      "til": "scripts/arkiv/verify-databaseprobe.mjs",
+      "sha256Foer": "57c152959e85d844b2affad64d7fa124de4598de8b870168c24ec525de38063c",
+      "sha256Etter": "083fff479fa4101aeaff89ee495cdfff42907b6e214f9765ac26c6f242cccc00"
+    }
+  ],
+  "regenererbartFjernet": [
+    ".next",
+    ".vercel/output",
+    ".DS_Store",
+    "tsconfig.tsbuildinfo",
+    ".impeccable/hook.cache.json"
+  ],
+  "lokaltArkiv": "_archive/local-opprydding-2026-09-10"
+}

@@ -233,7 +233,7 @@ function TlBryter({ label, sub, checked, onChange }: { label: string; sub?: stri
 
 function TlFeil({ children }: { children: React.ReactNode }) {
   return (
-    <p role="alert" style={{ marginTop: 14, fontSize: 13, color: TL.danger }}>
+    <p role="alert" style={{ marginTop: 14, fontSize: 13, color: TL.text }}>
       {children}
     </p>
   );

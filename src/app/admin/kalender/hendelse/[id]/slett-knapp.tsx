@@ -13,7 +13,7 @@ export function SlettKnapp({ id }: { id: string }) {
   if (!bekreft) {
     return (
       <Knapp ghost onClick={() => setBekreft(true)}>
-        <span style={{ color: TL.danger }}>Slett hendelse</span>
+        <span style={{ color: TL.text }}>Slett hendelse</span>
       </Knapp>
     );
   }

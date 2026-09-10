@@ -113,7 +113,7 @@ function InlineFeil({ melding }: { melding: string }) {
     <div
       role="alert"
       style={{
-        fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, lineHeight: 1.5,
+        fontFamily: TL.font.sans, fontSize: 12, color: TL.text, lineHeight: 1.5,
         background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`,
         border: `1px solid color-mix(in srgb, ${TL.danger} 30%, transparent)`,
         borderRadius: 10, padding: "8px 11px", marginTop: 12,
@@ -204,7 +204,7 @@ function SakKort({ sak }: { sak: ModereringSakV2 }) {
 
       {venterUtforelse && (
         <div style={{ marginTop: 14, borderRadius: 12, background: `color-mix(in srgb, ${TL.danger} 8%, transparent)`, padding: 14 }}>
-          <div style={{ marginBottom: 8, fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: TL.danger }}>
+          <div style={{ marginBottom: 8, fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: TL.text }}>
             Dette skjer ved bekreftelse
           </div>
           <ul style={{ display: "flex", flexDirection: "column", gap: 6, fontFamily: TL.font.sans, fontSize: 13, lineHeight: 1.55, color: TL.text, margin: 0, paddingLeft: 0, listStyle: "none" }}>
@@ -253,7 +253,7 @@ function SakKort({ sak }: { sak: ModereringSakV2 }) {
             <Knapp icon={pending ? "loader" : "check"} disabled={pending} onClick={godkjenn} style={{ minHeight: 44 }}>
               {gdpr ? "Godkjenn forespørselen" : "Godkjenn rapporten"}
             </Knapp>
-            <Knapp ghost icon="x" disabled={pending} onClick={() => setVisAvvis(true)} style={{ minHeight: 44, color: TL.danger }}>
+            <Knapp ghost icon="x" disabled={pending} onClick={() => setVisAvvis(true)} style={{ minHeight: 44, color: TL.text }}>
               Avvis
             </Knapp>
           </>
@@ -298,7 +298,7 @@ export function ModeringClientV2({ saker, historikk, stats, lasteFeil }: AdminSt
       {lasteFeil && (
         <Kort style={{ borderColor: `color-mix(in srgb, ${TL.warn} 40%, ${TL.hair})` }}>
           <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
-            <Icon name="alert-triangle" size={16} style={{ color: TL.warn, flex: "none", marginTop: 1 }} />
+            <Icon name="alert-triangle" size={16} style={{ color: TL.text, flex: "none", marginTop: 1 }} />
             <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text, lineHeight: 1.55, margin: 0 }}>{lasteFeil}</p>
           </div>
         </Kort>

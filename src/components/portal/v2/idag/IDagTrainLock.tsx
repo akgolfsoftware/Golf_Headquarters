@@ -376,7 +376,7 @@ export function IDagTrainLock(p: IDagTrainLockProps) {
   if (p.tilstand === "feil") {
     hero = (
       <div style={kort}>
-        <div style={{ ...caps, color: TL.danger }}>{IDAG_UI.feilCaps}</div>
+        <div style={{ ...caps, color: TL.text }}>{IDAG_UI.feilCaps}</div>
         <div style={{ marginTop: 8, fontSize: 15, fontWeight: 600, color: TL.text }}>{IDAG_UI.feilTittel}</div>
         <div style={{ marginTop: 4, fontSize: 13, color: TL.mute, lineHeight: 1.5 }}>{IDAG_UI.feilBrød}</div>
         <button

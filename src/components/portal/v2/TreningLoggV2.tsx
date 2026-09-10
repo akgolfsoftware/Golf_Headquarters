@@ -132,7 +132,7 @@ export function TreningLoggV2() {
         </Kort>
 
         {feil && (
-          <p role="alert" style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.danger, margin: 0 }}>
+          <p role="alert" style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.text, margin: 0 }}>
             {feil}
           </p>
         )}

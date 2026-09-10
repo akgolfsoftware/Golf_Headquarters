@@ -5,6 +5,7 @@
  */
 import "server-only";
 
+import { cancellationDeadline } from "@/lib/booking/policy";
 import { prisma } from "@/lib/prisma";
 import { resendKlient, FRA_EPOST } from "@/lib/email";
 import { logError } from "@/lib/error-tracking";
@@ -90,7 +91,7 @@ async function sendBooking(
   }
 
   const tpl = await hentTemplate(slug);
-  const cancelDeadline = new Date(booking.startAt.getTime() - 24 * 60 * 60_000);
+  const cancelDeadline = cancellationDeadline(booking.startAt);
 
   // Credit-baserte bookinger (fra Academy-abonnement) skal ikke vise pris,
   // men en melding om at den er trukket fra abonnementet.

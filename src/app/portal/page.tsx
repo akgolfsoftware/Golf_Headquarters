@@ -61,7 +61,9 @@ export default async function PortalHjemPage() {
     await Promise.all([
       getDashboardData(user.id, naa),
       getGjennomforeData(user.id),
-      loadPlayerDay({ playerId: user.id, date: iDag }),
+      user.role === "PLAYER" && user.tilgang.nivaa !== "FULL"
+        ? Promise.resolve({ ok: true as const, data: { date: iDag, sessions: [], nextSessionId: null } })
+        : loadPlayerDay({ playerId: user.id, date: iDag }),
       getTrackManTeaser(user.id),
       getTesterLiveKort(user.id),
       hentIDagKalender(user.id, naa),

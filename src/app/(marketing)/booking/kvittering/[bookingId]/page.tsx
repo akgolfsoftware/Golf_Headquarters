@@ -47,12 +47,10 @@ export default async function Kvittering({ params }: Props) {
     day: "numeric",
     month: "long",
     year: "numeric",
-    timeZone: "Europe/Oslo",
   });
   const tid = booking.startAt.toLocaleTimeString("nb-NO", {
     hour: "2-digit",
     minute: "2-digit",
-    timeZone: "Europe/Oslo",
   });
   const prisTekst = new Intl.NumberFormat("nb-NO", {
     style: "currency",

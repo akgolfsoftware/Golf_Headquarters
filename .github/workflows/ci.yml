@@ -43,6 +43,9 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Prosjektstruktur og dokumentlenker
+        run: npm run prosjekt:sjekk
+
       - name: Action-auth gate (KS-1 — server actions må ha auth-import)
         run: npm run check:action-auth
 

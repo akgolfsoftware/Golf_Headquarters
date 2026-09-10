@@ -230,7 +230,7 @@ export function FullforKjedeKlient({
                           {" "}→ {rad.til}
                         </span>
                         {rad.straffe && (
-                          <span style={{ fontFamily: TL.font.mono, fontSize: 9.5, fontWeight: 700, color: TL.danger, marginLeft: 6 }}>+1 STRAFFE</span>
+                          <span style={{ fontFamily: TL.font.mono, fontSize: 9.5, fontWeight: 700, color: TL.text, marginLeft: 6 }}>+1 STRAFFE</span>
                         )}
                       </div>
                     </div>
@@ -354,7 +354,7 @@ export function FullforKjedeKlient({
               </span>
               <div style={{ flex: 1 }} />
               {h.kjedeKomplett ? (
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, color: TL.ok }}>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, color: TL.text }}>
                   <Icon name="check" size={12} />
                   KJEDE OK
                 </span>

@@ -883,7 +883,7 @@ export function PlanCard({
             key={f}
             style={{ display: "flex", alignItems: "flex-start", gap: 6, fontFamily: TL.font.sans, fontSize: 12, lineHeight: 1.45, color: TL.mute }}
           >
-            <Check size={12} strokeWidth={2} style={{ marginTop: 3, flex: "none", color: TL.ok }} aria-hidden />
+            <Check size={12} strokeWidth={2} style={{ marginTop: 3, flex: "none", color: TL.text }} aria-hidden />
             {f}
           </span>
         ))}

@@ -34,7 +34,7 @@ function KpiKort({ tall, label, delta }: { tall: string; label: string; delta: s
       <div style={{ fontFamily: TL.font.mono, fontSize: 9.5, letterSpacing: "0.07em", textTransform: "uppercase", color: TL.mute, marginTop: 2 }}>
         {label}
       </div>
-      {delta && <div style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.ok, marginTop: 2 }}>{delta}</div>}
+      {delta && <div style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.text, marginTop: 2 }}>{delta}</div>}
     </div>
   );
 }

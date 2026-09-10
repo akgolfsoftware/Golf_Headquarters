@@ -47,7 +47,7 @@ if skjerm == () {
 }
 
 phase("Fasit");
-let fasit_prompt = "";
+let fasit_prompt = "Les AGENTS.md og designsystem/README.md først. Følg siste beslutning om denne flaten. ";
 fasit_prompt += "Les Train-lock-fasiten for skjermen " + skjerm + ". ";
 fasit_prompt += "Bruk read_file og grep. Ikke svar fra hukommelsen. ";
 fasit_prompt += "1) Les designsystem/train-lock/SCREEN-INDEX.md og finn fila. ";

@@ -6,6 +6,8 @@ description: >
   loadAiDispatch, byggAiDispatch. Versjon 2026-07-23.
 ---
 
+Prosjektkilder: `AGENTS.md` → `docs/platform/AGENT-BRIEF.md`. Design velges i `designsystem/README.md`; historiske skill-eksempler overstyrer ikke disse kildene.
+
 # AgenticOS cockpit — AI-dispatch
 
 ## Formål
@@ -23,22 +25,11 @@ På hjemskjermen (`/admin/agencyos`) se **hva som haster** og **hvilken AI-flate
 | `src/components/admin/v2/CockpitV2.tsx` | Plasserer panelet under KPI |
 | `src/lib/__tests__/ai-dispatch-data.test.ts` | Tester for bygg-logikk |
 
-## UI-kontrakt (komplett polish 2026-07-23)
+## UI-kontrakt
 
-> **OBS 25.08.2026:** Train-lock er designfasit for alle AgencyOS-skjermer, cockpit-panelet
-> inkludert — Paper-/`--p-*`-referansene under beskriver dagens token-bro (historikk), ikke
-> fasit for nytt arbeid. Se CLAUDE.md invariant 2.
+Bruk gjeldende cockpit og fasit via `designsystem/README.md`. Den tidligere Paper-kontrakten fra juli er utgått. Bruk `TL` og eksisterende komponenter. Verifiser filstiene og importene i tabellen over mot dagens kode før endring; cockpit har siden blitt omorganisert.
 
-1. **Én ting NÅ** — hero, clay-markering (`--p-handling` #D97757 — Paper-monopolet), display-type, CTA «Gjør dette»  
-2. **Mini-status** — tallfliser for plan/caddie/forespørsel/e-post/team (kun >0)  
-3. **Haster** vs **Valgfritt** — seksjoner; haster med warn-strek + tint  
-4. **Agent-team** — chips `1·Research · 2·Utkast · 3·Review`  
-5. **Maks 4 rader** — `tilLabel` · oppgave · ferdig når · prioritet  
-6. Hurtiglenker med antall: godkjenninger · agent-team · agenter · caddie · innboks  
-7. Badge «N i kø» / «Klar»  
-8. Ingen emoji · kun tokens (`--p-*` / `T.*` — `--v2-*` er broet til Paper) · clay KUN på «Én ting nå» + fokus (A3-beslutning 16.08); øvrige handlinger er ink-knapper  
-
-Samme kø-språk på: cockpit «Trenger deg nå», innboks-kort, `/admin/godkjenninger` SakKort.
+Hold køen forståelig: hva haster, hva krever handling, og hvor skal coachen gå videre. Ingen fabrikkerte tellinger. Én tydelig primærhandling. Følg godkjent meny fra beslutningen 09.09.2026.
 
 ## Datakilder (ekte)
 

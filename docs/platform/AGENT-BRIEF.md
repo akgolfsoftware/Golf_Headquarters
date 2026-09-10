@@ -1,192 +1,59 @@
 # AK Golf HQ — Agent Brief
 
-> **Nordstjernen:** [`NORDSTJERNE.md`](NORDSTJERNE.md) — hva appen SKAL være
-> (fire ansikter, de to loopene, planleggings-pyramiden, tilgangsskillet,
-> interaksjons- og sikkerhetsprinsippene). Les den før du bygger noe nytt.
+Les dette før du endrer filer. [START-HER.md](../../START-HER.md) er inngangen. [AGENTS.md](../../AGENTS.md) eier felles arbeidsregler; denne filen eier det tekniske oversiktskartet.
 
-## Hva dette er
+## Produkt og nåsituasjon
 
-AK Golf HQ er en monorepo-plattform som samler fire produkter under ett Next.js-prosjekt: en marketing-site, en booking-flyt, **PlayerHQ** (spillerportal) og **AgencyOS** (coach-admin). Plattformen betjener Anders Kristiansen (coach/eier) og spillerne hans på tvers av AK Golf Academy, WANG Toppidrett og GFGK. Det som skiller den fra generiske coaching-apper er det integrerte Strokes Gained-analysesystemet, teknisk utviklingsplan med TrackMan-kobling og AI-basert planlegging via Workbench.
+AK Golf HQ samler offentlig nettsted, coachingbooking, PlayerHQ og AgencyOS i én app. Forelder, WANG, GFGK, Team Norway og personlige arbeidsflater ligger også i samme prosjekt. Målet er en komplett app før åpen lansering med booking og betaling; endelig omfang er ikke låst.
 
----
+[Status nå](../STATUS-NÅ.md) skiller kode, tester, visuell godkjenning og produksjonsbevis. Eldre «ferdig»-markeringer er ikke et lanseringsvedtak.
 
-## Stack (eksakte versjoner — ikke oppgrader uten beslutning)
+## Kilder og ansvar
 
-- **Next.js 16** — App Router, TypeScript strict, Turbopack. MÅ ha `turbopack: { root: import.meta.dirname }` i `next.config.ts`, ellers feiler CSS-resolve lokalt.
-- **React 19**
-- **Prisma 7** — connection-strings i `prisma.config.ts`, IKKE i `schema.prisma`. Runtime krever `@prisma/adapter-pg`.
-- **Supabase** — Postgres + Auth + Realtime. Shared Pooler (IPv4, transaction pooler).
-- **Tailwind CSS v4** — CSS-first via `@theme` i `globals.css`. INGEN `tailwind.config.ts`.
-- **shadcn/ui** — UI-primitiver i `src/components/ui/`.
-- **Lucide React** — eneste icon-bibliotek. INGEN emojis i UI.
-- **npm** — pakkebehandler.
-- **Testrammeverk** — `node:test` via `tsx --test`. vitest er IKKE installert.
+| Spørsmål | Kilde |
+|---|---|
+| Hva skal produktet gjøre? | [Nordstjernen](NORDSTJERNE.md), [produktreglene](BUSINESS-RULES.md) |
+| Hva betyr treningsbegrepene? | [Treningsfaglig fasit](../FASIT-AK-GOLF-HQ.md), ordbøkene via [dokumentoversikten](../README.md) |
+| Hvordan skal skjermen se ut? | [Designarbeid og referanser](../../designsystem/README.md); alle skjermer revideres i Claude Design, og eksisterende design er ikke låst |
+| Hva gjør funksjonen faktisk? | Koden, testene og en målt kundereise |
+| Hva gjenstår? | [Arbeidslisten](../MASTERPLAN-GJENSTAAENDE.md) |
+| Hvor ligger en fil? | [Prosjektkart](../vedlikehold/prosjektkart.md) og det genererte filregisteret |
 
----
+## Teknisk grunnlag
 
-## Mappestruktur
+Next.js App Router, React, TypeScript, Prisma, Supabase og Tailwind CSS. Eksakte installerte versjoner eies av `package-lock.json`; støttede intervaller og kommandoer av `package.json`. Node-versjonen står i `.nvmrc`. Testene bruker `node:test` med `tsx`, samt Playwright i nettleser.
 
-(Flyttet hit fra CLAUDE.md 2026-08-16 — denne filen eier strukturkartet.)
+Les den installerte Next.js-dokumentasjonen i `node_modules/next/dist/docs/` før Next-spesifikke endringer. Ikke oppgrader rammeverk som del av dokumentopprydding.
 
-Størrelsesorden (målt på nytt 02.09.2026 — tallene drifter raskt, sjekk med `find`/`grep` ved
-tvil): ~470 `page.tsx`-ruter, ~175 filer med server actions, 193 Prisma-modeller, 87 migrasjoner,
-277 enhetstest-filer, 64 agent-filer. Sjekk filsystemet før du oppretter nye ruter — det finnes flere
-top-level-mapper enn de fire «offisielle» produktene.
+## Kodekart
 
-```
-src/
-├── app/            # App Router — ~470 ruter
-│   ├── page.tsx              # Marketing (landing)
-│   ├── (marketing)/          # Offentlige sider (layout med markeds-header)
-│   ├── (internal)/           # Interne demoer/labs — ikke prod-flater
-│   ├── auth/  onboard/  inviter/   # Auth-flyter, onboarding, invitasjoner
-│   ├── portal/               # PlayerHQ (spiller-appen)
-│   │   ├── (legacy)/         # Eldre flater under migrering
-│   │   ├── (fullscreen)/     # Fullskjerm-moduser (live/gjennomføring)
-│   │   └── …hovedflater      # planlegge · gjennomfore · analysere · meg · trackman · gameplan m.fl.
-│   ├── admin/                # AgencyOS (coach/admin) — agencyos (cockpit), grupper, godkjenninger,
-│   │                         # kalender, innboks, agenticos (AI-hub — /admin/agent-team og
-│   │                         # /admin/agents er redirect-stubs hit), agencyos/okonomi
-│   │                         # (/admin/finance er redirect-stub hit) m.fl. Etter STEG 15-
-│   │                         # konsolideringen (30.–31.08.2026) er kø, oppgaver, oppsett,
-│   │                         # kalender, turnering, kommunikasjon, analyse og plan hver sin
-│   │                         # ene fanet adresse — se docs/MASTERPLAN-GJENSTAAENDE.md STEG 15
-│   ├── forelder/             # Foreldreportal (lese-først)
-│   ├── booking-flyt          # /booking under (marketing) + /portal/booking + /admin/bookinger
-│   ├── team-wang/  team-gfgk/  gfgk-junior/   # Klubb-/skolespesifikke flater
-│   ├── kommando/  meg/  intern/  offline/     # Agent-chat, personlig, intern, PWA-offline
-│   ├── api/                  # REST (cron, webhooks, trackman, booking, public)
-│   ├── sw.ts                 # Serwist service worker-kilde
-│   └── layout.tsx            # Fonter, metadata, PWA-manifest
-├── components/
-│   ├── ui/                   # 21 primitiver (shadcn-basert): button, dialog, sheet, popover,
-│   │                         # dropdown-menu, tabs, toast, input, kpi-card, progress-ring …
-│   ├── v2/                   # Delte v2-primitiver (shell, kalender, datavis, hjelp, domene …)
-│   ├── athletic/             # Kun to undermapper igjen: golfdata/ (v13, overgangslag) + calendars/
-│   ├── shared/               # Utility-komponenter (cookie-banner, cmd-palette, mobile-bottom-nav)
-│   └── admin/ portal/ marketing/ forelder/ coachhq/ hubs/ workbench-hybrid/ planlegge-v2/
-│       sg-hub/ gameplan/ fys-plan/ teknisk-plan/ turneringer/ kommando/ meg/ …
-├── lib/            # domain/ (ferdighetslogikk — SG, hcp, ak-kategori, fys-score, pyramide) ·
-│                   # validation/schemas.ts · auth · prisma.ts · stripe · email · agents/ ·
-│                   # workbench/ · uke-helpers.ts (Oslo-tid) · scrapers/ · trackman/ · portal-*/ · admin-*/
-│                   # v2/tokens.ts = TS-speil av CSS-variablene — les herfra i TS/charts,
-│                   # definer aldri farger der
-├── proxy.ts        # Next 16 «middleware» — auth-guards (proxy.ts, IKKE middleware.ts)
-└── app/globals.css # Tailwind v4-tema
-prisma/
-├── schema.prisma   # 193 modeller (målt 02.09.2026): User · TrainingPlan(+Session) · Round → Shot → HoleScore ·
-│                   # Subscription · Booking · Lead · CoachAvailability · TestDefinition/TestResult ·
-│                   # DrillMal/OktMal · TrackManSession/TrackManShot · SeasonPlan · PeriodBlock · KommandoTask ·
-│                   # TnPost/TnPostAttachment/TnPostLesekvittering (Team Norway Workdesk) …
-├── migrations/     # 87 kjørte SQL-migrasjoner
-├── sql/  scripts/  seed-data/
-└── seed.ts · seed-drills.ts · seed-gfgk-facilities.ts …
-scripts/            # Engangs-/driftsscript: seed-screentest*.ts (Øyvind Rohjan) · drill-qa ·
-                    # retag-drill-kategorier · check-action-auth.mjs · audit-rls · …
-docs/               # platform/ (NORDSTJERNE, AGENT-BRIEF, BUSINESS-RULES, DATA-MODEL, PLATFORM-PRD) ·
-                    # natt/ (gjeldende lanseringsspor) · skjermtekst/ (copy-kilde) ·
-                    # design-system/TEMA-LYS-MORK.md (tema-oppførsel i kode) ·
-                    # gdpr/ · juridisk/ · sikkerhet/ · arkiv/ (inkl. paper-port)
-designsystem/train-lock/  # GJELDENDE designfasit for PlayerHQ, AgencyOS, Forelder
-                    # (designsystem/paper/ er SLETTET 30.08.2026 — finnes ikke lenger)
-tests/e2e/          # Én samlet e2e-suite (145 specs per 02.09.2026, opp fra 32 siden 2026-08-03): a11y, PWA, ruter, meta/OG,
-                    # offline, ikoner + auth-guard, IDOR, booking, workbench (fra gamle e2e/)
-```
+| Område | Hvor |
+|---|---|
+| Ruter, lastetilstander, feil og server actions | `src/app/` |
+| Grunnkomponenter | `src/components/ui/`, `src/components/v2/` |
+| Produktkomponenter | `src/components/admin/`, `portal/`, `marketing/`, `forelder/`, `workbench/` og øvrige funksjonsmapper |
+| Domene og beregninger | `src/lib/domain/` |
+| Workbench-planlegging | `src/lib/domain/workbench/`, `src/lib/workbench/wb-actions.ts` |
+| Tilgang | `src/lib/auth/`, `src/lib/feature-flags.ts`, `src/proxy.ts` |
+| Database | `prisma/schema.prisma`, `prisma/migrations/`, `prisma.config.ts`, `src/lib/prisma.ts` |
+| Autentisering og lagring | `src/lib/supabase/` |
+| Design i appen | `src/styles/`, `src/lib/v2/`, `src/app/globals.css` |
+| Generert databaseklient | `src/generated/` — regenereres, ikke håndredigeres |
+| Personlig ME-database | `supabase-meg/` — separat skjema, ikke del av appens Prisma-migrasjoner |
+| Tester | tester ved koden i `src/`, samt `tests/` |
+| Verktøy | [scripts/README.md](../../scripts/README.md) |
 
-Slettede mapper det ikke skal letes etter: `public/design-handover/`, `wireframe/`.
+Gamle `v2`, `legacy` og `athletic`-navn betyr ikke automatisk at en fil kan slettes. Kontroller innkommende importer og rutebruk. Mapper med aktive avhengigheter beholdes inntil en konkret funksjon er erstattet og testet.
 
----
+## Viktige tekniske grenser
 
-## Designsystem
+- Flere øktmodeller eksisterer samtidig. Workbench, TrainingSessionV2 og TrainingPlanSession skal ikke slås sammen som opprydding. Samsvar mellom dem må testes i den aktuelle spillerreisen.
+- `prisma.config.ts` laster lokal miljøkonfigurasjon. Generering av klient er noe annet enn å endre databasen. Ikke kjør data- eller skjemaskript for å få en dokumentkontroll grønn.
+- Migrasjonshistorikken er ufullstendig for en tom database. Følg [fallgruvene](../../.claude/rules/gotchas.md); en separat test-VM har [egen oppskrift](../utvikling/lokal-testdatabase.md).
+- `next.config.ts` bruker `withMDX(nextConfig)`. Service worker bygges separat med Serwist i `npm run build`. Bevar de faktiske kommandoene og eksportene.
+- Betalings- og e-postintegrasjoner må prøves gjennom hele flyten før åpen lansering. Eksisterende kode er ikke dokumentasjon på et vellykket kjøp.
+- Verken kodebasert auth-kontroll eller en RLS-migrasjonsfil beviser at en coach bare kan endre sine egne spillere. Test tillatte og avviste tilfeller.
 
-- **Designfasit:** Train-lock (`designsystem/train-lock/`) for ALLE skjermer i PlayerHQ,
-  AgencyOS og Forelder. Les `DESIGN-SYSTEM.md` → `SCREEN-INDEX.md` → `PORTING.md`.
-  Claude Paper (`designsystem/paper/`) er **fysisk slettet fra repoet 30.08.2026** — finnes
-  ikke lenger, ikke let etter den. Gammel Paper-plan (historikk, ikke kode): `docs/arkiv/paper-port/`.
-  Ved konflikt **vinner Train-lock**.
-- **Tokens (ny kode):** `--tl-*` i `src/styles/train-lock-tokens.css`, TS-speil `TL` i
-  `src/lib/v2/train-lock.ts`. Scene `#000000` / lys `#FFFFFF`. Fullført = warm `#B85C3D`.
-- **Tokens (utgående — rettet 01.09.2026):** `--p-*` (`src/styles/paper-tokens.css`) og `T`
-  (`src/lib/v2/tokens.ts`) er BEGGE slettet fra repoet 30.08.2026, ikke bare avviklet — de
-  finnes ikke lenger i runtime. `--v2-*` i `globals.css` peker nå på `--tl-*`, ikke `--p-*`.
-- **Komponenter:** primitiver fra `src/components/ui/` + `v2/`-mønstre; `athletic/golfdata/`
-  er overgangslag. Sjekk ALLTID hva som finnes FØR du lager noe nytt.
-- **Fonter (live i `src/app/layout.tsx`):** Poppins (UI/titler) · Lora (prosa) · IBM Plex Mono
-  (tall). Inter / Familjen Grotesk / JetBrains Mono / Inter Tight er FJERNET — ikke gjeninnfør.
-- **Ferdig-definisjon:** skjermbilde-gaten, se `.claude/rules/beslutninger.md` §Skjermbilde-gate
-  (`CLAUDE.md` har ingen egen §Skjermarbeid — død referanse, ikke let der).
+## Arbeid og kontroll
 
-**FORBUDT:** lage ny `tokens.css`, importere fra `wireframe/` eller `designsystem/paper/` (begge slettet),
-lage `tokens.ts` i komponent-mapper, cream `#FAF9F5` / clay-CTA / Presis-skog/lime i produktflater.
-
----
-
-## Låste beslutninger (ikke diskuter — bare følg)
-
-- **App-navn:** Coach-appen heter **AgencyOS** (`/admin`). «CoachHQ» er gammelt navn — aldri i ny UI-tekst.
-- **Tema:** mørk default på `/portal` og `/admin` (`src/lib/v2/tema-default.ts`). `/auth`
-  og `/forelder` er lys default. Cookie `ak-v2-tema` vinner over defaulten. Landingssider alltid lyse.
-- **Planlegging → Workbench:** ÉN inngangspunkt. Ikke en meny av 6 kort. Workbench har **fem nivå**: årsplan → periodisering → måned → uke → økt.
-- **Analyse samlet:** Analysere + TrackMan + Runder + SG er én flate med faner.
-- **Demo-navn:** Spiller = **Øyvind Rohjan**, coach = **Anders Kristiansen**. Fulle navn alltid. Gamle navn (Markus Berg, Magnus, Andreas Kragerud) skal bort. NB: ekte coach «Markus Røinås Pedersen» på markedssider beholdes.
-- **ELITE vises aldri i UI** — dødt Prisma-enum.
-- **Abonnement:** Gratis (prøveperiode / coaching-pakke / gruppe) eller 299 kr/mnd. Performance / Performance Pro er coaching-pakker, ikke app-nivåer.
-- **FYS-resultatformel:** avventer grønt lys fra Anders — vis plassholder-tall.
-- **Avatar-initialer:** avledes fra ekte navn i DB, aldri hardkodet.
-- **Design-kilden ER låst (oppdatert 2026-08-25):** Train-lock — for alle PlayerHQ/AgencyOS-skjermer.
-  (05.08-låsen på Claude Paper er supersedert.) Referanser til `wireframe/`, `design-package/`, `design-files-v2/`, `public/design-handover/`
-  eller andre gamle arkiver er forbudt i produksjonsfiler — fjernes ved første touch av filen.
-
-### Design-porting-unntak (diff-agenter skal ikke flagge disse)
-
-Listen under er fra Presis-æraen og gjaldt den gamle fasiten. **Utgått 2026-08-05** — den forrige
-lenken gikk dessuten til `.claude/rules/design-produktbeslutninger.md`, som ikke finnes.
-Gjeldende avvikshåndtering: kontrakten + skjermbilde-gaten i `CLAUDE.md` §Skjermarbeid.
-Beholdt kun som historikk:
-
-- PlayerHQ-hjem hero: profilbilde + tier-pill øverst (ikke dato-eyebrow + vær fra designet).
-- Tier-pill-tekst: «PlayerHQ · {tier}» (ikke «Performance Pro»).
-- Undersider mobil-topbar: global PortalShell-topbar (ikke sub-topbar med tilbake-pil).
-- Knappestil: `rounded-full` pill + mono 12px bold uppercase. **Utgått** — Train-lock:
-  én hvit (lys: sort) primær per skjerm, radius-card 20 / pill 999.
-- AgencyOS-initialer: «ØR» for Øyvind Rohjan (fasit hardkodet «MB» — levning fra gammelt navn).
-- Konkrete tekstinnhold (meldinger, oppgavetekster) er data, ikke design-avvik.
-
----
-
-## Kjente fallgruver
-
-- **Turbopack CSS-resolve:** `next.config.ts` MÅ ha `turbopack: { root: import.meta.dirname }`.
-- **next.config.ts export-form:** filen eksporterer `withSerwist(withMDX(nextConfig))` — IKKE `nextConfig` direkte. Aldri erstatt export-formen. Legg nye config-felter inn i `nextConfig`-objektet, ikke på utsiden.
-- **Prisma 7:** DB-url i `prisma.config.ts` → `datasource.url = env("DIRECT_URL")`. Runtime: `DATABASE_URL` via pgbouncer. `prisma.config.ts` MÅ laste `.env.local` med `dotenv.config({ path: ".env.local" })`.
-- **Next.js 16 middleware heter `proxy.ts`**, ikke `middleware.ts`. Kun nodejs runtime, ikke edge.
-- **tsx-scripts:** MÅ `import "./_env"` FØR `@/lib/prisma`, ellers feiler DB-tilkobling (ESM import-rekkefølge).
-- **JSON-blobs fra Prisma:** bruk `zod safeParse` — aldri `as unknown as <Type>` for forretningskritiske data.
-- **Supabase RLS:** alle nye tabeller MÅ ha `ENABLE RLS` i samme migrasjon, ellers lekkasje via PostgREST.
-- **Two live-session tracks:** Spor A (`TrainingPlanSession`, `/portal/live`) og Spor B (`TrainingSessionV2`, `/admin/live` + workbench) sameksisterer bevisst — ikke merge uoppfordret.
-
----
-
-## Kvalitetsgate per skjerm (ingen snarvei)
-
-Fasiten er Train-lock (`designsystem/train-lock/`, 219 skjermfiler, synket 08.09.2026). Mangler fasit for
-skjermen: STOPP og spør Anders — ikke fall tilbake til Paper.
-Deretter: bygg fra fasiten (element-liste først), screenshot med Playwright (PlayerHQ 430px,
-AgencyOS ~1280px, full-page), spawn en adversarial diff-subagent som FINNER avvik (ikke bekrefter),
-og fiks til 0 avvik. En skjerm regnes som ferdig først når
-skjermbilde-gaten i `CLAUDE.md` §Skjermarbeid er oppfylt og Anders har sett skjermbildet.
-
----
-
-## Andre referansedokumenter (ikke duplisert her)
-
-- `docs/gdpr/behandlingsregister.md` — GDPR-behandlingsregister
-- `docs/sikkerhet/action-audit.md` — sikkerhetsrevisjon av agent-handlinger
-- `docs/skjermtekst/skjerm-tekst-hovedskjermer.md` — norsk UI-copy-kilde
-- `docs/integrasjoner/whoop-garmin-oppsett.md` — Whoop/Garmin-oppsett
-
-## Verifikasjon (kjør før hver commit)
-
-```bash
-npm run verify
-```
+`npm run prosjekt:sjekk` kontrollerer dokumentasjon og struktur. `npm run verify` og `npm test` er kodekontrollene. Se [testveiledningen](../testing.md) og [visuell rigg](../../tests/visual/README.md). Dokumenter datagrunnlag og begrensninger når du rapporterer resultater.

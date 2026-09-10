@@ -1,3 +1,4 @@
+import { canAccessPlayer } from "@/lib/auth/own-or-coached";
 /**
  * PlayerHQ · Live-økt — status-router.
  *
@@ -24,7 +25,8 @@ export default async function LiveSessionPage({
   }
 
   const resolved = await resolveLiveSession(sessionId, user.id);
-  const rute = liveRouteForResolved(resolved, { userId: user.id, isCoach });
+  const hasPlayerAccess = resolved ? await canAccessPlayer(user, resolved.playerId) : false;
+  const rute = liveRouteForResolved(resolved, { userId: user.id, hasPlayerAccess });
   if (rute.type === "notfound") notFound();
   if (rute.type === "forbidden") redirect("/portal/planlegge/workbench");
   redirect(rute.href);

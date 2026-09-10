@@ -44,7 +44,7 @@ test("parseProtocol — variant A (NGF-batteri)", async (t) => {
     assert.equal(spec.forsok[1].target, "8/10");
   });
 
-  await t.test("select-felter utelates — de kan ikke representeres i scorekortet", () => {
+  await t.test("select-felter og valgmuligheter beholdes", () => {
     const spec = parseProtocol({
       steps: [
         {
@@ -53,7 +53,7 @@ test("parseProtocol — variant A (NGF-batteri)", async (t) => {
           shots: 1,
           inputFields: [
             { key: "carry", label: "Carry", unit: "m" },
-            { key: "launch", label: "Launch", type: "select" },
+            { key: "launch", label: "Launch", type: "select", options: ["Lav", "Høy"] },
           ],
         },
       ],
@@ -62,17 +62,18 @@ test("parseProtocol — variant A (NGF-batteri)", async (t) => {
     assert.ok(spec);
     assert.deepEqual(
       spec.forsok[0].felter.map((f) => f.key),
-      ["carry"],
+      ["carry", "launch"],
     );
+    assert.deepEqual(spec.forsok[0].felter[1].options, ["Lav", "Høy"]);
   });
 
-  await t.test("steg der alle felter er select faller tilbake til «Score»", () => {
+  await t.test("steg med bare valg blir ikke erstattet med en oppdiktet score", () => {
     const spec = parseProtocol({
       steps: [{ id: "s1", label: "Kun valg", shots: 1, inputFields: [{ key: "launch", label: "Launch", type: "select" }] }],
     });
 
     assert.ok(spec);
-    assert.deepEqual(spec.forsok[0].felter, [{ key: "score", type: "number", label: "Score" }]);
+    assert.deepEqual(spec.forsok[0].felter, [{ key: "launch", type: "select", label: "Launch" }]);
   });
 
   await t.test("«poeng» arves fra protokollnivå når feltet mangler egen enhet", () => {

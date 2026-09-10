@@ -1,6 +1,15 @@
 "use client";
 
 /**
+ * Avvik:
+ *   - Kontrastretting fra tidligere arbeidsgren er avstemt 10.09.2026. Eldre
+ *     visuelle referanser nedenfor er historikk; helskjermkontroll mot en ny
+ *     valgt Claude Design-versjon gjenstår. Denne endringen justerer fargebruk,
+ *     ikke skjermens funksjon eller oppsett. Se grener-og-main-2026-09-10.md
+ *     under docs/beslutningsgrunnlag for faktisk kontrollomfang.
+ */
+
+/**
  * Sak-artefaktet — én sak utvidet: utkast til svar, Godkjenn/Rediger/Avvis.
  * Fasit: jarvis/meg-sak.html. Gullregelen (nattsesjon-prompt Fase 2 punkt 3):
  * ingen mutasjon uten eksplisitt godkjenn-handling, og en 10 sekunders
@@ -196,7 +205,7 @@ export function SakArtefakt({
       )}
 
       {feilmelding && (
-        <div role="alert" style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger }}>
+        <div role="alert" style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.text }}>
           {feilmelding}
         </div>
       )}

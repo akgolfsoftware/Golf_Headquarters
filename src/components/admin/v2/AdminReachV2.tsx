@@ -223,7 +223,7 @@ export function AdminReachV2({ data }: { data: AdminReachV2Data }) {
                   <Link href={`/admin/spillere/${p.id}`} style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text, textDecoration: "none" }}>
                     {p.navn}
                   </Link>
-                  <div style={{ marginTop: 2, fontFamily: TL.font.mono, fontSize: 10, color: TL.danger }}>
+                  <div style={{ marginTop: 2, fontFamily: TL.font.mono, fontSize: 10, color: TL.text }}>
                     {p.compliancePct}% compliance <span style={{ color: TL.mute }}>· {p.readRatePct}% lest{p.sistSett ? ` · sett ${p.sistSett}` : ""}</span>
                   </div>
                 </div>

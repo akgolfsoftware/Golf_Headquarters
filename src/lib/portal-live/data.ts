@@ -1,3 +1,4 @@
+import { canAccessPlayer } from "@/lib/auth/own-or-coached";
 /**
  * PlayerHQ · Live-økt — server-side data-loader.
  *
@@ -69,13 +70,11 @@ type AccessResult =
 /**
  * Laster live-økt-data og verifiserer eierskap.
  * @param sessionId  TrainingPlanSession-id
- * @param userId     Innlogget bruker-id
- * @param isCoach    Er bruker COACH/ADMIN (ser alle økter)
+ * @param viewer     Serverens innloggede bruker
  */
 export async function loadLiveSession(
   sessionId: string,
-  userId: string,
-  isCoach: boolean,
+  viewer: { id: string; role: string },
 ): Promise<AccessResult> {
   const session = await prisma.trainingPlanSession.findUnique({
     where: { id: sessionId },
@@ -90,8 +89,7 @@ export async function loadLiveSession(
 
   if (!session) return { ok: false, reason: "notfound" };
 
-  const erEier = session.plan.userId === userId;
-  if (!erEier && !isCoach) return { ok: false, reason: "forbidden" };
+  if (!(await canAccessPlayer(viewer, session.plan.userId))) return { ok: false, reason: "forbidden" };
 
   const drills: LiveDrill[] = session.drills.map((d, i) => ({
     id: d.id,

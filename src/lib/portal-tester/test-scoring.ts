@@ -26,7 +26,7 @@ import { z } from "zod";
 /* ── Typer ───────────────────────────────────────────────────────────────── */
 
 /** «V»/«H» = registrert miss-retning (kun Gate-protokoller med miss_side, TE-04). */
-export type Verdi = number | boolean | "V" | "H" | null;
+export type Verdi = number | boolean | string | null;
 export type Forsok = { nr: number; label?: string; verdier: Record<string, Verdi> };
 
 export type ScoringKind =
@@ -119,7 +119,7 @@ export function lavereErBedre(kind: ScoringKind): boolean {
 /* ── Minimal protokoll-parse for scoring (target/kategori + kind) ────────── */
 
 type SlagSpec = { nr: number; label?: string; target?: number; category?: string };
-type ProtokollSpec = { kind: ScoringKind; unit: string | null; shots: SlagSpec[] };
+type ProtokollSpec = { kind: ScoringKind; unit: string | null; shots: SlagSpec[]; primaryMetric?: string };
 
 const FeltSchema = z.looseObject({ key: z.string(), label: z.string().optional(), unit: z.string().optional() });
 
@@ -135,6 +135,7 @@ const VariantBSchema = z.looseObject({
 });
 
 const VariantASchema = z.looseObject({
+  primaryMetric: z.string().optional(),
   unit: z.string().optional(),
   scoringMode: z.string(),
   steps: z.array(z.looseObject({
@@ -173,7 +174,7 @@ export function parseForScoring(protocol: unknown): ProtokollSpec {
         shots.push({ nr: shots.length + 1, label: steg.label, target });
       }
     }
-    return { kind, unit: a.data.unit ?? null, shots };
+    return { kind, unit: a.data.unit ?? null, shots, ...(a.data.primaryMetric ? { primaryMetric: a.data.primaryMetric } : {}) };
   }
   return { kind: "fallback", unit: null, shots: [] };
 }
@@ -237,12 +238,12 @@ function peiForSlag(verdier: Record<string, Verdi>, target: number | undefined):
   if (naerhet === null) {
     const carry = felt(verdier, ["carry", "carry_m"]);
     if (carry === null || target === undefined) return null;
-    const side = felt(verdier, ["carrySide", "retning", "side", "side_m"]) ?? 0;
+    const side = felt(verdier, ["carrySide", "retning", "side", "side_m"]);
+    if (side === null) return null;
     naerhet = Math.sqrt((target - carry) ** 2 + side ** 2);
   }
   if (naerhet === null) return null;
-  // Uten gyldig lengde kan vi ikke normalisere → bruk rå nærhet.
-  return target && target > 0 ? naerhet / target : naerhet;
+  return target && target > 0 && naerhet >= 0 ? naerhet / target : null;
 }
 
 /* ── Hovedfunksjon ───────────────────────────────────────────────────────── */
@@ -255,6 +256,7 @@ function peiForSlag(verdier: Record<string, Verdi>, target: number | undefined):
 export function scoreTest(protocol: unknown, forsok: Forsok[]): ScoreResultat {
   const spec = parseForScoring(protocol);
   const { kind } = spec;
+  const mainValue = (values: Record<string, Verdi>) => spec.primaryMetric ? felt(values, [spec.primaryMetric]) : hovedverdi(values);
 
   const perSlag: SlagDetalj[] = forsok.map((f, i) => {
     const s = spec.shots[i];
@@ -326,17 +328,17 @@ export function scoreTest(protocol: unknown, forsok: Forsok[]): ScoreResultat {
       break;
     }
     case "value_max": {
-      const xs = perSlag.map((d) => hovedverdi(d.verdier)).filter((n): n is number => n !== null);
+      const xs = perSlag.map((d) => mainValue(d.verdier)).filter((n): n is number => n !== null);
       score = xs.length ? Math.max(...xs) : 0;
       break;
     }
     case "min": {
-      const xs = perSlag.map((d) => hovedverdi(d.verdier)).filter((n): n is number => n !== null);
+      const xs = perSlag.map((d) => mainValue(d.verdier)).filter((n): n is number => n !== null);
       score = xs.length ? Math.min(...xs) : 0;
       break;
     }
     case "average": {
-      const xs = perSlag.map((d) => hovedverdi(d.verdier)).filter((n): n is number => n !== null);
+      const xs = perSlag.map((d) => mainValue(d.verdier)).filter((n): n is number => n !== null);
       score = snitt(xs);
       break;
     }
@@ -378,7 +380,7 @@ export const ScoringDetailsSchema = z.object({
     // scoreTest() skriver dem allerede (Verdi-typen over inkluderer "V"|"H"),
     // så leseskjemaet fulgte ikke skrive-siden. Oppdaget under PX-3-rest
     // (TE-03-porten), se docs/feillogg.md 29.08.
-    verdier: z.record(z.string(), z.union([z.number(), z.boolean(), z.enum(["V", "H"]), z.null()])),
+    verdier: z.record(z.string(), z.union([z.number().finite(), z.boolean(), z.string().max(200), z.null()])),
     pei: z.number().optional(),
   })),
   aggregat: z.record(z.string(), z.number()),

@@ -355,12 +355,12 @@ export function TurneringWizardV2({ courses }: { courses: Course[] }) {
         )}
 
         {(error || stepError) && step !== 4 && error && (
-          <div role="alert" style={{ marginTop: 16, borderRadius: 11, background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`, border: `1px solid color-mix(in srgb, ${TL.danger} 35%, transparent)`, padding: "10px 13px", fontFamily: TL.font.sans, fontSize: 12.5, color: TL.danger }}>
+          <div role="alert" style={{ marginTop: 16, borderRadius: 11, background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`, border: `1px solid color-mix(in srgb, ${TL.danger} 35%, transparent)`, padding: "10px 13px", fontFamily: TL.font.sans, fontSize: 12.5, color: TL.text }}>
             {error}
           </div>
         )}
         {error && step === 4 && (
-          <div role="alert" style={{ marginTop: 16, borderRadius: 11, background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`, border: `1px solid color-mix(in srgb, ${TL.danger} 35%, transparent)`, padding: "10px 13px", fontFamily: TL.font.sans, fontSize: 12.5, color: TL.danger }}>
+          <div role="alert" style={{ marginTop: 16, borderRadius: 11, background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`, border: `1px solid color-mix(in srgb, ${TL.danger} 35%, transparent)`, padding: "10px 13px", fontFamily: TL.font.sans, fontSize: 12.5, color: TL.text }}>
             {error}
           </div>
         )}

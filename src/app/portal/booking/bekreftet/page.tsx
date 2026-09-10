@@ -6,9 +6,10 @@
  * (`booking.userId !== user.id` → notFound) og googleKalenderUrl()-
  * genereringen. COPY-FIKS: legacy-tittelen «Forespørsel sendt!» var uærlig —
  * credit-bookingen opprettes CONFIRMED, ny tittel er «Booking bekreftet».
- * Datoformatering har fått eksplisitt Europe/Oslo (gotcha: Vercel kjører UTC).
+ * Klokkeslett følger lagret veggklokke; ingen ekstra Oslo-konvertering av naive tider.
  */
 
+import { naivOsloTilTidspunkt } from "@/lib/google-calendar-tid";
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
@@ -28,7 +29,7 @@ function googleKalenderUrl(booking: {
   location: { name: string };
 }): string {
   const fmt = (d: Date) =>
-    d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+    naivOsloTilTidspunkt(d).toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
   const params = new URLSearchParams({
     action: "TEMPLATE",
     text: `AK Golf — ${booking.serviceType.name}`,
@@ -74,12 +75,10 @@ export default async function BekreftetPage({ searchParams }: Props) {
     weekday: "long",
     day: "numeric",
     month: "long",
-    timeZone: "Europe/Oslo",
   });
   const klokkeslett = booking.startAt.toLocaleTimeString("nb-NO", {
     hour: "2-digit",
     minute: "2-digit",
-    timeZone: "Europe/Oslo",
   });
 
   return (

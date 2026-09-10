@@ -237,7 +237,7 @@ export function NyTestEgenV2({ rolle }: Props) {
         {feilmelding && (
           <div
             role="alert"
-            style={{ marginTop: 18, borderRadius: 11, border: `1px solid color-mix(in srgb, ${TL.danger} 35%, transparent)`, background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`, padding: "10px 14px", fontFamily: TL.font.sans, fontSize: 13, color: TL.danger }}
+            style={{ marginTop: 18, borderRadius: 11, border: `1px solid color-mix(in srgb, ${TL.danger} 35%, transparent)`, background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`, padding: "10px 14px", fontFamily: TL.font.sans, fontSize: 13, color: TL.text }}
           >
             {feilmelding}
           </div>

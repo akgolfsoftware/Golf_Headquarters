@@ -11,6 +11,10 @@
 "use server";
 
 import "server-only";
+import { workbenchWeekSession } from "@/lib/portal/workbench-week";
+import { osloUkeGrenser } from "@/lib/jarvis/ukesreview";
+import { OSLO_YMD_FMT, osloInstant } from "@/lib/jarvis/dagen";
+import { tilDatoKolonne, SPILLER_SYNLIGE_STATUSER } from "@/lib/workbench/wb-map";
 import { prisma } from "@/lib/prisma";
 import type { PyramidArea, PracticeType, SessionStatusV2 } from "@/generated/prisma/client";
 import { assertCanViewPlayerData } from "@/lib/auth/assert-own-or-coached";
@@ -233,11 +237,10 @@ export async function getTodaysSession(userId: string, naa: Date = new Date()): 
 export async function getWeekOverview(userId: string, naa: Date = new Date()): Promise<WeekDay[]> {
   await assertCanViewPlayerData(userId);
   const now = naa;
-  const start = startOfWeek(now);
-  const end = endOfWeek(now);
+  const { start, slutt: end } = osloUkeGrenser(now);
 
   const sessions = await prisma.trainingSessionV2.findMany({
-    where: { studentId: userId, startTime: { gte: start, lte: end } },
+    where: { studentId: userId, startTime: { gte: start, lt: end } },
     orderBy: { startTime: "asc" },
     select: {
       id: true,
@@ -253,19 +256,20 @@ export async function getWeekOverview(userId: string, naa: Date = new Date()): P
   });
 
   const days: WeekDay[] = Array.from({ length: 7 }, (_, i) => {
-    const d = new Date(start);
-    d.setDate(d.getDate() + i);
+    const key = tilDatoKolonne(OSLO_YMD_FMT.format(start));
+    key.setUTCDate(key.getUTCDate() + i);
+    const d = osloInstant(key.getUTCFullYear(), key.getUTCMonth() + 1, key.getUTCDate(), 12, 0);
     return {
       date: d,
-      dayLabel: UKEDAG_KORT[(d.getDay() + 6) % 7],
-      dayNumber: d.getDate(),
-      isToday: d.toDateString() === now.toDateString(),
+      dayLabel: UKEDAG_KORT[i],
+      dayNumber: key.getUTCDate(),
+      isToday: OSLO_YMD_FMT.format(d) === OSLO_YMD_FMT.format(now),
       sessions: [],
     };
   });
 
   for (const s of sessions) {
-    const day = days.find((d) => d.date.toDateString() === s.startTime.toDateString());
+    const day = days.find((d) => OSLO_YMD_FMT.format(d.date) === OSLO_YMD_FMT.format(s.startTime));
     if (!day) continue;
     day.sessions.push({
       id: s.id,
@@ -283,6 +287,22 @@ export async function getWeekOverview(userId: string, naa: Date = new Date()): P
     });
   }
 
+  const workbench = await prisma.workbenchSession.findMany({
+    where: {
+      playerId: userId,
+      date: { gte: tilDatoKolonne(OSLO_YMD_FMT.format(start)), lt: tilDatoKolonne(OSLO_YMD_FMT.format(end)) },
+      status: { in: [...SPILLER_SYNLIGE_STATUSER] },
+      hiddenByPlayer: false,
+      needsPlayerApproval: false,
+    },
+    include: { drills: { orderBy: { sortOrder: "asc" } } },
+  });
+  for (const row of workbench) {
+    const key = row.date.toISOString().slice(0, 10);
+    const day = days.find((d) => OSLO_YMD_FMT.format(d.date) === key);
+    if (day) day.sessions.push(workbenchWeekSession(row));
+  }
+  for (const day of days) day.sessions.sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
   return days;
 }
 

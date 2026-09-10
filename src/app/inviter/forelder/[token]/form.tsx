@@ -79,7 +79,7 @@ export function AksepterForm({ token, email }: { token: string; email: string })
               padding: "10px 14px",
               fontFamily: TL.font.sans,
               fontSize: 13,
-              color: TL.danger,
+              color: TL.text,
             }}
           >
             {error}

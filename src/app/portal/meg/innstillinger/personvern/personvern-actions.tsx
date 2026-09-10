@@ -56,7 +56,7 @@ function ExportAction() {
             fontFamily: TL.font.mono,
             fontSize: 11,
             letterSpacing: "0.04em",
-            color: status.ok ? TL.ok : TL.danger,
+            color: status.ok ? TL.mute : TL.text,
           }}
         >
           {status.msg}
@@ -110,7 +110,7 @@ function SlettKontoAction() {
               fontFamily: TL.font.mono,
               fontSize: 11,
               letterSpacing: "0.04em",
-              color: status.ok ? TL.ok : TL.danger,
+              color: status.ok ? TL.mute : TL.text,
             }}
           >
             {status.msg}
@@ -130,7 +130,7 @@ function SlettKontoAction() {
         padding: 14,
       }}
     >
-      <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.danger }}>
+      <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>
         Er du helt sikker?
       </p>
       <p style={{ margin: "6px 0 0", fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.5 }}>
@@ -182,7 +182,7 @@ function SlettKontoAction() {
         }}
       />
       {error ? (
-        <p style={{ margin: "8px 0 0", fontFamily: TL.font.mono, fontSize: 11, color: TL.danger }}>{error}</p>
+        <p style={{ margin: "8px 0 0", fontFamily: TL.font.mono, fontSize: 11, color: TL.text }}>{error}</p>
       ) : null}
       <div style={{ marginTop: 10, display: "flex", flexWrap: "wrap", gap: 8 }}>
         <button

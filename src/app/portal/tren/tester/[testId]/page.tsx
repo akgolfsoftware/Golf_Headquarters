@@ -1,5 +1,7 @@
 /**
  * PlayerHQ · Test-detalj (/portal/tren/tester/[testId]).
+ * Avvik:
+ * - Versjonerte Team Norway-tester åpnes i det kildekontrollerte scorekortet. Visuell retning er under arbeid.
  * Fasit: designsystem/train-lock/TE-03 TN Putt Gate detalj.dc.html
  *
  * TE-03 dekker «type A»-protokollene (TE-00 korttype A: serie OK/Bom, tappet
@@ -26,7 +28,8 @@
  */
 
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { tnFromDefinitionId } from "@/lib/portal-tester/tn-integration";
+import { notFound, redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { testTilgangWhere } from "@/lib/portal-tester/test-tilgang";
@@ -78,6 +81,8 @@ export default async function TestDetaljSpillerPage({
 }) {
   const user = await requirePortalUser({ kreverTilgang: "TALENT" });
   const [{ testId }, sp] = await Promise.all([params, searchParams]);
+  const tn = tnFromDefinitionId(testId);
+  if (tn) redirect(`/portal/tren/tester/team-norway?test=${tn.id}${tn.variableCount ? `&count=${tn.rows.length}` : ""}`);
   const lagret = sp.lagret === "1";
 
   // Tilgang: samme regel som katalogen — andres private tester gir 404 (K6).

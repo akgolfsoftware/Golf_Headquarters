@@ -74,7 +74,7 @@ export function MorgenbriefArtefakt({
           <br />i køen nå
         </span>
         {overFrist.length > 0 && (
-          <span style={{ marginLeft: "auto", fontFamily: TL.font.mono, fontSize: 11, color: TL.danger }}>▲ {overFrist.length} over frist</span>
+          <span style={{ marginLeft: "auto", fontFamily: TL.font.mono, fontSize: 11, color: TL.text }}>▲ {overFrist.length} over frist</span>
         )}
       </div>
 

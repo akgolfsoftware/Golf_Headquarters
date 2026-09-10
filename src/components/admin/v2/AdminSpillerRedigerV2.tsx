@@ -49,7 +49,7 @@ function Felt({ label, name, defaultValue, type = "text", required, hint }: { la
     <label style={{ display: "block" }}>
       <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.10em", color: TL.mute }}>
         {label}
-        {required && <span style={{ color: TL.danger }}> *</span>}
+        {required && <span style={{ color: TL.text }}> *</span>}
       </span>
       <input
         type={type}
