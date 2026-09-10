@@ -6,13 +6,9 @@
  * mot spilleren selv over tid — ingen persentil, ingen kullrangering på
  * spillerflaten. Plassering vises kun som «innen klasse».
  *
- * TRUTHLAYER: hvert tall her kan spores til `public_player_entries.scoreToPar`
- * (til-par for turneringen, allerede banenormalisert av kilden) og rundescorene
- * i `public_player_rounds`. Båndet (beste/verste runde som til-par) avledes KUN
- * fra turneringens egne tall: par per runde = (sum score − til-par total) /
- * antall runder. Går ikke det opp i et helt tall (blandet par, ufullstendige
- * runder), får turneringen ingen bånd — aldri et anslag. Par hentes ALDRI fra
- * baneregisteret (datakartleggingen 30.08: systematisk −1,02 slag for juniorer).
+ * TRUTHLAYER: snitt og beste/verste runde bruker fullstendige resultater.
+ * Rundevis til-par kommer fra kilden; par avledes aldri fra turneringssnitt.
+ * Score mot par er ikke en justering for banevanskelighet eller feltstyrke.
  *
  * Filtrene speiler `dashboard.mv_topar_grunnlag`
  * (scripts/lag-topar-grunnlag-2026-08-30.ts) så spillerens egne tall her er de
@@ -37,6 +33,8 @@ export type KurveRad = {
   toparTotal: number;
   /** Gyldige rundescorer (55–130), i spilt rekkefølge. Tom liste → raden utelates. */
   rundescorer: number[];
+  rundemotPar?: (number | null)[];
+  fullstendig?: boolean;
   /** Plassering innen klasse. Null = ikke registrert. */
   plassering: number | null;
   /** REGISTERED | TEED_OFF | CUT | WITHDREW | FINISHED */
@@ -130,16 +128,15 @@ function rund1(v: number): number {
  * utenfor grensene, eller ikke fullført).
  */
 export function tilPunkt(rad: KurveRad): KurvePunkt | null {
-  if (UTEN_RESULTAT.has(rad.status ?? "")) return null;
+  if (UTEN_RESULTAT.has(rad.status ?? "") || rad.status === "TEED_OFF" || rad.status === "DQ" || rad.fullstendig === false) return null;
   if (rad.toparTotal < TOPAR_MIN || rad.toparTotal > TOPAR_MAKS) return null;
-  const runder = rad.rundescorer.filter((s) => s >= RUNDESCORE_MIN && s <= RUNDESCORE_MAKS);
-  if (runder.length === 0) return null;
-
+  const runder = rad.rundescorer;
+  if (runder.length === 0 || runder.some(s => !Number.isSafeInteger(s) || s < RUNDESCORE_MIN || s > RUNDESCORE_MAKS)) return null;
   const snitt = rund1(rad.toparTotal / runder.length);
-  const sum = runder.reduce((a, b) => a + b, 0);
-  const parSum = sum - rad.toparTotal;
-  const parPerRunde = parSum / runder.length;
-  const harBaand = Number.isInteger(parPerRunde) && parPerRunde >= 27 && parPerRunde <= 80;
+  const motPar = rad.rundemotPar;
+  const harBaand = motPar != null && motPar.length === runder.length
+    && motPar.every(v => v != null && Number.isSafeInteger(v))
+    && motPar.reduce<number>((sum, value) => sum + (value ?? 0), 0) === rad.toparTotal;
 
   return {
     turneringId: rad.turneringId,
@@ -147,8 +144,8 @@ export function tilPunkt(rad: KurveRad): KurvePunkt | null {
     dato: rad.startDato,
     runder: runder.length,
     snitt,
-    beste: harBaand ? Math.min(...runder) - parPerRunde : null,
-    verste: harBaand ? Math.max(...runder) - parPerRunde : null,
+    beste: harBaand ? Math.min(...motPar as number[]) : null,
+    verste: harBaand ? Math.max(...motPar as number[]) : null,
     plassering: rad.plassering != null && rad.plassering > 0 ? rad.plassering : null,
     status: rad.status,
   };
@@ -238,12 +235,12 @@ export function byggMinKurve(
     .sort((a, b) => a.dato.getTime() - b.dato.getTime());
 
   if (alle.length === 0) {
-    return { ...TOM_KURVE, koblet: true, tomGrunn: "Ingen turneringer er registrert på deg ennå." };
+    return { ...TOM_KURVE, koblet: true, tomGrunn: "Ingen fullstendige turneringsresultater kan vises i kurven ennå. Se resultatlisten for tilgjengelige runder." };
   }
 
-  const sesonger = [...new Set(alle.map((p) => p.dato.getFullYear()))].sort((a, b) => b - a);
+  const sesonger = [...new Set(alle.map((p) => Number(new Intl.DateTimeFormat("en", { timeZone: "Europe/Oslo", year: "numeric" }).format(p.dato))))].sort((a, b) => b - a);
   const valgtSesong = velgSesong(sesonger, onsketSesong);
-  const punkter = valgtSesong === "alle" ? alle : alle.filter((p) => p.dato.getFullYear() === valgtSesong);
+  const punkter = valgtSesong === "alle" ? alle : alle.filter((p) => Number(new Intl.DateTimeFormat("en", { timeZone: "Europe/Oslo", year: "numeric" }).format(p.dato)) === valgtSesong);
 
   const kilder = [...new Set(rader.map((r) => r.kilde).filter((k): k is string => !!k))].sort();
 

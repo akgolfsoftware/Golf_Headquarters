@@ -486,6 +486,7 @@ export async function syncNgfSchedule(): Promise<{
   const link = await linkPublicPlayersByExactName(prisma);
   const backfill = await backfillTournamentResultsForLinkedUsers(prisma);
 
+  if (schedule.failedCustomers?.length) throw new Error(`${schedule.failedCustomers.length} GolfBox-kalendere kunne ikke hentes`);
   return {
     customers: schedule.customers,
     events: schedule.events,

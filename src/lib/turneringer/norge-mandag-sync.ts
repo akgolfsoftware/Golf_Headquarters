@@ -56,9 +56,11 @@ export async function runNorgeMandagSync(): Promise<NorgeMandagSyncOppsummering>
   const players = await kjorSteg("spillerliste (DataGolf NOR)", feil, () =>
     syncNorwegianPlayers(),
   );
-  const golfbox = await kjorSteg("GolfBox-kalender", feil, () =>
-    syncGolfBoxSchedules(prisma),
-  );
+  const golfbox = await kjorSteg("GolfBox-kalender", feil, async () => {
+    const result = await syncGolfBoxSchedules(prisma);
+    if (result.failedCustomers?.length) throw new Error(`${result.failedCustomers.length} GolfBox-kalendere kunne ikke hentes`);
+    return result;
+  });
   const link = await kjorSteg("navnelink", feil, async () => {
     const r = await linkPublicPlayersByExactName(prisma);
     return { linked: r.linked, scannedUsers: r.scannedUsers };

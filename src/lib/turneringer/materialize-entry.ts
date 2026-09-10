@@ -5,13 +5,18 @@
  * Kalles etter upsert av PublicPlayerEntry fra GolfBox/DataGolf.
  */
 
-import type { PrismaClient } from "@/generated/prisma/client";
+import type { Prisma } from "@/generated/prisma/client";
+
+type ResultDatabase = Pick<Prisma.TransactionClient, "publicPlayerRound" | "user" | "tournamentResult" | "tournamentEntry">;
 
 export type MaterializeRoundsInput = {
   entryId: string;
   /** Brutto-score per runde (R1, R2, …). null = ikke spilt. */
   roundScores: (number | null)[];
   source: "GOLFBOX" | "DATAGOLF" | "NGF" | "MANUAL" | "WAGR" | "NCAA";
+  roundToPar?: (number | null)[];
+  /** Full kildekorrigering for denne deltakelsen, innenfor samme datakilde. */
+  replace?: boolean;
 };
 
 /**
@@ -19,14 +24,22 @@ export type MaterializeRoundsInput = {
  * Runder med null-score hoppes over (ikke spilt / cut).
  */
 export async function materializePublicPlayerRounds(
-  prisma: PrismaClient,
+  prisma: ResultDatabase,
   input: MaterializeRoundsInput,
 ): Promise<{ rounds: number }> {
   let rounds = 0;
+  if (input.replace) {
+    await prisma.publicPlayerRound.deleteMany({ where: {
+      entryId: input.entryId, source: input.source,
+      roundNumber: { notIn: input.roundScores.flatMap((score, i) => Number.isSafeInteger(score) && score! > 0 ? [i + 1] : []) },
+    } });
+  }
   for (let i = 0; i < input.roundScores.length; i++) {
     const score = input.roundScores[i];
-    if (score == null || !Number.isFinite(score)) continue;
+    if (score == null || !Number.isSafeInteger(score) || score <= 0) continue;
     const roundNumber = i + 1;
+    const value = input.roundToPar?.[i];
+    const toPar = value != null && Number.isSafeInteger(value) ? value : null;
     await prisma.publicPlayerRound.upsert({
       where: {
         entryId_roundNumber: { entryId: input.entryId, roundNumber },
@@ -34,11 +47,13 @@ export async function materializePublicPlayerRounds(
       create: {
         entryId: input.entryId,
         roundNumber,
-        score: Math.round(score),
+        score,
+        toPar,
         source: input.source,
       },
       update: {
-        score: Math.round(score),
+        score,
+        ...(input.roundToPar ? { toPar } : {}),
         source: input.source,
       },
     });
@@ -52,7 +67,7 @@ export type MirrorTournamentResultInput = {
   /** PublicPlayer.id */
   publicPlayerId: string;
   position: number | null;
-  /** Prefer scoreToPar (til par); fallback totalScore. */
+  /** Eget felt: brukes aldri som brutto score. */
   scoreToPar: number | null;
   totalScore: number | null;
   /**
@@ -67,12 +82,12 @@ export function mapPublicStatusToEntryStatus(
   publicStatus: string | null | undefined,
 ): "PLANNED" | "CONFIRMED" | "WITHDRAWN" | "COMPLETED" | "DNF" {
   const s = (publicStatus ?? "").toUpperCase();
-  if (s === "CUT" || s === "WITHDREW") return "DNF";
+  if (["CUT", "WITHDREW", "DQ", "DNF"].includes(s)) return "DNF";
   if (s === "FINISHED") return "COMPLETED";
   if (s === "TEED_OFF") return "CONFIRMED";
   if (s === "REGISTERED") return "PLANNED";
-  // Har vi resultat uten status → regn som gjennomført
-  return "COMPLETED";
+  // Et ukjent kildefelt dokumenterer ikke at spilleren fullførte.
+  return "PLANNED";
 }
 
 /**
@@ -81,21 +96,16 @@ export function mapPublicStatusToEntryStatus(
  * 2) sørg for TournamentEntry (Analysere-listen baserer seg på entry)
  */
 export async function mirrorTournamentResultForLinkedUser(
-  prisma: PrismaClient,
+  prisma: ResultDatabase,
   input: MirrorTournamentResultInput,
 ): Promise<{ mirrored: boolean; userId?: string; entryEnsured?: boolean }> {
   const user = await prisma.user.findFirst({
-    where: { publicPlayerId: input.publicPlayerId, deletedAt: null },
+    where: { publicPlayerId: input.publicPlayerId, deletedAt: null, anonymisertAt: null },
     select: { id: true },
   });
   if (!user) return { mirrored: false };
 
-  const score =
-    input.scoreToPar != null
-      ? input.scoreToPar
-      : input.totalScore != null
-        ? input.totalScore
-        : null;
+  const score = input.totalScore != null && Number.isSafeInteger(input.totalScore) && input.totalScore > 0 ? input.totalScore : null;
 
   await prisma.tournamentResult.upsert({
     where: {
@@ -152,7 +162,7 @@ export function roundScoresFromEntryRounds(
   const r = rounds as Record<string, unknown>;
   if (Array.isArray(r.roundScores)) {
     return r.roundScores.map((v) =>
-      typeof v === "number" && Number.isFinite(v) ? v : null,
+      typeof v === "number" && Number.isSafeInteger(v) && v > 0 ? v : null,
     );
   }
   return [];

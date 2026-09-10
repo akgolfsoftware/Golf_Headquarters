@@ -170,3 +170,63 @@ test("getLeaderboard: klubb og klassenavn følger med hver entry (STEG 16.6 — 
   assert.equal(lb!.entries[0].clubName, "Fredrikstad GK");
   assert.equal(lb!.entries[0].klasseNavn, "Herrer");
 });
+
+// Syntetiske varianter av det offentlige GolfBox-formatet kontrollert 10.09.2026.
+import { golfBoxRoundDetails, orderedGolfBoxRounds, parseGolfBox, parseGolfBoxDate } from "./golfbox";
+
+const fullRound = (score = 72) => ({ Number: 1, ScoringMethod: 0, IsCompleted: true,
+  Holes: Object.fromEntries(Array.from({ length: 18 }, (_, i) => [`H${i + 1}`, { Number: i + 1 }])),
+  ResultSum: { ActualText: String(score), ToParText: String(score - 72) } });
+
+test("delvis runde med ResultSum, ugyldig score og poeng er ikke brutto fullrunde", () => {
+  assert.equal(extractRoundScore({ ...fullRound(), IsCompleted: false }), null);
+  assert.equal(extractRoundScore({ ...fullRound(), ResultSum: { ActualText: "72 DQ" } }), null);
+  assert.equal(extractRoundScore({ ...fullRound(), ScoringMethod: 1, ResultSum: { ActualText: "36" } }), null);
+  assert.equal(extractRoundScore({ ...fullRound(), ResultSum: { ActualValue: 720001 } }), null);
+});
+
+test("rundenummer beholdes ved uordnet dict og hull i rekken", () => {
+  const rounds = orderedGolfBoxRounds({ R3: { ...fullRound(70), Number: 3 }, R1: fullRound(72) });
+  assert.deepEqual(rounds.map(extractRoundScore), [72, null, 70]);
+  assert.deepEqual(orderedGolfBoxRounds({ R999999: fullRound(), x: {} }).length, 1);
+});
+
+test("faktisk hullantall og til-par følger rundescore", () => {
+  assert.deepEqual(golfBoxRoundDetails(fullRound(74)), { score: 74, toPar: 2, holes: 18, completed: true });
+  assert.equal(sumHoleScores({ IsCompleted: true, Holes: fullRound().Holes, HoleScores: lagHoleScores(Array(9).fill(4)) }), null);
+});
+
+test("GolfBox-parseren bevarer tekst og avviser umulige datoer", () => {
+  assert.deepEqual(parseGolfBox('{"label":"X:!0,","flags":[!0,!1,!0]}'), { label: "X:!0,", flags: [true, false, true] });
+  assert.equal(parseGolfBoxDate("20260230T000000"), null);
+  assert.equal(parseGolfBoxDate("20261301T000000"), null);
+});
+
+test("netto-standardklasse erstattes av brutto, lag og anonyme hoppes over, klassefeil vises", async t => {
+  const classes = [{ Id: 1, Name: "Netto", ClassType: "PlayerClass" }, { Id: 2, Name: "Brutto", ClassType: "PlayerClass" }, { Id: 3, Name: "Damer", ClassType: "PlayerClass" }, { Id: 4, Name: "Lag", ClassType: "TeamClass" }];
+  const player = { FirstName: "Test", LastName: "Spiller", Nationality: "NO", BirthYear: 2005, Position: { Actual: 2, Calculated: "T2" }, ScoringToPar: { ToParText: "-6" }, Rounds: { R1: fullRound(74) } };
+  t.mock.method(globalThis, "fetch", async (url: string | URL | Request) => {
+    if (String(url).includes("/ClassId/3/")) return new Response("feil", { status: 503 });
+    if (String(url).includes("/ClassId/2/")) return jsonResponse({ Classes: { C2: { Name: "Brutto", Leaderboard: { RoundNames: ["R1", "R2"], Entries: { p: player } } } } });
+    return jsonResponse({ CompetitionData: { Classes: classes }, Classes: {
+      C1: { Name: "Netto", Leaderboard: { RoundNames: ["R1"], Entries: { p: player, hidden: { ...player, FirstName: "Skjult", IsAnonymous: true } } } },
+      C4: { Name: "Lag", Leaderboard: { Entries: { p: { ...player, FirstName: "Lag" } } } },
+    } });
+  });
+  const result = await getLeaderboard(1);
+  assert.deepEqual(result?.failedClasses, [3]);
+  assert.equal(result?.entries.length, 1);
+  assert.equal(result?.entries[0].grossRanking, true);
+  assert.equal(result?.entries[0].klasseNavn, "Brutto");
+  assert.deepEqual(result?.entries[0].roundScores, [74, null]);
+  assert.deepEqual(result?.entries[0].roundCompleted, [true, false]);
+});
+
+test("klasseobjekt uten leaderboard hentes på nytt og feil merkes", async t => {
+  let requests = 0;
+  t.mock.method(globalThis, "fetch", async () => { requests++; return jsonResponse({
+    CompetitionData: { Classes: [{ Id: 1, Name: "Brutto" }] }, Classes: { C1: {} },
+  }); });
+  const result = await getLeaderboard(1);
+  assert.equal(requests, 2); assert.deepEqual(result?.failedClasses, [1]);
+});

@@ -1,14 +1,13 @@
 /**
  * Stasjon for alle slag — oversetter tak-tall til «hvor du står» + regel.
  *
- * Innspill: sirkel = tak-nærhet × (din carry / takets slag). Putting i fot,
- * ikke skalert. Chip/bunker: tour-tabell, merket. Ingen øvelsesnavn.
+ * Innspill bruker faktisk kildeintervall og justert nærhet som treningsmål.
+ * Putting, chip og bunker beholder egne øvelsesregler uten proffpåstander.
  */
 import {
   TAK_BAND,
-  bandMidtMeter,
+  YARD_TIL_METER,
   rundMeter,
-  slaTakSirkelMeter,
   type TakBandKode,
   type TakLie,
 } from "@/lib/datagolf/tak";
@@ -31,7 +30,7 @@ export type StasjonSlagId =
 
 export type StasjonKind = "sirkel" | "korridor" | "i_hull" | "lag_putt" | "opp_og_ned";
 export type StasjonEnhet = "m" | "ft";
-export type StasjonKilde = "datagolf" | "tour-arg" | "tour-putt" | "mangler";
+export type StasjonKilde = "datagolf" | "treningsregel" | "mangler";
 
 export type StasjonSlagDef = {
   id: StasjonSlagId;
@@ -45,10 +44,10 @@ export type StasjonSlagDef = {
 
 export const STASJON_SLAG: readonly StasjonSlagDef[] = [
   { id: "tee", omraade: "TEE", gruppe: "tee", etikett: "Tee", kind: "korridor", trengerCarry: true },
-  { id: "innspill50", omraade: "INNSPILL_50", gruppe: "innspill", etikett: "~50 m", kind: "sirkel", trengerCarry: true, innspillBand: "innspill50" },
-  { id: "innspill100", omraade: "INNSPILL_100", gruppe: "innspill", etikett: "~100 m", kind: "sirkel", trengerCarry: true, innspillBand: "innspill100" },
-  { id: "innspill150", omraade: "INNSPILL_150", gruppe: "innspill", etikett: "~150 m", kind: "sirkel", trengerCarry: true, innspillBand: "innspill150" },
-  { id: "innspill200", omraade: "INNSPILL_200", gruppe: "innspill", etikett: "~200 m", kind: "sirkel", trengerCarry: true, innspillBand: "innspill200" },
+  { id: "innspill50", omraade: "INNSPILL_50", gruppe: "innspill", etikett: "45,7–91,4 m", kind: "sirkel", trengerCarry: true, innspillBand: "innspill50" },
+  { id: "innspill100", omraade: "INNSPILL_100", gruppe: "innspill", etikett: "91,4–137,2 m", kind: "sirkel", trengerCarry: true, innspillBand: "innspill100" },
+  { id: "innspill150", omraade: "INNSPILL_150", gruppe: "innspill", etikett: "137,2–182,9 m", kind: "sirkel", trengerCarry: true, innspillBand: "innspill150" },
+  { id: "innspill200", omraade: "INNSPILL_200", gruppe: "innspill", etikett: "Over 182,9 m", kind: "sirkel", trengerCarry: true, innspillBand: "innspill200" },
   { id: "chip", omraade: "CHIP", gruppe: "kortspill", etikett: "Chip", kind: "opp_og_ned", trengerCarry: false },
   { id: "pitch", omraade: "PITCH", gruppe: "kortspill", etikett: "Pitch", kind: "sirkel", trengerCarry: true, innspillBand: "innspill50" },
   { id: "lob", omraade: "LOB", gruppe: "kortspill", etikett: "Lob", kind: "opp_og_ned", trengerCarry: false },
@@ -60,9 +59,7 @@ export const STASJON_SLAG: readonly StasjonSlagDef[] = [
   { id: "putt40plus", omraade: "PUTT_40_PLUSS", gruppe: "putting", etikett: "Putt 40+ ft", kind: "lag_putt", trengerCarry: false },
 ];
 
-/** Tour ARG fra 10 m — `BENCHMARK_ARG` i src/lib/domain/sg.ts. */
-const TOUR_ARG_10M = 2.36;
-/** Broadie putting «etter miss» (pga-sync): 3 m → 0,8 m ≈ 2,6 ft. */
+/** Lokale øvelsesgrenser i fot; ingen påstand om proffenes prestasjoner. */
 const LAG_PUTT_10FT = 2.6;
 const LAG_PUTT_20FT = 4.6;
 const LAG_PUTT_40FT = 9.8;
@@ -130,17 +127,13 @@ export function byggStasjon(input: {
   if (input.slag.innspillBand) {
     const band = fairwayBand(input.tak, input.slag.innspillBand, lie);
     const prox = band?.proximityMeters ?? null;
-    const manglerCarry = input.carryMeter == null || !(input.carryMeter > 0);
-    const def = TAK_BAND.find((b) => b.kode === input.slag.innspillBand && b.lie === "fairway");
-    const takSlag = def ? bandMidtMeter(def.minYards, def.maxYards) : 0;
-    const sirkel =
-      prox != null && !manglerCarry
-        ? slaTakSirkelMeter({
-            takNaerhetMeter: prox,
-            elevCarryMeter: input.carryMeter!,
-            takSlagMeter: takSlag,
-          })
-        : null;
+    const manglerCarry = input.carryMeter == null || !Number.isFinite(input.carryMeter) || !(input.carryMeter > 0) || input.carryMeter > 400;
+    const def = TAK_BAND.find((b) => b.kode === input.slag.innspillBand && b.lie === lie);
+    const innenBand = def && input.carryMeter != null &&
+      input.carryMeter >= def.minYards * YARD_TIL_METER &&
+      (def.proximityKey.startsWith("over_") || input.carryMeter < def.maxYards * YARD_TIL_METER);
+    // Kilden har avstandsintervaller, ingen kurve som kan skaleres med carry.
+    const sirkel = prox != null && prox > 0 && innenBand ? prox : null;
     const lekkasje = (band?.sgPerShot ?? 0) < 0;
     return {
       ...base,
@@ -151,19 +144,20 @@ export function byggStasjon(input: {
       maalEnhet: "m",
       manglerCarry,
       lekkasje,
-      kilde: prox != null ? "datagolf" : "mangler",
+      kilde: sirkel != null ? "datagolf" : "mangler",
       kildeTekst:
-        prox != null
-          ? `Data powered by DataGolf · ${datoKort(input.tak.asOf)}`
-          : "Innspill-nærhet mangler for dette taket.",
+        sirkel != null
+          ? `Data powered by DataGolf · ${datoKort(input.tak.asOf)}. Justert gjennomsnitt for avstandsintervallet, brukt som treningsmål. Ingen treffprosent eller direkte nivåmåling.`
+          : "Ingen sammenlignbar innspillreferanse for denne avstanden og ballens leie.",
       regel: manglerCarry
         ? "Mål carry først. Stasjonen er din lengde med denne køllerollen."
-        : `10 baller. Inne i sirkelen (${fmtLengde(sirkel, "m")}) slår ${input.tak.name}.`,
+        : sirkel == null ? "Velg en avstand innenfor referansens intervall og et leie med data."
+        : `10 baller. Registrer hvor mange som stopper innen ${fmtLengde(sirkel, "m")} fra hullet.`,
     };
   }
 
   if (input.slag.id === "tee") {
-    const manglerCarry = input.carryMeter == null || !(input.carryMeter > 0);
+    const manglerCarry = input.carryMeter == null || !Number.isFinite(input.carryMeter) || !(input.carryMeter > 0) || input.carryMeter > 400;
     const dist = input.tak.drivingDistY;
     const acc = input.tak.drivingAcc;
     const distTekst = dist == null ? "mangler" : `${dist > 0 ? "+" : ""}${rundMeter(dist, 1)} yards mot feltet`;
@@ -176,11 +170,11 @@ export function byggStasjon(input: {
       maalVerdi: null,
       maalEnhet: null,
       manglerCarry,
-      kilde: dist != null || acc != null ? "datagolf" : "mangler",
-      kildeTekst: `Data powered by DataGolf · ${datoKort(input.tak.asOf)}`,
+      kilde: "treningsregel",
+      kildeTekst: `Korridoren er en egen treningsregel. Profilinformasjon: Data powered by DataGolf · ${datoKort(input.tak.asOf)}.`,
       regel: manglerCarry
         ? "Mål driver-carry først. Ikke jakte takets meter."
-        : `Treff stripen. ${input.tak.name}: ${distTekst}, ${accTekst}.`,
+        : `10 baller mot en 30 m bred korridor. Treff stripen = inne. Egen treningsregel. ${input.tak.name}: ${distTekst}, ${accTekst}.`,
     };
   }
 
@@ -192,8 +186,8 @@ export function byggStasjon(input: {
       stasjonEnhet: "m",
       maalVerdi: null,
       maalEnhet: null,
-      kilde: "tour-arg",
-      kildeTekst: `Tour-tabell, ikke ${input.tak.name}. Forventet ${TOUR_ARG_10M.toString().replace(".", ",")} slag igjen fra 10 m.`,
+      kilde: "treningsregel",
+      kildeTekst: `Egen treningsregel. Ingen personlig chipreferanse fra ${input.tak.name}.`,
       regel: "10 baller fra 10 m. På green og ferdig i 2 slag = inne.",
     };
   }
@@ -206,8 +200,8 @@ export function byggStasjon(input: {
       stasjonEnhet: "m",
       maalVerdi: null,
       maalEnhet: null,
-      kilde: "tour-arg",
-      kildeTekst: `Tour-tabell, ikke ${input.tak.name}. DataGolf splitter ikke lob.`,
+      kilde: "treningsregel",
+      kildeTekst: `Egen treningsregel. Ingen personlig lobreferanse fra ${input.tak.name}.`,
       regel: "10 baller fra 20 m. På green = inne.",
     };
   }
@@ -220,8 +214,8 @@ export function byggStasjon(input: {
       stasjonEnhet: "m",
       maalVerdi: null,
       maalEnhet: null,
-      kilde: "tour-arg",
-      kildeTekst: `Tour-tabell, ikke ${input.tak.name}. DataGolf splitter ikke bunker.`,
+      kilde: "treningsregel",
+      kildeTekst: `Egen treningsregel. Ingen personlig bunkerreferanse fra ${input.tak.name}.`,
       regel: "10 baller fra 15 m i sand. På green = inne.",
     };
   }
@@ -282,8 +276,8 @@ function byggPutt(slag: StasjonSlagDef, takNavn: string): Stasjon {
     manglerCarry: false,
     lekkasje: false,
     baller: 10,
-    kilde: "tour-putt",
-    kildeTekst: `Tour-tabell (Broadie/IUP), ikke ${takNavn}. DataGolf har ikke putting per fot.`,
+    kilde: "treningsregel",
+    kildeTekst: `Egen treningsregel, ikke en målt referanse fra ${takNavn}. Putting per fot for enkeltproffer inngår ikke i DataGolf-dataene som hentes.`,
     regel: rad.regel,
   };
 }
@@ -294,7 +288,7 @@ export function sirkelAndreTak(input: {
   lie?: TakLie;
   andre: TakSnapshot[];
 }): { name: string; sirkelMeter: number | null }[] {
-  if (!input.slag.innspillBand || input.carryMeter == null || !(input.carryMeter > 0)) {
+  if (!input.slag.innspillBand || input.carryMeter == null || !Number.isFinite(input.carryMeter) || !(input.carryMeter > 0) || input.carryMeter > 400) {
     return [];
   }
   const lie = input.lie ?? "fairway";
@@ -313,10 +307,8 @@ export function fmtLengde(n: number | null, enhet: StasjonEnhet | null): string 
   return `${tekst} ${enhet}`;
 }
 
-export function ferdigSetning(inne: number, totalt: number, takNavn: string): string {
-  if (inne <= 0) return `Ingen inne — sirkelen mot ${takNavn} står.`;
-  if (inne >= totalt) return `Du slo ${takNavn} på alle ${totalt}.`;
-  return `Du slo ${takNavn} på ${inne} av ${totalt}.`;
+export function ferdigSetning(inne: number, totalt: number, takNavn: string, proffreferanse = true): string {
+  return `${inne} av ${totalt} innenfor treningsmålet.${proffreferanse ? ` Referanse: ${takNavn}.` : " Egen treningsregel."}`;
 }
 
 function datoKort(d: Date): string {

@@ -30,5 +30,6 @@ test("mapPublicStatusToEntryStatus", () => {
   assert.equal(mapPublicStatusToEntryStatus("WITHDREW"), "DNF");
   assert.equal(mapPublicStatusToEntryStatus("TEED_OFF"), "CONFIRMED");
   assert.equal(mapPublicStatusToEntryStatus("REGISTERED"), "PLANNED");
-  assert.equal(mapPublicStatusToEntryStatus(null), "COMPLETED");
+  assert.equal(mapPublicStatusToEntryStatus(null), "PLANNED");
+  assert.equal(mapPublicStatusToEntryStatus("DQ"), "DNF");
 });

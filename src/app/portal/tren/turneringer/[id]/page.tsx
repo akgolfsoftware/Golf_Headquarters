@@ -1,6 +1,8 @@
 /**
  * PlayerHQ · Turnering-detalj (/portal/tren/turneringer/[id]) — Paper-port W1
- * (fase2). Fasit: designsystem/paper/fase2/playerhq/playerhq-turnering-detalj.html.
+ * Fasit: designsystem/train-lock/TU-01 Turneringer.dc.html
+ * Avvik:
+ *   - Detaljene beholder eksisterende oppsett og viser samme resultatgrunnlag som Analyse.
  *
  * Fakta-radene bygges her KUN av reelle loader-felter (Startavgift/Reise
  * finnes ikke i schemaet → utelates ærlig). Dobbel bekreftelse (claim +
@@ -9,6 +11,7 @@
  */
 
 import Link from "next/link";
+import { TurneringshistorikkTrainLock } from "@/components/portal/v2/TurneringshistorikkTrainLock";
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
@@ -139,12 +142,7 @@ export default async function TurneringDetaljPage({
     fristLabel: data.entryClosesLabel,
     entryStatus,
     notater: data.entry?.notes ?? null,
-    historikk: data.history.map((h) => ({
-      id: h.id,
-      aar: h.year,
-      plassering: h.position,
-      score: h.score,
-    })),
+    historikk: [],
     arrangorUrl: data.registrationUrl ?? data.officialUrl,
   };
 
@@ -167,6 +165,7 @@ export default async function TurneringDetaljPage({
         kanStarteRunde={kanStarteRunde}
         startRundeAction={startRundeAction}
       />
+      {data.resultathistorikk.harHistorikk && <TurneringshistorikkTrainLock h={data.resultathistorikk} />}
     </V2Shell>
   );
 }

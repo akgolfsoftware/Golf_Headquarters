@@ -27,21 +27,34 @@ function takRory(): TakSnapshot {
 }
 
 describe("stasjon alle slag", () => {
+  it("avstand utenfor kildeintervallet får ikke en oppdiktet sirkel", () => {
+    const st = byggStasjon({ slag: finnSlag("innspill100"), tak: takRory(), carryMeter: 50 });
+    assert.equal(st.maalVerdi, null);
+    assert.equal(st.kilde, "mangler");
+  });
+  it("rough bruker rough-intervallet og åpne bånd støtter lengre avstander", () => {
+    const tak = { ...takRory(), bands: [
+      { band: "innspill100", lie: "rough", proximityMeters: 10, sgPerShot: 0 },
+      { band: "innspill200", lie: "fairway", proximityMeters: 12, sgPerShot: 0 },
+    ] };
+    assert.equal(byggStasjon({ slag: finnSlag("innspill100"), tak, carryMeter: 80, lie: "rough" }).maalVerdi, 10);
+    assert.equal(byggStasjon({ slag: finnSlag("innspill200"), tak, carryMeter: 260 }).maalVerdi, 12);
+  });
   it("har 14 stasjoner — ikke styrke/bevegelighet/bane", () => {
     assert.equal(STASJON_SLAG.length, 14);
     assert.equal(STASJON_SLAG.some((s) => s.omraade.startsWith("STYRKE")), false);
   });
 
-  it("innspill 100 med 50 m carry gir sirkel mot Rory", () => {
+  it("innspill bruker observert intervall uten carry-skalering", () => {
     const st = byggStasjon({
       slag: finnSlag("innspill100"),
       tak: takRory(),
-      carryMeter: 50,
+      carryMeter: 100,
     });
     assert.equal(st.kind, "sirkel");
-    assert.equal(st.stasjonVerdi, 50);
+    assert.equal(st.stasjonVerdi, 100);
     assert.ok(st.maalVerdi != null);
-    assert.equal(rundMeter(st.maalVerdi, 1), 2.7);
+    assert.equal(rundMeter(st.maalVerdi, 1), 6.1);
     assert.equal(st.manglerCarry, false);
     assert.equal(st.kilde, "datagolf");
   });
@@ -61,7 +74,7 @@ describe("stasjon alle slag", () => {
     const st = byggStasjon({
       slag: finnSlag("innspill50"),
       tak: takRory(),
-      carryMeter: 50,
+      carryMeter: 100,
     });
     assert.equal(st.lekkasje, true);
   });
@@ -70,20 +83,20 @@ describe("stasjon alle slag", () => {
     const st = byggStasjon({
       slag: finnSlag("putt5_10"),
       tak: takRory(),
-      carryMeter: 50,
+      carryMeter: 100,
     });
     assert.equal(st.stasjonEnhet, "ft");
     assert.equal(st.kind, "lag_putt");
-    assert.equal(st.kilde, "tour-putt");
+    assert.equal(st.kilde, "treningsregel");
     assert.equal(st.manglerCarry, false);
   });
 
-  it("chip og bunker bruker tour-tabell, ikke tak-nærhet", () => {
+  it("chip og bunker merkes som egne treningsregler", () => {
     const chip = byggStasjon({ slag: finnSlag("chip"), tak: takRory(), carryMeter: null });
     const bunker = byggStasjon({ slag: finnSlag("bunker"), tak: takRory(), carryMeter: null });
-    assert.equal(chip.kilde, "tour-arg");
-    assert.equal(bunker.kilde, "tour-arg");
-    assert.match(bunker.kildeTekst, /ikke Rory/);
+    assert.equal(chip.kilde, "treningsregel");
+    assert.equal(bunker.kilde, "treningsregel");
+    assert.match(bunker.kildeTekst, /Rory/);
   });
 
   it("tee krever carry og har ingen sirkel", () => {
@@ -102,7 +115,7 @@ describe("stasjon alle slag", () => {
     };
     const rader = sirkelAndreTak({
       slag: finnSlag("innspill100"),
-      carryMeter: 50,
+      carryMeter: 100,
       andre: [scheffler],
     });
     assert.equal(rader.length, 1);
@@ -110,8 +123,8 @@ describe("stasjon alle slag", () => {
   });
 
   it("ferdig-setning uten medalje", () => {
-    assert.equal(ferdigSetning(4, 10, "Rory McIlroy"), "Du slo Rory McIlroy på 4 av 10.");
-    assert.equal(ferdigSetning(0, 10, "Rory McIlroy"), "Ingen inne — sirkelen mot Rory McIlroy står.");
+    assert.equal(ferdigSetning(4, 10, "Rory McIlroy"), "4 av 10 innenfor treningsmålet. Referanse: Rory McIlroy.");
+    assert.equal(ferdigSetning(0, 10, "Rory McIlroy"), "0 av 10 innenfor treningsmålet. Referanse: Rory McIlroy.");
   });
 
   it("fmtLengde bruker norsk komma", () => {

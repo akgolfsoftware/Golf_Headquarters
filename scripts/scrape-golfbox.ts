@@ -71,8 +71,11 @@ async function main() {
     try {
       const r = await syncGolfBoxSchedules(prisma);
       console.log("[golfbox] schedule:", r);
-      await logRun("golfbox-schedule", start, r);
+      const error = r.failedCustomers.length ? new Error(`${r.failedCustomers.length} GolfBox-kunder kunne ikke hentes`) : undefined;
+      if (error) process.exitCode = 1;
+      await logRun("golfbox-schedule", start, r, error);
     } catch (err) {
+      process.exitCode = 1;
       console.error("[golfbox] schedule FEIL:", err);
       await logRun("golfbox-schedule", start, null, err);
     }
@@ -85,8 +88,11 @@ async function main() {
         limit: LIMIT || undefined,
       });
       console.log("[golfbox] leaderboards:", r);
-      await logRun("golfbox-leaderboards", start, r);
+      const error = r.failedTournaments.length ? new Error(`${r.failedTournaments.length} GolfBox-turneringer var ufullstendige`) : undefined;
+      if (error) process.exitCode = 1;
+      await logRun("golfbox-leaderboards", start, r, error);
     } catch (err) {
+      process.exitCode = 1;
       console.error("[golfbox] leaderboards FEIL:", err);
       await logRun("golfbox-leaderboards", start, null, err);
     }
@@ -102,6 +108,7 @@ async function main() {
       console.log("[golfbox] link+backfill:", r);
       await logRun("golfbox-link-backfill", start, r);
     } catch (err) {
+      process.exitCode = 1;
       console.error("[golfbox] link+backfill FEIL:", err);
       await logRun("golfbox-link-backfill", start, null, err);
     }

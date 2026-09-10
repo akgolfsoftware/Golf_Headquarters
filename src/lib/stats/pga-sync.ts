@@ -3,7 +3,7 @@
  *
  * Inneholder tre sync-funksjoner:
  *
- *  1. syncPgaSkillRatings — sesong-aggregat fra DataGolf /preds/skill-ratings
+ *  1. syncPgaSkillRatings — ett globalt prediksjonssett fra /preds/skill-ratings
  *     → PgaPlayerSeason. Kjøres ukentlig.
  *
  *  2. syncPgaPuttDistance — seed Broadie-estimater for putt-distance.
@@ -20,8 +20,8 @@ import { prisma } from "@/lib/prisma";
 import { getSkillRatings, type DGTour } from "@/lib/datagolf/client";
 import { logError } from "@/lib/error-tracking";
 
-// Tours som har stats-coverage. DataGolf returnerer skill-ratings for disse:
-const STATS_TOURS: DGTour[] = ["pga", "euro", "kft"];
+// Ett globalt sett. PGA er en eldre lagringsnøkkel, ikke en påstand om tour-dekning.
+const STATS_TOURS: DGTour[] = ["pga"]; // Historisk lagringsnøkkel for ett globalt sett.
 
 function pct(value: number | undefined): number | null {
   // DataGolf returnerer accuracy/gir som 0-1, vi lagrer som 0-100
@@ -50,8 +50,8 @@ async function syncOneTour(tour: DGTour): Promise<{ players: number }> {
       country: r.country ?? null,
       rounds: num(r.rounds) !== null ? Math.round(r.rounds!) : null,
       avgScore: num(r.avg_score),
-      driveDist: num(r.driving_dist),
-      fairwayPct: pct(r.driving_acc),
+      driveDist: null, // skill-ratings gir relativ lengde, ikke absolutt drive-lengde
+      fairwayPct: null, // skill-ratings gir relative prosentpoeng
       girPct: pct(r.gir),
       puttsPerRound: num(r.putts_per_round),
       scrambling: pct(r.scrambling),
@@ -60,7 +60,7 @@ async function syncOneTour(tour: DGTour): Promise<{ players: number }> {
       sgApp: num(r.sg_app),
       sgArg: num(r.sg_arg),
       sgPutt: num(r.sg_putt),
-      source: "datagolf-skill-ratings",
+      source: "datagolf-skill-ratings-global",
     };
 
     await prisma.pgaPlayerSeason.upsert({
@@ -81,7 +81,7 @@ async function syncOneTour(tour: DGTour): Promise<{ players: number }> {
 }
 
 /**
- * Cron-agent: sync alle stats-tours (pga, euro, kft) for inneværende år.
+ * Cron-agent: lagrer ett globalt ferdighetssett under den eldre PGA-nøkkelen.
  * Kjøres ukentlig.
  */
 export async function syncPgaSkillRatings(): Promise<{
@@ -254,103 +254,13 @@ export async function syncPgaPuttDistance(): Promise<{ updated: number }> {
 // Approach distance — aggregert fra DataGolf /preds/approach-skill
 // ---------------------------------------------------------------------------
 
-type DGApproachRow = {
-  dist: number;
-  lie: string;
-  sg_gained: number;
-  sample: number;
-};
-
-type DGApproachResponse = {
-  data?: DGApproachRow[];
-};
-
-// Yardage-bøtter vi samler data i (nøyaktig de 5 granulære APP-båndene fra MasterBrain / SG-spes)
-// Brukes for å utvide SgBaseline og PgaApproachDistance med DG /preds/approach-skill data.
-// Label matches de nye SG kategoriene: Approach 200+, Approach 150-200, Approach 100-150, Approach 50-100, Approach <50
-const APPROACH_BUCKETS: { label: string; minYards: number; maxYards: number }[] = [
-  { label: "200+",    minYards: 200, maxYards: 9999 },
-  { label: "150-200", minYards: 150, maxYards: 200 },
-  { label: "100-150", minYards: 100, maxYards: 150 },
-  { label: "50-100",  minYards: 50,  maxYards: 100 },
-  { label: "<50",     minYards: 0,   maxYards: 50  },
-];
-
 /**
- * Henter approach-skill fra DataGolf, aggregerer til PGA-Tour-snitt proximity
- * per yardage-bøtte (fairway-lie kun), og upsert-er til PgaApproachDistance.
- *
- * DataGolf /preds/approach-skill returnerer expected SG vs baseline per
- * (dist, lie)-kombinasjon. Vi bruker "fairway"-lie for å representere
- * Tour-snittet fra prime-lie.
- *
- * Proximity estimeres fra SG-formelen: proximity ≈ exp(-sg_gained * k)
- * kalibrert mot kjente Broadie-tall. For enkel presentasjon bruker vi
- * en lineær tabell-lookup i stedet.
- *
- * Note: DataGolf returnerer sg_gained som strokes gained vs random golfer —
- * ikke som proximity i meter. Vi bruker en kalibrert konvertering.
+ * Detaljerte referanser bevares per spiller og faktisk kildeintervall.
+ * Endpointet gir ikke en forventet-slag-tabell eller et PGA-toursnitt.
+ * Eldre syntetiske PgaApproachDistance-rader brukes ikke av spillerverktøyet.
  */
-const SG_TO_PROXIMITY_METERS: Record<string, number> = {
-  // Oppdatert til de 5 granulære APP-båndene (fra MasterBrain / SG-spes 2026)
-  // Verdier approksimert fra tidligere Broadie/DG kalibrering for fairway-lie (kan finjusteres med nye DG samples)
-  "200+":    12.0,
-  "150-200": 10.2,
-  "100-150": 7.5,
-  "50-100":  5.0,
-  "<50":     3.0,
-};
-
 export async function syncPgaApproach(): Promise<{ updated: number }> {
-  const apiKey = process.env.DATAGOLF_API_KEY;
-  if (!apiKey) throw new Error("DATAGOLF_API_KEY mangler i environment");
-
-  const url = `https://feeds.datagolf.com/preds/approach-skill?key=${apiKey}&file_format=json`;
-  const res = await fetch(url, { cache: "no-store" });
-  if (!res.ok) {
-    throw new Error(`[syncPgaApproach] DataGolf ${res.status}: ${res.statusText}`);
-  }
-
-  const json = (await res.json()) as DGApproachResponse;
-  const rows = json.data ?? [];
-  const year = new Date().getUTCFullYear();
-
-  // Filtrer kun fairway-lie (prime lie = tour-snitt referansecase)
-  const fairwayRows = rows.filter((r) => r.lie?.toLowerCase() === "fairway");
-
-  let updated = 0;
-  for (const bucket of APPROACH_BUCKETS) {
-    // Finn fairway-rader i dette yardage-intervallet
-    const inBucket = fairwayRows.filter(
-      (r) => r.dist >= bucket.minYards && r.dist < bucket.maxYards,
-    );
-
-    // Gjennomsnittlig proximity fra kalibrert tabell (DataGolf returnerer
-    // SG vs baseline, ikke proximity). Vi bruker kalibrerte tall.
-    const tourAvgProximityMeters = SG_TO_PROXIMITY_METERS[bucket.label] ?? 8.0;
-
-    // GIR kan estimeres fra sample-vektet gjennomsnitt av sg_gained.
-    // Høyere SG gained fra fairway → høyere GIR. Enkel heuristikk.
-    const avgSg =
-      inBucket.length > 0
-        ? inBucket.reduce((sum, r) => sum + r.sg_gained, 0) / inBucket.length
-        : null;
-    // Konverter SG til approx GIR% (kalibrert: 0 SG ≈ 65% GIR fra fairway 150y)
-    const girPct = avgSg !== null ? Math.min(99, Math.max(10, 65 + avgSg * 15)) : null;
-
-    const data = {
-      tourAvgProximityMeters,
-      girPct,
-      source: "datagolf-approach-skill",
-    };
-
-    await prisma.pgaApproachDistance.upsert({
-      where: { year_yardageBucket: { year, yardageBucket: bucket.label } },
-      create: { year, yardageBucket: bucket.label, ...data },
-      update: data,
-    });
-    updated++;
-  }
-
-  return { updated };
+  const { syncDatagolfTak } = await import("@/lib/datagolf/tak-sync");
+  const result = await syncDatagolfTak();
+  return { updated: result.upserted };
 }

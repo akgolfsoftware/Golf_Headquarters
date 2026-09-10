@@ -1,0 +1,870 @@
+{
+  "measuredOn": "2026-09-10",
+  "project": "Golf_Headquarters",
+  "method": "Read-only aggregate SQL through Supabase MCP. No player names, identifiers or individual results exported. Queries are independent observations, not one transaction.",
+  "datasets": {
+    "history": [
+      {
+        "tour_code": "pga",
+        "first_year": 1983,
+        "last_year": 2026,
+        "rounds": 428738,
+        "players": 5092,
+        "events": 1082,
+        "with_sg_total": 428738,
+        "with_all_categories": 306162,
+        "with_distance": 184159,
+        "with_proximity": 168018,
+        "latest_event_end": null,
+        "latest_round_insert": "2026-09-06 12:56:10.380654+00"
+      },
+      {
+        "tour_code": "euro",
+        "first_year": 2017,
+        "last_year": 2026,
+        "rounds": 146486,
+        "players": 2586,
+        "events": 349,
+        "with_sg_total": 146486,
+        "with_all_categories": 0,
+        "with_distance": 0,
+        "with_proximity": 0,
+        "latest_event_end": null,
+        "latest_round_insert": "2026-09-08 10:41:05.343339+00"
+      },
+      {
+        "tour_code": "kft",
+        "first_year": 2017,
+        "last_year": 2026,
+        "rounds": 110603,
+        "players": 1627,
+        "events": 251,
+        "with_sg_total": 110603,
+        "with_all_categories": 0,
+        "with_distance": 0,
+        "with_proximity": 0,
+        "latest_event_end": null,
+        "latest_round_insert": "2026-09-06 11:45:48.98457+00"
+      },
+      {
+        "tour_code": "cha",
+        "first_year": 2020,
+        "last_year": 2026,
+        "rounds": 73675,
+        "players": 1885,
+        "events": 172,
+        "with_sg_total": 73675,
+        "with_all_categories": 0,
+        "with_distance": 0,
+        "with_proximity": 0,
+        "latest_event_end": null,
+        "latest_round_insert": "2026-09-08 10:38:37.785748+00"
+      },
+      {
+        "tour_code": "ngl",
+        "first_year": 2020,
+        "last_year": 2026,
+        "rounds": 53768,
+        "players": 1735,
+        "events": 174,
+        "with_sg_total": 53768,
+        "with_all_categories": 0,
+        "with_distance": 0,
+        "with_proximity": 0,
+        "latest_event_end": null,
+        "latest_round_insert": "2026-09-08 08:25:41.11416+00"
+      },
+      {
+        "tour_code": "jpn",
+        "first_year": 2020,
+        "last_year": 2026,
+        "rounds": 48587,
+        "players": 1178,
+        "events": 134,
+        "with_sg_total": 48587,
+        "with_all_categories": 0,
+        "with_distance": 0,
+        "with_proximity": 0,
+        "latest_event_end": null,
+        "latest_round_insert": "2026-09-06 11:27:02.321126+00"
+      },
+      {
+        "tour_code": "champ",
+        "first_year": 2020,
+        "last_year": 2026,
+        "rounds": 40842,
+        "players": 800,
+        "events": 166,
+        "with_sg_total": 40842,
+        "with_all_categories": 0,
+        "with_distance": 0,
+        "with_proximity": 0,
+        "latest_event_end": null,
+        "latest_round_insert": "2026-09-05 15:19:50.888974+00"
+      },
+      {
+        "tour_code": "pgti",
+        "first_year": 2020,
+        "last_year": 2026,
+        "rounds": 38458,
+        "players": 698,
+        "events": 110,
+        "with_sg_total": 38458,
+        "with_all_categories": 0,
+        "with_distance": 0,
+        "with_proximity": 0,
+        "latest_event_end": null,
+        "latest_round_insert": "2026-09-08 10:45:08.540639+00"
+      },
+      {
+        "tour_code": "kor",
+        "first_year": 2020,
+        "last_year": 2026,
+        "rounds": 37029,
+        "players": 672,
+        "events": 95,
+        "with_sg_total": 37029,
+        "with_all_categories": 0,
+        "with_distance": 0,
+        "with_proximity": 0,
+        "latest_event_end": null,
+        "latest_round_insert": "2026-09-06 12:05:24.114416+00"
+      },
+      {
+        "tour_code": "afr",
+        "first_year": 2020,
+        "last_year": 2026,
+        "rounds": 35737,
+        "players": 704,
+        "events": 113,
+        "with_sg_total": 35737,
+        "with_all_categories": 0,
+        "with_distance": 0,
+        "with_proximity": 0,
+        "latest_event_end": null,
+        "latest_round_insert": "2026-09-05 12:48:12.840929+00"
+      },
+      {
+        "tour_code": "pgt",
+        "first_year": 2020,
+        "last_year": 2026,
+        "rounds": 31384,
+        "players": 1194,
+        "events": 103,
+        "with_sg_total": 31384,
+        "with_all_categories": 0,
+        "with_distance": 0,
+        "with_proximity": 0,
+        "latest_event_end": null,
+        "latest_round_insert": "2026-09-06 13:26:00.338819+00"
+      },
+      {
+        "tour_code": "alp",
+        "first_year": 2020,
+        "last_year": 2026,
+        "rounds": 30438,
+        "players": 1396,
+        "events": 106,
+        "with_sg_total": 30438,
+        "with_all_categories": 0,
+        "with_distance": 0,
+        "with_proximity": 0,
+        "latest_event_end": null,
+        "latest_round_insert": "2026-09-08 10:35:01.631918+00"
+      },
+      {
+        "tour_code": "anz",
+        "first_year": 2020,
+        "last_year": 2026,
+        "rounds": 29971,
+        "players": 1125,
+        "events": 90,
+        "with_sg_total": 29971,
+        "with_all_categories": 0,
+        "with_distance": 0,
+        "with_proximity": 0,
+        "latest_event_end": null,
+        "latest_round_insert": "2026-09-05 13:34:20.433993+00"
+      },
+      {
+        "tour_code": "atgt",
+        "first_year": 2020,
+        "last_year": 2026,
+        "rounds": 28536,
+        "players": 798,
+        "events": 70,
+        "with_sg_total": 28536,
+        "with_all_categories": 0,
+        "with_distance": 0,
+        "with_proximity": 0,
+        "latest_event_end": null,
+        "latest_round_insert": "2026-09-05 13:54:46.823601+00"
+      },
+      {
+        "tour_code": "atvt",
+        "first_year": 2020,
+        "last_year": 2026,
+        "rounds": 26682,
+        "players": 925,
+        "events": 76,
+        "with_sg_total": 26682,
+        "with_all_categories": 0,
+        "with_distance": 0,
+        "with_proximity": 0,
+        "latest_event_end": null,
+        "latest_round_insert": "2026-09-05 14:13:02.787694+00"
+      },
+      {
+        "tour_code": "bet",
+        "first_year": 2020,
+        "last_year": 2026,
+        "rounds": 20223,
+        "players": 866,
+        "events": 98,
+        "with_sg_total": 20223,
+        "with_all_categories": 0,
+        "with_distance": 0,
+        "with_proximity": 0,
+        "latest_event_end": null,
+        "latest_round_insert": "2026-09-08 10:36:15.724312+00"
+      },
+      {
+        "tour_code": "chn",
+        "first_year": 2020,
+        "last_year": 2026,
+        "rounds": 19795,
+        "players": 705,
+        "events": 59,
+        "with_sg_total": 19795,
+        "with_all_categories": 0,
+        "with_distance": 0,
+        "with_proximity": 0,
+        "latest_event_end": null,
+        "latest_round_insert": "2026-09-06 10:23:32.616981+00"
+      },
+      {
+        "tour_code": "pta",
+        "first_year": 2024,
+        "last_year": 2026,
+        "rounds": 18322,
+        "players": 696,
+        "events": 44,
+        "with_sg_total": 18322,
+        "with_all_categories": 0,
+        "with_distance": 0,
+        "with_proximity": 0,
+        "latest_event_end": null,
+        "latest_round_insert": "2026-09-06 14:18:55.105877+00"
+      },
+      {
+        "tour_code": "cpt",
+        "first_year": 2024,
+        "last_year": 2026,
+        "rounds": 16834,
+        "players": 806,
+        "events": 50,
+        "with_sg_total": 16834,
+        "with_all_categories": 0,
+        "with_distance": 0,
+        "with_proximity": 0,
+        "latest_event_end": null,
+        "latest_round_insert": "2026-09-06 10:51:23.83103+00"
+      },
+      {
+        "tour_code": "sam",
+        "first_year": 2020,
+        "last_year": 2023,
+        "rounds": 14951,
+        "players": 812,
+        "events": 39,
+        "with_sg_total": 14951,
+        "with_all_categories": 0,
+        "with_distance": 0,
+        "with_proximity": 0,
+        "latest_event_end": null,
+        "latest_round_insert": "2026-08-31 17:09:33.762254+00"
+      },
+      {
+        "tour_code": "can",
+        "first_year": 2020,
+        "last_year": 2023,
+        "rounds": 12928,
+        "players": 727,
+        "events": 32,
+        "with_sg_total": 12928,
+        "with_all_categories": 0,
+        "with_distance": 0,
+        "with_proximity": 0,
+        "latest_event_end": null,
+        "latest_round_insert": "2026-08-30 13:04:43.083172+00"
+      },
+      {
+        "tour_code": "ept",
+        "first_year": 2021,
+        "last_year": 2022,
+        "rounds": 10445,
+        "players": 531,
+        "events": 31,
+        "with_sg_total": 10445,
+        "with_all_categories": 0,
+        "with_distance": 0,
+        "with_proximity": 0,
+        "latest_event_end": null,
+        "latest_round_insert": "2026-08-28 22:54:33.555147+00"
+      },
+      {
+        "tour_code": "liv",
+        "first_year": 2022,
+        "last_year": 2026,
+        "rounds": 10422,
+        "players": 265,
+        "events": 65,
+        "with_sg_total": 10422,
+        "with_all_categories": 6940,
+        "with_distance": 9701,
+        "with_proximity": 0,
+        "latest_event_end": null,
+        "latest_round_insert": "2026-09-06 12:09:22.464615+00"
+      },
+      {
+        "tour_code": "tpga",
+        "first_year": 2025,
+        "last_year": 2026,
+        "rounds": 7844,
+        "players": 486,
+        "events": 23,
+        "with_sg_total": 7844,
+        "with_all_categories": 0,
+        "with_distance": 0,
+        "with_proximity": 0,
+        "latest_event_end": null,
+        "latest_round_insert": "2026-09-08 10:47:04.155175+00"
+      },
+      {
+        "tour_code": "tpt",
+        "first_year": 2024,
+        "last_year": 2026,
+        "rounds": 7367,
+        "players": 367,
+        "events": 36,
+        "with_sg_total": 7367,
+        "with_all_categories": 0,
+        "with_distance": 0,
+        "with_proximity": 0,
+        "latest_event_end": null,
+        "latest_round_insert": "2026-09-08 10:48:14.138088+00"
+      },
+      {
+        "tour_code": "mex",
+        "first_year": 2023,
+        "last_year": 2026,
+        "rounds": 6424,
+        "players": 421,
+        "events": 37,
+        "with_sg_total": 6424,
+        "with_all_categories": 0,
+        "with_distance": 0,
+        "with_proximity": 0,
+        "latest_event_end": null,
+        "latest_round_insert": "2026-09-06 12:14:27.695643+00"
+      }
+    ],
+    "publicRounds": [
+      {
+        "source": "DATAGOLF",
+        "rounds": 757928,
+        "players": 3448,
+        "events": 3165,
+        "with_sg_total": 757928,
+        "with_all_categories": 244577,
+        "first_event": "1983-03-27 00:00:00",
+        "latest_event": "2026-06-21 00:00:00",
+        "last_updated": "2026-08-24 16:42:07.301"
+      },
+      {
+        "source": "GOLFBOX",
+        "rounds": 183997,
+        "players": 9475,
+        "events": 2032,
+        "with_sg_total": 0,
+        "with_all_categories": 0,
+        "first_event": "2014-01-21 00:00:00",
+        "latest_event": "2026-09-08 00:00:00",
+        "last_updated": "2026-09-09 22:33:16.742"
+      },
+      {
+        "source": "WAGR",
+        "rounds": 4215,
+        "players": 72,
+        "events": 536,
+        "with_sg_total": 0,
+        "with_all_categories": 0,
+        "first_event": "2024-08-11 22:00:00",
+        "latest_event": "2026-08-05 22:00:00",
+        "last_updated": "2026-08-17 14:02:48.221"
+      },
+      {
+        "source": "NCAA",
+        "rounds": 92,
+        "players": 12,
+        "events": 28,
+        "with_sg_total": 0,
+        "with_all_categories": 0,
+        "first_event": "2024-09-07 00:00:00",
+        "latest_event": "2026-04-06 00:00:00",
+        "last_updated": "2026-08-17 14:10:49.434"
+      },
+      {
+        "source": "MANUAL",
+        "rounds": 40,
+        "players": 10,
+        "events": 8,
+        "with_sg_total": 0,
+        "with_all_categories": 0,
+        "first_event": "2025-09-20 00:00:00",
+        "latest_event": "2026-08-24 00:00:00",
+        "last_updated": "2026-09-05 14:37:42.122"
+      }
+    ],
+    "snapshots": [
+      {
+        "dataset": "skill",
+        "rows": 2221,
+        "players": 457,
+        "first_as_of": "2026-07-19",
+        "last_as_of": "2026-09-06"
+      },
+      {
+        "dataset": "approach",
+        "rows": 474,
+        "players": 474,
+        "first_as_of": "2026-09-08",
+        "last_as_of": "2026-09-08"
+      },
+      {
+        "dataset": "decompositions",
+        "rows": 503,
+        "players": 438,
+        "first_as_of": "2026-07-19",
+        "last_as_of": "2026-09-09"
+      },
+      {
+        "dataset": "predictions",
+        "rows": 0,
+        "players": 0,
+        "first_as_of": null,
+        "last_as_of": null
+      },
+      {
+        "dataset": "finishes",
+        "rows": 0,
+        "players": 0,
+        "first_as_of": null,
+        "last_as_of": null
+      },
+      {
+        "dataset": "odds",
+        "rows": 0,
+        "players": 0,
+        "first_as_of": null,
+        "last_as_of": null
+      },
+      {
+        "dataset": "matchups",
+        "rows": 0,
+        "players": null,
+        "first_as_of": null,
+        "last_as_of": null
+      },
+      {
+        "dataset": "dfs",
+        "rows": 0,
+        "players": 0,
+        "first_as_of": null,
+        "last_as_of": null
+      }
+    ],
+    "publicSkills": [
+      {
+        "tour": "euro",
+        "year": 2026,
+        "rows": 457,
+        "with_sg": 457,
+        "with_round_count": 0,
+        "with_avg_score": 0,
+        "with_gir": 0,
+        "with_putts": 0,
+        "min_driving": -28.097,
+        "max_driving": 22.552,
+        "min_accuracy": -17.1,
+        "max_accuracy": 12.3,
+        "last_updated": "2026-09-07 06:00:34.268"
+      },
+      {
+        "tour": "kft",
+        "year": 2026,
+        "rows": 457,
+        "with_sg": 457,
+        "with_round_count": 0,
+        "with_avg_score": 0,
+        "with_gir": 0,
+        "with_putts": 0,
+        "min_driving": -28.097,
+        "max_driving": 22.552,
+        "min_accuracy": -17.1,
+        "max_accuracy": 12.3,
+        "last_updated": "2026-09-07 06:00:36.688"
+      },
+      {
+        "tour": "pga",
+        "year": 2026,
+        "rows": 457,
+        "with_sg": 457,
+        "with_round_count": 0,
+        "with_avg_score": 0,
+        "with_gir": 0,
+        "with_putts": 0,
+        "min_driving": -28.097,
+        "max_driving": 22.552,
+        "min_accuracy": -17.1,
+        "max_accuracy": 12.3,
+        "last_updated": "2026-09-07 06:00:31.687"
+      }
+    ],
+    "refs": [
+      {
+        "dataset": "sg_baselines",
+        "rows": 0,
+        "updated": null
+      },
+      {
+        "dataset": "pga_approach_distance",
+        "rows": 5,
+        "updated": "2026-09-07 07:30:51.084"
+      },
+      {
+        "dataset": "pga_putt_distance",
+        "rows": 10,
+        "updated": "2026-09-07 07:00:00.4"
+      },
+      {
+        "dataset": "datagolf_tak_active",
+        "rows": 6,
+        "updated": "2026-09-07 14:03:51"
+      },
+      {
+        "dataset": "datagolf_tak_band",
+        "rows": 36,
+        "updated": null
+      }
+    ],
+    "dates": [
+      {
+        "events": 3608,
+        "with_start_date": 3592,
+        "with_end_date": 0,
+        "with_course": 0,
+        "with_field_size": 0
+      }
+    ],
+    "duplicates": [
+      {
+        "shared_players": 457,
+        "identical_all_metrics": 457
+      }
+    ],
+    "sources": [
+      {
+        "source": "DATAGOLF",
+        "events": 3230,
+        "with_entries": 3173,
+        "with_course": 0,
+        "first_event": "1983-03-27 00:00:00",
+        "last_event": "2026-12-03 00:00:00",
+        "last_sync": "2026-09-10 04:00:28.641"
+      },
+      {
+        "source": "GOLFBOX",
+        "events": 1344,
+        "with_entries": 868,
+        "with_course": 0,
+        "first_event": "2014-01-21 00:00:00",
+        "last_event": "2026-09-19 00:00:00",
+        "last_sync": "2026-09-10 04:30:14.264"
+      },
+      {
+        "source": "WAGR",
+        "events": 544,
+        "with_entries": 544,
+        "with_course": 0,
+        "first_event": "2024-08-11 22:00:00",
+        "last_event": "2026-08-05 22:00:00",
+        "last_sync": "2026-08-17 14:02:47.842"
+      },
+      {
+        "source": "SENIOR",
+        "events": 442,
+        "with_entries": 400,
+        "with_course": 0,
+        "first_event": "2014-06-28 00:00:00",
+        "last_event": "2026-09-13 00:00:00",
+        "last_sync": "2026-09-10 04:30:14.264"
+      },
+      {
+        "source": "NM",
+        "events": 432,
+        "with_entries": 54,
+        "with_course": 0,
+        "first_event": "2014-07-28 00:00:00",
+        "last_event": "2026-09-12 00:00:00",
+        "last_sync": "2026-09-10 04:30:14.264"
+      },
+      {
+        "source": "NGF",
+        "events": 235,
+        "with_entries": 223,
+        "with_course": 0,
+        "first_event": "2016-04-16 00:00:00",
+        "last_event": "2026-09-26 00:00:00",
+        "last_sync": "2026-09-07 05:19:23.717"
+      },
+      {
+        "source": "NCAA",
+        "events": 206,
+        "with_entries": 199,
+        "with_course": 0,
+        "first_event": "2023-08-28 00:00:00",
+        "last_event": "2026-04-20 00:00:00",
+        "last_sync": "2026-08-27 18:08:02.47"
+      },
+      {
+        "source": "MIDAM",
+        "events": 164,
+        "with_entries": 155,
+        "with_course": 0,
+        "first_event": "2014-04-26 00:00:00",
+        "last_event": "2022-09-23 00:00:00",
+        "last_sync": "2026-08-30 11:09:41.07"
+      },
+      {
+        "source": "OLYO",
+        "events": 159,
+        "with_entries": 135,
+        "with_course": 0,
+        "first_event": "2025-04-26 00:00:00",
+        "last_event": "2026-09-20 00:00:00",
+        "last_sync": "2026-09-10 04:30:14.264"
+      },
+      {
+        "source": "REGIONTOUR",
+        "events": 132,
+        "with_entries": 113,
+        "with_course": 0,
+        "first_event": "2015-04-25 00:00:00",
+        "last_event": "2026-09-06 00:00:00",
+        "last_sync": "2026-09-10 04:30:14.264"
+      },
+      {
+        "source": "OSTLANDS",
+        "events": 112,
+        "with_entries": 104,
+        "with_course": 0,
+        "first_event": "2014-05-10 00:00:00",
+        "last_event": "2026-09-19 00:00:00",
+        "last_sync": "2026-09-10 04:30:14.264"
+      },
+      {
+        "source": "SRIXON",
+        "events": 102,
+        "with_entries": 99,
+        "with_course": 0,
+        "first_event": "2017-02-14 00:00:00",
+        "last_event": "2026-08-29 00:00:00",
+        "last_sync": "2026-09-10 04:30:14.264"
+      },
+      {
+        "source": "NORGESCUP",
+        "events": 100,
+        "with_entries": 91,
+        "with_course": 0,
+        "first_event": "2014-05-10 00:00:00",
+        "last_event": "2026-09-12 00:00:00",
+        "last_sync": "2026-09-10 04:30:14.264"
+      },
+      {
+        "source": "GJGT",
+        "events": 37,
+        "with_entries": 6,
+        "with_course": 0,
+        "first_event": "2026-07-28 00:00:00",
+        "last_event": "2027-03-05 00:00:00",
+        "last_sync": "2026-09-09 09:57:29.858"
+      },
+      {
+        "source": "MANUAL",
+        "events": 8,
+        "with_entries": 8,
+        "with_course": 1,
+        "first_event": "2025-09-20 00:00:00",
+        "last_event": "2026-08-24 00:00:00",
+        "last_sync": null
+      },
+      {
+        "source": "NARVESEN",
+        "events": 1,
+        "with_entries": 1,
+        "with_course": 0,
+        "first_event": "2017-04-22 00:00:00",
+        "last_event": "2017-04-22 00:00:00",
+        "last_sync": "2026-08-30 11:09:41.07"
+      }
+    ],
+    "quality": [
+      {
+        "dataset": "tak_bands",
+        "rows": 36,
+        "proximity": 36,
+        "sg": 36,
+        "gir": 36,
+        "good_shots": 36,
+        "sample_count": 36
+      }
+    ],
+    "refsValues": [
+      {
+        "yardageBucket": "<50",
+        "tourAvgProximityMeters": 3,
+        "girPct": null,
+        "source": "datagolf-approach-skill"
+      },
+      {
+        "yardageBucket": "100-150",
+        "tourAvgProximityMeters": 7.5,
+        "girPct": null,
+        "source": "datagolf-approach-skill"
+      },
+      {
+        "yardageBucket": "150-200",
+        "tourAvgProximityMeters": 10.2,
+        "girPct": null,
+        "source": "datagolf-approach-skill"
+      },
+      {
+        "yardageBucket": "200+",
+        "tourAvgProximityMeters": 12,
+        "girPct": null,
+        "source": "datagolf-approach-skill"
+      },
+      {
+        "yardageBucket": "50-100",
+        "tourAvgProximityMeters": 5,
+        "girPct": null,
+        "source": "datagolf-approach-skill"
+      }
+    ],
+    "freshness": [
+      {
+        "dataset": "dashboard_round_events",
+        "latest_event_date": "2026-09-06",
+        "latest_insert": "2026-09-08 10:48:14.138088+00"
+      },
+      {
+        "dataset": "public_datagolf_snapshots",
+        "latest_event_date": "2026-08-27 00:00:00",
+        "latest_insert": "2026-08-31 00:00:24.302"
+      }
+    ],
+    "otherResults": [
+      {
+        "source": "olyo",
+        "results": 55106,
+        "events": 708,
+        "with_rounds": 55106,
+        "first_event": "2018-02-21",
+        "last_event": "2026-08-20",
+        "latest_insert": "2026-08-25 08:47:40.240264+00"
+      },
+      {
+        "source": "nordic_league",
+        "results": 22786,
+        "events": 174,
+        "with_rounds": 22786,
+        "first_event": null,
+        "last_event": null,
+        "latest_insert": "2026-09-08 08:25:42.711374+00"
+      },
+      {
+        "source": "srixon",
+        "results": 6090,
+        "events": 71,
+        "with_rounds": 6090,
+        "first_event": "2018-09-15",
+        "last_event": "2026-09-03",
+        "latest_insert": "2026-09-07 05:00:13.662489+00"
+      },
+      {
+        "source": "golfbox",
+        "results": 6000,
+        "events": 333,
+        "with_rounds": 6000,
+        "first_event": "2025-09-27",
+        "last_event": "2026-09-07",
+        "latest_insert": "2026-09-07 09:15:54.071957+00"
+      },
+      {
+        "source": "norgescup",
+        "results": 3029,
+        "events": 35,
+        "with_rounds": 3029,
+        "first_event": "2017-04-22",
+        "last_event": "2025-08-07",
+        "latest_insert": "2026-07-18 22:45:12.616541+00"
+      },
+      {
+        "source": "ostlands_titleist",
+        "results": 414,
+        "events": 16,
+        "with_rounds": 414,
+        "first_event": "2024-05-04",
+        "last_event": "2026-09-05",
+        "latest_insert": "2026-09-07 05:00:03.987044+00"
+      },
+      {
+        "source": "ostlands_callaway",
+        "results": 410,
+        "events": 62,
+        "with_rounds": 410,
+        "first_event": "2016-04-16",
+        "last_event": "2023-09-09",
+        "latest_insert": "2026-07-18 22:45:12.616541+00"
+      }
+    ],
+    "entryQuality": [
+      {
+        "dataset": "public_datagolf_entries",
+        "rows": 248783,
+        "with_position": 527,
+        "with_total_score": 0,
+        "with_to_par": 880,
+        "marked_finished": 247895
+      }
+    ],
+    "decompQuality": [
+      {
+        "rows": 503,
+        "with_true_skill": 0,
+        "with_total": 0,
+        "with_ott": 0,
+        "with_app": 0,
+        "with_rank": 0
+      }
+    ]
+  },
+  "summary": {
+    "historicalRounds": 1306489,
+    "tours": 26,
+    "eventsWithRounds": 3605,
+    "roundsWithAllSgCategories": 313102,
+    "categoryCoveragePercent": 23.97
+  }
+}
