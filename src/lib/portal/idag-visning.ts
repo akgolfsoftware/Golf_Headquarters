@@ -176,7 +176,7 @@ export function velgIDagTilstand(input: {
 
 /**
  * Prikk-måned PH-01: mandag først. I dag = ring, ikke fyll.
- * Fylt = gjennomført/planlagt. Tom rute før den 1. er transparent.
+ * Fylt = gjennomført. Tom rute før den 1. er transparent.
  */
 export function byggMaanedPrikker(opts: {
   aar: number;

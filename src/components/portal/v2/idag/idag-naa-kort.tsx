@@ -7,8 +7,8 @@ import { TL } from "@/lib/v2/train-lock";
 import { IDAG_UI } from "@/lib/portal/idag-visning";
 import type { NaaKort } from "./IDagTrainLock";
 import { TrainLockStatus, TrainLockChip, TrainLockFremdrift } from "@/components/train-lock/v3-elementer";
+import "./idag-train-lock.module.css";
 const PYRAMIDE_NIVAER = ["FYS", "TEK", "SLAG", "SPILL", "TURN"] as const;
-const caps = { fontSize: 11, fontWeight: 600, lineHeight: 1.2, letterSpacing: "0.08em", textTransform: "uppercase" as const, color: TL.mute };
 function Cta({ href, barn, dim }: { href: string; barn: string; dim?: boolean }) {
   return (
     <Link
@@ -128,12 +128,12 @@ export function IDagNaaKort({ naa }: { naa: NaaKort }) {
           {naa.fullfort && <Check size={12} strokeWidth={2.5} aria-hidden />}
           {naa.fullfort ? IDAG_UI.fullfort : naa.live ? IDAG_UI.live : IDAG_UI.naa}
         </TrainLockStatus>
-        <span style={{ ...caps, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>{naa.tid}</span>
+        <span style={{ fontSize: 13, color: TL.mute, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>{naa.tid}</span>
       </div>
       <div
+        className="ph01-naa-tittel"
         style={{
           marginTop: 12,
-          fontSize: 26,
           overflowWrap: "anywhere",
           fontWeight: 700,
           letterSpacing: "-0.01em",

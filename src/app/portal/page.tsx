@@ -14,6 +14,8 @@ import { getTrackManTeaser } from "@/lib/trackman/teaser";
 import { getTesterLiveKort } from "@/lib/portal-tester/tester-live-kort";
 import { formatSg } from "@/lib/sg";
 import { formatMinutes } from "@/lib/domain/workbench/labels";
+import { byggIDagAgenda } from "@/lib/portal/idag-agenda";
+import { weekSessionCounts } from "@/lib/portal/week-progress";
 import { hentIDagKalender } from "@/lib/portal/idag-data";
 import { hentSpillerDagITiden } from "@/lib/kalender-lag/player-dag";
 import { hentEffektivNaa } from "@/lib/testing/dato-override";
@@ -60,7 +62,7 @@ export default async function PortalHjemPage() {
   const [data, gjennomfore, workbenchDay, trackman, testerLive, kalender, dagITidenHendelser] =
     await Promise.all([
       getDashboardData(user.id, naa),
-      getGjennomforeData(user.id),
+      getGjennomforeData(user.id, naa),
       user.role === "PLAYER" && user.tilgang.nivaa !== "FULL"
         ? Promise.resolve({ ok: true as const, data: { date: iDag, sessions: [], nextSessionId: null } })
         : loadPlayerDay({ playerId: user.id, date: iDag }),
@@ -82,8 +84,8 @@ export default async function PortalHjemPage() {
   const fullfortGjennomfore = gjennomfore.fullfortIdag.at(-1) ?? null;
   const hvile = synlige.find((s) => erHvileTittel(s.title)) ?? null;
 
-  const ukeHarOkter =
-    kalender.okterDenneUken > 0 || data.week.some((d) => d.sessions.length > 0);
+  const ukeAntall = weekSessionCounts(data.week);
+  const ukeHarOkter = ukeAntall.total > 0;
 
   const tilstand = velgIDagTilstand({
     feil,
@@ -158,19 +160,9 @@ export default async function PortalHjemPage() {
     };
   }
 
-  const nesteIDag = synlige.find((s) => s.id !== wbOkt?.id && !erHvileTittel(s.title));
-  const neste =
-    nesteIDag != null
-      ? {
-          tittel: nesteIDag.title,
-          meta: `${formatIntervallPunkt(nesteIDag.startMinute, nesteIDag.durationMinutes)} · ${formatMinutes(nesteIDag.durationMinutes)}`,
-        }
-      : kalender.neste
-        ? { tittel: kalender.neste.tittel, meta: kalender.neste.meta }
-        : hvile && wbOkt
-          ? // Fasitens «Neste»-kort skriver alltid dagen først («Søndag · programmert»).
-            { tittel: IDAG_UI.hvile, meta: `${storForbokstav(dagNavnLang(naa))} · ${IDAG_UI.programmert}` }
-          : null;
+  const neste = kalender.neste;
+  const valgtOktId = wbOkt?.id ?? gjennomfore.nesteOkt?.id ?? fullfortGjennomfore?.id;
+  const agenda = byggIDagAgenda(dagITidenHendelser, data.week.find((d) => d.isToday)?.sessions ?? []);
 
   const datoLinje = `${dagNavnLang(naa)} ${dagNr}. ${OSLO_MANED.format(naa)}`;
   const prikker = byggMaanedPrikker({
@@ -202,20 +194,26 @@ export default async function PortalHjemPage() {
       <PushOptInBanner />
       <IDagTrainLock
         datoLinje={datoLinje}
+        navn={data.user.name}
+        avatarUrl={data.user.avatarUrl}
+        hilsen={`${data.greeting}, ${data.user.fornavn}`}
+        valgtOktId={valgtOktId}
+        fullfortMinutter={data.weekProgress.completedMin}
         maanedNavn={storForbokstav(OSLO_MANED.format(naa))}
         prikker={prikker}
         tilstand={tilstand}
         naa={naaKort}
         neste={neste}
         sgInnspill={formatSg(data.kpiStats.sgBreakdown.app)}
-        okterUke={kalender.okterDenneUken || data.kpiStats.sessionsThisWeek}
+        okterUke={ukeAntall.total}
+        fullfortUke={ukeAntall.completed}
         ukeNummer={data.weekNumber}
         ukeFremdrift={data.weekProgress.plannedMin > 0 ? data.weekProgress.completedMin / data.weekProgress.plannedMin : undefined}
         trackman={trackman}
         testerLive={testerLive}
         godkjenninger={godkjenninger}
         dagLabel={`${dagNavnLang(naa)} ${dagNr}.`}
-        hendelser={dagITidenHendelser}
+        hendelser={agenda}
       />
     </V2Shell>
   );

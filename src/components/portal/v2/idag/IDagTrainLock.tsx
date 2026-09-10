@@ -11,13 +11,15 @@
  * Fasit: designsystem/train-lock/PH-03 I dag tom uke.dc.html
  * Rigg: PH-01 I dag
  * Avvik:
- *   - Klokke-knapp «I dag i tiden» (KA-04) står ikke i PH-01-tegningen; Player
- *     har ingen kalender-fane, så inngangen ligger her (fase 2).
+ *   - «Hele dagen» beholder KA-04-inngangen. Ukens tall viser dokumenterte
+ *     øktminutter; SG er siste ti runder, ikke en oppdiktet ukesverdi.
+ *   - Tredje iPad-flis (antall slag) mangler et avstemt datagrunnlag.
+ *     Full kilde-/appkontroll og visuell godkjenning gjenstår.
  */
 
 import { useState, type CSSProperties, type ReactNode } from "react";
 import Link from "next/link";
-import { ChevronRight, Clock } from "lucide-react";
+import { ChevronRight, Clock, TrendingUp, CalendarDays, Check } from "lucide-react";
 import { TL } from "@/lib/v2/train-lock";
 import {
   IDAG_UI,
@@ -28,12 +30,15 @@ import {
 import type { PlayerDaySession } from "@/lib/workbench/wb-actions";
 import type { TrackManTeaser } from "@/lib/trackman/teaser";
 import type { TesterLiveKort as TesterLiveKortData } from "@/lib/portal-tester/tester-live-kort";
-import type { KalenderHendelse } from "@/lib/domain/kalender-lag";
+import { klokkeslett } from "@/lib/domain/kalender-lag";
+import type { IDagAgendaHendelse } from "@/lib/portal/idag-agenda";
+import { AvatarFoto } from "@/components/v2/core";
+import styles from "./idag-train-lock.module.css";
 import { IDagITidenArk } from "@/components/portal/v2/kalender/IDagITidenArk";
 import { GodkjenningKort } from "./GodkjenningKort";
 import { IDagNaaKort } from "./idag-naa-kort";
 import { TrainLockCaddieKnapp } from "@/components/train-lock/player-chrome";
-import { TrainLockFremdrift } from "@/components/train-lock/v3-elementer";
+import { TrainLockFremdrift, TrainLockStatus } from "@/components/train-lock/v3-elementer";
 
 export type NaaKort = {
   tittel: string;
@@ -60,13 +65,19 @@ export type NaaKort = {
 
 export type IDagTrainLockProps = {
   datoLinje: string;
+  navn?: string;
+  avatarUrl?: string | null;
+  hilsen?: string;
+  valgtOktId?: string;
+  fullfortMinutter?: number;
   maanedNavn: string;
   prikker: IDagPrikk[];
   tilstand: IDagTilstand;
   naa: NaaKort | null;
-  neste: { tittel: string; meta: string } | null;
+  neste: { tittel: string; meta: string; href?: string } | null;
   sgInnspill: string;
   okterUke: number;
+  fullfortUke?: number;
   ukeNummer: number;
   /** Andel fullførte planlagte minutter, når datagrunnlag finnes. */
   ukeFremdrift?: number;
@@ -75,7 +86,7 @@ export type IDagTrainLockProps = {
   godkjenninger: PlayerDaySession[];
   /** KA-04: norsk ukedag + dato, f.eks. «Lørdag 22.» (ingen måned). */
   dagLabel: string;
-  hendelser: KalenderHendelse[];
+  hendelser: IDagAgendaHendelse[];
 };
 
 const caps: CSSProperties = {
@@ -143,38 +154,43 @@ function TekstLenke({ href, barn }: { href: string; barn: string }) {
 }
 
 
-function NesteKort({ neste }: { neste: { tittel: string; meta: string } }) {
-  return (
-    <div style={{ ...kort, padding: "18px 20px" }}>
-      <div style={caps}>{IDAG_UI.neste}</div>
-      <div style={{ marginTop: 7, fontSize: 15, fontWeight: 600, lineHeight: 1.2, color: TL.text }}>{neste.tittel}</div>
-      <div style={{ marginTop: 3, fontSize: 13, fontWeight: 400, lineHeight: 1.2, color: TL.mute }}>{neste.meta}</div>
-    </div>
-  );
+function NesteKort({ neste }: { neste: { tittel: string; meta: string; href?: string } }) {
+  const innhold = <><div style={caps}>{IDAG_UI.neste}</div><div className={styles.nesteTittel}>{neste.tittel}</div><div className={styles.meta}>{neste.meta}</div></>;
+  return neste.href
+    ? <Link className={`${styles.neste} v2-focus v2-press`} href={neste.href}>{innhold}</Link>
+    : <div className={styles.neste}>{innhold}</div>;
 }
 
 function Bento({ sg, okter }: { sg: string; okter: number }) {
-  return (
-    <div className="ph01-bento">
-      <div style={{ ...kort, borderRadius: 20 }}>
-        <div style={{ fontSize: 34, fontWeight: 700, lineHeight: 1.2, letterSpacing: "-0.02em", fontVariantNumeric: "tabular-nums", color: TL.text }}>
-          {sg}
-        </div>
-        <div style={{ ...caps, marginTop: 7 }}>{IDAG_UI.sgInnspill}</div>
-      </div>
-      <div style={{ ...kort, borderRadius: 20 }}>
-        <div style={{ fontSize: 34, fontWeight: 700, lineHeight: 1.2, letterSpacing: "-0.02em", fontVariantNumeric: "tabular-nums", color: TL.text }}>
-          {okter}
-        </div>
-        <div style={{ ...caps, marginTop: 7 }}>{IDAG_UI.okterUken}</div>
-      </div>
+  return <div className={styles.bento}>
+    <div className={styles.flis}><CalendarDays size={20} aria-hidden /><div className={styles.tall}>{okter}</div><div style={caps}>{IDAG_UI.okterUken}</div></div>
+    <div className={styles.flis}><TrendingUp size={20} aria-hidden /><div className={styles.tall}>{sg}</div><div style={caps}>{IDAG_UI.sgInnspill}</div></div>
+  </div>;
+}
+
+function RestenAvDagen({ hendelser, onHeleDagen }: { hendelser: IDagAgendaHendelse[]; onHeleDagen: () => void }) {
+  return <section className={styles.agenda} aria-label="Resten av dagen">
+    <div className={styles.agendaHode}>
+      <h2 style={caps}>Resten av dagen</h2>
+      <button type="button" className="v2-focus v2-press" onClick={onHeleDagen} aria-label="I dag i tiden"><Clock size={16} aria-hidden />Hele dagen</button>
     </div>
-  );
+    {hendelser.length === 0 ? <p className={styles.meta}>Ingen andre avtaler i dag.</p> : <ul className={styles.agendaListe}>{hendelser.map((h) => {
+      const innhold = <>
+        <span className={styles.agendaTid}>{h.startMin == null ? h.lag === "TESTER" ? "Frist" : "Hele dagen" : klokkeslett(h.startMin)}</span>
+        <span className={styles.agendaTekst}><span className={styles.agendaTittel}>{h.tittel}</span>{h.undertekst && <span className={styles.meta}>{h.undertekst}</span>}</span>
+        {h.fullfort ? <span className={styles.agendaStatus}><TrainLockStatus variant="ok"><Check size={12} aria-hidden />Fullført</TrainLockStatus></span> : h.lesevisning ? <span className={styles.agendaStatus}><TrainLockStatus>Låst</TrainLockStatus></span> : null}
+      </>;
+      return <li key={h.id}>{h.href ? <Link href={h.href} className={`${styles.agendaRad} v2-focus v2-press`}>{innhold}</Link> : <div className={styles.agendaRad}>{innhold}</div>}</li>;
+    })}</ul>}
+  </section>;
 }
 
 function PrikkMaaned({ navn, prikker }: { navn: string; prikker: IDagPrikk[] }) {
+  const dager = prikker.filter((p) => !p.tom);
+  const fylte = dager.flatMap((p, i) => p.fylt ? [i + 1] : []);
+  const idag = dager.findIndex((p) => p.idag) + 1;
   return (
-    <div style={kort}>
+    <div style={kort} role="img" aria-label={`${navn}. I dag: ${idag}. Dager med fullførte økter markert: ${fylte.length ? fylte.join(", ") : "ingen"}.`}>
       <div style={caps}>{navn}</div>
       <div
         style={{
@@ -311,7 +327,7 @@ export function IDagTrainLock(p: IDagTrainLockProps) {
           {IDAG_UI.ingenOktTittel}
         </div>
         <div style={{ marginTop: 8, fontSize: 13, color: TL.mute }}>
-          Uke {p.ukeNummer} · {p.okterUke} økter er gjennomført
+          Uke {p.ukeNummer} · {p.fullfortUke ?? 0} økter er gjennomført
         </div>
         <Cta href="/portal/tren/wb" barn={IDAG_UI.startEgen} dim />
         <TekstLenke href="/portal/planlegge" barn={IDAG_UI.apnePlan} />
@@ -365,101 +381,47 @@ export function IDagTrainLock(p: IDagTrainLockProps) {
         fontVariantNumeric: "tabular-nums",
       }}
     >
-      <style>{`
-        /* Skallet reserverer plassen for Island; her trengs bare rulleluft. */
-        .ph01-scroll { padding-bottom: 16px; width: 100%; }
-        @media (min-width: 768px) and (max-width: 1100px) { .ph01-scroll { max-width: 560px; margin-inline: auto; } }
-        .ph01-bento { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .ph01-grid { display: flex; flex-direction: column; gap: 12px; }
-        .ph01-kun-mac { display: none; }
-        .ph01-kun-telefon { display: contents; }
-        .ph01-naa { padding: 20px; }
-        input.ph01-caddie::placeholder { color: var(--tl-mute); }
-        @media (min-width: 1101px) {
-          .ph01-grid { display: grid; grid-template-columns: 1.25fr 1fr; gap: 14px; align-items: start; }
-          .ph01-kun-mac { display: flex; flex-direction: column; gap: 12px; }
-          .ph01-kun-telefon { display: none; }
-          .ph01-cta-prim { width: 260px; }
-          .ph01-naa { padding: 24px; }
-        }
-      `}</style>
       <div
-        className="ph01-scroll"
+        className={`${styles.scroll} ph01-scroll`}
         style={{
           flex: 1,
           minHeight: 0,
           overflowY: "auto",
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "flex-start",
-            justifyContent: "space-between",
-            gap: 12,
-          }}
-        >
-          <div style={{ minWidth: 0 }}>
-            <div style={{ ...caps }}>{p.datoLinje}</div>
-            <h1
-              style={{
-                margin: "6px 0 0",
-                fontSize: 34,
-                fontWeight: 700,
-                letterSpacing: "-0.02em",
-                lineHeight: 1.1,
-                color: TL.text,
-              }}
-            >
-              {IDAG_UI.tittel}
-            </h1>
+        <header className={styles.hode}>
+          <div className={styles.hilsen}>
+            <div style={caps}>{p.datoLinje} · uke {p.ukeNummer}</div>
+            <h1><span className={styles.mobilTittel}>{IDAG_UI.tittel}</span><span className={styles.macTittel}>{p.hilsen ?? IDAG_UI.tittel}</span></h1>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <TrainLockCaddieKnapp bareDesktop />
-          {/* KA-04: «I dag i tiden» — hele dagen på tvers av lagene
-              (økt/skole/turnering/tester/booking), lesevisning. Ingen egen
-              kalender-fane for spilleren — dette er inngangen. */}
-          <button
-            type="button"
-            onClick={() => setIdagItidenApen(true)}
-            className="v2-press v2-focus"
-            aria-label="I dag i tiden"
-            style={{
-              width: 44,
-              height: 44,
-              display: "grid",
-              placeItems: "center",
-              borderRadius: TL.radius.card,
-              border: `1px solid ${TL.hair}`,
-              background: "transparent",
-              color: TL.text,
-              cursor: "pointer",
-              flex: "none",
-            }}
-          >
-            <Clock size={18} strokeWidth={1.8} aria-hidden />
-          </button>
+          <div className={styles.hodeHandlinger}>
+            {p.ukeFremdrift != null && <div className={styles.macFremdrift}><TrainLockFremdrift verdi={p.ukeFremdrift} label={`Uke ${p.ukeNummer} · planlagte minutter`} /></div>}
+            <TrainLockCaddieKnapp bareDesktop />
+            <Link href="/portal/meg" aria-label="Åpne profilen min" className={`${styles.profil} v2-focus v2-press`}><AvatarFoto navn={p.navn ?? "Spiller"} src={p.avatarUrl ?? null} size={44} /></Link>
           </div>
-        </div>
-        <div className="ph01-grid" style={{ marginTop: 20 }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            {godkjenninger.map((okt) => (
-              <GodkjenningKort key={okt.id} okt={okt} onFerdig={(id) => setBesvart((prev) => new Set(prev).add(id))} />
-            ))}
+        </header>
+        <div className={styles.grid}>
+          <div className={styles.hovedkolonne}>
+            {godkjenninger.map((okt) => <GodkjenningKort key={okt.id} okt={okt} onFerdig={(id) => setBesvart((prev) => new Set(prev).add(id))} />)}
             {hero}
-            <div className="ph01-kun-telefon">
-              {visTm && p.trackman && <TrackManKort trackman={p.trackman} />}
-            </div>
+            {visBento && <div className={styles.mobilTall}>
+              {p.ukeFremdrift != null && <TrainLockFremdrift verdi={p.ukeFremdrift} label={`Uke ${p.ukeNummer} · planlagte minutter`} />}
+              <Bento sg={p.sgInnspill} okter={p.okterUke} />
+            </div>}
+            <RestenAvDagen hendelser={p.hendelser.filter((h) => h.id !== `okt-${p.valgtOktId}` && (!p.valgtOktId || h.planSessionId !== p.valgtOktId)).sort((a, b) => Number(Boolean(a.fullfort)) - Number(Boolean(b.fullfort)))} onHeleDagen={() => setIdagItidenApen(true)} />
             {p.testerLive && p.tilstand !== "feil" && <TesterKort testerLive={p.testerLive} />}
-            <div className="ph01-kun-telefon">{nesteNode}</div>
-            {visBento && p.ukeFremdrift != null && <TrainLockFremdrift verdi={p.ukeFremdrift} label={`Uke ${p.ukeNummer} · treningsminutter`} />}
-            {visBento && <Bento sg={p.sgInnspill} okter={p.okterUke} />}
-            <div className="ph01-kun-telefon">{prikkNode}</div>
-          </div>
-          <div className="ph01-kun-mac">
+            {visTm && p.trackman && <TrackManKort trackman={p.trackman} />}
             {nesteNode}
-            {prikkNode}
           </div>
+          <aside className={styles.sidekolonne} aria-label="Ukeoversikt">
+            {visBento && <Bento sg={p.sgInnspill} okter={p.okterUke} />}
+            {p.fullfortMinutter != null && <div className={styles.moment}>
+              <div style={caps}>Ukens tall</div>
+              <div className={styles.momentTall}>{p.fullfortMinutter}</div>
+              <div className={styles.momentMeta}>Planlagte minutter i fullførte økter · uke {p.ukeNummer}</div>
+            </div>}
+            {prikkNode}
+          </aside>
         </div>
       </div>
       <IDagITidenArk

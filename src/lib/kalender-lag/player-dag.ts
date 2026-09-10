@@ -15,6 +15,9 @@
  * denne kalles aldri fra en Client Component.
  */
 
+import "server-only";
+import { OSLO_YMD_FMT, osloInstant, osloDagGrenser } from "@/lib/jarvis/dagen";
+import { osloMinuttAvDogen } from "@/lib/portal/idag-visning";
 import { prisma } from "@/lib/prisma";
 import { tilDatoKolonne } from "@/lib/workbench/wb-map";
 import type { KalenderHendelse } from "@/lib/domain/kalender-lag";
@@ -23,22 +26,18 @@ import { sorterDag } from "@/lib/domain/kalender-lag";
 const SPILLER_SYNLIGE_STATUSER = ["PUBLISHED", "IN_PROGRESS", "COMPLETED"] as const;
 
 function minSidenMidnatt(d: Date): number {
-  return d.getHours() * 60 + d.getMinutes();
+  return osloMinuttAvDogen(d);
 }
 
 function klemtSluttMin(start: Date, slutt: Date): number {
-  const sammeDag =
-    start.getFullYear() === slutt.getFullYear() &&
-    start.getMonth() === slutt.getMonth() &&
-    start.getDate() === slutt.getDate();
+  const sammeDag = OSLO_YMD_FMT.format(start) === OSLO_YMD_FMT.format(slutt);
   return sammeDag ? minSidenMidnatt(slutt) : 24 * 60;
 }
 
-/** Dagens vindu (naiv veggklokke) for real-timestamp-kolonner, fra en YYYY-MM-DD-streng. */
+/** Dagens vindu i Oslo for real-timestamp-kolonner, fra en YYYY-MM-DD-streng. */
 function dagensVindu(dato: string): { fra: Date; til: Date } {
   const [y, m, d] = dato.split("-").map(Number);
-  const fra = new Date(y, m - 1, d);
-  const til = new Date(y, m - 1, d + 1);
+  const { start: fra, slutt: til } = osloDagGrenser(osloInstant(y, m, d, 12, 0));
   return { fra, til };
 }
 

@@ -1,14 +1,14 @@
 /** Lokal komponentrigg. Next-ruting simuleres; appkomponentene importeres uendret. */
 import { build } from "esbuild";
 import { createServer } from "node:http";
-import { readFileSync, mkdirSync } from "node:fs";
+import { readFileSync, mkdirSync, readdirSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
 
 const root = process.cwd();
 const output = resolve(root, "_archive/portering-kontroll-2026-09-10");
 mkdirSync(output, { recursive: true });
 await build({
-  entryPoints: { playernav: resolve(root, "tests/visual/portering/player-nav-fixture.tsx"), wang: resolve(root, "tests/visual/portering/wang-login-fixture.tsx"), fixture: resolve(root, "tests/visual/portering/tn-tilgang-fixture.tsx"), trainlock: resolve(root, "tests/visual/portering/train-lock-fixture.tsx") },
+  entryPoints: { idag: resolve(root, "tests/visual/portering/idag-fixture.tsx"), playernav: resolve(root, "tests/visual/portering/player-nav-fixture.tsx"), wang: resolve(root, "tests/visual/portering/wang-login-fixture.tsx"), fixture: resolve(root, "tests/visual/portering/tn-tilgang-fixture.tsx"), trainlock: resolve(root, "tests/visual/portering/train-lock-fixture.tsx") },
   outdir: output,
   bundle: true,
   format: "iife",
@@ -17,6 +17,8 @@ await build({
   plugins: [{
     name: "isoler-next-ruting",
     setup(builder) {
+      builder.onResolve({ filter: /^@\/lib\/workbench\/wb-actions$/ }, ({ path }) => ({ path, namespace: "idag-server-stub" }));
+      builder.onLoad({ filter: /.*/, namespace: "idag-server-stub" }, () => ({ contents: 'export const resolvePlayerApproval=async()=>{throw new Error("Ingen serverhandling i komponentprøven")};', loader: "js" }));
       builder.onResolve({ filter: /^next\/(link|navigation|image)$/ }, ({ path }) => ({ path, namespace: "tn-fixture" }));
       builder.onLoad({ filter: /.*/, namespace: "tn-fixture" }, ({ path }) => ({
         contents: path === "next/image"
@@ -38,8 +40,21 @@ const html = `<!doctype html><html lang="nb"><meta charset="utf-8"><meta name="v
 </style><title>TN-18 – syntetisk komponentprøve</title><div id="root"></div><script src="/fixture.js"></script></html>`;
 const trainHtml = html.replace('/tokens.css', '/train-tokens.css').replace('/fixture.css', '/trainlock.css').replace('/fixture.js', '/trainlock.js');
 const navHtml = trainHtml.replace("/trainlock.css", "/playernav.css").replace("/trainlock.js", "/playernav.js");
+const idagHtml = trainHtml.replace("/trainlock.css", "/idag.css").replace("/trainlock.js", "/idag.js").replace("</title>", '</title><link rel="stylesheet" href="/geist.css">');
 const wangHtml = html.replace('/tokens.css', '/wang-tokens.css').replace('/fixture.css', '/wang.css').replace('/fixture.js', '/wang.js');
+const nextChunks = resolve(root, ".worktrees/portering-kontroll-2026-09-10/.next/static/chunks");
+const geistCss = (existsSync(nextChunks) ? readdirSync(nextChunks) : []).filter((file) => file.endsWith(".css")).flatMap((file) =>
+  [...readFileSync(resolve(nextChunks, file), "utf8").matchAll(/@font-face\{[^}]*font-family:Geist[^}]+\}/g)].map(([face]) =>
+    face.replace(/url\(([^)]+)\)/g, (_, url) => `url(data:font/woff2;base64,${readFileSync(resolve(nextChunks, url.replace(/["']/g, ""))).toString("base64")})`)
+  )
+).join("\n") + '\n:root{--font-geist-sans:Geist;--font-geist-mono:"Geist Mono"}';
 const files = new Map([
+  ["/ph-01-reference.html", [resolve(root, "_archive/design-kilder-2026-09-10/playerhq-train-lock-4/PH-01 I dag v3.dc.html"), "text/html; charset=utf-8"]],
+  ["/support.js", [resolve(root, "_archive/design-kilder-2026-09-10/playerhq-train-lock-4/support.js"), "text/javascript"]],
+  ["/react18.js", [resolve(output, "vendor/react.production.min.js"), "text/javascript"]],
+  ["/react-dom18.js", [resolve(output, "vendor/react-dom.production.min.js"), "text/javascript"]],
+  ["/idag.js", [resolve(output, "idag.js"), "text/javascript"]],
+  ["/idag.css", [resolve(output, "idag.css"), "text/css"]],
   ["/playernav.js", [resolve(output, "playernav.js"), "text/javascript"]],
   ["/playernav.css", [resolve(output, "playernav.css"), "text/css"]],
   ["/wang.js", [resolve(output, "wang.js"), "text/javascript"]],
@@ -54,12 +69,17 @@ const files = new Map([
 ]);
 createServer((request, response) => {
   const path = new URL(request.url, "http://127.0.0.1:5441").pathname;
+  if (path === "/geist.css") { response.setHeader("Content-Type", "text/css"); response.end(geistCss); return; }
   if (path === "/train-tokens.css") {
     response.setHeader("Content-Type", "text/css");
     response.end(["src/styles/train-lock-tokens.css", "src/styles/train-lock-valgt.css"].map((file) => readFileSync(resolve(root, file), "utf8")).join("\n"));
     return;
   }
+  if (path === "/ph-01-reference.html") {
+    const source = readFileSync(files.get(path)[0], "utf8").replace('<script src="./support.js"></script>', '<script src="/react18.js"></script><script src="/react-dom18.js"></script><script src="./support.js"></script>');
+    response.setHeader("Content-Type", "text/html; charset=utf-8"); response.end(source); return;
+  }
   const file = files.get(path);
   response.setHeader("Content-Type", file?.[1] ?? "text/html; charset=utf-8");
-  response.end(file ? readFileSync(file[0]) : path.startsWith("/team-norway") ? html : path.startsWith("/team-wang") ? wangHtml : path.startsWith("/player-nav") ? navHtml : trainHtml);
+  response.end(file ? readFileSync(file[0]) : path.startsWith("/team-norway") ? html : path.startsWith("/team-wang") ? wangHtml : path.startsWith("/player-nav") ? navHtml : path.startsWith("/idag-prove") ? idagHtml : trainHtml);
 }).listen(5441, "127.0.0.1", () => console.log("TN-komponentrigg klar på 127.0.0.1:5441"));

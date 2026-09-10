@@ -6145,9 +6145,9 @@
       "source": "src/app/portal/page.tsx",
       "area": "playerhq",
       "designSource": "train-lock-4",
-      "screenMapping": "PH-01 I dag v3 + eksisterende dag-/godkjenningsfunksjoner",
-      "implementation": "delvis-portert-naa-kort-og-felleslag; hel-skjerm-gjenstaar",
-      "visualApproval": "ikke-vurdert",
+      "screenMapping": "PH-01 I dag v3, Train-lock ZIP (4)",
+      "implementation": "delvis-portert-og-komponentprovd",
+      "visualApproval": "ikke-vurdert-av-Anders",
       "nearbySurfaces": [
         "src/app/error.tsx",
         "src/app/global-error.tsx",
@@ -7088,6 +7088,12 @@
       "area": "playerhq",
       "scope": "V2Shell Island, 64 px Mac-rail, Caddie-dialog med bevart kladd og stemmeark i samme nettleserlag",
       "tests": "8 komponentvarianter pluss samlet kontroll av de tidligere 64; faktisk innlogget rutenavigasjon gjenstår",
+      "completionProven": false
+    },
+    {
+      "area": "playerhq",
+      "scope": "PH-01 v3 oppsett, dagsagenda, felles WB/V2 uketall, fullført-kalender og Oslo-døgn; plan/V2-dublett i dagens økter",
+      "tests": "Full npm run verify bestod på sluttkoden. Hele npm test: 2301 bestod (syv nye); samlet 136 nettleservarianter bestod. Siste UI-justering ble prøvd på nytt i 64 hele I dag-varianter med faktiske Geist-filer.",
       "completionProven": false
     }
   ]
