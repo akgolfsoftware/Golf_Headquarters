@@ -7,7 +7,7 @@ import { expectNoConsoleErrors, gotoAndWait } from "./_helpers";
  * uten horisontal overflow, med merkets grunnfarge og font, på 390 og 1440.
  * Mønster: scripts/check-ak-golf-kits.mjs (samme måling på kitene).
  * Utvid SIDER etter hvert som sider porteres — alle 22 skal stå her til slutt.
- * Plan: docs/superpowers/plans/2026-09-04-marked-ak-golf-port.md.
+ * Plan: docs/planer/design/2026-09-04-marked-ak-golf-port.md.
  */
 
 const SIDER = ["/", "/forside-ak", "/coaching", "/junior", "/priser", "/om-oss", "/kontakt", "/vilkar"];

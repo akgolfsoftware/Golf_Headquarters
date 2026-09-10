@@ -243,7 +243,7 @@ export function SlotFormV2({ locations, initial, defaultWeekday, triggerLabel, t
           </div>
 
           {error && (
-            <div role="alert" style={{ marginTop: 14, borderRadius: 10, border: `1px solid color-mix(in srgb, ${TL.danger} 30%, transparent)`, background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`, padding: "10px 14px", fontSize: 13, color: TL.danger }}>
+            <div role="alert" style={{ marginTop: 14, borderRadius: 10, border: `1px solid color-mix(in srgb, ${TL.danger} 30%, transparent)`, background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`, padding: "10px 14px", fontSize: 13, color: TL.text }}>
               {error}
             </div>
           )}
@@ -254,7 +254,7 @@ export function SlotFormV2({ locations, initial, defaultWeekday, triggerLabel, t
                 type="button"
                 onClick={slett}
                 disabled={pending}
-                style={{ borderRadius: 9999, border: `1px solid color-mix(in srgb, ${TL.danger} 35%, transparent)`, background: `color-mix(in srgb, ${TL.danger} 6%, transparent)`, padding: "8px 16px", fontSize: 12, fontWeight: 600, color: TL.danger, cursor: "pointer", opacity: pending ? 0.6 : 1 }}
+                style={{ borderRadius: 9999, border: `1px solid color-mix(in srgb, ${TL.danger} 35%, transparent)`, background: `color-mix(in srgb, ${TL.danger} 6%, transparent)`, padding: "8px 16px", fontSize: 12, fontWeight: 600, color: TL.text, cursor: "pointer", opacity: pending ? 0.6 : 1 }}
               >
                 Slett
               </button>

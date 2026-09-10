@@ -1,6 +1,15 @@
 "use client";
 
 /**
+ * Avvik:
+ *   - Kontrastretting fra tidligere arbeidsgren er avstemt 10.09.2026. Eldre
+ *     visuelle referanser nedenfor er historikk; helskjermkontroll mot en ny
+ *     valgt Claude Design-versjon gjenstår. Denne endringen justerer fargebruk,
+ *     ikke skjermens funksjon eller oppsett. Se grener-og-main-2026-09-10.md
+ *     under docs/beslutningsgrunnlag for faktisk kontrollomfang.
+ */
+
+/**
  * AgencyOS Hjem — Train-lock (STEG 15.10, 31.08.2026).
  *
  * Fasit: designsystem/canvas/agencyos-ia/Hjem.dc.html (Mac 1440) +
@@ -107,7 +116,7 @@ function HasterPille() {
         fontWeight: 700,
         letterSpacing: "0.06em",
         textTransform: "uppercase",
-        color: TL.warn,
+        color: TL.text,
         boxShadow: `inset 0 0 0 1px ${TL.warnHair}`,
         borderRadius: TL.radius.pill,
         padding: "3px 8px",
@@ -268,7 +277,7 @@ function IDagKort({ dagLabel, timeline, now }: { dagLabel: string; timeline: Coc
 function FeilKort({ oppdatert }: { oppdatert: string }) {
   return (
     <Kort>
-      <div style={{ fontSize: TL.storrelse.kropp, fontWeight: TL.vekt.kropp, color: TL.danger }}>Ingen forbindelse</div>
+      <div style={{ fontSize: TL.storrelse.kropp, fontWeight: TL.vekt.kropp, color: TL.text }}>Ingen forbindelse</div>
       <div style={{ marginTop: 4, fontSize: TL.storrelse.meta, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
         Nettet er nede. Viser sist synkronisert {oppdatert}.
       </div>

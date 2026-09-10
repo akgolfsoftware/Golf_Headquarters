@@ -57,7 +57,7 @@ export function V2Feil({ reset, tilbakeHref, tittel = "Noe gikk galt", melding =
       <span style={{ width: 52, height: 52, borderRadius: 16, background: `color-mix(in srgb, ${TL.danger} 14%, transparent)`, border: `1px solid ${TL.danger}`, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
         <Icon name="alert-triangle" size={22} style={{ color: TL.danger }} />
       </span>
-      <div style={{ fontFamily: TL.font.mono, fontSize: 11, fontWeight: 700, letterSpacing: TL.track.capsSm, textTransform: "uppercase", color: TL.danger }}>Feil</div>
+      <div style={{ fontFamily: TL.font.mono, fontSize: 11, fontWeight: 700, letterSpacing: TL.track.capsSm, textTransform: "uppercase", color: TL.text }}>Feil</div>
       <h1 style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 22, color: TL.text, margin: 0 }}>{tittel}</h1>
       <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, maxWidth: 340, lineHeight: 1.6, margin: 0 }}>
         {melding}

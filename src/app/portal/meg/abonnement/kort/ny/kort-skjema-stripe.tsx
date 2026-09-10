@@ -100,7 +100,7 @@ function KortSkjemaInnhold() {
           padding: 12,
         }}
       >
-        <Icon name="check" size={14} style={{ color: TL.ok, marginTop: 2, flex: "none" }} />
+        <Icon name="check" size={14} style={{ color: TL.text, marginTop: 2, flex: "none" }} />
         <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text, lineHeight: 1.45 }}>
           Kortet er lagret og satt som standard.
         </span>

@@ -374,7 +374,7 @@ export function AdminWorkspaceNotionTrainLock({ data }: { data: AdminWorkspaceNo
 
       {!data.isAdmin && data.tilstand === "empty" && (
         <TlKort pad="14px 18px">
-          <p style={{ fontSize: 13, color: TL.warn, margin: 0 }}>
+          <p style={{ fontSize: 13, color: TL.text, margin: 0 }}>
             Bare hovedcoach (ADMIN) kan koble til Notion. Snakk med Anders hvis du vil at en database skal synkes.
           </p>
         </TlKort>
@@ -382,7 +382,7 @@ export function AdminWorkspaceNotionTrainLock({ data }: { data: AdminWorkspaceNo
 
       {data.feilmelding && (
         <TlKort pad="14px 18px">
-          <p style={{ fontSize: 13, color: TL.danger, margin: 0 }}>
+          <p style={{ fontSize: 13, color: TL.text, margin: 0 }}>
             Feil ved tilkobling: <code>{data.feilmelding}</code>
           </p>
         </TlKort>

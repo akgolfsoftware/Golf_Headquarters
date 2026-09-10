@@ -98,6 +98,7 @@ export default async function MittNivaPage() {
           omraadeLabel: PYRAMID_LABEL[omraade as keyof typeof PYRAMID_LABEL] ?? omraade,
           testNavn: n.testNavn,
           sisteScore: n.sisteScore,
+          unit: n.unit,
           sisteDato: n.sisteDato,
           antallTester: n.antallTester,
           benchmarkLabel: n.benchmarkLabel,

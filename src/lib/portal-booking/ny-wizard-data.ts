@@ -7,6 +7,7 @@
  * bookingen gjelder for (spilleren selv, eller barnet forelderen booker for)
  * — ALDRI den innloggede aktøren når de to er forskjellige.
  */
+import { fraNaivVeggklokke } from "@/lib/google-calendar-tid";
 import { kanBrukeCredits } from "@/lib/booking/credits-tilgang";
 import { getAvailableSlots } from "@/lib/booking/availability";
 import { prisma } from "@/lib/prisma";
@@ -131,7 +132,7 @@ export async function byggBookingNyData(params: NyWizardParams): Promise<NyWizar
     valgtServicePrisOre: valgtService.priceOre,
     datoParam: datoParam ?? null,
     serviceParamSatt: !!serviceParam,
-    valgtDatoIso: valgtDato.toISOString(),
+    valgtDatoIso: fraNaivVeggklokke(valgtDato),
     valgtDatoLang: valgtDato.toLocaleDateString("nb-NO", {
       weekday: "long",
       day: "numeric",
@@ -140,7 +141,7 @@ export async function byggBookingNyData(params: NyWizardParams): Promise<NyWizar
     aktivtSteg,
     isFree,
     slots: slots.map((s) => ({
-      startIso: s.start.toISOString(),
+      startIso: fraNaivVeggklokke(s.start),
       coachId: s.coachId,
       coachNavn: s.coachName,
     })),

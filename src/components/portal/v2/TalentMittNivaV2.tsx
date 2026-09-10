@@ -14,6 +14,7 @@ export interface TalentTestNivaaRad {
   omraadeLabel: string;
   testNavn: string;
   sisteScore: number;
+  unit?: string;
   /** ISO-dato. */
   sisteDato: string;
   antallTester: number;
@@ -176,7 +177,7 @@ function TestNivaaRad({ rad }: { rad: TalentTestNivaaRad }) {
       </p>
       <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: 6 }}>
         <span style={{ fontFamily: TL.font.mono, fontSize: 15, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>
-          {fmt10(rad.sisteScore)}
+          {rad.unit === "PEI" ? `${fmt10(rad.sisteScore * 100)} %` : `${fmt10(rad.sisteScore)}${rad.unit ? ` ${rad.unit}` : ""}`}
         </span>
         {rad.benchmarkLabel && (
           <span style={{ fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute }}>{rad.benchmarkLabel}</span>

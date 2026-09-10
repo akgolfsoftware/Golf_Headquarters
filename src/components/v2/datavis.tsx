@@ -444,8 +444,8 @@ export function SgKategorier({ kategorier = SGK_DEMO, baseline = "Broadie scratc
               <span style={{ position: "absolute", left: "50%", top: -2, width: 1, height: 12, background: TL.hair }} />
               <span style={{ position: "absolute", top: 0, height: "100%", borderRadius: 9999, width: `${w}%`, background: gain ? TL.ok : TL.danger, ...(gain ? { left: "50%" } : { right: "50%" }) }} />
             </span>
-            <span style={{ width: 78, flex: "none", textAlign: "right", ...mono(12, gain ? TL.ok : TL.danger) }}>
-              {fmt(k.sg)}{i === verst && <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: TL.danger }}>størst tap</span>}
+            <span style={{ width: 78, flex: "none", textAlign: "right", ...mono(12, TL.text) }}>
+              {fmt(k.sg)}{i === verst && <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: TL.mute }}>størst tap</span>}
             </span>
           </div>
         );

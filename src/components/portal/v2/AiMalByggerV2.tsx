@@ -442,7 +442,7 @@ export function AiMalByggerV2({
           {error && (
             <div role="alert" style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <StatusPill tone="down">Feil</StatusPill>
-              <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.danger }}>{error}</span>
+              <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.text }}>{error}</span>
             </div>
           )}
 

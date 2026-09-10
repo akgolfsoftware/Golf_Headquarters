@@ -27,8 +27,7 @@ at det stemmer. Aldri skriv en påstand du ikke har sett.
 Øverst i «Beslutningene»-seksjonen (nyeste først), som en `- **TITTEL (Anders DD.MM.ÅÅÅÅ, i økt):**`-blokk.
 
 - Store bokstaver i tittelen når beslutningen overstyrer noe eksisterende.
-- Sier den noe annet enn et eldre punkt: merk det gamle `[SUPERSEDERT DD.MM.ÅÅÅÅ — se X]` i
-  stedet for å slette det.
+- Sier den noe annet enn et eldre punkt: flytt den gamle teksten til beslutningsarkivet med dato og peker til den nye. Bevar historikken uten to konkurrerende oppskrifter.
 - **Kun det som gjelder nå.** Historikk og supersederte blokker hører i
   `docs/arkiv/beslutninger-historikk.md`. Fila lastes i hver eneste økt — hvert ord koster.
 
@@ -36,11 +35,9 @@ at det stemmer. Aldri skriv en påstand du ikke har sett.
 
 Oversett beslutningen til oppgaver noen kan utføre. Konkret:
 
-- **Krever den bygging?** → nummererte rader i riktig STEG-tabell, eller et nytt STEG hvis den er
-  stor nok (mønster: STEG 15). Hver rad: hva, hvor i koden, og hva som gjør den ferdig.
-- **Haster den (sikkerhet, PII, lisens, penger)?** → STEG 0.
-- **Åpner den et nytt spørsmål du ikke kan svare på?** → nummerert punkt i «Samlet beslutningskø
-  til Anders» nederst.
+- **Krever den bygging?** → nummererte rader i den gjeldende arbeidslisten. Hver rad: hva, hvor i koden, og hva som gjør den ferdig.
+- **Haster den (sikkerhet, PII, lisens, penger)?** → før risiko og foreslå prioritet i arbeidslisten.
+- **Åpner den et nytt spørsmål du ikke kan svare på?** → et konkret åpent punkt i arbeidslisten.
 - **Krever den ingenting?** (ren avklaring, bekrefter dagens tilstand) → skriv det eksplisitt i
   beslutningsblokken: «Krever ingen kodeendring — bekrefter dagens tilstand.» Da er det et
   bevisst valg, ikke en glipp.

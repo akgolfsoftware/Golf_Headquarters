@@ -49,7 +49,7 @@ function Etikett({
   return (
     <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.10em", color: TL.mute }}>
       {children}
-      {required && <span style={{ color: TL.danger }}>*</span>}
+      {required && <span style={{ color: TL.text }}>*</span>}
       {hjelp && <HjelpTips k={hjelp} size={11} />}
     </span>
   );
@@ -282,7 +282,7 @@ export function AdminPlanMalNyV2() {
       </div>
       {/* Ikke-blokkerende hint når fordelingen ikke går opp — selve stoppet skjer i submit + server-zod */}
       {sum !== 100 && (
-        <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, margin: 0, textAlign: "right" }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.text, margin: 0, textAlign: "right" }}>
           <Icon name="alert-triangle" size={12} style={{ verticalAlign: "-2px", marginRight: 4 }} />
           Fordelingen summerer til {sum} % — må være 100 % før malen kan opprettes.
         </p>

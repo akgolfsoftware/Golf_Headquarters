@@ -31,7 +31,7 @@ export function FjernVennKnapp({ vennUserId }: { vennUserId: string }) {
         {pending ? "Fjerner…" : "Fjern venn"}
       </Knapp>
       {feil && (
-        <span style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.danger }}>{feil}</span>
+        <span style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.text }}>{feil}</span>
       )}
     </div>
   );

@@ -86,7 +86,7 @@ function TlFelt({
           border: "none",
         }}
       />
-      {feil && <p style={{ margin: "6px 0 0", fontSize: 11, color: TL.danger }}>{feil}</p>}
+      {feil && <p style={{ margin: "6px 0 0", fontSize: 11, color: TL.text }}>{feil}</p>}
     </div>
   );
 }
@@ -127,7 +127,7 @@ function TlTekstOmraade({
           resize: "vertical",
         }}
       />
-      {feil && <p style={{ margin: "6px 0 0", fontSize: 11, color: TL.danger }}>{feil}</p>}
+      {feil && <p style={{ margin: "6px 0 0", fontSize: 11, color: TL.text }}>{feil}</p>}
     </div>
   );
 }
@@ -337,11 +337,11 @@ export function AdminProfilTrainLock({ data }: { data: AdminProfilV2Data }) {
             style={{ display: "none" }}
           />
         </div>
-        {avatarFeil && <p style={{ margin: "12px 0 0", fontSize: 12, color: TL.danger }}>{avatarFeil}</p>}
+        {avatarFeil && <p style={{ margin: "12px 0 0", fontSize: 12, color: TL.text }}>{avatarFeil}</p>}
       </TlKort>
 
-      {generellFeil && <p role="alert" style={{ margin: 0, fontSize: 12, color: TL.danger }}>{generellFeil}</p>}
-      {lagret && !generellFeil && <p role="status" style={{ margin: 0, fontSize: 12, color: TL.ok }}>Lagret.</p>}
+      {generellFeil && <p role="alert" style={{ margin: 0, fontSize: 12, color: TL.text }}>{generellFeil}</p>}
+      {lagret && !generellFeil && <p role="status" style={{ margin: 0, fontSize: 12, color: TL.mute }}>Lagret.</p>}
 
       {mobile ? (
         <>

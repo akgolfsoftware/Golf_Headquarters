@@ -74,7 +74,7 @@ export function KveldsjournalArtefakt({
         <ul style={{ listStyle: "none", margin: "0 0 16px", padding: 0 }}>
           {lukketIDag.map((l) => (
             <li key={l.id} style={{ display: "flex", gap: 8, alignItems: "baseline", padding: "3px 0", fontSize: 13, fontFamily: TL.font.sans, color: TL.text }}>
-              <span style={{ color: TL.ok, fontFamily: TL.font.mono, flex: "none" }}>✓</span>
+              <span style={{ color: TL.text, fontFamily: TL.font.mono, flex: "none" }}>✓</span>
               <button
                 type="button"
                 onClick={() => l.sakId && onVelgSak(l.sakId)}

@@ -79,7 +79,7 @@ export default async function AiCoachPage() {
         <ul style={{ margin: "14px 0 0", padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 8 }}>
           {FEATURES.map((f) => (
             <li key={f} style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
-              <Icon name="check" size={14} style={{ color: TL.ok, marginTop: 2, flex: "none" }} />
+              <Icon name="check" size={14} style={{ color: TL.text, marginTop: 2, flex: "none" }} />
               <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text, lineHeight: 1.45 }}>{f}</span>
             </li>
           ))}

@@ -1,5 +1,7 @@
 "use server";
 
+import { canAccessPlayer } from "@/lib/auth/own-or-coached";
+
 /**
  * PlayerHQ · Live-økt V2 — server actions for TrainingSessionV2.
  *
@@ -90,8 +92,6 @@ async function verifyAccess(sessionId: string) {
   });
   if (!session) throw new Error("not-found");
 
-  const isAdmin = user.role === "ADMIN";
-  const isCoach = user.role === "COACH";
   const isOwner =
     session.studentId === user.id ||
     session.hostId === user.id ||
@@ -100,7 +100,7 @@ async function verifyAccess(sessionId: string) {
     (p) => p.userId === user.id && ["ACCEPTED", "ATTENDED"].includes(p.status),
   );
 
-  if (!isAdmin && !isCoach && !isOwner && !isParticipant) {
+  if (!isOwner && !isParticipant && !(session.studentId && await canAccessPlayer(user, session.studentId))) {
     throw new Error("forbidden");
   }
 
@@ -202,7 +202,6 @@ function mapLog(log: {
 export async function loadLiveSession(sessionId: string): Promise<AccessResult> {
   const user = await requireConsentingUser();
   const userId = user.id;
-  const isCoach = user.role === "COACH" || user.role === "ADMIN";
 
 
   const session = await prisma.trainingSessionV2.findUnique({
@@ -219,10 +218,10 @@ export async function loadLiveSession(sessionId: string): Promise<AccessResult> 
     session.hostId === userId ||
     session.coachId === userId;
   const isParticipant = session.participants.some((p) =>
-    ["ACCEPTED", "ATTENDED"].includes(p.status),
+    p.userId === userId && ["ACCEPTED", "ATTENDED"].includes(p.status),
   );
 
-  if (!isOwner && !isParticipant && !isCoach) {
+  if (!isOwner && !isParticipant && !(session.studentId && await canAccessPlayer(user, session.studentId))) {
     return { ok: false, reason: "forbidden" };
   }
 

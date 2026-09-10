@@ -1,3 +1,5 @@
+> **Dokumentstatus 10.09.2026:** dette er et underlag, ikke en bekreftelse på dagens leveranse. Gjeldende status er `docs/STATUS-NÅ.md`, kodekartet er `docs/platform/AGENT-BRIEF.md`, og visuelt design velges i `designsystem/README.md`.
+
 # Knapp-audit — lanseringskjeden
 
 Statisk grep 08.09.2026 mot `feat/lanseringskjede-knapper`. Runtime (innlogget FULL, 390/1280, lys/mørk) kjører i `tests/e2e/lanseringskjede-knapper.spec.ts` når credentials finnes.

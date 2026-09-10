@@ -331,7 +331,7 @@ export function AutoProgresjon({ forslag = "+2,5 kg neste gang", grunnlag = "All
   const [status, setStatus] = useState<ProgStatus>("venter");
   if (status === "godtatt") return (
     <div style={{ display: "flex", gap: 8, alignItems: "center", padding: "10px 12px", borderRadius: 12, background: TL.dock, border: `1px solid ${TL.hair}` }}>
-      <Icon name="check" size={13} style={{ color: TL.ok, flex: "none" }} />
+      <Icon name="check" size={13} style={{ color: TL.text, flex: "none" }} />
       <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}>Lagt inn: <span style={{ fontFamily: TL.font.mono, fontWeight: 700, color: TL.text }}>{forslag}</span></span>
     </div>
   );

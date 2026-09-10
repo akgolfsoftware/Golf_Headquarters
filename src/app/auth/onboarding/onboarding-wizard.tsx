@@ -1,6 +1,15 @@
 "use client";
 
 /**
+ * Avvik:
+ *   - Kontrastretting fra tidligere arbeidsgren er avstemt 10.09.2026. Eldre
+ *     visuelle referanser nedenfor er historikk; helskjermkontroll mot en ny
+ *     valgt Claude Design-versjon gjenstår. Denne endringen justerer fargebruk,
+ *     ikke skjermens funksjon eller oppsett. Se grener-og-main-2026-09-10.md
+ *     under docs/beslutningsgrunnlag for faktisk kontrollomfang.
+ */
+
+/**
  * Onboarding-wizard (spiller) — MOBIL-FØRST 430px.
  * Fasit: designsystem/train-lock/PH-19 Onboarding.dc.html — DELVIS:
  * fasiten tegner 3 steg (hvem/hvor/coach-kode) på mørk scene, men /auth er
@@ -496,7 +505,7 @@ export function OnboardingWizard({
                 placeholder="forelder@example.com"
                 autoComplete="email"
               />
-              <p className="mt-1 text-[11px]" style={{ color: TL.warn }}>
+              <p className="mt-1 text-[11px]" style={{ color: TL.mute }}>
                 Vi sender en forespørsel om foreldresamtykke iht. GDPR art. 8.
               </p>
             </Field>
@@ -990,7 +999,7 @@ export function OnboardingWizard({
               borderRadius: 11,
               border: `1px solid color-mix(in srgb, ${TL.danger} 30%, transparent)`,
               background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`,
-              color: TL.danger,
+              color: TL.text,
             }}
             role="alert"
           >

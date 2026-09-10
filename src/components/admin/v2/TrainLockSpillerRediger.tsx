@@ -102,7 +102,7 @@ function Felt({
     <label style={{ display: "block" }}>
       <CapsLabel>
         {label}
-        {required && <span style={{ color: TL.warn }}> *</span>}
+        {required && <span style={{ color: TL.text }}> *</span>}
       </CapsLabel>
       <input type={type} name={name} defaultValue={defaultValue} required={required} style={feltStil()} />
       {hint && <span style={{ display: "block", marginTop: 4, fontSize: 12, color: TL.mute }}>{hint}</span>}

@@ -376,7 +376,7 @@ export function GjorV2({ data }: { data: GjennomforeData }) {
                         border: "1px solid transparent",
                       }}
                     >
-                      <Icon name="check" size={13} style={{ color: TL.ok }} />
+                      <Icon name="check" size={13} style={{ color: TL.text }} />
                     </span>
                   }
                   title={o.tittel}

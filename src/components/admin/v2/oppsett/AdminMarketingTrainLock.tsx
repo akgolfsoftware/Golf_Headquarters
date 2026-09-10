@@ -105,7 +105,7 @@ function StatusSykleChip({ id, status }: { id: string; status: MarketingStatus }
 
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 8, flex: "none" }}>
-      {feil && <span style={{ fontSize: 11, color: TL.danger }}>Feilet — prøv igjen</span>}
+      {feil && <span style={{ fontSize: 11, color: TL.text }}>Feilet — prøv igjen</span>}
       <button
         type="button"
         onClick={sykle}
@@ -303,7 +303,7 @@ function NyPostPopup({ onLukk }: { onLukk: () => void }) {
             <TlFelt label="Dato" type="date" value={dato} onChange={setDato} />
             <TlTekstOmraade label="Brief (valgfritt)" value={brief} rows={4} placeholder="Hva skal posten handle om? Vinkling, budskap, bilde/video…" onChange={setBrief} />
 
-            {feil && <span style={{ fontSize: 12, color: TL.danger }}>{feil}</span>}
+            {feil && <span style={{ fontSize: 12, color: TL.text }}>{feil}</span>}
 
             <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, opacity: pending ? 0.6 : 1 }}>
               <TlKnapp variant="tertiaer" disabled={pending} onClick={onLukk}>Avbryt</TlKnapp>

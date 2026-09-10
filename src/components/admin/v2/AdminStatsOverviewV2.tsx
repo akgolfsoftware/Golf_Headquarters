@@ -84,7 +84,7 @@ function PlausibleCard({ delay, title }: { delay: number; title: string }) {
       <Kort>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
           <Eyebrow>{title}</Eyebrow>
-          <span style={{ borderRadius: 6, background: `color-mix(in srgb, ${TL.warn} 12%, transparent)`, padding: "4px 8px", fontFamily: TL.font.mono, fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.10em", color: TL.warn }}>
+          <span style={{ borderRadius: 6, background: `color-mix(in srgb, ${TL.warn} 12%, transparent)`, padding: "4px 8px", fontFamily: TL.font.mono, fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.10em", color: TL.text }}>
             Krever Plausible-integrasjon
           </span>
         </div>

@@ -66,7 +66,7 @@ agentdb.rvf*
 .superpowers/
 .claude/worktrees/
 
-# Arkiv av stale design-eksperimenter — fjernes etter lansering
+# Lokalt arkiv og sikkerhetskopier — aldri til offentlig Git
 _archive/
 
 # Lokal env/DB/cache — aldri commit
@@ -75,9 +75,7 @@ _archive/
 .env.vercel-check
 *.rvf
 *.rvf.lock
-ruvector.db
 tsconfig.tsbuildinfo
-.DS_Store
 skills-lock.json
 
 # Lokale data-eksporter / import-artefakter med persondata (navn på brukere/spillere).
@@ -103,23 +101,7 @@ tmp/
 .env*.local
 tmp-handoff/
 
-# Skjermbilder og visuelle referansebilder holdes UTENFOR git (2026-08-14).
-# De veide 86 MB av et 228 MB repo og endrer seg ved hver designrunde, så hver
-# oppdatering la en ny kopi i historikken.
-#
-# screenshots/ (58 MB, 449 filer) er arkivert i Google Drive:
-#   AK Golf Group/akgolf-hq/screenshots-arkiv-2026-08-14/
-#   (byte-identisk kopi, sjekksum-verifisert før fjerning)
-#
-# Playwright-snapshots (28 MB, 432 filer) regenereres lokalt — se
-# tests/e2e/paper-visual/README.md. Fram til 15.08.2026 sto det her at de
-# «aldri kjørte i CI». Det var feil: prod-røyktesten kjørte hele tests/e2e/,
-# og én spec uten skip-vakt holdt den rød i 195 kjøringer. Nå filtreres
-# paper-visual/ bort i playwright.config.ts når CI er satt.
-#
-# Merk: historikken er IKKE omskrevet, så .git inneholder fortsatt de gamle
-# versjonene. Å krympe .git krever filter-repo + force-push og er en egen
-# beslutning som må tas bevisst.
+# Lokale skjermbilder og visuell testoutput er arbeidsfiler, aldri designfasit.
 screenshots/
 **/*-snapshots/
 # Train-lock sign-off-rigg (tests/visual/README.md) — arbeidsbilder fra
@@ -133,3 +115,8 @@ graphify-out/
 # Impeccable design-hook (maskinlokalt)
 .impeccable/config.local.json
 .impeccable/hook.cache.json
+
+# Maskinlokalt Codex-oppsett. Felles skills/hooks spores som relative pekere.
+/.codex/config.toml
+/.codex/hooks.json
+/.codex/environments/

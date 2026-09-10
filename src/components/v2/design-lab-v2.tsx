@@ -474,7 +474,7 @@ export function DesignLabV2() {
                 meta="I går · green · 3 drills · eksempel"
                 footerTall={
                   <span style={{ fontFamily: TL.font.mono, fontSize: 12, color: TL.mute }}>
-                    Adherence <b style={{ color: TL.ok }}>92 %</b>
+                    Adherence <b style={{ color: TL.text }}>92 %</b>
                   </span>
                 }
                 ctaGhost="Se logg"

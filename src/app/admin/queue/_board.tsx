@@ -79,7 +79,7 @@ function SpillerKort({ k, flytter }: { k: QueueKort; flytter: boolean }) {
             {k.stats.map((s, i) => (
               <div key={i}>
                 <Caps size={8.5}>{s.k}</Caps>
-                <div style={{ fontFamily: TL.font.mono, fontSize: 12.5, fontWeight: 700, marginTop: 3, color: s.tone === "down" ? TL.danger : s.tone === "up" ? TL.ok : TL.text }}>
+                <div style={{ fontFamily: TL.font.mono, fontSize: 12.5, fontWeight: 700, marginTop: 3, color: TL.text }}>
                   {s.v}
                 </div>
               </div>

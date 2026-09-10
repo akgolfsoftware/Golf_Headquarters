@@ -194,7 +194,7 @@ export function HistorikkArtefakt({
                       </>
                     )}
                     <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, marginTop: 2 }}>
-                      <span style={{ color: TL.ok }}>✓ godkjent av {rad.godkjentAv}</span>
+                      <span style={{ color: TL.mute }}>✓ godkjent av {rad.godkjentAv}</span>
                     </span>
                   </span>
                 </li>

@@ -10,6 +10,7 @@
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
+import { withTnAssignments } from "@/lib/portal-tester/tn-integration";
 import { prisma } from "@/lib/prisma";
 import { hentSpillerAkKategori } from "@/lib/domain/spiller-kategori";
 import { AdminTildelTestV2, type AdminTildelTestV2Data } from "@/components/admin/v2/AdminTildelTestV2";
@@ -33,8 +34,9 @@ export default async function TildelTestPage({
     }),
     prisma.testDefinition
       .findMany({
+        where: viewer.role === "ADMIN" ? {} : { OR: [{ isCustom: false }, { createdById: viewer.id }, { visibility: { not: "PRIVATE" } }] },
         orderBy: { name: "asc" },
-        select: { id: true, name: true, description: true, pyramidArea: true },
+        select: { id: true, name: true, description: true, pyramidArea: true, isCustom: true },
       })
       .catch(() => []),
     prisma.testAssignment.count({ where: { playerId: spillerId } }),
@@ -52,7 +54,7 @@ export default async function TildelTestPage({
     hcpLabel: spiller.hcp != null ? `HCP ${spiller.hcp}` : "HCP —",
     fullforte,
     totalt,
-    tester: tester.map((t) => ({
+    tester: withTnAssignments(tester).map((t) => ({
       id: t.id,
       name: t.name,
       description: t.description ?? "",

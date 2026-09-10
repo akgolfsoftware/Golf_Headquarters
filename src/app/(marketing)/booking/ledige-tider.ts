@@ -7,26 +7,25 @@
  * er coachens tid. Derfor hentes alle dagene i ett kall når tjenesten velges,
  * i stedet for en sidelasting per dag slik `/booking/[slug]` gjorde.
  *
- * All formatering er Oslo-tid (gotcha: Vercel kjører UTC).
+ * Tidene er allerede Oslo-veggklokke fra availability; konverter ikke en gang til.
  */
 
+import { fraNaivVeggklokke, tilNaivVeggklokke } from "@/lib/google-calendar-tid";
 import { prisma } from "@/lib/prisma";
 import { getAvailableSlots } from "@/lib/booking/availability";
 import { kanBrukeInnebygdBooking } from "@/lib/booking/offentlig-booking";
 import { publicAction } from "@/lib/auth/action-guards";
 
-const OSLO = "Europe/Oslo";
 const DAGER_FRAM = 7;
 
-const ukedag = new Intl.DateTimeFormat("nb-NO", { weekday: "short", timeZone: OSLO });
-const datokort = new Intl.DateTimeFormat("nb-NO", { day: "numeric", month: "numeric", timeZone: OSLO });
+const ukedag = new Intl.DateTimeFormat("nb-NO", { weekday: "short" });
+const datokort = new Intl.DateTimeFormat("nb-NO", { day: "numeric", month: "numeric" });
 const datolangt = new Intl.DateTimeFormat("nb-NO", {
   weekday: "long",
   day: "numeric",
   month: "long",
-  timeZone: OSLO,
 });
-const klokke = new Intl.DateTimeFormat("nb-NO", { hour: "2-digit", minute: "2-digit", timeZone: OSLO });
+const klokke = new Intl.DateTimeFormat("nb-NO", { hour: "2-digit", minute: "2-digit" });
 
 export type LedigTid = {
   /** «13:00» — visningsklokke i Oslo-tid. */
@@ -60,7 +59,7 @@ export async function finnNesteLedige(
   const service = await prisma.serviceType.findUnique({ where: { slug } });
   if (!service || !service.active) return null;
 
-  const idag = new Date();
+  const idag = tilNaivVeggklokke(new Date());
   idag.setHours(0, 0, 0, 0);
 
   for (let i = 0; i < DAGER_FRAM; i++) {
@@ -88,7 +87,7 @@ export async function hentLedigeDager(slug: string): Promise<LedigDag[]> {
   const service = await prisma.serviceType.findUnique({ where: { slug } });
   if (!service || !service.active) return [];
 
-  const idag = new Date();
+  const idag = tilNaivVeggklokke(new Date());
   idag.setHours(0, 0, 0, 0);
 
   const dager: LedigDag[] = [];
@@ -108,7 +107,7 @@ export async function hentLedigeDager(slug: string): Promise<LedigDag[]> {
       navn: datolangt.format(d),
       tider: slots.map((s) => ({
         kl: klokke.format(s.start),
-        startIso: s.start.toISOString(),
+        startIso: fraNaivVeggklokke(s.start),
         coachId: s.coachId,
       })),
     });

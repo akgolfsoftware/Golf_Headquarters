@@ -414,7 +414,7 @@ export function MalDetaljV2({ data, testOptions = [] }: { data: MalDetaljV2Data;
           </p>
         )}
         {data.status === "ACHIEVED" && data.achievedAtTekst && (
-          <p style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.ok, margin: "6px 0 0", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+          <p style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.text, margin: "6px 0 0", textTransform: "uppercase", letterSpacing: "0.04em" }}>
             Oppnådd {data.achievedAtTekst}
           </p>
         )}

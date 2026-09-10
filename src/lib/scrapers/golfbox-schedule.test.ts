@@ -60,3 +60,20 @@ test("schedule-entry med EntryCloses kan parses via parseGolfBoxDate", () => {
   assert.ok(entryCloses);
   assert.equal(entryCloses!.toISOString().slice(0, 10), "2026-07-27");
 });
+
+test("getSchedule bevarer standard-URL og bruker eksplisitt sesong bare ved valg", async t => {
+  const { getSchedule } = await import("./golfbox");
+  const urls: string[] = [];
+  t.mock.method(globalThis, "fetch", async (url: string | URL | Request) => {
+    urls.push(String(url));
+    return new Response(JSON.stringify({ CompetitionData: {} }));
+  });
+  await getSchedule(18);
+  await getSchedule(18, 2024);
+  assert.deepEqual(urls, [
+    "https://scores.golfbox.dk/Handlers/ScheduleHandler/GetSchedule/CustomerId/18/language/1044",
+    "https://scores.golfbox.dk/Handlers/ScheduleHandler/GetSchedule/CustomerId/18/Season/2024/language/1044",
+  ]);
+  for (const season of [0, NaN, 2024.5, Infinity, 10000]) await assert.rejects(getSchedule(18, season));
+  assert.equal(urls.length, 2);
+});

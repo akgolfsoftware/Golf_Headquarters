@@ -265,7 +265,7 @@ function DublettKort({ kandidat }: { kandidat: MergeKandidat }) {
         </div>
       )}
       {feil && (
-        <div role="alert" style={{ borderTop: `1px solid ${TL.hair}`, padding: "10px 20px", fontSize: 12.5, color: TL.danger, borderRadius: `0 0 ${TL.radius.card} ${TL.radius.card}` }}>
+        <div role="alert" style={{ borderTop: `1px solid ${TL.hair}`, padding: "10px 20px", fontSize: 12.5, color: TL.text, borderRadius: `0 0 ${TL.radius.card} ${TL.radius.card}` }}>
           {feil}
         </div>
       )}

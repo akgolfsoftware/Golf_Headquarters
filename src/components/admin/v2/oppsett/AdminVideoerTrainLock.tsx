@@ -337,14 +337,14 @@ function OpplastingsSkjema({ spillere }: { spillere: AdminVideoSpiller[] }) {
         <TlTekstOmraade label="Notater til spilleren (valgfri)" value={notes} onChange={setNotes} rows={3} />
 
         {error && (
-          <div role="alert" style={{ display: "flex", alignItems: "flex-start", gap: 8, fontSize: 12.5, color: TL.danger, boxShadow: `inset 0 0 0 1px ${TL.danger}`, borderRadius: 11, padding: "10px 13px", lineHeight: 1.5 }}>
+          <div role="alert" style={{ display: "flex", alignItems: "flex-start", gap: 8, fontSize: 12.5, color: TL.text, boxShadow: `inset 0 0 0 1px ${TL.danger}`, borderRadius: 11, padding: "10px 13px", lineHeight: 1.5 }}>
             <Icon name="alert-triangle" size={14} style={{ color: TL.danger, flex: "none", marginTop: 1 }} />
             {error}
           </div>
         )}
         {success && (
-          <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, color: TL.ok, boxShadow: `inset 0 0 0 1px ${TL.ok}`, borderRadius: 11, padding: "10px 13px" }}>
-            <Icon name="check-circle" size={14} style={{ color: TL.ok, flex: "none" }} />
+          <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, color: TL.text, boxShadow: `inset 0 0 0 1px ${TL.ok}`, borderRadius: 11, padding: "10px 13px" }}>
+            <Icon name="check-circle" size={14} style={{ color: TL.text, flex: "none" }} />
             Video lastet opp og delt med spilleren.
           </div>
         )}
@@ -413,7 +413,7 @@ function VideoRad({ video, last }: { video: AdminVideoRad; last: boolean }) {
         trailing={
           <span style={{ display: "inline-flex", alignItems: "center", gap: 6, flex: "none" }}>
             {!klar && (
-              <span style={{ display: "inline-flex", alignItems: "center", height: 22, padding: "0 9px", borderRadius: 999, fontSize: 11, fontWeight: 700, color: TL.warn, boxShadow: `inset 0 0 0 1px ${TL.warnHair}` }}>
+              <span style={{ display: "inline-flex", alignItems: "center", height: 22, padding: "0 9px", borderRadius: 999, fontSize: 11, fontWeight: 700, color: TL.text, boxShadow: `inset 0 0 0 1px ${TL.warnHair}` }}>
                 {video.status}
               </span>
             )}
@@ -427,7 +427,7 @@ function VideoRad({ video, last }: { video: AdminVideoRad; last: boolean }) {
         }
       />
       {error && (
-        <div role="alert" style={{ fontSize: 12, color: TL.danger, boxShadow: `inset 0 0 0 1px ${TL.danger}`, borderRadius: 10, padding: "6px 10px", margin: "6px 0 10px" }}>
+        <div role="alert" style={{ fontSize: 12, color: TL.text, boxShadow: `inset 0 0 0 1px ${TL.danger}`, borderRadius: 10, padding: "6px 10px", margin: "6px 0 10px" }}>
           {error}
         </div>
       )}

@@ -1,4 +1,14 @@
 "use client";
+
+/**
+ * Avvik:
+ *   - Kontrastretting fra tidligere arbeidsgren er avstemt 10.09.2026. Eldre
+ *     visuelle referanser nedenfor er historikk; helskjermkontroll mot en ny
+ *     valgt Claude Design-versjon gjenstår. Denne endringen justerer fargebruk,
+ *     ikke skjermens funksjon eller oppsett. Se grener-og-main-2026-09-10.md
+ *     under docs/beslutningsgrunnlag for faktisk kontrollomfang.
+ */
+
 import { TL } from "@/lib/v2/train-lock";
 
 /**
@@ -335,7 +345,7 @@ export function RundeEtterregistreringKlient({ baner, siste }: Props) {
                   gap: 8,
                 }}
               >
-                <Icon name="check" size={20} style={{ color: TL.ok }} />
+                <Icon name="check" size={20} style={{ color: TL.text }} />
                 Runden er lagret
               </h3>
               <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute, lineHeight: 1.55 }}>

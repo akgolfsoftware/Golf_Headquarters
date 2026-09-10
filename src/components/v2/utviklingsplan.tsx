@@ -194,7 +194,7 @@ export function MilepaelKort({
       </div>
       {godkjentAv && (
         <div style={{ display: "flex", alignItems: "center", gap: 7, paddingTop: 11, borderTop: `1px solid ${TL.hair}` }}>
-          <Icon name="badge-check" size={13} style={{ color: TL.ok }} />
+          <Icon name="badge-check" size={13} style={{ color: TL.mute }} />
           <span style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.mute }}>Godkjent av <span style={{ color: TL.mute, fontWeight: 600 }}>{godkjentAv}</span> · {godkjentDato}</span>
         </div>
       )}

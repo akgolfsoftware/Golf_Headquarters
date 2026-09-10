@@ -1,3 +1,4 @@
+import { canAccessPlayer } from "@/lib/auth/own-or-coached";
 /**
  * PlayerHQ · Live-økt brief V2 — TrainingSessionV2.
  *
@@ -39,7 +40,7 @@ export default async function LiveBriefPage({
 
   if (!v2 && !planSession && wbRow) {
     const erEier = wbRow.playerId === user.id;
-    if (!erEier && !isCoach) {
+    if (!(await canAccessPlayer(user, wbRow.playerId))) {
       redirect("/portal/planlegge/workbench");
     }
     if (wbRow.status === "COMPLETED") {
@@ -74,7 +75,7 @@ export default async function LiveBriefPage({
   }
 
   if (planSession && !v2) {
-    const result = await loadPlanLiveSession(sessionId, user.id, isCoach);
+    const result = await loadPlanLiveSession(sessionId, user);
     if (!result.ok) {
       if (result.reason === "notfound") notFound();
       redirect("/portal/planlegge/workbench");

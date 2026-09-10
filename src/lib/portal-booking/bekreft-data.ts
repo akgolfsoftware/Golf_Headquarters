@@ -3,6 +3,7 @@
  * `/portal/booking/ny/bekreft/page.tsx` (STEG 9.8) — se ny-wizard-data.ts for
  * hvorfor. `eierId`/`eierTier` er PERSONEN bookingen gjelder for.
  */
+import { fraNaivVeggklokke } from "@/lib/google-calendar-tid";
 import { kanBrukeCredits } from "@/lib/booking/credits-tilgang";
 import { isSlotStillAvailable } from "@/lib/booking/availability";
 import { prisma } from "@/lib/prisma";
@@ -74,7 +75,7 @@ export async function byggBookingBekreftData(params: BekreftParams): Promise<Bek
   const saldoEtter = creditsRemaining - 1;
 
   const backHref = `${wizardBase}?service=${serviceSlug}&dato=${
-    startAt.toISOString().split("T")[0]
+    fraNaivVeggklokke(startAt).split("T")[0]
   }${erBetaling ? "&betaling=1" : ""}`;
 
   const data: BookingNyBekreftV2Data = {
@@ -84,7 +85,7 @@ export async function byggBookingBekreftData(params: BekreftParams): Promise<Bek
     prisOre: service.priceOre,
     serviceTypeId: service.id,
     coachId,
-    startIso: startAt.toISOString(),
+    startIso: fraNaivVeggklokke(startAt),
     backHref,
     ledig,
     rader: [

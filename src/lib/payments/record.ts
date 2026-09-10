@@ -4,6 +4,7 @@ import "server-only";
 
 import type Stripe from "stripe";
 import { prisma } from "@/lib/prisma";
+import { savePayment } from "./save";
 import type { Prisma } from "@/generated/prisma/client";
 
 type PaymentStatus =
@@ -124,21 +125,10 @@ export async function recordPaymentIntent(intent: Stripe.PaymentIntent) {
     paidAt: status === "SUCCEEDED" ? new Date(intent.created * 1000) : null,
   };
 
-  await prisma.payment.upsert({
-    where: { stripePaymentIntentId: intent.id },
-    create: data,
-    update: {
-      status,
-      stripeChargeId: chargeId ?? undefined,
-      amountOre: intent.amount,
-      userId: userId ?? undefined,
-      bookingId: bookingId ?? undefined,
-      paidAt: status === "SUCCEEDED" ? new Date(intent.created * 1000) : undefined,
-    },
-  });
+  await savePayment(data);
 }
 
-export async function recordCheckoutSession(session: Stripe.Checkout.Session) {
+export async function recordCheckoutSession(session: Stripe.Checkout.Session, failed = false) {
   // Brukes for "mode: payment" og "mode: subscription".
   // For subscription med invoice — invoice.paid håndteres separat.
   if (session.mode === "setup") return;
@@ -169,11 +159,9 @@ export async function recordCheckoutSession(session: Stripe.Checkout.Session) {
   const subscriptionId = await findSubscriptionId(subscriptionStripeId);
 
   const status: PaymentStatus =
-    session.payment_status === "paid"
+    session.payment_status === "paid" || session.payment_status === "no_payment_required"
       ? "SUCCEEDED"
-      : session.payment_status === "unpaid"
-        ? "FAILED"
-        : "PENDING";
+      : failed ? "FAILED" : "PENDING";
 
   const type: PaymentType = subscriptionStripeId
     ? "SUBSCRIPTION"
@@ -199,21 +187,7 @@ export async function recordCheckoutSession(session: Stripe.Checkout.Session) {
     paidAt: status === "SUCCEEDED" ? new Date(session.created * 1000) : null,
   };
 
-  await prisma.payment.upsert({
-    where: { stripeSessionId: session.id },
-    create: data,
-    update: {
-      status,
-      amountOre,
-      stripePaymentIntentId: paymentIntentId ?? undefined,
-      stripeInvoiceId: invoiceId ?? undefined,
-      userId: userId ?? undefined,
-      bookingId: bookingId ?? undefined,
-      subscriptionId: subscriptionId ?? undefined,
-      paidAt:
-        status === "SUCCEEDED" ? new Date(session.created * 1000) : undefined,
-    },
-  });
+  await savePayment(data);
 }
 
 // Stripe v22 moved top-level `subscription` and `payment_intent` out of Invoice.
@@ -280,21 +254,7 @@ export async function recordInvoice(invoice: Stripe.Invoice) {
 
   if (!invoice.id) return;
 
-  await prisma.payment.upsert({
-    where: { stripeInvoiceId: invoice.id },
-    create: data,
-    update: {
-      status,
-      amountOre: invoice.amount_paid || invoice.amount_due || 0,
-      stripePaymentIntentId: paymentIntentId ?? undefined,
-      userId: userId ?? undefined,
-      subscriptionId: subscriptionId ?? undefined,
-      paidAt:
-        status === "SUCCEEDED" && invoice.status_transitions?.paid_at
-          ? new Date(invoice.status_transitions.paid_at * 1000)
-          : undefined,
-    },
-  });
+  await savePayment(data);
 }
 
 export async function recordChargeRefund(charge: Stripe.Charge) {
@@ -308,38 +268,21 @@ export async function recordChargeRefund(charge: Stripe.Charge) {
   const status: PaymentStatus =
     totalRefunded >= charge.amount ? "REFUNDED" : "PARTIALLY_REFUNDED";
 
-  // Finn eksisterende payment-rad via PI-ID. Hvis ingen finnes, lag en.
-  const existing = await prisma.payment.findUnique({
-    where: { stripePaymentIntentId: paymentIntentId },
+  const stripeCustomerId = customerId(charge.customer);
+  const userId = await findUserId({ stripeCustomerId });
+  const bookingId = await findBookingId({ paymentIntentId });
+  await savePayment({
+    stripePaymentIntentId: paymentIntentId,
+    stripeChargeId: charge.id,
+    stripeCustomerId,
+    amountOre: charge.amount,
+    amountRefundedOre: totalRefunded,
+    currency: charge.currency,
+    status,
+    type: bookingId ? "BOOKING" : "OTHER",
+    userId,
+    bookingId,
+    refundedAt: new Date(),
+    paidAt: new Date(charge.created * 1000),
   });
-
-  if (existing) {
-    await prisma.payment.update({
-      where: { id: existing.id },
-      data: {
-        status,
-        amountRefundedOre: totalRefunded,
-        refundedAt: new Date(),
-        stripeChargeId: charge.id,
-      },
-    });
-  } else {
-    const stripeCustomerId = customerId(charge.customer);
-    const userId = await findUserId({ stripeCustomerId });
-    await prisma.payment.create({
-      data: {
-        stripePaymentIntentId: paymentIntentId,
-        stripeChargeId: charge.id,
-        stripeCustomerId,
-        amountOre: charge.amount,
-        amountRefundedOre: totalRefunded,
-        currency: charge.currency,
-        status,
-        type: "OTHER",
-        userId,
-        refundedAt: new Date(),
-        paidAt: new Date(charge.created * 1000),
-      },
-    });
-  }
 }

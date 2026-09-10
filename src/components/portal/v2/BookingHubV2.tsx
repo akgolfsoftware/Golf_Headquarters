@@ -1,6 +1,8 @@
 "use client";
 import { TL } from "@/lib/v2/train-lock";
 /**
+ * Avvik:
+ *   - 2026-09-10 retter kun klokkeformatet; ingen ny visuell måling eller designgodkjenning.
  * PlayerHQ Booking — oversikt (ny default-landing på /portal/booking).
  * Fasit: designsystem/train-lock/BO-02 Mine bookinger.dc.html (kommende
  * timer-listen) + BO-01 Booking ledige luker.dc.html (første ledige-hintet).
@@ -39,11 +41,11 @@ export type BookingHubV2Data = {
 const UKEDAG = ["søn", "man", "tir", "ons", "tor", "fre", "lør"];
 const MND = ["jan.", "feb.", "mar.", "apr.", "mai", "jun.", "jul.", "aug.", "sep.", "okt.", "nov.", "des."];
 
-/** Oslo-korrekt dato/klokke — samme gotcha som resten av booking-flatene (Vercel=UTC). */
+/** Tidene er serialisert som Oslo-veggklokke uten Z; behold klokkeslettet også utenfor Norge. */
 function formatDatoTid(iso: string): { dato: string; kl: string } {
   const d = new Date(iso);
-  const dato = new Intl.DateTimeFormat("nb-NO", { timeZone: "Europe/Oslo", weekday: "short", day: "numeric", month: "short" }).format(d);
-  const kl = new Intl.DateTimeFormat("nb-NO", { timeZone: "Europe/Oslo", hour: "2-digit", minute: "2-digit" }).format(d);
+  const dato = new Intl.DateTimeFormat("nb-NO", { weekday: "short", day: "numeric", month: "short" }).format(d);
+  const kl = new Intl.DateTimeFormat("nb-NO", { hour: "2-digit", minute: "2-digit" }).format(d);
   return { dato: dato.charAt(0).toUpperCase() + dato.slice(1), kl };
 }
 function formatDato(iso: string): string {
@@ -101,7 +103,7 @@ export function BookingHubV2({ data }: { data: BookingHubV2Data }) {
       {/* Retur fra Stripe Checkout — kvittering/avbrudd i klarspråk. */}
       {melding === "betalt" && (
         <div style={{ display: "flex", gap: 10, alignItems: "flex-start", padding: "12px 14px", borderRadius: TL.radius.card, background: `color-mix(in srgb, ${TL.ok} 10%, transparent)`, border: `1px solid color-mix(in srgb, ${TL.ok} 40%, transparent)` }}>
-          <Icon name="check-circle" size={15} style={{ color: TL.ok, flex: "none", marginTop: 1 }} />
+          <Icon name="check-circle" size={15} style={{ color: TL.text, flex: "none", marginTop: 1 }} />
           <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text, lineHeight: 1.55 }}>
             Betalingen er mottatt. Timen bekreftes om et øyeblikk og dukker opp under «Kommende timer». Du får også e-post.
           </span>
@@ -109,7 +111,7 @@ export function BookingHubV2({ data }: { data: BookingHubV2Data }) {
       )}
       {melding === "avbrutt" && (
         <div style={{ display: "flex", gap: 10, alignItems: "flex-start", padding: "12px 14px", borderRadius: TL.radius.card, background: `color-mix(in srgb, ${TL.warn} 10%, transparent)`, border: `1px solid color-mix(in srgb, ${TL.warn} 40%, transparent)` }}>
-          <Icon name="alert-triangle" size={15} style={{ color: TL.warn, flex: "none", marginTop: 1 }} />
+          <Icon name="alert-triangle" size={15} style={{ color: TL.text, flex: "none", marginTop: 1 }} />
           <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text, lineHeight: 1.55 }}>
             Betalingen ble avbrutt — tiden er ikke reservert. Velg gjerne en ny tid under.
           </span>

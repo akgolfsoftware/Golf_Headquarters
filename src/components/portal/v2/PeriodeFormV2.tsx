@@ -104,7 +104,7 @@ function FeltEtikett({
     <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 7 }}>
       <Caps size={9}>{children}</Caps>
       {paakrevd && (
-        <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, color: TL.danger }}>*</span>
+        <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, color: TL.text }}>*</span>
       )}
       {hjelp}
     </div>
@@ -216,14 +216,14 @@ export function PeriodeFormV2(props: Props) {
       {error && (
         <div role="alert" style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <StatusPill tone="down">Feil</StatusPill>
-          <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.danger }}>{error}</span>
+          <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.text }}>{error}</span>
         </div>
       )}
 
       {/* ── Handlinger ──────────────────────────────────── */}
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8 }}>
         {props.mode === "rediger" && (
-          <Knapp ghost icon="trash-2" disabled={pending} onClick={slett} style={{ color: TL.danger }}>
+          <Knapp ghost icon="trash-2" disabled={pending} onClick={slett} style={{ color: TL.text }}>
             Slett periode
           </Knapp>
         )}

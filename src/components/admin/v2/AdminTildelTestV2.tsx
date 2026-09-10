@@ -147,7 +147,7 @@ export function AdminTildelTestV2({ data }: { data: AdminTildelTestV2Data }) {
 
           <div>
             <div style={{ fontFamily: TL.font.sans, fontSize: 12, fontWeight: 600, color: TL.mute, marginBottom: 8 }}>
-              Velg test <span style={{ color: TL.danger }}>*</span>
+              Velg test <span style={{ color: TL.text }}>*</span>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 8, height: 40, borderRadius: 10, border: `1px solid ${TL.hair}`, background: TL.dock, padding: "0 12px" }}>
               <Icon name="search" size={14} style={{ color: TL.mute }} />
@@ -230,7 +230,7 @@ export function AdminTildelTestV2({ data }: { data: AdminTildelTestV2Data }) {
         </div>
 
         <div style={{ position: "sticky", bottom: 0, background: TL.elev, padding: "14px 22px", borderTop: `1px solid ${TL.hair}`, display: "flex", alignItems: "center", gap: 8 }}>
-          {feil && <span style={{ marginRight: "auto", fontFamily: TL.font.mono, fontSize: 11, color: TL.danger }}>{feil}</span>}
+          {feil && <span style={{ marginRight: "auto", fontFamily: TL.font.mono, fontSize: 11, color: TL.text }}>{feil}</span>}
           <Knapp ghost disabled={pending} onClick={lukk}>
             Avbryt
           </Knapp>

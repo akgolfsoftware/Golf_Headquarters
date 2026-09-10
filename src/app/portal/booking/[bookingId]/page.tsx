@@ -5,7 +5,7 @@
  * sjekk `booking.userId !== user.id`) er uendret — kun presentasjonslaget er
  * nytt. Legacy-sidens hardkodede TIMELINE/MÅL/UTSTYR-plassholdere er SLETTET
  * (ærlig-data-prinsippet): kun ekte booking-felter vises. Datoformatering har
- * fått eksplisitt Europe/Oslo (gotcha: Vercel kjører UTC).
+ * følger lagret veggklokke uten en ekstra tidssonekonvertering.
  */
 
 import { notFound } from "next/navigation";
@@ -14,7 +14,7 @@ import { prisma } from "@/lib/prisma";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { TilbakeLenke, type StatusTone } from "@/components/v2";
 import { BookingDetaljV2 } from "@/components/portal/v2/BookingDetaljV2";
-import { AVBESTILLING_FRIST_TIMER } from "@/lib/booking/policy";
+import { AVBESTILLING_FRIST_TIMER, hoursUntil } from "@/lib/booking/policy";
 
 export const dynamic = "force-dynamic";
 
@@ -38,7 +38,7 @@ const STATUS_TONE: Record<string, StatusTone> = {
 };
 
 function formatTid(d: Date): string {
-  return d.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Oslo" });
+  return d.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" });
 }
 
 function formatDato(d: Date): string {
@@ -47,7 +47,6 @@ function formatDato(d: Date): string {
     day: "numeric",
     month: "long",
     year: "numeric",
-    timeZone: "Europe/Oslo",
   });
 }
 
@@ -66,7 +65,7 @@ export default async function OktDetalj({ params }: Props) {
   if (!booking || booking.userId !== user.id) notFound();
 
   // eslint-disable-next-line react-hooks/purity
-  const timerTilStart = (booking.startAt.getTime() - Date.now()) / 3_600_000;
+  const timerTilStart = hoursUntil(booking.startAt);
   const kanAvbestille = (booking.status === "PENDING" || booking.status === "CONFIRMED") && timerTilStart > 0;
   const kanFaaRefusjon = timerTilStart > AVBESTILLING_FRIST_TIMER;
 

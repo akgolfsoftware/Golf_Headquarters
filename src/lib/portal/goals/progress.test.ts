@@ -148,6 +148,9 @@ test("beregnGoalProgress — HCP_TARGET, ROUNDS_PER_MONTH, SESSION_FREQUENCY, TE
     assert.equal(ingenData.hasData, false, "ingen testresultat registrert -> ingen data");
 
     latestTestResult = { score: 2 };
+    const tn = await beregnGoalProgress(lagMal({ type: "TEST_SCORE", targetValue: 1, linkedTestId: "tn-v3-wedge-variation" }), { hcp: null });
+    assert.equal(tn.hasData, false, "TN må ikke bruke gammel høyere-er-bedre-poengformel");
+    assert.equal(tn.status, "no-data");
     const bakPlan = await beregnGoalProgress(mal, { hcp: null });
     assert.equal(bakPlan.hasData, true);
     assert.equal(bakPlan.pct, 25);

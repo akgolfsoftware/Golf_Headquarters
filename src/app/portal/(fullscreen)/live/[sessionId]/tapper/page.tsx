@@ -1,3 +1,4 @@
+import { canAccessPlayer } from "@/lib/auth/own-or-coached";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
@@ -52,7 +53,6 @@ export default async function LiveTapperPage({
     allow: ["PLAYER", "COACH", "ADMIN"],
   });
   const { sessionId } = await params;
-  const erCoach = user.role === "COACH" || user.role === "ADMIN";
 
   const plan = await prisma.trainingPlanSession.findUnique({
     where: { id: sessionId },
@@ -65,10 +65,11 @@ export default async function LiveTapperPage({
   let oktLabel: string | null = null;
 
   if (plan) {
-    const erEier = plan.plan.userId === user.id;
-    if (!erEier && !erCoach) {
+    if (!(await canAccessPlayer(user, plan.plan.userId))) {
       redirect("/portal/planlegge/workbench");
     }
+    if (plan.status === "COMPLETED") redirect(`/portal/live/${sessionId}/summary`);
+    if (!["ACTIVE", "PAUSED"].includes(plan.status)) redirect(`/portal/live/${sessionId}`);
     playerId = plan.plan.userId;
     oktLabel = plan.title || plan.plan.name;
   } else {
@@ -77,16 +78,14 @@ export default async function LiveTapperPage({
       select: { id: true, playerId: true, title: true, status: true },
     });
     if (wb) {
-      if (wb.playerId !== user.id && !erCoach) {
+      if (!(await canAccessPlayer(user, wb.playerId))) {
         redirect("/portal/planlegge/workbench");
       }
       if (wb.status === "COMPLETED") {
         redirect(`/portal/live/${sessionId}/summary`);
       }
       const startbar =
-        wb.status === "IN_PROGRESS" ||
-        wb.status === "PUBLISHED" ||
-        wb.status === "SCHEDULED";
+        wb.status === "IN_PROGRESS";
       if (!startbar) {
         playerId = null;
       } else {

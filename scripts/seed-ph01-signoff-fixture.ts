@@ -8,7 +8,7 @@
  * VIKTIG (lært i denne økten): "I dag"-skjermen leser `loadPlayerDay()` →
  * `WorkbenchSession` (wb-actions.ts), IKKE `TrainingSessionV2` — økt-data er
  * fragmentert over flere tabeller (dokumentert i
- * docs/arkitektur-kartlegging-2026-08-30.md). Riktig tabell for denne
+ * docs/arkiv/opprydding-2026-09-10/arkitektur-kartlegging-2026-08-30.md). Riktig tabell for denne
  * skjermen er WorkbenchSession.
  *
  * Idempotent: matcher på (playerId, date, startMinute, title) og oppdaterer

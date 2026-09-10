@@ -10,6 +10,8 @@ description: >
   i UI. Inspirert av Anthropic effective agents.
 ---
 
+Prosjektkilder: `AGENTS.md` → `docs/platform/AGENT-BRIEF.md`. Design velges i `designsystem/README.md`; historiske skill-eksempler overstyrer ikke disse kildene.
+
 # AgenticOS — Anders sitt AI-operativsystem
 
 **Ett språk. Én godkjenningsregel. Enkelhet før kompleksitet.**

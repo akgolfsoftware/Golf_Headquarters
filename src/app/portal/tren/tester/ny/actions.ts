@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { testTilgangWhere } from "@/lib/portal-tester/test-tilgang";
 import { triggerTestAgent } from "@/lib/agents/triggers";
 import { syncTalentEtterTest } from "@/lib/talent/test-sync";
+import { isTnTestName } from "@/lib/portal-tester/tn-catalog";
 
 /**
  * Zod-schema for ny test. Resultatet-feltet er en åpen record fordi de
@@ -53,9 +54,10 @@ export async function logTest(input: unknown) {
   // CANON-tester og egne isCustom-tester (K6-klassen tettet også her).
   const test = await prisma.testDefinition.findFirst({
     where: { id: data.testId, AND: [testTilgangWhere(user.id)] },
-    select: { id: true, name: true },
+    select: { id: true, name: true, isCustom: true },
   });
   if (!test) throw new Error("Test ikke funnet");
+  if (!test.isCustom && isTnTestName(test.name)) throw new Error("Bruk det oppdaterte Team Norway-scorekortet i testoversikten. Resultatet beregnes fra forsøkene, ikke en manuelt angitt totalscore.");
 
   // Beregn score som hovedverdi for visning i listen.
   // Default: bruk første resultat-verdi. Klient kan overstyre via results._score.

@@ -56,7 +56,7 @@ export function DagensOkterWidget({
               background: TL.dock, border: "1px solid transparent",
             }}
           >
-            <Icon name="check" size={13} style={{ color: TL.ok }} />
+            <Icon name="check" size={13} style={{ color: TL.text }} />
           </span>
         ) : (
           <span style={{ width: 44, flex: "none", fontFamily: TL.font.mono, fontSize: 11, fontWeight: 700, color: TL.mute }}>

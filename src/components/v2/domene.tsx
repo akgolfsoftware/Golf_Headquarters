@@ -894,7 +894,7 @@ export function VideoKort({
         </span>
       </button>
       {error && (
-        <span role="alert" style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, background: `color-mix(in srgb,${TL.danger} 10%,transparent)`, border: `1px solid color-mix(in srgb,${TL.danger} 30%,transparent)`, borderRadius: 10, padding: "6px 10px" }}>
+        <span role="alert" style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.text, background: `color-mix(in srgb,${TL.danger} 10%,transparent)`, border: `1px solid color-mix(in srgb,${TL.danger} 30%,transparent)`, borderRadius: 10, padding: "6px 10px" }}>
           {error}
         </span>
       )}

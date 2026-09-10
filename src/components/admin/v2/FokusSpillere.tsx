@@ -296,7 +296,7 @@ export function FokusSpillere({ fokus }: { fokus: FokusData }) {
           style={{
             fontFamily: TL.font.sans,
             fontSize: 12,
-            color: TL.warn,
+            color: TL.text,
             padding: "8px 12px",
             borderRadius: 10,
             background: `color-mix(in srgb, ${TL.warn} 10%, transparent)`,

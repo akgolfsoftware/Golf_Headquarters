@@ -113,7 +113,7 @@ function InviteModal({ playerId, playerName, onClose }: { playerId: string; play
             </label>
 
             {error && (
-              <div style={{ borderRadius: 10, background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`, padding: "10px 14px", fontSize: 13, color: TL.danger }}>{error}</div>
+              <div style={{ borderRadius: 10, background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`, padding: "10px 14px", fontSize: 13, color: TL.text }}>{error}</div>
             )}
 
             <p style={{ fontSize: 11, color: TL.mute, margin: 0 }}>Forelderen får en e-post med en lenke som er gyldig i 7 dager.</p>

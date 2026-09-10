@@ -153,7 +153,7 @@ export function InviteFriendModal({
             {maxParticipants} plasser
           </span>
           {erFull && (
-            <span style={{ fontFamily: TL.font.mono, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: TL.danger, background: `color-mix(in srgb, ${TL.danger} 13%, transparent)`, borderRadius: 9999, padding: "3px 9px" }}>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: TL.text, background: `color-mix(in srgb, ${TL.danger} 13%, transparent)`, borderRadius: 9999, padding: "3px 9px" }}>
               Fullt
             </span>
           )}

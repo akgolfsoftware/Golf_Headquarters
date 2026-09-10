@@ -199,7 +199,7 @@ export function TnSamtykkeSide({
                   borderRadius: 999,
                   border: `1px solid ${TL.danger}`,
                   background: "none",
-                  color: TL.danger,
+                  color: TL.text,
                   fontFamily: TL.font.sans,
                   fontSize: 13,
                   fontWeight: 600,

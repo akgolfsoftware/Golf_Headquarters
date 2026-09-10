@@ -62,7 +62,7 @@ function TlFelt({
           border: "none",
         }}
       />
-      {feil && <p style={{ margin: "6px 0 0", fontSize: 11, color: TL.danger }}>{feil}</p>}
+      {feil && <p style={{ margin: "6px 0 0", fontSize: 11, color: TL.text }}>{feil}</p>}
     </div>
   );
 }
@@ -161,9 +161,9 @@ export function AdminInviterCoachTrainLock({
           )}
 
           {error && !Object.keys(fieldErrors).length && (
-            <p role="alert" style={{ margin: 0, fontSize: 12, color: TL.danger }}>{error}</p>
+            <p role="alert" style={{ margin: 0, fontSize: 12, color: TL.text }}>{error}</p>
           )}
-          {success && <p role="status" style={{ margin: 0, fontSize: 12, color: TL.ok }}>{success}</p>}
+          {success && <p role="status" style={{ margin: 0, fontSize: 12, color: TL.mute }}>{success}</p>}
 
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 4 }}>
             <TlKnapp type="submit" icon="user-plus" variant="primaer" disabled={pending}>

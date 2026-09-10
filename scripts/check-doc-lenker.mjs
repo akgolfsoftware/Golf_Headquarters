@@ -1,58 +1,46 @@
 #!/usr/bin/env node
-// Lenkevakt for docs — opprydding 27.08.2026 (docs/OPPRYDDING-PLAN-2026-08-27.md).
-// Sjekker at "levende" styringsdokumenter ikke peker på docs/**.md-filer som ikke finnes.
-// Historiske/supersederte dokumenter (docs/natt/*-DONE, docs/arkiv/**, m.fl.) er bevisst
-// utelatt — de har lov til å sitere slettede filer som del av historikken.
-
-import { readFileSync, existsSync } from "node:fs";
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
-
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-
-const LEVENDE_KILDER = [
-  "CLAUDE.md",
-  "AGENTS.md",
-  "START-HER.md",
-  ".claude/rules/gotchas.md",
-  ".claude/rules/beslutninger.md",
-  ".claude/rules/arkitektur.md",
-  "docs/STATUS-NÅ.md",
-  "docs/MASTERPLAN-GJENSTAAENDE.md",
-  "docs/FASIT-AK-GOLF-HQ.md",
-  "docs/feillogg.md",
-  "docs/platform/AGENT-BRIEF.md",
-  "docs/platform/BUSINESS-RULES.md",
-  "docs/natt/README.md",
-];
-// docs/AAPNE-SPORSMAAL.md, docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md og
-// docs/treningsplanlegger/README.md ble slettet 30.08.2026 i doc-konsolideringen
-// (docs/MASTERPLAN-GJENSTAAENDE.md er nå eneste plandokument) — fjernet fra
-// levende-kilder-lista med vilje, ikke en forglemmelse.
-
-const LENKE_MØNSTER = /docs\/[A-Za-zÆØÅæøå0-9._/-]+\.md/g;
-
-let feil = 0;
-
-for (const kilde of LEVENDE_KILDER) {
-  const sti = join(ROOT, kilde);
-  if (!existsSync(sti)) {
-    console.error(`FEIL: levende kilde mangler selv: ${kilde}`);
-    feil++;
-    continue;
-  }
-  const innhold = readFileSync(sti, "utf8");
-  const treff = innhold.match(LENKE_MØNSTER) ?? [];
-  for (const lenke of new Set(treff)) {
-    if (!existsSync(join(ROOT, lenke))) {
-      console.error(`FEIL: ${kilde} peker på ${lenke} — filen finnes ikke`);
-      feil++;
+/** Local Markdown links in maintained documentation. No network or writes. */
+import { readFileSync, existsSync, readdirSync } from 'node:fs';
+import { join, resolve, dirname } from 'node:path';
+const root = resolve(import.meta.dirname, '..');
+const config = JSON.parse(readFileSync(join(root, 'docs/vedlikehold/prosjektstruktur.json'), 'utf8'));
+function walk(dir) {
+  return readdirSync(join(root, dir), { withFileTypes: true }).flatMap(e => {
+    const p = `${dir}/${e.name}`;
+    if ([...config.historiskeDokumenter, ...config.eksterneDokumenter].some(prefix => p === prefix || p.startsWith(prefix + '/'))) return [];
+    return e.isDirectory() ? walk(p) : e.name.endsWith('.md') ? [p] : [];
+  });
+}
+// Parse balanced parentheses so Next route-group paths remain valid link targets.
+function targets(text) {
+  const result = [];
+  const body = text.replace(/^```[^\n]*\n[\s\S]*?^```[^\n]*$/gm, '').replace(/`[^`\n]*`/g, '');
+  const start = /\]\(/g;
+  for (let m; (m = start.exec(body));) {
+    let depth = 1, i = start.lastIndex;
+    for (; i < body.length && depth; i++) {
+      if (body[i] === '\\') { i++; continue; }
+      if (body[i] === '(') depth++;
+      if (body[i] === ')') depth--;
     }
+    if (depth) continue;
+    let target = body.slice(start.lastIndex, i - 1).trim();
+    target = target.startsWith('<') ? target.slice(1, target.indexOf('>')) : target.replace(/\s+["'][\s\S]*$/, '');
+    result.push(target);
+    start.lastIndex = i;
+  }
+  return result;
+}
+const files = [...new Set([...config.innganger, ...walk('docs'), ...walk('.claude/skills')])];
+const failures = [];
+for (const file of files) {
+  if (!existsSync(join(root, file))) { failures.push(`Inngang mangler: ${file}`); continue; }
+  for (const target of new Set(targets(readFileSync(join(root, file), 'utf8')))) {
+    if (!target || /^[a-zA-Z][\w+.-]*:|^#|^\/|^~/.test(target)) continue;
+    const path = decodeURIComponent(target.split('#')[0].split('?')[0]);
+    if (!path || path.includes('*')) continue;
+    if (!existsSync(resolve(root, dirname(file), path))) failures.push(`${file} → ${target}`);
   }
 }
-
-if (feil > 0) {
-  console.error(`\n${feil} død(e) doc-lenke(r) i levende styringsdokumenter.`);
-  process.exit(1);
-}
-console.log("OK: ingen døde doc-lenker i levende styringsdokumenter.");
+if (failures.length) { console.error('Døde lokale dokumentlenker:\n' + failures.join('\n')); process.exitCode = 1; }
+else console.log(`OK: lokale Markdown-lenker i ${files.length} vedlikeholdte dokumenter (arkiv, daterte underlag og eksterne skill-pakker er unntatt).`);

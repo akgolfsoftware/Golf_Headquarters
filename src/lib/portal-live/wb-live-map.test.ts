@@ -47,11 +47,11 @@ describe("wb-live-map", () => {
     assert.equal(data.completed, false);
   });
 
-  it("summary-payload har varighet fra planen, 0 reps", () => {
-    const s = mapWbToLiveSummary(rad());
+  it("summary viser faktiske slag og dikter ikke opp varighet", () => {
+    const s = mapWbToLiveSummary(rad(), [{ count: 12 }, { count: 8 }]);
     assert.equal(s.title, "Innspill 50–80 m");
-    assert.equal(s.durationSec, 50 * 60);
-    assert.equal(s.totalReps, 0);
+    assert.equal(s.durationSec, 0);
+    assert.equal(s.totalReps, 20);
     assert.equal(s.drillsCompleted, 0);
     assert.equal(s.existingLogs.length, 0);
     assert.equal(s.drills.length, 1);

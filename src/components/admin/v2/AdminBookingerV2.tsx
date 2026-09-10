@@ -1,4 +1,14 @@
 "use client";
+
+/**
+ * Avvik:
+ *   - Kontrastretting fra tidligere arbeidsgren er avstemt 10.09.2026. Eldre
+ *     visuelle referanser nedenfor er historikk; helskjermkontroll mot en ny
+ *     valgt Claude Design-versjon gjenstår. Denne endringen justerer fargebruk,
+ *     ikke skjermens funksjon eller oppsett. Se grener-og-main-2026-09-10.md
+ *     under docs/beslutningsgrunnlag for faktisk kontrollomfang.
+ */
+
 import { TL } from "@/lib/v2/train-lock";
 /**
  * AgencyOS Bookinger og kapasitet — Paper 1:1 (fase2 W4, `agencyos-bookinger`).
@@ -103,7 +113,7 @@ function BekreftAvvis({ id, stor }: { id: string; stor?: boolean }) {
       <Knapp ghost full={stor} disabled={pending} onClick={() => kjor(avvisBooking)} style={kompakt}>
         Avvis
       </Knapp>
-      {feil && <span style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.danger, alignSelf: "center" }}>Feilet</span>}
+      {feil && <span style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.text, alignSelf: "center" }}>Feilet</span>}
     </div>
   );
 }

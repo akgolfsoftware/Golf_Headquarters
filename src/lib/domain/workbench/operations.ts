@@ -177,6 +177,9 @@ export function publishSession(
   if (session.status === "CANCELLED") {
     throw new Error("Kan ikke publisere en avlyst økt");
   }
+  if (session.status !== "DRAFT" && session.status !== "SCHEDULED") {
+    throw new Error("Bare utkast og planlagte økter kan publiseres");
+  }
 
   return {
     ...session,

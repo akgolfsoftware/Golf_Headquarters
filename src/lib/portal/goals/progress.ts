@@ -172,6 +172,13 @@ async function progressSgArea(goal: GoalForProgress): Promise<GoalProgress> {
 async function progressTestScore(goal: GoalForProgress): Promise<GoalProgress> {
   if (!goal.linkedTestId) return ingenData("Ingen test valgt");
 
+  // Goal stores a bare numeric target; its editor still labels it as points.
+  // TN v3 uses signed/lower-is-better scores and variable counts. Until the
+  // goal carries that contract, never award progress with the legacy formula.
+  if (goal.linkedTestId.startsWith("tn-v3-")) {
+    return ingenData("Følg resultatet i testhistorikken. Automatisk målfremdrift for denne testen er ikke avklart.");
+  }
+
   const latest = await prisma.testResult.findFirst({
     where: { userId: goal.userId, testId: goal.linkedTestId },
     orderBy: { takenAt: "desc" },

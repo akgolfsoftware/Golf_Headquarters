@@ -1,6 +1,15 @@
 "use client";
 
 /**
+ * Avvik:
+ *   - Kontrastretting fra tidligere arbeidsgren er avstemt 10.09.2026. Eldre
+ *     visuelle referanser nedenfor er historikk; helskjermkontroll mot en ny
+ *     valgt Claude Design-versjon gjenstår. Denne endringen justerer fargebruk,
+ *     ikke skjermens funksjon eller oppsett. Se grener-og-main-2026-09-10.md
+ *     under docs/beslutningsgrunnlag for faktisk kontrollomfang.
+ */
+
+/**
  * PortalChatHjem — PlayerHQ "I dag", chat-først (designport steg 7 PR-A,
  * retter avviksliste A1 mot plan-designport-alle-skjermer.md).
  * Erstatter HjemV2 som innhold på /portal. V2Shell (rail/bunn-nav) er uendret
@@ -656,7 +665,7 @@ function WorkbenchIDagArtefakt({ workbenchDay }: { workbenchDay: PlayerDayResult
       <div data-od-id="wb-idag-feil" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         {eyebrow}
         <div style={wbKortStil}>
-          <div style={{ fontFamily: TL.font.mono, fontSize: 11, fontWeight: 700, letterSpacing: TL.track.capsSm, textTransform: "uppercase", color: TL.danger }}>
+          <div style={{ fontFamily: TL.font.mono, fontSize: 11, fontWeight: 700, letterSpacing: TL.track.capsSm, textTransform: "uppercase", color: TL.text }}>
             Ingen forbindelse
           </div>
           <p style={{ margin: "10px 0 0", fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.45 }}>

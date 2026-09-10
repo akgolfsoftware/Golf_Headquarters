@@ -435,7 +435,7 @@ export function AdminCaddieAktivitetV2({
             </Caps>
             {aiErrors.length === 0 ? (
               <div style={{ marginTop: 12, display: "flex", alignItems: "center", gap: 10, borderRadius: 10, border: `1px solid ${TL.ok}`, padding: 14 }}>
-                <span style={{ width: 28, height: 28, flex: "none", borderRadius: 8, display: "inline-flex", alignItems: "center", justifyContent: "center", background: `color-mix(in srgb, ${TL.ok} 15%, transparent)`, color: TL.ok }}>
+                <span style={{ width: 28, height: 28, flex: "none", borderRadius: 8, display: "inline-flex", alignItems: "center", justifyContent: "center", background: `color-mix(in srgb, ${TL.ok} 15%, transparent)`, color: TL.text }}>
                   <Icon name="check" size={13} strokeWidth={2.5} />
                 </span>
                 <p style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>Ingen agent-feil registrert siste 7 dager.</p>

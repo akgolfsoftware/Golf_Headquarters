@@ -38,7 +38,7 @@ export function EnTingNaKort({ sak, na, onApne }: { sak: Sak | null; na: Date; o
           textAlign: "center",
         }}
       >
-        <Icon name="check-circle" size={20} strokeWidth={1.6} style={{ color: TL.ok }} />
+        <Icon name="check-circle" size={20} strokeWidth={1.6} style={{ color: TL.text }} />
         <h3 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
           Ingenting venter på deg nå
         </h3>

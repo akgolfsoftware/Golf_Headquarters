@@ -72,7 +72,7 @@ function TlFelt({
           border: "none",
         }}
       />
-      {feil && <p style={{ margin: "6px 0 0", fontSize: 11, color: TL.danger }}>{feil}</p>}
+      {feil && <p style={{ margin: "6px 0 0", fontSize: 11, color: TL.text }}>{feil}</p>}
     </div>
   );
 }
@@ -177,7 +177,7 @@ export function AdminEksternLeserTrainLock({
           <div>
             <TlCaps size={10}>Grupper</TlCaps>
             {fieldErrors.groupIds && (
-              <div style={{ fontSize: 12, color: TL.danger, marginTop: 4 }}>{fieldErrors.groupIds}</div>
+              <div style={{ fontSize: 12, color: TL.text, marginTop: 4 }}>{fieldErrors.groupIds}</div>
             )}
             <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 10 }}>
               {grupper.map((gruppe) => (
@@ -194,7 +194,7 @@ export function AdminEksternLeserTrainLock({
           <div>
             <TlCaps size={10}>Innsyn</TlCaps>
             {fieldErrors.scopes && (
-              <div style={{ fontSize: 12, color: TL.danger, marginTop: 4 }}>{fieldErrors.scopes}</div>
+              <div style={{ fontSize: 12, color: TL.text, marginTop: 4 }}>{fieldErrors.scopes}</div>
             )}
             <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 10 }}>
               {DELING_SCOPES.map((scope) => (
@@ -208,8 +208,8 @@ export function AdminEksternLeserTrainLock({
             </div>
           </div>
 
-          {error && <p role="alert" style={{ margin: 0, fontSize: 12, color: TL.danger }}>{error}</p>}
-          {success && <p role="status" style={{ margin: 0, fontSize: 12, color: TL.ok }}>{success}</p>}
+          {error && <p role="alert" style={{ margin: 0, fontSize: 12, color: TL.text }}>{error}</p>}
+          {success && <p role="status" style={{ margin: 0, fontSize: 12, color: TL.mute }}>{success}</p>}
 
           <TlKnapp type="submit" variant="primaer" disabled={pending} full>
             {pending ? "Oppretter …" : "Opprett ekstern leser"}

@@ -280,7 +280,7 @@ export function AdminWorkspaceHubTrainLock({ data }: { data: AdminWorkspaceV2Dat
           {brenner.length > 0 && (
             <TlKort action={<TlCaps size={9}>{pl(brenner.length, "sak", "saker")}</TlCaps>} pad="16px 18px">
               <div style={{ marginBottom: 12 }}>
-                <span style={{ display: "inline-flex", alignItems: "center", height: 22, padding: "0 9px", borderRadius: 999, fontSize: 11, fontWeight: 700, color: TL.danger, boxShadow: `inset 0 0 0 1px ${TL.danger}` }}>Brenner nå</span>
+                <span style={{ display: "inline-flex", alignItems: "center", height: 22, padding: "0 9px", borderRadius: 999, fontSize: 11, fontWeight: 700, color: TL.text, boxShadow: `inset 0 0 0 1px ${TL.danger}` }}>Brenner nå</span>
               </div>
               {brenner.map((t, i) => <OppgaveRad key={t.id} t={t} last={i === brenner.length - 1} />)}
             </TlKort>

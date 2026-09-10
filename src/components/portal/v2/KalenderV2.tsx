@@ -125,7 +125,7 @@ function Dag({ dag }: { dag: KalenderData["dag"] }) {
                       </div>
                       <AkseChip a={okt.a} />
                       {okt.naa && <StatusPill>Nå</StatusPill>}
-                      {okt.done && <Icon name="check" size={14} style={{ color: TL.ok }} />}
+                      {okt.done && <Icon name="check" size={14} style={{ color: TL.text }} />}
                     </div>
                   ))}
                 </div>
@@ -201,7 +201,7 @@ function Uke({ uke, mobile }: { uke: KalenderData["uke"]; mobile: boolean }) {
                 <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
                   <span style={{ width: 6, height: 6, borderRadius: 9999, background: AK.ax[o.a], flex: "none" }} />
                   <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, color: TL.mute }}>{o.kl}</span>
-                  {o.done && <Icon name="check" size={10} style={{ color: TL.ok, marginLeft: "auto" }} />}
+                  {o.done && <Icon name="check" size={10} style={{ color: TL.text, marginLeft: "auto" }} />}
                 </div>
                 <div style={{ fontFamily: TL.font.sans, fontSize: 11, fontWeight: 600, color: TL.text, marginTop: 5, lineHeight: 1.3 }}>{o.title}</div>
               </div>

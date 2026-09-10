@@ -1,6 +1,15 @@
 "use client";
 
 /**
+ * Avvik:
+ *   - Kontrastretting fra tidligere arbeidsgren er avstemt 10.09.2026. Eldre
+ *     visuelle referanser nedenfor er historikk; helskjermkontroll mot en ny
+ *     valgt Claude Design-versjon gjenstår. Denne endringen justerer fargebruk,
+ *     ikke skjermens funksjon eller oppsett. Se grener-og-main-2026-09-10.md
+ *     under docs/beslutningsgrunnlag for faktisk kontrollomfang.
+ */
+
+/**
  * Foreldreportal · Samtykke — pikselport PX-5.
  * Fasit: designsystem/train-lock/FO-08 Samtykke.dc.html
  * (+ FO-08L Samtykke lys.dc.html — lys/mørk gjøres av tokens).
@@ -163,7 +172,7 @@ function HelseSamtykkeSeksjon({ barn }: { barn: SamtykkeBarn }) {
         ))}
       </div>
       {feil && (
-        <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, margin: "8px 0 0" }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.text, margin: "8px 0 0" }}>
           {feil}
         </p>
       )}
@@ -340,7 +349,7 @@ function SlettingSeksjon({
           </div>
         )}
         {feil && (
-          <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, margin: "8px 0 0" }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.text, margin: "8px 0 0" }}>
             {feil}
           </p>
         )}

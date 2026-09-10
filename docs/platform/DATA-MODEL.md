@@ -1,3 +1,5 @@
+> **Dokumentstatus 10.09.2026:** dette er et underlag, ikke en bekreftelse på dagens leveranse. Gjeldende status er `docs/STATUS-NÅ.md`, kodekartet er `docs/platform/AGENT-BRIEF.md`, og visuelt design velges i `designsystem/README.md`.
+
 # AK Golf HQ — Data Model
 
 ## Bruker og identitet

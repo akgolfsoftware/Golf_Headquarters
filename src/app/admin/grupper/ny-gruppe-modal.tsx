@@ -153,7 +153,7 @@ export function NyGruppeModal({
               padding: "9px 12px",
               fontFamily: TL.font.sans,
               fontSize: 12.5,
-              color: TL.danger,
+              color: TL.text,
             }}
           >
             {feil}

@@ -1,3 +1,5 @@
+> **Dokumentstatus 10.09.2026:** dette er et underlag, ikke en bekreftelse på dagens leveranse. Gjeldende status er `docs/STATUS-NÅ.md`, kodekartet er `docs/platform/AGENT-BRIEF.md`, og visuelt design velges i `designsystem/README.md`.
+
 > STATUS: skrevet før designsystem-revisjonen juli 2026 — design-beslutninger i dag: `.claude/rules/beslutninger.md` §Tema/design (design-system-regel.md er slettet)
 
 # AK Golf HQ — Platform PRD

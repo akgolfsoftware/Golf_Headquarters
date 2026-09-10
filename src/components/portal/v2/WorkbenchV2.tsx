@@ -1,4 +1,14 @@
 "use client";
+
+/**
+ * Avvik:
+ *   - Kontrastretting fra tidligere arbeidsgren er avstemt 10.09.2026. Eldre
+ *     visuelle referanser nedenfor er historikk; helskjermkontroll mot en ny
+ *     valgt Claude Design-versjon gjenstår. Denne endringen justerer fargebruk,
+ *     ikke skjermens funksjon eller oppsett. Se grener-og-main-2026-09-10.md
+ *     under docs/beslutningsgrunnlag for faktisk kontrollomfang.
+ */
+
 import { TL } from "@/lib/v2/train-lock";
 
 /**
@@ -197,8 +207,8 @@ function TLBlokkInnhold({ o, kompakt, h }: { o: WeekEvent; kompakt: boolean; h: 
     <>
       <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
         <span style={{ fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.03em", color: TL.mute, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{AKSE_NAVN[ak] || o.eb} · {toKl(o.h, o.m)}</span>
-        {done && <Icon name="check" size={9} style={{ color: TL.ok, marginLeft: "auto", flex: "none" }} />}
-        {avvik && <Icon name="alert-triangle" size={9} style={{ color: TL.danger, marginLeft: "auto", flex: "none" }} />}
+        {done && <Icon name="check" size={9} style={{ color: TL.text, marginLeft: "auto", flex: "none" }} />}
+        {avvik && <Icon name="alert-triangle" size={9} style={{ color: TL.text, marginLeft: "auto", flex: "none" }} />}
       </div>
       {!kompakt && <div style={{ fontFamily: TL.font.sans, fontSize: 10.5, fontWeight: 600, color: TL.text, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{o.ttl}</div>}
       {!kompakt && h >= 58 && <div style={{ fontFamily: TL.font.mono, fontSize: 8.5, color: TL.mute, marginTop: 2 }}>{toKl(o.h, o.m)} · {fmtVarighet(o.durMin)}</div>}
@@ -1046,7 +1056,7 @@ function MndNivaa({ data, onVelgDato }: { data: WorkbenchData; onVelgDato: (dato
             >
               <span style={{ display: "flex", alignItems: "center", gap: 4 }}>
                 <span style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 700, color: erIDag ? TL.fill : c ? TL.text : TL.mute }}>{dagNr}</span>
-                {turnering && <Icon name="trophy" size={10} style={{ color: TL.warn }} aria-label={turnering} />}
+                {turnering && <Icon name="trophy" size={10} style={{ color: TL.text }} aria-label={turnering} />}
               </span>
               {c ? (
                 <>
@@ -1775,7 +1785,7 @@ function WBTurneringNivaa({ data, actions }: { data: WorkbenchData; actions?: Wo
               Påmeldingsfrist og reise mangler i basen og kan ikke fylles ut herfra ennå.
             </p>
             {arkFeil && (
-              <p style={{ margin: "10px 0 0", fontFamily: TL.font.sans, fontSize: 12, color: TL.danger }}>{arkFeil}</p>
+              <p style={{ margin: "10px 0 0", fontFamily: TL.font.sans, fontSize: 12, color: TL.text }}>{arkFeil}</p>
             )}
             <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
               <Knapp ghost full onClick={() => setValgt(null)} disabled={bekrefter}>Lukk</Knapp>

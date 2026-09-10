@@ -305,7 +305,7 @@ function UtstyrsbagRediger({
             border: `1px solid color-mix(in srgb, ${TL.danger} 35%, transparent)`,
             fontFamily: TL.font.sans,
             fontSize: 12.5,
-            color: TL.danger,
+            color: TL.text,
           }}
         >
           {feil}

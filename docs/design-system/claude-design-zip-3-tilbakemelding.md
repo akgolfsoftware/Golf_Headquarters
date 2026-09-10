@@ -1,0 +1,21 @@
+# Tilbakemelding til Claude Design etter ZIP (3)
+
+Fortsett arbeidet med den samlede designpakken for AK Golf HQ. Bruk H2-03 v2 som videre arbeidsgrunnlag for testregistrering, og bevar originalene. Eksisterende design er fortsatt åpent for forbedring. Ikke oppfatt dette som en godkjenning av hele appen eller en beskjed om å stoppe etter piloten.
+
+Kildelesingen og 8-ball blocked er forbedret og samsvarer nå med den versjonerte Excel-kontrollen. Behold disse rettingene. Følgende er reprodusert i en separat nettleser og må rettes før komponentene overleveres til kode:
+
+1. **Samme validering i alle innganger.** Fullfør Wedge eller 8-ball, velg «Korriger resultatet» og skriv `-1` i første carry-/restfelt. Prototypen beholder `fullfort`. Rett dette. Bruk én validator ved ny registrering, korrigering, gjenåpning og revisjonslagring. Carry/rest skal være endelige og ikke-negative; putt skal være et positivt heltall; side skal være oppgitt og ha entydig fortegn. Tomt er ikke null. Faste mål og riktig antall følger protokollen. Ikke oppdater det fullførte resultatet mens en ugyldig revisjon redigeres.
+2. **Alle råfelt må kunne rettes.** Wedge-korrigeringen mangler størrelse på sideavvik; V/H er ikke nok. Putt-korrigeringen mangler fem slag eller mer. Gi samme registreringsmuligheter som ved førstegangsregistrering. Skill en redigert kladd fra «Lagre korrigering», og tilby «Avbryt korrigering» uten å endre historikken.
+3. **Revisjoner som faktisk datakontrakt.** Vis opprinnelig resultat, revidert resultat, hvilke forsøk som er endret, hvem og tidspunkt. Angi hvordan ugyldig/ufullstendig korrigering og trukket resultat påvirker historikk, trend, tildeling og talent. Dagens server tillater ikke overskriving av avsluttede tester. Beskriv en ny revisjon; ikke gjenåpne eller overskriv en fullført økt i stillhet. Merk simulering og implementeringsbehov ærlig.
+4. **Gjenoppretting og lagring.** Innfør en versjonert lagringskontrakt og valider det som leses fra lokal lagring. En gammel v1-tilstand skal enten migreres sikkert eller tilbys eksport/nullstilling. Vis separat «endringer i denne fanen», «lagret på enheten» og «bekreftet av server». Ikke kall en tidtaker en serverkvittering.
+5. **Tilgjengelig korrigeringsdialog.** Feltnavn må inneholde forsøksnummer, hva som registreres og enhet. Implementer dialogrolle, fokus inn/ut, fokus innenfor dialogen, Escape og synlige fokusringer. Test med tastatur. Tømte felt skal få en tydelig og tilgjengelig feil, uten at brukeren mister tallene sine.
+
+Flytt celleadresser, filidentiteter og implementeringsforklaringer til et kilde-/hjelpepanel. Hovedflyten skal prioritere testnavn, variant, mål, enhet og neste handling. På bred skjerm: prøv et avgrenset registreringsområde med carry og side nær hverandre og tidligere forsøk ved siden av.
+
+Kontroller deretter 320/390/834/1440 px, lys/mørk og 200 % tekst. Mål selve produktflaten og oppgi om valgt bredde inkluderer kant. Prototypens kontrollpanel er utenfor produktet. Ikke kopier unødig høyde eller store tomrom fra kontrollbrettet inn i appoppsettet.
+
+Fortsett H2-04 med de øvrige beregnbare protokollene og deres faktiske felt: blant annet hullnummer/underlag, carry/side, resultater per hull og varianter med fast rekkefølge. Uavklarte gate-/speed-/teknikkregler kan tegnes som råregistrering/utkast, men ikke få oppfunnet standardscore. Behold kildeidentitet, variant, antall, enhet og retning for forbedring.
+
+Fullfør så coach-, booking-/betalings-, forelder- og øvrige familier i den allerede bestilte samlede pakken. Bevar funksjoner og bruk konkrete komponentkoblinger. Oppdater H1-registeret mot det nye inventaret; dagens repo har 479 sideruter. 193 rader «venter-design» er fortsatt gjenstående arbeid. Ikke tell de 26 opplastede kontekstfilene som nye designleveranser. Fjern dupliserte H2-03-rader i SCREEN-INDEX, og knytt hver familie til riktig design-, komponent- og tokenversjon.
+
+Lever en kort endringslogg, etterprøvbar kontrollrapport, målbare komponentverdier, nødvendige ressurser og referansebilder med eksakt format, tema, tilstand og syntetiske data. Skill kartlagt, tegnet, klikkbart, kontrollert og valgt for bygging. Bruk den eksisterende komplette overleveringsprompten for resten av kravene. Ikke påstå at hele appen er klar fordi testpiloten er forbedret.

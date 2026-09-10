@@ -309,7 +309,7 @@ function ForgotKort() {
                 border: `1px solid ${TL.hair}`,
               }}
             >
-              <Icon name="check-circle" size={24} style={{ color: TL.ok }} />
+              <Icon name="check-circle" size={24} style={{ color: TL.text }} />
             </div>
             <h1
               style={{
@@ -407,7 +407,7 @@ function ForgotKort() {
                 }}
               >
                 <Icon name="triangle-alert" size={14} style={{ color: TL.danger, marginTop: 1, flex: "none" }} />
-                <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 500, color: TL.danger }}>
+                <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 500, color: TL.text }}>
                   {feil}
                 </span>
               </div>

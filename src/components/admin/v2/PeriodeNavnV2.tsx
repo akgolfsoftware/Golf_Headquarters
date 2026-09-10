@@ -54,7 +54,7 @@ export function PeriodeNavnV2({
       {oversikt.ukjente.length > 0 && (
         <Kort pad="18px 20px">
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
-            <Icon name="triangle-alert" size={15} style={{ color: TL.warn }} />
+            <Icon name="triangle-alert" size={15} style={{ color: TL.text }} />
             <span style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 16, color: TL.text }}>
               Ukjente navn
             </span>
@@ -118,7 +118,7 @@ function UkjentNavnRad({ navn, typer }: { navn: string; typer: PeriodeNavnLabel[
         />
       </div>
       <Knapp onClick={lagre} disabled={pending}>{pending ? "Lagrer…" : "Koble til"}</Knapp>
-      {feil && <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.danger }}>{feil}</span>}
+      {feil && <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.text }}>{feil}</span>}
     </div>
   );
 }
@@ -147,7 +147,7 @@ function LagretNavnRad({ navn, periodeTypeLabel }: { navn: string; periodeTypeLa
         <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}>→ {periodeTypeLabel}</span>
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        {feil && <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.danger }}>{feil}</span>}
+        {feil && <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.text }}>{feil}</span>}
         <Knapp ghost onClick={slett} disabled={pending}>{pending ? "Fjerner…" : "Fjern"}</Knapp>
       </div>
     </div>

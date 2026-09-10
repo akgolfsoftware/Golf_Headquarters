@@ -90,7 +90,7 @@ export function RapporterVennKnapp({ vennUserId }: { vennUserId: string }) {
         }}
       />
       {feil ? (
-        <p style={{ margin: "8px 0 0", fontFamily: TL.font.mono, fontSize: 11, color: TL.danger }}>{feil}</p>
+        <p style={{ margin: "8px 0 0", fontFamily: TL.font.mono, fontSize: 11, color: TL.text }}>{feil}</p>
       ) : null}
       <div style={{ marginTop: 12, display: "flex", flexWrap: "wrap", gap: 8 }}>
         <Knapp icon="flag" onClick={send} disabled={pending || begrunnelse.trim().length === 0}>

@@ -28,8 +28,9 @@ test("parseSessionScoring: ugyldig/tom JSON → tom scoringData (aldri kast)", (
   assert.deepEqual(parseSessionScoring(null), { forsok: {} });
   assert.deepEqual(parseSessionScoring({}), { forsok: {} });
   assert.deepEqual(parseSessionScoring([1, 2]), { forsok: {} });
-  // Streng-verdi er ikke lov (tall/boolean/null) → hele lesingen faller tilbake.
-  assert.deepEqual(parseSessionScoring({ forsok: { "1": { ok: "ja" } } }), { forsok: {} });
+  // Valg lagres som tekst; objekter er fortsatt ugyldig.
+  assert.deepEqual(parseSessionScoring({ forsok: { "1": { lie: "Fairway" } } }), { forsok: { "1": { lie: "Fairway" } } });
+  assert.deepEqual(parseSessionScoring({ forsok: { "1": { ok: {} } } }), { forsok: {} });
   // Nøkkel må være 1-basert forsøksnummer.
   assert.deepEqual(parseSessionScoring({ forsok: { "0": { ok: true } } }), { forsok: {} });
 });

@@ -11,6 +11,7 @@
  * Presentasjons-komponenten (booking-hub.tsx) tar kun disse typene som props.
  */
 
+import { fraNaivVeggklokke, tilNaivVeggklokke } from "@/lib/google-calendar-tid";
 import { prisma } from "@/lib/prisma";
 import { kanBrukeCredits } from "@/lib/booking/credits-tilgang";
 import { beregnSlotVindu } from "@/lib/portal-booking/slot-vindu";
@@ -87,7 +88,7 @@ function initialsFromName(name: string): string {
 }
 
 export async function getBookingHubData(userId: string): Promise<BookingHubData> {
-  const now = new Date();
+  const now = tilNaivVeggklokke(new Date());
 
   const [subscription, upcomingRows, pastRows, coachRows] = await Promise.all([
     prisma.subscription.findUnique({
@@ -154,7 +155,7 @@ export async function getBookingHubData(userId: string): Promise<BookingHubData>
     serviceName: b.serviceType.name,
     locationName: b.location.name,
     coachName: b.coach?.name ?? null,
-    startIso: b.startAt.toISOString(),
+    startIso: fraNaivVeggklokke(b.startAt),
     durationMin: b.serviceType.durationMin,
     fromCredits: b.subscriptionId !== null,
     status: b.status as HubBooking["status"],
@@ -165,7 +166,7 @@ export async function getBookingHubData(userId: string): Promise<BookingHubData>
     serviceName: b.serviceType.name,
     locationName: b.location.name,
     coachName: b.coach?.name ?? null,
-    startIso: b.startAt.toISOString(),
+    startIso: fraNaivVeggklokke(b.startAt),
     durationMin: b.serviceType.durationMin,
     fromCredits: b.subscriptionId !== null,
     status: b.status as HubBooking["status"],

@@ -29,7 +29,6 @@ const KILDE_TEKST: Record<BookingKilde, string> = {
 };
 
 const OSLO_TID = new Intl.DateTimeFormat("nb-NO", {
-  timeZone: "Europe/Oslo",
   weekday: "short",
   day: "numeric",
   month: "short",
@@ -57,6 +56,7 @@ export async function varsleNyBooking(
       select: {
         id: true,
         startAt: true,
+        coachId: true,
         priceOre: true,
         guestName: true,
         plassNr: true,
@@ -85,9 +85,8 @@ export async function varsleNyBooking(
     // Coachen for tjenesten + alle ADMIN. Set fjerner dobbeltvarsling når
     // Anders er begge deler.
     const mottakere = new Set<string>();
-    if (booking.serviceType.coachUserId) {
-      mottakere.add(booking.serviceType.coachUserId);
-    }
+    const coachId = booking.coachId ?? booking.serviceType.coachUserId;
+    if (coachId) mottakere.add(coachId);
     const admins = await prisma.user.findMany({
       where: { role: "ADMIN" },
       select: { id: true },
@@ -101,7 +100,7 @@ export async function varsleNyBooking(
         title: tittel,
         body: tekst,
         link: `/admin/bookinger/${booking.id}`,
-      });
+      }).catch(error => logError({ context: "booking.varsleNyBooking.recipient", error, meta: { bookingId, userId }, severity: "warn" }).catch(() => undefined));
     }
   } catch (error) {
     await logError({
@@ -109,6 +108,6 @@ export async function varsleNyBooking(
       error,
       meta: { bookingId, kilde },
       severity: "warn",
-    });
+    }).catch(() => undefined);
   }
 }

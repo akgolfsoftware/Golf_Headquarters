@@ -54,8 +54,8 @@ function applyEvent(steps: AgentTeamStepView[], evt: StreamEvent): AgentTeamStep
 // ── Status → v2-visning ─────────────────────────────────────────
 const STEG_META: Record<string, { icon: string; color: string; tone: StatusTone; label: string; spin?: boolean }> = {
   pending: { icon: "circle", color: TL.mute, tone: "info", label: "I kø" },
-  running: { icon: "rotate-cw", color: TL.warn, tone: "warn", label: "Kjører", spin: true },
-  done: { icon: "check-circle", color: TL.ok, tone: "up", label: "Ferdig" },
+  running: { icon: "rotate-cw", color: TL.text, tone: "warn", label: "Kjører", spin: true },
+  done: { icon: "check-circle", color: TL.text, tone: "up", label: "Ferdig" },
   skipped: { icon: "minus", color: TL.mute, tone: "info", label: "Hoppet over" },
   failed: { icon: "triangle-alert", color: TL.danger, tone: "down", label: "Feil" },
 };
@@ -269,7 +269,7 @@ width: "100%", padding: "10px 16px",             background: TL.fill, color: TL.
           </span>
         </button>
         {error && (
-          <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, margin: 0 }}>{error}</p>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.text, margin: 0 }}>{error}</p>
         )}
       </div>
     </Kort>

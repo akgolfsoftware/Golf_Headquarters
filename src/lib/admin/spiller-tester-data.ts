@@ -7,6 +7,7 @@
  * ingen nivå-verdikt (låst regel). Ingen «A1-snitt» eller oppdiktede tall.
  */
 
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import type { PyramidArea } from "@/generated/prisma/client";
 import { parseBenchmarks, achievedLevel } from "./test-benchmarks";
@@ -66,9 +67,10 @@ function formatDato(d: Date): string {
   return d.toLocaleDateString("nb-NO", { day: "2-digit", month: "2-digit", year: "numeric" });
 }
 
-export async function loadSpillerTesterData(playerId: string): Promise<SpillerTesterData | null> {
-  const player = await prisma.user.findUnique({
-    where: { id: playerId },
+export async function loadSpillerTesterData(playerId: string, viewer: { id: string; role: string }): Promise<SpillerTesterData | null> {
+  if (viewer.role !== "COACH" && viewer.role !== "ADMIN") return null;
+  const player = await prisma.user.findFirst({
+    where: { AND: [coachScopedPlayerWhere(viewer), { id: playerId }] },
     select: { name: true, hcp: true, homeClub: true, dateOfBirth: true, tier: true, lastLoginAt: true },
   });
   if (!player) return null;

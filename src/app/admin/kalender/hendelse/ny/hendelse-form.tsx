@@ -116,7 +116,7 @@ export function HendelseForm({
         />
       </div>
 
-      {feil && <Caps style={{ color: TL.danger }}>{feil}</Caps>}
+      {feil && <Caps style={{ color: TL.text }}>{feil}</Caps>}
 
       <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
         <Knapp ghost onClick={() => router.push("/admin/kalender")}>Avbryt</Knapp>

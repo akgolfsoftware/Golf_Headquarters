@@ -179,7 +179,7 @@ export function GruppeTimeplanV2({
             <TlKnapp type="submit" variant="primaer">
               Opprett
             </TlKnapp>
-            {opprettFeil && <span style={{ fontSize: 13, color: TL.danger }}>{opprettFeil}</span>}
+            {opprettFeil && <span style={{ fontSize: 13, color: TL.text }}>{opprettFeil}</span>}
           </div>
         </form>
       </TlKort>

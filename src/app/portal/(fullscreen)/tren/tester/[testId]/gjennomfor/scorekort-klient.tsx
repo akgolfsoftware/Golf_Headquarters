@@ -4,6 +4,9 @@ import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ · Test-gjennomføring — Paper-port PP-3 (fase 1).
  * Fasit: designsystem/paper/fase1/playerhq-test-gjennomfor.html.
+ * Avvik:
+ * - Funksjonell retting: obligatoriske felt, valgverdier og fullstendig test før fullføring.
+ * - Feilvisningen gir tilgang til å rette registreringene. Visuell retning er fortsatt åpen.
  *
  * ETT skjermbilde (fasiten har ingen stegmaskin): protokoll-kortet
  * (beskrivelse-prosa + Scoring/Område/Foreslått mål med «Hvorfor dette
@@ -167,8 +170,9 @@ export function ScorekortKlient({
   function tilJsonVerdi(
     v: string | boolean | undefined,
     type: ScorekortFelt["type"],
-  ): number | boolean | null {
+  ): number | boolean | string | null {
     if (type === "checkbox") return typeof v === "boolean" ? v : null;
+    if (type === "select") return typeof v === "string" && v !== "" ? v : null;
     return typeof v === "string" ? parseNorsk(v) : null;
   }
 
@@ -185,10 +189,12 @@ export function ScorekortKlient({
     [verdier, spec],
   );
 
-  /** Hvilke forsøk som er ført (minst én gyldig verdi). */
+  /** Et forsøk er ført når alle obligatoriske felt har en verdi. */
   const fortMaske = useMemo(
-    () => forsokData.map((f) => Object.values(f.verdier).some((v) => v !== null)),
-    [forsokData],
+    () => forsokData.map((f, i) => spec.forsok[i].felter.every(felt =>
+      felt.optional || (felt.key === "miss_side" && f.verdier.ok === true) ||
+      (f.verdier[felt.key] !== null && f.verdier[felt.key] !== undefined && f.verdier[felt.key] !== ""))),
+    [forsokData, spec],
   );
   const antallFort = fortMaske.filter(Boolean).length;
   const alleFort = antallFort === antallForsok;
@@ -320,14 +326,13 @@ export function ScorekortKlient({
       visToast("Registrer minst ett forsøk først.");
       return;
     }
-    if (!alleFort && !erPrefiks) {
-      visToast("Fyll forsøkene i rekkefølge — du kan stoppe når som helst, men ikke hoppe over.");
+    if (!alleFort || !erPrefiks) {
+      visToast("Fyll ut alle forsøk før fullføring. Registreringene kan gjenopptas fra utkastet.");
       return;
     }
     setFeil(null);
     const kontekstInn = renKontekst(kontekst);
-    // Avbrutt test: kun de registrerte forsøkene sendes (sammenhengende fra
-    // forsøk 1, så protokoll-paringen per slag holder).
+    // Fullføring sender alle forsøk i protokollens rekkefølge.
     const sendes = forsokData.filter((_, i) => fortMaske[i]);
     startTransition(async () => {
       try {
@@ -389,9 +394,9 @@ export function ScorekortKlient({
             Klarte ikke å lagre testen
           </h3>
           <p style={{ margin: "0 0 12px", fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute, lineHeight: 1.55 }}>
-            Resultatet ligger trygt på telefonen — ingenting av det du har
-            registrert er tapt. Prøv å lagre på nytt når du er klar.
+            {feil} Registreringene er fortsatt i denne fanen.
           </p>
+          <button type="button" onClick={() => setFeil(null)}>Tilbake til registreringene</button>
           <Knapp
             full
             icon="check"
@@ -578,8 +583,8 @@ export function ScorekortKlient({
       </div>
 
       <p style={{ margin: "12px 0 0", fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.55 }}>
-        Du kan lagre når som helst — også en avbrutt test. Det som er registrert,
-        telles og merkes med antall forsøk.
+        Alle forsøk må være utfylt før testen fullføres. Ufullstendige
+        registreringer skal ikke brukes som et fullført testresultat.
       </p>
 
       <div style={{ marginTop: 8, display: "flex", justifyContent: "center" }}>
@@ -796,10 +801,10 @@ function ForsokRad({
             cursor: "pointer",
             fontFamily: TL.font.mono,
             fontSize: 11,
-            color: erOk ? TL.ok : erBom ? TL.danger : TL.mute,
+            color: erOk || erBom ? TL.text : TL.mute,
           }}
         >
-          {erOk && <Icon name="check" size={14} style={{ color: TL.ok }} />}
+          {erOk && <Icon name="check" size={14} style={{ color: TL.text }} />}
           {erOk ? "OK" : erBom ? "bom" : "—"}
         </button>
       </div>
@@ -1000,6 +1005,12 @@ function FeltInput({
   onSett: (verdi: string | boolean, medHistorikk: boolean) => void;
   onSnapshot: () => void;
 }) {
+  if (felt.type === "select") return <label style={{ display: "block" }}>
+    {felt.label}
+    <select aria-label={`${felt.label}, forsøk ${forsokNr}`} value={typeof verdi === "string" ? verdi : ""} style={inputStil} onChange={e => onSett(e.target.value, true)}>
+      <option value="">Velg</option>{felt.options?.map(v => <option key={v} value={v}>{v}</option>)}
+    </select>
+  </label>;
   if (felt.type === "checkbox") {
     const valgStil = (on: boolean): CSSProperties => ({
       appearance: "none",

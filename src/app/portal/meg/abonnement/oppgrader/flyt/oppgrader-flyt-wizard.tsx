@@ -183,7 +183,7 @@ export function OppgraderFlytWizard() {
               <div style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>{f.tittel}</div>
               <div style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, marginTop: 2 }}>{f.meta}</div>
             </div>
-            <Icon name="check" size={14} style={{ color: TL.ok, marginLeft: "auto", flex: "none" }} />
+            <Icon name="check" size={14} style={{ color: TL.text, marginLeft: "auto", flex: "none" }} />
           </div>
         ))}
       </Kort>
@@ -198,7 +198,7 @@ export function OppgraderFlytWizard() {
             padding: 12,
             fontFamily: TL.font.sans,
             fontSize: 13,
-            color: TL.danger,
+            color: TL.text,
           }}
         >
           {error}

@@ -315,7 +315,7 @@ function SpillerDetalj({ s }: { s: StallV2Player }) {
             {" · "}
             {s.pakke}
             {!s.pakkeAktiv && s.pakke !== "Drop-in" && " (inaktiv)"}
-            {s.skylder && <span style={{ color: TL.warn }}> · skylder</span>}
+            {s.skylder && <span style={{ color: TL.text }}> · skylder</span>}
           </div>
         </div>
       </div>

@@ -179,7 +179,7 @@ export function ServiceFormTrainLock({ initial, triggerLabel, triggerVariant = "
           </div>
 
           {error && (
-            <div role="alert" style={{ marginTop: 14, borderRadius: 10, boxShadow: `inset 0 0 0 1px ${TL.danger}`, padding: "10px 14px", fontSize: 13, color: TL.danger }}>
+            <div role="alert" style={{ marginTop: 14, borderRadius: 10, boxShadow: `inset 0 0 0 1px ${TL.danger}`, padding: "10px 14px", fontSize: 13, color: TL.text }}>
               {error}
             </div>
           )}

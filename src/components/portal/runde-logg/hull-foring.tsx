@@ -120,7 +120,7 @@ function KjedeRad({ rad, aktiv }: { rad: KjedeRadData; aktiv?: boolean }) {
           style={{
             fontFamily: TL.font.sans,
             fontSize: 11.5,
-            color: rad.til === "I hull" ? TL.ok : TL.mute,
+            color: rad.til === "I hull" ? TL.text : TL.mute,
             marginTop: 1,
           }}
         >
@@ -132,7 +132,7 @@ function KjedeRad({ rad, aktiv }: { rad: KjedeRadData; aktiv?: boolean }) {
                 fontFamily: TL.font.mono,
                 fontSize: 9.5,
                 fontWeight: 700,
-                color: TL.danger,
+                color: TL.text,
                 marginLeft: 6,
               }}
             >
@@ -299,7 +299,7 @@ export function HullForing({
                 justifyContent: "center",
               }}
             >
-              <Icon name="check" size={24} style={{ color: TL.ok }} />
+              <Icon name="check" size={24} style={{ color: TL.text }} />
             </span>
             <div style={{ fontFamily: TL.font.sans, fontSize: 18, fontWeight: 700, color: TL.text }}>
               Hull {hull.holeNumber} ferdig — {strokes} slag
@@ -309,11 +309,11 @@ export function HullForing({
               <div style={{ display: "flex", gap: 12, fontFamily: TL.font.mono, fontSize: 11.5 }}>
                 <span style={{ color: TL.mute }}>
                   Hull-SG{" "}
-                  <b style={{ color: hullSg >= 0 ? TL.ok : TL.danger }}>{fmtSg(hullSg)}</b>
+                  <b style={{ color: TL.text }}>{fmtSg(hullSg)}</b>
                 </span>
                 {straffer > 0 && (
                   <span style={{ color: TL.mute }}>
-                    Straffen{straffer > 1 ? "e" : ""} kostet <b style={{ color: TL.danger }}>−{komma(straffer)},0</b>
+                    Straffen{straffer > 1 ? "e" : ""} kostet <b style={{ color: TL.text }}>−{komma(straffer)},0</b>
                   </span>
                 )}
               </div>

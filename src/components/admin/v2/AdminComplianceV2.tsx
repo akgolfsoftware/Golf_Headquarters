@@ -367,7 +367,7 @@ export function AdminComplianceV2({ data, somFane }: { data: ComplianceData; som
           }}
         />
         {meldingFeil && (
-          <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.danger }}>{meldingFeil}</span>
+          <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.text }}>{meldingFeil}</span>
         )}
         <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
           <Knapp ghost onClick={() => setMeldingTil(null)}>Avbryt</Knapp>

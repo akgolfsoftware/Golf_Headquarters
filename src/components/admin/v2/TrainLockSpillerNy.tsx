@@ -121,7 +121,7 @@ function Felt({
       <CapsLabel>{label}</CapsLabel>
       <div style={{ marginTop: 6 }}>{children}</div>
       {feil ? (
-        <span style={{ display: "block", marginTop: 4, fontSize: 12, color: TL.warn }}>{feil}</span>
+        <span style={{ display: "block", marginTop: 4, fontSize: 12, color: TL.text }}>{feil}</span>
       ) : hjelp ? (
         <span style={{ display: "block", marginTop: 4, fontSize: 12, color: TL.mute }}>{hjelp}</span>
       ) : null}
@@ -214,7 +214,7 @@ function VarselPille({ children }: { children: ReactNode }) {
         borderRadius: TL.radius.pill,
         fontSize: 11.5,
         fontWeight: 600,
-        color: TL.warn,
+        color: TL.text,
         boxShadow: `inset 0 0 0 1px ${TL.warnHair}`,
       }}
     >
@@ -601,7 +601,7 @@ export function TrainLockSpillerNy() {
       </Kort>
 
       {feilTekst && (
-        <div style={{ borderRadius: TL.radius.field, background: TL.dock, padding: "12px 16px", fontSize: 13, color: TL.warn }}>
+        <div style={{ borderRadius: TL.radius.field, background: TL.dock, padding: "12px 16px", fontSize: 13, color: TL.text }}>
           {feilTekst}
         </div>
       )}

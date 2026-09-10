@@ -1,5 +1,7 @@
 "use server";
 
+import { canAccessPlayer } from "@/lib/auth/own-or-coached";
+
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
@@ -121,7 +123,7 @@ export async function savePlanSessionVideoNote(input: SaveVideoNoteInput): Promi
   const user = await requirePortalUser({ allow: ["PLAYER"] });
   const parsed = SaveVideoNoteInput.safeParse(input);
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.issues[0]?.message ?? "Ugyldig input" };
+    return { ok: false, error: "Kontroller videolenken og hvilken økt videoen skal lagres på." };
   }
 
   const session = await prisma.trainingPlanSession.findUnique({
@@ -129,7 +131,7 @@ export async function savePlanSessionVideoNote(input: SaveVideoNoteInput): Promi
     select: { liveSnapshot: true, plan: { select: { userId: true } } },
   });
   if (!session || session.plan.userId !== user.id) {
-    return { ok: false, error: "Ikke tilgang" };
+    return { ok: false, error: "Du har ikke tilgang til denne økten." };
   }
 
   const notat: VideoNote = {
@@ -161,18 +163,18 @@ export async function saveSessionV2VideoNote(input: SaveVideoNoteInput): Promise
   const user = await requirePortalUser();
   const parsed = SaveVideoNoteInput.safeParse(input);
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.issues[0]?.message ?? "Ugyldig input" };
+    return { ok: false, error: "Kontroller videolenken og hvilken økt videoen skal lagres på." };
   }
 
   const session = await prisma.trainingSessionV2.findUnique({
     where: { id: parsed.data.sessionId },
     select: { completedSummary: true, studentId: true, hostId: true, coachId: true },
   });
-  if (!session) return { ok: false, error: "Økt ikke funnet" };
+  if (!session) return { ok: false, error: "Fant ikke økten." };
   const eier =
     session.studentId === user.id || session.hostId === user.id || session.coachId === user.id;
-  if (!eier && user.role !== "ADMIN" && user.role !== "COACH") {
-    return { ok: false, error: "Ikke tilgang" };
+  if (!eier && !(session.studentId && await canAccessPlayer(user, session.studentId))) {
+    return { ok: false, error: "Du har ikke tilgang til denne økten." };
   }
 
   const notat: VideoNote = {

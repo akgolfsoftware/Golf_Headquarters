@@ -296,7 +296,7 @@ function VenterKort({ spillerNavn, invitasjonEmail }: Props) {
             fontWeight: 800,
             letterSpacing: "0.06em",
             textTransform: "uppercase",
-            color: TL.warn,
+            color: TL.text,
           }}
         >
           <Icon name="clock" size={11} />

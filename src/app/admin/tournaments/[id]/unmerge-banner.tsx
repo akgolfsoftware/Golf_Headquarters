@@ -64,7 +64,7 @@ export function UnmergeBanner({ sourceId, targetName }: Props) {
         </button>
       </div>
       {feil && (
-        <div role="alert" style={{ marginTop: 12, borderRadius: 11, background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`, border: `1px solid color-mix(in srgb, ${TL.danger} 35%, transparent)`, padding: "10px 13px", fontFamily: TL.font.sans, fontSize: 12.5, color: TL.danger }}>
+        <div role="alert" style={{ marginTop: 12, borderRadius: 11, background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`, border: `1px solid color-mix(in srgb, ${TL.danger} 35%, transparent)`, padding: "10px 13px", fontFamily: TL.font.sans, fontSize: 12.5, color: TL.text }}>
           {feil}
         </div>
       )}

@@ -167,7 +167,7 @@ export function MegFakturaV2({ data, handlinger }: { data: MegFakturaData; handl
       {data.erBetalt && data.betaltDato && (
         <Kort tint>
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            <span style={{ width: 36, height: 36, borderRadius: 11, background: `color-mix(in srgb, ${TL.ok} 14%, transparent)`, color: TL.ok, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+            <span style={{ width: 36, height: 36, borderRadius: 11, background: `color-mix(in srgb, ${TL.ok} 14%, transparent)`, color: TL.text, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
               <Icon name="credit-card" size={16} />
             </span>
             <div style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.55, minWidth: 0 }}>

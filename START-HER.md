@@ -1,21 +1,11 @@
-# START HER — AK Golf HQ
+# Start her — AK Golf HQ
 
-Én plattform, fire produkter (Marketing · Booking · **PlayerHQ** `/portal` · **AgencyOS** `/admin`).
+**Først: [status nå](docs/STATUS-NÅ.md).** Målet er en komplett app før åpen lansering med booking og betaling. Endelig lanseringsomfang er ikke låst.
 
-**Les i denne rekkefølgen:**
-1. [`docs/MASTERPLAN-GJENSTAAENDE.md`](docs/MASTERPLAN-GJENSTAAENDE.md) — DEN gjeldende, eneste plandokumentet: alt gjenstående arbeid, session-tabeller, status, beslutningskø.
-2. [`docs/platform/AGENT-BRIEF.md`](docs/platform/AGENT-BRIEF.md) — stack, prosjektkart, sannhets-hierarki (5 min). Les før du rører kode.
-3. [`docs/STATUS-NÅ.md`](docs/STATUS-NÅ.md) — hvor prosjektet står nå.
+1. [Agent Brief](docs/platform/AGENT-BRIEF.md) — hva prosjektet inneholder og hvor koden bor.
+2. [Designarbeid og referanser](designsystem/README.md) — alle skjermdesign er under revisjon i Claude Design; eksisterende materiale er ikke låst.
+3. [Arbeidsliste](docs/MASTERPLAN-GJENSTAAENDE.md) — bekreftede funn og bevarte bestillinger.
 
-**Design:** Train-lock (`designsystem/train-lock/`) er designfasit for ALLE skjermer i
-PlayerHQ, AgencyOS og Forelder — se `CLAUDE.md` invariant 2 og `.claude/rules/beslutninger.md`.
-Claude Paper (`designsystem/paper/`) er historikk/arkiv, aldri bygg-fasit. Ny kode bruker
-`--tl-*` / `TL`, aldri Paper-tokens (`T` / `--p-*`), cream `#FAF9F5` eller Inter/Familjen.
+[Hele dokumentoversikten](docs/README.md) · [Prosjektkart og opprydding](docs/vedlikehold/prosjektkart.md) · [Felles AI-instruks](AGENTS.md).
 
-## Kjør lokalt
-
-```bash
-npm run dev                # http://localhost:3000
-```
-
-Verifikasjon før commit: `npm run verify && npm test`
+Gamle planer ligger i arkiv eller er tydelig merket som daterte underlag. De er ikke dokumentasjon på at appen er ferdig. Kjør `npm run prosjekt:sjekk` for å kontrollere struktur, felles instruksjoner og lokale dokumentlenker.

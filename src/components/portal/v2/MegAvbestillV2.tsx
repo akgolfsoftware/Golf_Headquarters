@@ -121,7 +121,7 @@ export function MegAvbestillV2({ data }: { data: MegAvbestillData }) {
                 fontWeight: 700,
                 letterSpacing: "0.04em",
                 textTransform: "uppercase",
-                color: TL.danger,
+                color: TL.text,
                 background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`,
                 borderRadius: 9999,
                 padding: "3px 9px",
@@ -142,12 +142,12 @@ export function MegAvbestillV2({ data }: { data: MegAvbestillData }) {
         full
         disabled={pending}
         onClick={avbestill}
-        style={{ minHeight: 44, color: TL.danger, border: `1.5px solid color-mix(in srgb, ${TL.danger} 35%, transparent)` }}
+        style={{ minHeight: 44, color: TL.text, border: `1.5px solid color-mix(in srgb, ${TL.danger} 35%, transparent)` }}
       >
         {pending ? "Avbestiller …" : "Ja, avbestill"}
       </Knapp>
       {feil && (
-        <p role="alert" style={{ fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 500, lineHeight: 1.5, color: TL.danger, textAlign: "center", margin: 0 }}>
+        <p role="alert" style={{ fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 500, lineHeight: 1.5, color: TL.text, textAlign: "center", margin: 0 }}>
           {feil}
         </p>
       )}

@@ -1,53 +1,7 @@
-# DO NOT USE — Claude Paper (produktflater)
+# Paper er avviklet
 
-Train-lock er eneste designfasit for PlayerHQ, AgencyOS og Forelder
-(`designsystem/train-lock/`, CLAUDE.md invariant 2, Anders 25.08.2026).
+Paper er fjernet som designgrunnlag for hele plattformen, også markedssidene (Anders 30.08.2026). Bruk [designfasit per flate](../../designsystem/README.md).
 
-Denne fila er forbudslisten. Den er **ikke** en ny kanon. Ny skjermkode leser
-`--tl-*` / `TL` og Train-lock-HTML. Ikke denne listen, ikke Paper.
+Ikke gjenopprett `designsystem/paper/`, `src/lib/v2/tokens.ts`, `--p-*` eller det gamle markedssettet. Historiske Paper-verktøy ligger sperret i `scripts/arkiv/design-foer-train-lock/`. Den gamle offentlige tokenfilen ligger i dokumentarkivet, utenfor `public/`.
 
-Marketing (`akgolf.no`) har egen fasit og omfattes ikke.
-
-## Forbudt som bygg-fasit
-
-> **Rettet 01.09.2026 (revisjonsøkt):** Paper er fysisk SLETTET fra repoet 30.08.2026
-> (`.claude/rules/beslutninger.md` "PAPER ER FJERNET FRA HELE PLATTFORMEN"). Verifisert på nytt
-> 01.09: `designsystem/paper/`, `src/styles/paper-tokens.css`, `src/lib/v2/tokens.ts`,
-> `PaperChrome.tsx`, `paper-tilstand.tsx` og marketing-Paper-kit finnes IKKE lenger på disk —
-> tabellen under beskrev dem som «lever i runtime», noe som ikke lenger stemmer. Kun den
-> siste raden (arkiv) finnes fortsatt, med vilje.
-
-| Hva | Sti | Status |
-|---|---|---|
-| Paper-speil (HTML/JSX) | `designsystem/paper/` | **Slettet 30.08.2026.** Ikke gjenskap. |
-| Paper-tokens | `src/styles/paper-tokens.css` (`--p-*`) | **Slettet 30.08.2026.** Ny kode bruker `--tl-*`. |
-| Paper TS-speil | `src/lib/v2/tokens.ts` (`T`) | **Slettet 30.08.2026.** Ny kode: `TL` i `src/lib/v2/train-lock.ts`. |
-| Paper-skall | `src/components/portal/v2/PaperChrome.tsx` | **Slettet 30.08.2026.** |
-| Paper-tilstand | `src/components/system/paper-tilstand.tsx` | **Slettet 30.08.2026.** |
-| Marketing Paper-kit | `src/components/marketing/paper/`, `src/components/marketing/v2/paper/` | **Slettet 30.08.2026.** Marketing har egen, separat fasit (ak-golf-website) — ikke gjeninnfør Paper der heller. |
-| Paper visuell-e2e | `tests/e2e/paper-visual/` + `tests/e2e/_paper-fasit-helpers.ts` | **Slettet 05.09.2026** (fase 1 økt 7 i designporten), sammen med galleri-skriptene `scripts/signoff-gallery.mjs`, `signoff-gallery-bolger.mjs`, `signoff-side.mjs`, `paper-diff-maal.mjs` og typografi-vakten `check-typografi.mjs`/`typografi-skala.mjs`. Sign-off måles nå med `scripts/train-lock-pixel-diff.mjs` + `tests/visual/skjerm-mapping.ts` (se `tests/visual/README.md`). |
-| Paper-portplan | `docs/arkiv/paper-port/` | **Finnes fortsatt, med vilje** — historikk/arkiv. |
-
-## Forbudte visuelle trekk i PlayerHQ / AgencyOS / Forelder
-
-Ikke tegn, token-sett eller kopier dette inn i produktflater:
-
-- Cream/ivory-papir `#FAF9F5` / `#F4EFE6` som scene
-- Clay/oransje `#D97757` som «Én ting nå»-monopol
-- Ink `#141413` som primær CTA
-- «Varmt papir, aldri ren sort/hvit»
-- Håndtegnede Paper-ikoner / paper.tsx-kit
-- Inter / Familjen Grotesk / JetBrains Mono (fjernet 14.08.2026)
-- Presis-skog `#005840` / lime `#D1F843`
-- Blanding av `T.*` og `TL.*` i samme skjerm
-
-## Hva som SKAL brukes
-
-1. `designsystem/train-lock/DESIGN-SYSTEM.md`
-2. Skjermen i `designsystem/train-lock/SCREEN-INDEX.md`
-3. Tokens: `src/styles/train-lock-tokens.css` + `src/lib/v2/train-lock.ts` (`TL`)
-4. Fonter i produktet: Poppins / Lora / IBM Plex Mono (arver skala fra Train-lock, ikke familien SF Pro)
-5. Scene mørk `#000000`, lys `#FFFFFF`. Én hvit (lys: sort) primær CTA. Fullført = warm `#B85C3D` + hake.
-
-Hvis et dokument, en skill eller en kommentar sier «Paper vinner» / «bruk `--p-*`» / «cream»:
-**ignorer det** og følg Train-lock. Rett dokumentet, ikke koden til Paper.
+`scripts/check-ingen-paper.mjs` kontrollerer forbudte importer, variabler og filnavn i `src/`. Det er en teknisk kontroll, ikke en vurdering av om en skjerm ser riktig ut. Følg `tests/visual/README.md` for den visuelle kontrollen.

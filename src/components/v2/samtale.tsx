@@ -120,7 +120,7 @@ export function SamtaleFeil({ children }: SamtaleFeilProps) {
   return (
     <div
       role="alert"
-      style={{ display: "flex", alignItems: "flex-start", gap: 8, padding: "9px 12px", borderRadius: 10, background: `color-mix(in srgb, ${TL.danger} 12%, transparent)`, border: `1px solid ${`color-mix(in srgb, ${TL.danger} 30%, transparent)`}`, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.danger, lineHeight: 1.5 }}
+      style={{ display: "flex", alignItems: "flex-start", gap: 8, padding: "9px 12px", borderRadius: 10, background: `color-mix(in srgb, ${TL.danger} 12%, transparent)`, border: `1px solid ${`color-mix(in srgb, ${TL.danger} 30%, transparent)`}`, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.text, lineHeight: 1.5 }}
     >
       <Icon name="x-circle" size={14} style={{ color: TL.danger, flex: "none", marginTop: 1 }} />
       <span>{children}</span>

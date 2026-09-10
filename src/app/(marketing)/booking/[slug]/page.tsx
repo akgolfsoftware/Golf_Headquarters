@@ -7,6 +7,7 @@
  * datotekster formateres her (server, nb-NO — samme som før); presentasjonen
  * bor i MarkedBookingTjenesteV2 (v2, MRamme).
  */
+import { fraNaivVeggklokke } from "@/lib/google-calendar-tid";
 import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
@@ -101,8 +102,8 @@ export default async function ServiceBookingPage({ params, searchParams }: Props
       dager={dager}
       valgtDatoTekst={valgtDatoTekst}
       slots={slots.map((s) => ({
-        start: s.start.toISOString(),
-        end: s.end.toISOString(),
+        start: fraNaivVeggklokke(s.start),
+        end: fraNaivVeggklokke(s.end),
         coachId: s.coachId,
         coachName: s.coachName,
       }))}

@@ -23,7 +23,7 @@ describe("live-route", () => {
   it("wb PUBLISHED eiet av spilleren → brief, ikke notFound", () => {
     const rute = liveRouteForResolved(wb({ status: "PUBLISHED" }), {
       userId: "spiller-1",
-      isCoach: false,
+      hasPlayerAccess: false,
     });
     assert.deepEqual(rute, {
       type: "redirect",
@@ -59,14 +59,14 @@ describe("live-route", () => {
   it("wb annen spiller uten coach → forbidden, ikke notFound", () => {
     const rute = liveRouteForResolved(wb(), {
       userId: "annen",
-      isCoach: false,
+      hasPlayerAccess: false,
     });
     assert.equal(rute.type, "forbidden");
   });
 
   it("mangler økt → notFound", () => {
     assert.deepEqual(
-      liveRouteForResolved(null, { userId: "spiller-1", isCoach: false }),
+      liveRouteForResolved(null, { userId: "spiller-1", hasPlayerAccess: false }),
       { type: "notfound" },
     );
   });

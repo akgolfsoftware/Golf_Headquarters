@@ -369,7 +369,7 @@ export function MegV2({ data }: { data: MegData }) {
         </div>
       </div>
       {avatarFeil && (
-        <Caps style={{ color: TL.danger }}>{avatarFeil}</Caps>
+        <Caps style={{ color: TL.text }}>{avatarFeil}</Caps>
       )}
       {!lydGittLokalt && (
         <div
@@ -431,7 +431,7 @@ export function MegV2({ data }: { data: MegData }) {
             {lydPending ? "Lagrer …" : "Gi lydsamtykke"}
           </button>
           {lydFeil && (
-            <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.danger }} role="alert">
+            <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.text }} role="alert">
               {lydFeil}
             </p>
           )}
@@ -616,7 +616,7 @@ export function MegV2({ data }: { data: MegData }) {
             }}
           >
             <Icon name="log-out" size={16} style={{ color: TL.danger }} />
-            <span style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.danger }}>
+            <span style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>
               Logg ut
             </span>
           </button>

@@ -1,6 +1,15 @@
 "use client";
 
 /**
+ * Avvik:
+ *   - Kontrastretting fra tidligere arbeidsgren er avstemt 10.09.2026. Eldre
+ *     visuelle referanser nedenfor er historikk; helskjermkontroll mot en ny
+ *     valgt Claude Design-versjon gjenstår. Denne endringen justerer fargebruk,
+ *     ikke skjermens funksjon eller oppsett. Se grener-og-main-2026-09-10.md
+ *     under docs/beslutningsgrunnlag for faktisk kontrollomfang.
+ */
+
+/**
  * Kalendervakten-artefaktet — avvik i kalenderen (konflikt/reisetid/varsel).
  * Fasit: jarvis/meg-kalendervakt.html (avvikskort med diff-blokk «for → etter»,
  * --info som identitetsfarge, Godkjenn fiks/Avvis, «Godkjenn alle»-footer).
@@ -99,7 +108,7 @@ function AvvikKort({ avvik }: { avvik: Avvik }) {
 export function KalendervaktArtefakt({ avvik }: { avvik: Avvik[] }) {
   return (
     <div data-od-id="panel-kalendervakt" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-      <div style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.ok, fontWeight: 600 }}>
+      <div style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.text, fontWeight: 600 }}>
         {avvik.length} avvik · neste 7 dager
       </div>
 
@@ -118,7 +127,7 @@ export function KalendervaktArtefakt({ avvik }: { avvik: Avvik[] }) {
             borderRadius: TL.radius.card,
           }}
         >
-          <Icon name="shield-check" size={22} strokeWidth={1.6} style={{ color: TL.ok }} />
+          <Icon name="shield-check" size={22} strokeWidth={1.6} style={{ color: TL.text }} />
           <h3 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600, color: TL.text }}>
             Ren de neste 7 dagene
           </h3>

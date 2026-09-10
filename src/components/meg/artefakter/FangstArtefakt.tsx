@@ -155,7 +155,7 @@ export function FangstArtefakt({ onFang }: { onFang: (type: FangstType, tekst: s
             marginTop: 12,
           }}
         >
-          <Icon name="check" size={16} strokeWidth={2} style={{ color: TL.ok, flex: "none" }} />
+          <Icon name="check" size={16} strokeWidth={2} style={{ color: TL.text, flex: "none" }} />
           <span>
             Fanget → inbox som <strong>{FANGST_TYPE_LABEL[kvittering.type].toLowerCase()}</strong>
           </span>

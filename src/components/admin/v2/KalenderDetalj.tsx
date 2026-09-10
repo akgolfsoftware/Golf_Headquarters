@@ -272,7 +272,7 @@ export function KalenderDetaljFot({
             : `Flytt til ${klokke(forslag.startMin)}–${klokke(forslag.sluttMin)}`}
         </button>
         {feil && (
-          <span role="alert" style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.danger, lineHeight: 1.45 }}>
+          <span role="alert" style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.text, lineHeight: 1.45 }}>
             {feil}
           </span>
         )}

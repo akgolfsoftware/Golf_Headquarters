@@ -7,6 +7,8 @@
  * - Tjenestens varighet
  */
 
+import { vurderDeling } from "@/lib/booking/deling";
+import { tilNaivVeggklokke } from "@/lib/google-calendar-tid";
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@/generated/prisma/client";
 import { getCalendarBusy } from "@/lib/google-calendar";
@@ -68,7 +70,7 @@ export async function getAvailableSlots(
     andKlausuler.push({ OR: [{ locationId }, { locationId: null }] });
   }
   const availability = await prisma.coachAvailability.findMany({
-    where: { active: true, AND: andKlausuler },
+    where: { active: true, ...(service.coachUserId ? { coachId: service.coachUserId } : {}), AND: andKlausuler },
     include: { coach: { select: { id: true, name: true, role: true } } },
   });
 
@@ -95,10 +97,11 @@ export async function getAvailableSlots(
 
   const existing = await prisma.booking.findMany({
     where: {
-      startAt: { gte: dayStart, lte: dayEnd },
+      startAt: { lt: dayEnd },
+      endAt: { gt: dayStart },
       status: { in: ["PENDING", "CONFIRMED", "COMPLETED"] },
     },
-    select: { startAt: true, endAt: true },
+    select: { coachId: true, serviceTypeId: true, startAt: true, endAt: true, plassNr: true },
   });
 
   // I3: kalenderhendelser (ferie, stengt anlegg, møte) som overlapper dagen.
@@ -126,7 +129,7 @@ export async function getAvailableSlots(
   );
 
   const slots: Slot[] = [];
-  const now = new Date();
+  const now = tilNaivVeggklokke(new Date());
 
   for (const av of gjeldende) {
     if (!av.coach || (av.coach.role !== "COACH" && av.coach.role !== "ADMIN")) {
@@ -151,11 +154,8 @@ export async function getAvailableSlots(
       // Filtrer ut historiske slots.
       if (cursor.getTime() > now.getTime()) {
         // Sjekk konflikt med eksisterende bookinger ELLER Calendar-busy.
-        const bookingConflict = existing.some(
-          (b) =>
-            cursor.getTime() < b.endAt.getTime() &&
-            slotEnd.getTime() > b.startAt.getTime(),
-        );
+        const overlapping = existing.filter(b => b.coachId === av.coach.id && cursor < b.endAt && slotEnd > b.startAt);
+        const bookingConflict = vurderDeling(overlapping, { serviceTypeId: service.id, startAt: cursor, endAt: slotEnd }, service.maxDeltakere).utfall !== "ledig";
         const hendelseConflict = hendelser.some(
           (h) =>
             (h.coachId === null || h.coachId === av.coach.id) &&
@@ -179,7 +179,7 @@ export async function getAvailableSlots(
 
   // Sorter etter starttid.
   slots.sort((a, b) => a.start.getTime() - b.start.getTime());
-  return slots;
+  return slots.filter((slot, index, all) => all.findIndex(other => other.coachId === slot.coachId && other.start.getTime() === slot.start.getTime()) === index);
 }
 
 /**
@@ -195,54 +195,10 @@ export async function isSlotStillAvailable(
   coachId: string,
   holderId?: string | null,
 ): Promise<boolean> {
-  const service = await prisma.serviceType.findUnique({
-    where: { id: serviceTypeId },
-  });
-  if (!service) return false;
-
-  const endAt = new Date(startAt.getTime() + service.durationMin * 60_000);
-
-  // Soft hold under Stripe checkout (B.3)
+  if (!Number.isFinite(startAt.getTime())) return false;
   const { isBlockedByHold } = await import("@/lib/booking/slot-hold");
-  if (
-    await isBlockedByHold(
-      {
-        serviceTypeId,
-        coachId,
-        startIso: startAt.toISOString(),
-      },
-      holderId,
-    )
-  ) {
-    return false;
-  }
-
-  const conflict = await prisma.booking.findFirst({
-    where: {
-      startAt: { lt: endAt },
-      endAt: { gt: startAt },
-      status: { in: ["PENDING", "CONFIRMED", "COMPLETED"] },
-    },
-  });
-  if (conflict) return false;
-
-  // I3: kalenderhendelse (ferie, stengt anlegg, møte) for denne coachen
-  // eller hele akademiet (coachId=null) blokkerer slotet.
-  const hendelseConflict = await prisma.calendarEvent.findFirst({
-    where: {
-      OR: [{ coachId }, { coachId: null }],
-      startAt: { lt: endAt },
-      endAt: { gt: startAt },
-    },
-  });
-  if (hendelseConflict) return false;
-
-  // Sjekk også Google Calendar. Fail-closed: hvis sjekken ikke kunne utføres
-  // (ok:false) blokkeres slotet av kalenderBlokkererSlot.
-  const kalender = await getCalendarBusy(coachId, startAt, endAt);
-  if (kalenderBlokkererSlot(kalender, startAt, endAt)) {
-    return false;
-  }
-
-  return true;
+  if (await isBlockedByHold({ serviceTypeId, coachId, startIso: startAt.toISOString() }, holderId)) return false;
+  // Same window, recurrence, coach, capacity and calendar rules as the offered slots.
+  const offered = await getAvailableSlots(serviceTypeId, startAt);
+  return offered.some(slot => slot.coachId === coachId && slot.start.getTime() === startAt.getTime());
 }

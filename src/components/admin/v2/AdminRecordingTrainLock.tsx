@@ -214,7 +214,7 @@ export function AdminRecordingTrainLock({ data }: { data: AdminRecordingTLData }
 
       {!data.harTranskriberingsNokkel && (
         <Kort style={{ boxShadow: `inset 0 0 0 1px ${TL.warnHair}`, background: TL.dim }}>
-          <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 15, color: TL.warn }}>Transkribering ikke konfigurert</div>
+          <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 15, color: TL.text }}>Transkribering ikke konfigurert</div>
           <p style={{ marginTop: 6, fontFamily: TL.font.sans, fontSize: 13, color: TL.text, lineHeight: 1.55 }}>
             Automatisk transkripsjon krever en{" "}
             <code style={{ fontFamily: TL.font.mono, fontSize: 12, background: TL.elev, borderRadius: 4, padding: "2px 5px" }}>OPENAI_API_KEY</code> i .env.local. Inntil videre kan opptak
@@ -225,7 +225,7 @@ export function AdminRecordingTrainLock({ data }: { data: AdminRecordingTLData }
 
       {data.spillere.length === 0 && (
         <Kort style={{ boxShadow: `inset 0 0 0 1px ${TL.warnHair}`, background: TL.dim }}>
-          <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 15, color: TL.warn }}>Ingen spillere registrert</div>
+          <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 15, color: TL.text }}>Ingen spillere registrert</div>
           <p style={{ marginTop: 6, fontFamily: TL.font.sans, fontSize: 13, color: TL.text, lineHeight: 1.55 }}>
             Opptak knyttes til en spiller for å gi riktig kontekst i sammendraget. Registrer en spiller i stallen først.
           </p>
@@ -241,7 +241,7 @@ export function AdminRecordingTrainLock({ data }: { data: AdminRecordingTLData }
         topbar={
           <>
             {aktivProsesserer ? (
-              <span style={{ display: "inline-flex", alignItems: "center", gap: 8, borderRadius: 9999, boxShadow: `inset 0 0 0 1px ${TL.warnHair}`, padding: "5px 11px", fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: TL.track.capsSm, color: TL.warn }}>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 8, borderRadius: 9999, boxShadow: `inset 0 0 0 1px ${TL.warnHair}`, padding: "5px 11px", fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: TL.track.capsSm, color: TL.text }}>
                 <Loader2 size={11} className="animate-spin" />
                 Behandler {formatVarighet(aktiv?.durationSec ?? null)}
               </span>

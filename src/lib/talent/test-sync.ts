@@ -14,6 +14,7 @@
  * registreringen av selve testresultatet.
  */
 
+import { tnComparableResult } from "@/lib/portal-tester/tn-integration";
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@/generated/prisma/client";
 import { parseBenchmarks } from "@/lib/admin/test-benchmarks";
@@ -54,9 +55,10 @@ export async function syncTalentEtterTest(userId: string): Promise<void> {
   }
 
   const rader = await prisma.testResult.findMany({
-    where: { userId, test: { erCanon: true } },
+    where: { userId, OR: [{ test: { erCanon: true } }, { testId: { startsWith: "tn-v3-" } }] },
     select: {
       score: true,
+      details: true,
       takenAt: true,
       test: { select: { id: true, name: true, pyramidArea: true, protocol: true } },
     },
@@ -65,14 +67,14 @@ export async function syncTalentEtterTest(userId: string): Promise<void> {
   });
   if (rader.length === 0) return;
 
-  const resultater: CanonResultat[] = rader.map((r) => ({
-    testId: r.test.id,
-    testNavn: r.test.name,
-    pyramidArea: r.test.pyramidArea,
-    score: r.score,
-    takenAt: r.takenAt,
-    benchmarks: parseBenchmarks(r.test.protocol),
-  }));
+  const resultater: CanonResultat[] = rader.flatMap((r) => {
+    const base = { testId: r.test.id, testNavn: r.test.name, pyramidArea: r.test.pyramidArea, score: r.score, takenAt: r.takenAt };
+    if (r.test.id.startsWith("tn-v3-")) {
+      const tn = tnComparableResult(r.test.id, r.score, r.details);
+      return tn ? [{ ...base, benchmarks: null, comparisonKey: tn.comparisonKey, direction: tn.direction, unit: tn.unit }] : [];
+    }
+    return [{ ...base, benchmarks: parseBenchmarks(r.test.protocol) }];
+  });
 
   const nyeNivaaer = beregnTestNivaaer(resultater);
 

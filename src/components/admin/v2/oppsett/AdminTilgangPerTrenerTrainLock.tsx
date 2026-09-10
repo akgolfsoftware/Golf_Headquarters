@@ -112,7 +112,7 @@ export function AdminTilgangPerTrenerTrainLock({ trenere }: { trenere: PerTrener
             som helst.
           </p>
           {feil && (
-            <p role="alert" style={{ margin: "0 0 8px", fontSize: 12, color: TL.danger, fontWeight: 600 }}>
+            <p role="alert" style={{ margin: "0 0 8px", fontSize: 12, color: TL.text, fontWeight: 600 }}>
               {feil}
             </p>
           )}

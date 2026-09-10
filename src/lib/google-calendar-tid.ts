@@ -74,6 +74,22 @@ export function fraNaivVeggklokke(naiv: Date): string {
   );
 }
 
+/** Lagret Oslo-veggklokke → faktisk tidspunkt, til frister og kalenderlenker.
+ * Ved høstens gjentatte klokkeslett velges første forekomst, som JavaScript Date.
+ * Et klokkeslett i vårens manglende time avvises.
+ */
+export function naivOsloTilTidspunkt(naiv: Date): Date {
+  const wall = (d: Date) => Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds());
+  const wanted = wall(naiv);
+  if (!Number.isFinite(wanted)) throw new Error("Ugyldig tidspunkt.");
+  let guess = wanted;
+  for (let i = 0; i < 3; i++) guess += wanted - wall(tilNaivVeggklokke(new Date(guess)));
+  const matches = [guess - 3_600_000, guess, guess + 3_600_000]
+    .filter(candidate => wall(tilNaivVeggklokke(new Date(candidate))) === wanted);
+  if (!matches.length) throw new Error("Klokkeslettet finnes ikke ved overgang til sommertid.");
+  return new Date(Math.min(...matches) + naiv.getMilliseconds());
+}
+
 /** Heldags-format for Google: «2026-07-28» (start.date/end.date). */
 export function tilHeldagsDato(naiv: Date): string {
   const p = (n: number) => String(n).padStart(2, "0");

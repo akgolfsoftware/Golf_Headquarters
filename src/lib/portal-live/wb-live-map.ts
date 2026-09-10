@@ -119,7 +119,7 @@ function wbDrillToLive(d: WbLiveDrill, index: number, axis: PyramidArea): LiveV2
   };
 }
 
-export function mapWbToLiveSummary(row: WbLiveInput): LiveV2Summary {
+export function mapWbToLiveSummary(row: WbLiveInput, ballCounts: ReadonlyArray<{ count: number }> = []): LiveV2Summary {
   const axis = asPyramid(row.pyramid);
   const drills = [...row.drills]
     .sort((a, b) => a.sortOrder - b.sortOrder)
@@ -145,8 +145,10 @@ export function mapWbToLiveSummary(row: WbLiveInput): LiveV2Summary {
     drills,
     existingLogs: [],
     completedSummary: null,
-    durationSec: row.durationMinutes * 60,
-    totalReps: 0,
+    // Planlagt tid er ikke målt treningstid. Utelates når den ikke finnes.
+    logSource: "tapper",
+    durationSec: 0,
+    totalReps: ballCounts.reduce((sum, r) => sum + r.count, 0),
     drillsCompleted: 0,
     pyramidSummary: { FYS: 0, TEK: 0, SLAG: 0, SPILL: 0, TURN: 0 },
   };

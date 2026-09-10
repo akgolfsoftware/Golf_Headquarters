@@ -1,6 +1,15 @@
 "use client";
 
 /**
+ * Avvik:
+ *   - Kontrastretting fra tidligere arbeidsgren er avstemt 10.09.2026. Eldre
+ *     visuelle referanser nedenfor er historikk; helskjermkontroll mot en ny
+ *     valgt Claude Design-versjon gjenstår. Denne endringen justerer fargebruk,
+ *     ikke skjermens funksjon eller oppsett. Se grener-og-main-2026-09-10.md
+ *     under docs/beslutningsgrunnlag for faktisk kontrollomfang.
+ */
+
+/**
  * CreateSessionModal — «Ny økt» (natt-plan Loop 2, PX-2).
  *
  * Fasit: designsystem/train-lock/A-03 Ny okt modal.dc.html:
@@ -166,7 +175,7 @@ export function CreateSessionModal({
             </p>
 
             {feil && (
-              <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.danger, margin: 0 }}>{feil}</p>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.text, margin: 0 }}>{feil}</p>
             )}
           </div>
         </DialogBody>

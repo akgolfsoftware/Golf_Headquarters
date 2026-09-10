@@ -1,4 +1,14 @@
 "use client";
+
+/**
+ * Avvik:
+ *   - Kontrastretting fra tidligere arbeidsgren er avstemt 10.09.2026. Eldre
+ *     visuelle referanser nedenfor er historikk; helskjermkontroll mot en ny
+ *     valgt Claude Design-versjon gjenstår. Denne endringen justerer fargebruk,
+ *     ikke skjermens funksjon eller oppsett. Se grener-og-main-2026-09-10.md
+ *     under docs/beslutningsgrunnlag for faktisk kontrollomfang.
+ */
+
 import { TL } from "@/lib/v2/train-lock";
 import { AK } from "@/lib/v2/ak-palett";
 
@@ -630,7 +640,7 @@ export function KategoriStige({ trinn = KS_DEMO /* øverst = best */, naa = "C" 
           <div key={t.kat} style={{ display: "flex", alignItems: "center", gap: 12, padding: "9px 0", borderBottom: i === trinn.length - 1 ? "none" : `1px solid ${TL.hair}` }}>
             <span style={{ width: 32, height: 32, borderRadius: 9, flex: "none", display: "inline-flex", alignItems: "center", justifyContent: "center", ...mono(13, er ? TL.onFill : naadd ? TL.mute : TL.mute), background: er ? TL.fill : TL.dim, border: `1px solid ${er ? "transparent" : TL.hair}` }}>{t.kat}</span>
             <span style={{ flex: 1, fontFamily: TL.font.sans, fontSize: 12, color: er ? TL.text : naadd ? TL.mute : TL.mute }}>{t.krav}</span>
-            {er ? <StatusPill>Nå</StatusPill> : naadd ? <Icon name="check" size={13} style={{ color: TL.ok, flex: "none" }} /> : <span style={{ ...mono(8.5, TL.mute) }}>GJENSTÅR</span>}
+            {er ? <StatusPill>Nå</StatusPill> : naadd ? <Icon name="check" size={13} style={{ color: TL.mute, flex: "none" }} /> : <span style={{ ...mono(8.5, TL.mute) }}>GJENSTÅR</span>}
           </div>
         );
       })}

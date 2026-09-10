@@ -83,6 +83,7 @@ export default async function TesterHubPage() {
           >
             Tester
           </h1>
+          <Link href="/portal/tren/tester/team-norway" className="v2-focus" style={{ display: "block", paddingBlock: 12, color: TL.text }}>Team Norway · oppdaterte scorekort</Link>
           <span style={{ display: "block", marginTop: 4, fontFamily: TL.font.sans, fontSize: 13, color: TL.mute }}>
             {forfallerAntall === 0 ? "Ingen forfaller" : forfallerAntall === 1 ? "1 forfaller" : `${forfallerAntall} forfaller`}
           </span>

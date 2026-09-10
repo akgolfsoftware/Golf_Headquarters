@@ -208,8 +208,8 @@ export const TEST_PROTOKOLLER: TestProtokoll[] = [
     "Golfslag bane",
     BANE_GUTTER,
     BANE_JENTER,
-    27,
-    "30 slag med banelengder (hull 28–30 fra bunker). Resultat = meter fra hull, lie noteres."
+    26,
+    "30 slag med banelengder (slag 27–30 fra bunker). Resultat = meter fra hull, lie noteres."
   ),
   dispersjonTest(
     "driver-basic",
@@ -424,9 +424,9 @@ export const TEST_PROTOKOLLER: TestProtokoll[] = [
     "Slagtest — PGA Tour 27 shots",
     [
       145, 60, 45, 110, 150, 135, 140, 215, 75, 165, 115, 155, 180, 230, 200, 160, 185, 170, 130, 125, 155, 100,
-      190, 175, null, null, null,
+      190, 120, 105, 90, 175,
     ],
-    "PGA Tour-referansen: 27 slag (24 lengder fra arket; de tre siste fylles inn selv)."
+    "PGA Tour-referansen: 27 faste mål-lengder fra PEI Tester!AG10:AG36."
   ),
   peiSlagtest(
     "pei-wedge-blocked",

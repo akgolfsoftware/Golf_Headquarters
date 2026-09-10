@@ -204,10 +204,10 @@ export function InnstillingerSikkerhetV2({ data }: { data: InnstillingerSikkerhe
               placeholder="Gjenta passordet"
             />
             {passordFeil && (
-              <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, margin: 0 }}>{passordFeil}</p>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.text, margin: 0 }}>{passordFeil}</p>
             )}
             {passordSuksess && !passordFeil && (
-              <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.ok, margin: 0 }}>Passord oppdatert.</p>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.text, margin: 0 }}>Passord oppdatert.</p>
             )}
             <Knapp icon="check" full disabled={passordLagrer} onClick={lagrePassord}>
               {passordLagrer ? "Lagrer …" : "Lagre nytt passord"}
@@ -225,10 +225,10 @@ export function InnstillingerSikkerhetV2({ data }: { data: InnstillingerSikkerhe
               placeholder="navn@eksempel.no"
             />
             {epostFeil && (
-              <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, margin: 0 }}>{epostFeil}</p>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.text, margin: 0 }}>{epostFeil}</p>
             )}
             {epostSuksess && !epostFeil && (
-              <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.ok, lineHeight: 1.5, margin: 0 }}>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.text, lineHeight: 1.5, margin: 0 }}>
                 Bekreftelseslenke sendt til {nyEpost.trim()}. E-posten din endres først når du klikker
                 lenken.
               </p>

@@ -184,7 +184,7 @@ export function WorkbenchColdstart({
             )}
           </div>
 
-          {feil && <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger }}>{feil}</span>}
+          {feil && <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.text }}>{feil}</span>}
 
           {onBrukMal && maler.length > 0 && (
             <Knapp icon="layers" full disabled={!valgtMal || brukerMal} onClick={brukMal}>

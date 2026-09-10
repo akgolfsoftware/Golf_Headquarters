@@ -1,0 +1,375 @@
+{
+  "project": "dcnxoztjtdqoidaekxry",
+  "observed": "2026-09-10",
+  "functions": [
+    {
+      "nspname": "dashboard",
+      "proname": "name_key",
+      "args": "raw text",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "authenticated_execute": true,
+      "service_execute": true,
+      "definition_hash": "31eaadaef678636ff895a7a7c2332bd4"
+    },
+    {
+      "nspname": "public",
+      "proname": "beregn_frist",
+      "args": "mottatt timestamp with time zone",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "authenticated_execute": true,
+      "service_execute": true,
+      "definition_hash": "803441715a354de4e5bd0f60df63c8db"
+    },
+    {
+      "nspname": "public",
+      "proname": "helse_dashboard_data",
+      "args": "",
+      "prosecdef": true,
+      "proconfig": [
+        "search_path=helse, public"
+      ],
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "definition_hash": "589ff9d5b12b0daa2b115a701bbc017c"
+    },
+    {
+      "nspname": "public",
+      "proname": "helse_flate_hent",
+      "args": "p_navn text",
+      "prosecdef": true,
+      "proconfig": [
+        "search_path=helse, public"
+      ],
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "definition_hash": "59549de1c98de51dfe3fd34d458d7ed9"
+    },
+    {
+      "nspname": "public",
+      "proname": "helse_flate_lagre",
+      "args": "p_navn text, p_html text",
+      "prosecdef": true,
+      "proconfig": [
+        "search_path=helse, public"
+      ],
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "definition_hash": "8a1ea065b2f20907e825abd16affbc04"
+    },
+    {
+      "nspname": "public",
+      "proname": "helse_flytt_okt",
+      "args": "p_mal_id text, p_fra date, p_til date, p_begrunnelse text",
+      "prosecdef": true,
+      "proconfig": [
+        "search_path=helse, public"
+      ],
+      "anon_execute": true,
+      "authenticated_execute": true,
+      "service_execute": true,
+      "definition_hash": "993662e18b874a4ea5c5373eea97dd82"
+    },
+    {
+      "nspname": "public",
+      "proname": "helse_garmin_lagre",
+      "args": "p_okter jsonb",
+      "prosecdef": true,
+      "proconfig": [
+        "search_path=helse, public"
+      ],
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "definition_hash": "9f817429afeb4502d0bb342ab70021ee"
+    },
+    {
+      "nspname": "public",
+      "proname": "helse_garmin_lagre_detalj",
+      "args": "p_id bigint, p_strommer jsonb, p_splitter jsonb, p_soner jsonb, p_vaer jsonb",
+      "prosecdef": true,
+      "proconfig": [
+        "search_path=helse, public"
+      ],
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "definition_hash": "681b20e08eabb0136460a83eeb7df271"
+    },
+    {
+      "nspname": "public",
+      "proname": "helse_garmin_liste",
+      "args": "p_antall integer",
+      "prosecdef": true,
+      "proconfig": [
+        "search_path=helse, public"
+      ],
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "definition_hash": "b2b35f21c18d282e88de496f0181a75a"
+    },
+    {
+      "nspname": "public",
+      "proname": "helse_garmin_okt",
+      "args": "p_id bigint",
+      "prosecdef": true,
+      "proconfig": [
+        "search_path=helse, public"
+      ],
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "definition_hash": "38bf111055ece1694b727a84ecd85263"
+    },
+    {
+      "nspname": "public",
+      "proname": "helse_hent_doegn",
+      "args": "",
+      "prosecdef": true,
+      "proconfig": [
+        "search_path=helse, public"
+      ],
+      "anon_execute": true,
+      "authenticated_execute": true,
+      "service_execute": true,
+      "definition_hash": "1c1b9ec6e44640aa10a9e55372f345b4"
+    },
+    {
+      "nspname": "public",
+      "proname": "helse_hent_faktisk_historikk",
+      "args": "p_mal_id text, p_maks integer",
+      "prosecdef": true,
+      "proconfig": [
+        "search_path=helse, public"
+      ],
+      "anon_execute": true,
+      "authenticated_execute": true,
+      "service_execute": true,
+      "definition_hash": "7af15a4b8290daae4d431598133296c2"
+    },
+    {
+      "nspname": "public",
+      "proname": "helse_hent_matlogg_dag",
+      "args": "p_dato date",
+      "prosecdef": true,
+      "proconfig": [
+        "search_path=helse, public"
+      ],
+      "anon_execute": true,
+      "authenticated_execute": true,
+      "service_execute": true,
+      "definition_hash": "bcfa6bffbd500b7c13030150707f00e3"
+    },
+    {
+      "nspname": "public",
+      "proname": "helse_hent_matlogg_periode",
+      "args": "p_fra date, p_til date",
+      "prosecdef": true,
+      "proconfig": [
+        "search_path=helse, public"
+      ],
+      "anon_execute": true,
+      "authenticated_execute": true,
+      "service_execute": true,
+      "definition_hash": "f8dc48d5434f458988d44b3a7a5124ab"
+    },
+    {
+      "nspname": "public",
+      "proname": "helse_hent_okt_logg",
+      "args": "p_fra date, p_til date",
+      "prosecdef": true,
+      "proconfig": [
+        "search_path=helse, public"
+      ],
+      "anon_execute": true,
+      "authenticated_execute": true,
+      "service_execute": true,
+      "definition_hash": "e1a4d68d2d16e5b4bdb27fae0069c396"
+    },
+    {
+      "nspname": "public",
+      "proname": "helse_lagre_faktisk_sett",
+      "args": "p_dato date, p_mal_id text, p_ovelser jsonb, p_notat text",
+      "prosecdef": true,
+      "proconfig": [
+        "search_path=helse, public"
+      ],
+      "anon_execute": true,
+      "authenticated_execute": true,
+      "service_execute": true,
+      "definition_hash": "631ece35385658be07ecd83025407fb7"
+    },
+    {
+      "nspname": "public",
+      "proname": "helse_lagre_matlogg",
+      "args": "p_raa_tekst text, p_maaltid text, p_varer jsonb, p_kcal numeric, p_protein_g numeric, p_karbo_g numeric, p_fett_g numeric, p_vaeske_ml numeric, p_koffein_mg numeric",
+      "prosecdef": true,
+      "proconfig": [
+        "search_path=helse, public"
+      ],
+      "anon_execute": true,
+      "authenticated_execute": true,
+      "service_execute": true,
+      "definition_hash": "1b3d91935c0ebe43921c97f358a336d2"
+    },
+    {
+      "nspname": "public",
+      "proname": "helse_logg_okt",
+      "args": "p_dato date, p_mal_id text, p_status text, p_faktisk jsonb, p_notat text",
+      "prosecdef": true,
+      "proconfig": [
+        "search_path=helse, public"
+      ],
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true,
+      "definition_hash": "03087ffd69b4d2eb8c817d8eda61dda8"
+    },
+    {
+      "nspname": "public",
+      "proname": "helse_mat_dag",
+      "args": "p_dato date",
+      "prosecdef": true,
+      "proconfig": [
+        "search_path=helse"
+      ],
+      "anon_execute": true,
+      "authenticated_execute": true,
+      "service_execute": true,
+      "definition_hash": "6b7ab553346c995746d1d4d71414f88a"
+    },
+    {
+      "nspname": "public",
+      "proname": "helse_mat_lagre",
+      "args": "p_raa_tekst text, p_varer jsonb, p_kcal numeric, p_protein numeric, p_karbo numeric, p_fett numeric, p_vaeske numeric, p_koffein numeric, p_maaltid text",
+      "prosecdef": true,
+      "proconfig": [
+        "search_path=helse"
+      ],
+      "anon_execute": true,
+      "authenticated_execute": true,
+      "service_execute": true,
+      "definition_hash": "bdba229a42289e14dfc491f30cebb43a"
+    },
+    {
+      "nspname": "public",
+      "proname": "helse_mat_liste",
+      "args": "p_fra date, p_til date",
+      "prosecdef": true,
+      "proconfig": [
+        "search_path=helse"
+      ],
+      "anon_execute": true,
+      "authenticated_execute": true,
+      "service_execute": true,
+      "definition_hash": "ad4d5f25e03157463990d58d227fff6d"
+    },
+    {
+      "nspname": "public",
+      "proname": "helse_mat_sok",
+      "args": "p_tekst text, p_antall integer",
+      "prosecdef": true,
+      "proconfig": [
+        "search_path=helse, public"
+      ],
+      "anon_execute": true,
+      "authenticated_execute": true,
+      "service_execute": true,
+      "definition_hash": "61c8bdf37d30977fc03b97a67ec7dd61"
+    },
+    {
+      "nspname": "public",
+      "proname": "helse_sok_matvare",
+      "args": "soek text, maks integer",
+      "prosecdef": true,
+      "proconfig": [
+        "search_path=helse, public"
+      ],
+      "anon_execute": true,
+      "authenticated_execute": true,
+      "service_execute": true,
+      "definition_hash": "5a159ebee85184a2839c2455b4431a35"
+    },
+    {
+      "nspname": "public",
+      "proname": "match_me_knowledge",
+      "args": "query_embedding vector, match_count integer",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "authenticated_execute": true,
+      "service_execute": true,
+      "definition_hash": "590641653a61a464958c02d2dc11400b"
+    },
+    {
+      "nspname": "public",
+      "proname": "match_me_memory",
+      "args": "query_embedding vector, match_count integer",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "authenticated_execute": true,
+      "service_execute": true,
+      "definition_hash": "67b51034e5e0e1f160eb440d2b12996a"
+    },
+    {
+      "nspname": "public",
+      "proname": "sak_ferdig",
+      "args": "nokkel text, sak_id text",
+      "prosecdef": true,
+      "proconfig": [
+        "search_path=public"
+      ],
+      "anon_execute": true,
+      "authenticated_execute": true,
+      "service_execute": true,
+      "definition_hash": "2d18a498c0b9130ec591fd48effa732d"
+    },
+    {
+      "nspname": "public",
+      "proname": "sak_inn",
+      "args": "nokkel text, tekst text, kanal text",
+      "prosecdef": true,
+      "proconfig": [
+        "search_path=public"
+      ],
+      "anon_execute": true,
+      "authenticated_execute": true,
+      "service_execute": true,
+      "definition_hash": "18ee5c802f4ee55140a18c2f9b071bf4"
+    },
+    {
+      "nspname": "public",
+      "proname": "sak_liste",
+      "args": "nokkel text",
+      "prosecdef": true,
+      "proconfig": [
+        "search_path=public"
+      ],
+      "anon_execute": true,
+      "authenticated_execute": true,
+      "service_execute": true,
+      "definition_hash": "e4f01b4686d7e1f406c4b997190e03a9"
+    },
+    {
+      "nspname": "public",
+      "proname": "workbench_coach_has_player_access",
+      "args": "p_coach_id text, p_player_id text",
+      "prosecdef": true,
+      "proconfig": [
+        "search_path=public"
+      ],
+      "anon_execute": true,
+      "authenticated_execute": true,
+      "service_execute": true,
+      "definition_hash": "83f2cdcbf6f487da5ec6c7e33cf33463"
+    }
+  ]
+}

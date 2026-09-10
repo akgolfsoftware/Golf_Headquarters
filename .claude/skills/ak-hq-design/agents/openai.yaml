@@ -1,0 +1,6 @@
+interface:
+  display_name: "AK HQ Design"
+  short_description: "Design, brukerreiser og overlevering for AK Golf HQ"
+  default_prompt: "Bruk $ak-hq-design til å videreutvikle AK Golf HQs design med sammenhengende brukerreiser, felles komponenter og dokumentert skjermdekning."
+policy:
+  allow_implicit_invocation: true

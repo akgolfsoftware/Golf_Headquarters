@@ -1,4 +1,14 @@
 "use client";
+
+/**
+ * Avvik:
+ *   - Kontrastretting fra tidligere arbeidsgren er avstemt 10.09.2026. Eldre
+ *     visuelle referanser nedenfor er historikk; helskjermkontroll mot en ny
+ *     valgt Claude Design-versjon gjenstår. Denne endringen justerer fargebruk,
+ *     ikke skjermens funksjon eller oppsett. Se grener-og-main-2026-09-10.md
+ *     under docs/beslutningsgrunnlag for faktisk kontrollomfang.
+ */
+
 import { TL } from "@/lib/v2/train-lock";
 
 /**
@@ -137,7 +147,7 @@ function knappStil(fyll: "ink" | "ghost" | "fare", extra?: React.CSSProperties):
     textDecoration: "none",
   };
   if (fyll === "ink") return { ...base, background: TL.fill, color: TL.onFill, border: `1px solid ${TL.fill}`, ...extra };
-  if (fyll === "fare") return { ...base, background: "transparent", color: TL.danger, border: `1px solid ${TL.hair}`, ...extra };
+  if (fyll === "fare") return { ...base, background: "transparent", color: TL.text, border: `1px solid ${TL.hair}`, ...extra };
   return { ...base, background: TL.elev, color: TL.text, border: `1px solid ${TL.hair}`, ...extra };
 }
 
@@ -404,7 +414,7 @@ function SakKort({
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8 }}>
         <span style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>{row.who}</span>
         {row.urgent && (
-          <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: TL.warn, border: `1px solid ${TL.warn}`, borderRadius: TL.radius.row, padding: "2px 7px" }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: TL.text, border: `1px solid ${TL.warn}`, borderRadius: TL.radius.row, padding: "2px 7px" }}>
             Haster
           </span>
         )}
@@ -460,7 +470,7 @@ function SakInspektor({ row }: { row: AdminGodkjenningV2Row }) {
       ariaLabel={`Valgt sak: ${row.who}`}
       tag={
         row.urgent ? (
-          <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: TL.warn, border: `1px solid ${TL.warn}`, borderRadius: TL.radius.row, padding: "2px 7px" }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: TL.text, border: `1px solid ${TL.warn}`, borderRadius: TL.radius.row, padding: "2px 7px" }}>
             Haster
           </span>
         ) : row.lowRisk ? (

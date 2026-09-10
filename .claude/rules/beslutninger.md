@@ -1,10 +1,18 @@
-# Låste beslutninger — AK Golf HQ
+# Beslutninger — AK Golf HQ
 
 Gjeldende beslutninger fra Anders. Gjelder til han endrer dem. Nyeste først.
 
-**Historikk og supersederte beslutninger:** `docs/arkiv/beslutninger-historikk.md`. Denne fila
-lastes i hver eneste økt — hold den til det som gjelder NÅ. Blir en beslutning overstyrt, flytt
-den til arkivet, ikke la den ligge merket «SUPERSEDERT».
+## Gjeldende designavklaring — 10.09.2026
+
+Anders arbeider parallelt i Claude Design med alle skjermer og sier: «Ingenting av det som ligger i prosjektet nå er låst.» Eksisterende design er arbeidsunderlag under revisjon. Eldre krav om Train-lock, bestemte fonter, farger, temaer, menyer eller annen utforming er ikke bindende for videre designarbeid, selv om de nedenfor eller i leveransepakker kalles «låst» eller «fasit».
+
+Bruk [designstatus og referanser](../../designsystem/README.md) og registrer valgt versjon før en konkret skjermbygging. Gamle portplaner skal ikke settes i gang automatisk. [Arbeidslisten](../../docs/MASTERPLAN-GJENSTAAENDE.md) beskriver neste anbefalte gjennomgang og skiller den fra bestilt arbeid. Personvern, tilgangskontroll og krav til trygg databehandling videreføres.
+
+## Tidligere beslutningsgrunnlag
+
+Oppføringene under bevarer tidligere kontekst og inneholder både design og andre fagområder. Designkrav i dem er overstyrt av avklaringen over. De er ikke selvstendige byggeordrer.
+
+**Eldre arkiv:** `docs/arkiv/beslutninger-historikk.md`. Nye beslutninger skal være korte og stå først. Ved videre arkivering må faglige og tekniske opplysninger i blandede oppføringer bevares; designavklaringen over gjelder uansett hvor eldre tekst ligger.
 
 **Ny beslutning registreres med `/beslutning`** — den skriver både hit OG inn i
 `docs/MASTERPLAN-GJENSTAAENDE.md` som nummerert arbeid. En beslutning som bare står her, blir
@@ -93,7 +101,7 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
   (denne PR-en); port av DG-10–17 er STEG 20.5.
 
 - **DESIGNPORT FASE 2 — SEKS BESLUTNINGER, MILEPÆL 11.09 (Anders 08.09.2026, i økt):** svar på
-  planens §6 kø-punkter 1–6 (`docs/superpowers/plans/2026-09-05-komplett-designport.md`), spurt
+  planens §6 kø-punkter 1–6 (`docs/planer/design/2026-09-05-komplett-designport.md`), spurt
   samme dag fase 1 (grunnmuren) ble ferdigstilt (8/8 økter merget).
   **Presisert samme dag, senere i økten: «La oss ta Stripe til slutt».** Kø 28 er dermed IKKE
   lenger en forutsetning for å starte fase 2 — ingen av fase 2-skjermene bruker price-IDen.
@@ -128,7 +136,7 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
   oppdatert 8→~10), beslutningskø punkt 28 (fortsatt åpen, presisert), 29 og 31 pkt 1–6 (svart).
 
 - **KOMPLETT DESIGNPORT — PLANEN GJELDER, FASE 1 STARTER (Anders 05.09.2026, i økt):** planen
-  `docs/superpowers/plans/2026-09-05-komplett-designport.md` (åtte faser, 91 økter, lansering først,
+  `docs/planer/design/2026-09-05-komplett-designport.md` (åtte faser, 91 økter, lansering først,
   tre ferdig-punkter) er grunnlaget for all videre Train-lock-porting av produktskjermene. Anders:
   «Fiks slik at vi kan starte fase 1 i ny session.» Fase 1 (grunnmur: vakter i verify/CI, TallHero
   19.7, datofrys, riggfelt, filhode-vakt, nattlig måling, døde Paper-verktøy, dokumentrydding) krever
@@ -192,8 +200,8 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
   **To ting avgjøres når Anders ser dem, ikke nå:** forsiden («Reisen» 28.08 mot kitets stillere
   forside — begge vises på preview) og `/cases` (masteren forbyr sitater/vitnesbyrd, 01.09).
   **Løkke per side:** canvas → ja → bygg → `/impeccable audit` → skjermbilde 390+1440 → merge.
-  Aldri batch. Spec: `docs/superpowers/specs/2026-09-04-marked-ak-golf-port-design.md`, plan:
-  `docs/superpowers/plans/2026-09-04-marked-ak-golf-port.md`.
+  Aldri batch. Spec: `docs/referanse/design/2026-09-04-marked-ak-golf-port-design.md`, plan:
+  `docs/planer/design/2026-09-04-marked-ak-golf-port.md`.
   **Arbeidet:** `docs/MASTERPLAN-GJENSTAAENDE.md` STEG 18.33 (fundament levert 04.09, 18 sider +
   opprydding gjenstår).
 
@@ -954,12 +962,7 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
   visning, landscape-overlay) står inntil Train-lock-fasiten sier noe annet. Skjermbilde-gaten
   (04.08) og «Enkelhet/færrest trykk» gjelder uendret. **Begge forutsetningene er levert 25.08:**
   fasiten ligger i `designsystem/train-lock/` (D3, 180 skjermer), og tokensettet i kode
-  (D2, PR #586) — `src/styles/train-lock-tokens.css` + `src/lib/v2/train-lock.ts`, med kilder
-  og ti åpne spørsmål i `natt/D2-TOKENS-DONE.md`. Selve skjermporten gjenstår (B8 +
-  bølge T), og mørk-som-default er fortsatt uavklart (åpent spørsmål 1 der). Marketing/
-  landingssider beholder egen fasit (ak-golf-website). Forelder-portalens omfang: uavklart,
-  spør Anders. Konfliktregel: sier et dokument/skill noe annet enn Train-lock for
-  produktflatene, vinner Train-lock — og dokumentet rettes.
+  (D2, PR #586). Gjeldende mørk/lys-default står i beslutningen over og `src/lib/v2/tema-default.ts`. Marked følger AK Golf-masteren, og Forelder bruker Train-lock i lys og mørk. Se `designsystem/README.md` for hele flatekartet.
 - **ALLE TRENINGSPLANREGLER LÅST OPP (Anders 2026-08-18, i økt — «Ingenting skal være låst
   eller canon. Spiller står helt fritt»):** All regel-håndheving i planlegging er SLETTET fra
   koden (gren `feat/laas-opp-alle-regler`): de 9 invariantene (`src/lib/canon/` — hele mappen),
@@ -976,40 +979,27 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
   `PYRAMIDE_OMRADE_MOTORIKK_BELASTNING_PRESS` med motorikk UTEN_BALL/LAV_HAST/AUTO og press
   ALENE/OBSERVERT/KONKURRANSE/TURNERING.
 - **Beslutningsgaten PP-A besvart (Anders 2026-08-16, i økt — låser pixel-portens systemfikser):**
-  - **A1 · Admin-rail = FASE2-railen.** [SUPERSEDERT 09.09.2026 — se §COACH-MENYEN: PROTOTYPEN
-    VINNER — AX-01 REVERSERES øverst i denne fila] ⚠ **HELT OVERSTYRT 25.08.2026 (kveld):** railen
-    følger nå **`AX-01 Skall rail og tabbar.dc.html`** i Train-lock-fasiten, ikke fase2-railen.
-    **Fem destinasjoner, identisk på mobil og Mac: Stall · Workbench · Kø · Jarvis · Meg.**
-    Konsoll, Økonomi og Kalender er rader under Meg, aldri faner. **Mac-rail 232 px med
-    tekst** (`#1C1C1E`, aktiv = tekst `#F5F5F5` på `#2C2C2E`), ingen kollapset variant.
-    De sju punktene under, og rail-en i A-/AG-skjermene (7 ikoner i 64 px), er UTDATERT.
-    Fasit og begrunnelse: `docs/natt/D2-UNDERLAG-2026-08-25.md` §5.6.
-    Opprinnelig tekst: Fase2-fasitenes rail (7 punkter, Cockpit/Stall/Plan…,
-    fasitens casing) vinner over fase1-railen/dagens kode. Implementeres én gang i `V2Shell`
-    (PP-B1) — alle admin-flater arver. Fase1-fasitenes rail-avvik er dermed avgjort, ikke en
-    konflikt: admin-skjermer måles heretter mot fase2-skallet.
+  - **A1 · Coach-meny:** erstattet av beslutningen 09.09.2026 «COACH-MENYEN: PROTOTYPEN VINNER — AX-01 REVERSERES» øverst. Den gamle rail-oppskriften er flyttet til dokumentarkivet.
   - **A2 · Master–detalj = fasitens inspektørpanel.** Godkjenninger, planbibliotek og bookinger
     bygger 380px-inspektørpanelet (desktop) slik fasitene tegner det; mobil beholder
     liste→detalj. Ikke tegn fasitene om.
-  - **A3 · Clay-normen bekreftet.** Clay `#D97757` KUN i «Én ting nå»-kortet + fokus-tilstander.
-    Skjermens øvrige handlinger («Ny plan», «Ny booking» osv.) er ink-knapper i topplinjen.
-    `enTing`-som-liste-CTA er et brudd — sweep (PP-B2) + variant-dokumentene rettes.
-  - **A4 · Innlogging/auth = LYS** (Paper `#FAF9F5`, slik prod er — målt i #484).
+  - **A3 · Primærhandling:** den gamle clay-normen er overstyrt av Train-lock. Følg gjeldende fill/on-fill og fargegrammatikk.
+  - **A4 · Innlogging/auth = LYS.** Fargene følger Train-lock; gammel Paper-cream er utgått.
   - **Desktop-bredde = fasitens d1280 per skjerm.** «Full bredde» betyr å bygge nøyaktig
     fasitens desktop-visning (paneler/kolonner der fasiten har det) — aldri strekke innhold
     utover det fasiten tegner, og aldri smalere enn fasiten.
   - **iPhone landscape = «Vri telefonen»-overlay.** Mobil i liggende (Safari-fane) får et
-    Paper-stilet overlay; innholdet designes alltid for stående. PWA-manifestets
+    overlay etter gjeldende Train-lock-fasit; innholdet designes alltid for stående. PWA-manifestets
     `orientation: "portrait"` består (og legges også i team-wang/gfgk-manifestene).
     Overlayet treffer kun lav høyde (telefon-landscape), aldri iPad.
-- **Navigasjon følger Paper: FIRE PlayerHQ-faner (Anders 2026-08-05).** «I dag · Plan ·
+- **FIRE PlayerHQ-faner (Anders 2026-08-05).** «I dag · Plan ·
   Analyse · Meg» — per `fase1/KONTRAKT.md` §10. Fanen **«Gjør» utgår som egen fane**;
   gjennomføring (live-økt, runde, test) åpnes fra Hjem eller Plan, ikke fra bunn-navigasjonen.
   **IMPLEMENTERT (verifisert mot kode 17.08.2026):** `PLAYERHQ_NAV` i `src/components/v2/shell.tsx`
   har nøyaktig de fire fanene. (`PORTAL_TABS`-symbolet finnes ikke lenger.)
   Bakgrunn: navnene spriker i tre kilder (KONTRAKT §10 · fasit-HTML · `kodeordre-agencyos.md`),
   og skallet ligger på hver eneste skjerm — spriket måtte lukkes før skjerm-PR-ene kunne kjøre.
-  AgencyOS-railen er nå avklart: se **A1-beslutningen 2026-08-16** øverst (fase2-railen vinner).
+  AgencyOS-menyen følger beslutningen 09.09.2026 øverst i denne filen.
 - **Kort-ramme (K2): golfdata-kortene er rammeløse (Anders 2026-08-05).** `Panel` eier flaten;
   kortene er innholdslag uten egen ramme. Dette er allerede byggets standard i alle 12
   golfdata-komponenter, så beslutningen bekrefter tilstanden framfor å endre den. Aldri legg
@@ -1017,8 +1007,8 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
 - **LFaseBadge tas IKKE i bruk (Anders 2026-08-05).** Den viser de 5 L-fasene, som er
   AK-formel v1. v2 (bekreftet 2026-08-03) har ikke L-faser. Appen har allerede riktig
   erstatning: de tre motorikk-stegene i `src/lib/ak-formel-visning.ts` (Vei B). Komponenten
-  blir liggende ubrukt i Paper-biblioteket — ikke plasser den på noen flate.
-- **AK-formel v2 — press-navnene følger Paper (Anders 2026-08-05):** `ALENE · OBSERVERT ·
+  skal ikke gjeninnføres på noen flate; det gamle Paper-biblioteket er fjernet.
+- **AK-formel v2 — vedtatte press-navn (Anders 2026-08-05):** `ALENE · OBSERVERT ·
   KONKURRANSE · TURNERING` (hvem som ser på), IKKE appens gamle `FRI · KRAV · UTFORDRING ·
   KONKURRANSE`. Fire nivåer begge steder, så det er ren omdøping.
   **Motorikk-stegene er allerede riktige:** Paper skriver `UTEN_BALL / LAV_HAST / AUTO`, appens
@@ -1034,8 +1024,7 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
   førsteinntrykket på iPhone) + desktop 1280px, (3) lys OG mørk modus (kjent felle:
   primary=accent-kollisjonen), (4) fasitens tilsvarende skjerm ved siden av. CI måler typer og
   bygg — ikke layout. Dette tetter hullet som lot PR1–PR4 passere som «ferdige».
-  Ferdig-definisjonen per skjerm er denne blokken selv (§Skjermarbeid i `CLAUDE.md` finnes ikke —
-  død referanse rettet 30.08.2026). Fra 30.08 gjelder i tillegg §TEGN SKJERMEN FØR DU BYGGER DEN:
+  Ferdig-definisjonen per skjerm er denne blokken, samlet i `AGENTS.md` §Skjermarbeid. Fra 30.08 gjelder i tillegg §TEGN SKJERMEN FØR DU BYGGER DEN:
   canvas godkjent FØR koding, skjermbilde-gaten ETTER.
 - **Tester planlegges i Workbench, resultat synces til spillerens talentprofil
   (Anders 2026-08-04, oppdatert 28.08):** TalentHQ som eget produkt er avviklet

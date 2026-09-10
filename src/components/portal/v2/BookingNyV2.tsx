@@ -1,4 +1,14 @@
 "use client";
+
+/**
+ * Avvik:
+ *   - Kontrastretting fra tidligere arbeidsgren er avstemt 10.09.2026. Eldre
+ *     visuelle referanser nedenfor er historikk; helskjermkontroll mot en ny
+ *     valgt Claude Design-versjon gjenstår. Denne endringen justerer fargebruk,
+ *     ikke skjermens funksjon eller oppsett. Se grener-og-main-2026-09-10.md
+ *     under docs/beslutningsgrunnlag for faktisk kontrollomfang.
+ */
+
 import { TL } from "@/lib/v2/train-lock";
 /**
  * BookingNyV2 — v2-port (retning C) av credit-wizarden /portal/booking/ny.
@@ -300,7 +310,7 @@ export function BookingNyV2({ data }: { data: BookingNyV2Data }) {
         <Kort>
           <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
             <span style={{ width: 38, height: 38, borderRadius: 12, flex: "none", background: `color-mix(in srgb, ${TL.warn} 12%, transparent)`, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
-              <Icon name="lock" size={16} style={{ color: TL.warn }} />
+              <Icon name="lock" size={16} style={{ color: TL.text }} />
             </span>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontFamily: TL.font.sans, fontSize: 15, fontWeight: 700, color: TL.text }}>Booking krever Pro</div>
@@ -480,7 +490,7 @@ export function BookingNyV2({ data }: { data: BookingNyV2Data }) {
 
           {!erBetaling && sisteCredit && (
             <div style={{ display: "flex", gap: 8, alignItems: "flex-start", padding: "10px 12px", borderRadius: 12, marginTop: 10, background: `color-mix(in srgb, ${TL.warn} 10%, transparent)`, border: `1px solid color-mix(in srgb, ${TL.warn} 40%, transparent)` }}>
-              <Icon name="coins" size={13} style={{ color: TL.warn, flex: "none", marginTop: 1 }} />
+              <Icon name="coins" size={13} style={{ color: TL.text, flex: "none", marginTop: 1 }} />
               <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.5 }}>
                 Dette er den siste crediten din denne måneden.
               </span>

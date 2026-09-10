@@ -23,9 +23,9 @@ export type LiveRoute =
 export function canAccessResolved(
   resolved: ResolvedLiveSession,
   userId: string,
-  isCoach: boolean,
+  hasPlayerAccess: boolean,
 ): boolean {
-  if (isCoach) return true;
+  if (hasPlayerAccess) return true;
   if (resolved.playerId === userId) return true;
   if (resolved.kind === "v2") {
     return (
@@ -69,10 +69,10 @@ export function liveHrefForStatus(
 
 export function liveRouteForResolved(
   resolved: ResolvedLiveSession | null,
-  viewer: { userId: string; isCoach: boolean },
+  viewer: { userId: string; hasPlayerAccess: boolean },
 ): LiveRoute {
   if (!resolved) return { type: "notfound" };
-  if (!canAccessResolved(resolved, viewer.userId, viewer.isCoach)) {
+  if (!canAccessResolved(resolved, viewer.userId, viewer.hasPlayerAccess)) {
     return { type: "forbidden" };
   }
   return {
