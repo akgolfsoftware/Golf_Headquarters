@@ -1,6 +1,6 @@
 /**
  * Synk tak-pakken fra DataGolf skill-ratings + approach-skill + rankings.
- * Bare navnene i TAK_ROSTER. Idempotent upsert.
+ * Alle spillere i skill-ratings. Seks utvalgte navn sorteres først. Idempotent upsert.
  */
 import { prisma } from "@/lib/prisma";
 import {
@@ -12,7 +12,7 @@ import {
   type DGSkillRatingRow,
 } from "@/lib/datagolf/client";
 import { bandFraApproachRad, visningsnavnFraDataGolf } from "@/lib/datagolf/tak";
-import { TAK_ROSTER, TAK_ROSTER_IDS } from "@/lib/datagolf/tak-roster";
+import { TAK_ROSTER } from "@/lib/datagolf/tak-roster";
 
 function num(v: unknown): number | null {
   if (typeof v !== "number" || !Number.isFinite(v)) return null;
@@ -25,9 +25,10 @@ function int(v: unknown): number | null {
 }
 
 function asOfFra(iso: string | undefined): Date {
-  if (!iso) return new Date();
+  if (!iso) throw new Error("DataGolf mangler kildedato.");
   const d = new Date(iso);
-  return Number.isNaN(d.getTime()) ? new Date() : d;
+  if (Number.isNaN(d.getTime())) throw new Error("DataGolf har ugyldig kildedato.");
+  return d;
 }
 
 export async function syncDatagolfTak(): Promise<{
@@ -57,12 +58,17 @@ export async function syncDatagolfTak(): Promise<{
     if (typeof p.dg_id === "number") approachById.set(p.dg_id, p);
   }
 
-  const asOf = asOfFra(approach.meta?.last_updated ?? approach.last_updated ?? ranks.last_updated);
+  const asOf = asOfFra(approach.meta?.last_updated ?? approach.last_updated);
   const manglerSkill: number[] = [];
   const manglerApproach: number[] = [];
   let upserted = 0;
 
-  for (const rad of TAK_ROSTER) {
+  if (skillById.size === 0 || approachById.size === 0) {
+    throw new Error("DataGolf-svar mangler spillere. Eksisterende referanser er beholdt.");
+  }
+  const roster = [...skillById.keys()].map((dgId, i) =>
+    TAK_ROSTER.find(r => r.dgId === dgId) ?? { dgId, sortOrder: 100 + i, formLabel: null, displayName: undefined });
+  for (const rad of roster) {
     const skill = skillById.get(rad.dgId);
     const rank = rankById.get(rad.dgId);
     if (!skill) {
@@ -96,49 +102,23 @@ export async function syncDatagolfTak(): Promise<{
       source: "datagolf",
     };
 
-    const tak = await prisma.datagolfTak.upsert({
+    const bands = approachRad ? bandFraApproachRad(approachRad as Record<string, unknown>) : [];
+    // Profil og bånd byttes atomisk. En ny dato får aldri gamle bånd.
+    await prisma.datagolfTak.upsert({
       where: { dgPlayerId: rad.dgId },
-      create: data,
-      update: data,
+      create: { ...data, bands: { create: bands } },
+      update: { ...data, bands: { deleteMany: {}, create: bands } },
     });
-
-    if (approachRad) {
-      const bands = bandFraApproachRad(approachRad as Record<string, unknown>);
-      for (const b of bands) {
-        await prisma.datagolfTakBand.upsert({
-          where: {
-            takId_band_lie: { takId: tak.id, band: b.band, lie: b.lie },
-          },
-          create: {
-            takId: tak.id,
-            band: b.band,
-            lie: b.lie,
-            proximityMeters: b.proximityMeters,
-            sgPerShot: b.sgPerShot,
-            girRate: b.girRate,
-            goodShotRate: b.goodShotRate,
-            shotCount: b.shotCount,
-          },
-          update: {
-            proximityMeters: b.proximityMeters,
-            sgPerShot: b.sgPerShot,
-            girRate: b.girRate,
-            goodShotRate: b.goodShotRate,
-            shotCount: b.shotCount,
-          },
-        });
-      }
-    }
     upserted++;
   }
 
   await prisma.datagolfTak.updateMany({
-    where: { dgPlayerId: { notIn: [...TAK_ROSTER_IDS] } },
+    where: { dgPlayerId: { notIn: [...skillById.keys()] } },
     data: { isActive: false },
   });
 
   return {
-    roster: TAK_ROSTER.length,
+    roster: roster.length,
     upserted,
     manglerSkill,
     manglerApproach,

@@ -21,6 +21,8 @@
  */
 
 import { prisma } from "@/lib/prisma";
+import { hentTurneringshistorikk } from "@/lib/portal/turneringshistorikk-data";
+import { byggTurneringshistorikk, type Turneringshistorikk } from "@/lib/domain/turneringshistorikk";
 import { sisteSpilteBaneId } from "@/lib/portal/siste-spilte-bane";
 import type { TournamentEntryStatus } from "@/generated/prisma/client";
 
@@ -182,6 +184,7 @@ export type TurneringDetalj = {
   } | null;
   /** Spillerens tidligere resultater (tom = card utelates). */
   history: HistoricResult[];
+  resultathistorikk: Turneringshistorikk;
   /**
    * Turneringens dato-vindu er nå/aktivt (i dag ∈ [start, slutt] eller
    * status IN_PROGRESS) → «Start turneringsrunde» kan tilbys en påmeldt spiller.
@@ -258,18 +261,9 @@ export async function loadTurneringDetalj(
       )
     : [];
 
-  // Historikk: spillerens egne resultater. I praksis tomt i dag (0 rader),
-  // men strukturen er ekte og fylles automatisk når resultater registreres.
-  const results = await prisma.tournamentResult.findMany({
-    where: { userId, tournamentId },
-    select: {
-      id: true,
-      position: true,
-      score: true,
-      tournament: { select: { startDate: true } },
-    },
-    orderBy: { createdAt: "desc" },
-  });
+  const historikk = await hentTurneringshistorikk(userId);
+  const resultater = historikk.aar.flatMap(a => a.turneringer).filter(t => t.turneringId === tournamentId);
+  const resultathistorikk = byggTurneringshistorikk(resultater, true);
 
   const entryRow = tournament.entries[0] ?? null;
 
@@ -293,7 +287,7 @@ export async function loadTurneringDetalj(
   if (entryRow) {
     try {
       const runde = await prisma.round.findFirst({
-        where: { tournamentEntryId: entryRow.id },
+        where: { tournamentEntryId: entryRow.id, userId },
         orderBy: { createdAt: "desc" },
         select: { id: true, score: true, _count: { select: { holeScores: true } } },
       });
@@ -343,12 +337,8 @@ export async function loadTurneringDetalj(
               : "B",
         }
       : null,
-    history: results.map((r) => ({
-      id: r.id,
-      year: r.tournament.startDate.getFullYear(),
-      position: r.position,
-      score: r.score,
-    })),
+    history: resultater.map(r => ({ id: r.turneringId, year: r.startDato.getUTCFullYear(), position: r.plassering, score: r.brutto ?? null })),
+    resultathistorikk,
     erRelevantNa,
     rundeBaneId,
     liveRunde,

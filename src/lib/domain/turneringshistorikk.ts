@@ -17,6 +17,7 @@
  */
 
 /** Deltakelse slik den ligger i public_player_entries + tournaments. */
+import type { Resultatrunde } from "./turneringsresultat";
 export type TurneringsRad = {
   turneringId: string;
   navn: string;
@@ -33,6 +34,14 @@ export type TurneringsRad = {
   motPar: number | null;
   /** REGISTERED | TEED_OFF | CUT | WITHDREW | FINISHED. */
   status: string | null;
+  brutto?: number | null;
+  runder?: Resultatrunde[];
+  klasse?: string | null;
+  kildeDato?: Date | null;
+  kildeDelvis?: boolean;
+  kildeUrl?: string | null;
+  plasseringTekst?: string | null;
+  fullstendig?: boolean;
 };
 
 export type TurneringsAar = {
@@ -76,7 +85,7 @@ const TOM: Turneringshistorikk = {
  * telle som en plassering — en spiller som trakk seg har ikke «kommet på
  * 61. plass», han har ikke et resultat.
  */
-const UTEN_RESULTAT = new Set(["WITHDREW", "CUT", "REGISTERED"]);
+const UTEN_RESULTAT = new Set(["WITHDREW", "CUT", "REGISTERED", "TEED_OFF", "DQ", "DNF", "PLANNED", "CONFIRMED", "WITHDRAWN"]);
 
 function minstePlassering(rader: TurneringsRad[]): number | null {
   const tall = rader
@@ -114,7 +123,7 @@ export function byggTurneringshistorikk(
 
   const perAar = new Map<number, TurneringsRad[]>();
   for (const r of rader) {
-    const aar = r.startDato.getFullYear();
+    const aar = Number(new Intl.DateTimeFormat("en", { timeZone: "Europe/Oslo", year: "numeric" }).format(r.startDato));
     const liste = perAar.get(aar);
     if (liste) liste.push(r);
     else perAar.set(aar, [r]);

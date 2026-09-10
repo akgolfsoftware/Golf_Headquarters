@@ -2,6 +2,8 @@
 
 > **Hva dette er:** ett snapshot av hvor plattformen står akkurat nå. Oppdater datoen + relevante linjer når noe vesentlig endrer seg.
 
+**DataGolf/GolfBox, oppdatert 10.09.2026:** Spillerverktøy med proffsammenligning, kildebaserte innspill og lagrede utfordringer. Felles egen turneringshistorikk med brutto runder, statuser, kilde og filtre er koblet til DataGolf, turneringsanalyse og detaljside. GolfBox-importen håndterer delvise klasser, korrigeringer og rundenummer. [Leveranse og testbevis](beslutningsgrunnlag/datagolf-golfbox-leveranse-2026-09-10.md). Produksjonsdata er lesekontrollert; historisk reparasjon skjer via ordinær synk etter utrulling. Claude Design revideres fortsatt, og gammel «låst»-merking nedenfor er historikk for denne designleveransen.
+
 **Sist oppdatert:** 2026-09-08 (Train-lock-synk fra «Player HQ Train lock» 15:47 — 219 skjermfiler, ni nye DG-10–17; sitert 149/219. Forrige status 07.09 mot `8ca1d66ae`). Historikk under: 07.09, 05.09 (prosjektrevisjon — `docs/beslutningsgrunnlag/prosjektrevisjon-2026-09-05.md`).
 **Betaling:** koden er klar siden 30.08 (Stripe-cutover 1. september). Live-nøkler/DNS/DKIM er
 Anders-oppgaver i Vercel/Stripe-panelet og kan ikke verifiseres fra kode/git — se

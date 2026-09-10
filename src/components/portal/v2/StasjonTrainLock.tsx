@@ -21,8 +21,11 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo, useState, type CSSProperties } from "react";
+import { useMemo, useRef, useState, useTransition, type CSSProperties } from "react";
+import { lagreDataGolfUtfordring } from "@/app/portal/analysere/datagolf/actions";
 import { TilbakeLenke } from "@/components/v2";
+import { bandEtikett } from "@/lib/datagolf/player-tool";
+import { TAK_BAND } from "@/lib/datagolf/tak";
 import { TL } from "@/lib/v2/train-lock";
 import {
   STASJON_SLAG,
@@ -80,6 +83,9 @@ export function StasjonTrainLock({
   const router = useRouter();
   const [baller, setBaller] = useState<Ball[]>(() => Array.from({ length: 10 }, () => "tom"));
   const [ferdig, setFerdig] = useState(false);
+  const [lagrer, startLagring] = useTransition();
+  const [lagreFeil, setLagreFeil] = useState<string | null>(null);
+  const attempt = useRef<{ id: string; start: string } | null>(null);
   const [carryFelt, setCarryFelt] = useState(carryMeter != null ? String(carryMeter).replace(".", ",") : "");
 
   const inne = baller.filter((b) => b === "inne").length;
@@ -95,6 +101,7 @@ export function StasjonTrainLock({
   );
 
   function settBall(i: number) {
+    if (!attempt.current) attempt.current = { id: crypto.randomUUID(), start: new Date().toISOString() };
     setBaller((forrige) => {
       const neste = [...forrige];
       neste[i] = forrige[i] === "tom" ? "inne" : forrige[i] === "inne" ? "ute" : "tom";
@@ -102,9 +109,23 @@ export function StasjonTrainLock({
     });
   }
 
+  function fullfor() {
+    if (!stasjon || !valgtTakId || !attempt.current || baller.some(b => b === "tom")) return;
+    const forsok = attempt.current;
+    setLagreFeil(null);
+    startLagring(async () => {
+      try {
+        const result = await lagreDataGolfUtfordring({ attemptId: forsok.id, startedAt: forsok.start,
+          tak: valgtTakId, slag: slagId, carry: carryMeter, lie, baller, target: stasjon.maalVerdi });
+        if (result.ok) setFerdig(true);
+        else setLagreFeil(result.message);
+      } catch { setLagreFeil("Kunne ikke lagre. Ballene er beholdt her. Prøv igjen."); }
+    });
+  }
+
   function lagreCarry() {
     const n = Number(carryFelt.replace(",", "."));
-    const carry = Number.isFinite(n) && n > 0 ? n : null;
+    const carry = Number.isFinite(n) && n > 0 && n <= 400 ? n : null;
     router.replace(stasjonHref({ ...hrefBase, slag: slagId, carry }));
   }
 
@@ -113,7 +134,7 @@ export function StasjonTrainLock({
       <div>
         <TilbakeLenke href="/portal/analysere/datagolf">DataGolf</TilbakeLenke>
         <p style={{ marginTop: 16, fontSize: 15, color: TL.mute }}>
-          Ingen tak i pakken ennå. Kjør synken først.
+          Proffreferansene er ikke tilgjengelige ennå. Prøv igjen senere.
         </p>
       </div>
     );
@@ -178,9 +199,10 @@ export function StasjonTrainLock({
           Inne
         </div>
         <p style={{ marginTop: 18, fontSize: 26, fontWeight: 700, letterSpacing: "-0.01em", lineHeight: 1.25 }}>
-          {ferdigSetning(inne, 10, stasjon.takNavn)}
+          {ferdigSetning(inne, 10, stasjon.takNavn, stasjon.kilde === "datagolf")}
         </p>
-        <div style={{ marginTop: 18, display: "grid", gridTemplateColumns: "repeat(10, 1fr)", gap: 6 }}>
+        <p role="status" style={{ marginTop: 12, color: TL.mute }}>Resultatet er lagret i din treningshistorikk. Utfordringen måler treff på treningsmålet, ikke om du er bedre enn proffen.</p>
+        <div style={{ marginTop: 18, display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 6 }}>
           {baller.map((b, i) => (
             <div
               key={i}
@@ -198,6 +220,7 @@ export function StasjonTrainLock({
           onClick={() => {
             setFerdig(false);
             setBaller(Array.from({ length: 10 }, () => "tom"));
+            attempt.current = null;
           }}
           style={{
             marginTop: 24,
@@ -251,36 +274,19 @@ export function StasjonTrainLock({
             color: TL.mute,
           }}
         >
-          Tak: {stasjon.takNavn.split(" ").slice(-1)[0]}
+          Proff: {stasjon.takNavn}
         </span>
       </div>
 
-      <div style={{ marginTop: 14, display: "flex", flexWrap: "wrap", gap: 8 }}>
-        {taker.map((t) => {
-          const aktiv = t.dgPlayerId === valgtTakId;
-          return (
-            <Link
-              key={t.dgPlayerId}
-              href={stasjonHref({ ...hrefBase, takId: t.dgPlayerId, slag: slagId })}
-              className={PRESS}
-              style={{
-                height: 44,
-                padding: "0 16px",
-                borderRadius: TL.radius.pill,
-                background: aktiv ? TL.fill : TL.dock,
-                color: aktiv ? TL.onFill : TL.mute,
-                display: "flex",
-                alignItems: "center",
-                fontSize: 13,
-                fontWeight: 600,
-                textDecoration: "none",
-              }}
-            >
-              {t.name.split(" ").slice(-1)[0]}
-            </Link>
-          );
-        })}
-      </div>
+      <label style={{ display: "grid", gap: 8, marginTop: 14 }}>
+        <span>Velg proff</span>
+        <select aria-label="Velg proff" value={valgtTakId ?? ""}
+          onChange={e => router.push(stasjonHref({ ...hrefBase, takId: Number(e.target.value), slag: slagId }))}
+          style={{ minHeight: 48, width: "100%", background: TL.elev, color: TL.text,
+            border: `1px solid ${TL.hair}`, borderRadius: TL.radius.field, padding: "0 12px" }}>
+          {taker.map(t => <option key={t.dgPlayerId} value={t.dgPlayerId}>{t.name}</option>)}
+        </select>
+      </label>
 
       <div style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 10 }}>
         {GRUPPER.map((g) => (
@@ -298,7 +304,7 @@ export function StasjonTrainLock({
               {g.label}
             </div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-              {STASJON_SLAG.filter((s) => s.gruppe === g.id).map((s) => {
+              {STASJON_SLAG.filter((s) => s.gruppe === g.id && (s.gruppe !== "innspill" || TAK_BAND.some(b => b.kode === s.innspillBand && b.lie === lie))).map((s) => {
                 const aktiv = s.id === slagId;
                 return (
                   <Link
@@ -310,7 +316,7 @@ export function StasjonTrainLock({
                       padding: "0 14px",
                       borderRadius: TL.radius.pill,
                       background: aktiv ? TL.fill : TL.dock,
-                      color: aktiv ? TL.onFill : TL.mute,
+                      color: aktiv ? TL.onFill : TL.text,
                       display: "flex",
                       alignItems: "center",
                       fontSize: 13,
@@ -318,7 +324,7 @@ export function StasjonTrainLock({
                       textDecoration: "none",
                     }}
                   >
-                    {s.etikett}
+                    {s.gruppe === "innspill" && s.innspillBand ? bandEtikett({ band: s.innspillBand, lie }) : s.etikett}
                   </Link>
                 );
               })}
@@ -337,7 +343,7 @@ export function StasjonTrainLock({
             Fairway
           </Link>
           <Link
-            href={stasjonHref({ ...hrefBase, slag: slagId, lie: "rough" })}
+            href={stasjonHref({ ...hrefBase, slag: slagId === "innspill50" ? "innspill100" : slagId === "innspill200" ? "innspill150" : slagId, lie: "rough" })}
             className={PRESS}
             style={pilleStil(lie === "rough")}
           >
@@ -446,7 +452,8 @@ export function StasjonTrainLock({
           >
             {stasjon.maalVerdi != null
               ? fmtLengde(stasjon.maalVerdi, stasjon.maalEnhet)
-              : stasjon.kind === "korridor"
+                : stasjon.kind === "sirkel" ? "Mangler"
+                : stasjon.kind === "korridor"
                 ? "Stripe"
                 : stasjon.kind === "i_hull"
                   ? "I hull"
@@ -462,7 +469,7 @@ export function StasjonTrainLock({
               color: TL.mute,
             }}
           >
-            {stasjon.kind === "sirkel" ? `Sirkel · slå ${stasjon.takNavn.split(" ").slice(-1)[0]}` : "Regel"}
+            {stasjon.kind === "sirkel" ? "Treningsmål · radius" : "Regel"}
           </div>
         </div>
       </div>
@@ -479,7 +486,7 @@ export function StasjonTrainLock({
             color: TL.mute,
           }}
         >
-          Lekkasje hos taket
+          Proffens SG er under referansen i dette intervallet
         </p>
       ) : null}
 
@@ -508,7 +515,7 @@ export function StasjonTrainLock({
           </span>
           <span style={{ fontSize: 20, fontWeight: 700, fontVariantNumeric: "tabular-nums" }}>{inne}/10</span>
         </div>
-        <div style={{ marginTop: 12, display: "grid", gridTemplateColumns: "repeat(10, 1fr)", gap: 6 }}>
+        <div style={{ marginTop: 12, display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 6 }}>
           {baller.map((b, i) => (
             <button
               key={i}
@@ -516,6 +523,7 @@ export function StasjonTrainLock({
               aria-label={`Ball ${i + 1}: ${b}`}
               className={PRESS}
               onClick={() => settBall(i)}
+              disabled={lagrer || stasjon.manglerCarry || stasjon.kilde === "mangler"}
               style={{
                 height: 44,
                 borderRadius: 8,
@@ -540,7 +548,7 @@ export function StasjonTrainLock({
               color: TL.mute,
             }}
           >
-            Sirkelen ved annet tak
+            Treningsmål med andre proffreferanser
           </div>
           <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 10 }}>
             {andreSirkler.map((r) => (
@@ -559,6 +567,8 @@ export function StasjonTrainLock({
       ) : null}
 
       <p style={{ marginTop: 16, fontSize: 13, color: TL.mute }}>{stasjon.kildeTekst}</p>
+      {lagreFeil ? <p role="alert" style={{ marginTop: 12 }}>{lagreFeil}</p> : null}
+      <p role="status" style={{ marginTop: 8, color: TL.mute }}>{baller.filter(b => b !== "tom").length} av 10 baller registrert.</p>
 
       <div style={{ marginTop: 16, display: "flex", gap: 10 }}>
         <button
@@ -577,12 +587,13 @@ export function StasjonTrainLock({
             cursor: "pointer",
           }}
         >
-          Bytt tak
+          Bytt proff
         </button>
         <button
           type="button"
           className={PRESS}
-          onClick={() => setFerdig(true)}
+          onClick={fullfor}
+          disabled={lagrer || baller.some(b => b === "tom") || stasjon.manglerCarry || stasjon.kilde === "mangler"}
           style={{
             flex: 1,
             height: 48,
@@ -595,7 +606,7 @@ export function StasjonTrainLock({
             cursor: "pointer",
           }}
         >
-          Ferdig
+          {lagrer ? "Lagrer …" : "Lagre resultat"}
         </button>
       </div>
     </div>
@@ -608,7 +619,7 @@ function pilleStil(aktiv: boolean): CSSProperties {
     padding: "0 18px",
     borderRadius: TL.radius.pill,
     background: aktiv ? TL.fill : TL.dock,
-    color: aktiv ? TL.onFill : TL.mute,
+    color: aktiv ? TL.onFill : TL.text,
     display: "flex",
     alignItems: "center",
     fontSize: 13,

@@ -1,6 +1,7 @@
 import "server-only";
 
 import { prisma } from "@/lib/prisma";
+import { lesTurneringsresultat } from "@/lib/domain/turneringsresultat";
 import {
   byggTurneringshistorikk,
   type Turneringshistorikk,
@@ -26,9 +27,7 @@ export async function hentTurneringshistorikk(
     select: { publicPlayerId: true },
   });
 
-  if (!bruker?.publicPlayerId) return byggTurneringshistorikk([], false);
-
-  const entries = await prisma.publicPlayerEntry.findMany({
+  const [entries, manuelle] = await Promise.all([bruker?.publicPlayerId ? prisma.publicPlayerEntry.findMany({
     where: {
       playerId: bruker.publicPlayerId,
       // Sammenslåtte dubletter skal ikke dukke opp to ganger.
@@ -39,6 +38,8 @@ export async function hentTurneringshistorikk(
       status: true,
       position: true,
       scoreToPar: true,
+      totalScore: true, rounds: true, klasseNavn: true, updatedAt: true,
+      roundDetails: { select: { roundNumber: true, score: true, toPar: true, source: true }, orderBy: { roundNumber: "asc" } },
       tournament: {
         select: {
           id: true,
@@ -46,10 +47,16 @@ export async function hentTurneringshistorikk(
           sourceOrigin: true,
           tour: true,
           startDate: true,
+          officialUrl: true,
         },
       },
     },
-  });
+  }) : Promise.resolve([]), prisma.tournamentEntry.findMany({
+    where: { userId, withdrawnAt: null, OR: [{ tournamentId: null }, { tournament: { mergedIntoId: null } }] },
+    select: { id: true, manualName: true, manualDate: true, entryStatus: true, category: true,
+      tournament: { select: { id: true, name: true, sourceOrigin: true, tour: true, startDate: true, officialUrl: true } } },
+    orderBy: { createdAt: "desc" },
+  })]);
 
   const rader: TurneringsRad[] = entries.map((e) => ({
     turneringId: e.tournament.id,
@@ -57,10 +64,21 @@ export async function hentTurneringshistorikk(
     kilde: e.tournament.sourceOrigin,
     tour: e.tournament.tour,
     startDato: e.tournament.startDate,
-    plassering: e.position,
-    motPar: e.scoreToPar,
+    ...lesTurneringsresultat(e),
+    klasse: e.klasseNavn,
+    kildeUrl: e.tournament.officialUrl,
     status: e.status,
   }));
-
-  return byggTurneringshistorikk(rader, true);
+  const seen = new Set(rader.map(r => r.turneringId));
+  for (const e of manuelle) {
+    const t = e.tournament;
+    const id = t?.id ?? e.id;
+    const dato = t?.startDate ?? e.manualDate;
+    if (seen.has(id) || !dato) continue;
+    rader.push({ turneringId: id, navn: t?.name ?? e.manualName ?? "Egen turnering", startDato: dato,
+      kilde: t?.sourceOrigin ?? "MANUAL", tour: t?.tour ?? null, status: e.entryStatus,
+      plassering: null, motPar: null, brutto: null, runder: [], klasse: e.category, kildeUrl: t?.officialUrl ?? null });
+    seen.add(id);
+  }
+  return byggTurneringshistorikk(rader, !!bruker?.publicPlayerId || rader.length > 0);
 }

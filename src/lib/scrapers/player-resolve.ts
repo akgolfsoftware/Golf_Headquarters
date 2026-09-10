@@ -12,12 +12,14 @@
 
 import type { PrismaClient } from "../../generated/prisma/client";
 import { hentEntryAntall } from "../stats/entry-antall";
+import { iso3to2 } from "../datagolf/country";
 
 type PlayerRow = {
   id: string;
   name: string;
   slug: string;
   birthYear: number | null;
+  country?: string;
 };
 
 /**
@@ -69,8 +71,10 @@ export async function resolvePlayer(
 ): Promise<{ player: PlayerRow; created: boolean }> {
   const cleaned = cleanDisplayName(input.name);
   const norm = normalizePlayerName(cleaned);
+  const countryCode = (value: string | undefined) => value?.trim().length === 2 ? value.trim().toUpperCase() : iso3to2(value);
+  const country = countryCode(input.country);
 
-  const memoNokkel = `${norm}|${input.birthYear ?? ""}`;
+  const memoNokkel = `${norm}|${input.birthYear ?? ""}|${country}`;
   const memoTreff = memo.get(memoNokkel);
   if (memoTreff) return { player: memoTreff, created: false };
 
@@ -79,10 +83,12 @@ export async function resolvePlayer(
   const lastToken = cleaned.split(/\s+/).filter(Boolean).pop() ?? cleaned;
   const rough = await prisma.publicPlayer.findMany({
     where: { name: { contains: lastToken, mode: "insensitive" } },
-    select: { id: true, name: true, slug: true, birthYear: true },
+    select: { id: true, name: true, slug: true, birthYear: true, country: true },
   });
 
-  let pool = rough.filter((p) => normalizePlayerName(p.name) === norm);
+  let pool = rough.filter((p) => normalizePlayerName(p.name) === norm
+    && (!input.birthYear || !p.birthYear || p.birthYear === input.birthYear)
+    && (countryCode(p.country) === "XX" || country === "XX" || countryCode(p.country) === country));
   if (pool.length > 1 && input.birthYear) {
     const byYear = pool.filter((p) => p.birthYear === input.birthYear);
     if (byYear.length > 0) pool = byYear;
@@ -112,7 +118,7 @@ export async function resolvePlayer(
     data: {
       name: cleaned,
       slug,
-      country: input.country,
+      country,
       tier: input.tier,
       birthYear: input.birthYear ?? null,
     },

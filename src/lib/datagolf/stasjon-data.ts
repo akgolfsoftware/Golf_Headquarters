@@ -38,12 +38,12 @@ export async function hentStasjonSide(input: {
 }> {
   const rader = await hentAktiveTak();
   const taker = rader.map(tilSnapshot);
-  const dgId = input.takParam ? Number.parseInt(input.takParam, 10) : NaN;
+  const dgId = input.takParam && /^[1-9]\d{0,8}$/.test(input.takParam) ? Number(input.takParam) : NaN;
   const valgtTak =
     taker.find((t) => t.dgPlayerId === dgId) ?? taker[0] ?? null;
   const slag = finnSlag(input.slagParam);
   const carryRaw = input.carryParam?.replace(",", ".");
-  const carryMeter = carryRaw && Number.isFinite(Number(carryRaw)) && Number(carryRaw) > 0
+  const carryMeter = carryRaw && Number.isFinite(Number(carryRaw)) && Number(carryRaw) > 0 && Number(carryRaw) <= 400
     ? Number(carryRaw)
     : null;
   const lie = input.lieParam === "rough" ? "rough" : "fairway";
@@ -58,7 +58,7 @@ export async function hentStasjonSide(input: {
     carryMeter,
     lie,
     andre: taker.filter((t) => t.dgPlayerId !== valgtTak.dgPlayerId),
-  });
+  }).filter(r => r.sirkelMeter !== null).slice(0, 5);
 
   return { stasjon, taker, valgtTak, carryMeter, andreSirkler };
 }

@@ -1,7 +1,10 @@
 /**
  * Benchmark-autosync — cron-agent "benchmark-sync" (mandager 08:00 norsk tid).
  *
- * Holder DataGolf-fasitene i NGF-testbatteriet ferske:
+ * Automatisk justering er deaktivert 10.09.2026: DataGolf leverer relative
+ * verdier som ikke kan skalere absolutte testgrenser. Algoritmen nedenfor
+ * er beholdt som historisk kode for en eventuell fremtidig, gyldig rådatakilde.
+ * Tidligere funksjon:
  *   1. Henter ferske skill ratings fra DataGolf (PGA + Korn Ferry).
  *   2. Regner ankere: PGA topp 40 (snitt av topp 40 på SG total), PGA-snitt,
  *      KFT-snitt — for metrikker DataGolf faktisk måler (driver-lengde, fairway-%).
@@ -34,13 +37,13 @@ type AutoMetric = "driving_dist" | "driving_acc";
 
 /** Tester med egne DataGolf-ankere. Nøkkel = protocol.benchmarks_key. */
 const AUTO_TESTS: Record<string, { metric: AutoMetric; label: string }> = {
-  driver_basic: { metric: "driving_dist", label: "Driver Basic" },
-  driver_gate: { metric: "driving_acc", label: "Driver Gate" },
+  // Skill-ratings gir relative yards/prosentpoeng. Ingen absolutt test kan
+  // kalibreres ved å dele disse tallene på et tidligere relativt uttak.
 };
 
 /** Tester som skygger en annen tests drift (CHS følger driver-lengde ~1:1). */
 const FOLLOW_TESTS: Record<string, { follows: string; metric: AutoMetric; label: string }> = {
-  chs: { follows: "driver_basic", metric: "driving_dist", label: "Clubhead Speed (CHS)" },
+  // Køllehastighet kan heller ikke utledes fra justert driver-lengde.
 };
 
 /** Synk-modus for en test, brukt av fasit-siden i AgencyOS. */
@@ -280,6 +283,15 @@ async function syncOneTest(
 
 export async function runBenchmarkSync(): Promise<BenchmarkSyncSummary> {
   const now = new Date();
+  if (Object.keys(AUTO_TESTS).length === 0 && Object.keys(FOLLOW_TESTS).length === 0) {
+    return {
+      ranAt: now.toISOString(),
+      results: ["driver_basic", "driver_gate", "chs"].map(key => ({ key, label: key, status: "skipped",
+        detail: "DataGolf skill-ratings er relative verdier. Absolutte testreferanser beholdes uendret." })),
+      staticCount: await prisma.testDefinition.count(),
+      telegram: "skipped",
+    };
+  }
   const [pga, kft] = await Promise.all([getSkillRatings("pga"), getSkillRatings("kft")]);
 
   const anchorsByMetric = new Map<AutoMetric, SyncAnchors | null>();

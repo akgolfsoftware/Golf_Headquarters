@@ -112,6 +112,7 @@ export async function backfillTournamentResultsForLinkedUsers(
     where: {
       publicPlayerId: { not: null },
       deletedAt: null,
+      anonymisertAt: null,
     },
     select: { id: true, publicPlayerId: true },
   });
@@ -119,8 +120,9 @@ export async function backfillTournamentResultsForLinkedUsers(
   let mirrored = 0;
   for (const u of users) {
     if (!u.publicPlayerId) continue;
+    const publicPlayerId = u.publicPlayerId;
     const entries = await prisma.publicPlayerEntry.findMany({
-      where: { playerId: u.publicPlayerId },
+      where: { playerId: u.publicPlayerId, tournament: { mergedIntoId: null } },
       select: {
         tournamentId: true,
         position: true,
@@ -139,14 +141,14 @@ export async function backfillTournamentResultsForLinkedUsers(
       // Kun speil når vi har noe resultat
       if (e.position == null && score == null) continue;
 
-      const r = await mirrorTournamentResultForLinkedUser(prisma, {
+      const r = await prisma.$transaction(tx => mirrorTournamentResultForLinkedUser(tx, {
         tournamentId: e.tournamentId,
-        publicPlayerId: u.publicPlayerId,
+        publicPlayerId,
         position: e.position,
         scoreToPar: e.scoreToPar,
         totalScore: e.totalScore,
         publicEntryStatus: e.status,
-      });
+      }));
       if (r.mirrored) mirrored++;
     }
   }

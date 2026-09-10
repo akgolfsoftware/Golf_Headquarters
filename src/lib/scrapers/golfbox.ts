@@ -38,11 +38,9 @@ async function throttle(): Promise<void> {
  * Normaliser før parsing. Tokenene opptrer kun som verdier (`:!0`, `,!0`, `[!0`).
  */
 export function parseGolfBox<T = unknown>(text: string): T {
-  const normalized = text
-    .replace(/:!0([,}\]])/g, ":true$1")
-    .replace(/:!1([,}\]])/g, ":false$1")
-    .replace(/([,[])!0([,}\]])/g, "$1true$2")
-    .replace(/([,[])!1([,}\]])/g, "$1false$2");
+  // Hopp over strenger: et turneringsnavn kan selv inneholde «:!0,».
+  const normalized = text.replace(/"(?:\\.|[^"\\])*"|!([01])/g,
+    (token, value: string | undefined) => value === undefined ? token : value === "0" ? "true" : "false");
   return JSON.parse(normalized) as T;
 }
 
@@ -52,6 +50,7 @@ async function fetchHandler<T>(path: string): Promise<T> {
   const res = await fetch(url, {
     headers: { "User-Agent": USER_AGENT, Accept: "application/json" },
     cache: "no-store",
+    signal: AbortSignal.timeout(25_000),
   });
   if (!res.ok) {
     throw new Error(`[golfbox] ${path} → HTTP ${res.status}`);
@@ -150,7 +149,7 @@ export function parseGolfBoxDate(s: string | undefined | null): Date | null {
   const d = +s.slice(6, 8);
   if (!y || !m || !d) return null;
   const date = new Date(Date.UTC(y, m - 1, d));
-  return isNaN(date.getTime()) ? null : date;
+  return isNaN(date.getTime()) || date.getUTCFullYear() !== y || date.getUTCMonth() !== m - 1 || date.getUTCDate() !== d ? null : date;
 }
 
 export async function getSchedule(
@@ -222,6 +221,7 @@ const LeaderboardEntrySchema = z.object({
   BirthYear: z.number().nullable().optional(),
   ClubName: z.string().nullable().optional(),
   Wagr: z.unknown().optional(),
+  IsAnonymous: z.boolean().optional(),
   // Rounds kan være dict (keyed) eller array — hold løst, normaliser i mapping.
   Rounds: z.unknown().optional(),
 });
@@ -243,6 +243,11 @@ export type GolfBoxLeaderboardEntry = {
   klasseNavn: string | null;
   /** Brutto-score per runde (R1, R2, …). null der ikke spilt. */
   roundScores: (number | null)[];
+  roundToPar: (number | null)[];
+  roundHoles: (number | null)[];
+  roundCompleted: boolean[];
+  /** Klasseplassering kan bygge på netto/poeng; da vises kun brutto rundescorer. */
+  grossRanking: boolean;
 };
 
 export type GolfBoxLeaderboard = {
@@ -251,6 +256,7 @@ export type GolfBoxLeaderboard = {
   activeRound: number | null;
   isScoringOpen: boolean;
   entries: GolfBoxLeaderboardEntry[];
+  failedClasses: number[];
 };
 
 // ToParValue er skalert ×10000 i feeden (-230000 = -23). Foretrekk teksten.
@@ -260,10 +266,9 @@ function toParToNumber(
 ): number | null {
   if (text != null && text !== "") {
     if (/^E$/i.test(text)) return 0;
-    const n = parseInt(text.replace(/[^0-9+-]/g, ""), 10);
-    if (!isNaN(n)) return n;
+    if (/^[+-]?\d+$/.test(text.trim())) return Number(text);
   }
-  if (typeof value === "number") return Math.round(value / 10000);
+  if (typeof value === "number" && Number.isSafeInteger(value / 10000)) return value / 10000;
   return null;
 }
 
@@ -291,12 +296,13 @@ function holeScoreValue(hole: unknown): number | null {
   if (!score || typeof score !== "object") return null;
   const s = score as Record<string, unknown>;
   if (typeof s.Text === "string" && s.Text !== "") {
-    const n = parseInt(s.Text, 10);
-    if (!isNaN(n) && n > 0) return n;
+    const n = /^\d+$/.test(s.Text.trim()) ? Number(s.Text) : null;
+    if (n != null && n > 0) return n;
   }
   if (typeof s.Value === "number" && s.Value > 0) {
     // Observert rå (4 = 4 slag), men vær robust mot ×10000-skalering.
-    return s.Value >= 1000 ? Math.round(s.Value / 10000) : s.Value;
+    const n = s.Value >= 1000 ? s.Value / 10000 : s.Value;
+    return Number.isSafeInteger(n) && n > 0 ? n : null;
   }
   return null;
 }
@@ -318,7 +324,10 @@ export function sumHoleScores(round: unknown): number | null {
     : Object.entries(holeScores as Record<string, unknown>)
         .filter(([key]) => /^H\d+$/.test(key))
         .map(([, hole]) => hole);
-  if (holes.length < 9) return null;
+  const planned = r.Holes && typeof r.Holes === "object" ? Object.keys(r.Holes).filter(k => /^H\d+$/.test(k)).length : null;
+  if (![9, 18].includes(holes.length) || (planned && planned !== holes.length)) return null;
+  // Ni registrerte hull alene beviser ikke at en 18-hullsrunde er fullført.
+  if (holes.length === 9 && r.IsCompleted !== true && planned !== 9) return null;
   let sum = 0;
   for (const hole of holes) {
     const n = holeScoreValue(hole);
@@ -336,14 +345,20 @@ export function sumHoleScores(round: unknown): number | null {
 export function extractRoundScore(round: unknown): number | null {
   if (!round || typeof round !== "object") return null;
   const r = round as Record<string, unknown>;
+  if (r.IsCompleted === false) return null;
+  const holes = sumHoleScores(round);
+  if (holes != null) return holes;
+  // GolfBox ScoringMethod=0 er slagspill (kontrollert i offentlig feed).
+  // For øvrige spilleformer er ResultSum ikke nødvendigvis antall slag.
+  if (r.ScoringMethod != null && r.ScoringMethod !== 0) return null;
   const sum = r.ResultSum as Record<string, unknown> | undefined;
   if (sum) {
     // Eksplisitt: Actual = brutto. Ikke fall tilbake til Net*.
     if (typeof sum.ActualText === "string" && sum.ActualText !== "") {
-      const n = parseInt(sum.ActualText, 10);
-      if (!isNaN(n)) return n;
+      const n = /^\d+$/.test(sum.ActualText.trim()) ? Number(sum.ActualText) : null;
+      if (n != null && n > 0) return n;
     }
-    if (typeof sum.ActualValue === "number") return Math.round(sum.ActualValue / 10000);
+    if (typeof sum.ActualValue === "number" && Number.isSafeInteger(sum.ActualValue / 10000) && sum.ActualValue > 0) return sum.ActualValue / 10000;
   }
   return sumHoleScores(round);
 }
@@ -362,11 +377,31 @@ export function golfboxKlasseNavn(cls: unknown, dictKey?: string): string {
 }
 
 // Rounds kommer som dict (keyed pr. runde) eller array. Normaliser til ordnet liste.
-function normalizeRounds(rounds: unknown): (number | null)[] {
-  if (Array.isArray(rounds)) return rounds.map(extractRoundScore);
-  if (rounds && typeof rounds === "object")
-    return Object.values(rounds as Record<string, unknown>).map(extractRoundScore);
-  return [];
+export function orderedGolfBoxRounds(rounds: unknown): unknown[] {
+  if (!rounds || typeof rounds !== "object") return [];
+  const out: unknown[] = [];
+  for (const [key, value] of Object.entries(rounds)) {
+    const number = value && typeof value === "object" && "Number" in value ? value.Number : undefined;
+    const n = typeof number === "number" ? number : /^R\d+$/.test(key) ? Number(key.slice(1)) : Array.isArray(rounds) ? Number(key) + 1 : NaN;
+    if (!Number.isSafeInteger(n) || n < 1 || n > 8) continue;
+    while (out.length < n) out.push(null);
+    out[n - 1] = value;
+  }
+  return out;
+}
+
+export function golfBoxRoundDetails(round: unknown) {
+  const score = extractRoundScore(round);
+  const r = round && typeof round === "object" ? round as Record<string, unknown> : {};
+  const holes = r.Holes && typeof r.Holes === "object" ? Object.keys(r.Holes).filter(k => /^H\d+$/.test(k)).length : null;
+  const holeRows = r.HoleScores && typeof r.HoleScores === "object"
+    ? Object.entries(r.HoleScores).filter(([key]) => /^H\d+$/.test(key)).map(([, value]) => value as { Par?: unknown }) : [];
+  const pars = holeRows.map(h => h?.Par);
+  const par = pars.length > 0 && pars.every(p => typeof p === "number" && Number.isInteger(p) && p >= 3 && p <= 6)
+    && sumHoleScores(round) != null ? (pars as number[]).reduce((a, b) => a + b, 0) : null;
+  const sum = r.ResultSum as { ToParText?: string; ToParValue?: number } | undefined;
+  const toPar = score == null ? null : par != null ? score - par : r.ScoringMethod === 0 ? toParToNumber(sum?.ToParText, sum?.ToParValue) : null;
+  return { score, toPar, holes: holes && [9, 18].includes(holes) ? holes : null, completed: score != null && r.IsCompleted === true };
 }
 
 type RawLeaderboard = {
@@ -437,21 +472,24 @@ type LeaderboardAccumulator = {
   activeRound: number | null;
   isScoringOpen: boolean;
   entries: GolfBoxLeaderboardEntry[];
-  seen: Set<string>;
+  seen: Map<string, number>;
 };
 
 /** Les entries fra en Classes-dict (default- eller per-klasse-respons) inn i akkumulatoren. */
 function collectClasses(
   classes: Record<string, unknown> | undefined,
   acc: LeaderboardAccumulator,
+  definitions: GolfBoxCompetitionClass[] = [],
 ): void {
   if (!classes) return;
-  for (const [, cls] of Object.entries(classes)) {
+  for (const [key, cls] of Object.entries(classes)) {
+    const definition = definitions.find(d => String(d.id) === key.replace(/^C/, ""));
+    if (definition?.classType && definition.classType !== "PlayerClass") continue;
     const lb = (cls as { Leaderboard?: RawLeaderboard } | null)?.Leaderboard;
     if (!lb) continue;
     // Dict-nøkkelen er en id («C123»), ikke et navn — kun klasseobjektets egne
     // navnefelt (Name/ClassName/Title/DisplayName) er brukbare her.
-    const klasseNavn = golfboxKlasseNavn(cls) || null;
+    const klasseNavn = golfboxKlasseNavn(cls) || definition?.name || null;
     if (Array.isArray(lb.RoundNames) && lb.RoundNames.length > acc.roundNames.length)
       acc.roundNames = lb.RoundNames;
     if (typeof lb.ActiveRoundNumber === "number") acc.activeRound = lb.ActiveRoundNumber;
@@ -465,18 +503,25 @@ function collectClasses(
       const parsed = LeaderboardEntrySchema.safeParse(rawEntry);
       if (!parsed.success) continue;
       const e = parsed.data;
+      if (e.IsAnonymous) continue;
       const firstName = (e.FirstName ?? "").trim();
       const lastName = (e.LastName ?? "").trim();
-      // Samme spiller kan stå i flere klasser — første forekomst vinner.
-      const dedupeKey = `${firstName}|${lastName}|${e.BirthYear ?? ""}`.toLowerCase();
-      if (firstName + lastName !== "" && acc.seen.has(dedupeKey)) continue;
-      acc.seen.add(dedupeKey);
+      // Samme spiller kan stå i flere klasser; foretrekk brutto-resultatet.
+      const dedupeKey = `${firstName}|${lastName}|${e.BirthYear ?? ""}|${e.Nationality ?? ""}|${e.ClubName ?? ""}`.toLowerCase();
+      if (!firstName && !lastName) continue;
       const stp = e.ScoringToPar ?? {};
-      acc.entries.push({
-        position: e.Position?.Actual ?? null,
+      const rounds = orderedGolfBoxRounds(e.Rounds);
+      while (rounds.length < Math.min(8, lb.RoundNames?.length ?? 0)) rounds.push(null);
+      const details = rounds.map(golfBoxRoundDetails);
+      const grossRanking = !erNettoKlasse(klasseNavn) && !erNettoKlasse(definition?.shortName)
+        && rounds.every(r => !r || typeof r !== "object" || !("ScoringMethod" in r) || r.ScoringMethod === 0);
+      const previous = acc.seen.get(dedupeKey);
+      if (previous !== undefined && (acc.entries[previous].grossRanking || !grossRanking)) continue;
+      const result: GolfBoxLeaderboardEntry = {
+        position: grossRanking && e.Position?.Actual && Number.isSafeInteger(e.Position.Actual) && e.Position.Actual > 0 ? e.Position.Actual : null,
         positionText: e.Position?.Calculated ?? null,
-        toParText: stp.ToParText ?? null,
-        toParValue: toParToNumber(stp.ToParText, stp.ToParValue),
+        toParText: grossRanking ? stp.ToParText ?? null : null,
+        toParValue: grossRanking ? toParToNumber(stp.ToParText, stp.ToParValue) : null,
         todayText: stp.TodayText ?? null,
         thru: typeof stp.HoleValue === "number" ? stp.HoleValue : null,
         thruText: stp.HoleText ?? null,
@@ -486,8 +531,14 @@ function collectClasses(
         birthYear: e.BirthYear ?? null,
         clubName: e.ClubName ?? null,
         klasseNavn,
-        roundScores: normalizeRounds(e.Rounds),
-      });
+        roundScores: details.map(d => d.score),
+        roundToPar: details.map(d => d.toPar),
+        roundHoles: details.map(d => d.holes),
+        roundCompleted: details.map(d => d.completed),
+        grossRanking,
+      };
+      if (previous !== undefined) acc.entries[previous] = result;
+      else { acc.seen.set(dedupeKey, acc.entries.length); acc.entries.push(result); }
     }
   }
 }
@@ -518,24 +569,28 @@ export async function getLeaderboard(
     activeRound: null,
     isScoringOpen: false,
     entries: [],
-    seen: new Set(),
+    seen: new Map(),
   };
 
   // Klassene default-responsen allerede dekker (nøkkel «C{classId}»).
-  collectClasses(defaultClasses, acc);
+  // Hent brutto-visninger før netto-visninger når en spiller finnes i begge.
+  const sortedDefault = Object.fromEntries(Object.entries(defaultClasses ?? {}).sort((a, b) => Number(erNettoKlasse(golfboxKlasseNavn(a[1]))) - Number(erNettoKlasse(golfboxKlasseNavn(b[1])))));
+  collectClasses(sortedDefault, acc, alleKlasser);
   const dekket = new Set(
-    Object.keys(defaultClasses ?? {}).map((k) => k.replace(/^C/, "")),
+    Object.entries(defaultClasses ?? {}).filter(([, value]) => hasLeaderboard(value)).map(([k]) => k.replace(/^C/, "")),
   );
 
-  for (const cls of bruttoKlasser) {
+  const failedClasses: number[] = [];
+  for (const cls of [...bruttoKlasser].sort((a, b) => Number(erNettoKlasse(a.name)) - Number(erNettoKlasse(b.name)))) {
     if (dekket.has(String(cls.id))) continue;
     try {
       const clsRaw = await fetchHandler<RawLeaderboardResponse>(
         `/Handlers/LeaderboardHandler/GetLeaderboard/CompetitionId/${competitionId}/ClassId/${cls.id}/language/${LANG_EN}`,
       );
-      collectClasses(clsRaw?.Classes, acc);
+      if (!hasLeaderboard(clsRaw?.Classes?.[`C${cls.id}`])) failedClasses.push(cls.id);
+      collectClasses(clsRaw?.Classes, acc, alleKlasser);
     } catch {
-      // Én klasse uten data (vanlig for de yngste) skal ikke velte turneringen.
+      failedClasses.push(cls.id);
     }
   }
 
@@ -545,5 +600,12 @@ export async function getLeaderboard(
     activeRound: acc.activeRound,
     isScoringOpen: acc.isScoringOpen,
     entries: acc.entries,
+    failedClasses,
   };
+}
+
+function hasLeaderboard(value: unknown): boolean {
+  if (!value || typeof value !== "object") return false;
+  const lb = (value as { Leaderboard?: RawLeaderboard }).Leaderboard;
+  return !!lb && lb.Entries != null && typeof lb.Entries === "object";
 }

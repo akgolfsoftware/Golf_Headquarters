@@ -67,7 +67,7 @@ export const TAK_BAND: readonly TakBandDef[] = [
     omraade: "INNSPILL_200",
     lie: "fairway",
     minYards: 200,
-    maxYards: 250,
+    maxYards: Infinity,
     proximityKey: "over_200_fw_proximity_per_shot",
     sgKey: "over_200_fw_sg_per_shot",
     girKey: "over_200_fw_gir_rate",
@@ -91,7 +91,7 @@ export const TAK_BAND: readonly TakBandDef[] = [
     omraade: "INNSPILL_150",
     lie: "rough",
     minYards: 150,
-    maxYards: 250,
+    maxYards: Infinity,
     proximityKey: "over_150_rgh_proximity_per_shot",
     sgKey: "over_150_rgh_sg_per_shot",
     girKey: "over_150_rgh_gir_rate",
@@ -109,14 +109,15 @@ export function bandMidtMeter(minYards: number, maxYards: number): number {
 }
 
 /**
- * Sirkel eleven må stoppe innenfor for å slå taket.
- * Stasjon = elevens carry. Takets slag = midten av båndet i meter.
+ * @deprecated Historisk, proporsjonal øvelsesformel. Dette er ikke en validert
+ * proffsammenligning og brukes ikke av spillerverktøyet eller stasjonen.
  */
 export function slaTakSirkelMeter(input: {
   takNaerhetMeter: number;
   elevCarryMeter: number;
   takSlagMeter: number;
 }): number | null {
+  if (!Object.values(input).every(Number.isFinite)) return null;
   if (!(input.takNaerhetMeter > 0)) return null;
   if (!(input.elevCarryMeter > 0)) return null;
   if (!(input.takSlagMeter > 0)) return null;
@@ -145,7 +146,12 @@ function num(v: unknown): number | null {
 
 function int(v: unknown): number | null {
   const n = num(v);
-  return n === null ? null : Math.round(n);
+  return n === null || n < 0 || !Number.isInteger(n) ? null : n;
+}
+
+function rate(v: unknown): number | null {
+  const n = num(v);
+  return n !== null && n >= 0 && n <= 1 ? n : null;
 }
 
 export type TakBandRad = {
@@ -165,10 +171,10 @@ export function bandFraApproachRad(row: Record<string, unknown>): TakBandRad[] {
     return {
       band: def.kode,
       lie: def.lie,
-      proximityMeters: proxFot === null ? null : fotTilMeter(proxFot),
+      proximityMeters: proxFot === null || proxFot < 0 ? null : fotTilMeter(proxFot),
       sgPerShot: num(row[def.sgKey]),
-      girRate: num(row[def.girKey]),
-      goodShotRate: num(row[def.goodKey]),
+      girRate: rate(row[def.girKey]),
+      goodShotRate: rate(row[def.goodKey]),
       shotCount: int(row[def.countKey]),
     };
   });

@@ -3,12 +3,14 @@ import { TL } from "@/lib/v2/train-lock";
 
 /**
  * PlayerHQ · Turnering-detalj — Paper-port W1 (fase2).
- * Fasit: designsystem/paper/fase2/playerhq/playerhq-turnering-detalj.html.
+ * Fasit: designsystem/train-lock/TU-01 Turneringer.dc.html
+ * Avvik:
+ *   - Eksisterende detaljvisning er videreført. Deltakelse merkes etter faktisk bekreftelse.
  *
  * Struktur per fasit: header (navn + mono-sub) → «Én ting nå» (fristvarsel +
  * clay «Meld deg på» med DOBBEL bekreftelse — trykk 1 åpner bekreftelsen
  * (claimPaamelding), trykk 2 melder på (confirmPaamelding); aldri ett-trykks
- * påmelding) → påmeldt-status med tag «Bekreftet i GolfBox» → faktakort →
+ * påmelding) → påmeldt-status med tag «Deltakelse registrert» → faktakort →
  * eier-note. Feiltilstand sier eksplisitt: ingen penger trukket, du står
  * IKKE på startlisten.
  *
@@ -167,12 +169,12 @@ export function TurneringDetaljV2({
         </div>
       )}
 
-      {/* Påmeldt-status — fasit: tag «Bekreftet i GolfBox» */}
+      {/* Påmeldt-status — fasit: tag «Deltakelse registrert» */}
       {paameldt && (
         <Kort eyebrow="status">
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
             <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text }}>Påmeldt</span>
-            <StatusPill tone="up">Bekreftet i GolfBox</StatusPill>
+            <StatusPill tone="up">Deltakelse registrert</StatusPill>
           </div>
         </Kort>
       )}

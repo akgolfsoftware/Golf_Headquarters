@@ -312,6 +312,8 @@ D7 Jarvis-merge · 18.33 forsiden Reisen vs kit, `/cases`, bunn-e-post.
 
 ## STEG 4 — DataGolf + turneringsresultater (punkt 4)
 
+**Oppdatert 10.09.2026:** Samlet spillerverktøy og GolfBox-resultatkjede er implementert og verifiseres for Anders' bestilte merge til main. [Leveransegrunnlag](beslutningsgrunnlag/datagolf-golfbox-leveranse-2026-09-10.md) avløser eldre implementasjonsstatus for dette omfanget. Gjenstår etter kodeleveransen: ordinær produksjonssynk med måling av reparert historikk, samt visuell kontroll mot valgt Claude Design-versjon. Ingen ny designversjon er fastlåst her.
+
 **Operativt i dag (målt):** 5 DataGolf-cronjobber (schedule daglig · live hvert 10. min ·
 skills/approach/putt ukentlig) + GolfBox timesvis + GJGT daglig + sync-vaktbikkje mandager.
 Sammenligningsverktøyene (`/stats/sg-sammenlign` mot PGA, `/stats/sammenlign-spillere`

@@ -1,6 +1,8 @@
 /**
  * PlayerHQ · Min kurve (`/portal/analysere/turneringer`).
  *
+ * Avvik:
+ *   - Komplett resultatliste med GolfBox-runder vises også når kurven mangler grunnlag.
  * Fasit: designsystem/train-lock/PH-21 Min kurve.dc.html (+ PH-21L lys) —
  * portert 05.09.2026 (MASTERPLAN Ø19). Erstatter den rene turneringslisten
  * som lå her (#666) med spillerens egen til-par-kurve, bånd for beste/verste
@@ -21,6 +23,8 @@ import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { MinKurveTrainLock, type SesongLenke } from "@/components/portal/v2/MinKurveTrainLock";
+import { TurneringshistorikkTrainLock } from "@/components/portal/v2/TurneringshistorikkTrainLock";
+import { hentTurneringshistorikk } from "@/lib/portal/turneringshistorikk-data";
 import { hentMinKurve } from "@/lib/portal/min-kurve-data";
 import type { MinKurve } from "@/lib/domain/min-kurve";
 
@@ -45,7 +49,8 @@ export default async function TurneringerPage({ searchParams }: { searchParams: 
   if (user.role === "PARENT") redirect("/forelder");
 
   const { sesong } = await searchParams;
-  const { dataSistHentet, ...kurve } = await hentMinKurve(user.id, sesong);
+  const [kurveData, historikk] = await Promise.all([hentMinKurve(user.id, sesong), hentTurneringshistorikk(user.id)]);
+  const { dataSistHentet, ...kurve } = kurveData;
 
   return (
     <V2Shell bredde="full" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
@@ -56,6 +61,7 @@ export default async function TurneringerPage({ searchParams }: { searchParams: 
         programHref="/portal/tren/turneringer"
         tilbakeHref="/portal/analysere"
       />
+      <TurneringshistorikkTrainLock h={historikk} />
     </V2Shell>
   );
 }

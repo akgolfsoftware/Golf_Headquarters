@@ -1,10 +1,9 @@
 import "server-only";
 
 import { prisma } from "@/lib/prisma";
+import { lesTurneringsresultat } from "@/lib/domain/turneringsresultat";
 import {
   byggMinKurve,
-  RUNDESCORE_MAKS,
-  RUNDESCORE_MIN,
   TOPAR_MAKS,
   TOPAR_MIN,
   type KurveRad,
@@ -52,27 +51,29 @@ export async function hentMinKurve(userId: string, onsketSesong?: string): Promi
       scoreToPar: true,
       position: true,
       status: true,
-      updatedAt: true,
+      updatedAt: true, totalScore: true, rounds: true,
       tournament: { select: { id: true, name: true, startDate: true, sourceOrigin: true } },
       roundDetails: {
-        where: { score: { gte: RUNDESCORE_MIN, lte: RUNDESCORE_MAKS } },
         orderBy: { roundNumber: "asc" },
-        select: { score: true },
+        select: { score: true, toPar: true, roundNumber: true, source: true },
       },
     },
   });
 
-  const rader: KurveRad[] = entries.map((e) => ({
-    turneringId: e.tournament.id,
-    navn: e.tournament.name,
-    startDato: e.tournament.startDate,
-    // Filteret over garanterer at scoreToPar ikke er null.
-    toparTotal: e.scoreToPar ?? 0,
-    rundescorer: e.roundDetails.map((r) => r.score).filter((s): s is number => s != null),
-    plassering: e.position,
-    status: e.status,
-    kilde: e.tournament.sourceOrigin,
-  }));
+  const rader: KurveRad[] = entries.map(e => {
+    const result = lesTurneringsresultat(e);
+    const dgComplete = e.tournament.sourceOrigin === "DATAGOLF" && e.status === "FINISHED"
+      && e.roundDetails.length > 0 && e.roundDetails.every(r => r.score != null && r.toPar != null)
+      && e.roundDetails.reduce((sum, r) => sum + (r.toPar ?? 0), 0) === e.scoreToPar;
+    return {
+      turneringId: e.tournament.id, navn: e.tournament.name, startDato: e.tournament.startDate,
+      toparTotal: result.motPar ?? 0,
+      rundescorer: result.runder.map(r => r.brutto ?? 0),
+      rundemotPar: result.runder.map(r => r.motPar),
+      fullstendig: result.motPar != null && ((result.fullstendig && result.runder.every(r => r.hull === 18)) || dgComplete),
+      plassering: result.plassering, status: e.status, kilde: e.tournament.sourceOrigin,
+    };
+  });
 
   const dataSistHentet = entries.reduce<Date | null>(
     (sist, e) => (sist === null || e.updatedAt > sist ? e.updatedAt : sist),

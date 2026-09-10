@@ -8,7 +8,7 @@
 // season=<inneværende år> inkluderer "upcoming"-events resten av året.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { getSchedule } from "@/lib/datagolf/client";
+import { getSchedule, getSkillRatings } from "@/lib/datagolf/client";
 
 test("getSchedule", async (t) => {
   const originalKey = process.env.DATAGOLF_API_KEY;
@@ -45,5 +45,21 @@ test("getSchedule", async (t) => {
 
     await getSchedule("euro", 2027);
     assert.match(calledUrl, /season=2027(&|$)/);
+  });
+  await t.test("skill-ratings henter ett globalt sett og lekker ikke feilsvar", async (t) => {
+    let calledUrl = "";
+    t.mock.method(globalThis, "fetch", async (url: string) => {
+      calledUrl = url;
+      return new Response(JSON.stringify({ players: [] }), { status: 200 });
+    });
+    await getSkillRatings("kft");
+    assert.equal(new URL(calledUrl).searchParams.has("tour"), false);
+    t.mock.method(globalThis, "fetch", async () => new Response("sensitive-api-body", { status: 403 }));
+    await assert.rejects(() => getSkillRatings(), error => {
+      assert.ok(error instanceof Error);
+      assert.match(error.message, /403/);
+      assert.doesNotMatch(error.message, /sensitive-api-body|test-key/);
+      return true;
+    });
   });
 });

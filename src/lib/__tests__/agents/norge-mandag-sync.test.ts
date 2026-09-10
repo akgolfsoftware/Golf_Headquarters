@@ -14,6 +14,7 @@ import assert from "node:assert/strict";
 
 test("norge-mandag-sync — herdet stegkjøring", async (t) => {
   let golfboxFeiler = false;
+  let golfboxDelvis = false;
   const varsleCalls: { tittel: string; tekst: string; coachId: string }[] = [];
 
   t.mock.module("@/lib/prisma", {
@@ -34,6 +35,7 @@ test("norge-mandag-sync — herdet stegkjøring", async (t) => {
     namedExports: {
       syncGolfBoxSchedules: async () => {
         if (golfboxFeiler) throw new Error("GolfBox timeout");
+        if (golfboxDelvis) return { customers: 10, events: 40, upcoming: 12, failedCustomers: [18] };
         return { customers: 10, events: 40, upcoming: 12 };
       },
     },
@@ -88,5 +90,11 @@ test("norge-mandag-sync — herdet stegkjøring", async (t) => {
     assert.equal(varsleCalls[0].coachId, "admin-1");
     assert.match(varsleCalls[0].tittel, /1 av 5 steg feilet/);
     assert.match(varsleCalls[0].tekst, /GolfBox timeout/);
+  });
+  await t.test("delvis kalenderimport varsles som feil mens resten fortsetter", async () => {
+    golfboxFeiler = false; golfboxDelvis = true;
+    const r = await runNorgeMandagSync();
+    assert.equal(r.ok, false); assert.equal(r.steg.golfbox.ok, false);
+    assert.equal(r.steg.backfill.ok, true); assert.match(r.feil[0], /1 GolfBox-kalendere/);
   });
 });

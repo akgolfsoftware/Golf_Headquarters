@@ -38,7 +38,7 @@ export default async function DatagolfStasjonPage({
       <StasjonTrainLock
         key={
           data.stasjon
-            ? `${data.stasjon.slag.id}-${data.valgtTak?.dgPlayerId ?? "ingen"}`
+            ? `${data.stasjon.slag.id}-${data.valgtTak?.dgPlayerId ?? "ingen"}-${data.carryMeter}-${en(sp.lie)}`
             : "tom"
         }
         stasjon={data.stasjon}

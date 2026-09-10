@@ -33,12 +33,9 @@ function key(): string {
 async function fetchJson<T>(path: string): Promise<T> {
   const sep = path.includes("?") ? "&" : "?";
   const url = `${BASE}${path}${sep}key=${key()}&file_format=json`;
-  const res = await fetch(url, { cache: "no-store" });
+  const res = await fetch(url, { cache: "no-store", signal: AbortSignal.timeout(20_000) });
   if (!res.ok) {
-    const body = await res.text();
-    throw new Error(
-      `[datagolf] ${path} → ${res.status}: ${body.slice(0, 200)}`,
-    );
+    throw new Error(`[datagolf] ${path} → ${res.status}`);
   }
   return (await res.json()) as T;
 }
@@ -180,7 +177,7 @@ export type DGSkillRatingRow = {
   sg_putt?: number;
   // Generelle stats
   driving_dist?: number;
-  driving_acc?: number; // 0-1 (fairway %)
+  driving_acc?: number; // Justert forskjell i prosentpoeng, IKKE fairway-prosent.
   gir?: number; // 0-1
   putts_per_round?: number;
   scrambling?: number; // 0-1
@@ -194,14 +191,14 @@ export type DGSkillRatingsResponse = {
 };
 
 /**
- * Henter siste skill-ratings for valgt tour. DataGolf gir sesong-aggregat
- * basert på siste 2 år, vektet mot nylige resultater.
+ * Ett globalt prediksjonssett, ikke sesongstatistikk per tour.
+ * Tour-argumentet beholdes for eldre kallere, men sendes ikke til API-et.
  */
 export async function getSkillRatings(
-  tour: DGTour = "pga",
+  _tour: DGTour = "pga",
 ): Promise<DGSkillRatingRow[]> {
   const data = await fetchJson<DGSkillRatingsResponse>(
-    `/preds/skill-ratings?tour=${tour}&display=value`,
+    "/preds/skill-ratings?display=value",
   );
   return data.players ?? [];
 }

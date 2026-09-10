@@ -10,6 +10,8 @@ function rad(o: Partial<KurveRad> & { navn: string; startDato: Date; toparTotal:
     startDato: o.startDato,
     toparTotal: o.toparTotal,
     rundescorer: o.rundescorer,
+    rundemotPar: "rundemotPar" in o ? o.rundemotPar : o.rundescorer.map(s => s - 72),
+    fullstendig: o.fullstendig,
     plassering: o.plassering ?? null,
     status: o.status ?? "FINISHED",
     kilde: "kilde" in o ? (o.kilde ?? null) : "GOLFBOX",
@@ -24,7 +26,7 @@ test("ukoblet og koblet-uten-turneringer får hver sin setning", () => {
   assert.equal(ukoblet.koblet, false);
   assert.match(ukoblet.tomGrunn, /ikke koblet/);
   assert.equal(koblet.koblet, true);
-  assert.match(koblet.tomGrunn, /Ingen turneringer er registrert/);
+  assert.match(koblet.tomGrunn, /Ingen fullstendige turneringsresultater/);
   assert.equal(koblet.punkter.length, 0);
 });
 
@@ -38,12 +40,12 @@ test("rader uten gyldige runder eller uten resultat teller ikke", () => {
     true,
   );
   assert.equal(r.punkter.length, 0);
-  assert.match(r.tomGrunn, /Ingen turneringer/);
+  assert.match(r.tomGrunn, /Ingen fullstendige/);
 });
 
 // ── Punkt og bånd ──────────────────────────────────────────────────────────
 
-test("snitt er til-par delt på runder; bånd avledes kun når par går opp i et helt tall", () => {
+test("snitt bruker turneringens til-par; bånd krever kildeverdier som stemmer", () => {
   const p = tilPunkt(rad({ navn: "NM", startDato: new Date(2026, 7, 24), toparTotal: 25, rundescorer: [79, 82, 80] }));
   assert.ok(p);
   assert.equal(p.snitt, 8.3);
@@ -57,6 +59,22 @@ test("snitt er til-par delt på runder; bånd avledes kun når par går opp i et
   assert.equal(uten.snitt, 8.3);
   assert.equal(uten.beste, null);
   assert.equal(uten.verste, null);
+});
+
+test("heltallig gjennomsnittspar beviser ikke likt par per runde", () => {
+  const uten = tilPunkt(rad({ navn: "Blandet par", startDato: new Date("2026-08-01"), toparTotal: 4, rundescorer: [72, 74], rundemotPar: undefined }));
+  assert.equal(uten?.beste, null);
+  assert.equal(uten?.verste, null);
+  const kilde = tilPunkt(rad({ navn: "Blandet par", startDato: new Date("2026-08-01"), toparTotal: 4, rundescorer: [72, 74], rundemotPar: [2, 2] }));
+  assert.equal(kilde?.beste, 2);
+  assert.equal(kilde?.verste, 2);
+});
+
+test("ufullstendige resultater og pågående runder gir ikke ferdig sesongpunkt", () => {
+  const input = rad({ navn: "Delvis", startDato: new Date("2026-08-01"), toparTotal: 8, rundescorer: [80] });
+  assert.equal(tilPunkt({ ...input, fullstendig: false }), null);
+  assert.equal(tilPunkt({ ...input, status: "TEED_OFF" }), null);
+  assert.equal(tilPunkt({ ...input, rundescorer: [80, 0] }), null);
 });
 
 test("plassering 0 eller null vises ikke som plassering", () => {
