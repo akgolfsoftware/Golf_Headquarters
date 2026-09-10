@@ -32,6 +32,7 @@ import type { KalenderHendelse } from "@/lib/domain/kalender-lag";
 import { IDagITidenArk } from "@/components/portal/v2/kalender/IDagITidenArk";
 import { GodkjenningKort } from "./GodkjenningKort";
 import { IDagNaaKort } from "./idag-naa-kort";
+import { TrainLockCaddieKnapp } from "@/components/train-lock/player-chrome";
 import { TrainLockFremdrift } from "@/components/train-lock/v3-elementer";
 
 export type NaaKort = {
@@ -365,10 +366,9 @@ export function IDagTrainLock(p: IDagTrainLockProps) {
       }}
     >
       <style>{`
-        /* Bunnklaring for den faste Caddie-linjen + bunn-navet. Fasiten løser det
-           samme med en 150px avstandsholder nederst (PH-01b). Uten den stakk
-           siste kalenderrad opp bak doken (målt 30.08 på 390px). */
-        .ph01-scroll { padding-bottom: 150px; }
+        /* Skallet reserverer plassen for Island; her trengs bare rulleluft. */
+        .ph01-scroll { padding-bottom: 16px; width: 100%; }
+        @media (min-width: 768px) and (max-width: 1100px) { .ph01-scroll { max-width: 560px; margin-inline: auto; } }
         .ph01-bento { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .ph01-grid { display: flex; flex-direction: column; gap: 12px; }
         .ph01-kun-mac { display: none; }
@@ -414,6 +414,8 @@ export function IDagTrainLock(p: IDagTrainLockProps) {
               {IDAG_UI.tittel}
             </h1>
           </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <TrainLockCaddieKnapp bareDesktop />
           {/* KA-04: «I dag i tiden» — hele dagen på tvers av lagene
               (økt/skole/turnering/tester/booking), lesevisning. Ingen egen
               kalender-fane for spilleren — dette er inngangen. */}
@@ -437,6 +439,7 @@ export function IDagTrainLock(p: IDagTrainLockProps) {
           >
             <Clock size={18} strokeWidth={1.8} aria-hidden />
           </button>
+          </div>
         </div>
         <div className="ph01-grid" style={{ marginTop: 20 }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>

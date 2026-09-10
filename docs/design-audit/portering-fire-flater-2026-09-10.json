@@ -7083,6 +7083,12 @@
       "scope": "Samme CSP på request/response, bevart ved cookie-fornyelse; dynamisk WANG-innlogging",
       "tests": "2 CSP-tester; faktisk Next-nettleserprøve med håndhevet CSP, 390/1280, Montserrat og lokalt avskåret SDK-innsending bestod 2026-09-11",
       "completionProven": false
+    },
+    {
+      "area": "playerhq",
+      "scope": "V2Shell Island, 64 px Mac-rail, Caddie-dialog med bevart kladd og stemmeark i samme nettleserlag",
+      "tests": "8 komponentvarianter pluss samlet kontroll av de tidligere 64; faktisk innlogget rutenavigasjon gjenstår",
+      "completionProven": false
     }
   ]
 }

@@ -18,6 +18,8 @@ import { useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } fr
 import { createPortal } from "react-dom";
 import { TL } from "@/lib/v2/train-lock";
 import { Icon } from "./icon";
+import { TrainLockCaddieKnapp, TrainLockNavIkon, TrainLockPlayerCaddie, TrainLockPlayerIsland } from "@/components/train-lock/player-chrome";
+import playerChromeStyles from "@/components/train-lock/player-chrome.module.css";
 import { LogoAK, AvatarFoto } from "./core";
 import { useV2Tema, lesTema, type V2Tema } from "./tema";
 import { onsketTema } from "@/lib/v2/tema-default";
@@ -753,49 +755,6 @@ function TrainLockTemaKnapp() {
   );
 }
 
-function HusIkon({ size, fyll }: { size: number; fyll: boolean }) {
-  const felles = {
-    width: size,
-    height: size,
-    viewBox: "0 0 24 24",
-    "aria-hidden": true as const,
-    style: { display: "block", flex: "none" },
-  };
-  if (fyll) {
-    return (
-      <svg {...felles}>
-        <path d="M4 10.5 L12 4 L20 10.5 V20 H14.5 V14.5 H9.5 V20 H4 Z" fill="currentColor" />
-      </svg>
-    );
-  }
-  return (
-    <svg {...felles} fill="none">
-      <path d="M4 10.5 L12 4 L20 10.5 V20 H15 V14.5 H9 V20 H4 Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-/** PH-01 dock/rail-ikoner — fasitens SVG, ikke Lucide. */
-function PlayerFaneIkon({ icon, size, fyll }: { icon: string; size: number; fyll?: boolean }) {
-  if (icon === "home") return <HusIkon size={size} fyll={Boolean(fyll)} />;
-  if (icon === "calendar") {
-    return (
-      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden>
-        <rect x="4" y="5.5" width="16" height="15" rx="3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-        <path d="M8 3.5 V7 M16 3.5 V7 M4 10.5 H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-      </svg>
-    );
-  }
-  if (icon === "bar-chart") {
-    return (
-      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden>
-        <path d="M5 20 V13 M12 20 V6 M19 20 V10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-      </svg>
-    );
-  }
-  return <Icon name={icon} size={size} strokeWidth={2} />;
-}
-
 function Initialer({ navn, size, fontSize }: { navn: string; size: number; fontSize: number }) {
   return (
     <span
@@ -826,7 +785,7 @@ function playerInitialer(navn: string): string {
   return `${deler[0][0] ?? ""}${deler[deler.length - 1][0] ?? ""}`.toUpperCase();
 }
 
-/** PH-01 Mac-rail: 72 px, 44×44 r12, aktiv = hvit fyll, ØR nederst. */
+/** Valgt PH-01 v3: Mac-rail 64 px, fire destinasjoner og profil nederst. */
 function TrainLockPlayerRail({
   aktiv,
   nav,
@@ -837,13 +796,14 @@ function TrainLockPlayerRail({
   navn: string;
   avatarUrl?: string | null;
 }) {
+  const pathname = usePathname();
   return (
     <nav
-      className="hidden md:flex"
+      className={playerChromeStyles.rail}
       aria-label="Hovedmeny"
       data-tl-player-rail
       style={{
-        width: 72,
+        width: 64,
         flex: "none",
         borderRight: `1px solid ${TL.hair}`,
         flexDirection: "column",
@@ -853,10 +813,10 @@ function TrainLockPlayerRail({
         position: "sticky",
         top: 0,
         height: "100vh",
-        background: TL.scene,
+        background: TL.dock,
       }}
     >
-      {nav.filter((n) => n.id !== "meg").slice(0, 3).map((n) => {
+      {nav.map((n) => {
         const on = aktiv === n.id;
         return (
           <Link
@@ -878,161 +838,17 @@ function TrainLockPlayerRail({
               flex: "none",
             }}
           >
-            <PlayerFaneIkon icon={n.icon} size={21} fyll={on} />
+            <TrainLockNavIkon navn={n.id} />
           </Link>
         );
       })}
       <div style={{ flex: 1, minHeight: 8 }} />
+      {pathname !== "/portal" && <TrainLockCaddieKnapp />}
       <TrainLockTemaKnapp />
-      <Link href="/portal/meg" title="Meg" aria-label="Meg" className="v2-press">
-        <Initialer navn={navn} size={32} fontSize={11} />
+      <Link href="/portal/meg" title="Min profil" aria-label="Min profil" className="v2-press v2-focus" style={{ minWidth: 44, minHeight: 44, display: "grid", placeItems: "center" }}>
+        <Initialer navn={navn} size={38} fontSize={14} />
       </Link>
     </nav>
-  );
-}
-
-/** PH-01 telefon-dock: flytende pille 64 h, aktiv = hvit I DAG-pille. */
-function TrainLockPlayerDock({
-  aktiv,
-  nav,
-  navn,
-  composer,
-}: {
-  aktiv?: string;
-  nav: V2NavItem[];
-  navn: string;
-  composer?: ReactNode;
-}) {
-  const faner = nav.slice(0, 4);
-  return (
-    <div
-      data-tl-player-dock
-      style={{
-        position: "fixed",
-        right: 0,
-        bottom: 0,
-        zIndex: 40,
-        pointerEvents: "none",
-      }}
-    >
-      <style>{`
-        /* left MÅ stå her, ikke inline: inline-stil vinner over media-queryen
-           under, så en hardkodet left:0 ville lagt doken under 72px-skinnen på
-           desktop (målt mot PH-01 Mac 30.08 — composeren startet på x=56). */
-        [data-tl-player-dock] { left: 0; padding: 10px 16px 0; padding-bottom: calc(env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px)); }
-        [data-tl-player-pill] { display: flex; }
-        [data-tl-player-caddie] { margin-bottom: 10px; }
-        @media (min-width: 768px) {
-          [data-tl-player-dock] {
-            left: 72px;
-            padding: 12px 56px 20px;
-            padding-bottom: calc(20px + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px));
-            background: ${TL.scene};
-          }
-          [data-tl-player-pill] { display: none; }
-          [data-tl-player-caddie] { margin-bottom: 0; }
-        }
-      `}</style>
-      {composer != null && (
-        <div data-tl-player-caddie style={{ pointerEvents: "auto" }}>{composer}</div>
-      )}
-      <nav
-        data-tl-player-pill
-        aria-label="Hovedmeny"
-        style={{
-          pointerEvents: "auto",
-          height: 64,
-          background: TL.dock,
-          borderRadius: 999,
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "8px 10px",
-        }}
-      >
-        {faner.map((n) => {
-          const on = aktiv === n.id;
-          const erMeg = n.id === "meg";
-          if (on) {
-            return (
-              <Link
-                key={n.id}
-                href={n.href}
-                aria-current="page"
-                className="v2-press"
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 7,
-                  background: TL.fill,
-                  color: TL.onFill,
-                  borderRadius: 999,
-                  height: 48,
-                  padding: "0 18px",
-                  textDecoration: "none",
-                  flex: "none",
-                }}
-              >
-                {erMeg ? (
-                  <Initialer navn={navn} size={22} fontSize={9} />
-                ) : (
-                  <PlayerFaneIkon icon={n.icon} size={20} fyll />
-                )}
-                <span
-                  style={{
-                    fontSize: 11,
-                    fontWeight: 600,
-                    letterSpacing: "0.08em",
-                    textTransform: "uppercase",
-                    whiteSpace: "nowrap",
-                    color: TL.onFill,
-                  }}
-                >
-                  {n.label}
-                </span>
-              </Link>
-            );
-          }
-          return (
-            <Link
-              key={n.id}
-              href={n.href}
-              aria-label={n.label}
-              className="v2-press"
-              style={{
-                width: 52,
-                height: 48,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 2,
-                textDecoration: "none",
-                flex: "none",
-                color: TL.mute,
-              }}
-            >
-              {erMeg ? (
-                <Initialer navn={navn} size={22} fontSize={9} />
-              ) : (
-                <PlayerFaneIkon icon={n.icon} size={17} />
-              )}
-              <span
-                style={{
-                  fontSize: TL.storrelse.capsSm,
-                  fontWeight: 600,
-                  letterSpacing: "0.06em",
-                  textTransform: "uppercase",
-                  color: TL.mute,
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {n.label}
-              </span>
-            </Link>
-          );
-        })}
-      </nav>
-    </div>
   );
 }
 
@@ -1512,6 +1328,7 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
   }, [erAgency]);
 
   return (
+    <TrainLockPlayerCaddie key={erPlayer ? "player" : "other"} aktiv={erPlayer} composer={composer}>
     <div
       className={tema}
       data-paper-shell={erAgency ? "agencyos" : "playerhq"}
@@ -1540,7 +1357,7 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
       <div
         className={
           erPlayer
-            ? "px-4 md:px-14 pt-[calc(8px+env(safe-area-inset-top))] md:pt-[calc(40px+env(safe-area-inset-top))] pb-[calc(148px+env(safe-area-inset-bottom)+var(--ak-cookie-h,0px))] md:pb-[120px]"
+            ? playerChromeStyles.innhold
             : "px-4 md:px-8 pb-[calc(96px+env(safe-area-inset-bottom))] md:pb-9"
         }
         style={{
@@ -1560,7 +1377,7 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
             hopper skjermbytter hardt i en app som ellers beveger seg mykt. */}
         <div
           key={pathname}
-          className="v2-fade-in"
+          className={erPlayer ? undefined : "v2-fade-in"}
           style={{
             width: "100%",
             display: "flex",
@@ -1623,12 +1440,7 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
       {erAgency ? (
         <TrainLockAgencyDock />
       ) : erPlayer ? (
-        <TrainLockPlayerDock
-          aktiv={autoAktiv}
-          nav={navSynlig}
-          navn={navn}
-          composer={composer}
-        />
+        <TrainLockPlayerIsland aktiv={autoAktiv} nav={navSynlig} />
       ) : (
         <BunnNavLenker aktiv={autoAktiv} nav={navSynlig} mer={merGrupper} />
       )}
@@ -1636,5 +1448,6 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
           søkeknapp) — kun montert i AgencyOS. Selv-styrt, rendrer null lukket. */}
       {erAgency && <GlobalSearchModal />}
     </div>
+    </TrainLockPlayerCaddie>
   );
 }

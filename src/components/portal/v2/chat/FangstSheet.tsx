@@ -4,6 +4,9 @@
  * FangstSheet — Paper-fasitens fangstkomponent (designsystem/paper/fase1/
  * fangstsheet.html), kontekst A: bunn-ark fra composeren på PlayerHQ-hjem.
  * Erstatter den gamle FangstModal-stubben (PP-3).
+ * Avvik:
+ *   - Portal kan nå rendres inne i native Caddie-dialog, og Tab holdes i
+ *     stemmearket. Selve fangstdesignet er fortsatt eldre enn valgt v3.
  *
  * Fasitens ufravikelige mål (§1): mikrofonflate ≥60px, chips ≥44px, 4–6
  * chips avledet av øktformelen, AUTOLAGRING (ingen lagre-knapp), 10 s
@@ -92,6 +95,7 @@ export function FangstSheet({
   formel,
   oktLabel,
   autostart = true,
+  portalTarget,
 }: {
   onClose: () => void;
   /** Sender fangst-teksten samme vei som composeren (chat-tråden). */
@@ -102,6 +106,8 @@ export function FangstSheet({
   oktLabel?: string | null;
   /** Kontekst A: ett trykk fra composeren går rett i opptak (fasit §2). */
   autostart?: boolean;
+  /** Native dialog er i nettleserens topplag; fangsten må rendres i samme lag. */
+  portalTarget?: HTMLElement | null;
 }) {
   // «Ingen mikrofon» avgjøres ved init — Web Speech API mangler i Safari/Firefox.
   const [tilstand, setTilstand] = useState<FangstTilstand>(() => {
@@ -381,6 +387,16 @@ export function FangstSheet({
       if (e.key === "Escape") {
         e.preventDefault();
         lukk();
+      }
+      if (e.key === "Tab" && sheetRef.current) {
+        const felt = Array.from(sheetRef.current.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), [tabindex="0"]')).filter((el) => el.getClientRects().length > 0);
+        if (!felt.length) { e.preventDefault(); return; }
+        const aktiv = document.activeElement;
+        if (e.shiftKey && (aktiv === felt[0] || !sheetRef.current.contains(aktiv))) {
+          e.preventDefault(); felt.at(-1)?.focus();
+        } else if (!e.shiftKey && (aktiv === felt.at(-1) || !sheetRef.current.contains(aktiv))) {
+          e.preventDefault(); felt[0].focus();
+        }
       }
     };
     document.addEventListener("keydown", onKey, true);
@@ -811,6 +827,6 @@ export function FangstSheet({
         `}</style>
       </div>
     </>,
-    document.body,
+    portalTarget ?? document.body,
   );
 }

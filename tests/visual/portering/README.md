@@ -12,7 +12,7 @@ Prøven dekker 320, 390, 834 og 1440 piksler; liste, valgt person, tom, lasting 
 
 Riggserveren lytter bare på `127.0.0.1`. Den laster ingen miljøfiler og kontakter ingen database. Nettleserprøven blokkerer eksterne nettadresser. Reservefonter brukes frem til en separat prøve mot appens faktiske fontlast er gjennomført.
 
-Train-lock og WANG C7 inngår også. Kjør alle prøvene med:
+Train-lock, WANG C7 og PlayerHQs nye navigasjon inngår også. Kjør alle prøvene med:
 
 ```sh
 python3 .claude/skills/webapp-testing/scripts/with_server.py --server "node tests/visual/portering/server.mjs" --port 5441 -- python3 tests/visual/portering/kjor-alle.py
@@ -31,3 +31,5 @@ python3 .claude/skills/webapp-testing/scripts/with_server.py --server "python3 t
 ```
 
 Prøven beholder CSP (nettleserens skriptregel), sjekker ny nonce per forespørsel og samsvar med Next-skriptene, faktiske Montserrat-skrifter, mobil/desktop og at utfylte felt når Supabase-SDK-en. Innloggingsforespørselen avskjæres lokalt og får et syntetisk feilsvar. Den logger ikke inn mot Supabase eller beviser tilgang med en virkelig konto. Originale C7-rammer rendres med de samme fontfilene til lokal sammenligning; desktoprammen i kilden er 980 px selv om overskriften sier 1280.
+
+PlayerHQ-navigasjonen prøves i åtte kombinasjoner (320, 390, 834, 1440 × lys/mørk). Prøven kontrollerer fem sirkler, 48 px trykkflater, lenker, aktiv fane, fast plassering, siste handling over menyen, Caddie-dialog, fokusretur, bevart kladd og stemmeark i riktig nettleserlag. Ingen chat sendes og mikrofonstøtte er slått av i prøven. Dette er komponentkontroll, ikke innlogget navigasjon mellom alle PlayerHQ-sidene.

@@ -8,7 +8,7 @@ const root = process.cwd();
 const output = resolve(root, "_archive/portering-kontroll-2026-09-10");
 mkdirSync(output, { recursive: true });
 await build({
-  entryPoints: { wang: resolve(root, "tests/visual/portering/wang-login-fixture.tsx"), fixture: resolve(root, "tests/visual/portering/tn-tilgang-fixture.tsx"), trainlock: resolve(root, "tests/visual/portering/train-lock-fixture.tsx") },
+  entryPoints: { playernav: resolve(root, "tests/visual/portering/player-nav-fixture.tsx"), wang: resolve(root, "tests/visual/portering/wang-login-fixture.tsx"), fixture: resolve(root, "tests/visual/portering/tn-tilgang-fixture.tsx"), trainlock: resolve(root, "tests/visual/portering/train-lock-fixture.tsx") },
   outdir: output,
   bundle: true,
   format: "iife",
@@ -37,8 +37,11 @@ const html = `<!doctype html><html lang="nb"><meta charset="utf-8"><meta name="v
 @media(min-width:1024px){.lg\\:flex{display:flex}.lg\\:hidden{display:none}}
 </style><title>TN-18 – syntetisk komponentprøve</title><div id="root"></div><script src="/fixture.js"></script></html>`;
 const trainHtml = html.replace('/tokens.css', '/train-tokens.css').replace('/fixture.css', '/trainlock.css').replace('/fixture.js', '/trainlock.js');
+const navHtml = trainHtml.replace("/trainlock.css", "/playernav.css").replace("/trainlock.js", "/playernav.js");
 const wangHtml = html.replace('/tokens.css', '/wang-tokens.css').replace('/fixture.css', '/wang.css').replace('/fixture.js', '/wang.js');
 const files = new Map([
+  ["/playernav.js", [resolve(output, "playernav.js"), "text/javascript"]],
+  ["/playernav.css", [resolve(output, "playernav.css"), "text/css"]],
   ["/wang.js", [resolve(output, "wang.js"), "text/javascript"]],
   ["/wang.css", [resolve(output, "wang.css"), "text/css"]],
   ["/wang-tokens.css", [resolve(root, "src/styles/wang-tokens.css"), "text/css"]],
@@ -58,5 +61,5 @@ createServer((request, response) => {
   }
   const file = files.get(path);
   response.setHeader("Content-Type", file?.[1] ?? "text/html; charset=utf-8");
-  response.end(file ? readFileSync(file[0]) : path.startsWith("/team-norway") ? html : path.startsWith("/team-wang") ? wangHtml : trainHtml);
+  response.end(file ? readFileSync(file[0]) : path.startsWith("/team-norway") ? html : path.startsWith("/team-wang") ? wangHtml : path.startsWith("/player-nav") ? navHtml : trainHtml);
 }).listen(5441, "127.0.0.1", () => console.log("TN-komponentrigg klar på 127.0.0.1:5441"));

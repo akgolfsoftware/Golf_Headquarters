@@ -42,6 +42,12 @@ Det gjenstår å bygge TN-18s trenerkatalog/invitasjon, avstemme alle designvari
 - Ni rute-/tematester og 32 nettleservarianter bestod. Dette gjelder komponentene, ikke hele I dag, navigasjonsskallet, full treningsreise eller endelig fontgjengivelse.
 - Kildens små signalfargede tekster holder ikke alltid kontrastkravet. Den målte tilpasningen står i [kildespeilet](../../designsystem/train-lock/valgt-zip-4/README.md). Kontrastverktøyet viser nå både eldre og valgt lag, 88 par og 25 problematiske kombinasjoner. Disse kombinasjonene er ikke godkjent som liten tekst.
 
+### PlayerHQ-navigasjon, andre del 11.09
+
+Første del er lagret lokalt i `608afccf2`. Den påfølgende endringen erstatter V2Shells gamle PlayerHQ-dock med valgt Islands fire faner og mikrofon. Menyen er fast, 64 px høy, med 48 px sirkler og 12 px løft over safe-area. Stående iPad beholder menyen; Mac får 64 px sideskinne med fire destinasjoner. Mikrofonen åpner Caddie i et ark, og kladden beholdes ved lukking. På iPad/Mac åpnes arket fra høyre med 380 px bredde. Stemmekomponenten rendres i samme nettleserlag og holder tastaturfokus. I dag har egen mikrofonknapp på Mac; øvrige V2Shell-sider har inngangen i sideskinnen. Gammel fade ved rutebytte er fjernet for PlayerHQ.
+
+Åtte komponentvarianter bestod sammen med de tidligere 64. Innlogget kontroll av hele skallet, bevegelse ved faktisk rutebytte, full I dag-geometri og AgencyOS-navigasjon gjenstår. Stemmekomponentens visuelle innhold er fortsatt eldre enn v3. Den pågående endringen er ikke en fullført skjermreise.
+
 ## WANG C7: innlogging
 
 Skjemaet sender nå e-post og passord til eksisterende Supabase-innlogging, beholder feltene ved feil, sperrer gjentatt innsending og går tilbake til WANG ved suksess. WANGs navnefrie fellesside, glemt passord, trenerflate og eksisterende elevadministrasjon har ekte lenker. Den åpne demoen for å skrive elevnavn er erstattet av eksisterende beskyttet elevadministrasjon; ingen lagrede brukere er slettet.
