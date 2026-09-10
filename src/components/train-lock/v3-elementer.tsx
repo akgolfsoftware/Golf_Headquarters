@@ -3,11 +3,12 @@ import type { ReactNode } from "react";
 import { TL } from "@/lib/v2/train-lock";
 import styles from "./v3-elementer.module.css";
 
-export function TrainLockStatus({ variant = "mute", children }: {
+export function TrainLockStatus({ variant = "mute", compact = false, children }: {
   variant?: "ok" | "warm" | "danger" | "mute";
+  compact?: boolean;
   children: ReactNode;
 }) {
-  return <span className={styles.status} data-variant={variant}>{children}</span>;
+  return <span className={styles.status} data-variant={variant} data-compact={compact || undefined}>{children}</span>;
 }
 
 export function TrainLockChip({ children }: { children: ReactNode }) {

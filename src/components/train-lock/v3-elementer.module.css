@@ -22,6 +22,7 @@
 .status[data-variant="warm"] { background: var(--tl-warm-tint); color: var(--tl-warm-text); }
 .status[data-variant="ok"] { background: var(--tl-ok-tint); color: var(--tl-text); }
 .status[data-variant="danger"] { background: var(--tl-danger-tint); color: var(--tl-text); }
+.status[data-compact] { min-height: 20px; padding: 3px 7px; gap: 4px; font-size: .625rem; letter-spacing: 0; text-transform: none; white-space: nowrap; }
 /* Signalteksten i ZIP-en har for lav kontrast i lys. Behold tinten og
    tilstandsordet, bruk lesbar tekst. Mørk tåler kildens signalfarger. */
 :global(html[data-v2-tema="dark"]) .status[data-variant="ok"] { color: var(--tl-ok); }

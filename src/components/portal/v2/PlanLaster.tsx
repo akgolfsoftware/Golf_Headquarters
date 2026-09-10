@@ -1,0 +1,11 @@
+/** PH-07 v3 lastegeometri. Ren serverkomponent: loading.tsx skal ikke
+ * trekke inn klient-chunks uten nonce under Nexts strømming. */
+import styles from "./plan-v2.module.css";
+
+export function PlanLaster() {
+  return <div className={styles.lasteRamme} role="status" aria-label="Laster planen" aria-busy="true"><div className={styles.plan} aria-hidden="true"><main className={styles.hoved}>
+    <header className={styles.hode}><div><div className={styles.skjelett} style={{ width: 168, height: 11 }} /><h1>Plan</h1></div><div className={styles.skjelett} style={{ width: 44, height: 44, borderRadius: "50%" }} /></header>
+    <div className={styles.kompakt}><div className={styles.ukepiller} style={{ marginTop: 24 }}>{Array.from({ length: 7 }, (_, i) => <div key={i} className={styles.skjelettPille}><span className={styles.skjelett} style={{ width: 14, height: 14 }} /></div>)}</div><div className={styles.skjelett} style={{ margin: "22px 0", height: 4 }} /><div className={styles.dagOgForslag}><div className={styles.agenda}>{[0, 1, 2].map((i) => <div key={i} className={styles.rad} style={{ minHeight: 76 }}><div className={styles.skjelett} style={{ width: 44, height: 14 }} /><div className={styles.skjelett} style={{ width: "55%", height: 14 }} /></div>)}</div><div className={styles.forslagKort} style={{ borderColor: "var(--tl-hair)", minHeight: 160 }}><div className={styles.skjelett} style={{ width: "45%", height: 10 }} /><div className={styles.skjelett} style={{ width: "80%", height: 20, marginTop: 18 }} /></div></div></div>
+    <div className={styles.desktopGrid}><div className={styles.gridKort} style={{ marginTop: 32 }}><div className={styles.lasteGrid}>{Array.from({ length: 7 }, (_, i) => <div key={i}><div className={styles.skjelett} style={{ height: 16, margin: 12 }} /><div className={styles.skjelett} style={{ height: 54, margin: `${30 + i % 3 * 50}px 3px 0` }} /></div>)}</div></div></div>
+  </main><aside className={styles.inspektor}><div className={styles.skjelett} style={{ width: "80%", height: 26 }} /><div className={styles.skjelett} style={{ height: 120, marginTop: 28 }} /><div className={styles.skjelett} style={{ height: 14, marginTop: 28 }} /></aside></div></div>;
+}

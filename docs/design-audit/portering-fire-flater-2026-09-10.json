@@ -6185,8 +6185,8 @@
       "source": "src/app/portal/planlegge/page.tsx",
       "area": "playerhq",
       "designSource": "train-lock-4",
-      "screenMapping": "ikke-vurdert",
-      "implementation": "ikke-verifisert-mot-valgt-pakke",
+      "screenMapping": "PH-07 Plan v3",
+      "implementation": "responsiv-uke-agenda-forslag-inspektor; 32-komponentvarianter-bestod; innlogget-reise-gjenstaar",
       "visualApproval": "ikke-vurdert",
       "nearbySurfaces": [
         "src/app/error.tsx",
@@ -7094,6 +7094,12 @@
       "area": "playerhq",
       "scope": "PH-01 v3 oppsett, dagsagenda, felles WB/V2 uketall, fullført-kalender og Oslo-døgn; plan/V2-dublett i dagens økter",
       "tests": "Full npm run verify bestod på sluttkoden. Hele npm test: 2301 bestod (syv nye); samlet 136 nettleservarianter bestod. Siste UI-justering ble prøvd på nytt i 64 hele I dag-varianter med faktiske Geist-filer.",
+      "completionProven": false
+    },
+    {
+      "area": "playerhq",
+      "scope": "PH-07 v3: valgt dag, ukegrid, native øktark, forslag og WB-flytting, faktisk uke/kalender og serverlasteskjerm",
+      "tests": "Åtte nye modell-/lesetester bestod. Hele npm test bestod 2309 (2306 + 3). Plan: 32 nettleservarianter, tre lastebredder, store bokstaver, godkjenning/avvisning/feil/flytting/fokus bestod. Full npm run verify bestod, inkludert produksjonsbygg og Serwist.",
       "completionProven": false
     }
   ]

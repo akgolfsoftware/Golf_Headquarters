@@ -10,7 +10,7 @@ export function workbenchWeekSession(row: WbRow): TodaySession {
     row.date.getUTCDate(), Math.floor(row.startMinute / 60), row.startMinute % 60);
   const pyramidArea = asPyramid(row.pyramid);
   return {
-    id: row.id, title: row.title, startTime,
+    model: "wb", id: row.id, title: row.title, startTime,
     endTime: new Date(startTime.getTime() + row.durationMinutes * 60_000),
     status: row.status === "IN_PROGRESS" ? "IN_PROGRESS" : row.status === "COMPLETED" ? "COMPLETED" : "PLANNED",
     practiceType: pyramidArea === "SLAG" ? "RANDOM" : pyramidArea === "SPILL" ? "SPILL_TEST" : pyramidArea === "TURN" ? "KONKURRANSE" : "BLOKK",

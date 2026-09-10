@@ -41,6 +41,7 @@ export type TodaySession = {
   status: SessionStatusV2;
   avbruddAarsak?: OktAvbruddAarsak | null;
   planSessionId?: string | null;
+  model?: "v2" | "wb" | "plan";
   practiceType: PracticeType;
   pyramidArea: PyramidArea;
   durationMin: number;
@@ -265,6 +266,7 @@ export async function getWeekOverview(userId: string, naa: Date = new Date()): P
     if (!day) continue;
     day.sessions.push({
       id: s.id,
+      model: "v2",
       planSessionId: s.generertFra === GENERERT_FRA ? s.generertFraId : null,
       title: s.title,
       startTime: s.startTime,

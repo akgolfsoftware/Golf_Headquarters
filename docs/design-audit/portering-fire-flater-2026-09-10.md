@@ -60,6 +60,16 @@ Dagens eldre plan/V2-leser bruker samme valgte Oslo-dag og fjerner dubletten nå
 
 `idag.py` har bestått 64 kombinasjoner av 320/390/834/1440 × lys/mørk × økt/pågår/fullført/lang tekst/tom dag/tom uke/hvile/feil. Prøven beholder fokus og alle kalenderhendelser, prøver de konkrete øktlenkene og kontrollerer bredde. Den bruker faktiske Geist-filer fra kontrollkopiens Next-bygg. Originale valgte rammer på 393, 834 og 1440 er rendret med pakkens eget React 18.3.1-visningsskript og samme fonter. Appkomponenten er rendret med prosjektets React 19; Next-ruting og skallet er simulert i denne prøven. Privat sammenligning ligger i `_archive/portering-kontroll-2026-09-10/idag-sammenligning.html`.
 
+## PlayerHQ Plan: PH-07 v3 under kontroll
+
+Mobil har sju dagpiller, øktfremdrift, agenda for valgt dag og coachforslag. iPad bruker to spalter; Mac bruker felles TimeGrid med 52 px/time og et 360 px detaljpanel. Øktarket bruker samme detaljer på mobil, native dialog og en eksplisitt tastaturfelle. Samtidige økter får egne spor; også korte og sene økter kan velges. Fullført/avlyst/hoppet over vises fra status. Hvile får ingen startknapp.
+
+Plan leser Workbench/V2 og andre kalenderlag for den valgte uken. Dato og klokke følger Oslo, også gjennom sommertid. Skole uten klokkeslett forblir heldag. Synlige coachforslag får navnet fra den lagrede coachen, og inngår først i fremdriften etter godkjenning. Godkjenning, avvisning og Workbench-flytting bruker eksisterende serverhandlinger; innholdet endres først etter et bekreftet svar. Feil beholder planen og feltene. Ingen data er skrevet som del av kontrollen.
+
+«Ny økt» følger valgt dato/uke inn i det eksisterende Workbench-arket. Planøkter med V2-speil får redigeringslenke til originalen. Detaljene viser faktisk mål, øvelser, varighet og alle fem pyramidenivåer. Ingen eksempelverdier for belastning, ballantall eller målkrav er innført. Lasteskjermen er en ren serverkomponent og laster ingen nye klientskript gjennom Nexts fallback. Ny-økt-lenken er også rettet i Workbench: norsk kalenderdag beholdes uansett nettlesertidssone, og ugyldige datoer/klokkeslett flyttes aldri til en annen dag.
+
+**Gjenstår:** eldre TrainingPlanSession uten V2-speil er ikke med i denne ukelesingen. Direkte flytting av frittstående V2-økter, den fulle ny-/redigerreisen, feil ved første lasting, alle v3-bevegelser og en faktisk innlogget lagringsreise må kontrolleres videre. Ukenavigasjon og heldagsrad er nødvendige tillegg til eksempelrammene; detaljpanelets felt varierer med reelle data. Ingen visuell godkjenning fra Anders er registrert.
+
 ## WANG C7: innlogging
 
 Skjemaet sender nå e-post og passord til eksisterende Supabase-innlogging, beholder feltene ved feil, sperrer gjentatt innsending og går tilbake til WANG ved suksess. WANGs navnefrie fellesside, glemt passord, trenerflate og eksisterende elevadministrasjon har ekte lenker. Den åpne demoen for å skrive elevnavn er erstattet av eksisterende beskyttet elevadministrasjon; ingen lagrede brukere er slettet.
@@ -76,6 +86,8 @@ C7 er ennå ikke visuelt ferdig: desktop har fortsatt en egen blå overskrift ov
 
 | Before | After | Why |
 |---|---|---|
+| Plan viste alle dagene som en lang liste | Valgt dag på mobil, to spalter på iPad og uke med øktpanel på Mac | Følger PH-07 v3 og bruker ett datagrunnlag |
+| Forslag og skole var ikke tilgjengelige i Plan | Faktiske kalenderlag og to likeverdige svar på coachforslag | Spilleren kan overskue uken og svare der planen ligger |
 | Ukeprogresjon utelot Workbench; planlagte kalenderdager var markert fullført | Felles øktliste, faktiske fullført-statuser og Oslo-grenser | Tallene skal beskrive spillerens økter |
 | Gammelt I dag-oppsett med kalender på mobil | PH-01 v3 med agenda og egen Mac-kolonne | Beholder funksjonene og følger den valgte skjermens rekkefølge |
 | Eldre Poppins/ren hvit lysflate på PlayerHQ/AgencyOS | Valgt Geist, varm papirflate og eget tema per område | Følger ZIP (4); temavalg bevares |
@@ -84,6 +96,8 @@ C7 er ennå ikke visuelt ferdig: desktop har fortsatt en egen blå overskrift ov
 | Ark fikk en ugyldig sammensatt radius; kalenderlukk var 32 px | Én radiusverdi og kalenderlukk på 44 px med fokusretur | Fungerende geometri og berørings-/tastaturbruk |
 
 ## Faktisk kontroll
+
+Fjerde del: hele `npm test` bestod med **2 309 tester** (2 306 + 3), uten feil eller skipp. Åtte nye tester dekker Plan-modellen, uke-/forslagslesing og ny-økt-datoen. De tidligere 136 nettleservariantene bestod, og Plan bestod i 32 nye varianter, i tillegg til tre lastebredder, rotfont på 32 px, godkjenning/avvisning/feil, flytting og tastaturfokus. Plan ble prøvd på nytt etter siste visuelle justering. Faktiske Geist-filer og originale PH-07 v3-rammer ble brukt. Privat sammenligning: `_archive/portering-kontroll-2026-09-10/plan-sammenligning.html`. Åpning i Codex er køet; dette er ikke brukerens visuelle godkjenning. Full npm run verify bestod, inkludert produksjonsbygg og Serwist.
 
 Tredje del: hele `npm test` bestod med **2 301 tester** (2 298 + 3), ingen feil eller skipp. De fem nettleserprøvene bestod samlet i **136 varianter** (20 + 32 + 12 + 8 + 64). Full `npm run verify` bestod på sluttkoden, inkludert produksjonsbygg og Serwist. De siste justeringene i daglisten og tilgjengelig kalendertekst ble prøvd på nytt i alle 64 I dag-varianter. Kontrollkopiens 23 endrede/nye filer var byte-identiske med arbeidsgrenens filer før sluttrunden. Bare denne dokumenterte sluttstatusen er oppdatert etter byggkontrollen.
 

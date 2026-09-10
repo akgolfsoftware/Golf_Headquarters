@@ -37,3 +37,7 @@ PlayerHQ-navigasjonen prøves i åtte kombinasjoner (320, 390, 834, 1440 × lys/
 ## Hel I dag-komponent
 
 `idag.py` utvider prøven med 64 kombinasjoner av bredde, tema og tilstand, dagskalender/fokus, faktiske øktlenker, fullført-merking og mobil/Mac-oppsett. Riggserveren leser Geist/Geist Mono fra den allerede bygde kontrollkopien. Til referanserammene bruker den valgt PH-01 v3 under `_archive/design-kilder-2026-09-10/playerhq-train-lock-4/` og lokale kopier av React 18.3.1s to UMD-filer i `_archive/portering-kontroll-2026-09-10/vendor/`. Disse private forutsetningene kreves bare av den hele I dag-/referanseprøven; andre komponentprøver kan kjøres uten Next-fontkopien. Originalene er ikke endret. Neste-ruting og sideskinnen er simulert, og ingen innlogget databasereise påstås.
+
+## Plan v3
+
+`plan.py` bruker de samme lokale Geist-/React-referansefilene som I dag. Den prøver fire bredder × to temaer × fylt/tom/lang tekst/overlapp, pluss godkjenning, avvisning, serverfeil, flytting, fokus og store bokstaver. Lasting prøves separat på mobil, iPad og Mac. Original PH-07 v3 rendres til tre private referansebilder. Serverhandlinger er erstattet bare i riggen; ingen virkelig lagring eller varsling skjer. Navigasjon til ny/rediger kontrolleres som lenkekontrakter, ikke som ferdig innlogget reise.
