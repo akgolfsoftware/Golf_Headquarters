@@ -72,7 +72,7 @@ function TomOppsett() {
           <div>
             <TlCaps>Notion · ikke konfigurert</TlCaps>
             <div style={{ fontSize: 19, fontWeight: 700, color: TL.text, marginTop: 8 }}>
-              Sett <em style={{ color: TL.warm, fontStyle: "italic" }}>NOTION_INTERNAL_TOKEN</em> i Vercel for å koble til
+              Sett <em style={{ color: TL.warmText, fontStyle: "italic" }}>NOTION_INTERNAL_TOKEN</em> i Vercel for å koble til
             </div>
             <p style={{ fontSize: 13, color: TL.mute, lineHeight: 1.6, marginTop: 6 }}>
               AgencyOS bruker en Notion Internal Integration. Tokenet ligger som env-var i Vercel — ingen OAuth-flyt nødvendig.
@@ -331,8 +331,8 @@ function TilkobletTilstand({
           <Icon name="sparkles" size={16} style={{ color: TL.warm, flexShrink: 0, marginTop: 2 }} />
           <p style={{ fontSize: 12.5, color: TL.text, lineHeight: 1.6, margin: 0 }}>
             <strong>Hint:</strong> Vi har detektert at databasen <strong>Mulligan · drift</strong> har ny property{" "}
-            <em style={{ color: TL.warm, fontStyle: "italic" }}>«Forventet timer»</em>. Vil du mappe denne til{" "}
-            <strong>Estimat</strong>-feltet? <span style={{ color: TL.warm, fontWeight: 700 }}>Ja, map nå →</span>
+            <em style={{ color: TL.warmText, fontStyle: "italic" }}>«Forventet timer»</em>. Vil du mappe denne til{" "}
+            <strong>Estimat</strong>-feltet? <span style={{ color: TL.warmText, fontWeight: 700 }}>Ja, map nå →</span>
           </p>
         </div>
       </TlKort>

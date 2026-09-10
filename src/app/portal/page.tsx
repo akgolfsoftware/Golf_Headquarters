@@ -210,6 +210,7 @@ export default async function PortalHjemPage() {
         sgInnspill={formatSg(data.kpiStats.sgBreakdown.app)}
         okterUke={kalender.okterDenneUken || data.kpiStats.sessionsThisWeek}
         ukeNummer={data.weekNumber}
+        ukeFremdrift={data.weekProgress.plannedMin > 0 ? data.weekProgress.completedMin / data.weekProgress.plannedMin : undefined}
         trackman={trackman}
         testerLive={testerLive}
         godkjenninger={godkjenninger}

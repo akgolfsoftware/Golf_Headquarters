@@ -17,6 +17,7 @@ import { resolve, join } from "node:path";
 
 const rot = resolve(import.meta.dirname, "..");
 const css = readFileSync(join(rot, "src/styles/train-lock-tokens.css"), "utf8");
+const valgtCss = readFileSync(join(rot, "src/styles/train-lock-valgt.css"), "utf8");
 const streng = process.argv.includes("--streng");
 
 /* Selektoren med krøllparentes, ikke omtalen i filhodet — ellers splittes
@@ -33,6 +34,12 @@ function tokens(del) {
 }
 const lys = tokens(lysDel);
 const mork = { ...lys, ...tokens(morkDel ?? "") };
+const valgtMorkStart = valgtCss.indexOf('html[data-train-lock="4"][data-v2-tema="dark"] {');
+if (valgtMorkStart < 0) throw new Error("Mangler mørk valgt Train-lock-variant");
+const valgtLys = { ...lys, ...tokens(valgtCss.slice(0, valgtMorkStart)) };
+valgtLys["warm-text"] = valgtLys.text;
+const valgtMork = { ...mork, ...tokens(valgtCss.slice(valgtMorkStart)) };
+const profiler = [["lys", lys], ["mork", mork], ["valgt-lys", valgtLys], ["valgt-mork", valgtMork]];
 
 function lum(h) {
   const n = h.replace("#", "");
@@ -54,6 +61,8 @@ const PAR = [
   ["on-danger", "danger", 4.5, "Kø-badge"],
   ["danger", "scene", 4.5, "feilmelding som tekst"], ["danger", "elev", 4.5],
   ["ok", "scene", 4.5, "PUBLISERT / Godta som tekst"], ["ok", "elev", 4.5],
+  ["warm-text", "scene", 4.5, "v3 liten tekst"], ["warm-text", "elev", 4.5],
+  ["warm-ink", "scene", 4.5, "v3 kilde: bare stor tekst på papir"], ["warm-ink", "elev", 4.5],
   ["warm", "scene", 4.5, "fullført-hake som tekst"], ["warm", "elev", 3.0, "hake er grafikk"],
   ["warn", "scene", 3.0, "warn-pille — grafikk"], ["warn", "elev", 3.0],
   ["viz-target", "scene", 4.5, "StatusPill tone=info som tekst"], ["viz-target", "elev", 4.5],
@@ -63,7 +72,7 @@ const PAR = [
 
 const rader = [];
 let brudd = 0;
-for (const [modus, t] of [["lys", lys], ["mork", mork]]) {
+for (const [modus, t] of profiler) {
   for (const [tekst, flate, krav, note = ""] of PAR) {
     if (!t[tekst] || !t[flate]) continue;
     const k = kontrast(t[tekst], t[flate]);
@@ -83,17 +92,25 @@ const tabell = (modus) => [
 const md = [
   "# Train-lock — kontrast, målt",
   "",
-  `GENERERT av \`scripts/check-tl-kontrast.mjs\` fra \`src/styles/train-lock-tokens.css\`. Ikke rediger. Datoen står i git-loggen, ikke her — ellers ville hver \`npm run verify\` skitnet til arbeidstreet. ${rader.length} par, ${brudd} brudd.`,
+  `GENERERT av \`scripts/check-tl-kontrast.mjs\` fra \`src/styles/train-lock-tokens.css\` og \`src/styles/train-lock-valgt.css\`. Ikke rediger. Datoen står i git-loggen, ikke her — ellers ville hver \`npm run verify\` skitnet til arbeidstreet. ${rader.length} par, ${brudd} brudd.`,
   "",
-  "Et brudd her er IKKE en ordre om å endre tokenet — Train-lock er fasit (CLAUDE.md invariant 2). Det er en ordre om å ikke bruke paret som brødtekst: bruk fargen som grafikk, som stor tekst (fra 21 px), eller bytt til `text`/`mute`. Endres et token, er det etter beslutning fra Anders.",
+  "Tabellene skiller det eldre laget fra ZIP (4), valgt av Anders 10.09.2026. Brudd betyr at fargeparet ikke skal brukes som vanlig tekst. Fargene kan brukes i grafikk eller stor tekst når det aktuelle kontrastkravet holder; liten tekst bruker et målt lesbart par. Tintede flater og faktisk skjermbruk krever egen nettleserkontroll.",
   "",
-  "## Lys",
+  "## Eldre lag — lys",
   "",
   ...tabell("lys"),
   "",
-  "## Mørk",
+  "## Eldre lag — mørk",
   "",
   ...tabell("mork"),
+  "",
+  "## Valgt ZIP (4) — lys PlayerHQ/AgencyOS",
+  "",
+  ...tabell("valgt-lys"),
+  "",
+  "## Valgt ZIP (4) — mørk PlayerHQ/AgencyOS",
+  "",
+  ...tabell("valgt-mork"),
   "",
 ].join("\n");
 

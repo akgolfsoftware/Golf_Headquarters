@@ -117,7 +117,7 @@ export function OktArk({ session: initial }: { session: WorkbenchSession }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: TL.loft.s2, maxWidth: 460, margin: "0 auto", width: "100%" }}>
       <div>
-        <span style={{ ...eyebrow, color: session.status === "COMPLETED" ? TL.warm : eyebrow.color }}>
+        <span style={{ ...eyebrow, color: session.status === "COMPLETED" ? TL.warmText : eyebrow.color }}>
           {session.status === "PUBLISHED" ? UI.inspectorTitle : STATUS_CAPS[session.status]} ·{" "}
           {formatMinutes(session.durationMinutes)}
         </span>

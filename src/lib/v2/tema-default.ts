@@ -1,49 +1,19 @@
 /**
- * Tema-default per rute — ÉN kilde, delt mellom server og klient.
- *
- * Regelen bodde tidligere to steder (`onsketMorkTema` i `src/app/layout.tsx`
- * for SSR og en `useEffect` i `V2Shell` for rute-veksling). De må alltid si
- * det samme, ellers blinker flaten om ved client-side navigasjon — så de bor
- * her nå. Fila er ren (ingen server- eller DOM-import) og kan importeres fra
- * begge sider.
- *
- * MØRK DEFAULT PÅ /portal OG /admin (Anders 25.08.2026, i økt).
- * Train-lock er designfasit for hele produktet, og fasiten er mørk-først:
- * scene `#000000`, lys er varianten (CLAUDE.md invariant 2). Defaulten var
- * lys fra 25.07 — «mørk skjerm er vanskelig å lese utendørs i sollys» — men
- * det er nå brukerens valg via bryteren, ikke appens default. Dette svarer
- * åpent spørsmål 1 i `docs/natt/D2-TOKENS-DONE.md`.
- *
- * Uendret av den beslutningen:
- * - `/auth` er LYS (Paper `#FAF9F5`) — låst beslutning PP-A/A4 16.08.2026.
- * - `/forelder` er LYS som default uten cookie. Forelder-omfangsspørsmålet (T4 i
- *   AAPNE-SPORSMAAL) er LØST 26.08.2026: hele forelder-appen skal ha BÅDE lys og
- *   mørk modus (som resten av produktet) — men det endrer ikke *defaulten* her,
- *   kun at bryteren (mørk-valget) faktisk må fungere visuelt der også, ikke bare
- *   på /portal og /admin. Komponentporten er levert 29.08.2026 (PR #648, alle
- *   20 FO-filer sitert, lys+mørk kun via `--tl-*`); riggrader og lys-
- *   verifisering gjenstår (MASTERPLAN STEG 20.7, fase 7).
- * - Landingssidene er alltid lyse (fasit: AK Golf-masteren `designsystem/ak-golf/`,
- *   Anders 04.09.2026 — `ak-golf-website` er utgått som fasit).
- * - Resten (stats, team-flatene, interne) er mørke som før.
- * - Bryteren vinner alltid: cookien `ak-v2-tema` overstyrer defaulten begge
- *   veier, så en bruker som velger lys på /portal beholder lys.
+ * Én kilde for tema ved servervisning og klientnavigasjon.
+ * Anders valgte Train-lock ZIP (4) 10.09.2026: tokens/colors.css
+ * angir lys PlayerHQ og mørk AgencyOS. Lagret temavalg vinner.
  */
 
-/** Flater som er MØRKE uten cookie. Train-lock-fasitens hjemmebane. */
+/** AgencyOS starter mørkt. Rutegrenser skal ikke treffe navn som /administrasjon. */
 export function erMorkFlate(path: string): boolean {
-  return path.startsWith("/portal") || path.startsWith("/admin");
+  return /^\/admin(\/|$)/.test(path);
 }
 
-/** Flater som er LYSE uten cookie, og som IKKE er landingssider. */
+/** PlayerHQ, innlogging og forelder starter lyst uten lagret valg. */
 export function erLysFlate(path: string): boolean {
-  return path.startsWith("/auth") || path.startsWith("/forelder");
+  return /^\/(portal|auth|forelder)(\/|$)/.test(path);
 }
 
-/**
- * Ønsket tema for en rute, gitt `ak-v2-tema`-cookien (undefined = ikke satt).
- * Cookien er brukerens eksplisitte valg og vinner over defaulten.
- */
 export function onsketTema(
   path: string,
   temaCookie: string | undefined,

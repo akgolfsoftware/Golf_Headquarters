@@ -16,8 +16,8 @@ Oppryddingens resultat og verifikasjon står i [prosjektkartet](vedlikehold/pros
 
 | ID | Ansvar og status | Konkret oppgave | Klar når |
 |---|---|---|---|
-| D1 | Anders i Claude Design — designarbeid pågår; rekkefølgen her er anbefalt | Gjennomgå én sammenhengende spillerreise: I dag → Plan → gjennomfør økt → oppsummering | Skjermene henger sammen, hovedhandlinger og tilstander er tydelige, og Anders har valgt en versjon som kan bygges |
-| D2 | Implementering — avventer valgt versjon og byggeoppgave | Bygg og kontroller D1 samlet mot referansen | Faktiske data og overganger virker, mobil/desktop er kontrollert og Anders har sett resultatet |
+| D1 | Byggegrunnlag valgt av Anders 10.09 | Train-lock ZIP (4) for PlayerHQ/AgencyOS, levert Claw-pakke for interne TN-skjermer og WANG-speilet for WANG | Hver reise kobles til den konkrete valgte kilden; andre områder kan fortsatt revideres |
+| D2 | Portering pågår på `codex/portering-fire-flater-2026-09-10` | Bygg **alle skjermene** i PlayerHQ, AgencyOS, Team Norway og WANG. [Kilder og kontrollstatus](design-audit/portering-fire-flater-2026-09-10.md) | Funksjoner, datalagring, tilgang og relevante tilstander virker; mobil/desktop er sammenlignet med valgt kilde, og Anders har sett resultatet |
 | T1 | Lokale rettinger og åtte reiser mot ekte testdatabase prøvd — nettleserreise gjenstår | Rett R1 først, deretter datalagring og sammenheng i R2/R3/R5/R8 samt tilgang og videresending i R6/R7 | Målrettede tester bekrefter både tillatt oppførsel og avviste/feilende tilfeller |
 | F1 | Versjonert registrering implementert/testet lokalt — fagspørsmål og samlet integrasjon gjenstår | [Språk og treningsstruktur](beslutningsgrunnlag/sprak-og-treningskvalitet-2026-09-10.md), særlig [testbatteri mot Excel v3](beslutningsgrunnlag/team-norway-excel-v3-kontroll.md) | Én versjonert protokoll styrer felt, enheter, rekkefølge, validering og beregning i faktisk registrering; åpne fagspørsmål er avklart |
 

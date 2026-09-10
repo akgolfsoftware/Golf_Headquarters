@@ -81,7 +81,7 @@ export default async function WorkbenchDagensOkterPage() {
                       fontSize: 9,
                       fontWeight: 700,
                       letterSpacing: TL.track.capsSm,
-                      color: harHake(status) ? TL.warm : TL.mute,
+                      color: harHake(status) ? TL.warmText : TL.mute,
                     }}
                   >
                     {harHake(status) && <Icon name="check" size={10} style={{ color: TL.warm }} />}

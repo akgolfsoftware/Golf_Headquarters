@@ -154,7 +154,7 @@ export function StasjonTrainLock({
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              color: TL.warm,
+              color: TL.warmText,
               fontSize: 14,
               fontWeight: 700,
             }}

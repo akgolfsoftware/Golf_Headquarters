@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useRef, useState } from "react";
 import { TN } from "@/lib/v2/team-norway";
-import { Icon } from "@/components/v2";
+import { Icon } from "@/components/v2/icon";
 import type { TnMenyPunkt } from "./core";
 
 /**
@@ -16,6 +16,8 @@ import type { TnMenyPunkt } from "./core";
  */
 export function TnRailMobil({ punkter, orgNavn }: { punkter: TnMenyPunkt[]; orgNavn: string }) {
   const [apen, setApen] = useState(false);
+  const menyId = useId();
+  const knappRef = useRef<HTMLButtonElement>(null);
   const lenker = punkter.filter((p): p is Extract<TnMenyPunkt, { type: "lenke" }> => p.type === "lenke");
 
   return (
@@ -35,24 +37,34 @@ export function TnRailMobil({ punkter, orgNavn }: { punkter: TnMenyPunkt[]; orgN
           {orgNavn}
         </span>
         <button
+          ref={knappRef}
           type="button"
           onClick={() => setApen((v) => !v)}
           aria-expanded={apen}
+          aria-controls={menyId}
           aria-label={apen ? "Lukk meny" : "Åpne meny"}
-          style={{ background: "none", border: "none", padding: 8, cursor: "pointer" }}
+          style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", minWidth: 44, minHeight: 44, background: "none", border: "none", padding: 8, cursor: "pointer" }}
         >
           <Icon name={apen ? "x" : "menu"} size={20} style={{ color: TN.navy900 }} />
         </button>
       </div>
       {apen && (
         <nav
+          id={menyId}
           aria-label="Team Norway"
+          onKeyDown={(event) => {
+            if (event.key === "Escape") {
+              setApen(false);
+              knappRef.current?.focus();
+            }
+          }}
           style={{ display: "flex", flexDirection: "column", padding: "6px 10px", gap: 2, background: TN.surfaceCard, borderBottom: `1px solid ${TN.borderSubtle}` }}
         >
           {lenker.map((p) => (
             <a
               key={p.href}
               href={p.href}
+              aria-current={p.aktiv ? "page" : undefined}
               onClick={() => setApen(false)}
               style={{
                 height: 44,

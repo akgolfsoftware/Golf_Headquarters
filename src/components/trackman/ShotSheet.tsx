@@ -6,6 +6,9 @@
  * mobil/iPad, artefakt-panel (380px, fast til høyre, uten kart — hovedflaten
  * viser kartet allerede) på Mac ≥1101px. ALDRI en ny rute/URL.
  *
+ * Avvik:
+ *   - iPad deler stablet mobiloppsett; ny ZIP (4) er ikke visuelt avstemt her.
+ *   - Arkets radius leses nå som én CSS-verdi; full skjermkontroll gjenstår.
  * Fasit: designsystem/train-lock/TM-08f Slag-ark fra prikk.dc.html
  * (TM-08f1 iPhone / TM-08f2 iPad / TM-08f3 Mac 1440 — iPad-variantens
  * side-om-side kart+tekst er ikke portet 1:1 her; den deler mobil-layouten
@@ -249,7 +252,7 @@ export function ShotSheet({ shot, shotIndex, totalShots, allShots, variant, onCl
       aria-label={`Slag ${shot.shotNumber}`}
       style={{
         background: TL.dock,
-        borderRadius: `${TL.radius.sheet} ${TL.radius.sheet} 0 0`,
+        borderRadius: TL.radius.sheet,
         border: `1px solid ${TL.hair}`,
         padding: "10px 16px calc(20px + env(safe-area-inset-bottom))",
         display: "flex",

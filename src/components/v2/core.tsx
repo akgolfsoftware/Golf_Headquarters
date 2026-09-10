@@ -137,11 +137,11 @@ export function StatusPill({ children, tone = "lime" }: StatusPillProps) {
         height: 20,
         boxSizing: "border-box",
         fontFamily: TL.font.mono,
-        fontSize: 10,
+        fontSize: "max(10px, var(--tl-text-caps-sm))",
         fontWeight: 600,
         letterSpacing: "0.06em",
         lineHeight: 1,
-        color: c,
+        color: tone === "warm" ? TL.warmText : c,
         background: `color-mix(in srgb,${c} 10%,transparent)`,
         border: `1px solid color-mix(in srgb,${c} 26%,transparent)`,
         borderRadius: TL.radius.pill,
@@ -184,7 +184,7 @@ export function SevChip({ s }: SevChipProps) {
         height: 20,
         boxSizing: "border-box",
         fontFamily: TL.font.mono,
-        fontSize: 10,
+        fontSize: "max(10px, var(--tl-text-caps-sm))",
         fontWeight: 600,
         letterSpacing: "0.06em",
         lineHeight: 1,
@@ -213,7 +213,7 @@ export interface AkseChipProps {
    dedikert Paper-komponent, men badge-formen den bruker er felles med StatusPill/SevChip. */
 export function AkseChip({ a }: AkseChipProps) {
   return (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 5, height: 20, boxSizing: "border-box", fontFamily: TL.font.mono, fontSize: 10, fontWeight: 600, lineHeight: 1, color: TL.mute, background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: TL.radius.pill, padding: "0 8px" }}>
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 5, height: 20, boxSizing: "border-box", fontFamily: TL.font.mono, fontSize: "max(10px, var(--tl-text-caps-sm))", fontWeight: 600, lineHeight: 1, color: TL.mute, background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: TL.radius.pill, padding: "0 8px" }}>
       <span style={{ width: 6, height: 6, borderRadius: 9999, background: TL.mute, flex: "none" }} />{AKSE_NAVN[a] || a}
     </span>
   );
@@ -226,7 +226,7 @@ export interface MikroMetaProps {
 /* Liten mono-meta: ikon + tekst (sted, serie/gjentakelse osv.). */
 export function MikroMeta({ icon, children }: MikroMetaProps) {
   return (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, color: TL.mute }}>
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontFamily: TL.font.mono, fontSize: TL.storrelse.capsSm, fontWeight: 700, color: TL.mute }}>
       <Icon name={icon} size={10} style={{ color: TL.mute }} />{children}
     </span>
   );
@@ -664,7 +664,7 @@ export function FordelingRad({ code, label, pct, value, neg, signal, kol2, last,
         borderBottom: last || emphasis ? "none" : `1px solid ${TL.hair}`,
       }}
     >
-      {code && <span style={{ width: 40, fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, color: TL.mute, flex: "none" }}>{code}</span>}
+      {code && <span style={{ width: 40, fontFamily: TL.font.mono, fontSize: "max(10px, var(--tl-text-caps-sm))", fontWeight: 700, color: TL.mute, flex: "none" }}>{code}</span>}
       {label && (
         <span
           style={{
@@ -896,7 +896,7 @@ export function IkonRail({ aktiv, navn = "Øyvind Rohjan" }: IkonRailProps) {
           <div key={n.id} title={n.l} className="v2-press v2-focus" tabIndex={0} style={{ width: 48, minHeight: 44, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 3, padding: "8px 0 6px", borderRadius: 12, background: on ? "color-mix(in srgb, var(--tl-fill) 9%, transparent)" : "transparent", cursor: "pointer", position: "relative" }}>
             {on && <span style={{ position: "absolute", left: -7, top: 12, bottom: 12, width: 2, borderRadius: 2, background: TL.fill }} />}
             <Icon name={n.i} size={18} style={{ color: on ? TL.fill : TL.mute }} strokeWidth={on ? 2 : 1.5} />
-            <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: on ? TL.text : TL.mute }}>{n.l}</span>
+            <span style={{ fontFamily: TL.font.mono, fontSize: TL.storrelse.capsSm, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: on ? TL.text : TL.mute }}>{n.l}</span>
           </div>
         );
       })}
@@ -923,7 +923,7 @@ export function BunnNav({ aktiv }: BunnNavProps) {
         const on = aktiv === n.id;
         return (
           <div key={n.id} className="v2-press" style={{ flex: 1, minHeight: 44, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 3, padding: "4px 0", borderRadius: TL.radius.row, color: on ? TL.fill : TL.mute }}>
-            <Icon name={n.i} size={20} strokeWidth={on ? 2 : 1.5} /><span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: on ? 600 : 500 }}>{n.l}</span>
+            <Icon name={n.i} size={20} strokeWidth={on ? 2 : 1.5} /><span style={{ fontFamily: TL.font.mono, fontSize: "max(10px, var(--tl-text-caps-sm))", fontWeight: on ? 600 : 500 }}>{n.l}</span>
           </div>
         );
       })}

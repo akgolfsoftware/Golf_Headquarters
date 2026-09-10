@@ -1,14 +1,16 @@
 # Designarbeid og referanser
 
-**Gjeldende beskjed fra Anders 10.09.2026:** «Jeg jobber nå parallelt i Claude design for å optimalisere design på alle skjermer. Ingenting av det som ligger i prosjektet nå er låst.»
+**Valgt for den bestilte porteringen 10.09.2026:** Anders har valgt Train-lock for PlayerHQ og AgencyOS, Claw / Team Norway for interne Team Norway-skjermer og WANG for WANG-skjermene. Bestillingen gjelder alle skjermene i disse fire områdene. Se [valgte kilder og kontrollstatus](../docs/design-audit/portering-fire-flater-2026-09-10.md).
 
-Alle eksisterende designpakker er arbeidsunderlag under revisjon. Navn som «Train-lock», eldre godkjenninger og formuleringer som «eneste fasit» låser ikke videre arbeid. Dette gjelder også navigasjon, oppsett, fonter, farger, temaer og komponentvalg på tvers av flatene. En ny versjon fra Claude Design er ikke inspisert eller importert i denne avklaringen.
+Byggegrunnlaget er `Player HQ Train lock (4).zip`, `Claw Design — Team Norway Golf.zip` og det eksisterende WANG-speilet. De to leverte ZIP-filene er inspisert og identifisert med SHA-256. Team Norway-pakkens 230 sammenlignbare designfiler er identiske med speilet; Train-lock har nyere filer som må kobles til hver portert reise.
+
+Anders' tidligere presisering om at designet kan revideres gjelder fortsatt. Valget over er en byggeordre for denne oppgaven, ikke en visuell godkjenning av ferdig kode. Gamle dokumenters slettelister, datamodellforslag og publiseringsinstrukser er underlag, ikke selvstendige kjøreordrer.
 
 ## Eksisterende underlag
 
 For nytt arbeid: bruk [AK HQ Design-skillen](../.claude/skills/ak-hq-design/SKILL.md) og [samlet hovedprompt og arbeidsbeskrivelse](../docs/design-system/ak-hq-designarbeid.md). De definerer prosessen og dekningen, ikke et nytt låst utseende.
 
-Tabellen viser hvor materialet og dagens implementasjon finnes. Den velger ikke fremtidig design.
+Tabellen viser hvor materialet og dagens implementasjon finnes. Versjonsvalget for den aktive porteringen står over.
 
 | Flate | Eksisterende referanser | Dagens implementasjon |
 |---|---|---|

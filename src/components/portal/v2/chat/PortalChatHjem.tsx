@@ -711,7 +711,7 @@ function WorkbenchIDagArtefakt({ workbenchDay }: { workbenchDay: PlayerDayResult
         <div style={{ ...wbKortStil, display: "flex", flexDirection: "column", gap: 8 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <span style={{ width: 6, height: 6, borderRadius: "50%", background: TL.warm, flex: "none" }} aria-hidden="true" />
-            <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: TL.track.capsSm, textTransform: "uppercase", color: TL.warm }}>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: TL.track.capsSm, textTransform: "uppercase", color: TL.warmText }}>
               {STATUS_CAPS.IN_PROGRESS}
             </span>
           </div>
@@ -786,7 +786,7 @@ function WorkbenchIDagArtefakt({ workbenchDay }: { workbenchDay: PlayerDayResult
                   fontSize: 9,
                   fontWeight: 700,
                   letterSpacing: TL.track.capsSm,
-                  color: harHake(status) ? TL.warm : TL.mute,
+                  color: harHake(status) ? TL.warmText : TL.mute,
                 }}
               >
                 {harHake(status) && <Icon name="check" size={10} style={{ color: TL.warm }} />}

@@ -241,7 +241,7 @@ function IDagRad({ okt, now, forst }: { okt: CockpitTimelineSession; now: number
           {metaTekst}
         </div>
       </div>
-      <span style={{ fontSize: 13, color: erNa ? TL.warm : TL.mute, fontVariantNumeric: "tabular-nums", fontWeight: erNa ? 700 : 400 }}>
+      <span style={{ fontSize: 13, color: erNa ? TL.warmText : TL.mute, fontVariantNumeric: "tabular-nums", fontWeight: erNa ? 700 : 400 }}>
         {erNa ? "nå" : okt.time}
       </span>
     </div>

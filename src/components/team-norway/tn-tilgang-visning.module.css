@@ -1,0 +1,38 @@
+.skall { display: flex; min-height: 100dvh; background: var(--tn-surface-page); font-family: var(--tn-font-body); color: var(--tn-text-primary); }
+.innhold { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.arbeidsflate { flex: 1; min-width: 0; display: flex; align-items: stretch; }
+.liste { flex: 1; min-width: 0; padding: 28px 32px; display: flex; flex-direction: column; gap: 20px; }
+.oyenbryn { margin: 0; font-family: var(--tn-font-mono); font-size: var(--tn-text-micro); letter-spacing: var(--tn-tracking-eyebrow); text-transform: uppercase; color: var(--tn-text-secondary); }
+.tittel { margin: 6px 0 0; font-size: var(--tn-text-h2); font-weight: 700; letter-spacing: var(--tn-tracking-heading); color: var(--tn-navy-900); line-height: var(--tn-leading-tight); }
+.forklaring { background: var(--tn-navy-50); border: 1px solid var(--tn-navy-100); border-radius: var(--tn-radius-md); padding: 14px 16px; font-size: var(--tn-text-sm); line-height: var(--tn-leading-normal); }
+.forklaring p { margin: 0; padding-left: 12px; border-left: 3px solid var(--tn-navy-600); }
+.personlenke { display: flex; align-items: center; gap: 9px; min-height: 44px; text-decoration: none; color: inherit; }
+.persontekst { display: flex; flex-direction: column; gap: 3px; min-width: 0; overflow-wrap: anywhere; }
+.persontekst strong { font-size: var(--tn-text-sm); font-weight: 600; color: var(--tn-navy-900); }
+.epost { font-family: var(--tn-font-mono); font-size: var(--tn-text-micro); color: var(--tn-text-secondary); overflow-wrap: anywhere; }
+.gruppe { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: var(--tn-text-sm); }
+.periode { font-family: var(--tn-font-mono); font-size: var(--tn-text-xs); font-variant-numeric: tabular-nums; }
+.detalj { width: 400px; flex-shrink: 0; border-left: 1px solid var(--tn-border-subtle); background: var(--tn-surface-card); padding: 22px 24px; display: flex; flex-direction: column; align-items: flex-start; gap: 20px; }
+.detalj > form { width: 100%; }
+.personhode { display: flex; align-items: center; gap: 12px; width: 100%; }
+.personnavn { margin: 0; font-size: var(--tn-text-lg); font-weight: 700; line-height: var(--tn-leading-snug); color: var(--tn-navy-900); }
+.tilbake { display: inline-flex; align-items: center; min-height: 44px; color: var(--tn-link); font-size: var(--tn-text-sm); text-underline-offset: 4px; }
+.personlenke:focus-visible, .personkort:focus-visible, .tilbake:focus-visible { outline: 2px solid var(--tn-navy-600); outline-offset: 3px; border-radius: var(--tn-radius-xs); }
+.mobilListe { display: none; }
+.personer { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.personkort { display: flex; flex-direction: column; gap: 14px; padding: 18px; border: 1px solid var(--tn-border-subtle); border-radius: var(--tn-radius-lg); background: var(--tn-white); box-shadow: var(--tn-shadow-sm); color: inherit; text-decoration: none; }
+.radfot { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+.tom { margin: 0; padding: 26px 20px; background: var(--tn-white); border-radius: var(--tn-radius-lg); font-size: var(--tn-text-base); }
+
+@media (max-width: 1279px) {
+  .liste { padding: 24px; }
+  .arbeidsflate[data-valgt] .liste { display: none; }
+  .detalj { width: 100%; min-width: 0; border-left: 0; padding: 24px; padding-bottom: max(24px, env(safe-area-inset-bottom)); }
+}
+@media (max-width: 767px) {
+  .liste { padding: 20px 16px; }
+  .tittel { font-size: var(--tn-text-h3); }
+  .bredListe { display: none; }
+  .mobilListe { display: block; }
+  .detalj { padding: 20px 16px; padding-bottom: max(20px, env(safe-area-inset-bottom)); }
+}

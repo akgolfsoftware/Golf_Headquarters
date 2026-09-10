@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, type CSSProperties, type ReactNode } from "react";
+import { useId, type ComponentProps, type CSSProperties, type ReactNode } from "react";
 import { TN } from "@/lib/v2/team-norway";
-import { Icon } from "@/components/v2";
+import { Icon } from "@/components/v2/icon";
+import styles from "./tn-kontroller.module.css";
 
 /**
  * Team Norway — delte primitiver (Claw batch 3, 01.09.2026).
@@ -123,41 +124,35 @@ export function TnAvatarInitialer({
 
 // ───────────────────────── Knapp ─────────────────────────
 
-// 44/48/56px (sm/md/lg) — hevet 08.09.2026, 40px var under minste trykkmål.
-// Fasit: components/core/Button.jsx i Claw-designsystemet (a03bf94a…).
-const TN_KNAPP_HOYDE = { sm: 44, md: 48, lg: 56 } as const;
+// Fasit: designsystem/team-norway/components/core/Button.jsx.
+// Native knapp-props bevarer disabled, skjemakobling og tilgjengelige navn.
 
 export function TnKnapp({
   children,
   variant = "sekundaer",
   size = "md",
-  onClick,
   type = "button",
-}: {
+  fullBredde = false,
+  ikon,
+  className,
+  ...props
+}: Omit<ComponentProps<"button">, "children"> & {
   children: ReactNode;
-  variant?: "primaer" | "sekundaer";
+  variant?: "primaer" | "sekundaer" | "aksent" | "tekst" | "mork";
   size?: "sm" | "md" | "lg";
-  onClick?: () => void;
-  type?: "button" | "submit";
+  fullBredde?: boolean;
+  ikon?: ReactNode;
 }) {
-  const primaer = variant === "primaer";
   return (
     <button
+      {...props}
       type={type}
-      onClick={onClick}
-      style={{
-        height: TN_KNAPP_HOYDE[size],
-        padding: "0 18px",
-        borderRadius: TN.radius.full,
-        background: primaer ? TN.navy900 : "transparent",
-        border: primaer ? "none" : `1px solid ${TN.borderDefault}`,
-        color: primaer ? TN.white : TN.navy900,
-        fontFamily: TN.font.body,
-        fontSize: TN.text.sm,
-        fontWeight: TN.weight.semibold,
-        cursor: "pointer",
-      }}
+      className={[styles.knapp, className].filter(Boolean).join(" ")}
+      data-variant={variant}
+      data-size={size}
+      data-full-bredde={fullBredde || undefined}
     >
+      {ikon && <span aria-hidden="true" className={styles.ikon}>{ikon}</span>}
       {children}
     </button>
   );
@@ -172,7 +167,7 @@ export type TnMenyPunkt =
 export type TnBrukerFot = { navn: string; rolle: string };
 
 /**
- * 232px sidepanel — logo på hvit plate (rød stolpe), grupperte menypunkter
+ * 252px sidepanel — logo på hvit plate (rød stolpe), grupperte menypunkter
  * (aktiv = navy-50 bakgrunn + rød markør), bruker-fot nederst. Fasit:
  * TnSkall.dc.html §rail. Ikke ansvarlig for ruting — kall-siden gir `href`
  * og avgjør `aktiv` selv (unngår en client-side routing-avhengighet her).
@@ -252,6 +247,7 @@ export function TnRail({
             <a
               key={p.href}
               href={p.href}
+              aria-current={p.aktiv ? "page" : undefined}
               style={{
                 height: 40,
                 borderRadius: TN.radius.xs,
@@ -325,66 +321,52 @@ export function TnInput({
   type = "text",
   suffix,
   disabled,
-  name,
-}: {
+  id,
+  className,
+  "aria-describedby": beskrevetAv,
+  ...props
+}: Omit<ComponentProps<"input">, "value" | "onChange"> & {
   label?: string;
   value?: string;
   onChange?: (verdi: string) => void;
   placeholder?: string;
   error?: string;
   hint?: string;
-  type?: "text" | "number" | "date" | "email";
   suffix?: string;
-  disabled?: boolean;
-  name?: string;
 }) {
-  const [fokus, setFokus] = useState(false);
-  const kant = error ? TN.status.red : fokus ? TN.navy600 : TN.borderSubtle;
+  const generertId = useId();
+  const feltId = id ?? generertId;
+  const meldingId = `${feltId}-melding`;
+  const beskrivelse = [beskrevetAv, error || hint ? meldingId : undefined].filter(Boolean).join(" ") || undefined;
   return (
-    <label style={{ display: "flex", flexDirection: "column", gap: 7, fontFamily: TN.font.body }}>
+    <div className={styles.felt}>
       {label && (
-        <span style={{ fontSize: TN.text.xs, fontWeight: TN.weight.semibold, color: TN.textPrimary }}>{label}</span>
+        <label htmlFor={feltId} className={styles.etikett}>{label}</label>
       )}
       <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 8,
-          background: disabled ? TN.ink50 : TN.white,
-          border: `1px solid ${kant}`,
-          borderRadius: TN.radius.sm,
-          padding: "0 14px",
-          height: 48,
-          boxShadow: fokus ? TN.focusRing : TN.shadow.sm,
-        }}
+        className={styles.feltramme}
+        data-feil={!!error || undefined}
+        data-disabled={disabled || undefined}
       >
         <input
+          {...props}
+          id={feltId}
           type={type}
-          name={name}
-          value={value ?? ""}
+          value={value}
           placeholder={placeholder}
           disabled={disabled}
-          onChange={(e) => onChange?.(e.target.value)}
-          onFocus={() => setFokus(true)}
-          onBlur={() => setFokus(false)}
-          style={{
-            flex: 1,
-            minWidth: 0,
-            border: "none",
-            outline: "none",
-            background: "transparent",
-            fontFamily: type === "number" ? TN.font.mono : TN.font.body,
-            fontSize: TN.text.base,
-            color: TN.ink900,
-          }}
+          onChange={onChange ? (e) => onChange(e.target.value) : undefined}
+          aria-invalid={error ? true : props["aria-invalid"]}
+          aria-describedby={beskrivelse}
+          className={[styles.input, className].filter(Boolean).join(" ")}
         />
-        {suffix && <span style={{ fontFamily: TN.font.mono, fontSize: TN.text.xs, color: TN.ink400 }}>{suffix}</span>}
+        {suffix && <span className={styles.suffiks}>{suffix}</span>}
       </div>
       {error ? (
-        <span style={{ fontSize: TN.text.xs, color: TN.status.redText }}>{error}</span>
+        <span id={meldingId} className={styles.feil}>{error}</span>
       ) : hint ? (
-        <span style={{ fontSize: TN.text.xs, color: TN.ink400 }}>{hint}</span>
+        <span id={meldingId} className={styles.hint}>{hint}</span>
       ) : null}
-    </label>
+    </div>
   );
 }

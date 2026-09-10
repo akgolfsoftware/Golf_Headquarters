@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 
 import { WangLogin } from "./wang-login";
 
-export const dynamic = "force-static";
+// Innloggingen trenger skript med samme nonce som forespørselens CSP.
+// Et forhåndsbygd dokument har ingen forespørsel og kan ikke få denne verdien.
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Logg inn — WANG Toppidrett Fredrikstad Golf",

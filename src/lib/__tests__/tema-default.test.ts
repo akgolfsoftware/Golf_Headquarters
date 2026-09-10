@@ -5,15 +5,15 @@ import { erMorkFlate, erLysFlate, onsketTema } from "@/lib/v2/tema-default";
 // Regelen lå tidligere duplisert i layout.tsx og shell.tsx og drev fra
 // hverandre. Disse testene låser den ene kilden.
 
-test("mørk default: /portal og /admin uten cookie", () => {
-  for (const p of ["/portal", "/portal/analysere", "/admin", "/admin/agencyos/okonomi"]) {
+test("valgt Train-lock: AgencyOS starter mørkt uten cookie", () => {
+  for (const p of ["/admin", "/admin/agencyos/okonomi"]) {
     assert.equal(onsketTema(p, undefined, false), "dark", p);
     assert.equal(erMorkFlate(p), true, p);
   }
 });
 
-test("lys default består der den er låst: /auth (PP-A/A4) og /forelder (uavklart)", () => {
-  for (const p of ["/auth", "/auth/logg-inn", "/forelder", "/forelder/bookinger"]) {
+test("PlayerHQ, innlogging og forelder starter lyst uten cookie", () => {
+  for (const p of ["/portal", "/portal/analysere", "/auth", "/auth/logg-inn", "/forelder", "/forelder/bookinger"]) {
     assert.equal(onsketTema(p, undefined, false), "light", p);
     assert.equal(erLysFlate(p), true, p);
     assert.equal(erMorkFlate(p), false, p);
@@ -22,6 +22,7 @@ test("lys default består der den er låst: /auth (PP-A/A4) og /forelder (uavkla
 
 test("bryteren vinner over defaulten, begge veier", () => {
   assert.equal(onsketTema("/portal", "light", false), "light");
+  assert.equal(onsketTema("/portal", "dark", false), "dark");
   assert.equal(onsketTema("/admin", "light", false), "light");
   assert.equal(onsketTema("/auth", "dark", false), "dark");
   assert.equal(onsketTema("/forelder", "dark", false), "dark");
@@ -41,12 +42,13 @@ test("øvrige flater beholder mørk default og lys via cookie (uendret fra før)
 });
 
 test("ukjent cookieverdi behandles som ikke satt", () => {
-  assert.equal(onsketTema("/portal", "tull", false), "dark");
+  assert.equal(onsketTema("/portal", "tull", false), "light");
   assert.equal(onsketTema("/auth", "tull", false), "light");
 });
 
 test("prefiks-treff krysser ikke rutegrenser feil vei", () => {
   // /administrasjon finnes ikke i dag, men regelen skal ikke overraske om den kommer.
-  assert.equal(erMorkFlate("/portalen-min"), true); // startsWith er bevisst bred
-  assert.equal(erLysFlate("/portal"), false);
+  assert.equal(erMorkFlate("/administrasjon"), false);
+  assert.equal(erLysFlate("/portalen-min"), false);
+  assert.equal(erLysFlate("/portal"), true);
 });

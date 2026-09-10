@@ -130,7 +130,7 @@ export function BunnArk({ open, onClose, tittel, maxHeight = "82vh", children }:
           outline: "none",
           background: TL.elev,
           border: `1px solid ${TL.hair}`,
-          borderRadius: `${TL.radius.sheet} ${TL.radius.sheet} 0 0`,
+          borderRadius: TL.radius.sheet,
           padding: "10px 16px calc(20px + env(safe-area-inset-bottom))",
           boxShadow: `0 -18px 48px ${TL.scrim}`,
         }}

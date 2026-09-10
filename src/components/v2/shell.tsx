@@ -322,7 +322,7 @@ function TemaRailKnapp() {
       style={{ width: 46, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "7px 0 5px", borderRadius: 12, background: "transparent", border: 0, cursor: "pointer", flex: "none", marginBottom: 8 }}
     >
       <Icon name={tilLys ? "sun" : "moon"} size={18} style={{ color: TL.mute }} strokeWidth={1.5} />
-      <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: TL.mute }}>{tilLys ? "Lys" : "Mørk"}</span>
+      <span style={{ fontFamily: TL.font.mono, fontSize: TL.storrelse.capsSm, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: TL.mute }}>{tilLys ? "Lys" : "Mørk"}</span>
     </button>
   );
 }
@@ -441,7 +441,7 @@ function MerPanel({ grupper, rom, onClose, mobil, full, erAgency }: { grupper?: 
         }
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-          <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: "max(10px, var(--tl-text-caps-sm))", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>
             {rom && rom.length > 0 ? `Mer · ${rom.length} rom` : "Alle flater"}
           </span>
           <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
@@ -456,7 +456,7 @@ function MerPanel({ grupper, rom, onClose, mobil, full, erAgency }: { grupper?: 
                 style={{ display: "flex", alignItems: "center", gap: 6, background: "transparent", border: `1px solid ${TL.hair}`, borderRadius: 8, color: TL.mute, cursor: "pointer", padding: "4px 9px" }}
               >
                 <Icon name="search" size={13} />
-                <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase" }}>Søk</span>
+                <span style={{ fontFamily: TL.font.mono, fontSize: TL.storrelse.capsSm, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase" }}>Søk</span>
               </button>
             )}
             <button
@@ -466,7 +466,7 @@ function MerPanel({ grupper, rom, onClose, mobil, full, erAgency }: { grupper?: 
               style={{ display: "flex", alignItems: "center", gap: 6, background: "transparent", border: `1px solid ${TL.hair}`, borderRadius: 8, color: TL.mute, cursor: "pointer", padding: "4px 9px" }}
             >
               <Icon name={tema === "dark" ? "sun" : "moon"} size={13} />
-              <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase" }}>{tema === "dark" ? "Lys" : "Mørk"}</span>
+              <span style={{ fontFamily: TL.font.mono, fontSize: TL.storrelse.capsSm, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase" }}>{tema === "dark" ? "Lys" : "Mørk"}</span>
             </button>
             <button onClick={onClose} className="v2-press" aria-label="Lukk" style={{ background: "transparent", border: 0, color: TL.mute, cursor: "pointer", padding: 4 }}>
               <Icon name="x" size={16} />
@@ -476,7 +476,7 @@ function MerPanel({ grupper, rom, onClose, mobil, full, erAgency }: { grupper?: 
         <div style={mobil ? { display: "flex", flexDirection: "column", gap: 14 } : { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px 22px" }}>
           {(grupper ?? []).map((g) => (
             <div key={g.label}>
-              <div style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute, marginBottom: 6 }}>{g.label}</div>
+              <div style={{ fontFamily: TL.font.mono, fontSize: TL.storrelse.capsSm, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute, marginBottom: 6 }}>{g.label}</div>
               <div style={{ display: "flex", flexDirection: "column" }}>
                 {g.items.map((it) => {
                   const on = pathname === it.href;
@@ -544,7 +544,7 @@ function MerPanel({ grupper, rom, onClose, mobil, full, erAgency }: { grupper?: 
                     <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, letterSpacing: "-0.01em", marginBottom: 3 }}>{r.label}</span>
                     <span style={{ display: "block", fontSize: 12, lineHeight: 1.4, color: TL.mute, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{r.beskrivelse}</span>
                   </span>
-                  <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.02em", color: fremhevet ? TL.fill : TL.mute }}>{r.meta}</span>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: "max(10px, var(--tl-text-caps-sm))", fontWeight: 700, letterSpacing: "0.02em", color: fremhevet ? TL.fill : TL.mute }}>{r.meta}</span>
                 </Link>
               );
             })}
@@ -552,7 +552,7 @@ function MerPanel({ grupper, rom, onClose, mobil, full, erAgency }: { grupper?: 
               <p style={{ margin: 0, fontSize: 11.5, lineHeight: 1.4, color: TL.mute }}>
                 Resten (audit-log, marketing, dyp-katalog) lever i søk — ikke her.
               </p>
-              <kbd style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, padding: "3px 7px", borderRadius: 6, border: `1px solid ${TL.hair}`, background: TL.dock, color: TL.mute, flex: "none" }}>⌘K</kbd>
+              <kbd style={{ fontFamily: TL.font.mono, fontSize: "max(10px, var(--tl-text-caps-sm))", fontWeight: 700, padding: "3px 7px", borderRadius: 6, border: `1px solid ${TL.hair}`, background: TL.dock, color: TL.mute, flex: "none" }}>⌘K</kbd>
             </div>
           </div>
         )}
@@ -624,7 +624,7 @@ function TrainLockAgencyRail() {
         style={{
           padding: "0 10px 6px",
           fontFamily: TL.font.mono,
-          fontSize: 10,
+          fontSize: "max(10px, var(--tl-text-caps-sm))",
           fontWeight: 600,
           letterSpacing: "0.08em",
           textTransform: "uppercase",
@@ -711,7 +711,7 @@ function AgencySkallRad({ label, icon, href, on, ikonStorrelse, badge }: { label
             background: TL.danger,
             color: TL.onDanger,
             fontFamily: TL.font.mono,
-            fontSize: 10,
+            fontSize: "max(10px, var(--tl-text-caps-sm))",
             fontWeight: 700,
             lineHeight: "18px",
             textAlign: "center",
@@ -1018,7 +1018,7 @@ function TrainLockPlayerDock({
               )}
               <span
                 style={{
-                  fontSize: 9,
+                  fontSize: TL.storrelse.capsSm,
                   fontWeight: 600,
                   letterSpacing: "0.06em",
                   textTransform: "uppercase",
@@ -1078,7 +1078,7 @@ function IkonRailNav({ aktiv, nav, mer, rom, navn, avatarUrl, erAgency, erPlayer
           style={{ width: 56, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "8px 0 6px", borderRadius: 12, background: "transparent", border: 0, cursor: "pointer", flex: "none" }}
         >
           <Icon name="more-horizontal" size={19} style={{ color: aktiv === "mer" ? TL.text : TL.mute }} strokeWidth={1.5} />
-          <span style={{ fontFamily: TL.font.sans, fontSize: 10, fontWeight: 500, color: aktiv === "mer" ? TL.text : TL.mute }}>Mer</span>
+          <span style={{ fontFamily: TL.font.sans, fontSize: "max(10px, var(--tl-text-caps-sm))", fontWeight: 500, color: aktiv === "mer" ? TL.text : TL.mute }}>Mer</span>
         </button>
       )}
       <div style={{ flex: 1, minHeight: 8 }} />
@@ -1151,7 +1151,7 @@ function BunnNavLenker({ aktiv, nav, mer }: { aktiv?: string; nav: V2NavItem[]; 
                   </span>
                 )}
               </span>
-              <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 600 }}>{n.label}</span>
+              <span style={{ fontFamily: TL.font.mono, fontSize: TL.storrelse.capsSm, fontWeight: 600 }}>{n.label}</span>
             </Link>
           );
         })}
@@ -1164,7 +1164,7 @@ function BunnNavLenker({ aktiv, nav, mer }: { aktiv?: string; nav: V2NavItem[]; 
             style={{ flex: 1, minHeight: 56, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 3, padding: "4px 0", color: merOpen ? TL.text : TL.mute, background: "transparent", border: 0, cursor: "pointer" }}
           >
             <Icon name="more-horizontal" size={20} strokeWidth={1.5} />
-            <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 600 }}>Mer</span>
+            <span style={{ fontFamily: TL.font.mono, fontSize: TL.storrelse.capsSm, fontWeight: 600 }}>Mer</span>
           </button>
         )}
       </nav>
@@ -1226,7 +1226,7 @@ function TrainLockAgencyDock() {
                     background: TL.danger,
                     color: TL.onDanger,
                     fontFamily: TL.font.mono,
-                    fontSize: 10,
+                    fontSize: "max(10px, var(--tl-text-caps-sm))",
                     fontWeight: 700,
                     lineHeight: "16px",
                     textAlign: "center",
@@ -1235,7 +1235,7 @@ function TrainLockAgencyDock() {
                   {badge > 99 ? "99+" : badge}
                 </span>
               )}
-              <span style={{ fontFamily: TL.font.sans, fontSize: 10, fontWeight: 600, color: on ? TL.text : TL.mute }}>{t.label}</span>
+              <span style={{ fontFamily: TL.font.sans, fontSize: "max(10px, var(--tl-text-caps-sm))", fontWeight: 600, color: on ? TL.text : TL.mute }}>{t.label}</span>
             </>
           );
           if (t.id === "meg") {
@@ -1308,7 +1308,7 @@ function MegArkTL({ onClose }: { onClose: () => void }) {
           maxHeight: "72vh",
           overflowY: "auto",
           background: TL.elev,
-          borderRadius: `${TL.radius.sheet} ${TL.radius.sheet} 0 0`,
+          borderRadius: TL.radius.sheet,
           padding: "12px 24px calc(20px + env(safe-area-inset-bottom))",
         }}
       >
@@ -1490,8 +1490,8 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
   // dokument) — så attributtet må synkes ved rute-veksling. Regelen er den
   // SAMME som rot-layout kjører på server: `onsketTema` i
   // src/lib/v2/tema-default.ts er eneste kilde, så SSR og navigasjon ikke kan
-  // drifte fra hverandre. Mørk er default på /portal og /admin (Anders
-  // 25.08.2026); bryteren (cookien) vinner alltid over defaulten.
+  // drifte fra hverandre. Valgt ZIP (4) starter /portal lyst og /admin mørkt;
+  // bryteren (cookien) vinner alltid over defaulten.
   useEffect(() => {
     const rå = document.cookie.split("; ").find((c) => c.startsWith("ak-v2-tema="));
     const cookie = rå?.slice("ak-v2-tema=".length);

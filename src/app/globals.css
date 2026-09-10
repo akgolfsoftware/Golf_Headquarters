@@ -679,6 +679,7 @@ html[data-v2-tema="dark"] ::selection {
  * liggende til siste skjerm er portet — se src/styles/train-lock-tokens.css.
  */
 @import "../styles/train-lock-tokens.css";
+@import "../styles/train-lock-valgt.css";
 
 /* ---------- Team Norway-tokens (Claw batch 3, 2026-09-01) ----------
  * Designfasit for `/team-norway/*` ALENE — eget system ved siden av

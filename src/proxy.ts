@@ -163,9 +163,11 @@ export async function proxy(request: NextRequest) {
   }
 
   // Generer per-request nonce — base64-encodet UUID, kryptografisk tilfeldig.
-  // Sendes til updateSession slik at x-nonce-headeren er tilgjengelig i RSCs.
+  // Next leser nonce fra CSP på forespørselen når skriptene rendres.
+  // Samme policy må følge både forespørsel og svar.
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
-  const response = await updateSession(request, nonce);
+  const csp = buildCsp(nonce);
+  const response = await updateSession(request, nonce, csp);
 
   // /team-wang: fellessiden er ÅPEN uten innlogging — den skal kunne deles med
   // elever og foreldre. Det er trygt fordi siden ikke viser navn:
@@ -242,7 +244,7 @@ export async function proxy(request: NextRequest) {
     );
     return response;
   }
-  response.headers.set("Content-Security-Policy", buildCsp(nonce));
+  response.headers.set("Content-Security-Policy", csp);
   return response;
 }
 

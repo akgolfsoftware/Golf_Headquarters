@@ -2,6 +2,7 @@
 
 /**
  * PlayerHQ «I dag» — Train-lock-porten av hele skjermfamilien.
+ * Valgt kilde 10.09.2026: ZIP (4), PH-01 I dag v3.dc.html.
  * Fasit: designsystem/train-lock/PH-01 I dag.dc.html
  * Fasit: designsystem/train-lock/PH-01b I dag FYS-mandag.dc.html (FYS-stripe + pyramide-indikator)
  * Fasit: designsystem/train-lock/PH-01c I dag TrackMan-kort.dc.html (dempet TrackMan-kort)
@@ -16,7 +17,7 @@
 
 import { useState, type CSSProperties, type ReactNode } from "react";
 import Link from "next/link";
-import { Check, ChevronRight, Clock } from "lucide-react";
+import { ChevronRight, Clock } from "lucide-react";
 import { TL } from "@/lib/v2/train-lock";
 import {
   IDAG_UI,
@@ -30,6 +31,8 @@ import type { TesterLiveKort as TesterLiveKortData } from "@/lib/portal-tester/t
 import type { KalenderHendelse } from "@/lib/domain/kalender-lag";
 import { IDagITidenArk } from "@/components/portal/v2/kalender/IDagITidenArk";
 import { GodkjenningKort } from "./GodkjenningKort";
+import { IDagNaaKort } from "./idag-naa-kort";
+import { TrainLockFremdrift } from "@/components/train-lock/v3-elementer";
 
 export type NaaKort = {
   tittel: string;
@@ -54,9 +57,6 @@ export type NaaKort = {
   heroBilde?: string | null;
 };
 
-/** PH-01b: rekkefølgen i pyramide-indikatoren. */
-const PYRAMIDE_NIVAER = ["FYS", "TEK", "SLAG", "SPILL", "TURN"] as const;
-
 export type IDagTrainLockProps = {
   datoLinje: string;
   maanedNavn: string;
@@ -67,6 +67,8 @@ export type IDagTrainLockProps = {
   sgInnspill: string;
   okterUke: number;
   ukeNummer: number;
+  /** Andel fullførte planlagte minutter, når datagrunnlag finnes. */
+  ukeFremdrift?: number;
   trackman: TrackManTeaser | null;
   testerLive: TesterLiveKortData | null;
   godkjenninger: PlayerDaySession[];
@@ -90,6 +92,7 @@ const kort: CSSProperties = {
   background: TL.elev,
   borderRadius: TL.radius.card,
   padding: 20,
+  boxShadow: TL.shadowCard,
 };
 
 function Cta({ href, barn, dim }: { href: string; barn: string; dim?: boolean }) {
@@ -138,126 +141,6 @@ function TekstLenke({ href, barn }: { href: string; barn: string }) {
   );
 }
 
-/** PH-01b: 5-segments pyramide-indikator — aktivt nivå hvitt, resten dim. */
-function PyramideStripe({ aktiv }: { aktiv: string }) {
-  return (
-    <div style={{ marginTop: 12, display: "flex", gap: 3 }}>
-      {PYRAMIDE_NIVAER.map((nivaa) => {
-        const er = nivaa === aktiv;
-        return (
-          <div key={nivaa} style={{ flex: 1 }}>
-            <div style={{ height: 3, borderRadius: 2, background: er ? TL.text : TL.dim }} />
-            <div
-              style={{
-                marginTop: 3,
-                fontSize: 7,
-                fontWeight: 600,
-                letterSpacing: "0.06em",
-                color: er ? TL.text : TL.mute,
-                textAlign: "center",
-              }}
-            >
-              {nivaa}
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-function NaaFlate({ naa }: { naa: NaaKort }) {
-  const fys = naa.pyramide === "FYS";
-  // Hero-feltet er en bilde-plassholder i fasiten — uten bilde blir det bare et hull.
-  const hero = fys && Boolean(naa.heroBilde);
-  return (
-    <div
-      className={hero ? undefined : "ph01-naa"}
-      style={{ background: TL.elev, borderRadius: TL.radius.card, overflow: hero ? "hidden" : undefined }}
-    >
-      {hero && (
-        <div
-          style={{
-            height: 120,
-            borderRadius: 12,
-            background: `${TL.elev} center/cover no-repeat url(${JSON.stringify(naa.heroBilde)})`,
-            position: "relative",
-            overflow: "hidden",
-          }}
-        >
-          <span
-            style={{
-              position: "absolute",
-              left: 10,
-              bottom: 8,
-              fontSize: 9,
-              fontWeight: 600,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              color: TL.mute,
-            }}
-          >
-            FYS · {naa.tittel}
-          </span>
-        </div>
-      )}
-      <div className={hero ? "ph01-naa" : undefined} style={hero ? undefined : { display: "contents" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-        <span
-          style={{
-            ...caps,
-            color: naa.fullfort ? TL.warm : naa.live ? TL.text : TL.mute,
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 7,
-          }}
-        >
-          {naa.fullfort && <Check size={12} color={TL.warm} strokeWidth={2.5} aria-hidden />}
-          {naa.live && !naa.fullfort && (
-            <span aria-hidden style={{ width: 6, height: 6, borderRadius: "50%", background: TL.text }} />
-          )}
-          {naa.fullfort ? IDAG_UI.fullfort : naa.live ? IDAG_UI.live : IDAG_UI.naa}
-        </span>
-        <span style={{ ...caps, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>{naa.tid}</span>
-      </div>
-      <div
-        style={{
-          marginTop: 10,
-          fontSize: 26,
-          fontWeight: 700,
-          letterSpacing: "-0.01em",
-          lineHeight: 1.15,
-          color: TL.text,
-        }}
-      >
-        {naa.tittel}
-      </div>
-      <div style={{ marginTop: 5, fontSize: 13, fontWeight: 400, color: TL.mute }}>{naa.meta}</div>
-      {naa.fremdriftPst != null && (
-        <>
-          <div style={{ marginTop: 18, height: 3, borderRadius: 2, background: TL.dim, overflow: "hidden" }}>
-            <div style={{ width: `${naa.fremdriftPst}%`, height: "100%", background: TL.text, borderRadius: 2 }} />
-          </div>
-          {naa.fremdriftTekst && (
-            <div style={{ marginTop: 9, fontSize: 13, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
-              {naa.fremdriftTekst}
-            </div>
-          )}
-        </>
-      )}
-      {fys && naa.pyramide && (
-        /* PH-01b (telefon) har pyramide-stripen; PH-01 Mac har den ikke — der
-           står bare fremdriftsstreken. `.ph01-kun-telefon` skjuler den ≥1101px. */
-        <div className="ph01-kun-telefon">
-          <PyramideStripe aktiv={naa.pyramide} />
-        </div>
-      )}
-      <Cta href={naa.ctaHref} barn={naa.ctaTekst} />
-      {naa.sekundarTekst && naa.sekundarHref && <TekstLenke href={naa.sekundarHref} barn={naa.sekundarTekst} />}
-      </div>
-    </div>
-  );
-}
 
 function NesteKort({ neste }: { neste: { tittel: string; meta: string } }) {
   return (
@@ -272,13 +155,13 @@ function NesteKort({ neste }: { neste: { tittel: string; meta: string } }) {
 function Bento({ sg, okter }: { sg: string; okter: number }) {
   return (
     <div className="ph01-bento">
-      <div style={kort}>
+      <div style={{ ...kort, borderRadius: 20 }}>
         <div style={{ fontSize: 34, fontWeight: 700, lineHeight: 1.2, letterSpacing: "-0.02em", fontVariantNumeric: "tabular-nums", color: TL.text }}>
           {sg}
         </div>
         <div style={{ ...caps, marginTop: 7 }}>{IDAG_UI.sgInnspill}</div>
       </div>
-      <div style={kort}>
+      <div style={{ ...kort, borderRadius: 20 }}>
         <div style={{ fontSize: 34, fontWeight: 700, lineHeight: 1.2, letterSpacing: "-0.02em", fontVariantNumeric: "tabular-nums", color: TL.text }}>
           {okter}
         </div>
@@ -453,7 +336,7 @@ export function IDagTrainLock(p: IDagTrainLockProps) {
       </div>
     );
   } else if (p.naa) {
-    hero = <NaaFlate naa={p.naa} />;
+    hero = <IDagNaaKort naa={p.naa} />;
   }
 
   const visBento = p.tilstand === "okt" || p.tilstand === "hvile" || p.tilstand === "pagar";
@@ -475,6 +358,9 @@ export function IDagTrainLock(p: IDagTrainLockProps) {
         minHeight: 0,
         fontFamily: TL.font.sans,
         color: TL.text,
+        backgroundImage: TL.glow,
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "100% 320px",
         fontVariantNumeric: "tabular-nums",
       }}
     >
@@ -563,6 +449,7 @@ export function IDagTrainLock(p: IDagTrainLockProps) {
             </div>
             {p.testerLive && p.tilstand !== "feil" && <TesterKort testerLive={p.testerLive} />}
             <div className="ph01-kun-telefon">{nesteNode}</div>
+            {visBento && p.ukeFremdrift != null && <TrainLockFremdrift verdi={p.ukeFremdrift} label={`Uke ${p.ukeNummer} · treningsminutter`} />}
             {visBento && <Bento sg={p.sgInnspill} okter={p.okterUke} />}
             <div className="ph01-kun-telefon">{prikkNode}</div>
           </div>

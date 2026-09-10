@@ -101,7 +101,7 @@ export function RundeLiveArtefakt() {
                 fontWeight: 700,
                 letterSpacing: TL.track.capsSm,
                 textTransform: "uppercase",
-                color: TL.warm,
+                color: TL.warmText,
               }}
             >
               Klar for oppsummering
@@ -137,7 +137,7 @@ export function RundeLiveArtefakt() {
               fontWeight: 700,
               letterSpacing: TL.track.capsSm,
               textTransform: "uppercase",
-              color: TL.warm,
+              color: TL.warmText,
             }}
           >
             {kladd.modus === "live" ? "Live på banen" : "Etterpå-føring"}

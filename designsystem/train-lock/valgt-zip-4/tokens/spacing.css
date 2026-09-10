@@ -1,0 +1,73 @@
+/* tokens/spacing.css — geometri, radius, trykkflater, skall.
+   Fasit: DESIGN-SYSTEM.md §2. Alltid flex/grid + gap; aldri whitespace mellom UI-søsken. */
+
+@theme {
+  /* v3 · radius. v2-verdiene i parentes for porteringsdiffen. */
+  --radius-card: 24px;     /* v2 var 20 */
+  --radius-tile: 20px;     /* Bento-flis, v3 */
+  --radius-inner: 12px;    /* små innkort 12–14 */
+  --radius-grid: 8px;      /* rutenett-kort 5–8 */
+  --radius-field: 16px;    /* felt / input */
+  --radius-chip: 999px;
+  --radius-island: 999px;
+  --radius-pill: 999px;    /* pille / CTA / dock */
+  --radius-sheet: 32px;    /* v3-ark: 32 32 0 0. v2 var 20. */
+
+  --space-1: 8px;
+  --space-2: 12px;
+  --space-3: 16px;
+  --space-4: 20px;
+  --space-section: 22px;   /* før caps-etikett */
+  --space-cards: 14px;     /* mellom kort */
+  --space-rows: 10px;      /* mellom rader i samme gruppe */
+}
+
+:root {
+  /* Trykkflater — gulv, ikke forslag */
+  --hit-min: 44px;         /* også filter-chips og piller */
+  --island-h: 64px;        /* v3 · fixed 12 px over safe-area */
+  --island-btn: 48px;      /* fem/seks sirkler à 48 */
+  --island-lift: 12px;
+  --chip-h: 32px;
+  --pill-status-h: 24px;
+  --progress-h: 4px;
+  --hit-cta: 48px;
+  --dock-h: 64px;
+
+  /* Scroll-padding under dock. Composer-regelen, DESIGN-SYSTEM §5. */
+  --pad-bottom-plain: 96px;      /* dock uten composer */
+  --pad-bottom-composer: 160px;  /* dock med composer — kun I dag og Cockpit */
+
+  /* Kortpadding */
+  --pad-card-mobile: 18px;   /* 16–18 */
+  --pad-card-desktop: 22px;  /* 18–22 */
+
+  /* Skjerm-padding */
+  --pad-screen-mobile: 8px 20px;
+  --pad-screen-desktop: 22px 26px;
+
+  /* Skall */
+  --rail-w: 64px;
+  --inspector-mac: 360px;    /* 320–380 */
+  --inspector-sheet: 380px;  /* ark fra høyre, iPad */
+  --column-ipad: 560px;      /* max-width, fluid — aldri fast width */
+  --rail-ipad-landscape: 250px;
+  --weekgrid-hour-col: 48px;
+}
+
+/* Foto — tre aspekter, ingen fjerde. Radius følger kortet den ligger i. */
+:root {
+  --photo-hero: 16 / 9;
+  --photo-card: 4 / 3;
+  --photo-avatar: 1 / 1;
+}
+
+/* Fokusring for tastatur — 2 px target + 2 px offset.
+   På ALLE trykkflater på Mac/iPad. Aldri på tap. */
+:where(button, a, [role="button"], [tabindex]):focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--scene), 0 0 0 4px var(--target);
+}
+
+/* Første viewport på 1440 uten scroll holder minst fire informasjonsmoduler.
+   To kort og tom scene er en feil, ikke en stil. */
