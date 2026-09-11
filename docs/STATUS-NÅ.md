@@ -8,6 +8,7 @@ Oppdatert 11.09.2026. Appen er fortsatt under arbeid og ikke klarert for åpen l
 - **PH-06:** valgt resultathierarki er bygget. Lagrede notater og vurderinger er synlige, feil bevarer feltene, og samtidige lagringer oppdaterer separate JSON-felt. Appskall/Geist, åtte datatilstander, fire bredder og to temaer er komponentprøvd. Egen isolert PostgreSQL-prøve bestod. [PH-06-kontroll](design-audit/playerhq-ph06-2026-09-11.md).
 - **Planleggingsarbeid:** funksjonsregister, funksjonskort og produktintervju er bevart fra den separate arbeidsgrenen. De er arbeidsunderlag, ikke nye godkjente produktbeslutninger.
 - **Opprydding:** ferdige grener og arbeidskopier avstemmes med GitHub; nåstatus, masterplan, dokument-/filregister og arbeidsdeling er samordnet. [Samlingsrapport og sluttkontroll](vedlikehold/samling-og-opprydding-2026-09-11.md).
+- **Fem prioriterte sikkerhets-/funksjonspakker (R-A til R-H):** TrackMan-enhetsgjetning fjernet (R-D), driftsfeil skilt fra manglende abonnement (R-H), Caddie-verktøyenes eierskapssjekk og navnepseudonymisering rettet (R-A/R-B), offline-kø brukerstemplet mot brukerbytte på delt enhet (R-C) — alle fire komponentprøvd med mutasjonstestede enhetstester. R-E/R1-R3 (full innlogget spillerreise) er kun delvis dekket — se punkt 1 under. [Kontrollrapport](beslutningsgrunnlag/2026-09-11-fem-pakker-kontroll.md).
 
 ## Allerede i main
 
@@ -17,8 +18,8 @@ Tidligere kontroll av Vercel bekreftet `2807d4d08` som publisert kode og prøvde
 
 ## Det som gjenstår
 
-1. Isolert, innlogget spillerreise gjennom I dag, Plan, økt og oppsummering med alle tre øktmodeller og avviste roller.
-2. Caddie-tilgang/dataminimering, privat lokal lagring, TrackMan-enheter og feil ved abonnementshenting avstemt mot dagens kode.
+1. Isolert, innlogget spillerreise gjennom I dag, Plan, økt og oppsummering med alle tre øktmodeller og avviste roller — BLOKKERT av manglende provisjonert test-database i denne økten; kun den delte eierskaps-primitiven (`canAccessPlayer`) er komponentprøvd.
+2. ~~Caddie-tilgang/dataminimering, privat lokal lagring, TrackMan-enheter og feil ved abonnementshenting avstemt mot dagens kode.~~ Komponentprøvd 11.09.2026 — se over.
 3. Resterende PlayerHQ-, AgencyOS-, Team Norway- og WANG-skjermer, koblet til valgte kilder og reelle handlinger.
 4. Testvarianter/mål, foreldreinnsyn, booking-/betalingsreise og konkrete produktavklaringer fra funksjonsregisteret.
 5. Visuell vurdering med Anders, kontrast/tilgjengelighet, full alarm-/gjenopprettingsprøve og dokumentert faktisk produksjonsreise før lansering.
