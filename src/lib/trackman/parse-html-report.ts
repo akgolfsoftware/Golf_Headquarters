@@ -1,3 +1,8 @@
+import type {
+  TrackManDistanceUnit,
+  TrackManSpeedUnit,
+} from "@/lib/trackman/parse-csv";
+
 export type TrackManShotMetrics = {
   clubSpeed: number;
   clubPath: number;
@@ -25,6 +30,12 @@ export type TrackManHtmlReport = {
   reportDate: string; // ISO: "2026-03-19"
   sessionName: string;
   clubs: TrackManClubGroup[];
+  /** Enheter lest eksplisitt fra rapporthodet. Fravær betyr eldre rapport uten enhetsmerking. */
+  sourceUnits?: {
+    clubSpeed?: TrackManSpeedUnit;
+    ballSpeed?: TrackManSpeedUnit;
+    totalDistance?: TrackManDistanceUnit;
+  };
 };
 
 // ---------------------------------------------------------------------------
@@ -36,6 +47,46 @@ function stripHtml(html: string): string {
   text = text.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, " ");
   text = text.replace(/<[^>]+>/g, " ");
   return text.replace(/\s+/g, " ").trim();
+}
+
+function metricUnitToken(text: string, label: string): string | null | undefined {
+  const match = new RegExp(`${label}\\s*(?:\\(([^)]+)\\)|\\[([^\\]]+)\\]|(mph|m\\/s|mps|m|met(?:er|re)s?|yds?|yards?))`, "i").exec(text);
+  if (!match) return undefined;
+  return (match[1] ?? match[2] ?? match[3])?.trim().toLowerCase() ?? null;
+}
+
+function htmlSpeedUnit(text: string, label: string): TrackManSpeedUnit | undefined {
+  const token = metricUnitToken(text, label);
+  if (token === undefined) return undefined;
+  if (token === "mph") return "mph";
+  if (token === "m/s" || token === "mps") return "m/s";
+  return "unknown";
+}
+
+function htmlDistanceUnit(text: string, label: string): TrackManDistanceUnit | undefined {
+  const token = metricUnitToken(text, label);
+  if (token === undefined) return undefined;
+  if (token && /^(?:m|meters?|metres?)$/.test(token)) return "m";
+  if (token && /^(?:yds?|yards?)$/.test(token)) return "yd";
+  return "unknown";
+}
+
+function reportSourceUnits(text: string): TrackManHtmlReport["sourceUnits"] {
+  const units: NonNullable<TrackManHtmlReport["sourceUnits"]> = {};
+  const globalUnit = /\bunits?\s*[:=-]?\s*(metric|imperial)\b/i.exec(text)?.[1]?.toLowerCase();
+  units.clubSpeed = htmlSpeedUnit(text, "club speed");
+  units.ballSpeed = htmlSpeedUnit(text, "ball speed");
+  units.totalDistance = htmlDistanceUnit(text, "total distance");
+  if (globalUnit === "metric") {
+    units.clubSpeed ??= "m/s";
+    units.ballSpeed ??= "m/s";
+    units.totalDistance ??= "m";
+  } else if (globalUnit === "imperial") {
+    units.clubSpeed ??= "mph";
+    units.ballSpeed ??= "mph";
+    units.totalDistance ??= "yd";
+  }
+  return Object.values(units).some((unit) => unit !== undefined) ? units : undefined;
 }
 
 // Matches exactly 10 numeric fields — field 4 (lowPoint) may have A/B suffix.
@@ -65,6 +116,7 @@ function parseMetrics(src: string): TrackManShotMetrics | null {
 
 export function parseTrackManHtmlReport(html: string): TrackManHtmlReport {
   const text = stripHtml(html);
+  const sourceUnits = reportSourceUnits(text);
 
   // Report date — first ISO date in document
   const dateMatch = /(\d{4}-\d{2}-\d{2})/.exec(text);
@@ -130,5 +182,11 @@ export function parseTrackManHtmlReport(html: string): TrackManHtmlReport {
     return { clubId, clubName, shotCount: shots.length, shots, average, consistency };
   });
 
-  return { type: "multi-group", reportDate, sessionName, clubs };
+  return {
+    type: "multi-group",
+    reportDate,
+    sessionName,
+    clubs,
+    ...(sourceUnits ? { sourceUnits } : {}),
+  };
 }

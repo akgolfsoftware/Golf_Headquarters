@@ -122,6 +122,13 @@ export async function parseTrackManPhoto(
     spinRateRpm: s.spinRate ?? null,
     sideMeters: s.side ?? null,
     notes: null,
+    sourceUnits: {
+      clubSpeed: "mph",
+      ballSpeed: "mph",
+      carry: "m",
+      total: "m",
+      side: "m",
+    },
   }));
 
   return { ok: true, shots };

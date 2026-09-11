@@ -122,6 +122,13 @@ function dbShotsTilTrackMan(db: StabilitetDbShot[]): TrackManShot[] {
     spinRateRpm: s.spinRate,
     sideMeters: s.side,
     notes: null,
+    sourceUnits: {
+      clubSpeed: "m/s",
+      ballSpeed: "m/s",
+      carry: "m",
+      total: "m",
+      side: "m",
+    },
   }));
 }
 
@@ -208,4 +215,3 @@ export function beregnStabilitet(
 
   return { klubber, mestStødig, trengerJobbing, størsteForbedring: null };
 }
-

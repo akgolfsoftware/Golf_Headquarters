@@ -4,6 +4,10 @@
  */
 
 import type { TrackManShot as CsvShot } from "@/lib/trackman/parse-csv";
+import type {
+  TrackManDistanceUnit,
+  TrackManSpeedUnit,
+} from "@/lib/trackman/parse-csv";
 import type { TrackManHtmlReport } from "@/lib/trackman/parse-html-report";
 
 export type CanonicalShot = {
@@ -26,23 +30,36 @@ function round2(n: number): number {
 }
 
 /**
- * Normaliser hastighet til mph.
- * TrackMan CSV er ofte m/s (~35–55 for driver); UI/DB lagrer mph.
- * Verdier > 60 er nesten alltid allerede mph (jern/driver).
+ * Normaliser hastighet til mph. En eksplisitt kildeenhet vinner alltid.
+ * Uten kildeenhet beholder vi den gamle terskelen av hensyn til lagrede
+ * foto-/CSV-data: <= 60 tolkes som m/s, > 60 som mph. Det er tvetydig og
+ * skal ikke brukes når kilden faktisk oppgir enhet.
  */
-export function speedToMph(value: number | null): number | null {
+export function speedToMph(
+  value: number | null,
+  unit?: TrackManSpeedUnit,
+): number | null {
   if (value == null || !Number.isFinite(value)) return null;
+  if (unit === "unknown") return null;
+  if (unit === "mph") return round2(value);
+  if (unit === "m/s") return round2(value * 2.23694);
   if (value > 60) return round2(value);
   return round2(value * 2.23694);
 }
 
 /**
- * Normaliser avstand til meter.
- * HTML multi-group bruker ofte yards for total; CSV meter.
- * Svært høye tall (> 320) tolkes som yards.
+ * Normaliser avstand til meter. En eksplisitt kildeenhet vinner alltid.
+ * Uten kildeenhet beholdes den gamle terskelen: <= 320 tolkes som meter,
+ * > 320 som yards. Reserveveien er tvetydig og finnes kun for eldre data.
  */
-export function distanceToMeters(value: number | null): number | null {
+export function distanceToMeters(
+  value: number | null,
+  unit?: TrackManDistanceUnit,
+): number | null {
   if (value == null || !Number.isFinite(value)) return null;
+  if (unit === "unknown") return null;
+  if (unit === "m") return round2(value);
+  if (unit === "yd") return round2(value * 0.9144);
   if (value > 320) return round2(value * 0.9144);
   return round2(value);
 }
@@ -50,14 +67,14 @@ export function distanceToMeters(value: number | null): number | null {
 export function csvShotsToCanonical(shots: CsvShot[]): CanonicalShot[] {
   return shots.map((s) => ({
     club: s.club?.trim() || "Ukjent",
-    clubSpeedMph: speedToMph(s.clubSpeedMps),
-    ballSpeedMph: speedToMph(s.ballSpeedMps),
+    clubSpeedMph: speedToMph(s.clubSpeedMps, s.sourceUnits?.clubSpeed),
+    ballSpeedMph: speedToMph(s.ballSpeedMps, s.sourceUnits?.ballSpeed),
     smashFactor: s.smashFactor,
-    carryMeters: distanceToMeters(s.carryMeters),
-    totalMeters: distanceToMeters(s.totalMeters),
+    carryMeters: distanceToMeters(s.carryMeters, s.sourceUnits?.carry),
+    totalMeters: distanceToMeters(s.totalMeters, s.sourceUnits?.total),
     launchAngleDeg: s.launchAngleDeg,
     spinRateRpm: s.spinRateRpm,
-    sideMeters: s.sideMeters != null ? round2(s.sideMeters) : null,
+    sideMeters: distanceToMeters(s.sideMeters, s.sourceUnits?.side),
     faceToPath: null,
     clubPath: null,
     faceAngle: null,
@@ -65,21 +82,21 @@ export function csvShotsToCanonical(shots: CsvShot[]): CanonicalShot[] {
 }
 
 /**
- * HTML multi-group: per-kølle shot-rader → flate CanonicalShot[].
- * Speeds antas mph (typisk TrackMan web); totalDistance → total/carry.
+ * HTML multi-group: per-kølle shot-rader → flate CanonicalShot[]. Rapporten
+ * inneholder bare totaldistanse, så carry forblir ukjent.
  */
 export function htmlReportToCanonical(report: TrackManHtmlReport): CanonicalShot[] {
   const out: CanonicalShot[] = [];
   for (const group of report.clubs) {
     const club = group.clubName?.trim() || group.clubId?.trim() || "Ukjent";
     for (const shot of group.shots) {
-      const total = distanceToMeters(shot.totalDistance);
+      const total = distanceToMeters(shot.totalDistance, report.sourceUnits?.totalDistance);
       out.push({
         club,
-        clubSpeedMph: speedToMph(shot.clubSpeed),
-        ballSpeedMph: speedToMph(shot.ballSpeed),
+        clubSpeedMph: speedToMph(shot.clubSpeed, report.sourceUnits?.clubSpeed),
+        ballSpeedMph: speedToMph(shot.ballSpeed, report.sourceUnits?.ballSpeed),
         smashFactor: Number.isFinite(shot.smashFactor) ? shot.smashFactor : null,
-        carryMeters: total,
+        carryMeters: null,
         totalMeters: total,
         launchAngleDeg: null,
         spinRateRpm: null,
