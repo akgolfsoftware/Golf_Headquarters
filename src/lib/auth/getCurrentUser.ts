@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { ensureUser } from "./ensureUser";
 import { isAwaitingGuardianConsent } from "./minor";
-import { resolveTilgang, type Tilgang } from "@/lib/feature-flags";
+import { resolveTilgang, TilgangDriftsfeil, type Tilgang } from "@/lib/feature-flags";
 import { aktivtAkGruppeMedlemskapWhere } from "@/lib/domain/grupper";
 import type { User } from "@/generated/prisma/client";
 
@@ -73,29 +73,44 @@ export const getCurrentUser = cache(async (): Promise<UserMedTilgang | null> => 
 // med EFFEKTIV tier (PRO = FULL). Laster begge abonnementsrader + aktive
 // AK-gruppe-medlemskap (managedByAkGolf, plan G1-kontrakten).
 // /portal/meg/abonnement viser FAKTISK tier ved å lese prisma.user direkte.
+//
+// R-H (2026-09-11): Promise.allSettled i stedet for `.catch(() => null/0)`.
+// Den gamle koden slukte enhver DB-feil stille og lot den framstå som "denne
+// spilleren har ikke noe abonnement" — en driftsfeil (timeout, nettverk,
+// kastet feil) ble dermed identisk med et EKTE fravær av abonnement, og
+// brukeren kunne bli sendt til "du må betale" på grunn av en forbigående
+// feil. Nå: lyktes ikke ett av oppslagene, og det uten det oppslaget ville
+// gitt et SVAKERE nivå enn FULL, kastes `TilgangDriftsfeil` — fanges av
+// nærmeste error.tsx (retry), aldri tolket som manglende abonnement.
 async function withEffektivTilgang(user: User): Promise<UserMedTilgang> {
-  const [coaching, playerhq, akGruppeCount] = await Promise.all([
-    prisma.subscription
-      .findUnique({
-        where: { userId_kind: { userId: user.id, kind: "COACHING" } },
-        select: { monthlyCredits: true, status: true, currentPeriodEnd: true },
-      })
-      .catch(() => null),
-    prisma.subscription
-      .findUnique({
-        where: { userId_kind: { userId: user.id, kind: "PLAYERHQ" } },
-        select: {
-          status: true,
-          currentPeriodEnd: true,
-          plan: true,
-          stripeSubscriptionId: true,
-        },
-      })
-      .catch(() => null),
-    prisma.groupMember
-      .count({ where: { userId: user.id, ...aktivtAkGruppeMedlemskapWhere() } })
-      .catch(() => 0),
+  const [coachingRes, playerhqRes, akGruppeRes] = await Promise.allSettled([
+    prisma.subscription.findUnique({
+      where: { userId_kind: { userId: user.id, kind: "COACHING" } },
+      select: { monthlyCredits: true, status: true, currentPeriodEnd: true },
+    }),
+    prisma.subscription.findUnique({
+      where: { userId_kind: { userId: user.id, kind: "PLAYERHQ" } },
+      select: {
+        status: true,
+        currentPeriodEnd: true,
+        plan: true,
+        stripeSubscriptionId: true,
+      },
+    }),
+    prisma.groupMember.count({
+      where: { userId: user.id, ...aktivtAkGruppeMedlemskapWhere() },
+    }),
   ]);
+
+  const driftsfeil =
+    coachingRes.status === "rejected" ||
+    playerhqRes.status === "rejected" ||
+    akGruppeRes.status === "rejected";
+
+  const coaching = coachingRes.status === "fulfilled" ? coachingRes.value : null;
+  const playerhq = playerhqRes.status === "fulfilled" ? playerhqRes.value : null;
+  const akGruppeCount = akGruppeRes.status === "fulfilled" ? akGruppeRes.value : 0;
+
   const tilgang = resolveTilgang({
     tier: user.tier,
     profilType: user.profilType,
@@ -105,5 +120,16 @@ async function withEffektivTilgang(user: User): Promise<UserMedTilgang> {
     playerhq,
     akGruppeCount,
   });
+
+  // Et vellykket, sterkere signal (lanseringsvindu, betalt PLAYERHQ-rad,
+  // eller Betaler-flagget på selve brukerraden) vinner uansett — da vet vi
+  // FAKTISK at brukeren har FULL, og skal ikke nektes pga. en annen feilet
+  // sideeffekt-spørring. Kun når resultatet ELLERS ville blitt TALENT/INGEN
+  // pga. manglende data, og vi ikke kan stole på at dataen faktisk mangler,
+  // kaster vi driftsfeilen.
+  if (driftsfeil && tilgang.nivaa !== "FULL") {
+    throw new TilgangDriftsfeil({ coachingRes, playerhqRes, akGruppeRes });
+  }
+
   return { ...user, tier: tilgang.effektivTier, tilgang };
 }

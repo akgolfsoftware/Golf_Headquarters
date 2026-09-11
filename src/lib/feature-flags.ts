@@ -59,6 +59,26 @@ export interface Tilgang {
 }
 
 /**
+ * R-H (2026-09-11): kastes av `withEffektivTilgang` (lib/auth/getCurrentUser)
+ * når ett eller flere av DB-oppslagene som avgjør tilgangsnivået (COACHING/
+ * PLAYERHQ-abonnement, AK-gruppemedlemskap) FEILER — og feilen kunne ha
+ * endret utfallet bort fra "INGEN"/"TALENT". Skal ALDRI presenteres som
+ * "du må betale": den skiller "ekte manglende abonnement" (alle oppslag
+ * lyktes, ingen fant noe) fra "vi klarte ikke å bekrefte" (drift). Fanges av
+ * Next.js' nærmeste error.tsx-grense (`V2Feil`, med "prøv igjen"), aldri av
+ * requirePortalUser sin oppgraderings-redirect.
+ */
+export class TilgangDriftsfeil extends Error {
+  constructor(arsak: unknown) {
+    super(
+      "Kunne ikke bekrefte abonnementsstatus akkurat nå (driftsfeil, ikke manglende abonnement).",
+    );
+    this.name = "TilgangDriftsfeil";
+    this.cause = arsak;
+  }
+}
+
+/**
  * Bruker-formet input til resolveTilgang — nøyaktig det som trengs.
  * Lastes av withEffektivTilgang (lib/auth/getCurrentUser).
  */
