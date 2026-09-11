@@ -25,16 +25,18 @@ export function kanSeSpillerprofil(
 
 /**
  * `/team-wang/coach/iup/[elevId]` — IUP-samtale (egen-/trenervurdering) for
- * én elev. ADMIN/COACH ser alle, eleven ser sin egen, en foresatt ser kun
- * barn koblet via `ParentRelation` (`erForesattTilEleven` avgjøres av
- * `assertBarnTilhorerForelder`, godkjent kobling).
+ * én elev. ADMIN ser alle. COACH kun med `erCoachForEleven` (WANG-gruppe +
+ * eleven er medlem). Eleven ser sin egen. Foresatt ser kun barn koblet via
+ * `ParentRelation` (`erForesattTilEleven` fra `assertBarnTilhorerForelder`).
  */
 export function kanSeIup(
   viewer: Viewer,
   elevId: string,
   erForesattTilEleven: boolean,
+  erCoachForEleven = false,
 ): boolean {
-  if (viewer.role === "ADMIN" || viewer.role === "COACH") return true;
+  if (viewer.role === "ADMIN") return true;
+  if (viewer.role === "COACH") return erCoachForEleven;
   if (viewer.role === "PLAYER") return viewer.id === elevId;
   if (viewer.role === "PARENT") return erForesattTilEleven;
   return false;

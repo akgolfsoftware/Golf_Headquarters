@@ -4,6 +4,7 @@
  * En kvittering markerer bare versjonen som faktisk ble sendt. Kladden
  * beholdes etter synk, slik at klokke, pause og øvelsesstatus kan gjenopptas. */
 import { byggLiveDrillKoRad, trengerManuellLiveHandling, type LiveDrillKoRad, type LiveDrillReps } from "./live-drill-kladd";
+import { filtrerEgne, lesNettleserBrukerId, tilhorerBruker } from "./eier";
 
 const DB_NAVN = "akgolf-live-drill-ko";
 const BUTIKK = "live-drill-ko";
@@ -22,7 +23,6 @@ function apneDb(): Promise<IDBDatabase | null> {
   });
 }
 
-/** Vent på transaksjonen, ikke bare put-requesten. Les/endre er atomisk. */
 async function transaksjon<T>(mode: IDBTransactionMode, operation: (store: IDBObjectStore, result: (value: T) => void) => void): Promise<T | null> {
   const db = await apneDb();
   if (!db) return null;
@@ -39,21 +39,30 @@ async function transaksjon<T>(mode: IDBTransactionMode, operation: (store: IDBOb
 }
 
 export async function lesLiveDrillUtkast(sessionId: string): Promise<LiveDrillKoRad | null> {
-  return transaksjon("readonly", (store, result) => {
+  const rad = await transaksjon<LiveDrillKoRad | null>("readonly", (store, result) => {
     const req = store.get(sessionId);
     req.onsuccess = () => result(req.result ?? null);
   });
+  if (!rad) return null;
+  if (!tilhorerBruker(rad, lesNettleserBrukerId())) return null;
+  return rad;
 }
 
 export async function lagreLiveDrillUtkast(sessionId: string, drills: LiveDrillReps[], totalSec: number, clock?: { paused: boolean; drillSec: number }): Promise<boolean> {
+  const userId = lesNettleserBrukerId();
   const saved = await transaksjon<boolean>("readwrite", (store, result) => {
     const req = store.get(sessionId);
     req.onsuccess = () => {
       const previous: LiveDrillKoRad | undefined = req.result;
+      if (previous && previous.userId && userId && previous.userId !== userId) {
+        result(false);
+        return;
+      }
       const changed = !previous || JSON.stringify(previous.drills) !== JSON.stringify(drills);
       const row: LiveDrillKoRad = {
-        ...(previous ?? byggLiveDrillKoRad(sessionId, drills, totalSec, new Date())),
+        ...(previous ?? byggLiveDrillKoRad(sessionId, drills, totalSec, new Date(), userId)),
         drills, totalSec, ...clock,
+        userId: previous?.userId ?? userId,
         revision: (previous?.revision ?? 0) + (changed ? 1 : 0),
         sistOppdatert: new Date().toISOString(),
       };
@@ -64,19 +73,33 @@ export async function lagreLiveDrillUtkast(sessionId: string, drills: LiveDrillR
 }
 
 export async function slettLiveDrillUtkast(sessionId: string): Promise<void> {
+  const eksisterende = await transaksjon<LiveDrillKoRad | null>("readonly", (store, result) => {
+    const req = store.get(sessionId);
+    req.onsuccess = () => result(req.result ?? null);
+  });
+  if (eksisterende && !tilhorerBruker(eksisterende, lesNettleserBrukerId())) return;
   await transaksjon("readwrite", (store, result) => { store.delete(sessionId); result(true); });
 }
 
-/** Bare usendte versjoner vises i portalens felles kø. */
-export async function listLiveDrillKo(): Promise<LiveDrillKoRad[]> {
+async function alleLiveRader(): Promise<LiveDrillKoRad[]> {
   const rows = await transaksjon<LiveDrillKoRad[]>("readonly", (store, result) => {
     const req = store.getAll(); req.onsuccess = () => result(req.result);
   });
-  return (rows ?? []).filter((row) => row.synketRevision == null || row.synketRevision !== row.revision);
+  return rows ?? [];
+}
+
+/** Bare usendte versjoner vises i portalens felles kø — og bare for aktiv bruker. */
+export async function listLiveDrillKo(): Promise<LiveDrillKoRad[]> {
+  return filtrerEgne(await alleLiveRader(), lesNettleserBrukerId())
+    .filter((row) => row.synketRevision == null || row.synketRevision !== row.revision);
+}
+
+export async function harLiveDrillKoPaaEnheten(): Promise<boolean> {
+  const rader = await alleLiveRader();
+  return rader.some((row) => row.synketRevision == null || row.synketRevision !== row.revision);
 }
 
 const sending = new Map<string, Promise<LiveSyncResult>>();
-/** Ordnet sending i denne fanen. En eldre kvittering sletter aldri nyere data. */
 export function synkLiveDrillKo(sessionId: string, save: LiveDrillLagreFn): Promise<LiveSyncResult> {
   const previous = sending.get(sessionId) ?? Promise.resolve("tom" as const);
   const run = async (): Promise<LiveSyncResult> => {

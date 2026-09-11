@@ -12,7 +12,6 @@ import Image from "next/image";
 
 import {
   COACH_PERIODS,
-  COACH_USER,
   FASE_TRINN,
   PERIOD_FASE_ACTIVE,
   PY_AXES,
@@ -26,21 +25,48 @@ import { Sesongband, type SesongbandPeriode } from "../_components/sesongband";
 import { MONTH_ORDER, MON_SHORT } from "../_data/wang-plan";
 import { HelpDot, Ikon } from "../_components/primitiver";
 
-// Overlegg: ekte periode-datoer + fokus fra AgencyOS oppå demo-pyramiden.
-// DB-blokkene er sortert kronologisk (TURNERING→GRUNN→SPESIAL→TURNERING) og
-// matcher COACH_PERIODS-rekkefølgen [turnr, grunn, spes, turn] 1:1 på indeks.
+// Overlegg: ekte periode-datoer + fokus fra AgencyOS. Demonstrasjonsmalen
+// (pyramide/tips) brukes bare som struktur på EKTE perioder — aldri som
+// elevliste, og aldri som årets plan når gruppa mangler.
+function malForPeriode(fase: string, indeks: number): CoachPeriode | undefined {
+  if (fase === "GRUNN") return COACH_PERIODS.find((p) => p.key === "grunn");
+  if (fase === "SPESIAL") return COACH_PERIODS.find((p) => p.key === "spes");
+  if (fase === "TURNERING") {
+    return indeks === 0
+      ? COACH_PERIODS.find((p) => p.key === "turnr")
+      : COACH_PERIODS.find((p) => p.key === "turn");
+  }
+  return undefined;
+}
+
 function effektivePerioder(live: WangLiveData | null): CoachPeriode[] {
-  if (!live || live.perioder.length === 0) return COACH_PERIODS;
-  return COACH_PERIODS.map((p, i) => {
-    const db = live.perioder[i];
-    if (!db) return p;
+  if (!live) return [];
+  return live.perioder.map((db, i) => {
+    const mal = malForPeriode(db.fase, i);
     return {
-      ...p,
+      key: db.id,
+      name: mal?.name ?? db.fase,
+      color: mal?.color ?? "var(--wang-navy)",
+      tint: mal?.tint ?? "var(--tint-navy)",
+      fg: mal?.fg ?? "var(--wang-navy)",
       start: db.startIso,
       end: db.endIso,
-      fokus: db.fokus ?? p.fokus,
+      fokus: db.fokus ?? mal?.fokus ?? "",
+      pyr: mal?.pyr ?? { FYS: 0, TEK: 0, SLAG: 0, SPILL: 0, TURN: 0 },
+      faseFokus: mal?.faseFokus ?? "",
+      maal: mal?.maal ?? [],
+      tester: mal?.tester ?? [],
+      iup: mal?.iup ?? "",
+      turneringer: mal?.turneringer ?? [],
     };
   });
+}
+
+function coachInitialer(navn: string): string {
+  const deler = navn.trim().split(/\s+/).filter(Boolean);
+  if (deler.length === 0) return "?";
+  if (deler.length === 1) return deler[0].slice(0, 2).toUpperCase();
+  return (deler[0][0] + deler[deler.length - 1][0]).toUpperCase();
 }
 
 // ISO-uke (mandag-basert, Oslo). Kun til heroband-oppsummering — ikke bindende noe sted.
@@ -130,7 +156,15 @@ function dato(s: string): string {
   return `${d.getDate()}. ${MON[d.getMonth()]} ${d.getFullYear()}`;
 }
 
-export function CoachArsplan({ live = null }: { live?: WangLiveData | null }) {
+export function CoachArsplan({
+  live = null,
+  coachNavn,
+  coachRolle,
+}: {
+  live?: WangLiveData | null;
+  coachNavn: string;
+  coachRolle: string;
+}) {
   // Sticky toppbar over dokumentrullen — publiser høyden (toppbar-hoyde.tsx).
   const toppRef = useToppbarHoyde<HTMLElement>();
   const [selPeriod, setSelPeriod] = useState<string | null>(null);
@@ -281,7 +315,7 @@ export function CoachArsplan({ live = null }: { live?: WangLiveData | null }) {
               fontSize: 14,
             }}
           >
-            AK
+            {coachInitialer(coachNavn)}
           </span>
           <div style={{ minWidth: 0 }}>
             <div
@@ -292,7 +326,7 @@ export function CoachArsplan({ live = null }: { live?: WangLiveData | null }) {
                 color: "var(--white)",
               }}
             >
-              {COACH_USER.name}
+              {coachNavn}
             </div>
             <div
               style={{
@@ -301,7 +335,7 @@ export function CoachArsplan({ live = null }: { live?: WangLiveData | null }) {
                 color: "var(--text-on-dark-dim)",
               }}
             >
-              {COACH_USER.role}
+              {coachRolle}
             </div>
           </div>
         </div>
@@ -512,6 +546,32 @@ function Oversikt({
 
       <GruppeRoster live={live} iupLenke />
 
+      {!live ? (
+        <p
+          style={{
+            fontFamily: "var(--font-body)",
+            fontSize: 14,
+            color: "var(--text-secondary)",
+            margin: "8px 2px 0",
+          }}
+        >
+          WANG-gruppa er ikke funnet i AgencyOS. Ingen elevliste vises, og
+          demonstrasjonsplanen brukes ikke som faktiske elevdata.
+        </p>
+      ) : live.perioder.length === 0 ? (
+        <p
+          style={{
+            fontFamily: "var(--font-body)",
+            fontSize: 14,
+            color: "var(--text-secondary)",
+            margin: "8px 2px 0",
+          }}
+        >
+          Ingen perioder er lagt inn i AgencyOS ennå. Elevlista over er ekte
+          medlemskap.
+        </p>
+      ) : null}
+
       <div
         style={{
           display: "grid",
@@ -670,7 +730,8 @@ function PeriodeDetalj({
   periode: CoachPeriode;
   onBack: () => void;
 }) {
-  const aktive = PERIOD_FASE_ACTIVE[periode.key] ?? [];
+  const mal = COACH_PERIODS.find((p) => p.name === periode.name);
+  const aktive = PERIOD_FASE_ACTIVE[mal?.key ?? periode.key] ?? [];
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
       <button

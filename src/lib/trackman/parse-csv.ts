@@ -4,14 +4,16 @@
 // TrackMan eksporterer typisk per-slag-rader. Vi aggregerer per dato (recordedAt)
 // og bygger rawJson med shots-array + sammendrag (snitt, max, antall).
 //
-// Støtter to format-varianter vi har sett i praksis:
-//   1. "Standard"-eksport med kolonner: Date, Club, Club Speed, Ball Speed,
-//      Smash Factor, Carry, Total, Launch Angle, Spin Rate, Side, ...
-//   2. Mer kompakte rapporter med samme felter under norske/engelske synonymer.
-//
-// Hele rad-mappingen er forsiktig — ukjente kolonner ignoreres uten å feile.
+// Enhet kommer fra hode eller enhetsrad. Tallstørrelse brukes aldri til å gjette.
+// Carry og total er egne kolonner — tom carry kopieres aldri fra total.
 
 import Papa from "papaparse";
+import {
+  type DistanceUnit,
+  type SpeedUnit,
+  erEnhetsrad,
+  lesEnheterFraFelt,
+} from "@/lib/trackman/enheter";
 
 export type TrackManShot = {
   club: string | null;
@@ -24,6 +26,10 @@ export type TrackManShot = {
   spinRateRpm: number | null;
   sideMeters: number | null;
   notes: string | null;
+  /** Kildens hastighetsenhet. Ukjent → canonical lagrer null, ikke gjetning. */
+  speedUnit?: SpeedUnit;
+  /** Kildens avstandsenhet. */
+  distanceUnit?: DistanceUnit;
 };
 
 export type TrackManAggregatedSession = {
@@ -50,14 +56,59 @@ export type TrackManParseResult = {
   error: string;
 };
 
-const COLUMN_ALIASES: Record<keyof TrackManShot | "date", string[]> = {
+type CsvKolonne =
+  | "date"
+  | "club"
+  | "clubSpeedMps"
+  | "ballSpeedMps"
+  | "smashFactor"
+  | "carryMeters"
+  | "totalMeters"
+  | "launchAngleDeg"
+  | "spinRateRpm"
+  | "sideMeters"
+  | "notes";
+
+const COLUMN_ALIASES: Record<CsvKolonne, string[]> = {
   date: ["date", "dato", "session date", "shot date", "timestamp"],
   club: ["club", "klubbe", "kølle", "club type"],
-  clubSpeedMps: ["club speed", "club speed (m/s)", "club speed mps", "klubbhastighet"],
-  ballSpeedMps: ["ball speed", "ball speed (m/s)", "ball speed mps", "ballhastighet"],
+  clubSpeedMps: [
+    "club speed",
+    "club speed (m/s)",
+    "club speed mps",
+    "club speed (mph)",
+    "club speed mph",
+    "klubbhastighet",
+  ],
+  ballSpeedMps: [
+    "ball speed",
+    "ball speed (m/s)",
+    "ball speed mps",
+    "ball speed (mph)",
+    "ball speed mph",
+    "ballhastighet",
+  ],
   smashFactor: ["smash", "smash factor", "smash-factor"],
-  carryMeters: ["carry", "carry distance", "carry (m)", "carry meters"],
-  totalMeters: ["total", "total distance", "total (m)", "total meters"],
+  carryMeters: [
+    "carry",
+    "carry distance",
+    "carry (m)",
+    "carry meters",
+    "carry (yd)",
+    "carry (yds)",
+    "carry yards",
+    "carry (yards)",
+  ],
+  totalMeters: [
+    "total",
+    "total distance",
+    "total (m)",
+    "total meters",
+    "total (yd)",
+    "total (yds)",
+    "total yards",
+    "total (yards)",
+  ],
   launchAngleDeg: ["launch", "launch angle", "launch angle (deg)"],
   spinRateRpm: ["spin", "spin rate", "spin rate (rpm)"],
   sideMeters: ["side", "side (m)", "side total"],
@@ -68,15 +119,13 @@ function normalizeHeader(h: string): string {
   return h.trim().toLowerCase().replace(/\s+/g, " ");
 }
 
-function buildHeaderMap(headers: string[]): Partial<Record<keyof typeof COLUMN_ALIASES, number>> {
-  const map: Partial<Record<keyof typeof COLUMN_ALIASES, number>> = {};
+function buildHeaderMap(headers: string[]): Partial<Record<CsvKolonne, number>> {
+  const map: Partial<Record<CsvKolonne, number>> = {};
   headers.forEach((raw, idx) => {
     const h = normalizeHeader(raw);
-    for (const [field, aliases] of Object.entries(COLUMN_ALIASES) as [
-      keyof typeof COLUMN_ALIASES,
-      string[],
-    ][]) {
-      if (aliases.includes(h) && map[field] === undefined) {
+    const hBare = h.replace(/\s*\([^)]*\)\s*/g, "").trim();
+    for (const [field, aliases] of Object.entries(COLUMN_ALIASES) as [CsvKolonne, string[]][]) {
+      if ((aliases.includes(h) || aliases.includes(hBare)) && map[field] === undefined) {
         map[field] = idx;
       }
     }
@@ -97,10 +146,8 @@ function parseDate(value: unknown): Date | null {
   if (value instanceof Date) return value;
   if (typeof value !== "string" || value.trim() === "") return null;
   const trimmed = value.trim();
-  // Prøv ISO først.
   let d = new Date(trimmed);
   if (!Number.isNaN(d.getTime())) return d;
-  // Prøv DD.MM.YYYY eller DD/MM/YYYY.
   const norMatch = trimmed.match(/^(\d{1,2})[./-](\d{1,2})[./-](\d{2,4})/);
   if (norMatch) {
     const day = Number(norMatch[1]);
@@ -160,10 +207,23 @@ export function parseTrackManCsv(csv: string): TrackManParseResult {
   }
   const headerMap = buildHeaderMap(headers);
 
+  let dataStart = 1;
+  let unitsRow: string[] | null = null;
+  if (rows[1] && erEnhetsrad(rows[1])) {
+    unitsRow = rows[1];
+    dataStart = 2;
+  }
+  if (dataStart >= rows.length) {
+    return { ok: false, error: "CSV må ha header + minst én rad" };
+  }
+
+  const speedUnit = lesEnheterFraFelt(headers, unitsRow, "speed") as SpeedUnit;
+  const distanceUnit = lesEnheterFraFelt(headers, unitsRow, "distance") as DistanceUnit;
+
   const shotsByDay = new Map<string, { date: Date; shots: TrackManShot[] }>();
   const fallbackDate = new Date();
 
-  for (let i = 1; i < rows.length; i++) {
+  for (let i = dataStart; i < rows.length; i++) {
     const row = rows[i];
     if (!row || row.every((c) => !c || c.trim() === "")) continue;
 
@@ -190,6 +250,8 @@ export function parseTrackManCsv(csv: string): TrackManParseResult {
       sideMeters:
         headerMap.sideMeters !== undefined ? parseNumber(row[headerMap.sideMeters]) : null,
       notes: headerMap.notes !== undefined ? row[headerMap.notes]?.trim() || null : null,
+      speedUnit,
+      distanceUnit,
     };
 
     const existing = shotsByDay.get(key);

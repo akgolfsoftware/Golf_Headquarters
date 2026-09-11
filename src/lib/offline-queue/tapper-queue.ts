@@ -4,13 +4,10 @@
  * IndexedDB-laget for tapper-offline-køen. Ren I/O — regel/format-logikk
  * (retry-telling, når appen skal gi opp stille retry) ligger i tapper-kladd.ts
  * og er enhetstestet der. Native `indexedDB`-API — ingen ny avhengighet.
- *
- * Én butikk («tapper-ko»), nøkkel = sessionId — køen trenger kun siste
- * kjente snapshot per økt (saveTapperCounts er idempotent på absolutt
- * telling), ikke en voksende hendelseslogg.
  */
 
 import { byggKoRad, registrerMislykketForsok, trengerManuellHandling, type TapperKoRad } from "./tapper-kladd";
+import { filtrerEgne, lesNettleserBrukerId, tilhorerBruker } from "./eier";
 
 const DB_NAVN = "akgolf-offline-ko";
 const DB_VERSJON = 1;
@@ -26,8 +23,6 @@ function apneDb(): Promise<IDBDatabase | null> {
       }
     };
     req.onsuccess = () => resolve(req.result);
-    // Blokkert/feilet IndexedDB (privat modus, kvote osv.) skal aldri
-    // velte selve tapper-lagringen — bare gjøre offline-køen utilgjengelig.
     req.onerror = () => resolve(null);
   });
 }
@@ -45,26 +40,27 @@ async function medButikk<T>(
       req.onsuccess = () => resolve(req.result);
       req.onerror = () => resolve(null);
     } catch {
-      // db.transaction() kan kaste synkront (f.eks. lukket forbindelse) —
-      // skal aldri velte kalleren, bare gjøre køen utilgjengelig denne gangen.
       resolve(null);
     }
   });
 }
 
-/** Legger (eller erstatter) siste kjente tellinger for en økt i køen. */
 export async function leggIKo(
   sessionId: string,
   counts: Array<{ club: string; count: number }>,
 ): Promise<void> {
+  const userId = lesNettleserBrukerId();
   const eksisterende = await medButikk<TapperKoRad>("readonly", (b) => b.get(sessionId));
+  if (eksisterende && eksisterende.userId && userId && eksisterende.userId !== userId) return;
   const rad = eksisterende
-    ? { ...eksisterende, counts, sistOppdatert: new Date().toISOString() }
-    : byggKoRad(sessionId, counts, new Date());
+    ? { ...eksisterende, counts, userId: eksisterende.userId ?? userId, sistOppdatert: new Date().toISOString() }
+    : byggKoRad(sessionId, counts, new Date(), userId);
   await medButikk("readwrite", (b) => b.put(rad));
 }
 
 async function fjernFraKo(sessionId: string): Promise<void> {
+  const eksisterende = await medButikk<TapperKoRad>("readonly", (b) => b.get(sessionId));
+  if (eksisterende && !tilhorerBruker(eksisterende, lesNettleserBrukerId())) return;
   await medButikk("readwrite", (b) => b.delete(sessionId));
 }
 
@@ -73,24 +69,19 @@ async function alleRader(): Promise<TapperKoRad[]> {
   return rader ?? [];
 }
 
-/** Alle rader i offline-køen (for portal-wide flush). */
 export async function listTapperKo(): Promise<TapperKoRad[]> {
-  return alleRader();
+  return filtrerEgne(await alleRader(), lesNettleserBrukerId());
 }
 
-/**
- * Tømmer køen for én økt: prøver å synke via gitt lagringsfunksjon
- * (`saveTapperCounts`, injisert for å holde denne fila fri for
- * server-actions-importer). Suksess → fjernes fra køen. Feil → forsøks-
- * telleren økes og raden blir liggende til neste `tomKo`-kall.
- * Returnerer `"gitt-opp"` når terskelen for stille retry er nådd, slik at
- * kalleren kan vise en tydelig feil i stedet for å late som alt er bra.
- */
+export async function harTapperKoPaaEnheten(): Promise<boolean> {
+  return (await alleRader()).length > 0;
+}
+
 export async function tomKo(
   sessionId: string,
   lagre: (sessionId: string, counts: Array<{ club: string; count: number }>) => Promise<{ ok: boolean }>,
 ): Promise<"tom" | "synket" | "feilet" | "gitt-opp"> {
-  const rader = await alleRader();
+  const rader = await listTapperKo();
   const rad = rader.find((r) => r.sessionId === sessionId);
   if (!rad) return "tom";
 

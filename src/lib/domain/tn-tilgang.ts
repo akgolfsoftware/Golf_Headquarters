@@ -191,3 +191,37 @@ function parseDatoStrengUtc(iso: string): Date | null {
   if (!m) return null;
   return new Date(Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3])));
 }
+
+export type TnOversikt = {
+  gruppe: { id: string; name: string };
+  antallSpillere: number;
+  antallTrenere: number;
+  rolle: string | null;
+};
+
+/** Oversikt for /team-norway. Null hvis brukeren ikke er medlem og ikke ADMIN. */
+export async function hentTnOversiktForBruker(bruker: {
+  id: string;
+  role: UserRole;
+}): Promise<TnOversikt | null> {
+  const gruppe = await hentTeamNorwayGruppe();
+  if (!gruppe) return null;
+  const medlem = await prisma.groupMember.findFirst({
+    where: { groupId: gruppe.id, userId: bruker.id, endedAt: null },
+    select: { role: true },
+  });
+  if (!medlem && bruker.role !== "ADMIN") return null;
+  const [antallSpillere, antallTrenere] = await Promise.all([
+    prisma.groupMember.count({ where: { groupId: gruppe.id, role: "PLAYER", endedAt: null } }),
+    prisma.groupMember.count({
+      where: { groupId: gruppe.id, role: { in: ["COACH", "ASSISTANT"] }, endedAt: null },
+    }),
+  ]);
+  return {
+    gruppe,
+    antallSpillere,
+    antallTrenere,
+    rolle: medlem?.role ?? (bruker.role === "ADMIN" ? "ADMIN" : null),
+  };
+}
+

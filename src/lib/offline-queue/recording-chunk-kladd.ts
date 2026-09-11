@@ -10,6 +10,7 @@ export type RecordingChunkMeta = {
   index: number;
   createdAt: string;
   forsokAntall: number;
+  userId?: string | null;
 };
 
 const MAKS_STILLE_FORSOK = 8;
@@ -22,6 +23,7 @@ export function byggChunkMeta(
   recordingId: string,
   index: number,
   naa: Date,
+  userId?: string | null,
 ): RecordingChunkMeta {
   return {
     key: byggChunkKey(recordingId, index),
@@ -29,6 +31,7 @@ export function byggChunkMeta(
     index,
     createdAt: naa.toISOString(),
     forsokAntall: 0,
+    userId: userId ?? null,
   };
 }
 
@@ -39,7 +42,6 @@ export function registrerMislykketChunkForsok(
   return {
     ...meta,
     forsokAntall: meta.forsokAntall + 1,
-    // createdAt beholdes; forsøk speiles i forsokAntall
   };
 }
 

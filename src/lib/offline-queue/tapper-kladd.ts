@@ -14,6 +14,7 @@ export type TapperKoRad = {
   sistOppdatert: string;
   /** Antall mislykkede synk-forsøk siden raden ble lagt i køen. */
   forsokAntall: number;
+  userId?: string | null;
 };
 
 const MAKS_STILLE_FORSOK = 5;
@@ -22,21 +23,21 @@ export function byggKoRad(
   sessionId: string,
   counts: Array<{ club: string; count: number }>,
   naa: Date,
+  userId?: string | null,
 ): TapperKoRad {
-  return { sessionId, counts, sistOppdatert: naa.toISOString(), forsokAntall: 0 };
+  return {
+    sessionId,
+    counts,
+    sistOppdatert: naa.toISOString(),
+    forsokAntall: 0,
+    userId: userId ?? null,
+  };
 }
 
-/** Etter et mislykket synk-forsøk — oppdaterer telling og tidspunkt. */
 export function registrerMislykketForsok(rad: TapperKoRad, naa: Date): TapperKoRad {
   return { ...rad, forsokAntall: rad.forsokAntall + 1, sistOppdatert: naa.toISOString() };
 }
 
-/**
- * Etter MAKS_STILLE_FORSOK mislykkede forsøk skal appen slutte å prøve stille
- * i bakgrunnen og heller vise en tydelig feil til spilleren — automatisk
- * retry uten grense ville skjult et reelt, vedvarende problem (f.eks. utløpt
- * sesjon) bak en evig «lagres automatisk»-tekst.
- */
 export function trengerManuellHandling(rad: TapperKoRad): boolean {
   return rad.forsokAntall >= MAKS_STILLE_FORSOK;
 }

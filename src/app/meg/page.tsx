@@ -9,6 +9,7 @@ import { notFound } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { lagPrismaRepository } from "@/lib/jarvis/repository";
 import { MegApp } from "@/components/meg/MegApp";
+import { BindAktivBruker } from "@/components/auth/bind-aktiv-bruker";
 import { godkjennSak, avvisSak, oppdaterForeslattSvar, opprettFangst, oppdaterInnstilling } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -31,7 +32,9 @@ export default async function MegPage() {
   ]);
 
   return (
-    <MegApp
+    <>
+      <BindAktivBruker userId={user.id} />
+      <MegApp
       brukernavn={user.name ?? "Anders"}
       saker={saker}
       systemHelse={systemHelse}
@@ -49,5 +52,6 @@ export default async function MegPage() {
       opprettFangst={opprettFangst}
       oppdaterInnstilling={oppdaterInnstilling}
     />
+    </>
   );
 }

@@ -121,6 +121,7 @@ export function QueueBoard({ kolonner }: { kolonner: QueueKolonne[] }) {
   const [overKolonne, setOverKolonne] = useState<QueueStatus | null>(null);
   const [flytterId, setFlytterId] = useState<string | null>(null);
   const [feil, setFeil] = useState<string | null>(null);
+  const [mobilFane, setMobilFane] = useState<QueueStatus>("risk");
 
   const onDrop = async (spillerId: string, status: QueueStatus) => {
     if (flytterId) return;
@@ -140,10 +141,38 @@ export function QueueBoard({ kolonner }: { kolonner: QueueKolonne[] }) {
           <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.text }}>{feil}</span>
         </div>
       )}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4" style={{ gap: 16, alignItems: "start" }}>
+      {flytterId && (
+        <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, margin: 0 }}>Lagrer plassering…</p>
+      )}
+      <div className="flex gap-2 xl:hidden" style={{ overflowX: "auto" }}>
+        {kolonner.map((col) => (
+          <button
+            key={col.status}
+            type="button"
+            onClick={() => setMobilFane(col.status)}
+            className="v2-press v2-focus"
+            style={{
+              height: 36,
+              padding: "0 12px",
+              borderRadius: 999,
+              border: `1px solid ${TL.hair}`,
+              background: mobilFane === col.status ? TL.dock : "transparent",
+              color: TL.text,
+              fontFamily: TL.font.sans,
+              fontSize: 12.5,
+              fontWeight: 600,
+              whiteSpace: "nowrap",
+            }}
+          >
+            {col.tittel} ({col.kort.length})
+          </button>
+        ))}
+      </div>
+      <div className="grid grid-cols-1 xl:grid-cols-4" style={{ gap: 16, alignItems: "start" }}>
         {kolonner.map((col) => (
           <div
             key={col.status}
+            className={col.status === mobilFane ? "flex flex-col" : "hidden xl:flex xl:flex-col"}
             onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; if (overKolonne !== col.status) setOverKolonne(col.status); }}
             onDragLeave={() => setOverKolonne((v) => (v === col.status ? null : v))}
             onDrop={(e) => {
@@ -153,7 +182,7 @@ export function QueueBoard({ kolonner }: { kolonner: QueueKolonne[] }) {
               if (id) onDrop(id, col.status);
             }}
             style={{
-              display: "flex", flexDirection: "column", gap: 10,
+              gap: 10,
               borderRadius: 14, padding: 6, margin: -6,
               background: overKolonne === col.status ? `color-mix(in srgb, ${TL.fill} 6%, transparent)` : "transparent",
               outline: overKolonne === col.status ? `1px dashed color-mix(in srgb, ${TL.fill} 45%, transparent)` : "none",

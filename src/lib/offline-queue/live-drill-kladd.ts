@@ -23,6 +23,8 @@ export type LiveDrillKoRad = {
   totalSec: number;
   sistOppdatert: string;
   forsokAntall: number;
+  /** Prisma-bruker. Utlogging sletter ikke raden. */
+  userId?: string | null;
   /** Lokale felter; krever ingen database- eller IndexedDB-skjemaendring. */
   revision?: number;
   synketRevision?: number;
@@ -37,6 +39,7 @@ export function byggLiveDrillKoRad(
   drills: LiveDrillReps[],
   totalSec: number,
   naa: Date,
+  userId?: string | null,
 ): LiveDrillKoRad {
   return {
     sessionId,
@@ -44,6 +47,7 @@ export function byggLiveDrillKoRad(
     totalSec,
     sistOppdatert: naa.toISOString(),
     forsokAntall: 0,
+    userId: userId ?? null,
   };
 }
 

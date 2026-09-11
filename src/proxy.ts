@@ -199,6 +199,7 @@ export async function proxy(request: NextRequest) {
     // proxyen stopper kun uautentiserte (samme arbeidsdeling som /admin).
     path.startsWith("/innsyn") ||
     erTeamWangCoach ||
+    path.startsWith("/team-norway") ||
     erAargangHub;
 
   if (erBeskyttet) {

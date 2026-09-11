@@ -47,9 +47,10 @@ test("spillerprofil: PARENT/GUEST er aldri en gyldig vei inn, uansett flagg", ()
   );
 });
 
-test("iup: ADMIN og COACH ser alle elever", () => {
+test("iup: ADMIN ser alle elever, COACH bare med gruppetilgang", () => {
   assert.equal(kanSeIup({ id: "a1", role: "ADMIN" }, "elev-1", false), true);
-  assert.equal(kanSeIup({ id: "c1", role: "COACH" }, "elev-1", false), true);
+  assert.equal(kanSeIup({ id: "c1", role: "COACH" }, "elev-1", false), false);
+  assert.equal(kanSeIup({ id: "c1", role: "COACH" }, "elev-1", false, true), true);
 });
 
 test("iup: eleven ser sin egen IUP", () => {

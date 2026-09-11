@@ -1,4 +1,5 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { BindAktivBruker } from "@/components/auth/bind-aktiv-bruker";
 
 /**
  * Layout for interne sider — design-system, demoer, pilot-sider.
@@ -11,11 +12,11 @@ export default async function InternalLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // Kun ADMIN-rolle kan se interne sider/demoer
-  await requirePortalUser({ allow: ["ADMIN"] });
+  const user = await requirePortalUser({ allow: ["ADMIN"] });
 
   return (
     <div className="min-h-screen" style={{ background: "var(--v2-bg)" }}>
+      <BindAktivBruker userId={user.id} />
       <div
         style={{
           borderBottom: "1px solid var(--v2-border)",

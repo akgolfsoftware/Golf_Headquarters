@@ -3,11 +3,10 @@
 /**
  * Server actions for /portal/meg — PlayerHQ "Meg"-profil.
  *
- * Hent, oppdater og logg ut. Bruker requireConsentingUser + Prisma. Ingen schema-endringer.
+ * Hent og oppdater. Utlogging går via `@/lib/auth/logout` (land på /auth/logget-ut).
  */
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
@@ -102,12 +101,6 @@ export async function oppdaterPreferences(input: Partial<UserPreferences>) {
 
   revalidatePath("/portal/meg");
   revalidatePath("/portal/meg/innstillinger");
-}
-
-export async function logout() {
-  const supabase = await createClient();
-  await supabase.auth.signOut({ scope: "global" });
-  redirect("/auth/login");
 }
 
 

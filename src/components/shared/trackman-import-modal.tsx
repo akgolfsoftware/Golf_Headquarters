@@ -264,6 +264,8 @@ export function TrackmanImportModal({
           spinRateRpm: s.spinRateRpm,
           sideMeters: s.sideMeters,
           notes: null,
+          speedUnit: "mph",
+          distanceUnit: "m",
         }));
         setShots(preview);
         setValgt(new Set(preview.map((_, i) => i)));
@@ -768,10 +770,22 @@ function Steg3({
                   {s.club ?? "Ukjent"}
                 </span>
                 <span className="text-right font-mono tabular-nums">
-                  {s.carryMeters != null ? `${s.carryMeters} m` : "—"}
+                  {s.carryMeters != null
+                    ? s.distanceUnit === "yd"
+                      ? `${s.carryMeters} yd`
+                      : s.distanceUnit === "m"
+                        ? `${s.carryMeters} m`
+                        : String(s.carryMeters)
+                    : "—"}
                 </span>
                 <span className="text-right font-mono tabular-nums">
-                  {s.ballSpeedMps != null ? s.ballSpeedMps.toFixed(1) : "—"}
+                  {s.ballSpeedMps != null
+                    ? s.speedUnit === "mph"
+                      ? `${s.ballSpeedMps.toFixed(1)} mph`
+                      : s.speedUnit === "mps"
+                        ? `${s.ballSpeedMps.toFixed(1)} m/s`
+                        : s.ballSpeedMps.toFixed(1)
+                    : "—"}
                 </span>
                 <span className="text-right font-mono tabular-nums">
                   {s.smashFactor != null ? s.smashFactor.toFixed(2) : "—"}

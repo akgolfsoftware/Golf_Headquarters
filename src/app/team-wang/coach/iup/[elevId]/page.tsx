@@ -4,18 +4,21 @@ import { prisma } from "@/lib/prisma";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { assertBarnTilhorerForelder } from "@/lib/forelder";
 import { kanSeIup } from "@/lib/auth/spiller-side-tilgang";
+import { BindAktivBruker } from "@/components/auth/bind-aktiv-bruker";
 import { IupSamtale, type IupPeriode, type IupMaaling } from "./iup-samtale";
+import { erWangCoachForElev } from "../../../_data/wang-tilgang";
 
 /**
  * IUP-samtalen for én elev. Åpnet uten rollesperre 15.08.2026 («pr nå»,
  * MIDLERTIDIG) og aldri satt tilbake — enhver innlogget bruker, også en
  * vanlig spiller, kunne fram til 30.08.2026 lese vurderinger om en navngitt
  * mindreårig. Rettet (arkitektur-kartlegging §To sikkerhetsfunn, Anders'
- * beslutning 30.08: rollesperre + elev og foresatt): ADMIN/COACH ser alle
- * elever, eleven selv ser egen IUP, og en foresatt ser IUP for barn koblet
- * via `ParentRelation`. Alle andre får notFound(). Skjermen er fortsatt delt
- * mellom elev og trener i samme rom, derfor står egenvurdering og
- * trenervurdering side om side i stedet for i hver sin visning.
+ * beslutning 30.08: rollesperre + elev og foresatt): ADMIN ser alle elever,
+ * COACH kun med WANG-gruppetilgang til nettopp denne eleven, eleven selv
+ * ser egen IUP, og en foresatt ser IUP for barn koblet via `ParentRelation`.
+ * Alle andre får notFound(). Skjermen er fortsatt delt mellom elev og
+ * trener i samme rom, derfor står egenvurdering og trenervurdering side om
+ * side i stedet for i hver sin visning.
  */
 export const dynamic = "force-dynamic";
 
@@ -51,13 +54,15 @@ export default async function IupPage({
 
   const bruker = await requirePortalUser({
     allow: ["ADMIN", "COACH", "PLAYER", "PARENT"],
-    redirectTo: "/team-wang/logg-inn",
+    redirectTo: `/team-wang/logg-inn?next=${encodeURIComponent(`/team-wang/coach/iup/${elevId}`)}`,
     kreverTilgang: "INGEN",
   });
 
   const erForesattTilEleven =
     bruker.role === "PARENT" && (await assertBarnTilhorerForelder(bruker.id, elevId));
-  if (!kanSeIup(bruker, elevId, erForesattTilEleven)) notFound();
+  const erCoachForEleven =
+    bruker.role === "COACH" && (await erWangCoachForElev(bruker.id, elevId));
+  if (!kanSeIup(bruker, elevId, erForesattTilEleven, erCoachForEleven)) notFound();
 
   const elev = await prisma.user.findUnique({
     where: { id: elevId },
@@ -151,41 +156,44 @@ export default async function IupPage({
     : [];
 
   return (
-    <IupSamtale
-      elevId={elev.id}
-      elevNavn={elev.name?.trim() || elev.email}
-      avsluttende={avsluttende}
-      neste={neste}
-      evalueringer={
-        avsluttende
-          ? maal
-              .filter((m) => m.periodBlockId === avsluttende.id)
-              .map((m) => ({
-                id: m.id,
-                akse: m.akse,
-                tittel: m.tittel,
-                egentidMinUke: m.egentidMinUke,
-                maalemetode: m.maalemetode,
-                status: m.status,
-                egenvurdering: m.egenvurdering,
-                trenervurdering: m.trenervurdering,
-                kommentar: m.kommentar,
-              }))
-          : []
-      }
-      nyeStart={
-        neste
-          ? maal
-              .filter((m) => m.periodBlockId === neste.id)
-              .map((m) => ({
-                akse: m.akse,
-                tittel: m.tittel,
-                egentidMinUke: m.egentidMinUke,
-                maalemetode: m.maalemetode,
-              }))
-          : []
-      }
-      maalinger={maalinger}
-    />
+    <>
+      <BindAktivBruker userId={bruker.id} />
+      <IupSamtale
+        elevId={elev.id}
+        elevNavn={elev.name?.trim() || elev.email}
+        avsluttende={avsluttende}
+        neste={neste}
+        evalueringer={
+          avsluttende
+            ? maal
+                .filter((m) => m.periodBlockId === avsluttende.id)
+                .map((m) => ({
+                  id: m.id,
+                  akse: m.akse,
+                  tittel: m.tittel,
+                  egentidMinUke: m.egentidMinUke,
+                  maalemetode: m.maalemetode,
+                  status: m.status,
+                  egenvurdering: m.egenvurdering,
+                  trenervurdering: m.trenervurdering,
+                  kommentar: m.kommentar,
+                }))
+            : []
+        }
+        nyeStart={
+          neste
+            ? maal
+                .filter((m) => m.periodBlockId === neste.id)
+                .map((m) => ({
+                  akse: m.akse,
+                  tittel: m.tittel,
+                  egentidMinUke: m.egentidMinUke,
+                  maalemetode: m.maalemetode,
+                }))
+            : []
+        }
+        maalinger={maalinger}
+      />
+    </>
   );
 }

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { WangLogin } from "./wang-login";
+import { wangReturSti } from "../_data/wang-retur-sti";
 
 // Innloggingen trenger skript med samme nonce som forespørselens CSP.
 // Et forhåndsbygd dokument har ingen forespørsel og kan ikke få denne verdien.
@@ -13,6 +14,11 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function WangLoginPage() {
-  return <WangLogin />;
+export default async function WangLoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ next?: string }>;
+}) {
+  const { next } = await searchParams;
+  return <WangLogin neste={wangReturSti(next)} />;
 }

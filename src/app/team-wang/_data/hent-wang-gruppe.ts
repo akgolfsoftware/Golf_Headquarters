@@ -9,16 +9,20 @@
 // (Dette erstatter den midlertidige tilstanden fra 2026-08-15, der sperren var
 // av OG navn ble hentet ubetinget — se proxy.ts for tilgangssiden av det.)
 //
-// Ingen kall ved build: /team-wang-sidene er dynamiske (auth via cookies), og
-// alt her er pakket i try/catch → null slik at en manglende gruppe/DB gir ren
-// fallback til demo (samme mønster som /gfgk-junior/kalender).
+// DB-feil kastes som WangGruppeHentefeil. Kalleren skal vise feil/nytt forsøk,
+// aldri falle tilbake til demonstrasjons-elever som om de var ekte.
 
 import "server-only";
 
 import { prisma } from "@/lib/prisma";
 
-// Kanonisk slug (src/lib/domain/grupper.ts). Navn-fallback beholdes til
-// bootstrap-kanoniske-grupper-scriptet har satt slug i alle miljøer.
+export class WangGruppeHentefeil extends Error {
+  readonly kode = "WANG_GRUPPE_HENTEFEIL" as const;
+  constructor() {
+    super("Kunne ikke hente WANG-gruppa. Prøv igjen.");
+    this.name = "WangGruppeHentefeil";
+  }
+}
 const GRUPPE_SLUG = "wang-toppidrett";
 const GRUPPE_NAVN = "WANG Toppidrett Fredrikstad";
 
@@ -153,8 +157,9 @@ function skoleAr(
 }
 
 /**
- * Henter ekte WANG-gruppedata. Returnerer null hvis gruppa ikke finnes eller DB
- * feiler — kalleren faller da tilbake til ren demo.
+ * Henter ekte WANG-gruppedata. Returnerer null hvis gruppa ikke finnes.
+ * Databasen nede kaster WangGruppeHentefeil — aldri null som om gruppa
+ * manglet, og aldri stille demo.
  *
  * Elevnavn er PII om mindreårige og hentes derfor KUN når `medElevnavn: true`
  * sendes eksplisitt. Standard er `false`: `elever` blir tom og `antallElever`
@@ -336,8 +341,8 @@ export async function hentWangGruppe(
       fokusomraader,
       oppdatertIso: osloDato(new Date()),
     };
-  } catch {
-    // DB utilgjengelig / build uten database → ren demo-fallback.
-    return null;
+  } catch (e) {
+    if (e instanceof WangGruppeHentefeil) throw e;
+    throw new WangGruppeHentefeil();
   }
 }

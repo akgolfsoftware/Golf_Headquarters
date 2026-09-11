@@ -1,18 +1,11 @@
 /**
  * Auth · Logget ut (/auth/logget-ut) — v2-redesign (2026-07-10).
- *
- * Rendrer <LoggetUtV2> (retning C «Presis») som selvstendig sentrert kort på
- * mørk auth-flate, INGEN app-sidebar. Erstatter gamle <LoggetUtSkjerm>
- * (v10-design) — se src/components/portal/v2/LoggetUtV2.tsx.
- *
- * Rent presentasjonelt — ingen Prisma/DB/auth/loader. Komponenten rendres med
- * de ekte lenkene for denne ruten; ingen liksom-data. Gamle
- * src/components/auth/logget-ut.tsx står urørt som fallback.
  */
 
 import type { Metadata } from "next";
 import { LoggetUtV2 } from "@/components/portal/v2/LoggetUtV2";
 import { ClearPwaCaches } from "@/components/auth/clear-pwa-caches";
+import { UlagretKladdBanner } from "@/components/auth/ulagret-kladd-banner";
 
 export const metadata: Metadata = {
   title: "Logget ut · AK Golf",
@@ -23,6 +16,7 @@ export default function LoggetUtPage() {
   return (
     <>
       <ClearPwaCaches />
+      <UlagretKladdBanner />
       <LoggetUtV2
         hjemHref="/"
         loggInnHref="/auth/login"

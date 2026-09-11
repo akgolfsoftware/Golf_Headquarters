@@ -7,9 +7,8 @@
  * form som CSV-parseren produserer, slik at resten av import-pipelinen
  * (canonical.ts → matching → TM-mål) er uendret og kildeuavhengig.
  *
- * TruthLayer: vi ber modellen om `null` for alt den ikke kan lese sikkert —
- * aldri gjette et tall. Finner den ingen lesbare TrackMan-tallverdier,
- * returneres en feil med samme tekst som TM-03 C3 («Fant ingen tall...»).
+ * Enhet leses fra skjermen. Tallstørrelse brukes aldri til å gjette.
+ * Carry kopieres aldri fra total.
  */
 import "server-only";
 import { z } from "zod";
@@ -40,29 +39,30 @@ const ShotSchema = z.object({
   launchAngle: z.number().nullable().optional(),
   spinRate: z.number().nullable().optional(),
   side: z.number().nullable().optional(),
+  speedUnit: z.enum(["mph", "mps", "unknown"]).nullable().optional(),
+  distanceUnit: z.enum(["m", "yd", "unknown"]).nullable().optional(),
 });
 
 const ResponseSchema = z.object({
   shots: z.array(ShotSchema),
+  speedUnit: z.enum(["mph", "mps", "unknown"]).nullable().optional(),
+  distanceUnit: z.enum(["m", "yd", "unknown"]).nullable().optional(),
 });
 
 const SYSTEM_PROMPT = `Du leser skjermbilder/foto av TrackMan-skjermer (Sim eller Range) og trekker ut slagdata.
 
 Les hver rad/hvert slag som vises med tallverdier for kølle- og ballmetrikker.
 Svar KUN med gyldig JSON på nøyaktig denne formen, ingen annen tekst, ingen markdown:
-{"shots":[{"club":"...","clubSpeed":n|null,"ballSpeed":n|null,"smashFactor":n|null,"carry":n|null,"total":n|null,"launchAngle":n|null,"spinRate":n|null,"side":n|null}]}
+{"speedUnit":"mph"|"mps"|"unknown","distanceUnit":"m"|"yd"|"unknown","shots":[{"club":"...","clubSpeed":n|null,"ballSpeed":n|null,"smashFactor":n|null,"carry":n|null,"total":n|null,"launchAngle":n|null,"spinRate":n|null,"side":n|null}]}
 
 Regler:
-- clubSpeed/ballSpeed i mph (slik TrackMan normalt viser dem), carry/total i meter.
+- speedUnit og distanceUnit skal være det som står på skjermen (kolonne-hode, suffiks, akse).
+- Ser du ikke enheten: sett "unknown". ALDRI gjett fra tallstørrelse (70 er ikke automatisk mph, 330 er ikke automatisk yards).
+- carry er KUN carry-feltet. Kopier ALDRI total inn i carry. Mangler carry: null.
 - "side" er sideveis avvik i meter, negativ = venstre for target, positiv = høyre.
 - Er du usikker på en enkelt verdi: sett den til null. ALDRI gjett eller anslå et tall.
 - Er bildet ikke en TrackMan-skjerm, eller inneholder ingen lesbare tallverdier: svar {"shots":[]}.`;
 
-/**
- * Parser ett skjermbilde/foto av en TrackMan-skjerm til slagdata via Claude
- * vision. `base64` er ren base64 (uten data:-prefiks), `mediaType` styrer
- * hvilket bildeformat Anthropic-API-et dekoder det som.
- */
 export async function parseTrackManPhoto(
   base64: string,
   mediaType: TrackManPhotoMediaType,
@@ -111,6 +111,9 @@ export async function parseTrackManPhoto(
     return { ok: false, error: FANT_INGEN_TALL };
   }
 
+  const sessionSpeed = validated.data.speedUnit ?? "unknown";
+  const sessionDistance = validated.data.distanceUnit ?? "unknown";
+
   const shots: TrackManShot[] = validated.data.shots.map((s) => ({
     club: s.club?.trim() || null,
     clubSpeedMps: s.clubSpeed ?? null,
@@ -122,6 +125,8 @@ export async function parseTrackManPhoto(
     spinRateRpm: s.spinRate ?? null,
     sideMeters: s.side ?? null,
     notes: null,
+    speedUnit: s.speedUnit ?? sessionSpeed,
+    distanceUnit: s.distanceUnit ?? sessionDistance,
   }));
 
   return { ok: true, shots };

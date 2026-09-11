@@ -24,6 +24,7 @@
 import { test, mock } from "node:test";
 import assert from "node:assert/strict";
 import type { User } from "@/generated/prisma/client";
+import { erTilgangHentefeil } from "./tilgang-hentefeil";
 
 class RedirectSignal extends Error {
   constructor(public readonly to: string) {
@@ -34,6 +35,7 @@ class RedirectSignal extends Error {
 // Delt tilstand — settes per testtilfelle (samme mønster som guards-avvis.test.ts).
 let authBruker: { id: string } | null = null;
 let dbBruker: Partial<User> | null = null;
+let subscriptionKaster = false;
 
 mock.module("@/lib/supabase/server", {
   namedExports: {
@@ -50,7 +52,12 @@ mock.module("@/lib/prisma", {
         findUnique: async () => dbBruker,
         update: async () => dbBruker,
       },
-      subscription: { findUnique: async () => null },
+      subscription: {
+        findUnique: async () => {
+          if (subscriptionKaster) throw new Error("connect ECONNREFUSED");
+          return null;
+        },
+      },
       groupMember: { count: async () => 0 },
     },
   },
@@ -156,4 +163,35 @@ test("getCurrentUser: mindreårig MED samtykke slipper gjennom", async () => {
 
   const u = await getCurrentUser();
   assert.equal(u?.id, "junior-ok");
+});
+
+test("getCurrentUserRaw: abonnementsoppslag som feiler er hentefeil, ikke INGEN", async () => {
+  const { getCurrentUserRaw } = await mod();
+  authBruker = { id: "auth-1" };
+  dbBruker = dbRad({ id: "u-aktiv" });
+  subscriptionKaster = true;
+  try {
+    await assert.rejects(
+      () => getCurrentUserRaw(),
+      (e: unknown) => erTilgangHentefeil(e),
+    );
+  } finally {
+    subscriptionKaster = false;
+  }
+});
+
+test("getCurrentUser: hentefeil redirectes til tjeneste-utilgjengelig, ikke betalingskrav", async () => {
+  const { getCurrentUser } = await mod();
+  authBruker = { id: "auth-1" };
+  dbBruker = dbRad({ id: "u-aktiv" });
+  subscriptionKaster = true;
+  try {
+    await getCurrentUser();
+    assert.fail("getCurrentUser slapp gjennom da abonnement ikke kunne hentes");
+  } catch (e) {
+    assert.ok(e instanceof RedirectSignal, `uventet feil: ${String(e)}`);
+    assert.equal(e.to, "/auth/tjeneste-utilgjengelig");
+  } finally {
+    subscriptionKaster = false;
+  }
 });

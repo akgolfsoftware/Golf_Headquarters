@@ -45,8 +45,8 @@ export interface AdminSpillerProfilSideV2Data {
   spilteAar: string;
   ambisjon: string;
   foreldre: ProfilForelder[];
-  dna: DnaShape;
-  cohort: DnaShape;
+  dna: DnaShape | null;
+  cohort: DnaShape | null;
   maal: ProfilMaal[];
   permisjoner: ProfilPermisjon[];
   coachVurdering: { tekst: string; coachNavn: string; datoLabel: string } | null;
@@ -224,18 +224,22 @@ export function AdminSpillerProfilSideV2({ data }: { data: AdminSpillerProfilSid
 
       <Kort>
         <SeksjonHode eyebrow="Spiller-DNA" tittel="5-akset profil" />
+        {!data.dna ? (
+          <TomTilstand icon="activity" title="Ingen spiller-DNA registrert" sub="Profilen viser bare tall som er lagret for spilleren. Vi fyller ikke inn eksempelverdier." />
+        ) : (
         <div style={{ display: "grid", gridTemplateColumns: "280px 1fr", gap: 24, alignItems: "center" }}>
-          <RadarChart dna={data.dna} cohort={data.cohort} />
+          <RadarChart dna={data.dna} cohort={data.cohort ?? { fysisk: 0, teknikk: 0, taktikk: 0, mental: 0, motivasjon: 0 }} />
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {AXES.map((a) => (
-              <DnaAxisRow key={a} axis={a} verdi={data.dna[a]} cohort={data.cohort[a]} />
+              <DnaAxisRow key={a} axis={a} verdi={data.dna![a]} cohort={data.cohort?.[a] ?? 0} />
             ))}
             <div style={{ display: "flex", alignItems: "center", gap: 16, marginTop: 8, fontFamily: TL.font.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.08em", color: TL.mute }}>
               <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><span style={{ width: 12, height: 8, borderRadius: 9999, background: TL.fill }} /> Spilleren</span>
-              <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><span style={{ width: 12, height: 8, borderRadius: 9999, background: TL.mute }} /> Cohort-snitt</span>
+              {data.cohort ? <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><span style={{ width: 12, height: 8, borderRadius: 9999, background: TL.mute }} /> Cohort-snitt</span> : null}
             </div>
           </div>
         </div>
+        )}
       </Kort>
 
       <Kort>

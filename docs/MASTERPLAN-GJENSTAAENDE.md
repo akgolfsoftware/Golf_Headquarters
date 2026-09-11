@@ -20,6 +20,7 @@ Valgt byggegrunnlag: **Trainlock ZIP (4) for PlayerHQ og AgencyOS**, levert **Cl
 | D2-PH06 / R2 | Valgt resultathierarki, lesbare lagrede notater/vurdering, ekte appskrifter, feil/venting/nytt forsøk, trygg feltskriving | Bygget og komponentprøvd i denne leveransen. Fem nye handlingstester, 64 skjermvarianter, interaktive feilprøver og isolert PostgreSQL-prøve. [Rapport og begrensninger](design-audit/playerhq-ph06-2026-09-11.md) |
 | Produktplan/intervju | Funksjonsregister, funksjonskort og intervjuguide bevart fra separat gren | Dokumentene er integrert som arbeidsunderlag. Intervjuet og de foreslåtte produktbeslutningene er ikke erklært ferdige |
 | Prosjektopprydding | Ferdige grener/arbeidskopier avstemt, gjeldende innganger og register oppdatert | [Samlingsrapport](vedlikehold/samling-og-opprydding-2026-09-11.md). Historiske sikkerhetskopier og originaldesign bevares |
+| R-C / R-D / R-H / D2-AO / D2-TN / D2-WANG (denne grenen) | Privat lokal kladd, TrackMan-enheter, tilgang-hentefeil, AgencyOS DNA/kø, TN-oversikt, WANG-innlogging og gruppesperre | Bygget på `grok/r-c-d-h-d2-2026-09-11`. Enhetstester for eier, enheter, hentefeil, WANG-retur og gruppetilgang. Ikke flettet, ikke innlogget prøvd, ikke sett av Anders. Full uke/økt/rapport-port og øvrige AgencyOS-skjermer er ikke ferdig |
 
 Siste samlede testresultat og flettepunkt skal leses i samlingsrapporten og tilhørende GitHub PR. Innlogget produksjonsreise, faktisk betaling og Anders' visuelle vurdering er egne kontroller som fortsatt gjenstår.
 
@@ -29,12 +30,8 @@ Siste samlede testresultat og flettepunkt skal leses i samlingsrapporten og tilh
 |---|---|---|---|
 | 1 · R-E / R1–R3 | Kjør hele I dag → Plan → PH-04 → PH-05 → PH-06 med isolerte, innloggede testroller. Ta med V2, Workbench og eldre plan | `tests/e2e/`, `src/lib/portal-live/`, `src/lib/portal/` | Samme økt/tall gjennom reisen; gjenåpning etter lagring virker; uvedkommende avvises. Kritiske prøver gir ikke grønt ved å hoppes over |
 | 2 · R-A/R-B | Avstem Caddie-søk/direkte oppslag og dataminimering før AI-kall mot dagens kode | `src/lib/caddie/tools/read.ts`, `src/app/api/caddie/chat/route.ts`, `src/lib/ai/anonymiser.ts` | Syntetiske uvedkommende avvises og navn/e-post ikke går ut ved verktøyresultat, historikk eller fritekst. Ikke kall ADMIN-begrenset inngang en bekreftet ordinær coach-lekkasje |
-| 3 · R-C | Privat mellomlagring, opptak og kladd ved utlogging, utløpt innlogging og brukerbytte | `src/app/sw.ts`, `src/lib/offline-queue/` | Ingen får forrige brukers innhold. Ulagrede opptak bevares/håndteres forståelig; sletting brukes ikke som umerket reserveflyt |
-| 4 · R-D | Bevar TrackMan-enheter og skill carry fra total gjennom importen | `src/lib/trackman/canonical.ts` | Faste testfiler dekker mph/m/s og yards/meter. Ukjent enhet/manglende carry vises som ukjent, ikke gjettet |
-| 5 · R-H | Skill manglende abonnement fra feil ved henting | `src/lib/auth/getCurrentUser.ts` | Driftsfeil gir feil og nytt forsøk, uten feil betalingskrav eller utvidet tilgang |
-| 6 · D2-AO | Port AgencyOS-hjem → spillerliste → spillerkort → plan/tildeling → oppfølging fra valgt Trainlock | `src/components/admin/`, `src/components/workbench/`, valgte AX/AO-kilder | Mobil/desktop og temaer stemmer; reelle handlinger, tomt/feil/lagring og tilgang er prøvd |
-| 7 · D2-TN | Fullfør Team Norway-skall/oversikt → testføring → resultat/historikk → dokumenter/poster | `src/app/team-norway/`, `src/components/team-norway/`, valgt TN-pakke | Samme testvariant og resultat gjennom reisen, korrekt spiller-/coach-/organisasjonsinnsyn og ærlig manglende data |
-| 8 · D2-WANG | Fullfør WANG-hjem → skole-/treningsuke → økt → elev/gruppe → rapport | `src/app/wang/`, WANG-komponenter og `designsystem/wang/` | Innlogging og skole-/gruppeavgrensning virker; ingen demonstrasjonsdata fremstilles som faktiske elevdata |
+
+R-C, R-D, R-H, D2-AO (DNA/kø/ikke fire paneler), D2-TN (oversikt + proxy) og D2-WANG (innlogging, gruppesperre, ingen demo som elevdata) er bygget på denne grenen og venter fletting. De er ikke innlogget prøvd og ikke visuell godkjenning.
 
 R-A–R-J og REV-F1–F11 er forklart i [produktplanen](planer/produktplan-og-intervju-2026-09-11.md). Funn fra den eldre gjennomgangen må kontrolleres mot dagens kode før endring. R-G «neste økt» er allerede rettet i porteringen og skal verifiseres i prioritet 1, ikke bygges på nytt.
 
@@ -43,6 +40,9 @@ R-A–R-J og REV-F1–F11 er forklart i [produktplanen](planer/produktplan-og-in
 | Område / ID | Konkret restarbeid | Avhengighet / ferdigkriterium |
 |---|---|---|
 | PlayerHQ · D2-PH | Resterende Analyse, mål, kalender, øvelsesbank/program, profil, meldinger, deling, test/retest og sosiale reiser | Knytt hver skjerm til valgt kilde og appdata. Fullfør relevante tom-/laste-/feiltilstander. [Funksjonene P01–P11](planer/funksjonsregister-2026-09-11.md) |
+| AgencyOS · D2-AO rest | Resterende hjem → spillerliste → plan/tildeling utover DNA/kø/panel-fiks | Trainlock ZIP (4). Mobil/desktop og temaer; reelle handlinger |
+| Team Norway · D2-TN rest | Testføring/historikk utover oversikten; samlinger fortsatt ukoblet | Testføring bor i PlayerHQ. Samme variant gjennom reisen |
+| WANG · D2-WANG rest | Skole-/treningsuke → økt → rapport utover innlogging og gruppesperre | `src/app/team-wang/`, `designsystem/wang`. Ingen demo som elevdata (denne grenen). Årsplan-skallet er delvis live |
 | Plan/Live | Full ny/rediger/flytt-reise, FYS-standardverdier/detaljgjenoppretting, Caddie i live, frekvensmål på tvers av øktmodeller | Separate modeller beholdes. Ingen dubletter, gjenopplivede avlyste økter eller oppfunnet målt treningstid |
 | Mål · R-F / F1 | Startverdi, periode og faktisk gjennomføring; TN-mål med variant, antall, enhet og retning | Faglige definisjoner før avhengige beregninger. Eventuelle nye databasefelt krever konkret autorisasjon |
 | Team Norway-tester | Avstem testbatteriet mot Excel v3, variantbundet føring, korrigering/angre og historikk | [Fagkontroll](beslutningsgrunnlag/team-norway-excel-v3-kontroll.md). Ugyldige resultater avvises, og lagringsfeil bevarer registreringen |

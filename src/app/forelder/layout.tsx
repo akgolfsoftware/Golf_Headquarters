@@ -1,14 +1,17 @@
-// Foreldreportal — v2. Kun auth-guard: hver side leverer sin egen chrome via
-// V2Shell (IkonRail/BunnNav med FORELDER_NAV). Beskyttet for kun PARENT-rollen.
-
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { BindAktivBruker } from "@/components/auth/bind-aktiv-bruker";
 
 export default async function ForelderLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  await requirePortalUser({ allow: ["PARENT"] });
+  const user = await requirePortalUser({ allow: ["PARENT"] });
 
-  return <>{children}</>;
+  return (
+    <>
+      <BindAktivBruker userId={user.id} />
+      {children}
+    </>
+  );
 }

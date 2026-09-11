@@ -7,18 +7,62 @@ import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { ensureUser } from "./ensureUser";
 import { isAwaitingGuardianConsent } from "./minor";
-import { resolveTilgang, type Tilgang } from "@/lib/feature-flags";
+import { resolveTilgang, type ResolveTilgangInput, type Tilgang } from "@/lib/feature-flags";
 import { aktivtAkGruppeMedlemskapWhere } from "@/lib/domain/grupper";
+import { TilgangHentefeil, erTilgangHentefeil } from "./tilgang-hentefeil";
 import type { User } from "@/generated/prisma/client";
 
 /** Prisma-bruker + beregnet tilgangsnivå (A3). tier er alltid EFFEKTIV tier. */
 export type UserMedTilgang = User & { tilgang: Tilgang };
 
-// Henter innlogget Prisma-bruker UTEN samtykke-håndheving. Brukes KUN av
-// samtykke-flyten (samtykke-venter-siden + onboarding der den mindreårige
-// setter fødselsdato og resender invitasjon MENS hen venter på samtykke) og av
-// requirePortalUser/requireCapability (som gjør sin egen samtykke-redirect).
-// All annen kode skal bruke getCurrentUser, som arver samtykke-gaten under.
+/** Duck-type slik at enhetstester kan sende inn en mock uten PrismaClient. */
+export type TilgangsDb = {
+  subscription: { findUnique: (args: unknown) => Promise<unknown> };
+  groupMember: { count: (args: unknown) => Promise<number> };
+};
+
+/**
+ * Laster abonnementsrader og AK-gruppe-telling.
+ * Null-rad = finnes ikke. Kastet spørring = TilgangHentefeil (ikke INGEN).
+ */
+export async function lastTilgangsRader(
+  db: TilgangsDb,
+  userId: string,
+): Promise<{
+  coaching: ResolveTilgangInput["coaching"];
+  playerhq: ResolveTilgangInput["playerhq"];
+  akGruppeCount: number;
+}> {
+  try {
+    const [coaching, playerhq, akGruppeCount] = await Promise.all([
+      db.subscription.findUnique({
+        where: { userId_kind: { userId, kind: "COACHING" } },
+        select: { monthlyCredits: true, status: true, currentPeriodEnd: true },
+      }),
+      db.subscription.findUnique({
+        where: { userId_kind: { userId, kind: "PLAYERHQ" } },
+        select: {
+          status: true,
+          currentPeriodEnd: true,
+          plan: true,
+          stripeSubscriptionId: true,
+        },
+      }),
+      db.groupMember.count({
+        where: { userId, ...aktivtAkGruppeMedlemskapWhere() },
+      }),
+    ]);
+    return {
+      coaching: (coaching ?? null) as ResolveTilgangInput["coaching"],
+      playerhq: (playerhq ?? null) as ResolveTilgangInput["playerhq"],
+      akGruppeCount,
+    };
+  } catch (e) {
+    if (erTilgangHentefeil(e)) throw e;
+    throw new TilgangHentefeil();
+  }
+}
+
 export const getCurrentUserRaw = cache(async (): Promise<UserMedTilgang | null> => {
   const supabase = await createClient();
   const {
@@ -29,14 +73,8 @@ export const getCurrentUserRaw = cache(async (): Promise<UserMedTilgang | null> 
   const user = await prisma.user.findUnique({
     where: { authId: authUser.id },
   });
-  // GDPR (P20): soft-slettet konto (deletedAt satt) behandles som utlogget —
-  // brukeren kan ikke bruke appen i 30-dagers angrevinduet. Gjenoppretting via support.
   if (user?.deletedAt) return null;
   if (user) {
-    // Marker innlogging for alle stier (passord + OAuth). OAuth-callback setter
-    // også lastLoginAt, men passord-login gikk tidligere rett til /portal uten
-    // å oppdatere — aktiveringsmetrikken (31 spillere / 0 innlogginger) ble da
-    // feil. Oppdater maks én gang per 6 timer for å unngå write-storm.
     const staleMs = 6 * 60 * 60 * 1000;
     const needsLoginStamp =
       !user.lastLoginAt || Date.now() - user.lastLoginAt.getTime() > staleMs;
@@ -50,52 +88,29 @@ export const getCurrentUserRaw = cache(async (): Promise<UserMedTilgang | null> 
     return withEffektivTilgang(user);
   }
 
-  // Supabase-bruker finnes, men Prisma-rad mangler — opprett via metadata.
   const ny = await ensureUser(authUser);
   return ny ? withEffektivTilgang(ny) : null;
 });
 
-// GDPR art. 8 (S-13): standard innloggings-sti for portal/admin. Identisk med
-// getCurrentUserRaw, men håndhever foreldresamtykke for mindreårige sentralt —
-// en mindreårig som venter på samtykke sendes til venterommet i stedet for å få
-// kjøre data-mutasjoner. Dette lukker gapet der ~67 server-actions kalte rå
-// getCurrentUser uten requirePortalUser/requireCapability. Returnerer aldri en
-// bruker som venter på samtykke (redirect kaster før retur).
 export const getCurrentUser = cache(async (): Promise<UserMedTilgang | null> => {
-  const user = await getCurrentUserRaw();
+  let user: UserMedTilgang | null;
+  try {
+    user = await getCurrentUserRaw();
+  } catch (e) {
+    if (erTilgangHentefeil(e)) redirect("/auth/tjeneste-utilgjengelig");
+    throw e;
+  }
   if (user && isAwaitingGuardianConsent(user)) {
     redirect("/auth/samtykke-venter");
   }
   return user;
 });
 
-// Beregner tilgangsnivået (FULL/TALENT/INGEN — plan A3) og overskriver `tier`
-// med EFFEKTIV tier (PRO = FULL). Laster begge abonnementsrader + aktive
-// AK-gruppe-medlemskap (managedByAkGolf, plan G1-kontrakten).
-// /portal/meg/abonnement viser FAKTISK tier ved å lese prisma.user direkte.
 async function withEffektivTilgang(user: User): Promise<UserMedTilgang> {
-  const [coaching, playerhq, akGruppeCount] = await Promise.all([
-    prisma.subscription
-      .findUnique({
-        where: { userId_kind: { userId: user.id, kind: "COACHING" } },
-        select: { monthlyCredits: true, status: true, currentPeriodEnd: true },
-      })
-      .catch(() => null),
-    prisma.subscription
-      .findUnique({
-        where: { userId_kind: { userId: user.id, kind: "PLAYERHQ" } },
-        select: {
-          status: true,
-          currentPeriodEnd: true,
-          plan: true,
-          stripeSubscriptionId: true,
-        },
-      })
-      .catch(() => null),
-    prisma.groupMember
-      .count({ where: { userId: user.id, ...aktivtAkGruppeMedlemskapWhere() } })
-      .catch(() => 0),
-  ]);
+  const { coaching, playerhq, akGruppeCount } = await lastTilgangsRader(
+    prisma as unknown as TilgangsDb,
+    user.id,
+  );
   const tilgang = resolveTilgang({
     tier: user.tier,
     profilType: user.profilType,

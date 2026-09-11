@@ -19,6 +19,8 @@ import { getCurrentUserRaw } from "@/lib/auth/getCurrentUser";
 import { effectiveCapabilities } from "@/lib/auth/effective-capabilities";
 import { Capability } from "@/lib/auth/cbac";
 import { logout } from "@/lib/auth/logout";
+import { erTilgangHentefeil } from "@/lib/auth/tilgang-hentefeil";
+import { BindAktivBruker } from "@/components/auth/bind-aktiv-bruker";
 import { TL } from "@/lib/v2/train-lock";
 
 
@@ -32,7 +34,13 @@ export default async function InnsynLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const user = await getCurrentUserRaw();
+  let user;
+  try {
+    user = await getCurrentUserRaw();
+  } catch (e) {
+    if (erTilgangHentefeil(e)) redirect("/auth/tjeneste-utilgjengelig");
+    throw e;
+  }
   if (!user) redirect("/auth/login");
 
   const erInternStab = user.role === "ADMIN" || user.role === "COACH";
@@ -43,7 +51,14 @@ export default async function InnsynLayout({
     caps.has(Capability.VIEW_SHARED_STATS);
   if (!harTilgang) redirect("/auth/login");
 
-  if (erInternStab) return <>{children}</>;
+  if (erInternStab) {
+    return (
+      <>
+        <BindAktivBruker userId={user.id} />
+        {children}
+      </>
+    );
+  }
 
   return (
     <div
@@ -112,6 +127,7 @@ export default async function InnsynLayout({
         </div>
       </header>
       <main style={{ maxWidth: 760, margin: "0 auto", padding: "24px 20px 48px" }}>
+        <BindAktivBruker userId={user.id} />
         {children}
       </main>
     </div>

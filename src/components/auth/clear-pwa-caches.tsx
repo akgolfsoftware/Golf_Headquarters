@@ -1,26 +1,30 @@
 "use client";
 
 import { useEffect } from "react";
+import { fjernAktivBrukerId, merkUlagretFlagg } from "@/lib/offline-queue/eier";
+import { harLiveDrillKoPaaEnheten } from "@/lib/offline-queue/live-drill-queue";
+import { harTapperKoPaaEnheten } from "@/lib/offline-queue/tapper-queue";
+import { harChunkKoPaaEnheten } from "@/lib/offline-queue/recording-chunk-queue";
 
 /**
  * Tømmer PWA-cachen ved utlogging (GDPR / delt enhet).
  *
- * Rendres på post-logout-siden (/auth/logget-ut) — det ene punktet alle
- * logout-flyter lander på. Ved mount:
- *   1. sletter alle Cache Storage-nøkler direkte (dekker tilfellet der service
- *      workeren ikke kontrollerer denne fanen ennå), og
- *   2. sender { type: "CLEAR_CACHES" } til en aktiv service worker som
- *      belte-og-seler for cacher den eier.
- *
- * Vi avregistrerer bevisst IKKE service workeren — det ville ødelagt
- * offline/installert-PWA for neste innlogging. Å tømme cachen fjerner den
- * sensitive dataen, som er målet.
- *
- * Rendrer ingenting.
+ * Sletter IKKE IndexedDB-køer eller runde-kladder — de er eier-merket og
+ * vises bare neste gang samme konto logger inn.
  */
 export function ClearPwaCaches() {
   useEffect(() => {
     if (typeof window === "undefined") return;
+
+    void (async () => {
+      const [live, tapper, chunk] = await Promise.all([
+        harLiveDrillKoPaaEnheten().catch(() => false),
+        harTapperKoPaaEnheten().catch(() => false),
+        harChunkKoPaaEnheten().catch(() => false),
+      ]);
+      merkUlagretFlagg(window.sessionStorage, live || tapper || chunk);
+      fjernAktivBrukerId(window.sessionStorage);
+    })();
 
     if ("caches" in window) {
       caches

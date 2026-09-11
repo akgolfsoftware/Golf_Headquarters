@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { getCurrentUserRaw } from "./getCurrentUser";
 import { canAccessPortalRoute } from "./cbac";
 import { isAwaitingGuardianConsent } from "./minor";
+import { erTilgangHentefeil } from "./tilgang-hentefeil";
 import type { UserRole } from "@/generated/prisma/client";
 
 type Options = {
@@ -38,29 +39,22 @@ export async function requirePortalUser(options: Options = {}) {
     allowAwaitingConsent = false,
     kreverTilgang = "FULL",
   } = options;
-  // P0-4 (GDPR): getCurrentUser er eneste innloggings-sti for portal/admin og
-  // returnerer null for soft-slettet konto (deletedAt satt) — så !user-redirecten
-  // under stenger slettede kontoer ute. Ikke dupliser deletedAt-sjekken her: user
-  // kan aldri ha deletedAt satt på dette punktet (ville vært død kode).
-  // Bruker getCurrentUserRaw fordi denne guarden gjør sin EGEN samtykke-redirect
-  // under (med allowAwaitingConsent-flagget) — getCurrentUser ville redirecte
-  // ubetinget og gjort allowAwaitingConsent-flagget dødt.
-  const user = await getCurrentUserRaw();
+  let user;
+  try {
+    user = await getCurrentUserRaw();
+  } catch (e) {
+    if (erTilgangHentefeil(e)) redirect("/auth/tjeneste-utilgjengelig");
+    throw e;
+  }
   if (!user) redirect(redirectTo);
   if (allow && !canAccessPortalRoute(user.role, allow)) {
-    // Send brukere til riktig "hjemmeside" basert på rolle for å unngå loops.
     if (user.role === "PARENT") redirect("/forelder");
     if (user.role === "ADMIN" || user.role === "COACH") redirect("/admin");
     redirect("/portal");
   }
-  // S-13: GDPR art. 8 — mindreårig spiller uten foreldresamtykke
-  // sendes til venterom-side i stedet for portalen.
   if (!allowAwaitingConsent && isAwaitingGuardianConsent(user)) {
     redirect("/auth/samtykke-venter");
   }
-  // T2: tilgangsnivå-gaten (kun spillere — coach/admin har egne flater).
-  // gratisForAlle-vinduet gir alle FULL frem til 1. september, så gaten er
-  // i praksis sovende til da (resolveTilgang eier den logikken).
   if (user.role === "PLAYER") {
     const nivaa = user.tilgang.nivaa;
     if (nivaa === "INGEN" && kreverTilgang !== "INGEN") {

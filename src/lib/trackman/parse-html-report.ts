@@ -1,3 +1,5 @@
+import { type DistanceUnit, type SpeedUnit, lesEnheterFraRapporttekst } from "@/lib/trackman/enheter";
+
 export type TrackManShotMetrics = {
   clubSpeed: number;
   clubPath: number;
@@ -9,6 +11,8 @@ export type TrackManShotMetrics = {
   smashFactor: number;
   totalDistance: number;
   launchDirection: number;
+  /** Bare når rapporten har et eget carry-felt. Aldri kopiert fra total. */
+  carryDistance?: number | null;
 };
 
 export type TrackManClubGroup = {
@@ -25,11 +29,9 @@ export type TrackManHtmlReport = {
   reportDate: string; // ISO: "2026-03-19"
   sessionName: string;
   clubs: TrackManClubGroup[];
+  speedUnit?: SpeedUnit;
+  distanceUnit?: DistanceUnit;
 };
-
-// ---------------------------------------------------------------------------
-// Internal helpers
-// ---------------------------------------------------------------------------
 
 function stripHtml(html: string): string {
   let text = html.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, " ");
@@ -59,18 +61,13 @@ function parseMetrics(src: string): TrackManShotMetrics | null {
   };
 }
 
-// ---------------------------------------------------------------------------
-// Public API
-// ---------------------------------------------------------------------------
-
 export function parseTrackManHtmlReport(html: string): TrackManHtmlReport {
   const text = stripHtml(html);
+  const enheter = lesEnheterFraRapporttekst(text);
 
-  // Report date — first ISO date in document
   const dateMatch = /(\d{4}-\d{2}-\d{2})/.exec(text);
   const reportDate = dateMatch ? dateMatch[1] : new Date().toISOString().slice(0, 10);
 
-  // Session name — between US-format date and first ISO date
   const sessionRaw = /\d{1,2}\/\d{1,2}\/\d{4}\s+(.+?)\s+\d{4}-\d{2}-\d{2}/.exec(
     text.slice(0, 600),
   );
@@ -78,8 +75,6 @@ export function parseTrackManHtmlReport(html: string): TrackManHtmlReport {
     ? sessionRaw[1].replace(/\s+\w+\s+\d+\s*$/, "").trim()
     : "Trackman Multi Group";
 
-  // Club group boundaries
-  // Pattern: "{date} {clubId} [{clubName}] Hide"
   const GROUP_RE = /(\d{4}-\d{2}-\d{2})\s+(\w+)(?:\s+(\w+))?\s+Hide/g;
   const groupMatches = [...text.matchAll(GROUP_RE)];
 
@@ -98,11 +93,8 @@ export function parseTrackManHtmlReport(html: string): TrackManHtmlReport {
       i + 1 < groupMatches.length ? groupMatches[i + 1].index! : text.length;
     const block = text.slice(blockStart, blockEnd);
 
-    // Individual shots: "1. {10 values}" ...
-    const SHOT_RE = /(\d+)\.\s+[\s\S]*?(?=\d+\.|Average|Consistency|$)/g;
     const shots: ({ shotNumber: number } & TrackManShotMetrics)[] = [];
 
-    // Simpler: find all "N. <metrics>" blocks
     const shotLineRe = /(\d+)\.\s+([\d.-]+\s+[\d.-]+\s+[\d.-]+\s+[\d.]+[AB]?\s+[\d.-]+\s+[\d.-]+\s+[\d.-]+\s+[\d.]+\s+[\d.-]+\s+[\d.-]+)/g;
     for (const sm of block.matchAll(shotLineRe)) {
       const metrics = parseMetrics(sm[2]);
@@ -125,10 +117,15 @@ export function parseTrackManHtmlReport(html: string): TrackManHtmlReport {
       totalDistance: 0, launchDirection: 0,
     };
 
-    void SHOT_RE; // suppress unused-var warning
-
     return { clubId, clubName, shotCount: shots.length, shots, average, consistency };
   });
 
-  return { type: "multi-group", reportDate, sessionName, clubs };
+  return {
+    type: "multi-group",
+    reportDate,
+    sessionName,
+    clubs,
+    speedUnit: enheter.speed,
+    distanceUnit: enheter.distance,
+  };
 }

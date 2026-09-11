@@ -77,10 +77,17 @@ const perioder = [
   },
 ];
 
+let prismaKaster = false;
+
 mock.module("@/lib/prisma", {
   namedExports: {
     prisma: {
-      group: { findFirst: async () => gruppe },
+      group: {
+        findFirst: async () => {
+          if (prismaKaster) throw new Error("connect ECONNREFUSED");
+          return gruppe;
+        },
+      },
       groupPeriodBlock: { findMany: async () => perioder },
       schoolScheduleEntry: { findMany: async () => [] },
       groupPeriodGoal: { findMany: async () => [] },
@@ -177,4 +184,17 @@ test("ikke-PII fritekst passerer uendret — gaten er smal med vilje", async () 
   assert.equal(data?.hendelser[0]?.tittel, gruppe.schedules[0].title);
   assert.equal(data?.hendelser[0]?.sted, "GFGK");
   assert.equal(data?.perioder[0]?.fokus, "Teknikk og volum");
+});
+
+test("DB-feil kastes som WangGruppeHentefeil, ikke null-demo", async () => {
+  prismaKaster = true;
+  try {
+    const mod = await import("./hent-wang-gruppe");
+    await assert.rejects(
+      () => mod.hentWangGruppe(),
+      (e: unknown) => e instanceof mod.WangGruppeHentefeil,
+    );
+  } finally {
+    prismaKaster = false;
+  }
 });

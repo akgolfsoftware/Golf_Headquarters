@@ -12,13 +12,13 @@ import {
   trengerManuellChunkHandling,
   type RecordingChunkMeta,
 } from "./recording-chunk-kladd";
+import { lesNettleserBrukerId, tilhorerBruker } from "./eier";
 
 const DB_NAVN = "akgolf-recording-chunks";
 const DB_VERSJON = 1;
 const BUTIKK = "chunks";
 
 export type RecordingChunkRad = RecordingChunkMeta & {
-  /** Base64 av chunk — Blob er ikke alltid stabilt på tvers av IDB-browsere. */
   dataBase64: string;
   mimeType: string;
 };
@@ -76,13 +76,12 @@ function base64TilBlob(b64: string, mimeType: string): Blob {
   return new Blob([bytes], { type: mimeType || "audio/webm" });
 }
 
-/** Lagre chunk lokalt FØR opplasting. */
 export async function leggChunkIKo(
   recordingId: string,
   index: number,
   blob: Blob,
 ): Promise<void> {
-  const meta = byggChunkMeta(recordingId, index, new Date());
+  const meta = byggChunkMeta(recordingId, index, new Date(), lesNettleserBrukerId());
   const dataBase64 = await blobTilBase64(blob);
   const rad: RecordingChunkRad = {
     ...meta,
@@ -97,6 +96,8 @@ export async function fjernChunkFraKo(
   index: number,
 ): Promise<void> {
   const key = `${recordingId}:${index}`;
+  const eksisterende = await medButikk<RecordingChunkRad>("readonly", (b) => b.get(key));
+  if (eksisterende && !tilhorerBruker(eksisterende, lesNettleserBrukerId())) return;
   await medButikk("readwrite", (b) => b.delete(key));
 }
 
@@ -107,11 +108,21 @@ async function alleRader(): Promise<RecordingChunkRad[]> {
   return rader ?? [];
 }
 
+function egneRader(rader: RecordingChunkRad[]): RecordingChunkRad[] {
+  const userId = lesNettleserBrukerId();
+  if (!userId) return [];
+  return rader.filter((r) => tilhorerBruker(r, userId));
+}
+
 export async function antallVentendeChunks(
   recordingId: string,
 ): Promise<number> {
-  const rader = await alleRader();
+  const rader = egneRader(await alleRader());
   return tellVentendeChunks(rader, recordingId);
+}
+
+export async function harChunkKoPaaEnheten(): Promise<boolean> {
+  return (await alleRader()).length > 0;
 }
 
 export type ChunkUploadFn = (
@@ -120,15 +131,11 @@ export type ChunkUploadFn = (
   blob: Blob,
 ) => Promise<{ ok: boolean }>;
 
-/**
- * Prøv å laste opp alle ventende chunks for en recording.
- * Returnerer antall som fortsatt venter, og om manuell handling trengs.
- */
 export async function tomChunkKo(
   recordingId: string,
   lastOpp: ChunkUploadFn,
 ): Promise<{ gjenstaar: number; gittOpp: boolean }> {
-  const rader = (await alleRader()).filter(
+  const rader = egneRader(await alleRader()).filter(
     (r) => r.recordingId === recordingId,
   );
   let gittOpp = false;

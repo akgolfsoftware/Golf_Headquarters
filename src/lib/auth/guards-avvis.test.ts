@@ -29,6 +29,7 @@ import { test, mock } from "node:test";
 import assert from "node:assert/strict";
 import type { User } from "@/generated/prisma/client";
 import type { Tilgang } from "@/lib/feature-flags";
+import { TilgangHentefeil } from "./tilgang-hentefeil";
 
 /** Kastes av redirect-mocken, så vi kan se HVOR guarden sendte brukeren. */
 class RedirectSignal extends Error {
@@ -66,11 +67,18 @@ function spillerMedTilgang(nivaa: Tilgang["nivaa"], over: Partial<User> = {}): G
 // Delt tilstand som hvert testtilfelle setter før det kaller guarden.
 let gjeldendeBruker: GuardUser | null = null;
 let coachHarTilgang = false;
+let kastTilgangHentefeil = false;
 
 mock.module("@/lib/auth/getCurrentUser", {
   namedExports: {
-    getCurrentUser: async () => gjeldendeBruker,
-    getCurrentUserRaw: async () => gjeldendeBruker,
+    getCurrentUser: async () => {
+      if (kastTilgangHentefeil) throw new TilgangHentefeil();
+      return gjeldendeBruker;
+    },
+    getCurrentUserRaw: async () => {
+      if (kastTilgangHentefeil) throw new TilgangHentefeil();
+      return gjeldendeBruker;
+    },
   },
 });
 
@@ -315,6 +323,18 @@ test("canAccessMissionControl avviser utlogget", async () => {
   const { canAccessMissionControl } = await guards();
   gjeldendeBruker = null;
   assert.equal(await canAccessMissionControl(), null);
+});
+
+test("requirePortalUser: hentefeil går til tjeneste-utilgjengelig, ikke betalingskrav", async () => {
+  const { requirePortalUser } = await guards();
+  kastTilgangHentefeil = true;
+  gjeldendeBruker = null;
+  try {
+    const til = await fangRedirect(() => requirePortalUser({ allow: "PLAYER" }));
+    assert.equal(til, "/auth/tjeneste-utilgjengelig");
+  } finally {
+    kastTilgangHentefeil = false;
+  }
 });
 
 test("canAccessMissionControl slipper gjennom ADMIN", async () => {

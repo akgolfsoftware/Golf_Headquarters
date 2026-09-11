@@ -146,9 +146,6 @@ export default async function OppfolgingsKoPage() {
                 Justere regler
               </CTAPill>
             </Link>
-            <CTAPill ghost icon="sparkles">
-              Generer AI-aksjoner
-            </CTAPill>
           </div>
         </div>
 

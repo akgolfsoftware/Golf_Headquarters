@@ -4,13 +4,15 @@
  * Golfbane = dårlig dekning: kladden lever på enheten og lagres etter hver
  * mutasjon, slik at reload/crash aldri mister slag. Zod-validert ved restore
  * (ødelagt/utdatert kladd forkastes stille). Slettes først når serveren har
- * bekreftet lagring. Kjent begrensning: kladden følger enheten, ikke brukeren.
+ * bekreftet lagring. Nøkkelen er per bruker — utlogging viser aldri en annens kladd.
  */
 
 import { z } from "zod";
 import type { LoggetHull } from "@/lib/runde-logg/types";
+import { lesNettleserBrukerId } from "@/lib/offline-queue/eier";
 
-const NOKKEL = "akgolf.runde-logg.kladd.v1";
+const NOKKEL_PREFIKS = "akgolf.runde-logg.kladd.v1";
+const GAMMEL_NOKKEL = NOKKEL_PREFIKS;
 
 const hvileLieSchema = z.enum([
   "FAIRWAY",
@@ -48,7 +50,6 @@ const hullSchema = z.object({
 const kladdSchema = z.object({
   versjon: z.literal(1),
   modus: z.enum(["live", "etterpaa"]),
-  /** slag = full kjede, hurtig = score per hull (F.02). */
   foringsModus: z.enum(["slag", "hurtig"]).optional().default("slag"),
   steg: z.enum(["oppsett", "foring", "oppsummering"]),
   oppsett: z.object({
@@ -67,11 +68,13 @@ export type RundeKladd = Omit<z.infer<typeof kladdSchema>, "hullData"> & {
   hullData: LoggetHull[];
 };
 
-export function lesKladd(): RundeKladd | null {
-  if (typeof window === "undefined") return null;
+function nokkelFor(userId: string): string {
+  return `${NOKKEL_PREFIKS}:${userId}`;
+}
+
+function parseKladd(raa: string | null): RundeKladd | null {
+  if (!raa) return null;
   try {
-    const raa = window.localStorage.getItem(NOKKEL);
-    if (!raa) return null;
     const parsed = kladdSchema.safeParse(JSON.parse(raa));
     return parsed.success ? (parsed.data as RundeKladd) : null;
   } catch {
@@ -79,31 +82,54 @@ export function lesKladd(): RundeKladd | null {
   }
 }
 
-/**
- * Cachet lesing til useSyncExternalStore (getSnapshot MÅ returnere stabil
- * referanse mellom render-kall, ellers looper React). Cachen invalideres av
- * lagreKladd/slettKladd — aldri under render.
- */
+export function lesKladd(): RundeKladd | null {
+  if (typeof window === "undefined") return null;
+  const userId = lesNettleserBrukerId();
+  if (!userId) return null;
+  try {
+    const scoped = window.localStorage.getItem(nokkelFor(userId));
+    const fraScoped = parseKladd(scoped);
+    if (fraScoped) return fraScoped;
+    const gammel = window.localStorage.getItem(GAMMEL_NOKKEL);
+    const fraGammel = parseKladd(gammel);
+    if (fraGammel) {
+      window.localStorage.setItem(nokkelFor(userId), gammel!);
+      window.localStorage.removeItem(GAMMEL_NOKKEL);
+      return fraGammel;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 let kladdCache: RundeKladd | null | undefined;
+let kladdCacheBruker: string | null = null;
 
 export function lesKladdCached(): RundeKladd | null {
-  if (kladdCache === undefined) kladdCache = lesKladd();
+  const userId = lesNettleserBrukerId();
+  if (kladdCache === undefined || kladdCacheBruker !== userId) {
+    kladdCache = lesKladd();
+    kladdCacheBruker = userId;
+  }
   return kladdCache;
 }
 
-/** Server-snapshot for useSyncExternalStore. */
 export function lesKladdServer(): null {
   return null;
 }
 
 export function lagreKladd(kladd: Omit<RundeKladd, "oppdatert">): void {
   if (typeof window === "undefined") return;
+  const userId = lesNettleserBrukerId();
+  if (!userId) return;
   try {
     window.localStorage.setItem(
-      NOKKEL,
+      nokkelFor(userId),
       JSON.stringify({ ...kladd, oppdatert: new Date().toISOString() }),
     );
     kladdCache = undefined;
+    kladdCacheBruker = null;
   } catch {
     // Full quota / private mode — føringen fortsetter uten kladd.
   }
@@ -111,9 +137,12 @@ export function lagreKladd(kladd: Omit<RundeKladd, "oppdatert">): void {
 
 export function slettKladd(): void {
   if (typeof window === "undefined") return;
+  const userId = lesNettleserBrukerId();
+  if (!userId) return;
   try {
-    window.localStorage.removeItem(NOKKEL);
+    window.localStorage.removeItem(nokkelFor(userId));
     kladdCache = null;
+    kladdCacheBruker = userId;
   } catch {
     // ignorer
   }
