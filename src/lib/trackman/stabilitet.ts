@@ -4,6 +4,7 @@
  */
 
 import type { TrackManShot } from "@/lib/trackman/parse-csv";
+import { csvShotsToCanonical } from "@/lib/trackman/canonical";
 
 // ── Typer ───────────────────────────────────────────────────────────────────
 
@@ -132,6 +133,28 @@ function dbShotsTilTrackMan(db: StabilitetDbShot[]): TrackManShot[] {
   }));
 }
 
+type StabilitetShot = {
+  club: string;
+  carryMeters: number | null;
+  sideMeters: number | null;
+  ballSpeedMps: number | null;
+  launchAngleDeg: number | null;
+  spinRateRpm: number | null;
+  smashFactor: number | null;
+};
+
+function normaliserStabilitetShots(shots: TrackManShot[]): StabilitetShot[] {
+  return csvShotsToCanonical(shots).map((shot) => ({
+    club: shot.club,
+    carryMeters: shot.carryMeters,
+    sideMeters: shot.sideMeters,
+    ballSpeedMps: shot.ballSpeedMph != null ? shot.ballSpeedMph * 0.44704 : null,
+    launchAngleDeg: shot.launchAngleDeg,
+    spinRateRpm: shot.spinRateRpm,
+    smashFactor: shot.smashFactor,
+  }));
+}
+
 /**
  * Beregn stabilitet fra rawJson.shots.
  * Fallback: strukturerte TrackManShot-rader når rawJson mangler/er svak (E.03).
@@ -140,7 +163,7 @@ export function beregnStabilitet(
   rawJson: unknown,
   dbShots?: StabilitetDbShot[],
 ): StabilitetData {
-  let shots = (
+  let sourceShots = (
     typeof rawJson === "object" &&
     rawJson !== null &&
     "shots" in rawJson &&
@@ -152,12 +175,13 @@ export function beregnStabilitet(
   ).filter(sjekkShot) as TrackManShot[];
 
   // E.03: bruk DB-slag hvis rawJson er tom/svak
-  if (shots.length < 2 && dbShots && dbShots.length >= 2) {
-    shots = dbShotsTilTrackMan(dbShots);
+  if (sourceShots.length < 2 && dbShots && dbShots.length >= 2) {
+    sourceShots = dbShotsTilTrackMan(dbShots);
   }
+  const shots = normaliserStabilitetShots(sourceShots);
 
   // Grupper slag per kølle
-  const klubbMap = new Map<string, TrackManShot[]>();
+  const klubbMap = new Map<string, StabilitetShot[]>();
   for (const shot of shots) {
     const navn = shot.club?.trim() || "Ukjent";
     if (!klubbMap.has(navn)) klubbMap.set(navn, []);

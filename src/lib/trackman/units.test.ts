@@ -8,6 +8,7 @@ import {
 } from "./canonical";
 import { parseTrackManCsv } from "./parse-csv";
 import { parseTrackManHtmlReport } from "./parse-html-report";
+import { trackManShotsForPreview } from "./preview";
 
 function csvShots(csv: string) {
   const parsed = parseTrackManCsv(csv);
@@ -81,6 +82,14 @@ describe("CSV-enheter gjennom hele normaliseringen", () => {
     assert.equal(canonical?.carryMeters, 330);
     assert.equal(canonical?.totalMeters, 292.61);
     assert.equal(canonical?.sideMeters, 4.57);
+  });
+
+  it("gir forhåndsvisningen canonical mph og meter", () => {
+    const preview = trackManShotsForPreview(
+      csvShots("Date,Club,Ball Speed (mph),Carry (yd)\n2026-09-11,Driver,70,330"),
+    )[0];
+    assert.equal(preview?.ballSpeedMph, 70);
+    assert.equal(preview?.carryMeters, 301.75);
   });
 
   it("holder carry ukjent når CSV-en bare har total", () => {
