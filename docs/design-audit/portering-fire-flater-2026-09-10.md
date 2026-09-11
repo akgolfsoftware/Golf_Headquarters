@@ -156,3 +156,9 @@ GitHubs [CI](https://github.com/akgolfsoftware/Golf_Headquarters/actions/runs/34
 3. Bygg TN-skall, oversikt, eksisterende poster/dokumenter og alle øvrige TN-skjermreiser. Kontroller datakoblinger mot dagens skjema.
 4. Port WANGs 35 registrerte skjermdesign og deres tilstander, med eksisterende årsplan, gruppe-/elevtilgang og fagdata som funksjonsgrunnlag.
 5. Gjennomgå alle rader, nye ruter og manuelle overlegg; full kodekontroll, relevante integrasjonsprøver og sammenligning med valgt design før ferdigstatus. Arbeidslisten eies fortsatt av MASTERPLAN-GJENSTAAENDE.
+
+## Oppfølging 11.09 — main og eldre planøkter
+
+De seks kodepakkene gjennom `2bd5a052c` er flettet til main via [PR #835](https://github.com/akgolfsoftware/Golf_Headquarters/pull/835), merge `2807d4d08`; GitHub CI bestod. Den opprinnelige porteringsgrenen er slettet etter fletting. Videre arbeid skjer etter [arbeidsdelingen](../planer/arbeidsdeling-codex-claude-2026-09-11.md).
+
+Avviket i fjerde del om eldre TrainingPlanSession uten V2-speil er rettet på Codex sin separate Plan-gren. [Egen rapport](plan-legacy-2026-09-11.md) dokumenterer 11 nye kontrolltilfeller, samlet testsuite og hva som fortsatt er uverifisert. Dette endrer ikke tidligere status for visuell godkjenning eller innloggede reiser.

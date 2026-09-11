@@ -16,6 +16,7 @@ import { weekPlanProgress } from "@/lib/portal/week-progress";
 import { GENERERT_FRA } from "@/lib/workbench/v2-drill-mirror";
 import { visibleV2Where } from "@/lib/portal/visible-v2";
 import { workbenchWeekSession } from "@/lib/portal/workbench-week";
+import { loadLegacyPlanWeekSessions } from "@/lib/portal/legacy-plan-week-data";
 import { osloUkeGrenser } from "@/lib/jarvis/ukesreview";
 import { OSLO_YMD_FMT, osloInstant } from "@/lib/jarvis/dagen";
 import { tilDatoKolonne, SPILLER_SYNLIGE_STATUSER } from "@/lib/workbench/wb-map";
@@ -298,6 +299,10 @@ export async function getWeekOverview(userId: string, naa: Date = new Date()): P
     const key = row.date.toISOString().slice(0, 10);
     const day = days.find((d) => OSLO_YMD_FMT.format(d.date) === key);
     if (day) day.sessions.push(workbenchWeekSession(row));
+  }
+  for (const session of await loadLegacyPlanWeekSessions(userId, start, end)) {
+    const day = days.find((d) => OSLO_YMD_FMT.format(d.date) === OSLO_YMD_FMT.format(session.startTime));
+    if (day) day.sessions.push(session);
   }
   for (const day of days) day.sessions.sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
   return days;

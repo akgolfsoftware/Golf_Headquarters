@@ -4,7 +4,9 @@ Oppdatert 11.09.2026. **Appen er ikke klarert for åpen lansering.** Anders øns
 
 ## Gjennomført
 
-- **Main-samling 11.09:** seks kontrollerte kodeleveranser gjennom `2bd5a052c`: felles valgt designgrunnlag, PlayerHQ-navigasjon, I dag, Plan, PH-04/PH-05 og første TN-18/WANG C7-rettinger. Full lokal verify/Next/Serwist, **2 326 tester** og **292 syntetiske skjermvarianter** bestod. [Port-auditen](design-audit/portering-fire-flater-2026-09-10.md) skiller implementasjon, visuell vurdering og innlogget kontroll. Hele appen er fortsatt under arbeid.
+- **D2-PLAN lokalt 11.09:** eldre godtatte planøkter uten V2-speil er med i Plan og ukeprogresjon. 11 nye kontrolltilfeller og totalt 2 337 tester bestod. Egen gren, ikke del av PR #835. [Kontroll og begrensninger](design-audit/plan-legacy-2026-09-11.md).
+
+- **Main-samling 11.09:** flettet via [PR #835](https://github.com/akgolfsoftware/Golf_Headquarters/pull/835), merge `2807d4d08`. GitHub CI bestod. Vercel bekrefter samme main-commit som READY; innloggingssiden og utlogget videresending er kontrollert. Seks kontrollerte kodeleveranser gjennom `2bd5a052c`: felles valgt designgrunnlag, PlayerHQ-navigasjon, I dag, Plan, PH-04/PH-05 og første TN-18/WANG C7-rettinger. Full lokal verify/Next/Serwist, **2 326 tester** og **292 syntetiske skjermvarianter** bestod. [Port-auditen](design-audit/portering-fire-flater-2026-09-10.md) skiller implementasjon, visuell vurdering og innlogget kontroll. Hele appen er fortsatt under arbeid.
 - **Neste arbeid fordelt:** Claude Code / Sonnet 5 får PH-06-oppsummering. Codex tar eldre planøkter og ukeprogresjon. [Arbeidsdelingen](planer/arbeidsdeling-codex-claude-2026-09-11.md) angir separate filer/arbeidsmapper og en komplett overleveringsprompt. Pågående produktplan/intervju og manuell SG er bevart utenfor samlingen.
 
 - **Samlet kodeleveranse 10.09:** fire lokale endringssett, øvrige rettinger, kontrast fra 150 filer og det lagrede GolfBox-sesongtillegget er samlet og kontrollert. Full verify og **2 290 tester** bestod, i tillegg til ti lokale databasereiser, fem sikkerhetsprøver og gjenoppretting. Se [grenregnskapet](beslutningsgrunnlag/grener-og-main-2026-09-10.md) og siste del av [kontrollrapporten](beslutningsgrunnlag/teknisk-lanseringskontroll-2026-09-10.md). CI, preview og produksjonsversjon dokumenteres i den tilhørende PR-en og publiseringsoppgaven.
@@ -29,7 +31,7 @@ Kodearbeidet er samlet med den nyere DataGolf/GolfBox-leveransen og gjennomgått
 3. Valgt og komplett designleveranse, retting av prototypens resultatkorrigering, portering og visuell kontroll. ZIP-registeret har fortsatt 193 rader som venter på design; repoet har nå 479 sideruter.
 4. Måloppfølging på tvers av øktmodeller og variantbundet Team Norway-målfremdrift. Resterende fag-/språkavklaringer, produksjonens innloggingsvern, faktisk varslingsprøve og gjenopprettingsprøve fra produksjonskopi med innlogging og filer.
 
-Arbeidslisten eies av [MASTERPLAN-GJENSTAAENDE.md](MASTERPLAN-GJENSTAAENDE.md). DataGolf/GolfBox og tidligere samling er integrert via PR #833/#834. De nyere porteringene inngår i main-samlingen 11.09; faktisk publisert versjon og innlogget produksjonsreise må bekreftes separat. Offentlig booking er ikke åpnet som del av dette arbeidet.
+Arbeidslisten eies av [MASTERPLAN-GJENSTAAENDE.md](MASTERPLAN-GJENSTAAENDE.md). DataGolf/GolfBox og tidligere samling er integrert via PR #833/#834. De nyere porteringene er integrert via PR #835; publisert versjon `2807d4d08` er bekreftet, mens innlogget produksjonsreise fortsatt gjenstår. Offentlig booking er ikke åpnet som del av dette arbeidet.
 
 ## Historikk
 
