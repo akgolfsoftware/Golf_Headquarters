@@ -1,36 +1,32 @@
 # Status nå — AK Golf HQ
 
-Oppdatert 11.09.2026. **Appen er ikke klarert for åpen lansering.** Anders ønsker komplett app med booking og betaling; designet er fortsatt åpent og videreutvikles i Claude Design.
+Oppdatert 11.09.2026. Appen er fortsatt under arbeid og ikke klarert for åpen lansering. [Masterplanen](MASTERPLAN-GJENSTAAENDE.md) eier prioritert neste arbeid og den komplette restlisten.
 
-## Gjennomført
+## Denne samlingen
 
-- **Main-samling 11.09:** seks kontrollerte kodeleveranser gjennom `2bd5a052c`: felles valgt designgrunnlag, PlayerHQ-navigasjon, I dag, Plan, PH-04/PH-05 og første TN-18/WANG C7-rettinger. Full lokal verify/Next/Serwist, **2 326 tester** og **292 syntetiske skjermvarianter** bestod. [Port-auditen](design-audit/portering-fire-flater-2026-09-10.md) skiller implementasjon, visuell vurdering og innlogget kontroll. Hele appen er fortsatt under arbeid.
-- **Neste arbeid fordelt:** Claude Code / Sonnet 5 får PH-06-oppsummering. Codex tar eldre planøkter og ukeprogresjon. [Arbeidsdelingen](planer/arbeidsdeling-codex-claude-2026-09-11.md) angir separate filer/arbeidsmapper og en komplett overleveringsprompt. Pågående produktplan/intervju og manuell SG er bevart utenfor samlingen.
+- **Plan:** eldre godtatte planøkter uten V2-speil inngår i ukeoversikt og progresjon uten dobbelttelling. Separate øktmodeller og eksisterende statusregler er bevart. [Plan-kontroll](design-audit/plan-legacy-2026-09-11.md).
+- **PH-06:** valgt resultathierarki er bygget. Lagrede notater og vurderinger er synlige, feil bevarer feltene, og samtidige lagringer oppdaterer separate JSON-felt. Appskall/Geist, åtte datatilstander, fire bredder og to temaer er komponentprøvd. Egen isolert PostgreSQL-prøve bestod. [PH-06-kontroll](design-audit/playerhq-ph06-2026-09-11.md).
+- **Planleggingsarbeid:** funksjonsregister, funksjonskort og produktintervju er bevart fra den separate arbeidsgrenen. De er arbeidsunderlag, ikke nye godkjente produktbeslutninger.
+- **Opprydding:** ferdige grener og arbeidskopier avstemmes med GitHub; nåstatus, masterplan, dokument-/filregister og arbeidsdeling er samordnet. [Samlingsrapport og sluttkontroll](vedlikehold/samling-og-opprydding-2026-09-11.md).
 
-- **Samlet kodeleveranse 10.09:** fire lokale endringssett, øvrige rettinger, kontrast fra 150 filer og det lagrede GolfBox-sesongtillegget er samlet og kontrollert. Full verify og **2 290 tester** bestod, i tillegg til ti lokale databasereiser, fem sikkerhetsprøver og gjenoppretting. Se [grenregnskapet](beslutningsgrunnlag/grener-og-main-2026-09-10.md) og siste del av [kontrollrapporten](beslutningsgrunnlag/teknisk-lanseringskontroll-2026-09-10.md). CI, preview og produksjonsversjon dokumenteres i den tilhørende PR-en og publiseringsoppgaven.
-- DataGolf/GolfBox er flettet til `main` via [PR #833](https://github.com/akgolfsoftware/Golf_Headquarters/pull/833) 10.09 kl. 13:51 Oslo. GitHub-kontrollen og Vercel-preview bestod. Produksjonsadressen er kontrollert mot Vercels metadata: `50e64ae078ddcd0537070e07e0d90ffe3091becf`, fra Git/main, status `READY`. Innlogget produksjonsreise og historisk datadekning etter ordinær synk er ikke kontrollert i denne oppfølgingen.
-- Prosjektopprydding og felles arbeidsgrunnlag er på plass. Historikk og opprinnelige dokumenter er bevart; se [prosjektkartet](vedlikehold/prosjektkart.md).
-- Team Norway-registrering, tildeling, talentkobling, trenerinnsyn og treningsstatus er rettet lokalt. Uavklarte fagregler kan ikke gi en oppfunnet standardscore.
-- Booking og betaling er forbedret: riktig coach og kapasitet, vern ved feilet betalingslenke, hendelser i vilkårlig rekkefølge, refusjoner og konsekvent bookingklokke.
-- Isolert PostgreSQL er opprettet. Trening, tilganger, samtidige bestillinger, TN-lagring og betalingshendelser er prøvd mot ekte lokal database med syntetiske brukere. Lokal sikkerhetskopi er gjenopprettet med bevart booking og kollisjonsvern.
-- Tilgangsvernet på ni produksjonstabeller er aktivert etter Anders’ godkjenning og kontrollert med klientroller og appens servertilkobling. Dette er den eneste utførte databaseendringen i dette lanseringsarbeidet.
-- ZIP (3) er undersøkt og klikkprøvd. Kildelesingen er forbedret; korrigering av testresultater har fortsatt konkrete feil.
-- Siste Claude Design-ZIP legger til DataGolf H2-04. [Kontrollen](beslutningsgrunnlag/claude-design-datagolf-h2-04-review-2026-09-10.md) bekrefter spillerreisen, men avdekker feil ved manglende proffreferanse, angre under lagring og gjenåpning. H2-03 og resten av pakken er i hovedsak uendret; [tilbakemelding til Claude Design](design-system/claude-design-datagolf-h2-04-tilbakemelding.md) er klar.
-- Produksjonsbygg og samlet kodekontroll bestod i isolert kopi. 2 283 tester bestod, i tillegg til egne database-, sikkerhets- og gjenopprettingsprøver. Tolv eksisterende kontrastavvik gjenstår.
+## Allerede i main
 
-Siste bygg-/testresultat og presise begrensninger står i [teknisk kontrollrapport](beslutningsgrunnlag/teknisk-lanseringskontroll-2026-09-10.md). [Designkontrollen](beslutningsgrunnlag/claude-design-zip-3-review-2026-09-10.md) og [tilbakemeldingen til Claude Design](design-system/claude-design-zip-3-tilbakemelding.md) beskriver neste designleveranse.
+DataGolf/GolfBox og tidligere rettinger er samlet via PR #833/#834. Seks porteringspakker er samlet via PR #835. Manuell SG er samlet via PR #836. Claude Codes første PH-06-testpakke er samlet via PR #837, merge `97ff9b1bb`; både main-CI og produksjonens automatiske røyktest bestod for denne versjonen. Røyktesten er ikke en komplett innlogget brukerreise.
 
-## Gjenstår før lansering
+Tidligere kontroll av Vercel bekreftet `2807d4d08` som publisert kode og prøvde utlogget innlogging/videresending. Dette er et datert bevis, ikke en påstand om nåværende produksjonsversjon. Ingen manuell utrulling, miljøendring eller åpning av offentlig booking inngår i denne samlingen.
 
-Kodearbeidet er samlet med den nyere DataGolf/GolfBox-leveransen og gjennomgåtte grenrester. Original arbeidsmappe, gamle grener og stasher er bevart under kontrollen. Teknisk samling er ikke en godkjenning av komplett design eller åpen lansering.
+## Det som gjenstår
 
-1. Konkret godkjenning av funksjonssikkerhet i produksjon. SQL og lokale tester er ferdige; automatisk godkjenningskontroll avviste omfanget fordi generell tidligere godkjenning ikke var tilstrekkelig. Ukjente klienter kan bli påvirket; den kjente helseklientens servertilgang beholdes.
-2. Stripe-testnøkler og testinnlogging for hele nettleserreisen, inkludert bekreftelser, kalender og reelle feilscenarioer. Ingen Stripe-testbetaling er gjennomført.
-3. Valgt og komplett designleveranse, retting av prototypens resultatkorrigering, portering og visuell kontroll. ZIP-registeret har fortsatt 193 rader som venter på design; repoet har nå 479 sideruter.
-4. Måloppfølging på tvers av øktmodeller og variantbundet Team Norway-målfremdrift. Resterende fag-/språkavklaringer, produksjonens innloggingsvern, faktisk varslingsprøve og gjenopprettingsprøve fra produksjonskopi med innlogging og filer.
+1. Isolert, innlogget spillerreise gjennom I dag, Plan, økt og oppsummering med alle tre øktmodeller og avviste roller.
+2. Caddie-tilgang/dataminimering, privat lokal lagring, TrackMan-enheter og feil ved abonnementshenting avstemt mot dagens kode.
+3. Resterende PlayerHQ-, AgencyOS-, Team Norway- og WANG-skjermer, koblet til valgte kilder og reelle handlinger.
+4. Testvarianter/mål, foreldreinnsyn, booking-/betalingsreise og konkrete produktavklaringer fra funksjonsregisteret.
+5. Visuell vurdering med Anders, kontrast/tilgjengelighet, full alarm-/gjenopprettingsprøve og dokumentert faktisk produksjonsreise før lansering.
 
-Arbeidslisten eies av [MASTERPLAN-GJENSTAAENDE.md](MASTERPLAN-GJENSTAAENDE.md). DataGolf/GolfBox og tidligere samling er integrert via PR #833/#834. De nyere porteringene inngår i main-samlingen 11.09; faktisk publisert versjon og innlogget produksjonsreise må bekreftes separat. Offentlig booking er ikke åpnet som del av dette arbeidet.
+Stripe-testmiljø og innloggede testroller trengs for betalingsreisen. Tidligere avvist produksjonsendring for funksjonssikkerhet krever konkret miljøautorisasjon. Ingen reell betaling, varslingsutsending, migrasjon eller databaseoppsettsendring er gjennomført i denne pakken.
 
-## Historikk
+## Kilder og historikk
 
-[Status før oppryddingen](arkiv/opprydding-2026-09-10/status-nå.md) og daterte kontrollrapporter er bevart. Tidligere grønne kontroller gjelder sine daværende versjoner; de er ikke en lanseringsgodkjenning av dagens app.
+Valgt design: Trainlock ZIP (4) for PlayerHQ/AgencyOS, Claw Team Norway for interne TN-skjermer og WANG-speilet. [Port-auditen](design-audit/portering-fire-flater-2026-09-10.md) knytter kilder til kode og bevis. Det siste ruteinventaret har 479 sideruter; dette er ikke antall ferdige design.
+
+[Historisk status](arkiv/opprydding-2026-09-10/status-nå.md), [tidligere teknisk kontroll](beslutningsgrunnlag/teknisk-lanseringskontroll-2026-09-10.md) og Git-historikken bevarer tidligere hendelser. Bygget, testet, sett av Anders, flettet og publisert kontrollert er ulike statuser.

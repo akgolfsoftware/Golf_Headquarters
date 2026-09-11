@@ -48,7 +48,7 @@ export default async function LiveSummaryPage({
             durationMinutes: d.exercise.durationMin ?? 0, sortOrder: d.orderIndex })),
         }, counts);
         return <LiveSessionShell odId="playerhq-live-summary" title="Etter økta" subtitle={plan.title} backHref="/portal" closeHref="/portal">
-          <SessionSummary data={summary} lagredeOrd="Økt gjennomført." />
+          <SessionSummary key={sessionId} data={summary} lagredeOrd="Økt gjennomført." />
         </LiveSessionShell>;
       }
       if (result.reason === "notfound") notFound();
@@ -85,6 +85,7 @@ export default async function LiveSummaryPage({
         closeHref="/portal"
       >
         <SessionSummary
+          key={sessionId}
           data={summaryData}
           nesteOkt={nesteOkt}
           lagredeOrd="Økt gjennomført."
@@ -170,8 +171,9 @@ export default async function LiveSummaryPage({
   const nesteOkt = nesteOktTekst(okt, href, naa);
 
   return (
-    <LiveSessionShell odId="playerhq-live-summary" title="Etter økta" subtitle={data.title} backHref={`/portal/live/${sessionId}/active`} closeHref="/portal">
+    <LiveSessionShell odId="playerhq-live-summary" title="Etter økta" subtitle={data.title} backHref="/portal" closeHref="/portal">
       <SessionSummary
+        key={sessionId}
         data={summaryData}
         nesteOkt={nesteOkt}
         spillerVurdering={spillerVurdering && spillerVurdering.kvalitet >= 1 ? spillerVurdering : null}

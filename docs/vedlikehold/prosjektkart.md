@@ -1,5 +1,7 @@
 # Prosjektkart og opprydding — 10.09.2026
 
+Oppfølging 11.09: [siste samling og opprydding](samling-og-opprydding-2026-09-11.md) oppdaterer kodepakker, grener, arbeidskopier og kontrollstatus. Områdekartet under beskriver prosjektets struktur; daterte bevis gjelder sine oppgitte versjoner.
+
 Hele prosjektmappen er kartlagt på filnivå, inkludert ignorerte filer og genererte mapper. Oppryddingen skiller aktiv kode, gjeldende instrukser, designleveranser, referanser, historikk og lokale driftsdata. Dette er en mappe- og kildeopprydding; det er ikke en påstand om at alle funksjoner er feilfrie eller alle skjermer ferdig portert.
 
 [Start her](../../START-HER.md) · [dokumentregister](dokumentregister.md) · [filregister](filregister.json) · [flyttelogg](flyttelogg-2026-09-10.json).

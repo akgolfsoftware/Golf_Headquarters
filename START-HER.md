@@ -5,6 +5,7 @@
 1. [Agent Brief](docs/platform/AGENT-BRIEF.md) — hva prosjektet inneholder og hvor koden bor.
 2. [Designarbeid og referanser](designsystem/README.md) — alle skjermdesign er under revisjon i Claude Design; eksisterende materiale er ikke låst.
 3. [Arbeidsliste](docs/MASTERPLAN-GJENSTAAENDE.md) — bekreftede funn og bevarte bestillinger.
+4. [Siste samling og kontroll](docs/vedlikehold/samling-og-opprydding-2026-09-11.md) — ferdige pakker, grenregnskap og hva som fortsatt gjenstår.
 
 [Hele dokumentoversikten](docs/README.md) · [Prosjektkart og opprydding](docs/vedlikehold/prosjektkart.md) · [Felles AI-instruks](AGENTS.md).
 

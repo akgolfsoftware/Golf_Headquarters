@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState, useTransition, type CSSProperties } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import Link from "next/link";
 import { Check } from "lucide-react";
+import "./session-summary.css";
 import type { LiveV2Summary } from "./types";
 import { SpillerVurderingForm } from "./SpillerVurderingForm";
 import { LiveLoopNav } from "./LiveLoopNav";
@@ -59,8 +60,8 @@ function byggUtkast(data: LiveV2Summary, notater: LiveNotat[]): string {
   const min = Math.round(data.durationSec / 60);
   if (data.drills.length > 0) {
     deler.push(
-      `${data.title}: ${data.drillsCompleted} av ${data.drills.length} drills` +
-        `${data.totalReps > 0 ? ` og ${data.totalReps} reps` : ""}` +
+      `${data.title}: ${data.drillsCompleted} av ${data.drills.length} øvelser` +
+        `${data.totalReps > 0 ? ` og ${data.totalReps} repetisjoner` : ""}` +
         `${min > 0 ? ` på ${tidTekst(min)}` : ""}.`,
     );
   } else if (min > 0) {
@@ -79,444 +80,165 @@ function byggUtkast(data: LiveV2Summary, notater: LiveNotat[]): string {
   if (mestVolum) {
     deler.push(`Mest volum på ${mestVolum.d.name.toLowerCase()}.`);
   }
-  if (notater[0]) {
-    deler.push(notater[0].tekst);
-  }
+  for (const notat of notater) deler.push(notat.tekst);
   return deler.join(" ");
 }
 
-/** PH-06: caps-linjene er sans 11/600 med 0.08em — ikke mono. */
-const EYEBROW = "font-sans text-[11px] font-semibold uppercase tracking-[0.08em]";
-
-const KORT: CSSProperties = {
-  background: "var(--tl-elev)",
-  border: "1px solid var(--tl-hair)",
-  borderRadius: 12,
-  padding: 16,
-  minWidth: 0,
-};
-
-function Tag({ tekst, tone }: { tekst: string; tone: "up" | "info" }) {
-  return (
-    <span
-      className="ml-auto inline-flex flex-none items-center whitespace-nowrap px-2 py-[3px] font-mono text-[10px] uppercase tracking-[0.04em]"
-      style={{
-        borderRadius: 9999,
-        background: "var(--tl-dim)",
-        border: "1px solid var(--tl-hair)",
-        color: tone === "up" ? "var(--tl-ok)" : "var(--tl-viz-target)",
-      }}
-    >
-      {tekst}
-    </span>
-  );
-}
-
 /**
- * ETTER-skjermen i live-sløyfa.
- * Fasit: designsystem/train-lock/PH-06 Live ferdig.dc.html
+ * Valgt PH-06 / B3 lys: tittel → hovedresultat → tillegg → oppsummering → Lukk.
+ * Kilde: designsystem/train-lock/PH-06 Live ferdig.dc.html
  * Lys: designsystem/train-lock/B3 Lys resterende skjermer.dc.html
- *   (Lys PH-06 Live ferdig) — filen leser var(--tl-*) uten hardkodet hex.
- * Rigg: PH-06 Live ferdig
- * (11,97 % mot prod 09.09.2026 — fixture: scripts/seed-ph05-ph06-signoff-fixture.ts)
- * Avvik:
- *   - Primær CTA er «Tilbake til I dag» (`/portal`), ikke Plan — Anders 08.09.
- *     Fasitens ene «Lukk» er dermed tre lenker (I dag · Planen · Analyse).
- *   - Fasitens tre kort (I vindu 8/12 · SG innspill +0,18 · Recap) er i appen
- *     «Gjennomført»-tabellen (varighet, drills, reps, treff) + «Plan mot gjort»
- *     per steg. SG-kortet krever SG-grunnlag som ikke finnes for en enkeltøkt.
- *   - Selvvurdering (kvalitet 1–5, neste fokus, RPE) står under tallkortene.
- *     Ikke i fasiten, men er kilden til vurderingsfeltene på økta.
- *   - LiveSessionShell-topplinje («Etter økta» + tilbake/lukk) og LiveLoopNav
- *     over hodet — felles for hele live-sløyfa, ikke tegnet i fasiten.
- * Caps «Økt ferdig · varighet» + tittel, tallkort, recap («dine ord»),
- * kvittering med neste økt. Ingen konfetti/XP.
+ * Felles Geist/v3-verdier videreføres. Tegningens SG og måloppnåelse erstattes
+ * med lagrede øvelsesmarkeringer/tellinger; Workbench/eldre plan har lesemodus.
+ * Planavvik, notater og spillerens vurdering er bevart som utfoldbare detaljer.
  */
 export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }: SessionSummaryProps) {
   const [notater, setNotater] = useState<LiveNotat[]>([]);
-  const [ord, setOrd] = useState<string | null>(null);
+  const [ord, setOrd] = useState<string | null>(lagredeOrd ?? null);
   const [lagret, setLagret] = useState(Boolean(lagredeOrd));
   const [feil, setFeil] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
+  const saving = useRef(false);
+  const errorRef = useRef<HTMLParagraphElement>(null);
+  const savedRef = useRef<HTMLParagraphElement>(null);
+  const submitted = useRef(false);
+  const erTapper = data.logSource === "tapper";
 
-  // Notatene lever i sessionStorage fra UNDER-skjermen (ingen DB-mekanisme
-  // for frie øktnotater) — leses etter mount, flettes inn i utkastet.
   useEffect(() => {
-    const t = setTimeout(() => {
+    const timer = setTimeout(() => {
       const n = lesNotater(data.sessionId);
       setNotater(n);
       setOrd((prev) => prev ?? lagredeOrd ?? byggUtkast(data, n));
     }, 0);
-    return () => clearTimeout(t);
+    return () => clearTimeout(timer);
   }, [data, lagredeOrd]);
+  useEffect(() => { if (feil) errorRef.current?.focus(); }, [feil]);
+  useEffect(() => { if (lagret && submitted.current) savedRef.current?.focus(); }, [lagret]);
 
-  const plannedRepsTotal = data.drills.reduce((s, d) => s + d.plannedReps, 0);
-  const treffTotal = data.existingLogs.reduce((s, l) => s + l.repsHit, 0);
-  const vindusMin = Math.max(
-    0,
-    Math.round(
-      (new Date(data.endTimeISO).getTime() - new Date(data.scheduledAtISO).getTime()) / 60000,
-    ),
-  );
-  const planlagtMin =
-    vindusMin > 0 ? vindusMin : data.drills.reduce((s, d) => s + d.durationMinutes, 0);
-  const varighetMin = Math.round(data.durationSec / 60);
-  const tidsavvikMin = planlagtMin > 0 && data.durationSec > 0 ? planlagtMin - varighetMin : 0;
-
-  const tallRader: Array<[string, string]> = [];
-  if (data.durationSec > 0) {
-    tallRader.push([
-      "Varighet",
-      `${tidTekst(varighetMin)}${planlagtMin > 0 ? ` (plan ${tidTekst(planlagtMin)})` : ""}`,
-    ]);
-  }
-  if (data.drills.length > 0 && data.logSource !== "tapper") {
-    tallRader.push(["Drills", `${data.drillsCompleted} av ${data.drills.length}`]);
-  }
-  if (data.totalReps > 0 || plannedRepsTotal > 0 || data.logSource === "tapper") {
-    tallRader.push([
-      data.logSource === "tapper" ? "Slag totalt" : "Reps totalt",
-      plannedRepsTotal > 0 ? `${data.totalReps} av ${plannedRepsTotal}` : String(data.totalReps),
-    ]);
-  }
-  if (treffTotal > 0) {
-    tallRader.push(["Treff", `${treffTotal} av ${data.totalReps}`]);
-  }
+  const minutter = Math.round(data.durationSec / 60);
+  const planVindu = Math.round((Date.parse(data.endTimeISO) - Date.parse(data.scheduledAtISO)) / 60_000);
+  const planMinutter = planVindu > 0 ? planVindu : data.drills.reduce((sum, d) => sum + d.durationMinutes, 0);
+  const planReps = data.drills.reduce((sum, d) => sum + d.plannedReps, 0);
+  const treff = data.existingLogs.reduce((sum, log) => sum + log.repsHit, 0);
+  const harOvelser = !erTapper && data.drills.length > 0;
+  const harTall = erTapper || harOvelser || data.totalReps > 0 || data.durationSec > 0;
+  const hoved = harOvelser
+    ? { tittel: "Øvelser ferdig", verdi: data.drillsCompleted, av: data.drills.length }
+    : erTapper || data.totalReps > 0
+      ? { tittel: erTapper ? "Slag registrert" : "Repetisjoner registrert", verdi: data.totalReps, av: null }
+      : { tittel: "Varighet", verdi: tidTekst(minutter), av: null };
 
   function lagre() {
+    if (saving.current || erTapper) return;
     const tekst = (ord ?? "").trim();
-    if (!tekst) {
-      setFeil("Skriv noe først — ett ord er nok.");
+    if (!tekst || tekst.length > 2000) {
+      setFeil(!tekst ? "Skriv noe først — ett ord er nok." : "Oppsummeringen kan ha inntil 2 000 tegn. Kort ned teksten og prøv igjen.");
       return;
     }
+    saving.current = true;
     setFeil(null);
     startTransition(async () => {
-      const res = await lagreDineOrd(data.sessionId, tekst);
-      if (!res.ok) {
-        setFeil(res.error ?? "Klarte ikke å lagre til loggen. Teksten din står trygt her — prøv igjen.");
-        return;
-      }
       try {
-        sessionStorage.removeItem(notatKey(data.sessionId));
+        const res = await lagreDineOrd(data.sessionId, tekst);
+        if (!res.ok) {
+          setFeil(res.error ?? "Kunne ikke lagre. Teksten din er bevart — prøv igjen.");
+          return;
+        }
+        try { sessionStorage.removeItem(notatKey(data.sessionId)); } catch { /* Teksten er lagret på serveren. */ }
+        setOrd(tekst);
+        submitted.current = true;
+        setLagret(true);
       } catch {
-        /* ignore */
+        setFeil("Kunne ikke bekrefte lagringen. Teksten din er bevart — prøv igjen.");
+      } finally {
+        saving.current = false;
       }
-      setLagret(true);
     });
   }
 
   return (
-    <div
-      data-paper-portal-live-summary
-      data-paper-slug="playerhq-live-summary"
-      className="flex min-w-0 flex-col px-4 pb-16 pt-2"
-      style={{ maxWidth: 720, margin: "0 auto", width: "100%", color: "var(--tl-text)" }}
-    >
+    <div className="ph06" data-paper-portal-live-summary data-paper-slug="playerhq-live-summary">
       <LiveLoopNav aktiv="etter" sessionId={data.sessionId} />
-
-      {/* PH-06-hode: caps «Økt ferdig · varighet» + tittel 26/700 */}
-      <div className="mt-3">
-        <span className={EYEBROW} style={{ color: "var(--tl-mute)" }}>
-          Økt ferdig{varighetMin > 0 ? ` · ${tidTekst(varighetMin)}` : ""}
-        </span>
-        <h1
-          className="m-0 mt-[7px] font-sans"
-          style={{ fontSize: 26, fontWeight: 700, letterSpacing: "-0.01em", color: "var(--tl-text)" }}
-        >
-          {data.title}
-        </h1>
+      <header className="ph06-heading">
+        <p className="ph06-eyebrow">Økt ferdig{data.durationSec > 0 ? ` · ${tidTekst(minutter)}` : ""}</p>
+        <h1>{data.title}</h1>
+      </header>
+      <div className="ph06-columns">
+        <div className="ph06-results">
+          <section className="ph06-card ph06-hero" aria-label="Øktens hovedresultat">
+            {harTall ? <>
+              <h2 className="ph06-eyebrow">{hoved.tittel}</h2>
+              <p className="ph06-number"><span>{hoved.verdi}</span>{hoved.av !== null && <span className="ph06-denominator">/ {hoved.av}</span>}</p>
+              <p className="ph06-muted">{harOvelser
+                ? `${data.drillsCompleted} av ${data.drills.length} øvelser markert ferdig.`
+                : erTapper ? "Kilde: lagrede tellinger per kølle." : "Fra registreringene i denne økta."}</p>
+            </> : <>
+              <h2 className="ph06-empty-title">Økta er avsluttet</h2>
+              <p className="ph06-muted">Ingen tall ble logget i denne økta. Du kan fortsatt skrive en oppsummering.</p>
+            </>}
+          </section>
+          {!erTapper && (data.totalReps > 0 || data.durationSec > 0 || planReps > 0) && <dl className="ph06-metrics ph06-card">
+            {data.durationSec > 0 && <div><dt>Varighet</dt><dd>{tidTekst(minutter)}</dd>{planMinutter > 0 && <small>Planlagt {tidTekst(planMinutter)}</small>}</div>}
+            {(data.totalReps > 0 || planReps > 0) && <div><dt>Repetisjoner</dt><dd>{data.totalReps}</dd>{planReps > 0 && <small>Planlagt {planReps}</small>}</div>}
+            {data.existingLogs.length > 0 && data.totalReps > 0 && <div><dt>Markert som treff</dt><dd>{treff} <span>av {data.totalReps}</span></dd></div>}
+          </dl>}
+          {erTapper && <p className="ph06-muted">Tid, treffkvalitet og fullføring per øvelse er ikke registrert i denne økta.</p>}
+          {harTall && <WhyDetails odId="etter-why-tall" punkter={erTapper ? [
+            "Kilde: lagrede tellinger per kølle. Summen er antall registrerte slag.",
+            "Planlagt tid er ikke målt treningstid. Ingen treffkvalitet er beregnet.",
+          ] : [
+            "Ferdige øvelser følger dine ferdigmarkeringer. På eldre økter brukes den dokumenterte tellingen fra loggene.",
+            "Repetisjoner og treff summeres fra øvelsesloggene. Varighet kommer fra øktklokka, eller første og siste logg på eldre økter.",
+            "Én økt er ett datapunkt. Ingen måloppnåelse eller Strokes Gained er beregnet her.",
+          ]} />}
+          {harOvelser && <details className="ph06-card ph06-details">
+            <summary>Plan mot gjennomført</summary>
+            {data.drills.map((drill) => {
+              const log = data.existingLogs.find((l) => l.drillId === drill.id);
+              return <div key={drill.id} className="ph06-drill">
+                <h3>{drill.name}</h3>
+                <p>{log ? `${log.repsTotal}${drill.plannedReps > 0 ? ` av ${drill.plannedReps}` : ""} repetisjoner · ${log.repsHit} treff` : "Ingen registrering"}</p>
+                {data.completedDrillIds && <small>{data.completedDrillIds.includes(drill.id) ? "Markert ferdig" : "Ikke markert ferdig"}</small>}
+              </div>;
+            })}
+            {planMinutter > 0 && data.durationSec > 0 && planMinutter !== minutter && <p className="ph06-muted">Avsluttet {tidTekst(Math.abs(planMinutter - minutter))} {planMinutter > minutter ? "før" : "etter"} planlagt. Avvik gir informasjon til neste plan.</p>}
+          </details>}
+        </div>
+        <div className="ph06-reflection">
+          <section className="ph06-card" aria-label="Oppsummering">
+            <h2 className="ph06-eyebrow">Dine ord</h2>
+            {lagret || erTapper ? <>
+              <p className="ph06-recap" data-od-id="etter-lagrede-ord">{ord ?? lagredeOrd ?? "Økt gjennomført."}</p>
+              {!erTapper && <>
+                <p className="ph06-saved" role="status" tabIndex={-1} ref={savedRef}><Check size={16} aria-hidden /> Lagret i loggen</p>
+                <button type="button" className="ph06-text-button" data-od-id="etter-kvitt-angre" onClick={() => setLagret(false)}>Rediger oppsummering</button>
+              </>}
+            </> : <>
+              <label className="ph06-muted" htmlFor="ph06-ord">Utkast fra tallene og notatene dine. Endre fritt.</label>
+              <textarea id="ph06-ord" aria-label="Oppsummering med dine ord" data-od-id="etter-oppsum-tekst" value={ord ?? ""} onChange={(event) => setOrd(event.target.value)} disabled={pending} rows={4} aria-describedby={feil ? "ph06-ord-feil" : undefined} />
+              {feil && <p id="ph06-ord-feil" className="ph06-error" role="alert" tabIndex={-1} ref={errorRef}>{feil}</p>}
+              <button type="button" className="ph06-secondary" data-od-id="etter-lagre-logg" onClick={lagre} disabled={pending || ord === null}>{pending ? "Lagrer…" : feil ? "Prøv igjen" : "Lagre i loggen"}</button>
+            </>}
+            {data.coachName && <p className="ph06-muted ph06-coach">{data.coachName} kan se den lagrede oppsummeringen.</p>}
+          </section>
+          {notater.length > 0 && <details className="ph06-card ph06-details">
+            <summary>Notater fra økta · {notater.length}</summary>
+            {notater.map((notat, i) => <p key={`${notat.t}-${i}`} className="ph06-recap"><small>{notat.t} inn i økta</small><br />{notat.tekst}</p>)}
+          </details>}
+          {!erTapper && <SpillerVurderingForm sessionId={data.sessionId} eksisterende={spillerVurdering} />}
+          {nesteOkt && <section className="ph06-card">
+            <h2 className="ph06-eyebrow">Neste økt</h2>
+            <Link className="ph06-next" href={nesteOkt.href} data-od-id="etter-kvitt-neste">{nesteOkt.tekst}</Link>
+          </section>}
+        </div>
       </div>
-
-      {lagret ? (
-        <>
-          {/* ── Kvittering ── */}
-          <div
-            className="mt-4 px-4 py-6"
-            style={{
-              background: "var(--tl-elev)",
-              border: "1px solid var(--tl-ok)",
-              borderRadius: 12,
-            }}
-          >
-            <h2
-              className="m-0 flex items-center gap-2 font-sans text-[16px] font-semibold"
-              style={{ color: "var(--tl-text)" }}
-            >
-              <Check className="h-5 w-5" style={{ color: "var(--tl-ok)" }} strokeWidth={2} aria-hidden />
-              Lagret i loggen
-            </h2>
-            <p className="mb-0 mt-2 font-serif text-[13.5px]" style={{ color: "var(--tl-mute)" }}>
-              Økta er logget som gjennomført.
-              {data.coachName
-                ? ` ${data.coachName.split(" ")[0]} ser oppsummeringen — han skal ikke godkjenne noe, bare vite hva som skjedde.`
-                : ""}
-            </p>
-          </div>
-
-          {tallRader.length > 0 && (
-            <div className="mt-4" style={KORT}>
-              <h2 className="m-0 font-sans text-[16px] font-semibold">Registrert i økta</h2>
-              <dl className="mb-0">
-                {tallRader.map(([navn, verdi]) => <div key={navn} className="flex justify-between gap-4 py-2">
-                  <dt>{navn}</dt><dd className="m-0 font-mono">{verdi}</dd>
-                </div>)}
-              </dl>
-              {data.logSource === "tapper" && <p className="mb-0 text-[13px]">
-                Kilde: lagrede tellinger per kølle. Tid, treffkvalitet og fullføring per øvelse er ikke registrert her.
-              </p>}
-            </div>
-          )}
-
-          {/* Neste steg — én vei videre, aldri blank flate */}
-          {nesteOkt && (
-            <div className="mt-4" style={KORT}>
-              <span className={EYEBROW} style={{ color: "var(--tl-mute)" }}>
-                neste økt
-              </span>
-              <Link
-                href={nesteOkt.href}
-                data-od-id="etter-kvitt-neste"
-                className="mt-1 flex min-w-0 items-baseline gap-2 py-2 text-[13px] no-underline"
-                style={{ color: "var(--tl-text)" }}
-              >
-                <span className="min-w-0 truncate">{nesteOkt.tekst}</span>
-              </Link>
-            </div>
-          )}
-
-          <div className="mt-4 flex flex-col gap-2">
-            <Link
-              href="/portal"
-              data-od-id="etter-kvitt-idag"
-              className="flex w-full items-center justify-center font-sans text-[14px] font-semibold no-underline"
-              style={{
-                minHeight: 48,
-                borderRadius: 12,
-                background: "var(--tl-fill)",
-                color: "var(--tl-on-fill)",
-              }}
-            >
-              Tilbake til I dag
-            </Link>
-            <Link
-              href="/portal/planlegge"
-              data-od-id="etter-kvitt-plan"
-              className="flex w-full items-center justify-center font-sans text-[14px] font-medium no-underline"
-              style={{
-                minHeight: 48,
-                borderRadius: 12,
-                border: "1px solid var(--tl-hair)",
-                background: "transparent",
-                color: "var(--tl-text)",
-              }}
-            >
-              Til planen
-            </Link>
-            <Link
-              href="/portal/analysere"
-              data-od-id="etter-kvitt-analyse"
-              className="flex w-full items-center justify-center font-sans text-[14px] font-medium no-underline"
-              style={{
-                minHeight: 48,
-                borderRadius: 12,
-                border: "1px solid var(--tl-hair)",
-                background: "transparent",
-                color: "var(--tl-text)",
-              }}
-            >
-              Se utviklingen i Analyse
-            </Link>
-            <button
-              type="button"
-              data-od-id="etter-kvitt-angre"
-              onClick={() => setLagret(false)}
-              className="w-full font-sans text-[13px]"
-              style={{
-                minHeight: 44,
-                borderRadius: 12,
-                border: "1px solid var(--tl-hair)",
-                background: "transparent",
-                color: "var(--tl-mute)",
-              }}
-            >
-              Tilbake til oppsummeringen
-            </button>
-          </div>
-        </>
-      ) : (
-        <>
-          {/* ── Tallene — kilde: DrillLogV2-loggene fra økta ── */}
-          <div className="mt-4" style={KORT}>
-            <span className={EYEBROW} style={{ color: "var(--tl-mute)" }}>
-              Gjennomført
-            </span>
-            <div className="mt-1">
-              {tallRader.map(([navn, verdi]) => (
-                <div
-                  key={navn}
-                  className="flex min-w-0 items-baseline gap-2 border-b py-2 text-[13px] last:border-b-0"
-                  style={{ borderColor: "var(--tl-hair)" }}
-                >
-                  <span>{navn}</span>
-                  <span className="ml-auto min-w-0 text-right font-mono">{verdi}</span>
-                </div>
-              ))}
-              {tallRader.length === 0 && (
-                <p className="mb-0 mt-2 font-serif text-[13.5px]" style={{ color: "var(--tl-mute)" }}>
-                  Ingen tall ble logget i denne økta — det er også informasjon.
-                </p>
-              )}
-            </div>
-            {tallRader.length > 0 && (
-              <WhyDetails
-                odId="etter-why-tall"
-                punkter={[
-                  "Kilde: det du selv logget i økta — reps og treff per drill, pluss øktklokka.",
-                  "Beregning: summene av drill-loggene; varigheten er klokkas medgåtte tid.",
-                  "Forbehold: én økt er ett datapunkt. Trenden vises i Analyse.",
-                ]}
-              />
-            )}
-          </div>
-
-          {/* ── Plan mot gjort — informasjon, aldri kritikk ── */}
-          {data.drills.length > 0 && (
-            <div className="mt-4" style={KORT}>
-              <span className={EYEBROW} style={{ color: "var(--tl-mute)" }}>
-                plan mot gjort
-              </span>
-              <div className="mt-1">
-                {data.drills.map((drill) => {
-                  const log = data.existingLogs.find((l) => l.drillId === drill.id);
-                  const gjort = log
-                    ? `${log.repsTotal}${drill.plannedReps > 0 ? ` av ${drill.plannedReps}` : ""} reps` +
-                      (log.repsHit > 0 ? ` · ${log.repsHit} treff` : "")
-                    : "ikke logget";
-                  // Tag kun når BÅDE planlagte og loggede reps finnes.
-                  const tag =
-                    log && drill.plannedReps > 0
-                      ? log.repsTotal >= drill.plannedReps
-                        ? ({ tekst: "som planlagt", tone: "up" } as const)
-                        : ({ tekst: `mål ${drill.plannedReps}`, tone: "info" } as const)
-                      : null;
-                  return (
-                    <div
-                      key={drill.id}
-                      className="flex min-w-0 items-start gap-2 border-b py-2 text-[13px] last:border-b-0"
-                      style={{ borderColor: "var(--tl-hair)" }}
-                    >
-                      <div className="min-w-0">
-                        <span className="block truncate">{drill.name}</span>
-                        <span className="block font-mono text-[10.5px]" style={{ color: "var(--tl-mute)" }}>
-                          {gjort}{data.completedDrillIds && ` · ${data.completedDrillIds.includes(drill.id) ? "markert ferdig" : "ikke markert ferdig"}`}
-                        </span>
-                      </div>
-                      {tag && <Tag tekst={tag.tekst} tone={tag.tone} />}
-                    </div>
-                  );
-                })}
-                {Math.abs(tidsavvikMin) >= 1 && (
-                  <div
-                    className="flex min-w-0 items-start gap-2 py-2 text-[13px]"
-                    style={{ borderColor: "var(--tl-hair)" }}
-                  >
-                    <div className="min-w-0">
-                      <span className="block">
-                        Avsluttet {tidTekst(Math.abs(tidsavvikMin))}{" "}
-                        {tidsavvikMin > 0 ? "før" : "etter"} planlagt
-                      </span>
-                      <span className="block font-mono text-[10.5px]" style={{ color: "var(--tl-mute)" }}>
-                        Helt greit — avvik er informasjon til neste plan, ikke feil.
-                      </span>
-                    </div>
-                    <Tag tekst="notert" tone="info" />
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* ── Notater fra økta ── */}
-          {notater.length > 0 && (
-            <div className="mt-4 min-w-0">
-              <span className={EYEBROW} style={{ color: "var(--tl-mute)" }}>
-                notater fra økta · {notater.length}
-              </span>
-              {notater.map((n, i) => (
-                <div
-                  key={`${n.t}-${i}`}
-                  className="mt-2 p-3 font-serif text-[13.5px]"
-                  style={{
-                    background: "var(--tl-elev)",
-                    border: "1px solid var(--tl-hair)",
-                    borderRadius: 12,
-                  }}
-                >
-                  <span className="mb-[2px] block font-mono text-[10px]" style={{ color: "var(--tl-mute)" }}>
-                    {n.t} inn i økta
-                  </span>
-                  {n.tekst}
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* ── Vurderingene (beholdt funksjonalitet) ── */}
-          <div className="mt-4">
-            <SpillerVurderingForm sessionId={data.sessionId} eksisterende={spillerVurdering} />
-          </div>
-
-          {/* ── Dine ord — utkastet er bygget av øktas tall, endres fritt ── */}
-          <div className="mt-4 min-w-0">
-            <span className={EYEBROW} style={{ color: "var(--tl-mute)" }}>
-              dine ord · skrives til loggen
-            </span>
-            <textarea
-              value={ord ?? ""}
-              onChange={(e) => setOrd(e.target.value)}
-              aria-label="Oppsummering med dine ord"
-              data-od-id="etter-oppsum-tekst"
-              className="mt-2 w-full resize-y p-3 font-serif text-[15px]"
-              style={{
-                minHeight: 110,
-                background: "var(--tl-elev)",
-                color: "var(--tl-text)",
-                border: "1px solid var(--tl-hair)",
-                borderRadius: 12,
-              }}
-            />
-            <p className="mb-0 mt-2 font-serif text-[12.5px]" style={{ color: "var(--tl-mute)" }}>
-              Utkastet er laget fra tallene og notatene dine. Endre fritt — det
-              er dine ord som lagres.
-              {data.coachName ? ` ${data.coachName.split(" ")[0]} ser oppsummeringen i stallen sin.` : ""}
-            </p>
-          </div>
-
-          {feil && (
-            <p className="mb-0 mt-3 font-serif text-[13px]" style={{ color: "var(--tl-danger)" }} role="alert">
-              {feil}
-            </p>
-          )}
-
-          {/* Skjermens ene clay-handling — skriver til loggen */}
-          <button
-            type="button"
-            data-od-id="etter-lagre-logg"
-            data-paper-en-ting="true"
-            onClick={lagre}
-            disabled={pending}
-            className="mt-4 w-full border-none font-sans text-[14px] font-semibold active:translate-y-px disabled:opacity-60"
-            style={{
-              minHeight: 56,
-              borderRadius: 12,
-              background: "var(--tl-fill)",
-              color: "var(--tl-on-fill)",
-            }}
-          >
-            {pending ? "Lagrer…" : "Lagre i loggen"}
-          </button>
-        </>
-      )}
+      <footer className="ph06-footer">
+        <Link href="/portal" className="ph06-close" data-od-id="etter-kvitt-idag">Lukk</Link>
+        <nav aria-label="Etter økta" className="ph06-links">
+          <Link href="/portal/planlegge" data-od-id="etter-kvitt-plan">Til planen</Link>
+          <Link href="/portal/analysere" data-od-id="etter-kvitt-analyse">Se utviklingen i Analyse</Link>
+        </nav>
+      </footer>
     </div>
   );
 }

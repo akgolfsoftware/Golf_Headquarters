@@ -1,57 +1,29 @@
-# PH-06-rigg — Live-økt-oppsummering (PlayerHQ)
+# PH-06 — komponent- og lagringskontroll
 
-Egen, isolert rigg for D2-PH06/R2 (se
-`docs/planer/arbeidsdeling-codex-claude-2026-09-11.md`). Rører ikke den delte
-Playwright-riggen (`tests/e2e/`, `playwright.config.ts`) eller
-`tests/visual/portering/`-serveren.
+Riggen bruker faktisk `SessionSummary`, `SpillerVurderingForm`, `LiveLoopNav` og `LiveSessionShell` i React med klientinteraksjon. Next-ruting og serverhandlinger simuleres med syntetiske data. Dette er ikke en innlogget app-/databaseprøve.
 
-## Hva riggen faktisk gjør — og ikke gjør
-
-**SIMULERT, ikke en innlogget databaseprøve.** Ingen Next dev-server, ingen
-database, ingen ekte innlogging. `SessionSummary` rendres med
-`renderToStaticMarkup` og syntetiske `LiveV2Summary`-objekter
-(`fixtures.ts`) — kun første-malingen (SSR-markup) fanges opp.
-`lagreDineOrd`/`lagreSpillerVurdering` mockes bort med node:test sin
-`mock.module` utelukkende for at import-kjeden (som drar med seg
-server-only-kode via actions.ts) skal kunne lastes utenfor
-`react-server`-betingelsen `react-dom/server` krever — de faktiske
-handlingene kalles aldri.
-
-**Dekket:** layout, tekst-hierarki, innholdsrekkefølge, tomtilstand vs.
-delvis vs. fullført, langt innhold, viewport 320/390/834/1440, lys/mørk,
-200 % CSS-zoom.
-
-**IKKE dekket av denne riggen** (krever ekte nettleser-hydrering mot en
-kjørende app med database/innlogging):
-- Skriving i tekstfelt, faktisk lagre-klikk, feilmelding ved lagringsfeil,
-  nytt forsøk, dobbel-innsending-sperre.
-- Tastaturnavigasjon og fokusrekkefølge.
-- Faktisk lukking til `/portal` og at notater/vurdering overlever en
-  ekte omlasting.
-
-Disse punktene er verifisert ved lesing av kildekoden (linjereferanser i
-`docs/design-audit/playerhq-ph06-2026-09-11.md`), ikke i en levende
-nettleser. Teknisk grønt her er ikke visuell godkjenning — Anders må se
-appen selv.
-
-## Kjøre riggen
+Felles Trainlock/Geist/v3 lastes fra appens stilark og lokale Next-fontfiler. Manglende fonter stopper prøven; reservefont godtas ikke. CSS bygges med prosjektets Tailwind-motor. `render.tsx` er nå klientinngangen, ikke en statisk SSR-test.
 
 ```bash
-node tests/visual/playerhq-summary/build-tailwind.mjs                                   # 1) bygg utility-CSS for komponentene
-npx tsx --experimental-test-module-mocks --test tests/visual/playerhq-summary/render.tsx # 2) SSR-markup → statiske HTML-filer
-npx tsx tests/visual/playerhq-summary/screenshot.ts                                      # 3) skjermbilder → _archive/
+node --import tsx tests/visual/playerhq-summary/screenshot.ts
 ```
 
-Mellomfiler havner i `tests/visual/ut/playerhq-summary/` (gitignorert).
-Skjermbilder havner i `_archive/visuell-kontroll-ph06-2026-09-11/`
-(gitignorert, aldri i `public/` eller Git — se AGENTS.md §Data og sikkerhet).
+Kommandoen starter/avslutter sin egen server på 127.0.0.1. Den prøver 320/390/834/1440 px, lys/mørk og åtte tilstander: tom, delvis, fullført, lagret, vurdert, langt innhold, eldre og tapper. I tillegg prøves begge notater fra økta, lagringsfeil/nettfeil, bevaring, venting, dobbelttrykk, nytt forsøk, fokus, 200 prosent tekst, gjenåpning med simulert lagring og faktisk lenkenavigasjon til et simulert `/portal`-mål.
 
-## Tilstander i fixtures.ts
+Skriftene hentes fra `.next` eller den isolerte kontrollkopien. Alternativt kan `PH06_NEXT_DIR` peke på et eksisterende Next-bygg. Det kjøres ingen automatisk bygging med produksjonsmiljø. Mellomfiler ligger ignorert i `tests/visual/ut/playerhq-summary/`; bilder og `resultat.json` ligger i `_archive/visuell-kontroll-ph06-2026-09-11/`.
 
-| Fixture | Viser |
-|---|---|
-| `TOM_OKT` | Fri økt, ingen drills/logger — ærlig tomtilstand |
-| `DELVIS_OKT` | 1 av 3 drills ferdigmarkert, én delvis logget, én urørt |
-| `FULLFORT_OKT` | Alle drills ferdigmarkert |
-| `LANGT_INNHOLD_OKT` | Lang tittel, 6 drills med lange navn, langt coach-navn |
-| `ELDRE_OKT_UTEN_COMPLETED_IDS` | `completedSummary` uten `completedDrillIds` — dokumentert fallback til loggene |
+## Lagringsgrenser
+
+`src/lib/portal-live/summary-save.test.ts` prøver de faktiske serverhandlingene med simulert database: eierskap, ugyldige verdier, separate JSON-felt og tilbakeføring ved feil i planspeil. `live-summary.test.ts` dekker de seks opprinnelige reglene for ferdigmarkering.
+
+En separat PostgreSQL-prøve kan kjøres når `@electric-sql/pglite` finnes lokalt:
+
+```bash
+node --import tsx tests/visual/playerhq-summary/postgres.mjs
+```
+
+Den bruker en tom database i minnet med en minimal tabell og den faktiske parameteriserte SQL-en. Separate felt, transaksjonstilbakeføring, status/ID, sitater og eldre/null JSON prøves. Den kobler ikke til Supabase eller appdatabasen, og den er ikke automatisk del av `npm test`/CI. Ingen ny avhengighet er installert av denne pakken.
+
+## Hva som gjenstår
+
+Innlogget ende-til-ende-reise, faktiske roller mot appdatabasen, lagring/gjenåpning via Next og Anders' visuelle vurdering. Nettleserprøvens lagringssimulering og den isolerte SQL-prøven er separate bevis, ikke samlet produksjonsbevis.

@@ -6,6 +6,7 @@
 |---|---|
 | Nåstatus | [STATUS-NÅ.md](STATUS-NÅ.md) |
 | Gjeldende arbeid og bevarte bestillinger | [Arbeidslisten](MASTERPLAN-GJENSTAAENDE.md) |
+| Funksjonsbredde og produktavklaringer | [Funksjonsregister](planer/funksjonsregister-2026-09-11.md), [produktintervju](planer/produktplan-og-intervju-2026-09-11.md) |
 | Prosjekt og kodekart | [Agent Brief](platform/AGENT-BRIEF.md) |
 | Designarbeid og eksisterende referanser | [Designkartet](../designsystem/README.md) |
 | Prosjektets design-skill og hovedprompt | [AK HQ Designarbeid](design-system/ak-hq-designarbeid.md) |
@@ -13,6 +14,7 @@
 | Treningsfag | [Faglig fasit](FASIT-AK-GOLF-HQ.md), [begrepsordbok](ordbok-ak-golf-konsept.md), [planleggingsordbok](ORDBOK-TRENINGSPLANLEGGING-2026-09-08.md) |
 | Tester og drift | [Testing](testing.md), [drift](runbook.md), [visuell kontroll](../tests/visual/README.md) |
 | Hva oppryddingen gjorde | [Prosjektkart og kontrollresultat](vedlikehold/prosjektkart.md), [flyttelogg](vedlikehold/flyttelogg-2026-09-10.json) |
+| Siste kode-/grensamling | [Samling og opprydding 11.09](vedlikehold/samling-og-opprydding-2026-09-11.md) |
 | Alle dokumenter, også historiske | [Dokumentregister](vedlikehold/dokumentregister.md) |
 
 ## Hvor nytt materiale skal ligge
