@@ -20,6 +20,8 @@ import {
 import {
   csvShotsToCanonical,
   htmlReportToCanonical,
+  CSV_SOURCE_UNITS,
+  PHOTO_SOURCE_UNITS,
   type CanonicalShot,
 } from "@/lib/trackman/canonical";
 import type { TrackManEnvironment } from "@/generated/prisma/client";
@@ -119,7 +121,7 @@ export async function importTrackMan(
     if (photoShots.length === 0) {
       throw new Error("Ingen slag lest fra bildet. Prøv på nytt.");
     }
-    shots = csvShotsToCanonical(photoShots);
+    shots = csvShotsToCanonical(photoShots, PHOTO_SOURCE_UNITS);
     rawJson = {
       summary: {
         avgClubSpeed: avg(shots.map((s) => s.clubSpeedMph)),
@@ -140,7 +142,7 @@ export async function importTrackMan(
     }
     // Én session for valgt dato — flat alle dagers slag (bruker overstyrer dato)
     const allCsvShots = parsed.sessions.flatMap((s) => s.rawJson.shots);
-    shots = csvShotsToCanonical(allCsvShots);
+    shots = csvShotsToCanonical(allCsvShots, CSV_SOURCE_UNITS);
     rawJson = {
       summary: {
         avgClubSpeed: avg(shots.map((s) => s.clubSpeedMph)),
