@@ -82,4 +82,30 @@ describe("beregnStabilitet fallback (E.03)", () => {
     assert.equal(data.klubber[0].navn, "Driver");
     assert.equal(data.klubber[0].antallSlag, 2);
   });
+
+  it("normaliserer eksplisitt mph og yards før stabilitet beregnes", () => {
+    const shots = [
+      { ballSpeedMps: 60, carryMeters: 320 },
+      { ballSpeedMps: 70, carryMeters: 330 },
+      { ballSpeedMps: 80, carryMeters: 340 },
+    ].map(({ ballSpeedMps, carryMeters }) => ({
+      club: "Driver",
+      clubSpeedMps: null,
+      ballSpeedMps,
+      smashFactor: null,
+      carryMeters,
+      totalMeters: null,
+      launchAngleDeg: null,
+      spinRateRpm: null,
+      sideMeters: null,
+      notes: null,
+      sourceUnits: { ballSpeed: "mph" as const, carry: "yd" as const },
+    }));
+
+    const data = beregnStabilitet({ shots });
+    const driver = data.klubber[0];
+    assert.ok(driver);
+    assert.ok(Math.abs((driver.params.ballSpeed.mean ?? 0) - 31.2928) < 0.001);
+    assert.ok(Math.abs((driver.params.carry.mean ?? 0) - 301.753) < 0.001);
+  });
 });

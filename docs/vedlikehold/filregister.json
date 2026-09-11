@@ -1,10 +1,10 @@
 {
   "metode": "git ls-files -co --exclude-standard; eksisterende filer; genererte registerfiler utelatt. Kun metadata, ikke kundedata eller miljøverdier.",
   "telling": {
-    "prosjektfiler": 5194,
+    "prosjektfiler": 5217,
     "sidefiler": 479,
     "prismamodeller": 196,
-    "enhetstestfiler": 343,
+    "enhetstestfiler": 354,
     "nettlesertestfiler": 41,
     "trainLockTegninger": 219
   },
@@ -5552,9 +5552,19 @@
       "byte": 1786
     },
     {
+      "sti": "docs/design-audit/2026-09-11-agencyos-coach-reise-j04.md",
+      "omrade": "dokumentasjon",
+      "byte": 11248
+    },
+    {
       "sti": "docs/design-audit/ak-golf-til-train-lock-bro-2026-09-03.md",
       "omrade": "dokumentasjon",
       "byte": 7295
+    },
+    {
+      "sti": "docs/design-audit/lokal-lagring-personvern-2026-09-11.md",
+      "omrade": "dokumentasjon",
+      "byte": 2331
     },
     {
       "sti": "docs/design-audit/plan-legacy-2026-09-11.md",
@@ -5724,7 +5734,7 @@
     {
       "sti": "docs/MASTERPLAN-GJENSTAAENDE.md",
       "omrade": "dokumentasjon",
-      "byte": 11040
+      "byte": 11076
     },
     {
       "sti": "docs/merkevare/ak-golf-merkeplattform-2026-08-31.md",
@@ -5800,6 +5810,11 @@
       "sti": "docs/planer/arbeidsdeling-codex-claude-2026-09-11.md",
       "omrade": "datert-plan",
       "byte": 1765
+    },
+    {
+      "sti": "docs/planer/claude-code-sonnet-5-agencyos-prompt.md",
+      "omrade": "datert-plan",
+      "byte": 8716
     },
     {
       "sti": "docs/planer/claude-code-sonnet-5-ph06-prompt.md",
@@ -6024,7 +6039,7 @@
     {
       "sti": "docs/STATUS-NÅ.md",
       "omrade": "dokumentasjon",
-      "byte": 3454
+      "byte": 3939
     },
     {
       "sti": "docs/taksonomi-verifikasjon.md",
@@ -6140,6 +6155,11 @@
       "sti": "docs/vedlikehold/samling-og-opprydding-2026-09-11.md",
       "omrade": "dokumentasjon",
       "byte": 4370
+    },
+    {
+      "sti": "docs/vedlikehold/sikkerhet-og-enheter-2026-09-11.md",
+      "omrade": "dokumentasjon",
+      "byte": 3223
     },
     {
       "sti": "docs/vokabular-planlegging-2026-08-18.md",
@@ -12149,7 +12169,7 @@
     {
       "sti": "src/app/admin/layout.tsx",
       "omrade": "appkode",
-      "byte": 1075
+      "byte": 1231
     },
     {
       "sti": "src/app/admin/marketing/error.tsx",
@@ -12619,7 +12639,7 @@
     {
       "sti": "src/app/admin/spillere/page.tsx",
       "omrade": "appkode",
-      "byte": 3724
+      "byte": 4045
     },
     {
       "sti": "src/app/admin/stall/dag/error.tsx",
@@ -12949,12 +12969,12 @@
     {
       "sti": "src/app/api/caddie/approve/route.ts",
       "omrade": "appkode",
-      "byte": 4722
+      "byte": 4942
     },
     {
       "sti": "src/app/api/caddie/chat/route.ts",
       "omrade": "appkode",
-      "byte": 6639
+      "byte": 7125
     },
     {
       "sti": "src/app/api/caddie/conversations/[id]/route.ts",
@@ -13924,7 +13944,7 @@
     {
       "sti": "src/app/portal/(fullscreen)/live/[sessionId]/tapper/tapper-shell.tsx",
       "omrade": "appkode",
-      "byte": 16798
+      "byte": 17024
     },
     {
       "sti": "src/app/portal/(fullscreen)/runde/live/error.tsx",
@@ -14674,7 +14694,7 @@
     {
       "sti": "src/app/portal/layout.tsx",
       "omrade": "appkode",
-      "byte": 1739
+      "byte": 1756
     },
     {
       "sti": "src/app/portal/loading.tsx",
@@ -15524,7 +15544,7 @@
     {
       "sti": "src/app/sw.ts",
       "omrade": "appkode",
-      "byte": 5438
+      "byte": 5248
     },
     {
       "sti": "src/app/team-gfgk/_components/equity-section.tsx",
@@ -15954,7 +15974,7 @@
     {
       "sti": "src/components/admin/recording-controls.tsx",
       "omrade": "appkode",
-      "byte": 27222
+      "byte": 27748
     },
     {
       "sti": "src/components/admin/search-trigger-button.tsx",
@@ -16799,7 +16819,7 @@
     {
       "sti": "src/components/admin/v2/TrainLockStall.tsx",
       "omrade": "appkode",
-      "byte": 23265
+      "byte": 25155
     },
     {
       "sti": "src/components/admin/v2/TrainLockValgtCoachSelect.tsx",
@@ -17599,7 +17619,7 @@
     {
       "sti": "src/components/portal/live/LiveActive.tsx",
       "omrade": "appkode",
-      "byte": 13211
+      "byte": 13717
     },
     {
       "sti": "src/components/portal/live/LiveBrief.tsx",
@@ -17644,7 +17664,7 @@
     {
       "sti": "src/components/portal/live/SessionSummary.tsx",
       "omrade": "appkode",
-      "byte": 12739
+      "byte": 13107
     },
     {
       "sti": "src/components/portal/live/SessionTimer.tsx",
@@ -17664,7 +17684,7 @@
     {
       "sti": "src/components/portal/live/use-live-session.ts",
       "omrade": "appkode",
-      "byte": 7899
+      "byte": 8189
     },
     {
       "sti": "src/components/portal/live/useLiveCoachVideoUpload.ts",
@@ -17679,12 +17699,12 @@
     {
       "sti": "src/components/portal/OfflineSyncBootstrap.tsx",
       "omrade": "appkode",
-      "byte": 3289
+      "byte": 3385
     },
     {
       "sti": "src/components/portal/portal-providers.tsx",
       "omrade": "appkode",
-      "byte": 732
+      "byte": 939
     },
     {
       "sti": "src/components/portal/profile/AchievementsList.tsx",
@@ -17744,7 +17764,7 @@
     {
       "sti": "src/components/portal/runde-logg/fortsett-runde-cta.tsx",
       "omrade": "appkode",
-      "byte": 3189
+      "byte": 3477
     },
     {
       "sti": "src/components/portal/runde-logg/fullfor-kjede-klient.tsx",
@@ -17774,17 +17794,17 @@
     {
       "sti": "src/components/portal/runde-logg/runde-live-artefakt.tsx",
       "omrade": "appkode",
-      "byte": 6499
+      "byte": 6684
     },
     {
       "sti": "src/components/portal/runde-logg/runde-live-klient.tsx",
       "omrade": "appkode",
-      "byte": 31791
+      "byte": 32565
     },
     {
       "sti": "src/components/portal/runde-logg/runde-recap.tsx",
       "omrade": "appkode",
-      "byte": 13527
+      "byte": 13793
     },
     {
       "sti": "src/components/portal/runde-logg/sg-panel.tsx",
@@ -17929,7 +17949,7 @@
     {
       "sti": "src/components/portal/v2/chat/FangstSheet.tsx",
       "omrade": "appkode",
-      "byte": 31216
+      "byte": 32935
     },
     {
       "sti": "src/components/portal/v2/chat/PortalChatHjem.tsx",
@@ -18369,7 +18389,7 @@
     {
       "sti": "src/components/portal/v2/NyTestV2.tsx",
       "omrade": "appkode",
-      "byte": 27859
+      "byte": 28732
     },
     {
       "sti": "src/components/portal/v2/OnskeligOktBekreftetV2.tsx",
@@ -18844,7 +18864,7 @@
     {
       "sti": "src/components/shared/trackman-import-modal.tsx",
       "omrade": "appkode",
-      "byte": 28515
+      "byte": 28865
     },
     {
       "sti": "src/components/shared/train-lock-design-synk.tsx",
@@ -20387,6 +20407,16 @@
       "byte": 2933
     },
     {
+      "sti": "src/lib/admin/stall-url-state.test.ts",
+      "omrade": "test",
+      "byte": 2282
+    },
+    {
+      "sti": "src/lib/admin/stall-url-state.ts",
+      "omrade": "appkode",
+      "byte": 2024
+    },
+    {
       "sti": "src/lib/admin/stallen-data.ts",
       "omrade": "appkode",
       "byte": 18624
@@ -21119,12 +21149,12 @@
     {
       "sti": "src/lib/auth/get-current-user-avvis.test.ts",
       "omrade": "test",
-      "byte": 4718
+      "byte": 8883
     },
     {
       "sti": "src/lib/auth/getCurrentUser.ts",
       "omrade": "appkode",
-      "byte": 4684
+      "byte": 7403
     },
     {
       "sti": "src/lib/auth/guards-avvis.test.ts",
@@ -21332,9 +21362,24 @@
       "byte": 2304
     },
     {
+      "sti": "src/lib/caddie/approval-access.test.ts",
+      "omrade": "test",
+      "byte": 1540
+    },
+    {
+      "sti": "src/lib/caddie/approval-boundary.test.ts",
+      "omrade": "test",
+      "byte": 4567
+    },
+    {
       "sti": "src/lib/caddie/approval-executor.ts",
       "omrade": "appkode",
-      "byte": 11452
+      "byte": 11842
+    },
+    {
+      "sti": "src/lib/caddie/chat-privacy.test.ts",
+      "omrade": "test",
+      "byte": 7067
     },
     {
       "sti": "src/lib/caddie/conversation.ts",
@@ -21342,9 +21387,14 @@
       "byte": 574
     },
     {
+      "sti": "src/lib/caddie/draft-claim.ts",
+      "omrade": "appkode",
+      "byte": 447
+    },
+    {
       "sti": "src/lib/caddie/draft-godkjenning.ts",
       "omrade": "appkode",
-      "byte": 3799
+      "byte": 4137
     },
     {
       "sti": "src/lib/caddie/draft-labels.ts",
@@ -21352,14 +21402,34 @@
       "byte": 830
     },
     {
+      "sti": "src/lib/caddie/mcp-privacy.test.ts",
+      "omrade": "test",
+      "byte": 4246
+    },
+    {
+      "sti": "src/lib/caddie/mcp-privacy.ts",
+      "omrade": "appkode",
+      "byte": 1515
+    },
+    {
+      "sti": "src/lib/caddie/privacy.test.ts",
+      "omrade": "test",
+      "byte": 7676
+    },
+    {
+      "sti": "src/lib/caddie/privacy.ts",
+      "omrade": "appkode",
+      "byte": 8781
+    },
+    {
       "sti": "src/lib/caddie/system-prompt.ts",
       "omrade": "appkode",
-      "byte": 1576
+      "byte": 1889
     },
     {
       "sti": "src/lib/caddie/tools/index.ts",
       "omrade": "appkode",
-      "byte": 1510
+      "byte": 2526
     },
     {
       "sti": "src/lib/caddie/tools/knowledge.test.ts",
@@ -21372,14 +21442,19 @@
       "byte": 2601
     },
     {
+      "sti": "src/lib/caddie/tools/read-access.test.ts",
+      "omrade": "test",
+      "byte": 6393
+    },
+    {
       "sti": "src/lib/caddie/tools/read.ts",
       "omrade": "appkode",
-      "byte": 16593
+      "byte": 16961
     },
     {
       "sti": "src/lib/caddie/tools/write.ts",
       "omrade": "appkode",
-      "byte": 8850
+      "byte": 8555
     },
     {
       "sti": "src/lib/caddie/types.ts",
@@ -23219,7 +23294,7 @@
     {
       "sti": "src/lib/mcp/dispatcher.ts",
       "omrade": "appkode",
-      "byte": 5515
+      "byte": 5755
     },
     {
       "sti": "src/lib/mcp/jsonrpc.ts",
@@ -23452,19 +23527,34 @@
       "byte": 8205
     },
     {
+      "sti": "src/lib/offline-queue/eier-context.tsx",
+      "omrade": "appkode",
+      "byte": 557
+    },
+    {
+      "sti": "src/lib/offline-queue/eier-scope.test.ts",
+      "omrade": "test",
+      "byte": 1157
+    },
+    {
+      "sti": "src/lib/offline-queue/eier-scope.ts",
+      "omrade": "appkode",
+      "byte": 1131
+    },
+    {
       "sti": "src/lib/offline-queue/live-drill-kladd.test.ts",
       "omrade": "test",
-      "byte": 1151
+      "byte": 1265
     },
     {
       "sti": "src/lib/offline-queue/live-drill-kladd.ts",
       "omrade": "appkode",
-      "byte": 1454
+      "byte": 1687
     },
     {
       "sti": "src/lib/offline-queue/live-drill-queue.ts",
       "omrade": "appkode",
-      "byte": 5363
+      "byte": 6036
     },
     {
       "sti": "src/lib/offline-queue/offline-queue.contract.test.ts",
@@ -23472,34 +23562,44 @@
       "byte": 619
     },
     {
+      "sti": "src/lib/offline-queue/private-cache-routes.test.ts",
+      "omrade": "test",
+      "byte": 1374
+    },
+    {
+      "sti": "src/lib/offline-queue/private-cache-routes.ts",
+      "omrade": "appkode",
+      "byte": 807
+    },
+    {
       "sti": "src/lib/offline-queue/recording-chunk-kladd.test.ts",
       "omrade": "test",
-      "byte": 998
+      "byte": 1067
     },
     {
       "sti": "src/lib/offline-queue/recording-chunk-kladd.ts",
       "omrade": "appkode",
-      "byte": 1236
+      "byte": 1425
     },
     {
       "sti": "src/lib/offline-queue/recording-chunk-queue.ts",
       "omrade": "appkode",
-      "byte": 4432
+      "byte": 4920
     },
     {
       "sti": "src/lib/offline-queue/tapper-kladd.test.ts",
       "omrade": "test",
-      "byte": 1808
+      "byte": 1963
     },
     {
       "sti": "src/lib/offline-queue/tapper-kladd.ts",
       "omrade": "appkode",
-      "byte": 1654
+      "byte": 1906
     },
     {
       "sti": "src/lib/offline-queue/tapper-queue.ts",
       "omrade": "appkode",
-      "byte": 3963
+      "byte": 4457
     },
     {
       "sti": "src/lib/onboarding/sg-baseline.test.ts",
@@ -23734,7 +23834,7 @@
     {
       "sti": "src/lib/portal-live/live-state.test.ts",
       "omrade": "test",
-      "byte": 3234
+      "byte": 3246
     },
     {
       "sti": "src/lib/portal-live/live-state.ts",
@@ -24367,9 +24467,14 @@
       "byte": 1635
     },
     {
+      "sti": "src/lib/runde-logg/draft-eier.test.ts",
+      "omrade": "test",
+      "byte": 1444
+    },
+    {
       "sti": "src/lib/runde-logg/draft.ts",
       "omrade": "appkode",
-      "byte": 3476
+      "byte": 4150
     },
     {
       "sti": "src/lib/runde-logg/estimer-fra-total.test.ts",
@@ -24879,7 +24984,7 @@
     {
       "sti": "src/lib/trackman/canonical.ts",
       "omrade": "appkode",
-      "byte": 3149
+      "byte": 3964
     },
     {
       "sti": "src/lib/trackman/dispersion-map.test.ts",
@@ -24899,12 +25004,12 @@
     {
       "sti": "src/lib/trackman/parse-csv.ts",
       "omrade": "appkode",
-      "byte": 8134
+      "byte": 11215
     },
     {
       "sti": "src/lib/trackman/parse-html-report.ts",
       "omrade": "appkode",
-      "byte": 4764
+      "byte": 6936
     },
     {
       "sti": "src/lib/trackman/parse-photo.test.ts",
@@ -24914,22 +25019,32 @@
     {
       "sti": "src/lib/trackman/parse-photo.ts",
       "omrade": "appkode",
-      "byte": 4612
+      "byte": 4739
+    },
+    {
+      "sti": "src/lib/trackman/preview.ts",
+      "omrade": "appkode",
+      "byte": 348
     },
     {
       "sti": "src/lib/trackman/stabilitet-fallback.test.ts",
       "omrade": "test",
-      "byte": 2200
+      "byte": 3067
     },
     {
       "sti": "src/lib/trackman/stabilitet.ts",
       "omrade": "appkode",
-      "byte": 7632
+      "byte": 8548
     },
     {
       "sti": "src/lib/trackman/teaser.ts",
       "omrade": "appkode",
       "byte": 2547
+    },
+    {
+      "sti": "src/lib/trackman/units.test.ts",
+      "omrade": "test",
+      "byte": 5325
     },
     {
       "sti": "src/lib/training/korrelasjon.ts",

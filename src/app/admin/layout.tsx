@@ -1,6 +1,7 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { AdminRolleProvider } from "@/components/v2/rolle";
 import { AdminToaster } from "@/components/admin/admin-toaster";
+import { LokalDataEierProvider } from "@/lib/offline-queue/eier-context";
 
 // TOPP-layout for /admin — kun auth-guarden, INGEN visuell chrome. page.tsx
 // (rot) er en ren redirect til /admin/agencyos og trenger ingen chrome.
@@ -18,9 +19,11 @@ export default async function AdminLayout({
   // COACH får adminOnly-nav-punkter skjult i V2Shell (ren UI-skjuling —
   // hver ADMIN-side er i tillegg server-gated med egen requirePortalUser).
   return (
-    <AdminRolleProvider erAdmin={user.role === "ADMIN"}>
-      {children}
-      <AdminToaster />
-    </AdminRolleProvider>
+    <LokalDataEierProvider eierId={user.id}>
+      <AdminRolleProvider erAdmin={user.role === "ADMIN"}>
+        {children}
+        <AdminToaster />
+      </AdminRolleProvider>
+    </LokalDataEierProvider>
   );
 }

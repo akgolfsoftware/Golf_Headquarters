@@ -13,7 +13,7 @@ test("autosendte logger fullfører ikke øvelser", () => {
 test("lokal angre til null vinner over server; pause og klokke gjenopptas", () => {
   const data = session();
   data.existingLogs = [{ drillId: "d0", repsTotal: 8, repsWithoutBall: 0, repsLowSpeed: 0, repsAutomatic: 8, repsHit: 0, successRate: 0, notes: null, loggedAt: "2026-09-11T12:00Z" }];
-  const cached = { ...byggLiveDrillKoRad("s", livePayload(restoreLiveState(session(), null)), 120, new Date("2026-09-10")), paused: true, drillSec: 70 };
+  const cached = { ...byggLiveDrillKoRad("bruker-a", "s", livePayload(restoreLiveState(session(), null)), 120, new Date("2026-09-10")), paused: true, drillSec: 70 };
   const restored = restoreLiveState(data, cached);
   assert.equal(restored.drills[0].repsTotal, 0);
   assert.equal(restored.totalSec, 120); assert.equal(restored.drillSec, 70); assert.equal(restored.paused, true);

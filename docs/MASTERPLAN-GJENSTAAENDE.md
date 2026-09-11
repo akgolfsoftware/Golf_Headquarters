@@ -20,21 +20,21 @@ Valgt byggegrunnlag: **Trainlock ZIP (4) for PlayerHQ og AgencyOS**, levert **Cl
 | D2-PH06 / R2 | Valgt resultathierarki, lesbare lagrede notater/vurdering, ekte appskrifter, feil/venting/nytt forsøk, trygg feltskriving | Bygget og komponentprøvd i denne leveransen. Fem nye handlingstester, 64 skjermvarianter, interaktive feilprøver og isolert PostgreSQL-prøve. [Rapport og begrensninger](design-audit/playerhq-ph06-2026-09-11.md) |
 | Produktplan/intervju | Funksjonsregister, funksjonskort og intervjuguide bevart fra separat gren | Dokumentene er integrert som arbeidsunderlag. Intervjuet og de foreslåtte produktbeslutningene er ikke erklært ferdige |
 | Prosjektopprydding | Ferdige grener/arbeidskopier avstemt, gjeldende innganger og register oppdatert | [Samlingsrapport](vedlikehold/samling-og-opprydding-2026-09-11.md). Historiske sikkerhetskopier og originaldesign bevares |
+| R-A/R-B/R-C/R-D/R-H | Caddie-ressursgrenser og AI-minimering, privat lokal lagring, TrackMan-enheter og sikker abonnementshenting | Bygget og testet på samlingsgrenen. [Kontroll og åpne grenser](vedlikehold/sikkerhet-og-enheter-2026-09-11.md). GitHub-fletting, innlogget kontroll og produksjonsbevis registreres separat |
 
 Siste samlede testresultat og flettepunkt skal leses i samlingsrapporten og tilhørende GitHub PR. Innlogget produksjonsreise, faktisk betaling og Anders' visuelle vurdering er egne kontroller som fortsatt gjenstår.
 
 ## Neste oppgaver, i rekkefølge
 
+Aktiv arbeidsdeling 11.09.2026: Claude Code/Sonnet 5 har den avgrensede [AgencyOS-reisen](planer/claude-code-sonnet-5-agencyos-prompt.md). Codex har bygget R-A/R-B/R-C/R-D/R-H og kontrollerer dem samlet før GitHub-fletting. Sporene deler ikke filansvar.
+
 | Prioritet / ID | Konkret neste leveranse | Inngang | Ferdig når |
 |---|---|---|---|
 | 1 · R-E / R1–R3 | Kjør hele I dag → Plan → PH-04 → PH-05 → PH-06 med isolerte, innloggede testroller. Ta med V2, Workbench og eldre plan | `tests/e2e/`, `src/lib/portal-live/`, `src/lib/portal/` | Samme økt/tall gjennom reisen; gjenåpning etter lagring virker; uvedkommende avvises. Kritiske prøver gir ikke grønt ved å hoppes over |
-| 2 · R-A/R-B | Avstem Caddie-søk/direkte oppslag og dataminimering før AI-kall mot dagens kode | `src/lib/caddie/tools/read.ts`, `src/app/api/caddie/chat/route.ts`, `src/lib/ai/anonymiser.ts` | Syntetiske uvedkommende avvises og navn/e-post ikke går ut ved verktøyresultat, historikk eller fritekst. Ikke kall ADMIN-begrenset inngang en bekreftet ordinær coach-lekkasje |
-| 3 · R-C | Privat mellomlagring, opptak og kladd ved utlogging, utløpt innlogging og brukerbytte | `src/app/sw.ts`, `src/lib/offline-queue/` | Ingen får forrige brukers innhold. Ulagrede opptak bevares/håndteres forståelig; sletting brukes ikke som umerket reserveflyt |
-| 4 · R-D | Bevar TrackMan-enheter og skill carry fra total gjennom importen | `src/lib/trackman/canonical.ts` | Faste testfiler dekker mph/m/s og yards/meter. Ukjent enhet/manglende carry vises som ukjent, ikke gjettet |
-| 5 · R-H | Skill manglende abonnement fra feil ved henting | `src/lib/auth/getCurrentUser.ts` | Driftsfeil gir feil og nytt forsøk, uten feil betalingskrav eller utvidet tilgang |
-| 6 · D2-AO | Port AgencyOS-hjem → spillerliste → spillerkort → plan/tildeling → oppfølging fra valgt Trainlock | `src/components/admin/`, `src/components/workbench/`, valgte AX/AO-kilder | Mobil/desktop og temaer stemmer; reelle handlinger, tomt/feil/lagring og tilgang er prøvd |
-| 7 · D2-TN | Fullfør Team Norway-skall/oversikt → testføring → resultat/historikk → dokumenter/poster | `src/app/team-norway/`, `src/components/team-norway/`, valgt TN-pakke | Samme testvariant og resultat gjennom reisen, korrekt spiller-/coach-/organisasjonsinnsyn og ærlig manglende data |
-| 8 · D2-WANG | Fullfør WANG-hjem → skole-/treningsuke → økt → elev/gruppe → rapport | `src/app/wang/`, WANG-komponenter og `designsystem/wang/` | Innlogging og skole-/gruppeavgrensning virker; ingen demonstrasjonsdata fremstilles som faktiske elevdata |
+| 2 · D2-AO | Fullfør AgencyOS-hjem → spillerliste → spillerkort → plan/tildeling → oppfølging fra valgt Trainlock. PR #839 bevarer Stall-konteksten; fase 2 eier rail, innlogget ressursavvisning og publiseringsbevis | `src/components/admin/`, `src/components/workbench/`, valgte AX/AO-kilder | Mobil/desktop og temaer stemmer; reelle handlinger, tomt/feil/lagring og tilgang er prøvd |
+| 3 · Caddie-kø/AI-grense | Avgrens AgencyOS-køene til utkast administratoren faktisk kan godkjenne, og definer en streng produktgrense før vilkårlig fritekst kan sendes til AI | `src/lib/admin/ko/last-godkjenninger.ts`, `src/lib/admin/innboks-saker.ts`, Caddie-inngangene | Kø og godkjenning bruker samme eierregel. Ukjent fritekst går ikke til ekstern modell uten en dokumentert tillatt datastruktur |
+| 4 · D2-TN | Fullfør Team Norway-skall/oversikt → testføring → resultat/historikk → dokumenter/poster | `src/app/team-norway/`, `src/components/team-norway/`, valgt TN-pakke | Samme testvariant og resultat gjennom reisen, korrekt spiller-/coach-/organisasjonsinnsyn og ærlig manglende data |
+| 5 · D2-WANG | Fullfør WANG-hjem → skole-/treningsuke → økt → elev/gruppe → rapport | `src/app/wang/`, WANG-komponenter og `designsystem/wang/` | Innlogging og skole-/gruppeavgrensning virker; ingen demonstrasjonsdata fremstilles som faktiske elevdata |
 
 R-A–R-J og REV-F1–F11 er forklart i [produktplanen](planer/produktplan-og-intervju-2026-09-11.md). Funn fra den eldre gjennomgangen må kontrolleres mot dagens kode før endring. R-G «neste økt» er allerede rettet i porteringen og skal verifiseres i prioritet 1, ikke bygges på nytt.
 

@@ -8,6 +8,7 @@
 import { z } from "zod";
 import { sjekkKollisjon, erKollisjonsfeil, kollisjonsmelding } from "@/lib/booking/kollisjonsvern";
 import { prisma } from "@/lib/prisma";
+import { assertCoachTilgangTilSpiller } from "@/lib/auth/coached";
 
 // ---------- Input-skjemaer ----------
 
@@ -81,6 +82,12 @@ export async function executeApprovedTool(
   toolInput: Record<string, unknown>,
   adminUserId: string,
 ): Promise<ExecutorResult> {
+  // Et lagret forslag gir ikke evig innsyn: medlemskap/coachrelasjon kan
+  // være avsluttet etter at modellen foreslo handlingen.
+  const playerId = toolInput.playerId ?? toolInput.spillerId;
+  if (typeof playerId === "string") {
+    await assertCoachTilgangTilSpiller({ id: adminUserId, role: "ADMIN" }, playerId);
+  }
   switch (toolName) {
     case "draftPlayerMessage": {
       const input = parseOrThrow(messageSchema, toolInput, toolName);

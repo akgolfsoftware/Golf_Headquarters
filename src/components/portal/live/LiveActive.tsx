@@ -3,7 +3,7 @@
 /** PH-05 Live + B2 iPad/Mac fra valgt Trainlock ZIP (4), med v3-tema.
  * Faktiske rep-kategorier beholdes; Treff/Kant/Bom krever egne produktfelt.
  * Kontroll og åpne avvik: docs/design-audit/portering-fire-flater-2026-09-10.md. */
-import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { Check, Pause, Play } from "lucide-react";
 import type { LiveV2Session, LiveCoachPanelData } from "./types";
 import { plannedVolumText } from "./types";
@@ -11,15 +11,22 @@ import { DrillLogger } from "./DrillLogger";
 import { LiveCoachPanel } from "./LiveCoachPanel";
 import { useLiveSession } from "./use-live-session";
 import s from "./live-active.module.css";
+import { useLokalDataEier } from "@/lib/offline-queue/eier-context";
+import { byggLagringsNokkel } from "@/lib/offline-queue/eier-scope";
 
 type LiveNotat = { t: string; tekst: string };
 const fmt = (sec: number) => `${String(Math.floor(sec / 60)).padStart(2, "0")}:${String(sec % 60).padStart(2, "0")}`;
-const noteKey = (id: string) => `akhq-live-notater-${id}`;
+const noteKey = (eierId: string | null, id: string) =>
+  byggLagringsNokkel(`akhq-live-notater-${id}`, eierId);
 const subscribeNotes = (listener: () => void) => {
   window.addEventListener("storage", listener); window.addEventListener("akhq-live-notes", listener);
   return () => { window.removeEventListener("storage", listener); window.removeEventListener("akhq-live-notes", listener); };
 };
-function noteSnapshot(id: string) { try { return sessionStorage.getItem(noteKey(id)) ?? "[]"; } catch { return "[]"; } }
+function noteSnapshot(eierId: string | null, id: string) {
+  const key = noteKey(eierId, id);
+  if (!key) return "[]";
+  try { return sessionStorage.getItem(key) ?? "[]"; } catch { return "[]"; }
+}
 function readNotes(raw: string): LiveNotat[] {
   try {
     const value: unknown = JSON.parse(raw);
@@ -28,10 +35,15 @@ function readNotes(raw: string): LiveNotat[] {
 }
 
 export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPanel: LiveCoachPanelData }) {
-  const live = useLiveSession(data);
+  const eierId = useLokalDataEier();
+  const live = useLiveSession(data, eierId);
   const [mode, setMode] = useState<"now" | "list" | "notes">("now");
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const rawNotes = useSyncExternalStore(subscribeNotes, () => noteSnapshot(data.sessionId), () => "[]");
+  const getNotesSnapshot = useCallback(
+    () => noteSnapshot(eierId, data.sessionId),
+    [data.sessionId, eierId],
+  );
+  const rawNotes = useSyncExternalStore(subscribeNotes, getNotesSnapshot, () => "[]");
   const notes = useMemo(() => readNotes(rawNotes), [rawNotes]);
   const [text, setText] = useState("");
   const [noteError, setNoteError] = useState(false);
@@ -81,7 +93,9 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
     const value = text.trim();
     if (!value || !enabled) return;
     const next = [{ t: fmt(live.totalSec), tekst: value }, ...notes];
-    try { sessionStorage.setItem(noteKey(data.sessionId), JSON.stringify(next)); }
+    const key = noteKey(eierId, data.sessionId);
+    if (!key) { setNoteError(true); return; }
+    try { sessionStorage.setItem(key, JSON.stringify(next)); }
     catch { setNoteError(true); return; }
     window.dispatchEvent(new Event("akhq-live-notes")); setText(""); setNoteError(false); noteInput.current?.focus();
   };

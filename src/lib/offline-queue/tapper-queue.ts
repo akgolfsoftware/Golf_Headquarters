@@ -5,16 +5,17 @@
  * (retry-telling, når appen skal gi opp stille retry) ligger i tapper-kladd.ts
  * og er enhetstestet der. Native `indexedDB`-API — ingen ny avhengighet.
  *
- * Én butikk («tapper-ko»), nøkkel = sessionId — køen trenger kun siste
- * kjente snapshot per økt (saveTapperCounts er idempotent på absolutt
- * telling), ikke en voksende hendelseslogg.
+ * Nye rader ligger i «tapper-ko-v2», nøkkel = eierId + sessionId. Den gamle
+ * eierløse butikken beholdes urørt ved oppgradering, men leses aldri automatisk.
+ * Køen trenger kun siste kjente snapshot per bruker og økt.
  */
 
 import { byggKoRad, registrerMislykketForsok, trengerManuellHandling, type TapperKoRad } from "./tapper-kladd";
+import { byggEierNokkel, erGyldigEierId, filtrerEideRader } from "./eier-scope";
 
 const DB_NAVN = "akgolf-offline-ko";
-const DB_VERSJON = 1;
-const BUTIKK = "tapper-ko";
+const DB_VERSJON = 2;
+const BUTIKK = "tapper-ko-v2";
 
 function apneDb(): Promise<IDBDatabase | null> {
   if (typeof indexedDB === "undefined") return Promise.resolve(null);
@@ -22,13 +23,14 @@ function apneDb(): Promise<IDBDatabase | null> {
     const req = indexedDB.open(DB_NAVN, DB_VERSJON);
     req.onupgradeneeded = () => {
       if (!req.result.objectStoreNames.contains(BUTIKK)) {
-        req.result.createObjectStore(BUTIKK, { keyPath: "sessionId" });
+        req.result.createObjectStore(BUTIKK, { keyPath: "key" });
       }
     };
     req.onsuccess = () => resolve(req.result);
     // Blokkert/feilet IndexedDB (privat modus, kvote osv.) skal aldri
     // velte selve tapper-lagringen — bare gjøre offline-køen utilgjengelig.
     req.onerror = () => resolve(null);
+    req.onblocked = () => resolve(null);
   });
 }
 
@@ -54,18 +56,21 @@ async function medButikk<T>(
 
 /** Legger (eller erstatter) siste kjente tellinger for en økt i køen. */
 export async function leggIKo(
+  eierId: string,
   sessionId: string,
   counts: Array<{ club: string; count: number }>,
-): Promise<void> {
-  const eksisterende = await medButikk<TapperKoRad>("readonly", (b) => b.get(sessionId));
+): Promise<boolean> {
+  if (!erGyldigEierId(eierId)) return false;
+  const key = byggEierNokkel(eierId, sessionId);
+  const eksisterende = await medButikk<TapperKoRad>("readonly", (b) => b.get(key));
   const rad = eksisterende
     ? { ...eksisterende, counts, sistOppdatert: new Date().toISOString() }
-    : byggKoRad(sessionId, counts, new Date());
-  await medButikk("readwrite", (b) => b.put(rad));
+    : byggKoRad(eierId, sessionId, counts, new Date());
+  return (await medButikk("readwrite", (b) => b.put(rad))) != null;
 }
 
-async function fjernFraKo(sessionId: string): Promise<void> {
-  await medButikk("readwrite", (b) => b.delete(sessionId));
+async function fjernFraKo(eierId: string, sessionId: string): Promise<void> {
+  await medButikk("readwrite", (b) => b.delete(byggEierNokkel(eierId, sessionId)));
 }
 
 async function alleRader(): Promise<TapperKoRad[]> {
@@ -74,8 +79,9 @@ async function alleRader(): Promise<TapperKoRad[]> {
 }
 
 /** Alle rader i offline-køen (for portal-wide flush). */
-export async function listTapperKo(): Promise<TapperKoRad[]> {
-  return alleRader();
+export async function listTapperKo(eierId: string): Promise<TapperKoRad[]> {
+  if (!erGyldigEierId(eierId)) return [];
+  return filtrerEideRader(await alleRader(), eierId);
 }
 
 /**
@@ -87,16 +93,18 @@ export async function listTapperKo(): Promise<TapperKoRad[]> {
  * kalleren kan vise en tydelig feil i stedet for å late som alt er bra.
  */
 export async function tomKo(
+  eierId: string,
   sessionId: string,
   lagre: (sessionId: string, counts: Array<{ club: string; count: number }>) => Promise<{ ok: boolean }>,
 ): Promise<"tom" | "synket" | "feilet" | "gitt-opp"> {
-  const rader = await alleRader();
+  if (!erGyldigEierId(eierId)) return "feilet";
+  const rader = await listTapperKo(eierId);
   const rad = rader.find((r) => r.sessionId === sessionId);
   if (!rad) return "tom";
 
   const res = await lagre(rad.sessionId, rad.counts).catch(() => ({ ok: false }));
   if (res.ok) {
-    await fjernFraKo(sessionId);
+    await fjernFraKo(eierId, sessionId);
     return "synket";
   }
 

@@ -4,13 +4,15 @@
  * Golfbane = dårlig dekning: kladden lever på enheten og lagres etter hver
  * mutasjon, slik at reload/crash aldri mister slag. Zod-validert ved restore
  * (ødelagt/utdatert kladd forkastes stille). Slettes først når serveren har
- * bekreftet lagring. Kjent begrensning: kladden følger enheten, ikke brukeren.
+ * bekreftet lagring. Nøkkelen er avgrenset til innlogget bruker, slik at en
+ * annen bruker på samme enhet aldri får forrige brukers runde.
  */
 
 import { z } from "zod";
 import type { LoggetHull } from "@/lib/runde-logg/types";
+import { byggLagringsNokkel } from "@/lib/offline-queue/eier-scope";
 
-const NOKKEL = "akgolf.runde-logg.kladd.v1";
+const GRUNNNOKKEL = "akgolf.runde-logg.kladd.v2";
 
 const hvileLieSchema = z.enum([
   "FAIRWAY",
@@ -67,10 +69,12 @@ export type RundeKladd = Omit<z.infer<typeof kladdSchema>, "hullData"> & {
   hullData: LoggetHull[];
 };
 
-export function lesKladd(): RundeKladd | null {
+export function lesKladd(eierId: string | null): RundeKladd | null {
   if (typeof window === "undefined") return null;
+  const nokkel = byggLagringsNokkel(GRUNNNOKKEL, eierId);
+  if (!nokkel) return null;
   try {
-    const raa = window.localStorage.getItem(NOKKEL);
+    const raa = window.localStorage.getItem(nokkel);
     if (!raa) return null;
     const parsed = kladdSchema.safeParse(JSON.parse(raa));
     return parsed.success ? (parsed.data as RundeKladd) : null;
@@ -84,11 +88,13 @@ export function lesKladd(): RundeKladd | null {
  * referanse mellom render-kall, ellers looper React). Cachen invalideres av
  * lagreKladd/slettKladd — aldri under render.
  */
-let kladdCache: RundeKladd | null | undefined;
+const kladdCache = new Map<string, RundeKladd | null>();
 
-export function lesKladdCached(): RundeKladd | null {
-  if (kladdCache === undefined) kladdCache = lesKladd();
-  return kladdCache;
+export function lesKladdCached(eierId: string | null): RundeKladd | null {
+  const nokkel = byggLagringsNokkel(GRUNNNOKKEL, eierId);
+  if (!nokkel) return null;
+  if (!kladdCache.has(nokkel)) kladdCache.set(nokkel, lesKladd(eierId));
+  return kladdCache.get(nokkel) ?? null;
 }
 
 /** Server-snapshot for useSyncExternalStore. */
@@ -96,24 +102,33 @@ export function lesKladdServer(): null {
   return null;
 }
 
-export function lagreKladd(kladd: Omit<RundeKladd, "oppdatert">): void {
-  if (typeof window === "undefined") return;
+export function lagreKladd(
+  eierId: string | null,
+  kladd: Omit<RundeKladd, "oppdatert">,
+): boolean {
+  if (typeof window === "undefined") return false;
+  const nokkel = byggLagringsNokkel(GRUNNNOKKEL, eierId);
+  if (!nokkel) return false;
   try {
     window.localStorage.setItem(
-      NOKKEL,
+      nokkel,
       JSON.stringify({ ...kladd, oppdatert: new Date().toISOString() }),
     );
-    kladdCache = undefined;
+    kladdCache.delete(nokkel);
+    return true;
   } catch {
     // Full quota / private mode — føringen fortsetter uten kladd.
+    return false;
   }
 }
 
-export function slettKladd(): void {
+export function slettKladd(eierId: string | null): void {
   if (typeof window === "undefined") return;
+  const nokkel = byggLagringsNokkel(GRUNNNOKKEL, eierId);
+  if (!nokkel) return;
   try {
-    window.localStorage.removeItem(NOKKEL);
-    kladdCache = null;
+    window.localStorage.removeItem(nokkel);
+    kladdCache.set(nokkel, null);
   } catch {
     // ignorer
   }

@@ -29,5 +29,5 @@ export default async function PortalLayout({
   // STEG 16.3 (bruksmåling): én rad per bruker per Oslo-dag, skrevet ved hver
   // innlasting av /portal. Idempotent (upsert), feiler aldri sidevisningen.
   await registrerDagligAktivitet(user.id);
-  return <PortalProviders>{children}</PortalProviders>;
+  return <PortalProviders eierId={user.id}>{children}</PortalProviders>;
 }

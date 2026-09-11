@@ -2,7 +2,8 @@
 // Spec: https://spec.modelcontextprotocol.io/specification/
 
 import type { ZodType } from "zod";
-import { buildCaddieTools, CADDIE_TOOL_SHAPE } from "@/lib/caddie/tools";
+import { CADDIE_TOOL_SHAPE } from "@/lib/caddie/tools";
+import { buildPrivateMcpCaddieTools } from "@/lib/caddie/mcp-privacy";
 import {
   rpcError,
   rpcSuccess,
@@ -62,13 +63,21 @@ async function handleToolsCall(
   if (!toolName) {
     return rpcError(id, RPC_INVALID_PARAMS, "`params.name` mangler eller er ikke en string.");
   }
+  if (!Object.hasOwn(CADDIE_TOOL_SHAPE, toolName)) {
+    return rpcError(id, RPC_METHOD_NOT_FOUND, "Ukjent verktøy. Bruk tools/list for å se tilgjengelige verktøy.");
+  }
 
-  const tool = (buildCaddieTools(viewer) as Record<string, unknown>)[toolName];
+  let tool: unknown;
+  try {
+    tool = (await buildPrivateMcpCaddieTools(viewer))[toolName];
+  } catch {
+    return rpcError(id, RPC_INVALID_PARAMS, "Caddie er midlertidig utilgjengelig.");
+  }
   if (!tool) {
     return rpcError(
       id,
       RPC_METHOD_NOT_FOUND,
-      `Ukjent tool: ${toolName}. Bruk tools/list for å se tilgjengelige tools.`,
+      "Verktøyet er ikke tilgjengelig.",
     );
   }
 
@@ -111,10 +120,9 @@ async function handleToolsCall(
       content: [{ type: "text", text }],
       isError: isError === true,
     });
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
+  } catch {
     return rpcSuccess(id, {
-      content: [{ type: "text", text: `Feil under tool-eksekvering: ${message}` }],
+      content: [{ type: "text", text: "Verktøyet kunne ikke fullføres. Prøv igjen senere." }],
       isError: true,
     });
   }

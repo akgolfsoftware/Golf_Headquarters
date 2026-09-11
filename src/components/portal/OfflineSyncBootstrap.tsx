@@ -16,27 +16,27 @@ import { synkLiveDrillKo, listLiveDrillKo } from "@/lib/offline-queue/live-drill
 import { saveTapperCounts } from "@/app/portal/(fullscreen)/live/[sessionId]/tapper/actions";
 import { logDrillReps } from "@/app/portal/(fullscreen)/live/[sessionId]/actions";
 
-async function flushAll(): Promise<{ remaining: number; synced: number }> {
+async function flushAll(eierId: string): Promise<{ remaining: number; synced: number }> {
   if (typeof navigator !== "undefined" && !navigator.onLine) {
     return { remaining: 0, synced: 0 };
   }
 
   let synced = 0;
 
-  const tapper = await listTapperKo().catch(() => []);
+  const tapper = await listTapperKo(eierId).catch(() => []);
   for (const rad of tapper) {
     try {
-      const status = await tomKo(rad.sessionId, saveTapperCounts);
+      const status = await tomKo(eierId, rad.sessionId, saveTapperCounts);
       if (status === "synket") synced += 1;
     } catch {
       /* keep queue row */
     }
   }
 
-  const drills = await listLiveDrillKo().catch(() => []);
+  const drills = await listLiveDrillKo(eierId).catch(() => []);
   for (const rad of drills) {
     try {
-      const status = await synkLiveDrillKo(rad.sessionId, async (sessionId, items) => {
+      const status = await synkLiveDrillKo(eierId, rad.sessionId, async (sessionId, items) => {
         for (const d of items) {
           const r = await logDrillReps({
             sessionId,
@@ -59,17 +59,17 @@ async function flushAll(): Promise<{ remaining: number; synced: number }> {
     }
   }
 
-  const leftTapper = (await listTapperKo().catch(() => [])).length;
-  const leftDrill = (await listLiveDrillKo().catch(() => [])).length;
+  const leftTapper = (await listTapperKo(eierId).catch(() => [])).length;
+  const leftDrill = (await listLiveDrillKo(eierId).catch(() => [])).length;
   return { remaining: leftTapper + leftDrill, synced };
 }
 
-export function OfflineSyncBootstrap() {
+export function OfflineSyncBootstrap({ eierId }: { eierId: string }) {
   const warned = useRef(false);
 
   useEffect(() => {
     const run = async () => {
-      const { remaining, synced } = await flushAll();
+      const { remaining, synced } = await flushAll(eierId);
       if (synced > 0 && remaining === 0) {
         // silent success — avoid noise on every visit
       } else if (remaining > 0 && !warned.current) {
@@ -93,7 +93,7 @@ export function OfflineSyncBootstrap() {
       window.removeEventListener("online", onOnline);
       document.removeEventListener("visibilitychange", onVis);
     };
-  }, []);
+  }, [eierId]);
 
   return null;
 }

@@ -47,9 +47,9 @@ export const WRITE_TOOLS = {
           body,
           previewText: `Send "${subject}" til ${player.name} <${player.email}>?`,
         };
-      } catch (err) {
+      } catch {
         return toolError(
-          `draftPlayerMessage feilet: ${err instanceof Error ? err.message : String(err)}`,
+          "draftPlayerMessage feilet",
           "Kunne ikke forberede meldingsforslag.",
         );
       }
@@ -123,9 +123,9 @@ export const WRITE_TOOLS = {
           notes,
           previewText,
         };
-      } catch (err) {
+      } catch {
         return toolError(
-          `draftBookingProposal feilet: ${err instanceof Error ? err.message : String(err)}`,
+          "draftBookingProposal feilet",
           "Kunne ikke forberede bookingforslag.",
         );
       }
@@ -180,9 +180,9 @@ export const WRITE_TOOLS = {
           body,
           previewText: `Send purring til ${navn} for ${beloep} ${invoice.currency.toUpperCase()}?`,
         };
-      } catch (err) {
+      } catch {
         return toolError(
-          `draftInvoiceReminder feilet: ${err instanceof Error ? err.message : String(err)}`,
+          "draftInvoiceReminder feilet",
           "Kunne ikke forberede purreforslag.",
         );
       }
@@ -219,9 +219,9 @@ export const WRITE_TOOLS = {
           note,
           previewText: `Lagre notat på ${player.name}: "${preview}"?`,
         };
-      } catch (err) {
+      } catch {
         return toolError(
-          `draftPlayerNote feilet: ${err instanceof Error ? err.message : String(err)}`,
+          "draftPlayerNote feilet",
           "Kunne ikke forberede notat-forslag.",
         );
       }
@@ -261,9 +261,9 @@ export const WRITE_TOOLS = {
           reason,
           previewText: `Foreslår plan-endring for ${player.name}: "${preview}"`,
         };
-      } catch (err) {
+      } catch {
         return toolError(
-          `draftPlanAdjustment feilet: ${err instanceof Error ? err.message : String(err)}`,
+          "draftPlanAdjustment feilet",
           "Kunne ikke forberede plan-justering.",
         );
       }

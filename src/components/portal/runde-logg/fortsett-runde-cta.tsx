@@ -7,9 +7,10 @@ import { TL } from "@/lib/v2/train-lock";
  */
 
 import Link from "next/link";
-import { useSyncExternalStore } from "react";
+import { useCallback, useSyncExternalStore } from "react";
 import { lesKladdCached, lesKladdServer } from "@/lib/runde-logg/draft";
 import { Icon } from "@/components/v2";
+import { useLokalDataEier } from "@/lib/offline-queue/eier-context";
 
 const abonnerIngen = () => () => {};
 
@@ -21,12 +22,16 @@ type Props = {
 
 /** true når en runde-kladd finnes (ikke oppsett-steget) — for betinget kort-skall rundt CTA-en. */
 export function useHarRundeKladd(): boolean {
-  const kladd = useSyncExternalStore(abonnerIngen, lesKladdCached, lesKladdServer);
+  const eierId = useLokalDataEier();
+  const snapshot = useCallback(() => lesKladdCached(eierId), [eierId]);
+  const kladd = useSyncExternalStore(abonnerIngen, snapshot, lesKladdServer);
   return kladd != null && kladd.steg !== "oppsett";
 }
 
 export function FortsettRundeCta({ variant = "row" }: Props) {
-  const kladd = useSyncExternalStore(abonnerIngen, lesKladdCached, lesKladdServer);
+  const eierId = useLokalDataEier();
+  const snapshot = useCallback(() => lesKladdCached(eierId), [eierId]);
+  const kladd = useSyncExternalStore(abonnerIngen, snapshot, lesKladdServer);
   if (!kladd || kladd.steg === "oppsett") return null;
 
   const hullNr = (kladd.aktivtHullIdx ?? 0) + 1;

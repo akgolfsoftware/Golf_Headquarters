@@ -18,6 +18,9 @@
  * (Fasit: designsystem/train-lock/GAP-1 Tilstander.dc.html) — meldingen
  * er mer presis enn fasitens («Runden lagres lokalt og synkes…») fordi
  * kladden faktisk KUN lagres lokalt frem til denne lagringen lykkes.
+ * Avvik:
+ *   - Ingen riggrad: denne endringen avgrenser bare sletting av lokal kladd
+ *     til innlogget bruker; markup og visuelle verdier er urørt.
  */
 
 import { useState } from "react";
@@ -31,6 +34,7 @@ import type { LoggetHull } from "@/lib/runde-logg/types";
 import { beregnSg } from "@/lib/domain/sg";
 import { rundeTilSgShots, hullTilSgShots } from "@/lib/runde-logg/til-sg-shots";
 import { deriverRundeScore } from "@/lib/runde-logg/deriver-hullscore";
+import { useLokalDataEier } from "@/lib/offline-queue/eier-context";
 
 const UTDRAG_ANTALL = 3;
 
@@ -54,6 +58,7 @@ type RundeRecapProps = {
 
 export function RundeRecap({ courseId, courseNavn, playedAt, roundType, hullData, onTilbake }: RundeRecapProps) {
   const router = useRouter();
+  const eierId = useLokalDataEier();
   const [lagrer, setLagrer] = useState(false);
   const [feil, setFeil] = useState<string | null>(null);
 
@@ -109,7 +114,7 @@ export function RundeRecap({ courseId, courseNavn, playedAt, roundType, hullData
         hull: ferdige,
         roundType,
       });
-      slettKladd();
+      slettKladd(eierId);
       router.push(`/portal/mal/runder/${res.roundId}?lagret=1`);
     } catch (e) {
       setFeil(

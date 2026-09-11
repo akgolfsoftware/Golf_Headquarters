@@ -37,6 +37,8 @@ import {
   fangstFormelTag,
   type FangstFormel,
 } from "@/lib/domain/fangst-chips";
+import { useLokalDataEier } from "@/lib/offline-queue/eier-context";
+import { byggLagringsNokkel } from "@/lib/offline-queue/eier-scope";
 
 type FangstTilstand =
   | "hvile"
@@ -45,26 +47,52 @@ type FangstTilstand =
   | "lagret"
   | "ingen_mikrofon"
   | "offline"
+  | "lokal_feil"
   | "for_kort";
 
-const KO_KEY = "akhq-fangst-ko";
+const KO_GRUNNNOKKEL = "akhq-fangst-ko-v2";
+const PENDING_GRUNNNOKKEL = "akhq-fangst-pending-v2";
 
 /** Kø for offline-fangster — ren localStorage, chips-teksten er alt. */
-function lesKo(): string[] {
+function lesKo(eierId: string | null): string[] {
+  const key = byggLagringsNokkel(KO_GRUNNNOKKEL, eierId);
+  if (!key) return [];
   try {
-    const raw = localStorage.getItem(KO_KEY);
+    const raw = localStorage.getItem(key);
     const parsed: unknown = raw ? JSON.parse(raw) : [];
     return Array.isArray(parsed) ? parsed.filter((x): x is string => typeof x === "string") : [];
   } catch {
     return [];
   }
 }
-function skrivKo(ko: string[]) {
+function skrivKo(eierId: string | null, ko: string[]): boolean {
+  const key = byggLagringsNokkel(KO_GRUNNNOKKEL, eierId);
+  if (!key) return false;
   try {
-    if (ko.length === 0) localStorage.removeItem(KO_KEY);
-    else localStorage.setItem(KO_KEY, JSON.stringify(ko));
+    if (ko.length === 0) localStorage.removeItem(key);
+    else localStorage.setItem(key, JSON.stringify(ko));
+    return true;
   } catch {
     /* lagring nektet — fangsten lever videre i minnet til arket lukkes */
+    return false;
+  }
+}
+
+function lesPending(eierId: string | null): string | null {
+  const key = byggLagringsNokkel(PENDING_GRUNNNOKKEL, eierId);
+  if (!key) return null;
+  try { return localStorage.getItem(key); } catch { return null; }
+}
+
+function skrivPending(eierId: string | null, tekst: string | null): boolean {
+  const key = byggLagringsNokkel(PENDING_GRUNNNOKKEL, eierId);
+  if (!key) return false;
+  try {
+    if (tekst) localStorage.setItem(key, tekst);
+    else localStorage.removeItem(key);
+    return true;
+  } catch {
+    return false;
   }
 }
 
@@ -85,6 +113,8 @@ const HINT: Record<FangstTilstand, string> = {
     "Mikrofonen er ikke tilgjengelig her. Chips og tekst virker som normalt — velg under, så er fangsten fanget.",
   offline:
     "Ingen forbindelse. Notatet ligger på telefonen og sendes automatisk når nettet er tilbake.",
+  lokal_feil:
+    "Kunne ikke lagre notatet på denne enheten. Hold arket åpent, koble til nett og prøv igjen.",
   for_kort:
     "For kort — under 2 sekunder ble ingenting fanget. Trykk igjen og si det. Chips-valgene dine står.",
 };
@@ -109,6 +139,7 @@ export function FangstSheet({
   /** Native dialog er i nettleserens topplag; fangsten må rendres i samme lag. */
   portalTarget?: HTMLElement | null;
 }) {
+  const eierId = useLokalDataEier();
   // «Ingen mikrofon» avgjøres ved init — Web Speech API mangler i Safari/Firefox.
   const [tilstand, setTilstand] = useState<FangstTilstand>(() => {
     if (typeof window === "undefined") return "hvile";
@@ -151,36 +182,44 @@ export function FangstSheet({
 
   // ── Levering: send eller kø (offline) ───────────────────────────────────
   const lever = useCallback(
-    (tekst: string) => {
+    (tekst: string): boolean => {
       if (typeof navigator !== "undefined" && !navigator.onLine) {
-        skrivKo([...lesKo(), tekst]);
-        return;
+        const lagret = skrivKo(eierId, [...lesKo(eierId), tekst]);
+        if (lagret) skrivPending(eierId, null);
+        return lagret;
       }
       onLagre(tekst);
+      skrivPending(eierId, null);
+      return true;
     },
-    [onLagre],
+    [eierId, onLagre],
   );
 
   /** Send det som ligger i pending (kalles ved lukking/avmontering). */
-  const commitPending = useCallback(() => {
+  const commitPending = useCallback((): boolean => {
     if (pendingRef.current) {
-      lever(pendingRef.current);
+      if (!lever(pendingRef.current)) return false;
       pendingRef.current = null;
     }
+    return true;
   }, [lever]);
 
   // Flush offline-køen ved montering og når nettet kommer tilbake.
   useEffect(() => {
     const flush = () => {
-      const ko = lesKo();
+      const pending = lesPending(eierId);
+      const ko = lesKo(eierId);
+      if (pending) ko.push(pending);
       if (ko.length === 0) return;
-      skrivKo([]);
+      skrivKo(eierId, []);
+      skrivPending(eierId, null);
+      pendingRef.current = null;
       ko.forEach((t) => onLagre(t));
     };
     if (typeof navigator === "undefined" || navigator.onLine) flush();
     window.addEventListener("online", flush);
     return () => window.removeEventListener("online", flush);
-  }, [onLagre]);
+  }, [eierId, onLagre]);
 
   // ── Stoppeklokke mot 20 s-målet (fasit §7 — midlertidig telemetri) ──────
   useEffect(() => {
@@ -202,8 +241,9 @@ export function FangstSheet({
 
     pendingRef.current = tekst;
     const koet = typeof navigator !== "undefined" && !navigator.onLine;
+    const lokaltLagret = !koet || skrivPending(eierId, tekst);
     setKvittering({ kl: klokke(new Date()), koet });
-    setTilstand(koet ? "offline" : "lagret");
+    setTilstand(koet ? (lokaltLagret ? "offline" : "lokal_feil") : "lagret");
     setWatchStoppet((prev) => prev ?? Date.now() - t0Ref.current);
 
     if (angreTimerRef.current) clearInterval(angreTimerRef.current);
@@ -217,7 +257,7 @@ export function FangstSheet({
         return n - 1;
       });
     }, 1000);
-  }, [skrevet, valgteChips]);
+  }, [eierId, skrevet, valgteChips]);
 
   const autosaveRef = useRef(autosave);
   useEffect(() => {
@@ -228,6 +268,7 @@ export function FangstSheet({
   const angre = useCallback(() => {
     if (angreTimerRef.current) clearInterval(angreTimerRef.current);
     pendingRef.current = null;
+    skrivPending(eierId, null);
     finalTextRef.current = "";
     setTranskript("");
     setInterim("");
@@ -240,7 +281,7 @@ export function FangstSheet({
     t0Ref.current = Date.now();
     setTilstand("hvile");
     micRef.current?.focus();
-  }, []);
+  }, [eierId]);
 
   // ── Talegjenkjenning (Web Speech API, nb-NO) ────────────────────────────
   useEffect(() => {
@@ -378,7 +419,10 @@ export function FangstSheet({
 
   // ── Lukking: Esc + commit av pending ved avmontering ────────────────────
   const lukk = useCallback(() => {
-    commitPending();
+    if (!commitPending()) {
+      setTilstand("lokal_feil");
+      return;
+    }
     onClose();
   }, [commitPending, onClose]);
 

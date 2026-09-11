@@ -13,6 +13,7 @@ import { CADDIE_SYSTEM_PROMPT } from "@/lib/caddie/system-prompt";
 import { buildCaddieTools } from "@/lib/caddie/tools";
 import { logError } from "@/lib/error-tracking";
 import { chatBodySchema } from "@/lib/validation/api-schemas";
+import { createCaddiePrivacy } from "@/lib/caddie/privacy";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -92,33 +93,65 @@ export async function POST(req: Request) {
   }
   const messages = validert.data.messages;
 
+  // Samtale-ID fra nettleseren gir aldri rett til en annen admins historikk.
+  let privacy: ReturnType<typeof createCaddiePrivacy>;
+  try {
+    if (conversationId && !(await prisma.caddieConversation.findFirst({
+      where: { id: conversationId, userId: user.id }, select: { id: true },
+    }))) return new Response("Samtalen er ikke tilgjengelig", { status: 404 });
+    // Identitetskartet brukes kun lokalt. Også tidligere/selvbetjente brukere
+    // kan være nevnt i historikken; ingen profiler eller treningsdata hentes.
+    const identities = await prisma.user.findMany({
+      select: { id: true, name: true, email: true, phone: true }, orderBy: { id: "asc" },
+    });
+    privacy = createCaddiePrivacy(identities);
+  } catch {
+    // Ingen uanonymisert reservevei når identitetskartet ikke kan bygges.
+    return new Response("Caddie er midlertidig utilgjengelig", { status: 503 });
+  }
+  let safeMessages: UIMessage[];
+  try { safeMessages = privacy.messages(messages); }
+  catch { return new Response("Ugyldige meldinger", { status: 400 }); }
+  if (!safeMessages.length) return new Response("Skriv en tekstmelding", { status: 400 });
+
   // Persister siste bruker-melding hvis vi har en samtale-id
   if (conversationId) {
     const userText = extractLastUserText(messages);
     if (userText && userText.length > 0) {
-      await prisma.caddieMessage.create({
+      try { await prisma.caddieMessage.create({
         data: {
           userId: user.id,
           conversationId,
           role: "user",
           content: userText,
         },
-      });
+      }); } catch { return new Response("Kunne ikke lagre meldingen", { status: 503 }); }
     }
   }
 
-  const modelMessages = await convertToModelMessages(messages);
+  const modelMessages = await convertToModelMessages(safeMessages);
 
   const result = streamText({
     model: anthropic(MODEL_ID),
     system: CADDIE_SYSTEM_PROMPT,
     messages: modelMessages,
-    tools: buildCaddieTools(user),
+    tools: privacy.tools(buildCaddieTools(user), async (proposal) => {
+      if (!conversationId) throw new Error("Et forslag krever en lagret samtale");
+      const { needsApproval: _approval, type: _type, previewText, ...forslag } = proposal.output;
+      await prisma.caddieDraft.create({ data: {
+        userId: user.id, conversationId, toolCallId: proposal.toolCallId,
+        toolName: proposal.toolName,
+        toolInput: { ...proposal.input, ...forslag } as object,
+        previewText: typeof previewText === "string" ? previewText : "",
+        status: "PENDING",
+      } });
+    }),
     // La modellen fortsette etter at et lese-verktøy er kjørt, så den faktisk
     // svarer (uten dette stopper streamText etter første tool-call).
     stopWhen: stepCountIs(5),
     maxRetries: 2,
-    onFinish: async ({ text, usage, toolCalls, toolResults, steps }) => {
+    onError: () => {}, // Provider-feil kan inneholde payload; send bare generisk strømfeil.
+    onFinish: async ({ text, usage, toolCalls, toolResults }) => {
       if (!conversationId) return;
       try {
         await prisma.caddieMessage.create({
@@ -126,54 +159,21 @@ export async function POST(req: Request) {
             userId: user.id,
             conversationId,
             role: "assistant",
-            content: text,
-            toolCalls: toolCalls as unknown as object,
-            toolResults: toolResults as unknown as object,
+            content: privacy.text(text),
+            toolCalls: privacy.output(toolCalls) as object,
+            toolResults: privacy.output(toolResults) as object,
             inputTokens: usage?.inputTokens ?? null,
             outputTokens: usage?.outputTokens ?? null,
             model: MODEL_ID,
           },
         });
-      } catch (error) {
+      } catch {
         // Persistering må aldri ta ned stream-responsen — logg og fortsett.
-        await logError({ context: "caddie.chat.persister-assistant-melding", error, severity: "warn", meta: { conversationId, userId: user.id } });
+        await logError({ context: "caddie.chat.persister-assistant-melding", error: new Error("Kunne ikke lagre Caddie-svar"), severity: "warn" });
       }
 
-      // A2: persister hvert write-forslag (needsApproval) som CaddieDraft
-      // (PENDING) slik at det overlever samtalen og dukker opp i A1-køen på
-      // /admin/godkjenninger. toolInput lagres som input+forslag samlet, så
-      // approval-executor har alt den trenger (f.eks. subject/body for
-      // fakturapurring) ved senere utførelse.
-      try {
-        const alleResultater = steps.flatMap((s) => s.toolResults ?? []);
-        for (const r of alleResultater) {
-          const output = r.output as Record<string, unknown> | null | undefined;
-          if (!output || output.needsApproval !== true) continue;
-
-          const finnes = await prisma.caddieDraft.findFirst({
-            where: { toolCallId: r.toolCallId, userId: user.id },
-            select: { id: true },
-          });
-          if (finnes) continue;
-
-          const { needsApproval: _na, type: _t, previewText, ...forslag } = output;
-          await prisma.caddieDraft.create({
-            data: {
-              userId: user.id,
-              conversationId,
-              toolCallId: r.toolCallId,
-              toolName: r.toolName,
-              toolInput: { ...(r.input as Record<string, unknown>), ...forslag } as unknown as object,
-              previewText: typeof previewText === "string" ? previewText : "",
-              status: "PENDING",
-            },
-          });
-        }
-      } catch (error) {
-        await logError({ context: "caddie.chat.persister-utkast", error, severity: "warn", meta: { conversationId, userId: user.id } });
-      }
     },
   });
 
-  return result.toUIMessageStreamResponse();
+  return result.toUIMessageStreamResponse({ onError: () => "Caddie kunne ikke fullføre svaret. Prøv igjen." });
 }

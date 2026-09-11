@@ -39,6 +39,7 @@ import {
   leggChunkIKo,
   tomChunkKo,
 } from "@/lib/offline-queue/recording-chunk-queue";
+import { useLokalDataEier } from "@/lib/offline-queue/eier-context";
 
 type Mode = "idle" | "recovery" | "recording" | "paused" | "finalizing" | "behandler";
 
@@ -114,6 +115,7 @@ export function RecordingControls({
   okt = null,
 }: Props) {
   const router = useRouter();
+  const eierId = useLokalDataEier();
   const [skjult, setSkjult] = useState(false);
   const [banner, setBanner] = useState<Banner>(null);
   const [mode, setMode] = useState<Mode>(() => {
@@ -300,29 +302,34 @@ export function RecordingControls({
     return new Promise<void>((resolve) => {
       uploadQueueRef.current = uploadQueueRef.current.then(async () => {
         // 1) Lokal kø først — mistet dekning skal ikke miste biten.
+        let lokaltLagret = false;
         try {
-          await leggChunkIKo(id, idx, blob);
+          if (!eierId) throw new Error("Mangler lokal eier");
+          lokaltLagret = await leggChunkIKo(eierId, id, idx, blob);
         } catch (err) {
           console.error("[recording] IDB-kø feilet", err);
         }
         // 2) Prøv nett
         const res = await lastOppChunkHttp(id, idx, blob);
         if (res.ok) {
-          await fjernChunkFraKo(id, idx).catch(() => undefined);
+          if (eierId) await fjernChunkFraKo(eierId, id, idx).catch(() => undefined);
           setChunkInfo(`Lagret chunk ${idx + 1} (${formatTimer(elapsedSec)})`);
         } else {
-          const vent = await antallVentendeChunks(id).catch(() => 0);
+          const vent = eierId ? await antallVentendeChunks(eierId, id).catch(() => 0) : 0;
           setBanner({
-            tone: "warn",
+            tone: lokaltLagret ? "warn" : "error",
             text:
-              vent > 0
+              !lokaltLagret
+                ? "Lydbiten kunne ikke lastes opp eller lagres på enheten. Hold siden åpen og prøv igjen når nettet er tilbake."
+                : vent > 0
                 ? `${vent} lydbiter venter på opplasting — prøver igjen automatisk.`
                 : "Kobling avbrutt — prøver igjen automatisk.",
           });
         }
         // 3) Tøm resten av køen for denne recording
         try {
-          const flush = await tomChunkKo(id, lastOppChunkHttp);
+          if (!eierId) throw new Error("Mangler lokal eier");
+          const flush = await tomChunkKo(eierId, id, lastOppChunkHttp);
           if (flush.gjenstaar > 0) {
             setBanner({
               tone: flush.gittOpp ? "error" : "warn",

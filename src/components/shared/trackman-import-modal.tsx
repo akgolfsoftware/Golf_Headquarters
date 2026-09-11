@@ -43,6 +43,7 @@ import { ENVIRONMENT_OPTIONS } from "@/lib/sg-hub/environment-labels";
 import { parseTrackManCsv, type TrackManShot } from "@/lib/trackman/parse-csv";
 import { parseTrackManHtmlReport } from "@/lib/trackman/parse-html-report";
 import { htmlReportToCanonical } from "@/lib/trackman/canonical";
+import { trackManShotsForPreview } from "@/lib/trackman/preview";
 import { useToast } from "@/components/shared/toast-provider";
 
 type Steg = 1 | 2 | 3 | 4;
@@ -154,7 +155,7 @@ export function TrackmanImportModal({
   const [csvContent, setCsvContent] = useState("");
   const [htmlContent, setHtmlContent] = useState("");
 
-  // Steg 3 — preview shots (kun CSV)
+  // Steg 3 — råslag beholdes for import; tabellen viser canonical preview.
   const [shots, setShots] = useState<TrackManShot[]>([]);
   const [valgt, setValgt] = useState<Set<number>>(new Set());
 
@@ -264,6 +265,13 @@ export function TrackmanImportModal({
           spinRateRpm: s.spinRateRpm,
           sideMeters: s.sideMeters,
           notes: null,
+          sourceUnits: {
+            clubSpeed: "mph",
+            ballSpeed: "mph",
+            carry: "m",
+            total: "m",
+            side: "m",
+          },
         }));
         setShots(preview);
         setValgt(new Set(preview.map((_, i) => i)));
@@ -726,6 +734,7 @@ function Steg3({
   toggleOne: (i: number) => void;
 }) {
   const allSelected = valgt.size === shots.length && shots.length > 0;
+  const previewShots = trackManShotsForPreview(shots);
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
@@ -745,12 +754,12 @@ function Steg3({
         <div className="grid grid-cols-[24px_1fr_70px_70px_70px] gap-2 border-b border-border bg-muted/40 px-4 py-2 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
           <span />
           <span>Kølle</span>
-          <span className="text-right">Carry</span>
-          <span className="text-right">Ball</span>
+          <span className="text-right">Carry (m)</span>
+          <span className="text-right">Ball (mph)</span>
           <span className="text-right">Smash</span>
         </div>
         <ul className="max-h-[300px] overflow-y-auto">
-          {shots.map((s, i) => {
+          {previewShots.map((s, i) => {
             const checked = valgt.has(i);
             return (
               <li
@@ -768,10 +777,10 @@ function Steg3({
                   {s.club ?? "Ukjent"}
                 </span>
                 <span className="text-right font-mono tabular-nums">
-                  {s.carryMeters != null ? `${s.carryMeters} m` : "—"}
+                  {s.carryMeters != null ? s.carryMeters.toFixed(1) : "—"}
                 </span>
                 <span className="text-right font-mono tabular-nums">
-                  {s.ballSpeedMps != null ? s.ballSpeedMps.toFixed(1) : "—"}
+                  {s.ballSpeedMph != null ? s.ballSpeedMph.toFixed(1) : "—"}
                 </span>
                 <span className="text-right font-mono tabular-nums">
                   {s.smashFactor != null ? s.smashFactor.toFixed(2) : "—"}

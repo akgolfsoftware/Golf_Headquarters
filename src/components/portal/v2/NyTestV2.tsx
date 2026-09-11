@@ -11,6 +11,8 @@ import { useToast } from "@/components/shared/toast-provider";
 import { logTest } from "@/app/portal/tren/tester/ny/actions";
 import { Caps, Kort, Knapp, Inndata, Velger, TekstOmraade, Bryter, ProgresjonsBar } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
+import { useLokalDataEier } from "@/lib/offline-queue/eier-context";
+import { byggLagringsNokkel } from "@/lib/offline-queue/eier-scope";
 type TestDef = {
   id: string;
   name: string;
@@ -175,7 +177,7 @@ const KATALOG: Katalog[] = [
   },
 ];
 
-const LS_KEY = "akgolf:nytest:draft:v1";
+const LS_GRUNNNOKKEL = "akgolf:nytest:draft:v2";
 
 type State = {
   steg: 1 | 2 | 3 | 4;
@@ -229,9 +231,12 @@ function matchTestId(slug: string, tests: TestDef[]): string | null {
 
 export function NyTestV2({ tests, sistePerTest, spillerNavn }: Props) {
   const router = useRouter();
+  const eierId = useLokalDataEier();
+  const lagringsnokkel = byggLagringsNokkel(LS_GRUNNNOKKEL, eierId);
   const toast = useToast();
   const [pending, startTransition] = useTransition();
   const [feil, setFeil] = useState<string | null>(null);
+  const [lokalLagringsfeil, setLokalLagringsfeil] = useState(false);
 
   const [state, setState] = useState<State>(() => {
     const initial: State = {
@@ -250,7 +255,8 @@ export function NyTestV2({ tests, sistePerTest, spillerNavn }: Props) {
     // per komponent-mount; på server returnerer den `initial`.
     if (typeof window === "undefined") return initial;
     try {
-      const raw = window.localStorage.getItem(LS_KEY);
+      if (!lagringsnokkel) return initial;
+      const raw = window.localStorage.getItem(lagringsnokkel);
       if (!raw) return initial;
       const parsed = JSON.parse(raw) as Partial<State>;
       return {
@@ -263,17 +269,19 @@ export function NyTestV2({ tests, sistePerTest, spillerNavn }: Props) {
     }
   });
 
-  // Auto-save draft hvert 10. sek.
+  // Kort debounce bevarer utkastet ved navigasjon/krasj uten å skrive for hvert tastetrykk.
   useEffect(() => {
-    const timer = window.setInterval(() => {
+    const timer = window.setTimeout(() => {
       try {
-        window.localStorage.setItem(LS_KEY, JSON.stringify(state));
+        if (!lagringsnokkel) throw new Error("Mangler lokal eier");
+        window.localStorage.setItem(lagringsnokkel, JSON.stringify(state));
+        setLokalLagringsfeil(false);
       } catch {
-        /* quota — ignore */
+        setLokalLagringsfeil(true);
       }
-    }, 10000);
-    return () => window.clearInterval(timer);
-  }, [state]);
+    }, 300);
+    return () => window.clearTimeout(timer);
+  }, [lagringsnokkel, state]);
 
   const valgtKatalog = useMemo(
     () => KATALOG.find((k) => k.slug === state.valgtSlug) ?? null,
@@ -384,7 +392,7 @@ export function NyTestV2({ tests, sistePerTest, spillerNavn }: Props) {
           results: numerics,
         });
         try {
-          window.localStorage.removeItem(LS_KEY);
+          if (lagringsnokkel) window.localStorage.removeItem(lagringsnokkel);
         } catch {
           /* ignore */
         }
@@ -400,6 +408,11 @@ export function NyTestV2({ tests, sistePerTest, spillerNavn }: Props) {
 
   return (
     <div style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
+      {lokalLagringsfeil && (
+        <p role="alert" style={{ margin: 0, color: TL.text, fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600 }}>
+          Utkastet kunne ikke lagres på denne enheten. Hold siden åpen og prøv lagring igjen før du går ut.
+        </p>
+      )}
       <ProgresjonsBar
         variant="segment"
         total={4}

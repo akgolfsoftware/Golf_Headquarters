@@ -8,6 +8,7 @@ Oppdatert 11.09.2026. Appen er fortsatt under arbeid og ikke klarert for åpen l
 - **PH-06:** valgt resultathierarki er bygget. Lagrede notater og vurderinger er synlige, feil bevarer feltene, og samtidige lagringer oppdaterer separate JSON-felt. Appskall/Geist, åtte datatilstander, fire bredder og to temaer er komponentprøvd. Egen isolert PostgreSQL-prøve bestod. [PH-06-kontroll](design-audit/playerhq-ph06-2026-09-11.md).
 - **Planleggingsarbeid:** funksjonsregister, funksjonskort og produktintervju er bevart fra den separate arbeidsgrenen. De er arbeidsunderlag, ikke nye godkjente produktbeslutninger.
 - **Opprydding:** ferdige grener og arbeidskopier avstemmes med GitHub; nåstatus, masterplan, dokument-/filregister og arbeidsdeling er samordnet. [Samlingsrapport og sluttkontroll](vedlikehold/samling-og-opprydding-2026-09-11.md).
+- **Sikkerhet, lokal lagring og import:** Caddie-oppslag har ressurskontroll og minimerte modellgrenser, abonnementshenting feiler lukket, TrackMan bevarer eksplisitte enheter gjennom forhåndsvisning, lagring og analyse, og lokale utkast er avgrenset per serververifisert bruker. Dette er bygget og testet på samlingsgrenen; GitHub-fletting og innlogget kontroll føres separat. [Kontroll og begrensninger](vedlikehold/sikkerhet-og-enheter-2026-09-11.md).
 
 ## Allerede i main
 
@@ -18,7 +19,7 @@ Tidligere kontroll av Vercel bekreftet `2807d4d08` som publisert kode og prøvde
 ## Det som gjenstår
 
 1. Isolert, innlogget spillerreise gjennom I dag, Plan, økt og oppsummering med alle tre øktmodeller og avviste roller.
-2. Caddie-tilgang/dataminimering, privat lokal lagring, TrackMan-enheter og feil ved abonnementshenting avstemt mot dagens kode.
+2. Kjør innlogget kontroll av Caddie-, TrackMan-, lokal lagrings- og abonnementspakken og lukk den dokumenterte fritekst-/køgrensen før bredere AI-bruk.
 3. Resterende PlayerHQ-, AgencyOS-, Team Norway- og WANG-skjermer, koblet til valgte kilder og reelle handlinger.
 4. Testvarianter/mål, foreldreinnsyn, booking-/betalingsreise og konkrete produktavklaringer fra funksjonsregisteret.
 5. Visuell vurdering med Anders, kontrast/tilgjengelighet, full alarm-/gjenopprettingsprøve og dokumentert faktisk produksjonsreise før lansering.

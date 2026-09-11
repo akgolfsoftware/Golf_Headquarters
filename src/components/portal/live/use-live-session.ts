@@ -9,7 +9,7 @@ import type { LiveV2Session, DrillRepState } from "./types";
 type Phase = "starting" | "active" | "start-error" | "finishing" | "finish-error" | "finished";
 type Saving = "saved" | "saving" | "offline" | "error" | "local-error";
 
-export function useLiveSession(data: LiveV2Session) {
+export function useLiveSession(data: LiveV2Session, eierId: string | null) {
   const router = useRouter();
   const initial = useRef(data);
   const [state, setState] = useState(() => restoreLiveState(data, null));
@@ -25,12 +25,16 @@ export function useLiveSession(data: LiveV2Session) {
   const restoreRequest = useRef<ReturnType<typeof lesLiveDrillUtkast> | null>(null);
   const phaseTo = useCallback((next: Phase) => { phaseRef.current = next; setPhaseState(next); }, []);
   const update = useCallback((next: LiveState) => { latest.current = next; setState(next); }, []);
-  const saveLocal = useCallback((next: LiveState) => lagreLiveDrillUtkast(data.sessionId, livePayload(next), next.totalSec, { paused: next.paused, drillSec: next.drillSec }).catch(() => false), [data.sessionId]);
+  const saveLocal = useCallback((next: LiveState) => {
+    if (!eierId) return Promise.resolve(false);
+    return lagreLiveDrillUtkast(eierId, data.sessionId, livePayload(next), next.totalSec, { paused: next.paused, drillSec: next.drillSec }).catch(() => false);
+  }, [data.sessionId, eierId]);
 
   const sync = useCallback(async () => {
     if (!navigator.onLine) { if (mounted.current) setSaving("offline"); return false; }
     if (mounted.current) setSaving("saving");
-    const result = await synkLiveDrillKo(data.sessionId, async (sessionId, drills) => {
+    if (!eierId) { if (mounted.current) setSaving("local-error"); return false; }
+    const result = await synkLiveDrillKo(eierId, data.sessionId, async (sessionId, drills) => {
       for (const drill of drills) {
         const response = await logDrillReps({ sessionId, ...drill });
         if (!response.ok) return { ok: false };
@@ -39,7 +43,7 @@ export function useLiveSession(data: LiveV2Session) {
     }).catch(() => "feilet" as const);
     if (mounted.current) setSaving(result === "synket" || result === "tom" ? "saved" : result === "venter" ? "saving" : "error");
     return result === "synket" || result === "tom";
-  }, [data.sessionId]);
+  }, [data.sessionId, eierId]);
 
   const persist = useCallback((next: LiveState) => {
     update(next);
@@ -56,7 +60,7 @@ export function useLiveSession(data: LiveV2Session) {
     mounted.current = true;
     let disposed = false;
     startRequest.current ??= startSession(data.sessionId);
-    restoreRequest.current ??= lesLiveDrillUtkast(data.sessionId);
+    restoreRequest.current ??= eierId ? lesLiveDrillUtkast(eierId, data.sessionId) : Promise.resolve(null);
     void Promise.all([startRequest.current, restoreRequest.current]).then(async ([result, cached]) => {
       if (disposed) return;
       if (result.state !== "active") { phaseTo("finished"); router.replace(result.redirectTo); return; }
@@ -69,7 +73,7 @@ export function useLiveSession(data: LiveV2Session) {
       } else if (cached && (cached.synketRevision == null || cached.synketRevision !== cached.revision)) void sync();
     }).catch(() => { if (!disposed) phaseTo("start-error"); });
     return () => { disposed = true; mounted.current = false; if (syncTimer.current) clearTimeout(syncTimer.current); };
-  }, [data.sessionId, attempt, phaseTo, router, saveLocal, sync, update]);
+  }, [data.sessionId, eierId, attempt, phaseTo, router, saveLocal, sync, update]);
 
   useEffect(() => {
     if (phase !== "active") return;
@@ -101,13 +105,13 @@ export function useLiveSession(data: LiveV2Session) {
     try {
       // Et tapt fullføringssvar skal kunne prøves igjen uten nye registreringer.
       const current = await startSession(data.sessionId);
-      if (current.state !== "active") { phaseTo("finished"); if (current.state === "completed") await slettLiveDrillUtkast(data.sessionId).catch(() => {}); router.replace(current.redirectTo); return; }
+      if (current.state !== "active") { phaseTo("finished"); if (current.state === "completed" && eierId) await slettLiveDrillUtkast(eierId, data.sessionId).catch(() => {}); router.replace(current.redirectTo); return; }
       const snapshot = latest.current;
       if (!(await saveLocal(snapshot))) { setSaving("local-error"); throw new Error("local-save"); }
       if (!(await sync())) throw new Error("sync");
       const result = await completeSession(data.sessionId, snapshot.totalSec, snapshot.drills.filter((d) => d.status === "done").map((d) => d.id));
       phaseTo("finished");
-      await slettLiveDrillUtkast(data.sessionId).catch(() => {});
+      if (eierId) await slettLiveDrillUtkast(eierId, data.sessionId).catch(() => {});
       router.replace(result.href);
     } catch { phaseTo("finish-error"); }
   };
