@@ -18,7 +18,9 @@
 
 import { useState } from "react";
 import type { LiveV2Drill, DrillRepState } from "./types";
-import { SettRepsLogger, type SettRad, PulsSoneVelger, Stegteller, Caps } from "@/components/v2";
+import { SettRepsLogger, type SettRad, PulsSoneVelger } from "@/components/v2/fysisk";
+import { Stegteller } from "@/components/v2/skjema";
+import { Caps } from "@/components/v2/core";
 import { MicButton } from "@/components/shared/mic-button";
 import { HjelpTips } from "@/components/v2/hjelp";
 

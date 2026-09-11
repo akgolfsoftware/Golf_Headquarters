@@ -15,6 +15,9 @@
  * denne kalles aldri fra en Client Component.
  */
 
+import "server-only";
+import { OSLO_YMD_FMT, osloInstant, osloDagGrenser } from "@/lib/jarvis/dagen";
+import { osloMinuttAvDogen } from "@/lib/portal/idag-visning";
 import { prisma } from "@/lib/prisma";
 import { tilDatoKolonne } from "@/lib/workbench/wb-map";
 import type { KalenderHendelse } from "@/lib/domain/kalender-lag";
@@ -23,27 +26,35 @@ import { sorterDag } from "@/lib/domain/kalender-lag";
 const SPILLER_SYNLIGE_STATUSER = ["PUBLISHED", "IN_PROGRESS", "COMPLETED"] as const;
 
 function minSidenMidnatt(d: Date): number {
-  return d.getHours() * 60 + d.getMinutes();
+  return osloMinuttAvDogen(d);
 }
 
 function klemtSluttMin(start: Date, slutt: Date): number {
-  const sammeDag =
-    start.getFullYear() === slutt.getFullYear() &&
-    start.getMonth() === slutt.getMonth() &&
-    start.getDate() === slutt.getDate();
+  const sammeDag = OSLO_YMD_FMT.format(start) === OSLO_YMD_FMT.format(slutt);
   return sammeDag ? minSidenMidnatt(slutt) : 24 * 60;
 }
 
-/** Dagens vindu (naiv veggklokke) for real-timestamp-kolonner, fra en YYYY-MM-DD-streng. */
+/** Dagens vindu i Oslo for real-timestamp-kolonner, fra en YYYY-MM-DD-streng. */
 function dagensVindu(dato: string): { fra: Date; til: Date } {
   const [y, m, d] = dato.split("-").map(Number);
-  const fra = new Date(y, m - 1, d);
-  const til = new Date(y, m - 1, d + 1);
+  const { start: fra, slutt: til } = osloDagGrenser(osloInstant(y, m, d, 12, 0));
   return { fra, til };
 }
 
 export async function hentSpillerDagITiden(playerId: string, dato: string): Promise<KalenderHendelse[]> {
-  const { fra, til } = dagensVindu(dato);
+  return hentSpillerTidsrom(playerId, dato, dato, true);
+}
+
+/** Kalenderlag for Plans sju dager i én lesing. Økter leveres av getWeekOverview. */
+export async function hentSpillerUkeITiden(playerId: string, mandag: string): Promise<KalenderHendelse[]> {
+  const sondag = tilDatoKolonne(mandag);
+  sondag.setUTCDate(sondag.getUTCDate() + 6);
+  return hentSpillerTidsrom(playerId, mandag, sondag.toISOString().slice(0, 10), false);
+}
+
+async function hentSpillerTidsrom(playerId: string, dato: string, sisteDato: string, medOkter: boolean): Promise<KalenderHendelse[]> {
+  const { fra } = dagensVindu(dato);
+  const { til } = dagensVindu(sisteDato);
   const dagKolonne = tilDatoKolonne(dato);
 
   const spiller = await prisma.user.findUnique({
@@ -52,11 +63,11 @@ export async function hentSpillerDagITiden(playerId: string, dato: string): Prom
   });
 
   const [okter, bookinger, turneringer, tester, skole] = await Promise.all([
-    prisma.workbenchSession.findMany({
+    medOkter ? prisma.workbenchSession.findMany({
       where: { playerId, date: dagKolonne, status: { in: [...SPILLER_SYNLIGE_STATUSER] }, hiddenByPlayer: false },
       select: { id: true, startMinute: true, durationMinutes: true, title: true, location: true },
       orderBy: { startMinute: "asc" },
-    }),
+    }) : Promise.resolve([]),
     prisma.booking.findMany({
       where: { userId: playerId, startAt: { gte: fra, lt: til }, status: { in: ["CONFIRMED", "PENDING", "COMPLETED"] } },
       include: { serviceType: { select: { name: true } }, facility: { select: { name: true } } },
@@ -68,7 +79,7 @@ export async function hentSpillerDagITiden(playerId: string, dato: string): Prom
         entryStatus: { notIn: ["WITHDRAWN"] },
         OR: [{ manualDate: { gte: fra, lt: til } }, { tournament: { startDate: { gte: fra, lt: til } } }],
       },
-      include: { tournament: { select: { name: true } } },
+      include: { tournament: { select: { name: true, startDate: true } } },
     }),
     prisma.testAssignment.findMany({
       where: { playerId, status: "OPEN", dueDate: { gte: fra, lt: til } },
@@ -103,7 +114,7 @@ export async function hentSpillerDagITiden(playerId: string, dato: string): Prom
     hendelser.push({
       id: `booking-${b.id}`,
       lag: "BOOKING",
-      dato,
+      dato: OSLO_YMD_FMT.format(b.startAt),
       tittel: b.serviceType.name,
       undertekst: b.facility?.name ?? undefined,
       startMin: minSidenMidnatt(b.startAt),
@@ -113,10 +124,12 @@ export async function hentSpillerDagITiden(playerId: string, dato: string): Prom
   }
 
   for (const t of turneringer) {
+    const tidspunkt = t.manualDate ?? t.tournament?.startDate;
+    if (!tidspunkt || tidspunkt < fra || tidspunkt >= til) continue;
     hendelser.push({
       id: `turn-${t.id}`,
       lag: "TURNERING",
-      dato,
+      dato: OSLO_YMD_FMT.format(tidspunkt),
       tittel: t.tournament?.name ?? t.manualName ?? "Turnering",
       startMin: null,
       sluttMin: null,
@@ -125,12 +138,13 @@ export async function hentSpillerDagITiden(playerId: string, dato: string): Prom
   }
 
   for (const t of tester) {
+    if (!t.dueDate) continue;
     hendelser.push({
       id: `test-${t.id}`,
       lag: "TESTER",
-      dato,
+      dato: OSLO_YMD_FMT.format(t.dueDate),
       tittel: t.test.name,
-      undertekst: "Frist i dag",
+      undertekst: "Testfrist",
       startMin: null,
       sluttMin: null,
       heldag: true,
@@ -141,7 +155,7 @@ export async function hentSpillerDagITiden(playerId: string, dato: string): Prom
     hendelser.push({
       id: `skole-${s.id}`,
       lag: "SKOLE",
-      dato,
+      dato: OSLO_YMD_FMT.format(s.date),
       tittel: s.title,
       startMin: null,
       sluttMin: null,
@@ -150,5 +164,5 @@ export async function hentSpillerDagITiden(playerId: string, dato: string): Prom
     });
   }
 
-  return sorterDag(hendelser);
+  return sorterDag(hendelser).sort((a, b) => a.dato.localeCompare(b.dato));
 }

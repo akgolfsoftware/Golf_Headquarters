@@ -1,55 +1,18 @@
 /**
- * AK Golf HQ · Train-lock — TS-speil av --tl-* (D2, 25.08.2026).
+ * Train-locks TypeScript-navn peker på CSS-variabler; verdiene dupliseres ikke.
+ * Basis: src/styles/train-lock-tokens.css (eldre flater).
+ * Valgt PlayerHQ/AgencyOS: src/styles/train-lock-valgt.css, ZIP (4), 10.09.2026.
+ * Kilde: designsystem/train-lock/valgt-zip-4/README.md.
+ * Basislagets historiske kilder beholdes for sporbarhet:
+ * - AG-00 LOCK.dc.html: PlayerHQ/AgencyOS delte verdier før valgt v3.
+ * - B4 Lys iPad Mac.dc.html: basislagets lyse variant på større skjermer.
+ * - MAT-01 Mac Okt FYS hero.dc.html: opphavet til FYS-fotofeltet; ikke bevis
+ *   på at denne referansen eller den nye v3-fotovarianten er visuelt kontrollert.
  *
- * Verdiene bor som CSS-variabler i src/styles/train-lock-tokens.css:
- * LYS på :root, MØRK via html[data-v2-tema="dark"] (appens eneste
- * tema-mekanisme). Denne fila peker BARE på var(--tl-*) — den dupliserer
- * ingen hex, slik at scripts/check-token-gap.mjs slipper en allowlist og
- * fasiten har nøyaktig ett sted å endres.
- *
- * FASIT: designsystem/train-lock/ (HANDOFF.md · TRAIN LOCK.dc.html ·
- * AG-00 LOCK.dc.html · AX-01 Skall rail og tabbar.dc.html ·
- * GAP-00 Kart.dc.html · MAT-00 Materialer.dc.html).
- * Train-lock er designfasit for ALLE skjermer i PlayerHQ OG AgencyOS
- * (CLAUDE.md invariant 2). AG-00 viser at AgencyOS arver samme tokens —
- * derfor ett objekt, ikke to. GAP-00 er IKKE en skjerm — det er
- * Paper→Train-ID-kartet (hvilken gammel Paper-jobb som bor hvor nå, hvilken
- * bølge den hører til). Referert her fordi denne fila er det naturlige
- * skjerm-ID-krysspunktet i kode; ingen UI bygges av GAP-00 selv (PX-7,
- * 29.08.2026).
- * MAT-00 er materiale-spesimen (logo-prikk, Fullført-hake, pyramide-
- * streker, foto-stripe), ikke en skjerm — reglene den viser ER allerede
- * håndhevet mekanisk her og i CLAUDE.md invariant 2 («Fullført = warm
- * TL.warm + hake. TL.ok er BARE godkjent-av-coach»), verifisert PX-7 mot
- * OktArk.tsx (`session.status === "COMPLETED" ? TL.warm : …`). MAT-01
- * (Mac Økt FYS hero-foto) er IKKE portert — hero-foto på øktvisning finnes
- * ikke i koden ennå og er ny UI utover tilstand/brekk, se PR-beskrivelsen.
- *
- * FORHOLD TIL T (src/lib/v2/tokens.ts): T er Paper-speilet og er UTGÅENDE.
- * Det står urørt så lenge skjermene fortsatt leser det. Ny Train-lock-kode
- * bruker TL. Ingen skjerm er portet i D2 — TL har null konsumenter ennå.
- *
- * REGLER SOM FØLGER MED TOKENENE (fra fasiten, ikke smak):
- * - Én hvit (lys: sort) primær CTA per skjerm. Alt annet er dim eller ren
- *   tekst. Aktiv fane / valgt dag / aktiv live-tapper er TILSTAND, ikke CTA.
- * - Fullført = TL.warm + hake. TL.ok er BARE «godkjent av coach»
- *   (Godta / PUBLISERT-merke). TL.danger er BARE feiltilstander.
- * - Material er opaque. Ingen backdrop-filter, ingen Liquid Glass.
- * - Ingen linear/radial-gradient. `repeating-linear-gradient` er tillatt
- *   KUN som timeline-hairline i rutenett.
- * - Negativ verdi = samme tekstfarge med opasitet + fortegn i tallet.
- *   Aldri rød, aldri fargekodet ferdighet, aldri heatmap/radar/lime.
- * - tabular-nums på alle tall. Norsk format: 1 000,00 · +0,18 ·
- *   22.08.2026 · 09.00.
- *
- * LYS PÅ TVERS AV SKJERMER (B3/B4, PX-7 2026-08-29 — full begrunnelse i
- * src/styles/train-lock-tokens.css-headeren). Fasit:
- * - designsystem/train-lock/B3 Lys nøkkelskjermer.dc.html
- * - designsystem/train-lock/B3 Lys resterende skjermer.dc.html
- * - designsystem/train-lock/B4 Lys iPad Mac.dc.html
- * Lys/mørk er ÉN mekanisme — enhver skjerm som leser TL/--tl-* får korrekt
- * lys automatisk, uansett brekkpunkt. Repo-bred grep (PX-7) fant ingen nye
- * hardkodet-mørk-lekkasjer utover det C8 (#636) allerede dokumenterte.
+ * Appen har én temamekanisme, html[data-v2-tema="dark"]. Markøren
+ * data-train-lock="4" avgrenser valgt versjon til /portal og /admin.
+ * Et oppdatert tokenlag er ikke bevis på at alle skjermene er portert.
+ * Se docs/design-audit/portering-fire-flater-2026-09-10.md for avvik og kontroll.
  */
 export const TL = {
   // ── Flater ──
@@ -71,13 +34,18 @@ export const TL = {
   // ── Identitet ──
   avatar: "var(--tl-avatar)",
   onAvatar: "var(--tl-on-avatar)",
-  /** Logo-prikk + fullført-hake/ring. Fullført er ALDRI grønn.
-   *  Fasit: designsystem/train-lock/MAT-00 Materialer.dc.html +
-   *  MAT-01 Mac Okt FYS hero.dc.html (PX-7, 2026-08-29) — logo-prikk 64/28/16,
-   *  fullført = hake + 1px varm ring (aldri grønn fylt flate), pyramide-
-   *  streker er posisjon (F5F5F5 aktiv / 2C2C2E resten), ikke farge, og foto
-   *  får bare bredde på FYS/hero — aldri bak tall. */
+  /** v3: fremdrift og «nå» som grafikk. Liten tekst bruker warmText.
+   * Fullført kan bruke den nye StatusPill sin ok-variant; eldre skjermer
+   * med warm-fullføring vurderes under porteringen av hver familie. */
   warm: "var(--tl-warm)",
+  /** v3: warm-ink på hvite kort. På lys papirbakgrunn brukes warmText. */
+  warmInk: "var(--tl-warm-ink, var(--tl-warm))",
+  /** Liten tekst på både scene og kort; nøytral i lys for lesbarhet. */
+  warmText: "var(--tl-warm-text, var(--tl-warm))",
+  warmTint: "var(--tl-warm-tint, transparent)",
+  shadowCard: "var(--tl-shadow-card, none)",
+  photoOpacity: "var(--tl-photo-opacity, 1)",
+  glow: "var(--tl-glow, none)",
   /** Varsel som IKKE sperrer (publiser med advarsel, «mangler drill»). Aldri generell fargekoding. */
   warn: "var(--tl-warn)",
   /** Kant på warn-pille: `inset 0 0 0 1px TL.warnHair`. */

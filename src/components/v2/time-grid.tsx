@@ -13,6 +13,11 @@
  * i dag-kolonnen får #16161680-flate. Tidsakse-området (05:00–23:00, 30 min
  * slot-snap) styres fortsatt av src/lib/calendar/notion-grid.ts; fasitens
  * tetthet er 48 px/time (`hourPx`), kalenderen (KA-01) beholder 44.
+ * Avvik:
+ *   - Valgt PH-07 v3 bruker valgfritt tidsutsnitt og stablet daghode;
+ *     øvrige flater beholder sine eksisterende standardverdier.
+ *   - PH-07 kontrolleres i tests/visual/portering/plan.py. Dette er ikke
+ *     visuell godkjenning av alle eldre Workbench-/kalenderflater.
  */
 
 import {
@@ -29,7 +34,6 @@ import {
   GRID_START_HOUR,
   GRID_START_MIN,
   PIXEL_PER_HOUR,
-  gridHours,
 } from "@/lib/calendar/notion-grid";
 import { TL } from "@/lib/v2/train-lock";
 
@@ -67,16 +71,20 @@ type Props = {
   bordered?: boolean;
   /** Piksler per time. Fasit A-01 (workbench) = 48; kalender-fasit KA-01 = 44. */
   hourPx?: number;
+  /** PH-07 v3 bruker et innholdsbestemt utsnitt; eldre flater beholder 05–23. */
+  startHour?: number;
+  endHour?: number;
+  stackedHeader?: boolean;
   className?: string;
   style?: CSSProperties;
 };
 
 /** Snap Y i grid-body til slot innenfor 05:00–(23:00−GRID_SLOT_MIN). */
-export function snapYToSlot(y: number, hourPx = PIXEL_PER_HOUR): Omit<TimeGridSlot, "dayIndex"> {
-  const hours = GRID_START_HOUR + y / hourPx;
+export function snapYToSlot(y: number, hourPx = PIXEL_PER_HOUR, startHour = GRID_START_HOUR, endHour = GRID_END_HOUR): Omit<TimeGridSlot, "dayIndex"> {
+  const hours = startHour + y / hourPx;
   let totalMin = Math.round((hours * 60) / GRID_SLOT_MIN) * GRID_SLOT_MIN;
-  const maxStart = GRID_END_HOUR * 60 - GRID_SLOT_MIN;
-  totalMin = Math.max(GRID_START_MIN, Math.min(maxStart, totalMin));
+  const maxStart = endHour * 60 - GRID_SLOT_MIN;
+  totalMin = Math.max(startHour * 60, Math.min(maxStart, totalMin));
   return {
     hour: Math.floor(totalMin / 60),
     minute: totalMin % 60,
@@ -117,11 +125,14 @@ export function TimeGrid({
   timeColWidth = 48,
   bordered = true,
   hourPx = PIXEL_PER_HOUR,
+  startHour = GRID_START_HOUR,
+  endHour = GRID_END_HOUR,
+  stackedHeader = false,
   className,
   style,
 }: Props) {
-  const timer = useMemo(() => gridHours(), []);
-  const bodyH = (GRID_END_HOUR - GRID_START_HOUR) * hourPx;
+  const timer = useMemo(() => Array.from({ length: endHour - startHour + 1 }, (_, i) => startHour + i), [startHour, endHour]);
+  const bodyH = (endHour - startHour) * hourPx;
 
   const [tikk, setTikk] = useState(0);
   useEffect(() => {
@@ -133,8 +144,8 @@ export function TimeGrid({
   const now = new Date();
   void tikk;
   const nowMin = now.getHours() * 60 + now.getMinutes();
-  const nowInGrid = nowMin >= GRID_START_MIN && nowMin <= GRID_END_HOUR * 60;
-  const nowTop = ((nowMin - GRID_START_MIN) / 60) * hourPx;
+  const nowInGrid = nowMin >= startHour * 60 && nowMin <= endHour * 60;
+  const nowTop = ((nowMin - startHour * 60) / 60) * hourPx;
   const todayIndex = days.findIndex((d) => d.today);
 
   const shell: CSSProperties = {
@@ -173,7 +184,7 @@ export function TimeGrid({
                 whiteSpace: "nowrap",
               }}
             >
-              {d.dow} {d.date}
+              {d.dow}{stackedHeader ? <strong style={{ display: "block", fontSize: 17, fontWeight: 600, color: d.today ? TL.text : TL.mute, marginTop: 5, letterSpacing: "-0.02em" }}>{d.date}</strong> : ` ${d.date}`}
             </span>
           </div>
         ))}
@@ -185,12 +196,12 @@ export function TimeGrid({
             høyrestilt 8 px, sentrert på timelinjen. */}
         <div style={{ width: timeColWidth, flex: "none", position: "relative" }}>
           {timer.map((h) =>
-            h < GRID_END_HOUR ? (
+            h < endHour ? (
               <span
                 key={h}
                 style={{
                   position: "absolute",
-                  top: (h - GRID_START_HOUR) * hourPx - 7,
+                  top: (h - startHour) * hourPx - 7,
                   right: 8,
                   fontFamily: TL.font.sans,
                   fontSize: 10,
@@ -209,14 +220,14 @@ export function TimeGrid({
           {/* Kun hele timer som hairline (fasit: repeating-gradient per 48 px,
               ingen halvtimelinjer). */}
           {timer.map((h) =>
-            h > GRID_START_HOUR && h < GRID_END_HOUR ? (
+            h > startHour && h < endHour ? (
               <span
                 key={`h-${h}`}
                 style={{
                   position: "absolute",
                   left: 0,
                   right: 0,
-                  top: (h - GRID_START_HOUR) * hourPx,
+                  top: (h - startHour) * hourPx,
                   height: 1,
                   background: TL.hair,
                   pointerEvents: "none",
@@ -265,7 +276,7 @@ export function TimeGrid({
                   ? (e) => {
                       if (e.target !== e.currentTarget) return;
                       const y = e.clientY - e.currentTarget.getBoundingClientRect().top;
-                      const slot = snapYToSlot(y, hourPx);
+                      const slot = snapYToSlot(y, hourPx, startHour, endHour);
                       onEmptyClick({ ...slot, dayIndex: i });
                     }
                   : undefined
@@ -276,7 +287,7 @@ export function TimeGrid({
                   ? (e) => {
                       e.preventDefault();
                       const y = e.clientY - e.currentTarget.getBoundingClientRect().top;
-                      const slot = snapYToSlot(y, hourPx);
+                      const slot = snapYToSlot(y, hourPx, startHour, endHour);
                       onDropSlot({ ...slot, dayIndex: i }, e);
                     }
                   : undefined

@@ -1,0 +1,34 @@
+.status, .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  width: fit-content;
+  max-width: 100%;
+  border-radius: var(--tl-r-pill);
+  font-family: var(--tl-font-sans);
+  font-weight: 600;
+  background: var(--tl-mute-tint);
+  color: var(--tl-mute);
+  overflow-wrap: anywhere;
+}
+.status {
+  min-height: 24px;
+  padding: 4px 10px;
+  font-size: 11px;
+  line-height: 1.2;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.status[data-variant="warm"] { background: var(--tl-warm-tint); color: var(--tl-warm-text); }
+.status[data-variant="ok"] { background: var(--tl-ok-tint); color: var(--tl-text); }
+.status[data-variant="danger"] { background: var(--tl-danger-tint); color: var(--tl-text); }
+.status[data-compact] { min-height: 20px; padding: 3px 7px; gap: 4px; font-size: .625rem; letter-spacing: 0; text-transform: none; white-space: nowrap; }
+/* Signalteksten i ZIP-en har for lav kontrast i lys. Behold tinten og
+   tilstandsordet, bruk lesbar tekst. Mørk tåler kildens signalfarger. */
+:global(html[data-v2-tema="dark"]) .status[data-variant="ok"] { color: var(--tl-ok); }
+:global(html[data-v2-tema="dark"]) .status[data-variant="danger"] { color: var(--tl-danger); }
+.chip { min-height: 32px; padding: 6px 12px; font-size: 13px; line-height: 1.4; font-variant-numeric: tabular-nums; color: var(--tl-text); }
+:global(html[data-v2-tema="dark"]) .chip { color: var(--tl-mute); }
+.fremdrift { margin-top: 10px; }
+.fremdriftTekst { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 8px; color: var(--tl-mute); font-family: var(--tl-font-sans); font-size: 11px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.spor { height: 4px; border-radius: var(--tl-r-pill); background: var(--tl-mute-tint); overflow: hidden; }

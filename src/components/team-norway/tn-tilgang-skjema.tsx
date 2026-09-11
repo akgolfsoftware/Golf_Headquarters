@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { TN } from "@/lib/v2/team-norway";
 import { TnKnapp, TnInput } from "./core";
@@ -39,36 +39,48 @@ export function TnTilgangSkjema({
   const [fra, setFra] = useState(fraInitialIso);
   const [til, setTil] = useState(tilInitialIso ?? "");
   const [feil, setFeil] = useState<{ gruppeNavn: string; antallSpillere: number } | null>(null);
+  const [lagringsFeil, setLagringsFeil] = useState<string | null>(null);
+  const [status, setStatus] = useState("");
+  const [handling, setHandling] = useState<"lagre" | "avslutt">("lagre");
   const [pending, startTransition] = useTransition();
+  const paagar = useRef(false);
 
-  function lagre() {
+  function utfor(valgtHandling: "lagre" | "avslutt") {
+    if (pending || paagar.current) return;
+    paagar.current = true;
+    setHandling(valgtHandling);
     setFeil(null);
+    setLagringsFeil(null);
+    setStatus("");
     startTransition(async () => {
-      const resultat = await settTilgang({ groupId, targetUserId, rolle, fraIso: fra, tilIso: til || null });
-      if (!resultat.ok) {
-        setFeil({ gruppeNavn: resultat.gruppeNavn, antallSpillere: resultat.antallSpillere });
-        return;
+      try {
+        const resultat = valgtHandling === "lagre"
+          ? await settTilgang({ groupId, targetUserId, rolle, fraIso: fra, tilIso: til || null })
+          : await avsluttTilgang(groupId, targetUserId);
+        if (!resultat.ok) {
+          setFeil({ gruppeNavn: resultat.gruppeNavn, antallSpillere: resultat.antallSpillere });
+          return;
+        }
+        setStatus(valgtHandling === "lagre" ? "Tilgangen er lagret." : "Tilgangen er avsluttet.");
+        router.refresh();
+      } catch {
+        setLagringsFeil("Kunne ikke bekrefte lagringen. Valgene dine er beholdt. Prøv igjen.");
+      } finally {
+        paagar.current = false;
       }
-      router.refresh();
     });
   }
 
-  function avslutt() {
-    setFeil(null);
-    startTransition(async () => {
-      const resultat = await avsluttTilgang(groupId, targetUserId);
-      if (!resultat.ok) {
-        setFeil({ gruppeNavn: resultat.gruppeNavn, antallSpillere: resultat.antallSpillere });
-        return;
-      }
-      router.refresh();
-    });
+  function lagre(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    utfor("lagre");
   }
 
   if (feil) {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
         <div
+          role="alert"
           style={{
             background: TN.status.redBg,
             borderRadius: TN.radius.md,
@@ -95,7 +107,7 @@ export function TnTilgangSkjema({
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+    <form onSubmit={lagre} aria-busy={pending} style={{ display: "flex", flexDirection: "column", gap: 20 }}>
       <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
         <span
           style={{
@@ -116,6 +128,7 @@ export function TnTilgangSkjema({
                 key={v}
                 type="button"
                 disabled={pending}
+                aria-pressed={aktiv}
                 onClick={() => setRolle(v)}
                 style={{
                   flex: 1,
@@ -150,9 +163,9 @@ export function TnTilgangSkjema({
         >
           Aktiv periode
         </span>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-          <TnInput label="Fra" type="date" value={fra} onChange={setFra} disabled={pending} />
-          <TnInput label="Til" type="date" value={til} onChange={setTil} placeholder="åpen" hint="Tom = åpen" disabled={pending} />
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 140px), 1fr))", gap: 12 }}>
+          <TnInput label="Fra" name="fra" type="date" value={fra} onChange={setFra} required max={til || undefined} disabled={pending} />
+          <TnInput label="Til" name="til" type="date" value={til} onChange={setTil} min={fra || undefined} placeholder="åpen" hint="Tom = åpen" disabled={pending} />
         </div>
         <span style={{ fontSize: TN.text.xs, color: TN.textSecondary, lineHeight: TN.leading.normal }}>
           Tom «til» betyr åpen tilgang. Er datoen passert, står raden som utløpt og personen kommer ikke inn —
@@ -160,14 +173,15 @@ export function TnTilgangSkjema({
         </span>
       </div>
 
-      <div style={{ display: "flex", gap: 10 }}>
-        <TnKnapp variant="primaer" onClick={lagre}>
-          {pending ? "Lagrer …" : "Lagre tilgang"}
+      {lagringsFeil && <p role="alert" style={{ margin: 0, color: TN.status.redText, fontSize: TN.text.sm }}>{lagringsFeil}</p>}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+        <TnKnapp variant="primaer" type="submit" disabled={pending}>
+          {pending && handling === "lagre" ? "Lagrer …" : "Lagre tilgang"}
         </TnKnapp>
         <button
           type="button"
           disabled={pending}
-          onClick={avslutt}
+          onClick={() => utfor("avslutt")}
           style={{
             minHeight: 48,
             padding: "0 18px",
@@ -181,9 +195,10 @@ export function TnTilgangSkjema({
             cursor: pending ? "not-allowed" : "pointer",
           }}
         >
-          Avslutt
+          {pending && handling === "avslutt" ? "Avslutter …" : "Avslutt"}
         </button>
       </div>
-    </div>
+      <span role="status" style={{ fontSize: TN.text.sm, color: TN.textSecondary }}>{status}</span>
+    </form>
   );
 }

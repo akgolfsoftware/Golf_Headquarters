@@ -162,5 +162,7 @@ export type LiveV2Summary = LiveV2Session & {
   durationSec: number;
   totalReps: number;
   drillsCompleted: number;
+  /** Eksplisitt ferdigmarkering; fravær betyr eldre sammendrag. */
+  completedDrillIds?: string[];
   pyramidSummary: Record<PyramidArea, number>;
 };

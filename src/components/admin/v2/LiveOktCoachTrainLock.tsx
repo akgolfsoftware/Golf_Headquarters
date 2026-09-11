@@ -3,6 +3,8 @@
 /**
  * Coachens per-økt live-visning — Train-lock (T9, 27.08.2026).
  *
+ * Avvik:
+ *   - Liten warm-tekst er nøytral i lys etter valgt ZIP (4); full visuell kontroll gjenstår.
  * Fasit: `AG-09b Live-tavle full.dc.html` — samme kortspråk (avatar, warm =
  * fullført, ingen fargekoding på status) skalert opp til én-økt-detalj.
  * Ingen egen AG-09b-ramme viser en full enkelt-økt-side (AG-09b er en
@@ -158,7 +160,7 @@ function LiveMeldingSeksjon({ sessionId }: { sessionId: string }) {
       </div>
       {feil && <CapsLabel color={TL.danger}>{feil}</CapsLabel>}
       {sendt && !isPending && (
-        <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: TL.font.mono, fontSize: 11, color: TL.warm }}>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: TL.font.mono, fontSize: 11, color: TL.warmText }}>
           <Check size={13} />
           Sendt til spiller
         </span>
@@ -219,7 +221,7 @@ function BriefSeksjon({ sessionId, initialMelding }: { sessionId: string; initia
         </GhostButton>
         {feil && <CapsLabel color={TL.danger}>{feil}</CapsLabel>}
         {sendt && !isPending && !feil && (
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: TL.font.mono, fontSize: 11, color: TL.warm }}>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: TL.font.mono, fontSize: 11, color: TL.warmText }}>
             <Check size={13} />
             Sendt
           </span>
@@ -297,7 +299,7 @@ function VurderingSeksjon({ sessionId, initialRating, initialNotat }: { sessionI
         </GhostButton>
         {feil && <CapsLabel color={TL.danger}>{feil}</CapsLabel>}
         {lagret && !isPending && !feil && (
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: TL.font.mono, fontSize: 11, color: TL.warm }}>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: TL.font.mono, fontSize: 11, color: TL.warmText }}>
             <Check size={13} />
             Lagret
           </span>

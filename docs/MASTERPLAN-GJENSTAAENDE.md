@@ -1,6 +1,6 @@
 # Arbeidsliste — AK Golf HQ
 
-**Oppdatert 10.09.2026.** Denne filen eier gjeldende rekkefølge. Den tidligere masterplanen er bevart i sin helhet, med alle oppgaver og beslutningskøer, i [planarkivet](arkiv/opprydding-2026-09-10/masterplan-gjenstaaende.md).
+**Oppdatert 11.09.2026.** Denne filen eier gjeldende rekkefølge. Den tidligere masterplanen er bevart i sin helhet, med alle oppgaver og beslutningskøer, i [planarkivet](arkiv/opprydding-2026-09-10/masterplan-gjenstaaende.md).
 
 ## Bestillingen som gjelder nå
 
@@ -10,14 +10,20 @@ Oppryddingens resultat og verifikasjon står i [prosjektkartet](vedlikehold/pros
 
 ## Neste arbeid
 
+**Main-samling og arbeidsdeling 11.09:** Seks kontrollerte kodepakker gjennom `2bd5a052c` samles: valgt designgrunnlag, PlayerHQ-navigasjon, I dag, Plan, PH-04 og PH-05, samt første TN-18/WANG C7-rettinger. Full lokal verify, **2 326 tester** og **292 skjermvarianter** bestod. Dette er testet kode, ikke ferdig visuell godkjenning av alle fire flater. Detaljer og åpne avvik står i [port-auditen](design-audit/portering-fire-flater-2026-09-10.md).
+
+Neste to pakker har atskilte filer og arbeidsmapper: **Claude Code / Sonnet 5 tar D2-PH06**, oppsummeringen etter trening. **Codex tar D2-PLAN**, eldre planøkter og konsistent ukeprogresjon. Se [arbeidsdelingen](planer/arbeidsdeling-codex-claude-2026-09-11.md) og [komplett Claude-prompt](planer/claude-code-sonnet-5-ph06-prompt.md). Pågående produktplan/intervju og manuell SG i andre arbeidsgrener er ikke erklært ferdige eller slettet av samlingen.
+
 **Samlet leveranse 10.09:** DataGolf/GolfBox fra [PR #833](https://github.com/akgolfsoftware/Golf_Headquarters/pull/833) er bevart og avstemt med de fire lokale endringssettene, øvrige rettinger og gjennomgåtte grenrester. Full verify, 2 290 tester og separate lokale databaseprøver bestod på sluttkoden. Se [grenregnskapet](beslutningsgrunnlag/grener-og-main-2026-09-10.md). Ekstern kontroll av PR, CI og faktisk produksjonsversjon dokumenteres i publiseringsoppgaven. Claude Design arbeider videre med H2-04-tilbakemeldingen ifølge Anders.
 
 **Designgrunnlag bestilt og laget 10.09:** [AK HQ Design](design-system/ak-hq-designarbeid.md) samler en prosjektspesifikk skill, komplett hovedprompt, komponent-/reisekatalog, formatkrav og inventar fra hele appen. Dette er grunnlaget for videre designarbeid; komponentene og skjermene er ikke erklært ferdig tegnet eller implementert.
 
 | ID | Ansvar og status | Konkret oppgave | Klar når |
 |---|---|---|---|
-| D1 | Anders i Claude Design — designarbeid pågår; rekkefølgen her er anbefalt | Gjennomgå én sammenhengende spillerreise: I dag → Plan → gjennomfør økt → oppsummering | Skjermene henger sammen, hovedhandlinger og tilstander er tydelige, og Anders har valgt en versjon som kan bygges |
-| D2 | Implementering — avventer valgt versjon og byggeoppgave | Bygg og kontroller D1 samlet mot referansen | Faktiske data og overganger virker, mobil/desktop er kontrollert og Anders har sett resultatet |
+| D1 | Byggegrunnlag valgt av Anders 10.09 | Train-lock ZIP (4) for PlayerHQ/AgencyOS, levert Claw-pakke for interne TN-skjermer og WANG-speilet for WANG | Hver reise kobles til den konkrete valgte kilden; andre områder kan fortsatt revideres |
+| D2 | Seks kontrollerte kodepakker i main-samlingen; resten fordelt på separate pakker | Bygg **alle skjermene** i PlayerHQ, AgencyOS, Team Norway og WANG. [Kilder og kontrollstatus](design-audit/portering-fire-flater-2026-09-10.md) | Funksjoner, datalagring, tilgang og relevante tilstander virker; mobil/desktop er sammenlignet med valgt kilde, og Anders har sett resultatet |
+| D2-PH06 | Klar for Claude Code / Sonnet 5 | Oppsummering etter trening, faktiske resultater og bevart vurdering/notat | PH-06 er komponent-/funksjonsprøvd og sammenlignet med valgt kilde; innlogget og visuell status er eksplisitt |
+| D2-PLAN | Codex fortsetter etter samlingen | Eldre planøkter uten V2-speil i Plan/ukeprogresjon | Riktig synlighet, status, Oslo-uke og én telling per økt er regresjonstestet |
 | T1 | Lokale rettinger og åtte reiser mot ekte testdatabase prøvd — nettleserreise gjenstår | Rett R1 først, deretter datalagring og sammenheng i R2/R3/R5/R8 samt tilgang og videresending i R6/R7 | Målrettede tester bekrefter både tillatt oppførsel og avviste/feilende tilfeller |
 | F1 | Versjonert registrering implementert/testet lokalt — fagspørsmål og samlet integrasjon gjenstår | [Språk og treningsstruktur](beslutningsgrunnlag/sprak-og-treningskvalitet-2026-09-10.md), særlig [testbatteri mot Excel v3](beslutningsgrunnlag/team-norway-excel-v3-kontroll.md) | Én versjonert protokoll styrer felt, enheter, rekkefølge, validering og beregning i faktisk registrering; åpne fagspørsmål er avklart |
 

@@ -11,12 +11,16 @@
 "use server";
 
 import "server-only";
+import { ukenummer } from "@/lib/uke-helpers";
+import { weekPlanProgress } from "@/lib/portal/week-progress";
+import { GENERERT_FRA } from "@/lib/workbench/v2-drill-mirror";
+import { visibleV2Where } from "@/lib/portal/visible-v2";
 import { workbenchWeekSession } from "@/lib/portal/workbench-week";
 import { osloUkeGrenser } from "@/lib/jarvis/ukesreview";
 import { OSLO_YMD_FMT, osloInstant } from "@/lib/jarvis/dagen";
 import { tilDatoKolonne, SPILLER_SYNLIGE_STATUSER } from "@/lib/workbench/wb-map";
 import { prisma } from "@/lib/prisma";
-import type { PyramidArea, PracticeType, SessionStatusV2 } from "@/generated/prisma/client";
+import type { PyramidArea, PracticeType, SessionStatusV2, OktAvbruddAarsak } from "@/generated/prisma/client";
 import { assertCanViewPlayerData } from "@/lib/auth/assert-own-or-coached";
 import { translateMiljo } from "@/lib/portal/translate-taxonomy";
 import { v2DbSessionHref } from "@/lib/portal/session-hrefs";
@@ -35,6 +39,9 @@ export type TodaySession = {
   startTime: Date;
   endTime: Date;
   status: SessionStatusV2;
+  avbruddAarsak?: OktAvbruddAarsak | null;
+  planSessionId?: string | null;
+  model?: "v2" | "wb" | "plan";
   practiceType: PracticeType;
   pyramidArea: PyramidArea;
   durationMin: number;
@@ -157,30 +164,12 @@ function startOfWeek(d: Date): Date {
   return s;
 }
 
-function endOfWeek(d: Date): Date {
-  const s = startOfWeek(d);
-  const e = new Date(s);
-  e.setDate(e.getDate() + 6);
-  e.setHours(23, 59, 59, 999);
-  return e;
-}
-
-function ukenummer(d: Date): number {
-  const target = new Date(d.valueOf());
-  const dayNr = (d.getDay() + 6) % 7;
-  target.setDate(target.getDate() - dayNr + 3);
-  const firstThursday = target.valueOf();
-  target.setMonth(0, 1);
-  if (target.getDay() !== 4) target.setMonth(0, 1 + ((4 - target.getDay() + 7) % 7));
-  return 1 + Math.ceil((firstThursday - target.valueOf()) / 604_800_000);
-}
-
 function fornavn(name: string): string {
   return name.trim().split(/\s+/)[0] || "spiller";
 }
 
 function greeting(naa: Date): string {
-  const hour = naa.getHours();
+  const hour = Number(new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Oslo", hour: "2-digit", hourCycle: "h23" }).format(naa));
   if (hour < 5) return "God natt";
   if (hour < 11) return "God morgen";
   if (hour < 17) return "Hei";
@@ -239,15 +228,19 @@ export async function getWeekOverview(userId: string, naa: Date = new Date()): P
   const now = naa;
   const { start, slutt: end } = osloUkeGrenser(now);
 
+  const visibility = await visibleV2Where(userId);
   const sessions = await prisma.trainingSessionV2.findMany({
-    where: { studentId: userId, startTime: { gte: start, lt: end } },
+    where: { ...visibility, startTime: { gte: start, lt: end } },
     orderBy: { startTime: "asc" },
     select: {
       id: true,
+      generertFra: true,
+      generertFraId: true,
       title: true,
       startTime: true,
       endTime: true,
       status: true,
+      avbruddAarsak: true,
       practiceType: true,
       miljo: true,
       maalsetning: true,
@@ -273,10 +266,13 @@ export async function getWeekOverview(userId: string, naa: Date = new Date()): P
     if (!day) continue;
     day.sessions.push({
       id: s.id,
+      model: "v2",
+      planSessionId: s.generertFra === GENERERT_FRA ? s.generertFraId : null,
       title: s.title,
       startTime: s.startTime,
       endTime: s.endTime,
       status: s.status,
+      avbruddAarsak: s.avbruddAarsak,
       practiceType: s.practiceType,
       pyramidArea: PRACTICE_TO_PYRAMID[s.practiceType] ?? "TEK",
       durationMin: Math.max(0, Math.round((s.endTime.getTime() - s.startTime.getTime()) / 60_000)),
@@ -294,6 +290,7 @@ export async function getWeekOverview(userId: string, naa: Date = new Date()): P
       status: { in: [...SPILLER_SYNLIGE_STATUSER] },
       hiddenByPlayer: false,
       needsPlayerApproval: false,
+      OR: [{ approvalStatus: null }, { approvalStatus: { not: "REJECTED" } }],
     },
     include: { drills: { orderBy: { sortOrder: "asc" } } },
   });
@@ -565,41 +562,7 @@ export async function getNextTournament(userId: string, naa: Date = new Date()):
 
 export async function getWeekPlanProgress(userId: string, naa: Date = new Date()): Promise<WeekPlanProgress> {
   await assertCanViewPlayerData(userId);
-  const now = naa;
-  const weekStart = startOfWeek(now);
-  const weekEnd = endOfWeek(now);
-
-  const sessions = await prisma.trainingSessionV2.findMany({
-    where: { studentId: userId, startTime: { gte: weekStart, lte: weekEnd } },
-    select: {
-      startTime: true,
-      endTime: true,
-      status: true,
-      practiceType: true,
-    },
-  });
-
-  const initial: Record<PyramidArea, number> = { FYS: 0, TEK: 0, SLAG: 0, SPILL: 0, TURN: 0 };
-
-  return sessions.reduce(
-    (acc, s) => {
-      const min = Math.max(0, Math.round((s.endTime.getTime() - s.startTime.getTime()) / 60_000));
-      const axis = PRACTICE_TO_PYRAMID[s.practiceType] ?? "TEK";
-      acc.plannedMin += min;
-      acc.plannedByAxis[axis] += min;
-      if (s.status === "COMPLETED") {
-        acc.completedMin += min;
-        acc.completedByAxis[axis] += min;
-      }
-      return acc;
-    },
-    {
-      plannedMin: 0,
-      completedMin: 0,
-      plannedByAxis: { ...initial },
-      completedByAxis: { ...initial },
-    } as WeekPlanProgress,
-  );
+  return weekPlanProgress(await getWeekOverview(userId, naa));
 }
 
 // ── KPI stats (avg score + SG total from recent rounds) ──────────
@@ -773,7 +736,7 @@ export async function getDashboardData(userId: string, naa: Date = new Date()): 
     select: { id: true, name: true, avatarUrl: true, hcp: true, tier: true },
   });
 
-  const [todayAll, week, recentActivity, goals, { count: unreadCount, notifications }, coachMessage, stats, kpiStats, nextTournament, weekProgress, trainingHeatmap, optimalSession, harPlanTilGodkjenning] =
+  const [todayAll, week, recentActivity, goals, { count: unreadCount, notifications }, coachMessage, stats, kpiStats, nextTournament, trainingHeatmap, optimalSession, harPlanTilGodkjenning] =
     await Promise.all([
       getAllTodaysSessions(userId, naa),
       getWeekOverview(userId, naa),
@@ -784,7 +747,6 @@ export async function getDashboardData(userId: string, naa: Date = new Date()): 
       getStatsSnapshot(userId, naa),
       getKpiStats(userId, naa),
       getNextTournament(userId, naa),
-      getWeekPlanProgress(userId, naa),
       getTrainingHeatmap(userId, naa),
       hentOptimalOktHint(userId),
       prisma.trainingPlan
@@ -817,7 +779,7 @@ export async function getDashboardData(userId: string, naa: Date = new Date()): 
     stats,
     kpiStats,
     nextTournament,
-    weekProgress,
+    weekProgress: weekPlanProgress(week),
     trainingHeatmap,
     optimalSession: todayAll.length === 0 ? optimalSession : null,
     nesteHandling,

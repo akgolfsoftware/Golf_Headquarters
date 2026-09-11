@@ -2,17 +2,18 @@
 // Kalles fra src/proxy.ts. Refresher access token automatisk og
 // oppdaterer cookies på request + response.
 //
-// Aksepterer optional nonce-string slik at CSP-nonce kan inkluderes
-// i x-nonce request-header — lesbar via headers() i Server Components.
+// CSP må også følge forespørselen: Next leser nonce derfra og setter den
+// på egne skript. x-nonce alene gjør ikke dette. Bevares ved cookie-refresh.
 
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-export async function updateSession(request: NextRequest, nonce?: string) {
-  // Bygg request-headers med optional nonce så RSCs kan lese den via headers().
+export async function updateSession(request: NextRequest, nonce: string, csp: string) {
+  // Overskriv eventuelle klientverdier med serverens policy og nonce.
   function buildReqHeaders(): Headers {
     const h = new Headers(request.headers);
-    if (nonce) h.set("x-nonce", nonce);
+    h.set("x-nonce", nonce);
+    h.set("Content-Security-Policy", csp);
     // Path for RootLayout tema (SSR) — unngår inline <script> / hydration-støy
     h.set("x-pathname", request.nextUrl.pathname);
     return h;

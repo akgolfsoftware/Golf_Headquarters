@@ -61,6 +61,8 @@ export type LiveDrill = {
   csTarget: number | null;
   /** Coach-notat på drillen, hvis satt. */
   notes: string | null;
+  /** Planlagt drilltid når kildemodellen har den. */
+  durationMin?: number | null;
 };
 
 /** Hele live-økta — utledet view-modell. */
@@ -72,6 +74,8 @@ export type LiveSessionData = {
   title: string;
   /** Coach-rasjonale / mål-tekst. */
   rationale: string | null;
+  location?: string | null;
+  maalsetning?: string | null;
   axis: LiveAxis;
   /** Planlagt varighet i minutter. */
   durationMin: number;

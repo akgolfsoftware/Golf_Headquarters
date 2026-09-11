@@ -102,7 +102,7 @@ function PipelineNode({ step }: { step: PipelineStep }) {
           borderRadius: 9999,
           border: `2px solid ${ringFarge}`,
           background: TL.elev,
-          color: ferdig ? TL.warm : aktiv ? TL.text : TL.mute,
+          color: ferdig ? TL.warmText : aktiv ? TL.text : TL.mute,
         }}
       >
         {aktiv ? <Loader2 size={18} strokeWidth={1.5} className="animate-spin" /> : ferdig ? <Check size={18} strokeWidth={1.5} /> : <CircleDot size={18} strokeWidth={1.5} />}

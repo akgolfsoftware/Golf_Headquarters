@@ -9,7 +9,6 @@ import { canAccessPlayer } from "@/lib/auth/own-or-coached";
  */
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@/generated/prisma/client";
@@ -304,7 +303,11 @@ export async function startSession(sessionId: string): Promise<StartSessionResul
 
 /** Logger reps for en drill (upsert på drillId + loggedBy). */
 export async function logDrillReps(input: CompleteDrillInput): Promise<{ ok: boolean }> {
-  const { user } = await verifyAccess(input.sessionId);
+  const { user, session } = await verifyAccess(input.sessionId);
+  if (session.status !== "IN_PROGRESS") return { ok: false };
+  if (!session.drills.some((drill) => drill.id === input.drillId)) throw new Error("Øvelsen tilhører ikke denne økta.");
+  const counters = [input.repsTotal, input.repsWithoutBall, input.repsLowSpeed, input.repsAutomatic, input.repsHit];
+  if (counters.some((value) => !Number.isSafeInteger(value) || value < 0)) throw new Error("Kontroller antall registreringer.");
 
   const successRate =
     input.successRate ??
@@ -400,13 +403,17 @@ export async function completeDrill(input: CompleteDrillInput): Promise<{ ok: bo
   return logDrillReps(input);
 }
 
-/** Fullfører økta: setter COMPLETED, lagrer sammendrag, redirect til summary. */
-export async function completeSession(sessionId: string, clientDurationSec?: number): Promise<void> {
+/** Fullfører økt og planspeil samlet. Klienten åpner oppsummeringen etter bekreftet svar. */
+export async function completeSession(sessionId: string, clientDurationSec?: number, completedDrillIds?: string[]): Promise<{ href: string }> {
   const { user, session } = await verifyAccess(sessionId);
 
   if (session.status === "COMPLETED") {
-    redirect(`/portal/live/${sessionId}/summary`);
+    return { href: `/portal/live/${sessionId}/summary` };
   }
+
+  if (session.status !== "IN_PROGRESS") throw new Error("Økta er ikke pågående.");
+  if (clientDurationSec != null && (!Number.isSafeInteger(clientDurationSec) || clientDurationSec < 0)) throw new Error("Ugyldig varighet.");
+  if (completedDrillIds && (!Array.isArray(completedDrillIds) || completedDrillIds.some((id) => !session.drills.some((drill) => drill.id === id)))) throw new Error("Ugyldig øvelse i fullføringen.");
 
   const logs = await prisma.drillLogV2.findMany({
     where: { drill: { sessionId } },
@@ -414,7 +421,7 @@ export async function completeSession(sessionId: string, clientDurationSec?: num
   });
 
   const totalReps = logs.reduce((sum, l) => sum + l.repsTotal, 0);
-  const drillsCompleted = logs.length;
+  const drillsCompleted = completedDrillIds ? new Set(completedDrillIds).size : new Set(logs.map((log) => log.drillId)).size;
   const startedAt = logs.length > 0 ? logs[0].loggedAt : session.startTime;
   const lastLoggedAt = logs.length > 0 ? logs[logs.length - 1].loggedAt : new Date();
   const computedDurationSec = Math.max(
@@ -438,17 +445,18 @@ export async function completeSession(sessionId: string, clientDurationSec?: num
       durationSec,
       totalReps,
       drillsCompleted,
+      ...(completedDrillIds ? { completedDrillIds: [...new Set(completedDrillIds)] } : {}),
       loggedBy: user.id,
     },
   };
 
-  await prisma.trainingSessionV2.update({
+  const writes: Prisma.PrismaPromise<unknown>[] = [prisma.trainingSessionV2.update({
     where: { id: sessionId },
     data: {
       status: "COMPLETED",
       completedSummary: summary as unknown as Prisma.InputJsonValue,
     },
-  });
+  })];
 
   // Speil tilbake til plan-økta — etterlevelsen (adherence/compliance) leser
   // plan-sida, ellers telles ikke live-fullførte økter. Skriv også
@@ -462,7 +470,7 @@ export async function completeSession(sessionId: string, clientDurationSec?: num
       repsAutomatic: l.repsAutomatic,
       repsHit: l.repsHit,
     }));
-    await prisma.$transaction([
+    writes.push(
       prisma.trainingPlanSession.updateMany({
         where: { id: session.generertFraId },
         data: { status: "COMPLETED", liveSnapshot: Prisma.DbNull },
@@ -483,12 +491,14 @@ export async function completeSession(sessionId: string, clientDurationSec?: num
           drillAggregates: drillAggregates as unknown as Prisma.InputJsonValue,
         },
       }),
-    ]);
+    );
   }
+
+  await prisma.$transaction(writes);
 
   revalidatePath("/portal/planlegge");
   revalidatePath(`/portal/live/${sessionId}`);
-  redirect(`/portal/live/${sessionId}/summary`);
+  return { href: `/portal/live/${sessionId}/summary` };
 }
 
 /** «Dine ord» etter økt → completedSummary.dineOrd (Paper PP-3, ETTER-skjermen).

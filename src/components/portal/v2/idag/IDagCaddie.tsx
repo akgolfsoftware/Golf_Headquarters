@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type CSSProperties, type FormEvent } from "react";
+import { useRef, useState, type CSSProperties, type FormEvent } from "react";
 import { TL } from "@/lib/v2/train-lock";
 import { usePortalChat } from "@/components/portal/v2/chat/use-portal-chat";
 import { SamtaleBoble, SamtaleSkriver } from "@/components/v2/samtale";
@@ -17,6 +17,7 @@ function meldingTekst(parts: PortalChatMessagePart[]): string {
 
 const felt: CSSProperties = {
   flex: 1,
+  minWidth: 0,
   height: 48,
   borderRadius: 999,
   background: TL.dock,
@@ -25,7 +26,7 @@ const felt: CSSProperties = {
   alignItems: "center",
   padding: "0 18px",
   fontFamily: TL.font.sans,
-  fontSize: 15,
+  fontSize: 16,
   fontWeight: 400,
   color: TL.text,
   outline: "none",
@@ -45,6 +46,8 @@ export function IDagCaddie({
   const { messages, status, sendMessage } = usePortalChat();
   const [tekst, setTekst] = useState("");
   const [fangst, setFangst] = useState(false);
+  const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
+  const feltRef = useRef<HTMLInputElement>(null);
   const sender = status === "streaming" || status === "submitted";
   const visTrad = messages.length > 0 || sender;
 
@@ -63,6 +66,8 @@ export function IDagCaddie({
   const bar = (
     <form onSubmit={onSubmit} style={{ display: "flex", alignItems: "center", gap: 10 }}>
       <input
+        ref={feltRef}
+        enterKeyHint="send"
         aria-label={placeholder}
         value={tekst}
         onChange={(e) => setTekst(e.target.value)}
@@ -75,7 +80,7 @@ export function IDagCaddie({
         type="button"
         className="v2-press v2-focus"
         aria-label="Mikrofon"
-        onClick={() => setFangst(true)}
+        onClick={(event) => { setPortalTarget(event.currentTarget.closest("dialog")); setFangst(true); }}
         style={{
           width: 48,
           height: 48,
@@ -130,7 +135,8 @@ export function IDagCaddie({
       {bar}
       {fangst && (
         <FangstSheet
-          onClose={() => setFangst(false)}
+          portalTarget={portalTarget}
+          onClose={() => { setFangst(false); feltRef.current?.focus(); }}
           onLagre={(inn) => {
             void send(inn);
           }}

@@ -64,7 +64,7 @@ export function IDagITidenArk({
         }
         const forste = fokuserbare[0];
         const siste = fokuserbare[fokuserbare.length - 1];
-        if (e.shiftKey && document.activeElement === forste) {
+        if (e.shiftKey && (document.activeElement === forste || document.activeElement === arkRef.current)) {
           e.preventDefault();
           siste.focus();
         } else if (!e.shiftKey && document.activeElement === siste) {
@@ -104,7 +104,7 @@ export function IDagITidenArk({
           maxHeight: "82vh",
           overflowY: "auto",
           background: TL.elev,
-          borderRadius: `${TL.radius.sheet} ${TL.radius.sheet} 0 0`,
+          borderRadius: TL.radius.sheet,
           padding: "12px 24px calc(24px + env(safe-area-inset-bottom, 0px))",
           outline: "none",
         }}
@@ -126,8 +126,8 @@ export function IDagITidenArk({
               appearance: "none",
               border: "none",
               background: TL.dock,
-              width: 32,
-              height: 32,
+              width: 44,
+              height: 44,
               borderRadius: "50%",
               display: "flex",
               alignItems: "center",
@@ -155,7 +155,7 @@ export function IDagITidenArk({
                   {tidCelle(h)}
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 9, fontWeight: 600, letterSpacing: "0.04em", color: TL.mute }}>
+                  <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.04em", color: TL.mute }}>
                     {LAG_LABEL[h.lag]}
                   </div>
                   <div style={{ marginTop: 2, fontSize: 15, fontWeight: 600, color: TL.text }}>{h.tittel}</div>

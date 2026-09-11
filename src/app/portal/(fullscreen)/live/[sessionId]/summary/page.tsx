@@ -1,3 +1,4 @@
+import { completedLiveDrills } from "@/lib/portal-live/live-summary";
 import { prisma } from "@/lib/prisma";
 import { canAccessPlayer } from "@/lib/auth/own-or-coached";
 /**
@@ -131,7 +132,8 @@ export default async function LiveSummaryPage({
 
   // Beregn sammendrag fra loggene.
   const totalReps = data.existingLogs.reduce((sum, l) => sum + l.repsTotal, 0);
-  const drillsCompleted = data.existingLogs.length;
+  const completedDrillIds = completedLiveDrills(data);
+  const drillsCompleted = completedDrillIds.length;
   const pyramidSummary = data.drills.reduce<Record<PyramidArea, number>>(
     (acc, drill) => {
       const log = data.existingLogs.find((l) => l.drillId === drill.id);
@@ -159,6 +161,7 @@ export default async function LiveSummaryPage({
     durationSec,
     totalReps,
     drillsCompleted,
+    completedDrillIds,
     pyramidSummary,
   };
 

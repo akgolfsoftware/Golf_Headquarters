@@ -10,6 +10,9 @@
  */
 
 import "server-only";
+import { osloDagGrenser } from "@/lib/jarvis/dagen";
+import { visibleV2Where } from "@/lib/portal/visible-v2";
+import { GENERERT_FRA } from "@/lib/workbench/v2-drill-mirror";
 import { prisma } from "@/lib/prisma";
 import {
   planSessionStartHref,
@@ -89,8 +92,8 @@ function tid(d: Date): string {
   });
 }
 
-function minutterTil(d: Date): number {
-  return Math.round((d.getTime() - Date.now()) / 60_000);
+function minutterTil(d: Date, naa: Date): number {
+  return Math.round((d.getTime() - naa.getTime()) / 60_000);
 }
 
 function coachInitial(name: string): string {
@@ -99,20 +102,19 @@ function coachInitial(name: string): string {
   return name;
 }
 
-export async function getGjennomforeData(userId: string): Promise<GjennomforeData> {
-  const now = new Date();
-  const startOfDay = new Date(now);
-  startOfDay.setHours(0, 0, 0, 0);
-  const endOfDay = new Date(startOfDay);
-  endOfDay.setDate(endOfDay.getDate() + 1);
+export async function getGjennomforeData(userId: string, now: Date = new Date()): Promise<GjennomforeData> {
+  const { start: startOfDay, slutt: endOfDay } = osloDagGrenser(now);
+  const visibility = await visibleV2Where(userId);
 
   const [okterRaw, planOkterRaw] = await Promise.all([
     prisma.trainingSessionV2
       .findMany({
-        where: { studentId: userId, startTime: { gte: startOfDay, lt: endOfDay } },
+        where: { ...visibility, startTime: { gte: startOfDay, lt: endOfDay }, status: { in: ["PLANNED", "IN_PROGRESS", "COMPLETED"] } },
         orderBy: { startTime: "asc" },
         select: {
           id: true,
+          generertFra: true,
+          generertFraId: true,
           title: true,
           startTime: true,
           endTime: true,
@@ -142,7 +144,7 @@ export async function getGjennomforeData(userId: string): Promise<GjennomforeDat
       .findMany({
         where: {
           scheduledAt: { gte: startOfDay, lt: endOfDay },
-          plan: { userId, isActive: true },
+          plan: { userId, isActive: true, status: { in: ["ACCEPTED", "ACTIVE", "PAUSED"] } },
           status: { not: "ABANDONED" },
         },
         orderBy: { scheduledAt: "asc" },
@@ -208,7 +210,7 @@ export async function getGjennomforeData(userId: string): Promise<GjennomforeDat
       : null;
 
     // meta for rad-visning (kompakt)
-    const minTil = minutterTil(o.startTime);
+    const minTil = minutterTil(o.startTime, now);
     const tidLabel =
       status === "now"
         ? "Pågår nå"
@@ -256,7 +258,7 @@ export async function getGjennomforeData(userId: string): Promise<GjennomforeDat
     const varighet = o.durationMin;
     const drillNavn = o.drills.map((d) => d.exercise.name);
     const trengerLogg = uiStatus === "done" && o.log == null;
-    const minTil = minutterTil(scheduled);
+    const minTil = minutterTil(scheduled, now);
     const tidLabel =
       uiStatus === "now"
         ? "Pågår nå"
@@ -299,9 +301,10 @@ export async function getGjennomforeData(userId: string): Promise<GjennomforeDat
     };
   };
 
+  const speiledePlanIder = new Set(okterRaw.filter((o) => o.generertFra === GENERERT_FRA).map((o) => o.generertFraId));
   const okter: GjennomforeOkt[] = [
     ...okterRaw.map((o) => ({ at: o.startTime.getTime(), okt: mapOkt(o) })),
-    ...planOkterRaw.map((o) => ({
+    ...planOkterRaw.filter((o) => !speiledePlanIder.has(o.id)).map((o) => ({
       at: o.scheduledAt.getTime(),
       okt: mapPlanOkt(o),
     })),

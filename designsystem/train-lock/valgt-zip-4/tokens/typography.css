@@ -1,0 +1,41 @@
+/* tokens/typography.css — Geist Sans for UI, Geist Mono for mono-caption og tabellhoder.
+   Typegulv 11 px. 10 px KUN på chips inne i uke-rutenettet (WB/A/KA). 9 px finnes ikke. */
+
+@theme {
+  --font-sans: 'Geist', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, Menlo, monospace;
+
+  --text-caps: 11px;      /* 600 / 0.08em / uppercase / mute */
+  --text-meta: 13px;      /* 400–600 / mute */
+  --text-body: 15px;      /* 600 */
+  --text-cta: 16px;       /* 700 — sekundær 15/600 */
+  --text-card: 26px;      /* 700 — mobil 20–22 */
+  --text-title: 34px;     /* 700 / -0.02em */
+  --text-hero: 56px;      /* 700 — store tall, opp til 104 */
+}
+
+:root {
+  --tracking-caps: 0.08em;
+  --tracking-title: -0.02em;
+  --tracking-card: -0.01em;
+
+  --leading-title: 1.1;
+  --leading-card: 1.15;
+  --leading-body: 1.5;
+
+  /* Dynamic Type XL — alle PH-skjermer har en XL-ramme.
+     Tekst bryter til ny linje eller trunkeres med ellipse. Aldri klippes. */
+  --xl-title: 40px;
+  --xl-card: 31px;
+  --xl-cta: 19px;
+  --xl-body: 18px;
+  --xl-meta: 16px;
+  --xl-caps: 13px;
+}
+
+/* Alle tall, uten unntak */
+[data-num], .tabular { font-variant-numeric: tabular-nums; }
+
+/* Norsk format nøyaktig som Intl.NumberFormat('nb-NO'):
+   1 450,00 · +0,18 · 22.08.2026 · 09.00–13.00
+   PEI vises alltid som to tall: «4,26 % · 0,04». Putt i fot, innspill i meter. */

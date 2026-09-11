@@ -5,6 +5,7 @@
 import type { PyramidArea, SessionStatusV2 } from "@/generated/prisma/client";
 import type { LiveV2Drill, LiveV2Summary } from "@/components/portal/live/types";
 import type { LiveSessionData, LiveStatus } from "./types";
+import { osloInstant } from "@/lib/jarvis/dagen";
 
 const PYR = ["FYS", "TEK", "SLAG", "SPILL", "TURN"] as const;
 
@@ -41,7 +42,7 @@ export function wbScheduledAtISO(date: Date, startMinute: number): string {
   const d = date.getUTCDate();
   const h = Math.floor(startMinute / 60);
   const min = startMinute % 60;
-  return new Date(Date.UTC(y, m, d, h, min, 0)).toISOString();
+  return osloInstant(y, m + 1, d, h, min).toISOString();
 }
 
 export function wbStatusToPlanStatus(status: string): LiveStatus {
@@ -66,6 +67,7 @@ export function mapWbToLiveSessionData(row: WbLiveInput): LiveSessionData {
       repsLabel: "",
       csTarget: null,
       notes: d.description,
+      durationMin: d.durationMinutes,
     }));
   const scheduledAtISO = wbScheduledAtISO(row.date, row.startMinute);
   return {
@@ -74,6 +76,7 @@ export function mapWbToLiveSessionData(row: WbLiveInput): LiveSessionData {
     planName: "Plan",
     title: row.title,
     rationale: row.notes,
+    location: row.location,
     axis,
     durationMin: row.durationMinutes,
     scheduledAtISO,

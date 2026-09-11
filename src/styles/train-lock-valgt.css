@@ -1,0 +1,70 @@
+/* Valgt kilde: Player HQ Train lock (4).zip, tokens/colors.css + typography.css.
+   Dette laget gjelder bare PlayerHQ/AgencyOS. Rotmarkøren omfatter også
+   dialoger som rendres direkte i body. Resten av v3-porteringen føres i
+   docs/design-audit/portering-fire-flater-2026-09-10.md. */
+html[data-train-lock="4"] {
+  --tl-font-sans: var(--font-geist-sans), "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --tl-font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-sans: var(--tl-font-sans);
+  --font-display: var(--tl-font-sans);
+  --font-mono: var(--tl-font-mono);
+  --v2-font-mono: var(--tl-font-mono);
+
+  /* Eldre komponenter leser font-loaderens navn direkte. Aliasene holder
+     valgt familie konsistent mens de samme skjermene portes videre. */
+  --font-poppins: var(--font-geist-sans);
+  --font-ibm-plex-mono: var(--font-geist-mono);
+  --tl-text-caps-sm: 11px;
+  --tl-r-card: 24px;
+  --tl-r-sheet: 32px 32px 0 0;
+
+  --tl-scene: #F2F1ED;
+  --tl-elev: #FFFFFF;
+  --tl-dock: #E9E9EB;
+  --tl-hair: #E6E4DF;
+  --tl-dim: #DDDDDE;
+  --tl-text: #111111;
+  /* Lesbarhetsavvik: kildens #6E6E73 gir 4,18 på dock. Denne gir 4,50. */
+  --tl-mute: #69696E;
+  --tl-fill: #000000;
+  --tl-on-fill: #FFFFFF;
+  --tl-warm: #D4611A;
+  --tl-warm-ink: #B85C3D;
+  /* Warm-ink holder for liten tekst på hvite kort, men ikke på papir.
+     Eldre tekstkonsumenter bruker derfor nøytral tekst i lyst tema. */
+  --tl-warm-text: var(--tl-text);
+  --tl-warm-tint: #D4611A1F;
+  --tl-ok: #34C759;
+  --tl-ok-tint: #34C7591F;
+  --tl-danger: #FF3B30;
+  --tl-danger-tint: #FF3B301F;
+  --tl-mute-tint: #6E6E731F;
+  --tl-shadow-card: 0 1px 2px rgba(20, 18, 15, 0.06);
+  --tl-photo-opacity: 1;
+  --tl-glow: none;
+  --tl-scrim-photo: linear-gradient(180deg, transparent 40%, var(--tl-scene) 100%);
+}
+
+html[data-train-lock="4"][data-v2-tema="dark"] {
+  --tl-scene: #000000;
+  --tl-elev: #161616;
+  --tl-dock: #1C1C1E;
+  --tl-hair: #FFFFFF14;
+  --tl-dim: #2C2C2E;
+  --tl-text: #F5F5F5;
+  --tl-mute: #8E8E93;
+  --tl-fill: #FFFFFF;
+  --tl-on-fill: #000000;
+  --tl-warm: #E8752A;
+  --tl-warm-ink: #E8752A;
+  --tl-warm-text: #E8752A;
+  --tl-warm-tint: #E8752A1F;
+  --tl-ok: #30D158;
+  --tl-ok-tint: #30D1581F;
+  --tl-danger: #FF453A;
+  --tl-danger-tint: #FF453A1F;
+  --tl-mute-tint: #8E8E931F;
+  --tl-shadow-card: none;
+  --tl-photo-opacity: 0.92;
+  --tl-glow: radial-gradient(60% 40% at 50% 0%, #E8752A38 0%, transparent 100%);
+}

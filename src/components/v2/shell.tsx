@@ -18,6 +18,8 @@ import { useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } fr
 import { createPortal } from "react-dom";
 import { TL } from "@/lib/v2/train-lock";
 import { Icon } from "./icon";
+import { TrainLockCaddieKnapp, TrainLockNavIkon, TrainLockPlayerCaddie, TrainLockPlayerIsland } from "@/components/train-lock/player-chrome";
+import playerChromeStyles from "@/components/train-lock/player-chrome.module.css";
 import { LogoAK, AvatarFoto } from "./core";
 import { useV2Tema, lesTema, type V2Tema } from "./tema";
 import { onsketTema } from "@/lib/v2/tema-default";
@@ -322,7 +324,7 @@ function TemaRailKnapp() {
       style={{ width: 46, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "7px 0 5px", borderRadius: 12, background: "transparent", border: 0, cursor: "pointer", flex: "none", marginBottom: 8 }}
     >
       <Icon name={tilLys ? "sun" : "moon"} size={18} style={{ color: TL.mute }} strokeWidth={1.5} />
-      <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: TL.mute }}>{tilLys ? "Lys" : "Mørk"}</span>
+      <span style={{ fontFamily: TL.font.mono, fontSize: TL.storrelse.capsSm, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: TL.mute }}>{tilLys ? "Lys" : "Mørk"}</span>
     </button>
   );
 }
@@ -441,7 +443,7 @@ function MerPanel({ grupper, rom, onClose, mobil, full, erAgency }: { grupper?: 
         }
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-          <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: "max(10px, var(--tl-text-caps-sm))", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>
             {rom && rom.length > 0 ? `Mer · ${rom.length} rom` : "Alle flater"}
           </span>
           <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
@@ -456,7 +458,7 @@ function MerPanel({ grupper, rom, onClose, mobil, full, erAgency }: { grupper?: 
                 style={{ display: "flex", alignItems: "center", gap: 6, background: "transparent", border: `1px solid ${TL.hair}`, borderRadius: 8, color: TL.mute, cursor: "pointer", padding: "4px 9px" }}
               >
                 <Icon name="search" size={13} />
-                <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase" }}>Søk</span>
+                <span style={{ fontFamily: TL.font.mono, fontSize: TL.storrelse.capsSm, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase" }}>Søk</span>
               </button>
             )}
             <button
@@ -466,7 +468,7 @@ function MerPanel({ grupper, rom, onClose, mobil, full, erAgency }: { grupper?: 
               style={{ display: "flex", alignItems: "center", gap: 6, background: "transparent", border: `1px solid ${TL.hair}`, borderRadius: 8, color: TL.mute, cursor: "pointer", padding: "4px 9px" }}
             >
               <Icon name={tema === "dark" ? "sun" : "moon"} size={13} />
-              <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase" }}>{tema === "dark" ? "Lys" : "Mørk"}</span>
+              <span style={{ fontFamily: TL.font.mono, fontSize: TL.storrelse.capsSm, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase" }}>{tema === "dark" ? "Lys" : "Mørk"}</span>
             </button>
             <button onClick={onClose} className="v2-press" aria-label="Lukk" style={{ background: "transparent", border: 0, color: TL.mute, cursor: "pointer", padding: 4 }}>
               <Icon name="x" size={16} />
@@ -476,7 +478,7 @@ function MerPanel({ grupper, rom, onClose, mobil, full, erAgency }: { grupper?: 
         <div style={mobil ? { display: "flex", flexDirection: "column", gap: 14 } : { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px 22px" }}>
           {(grupper ?? []).map((g) => (
             <div key={g.label}>
-              <div style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute, marginBottom: 6 }}>{g.label}</div>
+              <div style={{ fontFamily: TL.font.mono, fontSize: TL.storrelse.capsSm, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute, marginBottom: 6 }}>{g.label}</div>
               <div style={{ display: "flex", flexDirection: "column" }}>
                 {g.items.map((it) => {
                   const on = pathname === it.href;
@@ -544,7 +546,7 @@ function MerPanel({ grupper, rom, onClose, mobil, full, erAgency }: { grupper?: 
                     <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, letterSpacing: "-0.01em", marginBottom: 3 }}>{r.label}</span>
                     <span style={{ display: "block", fontSize: 12, lineHeight: 1.4, color: TL.mute, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{r.beskrivelse}</span>
                   </span>
-                  <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.02em", color: fremhevet ? TL.fill : TL.mute }}>{r.meta}</span>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: "max(10px, var(--tl-text-caps-sm))", fontWeight: 700, letterSpacing: "0.02em", color: fremhevet ? TL.fill : TL.mute }}>{r.meta}</span>
                 </Link>
               );
             })}
@@ -552,7 +554,7 @@ function MerPanel({ grupper, rom, onClose, mobil, full, erAgency }: { grupper?: 
               <p style={{ margin: 0, fontSize: 11.5, lineHeight: 1.4, color: TL.mute }}>
                 Resten (audit-log, marketing, dyp-katalog) lever i søk — ikke her.
               </p>
-              <kbd style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, padding: "3px 7px", borderRadius: 6, border: `1px solid ${TL.hair}`, background: TL.dock, color: TL.mute, flex: "none" }}>⌘K</kbd>
+              <kbd style={{ fontFamily: TL.font.mono, fontSize: "max(10px, var(--tl-text-caps-sm))", fontWeight: 700, padding: "3px 7px", borderRadius: 6, border: `1px solid ${TL.hair}`, background: TL.dock, color: TL.mute, flex: "none" }}>⌘K</kbd>
             </div>
           </div>
         )}
@@ -624,7 +626,7 @@ function TrainLockAgencyRail() {
         style={{
           padding: "0 10px 6px",
           fontFamily: TL.font.mono,
-          fontSize: 10,
+          fontSize: "max(10px, var(--tl-text-caps-sm))",
           fontWeight: 600,
           letterSpacing: "0.08em",
           textTransform: "uppercase",
@@ -711,7 +713,7 @@ function AgencySkallRad({ label, icon, href, on, ikonStorrelse, badge }: { label
             background: TL.danger,
             color: TL.onDanger,
             fontFamily: TL.font.mono,
-            fontSize: 10,
+            fontSize: "max(10px, var(--tl-text-caps-sm))",
             fontWeight: 700,
             lineHeight: "18px",
             textAlign: "center",
@@ -753,49 +755,6 @@ function TrainLockTemaKnapp() {
   );
 }
 
-function HusIkon({ size, fyll }: { size: number; fyll: boolean }) {
-  const felles = {
-    width: size,
-    height: size,
-    viewBox: "0 0 24 24",
-    "aria-hidden": true as const,
-    style: { display: "block", flex: "none" },
-  };
-  if (fyll) {
-    return (
-      <svg {...felles}>
-        <path d="M4 10.5 L12 4 L20 10.5 V20 H14.5 V14.5 H9.5 V20 H4 Z" fill="currentColor" />
-      </svg>
-    );
-  }
-  return (
-    <svg {...felles} fill="none">
-      <path d="M4 10.5 L12 4 L20 10.5 V20 H15 V14.5 H9 V20 H4 Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-/** PH-01 dock/rail-ikoner — fasitens SVG, ikke Lucide. */
-function PlayerFaneIkon({ icon, size, fyll }: { icon: string; size: number; fyll?: boolean }) {
-  if (icon === "home") return <HusIkon size={size} fyll={Boolean(fyll)} />;
-  if (icon === "calendar") {
-    return (
-      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden>
-        <rect x="4" y="5.5" width="16" height="15" rx="3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-        <path d="M8 3.5 V7 M16 3.5 V7 M4 10.5 H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-      </svg>
-    );
-  }
-  if (icon === "bar-chart") {
-    return (
-      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden>
-        <path d="M5 20 V13 M12 20 V6 M19 20 V10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-      </svg>
-    );
-  }
-  return <Icon name={icon} size={size} strokeWidth={2} />;
-}
-
 function Initialer({ navn, size, fontSize }: { navn: string; size: number; fontSize: number }) {
   return (
     <span
@@ -826,7 +785,7 @@ function playerInitialer(navn: string): string {
   return `${deler[0][0] ?? ""}${deler[deler.length - 1][0] ?? ""}`.toUpperCase();
 }
 
-/** PH-01 Mac-rail: 72 px, 44×44 r12, aktiv = hvit fyll, ØR nederst. */
+/** Valgt PH-01 v3: Mac-rail 64 px, fire destinasjoner og profil nederst. */
 function TrainLockPlayerRail({
   aktiv,
   nav,
@@ -837,13 +796,14 @@ function TrainLockPlayerRail({
   navn: string;
   avatarUrl?: string | null;
 }) {
+  const pathname = usePathname();
   return (
     <nav
-      className="hidden md:flex"
+      className={playerChromeStyles.rail}
       aria-label="Hovedmeny"
       data-tl-player-rail
       style={{
-        width: 72,
+        width: 64,
         flex: "none",
         borderRight: `1px solid ${TL.hair}`,
         flexDirection: "column",
@@ -853,10 +813,10 @@ function TrainLockPlayerRail({
         position: "sticky",
         top: 0,
         height: "100vh",
-        background: TL.scene,
+        background: TL.dock,
       }}
     >
-      {nav.filter((n) => n.id !== "meg").slice(0, 3).map((n) => {
+      {nav.map((n) => {
         const on = aktiv === n.id;
         return (
           <Link
@@ -878,161 +838,17 @@ function TrainLockPlayerRail({
               flex: "none",
             }}
           >
-            <PlayerFaneIkon icon={n.icon} size={21} fyll={on} />
+            <TrainLockNavIkon navn={n.id} />
           </Link>
         );
       })}
       <div style={{ flex: 1, minHeight: 8 }} />
+      {pathname !== "/portal" && <TrainLockCaddieKnapp />}
       <TrainLockTemaKnapp />
-      <Link href="/portal/meg" title="Meg" aria-label="Meg" className="v2-press">
-        <Initialer navn={navn} size={32} fontSize={11} />
+      <Link href="/portal/meg" title="Min profil" aria-label="Min profil" className="v2-press v2-focus" style={{ minWidth: 44, minHeight: 44, display: "grid", placeItems: "center" }}>
+        <Initialer navn={navn} size={38} fontSize={14} />
       </Link>
     </nav>
-  );
-}
-
-/** PH-01 telefon-dock: flytende pille 64 h, aktiv = hvit I DAG-pille. */
-function TrainLockPlayerDock({
-  aktiv,
-  nav,
-  navn,
-  composer,
-}: {
-  aktiv?: string;
-  nav: V2NavItem[];
-  navn: string;
-  composer?: ReactNode;
-}) {
-  const faner = nav.slice(0, 4);
-  return (
-    <div
-      data-tl-player-dock
-      style={{
-        position: "fixed",
-        right: 0,
-        bottom: 0,
-        zIndex: 40,
-        pointerEvents: "none",
-      }}
-    >
-      <style>{`
-        /* left MÅ stå her, ikke inline: inline-stil vinner over media-queryen
-           under, så en hardkodet left:0 ville lagt doken under 72px-skinnen på
-           desktop (målt mot PH-01 Mac 30.08 — composeren startet på x=56). */
-        [data-tl-player-dock] { left: 0; padding: 10px 16px 0; padding-bottom: calc(env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px)); }
-        [data-tl-player-pill] { display: flex; }
-        [data-tl-player-caddie] { margin-bottom: 10px; }
-        @media (min-width: 768px) {
-          [data-tl-player-dock] {
-            left: 72px;
-            padding: 12px 56px 20px;
-            padding-bottom: calc(20px + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px));
-            background: ${TL.scene};
-          }
-          [data-tl-player-pill] { display: none; }
-          [data-tl-player-caddie] { margin-bottom: 0; }
-        }
-      `}</style>
-      {composer != null && (
-        <div data-tl-player-caddie style={{ pointerEvents: "auto" }}>{composer}</div>
-      )}
-      <nav
-        data-tl-player-pill
-        aria-label="Hovedmeny"
-        style={{
-          pointerEvents: "auto",
-          height: 64,
-          background: TL.dock,
-          borderRadius: 999,
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "8px 10px",
-        }}
-      >
-        {faner.map((n) => {
-          const on = aktiv === n.id;
-          const erMeg = n.id === "meg";
-          if (on) {
-            return (
-              <Link
-                key={n.id}
-                href={n.href}
-                aria-current="page"
-                className="v2-press"
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 7,
-                  background: TL.fill,
-                  color: TL.onFill,
-                  borderRadius: 999,
-                  height: 48,
-                  padding: "0 18px",
-                  textDecoration: "none",
-                  flex: "none",
-                }}
-              >
-                {erMeg ? (
-                  <Initialer navn={navn} size={22} fontSize={9} />
-                ) : (
-                  <PlayerFaneIkon icon={n.icon} size={20} fyll />
-                )}
-                <span
-                  style={{
-                    fontSize: 11,
-                    fontWeight: 600,
-                    letterSpacing: "0.08em",
-                    textTransform: "uppercase",
-                    whiteSpace: "nowrap",
-                    color: TL.onFill,
-                  }}
-                >
-                  {n.label}
-                </span>
-              </Link>
-            );
-          }
-          return (
-            <Link
-              key={n.id}
-              href={n.href}
-              aria-label={n.label}
-              className="v2-press"
-              style={{
-                width: 52,
-                height: 48,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 2,
-                textDecoration: "none",
-                flex: "none",
-                color: TL.mute,
-              }}
-            >
-              {erMeg ? (
-                <Initialer navn={navn} size={22} fontSize={9} />
-              ) : (
-                <PlayerFaneIkon icon={n.icon} size={17} />
-              )}
-              <span
-                style={{
-                  fontSize: 9,
-                  fontWeight: 600,
-                  letterSpacing: "0.06em",
-                  textTransform: "uppercase",
-                  color: TL.mute,
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {n.label}
-              </span>
-            </Link>
-          );
-        })}
-      </nav>
-    </div>
   );
 }
 
@@ -1078,7 +894,7 @@ function IkonRailNav({ aktiv, nav, mer, rom, navn, avatarUrl, erAgency, erPlayer
           style={{ width: 56, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "8px 0 6px", borderRadius: 12, background: "transparent", border: 0, cursor: "pointer", flex: "none" }}
         >
           <Icon name="more-horizontal" size={19} style={{ color: aktiv === "mer" ? TL.text : TL.mute }} strokeWidth={1.5} />
-          <span style={{ fontFamily: TL.font.sans, fontSize: 10, fontWeight: 500, color: aktiv === "mer" ? TL.text : TL.mute }}>Mer</span>
+          <span style={{ fontFamily: TL.font.sans, fontSize: "max(10px, var(--tl-text-caps-sm))", fontWeight: 500, color: aktiv === "mer" ? TL.text : TL.mute }}>Mer</span>
         </button>
       )}
       <div style={{ flex: 1, minHeight: 8 }} />
@@ -1151,7 +967,7 @@ function BunnNavLenker({ aktiv, nav, mer }: { aktiv?: string; nav: V2NavItem[]; 
                   </span>
                 )}
               </span>
-              <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 600 }}>{n.label}</span>
+              <span style={{ fontFamily: TL.font.mono, fontSize: TL.storrelse.capsSm, fontWeight: 600 }}>{n.label}</span>
             </Link>
           );
         })}
@@ -1164,7 +980,7 @@ function BunnNavLenker({ aktiv, nav, mer }: { aktiv?: string; nav: V2NavItem[]; 
             style={{ flex: 1, minHeight: 56, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 3, padding: "4px 0", color: merOpen ? TL.text : TL.mute, background: "transparent", border: 0, cursor: "pointer" }}
           >
             <Icon name="more-horizontal" size={20} strokeWidth={1.5} />
-            <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 600 }}>Mer</span>
+            <span style={{ fontFamily: TL.font.mono, fontSize: TL.storrelse.capsSm, fontWeight: 600 }}>Mer</span>
           </button>
         )}
       </nav>
@@ -1226,7 +1042,7 @@ function TrainLockAgencyDock() {
                     background: TL.danger,
                     color: TL.onDanger,
                     fontFamily: TL.font.mono,
-                    fontSize: 10,
+                    fontSize: "max(10px, var(--tl-text-caps-sm))",
                     fontWeight: 700,
                     lineHeight: "16px",
                     textAlign: "center",
@@ -1235,7 +1051,7 @@ function TrainLockAgencyDock() {
                   {badge > 99 ? "99+" : badge}
                 </span>
               )}
-              <span style={{ fontFamily: TL.font.sans, fontSize: 10, fontWeight: 600, color: on ? TL.text : TL.mute }}>{t.label}</span>
+              <span style={{ fontFamily: TL.font.sans, fontSize: "max(10px, var(--tl-text-caps-sm))", fontWeight: 600, color: on ? TL.text : TL.mute }}>{t.label}</span>
             </>
           );
           if (t.id === "meg") {
@@ -1308,7 +1124,7 @@ function MegArkTL({ onClose }: { onClose: () => void }) {
           maxHeight: "72vh",
           overflowY: "auto",
           background: TL.elev,
-          borderRadius: `${TL.radius.sheet} ${TL.radius.sheet} 0 0`,
+          borderRadius: TL.radius.sheet,
           padding: "12px 24px calc(20px + env(safe-area-inset-bottom))",
         }}
       >
@@ -1490,8 +1306,8 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
   // dokument) — så attributtet må synkes ved rute-veksling. Regelen er den
   // SAMME som rot-layout kjører på server: `onsketTema` i
   // src/lib/v2/tema-default.ts er eneste kilde, så SSR og navigasjon ikke kan
-  // drifte fra hverandre. Mørk er default på /portal og /admin (Anders
-  // 25.08.2026); bryteren (cookien) vinner alltid over defaulten.
+  // drifte fra hverandre. Valgt ZIP (4) starter /portal lyst og /admin mørkt;
+  // bryteren (cookien) vinner alltid over defaulten.
   useEffect(() => {
     const rå = document.cookie.split("; ").find((c) => c.startsWith("ak-v2-tema="));
     const cookie = rå?.slice("ak-v2-tema=".length);
@@ -1512,6 +1328,7 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
   }, [erAgency]);
 
   return (
+    <TrainLockPlayerCaddie key={erPlayer ? "player" : "other"} aktiv={erPlayer} composer={composer}>
     <div
       className={tema}
       data-paper-shell={erAgency ? "agencyos" : "playerhq"}
@@ -1540,7 +1357,7 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
       <div
         className={
           erPlayer
-            ? "px-4 md:px-14 pt-[calc(8px+env(safe-area-inset-top))] md:pt-[calc(40px+env(safe-area-inset-top))] pb-[calc(148px+env(safe-area-inset-bottom)+var(--ak-cookie-h,0px))] md:pb-[120px]"
+            ? playerChromeStyles.innhold
             : "px-4 md:px-8 pb-[calc(96px+env(safe-area-inset-bottom))] md:pb-9"
         }
         style={{
@@ -1560,7 +1377,7 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
             hopper skjermbytter hardt i en app som ellers beveger seg mykt. */}
         <div
           key={pathname}
-          className="v2-fade-in"
+          className={erPlayer ? undefined : "v2-fade-in"}
           style={{
             width: "100%",
             display: "flex",
@@ -1623,12 +1440,7 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
       {erAgency ? (
         <TrainLockAgencyDock />
       ) : erPlayer ? (
-        <TrainLockPlayerDock
-          aktiv={autoAktiv}
-          nav={navSynlig}
-          navn={navn}
-          composer={composer}
-        />
+        <TrainLockPlayerIsland aktiv={autoAktiv} nav={navSynlig} />
       ) : (
         <BunnNavLenker aktiv={autoAktiv} nav={navSynlig} mer={merGrupper} />
       )}
@@ -1636,5 +1448,6 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
           søkeknapp) — kun montert i AgencyOS. Selv-styrt, rendrer null lukket. */}
       {erAgency && <GlobalSearchModal />}
     </div>
+    </TrainLockPlayerCaddie>
   );
 }

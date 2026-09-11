@@ -60,5 +60,5 @@ export default async function LiveActivePage({
     initialMessages: filterLiveCoachMessages(thread?.messages),
   };
 
-  return <LiveActive data={result.data} coachPanel={coachPanel} />;
+  return <LiveActive key={result.data.sessionId} data={result.data} coachPanel={coachPanel} />;
 }

@@ -4,6 +4,7 @@ import {
   mapWbToLiveSessionData,
   mapWbToLiveSummary,
   wbStatusToPlanStatus,
+  wbScheduledAtISO,
   type WbLiveInput,
 } from "./wb-live-map";
 
@@ -45,6 +46,25 @@ describe("wb-live-map", () => {
     assert.equal(data.drills.length, 1);
     assert.equal(data.totalPlannedReps, 0);
     assert.equal(data.completed, false);
+    assert.equal(data.location, "Range");
+    assert.equal(data.drills[0].durationMin, 20);
+    assert.equal(data.drills[0].notes, null);
+  });
+
+  it("Plan, brief og oppsummering beholder Oslo-klokken gjennom sommer og vinter", () => {
+    for (const [day, expected] of [
+      ["2026-01-12", "2026-01-12T08:00:00.000Z"],
+      ["2026-03-29", "2026-03-29T07:00:00.000Z"],
+      ["2026-09-08", "2026-09-08T07:00:00.000Z"],
+      ["2026-10-25", "2026-10-25T08:00:00.000Z"],
+    ]) {
+      const row = rad({ date: new Date(`${day}T00:00Z`) });
+      assert.equal(wbScheduledAtISO(row.date, 540), expected);
+      assert.equal(mapWbToLiveSessionData(row).scheduledAtISO, expected);
+      const summary = mapWbToLiveSummary(row);
+      assert.equal(summary.scheduledAtISO, expected);
+      assert.equal(new Date(summary.endTimeISO).getTime() - new Date(expected).getTime(), 50 * 60_000);
+    }
   });
 
   it("summary viser faktiske slag og dikter ikke opp varighet", () => {

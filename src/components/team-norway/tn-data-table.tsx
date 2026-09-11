@@ -25,16 +25,21 @@ export function TnDataTable({
   dense = false,
   empty,
   loading = false,
+  caption,
+  highlightRow,
 }: {
   kolonner: TnDataTableKolonne[];
   rader: Array<Record<string, ReactNode>>;
   dense?: boolean;
   empty?: string | ReactNode;
   loading?: boolean;
+  caption?: string;
+  highlightRow?: number;
 }) {
   const pad = dense ? "10px 14px" : "14px 18px";
   const skall: React.CSSProperties = {
-    overflow: "hidden",
+    overflowX: "auto",
+    minWidth: 0,
     borderRadius: TN.radius.lg,
     border: `1px solid ${TN.borderSubtle}`,
     background: TN.white,
@@ -43,8 +48,8 @@ export function TnDataTable({
 
   if (loading) {
     return (
-      <div style={skall}>
-        <div style={{ display: "flex", gap: 12, padding: pad, background: TN.ink50, borderBottom: `1px solid ${TN.borderSubtle}` }}>
+      <div style={skall} role="status" aria-label={caption ? `Henter ${caption.toLocaleLowerCase("nb-NO")}` : "Henter tabell"}>
+        <div aria-hidden="true" style={{ display: "flex", gap: 12, padding: pad, background: TN.ink50, borderBottom: `1px solid ${TN.borderSubtle}` }}>
           {kolonner.map((k) => (
             <div key={k.key} style={{ flex: 1, height: 11, borderRadius: TN.radius.xs, background: TN.ink200 }} />
           ))}
@@ -52,6 +57,7 @@ export function TnDataTable({
         {[0, 1, 2, 3].map((rad) => (
           <div
             key={rad}
+            aria-hidden="true"
             style={{ display: "flex", gap: 12, padding: pad, borderBottom: rad === 3 ? "none" : `1px solid ${TN.ink100}` }}
           >
             {kolonner.map((k) => (
@@ -75,13 +81,15 @@ export function TnDataTable({
   }
 
   return (
-    <div style={skall}>
+    <div style={skall} role="region" aria-label={caption ?? "Tabell"} tabIndex={0}>
       <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: TN.font.body, fontSize: dense ? 13 : 14 }}>
+        {caption && <caption className="sr-only">{caption}</caption>}
         <thead>
           <tr>
             {kolonner.map((k) => (
               <th
                 key={k.key}
+                scope="col"
                 style={{
                   textAlign: k.align === "right" ? "right" : "left",
                   padding: pad,
@@ -102,7 +110,7 @@ export function TnDataTable({
         </thead>
         <tbody>
           {rader.map((rad, ri) => (
-            <tr key={ri}>
+            <tr key={ri} style={{ background: ri === highlightRow ? TN.navy50 : undefined, boxShadow: ri === highlightRow ? `inset 3px 0 0 ${TN.red600}` : undefined }}>
               {kolonner.map((k) => (
                 <td
                   key={k.key}

@@ -1,0 +1,94 @@
+/* Valgt Claw-pakke 10.09.2026: components/core/Button.jsx og Input.jsx. */
+.knapp {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 44px;
+  min-height: 48px;
+  padding: 12px 20px;
+  border: 1px solid var(--tn-border-default);
+  border-radius: var(--tn-radius-full);
+  background: var(--tn-white);
+  color: var(--tn-navy-900);
+  box-shadow: var(--tn-shadow-sm);
+  font-family: var(--tn-font-body);
+  font-size: var(--tn-text-sm);
+  font-weight: var(--tn-weight-semibold);
+  line-height: 1.4;
+  letter-spacing: -0.005em;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color var(--tn-duration-fast) var(--tn-ease-hover),
+    opacity var(--tn-duration-fast) var(--tn-ease-hover);
+}
+
+.knapp[data-size="sm"] { min-height: 44px; padding: 10px 16px; font-size: var(--tn-text-xs); }
+.knapp[data-size="lg"] { min-height: 56px; padding: 16px 28px; font-size: var(--tn-text-base); }
+.knapp[data-full-bredde] { width: 100%; }
+.knapp[data-variant="primaer"] { background: var(--tn-navy-900); color: var(--tn-white); border-color: transparent; }
+.knapp[data-variant="aksent"] { background: var(--tn-red-600); color: var(--tn-white); border-color: transparent; }
+.knapp[data-variant="tekst"] { background: transparent; color: var(--tn-navy-700); border-color: transparent; box-shadow: none; }
+.knapp[data-variant="mork"] {
+  background: color-mix(in srgb, var(--tn-white) 10%, transparent);
+  color: var(--tn-white);
+  border-color: color-mix(in srgb, var(--tn-white) 24%, transparent);
+  box-shadow: none;
+}
+.knapp:disabled { opacity: 0.45; cursor: not-allowed; }
+.knapp:focus-visible { outline: 2px solid var(--tn-navy-600); outline-offset: 3px; }
+.knapp[data-variant="mork"]:focus-visible { outline-color: var(--tn-white); }
+.ikon { display: inline-flex; flex-shrink: 0; }
+
+@media (hover: hover) and (pointer: fine) {
+  .knapp[data-variant="primaer"]:hover:enabled { background: var(--tn-navy-700); }
+  .knapp[data-variant="aksent"]:hover:enabled { background: var(--tn-red-700); }
+  .knapp[data-variant="sekundaer"]:hover:enabled { background: var(--tn-ink-50); }
+  .knapp[data-variant="tekst"]:hover:enabled { background: var(--tn-navy-100); }
+  .knapp[data-variant="mork"]:hover:enabled { background: color-mix(in srgb, var(--tn-white) 20%, transparent); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .knapp:active:enabled:not(:focus-visible) { transform: scale(0.97); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .knapp:active:enabled { opacity: 0.75; }
+}
+
+.felt { display: flex; flex-direction: column; gap: 7px; min-width: 0; font-family: var(--tn-font-body); }
+.etikett { font-size: var(--tn-text-xs); font-weight: var(--tn-weight-semibold); color: var(--tn-text-primary); }
+.feltramme {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: 46px;
+  padding: 0 14px;
+  background: var(--tn-white);
+  border: 1px solid var(--tn-border-subtle);
+  border-radius: var(--tn-radius-sm);
+  box-shadow: var(--tn-shadow-sm);
+  transition: border-color var(--tn-duration-fast) var(--tn-ease-out), box-shadow var(--tn-duration-base) var(--tn-ease-out);
+}
+.feltramme:focus-within { border-color: var(--tn-navy-600); box-shadow: var(--tn-focus-ring); }
+.feltramme[data-feil] { border-color: var(--tn-status-red); }
+.feltramme[data-disabled] { background: var(--tn-ink-50); }
+.input {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 8px 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  font-family: var(--tn-font-body);
+  font-size: 16px;
+  color: var(--tn-ink-900);
+}
+.input[type="number"] { font-family: var(--tn-font-mono); }
+.input:disabled { cursor: not-allowed; }
+.suffiks { font-family: var(--tn-font-mono); font-size: var(--tn-text-xs); color: var(--tn-text-secondary); }
+.hint, .feil { font-size: var(--tn-text-xs); line-height: var(--tn-leading-normal); }
+.hint { color: var(--tn-text-secondary); }
+.feil { color: var(--tn-status-red-text); }

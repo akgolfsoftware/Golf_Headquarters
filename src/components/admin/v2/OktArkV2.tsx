@@ -224,7 +224,7 @@ export function OktArkV2({ data }: { data: OktArkData }) {
                   <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
                     <span style={{ ...eyebrow, fontSize: 9.5 }}>{d.category}</span>
                     {erAktiv && (
-                      <span style={{ ...eyebrow, color: TL.warm, fontSize: 9.5 }}>Nå</span>
+                      <span style={{ ...eyebrow, color: TL.warmText, fontSize: 9.5 }}>Nå</span>
                     )}
                   </span>
                   <span style={{ display: "block", marginTop: 4, fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
@@ -235,7 +235,7 @@ export function OktArkV2({ data }: { data: OktArkData }) {
                   </span>
                 </span>
                 {status === "GJENNOMFØRT" && (
-                  <span style={{ flex: "none", fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, color: TL.warm }}>
+                  <span style={{ flex: "none", fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, color: TL.warmText }}>
                     {d.done}/{d.target}
                   </span>
                 )}
@@ -398,7 +398,7 @@ export function OktArkV2({ data }: { data: OktArkData }) {
               width: "100%",
               maxWidth: 480,
               background: TL.elev,
-              borderRadius: `${TL.radius.sheet} ${TL.radius.sheet} 0 0`,
+              borderRadius: TL.radius.sheet,
               padding: "18px 20px calc(20px + env(safe-area-inset-bottom))",
             }}
             onClick={(e) => e.stopPropagation()}

@@ -1,0 +1,117 @@
+/* tokens/colors.css — Train-lock **v3 «Warm»** (10.09.2026)
+   VERSJON: v3. Kodeagenter: denne linjen er bryteren. Sier den v2, bygg v2.
+   Fasit: DESIGN-SYSTEM.md §1 + KODEFASIT §5.
+   Rammechrome ligger i tokens/chrome.css — det porteres aldri.
+
+   Kontrast er målt, ikke antatt. Ratio står som kommentar ved hver
+   tekst/flate-kombinasjon som faktisk brukes. Alt brødtekst-nivå er ≥ 4,5:1.
+   Warm som tekst på hvit finnes ikke — se warm-deep. */
+
+@theme {
+  /* Mørk er basis. Lys overstyrer via [data-theme="light"]. */
+  --color-scene: #000000;
+  --color-elev: #161616;
+  --color-dock: #1C1C1E;
+  --color-hair: #FFFFFF14;
+  --color-dim: #2C2C2E;
+  --color-text: #F5F5F5;   /* på scene 19,1:1 · på elev 17,2:1 */
+  --color-mute: #8E8E93;   /* på scene 6,4:1 · på elev 5,8:1 */
+  --color-fill: #FFFFFF;
+  --color-onfill: #000000; /* på fill 21,0:1 */
+
+  /* v3 · warm er fremdrift og «nå». Erstatter ikke fill som CTA. */
+  --color-warm: #E8752A;      /* mørk · på scene 7,0:1 · på elev 6,2:1 */
+  --color-warm-deep: #B85C3D; /* KUN tekst på lys flate — se [data-theme="light"] */
+
+  /* Signal — én jobb hver */
+  --color-target: #0A84FF;   /* satt eller valgt: fokusring, målvindu */
+  --color-ok: #30D158;       /* fullført via StatusPill + WB-04 «Godta» + eval-prikker */
+  --color-danger: #FF453A;   /* KUN faktisk feil, aldri fylt flate */
+  --color-shot: #B08968;     /* spillerens egne data */
+  --color-avatar: #B08968;
+  --color-avatar-ink: #201409;
+}
+
+:root,
+[data-theme="dark"] {
+  --scene: var(--color-scene);
+  --elev: var(--color-elev);
+  --dock: var(--color-dock);
+  --hair: var(--color-hair);
+  --dim: var(--color-dim);
+  --text: var(--color-text);
+  --mute: var(--color-mute);
+  --fill: var(--color-fill);
+  --onfill: var(--color-onfill);
+  --target: var(--color-target);
+  --ok: var(--color-ok);           /* på scene 10,4:1 */
+  --warn: #FFD60A;                 /* på scene 15,3:1 */
+  --danger: var(--color-danger);   /* på scene 6,2:1 */
+  --warm: var(--color-warm);
+  --warm-ink: var(--color-warm);   /* warm som TEKST — i mørk er det warm selv */
+  --shot: var(--color-shot);       /* på scene 6,9:1 */
+  --avatar: var(--color-avatar);
+  --avatar-ink: var(--color-avatar-ink);
+
+  /* Tint 12 % — flater bak ikon og pille. Aldri tekstfarge. */
+  --warm-tint: #E8752A1F;
+  --ok-tint: #30D1581F;
+  --danger-tint: #FF453A1F;
+  --mute-tint: #8E8E931F;
+
+  /* Kort har ingen skygge i mørk — dybde kommer fra flate. */
+  --shadow-card: none;
+
+  /* Foto er dempet i mørk så scenen fortsatt er sort. */
+  --photo-opacity: 0.92;
+}
+
+/* Lys v3 — varmere papir, hvite kort. Geometrien er uendret. */
+[data-theme="light"] {
+  --scene: #F2F1ED;    /* varmt papir, ikke rent hvitt */
+  --elev: #FFFFFF;
+  --dock: #E9E9EB;
+  --hair: #E6E4DF;
+  --dim: #DDDDDE;
+  --text: #111111;     /* på scene 17,0:1 · på elev 18,9:1 */
+  --mute: #6E6E73;     /* på scene 4,6:1 · på elev 5,1:1 */
+  --fill: #000000;
+  --onfill: #FFFFFF;
+  --target: #0A84FF;
+  --ok: #34C759;
+  --warn: #FFD60A;
+  --danger: #FF3B30;
+  --shot: #B08968;
+
+  /* warm som FLATE i lys (fyll, prikk, progress-linje) */
+  --warm: #D4611A;
+
+  /* warm som TEKST i lys. #D4611A på hvit er 3,8:1 og finnes derfor ikke.
+     warm-deep på elev(#FFFFFF) = 4,56:1 ✓ brødtekst.
+     warm-deep på scene(#F2F1ED) = 4,03:1 → KUN ≥ 24 px / 700. */
+  --warm-ink: var(--color-warm-deep);
+
+  --warm-tint: #D4611A1F;
+  --ok-tint: #34C7591F;
+  --danger-tint: #FF3B301F;
+  --mute-tint: #6E6E731F;
+
+  /* Lys flate trenger en kant lyset kan fanges i. Eneste skygge i systemet. */
+  --shadow-card: 0 1px 2px rgba(20, 18, 15, 0.06);
+
+  --photo-opacity: 1;
+}
+
+/* De to eneste gradientene i systemet, ved siden av rutenett-hairline.
+   glow: kun mørk, kun I dag · Cockpit · Live · Analyse-topp.
+   scrim-photo: alltid der tekst ligger over foto. */
+:root {
+  --glow: radial-gradient(60% 40% at 50% 0%, #E8752A38 0%, transparent 100%);
+  --scrim-photo: linear-gradient(180deg, transparent 40%, var(--scene) 100%);
+  --scrim-blur: 20px; /* KUN i Sheet. Ingen andre flater har blur. */
+}
+[data-theme="light"] { --glow: none; } /* glow finnes ikke i lys */
+
+/* Tema-default per flate — fasit, KODEFASIT §1.
+   Settes som data-theme på <html> i rutens layout.
+   /portal light · /forelder light · /admin dark. Alle har toggle. */

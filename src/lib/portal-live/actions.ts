@@ -76,7 +76,7 @@ export async function startPlanSession(sessionId: string): Promise<void> {
   }
   if (wb.status === "PUBLISHED" || wb.status === "SCHEDULED") {
     const res = await startWorkbenchSession(sessionId);
-    if (!res.ok) redirect("/portal");
+    if (!res.ok) throw new Error("Økten kunne ikke startes.");
   }
 
   revalidatePath("/portal");

@@ -101,6 +101,7 @@ export async function loadLiveSession(
     repsLabel: d.repsSets,
     csTarget: d.csTarget ?? null,
     notes: d.notes ?? null,
+    durationMin: d.repType === "TID" ? d.repMinutter : null,
   }));
 
   const totalPlannedReps = drills.reduce((sum, d) => sum + d.plannedReps, 0);
@@ -140,6 +141,8 @@ export async function loadLiveSession(
       planName: session.plan.name,
       title: session.title,
       rationale: session.rationale,
+      maalsetning: session.maalsetning,
+      location: session.location,
       axis: session.pyramidArea,
       durationMin: session.durationMin,
       scheduledAtISO: session.scheduledAt.toISOString(),

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { cookies, headers } from "next/headers";
-import { IBM_Plex_Mono, Lora, Poppins } from "next/font/google";
+import { Geist, Geist_Mono, IBM_Plex_Mono, Lora, Poppins } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { InstallPrompt } from "@/components/portal/install-prompt";
@@ -11,13 +11,16 @@ import { CookieBanner } from "@/components/shared/cookie-banner";
 import { VriTelefonen } from "@/components/shared/vri-telefonen";
 import { AnalyticsLoader } from "@/components/shared/analytics-loader";
 import { onsketTema } from "@/lib/v2/tema-default";
+import { trainLockVersjonForRute } from "@/lib/v2/valgt-design";
+import { TrainLockDesignSynk } from "@/components/shared/train-lock-design-synk";
 import "./globals.css";
 
-// ---------- Produktfonter (Train-lock arver skala, ikke Paper-look) ----------
-// Poppins (UI/display) · Lora (prosa) · IBM Plex Mono (tall) er de ENESTE
-// fontene i appen. Inter, Familjen Grotesk og JetBrains Mono ble fjernet i
-// steg 10 (2026-08-14). Ikke gjeninnfør dem — se CLAUDE.md invariant 2.
-// Lint-porten i scripts/check-token-gap.mjs vokter det.
+// Geist/Geist Mono er valgt for PlayerHQ/AgencyOS i ZIP (4), 10.09.2026.
+// Fontene forhåndslastes ikke på øvrige flater. Disse beholder sine profiler.
+const geist = Geist({ variable: "--font-geist-sans", subsets: ["latin"], display: "swap", preload: false });
+const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"], display: "swap", preload: false });
+
+// Eksisterende familier brukes fortsatt av øvrige flater og prosa.
 const poppins = Poppins({
   variable: "--font-poppins",
   weight: ["400", "500", "600", "700"],
@@ -185,11 +188,13 @@ export default async function RootLayout({
   return (
     <html
       lang="nb"
-      className={`${poppins.variable} ${lora.variable} ${ibmPlexMono.variable} h-full antialiased`}
+      className={`${poppins.variable} ${lora.variable} ${ibmPlexMono.variable} ${geist.variable} ${geistMono.variable} h-full antialiased`}
+      data-train-lock={trainLockVersjonForRute(path)}
       {...(mork ? { "data-v2-tema": "dark" } : {})}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
+        <TrainLockDesignSynk />
         {/* Tema: satt på <html> via cookie + path (SSR). V2Shell synker ved toggle. */}
         {children}
         <InstallPrompt />

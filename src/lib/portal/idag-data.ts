@@ -4,133 +4,98 @@
  */
 import "server-only";
 import { prisma } from "@/lib/prisma";
-import {
-  endOfMonth,
-  endOfWeek,
-  startOfMonth,
-  startOfWeek,
-} from "@/lib/uke-helpers";
-import { SPILLER_SYNLIGE_STATUSER, tilDatoKolonne } from "@/lib/workbench/wb-map";
-
-const ISO = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Oslo" });
-
-function isoLokal(d: Date): string {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const dag = String(d.getDate()).padStart(2, "0");
-  return `${y}-${m}-${dag}`;
-}
+import { OSLO_YMD_FMT, osloDagGrenser, osloInstant } from "@/lib/jarvis/dagen";
+import { tilDatoKolonne } from "@/lib/workbench/wb-map";
+import { visibleV2Where } from "@/lib/portal/visible-v2";
+import { v2DbSessionHref } from "@/lib/portal/session-hrefs";
+import { liveHrefForStatus } from "@/lib/portal-live/live-route";
 
 export type IDagNeste = {
   tittel: string;
   meta: string;
   datoIso: string;
+  href: string;
 };
 
 export type IDagKalender = {
   ferdigeDager: number[];
-  okterDenneUken: number;
   neste: IDagNeste | null;
 };
 
 export async function hentIDagKalender(playerId: string, naa: Date): Promise<IDagKalender> {
-  const mStart = startOfMonth(naa);
-  const mSlutt = endOfMonth(naa);
-  const uStart = startOfWeek(naa);
-  const uSlutt = endOfWeek(naa);
-  const iDagIso = ISO.format(naa);
+  const [aar, maned] = OSLO_YMD_FMT.format(naa).split("-").map(Number);
+  const mStart = osloInstant(aar, maned, 1, 0, 0);
+  const mSlutt = osloInstant(aar, maned + 1, 1, 0, 0);
+  const { slutt: iMorgen } = osloDagGrenser(naa);
+  const visibility = await visibleV2Where(playerId);
+  const wbVisibility = {
+    playerId,
+    hiddenByPlayer: false,
+    needsPlayerApproval: false,
+    OR: [{ approvalStatus: null }, { approvalStatus: { not: "REJECTED" } }],
+  };
 
-  const [wbMnd, v2Mnd, wbUke, v2Uke] = await Promise.all([
+  const [wbMnd, v2Mnd, wbNeste, v2Neste] = await Promise.all([
     prisma.workbenchSession.findMany({
       where: {
-        playerId,
-        date: { gte: tilDatoKolonne(isoLokal(mStart)), lt: tilDatoKolonne(isoLokal(mSlutt)) },
-        status: { in: [...SPILLER_SYNLIGE_STATUSER] },
-        hiddenByPlayer: false,
+        ...wbVisibility,
+        date: { gte: tilDatoKolonne(OSLO_YMD_FMT.format(mStart)), lt: tilDatoKolonne(OSLO_YMD_FMT.format(mSlutt)) },
+        status: "COMPLETED",
       },
-      select: { date: true, title: true, startMinute: true, durationMinutes: true, status: true },
-      orderBy: [{ date: "asc" }, { startMinute: "asc" }],
+      select: { date: true },
     }),
     prisma.trainingSessionV2.findMany({
-      where: {
-        studentId: playerId,
-        startTime: { gte: mStart, lt: mSlutt },
-      },
-      select: { startTime: true, title: true },
-      orderBy: { startTime: "asc" },
+      where: { ...visibility, startTime: { gte: mStart, lt: mSlutt }, status: "COMPLETED" },
+      select: { startTime: true },
     }),
-    prisma.workbenchSession.findMany({
+    prisma.workbenchSession.findFirst({
       where: {
-        playerId,
-        date: { gte: tilDatoKolonne(isoLokal(uStart)), lt: tilDatoKolonne(isoLokal(uSlutt)) },
-        status: { in: [...SPILLER_SYNLIGE_STATUSER] },
-        hiddenByPlayer: false,
+        ...wbVisibility,
+        date: { gte: tilDatoKolonne(OSLO_YMD_FMT.format(iMorgen)) },
+        status: "PUBLISHED",
       },
-      select: { date: true, title: true, startMinute: true, durationMinutes: true },
+      select: { id: true, date: true, title: true, startMinute: true, status: true },
+      orderBy: [{ date: "asc" }, { startMinute: "asc" }, { id: "asc" }],
     }),
-    prisma.trainingSessionV2.count({
-      where: { studentId: playerId, startTime: { gte: uStart, lt: uSlutt } },
+    prisma.trainingSessionV2.findFirst({
+      where: { ...visibility, startTime: { gte: iMorgen }, status: "PLANNED" },
+      select: { id: true, startTime: true, title: true, status: true },
+      orderBy: [{ startTime: "asc" }, { id: "asc" }],
     }),
   ]);
 
   const ferdige = new Set<number>();
-  for (const s of wbMnd) {
-    const iso = s.date.toISOString().slice(0, 10);
-    ferdige.add(Number(iso.slice(8, 10)));
+  for (const s of wbMnd) ferdige.add(s.date.getUTCDate());
+  for (const s of v2Mnd) ferdige.add(Number(OSLO_YMD_FMT.format(s.startTime).slice(8, 10)));
+
+  // Sammenlign faktiske tidspunkt, også over måneds-/årsskiftet. Begge
+  // øktmodellene beholder sin egen identitet og eksisterende detaljlenke.
+  const kandidater: { start: Date; tittel: string; href: string; programmert: boolean }[] = [];
+  if (wbNeste) {
+    const d = wbNeste.date;
+    kandidater.push({
+      start: osloInstant(d.getUTCFullYear(), d.getUTCMonth() + 1, d.getUTCDate(), Math.floor(wbNeste.startMinute / 60), wbNeste.startMinute % 60),
+      tittel: wbNeste.title,
+      href: liveHrefForStatus("wb", wbNeste.status, wbNeste.id),
+      programmert: true,
+    });
   }
-  for (const s of v2Mnd) {
-    ferdige.add(Number(ISO.format(s.startTime).slice(8, 10)));
-  }
-
-  const okterDenneUken = wbUke.length > 0 ? wbUke.length : v2Uke;
-
-  const kommendeWb = wbMnd
-    .map((s) => ({
-      iso: s.date.toISOString().slice(0, 10),
-      tittel: s.title,
-      startMinute: s.startMinute,
-    }))
-    .filter((s) => s.iso > iDagIso);
-
+  if (v2Neste) kandidater.push({ start: v2Neste.startTime, tittel: v2Neste.title, href: v2DbSessionHref(v2Neste.id, v2Neste.status), programmert: false });
+  kandidater.sort((a, b) => a.start.getTime() - b.start.getTime());
+  const n = kandidater[0];
   let neste: IDagNeste | null = null;
-  if (kommendeWb[0]) {
-    const n = kommendeWb[0];
-    const ukedag = ukedagLangFraIso(n.iso);
-    const erHvile = n.tittel.trim().toLowerCase() === "hvile";
+  if (n) {
+    const datoIso = OSLO_YMD_FMT.format(n.start);
+    const kl = new Intl.DateTimeFormat("nb-NO", { timeZone: "Europe/Oslo", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(n.start).replace(":", ".");
+    const hvile = n.tittel.trim().toLowerCase() === "hvile";
     neste = {
       tittel: n.tittel,
-      meta: erHvile ? `${ukedag} · programmert` : `${ukedag} · ${punktFraMinutt(n.startMinute)} · programmert`,
-      datoIso: n.iso,
+      meta: [ukedagLangFraIso(datoIso), hvile ? null : kl, n.programmert ? "programmert" : null].filter(Boolean).join(" · "),
+      datoIso,
+      href: n.href,
     };
-  } else {
-    const kommendeV2 = v2Mnd.find((s) => ISO.format(s.startTime) > iDagIso);
-    if (kommendeV2) {
-      const iso = ISO.format(kommendeV2.startTime);
-      const kl = new Intl.DateTimeFormat("en-GB", {
-        timeZone: "Europe/Oslo",
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-      })
-        .format(kommendeV2.startTime)
-        .replace(":", ".");
-      neste = {
-        tittel: kommendeV2.title,
-        meta: `${ukedagLangFraIso(iso)} · ${kl}`,
-        datoIso: iso,
-      };
-    }
   }
-
-  return { ferdigeDager: [...ferdige], okterDenneUken, neste };
-}
-
-function punktFraMinutt(m: number): string {
-  const h = Math.floor(m / 60)
-    .toString()
-    .padStart(2, "0");
-  const min = (m % 60).toString().padStart(2, "0");
-  return `${h}.${min}`;
+  return { ferdigeDager: [...ferdige].sort((a, b) => a - b), neste };
 }
 
 function ukedagLangFraIso(iso: string): string {

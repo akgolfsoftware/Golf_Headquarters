@@ -9,6 +9,7 @@
  *     under docs/beslutningsgrunnlag for faktisk kontrollomfang.
  */
 
+import { parseWorkbenchStart } from "@/lib/workbench/start-prefill";
 import { TL } from "@/lib/v2/train-lock";
 
 /**
@@ -1890,23 +1891,8 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
   // HurtigOpprett / kalender: ?start=YYYY-MM-DDTHH:mm — deriveres fra URL (ingen setState i effect).
   const [startPrefillLukket, setStartPrefillLukket] = useState(false);
   const startFraUrl = useMemo(() => {
-    if (startPrefillLukket || !data?.weekStartISO) return null;
-    const raw = searchParams.get("start");
-    if (!raw) return null;
-    const m = raw.match(/^(\d{4}-\d{2}-\d{2})T(\d{2}):(\d{2})/);
-    if (!m) return null;
-    const [, datoIso, hh, mm] = m;
-    const target = new Date(`${datoIso}T12:00:00`);
-    if (Number.isNaN(target.getTime())) return null;
-    const weekStart = new Date(data.weekStartISO);
-    const mandag = new Date(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate());
-    const maal = new Date(target.getFullYear(), target.getMonth(), target.getDate());
-    const dayDiff = Math.round((maal.getTime() - mandag.getTime()) / 86_400_000);
-    const dayIndex = Math.max(0, Math.min(6, dayDiff));
-    const min = Number(hh) * 60 + Number(mm);
-    const snappet = Math.round(min / 30) * 30;
-    const pad = (n: number) => String(n).padStart(2, "0");
-    return { dayIndex, tid: `${pad(Math.floor(snappet / 60))}:${pad(snappet % 60)}` };
+    if (startPrefillLukket) return null;
+    return parseWorkbenchStart(searchParams.get("start"), data?.weekStartISO);
   }, [searchParams, data, startPrefillLukket]);
   // Mal dratt til canvas → bekreftelses-popup (Anders-logikken).
   const [malBekreft, setMalBekreft] = useState<{ templateId: string; name: string; sessionCount: number; varighetUker: number } | null>(null);

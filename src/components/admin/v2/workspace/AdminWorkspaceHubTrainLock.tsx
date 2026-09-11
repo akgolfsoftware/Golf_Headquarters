@@ -336,7 +336,7 @@ export function AdminWorkspaceHubTrainLock({ data }: { data: AdminWorkspaceV2Dat
             ? `${pl(brenner.length, "sak brenner", "saker brenner")} og ${pl(kpi.apne, "oppgave er åpen", "oppgaver er åpne")} — ta de viktigste først.`
             : `${pl(kpi.apne, "åpen oppgave", "åpne oppgaver")} fordelt på uka. Synk med Notion for å holde lista fersk.`}
           {" "}
-          <Link href="/admin/workspace/notion" className={TL_PRESS} style={{ color: TL.warm, fontWeight: 700, textDecoration: "none" }}>Åpne Notion-sync →</Link>
+          <Link href="/admin/workspace/notion" className={TL_PRESS} style={{ color: TL.warmText, fontWeight: 700, textDecoration: "none" }}>Åpne Notion-sync →</Link>
         </p>
       </div>
     </div>

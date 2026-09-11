@@ -38,7 +38,6 @@ async function flushAll(): Promise<{ remaining: number; synced: number }> {
     try {
       const status = await synkLiveDrillKo(rad.sessionId, async (sessionId, items) => {
         for (const d of items) {
-          if (d.repsTotal <= 0 && d.status !== "done") continue;
           const r = await logDrillReps({
             sessionId,
             drillId: d.drillId,
