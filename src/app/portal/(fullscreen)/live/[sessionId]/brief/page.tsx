@@ -13,6 +13,7 @@ import { loadLiveSession as loadPlanLiveSession } from "@/lib/portal-live/data";
 import { loadLiveSession as loadV2LiveSession } from "@/app/portal/(fullscreen)/live/[sessionId]/actions";
 import { LiveBrief, PlanSessionBrief } from "@/components/portal/live";
 import { mapWbToLiveSessionData } from "@/lib/portal-live/wb-live-map";
+import type { BriefBlockReason } from "@/lib/portal-live/brief-state";
 
 export default async function LiveBriefPage({
   params,
@@ -43,6 +44,8 @@ export default async function LiveBriefPage({
     if (!(await canAccessPlayer(user, wbRow.playerId))) {
       redirect("/portal/planlegge/workbench");
     }
+    // Samme spiller-synlighet som loadPlayerSession; ingen ny tilgangsrolle.
+    if (erEier && (wbRow.hiddenByPlayer || wbRow.status === "DRAFT")) notFound();
     if (wbRow.status === "COMPLETED") {
       redirect(`/portal/live/${sessionId}/summary`);
     }
@@ -63,14 +66,17 @@ export default async function LiveBriefPage({
       createdAt: wbRow.createdAt,
       drills: wbRow.drills,
     });
-    const canStart = erEier && user.tier !== "GRATIS" && !data.completed;
-    const blockReason: "completed" | "tier" | "coach" | null = data.completed
+    const needsApproval = wbRow.needsPlayerApproval || wbRow.approvalStatus === "REJECTED";
+    const canStart = !isCoach && erEier && user.tier !== "GRATIS" && !data.completed && !needsApproval && wbRow.status === "PUBLISHED";
+    const blockReason: BriefBlockReason = data.completed
       ? "completed"
-      : isCoach && !erEier
+      : isCoach
         ? "coach"
-        : user.tier === "GRATIS"
-          ? "tier"
-          : null;
+        : needsApproval
+          ? "approval"
+          : user.tier === "GRATIS"
+            ? "tier"
+            : null;
     return <PlanSessionBrief data={data} canStart={canStart} blockReason={blockReason} />;
   }
 
@@ -87,7 +93,7 @@ export default async function LiveBriefPage({
       select: { plan: { select: { userId: true } } },
     });
     const erEier = owner?.plan.userId === user.id;
-    const canStart = erEier && user.tier !== "GRATIS" && !data.completed;
+    const canStart = !isCoach && erEier && user.tier !== "GRATIS" && !data.completed;
     const blockReason: "completed" | "tier" | "coach" | null = data.completed
       ? "completed"
       : isCoach
@@ -107,11 +113,13 @@ export default async function LiveBriefPage({
 
   const { data } = result;
   const canStart = !isCoach && user.tier !== "GRATIS" && !data.completed;
-  const blockReason: "completed" | "tier" | null = data.completed
+  const blockReason: BriefBlockReason = data.completed
     ? "completed"
-    : user.tier === "GRATIS" && !isCoach
-      ? "tier"
-      : null;
+    : isCoach
+      ? "coach"
+      : user.tier === "GRATIS"
+        ? "tier"
+        : null;
 
   return <LiveBrief data={data} canStart={canStart} blockReason={blockReason} />;
 }

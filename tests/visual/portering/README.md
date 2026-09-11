@@ -41,3 +41,7 @@ PlayerHQ-navigasjonen prøves i åtte kombinasjoner (320, 390, 834, 1440 × lys/
 ## Plan v3
 
 `plan.py` bruker de samme lokale Geist-/React-referansefilene som I dag. Den prøver fire bredder × to temaer × fylt/tom/lang tekst/overlapp, pluss godkjenning, avvisning, serverfeil, flytting, fokus og store bokstaver. Lasting prøves separat på mobil, iPad og Mac. Original PH-07 v3 rendres til tre private referansebilder. Serverhandlinger er erstattet bare i riggen; ingen virkelig lagring eller varsling skjer. Navigasjon til ny/rediger kontrolleres som lenkekontrakter, ikke som ferdig innlogget reise.
+
+## Øktark PH-04
+
+`brief.py` prøver felles øktark med faktiske Workbench-/plan-/V2-adaptere og syntetiske verdier. 84 varianter omfatter 320/390/834/1440, begge temaer, planlagt/pågående/pauset/fullført/avlyst, coach/PRO/forslag, tomt og langt innhold. Stor tekst, tastatur, oppstartsfeil, nytt forsøk og dobbeltinnsending prøves separat. Start-handlingen og Nexts `unstable_rethrow` er simulert kun i riggen. Dette beviser ikke faktisk innlogget start eller Nexts redirect-håndtering. Direkte rute bruker eget sentrert ark på Mac; kildens panel over en bevart bakgrunn gjenstår.

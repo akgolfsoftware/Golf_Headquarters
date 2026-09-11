@@ -8,7 +8,7 @@ const root = process.cwd();
 const output = resolve(root, "_archive/portering-kontroll-2026-09-10");
 mkdirSync(output, { recursive: true });
 await build({
-  entryPoints: { plan: resolve(root, "tests/visual/portering/plan-fixture.tsx"), idag: resolve(root, "tests/visual/portering/idag-fixture.tsx"), playernav: resolve(root, "tests/visual/portering/player-nav-fixture.tsx"), wang: resolve(root, "tests/visual/portering/wang-login-fixture.tsx"), fixture: resolve(root, "tests/visual/portering/tn-tilgang-fixture.tsx"), trainlock: resolve(root, "tests/visual/portering/train-lock-fixture.tsx") },
+  entryPoints: { brief: resolve(root, "tests/visual/portering/brief-fixture.tsx"), plan: resolve(root, "tests/visual/portering/plan-fixture.tsx"), idag: resolve(root, "tests/visual/portering/idag-fixture.tsx"), playernav: resolve(root, "tests/visual/portering/player-nav-fixture.tsx"), wang: resolve(root, "tests/visual/portering/wang-login-fixture.tsx"), fixture: resolve(root, "tests/visual/portering/tn-tilgang-fixture.tsx"), trainlock: resolve(root, "tests/visual/portering/train-lock-fixture.tsx") },
   outdir: output,
   bundle: true,
   format: "iife",
@@ -17,6 +17,8 @@ await build({
   plugins: [{
     name: "isoler-next-ruting",
     setup(builder) {
+      builder.onResolve({ filter: /^@\/lib\/portal-live\/actions$/ }, ({ path }) => ({ path, namespace: "brief-server-stub" }));
+      builder.onLoad({ filter: /.*/, namespace: "brief-server-stub" }, () => ({ contents: 'export const startPlanSession=async()=>window.briefSvar();', loader: "js" }));
       builder.onResolve({ filter: /^@\/lib\/workbench\/wb-actions$/ }, ({ path }) => ({ path, namespace: "idag-server-stub" }));
       builder.onLoad({ filter: /.*/, namespace: "idag-server-stub" }, () => ({ contents: 'export const resolvePlayerApproval=async(input)=>{if(window.planSvar)return window.planSvar("svar",input);throw new Error("Ingen serverhandling i komponentprøven")};export const moveSession=async(input)=>{if(window.planSvar)return window.planSvar("flytt",input);throw new Error("Ingen serverhandling i komponentprøven")};', loader: "js" }));
       builder.onResolve({ filter: /^next\/(link|navigation|image)$/ }, ({ path }) => ({ path, namespace: "tn-fixture" }));
@@ -25,7 +27,7 @@ await build({
           ? 'import {createElement} from "react"; export default function Image({priority,fill,loader,quality,unoptimized,placeholder,blurDataURL,...props}) { return createElement("img",props); }'
           : path === "next/link"
           ? 'import {createElement} from "react"; export default function Link({prefetch,scroll,replace,...props}) { return createElement("a",props); }'
-          : 'export const useRouter=()=>({refresh:()=>{window.tnOppfriskinger++},push:(url)=>{window.location.assign(url)}}); import {useSyncExternalStore} from "react"; const listen=(cb)=>{window.addEventListener("popstate",cb);return ()=>window.removeEventListener("popstate",cb)}; export const usePathname=()=>useSyncExternalStore(listen,()=>window.location.pathname); export const useSearchParams=()=>new URLSearchParams(window.location.search);',
+          : 'export const unstable_rethrow=()=>{}; export const useRouter=()=>({refresh:()=>{window.tnOppfriskinger++},push:(url)=>{window.location.assign(url)}}); import {useSyncExternalStore} from "react"; const listen=(cb)=>{window.addEventListener("popstate",cb);return ()=>window.removeEventListener("popstate",cb)}; export const usePathname=()=>useSyncExternalStore(listen,()=>window.location.pathname); export const useSearchParams=()=>new URLSearchParams(window.location.search);',
         resolveDir: root,
         loader: "js",
       }));
@@ -41,6 +43,7 @@ const html = `<!doctype html><html lang="nb"><meta charset="utf-8"><meta name="v
 const trainHtml = html.replace('/tokens.css', '/train-tokens.css').replace('/fixture.css', '/trainlock.css').replace('/fixture.js', '/trainlock.js');
 const navHtml = trainHtml.replace("/trainlock.css", "/playernav.css").replace("/trainlock.js", "/playernav.js");
 const idagHtml = trainHtml.replace("/trainlock.css", "/idag.css").replace("/trainlock.js", "/idag.js").replace("</title>", '</title><link rel="stylesheet" href="/geist.css">');
+const briefHtml = idagHtml.replaceAll("/idag.", "/brief.");
 const planHtml = idagHtml.replaceAll("/idag.", "/plan.");
 const wangHtml = html.replace('/tokens.css', '/wang-tokens.css').replace('/fixture.css', '/wang.css').replace('/fixture.js', '/wang.js');
 const nextChunks = resolve(root, ".worktrees/portering-kontroll-2026-09-10/.next/static/chunks");
@@ -50,6 +53,10 @@ const geistCss = (existsSync(nextChunks) ? readdirSync(nextChunks) : []).filter(
   )
 ).join("\n") + '\n:root{--font-geist-sans:Geist;--font-geist-mono:"Geist Mono"}';
 const files = new Map([
+  ["/brief.js", [resolve(output, "brief.js"), "text/javascript"]],
+  ["/brief.css", [resolve(output, "brief.css"), "text/css"]],
+  ["/ph-04-reference.html", [resolve(root, "_archive/design-kilder-2026-09-10/playerhq-train-lock-4/PH-04 Okt-ark.dc.html"), "text/html; charset=utf-8"]],
+  ["/ph-04-wide-reference.html", [resolve(root, "_archive/design-kilder-2026-09-10/playerhq-train-lock-4/B2 PH-04 Okt-ark iPad Mac.dc.html"), "text/html; charset=utf-8"]],
   ["/plan.js", [resolve(output, "plan.js"), "text/javascript"]],
   ["/plan.css", [resolve(output, "plan.css"), "text/css"]],
   ["/ph-07-reference.html", [resolve(root, "_archive/design-kilder-2026-09-10/playerhq-train-lock-4/PH-07 Plan v3.dc.html"), "text/html; charset=utf-8"]],
@@ -79,11 +86,11 @@ createServer((request, response) => {
     response.end(["src/styles/train-lock-tokens.css", "src/styles/train-lock-valgt.css"].map((file) => readFileSync(resolve(root, file), "utf8")).join("\n"));
     return;
   }
-  if (path === "/ph-01-reference.html" || path === "/ph-07-reference.html") {
+  if (["/ph-01-reference.html", "/ph-07-reference.html", "/ph-04-reference.html", "/ph-04-wide-reference.html"].includes(path)) {
     const source = readFileSync(files.get(path)[0], "utf8").replace('<script src="./support.js"></script>', '<script src="/react18.js"></script><script src="/react-dom18.js"></script><script src="./support.js"></script>');
     response.setHeader("Content-Type", "text/html; charset=utf-8"); response.end(source); return;
   }
   const file = files.get(path);
   response.setHeader("Content-Type", file?.[1] ?? "text/html; charset=utf-8");
-  response.end(file ? readFileSync(file[0]) : path.startsWith("/team-norway") ? html : path.startsWith("/team-wang") ? wangHtml : path.startsWith("/player-nav") ? navHtml : path.startsWith("/idag-prove") ? idagHtml : path.startsWith("/plan-prove") ? planHtml : trainHtml);
+  response.end(file ? readFileSync(file[0]) : path.startsWith("/team-norway") ? html : path.startsWith("/team-wang") ? wangHtml : path.startsWith("/player-nav") ? navHtml : path.startsWith("/idag-prove") ? idagHtml : path.startsWith("/brief-prove") ? briefHtml : path.startsWith("/plan-prove") ? planHtml : trainHtml);
 }).listen(5441, "127.0.0.1", () => console.log("TN-komponentrigg klar på 127.0.0.1:5441"));

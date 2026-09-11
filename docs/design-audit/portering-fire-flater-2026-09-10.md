@@ -70,6 +70,18 @@ Plan leser Workbench/V2 og andre kalenderlag for den valgte uken. Dato og klokke
 
 **Gjenstår:** eldre TrainingPlanSession uten V2-speil er ikke med i denne ukelesingen. Direkte flytting av frittstående V2-økter, den fulle ny-/redigerreisen, feil ved første lasting, alle v3-bevegelser og en faktisk innlogget lagringsreise må kontrolleres videre. Ukenavigasjon og heldagsrad er nødvendige tillegg til eksempelrammene; detaljpanelets felt varierer med reelle data. Ingen visuell godkjenning fra Anders er registrert.
 
+## Øktark PH-04: versjonsavstemming før portering
+
+ZIP (4) har PH-04 og B2 PH-04, men ingen PH-04 v3. De statiske arkene bruker eldre SF Pro, 20 px hjørner og iPad-ark på 560 px / Mac-panel på 380 px. H2-02s treningsprototype bruker Geist og beskriver faseavhengige handlinger, men viser en eldre navigasjon med fem faner. Felles utseende følger de allerede valgte v3-verdiene; øktinnholdets rekkefølge følger PH-04. H2-02s nye forslag om gjenåpning og fem faner er ikke nye produktbestillinger. De eksisterende start-/fortsett-/fullførreglene gjelder fortsatt.
+
+Felles øktark viser planlagt tid, dato/sted, nummererte øvelser, faktisk volum og notater/mål. V2, TrainingPlanSession og Workbench beholder sine eksisterende start- og fortsettruter. Pågående økt viser Fortsett, fullført gir oppsummering, avsluttet økt får ingen startknapp. Coach får lesevisning og gratisnivå peker til abonnement. Workbench-forslag må besvares først. Skjulte Workbench-økter og utkast er også skjermet når spilleren åpner den direkte brief-lenken; startserverens eksisterende regler er bevart. Ingen skjemamodell eller databaserolle er endret.
+
+Workbench-dato + klokkeminutt tolkes nå som Oslo-tid i brief og oppsummering. Sted og drilltid følger med, og planøkten beholder både målsetning og begrunnelse. Start bruker den eksisterende serverhandlingen, med umiddelbar sperre mot dobbeltinnsending, ventetekst og feil som lar spilleren prøve igjen. React-/Next-omdirigeringer skal fortsatt håndteres av rammeverket.
+
+84 syntetiske nettleservarianter, 200 prosent tekst, tastatur, oppstartsfeil og dobbeltinnsending er prøvd. Sju nye regresjonstester dekker statusvalg, direkte Workbench-tilgang og Oslo-klokke sommer/vinter. Ingen innlogget start eller produksjonsskriving er prøvd.
+
+Direkte øktlenke har egen side, uten en bevart Plan-side under arket. Dette er et registrert avvik fra kildens overlegg, og skal ikke fremstilles som en ferdig modalreise. Planens eksisterende øktdialog beholdes. Innlogget rutebevegelse og pågående trening/oppsummering kontrolleres videre.
+
 ## WANG C7: innlogging
 
 Skjemaet sender nå e-post og passord til eksisterende Supabase-innlogging, beholder feltene ved feil, sperrer gjentatt innsending og går tilbake til WANG ved suksess. WANGs navnefrie fellesside, glemt passord, trenerflate og eksisterende elevadministrasjon har ekte lenker. Den åpne demoen for å skrive elevnavn er erstattet av eksisterende beskyttet elevadministrasjon; ingen lagrede brukere er slettet.
@@ -86,6 +98,8 @@ C7 er ennå ikke visuelt ferdig: desktop har fortsatt en egen blå overskrift ov
 
 | Before | After | Why |
 |---|---|---|
+| To ulike eldre brief-oppsett mistet deler av øktinnholdet | Ett felles PH-04-ark med lagret sted, øvelser, notater og faseavhengig handling | Økten skal være gjenkjennelig fra Plan og beholde faktisk innhold |
+| Workbench-klokken ble tolket som UTC | Samme Oslo-tid i brief og oppsummering som i Plan | Unngår én eller to timers forskyvning |
 | Plan viste alle dagene som en lang liste | Valgt dag på mobil, to spalter på iPad og uke med øktpanel på Mac | Følger PH-07 v3 og bruker ett datagrunnlag |
 | Forslag og skole var ikke tilgjengelige i Plan | Faktiske kalenderlag og to likeverdige svar på coachforslag | Spilleren kan overskue uken og svare der planen ligger |
 | Ukeprogresjon utelot Workbench; planlagte kalenderdager var markert fullført | Felles øktliste, faktiske fullført-statuser og Oslo-grenser | Tallene skal beskrive spillerens økter |
@@ -96,6 +110,8 @@ C7 er ennå ikke visuelt ferdig: desktop har fortsatt en egen blå overskrift ov
 | Ark fikk en ugyldig sammensatt radius; kalenderlukk var 32 px | Én radiusverdi og kalenderlukk på 44 px med fokusretur | Fungerende geometri og berørings-/tastaturbruk |
 
 ## Faktisk kontroll
+
+Femte del: full `npm run verify` bestod, inkludert produksjonsbygg og Serwist. Hele `npm test` bestod med **2 316 tester** (2 313 + 3), uten feil eller skipp. Alle sju komponentprøver bestod samlet: **252 varianter**, hvorav 84 for PH-04, pluss stor tekst, tastatur, oppstartsfeil og umiddelbar sperre mot dobbeltinnsending. Original PH-04 mobil/B2 Mac og appens lys-/mørkevisninger er rendret; mobil lys og Mac mørk samt begge originaler er visuelt inspisert. Privat sammenligning: `_archive/portering-kontroll-2026-09-10/brief-sammenligning.html`. Åpning i Codex er køet, og er ikke visuell godkjenning. Første kvalitetsforsøk stanset ved en lokal port som sandkassen sperret; full ny kjøring med lokal porttilgang bestod. Ingen automatisk godkjenningsavvisning oppstod.
 
 Fjerde del: hele `npm test` bestod med **2 309 tester** (2 306 + 3), uten feil eller skipp. Åtte nye tester dekker Plan-modellen, uke-/forslagslesing og ny-økt-datoen. De tidligere 136 nettleservariantene bestod, og Plan bestod i 32 nye varianter, i tillegg til tre lastebredder, rotfont på 32 px, godkjenning/avvisning/feil, flytting og tastaturfokus. Plan ble prøvd på nytt etter siste visuelle justering. Faktiske Geist-filer og originale PH-07 v3-rammer ble brukt. Privat sammenligning: `_archive/portering-kontroll-2026-09-10/plan-sammenligning.html`. Åpning i Codex er køet; dette er ikke brukerens visuelle godkjenning. Full npm run verify bestod, inkludert produksjonsbygg og Serwist.
 
