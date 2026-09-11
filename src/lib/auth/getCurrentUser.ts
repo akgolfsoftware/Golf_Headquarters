@@ -9,10 +9,77 @@ import { ensureUser } from "./ensureUser";
 import { isAwaitingGuardianConsent } from "./minor";
 import { resolveTilgang, type Tilgang } from "@/lib/feature-flags";
 import { aktivtAkGruppeMedlemskapWhere } from "@/lib/domain/grupper";
-import type { User } from "@/generated/prisma/client";
+import type { SubscriptionStatus, User } from "@/generated/prisma/client";
 
 /** Prisma-bruker + beregnet tilgangsnivå (A3). tier er alltid EFFEKTIV tier. */
 export type UserMedTilgang = User & { tilgang: Tilgang };
+
+const TILLATTE_ABONNEMENTSSTATUSER = new Set<SubscriptionStatus>([
+  "ACTIVE",
+  "PAST_DUE",
+  "CANCELLED",
+  "TRIALING",
+]);
+
+/**
+ * Trygg feil for sider og actions som ikke kan fastslå effektiv tilgang.
+ * Meldingen er med vilje generell: den skal kunne vises/logges av en
+ * error-grense uten å røpe database-, nettverks- eller abonnementsdetaljer.
+ */
+export class TilgangsdataUtilgjengeligError extends Error {
+  readonly code = "TILGANGSDATA_UTILGJENGELIG";
+
+  constructor() {
+    super("Kunne ikke kontrollere tilgangen akkurat nå. Prøv igjen.");
+    this.name = "TilgangsdataUtilgjengeligError";
+  }
+}
+
+type CoachingTilgangsrad = {
+  monthlyCredits: number;
+  status: SubscriptionStatus;
+  currentPeriodEnd: Date | null;
+};
+
+type PlayerHqTilgangsrad = {
+  status: SubscriptionStatus;
+  currentPeriodEnd: Date | null;
+  plan: string | null;
+  stripeSubscriptionId: string | null;
+};
+
+function erDatoEllerNull(value: unknown): value is Date | null {
+  return value === null || (value instanceof Date && Number.isFinite(value.getTime()));
+}
+
+function erAbonnementsstatus(value: unknown): value is SubscriptionStatus {
+  return typeof value === "string" && TILLATTE_ABONNEMENTSSTATUSER.has(value as SubscriptionStatus);
+}
+
+function erCoachingTilgangsrad(value: unknown): value is CoachingTilgangsrad | null {
+  if (value === null) return true;
+  if (typeof value !== "object") return false;
+  const rad = value as Record<string, unknown>;
+  return (
+    typeof rad.monthlyCredits === "number" &&
+    Number.isFinite(rad.monthlyCredits) &&
+    rad.monthlyCredits >= 0 &&
+    erAbonnementsstatus(rad.status) &&
+    erDatoEllerNull(rad.currentPeriodEnd)
+  );
+}
+
+function erPlayerHqTilgangsrad(value: unknown): value is PlayerHqTilgangsrad | null {
+  if (value === null) return true;
+  if (typeof value !== "object") return false;
+  const rad = value as Record<string, unknown>;
+  return (
+    erAbonnementsstatus(rad.status) &&
+    erDatoEllerNull(rad.currentPeriodEnd) &&
+    (rad.plan === null || typeof rad.plan === "string") &&
+    (rad.stripeSubscriptionId === null || typeof rad.stripeSubscriptionId === "string")
+  );
+}
 
 // Henter innlogget Prisma-bruker UTEN samtykke-håndheving. Brukes KUN av
 // samtykke-flyten (samtykke-venter-siden + onboarding der den mindreårige
@@ -74,15 +141,13 @@ export const getCurrentUser = cache(async (): Promise<UserMedTilgang | null> => 
 // AK-gruppe-medlemskap (managedByAkGolf, plan G1-kontrakten).
 // /portal/meg/abonnement viser FAKTISK tier ved å lese prisma.user direkte.
 async function withEffektivTilgang(user: User): Promise<UserMedTilgang> {
-  const [coaching, playerhq, akGruppeCount] = await Promise.all([
-    prisma.subscription
-      .findUnique({
+  try {
+    const [coaching, playerhq, akGruppeCount] = await Promise.all([
+      prisma.subscription.findUnique({
         where: { userId_kind: { userId: user.id, kind: "COACHING" } },
         select: { monthlyCredits: true, status: true, currentPeriodEnd: true },
-      })
-      .catch(() => null),
-    prisma.subscription
-      .findUnique({
+      }),
+      prisma.subscription.findUnique({
         where: { userId_kind: { userId: user.id, kind: "PLAYERHQ" } },
         select: {
           status: true,
@@ -90,20 +155,36 @@ async function withEffektivTilgang(user: User): Promise<UserMedTilgang> {
           plan: true,
           stripeSubscriptionId: true,
         },
-      })
-      .catch(() => null),
-    prisma.groupMember
-      .count({ where: { userId: user.id, ...aktivtAkGruppeMedlemskapWhere() } })
-      .catch(() => 0),
-  ]);
-  const tilgang = resolveTilgang({
-    tier: user.tier,
-    profilType: user.profilType,
-    createdAt: user.createdAt,
-    trialEndsAt: user.trialEndsAt,
-    coaching,
-    playerhq,
-    akGruppeCount,
-  });
-  return { ...user, tier: tilgang.effektivTier, tilgang };
+      }),
+      prisma.groupMember.count({
+        where: { userId: user.id, ...aktivtAkGruppeMedlemskapWhere() },
+      }),
+    ]);
+
+    // Prisma gir disse formene ved et friskt svar. En adapter, proxy eller
+    // delvis feil skal aldri kunne bli tolket som «ingen abonnement».
+    if (
+      !erCoachingTilgangsrad(coaching) ||
+      !erPlayerHqTilgangsrad(playerhq) ||
+      !Number.isSafeInteger(akGruppeCount) ||
+      akGruppeCount < 0
+    ) {
+      throw new TilgangsdataUtilgjengeligError();
+    }
+
+    const tilgang = resolveTilgang({
+      tier: user.tier,
+      profilType: user.profilType,
+      createdAt: user.createdAt,
+      trialEndsAt: user.trialEndsAt,
+      coaching,
+      playerhq,
+      akGruppeCount,
+    });
+    return { ...user, tier: tilgang.effektivTier, tilgang };
+  } catch {
+    // Fail closed: driftsfeil skal gå til nærmeste error.tsx med «Prøv igjen».
+    // De skal verken bli oppgraderingsredirect eller gi tilgang fra deldata.
+    throw new TilgangsdataUtilgjengeligError();
+  }
 }
