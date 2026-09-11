@@ -9,7 +9,7 @@ import type { LiveV2Session, DrillRepState } from "./types";
 type Phase = "starting" | "active" | "start-error" | "finishing" | "finish-error" | "finished";
 type Saving = "saved" | "saving" | "offline" | "error" | "local-error";
 
-export function useLiveSession(data: LiveV2Session) {
+export function useLiveSession(data: LiveV2Session, userId: string) {
   const router = useRouter();
   const initial = useRef(data);
   const [state, setState] = useState(() => restoreLiveState(data, null));
@@ -25,7 +25,7 @@ export function useLiveSession(data: LiveV2Session) {
   const restoreRequest = useRef<ReturnType<typeof lesLiveDrillUtkast> | null>(null);
   const phaseTo = useCallback((next: Phase) => { phaseRef.current = next; setPhaseState(next); }, []);
   const update = useCallback((next: LiveState) => { latest.current = next; setState(next); }, []);
-  const saveLocal = useCallback((next: LiveState) => lagreLiveDrillUtkast(data.sessionId, livePayload(next), next.totalSec, { paused: next.paused, drillSec: next.drillSec }).catch(() => false), [data.sessionId]);
+  const saveLocal = useCallback((next: LiveState) => lagreLiveDrillUtkast(data.sessionId, livePayload(next), next.totalSec, userId, { paused: next.paused, drillSec: next.drillSec }).catch(() => false), [data.sessionId, userId]);
 
   const sync = useCallback(async () => {
     if (!navigator.onLine) { if (mounted.current) setSaving("offline"); return false; }

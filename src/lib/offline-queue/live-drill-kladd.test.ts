@@ -7,6 +7,7 @@ import assert from "node:assert/strict";
 import {
   byggLiveDrillKoRad,
   registrerMislykketLiveForsok,
+  tilhoererBrukerLive,
   trengerManuellLiveHandling,
 } from "./live-drill-kladd";
 
@@ -40,5 +41,22 @@ describe("live-drill-kladd", () => {
       rad = registrerMislykketLiveForsok(rad, new Date());
     }
     assert.equal(trengerManuellLiveHandling(rad), true);
+  });
+});
+
+describe("tilhoererBrukerLive (R-C: hindrer flush av forrige brukers rad ved brukerbytte)", () => {
+  it("true for samme bruker som stemplet raden", () => {
+    const rad = byggLiveDrillKoRad("s1", [], 0, new Date(), "u-1");
+    assert.equal(tilhoererBrukerLive(rad, "u-1"), true);
+  });
+
+  it("false for en annen bruker", () => {
+    const rad = byggLiveDrillKoRad("s1", [], 0, new Date(), "u-1");
+    assert.equal(tilhoererBrukerLive(rad, "u-2"), false);
+  });
+
+  it("false for en rad uten userId (eldre appversjon) — flushes aldri automatisk", () => {
+    const rad = byggLiveDrillKoRad("s1", [], 0, new Date());
+    assert.equal(tilhoererBrukerLive(rad, "u-1"), false);
   });
 });

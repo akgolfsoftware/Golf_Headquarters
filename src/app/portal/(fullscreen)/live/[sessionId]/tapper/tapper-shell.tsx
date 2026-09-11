@@ -40,6 +40,8 @@ type Props = {
   coachPanel: LiveCoachPanelData;
   /** Tidligere lagrede tellinger (session_ball_logs) — gjenopptak etter refresh. */
   initialCounts?: Record<string, number>;
+  /** R-C: den innloggede brukeren som faktisk bruker denne nettleseren nå — stemples på offline-kø-raden. */
+  userId: string;
 };
 
 /** Lokalt tapp denne nettleserøkta — bærer «siste slag kl. X» + Angre. */
@@ -51,7 +53,7 @@ const OSLO_KL = new Intl.DateTimeFormat("nb-NO", {
   timeZone: "Europe/Oslo",
 });
 
-export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCounts }: Props) {
+export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCounts, userId }: Props) {
   const router = useRouter();
   const [counts, setCounts] = useState<Record<string, number>>(() => ({
     ...Object.fromEntries(clubs.map((c) => [c.id, 0])),
@@ -84,7 +86,7 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
     }
     // IndexedDB kan i sjeldne tilfeller kaste synkront (f.eks. lukket
     // forbindelse) — skal aldri hindre avslutt() sin navigering.
-    await leggIKo(sessionId, payload).catch(() => {});
+    await leggIKo(sessionId, payload, userId).catch(() => {});
     setLagreStatus("kolagt");
     return false;
   }

@@ -28,7 +28,7 @@ function readNotes(raw: string): LiveNotat[] {
 }
 
 export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPanel: LiveCoachPanelData }) {
-  const live = useLiveSession(data);
+  const live = useLiveSession(data, coachPanel.userId);
   const [mode, setMode] = useState<"now" | "list" | "notes">("now");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const rawNotes = useSyncExternalStore(subscribeNotes, () => noteSnapshot(data.sessionId), () => "[]");

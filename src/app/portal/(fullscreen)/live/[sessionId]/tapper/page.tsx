@@ -199,6 +199,7 @@ export default async function LiveTapperPage({
       clubs={clubs}
       coachPanel={coachPanel}
       initialCounts={initialCounts}
+      userId={user.id}
     />
   );
 }

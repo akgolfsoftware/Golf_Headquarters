@@ -10,7 +10,7 @@
  * telling), ikke en voksende hendelseslogg.
  */
 
-import { byggKoRad, registrerMislykketForsok, trengerManuellHandling, type TapperKoRad } from "./tapper-kladd";
+import { byggKoRad, registrerMislykketForsok, trengerManuellHandling, tilhoererBruker, type TapperKoRad } from "./tapper-kladd";
 
 const DB_NAVN = "akgolf-offline-ko";
 const DB_VERSJON = 1;
@@ -52,15 +52,19 @@ async function medButikk<T>(
   });
 }
 
-/** Legger (eller erstatter) siste kjente tellinger for en økt i køen. */
+/**
+ * Legger (eller erstatter) siste kjente tellinger for en økt i køen.
+ * `userId` (R-C) stemples på raden — se `TapperKoRad.userId`.
+ */
 export async function leggIKo(
   sessionId: string,
   counts: Array<{ club: string; count: number }>,
+  userId: string,
 ): Promise<void> {
   const eksisterende = await medButikk<TapperKoRad>("readonly", (b) => b.get(sessionId));
   const rad = eksisterende
-    ? { ...eksisterende, counts, sistOppdatert: new Date().toISOString() }
-    : byggKoRad(sessionId, counts, new Date());
+    ? { ...eksisterende, counts, sistOppdatert: new Date().toISOString(), userId }
+    : byggKoRad(sessionId, counts, new Date(), userId);
   await medButikk("readwrite", (b) => b.put(rad));
 }
 
@@ -73,9 +77,25 @@ async function alleRader(): Promise<TapperKoRad[]> {
   return rader ?? [];
 }
 
-/** Alle rader i offline-køen (for portal-wide flush). */
-export async function listTapperKo(): Promise<TapperKoRad[]> {
-  return alleRader();
+/**
+ * R-C (2026-09-11): rader for DENNE brukeren, for portal-wide flush.
+ *
+ * IndexedDB er origin-scopet — på en delt/familie-enhet kan det ligge
+ * usynkede rader igjen fra en TIDLIGERE innlogget bruker (nettet falt ut før
+ * synk, de logget ut). Uten dette filteret ville `OfflineSyncBootstrap`
+ * forsøkt å flushe (sende) forrige brukers treningstall under NESTE brukers
+ * innloggede sesjon idet de åpner /portal — nøyaktig det R-C forbyr
+ * («brukerbytte skal aldri vise/sende forrige brukers innhold»).
+ *
+ * En rad UTEN `userId` (skrevet av en eldre appversjon, før dette feltet
+ * fantes) regnes som ukjent eier og flushes ALDRI automatisk — den blir
+ * liggende til spilleren selv åpner den aktuelle live-økten igjen (der
+ * `tomKo` fortsatt kan synke den eksplisitt, se tapper-shell.tsx), i stedet
+ * for å bli slettet stille eller sendt under feil identitet.
+ */
+export async function listTapperKo(userId: string): Promise<TapperKoRad[]> {
+  const rader = await alleRader();
+  return rader.filter((r) => tilhoererBruker(r, userId));
 }
 
 /**

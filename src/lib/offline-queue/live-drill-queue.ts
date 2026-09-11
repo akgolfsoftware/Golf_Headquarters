@@ -3,7 +3,7 @@
 /** Live-kladd og ventende sendinger i samme eksisterende IndexedDB-butikk.
  * En kvittering markerer bare versjonen som faktisk ble sendt. Kladden
  * beholdes etter synk, slik at klokke, pause og øvelsesstatus kan gjenopptas. */
-import { byggLiveDrillKoRad, trengerManuellLiveHandling, type LiveDrillKoRad, type LiveDrillReps } from "./live-drill-kladd";
+import { byggLiveDrillKoRad, tilhoererBrukerLive, trengerManuellLiveHandling, type LiveDrillKoRad, type LiveDrillReps } from "./live-drill-kladd";
 
 const DB_NAVN = "akgolf-live-drill-ko";
 const BUTIKK = "live-drill-ko";
@@ -45,15 +45,15 @@ export async function lesLiveDrillUtkast(sessionId: string): Promise<LiveDrillKo
   });
 }
 
-export async function lagreLiveDrillUtkast(sessionId: string, drills: LiveDrillReps[], totalSec: number, clock?: { paused: boolean; drillSec: number }): Promise<boolean> {
+export async function lagreLiveDrillUtkast(sessionId: string, drills: LiveDrillReps[], totalSec: number, userId: string, clock?: { paused: boolean; drillSec: number }): Promise<boolean> {
   const saved = await transaksjon<boolean>("readwrite", (store, result) => {
     const req = store.get(sessionId);
     req.onsuccess = () => {
       const previous: LiveDrillKoRad | undefined = req.result;
       const changed = !previous || JSON.stringify(previous.drills) !== JSON.stringify(drills);
       const row: LiveDrillKoRad = {
-        ...(previous ?? byggLiveDrillKoRad(sessionId, drills, totalSec, new Date())),
-        drills, totalSec, ...clock,
+        ...(previous ?? byggLiveDrillKoRad(sessionId, drills, totalSec, new Date(), userId)),
+        drills, totalSec, userId, ...clock,
         revision: (previous?.revision ?? 0) + (changed ? 1 : 0),
         sistOppdatert: new Date().toISOString(),
       };
@@ -67,12 +67,21 @@ export async function slettLiveDrillUtkast(sessionId: string): Promise<void> {
   await transaksjon("readwrite", (store, result) => { store.delete(sessionId); result(true); });
 }
 
-/** Bare usendte versjoner vises i portalens felles kø. */
-export async function listLiveDrillKo(): Promise<LiveDrillKoRad[]> {
+/**
+ * Bare usendte versjoner for DENNE brukeren vises i portalens felles kø
+ * (R-C, 2026-09-11) — se `listTapperKo` (tapper-queue.ts) for full
+ * begrunnelse: uten brukerfilteret ville en stale rad fra en tidligere
+ * bruker på samme enhet blitt forsøkt sendt under neste brukers sesjon.
+ */
+export async function listLiveDrillKo(userId: string): Promise<LiveDrillKoRad[]> {
   const rows = await transaksjon<LiveDrillKoRad[]>("readonly", (store, result) => {
     const req = store.getAll(); req.onsuccess = () => result(req.result);
   });
-  return (rows ?? []).filter((row) => row.synketRevision == null || row.synketRevision !== row.revision);
+  return (rows ?? []).filter(
+    (row) =>
+      tilhoererBrukerLive(row, userId) &&
+      (row.synketRevision == null || row.synketRevision !== row.revision),
+  );
 }
 
 const sending = new Map<string, Promise<LiveSyncResult>>();
