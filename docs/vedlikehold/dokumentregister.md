@@ -47,6 +47,7 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | dokumentasjon | [docs/design-audit/2026-09-06/scoreboard.md](<../design-audit/2026-09-06/scoreboard.md>) |
 | dokumentasjon | [docs/design-audit/2026-09-07-csp-konsoll/README.md](<../design-audit/2026-09-07-csp-konsoll/README.md>) |
 | dokumentasjon | [docs/design-audit/2026-09-08/rigg-panelmodus-ao/README.md](<../design-audit/2026-09-08/rigg-panelmodus-ao/README.md>) |
+| dokumentasjon | [docs/design-audit/2026-09-11-agencyos-coach-reise-j04.md](<../design-audit/2026-09-11-agencyos-coach-reise-j04.md>) |
 | dokumentasjon | [docs/design-audit/ak-golf-til-train-lock-bro-2026-09-03.md](<../design-audit/ak-golf-til-train-lock-bro-2026-09-03.md>) |
 | dokumentasjon | [docs/design-audit/lokal-lagring-personvern-2026-09-11.md](<../design-audit/lokal-lagring-personvern-2026-09-11.md>) |
 | dokumentasjon | [docs/design-audit/plan-legacy-2026-09-11.md](<../design-audit/plan-legacy-2026-09-11.md>) |

@@ -1,10 +1,10 @@
 {
   "metode": "git ls-files -co --exclude-standard; eksisterende filer; genererte registerfiler utelatt. Kun metadata, ikke kundedata eller miljøverdier.",
   "telling": {
-    "prosjektfiler": 5214,
+    "prosjektfiler": 5217,
     "sidefiler": 479,
     "prismamodeller": 196,
-    "enhetstestfiler": 353,
+    "enhetstestfiler": 354,
     "nettlesertestfiler": 41,
     "trainLockTegninger": 219
   },
@@ -5552,6 +5552,11 @@
       "byte": 1786
     },
     {
+      "sti": "docs/design-audit/2026-09-11-agencyos-coach-reise-j04.md",
+      "omrade": "dokumentasjon",
+      "byte": 11248
+    },
+    {
       "sti": "docs/design-audit/ak-golf-til-train-lock-bro-2026-09-03.md",
       "omrade": "dokumentasjon",
       "byte": 7295
@@ -5729,7 +5734,7 @@
     {
       "sti": "docs/MASTERPLAN-GJENSTAAENDE.md",
       "omrade": "dokumentasjon",
-      "byte": 10971
+      "byte": 11076
     },
     {
       "sti": "docs/merkevare/ak-golf-merkeplattform-2026-08-31.md",
@@ -5809,7 +5814,7 @@
     {
       "sti": "docs/planer/claude-code-sonnet-5-agencyos-prompt.md",
       "omrade": "datert-plan",
-      "byte": 7443
+      "byte": 8716
     },
     {
       "sti": "docs/planer/claude-code-sonnet-5-ph06-prompt.md",
@@ -12634,7 +12639,7 @@
     {
       "sti": "src/app/admin/spillere/page.tsx",
       "omrade": "appkode",
-      "byte": 3724
+      "byte": 4045
     },
     {
       "sti": "src/app/admin/stall/dag/error.tsx",
@@ -16814,7 +16819,7 @@
     {
       "sti": "src/components/admin/v2/TrainLockStall.tsx",
       "omrade": "appkode",
-      "byte": 23265
+      "byte": 25155
     },
     {
       "sti": "src/components/admin/v2/TrainLockValgtCoachSelect.tsx",
@@ -20400,6 +20405,16 @@
       "sti": "src/lib/admin/stall-rad.ts",
       "omrade": "appkode",
       "byte": 2933
+    },
+    {
+      "sti": "src/lib/admin/stall-url-state.test.ts",
+      "omrade": "test",
+      "byte": 2282
+    },
+    {
+      "sti": "src/lib/admin/stall-url-state.ts",
+      "omrade": "appkode",
+      "byte": 2024
     },
     {
       "sti": "src/lib/admin/stallen-data.ts",

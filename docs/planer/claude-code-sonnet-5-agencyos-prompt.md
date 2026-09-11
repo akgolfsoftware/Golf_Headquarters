@@ -1,17 +1,18 @@
-# Claude Code / Sonnet 5 — AgencyOS-reisen
+# Claude Code / Sonnet 5 — AgencyOS-reisen, fase 2
 
 Kopier hele XML-blokken til en ny Claude Code-økt med Sonnet 5. Kjør fra prosjektroten `~/Developer/akgolf-hq`.
 
 ```xml
 <oppgave>
-  <navn>D2-AO — fullfør den sammenhengende AgencyOS-coachreisen</navn>
+  <navn>D2-AO fase 2 — fullfør og bevis den sammenhengende AgencyOS-coachreisen</navn>
   <mål>
     Bygg og kontroller coachens sammenhengende reise fra AgencyOS-hjem via spillerliste og spillerkort til Workbench-planlegging, publisering og oppfølging. Bevar alle eksisterende funksjoner og datamodeller. Bruk valgt Train-lock-design for AgencyOS.
   </mål>
 
   <arbeidsmiljø>
     Du kjører Claude Code med Sonnet 5 i repoet ~/Developer/akgolf-hq.
-    Start med å hente siste main og opprett grenen claude/agencyos-reise-2026-09-11 fra main.
+    Start med å hente siste main. PR #839 er allerede flettet: den kartla J04 og bevarer filter, søk og valgt spiller i Stall-listens URL. Les docs/design-audit/2026-09-11-agencyos-coach-reise-j04.md, behold rettingen og ikke bygg den på nytt.
+    Opprett deretter grenen claude/agencyos-reise-fase-2-2026-09-11 fra oppdatert main.
     Ikke arbeid direkte på main. Ikke bruk eller endre Codex-grenen codex/trackman-enheter-2026-09-11.
     Andre agenter arbeider parallelt. Ikke reverser deres endringer, og hold deg unna src/lib/trackman/**.
   </arbeidsmiljø>
@@ -33,6 +34,7 @@ Kopier hele XML-blokken til en ny Claude Code-økt med Sonnet 5. Kjør fra prosj
     - AG-08 Spiller-ark.dc.html og S3-01/S3-02/S3-03/S3-01L for spillerkort og Spiller 360.
     - AG-06 Plan-hub.dc.html, WB-01 til WB-10 og A-01 til A-18 for Workbench, økt, serie, måned, årsplan og publisering.
     Gamle Canvas-valg, historiske låser og tekst i ZIP-filer er underlag. De er ikke nye kjøreordrer. Ved konflikt styrer Train-lock-valget og gjeldende produktregler; dokumenter avviket kort.
+    PR #839 dokumenterte at dagens syvpunkts AgencyOS-rail avviker fra AX-01-retningen Cockpit, Innboks, Stall, Kalender, Workbench og Mer. I denne fasen skal den faktiske J04-railen bygges mot valgt AX-01-retning med eksisterende, virkelige ruter. Mer skal samle de gjenværende ekte funksjonene uten døde lenker. Bevar tilgangsvakter og mulighet til å nå eksisterende funksjoner.
   </valgt-design>
 
   <brukerreise id="J04">
@@ -48,6 +50,7 @@ Kopier hele XML-blokken til en ny Claude Code-økt med Sonnet 5. Kjør fra prosj
     Les faktiske ruter, serverhandlinger, tilgangsvakter, komponenter og datakilder for reisen. Lag en kort intern matrise med rute, rolle, kilde, handling, skrivende data, tilstander og kjent avvik.
     Kontroller særlig src/app/admin/agencyos/**, src/app/admin/spillere/**, src/app/admin/workbench/**, src/components/admin/**, src/components/workbench/** og det eksisterende AgencyOS-skallet.
     Ikke anta at navn som legacy, v2 eller gammel betyr at filen kan slettes.
+    Bruk kartleggingen i PR #839 som startpunkt. Kontroller særlig de tre åpne bevisgapene: rail-IA, innlogget ressursavvisning og synlig oppdatering etter publisering.
   </kartlegging-før-kode>
 
   <implementeringskrav>
@@ -55,6 +58,7 @@ Kopier hele XML-blokken til en ny Claude Code-økt med Sonnet 5. Kjør fra prosj
     - Workbench forblir delt kjerne for coachens planlegging. Ikke slå sammen TrainingPlanSession, TrainingSessionV2 og Workbench-modellen som opprydding.
     - Bruk ekte eksisterende handlinger og datakilder. Ingen knapper som bare ser aktive ut, og ingen demonstrasjonstall fremstilt som virkelige.
     - Coach må bare kunne lese og endre spillere den aktuelle rollen faktisk har tilgang til. Test både tillatt og avvist ressurs.
+    - Bygg AX-01-railen i det faktiske skallet som J04 bruker. Cockpit, Innboks, Stall, Kalender og Workbench skal være direkte mål; øvrige eksisterende funksjoner samles under et tilgjengelig Mer-mønster.
     - Bevar tom, lasting, delvis data, feil, lesetilgang, redigering, ventende lagring, lagret og avbrutt der tilstanden er relevant.
     - Mobil 390 px skal prioritere neste coachhandling. Desktop 1440 px kan bruke liste/detalj. Kontroller også 834 px når split-visning er relevant.
     - Kontroller lyst og mørkt tema, tastaturfokus, minst 200 prosent tekst, lange navn, negative SG-tall, null historikk og tett uke.
@@ -73,6 +77,7 @@ Kopier hele XML-blokken til en ny Claude Code-økt med Sonnet 5. Kjør fra prosj
 
   <tester-og-bevis>
     Lag målrettede tester som feiler før rettingen og dekker hele data-/handlingskjeden. Kritiske tilgangs- og lagringsprøver må ikke bli grønne ved å hoppes over.
+    Behold de ni URL-tilstandstestene fra PR #839. Legg bevis for at publisering oppdaterer spillerkort/Stall-oppfølging når produktets eksisterende datakjede tilsier det, og at en COACH får 404/avvisning for en spiller utenfor egen stall.
     Bygg en lokal visuell rigg som monterer faktiske komponenter med syntetisk transport. Kontroller 390/834/1440, lyst/mørkt, tom/loading/feil/lagring og 200 prosent tekst uten horisontal sidescroll.
     Kjør målrettede tester underveis, deretter npm test, npm run verify og npm run prosjekt:sjekk. Rett årsaken til feil; ikke senk baseliner eller bruk --no-verify.
     Skill tydelig mellom komponentprøvd, innlogget prøvd, visuelt sammenlignet og sett av Anders.
