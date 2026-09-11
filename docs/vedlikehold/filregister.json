@@ -1,10 +1,10 @@
 {
   "metode": "git ls-files -co --exclude-standard; eksisterende filer; genererte registerfiler utelatt. Kun metadata, ikke kundedata eller miljøverdier.",
   "telling": {
-    "prosjektfiler": 5217,
-    "sidefiler": 479,
+    "prosjektfiler": 5228,
+    "sidefiler": 480,
     "prismamodeller": 196,
-    "enhetstestfiler": 354,
+    "enhetstestfiler": 358,
     "nettlesertestfiler": 41,
     "trainLockTegninger": 219
   },
@@ -5587,6 +5587,11 @@
       "byte": 26980
     },
     {
+      "sti": "docs/design-audit/tn-wang-tilgang-2026-09-11.md",
+      "omrade": "dokumentasjon",
+      "byte": 2433
+    },
+    {
       "sti": "docs/design-audit/train-lock-kontrast.md",
       "omrade": "dokumentasjon",
       "byte": 8402
@@ -5734,7 +5739,7 @@
     {
       "sti": "docs/MASTERPLAN-GJENSTAAENDE.md",
       "omrade": "dokumentasjon",
-      "byte": 11076
+      "byte": 11437
     },
     {
       "sti": "docs/merkevare/ak-golf-merkeplattform-2026-08-31.md",
@@ -6039,7 +6044,7 @@
     {
       "sti": "docs/STATUS-NÅ.md",
       "omrade": "dokumentasjon",
-      "byte": 3939
+      "byte": 4314
     },
     {
       "sti": "docs/taksonomi-verifikasjon.md",
@@ -15612,9 +15617,24 @@
       "byte": 15138
     },
     {
+      "sti": "src/app/team-norway/error.tsx",
+      "omrade": "appkode",
+      "byte": 1435
+    },
+    {
       "sti": "src/app/team-norway/layout.tsx",
       "omrade": "appkode",
       "byte": 993
+    },
+    {
+      "sti": "src/app/team-norway/loading.tsx",
+      "omrade": "appkode",
+      "byte": 1465
+    },
+    {
+      "sti": "src/app/team-norway/page.tsx",
+      "omrade": "appkode",
+      "byte": 6991
     },
     {
       "sti": "src/app/team-norway/spiller/[spillerId]/page.tsx",
@@ -15764,12 +15784,12 @@
     {
       "sti": "src/app/team-wang/_data/hent-wang-gruppe.test.ts",
       "omrade": "test",
-      "byte": 7620
+      "byte": 8341
     },
     {
       "sti": "src/app/team-wang/_data/hent-wang-gruppe.ts",
       "omrade": "appkode",
-      "byte": 10819
+      "byte": 10786
     },
     {
       "sti": "src/app/team-wang/_data/live-sesong.ts",
@@ -15782,6 +15802,26 @@
       "byte": 83911
     },
     {
+      "sti": "src/app/team-wang/_data/wang-retur-sti.test.ts",
+      "omrade": "test",
+      "byte": 991
+    },
+    {
+      "sti": "src/app/team-wang/_data/wang-retur-sti.ts",
+      "omrade": "appkode",
+      "byte": 783
+    },
+    {
+      "sti": "src/app/team-wang/_data/wang-tilgang.test.ts",
+      "omrade": "test",
+      "byte": 4251
+    },
+    {
+      "sti": "src/app/team-wang/_data/wang-tilgang.ts",
+      "omrade": "appkode",
+      "byte": 3006
+    },
+    {
       "sti": "src/app/team-wang/coach/coach-arsplan.tsx",
       "omrade": "appkode",
       "byte": 30302
@@ -15789,7 +15829,7 @@
     {
       "sti": "src/app/team-wang/coach/iup/[elevId]/actions.ts",
       "omrade": "appkode",
-      "byte": 3769
+      "byte": 4770
     },
     {
       "sti": "src/app/team-wang/coach/iup/[elevId]/iup-samtale.tsx",
@@ -15799,12 +15839,22 @@
     {
       "sti": "src/app/team-wang/coach/iup/[elevId]/page.tsx",
       "omrade": "appkode",
-      "byte": 5744
+      "byte": 5533
     },
     {
       "sti": "src/app/team-wang/coach/page.tsx",
       "omrade": "appkode",
-      "byte": 1377
+      "byte": 1698
+    },
+    {
+      "sti": "src/app/team-wang/coach/wang-ruter-actions.test.ts",
+      "omrade": "test",
+      "byte": 5902
+    },
+    {
+      "sti": "src/app/team-wang/error.tsx",
+      "omrade": "appkode",
+      "byte": 1403
     },
     {
       "sti": "src/app/team-wang/layout.tsx",
@@ -15814,7 +15864,7 @@
     {
       "sti": "src/app/team-wang/logg-inn/page.tsx",
       "omrade": "appkode",
-      "byte": 589
+      "byte": 809
     },
     {
       "sti": "src/app/team-wang/logg-inn/wang-innloggings-skjema.tsx",
@@ -15829,7 +15879,7 @@
     {
       "sti": "src/app/team-wang/logg-inn/wang-login.tsx",
       "omrade": "appkode",
-      "byte": 1200
+      "byte": 1246
     },
     {
       "sti": "src/app/team-wang/page.tsx",
@@ -22097,6 +22147,11 @@
       "byte": 8698
     },
     {
+      "sti": "src/lib/domain/tn-oversikt.test.ts",
+      "omrade": "test",
+      "byte": 3230
+    },
+    {
       "sti": "src/lib/domain/tn-post-regler.test.ts",
       "omrade": "test",
       "byte": 3644
@@ -22119,7 +22174,7 @@
     {
       "sti": "src/lib/domain/tn-tilgang.ts",
       "omrade": "appkode",
-      "byte": 7819
+      "byte": 9496
     },
     {
       "sti": "src/lib/domain/turneringshistorikk.ts",
