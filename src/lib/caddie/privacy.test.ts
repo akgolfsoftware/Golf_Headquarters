@@ -17,6 +17,9 @@ test("ukjente e-poster, lenker og vanlige fulle navn fjernes konservativt", () =
   const result = createCaddiePrivacy([]).text("Snakket med Anne Eksempel via anne@unknown.test og https://example.test/person/anne.");
   assert(!result.includes("Anne")); assert(!result.includes("@")); assert(!result.includes("https"));
 });
+test("generell fritekst er ikke fullstendig anonymisert: ukjente enkeltnavn kan ikke gjenkjennes sikkert", () => {
+  assert.equal(createCaddiePrivacy([]).text("ukjentper trener carry 150 m"), "ukjentper trener carry 150 m");
+});
 test("strukturerte tall og datoer bevares mens private felter og frie DB-notater utelates", () => {
   const privacy = createCaddiePrivacy(identities);
   const result = privacy.output({ id: identities[0].id, name: identities[0].name, email: identities[0].email,

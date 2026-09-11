@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
 import { before, beforeEach, mock, test } from "node:test";
 
-const player = { id: "synthetic-player", name: "Kari Testperson", email: "kari@example.test", phone: "99887766", hcp: 4.2, trainingPlans: [] };
+const player = { id: "synthetic-player", name: "Kari Testperson", email: "kari@example.test", phone: "99887766", hcp: 4.2,
+  homeClub: "ukjentida", trainingPlans: [{ id: "synthetic-plan", name: "ukjentper", status: "ACTIVE" }] };
 let fail = false;
 let requestedId: unknown;
 let keyRole = "ADMIN";
@@ -42,6 +43,8 @@ test("MCP søk og påfølgende direkte oppslag beholder referansen kun for samme
   assert(!JSON.stringify(search).includes("Kari")); assert(!JSON.stringify(search).includes("@"));
   const found = await call("admin-one", "getPlayer", { id: alias });
   assert.equal(data(found).ok, true); assert.equal(requestedId, player.id); assert.equal(data(found).data.hcp, 4.2);
+  assert(!JSON.stringify(found).includes("ukjentida")); assert(!JSON.stringify(found).includes("ukjentper"));
+  assert(JSON.stringify(found).includes("ACTIVE"));
   const foreign = await call("admin-two", "getPlayer", { id: alias });
   assert.equal(data(foreign).ok, false); assert.notEqual(requestedId, player.id);
 });

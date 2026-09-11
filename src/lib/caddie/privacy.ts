@@ -5,9 +5,10 @@ type Identity = { id: string; name: string; email: string; phone?: string | null
 type Proposal = { toolName: string; toolCallId: string; input: Record<string, unknown>; output: Record<string, unknown> };
 const escape = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const privateKeys = /^(email|phone|authId|address|birthDate|dateOfBirth|avatarUrl|stripe\w+)$/i;
-// Frie DB-notater kan nevne tredjeparter som ikke finnes i brukerregisteret.
-// Modellen får de strukturerte golfverdiene, ikke disse tekstfeltene.
-const omittedTextKeys = /^(notes|rationale|coachFeedback|ambition|description)$/;
+// Også titler og ressursnavn kan nevne ukjente personer, med vilkårlig
+// skrivemåte. Regex er ingen garanti for anonymisering av disse DB-feltene.
+// Modellen får referanser og strukturerte golfverdier i stedet.
+const omittedTextKeys = /^(name|title|homeClub|format|notes|rationale|coachFeedback|ambition|description)$/;
 const golfTerms = new Set(["Strokes Gained", "Team Norway", "Driving Range", "Putting Green"]);
 
 /** Kartet lever kun i denne forespørselen. Det sendes aldri til modellen. */
@@ -65,23 +66,24 @@ export function createCaddiePrivacy(identities: Identity[]) {
       (match) => /Spiller(?:søk)?$/.test(match) || golfTerms.has(match) ? match : "[navn fjernet]") : result;
   }
 
-  function output(value: unknown, key = "", fromDatabase = true, parent = ""): unknown {
+  function output(value: unknown, key = "", fromDatabase = true): unknown {
     if (privateKeys.test(key)) return "[utelatt]";
+    // Preview settes sammen fra DB-navn også for modellens skriveforslag.
+    if (key === "previewText" && value != null) return "[fritekst utelatt]";
     if (fromDatabase && omittedTextKeys.test(key) && value != null) return "[fritekst utelatt]";
     if (value instanceof Date) return value.toISOString();
     if (typeof value === "string") {
       // Providerens transport-ID er allerede kjent for modellen. Den må være
       // stabil i lagret historikk så et forslag kan godkjennes etter reload.
       if (key === "toolCallId") return value;
-      if (/^(id|.*Id)$/.test(key)) return reference(value);
-      // Bane/tjeneste/lokasjon er nødvendig fag-/bookingkontekst. Kjente
-      // personidentifikatorer fjernes fortsatt; offentlig navn bevares.
-      return text(value, !(key === "name" && /^(course|serviceType|location|facility)$/.test(parent)));
+      if (/^(id|.*Id|slug|serviceTypeSlug)$/.test(key)) return reference(value);
+      return text(value);
     }
-    if (Array.isArray(value)) return value.map((item) => output(item, "", fromDatabase, key));
+    if (Array.isArray(value)) return value.map((item) => output(item, "", fromDatabase));
     if (value && typeof value === "object") {
-      const personId = "id" in value && typeof value.id === "string" && identityIds.has(value.id) ? value.id : null;
-      return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, k === "name" && personId ? label(personId) : output(v, k, fromDatabase, key)]));
+      const rawId = "id" in value && typeof value.id === "string" ? internal.get(value.id) ?? value.id : null;
+      const personId = rawId && identityIds.has(rawId) ? rawId : null;
+      return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, k === "name" && personId ? label(personId) : output(v, k, fromDatabase)]));
     }
     return value;
   }
@@ -127,7 +129,12 @@ export function createCaddiePrivacy(identities: Identity[]) {
           if (onProposal && result && typeof result === "object" && "needsApproval" in result && result.needsApproval === true) {
             await onProposal({ toolName: name, toolCallId: options.toolCallId, input: restored as Record<string, unknown>, output: result });
           }
-          return output(result, "", !name.startsWith("draft"));
+          // Fakturautkastets tekst bygges fra DB (bl.a. fri description), ikke
+          // fra modellens input. Fullt utkast er allerede lagret lokalt over.
+          const modelResult = name === "draftInvoiceReminder" && result && typeof result === "object"
+            ? { ...result, subject: "[fritekst utelatt]", body: "[fritekst utelatt]" }
+            : result;
+          return output(modelResult, "", !name.startsWith("draft"));
         } catch {
           return { ok: false, error: "Verktøyet kunne ikke fullføres", userMessage: "Prøv igjen senere." };
         }
