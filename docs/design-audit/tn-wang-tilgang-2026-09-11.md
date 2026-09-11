@@ -2,6 +2,8 @@
 
 Oppdatert 11.09.2026. Pakken bygger et sikkert inngangspunkt for Team Norway og lukker WANGs trener-/elevgrense. Den fullfører ikke alle skjermene i de to brukerreisene og er ikke visuelt godkjent av Anders.
 
+GitHub-samling: PR #842.
+
 ## Team Norway
 
 - `/team-norway` viser en datadrevet oversikt fra den kanoniske Team Norway-gruppen.

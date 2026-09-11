@@ -21,7 +21,7 @@ Valgt byggegrunnlag: **Trainlock ZIP (4) for PlayerHQ og AgencyOS**, levert **Cl
 | Produktplan/intervju | Funksjonsregister, funksjonskort og intervjuguide bevart fra separat gren | Dokumentene er integrert som arbeidsunderlag. Intervjuet og de foreslåtte produktbeslutningene er ikke erklært ferdige |
 | Prosjektopprydding | Ferdige grener/arbeidskopier avstemt, gjeldende innganger og register oppdatert | [Samlingsrapport](vedlikehold/samling-og-opprydding-2026-09-11.md). Historiske sikkerhetskopier og originaldesign bevares |
 | R-A/R-B/R-C/R-D/R-H | Caddie-ressursgrenser og AI-minimering, privat lokal lagring, TrackMan-enheter og sikker abonnementshenting | Bygget og testet på samlingsgrenen. [Kontroll og åpne grenser](vedlikehold/sikkerhet-og-enheter-2026-09-11.md). GitHub-fletting, innlogget kontroll og produksjonsbevis registreres separat |
-| D2-TN/D2-WANG tilgangsgrunnlag | Sikret Team Norway-oversikt og samme konkrete WANG-gruppe/elev gjennom trenerliste, IUP-lesing og IUP-lagring | Bygget og testet i neste samlingsgren. [Kontroll og gjenstående brukerreiser](design-audit/tn-wang-tilgang-2026-09-11.md). Innlogget og visuell kontroll gjenstår |
+| D2-TN/D2-WANG tilgangsgrunnlag | Sikret Team Norway-oversikt og samme konkrete WANG-gruppe/elev gjennom trenerliste, IUP-lesing og IUP-lagring | Bygget og testet i PR #842. [Kontroll og gjenstående brukerreiser](design-audit/tn-wang-tilgang-2026-09-11.md). Innlogget og visuell kontroll gjenstår |
 
 Siste samlede testresultat og flettepunkt skal leses i samlingsrapporten og tilhørende GitHub PR. Innlogget produksjonsreise, faktisk betaling og Anders' visuelle vurdering er egne kontroller som fortsatt gjenstår.
 

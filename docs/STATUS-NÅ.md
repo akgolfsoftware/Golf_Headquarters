@@ -9,7 +9,7 @@ Oppdatert 11.09.2026. Appen er fortsatt under arbeid og ikke klarert for åpen l
 - **Planleggingsarbeid:** funksjonsregister, funksjonskort og produktintervju er bevart fra den separate arbeidsgrenen. De er arbeidsunderlag, ikke nye godkjente produktbeslutninger.
 - **Opprydding:** ferdige grener og arbeidskopier avstemmes med GitHub; nåstatus, masterplan, dokument-/filregister og arbeidsdeling er samordnet. [Samlingsrapport og sluttkontroll](vedlikehold/samling-og-opprydding-2026-09-11.md).
 - **Sikkerhet, lokal lagring og import:** Caddie-oppslag har ressurskontroll og minimerte modellgrenser, abonnementshenting feiler lukket, TrackMan bevarer eksplisitte enheter gjennom forhåndsvisning, lagring og analyse, og lokale utkast er avgrenset per serververifisert bruker. Dette er bygget og testet på samlingsgrenen; GitHub-fletting og innlogget kontroll føres separat. [Kontroll og begrensninger](vedlikehold/sikkerhet-og-enheter-2026-09-11.md).
-- **Team Norway/WANG-grunnlag:** Team Norway har en medlemsavgrenset oversikt, og WANG bruker samme konkrete Toppidrett-gruppe gjennom trenerliste, IUP-lesing og IUP-lagring. Trygg retursti og ærlig databasefeil er prøvd. Full skjermreise, GitHub-fletting, innlogget og visuell kontroll føres separat. [Kontroll og restarbeid](design-audit/tn-wang-tilgang-2026-09-11.md).
+- **Team Norway/WANG-grunnlag:** Team Norway har en medlemsavgrenset oversikt, og WANG bruker samme konkrete Toppidrett-gruppe gjennom trenerliste, IUP-lesing og IUP-lagring. Trygg retursti og ærlig databasefeil er prøvd i PR #842. Full skjermreise, innlogget og visuell kontroll føres separat. [Kontroll og restarbeid](design-audit/tn-wang-tilgang-2026-09-11.md).
 
 ## Allerede i main
 
