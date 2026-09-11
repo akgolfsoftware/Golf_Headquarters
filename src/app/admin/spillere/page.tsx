@@ -10,6 +10,7 @@
  * Server component.
  */
 
+import { Suspense } from "react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { loadStallen, type StatusKind, type Axis } from "@/lib/admin/stallen-data";
 import { nesteOktLabel, prikkForBolk, sisteAktivitetLabel } from "@/lib/admin/stall-rad";
@@ -97,7 +98,12 @@ export default async function V2StallPage() {
 
   return (
     <V2Shell bredde="full" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <TrainLockStall data={data} />
+      {/* TrainLockStall leser/skriver filter+søk+valgt spiller via useSearchParams
+          (J04, 2026-09-11) — Next krever en Suspense-grense rundt enhver
+          useSearchParams-forbruker, selv på en force-dynamic side. */}
+      <Suspense fallback={null}>
+        <TrainLockStall data={data} />
+      </Suspense>
     </V2Shell>
   );
 }
