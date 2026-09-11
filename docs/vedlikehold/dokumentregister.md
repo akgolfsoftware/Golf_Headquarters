@@ -53,6 +53,7 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | dokumentasjon | [docs/design-audit/plan-legacy-2026-09-11.md](<../design-audit/plan-legacy-2026-09-11.md>) |
 | dokumentasjon | [docs/design-audit/playerhq-ph06-2026-09-11.md](<../design-audit/playerhq-ph06-2026-09-11.md>) |
 | dokumentasjon | [docs/design-audit/portering-fire-flater-2026-09-10.md](<../design-audit/portering-fire-flater-2026-09-10.md>) |
+| dokumentasjon | [docs/design-audit/tn-wang-tilgang-2026-09-11.md](<../design-audit/tn-wang-tilgang-2026-09-11.md>) |
 | dokumentasjon | [docs/design-audit/train-lock-kontrast.md](<../design-audit/train-lock-kontrast.md>) |
 | dokumentasjon | [docs/design-guide-terminologi.md](<../design-guide-terminologi.md>) |
 | dokumentasjon | [docs/design-system/ak-hq-designarbeid.md](<../design-system/ak-hq-designarbeid.md>) |

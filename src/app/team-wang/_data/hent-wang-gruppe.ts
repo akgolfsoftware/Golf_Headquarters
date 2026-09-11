@@ -10,18 +10,18 @@
 // av OG navn ble hentet ubetinget — se proxy.ts for tilgangssiden av det.)
 //
 // Ingen kall ved build: /team-wang-sidene er dynamiske (auth via cookies), og
-// alt her er pakket i try/catch → null slik at en manglende gruppe/DB gir ren
-// fallback til demo (samme mønster som /gfgk-junior/kalender).
+// databasefeil skilles fra en legitimt manglende gruppe. En driftsfeil skal
+// aldri åpne rosteret eller presenteres som demo-data.
 
 import "server-only";
 
 import { prisma } from "@/lib/prisma";
+import {
+  WANG_TOPPIDRETT_SLUG,
+  WangDataUtilgjengeligError,
+} from "@/app/team-wang/_data/wang-tilgang";
 
-// Kanonisk slug (src/lib/domain/grupper.ts). Navn-fallback beholdes til
-// bootstrap-kanoniske-grupper-scriptet har satt slug i alle miljøer.
-const GRUPPE_SLUG = "wang-toppidrett";
-const GRUPPE_NAVN = "WANG Toppidrett Fredrikstad";
-
+// Kanonisk slug fra src/lib/domain/grupper.ts er gruppens identitet.
 export type WangFase =
   | "GRUNN"
   | "SPESIAL"
@@ -92,6 +92,7 @@ export interface WangSkoleDagDb {
 }
 
 export interface WangLiveData {
+  gruppeId: string;
   gruppeNavn: string;
   antallElever: number;
   elever: WangElev[];
@@ -153,8 +154,8 @@ function skoleAr(
 }
 
 /**
- * Henter ekte WANG-gruppedata. Returnerer null hvis gruppa ikke finnes eller DB
- * feiler — kalleren faller da tilbake til ren demo.
+ * Henter ekte WANG-gruppedata. Returnerer null bare hvis gruppa ikke finnes.
+ * Databasefeil kastes som en trygg, visbar feil.
  *
  * Elevnavn er PII om mindreårige og hentes derfor KUN når `medElevnavn: true`
  * sendes eksplisitt. Standard er `false`: `elever` blir tom og `antallElever`
@@ -174,8 +175,8 @@ export async function hentWangGruppe(
   } = {},
 ): Promise<WangLiveData | null> {
   try {
-    const gruppe = await prisma.group.findFirst({
-      where: { OR: [{ slug: GRUPPE_SLUG }, { name: GRUPPE_NAVN, slug: null }] },
+    const gruppe = await prisma.group.findUnique({
+      where: { slug: WANG_TOPPIDRETT_SLUG },
       select: {
         id: true,
         name: true,
@@ -326,6 +327,7 @@ export async function hentWangGruppe(
     }));
 
     return {
+      gruppeId: gruppe.id,
       gruppeNavn: gruppe.name,
       antallElever,
       elever,
@@ -336,8 +338,8 @@ export async function hentWangGruppe(
       fokusomraader,
       oppdatertIso: osloDato(new Date()),
     };
-  } catch {
-    // DB utilgjengelig / build uten database → ren demo-fallback.
-    return null;
+  } catch (error) {
+    if (error instanceof WangDataUtilgjengeligError) throw error;
+    throw new WangDataUtilgjengeligError();
   }
 }

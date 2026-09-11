@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { WangInnloggingsSkjema } from "./wang-innloggings-skjema";
 
-export function WangLogin() {
+export function WangLogin({ retursti = "/team-wang" }: { retursti?: string }) {
   const router = useRouter();
   return <WangInnloggingsSkjema loggInn={async ({ epost, passord }) => {
     const { error } = await createClient().auth.signInWithPassword({ email: epost, password: passord });
@@ -20,7 +20,7 @@ export function WangLogin() {
     if (error) return { ok: false };
     // Behold WANG som returflate. Serverens eksisterende sperrer avgjør
     // tilgang når brukeren åpner trenerverktøy eller personlig innhold.
-    router.replace("/team-wang");
+    router.replace(retursti);
     router.refresh();
     return { ok: true };
   }} />;
