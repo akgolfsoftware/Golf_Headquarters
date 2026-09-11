@@ -33,8 +33,10 @@
  */
 
 import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { TL } from "@/lib/v2/train-lock";
+import { lesStallUrlState, skrivStallUrlState, type StallFilterKey } from "@/lib/admin/stall-url-state";
 import type { StallV2Data, StallV2Player } from "./StallV2";
 
 const PRESS =
@@ -200,7 +202,9 @@ const BOLKER = [
   { k: "hviler", n: "Hviler", note: "Planlagt pause eller retur-til-spill. Teller ikke som stille." },
 ] as const;
 
-type FilterKey = "alle" | "akademi" | "wang" | "gfgk" | "stille";
+// FilterKey er nå den delte StallFilterKey (src/lib/admin/stall-url-state.ts) — url-tilstanden
+// og filterlisten skal aldri kunne drive fra hverandre.
+type FilterKey = StallFilterKey;
 const FILTRE: { k: FilterKey; n: string; f: (s: StallV2Player) => boolean }[] = [
   { k: "alle", n: "Alle", f: () => true },
   { k: "akademi", n: "AK Golf Academy", f: (s) => s.gruppe === "AK Golf Academy" },
@@ -398,14 +402,51 @@ function SpillerDetalj({ s }: { s: StallV2Player }) {
 
 export function TrainLockStall({ data }: { data: StallV2Data }) {
   const mobile = useMobile();
-  const [filter, setFilter] = useState<FilterKey>("alle");
-  const [sok, setSok] = useState("");
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  // Startverdiene leses fra URL-en ÉN gang ved mount (searchParams her er den
+  // som fulgte med server-renderen) — url-en er dermed den ene sannhetskilden
+  // for filter/søk/valgt spiller på tvers av «gå til spiller → tilbake».
+  const urlStart = lesStallUrlState(searchParams);
+  const [filter, setFilterRaw] = useState<FilterKey>(urlStart.filter);
+  const [sok, setSokRaw] = useState(urlStart.sok);
   const alleVenter = data.spillere.length > 0 && data.spillere.every((p) => p.venter);
   const [venterApen, setVenterApen] = useState(alleVenter);
-  const [valgtId, setValgtId] = useState<string | null>(
-    data.spillere.find((p) => !p.venter)?.id ?? data.spillere[0]?.id ?? null,
+  const [valgtId, setValgtIdRaw] = useState<string | null>(
+    urlStart.valgtId ?? data.spillere.find((p) => !p.venter)?.id ?? data.spillere[0]?.id ?? null,
   );
   const [arkApen, setArkApen] = useState(false);
+
+  /**
+   * Skriver ny tilstand til URL-en med `history.replaceState` — BEVISST ikke
+   * `router.replace()`. Stallen er `force-dynamic` (ekte DB-spørring per
+   * lasting), og en Next-navigasjon på hvert tastetrykk i søkefeltet ville
+   * hentet spillerlista på nytt fra serveren for hver bokstav. replaceState
+   * endrer kun det coachen ser i adresselinja/historikken — ingen refetch,
+   * ingen ny history-rad (så nettleserens «tilbake» fortsatt går ut av
+   * Stallen, ikke gjennom hvert filtervalg).
+   */
+  const skrivUrl = (neste: Partial<{ filter: FilterKey; sok: string; valgtId: string | null }>) => {
+    if (typeof window === "undefined") return;
+    const qs = skrivStallUrlState(
+      { filter, sok, valgtId, ...neste },
+      searchParams,
+    );
+    const url = qs ? `${pathname}?${qs}` : pathname;
+    window.history.replaceState(window.history.state, "", url);
+  };
+  const setFilter = (f: FilterKey) => {
+    setFilterRaw(f);
+    skrivUrl({ filter: f });
+  };
+  const setSok = (q: string) => {
+    setSokRaw(q);
+    skrivUrl({ sok: q });
+  };
+  const setValgtId = (id: string | null) => {
+    setValgtIdRaw(id);
+    skrivUrl({ valgtId: id });
+  };
 
   const sokTrim = sok.trim().toLowerCase();
   const aktivtFilter = FILTRE.find((f) => f.k === filter) ?? FILTRE[0];
