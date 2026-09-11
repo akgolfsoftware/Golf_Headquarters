@@ -17,6 +17,7 @@
 import "server-only";
 
 import { prisma } from "@/lib/prisma";
+import { aktivtMedlemskapWhere } from "@/lib/domain/grupper";
 import type { UserRole } from "@/generated/prisma/client";
 
 const TEAM_NORWAY_SLUG = "team-norway";
@@ -92,6 +93,65 @@ export async function hentTeamNorwayTilganger(): Promise<TnTilgangData | null> {
       joinedAt: r.joinedAt,
       endedAt: r.endedAt,
     })),
+  };
+}
+
+export type TnOversikt = {
+  gruppe: { id: string; name: string };
+  antallSpillere: number;
+  antallTrenere: number;
+  rolle: string;
+  erAktivtMedlem: boolean;
+};
+
+/**
+ * Serverporten for `/team-norway`.
+ *
+ * En plattform-ADMIN kan se den kanoniske Team Norway-oversikten uten et
+ * eget gruppemedlemskap. Alle andre må ha en aktiv GroupMember-rad i akkurat
+ * gruppen med slug `team-norway`. Poster, dokumenter, testlenker eller andre
+ * relasjoner inngår ikke i tilgangsavgjørelsen.
+ *
+ * Databasefeil bobler opp til rutens error-grense. De omgjøres aldri til et
+ * medlemskap eller delvise oversiktstall.
+ */
+export async function hentTnOversiktForBruker(bruker: {
+  id: string;
+  role: UserRole;
+}): Promise<TnOversikt | null> {
+  const gruppe = await hentTeamNorwayGruppe();
+  if (!gruppe) return null;
+
+  const medlemskap = await prisma.groupMember.findFirst({
+    where: {
+      groupId: gruppe.id,
+      userId: bruker.id,
+      ...aktivtMedlemskapWhere(),
+    },
+    select: { role: true },
+  });
+  const erAktivtMedlem = medlemskap !== null;
+  if (!erAktivtMedlem && bruker.role !== "ADMIN") return null;
+
+  const [antallSpillere, antallTrenere] = await Promise.all([
+    prisma.groupMember.count({
+      where: { groupId: gruppe.id, role: "PLAYER", ...aktivtMedlemskapWhere() },
+    }),
+    prisma.groupMember.count({
+      where: {
+        groupId: gruppe.id,
+        role: { in: ["COACH", "ASSISTANT"] },
+        ...aktivtMedlemskapWhere(),
+      },
+    }),
+  ]);
+
+  return {
+    gruppe,
+    antallSpillere,
+    antallTrenere,
+    rolle: medlemskap?.role ?? "ADMIN",
+    erAktivtMedlem,
   };
 }
 
