@@ -1,10 +1,10 @@
 "use server";
 
 /**
- * I5 · Oppfølgingskøen: dra et spillerkort til en annen kolonne = coachens
- * manuelle overstyring av det beregnede nivået (7 dagers virkning), lagret
- * som Signal (kind OPPFOLGING_STATUS, payload { status }) — gjenbruk av
- * eksisterende modell, ingen schema-endring. «Løst» = kvittert.
+ * I5 · Oppfølgingskøen: flytting med dra-og-slipp eller kortets statusvalg
+ * gir coachens manuelle overstyring av det beregnede nivået (7 dagers
+ * virkning), lagret som Signal (kind OPPFOLGING_STATUS, payload { status }) —
+ * gjenbruk av eksisterende modell, ingen schema-endring. «Løst» = kvittert.
  */
 
 import { z } from "zod";
@@ -12,6 +12,7 @@ import { revalidatePath } from "next/cache";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { erCoachetSpiller, harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
+import type { QueueStatus } from "./status";
 
 const InputSchema = z.object({
   spillerId: z.string().min(1),
@@ -20,7 +21,7 @@ const InputSchema = z.object({
 
 export async function settOppfolgingsstatus(
   spillerId: string,
-  status: "risk" | "watch" | "check" | "ok",
+  status: QueueStatus,
 ): Promise<{ ok: boolean; error?: string }> {
   const parsed = InputSchema.safeParse({ spillerId, status });
   if (!parsed.success) return { ok: false, error: "Ugyldig status." };

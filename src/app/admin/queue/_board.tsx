@@ -1,10 +1,10 @@
 "use client";
 
 /**
- * Oppfølgingskøens kanban-board (klient) — I5: kortene dras mellom kolonner.
- * Dra = coachens manuelle overstyring (settOppfolgingsstatus, 7 dagers
- * virkning); «Løst» = kvittert. Kort-markupen er flyttet 1:1 fra page.tsx
- * (server) — kun DnD-lag og lagre-state er nytt. Kun v2-komponenter.
+ * Oppfølgingskøens kanban-board (klient) — I5: kortene kan dras mellom
+ * kolonner eller flyttes med statusvalget på hvert kort. Statusvalget gjør
+ * samme handling tilgjengelig på mobil, med tastatur og for hjelpemidler.
+ * Manuell overstyring varer i 7 dager; «Løst» = kvittert.
  */
 
 import Link from "next/link";
@@ -14,10 +14,11 @@ import { TL } from "@/lib/v2/train-lock";
 
 import { Caps, Kort, StatusPill, AvatarInit, Icon } from "@/components/v2";
 import { settOppfolgingsstatus } from "./actions";
+import { QUEUE_STATUS_OPTIONS, type QueueStatus } from "./status";
+
+export type { QueueStatus } from "./status";
 
 const DND_MIME = "application/x-akgolf-queue";
-
-export type QueueStatus = "risk" | "watch" | "check" | "ok";
 
 export type QueueKort = {
   id: string;
@@ -45,14 +46,25 @@ const KOLONNE_DOT: Record<QueueStatus, string> = {
   ok: TL.viz.target,
 };
 
-function SpillerKort({ k, flytter }: { k: QueueKort; flytter: boolean }) {
+function SpillerKort({
+  k,
+  status,
+  flytter,
+  onFlytt,
+}: {
+  k: QueueKort;
+  status: QueueStatus;
+  flytter: boolean;
+  onFlytt: (status: QueueStatus) => void;
+}) {
   return (
     <div
-      draggable
+      draggable={!flytter}
       onDragStart={(e) => {
         e.dataTransfer.setData(DND_MIME, k.id);
         e.dataTransfer.effectAllowed = "move";
       }}
+      aria-busy={flytter}
       style={{ cursor: "grab", opacity: flytter ? 0.45 : 1 }}
     >
       <Kort pad="12px 14px" tint={k.prioritet}>
@@ -97,6 +109,38 @@ function SpillerKort({ k, flytter }: { k: QueueKort; flytter: boolean }) {
           </div>
         )}
 
+        <label style={{ display: "grid", gap: 5, marginTop: 10 }}>
+          <Caps size={8.5}>Flytt sak</Caps>
+          <select
+            value={status}
+            disabled={flytter}
+            draggable={false}
+            onChange={(event) => {
+              const nesteStatus = event.target.value as QueueStatus;
+              if (nesteStatus !== status) onFlytt(nesteStatus);
+            }}
+            aria-label={`Flytt ${k.navn} til status`}
+            style={{
+              width: "100%",
+              minHeight: 44,
+              borderRadius: 8,
+              border: `1px solid ${TL.hair}`,
+              background: TL.elev,
+              color: TL.text,
+              padding: "0 10px",
+              fontFamily: TL.font.sans,
+              fontSize: 12,
+              cursor: flytter ? "wait" : "pointer",
+            }}
+          >
+            {QUEUE_STATUS_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </label>
+
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginTop: 10, paddingTop: 10, borderTop: `1px solid ${TL.hair}` }}>
           <span style={{ fontFamily: TL.font.mono, fontSize: 9, textTransform: "uppercase", color: TL.mute }}>{k.siden}</span>
           <div style={{ display: "flex", gap: 4 }}>
@@ -122,7 +166,7 @@ export function QueueBoard({ kolonner }: { kolonner: QueueKolonne[] }) {
   const [flytterId, setFlytterId] = useState<string | null>(null);
   const [feil, setFeil] = useState<string | null>(null);
 
-  const onDrop = async (spillerId: string, status: QueueStatus) => {
+  const flyttKort = async (spillerId: string, status: QueueStatus) => {
     if (flytterId) return;
     setFlytterId(spillerId);
     setFeil(null);
@@ -135,7 +179,7 @@ export function QueueBoard({ kolonner }: { kolonner: QueueKolonne[] }) {
   return (
     <>
       {feil && (
-        <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "9px 13px", borderRadius: 11, background: `color-mix(in srgb, ${TL.danger} 9%, ${TL.elev})`, border: `1px solid color-mix(in srgb, ${TL.danger} 30%, transparent)` }}>
+        <div role="alert" style={{ display: "flex", alignItems: "center", gap: 8, padding: "9px 13px", borderRadius: 11, background: `color-mix(in srgb, ${TL.danger} 9%, ${TL.elev})`, border: `1px solid color-mix(in srgb, ${TL.danger} 30%, transparent)` }}>
           <Icon name="alert-triangle" size={13} style={{ color: TL.danger }} />
           <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.text }}>{feil}</span>
         </div>
@@ -150,7 +194,7 @@ export function QueueBoard({ kolonner }: { kolonner: QueueKolonne[] }) {
               e.preventDefault();
               setOverKolonne(null);
               const id = e.dataTransfer.getData(DND_MIME);
-              if (id) onDrop(id, col.status);
+              if (id) void flyttKort(id, col.status);
             }}
             style={{
               display: "flex", flexDirection: "column", gap: 10,
@@ -175,7 +219,15 @@ export function QueueBoard({ kolonner }: { kolonner: QueueKolonne[] }) {
                 {col.status === "ok" ? "Dra en sak hit for å kvittere den." : "Ingen saker her."}
               </div>
             ) : (
-              col.kort.map((k) => <SpillerKort key={k.id} k={k} flytter={flytterId === k.id} />)
+              col.kort.map((k) => (
+                <SpillerKort
+                  key={k.id}
+                  k={k}
+                  status={col.status}
+                  flytter={flytterId === k.id}
+                  onFlytt={(status) => void flyttKort(k.id, status)}
+                />
+              ))
             )}
           </div>
         ))}

@@ -8,6 +8,7 @@
 //   1. "Standard"-eksport med kolonner: Date, Club, Club Speed, Ball Speed,
 //      Smash Factor, Carry, Total, Launch Angle, Spin Rate, Side, ...
 //   2. Mer kompakte rapporter med samme felter under norske/engelske synonymer.
+// Begge kan ha en egen enhetsrad mellom overskriften og første slag.
 //
 // Hele rad-mappingen er forsiktig — ukjente kolonner ignoreres uten å feile.
 
@@ -43,6 +44,12 @@ export type TrackManSourceUnits = {
   carry?: TrackManDistanceUnit;
   total?: TrackManDistanceUnit;
   side?: TrackManDistanceUnit;
+};
+
+type ParsedCsvRows = {
+  headers: string[];
+  unitRow: string[] | null;
+  shotRows: string[][];
 };
 
 export type TrackManAggregatedSession = {
@@ -155,14 +162,121 @@ function buildHeaderMap(headers: string[]): HeaderMap {
   return map;
 }
 
-function sourceUnitsFromHeaders(headerMap: HeaderMap): TrackManSourceUnits | undefined {
+function speedUnitFromToken(value: string | undefined): TrackManSpeedUnit | undefined {
+  const token = normalizeHeader(value ?? "");
+  if (!token) return undefined;
+  if (token === "mph") return "mph";
+  if (token === "m/s" || token === "mps") return "m/s";
+  return "unknown";
+}
+
+function distanceUnitFromToken(value: string | undefined): TrackManDistanceUnit | undefined {
+  const token = normalizeHeader(value ?? "");
+  if (!token) return undefined;
+  if (/^(?:m|meters?|metres?)$/.test(token)) return "m";
+  if (/^(?:yds?|yards?)$/.test(token)) return "yd";
+  return "unknown";
+}
+
+function erTillattEnhetsverdi(field: CsvField, value: string): boolean {
+  const token = normalizeHeader(value);
+  if (!token) return true;
+  if (field === "clubSpeedMps" || field === "ballSpeedMps") {
+    return /^(?:mph|m\/s|mps|km\/?h|kmh|kph)$/.test(token);
+  }
+  if (field === "carryMeters" || field === "totalMeters" || field === "sideMeters") {
+    return /^(?:m|meters?|metres?|yds?|yards?|ft|feet|cm)$/.test(token);
+  }
+  if (field === "launchAngleDeg") {
+    return /^(?:deg|degrees?|grader?|°)$/.test(token);
+  }
+  if (field === "spinRateRpm") return token === "rpm";
+  if (field === "smashFactor") return /^(?:-|ratio|x)$/.test(token);
+  return false;
+}
+
+/**
+ * TrackMan kan legge en egen enhetsrad mellom overskrift og første slag.
+ * Ukjente eksportkolonner ignoreres; bare feltene vi faktisk bruker avgjør om
+ * raden er en enhetsrad. Dermed tåles blant annet `deg` og `rpm` ved siden av
+ * hastighet og avstand.
+ */
+function erEnhetsrad(row: string[], headerMap: HeaderMap): boolean {
+  let antallEnheter = 0;
+  for (const [field, binding] of Object.entries(headerMap) as [CsvField, HeaderBinding][]) {
+    const value = row[binding.index]?.trim() ?? "";
+    if (!value) continue;
+    if (!erTillattEnhetsverdi(field, value)) return false;
+    antallEnheter += 1;
+  }
+  return antallEnheter > 0;
+}
+
+function sourceUnitsFromHeaders(
+  headerMap: HeaderMap,
+  unitRow: string[] | null,
+): TrackManSourceUnits | undefined {
   const sourceUnits: TrackManSourceUnits = {};
-  if (headerMap.clubSpeedMps?.speedUnit) sourceUnits.clubSpeed = headerMap.clubSpeedMps.speedUnit;
-  if (headerMap.ballSpeedMps?.speedUnit) sourceUnits.ballSpeed = headerMap.ballSpeedMps.speedUnit;
-  if (headerMap.carryMeters?.distanceUnit) sourceUnits.carry = headerMap.carryMeters.distanceUnit;
-  if (headerMap.totalMeters?.distanceUnit) sourceUnits.total = headerMap.totalMeters.distanceUnit;
-  if (headerMap.sideMeters?.distanceUnit) sourceUnits.side = headerMap.sideMeters.distanceUnit;
+  const clubSpeed = headerMap.clubSpeedMps;
+  const ballSpeed = headerMap.ballSpeedMps;
+  const carry = headerMap.carryMeters;
+  const total = headerMap.totalMeters;
+  const side = headerMap.sideMeters;
+  if (clubSpeed) {
+    sourceUnits.clubSpeed = clubSpeed.speedUnit ?? speedUnitFromToken(unitRow?.[clubSpeed.index]);
+  }
+  if (ballSpeed) {
+    sourceUnits.ballSpeed = ballSpeed.speedUnit ?? speedUnitFromToken(unitRow?.[ballSpeed.index]);
+  }
+  if (carry) {
+    sourceUnits.carry = carry.distanceUnit ?? distanceUnitFromToken(unitRow?.[carry.index]);
+  }
+  if (total) {
+    sourceUnits.total = total.distanceUnit ?? distanceUnitFromToken(unitRow?.[total.index]);
+  }
+  if (side) {
+    sourceUnits.side = side.distanceUnit ?? distanceUnitFromToken(unitRow?.[side.index]);
+  }
+  for (const key of Object.keys(sourceUnits) as (keyof TrackManSourceUnits)[]) {
+    if (sourceUnits[key] === undefined) delete sourceUnits[key];
+  }
   return Object.keys(sourceUnits).length > 0 ? sourceUnits : undefined;
+}
+
+function delOppCsvRader(rows: string[][]): ParsedCsvRows | null {
+  const headers = rows[0];
+  if (!headers) return null;
+  const headerMap = buildHeaderMap(headers);
+  const dataRows = rows.slice(1).filter((row) => row.some((cell) => cell?.trim()));
+  const unitRow = dataRows[0] && erEnhetsrad(dataRows[0], headerMap) ? dataRows[0] : null;
+  return {
+    headers,
+    unitRow,
+    shotRows: unitRow ? dataRows.slice(1) : dataRows,
+  };
+}
+
+/**
+ * Beholder overskrift og eventuell enhetsrad, men filtrerer faktiske slagrader
+ * etter indeksene brukeren valgte i forhåndsvisningen.
+ */
+export function byggTrackManCsvMedValgteSlag(
+  csv: string,
+  selectedIndices: ReadonlySet<number>,
+): string {
+  const parsed = Papa.parse<string[]>(csv.trim(), {
+    skipEmptyLines: true,
+    delimiter: "",
+  });
+  if (parsed.errors.length > 0) return csv;
+  const parts = delOppCsvRader(parsed.data);
+  if (!parts) return csv;
+  const selectedRows = parts.shotRows.filter((_, index) => selectedIndices.has(index));
+  return Papa.unparse([
+    parts.headers,
+    ...(parts.unitRow ? [parts.unitRow] : []),
+    ...selectedRows,
+  ]);
 }
 
 function parseNumber(value: unknown): number | null {
@@ -235,20 +349,17 @@ export function parseTrackManCsv(csv: string): TrackManParseResult {
     return { ok: false, error: "CSV må ha header + minst én rad" };
   }
 
-  const headers = rows[0];
-  if (!headers) {
+  const parts = delOppCsvRader(rows);
+  if (!parts) {
     return { ok: false, error: "Mangler header-rad" };
   }
-  const headerMap = buildHeaderMap(headers);
-  const sourceUnits = sourceUnitsFromHeaders(headerMap);
+  const headerMap = buildHeaderMap(parts.headers);
+  const sourceUnits = sourceUnitsFromHeaders(headerMap, parts.unitRow);
 
   const shotsByDay = new Map<string, { date: Date; shots: TrackManShot[] }>();
   const fallbackDate = new Date();
 
-  for (let i = 1; i < rows.length; i++) {
-    const row = rows[i];
-    if (!row || row.every((c) => !c || c.trim() === "")) continue;
-
+  for (const row of parts.shotRows) {
     const dateRaw = headerMap.date ? row[headerMap.date.index] : undefined;
     const recordedAt = parseDate(dateRaw) ?? fallbackDate;
     const key = dayKey(recordedAt);

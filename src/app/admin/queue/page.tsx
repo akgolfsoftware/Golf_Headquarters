@@ -86,7 +86,7 @@ export default async function OppfolgingsKoPage() {
   }
 
   // I5: coachens manuelle overstyringer siste 7 dager (Signal
-  // OPPFOLGING_STATUS — skrevet når et kort dras til en annen kolonne).
+  // OPPFOLGING_STATUS — skrevet når et kort flyttes til en annen kolonne).
   const sjuDager = new Date();
   sjuDager.setDate(sjuDager.getDate() - 7);
   const overstyringer = await prisma.signal.findMany({
@@ -176,7 +176,7 @@ export default async function OppfolgingsKoPage() {
           </div>
         </Kort>
 
-        {/* Board — I5: kanban med drag-and-drop (klient) */}
+        {/* Board — I5: kanban med dra-og-slipp og tilgjengelig statusvalg */}
         <QueueBoard kolonner={kolonner as QueueKolonne[]} />
 
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderTop: `1px solid ${TL.hair}`, paddingTop: 16 }}>

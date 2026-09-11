@@ -6,7 +6,10 @@ import {
   htmlReportToCanonical,
   speedToMph,
 } from "./canonical";
-import { parseTrackManCsv } from "./parse-csv";
+import {
+  byggTrackManCsvMedValgteSlag,
+  parseTrackManCsv,
+} from "./parse-csv";
 import { parseTrackManHtmlReport } from "./parse-html-report";
 import { trackManShotsForPreview } from "./preview";
 
@@ -105,6 +108,65 @@ describe("CSV-enheter gjennom hele normaliseringen", () => {
     const canonical = csvShotsToCanonical(
       csvShots("Date,Club,Ball Speed (km/h),Carry (ft)\n2026-09-11,Driver,70,330"),
     )[0];
+    assert.equal(canonical?.ballSpeedMph, null);
+    assert.equal(canonical?.carryMeters, null);
+  });
+
+  it("leser en egen enhetsrad med deg og rpm uten å gjøre den til et slag", () => {
+    const shots = csvShots(
+      [
+        "Date,Club,Club Speed,Ball Speed,Carry,Total,Launch Angle,Spin Rate,Side",
+        ",,mph,m/s,yd,m,deg,rpm,yd",
+        "2026-09-11,Driver,70,60,330,320,12,2400,5",
+      ].join("\n"),
+    );
+
+    assert.equal(shots.length, 1);
+    assert.deepEqual(shots[0]?.sourceUnits, {
+      clubSpeed: "mph",
+      ballSpeed: "m/s",
+      carry: "yd",
+      total: "m",
+      side: "yd",
+    });
+    const canonical = csvShotsToCanonical(shots)[0];
+    assert.equal(canonical?.clubSpeedMph, 70);
+    assert.equal(canonical?.ballSpeedMph, 134.22);
+    assert.equal(canonical?.carryMeters, 301.75);
+    assert.equal(canonical?.totalMeters, 320);
+    assert.equal(canonical?.sideMeters, 4.57);
+  });
+
+  it("beholder enhetsraden og velger faktiske slagrader med riktig indeks", () => {
+    const csv = [
+      "Date,Club,Ball Speed,Carry,Launch Angle,Spin Rate",
+      ",,mph,yd,deg,rpm",
+      "2026-09-11,Driver,150,280,12,2400",
+      "2026-09-11,7-jern,120,170,18,6200",
+    ].join("\n");
+
+    const onlyFirst = csvShots(byggTrackManCsvMedValgteSlag(csv, new Set([0])));
+    const onlyLast = csvShots(byggTrackManCsvMedValgteSlag(csv, new Set([1])));
+
+    assert.equal(onlyFirst.length, 1);
+    assert.equal(onlyFirst[0]?.club, "Driver");
+    assert.equal(onlyFirst[0]?.sourceUnits?.carry, "yd");
+    assert.equal(onlyLast.length, 1);
+    assert.equal(onlyLast[0]?.club, "7-jern");
+    assert.equal(onlyLast[0]?.sourceUnits?.ballSpeed, "mph");
+  });
+
+  it("merker ukjente enheter i en egen enhetsrad uten å gjette", () => {
+    const canonical = csvShotsToCanonical(
+      csvShots(
+        [
+          "Date,Club,Ball Speed,Carry,Launch Angle,Spin Rate",
+          ",,km/h,ft,deg,rpm",
+          "2026-09-11,Driver,240,900,12,2400",
+        ].join("\n"),
+      ),
+    )[0];
+
     assert.equal(canonical?.ballSpeedMph, null);
     assert.equal(canonical?.carryMeters, null);
   });

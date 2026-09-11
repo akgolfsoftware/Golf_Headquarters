@@ -40,7 +40,11 @@ import {
   type TrackManEnvironment,
 } from "@/app/portal/mal/trackman/actions";
 import { ENVIRONMENT_OPTIONS } from "@/lib/sg-hub/environment-labels";
-import { parseTrackManCsv, type TrackManShot } from "@/lib/trackman/parse-csv";
+import {
+  byggTrackManCsvMedValgteSlag,
+  parseTrackManCsv,
+  type TrackManShot,
+} from "@/lib/trackman/parse-csv";
 import { parseTrackManHtmlReport } from "@/lib/trackman/parse-html-report";
 import { htmlReportToCanonical } from "@/lib/trackman/canonical";
 import { trackManShotsForPreview } from "@/lib/trackman/preview";
@@ -338,7 +342,7 @@ export function TrackmanImportModal({
         if (!kilde) throw new Error("Velg kilde først.");
         const content =
           kilde === "csv"
-            ? byggCsvFraValgte(csvContent, valgt)
+            ? byggTrackManCsvMedValgteSlag(csvContent, valgt)
             : kilde === "html"
               ? htmlContent
               : "";
@@ -856,22 +860,4 @@ function Row({ label, value }: { label: string; value: string }) {
       <dd className="font-medium text-foreground">{value}</dd>
     </div>
   );
-}
-
-/* ─────────────── Helpers ─────────────── */
-
-/**
- * Bygger en redusert CSV-streng som kun inneholder header + valgte rader.
- * Brukes for å re-importere kun de slagene brukeren har valgt i steg 3.
- */
-function byggCsvFraValgte(csvContent: string, valgt: Set<number>): string {
-  const linjer = csvContent
-    .replace(/\r\n/g, "\n")
-    .split("\n")
-    .filter((l) => l.trim().length > 0);
-  if (linjer.length < 2) return csvContent;
-  const header = linjer[0];
-  const rader = linjer.slice(1);
-  const utvalgte = rader.filter((_, i) => valgt.has(i));
-  return [header, ...utvalgte].join("\n");
 }
