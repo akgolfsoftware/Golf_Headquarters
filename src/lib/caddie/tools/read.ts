@@ -2,11 +2,33 @@
 // Spør Prisma og returnerer strukturerte data.
 // Feil håndteres med try/catch og returneres som ToolErrorResponse.
 
-import { coachScopedPlayerWhere } from "@/lib/auth/coached";
+import { coachScopedPlayerWhere, harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { tool } from "ai";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { toolError } from "../types";
+import { nyttSpillerRegister, pseudonymiserNavn, type SpillerRegister } from "./minimering";
+
+/**
+ * R-A/R-B (2026-09-11): felles eierskaps-vakt for DIREKTE ID-oppslag.
+ * `searchPlayers` filtrerer allerede via `coachScopedPlayerWhere` i selve
+ * spørringen — men de øvrige verktøyene tok en `playerId`/`roundId` og slo
+ * den opp UBETINGET (`findUnique`), uten å sjekke at VIEWEREN faktisk har en
+ * coach-relasjon til akkurat den spilleren. I dag er hele Caddie-chat-inngangen
+ * ADMIN-gated (`canAccessMissionControl`), og ADMIN ser uansett alle coachede
+ * spillere via `coachScopedPlayerWhere` — så dette er IKKE en bekreftet,
+ * utnyttbar lekkasje for en ordinær coach i dag. Det er derimot en reell IDOR
+ * dersom en modell (eller en fremtidig COACH-rolle i Caddie) sender en ID
+ * viewer ikke eier: uten denne sjekken ville en COACH kunnet be Caddie om en
+ * annen coachs spiller-id og få dataene tilbake. Fikset FØR COACH-tilgang
+ * åpnes for Caddie, jf. kommentaren i `buildReadTools` under.
+ */
+async function verifiserSpillerTilgang(
+  viewer: { id: string; role: string },
+  playerId: string,
+): Promise<boolean> {
+  return harCoachTilgangTilSpiller(viewer, playerId);
+}
 
 // Periode-helper: regner ut "siden"-dato fra periode-string.
 function periodToSince(period: "30d" | "90d" | "season"): Date {
@@ -25,7 +47,16 @@ function periodToSince(period: "30d" | "90d" | "season"): Date {
 // ADMIN ser alle coachede). Begge inngangene (Caddie-chat og MCP-endepunktet)
 // er i dag ADMIN-gated, så oppførselen er uendret i praksis — men scopingen
 // følger automatisk med hvis COACH-tilgang åpnes senere.
-export const buildReadTools = (viewer: { id: string; role: string }) => ({
+//
+// `register` (R-B, valgfri — opprettes lokalt hvis utelatt): pseudonym → ekte
+// navn, bygget opp mens verktøyene kjører. route.ts sender inn SITT EGET
+// register for én chat-request, og bruker det til å skrive ekte navn tilbake
+// i modellens ferdige svar FØR det persisteres — uten at navnet noensinne var
+// en del av det som faktisk gikk til Anthropic.
+export const buildReadTools = (
+  viewer: { id: string; role: string },
+  register: SpillerRegister = nyttSpillerRegister(),
+) => ({
   searchPlayers: tool({
     description:
       "Søk etter spillere via navn eller e-post (delvis match). Returnerer id, navn, HCP og tier " +
@@ -53,7 +84,13 @@ export const buildReadTools = (viewer: { id: string; role: string }) => ({
           take: limit,
           orderBy: { name: "asc" },
         });
-        return { ok: true as const, data: { count: players.length, players } };
+        // R-B: navnet forlater aldri serveren mot Anthropic upseudonymisert —
+        // pseudonymiseres her, FØR retur fra tool.execute (se minimering.ts).
+        const pseudonymiserte = players.map((p) => ({
+          ...p,
+          name: pseudonymiserNavn(register, p.id, p.name),
+        }));
+        return { ok: true as const, data: { count: pseudonymiserte.length, players: pseudonymiserte } };
       } catch (err) {
         return toolError(
           `searchPlayers feilet: ${err instanceof Error ? err.message : String(err)}`,
@@ -74,6 +111,12 @@ export const buildReadTools = (viewer: { id: string; role: string }) => ({
     }),
     execute: async ({ id }) => {
       try {
+        if (!(await verifiserSpillerTilgang(viewer, id))) {
+          return toolError(
+            `getPlayer avvist: viewer=${viewer.id} har ikke coach-tilgang til spiller=${id}`,
+            "Fant ingen spiller med denne IDen.",
+          );
+        }
         const player = await prisma.user.findUnique({
           where: { id },
           select: {
@@ -107,7 +150,10 @@ export const buildReadTools = (viewer: { id: string; role: string }) => ({
             "Fant ingen spiller med denne IDen.",
           );
         }
-        return { ok: true as const, data: player };
+        return {
+          ok: true as const,
+          data: { ...player, name: pseudonymiserNavn(register, player.id, player.name) },
+        };
       } catch (err) {
         return toolError(
           `getPlayer feilet: ${err instanceof Error ? err.message : String(err)}`,
@@ -128,6 +174,12 @@ export const buildReadTools = (viewer: { id: string; role: string }) => ({
     }),
     execute: async ({ playerId, from, to, limit }) => {
       try {
+        if (!(await verifiserSpillerTilgang(viewer, playerId))) {
+          return toolError(
+            `getPlayerSessions avvist: viewer=${viewer.id} har ikke coach-tilgang til spiller=${playerId}`,
+            "Fant ingen spiller med denne IDen.",
+          );
+        }
         const fromDate = from ? new Date(from) : undefined;
         const toDate = to ? new Date(to) : undefined;
         const sessions = await prisma.trainingPlanSession.findMany({
@@ -171,6 +223,12 @@ export const buildReadTools = (viewer: { id: string; role: string }) => ({
     }),
     execute: async ({ playerId, period }) => {
       try {
+        if (!(await verifiserSpillerTilgang(viewer, playerId))) {
+          return toolError(
+            `getPlayerStats avvist: viewer=${viewer.id} har ikke coach-tilgang til spiller=${playerId}`,
+            "Fant ingen spiller med denne IDen.",
+          );
+        }
         const since = periodToSince(period);
         const [rounds, testCount, sessionCount, sgAgg] = await Promise.all([
           prisma.round.findMany({
@@ -253,7 +311,7 @@ export const buildReadTools = (viewer: { id: string; role: string }) => ({
             status: true,
             notes: true,
             priceOre: true,
-            user: { select: { id: true, name: true, email: true } },
+            user: { select: { id: true, name: true } }, // R-B: e-post hentes ikke engang — trengs aldri av modellen.
             serviceType: { select: { id: true, name: true, slug: true } },
             location: { select: { id: true, name: true } },
             facility: { select: { id: true, name: true } },
@@ -261,7 +319,14 @@ export const buildReadTools = (viewer: { id: string; role: string }) => ({
           orderBy: { startAt: "asc" },
           take: limit,
         });
-        return { ok: true as const, data: { count: bookings.length, bookings } };
+        // R-B: e-post fjernes helt (trengs aldri av modellen), navn pseudonymiseres.
+        const minimerte = bookings.map((b) => ({
+          ...b,
+          user: b.user
+            ? { id: b.user.id, name: pseudonymiserNavn(register, b.user.id, b.user.name) }
+            : null,
+        }));
+        return { ok: true as const, data: { count: minimerte.length, bookings: minimerte } };
       } catch (err) {
         return toolError(
           `getUpcomingBookings feilet: ${err instanceof Error ? err.message : String(err)}`,
@@ -292,7 +357,7 @@ export const buildReadTools = (viewer: { id: string; role: string }) => ({
             description: true,
             createdAt: true,
             stripeInvoiceId: true,
-            user: { select: { id: true, name: true, email: true } },
+            user: { select: { id: true, name: true } }, // R-B: e-post hentes ikke engang — trengs aldri av modellen.
           },
           orderBy: { createdAt: "desc" },
           take: limit,
@@ -304,8 +369,12 @@ export const buildReadTools = (viewer: { id: string; role: string }) => ({
             count: payments.length,
             totalOre,
             totalNok: totalOre / 100,
+            // R-B: e-post fjernes helt, navn pseudonymiseres.
             invoices: payments.map((p) => ({
               ...p,
+              user: p.user
+                ? { id: p.user.id, name: pseudonymiserNavn(register, p.user.id, p.user.name) }
+                : null,
               amountNok: p.amountOre / 100,
             })),
           },
@@ -327,6 +396,16 @@ export const buildReadTools = (viewer: { id: string; role: string }) => ({
     }),
     execute: async ({ roundId }) => {
       try {
+        const eier = await prisma.round.findUnique({
+          where: { id: roundId },
+          select: { userId: true },
+        });
+        if (!eier || !(await verifiserSpillerTilgang(viewer, eier.userId))) {
+          return toolError(
+            `getRound avvist: viewer=${viewer.id} har ikke coach-tilgang til runden=${roundId}`,
+            "Fant ingen runde med denne IDen.",
+          );
+        }
         const round = await prisma.round.findUnique({
           where: { id: roundId },
           select: {
@@ -365,7 +444,13 @@ export const buildReadTools = (viewer: { id: string; role: string }) => ({
             "Fant ingen runde med denne IDen.",
           );
         }
-        return { ok: true as const, data: round };
+        return {
+          ok: true as const,
+          data: {
+            ...round,
+            user: { id: round.user.id, name: pseudonymiserNavn(register, round.user.id, round.user.name) },
+          },
+        };
       } catch (err) {
         return toolError(
           `getRound feilet: ${err instanceof Error ? err.message : String(err)}`,
@@ -433,12 +518,17 @@ export const buildReadTools = (viewer: { id: string; role: string }) => ({
             monthlyCredits: true,
             creditsRemaining: true,
             stripeSubscriptionId: true,
-            user: { select: { id: true, name: true, email: true } },
+            user: { select: { id: true, name: true } }, // R-B: e-post hentes ikke engang — trengs aldri av modellen.
           },
           orderBy: { currentPeriodEnd: "asc" },
           take: limit,
         });
-        return { ok: true as const, data: { count: subs.length, subscriptions: subs } };
+        // R-B: e-post fjernes helt, navn pseudonymiseres.
+        const minimerte = subs.map((s) => ({
+          ...s,
+          user: { id: s.user.id, name: pseudonymiserNavn(register, s.user.id, s.user.name) },
+        }));
+        return { ok: true as const, data: { count: minimerte.length, subscriptions: minimerte } };
       } catch (err) {
         return toolError(
           `getActiveSubscriptions feilet: ${err instanceof Error ? err.message : String(err)}`,
@@ -457,6 +547,12 @@ export const buildReadTools = (viewer: { id: string; role: string }) => ({
     }),
     execute: async ({ playerId, pyramidArea }) => {
       try {
+        if (!(await verifiserSpillerTilgang(viewer, playerId))) {
+          return toolError(
+            `getPlayerLatestSession avvist: viewer=${viewer.id} har ikke coach-tilgang til spiller=${playerId}`,
+            "Fant ingen økter for denne spilleren.",
+          );
+        }
         const session = await prisma.trainingPlanSession.findFirst({
           where: {
             plan: { userId: playerId },

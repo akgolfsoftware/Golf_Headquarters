@@ -5,16 +5,26 @@
 
 import { KNOWLEDGE_TOOLS } from "./knowledge";
 import { buildReadTools } from "./read";
-import { WRITE_TOOLS } from "./write";
+import { buildWriteTools, WRITE_TOOLS } from "./write";
+import { nyttSpillerRegister, type SpillerRegister } from "./minimering";
 
-export { buildReadTools, KNOWLEDGE_TOOLS, WRITE_TOOLS };
+export { buildReadTools, buildWriteTools, KNOWLEDGE_TOOLS, WRITE_TOOLS };
 
-/** Bygg hele tool-settet for en konkret innlogget ADMIN/COACH-viewer. */
-export function buildCaddieTools(viewer: { id: string; role: string }) {
+/**
+ * Bygg hele tool-settet for en konkret innlogget ADMIN/COACH-viewer.
+ * `register` (R-B) deles mellom read- og write-tools for ÉN chat-request —
+ * pass inn ditt eget register (og bruk det til å skrive ekte navn tilbake i
+ * modellens svar før persistering) i stedet for å la denne opprette et som
+ * kastes bort umiddelbart etter kallet.
+ */
+export function buildCaddieTools(
+  viewer: { id: string; role: string },
+  register: SpillerRegister = nyttSpillerRegister(),
+) {
   return {
-    ...buildReadTools(viewer),
+    ...buildReadTools(viewer, register),
     ...KNOWLEDGE_TOOLS,
-    ...WRITE_TOOLS,
+    ...buildWriteTools(viewer, register),
   } as const;
 }
 

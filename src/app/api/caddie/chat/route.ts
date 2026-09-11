@@ -11,6 +11,8 @@ import { rateLimit } from "@/lib/rate-limit";
 import { anthropicProvider, modelFor } from "@/lib/ai/client";
 import { CADDIE_SYSTEM_PROMPT } from "@/lib/caddie/system-prompt";
 import { buildCaddieTools } from "@/lib/caddie/tools";
+import { nyttSpillerRegister } from "@/lib/caddie/tools/minimering";
+import { substituerPseudonymer } from "@/lib/ai/anonymiser";
 import { logError } from "@/lib/error-tracking";
 import { chatBodySchema } from "@/lib/validation/api-schemas";
 
@@ -109,26 +111,45 @@ export async function POST(req: Request) {
 
   const modelMessages = await convertToModelMessages(messages);
 
+  // R-B (2026-09-11): registeret bygges opp AV read-toolsene mens de kjører
+  // (hvert kall til pseudonymiserNavn legger inn pseudonym→ekte-navn). Det
+  // sendes ALDRI noe sted — kun brukt lokalt i onFinish under til å skrive
+  // ekte navn tilbake i det som PERSISTERES, etter at modellen allerede har
+  // fått og svart på pseudonymiserte navn. Selve Anthropic-kallet (system,
+  // messages, tools) ser aldri et ekte spillernavn eller en spiller-e-post
+  // fra databasen — kun det admin/coach selv skriver i chat-meldingen sin.
+  const spillerRegister = nyttSpillerRegister();
+  const tools = buildCaddieTools(user, spillerRegister);
+
   const result = streamText({
     model: anthropic(MODEL_ID),
     system: CADDIE_SYSTEM_PROMPT,
     messages: modelMessages,
-    tools: buildCaddieTools(user),
+    tools,
     // La modellen fortsette etter at et lese-verktøy er kjørt, så den faktisk
     // svarer (uten dette stopper streamText etter første tool-call).
     stopWhen: stepCountIs(5),
     maxRetries: 2,
     onFinish: async ({ text, usage, toolCalls, toolResults, steps }) => {
       if (!conversationId) return;
+      // R-B: modellens svar kan gjenta et pseudonym den fikk fra et
+      // verktøy-resultat (f.eks. "Spiller-a1b2c3 har forbedret SG"). Vi
+      // skriver ekte navn tilbake KUN i det vi lagrer/viser internt — dette
+      // skjer server-side, etter at kallet mot Anthropic er ferdig.
+      const ektText = substituerPseudonymer(text, spillerRegister);
       try {
         await prisma.caddieMessage.create({
           data: {
             userId: user.id,
             conversationId,
             role: "assistant",
-            content: text,
-            toolCalls: toolCalls as unknown as object,
-            toolResults: toolResults as unknown as object,
+            content: ektText,
+            toolCalls: JSON.parse(
+              substituerPseudonymer(JSON.stringify(toolCalls), spillerRegister),
+            ) as unknown as object,
+            toolResults: JSON.parse(
+              substituerPseudonymer(JSON.stringify(toolResults), spillerRegister),
+            ) as unknown as object,
             inputTokens: usage?.inputTokens ?? null,
             outputTokens: usage?.outputTokens ?? null,
             model: MODEL_ID,
@@ -157,14 +178,26 @@ export async function POST(req: Request) {
           if (finnes) continue;
 
           const { needsApproval: _na, type: _t, previewText, ...forslag } = output;
+          // R-B: samme tilbakeskriving som over — et forslag kan inneholde et
+          // pseudonym fra et tidligere leseresultat i samme samtale.
+          const ektToolInput = JSON.parse(
+            substituerPseudonymer(
+              JSON.stringify({ ...(r.input as Record<string, unknown>), ...forslag }),
+              spillerRegister,
+            ),
+          ) as Record<string, unknown>;
+          const ektPreviewText =
+            typeof previewText === "string"
+              ? substituerPseudonymer(previewText, spillerRegister)
+              : "";
           await prisma.caddieDraft.create({
             data: {
               userId: user.id,
               conversationId,
               toolCallId: r.toolCallId,
               toolName: r.toolName,
-              toolInput: { ...(r.input as Record<string, unknown>), ...forslag } as unknown as object,
-              previewText: typeof previewText === "string" ? previewText : "",
+              toolInput: ektToolInput as unknown as object,
+              previewText: ektPreviewText,
               status: "PENDING",
             },
           });

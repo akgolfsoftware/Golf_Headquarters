@@ -1,10 +1,20 @@
 // Write-tools for Caddie MCP — krever Anders' godkjenning.
 // IKKE faktisk skriving til DB her. Alle tools returnerer `needsApproval: true`
 // med et preview-objekt som frontend kan vise og deretter ev. utføre.
+//
+// R-A/R-B (2026-09-11): samme to rettelser som read.ts —
+// (1) eierskap: en `playerId`/`invoiceId` sjekkes nå mot viewerens
+//     coach-relasjon (`harCoachTilgangTilSpiller`) FØR forslaget bygges, og
+// (2) dataminimering: `previewText`/`body` inneholdt tidligere EKTE navn og
+//     e-post direkte i strengen som blir en del av tool-resultatet AI SDK
+//     sender til modellen — nå pseudonymisert via samme `register` som
+//     read-toolsene deler i samme chat-request (route.ts skriver ekte navn
+//     tilbake i det som persisteres, ETTER Anthropic-kallet).
 
 import { tool } from "ai";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import {
   toolError,
   type DraftBookingProposal,
@@ -13,8 +23,12 @@ import {
   type DraftPlanAdjustmentProposal,
   type DraftPlayerNoteProposal,
 } from "../types";
+import { nyttSpillerRegister, pseudonymiserNavn, type SpillerRegister } from "./minimering";
 
-export const WRITE_TOOLS = {
+export const buildWriteTools = (
+  viewer: { id: string; role: string },
+  register: SpillerRegister = nyttSpillerRegister(),
+) => ({
   draftPlayerMessage: tool({
     description:
       "Foreslå en e-postmelding til en spiller. Sender IKKE — krever Anders' godkjenning før utsendelse.",
@@ -29,9 +43,15 @@ export const WRITE_TOOLS = {
       body,
     }): Promise<DraftMessageProposal | ReturnType<typeof toolError>> => {
       try {
+        if (!(await harCoachTilgangTilSpiller(viewer, playerId))) {
+          return toolError(
+            `draftPlayerMessage avvist: viewer=${viewer.id} har ikke coach-tilgang til spiller=${playerId}`,
+            "Fant ingen spiller med denne IDen.",
+          );
+        }
         const player = await prisma.user.findUnique({
           where: { id: playerId },
-          select: { id: true, name: true, email: true },
+          select: { id: true, name: true },
         });
         if (!player) {
           return toolError(
@@ -39,13 +59,16 @@ export const WRITE_TOOLS = {
             "Fant ingen spiller med denne IDen.",
           );
         }
+        // R-B: e-post skal ALDRI i previewText mot modellen — trengs ikke der,
+        // den ekte adressen hentes av approval-executor ved faktisk utsendelse.
+        const navn = pseudonymiserNavn(register, player.id, player.name);
         return {
           type: "DRAFT_MESSAGE",
           needsApproval: true,
           playerId,
           subject,
           body,
-          previewText: `Send "${subject}" til ${player.name} <${player.email}>?`,
+          previewText: `Send "${subject}" til ${navn}?`,
         };
       } catch (err) {
         return toolError(
@@ -74,6 +97,12 @@ export const WRITE_TOOLS = {
       notes,
     }): Promise<DraftBookingProposal | ReturnType<typeof toolError>> => {
       try {
+        if (!(await harCoachTilgangTilSpiller(viewer, playerId))) {
+          return toolError(
+            `draftBookingProposal avvist: viewer=${viewer.id} har ikke coach-tilgang til spiller=${playerId}`,
+            "Fant ingen spiller med denne IDen.",
+          );
+        }
         const [player, service, location] = await Promise.all([
           prisma.user.findUnique({
             where: { id: playerId },
@@ -109,8 +138,9 @@ export const WRITE_TOOLS = {
         }
 
         const start = new Date(startAt);
+        const navn = pseudonymiserNavn(register, player.id, player.name);
         const previewText =
-          `Opprett booking: ${service.name} for ${player.name} ` +
+          `Opprett booking: ${service.name} for ${navn} ` +
           `${start.toLocaleString("no-NO")} på ${location.name}?`;
 
         return {
@@ -152,7 +182,7 @@ export const WRITE_TOOLS = {
             type: true,
             description: true,
             createdAt: true,
-            user: { select: { id: true, name: true, email: true } },
+            user: { select: { id: true, name: true } },
           },
         });
         if (!invoice) {
@@ -161,17 +191,35 @@ export const WRITE_TOOLS = {
             "Fant ingen faktura med denne IDen.",
           );
         }
-        const navn = invoice.user?.name ?? "kunde";
+        // Fakturaer er ikke spiller-scopet i domenet (ADMIN-only i dag, jf.
+        // read.ts sin getOutstandingInvoices) — men er brukeren en coach med
+        // et fremtidig innsyn, skal hen ikke kunne purre en spiller hen ikke
+        // coacher. Eier-sjekk når faktura faktisk har en spiller-bruker.
+        if (invoice.user && !(await harCoachTilgangTilSpiller(viewer, invoice.user.id))) {
+          return toolError(
+            `draftInvoiceReminder avvist: viewer=${viewer.id} har ikke coach-tilgang til spiller=${invoice.user.id}`,
+            "Fant ingen faktura med denne IDen.",
+          );
+        }
+        const ektNavn = invoice.user?.name ?? "kunde";
+        const navn = invoice.user
+          ? pseudonymiserNavn(register, invoice.user.id, invoice.user.name)
+          : "kunde";
         const beloep = (invoice.amountOre / 100).toFixed(2);
         const subject = `Påminnelse: utestående faktura (${beloep} ${invoice.currency.toUpperCase()})`;
         const body =
-          `Hei ${navn},\n\n` +
+          `Hei ${ektNavn},\n\n` +
           `Vi vil minne om at faktura på ${beloep} ${invoice.currency.toUpperCase()} ` +
           `fortsatt står som ubetalt.\n\n` +
           (invoice.description ? `Gjelder: ${invoice.description}\n\n` : "") +
           `Vennligst gjør opp ved første anledning. Ta kontakt om du har spørsmål.\n\n` +
           `Med vennlig hilsen\nAK Golf Academy`;
-
+        // `body` (med ekte navn — det er selve e-postteksten som skal sendes
+        // til spilleren når godkjent) lagres i toolInput/CaddieDraft, IKKE i
+        // previewText som går til modellen — previewText pseudonymiseres.
+        // route.ts sin substituerPseudonymer skriver `body` sitt ekte navn
+        // tilbake uansett når draftet persisteres, så denne mellomveien er
+        // trygg selv om `body` skulle nå modellkonteksten i et senere steg.
         return {
           type: "DRAFT_INVOICE_REMINDER",
           needsApproval: true,
@@ -201,6 +249,12 @@ export const WRITE_TOOLS = {
       note,
     }): Promise<DraftPlayerNoteProposal | ReturnType<typeof toolError>> => {
       try {
+        if (!(await harCoachTilgangTilSpiller(viewer, playerId))) {
+          return toolError(
+            `draftPlayerNote avvist: viewer=${viewer.id} har ikke coach-tilgang til spiller=${playerId}`,
+            "Fant ingen spiller med denne IDen.",
+          );
+        }
         const player = await prisma.user.findUnique({
           where: { id: playerId },
           select: { id: true, name: true },
@@ -212,12 +266,13 @@ export const WRITE_TOOLS = {
           );
         }
         const preview = note.length > 80 ? `${note.slice(0, 80)}…` : note;
+        const navn = pseudonymiserNavn(register, player.id, player.name);
         return {
           type: "DRAFT_PLAYER_NOTE",
           needsApproval: true,
           playerId,
           note,
-          previewText: `Lagre notat på ${player.name}: "${preview}"?`,
+          previewText: `Lagre notat på ${navn}: "${preview}"?`,
         };
       } catch (err) {
         return toolError(
@@ -242,6 +297,12 @@ export const WRITE_TOOLS = {
       reason,
     }): Promise<DraftPlanAdjustmentProposal | ReturnType<typeof toolError>> => {
       try {
+        if (!(await harCoachTilgangTilSpiller(viewer, playerId))) {
+          return toolError(
+            `draftPlanAdjustment avvist: viewer=${viewer.id} har ikke coach-tilgang til spiller=${playerId}`,
+            "Fant ingen spiller med denne IDen.",
+          );
+        }
         const player = await prisma.user.findUnique({
           where: { id: playerId },
           select: { id: true, name: true },
@@ -253,13 +314,14 @@ export const WRITE_TOOLS = {
           );
         }
         const preview = change.length > 100 ? `${change.slice(0, 100)}…` : change;
+        const navn = pseudonymiserNavn(register, player.id, player.name);
         return {
           type: "DRAFT_PLAN_ADJUSTMENT",
           needsApproval: true,
           playerId,
           change,
           reason,
-          previewText: `Foreslår plan-endring for ${player.name}: "${preview}"`,
+          previewText: `Foreslår plan-endring for ${navn}: "${preview}"`,
         };
       } catch (err) {
         return toolError(
@@ -269,4 +331,7 @@ export const WRITE_TOOLS = {
       }
     },
   }),
-} as const;
+});
+
+/** Viewer-uavhengig form (tool-navn/schemaer) — kun til metadata/lister. */
+export const WRITE_TOOLS = buildWriteTools({ id: "", role: "ADMIN" });
