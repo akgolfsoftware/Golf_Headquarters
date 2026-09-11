@@ -49,6 +49,7 @@ Dette er funn til prioritering, ikke et forslag om å kutte resten av produktet 
 
 ## Bevarte arbeidsunderlag
 
+- [Manuell SG](planer/funksjon-manuell-sg.md): enkel og avansert inntasting med alle kategorier er bestilt 11.09 og implementert på egen gren. Full verify, 2 349 tester og 20 nettleserkontroller har bestått. Innlogget prøve og Anders' vurdering gjenstår; kartplanen tas senere.
 - [Full tidligere arbeidsliste og beslutningskø](arkiv/opprydding-2026-09-10/masterplan-gjenstaaende.md): inneholder også uferdige og parkerte bestillinger. Leveransestatus må kontrolleres mot kode og Git før en oppgave gjenopptas.
 - [Train-lock-plan fra 09.09](planer/design/2026-09-09-train-lock-full-port.md): historisk retning, oppgaver og daterte tellinger. Designvalgene er åpnet igjen 10.09; planen skal ikke utføres automatisk.
 - [Detaljert designport](planer/design/2026-09-05-komplett-designport.md) og [skjermvedlegg](planer/design/2026-09-05-komplett-designport-vedlegg-skjermer.md).

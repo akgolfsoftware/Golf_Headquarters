@@ -1,3 +1,4 @@
+import { SG_DETALJFELT } from "@/lib/portal-runder/manuell-sg";
 // «Min golf»-loaderen — komponerer EKSISTERENDE datakilder til golfdata-
 // komponentenes props (masterplan bølge 1). Kun visning og aggregering av
 // felter som allerede finnes (Round.sg*, Shot, TrackManSession, SgInsight) —
@@ -118,20 +119,9 @@ const PUTT_BAND: { label: string; minFt: number; maxFt: number }[] = [
 ];
 
 // Lekkasje-bånd: snitt av Round sine granulære SG-felter. Putting i fot.
-const LEKKASJE_FELT = [
-  { id: "tee", label: "Tee-slag", felt: "sgTee" },
-  { id: "app200", label: "Innspill 200–150 m", felt: "sgApp200" },
-  { id: "app150", label: "Innspill 150–100 m", felt: "sgApp150" },
-  { id: "app100", label: "Innspill 100–50 m", felt: "sgApp100" },
-  { id: "app50", label: "Innspill < 50 m", felt: "sgApp50" },
-  { id: "chip", label: "Nærspill chip", felt: "sgChip" },
-  { id: "pitch", label: "Nærspill pitch", felt: "sgPitch" },
-  { id: "bunker", label: "Bunker", felt: "sgBunker" },
-  { id: "putt0", label: "Putting 0–3 ft", felt: "sgPutt0_3" },
-  { id: "putt3", label: "Putting 3–5 ft", felt: "sgPutt3_5" },
-  { id: "putt5", label: "Putting 5–10 ft", felt: "sgPutt5_10" },
-  { id: "putt10", label: "Putting 10+ ft", felt: "sgPutt10_15" },
-] as const;
+const LEKKASJE_FELT = SG_DETALJFELT.map((felt) => ({
+  id: felt.key, label: felt.label, felt: felt.key,
+}));
 
 const snittAv = (verdier: (number | null)[]): number | null => {
   const tall = verdier.filter((v): v is number => v !== null);

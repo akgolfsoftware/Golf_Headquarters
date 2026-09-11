@@ -313,6 +313,7 @@ function AnalyseDybde({ data, mobile }: { data: AnalysereData; mobile: boolean }
       {nesteFokus && nesteFokus.lekkasjeBaand.length > 0 && (
         <SlagLekkasje
           baand={nesteFokus.lekkasjeBaand}
+          visSum={false}
           baseline={nesteFokus.baseline}
           grunnlag={nesteFokus.grunnlag}
           desimaler={2}

@@ -815,11 +815,13 @@ export interface SlagLekkasjeProps {
   tittel?: ReactNode;
   valgtId?: string | null;
   onVelgBaand?: ((b: SlagBaand) => void) | null;
+  /** Manuelle detaljområder kan overlappe. Ikke vis en sum av slike bånd. */
+  visSum?: boolean;
   /** Desimaler i SG-tallet. Default 1 (fasit). Bruk 2 for tette ekte verdier —
    *  ellers viser båndet «−0,0» mens heat-fargen sier noe annet. */
   desimaler?: 1 | 2;
 }
-export function SlagLekkasje({ baand = SL_DEMO, baseline = "Broadie scratch", grunnlag = "14 runder", tittel = "Hvor slagene forsvinner", valgtId = null, onVelgBaand = null, desimaler = 1 }: SlagLekkasjeProps) {
+export function SlagLekkasje({ baand = SL_DEMO, baseline = "Broadie scratch", grunnlag = "14 runder", tittel = "Hvor slagene forsvinner", valgtId = null, onVelgBaand = null, desimaler = 1, visSum = true }: SlagLekkasjeProps) {
   const maks = Math.max(0.4, ...baand.map((b) => Math.abs(b.sg ?? 0)));
   const sum = baand.reduce((a, b) => a + (b.sg ?? 0), 0);
   const fmt = (v: number): string =>
@@ -846,7 +848,7 @@ export function SlagLekkasje({ baand = SL_DEMO, baseline = "Broadie scratch", gr
         })}
       </div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 10 }}>
-        <span style={{ ...mono(10, sum < 0 ? TL.danger : TL.ok, 600) }}>Sum {fmt(sum)} slag/runde</span>
+        {visSum ? <span style={{ ...mono(10, sum < 0 ? TL.danger : TL.ok, 600) }}>Sum {fmt(sum)} slag/runde</span> : <span style={{ ...mono(11, TL.mute), lineHeight: 1.5 }}>Detaljområdene kan overlappe og summeres ikke.</span>}
         {onVelgBaand && <span style={{ fontFamily: TL.font.sans, fontSize: 10.5, color: TL.mute }}>Trykk et bånd for analyse</span>}
       </div>
     </Kort>
