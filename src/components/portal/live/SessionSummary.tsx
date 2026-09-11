@@ -408,7 +408,7 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }:
                       <div className="min-w-0">
                         <span className="block truncate">{drill.name}</span>
                         <span className="block font-mono text-[10.5px]" style={{ color: "var(--tl-mute)" }}>
-                          {gjort}
+                          {gjort}{data.completedDrillIds && ` · ${data.completedDrillIds.includes(drill.id) ? "markert ferdig" : "ikke markert ferdig"}`}
                         </span>
                       </div>
                       {tag && <Tag tekst={tag.tekst} tone={tag.tone} />}

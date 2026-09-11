@@ -8,7 +8,7 @@ const root = process.cwd();
 const output = resolve(root, "_archive/portering-kontroll-2026-09-10");
 mkdirSync(output, { recursive: true });
 await build({
-  entryPoints: { brief: resolve(root, "tests/visual/portering/brief-fixture.tsx"), plan: resolve(root, "tests/visual/portering/plan-fixture.tsx"), idag: resolve(root, "tests/visual/portering/idag-fixture.tsx"), playernav: resolve(root, "tests/visual/portering/player-nav-fixture.tsx"), wang: resolve(root, "tests/visual/portering/wang-login-fixture.tsx"), fixture: resolve(root, "tests/visual/portering/tn-tilgang-fixture.tsx"), trainlock: resolve(root, "tests/visual/portering/train-lock-fixture.tsx") },
+  entryPoints: { live: resolve(root, "tests/visual/portering/live-fixture.tsx"), brief: resolve(root, "tests/visual/portering/brief-fixture.tsx"), plan: resolve(root, "tests/visual/portering/plan-fixture.tsx"), idag: resolve(root, "tests/visual/portering/idag-fixture.tsx"), playernav: resolve(root, "tests/visual/portering/player-nav-fixture.tsx"), wang: resolve(root, "tests/visual/portering/wang-login-fixture.tsx"), fixture: resolve(root, "tests/visual/portering/tn-tilgang-fixture.tsx"), trainlock: resolve(root, "tests/visual/portering/train-lock-fixture.tsx") },
   outdir: output,
   bundle: true,
   format: "iife",
@@ -17,6 +17,10 @@ await build({
   plugins: [{
     name: "isoler-next-ruting",
     setup(builder) {
+      builder.onResolve({ filter: /^@\/app\/portal\/\(fullscreen\)\/live\/\[sessionId\]\/actions$/ }, ({ path }) => ({ path, namespace: "live-server-stub" }));
+      builder.onLoad({ filter: /.*/, namespace: "live-server-stub" }, () => ({ contents: 'export const startSession=(...args)=>window.liveAction("start",...args);export const logDrillReps=(...args)=>window.liveAction("save",...args);export const completeSession=(...args)=>window.liveAction("finish",...args);', loader: "js" }));
+      builder.onResolve({ filter: /^\.\/LiveCoachPanel$/ }, ({ path }) => ({ path, namespace: "live-coach-stub" }));
+      builder.onLoad({ filter: /.*/, namespace: "live-coach-stub" }, () => ({ contents: 'import {createElement} from "react";export const LiveCoachPanel=()=>createElement("button",{style:{position:"fixed",bottom:20,right:20,minHeight:48,borderRadius:24,padding:"12px 20px",background:"var(--tl-fill)",color:"var(--tl-on-fill)"},onClick:()=>{}},"Caddie (isolert i prøven)");', resolveDir:root, loader:"js" }));
       builder.onResolve({ filter: /^@\/lib\/portal-live\/actions$/ }, ({ path }) => ({ path, namespace: "brief-server-stub" }));
       builder.onLoad({ filter: /.*/, namespace: "brief-server-stub" }, () => ({ contents: 'export const startPlanSession=async()=>window.briefSvar();', loader: "js" }));
       builder.onResolve({ filter: /^@\/lib\/workbench\/wb-actions$/ }, ({ path }) => ({ path, namespace: "idag-server-stub" }));
@@ -27,7 +31,7 @@ await build({
           ? 'import {createElement} from "react"; export default function Image({priority,fill,loader,quality,unoptimized,placeholder,blurDataURL,...props}) { return createElement("img",props); }'
           : path === "next/link"
           ? 'import {createElement} from "react"; export default function Link({prefetch,scroll,replace,...props}) { return createElement("a",props); }'
-          : 'export const unstable_rethrow=()=>{}; export const useRouter=()=>({refresh:()=>{window.tnOppfriskinger++},push:(url)=>{window.location.assign(url)}}); import {useSyncExternalStore} from "react"; const listen=(cb)=>{window.addEventListener("popstate",cb);return ()=>window.removeEventListener("popstate",cb)}; export const usePathname=()=>useSyncExternalStore(listen,()=>window.location.pathname); export const useSearchParams=()=>new URLSearchParams(window.location.search);',
+          : 'export const unstable_rethrow=()=>{}; const router={refresh:()=>{window.tnOppfriskinger++},push:(url)=>{window.location.assign(url)},replace:(url)=>{if(window.liveNavigate)window.liveNavigate(url);else window.location.assign(url)}}; export const useRouter=()=>router; import {useSyncExternalStore} from "react"; const listen=(cb)=>{window.addEventListener("popstate",cb);return ()=>window.removeEventListener("popstate",cb)}; export const usePathname=()=>useSyncExternalStore(listen,()=>window.location.pathname); export const useSearchParams=()=>new URLSearchParams(window.location.search);',
         resolveDir: root,
         loader: "js",
       }));
@@ -44,6 +48,7 @@ const trainHtml = html.replace('/tokens.css', '/train-tokens.css').replace('/fix
 const navHtml = trainHtml.replace("/trainlock.css", "/playernav.css").replace("/trainlock.js", "/playernav.js");
 const idagHtml = trainHtml.replace("/trainlock.css", "/idag.css").replace("/trainlock.js", "/idag.js").replace("</title>", '</title><link rel="stylesheet" href="/geist.css">');
 const briefHtml = idagHtml.replaceAll("/idag.", "/brief.");
+const liveHtml = idagHtml.replaceAll("/idag.", "/live.");
 const planHtml = idagHtml.replaceAll("/idag.", "/plan.");
 const wangHtml = html.replace('/tokens.css', '/wang-tokens.css').replace('/fixture.css', '/wang.css').replace('/fixture.js', '/wang.js');
 const nextChunks = resolve(root, ".worktrees/portering-kontroll-2026-09-10/.next/static/chunks");
@@ -53,6 +58,10 @@ const geistCss = (existsSync(nextChunks) ? readdirSync(nextChunks) : []).filter(
   )
 ).join("\n") + '\n:root{--font-geist-sans:Geist;--font-geist-mono:"Geist Mono"}';
 const files = new Map([
+  ["/live.js", [resolve(output, "live.js"), "text/javascript"]],
+  ["/live.css", [resolve(output, "live.css"), "text/css"]],
+  ["/ph-05-reference.html", [resolve(root, "_archive/design-kilder-2026-09-10/playerhq-train-lock-4/PH-05 Live.dc.html"), "text/html; charset=utf-8"]],
+  ["/ph-05-wide-reference.html", [resolve(root, "_archive/design-kilder-2026-09-10/playerhq-train-lock-4/B2 PH-05 Live iPad Mac.dc.html"), "text/html; charset=utf-8"]],
   ["/brief.js", [resolve(output, "brief.js"), "text/javascript"]],
   ["/brief.css", [resolve(output, "brief.css"), "text/css"]],
   ["/ph-04-reference.html", [resolve(root, "_archive/design-kilder-2026-09-10/playerhq-train-lock-4/PH-04 Okt-ark.dc.html"), "text/html; charset=utf-8"]],
@@ -86,11 +95,11 @@ createServer((request, response) => {
     response.end(["src/styles/train-lock-tokens.css", "src/styles/train-lock-valgt.css"].map((file) => readFileSync(resolve(root, file), "utf8")).join("\n"));
     return;
   }
-  if (["/ph-01-reference.html", "/ph-07-reference.html", "/ph-04-reference.html", "/ph-04-wide-reference.html"].includes(path)) {
+  if (["/ph-05-reference.html", "/ph-05-wide-reference.html", "/ph-01-reference.html", "/ph-07-reference.html", "/ph-04-reference.html", "/ph-04-wide-reference.html"].includes(path)) {
     const source = readFileSync(files.get(path)[0], "utf8").replace('<script src="./support.js"></script>', '<script src="/react18.js"></script><script src="/react-dom18.js"></script><script src="./support.js"></script>');
     response.setHeader("Content-Type", "text/html; charset=utf-8"); response.end(source); return;
   }
   const file = files.get(path);
   response.setHeader("Content-Type", file?.[1] ?? "text/html; charset=utf-8");
-  response.end(file ? readFileSync(file[0]) : path.startsWith("/team-norway") ? html : path.startsWith("/team-wang") ? wangHtml : path.startsWith("/player-nav") ? navHtml : path.startsWith("/idag-prove") ? idagHtml : path.startsWith("/brief-prove") ? briefHtml : path.startsWith("/plan-prove") ? planHtml : trainHtml);
+  response.end(file ? readFileSync(file[0]) : path.startsWith("/team-norway") ? html : path.startsWith("/team-wang") ? wangHtml : path.startsWith("/player-nav") ? navHtml : path.startsWith("/idag-prove") ? idagHtml : path.startsWith("/live-prove") ? liveHtml : path.startsWith("/brief-prove") ? briefHtml : path.startsWith("/plan-prove") ? planHtml : trainHtml);
 }).listen(5441, "127.0.0.1", () => console.log("TN-komponentrigg klar på 127.0.0.1:5441"));

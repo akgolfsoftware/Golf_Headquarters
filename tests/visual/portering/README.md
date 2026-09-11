@@ -45,3 +45,8 @@ PlayerHQ-navigasjonen prøves i åtte kombinasjoner (320, 390, 834, 1440 × lys/
 ## Øktark PH-04
 
 `brief.py` prøver felles øktark med faktiske Workbench-/plan-/V2-adaptere og syntetiske verdier. 84 varianter omfatter 320/390/834/1440, begge temaer, planlagt/pågående/pauset/fullført/avlyst, coach/PRO/forslag, tomt og langt innhold. Stor tekst, tastatur, oppstartsfeil, nytt forsøk og dobbeltinnsending prøves separat. Start-handlingen og Nexts `unstable_rethrow` er simulert kun i riggen. Dette beviser ikke faktisk innlogget start eller Nexts redirect-håndtering. Direkte rute bruker eget sentrert ark på Mac; kildens panel over en bevart bakgrunn gjenstår.
+
+
+## Live-trening PH-05
+
+`live.py` bruker faktisk LiveActive, rep-logger, lokal klokke og nettleserens IndexedDB. 40 varianter dekker fire bredder, to temaer og normal/tom/lang/lasting/startfeil. Separate reiseprøver dekker StrictMode, raske trykk, angre og nullkorrigering, pause/gjenåpning, notater, dialogfokus/Escape, dobbel fullføring, frakobling, lokal lagringsnekt, mislykket sending, tapt fullføringssvar og to faner med Web Locks. Next-ruting og serverhandlinger er avskåret, og Caddie-panelet er erstattet av en tydelig merket prøveknapp. Ingen AI-samtale, autentisert lagring eller faktisk databasetransaksjon prøves her. Golfregistrering prøves; den eldre FYS-loggeren har fortsatt egne åpne avvik.

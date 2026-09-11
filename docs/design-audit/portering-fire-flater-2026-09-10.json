@@ -3319,9 +3319,9 @@
       "source": "src/app/portal/(fullscreen)/live/[sessionId]/active/page.tsx",
       "area": "playerhq",
       "designSource": "train-lock-4",
-      "screenMapping": "ikke-vurdert",
-      "implementation": "ikke-verifisert-mot-valgt-pakke",
-      "visualApproval": "ikke-vurdert",
+      "screenMapping": "PH-05 Live + B2 PH-05 i valgt ZIP (4), felles Geist/v3-tema",
+      "implementation": "delvis-portert: aktiv øvelse, golfregistrering, pause/kladd, notater, eksplisitt fullføring; FYS, Caddie-geometri og innlogget reise gjenstår",
+      "visualApproval": "ikke-vurdert-av-anders",
       "nearbySurfaces": [
         "src/app/error.tsx",
         "src/app/global-error.tsx",
@@ -3404,7 +3404,7 @@
       "area": "playerhq",
       "designSource": "train-lock-4",
       "screenMapping": "ikke-vurdert",
-      "implementation": "ikke-verifisert-mot-valgt-pakke",
+      "implementation": "sammendrag leser eksplisitt ferdige øvelser; PH-06-design ikke portert i denne delen",
       "visualApproval": "ikke-vurdert",
       "nearbySurfaces": [
         "src/app/error.tsx",
@@ -7106,6 +7106,12 @@
       "area": "playerhq",
       "scope": "PH-04 felles øktark for WB/plan/V2, korrekt Oslo-klokke, lagret innhold og faseavhengige handlinger",
       "tests": "Full npm run verify og hele npm test bestod: 2316 tester (2313 + 3), sju nye regresjonstester. Alle sju komponentprøver bestod samlet 252 varianter, hvorav 84 PH-04; tillegg for stor tekst, tastatur og startfeil/dobbeltinnsending. Ingen innlogget start eller visuell godkjenning fra Anders.",
+      "completionProven": false
+    },
+    {
+      "area": "playerhq",
+      "scope": "PH-05 aktiv øvelse, lokal kladd og fullføringsreise for V2, med presis ferdigtelling i sammendrag",
+      "tests": "Full npm run verify bestod på sluttkoden, inkludert Next/Serwist. Hele npm test bestod: 2326 (2323 + 3), ti nye enhetstester. Alle åtte komponentprøver bestod 292 varianter; PH-05: 40 varianter og ti egne flyt-/lagringskontroller med ekte IndexedDB. Streng lint bestod. Ingen GitHub-kjøring for lokal gren; ingen innlogget reise eller Anders-godkjenning.",
       "completionProven": false
     }
   ]

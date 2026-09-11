@@ -23,6 +23,11 @@ export type LiveDrillKoRad = {
   totalSec: number;
   sistOppdatert: string;
   forsokAntall: number;
+  /** Lokale felter; krever ingen database- eller IndexedDB-skjemaendring. */
+  revision?: number;
+  synketRevision?: number;
+  paused?: boolean;
+  drillSec?: number;
 };
 
 const MAKS_STILLE_FORSOK = 5;

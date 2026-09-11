@@ -82,6 +82,20 @@ Workbench-dato + klokkeminutt tolkes nå som Oslo-tid i brief og oppsummering. S
 
 Direkte øktlenke har egen side, uten en bevart Plan-side under arket. Dette er et registrert avvik fra kildens overlegg, og skal ikke fremstilles som en ferdig modalreise. Planens eksisterende øktdialog beholdes. Innlogget rutebevegelse og pågående trening/oppsummering kontrolleres videre.
 
+## Live-trening PH-05: første port og lagringsreise
+
+Valgt ZIP (4) har PH-05 og B2 PH-05, uten egen v3-fil. Geometrien følger mobilens 72 px klokke, 20 px Nå-kort og 64 px registreringsknapper, iPad 560 px innhold/88 px klokke og Mac 720 px/to spalter/104 px klokke. Geist og lys/mørk følger felles valgt v3. Telefonramme, statusbar og oppdiktede klokke-/ballverdier er ikke kopiert.
+
+Live åpner på aktiv øvelse og registrering. Hele øvelseslisten, ferdigmarkering, angre/korrigering, coachens innhold, frie notater, FYS og eksisterende Caddie er fortsatt tilgjengelige. Hjelpeinnhold er samlet under en utfellbar forklaring, slik at registreringen kommer tidligere på mobil. Pause stopper bare medgått tid. Klokken starter først etter bekreftet start og gjenopprettet kladd. Klokke/pause bevares på enheten; periodisk kladd kan miste inntil fem sekunder ved brå lukking. Det er ingen global, serverlagret startklokke.
+
+Lokal skriving skjer ved registreringen, og kvitteres først når IndexedDB-transaksjonen er ferdig. Sending venter kort for å samle raske trykk. Kvittering for en eldre versjon sletter aldri nyere lokale tall. Synket kladd beholdes for gjenåpning; bare usendte versjoner inngår i portalens kø. Web Locks ordner sending mellom faner i nettlesere som støtter det. Dette er ikke sammenslåing av samtidig redigering på flere enheter. Rettelser ned til null sendes også. En lagringsnekt vises tydelig og stopper fullføring; tellingen beholdes i åpen skjerm.
+
+Ferdigmarkering for én øvelse fullfører ikke hele økta. Egen bekreftelsesdialog har fokusretur, tastaturfelle og sperre mot dobbel innsending. Siste registrering må være bekreftet sendt før fullføring. Tapt fullføringssvar kan prøves igjen; en allerede fullført økt sendes til oppsummeringen. V2-status, eventuelt planspeil og planlogg sendes som én Prisma-transaksjon. Eksplisitte ferdigmarkeringer lagres i eksisterende sammendrags-JSON og brukes i oppsummeringen. En autosendt logg telles dermed ikke automatisk som en ferdig øvelse. Eldre sammendrag beholder tidligere fallback. Ingen skjema-, tilgangsrolle- eller produksjonsendring er utført.
+
+**Registrerte avvik:** Den valgte tegningen har Treff/Kant/Bom, mens dagens vedvarende modell har motorikkategorier og treff. Porten beholder +1 rep/+1 treff og de faktiske kategoriene; Kant/Bom er ikke oppdiktet som nye felt. Mac viser registrering som første høyrekolonne, mens B2 viser øvelsesliste. Funksjonelle tillegg er pause, lagringsstatus, øvelsesvalg, retting og notater. Caddie beholder eksisterende flytende panel; kildens sentrerte mikrofon er ikke portert her. FYS beholder eksisterende modaliteter og generiske standardverdier; detaljfeltenes gjenoppretting og full visuell FYS-kontroll gjenstår. Korrigering av rep-totalen reverserer ikke den eksisterende tekniske oppgavens positive deltatelling. Disse begrensningene må behandles i videre trening-/Analyse-arbeid.
+
+De ti nye enhetstestene prøver status, tall, gjenoppretting og serverhandlingenes tilgang/skriverekkefølge med simulert database. 40 nettleservarianter og ti egne reise-/lagringskontroller er bestått med syntetiske data, ekte IndexedDB og simulert server/Next-ruting. Mobil mørk og Mac lys/mørk er visuelt inspisert sammen med originale PH-05/B2-rammer. Ingen autentisert database- eller AI-reise, fysisk telefon eller visuell godkjenning fra Anders er registrert. PH-06s fulle design gjenstår.
+
 ## WANG C7: innlogging
 
 Skjemaet sender nå e-post og passord til eksisterende Supabase-innlogging, beholder feltene ved feil, sperrer gjentatt innsending og går tilbake til WANG ved suksess. WANGs navnefrie fellesside, glemt passord, trenerflate og eksisterende elevadministrasjon har ekte lenker. Den åpne demoen for å skrive elevnavn er erstattet av eksisterende beskyttet elevadministrasjon; ingen lagrede brukere er slettet.
@@ -98,6 +112,9 @@ C7 er ennå ikke visuelt ferdig: desktop har fortsatt en egen blå overskrift ov
 
 | Before | After | Why |
 |---|---|---|
+| Live åpnet i sjekkliste, mens løpende telling lå i en annen visning | Aktiv øvelse og store registreringsknapper først; liste/notater beholdt | Følger PH-05s rekkefølge og gjør gjentatt registrering tilgjengelig |
+| Klokken startet før bekreftelse, og et eldre lagringssvar kunne fjerne en nyere kladd | Bekreftet oppstart, versjonert kladd og ordnet sending | Spilleren kan gjenoppta og rette telling uten å miste nyere registreringer |
+| Siste øvelse var merket «Fullfør økt», og autosending ble tolket som ferdig øvelse | Egen ferdigmarkering og eksplisitt fullføring med kontrollert sending | Oppsummeringen skal vise det spilleren faktisk avsluttet |
 | To ulike eldre brief-oppsett mistet deler av øktinnholdet | Ett felles PH-04-ark med lagret sted, øvelser, notater og faseavhengig handling | Økten skal være gjenkjennelig fra Plan og beholde faktisk innhold |
 | Workbench-klokken ble tolket som UTC | Samme Oslo-tid i brief og oppsummering som i Plan | Unngår én eller to timers forskyvning |
 | Plan viste alle dagene som en lang liste | Valgt dag på mobil, to spalter på iPad og uke med øktpanel på Mac | Følger PH-07 v3 og bruker ett datagrunnlag |
@@ -110,6 +127,8 @@ C7 er ennå ikke visuelt ferdig: desktop har fortsatt en egen blå overskrift ov
 | Ark fikk en ugyldig sammensatt radius; kalenderlukk var 32 px | Én radiusverdi og kalenderlukk på 44 px med fokusretur | Fungerende geometri og berørings-/tastaturbruk |
 
 ## Faktisk kontroll
+
+Sjette del: full `npm run verify` bestod på sluttkoden, inkludert Next-bygg og Serwist. Hele `npm test` bestod med **2 326 tester** (2 323 + 3), uten feil eller skipp. Streng lint av alle berørte kode-/riggfiler bestod uten advarsler. Alle åtte komponentprøver bestod samlet: **292 varianter**, hvorav 40 PH-05, og ti egne PH-05-kontroller av flyt/lagring. Privat sammenligning er `_archive/portering-kontroll-2026-09-10/live-sammenligning.html`; åpning i Codex er køet. GitHub har ingen kontrollkjøring for den lokale arbeidsgrenen. Dokumentert status er oppdatert etter bygg/test; appkoden er uendret. De tidligere dokumenterte kontrastavvikene er fortsatt åpne. Ingen innlogget lagring, AI-sending, push eller publisering er gjennomført.
 
 Femte del: full `npm run verify` bestod, inkludert produksjonsbygg og Serwist. Hele `npm test` bestod med **2 316 tester** (2 313 + 3), uten feil eller skipp. Alle sju komponentprøver bestod samlet: **252 varianter**, hvorav 84 for PH-04, pluss stor tekst, tastatur, oppstartsfeil og umiddelbar sperre mot dobbeltinnsending. Original PH-04 mobil/B2 Mac og appens lys-/mørkevisninger er rendret; mobil lys og Mac mørk samt begge originaler er visuelt inspisert. Privat sammenligning: `_archive/portering-kontroll-2026-09-10/brief-sammenligning.html`. Åpning i Codex er køet, og er ikke visuell godkjenning. Første kvalitetsforsøk stanset ved en lokal port som sandkassen sperret; full ny kjøring med lokal porttilgang bestod. Ingen automatisk godkjenningsavvisning oppstod.
 
