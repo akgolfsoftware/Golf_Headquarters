@@ -7,6 +7,8 @@
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
+import { SG_ALLE_FELT, type ManuellSgVerdier } from "@/lib/portal-runder/manuell-sg";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { RundeDetaljV2, type RundeDetaljData } from "@/components/portal/v2/RundeDetaljV2";
 
@@ -34,7 +36,8 @@ export default async function RundeDetaljPage({
   });
 
   if (!runde) notFound();
-  if (runde.userId !== user.id && user.role !== "ADMIN" && user.role !== "COACH") notFound();
+  if (runde.userId !== user.id &&
+    (!(user.role === "ADMIN" || user.role === "COACH") || !(await harCoachTilgangTilSpiller(user, runde.userId)))) notFound();
 
   const erEier = runde.userId === user.id;
 
@@ -142,7 +145,8 @@ export default async function RundeDetaljPage({
     antallSpilteHull,
     sgTotal: runde.sgTotal,
     sgKategorier,
-    sgSource: runde.sgSource as "beregnet" | "manual" | null,
+    sgSource: runde.sgSource,
+    manuellSg: Object.fromEntries(SG_ALLE_FELT.map(({ key }) => [key, runde[key]])) as ManuellSgVerdier,
     hull,
     erEier,
     visKjedeStatus,
@@ -157,6 +161,7 @@ export default async function RundeDetaljPage({
       app50: runde.sgApp50,
       chip: runde.sgChip,
       pitch: runde.sgPitch,
+      lob: runde.sgLob,
       bunker: runde.sgBunker,
       putt0_3: runde.sgPutt0_3,
       putt3_5: runde.sgPutt3_5,

@@ -1,36 +1,17 @@
 "use client";
 
-/**
- * PlayerHQ · Runder · Ny — Loggfør runde.
- *
- * Visuelt portet FRA fersk Claude Design-fasit:
- *   (historisk juni-fasit, fjernet fra repo) playerhq-app/ph-screens.jsx
- *   (LogRoundScreen): Bane + Dato (2-kol md) → accent-kort med LIVE to-par
- *   (stor farget to-par + «{total} slag» + «Par {par} · 18 hull») → hull-grid
- *   UT/INN med −/+ per hull (3-kol mobil / 9-kol md) → primær full-bredde
- *   «Lagre runde» m/ check. Eyebrow + h1 eies av siden (ny/page.tsx).
- *
- * D6a (17. juli 2026): hull-for-hull-steget er nå VALGFRITT — spilleren kan
- * logge kun totalscore, velge 9 eller 18 hull, justere par per hull (3/4/5)
- * og valgfritt logge putter + fairway/GIR per hull (HullEditor, delt med
- * redigeringen på runde-detaljen). Totalen auto-summeres fra hullene
- * (brutto score — aldri netto).
- *
- * Strokes Gained (valgfritt) + Notat beholdes fra eksisterende form — de mater
- * lagringen og er ikke en del av fasit-strukturen, men fjernes ikke (lagrings-
- * logikken er uendret).
- *
- * Lagringslogikk EKSAKT som før (logRoundManual) + det additive hullDetaljer-
- * feltet. DS-tokens kun — ingen hardkodet hex, ingen emoji (kun lucide).
- * Ingen falske tall: putter/FW/GIR sendes kun når detalj-steget er på.
+/** Runderegistrering med valgfrie hull og manuell SG (enkel/avansert).
+ * Eksisterende runde- og feltmønstre videreføres; SG deler kontrakt med redigeringen.
  */
 
-import { useMemo, useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useMemo, useRef, useState, useTransition } from "react";
+import { unstable_rethrow, useRouter } from "next/navigation";
 import { Calendar, Check, Minus, Plus, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { logRoundManual } from "@/app/portal/mal/runder/ny/actions";
 import { parTemplate } from "@/lib/portal-runder/par-template";
+import { lesManuellSgKladd, sgKladdFraVerdier, type ManuellSgFeil } from "@/lib/portal-runder/manuell-sg";
+import { ManuellSgFelt } from "./manuell-sg-felt";
 import {
   HullEditor,
   nyeHull,
@@ -44,23 +25,6 @@ type Course = { id: string; name: string; par: number };
 
 const MIN_TOTAL = 1;
 const MAX_TOTAL = 199;
-
-/** Norsk desimal-parsing: «+0,32» / «−0,15» → tall. Tom → null. */
-function parseSg(raw: string): number | null {
-  const trimmed = raw.trim();
-  if (trimmed === "") return null;
-  const normalized = trimmed.replace("−", "-").replace(",", ".");
-  const n = Number(normalized);
-  return Number.isFinite(n) ? n : null;
-}
-
-const SG_FIELDS = [
-  { key: "ott", label: "OTT" },
-  { key: "app", label: "APP" },
-  { key: "arg", label: "ARG" },
-  { key: "putt", label: "PUTT" },
-] as const;
-type SgKey = (typeof SG_FIELDS)[number]["key"];
 
 const lblCls =
   "font-mono text-[9px] font-extrabold uppercase tracking-[0.10em] text-muted-foreground";
@@ -82,8 +46,11 @@ export function RundeNyForm({
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [sgFeil, setSgFeil] = useState<ManuellSgFeil>({});
+  const [requestId] = useState(() => crypto.randomUUID());
+  const sender = useRef(false);
 
-  const today = new Date().toISOString().split("T")[0];
+  const today = new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Oslo" }).format(new Date());
 
   const [courseId, setCourseId] = useState(courses[0]?.id ?? "");
   const [courseQuery, setCourseQuery] = useState(courses[0]?.name ?? "");
@@ -97,32 +64,26 @@ export function RundeNyForm({
   const coursePar = course?.par ?? 72;
   const pars = useMemo(() => parTemplate(coursePar), [coursePar]);
 
-  // D6a: hull-for-hull er valgfritt — «hull» (dagens oppførsel, default)
-  // eller «total» (kun totalscore, ingen HoleScore-rader).
-  const [modus, setModus] = useState<"hull" | "total">("hull");
+  // Manuell SG starter med totalscore. Hull-for-hull er fortsatt tilgjengelig.
+  const [modus, setModus] = useState<"hull" | "total">("total");
   const [antallHull, setAntallHull] = useState<9 | 18>(18);
   const [visDetaljer, setVisDetaljer] = useState(false);
 
   // Hull-state — starter på par for hvert hull (spilleren stepper opp/ned).
-  const [hull, setHull] = useState<HullVerdi[]>(() => nyeHull(parTemplate(72)));
+  const [hull, setHull] = useState<HullVerdi[]>(() => nyeHull(pars));
   // Kun-total-modus: fri totalscore (tekst-state for redigerbart felt).
-  const [totalTekst, setTotalTekst] = useState("72");
+  const [totalTekst, setTotalTekst] = useState("");
 
   // Re-baselinjer hull + total når banen (og dermed par-malen) endres.
   const parKey = pars.join(",");
   const [lastParKey, setLastParKey] = useState(parKey);
   if (parKey !== lastParKey) {
     setHull(nyeHull(pars.slice(0, antallHull)));
-    setTotalTekst(String(pars.slice(0, antallHull).reduce((a, b) => a + b, 0)));
+    setTotalTekst("");
     setLastParKey(parKey);
   }
 
-  const [sg, setSg] = useState<Record<SgKey, string>>({
-    ott: "",
-    app: "",
-    arg: "",
-    putt: "",
-  });
+  const [sg, setSg] = useState(() => sgKladdFraVerdier());
   const [notes, setNotes] = useState("");
 
   // ── Beregninger (live) ─────────────────────────────────────────
@@ -131,6 +92,7 @@ export function RundeNyForm({
   const hullSum = summerHull(hull);
   const total = modus === "hull" ? hullSum.score : Number.isFinite(totalScore) ? totalScore : 0;
   const parTotal = modus === "hull" ? hullSum.par : parMal;
+  const harScore = modus === "hull" || (Number.isInteger(totalScore) && totalScore >= MIN_TOTAL);
   const diff = total - parTotal;
 
   function endreHull(nr: number, patch: Partial<HullVerdi>) {
@@ -145,7 +107,7 @@ export function RundeNyForm({
         ? prev.filter((h) => h.nr <= 9)
         : [...prev.filter((h) => h.nr <= 9), ...nyeHull(pars.slice(9), 10)],
     );
-    setTotalTekst(String(pars.slice(0, n).reduce((a, b) => a + b, 0)));
+    setTotalTekst("");
   }
 
   function stegTotal(delta: number) {
@@ -170,6 +132,11 @@ export function RundeNyForm({
   }, [courseQuery, courses]);
 
   function lagre() {
+    if (sender.current) return;
+    if (modus === "total" && antallHull !== 18) {
+      setError("For ni hull: velg Hull for hull og registrer scorekortet. Da lagres riktig antall hull.");
+      return;
+    }
     if (!courseId) {
       setError("Velg en bane.");
       return;
@@ -182,10 +149,15 @@ export function RundeNyForm({
       setError("Registrer score for hullene.");
       return;
     }
+    const parsedSg = lesManuellSgKladd(sg);
+    if (!parsedSg.ok) { setSgFeil(parsedSg.feil); setError(parsedSg.melding); return; }
+    setSgFeil({});
     setError(null);
+    sender.current = true;
     startTransition(async () => {
       try {
         await logRoundManual({
+          requestId,
           courseId,
           playedAt,
           score: total,
@@ -203,21 +175,21 @@ export function RundeNyForm({
                 }))
               : undefined,
           notes: notes.trim() || undefined,
-          sgOtt: parseSg(sg.ott),
-          sgApp: parseSg(sg.app),
-          sgArg: parseSg(sg.arg),
-          sgPutt: parseSg(sg.putt),
+          ...parsedSg.verdier,
         });
         // logRoundManual redirigerer ved suksess; refresh som fallback.
         router.refresh();
-      } catch {
-        setError("Kunne ikke lagre runden. Prøv igjen.");
-      }
+      } catch (error) {
+        unstable_rethrow(error);
+        setError(error instanceof Error && error.message.startsWith("Registreringen er allerede lagret")
+          ? error.message : "Kunne ikke lagre runden. Tallene er beholdt. Prøv igjen.");
+      } finally { sender.current = false; }
     });
   }
 
   return (
-    <div className="mt-4">
+    <form className="mt-4" onSubmit={(e) => { e.preventDefault(); lagre(); }}>
+      <fieldset disabled={pending} style={{ border: 0, margin: 0, padding: 0, minWidth: 0 }}>
       {/* Bane + Dato — 2-kol på md (jf. fasit) */}
       <div className="grid gap-3.5 md:grid-cols-2">
         {/* Bane — autocomplete */}
@@ -297,7 +269,7 @@ export function RundeNyForm({
         </div>
       </div>
 
-      {/* Modus — hull-for-hull (valgfritt, dagens default) eller kun total */}
+      {/* Modus — totalscore eller et komplett scorekort */}
       <div className="mt-4 grid grid-cols-2 gap-1 rounded-xl border border-border bg-card p-1">
         <button
           type="button"
@@ -354,19 +326,22 @@ export function RundeNyForm({
         )}
       </div>
 
-      {/* Accent-kort — LIVE to-par (jf. fasit) */}
+      {modus === "total" && antallHull === 9 && (
+        <p className="mt-3 text-sm text-foreground">For ni hull: velg Hull for hull og registrer scorekortet, slik at riktig antall hull blir lagret.</p>
+      )}
+      {/* Brutto score og mot par vises først når en score er oppgitt. */}
       <div className="mt-4 flex items-center gap-3.5 rounded-xl border border-border border-l-[3px] border-l-accent bg-card px-4 py-3.5">
         <span
           className={cn(
             "font-mono text-[30px] font-extrabold leading-none tracking-[-0.03em] tabular-nums",
-            scoreTextClass(diff),
+            scoreTextClass(harScore ? diff : 0),
           )}
         >
-          {tilParLabel(diff)}
+          {harScore ? tilParLabel(diff) : "—"}
         </span>
         <div className="flex-1">
           <div className="font-mono text-base font-extrabold tabular-nums text-foreground">
-            {total} slag
+            {harScore ? `${total} slag` : "Oppgi totalscore"}
           </div>
           <div className="mt-0.5 font-mono text-[9px] uppercase tracking-[0.1em] text-muted-foreground">
             Par {parTotal} · {antallHull} hull
@@ -396,6 +371,7 @@ export function RundeNyForm({
               setTotalTekst(e.target.value.replace(/[^0-9]/g, "").slice(0, 3))
             }
             aria-label="Totalscore (brutto slag)"
+            placeholder="Slag"
             className="w-24 border-0 bg-transparent p-0 text-center font-mono text-[34px] font-extrabold tabular-nums text-foreground outline-none"
           />
           <button
@@ -410,30 +386,8 @@ export function RundeNyForm({
         </div>
       )}
 
-      {/* Seksjon — Strokes Gained (valgfritt) */}
-      <SectionHead optional="· valgfritt">Strokes Gained</SectionHead>
-      <div className="mb-4 grid grid-cols-2 gap-2.5">
-        {SG_FIELDS.map((f) => (
-          <div key={f.key} className="flex flex-col gap-1.5">
-            <span className={lblCls}>{f.label}</span>
-            <label className="flex h-[46px] items-center gap-1.5 rounded-xl border border-input bg-card px-2.5 transition-colors focus-within:border-primary focus-within:ring-[3px] focus-within:ring-ring/20">
-              <input
-                type="text"
-                inputMode="decimal"
-                value={sg[f.key]}
-                onChange={(e) =>
-                  setSg((prev) => ({ ...prev, [f.key]: e.target.value }))
-                }
-                placeholder="0,00"
-                aria-label={`Strokes Gained ${f.label}`}
-                className="min-w-0 flex-1 border-0 bg-transparent p-0 font-mono text-[15px] font-bold tabular-nums text-foreground outline-none placeholder:text-muted-foreground/60"
-              />
-              <span className="font-mono text-[10px] font-bold text-muted-foreground">
-                SG
-              </span>
-            </label>
-          </div>
-        ))}
+      <div className="mb-6">
+        <ManuellSgFelt value={sg} onChange={setSg} feil={sgFeil} disabled={pending} />
       </div>
 
       {/* Notat */}
@@ -459,34 +413,14 @@ export function RundeNyForm({
 
       {/* Primær full-bredde CTA (jf. fasit) */}
       <button
-        type="button"
-        onClick={lagre}
+        type="submit"
         disabled={pending}
         className="mt-6 inline-flex h-[52px] w-full items-center justify-center gap-2 rounded-full bg-primary font-mono text-[12px] font-bold uppercase tracking-[0.08em] text-primary-foreground shadow-[0_8px_20px_rgba(20,20,19,0.18)] transition hover:bg-primary/90 disabled:pointer-events-none disabled:opacity-60"
       >
         <Check className="h-[18px] w-[18px]" strokeWidth={2} aria-hidden />
         {pending ? "Lagrer…" : "Lagre runde"}
       </button>
-    </div>
-  );
-}
-
-/* ── Sub-komponenter ──────────────────────────────────────────── */
-
-function SectionHead({
-  children,
-  optional,
-}: {
-  children: React.ReactNode;
-  optional?: string;
-}) {
-  return (
-    <div className="mb-2.5 mt-1.5 flex items-baseline gap-2.5 font-mono text-[9px] font-extrabold uppercase tracking-[0.10em] text-muted-foreground">
-      <span className="inline-flex items-baseline gap-1.5">
-        {children}
-        {optional && <span className="font-bold">{optional}</span>}
-      </span>
-      <span className="h-px flex-1 bg-border" aria-hidden />
-    </div>
+      </fieldset>
+    </form>
   );
 }

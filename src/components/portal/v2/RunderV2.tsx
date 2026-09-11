@@ -3,6 +3,8 @@
 /**
  * PlayerHQ Runder — Train-lock-porten.
  * Fasit: designsystem/train-lock/PH-11 Analyse runder.dc.html
+ * Avvik:
+ *   - Bestilt manuell SG har en tydelig lenke til eksisterende rundeskjema.
  * H1 «Runder» 34/700 + mute sub «N runder i måned · snitt X», liste-rader
  * (bane / dato · hull — score + til par / SG — chevron). Live-føring består
  * som skjermens ene hvite CTA under listen.
@@ -176,7 +178,7 @@ export function RunderV2({ data }: { data: RunderV2Data }) {
       >
         Start live-føring
       </Link>
-      <div style={{ marginTop: 4, display: "flex", justifyContent: "center", gap: 24 }}>
+      <div style={{ marginTop: 4, display: "flex", justifyContent: "center", flexWrap: "wrap", gap: 16 }}>
         <Link
           href={RUTE_SLAG}
           className="v2-press"
@@ -189,7 +191,7 @@ export function RunderV2({ data }: { data: RunderV2Data }) {
           className="v2-press"
           style={{ height: 44, display: "flex", alignItems: "center", fontSize: 15, fontWeight: 600, color: TL.mute, textDecoration: "none" }}
         >
-          Hurtig score
+          Score og manuell SG
         </Link>
       </div>
     </div>
