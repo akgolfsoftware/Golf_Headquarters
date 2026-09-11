@@ -17,3 +17,9 @@
 **Håndtering:** faktisk deploy-status ble kontrollert. Separat kildeopplasting til preview ble avvist av automatisk godkjenningskontroll og ikke gjennomført. PR-en ble flettet etter brukerens uttrykkelige merge-bestilling og grønn GitHub CI; preview er ikke rapportert som bestått. Ingen konfigurasjon ble endret.
 
 **Videre kontroll:** les Vercels faktiske byggstatus og kodeversjon, ikke bare PR-merket. En eventuell endring av dokumentfilteret er en egen, konkret konfigurasjonsoppgave.
+
+## 11.09.2026 — PH-06-kontroll må kjøre faktisk klientatferd
+
+**Problem og retting:** statisk HTML og bilder beviste ikke lagringsfeil, venting, gjenåpning eller lastet appskrift. Riggen monterer nå de faktiske klientkomponentene med syntetiske serverhandlinger og tester disse tilstandene interaktivt. En separat PostgreSQL-prøve kontrollerer selve SQL-oppdateringen. To designhenvisninger som falt ut ved omskriving, ble gjenopprettet etter at fullkontrollen avviste endringen.
+
+**Varig regel:** komponentprøver, isolert databaseprøve og innlogget appreise er ulike bevis. Registrer avgrensningen, behold kildehenvisninger ved omskriving, og rett årsaken før kontrollgrenser vurderes endret.

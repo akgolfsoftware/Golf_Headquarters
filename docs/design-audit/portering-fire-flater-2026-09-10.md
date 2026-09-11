@@ -1,5 +1,7 @@
 # Portering av de fire appflatene — 10.09.2026
 
+> Oppfølging 11.09: Grunnpakken er i main via PR #835; manuell SG og Claude-testpakken er i main via #836/#837. Ny samling inneholder eldre Plan-økter og den implementerte PH-06-oppfølgingen. [Gjeldende masterplan](../MASTERPLAN-GJENSTAAENDE.md) og [samlingsrapport](../vedlikehold/samling-og-opprydding-2026-09-11.md) overstyrer historiske gren-/publiseringsstatuser nedenfor.
+
 Anders har bestilt at **alle skjermene i PlayerHQ, AgencyOS, interne Team Norway og WANG** skal porteres til kode. Han har valgt designgrunnlaget nedenfor. Arbeidet skjer på `codex/portering-fire-flater-2026-09-10`. Hele bestillingen er fortsatt under arbeid.
 
 ## Valgte kilder

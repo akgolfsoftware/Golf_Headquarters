@@ -1,77 +1,69 @@
 # Arbeidsliste — AK Golf HQ
 
-**Oppdatert 11.09.2026.** Denne filen eier gjeldende rekkefølge. Den tidligere masterplanen er bevart i sin helhet, med alle oppgaver og beslutningskøer, i [planarkivet](arkiv/opprydding-2026-09-10/masterplan-gjenstaaende.md).
+Oppdatert 11.09.2026. Denne filen eier rekkefølge og gjenstående arbeid. [Status nå](STATUS-NÅ.md) oppsummerer leveransen. [Funksjonsregisteret](planer/funksjonsregister-2026-09-11.md) bevarer hele produktbredden; eldre bestillinger er samlet i [planarkivet](arkiv/opprydding-2026-09-10/masterplan-gjenstaaende.md).
 
-## Bestillingen som gjelder nå
+## Gjeldende bestilling og design
 
-Anders ønsker en komplett app før åpen lansering med booking og betaling. Prosjektoppryddingen er gjennomført lokalt i commit `664ca2118`. Anders optimaliserer nå alle skjermer parallelt i Claude Design. **Ingenting av det eksisterende designet er låst.** Tidligere designplaner og godkjenninger er arbeidsunderlag, ikke automatisk gjeldende byggeordre.
+Anders ønsker en komplett app før åpen lansering med booking og betaling. Han har bestilt videre arbeid, samling av ferdige oppgaver til main, prosjektopprydding og denne oppdaterte restlisten. En merge betyr at kode er samlet; den er ikke visuell godkjenning eller lanseringsvedtak.
 
-Oppryddingens resultat og verifikasjon står i [prosjektkartet](vedlikehold/prosjektkart.md). Ingen av de gamle funksjonsbestillingene er slettet eller erklært levert ved arkivering.
+Valgt byggegrunnlag: **Trainlock ZIP (4) for PlayerHQ og AgencyOS**, levert **Claw Team Norway-pakke for interne TN-skjermer**, og **designsystem/wang for WANG**. PlayerHQ/AgencyOS viderefører felles Geist/v3. Valgene skal ikke avklares på nytt for disse oppgavene. Andre designområder er fortsatt under revisjon. [Kildeidentitet og skjermstatus](design-audit/portering-fire-flater-2026-09-10.md).
 
-## Neste arbeid
+## Samlet arbeid og hva kontrollene beviser
 
-**Main-samling og arbeidsdeling 11.09:** Seks kontrollerte kodepakker gjennom `2bd5a052c` er flettet til main via [PR #835](https://github.com/akgolfsoftware/Golf_Headquarters/pull/835), merge `2807d4d08`: valgt designgrunnlag, PlayerHQ-navigasjon, I dag, Plan, PH-04 og PH-05, samt første TN-18/WANG C7-rettinger. Full lokal verify, **2 326 tester** og **292 skjermvarianter** bestod. Dette er testet kode, ikke ferdig visuell godkjenning av alle fire flater. Detaljer og åpne avvik står i [port-auditen](design-audit/portering-fire-flater-2026-09-10.md).
-
-Neste to pakker har atskilte filer og arbeidsmapper: **Claude Code / Sonnet 5 tar D2-PH06**, oppsummeringen etter trening. **Codex tar D2-PLAN**, eldre planøkter og konsistent ukeprogresjon. Se [arbeidsdelingen](planer/arbeidsdeling-codex-claude-2026-09-11.md) og [komplett Claude-prompt](planer/claude-code-sonnet-5-ph06-prompt.md). Pågående produktplan/intervju og manuell SG i andre arbeidsgrener er ikke erklært ferdige eller slettet av samlingen.
-
-**Samlet leveranse 10.09:** DataGolf/GolfBox fra [PR #833](https://github.com/akgolfsoftware/Golf_Headquarters/pull/833) er bevart og avstemt med de fire lokale endringssettene, øvrige rettinger og gjennomgåtte grenrester. Full verify, 2 290 tester og separate lokale databaseprøver bestod på sluttkoden. Se [grenregnskapet](beslutningsgrunnlag/grener-og-main-2026-09-10.md). Ekstern kontroll av PR, CI og faktisk produksjonsversjon dokumenteres i publiseringsoppgaven. Claude Design arbeider videre med H2-04-tilbakemeldingen ifølge Anders.
-
-**Designgrunnlag bestilt og laget 10.09:** [AK HQ Design](design-system/ak-hq-designarbeid.md) samler en prosjektspesifikk skill, komplett hovedprompt, komponent-/reisekatalog, formatkrav og inventar fra hele appen. Dette er grunnlaget for videre designarbeid; komponentene og skjermene er ikke erklært ferdig tegnet eller implementert.
-
-| ID | Ansvar og status | Konkret oppgave | Klar når |
-|---|---|---|---|
-| D1 | Byggegrunnlag valgt av Anders 10.09 | Train-lock ZIP (4) for PlayerHQ/AgencyOS, levert Claw-pakke for interne TN-skjermer og WANG-speilet for WANG | Hver reise kobles til den konkrete valgte kilden; andre områder kan fortsatt revideres |
-| D2 | Seks kontrollerte kodepakker i main-samlingen; resten fordelt på separate pakker | Bygg **alle skjermene** i PlayerHQ, AgencyOS, Team Norway og WANG. [Kilder og kontrollstatus](design-audit/portering-fire-flater-2026-09-10.md) | Funksjoner, datalagring, tilgang og relevante tilstander virker; mobil/desktop er sammenlignet med valgt kilde, og Anders har sett resultatet |
-| D2-PH06 | Klar for Claude Code / Sonnet 5 | Oppsummering etter trening, faktiske resultater og bevart vurdering/notat | PH-06 er komponent-/funksjonsprøvd og sammenlignet med valgt kilde; innlogget og visuell status er eksplisitt |
-| D2-PLAN | Implementert og regresjonstestet lokalt på `codex/plan-legacy-2026-09-11`; [rapport](design-audit/plan-legacy-2026-09-11.md) | Eldre planøkter uten V2-speil i Plan/ukeprogresjon | Riktig synlighet, status, Oslo-uke og én telling per økt er regresjonstestet |
-| T1 | Lokale rettinger og åtte reiser mot ekte testdatabase prøvd — nettleserreise gjenstår | Rett R1 først, deretter datalagring og sammenheng i R2/R3/R5/R8 samt tilgang og videresending i R6/R7 | Målrettede tester bekrefter både tillatt oppførsel og avviste/feilende tilfeller |
-| F1 | Versjonert registrering implementert/testet lokalt — fagspørsmål og samlet integrasjon gjenstår | [Språk og treningsstruktur](beslutningsgrunnlag/sprak-og-treningskvalitet-2026-09-10.md), særlig [testbatteri mot Excel v3](beslutningsgrunnlag/team-norway-excel-v3-kontroll.md) | Én versjonert protokoll styrer felt, enheter, rekkefølge, validering og beregning i faktisk registrering; åpne fagspørsmål er avklart |
-
-Tekniske rettinger som ikke bestemmer utseendet kan gjennomføres parallelt med Claude Design når de er bestilt. Ny skjermbygging bruker en navngitt versjon; resten av designet trenger ikke være ferdig først. Komplett app før lansering er fortsatt målet. Se [overlevering fra Claude Design](../designsystem/README.md).
-
-## Bekreftede funn som må inn i videre prioritering
-
-[Revisjon 10.09.2026](beslutningsgrunnlag/revisjonsfunn-2026-09-10.md) beskriver bevis og begrensninger.
-
-| ID | Arbeid | Ferdig når |
+| Pakke | Resultat | Status og bevis |
 |---|---|---|
-| R1 | Coach-tilgang til andre spilleres økter | Uvedkommende coach avvises ved lesing og skriving; riktig coach fungerer |
-| R2 | Avslutt økt og se eget sammendrag | Status lagres, spilleren kommer ut av gjennomføringen og ser faktisk lagrede resultater |
-| R3 | Sammenheng mellom I dag og Plan | Den samme publiserte økten finnes og har samme status gjennom spillerreisen |
-| R4 | Offentlig bookingdesign | Hele bookingflyten følger en valgt designversjon og fungerer på mobil og desktop |
-| R5 | Valgt coach følger bestillingen | Riktig coach brukes ved kollisjonskontroll og lagres på bookingen |
-| R6 | TALENT-tilgang | Tillatte innganger virker, låste funksjoner gir riktig oppgraderingsvei |
-| R7 | Ny økt-adresse | Ingen runddans mellom to videresendinger |
-| R8 | Publisering av flere økter | Feil gir dokumentert, konsistent resultat; ingen skjult delvis publisering |
-| R9 | Full kundereise med betaling | Booking, betaling, bekreftelse og etterfølgende administrasjon er prøvd samlet i riktig miljø |
+| DataGolf/GolfBox og tidligere rettinger | Kode fra tidligere arbeidsgrener samlet | I main via PR #833/#834. [Grenregnskap](beslutningsgrunnlag/grener-og-main-2026-09-10.md) |
+| D2 grunnlag, navigasjon, I dag, Plan, PH-04/PH-05, TN-18/WANG C7 | Første seks porteringspakker | I main via PR #835. Kode- og komponentprøver; alle skjermfamilier er ikke ferdige |
+| Manuell SG | Manuell runde-/SG-registrering og dokumentert skjermarbeid | I main via PR #836. Ingen ny måling eller innlogget godkjenning er utledet av flettingen |
+| Claude PH-06-testpakke | Seks enhetstester og første visuelle rigg | I main via PR #837. Den pakken endret ikke skjermen; den opprinnelige ferdigpåstanden er korrigert i [PH-06-rapporten](design-audit/playerhq-ph06-2026-09-11.md) |
+| D2-PLAN | Eldre godtatte planøkter uten V2-speil kommer med i Plan/ukeprogresjon, uten dobbelttelling | Samlet i denne leveransen fra `0c060141c`. 11 målrettede kontrolltilfeller; [rapport](design-audit/plan-legacy-2026-09-11.md). Innlogget reise gjenstår |
+| D2-PH06 / R2 | Valgt resultathierarki, lesbare lagrede notater/vurdering, ekte appskrifter, feil/venting/nytt forsøk, trygg feltskriving | Bygget og komponentprøvd i denne leveransen. Fem nye handlingstester, 64 skjermvarianter, interaktive feilprøver og isolert PostgreSQL-prøve. [Rapport og begrensninger](design-audit/playerhq-ph06-2026-09-11.md) |
+| Produktplan/intervju | Funksjonsregister, funksjonskort og intervjuguide bevart fra separat gren | Dokumentene er integrert som arbeidsunderlag. Intervjuet og de foreslåtte produktbeslutningene er ikke erklært ferdige |
+| Prosjektopprydding | Ferdige grener/arbeidskopier avstemt, gjeldende innganger og register oppdatert | [Samlingsrapport](vedlikehold/samling-og-opprydding-2026-09-11.md). Historiske sikkerhetskopier og originaldesign bevares |
 
-Dette er funn til prioritering, ikke et forslag om å kutte resten av produktet fra lanseringen.
+Siste samlede testresultat og flettepunkt skal leses i samlingsrapporten og tilhørende GitHub PR. Innlogget produksjonsreise, faktisk betaling og Anders' visuelle vurdering er egne kontroller som fortsatt gjenstår.
 
-## Bevarte arbeidsunderlag
+## Neste oppgaver, i rekkefølge
 
-- [Full tidligere arbeidsliste og beslutningskø](arkiv/opprydding-2026-09-10/masterplan-gjenstaaende.md): inneholder også uferdige og parkerte bestillinger. Leveransestatus må kontrolleres mot kode og Git før en oppgave gjenopptas.
-- [Train-lock-plan fra 09.09](planer/design/2026-09-09-train-lock-full-port.md): historisk retning, oppgaver og daterte tellinger. Designvalgene er åpnet igjen 10.09; planen skal ikke utføres automatisk.
-- [Detaljert designport](planer/design/2026-09-05-komplett-designport.md) og [skjermvedlegg](planer/design/2026-09-05-komplett-designport-vedlegg-skjermer.md).
-- [Markedsplan](planer/design/2026-09-04-marked-ak-golf-port.md), [Team Norway](planer/design/2026-09-06-team-norway-skjermer.md), [WANG/TN](planer/design/2026-09-08-wang-tn-port.md).
-- [Produktregler](platform/BUSINESS-RULES.md), [treningsfaglig fasit](FASIT-AK-GOLF-HQ.md), [beslutninger med gjeldende designavklaring](../.claude/rules/beslutninger.md).
+| Prioritet / ID | Konkret neste leveranse | Inngang | Ferdig når |
+|---|---|---|---|
+| 1 · R-E / R1–R3 | Kjør hele I dag → Plan → PH-04 → PH-05 → PH-06 med isolerte, innloggede testroller. Ta med V2, Workbench og eldre plan | `tests/e2e/`, `src/lib/portal-live/`, `src/lib/portal/` | Samme økt/tall gjennom reisen; gjenåpning etter lagring virker; uvedkommende avvises. Kritiske prøver gir ikke grønt ved å hoppes over |
+| 2 · R-A/R-B | Avstem Caddie-søk/direkte oppslag og dataminimering før AI-kall mot dagens kode | `src/lib/caddie/tools/read.ts`, `src/app/api/caddie/chat/route.ts`, `src/lib/ai/anonymiser.ts` | Syntetiske uvedkommende avvises og navn/e-post ikke går ut ved verktøyresultat, historikk eller fritekst. Ikke kall ADMIN-begrenset inngang en bekreftet ordinær coach-lekkasje |
+| 3 · R-C | Privat mellomlagring, opptak og kladd ved utlogging, utløpt innlogging og brukerbytte | `src/app/sw.ts`, `src/lib/offline-queue/` | Ingen får forrige brukers innhold. Ulagrede opptak bevares/håndteres forståelig; sletting brukes ikke som umerket reserveflyt |
+| 4 · R-D | Bevar TrackMan-enheter og skill carry fra total gjennom importen | `src/lib/trackman/canonical.ts` | Faste testfiler dekker mph/m/s og yards/meter. Ukjent enhet/manglende carry vises som ukjent, ikke gjettet |
+| 5 · R-H | Skill manglende abonnement fra feil ved henting | `src/lib/auth/getCurrentUser.ts` | Driftsfeil gir feil og nytt forsøk, uten feil betalingskrav eller utvidet tilgang |
+| 6 · D2-AO | Port AgencyOS-hjem → spillerliste → spillerkort → plan/tildeling → oppfølging fra valgt Trainlock | `src/components/admin/`, `src/components/workbench/`, valgte AX/AO-kilder | Mobil/desktop og temaer stemmer; reelle handlinger, tomt/feil/lagring og tilgang er prøvd |
+| 7 · D2-TN | Fullfør Team Norway-skall/oversikt → testføring → resultat/historikk → dokumenter/poster | `src/app/team-norway/`, `src/components/team-norway/`, valgt TN-pakke | Samme testvariant og resultat gjennom reisen, korrekt spiller-/coach-/organisasjonsinnsyn og ærlig manglende data |
+| 8 · D2-WANG | Fullfør WANG-hjem → skole-/treningsuke → økt → elev/gruppe → rapport | `src/app/wang/`, WANG-komponenter og `designsystem/wang/` | Innlogging og skole-/gruppeavgrensning virker; ingen demonstrasjonsdata fremstilles som faktiske elevdata |
 
-## Slik oppdateres listen
+R-A–R-J og REV-F1–F11 er forklart i [produktplanen](planer/produktplan-og-intervju-2026-09-11.md). Funn fra den eldre gjennomgangen må kontrolleres mot dagens kode før endring. R-G «neste økt» er allerede rettet i porteringen og skal verifiseres i prioritet 1, ikke bygges på nytt.
 
-Gi nytt arbeid en konkret hensikt, berørte flater, ferdigkriterium og dokumentert resultat. Skill mellom foreslått, bestilt, bygget, testet og sett av Anders. Flytt avsluttede statusfortellinger til arkiv. En merge eller en grønn test flytter ikke automatisk en skjerm til «godkjent».
+## Resterende oppgaver etter neste pakker
 
-Teknisk arbeid 10.09: se [rettinger og kontrollstatus](beslutningsgrunnlag/teknisk-retting-2026-09-10.md). R1/R2/R3/R5/R6/R7/R8 er endret lokalt; de er ikke bekreftet ferdige i produksjon.
+| Område / ID | Konkret restarbeid | Avhengighet / ferdigkriterium |
+|---|---|---|
+| PlayerHQ · D2-PH | Resterende Analyse, mål, kalender, øvelsesbank/program, profil, meldinger, deling, test/retest og sosiale reiser | Knytt hver skjerm til valgt kilde og appdata. Fullfør relevante tom-/laste-/feiltilstander. [Funksjonene P01–P11](planer/funksjonsregister-2026-09-11.md) |
+| Plan/Live | Full ny/rediger/flytt-reise, FYS-standardverdier/detaljgjenoppretting, Caddie i live, frekvensmål på tvers av øktmodeller | Separate modeller beholdes. Ingen dubletter, gjenopplivede avlyste økter eller oppfunnet målt treningstid |
+| Mål · R-F / F1 | Startverdi, periode og faktisk gjennomføring; TN-mål med variant, antall, enhet og retning | Faglige definisjoner før avhengige beregninger. Eventuelle nye databasefelt krever konkret autorisasjon |
+| Team Norway-tester | Avstem testbatteriet mot Excel v3, variantbundet føring, korrigering/angre og historikk | [Fagkontroll](beslutningsgrunnlag/team-norway-excel-v3-kontroll.md). Ugyldige resultater avvises, og lagringsfeil bevarer registreringen |
+| WANG/GFGK | Årsplan, juniorgrupper, testdager, styrkeprogram, rapporter og foresatte | Virkelige rollegrenser og avklarte fagregler; P08/O03 i funksjonsregisteret |
+| Booking · R4/R5/R9 | Valgt bookingdesign og samlet coach/sted/tid → pris → betaling → bekreftelse → administrasjon | Bookingens designversjon må identifiseres for den konkrete byggepakken. Testnøkler og innloggede testroller trengs for betalingsreisen; ingen reell betaling er bestilt |
+| Betaling/tilgang · R6/R8 | Credits, abonnement, oppsigelse/refusjon, TALENT/FULL og publisering av flere økter | Tillatte/avviste roller og hendelser i vilkårlig rekkefølge; ingen skjult delpublisering |
+| Forelder/delt innsyn | Bytte mellom barn, plan/mål/booking, betaling og tilbakekalling av tilgang | Formål og rettigheter må stemme for hver rolle; samtykke og datadeling følges gjennom hele reisen |
+| Runde/SG/DataGolf | Full runde-/slagreise, manuell korrigering, importkilder, datadekning og gjenåpning | Manuell SG i PR #836 er et delresultat. Sammenligningsgrunnlag, rå brutto score og kilder må være tydelige |
+| Baneguide · BG-01–06 | Gameplan/kart/soner, samme slagkjede i kart og liste, GPS, offline, bag/spredning og coachvisning | Seks konkrete delpakker står i funksjonsregisteret. Avklar datakilde, bruker, offline-omfang og valgt design ved oppstart |
+| Vindverktøy | Avklar treningsberegning, værkilde eller fysisk måler; bygg deretter én valgt funksjon | Ingen sensor- eller værintegrasjon er bekreftet som valgt. Usikkerhet og datakilde skal vises |
+| AgenticOS/Jarvis | Innkurv, utkast, godkjenning, rutiner, oppgaver og kalender koblet til faktisk kjøring | Ingen editor-agentkopier som runtime. Utsending til andre krever gjeldende eksplisitt autorisasjon |
+| Marked/salg | Nettsider, tilbud, coachprofiler, innhold og fungerende overgang til booking | Avstem bestilt omfang; ikke aktiver et historisk markedsføringssystem automatisk |
+| Økonomi/personlig | Beslutningsstøtte, rapportgrunnlag og egne oppgaver | Avklar konkret behov; økonomitall kun fra autorisert Tripletex-eksport |
+| Samtykke · R-J | Formål, opplysningstype, alder, rolle, deling, lagringssted og historikk | Verifiser regelgrunnlaget før tekst/tilgang endres. Ingen automatisk bytting av aldersgrense |
+| Kodekontroll · R-I | Styrk tester av faktisk handlingstilgang og ressursavgrensning | En importert, men ubrukt tilgangsvakt må ikke være tilstrekkelig for grønn kontroll |
+| Felles design/kvalitet | Avstem alle 479 sideruter og deres mønstre, visuell kontroll, kontrast, fokus, mobil og stor tekst | 479 ruter er inventar, ikke 479 unike ferdige design. Ingen ny kontrastbaseline for å skjule brudd |
+| Drift/lansering | Produksjonens innloggings-/funksjonsvern, alarmprøve, gjenoppretting med filer og full kundereise | Konkret miljøautorisasjon for tidligere avvist funksjonssikkerhetsendring; testoppsett for betaling og varsling; dokumentert faktisk publisert versjon |
+| Produktintervju | Avklar mål, prioriteringsregel og åpne produkt-/fagspørsmål med Anders | [Intervjuguide](planer/produktplan-og-intervju-2026-09-11.md). Familie-OS/eldre sideprosjekter er bevart som underlag, ikke automatisk aktivert |
 
-Designkontroll 10.09: [ZIP (2)-review](beslutningsgrunnlag/claude-design-zip-2-review-2026-09-10.md), [oppdatert overleveringsprompt](design-system/claude-design-komplett-overlevering.md) og [gjennomføringsløp til lansering](design-system/lanseringslop-2026-09-10.md). Prompt-skillene er revidert; gammelt modell-/prisgrunnlag og uautoriserte stopp er fjernet. Ingen designversjon er valgt automatisk ved mottak av ZIP.
+## Arbeidsmåte og oppdatering
 
-## Teknisk kontroll 10.09.2026 — parallelt med Claude Design
+Arbeid på egen gren, bevar andres endringer, og bruk én ansvarlig oppgave per filområde. Kjør relevante tester, full `npm run verify` og `npm run prosjekt:sjekk` før commit. Anders har bestilt fletting av denne samlingen; senere oppgaver følger sin gjeldende autorisasjon. Ikke kjør migrasjoner, seed/import, reelle betalinger eller utsending som opprydding.
 
-Team Norway-tildeling/talent, private tester, gjennomføringsstatus og betalingsvalidering er rettet lokalt. Se [kontrollrapporten](beslutningsgrunnlag/teknisk-lanseringskontroll-2026-09-10.md). Databasevern på ni tabeller er nå utført etter Anders’ eksplisitte godkjenning. Begge klientroller og appens faktiske servertilkobling er kontrollert. Isolert lokal PostgreSQL og lokal gjenopprettingsprøve er nå gjennomført. Booking, betaling, refusjoner og klokkeslett er ytterligere rettet og testes samlet. Funksjonssikkerhet er klargjort og testet lokalt, men produksjonskjøringen ble avvist av automatisk godkjenningskontroll og venter på konkret godkjenning. Stripe-testnøkler, testinnlogging, full nettleserreise, produksjonsgjenoppretting og faktisk alarmprøve gjenstår. Hele appen er ikke lanseringsklar.
-
-Ny designleveranse 10.09: [ZIP (3)-kontroll](beslutningsgrunnlag/claude-design-zip-3-review-2026-09-10.md) og [konkret tilbakemelding](design-system/claude-design-zip-3-tilbakemelding.md). H2-03 v2 retter kildelesing og blocked-rekkefølge, men resultatkorrigering tillater fortsatt ugyldige tall. Den bestilte samlede pakken er fortsatt ufullstendig.
-
-
-## Samlet lokal kandidat
-
-Etter Anders’ godkjenning av samlingsplanen er kodearbeidet avstemt i `.worktrees/samlet-lanseringskontroll`, basert på `main` med den nyere DataGolf/GolfBox-leveransen. Se siste avsnitt i [kontrollrapporten](beslutningsgrunnlag/teknisk-lanseringskontroll-2026-09-10.md) for endelige tester og nye rettinger av abonnementsbooking, coachvarsling, frister, skjulte økter og måltilgang.
-
-Nye faglige restpunkter: frekvensmål må knyttes til varige gjennomføringsdata for alle øktmodeller; Team Norway-testmål trenger variant, antall, enhet, retning og utgangspunkt før automatisk målprosent kan brukes. Ingen historiske verdier skal gjettes. Historiske grenrester er nå tatt med eller dokumentert erstattet, og den samlede kvalitetsgaten er grønn. De faglige restpunktene er fortsatt åpne.
+Marker separat: **bygget**, **komponentprøvd**, **innlogget prøvd**, **sett av Anders**, **flettet** og **publisert kontrollert**. Arkiv inneholder historiske oppgaver og målinger; dokumentert intensjon er ikke bevis på ferdig funksjon. Oppdater denne listen etter hver sammenhengende leveranse, uten en konkurrerende masterplan.

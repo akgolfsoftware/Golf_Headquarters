@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
+import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { sikreBaneBro } from "@/lib/portal/bane-bro";
 import { parTemplate } from "@/lib/portal-runder/par-template";
@@ -12,6 +12,7 @@ import { estimerHullFraTotal } from "@/lib/runde-logg/estimer-fra-total";
 import { beregnSg } from "@/lib/domain/sg";
 import { beregnGranulaerSg } from "@/lib/runde-logg/granulaer-sg";
 import { rundeTilSgShots } from "@/lib/runde-logg/til-sg-shots";
+import { hentManuelleSgFelt, validerManuellSg, SG_ALLE_FELT, type ManuellSgInput } from "@/lib/portal-runder/manuell-sg";
 
 /**
  * Hull-for-hull-detaljer fra det valgfrie logge-steget (D6a, 17. juli 2026).
@@ -42,7 +43,9 @@ const hullDetaljListe = z
 
 export type HullDetaljInput = z.infer<typeof hullDetaljSchema>;
 
-export type LogRoundManualInput = {
+export type LogRoundManualInput = ManuellSgInput & {
+  /** Stabil ID fra skjemaet: samme forsøk kan aldri opprette to runder. */
+  requestId?: string;
   courseId: string;
   playedAt: string;
   score: number;
@@ -64,11 +67,6 @@ export type LogRoundManualInput = {
   penalties?: number;
   notes?: string;
   tellHandicap?: boolean;
-  // Strokes Gained — manuelt registrert, alle valgfrie.
-  sgOtt?: number | null;
-  sgApp?: number | null;
-  sgArg?: number | null;
-  sgPutt?: number | null;
 };
 
 /**
@@ -81,15 +79,21 @@ export type LogRoundManualInput = {
  * tilbys full Strokes Gained i etterkant.
  */
 export async function logRoundManual(input: LogRoundManualInput) {
-  const user = await requireConsentingUser();
+  const user = await requirePortalUser({ kreverTilgang: "TALENT" });
 
-  const sgValues = [input.sgOtt, input.sgApp, input.sgArg, input.sgPutt];
-  const sgTastet = sgValues.some((v) => typeof v === "number")
-    ? sgValues.reduce<number>((sum, v) => sum + (v ?? 0), 0)
-    : null;
+  const base = z.object({
+    courseId: z.string().trim().min(1).max(200),
+    playedAt: z.union([z.iso.date(), z.iso.datetime({ offset: true })]),
+    score: z.number().int().min(1).max(270),
+    notes: z.string().max(2000).optional(),
+    requestId: z.string().uuid().optional(),
+  }).safeParse(input);
+  if (!base.success) throw new Error("Kontroller bane, dato og totalscore.");
+  const sg = validerManuellSg(hentManuelleSgFelt(input));
+  if (!sg.ok) throw new Error(sg.melding);
 
   const course = await prisma.courseDefinition.findUnique({
-    where: { id: input.courseId },
+    where: { id: base.data.courseId },
     select: { par: true },
   });
   if (!course) throw new Error("Banen finnes ikke");
@@ -151,7 +155,7 @@ export async function logRoundManual(input: LogRoundManualInput) {
   // (urørt av denne loopen) har ingen EST-merking å vise dem med.
   let sgEstimat: ReturnType<typeof beregnSg> | null = null;
   let granulaerEstimat: ReturnType<typeof beregnGranulaerSg> | null = null;
-  if (holeScores.length === 0 && sgTastet == null) {
+  if (holeScores.length === 0 && !sg.harTall) {
     try {
       const syntetiskHull = estimerHullFraTotal({
         score: input.score,
@@ -169,61 +173,60 @@ export async function logRoundManual(input: LogRoundManualInput) {
     }
   }
 
-  const sgTotal = sgTastet ?? sgEstimat?.total ?? null;
+  const sgTotal = sg.harTall ? sg.verdier.sgTotal : sgEstimat?.total ?? null;
   const sgSource: "manual" | "estimert" | null =
-    sgTastet != null ? "manual" : sgEstimat != null ? "estimert" : null;
-
-  await prisma.$transaction(async (tx) => {
-    const round = await tx.round.create({
-      data: {
-        userId: user.id,
-        courseId: input.courseId,
-        playedAt: new Date(input.playedAt),
-        score,
-        notes: input.notes ?? null,
-        sgOtt: input.sgOtt ?? sgEstimat?.ott ?? null,
-        sgApp: input.sgApp ?? sgEstimat?.app ?? null,
-        sgArg: input.sgArg ?? sgEstimat?.arg ?? null,
-        sgPutt: input.sgPutt ?? sgEstimat?.putt ?? null,
-        sgTotal,
-        sgTee: granulaerEstimat?.sgTee ?? null,
-        sgApp200: granulaerEstimat?.sgApp200 ?? null,
-        sgApp150: granulaerEstimat?.sgApp150 ?? null,
-        sgApp100: granulaerEstimat?.sgApp100 ?? null,
-        sgApp50: granulaerEstimat?.sgApp50 ?? null,
-        sgChip: granulaerEstimat?.sgChip ?? null,
-        sgPitch: granulaerEstimat?.sgPitch ?? null,
-        sgBunker: granulaerEstimat?.sgBunker ?? null,
-        sgPutt0_3: granulaerEstimat?.sgPutt0_3 ?? null,
-        sgPutt3_5: granulaerEstimat?.sgPutt3_5 ?? null,
-        sgPutt5_10: granulaerEstimat?.sgPutt5_10 ?? null,
-        sgPutt10_15: granulaerEstimat?.sgPutt10_15 ?? null,
-        sgPutt15_25: granulaerEstimat?.sgPutt15_25 ?? null,
-        sgPutt25_40: granulaerEstimat?.sgPutt25_40 ?? null,
-        sgPutt40plus: granulaerEstimat?.sgPutt40plus ?? null,
-        // Håndtastet SG skal aldri overskrives av autoberegning (recomputeRoundSg).
-        // Estimert (fra kun totalscore) overskrives derimot gjerne — se sg-skriving.ts.
-        sgSource,
-      },
-      select: { id: true },
-    });
-
-    if (holeScores.length > 0) {
-      await tx.holeScore.createMany({
-        data: holeScores.map((h) => ({ ...h, roundId: round.id })),
+    sg.harTall ? "manual" : sgEstimat != null ? "estimert" : null;
+  const sgData = sg.harTall ? sg.verdier : {
+    ...sg.verdier,
+    sgOtt: sgEstimat?.ott ?? null,
+    sgApp: sgEstimat?.app ?? null,
+    sgArg: sgEstimat?.arg ?? null,
+    sgPutt: sgEstimat?.putt ?? null,
+    ...granulaerEstimat,
+    sgTotal,
+  };
+  const requestRoundId = base.data.requestId ? `manual-${user.id}-${base.data.requestId}` : undefined;
+  const data = {
+    userId: user.id, courseId: base.data.courseId,
+    playedAt: new Date(base.data.playedAt), score,
+    notes: base.data.notes ?? null, ...sgData, sgSource,
+  };
+  const roundId = await prisma.$transaction(async (tx) => {
+    if (requestRoundId) {
+      const existing = await tx.round.findUnique({
+        where: { id: requestRoundId }, include: { holeScores: { orderBy: { holeNumber: "asc" } } },
       });
+      if (existing) {
+        const sameHoles = existing.holeScores.length === holeScores.length && existing.holeScores.every((h, i) => {
+          const expected = [...holeScores].sort((a, b) => a.holeNumber - b.holeNumber)[i];
+          return h.holeNumber === expected.holeNumber && h.par === expected.par && h.strokes === expected.strokes &&
+            h.putts === expected.putts && h.fairway === expected.fairway && h.gir === expected.gir;
+        });
+        if (existing.userId !== user.id || existing.courseId !== data.courseId ||
+          existing.playedAt.getTime() !== data.playedAt.getTime() || existing.score !== data.score ||
+          existing.notes !== data.notes || existing.sgSource !== sgSource || !sameHoles ||
+          SG_ALLE_FELT.some(({ key }) => existing[key] !== sgData[key])) {
+          throw new Error("Registreringen er allerede lagret med andre verdier. Åpne runden fra rundelisten for å redigere den.");
+        }
+        return existing.id;
+      }
     }
+    const round = await tx.round.create({ data: { ...data, ...(requestRoundId ? { id: requestRoundId } : {}) }, select: { id: true } });
+    if (holeScores.length > 0) {
+      await tx.holeScore.createMany({ data: holeScores.map((h) => ({ ...h, roundId: round.id })) });
+    }
+    return round.id;
   });
 
   // Bygg/behold broen til banegeometrien (AP0.4). Må stå FØR redirect —
   // redirect() kaster NEXT_REDIRECT. Kaster aldri selv.
-  await sikreBaneBro(input.courseId);
+  await sikreBaneBro(base.data.courseId);
 
   // SG-broen (T6): oppdater DataGolf-grunnlaget (BrukerSgInput, kilde
   // PLAYERHQ) fra runde-SG. Best-effort — kaster aldri, og må stå FØR
   // redirect (redirect kaster). Uten SG på runden er den en no-op.
   await synkroniserSgFraRunder(user.id);
 
-  revalidatePath("/portal/mal/runder");
-  redirect("/portal/mal/runder");
+  revalidatePath("/portal", "layout");
+  redirect(base.data.requestId ? `/portal/mal/runder/${roundId}?lagret=1` : "/portal/mal/runder");
 }

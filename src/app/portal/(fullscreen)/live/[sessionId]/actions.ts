@@ -18,6 +18,7 @@ import { triggerLiveSessionAgent } from "@/lib/agents/triggers";
 import { GENERERT_FRA } from "@/lib/workbench/v2-sync";
 import { applyPositionTaskReps } from "@/lib/teknisk-plan/apply-reps";
 import { beregnSRpe } from "@/lib/training/srpe";
+import { summaryFieldUpdate } from "@/lib/portal-live/summary-field";
 
 export type StartSessionResult =
   | { state: "active" }
@@ -513,31 +514,16 @@ export async function lagreDineOrd(
   if (session.status !== "COMPLETED") {
     return { ok: false, error: "Økta er ikke fullført ennå" };
   }
-  const ord = tekst.trim().slice(0, 2000);
-  if (!ord) {
-    return { ok: false, error: "Skriv noe først — ett ord er nok" };
+  const ord = tekst.trim();
+  if (!ord || ord.length > 2000) {
+    return { ok: false, error: !ord ? "Skriv noe først — ett ord er nok" : "Oppsummeringen kan ha inntil 2 000 tegn" };
   }
-
-  const existing =
-    session.completedSummary &&
-    typeof session.completedSummary === "object" &&
-    !Array.isArray(session.completedSummary)
-      ? (session.completedSummary as Record<string, unknown>)
-      : {};
-
-  const neste = {
-    ...existing,
-    dineOrd: {
-      tekst: ord,
-      loggedBy: user.id,
-      loggedAt: new Date().toISOString(),
-    },
-  };
-
-  await prisma.trainingSessionV2.update({
-    where: { id: sessionId },
-    data: { completedSummary: neste as unknown as Prisma.InputJsonValue },
-  });
+  const count = await prisma.$executeRaw(summaryFieldUpdate(sessionId, "dineOrd", {
+    tekst: ord,
+    loggedBy: user.id,
+    loggedAt: new Date().toISOString(),
+  }));
+  if (count !== 1) return { ok: false, error: "Økta er ikke tilgjengelig for lagring. Prøv igjen." };
 
   // Bevisst INGEN speiling til TrainingPlanSessionLog.notes her —
   // lagreSpillerVurdering eier det feltet (spiller-fokus), og en upsert
@@ -557,7 +543,7 @@ export async function lagreSpillerVurdering(
   if (session.status !== "COMPLETED") {
     return { ok: false, error: "Økta er ikke fullført ennå" };
   }
-  if (input.kvalitet < 1 || input.kvalitet > 5) {
+  if (!Number.isInteger(input.kvalitet) || input.kvalitet < 1 || input.kvalitet > 5) {
     return { ok: false, error: "Kvalitet må være 1–5" };
   }
   if (
@@ -585,9 +571,8 @@ export async function lagreSpillerVurdering(
     typeof liveSummary?.durationSec === "number" ? liveSummary.durationSec : null;
   const { durationMin, sRpe } = beregnSRpe(input.rpe, durationSec);
 
-  const neste = {
-    ...existing,
-    spillerVurdering: {
+  await prisma.$transaction(async (tx) => {
+    const count = await tx.$executeRaw(summaryFieldUpdate(sessionId, "spillerVurdering", {
       kvalitet: input.kvalitet,
       nesteFokus: input.nesteFokus.trim().slice(0, 500),
       folelse: input.folelse?.trim().slice(0, 200) || null,
@@ -596,31 +581,19 @@ export async function lagreSpillerVurdering(
       sRpe,
       loggedBy: user.id,
       loggedAt: new Date().toISOString(),
-    },
-  };
+    }));
+    if (count !== 1) throw new Error("Økta er ikke tilgjengelig for lagring");
 
-  await prisma.trainingSessionV2.update({
-    where: { id: sessionId },
-    data: { completedSummary: neste as unknown as Prisma.InputJsonValue },
+    // Vurdering og eventuelt planspeil lagres samlet; feil beholder begge førverdiene.
+    if (session.generertFra === GENERERT_FRA && session.generertFraId && input.nesteFokus.trim()) {
+      const fokus = input.nesteFokus.trim().slice(0, 500);
+      await tx.trainingPlanSessionLog.upsert({
+        where: { sessionId: session.generertFraId },
+        create: { sessionId: session.generertFraId, startedAt: new Date(), notes: `Spiller-fokus etter økt: ${fokus}`, rating: input.kvalitet },
+        update: { notes: `Spiller-fokus etter økt: ${fokus}`, rating: input.kvalitet },
+      });
+    }
   });
-
-  // Speil neste fokus inn i plan-økt-loggen (coach ser det).
-  if (session.generertFra === GENERERT_FRA && session.generertFraId && input.nesteFokus.trim()) {
-    const fokus = input.nesteFokus.trim().slice(0, 500);
-    await prisma.trainingPlanSessionLog.upsert({
-      where: { sessionId: session.generertFraId },
-      create: {
-        sessionId: session.generertFraId,
-        startedAt: new Date(),
-        notes: `Spiller-fokus etter økt: ${fokus}`,
-        rating: input.kvalitet,
-      },
-      update: {
-        notes: `Spiller-fokus etter økt: ${fokus}`,
-        rating: input.kvalitet,
-      },
-    });
-  }
 
   revalidatePath(`/portal/live/${sessionId}/summary`);
   revalidatePath("/portal/planlegge");

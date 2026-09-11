@@ -48,6 +48,9 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | dokumentasjon | [docs/design-audit/2026-09-07-csp-konsoll/README.md](<../design-audit/2026-09-07-csp-konsoll/README.md>) |
 | dokumentasjon | [docs/design-audit/2026-09-08/rigg-panelmodus-ao/README.md](<../design-audit/2026-09-08/rigg-panelmodus-ao/README.md>) |
 | dokumentasjon | [docs/design-audit/ak-golf-til-train-lock-bro-2026-09-03.md](<../design-audit/ak-golf-til-train-lock-bro-2026-09-03.md>) |
+| dokumentasjon | [docs/design-audit/plan-legacy-2026-09-11.md](<../design-audit/plan-legacy-2026-09-11.md>) |
+| dokumentasjon | [docs/design-audit/playerhq-ph06-2026-09-11.md](<../design-audit/playerhq-ph06-2026-09-11.md>) |
+| dokumentasjon | [docs/design-audit/portering-fire-flater-2026-09-10.md](<../design-audit/portering-fire-flater-2026-09-10.md>) |
 | dokumentasjon | [docs/design-audit/train-lock-kontrast.md](<../design-audit/train-lock-kontrast.md>) |
 | dokumentasjon | [docs/design-guide-terminologi.md](<../design-guide-terminologi.md>) |
 | dokumentasjon | [docs/design-system/ak-hq-designarbeid.md](<../design-system/ak-hq-designarbeid.md>) |
@@ -56,6 +59,7 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | dokumentasjon | [docs/design-system/claude-design-zip-3-tilbakemelding.md](<../design-system/claude-design-zip-3-tilbakemelding.md>) |
 | dokumentasjon | [docs/design-system/datagolf-claude-design-prompt-2026-09-10.md](<../design-system/datagolf-claude-design-prompt-2026-09-10.md>) |
 | dokumentasjon | [docs/design-system/lanseringslop-2026-09-10.md](<../design-system/lanseringslop-2026-09-10.md>) |
+| dokumentasjon | [docs/design-system/manuell-sg-skjermer.md](<../design-system/manuell-sg-skjermer.md>) |
 | dokumentasjon | [docs/design-system/TEMA-LYS-MORK.md](<../design-system/TEMA-LYS-MORK.md>) |
 | dokumentasjon | [docs/drift/lansering-og-gjenoppretting.md](<../drift/lansering-og-gjenoppretting.md>) |
 | dokumentasjon | [docs/epost-maler/LES-MEG.md](<../epost-maler/LES-MEG.md>) |
@@ -86,6 +90,8 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | dokumentasjon | [docs/ordbok-ak-golf-konsept.md](<../ordbok-ak-golf-konsept.md>) |
 | dokumentasjon | [docs/ORDBOK-TRENINGSPLANLEGGING-2026-09-08.md](<../ORDBOK-TRENINGSPLANLEGGING-2026-09-08.md>) |
 | dokumentasjon | [docs/plan-styrkeprogram-fys.md](<../plan-styrkeprogram-fys.md>) |
+| datert-plan | [docs/planer/arbeidsdeling-codex-claude-2026-09-11.md](<../planer/arbeidsdeling-codex-claude-2026-09-11.md>) |
+| datert-plan | [docs/planer/claude-code-sonnet-5-ph06-prompt.md](<../planer/claude-code-sonnet-5-ph06-prompt.md>) |
 | datert-plan | [docs/planer/datagolf-spillerverktoy-2026-09-10.md](<../planer/datagolf-spillerverktoy-2026-09-10.md>) |
 | datert-plan | [docs/planer/design/2026-09-04-marked-ak-golf-port.md](<../planer/design/2026-09-04-marked-ak-golf-port.md>) |
 | datert-plan | [docs/planer/design/2026-09-05-komplett-designport-vedlegg-skjermer.md](<../planer/design/2026-09-05-komplett-designport-vedlegg-skjermer.md>) |
@@ -93,6 +99,10 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | datert-plan | [docs/planer/design/2026-09-06-team-norway-skjermer.md](<../planer/design/2026-09-06-team-norway-skjermer.md>) |
 | datert-plan | [docs/planer/design/2026-09-08-wang-tn-port.md](<../planer/design/2026-09-08-wang-tn-port.md>) |
 | datert-plan | [docs/planer/design/2026-09-09-train-lock-full-port.md](<../planer/design/2026-09-09-train-lock-full-port.md>) |
+| datert-plan | [docs/planer/funksjon-manuell-sg.md](<../planer/funksjon-manuell-sg.md>) |
+| datert-plan | [docs/planer/funksjonskort-mal.md](<../planer/funksjonskort-mal.md>) |
+| datert-plan | [docs/planer/funksjonsregister-2026-09-11.md](<../planer/funksjonsregister-2026-09-11.md>) |
+| datert-plan | [docs/planer/produktplan-og-intervju-2026-09-11.md](<../planer/produktplan-og-intervju-2026-09-11.md>) |
 | dokumentasjon | [docs/platform/AGENT-BRIEF.md](<../platform/AGENT-BRIEF.md>) |
 | dokumentasjon | [docs/platform/BOOKING-POLICY.md](<../platform/BOOKING-POLICY.md>) |
 | dokumentasjon | [docs/platform/BOOKING-SLOT-HOLD.md](<../platform/BOOKING-SLOT-HOLD.md>) |
@@ -141,4 +151,5 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | dokumentasjon | [docs/vedlikehold/historiske-designhenvisninger.md](<historiske-designhenvisninger.md>) |
 | dokumentasjon | [docs/vedlikehold/kontrollresultat-2026-09-10.md](<kontrollresultat-2026-09-10.md>) |
 | dokumentasjon | [docs/vedlikehold/prosjektkart.md](<prosjektkart.md>) |
+| dokumentasjon | [docs/vedlikehold/samling-og-opprydding-2026-09-11.md](<samling-og-opprydding-2026-09-11.md>) |
 | dokumentasjon | [docs/vokabular-planlegging-2026-08-18.md](<../vokabular-planlegging-2026-08-18.md>) |

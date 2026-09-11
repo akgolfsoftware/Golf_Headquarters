@@ -1,5 +1,7 @@
 # D2-PLAN — eldre planøkter i ukeoversikten
 
+> Samlingsoppfølging 11.09: Plan-commiten `0c060141c` er tatt inn i den nye samlingspakken sammen med siste main og PH-06. Datert kontroll nedenfor beskriver den opprinnelige lokale leveransen. [Siste samlingsstatus](../vedlikehold/samling-og-opprydding-2026-09-11.md).
+
 11.09.2026. Codex-pakke på `codex/plan-legacy-2026-09-11`, etter main-samlingen [PR #835](https://github.com/akgolfsoftware/Golf_Headquarters/pull/835). Denne nye pakken er lokal og ikke flettet eller publisert.
 
 ## Før / etter / hvorfor

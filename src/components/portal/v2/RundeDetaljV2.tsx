@@ -3,11 +3,15 @@ import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ Runde-detalj.
  * Fasit: designsystem/train-lock/PH-12 Analyse én runde.dc.html
+ * Avvik:
+ *   - Bestilt manuell SG utvider PH-12 med registrering/redigering, kilde og alle detaljfelt.
  * H1 bane 34/700 + mute sub «dato · hull · score (+par)», SG-tall, scorekort.
  */
 
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
+import { ManuellSgRedigering } from "@/components/portal/runde-ny/manuell-sg-redigering";
+import { SG_DETALJGRUPPER, type ManuellSgVerdier } from "@/lib/portal-runder/manuell-sg";
 import { UpGameImportModal } from "@/app/portal/mal/runder/[id]/upgame-import-modal";
 import { Kort, Rad, StatusPill, MikroMeta, TomTilstand, KpiFlis, SgKategorier, HjelpTips, type ScorekortHull, type SgKategori } from "@/components/v2";
 /* ── Data-kontrakt ─────────────────────────────────────────────────── */
@@ -20,6 +24,7 @@ export type GranulaerSgData = {
   app50: number | null;
   chip: number | null;
   pitch: number | null;
+  lob?: number | null;
   bunker: number | null;
   putt0_3: number | null;
   putt3_5: number | null;
@@ -53,10 +58,11 @@ export type RundeDetaljData = {
   par: number;
   antallSpilteHull: number;
   sgTotal: number | null;
-  /** Kun kategorier med beregnet SG (null-verdier er filtrert bort på serveren). */
+  /** Kun kategorier med registrert SG (null-verdier er filtrert bort på serveren). */
   sgKategorier: SgKategori[];
-  /** "beregnet" = fra komplett slag-kjede, "manual" = håndtastet, null = ingen SG. */
-  sgSource: "beregnet" | "manual" | null;
+  /** "beregnet" = fra slag-kjeden, "manual" = håndtastet, "estimert" = fra score. */
+  sgSource: string | null;
+  manuellSg?: ManuellSgVerdier;
   /** Hull-for-hull — HoleScore-sannhet eller Shot-avledet fallback. */
   hull: ScorekortHull[];
   erEier: boolean;
@@ -103,10 +109,10 @@ function BucketKort({
                 fontFamily: TL.font.mono,
                 fontSize: 12,
                 fontWeight: 700,
-                color: v == null ? TL.mute : v >= 0 ? TL.ok : TL.danger,
+                color: v == null ? TL.mute : TL.text,
               }}
             >
-              {v == null ? "— ingen slag" : sgTekst(v)}
+              {v == null ? "Ikke registrert" : sgTekst(v)}
             </span>
           }
         />
@@ -123,8 +129,9 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
   const sgTotalTekst = sgTekst(data.sgTotal);
 
   const g = data.granulaerSg;
-  const harGranulaerData =
-    Object.values(g).some((v) => v != null) && data.sgTotal != null;
+  const detaljVerdier = data.manuellSg ?? Object.fromEntries(Object.entries(g).map(([key, value]) =>
+    [`sg${key[0].toUpperCase()}${key.slice(1)}`, value ?? null])) as Partial<ManuellSgVerdier>;
+  const harGranulaerData = SG_DETALJGRUPPER.some((gruppe) => gruppe.fields.some((f) => detaljVerdier[f.key] != null));
 
   return (
     <div data-paper-portal-runde-detalj data-paper-slug="playerhq-runde-detalj" style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
@@ -178,11 +185,14 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
             <p style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text, margin: 0 }}>
               Runden er lagret
             </p>
-            {data.sgTotal != null && <StatusPill tone="up">SG klar</StatusPill>}
+            {data.sgSource === "manual" ? <StatusPill tone="up">SG registrert</StatusPill>
+              : data.sgTotal != null && <StatusPill tone="up">{data.sgSource === "estimert" ? "SG estimert" : "SG klar"}</StatusPill>}
           </div>
           <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, margin: "6px 0 0" }}>
-            {data.sgTotal != null
-              ? "Strokes Gained er klar — se tallene under."
+            {data.sgSource === "manual"
+              ? "SG-tallene dine er lagret. Du kan legge til eller endre tallene under."
+              : data.sgTotal != null
+                ? "Strokes Gained er klar — se tallene under."
               : "Mangler hull-score for full Strokes Gained. Neste steg står rett under."}
           </p>
         </Kort>
@@ -212,56 +222,32 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
         </Link>
       )}
 
-      {/* SG per kategori — fasit: første kort, før scorekortet */}
-      {data.sgTotal == null ? (
-        <Kort eyebrow="SG per kategori">
-          <TomTilstand
-            icon="trending-up"
-            title="Ingen SG beregnet for denne runden"
-            sub="Runden er registrert med hurtig score. Før hull for hull med slag for å få SG og scorekort."
-          />
-        </Kort>
-      ) : data.sgKategorier.length > 0 ? (
-        <SgKategorier kategorier={data.sgKategorier} hjelp="sgOmrade" desimaler={2} />
+      {data.sgSource === "manual" && (
+        <p style={{ fontFamily: TL.font.sans, color: TL.mute, fontSize: 14, lineHeight: 1.5, margin: 0 }}>
+          Manuelt registrert SG. Tomme felt betyr at verdien ikke er registrert.
+        </p>
+      )}
+      {data.sgSource === "estimert" && (
+        <p style={{ fontFamily: TL.font.sans, color: TL.mute, fontSize: 14, lineHeight: 1.5, margin: 0 }}>SG er estimert fra score, ikke beregnet fra faktiske slag.</p>
+      )}
+      {data.erEier && data.manuellSg && (
+        <ManuellSgRedigering roundId={data.id} verdier={data.manuellSg} kilde={data.sgSource} />
+      )}
+      {data.sgKategorier.length > 0 ? (
+        <SgKategorier kategorier={data.sgKategorier} hjelp="sgOmrade" desimaler={2}
+          baseline={data.sgSource === "manual" ? "din referanse" : undefined} />
       ) : (
         <Kort eyebrow="SG per kategori">
-          <TomTilstand icon="trending-up" title="Ingen kategori-data" sub="—" />
+          <TomTilstand icon="trending-up" title="Ingen hovedkategorier registrert"
+            sub="Registrer SG-tallene manuelt, eller før slag for slag for å beregne dem. Ukjente tall vises ikke som null." />
         </Kort>
       )}
-
-      {/* Granulære buckets — kun når kjeden faktisk ga bucket-nivå-data */}
       {harGranulaerData && (
         <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: 16 }}>
-          <BucketKort
-            tittel="Tee og innspill — per avstand"
-            rader={[
-              ["Tee-slag", g.tee],
-              ["200 m+", g.app200],
-              ["150–200 m", g.app150],
-              ["100–150 m", g.app100],
-              ["50–100 m", g.app50],
-            ]}
-          />
-          <BucketKort
-            tittel="Nærspill"
-            rader={[
-              ["Chip (≤12 m)", g.chip],
-              ["Pitch", g.pitch],
-              ["Bunker", g.bunker],
-            ]}
-          />
-          <BucketKort
-            tittel="Putting — per lengde (ft)"
-            rader={[
-              ["0–3 ft", g.putt0_3],
-              ["3–5 ft", g.putt3_5],
-              ["5–10 ft", g.putt5_10],
-              ["10–15 ft", g.putt10_15],
-              ["15–25 ft", g.putt15_25],
-              ["25–40 ft", g.putt25_40],
-              ["40 ft+", g.putt40plus],
-            ]}
-          />
+          {SG_DETALJGRUPPER.map((gruppe) => (
+            <BucketKort key={gruppe.label} tittel={gruppe.label}
+              rader={gruppe.fields.map((f) => [f.label, detaljVerdier[f.key] ?? null])} />
+          ))}
         </div>
       )}
 

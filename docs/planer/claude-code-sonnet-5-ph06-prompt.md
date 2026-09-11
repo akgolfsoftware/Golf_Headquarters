@@ -1,5 +1,7 @@
 # Claude Code / Sonnet 5 — PH-06 etter trening
 
+Historisk overlevering: Claude-pakken ble flettet i PR #837, og Codex fulgte opp de åpne PH-06-funnene. Arbeidsmappen nedenfor er ryddet. Bruk [gjeldende masterplan](../MASTERPLAN-GJENSTAAENDE.md) og [oppdatert arbeidsdeling](arbeidsdeling-codex-claude-2026-09-11.md) før ny oppstart; ikke start dette gamle oppdraget på nytt automatisk.
+
 Kopier hele blokken til Claude Code med modellen Anders har valgt, Sonnet 5. Arbeidsmappen klargjøres av Codex etter main-samlingen; prompten gir ingen påstand om modelltilgjengelighet eller pris.
 
 ```xml

@@ -1,7 +1,6 @@
 /**
- * PlayerHQ Loggfør runde — v2-ramme rundt RundeNyForm (rå tailwind, ingen
- * golfdata — gjenbrukes som den er). Lagringslogikk uendret (logRoundManual
- * via formen).
+ * PlayerHQ Loggfør runde — totalscore/scorekort og valgfri manuell SG.
+ * RundeNyForm deler SG-felt og validering med redigeringen på rundedetaljen.
  */
 
 import Link from "next/link";
@@ -41,14 +40,14 @@ export default async function NyRundePage() {
           </div>
         </div>
 
-        {/* Full SG krever slag-for-slag-føring — pek dit (port fra main 2026-07-11) */}
+        {/* To kilder: før egne slag, eller registrer eksisterende SG-tall. */}
         <Kort pad="12px 18px">
           <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: 0, lineHeight: 1.6 }}>
-            Vil du ha full Strokes Gained?{" "}
+            Har du SG-tall fra før? Registrer dem i enkel eller avansert visning under. Du kan også{" "}
             <Link href="/portal/runde/logg" style={{ color: TL.fill, fontWeight: 600, textDecoration: "none" }}>
-              Før runden slag for slag
+              føre runden slag for slag
             </Link>{" "}
-            — da ser du nøyaktig hvor slagene ble tjent og tapt.
+            for å beregne SG fra registrerte slag.
           </p>
         </Kort>
 
