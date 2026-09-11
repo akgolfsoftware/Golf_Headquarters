@@ -25,6 +25,8 @@ Siste samlede testresultat og flettepunkt skal leses i samlingsrapporten og tilh
 
 ## Neste oppgaver, i rekkefølge
 
+Aktiv arbeidsdeling 11.09.2026: Claude Code/Sonnet 5 har den avgrensede [AgencyOS-reisen](planer/claude-code-sonnet-5-agencyos-prompt.md). Codex/Sol arbeider separat med R-D TrackMan-enheter. Sporene deler ikke filansvar; status oppdateres først når hver gren har egne kontroller og GitHub-review.
+
 | Prioritet / ID | Konkret neste leveranse | Inngang | Ferdig når |
 |---|---|---|---|
 | 1 · R-E / R1–R3 | Kjør hele I dag → Plan → PH-04 → PH-05 → PH-06 med isolerte, innloggede testroller. Ta med V2, Workbench og eldre plan | `tests/e2e/`, `src/lib/portal-live/`, `src/lib/portal/` | Samme økt/tall gjennom reisen; gjenåpning etter lagring virker; uvedkommende avvises. Kritiske prøver gir ikke grønt ved å hoppes over |
