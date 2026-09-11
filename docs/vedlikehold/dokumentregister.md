@@ -48,6 +48,7 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | dokumentasjon | [docs/design-audit/2026-09-07-csp-konsoll/README.md](<../design-audit/2026-09-07-csp-konsoll/README.md>) |
 | dokumentasjon | [docs/design-audit/2026-09-08/rigg-panelmodus-ao/README.md](<../design-audit/2026-09-08/rigg-panelmodus-ao/README.md>) |
 | dokumentasjon | [docs/design-audit/ak-golf-til-train-lock-bro-2026-09-03.md](<../design-audit/ak-golf-til-train-lock-bro-2026-09-03.md>) |
+| dokumentasjon | [docs/design-audit/lokal-lagring-personvern-2026-09-11.md](<../design-audit/lokal-lagring-personvern-2026-09-11.md>) |
 | dokumentasjon | [docs/design-audit/plan-legacy-2026-09-11.md](<../design-audit/plan-legacy-2026-09-11.md>) |
 | dokumentasjon | [docs/design-audit/playerhq-ph06-2026-09-11.md](<../design-audit/playerhq-ph06-2026-09-11.md>) |
 | dokumentasjon | [docs/design-audit/portering-fire-flater-2026-09-10.md](<../design-audit/portering-fire-flater-2026-09-10.md>) |
@@ -91,6 +92,7 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | dokumentasjon | [docs/ORDBOK-TRENINGSPLANLEGGING-2026-09-08.md](<../ORDBOK-TRENINGSPLANLEGGING-2026-09-08.md>) |
 | dokumentasjon | [docs/plan-styrkeprogram-fys.md](<../plan-styrkeprogram-fys.md>) |
 | datert-plan | [docs/planer/arbeidsdeling-codex-claude-2026-09-11.md](<../planer/arbeidsdeling-codex-claude-2026-09-11.md>) |
+| datert-plan | [docs/planer/claude-code-sonnet-5-agencyos-prompt.md](<../planer/claude-code-sonnet-5-agencyos-prompt.md>) |
 | datert-plan | [docs/planer/claude-code-sonnet-5-ph06-prompt.md](<../planer/claude-code-sonnet-5-ph06-prompt.md>) |
 | datert-plan | [docs/planer/datagolf-spillerverktoy-2026-09-10.md](<../planer/datagolf-spillerverktoy-2026-09-10.md>) |
 | datert-plan | [docs/planer/design/2026-09-04-marked-ak-golf-port.md](<../planer/design/2026-09-04-marked-ak-golf-port.md>) |
@@ -152,4 +154,5 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | dokumentasjon | [docs/vedlikehold/kontrollresultat-2026-09-10.md](<kontrollresultat-2026-09-10.md>) |
 | dokumentasjon | [docs/vedlikehold/prosjektkart.md](<prosjektkart.md>) |
 | dokumentasjon | [docs/vedlikehold/samling-og-opprydding-2026-09-11.md](<samling-og-opprydding-2026-09-11.md>) |
+| dokumentasjon | [docs/vedlikehold/sikkerhet-og-enheter-2026-09-11.md](<sikkerhet-og-enheter-2026-09-11.md>) |
 | dokumentasjon | [docs/vokabular-planlegging-2026-08-18.md](<../vokabular-planlegging-2026-08-18.md>) |
