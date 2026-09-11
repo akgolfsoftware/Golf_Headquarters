@@ -23,13 +23,22 @@ function periodToSince(period: "30d" | "90d" | "season"): Date {
 
 // Bygges per innlogget viewer (coach-scoping: COACH ser kun egne spillere,
 // ADMIN ser alle coachede). Begge inngangene (Caddie-chat og MCP-endepunktet)
-// er i dag ADMIN-gated, så oppførselen er uendret i praksis — men scopingen
-// følger automatisk med hvis COACH-tilgang åpnes senere.
-export const buildReadTools = (viewer: { id: string; role: string }) => ({
+// er ADMIN-begrenset. Ressursfilteret gjelder likevel hvert enkelt oppslag;
+// et navnesøk eller en direkte ID må aldri utvide spillerutvalget.
+export const buildReadTools = (viewer: { id: string; role: string }) => {
+  // Ukjente roller må aldri arve helperens ADMIN-gren.
+  const scope = viewer.id && (viewer.role === "ADMIN" || viewer.role === "COACH")
+    ? coachScopedPlayerWhere(viewer)
+    : { id: { in: [] } };
+  const hasPlayer = async (id: string) => Boolean(await prisma.user.findFirst({
+    where: { AND: [scope, { id }] }, select: { id: true },
+  }));
+  const denied = () => toolError("Ikke tilgjengelig", "Fant ingen tilgjengelig spiller eller ressurs.");
+  return ({
   searchPlayers: tool({
     description:
-      "Søk etter spillere via navn eller e-post (delvis match). Returnerer id, navn, HCP og tier " +
-      "(e-post brukes kun til å søke i, sendes ikke tilbake — GDPR-minimering av det AI-modellen ser).",
+      "Søk etter spillere via navn, e-post eller et pseudonym/søketoken (delvis match). Returnerer referanse, pseudonym, HCP og tier. " +
+      "Referanser er lokale og midlertidige. Kjør et nytt søk hvis et senere oppslag ikke finner ressursen. Kontaktinfo sendes ikke tilbake.",
     inputSchema: z.object({
       query: z.string().describe("Navn eller e-post (delvis match, case-insensitive)"),
       limit: z.number().int().min(1).max(50).default(10),
@@ -38,11 +47,10 @@ export const buildReadTools = (viewer: { id: string; role: string }) => ({
       try {
         const players = await prisma.user.findMany({
           where: {
-            ...coachScopedPlayerWhere(viewer),
-            OR: [
+            AND: [scope, { OR: [
               { name: { contains: query, mode: "insensitive" } },
               { email: { contains: query, mode: "insensitive" } },
-            ],
+            ] }],
           },
           select: {
             id: true,
@@ -54,9 +62,9 @@ export const buildReadTools = (viewer: { id: string; role: string }) => ({
           orderBy: { name: "asc" },
         });
         return { ok: true as const, data: { count: players.length, players } };
-      } catch (err) {
+      } catch {
         return toolError(
-          `searchPlayers feilet: ${err instanceof Error ? err.message : String(err)}`,
+          "searchPlayers feilet",
           "Kunne ikke søke etter spillere. Sjekk databasetilkoblingen.",
         );
       }
@@ -70,12 +78,12 @@ export const buildReadTools = (viewer: { id: string; role: string }) => ({
       "coaching-resonnement, og skal ikke sendes til AI-modellen. Bruk getActiveSubscriptions " +
       "hvis abonnementsstatus faktisk trengs.)",
     inputSchema: z.object({
-      id: z.string().describe("Spiller-ID (cuid)"),
+      id: z.string().describe("Spillerreferanse fra et ferskt searchPlayers-svar"),
     }),
     execute: async ({ id }) => {
       try {
-        const player = await prisma.user.findUnique({
-          where: { id },
+        const player = await prisma.user.findFirst({
+          where: { AND: [scope, { id }] },
           select: {
             id: true,
             name: true,
@@ -103,14 +111,14 @@ export const buildReadTools = (viewer: { id: string; role: string }) => ({
         });
         if (!player) {
           return toolError(
-            `Spiller med id=${id} finnes ikke`,
+            "Spilleren er ikke tilgjengelig",
             "Fant ingen spiller med denne IDen.",
           );
         }
         return { ok: true as const, data: player };
-      } catch (err) {
+      } catch {
         return toolError(
-          `getPlayer feilet: ${err instanceof Error ? err.message : String(err)}`,
+          "getPlayer feilet",
           "Kunne ikke hente spiller-profil.",
         );
       }
@@ -128,11 +136,12 @@ export const buildReadTools = (viewer: { id: string; role: string }) => ({
     }),
     execute: async ({ playerId, from, to, limit }) => {
       try {
+        if (!(await hasPlayer(playerId))) return denied();
         const fromDate = from ? new Date(from) : undefined;
         const toDate = to ? new Date(to) : undefined;
         const sessions = await prisma.trainingPlanSession.findMany({
           where: {
-            plan: { userId: playerId },
+            plan: { userId: playerId, user: scope },
             scheduledAt: {
               ...(fromDate ? { gte: fromDate } : {}),
               ...(toDate ? { lte: toDate } : {}),
@@ -153,9 +162,9 @@ export const buildReadTools = (viewer: { id: string; role: string }) => ({
           take: limit,
         });
         return { ok: true as const, data: { count: sessions.length, sessions } };
-      } catch (err) {
+      } catch {
         return toolError(
-          `getPlayerSessions feilet: ${err instanceof Error ? err.message : String(err)}`,
+          "getPlayerSessions feilet",
           "Kunne ikke hente økter for spilleren.",
         );
       }
@@ -171,10 +180,11 @@ export const buildReadTools = (viewer: { id: string; role: string }) => ({
     }),
     execute: async ({ playerId, period }) => {
       try {
+        if (!(await hasPlayer(playerId))) return denied();
         const since = periodToSince(period);
         const [rounds, testCount, sessionCount, sgAgg] = await Promise.all([
           prisma.round.findMany({
-            where: { userId: playerId, playedAt: { gte: since } },
+            where: { userId: playerId, user: scope, playedAt: { gte: since } },
             select: {
               id: true,
               playedAt: true,
@@ -188,17 +198,17 @@ export const buildReadTools = (viewer: { id: string; role: string }) => ({
             orderBy: { playedAt: "desc" },
           }),
           prisma.testResult.count({
-            where: { userId: playerId, takenAt: { gte: since } },
+            where: { userId: playerId, user: scope, takenAt: { gte: since } },
           }),
           prisma.trainingPlanSession.count({
             where: {
-              plan: { userId: playerId },
+              plan: { userId: playerId, user: scope },
               scheduledAt: { gte: since },
               status: "COMPLETED",
             },
           }),
           prisma.round.aggregate({
-            where: { userId: playerId, playedAt: { gte: since } },
+            where: { userId: playerId, user: scope, playedAt: { gte: since } },
             _avg: {
               sgTotal: true,
               sgOtt: true,
@@ -221,9 +231,9 @@ export const buildReadTools = (viewer: { id: string; role: string }) => ({
             recentRounds: rounds.slice(0, 10),
           },
         };
-      } catch (err) {
+      } catch {
         return toolError(
-          `getPlayerStats feilet: ${err instanceof Error ? err.message : String(err)}`,
+          "getPlayerStats feilet",
           "Kunne ikke aggregere stats for spilleren.",
         );
       }
@@ -239,6 +249,7 @@ export const buildReadTools = (viewer: { id: string; role: string }) => ({
     }),
     execute: async ({ daysAhead, limit }) => {
       try {
+        if (viewer.role !== "ADMIN" || !viewer.id) return denied();
         const now = new Date();
         const until = new Date(now.getTime() + daysAhead * 24 * 60 * 60 * 1000);
         const bookings = await prisma.booking.findMany({
@@ -262,9 +273,9 @@ export const buildReadTools = (viewer: { id: string; role: string }) => ({
           take: limit,
         });
         return { ok: true as const, data: { count: bookings.length, bookings } };
-      } catch (err) {
+      } catch {
         return toolError(
-          `getUpcomingBookings feilet: ${err instanceof Error ? err.message : String(err)}`,
+          "getUpcomingBookings feilet",
           "Kunne ikke hente kommende bookinger.",
         );
       }
@@ -279,6 +290,7 @@ export const buildReadTools = (viewer: { id: string; role: string }) => ({
     }),
     execute: async ({ limit }) => {
       try {
+        if (viewer.role !== "ADMIN" || !viewer.id) return denied();
         const payments = await prisma.payment.findMany({
           where: {
             type: "INVOICE",
@@ -310,9 +322,9 @@ export const buildReadTools = (viewer: { id: string; role: string }) => ({
             })),
           },
         };
-      } catch (err) {
+      } catch {
         return toolError(
-          `getOutstandingInvoices feilet: ${err instanceof Error ? err.message : String(err)}`,
+          "getOutstandingInvoices feilet",
           "Kunne ikke hente utestående faktura.",
         );
       }
@@ -327,8 +339,8 @@ export const buildReadTools = (viewer: { id: string; role: string }) => ({
     }),
     execute: async ({ roundId }) => {
       try {
-        const round = await prisma.round.findUnique({
-          where: { id: roundId },
+        const round = await prisma.round.findFirst({
+          where: { id: roundId, user: scope },
           select: {
             id: true,
             playedAt: true,
@@ -361,14 +373,14 @@ export const buildReadTools = (viewer: { id: string; role: string }) => ({
         });
         if (!round) {
           return toolError(
-            `Runde med id=${roundId} finnes ikke`,
+            "Runden er ikke tilgjengelig",
             "Fant ingen runde med denne IDen.",
           );
         }
         return { ok: true as const, data: round };
-      } catch (err) {
+      } catch {
         return toolError(
-          `getRound feilet: ${err instanceof Error ? err.message : String(err)}`,
+          "getRound feilet",
           "Kunne ikke hente runden.",
         );
       }
@@ -406,9 +418,9 @@ export const buildReadTools = (viewer: { id: string; role: string }) => ({
           take: limit,
         });
         return { ok: true as const, data: { count: tournaments.length, tournaments } };
-      } catch (err) {
+      } catch {
         return toolError(
-          `getTournaments feilet: ${err instanceof Error ? err.message : String(err)}`,
+          "getTournaments feilet",
           "Kunne ikke hente turneringer.",
         );
       }
@@ -423,6 +435,7 @@ export const buildReadTools = (viewer: { id: string; role: string }) => ({
     }),
     execute: async ({ limit }) => {
       try {
+        if (viewer.role !== "ADMIN" || !viewer.id) return denied();
         const subs = await prisma.subscription.findMany({
           where: { status: { in: ["ACTIVE", "TRIALING"] } },
           select: {
@@ -439,9 +452,9 @@ export const buildReadTools = (viewer: { id: string; role: string }) => ({
           take: limit,
         });
         return { ok: true as const, data: { count: subs.length, subscriptions: subs } };
-      } catch (err) {
+      } catch {
         return toolError(
-          `getActiveSubscriptions feilet: ${err instanceof Error ? err.message : String(err)}`,
+          "getActiveSubscriptions feilet",
           "Kunne ikke hente abonnementer.",
         );
       }
@@ -457,9 +470,10 @@ export const buildReadTools = (viewer: { id: string; role: string }) => ({
     }),
     execute: async ({ playerId, pyramidArea }) => {
       try {
+        if (!(await hasPlayer(playerId))) return denied();
         const session = await prisma.trainingPlanSession.findFirst({
           where: {
-            plan: { userId: playerId },
+            plan: { userId: playerId, user: scope },
             ...(pyramidArea ? { pyramidArea } : {}),
           },
           select: {
@@ -488,17 +502,18 @@ export const buildReadTools = (viewer: { id: string; role: string }) => ({
         });
         if (!session) {
           return toolError(
-            `Ingen økter funnet for playerId=${playerId}${pyramidArea ? ` (område=${pyramidArea})` : ""}`,
+            "Ingen tilgjengelig økt",
             "Fant ingen økter for denne spilleren.",
           );
         }
         return { ok: true as const, data: session };
-      } catch (err) {
+      } catch {
         return toolError(
-          `getPlayerLatestSession feilet: ${err instanceof Error ? err.message : String(err)}`,
+          "getPlayerLatestSession feilet",
           "Kunne ikke hente siste økt.",
         );
       }
     },
   }),
 }) as const;
+};

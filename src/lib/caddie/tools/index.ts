@@ -6,15 +6,32 @@
 import { KNOWLEDGE_TOOLS } from "./knowledge";
 import { buildReadTools } from "./read";
 import { WRITE_TOOLS } from "./write";
+import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
+import type { ToolSet } from "ai";
 
 export { buildReadTools, KNOWLEDGE_TOOLS, WRITE_TOOLS };
 
 /** Bygg hele tool-settet for en konkret innlogget ADMIN/COACH-viewer. */
 export function buildCaddieTools(viewer: { id: string; role: string }) {
+  const writes: ToolSet = Object.fromEntries(Object.entries(WRITE_TOOLS).map(([name, definition]) => [name, {
+    ...definition,
+    execute: async (input: Record<string, unknown>, options: Parameters<NonNullable<typeof definition.execute>>[1]) => {
+      const denied = { ok: false, error: "Ressursen er ikke tilgjengelig", userMessage: "Fant ingen tilgjengelig ressurs." };
+      if (!viewer.id || (viewer.role !== "ADMIN" && viewer.role !== "COACH")) return denied;
+      try {
+        if (typeof input.playerId === "string" && !(await harCoachTilgangTilSpiller(viewer, input.playerId))) return denied;
+        if (name === "draftInvoiceReminder" && viewer.role !== "ADMIN") return denied;
+        const execute = definition.execute as (args: Record<string, unknown>, opts: typeof options) => Promise<unknown>;
+        return await execute(input, options);
+      } catch {
+        return denied;
+      }
+    },
+  }]));
   return {
     ...buildReadTools(viewer),
     ...KNOWLEDGE_TOOLS,
-    ...WRITE_TOOLS,
+    ...writes,
   } as const;
 }
 

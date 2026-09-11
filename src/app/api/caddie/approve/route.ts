@@ -11,6 +11,7 @@ import { prisma } from "@/lib/prisma";
 import { executeApprovedTool } from "@/lib/caddie/approval-executor";
 import { logError } from "@/lib/error-tracking";
 import { rateLimit } from "@/lib/rate-limit";
+import { claimPendingDraft } from "@/lib/caddie/draft-claim";
 
 export const runtime = "nodejs";
 
@@ -65,7 +66,23 @@ export async function POST(req: Request) {
     );
   }
 
-  const { conversationId, toolCallId, toolName, approved, toolInput } = parsed.data;
+  const { conversationId, toolCallId, toolName, approved } = parsed.data;
+  let toolInput: Record<string, unknown>;
+  try {
+    const draft = await prisma.caddieDraft.findFirst({
+      where: { userId: user.id, conversationId, toolCallId, toolName, status: "PENDING" },
+      select: { id: true, toolInput: true },
+    });
+    if (!draft) return Response.json({ ok: false, error: "Forslaget er ikke tilgjengelig eller er allerede behandlet." }, { status: 409 });
+    const saved = z.record(z.string(), z.unknown()).safeParse(draft.toolInput);
+    if (!saved.success) return Response.json({ ok: false, error: "Forslaget har ugyldige lagrede data." }, { status: 409 });
+    toolInput = saved.data;
+    if (!(await claimPendingDraft(draft.id, user.id, approved))) {
+      return Response.json({ ok: false, error: "Forslaget er allerede behandlet." }, { status: 409 });
+    }
+  } catch {
+    return Response.json({ ok: false, error: "Kunne ikke lese forslaget." }, { status: 503 });
+  }
 
   // --- Avvisning ---
   if (!approved) {
@@ -78,7 +95,6 @@ export async function POST(req: Request) {
       toolName,
       result,
     });
-    await resolveDraft(user.id, toolCallId, "REJECTED");
     return Response.json({ ok: true, status: result.status, summary: result.summary });
   }
 
@@ -95,15 +111,14 @@ export async function POST(req: Request) {
       toolName,
       result,
     });
-    await resolveDraft(user.id, toolCallId, "APPROVED");
     return Response.json({
       ok: true,
       status: exec.status,
       summary: exec.summary,
       details: exec.details ?? null,
     });
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
+  } catch {
+    const message = "Utførelsen kunne ikke bekreftes. Kontroller resultatet før du lager et nytt forslag.";
     const result = {
       status: "failed" as const,
       summary: `Utførelse feilet: ${message}`,
@@ -118,24 +133,6 @@ export async function POST(req: Request) {
       { ok: false, error: message, status: result.status },
       { status: 500 },
     );
-  }
-}
-
-// A2: chat-forslag persisteres nå som CaddieDraft (PENDING) i A1-køen.
-// Behandles forslaget i chatten, må draft-raden lukkes så køen holdes i synk.
-async function resolveDraft(
-  userId: string,
-  toolCallId: string,
-  status: "APPROVED" | "REJECTED",
-): Promise<void> {
-  try {
-    await prisma.caddieDraft.updateMany({
-      where: { userId, toolCallId, status: "PENDING" },
-      data: { status, resolvedAt: new Date() },
-    });
-  } catch (error) {
-    // Kø-synk må aldri ta ned API-responsen.
-    await logError({ context: "caddie.approve.lukk-draft", error, severity: "warn", meta: { toolCallId, userId } });
   }
 }
 
@@ -154,8 +151,8 @@ async function persistToolMessage(
         toolResults: [payload] as unknown as object,
       },
     });
-  } catch (error) {
+  } catch {
     // Persistering må aldri ta ned API-responsen.
-    await logError({ context: "caddie.approve.persister-tool-melding", error, severity: "warn", meta: { conversationId, userId, toolCallId: payload.toolCallId } });
+    await logError({ context: "caddie.approve.persister-tool-melding", error: new Error("Kunne ikke lagre Caddie-resultat"), severity: "warn" });
   }
 }

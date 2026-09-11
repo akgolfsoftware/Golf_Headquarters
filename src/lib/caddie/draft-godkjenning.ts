@@ -8,6 +8,8 @@
 import { prisma } from "@/lib/prisma";
 import { executeApprovedTool } from "@/lib/caddie/approval-executor";
 import { logError } from "@/lib/error-tracking";
+import { claimPendingDraft } from "./draft-claim";
+import { z } from "zod";
 
 export type DraftGodkjenningResult = {
   ok: boolean;
@@ -15,13 +17,13 @@ export type DraftGodkjenningResult = {
   summary: string;
 };
 
-/** Godkjenn og UTFØR et PENDING CaddieDraft. Feiler utførelsen forblir raden
- *  PENDING (kan prøves igjen eller avvises). */
+/** Godkjenn og utfør et eiet PENDING-utkast én gang. Usikker ekstern
+ * utførelse skal aldri automatisk prøves på nytt fra samme godkjenning. */
 export async function godkjennOgUtforCaddieDraft(
   draftId: string,
   adminUserId: string,
 ): Promise<DraftGodkjenningResult> {
-  const draft = await prisma.caddieDraft.findUnique({ where: { id: draftId } });
+  const draft = await prisma.caddieDraft.findFirst({ where: { id: draftId, userId: adminUserId } });
   if (!draft) {
     return { ok: false, status: "not-found", summary: "Utkastet finnes ikke lenger." };
   }
@@ -33,15 +35,12 @@ export async function godkjennOgUtforCaddieDraft(
     };
   }
 
-  const toolInput = (draft.toolInput ?? {}) as Record<string, unknown>;
+  const input = z.record(z.string(), z.unknown()).safeParse(draft.toolInput);
+  if (!input.success) return { ok: false, status: "invalid", summary: "Utkastet har ugyldige lagrede data." };
 
   try {
-    const exec = await executeApprovedTool(draft.toolName, toolInput, adminUserId);
-
-    await prisma.caddieDraft.update({
-      where: { id: draft.id },
-      data: { status: "APPROVED", resolvedAt: new Date() },
-    });
+    if (!(await claimPendingDraft(draft.id, adminUserId, true))) return { ok: false, status: "already-resolved", summary: "Utkastet er allerede behandlet." };
+    const exec = await executeApprovedTool(draft.toolName, input.data, adminUserId);
 
     await persistAudit(adminUserId, draft.conversationId, {
       toolCallId: draft.toolCallId,
@@ -50,8 +49,8 @@ export async function godkjennOgUtforCaddieDraft(
     });
 
     return { ok: true, status: exec.status, summary: exec.summary };
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
+  } catch {
+    const message = "Utførelsen kunne ikke bekreftes. Kontroller resultatet før du lager et nytt forslag.";
     await persistAudit(adminUserId, draft.conversationId, {
       toolCallId: draft.toolCallId,
       toolName: draft.toolName,
@@ -66,15 +65,12 @@ export async function avvisCaddieDraft(
   draftId: string,
   adminUserId: string,
 ): Promise<DraftGodkjenningResult> {
-  const draft = await prisma.caddieDraft.findUnique({ where: { id: draftId } });
+  const draft = await prisma.caddieDraft.findFirst({ where: { id: draftId, userId: adminUserId } });
   if (!draft || draft.status !== "PENDING") {
     return { ok: false, status: "not-found", summary: "Utkastet er allerede behandlet." };
   }
 
-  await prisma.caddieDraft.update({
-    where: { id: draft.id },
-    data: { status: "REJECTED", resolvedAt: new Date() },
-  });
+  if (!(await claimPendingDraft(draft.id, adminUserId, false))) return { ok: false, status: "already-resolved", summary: "Utkastet er allerede behandlet." };
   await persistAudit(adminUserId, draft.conversationId, {
     toolCallId: draft.toolCallId,
     toolName: draft.toolName,
@@ -99,12 +95,11 @@ async function persistAudit(
         toolResults: [payload] as unknown as object,
       },
     });
-  } catch (error) {
+  } catch {
     // Audit-persistering må aldri velte selve godkjenningen.
     await logError({
       context: "caddie.draftGodkjenning.audit",
-      error,
-      meta: { userId, conversationId },
+      error: new Error("Kunne ikke lagre Caddie-resultat"),
       severity: "warn",
     });
   }
