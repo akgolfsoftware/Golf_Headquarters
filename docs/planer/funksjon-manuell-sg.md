@@ -2,7 +2,7 @@
 
 Bestilt av Anders 11.09.2026: implementer enkel og avansert inntasting av SG med alle kategorier. Utbedring av planen for komplette kartfunksjoner som UpGame kommer senere.
 
-**Status:** implementert på `codex/manuell-sg-2026-09-11`, oppdatert mot main `2807d4d08` (PR #835). Full kvalitetskontroll, 2 349 tester og 20 nettleserkontroller har bestått. Ikke lagt i main eller publisert. Anders har ikke vurdert den ferdige visningen ennå.
+**Status:** implementert på `codex/manuell-sg-2026-09-11`, oppdatert mot main `2807d4d08` (PR #835). Full kvalitetskontroll, 2 349 tester og 20 nettleserkontroller har bestått. Anders bestilte innlegging i main 11.09.2026. [Komplett skjermleveranse](../design-system/manuell-sg-skjermer.md) samler fem skjermer/tilstander og 72 bilder fra faktiske sidekomponenter. Visuell vurdering av Anders og faktisk produksjonsstatus dokumenteres separat.
 
 ## Behov og brukerreise
 
@@ -69,5 +69,5 @@ Private prøvefiler og skjermbilder ligger under ignorert `_archive/manuell-sg-2
 - Ni hull kan registreres med scorekort. Kun totalscore støttes her for 18 hull: dagens Round-modell mangler et eget felt for antall hull uten scorekort. Skjemaet forklarer dette og avviser ni hull uten scorekort fremfor å lagre feil antall. En framtidig utvidelse må også avstemme lesere og aggregater.
 - Rundevisningen viser alle registrerte detaljer, også uten hovedkategorier eller total. Eksisterende samlede SG-trender og SG-broen bruker fortsatt sitt eget krav til registrert total/hovedkategorier. Ingen ny analysemodell eller automatisk treningsresept innføres her.
 - Referansekilde per runde, sammenblanding av ulike referanser og omregning mellom dem trenger et eget faglig avklart arbeid. Denne leveransen lagrer tallene som oppgitt i eksisterende felt.
-- Før main: kontroller eventuelle nyere endringer siden `2807d4d08`, prøv ekte innlogging/lagring i et isolert testmiljø, og vis resultatet til Anders. Merge, push og publisering utføres først når det er bestilt. Tilbakeføring er å reversere funksjonens kodeendring; ingen databasemigrasjon må reverseres.
+- Innlegging i main er bestilt 11.09: avstem mot siste main og kontroller PR-versjonen før merge. Ekte innlogging/lagring i et isolert testmiljø og Anders' visuelle vurdering gjenstår før åpen lansering. Tilbakeføring er å reversere funksjonens kodeendring; ingen databasemigrasjon må reverseres.
 - Deretter utbedres planen for komplett kartbasert rundeføring, baneguide og vind. Se [baneguideunderlaget](../baneguide-produktdokument-2026-08-02.md) og AP0–AP6 i [tidligere arbeidsliste](../arkiv/opprydding-2026-09-10/masterplan-gjenstaaende.md). Historiske avkryssinger må kontrolleres mot faktisk kode før ny implementering.
