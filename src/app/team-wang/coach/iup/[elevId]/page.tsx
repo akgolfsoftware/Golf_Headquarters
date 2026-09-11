@@ -2,9 +2,12 @@ import { notFound } from "next/navigation";
 
 import { prisma } from "@/lib/prisma";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { assertBarnTilhorerForelder } from "@/lib/forelder";
-import { kanSeIup } from "@/lib/auth/spiller-side-tilgang";
-import { IupSamtale, type IupPeriode, type IupMaaling } from "./iup-samtale";
+import { hentWangElevGruppeId } from "@/app/team-wang/_data/wang-tilgang";
+import {
+  IupSamtale,
+  type IupPeriode,
+  type IupMaaling,
+} from "@/app/team-wang/coach/iup/[elevId]/iup-samtale";
 
 /**
  * IUP-samtalen for én elev. Åpnet uten rollesperre 15.08.2026 («pr nå»,
@@ -18,8 +21,6 @@ import { IupSamtale, type IupPeriode, type IupMaaling } from "./iup-samtale";
  * trenervurdering side om side i stedet for i hver sin visning.
  */
 export const dynamic = "force-dynamic";
-
-const GRUPPE_NAVN = "WANG Toppidrett Fredrikstad";
 
 const FASE_NAVN: Record<string, string> = {
   GRUNN: "Grunnperiode",
@@ -51,13 +52,12 @@ export default async function IupPage({
 
   const bruker = await requirePortalUser({
     allow: ["ADMIN", "COACH", "PLAYER", "PARENT"],
-    redirectTo: "/team-wang/logg-inn",
+    redirectTo: `/team-wang/logg-inn?next=${encodeURIComponent(`/team-wang/coach/iup/${encodeURIComponent(elevId)}`)}`,
     kreverTilgang: "INGEN",
   });
 
-  const erForesattTilEleven =
-    bruker.role === "PARENT" && (await assertBarnTilhorerForelder(bruker.id, elevId));
-  if (!kanSeIup(bruker, elevId, erForesattTilEleven)) notFound();
+  const gruppeId = await hentWangElevGruppeId(bruker, elevId);
+  if (!gruppeId) notFound();
 
   const elev = await prisma.user.findUnique({
     where: { id: elevId },
@@ -65,14 +65,8 @@ export default async function IupPage({
   });
   if (!elev) notFound();
 
-  const gruppe = await prisma.group.findFirst({
-    where: { name: GRUPPE_NAVN },
-    select: { id: true },
-  });
-  if (!gruppe) notFound();
-
   const blokker = await prisma.groupPeriodBlock.findMany({
-    where: { groupId: gruppe.id },
+    where: { groupId: gruppeId },
     orderBy: { startDate: "asc" },
     select: {
       id: true,

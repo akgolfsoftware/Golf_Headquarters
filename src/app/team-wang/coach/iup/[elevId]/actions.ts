@@ -7,16 +7,20 @@
  * avtaler fokusområdene for den neste. Begge deler skrives til
  * `group_period_goals`, som er kilden elevens årsplan leser fra.
  *
- * Dette er vurderinger om mindreårige elever — kun coach/admin, og hver lagring
- * havner i revisjonsloggen.
+ * Dette er vurderinger om mindreårige elever. Samme ressursgrense brukes ved
+ * lesing og lagring, og hver lagring havner i revisjonsloggen.
  */
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
-import { requireCoachActionUser } from "@/lib/auth/action-guards";
+import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
+import {
+  hentWangElevGruppeId,
+  WangDataUtilgjengeligError,
+} from "@/app/team-wang/_data/wang-tilgang";
 
 const AKSE = z.enum(["FYS", "TEK", "SLAG", "SPILL", "TURN"]);
 const STATUS = z.enum(["IKKE_STARTET", "PAA_VEI", "NAADD"]);
@@ -48,7 +52,10 @@ const Input = z.object({
 export type IupResultat = { ok: true } | { ok: false; feil: string };
 
 export async function lagreIupSamtale(raw: unknown): Promise<IupResultat> {
-  const coach = await requireCoachActionUser();
+  const bruker = await getCurrentUser();
+  if (!bruker) {
+    return { ok: false, feil: "Du må logge inn på nytt før du kan lagre." };
+  }
 
   const parsed = Input.safeParse(raw);
   if (!parsed.success) {
@@ -59,21 +66,39 @@ export async function lagreIupSamtale(raw: unknown): Promise<IupResultat> {
   }
   const { elevId, evalueringer, nestePeriodeId, nyeFokus } = parsed.data;
 
-  // Radene som evalueres MÅ tilhøre eleven. Uten denne sjekken kan en id fra
-  // en annen elev sendes inn direkte til actionen, forbi skjermen.
-  if (evalueringer.length > 0) {
-    const eide = await prisma.groupPeriodGoal.count({
-      where: { userId: elevId, id: { in: evalueringer.map((e) => e.id) } },
-    });
-    if (eide !== evalueringer.length) {
-      return {
-        ok: false,
-        feil: "Fant ikke alle fokusområdene på denne eleven.",
-      };
+  let gruppeId: string | null;
+  try {
+    gruppeId = await hentWangElevGruppeId(bruker, elevId);
+  } catch (error) {
+    if (error instanceof WangDataUtilgjengeligError) {
+      return { ok: false, feil: "Kunne ikke kontrollere tilgangen akkurat nå. Prøv igjen." };
     }
+    throw error;
+  }
+  if (!gruppeId) {
+    return { ok: false, feil: "Du har ikke tilgang til denne elevens IUP." };
   }
 
   try {
+    const evalueringsIder = evalueringer.map((e) => e.id);
+    const maal = evalueringsIder.length
+      ? await prisma.groupPeriodGoal.findMany({
+          where: { userId: elevId, id: { in: evalueringsIder } },
+          select: { id: true, periodBlockId: true },
+        })
+      : [];
+    if (maal.length !== new Set(evalueringsIder).size || maal.length !== evalueringsIder.length) {
+      return { ok: false, feil: "Fant ikke alle fokusområdene på denne eleven." };
+    }
+
+    const periodeIder = new Set([nestePeriodeId, ...maal.map((m) => m.periodBlockId)]);
+    const antallPerioderIGruppen = await prisma.groupPeriodBlock.count({
+      where: { id: { in: [...periodeIder] }, groupId: gruppeId },
+    });
+    if (antallPerioderIGruppen !== periodeIder.size) {
+      return { ok: false, feil: "Fant ikke alle periodene i WANG-gruppen." };
+    }
+
     await prisma.$transaction([
       ...evalueringer.map((e) =>
         prisma.groupPeriodGoal.update({
@@ -110,7 +135,7 @@ export async function lagreIupSamtale(raw: unknown): Promise<IupResultat> {
   }
 
   await audit({
-    actorId: coach.id,
+    actorId: bruker.id,
     action: "wang.iup.lagret",
     target: elevId,
     metadata: {

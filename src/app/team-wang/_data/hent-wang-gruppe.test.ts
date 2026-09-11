@@ -77,10 +77,18 @@ const perioder = [
   },
 ];
 
+let gruppeFeil: Error | null = null;
+
 mock.module("@/lib/prisma", {
   namedExports: {
     prisma: {
-      group: { findFirst: async () => gruppe },
+      group: {
+        findUnique: async ({ where }: { where: { slug: string } }) => {
+          assert.deepEqual(where, { slug: "wang-toppidrett" });
+          if (gruppeFeil) throw gruppeFeil;
+          return gruppe;
+        },
+      },
       groupPeriodBlock: { findMany: async () => perioder },
       schoolScheduleEntry: { findMany: async () => [] },
       groupPeriodGoal: { findMany: async () => [] },
@@ -177,4 +185,16 @@ test("ikke-PII fritekst passerer uendret — gaten er smal med vilje", async () 
   assert.equal(data?.hendelser[0]?.tittel, gruppe.schedules[0].title);
   assert.equal(data?.hendelser[0]?.sted, "GFGK");
   assert.equal(data?.perioder[0]?.fokus, "Teknikk og volum");
+});
+
+test("databasefeil blir ikke til demo eller legitimt manglende gruppe", async () => {
+  const hentWangGruppe = await lastHentWangGruppe();
+  gruppeFeil = new Error("connection timeout: postgresql://hemmelig");
+  await assert.rejects(hentWangGruppe(), (error: unknown) => {
+    assert.ok(error instanceof Error);
+    assert.equal(error.name, "WangDataUtilgjengeligError");
+    assert.doesNotMatch(error.message, /postgres|hemmelig|timeout/i);
+    return true;
+  });
+  gruppeFeil = null;
 });
