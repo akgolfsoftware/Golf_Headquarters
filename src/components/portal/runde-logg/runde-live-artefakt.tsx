@@ -19,7 +19,7 @@
  * startes fra Plan/Workbench. Notert, ikke løst på sparket.
  */
 
-import { useSyncExternalStore, type CSSProperties } from "react";
+import { useCallback, useSyncExternalStore, type CSSProperties } from "react";
 import Link from "next/link";
 import { TL } from "@/lib/v2/train-lock";
 import { fmtSg } from "@/lib/v2/format";
@@ -28,6 +28,7 @@ import { lesKladdCached, lesKladdServer } from "@/lib/runde-logg/draft";
 import { scoreFraHull } from "@/lib/runde-logg/syntetiser-hurtig";
 import { beregnSg } from "@/lib/domain/sg";
 import { rundeTilSgShots } from "@/lib/runde-logg/til-sg-shots";
+import { useLokalDataEier } from "@/lib/offline-queue/eier-context";
 
 const abonnerIngen = () => () => {};
 
@@ -57,7 +58,9 @@ const ctaStil: CSSProperties = {
 };
 
 export function RundeLiveArtefakt() {
-  const kladd = useSyncExternalStore(abonnerIngen, lesKladdCached, lesKladdServer);
+  const eierId = useLokalDataEier();
+  const snapshot = useCallback(() => lesKladdCached(eierId), [eierId]);
+  const kladd = useSyncExternalStore(abonnerIngen, snapshot, lesKladdServer);
 
   if (!kladd || kladd.steg === "oppsett") return null;
 

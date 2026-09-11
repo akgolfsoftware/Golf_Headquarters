@@ -1,8 +1,9 @@
 "use client";
 
 /**
- * IndexedDB-kø for lydchunks under fangst. Mistet dekning skal ikke miste bit.
- * Speiler tapper/live-drill-mønsteret.
+ * Brukeravgrenset IndexedDB-kø for lydchunks under fangst. Mistet dekning
+ * skal ikke miste bit. Den gamle eierløse butikken beholdes urørt, men leses
+ * aldri automatisk.
  */
 
 import {
@@ -12,10 +13,11 @@ import {
   trengerManuellChunkHandling,
   type RecordingChunkMeta,
 } from "./recording-chunk-kladd";
+import { erGyldigEierId, filtrerEideRader } from "./eier-scope";
 
 const DB_NAVN = "akgolf-recording-chunks";
-const DB_VERSJON = 1;
-const BUTIKK = "chunks";
+const DB_VERSJON = 2;
+const BUTIKK = "chunks-v2";
 
 export type RecordingChunkRad = RecordingChunkMeta & {
   /** Base64 av chunk — Blob er ikke alltid stabilt på tvers av IDB-browsere. */
@@ -35,6 +37,7 @@ function apneDb(): Promise<IDBDatabase | null> {
     };
     req.onsuccess = () => resolve(req.result);
     req.onerror = () => resolve(null);
+    req.onblocked = () => resolve(null);
   });
 }
 
@@ -78,39 +81,45 @@ function base64TilBlob(b64: string, mimeType: string): Blob {
 
 /** Lagre chunk lokalt FØR opplasting. */
 export async function leggChunkIKo(
+  eierId: string,
   recordingId: string,
   index: number,
   blob: Blob,
-): Promise<void> {
-  const meta = byggChunkMeta(recordingId, index, new Date());
+): Promise<boolean> {
+  if (!erGyldigEierId(eierId)) return false;
+  const meta = byggChunkMeta(eierId, recordingId, index, new Date());
   const dataBase64 = await blobTilBase64(blob);
   const rad: RecordingChunkRad = {
     ...meta,
     dataBase64,
     mimeType: blob.type || "audio/webm",
   };
-  await medButikk("readwrite", (b) => b.put(rad));
+  return (await medButikk("readwrite", (b) => b.put(rad))) != null;
 }
 
 export async function fjernChunkFraKo(
+  eierId: string,
   recordingId: string,
   index: number,
 ): Promise<void> {
-  const key = `${recordingId}:${index}`;
+  if (!erGyldigEierId(eierId)) return;
+  const key = `${encodeURIComponent(eierId)}:${recordingId}:${index}`;
   await medButikk("readwrite", (b) => b.delete(key));
 }
 
-async function alleRader(): Promise<RecordingChunkRad[]> {
+async function alleRader(eierId: string): Promise<RecordingChunkRad[]> {
+  if (!erGyldigEierId(eierId)) return [];
   const rader = await medButikk<RecordingChunkRad[]>("readonly", (b) =>
     b.getAll(),
   );
-  return rader ?? [];
+  return filtrerEideRader(rader ?? [], eierId);
 }
 
 export async function antallVentendeChunks(
+  eierId: string,
   recordingId: string,
 ): Promise<number> {
-  const rader = await alleRader();
+  const rader = await alleRader(eierId);
   return tellVentendeChunks(rader, recordingId);
 }
 
@@ -125,10 +134,11 @@ export type ChunkUploadFn = (
  * Returnerer antall som fortsatt venter, og om manuell handling trengs.
  */
 export async function tomChunkKo(
+  eierId: string,
   recordingId: string,
   lastOpp: ChunkUploadFn,
 ): Promise<{ gjenstaar: number; gittOpp: boolean }> {
-  const rader = (await alleRader()).filter(
+  const rader = (await alleRader(eierId)).filter(
     (r) => r.recordingId === recordingId,
   );
   let gittOpp = false;
@@ -138,7 +148,7 @@ export async function tomChunkKo(
       ok: false,
     }));
     if (res.ok) {
-      await fjernChunkFraKo(rad.recordingId, rad.index);
+      await fjernChunkFraKo(eierId, rad.recordingId, rad.index);
       continue;
     }
     const oppdatert: RecordingChunkRad = {
@@ -148,6 +158,6 @@ export async function tomChunkKo(
     await medButikk("readwrite", (b) => b.put(oppdatert));
     if (trengerManuellChunkHandling(oppdatert)) gittOpp = true;
   }
-  const gjenstaar = await antallVentendeChunks(recordingId);
+  const gjenstaar = await antallVentendeChunks(eierId, recordingId);
   return { gjenstaar, gittOpp };
 }

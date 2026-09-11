@@ -9,6 +9,8 @@ import { SpillerVurderingForm } from "./SpillerVurderingForm";
 import { LiveLoopNav } from "./LiveLoopNav";
 import { WhyDetails } from "./WhyDetails";
 import { lagreDineOrd } from "@/app/portal/(fullscreen)/live/[sessionId]/actions";
+import { useLokalDataEier } from "@/lib/offline-queue/eier-context";
+import { byggLagringsNokkel } from "@/lib/offline-queue/eier-scope";
 
 export type SessionSummaryProps = {
   data: LiveV2Summary;
@@ -25,13 +27,15 @@ export type SessionSummaryProps = {
 
 type LiveNotat = { t: string; tekst: string };
 
-function notatKey(sessionId: string): string {
-  return `akhq-live-notater-${sessionId}`;
+function notatKey(eierId: string | null, sessionId: string): string | null {
+  return byggLagringsNokkel(`akhq-live-notater-${sessionId}`, eierId);
 }
 
-function lesNotater(sessionId: string): LiveNotat[] {
+function lesNotater(eierId: string | null, sessionId: string): LiveNotat[] {
   try {
-    const raw = sessionStorage.getItem(notatKey(sessionId));
+    const key = notatKey(eierId, sessionId);
+    if (!key) return [];
+    const raw = sessionStorage.getItem(key);
     if (!raw) return [];
     const parsed: unknown = JSON.parse(raw);
     if (!Array.isArray(parsed)) return [];
@@ -93,6 +97,7 @@ function byggUtkast(data: LiveV2Summary, notater: LiveNotat[]): string {
  * Planavvik, notater og spillerens vurdering er bevart som utfoldbare detaljer.
  */
 export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }: SessionSummaryProps) {
+  const eierId = useLokalDataEier();
   const [notater, setNotater] = useState<LiveNotat[]>([]);
   const [ord, setOrd] = useState<string | null>(lagredeOrd ?? null);
   const [lagret, setLagret] = useState(Boolean(lagredeOrd));
@@ -106,12 +111,12 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }:
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      const n = lesNotater(data.sessionId);
+      const n = lesNotater(eierId, data.sessionId);
       setNotater(n);
       setOrd((prev) => prev ?? lagredeOrd ?? byggUtkast(data, n));
     }, 0);
     return () => clearTimeout(timer);
-  }, [data, lagredeOrd]);
+  }, [data, eierId, lagredeOrd]);
   useEffect(() => { if (feil) errorRef.current?.focus(); }, [feil]);
   useEffect(() => { if (lagret && submitted.current) savedRef.current?.focus(); }, [lagret]);
 
@@ -144,7 +149,8 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }:
           setFeil(res.error ?? "Kunne ikke lagre. Teksten din er bevart — prøv igjen.");
           return;
         }
-        try { sessionStorage.removeItem(notatKey(data.sessionId)); } catch { /* Teksten er lagret på serveren. */ }
+        const key = notatKey(eierId, data.sessionId);
+        try { if (key) sessionStorage.removeItem(key); } catch { /* Teksten er lagret på serveren. */ }
         setOrd(tekst);
         submitted.current = true;
         setLagret(true);

@@ -8,13 +8,22 @@
 import { ToastProvider } from "@/components/shared/toast-provider";
 import { CmdPalette } from "@/components/shared/cmd-palette";
 import { OfflineSyncBootstrap } from "@/components/portal/OfflineSyncBootstrap";
+import { LokalDataEierProvider } from "@/lib/offline-queue/eier-context";
 
-export function PortalProviders({ children }: { children: React.ReactNode }) {
+export function PortalProviders({
+  eierId,
+  children,
+}: {
+  eierId: string;
+  children: React.ReactNode;
+}) {
   return (
-    <ToastProvider>
-      <OfflineSyncBootstrap />
-      {children}
-      <CmdPalette />
-    </ToastProvider>
+    <LokalDataEierProvider eierId={eierId}>
+      <ToastProvider>
+        <OfflineSyncBootstrap eierId={eierId} />
+        {children}
+        <CmdPalette />
+      </ToastProvider>
+    </LokalDataEierProvider>
   );
 }

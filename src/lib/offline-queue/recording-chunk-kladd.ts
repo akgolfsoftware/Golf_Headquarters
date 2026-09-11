@@ -4,8 +4,10 @@
  */
 
 export type RecordingChunkMeta = {
-  /** `${recordingId}:${index}` */
+  /** `${eierId}:${recordingId}:${index}` */
   key: string;
+  /** Innlogget aktør som opprettet opptaket på denne enheten. */
+  eierId: string;
   recordingId: string;
   index: number;
   createdAt: string;
@@ -14,17 +16,23 @@ export type RecordingChunkMeta = {
 
 const MAKS_STILLE_FORSOK = 8;
 
-export function byggChunkKey(recordingId: string, index: number): string {
-  return `${recordingId}:${index}`;
+export function byggChunkKey(
+  eierId: string,
+  recordingId: string,
+  index: number,
+): string {
+  return `${encodeURIComponent(eierId)}:${recordingId}:${index}`;
 }
 
 export function byggChunkMeta(
+  eierId: string,
   recordingId: string,
   index: number,
   naa: Date,
 ): RecordingChunkMeta {
   return {
-    key: byggChunkKey(recordingId, index),
+    key: byggChunkKey(eierId, recordingId, index),
+    eierId,
     recordingId,
     index,
     createdAt: naa.toISOString(),

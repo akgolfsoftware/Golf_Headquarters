@@ -28,6 +28,7 @@ import { LiveCoachPanel } from "@/components/portal/live/LiveCoachPanel";
 import type { LiveCoachPanelData } from "@/components/portal/live/types";
 import { saveTapperCounts, finishTapperSession } from "./actions";
 import { leggIKo, tomKo } from "@/lib/offline-queue/tapper-queue";
+import { useLokalDataEier } from "@/lib/offline-queue/eier-context";
 
 type Club = { id: string; name: string };
 
@@ -53,6 +54,7 @@ const OSLO_KL = new Intl.DateTimeFormat("nb-NO", {
 
 export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCounts }: Props) {
   const router = useRouter();
+  const eierId = useLokalDataEier();
   const [counts, setCounts] = useState<Record<string, number>>(() => ({
     ...Object.fromEntries(clubs.map((c) => [c.id, 0])),
     ...(initialCounts ?? {}),
@@ -84,8 +86,10 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
     }
     // IndexedDB kan i sjeldne tilfeller kaste synkront (f.eks. lukket
     // forbindelse) — skal aldri hindre avslutt() sin navigering.
-    await leggIKo(sessionId, payload).catch(() => {});
-    setLagreStatus("kolagt");
+    const kolagt = eierId
+      ? await leggIKo(eierId, sessionId, payload).catch(() => false)
+      : false;
+    setLagreStatus(kolagt ? "kolagt" : "gitt-opp");
     return false;
   }
 
@@ -104,14 +108,15 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
   // nettet kommer tilbake mens siden er åpen.
   useEffect(() => {
     async function synk() {
-      const resultat = await tomKo(sessionId, saveTapperCounts);
+      if (!eierId) return;
+      const resultat = await tomKo(eierId, sessionId, saveTapperCounts);
       if (resultat === "synket") setLagreStatus("ok");
       else if (resultat === "gitt-opp") setLagreStatus("gitt-opp");
     }
     void synk();
     window.addEventListener("online", synk);
     return () => window.removeEventListener("online", synk);
-  }, [sessionId]);
+  }, [eierId, sessionId]);
 
   async function avslutt() {
     if (finishing) return;

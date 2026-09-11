@@ -6,7 +6,9 @@ const NAA = new Date(2026, 6, 11, 12, 0);
 
 describe("byggKoRad", () => {
   it("starter på 0 forsøk med gitt telling og tidspunkt", () => {
-    const r = byggKoRad("okt-1", [{ club: "driver", count: 5 }], NAA);
+    const r = byggKoRad("bruker-a", "okt-1", [{ club: "driver", count: 5 }], NAA);
+    assert.equal(r.eierId, "bruker-a");
+    assert.equal(r.key, "bruker-a:okt-1");
     assert.equal(r.sessionId, "okt-1");
     assert.deepEqual(r.counts, [{ club: "driver", count: 5 }]);
     assert.equal(r.forsokAntall, 0);
@@ -16,7 +18,7 @@ describe("byggKoRad", () => {
 
 describe("registrerMislykketForsok", () => {
   it("øker forsøkstelleren med 1 og oppdaterer tidspunkt", () => {
-    const r0 = byggKoRad("okt-1", [], NAA);
+    const r0 = byggKoRad("bruker-a", "okt-1", [], NAA);
     const senere = new Date(2026, 6, 11, 12, 5);
     const r1 = registrerMislykketForsok(r0, senere);
     assert.equal(r1.forsokAntall, 1);
@@ -24,7 +26,7 @@ describe("registrerMislykketForsok", () => {
   });
 
   it("er ren — endrer ikke originalobjektet", () => {
-    const r0 = byggKoRad("okt-1", [], NAA);
+    const r0 = byggKoRad("bruker-a", "okt-1", [], NAA);
     registrerMislykketForsok(r0, NAA);
     assert.equal(r0.forsokAntall, 0);
   });
@@ -32,19 +34,19 @@ describe("registrerMislykketForsok", () => {
 
 describe("trengerManuellHandling", () => {
   it("false under terskelen", () => {
-    let r = byggKoRad("okt-1", [], NAA);
+    let r = byggKoRad("bruker-a", "okt-1", [], NAA);
     for (let i = 0; i < 4; i++) r = registrerMislykketForsok(r, NAA);
     assert.equal(r.forsokAntall, 4);
     assert.equal(trengerManuellHandling(r), false);
   });
 
   it("true ved og over terskelen (5)", () => {
-    let r = byggKoRad("okt-1", [], NAA);
+    let r = byggKoRad("bruker-a", "okt-1", [], NAA);
     for (let i = 0; i < 5; i++) r = registrerMislykketForsok(r, NAA);
     assert.equal(trengerManuellHandling(r), true);
   });
 
   it("fersk rad (0 forsøk) trenger aldri manuell handling", () => {
-    assert.equal(trengerManuellHandling(byggKoRad("okt-1", [], NAA)), false);
+    assert.equal(trengerManuellHandling(byggKoRad("bruker-a", "okt-1", [], NAA)), false);
   });
 });

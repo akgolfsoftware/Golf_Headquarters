@@ -12,6 +12,10 @@
 import { defaultCache } from "@serwist/next/worker";
 import type { PrecacheEntry, SerwistGlobalConfig, RuntimeCaching } from "serwist";
 import { Serwist, NetworkOnly } from "serwist";
+import {
+  erPrivatKlientsti,
+  erPrivatNextDataSti,
+} from "@/lib/offline-queue/private-cache-routes";
 
 // ServiceWorker-typene ligger i 'webworker'-lib som ikke er aktivert i prosjektets
 // tsconfig (vi har 'dom' for app-koden). Bruk minimal type-skisse i stedet.
@@ -36,21 +40,13 @@ declare const self: SwScope;
  * i inntil 24t — det ville lagre spiller-/helse-/booking-data på enheten, som er
  * en reell lekkasje på delte/familie-enheter (appen har forelder/junior-bruk).
  * Vi legger derfor en NetworkOnly-regel FØRST (Serwist bruker første treff) for
- * alt under /portal, /admin og /api, inkludert deres RSC- og _next/data-varianter.
+ * alle autentiserte toppnivåruter, inkludert RSC- og _next/data-varianter.
  */
 const authNetworkOnly: RuntimeCaching = {
   matcher: ({ url, sameOrigin }) => {
     if (!sameOrigin) return false;
     const p = url.pathname;
-    if (p.startsWith("/api/")) return true;
-    if (p.startsWith("/portal") || p.startsWith("/admin")) return true;
-    // Next.js data-payloads for de samme sidene (/_next/data/<build>/portal…json).
-    if (
-      p.startsWith("/_next/data/") &&
-      (p.includes("/portal") || p.includes("/admin"))
-    )
-      return true;
-    return false;
+    return erPrivatKlientsti(p) || erPrivatNextDataSti(p);
   },
   handler: new NetworkOnly(),
 };

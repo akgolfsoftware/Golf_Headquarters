@@ -13,6 +13,7 @@ import {
 describe("live-drill-kladd", () => {
   it("bygger rad med forsokAntall 0", () => {
     const rad = byggLiveDrillKoRad(
+      "bruker-a",
       "s1",
       [
         {
@@ -29,13 +30,15 @@ describe("live-drill-kladd", () => {
       new Date("2026-07-24T12:00:00Z"),
     );
     assert.equal(rad.sessionId, "s1");
+    assert.equal(rad.eierId, "bruker-a");
+    assert.equal(rad.key, "bruker-a:s1");
     assert.equal(rad.forsokAntall, 0);
     assert.equal(rad.drills[0].repsTotal, 10);
     assert.equal(rad.totalSec, 120);
   });
 
   it("teller mislykkede forsøk til manuell terskel", () => {
-    let rad = byggLiveDrillKoRad("s1", [], 0, new Date("2026-07-24T12:00:00Z"));
+    let rad = byggLiveDrillKoRad("bruker-a", "s1", [], 0, new Date("2026-07-24T12:00:00Z"));
     for (let i = 0; i < 5; i++) {
       rad = registrerMislykketLiveForsok(rad, new Date());
     }

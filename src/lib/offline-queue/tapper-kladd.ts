@@ -8,6 +8,10 @@
  */
 
 export type TapperKoRad = {
+  /** Sammensatt lokal nøkkel: eier + økt. */
+  key: string;
+  /** Innlogget aktør som opprettet kladden på denne enheten. */
+  eierId: string;
   sessionId: string;
   counts: Array<{ club: string; count: number }>;
   /** ISO-tidspunkt for siste lokale oppdatering — kun til feilsøk/visning. */
@@ -19,11 +23,19 @@ export type TapperKoRad = {
 const MAKS_STILLE_FORSOK = 5;
 
 export function byggKoRad(
+  eierId: string,
   sessionId: string,
   counts: Array<{ club: string; count: number }>,
   naa: Date,
 ): TapperKoRad {
-  return { sessionId, counts, sistOppdatert: naa.toISOString(), forsokAntall: 0 };
+  return {
+    key: `${encodeURIComponent(eierId)}:${sessionId}`,
+    eierId,
+    sessionId,
+    counts,
+    sistOppdatert: naa.toISOString(),
+    forsokAntall: 0,
+  };
 }
 
 /** Etter et mislykket synk-forsøk — oppdaterer telling og tidspunkt. */

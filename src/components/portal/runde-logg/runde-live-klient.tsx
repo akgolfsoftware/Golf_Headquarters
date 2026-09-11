@@ -39,7 +39,7 @@ import { TL } from "@/lib/v2/train-lock";
  * KUN brutto score — netto finnes ikke.
  */
 
-import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import type { LoggetHull, LoggetSlag } from "@/lib/runde-logg/types";
 import { lesKladdCached, lesKladdServer, lagreKladd, slettKladd } from "@/lib/runde-logg/draft";
@@ -51,6 +51,7 @@ import { HullOversikt } from "./hull-oversikt";
 import { SgPanel } from "./sg-panel";
 import { RundeRecap } from "./runde-recap";
 import { TommelSone, PrimaerKnapp } from "./tommel-sone";
+import { useLokalDataEier } from "@/lib/offline-queue/eier-context";
 
 /** Kladden endres aldri utenfra mens siden er åpen — tom subscribe. */
 const abonnerIngen = () => () => {};
@@ -78,6 +79,7 @@ function scoreNavn(s: number, par: number): string {
 }
 
 export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
+  const eierId = useLokalDataEier();
   const [steg, setSteg] = useState<Steg>("oppsett");
   const [visning, setVisning] = useState<Visning>("stepper");
   const [oppsett, setOppsett] = useState<Omit<OppsettVerdi, "hull"> | null>(null);
@@ -86,6 +88,7 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
   const [kladdHandtert, setKladdHandtert] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [srMelding, setSrMelding] = useState("");
+  const [lokalLagringsfeil, setLokalLagringsfeil] = useState(false);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   function visToast(t: string) {
@@ -95,14 +98,15 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
   }
 
   // Gjenoppretting: les kladd hydration-trygt (server ser alltid null).
-  const lagretKladd = useSyncExternalStore(abonnerIngen, lesKladdCached, lesKladdServer);
+  const snapshot = useCallback(() => lesKladdCached(eierId), [eierId]);
+  const lagretKladd = useSyncExternalStore(abonnerIngen, snapshot, lesKladdServer);
   const kladd = kladdHandtert ? null : lagretKladd;
 
   // Autolagre kladd etter hver mutasjon (kun etter at føringen er i gang).
   const startet = steg !== "oppsett" && oppsett != null;
   useEffect(() => {
     if (!startet || !oppsett) return;
-    lagreKladd({
+    const lagret = lagreKladd(eierId, {
       versjon: 1,
       modus: "live",
       foringsModus: visning === "detalj" ? "slag" : "hurtig",
@@ -117,7 +121,9 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
       hullData,
       aktivtHullIdx,
     });
-  }, [startet, visning, steg, oppsett, hullData, aktivtHullIdx]);
+    const statusTimer = window.setTimeout(() => setLokalLagringsfeil(!lagret), 0);
+    return () => window.clearTimeout(statusTimer);
+  }, [startet, visning, steg, oppsett, hullData, aktivtHullIdx, eierId]);
 
   const start = (verdi: OppsettVerdi) => {
     setOppsett({
@@ -158,7 +164,7 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
   };
 
   const forkastKladd = () => {
-    slettKladd();
+    slettKladd(eierId);
     setKladdHandtert(true);
   };
 
@@ -345,6 +351,15 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
             </span>
           </div>
         </header>
+
+        {lokalLagringsfeil && (
+          <p
+            role="alert"
+            style={{ margin: "0 0 14px", color: TL.text, fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600 }}
+          >
+            Kunne ikke lagre runden på denne enheten. Hold siden åpen mens du fortsetter, og prøv igjen før du går ut.
+          </p>
+        )}
 
         {/* ── Tom tilstand: ingen runde pågår → oppsett ── */}
         {steg === "oppsett" && (

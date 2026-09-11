@@ -18,6 +18,10 @@ export type LiveDrillReps = {
 };
 
 export type LiveDrillKoRad = {
+  /** Sammensatt lokal nøkkel: eier + økt. */
+  key: string;
+  /** Innlogget aktør som opprettet kladden på denne enheten. */
+  eierId: string;
   sessionId: string;
   drills: LiveDrillReps[];
   totalSec: number;
@@ -33,12 +37,15 @@ export type LiveDrillKoRad = {
 const MAKS_STILLE_FORSOK = 5;
 
 export function byggLiveDrillKoRad(
+  eierId: string,
   sessionId: string,
   drills: LiveDrillReps[],
   totalSec: number,
   naa: Date,
 ): LiveDrillKoRad {
   return {
+    key: `${encodeURIComponent(eierId)}:${sessionId}`,
+    eierId,
     sessionId,
     drills,
     totalSec,
