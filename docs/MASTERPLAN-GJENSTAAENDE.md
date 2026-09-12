@@ -63,7 +63,12 @@ Disse er nå eksplisitte D0-blokkeringer, ikke fotnoter: faktisk 320 px-/200 %-k
 | O06 booking/betaling | Kollisjon, idempotens, hendelser i ulik rekkefølge, credits, avbestilling/refusjon og oppsigelse mot Stripe først. Kun mocket Stripe | I main via PR #853. [Kontroll](design-audit/booking-o06-betaling-2026-09-12.md). Innlogget checkout og reell testnøkkel gjenstår |
 | P02–P05 Plan/Live | Frekvens uten dobbelttelling av speil, FYS-standardverdi og detaljgjenåpning, avbrutt mot lagret | I main via PR #854. [Kontroll](design-audit/plan-live-p02-p05-2026-09-12.md). Innlogget reise gjenstår |
 | G01/G06–G10 | Korrigering, kilde, enhet, manglende data og gjenåpning uten produksjonsimport | I main via PR #855. [Kontroll](design-audit/runde-sg-trackman-g01-g10-2026-09-12.md) |
-| O13 kvalitet/backup | Feilsanitering uten hemmeligheter, helsesvar uten env, lokal URL-vakt og rollback-regel. Faktisk `pg_restore` blokkert uten Docker | Bygget på `grok/o13-kvalitet-backup-2026-09-12`. [Kontroll](design-audit/o13-kvalitet-backup-2026-09-12.md). L7 ikke bestått |
+| O13 kvalitet/backup | Feilsanitering uten hemmeligheter, helsesvar uten env, lokal URL-vakt og rollback-regel. Faktisk `pg_restore` blokkert uten Docker | I main via PR #857. [Kontroll](design-audit/o13-kvalitet-backup-2026-09-12.md). L7 ikke bestått |
+| J05 TN-testreise | Tildeling → utkastkorrigering → angre → fullføring → historikk uten overskriving | Bygget og testet i PR #858. Ikke flettet. Ikke innlogget prøvd. Ikke sett av Anders. Ikke publisert |
+| P09 coachkontakt økt | Tilbakemelding følger økt-tilgang; svar/kvittering bare på spillerens egen økt | Bygget og testet i PR #859. Ikke flettet. Ikke innlogget prøvd. Ikke sett av Anders. Ikke publisert |
+| J14 AgenticOS spor | Godkjenning, avvisning og kjøringsfeil peker på samme forslags-id. Feiltekst renses | Bygget og testet i PR #861. Ikke flettet. Ikke innlogget prøvd. Ikke sett av Anders. Ikke publisert |
+| P09/J07 melding til coach | Spiller sender bare til aktivt tildelt coach. Ingen tilfeldig coach-fallback | Bygget og testet i denne leveransen. Ikke flettet. Ikke innlogget prøvd. Ikke sett av Anders. Ikke publisert. [Kontroll](design-audit/playerhq-p09-melding-coach-2026-09-12.md) |
+| P0-TEST isolert restore | Docker/launch-testdatabase | Pågår i PR #862 (annet vindu). Ikke duplisert her |
 
 Siste samlede testresultat og flettepunkt skal leses i samlingsrapporten og tilhørende GitHub PR. Innlogget produksjonsreise, faktisk betaling og Anders' visuelle vurdering er egne kontroller som fortsatt gjenstår.
 
@@ -73,7 +78,7 @@ Aktiv arbeidsdeling 12.09.2026: Claude Design eier Design System v0.1 og de før
 
 | Prioritet / ID | Konkret neste leveranse | Inngang | Ferdig når |
 |---|---|---|---|
-| 1 · P0-TEST → R-E / R1–R3 | Fullfør innlogget Next-/databasereise I dag → Plan → PH-04 → PH-05 → PH-06. Enhetstester er i PR #845. Isolert testdatabase er blokkert uten Docker | `docs/utvikling/lokal-testdatabase.md`, [blokkering](design-audit/p0-test-blokkering-2026-09-12.md), [R-E](design-audit/playerhq-r-e-spillerreise-2026-09-12.md) | P0-TEST er bestått; samme økt/tall i innlogget isolert base; gjenåpning virker; uvedkommende avvises |
+| 1 · P0-TEST → R-E / R1–R3 | Fullfør innlogget Next-/databasereise I dag → Plan → PH-04 → PH-05 → PH-06. Enhetstester er i PR #845. Isolert testdatabase er blokkert uten Docker. PR #862 jobber med isolert restore i eget vindu | `docs/utvikling/lokal-testdatabase.md`, [blokkering](design-audit/p0-test-blokkering-2026-09-12.md), [R-E](design-audit/playerhq-r-e-spillerreise-2026-09-12.md) | P0-TEST er bestått; samme økt/tall i innlogget isolert base; gjenåpning virker; uvedkommende avvises |
 | 2 · D2-AO | Teknisk AgencyOS-reise: stall bruker samme spillerporte som kort/Workbench; oversikt lastes ikke uten tilgang. Visuell port venter på D0 | `src/lib/admin/stallen-scope.ts`, `src/lib/agencyos/coach-reise.ts`, [kontroll](design-audit/agencyos-d2-ao-teknisk-2026-09-12.md) | Innlogget reise og visuell port gjenstår; tilgang på stall/kort er prøvd uten visuell endring |
 | 3 · Caddie-kø/AI-grense | Avgrens AgencyOS-køene til utkast eieren faktisk kan godkjenne, og hold ukjent databasefritekst unna ekstern modell. Bygget på `grok/caddie-ko-eier-fritekst-2026-09-12` | `src/lib/caddie/draft-eier.ts`, `src/lib/caddie/modell-felt.ts`, kø- og innboks-lastere | Kø og godkjenning bruker samme eierregel. Ukjent fritekst går ikke til ekstern modell uten en dokumentert tillatt datastruktur |
 | 4 · D2-TN | Fullfør den sikrede Team Norway-oversikten → testføring → resultat/historikk → dokumenter/poster | `src/lib/team-norway/tn-reise.ts`, `src/lib/domain/tn-post.ts`, [kontroll](design-audit/team-norway-d2-tn-teknisk-reise-2026-09-12.md) | Teknisk reise og kanonisk gruppeavgrensning bygget. Innlogget og visuell kontroll gjenstår |
@@ -85,10 +90,10 @@ R-A–R-J og REV-F1–F11 er forklart i [produktplanen](planer/produktplan-og-in
 
 | Område / ID | Konkret restarbeid | Avhengighet / ferdigkriterium |
 |---|---|---|
-| PlayerHQ · D2-PH | Resterende Analyse, mål, kalender, øvelsesbank/program, profil, meldinger, deling, test/retest og sosiale reiser | Knytt hver skjerm til valgt kilde og appdata. Fullfør relevante tom-/laste-/feiltilstander. [Funksjonene P01–P11](planer/funksjonsregister-2026-09-11.md) |
+| PlayerHQ · D2-PH | Tilbakemelding låst til økt (PR #859). Melding bare til tildelt coach (denne leveransen). Analyse, kalender, øvelsesbank, deling og sosiale reiser gjenstår | [P09 melding](design-audit/playerhq-p09-melding-coach-2026-09-12.md) |
 | Plan/Live | Frekvens uten speildobling og FYS-gjenåpning er prøvd. Innlogget ny/rediger/flytt og Caddie i live gjenstår | [Kontroll](design-audit/plan-live-p02-p05-2026-09-12.md). Separate modeller beholdes |
 | Mål · R-F / F1 | Startverdi, periode og faktisk gjennomføring; TN-mål med variant, antall, enhet og retning | Faglige definisjoner før avhengige beregninger. Eventuelle nye databasefelt krever konkret autorisasjon |
-| Team Norway-tester | Avstem testbatteriet mot Excel v3, variantbundet føring, korrigering/angre og historikk | [Fagkontroll](beslutningsgrunnlag/team-norway-excel-v3-kontroll.md). Ugyldige resultater avvises, og lagringsfeil bevarer registreringen |
+| Team Norway-tester | Variantbundet føring, korrigering/angre og historikk er prøvd i PR #858. Innlogget reise og resterende Excel-v3-fagvalg gjenstår | [Fagkontroll](beslutningsgrunnlag/team-norway-excel-v3-kontroll.md) |
 | WANG/GFGK | Årsplan, juniorgrupper, testdager, styrkeprogram, rapporter og foresatte | Virkelige rollegrenser og avklarte fagregler; P08/O03 i funksjonsregisteret |
 | Booking · R4/R5/R9 | Serverregler for kollisjon, idempotens og trygg retur er prøvd med mock. Innlogget checkout og valgt bookingdesign gjenstår | [Kontroll](design-audit/booking-o06-betaling-2026-09-12.md). Ingen reell betaling |
 | Betaling/tilgang · R6/R8 | Credits-race, avbestilling/refusjon og oppsigelse mot Stripe først er prøvd. Innlogget reise og testnøkkel gjenstår | [Kontroll](design-audit/booking-o06-betaling-2026-09-12.md) |
@@ -96,7 +101,7 @@ R-A–R-J og REV-F1–F11 er forklart i [produktplanen](planer/produktplan-og-in
 | Runde/SG/DataGolf | Korrigering, kilde, enhet og manglende data er prøvd uten produksjonsimport. Innlogget importreise gjenstår | [Kontroll](design-audit/runde-sg-trackman-g01-g10-2026-09-12.md) |
 | Baneguide · BG-01–06 | Gameplan/kart/soner, samme slagkjede i kart og liste, GPS, offline, bag/spredning og coachvisning | Seks konkrete delpakker står i funksjonsregisteret. Avklar datakilde, bruker, offline-omfang og valgt design ved oppstart |
 | Vindverktøy | Avklar treningsberegning, værkilde eller fysisk måler; bygg deretter én valgt funksjon | Ingen sensor- eller værintegrasjon er bekreftet som valgt. Usikkerhet og datakilde skal vises |
-| AgenticOS/Jarvis | Innkurv, utkast, godkjenning, rutiner, oppgaver og kalender koblet til faktisk kjøring | Ingen editor-agentkopier som runtime. Utsending til andre krever gjeldende eksplisitt autorisasjon |
+| AgenticOS/Jarvis | Godkjenning → kjøring/feil → spor er prøvd i PR #861. Innkurv, rutiner, kalender og utsending gjenstår | Ingen editor-agentkopier som runtime. Utsending til andre krever gjeldende eksplisitt autorisasjon |
 | Marked/salg | Nettsider, tilbud, coachprofiler, innhold og fungerende overgang til booking | Avstem bestilt omfang; ikke aktiver et historisk markedsføringssystem automatisk |
 | Økonomi/personlig | Beslutningsstøtte, rapportgrunnlag og egne oppgaver | Avklar konkret behov; økonomitall kun fra autorisert Tripletex-eksport |
 | Samtykke · R-J | Formål, opplysningstype, alder, rolle, deling, lagringssted og historikk | Verifiser regelgrunnlaget før tekst/tilgang endres. Ingen automatisk bytting av aldersgrense |

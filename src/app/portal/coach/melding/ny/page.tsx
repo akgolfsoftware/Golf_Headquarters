@@ -1,7 +1,7 @@
 /**
  * PlayerHQ Coach · Ny melding (/portal/coach/melding/ny) — v2.
- * Hovedcoach forhåndsvalgt (aktiv PlayerEnrollment → fallback første
- * COACH-bruker), samme datakilde-mønster som hub-siden
+ * Hovedcoach er den aktive PlayerEnrollment-coachen, samme datakilde
+ * som hub-siden. Uten tildelt coach vises tom tilstand — ingen tilfeldig coach.
  * (src/app/portal/coach/melding/page.tsx → CoachMeldingerV2). Erstatter
  * legacy /portal/(legacy)/coach/melding/ny som spillerens inngang.
  */
@@ -30,20 +30,13 @@ export default async function NyMeldingPage() {
     );
   }
 
-  const [aktivEnrollering, forsteCoach] = await Promise.all([
-    prisma.playerEnrollment.findFirst({
-      where: { userId: user.id, endedAt: null, coachId: { not: null } },
-      include: { coach: { select: { id: true, name: true } } },
-      orderBy: { enrolledAt: "desc" },
-    }),
-    prisma.user.findFirst({
-      where: { role: "COACH" },
-      select: { id: true, name: true },
-      orderBy: { name: "asc" },
-    }),
-  ]);
+  const aktivEnrollering = await prisma.playerEnrollment.findFirst({
+    where: { userId: user.id, endedAt: null, coachId: { not: null } },
+    include: { coach: { select: { id: true, name: true } } },
+    orderBy: { enrolledAt: "desc" },
+  });
 
-  const coach = aktivEnrollering?.coach ?? forsteCoach ?? null;
+  const coach = aktivEnrollering?.coach ?? null;
 
   return (
     <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name}>
