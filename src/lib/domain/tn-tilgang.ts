@@ -17,10 +17,10 @@
 import "server-only";
 
 import { prisma } from "@/lib/prisma";
-import { aktivtMedlemskapWhere } from "@/lib/domain/grupper";
+import { aktivtMedlemskapWhere, TEAM_NORWAY_SLUG } from "@/lib/domain/grupper";
 import type { UserRole } from "@/generated/prisma/client";
 
-const TEAM_NORWAY_SLUG = "team-norway";
+export { TEAM_NORWAY_SLUG };
 
 export type TnTrenerRolle = "COACH" | "ASSISTANT";
 
