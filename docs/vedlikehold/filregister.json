@@ -5582,6 +5582,11 @@
       "byte": 7295
     },
     {
+      "sti": "docs/design-audit/booking-o06-betaling-2026-09-12.md",
+      "omrade": "dokumentasjon",
+      "byte": 1488
+    },
+    {
       "sti": "docs/design-audit/claude-design-v0-3-3-2026-09-12.md",
       "omrade": "dokumentasjon",
       "byte": 2864
@@ -14957,6 +14962,11 @@
       "byte": 558
     },
     {
+      "sti": "src/app/portal/meg/abonnement/avbestill/actions.test.ts",
+      "omrade": "test",
+      "byte": 3049
+    },
+    {
       "sti": "src/app/portal/meg/abonnement/avbestill/actions.ts",
       "omrade": "appkode",
       "byte": 4027
@@ -15035,6 +15045,11 @@
       "sti": "src/app/portal/meg/actions.ts",
       "omrade": "appkode",
       "byte": 5239
+    },
+    {
+      "sti": "src/app/portal/meg/bookinger/actions.test.ts",
+      "omrade": "test",
+      "byte": 4329
     },
     {
       "sti": "src/app/portal/meg/bookinger/actions.ts",
@@ -21512,6 +21527,11 @@
       "byte": 1999
     },
     {
+      "sti": "src/lib/booking/credit-booking.test.ts",
+      "omrade": "test",
+      "byte": 4077
+    },
+    {
       "sti": "src/lib/booking/credit-booking.ts",
       "omrade": "appkode",
       "byte": 8011
@@ -23897,6 +23917,11 @@
       "byte": 8989
     },
     {
+      "sti": "src/lib/payments/save.test.ts",
+      "omrade": "test",
+      "byte": 5161
+    },
+    {
       "sti": "src/lib/payments/save.ts",
       "omrade": "appkode",
       "byte": 3154
@@ -25170,6 +25195,11 @@
       "sti": "src/lib/stripe/beregn-subscription-sync.ts",
       "omrade": "appkode",
       "byte": 2294
+    },
+    {
+      "sti": "src/lib/stripe/handle-event-rekkefolge.test.ts",
+      "omrade": "test",
+      "byte": 3444
     },
     {
       "sti": "src/lib/stripe/handle-event.ts",
