@@ -18,77 +18,7 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@/generated/prisma/client";
-
-// ---------------------------------------------------------------------------
-// S-20: PII-sanitering
-// ---------------------------------------------------------------------------
-
-/** Feltnavn som aldri skal logges — verdien erstattes med "[REDACTED]" */
-const PII_FIELDS = new Set([
-  "email",
-  "mail",
-  "phone",
-  "telefon",
-  "password",
-  "passord",
-  "secret",
-  "token",
-  "accessToken",
-  "refreshToken",
-  "apiKey",
-  "creditCard",
-  "cardNumber",
-  "cvv",
-  "ssn",
-  "dateOfBirth",
-  "dob",
-  "guardianEmail",
-  "guestEmail",
-  "guestPhone",
-  "guestName",
-]);
-
-/** Regex for å finne e-postadresser i tekst-strenger */
-const EMAIL_RE = /[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/g;
-/** Regex for norske/internasjonale telefonnumre (8+ siffer, evt. med +/mellomrom) */
-const PHONE_RE = /(?:\+?[\d\s\-()]{8,20})/g;
-
-/**
- * Saniterer et objekt rekursivt: erstattar kjente PII-feltnavn med "[REDACTED]"
- * og maskerer e-post/telefon i strengverdier.
- */
-function sanitizeMeta(obj: unknown, depth = 0): unknown {
-  if (depth > 5) return obj; // unngå uendelig rekursjon
-  if (obj === null || obj === undefined) return obj;
-  if (typeof obj === "string") {
-    // Masker e-postadresser og telefonnumre i fri tekst
-    return obj
-      .replace(EMAIL_RE, "[e-post-fjernet]")
-      .replace(PHONE_RE, (m) => (m.replace(/\D/g, "").length >= 8 ? "[tlf-fjernet]" : m));
-  }
-  if (Array.isArray(obj)) {
-    return obj.map((item) => sanitizeMeta(item, depth + 1));
-  }
-  if (typeof obj === "object") {
-    const result: Record<string, unknown> = {};
-    for (const [key, value] of Object.entries(obj as Record<string, unknown>)) {
-      if (PII_FIELDS.has(key)) {
-        result[key] = "[REDACTED]";
-      } else {
-        result[key] = sanitizeMeta(value, depth + 1);
-      }
-    }
-    return result;
-  }
-  return obj;
-}
-
-/** Saniterer en feilmeldings-streng */
-function sanitizeMessage(msg: string): string {
-  return msg
-    .replace(EMAIL_RE, "[e-post-fjernet]")
-    .replace(PHONE_RE, (m) => (m.replace(/\D/g, "").length >= 8 ? "[tlf-fjernet]" : m));
-}
+import { sanitizeMessage, sanitizeMeta } from "@/lib/error-sanitize";
 
 export type ErrorSeverity = "fatal" | "error" | "warn" | "info";
 
@@ -202,8 +132,9 @@ export async function logError({
       },
     });
   } catch (dbError) {
-    // Hvis ErrorLog selv feiler: kun console-log
-    console.error("ErrorLog write failed:", dbError);
+    const raw =
+      dbError instanceof Error ? dbError.message : String(dbError);
+    console.error("ErrorLog write failed:", sanitizeMessage(raw));
   }
 
   // 3. Slack-alert ved fatal/error (sanitert meta sendes videre)

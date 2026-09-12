@@ -33,9 +33,9 @@ Arbeidsoppskrift 10.09.2026. En lokal gjenopprettingsprøve med syntetiske data 
 | Varsling ved faktisk driftsfeil | Ikke prøvd |
 | Ny behandling av feilet betaling i testmiljø | Ikke prøvd |
 | Sikkerhetskopiens dekning og tidspunkt | Ikke verifisert |
-| Gjenoppretting til separat miljø | Lokal prøve bestått: 196 tabeller, bevart booking og kollisjonsvern. Produksjonskopi gjenstår |
-| Målt gjenopprettingstid og datatap | Lokal liten testdatabase: 2,59 sekunder, syntetisk booking bevart. Produksjon ikke målt |
-| Tilbakeføring av utrulling med kompatibelt skjema | Ikke prøvd |
+| Gjenoppretting til separat miljø | Lokal prøve 10.09: 196 tabeller, bevart booking og kollisjonsvern. 12.09: URL-vakt enhetstestet; `pg_restore` ikke kjørt (Docker nede). Produksjonskopi gjenstår |
+| Målt gjenopprettingstid og datatap | Lokal liten testdatabase 10.09: 2,59 sekunder, syntetisk booking bevart. Produksjon ikke målt |
+| Tilbakeføring av utrulling med kompatibelt skjema | Regel enhetstestet: produksjonstilbakeføring avvist uten uttrykkelig autorisasjon. Vercel-rollback ikke kjørt |
 
 
 ## Lokal testoppskrift og avgrensning
