@@ -10,9 +10,12 @@ import {
   NEVNER_TEKST,
 } from "@/lib/domain/etterlevelse";
 
+/** Kun godkjent ParentRelation gir innsyn, booking og barnbytte. */
+const GODKJENT_FORELDER = { approved: true } as const;
+
 export async function hentBarnForForelder(parentUserId: string) {
   const links = await prisma.parentRelation.findMany({
-    where: { parentId: parentUserId },
+    where: { parentId: parentUserId, ...GODKJENT_FORELDER },
     include: {
       child: {
         select: {
@@ -38,16 +41,31 @@ export async function hentBarnForForelder(parentUserId: string) {
   }));
 }
 
+export type ForelderBarnKobling = Awaited<ReturnType<typeof hentBarnForForelder>>[number];
+
+/**
+ * Velg hvilket godkjent barn som er i fokus. Uten `barnId` brukes det første
+ * godkjente barnet. Med `barnId` returneres kun det barnet, og aldri et
+ * annet barn som fallback — feil eller ugodkjent id gir `fokus: null`.
+ */
+export async function velgGodkjentBarn(
+  parentUserId: string,
+  barnId?: string | null,
+): Promise<{ alle: ForelderBarnKobling[]; fokus: ForelderBarnKobling | null }> {
+  const alle = await hentBarnForForelder(parentUserId);
+  if (alle.length === 0) return { alle, fokus: null };
+  if (!barnId) return { alle, fokus: alle[0] ?? null };
+  return { alle, fokus: alle.find((b) => b.child.id === barnId) ?? null };
+}
+
 /**
  * Autorisasjonssjekk for «forelder booker for barnet» (STEG 9.8): finnes det
- * en ParentRelation mellom denne forelderen og dette barnet? Returnerer
- * barnets bookingsrelevante felter (id/navn/e-post/tier), eller null.
- * Samme filter (kun parentId, ingen `approved`-sjekk) som hentBarnForForelder
- * over, for konsistent autorisasjon på tvers av forelderflatene.
+ * en godkjent ParentRelation mellom denne forelderen og dette barnet?
+ * Returnerer barnets bookingsrelevante felter, eller null.
  */
 export async function hentBarnHvisTilhoerer(parentUserId: string, barnId: string) {
   const link = await prisma.parentRelation.findFirst({
-    where: { parentId: parentUserId, childId: barnId },
+    where: { parentId: parentUserId, childId: barnId, ...GODKJENT_FORELDER },
     select: {
       child: {
         select: { id: true, name: true, email: true, tier: true, avatarUrl: true },
@@ -70,8 +88,9 @@ export async function assertBarnTilhorerForelder(
 ): Promise<boolean> {
   const rel = await prisma.parentRelation.findUnique({
     where: { parentId_childId: { parentId: parentUserId, childId } },
+    select: { approved: true },
   });
-  return !!rel;
+  return rel?.approved === true;
 }
 
 // ── Foreldre-portal · landing-data (mobil-først) ──────────────────────────
@@ -125,7 +144,7 @@ export type ForelderAktivitet = {
 export type ForelderOversikt = {
   /** Antall koblede barn — styrer bytte-UI og tomtilstander. */
   antallBarn: number;
-  /** Fokus-barnet (første koblede). Null hvis ingen barn er koblet. */
+  /** Fokus-barnet. Null hvis ingen godkjent barn, eller valgt id ikke eies. */
   fokusBarn: ForelderBarn | null;
   coachNavn: string | null;
   klubb: string | null;
@@ -143,35 +162,37 @@ export type ForelderOversikt = {
 
 const UBETALT: PaymentStatus[] = ["PENDING", "FAILED"];
 
+const TOM_FORELDER_OVERSIKT: Omit<ForelderOversikt, "antallBarn"> = {
+  fokusBarn: null,
+  coachNavn: null,
+  klubb: null,
+  kpi: {
+    okter30d: 0,
+    nesteBooking: null,
+    utestaaendeOre: 0,
+    utestaaendeAntall: 0,
+  },
+  kommendeBookinger: [],
+  kommendeOkter: [],
+  fakturaer: [],
+  aktivitet: [],
+};
+
 /**
- * Henter all data til /forelder-landingen for det første koblede barnet.
- * Returnerer `fokusBarn: null` når forelderen ikke er koblet til noen barn.
+ * Henter data til /forelder-landingen for ett godkjent barn.
+ * Uten `barnId` brukes det første godkjente barnet. Feil eller ugodkjent
+ * `barnId` gir tomt innhold — aldri et annet barns tall.
  */
 export async function hentForelderOversikt(
-  parentUserId: string
+  parentUserId: string,
+  barnId?: string | null,
 ): Promise<ForelderOversikt> {
-  const barn = await hentBarnForForelder(parentUserId);
+  const { alle, fokus } = await velgGodkjentBarn(parentUserId, barnId);
 
-  if (barn.length === 0) {
-    return {
-      antallBarn: 0,
-      fokusBarn: null,
-      coachNavn: null,
-      klubb: null,
-      kpi: {
-        okter30d: 0,
-        nesteBooking: null,
-        utestaaendeOre: 0,
-        utestaaendeAntall: 0,
-      },
-      kommendeBookinger: [],
-      kommendeOkter: [],
-      fakturaer: [],
-      aktivitet: [],
-    };
+  if (!fokus) {
+    return { antallBarn: alle.length, ...TOM_FORELDER_OVERSIKT };
   }
 
-  const fokus = barn[0];
   const childId = fokus.child.id;
   const now = new Date();
   const om7dager = new Date(now);
@@ -273,7 +294,7 @@ export async function hentForelderOversikt(
   const utestaaendeOre = ubetalte.reduce((s, p) => s + p.amountOre, 0);
 
   return {
-    antallBarn: barn.length,
+    antallBarn: alle.length,
     fokusBarn: {
       id: childId,
       name: fokus.child.name,
@@ -374,13 +395,14 @@ const AKSE_NAVN: Record<PyramidArea, string> = {
 };
 
 export async function hentForelderUkerapport(
-  parentUserId: string
+  parentUserId: string,
+  barnId?: string | null,
 ): Promise<ForelderUkerapport | null> {
-  const barn = await hentBarnForForelder(parentUserId);
-  if (barn.length === 0) return null;
+  const { fokus } = await velgGodkjentBarn(parentUserId, barnId);
+  if (!fokus) return null;
 
-  const childId = barn[0].child.id;
-  const childName = barn[0].child.name;
+  const childId = fokus.child.id;
+  const childName = fokus.child.name;
   const childFirstName = childName.split(" ")[0] ?? childName;
 
   const now = new Date();
