@@ -56,7 +56,9 @@ Disse er nå eksplisitte D0-blokkeringer, ikke fotnoter: faktisk 320 px-/200 %-k
 | D2-TN/D2-WANG tilgangsgrunnlag | Sikret Team Norway-oversikt og samme konkrete WANG-gruppe/elev gjennom trenerliste, IUP-lesing og IUP-lagring | Bygget og testet i PR #842. [Kontroll og gjenstående brukerreiser](design-audit/tn-wang-tilgang-2026-09-11.md). Innlogget og visuell kontroll gjenstår |
 | R-I handlingstilgang | Avvisningstester som kaller eksporterte handlinger; ubrukt vaktimport feiler i verify; coach-notat, fys-logg og IUP-skriving ressursavgrenset | I main via PR #848. [Kontroll](design-audit/handlingstilgang-r-i-2026-09-12.md). Innlogget reise gjenstår |
 | D2-TN teknisk reise | Oversikt → poster/dokumenter → spillerpost → testføring → historikk uten visuell port. Poster og dokumenter låst til kanonisk Team Norway-gruppe | I main via PR #849. [Kontroll](design-audit/team-norway-d2-tn-teknisk-reise-2026-09-12.md) |
-| D2-WANG teknisk reise | Åpen hjemside → innlogging → coach-uke/økt → elev/IUP uten visuell port. IUP-lenke krever samme Toppidrett-gruppe og elev i rosteret | Bygget på `grok/d2-wang-teknisk-reise-2026-09-12`. [Kontroll](design-audit/wang-d2-wang-teknisk-reise-2026-09-12.md) |
+| D2-WANG teknisk reise | Åpen hjemside → innlogging → coach-uke/økt → elev/IUP uten visuell port. IUP-lenke krever samme Toppidrett-gruppe og elev i rosteret | I main via PR #850. [Kontroll](design-audit/wang-d2-wang-teknisk-reise-2026-09-12.md) |
+| Teknisk rute-/tilstandskart | 479 `page.tsx`, 103 lastefiler, 93 feilfiler kartlagt uten visuell port | I main via PR #851. [Kart](planer/teknisk-rute-tilstandskart-2026-09-12.md) |
+| O13 kvalitet/backup | Feilsanitering uten hemmeligheter, helsesvar uten env, lokal URL-vakt og rollback-regel. Faktisk `pg_restore` blokkert uten Docker | Bygget på `grok/o13-kvalitet-backup-2026-09-12`. [Kontroll](design-audit/o13-kvalitet-backup-2026-09-12.md). L7 ikke bestått |
 
 Siste samlede testresultat og flettepunkt skal leses i samlingsrapporten og tilhørende GitHub PR. Innlogget produksjonsreise, faktisk betaling og Anders' visuelle vurdering er egne kontroller som fortsatt gjenstår.
 
@@ -95,7 +97,7 @@ R-A–R-J og REV-F1–F11 er forklart i [produktplanen](planer/produktplan-og-in
 | Samtykke · R-J | Formål, opplysningstype, alder, rolle, deling, lagringssted og historikk | Verifiser regelgrunnlaget før tekst/tilgang endres. Ingen automatisk bytting av aldersgrense |
 | Kodekontroll · R-I | Avvisningstester på eksporterte handlinger i PlayerHQ, AgencyOS, Team Norway, WANG og forelder. Ubrukt vaktimport feiler i `check-action-auth` | Bygget 12.09; venter samling. [Kontroll](design-audit/handlingstilgang-r-i-2026-09-12.md). Innlogget isolert reise og øvrige handlinger gjenstår |
 | Felles design/kvalitet | Avstem alle 480 sideruter og deres mønstre, visuell kontroll, kontrast, fokus, mobil og stor tekst | 480 ruter er inventar, ikke 480 unike ferdige design. Ingen ny kontrastbaseline for å skjule brudd |
-| Drift/lansering | Produksjonens innloggings-/funksjonsvern, alarmprøve, gjenoppretting med filer og full kundereise | Konkret miljøautorisasjon for tidligere avvist funksjonssikkerhetsendring; testoppsett for betaling og varsling; dokumentert faktisk publisert versjon |
+| Drift/lansering | Produksjonens innloggings-/funksjonsvern, alarmprøve, gjenoppretting med filer og full kundereise | Lokal URL-vakt og feilsanitering prøvd 12.09. [Kontroll](design-audit/o13-kvalitet-backup-2026-09-12.md). Faktisk `pg_restore`, produksjonsalarm og Vercel-rollback krever Docker/miljøautorisasjon |
 | Produktbeslutninger | Avklar blokkerende produkt-/fagspørsmål rett før den avhengige leveransen; samle resten i intervjuet uten å stoppe uavhengig teknisk arbeid | [Intervjuguide](planer/produktplan-og-intervju-2026-09-11.md). Familie-OS/eldre sideprosjekter er bevart som underlag, ikke automatisk aktivert |
 
 ## Lanseringsporter L0–L8

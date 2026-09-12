@@ -21,6 +21,7 @@ Oppdatert 12.09.2026. Appen er fortsatt under arbeid og ikke klarert for åpen l
 - **Team Norway/WANG-grunnlag:** Team Norway har en medlemsavgrenset oversikt, og WANG bruker samme konkrete Toppidrett-gruppe gjennom trenerliste, IUP-lesing og IUP-lagring. Trygg retursti og ærlig databasefeil er prøvd i PR #842. Full skjermreise, innlogget og visuell kontroll føres separat. [Kontroll og restarbeid](design-audit/tn-wang-tilgang-2026-09-11.md).
 - **D2-TN teknisk reise:** Oversikt, poster, dokumenter og testføring er kartlagt uten visuell port. Poster og dokumenter avviser andre grupper enn Team Norway. [Kontroll](design-audit/team-norway-d2-tn-teknisk-reise-2026-09-12.md).
 - **D2-WANG teknisk reise:** Åpen hjemside, coach-uke og IUP er kartlagt uten visuell port. IUP fra uka krever samme Toppidrett-gruppe og elev i rosteret. [Kontroll](design-audit/wang-d2-wang-teknisk-reise-2026-09-12.md).
+- **O13 kvalitet/backup:** Feillogg fjerner hemmeligheter. Helsesjekken avslører ikke miljøverdier. Lokal testdatabase-vakt avviser alt utenom `127.0.0.1:54379/ak_hq_launch_tests`. Faktisk gjenoppretting er blokkert uten Docker. L7 er ikke bestått. [Kontroll](design-audit/o13-kvalitet-backup-2026-09-12.md).
 
 ## Allerede i main
 
@@ -34,7 +35,7 @@ Tidligere kontroll av Vercel bekreftet `2807d4d08` som publisert kode og prøvde
 2. Kjør innlogget kontroll av Caddie-, TrackMan-, lokal lagrings- og abonnementspakken. Serverregelen for Caddie-eier og tillatt modell-felt er bygget; R-I har handlingstester uten isolert database. Bredere AI-bruk venter på innlogget bevis.
 3. Resterende PlayerHQ-, AgencyOS-, Team Norway- og WANG-skjermer, koblet til valgte kilder og reelle handlinger.
 4. Testvarianter/mål, foreldreinnsyn, booking-/betalingsreise og konkrete produktavklaringer fra funksjonsregisteret.
-5. Visuell vurdering med Anders, kontrast/tilgjengelighet, full alarm-/gjenopprettingsprøve og dokumentert faktisk produksjonsreise før lansering.
+5. Visuell vurdering med Anders, kontrast/tilgjengelighet, full alarm-/gjenopprettingsprøve mot isolert Docker-base og dokumentert faktisk produksjonsreise før lansering. L7 er ikke bestått.
 
 Stripe-testmiljø og innloggede testroller trengs for betalingsreisen. Tidligere avvist produksjonsendring for funksjonssikkerhet krever konkret miljøautorisasjon. Ingen reell betaling, varslingsutsending, migrasjon eller databaseoppsettsendring er gjennomført i denne pakken.
 

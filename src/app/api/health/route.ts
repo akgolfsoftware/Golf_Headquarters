@@ -13,6 +13,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/rate-limit";
 import { getClientIp } from "@/lib/security/same-origin";
+import { byggHelseSvar, helseHttpStatus } from "@/lib/health/helse-svar";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -29,11 +30,6 @@ export async function GET(req: Request) {
     );
   }
 
-  const base = {
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
-  };
-
   let dbOk = false;
   try {
     await Promise.race([
@@ -47,8 +43,10 @@ export async function GET(req: Request) {
     dbOk = false;
   }
 
-  return NextResponse.json(
-    { status: dbOk ? "ok" : "degraded", db: dbOk ? "up" : "down", ...base },
-    { status: dbOk ? 200 : 503 },
-  );
+  const body = byggHelseSvar({
+    dbOk,
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+  });
+  return NextResponse.json(body, { status: helseHttpStatus(dbOk) });
 }
