@@ -59,7 +59,8 @@ Disse er nå eksplisitte D0-blokkeringer, ikke fotnoter: faktisk 320 px-/200 %-k
 | D2-WANG teknisk reise | Åpen hjemside → innlogging → coach-uke/økt → elev/IUP uten visuell port. IUP-lenke krever samme Toppidrett-gruppe og elev i rosteret | I main via PR #850. [Kontroll](design-audit/wang-d2-wang-teknisk-reise-2026-09-12.md) |
 | O05/O07 forelder og delt innsyn | Godkjent eierskap, identitetssikkert barnbytte, avvist skriving, ugyldig/utløpt lenke og tilbakekalling av delt tilgang | I main via PR #852. [Kontroll](design-audit/forelder-o05-delt-innsyn-2026-09-12.md). Innlogget reise og betaling for barn gjenstår |
 | O06 booking/betaling | Kollisjon, idempotens, hendelser i ulik rekkefølge, credits, avbestilling/refusjon og oppsigelse mot Stripe først. Kun mocket Stripe | I main via PR #853. [Kontroll](design-audit/booking-o06-betaling-2026-09-12.md). Innlogget checkout og reell testnøkkel gjenstår |
-| P02–P05 Plan/Live | Frekvens uten dobbelttelling av speil, FYS-standardverdi og detaljgjenåpning, avbrutt mot lagret | Bygget på `grok/p02-p05-plan-live-2026-09-12`. [Kontroll](design-audit/plan-live-p02-p05-2026-09-12.md). Innlogget reise gjenstår |
+| P02–P05 Plan/Live | Frekvens uten dobbelttelling av speil, FYS-standardverdi og detaljgjenåpning, avbrutt mot lagret | I main via PR #854. [Kontroll](design-audit/plan-live-p02-p05-2026-09-12.md). Innlogget reise gjenstår |
+| G01/G06–G10 | Korrigering, kilde, enhet, manglende data og gjenåpning uten produksjonsimport | Bygget på `grok/g01-g10-runde-sg-trackman-2026-09-12`. [Kontroll](design-audit/runde-sg-trackman-g01-g10-2026-09-12.md) |
 
 Siste samlede testresultat og flettepunkt skal leses i samlingsrapporten og tilhørende GitHub PR. Innlogget produksjonsreise, faktisk betaling og Anders' visuelle vurdering er egne kontroller som fortsatt gjenstår.
 
@@ -89,7 +90,7 @@ R-A–R-J og REV-F1–F11 er forklart i [produktplanen](planer/produktplan-og-in
 | Booking · R4/R5/R9 | Serverregler for kollisjon, idempotens og trygg retur er prøvd med mock. Innlogget checkout og valgt bookingdesign gjenstår | [Kontroll](design-audit/booking-o06-betaling-2026-09-12.md). Ingen reell betaling |
 | Betaling/tilgang · R6/R8 | Credits-race, avbestilling/refusjon og oppsigelse mot Stripe først er prøvd. Innlogget reise og testnøkkel gjenstår | [Kontroll](design-audit/booking-o06-betaling-2026-09-12.md) |
 | Forelder/delt innsyn | Teknisk eierskap, barnbytte, lenkeavvisning og tilbakekalling er prøvd. Betaling for barn og innlogget reise gjenstår | [Kontroll](design-audit/forelder-o05-delt-innsyn-2026-09-12.md). Visuell barnvelger venter på D0 |
-| Runde/SG/DataGolf | Full runde-/slagreise, manuell korrigering, importkilder, datadekning og gjenåpning | Manuell SG i PR #836 er et delresultat. Sammenligningsgrunnlag, rå brutto score og kilder må være tydelige |
+| Runde/SG/DataGolf | Korrigering, kilde, enhet og manglende data er prøvd uten produksjonsimport. Innlogget importreise gjenstår | [Kontroll](design-audit/runde-sg-trackman-g01-g10-2026-09-12.md) |
 | Baneguide · BG-01–06 | Gameplan/kart/soner, samme slagkjede i kart og liste, GPS, offline, bag/spredning og coachvisning | Seks konkrete delpakker står i funksjonsregisteret. Avklar datakilde, bruker, offline-omfang og valgt design ved oppstart |
 | Vindverktøy | Avklar treningsberegning, værkilde eller fysisk måler; bygg deretter én valgt funksjon | Ingen sensor- eller værintegrasjon er bekreftet som valgt. Usikkerhet og datakilde skal vises |
 | AgenticOS/Jarvis | Innkurv, utkast, godkjenning, rutiner, oppgaver og kalender koblet til faktisk kjøring | Ingen editor-agentkopier som runtime. Utsending til andre krever gjeldende eksplisitt autorisasjon |

@@ -61,6 +61,7 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | dokumentasjon | [docs/design-audit/playerhq-ph06-2026-09-11.md](<../design-audit/playerhq-ph06-2026-09-11.md>) |
 | dokumentasjon | [docs/design-audit/playerhq-r-e-spillerreise-2026-09-12.md](<../design-audit/playerhq-r-e-spillerreise-2026-09-12.md>) |
 | dokumentasjon | [docs/design-audit/portering-fire-flater-2026-09-10.md](<../design-audit/portering-fire-flater-2026-09-10.md>) |
+| dokumentasjon | [docs/design-audit/runde-sg-trackman-g01-g10-2026-09-12.md](<../design-audit/runde-sg-trackman-g01-g10-2026-09-12.md>) |
 | dokumentasjon | [docs/design-audit/team-norway-d2-tn-teknisk-reise-2026-09-12.md](<../design-audit/team-norway-d2-tn-teknisk-reise-2026-09-12.md>) |
 | dokumentasjon | [docs/design-audit/tn-wang-tilgang-2026-09-11.md](<../design-audit/tn-wang-tilgang-2026-09-11.md>) |
 | dokumentasjon | [docs/design-audit/train-lock-kontrast.md](<../design-audit/train-lock-kontrast.md>) |

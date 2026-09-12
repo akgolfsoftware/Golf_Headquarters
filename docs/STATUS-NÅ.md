@@ -24,6 +24,7 @@ Oppdatert 12.09.2026. Appen er fortsatt under arbeid og ikke klarert for åpen l
 - **O05/O07 forelder og delt innsyn:** Kun godkjent relasjon gir innsyn og skriving. Barnbytte blander ikke identitet. Ugyldig/utløpt lenke og tilbakekalling av delt tilgang er prøvd mot eksporterte handlinger. [Kontroll](design-audit/forelder-o05-delt-innsyn-2026-09-12.md).
 - **O06 booking/betaling:** Kollisjon, credits-race, hendelsesrekkefølge, avbestilling/refusjon og oppsigelse er prøvd med mocket Stripe. Ingen reell betaling. [Kontroll](design-audit/booking-o06-betaling-2026-09-12.md).
 - **P02–P05 Plan/Live:** Frekvensmål teller ikke V2-speil dobbelt. FYS bruker planlagt varighet og beholder detaljer ved gjenåpning. Avbrutt er ikke det samme som lagret. [Kontroll](design-audit/plan-live-p02-p05-2026-09-12.md).
+- **G01/G06–G10:** Korrigering, kilde, enhet og manglende data er prøvd uten produksjonsimport. [Kontroll](design-audit/runde-sg-trackman-g01-g10-2026-09-12.md).
 
 ## Allerede i main
 
