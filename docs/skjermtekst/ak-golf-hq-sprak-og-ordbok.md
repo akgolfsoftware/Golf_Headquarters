@@ -1,6 +1,6 @@
 # AK Golf HQ — samlet språk, ord og uttrykk
 
-**Versjon:** 0.1, samlet 12.09.2026. **Status:** arbeidsutgave for gjennomgang med Anders, ikke ferdig språkgodkjent.
+**Versjon:** 0.2, oppdatert 12.09.2026. **Status:** arbeidsutgave for gjennomgang med Anders, ikke ferdig språkgodkjent.
 
 Dette dokumentet samler det dokumenterte språket for PlayerHQ, AgencyOS, AgenticOS, booking, forelder og tilhørende markeds- og e-postflater. Det inneholder språkregler, fagord, tekniske motstykker, eksisterende skjermtekster og et avklaringsregister i én fil.
 
@@ -33,7 +33,7 @@ Kildeorden avhenger av spørsmålet, ikke bare av hvilken fil som har nyest dato
 | Produktnavn, abonnement, booking og tilgang | S6: produktreglene, med nyere uttrykkelige beslutninger |
 | Vanlige appord og staving | S3 del B; nyere fag- og språkbeslutninger overstyrer eldre rader |
 | Tall, enheter og knappeord | S4, kontrollert mot S1–S3 |
-| TrackMan-parameteres skrivemåte | S7: språkregelen fra 01.09.2026 |
+| TrackMan-parameternes skrivemåte | S7: språkregelen fra 01.09.2026 |
 | Markedsføringens tone og tekst | S7–S9; for forsiden gjelder de konkrete avklaringene fra 05.09 |
 | Skjermtekst fra tidligere versjoner | S5 er et tekstunderlag, ikke en samlet godkjenning |
 | Visuelt design | Den Claude Design-versjonen Anders velger. Denne ordboken fastsetter ingen farger, fonter eller navigasjon |
@@ -70,7 +70,7 @@ Utropstegn er et kildeavvik: S3 har «Lagret!» og «Sendt!», mens S7 sier inge
 | AgenticOS | AI-arbeid i AgencyOS; ikke synonym for Caddie | S13 |
 | Caddie | Navnet på AI-assistenten | S3 B16 |
 | AK Golf HQ | Hele plattformen i publikumsvendt tekst | S7 |
-| AK Golf Academy | «AK Academy» som nytt publikumsnavn; eldre programkode beholdes internt | S7; A04 |
+| AK Golf Academy | Offisielt publikumsnavn; skriv AK med store bokstaver. Eldre programkoder kan beholdes internt | S7; A04 |
 | AK Golf Junior Academy / Junior Academy | «Juniorakademiet» som merkenavn | S7 |
 | Økt / treningsøkt | «Session», «workout», «ny session» | S3 B5/B24 |
 | Mål, resultatmål, prosessmål | «Goal» i UI | S3 B6 |
@@ -82,7 +82,7 @@ Utropstegn er et kildeavvik: S3 har «Lagret!» og «Sendt!», mens S7 sier inge
 | Restitusjon | «Recovery» når det betyr hvile/restitusjon; et golfslag fra trøbbel er en annen betydning | S3 B17/§10 |
 | I dag, i går, i morgen, denne uka | Sammenskriving; S3 velger «denne uka» | S3 B9 |
 
-**Drill eller øvelse er ikke avgjort i denne samlingen.** S3 bruker «drill/drills». Forslaget i samtalen er «øvelse», men Anders har ikke godkjent byttet. Ikke bruk denne sammenstillingen som en stilltiende godkjenning av noen ny regel.
+**Øvelse er standardordet i brukergrensesnittet.** Bruk «øvelse», «øvelser» og «øvelsesbibliotek». «Drill» kan fortsatt stå i tekniske identifikatorer, eldre kilder og egennavn, men skal ikke innføres som vanlig skjermtekst. Besluttet av Anders 12.09.2026 (A01).
 
 ### 2.3 TrackMan og måleparametere
 
@@ -183,9 +183,13 @@ L-faser, CS-prosentnivåer, M0–M5, PR1–PR5, gamle prosentkrav, CS-tak og «i
 
 ### 4.1 Handlingsord fra eksisterende kilder
 
-Lagre · Ferdig · Bekreft · Fortsett · Send · Gjenoppta · Importer · Marker oppnådd · Avbryt · Lukk · Tilbake · Pause · Endre · Rediger · Vis · Skjul · Last ned · Eksporter · Be om hjelp · Marker som lest · Slett · Neste · Forrige · Be om økt · Logg ny økt · Start økt · Avslutt · Se mer · Se alle · Åpne · Send melding · Oppgrader til Pro.
+Lagre · Ferdig · Bekreft · Fortsett · Send · Gjenoppta · Importer · Marker oppnådd · Avbryt · Lukk · Tilbake · Pause · Endre · Rediger · Vis · Skjul · Last ned · Eksporter · Be om hjelp · Marker som lest · Slett · Neste · Forrige · Be om økt · Registrer ny økt · Start økt · Avslutt · Se mer · Se alle · Åpne · Send melding · Oppgrader til Pro.
 
 Kilde: S4 §5. Ordene er ikke fullstendige handlingskontrakter: «Ferdig» sier for eksempel ikke i seg selv om noe også lagres. «Se alle» og «Vis alle», samt «Fortsett» og «Gjenoppta», må harmoniseres per handling (A12).
+
+**Registrere er standardordet for å føre data inn i appen** (A02). Bruk «registrer», «registrert» og «registrering» når spilleren eller coachen fører inn resultat, oppmøte eller gjennomføring. «Lagre» beskriver at innholdet bevares, og «fullført» beskriver at aktiviteten er gjennomført. «Logg inn» og «logg ut» beholder sitt etablerte innloggingsbegrep; interne logger og tekniske modellnavn endres ikke av denne språkregelen.
+
+**Blokktrening og variasjonstrening er treningsmetoder** (A03): De beskriver hvordan en øvelse trenes. De er ikke tellbare deler av en økt. Bruk «øvelse» når grensesnittet teller innholdet i økten, for eksempel «1 av 3 øvelser». En «treningsblokk» i kalenderen er et datospenn og et annet begrep.
 
 ### 4.2 Tydelig betydning — forslag til felles kontrakt
 
@@ -223,7 +227,7 @@ Tabellen er en redaksjonell sammenstilling for gjennomgang, basert på dokumente
 | AI-forslag | «Forslag» før godkjenning. «Godkjent» er ikke det samme som «Utført» |
 | AI-arbeid | Skill foreslått, godkjent, kjører, feilet og utført; ikke bruk «Ferdig» for alle |
 
-Private arbeidsnotater, spillerbeskjeder og det faktisk delte sammendraget må ha tydelige navn. Valg mellom «beskjed» og «melding», «føre» og «registrere» og betydningen av «bolk» står fortsatt i A02–A03.
+Private arbeidsnotater, innholdet til spilleren og det faktisk delte sammendraget må ha tydelige navn. «Registrere» er besluttet for dataføring, og «øvelse» er den tellbare delen av en økt. Valget mellom «beskjed» og «melding» står fortsatt i A20.
 
 ## 5. Avklaringer vi må ta sammen
 
@@ -231,11 +235,11 @@ Ingen av forslagene under blir godkjent bare fordi dokumentet er samlet. Gjelden
 
 | ID | Tema / konflikt | Hva som må avgjøres eller kontrolleres | Status |
 |---|---|---|---|
-| A01 | Drill / øvelse | Standardord, flertall og biblioteknavn. S3 sier drill/drills; samtalen foreslår øvelse | Åpen beslutning hos Anders |
-| A02 | Føre / registrere / logge | Samme handling bør få samme ord. «Ført» må ikke bety både registrert, fullført og lagret | Forslag til avklaring |
-| A03 | Bolk / blokk / øvelse, beskjed / melding | Definer hva som telles og hva som deles. Treningsblokk over datoer er ikke automatisk en del av en økt | Forslag til avklaring |
-| A04 | AK Academy og programnavn | S7 har nye publikumsnavn; S1/S2 har eldre programnavn/koder. Lag en visningskobling, ikke en datamigrering | Kildekobling gjenstår |
-| A05 | TrackMan-navnevarianter | Total/Total Distance, Landing Angle/Land Angle, Apex/Apex Height må samsvare med faktisk felt. Engelsk + stor forbokstav er avklart | Feltkontroll gjenstår |
+| A01 | Drill / øvelse | Bruk «øvelse», «øvelser» og «øvelsesbibliotek» i UI. Tekniske identifikatorer endres ikke automatisk | **Besluttet 12.09.2026** |
+| A02 | Føre / registrere / logge | Bruk «registrere» for å føre data inn i appen. Hold dette atskilt fra lagring og fullføring. «Logg inn/ut» beholdes | **Besluttet 12.09.2026** |
+| A03 | Bolk / blokk / øvelse | Blokktrening og variasjonstrening beskriver hvordan man trener. De er ikke tellbare deler; tell «øvelser». Treningsblokk i kalenderen er et eget tidsbegrep | **Besluttet 12.09.2026** |
+| A04 | AK Academy og programnavn | Offisielt publikumsnavn er «AK Golf Academy». Eldre programkoder kan beholdes internt; dette er ikke en datamigrering | **Besluttet 12.09.2026** |
+| A05 | TrackMan-navnevarianter | TrackMan-parametere skrives på engelsk med stor forbokstav. Total/Total Distance, Landing Angle/Land Angle og Apex/Apex Height må fortsatt kobles til riktig faktisk felt | **Skrivemåte besluttet 12.09.2026; feltkontroll gjenstår** |
 | A06 | AK-formel og CHIP-eksempel | S1 sier økt; S2 sier drill. Begge bruker CHIP + LAV_HAST, mens S2 sier motorikk kun fullsving. Ikke kopier et selvmotsigende eksempel | Faglig avklaring |
 | A07 | Turneringsstatus | DNF = «Ikke fullført» i S1, «Startet, men trakk» i S2. Påmeldt må skilles fra bekreftet | Faglig avklaring; S1 er hovedkilden |
 | A08 | Test- og kategoritall | Historiske 31/21 tester og kildepåstander om A–L i kode er ikke fersk kodekontroll. A–K med A som best er avklart | Verifiser dynamiske påstander før bruk |
@@ -250,12 +254,18 @@ Ingen av forslagene under blir godkjent bare fordi dokumentet er samlet. Gjelden
 | A17 | Faglige forklaringer | «Treffpunkt = Face-to-Path» i S2 kan ikke uten videre likestilles med S3s treffmønster på køllebladet. P-posisjonsnavn varierer også | Bevar ulike begreper; faglig avklaring |
 | A18 | Brede kategoriforbud | ELITE er forbudt som appnivå, ikke som ord i GFGK Elite eller eliteidrett. MORAD er internt fagspråk, ikke markedsnavn | Omfang presisert, ikke global søk/erstatt |
 | A19 | Credit / klipp / coaching-time | Produktreglene bruker credit; endelig forståelig visningsnavn og entall/flertall må velges uten å endre trekkreglene | Åpen ordavklaring |
+| A20 | Beskjed / melding | Velg standardord for innhold coachen sender til spilleren, og skill det fra systemvarsel og meldingstråd | Åpen ordavklaring |
 
 ### Beslutningslogg
 
 | Dato | Beslutning | Godkjent av | Konsekvens |
 |---|---|---|---|
 | 12.09.2026 | Samle eksisterende språk, ord og uttrykk i ett dokument | Anders, bestilling i samtalen | Kildene samles; ingen uavklarte ordvalg godkjennes automatisk |
+| 12.09.2026 | A01: «Øvelse» er standardordet i brukergrensesnittet | Anders | «Drill» beholdes bare i tekniske identifikatorer, eldre kilder og eventuelle egennavn |
+| 12.09.2026 | A02: «Registrere» brukes når data føres inn | Anders | Skilles fra lagre, fullføre og logg inn/logg ut |
+| 12.09.2026 | A03: Blokktrening og variasjonstrening beskriver hvordan man trener | Anders | Tellbare deler i en økt kalles øvelser; kalenderens treningsblokk er et annet begrep |
+| 12.09.2026 | A04: Offisielt publikumsnavn er «AK Golf Academy» | Anders | Eldre interne programkoder endres ikke som språkvask |
+| 12.09.2026 | A05: TrackMan-parametere skrives på engelsk med stor forbokstav | Anders | Feltvariantene må fortsatt kontrolleres mot faktisk datakilde |
 
 Ved videre gjennomgang: fyll inn beslutningen, hvilke flater den gjelder og kilden. Oppdater berørt originalkilde og denne samlingen kontrollert. Ikke gjør globale navnebytter i databasen som språkvask.
 
@@ -349,7 +359,7 @@ Foreslått gjennomgangsrekkefølge: produkt/roller → treningsstruktur → før
 | Approach-snitt / Innspill-snitt | Bokmål: approach-snitt / innspill-snitt · Notater: bindestrek | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:680 · B3E. Approach-statistikk (SG-APP data) |
 | Approach-spill / Innspill | Bokmål: innspill · Notater: «approach» på norsk | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:518 · B2C. SLAG — slag-spesifikke kategorier |
 | Arbeidsoppgave | Teknisk term: `PositionTask` · Definisjon & bruk: Konkret teknisk oppgave med L-fase, CS, M, PR. Auto-oppdateres av matchede TrackMan-slag; `diagnosticOverride` lar coach lukke uten TM-evidens. | HISTORIKK / AVVIK – utgåtte treningsledd; bruk S1/S2 | S3:333 · 14. Planleggingshjernen |
-| Arbeidsoppgave-status | Teknisk term: `PositionTaskStatus` · Definisjon & bruk: PENDING, ACTIVE (logger reps), DONE, ARCHIVED. | KILDEOPPSLAG – ordvalgene i A01–A03 er ikke ferdig vedtatt | S3:381 · 15. Datamodell & status-enums |
+| Arbeidsoppgave-status | Teknisk term: `PositionTaskStatus` · Definisjon & bruk: PENDING, ACTIVE (logger reps), DONE, ARCHIVED. | KILDEOPPSLAG – UI følger A01–A03; tekniske identifikatorer og historisk ordlyd er bevart | S3:381 · 15. Datamodell & status-enums |
 | Around-green-snitt | Bokmål: around-green-snitt · Notater: bindestrek | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:690 · B3F. Around-green-statistikk (SG-ARG data) |
 | Attack Angle | Teknisk term: `attackAngle` · Definisjon & bruk: Køllehodets vinkel opp/ned i treff (grader). | PARAMETERKILDE – navneformen må følge nyere S7; se A05 | S3:267 · 11. TrackMan-parametere |
 | Attack Angle | Aldri: angrepsvinkel, angle of attack | SPRÅKKILDE 01.09 – skill parameter, app og markedsflate | S7:49 · De vanligste |
@@ -397,7 +407,7 @@ Foreslått gjennomgangsrekkefølge: produkt/roller → treningsstruktur → før
 | Birdie / Eagle / Albatross | Bokmål: birdie / eagle / albatross · Notater: flertall: birdies, eagles | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:717 · B3X-A. Score-statistikk |
 | Birdie-% / Par-% / Bogey-% | Bokmål: birdie-% osv. · Notater: bindestrek + prosent; bogey-or-worse-% = «bogey-eller-værre-%» | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:722 · B3X-A. Score-statistikk |
 | Blokk (B) | Teknisk term: `BLOKK` · Definisjon & bruk: Samme oppgave repeteres — isolert innlæring. Dominerer grunnperiode (70 %) og ferie (80 %). | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:203 · 8. Praksistyper |
-| Blokk-praksis / Random-praksis | Bokmål: blokk-praksis / random-praksis · Notater: bindestrek (samme drill gjentas / randomiseres) | KILDEOPPSLAG – ordvalgene i A01–A03 er ikke ferdig vedtatt | S3:843 · Trenings-modus & metoder |
+| Blokk-praksis / Random-praksis | Bokmål: blokk-praksis / random-praksis · Notater: bindestrek (samme drill gjentas / randomiseres) | KILDEOPPSLAG – UI følger A01–A03; tekniske identifikatorer og historisk ordlyd er bevart | S3:843 · Trenings-modus & metoder |
 | Blokk-praksis / Random-praksis / Differensiell-praksis | Bokmål: blokk-praksis / random-praksis / differensiell-praksis · Notater: bindestrek; «variabel praksis» uten | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:802 · B4. Treningsplanlegging — periodisering |
 | Booking | Merknad: Coachtime/fasilitet, fra booking-systemet | FAGKILDE – les kildeorden og avklaringer i del 1–5 | S1:182 · Blokk-typer i kalenderen |
 | Booking | Merknad: Coachtime/fasilitet, fra booking-systemet | FAGKILDE – les kildeorden og avklaringer i del 1–5 | S2:187 · 7. Blokk-typer i kalenderen |
@@ -435,7 +445,7 @@ Foreslått gjennomgangsrekkefølge: produkt/roller → treningsstruktur → før
 | Club Speed (målt) | Visning: mph · Eksempel: `104 mph` | VISNINGSKILDE – ord/tall til kontroll; ikke farger eller fonter | S4:71 · 2. Tall, enheter og formatering |
 | coach | Galt: trener, når det er AK Golfs egne | SPRÅKKILDE 01.09 – skill parameter, app og markedsflate | S7:104 · Navn og skrivemåte |
 | Coach | Bokmål: coach · Notater: aldri «trener» alene i UI (ok i «hovedcoach») | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:419 · B1. Roller |
-| Coach-direktiv | Teknisk term: `CoachDirektivType` · Definisjon & bruk: PIN, BLOCK, PRIORITER — coach styrer drill-anbefalinger. | KILDEOPPSLAG – ordvalgene i A01–A03 er ikke ferdig vedtatt | S3:388 · 15. Datamodell & status-enums |
+| Coach-direktiv | Teknisk term: `CoachDirektivType` · Definisjon & bruk: PIN, BLOCK, PRIORITER — coach styrer drill-anbefalinger. | KILDEOPPSLAG – UI følger A01–A03; tekniske identifikatorer og historisk ordlyd er bevart | S3:388 · 15. Datamodell & status-enums |
 | Combine / TrackMan-combine | Bokmål: combine / TrackMan-combine · Notater: engelsk fagterm; bindestrek | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:876 · Tester & måling |
 | Comeback | Bokmål: comeback · Notater: engelsk-norsk | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:593 · B2E. TURN — turnerings-spesifikke kategorier |
 | COMPLETED | Navn: Gjennomført | FAGKILDE – les kildeorden og avklaringer i del 1–5 | S1:169 · Turneringer |
@@ -488,9 +498,9 @@ Foreslått gjennomgangsrekkefølge: produkt/roller → treningsstruktur → før
 | Double / Triple bogey | Bokmål: double bogey / triple bogey · Notater: uten bindestrek | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:720 · B3X-A. Score-statistikk |
 | Draw | Bokmål: draw · Notater: venstre-buet (høyrehendt) | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:538 · B2C. SLAG — slag-spesifikke kategorier |
 | Drift-deteksjon | Teknisk term: `detectDrift()` / `evaluateDPlaneDrift` · Definisjon & bruk: Gradvis drift i path/face over uker (`slopePerWeek`); flagger verste kølle. | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:292 · 12. TrackMan-analyser og innsikt |
-| Drill / Drill-bibliotek | Bokmål: drill / drill-bibliotek · Notater: flertall: drills; bindestrek | KILDEOPPSLAG – ordvalgene i A01–A03 er ikke ferdig vedtatt | S3:813 · B5. Trening — økter & drills |
-| Drill-fasilitet | Teknisk term: `DrillFasilitet` · Definisjon & bruk: Utstyrs-/anleggskrav (14 verdier: RADAR, SIMULATOR, BUNKER, SHORT_GAME_AREA, DRIVING_RANGE, PUTTING_GREEN m.fl.). Matches mot `tilgjengeligeFasiliteter`. Tom = ingen krav. | KILDEOPPSLAG – ordvalgene i A01–A03 er ikke ferdig vedtatt | S3:354 · 15. Datamodell & status-enums |
-| Drill-malkategori | Teknisk term: `DRILL_MAL_KATEGORIER` · Definisjon & bruk: 11 malkategorier som hver mapper til ett pyramide-område (TEKNIKK→TEK, PUTT_DRILL→SLAG, MENTAL_DRILL→TURN …). | KILDEOPPSLAG – ordvalgene i A01–A03 er ikke ferdig vedtatt | S3:57 · 1. Pyramiden |
+| Drill / Drill-bibliotek | Bokmål: drill / drill-bibliotek · Notater: flertall: drills; bindestrek | KILDEOPPSLAG – UI følger A01–A03; tekniske identifikatorer og historisk ordlyd er bevart | S3:813 · B5. Trening — økter & drills |
+| Drill-fasilitet | Teknisk term: `DrillFasilitet` · Definisjon & bruk: Utstyrs-/anleggskrav (14 verdier: RADAR, SIMULATOR, BUNKER, SHORT_GAME_AREA, DRIVING_RANGE, PUTTING_GREEN m.fl.). Matches mot `tilgjengeligeFasiliteter`. Tom = ingen krav. | KILDEOPPSLAG – UI følger A01–A03; tekniske identifikatorer og historisk ordlyd er bevart | S3:354 · 15. Datamodell & status-enums |
+| Drill-malkategori | Teknisk term: `DRILL_MAL_KATEGORIER` · Definisjon & bruk: 11 malkategorier som hver mapper til ett pyramide-område (TEKNIKK→TEK, PUTT_DRILL→SLAG, MENTAL_DRILL→TURN …). | KILDEOPPSLAG – UI følger A01–A03; tekniske identifikatorer og historisk ordlyd er bevart | S3:57 · 1. Pyramiden |
 | Drillmodus | Teknisk term: `DrillModus` (`FYS`\|`GOLF`) · Definisjon & bruk: FYS gir reps/sett/kg/tid/sone; GOLF gir treningsområde/L-fase/P-posisjoner/miljø. Via `getDrillModus()` / `isFysDrill()`. | HISTORIKK / AVVIK – utgåtte treningsledd; bruk S1/S2 | S3:53 · 1. Pyramiden |
 | Drive | Bokmål: drive · Notater: «tee-shot» | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:516 · B2C. SLAG — slag-spesifikke kategorier |
 | Driver / Putter / Hybrid | Bokmål: driver / putter / hybrid · Notater:  | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:972 · B12. Kølle-typer |
@@ -556,10 +566,10 @@ Foreslått gjennomgangsrekkefølge: produkt/roller → treningsstruktur → før
 | FYS | Navn: Fysisk · Dekker: Styrke, kondisjon, mobilitet, hurtighet | FAGKILDE – les kildeorden og avklaringer i del 1–5 | S2:24 · 1. Pyramiden — de fem treningsområdene |
 | FYS | Lys flate (`--pyr-*` i globals.css): `#005840` (forest) · Workbench mørk terminal (`CAT_COLORS` i workbench-hybrid/theme.ts): `#56C59A` | VISNINGSKILDE – ord/tall til kontroll; ikke farger eller fonter | S4:26 · Pyramiden — TO fargesett (velg etter flate) |
 | FYS-muskelgruppe | Teknisk term: `FYS_MUSKELGRUPPER` · Definisjon & bruk: 9 muskelgrupper med golfrelevans (flervalg via `muskelgrupper`): Hoftefleksorer (`HOFTEFLEKSORER`, hofterotasjon i nedsving) · Gluteus (`GLUTEUS`, kraft/stabilitet) · Core (`CORE`, rotasjonsstabilitet/X-faktor) · Skuldre (`SKULDRE`, armplan) · Thorax (`THORAX`, brystrotasjon/holdning) · Hamstrings (`HAMSTRINGS`, benstabilitet) · Underarmer (`UNDERARMER`, grep/håndledd) · Rygg (`RYGG`, holdning/rotasjon) · Quadriceps (`QUADRICEPS`, benstyrke/balanse). | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:191 · 7. FYS — fysiske underkategorier |
-| FYS-parametersett | Teknisk term: `FysParameters` · Definisjon & bruk: Feltene en FYS-drill logger (fysType, muskelgrupper, sone, reps, sett, kg, tid). Valideres automatisk (Zod) i `parametersJson`. | KILDEOPPSLAG – ordvalgene i A01–A03 er ikke ferdig vedtatt | S3:54 · 1. Pyramiden |
+| FYS-parametersett | Teknisk term: `FysParameters` · Definisjon & bruk: Feltene en FYS-drill logger (fysType, muskelgrupper, sone, reps, sett, kg, tid). Valideres automatisk (Zod) i `parametersJson`. | KILDEOPPSLAG – UI følger A01–A03; tekniske identifikatorer og historisk ordlyd er bevart | S3:54 · 1. Pyramiden |
 | FYS-parametersett | Teknisk term: `FysParameterSett` · Definisjon & bruk: Bool-sett per treningstype: hvilke felter (reps/sets/kg/tid/sone/type) som er relevante. Styrer live-økt og plan-bygger. | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:190 · 7. FYS — fysiske underkategorier |
 | FYS-treningstype | Teknisk term: `FYS_TRENINGSTYPER` · Definisjon & bruk: Fem typer, hver med eget parametersett (velges via `fysType`; styrer input-feltene i UI). | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:184 · 7. FYS — fysiske underkategorier |
-| Fysisk | Teknisk term: `FYS` · Definisjon & bruk: Styrke, kondisjon, bevegelighet. Eneste område med drillmodus FYS (reps/sett/kg/tid/sone). Tyngst i grunn-/ferieperioder (FERIE ≥ 40 % FYS). Farge `pyr-fys`. | KILDEOPPSLAG – ordvalgene i A01–A03 er ikke ferdig vedtatt | S3:48 · 1. Pyramiden |
+| Fysisk | Teknisk term: `FYS` · Definisjon & bruk: Styrke, kondisjon, bevegelighet. Eneste område med drillmodus FYS (reps/sett/kg/tid/sone). Tyngst i grunn-/ferieperioder (FERIE ≥ 40 % FYS). Farge `pyr-fys`. | KILDEOPPSLAG – UI følger A01–A03; tekniske identifikatorer og historisk ordlyd er bevart | S3:48 · 1. Pyramiden |
 | G | Snittscore: 80–85 | FAGKILDE – les kildeorden og avklaringer i del 1–5 | S1:29 · Spillerkategorier |
 | G | Snittscore: 80–85 | FAGKILDE – les kildeorden og avklaringer i del 1–5 | S2:213 · 8. Spillerkategori — hvor spilleren er |
 | Gameplan | Teknisk term: `/portal/gameplan`, `GameplanHull`, `GameplanSone` · Definisjon & bruk: F{initialer}-runden-flaten: banebibliotek → banekart → hull-detalj med spillerens dispersjonsellipse, sikte og bra/aldri-soner. Het «Baneguide» frem til 16.07.2026. UI-navnet i dag. | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:404 · 16. Andre sentrale begreper |
@@ -716,7 +726,7 @@ Foreslått gjennomgangsrekkefølge: produkt/roller → treningsstruktur → før
 | Lead arm | Bokmål: lead arm · Notater: engelsk | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:503 · B2B. TEK — tekniske underkategorier |
 | Lead protection | Bokmål: beskytte ledelse · Notater: norsk form | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:592 · B2E. TURN — turnerings-spesifikke kategorier |
 | Leder | Bokmål: leder · Notater: enkel form | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:921 · B7. Turneringer |
-| LIFE-koder | Teknisk term: `LIFE_KODER` · Definisjon & bruk: Fem livsferdigheter: Resiliens, Fokus, Selvtillit, Kommunikasjon, Eget ansvar. Knyttes til drills (særlig TURN). | KILDEOPPSLAG – ordvalgene i A01–A03 er ikke ferdig vedtatt | S3:400 · 16. Andre sentrale begreper |
+| LIFE-koder | Teknisk term: `LIFE_KODER` · Definisjon & bruk: Fem livsferdigheter: Resiliens, Fokus, Selvtillit, Kommunikasjon, Eget ansvar. Knyttes til drills (særlig TURN). | KILDEOPPSLAG – UI følger A01–A03; tekniske identifikatorer og historisk ordlyd er bevart | S3:400 · 16. Andre sentrale begreper |
 | Linje-kontroll / Lese green / Green-lesing | Bokmål: greenlesning · Notater: «green reading» | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:534 · B2C. SLAG — slag-spesifikke kategorier |
 | Linjegraf / Søylediagram / Stolpediagram | Bokmål: linjegraf / søylediagram / stolpediagram · Notater: ett ord | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:781 · B3X-E. Visualiserings-uttrykk |
 | Live | Bokmål: LIVE · Badge-stil: rød puls | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:896 · Status på økter |
@@ -726,7 +736,7 @@ Foreslått gjennomgangsrekkefølge: produkt/roller → treningsstruktur → før
 | LOB | Navn: Lob | FAGKILDE – les kildeorden og avklaringer i del 1–5 | S1:65 · Treningsområder |
 | LOB | Navn: Lob · Familie: Nærspill · Enhet: m · Hva en rep er: Slag | FAGKILDE – les kildeorden og avklaringer i del 1–5 | S2:47 · 2. Treningsområder — hvor på banen/anlegget (19 stk) |
 | Loft | Bokmål: loft · Notater: køllens loft | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:498 · B2B. TEK — tekniske underkategorier |
-| Logg | Tekst: Logg ny økt · Stil: aldri «log new» | KILDEOPPSLAG – ordvalgene i A01–A03 er ikke ferdig vedtatt | S4:118 · 5. Knapper & CTA-er (flyttet fra ordbok B13) |
+| Logg | Tekst: Logg ny økt · Stil: aldri «log new» | KILDEOPPSLAG – UI følger A01–A03; tekniske identifikatorer og historisk ordlyd er bevart | S4:118 · 5. Knapper & CTA-er (flyttet fra ordbok B13) |
 | Low ball | Bokmål: lavt slag · Notater: norsk form | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:544 · B2C. SLAG — slag-spesifikke kategorier |
 | Low Point | Aldri: lavpunkt | SPRÅKKILDE 01.09 – skill parameter, app og markedsflate | S7:62 · De vanligste |
 | M0 — Kontrollert, uten ball | Teknisk term: `M0` · Definisjon & bruk: Kontrollert range/rom, ingen mål, ingen ball. Hjemmet til L_KROPP. | HISTORIKK / AVVIK – utgåtte treningsledd; bruk S1/S2 | S3:144 · 5. Miljø (M) og Press (PR) |
@@ -771,13 +781,13 @@ Foreslått gjennomgangsrekkefølge: produkt/roller → treningsstruktur → før
 | Måneder | Bokmål: januar … desember · Notater: lowercase; kort: Jan, Feb, Mar, Apr, Mai, Jun, Jul, Aug, Sep, Okt, Nov, Des | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:944 · B9. Kalender & tid |
 | Neste / Forrige | Tekst: Neste → / ← Forrige · Stil: primary / outline | VISNINGSKILDE – ord/tall til kontroll; ikke farger eller fonter | S4:116 · 5. Knapper & CTA-er (flyttet fra ordbok B13) |
 | Net / Gross score | Bokmål: netto-score / brutto-score · Notater: bindestrek. NB golf-data: alltid brutto (se CLAUDE.md) | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:725 · B3X-A. Score-statistikk |
-| NGF-kategori (eldre kode) | Teknisk term: `NgfKategori` · Definisjon & bruk: Eldre A–L-skala i datamodellen der A = verdenselite — motsatt av canon. `minKategori`/`maxKategori` på øvelser, nøkkel i `csTargetByKategori`. Skal migreres. | KILDEOPPSLAG – ordvalgene i A01–A03 er ikke ferdig vedtatt | S3:398 · 16. Andre sentrale begreper |
+| NGF-kategori (eldre kode) | Teknisk term: `NgfKategori` · Definisjon & bruk: Eldre A–L-skala i datamodellen der A = verdenselite — motsatt av canon. `minKategori`/`maxKategori` på øvelser, nøkkel i `csTargetByKategori`. Skal migreres. | KILDEOPPSLAG – UI følger A01–A03; tekniske identifikatorer og historisk ordlyd er bevart | S3:398 · 16. Andre sentrale begreper |
 | Nivåer | Bokmål: lav / moderat / medium / høy / maks · Notater: grønn-/gul-/rød-zone | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:862 · Belastning-skala |
 | Notion-kobling | Teknisk term: `NotionLinkType` / `NotionSyncMode` · Definisjon & bruk: OPPGAVER/PROSJEKTER · AUTO/MANUELL/PAUSED (workspace-synk). | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:389 · 15. Datamodell & status-enums |
 | Ny økt | Bokmål: ny økt · Notater: aldri «ny session» | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:814 · B5. Trening — økter & drills |
 | OBSERVERT | Navn: Observert | FAGKILDE – les kildeorden og avklaringer i del 1–5 | S1:113 · AK-formelen |
 | OBSERVERT | Navn: Observert | FAGKILDE – les kildeorden og avklaringer i del 1–5 | S2:103 · 3.3 Press (hvem som ser på) |
-| Område | Bokmål: område · Notater: hvor drillen utføres | KILDEOPPSLAG – ordvalgene i A01–A03 er ikke ferdig vedtatt | S3:817 · B5. Trening — økter & drills |
+| Område | Bokmål: område · Notater: hvor drillen utføres | KILDEOPPSLAG – UI følger A01–A03; tekniske identifikatorer og historisk ordlyd er bevart | S3:817 · B5. Trening — økter & drills |
 | On plane | Bokmål: på plan · Notater:  | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:471 · B2B. TEK — tekniske underkategorier |
 | Oppgave-kategori | Teknisk term: `TaskKategori` · Definisjon & bruk: TEKNISK, TAKTISK, MENTALT, SOSIALT — eget klassifiseringsfelt på `PositionTask` ved siden av pyramide-aksen (runde 2 · 2026-07-14, Anders: «Begge — legg til som eget felt»). Nullable — aldri en sperre. | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:382 · 15. Datamodell & status-enums |
 | Oppgrader | Tekst: Oppgrader til Pro · Stil: primary lime | VISNINGSKILDE – ord/tall til kontroll; ikke farger eller fonter | S4:123 · 5. Knapper & CTA-er (flyttet fra ordbok B13) |
@@ -914,7 +924,7 @@ Foreslått gjennomgangsrekkefølge: produkt/roller → treningsstruktur → før
 | Rekord / Beste runde | Bokmål: rekord / beste runde · Notater: «personlig rekord» | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:956 · B10. Statistikk-termer |
 | Release | Bokmål: release · Notater: engelsk | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:505 · B2B. TEK — tekniske underkategorier |
 | Rep-hastighet | Teknisk term: `RepHastighet` · Definisjon & bruk: Slag klassifisert LAV eller FULL mot spillerens maks. LAV ≈ CS50–70, FULL ≈ CS80–100. | HISTORIKK / AVVIK – utgåtte treningsledd; bruk S1/S2 | S3:273 · 11. TrackMan-parametere |
-| Rep-type (volummåling) | Teknisk term: `RepType` · Definisjon & bruk: Hvordan volum logges per drill: SVINGER_UTEN_BALL (antall svinger uten ball), BALLER_SLATT (antall baller slått), TID (minutter), SETT_REPS (sett × reps). Brukes i live-økt-logging. | KILDEOPPSLAG – ordvalgene i A01–A03 er ikke ferdig vedtatt | S3:208 · 8. Praksistyper |
+| Rep-type (volummåling) | Teknisk term: `RepType` · Definisjon & bruk: Hvordan volum logges per drill: SVINGER_UTEN_BALL (antall svinger uten ball), BALLER_SLATT (antall baller slått), TID (minutter), SETT_REPS (sett × reps). Brukes i live-økt-logging. | KILDEOPPSLAG – UI følger A01–A03; tekniske identifikatorer og historisk ordlyd er bevart | S3:208 · 8. Praksistyper |
 | Repetisjon / Sett / Reps | Bokmål: repetisjon / sett / reps · Notater: flertall: repetisjoner; sett uendret | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:853 · Trenings-modus & metoder |
 | Reset-rutine | Bokmål: reset-rutine · Notater: bindestrek, etter dårlig slag | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:598 · B2E. TURN — turnerings-spesifikke kategorier |
 | Restitusjon | Bokmål: restitusjon · Notater:  | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:457 · B2A. FYS — fysiske underkategorier |
@@ -943,7 +953,7 @@ Foreslått gjennomgangsrekkefølge: produkt/roller → treningsstruktur → før
 | Score | Bokmål: score · Notater: engelsk-norsk; snittscore ett ord | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:712 · B3X-A. Score-statistikk |
 | Score / Percentil / Persentil-rang | Bokmål: score / percentil / persentil-rang · Notater: tall fra test; sammenligning | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:881 · Tester & måling |
 | Score / Snittscore | Bokmål: score / snittscore · Notater: ett ord | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:919 · B7. Turneringer |
-| Scoring | Bokmål: scoring · Notater: «Scoring-drill» | KILDEOPPSLAG – ordvalgene i A01–A03 er ikke ferdig vedtatt | S3:573 · B2D. SPILL — spillsimuleringskategorier |
+| Scoring | Bokmål: scoring · Notater: «Scoring-drill» | KILDEOPPSLAG – UI følger A01–A03; tekniske identifikatorer og historisk ordlyd er bevart | S3:573 · B2D. SPILL — spillsimuleringskategorier |
 | Scrambling | Bokmål: scrambling · Notater: engelsk fagterm | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:560 · B2D. SPILL — spillsimuleringskategorier |
 | Scrambling | Bokmål: scrambling · Notater: engelsk fagterm; scrambling-% | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:686 · B3F. Around-green-statistikk (SG-ARG data) |
 | Scratch-benchmark | Bokmål: scratch · Notater: mot HCP 0 | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:631 · B3B. SG-benchmark & sammenligning |
@@ -985,8 +995,8 @@ Foreslått gjennomgangsrekkefølge: produkt/roller → treningsstruktur → før
 | SG-verdier | Visning: fortegn ALLTID (+/−), komma, 1–2 desimaler · Eksempel: `SG +1,2` · `−0,4` | VISNINGSKILDE – ord/tall til kontroll; ikke farger eller fonter | S4:67 · 2. Tall, enheter og formatering |
 | Shoulder rotation | Bokmål: skulderrotasjon · Notater: norsk form | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:489 · B2B. TEK — tekniske underkategorier |
 | Side / dispersion | Teknisk term: `side` · Definisjon & bruk: Avstand fra mållinjen ved landing (meter, offline) — treffsikkerhet/spredning. | PARAMETERKILDE – navneformen må følge nyere S7; se A05 | S3:266 · 11. TrackMan-parametere |
-| Sign in | Bruk i stedet: logg inn | KILDEOPPSLAG – ordvalgene i A01–A03 er ikke ferdig vedtatt | S3:1091 · B24. Forbudt-liste |
-| Sign out | Bruk i stedet: logg ut | KILDEOPPSLAG – ordvalgene i A01–A03 er ikke ferdig vedtatt | S3:1092 · B24. Forbudt-liste |
+| Sign in | Bruk i stedet: logg inn | KILDEOPPSLAG – UI følger A01–A03; tekniske identifikatorer og historisk ordlyd er bevart | S3:1091 · B24. Forbudt-liste |
+| Sign out | Bruk i stedet: logg ut | KILDEOPPSLAG – UI følger A01–A03; tekniske identifikatorer og historisk ordlyd er bevart | S3:1092 · B24. Forbudt-liste |
 | Simulator / TrackMan-studio | Bokmål: simulator / TrackMan-studio · Notater: bindestrek; merkenavn GC Quad, Foresight, Mulligan Indoor | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:834 · Områder (på driving range / golfbane) |
 | Simulator/Test (S) | Teknisk term: `SPILL_TEST` · Definisjon & bruk: Test eller simulert spill mot standard. Kobles til test-/benchmark-flyt. | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:206 · 8. Praksistyper |
 | Siste 10 runder / Siste 30 dager / Siste sesong | Bokmål: siste 10 runder … · Notater: snitt-vinduer | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:714 · B3X-A. Score-statistikk |
@@ -997,13 +1007,13 @@ Foreslått gjennomgangsrekkefølge: produkt/roller → treningsstruktur → før
 | Skole | Merknad: Vises dimmet og låst | FAGKILDE – les kildeorden og avklaringer i del 1–5 | S1:181 · Blokk-typer i kalenderen |
 | Skole | Merknad: Vises dimmet og låst | FAGKILDE – les kildeorden og avklaringer i del 1–5 | S2:186 · 7. Blokk-typer i kalenderen |
 | Skulder-mobilitet | Bokmål: skulder-mobilitet · Notater: bindestrek | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:444 · B2A. FYS — fysiske underkategorier |
-| Slag | Teknisk term: `SLAG` · Definisjon & bruk: Slagøvelser (putt, chip, bunker, fulle slag mot mål). Øker mot spesialisering/turnering. Farge `pyr-slag`. | KILDEOPPSLAG – ordvalgene i A01–A03 er ikke ferdig vedtatt | S3:50 · 1. Pyramiden |
+| Slag | Teknisk term: `SLAG` · Definisjon & bruk: Slagøvelser (putt, chip, bunker, fulle slag mot mål). Øker mot spesialisering/turnering. Farge `pyr-slag`. | KILDEOPPSLAG – UI følger A01–A03; tekniske identifikatorer og historisk ordlyd er bevart | S3:50 · 1. Pyramiden |
 | SLAG | Navn: Golfslag · Dekker: Fokus på å slå spesifikke golfslag | FAGKILDE – les kildeorden og avklaringer i del 1–5 | S1:45 · Pyramiden |
 | SLAG | Navn: Golfslag · Dekker: Fokus på å slå spesifikke golfslag | FAGKILDE – les kildeorden og avklaringer i del 1–5 | S2:26 · 1. Pyramiden — de fem treningsområdene |
 | SLAG | Lys flate (`--pyr-*` i globals.css): `#2563EB` (blå) · Workbench mørk terminal (`CAT_COLORS` i workbench-hybrid/theme.ts): `#84A9FF` | VISNINGSKILDE – ord/tall til kontroll; ikke farger eller fonter | S4:28 · Pyramiden — TO fargesett (velg etter flate) |
 | Slag på green | Bokmål: slag på green · Notater: etter approach | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:678 · B3E. Approach-statistikk (SG-APP data) |
 | Slag-matching | Teknisk term: `matchSource` / `matchConfidence` · Definisjon & bruk: Slag → oppgave via `auto-drill`/`auto-club`/`manual` med high/medium/low; usikre koblinger kan overstyres. | HISTORISK MODELL – ord beholdt for oppslag, ikke regelgrunnlag | S3:335 · 14. Planleggingshjernen |
-| Slag-type | Teknisk term: `ShotType` · Definisjon & bruk: DRIVE, APPROACH, CHIP, PITCH, PUTT, BUNKER, RECOVERY, DROP (ved slag-logging). | KILDEOPPSLAG – ordvalgene i A01–A03 er ikke ferdig vedtatt | S3:373 · 15. Datamodell & status-enums |
+| Slag-type | Teknisk term: `ShotType` · Definisjon & bruk: DRIVE, APPROACH, CHIP, PITCH, PUTT, BUNKER, RECOVERY, DROP (ved slag-logging). | KILDEOPPSLAG – UI følger A01–A03; tekniske identifikatorer og historisk ordlyd er bevart | S3:373 · 15. Datamodell & status-enums |
 | Slag-underlag | Teknisk term: `ShotLie` · Definisjon & bruk: TEE, FAIRWAY, SEMI_ROUGH, ROUGH, DEEP_ROUGH, BUNKER, GREEN, WATER, OOB, TREES (hvor ballen lå). | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:372 · 15. Datamodell & status-enums |
 | Slag-utfall | Teknisk term: `SgOutcome` · Definisjon & bruk: Hvor slaget endte: FAIRWAY, ROUGH, GREEN, SAND, RECOVERY, HOLED. Avgjør benchmark for sluttposisjon. | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:239 · 10. Strokes Gained (SG) og benchmarks |
 | Slett | Tekst: Slett · Stil: danger | VISNINGSKILDE – ord/tall til kontroll; ikke farger eller fonter | S4:115 · 5. Knapper & CTA-er (flyttet fra ordbok B13) |
@@ -1125,7 +1135,7 @@ Foreslått gjennomgangsrekkefølge: produkt/roller → treningsstruktur → før
 | TM-mål-type | Teknisk term: `TmGoalType` · Definisjon & bruk: PRIMARY, SECONDARY, CAUSAL, HIT_RATE (jf. §14 TrackMan-mål). | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:384 · 15. Datamodell & status-enums |
 | TM-parametere i UI | Bokmål: club speed · ball speed · smash factor · carry · total distance · launch angle · spin rate · attack angle · club path · face angle · apex · deviation · Notater: engelske fagtermer beholdes (betydning: §11) | PARAMETERKILDE – navneformen må følge nyere S7; se A05 | S3:965 · B11. TrackMan-termer |
 | Toast | Bokmål: toast · Notater: UI-feedback | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:991 · B14. Notifikasjoner & feedback |
-| Tooltip / Drill-down / Zoom | Bokmål: tooltip / drill-down / zoom · Notater: engelsk-norsk | KILDEOPPSLAG – ordvalgene i A01–A03 er ikke ferdig vedtatt | S3:788 · B3X-E. Visualiserings-uttrykk |
+| Tooltip / Drill-down / Zoom | Bokmål: tooltip / drill-down / zoom · Notater: engelsk-norsk | KILDEOPPSLAG – UI følger A01–A03; tekniske identifikatorer og historisk ordlyd er bevart | S3:788 · B3X-E. Visualiserings-uttrykk |
 | Top 10 % / Bunn 25 % | Bokmål: topp 10 % / bunn 25 % · Notater: mellomrom før % | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:636 · B3B. SG-benchmark & sammenligning |
 | Topp-posisjon | Bokmål: P4.0 · Notater: bindestrek | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:480 · B2B. TEK — tekniske underkategorier |
 | Total distance | Bokmål: total distanse · Notater: uten bindestrek | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:657 · B3D. Driving-statistikk (SG-OTT data) |
@@ -1152,8 +1162,8 @@ Foreslått gjennomgangsrekkefølge: produkt/roller → treningsstruktur → før
 | TRENINGSSAMLING | Typisk innhold (veiledende): Samling (dagsformat) | FAGKILDE – les kildeorden og avklaringer i del 1–5 | S1:138 · Periodisering |
 | TRENINGSSAMLING | Typisk innhold (veiledende, ikke krav): Samling (dagsformat) | FAGKILDE – les kildeorden og avklaringer i del 1–5 | S2:143 · 4. Periodisering — årets rytme |
 | Treningstempo / Game speed | Bokmål: treningstempo / game speed · Notater: ett ord / engelsk | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:848 · Trenings-modus & metoder |
-| Treningstype (drill) | Teknisk term: `DrillPracticeType` · Definisjon & bruk: Drillnivå: BLOKK, VARIABEL, KONKURRANSE, SPILL_TEST. Settes på `ExerciseDefinition.treningstype`. | KILDEOPPSLAG – ordvalgene i A01–A03 er ikke ferdig vedtatt | S3:207 · 8. Praksistyper |
-| Treningsøkt (Spor A) | Teknisk term: `TrainingPlanSession` · Definisjon & bruk: Planlagt PlayerHQ-økt (tid, varighet, pyramide, drills). Live-fremdrift i `liveSnapshot`. | KILDEOPPSLAG – ordvalgene i A01–A03 er ikke ferdig vedtatt | S3:346 · 15. Datamodell & status-enums |
+| Treningstype (drill) | Teknisk term: `DrillPracticeType` · Definisjon & bruk: Drillnivå: BLOKK, VARIABEL, KONKURRANSE, SPILL_TEST. Settes på `ExerciseDefinition.treningstype`. | KILDEOPPSLAG – UI følger A01–A03; tekniske identifikatorer og historisk ordlyd er bevart | S3:207 · 8. Praksistyper |
+| Treningsøkt (Spor A) | Teknisk term: `TrainingPlanSession` · Definisjon & bruk: Planlagt PlayerHQ-økt (tid, varighet, pyramide, drills). Live-fremdrift i `liveSnapshot`. | KILDEOPPSLAG – UI følger A01–A03; tekniske identifikatorer og historisk ordlyd er bevart | S3:346 · 15. Datamodell & status-enums |
 | Treningsøkt / Økt | Bokmål: treningsøkt / økt · Notater: ett ord; økt = kort form | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:811 · B5. Trening — økter & drills |
 | Treningsøkt V2 (Spor B) | Teknisk term: `TrainingSessionV2` · Definisjon & bruk: Coach-/Workbench-økt med miljø, treningstype, deltakere (`/admin/live`). Sameksisterer bevisst med Spor A. | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:347 · 15. Datamodell & status-enums |
 | Trondheim Golfklubb | Forkortelse: Trondheim GK · Lokasjon: Trondheim | VISNINGSKILDE – ord/tall til kontroll; ikke farger eller fonter | S4:166 · 9. Klubber & lokasjoner — demo-data (flyttet fra ordbok B22) |
@@ -1198,9 +1208,9 @@ Foreslått gjennomgangsrekkefølge: produkt/roller → treningsstruktur → før
 | Vedlegg / Spørsmål / Svar | Bokmål: vedlegg / spørsmål / svar · Notater: flertall uendret | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:989 · B14. Notifikasjoner & feedback |
 | Video-analyse / Video-review / Bilde-analyse | Bokmål: video-analyse / video-review / bilde-analyse · Notater: bindestrek | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:850 · Trenings-modus & metoder |
 | Vind-spill | Bokmål: vind-spill · Notater: bindestrek | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:588 · B2E. TURN — turnerings-spesifikke kategorier |
-| Vindretning | Teknisk term: `WindDir` · Definisjon & bruk: STILLE, MEDVIND, MOTVIND, VENSTRE, HOYRE (kontekst på loggede slag). | KILDEOPPSLAG – ordvalgene i A01–A03 er ikke ferdig vedtatt | S3:374 · 15. Datamodell & status-enums |
+| Vindretning | Teknisk term: `WindDir` · Definisjon & bruk: STILLE, MEDVIND, MOTVIND, VENSTRE, HOYRE (kontekst på loggede slag). | KILDEOPPSLAG – UI følger A01–A03; tekniske identifikatorer og historisk ordlyd er bevart | S3:374 · 15. Datamodell & status-enums |
 | Visualisering | Bokmål: visualisering · Notater: «Se slaget før det skjer» | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:582 · B2E. TURN — turnerings-spesifikke kategorier |
-| Visualiseringsøvelse | Bokmål: visualiseringsøvelse · Notater: ett ord | KILDEOPPSLAG – ordvalgene i A01–A03 er ikke ferdig vedtatt | S3:601 · B2E. TURN — turnerings-spesifikke kategorier |
+| Visualiseringsøvelse | Bokmål: visualiseringsøvelse · Notater: ett ord | KILDEOPPSLAG – UI følger A01–A03; tekniske identifikatorer og historisk ordlyd er bevart | S3:601 · B2E. TURN — turnerings-spesifikke kategorier |
 | Volum-tak | Teknisk term: `maxVolumMin` / `volumPerUke` · Definisjon & bruk: Ukentlig volum (min) innenfor periodens min/maks; valideres per ISO-uke. | HISTORISK MODELL – ord beholdt for oppslag, ikke regelgrunnlag | S3:313 · 13. Invarianter (systemets harde regler — versjonert, kan endres) |
 | Vs. forrige uke/måned/sesong | Bokmål: mot forrige uke / måned / sesong · Notater: norsk | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:756 · B3X-C. Tidsperioder & sammenligning |
 | Vær-tilpasning | Bokmål: vær-tilpasning · Notater: bindestrek | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:589 · B2E. TURN — turnerings-spesifikke kategorier |
@@ -1229,8 +1239,8 @@ Foreslått gjennomgangsrekkefølge: produkt/roller → treningsstruktur → før
 | Øktgenerator | Teknisk term: `session-generator` · Definisjon & bruk: Auto-genererer økter innenfor invariantene; alltid M2 + BLOKK. | HISTORISK MODELL – ord beholdt for oppslag, ikke regelgrunnlag | S3:326 · 14. Planleggingshjernen |
 | Øktmiljø (sted) | Teknisk term: `SessionEnvironment` · Definisjon & bruk: Konkret STEDTYPE en økt logges på: RANGE, BANE, STUDIO, HJEM, SIMULATOR, GYM. Chip ved øktlogging. Sted ≠ konkurransenærhet (M). | HISTORISK MODELL – ord beholdt for oppslag, ikke regelgrunnlag | S3:156 · 5. Miljø (M) og Press (PR) |
 | Øktnotat-type | Teknisk term: `SessionNoteType` · Definisjon & bruk: SELF, COACH_QUESTION, VIDEO. | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:369 · 15. Datamodell & status-enums |
-| Øvelses-synlighet | Teknisk term: `ExerciseVisibility` · Definisjon & bruk: PRIVATE, COACH_PLAYERS m.fl. — hvem ser en coach-/spiller-øvelse. | KILDEOPPSLAG – ordvalgene i A01–A03 er ikke ferdig vedtatt | S3:353 · 15. Datamodell & status-enums |
-| Øvelseskilde | Teknisk term: `ExerciseSource` · Definisjon & bruk: SYSTEM (seedet, låst), COACH, PLAYER. | KILDEOPPSLAG – ordvalgene i A01–A03 er ikke ferdig vedtatt | S3:352 · 15. Datamodell & status-enums |
+| Øvelses-synlighet | Teknisk term: `ExerciseVisibility` · Definisjon & bruk: PRIVATE, COACH_PLAYERS m.fl. — hvem ser en coach-/spiller-øvelse. | KILDEOPPSLAG – UI følger A01–A03; tekniske identifikatorer og historisk ordlyd er bevart | S3:353 · 15. Datamodell & status-enums |
+| Øvelseskilde | Teknisk term: `ExerciseSource` · Definisjon & bruk: SYSTEM (seedet, låst), COACH, PLAYER. | KILDEOPPSLAG – UI følger A01–A03; tekniske identifikatorer og historisk ordlyd er bevart | S3:352 · 15. Datamodell & status-enums |
 | Δ (delta) | Bokmål: endring · Notater: Δ-symbol kan brukes; «endring i prosent»; «prosent endring» uten bindestrek | KILDEOPPSLAG – eldre ordlyd, ikke ny samlet godkjenning | S3:757 · B3X-C. Tidsperioder & sammenligning |
 
 ## 8. Samlede faglige forklaringer
