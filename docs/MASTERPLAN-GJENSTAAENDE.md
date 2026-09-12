@@ -10,6 +10,8 @@ Aktiv visuell retning er nå **Atletisk intelligens**. Siste Claude-kandidat bes
 
 Eksisterende UI skal ikke slettes på forhånd. Det erstattes kontrollert per brukerreise etter at en designversjon er valgt, kartlagt til kode og funksjons-/visuelt prøvd.
 
+Når Anders velger en komplett Claude Design-pakke med `selectedForBuilding: true`, er den eneste visuelle fasiten for inkluderte flater. Gamle visuelle regler og avhengigheter fjernes kontrollert under porteringen og skal ikke finnes i sluttresultatet. Claude trenger ikke detaljtegne hver rute separat, men alle ruter må kobles til et kontrollert skjermmønster, og alle unike/kritiske reiser skal ha detaljert UI og klikkbar mobil-, iPad- og desktopflyt. [Komplett design- og porteringskontrakt](planer/claude-design-til-grok-portering-2026-09-12.md).
+
 ## Samlet arbeid og hva kontrollene beviser
 
 | Pakke | Resultat | Status og bevis |

@@ -8,6 +8,8 @@ Se [den sentrale retningskontrakten](../.claude/skills/ak-hq-design/references/a
 
 Siste kontrollerte kandidat er AgencyOS v0.3.3, AgencyOS Hjem v0.3.2, PlayerHQ v0.3.2 og Stall/spillerkort v0.1. Pakken er klikkbar, men oppgir fortsatt `selectedForBuilding: false` og `eksportert: false`. Retningen er ikke valgt for produksjonsbygging før Anders velger en konkret versjon og Claude leverer en samsvarende byggepakke. [Kontroll av siste pakke](../docs/design-audit/claude-design-v0-3-3-2026-09-12.md).
 
+Når en komplett pakke er valgt for bygging, er den eneste visuelle autoriteten for de inkluderte flatene. Gamle designverdier og regler skal ikke overleve som skjulte standarder. De kan bare eksistere midlertidig mens en konkret brukerreise erstattes og prøves. Komplett krav til designomfang og Groks portering står i [Claude Design → Grok-kontrakten](../docs/planer/claude-design-til-grok-portering-2026-09-12.md).
+
 ## Tidligere portering og nåværende implementasjon
 
 **Valgt for den bestilte porteringen 10.09.2026:** Anders har valgt Train-lock for PlayerHQ og AgencyOS, Claw / Team Norway for interne Team Norway-skjermer og WANG for WANG-skjermene. Bestillingen gjelder alle skjermene i disse fire områdene. Se [valgte kilder og kontrollstatus](../docs/design-audit/portering-fire-flater-2026-09-10.md).
