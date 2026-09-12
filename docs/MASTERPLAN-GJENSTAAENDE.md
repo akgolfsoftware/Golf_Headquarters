@@ -64,13 +64,21 @@ Disse er nå eksplisitte D0-blokkeringer, ikke fotnoter: faktisk 320 px-/200 %-k
 | P02–P05 Plan/Live | Frekvens uten dobbelttelling av speil, FYS-standardverdi og detaljgjenåpning, avbrutt mot lagret | I main via PR #854. [Kontroll](design-audit/plan-live-p02-p05-2026-09-12.md). Innlogget reise gjenstår |
 | G01/G06–G10 | Korrigering, kilde, enhet, manglende data og gjenåpning uten produksjonsimport | I main via PR #855. [Kontroll](design-audit/runde-sg-trackman-g01-g10-2026-09-12.md) |
 | O13 kvalitet/backup | Feilsanitering uten hemmeligheter, helsesvar uten env, lokal URL-vakt og rollback-regel. Lokal `pg_restore` prøvd 12.09 kveld | I main via PR #857, ny prøve på `grok/docker-launch-tester-2026-09-12`. [Kontroll](design-audit/docker-launch-tester-2026-09-12.md). L7 ikke bestått |
-| R-J samtykkegrunnlag | Felles 16-årsregel for helse og deling (flagg eller fødselsdato). Register over formål/lagring. Helselogg og spiller-samtykke avviser uten gyldig grunnlag | På `grok/r-j-samtykke-2026-09-13`. [Kontroll](design-audit/samtykke-r-j-2026-09-13.md). UI-tekst og lydhistorikk uendret |
+| R-J samtykkegrunnlag | Felles 16-årsregel for helse og deling (flagg eller fødselsdato). Register over formål/lagring. Helselogg og spiller-samtykke avviser uten gyldig grunnlag | I main via PR #867. [Kontroll](design-audit/samtykke-r-j-2026-09-13.md). UI-tekst og lydhistorikk uendret |
+| J05 TN-testreise | Sammenlignbar testhistorikk uten overskriving | I main via PR #858. [Kontroll](design-audit/tn-j05-testreise-2026-09-12.md) |
+| P09 økt-tilbakemelding | Tilbakemelding bundet til eiers økt | I main via PR #859. [Kontroll](design-audit/playerhq-p09-coachkontakt-2026-09-12.md) |
+| J14 AgenticOS-spor | Godkjenning, feil og avvisning på samme handlingsspor | I main via PR #861. [Kontroll](design-audit/agenticos-j14-godkjenning-spor-2026-09-12.md) |
+| P09 spørsmål-tilgang | Spørsmål kun for spørsmålsstiller og tildelt coach | I main via PR #864. [Kontroll](design-audit/playerhq-p09-sporsmal-tilgang-2026-09-12.md) |
+| O02 Workbench-publisering | Coach uten stalltilgang avvises. Snapshot bruker norsk mandag | PR #866, ikke flettet |
+| R-I helseskriving | Forelder avvises før helselogg. Manuelt samtykke kreves | PR #868, ikke flettet |
+| R-I utstyrsbag | Fremmed skriving avvises | PR #869, ikke flettet |
+| R-I admin-spiller | Opprett/rediger spiller avviser spiller og forelder; rediger krever stalltilgang | Denne leveransen. [Kontroll](design-audit/handlingstilgang-admin-spiller-2026-09-13.md) |
 
 Siste samlede testresultat og flettepunkt skal leses i samlingsrapporten og tilhørende GitHub PR. Innlogget produksjonsreise, faktisk betaling og Anders' visuelle vurdering er egne kontroller som fortsatt gjenstår.
 
 ## Neste oppgaver, i rekkefølge
 
-Aktiv arbeidsdeling 12.09.2026: Claude Design eier Design System v0.1 og de første pilotskjermene. Grok 4.6 leverte R-E del 1 via PR #845 og kan fortsette med designuavhengig teknisk arbeid etter [Grok-planen](planer/grok-4-6-start-2026-09-12.md). Grok kan bruke siste prototype til funksjonell kartlegging, men endrer ikke globale designverdier, navigasjon eller visuelt komponentuttrykk før D0 er bestått.
+Aktiv arbeidsdeling 13.09.2026: Claude Design eier Design System v0.1. P0-TEST (PR #865), D2-AO, utstyrsbag (PR #869) og melding til tildelt coach (PR #863) eies av andre økter. Ikke dupliser dem.
 
 | Prioritet / ID | Konkret neste leveranse | Inngang | Ferdig når |
 |---|---|---|---|
@@ -89,7 +97,7 @@ R-A–R-J og REV-F1–F11 er forklart i [produktplanen](planer/produktplan-og-in
 | PlayerHQ · D2-PH | Resterende Analyse, mål, kalender, øvelsesbank/program, profil, meldinger, deling, test/retest og sosiale reiser | Knytt hver skjerm til valgt kilde og appdata. Fullfør relevante tom-/laste-/feiltilstander. [Funksjonene P01–P11](planer/funksjonsregister-2026-09-11.md) |
 | Plan/Live | Frekvens uten speildobling og FYS-gjenåpning er prøvd. Innlogget ny/rediger/flytt og Caddie i live gjenstår | [Kontroll](design-audit/plan-live-p02-p05-2026-09-12.md). Separate modeller beholdes |
 | Mål · R-F / F1 | Startverdi, periode og faktisk gjennomføring; TN-mål med variant, antall, enhet og retning | Faglige definisjoner før avhengige beregninger. Eventuelle nye databasefelt krever konkret autorisasjon |
-| Team Norway-tester | Avstem testbatteriet mot Excel v3, variantbundet føring, korrigering/angre og historikk | [Fagkontroll](beslutningsgrunnlag/team-norway-excel-v3-kontroll.md). Ugyldige resultater avvises, og lagringsfeil bevarer registreringen |
+| Team Norway-tester | Sammenlignbar historikk uten overskriving er i main via PR #858. Rest: Excel v3-avstemming og innlogget reise | [J05](design-audit/tn-j05-testreise-2026-09-12.md) · [Fagkontroll](beslutningsgrunnlag/team-norway-excel-v3-kontroll.md) |
 | WANG/GFGK | Årsplan, juniorgrupper, testdager, styrkeprogram, rapporter og foresatte | Virkelige rollegrenser og avklarte fagregler; P08/O03 i funksjonsregisteret |
 | Booking · R4/R5/R9 | Serverregler for kollisjon, idempotens og trygg retur er prøvd med mock. Innlogget checkout og valgt bookingdesign gjenstår | [Kontroll](design-audit/booking-o06-betaling-2026-09-12.md). Ingen reell betaling |
 | Betaling/tilgang · R6/R8 | Credits-race, avbestilling/refusjon og oppsigelse mot Stripe først er prøvd. Innlogget reise og testnøkkel gjenstår | [Kontroll](design-audit/booking-o06-betaling-2026-09-12.md) |
@@ -101,7 +109,7 @@ R-A–R-J og REV-F1–F11 er forklart i [produktplanen](planer/produktplan-og-in
 | Marked/salg | Nettsider, tilbud, coachprofiler, innhold og fungerende overgang til booking | Avstem bestilt omfang; ikke aktiver et historisk markedsføringssystem automatisk |
 | Økonomi/personlig | Beslutningsstøtte, rapportgrunnlag og egne oppgaver | Avklar konkret behov; økonomitall kun fra autorisert Tripletex-eksport |
 | Samtykke · R-J | Register og 16-årsregel er prøvd. Gjenstår: avklart UI-tekst per formål, lyd som historikk, innlogget reise | [Kontroll](design-audit/samtykke-r-j-2026-09-13.md). Ikke bytt 16 til 13 |
-| Kodekontroll · R-I | Første utvalg i PR #848. Fortsettelse: opptatt tid, profil og mål. 157 filer mangler søskentest | [R-I](design-audit/handlingstilgang-r-i-2026-09-12.md) · [bred](design-audit/handlingstilgang-bred-2026-09-12.md) |
+| Kodekontroll · R-I | PR #848 og #856 i main. Helse PR #868, bag PR #869, admin-spiller i denne leveransen. Øvrige admin-skriv gjenstår | [R-I](design-audit/handlingstilgang-r-i-2026-09-12.md) · [bred](design-audit/handlingstilgang-bred-2026-09-12.md) · [admin-spiller](design-audit/handlingstilgang-admin-spiller-2026-09-13.md) |
 | Felles design/kvalitet | Avstem alle 480 sideruter og deres mønstre, visuell kontroll, kontrast, fokus, mobil og stor tekst | 480 ruter er inventar, ikke 480 unike ferdige design. Ingen ny kontrastbaseline for å skjule brudd |
 | Drift/lansering | Produksjonens innloggings-/funksjonsvern, alarmprøve, gjenoppretting med filer og full kundereise | Lokal `pg_restore` prøvd 12.09 kveld. [Kontroll](design-audit/docker-launch-tester-2026-09-12.md). Produksjonsalarm og Vercel-rollback krever miljøautorisasjon |
 | Produktbeslutninger | Avklar blokkerende produkt-/fagspørsmål rett før den avhengige leveransen; samle resten i intervjuet uten å stoppe uavhengig teknisk arbeid | [Intervjuguide](planer/produktplan-og-intervju-2026-09-11.md). Familie-OS/eldre sideprosjekter er bevart som underlag, ikke automatisk aktivert |
