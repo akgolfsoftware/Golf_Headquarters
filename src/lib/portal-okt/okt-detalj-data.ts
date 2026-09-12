@@ -4,8 +4,8 @@
  *
  * Én skjerm, to tilstander (planlagt / gjennomført) — erstatter både den gamle
  * OktV2-lesesiden og /portal/tren/[sessionId]/planlagt (som nå er redirect hit).
- * Tilgangsmodellen er derfor planlagt-sidens brede: spilleren selv, coach,
- * host, invitert deltaker, eller COACH/ADMIN-rolle.
+ * Tilgang: spilleren selv, tildelt coach/vert, akseptert deltaker, eller
+ * coach/admin med bekreftet spiller-tilgang. Rolle alene gir ikke innsyn.
  *
  * Ekte Prisma. Ingen fabrikerte tall: mangler et felt (mål, resultat, notat),
  * utelates det og skjermen bygger ærlig tilstand uten.
@@ -16,6 +16,8 @@ import { prisma } from "@/lib/prisma";
 import { ukenummer } from "@/lib/uke-helpers";
 import { lFaseTilSteg, pressTilNivaa } from "@/lib/ak-formel-visning";
 import type { LFase, MMiljo } from "@/generated/prisma/client";
+import { canAccessPlayer } from "@/lib/auth/own-or-coached";
+import { kanSeOktDetalj } from "./okt-detalj-tilgang";
 
 export type PyramidArea = "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN";
 export type OktUiStatus = "planned" | "now" | "done" | "cancelled" | "skipped";
@@ -313,17 +315,19 @@ export async function getOktDetaljData(
 
   if (!okt) return { found: false };
 
-  // Tilgang (samme modell som gamle planlagt-siden): spilleren selv, coach,
-  // host, invitert deltaker, eller COACH/ADMIN-rolle.
-  const erDeltaker = okt.participants.some((p) => p.userId === user.id);
-  const harTilgang =
-    okt.studentId === user.id ||
-    okt.coachId === user.id ||
-    okt.hostId === user.id ||
-    erDeltaker ||
-    user.role === "ADMIN" ||
-    user.role === "COACH";
-  if (!harTilgang) return { found: false };
+  const hasPlayerAccess = okt.studentId
+    ? await canAccessPlayer(user, okt.studentId)
+    : false;
+  if (!kanSeOktDetalj({
+    viewerId: user.id,
+    studentId: okt.studentId,
+    coachId: okt.coachId,
+    hostId: okt.hostId,
+    participants: okt.participants,
+    hasPlayerAccess,
+  })) {
+    return { found: false };
+  }
 
   const varighetMin = Math.max(0, Math.round((okt.endTime.getTime() - okt.startTime.getTime()) / 60_000));
 
