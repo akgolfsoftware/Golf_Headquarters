@@ -14,6 +14,12 @@
  * innsamlings-samtykker, mens coach-innsynet gjelder begge kilder likt.
  */
 
+import {
+  calculateAge,
+  maaHaForesattSamtykke,
+  type SamtykkeGiver,
+} from "@/lib/auth/minor";
+
 /**
  * Versjon av samtykketeksten. Bump denne HVER gang teksten under endres
  * meningsbærende — da vet vi nøyaktig hva hver enkelt faktisk sa ja til, og
@@ -104,42 +110,14 @@ export const HELSE_SAMTYKKE_TEKST: Record<
   },
 };
 
-/**
- * Alderen der man kan samtykke selv til behandling av egne persondata.
- * Speiler GDPR_AGE_THRESHOLD i src/lib/auth/minor.ts (art. 8, norsk grense).
- */
-const SELVSAMTYKKE_ALDER = 16;
+export type SamtykteGiver = SamtykkeGiver;
+export { maaHaForesattSamtykke };
 
-export type SamtykteGiver = {
-  /** Om brukeren er flagget som mindreårig i systemet. */
-  requiresGuardianConsent: boolean;
-  /** Fødselsdato, hvis vi har den. */
-  dateOfBirth: Date | null;
-};
-
-/**
- * Kan spilleren gi dette samtykket selv, eller må en foresatt gjøre det?
- *
- * To uavhengige signaler, og vi stoler på det STRENGESTE: flagget
- * `requiresGuardianConsent` (satt ved onboarding) og fødselsdatoen. Er ett av
- * dem «under 16», må foresatt inn. Mangler begge, antar vi voksen — samme
- * antakelse som `isMinor` i auth/minor.ts.
- */
-export function maaHaForesattSamtykke(
-  bruker: SamtykteGiver,
-  naa: Date = new Date(),
-): boolean {
-  if (bruker.requiresGuardianConsent) return true;
-  if (!bruker.dateOfBirth) return false;
-  return alderVed(bruker.dateOfBirth, naa) < SELVSAMTYKKE_ALDER;
-}
-
-/** Alder i hele år på et gitt tidspunkt. */
+/** Alder i hele år på et gitt tidspunkt. Samme kalenderregel som `calculateAge`. */
 export function alderVed(foedselsdato: Date, naa: Date): number {
-  let alder = naa.getFullYear() - foedselsdato.getFullYear();
-  const maaned = naa.getMonth() - foedselsdato.getMonth();
-  if (maaned < 0 || (maaned === 0 && naa.getDate() < foedselsdato.getDate())) {
-    alder--;
+  const alder = calculateAge(foedselsdato, naa);
+  if (alder == null) {
+    throw new Error("Fødselsdato mangler");
   }
   return alder;
 }

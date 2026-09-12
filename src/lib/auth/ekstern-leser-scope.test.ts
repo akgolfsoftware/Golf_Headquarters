@@ -110,3 +110,45 @@ test("ekstern-leser mot Team Norway: STATS-scope er uavhengig av TEST_RESULTATER
   const tilgang = await harEksternLeserTilgang(LESER_ID, SPILLER_MED_SAMTYKKE, "STATS");
   assert.equal(tilgang, false, "samtykke er per scope — TEST_RESULTATER gir ikke STATS");
 });
+
+test("ekstern-leser: SELV-rad fra under 16 uten flagg gir ikke innsyn", async (t) => {
+  const MINDRE = "spiller-15";
+  t.mock.module("@/lib/prisma", {
+    namedExports: {
+      prisma: {
+        eksternLeserGruppe: {
+          findMany: async () => [{ groupId: TEAM_NORWAY_GROUP_ID }],
+        },
+        group: {
+          findMany: async () => [{ id: TEAM_NORWAY_GROUP_ID, name: "Team Norway Golf" }],
+        },
+        user: {
+          findMany: async () => [
+            {
+              id: MINDRE,
+              requiresGuardianConsent: false,
+              dateOfBirth: new Date("2012-01-01"),
+              groupMemberships: [{ groupId: TEAM_NORWAY_GROUP_ID }],
+            },
+          ],
+        },
+        delingsSamtykke: {
+          findMany: async () => [
+            {
+              userId: MINDRE,
+              scope: "TEST_RESULTATER",
+              mottakerGruppeId: TEAM_NORWAY_GROUP_ID,
+              gitt: true,
+              gittAvRolle: "SELV",
+              createdAt: new Date("2026-08-20T10:00:00Z"),
+            },
+          ],
+        },
+      },
+    },
+  });
+
+  const { harEksternLeserTilgang } = await import("./ekstern-leser-scope");
+  const tilgang = await harEksternLeserTilgang(LESER_ID, MINDRE, "TEST_RESULTATER");
+  assert.equal(tilgang, false);
+});
