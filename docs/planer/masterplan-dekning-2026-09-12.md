@@ -8,9 +8,9 @@ Opprettet 12.09.2026. Dette er sporbarhetsregisteret under [masterplanen](../MAS
 |---|---|---|---|
 | P01 | Registrering, introduksjon, profil | Konto/onboarding | Åpen; førstegangsnytte og nivåquiz avklares |
 | P02 | I dag | P0-TEST → R-E/J02 | Del 1 i main via PR #845; innlogget isolert reise blokkert uten Docker/testbase |
-| P03 | Planlegging | R-E + Workbench | Pågår/delvis; tre øktmodeller beholdes |
-| P04 | Gjennomføring/Live | R-E/J02 | Pågår/delvis; lagret er ikke lik fullført |
-| P05 | Mål/fremgang | R-F | Åpen; startverdi, periode og telling avklares |
+| P03 | Planlegging | R-E + Workbench | Tre modeller beholdes. Frekvens teller speil én gang. Innlogget ny/rediger/flytt gjenstår. [Kontroll](../design-audit/plan-live-p02-p05-2026-09-12.md) |
+| P04 | Gjennomføring/Live | R-E/J02 | Avbrutt skilles fra lagret. Innlogget reise blokkert uten Docker |
+| P05 | Mål/fremgang | R-F | Frekvens uten dobbelttelling bygget; startverdi/periode for øvrige måltyper gjenstår |
 | P06 | Øvelsesbank/program | D2-PH + O02 | Delvis; faglige merkelapper er frie |
 | P07 | Tester | D2-TN + testfag | Delvis; samme TN-protokoll og versjon følger resultatet. Enhet/retning/historikk utenom v3 gjenstår |
 | P08 | Fysisk trening/helse | D2-WANG + R-I | Fys-logg bruker samme spiller-tilgang som øvrige handlinger; IUP-skriving er coach/admin. Styrkeinnhold og helsedeling avklares |

@@ -5617,6 +5617,11 @@
       "byte": 5118
     },
     {
+      "sti": "docs/design-audit/plan-live-p02-p05-2026-09-12.md",
+      "omrade": "dokumentasjon",
+      "byte": 1118
+    },
+    {
       "sti": "docs/design-audit/playerhq-ph06-2026-09-11.md",
       "omrade": "dokumentasjon",
       "byte": 5093
@@ -14744,7 +14749,7 @@
     {
       "sti": "src/app/portal/fysisk/actions.test.ts",
       "omrade": "test",
-      "byte": 1899
+      "byte": 3144
     },
     {
       "sti": "src/app/portal/fysisk/actions.ts",
@@ -24164,7 +24169,7 @@
     {
       "sti": "src/lib/portal-live/spillerreise.test.ts",
       "omrade": "test",
-      "byte": 7225
+      "byte": 7456
     },
     {
       "sti": "src/lib/portal-live/spillerreise.ts",
@@ -24432,14 +24437,24 @@
       "byte": 706
     },
     {
+      "sti": "src/lib/portal/goals/frekvens-okter.test.ts",
+      "omrade": "test",
+      "byte": 1250
+    },
+    {
+      "sti": "src/lib/portal/goals/frekvens-okter.ts",
+      "omrade": "appkode",
+      "byte": 756
+    },
+    {
       "sti": "src/lib/portal/goals/progress.test.ts",
       "omrade": "test",
-      "byte": 9432
+      "byte": 9693
     },
     {
       "sti": "src/lib/portal/goals/progress.ts",
       "omrade": "appkode",
-      "byte": 7900
+      "byte": 8905
     },
     {
       "sti": "src/lib/portal/idag-agenda.ts",

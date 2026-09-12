@@ -23,6 +23,7 @@ Oppdatert 12.09.2026. Appen er fortsatt under arbeid og ikke klarert for åpen l
 - **D2-WANG teknisk reise:** Åpen hjemside, coach-uke og IUP er kartlagt uten visuell port. IUP fra uka krever samme Toppidrett-gruppe og elev i rosteret. [Kontroll](design-audit/wang-d2-wang-teknisk-reise-2026-09-12.md).
 - **O05/O07 forelder og delt innsyn:** Kun godkjent relasjon gir innsyn og skriving. Barnbytte blander ikke identitet. Ugyldig/utløpt lenke og tilbakekalling av delt tilgang er prøvd mot eksporterte handlinger. [Kontroll](design-audit/forelder-o05-delt-innsyn-2026-09-12.md).
 - **O06 booking/betaling:** Kollisjon, credits-race, hendelsesrekkefølge, avbestilling/refusjon og oppsigelse er prøvd med mocket Stripe. Ingen reell betaling. [Kontroll](design-audit/booking-o06-betaling-2026-09-12.md).
+- **P02–P05 Plan/Live:** Frekvensmål teller ikke V2-speil dobbelt. FYS bruker planlagt varighet og beholder detaljer ved gjenåpning. Avbrutt er ikke det samme som lagret. [Kontroll](design-audit/plan-live-p02-p05-2026-09-12.md).
 
 ## Allerede i main
 
@@ -32,7 +33,7 @@ Tidligere kontroll av Vercel bekreftet `2807d4d08` som publisert kode og prøvde
 
 ## Det som gjenstår
 
-1. Bestå P0-TEST, deretter fullfør isolert, innlogget Next-/databasereise gjennom I dag, Plan, økt og oppsummering. Enhetstestene for de tre øktmodellene og avviste roller er i main; tom lokal testdatabase mangler fortsatt.
+1. Bestå P0-TEST, deretter fullfør isolert, innlogget Next-/databasereise gjennom I dag, Plan, økt og oppsummering. Frekvens uten dobbelttelling og FYS-gjenåpning er prøvd uten innlogget reise. Tom lokal testdatabase mangler fortsatt.
 2. Kjør innlogget kontroll av Caddie-, TrackMan-, lokal lagrings- og abonnementspakken. Serverregelen for Caddie-eier og tillatt modell-felt er bygget; R-I har handlingstester uten isolert database. Bredere AI-bruk venter på innlogget bevis.
 3. Resterende PlayerHQ-, AgencyOS-, Team Norway- og WANG-skjermer, koblet til valgte kilder og reelle handlinger.
 4. Innlogget booking-/betalingsreise med Stripe-testnøkkel, og betaling for barn. Serverregler for kollisjon, credits, oppsigelse, forelder-eierskap og tilbakekalling er prøvd uten reell betaling.
