@@ -8,6 +8,7 @@ Oppdatert 12.09.2026. Appen er fortsatt under arbeid og ikke klarert for åpen l
 - **Ny designretning:** Siste Claude-pakke har AgencyOS v0.3.3, AgencyOS Hjem v0.3.2, PlayerHQ v0.3.2 og Stall/spillerkort v0.1. Reisene er klikkbare på mobil og desktop, men pakken har fortsatt `selectedForBuilding: false` og `eksportert: false`. Eksisterende UI bevares som funksjons- og implementasjonsgrunnlag, ikke som visuell fasit. [Pakkekontroll](design-audit/claude-design-v0-3-3-2026-09-12.md).
 - **Grok-start:** Grok 4.6 kan starte med innlogget spillerreise, tilgangstester, serverregler og teknisk skjermkartlegging uten å låse det nye uttrykket. [Avgrenset Terminal-plan og startprompt](planer/grok-4-6-start-2026-09-12.md).
 - **R-E del 1:** Enhetstester følger samme økt gjennom I dag → Plan → øktark → Live → oppsummering for V2, Workbench og eldre plan, med avviste roller. Isolert testdatabase og innlogget Next-reise er blokkert uten Docker. [Kontroll](design-audit/playerhq-r-e-spillerreise-2026-09-12.md).
+- **Caddie-kø/AI-grense:** AgencyOS-kø og telling viser bare Caddie-utkast eieren kan godkjenne. Ukjent databasefritekst sendes ikke til ekstern modell uten tillatt feltliste. Innlogget kontroll gjenstår.
 - **Grenkontroll:** GitHub `main` er grunnlaget. PR #843 er lukket uten helfletting; språk-/ordbokarbeidet er samlet via PR #844, og Groks R-E del 1 via PR #845. Groks ferdige worktree er fjernet. [Grenregnskap](vedlikehold/grengjennomgang-2026-09-12.md).
 - **Plan:** eldre godtatte planøkter uten V2-speil inngår i ukeoversikt og progresjon uten dobbelttelling. Separate øktmodeller og eksisterende statusregler er bevart. [Plan-kontroll](design-audit/plan-legacy-2026-09-11.md).
 - **PH-06:** valgt resultathierarki er bygget. Lagrede notater og vurderinger er synlige, feil bevarer feltene, og samtidige lagringer oppdaterer separate JSON-felt. Appskall/Geist, åtte datatilstander, fire bredder og to temaer er komponentprøvd. Egen isolert PostgreSQL-prøve bestod. [PH-06-kontroll](design-audit/playerhq-ph06-2026-09-11.md).
@@ -25,7 +26,7 @@ Tidligere kontroll av Vercel bekreftet `2807d4d08` som publisert kode og prøvde
 ## Det som gjenstår
 
 1. Bestå P0-TEST, deretter fullfør isolert, innlogget Next-/databasereise gjennom I dag, Plan, økt og oppsummering. Enhetstestene for de tre øktmodellene og avviste roller er i main; tom lokal testdatabase mangler fortsatt.
-2. Kjør innlogget kontroll av Caddie-, TrackMan-, lokal lagrings- og abonnementspakken og lukk den dokumenterte fritekst-/køgrensen før bredere AI-bruk.
+2. Kjør innlogget kontroll av Caddie-, TrackMan-, lokal lagrings- og abonnementspakken. Serverregelen for Caddie-eier og tillatt modell-felt er bygget; bredere AI-bruk venter på innlogget bevis.
 3. Resterende PlayerHQ-, AgencyOS-, Team Norway- og WANG-skjermer, koblet til valgte kilder og reelle handlinger.
 4. Testvarianter/mål, foreldreinnsyn, booking-/betalingsreise og konkrete produktavklaringer fra funksjonsregisteret.
 5. Visuell vurdering med Anders, kontrast/tilgjengelighet, full alarm-/gjenopprettingsprøve og dokumentert faktisk produksjonsreise før lansering.

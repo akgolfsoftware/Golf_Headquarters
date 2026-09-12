@@ -1,5 +1,6 @@
 import { createHash, randomUUID } from "node:crypto";
 import type { ToolSet, UIMessage } from "ai";
+import { erTillattCaddieModellStrengfelt } from "./modell-felt";
 
 type Identity = { id: string; name: string; email: string; phone?: string | null };
 type Proposal = { toolName: string; toolCallId: string; input: Record<string, unknown>; output: Record<string, unknown> };
@@ -77,6 +78,8 @@ export function createCaddiePrivacy(identities: Identity[]) {
       // stabil i lagret historikk så et forslag kan godkjennes etter reload.
       if (key === "toolCallId") return value;
       if (/^(id|.*Id|slug|serviceTypeSlug)$/.test(key)) return reference(value);
+      if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(value)) return value;
+      if (fromDatabase && !erTillattCaddieModellStrengfelt(key)) return "[fritekst utelatt]";
       return text(value);
     }
     if (Array.isArray(value)) return value.map((item) => output(item, "", fromDatabase));

@@ -35,7 +35,7 @@ Opprettet 12.09.2026. Dette er sporbarhetsregisteret under [masterplanen](../MAS
 | O05 | Forelder/delt innsyn | Forelderpakken | Åpen; barnbytte, betaling, innsyn og tilbakekalling |
 | O06 | Booking/betaling | Booking R4/R5/R9 | Åpen; testmiljø og full kundereise |
 | O07 | Tilgang/konto | P0-TEST + tilgang | Delvis; FULL/TALENT/INGEN og handlingstilgang |
-| O08 | Caddie/AI Coach | Caddie-kø/AI-grense | Delvis; eierregel og tillatt datastruktur før bred bruk |
+| O08 | Caddie/AI Coach | Caddie-kø/AI-grense | Eierregel og tillatt modell-felt bygget; innlogget kontroll gjenstår |
 | O09 | AgenticOS/Jarvis | AgencyOS/AgenticOS | Delvis; faktisk kjøring, godkjenning og sporbarhet |
 | O10 | Marked/salg | Marked → booking | Åpen; ønsket omfang og fungerende overgang |
 | O11 | Økonomi/personlig | P0-PRODUKT | Uavklart; kun autorisert Tripletex-eksport |
