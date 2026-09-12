@@ -5,18 +5,25 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { acceptAndApplyPlanAction } from "./accept-plan-action";
+import { planActionAvvisSpor } from "./plan-action-spor";
+import { kanBehandlePlanAction } from "./plan-action-tilgang";
 
 /** Spiller eier egen action; coach/admin kun for coachede spillere (+ coachId-match). */
 async function assertPlanActionAccess(
   user: { id: string; role: string },
   action: { userId: string; coachId: string | null },
 ): Promise<void> {
-  if (action.userId === user.id) return;
-  if (user.role === "ADMIN") return;
-  if (user.role !== "COACH") throw new Error("forbidden");
-  // Tildelt annen coach → nei
-  if (action.coachId && action.coachId !== user.id) throw new Error("forbidden");
-  if (!(await harCoachTilgangTilSpiller(user, action.userId))) {
+  const harSpillerTilgang =
+    user.role === "COACH" ? await harCoachTilgangTilSpiller(user, action.userId) : false;
+  if (
+    !kanBehandlePlanAction({
+      viewerId: user.id,
+      viewerRole: user.role,
+      actionUserId: action.userId,
+      actionCoachId: action.coachId,
+      harSpillerTilgang,
+    })
+  ) {
     throw new Error("forbidden");
   }
 }
@@ -53,6 +60,7 @@ export async function rejectPlanAction(actionId: string, reason?: string) {
   });
   if (!action) throw new Error("not-found");
   await assertPlanActionAccess(user, action);
+  if (action.status !== "PENDING") return;
 
   // Grunn er valgfri men verdifull eval-data — trimmes og caps til 500 tegn.
   const rejectReason =
@@ -68,6 +76,13 @@ export async function rejectPlanAction(actionId: string, reason?: string) {
       decidedById: user.id,
       ...(rejectReason ? { rejectReason } : {}),
     },
+  });
+  await prisma.agentRun.create({
+    data: planActionAvvisSpor({
+      actionId,
+      actionType: action.actionType,
+      userId: action.userId,
+    }),
   });
 
   revalidatePath("/portal");

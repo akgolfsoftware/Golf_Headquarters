@@ -33,8 +33,8 @@ Arbeidsoppskrift 10.09.2026. En lokal gjenopprettingsprøve med syntetiske data 
 | Varsling ved faktisk driftsfeil | Ikke prøvd |
 | Ny behandling av feilet betaling i testmiljø | Ikke prøvd |
 | Sikkerhetskopiens dekning og tidspunkt | Ikke verifisert |
-| Gjenoppretting til separat miljø | Lokal prøve 10.09: 196 tabeller, bevart booking og kollisjonsvern. 12.09: URL-vakt enhetstestet; `pg_restore` ikke kjørt (Docker nede). Produksjonskopi gjenstår |
-| Målt gjenopprettingstid og datatap | Lokal liten testdatabase 10.09: 2,59 sekunder, syntetisk booking bevart. Produksjon ikke målt |
+| Gjenoppretting til separat miljø | Lokal prøve 12.09 kveld: 196 tabeller, bevart booking og kollisjonsvern, 1,06 s. Samme isolat som 10.09. Produksjonskopi gjenstår. [Kontroll](../design-audit/docker-launch-tester-2026-09-12.md) |
+| Målt gjenopprettingstid og datatap | Lokal liten testdatabase 12.09: 1,06 sekunder, syntetisk booking bevart. 10.09: 2,59 sekunder. Produksjon ikke målt |
 | Tilbakeføring av utrulling med kompatibelt skjema | Regel enhetstestet: produksjonstilbakeføring avvist uten uttrykkelig autorisasjon. Vercel-rollback ikke kjørt |
 
 
@@ -42,10 +42,10 @@ Arbeidsoppskrift 10.09.2026. En lokal gjenopprettingsprøve med syntetiske data 
 
 Testene ligger i `tests/integration/`. De krever eksplisitt `LAUNCH_TEST_DATABASE_URL`, og avviser andre mål enn `127.0.0.1:54379/ak_hq_launch_tests`. De leser ikke `.env.local`. Nettleserinnlogging er erstattet med en kontrollert testidentitet; e-post, Google Calendar og varsling er erstattet med testfunksjoner. Dette er en funksjonsprøve av server og database, ikke en bekreftelse på at eksterne integrasjoner virker.
 
-Kjør `launch-database.test.ts` med Node, `--import tsx --conditions=react-server --experimental-test-module-mocks --test`. Sikkerhet og backup kjøres med `node --test` på hver `.mjs`-fil. Kjør filene sekvensielt. Backup krever også `LAUNCH_TEST_PG_BIN` med lokal PostgreSQL-verktøysti. URL/nøkler legges i prosessmiljøet fra tilgangsbeskyttet lokal fil, aldri i kommandohistorikk, dokumenter eller testlogger.
+Kjør `launch-database.test.ts` med Node, `--import tsx --conditions=react-server --experimental-test-module-mocks --test`. Prøven setter selv `TZ=UTC`. Sikkerhet og backup kjøres med `node --test` på hver `.mjs`-fil. Kjør filene sekvensielt. Backup krever også `LAUNCH_TEST_PG_BIN` med lokal PostgreSQL-verktøysti. URL/nøkler legges i prosessmiljøet fra tilgangsbeskyttet lokal fil, aldri i kommandohistorikk, dokumenter eller testlogger.
 
 Den lokale klyngen ligger i `/tmp/ak-hq-launch-pg-20260910`. Appskjemaet ble generert fra Prisma med `migrate diff --from-empty --to-schema prisma/schema.prisma --script`; dette er lokal SQL-generering, ikke migrering av produksjon. pgvector er ikke installert lokalt; to vektorkolonner er substituert bare i testskjemaet. Bookingvernet `booking_coach_no_overlap` og `btree_gist` ble lagt til eksplisitt. En ny maskin trenger tilsvarende lokal rigg før testene kan kjøres.
 
-Den midlertidige tjenesten er stoppet etter sluttkontrollen 10.09.2026. Klyngen og den beskyttede lokale testkonfigurasjonen er bevart for neste testøkt; ingen produksjonsnøkler er kopiert inn.
+Klyngen ligger i `/tmp/ak-hq-launch-pg-20260910` og startes med PostgreSQL 17 på loopback-port 54379. Den ble startet på nytt 12.09.2026 kveld, prøvd, og skal stoppes etter sluttkontroll. Ingen produksjonsnøkler er kopiert inn.
 
 Før Vercel-utrulling anbefales oppgradering av CLI fra den meldte 56.3.1 til gjeldende 59.15.1 eller nyere med `npm i -g vercel@latest`. CLI er ikke oppgradert eller brukt til deploy i denne arbeidsøkten.

@@ -18,3 +18,11 @@ export function kanSeOktDetalj(input: {
   }
   return Boolean(input.studentId && input.hasPlayerAccess);
 }
+
+/** Bare spilleren økta tilhører kan svare eller kvittere på tilbakemeldingen. */
+export function kanSvarePaOktTilbakemelding(
+  viewerId: string,
+  studentId: string | null,
+): boolean {
+  return Boolean(studentId && studentId === viewerId);
+}

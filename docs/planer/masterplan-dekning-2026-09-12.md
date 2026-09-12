@@ -14,7 +14,7 @@ Opprettet 12.09.2026. Dette er sporbarhetsregisteret under [masterplanen](../MAS
 | P06 | Øvelsesbank/program | D2-PH + O02 | Delvis; faglige merkelapper er frie |
 | P07 | Tester | D2-TN + testfag | Delvis; samme TN-protokoll og versjon følger resultatet. Enhet/retning/historikk utenom v3 gjenstår |
 | P08 | Fysisk trening/helse | D2-WANG + R-I | Fys-logg bruker samme spiller-tilgang som øvrige handlinger; IUP-skriving er coach/admin. Styrkeinnhold og helsedeling avklares |
-| P09 | Coachkontakt | PlayerHQ-rest | Økt-tilbakemelding i PR #859 (ikke flettet). Melding bare til tildelt coach i denne leveransen. Binding av fri melding til konkret økt gjenstår |
+| P09 | Coachkontakt | PlayerHQ-rest | Åpen; kobling til økt/resultat og svartid |
 | P10 | Kalender/turnering | PlayerHQ-rest + AgencyOS | Åpen; styrende kalender og konfliktregler |
 | P11 | Venner/utfordringer | P0-PRODUKT | Uavklart nytte/målgruppe; ikke utvid før beslutning |
 | G01 | Runderegistrering | Runde/SG | Manuell korrigering, nullstilling og gjenåpning prøvd. Innsatsnivå avklares. [Kontroll](../design-audit/runde-sg-trackman-g01-g10-2026-09-12.md) |
@@ -34,13 +34,13 @@ Opprettet 12.09.2026. Dette er sporbarhetsregisteret under [masterplanen](../MAS
 | O04 | Team Norway | D2-TN/D3 | Teknisk reise bygget; poster/dokumenter låst til kanonisk gruppe. Innlogget og visuell kontroll gjenstår. [Kontroll](../design-audit/team-norway-d2-tn-teknisk-reise-2026-09-12.md) |
 | O05 | Forelder/delt innsyn | Forelderpakken | Godkjent eierskap, barnbytte uten identitetsblanding, avvist skriving, ugyldig/utløpt lenke og tilbakekalling er prøvd. Betaling for barn og innlogget reise gjenstår. [Kontroll](../design-audit/forelder-o05-delt-innsyn-2026-09-12.md) |
 | O06 | Booking/betaling | Booking R4/R5/R9 | Kollisjon, idempotens, credits, avbestilling/refusjon og oppsigelse prøvd med mocket Stripe. Innlogget checkout og reell testnøkkel gjenstår. [Kontroll](../design-audit/booking-o06-betaling-2026-09-12.md) |
-| O07 | Tilgang/konto | P0-TEST + R-I + O05 | Handlingstester for avvist skriving, ugyldig/utløpt invitasjon, trukket ekstern leser, opptatt tid, profil og mål. Innlogget isolert reise blokkert uten Docker. [R-I](../design-audit/handlingstilgang-r-i-2026-09-12.md) · [O05](../design-audit/forelder-o05-delt-innsyn-2026-09-12.md) · [bred](../design-audit/handlingstilgang-bred-2026-09-12.md) |
+| O07 | Tilgang/konto | P0-TEST + R-I + O05 + R-J | Handlingstester for avvist skriving, ugyldig/utløpt invitasjon, trukket ekstern leser, opptatt tid, profil og mål. Deling og helse bruker samme 16-årsregel. Innlogget isolert reise blokkert uten Docker. [R-I](../design-audit/handlingstilgang-r-i-2026-09-12.md) · [O05](../design-audit/forelder-o05-delt-innsyn-2026-09-12.md) · [R-J](../design-audit/samtykke-r-j-2026-09-13.md) |
 | O08 | Caddie/AI Coach | Caddie-kø/AI-grense | Eierregel og tillatt modell-felt bygget; innlogget kontroll gjenstår |
-| O09 | AgenticOS/Jarvis | AgencyOS/AgenticOS | Godkjenning/feil/spor bygget og testet i PR #861 (ikke flettet). Innkurv, rutiner og utsending gjenstår |
+| O09 | AgenticOS/Jarvis | AgencyOS/AgenticOS | Delvis; faktisk kjøring, godkjenning og sporbarhet |
 | O10 | Marked/salg | Marked → booking | Åpen; ønsket omfang og fungerende overgang |
 | O11 | Økonomi/personlig | P0-PRODUKT | Uavklart; kun autorisert Tripletex-eksport |
 | O12 | Familie-OS/sideprosjekter | Utenfor aktiv app | Ikke aktivert; krever uttrykkelig ny bestilling |
-| O13 | Felles kvalitet/drift | D0–D6 + L0–L8 | Feilsanitering, helsesvar og lokal restore-vakt prøvd 12.09. Faktisk `pg_restore` og L7 blokkert uten Docker. [Kontroll](../design-audit/o13-kvalitet-backup-2026-09-12.md) |
+| O13 | Felles kvalitet/drift | D0–D6 + L0–L8 | Lokal `pg_restore` og 11 lanseringsreiser prøvd 12.09 kveld. L7 ikke bestått. [Kontroll](../design-audit/docker-launch-tester-2026-09-12.md) |
 
 Detaljert innhold og kildegrunnlag står i [funksjonsregisteret](funksjonsregister-2026-09-11.md). Dette registeret eier koblingen til gjennomføring og må oppdateres ved hver leveranse.
 
@@ -52,19 +52,19 @@ Detaljert innhold og kildegrunnlag står i [funksjonsregisteret](funksjonsregist
 | J02 I dag → Plan → økt → Live → oppsummering | P02–P04; R-E og D3 |
 | J03 mål → plan → faktisk fremgang | P03, P05, G07 |
 | J04 coach ser behov → planlegger → publiserer → følger opp | O01–O02, P09 |
-| J05 test tildeles → føres → korrigeres → historikk | P07, O04. Bygget og testet i PR #858, ikke flettet |
+| J05 test tildeles → føres → korrigeres → historikk | P07, O04 |
 | J06 WANG uke → økt → elev/IUP → rapport | P08, O03 |
-| J07 melding/råd → relevant økt eller resultat | P09, O01. Tilbakemelding i PR #859. Melding til tildelt coach i denne leveransen. Binding til konkret økt gjenstår |
+| J07 melding/råd → relevant økt eller resultat | P09, O01 |
 | J08 kalender/booking → pris → betaling → bekreftelse | P10, O06 |
 | J09 forelder bytter barn → innsyn → samtykke/betaling | O05–O07 |
 | J10 runde → korrigering → analyse | G01, G07 |
 | J11 Gameplan → Live/GPS → offline/synk → etterlevelse | G02–G06, G11 |
 | J12 import → kildevalidering → analyse | G06–G10 |
 | J13 Caddie-forslag → menneskelig valg → resultat | O08 |
-| J14 AgenticOS-forslag → godkjenning → kjøring/feil → spor | O09. Bygget og testet i PR #861, ikke flettet |
+| J14 AgenticOS-forslag → godkjenning → kjøring/feil → spor | O09 |
 | J15 marked → tilbud → booking → oppfølging | O06, O10 |
 | J16 delt lenke → korrekt innsyn → utløpt/tilbakekalt | O05, O07 |
-| J17 alarm → håndtering → backup/restore/rollback | O13; L7–L8. Lokal vakt prøvd; produksjonsrestore ikke kjørt. [Kontroll](../design-audit/o13-kvalitet-backup-2026-09-12.md) |
+| J17 alarm → håndtering → backup/restore/rollback | O13; L7–L8. Lokal `pg_restore` prøvd; produksjonsrestore ikke kjørt. [Kontroll](../design-audit/docker-launch-tester-2026-09-12.md) |
 
 ## Rute- og tilstandsdekning
 

@@ -1,6 +1,6 @@
 # Status nå — AK Golf HQ
 
-Oppdatert 12.09.2026. Appen er fortsatt under arbeid og ikke klarert for åpen lansering. [Masterplanen](MASTERPLAN-GJENSTAAENDE.md) eier prioritert neste arbeid og den komplette restlisten.
+Oppdatert 13.09.2026. Appen er fortsatt under arbeid og ikke klarert for åpen lansering. [Masterplanen](MASTERPLAN-GJENSTAAENDE.md) eier prioritert neste arbeid og den komplette restlisten.
 
 ## Denne samlingen
 
@@ -26,12 +26,8 @@ Oppdatert 12.09.2026. Appen er fortsatt under arbeid og ikke klarert for åpen l
 - **O06 booking/betaling:** Kollisjon, credits-race, hendelsesrekkefølge, avbestilling/refusjon og oppsigelse er prøvd med mocket Stripe. Ingen reell betaling. [Kontroll](design-audit/booking-o06-betaling-2026-09-12.md).
 - **P02–P05 Plan/Live:** Frekvensmål teller ikke V2-speil dobbelt. FYS bruker planlagt varighet og beholder detaljer ved gjenåpning. Avbrutt er ikke det samme som lagret. [Kontroll](design-audit/plan-live-p02-p05-2026-09-12.md).
 - **G01/G06–G10:** Korrigering, kilde, enhet og manglende data er prøvd uten produksjonsimport. [Kontroll](design-audit/runde-sg-trackman-g01-g10-2026-09-12.md).
-- **O13 kvalitet/backup:** Feillogg fjerner hemmeligheter. Helsesjekken avslører ikke miljøverdier. Lokal testdatabase-vakt avviser alt utenom `127.0.0.1:54379/ak_hq_launch_tests`. I main via PR #857. Faktisk gjenoppretting er blokkert uten Docker. L7 er ikke bestått. [Kontroll](design-audit/o13-kvalitet-backup-2026-09-12.md).
-- **J05 TN-testreise:** Tildeling, utkastkorrigering, angre og historikk er bygget og testet i PR #858. Ikke flettet. Ikke innlogget prøvd. Ikke sett av Anders. Ikke publisert.
-- **P09 coachkontakt økt:** Tilbakemelding følger samme økt-tilgang som øktarket. Bygget og testet i PR #859. Ikke flettet. Ikke innlogget prøvd. Ikke sett av Anders. Ikke publisert.
-- **J14 AgenticOS spor:** Godkjenning, avvisning og feil peker på samme forslags-id. Bygget og testet i PR #861. Ikke flettet. Ikke innlogget prøvd. Ikke sett av Anders. Ikke publisert.
-- **P09/J07 melding til coach:** Spiller sender bare til aktivt tildelt coach. Bygget og testet i denne leveransen. Ikke flettet. Ikke innlogget prøvd. Ikke sett av Anders. Ikke publisert. [Kontroll](design-audit/playerhq-p09-melding-coach-2026-09-12.md).
-- **P0-TEST isolert restore:** Pågår i PR #862 i et annet vindu. Ikke duplisert her.
+- **O13 kvalitet/backup:** Feillogg fjerner hemmeligheter. Helsesjekken avslører ikke miljøverdier. Lokal gjenoppretting mot `127.0.0.1:54379/ak_hq_launch_tests` er prøvd 12.09 kveld: 196 tabeller, booking bevart, overlapp avvist. L7 er ikke bestått. [Kontroll](design-audit/docker-launch-tester-2026-09-12.md).
+- **R-J samtykke:** Helse og deling bruker samme 16-årsregel. En 15-åring uten flagg kan ikke lenger gi deling selv. [Kontroll](design-audit/samtykke-r-j-2026-09-13.md).
 
 ## Allerede i main
 
@@ -41,9 +37,9 @@ Tidligere kontroll av Vercel bekreftet `2807d4d08` som publisert kode og prøvde
 
 ## Det som gjenstår
 
-1. Bestå P0-TEST, deretter fullfør isolert, innlogget Next-/databasereise gjennom I dag, Plan, økt og oppsummering. Frekvens uten dobbelttelling og FYS-gjenåpning er prøvd uten innlogget reise. Tom lokal testdatabase mangler fortsatt.
+1. Bestå P0-TEST, deretter fullfør isolert, innlogget Next-/databasereise gjennom I dag, Plan, økt og oppsummering. Isolert Postgres-reise med testidentitet er prøvd; lokal Supabase-innlogging mangler fordi Docker-stacken som kjører tilhører et annet prosjekt. [P0-TEST](design-audit/p0-test-blokkering-2026-09-12.md).
 2. Kjør innlogget kontroll av Caddie-, TrackMan-, lokal lagrings- og abonnementspakken. Serverregelen for Caddie-eier og tillatt modell-felt er bygget; R-I har handlingstester uten isolert database. Bredere AI-bruk venter på innlogget bevis.
-3. Resterende PlayerHQ-, AgencyOS-, Team Norway- og WANG-skjermer, koblet til valgte kilder og reelle handlinger. J05/P09/J14 er bygget og testet i åpne PR-er, ikke flettet.
+3. Resterende PlayerHQ-, AgencyOS-, Team Norway- og WANG-skjermer, koblet til valgte kilder og reelle handlinger.
 4. Innlogget booking-/betalingsreise med Stripe-testnøkkel, og betaling for barn. Serverregler for kollisjon, credits, oppsigelse, forelder-eierskap og tilbakekalling er prøvd uten reell betaling.
 5. Visuell vurdering med Anders, kontrast/tilgjengelighet, full alarm-/gjenopprettingsprøve mot isolert Docker-base og dokumentert faktisk produksjonsreise før lansering. L7 er ikke bestått.
 

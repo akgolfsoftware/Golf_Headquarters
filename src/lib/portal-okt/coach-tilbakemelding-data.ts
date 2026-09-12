@@ -23,7 +23,9 @@
 
 import "server-only";
 import { prisma } from "@/lib/prisma";
+import { canAccessPlayer } from "@/lib/auth/own-or-coached";
 import { MILJO_LABEL } from "@/lib/portal-okt/okt-detalj-data";
+import { kanSeOktDetalj, kanSvarePaOktTilbakemelding } from "@/lib/portal-okt/okt-detalj-tilgang";
 
 export type TilbakemeldingKlipp = {
   id: string;
@@ -105,24 +107,26 @@ export async function getCoachTilbakemeldingData(
         id: true, title: true, startTime: true, endTime: true, location: true,
         miljo: true, notes: true, completedSummary: true, coachId: true,
         studentId: true, hostId: true,
-        participants: { select: { userId: true } },
+        participants: { select: { userId: true, status: true } },
       },
     })
     .catch(() => null);
 
   if (!okt) return { found: false };
 
-  // Tilgang — samme modell som okt-detalj: spilleren selv, coach, host,
-  // deltaker, eller COACH/ADMIN-rolle.
-  const erDeltaker = okt.participants.some((p) => p.userId === user.id);
-  const harTilgang =
-    okt.studentId === user.id ||
-    okt.coachId === user.id ||
-    okt.hostId === user.id ||
-    erDeltaker ||
-    user.role === "ADMIN" ||
-    user.role === "COACH";
-  if (!harTilgang) return { found: false };
+  const hasPlayerAccess = okt.studentId
+    ? await canAccessPlayer(user, okt.studentId)
+    : false;
+  if (!kanSeOktDetalj({
+    viewerId: user.id,
+    studentId: okt.studentId,
+    coachId: okt.coachId,
+    hostId: okt.hostId,
+    participants: okt.participants,
+    hasPlayerAccess,
+  })) {
+    return { found: false };
+  }
 
   const summary = somObjekt(okt.completedSummary);
   const coachRatedAt = lesDato(summary.coachRatedAt);
@@ -246,7 +250,7 @@ export async function getCoachTilbakemeldingData(
     klipp,
     dittSvar,
     kvittert,
-    kanSvare: okt.studentId === user.id,
+    kanSvare: kanSvarePaOktTilbakemelding(user.id, okt.studentId),
   };
 }
 
