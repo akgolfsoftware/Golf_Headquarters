@@ -11,7 +11,10 @@ export const TN_REISE = [
   { steg: "gruppeposter", href: "/team-norway/[groupId]", vakt: "hentGruppepostSide + kanonisk slug" },
   { steg: "dokumenter", href: "/team-norway/[groupId]/dokumenter", vakt: "hentGruppeDokumenter + kanonisk slug" },
   { steg: "spillerpost", href: "/team-norway/spiller/[spillerId]", vakt: "hentSpillerpostTidslinje + TN-trener" },
+  { steg: "tildeling", href: "/admin/spillere/[id]/tester", vakt: "tildelTest tn-v3 + coach-omfang" },
   { steg: "testforing", href: "/portal/tren/tester/team-norway", vakt: "saveTnTest own session" },
+  { steg: "korrigering-angre", href: "/portal/tren/tester/team-norway?test=[protokoll]", vakt: "utkast-revisjon, abort, ny økt etter fullført" },
+  { steg: "historikk", href: "/admin/spillere/[id]/tester", vakt: "tnHistorikkRader samme variant" },
 ] as const;
 
 export function tnGruppeHref(groupId: string): string {
@@ -29,6 +32,15 @@ export function tnSpillerpostHref(spillerId: string): string {
 export function tnTestforingHref(protocolId?: string): string {
   const base = "/portal/tren/tester/team-norway";
   return protocolId ? `${base}?test=${protocolId}` : base;
+}
+
+/** Korrigering av en fullført test åpner alltid et nytt forsøk, aldri den gamle økt-id-en. */
+export function tnNyForsokHref(protocolId: string): string {
+  return tnTestforingHref(protocolId);
+}
+
+export function tnKorrigeringGjenbrukerOkt(href: string, sessionId: string): boolean {
+  return href.includes(`session=${sessionId}`);
 }
 
 /** Testlenken i oversikten vises bare for spillerrollen, ikke for trener eller admin. */
