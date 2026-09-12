@@ -50,7 +50,9 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | dokumentasjon | [docs/design-audit/2026-09-11-agencyos-coach-reise-j04.md](<../design-audit/2026-09-11-agencyos-coach-reise-j04.md>) |
 | dokumentasjon | [docs/design-audit/agencyos-d2-ao-teknisk-2026-09-12.md](<../design-audit/agencyos-d2-ao-teknisk-2026-09-12.md>) |
 | dokumentasjon | [docs/design-audit/ak-golf-til-train-lock-bro-2026-09-03.md](<../design-audit/ak-golf-til-train-lock-bro-2026-09-03.md>) |
+| dokumentasjon | [docs/design-audit/booking-o06-betaling-2026-09-12.md](<../design-audit/booking-o06-betaling-2026-09-12.md>) |
 | dokumentasjon | [docs/design-audit/claude-design-v0-3-3-2026-09-12.md](<../design-audit/claude-design-v0-3-3-2026-09-12.md>) |
+| dokumentasjon | [docs/design-audit/forelder-o05-delt-innsyn-2026-09-12.md](<../design-audit/forelder-o05-delt-innsyn-2026-09-12.md>) |
 | dokumentasjon | [docs/design-audit/handlingstilgang-r-i-2026-09-12.md](<../design-audit/handlingstilgang-r-i-2026-09-12.md>) |
 | dokumentasjon | [docs/design-audit/lokal-lagring-personvern-2026-09-11.md](<../design-audit/lokal-lagring-personvern-2026-09-11.md>) |
 | dokumentasjon | [docs/design-audit/p0-test-blokkering-2026-09-12.md](<../design-audit/p0-test-blokkering-2026-09-12.md>) |
