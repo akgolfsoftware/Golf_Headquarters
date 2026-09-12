@@ -1,7 +1,7 @@
 {
   "metode": "git ls-files -co --exclude-standard; eksisterende filer; genererte registerfiler utelatt. Kun metadata, ikke kundedata eller miljøverdier.",
   "telling": {
-    "prosjektfiler": 5280,
+    "prosjektfiler": 5281,
     "sidefiler": 480,
     "prismamodeller": 196,
     "enhetstestfiler": 384,
@@ -5650,6 +5650,11 @@
       "sti": "docs/design-audit/handlingstilgang-bred-2026-09-12.md",
       "omrade": "dokumentasjon",
       "byte": 986
+    },
+    {
+      "sti": "docs/design-audit/handlingstilgang-helse-2026-09-13.md",
+      "omrade": "dokumentasjon",
+      "byte": 956
     },
     {
       "sti": "docs/design-audit/handlingstilgang-r-i-2026-09-12.md",
