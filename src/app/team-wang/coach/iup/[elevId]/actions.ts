@@ -66,6 +66,10 @@ export async function lagreIupSamtale(raw: unknown): Promise<IupResultat> {
   }
   const { elevId, evalueringer, nestePeriodeId, nyeFokus } = parsed.data;
 
+  if (bruker.role !== "COACH" && bruker.role !== "ADMIN") {
+    return { ok: false, feil: "Du har ikke tilgang til denne elevens IUP." };
+  }
+
   let gruppeId: string | null;
   try {
     gruppeId = await hentWangElevGruppeId(bruker, elevId);

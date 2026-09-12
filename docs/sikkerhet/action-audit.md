@@ -37,8 +37,9 @@
 ## Gate
 
 `scripts/check-action-auth.mjs` — kjøres i `npm run verify`. Feiler hvis en
-ny `"use server"`-fil under `src/app/admin` eller `src/app/portal` mangler
-auth-import.
+`"use server"`-fil under `src/app`, `src/lib` eller `src/components` mangler
+auth-import, eller hvis en kjent tilgangsvakt importeres uten å kalles. Import
+alene er ikke autorisasjon. [R-I-kontroll](../design-audit/handlingstilgang-r-i-2026-09-12.md).
 
 ## Tester
 
