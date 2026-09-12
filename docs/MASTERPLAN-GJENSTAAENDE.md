@@ -22,7 +22,7 @@ Arbeid kan gå parallelt bare når avhengighetene under er oppfylt. Statusene `�
 | P0-OMFANG | Anders/Claude Design | Bestått som bestilling | Fire kjerner er obligatoriske, øvrige brukerflater får navngitt profil/mønster, og 480 ruter samt overlegg skal forklares |
 | P0-TEST | Grok | Blokkert uten Docker/testbase. [Bevis](design-audit/p0-test-blokkering-2026-09-12.md) | Separat tom testdatabase kan bygges etter gjeldende oppskrift; syntetiske spiller-, coach-, organisasjons- og avviste roller finnes; kritiske prøver hopper ikke over manglende oppsett; betaling/e-post bruker testmiljø |
 | P0-PRODUKT | Anders + fagansvarlig | Åpen per beslutning | Bare produkt- eller fagvalg som faktisk blokkerer neste leveranse avklares før avhengig bygging; beslutning, konsekvens og eier loggføres |
-| P0-DEKNING | Teknisk eier | Åpen | Alle 35 funksjonsfamilier, 17 hovedreiser, 480 ruter og manuelle overlegg har ansvarlig arbeidspakke og bevisstatus i [dekningsregisteret](planer/masterplan-dekning-2026-09-12.md) |
+| P0-DEKNING | Teknisk eier | Åpen | Første tekniske prefikskart 12.09: 479 `page.tsx`, 103 lastefiler, 93 feilfiler. Familier og reiser har ansvarlig pakke; manuelle overlegg og D1-mønster gjenstår. [Kart](planer/teknisk-rute-tilstandskart-2026-09-12.md) |
 
 ### Design og portering D0–D6
 
