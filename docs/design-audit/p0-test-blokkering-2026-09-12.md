@@ -1,21 +1,17 @@
-# P0-TEST — status 12.09.2026 kveld
+# P0-TEST — status 12.09.2026 natt
 
-Porten P0-TEST er **ikke bestått**. R-E del 1 (PR #845) og Caddie-eierregelen (PR #846) er i main. Innlogget Next mot lokal Supabase-innlogging er ikke kjørt.
+Porten P0-TEST er **ikke helt bestått**. Egen HQ-Supabase og innlogget Workbench-/planreise er prøvd. V2-fullføring i UI gjenstår. [Kontroll](p0-test-innlogget-reise-2026-09-12.md).
 
-## Eksakt blokkering for innlogget Next
+## Hva som er på plass
 
-[Oppskriften](../utvikling/lokal-testdatabase.md) gjelder en tom lokal Supabase-stack for HQ. Kontroll 12.09 kveld:
+- Docker kjører. WANG-stacken eier 54321–54324 og er urørt.
+- HQ-stacken eier 54421/54422 med HQ-skjema (196 tabeller) og syntetiske roller.
+- `.env.local` leses ikke. Innlogget Portal krever `VEDLIKEHOLD=0` i Next-prosessen.
 
-- Docker kjører. Stacken som svarer på 54321–54324 heter `wang-toppidrett`.
-- Den har 122 `public`-tabeller og ingen `public.users`. HQ-skjema er ikke lagt inn.
-- `.env.local` peker på hostet base og skal ikke kopieres inn i worktree eller brukes til seed/`db push`.
+## Isolert Postgres uten innlogging
 
-Derfor er det ikke startet HQ-Supabase, syntetiske innloggede roller mot Next, eller e2e som krever ekte innlogging.
-
-## Hva som er prøvd i isolert Postgres
-
-Isolert HQ-testdatabase på `127.0.0.1:54379` ble startet på nytt. Gjenoppretting, funksjonssikkerhet og 11 lanseringsreiser med testidentitet bestod. [Kontroll](docker-launch-tester-2026-09-12.md). Det erstatter ikke innlogget nettleserreise.
+Isolert HQ-testdatabase på `127.0.0.1:54379` er fortsatt evidens for gjenoppretting og lanseringsreiser uten GoTrue. [Kontroll](docker-launch-tester-2026-09-12.md).
 
 ## Neste for P0-TEST
 
-Egen tom HQ-Supabase-stack, syntetiske spiller-/coach-/avviste roller, og innlogget R-E-reise mot den basen. Ikke bruk WANG-stacken. Kritiske prøver skal feile stengt hvis oppsettet mangler, ikke hoppes over.
+Fullfør V2-live-finish i `tests/p0/spillerreise-innlogget.spec.ts` mot samme HQ-stack. Kritiske prøver skal feile stengt hvis oppsettet mangler, ikke hoppes over.

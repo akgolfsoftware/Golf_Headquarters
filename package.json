@@ -37,6 +37,7 @@
     "signoff:train-lock": "node scripts/train-lock-pixel-diff.mjs",
     "nattlig": "playwright test -c playwright.nattlig.config.ts",
     "test:all": "npm test && npm run test:e2e",
+    "test:p0-test": "node scripts/p0-test-innlogget-reise.mjs",
     "prepare": "husky",
     "meg:tilbakeskriv": "tsx scripts/meg-tilbakeskriving/run.ts",
     "meg:morgen": "tsx scripts/meg-tilbakeskriving/morgen.ts",
