@@ -10,11 +10,37 @@ import path from "node:path";
 // action i src/lib/x/actions.ts er like eksponert som en under portal/, siden
 // server actions kan POST-es direkte forbi layout-guards.
 const ROOTS = ["src/app", "src/lib", "src/components"];
-const AUTH_IMPORT = /from\s+["']@\/lib\/auth\/(?:action-guards|assert-own-or-coached|requireConsentingUser|requirePortalUser|requireCapability|coached|getCurrentUser|canAccessMissionControl)["']/;
-const ALT_AUTH = /from\s+["']@\/lib\/teknisk-plan\/ensure-plan-access["']/;
+const AUTH_IMPORT = /from\s+["']@\/lib\/(?:auth\/(?:action-guards|assert-own-or-coached|requireConsentingUser|requirePortalUser|requireCapability|coached|getCurrentUser|canAccessMissionControl|own-or-coached)|teknisk-plan\/ensure-plan-access)["']/;
 // Kun EKTE direktiv: en linje som bare er "use server" (evt. med semikolon).
 // Unngår falske treff på "use server" nevnt inne i kommentarer/dok-strenger.
 const USE_SERVER = /^\s*["']use server["'];?\s*$/m;
+
+/** Runtime-vakter. En import uten kall er ikke autorisasjon (R-I / REV-F10). */
+const AUTH_FNS = [
+  "requireCoachActionUser",
+  "requireAdminActionUser",
+  "requireSpillerActionUser",
+  "requireParentActionUser",
+  "requireConsentingUser",
+  "requirePortalUser",
+  "requireCapability",
+  "getCurrentUser",
+  "getCurrentUserRaw",
+  "canAccessMissionControl",
+  "harCoachTilgangTilSpiller",
+  "assertCoachTilgangTilSpiller",
+  "erCoachetSpiller",
+  "coachScopedPlayerWhere",
+  "canAccessPlayer",
+  "ensurePlanAccess",
+  "assertCanViewPlayerData",
+  "assertOwnOrCoached",
+  "coachAction",
+  "spillerAction",
+  "adminAction",
+  "parentAction",
+  "publicAction",
+];
 
 /**
  * Bevisst offentlige / token-baserte actions. For token-flytene ER token i URL
@@ -38,7 +64,33 @@ function* walk(dir) {
   }
 }
 
-const offenders = [];
+function importedAuthNames(txt) {
+  const names = [];
+  const importRe =
+    /import\s+(type\s+)?(?:\{([^}]+)\}|\*\s+as\s+\w+|(\w+))\s+from\s+["']@\/lib\/(?:auth\/[^"']+|teknisk-plan\/ensure-plan-access)["']/g;
+  let m;
+  while ((m = importRe.exec(txt))) {
+    if (m[1]) continue;
+    if (m[2]) {
+      for (const part of m[2].split(",")) {
+        const trimmed = part.trim();
+        if (!trimmed || trimmed.startsWith("type ")) continue;
+        const name = trimmed.split(/\s+as\s+/).pop()?.trim();
+        if (name && AUTH_FNS.includes(name)) names.push(name);
+      }
+    } else if (m[3] && AUTH_FNS.includes(m[3])) {
+      names.push(m[3]);
+    }
+  }
+  return names;
+}
+
+function callCount(txt, fn) {
+  return (txt.match(new RegExp("\\b" + fn + "\\s*\\(", "g")) || []).length;
+}
+
+const missingImport = [];
+const unusedGuard = [];
 for (const root of ROOTS) {
   for (const file of walk(root)) {
     const rel = file.replace(/\\/g, "/");
@@ -47,25 +99,37 @@ for (const root of ROOTS) {
     // Skip non-action helpers that happened to have the directive
     if (rel.endsWith("/constants.ts") || rel.includes("/lib/periode-helpers")) continue;
     if (PUBLIC_ALLOW.has(rel)) continue;
-    if (AUTH_IMPORT.test(txt) || ALT_AUTH.test(txt)) continue;
-    // Markør: publicAction() kalt/importert
-    if (
-      txt.includes("publicAction") &&
-      txt.includes("@/lib/auth/action-guards")
-    ) {
+    const hasAuthImport = AUTH_IMPORT.test(txt);
+    const hasPublicActionMarker =
+      txt.includes("publicAction") && txt.includes("@/lib/auth/action-guards");
+    if (!hasAuthImport && !hasPublicActionMarker) {
+      missingImport.push(rel);
       continue;
     }
-    offenders.push(rel);
+    const imported = importedAuthNames(txt);
+    const unused = imported.filter((fn) => callCount(txt, fn) === 0);
+    if (unused.length) unusedGuard.push({ rel, unused });
   }
 }
 
-if (offenders.length) {
+if (missingImport.length) {
   console.error(
     "check-action-auth: server-action-filer uten auth-import:\n" +
-      offenders.map((f) => `  ${f}`).join("\n") +
+      missingImport.map((f) => `  ${f}`).join("\n") +
       "\nImporter requireCoachActionUser / requireSpillerActionUser / " +
       "assertCanViewPlayerData / publicAction fra @/lib/auth/action-guards " +
       "(eller annen kjent auth-helper).",
+  );
+  process.exit(1);
+}
+
+if (unusedGuard.length) {
+  console.error(
+    "check-action-auth: importert tilgangsvakt uten kall (R-I):\n" +
+      unusedGuard
+        .map((u) => `  ${u.rel}: ${u.unused.join(", ")}`)
+        .join("\n") +
+      "\nEn ubrukt import er ikke autorisasjon. Kall vakten i den eksporterte handlingen.",
   );
   process.exit(1);
 }

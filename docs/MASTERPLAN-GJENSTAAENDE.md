@@ -54,6 +54,7 @@ Disse er nå eksplisitte D0-blokkeringer, ikke fotnoter: faktisk 320 px-/200 %-k
 | Prosjektopprydding | Ferdige grener/arbeidskopier avstemt, gjeldende innganger og register oppdatert | [Samlingsrapport](vedlikehold/samling-og-opprydding-2026-09-11.md). Historiske sikkerhetskopier og originaldesign bevares |
 | R-A/R-B/R-C/R-D/R-H | Caddie-ressursgrenser og AI-minimering, privat lokal lagring, TrackMan-enheter og sikker abonnementshenting | I main via samlingsarbeidet. [Kontroll og åpne grenser](vedlikehold/sikkerhet-og-enheter-2026-09-11.md). Innlogget kontroll og produksjonsbevis registreres separat |
 | D2-TN/D2-WANG tilgangsgrunnlag | Sikret Team Norway-oversikt og samme konkrete WANG-gruppe/elev gjennom trenerliste, IUP-lesing og IUP-lagring | Bygget og testet i PR #842. [Kontroll og gjenstående brukerreiser](design-audit/tn-wang-tilgang-2026-09-11.md). Innlogget og visuell kontroll gjenstår |
+| R-I handlingstilgang | Avvisningstester som kaller eksporterte handlinger; ubrukt vaktimport feiler i verify; coach-notat, fys-logg og IUP-skriving ressursavgrenset | Bygget på `grok/r-i-handlingstilgang-2026-09-12`. [Kontroll](design-audit/handlingstilgang-r-i-2026-09-12.md). Innlogget reise gjenstår |
 
 Siste samlede testresultat og flettepunkt skal leses i samlingsrapporten og tilhørende GitHub PR. Innlogget produksjonsreise, faktisk betaling og Anders' visuelle vurdering er egne kontroller som fortsatt gjenstår.
 
@@ -90,7 +91,7 @@ R-A–R-J og REV-F1–F11 er forklart i [produktplanen](planer/produktplan-og-in
 | Marked/salg | Nettsider, tilbud, coachprofiler, innhold og fungerende overgang til booking | Avstem bestilt omfang; ikke aktiver et historisk markedsføringssystem automatisk |
 | Økonomi/personlig | Beslutningsstøtte, rapportgrunnlag og egne oppgaver | Avklar konkret behov; økonomitall kun fra autorisert Tripletex-eksport |
 | Samtykke · R-J | Formål, opplysningstype, alder, rolle, deling, lagringssted og historikk | Verifiser regelgrunnlaget før tekst/tilgang endres. Ingen automatisk bytting av aldersgrense |
-| Kodekontroll · R-I | Styrk tester av faktisk handlingstilgang og ressursavgrensning | En importert, men ubrukt tilgangsvakt må ikke være tilstrekkelig for grønn kontroll |
+| Kodekontroll · R-I | Avvisningstester på eksporterte handlinger i PlayerHQ, AgencyOS, Team Norway, WANG og forelder. Ubrukt vaktimport feiler i `check-action-auth` | Bygget 12.09; venter samling. [Kontroll](design-audit/handlingstilgang-r-i-2026-09-12.md). Innlogget isolert reise og øvrige handlinger gjenstår |
 | Felles design/kvalitet | Avstem alle 480 sideruter og deres mønstre, visuell kontroll, kontrast, fokus, mobil og stor tekst | 480 ruter er inventar, ikke 480 unike ferdige design. Ingen ny kontrastbaseline for å skjule brudd |
 | Drift/lansering | Produksjonens innloggings-/funksjonsvern, alarmprøve, gjenoppretting med filer og full kundereise | Konkret miljøautorisasjon for tidligere avvist funksjonssikkerhetsendring; testoppsett for betaling og varsling; dokumentert faktisk publisert versjon |
 | Produktbeslutninger | Avklar blokkerende produkt-/fagspørsmål rett før den avhengige leveransen; samle resten i intervjuet uten å stoppe uavhengig teknisk arbeid | [Intervjuguide](planer/produktplan-og-intervju-2026-09-11.md). Familie-OS/eldre sideprosjekter er bevart som underlag, ikke automatisk aktivert |

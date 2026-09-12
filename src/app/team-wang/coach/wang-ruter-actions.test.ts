@@ -151,6 +151,15 @@ test("IUP-ruten leser ingen elevdata når den felles ressursgrensen avviser", as
   assert.equal(elevLesinger, 0);
 });
 
+test("IUP-action avviser spilleren selv når ressursgrensen ellers ville sluppet inn", async () => {
+  const lagre = await action();
+  bruker = { id: "elev-1", role: "PLAYER" };
+  elevGruppeId = "wang-top-id";
+  const svar = await lagre({ elevId: "elev-1", evalueringer: [], nestePeriodeId: "periode-1", nyeFokus: [] });
+  assert.deepEqual(svar, { ok: false, feil: "Du har ikke tilgang til denne elevens IUP." });
+  assert.equal(transaksjoner, 0);
+});
+
 test("IUP-action skriver ingenting når ressursgrensen avviser", async () => {
   const lagre = await action();
   elevGruppeId = null;

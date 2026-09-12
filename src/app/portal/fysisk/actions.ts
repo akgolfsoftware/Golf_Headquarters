@@ -15,6 +15,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { canAccessPlayer } from "@/lib/auth/own-or-coached";
 
 const LoggFysOktSchema = z.object({
   oktId: z.string().min(1),
@@ -50,8 +51,8 @@ export async function loggFysOkt(
   if (!parsed.success) return { ok: false, error: "Ugyldige treningstall." };
   const { oktId, faktiskMinutter, rader } = parsed.data;
 
-  // Eierskap: økta henger under en plan som tilhører en spiller. Coach med
-  // aktiv kobling til spilleren kan også logge (samme regel som drill-editering).
+  // Eierskap: spilleren selv, eller coach/admin med tilgang til spilleren
+  // (enrollment eller gruppe — samme regel som øvrige spillerhandlinger).
   const okt = await prisma.fysOkt.findUnique({
     where: { id: oktId },
     select: {
@@ -64,13 +65,8 @@ export async function loggFysOkt(
   if (!okt?.uke?.plan) return { ok: false, error: "Fant ikke økten." };
 
   const eierId = okt.uke.plan.userId;
-  if (eierId !== user.id) {
-    const erCoach =
-      (await prisma.playerEnrollment.findFirst({
-        where: { userId: eierId, coachId: user.id, endedAt: null },
-        select: { id: true },
-      })) !== null;
-    if (!erCoach) return { ok: false, error: "Du kan ikke logge denne økten." };
+  if (!(await canAccessPlayer(user, eierId))) {
+    return { ok: false, error: "Du kan ikke logge denne økten." };
   }
 
   // Kun rader som faktisk hører til økta — hindrer at en fremmed radId smugles inn.

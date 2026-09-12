@@ -58,8 +58,8 @@ Tyngdepunktet ligger i `src/lib/domain/` (SG, hcp, ak-kategori, fys-score),
 (guard-avvisning). Noen som er verdt å kjenne til:
 
 - `src/lib/auth/guards-avvis.test.ts` — beviser at guardene AVVISER, ikke bare at
-  de importeres. `scripts/check-action-auth.mjs` dekker importen; den sier
-  ingenting om oppførsel.
+  de importeres. `scripts/check-action-auth.mjs` dekker import og ubrukt kall.
+  Handlingene selv prøves i [R-I-kontrollen](design-audit/handlingstilgang-r-i-2026-09-12.md).
 - `src/lib/auth/coach-scope-idor.test.ts` — IDOR-regresjoner. Importerer ekte
   produksjonskode fra `booking-scope.ts`. **Legg aldri en lokal kopi av
   produksjonslogikk her** — det var nettopp et slikt speil som drev fra

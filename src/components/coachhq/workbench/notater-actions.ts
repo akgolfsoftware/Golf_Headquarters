@@ -13,6 +13,7 @@ import { revalidatePath } from "next/cache";
 
 import { prisma } from "@/lib/prisma";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 
 // ─── Schemas ─────────────────────────────────────────────────────────────────
 
@@ -36,6 +37,9 @@ export type OppdaterNotatInput = z.infer<typeof oppdaterNotatSchema>;
 export async function opprettCoachNotat(input: OpprettNotatInput) {
   const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const parsed = opprettNotatSchema.parse(input);
+  if (!(await harCoachTilgangTilSpiller(coach, parsed.playerId))) {
+    throw new Error("Ikke tillatt");
+  }
 
   const notat = await prisma.coachNote.create({
     data: {
@@ -56,12 +60,15 @@ export async function oppdaterCoachNotat(input: OppdaterNotatInput) {
   const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const { id, ...data } = oppdaterNotatSchema.parse(input);
 
-  // Authz: kun forfatter (coachId) kan redigere
+  // Authz: kun forfatter (coachId) kan redigere, og bare for spillere i stallen.
   const eksisterende = await prisma.coachNote.findUnique({
     where: { id },
-    select: { coachId: true },
+    select: { coachId: true, playerId: true },
   });
   if (!eksisterende || eksisterende.coachId !== coach.id) {
+    throw new Error("Ikke tillatt");
+  }
+  if (!(await harCoachTilgangTilSpiller(coach, eksisterende.playerId))) {
     throw new Error("Ikke tillatt");
   }
 
@@ -79,9 +86,12 @@ export async function slettCoachNotat(id: string) {
 
   const eksisterende = await prisma.coachNote.findUnique({
     where: { id },
-    select: { coachId: true },
+    select: { coachId: true, playerId: true },
   });
   if (!eksisterende || eksisterende.coachId !== coach.id) {
+    throw new Error("Ikke tillatt");
+  }
+  if (!(await harCoachTilgangTilSpiller(coach, eksisterende.playerId))) {
     throw new Error("Ikke tillatt");
   }
 
@@ -92,6 +102,9 @@ export async function slettCoachNotat(id: string) {
 
 export async function hentCoachNotater(playerId: string) {
   const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  if (!(await harCoachTilgangTilSpiller(coach, playerId))) {
+    return [];
+  }
 
   return prisma.coachNote.findMany({
     where: { coachId: coach.id, playerId },
