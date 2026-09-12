@@ -31,6 +31,10 @@ mock.module("@/lib/storage/supabase-storage", {
 mock.module("@/lib/prisma", {
   namedExports: {
     prisma: {
+      group: {
+        findUnique: async ({ where }: { where: { id: string } }) =>
+          where.id === "gruppe-tn" ? { slug: "team-norway" } : { slug: "annen-gruppe" },
+      },
       groupMember: {
         findFirst: async () => (medlem ? { id: "m1", role: "COACH" } : null),
       },
