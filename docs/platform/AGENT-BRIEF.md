@@ -57,3 +57,5 @@ Gamle `v2`, `legacy` og `athletic`-navn betyr ikke automatisk at en fil kan slet
 ## Arbeid og kontroll
 
 `npm run prosjekt:sjekk` kontrollerer dokumentasjon og struktur. `npm run verify` og `npm test` er kodekontrollene. Se [testveiledningen](../testing.md) og [visuell rigg](../../tests/visual/README.md). Dokumenter datagrunnlag og begrensninger når du rapporterer resultater.
+
+Ved endring i innlogging, persondata, betaling, filer, logger eller AI: les [ak-sikkerhet](../../.claude/skills/ak-sikkerhet/SKILL.md) og [ak-personvern](../../.claude/skills/ak-personvern/SKILL.md) før du skriver kode.
