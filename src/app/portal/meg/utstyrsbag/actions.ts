@@ -1,23 +1,27 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { z } from "zod";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 
-export type UtstyrsbagInput = {
-  driver?: string;
-  fairwayWoods?: string;
-  hybrids?: string;
-  irons?: string;
-  wedges?: string;
-  putter?: string;
-  ball?: string;
-  bag?: string;
-  notes?: string;
-};
-
 const FELT_MAX = 200;
+
+const Felt = z.string().max(FELT_MAX).optional();
+const InputSchema = z.object({
+  driver: Felt,
+  fairwayWoods: Felt,
+  hybrids: Felt,
+  irons: Felt,
+  wedges: Felt,
+  putter: Felt,
+  ball: Felt,
+  bag: Felt,
+  notes: Felt,
+});
+
+export type UtstyrsbagInput = z.infer<typeof InputSchema>;
 
 function rens(v: string | undefined): string | null {
   if (v == null) return null;
@@ -31,16 +35,18 @@ export async function lagreUtstyrsbag(data: UtstyrsbagInput): Promise<void> {
     allow: ["PLAYER", "COACH", "ADMIN"],
   });
 
+  const parsed = InputSchema.parse(data);
+
   const payload = {
-    driver: rens(data.driver),
-    fairwayWoods: rens(data.fairwayWoods),
-    hybrids: rens(data.hybrids),
-    irons: rens(data.irons),
-    wedges: rens(data.wedges),
-    putter: rens(data.putter),
-    ball: rens(data.ball),
-    bag: rens(data.bag),
-    notes: rens(data.notes),
+    driver: rens(parsed.driver),
+    fairwayWoods: rens(parsed.fairwayWoods),
+    hybrids: rens(parsed.hybrids),
+    irons: rens(parsed.irons),
+    wedges: rens(parsed.wedges),
+    putter: rens(parsed.putter),
+    ball: rens(parsed.ball),
+    bag: rens(parsed.bag),
+    notes: rens(parsed.notes),
   };
 
   await prisma.equipmentBag.upsert({
