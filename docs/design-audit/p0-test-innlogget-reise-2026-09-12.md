@@ -13,15 +13,15 @@ Kjøring `node scripts/p0-test-innlogget-reise.mjs` med `VEDLIKEHOLD=0`:
 | Workbench I dag → brief → tapper → oppsummering → gjenåpning | Bestått. 5 Driver-slag lagret og vist |
 | Eldre planøkt brief → tapper → oppsummering | Bestått. 4 slag på 7-jern lagret og vist |
 | Tillatt coach ser økta; uvedkommende avvises uten innhold | Bestått. Fremmed spiller/coach lander uten øktinnhold |
-| V2-live finish-knapp i nettleseren | Ikke bestått i samme kjøring. `startSession` og `logDrillReps` (7 repetisjoner) gikk på serveren; fullføringsknappen ble ikke truffet før tidsavbrudd |
+| V2-live brief → aktiv → oppsummering → gjenåpning | Bestått. 7 repetisjoner og 3 treff ga samme total på 10 etter gjenåpning |
 
-URL-vakten avviser hostet base og WANG-portene. Prøvene hopper ikke over manglende oppsett.
+Hele nettleserpakken bestod 4/4 på 2,4 minutter 13.09.2026. URL-vakten avviser hostet base og WANG-portene. Prøvene hopper ikke over manglende oppsett. Orkestratoren velger nyeste tilgjengelige lokale Supabase CLI fordi en eldre Homebrew-versjon ikke kan lese dagens konfigurasjon.
 
 ## Begrensninger
 
 - `.env.local` leses ikke. Nøkler ligger i `/tmp/ak-hq-p0.status.env` og syntetiske passord i `/tmp/ak-hq-p0-creds.env` (ikke Git).
 - Vedlikeholdsmodus er på som standard. Innlogget Portal krever `VEDLIKEHOLD=0` i prosessmiljøet til Next, ellers skrives alt til `/vedlikehold`.
-- Dette er ikke P0-TEST bestått for alle tre øktmodeller i UI. V2-fullføring i nettleseren gjenstår.
+- Dette beviser P0-TEST lokalt for alle tre øktmodeller i samme isolerte innlogging. Masterplan og Notion markeres ikke ferdig før endringen er godkjent og merget.
 - Ingen reell betaling, e-post eller produksjonsrestore.
 
 ## Ikke påstått

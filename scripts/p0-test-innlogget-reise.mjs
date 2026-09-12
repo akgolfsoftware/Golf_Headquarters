@@ -19,6 +19,47 @@ const STATUS_FIL = "/tmp/ak-hq-p0.status.env";
 const CREDS_FIL = "/tmp/ak-hq-p0-creds.env";
 const APP = "http://127.0.0.1:3010";
 
+function versjonDeler(verdi) {
+  const treff = verdi.match(/^(\d+)\.(\d+)\.(\d+)/);
+  return treff ? treff.slice(1).map(Number) : null;
+}
+
+function finnSupabaseBin() {
+  const eksplisitt = process.env.P0_SUPABASE_BIN?.trim();
+  if (eksplisitt) return eksplisitt;
+
+  const kandidater = execFileSync("which", ["-a", "supabase"], {
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "pipe"],
+  })
+    .split("\n")
+    .map((sti) => sti.trim())
+    .filter((sti, index, alle) => sti && alle.indexOf(sti) === index);
+
+  const gyldige = kandidater.flatMap((sti) => {
+    try {
+      const deler = versjonDeler(execFileSync(sti, ["--version"], {
+        encoding: "utf8",
+        stdio: ["ignore", "pipe", "pipe"],
+      }).trim());
+      return deler ? [{ sti, deler }] : [];
+    } catch {
+      return [];
+    }
+  });
+
+  gyldige.sort((a, b) => {
+    for (let i = 0; i < 3; i += 1) {
+      if (a.deler[i] !== b.deler[i]) return b.deler[i] - a.deler[i];
+    }
+    return 0;
+  });
+  if (!gyldige[0]) throw new Error("Fant ingen fungerende lokal Supabase CLI");
+  return gyldige[0].sti;
+}
+
+const SUPABASE_BIN = finnSupabaseBin();
+
 function krevUrl(url, felt, port, pathname) {
   if (!url) throw new Error(`${felt} is required; production defaults are forbidden`);
   let target;
@@ -87,7 +128,7 @@ function oppdaterStatus() {
   if (!existsSync(join(STACK_DIR, "supabase", "config.toml"))) {
     throw new Error(`Mangler ${STACK_DIR}/supabase/config.toml. Ikke bruk WANG-stacken på 54321.`);
   }
-  const ut = execFileSync("supabase", ["status", "-o", "env"], {
+  const ut = execFileSync(SUPABASE_BIN, ["status", "-o", "env"], {
     cwd: STACK_DIR,
     encoding: "utf8",
     stdio: ["ignore", "pipe", "pipe"],
@@ -114,7 +155,7 @@ async function ventPaUrl(url, timeoutMs) {
 async function main() {
   if (!hqStackKjorer()) {
     process.stdout.write("Starter isolert HQ-Supabase på 54421/54422\n");
-    execFileSync("supabase", ["start"], { cwd: STACK_DIR, stdio: "inherit" });
+    execFileSync(SUPABASE_BIN, ["start"], { cwd: STACK_DIR, stdio: "inherit" });
   }
   oppdaterStatus();
   lastEnvFil(STATUS_FIL);

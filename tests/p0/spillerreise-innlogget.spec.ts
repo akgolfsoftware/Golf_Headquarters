@@ -94,7 +94,8 @@ test.describe("P0 innlogget spillerreise", () => {
     await lukkCookie(page);
     await expect(page.getByRole("link", { name: "Start økt" })).toBeVisible();
     await expect(page.getByText("P0 Workbench").first()).toBeAttached();
-    await page.goto("/portal/planlegge");
+    await page.getByRole("link", { name: "Plan", exact: true }).first().click();
+    await expect(page).toHaveURL(/\/portal\/planlegge(\/|$|\?)/);
     await expect(page.getByRole("heading", { name: "Plan" })).toBeVisible();
     await expect(page.getByText("P0 Workbench").first()).toBeAttached();
     await expect(page.getByText("P0 V2 Innspill").first()).toBeAttached();
@@ -150,11 +151,11 @@ test.describe("P0 innlogget spillerreise", () => {
     await expect(page.getByRole("heading", { name: "P0 V2 Innspill" })).toBeVisible();
     await expect(page.locator("dt", { hasText: "Repetisjoner" })).toBeVisible();
     await expect(page.locator("dd").filter({ hasText: String(v2Totalt) }).first()).toBeVisible();
-    await expect(page.getByText(`${v2Treff} av ${v2Totalt}`)).toBeVisible();
+    await expect(page.getByText(`${v2Treff} av ${v2Totalt}`, { exact: true })).toBeVisible();
     await page.goto(`/portal/live/${v2Id}/summary`);
     await expect(page.getByRole("heading", { name: "P0 V2 Innspill" })).toBeVisible();
     await expect(page.locator("dd").filter({ hasText: String(v2Totalt) }).first()).toBeVisible();
-    await expect(page.getByText(`${v2Treff} av ${v2Totalt}`)).toBeVisible();
+    await expect(page.getByText(`${v2Treff} av ${v2Totalt}`, { exact: true })).toBeVisible();
   });
 
   test("eldre planøkt PH-04 → PH-05 → PH-06 med samme slag etter gjenåpning", async ({ page }) => {

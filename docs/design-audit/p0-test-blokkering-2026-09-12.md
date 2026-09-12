@@ -1,6 +1,6 @@
 # P0-TEST — status 12.09.2026 natt
 
-Porten P0-TEST er **ikke helt bestått**. Egen HQ-Supabase og innlogget Workbench-/planreise er prøvd. V2-fullføring i UI gjenstår. [Kontroll](p0-test-innlogget-reise-2026-09-12.md).
+Porten P0-TEST er **bestått lokalt på arbeidsgrenen**, men er ikke ferdigregistrert før endringen er godkjent og merget. Egen HQ-Supabase og alle tre innloggede øktreiser er prøvd. [Kontroll](p0-test-innlogget-reise-2026-09-12.md).
 
 ## Hva som er på plass
 
@@ -14,4 +14,4 @@ Isolert HQ-testdatabase på `127.0.0.1:54379` er fortsatt evidens for gjenoppret
 
 ## Neste for P0-TEST
 
-Fullfør V2-live-finish i `tests/p0/spillerreise-innlogget.spec.ts` mot samme HQ-stack. Kritiske prøver skal feile stengt hvis oppsettet mangler, ikke hoppes over.
+Kjør full prosjektgate og få arbeidsgrenen godkjent. Etter merge kan masterplan og Notion oppdateres som ferdig. Kritiske prøver skal fortsatt feile stengt hvis oppsettet mangler, ikke hoppes over.
