@@ -1,6 +1,6 @@
 # Arbeidsliste — AK Golf HQ
 
-Oppdatert 12.09.2026. Denne filen eier rekkefølge og gjenstående arbeid. [Status nå](STATUS-NÅ.md) oppsummerer leveransen. [Funksjonsregisteret](planer/funksjonsregister-2026-09-11.md) bevarer hele produktbredden; eldre bestillinger er samlet i [planarkivet](arkiv/opprydding-2026-09-10/masterplan-gjenstaaende.md).
+Oppdatert 13.09.2026. Denne filen eier rekkefølge og gjenstående arbeid. [Status nå](STATUS-NÅ.md) oppsummerer leveransen. [Funksjonsregisteret](planer/funksjonsregister-2026-09-11.md) bevarer hele produktbredden; eldre bestillinger er samlet i [planarkivet](arkiv/opprydding-2026-09-10/masterplan-gjenstaaende.md).
 
 ## Gjeldende bestilling og design
 
@@ -64,17 +64,18 @@ Disse er nå eksplisitte D0-blokkeringer, ikke fotnoter: faktisk 320 px-/200 %-k
 | P02–P05 Plan/Live | Frekvens uten dobbelttelling av speil, FYS-standardverdi og detaljgjenåpning, avbrutt mot lagret | I main via PR #854. [Kontroll](design-audit/plan-live-p02-p05-2026-09-12.md). Innlogget reise gjenstår |
 | G01/G06–G10 | Korrigering, kilde, enhet, manglende data og gjenåpning uten produksjonsimport | I main via PR #855. [Kontroll](design-audit/runde-sg-trackman-g01-g10-2026-09-12.md) |
 | O13 kvalitet/backup | Feilsanitering uten hemmeligheter, helsesvar uten env, lokal URL-vakt og rollback-regel. Lokal `pg_restore` prøvd 12.09 kveld | I main via PR #857, ny prøve på `grok/docker-launch-tester-2026-09-12`. [Kontroll](design-audit/docker-launch-tester-2026-09-12.md). L7 ikke bestått |
+| O02 Workbench-publisering | Coach uten stalltilgang avvises før skriving. Publisering lager ikke nye økter. Snapshot bruker norsk mandag | PR #866, ikke flettet. [Kontroll](design-audit/workbench-o02-publisering-2026-09-13.md). Innlogget reise og gruppeplan uten dublett gjenstår |
 
 Siste samlede testresultat og flettepunkt skal leses i samlingsrapporten og tilhørende GitHub PR. Innlogget produksjonsreise, faktisk betaling og Anders' visuelle vurdering er egne kontroller som fortsatt gjenstår.
 
 ## Neste oppgaver, i rekkefølge
 
-Aktiv arbeidsdeling 12.09.2026: Claude Design eier Design System v0.1 og de første pilotskjermene. Grok 4.6 leverte R-E del 1 via PR #845 og kan fortsette med designuavhengig teknisk arbeid etter [Grok-planen](planer/grok-4-6-start-2026-09-12.md). Grok kan bruke siste prototype til funksjonell kartlegging, men endrer ikke globale designverdier, navigasjon eller visuelt komponentuttrykk før D0 er bestått.
+Aktiv arbeidsdeling 13.09.2026: Claude Design eier Design System v0.1 og de første pilotskjermene. Grok 4.6 leverte R-E del 1 via PR #845 og kan fortsette med designuavhengig teknisk arbeid etter [Grok-planen](planer/grok-4-6-start-2026-09-12.md). Grok kan bruke siste prototype til funksjonell kartlegging, men endrer ikke globale designverdier, navigasjon eller visuelt komponentuttrykk før D0 er bestått. P0-TEST, D2-AO, R-J og P09/J05/J14 eies av andre åpne PR-er; ikke dupliser dem.
 
 | Prioritet / ID | Konkret neste leveranse | Inngang | Ferdig når |
 |---|---|---|---|
 | 1 · P0-TEST → R-E / R1–R3 | Fullfør innlogget Next-/databasereise I dag → Plan → PH-04 → PH-05 → PH-06. Enhetstester er i PR #845. Isolert Postgres med testidentitet er prøvd; lokal Supabase-innlogging mangler | `docs/utvikling/lokal-testdatabase.md`, [blokkering](design-audit/p0-test-blokkering-2026-09-12.md), [R-E](design-audit/playerhq-r-e-spillerreise-2026-09-12.md) | P0-TEST er bestått; samme økt/tall i innlogget isolert base; gjenåpning virker; uvedkommende avvises |
-| 2 · D2-AO | Teknisk AgencyOS-reise: stall bruker samme spillerporte som kort/Workbench; oversikt lastes ikke uten tilgang. Visuell port venter på D0 | `src/lib/admin/stallen-scope.ts`, `src/lib/agencyos/coach-reise.ts`, [kontroll](design-audit/agencyos-d2-ao-teknisk-2026-09-12.md) | Innlogget reise og visuell port gjenstår; tilgang på stall/kort er prøvd uten visuell endring |
+| 2 · D2-AO | Teknisk AgencyOS-reise: stall bruker samme spillerporte som kort/Workbench; oversikt lastes ikke uten tilgang. Visuell port venter på D0 | `src/lib/admin/stallen-scope.ts`, `src/lib/agencyos/coach-reise.ts`, [kontroll](design-audit/agencyos-d2-ao-teknisk-2026-09-12.md) | Innlogget reise og visuell port gjenstår; tilgang på stall/kort er prøvd uten visuell endring. Egen gren `grok/d2-agencyos-innlogget-reise-2026-09-12` |
 | 3 · Caddie-kø/AI-grense | Avgrens AgencyOS-køene til utkast eieren faktisk kan godkjenne, og hold ukjent databasefritekst unna ekstern modell. Bygget på `grok/caddie-ko-eier-fritekst-2026-09-12` | `src/lib/caddie/draft-eier.ts`, `src/lib/caddie/modell-felt.ts`, kø- og innboks-lastere | Kø og godkjenning bruker samme eierregel. Ukjent fritekst går ikke til ekstern modell uten en dokumentert tillatt datastruktur |
 | 4 · D2-TN | Fullfør den sikrede Team Norway-oversikten → testføring → resultat/historikk → dokumenter/poster | `src/lib/team-norway/tn-reise.ts`, `src/lib/domain/tn-post.ts`, [kontroll](design-audit/team-norway-d2-tn-teknisk-reise-2026-09-12.md) | Teknisk reise og kanonisk gruppeavgrensning bygget. Innlogget og visuell kontroll gjenstår |
 | 5 · D2-WANG | Fullfør WANG-hjem fra den sikrede Toppidrett-grensen → skole-/treningsuke → økt → elev/gruppe → rapport | `src/app/team-wang/_data/wang-reise.ts`, [kontroll](design-audit/wang-d2-wang-teknisk-reise-2026-09-12.md) | Teknisk reise bygget. Innlogget og visuell kontroll gjenstår |
@@ -87,6 +88,7 @@ R-A–R-J og REV-F1–F11 er forklart i [produktplanen](planer/produktplan-og-in
 |---|---|---|
 | PlayerHQ · D2-PH | Resterende Analyse, mål, kalender, øvelsesbank/program, profil, meldinger, deling, test/retest og sosiale reiser | Knytt hver skjerm til valgt kilde og appdata. Fullfør relevante tom-/laste-/feiltilstander. [Funksjonene P01–P11](planer/funksjonsregister-2026-09-11.md) |
 | Plan/Live | Frekvens uten speildobling og FYS-gjenåpning er prøvd. Innlogget ny/rediger/flytt og Caddie i live gjenstår | [Kontroll](design-audit/plan-live-p02-p05-2026-09-12.md). Separate modeller beholdes |
+| Workbench · O02 | Plan-publisering avviser uvedkommende og bruker norsk mandag. Gruppeplan uten dublett/bortfall av spillerens egne økter gjenstår | [Kontroll](design-audit/workbench-o02-publisering-2026-09-13.md). PR #866 |
 | Mål · R-F / F1 | Startverdi, periode og faktisk gjennomføring; TN-mål med variant, antall, enhet og retning | Faglige definisjoner før avhengige beregninger. Eventuelle nye databasefelt krever konkret autorisasjon |
 | Team Norway-tester | Avstem testbatteriet mot Excel v3, variantbundet føring, korrigering/angre og historikk | [Fagkontroll](beslutningsgrunnlag/team-norway-excel-v3-kontroll.md). Ugyldige resultater avvises, og lagringsfeil bevarer registreringen |
 | WANG/GFGK | Årsplan, juniorgrupper, testdager, styrkeprogram, rapporter og foresatte | Virkelige rollegrenser og avklarte fagregler; P08/O03 i funksjonsregisteret |
@@ -100,7 +102,7 @@ R-A–R-J og REV-F1–F11 er forklart i [produktplanen](planer/produktplan-og-in
 | Marked/salg | Nettsider, tilbud, coachprofiler, innhold og fungerende overgang til booking | Avstem bestilt omfang; ikke aktiver et historisk markedsføringssystem automatisk |
 | Økonomi/personlig | Beslutningsstøtte, rapportgrunnlag og egne oppgaver | Avklar konkret behov; økonomitall kun fra autorisert Tripletex-eksport |
 | Samtykke · R-J | Formål, opplysningstype, alder, rolle, deling, lagringssted og historikk | Verifiser regelgrunnlaget før tekst/tilgang endres. Ingen automatisk bytting av aldersgrense |
-| Kodekontroll · R-I | Første utvalg i PR #848. Fortsettelse: opptatt tid, profil og mål. 157 filer mangler søskentest | [R-I](design-audit/handlingstilgang-r-i-2026-09-12.md) · [bred](design-audit/handlingstilgang-bred-2026-09-12.md) |
+| Kodekontroll · R-I | Første utvalg i PR #848. Bred: opptatt tid, profil og mål i PR #856. O02-publisering i PR #866. Gjenstår: helse, utstyrsbag og øvrige admin-skriv | [R-I](design-audit/handlingstilgang-r-i-2026-09-12.md) · [bred](design-audit/handlingstilgang-bred-2026-09-12.md) · [O02](design-audit/workbench-o02-publisering-2026-09-13.md) |
 | Felles design/kvalitet | Avstem alle 480 sideruter og deres mønstre, visuell kontroll, kontrast, fokus, mobil og stor tekst | 480 ruter er inventar, ikke 480 unike ferdige design. Ingen ny kontrastbaseline for å skjule brudd |
 | Drift/lansering | Produksjonens innloggings-/funksjonsvern, alarmprøve, gjenoppretting med filer og full kundereise | Lokal `pg_restore` prøvd 12.09 kveld. [Kontroll](design-audit/docker-launch-tester-2026-09-12.md). Produksjonsalarm og Vercel-rollback krever miljøautorisasjon |
 | Produktbeslutninger | Avklar blokkerende produkt-/fagspørsmål rett før den avhengige leveransen; samle resten i intervjuet uten å stoppe uavhengig teknisk arbeid | [Intervjuguide](planer/produktplan-og-intervju-2026-09-11.md). Familie-OS/eldre sideprosjekter er bevart som underlag, ikke automatisk aktivert |
