@@ -48,13 +48,21 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | dokumentasjon | [docs/design-audit/2026-09-07-csp-konsoll/README.md](<../design-audit/2026-09-07-csp-konsoll/README.md>) |
 | dokumentasjon | [docs/design-audit/2026-09-08/rigg-panelmodus-ao/README.md](<../design-audit/2026-09-08/rigg-panelmodus-ao/README.md>) |
 | dokumentasjon | [docs/design-audit/2026-09-11-agencyos-coach-reise-j04.md](<../design-audit/2026-09-11-agencyos-coach-reise-j04.md>) |
+| dokumentasjon | [docs/design-audit/agencyos-d2-ao-teknisk-2026-09-12.md](<../design-audit/agencyos-d2-ao-teknisk-2026-09-12.md>) |
 | dokumentasjon | [docs/design-audit/ak-golf-til-train-lock-bro-2026-09-03.md](<../design-audit/ak-golf-til-train-lock-bro-2026-09-03.md>) |
+| dokumentasjon | [docs/design-audit/claude-design-v0-3-3-2026-09-12.md](<../design-audit/claude-design-v0-3-3-2026-09-12.md>) |
+| dokumentasjon | [docs/design-audit/handlingstilgang-r-i-2026-09-12.md](<../design-audit/handlingstilgang-r-i-2026-09-12.md>) |
 | dokumentasjon | [docs/design-audit/lokal-lagring-personvern-2026-09-11.md](<../design-audit/lokal-lagring-personvern-2026-09-11.md>) |
+| dokumentasjon | [docs/design-audit/p0-test-blokkering-2026-09-12.md](<../design-audit/p0-test-blokkering-2026-09-12.md>) |
 | dokumentasjon | [docs/design-audit/plan-legacy-2026-09-11.md](<../design-audit/plan-legacy-2026-09-11.md>) |
+| dokumentasjon | [docs/design-audit/plan-live-p02-p05-2026-09-12.md](<../design-audit/plan-live-p02-p05-2026-09-12.md>) |
 | dokumentasjon | [docs/design-audit/playerhq-ph06-2026-09-11.md](<../design-audit/playerhq-ph06-2026-09-11.md>) |
+| dokumentasjon | [docs/design-audit/playerhq-r-e-spillerreise-2026-09-12.md](<../design-audit/playerhq-r-e-spillerreise-2026-09-12.md>) |
 | dokumentasjon | [docs/design-audit/portering-fire-flater-2026-09-10.md](<../design-audit/portering-fire-flater-2026-09-10.md>) |
+| dokumentasjon | [docs/design-audit/team-norway-d2-tn-teknisk-reise-2026-09-12.md](<../design-audit/team-norway-d2-tn-teknisk-reise-2026-09-12.md>) |
 | dokumentasjon | [docs/design-audit/tn-wang-tilgang-2026-09-11.md](<../design-audit/tn-wang-tilgang-2026-09-11.md>) |
 | dokumentasjon | [docs/design-audit/train-lock-kontrast.md](<../design-audit/train-lock-kontrast.md>) |
+| dokumentasjon | [docs/design-audit/wang-d2-wang-teknisk-reise-2026-09-12.md](<../design-audit/wang-d2-wang-teknisk-reise-2026-09-12.md>) |
 | dokumentasjon | [docs/design-guide-terminologi.md](<../design-guide-terminologi.md>) |
 | dokumentasjon | [docs/design-system/ak-hq-designarbeid.md](<../design-system/ak-hq-designarbeid.md>) |
 | dokumentasjon | [docs/design-system/claude-design-datagolf-h2-04-tilbakemelding.md](<../design-system/claude-design-datagolf-h2-04-tilbakemelding.md>) |
@@ -96,6 +104,7 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | datert-plan | [docs/planer/arbeidsdeling-codex-claude-2026-09-11.md](<../planer/arbeidsdeling-codex-claude-2026-09-11.md>) |
 | datert-plan | [docs/planer/claude-code-sonnet-5-agencyos-prompt.md](<../planer/claude-code-sonnet-5-agencyos-prompt.md>) |
 | datert-plan | [docs/planer/claude-code-sonnet-5-ph06-prompt.md](<../planer/claude-code-sonnet-5-ph06-prompt.md>) |
+| datert-plan | [docs/planer/claude-design-til-grok-portering-2026-09-12.md](<../planer/claude-design-til-grok-portering-2026-09-12.md>) |
 | datert-plan | [docs/planer/datagolf-spillerverktoy-2026-09-10.md](<../planer/datagolf-spillerverktoy-2026-09-10.md>) |
 | datert-plan | [docs/planer/design/2026-09-04-marked-ak-golf-port.md](<../planer/design/2026-09-04-marked-ak-golf-port.md>) |
 | datert-plan | [docs/planer/design/2026-09-05-komplett-designport-vedlegg-skjermer.md](<../planer/design/2026-09-05-komplett-designport-vedlegg-skjermer.md>) |
@@ -106,7 +115,10 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | datert-plan | [docs/planer/funksjon-manuell-sg.md](<../planer/funksjon-manuell-sg.md>) |
 | datert-plan | [docs/planer/funksjonskort-mal.md](<../planer/funksjonskort-mal.md>) |
 | datert-plan | [docs/planer/funksjonsregister-2026-09-11.md](<../planer/funksjonsregister-2026-09-11.md>) |
+| datert-plan | [docs/planer/grok-4-6-start-2026-09-12.md](<../planer/grok-4-6-start-2026-09-12.md>) |
+| datert-plan | [docs/planer/masterplan-dekning-2026-09-12.md](<../planer/masterplan-dekning-2026-09-12.md>) |
 | datert-plan | [docs/planer/produktplan-og-intervju-2026-09-11.md](<../planer/produktplan-og-intervju-2026-09-11.md>) |
+| datert-plan | [docs/planer/teknisk-rute-tilstandskart-2026-09-12.md](<../planer/teknisk-rute-tilstandskart-2026-09-12.md>) |
 | dokumentasjon | [docs/platform/AGENT-BRIEF.md](<../platform/AGENT-BRIEF.md>) |
 | dokumentasjon | [docs/platform/BOOKING-POLICY.md](<../platform/BOOKING-POLICY.md>) |
 | dokumentasjon | [docs/platform/BOOKING-SLOT-HOLD.md](<../platform/BOOKING-SLOT-HOLD.md>) |
@@ -135,6 +147,7 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | referanse | [docs/referanse/masterbrain-rebuild/scripts/README.md](<../referanse/masterbrain-rebuild/scripts/README.md>) |
 | dokumentasjon | [docs/runbook.md](<../runbook.md>) |
 | dokumentasjon | [docs/sikkerhet/action-audit.md](<../sikkerhet/action-audit.md>) |
+| dokumentasjon | [docs/skjermtekst/ak-golf-hq-sprak-og-ordbok.md](<../skjermtekst/ak-golf-hq-sprak-og-ordbok.md>) |
 | dokumentasjon | [docs/skjermtekst/skjerm-tekst-hovedskjermer.md](<../skjermtekst/skjerm-tekst-hovedskjermer.md>) |
 | dokumentasjon | [docs/STATUS-NÅ.md](<../STATUS-NÅ.md>) |
 | dokumentasjon | [docs/taksonomi-verifikasjon.md](<../taksonomi-verifikasjon.md>) |
@@ -152,6 +165,7 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | dokumentasjon | [docs/treningsplanlegger/wang-toppidrett/systembygging-plan.md](<../treningsplanlegger/wang-toppidrett/systembygging-plan.md>) |
 | dokumentasjon | [docs/turnering-datakilder.md](<../turnering-datakilder.md>) |
 | dokumentasjon | [docs/utvikling/lokal-testdatabase.md](<../utvikling/lokal-testdatabase.md>) |
+| dokumentasjon | [docs/vedlikehold/grengjennomgang-2026-09-12.md](<grengjennomgang-2026-09-12.md>) |
 | dokumentasjon | [docs/vedlikehold/historiske-designhenvisninger.md](<historiske-designhenvisninger.md>) |
 | dokumentasjon | [docs/vedlikehold/kontrollresultat-2026-09-10.md](<kontrollresultat-2026-09-10.md>) |
 | dokumentasjon | [docs/vedlikehold/prosjektkart.md](<prosjektkart.md>) |

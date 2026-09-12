@@ -56,7 +56,8 @@ Disse er nå eksplisitte D0-blokkeringer, ikke fotnoter: faktisk 320 px-/200 %-k
 | D2-TN/D2-WANG tilgangsgrunnlag | Sikret Team Norway-oversikt og samme konkrete WANG-gruppe/elev gjennom trenerliste, IUP-lesing og IUP-lagring | Bygget og testet i PR #842. [Kontroll og gjenstående brukerreiser](design-audit/tn-wang-tilgang-2026-09-11.md). Innlogget og visuell kontroll gjenstår |
 | R-I handlingstilgang | Avvisningstester som kaller eksporterte handlinger; ubrukt vaktimport feiler i verify; coach-notat, fys-logg og IUP-skriving ressursavgrenset | I main via PR #848. [Kontroll](design-audit/handlingstilgang-r-i-2026-09-12.md). Innlogget reise gjenstår |
 | D2-TN teknisk reise | Oversikt → poster/dokumenter → spillerpost → testføring → historikk uten visuell port. Poster og dokumenter låst til kanonisk Team Norway-gruppe | I main via PR #849. [Kontroll](design-audit/team-norway-d2-tn-teknisk-reise-2026-09-12.md) |
-| D2-WANG teknisk reise | Åpen hjemside → innlogging → coach-uke/økt → elev/IUP uten visuell port. IUP-lenke krever samme Toppidrett-gruppe og elev i rosteret | Bygget på `grok/d2-wang-teknisk-reise-2026-09-12`. [Kontroll](design-audit/wang-d2-wang-teknisk-reise-2026-09-12.md) |
+| D2-WANG teknisk reise | Åpen hjemside → innlogging → coach-uke/økt → elev/IUP uten visuell port. IUP-lenke krever samme Toppidrett-gruppe og elev i rosteret | I main via PR #850. [Kontroll](design-audit/wang-d2-wang-teknisk-reise-2026-09-12.md) |
+| P02–P05 Plan/Live | Frekvens uten dobbelttelling av speil, FYS-standardverdi og detaljgjenåpning, avbrutt mot lagret | Bygget på `grok/p02-p05-plan-live-2026-09-12`. [Kontroll](design-audit/plan-live-p02-p05-2026-09-12.md). Innlogget reise gjenstår |
 
 Siste samlede testresultat og flettepunkt skal leses i samlingsrapporten og tilhørende GitHub PR. Innlogget produksjonsreise, faktisk betaling og Anders' visuelle vurdering er egne kontroller som fortsatt gjenstår.
 
@@ -79,7 +80,7 @@ R-A–R-J og REV-F1–F11 er forklart i [produktplanen](planer/produktplan-og-in
 | Område / ID | Konkret restarbeid | Avhengighet / ferdigkriterium |
 |---|---|---|
 | PlayerHQ · D2-PH | Resterende Analyse, mål, kalender, øvelsesbank/program, profil, meldinger, deling, test/retest og sosiale reiser | Knytt hver skjerm til valgt kilde og appdata. Fullfør relevante tom-/laste-/feiltilstander. [Funksjonene P01–P11](planer/funksjonsregister-2026-09-11.md) |
-| Plan/Live | Full ny/rediger/flytt-reise, FYS-standardverdier/detaljgjenoppretting, Caddie i live, frekvensmål på tvers av øktmodeller | Separate modeller beholdes. Ingen dubletter, gjenopplivede avlyste økter eller oppfunnet målt treningstid |
+| Plan/Live | Frekvens uten speildobling og FYS-gjenåpning er prøvd. Innlogget ny/rediger/flytt og Caddie i live gjenstår | [Kontroll](design-audit/plan-live-p02-p05-2026-09-12.md). Separate modeller beholdes |
 | Mål · R-F / F1 | Startverdi, periode og faktisk gjennomføring; TN-mål med variant, antall, enhet og retning | Faglige definisjoner før avhengige beregninger. Eventuelle nye databasefelt krever konkret autorisasjon |
 | Team Norway-tester | Avstem testbatteriet mot Excel v3, variantbundet føring, korrigering/angre og historikk | [Fagkontroll](beslutningsgrunnlag/team-norway-excel-v3-kontroll.md). Ugyldige resultater avvises, og lagringsfeil bevarer registreringen |
 | WANG/GFGK | Årsplan, juniorgrupper, testdager, styrkeprogram, rapporter og foresatte | Virkelige rollegrenser og avklarte fagregler; P08/O03 i funksjonsregisteret |
