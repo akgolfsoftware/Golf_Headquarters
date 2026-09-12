@@ -10,8 +10,9 @@
  */
 
 import { prisma } from "@/lib/prisma";
-import type { PlayerProgram, Tier, UserStatus, PyramidArea } from "@/generated/prisma/client";
+import type { Tier, UserStatus, PyramidArea } from "@/generated/prisma/client";
 import { erOktGjennomfort } from "@/lib/workbench/compliance";
+import { stallenPlayerWhere } from "./stallen-scope";
 
 // ── Typer eksponert til komponenten ─────────────────────────────
 import { bucketFraEnrollments, type GroupBucket } from "@/lib/domain/program-bucket";
@@ -198,7 +199,6 @@ export async function loadStallen(
   params: StallenParams,
 ): Promise<StallenData> {
   const now = new Date();
-  const isAdmin = coach.role === "ADMIN";
 
   // Tidsvinduer
   const ukeStart = new Date(now);
@@ -216,27 +216,7 @@ export async function loadStallen(
   const fjortenFrem = new Date(now);
   fjortenFrem.setDate(fjortenFrem.getDate() + 14);
 
-  // Where: spillere i coachens scope (ADMIN ser alle, COACH ser sine via enrollering).
-  const where = {
-    role: "PLAYER" as const,
-    deletedAt: null,
-    enrollmentsAsPlayer: {
-      some: {
-        endedAt: null,
-        NOT: { program: "PLATFORM_ONLY" as PlayerProgram },
-        ...(isAdmin ? {} : { coachId: coach.id }),
-      },
-    },
-    ...(params.q
-      ? {
-          OR: [
-            { name: { contains: params.q, mode: "insensitive" as const } },
-            { email: { contains: params.q, mode: "insensitive" as const } },
-            { homeClub: { contains: params.q, mode: "insensitive" as const } },
-          ],
-        }
-      : {}),
-  };
+  const where = stallenPlayerWhere(coach, params.q);
 
   const players = await prisma.user.findMany({
     where,

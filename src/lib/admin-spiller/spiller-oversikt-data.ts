@@ -15,6 +15,8 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
 import { aktivtSpillerMedlemskapWhere } from "@/lib/domain/grupper";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
+import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 
 const OSLO_TZ = "Europe/Oslo";
 const NB_DATE = new Intl.DateTimeFormat("nb-NO", { day: "2-digit", month: "short" });
@@ -72,6 +74,17 @@ export type SpillerOversiktKort = {
 };
 
 export async function lastSpillerOversikt(playerId: string): Promise<SpillerOversiktKort> {
+  const viewer = await getCurrentUser();
+  if (!viewer) throw new Error("Ikke innlogget");
+  const data = await lastSpillerOversiktForViewer(viewer, playerId);
+  if (!data) throw new Error("Spiller ikke funnet");
+  return data;
+}
+
+export async function lastSpillerOversiktForViewer(
+  viewer: { id: string; role: string },
+  playerId: string,
+): Promise<SpillerOversiktKort | null> {
   const naa = new Date();
   const idagStart = osloIdagStart();
   const idagSlutt = new Date(idagStart.getTime() + 24 * 60 * 60 * 1000);
@@ -79,12 +92,14 @@ export async function lastSpillerOversikt(playerId: string): Promise<SpillerOver
   const ukeSlutt = new Date(ukeStart.getTime() + 7 * 24 * 60 * 60 * 1000);
   const aarStart = new Date(Date.UTC(naa.getFullYear(), 0, 1));
 
-  const [player, medlemskap, okterIAar, tournamentEntriesSpilt, ukeOkter, tekniskPlan, rounderISesong, kommendeTurneringer, dagensOkter, aktivNaa] =
+  const player = await prisma.user.findFirst({
+    where: { AND: [coachScopedPlayerWhere(viewer), { id: playerId, role: "PLAYER" }] },
+    select: { name: true, hcp: true, homeClub: true },
+  });
+  if (!player) return null;
+
+  const [medlemskap, okterIAar, tournamentEntriesSpilt, ukeOkter, tekniskPlan, rounderISesong, kommendeTurneringer, dagensOkter, aktivNaa] =
     await Promise.all([
-      prisma.user.findUnique({
-        where: { id: playerId },
-        select: { name: true, hcp: true, homeClub: true },
-      }),
       prisma.groupMember.findFirst({
         where: { userId: playerId, ...aktivtSpillerMedlemskapWhere() },
         orderBy: { joinedAt: "asc" },
@@ -145,9 +160,6 @@ export async function lastSpillerOversikt(playerId: string): Promise<SpillerOver
       }),
     ]);
 
-  if (!player) {
-    throw new Error("Spiller ikke funnet");
-  }
 
   // Pyramide-fordeling for uka — andel fullført per område (kun blant økter
   // som faktisk ligger i uka, ikke en fabrikert 100%-fordeling). Samme

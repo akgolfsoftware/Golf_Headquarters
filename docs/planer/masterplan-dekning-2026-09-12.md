@@ -28,7 +28,7 @@ Opprettet 12.09.2026. Dette er sporbarhetsregisteret under [masterplanen](../MAS
 | G09 | DataGolf/GolfBox | Import/Analyse | I main delvis; samlet reise/kildeoppdatering gjenstår |
 | G10 | Turnering/talent | Talentpakken | Delvis; datadekning og identitetsusikkerhet |
 | G11 | Banedata/trener | BG-06 | Planlagt/delvis; datakvalitet og delingsregler først |
-| O01 | AgencyOS hjem/stall | D2-AO/D3 | Delvis; teknisk kartlegging før visuell pilot |
+| O01 | AgencyOS hjem/stall | D2-AO/D3 | Teknisk stall-porte og kort-tilgang rettet; visuell pilot venter på D0 |
 | O02 | Workbench | D2-AO | Delvis; publisering uten dublett/bortfall |
 | O03 | WANG/GFGK | D2-WANG/D3 | Delvis; skole-, gruppe- og personverngrenser |
 | O04 | Team Norway | D2-TN/D3 | Delvis; testreise og organisasjonsinnsyn |
