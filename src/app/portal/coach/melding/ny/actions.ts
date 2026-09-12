@@ -11,6 +11,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import type { Prisma } from "@/generated/prisma/client";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { kanSendeCoachMelding } from "@/lib/portal-okt/coach-melding-tilgang";
 import { prisma } from "@/lib/prisma";
 import { nonEmpty } from "@/lib/validation/schemas";
 
@@ -26,8 +27,30 @@ export type SendMeldingNyInput = {
 
 export async function sendMeldingNyV2(input: SendMeldingNyInput): Promise<void> {
   const { coachId, body } = SendMeldingSchema.parse(input);
-  const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN", "PARENT"] });
+  const user = await requirePortalUser({ allow: ["PLAYER"] });
   if (user.tier === "GRATIS") throw new Error("upgrade-required");
+
+  const [enrollering, mottaker] = await Promise.all([
+    prisma.playerEnrollment.findFirst({
+      where: { userId: user.id, endedAt: null, coachId: { not: null } },
+      orderBy: { enrolledAt: "desc" },
+      select: { coachId: true },
+    }),
+    prisma.user.findUnique({
+      where: { id: coachId },
+      select: { role: true },
+    }),
+  ]);
+  if (
+    !kanSendeCoachMelding({
+      viewerRole: user.role,
+      requestedCoachId: coachId,
+      enrolledCoachId: enrollering?.coachId ?? null,
+      mottakerRolle: mottaker?.role ?? null,
+    })
+  ) {
+    throw new Error("forbidden");
+  }
 
   const session = await prisma.coachingSession.create({
     data: {
