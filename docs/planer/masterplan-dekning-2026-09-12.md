@@ -8,33 +8,33 @@ Opprettet 12.09.2026. Dette er sporbarhetsregisteret under [masterplanen](../MAS
 |---|---|---|---|
 | P01 | Registrering, introduksjon, profil | Konto/onboarding | Åpen; førstegangsnytte og nivåquiz avklares |
 | P02 | I dag | P0-TEST → R-E/J02 | Del 1 i main via PR #845; innlogget isolert reise blokkert uten Docker/testbase |
-| P03 | Planlegging | R-E + Workbench | Pågår/delvis; tre øktmodeller beholdes |
-| P04 | Gjennomføring/Live | R-E/J02 | Pågår/delvis; lagret er ikke lik fullført |
-| P05 | Mål/fremgang | R-F | Åpen; startverdi, periode og telling avklares |
+| P03 | Planlegging | R-E + Workbench | Tre modeller beholdes. Frekvens teller speil én gang. Innlogget ny/rediger/flytt gjenstår. [Kontroll](../design-audit/plan-live-p02-p05-2026-09-12.md) |
+| P04 | Gjennomføring/Live | R-E/J02 | Avbrutt skilles fra lagret. Innlogget reise blokkert uten Docker |
+| P05 | Mål/fremgang | R-F | Frekvens uten dobbelttelling bygget; startverdi/periode for øvrige måltyper gjenstår |
 | P06 | Øvelsesbank/program | D2-PH + O02 | Delvis; faglige merkelapper er frie |
 | P07 | Tester | D2-TN + testfag | Delvis; samme TN-protokoll og versjon følger resultatet. Enhet/retning/historikk utenom v3 gjenstår |
 | P08 | Fysisk trening/helse | D2-WANG + R-I | Fys-logg bruker samme spiller-tilgang som øvrige handlinger; IUP-skriving er coach/admin. Styrkeinnhold og helsedeling avklares |
 | P09 | Coachkontakt | PlayerHQ-rest | Åpen; kobling til økt/resultat og svartid |
 | P10 | Kalender/turnering | PlayerHQ-rest + AgencyOS | Åpen; styrende kalender og konfliktregler |
 | P11 | Venner/utfordringer | P0-PRODUKT | Uavklart nytte/målgruppe; ikke utvid før beslutning |
-| G01 | Runderegistrering | Runde/SG | Delvis; innsatsnivå og korrigering avklares |
+| G01 | Runderegistrering | Runde/SG | Manuell korrigering, nullstilling og gjenåpning prøvd. Innsatsnivå avklares. [Kontroll](../design-audit/runde-sg-trackman-g01-g10-2026-09-12.md) |
 | G02 | Gameplan | BG-01 | Delvis; banedekning, lagring og brukerreise prøves |
 | G03 | GPS/live avstander | BG-03 | Planlagt; tillatelse og datakvalitet før bygging |
 | G04 | Offline baneguide | BG-04 | Planlagt; omfang, oppbevaring og kartvilkår først |
 | G05 | Vind/spilleforhold | P0-PRODUKT | Uavklart: manuell trening, værkilde eller fysisk måler |
-| G06 | Bag/gapping | BG-05 | Delvis; TrackMan-enheter og kildegrunnlag først |
-| G07 | Analyse/SG | Analysepakken | Delvis; samme referanse, skala, enhet og kilde |
-| G08 | TrackMan | Import/Analyse | Delvis; innlogget kildekontroll gjenstår |
-| G09 | DataGolf/GolfBox | Import/Analyse | I main delvis; samlet reise/kildeoppdatering gjenstår |
-| G10 | Turnering/talent | Talentpakken | Delvis; datadekning og identitetsusikkerhet |
+| G06 | Bag/gapping | BG-05 | TrackMan-enheter: ukjent enhet og manglende felt gir null. Innlogget bag-reise gjenstår |
+| G07 | Analyse/SG | Analysepakken | Manuell kilde overskrives ikke. Samme skala i beregnet vs manuell |
+| G08 | TrackMan | Import/Analyse | Enhet og manglende felt prøvd. Innlogget import gjenstår |
+| G09 | DataGolf/GolfBox | Import/Analyse | Manglende referanse skrives ikke. Produksjonsimport ikke kjørt |
+| G10 | Turnering/talent | Talentpakken | Identitet i sesonghelper prøvd. Produksjonsimport krever autorisasjon |
 | G11 | Banedata/trener | BG-06 | Planlagt/delvis; datakvalitet og delingsregler først |
 | O01 | AgencyOS hjem/stall | D2-AO/D3 | Teknisk stall-porte og kort-tilgang rettet; visuell pilot venter på D0 |
 | O02 | Workbench | D2-AO | Delvis; publisering uten dublett/bortfall |
 | O03 | WANG/GFGK | D2-WANG/D3 | Teknisk uke/elev-reise bygget; IUP krever coach/admin og samme Toppidrett-gruppe. Innlogget og visuell kontroll gjenstår. [Kontroll](../design-audit/wang-d2-wang-teknisk-reise-2026-09-12.md) |
 | O04 | Team Norway | D2-TN/D3 | Teknisk reise bygget; poster/dokumenter låst til kanonisk gruppe. Innlogget og visuell kontroll gjenstår. [Kontroll](../design-audit/team-norway-d2-tn-teknisk-reise-2026-09-12.md) |
-| O05 | Forelder/delt innsyn | Forelderpakken | Åpen; skoletid avviser andres barn. Barnbytte, betaling og tilbakekalling gjenstår |
-| O06 | Booking/betaling | Booking R4/R5/R9 | Åpen; testmiljø og full kundereise |
-| O07 | Tilgang/konto | P0-TEST + R-I | Handlingstester for avvist skriving bygget og utvidet. Innlogget isolert reise blokkert uten Docker. [R-I](../design-audit/handlingstilgang-r-i-2026-09-12.md) · [bred](../design-audit/handlingstilgang-bred-2026-09-12.md) |
+| O05 | Forelder/delt innsyn | Forelderpakken | Godkjent eierskap, barnbytte uten identitetsblanding, avvist skriving, ugyldig/utløpt lenke og tilbakekalling er prøvd. Betaling for barn og innlogget reise gjenstår. [Kontroll](../design-audit/forelder-o05-delt-innsyn-2026-09-12.md) |
+| O06 | Booking/betaling | Booking R4/R5/R9 | Kollisjon, idempotens, credits, avbestilling/refusjon og oppsigelse prøvd med mocket Stripe. Innlogget checkout og reell testnøkkel gjenstår. [Kontroll](../design-audit/booking-o06-betaling-2026-09-12.md) |
+| O07 | Tilgang/konto | P0-TEST + R-I + O05 | Handlingstester for avvist skriving, ugyldig/utløpt invitasjon, trukket ekstern leser, opptatt tid, profil og mål. Innlogget isolert reise blokkert uten Docker. [R-I](../design-audit/handlingstilgang-r-i-2026-09-12.md) · [O05](../design-audit/forelder-o05-delt-innsyn-2026-09-12.md) · [bred](../design-audit/handlingstilgang-bred-2026-09-12.md) |
 | O08 | Caddie/AI Coach | Caddie-kø/AI-grense | Eierregel og tillatt modell-felt bygget; innlogget kontroll gjenstår |
 | O09 | AgenticOS/Jarvis | AgencyOS/AgenticOS | Delvis; faktisk kjøring, godkjenning og sporbarhet |
 | O10 | Marked/salg | Marked → booking | Åpen; ønsket omfang og fungerende overgang |

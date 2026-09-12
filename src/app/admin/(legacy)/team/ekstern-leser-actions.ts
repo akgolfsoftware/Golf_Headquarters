@@ -202,7 +202,11 @@ export async function trekkEksternLeser(
     where: {
       userId,
       capability: {
-        in: [Capability.VIEW_SHARED_TEST_RESULTS, Capability.VIEW_SHARED_STATS],
+        in: [
+          Capability.VIEW_SHARED_TEST_RESULTS,
+          Capability.VIEW_SHARED_STATS,
+          Capability.VIEW_SHARED_FULL_PROFILE,
+        ],
       },
     },
   });

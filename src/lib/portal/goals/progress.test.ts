@@ -38,8 +38,17 @@ test("beregnGoalProgress — HCP_TARGET, ROUNDS_PER_MONTH, SESSION_FREQUENCY, TE
           findFirst: async () => (roundsEverExists ? { id: "r1" } : null),
           findMany: async () => sgRounds,
         },
+        trainingSessionV2: {
+          findMany: async () => [],
+        },
+        workbenchSession: {
+          findMany: async () => [],
+        },
         trainingPlanSessionLog: {
-          count: async () => sessionCountInWindow,
+          findMany: async () =>
+            Array.from({ length: sessionCountInWindow }, (_, i) => ({
+              sessionId: `plan-${i + 1}`,
+            })),
           findFirst: async () => (sessionEverExists ? { id: "log-1" } : null),
         },
         testResult: {
