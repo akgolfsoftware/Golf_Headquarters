@@ -33,7 +33,7 @@ Opprettet 12.09.2026. Dette er sporbarhetsregisteret under [masterplanen](../MAS
 | O03 | WANG/GFGK | D2-WANG/D3 | Teknisk uke/elev-reise bygget; IUP krever coach/admin og samme Toppidrett-gruppe. Innlogget og visuell kontroll gjenstår. [Kontroll](../design-audit/wang-d2-wang-teknisk-reise-2026-09-12.md) |
 | O04 | Team Norway | D2-TN/D3 | Teknisk reise bygget; poster/dokumenter låst til kanonisk gruppe. Innlogget og visuell kontroll gjenstår. [Kontroll](../design-audit/team-norway-d2-tn-teknisk-reise-2026-09-12.md) |
 | O05 | Forelder/delt innsyn | Forelderpakken | Åpen; skoletid avviser andres barn. Barnbytte, betaling og tilbakekalling gjenstår |
-| O06 | Booking/betaling | Booking R4/R5/R9 | Åpen; testmiljø og full kundereise |
+| O06 | Booking/betaling | Booking R4/R5/R9 | Kollisjon, idempotens, credits, avbestilling/refusjon og oppsigelse prøvd med mocket Stripe. Innlogget checkout og reell testnøkkel gjenstår. [Kontroll](../design-audit/booking-o06-betaling-2026-09-12.md) |
 | O07 | Tilgang/konto | P0-TEST + R-I | Handlingstester for avvist skriving bygget; innlogget isolert reise blokkert uten Docker. [Kontroll](../design-audit/handlingstilgang-r-i-2026-09-12.md) |
 | O08 | Caddie/AI Coach | Caddie-kø/AI-grense | Eierregel og tillatt modell-felt bygget; innlogget kontroll gjenstår |
 | O09 | AgenticOS/Jarvis | AgencyOS/AgenticOS | Delvis; faktisk kjøring, godkjenning og sporbarhet |
