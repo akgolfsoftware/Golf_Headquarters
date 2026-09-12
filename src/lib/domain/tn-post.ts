@@ -11,7 +11,12 @@
 import "server-only";
 
 import { prisma } from "@/lib/prisma";
-import { aktivtMedlemskapWhere, aktivtSpillerMedlemskapWhere, aktivtTrenerMedlemskapWhere } from "@/lib/domain/grupper";
+import {
+  aktivtMedlemskapWhere,
+  aktivtSpillerMedlemskapWhere,
+  aktivtTrenerMedlemskapWhere,
+  TEAM_NORWAY_SLUG,
+} from "@/lib/domain/grupper";
 import {
   beregnLesekvittering,
   erMindrearigIAr,
@@ -22,6 +27,14 @@ import {
   osloKalenderar,
   type TnPostKind,
 } from "@/lib/domain/tn-post-regler";
+
+async function erTeamNorwayGruppe(groupId: string): Promise<boolean> {
+  const gruppe = await prisma.group.findUnique({
+    where: { id: groupId },
+    select: { slug: true },
+  });
+  return gruppe?.slug === TEAM_NORWAY_SLUG;
+}
 
 async function erAktivtMedlem(groupId: string, userId: string): Promise<boolean> {
   const rad = await prisma.groupMember.findFirst({
@@ -41,6 +54,7 @@ export type TnViewerRolle = "TRENER" | "SPILLER" | "FORESATT" | null;
  * `kanSeGruppepost`, men med rollen synlig for UI-et.
  */
 export async function hentViewerRolleIGruppe(groupId: string, viewerId: string): Promise<TnViewerRolle> {
+  if (!(await erTeamNorwayGruppe(groupId))) return null;
   const medlemskap = await prisma.groupMember.findFirst({
     where: { groupId, userId: viewerId, ...aktivtMedlemskapWhere() },
     select: { role: true },
@@ -62,6 +76,7 @@ async function erAktivTrenerIGruppeMedSpiller(trenerId: string, spillerId: strin
     where: {
       ...aktivtTrenerMedlemskapWhere(trenerId),
       group: {
+        slug: TEAM_NORWAY_SLUG,
         members: { some: { userId: spillerId, ...aktivtSpillerMedlemskapWhere() } },
       },
     },
@@ -93,6 +108,9 @@ export async function opprettGruppepost(input: {
   tekst: string;
   kind: TnPostKind;
 }): Promise<{ id: string }> {
+  if (!(await erTeamNorwayGruppe(input.groupId))) {
+    throw new Error("Du er ikke trener i denne gruppen");
+  }
   const lovlig = await erAktivtMedlem(input.groupId, input.forfatterId);
   if (!lovlig) throw new Error("Du er ikke trener i denne gruppen");
   const rolle = await prisma.groupMember.findFirst({
@@ -135,6 +153,9 @@ export async function opprettGruppeDokument(input: {
   fileSize: number | null;
   path: string;
 }): Promise<{ id: string }> {
+  if (!(await erTeamNorwayGruppe(input.groupId))) {
+    throw new Error("Du er ikke trener i denne gruppen");
+  }
   const lovlig = await erAktivtMedlem(input.groupId, input.forfatterId);
   if (!lovlig) throw new Error("Du er ikke trener i denne gruppen");
   const rolle = await prisma.groupMember.findFirst({
@@ -217,6 +238,7 @@ async function forfatterNavnPerId(authorUserIds: readonly string[]): Promise<Map
 
 /** Gruppens tidslinje — null hvis viewer ikke er aktivt medlem (IDOR-port). */
 export async function hentGruppetidslinje(groupId: string, viewerId: string): Promise<TnPostMedKvittering[] | null> {
+  if (!(await erTeamNorwayGruppe(groupId))) return null;
   const erMedlem = await erAktivtMedlem(groupId, viewerId);
   if (!kanSeGruppepost(erMedlem)) return null;
 

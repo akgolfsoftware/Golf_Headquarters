@@ -30,6 +30,8 @@ export type GruppemedlemRolle = (typeof GRUPPEMEDLEM_ROLLER)[number];
 
 export const gruppemedlemRolleSchema = z.enum(GRUPPEMEDLEM_ROLLER);
 
+export const TEAM_NORWAY_SLUG = "team-norway" as const;
+
 export type KanoniskGruppeSlug =
   | "gfgk-mini"
   | "gfgk-basis"

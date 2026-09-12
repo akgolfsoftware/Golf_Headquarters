@@ -12,7 +12,7 @@ Opprettet 12.09.2026. Dette er sporbarhetsregisteret under [masterplanen](../MAS
 | P04 | Gjennomføring/Live | R-E/J02 | Pågår/delvis; lagret er ikke lik fullført |
 | P05 | Mål/fremgang | R-F | Åpen; startverdi, periode og telling avklares |
 | P06 | Øvelsesbank/program | D2-PH + O02 | Delvis; faglige merkelapper er frie |
-| P07 | Tester | D2-TN + testfag | Delvis; variant, enhet, retning og historikk må stemme |
+| P07 | Tester | D2-TN + testfag | Delvis; samme TN-protokoll og versjon følger resultatet. Enhet/retning/historikk utenom v3 gjenstår |
 | P08 | Fysisk trening/helse | D2-WANG + R-I | Fys-logg bruker samme spiller-tilgang som øvrige handlinger; IUP-skriving er coach/admin. Styrkeinnhold og helsedeling avklares |
 | P09 | Coachkontakt | PlayerHQ-rest | Åpen; kobling til økt/resultat og svartid |
 | P10 | Kalender/turnering | PlayerHQ-rest + AgencyOS | Åpen; styrende kalender og konfliktregler |
@@ -31,7 +31,7 @@ Opprettet 12.09.2026. Dette er sporbarhetsregisteret under [masterplanen](../MAS
 | O01 | AgencyOS hjem/stall | D2-AO/D3 | Teknisk stall-porte og kort-tilgang rettet; visuell pilot venter på D0 |
 | O02 | Workbench | D2-AO | Delvis; publisering uten dublett/bortfall |
 | O03 | WANG/GFGK | D2-WANG/D3 | Delvis; IUP-lagring krever coach/admin. Uke-/elevreise gjenstår |
-| O04 | Team Norway | D2-TN/D3 | Delvis; gruppepost avviser uten medlemskap. Full testreise gjenstår |
+| O04 | Team Norway | D2-TN/D3 | Teknisk reise bygget; poster/dokumenter låst til kanonisk gruppe. Innlogget og visuell kontroll gjenstår. [Kontroll](../design-audit/team-norway-d2-tn-teknisk-reise-2026-09-12.md) |
 | O05 | Forelder/delt innsyn | Forelderpakken | Åpen; skoletid avviser andres barn. Barnbytte, betaling og tilbakekalling gjenstår |
 | O06 | Booking/betaling | Booking R4/R5/R9 | Åpen; testmiljø og full kundereise |
 | O07 | Tilgang/konto | P0-TEST + R-I | Handlingstester for avvist skriving bygget; innlogget isolert reise blokkert uten Docker. [Kontroll](../design-audit/handlingstilgang-r-i-2026-09-12.md) |
