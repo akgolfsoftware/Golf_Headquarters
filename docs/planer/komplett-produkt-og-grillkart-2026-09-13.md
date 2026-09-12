@@ -4,6 +4,8 @@ Opprettet 13.09.2026.
 
 Status: intervjukart og beslutningsgrunnlag. Dette er ikke en ny, konkurrerende masterplan. Kartet brukes til å gå systematisk gjennom hele produktet med Anders. Først når svarene er strukturert og godkjent, oppdateres gjeldende masterplan og de konkrete oppgavene i Notion.
 
+Notion-oversikt: [AK Golf HQ – komplett produkt- og grillkart](https://app.notion.com/p/akgolfacademy/AK-Golf-HQ-komplett-produkt-og-grillkart-3d935a45535a8021a2fec022763f0660).
+
 ## 1. Hva vi skal oppnå
 
 AK Golf HQ skal beskrives og bygges som fire sammenhengende deler:

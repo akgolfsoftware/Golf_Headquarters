@@ -1,6 +1,6 @@
 # Arbeidsliste — AK Golf HQ
 
-Oppdatert 12.09.2026. Denne filen eier rekkefølge og gjenstående arbeid. [Status nå](STATUS-NÅ.md) oppsummerer leveransen. [Funksjonsregisteret](planer/funksjonsregister-2026-09-11.md) bevarer hele produktbredden; eldre bestillinger er samlet i [planarkivet](arkiv/opprydding-2026-09-10/masterplan-gjenstaaende.md).
+Oppdatert 13.09.2026. Denne filen eier rekkefølge og gjenstående arbeid. [Status nå](STATUS-NÅ.md) oppsummerer leveransen. [Funksjonsregisteret](planer/funksjonsregister-2026-09-11.md) bevarer hele produktbredden; eldre bestillinger er samlet i [planarkivet](arkiv/opprydding-2026-09-10/masterplan-gjenstaaende.md).
 
 ## Gjeldende bestilling og design
 
@@ -64,6 +64,8 @@ Disse er nå eksplisitte D0-blokkeringer, ikke fotnoter: faktisk 320 px-/200 %-k
 | P02–P05 Plan/Live | Frekvens uten dobbelttelling av speil, FYS-standardverdi og detaljgjenåpning, avbrutt mot lagret | I main via PR #854. [Kontroll](design-audit/plan-live-p02-p05-2026-09-12.md). Innlogget reise gjenstår |
 | G01/G06–G10 | Korrigering, kilde, enhet, manglende data og gjenåpning uten produksjonsimport | I main via PR #855. [Kontroll](design-audit/runde-sg-trackman-g01-g10-2026-09-12.md) |
 | O13 kvalitet/backup | Feilsanitering uten hemmeligheter, helsesvar uten env, lokal URL-vakt og rollback-regel. Lokal `pg_restore` prøvd 12.09 kveld | I main via PR #857, ny prøve på `grok/docker-launch-tester-2026-09-12`. [Kontroll](design-audit/docker-launch-tester-2026-09-12.md). L7 ikke bestått |
+| R-J samtykkegrunnlag | Felles 16-årsregel for helse og deling (flagg eller fødselsdato). Register over formål/lagring. Helselogg og spiller-samtykke avviser uten gyldig grunnlag | I main via PR #867. [Kontroll](design-audit/samtykke-r-j-2026-09-13.md). UI-tekst og lydhistorikk uendret |
+| R-I utstyrsbag | Forelder avvises. Lagring bruker innlogget bruker-id. Felt over 200 tegn avvises | På `grok/r-i-utstyrsbag-2026-09-13`. [Kontroll](design-audit/handlingstilgang-utstyrsbag-2026-09-13.md) |
 
 Siste samlede testresultat og flettepunkt skal leses i samlingsrapporten og tilhørende GitHub PR. Innlogget produksjonsreise, faktisk betaling og Anders' visuelle vurdering er egne kontroller som fortsatt gjenstår.
 
@@ -99,8 +101,8 @@ R-A–R-J og REV-F1–F11 er forklart i [produktplanen](planer/produktplan-og-in
 | AgenticOS/Jarvis | Innkurv, utkast, godkjenning, rutiner, oppgaver og kalender koblet til faktisk kjøring | Ingen editor-agentkopier som runtime. Utsending til andre krever gjeldende eksplisitt autorisasjon |
 | Marked/salg | Nettsider, tilbud, coachprofiler, innhold og fungerende overgang til booking | Avstem bestilt omfang; ikke aktiver et historisk markedsføringssystem automatisk |
 | Økonomi/personlig | Beslutningsstøtte, rapportgrunnlag og egne oppgaver | Avklar konkret behov; økonomitall kun fra autorisert Tripletex-eksport |
-| Samtykke · R-J | Formål, opplysningstype, alder, rolle, deling, lagringssted og historikk | Verifiser regelgrunnlaget før tekst/tilgang endres. Ingen automatisk bytting av aldersgrense |
-| Kodekontroll · R-I | Første utvalg i PR #848. Fortsettelse: opptatt tid, profil og mål. 157 filer mangler søskentest | [R-I](design-audit/handlingstilgang-r-i-2026-09-12.md) · [bred](design-audit/handlingstilgang-bred-2026-09-12.md) |
+| Samtykke · R-J | Register og 16-årsregel er prøvd. Gjenstår: avklart UI-tekst per formål, lyd som historikk, innlogget reise | [Kontroll](design-audit/samtykke-r-j-2026-09-13.md). Ikke bytt 16 til 13 |
+| Kodekontroll · R-I | Første utvalg i PR #848. Fortsettelse: opptatt tid, profil og mål. Utstyrsbag prøvd 13.09. Øvrige skriv gjenstår | [R-I](design-audit/handlingstilgang-r-i-2026-09-12.md) · [bred](design-audit/handlingstilgang-bred-2026-09-12.md) · [utstyrsbag](design-audit/handlingstilgang-utstyrsbag-2026-09-13.md) |
 | Felles design/kvalitet | Avstem alle 480 sideruter og deres mønstre, visuell kontroll, kontrast, fokus, mobil og stor tekst | 480 ruter er inventar, ikke 480 unike ferdige design. Ingen ny kontrastbaseline for å skjule brudd |
 | Drift/lansering | Produksjonens innloggings-/funksjonsvern, alarmprøve, gjenoppretting med filer og full kundereise | Lokal `pg_restore` prøvd 12.09 kveld. [Kontroll](design-audit/docker-launch-tester-2026-09-12.md). Produksjonsalarm og Vercel-rollback krever miljøautorisasjon |
 | Produktbeslutninger | Avklar blokkerende produkt-/fagspørsmål rett før den avhengige leveransen; samle resten i intervjuet uten å stoppe uavhengig teknisk arbeid | [Intervjuguide](planer/produktplan-og-intervju-2026-09-11.md). Familie-OS/eldre sideprosjekter er bevart som underlag, ikke automatisk aktivert |

@@ -1,6 +1,6 @@
 # Status nå — AK Golf HQ
 
-Oppdatert 12.09.2026. Appen er fortsatt under arbeid og ikke klarert for åpen lansering. [Masterplanen](MASTERPLAN-GJENSTAAENDE.md) eier prioritert neste arbeid og den komplette restlisten.
+Oppdatert 13.09.2026. Appen er fortsatt under arbeid og ikke klarert for åpen lansering. [Masterplanen](MASTERPLAN-GJENSTAAENDE.md) eier prioritert neste arbeid og den komplette restlisten.
 
 ## Denne samlingen
 
@@ -27,6 +27,8 @@ Oppdatert 12.09.2026. Appen er fortsatt under arbeid og ikke klarert for åpen l
 - **P02–P05 Plan/Live:** Frekvensmål teller ikke V2-speil dobbelt. FYS bruker planlagt varighet og beholder detaljer ved gjenåpning. Avbrutt er ikke det samme som lagret. [Kontroll](design-audit/plan-live-p02-p05-2026-09-12.md).
 - **G01/G06–G10:** Korrigering, kilde, enhet og manglende data er prøvd uten produksjonsimport. [Kontroll](design-audit/runde-sg-trackman-g01-g10-2026-09-12.md).
 - **O13 kvalitet/backup:** Feillogg fjerner hemmeligheter. Helsesjekken avslører ikke miljøverdier. Lokal gjenoppretting mot `127.0.0.1:54379/ak_hq_launch_tests` er prøvd 12.09 kveld: 196 tabeller, booking bevart, overlapp avvist. L7 er ikke bestått. [Kontroll](design-audit/docker-launch-tester-2026-09-12.md).
+- **R-J samtykke:** Helse og deling bruker samme 16-årsregel. En 15-åring uten flagg kan ikke lenger gi deling selv. I main via PR #867. [Kontroll](design-audit/samtykke-r-j-2026-09-13.md).
+- **R-I utstyrsbag:** Forelder avvises. Bagen lagres på innlogget bruker. [Kontroll](design-audit/handlingstilgang-utstyrsbag-2026-09-13.md).
 
 ## Allerede i main
 
