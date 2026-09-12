@@ -28,8 +28,9 @@ Oppdatert 13.09.2026. Appen er fortsatt under arbeid og ikke klarert for åpen l
 - **G01/G06–G10:** Korrigering, kilde, enhet og manglende data er prøvd uten produksjonsimport. [Kontroll](design-audit/runde-sg-trackman-g01-g10-2026-09-12.md).
 - **O13 kvalitet/backup:** Feillogg fjerner hemmeligheter. Helsesjekken avslører ikke miljøverdier. Lokal gjenoppretting mot `127.0.0.1:54379/ak_hq_launch_tests` er prøvd 12.09 kveld: 196 tabeller, booking bevart, overlapp avvist. L7 er ikke bestått. [Kontroll](design-audit/docker-launch-tester-2026-09-12.md).
 - **R-J samtykke:** Helse og deling bruker samme 16-årsregel. I main via PR #867. [Kontroll](design-audit/samtykke-r-j-2026-09-13.md).
-- **J05 / P09 / J14:** Testhistorikk, økt-tilbakemelding, AgenticOS-spor og spørsmål-tilgang er i main via PR #858, #859, #861 og #864.
-- **O02 / helse / bag:** Åpne PR #866, #868 og #869. Ikke flettet.
+- **J05 / P09 / J14:** Testhistorikk, økt-tilbakemelding, AgenticOS-spor, spørsmål og melding til tildelt coach er i main via PR #858, #859, #861, #863 og #864.
+- **R-I utstyrsbag:** Forelder avvises. I main via PR #869. [Kontroll](design-audit/handlingstilgang-utstyrsbag-2026-09-13.md).
+- **O02 / helse:** Åpne PR #866 og #868. Ikke flettet.
 - **R-I admin-spiller:** Opprett og rediger spiller avviser uvedkommende. [Kontroll](design-audit/handlingstilgang-admin-spiller-2026-09-13.md).
 
 ## Allerede i main

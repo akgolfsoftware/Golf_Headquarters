@@ -18,7 +18,7 @@ Tidligere R-I (PR #848) dekker coach-notat, fys-logg, IUP, TN-post og skoletid.
 
 ## Gjenstår
 
-Øvrige skrivehandlinger uten søskentest, inkludert booking, helse, utstyrsbag, coachmelding og admin-mutasjoner. Innlogget isolert reise er blokkert uten Docker.
+Øvrige skrivehandlinger uten søskentest, inkludert booking, helse, coachmelding og admin-mutasjoner. Utstyrsbag er prøvd på `grok/r-i-utstyrsbag-2026-09-13`. Innlogget isolert reise er blokkert uten Docker.
 
 ## Ikke påstått
 
