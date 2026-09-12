@@ -143,6 +143,10 @@ describe("R-E innlogget spillerreise", () => {
     const fullfortLagret = skillOktOgPersistens("fullfort", "lagret");
     assert.equal(fullfortLagret.liv, "fullfort");
     assert.notEqual(pagaendeFeilet.liv, fullfortLagret.liv);
+    const avbruttLagret = skillOktOgPersistens("avbrutt", "lagret");
+    assert.equal(avbruttLagret.liv, "avbrutt");
+    assert.equal(avbruttLagret.persistens, "lagret");
+    assert.notEqual(avbruttLagret.liv, fullfortLagret.liv);
   });
 
   it("egen spiller og tillatt coach slipper inn; uvedkommende avvises uten øktdata", () => {
