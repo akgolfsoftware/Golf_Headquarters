@@ -7,10 +7,10 @@ Gjennomgangen avstemmer fersk `origin`, lokale grener, arbeidskopier og åpne pu
 | Gren / arbeid | Funn | Behandling |
 |---|---|---|
 | `main` | Lokal og `origin/main` var synkronisert på `ca25a7569`. Hovedmappen hadde ucommittert, sammenhengende arbeid for den nye retningen «Atletisk intelligens» og felles språkgrunnlag. | Bevares på egen `codex/athletic-intelligence-design-skills` før samling. |
-| `codex/pr841-funn-2026-09-11` | Én ren commit direkte oppå `main`: alternativ statuskontroll for oppfølgingskøen og eksplisitt TrackMan-enhetsrad. 15 målrettede tester, TypeScript og streng lint bestod 12.09. | Kan samles i `main` etter full kvalitetsgate. |
+| `codex/pr841-funn-2026-09-11` | Én ren commit direkte oppå `main`: alternativ statuskontroll for oppfølgingskøen og eksplisitt TrackMan-enhetsrad. 15 målrettede tester, TypeScript og streng lint bestod 12.09. | Samlet i lokal `main` som `e615c178d`; den overflødige arbeidskopien kan fjernes. |
 | `origin/claude/ak-golf-hq-five-packages-ioqscd` / PR #843 | Utkast med seks commits og 38 filer. De fem sikkerhetspakkene har samme formål som nyere arbeid som allerede er samlet via PR #840, men med konkurrerende implementasjoner. Simulert merge mot dagens `main` ga 17 innholdskonflikter. PR-en viste 2 av 2 grønne kontroller, men full innlogget spillerreise var ikke utført. | Skal ikke flettes som helhet. Bevar commit `547c506f1` i historikken, lukk den foreldede PR-en og slett fjern-grenen etter avstemming. |
 | `codex/manuell-sg-2026-09-11` | Ingen unike commits mot `main`; innholdet er allerede samlet via PR #836. Arbeidskopien ble tidligere beholdt for lokal prototypebruk. | Kan fjernes når ingen lokal server eller privat prototype fortsatt bruker mappen. |
-| `codex/athletic-intelligence-design-skills` | Pekte på samme commit som `main`; navnet var klart for det ucommitterte design-/instruksjonsarbeidet. | Brukes til å bevare og kontrollere den nye designretningen før samling. |
+| `codex/athletic-intelligence-design-skills` | Bevarte den nye designretningen, prosjektinstruksene og Grok-planen. | De kontrollerte commitene er samlet i lokal `main`. Arbeidskopien beholdes midlertidig fordi en uavhengig språkfil fortsatt er endret der. |
 | Fem stasher | Historiske/private sikkerhetskopier, ikke aktive funksjonsgrener. | Bevares. De slettes ikke som vanlig grenopprydding. |
 
 ## Hvorfor dagens UI ikke slettes
@@ -27,3 +27,11 @@ Riktig overgang er skjermfamilie for skjermfamilie:
 ## Begrensninger
 
 GitHub CLI-tokenet var utløpt. Ferske grener ble hentet med Git over SSH, og PR #843 ble kontrollert lesende i GitHub. Ingen GitHub-kommentar eller PR-status ble endret i denne delen av gjennomgangen.
+
+## Kvalitetskontroll før samling
+
+- 2 459 tester bestod: 2 455 enhetstester og 4 komponenttester.
+- `npm run verify` bestod, inkludert Prisma-kontroll, TypeScript, lint, prosjektvakter og produksjonsbygg.
+- Designinventaret fant 480 sideruter, 703 komponenter og 230 overflatefiler; alle fire inventartester bestod.
+- `npm run prosjekt:sjekk` og `git diff --check` bestod etter siste Claude Design-oppdatering.
+- Ingen database-, miljø-, betalings-, utsendings- eller manuell produksjonsendring ble kjørt.
