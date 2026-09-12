@@ -25,6 +25,7 @@ import { prisma } from "@/lib/prisma";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { handlingstypeLabel } from "@/lib/labels/handlingstyper";
 import { caddieDraftTittel } from "@/lib/caddie/draft-labels";
+import { caddieDraftKoWhere } from "@/lib/caddie/draft-eier";
 import { provenanceLinjer } from "@/lib/agents/provenance";
 import {
   buildDiffPreview,
@@ -174,7 +175,7 @@ export async function loadInnboksSaker(user: {
   const spillerScope = coachScopedPlayerWhere(user);
   const lostGrense = new Date(now.getTime() - 7 * DAG);
 
-  const [actions, caddieDraftsRaw, sessionRequests, varsler, feedback, mineSpillere, losteActions] =
+  const [actions, caddieDrafts, sessionRequests, varsler, feedback, losteActions] =
     await Promise.all([
       prisma.planAction.findMany({
         where: {
@@ -190,7 +191,7 @@ export async function loadInnboksSaker(user: {
         take: 40,
       }),
       prisma.caddieDraft.findMany({
-        where: { status: "PENDING" },
+        where: caddieDraftKoWhere(user.id),
         orderBy: { createdAt: "desc" },
         take: 30,
         select: {
@@ -228,7 +229,6 @@ export async function loadInnboksSaker(user: {
         take: 30,
       }),
       prisma.appFeedback.findMany({ orderBy: { createdAt: "desc" }, take: 20 }),
-      prisma.user.findMany({ where: spillerScope, select: { id: true } }),
       prisma.planAction.findMany({
         where: {
           status: { in: ["ACCEPTED", "REJECTED"] },
@@ -248,23 +248,14 @@ export async function loadInnboksSaker(user: {
       }),
     ]);
 
-  // CaddieDraft.userId er EIEREN (ADMIN) — spilleren utkastet gjelder ligger i
-  // toolInput. Coach ser kun utkast for sine egne spillere (samme regel som
-  // godkjenninger-flaten).
+  // CaddieDraft.userId er EIEREN som kan godkjenne. Spilleren utkastet
+  // gjelder vises fra toolInput når den finnes.
   const draftSpillerId = (toolInput: unknown): string | null => {
     const inp = toolInput as { playerId?: unknown; spillerId?: unknown } | null;
     if (typeof inp?.playerId === "string") return inp.playerId;
     if (typeof inp?.spillerId === "string") return inp.spillerId;
     return null;
   };
-  const mineIds = new Set(mineSpillere.map((s) => s.id));
-  const caddieDrafts =
-    user.role === "ADMIN"
-      ? caddieDraftsRaw
-      : caddieDraftsRaw.filter((d) => {
-          const spiller = draftSpillerId(d.toolInput);
-          return spiller != null && mineIds.has(spiller);
-        });
 
   // Navn til alle brukere sakene peker på (AppFeedback og CaddieDraft har
   // ingen relasjon — de slås opp i én runde).

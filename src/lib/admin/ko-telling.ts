@@ -6,14 +6,14 @@
  * Filtrene speiler loaderen i src/app/admin/godkjenninger/page.tsx:
  *   - PlanAction:      PENDING + coach-scope + spiller-scope
  *                      (ADMIN ser også agency-rader: user.role ADMIN)
- *   - CaddieDraft:     PENDING (ADMIN: alle; COACH: filtreres i UI — her
- *                      teller vi kun admin-alle / coach 0 hvis ikke ADMIN)
+ *   - CaddieDraft:     PENDING + eier (samme userId som kan godkjenne)
  *   - SessionRequest:  PENDING + coach-scope + spiller-scope
  */
 
 import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
+import { caddieDraftKoWhere } from "@/lib/caddie/draft-eier";
 
 export type KoTelling = {
   planActions: number;
@@ -51,10 +51,7 @@ export async function koTelling(
     prisma.planAction.count({
       where: planActionKoWhere({ id: coachUserId, role: viewerRole }),
     }),
-    // Caddie-utkast: full telling kun for ADMIN (coach ser filtrert liste i UI)
-    viewerRole === "ADMIN"
-      ? prisma.caddieDraft.count({ where: { status: "PENDING" } })
-      : Promise.resolve(0),
+    prisma.caddieDraft.count({ where: caddieDraftKoWhere(coachUserId) }),
     prisma.sessionRequest
       .count({
         where: {

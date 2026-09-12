@@ -24,6 +24,7 @@ import {
 } from "@/lib/admin/plan-action-diff";
 import { provenanceLesbarTekst } from "@/lib/agents/provenance";
 import { caddieDraftTittel } from "@/lib/caddie/draft-labels";
+import { caddieDraftAvgjortWhere, caddieDraftKoWhere } from "@/lib/caddie/draft-eier";
 import type {
   AdminGodkjenningerV2Data,
   AdminGodkjenningV2Row,
@@ -50,14 +51,12 @@ export async function lastGodkjenninger(
   // e-postutkast bor i innboks-epost-flaten med egen godkjenning der).
   const spillerScope = coachScopedPlayerWhere(user);
   const syvDagerSiden = syvDagerSidenGrense();
-  const erAdmin = user.role === "ADMIN";
 
   const [
     actions,
-    caddieDraftsRaw,
+    caddieDrafts,
     sessionRequests,
     ko,
-    mineSpillere,
     planGodkjent7d,
     planAvvist7d,
     caddieGodkjent7d,
@@ -74,7 +73,7 @@ export async function lastGodkjenninger(
       orderBy: { createdAt: "desc" },
     }),
     prisma.caddieDraft.findMany({
-      where: { status: "PENDING" },
+      where: caddieDraftKoWhere(user.id),
       orderBy: { createdAt: "desc" },
       take: 50,
       select: { id: true, userId: true, previewText: true, toolName: true, toolInput: true, createdAt: true },
@@ -91,10 +90,6 @@ export async function lastGodkjenninger(
     }).catch(() => []),
     // FUNN 4: kanonisk kø-telling — samme tall i hodet som på innboks/varsler.
     koTelling(user.id, user.role),
-    prisma.user.findMany({
-      where: spillerScope,
-      select: { id: true },
-    }),
     // Køen i tall (høyrekolonne) — «Godkjent 7 dg»/«N avvist», ærlig telt per kilde.
     prisma.planAction.count({
       where: { status: "ACCEPTED", decidedAt: { gte: syvDagerSiden }, OR: [{ coachId: user.id }, { coachId: null }], user: spillerScope },
@@ -102,12 +97,8 @@ export async function lastGodkjenninger(
     prisma.planAction.count({
       where: { status: "REJECTED", decidedAt: { gte: syvDagerSiden }, OR: [{ coachId: user.id }, { coachId: null }], user: spillerScope },
     }),
-    erAdmin
-      ? prisma.caddieDraft.count({ where: { status: "APPROVED", resolvedAt: { gte: syvDagerSiden } } })
-      : Promise.resolve(0),
-    erAdmin
-      ? prisma.caddieDraft.count({ where: { status: "REJECTED", resolvedAt: { gte: syvDagerSiden } } })
-      : Promise.resolve(0),
+    prisma.caddieDraft.count({ where: caddieDraftAvgjortWhere(user.id, "APPROVED", syvDagerSiden) }),
+    prisma.caddieDraft.count({ where: caddieDraftAvgjortWhere(user.id, "REJECTED", syvDagerSiden) }),
     prisma.sessionRequest
       .count({
         where: { status: "APPROVED", respondedAt: { gte: syvDagerSiden }, OR: [{ coachId: user.id }, { coachId: null }], user: spillerScope },
@@ -119,22 +110,14 @@ export async function lastGodkjenninger(
       })
       .catch(() => 0),
   ]);
-  // CaddieDraft.userId er EIEREN (Anders/ADMIN) — spilleren utkastet gjelder
-  // ligger i toolInput (playerId/spillerId). Vis spilleren i køen når den finnes.
+  // CaddieDraft.userId er EIEREN som kan godkjenne. Spilleren utkastet
+  // gjelder vises fra toolInput når den finnes.
   const draftSpillerId = (toolInput: unknown): string | null => {
     const inp = toolInput as { playerId?: unknown; spillerId?: unknown } | null;
     if (typeof inp?.playerId === "string") return inp.playerId;
     if (typeof inp?.spillerId === "string") return inp.spillerId;
     return null;
   };
-  const mineIds = new Set(mineSpillere.map((s) => s.id));
-  const caddieDrafts =
-    user.role === "ADMIN"
-      ? caddieDraftsRaw
-      : caddieDraftsRaw.filter((d) => {
-          const spiller = draftSpillerId(d.toolInput);
-          return spiller != null && mineIds.has(spiller);
-        });
   const caddieBrukerIder = [
     ...new Set(
       caddieDrafts.flatMap((d) => {

@@ -20,6 +20,16 @@ test("ukjente e-poster, lenker og vanlige fulle navn fjernes konservativt", () =
 test("generell fritekst er ikke fullstendig anonymisert: ukjente enkeltnavn kan ikke gjenkjennes sikkert", () => {
   assert.equal(createCaddiePrivacy([]).text("ukjentper trener carry 150 m"), "ukjentper trener carry 150 m");
 });
+test("ukjent databasefritekst sendes ikke til modellen uten tillatt felt", () => {
+  const result = createCaddiePrivacy([]).output({
+    pyramidArea: "TEK",
+    comment: "ukjentper har vondt i ryggen",
+    score: 74,
+  }, "", true) as Record<string, unknown>;
+  assert.equal(result.pyramidArea, "TEK");
+  assert.equal(result.comment, "[fritekst utelatt]");
+  assert.equal(result.score, 74);
+});
 test("strukturerte tall og datoer bevares mens private felter og frie DB-notater utelates", () => {
   const privacy = createCaddiePrivacy(identities);
   const result = privacy.output({ id: identities[0].id, name: identities[0].name, email: identities[0].email,
