@@ -471,6 +471,7 @@
 "src/app/team-gfgk/page.tsx","/team-gfgk","lag-og-skole","false","false","false","ikke-vurdert","ikke-verifisert"
 "src/app/team-norway/[groupId]/dokumenter/page.tsx","/team-norway/[groupId]/dokumenter","lag-og-skole","false","false","false","ikke-vurdert","ikke-verifisert"
 "src/app/team-norway/[groupId]/page.tsx","/team-norway/[groupId]","lag-og-skole","false","false","false","ikke-vurdert","ikke-verifisert"
+"src/app/team-norway/page.tsx","/team-norway","lag-og-skole","false","false","false","ikke-vurdert","ikke-verifisert"
 "src/app/team-norway/spiller/[spillerId]/page.tsx","/team-norway/spiller/[spillerId]","lag-og-skole","false","false","false","ikke-vurdert","ikke-verifisert"
 "src/app/team-norway/tilgang/page.tsx","/team-norway/tilgang","lag-og-skole","false","false","false","ikke-vurdert","ikke-verifisert"
 "src/app/team-wang/coach/iup/[elevId]/page.tsx","/team-wang/coach/iup/[elevId]","lag-og-skole","false","false","false","ikke-vurdert","ikke-verifisert"

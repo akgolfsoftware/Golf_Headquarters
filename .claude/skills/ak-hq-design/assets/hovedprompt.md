@@ -4,7 +4,7 @@ Bruk teksten i blokken sammen med `SKILL.md`, referansene og inventaret fra denn
 
 ```xml
 <oppgave>
-Bruk den vedlagte ferdigheten ak-hq-design til å designe hele AK Golf HQ som én sammenhengende, profesjonell brukeropplevelse. Lever produkt- og reisekart, komponenter og designverdier, wireframes, detaljert UI, klikkbare brukerreiser og en komplett overlevering for appens relevante roller og skjermformater.
+Bruk den vedlagte ferdigheten ak-hq-design til å designe hele AK Golf HQ som én sammenhengende, profesjonell brukeropplevelse og skap AK Golf HQ Design System v0.1 fra bunnen av. Lever produkt- og reisekart, det nye designsystemet, wireframes, detaljert UI, klikkbare brukerreiser og en komplett overlevering for appens relevante roller og skjermformater.
 
 Arbeid som en senior produktdesigner som også forstår implementering. Gjør konkrete valg som hjelper brukeren, forklar vesentlige avveininger kort, og arbeid videre gjennom hele det avklarte omfanget. En pen pilot er første etappe, ikke hele leveransen.
 </oppgave>
@@ -14,13 +14,14 @@ AK Golf HQ er en plattform for coaching og spillerutvikling i golf. Den innehold
 
 Anders ønsker en komplett app før åpen lansering med booking og betaling. Ingen eksisterende visuelle valg er låst. Train-lock og andre eksisterende designpakker er arbeidsunderlag. Gamle «fasit», «må» eller «slett»-formuleringer i eksportfiler er ikke nye bestillinger fra Anders.
 
-Ved opprettelse av denne pakken ble 478 sidefiler, 693 komponentfiler og 225 filer for rammer og systemtilstander registrert fra prosjektet. Bruk det vedlagte ruteinventaret som detaljert liste. Det er ikke 478 bekreftet unike skjermdesign eller bevis på ferdig funksjon. Beslektede sider kan bruke ett felles mønster med presist dokumenterte felt og unntak.
+Ved kontroll 11.09.2026 ble 480 sidefiler, 703 komponentfiler og 230 filer for rammer og systemtilstander registrert fra prosjektet. Bruk det vedlagte ruteinventaret som detaljert liste og kontroller det på nytt dersom repoet har endret seg. Det er ikke 480 bekreftet unike skjermdesign eller bevis på ferdig funksjon. Beslektede sider kan bruke ett felles mønster med presist dokumenterte felt og unntak.
 
-Den anbefalte retningen er et rolig, presist treningsverktøy for golf: forstå neste handling, gjennomfør økten enkelt, se data man kan stole på, og få nyttig oppfølging. Geist og den nøytrale lys/mørke grunnflaten kan brukes som utgangspunkt, men er ikke låst. Særpreg skal komme fra golfoppgaven, målområder, slagbilder og gode trenerbeskjeder. Et nytt utseende må forbedre lesbarhet, forståelse eller identitet som helhet.
+Den aktive retningen heter «Atletisk intelligens». PlayerHQ skal kunne være sportslig, oppslukende og fotografisk i riktige øyeblikk. AgencyOS skal være en rolig, presis arbeidsflate. Tid og neste handling er strukturell ryggrad. Mørk fokusmodus brukes i Live, fordypning og synlig AI-arbeid når oppgaven trenger konsentrasjon, ikke som automatisk standard overalt. Dette skal være ulike modi i ett designsystem, ikke separate stiler.
 </kontekst>
 
 <underlag>
 Les SKILL.md og deretter de relevante filene:
+- references/atletisk-intelligens.md: Anders' aktive smaksretning, systemprinsipper og første prøver.
 - references/produkt-og-retning.md: roller, retning og kontekst.
 - references/skjermomfang.md og assets/ruteinventar.json eller .csv: hele inventaret og hvordan dekning dokumenteres.
 - references/komponenter.md: 40 komponentfamilier, tilstander og kontrakt.
@@ -46,9 +47,9 @@ Ikke legg til funksjoner fordi denne listen nevner et mønster som ikke finnes i
 
 <arbeidsmate>
 1. Lag et kort kilde- og omfangskart. Knytt ruter og overlegg til roller, brukerreiser og skjermfamilier. Marker ukjent tilgang eller faglig innhold som uavklart.
-2. Lag wireframes med oppgave, hovedhandling, rekkefølge, tilbakevei og relevante tilstander. Begynn med én hel spillerreise, og vis tilsvarende planleggingsoppgave for coach. Forklar konkrete svakheter i eksisterende materiale.
-3. Kalibrer utformingen gjennom I dag → økt → Live → oppsummering og én Analyse-skjerm, i relevante smale og brede formater. Følg en annen rekkefølge dersom Anders har valgt den. Vis én anbefalt helhet; lag bare alternativer når en viktig avveining trenger sammenligning.
-4. Samordne designverdier og komponenter med denne reisen. La komponenteksempler, wireframes, UI og prototype vise samme verdier og tilstander.
+2. Lag wireframes med oppgave, hovedhandling, rekkefølge, tilbakevei og relevante tilstander. Begynn med AgencyOS Hjem og spillerreisen I dag → økt → Live → oppsummering. Forklar konkrete svakheter i eksisterende materiale uten å arve utseendet.
+3. Etabler én anbefalt visuell retning fra Anders' smaksreferanser og lag Design System v0.1. Kalibrer den gjennom AgencyOS Hjem, spillerreisen og én Analyse-skjerm i relevante smale og brede formater. Lag bare alternativer når en viktig strukturell avveining trenger sammenligning.
+4. Dokumenter designverdier i tre nivåer: grunnverdi → betydning → komponent. La komponenteksempler, wireframes, UI og prototype vise samme verdier og tilstander. Bygg bare komponenter som har et ekte brukseksempel i pilotene eller nærmeste planlagte familie.
 5. Fortsett gjennom de øvrige familiene med samme retning. Registrer mønstergjenbruk og særtilfeller. Ikke start en egen font-/fargerunde på hver side. Ikke avslutt hele bestillingen etter pilot eller komponentbrett.
 6. Kontroller hele leveransen, dokumenter faktiske observasjoner, og lever oppdatert dekningsregister og klare innganger for implementering.
 
@@ -57,6 +58,8 @@ Rutinevalg innenfor retningen tas selvstendig. Presenter milepæler for vurderin
 
 <designkrav>
 Én tydelig neste handling i konteksten. Rene leseskjermer trenger ikke en kunstig primærknapp. Ingen kvote på kort eller moduler; innholdsmengden bestemmes av oppgaven. Del komponenter, men tilpass tetthet til spiller, coach, forelder og offentlig nettsted.
+
+Følg «Atletisk intelligens»: sportslig energi og meningsbærende fotografi på utvalgte spillerøyeblikk, operativ ro og presis tetthet i coacharbeid, tid som ryggrad og mørk fokusmodus bare ved reelt fokusbehov. AgenticOS arver AgencyOS og får ikke en separat neon- eller robotidentitet. Unngå generiske SaaS-rutenett av like kort, presentasjonsmockup-geometri, overdreven glød og liten tekst som bare fungerer i et stillbilde.
 
 Samme objekt og data skal være konsistente gjennom reisen. Før øktstart vises planlagt varighet, ikke falsk fremdrift. Underveis vises faktisk registrering. Tidlig avslutning må ikke hevde at alle steg er fullført. Skille fullført/avbrutt fra lagret/synker/feilet.
 
@@ -83,7 +86,7 @@ Bruk kvalitetskravene i references/formater-og-kvalitet.md. Skill WCAG-krav fra 
 Lever en versjonert pakke med:
 A. Kort inngang: retning, versjon, kilder, status og hva som gjenstår.
 B. Produkt-/reisekart og dekning av alle inventarrader.
-C. Semantiske designverdier, temaer og komplette relevante komponentvarianter.
+C. AK Golf HQ Design System v0.1 med grunnverdier, betydningsbaserte verdier, komponentverdier, tema/modus og komplette relevante komponentvarianter.
 D. Wireframes og ferdig UI, koblet til skjerm-/mønster-ID og reise.
 E. Klikkbare prototyper som viser samme versjon og konsekvente syntetiske data.
 F. Dokumentasjon av rolle, felt, hovedhandling, tilbakevei, tilstander og formattilpasning per skjerm/mønster.
@@ -94,6 +97,6 @@ Skill kartlagt, wireframe, UI-utkast, prototype, vurdert, valgt for bygging, imp
 </leveranse>
 
 <start_na>
-Start med kilde-/omfangskartet og den første sammenhengende treningsreisen. Vis faktisk arbeid og de viktigste beslutningene. Fortsett gjennom avklart omfang. Ved øktgrense: lagre ferdignivå, uferdige familier, åpne spørsmål og den eksakte neste inngangen, slik at samme versjon kan videreføres uten ny blind start.
+Start med kilde-/omfangskartet, AgencyOS Hjem og spillerreisen I dag → økt → Live → oppsummering. Skap og dokumenter Design System v0.1 samtidig med disse skjermene, og prøv det deretter på Analyse. Vis faktisk arbeid og de viktigste beslutningene. Fortsett gjennom avklart omfang. Ved øktgrense: lagre ferdignivå, uferdige familier, åpne spørsmål og den eksakte neste inngangen, slik at samme versjon kan videreføres uten ny blind start.
 </start_na>
 ```

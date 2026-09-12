@@ -4,7 +4,7 @@ description: >
   Designinspirasjon fra Mobbin (ekte app-skjermer) for AK Golf HQ.
   Bruk ved "mobbin", "designinspo", "UI-referanse", "hvordan gjør top-apper",
   "dashboard-inspo", "AI-chat UI", "inbox-mønster", "unngå AI-slop".
-  MCP: https://api.mobbin.com/mcp — krever OAuth. Versjon 2026-07-23.
+  MCP: https://api.mobbin.com/mcp — krever OAuth. Versjon 2026-09-11.
 ---
 
 Prosjektkilder: `AGENTS.md` → `docs/platform/AGENT-BRIEF.md`. Design velges i `designsystem/README.md`; historiske skill-eksempler overstyrer ikke disse kildene.
@@ -13,10 +13,7 @@ Prosjektkilder: `AGENTS.md` → `docs/platform/AGENT-BRIEF.md`. Design velges i 
 
 ## Hva
 Mobbin = 600k+ **ekte** skjermer. Bruk for struktur og flyt — **ikke** kopier farger.
-AK-fasit (endret 25.08.2026): **Train-lock** for ALLE skjermer i PlayerHQ og AgencyOS — se
-AGENTS.md §Skjermarbeid + `.claude/rules/beslutninger.md` (øverste beslutning). Train-lock
-vinner alltid over Mobbin-referansen. Claude Paper (`605a48cc`) er historikk, ikke fasit.
-lime/forest er avviklet.
+For aktiv retning: les [Atletisk intelligens](../ak-hq-design/references/atletisk-intelligens.md). Anders' eget bildesett styrer visuell smak. Mobbin og offisielle produktkilder brukes sekundært for å kontrollere struktur, flyt og interaksjonsmønstre. Train-lock og Paper er historiske referanser, ikke visuell fasit for Design System v0.1.
 
 ## Auth (hvis MCP feiler)
 Claude: `/mcp` → mobbin → Authenticate → logg inn.  
@@ -25,17 +22,20 @@ Notat: `~/Documents/Claude/inbox/mobbin-design-inspo-agencyos.md`
 
 ## Arbeidsflyt
 1. Definer jobben (5 sek): f.eks. «cockpit — hva haster»
-2. Søk Mobbin (MCP hvis auth, ellers bruk notatet + kjente apper)
-3. Trekk ut **3 grepp** (layout, hierarki, handling) — ikke hex
-4. Map til v2-komponenter (`Kort`, `Rad`, `KpiFlis`, `CTAPill`)
-5. ADHD: én primær CTA
+2. Start med Anders' smaksreferanser; søk deretter Mobbin (MCP hvis auth, ellers bruk verifiserbare produktkilder)
+3. Skill visuelt smaksbevis fra bevis på testet brukervennlighet
+4. Trekk ut **3 grep** (layout, hierarki, handling) — ikke kopier hex, geometri eller merkevare
+5. Koble grepene til oppgaver og semantiske komponentbehov i Design System v0.1, ikke automatisk til dagens v2-komponenter
+6. ADHD: én primær CTA
 
 ## Standard-søk for AgencyOS
-- dark mode admin dashboard KPI
+- calm operations dashboard priority
+- immersive sports training mobile
+- timeline workout planner mobile
 - AI assistant suggestions approve dismiss
 - inbox approval queue list
 - multi-column productivity layout
-- AI dashboard
+- AI status transparency
 
 ## Referanse-apper (når MCP nede)
 Linear, Vercel, Notion AI, Superhuman, Cursor — struktur, ikke merkevare.

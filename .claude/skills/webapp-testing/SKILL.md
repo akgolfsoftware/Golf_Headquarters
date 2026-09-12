@@ -6,6 +6,10 @@ license: Complete terms in LICENSE.txt
 
 # Web Application Testing
 
+## Visuell kontroll i AK Golf HQ
+
+Når oppgaven gjelder den nye produktretningen, les [Atletisk intelligens](../ak-hq-design/references/atletisk-intelligens.md). Registrer valgt Claude Design-versjon, rolle, syntetiske data, tema/modus, bredde og tilstand før sammenligning. Prøv minst relevant mobil- og desktopformat samt tom, lastende og feiltilstand. Ikke bruk dagens Train-lock- eller v2-skjerm som visuelt mål når Anders har valgt en nyere Design System-versjon.
+
 To test local web applications, write native Python Playwright scripts.
 
 **Helper Scripts Available**:

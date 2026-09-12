@@ -5,7 +5,8 @@
 1. [Agent Brief](docs/platform/AGENT-BRIEF.md) — hva prosjektet inneholder og hvor koden bor.
 2. [Designarbeid og referanser](designsystem/README.md) — alle skjermdesign er under revisjon i Claude Design; eksisterende materiale er ikke låst.
 3. [Arbeidsliste](docs/MASTERPLAN-GJENSTAAENDE.md) — bekreftede funn og bevarte bestillinger.
-4. [Siste samling og kontroll](docs/vedlikehold/samling-og-opprydding-2026-09-11.md) — ferdige pakker, grenregnskap og hva som fortsatt gjenstår.
+4. [Siste grengjennomgang](docs/vedlikehold/grengjennomgang-2026-09-12.md) — hva som kan samles, hva som er foreldet og hvorfor dagens UI bevares.
+5. [Grok 4.6-start](docs/planer/grok-4-6-start-2026-09-12.md) — designuavhengig arbeid i lokal Terminal mens Claude Design lager v0.1.
 
 [Hele dokumentoversikten](docs/README.md) · [Prosjektkart og opprydding](docs/vedlikehold/prosjektkart.md) · [Felles AI-instruks](AGENTS.md).
 

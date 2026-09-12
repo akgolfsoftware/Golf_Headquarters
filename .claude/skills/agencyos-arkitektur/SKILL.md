@@ -4,7 +4,7 @@ description: >
   Komplett arkitektur for AgencyOS — coach/admin i AK Golf HQ (/admin).
   Bruk ALLTID ved AgencyOS, admin, stall, cockpit, coach-workbench, godkjenninger,
   AI-hub, Caddie, booking-admin, sidemeny/hub, "bygg i AgencyOS", ny admin-side.
-  FORBUDT i UI: CoachHQ. Les ALLTID før admin-kode. Versjon 2026-07-23.
+  FORBUDT i UI: CoachHQ. Les ALLTID før admin-kode. Versjon 2026-09-11.
 ---
 
 Prosjektkilder: `AGENTS.md` → `docs/platform/AGENT-BRIEF.md`. Design velges i `designsystem/README.md`; historiske skill-eksempler overstyrer ikke disse kildene.
@@ -81,8 +81,10 @@ Skills: `agenticos`, `agenticos-cockpit`, `hq-godkjenning`, `playerhq-agents` (p
 
 ## Design
 
-- AgencyOS: mørk default (v2 tokens `--v2-*`)
-- Kun `src/components/v2` for nye flater
+- Les [Atletisk intelligens](../ak-hq-design/references/atletisk-intelligens.md) og bruk `ak-hq-design` ved design og UI.
+- AgencyOS er den rolige, operative modusen i samme nye designsystem som PlayerHQ. Lys eller mørk standard avgjøres av valgt Claude Design-versjon; dagens v2- og Train-lock-tokens er ikke visuell fasit.
+- Mørk fokusmodus kan brukes for fordypning og synlig AgenticOS-arbeid når oppgaven begrunner det. Ikke gjør hele coachflaten mørk av vane.
+- Under utforsking starter Claude Design blankt. Ved implementering kartlegges den valgte versjonen til faktiske delte komponenter; eksisterende komponentmapper er teknisk underlag, ikke designordre.
 - Ingen emoji i UI — Lucide
 - Norsk bokmål
 

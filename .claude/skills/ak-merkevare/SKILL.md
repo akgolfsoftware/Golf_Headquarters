@@ -11,11 +11,12 @@ description: |
   logobruk, favicon, fotovalg, merketekst, tagline, tone, trykkfarger.
   Trigger også uten ordet «design»: «finpuss», «juster», «ser dette riktig ut»,
   «sjekk mot merket», «kan vi skrive», «hvilket bilde».
-  IKKE for produktskjermer i /portal, /admin eller /forelder — der gjelder
-  Train-lock (designsystem/train-lock/). IKKE for /team-norway/* — der gjelder
+  IKKE for produktskjermer i /portal, /admin eller /forelder — bruk ak-hq-design
+  og den aktive produktretningen. IKKE for /team-norway/* — der gjelder
   Claw (designsystem/team-norway/).
-version: "1.0"
-updated: "2026-09-01"
+metadata:
+  version: "1.1"
+  reviewed: "2026-09-11"
 ---
 
 Prosjektkilder: `AGENTS.md` → `docs/platform/AGENT-BRIEF.md`. Design velges i `designsystem/README.md`; historiske skill-eksempler overstyrer ikke disse kildene.
@@ -24,9 +25,7 @@ Prosjektkilder: `AGENTS.md` → `docs/platform/AGENT-BRIEF.md`. Design velges i 
 
 Du finjusterer AK Golfs merkevare. Ikke produktet. Grensen er absolutt, og den er
 det første du sjekker: **er dette en skjerm inne i appen?** Da er du feil skill.
-Si det, og pek på `designsystem/train-lock/` — `DESIGN-SYSTEM.md` for visuelle
-verdier, `SCREEN-INDEX.md` for å finne skjermen, `HANDOFF.md` for struktur.
-Ved konflikt vinner HANDOFF på struktur og DESIGN-SYSTEM på verdier.
+Si det, og pek på `ak-hq-design` og [Atletisk intelligens](../ak-hq-design/references/atletisk-intelligens.md). Produktets nye Design System v0.1 utforskes fra blankt lerret. Denne merkevareskillens fonter, farger og verkstedregler gjelder ikke automatisk inne i PlayerHQ, AgencyOS eller AgenticOS.
 
 ## Hvor fasiten bor
 

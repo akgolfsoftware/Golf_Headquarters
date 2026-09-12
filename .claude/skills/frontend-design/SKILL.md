@@ -6,6 +6,10 @@ license: Complete terms in LICENSE.txt
 
 # Frontend Design
 
+## AK Golf HQ
+
+Ved produktdesign i dette repoet skal du først lese [Atletisk intelligens](../ak-hq-design/references/atletisk-intelligens.md) og bruke `ak-hq-design`. Start blankt når oppgaven gjelder Design System v0.1: dagens Train-lock-, Paper- og v2-uttrykk er teknisk og funksjonelt underlag, ikke visuell fasit. Utforsk én samlet produktfamilie med sportslig PlayerHQ, operativt rolig AgencyOS og mørk fokusmodus bare når oppgaven krever det. Ikke la denne skillens generelle eksempler overstyre Anders' smaksreferanser eller en senere valgt Claude Design-versjon.
+
 Approach this as the design lead at a small studio known for giving every client a visual identity that could not be mistaken for anyone else's. This client has already rejected proposals that felt templated, and is paying for a distinctive point of view: make deliberate, opinionated choices about palette, typography, and layout that are specific to this brief, and take one real aesthetic risk you can justify.
 
 ## Ground it in the subject

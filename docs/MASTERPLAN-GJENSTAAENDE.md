@@ -1,12 +1,14 @@
 # Arbeidsliste — AK Golf HQ
 
-Oppdatert 11.09.2026. Denne filen eier rekkefølge og gjenstående arbeid. [Status nå](STATUS-NÅ.md) oppsummerer leveransen. [Funksjonsregisteret](planer/funksjonsregister-2026-09-11.md) bevarer hele produktbredden; eldre bestillinger er samlet i [planarkivet](arkiv/opprydding-2026-09-10/masterplan-gjenstaaende.md).
+Oppdatert 12.09.2026. Denne filen eier rekkefølge og gjenstående arbeid. [Status nå](STATUS-NÅ.md) oppsummerer leveransen. [Funksjonsregisteret](planer/funksjonsregister-2026-09-11.md) bevarer hele produktbredden; eldre bestillinger er samlet i [planarkivet](arkiv/opprydding-2026-09-10/masterplan-gjenstaaende.md).
 
 ## Gjeldende bestilling og design
 
 Anders ønsker en komplett app før åpen lansering med booking og betaling. Han har bestilt videre arbeid, samling av ferdige oppgaver til main, prosjektopprydding og denne oppdaterte restlisten. En merge betyr at kode er samlet; den er ikke visuell godkjenning eller lanseringsvedtak.
 
-Valgt byggegrunnlag: **Trainlock ZIP (4) for PlayerHQ og AgencyOS**, levert **Claw Team Norway-pakke for interne TN-skjermer**, og **designsystem/wang for WANG**. PlayerHQ/AgencyOS viderefører felles Geist/v3. Valgene skal ikke avklares på nytt for disse oppgavene. Andre designområder er fortsatt under revisjon. [Kildeidentitet og skjermstatus](design-audit/portering-fire-flater-2026-09-10.md).
+Aktiv visuell retning er nå **Atletisk intelligens**. Claude Design lager AK Golf HQ Design System v0.1 fra blankt lerret for PlayerHQ, AgencyOS og AgenticOS. Ingen konkret Claude Design-versjon er ennå valgt for bygging. Train-lock, Claw/Team Norway, WANG-speilet og dagens Geist/v3-implementasjon bevares som funksjons-, historikk- og teknisk underlag, men er ikke visuell fasit for nye skjermendringer. [Designstatus](../designsystem/README.md) og [tidligere portstatus](design-audit/portering-fire-flater-2026-09-10.md).
+
+Eksisterende UI skal ikke slettes på forhånd. Det erstattes kontrollert per brukerreise etter at en designversjon er valgt, kartlagt til kode og funksjons-/visuelt prøvd.
 
 ## Samlet arbeid og hva kontrollene beviser
 
@@ -27,12 +29,12 @@ Siste samlede testresultat og flettepunkt skal leses i samlingsrapporten og tilh
 
 ## Neste oppgaver, i rekkefølge
 
-Aktiv arbeidsdeling 11.09.2026: Claude Code/Sonnet 5 har den avgrensede [AgencyOS-reisen](planer/claude-code-sonnet-5-agencyos-prompt.md). Codex har bygget R-A/R-B/R-C/R-D/R-H og kontrollerer dem samlet før GitHub-fletting. Sporene deler ikke filansvar.
+Aktiv arbeidsdeling 12.09.2026: Claude Design eier Design System v0.1 og de første pilotskjermene. Grok 4.6 i lokal Terminal starter med designuavhengig teknisk arbeid etter [Grok-planen](planer/grok-4-6-start-2026-09-12.md). Grok endrer ikke globale designverdier, navigasjon eller visuelt komponentuttrykk før Anders har valgt en konkret designversjon.
 
 | Prioritet / ID | Konkret neste leveranse | Inngang | Ferdig når |
 |---|---|---|---|
 | 1 · R-E / R1–R3 | Kjør hele I dag → Plan → PH-04 → PH-05 → PH-06 med isolerte, innloggede testroller. Ta med V2, Workbench og eldre plan | `tests/e2e/`, `src/lib/portal-live/`, `src/lib/portal/` | Samme økt/tall gjennom reisen; gjenåpning etter lagring virker; uvedkommende avvises. Kritiske prøver gir ikke grønt ved å hoppes over |
-| 2 · D2-AO | Fullfør AgencyOS-hjem → spillerliste → spillerkort → plan/tildeling → oppfølging fra valgt Trainlock. PR #839 bevarer Stall-konteksten; fase 2 eier rail, innlogget ressursavvisning og publiseringsbevis | `src/components/admin/`, `src/components/workbench/`, valgte AX/AO-kilder | Mobil/desktop og temaer stemmer; reelle handlinger, tomt/feil/lagring og tilgang er prøvd |
+| 2 · D2-AO | Kartlegg og prøv AgencyOS-hjem → spillerliste → spillerkort → plan/tildeling → oppfølging teknisk. Vent med visuell portering til en Claude Design-versjon er valgt. PR #839 bevarer Stall-konteksten | `src/components/admin/`, `src/components/workbench/`, serverhandlinger og tilgangstester | Reelle handlinger, tomt/feil/lagring og tilgang er prøvd; visuelt arbeid har navngitt valgt designversjon |
 | 3 · Caddie-kø/AI-grense | Avgrens AgencyOS-køene til utkast administratoren faktisk kan godkjenne, og definer en streng produktgrense før vilkårlig fritekst kan sendes til AI | `src/lib/admin/ko/last-godkjenninger.ts`, `src/lib/admin/innboks-saker.ts`, Caddie-inngangene | Kø og godkjenning bruker samme eierregel. Ukjent fritekst går ikke til ekstern modell uten en dokumentert tillatt datastruktur |
 | 4 · D2-TN | Fullfør den sikrede Team Norway-oversikten → testføring → resultat/historikk → dokumenter/poster | `src/app/team-norway/`, `src/components/team-norway/`, valgt TN-pakke | Samme testvariant og resultat gjennom reisen, korrekt spiller-/coach-/organisasjonsinnsyn og ærlig manglende data |
 | 5 · D2-WANG | Fullfør WANG-hjem fra den sikrede Toppidrett-grensen → skole-/treningsuke → økt → elev/gruppe → rapport | `src/app/team-wang/`, WANG-komponenter og `designsystem/wang/` | Innlogging og skole-/gruppeavgrensning virker; ingen demonstrasjonsdata fremstilles som faktiske elevdata |
@@ -59,7 +61,7 @@ R-A–R-J og REV-F1–F11 er forklart i [produktplanen](planer/produktplan-og-in
 | Økonomi/personlig | Beslutningsstøtte, rapportgrunnlag og egne oppgaver | Avklar konkret behov; økonomitall kun fra autorisert Tripletex-eksport |
 | Samtykke · R-J | Formål, opplysningstype, alder, rolle, deling, lagringssted og historikk | Verifiser regelgrunnlaget før tekst/tilgang endres. Ingen automatisk bytting av aldersgrense |
 | Kodekontroll · R-I | Styrk tester av faktisk handlingstilgang og ressursavgrensning | En importert, men ubrukt tilgangsvakt må ikke være tilstrekkelig for grønn kontroll |
-| Felles design/kvalitet | Avstem alle 479 sideruter og deres mønstre, visuell kontroll, kontrast, fokus, mobil og stor tekst | 479 ruter er inventar, ikke 479 unike ferdige design. Ingen ny kontrastbaseline for å skjule brudd |
+| Felles design/kvalitet | Avstem alle 480 sideruter og deres mønstre, visuell kontroll, kontrast, fokus, mobil og stor tekst | 480 ruter er inventar, ikke 480 unike ferdige design. Ingen ny kontrastbaseline for å skjule brudd |
 | Drift/lansering | Produksjonens innloggings-/funksjonsvern, alarmprøve, gjenoppretting med filer og full kundereise | Konkret miljøautorisasjon for tidligere avvist funksjonssikkerhetsendring; testoppsett for betaling og varsling; dokumentert faktisk publisert versjon |
 | Produktintervju | Avklar mål, prioriteringsregel og åpne produkt-/fagspørsmål med Anders | [Intervjuguide](planer/produktplan-og-intervju-2026-09-11.md). Familie-OS/eldre sideprosjekter er bevart som underlag, ikke automatisk aktivert |
 

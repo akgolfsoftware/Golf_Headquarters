@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "method": "Filinventar fra src/app og src/components. Flate er foreslått fra sti, ikke tilgangsbevis. Skanner ikke API-handler, miljøfiler, kundedata eller produksjon. Filantall er ikke antall ferdige skjermer.",
   "totals": {
-    "pageFiles": 479,
-    "uniqueRoutePatterns": 479,
-    "componentFiles": 693,
-    "surfaceFiles": 227,
+    "pageFiles": 480,
+    "uniqueRoutePatterns": 480,
+    "componentFiles": 703,
+    "surfaceFiles": 230,
     "byArea": {
       "interne-eksempler": 6,
       "marked-og-offentlig": 70,
@@ -13,7 +13,7 @@
       "agencyos": 163,
       "inngang-og-konto": 18,
       "forelder": 16,
-      "lag-og-skole": 15,
+      "lag-og-skole": 16,
       "delt-innsyn": 11,
       "personlig-arbeidsflate": 3,
       "systemtilstand": 2,
@@ -10920,7 +10920,9 @@
         "src/app/layout.tsx",
         "src/app/not-found.tsx",
         "src/app/team-norway/[groupId]/loading.tsx",
-        "src/app/team-norway/layout.tsx"
+        "src/app/team-norway/error.tsx",
+        "src/app/team-norway/layout.tsx",
+        "src/app/team-norway/loading.tsx"
       ],
       "designStatus": "ikke-vurdert",
       "accessStatus": "ikke-verifisert"
@@ -10940,7 +10942,30 @@
         "src/app/layout.tsx",
         "src/app/not-found.tsx",
         "src/app/team-norway/[groupId]/loading.tsx",
-        "src/app/team-norway/layout.tsx"
+        "src/app/team-norway/error.tsx",
+        "src/app/team-norway/layout.tsx",
+        "src/app/team-norway/loading.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
+      "source": "src/app/team-norway/page.tsx",
+      "route": "/team-norway",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "lag-og-skole",
+      "legacyGroup": false,
+      "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/team-norway/error.tsx",
+        "src/app/team-norway/layout.tsx",
+        "src/app/team-norway/loading.tsx"
       ],
       "designStatus": "ikke-vurdert",
       "accessStatus": "ikke-verifisert"
@@ -10959,7 +10984,9 @@
         "src/app/global-error.tsx",
         "src/app/layout.tsx",
         "src/app/not-found.tsx",
-        "src/app/team-norway/layout.tsx"
+        "src/app/team-norway/error.tsx",
+        "src/app/team-norway/layout.tsx",
+        "src/app/team-norway/loading.tsx"
       ],
       "designStatus": "ikke-vurdert",
       "accessStatus": "ikke-verifisert"
@@ -10978,7 +11005,9 @@
         "src/app/global-error.tsx",
         "src/app/layout.tsx",
         "src/app/not-found.tsx",
+        "src/app/team-norway/error.tsx",
         "src/app/team-norway/layout.tsx",
+        "src/app/team-norway/loading.tsx",
         "src/app/team-norway/tilgang/error.tsx",
         "src/app/team-norway/tilgang/loading.tsx"
       ],
@@ -10999,6 +11028,7 @@
         "src/app/global-error.tsx",
         "src/app/layout.tsx",
         "src/app/not-found.tsx",
+        "src/app/team-wang/error.tsx",
         "src/app/team-wang/layout.tsx"
       ],
       "designStatus": "ikke-vurdert",
@@ -11018,6 +11048,7 @@
         "src/app/global-error.tsx",
         "src/app/layout.tsx",
         "src/app/not-found.tsx",
+        "src/app/team-wang/error.tsx",
         "src/app/team-wang/layout.tsx"
       ],
       "designStatus": "ikke-vurdert",
@@ -11037,6 +11068,7 @@
         "src/app/global-error.tsx",
         "src/app/layout.tsx",
         "src/app/not-found.tsx",
+        "src/app/team-wang/error.tsx",
         "src/app/team-wang/layout.tsx"
       ],
       "designStatus": "ikke-vurdert",
@@ -11056,6 +11088,7 @@
         "src/app/global-error.tsx",
         "src/app/layout.tsx",
         "src/app/not-found.tsx",
+        "src/app/team-wang/error.tsx",
         "src/app/team-wang/layout.tsx"
       ],
       "designStatus": "ikke-vurdert",
@@ -12782,6 +12815,11 @@
       "isTest": false
     },
     {
+      "source": "src/components/portal/live/BriefStart.tsx",
+      "family": "portal",
+      "isTest": false
+    },
+    {
       "source": "src/components/portal/live/DrillLogger.tsx",
       "family": "portal",
       "isTest": false
@@ -12818,6 +12856,11 @@
     },
     {
       "source": "src/components/portal/live/PlanSessionBrief.tsx",
+      "family": "portal",
+      "isTest": false
+    },
+    {
+      "source": "src/components/portal/live/SessionBrief.tsx",
       "family": "portal",
       "isTest": false
     },
@@ -12968,6 +13011,16 @@
     },
     {
       "source": "src/components/portal/runde-ny/hull-rediger-form.tsx",
+      "family": "portal",
+      "isTest": false
+    },
+    {
+      "source": "src/components/portal/runde-ny/manuell-sg-felt.tsx",
+      "family": "portal",
+      "isTest": false
+    },
+    {
+      "source": "src/components/portal/runde-ny/manuell-sg-redigering.tsx",
       "family": "portal",
       "isTest": false
     },
@@ -13477,6 +13530,11 @@
       "isTest": false
     },
     {
+      "source": "src/components/portal/v2/PlanLaster.tsx",
+      "family": "portal",
+      "isTest": false
+    },
+    {
       "source": "src/components/portal/v2/PlanV2.tsx",
       "family": "portal",
       "isTest": false
@@ -13717,6 +13775,11 @@
       "isTest": false
     },
     {
+      "source": "src/components/portal/v2/idag/idag-naa-kort.tsx",
+      "family": "portal",
+      "isTest": false
+    },
+    {
       "source": "src/components/portal/v2/kalender/IDagITidenArk.tsx",
       "family": "portal",
       "isTest": false
@@ -13952,6 +14015,11 @@
       "isTest": false
     },
     {
+      "source": "src/components/shared/train-lock-design-synk.tsx",
+      "family": "shared",
+      "isTest": false
+    },
+    {
       "source": "src/components/shared/view-mode-toggle.tsx",
       "family": "shared",
       "isTest": false
@@ -14137,6 +14205,11 @@
       "isTest": false
     },
     {
+      "source": "src/components/team-norway/tn-tilgang-visning.tsx",
+      "family": "team-norway",
+      "isTest": false
+    },
+    {
       "source": "src/components/teknisk-plan/oppgave-modal.tsx",
       "family": "teknisk-plan",
       "isTest": false
@@ -14184,6 +14257,16 @@
     {
       "source": "src/components/trackman/TrackManSessionDetail.tsx",
       "family": "trackman",
+      "isTest": false
+    },
+    {
+      "source": "src/components/train-lock/player-chrome.tsx",
+      "family": "train-lock",
+      "isTest": false
+    },
+    {
+      "source": "src/components/train-lock/v3-elementer.tsx",
+      "family": "train-lock",
       "isTest": false
     },
     {
@@ -14771,9 +14854,12 @@
     "src/app/portal/tren/turneringer/loading.tsx",
     "src/app/team-gfgk/layout.tsx",
     "src/app/team-norway/[groupId]/loading.tsx",
+    "src/app/team-norway/error.tsx",
     "src/app/team-norway/layout.tsx",
+    "src/app/team-norway/loading.tsx",
     "src/app/team-norway/tilgang/error.tsx",
     "src/app/team-norway/tilgang/loading.tsx",
+    "src/app/team-wang/error.tsx",
     "src/app/team-wang/layout.tsx"
   ]
 }

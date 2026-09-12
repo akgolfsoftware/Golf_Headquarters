@@ -1,18 +1,18 @@
 # Hele appens skjermomfang
 
-Start med [inventaret](../assets/ruteinventar.json) eller [CSV](../assets/ruteinventar.csv). Tellingen ved opprettelse 10.09.2026 var 478 sidefiler, 693 komponentfiler og 225 filer for layout, lasting, feil og andre rammenivåer. Dette er kodeinventar, ikke ferdig design eller automatisk oppdeling i like mange tegninger.
+Start med [inventaret](../assets/ruteinventar.json) eller [CSV](../assets/ruteinventar.csv). Tellingen ved kontroll 11.09.2026 var 480 sidefiler, 703 komponentfiler og 230 filer for layout, lasting, feil og andre rammenivåer. Dette er kodeinventar, ikke ferdig design eller automatisk oppdeling i like mange tegninger. Kontroller på nytt dersom repoet har endret seg.
 
 ## Flater som ikke må forsvinne
 
 | Flate i inventaret | Sidefiler ved opprettelse | Familier som skal undersøkes |
 |---|---:|---|
-| playerhq | 170 | I dag, planer/maler, økter, Live, runder, tester, fysisk trening, analyser, TrackMan/DataGolf, gameplan/baneguide, coachkontakt/videoer, booking, utviklingsplan, venner, talent, varsler, Meg, abonnement/hjelp/sikkerhet |
+| playerhq | 171 | I dag, planer/maler, økter, Live, runder, tester, fysisk trening, analyser, TrackMan/DataGolf, gameplan/baneguide, coachkontakt/videoer, booking, utviklingsplan, venner, talent, varsler, Meg, abonnement/hjelp/sikkerhet |
 | agencyos | 163 | Cockpit, innboks/kommunikasjon, spiller/grupper/stall, kalender/tilgjengelighet, Workbench/planlegging, øvelsesbank/tester, Live/runder/analyse, booking/tjenester, økonomi, innhold/marked, talent, organisasjon, oppsett, integrasjoner, AI/AgenticOS/Jarvis, historikk/godkjenning |
 | marked-og-offentlig | 70 | Forside, tilbud/priser, coaching, coacher, anlegg, junior, blogg/cases, statistikk/verktøy, turneringer, kontakt/FAQ, personvern/vilkår/cookies og bekreftelser |
 | offentlig-booking | 4 | Valg av tjeneste/coach/tid, gjennomgang, betaling og bekreftelse; overlegg og leverandørsteg kommer i tillegg til sidefiler |
 | inngang-og-konto | 18 | Innlogging, registrering, invitasjon, verifisering, gjenoppretting, rolle-/kontooppsett og onboarding |
 | forelder | 16 | Barn/oversikt, plan, coachkontakt, booking, faktura/økonomi, samtykker, ukerapport, varsler og innstillinger |
-| lag-og-skole | 15 | WANG, Team Norway, GFGK og junior; plan, innlegg, dokumenter, kontakt og tilgang |
+| lag-og-skole | 16 | WANG, Team Norway, GFGK og junior; plan, innlegg, dokumenter, kontakt og tilgang |
 | delt-innsyn | 11 | Delte spiller-/talentvisninger, sammenligning, gyldig/utløpt/avvist lenke |
 | personlig-arbeidsflate | 3 | Personlig oversikt, dispatch og morgenbrief |
 | systemtilstand | 2 | Offline og vedlikehold; feil, tilgangsavslag og ikke funnet dekkes også av rammenivåer |

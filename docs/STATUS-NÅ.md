@@ -1,9 +1,12 @@
 # Status nå — AK Golf HQ
 
-Oppdatert 11.09.2026. Appen er fortsatt under arbeid og ikke klarert for åpen lansering. [Masterplanen](MASTERPLAN-GJENSTAAENDE.md) eier prioritert neste arbeid og den komplette restlisten.
+Oppdatert 12.09.2026. Appen er fortsatt under arbeid og ikke klarert for åpen lansering. [Masterplanen](MASTERPLAN-GJENSTAAENDE.md) eier prioritert neste arbeid og den komplette restlisten.
 
 ## Denne samlingen
 
+- **Ny designretning:** Claude Design lager AK Golf HQ Design System v0.1 fra blankt lerret med «Atletisk intelligens». Ingen ny versjon er valgt for bygging ennå. Eksisterende UI bevares som funksjons- og implementasjonsgrunnlag, ikke som visuell fasit.
+- **Grok-start:** Grok 4.6 kan starte med innlogget spillerreise, tilgangstester, serverregler og teknisk skjermkartlegging uten å låse det nye uttrykket. [Avgrenset Terminal-plan og startprompt](planer/grok-4-6-start-2026-09-12.md).
+- **Grenkontroll:** Fersk `origin` hadde `main` og én åpen Claude-gren. PR #843 konkurrerer med nyere arbeid i `main` og ga 17 konflikter i simulert merge; den skal ikke flettes som helhet. Den lokale PR #841-rettelsen er en ren kandidat etter full kontroll. [Grenregnskap](vedlikehold/grengjennomgang-2026-09-12.md).
 - **Plan:** eldre godtatte planøkter uten V2-speil inngår i ukeoversikt og progresjon uten dobbelttelling. Separate øktmodeller og eksisterende statusregler er bevart. [Plan-kontroll](design-audit/plan-legacy-2026-09-11.md).
 - **PH-06:** valgt resultathierarki er bygget. Lagrede notater og vurderinger er synlige, feil bevarer feltene, og samtidige lagringer oppdaterer separate JSON-felt. Appskall/Geist, åtte datatilstander, fire bredder og to temaer er komponentprøvd. Egen isolert PostgreSQL-prøve bestod. [PH-06-kontroll](design-audit/playerhq-ph06-2026-09-11.md).
 - **Planleggingsarbeid:** funksjonsregister, funksjonskort og produktintervju er bevart fra den separate arbeidsgrenen. De er arbeidsunderlag, ikke nye godkjente produktbeslutninger.
@@ -29,6 +32,6 @@ Stripe-testmiljø og innloggede testroller trengs for betalingsreisen. Tidligere
 
 ## Kilder og historikk
 
-Valgt design: Trainlock ZIP (4) for PlayerHQ/AgencyOS, Claw Team Norway for interne TN-skjermer og WANG-speilet. [Port-auditen](design-audit/portering-fire-flater-2026-09-10.md) knytter kilder til kode og bevis. Det siste ruteinventaret har 479 sideruter; dette er ikke antall ferdige design.
+Aktiv designutforsking: nytt Design System v0.1 med «Atletisk intelligens» for PlayerHQ, AgencyOS og AgenticOS. Train-lock, Claw/Team Norway, WANG-speilet og dagens kode bevarer funksjon, historikk og tidligere portering, men er ikke automatisk visuell fasit for den nye retningen. [Designstatus](../designsystem/README.md) og [port-audit](design-audit/portering-fire-flater-2026-09-10.md). Det siste kontrollerte ruteinventaret har 480 sideruter; dette er ikke antall ferdige design.
 
 [Historisk status](arkiv/opprydding-2026-09-10/status-nå.md), [tidligere teknisk kontroll](beslutningsgrunnlag/teknisk-lanseringskontroll-2026-09-10.md) og Git-historikken bevarer tidligere hendelser. Bygget, testet, sett av Anders, flettet og publisert kontrollert er ulike statuser.

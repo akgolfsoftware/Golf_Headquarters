@@ -1,10 +1,20 @@
 # Designarbeid og referanser
 
+## Aktiv ny produktretning — 11.09.2026
+
+Anders starter fra blankt lerret i Claude Design og har bestilt et nytt **AK Golf HQ Design System v0.1** for PlayerHQ, AgencyOS og AgenticOS. Arbeidsretningen heter **Atletisk intelligens**: sportslig og oppslukende PlayerHQ, rolig og presis AgencyOS, tid som ryggrad og mørk fokusmodus bare der oppgaven trenger konsentrasjon.
+
+Se [den sentrale retningskontrakten](../.claude/skills/ak-hq-design/references/atletisk-intelligens.md). Anders' bildesett fra 11.09 styrer visuell smak. Eksisterende Train-lock, Paper, v2 og tidligere designpakker brukes til funksjonsdekning og implementasjonsforståelse, ikke som visuell fasit i denne utforskingen.
+
+Retningen er ikke valgt for produksjonsbygging før Anders velger en konkret Claude Design-versjon. Første systemversjon skal bevises på AgencyOS Hjem, PlayerHQ-reisen I dag → økt → Live → oppsummering og en Analyse-skjerm.
+
+## Tidligere portering og nåværende implementasjon
+
 **Valgt for den bestilte porteringen 10.09.2026:** Anders har valgt Train-lock for PlayerHQ og AgencyOS, Claw / Team Norway for interne Team Norway-skjermer og WANG for WANG-skjermene. Bestillingen gjelder alle skjermene i disse fire områdene. Se [valgte kilder og kontrollstatus](../docs/design-audit/portering-fire-flater-2026-09-10.md).
 
 Byggegrunnlaget er `Player HQ Train lock (4).zip`, `Claw Design — Team Norway Golf.zip` og det eksisterende WANG-speilet. De to leverte ZIP-filene er inspisert og identifisert med SHA-256. Team Norway-pakkens 230 sammenlignbare designfiler er identiske med speilet; Train-lock har nyere filer som må kobles til hver portert reise.
 
-Anders' tidligere presisering om at designet kan revideres gjelder fortsatt. Valget over er en byggeordre for denne oppgaven, ikke en visuell godkjenning av ferdig kode. Gamle dokumenters slettelister, datamodellforslag og publiseringsinstrukser er underlag, ikke selvstendige kjøreordrer.
+Dette avsnittet dokumenterer porteringen og dagens implementasjonsgrunnlag. Den nye bestillingen fra 11.09 overstyrer Train-lock som visuell målretning for videre utforsking, men sletter ikke kode, historikk eller funksjonskrav. Gamle dokumenters slettelister, datamodellforslag og publiseringsinstrukser er underlag, ikke selvstendige kjøreordrer.
 
 ## Eksisterende underlag
 

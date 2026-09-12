@@ -9,6 +9,10 @@ metadata:
 
 # Web Interface Guidelines
 
+## AK Golf HQ
+
+Ved vurdering av en produktskjerm: kontroller både de generelle retningslinjene og den versjonen Anders faktisk har valgt gjennom `ak-hq-design`. For Design System v0.1 skal [Atletisk intelligens](../ak-hq-design/references/atletisk-intelligens.md) brukes som retningsbevis. En best-practice-kontroll alene avgjør ikke visuell kvalitet, og dagens Train-lock- eller v2-uttrykk er ikke sammenligningsmål uten en eksplisitt valgt byggeversjon.
+
 Review files for compliance with Web Interface Guidelines.
 
 ## How It Works

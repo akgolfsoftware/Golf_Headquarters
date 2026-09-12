@@ -2,7 +2,7 @@
 
 Les `docs/platform/AGENT-BRIEF.md` før du endrer filer. `START-HER.md` er inngangen for både mennesker og AI-verktøy.
 
-**Designstatus 10.09.2026:** Anders optimaliserer alle skjermer i Claude Design og har presisert at ingenting i prosjektet er låst. Eksisterende design, navigasjon, fonter, farger og komponentvalg er arbeidsunderlag under revisjon. Tidligere «låst», «fasit» og «godkjent» er ikke bindende for det videre designarbeidet. Se `designsystem/README.md`.
+**Designstatus 11.09.2026:** Anders starter blankt i Claude Design og utvikler AK Golf HQ Design System v0.1 for PlayerHQ, AgencyOS og AgenticOS. Aktiv smaksretning er «Atletisk intelligens»: sportslig PlayerHQ, operativt rolig AgencyOS og mørk fokusmodus når oppgaven krever det. Eksisterende design, navigasjon, fonter, farger og komponentvalg er arbeidsunderlag, ikke visuell fasit. Se `designsystem/README.md` og `.claude/skills/ak-hq-design/references/atletisk-intelligens.md`.
 
 ## Kildeorden
 
@@ -23,7 +23,7 @@ Koden ligger i dette prosjektet. Ikke kopier eksterne agentkataloger inn i repoe
 
 ## Skjermarbeid
 
-Bruk den prosjektspesifikke skillen [AK HQ Design](.claude/skills/ak-hq-design/SKILL.md) ved brukerreiser, komponenter, wireframes, UI og designoverlevering. Den samler arbeidsmåte og kvalitetskrav; visuelle valg forblir åpne til Anders velger en versjon for den aktuelle byggeoppgaven. Startpakken og hovedprompten nås fra [designarbeidet](docs/design-system/ak-hq-designarbeid.md).
+Bruk den prosjektspesifikke skillen [AK HQ Design](.claude/skills/ak-hq-design/SKILL.md) ved brukerreiser, komponenter, wireframes, UI og designoverlevering. Les [Atletisk intelligens](.claude/skills/ak-hq-design/references/atletisk-intelligens.md) for den aktive retningen. Skillen samler arbeidsmåte og kvalitetskrav; Design System v0.1 utvikles fra blankt lerret og visuelle valg forblir åpne til Anders velger en versjon for den aktuelle byggeoppgaven. Startpakken og hovedprompten nås fra [designarbeidet](docs/design-system/ak-hq-designarbeid.md).
 
 Bruk `designsystem/README.md` til å forstå dagens kilder og status. Train-lock, AK Golf, WANG, Team Norway og Canvas er eksisterende referanser, ikke låste valg. Ikke gjennomfør gamle porteringsplaner automatisk mens Anders reviderer designet i Claude Design.
 

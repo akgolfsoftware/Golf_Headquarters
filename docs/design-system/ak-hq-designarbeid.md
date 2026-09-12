@@ -1,6 +1,6 @@
 # AK HQ Design — start arbeidet her
 
-**Opprettet 10.09.2026 etter Anders' bestilling.** Én prosjektspesifikk arbeidsmåte for hele appens design. Eksisterende visuelle valg er fortsatt åpne. Målet om komplett app før åpen lansering med booking og betaling står ved lag.
+**Opprettet 10.09.2026 og oppdatert 11.09.2026.** Én prosjektspesifikk arbeidsmåte for hele appens design. Anders starter blankt i Claude Design og lager Design System v0.1 med retningen [Atletisk intelligens](../../.claude/skills/ak-hq-design/references/atletisk-intelligens.md). Eksisterende visuelle valg er arbeidsunderlag, ikke fasit. Målet om komplett app før åpen lansering med booking og betaling står ved lag.
 
 ## Bruk i prosjektet
 
@@ -10,12 +10,12 @@ Skillen støtter full plattformdesign, en enkelt brukerreise, komponentarbeid og
 
 ## Bruk i Claude Design
 
-Last inn ferdighetspakken som prosjektunderlag og bruk [hovedprompten](../../.claude/skills/ak-hq-design/assets/hovedprompt.md). Den er skrevet for hele appen med gjennomførbare etapper. Dersom Claude Design ikke har en egen skill-funksjon, fungerer innholdet som vedlagte prosjektinstrukser og referanser. Pakken er ikke installert inne i Claude Design av denne oppgaven.
+Last inn ferdighetspakken, Anders' visuelle smaksreferanser og [hovedprompten](../../.claude/skills/ak-hq-design/assets/hovedprompt.md). Den er skrevet for hele appen med gjennomførbare etapper og ber Claude skape både Design System v0.1 og representative skjermer. Dersom Claude Design ikke har en egen skill-funksjon, fungerer innholdet som vedlagte prosjektinstrukser og referanser. Pakken er ikke installert inne i Claude Design av denne oppgaven.
 
 Kort inngang når pakken er lagt ved:
 
 ```text
-Bruk den vedlagte AK HQ Design-pakken. Les SKILL.md og kjør oppgaven i assets/hovedprompt.md. Eksisterende design er arbeidsunderlag, og ingen visuelle valg er låst. Arbeid gjennom hele det avklarte omfanget og dokumenter skjermdekning, tilstander og formater.
+Bruk den vedlagte AK HQ Design-pakken og Anders' smaksreferanser. Les SKILL.md, references/atletisk-intelligens.md og kjør oppgaven i assets/hovedprompt.md. Start blankt og skap AK Golf HQ Design System v0.1 sammen med pilotskjermene. Eksisterende design er bare funksjonelt og teknisk arbeidsunderlag. Dokumenter skjermdekning, tilstander og formater.
 ```
 
 ## Dette følger med
@@ -23,6 +23,7 @@ Bruk den vedlagte AK HQ Design-pakken. Les SKILL.md og kjør oppgaven i assets/h
 | Innhold | Kilde |
 |---|---|
 | Full bestilling til Claude Design | [Hovedprompt](../../.claude/skills/ak-hq-design/assets/hovedprompt.md) |
+| Aktiv smaksretning og systemprinsipper | [Atletisk intelligens](../../.claude/skills/ak-hq-design/references/atletisk-intelligens.md) |
 | Produkt, brukerroller og foreslått designretning | [Produkt og retning](../../.claude/skills/ak-hq-design/references/produkt-og-retning.md) |
 | 40 komponentfamilier og kontrakt for varianter/tilstander | [Komponenter](../../.claude/skills/ak-hq-design/references/komponenter.md) |
 | 17 brukerreiser og wireframe-metode | [Flyter og wireframes](../../.claude/skills/ak-hq-design/references/flyter-og-wireframes.md) |
@@ -32,7 +33,7 @@ Bruk den vedlagte AK HQ Design-pakken. Les SKILL.md og kjør oppgaven i assets/h
 | Faktiske sidefiler og komponentfiler | [JSON-inventar](../../.claude/skills/ak-hq-design/assets/ruteinventar.json), [CSV](../../.claude/skills/ak-hq-design/assets/ruteinventar.csv) |
 | Mal for manuelt designregister | [Skjermkontrakt](../../.claude/skills/ak-hq-design/assets/skjermkontrakt.yaml) |
 
-Inventaret omfatter ved opprettelse 478 sidefiler, 693 komponentfiler og 225 layout-/tilstandsfiler. Det beviser ikke at hver side trenger et unikt design eller at funksjonen virker. Overlegg, betaling hos leverandør og andre mellomtilstander må kartlegges i tillegg. Genererte filer brukes som observasjoner; manuelle valg legges i leveransens eget register.
+Inventaret omfatter ved kontroll 11.09.2026 480 sidefiler, 703 komponentfiler og 230 layout-/tilstandsfiler. Det beviser ikke at hver side trenger et unikt design eller at funksjonen virker. Overlegg, betaling hos leverandør og andre mellomtilstander må kartlegges i tillegg. Genererte filer brukes som observasjoner; manuelle valg legges i leveransens eget register.
 
 ## Vedlikehold
 

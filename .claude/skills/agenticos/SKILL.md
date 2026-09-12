@@ -6,7 +6,7 @@ description: >
   Trigger: agenticos, dispatch, multi-ai, Caddie, PlanAction, agent-team,
   AI-hub, hvilken AI, orkestrer, prompt engineer (pek til skill), worktree,
   checkpoint, hvor jobbes hva, veileder-rolle, Claude Code-arbeidsdisiplin.
-  Versjon 2026-08-06 (la til §Claude Code — arbeidsdisiplin). CoachHQ forbudt
+  Versjon 2026-09-11. CoachHQ forbudt
   i UI. Inspirert av Anthropic effective agents.
 ---
 
@@ -82,6 +82,10 @@ Referanse: `~/Documents/Claude/inbox/agenticos-verdensklasse-inspirasjon.md`
 | Caddie | `/admin/agencyos/caddie` |
 
 Ved all AgencyOS-arbeid: behold AgenticOS synlig på Hjem + Kø.
+
+## Visuell integrasjon
+
+Ved design av AgenticOS-flater: les [Atletisk intelligens](../ak-hq-design/references/atletisk-intelligens.md). AgenticOS arver AgencyOS-systemet og får ikke en separat «AI-magisk» stil. Vis transparens gjennom kilde, begrunnelse, konsekvens og eksakt status. Kontrollert dybde eller mørk fokusmodus kan markere aktivt arbeid, men neon, robotgrafikk og glød skal aldri erstatte forståelig status.
 
 ## Dispatch-flyt
 

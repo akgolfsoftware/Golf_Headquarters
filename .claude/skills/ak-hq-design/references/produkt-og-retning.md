@@ -6,16 +6,16 @@ AK Golf HQ samler spillerutvikling, coachingarbeid, booking, betaling og offentl
 
 Funksjoner beskrives av prosjektets produkt- og fagkilder. Filinventaret beskriver hvor kode finnes. Denne pakken bestemmer ikke nye priser, tilgangsrettigheter eller faglige beregninger. Dersom full kontekst mangler i Claude Design, tegn et merket utkast og registrer det konkrete spørsmålet før avhengig endelig detaljering.
 
-## Foreslått retning — under utprøving
+## Aktiv retning — under utprøving
 
-**Et rolig og presist treningsverktøy for golf.** Neste handling er tydelig, data er forståelige og registrering krever lite oppmerksomhet. La særpreget komme fra treningsoppgaven, målområder, slagbilder, presise avstander og nyttige trenerbeskjeder.
+**Atletisk intelligens.** PlayerHQ kan være sportslig, oppslukende og fotografisk i utvalgte øyeblikk. AgencyOS er operativt rolig og presist. Tid, rekkefølge og neste handling bærer hverdagsflytene. Mørk fokusmodus brukes når Live, fordypning eller synlig AI-arbeid krever konsentrasjon.
 
-Dette er arbeidsretningen som anbefales etter gjennomgangen 10.09.2026. Den låser ikke eksisterende design. Geist, en nøytral lys/mørk palett og en dempet aksent for egne data er et mulig utgangspunkt. Andre valg vurderes samlet mot lesbarhet, identitet og arbeidsflyt; unngå font- og fargebytte som erstatning for å løse et konkret problem.
+Dette er arbeidsretningen Anders valgte som utgangspunkt 11.09.2026 etter å ha delt egne smaksreferanser. Les [den fulle retningskontrakten](atletisk-intelligens.md). Claude Design skal starte blankt og lage Design System v0.1; ingen eksisterende font, farge, radius eller komponentgeometri er valgt på forhånd. Retningen låses først til bygging når Anders velger en konkret versjon etter utprøving.
 
 | Brukerflate | Viktigste utfall | Designhensyn |
 |---|---|---|
-| Spiller | Forstå planen, trene, registrere og se fremgang | Én hånd, dagslys, enkel handling, gradvis fordypning |
-| Coach | Prioritere spillere, planlegge, gi tilbakemelding og følge opp | God oversikt, effektiv tastaturbruk, sikre gruppehandlinger |
+| Spiller | Forstå planen, trene, registrere og se fremgang | Én hånd, dagslys, sportslig energi, enkel handling, gradvis fordypning |
+| Coach | Prioritere spillere, planlegge, gi tilbakemelding og følge opp | Operativ ro, god oversikt, effektiv tastaturbruk, sikre gruppehandlinger |
 | Forelder | Forstå barnets plan, samtykker, bookinger og økonomi | Klarspråk, tydelig barn/kontekst, hensiktsmessig innsyn |
 | Offentlig besøkende | Forstå tilbudet, velge coach/tjeneste, bestille | Troverdig innhold, tydelig pris og avtale, enkel kontakt |
 | Lag/skole/klubb | Samordne plan, gruppeaktivitet og kommunikasjon | Organisasjon og rolle synlig, lokale profilbehov |
@@ -32,6 +32,8 @@ Disse er behovsprofiler, ikke en ferdig tilgangsmatrise. Lesing/skriving og data
 - Geometri: felles avstandsskala, radrytme, hjørner og hovedhandlinger. Ingen kvote på antall moduler i skjermbildet.
 - Navigasjon: stabile destinasjoner, tilbakevei, rollebytte og aktive valg. Nåværende fire spillerfaner er et utgangspunkt som skal prøves mot coachkontakt og booking, ikke en universell lås.
 - Bevegelse: forklar endring, behold brukerens posisjon og respekter redusert bevegelse. Ingen treg inngangsanimasjon hver gang en hyppig brukt skjerm åpnes.
+- Modi: dokumenter hva som utløser sportslig energi, operativ ro og mørk fokusmodus, og hvordan de deler samme typografi-, geometri- og komponentgrammatikk.
+- Foto: bruk det som meningsbærende innhold i utvalgte spillerøyeblikk. Beskytt alltid tekst, data og handlinger mot urolig bakgrunn.
 
 Skriv hvert valg med hensikt, berørte flater, versjon og status. Skill `forslag`, `valgt for utprøving` og `valgt for bygging`. Brukerens siste beskjed kan endre alle visuelle valg.
 

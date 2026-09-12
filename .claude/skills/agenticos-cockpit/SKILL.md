@@ -3,7 +3,7 @@ name: agenticos-cockpit
 description: >
   AI-dispatch-panelet på AgencyOS-cockpit (/admin/agencyos). Bruk ved endring av
   AI-dispatch, cockpit AI-kø, «én ting NÅ», AgenticOS-panel, AiDispatchPanelV2,
-  loadAiDispatch, byggAiDispatch. Versjon 2026-07-23.
+  loadAiDispatch, byggAiDispatch. Versjon 2026-09-11.
 ---
 
 Prosjektkilder: `AGENTS.md` → `docs/platform/AGENT-BRIEF.md`. Design velges i `designsystem/README.md`; historiske skill-eksempler overstyrer ikke disse kildene.
@@ -27,9 +27,11 @@ På hjemskjermen (`/admin/agencyos`) se **hva som haster** og **hvilken AI-flate
 
 ## UI-kontrakt
 
-Bruk gjeldende cockpit og fasit via `designsystem/README.md`. Den tidligere Paper-kontrakten fra juli er utgått. Bruk `TL` og eksisterende komponenter. Verifiser filstiene og importene i tabellen over mot dagens kode før endring; cockpit har siden blitt omorganisert.
+Bruk gjeldende designstatus via `designsystem/README.md` og les [Atletisk intelligens](../ak-hq-design/references/atletisk-intelligens.md). Den tidligere Paper-kontrakten, Train-lock-geometrien og dagens komponentutseende er ikke visuell fasit for Design System v0.1. Verifiser filstiene og importene i tabellen over mot dagens kode før endring; cockpit har siden blitt omorganisert.
 
 Hold køen forståelig: hva haster, hva krever handling, og hvor skal coachen gå videre. Ingen fabrikkerte tellinger. Én tydelig primærhandling. Følg godkjent meny fra beslutningen 09.09.2026.
+
+AgenticOS skal se ut som en integrert del av AgencyOS, ikke en separat neon- eller robotflate. Bruk mørk fokusmodus bare når en aktiv prosess eller detaljvisning trenger konsentrasjon. Forslag, godkjenning, kjøring, feil og utført handling må skilles med tydelig språk og status.
 
 ## Datakilder (ekte)
 
