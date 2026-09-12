@@ -15,7 +15,7 @@ Kjøring `node scripts/p0-test-innlogget-reise.mjs` med `VEDLIKEHOLD=0`:
 | Tillatt coach ser økta; uvedkommende avvises uten innhold | Bestått. Fremmed spiller/coach lander uten øktinnhold |
 | V2-live brief → aktiv → oppsummering → gjenåpning | Bestått. 7 repetisjoner og 3 treff ga samme total på 10 etter gjenåpning |
 
-Hele nettleserpakken bestod 4/4 på 2,4 minutter 13.09.2026. URL-vakten avviser hostet base og WANG-portene. Prøvene hopper ikke over manglende oppsett. Orkestratoren velger nyeste tilgjengelige lokale Supabase CLI fordi en eldre Homebrew-versjon ikke kan lese dagens konfigurasjon.
+Hele nettleserpakken bestod 4/4 på 2,9 minutter 13.09.2026. V2-reisen alene bestod også på 30 sekunder. URL-vakten avviser hostet base og WANG-portene. Prøvene hopper ikke over manglende oppsett. Orkestratoren velger nyeste tilgjengelige lokale Supabase CLI fordi en eldre Homebrew-versjon ikke kan lese dagens konfigurasjon.
 
 ## Begrensninger
 

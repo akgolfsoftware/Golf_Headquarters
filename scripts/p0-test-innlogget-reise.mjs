@@ -217,7 +217,7 @@ async function main() {
     await ventPaUrl(`${APP}/auth/login`, 120_000);
     await kjor(
       "npx",
-      ["playwright", "test", "-c", "tests/p0/playwright.config.ts", "--project=chromium"],
+      ["playwright", "test", "-c", "tests/p0/playwright.config.ts", "--project=chromium", ...process.argv.slice(2)],
       {
         ...felles,
         PLAYWRIGHT_BASE_URL: APP,

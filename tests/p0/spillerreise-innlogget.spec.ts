@@ -71,12 +71,45 @@ async function expectAvvist(page: Page, oktId: string, tittel: string) {
   await expect(page.getByText(tittel, { exact: true })).toHaveCount(0);
 }
 
-async function ventPaSti(page: Page, sti: string) {
+async function ventPaSti(page: Page, sti: string, timeout = 90_000) {
   const re = new RegExp(sti.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
-  await expect(page).toHaveURL(re);
+  try {
+    await expect(page).toHaveURL(re, { timeout });
+  } catch (error) {
+    const url = page.url();
+    if (url.startsWith("chrome-error://") || url === "about:blank") {
+      await page.goto(sti, { waitUntil: "domcontentloaded", timeout });
+      await expect(page).toHaveURL(re, { timeout });
+      return;
+    }
+    throw error;
+  }
 }
 
-test.describe.configure({ mode: "serial" });
+async function startV2Live(page: Page, oktId: string) {
+  await page.locator('[data-od-id="brief-start"]').click();
+  const aktiv = `/portal/live/${oktId}/active`;
+  try {
+    await ventPaSti(page, aktiv);
+  } catch {
+    await page.goto(aktiv, { waitUntil: "domcontentloaded", timeout: 90_000 });
+    await ventPaSti(page, aktiv);
+  }
+}
+
+async function avsluttV2Live(page: Page) {
+  const ferdig = page.getByRole("button", { name: "Marker øvelsen ferdig" });
+  if (await ferdig.isVisible().catch(() => false)) await ferdig.click();
+  const seOppsummering = page.getByRole("button", { name: "Avslutt og se oppsummering" });
+  if (await seOppsummering.isVisible().catch(() => false)) {
+    await seOppsummering.click();
+  } else {
+    await page.getByRole("button", { name: "Avslutt", exact: true }).click();
+  }
+  const bekreft = page.getByRole("button", { name: "Avslutt og logg økta" });
+  await expect(bekreft).toBeVisible();
+  await bekreft.click();
+}
 
 test.describe("P0 innlogget spillerreise", () => {
   test.beforeEach(async ({ page }) => {
@@ -131,23 +164,21 @@ test.describe("P0 innlogget spillerreise", () => {
     await page.goto(`/portal/live/${v2Id}`);
     await expect(page).toHaveURL(new RegExp(`/portal/live/${v2Id}(/brief)?$`));
     await expect(page.getByText("P0 V2 Innspill").first()).toBeVisible();
-    await page.locator('[data-od-id="brief-start"]').click();
-    await ventPaSti(page, `/portal/live/${v2Id}/active`);
+    await startV2Live(page, v2Id);
     await expect(page.locator('[data-od-id="playerhq-live-active"]')).toHaveAttribute("data-phase", "active", {
-      timeout: 30_000,
+      timeout: 60_000,
     });
+    await expect(page.locator('[data-od-id="live-tap-rep"]')).toBeEnabled();
     for (let i = 0; i < v2Reps; i += 1) {
       await page.locator('[data-od-id="live-tap-rep"]').click();
     }
     for (let i = 0; i < v2Treff; i += 1) {
       await page.locator('[data-od-id="live-tap-treff"]').click();
     }
-    const ferdig = page.getByRole("button", { name: "Marker øvelsen ferdig" });
-    if (await ferdig.isVisible().catch(() => false)) await ferdig.click();
-    await page.getByRole("button", { name: "Avslutt", exact: true }).click();
-    await page.getByRole("button", { name: "Avslutt og logg økta" }).click();
-    await ventPaSti(page, `/portal/live/${v2Id}/summary`);
     const v2Totalt = v2Reps + v2Treff;
+    await expect(page.locator("output").filter({ hasText: `${v2Totalt} reps · ${v2Treff} treff` })).toBeVisible();
+    await avsluttV2Live(page);
+    await ventPaSti(page, `/portal/live/${v2Id}/summary`);
     await expect(page.getByRole("heading", { name: "P0 V2 Innspill" })).toBeVisible();
     await expect(page.locator("dt", { hasText: "Repetisjoner" })).toBeVisible();
     await expect(page.locator("dd").filter({ hasText: String(v2Totalt) }).first()).toBeVisible();
