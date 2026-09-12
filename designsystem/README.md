@@ -1,12 +1,12 @@
 # Designarbeid og referanser
 
-## Aktiv ny produktretning — 11.09.2026
+## Aktiv ny produktretning — oppdatert 12.09.2026
 
 Anders starter fra blankt lerret i Claude Design og har bestilt et nytt **AK Golf HQ Design System v0.1** for PlayerHQ, AgencyOS og AgenticOS. Arbeidsretningen heter **Atletisk intelligens**: sportslig og oppslukende PlayerHQ, rolig og presis AgencyOS, tid som ryggrad og mørk fokusmodus bare der oppgaven trenger konsentrasjon.
 
 Se [den sentrale retningskontrakten](../.claude/skills/ak-hq-design/references/atletisk-intelligens.md). Anders' bildesett fra 11.09 styrer visuell smak. Eksisterende Train-lock, Paper, v2 og tidligere designpakker brukes til funksjonsdekning og implementasjonsforståelse, ikke som visuell fasit i denne utforskingen.
 
-Retningen er ikke valgt for produksjonsbygging før Anders velger en konkret Claude Design-versjon. Første systemversjon skal bevises på AgencyOS Hjem, PlayerHQ-reisen I dag → økt → Live → oppsummering og en Analyse-skjerm.
+Siste kontrollerte kandidat er AgencyOS v0.3.3, AgencyOS Hjem v0.3.2, PlayerHQ v0.3.2 og Stall/spillerkort v0.1. Pakken er klikkbar, men oppgir fortsatt `selectedForBuilding: false` og `eksportert: false`. Retningen er ikke valgt for produksjonsbygging før Anders velger en konkret versjon og Claude leverer en samsvarende byggepakke. [Kontroll av siste pakke](../docs/design-audit/claude-design-v0-3-3-2026-09-12.md).
 
 ## Tidligere portering og nåværende implementasjon
 

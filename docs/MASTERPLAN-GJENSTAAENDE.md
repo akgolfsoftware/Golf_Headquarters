@@ -6,7 +6,7 @@ Oppdatert 12.09.2026. Denne filen eier rekkefølge og gjenstående arbeid. [Stat
 
 Anders ønsker en komplett app før åpen lansering med booking og betaling. Han har bestilt videre arbeid, samling av ferdige oppgaver til main, prosjektopprydding og denne oppdaterte restlisten. En merge betyr at kode er samlet; den er ikke visuell godkjenning eller lanseringsvedtak.
 
-Aktiv visuell retning er nå **Atletisk intelligens**. Claude Design lager AK Golf HQ Design System v0.1 fra blankt lerret for PlayerHQ, AgencyOS og AgenticOS. Ingen konkret Claude Design-versjon er ennå valgt for bygging. Train-lock, Claw/Team Norway, WANG-speilet og dagens Geist/v3-implementasjon bevares som funksjons-, historikk- og teknisk underlag, men er ikke visuell fasit for nye skjermendringer. [Designstatus](../designsystem/README.md) og [tidligere portstatus](design-audit/portering-fire-flater-2026-09-10.md).
+Aktiv visuell retning er nå **Atletisk intelligens**. Siste Claude-kandidat består av AgencyOS v0.3.3, AgencyOS Hjem v0.3.2, PlayerHQ v0.3.2 og Stall/spillerkort v0.1. Den er klikkbar, men eksplisitt ikke valgt eller eksportert for bygging. Train-lock, Claw/Team Norway, WANG-speilet og dagens Geist/v3-implementasjon bevares som funksjons-, historikk- og teknisk underlag, men er ikke visuell fasit for nye skjermendringer. [Kontroll av Claude-pakken](design-audit/claude-design-v0-3-3-2026-09-12.md), [designstatus](../designsystem/README.md) og [tidligere portstatus](design-audit/portering-fire-flater-2026-09-10.md).
 
 Eksisterende UI skal ikke slettes på forhånd. Det erstattes kontrollert per brukerreise etter at en designversjon er valgt, kartlagt til kode og funksjons-/visuelt prøvd.
 
@@ -29,7 +29,7 @@ Siste samlede testresultat og flettepunkt skal leses i samlingsrapporten og tilh
 
 ## Neste oppgaver, i rekkefølge
 
-Aktiv arbeidsdeling 12.09.2026: Claude Design eier Design System v0.1 og de første pilotskjermene. Grok 4.6 i lokal Terminal starter med designuavhengig teknisk arbeid etter [Grok-planen](planer/grok-4-6-start-2026-09-12.md). Grok endrer ikke globale designverdier, navigasjon eller visuelt komponentuttrykk før Anders har valgt en konkret designversjon.
+Aktiv arbeidsdeling 12.09.2026: Claude Design eier Design System v0.1 og de første pilotskjermene. Grok 4.6 i lokal Terminal starter med designuavhengig teknisk arbeid etter [Grok-planen](planer/grok-4-6-start-2026-09-12.md). Grok kan bruke siste prototype til funksjonell kartlegging, men endrer ikke globale designverdier, navigasjon eller visuelt komponentuttrykk før Anders har valgt en konkret designversjon og Claude har levert en samsvarende byggepakke.
 
 | Prioritet / ID | Konkret neste leveranse | Inngang | Ferdig når |
 |---|---|---|---|

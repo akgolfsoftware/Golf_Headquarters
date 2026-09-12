@@ -4,7 +4,7 @@ Oppdatert 12.09.2026. Appen er fortsatt under arbeid og ikke klarert for åpen l
 
 ## Denne samlingen
 
-- **Ny designretning:** Claude Design lager AK Golf HQ Design System v0.1 fra blankt lerret med «Atletisk intelligens». Ingen ny versjon er valgt for bygging ennå. Eksisterende UI bevares som funksjons- og implementasjonsgrunnlag, ikke som visuell fasit.
+- **Ny designretning:** Siste Claude-pakke har AgencyOS v0.3.3, AgencyOS Hjem v0.3.2, PlayerHQ v0.3.2 og Stall/spillerkort v0.1. Reisene er klikkbare på mobil og desktop, men pakken har fortsatt `selectedForBuilding: false` og `eksportert: false`. Eksisterende UI bevares som funksjons- og implementasjonsgrunnlag, ikke som visuell fasit. [Pakkekontroll](design-audit/claude-design-v0-3-3-2026-09-12.md).
 - **Grok-start:** Grok 4.6 kan starte med innlogget spillerreise, tilgangstester, serverregler og teknisk skjermkartlegging uten å låse det nye uttrykket. [Avgrenset Terminal-plan og startprompt](planer/grok-4-6-start-2026-09-12.md).
 - **Grenkontroll:** Fersk `origin` hadde `main` og én åpen Claude-gren. PR #843 konkurrerer med nyere arbeid i `main` og ga 17 konflikter i simulert merge; den skal ikke flettes som helhet. Den lokale PR #841-rettelsen er en ren kandidat etter full kontroll. [Grenregnskap](vedlikehold/grengjennomgang-2026-09-12.md).
 - **Plan:** eldre godtatte planøkter uten V2-speil inngår i ukeoversikt og progresjon uten dobbelttelling. Separate øktmodeller og eksisterende statusregler er bevart. [Plan-kontroll](design-audit/plan-legacy-2026-09-11.md).
