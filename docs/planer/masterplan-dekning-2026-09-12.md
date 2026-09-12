@@ -30,7 +30,7 @@ Opprettet 12.09.2026. Dette er sporbarhetsregisteret under [masterplanen](../MAS
 | G11 | Banedata/trener | BG-06 | Planlagt/delvis; datakvalitet og delingsregler først |
 | O01 | AgencyOS hjem/stall | D2-AO/D3 | Teknisk stall-porte og kort-tilgang rettet; visuell pilot venter på D0 |
 | O02 | Workbench | D2-AO | Delvis; publisering uten dublett/bortfall |
-| O03 | WANG/GFGK | D2-WANG/D3 | Delvis; IUP-lagring krever coach/admin. Uke-/elevreise gjenstår |
+| O03 | WANG/GFGK | D2-WANG/D3 | Teknisk uke/elev-reise bygget; IUP krever coach/admin og samme Toppidrett-gruppe. Innlogget og visuell kontroll gjenstår. [Kontroll](../design-audit/wang-d2-wang-teknisk-reise-2026-09-12.md) |
 | O04 | Team Norway | D2-TN/D3 | Teknisk reise bygget; poster/dokumenter låst til kanonisk gruppe. Innlogget og visuell kontroll gjenstår. [Kontroll](../design-audit/team-norway-d2-tn-teknisk-reise-2026-09-12.md) |
 | O05 | Forelder/delt innsyn | Forelderpakken | Åpen; skoletid avviser andres barn. Barnbytte, betaling og tilbakekalling gjenstår |
 | O06 | Booking/betaling | Booking R4/R5/R9 | Åpen; testmiljø og full kundereise |
