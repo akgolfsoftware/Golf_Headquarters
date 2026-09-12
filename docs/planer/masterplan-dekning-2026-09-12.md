@@ -68,6 +68,6 @@ Detaljert innhold og kildegrunnlag står i [funksjonsregisteret](funksjonsregist
 
 ## Rute- og tilstandsdekning
 
-Siste kontrollerte inventar har 480 sidefiler: PlayerHQ 171, AgencyOS 163, marked/offentlig 70, offentlig booking 4, inngang/konto 18, forelder 16, lag/skole 16, delt innsyn 11, personlig arbeidsflate 3, systemtilstand 2 og interne eksempler 6. D1 skal koble hver rad til `egen-skjerm`, `felles-mønster`, undersøkt videresending/internflate eller en konkret blokkering.
+Siste kontrollerte inventar har 480 sidefiler i designinventaret. Målt 12.09.2026 mot `page.tsx`: 479 sideruter (PlayerHQ 171, AgencyOS 162, Team Norway 5, WANG 4, forelder 16, delt innsyn 11, inngang/booking 22, marked/offentlig 50, øvrig 38). 103 lastefiler og 93 feilfiler finnes; det er ikke dekning for alle manuelle overlegg. [Teknisk rute- og tilstandskart](teknisk-rute-tilstandskart-2026-09-12.md). D1 skal koble hver rad til `egen-skjerm`, `felles-mønster`, undersøkt videresending/internflate eller en konkret blokkering.
 
 Overlegg må registreres i tillegg: ark/dialog, meny, tooltip, toast, bekreftelse, konflikt, tomt søk, betalingens leverandørsteg, opplasting, varsling, tilgangsavslag og nettfeil. Ingen rute eller komponent slettes ut fra inventaret alene.
