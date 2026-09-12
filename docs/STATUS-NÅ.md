@@ -21,6 +21,7 @@ Oppdatert 12.09.2026. Appen er fortsatt under arbeid og ikke klarert for åpen l
 - **Team Norway/WANG-grunnlag:** Team Norway har en medlemsavgrenset oversikt, og WANG bruker samme konkrete Toppidrett-gruppe gjennom trenerliste, IUP-lesing og IUP-lagring. Trygg retursti og ærlig databasefeil er prøvd i PR #842. Full skjermreise, innlogget og visuell kontroll føres separat. [Kontroll og restarbeid](design-audit/tn-wang-tilgang-2026-09-11.md).
 - **D2-TN teknisk reise:** Oversikt, poster, dokumenter og testføring er kartlagt uten visuell port. Poster og dokumenter avviser andre grupper enn Team Norway. [Kontroll](design-audit/team-norway-d2-tn-teknisk-reise-2026-09-12.md).
 - **D2-WANG teknisk reise:** Åpen hjemside, coach-uke og IUP er kartlagt uten visuell port. IUP fra uka krever samme Toppidrett-gruppe og elev i rosteret. [Kontroll](design-audit/wang-d2-wang-teknisk-reise-2026-09-12.md).
+- **G01/G06–G10:** Korrigering, kilde, enhet og manglende data er prøvd uten produksjonsimport. [Kontroll](design-audit/runde-sg-trackman-g01-g10-2026-09-12.md).
 
 ## Allerede i main
 

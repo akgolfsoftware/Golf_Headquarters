@@ -56,7 +56,8 @@ Disse er nå eksplisitte D0-blokkeringer, ikke fotnoter: faktisk 320 px-/200 %-k
 | D2-TN/D2-WANG tilgangsgrunnlag | Sikret Team Norway-oversikt og samme konkrete WANG-gruppe/elev gjennom trenerliste, IUP-lesing og IUP-lagring | Bygget og testet i PR #842. [Kontroll og gjenstående brukerreiser](design-audit/tn-wang-tilgang-2026-09-11.md). Innlogget og visuell kontroll gjenstår |
 | R-I handlingstilgang | Avvisningstester som kaller eksporterte handlinger; ubrukt vaktimport feiler i verify; coach-notat, fys-logg og IUP-skriving ressursavgrenset | I main via PR #848. [Kontroll](design-audit/handlingstilgang-r-i-2026-09-12.md). Innlogget reise gjenstår |
 | D2-TN teknisk reise | Oversikt → poster/dokumenter → spillerpost → testføring → historikk uten visuell port. Poster og dokumenter låst til kanonisk Team Norway-gruppe | I main via PR #849. [Kontroll](design-audit/team-norway-d2-tn-teknisk-reise-2026-09-12.md) |
-| D2-WANG teknisk reise | Åpen hjemside → innlogging → coach-uke/økt → elev/IUP uten visuell port. IUP-lenke krever samme Toppidrett-gruppe og elev i rosteret | Bygget på `grok/d2-wang-teknisk-reise-2026-09-12`. [Kontroll](design-audit/wang-d2-wang-teknisk-reise-2026-09-12.md) |
+| D2-WANG teknisk reise | Åpen hjemside → innlogging → coach-uke/økt → elev/IUP uten visuell port. IUP-lenke krever samme Toppidrett-gruppe og elev i rosteret | I main via PR #850. [Kontroll](design-audit/wang-d2-wang-teknisk-reise-2026-09-12.md) |
+| G01/G06–G10 | Korrigering, kilde, enhet, manglende data og gjenåpning uten produksjonsimport | Bygget på `grok/g01-g10-runde-sg-trackman-2026-09-12`. [Kontroll](design-audit/runde-sg-trackman-g01-g10-2026-09-12.md) |
 
 Siste samlede testresultat og flettepunkt skal leses i samlingsrapporten og tilhørende GitHub PR. Innlogget produksjonsreise, faktisk betaling og Anders' visuelle vurdering er egne kontroller som fortsatt gjenstår.
 
@@ -86,7 +87,7 @@ R-A–R-J og REV-F1–F11 er forklart i [produktplanen](planer/produktplan-og-in
 | Booking · R4/R5/R9 | Valgt bookingdesign og samlet coach/sted/tid → pris → betaling → bekreftelse → administrasjon | Bookingens designversjon må identifiseres for den konkrete byggepakken. Testnøkler og innloggede testroller trengs for betalingsreisen; ingen reell betaling er bestilt |
 | Betaling/tilgang · R6/R8 | Credits, abonnement, oppsigelse/refusjon, TALENT/FULL og publisering av flere økter | Tillatte/avviste roller og hendelser i vilkårlig rekkefølge; ingen skjult delpublisering |
 | Forelder/delt innsyn | Bytte mellom barn, plan/mål/booking, betaling og tilbakekalling av tilgang | Formål og rettigheter må stemme for hver rolle; samtykke og datadeling følges gjennom hele reisen |
-| Runde/SG/DataGolf | Full runde-/slagreise, manuell korrigering, importkilder, datadekning og gjenåpning | Manuell SG i PR #836 er et delresultat. Sammenligningsgrunnlag, rå brutto score og kilder må være tydelige |
+| Runde/SG/DataGolf | Korrigering, kilde, enhet og manglende data er prøvd uten produksjonsimport. Innlogget importreise gjenstår | [Kontroll](design-audit/runde-sg-trackman-g01-g10-2026-09-12.md) |
 | Baneguide · BG-01–06 | Gameplan/kart/soner, samme slagkjede i kart og liste, GPS, offline, bag/spredning og coachvisning | Seks konkrete delpakker står i funksjonsregisteret. Avklar datakilde, bruker, offline-omfang og valgt design ved oppstart |
 | Vindverktøy | Avklar treningsberegning, værkilde eller fysisk måler; bygg deretter én valgt funksjon | Ingen sensor- eller værintegrasjon er bekreftet som valgt. Usikkerhet og datakilde skal vises |
 | AgenticOS/Jarvis | Innkurv, utkast, godkjenning, rutiner, oppgaver og kalender koblet til faktisk kjøring | Ingen editor-agentkopier som runtime. Utsending til andre krever gjeldende eksplisitt autorisasjon |

@@ -17,16 +17,16 @@ Opprettet 12.09.2026. Dette er sporbarhetsregisteret under [masterplanen](../MAS
 | P09 | Coachkontakt | PlayerHQ-rest | Åpen; kobling til økt/resultat og svartid |
 | P10 | Kalender/turnering | PlayerHQ-rest + AgencyOS | Åpen; styrende kalender og konfliktregler |
 | P11 | Venner/utfordringer | P0-PRODUKT | Uavklart nytte/målgruppe; ikke utvid før beslutning |
-| G01 | Runderegistrering | Runde/SG | Delvis; innsatsnivå og korrigering avklares |
+| G01 | Runderegistrering | Runde/SG | Manuell korrigering, nullstilling og gjenåpning prøvd. Innsatsnivå avklares. [Kontroll](../design-audit/runde-sg-trackman-g01-g10-2026-09-12.md) |
 | G02 | Gameplan | BG-01 | Delvis; banedekning, lagring og brukerreise prøves |
 | G03 | GPS/live avstander | BG-03 | Planlagt; tillatelse og datakvalitet før bygging |
 | G04 | Offline baneguide | BG-04 | Planlagt; omfang, oppbevaring og kartvilkår først |
 | G05 | Vind/spilleforhold | P0-PRODUKT | Uavklart: manuell trening, værkilde eller fysisk måler |
-| G06 | Bag/gapping | BG-05 | Delvis; TrackMan-enheter og kildegrunnlag først |
-| G07 | Analyse/SG | Analysepakken | Delvis; samme referanse, skala, enhet og kilde |
-| G08 | TrackMan | Import/Analyse | Delvis; innlogget kildekontroll gjenstår |
-| G09 | DataGolf/GolfBox | Import/Analyse | I main delvis; samlet reise/kildeoppdatering gjenstår |
-| G10 | Turnering/talent | Talentpakken | Delvis; datadekning og identitetsusikkerhet |
+| G06 | Bag/gapping | BG-05 | TrackMan-enheter: ukjent enhet og manglende felt gir null. Innlogget bag-reise gjenstår |
+| G07 | Analyse/SG | Analysepakken | Manuell kilde overskrives ikke. Samme skala i beregnet vs manuell |
+| G08 | TrackMan | Import/Analyse | Enhet og manglende felt prøvd. Innlogget import gjenstår |
+| G09 | DataGolf/GolfBox | Import/Analyse | Manglende referanse skrives ikke. Produksjonsimport ikke kjørt |
+| G10 | Turnering/talent | Talentpakken | Identitet i sesonghelper prøvd. Produksjonsimport krever autorisasjon |
 | G11 | Banedata/trener | BG-06 | Planlagt/delvis; datakvalitet og delingsregler først |
 | O01 | AgencyOS hjem/stall | D2-AO/D3 | Teknisk stall-porte og kort-tilgang rettet; visuell pilot venter på D0 |
 | O02 | Workbench | D2-AO | Delvis; publisering uten dublett/bortfall |
