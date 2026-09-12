@@ -9,13 +9,13 @@
  * Både individuelle økter (studentId) og gruppeøkter (groupId) er med —
  * en gruppeøkt er ÉN rad for hele gruppa, ikke én per medlem.
  *
- * Scope: ADMIN ser alle spillere og grupper, COACH ser egne (samme
- * where-mønster som cockpit-sidens spillerliste/loadStallen).
+ * Scope: samme porte som stall/kort/Workbench (`stallenPlayerWhere` og
+ * `stallenGruppeWhere`). ADMIN ser alle coachede spillere og alle grupper.
  */
 
 import "server-only";
 import { prisma } from "@/lib/prisma";
-import type { PlayerProgram } from "@/generated/prisma/client";
+import { stallenGruppeWhere, stallenPlayerWhere } from "@/lib/admin/stallen-scope";
 import { planSessionUiStatus, type V2OktUiStatus } from "@/lib/portal/session-hrefs";
 
 type PyramidArea = "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN";
@@ -64,35 +64,24 @@ export async function getStallOkterData(coach: {
   id: string;
   role: string;
 }): Promise<StallOkterData> {
-  const isAdmin = coach.role === "ADMIN";
   const now = new Date();
   const startOfDay = new Date(now);
   startOfDay.setHours(0, 0, 0, 0);
   const endOfDay = new Date(startOfDay);
   endOfDay.setDate(endOfDay.getDate() + 1);
 
-  // Coachens scope: egne spillere OG egne grupper (ADMIN ser alt).
+  // Samme spiller- og gruppeporte som stall/kort/Workbench.
   const [spillere, grupper] = await Promise.all([
     prisma.user
       .findMany({
-        where: {
-          role: "PLAYER",
-          deletedAt: null,
-          enrollmentsAsPlayer: {
-            some: {
-              endedAt: null,
-              NOT: { program: "PLATFORM_ONLY" as PlayerProgram },
-              ...(isAdmin ? {} : { coachId: coach.id }),
-            },
-          },
-        },
+        where: stallenPlayerWhere(coach),
         select: { id: true, name: true },
         take: 400,
       })
       .catch(() => [] as { id: string; name: string | null }[]),
     prisma.group
       .findMany({
-        where: isAdmin ? {} : { coachId: coach.id },
+        where: stallenGruppeWhere(coach),
         select: { id: true, name: true, _count: { select: { members: { where: { endedAt: null } } } } },
         take: 200,
       })

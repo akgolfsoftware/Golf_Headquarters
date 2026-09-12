@@ -25,8 +25,9 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
+import { stallenPlayerWhere } from "@/lib/admin/stallen-scope";
 import { aktivtSpillerMedlemskapWhere } from "@/lib/domain/grupper";
-import type { SgCategory, PlayerProgram } from "@/generated/prisma/client";
+import type { SgCategory } from "@/generated/prisma/client";
 
 const NB_DATE = new Intl.DateTimeFormat("nb-NO", { day: "2-digit", month: "short" });
 const OSLO_TZ = "Europe/Oslo";
@@ -101,30 +102,20 @@ export async function lastSpillerArbeidsvisning(
   const ukeSlutt = new Date(ukeStart.getTime() + 7 * 24 * 60 * 60 * 1000);
   const tolvUkerSiden = new Date(now.getTime() - 84 * 24 * 60 * 60 * 1000);
 
-  const railWhere = {
-    role: "PLAYER" as const,
-    deletedAt: null,
-    enrollmentsAsPlayer: {
-      some: {
-        endedAt: null,
-        NOT: { program: "PLATFORM_ONLY" as PlayerProgram },
-        ...(coach.role === "ADMIN" ? {} : { coachId: coach.id }),
-      },
-    },
-  };
+  const player = await prisma.user.findFirst({
+    where: { AND: [coachScopedPlayerWhere(coach), { id: playerId }] },
+    select: { id: true, name: true, avatarUrl: true, hcp: true, role: true },
+  });
+  if (!player || player.role !== "PLAYER") return null;
 
-  const [player, gruppeMedlemskap, railSpillere, ukeOkter, dagensOkter, sgRunder, testResultater, videoer, sisteNotat] = await Promise.all([
-    prisma.user.findFirst({
-      where: { AND: [coachScopedPlayerWhere(coach), { id: playerId }] },
-      select: { id: true, name: true, avatarUrl: true, hcp: true, role: true },
-    }),
+  const [gruppeMedlemskap, railSpillere, ukeOkter, dagensOkter, sgRunder, testResultater, videoer, sisteNotat] = await Promise.all([
     prisma.groupMember.findFirst({
       where: { userId: playerId, ...aktivtSpillerMedlemskapWhere() },
       orderBy: { joinedAt: "desc" },
       select: { group: { select: { name: true } } },
     }),
     prisma.user.findMany({
-      where: railWhere,
+      where: stallenPlayerWhere(coach),
       select: { id: true, name: true, avatarUrl: true, hcp: true, homeClub: true },
       orderBy: { name: "asc" },
       take: 60,
@@ -162,8 +153,6 @@ export async function lastSpillerArbeidsvisning(
       select: { content: true, updatedAt: true, coach: { select: { name: true } } },
     }),
   ]);
-
-  if (!player || player.role !== "PLAYER") return null;
 
   const PRACTICE_TO_PYRAMID: Record<string, "TEK" | "SLAG" | "TURN" | "SPILL"> = {
     BLOKK: "TEK",
