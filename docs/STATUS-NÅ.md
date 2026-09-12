@@ -26,7 +26,7 @@ Oppdatert 12.09.2026. Appen er fortsatt under arbeid og ikke klarert for åpen l
 - **O06 booking/betaling:** Kollisjon, credits-race, hendelsesrekkefølge, avbestilling/refusjon og oppsigelse er prøvd med mocket Stripe. Ingen reell betaling. [Kontroll](design-audit/booking-o06-betaling-2026-09-12.md).
 - **P02–P05 Plan/Live:** Frekvensmål teller ikke V2-speil dobbelt. FYS bruker planlagt varighet og beholder detaljer ved gjenåpning. Avbrutt er ikke det samme som lagret. [Kontroll](design-audit/plan-live-p02-p05-2026-09-12.md).
 - **G01/G06–G10:** Korrigering, kilde, enhet og manglende data er prøvd uten produksjonsimport. [Kontroll](design-audit/runde-sg-trackman-g01-g10-2026-09-12.md).
-- **O13 kvalitet/backup:** Feillogg fjerner hemmeligheter. Helsesjekken avslører ikke miljøverdier. Lokal testdatabase-vakt avviser alt utenom `127.0.0.1:54379/ak_hq_launch_tests`. Faktisk gjenoppretting er blokkert uten Docker. L7 er ikke bestått. [Kontroll](design-audit/o13-kvalitet-backup-2026-09-12.md).
+- **O13 kvalitet/backup:** Feillogg fjerner hemmeligheter. Helsesjekken avslører ikke miljøverdier. Lokal gjenoppretting mot `127.0.0.1:54379/ak_hq_launch_tests` er prøvd 12.09 kveld: 196 tabeller, booking bevart, overlapp avvist. L7 er ikke bestått. [Kontroll](design-audit/docker-launch-tester-2026-09-12.md).
 
 ## Allerede i main
 
@@ -36,7 +36,7 @@ Tidligere kontroll av Vercel bekreftet `2807d4d08` som publisert kode og prøvde
 
 ## Det som gjenstår
 
-1. Bestå P0-TEST, deretter fullfør isolert, innlogget Next-/databasereise gjennom I dag, Plan, økt og oppsummering. Frekvens uten dobbelttelling og FYS-gjenåpning er prøvd uten innlogget reise. Tom lokal testdatabase mangler fortsatt.
+1. Bestå P0-TEST, deretter fullfør isolert, innlogget Next-/databasereise gjennom I dag, Plan, økt og oppsummering. Isolert Postgres-reise med testidentitet er prøvd; lokal Supabase-innlogging mangler fordi Docker-stacken som kjører tilhører et annet prosjekt. [P0-TEST](design-audit/p0-test-blokkering-2026-09-12.md).
 2. Kjør innlogget kontroll av Caddie-, TrackMan-, lokal lagrings- og abonnementspakken. Serverregelen for Caddie-eier og tillatt modell-felt er bygget; R-I har handlingstester uten isolert database. Bredere AI-bruk venter på innlogget bevis.
 3. Resterende PlayerHQ-, AgencyOS-, Team Norway- og WANG-skjermer, koblet til valgte kilder og reelle handlinger.
 4. Innlogget booking-/betalingsreise med Stripe-testnøkkel, og betaling for barn. Serverregler for kollisjon, credits, oppsigelse, forelder-eierskap og tilbakekalling er prøvd uten reell betaling.
