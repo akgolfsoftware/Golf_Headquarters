@@ -10,6 +10,7 @@ import "server-only";
 
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
+import { maaHaForesattSamtykke } from "@/lib/auth/minor";
 import {
   SAMTYKKE_TEKST_VERSJON,
   harGyldigSamtykke,
@@ -40,12 +41,20 @@ export async function registrerDelingsSamtykke(input: {
 
   const bruker = await prisma.user.findUnique({
     where: { id: userId },
-    select: { requiresGuardianConsent: true },
+    select: { requiresGuardianConsent: true, dateOfBirth: true },
   });
   if (!bruker) throw new Error("Spilleren finnes ikke");
 
-  // Tilbaketrekking er alltid tillatt — like enkelt som å gi (art. 7-3).
-  if (gitt && bruker.requiresGuardianConsent && gittAvRolle === "SELV") {
+  // Samme 16-årsregel som helse: flagg ELLER fødselsdato. Tilbaketrekking
+  // er alltid tillatt — like enkelt som å gi (art. 7-3).
+  if (
+    gitt &&
+    maaHaForesattSamtykke({
+      requiresGuardianConsent: bruker.requiresGuardianConsent,
+      dateOfBirth: bruker.dateOfBirth,
+    }) &&
+    gittAvRolle === "SELV"
+  ) {
     throw new Error(
       "Du er under 16 år, så en foresatt må godkjenne delingen for deg i foreldreportalen.",
     );
@@ -127,7 +136,7 @@ export async function hentDelingsStatus(
   const [bruker, rader] = await Promise.all([
     prisma.user.findUnique({
       where: { id: userId },
-      select: { requiresGuardianConsent: true },
+      select: { requiresGuardianConsent: true, dateOfBirth: true },
     }),
     prisma.delingsSamtykke.findMany({
       where: { userId, mottakerGruppeId: { in: [...gruppeIder] } },
@@ -140,7 +149,12 @@ export async function hentDelingsStatus(
       },
     }),
   ]);
-  const kreverForesatt = bruker?.requiresGuardianConsent === true;
+  const kreverForesatt = bruker
+    ? maaHaForesattSamtykke({
+        requiresGuardianConsent: bruker.requiresGuardianConsent,
+        dateOfBirth: bruker.dateOfBirth,
+      })
+    : false;
 
   return gruppeIder.map((gruppeId) => ({
     gruppeId,
