@@ -3,6 +3,8 @@ import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import { mock, test } from "node:test";
 
+process.env.TZ = "UTC"; // lokale Date(y,m,d,h) skal treffe ISO-Z, også i norsk sommertid
+
 const connection = process.env.LAUNCH_TEST_DATABASE_URL;
 if (!connection) throw new Error("LAUNCH_TEST_DATABASE_URL is required; production defaults are forbidden");
 const target = new URL(connection);

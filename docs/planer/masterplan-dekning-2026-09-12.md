@@ -40,7 +40,7 @@ Opprettet 12.09.2026. Dette er sporbarhetsregisteret under [masterplanen](../MAS
 | O10 | Marked/salg | Marked → booking | Åpen; ønsket omfang og fungerende overgang |
 | O11 | Økonomi/personlig | P0-PRODUKT | Uavklart; kun autorisert Tripletex-eksport |
 | O12 | Familie-OS/sideprosjekter | Utenfor aktiv app | Ikke aktivert; krever uttrykkelig ny bestilling |
-| O13 | Felles kvalitet/drift | D0–D6 + L0–L8 | Feilsanitering, helsesvar og lokal restore-vakt prøvd 12.09. Faktisk `pg_restore` og L7 blokkert uten Docker. [Kontroll](../design-audit/o13-kvalitet-backup-2026-09-12.md) |
+| O13 | Felles kvalitet/drift | D0–D6 + L0–L8 | Lokal `pg_restore` og 11 lanseringsreiser prøvd 12.09 kveld. L7 ikke bestått. [Kontroll](../design-audit/docker-launch-tester-2026-09-12.md) |
 
 Detaljert innhold og kildegrunnlag står i [funksjonsregisteret](funksjonsregister-2026-09-11.md). Dette registeret eier koblingen til gjennomføring og må oppdateres ved hver leveranse.
 
@@ -64,7 +64,7 @@ Detaljert innhold og kildegrunnlag står i [funksjonsregisteret](funksjonsregist
 | J14 AgenticOS-forslag → godkjenning → kjøring/feil → spor | O09 |
 | J15 marked → tilbud → booking → oppfølging | O06, O10 |
 | J16 delt lenke → korrekt innsyn → utløpt/tilbakekalt | O05, O07 |
-| J17 alarm → håndtering → backup/restore/rollback | O13; L7–L8. Lokal vakt prøvd; produksjonsrestore ikke kjørt. [Kontroll](../design-audit/o13-kvalitet-backup-2026-09-12.md) |
+| J17 alarm → håndtering → backup/restore/rollback | O13; L7–L8. Lokal `pg_restore` prøvd; produksjonsrestore ikke kjørt. [Kontroll](../design-audit/docker-launch-tester-2026-09-12.md) |
 
 ## Rute- og tilstandsdekning
 

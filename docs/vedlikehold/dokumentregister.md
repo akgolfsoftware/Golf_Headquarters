@@ -52,6 +52,7 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | dokumentasjon | [docs/design-audit/ak-golf-til-train-lock-bro-2026-09-03.md](<../design-audit/ak-golf-til-train-lock-bro-2026-09-03.md>) |
 | dokumentasjon | [docs/design-audit/booking-o06-betaling-2026-09-12.md](<../design-audit/booking-o06-betaling-2026-09-12.md>) |
 | dokumentasjon | [docs/design-audit/claude-design-v0-3-3-2026-09-12.md](<../design-audit/claude-design-v0-3-3-2026-09-12.md>) |
+| dokumentasjon | [docs/design-audit/docker-launch-tester-2026-09-12.md](<../design-audit/docker-launch-tester-2026-09-12.md>) |
 | dokumentasjon | [docs/design-audit/forelder-o05-delt-innsyn-2026-09-12.md](<../design-audit/forelder-o05-delt-innsyn-2026-09-12.md>) |
 | dokumentasjon | [docs/design-audit/handlingstilgang-bred-2026-09-12.md](<../design-audit/handlingstilgang-bred-2026-09-12.md>) |
 | dokumentasjon | [docs/design-audit/handlingstilgang-r-i-2026-09-12.md](<../design-audit/handlingstilgang-r-i-2026-09-12.md>) |
