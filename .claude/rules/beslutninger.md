@@ -2,9 +2,11 @@
 
 Gjeldende beslutninger fra Anders. Gjelder til han endrer dem. Nyeste først.
 
-## Gjeldende designavklaring — 10.09.2026
+## Gjeldende designavklaring — 12.09.2026
 
 Anders arbeider parallelt i Claude Design med alle skjermer og sier: «Ingenting av det som ligger i prosjektet nå er låst.» Eksisterende design er arbeidsunderlag under revisjon. Eldre krav om Train-lock, bestemte fonter, farger, temaer, menyer eller annen utforming er ikke bindende for videre designarbeid, selv om de nedenfor eller i leveransepakker kalles «låst» eller «fasit».
+
+Når Anders velger en komplett og ferdig Claude Design-pakke med `selectedForBuilding: true`, er pakkens visuelle autoritets-ID eneste visuelle fasit for registrert omfang. Den komplette pakken skal dekke PlayerHQ, AgencyOS, Team Norway og WANG. Øvrige brukerflater skal bruke samme fundament gjennom navngitte profiler/mønstre før lansering. Gamle visuelle regler fjernes kontrollert etter erstatning og kan ikke bli liggende som skjulte standarder. Produkt-, fag-, tilgangs-, data-, personvern-, sikkerhets- og betalingsregler endres ikke av designvalget.
 
 Bruk [designstatus og referanser](../../designsystem/README.md) og registrer valgt versjon før en konkret skjermbygging. Gamle portplaner skal ikke settes i gang automatisk. [Arbeidslisten](../../docs/MASTERPLAN-GJENSTAAENDE.md) beskriver neste anbefalte gjennomgang og skiller den fra bestilt arbeid. Personvern, tilgangskontroll og krav til trygg databehandling videreføres.
 

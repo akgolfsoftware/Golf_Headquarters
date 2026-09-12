@@ -40,12 +40,15 @@ God nok er ikke god nok. Hver flate skal tåle gransking fra en krevende coach,
 en krevende spiller og en krevende investor. Ved tvil: ville Anders vist dette
 frem som bevis på at systemet er bedre enn konkurrentene?
 
-## Design (RETTET 02.09.2026 — designfasit er låst)
+## Design (RETTET 12.09.2026 — nytt system fra blankt lerret)
 
-> Denne seksjonen beskrev Open Design-sporet fra 07.2026 som fortsatt åpent. Det er forlatt.
-> **Designfasit er Train-lock** (`designsystem/train-lock/`), låst av Anders 25.08.2026 — se
-> CLAUDE.md invariant 2 og `.claude/rules/beslutninger.md`. Kvalitetsstandarden (skal tåle å
-> selges for millionsum) er uendret.
+> Claude Design utvikler AK Golf HQ Design System v0.1 i retningen «Atletisk intelligens».
+> Før en versjon er valgt, er eksisterende UI bare funksjons- og implementasjonsgrunnlag. Når
+> Anders velger en komplett pakke med `selectedForBuilding: true`, er denne pakkens visuelle
+> autoritets-ID eneste visuelle fasit for det avtalte omfanget. Train-lock, Paper og tidligere
+> Team Norway-/WANG-uttrykk kan ikke bli liggende som parallelle regler. Én systemgrammatikk kan
+> ha sportslig PlayerHQ, operativt rolig AgencyOS og dokumenterte profiler for lag/skole,
+> booking, marked og øvrige brukerflater. Kvalitetsstandarden er uendret.
 
 ## Forretningsramme
 

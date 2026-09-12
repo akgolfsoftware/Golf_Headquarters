@@ -177,10 +177,10 @@ COACH  /admin/spillere/[id]/baneguide        (NY fase 2)
 
 ### 6.1 Designprinsipper
 
-**Designfasit er Train-lock (endret 25.08.2026)** — for alle PlayerHQ/AgencyOS-skjermer,
-Baneguide inkludert. Claude Paper-avsnittet som sto her (05.08) er supersedert; se CLAUDE.md
-invariant 2 + `designsystem/train-lock/SCREEN-INDEX.md`. Mangler skjermen fasit der: spør
-Anders, ikke bruk monsterdokumentet.
+**Historisk designgrunnlag var Train-lock (endret 25.08.2026).** Dette er ikke gjeldende visuell
+fasit. Bruk `designsystem/README.md`, D0–D6 i masterplanen og den valgte Claude Design-pakken.
+Prinsippene under bevarer funksjonsbehov for baneguide, men konkrete farger, tokens, geometri og
+eldre skjermreferanser er historikk og skal ikke overføres automatisk.
 
 1. **Én ting nå.** Under runden finnes nøyaktig én primærhandling per øyeblikk: «Logg slag»
    (`--handling`-oransje). Alt annet er sekundært. ADHD-vennlig, hanske-vennlig, sol-vennlig.

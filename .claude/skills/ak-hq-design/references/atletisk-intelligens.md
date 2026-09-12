@@ -1,6 +1,6 @@
 # Atletisk intelligens — aktiv retning fra blankt lerret
 
-Status 11.09.2026: Dette er Anders' aktive smaks- og arbeidsretning for et nytt produktdesign i PlayerHQ, AgencyOS og AgenticOS. Det er ikke et ferdig eller låst designsystem. Claude Design skal lage **AK Golf HQ Design System v0.1 fra bunnen av**, prøve det på faktiske brukerreiser og revidere det før Anders velger en versjon for bygging.
+Status 12.09.2026: Dette er Anders' aktive smaks- og arbeidsretning for et nytt produktdesign i hele den brukerrettede appen. PlayerHQ, AgencyOS, Team Norway og WANG er obligatoriske kjerner; øvrige brukerflater kobles til samme system gjennom navngitte profiler og mønstre. Det er ikke et ferdig eller låst designsystem. Claude Design skal lage **AK Golf HQ Design System v0.1 fra bunnen av**, prøve det på faktiske brukerreiser og revidere det før Anders velger en versjon for bygging.
 
 Eksisterende Train-lock-, Paper-, v2- og andre produktuttrykk kan brukes til å finne funksjoner, tilstander og tekniske avhengigheter. De er ikke visuell fasit for denne utforskingen. Ingen eksisterende font, farge, radius, navigasjonsform eller komponentgeometri skal arves uten at den nye designprosessen velger den på nytt.
 
@@ -57,4 +57,4 @@ For funksjonelle mønstre kan etablerte produkter brukes som sekundær kilde. Tr
 - **Implementering:** Bygg bare mot den valgte versjonen. Kartlegg den til faktiske delte komponenter og designverdier i repoet; ikke behold gamle visuelle regler av vane og ikke opprett et parallelt bibliotek uten plan.
 - **Kontroll:** Sammenlign mobil og desktop med valgt versjon, og prøv relevante tomme, lastende, feil-, offline-, tilgangs- og lagringstilstander.
 
-Offentlig marked, WANG og Team Norway følger ikke automatisk denne produktretningen. Koble dem til systemet bare når Anders uttrykkelig velger det for den aktuelle flaten.
+Den komplette byggepakken skal inkludere PlayerHQ, AgencyOS, Team Norway og WANG. Offentlig marked, booking, innlogging/konto, forelder, delt innsyn og systemtilstander skal bruke samme fundament gjennom eksplisitte profiler eller mønstre før lansering. Profilforskjeller kan endre tone og tetthet, men ikke skape parallelle, skjulte designregler.

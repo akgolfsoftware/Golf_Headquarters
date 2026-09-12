@@ -2,7 +2,7 @@
 
 Flyttet fra CLAUDE.md 2026-06-14. Les denne FØR du skriver kode. Når noe brekker, legg gotcha-en til her.
 (Eldre PRISMA-7- og Supabase-detaljer finnes også i git-historikken.)
-Designfasit er Train-lock (låst 25.08.2026, CLAUDE.md invariant 2) — se `designsystem/train-lock/`. Open Design-sporet fra 2026-07-25 er forlatt.
+Visuell fasit er under ny utvikling i Claude Design. Når Anders velger en komplett pakke med `selectedForBuilding: true`, vinner denne for registrert omfang. Train-lock og eldre systemer er funksjons-, historie- og migreringsunderlag; se `designsystem/README.md`.
 
 ### Next 16.3: loading.tsx-/error.tsx-grensens klient-chunks får IKKE CSP-nonce (oppdaget 2026-09-05, rettet 07.09)
 - **Symptom:** nettleserkonsollen i prod: «Loading the script '/_next/static/immutable/chunks/<hash>.js'
@@ -31,11 +31,12 @@ Designfasit er Train-lock (låst 25.08.2026, CLAUDE.md invariant 2) — se `desi
   dokument-HTML-en: ligger det i `self.__next_f.push(...)`-payloaden under
   `"loading":[…,[["$","script","script-0",…` er det denne bugen. Chunken selv er offentlig
   (`curl .../_next/static/immutable/chunks/<hash>.js`) og røper hvilken modul det er.
-### Signalfarger som ren tekst på lys `scene`/`elev`/`dock` — bruksregel, ikke tokenendring (03.09.2026)
+### Historisk Train-lock-kontrast mens gammel kode fortsatt finnes (03.09.2026)
 - **Kilde:** `.claude/rules/beslutninger.md` §KONTRAST-REGEL I STEDET FOR NY FASIT (Vei A), målt av
   `scripts/check-tl-kontrast.mjs` → `docs/design-audit/train-lock-kontrast.md` (12 brudd, 11 i lys
-  modus + 1 felles for begge). **Ingen `--tl-*`-verdi endres** — dette er en bruksregel oppå
-  Train-lock, ikke en ny fasit (CLAUDE.md invariant 2 står).
+  modus + 1 felles for begge). Dette gjelder bare eksisterende Train-lock-kode fram til den er
+  erstattet. Det skal ikke overføres som farge- eller tokenregel til den valgte Claude-pakken;
+  den pakken må dokumentere og bestå sin egen kontrastkontroll.
 - **Regel:** `danger`, `ok`, `warn`, `viz-target` skal ALDRI være `color:` på ren `scene`/`elev`-bunn
   i lys modus (2,0–3,6:1, krav 4,5:1/3,0:1). Bruk dem i stedet som: hvit tekst PÅ en fylt flate i
   samme farge (`on-fill`-mønsteret), eller ikon/grafikk med egen farget bakgrunnsflate rundt seg —

@@ -1,10 +1,10 @@
 # Claude Design → Grok 4.6 — komplett design- og porteringskontrakt
 
-Denne planen beskriver hva Claude Design må levere, og hvordan Grok porter det valgte designet effektivt til AK Golf HQ. Den gjelder PlayerHQ, AgencyOS, Team Norway og WANG.
+Denne planen beskriver hva Claude Design må levere, og hvordan Grok porter det valgte designet effektivt til AK Golf HQ. Den gjelder hele den brukerrettede appen. PlayerHQ, AgencyOS, Team Norway og WANG er de fire prioriterte kjernene; booking, marked, innlogging/konto, forelder, delt innsyn og systemtilstander må bruke samme fundament og få en navngitt profil før lansering.
 
 ## Én visuell fasit
 
-Når Anders har valgt en komplett og ferdig Claude Design-leveranse med status `selectedForBuilding: true`, er denne versjonen **eneste visuelle autoritet** for de berørte flatene.
+Når Anders har valgt en komplett og ferdig Claude Design-leveranse med status `selectedForBuilding: true`, er denne versjonen **eneste visuelle autoritet** for hele omfanget registrert i pakken.
 
 Det betyr:
 
@@ -81,7 +81,7 @@ Mobil, iPad og desktop skal vise samme funksjon og status. Tilpasning kan endre 
 - Årsplan, testdag, styrkeprogram og gruppeaktivitet.
 - Innlegg, dokumenter, varsler, tilgang og organisasjonskontekst.
 
-Team Norway og WANG skal bruke det nye systemet bare når Anders' valgte byggepakke uttrykkelig inkluderer disse flatene. De kan ha profilforskjeller, men må dele systemets komponentlogikk, statusbetydning og tilgjengelighetsnivå.
+Den komplette byggepakken skal uttrykkelig inkludere PlayerHQ, AgencyOS, Team Norway og WANG. De kan ha profilforskjeller, men må dele systemets komponentlogikk, statusbetydning og tilgjengelighetsnivå. Booking, marked, innlogging/konto, forelder, delt innsyn og systemtilstander kan dekkes av navngitte fellesmønstre og profiler; de kan ikke falle tilbake til gammel design som en usynlig standard.
 
 ## Hva den ferdige Claude-pakken må inneholde
 
@@ -97,6 +97,8 @@ Team Norway og WANG skal bruke det nye systemet bare når Anders' valgte byggepa
 10. Kjente avvik og produktbeslutninger som fortsatt blokkerer bestemte skjermer. En åpen beslutning kan ikke skjules som ferdig design.
 
 ## Groks mest effektive portering
+
+Porteringen styres av designportene D0–D6 i masterplanen. En port åpnes bare når forrige port har dokumentert bevis; dette hindrer at Grok må bygge samme skjerm flere ganger.
 
 ### 0. Lås kilden
 

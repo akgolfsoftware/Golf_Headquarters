@@ -272,21 +272,21 @@ AK Golf Academy bruker en 5-trinns trenings-pyramide:
 
 ---
 
-## Tema per produkt
+## Visuell kildeorden og dagens tema
 
-> **Design (ENDRET 25.08.2026 — Train-lock vinner alltid, Anders i økt):** Train-lock
-> (`designsystem/train-lock/`) er eneste designfasit for ALLE skjermer i PlayerHQ og AgencyOS.
-> Paper-låsen fra 03.08 er supersedert; Claude Paper (`605a48cc`) er historikk. Mangler en
-> skjerm fasit: spør Anders. Ved konflikt mellom et dokument og Train-lock vinner Train-lock.
+> **Design (ENDRET 12.09.2026 — ny bestilling fra Anders):** Gjeldende designstatus ligger i
+> `designsystem/README.md`. Når Anders velger en komplett Claude Design-pakke med
+> `selectedForBuilding: true`, er pakkens visuelle autoritets-ID eneste visuelle fasit for hele
+> det avtalte brukerflateomfanget. Gamle Train-lock-, Paper-, v2/v3-, Team Norway- og WANG-regler
+> er da bare funksjons-, historie- og migreringsunderlag. De kan ikke brukes som skjult standard
+> eller blandes inn i nye komponenter.
 >
-> **Token i kode (ny skjerm):** `--tl-*` / `TL` (`src/styles/train-lock-tokens.css`,
-> `src/lib/v2/train-lock.ts`). Én primær CTA per skjerm (fill/on-fill). Fullført = warm.
-> `T` / `--p-*` / `--v2-*` er utgående Paper-bro — ikke bruk i ny kode.
+> Produkt-, fag-, data-, tilgangs-, personvern-, sikkerhets- og betalingsreglene i denne filen
+> består. En designleveranse endrer dem ikke. Eksisterende UI beholdes midlertidig mens hver reise
+> erstattes og prøves; gammel designkode fjernes først etter dokumentert funksjons- og visuell
+> kontroll. Se `docs/planer/claude-design-til-grok-portering-2026-09-12.md`.
 >
-> **Palett:** Train-lock (scene `#000000` / lys `#FFFFFF`). Paper-cream og Presis-skog/lime
-> er **ikke** fasit. Marketing har egen palett.
->
-> Det under er beskrivelse av nåværende tema-oppførsel i kode, ikke en konkurrerende designkanon.
+> Det under beskriver nåværende oppførsel i kode, ikke en konkurrerende designkanon.
 
 Nåværende oppførsel i kode: `/portal` og `/admin` er **mørke** som standard; `/auth` og
 `/forelder` er lyse; landingssider alltid lyse. Cookie `ak-v2-tema` vinner over defaulten.

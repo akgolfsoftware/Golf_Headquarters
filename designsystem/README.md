@@ -2,13 +2,13 @@
 
 ## Aktiv ny produktretning — oppdatert 12.09.2026
 
-Anders starter fra blankt lerret i Claude Design og har bestilt et nytt **AK Golf HQ Design System v0.1** for PlayerHQ, AgencyOS og AgenticOS. Arbeidsretningen heter **Atletisk intelligens**: sportslig og oppslukende PlayerHQ, rolig og presis AgencyOS, tid som ryggrad og mørk fokusmodus bare der oppgaven trenger konsentrasjon.
+Anders starter fra blankt lerret i Claude Design og har bestilt et nytt **AK Golf HQ Design System v0.1** for hele den brukerrettede appen. PlayerHQ, AgencyOS, Team Norway og WANG er de fire prioriterte kjernene. Booking, marked, innlogging/konto, forelder, delt innsyn og systemtilstander skal bruke samme fundament gjennom navngitte profiler og mønstre. Arbeidsretningen heter **Atletisk intelligens**: sportslig og oppslukende PlayerHQ, rolig og presis AgencyOS, tid som ryggrad og mørk fokusmodus bare der oppgaven trenger konsentrasjon.
 
 Se [den sentrale retningskontrakten](../.claude/skills/ak-hq-design/references/atletisk-intelligens.md). Anders' bildesett fra 11.09 styrer visuell smak. Eksisterende Train-lock, Paper, v2 og tidligere designpakker brukes til funksjonsdekning og implementasjonsforståelse, ikke som visuell fasit i denne utforskingen.
 
 Siste kontrollerte kandidat er AgencyOS v0.3.3, AgencyOS Hjem v0.3.2, PlayerHQ v0.3.2 og Stall/spillerkort v0.1. Pakken er klikkbar, men oppgir fortsatt `selectedForBuilding: false` og `eksportert: false`. Retningen er ikke valgt for produksjonsbygging før Anders velger en konkret versjon og Claude leverer en samsvarende byggepakke. [Kontroll av siste pakke](../docs/design-audit/claude-design-v0-3-3-2026-09-12.md).
 
-Når en komplett pakke er valgt for bygging, er den eneste visuelle autoriteten for de inkluderte flatene. Gamle designverdier og regler skal ikke overleve som skjulte standarder. De kan bare eksistere midlertidig mens en konkret brukerreise erstattes og prøves. Komplett krav til designomfang og Groks portering står i [Claude Design → Grok-kontrakten](../docs/planer/claude-design-til-grok-portering-2026-09-12.md).
+Når en komplett pakke er valgt for bygging, er den eneste visuelle autoriteten for omfanget i pakken. Den ferdige pakken må inkludere de fire kjernene og navngi profil/mønster for øvrige brukerflater før lansering. Gamle designverdier og regler skal ikke overleve som skjulte standarder. De kan bare eksistere midlertidig mens en konkret brukerreise erstattes og prøves. Komplett krav til designomfang og Groks portering står i [Claude Design → Grok-kontrakten](../docs/planer/claude-design-til-grok-portering-2026-09-12.md).
 
 ## Tidligere portering og nåværende implementasjon
 

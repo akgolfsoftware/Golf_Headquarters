@@ -2,7 +2,7 @@
 
 Les `docs/platform/AGENT-BRIEF.md` før du endrer filer. `START-HER.md` er inngangen for både mennesker og AI-verktøy.
 
-**Designstatus 11.09.2026:** Anders starter blankt i Claude Design og utvikler AK Golf HQ Design System v0.1 for PlayerHQ, AgencyOS og AgenticOS. Aktiv smaksretning er «Atletisk intelligens»: sportslig PlayerHQ, operativt rolig AgencyOS og mørk fokusmodus når oppgaven krever det. Eksisterende design, navigasjon, fonter, farger og komponentvalg er arbeidsunderlag, ikke visuell fasit. Se `designsystem/README.md` og `.claude/skills/ak-hq-design/references/atletisk-intelligens.md`.
+**Designstatus 12.09.2026:** Anders starter blankt i Claude Design og utvikler AK Golf HQ Design System v0.1 for hele den brukerrettede appen. PlayerHQ, AgencyOS, Team Norway og WANG er obligatoriske kjerner; øvrige brukerflater får navngitte profiler/mønstre i samme system. Aktiv smaksretning er «Atletisk intelligens»: sportslig PlayerHQ, operativt rolig AgencyOS og mørk fokusmodus når oppgaven krever det. Når Anders velger en komplett pakke med `selectedForBuilding: true`, er den eneste visuelle fasiten for registrert omfang. Eksisterende design, navigasjon, fonter, farger og komponentvalg er arbeidsunderlag, ikke visuell fasit. Se `designsystem/README.md` og `.claude/skills/ak-hq-design/references/atletisk-intelligens.md`.
 
 ## Kildeorden
 
