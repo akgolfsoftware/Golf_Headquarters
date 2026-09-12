@@ -32,6 +32,7 @@
     "designsystem",
     "docs",
     "eslint.config.mjs",
+    "graphify-out",
     "mdx-components.tsx",
     "next-env.d.ts",
     "next.config.ts",
@@ -105,6 +106,18 @@
     "docs/juridisk"
   ],
   "eksterneDokumenter": [
-    ".claude/skills/react-best-practices"
+    ".claude/skills/react-best-practices",
+    ".claude/skills/security-and-hardening",
+    ".claude/skills/api-and-interface-design",
+    ".claude/skills/nextjs-security",
+    ".claude/skills/stripe-webhook-security",
+    ".claude/skills/prompt-injection-defense",
+    ".claude/skills/llm-app-security",
+    ".claude/skills/file-upload-security",
+    ".claude/skills/secret-hygiene",
+    ".claude/skills/security-review",
+    ".claude/skills/supabase-postgres-best-practices",
+    ".claude/skills/stripe-docs",
+    ".claude/skills/web-security-review"
   ]
 }

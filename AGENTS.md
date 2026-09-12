@@ -33,6 +33,8 @@ En skjerm er ferdig når funksjonen virker og Anders har sett appen ved siden av
 
 ## Data og sikkerhet
 
+Ved endring i `src/`, `prisma/`, innlogging, betaling, filer, logger eller AI: les [ak-sikkerhet](.claude/skills/ak-sikkerhet/SKILL.md) og [ak-personvern](.claude/skills/ak-personvern/SKILL.md) før du skriver kode. De tre spørsmålene der stilles også før commit, via [verify-og-commit](.claude/skills/verify-og-commit/SKILL.md).
+
 Hemmeligheter hører hjemme i ignorerte miljøfiler. Ikke skriv ut, kopier til dokumentasjon eller commit verdiene. Persondata skal ikke inn i sky-prompts, logger eller offentlig Git. Bruk syntetiske testdata. Ikke kjør seed-, import-, betalings-, e-post- eller databaseendringer som del av en dokumentkontroll.
 
 Ikke endre databaseskjema, tilgangsregler, produksjonsoppsett eller `vercel.json` uten autorisasjon for den konkrete endringen. Les `.claude/rules/gotchas.md` før databasearbeid. Migrasjonshistorikken bygger ikke en tom database korrekt; ikke kjør `migrate dev`, `db push` eller `migrate deploy` mot den hostede basen. Oppskriften i `docs/utvikling/lokal-testdatabase.md` gjelder kun en separat, tom testdatabase.
