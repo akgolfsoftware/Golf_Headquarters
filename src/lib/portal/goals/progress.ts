@@ -10,6 +10,7 @@ import type { Goal } from "@/generated/prisma/client";
 import { PYR_LABEL } from "@/lib/pyramide";
 import { lesSgMaal, SG_OMRADE_NAVN } from "@/lib/domain/maal-fremdrift";
 import { hentSgSnittPerOmrade } from "@/lib/portal/sg-omrade-snitt";
+import { unikFullforteFrekvensOkter } from "./frekvens-okter";
 
 export type GoalProgressStatus = "on-track" | "behind" | "achieved" | "no-data";
 
@@ -103,14 +104,47 @@ async function progressSessionFrequency(goal: GoalForProgress, now: Date): Promi
 
   const target = goal.targetValue ?? 1;
   const windowStart = daysAgo(now, ROLLING_WINDOW_DAYS);
+  const omrade = goal.linkedPyramidArea;
   const sessionFilter = {
-    pyramidArea: goal.linkedPyramidArea,
+    pyramidArea: omrade,
     plan: { userId: goal.userId },
   };
 
-  const count = await prisma.trainingPlanSessionLog.count({
-    where: { completedAt: { gte: windowStart }, session: sessionFilter },
-  });
+  const [v2, wb, planLogger] = await Promise.all([
+    prisma.trainingSessionV2.findMany({
+      where: {
+        studentId: goal.userId,
+        status: "COMPLETED",
+        startTime: { gte: windowStart },
+        drills: { some: { pyramide: omrade } },
+      },
+      select: { id: true, generertFraId: true },
+    }),
+    prisma.workbenchSession.findMany({
+      where: {
+        playerId: goal.userId,
+        status: "COMPLETED",
+        date: { gte: windowStart },
+        pyramid: omrade,
+      },
+      select: { id: true },
+    }),
+    prisma.trainingPlanSessionLog.findMany({
+      where: { completedAt: { gte: windowStart }, session: sessionFilter },
+      select: { sessionId: true },
+    }),
+  ]);
+
+  const count = unikFullforteFrekvensOkter([
+    ...v2.map((s) => ({
+      id: s.id,
+      modell: "v2" as const,
+      fullfort: true,
+      speilAvPlanId: s.generertFraId,
+    })),
+    ...wb.map((s) => ({ id: s.id, modell: "wb" as const, fullfort: true })),
+    ...planLogger.map((s) => ({ id: s.sessionId, modell: "plan" as const, fullfort: true })),
+  ]);
 
   if (count === 0) {
     const noenGang = await prisma.trainingPlanSessionLog.findFirst({
@@ -118,7 +152,7 @@ async function progressSessionFrequency(goal: GoalForProgress, now: Date): Promi
       select: { id: true },
     });
     if (!noenGang) {
-      return ingenData(`Ingen ${PYR_LABEL[goal.linkedPyramidArea].toLowerCase()}-økter logget ennå`);
+      return ingenData(`Ingen ${PYR_LABEL[omrade].toLowerCase()}-økter logget ennå`);
     }
   }
 

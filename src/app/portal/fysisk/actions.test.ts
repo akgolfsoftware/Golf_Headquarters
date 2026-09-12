@@ -7,6 +7,8 @@ import { mock, test } from "node:test";
 let bruker = { id: "spiller-a", role: "PLAYER" as const };
 let harTilgang = true;
 let transaksjoner = 0;
+let fysOktData: Record<string, unknown> | null = null;
+let radData: Record<string, unknown> | null = null;
 
 mock.module("next/cache", { namedExports: { revalidatePath: () => undefined } });
 mock.module("next/navigation", {
@@ -32,9 +34,17 @@ mock.module("@/lib/prisma", {
           uke: { plan: { userId: "spiller-a" } },
           rader: [{ id: "rad-1" }],
         }),
-        update: async () => ({}),
+        update: async ({ data }: { data: Record<string, unknown> }) => {
+          fysOktData = data;
+          return {};
+        },
       },
-      fysOvelseRad: { update: async () => ({}) },
+      fysOvelseRad: {
+        update: async ({ data }: { data: Record<string, unknown> }) => {
+          radData = data;
+          return {};
+        },
+      },
       $transaction: async (ops: Promise<unknown>[]) => {
         transaksjoner += 1;
         return Promise.all(ops);
@@ -51,6 +61,8 @@ test.beforeEach(() => {
   bruker = { id: "spiller-a", role: "PLAYER" };
   harTilgang = true;
   transaksjoner = 0;
+  fysOktData = null;
+  radData = null;
 });
 
 test("loggFysOkt avviser uten tilgang og skriver ingenting", async () => {
@@ -66,4 +78,30 @@ test("loggFysOkt lagrer når tilgang finnes", async () => {
   const svar = await fn({ oktId: "okt-1" });
   assert.equal(svar.ok, true);
   assert.equal(transaksjoner, 1);
+});
+
+test("loggFysOkt bruker planlagt varighet når faktisk tid utelates", async () => {
+  const fn = await logg();
+  const svar = await fn({ oktId: "okt-1" });
+  assert.equal(svar.ok, true);
+  assert.equal(fysOktData?.faktiskMinutter, 45);
+});
+
+test("loggFysOkt gjenåpner detaljer uten å miste rad-id", async () => {
+  const fn = await logg();
+  const svar = await fn({
+    oktId: "okt-1",
+    rader: [{ radId: "rad-1", loggSett: 3, loggRepsPerSett: "8" }],
+  });
+  assert.equal(svar.ok, true);
+  assert.equal(radData?.loggSett, 3);
+  assert.equal(radData?.loggRepsPerSett, "8");
+});
+
+test("angreFysOktLogg fjerner stempel men rører ikke øvelsesrader", async () => {
+  const { angreFysOktLogg } = await import("./actions");
+  const svar = await angreFysOktLogg("okt-1");
+  assert.equal(svar.ok, true);
+  assert.equal(fysOktData?.gjennomfortAt, null);
+  assert.equal(radData, null);
 });
