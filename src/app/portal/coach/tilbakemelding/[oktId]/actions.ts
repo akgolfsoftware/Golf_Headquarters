@@ -3,8 +3,8 @@
 // Server actions for /portal/coach/tilbakemelding/[oktId] (Paper W3).
 //
 // sendTilbakemeldingSvar — «Send svar» GJENBRUKER lagreDineOrd (ETTER-skjermens
-// eksisterende action): samme persistens (completedSummary.dineOrd), samme
-// tilgangs- og statuskontroll, og coachen leser svaret samme sted i stallen.
+// eksisterende action): samme persistens (completedSummary.dineOrd). Bare
+// spilleren økta tilhører kan svare; coachen leser svaret i stallen.
 // Ingen ny lagringsvei for spillerens ord.
 //
 // kvitterTilbakemelding — «Forstått» uten tekst: completedSummary
@@ -36,8 +36,18 @@ export async function sendTilbakemeldingSvar(
     return { ok: false, error: parsed.error.issues[0]?.message ?? "Ugyldig input" };
   }
 
+  const me = await getCurrentUser();
+  if (!me) return { ok: false, error: "Ikke innlogget" };
+
   try {
-    const res = await lagreDineOrd(parsed.data.oktId, parsed.data.tekst);
+    // Svaret skrives bare på økta spilleren selv eier — aldri en annen økt.
+    const okt = await prisma.trainingSessionV2.findFirst({
+      where: { id: parsed.data.oktId, studentId: me.id },
+      select: { id: true },
+    });
+    if (!okt) return { ok: false, error: "Fant ikke økta, eller du har ikke tilgang" };
+
+    const res = await lagreDineOrd(okt.id, parsed.data.tekst);
     if (!res.ok) {
       return { ok: false, error: res.error ?? "Kunne ikke sende svaret" };
     }

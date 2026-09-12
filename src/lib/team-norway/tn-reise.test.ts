@@ -6,6 +6,8 @@ import {
   TN_REISE,
   tnDokumenterHref,
   tnGruppeHref,
+  tnKorrigeringGjenbrukerOkt,
+  tnNyForsokHref,
   tnOversiktTestHref,
   tnSammeTestvariant,
   tnSpillerpostHref,
@@ -18,6 +20,30 @@ test("reisen holder samme gruppe- og spiller-id gjennom poster og dokumenter", (
   assert.equal(tnDokumenterHref("gruppe-tn"), "/team-norway/gruppe-tn/dokumenter");
   assert.equal(tnSpillerpostHref("spiller-a"), "/team-norway/spiller/spiller-a");
   assert.equal(tnTestforingHref("putt-1-3m"), "/portal/tren/tester/team-norway?test=putt-1-3m");
+  assert.deepEqual(
+    TN_REISE.map((steg) => steg.steg),
+    [
+      "oversikt",
+      "gruppeposter",
+      "dokumenter",
+      "spillerpost",
+      "tildeling",
+      "testforing",
+      "korrigering-angre",
+      "historikk",
+    ],
+  );
+});
+
+test("korrigering åpner nytt forsøk og gjenbruker ikke fullført økt-id", () => {
+  const fullfort = "b7f0d4a8-70d6-4d7a-8a73-682ed75ac000";
+  const href = tnNyForsokHref("putt-1-3m");
+  assert.equal(href, "/portal/tren/tester/team-norway?test=putt-1-3m");
+  assert.equal(tnKorrigeringGjenbrukerOkt(href, fullfort), false);
+  assert.equal(
+    tnKorrigeringGjenbrukerOkt(`/portal/tren/tester/team-norway?session=${fullfort}`, fullfort),
+    true,
+  );
 });
 
 test("oversikten lenker til testføring bare for spillerrollen", () => {
