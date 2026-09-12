@@ -5647,6 +5647,11 @@
       "byte": 2052
     },
     {
+      "sti": "docs/design-audit/handlingstilgang-bred-2026-09-12.md",
+      "omrade": "dokumentasjon",
+      "byte": 986
+    },
+    {
       "sti": "docs/design-audit/handlingstilgang-r-i-2026-09-12.md",
       "omrade": "dokumentasjon",
       "byte": 1716
@@ -14277,6 +14282,11 @@
       "byte": 281
     },
     {
+      "sti": "src/app/portal/(legacy)/mal/goals-actions.test.ts",
+      "omrade": "test",
+      "byte": 2228
+    },
+    {
       "sti": "src/app/portal/(legacy)/mal/goals-actions.ts",
       "omrade": "appkode",
       "byte": 7955
@@ -14832,6 +14842,11 @@
       "byte": 198
     },
     {
+      "sti": "src/app/portal/kalender/opptatt-actions.test.ts",
+      "omrade": "test",
+      "byte": 2430
+    },
+    {
       "sti": "src/app/portal/kalender/opptatt-actions.ts",
       "omrade": "appkode",
       "byte": 3676
@@ -15285,6 +15300,11 @@
       "sti": "src/app/portal/meg/profil-form.tsx",
       "omrade": "appkode",
       "byte": 16883
+    },
+    {
+      "sti": "src/app/portal/meg/profil/actions.test.ts",
+      "omrade": "test",
+      "byte": 1364
     },
     {
       "sti": "src/app/portal/meg/profil/actions.ts",

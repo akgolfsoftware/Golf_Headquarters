@@ -53,6 +53,7 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | dokumentasjon | [docs/design-audit/booking-o06-betaling-2026-09-12.md](<../design-audit/booking-o06-betaling-2026-09-12.md>) |
 | dokumentasjon | [docs/design-audit/claude-design-v0-3-3-2026-09-12.md](<../design-audit/claude-design-v0-3-3-2026-09-12.md>) |
 | dokumentasjon | [docs/design-audit/forelder-o05-delt-innsyn-2026-09-12.md](<../design-audit/forelder-o05-delt-innsyn-2026-09-12.md>) |
+| dokumentasjon | [docs/design-audit/handlingstilgang-bred-2026-09-12.md](<../design-audit/handlingstilgang-bred-2026-09-12.md>) |
 | dokumentasjon | [docs/design-audit/handlingstilgang-r-i-2026-09-12.md](<../design-audit/handlingstilgang-r-i-2026-09-12.md>) |
 | dokumentasjon | [docs/design-audit/lokal-lagring-personvern-2026-09-11.md](<../design-audit/lokal-lagring-personvern-2026-09-11.md>) |
 | dokumentasjon | [docs/design-audit/p0-test-blokkering-2026-09-12.md](<../design-audit/p0-test-blokkering-2026-09-12.md>) |
