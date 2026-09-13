@@ -1,70 +1,105 @@
-// Tester for parseTrackManPhoto (D4, AI-vision TrackMan-import).
-//
-// Mønster fra src/lib/portal/goals/progress.test.ts: t.mock.module for
-// "@/lib/ai/client" + dynamisk import() ETTER mock-oppsettet, ETT
-// mock.module-kall for hele filen (modulen under test importeres kun én
-// gang), scenarioer varieres via en mutérbar "respons"-variabel som
-// mock-implementasjonen leser lazily.
-//
-// Kjør med: npm test
-
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { csvShotsToCanonical } from "./canonical";
+import { trackManShotsForPreview } from "./preview";
 
-test("parseTrackManPhoto — vision-svar tolkes til TrackManShot[] og feil håndteres", async (t) => {
-  let modellSvarTekst = "";
-
+test("fotoavlesning bevarer kildeenheter og avviser usikre modellresultater", async (t) => {
+  let response = "";
+  let modelError = false;
   t.mock.module("@/lib/ai/client", {
     namedExports: {
-      anthropic: {
-        messages: {
-          create: async () => ({}),
-        },
-      },
-      tekstFra: () => modellSvarTekst,
+      anthropic: { messages: { create: async () => {
+        if (modelError) throw new Error("Syntetisk leverandørfeil");
+        return {};
+      } } },
+      tekstFra: () => response,
     },
   });
-
   const { parseTrackManPhoto } = await import("./parse-photo");
+  const parse = async (shots: unknown[]) => {
+    response = JSON.stringify({ shots });
+    return parseTrackManPhoto("QUJD", "image/jpeg");
+  };
 
-  await t.test("gyldig JSON med slag → ok:true, riktig felt-mapping", async () => {
-    modellSvarTekst = JSON.stringify({
-      shots: [
-        { club: "7-jern", clubSpeed: 92, ballSpeed: 128, smashFactor: 1.39, carry: 148, total: 152, launchAngle: 18, spinRate: 6200, side: -3.5 },
-        { club: null, clubSpeed: null, ballSpeed: null, smashFactor: null, carry: null, total: null, launchAngle: null, spinRate: null, side: null },
-      ],
-    });
-    const result = await parseTrackManPhoto("QUJD", "image/jpeg");
-    assert.equal(result.ok, true);
-    if (!result.ok) return;
-    assert.equal(result.shots.length, 2);
+  await t.test("råverdier beholdes og blandede enheter konverteres én gang", async () => {
+    const result = await parse([{
+      club: "  7-jern  ", clubSpeed: 60, ballSpeed: 70, carry: 330, total: 320, side: -5,
+      sourceUnits: { clubSpeed: "mph", ballSpeed: "m/s", carry: "m", total: "yd", side: "yd" },
+    }]);
+    assert.ok(result.ok);
     assert.equal(result.shots[0].club, "7-jern");
-    assert.equal(result.shots[0].clubSpeedMps, 92);
-    assert.equal(result.shots[0].carryMeters, 148);
-    assert.equal(result.shots[0].sideMeters, -3.5);
-    assert.equal(result.shots[1].club, null);
+    assert.equal(result.shots[0].ballSpeedMps, 70);
+    assert.equal(result.shots[0].totalMeters, 320);
+    const canonical = csvShotsToCanonical(result.shots)[0];
+    assert.equal(canonical.clubSpeedMph, 60);
+    assert.equal(canonical.ballSpeedMph, 156.59);
+    assert.equal(canonical.carryMeters, 330);
+    assert.equal(canonical.totalMeters, 292.61);
+    assert.equal(canonical.sideMeters, -4.57);
+    assert.deepEqual(trackManShotsForPreview(result.shots)[0], canonical);
   });
 
-  await t.test("tomt shots-array → ok:false med fasit-teksten", async () => {
-    modellSvarTekst = JSON.stringify({ shots: [] });
-    const result = await parseTrackManPhoto("QUJD", "image/jpeg");
+  await t.test("enhet gjelder hvert felt og hver rad, også ved gamle terskler", async () => {
+    const result = await parse([
+      { clubSpeed: 60, ballSpeed: 70, carry: 320, total: 330, sourceUnits: { clubSpeed: "m/s", ballSpeed: "mph", carry: "yd", total: "m" } },
+      { clubSpeed: 60, ballSpeed: 70, carry: 320, total: 330, sourceUnits: { clubSpeed: "mph", ballSpeed: "m/s", carry: "m", total: "yd" } },
+    ]);
+    assert.ok(result.ok);
+    const [first, second] = csvShotsToCanonical(result.shots);
+    assert.deepEqual([first.clubSpeedMph, first.ballSpeedMph, first.carryMeters, first.totalMeters], [134.22, 70, 292.61, 330]);
+    assert.deepEqual([second.clubSpeedMph, second.ballSpeedMph, second.carryMeters, second.totalMeters], [60, 156.59, 320, 301.75]);
+  });
+
+  await t.test("manglende og tvetydige enheter blir null i import og forhåndsvisning", async () => {
+    for (const sourceUnits of [undefined, null, {}, { clubSpeed: null, ballSpeed: "unknown", carry: "unknown" }]) {
+      const result = await parse([{ clubSpeed: 60, ballSpeed: 70, carry: 330, total: 320, side: 4, smashFactor: 1.4, sourceUnits }]);
+      assert.ok(result.ok);
+      assert.equal(result.shots[0].carryMeters, 330, "lesbar råverdi bevares");
+      assert.equal(result.shots[0].sourceUnits?.carry, "unknown");
+      const canonical = csvShotsToCanonical(result.shots)[0];
+      assert.deepEqual([canonical.clubSpeedMph, canonical.ballSpeedMph, canonical.carryMeters, canonical.totalMeters, canonical.sideMeters], [null, null, null, null, null]);
+      assert.equal(canonical.smashFactor, 1.4);
+      assert.deepEqual(trackManShotsForPreview(result.shots)[0], canonical);
+    }
+  });
+
+  await t.test("km/t og andre enheter uten støtte avvises uten feil konvertering", async () => {
+    for (const unit of ["km/h", "km/t", "feet", "mph eller m/s"]) {
+      const result = await parse([{ ballSpeed: 240, sourceUnits: { ballSpeed: unit } }]);
+      assert.equal(result.ok, false);
+    }
+    const result = await parse([{ ballSpeed: 240, sourceUnits: { ballSpeed: "unknown" } }]);
     assert.equal(result.ok, false);
-    if (result.ok) return;
-    assert.equal(result.error, "Fant ingen tall. Rett på kortet. HEIC → JPG.");
+    if (!result.ok) assert.match(result.error, /måleenhetene vises/);
   });
 
-  await t.test("ugyldig JSON (ikke tall-svar) → ok:false, samme feiltekst", async () => {
-    modellSvarTekst = "Dette er ikke et TrackMan-bilde.";
-    const result = await parseTrackManPhoto("QUJD", "image/jpeg");
+  await t.test("ingen brukbare mål blir ikke en vellykket tom import", async () => {
+    for (const shot of [{}, { club: "Driver" }, { carry: null }, { carry: 150 }, { carry: 150, sourceUnits: { carry: "unknown" } }]) {
+      assert.equal((await parse([shot])).ok, false);
+    }
+  });
+
+  await t.test("tomme rader fjernes, null forblir ukjent og avvik på 0 meter beholdes", async () => {
+    const result = await parse([{ club: "Driver" }, { side: 0, total: null, sourceUnits: { side: "m" } }]);
+    assert.ok(result.ok);
+    assert.equal(result.shots.length, 1);
+    assert.equal(result.shots[0].sideMeters, 0);
+    assert.equal(result.shots[0].totalMeters, null);
+  });
+
+  await t.test("tom liste, ugyldig JSON og tall som tekst avvises", async () => {
+    assert.equal((await parse([])).ok, false);
+    assert.equal((await parse([{ carry: "150", sourceUnits: { carry: "m" } }])).ok, false);
+    response = "Dette er ikke slagdata";
+    assert.equal((await parseTrackManPhoto("QUJD", "image/jpeg")).ok, false);
+    response = '{"shots":[{"carry":1e999,"sourceUnits":{"carry":"m"}}]}';
+    assert.equal((await parseTrackManPhoto("QUJD", "image/jpeg")).ok, false);
+  });
+
+  await t.test("modellfeil returnerer trygg feiltekst", async () => {
+    modelError = true;
+    const result = await parse([{ smashFactor: 1.4 }]);
     assert.equal(result.ok, false);
-  });
-
-  await t.test("modell utelater et felt → optional/undefined faller til null, ikke krasj", async () => {
-    modellSvarTekst = JSON.stringify({ shots: [{ club: "Driver" }] });
-    const result = await parseTrackManPhoto("QUJD", "image/jpeg");
-    assert.equal(result.ok, true);
-    if (!result.ok) return;
-    assert.equal(result.shots[0].club, "Driver");
-    assert.equal(result.shots[0].clubSpeedMps, null);
+    if (!result.ok) assert.equal(result.error, "Kunne ikke lese bildet akkurat nå. Prøv igjen.");
   });
 });
