@@ -7,8 +7,10 @@
  */
 
 import { z } from "zod";
-import type { PrismaClient, PyramidArea } from "@/generated/prisma/client";
+import type { Prisma, PrismaClient, PyramidArea } from "@/generated/prisma/client";
 import { upsertV2ForPlanSession } from "@/lib/workbench/v2-sync";
+
+type PlanDb = PrismaClient | Prisma.TransactionClient;
 
 // 8c.7: drill-rad i økt-komponisten. Intensitetsnivå (Anders: «uten · lav
 // hastighet · vanlig») mappes til datamodellen: uten → repType
@@ -83,65 +85,71 @@ export async function executeSessionUpdate(
     return { ok: false, error: "Økt ikke funnet" };
   }
 
-  // Nytt klokkeslett på SAMME dato (dag flyttes via executeSessionMove).
-  let scheduledAt = session.scheduledAt;
-  if (patch.hour != null || patch.minute != null) {
-    scheduledAt = new Date(session.scheduledAt);
-    if (patch.hour != null) scheduledAt.setHours(patch.hour);
-    if (patch.minute != null) scheduledAt.setMinutes(patch.minute);
-  }
+  try {
+    await prisma.$transaction(async (tx) => {
+      // Nytt klokkeslett på SAMME dato (dag flyttes via executeSessionMove).
+      let scheduledAt = session.scheduledAt;
+      if (patch.hour != null || patch.minute != null) {
+        scheduledAt = new Date(session.scheduledAt);
+        if (patch.hour != null) scheduledAt.setHours(patch.hour);
+        if (patch.minute != null) scheduledAt.setMinutes(patch.minute);
+      }
 
-  const updated = await prisma.trainingPlanSession.update({
-    where: { id: session.id },
-    data: {
-      ...(patch.title != null ? { title: patch.title } : {}),
-      ...(patch.pyramidArea != null ? { pyramidArea: patch.pyramidArea as PyramidArea } : {}),
-      ...(patch.durationMin != null ? { durationMin: patch.durationMin } : {}),
-      ...(patch.lFase !== undefined ? { lFase: patch.lFase } : {}),
-      ...(patch.miljo !== undefined ? { miljo: patch.miljo } : {}),
-      // Tom streng fra UI betyr «fjern» → null, ikke undefined (gotcha: undefined
-      // lar feltet stå urørt, så lokasjon/mål kunne aldri tømmes igjen).
-      ...(patch.location !== undefined ? { location: patch.location || null } : {}),
-      ...(patch.maalsetning !== undefined
-        ? { maalsetning: patch.maalsetning || null }
-        : {}),
-      scheduledAt,
-    },
-    select: {
-      id: true,
-      title: true,
-      scheduledAt: true,
-      durationMin: true,
-      pyramidArea: true,
-      miljo: true,
-      location: true,
-      maalsetning: true,
-    },
-  });
+      const updated = await tx.trainingPlanSession.update({
+        where: { id: session.id },
+        data: {
+          ...(patch.title != null ? { title: patch.title } : {}),
+          ...(patch.pyramidArea != null ? { pyramidArea: patch.pyramidArea as PyramidArea } : {}),
+          ...(patch.durationMin != null ? { durationMin: patch.durationMin } : {}),
+          ...(patch.lFase !== undefined ? { lFase: patch.lFase } : {}),
+          ...(patch.miljo !== undefined ? { miljo: patch.miljo } : {}),
+          // Tom streng fra UI betyr «fjern» → null, ikke undefined (gotcha: undefined
+          // lar feltet stå urørt, så lokasjon/mål kunne aldri tømmes igjen).
+          ...(patch.location !== undefined ? { location: patch.location || null } : {}),
+          ...(patch.maalsetning !== undefined
+            ? { maalsetning: patch.maalsetning || null }
+            : {}),
+          scheduledAt,
+        },
+        select: {
+          id: true,
+          title: true,
+          scheduledAt: true,
+          durationMin: true,
+          pyramidArea: true,
+          miljo: true,
+          location: true,
+          maalsetning: true,
+        },
+      });
 
-  // 8c.7: drill-liste (replace) — egen øvelse opprettes i banken ved behov.
-  if (patch.drills) {
-    await skrivSessionDrills(prisma, {
-      sessionId: session.id,
-      drills: patch.drills,
-      fallbackPyramidArea: updated.pyramidArea,
-      playerId: input.playerId,
-      coachId: input.coachId,
+      if (patch.drills) {
+        await skrivSessionDrills(tx, {
+          sessionId: session.id,
+          drills: patch.drills,
+          fallbackPyramidArea: updated.pyramidArea,
+          playerId: input.playerId,
+          coachId: input.coachId,
+        });
+      }
+
+      await upsertV2ForPlanSession({
+        planSessionId: updated.id,
+        playerId: input.playerId,
+        title: updated.title,
+        scheduledAt: updated.scheduledAt,
+        durationMin: updated.durationMin,
+        pyramidArea: updated.pyramidArea,
+        coachId: input.coachId,
+        miljo: updated.miljo,
+        location: updated.location,
+        maalsetning: updated.maalsetning,
+        db: tx,
+      });
     });
+  } catch {
+    return { ok: false, error: "Kunne ikke lagre økten." };
   }
-
-  await upsertV2ForPlanSession({
-    planSessionId: updated.id,
-    playerId: input.playerId,
-    title: updated.title,
-    scheduledAt: updated.scheduledAt,
-    durationMin: updated.durationMin,
-    pyramidArea: updated.pyramidArea,
-    coachId: input.coachId,
-    miljo: updated.miljo,
-    location: updated.location,
-    maalsetning: updated.maalsetning,
-  });
 
   return { ok: true };
 }
@@ -153,7 +161,7 @@ export async function executeSessionUpdate(
  * kontrakt.
  */
 export async function skrivSessionDrills(
-  prisma: PrismaClient,
+  prisma: PlanDb,
   input: {
     sessionId: string;
     drills: OktDrillInput[];
