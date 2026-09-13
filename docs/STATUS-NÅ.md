@@ -38,6 +38,7 @@ Oppdatert 13.09.2026. Appen er fortsatt under arbeid og ikke klarert for åpen l
 - **TrackMan fotoimport:** PR #877 krever eksplisitte enheter i fotoresultatet før forhåndsvisning og lagring. Parser- og komponentprøver er grønne. Reell bildepresisjon, personvernsertifisering av bildeoverføring og full innlogget importreise er ikke bevist.
 - **Team Norway Claw:** PR #878 samlet den avgrensede Team Norway-flaten som Anders godkjente. 82 målrettede tester og full kvalitetskontroll bestod. Godkjenningen gjelder Team Norway-flaten, ikke hele Claude Design-systemet.
 - **Avhengighetssikkerhet:** PR #879 og #880 oppdaterte Next.js til 16.3.3 og rettet kompatible underpakker. `npm audit` gikk fra 20 funn med 1 kritisk til 5 uten kritiske eller moderate funn. De fem restene er oppstrøms-/kompatibilitetsblokker i Prisma CLI og esbuild. [Kontroll og avgrensning](vedlikehold/avhengighetssikkerhet-2026-09-13.md).
+- **R-E abonnement/tilgangsnivå (delvis):** Innlogget browserreise mot isolert HQ-Supabase bekrefter at TALENT-profilen ser testbatteriet men sendes til oppgraderingsflyten fra en FULL-låst side, og at FULL-spilleren når samme side uten omvei — gaten i `requirePortalUser` er nå faktisk aktiv siden lanseringsvinduet er over. Lokal commit `62803ae9d` i denne arbeidskopien, ikke pushet eller flettet. Caddie/TrackMan/lokal lagring gjenstår fortsatt for R-E. [Kontroll](design-audit/abonnement-tilgang-r-e-2026-09-13.md).
 
 ## Allerede i main
 

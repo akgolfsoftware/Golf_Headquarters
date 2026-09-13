@@ -81,6 +81,7 @@ Kandidat v0.4.10 er fortsatt en delpakke og har ikke `selectedForBuilding: true`
 | TrackMan fotoenheter | Fotoresultat må ha eksplisitt avstands- og hastighetsenhet før det kan forhåndsvises og lagres | I main via PR #877. Reell bildepresisjon, personverngjennomgang av bildeoverføring og innlogget importreise gjenstår |
 | Team Norway Claw | Visuelt godkjente Team Norway-flater samlet uten å erklære hele designpakken valgt | I main via PR #878. 82 målrettede tester og full kvalitetskontroll bestod |
 | Avhengighetssikkerhet | Next.js 16.3.3 og kompatible sikkerhetspatcher; npm-funn redusert fra 20 til 5 | I main via PR #879/#880. Fem oppstrøms-/kompatibilitetsblokker dokumentert i [kontrollen](vedlikehold/avhengighetssikkerhet-2026-09-13.md) |
+| R-E abonnement/tilgangsnivå | TALENT-profil ser talent-åpen side; FULL-låst side sender TALENT til oppgraderingsflyten; FULL-spiller går rett inn. Ny seedrolle + Playwright-spec mot samme isolerte stack som P0-TEST | Lokal commit `62803ae9d` i denne arbeidskopien. **Ikke pushet, ikke PR, ikke flettet.** [Kontroll](design-audit/abonnement-tilgang-r-e-2026-09-13.md). Pre-eksisterende flake i `spillerreise-innlogget.spec.ts` observert og dokumentert, ikke rettet |
 
 Siste samlede testresultat og flettepunkt skal leses i samlingsrapporten og tilhørende GitHub PR. Innlogget produksjonsreise, faktisk betaling og Anders' visuelle vurdering er egne kontroller som fortsatt gjenstår.
 
@@ -92,7 +93,7 @@ Aktiv arbeidsdeling 13.09.2026: Claude Design eier Design System v0.1. GitHub ha
 |---|---|---|---|
 | 1 · D0 | Fullfør og velg én Claude Design-pakke for et tydelig registrert omfang | Kandidat v0.4.10 og designregisteret; avklar P11, O11 og O12 | Pakken har versjon, hash, komplett avtalt dekning og `selectedForBuilding: true`; Anders har valgt den |
 | 2 · D1 / P0-DEKNING | Koble valgt pakke til ruter, tilstander og handlinger; avklar J07-binding, TrackMan → utstyrsbag og Gameplan/GPS-gap uten skjult ny datamodell | Ruteinventaret, J07, G02–G04 og G06/G08 | Hver berørt rute har mønster, tilstand, rolle og datakilde; eventuell schemaendring er særskilt godkjent |
-| 3 · R-A–R-E | Kjør innlogget Caddie-, TrackMan-, lokal lagrings- og abonnementsreise med syntetiske testbrukere | Eksisterende sikkerhetsregler og PR #877 | Tillatt rolle virker, uvedkommende avvises, feiltilstander er ærlige og ingen persondata sendes ukontrollert |
+| 3 · R-A–R-E | Kjør innlogget Caddie-, TrackMan-, lokal lagrings- og abonnementsreise med syntetiske testbrukere. **Abonnement/tilgangsnivå bestått 13.09** (lokal commit `62803ae9d`, ikke flettet); Caddie, TrackMan og lokal lagring gjenstår | Eksisterende sikkerhetsregler og PR #877 | Tillatt rolle virker, uvedkommende avvises, feiltilstander er ærlige og ingen persondata sendes ukontrollert |
 | 4 · R4–R9 | Kjør innlogget booking- og betalingsreise med Stripe-testnøkkel, inkludert barn, avbrudd, retur og gjentakelse | O06/O05-reglene i main | Testbetaling og refusjon består uten reell belastning; eierskap og idempotens er bevist |
 | 5 · L3/L7/L8 | Fullfør visuell tilgjengelighet, alarm/gjenoppretting og kontrollert produksjonsreise | D6 og eksplisitt miljøautorisasjon | Kontrast, 320 px, 200 %, alarmer, restore/rollback og eksakt produksjonscommit er dokumentert bestått |
 
