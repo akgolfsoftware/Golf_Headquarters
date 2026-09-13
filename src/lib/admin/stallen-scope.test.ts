@@ -1,13 +1,25 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
-import { stallenPlayerWhere } from "./stallen-scope";
+import { aktivtTrenerMedlemskapWhere } from "@/lib/domain/grupper";
+import { stallenGruppeWhere, stallenPlayerWhere } from "./stallen-scope";
 
 test("stall uten søk bruker samme spillerporte som hjem og spillerkort", () => {
   const coach = { id: "coach-1", role: "COACH" };
   assert.deepEqual(stallenPlayerWhere(coach), coachScopedPlayerWhere(coach));
   const admin = { id: "admin", role: "ADMIN" };
   assert.deepEqual(stallenPlayerWhere(admin), coachScopedPlayerWhere(admin));
+});
+
+test("gruppeporten inkluderer eiergruppe og gruppetrener, ikke bare eier", () => {
+  const coach = { id: "coach-1", role: "COACH" };
+  assert.deepEqual(stallenGruppeWhere(coach), {
+    OR: [
+      { coachId: "coach-1" },
+      { members: { some: aktivtTrenerMedlemskapWhere("coach-1") } },
+    ],
+  });
+  assert.deepEqual(stallenGruppeWhere({ id: "admin", role: "ADMIN" }), {});
 });
 
 test("søk begrenser innenfor coach-scope, ikke i stedet for det", () => {
