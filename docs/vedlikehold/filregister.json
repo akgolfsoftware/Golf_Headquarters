@@ -1,10 +1,10 @@
 {
   "metode": "git ls-files -co --exclude-standard; eksisterende filer; genererte registerfiler utelatt. Kun metadata, ikke kundedata eller miljøverdier.",
   "telling": {
-    "prosjektfiler": 5280,
+    "prosjektfiler": 5283,
     "sidefiler": 480,
     "prismamodeller": 196,
-    "enhetstestfiler": 384,
+    "enhetstestfiler": 386,
     "nettlesertestfiler": 41,
     "trainLockTegninger": 219
   },
@@ -5645,6 +5645,11 @@
       "sti": "docs/design-audit/forelder-o05-delt-innsyn-2026-09-12.md",
       "omrade": "dokumentasjon",
       "byte": 2052
+    },
+    {
+      "sti": "docs/design-audit/handlingstilgang-admin-spiller-2026-09-13.md",
+      "omrade": "dokumentasjon",
+      "byte": 772
     },
     {
       "sti": "docs/design-audit/handlingstilgang-bred-2026-09-12.md",
@@ -11542,6 +11547,11 @@
       "byte": 754
     },
     {
+      "sti": "src/app/admin/(legacy)/spillere/[id]/rediger/actions.test.ts",
+      "omrade": "test",
+      "byte": 3799
+    },
+    {
       "sti": "src/app/admin/(legacy)/spillere/[id]/rediger/actions.ts",
       "omrade": "appkode",
       "byte": 6040
@@ -11560,6 +11570,11 @@
       "sti": "src/app/admin/(legacy)/spillere/[id]/workbench/layout.tsx",
       "omrade": "appkode",
       "byte": 501
+    },
+    {
+      "sti": "src/app/admin/(legacy)/spillere/ny/actions.test.ts",
+      "omrade": "test",
+      "byte": 2176
     },
     {
       "sti": "src/app/admin/(legacy)/spillere/ny/actions.ts",
