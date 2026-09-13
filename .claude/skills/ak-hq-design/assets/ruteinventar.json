@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "method": "Filinventar fra src/app og src/components. Flate er foreslått fra sti, ikke tilgangsbevis. Skanner ikke API-handler, miljøfiler, kundedata eller produksjon. Filantall er ikke antall ferdige skjermer.",
   "totals": {
-    "pageFiles": 480,
-    "uniqueRoutePatterns": 480,
-    "componentFiles": 703,
+    "pageFiles": 496,
+    "uniqueRoutePatterns": 496,
+    "componentFiles": 707,
     "surfaceFiles": 230,
     "byArea": {
       "interne-eksempler": 6,
@@ -13,7 +13,7 @@
       "agencyos": 163,
       "inngang-og-konto": 18,
       "forelder": 16,
-      "lag-og-skole": 16,
+      "lag-og-skole": 32,
       "delt-innsyn": 11,
       "personlig-arbeidsflate": 3,
       "systemtilstand": 2,
@@ -10950,8 +10950,260 @@
       "accessStatus": "ikke-verifisert"
     },
     {
+      "source": "src/app/team-norway/apparatet/page.tsx",
+      "route": "/team-norway/apparatet",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "lag-og-skole",
+      "legacyGroup": false,
+      "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/team-norway/error.tsx",
+        "src/app/team-norway/layout.tsx",
+        "src/app/team-norway/loading.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
+      "source": "src/app/team-norway/college/page.tsx",
+      "route": "/team-norway/college",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "lag-og-skole",
+      "legacyGroup": false,
+      "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/team-norway/error.tsx",
+        "src/app/team-norway/layout.tsx",
+        "src/app/team-norway/loading.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
+      "source": "src/app/team-norway/fellestesting/page.tsx",
+      "route": "/team-norway/fellestesting",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "lag-og-skole",
+      "legacyGroup": false,
+      "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/team-norway/error.tsx",
+        "src/app/team-norway/layout.tsx",
+        "src/app/team-norway/loading.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
+      "source": "src/app/team-norway/inviter/page.tsx",
+      "route": "/team-norway/inviter",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "lag-og-skole",
+      "legacyGroup": false,
+      "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/team-norway/error.tsx",
+        "src/app/team-norway/layout.tsx",
+        "src/app/team-norway/loading.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
+      "source": "src/app/team-norway/manedsplan/page.tsx",
+      "route": "/team-norway/manedsplan",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "lag-og-skole",
+      "legacyGroup": false,
+      "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/team-norway/error.tsx",
+        "src/app/team-norway/layout.tsx",
+        "src/app/team-norway/loading.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
       "source": "src/app/team-norway/page.tsx",
       "route": "/team-norway",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "lag-og-skole",
+      "legacyGroup": false,
+      "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/team-norway/error.tsx",
+        "src/app/team-norway/layout.tsx",
+        "src/app/team-norway/loading.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
+      "source": "src/app/team-norway/protokoller/[id]/page.tsx",
+      "route": "/team-norway/protokoller/[id]",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "lag-og-skole",
+      "legacyGroup": false,
+      "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/team-norway/error.tsx",
+        "src/app/team-norway/layout.tsx",
+        "src/app/team-norway/loading.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
+      "source": "src/app/team-norway/protokoller/page.tsx",
+      "route": "/team-norway/protokoller",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "lag-og-skole",
+      "legacyGroup": false,
+      "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/team-norway/error.tsx",
+        "src/app/team-norway/layout.tsx",
+        "src/app/team-norway/loading.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
+      "source": "src/app/team-norway/rangliste/page.tsx",
+      "route": "/team-norway/rangliste",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "lag-og-skole",
+      "legacyGroup": false,
+      "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/team-norway/error.tsx",
+        "src/app/team-norway/layout.tsx",
+        "src/app/team-norway/loading.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
+      "source": "src/app/team-norway/referansenivaer/page.tsx",
+      "route": "/team-norway/referansenivaer",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "lag-og-skole",
+      "legacyGroup": false,
+      "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/team-norway/error.tsx",
+        "src/app/team-norway/layout.tsx",
+        "src/app/team-norway/loading.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
+      "source": "src/app/team-norway/samlinger/[id]/page.tsx",
+      "route": "/team-norway/samlinger/[id]",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "lag-og-skole",
+      "legacyGroup": false,
+      "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/team-norway/error.tsx",
+        "src/app/team-norway/layout.tsx",
+        "src/app/team-norway/loading.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
+      "source": "src/app/team-norway/samlinger/page.tsx",
+      "route": "/team-norway/samlinger",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "lag-og-skole",
+      "legacyGroup": false,
+      "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/team-norway/error.tsx",
+        "src/app/team-norway/layout.tsx",
+        "src/app/team-norway/loading.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
+      "source": "src/app/team-norway/skoler/page.tsx",
+      "route": "/team-norway/skoler",
       "groups": [],
       "slots": [],
       "requiresRouteReview": false,
@@ -10992,6 +11244,27 @@
       "accessStatus": "ikke-verifisert"
     },
     {
+      "source": "src/app/team-norway/spillere/page.tsx",
+      "route": "/team-norway/spillere",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "lag-og-skole",
+      "legacyGroup": false,
+      "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/team-norway/error.tsx",
+        "src/app/team-norway/layout.tsx",
+        "src/app/team-norway/loading.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
       "source": "src/app/team-norway/tilgang/page.tsx",
       "route": "/team-norway/tilgang",
       "groups": [],
@@ -11010,6 +11283,69 @@
         "src/app/team-norway/loading.tsx",
         "src/app/team-norway/tilgang/error.tsx",
         "src/app/team-norway/tilgang/loading.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
+      "source": "src/app/team-norway/turneringer/ny/page.tsx",
+      "route": "/team-norway/turneringer/ny",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "lag-og-skole",
+      "legacyGroup": false,
+      "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/team-norway/error.tsx",
+        "src/app/team-norway/layout.tsx",
+        "src/app/team-norway/loading.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
+      "source": "src/app/team-norway/turneringer/page.tsx",
+      "route": "/team-norway/turneringer",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "lag-og-skole",
+      "legacyGroup": false,
+      "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/team-norway/error.tsx",
+        "src/app/team-norway/layout.tsx",
+        "src/app/team-norway/loading.tsx"
+      ],
+      "designStatus": "ikke-vurdert",
+      "accessStatus": "ikke-verifisert"
+    },
+    {
+      "source": "src/app/team-norway/uttak/page.tsx",
+      "route": "/team-norway/uttak",
+      "groups": [],
+      "slots": [],
+      "requiresRouteReview": false,
+      "area": "lag-og-skole",
+      "legacyGroup": false,
+      "redirectCandidate": false,
+      "nearbySurfaces": [
+        "src/app/error.tsx",
+        "src/app/global-error.tsx",
+        "src/app/layout.tsx",
+        "src/app/not-found.tsx",
+        "src/app/team-norway/error.tsx",
+        "src/app/team-norway/layout.tsx",
+        "src/app/team-norway/loading.tsx"
       ],
       "designStatus": "ikke-vurdert",
       "accessStatus": "ikke-verifisert"
@@ -14190,12 +14526,32 @@
       "isTest": false
     },
     {
+      "source": "src/components/team-norway/tn-inviter-spiller.tsx",
+      "family": "team-norway",
+      "isTest": false
+    },
+    {
+      "source": "src/components/team-norway/tn-manuell-turnering.tsx",
+      "family": "team-norway",
+      "isTest": false
+    },
+    {
       "source": "src/components/team-norway/tn-post-komponer.tsx",
       "family": "team-norway",
       "isTest": false
     },
     {
       "source": "src/components/team-norway/tn-post-tidslinje.tsx",
+      "family": "team-norway",
+      "isTest": false
+    },
+    {
+      "source": "src/components/team-norway/tn-registrerte-skjermer.tsx",
+      "family": "team-norway",
+      "isTest": false
+    },
+    {
+      "source": "src/components/team-norway/tn-shell.tsx",
       "family": "team-norway",
       "isTest": false
     },

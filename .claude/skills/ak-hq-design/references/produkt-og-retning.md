@@ -10,7 +10,7 @@ Funksjoner beskrives av prosjektets produkt- og fagkilder. Filinventaret beskriv
 
 **Atletisk intelligens.** PlayerHQ kan være sportslig, oppslukende og fotografisk i utvalgte øyeblikk. AgencyOS er operativt rolig og presist. Tid, rekkefølge og neste handling bærer hverdagsflytene. Mørk fokusmodus brukes når Live, fordypning eller synlig AI-arbeid krever konsentrasjon.
 
-Dette er arbeidsretningen Anders valgte som utgangspunkt 11.09.2026 etter å ha delt egne smaksreferanser. Les [den fulle retningskontrakten](atletisk-intelligens.md). Claude Design skal starte blankt og lage Design System v0.1; ingen eksisterende font, farge, radius eller komponentgeometri er valgt på forhånd. Retningen låses først til bygging når Anders velger en konkret versjon etter utprøving.
+Dette er arbeidsretningen Anders valgte som utgangspunkt 11.09.2026 etter å ha delt egne smaksreferanser. Les [den fulle retningskontrakten](atletisk-intelligens.md). Arbeidet startet blankt med Design System v0.1. Ved videreføring fullføres siste faktiske kandidat, og nyere rettinger bevares. Valg for bygging gjelder konkret versjon og omfang; Team Norway Claw er valgt for egne `/team-norway/*`-skjermer 13.09.2026 og overstyres ikke av den generelle utforskingen.
 
 | Brukerflate | Viktigste utfall | Designhensyn |
 |---|---|---|
@@ -48,4 +48,4 @@ Skriv hvert valg med hensikt, berørte flater, versjon og status. Skill `forslag
 
 ## Lærdom fra ZIP-gjennomgangen
 
-I den undersøkte Train-lock-pakken var +0,18 tegnet høyere enn −0,31 på grunn av ulik skala. Viktige negative tall var dempet. Prototypen sa «3 av 3 steg fullført» etter to registreringer og tidlig avslutning. Nyere brett, eldre prototype og komponentverdier var ikke helt samordnet. Dette er eksempler på feil som kontrollene skal fange, ikke bevis på at alle slike feil finnes i produksjonsappen.
+I en tidligere undersøkt designpakke var +0,18 tegnet høyere enn −0,31 på grunn av ulik skala. Viktige negative tall var dempet. Prototypen sa «3 av 3 steg fullført» etter to registreringer og tidlig avslutning. Nyere brett, eldre prototype og komponentverdier var ikke helt samordnet. Dette er eksempler på feil som kontrollene skal fange, ikke bevis på at alle slike feil finnes i produksjonsappen.

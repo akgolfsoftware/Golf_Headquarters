@@ -27,7 +27,7 @@ På hjemskjermen (`/admin/agencyos`) se **hva som haster** og **hvilken AI-flate
 
 ## UI-kontrakt
 
-Bruk gjeldende designstatus via `designsystem/README.md` og les [Atletisk intelligens](../ak-hq-design/references/atletisk-intelligens.md). Den tidligere Paper-kontrakten, Train-lock-geometrien og dagens komponentutseende er ikke visuell fasit for Design System v0.1. Verifiser filstiene og importene i tabellen over mot dagens kode før endring; cockpit har siden blitt omorganisert.
+Bruk gjeldende designstatus via `designsystem/README.md` og les [Atletisk intelligens](../ak-hq-design/references/atletisk-intelligens.md). Tidligere designkontrakter og dagens komponentutseende er ikke visuell fasit for Design System v0.1. Verifiser filstiene og importene i tabellen over mot dagens kode før endring; cockpit har siden blitt omorganisert.
 
 Hold køen forståelig: hva haster, hva krever handling, og hvor skal coachen gå videre. Ingen fabrikkerte tellinger. Én tydelig primærhandling. Følg godkjent meny fra beslutningen 09.09.2026.
 

@@ -4,8 +4,8 @@ description: |
   Finjusterer AK Golf-MERKET — marked, materiell, presentasjon, sosiale medier,
   e-post, trykk, foto og tekst. Fasit er VERKSTEDET: grunn #E8E4DC, signal #B83217
   (betyr «se her»), IBM Plex Sans Condensed / Sans / Mono, instrumentlaget
-  (rutenett 56px, målestokk, kryss). Krem #FAF9F5, clay #D97757, Poppins, Lora,
-  Archivo og Paper er UTE av merket.
+  (rutenett 56px, målestokk, kryss). Krem #FAF9F5, clay #D97757, Poppins, Lora
+  og Archivo er UTE av merket.
   Bruk ved: markedsside, landingsside, kampanje, presentasjon, roll-up, plakat,
   visittkort, e-post, nyhetsbrev, innlegg, story, brevark, tilbud, profilklær,
   logobruk, favicon, fotovalg, merketekst, tagline, tone, trykkfarger.

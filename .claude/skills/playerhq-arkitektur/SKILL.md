@@ -17,7 +17,7 @@ PlayerHQ er den innloggede spillerens daglige verktøy for plan, trening, gjenno
 - Adresse: `/portal/*`
 - Inngang: `/portal`
 - Viktige kodeområder: `src/app/portal/`, `src/components/portal/` og delte komponenter i `src/components/`
-- Kontroller faktisk kode og ruter før endring; historiske `v2`, `legacy`, `TL` og `Paper`-navn beviser ikke gjeldende design eller om en fil kan fjernes.
+- Kontroller faktisk kode og ruter før endring; historiske komponentnavn som `v2`, `legacy` og `TL` beviser ikke gjeldende design eller om en fil kan fjernes.
 
 ## Nåværende brukerreise som skal bevares og prøves
 
@@ -43,7 +43,7 @@ Ved design og UI skal du lese [Atletisk intelligens](../ak-hq-design/references/
 - Mørk fokusmodus kan passe Live og fordypning; den er ikke automatisk standard på alle PlayerHQ-skjermer.
 - Mobil er hovedprøven. Desktop og nettbrett skal fortsatt være komplette og forståelige.
 
-Eksisterende Train-lock-tokens, fonter og komponenter beskriver dagens implementasjon. De er ikke automatisk input til Design System v0.1. Når Anders velger en ny Claude Design-versjon for bygging, skal den kartlegges kontrollert til delte komponenter og designverdier.
+Tokens, fonter og komponenter som ligger i koden i dag beskriver dagens implementasjon. De er ikke automatisk input til Design System v0.1. Når Anders velger en ny Claude Design-versjon for bygging, skal den kartlegges kontrollert til delte komponenter og designverdier.
 
 ## Funksjonelle krav
 

@@ -8,7 +8,7 @@ metadata:
 
 # AK Golf HQ Design System
 
-Bruk `ak-hq-design` som samlet arbeidsmåte og les [Atletisk intelligens](../ak-hq-design/references/atletisk-intelligens.md). Anders starter blankt i Claude Design. Eksisterende Train-lock-, Paper-, v2- og merkevareverdier er ikke produktets nye designfasit.
+Bruk `ak-hq-design` som samlet arbeidsmåte og les [Atletisk intelligens](../ak-hq-design/references/atletisk-intelligens.md). Anders starter blankt i Claude Design. Eksisterende implementerte design- og merkevareverdier er ikke produktets nye designfasit.
 
 ## Målet
 

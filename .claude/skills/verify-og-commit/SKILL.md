@@ -41,7 +41,7 @@ Du sikrer at ingenting ukontrollert når repoet. Rekkefølgen er låst.
 7. **Ekstern lagring og publisering:** push, PR, merge og deploy følger brukerens gjeldende autorisasjon. Denne skillen gir ikke i seg selv tillatelse til slike handlinger. Fullfør autorisert lokalt arbeid og rapporter konkret hva som er kontrollert før en eventuell nødvendig publiseringsbeslutning.
 8. **Oppsummer på norsk:** skill lokal bygg/test, CI, visuell vurdering og faktisk produksjonskontroll. Ikke oppgi CI eller preview som bestått uten en tilgjengelig kjøring/lenke. Ingen designversjon er automatisk valgt fordi testen er grønn. Si kort hva sikkerhets- og personvernspørsmålene viste, eller at diffen ikke rørte de områdene.
 
-Ved designarbeid gjelder Anders' siste beskjed og `designsystem/README.md` foran historiske Train-lock-låser. Bruk en navngitt valgt referanse for pikselkontroll, med dokumentert bredde, tema, data og gjengivelsesmiljø. Målrettede kontroller i et syntetisk oppsett er ikke en ende-til-ende-test mot ekte database eller betaling.
+Ved designarbeid gjelder Anders' siste beskjed og `designsystem/README.md` foran historiske designlåser. Bruk en navngitt valgt referanse for pikselkontroll, med dokumentert bredde, tema, data og gjengivelsesmiljø. Målrettede kontroller i et syntetisk oppsett er ikke en ende-til-ende-test mot ekte database eller betaling.
 
 ## Hurtigvarianter
 

@@ -82,7 +82,7 @@ Skills: `agenticos`, `agenticos-cockpit`, `hq-godkjenning`, `playerhq-agents` (p
 ## Design
 
 - Les [Atletisk intelligens](../ak-hq-design/references/atletisk-intelligens.md) og bruk `ak-hq-design` ved design og UI.
-- AgencyOS er den rolige, operative modusen i samme nye designsystem som PlayerHQ. Lys eller mørk standard avgjøres av valgt Claude Design-versjon; dagens v2- og Train-lock-tokens er ikke visuell fasit.
+- AgencyOS er den rolige, operative modusen i samme nye designsystem som PlayerHQ. Lys eller mørk standard avgjøres av valgt Claude Design-versjon; dagens implementerte tokens er ikke visuell fasit.
 - Mørk fokusmodus kan brukes for fordypning og synlig AgenticOS-arbeid når oppgaven begrunner det. Ikke gjør hele coachflaten mørk av vane.
 - Under utforsking starter Claude Design blankt. Ved implementering kartlegges den valgte versjonen til faktiske delte komponenter; eksisterende komponentmapper er teknisk underlag, ikke designordre.
 - Ingen emoji i UI — Lucide
