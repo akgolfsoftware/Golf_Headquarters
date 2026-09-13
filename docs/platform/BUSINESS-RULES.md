@@ -160,7 +160,7 @@ Implementasjon: `src/lib/domain/sg.ts`.
 Tre øktmodeller sameksisterer **bevisst** og skal **ikke slås sammen som opprydding**.
 
 | Modell | Primær bruk | Rute/forbruker |
-|---|---|---|---|
+|---|---|---|
 | `TrainingPlanSession` | Planlagt økt i spillerens eldre treningsplan | `/portal/live/[sessionId]` |
 | `TrainingSessionV2` | Gjennomføring, driller og oppsummering i nyere live-flyt | `/portal/live/[sessionId]` og coachens live-flater |
 | `WorkbenchSession` | Coachens og spillerens planlegging i Workbench | `/portal/planlegge/workbench` og AgencyOS-planlegging |
