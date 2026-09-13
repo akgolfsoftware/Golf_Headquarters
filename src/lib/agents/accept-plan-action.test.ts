@@ -10,6 +10,7 @@ mock.module("@/lib/agents/plan-action-executor", {
   namedExports: {
     executePlanAction: async () => {
       executeKall += 1;
+      assert.equal(status, "PROCESSING");
       if (failExec) throw new Error("postgresql://secret@db/internal_table kari@example.test");
       return { applied: true, summary: "Økt lagt til", sessionsAdded: 1, sessionsRemoved: 0, sessionsModified: 0 };
     },
@@ -30,8 +31,16 @@ mock.module("@/lib/prisma", {
                 status,
                 suggestion: {},
               },
-        update: async ({ data }: { data: { status: string } }) => {
+        updateMany: async ({
+          where,
+          data,
+        }: {
+          where: { status?: string };
+          data: { status: string };
+        }) => {
+          if (where.status && status !== where.status) return { count: 0 };
           status = data.status;
+          return { count: 1 };
         },
       },
       agentRun: {
@@ -86,4 +95,18 @@ test("allerede behandlet forslag kjøres ikke på nytt", async () => {
   assert.equal(resultat.applied, false);
   assert.equal(executeKall, 0);
   assert.equal(runs.length, 0);
+});
+
+test("to samtidige godkjenninger kjører sideeffekten bare én gang", async () => {
+  const [a, b] = await Promise.all([
+    acceptAndApplyPlanAction("pa-1"),
+    acceptAndApplyPlanAction("pa-1"),
+  ]);
+
+  assert.equal(executeKall, 1);
+  assert.equal(status, "ACCEPTED");
+  assert.deepEqual(
+    [a.status, b.status].sort(),
+    ["ACCEPTED", "UNCHANGED"],
+  );
 });

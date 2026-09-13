@@ -96,8 +96,8 @@ export async function batchApproveSelected(ids: string[]) {
   let feilet = 0;
   for (const action of pending) {
     try {
-      await acceptAndApplyPlanAction(action.id);
-      godkjent++;
+      const resultat = await acceptAndApplyPlanAction(action.id);
+      if (resultat.status === "ACCEPTED") godkjent++;
     } catch {
       feilet++;
     }
@@ -119,8 +119,8 @@ export async function batchApproveLowRisk() {
   for (const action of pending) {
     if (!LOW_RISK_ACTION_TYPES.has(action.actionType)) continue;
     try {
-      await acceptAndApplyPlanAction(action.id);
-      godkjent++;
+      const resultat = await acceptAndApplyPlanAction(action.id);
+      if (resultat.status === "ACCEPTED") godkjent++;
     } catch {
       // Hopp over enkeltfeil — coach kan håndtere manuelt
     }
@@ -148,8 +148,8 @@ export async function declineRequestDetailed(actionId: string, reason: string) {
     at: new Date().toISOString(),
   });
 
-  await prisma.planAction.update({
-    where: { id: actionId },
+  await prisma.planAction.updateMany({
+    where: { id: actionId, status: "PENDING" },
     data: {
       status: "REJECTED",
       ...(suggestion ? { suggestion } : {}),

@@ -34,8 +34,16 @@ mock.module("@/lib/prisma", {
           status,
           suggestion: {},
         }),
-        update: async ({ data }: { data: { status: string } }) => {
+        updateMany: async ({
+          where,
+          data,
+        }: {
+          where: { status?: string };
+          data: { status: string };
+        }) => {
+          if (where.status && status !== where.status) return { count: 0 };
           status = data.status;
+          return { count: 1 };
         },
       },
       agentRun: {
@@ -85,4 +93,14 @@ test("allerede avvist forslag avvises ikke på nytt", async () => {
   await rejectPlanAction("pa-1");
   assert.equal(executeKall, 0);
   assert.equal(runs.length, 0);
+});
+
+test("to samtidige avvisninger lager bare ett beslutningsspor", async () => {
+  await Promise.all([
+    rejectPlanAction("pa-1", "Første"),
+    rejectPlanAction("pa-1", "Andre"),
+  ]);
+
+  assert.equal(status, "REJECTED");
+  assert.equal(runs.length, 1);
 });

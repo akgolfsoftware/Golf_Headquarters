@@ -257,7 +257,14 @@ export default async function AgentDetaljPage({
     return {
       id: a.id,
       actionTypeLabel: ACTION_LABEL[a.actionType] ?? a.actionType,
-      statusLabel: a.status === "PENDING" ? "Venter" : a.status === "ACCEPTED" ? "Godkjent" : "Avvist",
+      statusLabel:
+        a.status === "PENDING"
+          ? "Venter"
+          : a.status === "PROCESSING"
+            ? "Behandles"
+            : a.status === "ACCEPTED"
+              ? "Godkjent"
+              : "Avvist",
       tone,
       brukerNavn: a.user.name ?? "Ukjent",
       playerId: a.user.id,

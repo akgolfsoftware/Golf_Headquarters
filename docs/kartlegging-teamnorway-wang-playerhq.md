@@ -97,7 +97,7 @@ erDiagram
 | `/team-wang/logg-inn` | `src/app/team-wang/logg-inn/page.tsx` | Åpen (login-side) | Egen innlogging for WANG-flaten | **Nei** |
 | `/team-wang/coach` | `src/app/team-wang/coach/page.tsx` | `proxy.ts` (innlogget) + `requirePortalUser({allow:["ADMIN","COACH"]})` i siden | Trenerens periodiserte årsplan med elevnavn/roster + IUP-lenker (PII) | **Nei** |
 | `/team-wang/coach/iup/[elevId]` | `src/app/team-wang/coach/iup/[elevId]/page.tsx` | Samme gate som over | IUP-samtale for én elev | **Nei** |
-| `/team-gfgk` | `src/app/team-gfgk/page.tsx` + `layout.tsx` | Ingen — åpen (`noindex`) | Foreldremøte-presentasjon: differensiering elitegruppe, resultatoversikt | **Nei** |
+| `/team-gfgk` | `src/app/team-gfgk/page.tsx` + `layout.tsx` | Stengt med `notFound()` | Arkivert foreldremøte-presentasjon; statisk spillerdata fjernet 13.09.2026 | **Nei** |
 | `/gfgk-junior` | `src/app/gfgk-junior/page.tsx` + `layout.tsx` | Ingen — offentlig, indekseres | Markedsside GFGK juniorgolf | **Nei** i shell, men refereres fra `cookie-banner.tsx` |
 | `/gfgk-junior/kalender` | `src/app/gfgk-junior/kalender/page.tsx` | Ingen | Kalendervisning GFGK junior | **Nei** |
 | `/gfgk-junior/treningsplaner` | `src/app/gfgk-junior/treningsplaner/page.tsx` | Ingen | Treningsplaner-oversikt | **Nei** |
@@ -212,9 +212,10 @@ Skriv for hver skjerm slik at Claude Design kan tegne den uten å åpne kodebase
 - **Handlinger:** trolig lesing + notatfelt (bekreft i kildekode før eksakt skrive-UI tegnes — ikke verifisert i denne kartleggingen ut over routing).
 
 ### `/team-gfgk` — Foreldremøte-presentasjon
-- **Data:** deck-aktig presentasjon: differensiering i elitegruppa, resultatoversikt. `noindex`, offentlig URL men ikke søkbar.
-- **Tilstander:** Lastet (presentasjonsvisning). Ingen tom/feil-tilstand av betydning — statisk/semi-statisk innhold.
-- **Handlinger:** trolig kun bla gjennom slides/seksjoner. Ingen skriving.
+- **Status 13.09.2026:** stengt med `notFound()` etter personvernkontroll. Det statiske
+  spiller- og resultatdatasettet er fjernet fra dagens kildekode.
+- **Før eventuell gjenåpning:** data må komme fra en tilgangsstyrt serverkilde med
+  dokumentert samtykke og minste nødvendige datautvalg.
 
 ### `/gfgk-junior` + underruter — Offentlig markedsside
 - **Data:** markedsføringsinnhold for GFGK juniorgolf, kalendervisning, treningsplaner (offentlig lesbare), veileder-artikler.

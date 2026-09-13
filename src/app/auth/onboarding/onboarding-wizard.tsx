@@ -44,6 +44,7 @@ import {
   Trophy,
 } from "lucide-react";
 import { TL } from "@/lib/v2/train-lock";
+import { tierEtikett } from "@/lib/tier-etikett";
 
 import {
   byggSgBaseline,
@@ -921,7 +922,8 @@ export function OnboardingWizard({
                 label="Abonnement"
                 value={
                   <span className="font-mono">
-                    {selectedTier === "PRO" ? "PRO · 299 kr/mnd" : "GRATIS"}
+                    {tierEtikett(selectedTier)}
+                    {selectedTier === "PRO" ? " · 299 kr/mnd" : " · gratis"}
                   </span>
                 }
               />

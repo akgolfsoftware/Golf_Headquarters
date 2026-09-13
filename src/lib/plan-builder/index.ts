@@ -384,7 +384,7 @@ export async function lagrePlanForslagCore(
 ): Promise<LagrePlanResultat> {
   if (user.tier === "GRATIS") {
     throw new Error(
-      "GRATIS-brukere kan ikke lagre planer. Oppgrader til PRO for å lagre.",
+      "TALENT-brukere kan ikke lagre planer. Oppgrader til FULL for å lagre.",
     );
   }
 

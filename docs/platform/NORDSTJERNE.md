@@ -2,12 +2,7 @@
 
 > **Hva er dette?** Den ene setningen alt skal måles mot. Les denne først — alltid.
 > Ved konflikt: denne fila vinner over all annen dokumentasjon unntatt
-> `docs/platform/BUSINESS-RULES.md` (låste forretningsregler) og
-> `src/lib/masterbrain/rag-corpus/morad/canon-invariants-13.md` (metodikk-invarianter).
-
-> **UTGÅTT (se `.claude/rules/beslutninger.md`, «ALLE TRENINGSPLANREGLER LÅST OPP», 2026-08-18):**
-> `canon-invariants-13.md` finnes ikke lenger i repoet — invariant-håndhevingen er slettet fra
-> koden. Referansen over er historisk og skal ikke leses som en gjeldende fasit-kilde.
+> `docs/platform/BUSINESS-RULES.md` (låste forretningsregler).
 
 ---
 
@@ -25,13 +20,13 @@ Fire produkter, én plattform:
 ## Det vi aldri gjør
 
 1. **Anbefalinger sperrer aldri.** Ingenting i appen blokkerer trening. Avvik vises
-   i klarspråk; sterkt avvik varsler coach. Dette er CANON-invariant #1 og gjelder
+   i klarspråk; sterkt avvik varsler coach. Dette er en gjeldende produktregel og gjelder
    all logikk, alle agenter, all UI.
 2. **Vi gjetter ikke på brukeren.** Data kvalifiserer råd — TrackMan-verifisert,
    GPS-beregnet og selvrapportert er ulike tillitsnivåer og skal merkes slik.
 3. **Vi forvirrer ikke spilleren.** Norsk bokmål, klarspråk (nærspill, ikke ARG),
    én primær CTA per skjerm. Vanskelig å forstå = feil design.
-4. **Vi bygger ikke to sannheter.** Én SG-beregning, én plan-motor, én kanon per
+4. **Vi bygger ikke to sannheter.** Én SG-beregning, én plan-motor og én sannhetskilde per
    domene. Avledet data regenereres fra kilde — aldri kopier og la dem drive fra hverandre.
 
 ## Kvalitetsstandard
@@ -61,17 +56,16 @@ frem som bevis på at systemet er bedre enn konkurrentene?
 
 ## Metodikk
 
-> **UTGÅTT (beslutninger.md 2026-08-18):** CS-progresjon og «13 invarianter» er pensjonert —
-> ingen regel-håndheving i planlegging lenger. Vokabularet (pyramide, A–K, MORAD P-system) består
-> som frie merkelapper, aldri krav. Club Speed (Anders, 2026-09-01): motorikk AUTO, «uten ball»
-> er en egenskap ved øvelsen, ikke eget motorikk-steg — se `docs/ordbok-ak-golf-konsept.md` §3.
+AK-metodikken er plattformens treningsfaglige grunnlag. Gjeldende begreper og
+beslutninger eies av treningsfasiten, ordbøkene og Anders. Pyramide, A–K og MORAD
+P-system kan brukes som faglige merkelapper, men de tidligere 13 invariantene og
+CS-progresjonen er pensjonert og skal ikke gjeninnføres som krav.
 
-Coaching-metodikken (AK-metodikken / CANON) er plattformens intellektuelle kjerne:
-A–K-kategorier, pyramide-fordeling, CS-progresjon, 13 invarianter, MORAD P-system.
-Kilde: `src/lib/masterbrain/` (knowledge/ + rag-corpus/, vendored fra Masterbrain-repoet). Metodikken endres ikke av
-tekniske hensyn — den endres av Anders.
+Club Speed-beslutningen fra 1. september gjelder: motorikk er AUTO, og «uten ball»
+er en egenskap ved øvelsen, ikke et eget motorikksteg. Se
+`docs/ordbok-ak-golf-konsept.md` §3.
 
 ---
 
 *Denne fila vedlikeholdes av Anders. Endringsforslag går via PR med hans godkjenning.*
-*Sist oppdatert: 2026-07-19*
+*Sist oppdatert: 2026-09-13*

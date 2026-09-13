@@ -86,7 +86,8 @@ Sist oppdatert: 2026-08-17 (dato rettet — §Abonnement og tilgang er fra 2026-
 ### Tier-pill i hero (PlayerHQ)
 
 - Tier-pill viser **«PlayerHQ · {tier}»** (+ «· HCP {hcp}» på desktop).
-- `{tier}` er `GRATIS` eller `PRO` — aldri `ELITE`, aldri «Performance», aldri «Performance Pro».
+- `{tier}` er det synlige produktnavnet `TALENT` eller `FULL` — aldri databasenavnene
+  `GRATIS`, `PRO` eller `ELITE`, og aldri «Performance» eller «Performance Pro».
 - Performance/Performance Pro er coaching-pakker og tilhører ikke app-pillen.
 
 ---
@@ -154,17 +155,21 @@ Implementasjon: `src/lib/domain/sg.ts`.
 
 ---
 
-## Live-økt dual-track
+## Live-økter — tre datamodeller
 
-To separate live-systemer sameksisterer **bevisst** og skal **ikke merges uoppfordret**.
+Tre øktmodeller sameksisterer **bevisst** og skal **ikke slås sammen som opprydding**.
 
-| Spor | Tabell | Rute | Use case |
+| Modell | Primær bruk | Rute/forbruker |
 |---|---|---|---|
-| **Spor A** | `TrainingPlanSession` | `/portal/live/[sessionId]` | Spillerens selvstyrte treningsøkt fra egen plan |
-| **Spor B** | `TrainingSessionV2` | `/admin/live/[sessionId]` + Workbench | Coachens styrte økt med spiller |
+| `TrainingPlanSession` | Planlagt økt i spillerens eldre treningsplan | `/portal/live/[sessionId]` |
+| `TrainingSessionV2` | Gjennomføring, driller og oppsummering i nyere live-flyt | `/portal/live/[sessionId]` og coachens live-flater |
+| `WorkbenchSession` | Coachens og spillerens planlegging i Workbench | `/portal/planlegge/workbench` og AgencyOS-planlegging |
 
-- Spor A og B er to forskjellige use cases med separate datamodeller.
-- Workbench er primærpunktet for planlegging i Spor B — planlegge er ett trykkpunkt dit, ikke en meny.
+- `resolve-live-session.ts` kan finne en økt på tvers av alle tre, i rekkefølgen
+  `TrainingSessionV2` → `TrainingPlanSession` → `WorkbenchSession`.
+- Enkelte skriveflyter speiler data mellom modeller, men dette betyr ikke at alle tre
+  er én felles sannhet. Hver overgang må testes i den aktuelle spillerreisen.
+- Workbench er primærpunktet for planlegging — planlegge er ett trykkpunkt dit, ikke en meny.
 
 ---
 
@@ -342,35 +347,13 @@ Implementasjon: `src/lib/v2/tema-default.ts` + `src/app/layout.tsx` + `src/compo
 
 ---
 
-## CANON-invariantene — de 13 (metodikk)
+## Tidligere CANON-invarianter
 
-> **UTGÅTT (se `.claude/rules/beslutninger.md`, «ALLE TRENINGSPLANREGLER LÅST OPP», 2026-08-18):**
-> all regel-håndheving i planlegging er slettet fra koden — `src/lib/canon/` og
-> `canon-invariants-13.md` finnes ikke lenger i repoet. CANON som overstyrende fasit-begrep er
-> pensjonert; L-fase (#4) og CS50-minimum (#2) er utgåtte begreper. Listen under er historikk.
-> Club Speed (Anders, 2026-09-01): motorikk AUTO, «uten ball» er en egenskap ved øvelsen, ikke
-> eget motorikk-steg — se `docs/ordbok-ak-golf-konsept.md` §3.
+De 13 tidligere CANON-invariantene og kodehåndhevelsen under `src/lib/canon/` ble
+pensjonert 18. august 2026. De er historikk, ikke produktregler eller aktive
+implementasjonskrav. Gjeldende treningsbegreper og beslutninger finnes i
+`docs/FASIT-AK-GOLF-HQ.md`, ordbøkene og `.claude/rules/beslutninger.md`.
 
-> Navngitt kanonisk liste (A4, forankret 2026-07-18). Kilde: `src/lib/masterbrain/rag-corpus/morad/canon-invariants-13.md`
-> (CANON v3.5). **Invariantene er ANBEFALINGER som varsler ved avvik — aldri harde sperrer.**
-> Ingenting i appen blokkerer trening; sterkt avvik vises i klarspråk og kan varsle coach.
-> Pyramide-fordelingen (#1, #5) er coach-redigerbar per periode (`/admin/settings/periode-fordeling`).
-
-1. **TEK ≥ minimum** — teknisk andel alltid over periodens minimum (coach-satt, standard grunn 25 % / turneringsfase 15 %). Teknikk forsvinner aldri helt.
-2. **CS50-minimum for ballkontakt** — slag med ballkontakt krever ferdighetsnivå (CS) ≥ 50 %. Under: kun ren bevegelse uten ball.
-3. **Junior volum-tak** — under 18: treningstimer per uke ≤ alder i år. Vern mot overbelastning.
-4. **L-fase overstyrer alt** — læringsfasen har forrang over SG-data, turneringskalender og coach-input.
-5. **Pyramide = 100 %** — fordelingen mellom FYS/TEK/SLAG/SPILL/TURN summerer til 100 %.
-6. **SG krever teknisk plan** — et Strokes Gained-tiltak må kobles til en konkret teknisk plan, ikke stå som diagnose alene.
-7. **Konfidens < 0,70 = retningssignal** — anbefalinger under 0,70 konfidens er hint, aldri definitive.
-8. **Rough-baseline +0,15–0,25** — SG fra rough legger til 0,15–0,25 slag; aldri fairway-baseline for rough.
-9. **Lav readiness → lavere PR + volum** — lav dagsform/restitusjon senker både intensitet og volum.
-10. **Alle 5 APP-bånd med baseline** — alle fem APP-bånd må ha baseline før tiltaket settes i produksjon.
-11. **Metrikker ≠ sjekkpunkter** — måltall og sjekkpunkter er separate felt; en måling er ikke en godkjenning.
-12. **MORAD-feil → P-posisjon påkrevd** — sving-feil må lokaliseres til en P-posisjon (P1–P10), ikke bare beskrives.
-13. **Anbefalings-format** — enhver anbefaling har fire ledd: why + what + expected_effect + why_now.
-
-**Kode-håndhevelse:** #1–#5 og #cs-tak/#l-fase/#volum/#hviledager er implementert som rene funksjoner i
-`src/lib/canon/invarianter.ts` (9 invarianter, testet). #6, #7, #8, #11, #12, #13 bor foreløpig i
-AI-coach-kunnskapen (retningsgivende), ikke som validerings-funksjoner — et kjent gap hvis full
-kode-håndhevelse av alle 13 ønskes senere.
+Club Speed-beslutningen fra 1. september gjelder fortsatt: motorikk er AUTO, og
+«uten ball» er en egenskap ved øvelsen, ikke et eget motorikksteg. Se
+`docs/ordbok-ak-golf-konsept.md` §3.
