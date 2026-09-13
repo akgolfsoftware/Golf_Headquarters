@@ -21,23 +21,13 @@ import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { hasRole } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
 import { logError } from "@/lib/error-tracking";
+import { coachLiveSummaryUpdate } from "./live-summary-update";
 
 type ActionResult = { ok: true } | { ok: false; error: string };
 
-async function hentEidSesjon(sessionId: string, meId: string, erAdmin: boolean) {
-  return prisma.trainingSessionV2.findFirst({
-    where: { id: sessionId, ...(erAdmin ? {} : { coachId: meId }) },
-    select: { id: true, completedSummary: true },
-  });
-}
-
-function somObjekt(raw: unknown): Record<string, unknown> {
-  return raw && typeof raw === "object" && !Array.isArray(raw) ? (raw as Record<string, unknown>) : {};
-}
-
 const MeldingSchema = z.object({
   sessionId: z.string().min(1, "Økt-ID er påkrevd"),
-  melding: z.string().min(1, "Skriv en melding").max(1000, "Maks 1000 tegn"),
+  melding: z.string().trim().min(1, "Skriv en melding").max(1000, "Maks 1000 tegn"),
 });
 
 type CoachLiveMelding = { content: string; ts: string; sentById: string };
@@ -55,17 +45,10 @@ export async function sendLiveMelding(sessionId: string, melding: string): Promi
   const ny: CoachLiveMelding = { content: trimmet, ts: new Date().toISOString(), sentById: me.id };
 
   try {
-    const session = await hentEidSesjon(parsed.data.sessionId, me.id, me.role === "ADMIN");
-    if (!session) return { ok: false, error: "Økt ikke funnet" };
-
-    const eksisterende = somObjekt(session.completedSummary);
-    const rawMsgs = eksisterende.coachMessages;
-    const meldinger: CoachLiveMelding[] = Array.isArray(rawMsgs) ? (rawMsgs as CoachLiveMelding[]) : [];
-
-    await prisma.trainingSessionV2.update({
-      where: { id: parsed.data.sessionId },
-      data: { completedSummary: { ...eksisterende, coachMessages: [...meldinger, ny] } as object },
-    });
+    const skrevet = await prisma.$executeRaw(coachLiveSummaryUpdate(
+      parsed.data.sessionId, me.id, me.role === "ADMIN", { kind: "message", value: ny },
+    ));
+    if (skrevet === 0) return { ok: false, error: "Økt ikke funnet" };
   } catch (error) {
     await logError({ context: "admin.live.sendLiveMelding", error, meta: { sessionId: parsed.data.sessionId } });
     return { ok: false, error: "Kunne ikke sende melding" };
@@ -77,7 +60,7 @@ export async function sendLiveMelding(sessionId: string, melding: string): Promi
 
 const BriefSchema = z.object({
   sessionId: z.string().min(1, "Økt-ID er påkrevd"),
-  melding: z.string().min(1, "Skriv en melding").max(4000, "Maks 4000 tegn"),
+  melding: z.string().trim().min(1, "Skriv en melding").max(4000, "Maks 4000 tegn"),
 });
 
 export async function sendBriefTilSpiller(sessionId: string, melding: string): Promise<ActionResult> {
@@ -90,19 +73,13 @@ export async function sendBriefTilSpiller(sessionId: string, melding: string): P
   const trimmet = parsed.data.melding.trim();
 
   try {
-    const session = await hentEidSesjon(parsed.data.sessionId, me.id, me.role === "ADMIN");
-    if (!session) return { ok: false, error: "Økt ikke funnet" };
-
-    const eksisterende = somObjekt(session.completedSummary);
-    await prisma.trainingSessionV2.update({
-      where: { id: parsed.data.sessionId },
-      data: {
-        completedSummary: {
-          ...eksisterende,
-          coachBrief: { melding: trimmet, sentAt: new Date().toISOString(), sentById: me.id },
-        } as object,
+    const skrevet = await prisma.$executeRaw(coachLiveSummaryUpdate(
+      parsed.data.sessionId, me.id, me.role === "ADMIN", {
+        kind: "brief",
+        value: { melding: trimmet, sentAt: new Date().toISOString(), sentById: me.id },
       },
-    });
+    ));
+    if (skrevet === 0) return { ok: false, error: "Økt ikke funnet" };
   } catch (error) {
     await logError({ context: "admin.live.sendBriefTilSpiller", error, meta: { sessionId: parsed.data.sessionId } });
     return { ok: false, error: "Kunne ikke sende til spiller" };
@@ -121,7 +98,7 @@ const VurderingSchema = z.object({
 /**
  * Lagrer coachens øktvurdering. completedSummary er et JSON-objekt som
  * spiller-siden allerede kan ha frosset (SessionSummaryShape) — les det
- * eksisterende objektet, behold alle nøklene, legg kun til coach-feltene.
+ * eksisterende objektet i databasen og oppdater kun coach-feltene atomisk.
  */
 export async function lagreCoachVurdering(sessionId: string, rating: number, notat: string): Promise<ActionResult> {
   const parsed = VurderingSchema.safeParse({ sessionId, rating, notat });
@@ -133,23 +110,15 @@ export async function lagreCoachVurdering(sessionId: string, rating: number, not
   const trimmet = parsed.data.notat.trim();
 
   try {
-    const session = await hentEidSesjon(parsed.data.sessionId, me.id, me.role === "ADMIN");
-    if (!session) return { ok: false, error: "Økt ikke funnet" };
-
-    const eksisterende = somObjekt(session.completedSummary);
-    await prisma.trainingSessionV2.update({
-      where: { id: parsed.data.sessionId },
-      data: {
-        completedSummary: {
-          ...eksisterende,
-          coachRating: parsed.data.rating,
-          coachRatedAt: new Date().toISOString(),
-          coachRatedById: me.id,
-        } as object,
-        // Tomt notat lar eksisterende .notes stå — nuller ikke destruktivt.
-        ...(trimmet.length > 0 ? { notes: trimmet } : {}),
+    const skrevet = await prisma.$executeRaw(coachLiveSummaryUpdate(
+      parsed.data.sessionId, me.id, me.role === "ADMIN", {
+        kind: "rating",
+        rating: parsed.data.rating,
+        at: new Date().toISOString(),
+        ...(trimmet.length > 0 ? { note: trimmet } : {}),
       },
-    });
+    ));
+    if (skrevet === 0) return { ok: false, error: "Økt ikke funnet" };
   } catch (error) {
     await logError({ context: "admin.live.lagreCoachVurdering", error, meta: { sessionId: parsed.data.sessionId } });
     return { ok: false, error: "Kunne ikke lagre vurdering" };

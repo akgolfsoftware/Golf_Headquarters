@@ -1,5 +1,4 @@
-// swing-video-analyst (stub): bekrefter mottak av swing-video i LIVE-tråden.
-// Ingen bildeanalyse ennå — Claude feature/live-coach-session eier full pipeline.
+// Bekrefter mottak av svingvideo i Live-tråden. Videoen analyseres ikke her.
 
 import "server-only";
 import { prisma } from "@/lib/prisma";
@@ -29,8 +28,8 @@ export async function runSwingVideoAnalyst(opts: {
     }
 
     const tekst = opts.drillId
-      ? `Video mottatt for øvelsen. Jeg ser på opptaket — gi meg et øyeblikk mens du fortsetter økta.`
-      : `Video mottatt. Jeg ser på opptaket — fortell meg hva du vil jeg skal se etter.`;
+      ? "Video mottatt for øvelsen. Automatisk videoanalyse er ikke tilgjengelig ennå."
+      : "Video mottatt. Automatisk videoanalyse er ikke tilgjengelig ennå.";
 
     const eksisterende = Array.isArray(live.messages) ? live.messages : [];
     await prisma.coachingSession.update({
