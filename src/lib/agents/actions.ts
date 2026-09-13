@@ -68,8 +68,8 @@ export async function rejectPlanAction(actionId: string, reason?: string) {
       ? reason.trim().slice(0, 500)
       : undefined;
 
-  await prisma.planAction.update({
-    where: { id: actionId },
+  const rejected = await prisma.planAction.updateMany({
+    where: { id: actionId, status: "PENDING" },
     data: {
       status: "REJECTED",
       decidedAt: new Date(),
@@ -77,6 +77,7 @@ export async function rejectPlanAction(actionId: string, reason?: string) {
       ...(rejectReason ? { rejectReason } : {}),
     },
   });
+  if (rejected.count !== 1) return;
   await prisma.agentRun.create({
     data: planActionAvvisSpor({
       actionId,

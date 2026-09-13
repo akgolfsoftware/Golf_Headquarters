@@ -1,6 +1,8 @@
-import { GFGK_DATA } from "./data";
-import { Presentation } from "./_components/presentation";
+import { notFound } from "next/navigation";
 
 export default function TeamGfgkPage() {
-  return <Presentation data={GFGK_DATA} />;
+  // Presentasjonen inneholdt identifiserende juniorresultater i kildekoden.
+  // Den skal ikke kunne åpnes før data er flyttet til en tilgangsstyrt kilde
+  // med dokumentert samtykke og minste nødvendige datautvalg.
+  notFound();
 }

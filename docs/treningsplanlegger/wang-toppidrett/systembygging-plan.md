@@ -22,7 +22,9 @@ Komponentene finnes: `src/components/athletic/calendars/{year-plan-gantt,month-g
 - **Gjenbruk props** slik de er (kartlagt): `YearPlanGantt(year, phases[], milestones[])`, `MonthGrid(year, month, cells[])`, `WeekGrid(weekStart, events[], startHour, endHour)`.
 
 ## Steg 6 — Åpen WANG-side (uten innlogging)
-Mal: `src/app/team-gfgk/` (ingen `requirePortalUser()`, `robots: noindex`).
+`src/app/team-gfgk/` skal **ikke** brukes som tilgangsmal. Ruten ble stengt
+13.09.2026 fordi den inneholdt identifiserende juniorresultater. En åpen WANG-side
+kan bare vise ikke-personlig gruppeinformasjon og må ha en egen personvernkontroll.
 - **Ny:** `src/app/team-wang/page.tsx` — server component som leser WANG-gruppe + schedules + perioder og rendrer kalender-wrapperen + tider/samlinger/turneringer/tester. **Ingen personlige spillerdata.**
 - Domenekobling til gfgkjunior.no-mønster kommer i GFGK-delen (egen jobb).
 
@@ -34,7 +36,7 @@ Ingen eksplisitt trinn-felt i dag. **Default (ingen ny data):** beregn trinn fra
 ## Rekkefølge (minst ny kode først)
 0. Seed WANG-gruppe + schedules + perioder (forutsetning).
 1. Steg 4 kalender-wrapper (gjenbruk 3 komponenter).
-2. Steg 6 åpen side (mal fra team-gfgk).
+2. Steg 6 åpen side (egen ikke-personlig datakontrakt; ikke `team-gfgk`).
 3. Steg 5 VG-filter (default: beregn fra fødselsår).
 
 ## akgolf-hq-regler som gjelder
@@ -46,5 +48,6 @@ Ingen eksplisitt trinn-felt i dag. **Default (ingen ny data):** beregn trinn fra
 
 ## Åpne beslutninger for Anders
 1. VG-filter: beregne fra fødselsår (enkelt, anbefalt) vs. redigerbart felt (schema-endring)?
-2. team-gfgk-presentasjonen: består ved siden av ny åpen side, eller erstattes?
+2. Hvis team-gfgk-presentasjonen senere skal gjenåpnes: hvem har tilgang, hvilket
+   samtykke finnes, og hvilke minimumsdata trenger mottakeren?
 3. Perioder: lagres på gruppen eller i egen liten tabell kalenderen fargelegger?

@@ -39,8 +39,8 @@ export async function avvisPlanAction(actionId: string): Promise<{ ok: boolean }
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const action = await assertKanBehandlePlanAction(user, actionId);
   if (action) {
-    await prisma.planAction.update({
-      where: { id: actionId },
+    await prisma.planAction.updateMany({
+      where: { id: actionId, status: "PENDING" },
       data: { status: "REJECTED", updatedAt: new Date() },
     });
   }

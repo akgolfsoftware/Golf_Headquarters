@@ -18,6 +18,7 @@ import { StatsHorisontalBar } from "@/components/stats/stats-horisontal-bar";
 import { StatsKohortLinjegraf } from "@/components/stats/stats-kohort-linjegraf";
 import { StatsIcon } from "@/components/stats/icon";
 import { StatsLegacyShell } from "@/components/marketing/v2/stats-ramme";
+import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 
 export const revalidate = 3600;
 
@@ -38,6 +39,7 @@ export async function generateMetadata({
     title: `${aar}-årgangen | AK Golf Stats`,
     description: `Alle norske golfspillere født i ${aar} (${alder} år). Topp 10, scoredistribusjon, klubbfordeling og tour-aktivitet.`,
     alternates: { canonical: `https://akgolf.no/stats/aargang/${aar}` },
+    robots: { index: false, follow: false },
   };
 }
 
@@ -243,6 +245,7 @@ export default async function AargangDetalj({
 }: {
   params: Promise<{ aar: string }>;
 }) {
+  await requirePortalUser({ kreverTilgang: "INGEN" });
   const { aar } = await params;
   const aarNum = parseInt(aar, 10);
 

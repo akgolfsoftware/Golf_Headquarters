@@ -14,6 +14,7 @@ import { Reveal } from "@/components/stats/reveal";
 import { StatsBtn } from "@/components/stats/btn";
 import { CountUp } from "@/components/stats/count-up";
 import { StatsLegacyShell } from "@/components/marketing/v2/stats-ramme";
+import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 
 export const revalidate = 3600;
 
@@ -22,6 +23,7 @@ export const metadata: Metadata = {
   description:
     "Utforsk norske golftaler per fødselsår. Hvem er de beste 2009-talentene? Kohort-explorer for 2000-2012.",
   alternates: { canonical: "https://akgolf.no/stats/aargang" },
+  robots: { index: false, follow: false },
   openGraph: {
     title: "Årganger | AK Golf Stats",
     description: "Kohort-explorer for norske golftalenter, 2000-2012.",
@@ -70,6 +72,7 @@ async function hentAargangData() {
 }
 
 export default async function AargangIndexPage() {
+  await requirePortalUser({ kreverTilgang: "INGEN" });
   const kohorter = await hentAargangData();
   const totalSpillere = kohorter.reduce((s, k) => s + k.spillere, 0);
 

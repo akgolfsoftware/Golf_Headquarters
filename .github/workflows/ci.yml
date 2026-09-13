@@ -23,6 +23,14 @@ jobs:
       # tsc --noEmit + next build går tom for default ~2GB heap på et stort
       # prosjekt (411 ruter). Hev til 4GB (ubuntu-latest har 7GB RAM).
       NODE_OPTIONS: --max-old-space-size=4096
+      NEXT_PUBLIC_SUPABASE_URL: https://dummy.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: dummy
+      ANTHROPIC_API_KEY: dummy
+      STRIPE_SECRET_KEY: sk_test_dummy
+      STRIPE_WEBHOOK_SECRET: whsec_dummy
+      NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: pk_test_dummy
+      STRIPE_PRICE_ID_PRO: price_dummy
+      CRON_SECRET: dummy
     steps:
       - uses: actions/checkout@v4
 
@@ -34,65 +42,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Generate Prisma client
-        run: npx prisma generate
-
-      - name: Type-check
-        run: npx tsc --noEmit
-
-      - name: Lint
-        run: npm run lint
-
-      - name: Prosjektstruktur og dokumentlenker
-        run: npm run prosjekt:sjekk
-
-      - name: Action-auth gate (KS-1 — server actions må ha auth-import)
-        run: npm run check:action-auth
-
-      - name: Token-gap gate (designport steg 10 — ingen nye hardkodede farger)
-        run: npm run check:token-gap
-
-      - name: Critical imports gate (bundle + offline-queue export contract)
-        run: npm run check:critical-imports
-
-      - name: Ingen-Paper gate (Anders 30.08.2026 — Paper kommer aldri tilbake i src/)
-        run: node scripts/check-ingen-paper.mjs
-
-      - name: "V2Shell-bredde gate (alle <V2Shell> har eksplisitt bredde-prop)"
-        run: node scripts/check-v2shell-bredde.mjs
-
-      - name: Train-lock kontrast (rapport — blokkerer ikke, Train-lock er fasit)
-        run: node scripts/check-tl-kontrast.mjs
-
       - name: Hent origin/main (baseline for signalfarge-vakten i oppgave 1.4 og fasit-siteringsvakten i økt 5)
         run: git fetch --no-tags --depth=1 origin +refs/heads/main:refs/remotes/origin/main
 
-      - name: Fasit-sitering gate (designport fase 1 økt 5 — Fasit må finnes, Rigg/Avvik på endrede skjermfiler)
-        run: npm run check:fasit-sitering
-
-      - name: Fasitdekning-vakt (aldri færre siterte tegninger enn den committede baselinen)
-        run: node scripts/check-fasitdekning-baseline.mjs
-
-      - name: "Signalfarge-vakt (color: TL.<signal> som tekst øker aldri per fil)"
-        run: node scripts/check-signalfarge-tekst.mjs
-
-      - name: Unit tests (node:test + tsx)
-        run: npm test
-
-      - name: Build
-        run: npm run build
-        env:
-          # Dummy-verdier for build (Next bygger uten DB-tilkobling)
-          DATABASE_URL: postgresql://dummy:dummy@localhost:5432/dummy?pgbouncer=true
-          DIRECT_URL: postgresql://dummy:dummy@localhost:5432/dummy
-          NEXT_PUBLIC_SUPABASE_URL: https://dummy.supabase.co
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: dummy
-          ANTHROPIC_API_KEY: dummy
-          STRIPE_SECRET_KEY: sk_test_dummy
-          STRIPE_WEBHOOK_SECRET: whsec_dummy
-          NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: pk_test_dummy
-          STRIPE_PRICE_ID_PRO: price_dummy
-          CRON_SECRET: dummy
+      - name: Autoritativ kvalitetsport
+        run: npm run verify
 
       # E2E er BEVISST fjernet herfra (2026-07-26). Blokket startet appen med
       # dummy-DB/Supabase-verdier og kjørte hele suiten (206 tester) mot den:

@@ -18,7 +18,7 @@ import "server-only";
 
 import { prisma } from "@/lib/prisma";
 import { aktivtMedlemskapWhere, TEAM_NORWAY_SLUG } from "@/lib/domain/grupper";
-import type { UserRole } from "@/generated/prisma/client";
+import type { Prisma, UserRole } from "@/generated/prisma/client";
 
 export { TEAM_NORWAY_SLUG };
 
@@ -157,6 +157,24 @@ export async function hentTnOversiktForBruker(bruker: {
 
 export type TnAvsluttResultat = { ok: true } | { ok: false; reason: "siste-trener"; gruppeNavn: string; antallSpillere: number };
 
+async function medSerialiserbarTilgangsoppdatering<T>(
+  arbeid: (tx: Prisma.TransactionClient) => Promise<T>,
+): Promise<T> {
+  for (let forsok = 0; forsok < 3; forsok++) {
+    try {
+      return await prisma.$transaction(arbeid, {
+        isolationLevel: "Serializable",
+      });
+    } catch (error) {
+      const kode = (error as { code?: string } | null)?.code;
+      const kanProveIgjen =
+        kode === "P2034" || kode === "40001" || kode === "40P01";
+      if (!kanProveIgjen || forsok === 2) throw error;
+    }
+  }
+  throw new Error("Tilgangsoppdateringen kunne ikke fullføres");
+}
+
 /**
  * Setter `endedAt = nå` (soft-end, jf. grupper.ts) på trener-/hjelpetrener-
  * medlemskapet. Sperret hvis dette ville fjernet siste aktive COACH i
@@ -171,27 +189,29 @@ export async function avsluttTilgang(input: {
   const lovlig = await erSportssjef(input.caller);
   if (!lovlig) throw new Error("Du er ikke sportssjef");
 
-  const rad = await prisma.groupMember.findUnique({
-    where: { groupId_userId: { groupId: input.groupId, userId: input.targetUserId } },
-    select: { id: true, role: true, endedAt: true },
-  });
-  if (!rad || rad.endedAt) return { ok: true };
-
-  if (rad.role === "COACH") {
-    const andreAktiveTrenere = await prisma.groupMember.count({
-      where: { groupId: input.groupId, role: "COACH", endedAt: null, userId: { not: input.targetUserId } },
+  return medSerialiserbarTilgangsoppdatering(async (tx) => {
+    const rad = await tx.groupMember.findUnique({
+      where: { groupId_userId: { groupId: input.groupId, userId: input.targetUserId } },
+      select: { id: true, role: true, endedAt: true },
     });
-    if (andreAktiveTrenere === 0) {
-      const [gruppe, antallSpillere] = await Promise.all([
-        prisma.group.findUnique({ where: { id: input.groupId }, select: { name: true } }),
-        prisma.groupMember.count({ where: { groupId: input.groupId, role: "PLAYER", endedAt: null } }),
-      ]);
-      return { ok: false, reason: "siste-trener", gruppeNavn: gruppe?.name ?? "gruppen", antallSpillere };
-    }
-  }
+    if (!rad || rad.endedAt) return { ok: true };
 
-  await prisma.groupMember.update({ where: { id: rad.id }, data: { endedAt: new Date() } });
-  return { ok: true };
+    if (rad.role === "COACH") {
+      const andreAktiveTrenere = await tx.groupMember.count({
+        where: { groupId: input.groupId, role: "COACH", endedAt: null, userId: { not: input.targetUserId } },
+      });
+      if (andreAktiveTrenere === 0) {
+        const [gruppe, antallSpillere] = await Promise.all([
+          tx.group.findUnique({ where: { id: input.groupId }, select: { name: true } }),
+          tx.groupMember.count({ where: { groupId: input.groupId, role: "PLAYER", endedAt: null } }),
+        ]);
+        return { ok: false as const, reason: "siste-trener" as const, gruppeNavn: gruppe?.name ?? "gruppen", antallSpillere };
+      }
+    }
+
+    await tx.groupMember.update({ where: { id: rad.id }, data: { endedAt: new Date() } });
+    return { ok: true as const };
+  });
 }
 
 export type TnSettRolleResultat = { ok: true } | { ok: false; reason: "siste-trener"; gruppeNavn: string; antallSpillere: number };
@@ -215,34 +235,36 @@ export async function settTilgang(input: {
   const lovlig = await erSportssjef(input.caller);
   if (!lovlig) throw new Error("Du er ikke sportssjef");
 
-  const eksisterende = await prisma.groupMember.findUnique({
-    where: { groupId_userId: { groupId: input.groupId, userId: input.targetUserId } },
-    select: { id: true, role: true, endedAt: true },
-  });
-
-  const degraderesFraCoach = eksisterende?.role === "COACH" && !eksisterende.endedAt && input.rolle !== "COACH";
-  if (degraderesFraCoach) {
-    const andreAktiveTrenere = await prisma.groupMember.count({
-      where: { groupId: input.groupId, role: "COACH", endedAt: null, userId: { not: input.targetUserId } },
-    });
-    if (andreAktiveTrenere === 0) {
-      const [gruppe, antallSpillere] = await Promise.all([
-        prisma.group.findUnique({ where: { id: input.groupId }, select: { name: true } }),
-        prisma.groupMember.count({ where: { groupId: input.groupId, role: "PLAYER", endedAt: null } }),
-      ]);
-      return { ok: false, reason: "siste-trener", gruppeNavn: gruppe?.name ?? "gruppen", antallSpillere };
-    }
-  }
-
   const fra = parseDatoStrengUtc(input.fraIso) ?? new Date();
   const til = input.tilIso ? parseDatoStrengUtc(input.tilIso) : null;
 
-  await prisma.groupMember.upsert({
-    where: { groupId_userId: { groupId: input.groupId, userId: input.targetUserId } },
-    create: { groupId: input.groupId, userId: input.targetUserId, role: input.rolle, joinedAt: fra, endedAt: til },
-    update: { role: input.rolle, joinedAt: fra, endedAt: til },
+  return medSerialiserbarTilgangsoppdatering(async (tx) => {
+    const eksisterende = await tx.groupMember.findUnique({
+      where: { groupId_userId: { groupId: input.groupId, userId: input.targetUserId } },
+      select: { id: true, role: true, endedAt: true },
+    });
+
+    const degraderesFraCoach = eksisterende?.role === "COACH" && !eksisterende.endedAt && input.rolle !== "COACH";
+    if (degraderesFraCoach) {
+      const andreAktiveTrenere = await tx.groupMember.count({
+        where: { groupId: input.groupId, role: "COACH", endedAt: null, userId: { not: input.targetUserId } },
+      });
+      if (andreAktiveTrenere === 0) {
+        const [gruppe, antallSpillere] = await Promise.all([
+          tx.group.findUnique({ where: { id: input.groupId }, select: { name: true } }),
+          tx.groupMember.count({ where: { groupId: input.groupId, role: "PLAYER", endedAt: null } }),
+        ]);
+        return { ok: false as const, reason: "siste-trener" as const, gruppeNavn: gruppe?.name ?? "gruppen", antallSpillere };
+      }
+    }
+
+    await tx.groupMember.upsert({
+      where: { groupId_userId: { groupId: input.groupId, userId: input.targetUserId } },
+      create: { groupId: input.groupId, userId: input.targetUserId, role: input.rolle, joinedAt: fra, endedAt: til },
+      update: { role: input.rolle, joinedAt: fra, endedAt: til },
+    });
+    return { ok: true as const };
   });
-  return { ok: true };
 }
 
 /** `YYYY-MM-DD` → UTC-midnatt. gotchas.md §Dato-strenger — aldri `new Date(y,m-1,d)`. */
