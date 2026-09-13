@@ -135,6 +135,9 @@
     "tsx": "^4.21.0",
     "typescript": "^5"
   },
+  "overrides": {
+    "browserslist": "4.28.9"
+  },
   "lint-staged": {
     "*.{ts,tsx}": [
       "eslint --max-warnings 0 --no-warn-ignored",
