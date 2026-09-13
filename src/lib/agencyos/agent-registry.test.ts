@@ -30,6 +30,8 @@ const INFRASTRUKTUR = new Set([
   "canonical-json.ts",
   "notify-plan-action.ts",
   "plan-action-executor.ts",
+  "plan-action-spor.ts",
+  "plan-action-tilgang.ts",
   "plan-revision-actions.ts",
   "provenance.ts",
   "triggers.ts",

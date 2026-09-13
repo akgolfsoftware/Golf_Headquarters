@@ -6,6 +6,7 @@ import {
 } from "@/lib/recording/fangst-suggestion";
 import { isEditedSuggestion } from "./canonical-json";
 import { executePlanAction } from "./plan-action-executor";
+import { planActionFeilSpor, planActionOkSpor } from "./plan-action-spor";
 
 export type AcceptPlanActionResult = {
   status: "ACCEPTED" | "REJECTED" | "UNCHANGED";
@@ -64,17 +65,13 @@ export async function acceptAndApplyPlanAction(
       },
     });
     await prisma.agentRun.create({
-      data: {
-        agentName: "plan-action-executor",
+      data: planActionOkSpor({
+        actionId,
+        actionType: action.actionType,
         userId: action.userId,
-        status: "OK",
-        duration: 0,
-        output: {
-          actionId,
-          actionType: action.actionType,
-          ...exec,
-        },
-      },
+        applied: exec.applied,
+        summary: exec.summary,
+      }),
     });
     return {
       status: "ACCEPTED",
@@ -83,14 +80,13 @@ export async function acceptAndApplyPlanAction(
     };
   } catch (err) {
     await prisma.agentRun.create({
-      data: {
-        agentName: "plan-action-executor",
+      data: planActionFeilSpor({
+        actionId,
+        actionType: action.actionType,
         userId: action.userId,
-        status: "ERROR",
-        duration: 0,
-        error: err instanceof Error ? err.message.slice(0, 500) : String(err),
-      },
+        error: err,
+      }),
     });
-    throw err;
+    throw new Error("execution-failed");
   }
 }

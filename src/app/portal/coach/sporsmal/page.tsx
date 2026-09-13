@@ -9,6 +9,8 @@
 
 import { TilbakeLenke } from "@/components/v2";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
+import { sporsmalListeFilter } from "@/lib/portal-okt/coach-sporsmal-tilgang";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { CoachQAV2, type CoachSporsmal } from "@/components/portal/v2/CoachQAV2";
@@ -27,9 +29,19 @@ function formatDatoTid(d: Date): string {
 export default async function V2CoachSporsmalPreviewPage() {
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
-  // Spørsmål rettet til denne coachen + spørsmål uten tildelt coach (åpen kø).
+  const egneSpillere =
+    user.role === "ADMIN"
+      ? []
+      : await prisma.user.findMany({
+          where: coachScopedPlayerWhere(user),
+          select: { id: true },
+        });
   const questions = await prisma.question.findMany({
-    where: { OR: [{ coachUserId: user.id }, { coachUserId: null }] },
+    where: sporsmalListeFilter({
+      viewerId: user.id,
+      viewerRole: user.role,
+      coachedPlayerIds: egneSpillere.map((spiller) => spiller.id),
+    }),
     orderBy: { createdAt: "desc" },
     take: 50,
   });

@@ -3,6 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
+import { kanSvarePaSporsmal } from "@/lib/portal-okt/coach-sporsmal-tilgang";
 import { prisma } from "@/lib/prisma";
 import { nonEmpty } from "@/lib/validation/schemas";
 
@@ -19,17 +21,20 @@ export async function svarPaSporsmal(questionId: string, answer: string): Promis
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const parsed = SvarSchema.parse({ questionId, answer });
 
-  // IDOR-vern: en coach kan kun svare på spørsmål rettet til seg selv eller i
-  // den åpne køen (coachUserId = null). ADMIN kan svare på alle.
   const question = await prisma.question.findUnique({
     where: { id: parsed.questionId },
-    select: { coachUserId: true },
+    select: { coachUserId: true, askerUserId: true },
   });
   if (!question) throw new Error("not_found");
+  const harSpillerTilgang =
+    user.role === "COACH" ? await harCoachTilgangTilSpiller(user, question.askerUserId) : false;
   if (
-    user.role !== "ADMIN" &&
-    question.coachUserId !== null &&
-    question.coachUserId !== user.id
+    !kanSvarePaSporsmal({
+      viewerId: user.id,
+      viewerRole: user.role,
+      coachUserId: question.coachUserId,
+      harSpillerTilgang,
+    })
   ) {
     throw new Error("forbidden");
   }

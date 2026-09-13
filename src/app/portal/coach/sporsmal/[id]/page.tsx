@@ -2,13 +2,14 @@
  * PlayerHQ Coach · Spørsmål-tråd (/portal/coach/sporsmal/[id]) — v2.
  * Erstatter legacy /portal/(legacy)/coach/sporsmal/[id] som tråd-detaljen
  * lista (/portal/coach/sporsmal, allerede v2) lenker til. Auth + datahenting
- * speiler legacy-siden EKSAKT: samme Question-oppslag, samme spillernavn-
- * oppslag, samme svarPaSporsmal-server-action (uendret, importert fra legacy
- * og sendt inn som prop). Kun det visuelle er løftet til v2.
+ * Tråden vises bare for den som spurte, tildelt coach, admin, eller coach
+ * med tilgang når spørsmålet ligger i åpen kø.
  */
 
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
+import { kanSeSporsmal } from "@/lib/portal-okt/coach-sporsmal-tilgang";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { TilbakeLenke } from "@/components/v2";
@@ -40,6 +41,20 @@ export default async function CoachSporsmalTraadPage({ params }: RouteProps) {
 
   const question = await prisma.question.findUnique({ where: { id } });
   if (!question) notFound();
+
+  const harSpillerTilgang =
+    user.role === "COACH" ? await harCoachTilgangTilSpiller(user, question.askerUserId) : false;
+  if (
+    !kanSeSporsmal({
+      viewerId: user.id,
+      viewerRole: user.role,
+      askerUserId: question.askerUserId,
+      coachUserId: question.coachUserId,
+      harSpillerTilgang,
+    })
+  ) {
+    notFound();
+  }
 
   const asker = await prisma.user.findUnique({
     where: { id: question.askerUserId },

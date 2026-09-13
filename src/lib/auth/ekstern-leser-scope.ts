@@ -23,6 +23,7 @@ import "server-only";
 
 import { prisma } from "@/lib/prisma";
 import { aktivtSpillerMedlemskapWhere } from "@/lib/domain/grupper";
+import { maaHaForesattSamtykke } from "@/lib/auth/minor";
 import {
   velgSamtykkedeSpillerePerGruppe,
   type DelingSamtykkeRad,
@@ -76,6 +77,7 @@ export async function eksternLeserSpillerIderPerGruppe(
     select: {
       id: true,
       requiresGuardianConsent: true,
+      dateOfBirth: true,
       groupMemberships: {
         where: { ...aktivtSpillerMedlemskapWhere(), groupId: { in: gruppeIder } },
         select: { groupId: true },
@@ -110,7 +112,10 @@ export async function eksternLeserSpillerIderPerGruppe(
   const samtykket = velgSamtykkedeSpillerePerGruppe(
     kandidater.map((k) => ({
       userId: k.id,
-      kreverForesatt: k.requiresGuardianConsent,
+      kreverForesatt: maaHaForesattSamtykke({
+        requiresGuardianConsent: k.requiresGuardianConsent,
+        dateOfBirth: k.dateOfBirth,
+      }),
       gruppeIder: k.groupMemberships.map((m) => m.groupId),
       samtykkeRader: raderPerSpiller.get(k.id) ?? [],
     })),
