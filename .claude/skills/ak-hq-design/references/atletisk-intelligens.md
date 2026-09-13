@@ -1,8 +1,10 @@
-# Atletisk intelligens — aktiv retning fra blankt lerret
+# Atletisk intelligens — aktiv retning og videreføring
 
-Status 12.09.2026: Dette er Anders' aktive smaks- og arbeidsretning for et nytt produktdesign i hele den brukerrettede appen. PlayerHQ, AgencyOS, Team Norway og WANG er obligatoriske kjerner; øvrige brukerflater kobles til samme system gjennom navngitte profiler og mønstre. Det er ikke et ferdig eller låst designsystem. Claude Design skal lage **AK Golf HQ Design System v0.1 fra bunnen av**, prøve det på faktiske brukerreiser og revidere det før Anders velger en versjon for bygging.
+Status 13.09.2026: Dette er Anders' aktive smaks- og arbeidsretning for produktdesignet. PlayerHQ, AgencyOS, Team Norway og WANG er obligatoriske kjerner; øvrige brukerflater kobles til systemet gjennom navngitte profiler og mønstre. Arbeidet startet fra blankt lerret med v0.1. Ved videreføring skal Claude Design fullføre siste faktiske kandidat, ikke starte på nytt. Den samlede kandidaten er ikke valgt bare fordi enkeltflater er tegnet eller testet.
 
-Eksisterende Train-lock-, Paper-, v2- og andre produktuttrykk kan brukes til å finne funksjoner, tilstander og tekniske avhengigheter. De er ikke visuell fasit for denne utforskingen. Ingen eksisterende font, farge, radius, navigasjonsform eller komponentgeometri skal arves uten at den nye designprosessen velger den på nytt.
+**Valgt delomfang:** Team Norways Claw-pakke er visuell fasit for egne `/team-norway/*`-skjermer, jf. [beslutningen 13.09.2026](../../../../docs/design-system/team-norway-claw-valgt-2026-09-13.md). Logo, typografi, farger, navigasjon og komponentmønstre følger den valgte pakken. Den generelle utforskingsfriheten nedenfor overstyrer ikke dette valget.
+
+Historiske produktuttrykk i koden kan brukes til å finne funksjoner, tilstander og tekniske avhengigheter. De er ikke automatisk visuell fasit. Ved videreføring beholdes kandidatens fungerende designvalg og rettinger, mens konkrete svakheter forbedres. Nye uttrykkelige valg registreres for sitt omfang.
 
 ## Retningen
 
@@ -52,7 +54,8 @@ For funksjonelle mønstre kan etablerte produkter brukes som sekundær kilde. Tr
 
 ## Bruk i prompts, design og kode
 
-- **Utforsking:** Start blankt og navngi leveransen v0.1. Vis både systemet og skjermene som bruker det.
+- **Ny utforsking:** Start blankt og navngi leveransen v0.1 når Anders bestiller en ny start. Vis både systemet og skjermene som bruker det.
+- **Videreføring:** Les siste prosjektfiler og gjeldende delvalg. Fullfør avklart omfang med neste ledige kandidatversjon. Eldre eksport og siste rapport fra et verktøy må skilles fra kontrollert filinnhold.
 - **Valg:** Registrer Claude Design-versjon, dato, berørte reiser, temaer og åpne avvik når Anders velger en retning.
 - **Implementering:** Bygg bare mot den valgte versjonen. Kartlegg den til faktiske delte komponenter og designverdier i repoet; ikke behold gamle visuelle regler av vane og ikke opprett et parallelt bibliotek uten plan.
 - **Kontroll:** Sammenlign mobil og desktop med valgt versjon, og prøv relevante tomme, lastende, feil-, offline-, tilgangs- og lagringstilstander.

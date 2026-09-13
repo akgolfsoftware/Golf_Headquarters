@@ -2,8 +2,8 @@
 name: ak-prompt-master
 description: Lag en presis, kopierbar prompt når Anders ber om en prompt eller ønsker å forbedre en bestilling. Bruk prompt-engineer som felles arbeidsmåte og ak-hq-design ved design av AK Golf HQ.
 metadata:
-  version: "4"
-  reviewed: "2026-09-11"
+  version: "5"
+  reviewed: "2026-09-13"
 ---
 
 # AK Prompt Master
@@ -17,6 +17,15 @@ Dette er den korte inngangen til [prompt-engineer](../prompt-engineer/SKILL.md),
 5. Still spørsmål bare om nødvendige opplysninger som ikke kan hentes fra tilgjengelige kilder. Fortsett uavhengige deler. Ikke be om skjult intern tankerekke; be om kort begrunnelse, bevis og avvik.
 6. En prompt er ikke en ferdig app. Skill tegnet, klikkbart, implementert, testet og valgt av Anders. Verifisering skal være konkret og forholdsmessig, uavhengig av modell.
 
-Når Anders starter blankt i Claude Design, skal prompten be om både et nytt Design System v0.1 og representative skjermer som beviser systemet. Ikke send mottakeren tilbake til eksisterende Train-lock-, Paper- eller v2-verdier som visuell fasit.
+## Videreføring og komplette pakker
+
+- Avklar fra samtalen om arbeidet starter blankt eller viderefører en kandidat. Ved videreføring: bruk siste faktiske prosjektfiler, bevar utført arbeid og velg neste ledige versjon. En eldre ZIP er et datert sammenligningsgrunnlag, ikke ordre om å erstatte nyere filer.
+- Siste svar fra et designverktøy er **rapportert status** til filene og kontrollen er undersøkt. Ta med rapporten med kilde og bevisgrense; ikke presenter for eksempel «0 uløste tokens» som egen verifisering.
+- Ved «komplett ZIP»: lever én styrende hovedprompt, tydelig startfil, nødvendige anonymiserte kilder, funksjons-/reisekart, leveransekontrakt, kontrollkrav, kilde-/filmanifest og faktiske kontrollsummer. Kontroller arkivet etter pakking. Ingen absolutt lokal sti må være eneste tilgang til en nødvendig kilde.
+- Historiske prompter skal ikke konkurrere med hovedprompten. Merk referansemateriale med rolle, dato og begrensning. Bevar allerede valgte delomfang, særlig Team Norways Claw-beslutning i prosjektets gjeldende designregister.
+- For AK Golf HQ: kryssjekk funksjonsfamilier, detaljerte funksjonskort, reiser og ruter hver for seg. Bruk `FAM:`, `KORT:` og `REISE:` når ID-er kan kollidere. Én klikkbar familierepresentant beviser ikke et ferdig funksjonskort.
+- Tokenarbeid skal følge [videreføring og tokenkontroll](../ak-hq-design/references/videreforing-og-tokenkontroll.md): les faktiske navn før bruk, kontroller koblingen per aktiv fil og mål de faktiske komponentene. Riktig farge alene beviser ikke korrekt kobling.
+
+Når Anders starter blankt i Claude Design, skal prompten be om både et nytt Design System v0.1 og representative skjermer som beviser systemet. Ikke send mottakeren tilbake til eksisterende implementerte designverdier som visuell fasit.
 
 Ingen personopplysninger eller hemmeligheter i sky-prompts. Bruk syntetiske eksempler og kontroller vedlegg før eksport.

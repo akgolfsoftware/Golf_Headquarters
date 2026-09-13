@@ -2,8 +2,8 @@
 name: ak-hq-design
 description: "Planlegg, tegn og vurder AK Golf HQs brukerreiser, komponenter, wireframes og responsive UI, og klargjør en sammenhengende designoverlevering. Bruk ved designarbeid i PlayerHQ, AgencyOS, booking, marked, forelder og øvrige flater i dette prosjektet."
 metadata:
-  version: "3"
-  reviewed: "2026-09-11"
+  version: "4"
+  reviewed: "2026-09-13"
   short-description: "Samlet designarbeid for hele AK Golf HQ"
 ---
 
@@ -13,8 +13,9 @@ Utvikle et presist og lett forståelig golfprodukt. Arbeid fra faktiske brukerop
 
 ## Utgangspunkt og kildeorden
 
-- Anders' siste bestilling styrer. **Eksisterende design er åpent for revisjon.** «Train-lock», eldre godkjenninger, ZIP-instrukser og skill-eksempler låser ikke fonter, farger, oppsett eller navigasjon.
-- For den aktive nye produktretningen: les [Atletisk intelligens](references/atletisk-intelligens.md). Claude Design starter uten eksisterende visuell fasit og lager AK Golf HQ Design System v0.1 sammen med faktiske pilotskjermer.
+- Anders' siste bestilling styrer. **Utforskede design er åpne for revisjon; uttrykkelig valgte delomfang beholder sin autoritet.** Historiske designpakker, ZIP-instrukser og skill-eksempler er ikke nye valg. Kontroller aktuell status i `designsystem/README.md` og daterte beslutninger.
+- For den aktive produktretningen: les [Atletisk intelligens](references/atletisk-intelligens.md). Start v0.1 fra blankt lerret bare når det er bestillingen. Ved videreføring brukes siste faktiske kandidat og neste ledige versjon; bevar nyere rettinger fra designprosjektet.
+- Team Norways Claw-pakke er valgt for egne `/team-norway/*`-skjermer, jf. [beslutningen 13.09.2026](../../../docs/design-system/team-norway-claw-valgt-2026-09-13.md). Den omfatter hele profilen, ikke bare aksentfargen. En samlet ny kandidat erstatter ikke dette valget uten Anders' uttrykkelige beslutning.
 - I repoet: les `AGENTS.md`, `docs/platform/AGENT-BRIEF.md` og aktuell `designsystem/README.md`. Bruk produktregler og fagordbøker for funksjon og begreper; eldre visuelle regler i dem er underordnet den siste designavklaringen.
 - I Claude Design eller annet miljø uten repo: bruk det vedlagte inventaret og konteksten nedenfor. Si hva du kan se. Et eksportert filinventar beviser ikke tilgang, ferdig kode eller funksjon.
 - En ny designleveranse er et forslag inntil Anders velger den for den aktuelle byggeoppgaven. Bruk allerede avklarte valg; ikke innfør gjentatte godkjenningsstopp for rutinearbeid.
@@ -30,6 +31,7 @@ Utvikle et presist og lett forståelig golfprodukt. Arbeid fra faktiske brukerop
 | UI, skjermformater eller tilgjengelighet | [Formater og kvalitet](references/formater-og-kvalitet.md), relevant reise og komponentfamilie |
 | Vurdering / overlevering | [Overlevering og bevis](references/overlevering.md); undersøk faktisk tegning/prototype før visuelle påstander |
 | Prompt til Claude Design | [Hovedprompt](assets/hovedprompt.md), sammen med denne skillen og referansene |
+| Videreføring, tokenportering eller eksportkontroll | [Videreføring og tokenkontroll](references/videreforing-og-tokenkontroll.md), siste faktiske kandidat og gjeldende produktvalg |
 
 Les bare underlaget oppgaven krever. En liten knappeendring skal ikke utløse en full plattformgjennomgang.
 
@@ -41,6 +43,8 @@ Les bare underlaget oppgaven krever. En liten knappeendring skal ikke utløse en
 4. **Samordne komponentene:** dokumenter grunnverdier, betydningsbaserte verdier og komponentverdier som faktisk brukes i skjermene. Koble valgt designversjon til eksisterende komponenter når kode skal bygges; ikke la dagens tokens styre utforskingen og ikke opprett et nytt parallelt system av vane.
 5. **Fullfør familiene:** bruk avtalt retning gjennom alle registrerte flater og formater. En pilot er ikke slutten på en bestilling som gjelder hele appen. Fortsett med avklart arbeid; noter konkrete produktspørsmål som blokkerer avhengige deler.
 6. **Prøv og lever:** gå gjennom flytene, kontroller formatene, registrer funn og oppdater dekningsregisteret. Oppgi valgt versjon, bevis og det som gjenstår. En grønn teknisk kontroll eller et skjermbilde er ikke alene brukerens godkjenning.
+
+Ved videreføring er funksjonssammenheng en egen kontroll: mål → plan → økt → måling → vurdering → neste tiltak. Undersøk Workbench på år/periode/måned/uke/økt, teknisk oppgave med kilder og revisjon, og coaching før–under–etter med kontrollert levering. De eldre pakkene kan dokumentere behov som en enklere ny skjerm ennå ikke dekker; de bestemmer ikke automatisk ny utforming eller faglige regler.
 
 ## Kvalitetskrav som endrer beslutninger
 
@@ -54,6 +58,8 @@ Les bare underlaget oppgaven krever. En liten knappeendring skal ikke utløse en
 ## Inventar og status
 
 [Filinventar](assets/ruteinventar.json) og [CSV](assets/ruteinventar.csv) er genererte observasjoner, **ikke** et vedtak om like mange unike skjermdesign. Aktuelle antall står i filen og endres når prosjektet endres.
+
+Kryssjekk også [funksjonsfamiliene](../../../docs/planer/funksjonsregister-2026-09-11.md) og [de detaljerte funksjonskortene](../../../docs/planer/funksjonsforbedringer-og-intervju-2026-09-13.md), eller en dokumentert etterfølger. Skill forslag, vedtatt omfang og implementert oppførsel. Bruk navnerom: `FAM:P11` (venner) er ikke `KORT:P11` (årsplan). Hvert relevant kort trenger konkret skjerm/mønster, handling, tilstand og kontroll; en familierepresentant beviser ikke full dekning. Generer JSON og CSV fra samme grunnlag og beregn antall fra radene.
 
 Fra prosjektroten kan du lese tellingen med:
 

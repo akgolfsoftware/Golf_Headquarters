@@ -1,6 +1,6 @@
 # Komponenter og felles designverdier
 
-Dette er en behovskatalog for hele appen, ikke ordre om å bygge enda et bibliotek. Undersøk de faktiske komponentfilene i [inventaret](../assets/ruteinventar.json). Velg gjenbruk, justering eller ny komponent med begrunnelse. Ikke behandle 693 filer som 693 selvstendige grunnkomponenter.
+Dette er en behovskatalog for hele appen, ikke ordre om å bygge enda et bibliotek. Undersøk de faktiske komponentfilene i [inventaret](../assets/ruteinventar.json). Velg gjenbruk, justering eller ny komponent med begrunnelse. Antall filer er ikke antall selvstendige grunnkomponenter.
 
 ## Designverdier i tre nivåer
 
@@ -9,6 +9,8 @@ Dette er en behovskatalog for hele appen, ikke ordre om å bygge enda et bibliot
 3. **Komponent:** knappens høyde/fyll, feltets kant, radens padding og grafens serieverdier peker til nivåene over.
 
 Hvert tema definerer de samme betydningene med lesbare kombinasjoner. Ikke anta at identisk hex i lys og mørk gir samme kontrast. Før en kartlegging til dagens CSS-variabler og komponenter ved implementering; behold eksisterende navn der det er hensiktsmessig. Ikke fastsett et nytt prefiks eller importer et nytt UI-bibliotek som en del av selve designbeskrivelsen.
+
+Les faktiske tokennavn og definisjoner før de brukes. Følg [tokenkontrollen](videreforing-og-tokenkontroll.md) for aktive filer, referanser, temaer, fokus og målte verdier. En hex-fallback som skjuler et oppdiktet navn, eller en ubrukt import av `tokens.css`, er ikke en fungerende systemkobling.
 
 ## Katalog over komponentfamilier
 

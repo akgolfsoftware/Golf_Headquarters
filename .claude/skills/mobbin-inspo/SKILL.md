@@ -13,7 +13,7 @@ Prosjektkilder: `AGENTS.md` → `docs/platform/AGENT-BRIEF.md`. Design velges i 
 
 ## Hva
 Mobbin = 600k+ **ekte** skjermer. Bruk for struktur og flyt — **ikke** kopier farger.
-For aktiv retning: les [Atletisk intelligens](../ak-hq-design/references/atletisk-intelligens.md). Anders' eget bildesett styrer visuell smak. Mobbin og offisielle produktkilder brukes sekundært for å kontrollere struktur, flyt og interaksjonsmønstre. Train-lock og Paper er historiske referanser, ikke visuell fasit for Design System v0.1.
+For aktiv retning: les [Atletisk intelligens](../ak-hq-design/references/atletisk-intelligens.md). Anders' eget bildesett styrer visuell smak. Mobbin og offisielle produktkilder brukes sekundært for å kontrollere struktur, flyt og interaksjonsmønstre. Tidligere designpakker er historiske referanser, ikke visuell fasit for Design System v0.1.
 
 ## Auth (hvis MCP feiler)
 Claude: `/mcp` → mobbin → Authenticate → logg inn.  
