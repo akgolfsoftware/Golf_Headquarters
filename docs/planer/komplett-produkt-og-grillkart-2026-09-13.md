@@ -541,10 +541,35 @@ Status: låst 13.09.2026.
 - Den kanoniske treningssløyfen er planlegge → gjennomføre → registrere → analysere → forbedre neste plan.
 - Intervjuet organiseres etter funksjon og brukerbehov, ikke dagens antall ruter.
 
-### PK-01 — første åpne beslutning
+### PK-01 — forsidens første løfte og vei videre
 
-Status: venter på svar.
+Status: låst 13.09.2026.
 
-Hva skal være det viktigste løftet og den viktigste handlingen for en helt ny besøkende på AK Golf-forsiden?
+- Det første en ny besøkende skal forstå er **reisen til å bli en bedre golfspiller**.
+- Det første kommersielle valget skal være **coachingtilbud hos AK Golf**, ikke en lang funksjonsliste eller en teknisk presentasjon av appen.
+- Primær handling er **Finn riktig coachingtilbud**.
+- PlayerHQ vises som systemet som følger opp reisen før, mellom og etter coachingtimene.
+- Selvbetjent PlayerHQ er et sekundært valg, ikke hovedinngangen på forsiden.
 
-Foreløpig anbefaling: Selg personlig, målt og sammenhengende spillerutvikling først. Bruk kartleggingsøkten som primær inngang, vis PlayerHQ som systemet som binder treningen sammen, og la selvbetjent PlayerHQ være et sekundært valg.
+### PK-02 — Live: Automatikk og tid
+
+Status: låst 13.09.2026.
+
+- «Auto» skal vises som **Automatikk** og betyr tredje motoriske læringssteg etter Uten ball og Lav hastighet. Det er ikke en automatisk systemfunksjon.
+- Økttid fortsetter mellom øvelser og stopper bare ved brukerens eksplisitte pause, avslutning eller avbrudd.
+- Tid på øvelse teller bare mens en konkret øvelse er aktiv og stopper automatisk i overgangen til neste.
+- Øktstatus, øvelsesstatus og lagre-/synkroniseringsstatus skal vises som tre separate forhold.
+
+Detaljert beslutning og kildekontroll: [Claude Design D-03/D-05](../design-system/claude-design-d03-d05-beslutning-2026-09-13.md).
+
+### PK-03 — Team Norway og WANG i komplett designpakke
+
+Status: låst 13.09.2026.
+
+- Team Norway og WANG er obligatoriske, egne organisasjonsflater, ikke deler av AgencyOS.
+- Team Norways detaljerte kjernereise er organisasjon/gruppe → oversikt → protokoll/variant → fellestesting → kontroll/attestering → resultat/historikk.
+- WANGs detaljerte kjernereise er Hjem → rolle/gruppe → uke/økt → elevkort → IUP/utviklingsplan → oppfølging/rapport.
+- Begge skal dekke kommunikasjon, dokumenter, tilgang og robuste systemtilstander, med særlig personvern for mindreårige.
+- Samme komplette kandidat som PlayerHQ og AgencyOS skal bevise kjernereisene ved fem bredder og 200 prosent tekst.
+
+Fullt skjermomfang og leveransekrav: [Claude Design D-03/D-05](../design-system/claude-design-d03-d05-beslutning-2026-09-13.md).

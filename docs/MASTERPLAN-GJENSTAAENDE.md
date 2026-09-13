@@ -6,7 +6,7 @@ Oppdatert 13.09.2026. Denne filen eier rekkefølge og gjenstående arbeid. [Stat
 
 Anders ønsker en komplett app før åpen lansering med booking og betaling. Han har bestilt videre arbeid, samling av ferdige oppgaver til main, prosjektopprydding og denne oppdaterte restlisten. En merge betyr at kode er samlet; den er ikke visuell godkjenning eller lanseringsvedtak.
 
-Aktiv visuell retning er nå **Atletisk intelligens**. Claude Design-koordinatoren har kontrollert kandidat v0.4.7: 26 av 35 funksjonsfamilier, 15 av 17 hovedreiser med klikkbar deldekning og 64 av 480 registrerte ruter. Åtte reiser er merket komplette i designregisteret. Kandidaten består av 159 filer med SHA-256 `17b1c35c7c214819d436cc85e46bb300778d7c24bc6d7d467d1222409d8694b3`, men har fortsatt `selectedForBuilding: false`; den er derfor ikke en samlet byggebestilling. Train-lock, Claw/Team Norway, WANG-speilet og dagens Geist/v3-implementasjon bevares som funksjons-, historikk- og teknisk underlag, men er ikke visuell fasit for nye skjermendringer. [Siste repo-lagrede kontroll](design-audit/claude-design-v0-3-3-2026-09-12.md), [designstatus](../designsystem/README.md) og [tidligere portstatus](design-audit/portering-fire-flater-2026-09-10.md).
+Aktiv visuell retning er nå **Atletisk intelligens**. Claude Design-koordinatoren har kontrollert kandidat v0.4.10: 32 av 35 funksjonsfamilier, alle 17 hovedreiser med klikkbar dekning og 72 av 480 registrerte ruter som klikkbare. Ti reiser er merket komplette i designregisteret. Kandidaten består av en kontrollert eksport med SHA-256 `01fdb517a840593ff5c2828eac90ee0710c0fea222198b263b1e43187f6c1801`, men har fortsatt `selectedForBuilding: false`; den er derfor ikke en samlet byggebestilling. Train-lock, Claw/Team Norway, WANG-speilet og dagens Geist/v3-implementasjon bevares som funksjons-, historikk- og teknisk underlag, men er ikke visuell fasit for nye skjermendringer. [Siste repo-lagrede kontroll](design-audit/claude-design-v0-3-3-2026-09-12.md), [designstatus](../designsystem/README.md) og [tidligere portstatus](design-audit/portering-fire-flater-2026-09-10.md).
 
 Eksisterende UI skal ikke slettes på forhånd. Det erstattes kontrollert per brukerreise etter at en designversjon er valgt, kartlagt til kode og funksjons-/visuelt prøvd.
 
@@ -38,7 +38,7 @@ Arbeid kan gå parallelt bare når avhengighetene under er oppfylt. Statusene `�
 
 ### Åpne avvik i siste Claude-kandidat
 
-Kandidat v0.4.7 er fortsatt en delpakke og har ikke `selectedForBuilding: true`. 9 funksjonsfamilier, 2 hovedreiser og størstedelen av ruteinventaret mangler fortsatt dokumentert dekning. J07 mangler bevist varig øktbinding for direkte coachdialog, mens Live-bindingen tilhører AI-coachen. Valgt, filtrert TrackMan-sett har heller ikke bevist lagring til utstyrsbag. Gameplan/GPS er klikkbart, men mangler fortsatt live-posisjon, aktiv rundekobling, offline-cache, kø for rundeslag, lagre-notat-handling og bevist idempotens ved ukjent utfall. Faktisk 320 px-/200 %-kontroll og full appattestering mangler. Den eldre [v0.3.3-kontrollen](design-audit/claude-design-v0-3-3-2026-09-12.md) bevarer tidligere avvik. Datamodell eller databaseendring krever egen autorisasjon.
+Kandidat v0.4.10 er fortsatt en delpakke og har ikke `selectedForBuilding: true`. P11, O11 og O12 mangler fortsatt produktvalg og klikkbar familiedekning. Alle hovedreisene er representert, men bare 10 av 17 er merket komplette; 402 ruter er fortsatt mønsterkartlagt og 6 krever vurdering. J07 mangler bevist varig øktbinding for direkte coachdialog, mens Live-bindingen tilhører AI-coachen. Valgt, filtrert TrackMan-sett har heller ikke bevist lagring til utstyrsbag. Gameplan/GPS er klikkbart, men mangler fortsatt live-posisjon, aktiv rundekobling, offline-cache, kø for rundeslag, lagre-notat-handling og bevist idempotens ved ukjent utfall. Faktisk 320 px-/200 %-kontroll og full appattestering mangler. Den eldre [v0.3.3-kontrollen](design-audit/claude-design-v0-3-3-2026-09-12.md) bevarer tidligere avvik. Datamodell eller databaseendring krever egen autorisasjon.
 
 ## Samlet arbeid og hva kontrollene beviser
 
@@ -50,7 +50,8 @@ Kandidat v0.4.7 er fortsatt en delpakke og har ikke `selectedForBuilding: true`.
 | Claude PH-06-testpakke | Seks enhetstester og første visuelle rigg | I main via PR #837. Den pakken endret ikke skjermen; den opprinnelige ferdigpåstanden er korrigert i [PH-06-rapporten](design-audit/playerhq-ph06-2026-09-11.md) |
 | D2-PLAN | Eldre godtatte planøkter uten V2-speil kommer med i Plan/ukeprogresjon, uten dobbelttelling | Samlet i denne leveransen fra `0c060141c`. 11 målrettede kontrolltilfeller; [rapport](design-audit/plan-legacy-2026-09-11.md). Innlogget reise gjenstår |
 | D2-PH06 / R2 | Valgt resultathierarki, lesbare lagrede notater/vurdering, ekte appskrifter, feil/venting/nytt forsøk, trygg feltskriving | Bygget og komponentprøvd i denne leveransen. Fem nye handlingstester, 64 skjermvarianter, interaktive feilprøver og isolert PostgreSQL-prøve. [Rapport og begrensninger](design-audit/playerhq-ph06-2026-09-11.md) |
-| Produktplan/intervju | Funksjonsregister, funksjonskort og intervjuguide bevart fra separat gren | Dokumentene er integrert som arbeidsunderlag. Intervjuet og de foreslåtte produktbeslutningene er ikke erklært ferdige |
+| Produktplan/intervju | 192 funksjonskort, eget utførelsesregister og intervjuguide samlet | [Funksjonskort](planer/funksjonsforbedringer-og-intervju-2026-09-13.md) og [statusregister](planer/funksjonsforbedringer-nattstatus-2026-09-13.md) er styrte vedlegg til denne masterplanen. Kortene er bevart, men ikke automatisk ferdige |
+| Future Development | Markedsundersøkelse av ledende golf-/coachingapper og fem framtidige AI-satsinger | [Markeds- og AI-retning](planer/future-development-markedsundersokelse.md) er beslutningsgrunnlag. Arbeidet starter etter portene i hovedrekkefølgen under |
 | Prosjektopprydding | Ferdige grener/arbeidskopier avstemt, gjeldende innganger og register oppdatert | [Samlingsrapport](vedlikehold/samling-og-opprydding-2026-09-11.md). Historiske sikkerhetskopier og originaldesign bevares |
 | R-A/R-B/R-C/R-D/R-H | Caddie-ressursgrenser og AI-minimering, privat lokal lagring, TrackMan-enheter og sikker abonnementshenting | I main via samlingsarbeidet. [Kontroll og åpne grenser](vedlikehold/sikkerhet-og-enheter-2026-09-11.md). Innlogget kontroll og produksjonsbevis registreres separat |
 | D2-TN/D2-WANG tilgangsgrunnlag | Sikret Team Norway-oversikt og samme konkrete WANG-gruppe/elev gjennom trenerliste, IUP-lesing og IUP-lagring | Bygget og testet i PR #842. [Kontroll og gjenstående brukerreiser](design-audit/tn-wang-tilgang-2026-09-11.md). Innlogget og visuell kontroll gjenstår |
@@ -85,17 +86,29 @@ Siste samlede testresultat og flettepunkt skal leses i samlingsrapporten og tilh
 
 ## Neste oppgaver, i rekkefølge
 
-Aktiv arbeidsdeling 13.09.2026: Claude Design eier Design System v0.1. GitHub har etter PR #881 ingen åpne pull requests eller issues. Ikke bygg fra kandidat v0.4.7 før en pakke er valgt for det aktuelle omfanget.
+Aktiv arbeidsdeling 13.09.2026: Claude Design eier Design System v0.1. GitHub hadde etter PR #882 ingen åpne pull requests eller issues ved denne avstemmingen. Ikke bygg fra kandidat v0.4.10 før en pakke er valgt for det aktuelle omfanget.
 
 | Prioritet / ID | Konkret neste leveranse | Inngang | Ferdig når |
 |---|---|---|---|
-| 1 · D0 | Fullfør og velg én Claude Design-pakke for et tydelig registrert omfang | Kandidat v0.4.7 og designregisteret | Pakken har versjon, hash, komplett avtalt dekning og `selectedForBuilding: true`; Anders har valgt den |
+| 1 · D0 | Fullfør og velg én Claude Design-pakke for et tydelig registrert omfang | Kandidat v0.4.10 og designregisteret; avklar P11, O11 og O12 | Pakken har versjon, hash, komplett avtalt dekning og `selectedForBuilding: true`; Anders har valgt den |
 | 2 · D1 / P0-DEKNING | Koble valgt pakke til ruter, tilstander og handlinger; avklar J07-binding, TrackMan → utstyrsbag og Gameplan/GPS-gap uten skjult ny datamodell | Ruteinventaret, J07, G02–G04 og G06/G08 | Hver berørt rute har mønster, tilstand, rolle og datakilde; eventuell schemaendring er særskilt godkjent |
 | 3 · R-A–R-E | Kjør innlogget Caddie-, TrackMan-, lokal lagrings- og abonnementsreise med syntetiske testbrukere | Eksisterende sikkerhetsregler og PR #877 | Tillatt rolle virker, uvedkommende avvises, feiltilstander er ærlige og ingen persondata sendes ukontrollert |
 | 4 · R4–R9 | Kjør innlogget booking- og betalingsreise med Stripe-testnøkkel, inkludert barn, avbrudd, retur og gjentakelse | O06/O05-reglene i main | Testbetaling og refusjon består uten reell belastning; eierskap og idempotens er bevist |
 | 5 · L3/L7/L8 | Fullfør visuell tilgjengelighet, alarm/gjenoppretting og kontrollert produksjonsreise | D6 og eksplisitt miljøautorisasjon | Kontrast, 320 px, 200 %, alarmer, restore/rollback og eksakt produksjonscommit er dokumentert bestått |
 
 R-A–R-J og REV-F1–F11 er forklart i [produktplanen](planer/produktplan-og-intervju-2026-09-11.md). Funn fra den eldre gjennomgangen må kontrolleres mot dagens kode før endring. R-G «neste økt» er allerede rettet i porteringen og skal verifiseres i prioritet 1, ikke bygges på nytt.
+
+### Future Development — rekkefølge etter stabil kjerne
+
+Disse oppgavene er lagret fra markedsundersøkelsen. De skal ikke hoppe foran D0–L8 eller tolkes som ferdig produktvalg. Fullt kildegrunnlag, konkurrentkart, personvernrammer og måltall står i [Future Development-undersøkelsen](planer/future-development-markedsundersokelse.md).
+
+| Prioritet / ID | Framtidig leveranse | Før utvikling | Ferdig når |
+|---|---|---|---|
+| FD-01 | Coachminne etter hver økt: fra notat/opptak til kontrollert sammendrag, én prioritet, øvelser og oppfølging | Stabil økt-, samtykke- og planreise | Coach godkjenner før noe deles eller endrer planen; kilde og beslutningshistorikk vises |
+| FD-02 | Én evidenslinje per spiller på tvers av runder, SG, TrackMan, tester, video og økter | Avklart felles identitet, datakvalitet og tilgang | Hver hendelse viser kilde, tidspunkt, enhet, kvalitet og hvem som kan se den |
+| FD-03 | Ukentlig prioriteringsmotor som foreslår én forklarbar handling | FD-02 og faglig validerte regler | Forslaget viser bevis og usikkerhet; coach kan godkjenne, redigere, utsette eller avvise |
+| FD-04 | Enkel videoflyt først; avansert 3D gjennom validert partner | Samtykke, trygg fillagring og dokumentert leverandørvurdering | Opptak, trimming, sammenligning og coachkommentar virker; ingen medisinsk eller biomekanisk sannhet påstås uten validering |
+| FD-05 | Konkurransetrygg banemodus | Valgt regelprofil, turneringskontekst og pålitelig frakoblet tilstand | Modusen skiller trening, sosial runde og konkurranse og låser råd som ikke er tillatt under tellende runde |
 
 ## Resterende oppgaver etter neste pakker
 
@@ -143,3 +156,12 @@ Lansering kan først vurderes når alle porter under har datert bevis mot én ek
 Arbeid på egen gren, bevar andres endringer, og bruk én ansvarlig oppgave per filområde. Kjør relevante tester, full `npm run verify` og `npm run prosjekt:sjekk` før commit. Anders har bestilt fletting av denne samlingen; senere oppgaver følger sin gjeldende autorisasjon. Ikke kjør migrasjoner, seed/import, reelle betalinger eller utsending som opprydding.
 
 Marker separat: **bygget**, **komponentprøvd**, **innlogget prøvd**, **sett av Anders**, **flettet** og **publisert kontrollert**. Arkiv inneholder historiske oppgaver og målinger; dokumentert intensjon er ikke bevis på ferdig funksjon. Oppdater denne listen etter hver sammenhengende leveranse, uten en konkurrerende masterplan.
+
+### Regel for absolutt ferdige oppgaver
+
+En branch-push er ikke ferdigstatus. Når en leveranse har oppfylt avtalte ferdigkriterier, bestått relevante kontroller, blitt flettet til `main` og fått eventuell avtalt publisering kontrollert, skal sluttføringen i samme arbeidssteg:
+
+1. oppdatere denne masterplanen med status, dato, PR, merge-commit, kontrollbevis og ærlig restarbeid;
+2. oppdatere den eksisterende, tilsvarende oppgaven i Notion-databasen `Tasks` til ferdig med samme bevis og begrensninger.
+
+Hvis én av oppdateringene ikke kan gjennomføres, er status **flettet, men sluttsynkronisering gjenstår**. Oppgaven skal ikke omtales som absolutt ferdig før både prosjektkilden og Notion samsvarer.
