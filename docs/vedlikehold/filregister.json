@@ -1,10 +1,10 @@
 {
   "metode": "git ls-files -co --exclude-standard; eksisterende filer; genererte registerfiler utelatt. Kun metadata, ikke kundedata eller miljøverdier.",
   "telling": {
-    "prosjektfiler": 5448,
+    "prosjektfiler": 5450,
     "sidefiler": 480,
     "prismamodeller": 196,
-    "enhetstestfiler": 423,
+    "enhetstestfiler": 424,
     "nettlesertestfiler": 41,
     "trainLockTegninger": 219
   },
@@ -6212,6 +6212,11 @@
       "byte": 896
     },
     {
+      "sti": "docs/design-audit/workbench-o02-publisering-2026-09-13.md",
+      "omrade": "dokumentasjon",
+      "byte": 1116
+    },
+    {
       "sti": "docs/design-guide-terminologi.md",
       "omrade": "dokumentasjon",
       "byte": 9504
@@ -6354,7 +6359,7 @@
     {
       "sti": "docs/MASTERPLAN-GJENSTAAENDE.md",
       "omrade": "dokumentasjon",
-      "byte": 22473
+      "byte": 22794
     },
     {
       "sti": "docs/merkevare/ak-golf-merkeplattform-2026-08-31.md",
@@ -6514,7 +6519,7 @@
     {
       "sti": "docs/planer/masterplan-dekning-2026-09-12.md",
       "omrade": "datert-plan",
-      "byte": 8048
+      "byte": 8243
     },
     {
       "sti": "docs/planer/produktplan-og-intervju-2026-09-11.md",
@@ -6694,7 +6699,7 @@
     {
       "sti": "docs/STATUS-NÅ.md",
       "omrade": "dokumentasjon",
-      "byte": 10320
+      "byte": 10496
     },
     {
       "sti": "docs/taksonomi-verifikasjon.md",
@@ -26567,9 +26572,14 @@
       "byte": 2008
     },
     {
+      "sti": "src/lib/workbench/publish-actions.test.ts",
+      "omrade": "test",
+      "byte": 8540
+    },
+    {
       "sti": "src/lib/workbench/publish-actions.ts",
       "omrade": "appkode",
-      "byte": 10274
+      "byte": 10270
     },
     {
       "sti": "src/lib/workbench/publish-atomic.test.ts",

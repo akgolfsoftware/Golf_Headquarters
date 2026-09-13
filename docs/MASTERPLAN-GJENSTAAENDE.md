@@ -72,15 +72,15 @@ Disse er nå eksplisitte D0-blokkeringer, ikke fotnoter: faktisk 320 px-/200 %-k
 | P09 spørsmål-tilgang | Spørsmål kun for spørsmålsstiller og tildelt coach | I main via PR #864. [Kontroll](design-audit/playerhq-p09-sporsmal-tilgang-2026-09-12.md) |
 | P09 melding til tildelt coach | Spiller sender kun til innrullert coach | I main via PR #863. [Kontroll](design-audit/playerhq-p09-melding-coach-2026-09-12.md) |
 | R-I utstyrsbag | Forelder avvises. Lagring bruker innlogget bruker-id | I main via PR #869. [Kontroll](design-audit/handlingstilgang-utstyrsbag-2026-09-13.md) |
-| O02 Workbench-publisering | Coach uten stalltilgang avvises. Snapshot bruker norsk mandag | PR #866, ikke flettet |
+| R-I admin-spiller | Opprett/rediger spiller avviser spiller og forelder; rediger krever stalltilgang | I main via PR #870. [Kontroll](design-audit/handlingstilgang-admin-spiller-2026-09-13.md) |
+| O02 Workbench-publisering | Coach uten stalltilgang avvises. Snapshot bruker norsk mandag. Publisering lager ikke nye økter | Denne leveransen. [Kontroll](design-audit/workbench-o02-publisering-2026-09-13.md). Gruppeplan uten dublett gjenstår |
 | R-I helseskriving | Forelder avvises før helselogg. Manuelt samtykke kreves | PR #868, ikke flettet |
-| R-I admin-spiller | Opprett/rediger spiller avviser spiller og forelder; rediger krever stalltilgang | Denne leveransen. [Kontroll](design-audit/handlingstilgang-admin-spiller-2026-09-13.md) |
 
 Siste samlede testresultat og flettepunkt skal leses i samlingsrapporten og tilhørende GitHub PR. Innlogget produksjonsreise, faktisk betaling og Anders' visuelle vurdering er egne kontroller som fortsatt gjenstår.
 
 ## Neste oppgaver, i rekkefølge
 
-Aktiv arbeidsdeling 13.09.2026: Claude Design eier Design System v0.1. P0-TEST (PR #865), D2-AO og O02 (PR #866) eies av andre økter. Ikke dupliser dem.
+Aktiv arbeidsdeling 13.09.2026: Claude Design eier Design System v0.1. D2-AO og helse (PR #868) eies av andre økter. Ikke dupliser dem.
 
 | Prioritet / ID | Konkret neste leveranse | Inngang | Ferdig når |
 |---|---|---|---|
@@ -97,7 +97,8 @@ R-A–R-J og REV-F1–F11 er forklart i [produktplanen](planer/produktplan-og-in
 | Område / ID | Konkret restarbeid | Avhengighet / ferdigkriterium |
 |---|---|---|
 | PlayerHQ · D2-PH | Resterende Analyse, mål, kalender, øvelsesbank/program, profil, meldinger, deling, test/retest og sosiale reiser | Knytt hver skjerm til valgt kilde og appdata. Fullfør relevante tom-/laste-/feiltilstander. [Funksjonene P01–P11](planer/funksjonsregister-2026-09-11.md) |
-| Plan/Live | Frekvens, FYS-gjenåpning og serverregler for ny/rediger/flytt er prøvd. Innlogget reise og Caddie i live gjenstår | [P02–P05](design-audit/plan-live-p02-p05-2026-09-12.md) · [ny/rediger/flytt](design-audit/plan-ny-rediger-flytt-2026-09-13.md). Separate modeller beholdes |
+| Plan/Live | Frekvens, FYS-gjenåpning og serverregler for ny/rediger/flytt er prøvd. Innlogget ny/rediger/flytt og Caddie i live gjenstår | [P02–P05](design-audit/plan-live-p02-p05-2026-09-12.md) · [ny/rediger/flytt](design-audit/plan-ny-rediger-flytt-2026-09-13.md). Separate modeller beholdes |
+| Workbench · O02 | Plan-publisering avviser uvedkommende og bruker norsk mandag. Gruppeplan uten dublett/bortfall av spillerens egne økter gjenstår | [Kontroll](design-audit/workbench-o02-publisering-2026-09-13.md). PR #866 |
 | Mål · R-F / F1 | Startverdi, periode og faktisk gjennomføring; TN-mål med variant, antall, enhet og retning | Faglige definisjoner før avhengige beregninger. Eventuelle nye databasefelt krever konkret autorisasjon |
 | Team Norway-tester | Sammenlignbar historikk uten overskriving er i main via PR #858. Rest: Excel v3-avstemming og innlogget reise | [J05](design-audit/tn-j05-testreise-2026-09-12.md) · [Fagkontroll](beslutningsgrunnlag/team-norway-excel-v3-kontroll.md) |
 | WANG/GFGK | Årsplan, juniorgrupper, testdager, styrkeprogram, rapporter og foresatte | Virkelige rollegrenser og avklarte fagregler; P08/O03 i funksjonsregisteret |
@@ -111,7 +112,7 @@ R-A–R-J og REV-F1–F11 er forklart i [produktplanen](planer/produktplan-og-in
 | Marked/salg | Nettsider, tilbud, coachprofiler, innhold og fungerende overgang til booking | Avstem bestilt omfang; ikke aktiver et historisk markedsføringssystem automatisk |
 | Økonomi/personlig | Beslutningsstøtte, rapportgrunnlag og egne oppgaver | Avklar konkret behov; økonomitall kun fra autorisert Tripletex-eksport |
 | Samtykke · R-J | Register og 16-årsregel er prøvd. Gjenstår: avklart UI-tekst per formål, lyd som historikk, innlogget reise | [Kontroll](design-audit/samtykke-r-j-2026-09-13.md). Ikke bytt 16 til 13 |
-| Kodekontroll · R-I | PR #848, #856 og #869 i main. Helse PR #868 og admin-spiller i denne leveransen. Øvrige admin-skriv gjenstår | [R-I](design-audit/handlingstilgang-r-i-2026-09-12.md) · [bred](design-audit/handlingstilgang-bred-2026-09-12.md) · [utstyrsbag](design-audit/handlingstilgang-utstyrsbag-2026-09-13.md) · [admin-spiller](design-audit/handlingstilgang-admin-spiller-2026-09-13.md) |
+| Kodekontroll · R-I | PR #848, #856, #869 og #870 i main. O02 i denne leveransen. Helse PR #868 gjenstår | [R-I](design-audit/handlingstilgang-r-i-2026-09-12.md) · [bred](design-audit/handlingstilgang-bred-2026-09-12.md) · [O02](design-audit/workbench-o02-publisering-2026-09-13.md) · [admin-spiller](design-audit/handlingstilgang-admin-spiller-2026-09-13.md) |
 | Felles design/kvalitet | Avstem alle 480 sideruter og deres mønstre, visuell kontroll, kontrast, fokus, mobil og stor tekst | 480 ruter er inventar, ikke 480 unike ferdige design. Ingen ny kontrastbaseline for å skjule brudd |
 | Drift/lansering | Produksjonens innloggings-/funksjonsvern, alarmprøve, gjenoppretting med filer og full kundereise | Lokal `pg_restore` prøvd 12.09 kveld. [Kontroll](design-audit/docker-launch-tester-2026-09-12.md). Produksjonsalarm og Vercel-rollback krever miljøautorisasjon |
 | Produktbeslutninger | Avklar blokkerende produkt-/fagspørsmål rett før den avhengige leveransen; samle resten i intervjuet uten å stoppe uavhengig teknisk arbeid | [Intervjuguide](planer/produktplan-og-intervju-2026-09-11.md). Familie-OS/eldre sideprosjekter er bevart som underlag, ikke automatisk aktivert |
