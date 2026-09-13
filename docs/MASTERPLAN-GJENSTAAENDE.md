@@ -6,7 +6,7 @@ Oppdatert 13.09.2026. Denne filen eier rekkefølge og gjenstående arbeid. [Stat
 
 Anders ønsker en komplett app før åpen lansering med booking og betaling. Han har bestilt videre arbeid, samling av ferdige oppgaver til main, prosjektopprydding og denne oppdaterte restlisten. En merge betyr at kode er samlet; den er ikke visuell godkjenning eller lanseringsvedtak.
 
-Aktiv visuell retning er nå **Atletisk intelligens**. Claude Design-koordinatoren har kontrollert kandidat v0.4.6: 23 av 35 funksjonsfamilier, 14 av 17 hovedreiser med klikkbar deldekning og 61 av 480 registrerte ruter. Åtte reiser er merket komplette i designregisteret. Kandidaten har fortsatt `selectedForBuilding: false`; den er derfor ikke en samlet byggebestilling. Train-lock, Claw/Team Norway, WANG-speilet og dagens Geist/v3-implementasjon bevares som funksjons-, historikk- og teknisk underlag, men er ikke visuell fasit for nye skjermendringer. [Siste repo-lagrede kontroll](design-audit/claude-design-v0-3-3-2026-09-12.md), [designstatus](../designsystem/README.md) og [tidligere portstatus](design-audit/portering-fire-flater-2026-09-10.md).
+Aktiv visuell retning er nå **Atletisk intelligens**. Claude Design-koordinatoren har kontrollert kandidat v0.4.7: 26 av 35 funksjonsfamilier, 15 av 17 hovedreiser med klikkbar deldekning og 64 av 480 registrerte ruter. Åtte reiser er merket komplette i designregisteret. Kandidaten består av 159 filer med SHA-256 `17b1c35c7c214819d436cc85e46bb300778d7c24bc6d7d467d1222409d8694b3`, men har fortsatt `selectedForBuilding: false`; den er derfor ikke en samlet byggebestilling. Train-lock, Claw/Team Norway, WANG-speilet og dagens Geist/v3-implementasjon bevares som funksjons-, historikk- og teknisk underlag, men er ikke visuell fasit for nye skjermendringer. [Siste repo-lagrede kontroll](design-audit/claude-design-v0-3-3-2026-09-12.md), [designstatus](../designsystem/README.md) og [tidligere portstatus](design-audit/portering-fire-flater-2026-09-10.md).
 
 Eksisterende UI skal ikke slettes på forhånd. Det erstattes kontrollert per brukerreise etter at en designversjon er valgt, kartlagt til kode og funksjons-/visuelt prøvd.
 
@@ -38,7 +38,7 @@ Arbeid kan gå parallelt bare når avhengighetene under er oppfylt. Statusene `�
 
 ### Åpne avvik i siste Claude-kandidat
 
-Kandidat v0.4.6 er fortsatt en delpakke og har ikke `selectedForBuilding: true`. 12 funksjonsfamilier, 3 hovedreiser og størstedelen av ruteinventaret mangler fortsatt dokumentert dekning. J07 mangler bevist varig øktbinding for direkte coachdialog, mens Live-bindingen tilhører AI-coachen. Valgt, filtrert TrackMan-sett har heller ikke bevist lagring til utstyrsbag. Faktisk 320 px-/200 %-kontroll og full appattestering mangler. Den eldre [v0.3.3-kontrollen](design-audit/claude-design-v0-3-3-2026-09-12.md) bevarer tidligere avvik. Datamodell eller databaseendring krever egen autorisasjon.
+Kandidat v0.4.7 er fortsatt en delpakke og har ikke `selectedForBuilding: true`. 9 funksjonsfamilier, 2 hovedreiser og størstedelen av ruteinventaret mangler fortsatt dokumentert dekning. J07 mangler bevist varig øktbinding for direkte coachdialog, mens Live-bindingen tilhører AI-coachen. Valgt, filtrert TrackMan-sett har heller ikke bevist lagring til utstyrsbag. Gameplan/GPS er klikkbart, men mangler fortsatt live-posisjon, aktiv rundekobling, offline-cache, kø for rundeslag, lagre-notat-handling og bevist idempotens ved ukjent utfall. Faktisk 320 px-/200 %-kontroll og full appattestering mangler. Den eldre [v0.3.3-kontrollen](design-audit/claude-design-v0-3-3-2026-09-12.md) bevarer tidligere avvik. Datamodell eller databaseendring krever egen autorisasjon.
 
 ## Samlet arbeid og hva kontrollene beviser
 
@@ -85,12 +85,12 @@ Siste samlede testresultat og flettepunkt skal leses i samlingsrapporten og tilh
 
 ## Neste oppgaver, i rekkefølge
 
-Aktiv arbeidsdeling 13.09.2026: Claude Design eier Design System v0.1. GitHub har etter PR #880 ingen åpne pull requests eller issues. Ikke bygg fra kandidat v0.4.6 før en pakke er valgt for det aktuelle omfanget.
+Aktiv arbeidsdeling 13.09.2026: Claude Design eier Design System v0.1. GitHub har etter PR #881 ingen åpne pull requests eller issues. Ikke bygg fra kandidat v0.4.7 før en pakke er valgt for det aktuelle omfanget.
 
 | Prioritet / ID | Konkret neste leveranse | Inngang | Ferdig når |
 |---|---|---|---|
-| 1 · D0 | Fullfør og velg én Claude Design-pakke for et tydelig registrert omfang | Kandidat v0.4.6 og designregisteret | Pakken har versjon, hash, komplett avtalt dekning og `selectedForBuilding: true`; Anders har valgt den |
-| 2 · D1 / P0-DEKNING | Koble valgt pakke til ruter, tilstander og handlinger; avklar J07-binding og TrackMan → utstyrsbag uten skjult ny datamodell | Ruteinventaret, J07 og G06/G08 | Hver berørt rute har mønster, tilstand, rolle og datakilde; eventuell schemaendring er særskilt godkjent |
+| 1 · D0 | Fullfør og velg én Claude Design-pakke for et tydelig registrert omfang | Kandidat v0.4.7 og designregisteret | Pakken har versjon, hash, komplett avtalt dekning og `selectedForBuilding: true`; Anders har valgt den |
+| 2 · D1 / P0-DEKNING | Koble valgt pakke til ruter, tilstander og handlinger; avklar J07-binding, TrackMan → utstyrsbag og Gameplan/GPS-gap uten skjult ny datamodell | Ruteinventaret, J07, G02–G04 og G06/G08 | Hver berørt rute har mønster, tilstand, rolle og datakilde; eventuell schemaendring er særskilt godkjent |
 | 3 · R-A–R-E | Kjør innlogget Caddie-, TrackMan-, lokal lagrings- og abonnementsreise med syntetiske testbrukere | Eksisterende sikkerhetsregler og PR #877 | Tillatt rolle virker, uvedkommende avvises, feiltilstander er ærlige og ingen persondata sendes ukontrollert |
 | 4 · R4–R9 | Kjør innlogget booking- og betalingsreise med Stripe-testnøkkel, inkludert barn, avbrudd, retur og gjentakelse | O06/O05-reglene i main | Testbetaling og refusjon består uten reell belastning; eierskap og idempotens er bevist |
 | 5 · L3/L7/L8 | Fullfør visuell tilgjengelighet, alarm/gjenoppretting og kontrollert produksjonsreise | D6 og eksplisitt miljøautorisasjon | Kontrast, 320 px, 200 %, alarmer, restore/rollback og eksakt produksjonscommit er dokumentert bestått |
