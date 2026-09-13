@@ -58,6 +58,7 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | dokumentasjon | [docs/design-audit/handlingstilgang-r-i-2026-09-12.md](<../design-audit/handlingstilgang-r-i-2026-09-12.md>) |
 | dokumentasjon | [docs/design-audit/lokal-lagring-personvern-2026-09-11.md](<../design-audit/lokal-lagring-personvern-2026-09-11.md>) |
 | dokumentasjon | [docs/design-audit/p0-test-blokkering-2026-09-12.md](<../design-audit/p0-test-blokkering-2026-09-12.md>) |
+| dokumentasjon | [docs/design-audit/p0-test-innlogget-reise-2026-09-12.md](<../design-audit/p0-test-innlogget-reise-2026-09-12.md>) |
 | dokumentasjon | [docs/design-audit/plan-legacy-2026-09-11.md](<../design-audit/plan-legacy-2026-09-11.md>) |
 | dokumentasjon | [docs/design-audit/plan-live-p02-p05-2026-09-12.md](<../design-audit/plan-live-p02-p05-2026-09-12.md>) |
 | dokumentasjon | [docs/design-audit/playerhq-ph06-2026-09-11.md](<../design-audit/playerhq-ph06-2026-09-11.md>) |
