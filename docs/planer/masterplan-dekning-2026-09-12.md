@@ -7,13 +7,13 @@ Opprettet 12.09.2026. Dette er sporbarhetsregisteret under [masterplanen](../MAS
 | ID | Familie | Ansvarlig arbeidspakke | Før bygging / gjeldende status |
 |---|---|---|---|
 | P01 | Registrering, introduksjon, profil | Konto/onboarding | Åpen; førstegangsnytte og nivåquiz avklares |
-| P02 | I dag | P0-TEST → R-E/J02 | Del 1 i main via PR #845; innlogget isolert reise blokkert uten Docker/testbase |
-| P03 | Planlegging | R-E + Workbench | Tre modeller beholdes. Frekvens teller speil én gang. Innlogget ny/rediger/flytt gjenstår. [Kontroll](../design-audit/plan-live-p02-p05-2026-09-12.md) |
-| P04 | Gjennomføring/Live | R-E/J02 | Avbrutt skilles fra lagret. Innlogget reise blokkert uten Docker |
+| P02 | I dag | P0-TEST → R-E/J02 | Del 1 i main via PR #845. Innlogget isolert reise i main via PR #865. [Kontroll](../design-audit/p0-test-innlogget-reise-2026-09-12.md) |
+| P03 | Planlegging | R-E + Workbench | Tre modeller beholdes. Frekvens teller speil én gang. Ny/rediger/flytt avviser uvedkommende. Innlogget ny/rediger/flytt gjenstår. [P02–P05](../design-audit/plan-live-p02-p05-2026-09-12.md) · [ny/rediger/flytt](../design-audit/plan-ny-rediger-flytt-2026-09-13.md) |
+| P04 | Gjennomføring/Live | R-E/J02 | Avbrutt skilles fra lagret. Innlogget V2-/Workbench-/planreise i main via PR #865. [Kontroll](../design-audit/p0-test-innlogget-reise-2026-09-12.md) |
 | P05 | Mål/fremgang | R-F | Frekvens uten dobbelttelling bygget; startverdi/periode for øvrige måltyper gjenstår |
 | P06 | Øvelsesbank/program | D2-PH + O02 | Delvis; faglige merkelapper er frie |
 | P07 | Tester | D2-TN + testfag | Delvis; samme TN-protokoll og versjon følger resultatet. Enhet/retning/historikk utenom v3 gjenstår |
-| P08 | Fysisk trening/helse | D2-WANG + R-I | Fys-logg bruker samme spiller-tilgang som øvrige handlinger; IUP-skriving er coach/admin. Styrkeinnhold og helsedeling avklares |
+| P08 | Fysisk trening/helse | D2-WANG + R-I | Fys-logg bruker samme spiller-tilgang. Helseskriving krever manuelt samtykke; under 16 kan ikke samtykke selv. [Kontroll](../design-audit/handlingstilgang-helse-2026-09-13.md). Styrkeinnhold avklares |
 | P09 | Coachkontakt | PlayerHQ-rest | Åpen; kobling til økt/resultat og svartid |
 | P10 | Kalender/turnering | PlayerHQ-rest + AgencyOS | Åpen; styrende kalender og konfliktregler |
 | P11 | Venner/utfordringer | P0-PRODUKT | Uavklart nytte/målgruppe; ikke utvid før beslutning |
@@ -29,12 +29,12 @@ Opprettet 12.09.2026. Dette er sporbarhetsregisteret under [masterplanen](../MAS
 | G10 | Turnering/talent | Talentpakken | Identitet i sesonghelper prøvd. Produksjonsimport krever autorisasjon |
 | G11 | Banedata/trener | BG-06 | Planlagt/delvis; datakvalitet og delingsregler først |
 | O01 | AgencyOS hjem/stall | D2-AO/D3 | Teknisk stall-porte og kort-tilgang rettet; visuell pilot venter på D0 |
-| O02 | Workbench | D2-AO | Delvis; publisering uten dublett/bortfall |
+| O02 | Workbench | D2-AO | Plan-publisering avviser uvedkommende og bruker norsk mandag (PR #866, ikke flettet). Gruppeplan uten dublett/bortfall gjenstår. [Kontroll](../design-audit/workbench-o02-publisering-2026-09-13.md) |
 | O03 | WANG/GFGK | D2-WANG/D3 | Teknisk uke/elev-reise bygget; IUP krever coach/admin og samme Toppidrett-gruppe. Innlogget og visuell kontroll gjenstår. [Kontroll](../design-audit/wang-d2-wang-teknisk-reise-2026-09-12.md) |
 | O04 | Team Norway | D2-TN/D3 | Teknisk reise bygget; poster/dokumenter låst til kanonisk gruppe. Innlogget og visuell kontroll gjenstår. [Kontroll](../design-audit/team-norway-d2-tn-teknisk-reise-2026-09-12.md) |
 | O05 | Forelder/delt innsyn | Forelderpakken | Godkjent eierskap, barnbytte uten identitetsblanding, avvist skriving, ugyldig/utløpt lenke og tilbakekalling er prøvd. Betaling for barn og innlogget reise gjenstår. [Kontroll](../design-audit/forelder-o05-delt-innsyn-2026-09-12.md) |
 | O06 | Booking/betaling | Booking R4/R5/R9 | Kollisjon, idempotens, credits, avbestilling/refusjon og oppsigelse prøvd med mocket Stripe. Innlogget checkout og reell testnøkkel gjenstår. [Kontroll](../design-audit/booking-o06-betaling-2026-09-12.md) |
-| O07 | Tilgang/konto | P0-TEST + R-I + O05 | Handlingstester for avvist skriving, ugyldig/utløpt invitasjon, trukket ekstern leser, opptatt tid, profil og mål. Innlogget isolert reise blokkert uten Docker. [R-I](../design-audit/handlingstilgang-r-i-2026-09-12.md) · [O05](../design-audit/forelder-o05-delt-innsyn-2026-09-12.md) · [bred](../design-audit/handlingstilgang-bred-2026-09-12.md) |
+| O07 | Tilgang/konto | P0-TEST + R-I + O05 + R-J | Handlingstester for avvist skriving, ugyldig/utløpt invitasjon, trukket ekstern leser, opptatt tid, profil og mål. Deling og helse bruker samme 16-årsregel. Innlogget avvisning av uvedkommende er i main via PR #865. [R-I](../design-audit/handlingstilgang-r-i-2026-09-12.md) · [O05](../design-audit/forelder-o05-delt-innsyn-2026-09-12.md) · [R-J](../design-audit/samtykke-r-j-2026-09-13.md) · [bred](../design-audit/handlingstilgang-bred-2026-09-12.md) · [P0-TEST](../design-audit/p0-test-innlogget-reise-2026-09-12.md) |
 | O08 | Caddie/AI Coach | Caddie-kø/AI-grense | Eierregel og tillatt modell-felt bygget; innlogget kontroll gjenstår |
 | O09 | AgenticOS/Jarvis | AgencyOS/AgenticOS | Delvis; faktisk kjøring, godkjenning og sporbarhet |
 | O10 | Marked/salg | Marked → booking | Åpen; ønsket omfang og fungerende overgang |
@@ -51,7 +51,7 @@ Detaljert innhold og kildegrunnlag står i [funksjonsregisteret](funksjonsregist
 | J01 konto → første nytte | P01, O07 |
 | J02 I dag → Plan → økt → Live → oppsummering | P02–P04; R-E og D3 |
 | J03 mål → plan → faktisk fremgang | P03, P05, G07 |
-| J04 coach ser behov → planlegger → publiserer → følger opp | O01–O02, P09 |
+| J04 coach ser behov → planlegger → publiserer → følger opp | O01–O02, P09. Publiseringshandling prøvd i PR #866 |
 | J05 test tildeles → føres → korrigeres → historikk | P07, O04 |
 | J06 WANG uke → økt → elev/IUP → rapport | P08, O03 |
 | J07 melding/råd → relevant økt eller resultat | P09, O01 |

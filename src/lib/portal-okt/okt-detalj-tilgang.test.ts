@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { kanSeOktDetalj } from "./okt-detalj-tilgang";
+import { kanSeOktDetalj, kanSvarePaOktTilbakemelding } from "./okt-detalj-tilgang";
 
 const okt = {
   studentId: "spiller",
@@ -48,4 +48,11 @@ test("fremmed spiller avvises", () => {
     kanSeOktDetalj({ viewerId: "annen-spiller", ...okt, hasPlayerAccess: false }),
     false,
   );
+});
+
+test("bare spilleren på økta kan svare på tilbakemeldingen", () => {
+  assert.equal(kanSvarePaOktTilbakemelding("spiller", "spiller"), true);
+  assert.equal(kanSvarePaOktTilbakemelding("tildelt-coach", "spiller"), false);
+  assert.equal(kanSvarePaOktTilbakemelding("annen-spiller", "spiller"), false);
+  assert.equal(kanSvarePaOktTilbakemelding("spiller", null), false);
 });
