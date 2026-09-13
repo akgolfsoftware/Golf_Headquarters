@@ -21,7 +21,7 @@ Hele nettleserpakken bestod 4/4 på 2,9 minutter 13.09.2026. V2-reisen alene bes
 
 - `.env.local` leses ikke. Nøkler ligger i `/tmp/ak-hq-p0.status.env` og syntetiske passord i `/tmp/ak-hq-p0-creds.env` (ikke Git).
 - Vedlikeholdsmodus er på som standard. Innlogget Portal krever `VEDLIKEHOLD=0` i prosessmiljøet til Next, ellers skrives alt til `/vedlikehold`.
-- Dette beviser P0-TEST lokalt for alle tre øktmodeller i samme isolerte innlogging. Masterplan og Notion markeres ikke ferdig før endringen er godkjent og merget.
+- Dette beviser P0-TEST i main via PR #865 for alle tre øktmodeller i samme isolerte innlogging. Notion kan merkes ferdig.
 - Ingen reell betaling, e-post eller produksjonsrestore.
 
 ## Ikke påstått

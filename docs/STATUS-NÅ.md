@@ -9,7 +9,7 @@ Oppdatert 13.09.2026. Appen er fortsatt under arbeid og ikke klarert for åpen l
 - **Grok-start:** Grok 4.6 kan starte med innlogget spillerreise, tilgangstester, serverregler og teknisk skjermkartlegging uten å låse det nye uttrykket. [Avgrenset Terminal-plan og startprompt](planer/grok-4-6-start-2026-09-12.md).
 - **R-E del 1:** Enhetstester følger samme økt gjennom I dag → Plan → øktark → Live → oppsummering for V2, Workbench og eldre plan, med avviste roller. Isolert testdatabase og innlogget Next-reise er blokkert uten Docker. [Kontroll](design-audit/playerhq-r-e-spillerreise-2026-09-12.md).
 - **Caddie-kø/AI-grense:** AgencyOS-kø og telling viser bare Caddie-utkast eieren kan godkjenne. Ukjent databasefritekst sendes ikke til ekstern modell uten tillatt feltliste. Innlogget kontroll gjenstår.
-- **P0-TEST:** Egen HQ-Supabase på 54421/54422. Innlogget reise for V2, Workbench og eldre plan er prøvd lokalt 13.09, med samme tall etter gjenåpning. Uvedkommende avvises. [Kontroll](design-audit/p0-test-innlogget-reise-2026-09-12.md).
+- **P0-TEST:** I main via PR #865. Innlogget reise for V2, Workbench og eldre plan er prøvd mot isolert HQ-Supabase, med samme tall etter gjenåpning. Uvedkommende avvises. [Kontroll](design-audit/p0-test-innlogget-reise-2026-09-12.md).
 - **D2-AO teknisk:** Stall bruker samme spillerporte som spillerkort og Workbench. Oversiktsdata lastes ikke uten tilgang. [Kontroll](design-audit/agencyos-d2-ao-teknisk-2026-09-12.md).
 - **R-I handlingstilgang:** Eksporterte handlinger i PlayerHQ, AgencyOS, Team Norway, WANG og forelder avviser uvedkommende uten skriving. Ubrukt vaktimport feiler i kvalitetsgaten. [Kontroll](design-audit/handlingstilgang-r-i-2026-09-12.md).
 - **R-I bred handlingstilgang:** Opptatt tid, profil og mål avviser uvedkommende. Inventar over øvrige use-server-filer. [Kontroll](design-audit/handlingstilgang-bred-2026-09-12.md).
@@ -36,17 +36,16 @@ Oppdatert 13.09.2026. Appen er fortsatt under arbeid og ikke klarert for åpen l
 
 ## Allerede i main
 
-DataGolf/GolfBox og tidligere rettinger er samlet via PR #833/#834. Seks porteringspakker er samlet via PR #835. Manuell SG er samlet via PR #836. Claude Codes første PH-06-testpakke er samlet via PR #837, merge `97ff9b1bb`; både main-CI og produksjonens automatiske røyktest bestod for denne versjonen. Røyktesten er ikke en komplett innlogget brukerreise.
+P0-TEST innlogget reise er samlet via PR #865. DataGolf/GolfBox og tidligere rettinger er samlet via PR #833/#834. Seks porteringspakker er samlet via PR #835. Manuell SG er samlet via PR #836. Claude Codes første PH-06-testpakke er samlet via PR #837, merge `97ff9b1bb`; både main-CI og produksjonens automatiske røyktest bestod for denne versjonen. Røyktesten er ikke en komplett innlogget brukerreise.
 
 Tidligere kontroll av Vercel bekreftet `2807d4d08` som publisert kode og prøvde utlogget innlogging/videresending. Dette er et datert bevis, ikke en påstand om nåværende produksjonsversjon. Ingen manuell utrulling, miljøendring eller åpning av offentlig booking inngår i denne samlingen.
 
 ## Det som gjenstår
 
-1. P0-TEST er bestått lokalt på arbeidsgren. Merge og Notion venter. Deretter neste porter. [P0-TEST](design-audit/p0-test-innlogget-reise-2026-09-12.md).
-2. Kjør innlogget kontroll av Caddie-, TrackMan-, lokal lagrings- og abonnementspakken. Serverregelen for Caddie-eier og tillatt modell-felt er bygget; R-I har handlingstester uten isolert database. Bredere AI-bruk venter på innlogget bevis.
-3. Resterende PlayerHQ-, AgencyOS-, Team Norway- og WANG-skjermer, koblet til valgte kilder og reelle handlinger.
-4. Innlogget booking-/betalingsreise med Stripe-testnøkkel, og betaling for barn. Serverregler for kollisjon, credits, oppsigelse, forelder-eierskap og tilbakekalling er prøvd uten reell betaling.
-5. Visuell vurdering med Anders, kontrast/tilgjengelighet, full alarm-/gjenopprettingsprøve mot isolert Docker-base og dokumentert faktisk produksjonsreise før lansering. L7 er ikke bestått.
+1. Kjør innlogget kontroll av Caddie-, TrackMan-, lokal lagrings- og abonnementspakken. Serverregelen for Caddie-eier og tillatt modell-felt er bygget; R-I har handlingstester uten isolert database. Bredere AI-bruk venter på innlogget bevis.
+2. Resterende PlayerHQ-, AgencyOS-, Team Norway- og WANG-skjermer, koblet til valgte kilder og reelle handlinger.
+3. Innlogget booking-/betalingsreise med Stripe-testnøkkel, og betaling for barn. Serverregler for kollisjon, credits, oppsigelse, forelder-eierskap og tilbakekalling er prøvd uten reell betaling.
+4. Visuell vurdering med Anders, kontrast/tilgjengelighet, full alarm-/gjenopprettingsprøve mot isolert Docker-base og dokumentert faktisk produksjonsreise før lansering. L7 er ikke bestått.
 
 Stripe-testmiljø og innloggede testroller trengs for betalingsreisen. Tidligere avvist produksjonsendring for funksjonssikkerhet krever konkret miljøautorisasjon. Ingen reell betaling, varslingsutsending, migrasjon eller databaseoppsettsendring er gjennomført i denne pakken.
 

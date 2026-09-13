@@ -20,7 +20,7 @@ Arbeid kan gå parallelt bare når avhengighetene under er oppfylt. Statusene `�
 |---|---|---|---|
 | P0-KILDE | Codex/Anders | Bestått i denne planleveransen | Business Rules, Nordstjernen, designstatus og masterplan har samme kildeorden: valgt Claude-pakke styrer visuelt; produkt- og sikkerhetsregler består |
 | P0-OMFANG | Anders/Claude Design | Bestått som bestilling | Fire kjerner er obligatoriske, øvrige brukerflater får navngitt profil/mønster, og 480 ruter samt overlegg skal forklares |
-| P0-TEST | Grok | Bestått lokalt 13.09 på arbeidsgren: innlogget HQ-Supabase-reise for V2, Workbench og eldre plan; uvedkommende avvist. Ikke merget. [Bevis](design-audit/p0-test-innlogget-reise-2026-09-12.md) | Syntetiske roller mot HQ-skjema i egen stack; kritiske prøver hopper ikke over manglende oppsett; betaling/e-post bruker testmiljø |
+| P0-TEST | Grok | Bestått i main 13.09 via PR #865: innlogget HQ-Supabase-reise for V2, Workbench og eldre plan; uvedkommende avvist. [Bevis](design-audit/p0-test-innlogget-reise-2026-09-12.md) | Syntetiske roller mot HQ-skjema i egen stack; kritiske prøver hopper ikke over manglende oppsett; betaling/e-post bruker testmiljø |
 | P0-PRODUKT | Anders + fagansvarlig | Åpen per beslutning | Bare produkt- eller fagvalg som faktisk blokkerer neste leveranse avklares før avhengig bygging; beslutning, konsekvens og eier loggføres |
 | P0-DEKNING | Teknisk eier | Åpen | Første tekniske prefikskart 12.09: 479 `page.tsx`, 103 lastefiler, 93 feilfiler. Familier og reiser har ansvarlig pakke; manuelle overlegg og D1-mønster gjenstår. [Kart](planer/teknisk-rute-tilstandskart-2026-09-12.md) |
 
@@ -74,6 +74,7 @@ Disse er nå eksplisitte D0-blokkeringer, ikke fotnoter: faktisk 320 px-/200 %-k
 | R-I admin-spiller | Opprett/rediger spiller avviser spiller og forelder; rediger krever stalltilgang | I main via PR #870. [Kontroll](design-audit/handlingstilgang-admin-spiller-2026-09-13.md) |
 | O02 Workbench-publisering | Coach uten stalltilgang avvises. Snapshot bruker norsk mandag. Publisering lager ikke nye økter | I main via PR #866. [Kontroll](design-audit/workbench-o02-publisering-2026-09-13.md). Gruppeplan uten dublett gjenstår |
 | R-I helseskriving | Manuelt helsesamtykke kreves før lagring. Forelder avvises. Under 16 kan ikke samtykke selv | Denne leveransen. [Kontroll](design-audit/handlingstilgang-helse-2026-09-13.md) |
+| P0-TEST innlogget reise | I dag → Plan → PH-04/05/06 for V2, Workbench og eldre plan. Samme tall etter gjenåpning. Uvedkommende avvises | I main via PR #865. [Kontroll](design-audit/p0-test-innlogget-reise-2026-09-12.md) |
 
 Siste samlede testresultat og flettepunkt skal leses i samlingsrapporten og tilhørende GitHub PR. Innlogget produksjonsreise, faktisk betaling og Anders' visuelle vurdering er egne kontroller som fortsatt gjenstår.
 
@@ -83,7 +84,7 @@ Aktiv arbeidsdeling 13.09.2026: Claude Design eier Design System v0.1. D2-AO og 
 
 | Prioritet / ID | Konkret neste leveranse | Inngang | Ferdig når |
 |---|---|---|---|
-| 1 · P0-TEST → R-E / R1–R3 | Innlogget HQ-Supabase-reise I dag → Plan → PH-04/05/06 er prøvd lokalt for V2, Workbench og eldre plan, med samme tall etter gjenåpning og avvist uvedkommende. Venter godkjenning og merge | `scripts/p0-test-innlogget-reise.mjs`, [kontroll](design-audit/p0-test-innlogget-reise-2026-09-12.md) | P0-TEST er bestått i main; samme økt/tall i innlogget isolert base; gjenåpning virker; uvedkommende avvises |
+| 1 · P0-TEST → R-E / R1–R3 | I main via PR #865. Innlogget HQ-reise for V2, Workbench og eldre plan, samme tall etter gjenåpning, uvedkommende avvist | `scripts/p0-test-innlogget-reise.mjs`, [kontroll](design-audit/p0-test-innlogget-reise-2026-09-12.md) | P0-TEST er bestått i main; samme økt/tall i innlogget isolert base; gjenåpning virker; uvedkommende avvises |
 | 2 · D2-AO | Teknisk AgencyOS-reise: stall bruker samme spillerporte som kort/Workbench; oversikt lastes ikke uten tilgang. Visuell port venter på D0 | `src/lib/admin/stallen-scope.ts`, `src/lib/agencyos/coach-reise.ts`, [kontroll](design-audit/agencyos-d2-ao-teknisk-2026-09-12.md) | Innlogget reise og visuell port gjenstår; tilgang på stall/kort er prøvd uten visuell endring |
 | 3 · Caddie-kø/AI-grense | Avgrens AgencyOS-køene til utkast eieren faktisk kan godkjenne, og hold ukjent databasefritekst unna ekstern modell. Bygget på `grok/caddie-ko-eier-fritekst-2026-09-12` | `src/lib/caddie/draft-eier.ts`, `src/lib/caddie/modell-felt.ts`, kø- og innboks-lastere | Kø og godkjenning bruker samme eierregel. Ukjent fritekst går ikke til ekstern modell uten en dokumentert tillatt datastruktur |
 | 4 · D2-TN | Fullfør den sikrede Team Norway-oversikten → testføring → resultat/historikk → dokumenter/poster | `src/lib/team-norway/tn-reise.ts`, `src/lib/domain/tn-post.ts`, [kontroll](design-audit/team-norway-d2-tn-teknisk-reise-2026-09-12.md) | Teknisk reise og kanonisk gruppeavgrensning bygget. Innlogget og visuell kontroll gjenstår |
