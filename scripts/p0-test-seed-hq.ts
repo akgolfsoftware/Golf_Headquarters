@@ -210,6 +210,9 @@ async function main() {
     await prisma.playerEnrollment.deleteMany({
       where: { userId: { in: [spiller.id, fremmed.id] } },
     });
+    // TrackMan-import (R-D) skriver egne sesjoner utenom WB/V2/plan-modellene
+    // over — ryddes her så «Ingen økter ennå» er sant ved starten av hver kjøring.
+    await prisma.trackManSession.deleteMany({ where: { userId: spiller.id } });
     await prisma.playerEnrollment.create({
       data: { userId: spiller.id, coachId: coach.id, program: "AK_ACADEMY" },
     });
