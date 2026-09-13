@@ -17,6 +17,7 @@ export const COACH_EPOST = "p0-coach@akgolf.test";
 export const FREMMED_EPOST = "p0-fremmed@akgolf.test";
 export const FREMMED_COACH_EPOST = "p0-fremmed-coach@akgolf.test";
 export const TALENT_EPOST = "p0-talent@akgolf.test";
+export const ADMIN_EPOST = "p0-admin@akgolf.test";
 export const WB_ID = "p0-wb-okt";
 export const V2_ID = "p0-v2-okt";
 export const PLAN_ID = "p0-plan-okt";
@@ -95,7 +96,7 @@ async function upsertBruker(
     authId: string;
     email: string;
     name: string;
-    role: "PLAYER" | "COACH";
+    role: "PLAYER" | "COACH" | "ADMIN";
     trial: boolean;
     profilType?: "STANDARD" | "TALENT";
   },
@@ -149,12 +150,13 @@ async function main() {
   }
 
   try {
-    const [spillerAuth, coachAuth, fremmedAuth, fremmedCoachAuth, talentAuth] = await Promise.all([
+    const [spillerAuth, coachAuth, fremmedAuth, fremmedCoachAuth, talentAuth, adminAuth] = await Promise.all([
       authBruker(api, serviceRole, SPILLER_EPOST, passord),
       authBruker(api, serviceRole, COACH_EPOST, passord),
       authBruker(api, serviceRole, FREMMED_EPOST, passord),
       authBruker(api, serviceRole, FREMMED_COACH_EPOST, passord),
       authBruker(api, serviceRole, TALENT_EPOST, passord),
+      authBruker(api, serviceRole, ADMIN_EPOST, passord),
     ]);
 
     const coach = await upsertBruker(prisma, {
@@ -194,6 +196,15 @@ async function main() {
       role: "PLAYER",
       trial: false,
       profilType: "TALENT",
+    });
+    // Caddie/Mission Control (R-A) krever nøyaktig ADMIN-rolle
+    // (canAccessMissionControl) — COACH er bevisst IKKE nok.
+    await upsertBruker(prisma, {
+      authId: adminAuth,
+      email: ADMIN_EPOST,
+      name: "P0 Admin",
+      role: "ADMIN",
+      trial: false,
     });
 
     await prisma.playerEnrollment.deleteMany({
@@ -338,6 +349,8 @@ async function main() {
         `P0_FOREIGN_COACH_PASSWORD=${passord}`,
         `P0_TALENT_EMAIL=${TALENT_EPOST}`,
         `P0_TALENT_PASSWORD=${passord}`,
+        `P0_ADMIN_EMAIL=${ADMIN_EPOST}`,
+        `P0_ADMIN_PASSWORD=${passord}`,
         `P0_WB_ID=${WB_ID}`,
         `P0_V2_ID=${V2_ID}`,
         `P0_PLAN_ID=${PLAN_ID}`,
