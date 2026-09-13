@@ -5,6 +5,7 @@ const baseURL = krevHqP0AppUrl(process.env.P0_HQ_APP_URL ?? process.env.PLAYWRIG
 
 export default defineConfig({
   testDir: ".",
+  outputDir: "/tmp/ak-hq-p0-streng-playwright-results",
   testMatch: ["*.spec.ts"],
   fullyParallel: false,
   workers: 1,
@@ -14,7 +15,8 @@ export default defineConfig({
   expect: { timeout: 20_000 },
   use: {
     baseURL,
-    trace: "on-first-retry",
+    // Prøven starter spor etter innlogging og lagrer også vellykkede reiser.
+    trace: "off",
     screenshot: "only-on-failure",
     navigationTimeout: 90_000,
   },

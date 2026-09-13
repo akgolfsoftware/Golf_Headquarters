@@ -4,6 +4,7 @@
  * Rører ikke WANG-stacken og leser ikke .env.local.
  */
 import { spawn, execFileSync } from "node:child_process";
+import { createServer } from "node:net";
 import { readFileSync, existsSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -152,7 +153,32 @@ async function ventPaUrl(url, timeoutMs) {
   throw new Error(`Svarte ikke på ${url}: ${siste}`);
 }
 
+async function krevLedigAppPort() {
+  await new Promise((resolve, reject) => {
+    const server = createServer();
+    server.once("error", () => reject(new Error(`Port ${HQ_APP_PORT} er opptatt eller utilgjengelig. Avklar eier; P0 stopper uten å drepe prosesser.`)));
+    server.listen(Number(HQ_APP_PORT), HQ_HOST, () => server.close((error) => error ? reject(error) : resolve()));
+  });
+}
+
+function krevIngenAutomatiskeMiljofiler() {
+  // Next laster disse selv, også når runneren ikke leser dem eksplisitt.
+  for (const navn of [".env", ".env.local", ".env.development", ".env.development.local"]) {
+    if (existsSync(join(rot, navn))) throw new Error(`Isolert P0 krever arbeidskopi uten ${navn}; ikke last mulige live-integrasjoner.`);
+  }
+}
+
+function systemMiljo() {
+  const env = {};
+  for (const navn of ["PATH", "HOME", "TMPDIR", "TMP", "TEMP", "LANG", "LC_ALL", "TERM", "USER", "LOGNAME", "SHELL", "SystemRoot"]) {
+    if (process.env[navn]) env[navn] = process.env[navn];
+  }
+  return env;
+}
+
 async function main() {
+  await krevLedigAppPort();
+  krevIngenAutomatiskeMiljofiler();
   if (!hqStackKjorer()) {
     process.stdout.write("Starter isolert HQ-Supabase på 54421/54422\n");
     execFileSync(SUPABASE_BIN, ["start"], { cwd: STACK_DIR, stdio: "inherit" });
@@ -168,7 +194,7 @@ async function main() {
   await ventPaUrl(`${api}/auth/v1/health`, 30_000);
 
   const felles = {
-    ...process.env,
+    ...systemMiljo(),
     P0_HQ_DATABASE_URL: db,
     P0_HQ_API_URL: api,
     P0_HQ_APP_URL: APP,
@@ -177,6 +203,7 @@ async function main() {
     NEXT_PUBLIC_SUPABASE_URL: api,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.ANON_KEY,
     SUPABASE_SERVICE_ROLE_KEY: process.env.SERVICE_ROLE_KEY,
+    SERVICE_ROLE_KEY: process.env.SERVICE_ROLE_KEY,
     NEXT_PUBLIC_APP_URL: APP,
     BOOKING_ACTIVE: "false",
     VEDLIKEHOLD: "0",
@@ -184,21 +211,15 @@ async function main() {
 
   await kjor("npx", ["tsx", "scripts/p0-test-seed-hq.ts"], felles);
   lastEnvFil(CREDS_FIL);
-  for (const [navn, verdi] of Object.entries(process.env)) {
-    if (navn.startsWith("P0_")) felles[navn] = verdi;
+  for (const navn of [
+    "P0_PLAYER_EMAIL", "P0_PLAYER_PASSWORD", "P0_COACH_EMAIL", "P0_COACH_PASSWORD",
+    "P0_FOREIGN_EMAIL", "P0_FOREIGN_PASSWORD", "P0_FOREIGN_COACH_EMAIL", "P0_FOREIGN_COACH_PASSWORD",
+    "P0_WB_ID", "P0_V2_ID", "P0_PLAN_ID", "P0_WB_TALL", "P0_V2_REPS", "P0_V2_TREFF", "P0_PLAN_TALL",
+  ]) {
+    felles[navn] = process.env[navn];
   }
 
-  try {
-    execFileSync("lsof", ["-ti", `tcp:${HQ_APP_PORT}`], { encoding: "utf8" })
-      .split("\n")
-      .filter(Boolean)
-      .forEach((pid) => {
-        try { process.kill(Number(pid), "SIGTERM"); } catch { /* allerede borte */ }
-      });
-    await new Promise((r) => setTimeout(r, 1500));
-  } catch {
-    // Ingen prosess på porten.
-  }
+  await krevLedigAppPort();
 
   const nextLog = [];
   const next = spawn("npx", ["next", "dev", "-H", "127.0.0.1", "-p", HQ_APP_PORT], {
@@ -217,7 +238,7 @@ async function main() {
     await ventPaUrl(`${APP}/auth/login`, 120_000);
     await kjor(
       "npx",
-      ["playwright", "test", "-c", "tests/p0/playwright.config.ts", "--project=chromium"],
+      ["playwright", "test", "-c", "tests/p0/playwright.config.ts", "--project=chromium", ...process.argv.slice(2)],
       {
         ...felles,
         PLAYWRIGHT_BASE_URL: APP,
