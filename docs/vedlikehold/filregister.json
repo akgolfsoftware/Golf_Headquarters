@@ -1,7 +1,7 @@
 {
   "metode": "git ls-files -co --exclude-standard; eksisterende filer; genererte registerfiler utelatt. Kun metadata, ikke kundedata eller miljøverdier.",
   "telling": {
-    "prosjektfiler": 5450,
+    "prosjektfiler": 5451,
     "sidefiler": 480,
     "prismamodeller": 196,
     "enhetstestfiler": 424,
@@ -6092,6 +6092,11 @@
       "byte": 1033
     },
     {
+      "sti": "docs/design-audit/handlingstilgang-helse-2026-09-13.md",
+      "omrade": "dokumentasjon",
+      "byte": 956
+    },
+    {
       "sti": "docs/design-audit/handlingstilgang-r-i-2026-09-12.md",
       "omrade": "dokumentasjon",
       "byte": 1716
@@ -6119,12 +6124,12 @@
     {
       "sti": "docs/design-audit/p0-test-blokkering-2026-09-12.md",
       "omrade": "dokumentasjon",
-      "byte": 959
+      "byte": 816
     },
     {
       "sti": "docs/design-audit/p0-test-innlogget-reise-2026-09-12.md",
       "omrade": "dokumentasjon",
-      "byte": 2068
+      "byte": 2026
     },
     {
       "sti": "docs/design-audit/plan-legacy-2026-09-11.md",
@@ -6359,7 +6364,7 @@
     {
       "sti": "docs/MASTERPLAN-GJENSTAAENDE.md",
       "omrade": "dokumentasjon",
-      "byte": 22794
+      "byte": 23187
     },
     {
       "sti": "docs/merkevare/ak-golf-merkeplattform-2026-08-31.md",
@@ -6519,7 +6524,7 @@
     {
       "sti": "docs/planer/masterplan-dekning-2026-09-12.md",
       "omrade": "datert-plan",
-      "byte": 8243
+      "byte": 8313
     },
     {
       "sti": "docs/planer/produktplan-og-intervju-2026-09-11.md",
@@ -6699,7 +6704,7 @@
     {
       "sti": "docs/STATUS-NÅ.md",
       "omrade": "dokumentasjon",
-      "byte": 10496
+      "byte": 10528
     },
     {
       "sti": "docs/taksonomi-verifikasjon.md",
@@ -15759,12 +15764,12 @@
     {
       "sti": "src/app/portal/meg/helse/actions.test.ts",
       "omrade": "test",
-      "byte": 1740
+      "byte": 2663
     },
     {
       "sti": "src/app/portal/meg/helse/actions.ts",
       "omrade": "appkode",
-      "byte": 2142
+      "byte": 2190
     },
     {
       "sti": "src/app/portal/meg/helse/page.tsx",

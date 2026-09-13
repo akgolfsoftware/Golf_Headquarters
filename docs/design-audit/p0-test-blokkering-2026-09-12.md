@@ -1,6 +1,6 @@
 # P0-TEST — status 12.09.2026 natt
 
-Porten P0-TEST er **bestått lokalt på arbeidsgrenen**, men er ikke ferdigregistrert før endringen er godkjent og merget. Egen HQ-Supabase og alle tre innloggede øktreiser er prøvd. [Kontroll](p0-test-innlogget-reise-2026-09-12.md).
+Porten P0-TEST er **bestått i main via PR #865**. Egen HQ-Supabase og alle tre innloggede øktreiser er prøvd. [Kontroll](p0-test-innlogget-reise-2026-09-12.md).
 
 ## Hva som er på plass
 
@@ -14,4 +14,4 @@ Isolert HQ-testdatabase på `127.0.0.1:54379` er fortsatt evidens for gjenoppret
 
 ## Neste for P0-TEST
 
-Kjør full prosjektgate og få arbeidsgrenen godkjent. Etter merge kan masterplan og Notion oppdateres som ferdig. Kritiske prøver skal fortsatt feile stengt hvis oppsettet mangler, ikke hoppes over.
+P0-TEST er i main. Kritiske prøver skal fortsatt feile stengt hvis oppsettet mangler, ikke hoppes over. Notion kan merkes ferdig.

@@ -57,6 +57,7 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | dokumentasjon | [docs/design-audit/forelder-o05-delt-innsyn-2026-09-12.md](<../design-audit/forelder-o05-delt-innsyn-2026-09-12.md>) |
 | dokumentasjon | [docs/design-audit/handlingstilgang-admin-spiller-2026-09-13.md](<../design-audit/handlingstilgang-admin-spiller-2026-09-13.md>) |
 | dokumentasjon | [docs/design-audit/handlingstilgang-bred-2026-09-12.md](<../design-audit/handlingstilgang-bred-2026-09-12.md>) |
+| dokumentasjon | [docs/design-audit/handlingstilgang-helse-2026-09-13.md](<../design-audit/handlingstilgang-helse-2026-09-13.md>) |
 | dokumentasjon | [docs/design-audit/handlingstilgang-r-i-2026-09-12.md](<../design-audit/handlingstilgang-r-i-2026-09-12.md>) |
 | dokumentasjon | [docs/design-audit/handlingstilgang-utstyrsbag-2026-09-13.md](<../design-audit/handlingstilgang-utstyrsbag-2026-09-13.md>) |
 | dokumentasjon | [docs/design-audit/lokal-lagring-personvern-2026-09-11.md](<../design-audit/lokal-lagring-personvern-2026-09-11.md>) |
