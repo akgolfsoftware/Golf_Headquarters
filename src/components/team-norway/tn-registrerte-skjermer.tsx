@@ -66,7 +66,7 @@ function rolleNavn(rolle: string) {
 
 function Chrome({ aktiv, brukerNavn, kontekst, children }: { aktiv: TnAktivSide; brukerNavn: string; kontekst: TnArbeidskontekst; children: ReactNode }) {
   return (
-    <TnShell aktiv={aktiv} brukerNavn={brukerNavn} rolle={rolleNavn(kontekst.rolle)} groupId={kontekst.gruppe.id} kanAdministrere={kontekst.kanAdministrere}>
+    <TnShell aktiv={aktiv} brukerNavn={brukerNavn} rolle={rolleNavn(kontekst.rolle)} groupId={kontekst.gruppe.id} visTrenerflater={!kontekst.erSpiller} kanAdministrere={kontekst.kanAdministrere}>
       {children}
     </TnShell>
   );
@@ -226,7 +226,7 @@ export async function TnRegistrertSkjerm({ skjerm, id }: { skjerm: Skjerm; id?: 
     return (
       <Chrome aktiv="referansenivaer" brukerNavn={brukerNavn} kontekst={data.kontekst}>
         <TnSidehode overlinje={`Data · ${data.versjon}`} tittel="Referansenivåer" ingress="Viser bare målverdier som finnes eksplisitt i den versjonerte protokollkilden." />
-        <TnDataTable caption="Referansenivåer" kolonner={[{ key: "protokoll", label: "Protokoll" }, { key: "mal", label: "Måling" }, { key: "verdi", label: "Referanse", align: "right" }]} rader={data.rader.map((rad) => ({ protokoll: <Link href={`/team-norway/protokoller/${rad.protokollId}`} style={{ color: TN.navy700 }}>{rad.protokoll}</Link>, mal: rad.mal, verdi: rad.verdi ?? "Ukjent" }))} empty="Ingen eksplisitte referanseverdier finnes i protokollkilden." />
+        <TnDataTable caption="Referansenivåer" kolonner={[{ key: "protokoll", label: "Protokoll" }, { key: "mal", label: "Måling" }, { key: "verdi", label: "Referanse", align: "right" }]} rader={data.rader.map((rad) => ({ protokoll: data.kontekst.erSpiller ? rad.protokoll : <Link href={`/team-norway/protokoller/${rad.protokollId}`} style={{ color: TN.navy700 }}>{rad.protokoll}</Link>, mal: rad.mal, verdi: rad.verdi ?? "Ukjent" }))} empty="Ingen eksplisitte referanseverdier finnes i protokollkilden." />
       </Chrome>
     );
   }

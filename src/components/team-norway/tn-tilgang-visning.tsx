@@ -40,7 +40,7 @@ export function TnTilgangVisning({ brukerNavn, gruppeId, gruppeNavn, rader, valg
 }) {
   const valgt = rader.find((rad) => rad.userId === valgtId);
   const lenke = (id: string) => `/team-norway/tilgang?valgt=${encodeURIComponent(id)}`;
-  const meny = tnHovedmeny({ aktiv: "tilgang", groupId: gruppeId, kanAdministrere: true });
+  const meny = tnHovedmeny({ aktiv: "tilgang", groupId: gruppeId, visTrenerflater: true, kanAdministrere: true });
 
   return (
     <div className={styles.skall}>

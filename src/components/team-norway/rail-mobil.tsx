@@ -63,7 +63,7 @@ export function TnRailMobil({ punkter, orgNavn }: { punkter: TnMenyPunkt[]; orgN
         >
           {lenker.map((p) => (
             <a
-              key={p.href}
+              key={`${p.href}-${p.label}`}
               href={p.href}
               aria-current={p.aktiv ? "page" : undefined}
               onClick={() => setApen(false)}

@@ -273,7 +273,7 @@ export function TnRail({
             </div>
           ) : (
             <a
-              key={p.href}
+              key={`${p.href}-${p.label}`}
               href={p.href}
               aria-current={p.aktiv ? "page" : undefined}
               style={{

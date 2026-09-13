@@ -39,7 +39,7 @@ export default async function GruppepostPage({ params }: { params: Promise<{ gro
 
   const { rolle } = side;
   const erTrener = rolle === "TRENER";
-  const punkter = tnHovedmeny({ aktiv: "gruppeposter", groupId, kanAdministrere: erTrener || bruker.role === "ADMIN" });
+  const punkter = tnHovedmeny({ aktiv: "gruppeposter", groupId, visTrenerflater: erTrener || bruker.role === "ADMIN", kanAdministrere: erTrener || bruker.role === "ADMIN" });
 
   const poster: TnTidslinjePost[] = side.tidslinje.map((p) => ({
     id: p.id,

@@ -40,33 +40,41 @@ function lenke(label: string, href: string, id: TnAktivSide, aktiv: TnAktivSide,
 export function tnHovedmeny({
   aktiv,
   groupId,
+  visTrenerflater,
   kanAdministrere,
 }: {
   aktiv: TnAktivSide;
   groupId?: string;
+  visTrenerflater: boolean;
   kanAdministrere: boolean;
 }): TnMenyPunkt[] {
-  const gruppeHref = groupId ? `/team-norway/${groupId}` : "/team-norway";
-  const dokumentHref = groupId ? `/team-norway/${groupId}/dokumenter` : "/team-norway";
   const punkter: TnMenyPunkt[] = [
     { type: "overskrift", label: "Daglig" },
     lenke("Oversikt", "/team-norway", "oversikt", aktiv),
-    lenke("Fellestesting", "/team-norway/fellestesting", "fellestesting", aktiv),
+    ...(visTrenerflater ? [lenke("Fellestesting", "/team-norway/fellestesting", "fellestesting", aktiv)] : []),
     lenke("Samlingspunkt", "/team-norway/samlinger", "samlinger", aktiv),
     lenke("Collegegruppen", "/team-norway/college", "college", aktiv),
     lenke("Månedsplan", "/team-norway/manedsplan", "manedsplan", aktiv),
-    lenke("Spillerutvikling", "/team-norway/spillere", "spillere", aktiv),
-    { type: "overskrift", label: "Uttak" },
-    lenke("Uttaksliste", "/team-norway/uttak", "uttak", aktiv),
-    lenke("Rangliste", "/team-norway/rangliste", "rangliste", aktiv),
-    { type: "overskrift", label: "Skoler" },
-    lenke("Skoleoversikt", "/team-norway/skoler", "skoler", aktiv),
+    ...(visTrenerflater
+      ? [
+          lenke("Spillerutvikling", "/team-norway/spillere", "spillere", aktiv),
+          { type: "overskrift" as const, label: "Uttak" },
+          lenke("Uttaksliste", "/team-norway/uttak", "uttak", aktiv),
+          lenke("Rangliste", "/team-norway/rangliste", "rangliste", aktiv),
+          { type: "overskrift" as const, label: "Skoler" },
+          lenke("Skoleoversikt", "/team-norway/skoler", "skoler", aktiv),
+        ]
+      : []),
     { type: "overskrift", label: "Kommunikasjon" },
-    lenke("Gruppeposter", gruppeHref, "gruppeposter", aktiv),
-    lenke("Dokumenter", dokumentHref, "dokumenter", aktiv),
+    ...(groupId
+      ? [
+          lenke("Gruppeposter", `/team-norway/${groupId}`, "gruppeposter", aktiv),
+          lenke("Dokumenter", `/team-norway/${groupId}/dokumenter`, "dokumenter", aktiv),
+        ]
+      : []),
     { type: "lenke", label: "Samtykke", href: "/portal/meg/innstillinger/personvern/deling" },
     { type: "overskrift", label: "Data" },
-    lenke("Testprotokoller", "/team-norway/protokoller", "protokoller", aktiv),
+    ...(visTrenerflater ? [lenke("Testprotokoller", "/team-norway/protokoller", "protokoller", aktiv)] : []),
     lenke("Turneringer", "/team-norway/turneringer", "turneringer", aktiv),
     lenke("Referansenivåer", "/team-norway/referansenivaer", "referansenivaer", aktiv),
     { type: "lenke", label: "Analyse", href: "/portal/analysere" },
@@ -89,6 +97,7 @@ export function TnShell({
   brukerNavn,
   rolle,
   groupId,
+  visTrenerflater,
   kanAdministrere,
   children,
 }: {
@@ -96,10 +105,11 @@ export function TnShell({
   brukerNavn: string;
   rolle: string;
   groupId?: string;
+  visTrenerflater: boolean;
   kanAdministrere: boolean;
   children: ReactNode;
 }) {
-  const punkter = tnHovedmeny({ aktiv, groupId, kanAdministrere });
+  const punkter = tnHovedmeny({ aktiv, groupId, visTrenerflater, kanAdministrere });
   return (
     <div style={{ display: "flex", minHeight: "100dvh", background: TN.surfacePage, color: TN.textPrimary, fontFamily: TN.font.body }}>
       <TnRail punkter={punkter} bruker={{ navn: brukerNavn, rolle }} orgNavn="Team Norway Golf" orgUndertittel="Prestasjon" />

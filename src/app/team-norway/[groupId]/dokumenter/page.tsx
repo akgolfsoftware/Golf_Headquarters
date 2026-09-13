@@ -34,7 +34,7 @@ export default async function DokumenterPage({ params }: { params: Promise<{ gro
     return opprettGruppeDokumentAction(groupId, form);
   }
 
-  const punkter = tnHovedmeny({ aktiv: "dokumenter", groupId, kanAdministrere: rolle === "TRENER" || bruker.role === "ADMIN" });
+  const punkter = tnHovedmeny({ aktiv: "dokumenter", groupId, visTrenerflater: rolle === "TRENER" || bruker.role === "ADMIN", kanAdministrere: rolle === "TRENER" || bruker.role === "ADMIN" });
 
   const rader: TnDokumentRadVisning[] = dokumenter.map((d) => ({
     attachmentId: d.attachmentId,

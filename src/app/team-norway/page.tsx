@@ -27,6 +27,7 @@ export default async function TeamNorwayOversiktPage() {
   const punkter = tnHovedmeny({
     aktiv: "oversikt",
     groupId: side.erAktivtMedlem ? side.gruppe.id : undefined,
+    visTrenerflater: !erSpillerIGruppe,
     kanAdministrere: bruker.role === "ADMIN" || side.rolle === "COACH",
   });
 

@@ -35,14 +35,15 @@ export default async function SpillerpostPage({ params }: { params: Promise<{ sp
   });
   if (!spiller) notFound();
 
-  const [tidslinje, foresatte] = await Promise.all([
+  const [tidslinje, foresatte, gruppe] = await Promise.all([
     hentSpillerpostTidslinje(spillerId, bruker.id),
     prisma.parentRelation.findMany({
       where: { childId: spillerId, approved: true },
       select: { parent: { select: { id: true, name: true } } },
     }),
+    prisma.group.findUnique({ where: { slug: "team-norway" }, select: { id: true } }),
   ]);
-  if (!tidslinje) notFound();
+  if (!tidslinje || !gruppe) notFound();
 
   const erTrenerHer = bruker.id !== spillerId && !foresatte.some((f) => f.parent.id === bruker.id);
   const spillerAlder = alder(spiller.dateOfBirth);
@@ -52,7 +53,7 @@ export default async function SpillerpostPage({ params }: { params: Promise<{ sp
     return opprettSpillerpostAction(spillerId, input);
   }
 
-  const punkter = tnHovedmeny({ aktiv: "spillere", kanAdministrere: erTrenerHer || bruker.role === "ADMIN" });
+  const punkter = tnHovedmeny({ aktiv: "spillere", groupId: gruppe.id, visTrenerflater: erTrenerHer || bruker.role === "ADMIN", kanAdministrere: erTrenerHer || bruker.role === "ADMIN" });
 
   const poster: TnTidslinjePost[] = tidslinje.map((p) => ({
     id: p.id,

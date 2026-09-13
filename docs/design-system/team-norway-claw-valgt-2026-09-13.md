@@ -34,4 +34,14 @@ Presentasjon og systemkart er dokumentasjons-/eksportflater i Claw-registeret og
 
 ## Bevisgrense
 
-Kode, typografi, tokens, logoressurs og ruter kan verifiseres teknisk. Visuell likhet skal i tillegg kontrolleres i faktisk app på mobil og desktop med relevante roller og reelle, samtykkede testdata før produksjonsklar status.
+Kode, typografi, tokens, logoressurs og ruter er kontrollert teknisk. Skjermene er i tillegg kontrollert i faktisk app på 390 px mobil og 1440 px desktop med syntetiske testbrukere for trener, Team Norway-spiller og spiller uten Team Norway-tilgang.
+
+Kontrollen dekket 32 kombinasjoner av rute, rolle og skjermbredde:
+
+- 30 autoriserte visninger lastet korrekt
+- 2 avviste visninger viste forventet «Denne siden finnes ikke»
+- 0 horisontale sidebredde-feil
+- 0 konsollfeil
+- spillerens meny inneholder ikke trenerflater
+
+Visuell produksjonsgodkjenning tilhører fortsatt Anders. Den tekniske og rollebaserte skjermkontrollen er bestått.
