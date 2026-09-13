@@ -16,6 +16,7 @@ export const SPILLER_EPOST = "p0-spiller@akgolf.test";
 export const COACH_EPOST = "p0-coach@akgolf.test";
 export const FREMMED_EPOST = "p0-fremmed@akgolf.test";
 export const FREMMED_COACH_EPOST = "p0-fremmed-coach@akgolf.test";
+export const TALENT_EPOST = "p0-talent@akgolf.test";
 export const WB_ID = "p0-wb-okt";
 export const V2_ID = "p0-v2-okt";
 export const PLAN_ID = "p0-plan-okt";
@@ -96,8 +97,10 @@ async function upsertBruker(
     name: string;
     role: "PLAYER" | "COACH";
     trial: boolean;
+    profilType?: "STANDARD" | "TALENT";
   },
 ) {
+  const profilType = input.profilType ?? "STANDARD";
   return prisma.user.upsert({
     where: { email: input.email },
     update: {
@@ -105,7 +108,7 @@ async function upsertBruker(
       name: input.name,
       role: input.role,
       tier: input.trial ? "PRO" : "GRATIS",
-      profilType: "STANDARD",
+      profilType,
       trialEndsAt: input.trial ? new Date("2099-01-01T00:00:00Z") : null,
       deletedAt: null,
       preferences: ONBOARDING,
@@ -116,7 +119,7 @@ async function upsertBruker(
       name: input.name,
       role: input.role,
       tier: input.trial ? "PRO" : "GRATIS",
-      profilType: "STANDARD",
+      profilType,
       trialEndsAt: input.trial ? new Date("2099-01-01T00:00:00Z") : null,
       preferences: ONBOARDING,
     },
@@ -146,11 +149,12 @@ async function main() {
   }
 
   try {
-    const [spillerAuth, coachAuth, fremmedAuth, fremmedCoachAuth] = await Promise.all([
+    const [spillerAuth, coachAuth, fremmedAuth, fremmedCoachAuth, talentAuth] = await Promise.all([
       authBruker(api, serviceRole, SPILLER_EPOST, passord),
       authBruker(api, serviceRole, COACH_EPOST, passord),
       authBruker(api, serviceRole, FREMMED_EPOST, passord),
       authBruker(api, serviceRole, FREMMED_COACH_EPOST, passord),
+      authBruker(api, serviceRole, TALENT_EPOST, passord),
     ]);
 
     const coach = await upsertBruker(prisma, {
@@ -180,6 +184,16 @@ async function main() {
       name: "P0 Fremmed coach",
       role: "COACH",
       trial: false,
+    });
+    // TALENT-nivå (plan T2/A3): gratis, låst profil — ingen trial, ingen
+    // abonnement, ingen gruppe. resolveTilgang faller da på profilType.
+    await upsertBruker(prisma, {
+      authId: talentAuth,
+      email: TALENT_EPOST,
+      name: "P0 Talent",
+      role: "PLAYER",
+      trial: false,
+      profilType: "TALENT",
     });
 
     await prisma.playerEnrollment.deleteMany({
@@ -322,6 +336,8 @@ async function main() {
         `P0_FOREIGN_PASSWORD=${passord}`,
         `P0_FOREIGN_COACH_EMAIL=${FREMMED_COACH_EPOST}`,
         `P0_FOREIGN_COACH_PASSWORD=${passord}`,
+        `P0_TALENT_EMAIL=${TALENT_EPOST}`,
+        `P0_TALENT_PASSWORD=${passord}`,
         `P0_WB_ID=${WB_ID}`,
         `P0_V2_ID=${V2_ID}`,
         `P0_PLAN_ID=${PLAN_ID}`,
