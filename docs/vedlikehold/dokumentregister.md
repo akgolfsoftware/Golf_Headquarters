@@ -67,6 +67,7 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | dokumentasjon | [docs/design-audit/p0-test-innlogget-reise-2026-09-12.md](<../design-audit/p0-test-innlogget-reise-2026-09-12.md>) |
 | dokumentasjon | [docs/design-audit/plan-legacy-2026-09-11.md](<../design-audit/plan-legacy-2026-09-11.md>) |
 | dokumentasjon | [docs/design-audit/plan-live-p02-p05-2026-09-12.md](<../design-audit/plan-live-p02-p05-2026-09-12.md>) |
+| dokumentasjon | [docs/design-audit/plan-ny-rediger-flytt-2026-09-13.md](<../design-audit/plan-ny-rediger-flytt-2026-09-13.md>) |
 | dokumentasjon | [docs/design-audit/playerhq-p09-coachkontakt-2026-09-12.md](<../design-audit/playerhq-p09-coachkontakt-2026-09-12.md>) |
 | dokumentasjon | [docs/design-audit/playerhq-p09-melding-coach-2026-09-12.md](<../design-audit/playerhq-p09-melding-coach-2026-09-12.md>) |
 | dokumentasjon | [docs/design-audit/playerhq-p09-sporsmal-tilgang-2026-09-12.md](<../design-audit/playerhq-p09-sporsmal-tilgang-2026-09-12.md>) |

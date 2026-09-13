@@ -46,30 +46,37 @@ export async function executeSessionMove(
   const before = session.scheduledAt;
   const target = computeMoveTarget(before, dayIndex, refDate);
 
-  const updated = await prisma.trainingPlanSession.update({
-    where: { id: sessionId },
-    data: { scheduledAt: target },
-    select: {
-      id: true,
-      title: true,
-      scheduledAt: true,
-      durationMin: true,
-      pyramidArea: true,
-      miljo: true,
-    },
-  });
+  try {
+    const after = await prisma.$transaction(async (tx) => {
+      const updated = await tx.trainingPlanSession.update({
+        where: { id: sessionId },
+        data: { scheduledAt: target },
+        select: {
+          id: true,
+          title: true,
+          scheduledAt: true,
+          durationMin: true,
+          pyramidArea: true,
+          miljo: true,
+        },
+      });
 
-  await upsertV2ForPlanSession({
-    planSessionId: updated.id,
-    playerId,
-    title: updated.title,
-    scheduledAt: updated.scheduledAt,
-    durationMin: updated.durationMin,
-    pyramidArea: updated.pyramidArea,
-    coachId,
-    // Bevar miljø i V2-speilet ved flytting (ellers ble det nullstilt til "M2").
-    miljo: updated.miljo,
-  });
-
-  return { ok: true, before, after: updated.scheduledAt };
+      await upsertV2ForPlanSession({
+        planSessionId: updated.id,
+        playerId,
+        title: updated.title,
+        scheduledAt: updated.scheduledAt,
+        durationMin: updated.durationMin,
+        pyramidArea: updated.pyramidArea,
+        coachId,
+        // Bevar miljø i V2-speilet ved flytting (ellers ble det nullstilt til "M2").
+        miljo: updated.miljo,
+        db: tx,
+      });
+      return updated.scheduledAt;
+    });
+    return { ok: true, before, after };
+  } catch {
+    return { ok: false, error: "Kunne ikke flytte økten." };
+  }
 }

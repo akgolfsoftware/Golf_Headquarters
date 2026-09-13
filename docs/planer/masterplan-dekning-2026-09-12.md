@@ -7,8 +7,8 @@ Opprettet 12.09.2026. Dette er sporbarhetsregisteret under [masterplanen](../MAS
 | ID | Familie | Ansvarlig arbeidspakke | Før bygging / gjeldende status |
 |---|---|---|---|
 | P01 | Registrering, introduksjon, profil | Konto/onboarding | Åpen; førstegangsnytte og nivåquiz avklares |
-| P02 | I dag | P0-TEST → R-E/J02 | Del 1 i main via PR #845; innlogget isolert reise i main via PR #865. [Kontroll](../design-audit/p0-test-innlogget-reise-2026-09-12.md) |
-| P03 | Planlegging | R-E + Workbench | Tre modeller beholdes. Frekvens teller speil én gang. Innlogget ny/rediger/flytt gjenstår. [Kontroll](../design-audit/plan-live-p02-p05-2026-09-12.md) |
+| P02 | I dag | P0-TEST → R-E/J02 | Del 1 i main via PR #845. Innlogget isolert reise i main via PR #865. [Kontroll](../design-audit/p0-test-innlogget-reise-2026-09-12.md) |
+| P03 | Planlegging | R-E + Workbench | Tre modeller beholdes. Frekvens teller speil én gang. Ny/rediger/flytt avviser uvedkommende. Innlogget ny/rediger/flytt gjenstår. [P02–P05](../design-audit/plan-live-p02-p05-2026-09-12.md) · [ny/rediger/flytt](../design-audit/plan-ny-rediger-flytt-2026-09-13.md) |
 | P04 | Gjennomføring/Live | R-E/J02 | Avbrutt skilles fra lagret. Innlogget V2-/Workbench-/planreise i main via PR #865. [Kontroll](../design-audit/p0-test-innlogget-reise-2026-09-12.md) |
 | P05 | Mål/fremgang | R-F | Frekvens uten dobbelttelling bygget; startverdi/periode for øvrige måltyper gjenstår |
 | P06 | Øvelsesbank/program | D2-PH + O02 | Delvis; faglige merkelapper er frie |
