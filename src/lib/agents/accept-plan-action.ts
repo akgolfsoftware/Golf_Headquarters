@@ -24,8 +24,8 @@ async function claimPendingAction(actionId: string): Promise<boolean> {
 
 /**
  * Godkjenner en PlanAction og kjører executor. Ved kjøringsfeil settes status
- * tilbake til PENDING, mens en ferdig sideeffekt aldri åpnes for ny kjøring ved
- * en etterfølgende sporfeil.
+ * tilbake til PENDING. Etter at executor har returnert, forblir handlingen
+ * PROCESSING hvis statuslagringen feiler, slik at sideeffekten ikke kan gjentas.
  * Ved coach-redigering snapshotes originalforslaget til `originalSuggestion`
  * og `editedBeforeApproval` settes via kanonisk JSON-diff — grunnlaget for
  * «godkjent uendret»-metrikken i eval-suiten.
@@ -58,7 +58,31 @@ export async function acceptAndApplyPlanAction(
   let exec: Awaited<ReturnType<typeof executePlanAction>>;
   try {
     exec = await executePlanAction(actionId);
+  } catch (err) {
+    try {
+      await prisma.planAction.updateMany({
+        where: { id: actionId, status: "PROCESSING" },
+        data: { status: "PENDING", updatedAt: new Date() },
+      });
+    } catch {
+      // En mislykket reset skal ikke lekke databasefeilen til klienten.
+    }
+    try {
+      await prisma.agentRun.create({
+        data: planActionFeilSpor({
+          actionId,
+          actionType: action.actionType,
+          userId: action.userId,
+          error: err,
+        }),
+      });
+    } catch {
+      // Sporfeil skal ikke erstatte den trygge feilen som returneres til klienten.
+    }
+    throw new Error("execution-failed");
+  }
 
+  try {
     // FØR/UNDER/ETTER: sjekkpunkt + fangstId fra suggestion (zod, #9).
     const rawSug = coachNoteSuggestion ?? action.suggestion;
     const sjekkpunkt =
@@ -89,32 +113,37 @@ export async function acceptAndApplyPlanAction(
     });
     if (accepted.count !== 1) throw new Error("claim-lost");
   } catch (err) {
-    await prisma.planAction.updateMany({
-      where: { id: actionId, status: "PROCESSING" },
-      data: { status: "PENDING", updatedAt: new Date() },
-    });
-    await prisma.agentRun.create({
-      data: planActionFeilSpor({
-        actionId,
-        actionType: action.actionType,
-        userId: action.userId,
-        error: err,
-      }),
-    });
+    // Executor har returnert og sideeffekten kan allerede være varig. Behold
+    // PROCESSING ved statusfeil; PENDING ville åpnet for dobbel utføring.
+    try {
+      await prisma.agentRun.create({
+        data: planActionFeilSpor({
+          actionId,
+          actionType: action.actionType,
+          userId: action.userId,
+          error: err,
+        }),
+      });
+    } catch {
+      // Statusen er fortsatt låst selv om også feilsporet skulle feile.
+    }
     throw new Error("execution-failed");
   }
 
-  // Sporfeil skal aldri sette handlingen tilbake til PENDING etter at
-  // sideeffekten er utført. En ny godkjenning ville da kunne kjøre den igjen.
-  await prisma.agentRun.create({
-    data: planActionOkSpor({
-      actionId,
-      actionType: action.actionType,
-      userId: action.userId,
-      applied: exec.applied,
-      summary: exec.summary,
-    }),
-  });
+  // Sporfeil skal ikke gjøre en utført og godkjent handling til en klientfeil.
+  try {
+    await prisma.agentRun.create({
+      data: planActionOkSpor({
+        actionId,
+        actionType: action.actionType,
+        userId: action.userId,
+        applied: exec.applied,
+        summary: exec.summary,
+      }),
+    });
+  } catch {
+    // Statusen er ACCEPTED og sideeffekten skal aldri gjentas for å reparere spor.
+  }
   return {
     status: "ACCEPTED",
     applied: exec.applied,

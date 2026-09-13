@@ -3,6 +3,8 @@ import { before, beforeEach, mock, test } from "node:test";
 
 let status = "PENDING";
 let failExec = false;
+let failAcceptedWrite = false;
+let failOkRunWrite = false;
 let executeKall = 0;
 const runs: Array<{ status: string; error?: string; output?: { actionId?: string; utfall?: string } }> = [];
 
@@ -39,12 +41,19 @@ mock.module("@/lib/prisma", {
           data: { status: string };
         }) => {
           if (where.status && status !== where.status) return { count: 0 };
+          if (data.status === "ACCEPTED" && failAcceptedWrite) {
+            failAcceptedWrite = false;
+            throw new Error("Syntetisk statuslagring feilet");
+          }
           status = data.status;
           return { count: 1 };
         },
       },
       agentRun: {
         create: async ({ data }: { data: (typeof runs)[number] }) => {
+          if (data.status === "OK" && failOkRunWrite) {
+            throw new Error("Syntetisk sporlagring feilet");
+          }
           runs.push(data);
         },
       },
@@ -61,6 +70,8 @@ before(async () => {
 beforeEach(() => {
   status = "PENDING";
   failExec = false;
+  failAcceptedWrite = false;
+  failOkRunWrite = false;
   executeKall = 0;
   runs.length = 0;
 });
@@ -109,4 +120,34 @@ test("to samtidige godkjenninger kjører sideeffekten bare én gang", async () =
     [a.status, b.status].sort(),
     ["ACCEPTED", "UNCHANGED"],
   );
+});
+
+test("statusfeil etter ferdig executor åpner ikke for ny sideeffekt", async () => {
+  failAcceptedWrite = true;
+
+  await assert.rejects(
+    () => acceptAndApplyPlanAction("pa-1"),
+    /execution-failed/,
+  );
+  assert.equal(status, "PROCESSING");
+  assert.equal(executeKall, 1);
+
+  const nyttForsok = await acceptAndApplyPlanAction("pa-1");
+  assert.equal(nyttForsok.status, "UNCHANGED");
+  assert.equal(executeKall, 1);
+});
+
+test("sporfeil etter godkjenning endrer ikke resultat eller gjentar sideeffekt", async () => {
+  failOkRunWrite = true;
+
+  const resultat = await acceptAndApplyPlanAction("pa-1");
+  assert.equal(resultat.status, "ACCEPTED");
+  assert.equal(resultat.applied, true);
+  assert.equal(status, "ACCEPTED");
+  assert.equal(executeKall, 1);
+
+  const nyttForsok = await acceptAndApplyPlanAction("pa-1");
+  assert.equal(nyttForsok.status, "ACCEPTED");
+  assert.equal(nyttForsok.applied, false);
+  assert.equal(executeKall, 1);
 });
