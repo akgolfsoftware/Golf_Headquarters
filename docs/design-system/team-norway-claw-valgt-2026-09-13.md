@@ -2,6 +2,7 @@
 
 Dato: 13.09.2026
 Beslutningseier: Anders Kristiansen
+Status: Visuelt godkjent av Anders 13.09.2026
 
 ## Beslutning
 
@@ -44,4 +45,4 @@ Kontrollen dekket 32 kombinasjoner av rute, rolle og skjermbredde:
 - 0 konsollfeil
 - spillerens meny inneholder ikke trenerflater
 
-Visuell produksjonsgodkjenning tilhører fortsatt Anders. Den tekniske og rollebaserte skjermkontrollen er bestått.
+Anders godkjente den viste desktop- og mobilimplementasjonen 13.09.2026. Team Norway har dermed bestått både teknisk kontroll, rollebasert skjermkontroll og visuell godkjenning for dette omfanget. Publisering krever fortsatt egen beslutning.
