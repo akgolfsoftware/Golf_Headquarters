@@ -6,7 +6,7 @@ Oppdatert 13.09.2026. Denne filen eier rekkefølge og gjenstående arbeid. [Stat
 
 Anders ønsker en komplett app før åpen lansering med booking og betaling. Han har bestilt videre arbeid, samling av ferdige oppgaver til main, prosjektopprydding og denne oppdaterte restlisten. En merge betyr at kode er samlet; den er ikke visuell godkjenning eller lanseringsvedtak.
 
-Aktiv visuell retning er nå **Atletisk intelligens**. Siste Claude-kandidat består av AgencyOS v0.3.3, AgencyOS Hjem v0.3.2, PlayerHQ v0.3.2 og Stall/spillerkort v0.1. Den er klikkbar, men eksplisitt ikke valgt eller eksportert for bygging. Train-lock, Claw/Team Norway, WANG-speilet og dagens Geist/v3-implementasjon bevares som funksjons-, historikk- og teknisk underlag, men er ikke visuell fasit for nye skjermendringer. [Kontroll av Claude-pakken](design-audit/claude-design-v0-3-3-2026-09-12.md), [designstatus](../designsystem/README.md) og [tidligere portstatus](design-audit/portering-fire-flater-2026-09-10.md).
+Aktiv visuell retning er nå **Atletisk intelligens**. Claude Design-koordinatoren har kontrollert kandidat v0.4.6: 23 av 35 funksjonsfamilier, 14 av 17 hovedreiser med klikkbar deldekning og 61 av 480 registrerte ruter. Åtte reiser er merket komplette i designregisteret. Kandidaten har fortsatt `selectedForBuilding: false`; den er derfor ikke en samlet byggebestilling. Train-lock, Claw/Team Norway, WANG-speilet og dagens Geist/v3-implementasjon bevares som funksjons-, historikk- og teknisk underlag, men er ikke visuell fasit for nye skjermendringer. [Siste repo-lagrede kontroll](design-audit/claude-design-v0-3-3-2026-09-12.md), [designstatus](../designsystem/README.md) og [tidligere portstatus](design-audit/portering-fire-flater-2026-09-10.md).
 
 Eksisterende UI skal ikke slettes på forhånd. Det erstattes kontrollert per brukerreise etter at en designversjon er valgt, kartlagt til kode og funksjons-/visuelt prøvd.
 
@@ -38,7 +38,7 @@ Arbeid kan gå parallelt bare når avhengighetene under er oppfylt. Statusene `�
 
 ### Åpne avvik i siste Claude-kandidat
 
-Disse er nå eksplisitte D0-blokkeringer, ikke fotnoter: faktisk 320 px-/200 %-kontroll mangler; nyere lagrings-/delingsregler er ikke innarbeidet i systemfilene; gruppeoppmøte mangler godkjent datamodell; prototypeføringen har ikke serverlagring; AgencyOS Hjem har bare to redigeringstider; og skjermregister, filversjoner og Stall-status er ikke samordnet. [Kilde og detaljer](design-audit/claude-design-v0-3-3-2026-09-12.md). Datamodell eller databaseendring krever egen autorisasjon.
+Kandidat v0.4.6 er fortsatt en delpakke og har ikke `selectedForBuilding: true`. 12 funksjonsfamilier, 3 hovedreiser og størstedelen av ruteinventaret mangler fortsatt dokumentert dekning. J07 mangler bevist varig øktbinding for direkte coachdialog, mens Live-bindingen tilhører AI-coachen. Valgt, filtrert TrackMan-sett har heller ikke bevist lagring til utstyrsbag. Faktisk 320 px-/200 %-kontroll og full appattestering mangler. Den eldre [v0.3.3-kontrollen](design-audit/claude-design-v0-3-3-2026-09-12.md) bevarer tidligere avvik. Datamodell eller databaseendring krever egen autorisasjon.
 
 ## Samlet arbeid og hva kontrollene beviser
 
@@ -62,7 +62,7 @@ Disse er nå eksplisitte D0-blokkeringer, ikke fotnoter: faktisk 320 px-/200 %-k
 | O05/O07 forelder og delt innsyn | Godkjent eierskap, identitetssikkert barnbytte, avvist skriving, ugyldig/utløpt lenke og tilbakekalling av delt tilgang | I main via PR #852. [Kontroll](design-audit/forelder-o05-delt-innsyn-2026-09-12.md). Innlogget reise og betaling for barn gjenstår |
 | O06 booking/betaling | Kollisjon, idempotens, hendelser i ulik rekkefølge, credits, avbestilling/refusjon og oppsigelse mot Stripe først. Kun mocket Stripe | I main via PR #853. [Kontroll](design-audit/booking-o06-betaling-2026-09-12.md). Innlogget checkout og reell testnøkkel gjenstår |
 | P02–P05 Plan/Live | Frekvens uten dobbelttelling av speil, FYS-standardverdi og detaljgjenåpning, avbrutt mot lagret | I main via PR #854. [Kontroll](design-audit/plan-live-p02-p05-2026-09-12.md). Innlogget reise gjenstår |
-| P03 ny/rediger/flytt | Avvist rolle uten skriving for planøkt og Workbench-økt. Flytt treffer vist uke. Feil ruller tilbake tittel | På `grok/p03-plan-ny-rediger-flytt-2026-09-13`. [Kontroll](design-audit/plan-ny-rediger-flytt-2026-09-13.md). Innlogget reise gjenstår |
+| P03 ny/rediger/flytt | Avvist rolle uten skriving for planøkt og Workbench-økt. Flytt treffer vist uke. Feil ruller tilbake tittel | I main via PR #871. [Kontroll](design-audit/plan-ny-rediger-flytt-2026-09-13.md). Innlogget reise gjenstår |
 | G01/G06–G10 | Korrigering, kilde, enhet, manglende data og gjenåpning uten produksjonsimport | I main via PR #855. [Kontroll](design-audit/runde-sg-trackman-g01-g10-2026-09-12.md) |
 | O13 kvalitet/backup | Feilsanitering uten hemmeligheter, helsesvar uten env, lokal URL-vakt og rollback-regel. Lokal `pg_restore` prøvd 12.09 kveld | I main via PR #857, ny prøve på `grok/docker-launch-tester-2026-09-12`. [Kontroll](design-audit/docker-launch-tester-2026-09-12.md). L7 ikke bestått |
 | R-J samtykkegrunnlag | Felles 16-årsregel for helse og deling (flagg eller fødselsdato). Register over formål/lagring. Helselogg og spiller-samtykke avviser uten gyldig grunnlag | I main via PR #867. [Kontroll](design-audit/samtykke-r-j-2026-09-13.md). UI-tekst og lydhistorikk uendret |
@@ -74,22 +74,26 @@ Disse er nå eksplisitte D0-blokkeringer, ikke fotnoter: faktisk 320 px-/200 %-k
 | R-I utstyrsbag | Forelder avvises. Lagring bruker innlogget bruker-id | I main via PR #869. [Kontroll](design-audit/handlingstilgang-utstyrsbag-2026-09-13.md) |
 | R-I admin-spiller | Opprett/rediger spiller avviser spiller og forelder; rediger krever stalltilgang | I main via PR #870. [Kontroll](design-audit/handlingstilgang-admin-spiller-2026-09-13.md) |
 | O02 Workbench-publisering | Coach uten stalltilgang avvises. Snapshot bruker norsk mandag. Publisering lager ikke nye økter | I main via PR #866. [Kontroll](design-audit/workbench-o02-publisering-2026-09-13.md). Gruppeplan uten dublett gjenstår |
-| R-I helseskriving | Manuelt helsesamtykke kreves før lagring. Forelder avvises. Under 16 kan ikke samtykke selv | Denne leveransen. [Kontroll](design-audit/handlingstilgang-helse-2026-09-13.md) |
+| R-I helseskriving | Manuelt helsesamtykke kreves før lagring. Forelder avvises. Under 16 kan ikke samtykke selv | I main via PR #872. [Kontroll](design-audit/handlingstilgang-helse-2026-09-13.md) |
 | P0-TEST innlogget reise | I dag → Plan → PH-04/05/06 for V2, Workbench og eldre plan. Samme tall etter gjenåpning. Uvedkommende avvises | I main via PR #865. [Kontroll](design-audit/p0-test-innlogget-reise-2026-09-12.md) |
+| Sikkerhet og samtidighet | Delt AgencyOS-spillertilgang, følsomme ruter, godkjenningsløp og samtidige Live-oppsummeringer er strammet inn | I main via PR #874–#876. Full `npm run verify` og GitHub/Vercel-kontroller bestod |
+| TrackMan fotoenheter | Fotoresultat må ha eksplisitt avstands- og hastighetsenhet før det kan forhåndsvises og lagres | I main via PR #877. Reell bildepresisjon, personverngjennomgang av bildeoverføring og innlogget importreise gjenstår |
+| Team Norway Claw | Visuelt godkjente Team Norway-flater samlet uten å erklære hele designpakken valgt | I main via PR #878. 82 målrettede tester og full kvalitetskontroll bestod |
+| Avhengighetssikkerhet | Next.js 16.3.3 og kompatible sikkerhetspatcher; npm-funn redusert fra 20 til 5 | I main via PR #879/#880. Fem oppstrøms-/kompatibilitetsblokker dokumentert i [kontrollen](vedlikehold/avhengighetssikkerhet-2026-09-13.md) |
 
 Siste samlede testresultat og flettepunkt skal leses i samlingsrapporten og tilhørende GitHub PR. Innlogget produksjonsreise, faktisk betaling og Anders' visuelle vurdering er egne kontroller som fortsatt gjenstår.
 
 ## Neste oppgaver, i rekkefølge
 
-Aktiv arbeidsdeling 13.09.2026: Claude Design eier Design System v0.1. D2-AO og helse (PR #868) eies av andre økter. Ikke dupliser dem.
+Aktiv arbeidsdeling 13.09.2026: Claude Design eier Design System v0.1. GitHub har etter PR #880 ingen åpne pull requests eller issues. Ikke bygg fra kandidat v0.4.6 før en pakke er valgt for det aktuelle omfanget.
 
 | Prioritet / ID | Konkret neste leveranse | Inngang | Ferdig når |
 |---|---|---|---|
-| 1 · P0-TEST → R-E / R1–R3 | I main via PR #865. Innlogget HQ-reise for V2, Workbench og eldre plan, samme tall etter gjenåpning, uvedkommende avvist | `scripts/p0-test-innlogget-reise.mjs`, [kontroll](design-audit/p0-test-innlogget-reise-2026-09-12.md) | P0-TEST er bestått i main; samme økt/tall i innlogget isolert base; gjenåpning virker; uvedkommende avvises |
-| 2 · D2-AO | Teknisk AgencyOS-reise: stall bruker samme spillerporte som kort/Workbench; oversikt lastes ikke uten tilgang. Visuell port venter på D0 | `src/lib/admin/stallen-scope.ts`, `src/lib/agencyos/coach-reise.ts`, [kontroll](design-audit/agencyos-d2-ao-teknisk-2026-09-12.md) | Innlogget reise og visuell port gjenstår; tilgang på stall/kort er prøvd uten visuell endring |
-| 3 · Caddie-kø/AI-grense | Avgrens AgencyOS-køene til utkast eieren faktisk kan godkjenne, og hold ukjent databasefritekst unna ekstern modell. Bygget på `grok/caddie-ko-eier-fritekst-2026-09-12` | `src/lib/caddie/draft-eier.ts`, `src/lib/caddie/modell-felt.ts`, kø- og innboks-lastere | Kø og godkjenning bruker samme eierregel. Ukjent fritekst går ikke til ekstern modell uten en dokumentert tillatt datastruktur |
-| 4 · D2-TN | Fullfør den sikrede Team Norway-oversikten → testføring → resultat/historikk → dokumenter/poster | `src/lib/team-norway/tn-reise.ts`, `src/lib/domain/tn-post.ts`, [kontroll](design-audit/team-norway-d2-tn-teknisk-reise-2026-09-12.md) | Teknisk reise og kanonisk gruppeavgrensning bygget. Innlogget og visuell kontroll gjenstår |
-| 5 · D2-WANG | Fullfør WANG-hjem fra den sikrede Toppidrett-grensen → skole-/treningsuke → økt → elev/gruppe → rapport | `src/app/team-wang/_data/wang-reise.ts`, [kontroll](design-audit/wang-d2-wang-teknisk-reise-2026-09-12.md) | Teknisk reise bygget. Innlogget og visuell kontroll gjenstår |
+| 1 · D0 | Fullfør og velg én Claude Design-pakke for et tydelig registrert omfang | Kandidat v0.4.6 og designregisteret | Pakken har versjon, hash, komplett avtalt dekning og `selectedForBuilding: true`; Anders har valgt den |
+| 2 · D1 / P0-DEKNING | Koble valgt pakke til ruter, tilstander og handlinger; avklar J07-binding og TrackMan → utstyrsbag uten skjult ny datamodell | Ruteinventaret, J07 og G06/G08 | Hver berørt rute har mønster, tilstand, rolle og datakilde; eventuell schemaendring er særskilt godkjent |
+| 3 · R-A–R-E | Kjør innlogget Caddie-, TrackMan-, lokal lagrings- og abonnementsreise med syntetiske testbrukere | Eksisterende sikkerhetsregler og PR #877 | Tillatt rolle virker, uvedkommende avvises, feiltilstander er ærlige og ingen persondata sendes ukontrollert |
+| 4 · R4–R9 | Kjør innlogget booking- og betalingsreise med Stripe-testnøkkel, inkludert barn, avbrudd, retur og gjentakelse | O06/O05-reglene i main | Testbetaling og refusjon består uten reell belastning; eierskap og idempotens er bevist |
+| 5 · L3/L7/L8 | Fullfør visuell tilgjengelighet, alarm/gjenoppretting og kontrollert produksjonsreise | D6 og eksplisitt miljøautorisasjon | Kontrast, 320 px, 200 %, alarmer, restore/rollback og eksakt produksjonscommit er dokumentert bestått |
 
 R-A–R-J og REV-F1–F11 er forklart i [produktplanen](planer/produktplan-og-intervju-2026-09-11.md). Funn fra den eldre gjennomgangen må kontrolleres mot dagens kode før endring. R-G «neste økt» er allerede rettet i porteringen og skal verifiseres i prioritet 1, ikke bygges på nytt.
 

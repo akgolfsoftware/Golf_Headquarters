@@ -5,7 +5,7 @@ Oppdatert 13.09.2026. Appen er fortsatt under arbeid og ikke klarert for åpen l
 ## Denne samlingen
 
 - **Entydig masterplan:** Train-lock er ikke lenger låst som visuell autoritet i styringsdokumentene. Når Anders velger en komplett Claude-pakke med `selectedForBuilding: true`, er den eneste visuelle fasiten for registrert omfang. PlayerHQ, AgencyOS, Team Norway og WANG er obligatoriske kjerner; alle øvrige brukerflater må bruke samme fundament gjennom navngitte profiler/mønstre. Masterplanen har nå P0-, D0–D6- og L0–L8-porter samt [sporbarhet for 35 funksjonsfamilier og 17 hovedreiser](planer/masterplan-dekning-2026-09-12.md).
-- **Ny designretning:** Siste Claude-pakke har AgencyOS v0.3.3, AgencyOS Hjem v0.3.2, PlayerHQ v0.3.2 og Stall/spillerkort v0.1. Reisene er klikkbare på mobil og desktop, men pakken har fortsatt `selectedForBuilding: false` og `eksportert: false`. Eksisterende UI bevares som funksjons- og implementasjonsgrunnlag, ikke som visuell fasit. [Pakkekontroll](design-audit/claude-design-v0-3-3-2026-09-12.md).
+- **Ny designretning:** Claude Design-koordinatoren har kontrollert kandidat v0.4.6: 23 av 35 funksjonsfamilier, 14 av 17 hovedreiser med klikkbar deldekning og 61 av 480 registrerte ruter. Åtte reiser er merket komplette i designregisteret. Kandidaten har fortsatt `selectedForBuilding: false` og kan derfor ikke brukes som samlet byggebestilling. Eksisterende UI bevares som funksjons- og implementasjonsgrunnlag, ikke som visuell fasit. Den siste repo-lagrede [pakkekontrollen](design-audit/claude-design-v0-3-3-2026-09-12.md) er historisk underlag.
 - **Grok-start:** Grok 4.6 kan starte med innlogget spillerreise, tilgangstester, serverregler og teknisk skjermkartlegging uten å låse det nye uttrykket. [Avgrenset Terminal-plan og startprompt](planer/grok-4-6-start-2026-09-12.md).
 - **R-E del 1:** Enhetstester følger samme økt gjennom I dag → Plan → øktark → Live → oppsummering for V2, Workbench og eldre plan, med avviste roller. Isolert testdatabase og innlogget Next-reise er blokkert uten Docker. [Kontroll](design-audit/playerhq-r-e-spillerreise-2026-09-12.md).
 - **Caddie-kø/AI-grense:** AgencyOS-kø og telling viser bare Caddie-utkast eieren kan godkjenne. Ukjent databasefritekst sendes ikke til ekstern modell uten tillatt feltliste. Innlogget kontroll gjenstår.
@@ -25,7 +25,7 @@ Oppdatert 13.09.2026. Appen er fortsatt under arbeid og ikke klarert for åpen l
 - **O05/O07 forelder og delt innsyn:** Kun godkjent relasjon gir innsyn og skriving. Barnbytte blander ikke identitet. Ugyldig/utløpt lenke og tilbakekalling av delt tilgang er prøvd mot eksporterte handlinger. [Kontroll](design-audit/forelder-o05-delt-innsyn-2026-09-12.md).
 - **O06 booking/betaling:** Kollisjon, credits-race, hendelsesrekkefølge, avbestilling/refusjon og oppsigelse er prøvd med mocket Stripe. Ingen reell betaling. [Kontroll](design-audit/booking-o06-betaling-2026-09-12.md).
 - **P02–P05 Plan/Live:** Frekvensmål teller ikke V2-speil dobbelt. FYS bruker planlagt varighet og beholder detaljer ved gjenåpning. Avbrutt er ikke det samme som lagret. [Kontroll](design-audit/plan-live-p02-p05-2026-09-12.md).
-- **P03 ny/rediger/flytt:** Spilleren og coach med stalltilgang kan opprette, flytte og redigere. Uvedkommende avvises uten skriving. Feilet drill-skriving ruller tilbake tittelen. Innlogget reise gjenstår. [Kontroll](design-audit/plan-ny-rediger-flytt-2026-09-13.md).
+- **P03 ny/rediger/flytt:** Spilleren og coach med stalltilgang kan opprette, flytte og redigere. Uvedkommende avvises uten skriving. Feilet drill-skriving ruller tilbake tittelen. I main via PR #871; innlogget reise gjenstår. [Kontroll](design-audit/plan-ny-rediger-flytt-2026-09-13.md).
 - **G01/G06–G10:** Korrigering, kilde, enhet og manglende data er prøvd uten produksjonsimport. [Kontroll](design-audit/runde-sg-trackman-g01-g10-2026-09-12.md).
 - **O13 kvalitet/backup:** Feillogg fjerner hemmeligheter. Helsesjekken avslører ikke miljøverdier. Lokal gjenoppretting mot `127.0.0.1:54379/ak_hq_launch_tests` er prøvd 12.09 kveld: 196 tabeller, booking bevart, overlapp avvist. L7 er ikke bestått. [Kontroll](design-audit/docker-launch-tester-2026-09-12.md).
 - **R-J samtykke:** Helse og deling bruker samme 16-årsregel. I main via PR #867. [Kontroll](design-audit/samtykke-r-j-2026-09-13.md).
@@ -33,11 +33,15 @@ Oppdatert 13.09.2026. Appen er fortsatt under arbeid og ikke klarert for åpen l
 - **R-I utstyrsbag:** Forelder avvises. I main via PR #869. [Kontroll](design-audit/handlingstilgang-utstyrsbag-2026-09-13.md).
 - **R-I admin-spiller:** Opprett og rediger spiller avviser uvedkommende. I main via PR #870. [Kontroll](design-audit/handlingstilgang-admin-spiller-2026-09-13.md).
 - **O02 Workbench-publisering:** Coach uten stalltilgang avvises. Snapshot bruker norsk mandag. I main via PR #866. [Kontroll](design-audit/workbench-o02-publisering-2026-09-13.md).
-- **R-I helseskriving:** Helse-logg krever manuelt samtykke. Forelder avvises. Under 16 kan ikke samtykke selv. [Kontroll](design-audit/handlingstilgang-helse-2026-09-13.md).
+- **R-I helseskriving:** Helse-logg krever manuelt samtykke. Forelder avvises. Under 16 kan ikke samtykke selv. I main via PR #872. [Kontroll](design-audit/handlingstilgang-helse-2026-09-13.md).
+- **Sikkerhets- og samtidighetsfiks:** PR #874–#876 samlet delt AgencyOS-spillertilgang, ressursgrenser for følsomme ruter og godkjenningsløp samt tapsfri samtidig oppdatering av Live-oppsummering.
+- **TrackMan fotoimport:** PR #877 krever eksplisitte enheter i fotoresultatet før forhåndsvisning og lagring. Parser- og komponentprøver er grønne. Reell bildepresisjon, personvernsertifisering av bildeoverføring og full innlogget importreise er ikke bevist.
+- **Team Norway Claw:** PR #878 samlet den avgrensede Team Norway-flaten som Anders godkjente. 82 målrettede tester og full kvalitetskontroll bestod. Godkjenningen gjelder Team Norway-flaten, ikke hele Claude Design-systemet.
+- **Avhengighetssikkerhet:** PR #879 og #880 oppdaterte Next.js til 16.3.3 og rettet kompatible underpakker. `npm audit` gikk fra 20 funn med 1 kritisk til 5 uten kritiske eller moderate funn. De fem restene er oppstrøms-/kompatibilitetsblokker i Prisma CLI og esbuild. [Kontroll og avgrensning](vedlikehold/avhengighetssikkerhet-2026-09-13.md).
 
 ## Allerede i main
 
-P0-TEST innlogget reise er samlet via PR #865. DataGolf/GolfBox og tidligere rettinger er samlet via PR #833/#834. Seks porteringspakker er samlet via PR #835. Manuell SG er samlet via PR #836. Claude Codes første PH-06-testpakke er samlet via PR #837, merge `97ff9b1bb`; både main-CI og produksjonens automatiske røyktest bestod for denne versjonen. Røyktesten er ikke en komplett innlogget brukerreise.
+GitHub `main` peker etter siste kontrollerte merge på `731f2566f` via PR #880. P0-TEST innlogget reise er samlet via PR #865. DataGolf/GolfBox og tidligere rettinger er samlet via PR #833/#834. Seks porteringspakker er samlet via PR #835. Manuell SG er samlet via PR #836. Claude Codes første PH-06-testpakke er samlet via PR #837, merge `97ff9b1bb`; både main-CI og produksjonens automatiske røyktest bestod for denne versjonen. Røyktesten er ikke en komplett innlogget brukerreise.
 
 Tidligere kontroll av Vercel bekreftet `2807d4d08` som publisert kode og prøvde utlogget innlogging/videresending. Dette er et datert bevis, ikke en påstand om nåværende produksjonsversjon. Ingen manuell utrulling, miljøendring eller åpning av offentlig booking inngår i denne samlingen.
 
@@ -47,6 +51,7 @@ Tidligere kontroll av Vercel bekreftet `2807d4d08` som publisert kode og prøvde
 2. Resterende PlayerHQ-, AgencyOS-, Team Norway- og WANG-skjermer, koblet til valgte kilder og reelle handlinger.
 3. Innlogget booking-/betalingsreise med Stripe-testnøkkel, og betaling for barn. Serverregler for kollisjon, credits, oppsigelse, forelder-eierskap og tilbakekalling er prøvd uten reell betaling.
 4. Visuell vurdering med Anders, kontrast/tilgjengelighet, full alarm-/gjenopprettingsprøve mot isolert Docker-base og dokumentert faktisk produksjonsreise før lansering. L7 er ikke bestått.
+5. Følg opp de fem kjente npm-funnene når Prisma og Serwist/esbuild har kompatible rettede versjoner. Ingen tvungen hovedversjon eller nedgradering skal brukes. [Avhengighetskontroll](vedlikehold/avhengighetssikkerhet-2026-09-13.md).
 
 Stripe-testmiljø og innloggede testroller trengs for betalingsreisen. Tidligere avvist produksjonsendring for funksjonssikkerhet krever konkret miljøautorisasjon. Ingen reell betaling, varslingsutsending, migrasjon eller databaseoppsettsendring er gjennomført i denne pakken.
 
