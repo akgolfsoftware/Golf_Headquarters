@@ -9,7 +9,7 @@ Oppdatert 13.09.2026. Appen er fortsatt under arbeid og ikke klarert for åpen l
 - **Grok-start:** Grok 4.6 kan starte med innlogget spillerreise, tilgangstester, serverregler og teknisk skjermkartlegging uten å låse det nye uttrykket. [Avgrenset Terminal-plan og startprompt](planer/grok-4-6-start-2026-09-12.md).
 - **R-E del 1:** Enhetstester følger samme økt gjennom I dag → Plan → øktark → Live → oppsummering for V2, Workbench og eldre plan, med avviste roller. Isolert testdatabase og innlogget Next-reise er blokkert uten Docker. [Kontroll](design-audit/playerhq-r-e-spillerreise-2026-09-12.md).
 - **Caddie-kø/AI-grense:** AgencyOS-kø og telling viser bare Caddie-utkast eieren kan godkjenne. Ukjent databasefritekst sendes ikke til ekstern modell uten tillatt feltliste. Innlogget kontroll gjenstår.
-- **P0-TEST:** Isolert testdatabase kan ikke startes her (ingen Docker). [Blokkering](design-audit/p0-test-blokkering-2026-09-12.md).
+- **P0-TEST:** Egen HQ-Supabase på 54421/54422. Innlogget reise for V2, Workbench og eldre plan er prøvd lokalt 13.09, med samme tall etter gjenåpning. Uvedkommende avvises. [Kontroll](design-audit/p0-test-innlogget-reise-2026-09-12.md).
 - **D2-AO teknisk:** Stall bruker samme spillerporte som spillerkort og Workbench. Oversiktsdata lastes ikke uten tilgang. [Kontroll](design-audit/agencyos-d2-ao-teknisk-2026-09-12.md).
 - **R-I handlingstilgang:** Eksporterte handlinger i PlayerHQ, AgencyOS, Team Norway, WANG og forelder avviser uvedkommende uten skriving. Ubrukt vaktimport feiler i kvalitetsgaten. [Kontroll](design-audit/handlingstilgang-r-i-2026-09-12.md).
 - **R-I bred handlingstilgang:** Opptatt tid, profil og mål avviser uvedkommende. Inventar over øvrige use-server-filer. [Kontroll](design-audit/handlingstilgang-bred-2026-09-12.md).
@@ -28,8 +28,11 @@ Oppdatert 13.09.2026. Appen er fortsatt under arbeid og ikke klarert for åpen l
 - **P03 ny/rediger/flytt:** Spilleren og coach med stalltilgang kan opprette, flytte og redigere. Uvedkommende avvises uten skriving. Feilet drill-skriving ruller tilbake tittelen. Innlogget reise gjenstår. [Kontroll](design-audit/plan-ny-rediger-flytt-2026-09-13.md).
 - **G01/G06–G10:** Korrigering, kilde, enhet og manglende data er prøvd uten produksjonsimport. [Kontroll](design-audit/runde-sg-trackman-g01-g10-2026-09-12.md).
 - **O13 kvalitet/backup:** Feillogg fjerner hemmeligheter. Helsesjekken avslører ikke miljøverdier. Lokal gjenoppretting mot `127.0.0.1:54379/ak_hq_launch_tests` er prøvd 12.09 kveld: 196 tabeller, booking bevart, overlapp avvist. L7 er ikke bestått. [Kontroll](design-audit/docker-launch-tester-2026-09-12.md).
-- **R-J samtykke:** Helse og deling bruker samme 16-årsregel. En 15-åring uten flagg kan ikke lenger gi deling selv. I main via PR #867. [Kontroll](design-audit/samtykke-r-j-2026-09-13.md).
-- **R-I utstyrsbag:** Forelder avvises. Bagen lagres på innlogget bruker. [Kontroll](design-audit/handlingstilgang-utstyrsbag-2026-09-13.md).
+- **R-J samtykke:** Helse og deling bruker samme 16-årsregel. I main via PR #867. [Kontroll](design-audit/samtykke-r-j-2026-09-13.md).
+- **J05 / P09 / J14:** Testhistorikk, økt-tilbakemelding, AgenticOS-spor, spørsmål og melding til tildelt coach er i main via PR #858, #859, #861, #863 og #864.
+- **R-I utstyrsbag:** Forelder avvises. I main via PR #869. [Kontroll](design-audit/handlingstilgang-utstyrsbag-2026-09-13.md).
+- **O02 / helse:** Åpne PR #866 og #868. Ikke flettet.
+- **R-I admin-spiller:** Opprett og rediger spiller avviser uvedkommende. [Kontroll](design-audit/handlingstilgang-admin-spiller-2026-09-13.md).
 
 ## Allerede i main
 
@@ -39,7 +42,7 @@ Tidligere kontroll av Vercel bekreftet `2807d4d08` som publisert kode og prøvde
 
 ## Det som gjenstår
 
-1. Bestå P0-TEST, deretter fullfør isolert, innlogget Next-/databasereise gjennom I dag, Plan, økt og oppsummering. Isolert Postgres-reise med testidentitet er prøvd; lokal Supabase-innlogging mangler fordi Docker-stacken som kjører tilhører et annet prosjekt. [P0-TEST](design-audit/p0-test-blokkering-2026-09-12.md).
+1. P0-TEST er bestått lokalt på arbeidsgren. Merge og Notion venter. Deretter neste porter. [P0-TEST](design-audit/p0-test-innlogget-reise-2026-09-12.md).
 2. Kjør innlogget kontroll av Caddie-, TrackMan-, lokal lagrings- og abonnementspakken. Serverregelen for Caddie-eier og tillatt modell-felt er bygget; R-I har handlingstester uten isolert database. Bredere AI-bruk venter på innlogget bevis.
 3. Resterende PlayerHQ-, AgencyOS-, Team Norway- og WANG-skjermer, koblet til valgte kilder og reelle handlinger.
 4. Innlogget booking-/betalingsreise med Stripe-testnøkkel, og betaling for barn. Serverregler for kollisjon, credits, oppsigelse, forelder-eierskap og tilbakekalling er prøvd uten reell betaling.

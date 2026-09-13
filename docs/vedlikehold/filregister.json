@@ -1,10 +1,10 @@
 {
   "metode": "git ls-files -co --exclude-standard; eksisterende filer; genererte registerfiler utelatt. Kun metadata, ikke kundedata eller miljøverdier.",
   "telling": {
-    "prosjektfiler": 5437,
+    "prosjektfiler": 5448,
     "sidefiler": 480,
     "prismamodeller": 196,
-    "enhetstestfiler": 420,
+    "enhetstestfiler": 423,
     "nettlesertestfiler": 41,
     "trainLockTegninger": 219
   },
@@ -6082,6 +6082,11 @@
       "byte": 2052
     },
     {
+      "sti": "docs/design-audit/handlingstilgang-admin-spiller-2026-09-13.md",
+      "omrade": "dokumentasjon",
+      "byte": 772
+    },
+    {
       "sti": "docs/design-audit/handlingstilgang-bred-2026-09-12.md",
       "omrade": "dokumentasjon",
       "byte": 1033
@@ -6107,9 +6112,19 @@
       "byte": 1659
     },
     {
+      "sti": "docs/design-audit/p0-streng-reise-2026-09-13.md",
+      "omrade": "dokumentasjon",
+      "byte": 1862
+    },
+    {
       "sti": "docs/design-audit/p0-test-blokkering-2026-09-12.md",
       "omrade": "dokumentasjon",
-      "byte": 1269
+      "byte": 959
+    },
+    {
+      "sti": "docs/design-audit/p0-test-innlogget-reise-2026-09-12.md",
+      "omrade": "dokumentasjon",
+      "byte": 2068
     },
     {
       "sti": "docs/design-audit/plan-legacy-2026-09-11.md",
@@ -6339,7 +6354,7 @@
     {
       "sti": "docs/MASTERPLAN-GJENSTAAENDE.md",
       "omrade": "dokumentasjon",
-      "byte": 21549
+      "byte": 22473
     },
     {
       "sti": "docs/merkevare/ak-golf-merkeplattform-2026-08-31.md",
@@ -6499,7 +6514,7 @@
     {
       "sti": "docs/planer/masterplan-dekning-2026-09-12.md",
       "omrade": "datert-plan",
-      "byte": 7752
+      "byte": 8048
     },
     {
       "sti": "docs/planer/produktplan-og-intervju-2026-09-11.md",
@@ -6679,7 +6694,7 @@
     {
       "sti": "docs/STATUS-NÅ.md",
       "omrade": "dokumentasjon",
-      "byte": 10087
+      "byte": 10320
     },
     {
       "sti": "docs/taksonomi-verifikasjon.md",
@@ -6834,7 +6849,7 @@
     {
       "sti": "package.json",
       "omrade": "prosjektoppsett",
-      "byte": 5820
+      "byte": 5884
     },
     {
       "sti": "playwright.config.ts",
@@ -10732,6 +10747,16 @@
       "byte": 8495
     },
     {
+      "sti": "scripts/p0-test-innlogget-reise.mjs",
+      "omrade": "verktoy",
+      "byte": 8502
+    },
+    {
+      "sti": "scripts/p0-test-seed-hq.ts",
+      "omrade": "verktoy",
+      "byte": 10749
+    },
+    {
       "sti": "scripts/pilot-flyt-smoke.mjs",
       "omrade": "verktoy",
       "byte": 10271
@@ -12072,6 +12097,11 @@
       "byte": 754
     },
     {
+      "sti": "src/app/admin/(legacy)/spillere/[id]/rediger/actions.test.ts",
+      "omrade": "test",
+      "byte": 3799
+    },
+    {
       "sti": "src/app/admin/(legacy)/spillere/[id]/rediger/actions.ts",
       "omrade": "appkode",
       "byte": 6040
@@ -12090,6 +12120,11 @@
       "sti": "src/app/admin/(legacy)/spillere/[id]/workbench/layout.tsx",
       "omrade": "appkode",
       "byte": 501
+    },
+    {
+      "sti": "src/app/admin/(legacy)/spillere/ny/actions.test.ts",
+      "omrade": "test",
+      "byte": 2176
     },
     {
       "sti": "src/app/admin/(legacy)/spillere/ny/actions.ts",
@@ -23612,6 +23647,16 @@
       "byte": 1544
     },
     {
+      "sti": "src/lib/launch/p0-hq-supabase.test.ts",
+      "omrade": "test",
+      "byte": 1900
+    },
+    {
+      "sti": "src/lib/launch/p0-hq-supabase.ts",
+      "omrade": "appkode",
+      "byte": 2270
+    },
+    {
       "sti": "src/lib/masterbrain/drill-bank.test.ts",
       "omrade": "test",
       "byte": 935
@@ -27010,6 +27055,16 @@
       "sti": "tests/komponenter/tall-hero.test.ts",
       "omrade": "test",
       "byte": 1306
+    },
+    {
+      "sti": "tests/p0/playwright.config.ts",
+      "omrade": "test",
+      "byte": 781
+    },
+    {
+      "sti": "tests/p0/spillerreise-innlogget.spec.ts",
+      "omrade": "test",
+      "byte": 12569
     },
     {
       "sti": "tests/visual/fasitdekning-baseline.json",

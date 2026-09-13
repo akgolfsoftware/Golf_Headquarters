@@ -92,6 +92,8 @@ Generert med `npm run prosjekt:register`. Kategoriene er veivisere basert på na
 | Data / integrasjon — kan skrive eller sende | [scripts/opprett-e2e-testspiller-2026-08-02.ts](<opprett-e2e-testspiller-2026-08-02.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/opprett-gfgk-junior-grupper.ts](<opprett-gfgk-junior-grupper.ts>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/ordbok-json.ts](<ordbok-json.ts>) |
+| Verktøy / drift — les kontrakten før kjøring | [scripts/p0-test-innlogget-reise.mjs](<p0-test-innlogget-reise.mjs>) |
+| Verktøy / drift — les kontrakten før kjøring | [scripts/p0-test-seed-hq.ts](<p0-test-seed-hq.ts>) |
 | Test / bilde — kontroller miljø og testkonto | [scripts/pilot-flyt-smoke.mjs](<pilot-flyt-smoke.mjs>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/print-datagolf-tak.ts](<print-datagolf-tak.ts>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/probe-screentest-data.ts](<probe-screentest-data.ts>) |
