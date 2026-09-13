@@ -3,10 +3,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentGruppepostSide } from "@/lib/domain/tn-post";
-import { tnAktivFraPath } from "@/lib/domain/tn-skall";
 import { TN } from "@/lib/v2/team-norway";
-import { TnAvatarInitialer, TnRail, type TnMenyPunkt } from "@/components/team-norway/core";
+import { TnAvatarInitialer, TnRail } from "@/components/team-norway/core";
 import { TnRailMobil } from "@/components/team-norway/rail-mobil";
+import { tnHovedmeny } from "@/components/team-norway/tn-shell";
 import { TnPostKomponer } from "@/components/team-norway/tn-post-komponer";
 import { TnPostTidslinje, type TnTidslinjePost } from "@/components/team-norway/tn-post-tidslinje";
 import { opprettGruppepostAction } from "@/app/team-norway/tn-post-actions";
@@ -39,12 +39,7 @@ export default async function GruppepostPage({ params }: { params: Promise<{ gro
 
   const { rolle } = side;
   const erTrener = rolle === "TRENER";
-  const aktivId = tnAktivFraPath(`/team-norway/${groupId}`);
-  const punkter: TnMenyPunkt[] = [
-    { type: "overskrift", label: "Kommunikasjon" },
-    { type: "lenke", label: "Gruppeposter", href: `/team-norway/${groupId}`, aktiv: aktivId === "oversikt" },
-    { type: "lenke", label: "Dokumenter", href: `/team-norway/${groupId}/dokumenter` },
-  ];
+  const punkter = tnHovedmeny({ aktiv: "gruppeposter", groupId, visTrenerflater: erTrener || bruker.role === "ADMIN", kanAdministrere: erTrener || bruker.role === "ADMIN" });
 
   const poster: TnTidslinjePost[] = side.tidslinje.map((p) => ({
     id: p.id,

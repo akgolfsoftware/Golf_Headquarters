@@ -3,7 +3,7 @@
 import { useId, useRef, useState } from "react";
 import { TN } from "@/lib/v2/team-norway";
 import { Icon } from "@/components/v2/icon";
-import type { TnMenyPunkt } from "./core";
+import { TnLogo, type TnMenyPunkt } from "./core";
 
 /**
  * Mobil-erstatning for `TnRail` under Tailwind sitt default `lg`-brekkpunkt
@@ -33,8 +33,9 @@ export function TnRailMobil({ punkter, orgNavn }: { punkter: TnMenyPunkt[]; orgN
           background: TN.surfaceCard,
         }}
       >
-        <span style={{ fontFamily: TN.font.body, fontSize: TN.text.sm, fontWeight: TN.weight.bold, color: TN.navy900 }}>
-          {orgNavn}
+        <span style={{ display: "inline-flex", alignItems: "center", minWidth: 0 }}>
+          <TnLogo hoyde={24} prioritet />
+          <span className="sr-only">{orgNavn}</span>
         </span>
         <button
           ref={knappRef}
@@ -62,7 +63,7 @@ export function TnRailMobil({ punkter, orgNavn }: { punkter: TnMenyPunkt[]; orgN
         >
           {lenker.map((p) => (
             <a
-              key={p.href}
+              key={`${p.href}-${p.label}`}
               href={p.href}
               aria-current={p.aktiv ? "page" : undefined}
               onClick={() => setApen(false)}

@@ -2,10 +2,10 @@ import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { hentGruppeDokumenter, hentViewerRolleIGruppe } from "@/lib/domain/tn-post";
-import { tnAktivFraPath } from "@/lib/domain/tn-skall";
 import { TN } from "@/lib/v2/team-norway";
-import { TnRail, type TnMenyPunkt } from "@/components/team-norway/core";
+import { TnRail } from "@/components/team-norway/core";
 import { TnRailMobil } from "@/components/team-norway/rail-mobil";
+import { tnHovedmeny } from "@/components/team-norway/tn-shell";
 import { TnDokumentOpplasting } from "@/components/team-norway/tn-dokument-opplasting";
 import { TnDokumentTabell, type TnDokumentRadVisning } from "@/components/team-norway/tn-dokument-tabell";
 import { opprettGruppeDokumentAction } from "@/app/team-norway/tn-post-actions";
@@ -34,17 +34,7 @@ export default async function DokumenterPage({ params }: { params: Promise<{ gro
     return opprettGruppeDokumentAction(groupId, form);
   }
 
-  const aktivId = tnAktivFraPath(`/team-norway/${groupId}/dokumenter`);
-  const punkter: TnMenyPunkt[] = [
-    { type: "overskrift", label: "Kommunikasjon" },
-    { type: "lenke", label: "Gruppeposter", href: `/team-norway/${groupId}` },
-    // I dag har denne siden kun ÉN rad i egen lokal meny, så sammenligningen
-    // er reelt sett alltid sann (ingen reell differensiering ennå). Blir
-    // meningsfull når en senere oppgave kobler inn TnSkall sin faktiske,
-    // delte meny (Oversikt/Fellestesting/... fra menySet() i
-    // designsystem/team-norway/templates/tn-skall/TnSkall.dc.html).
-    { type: "lenke", label: "Dokumenter", href: `/team-norway/${groupId}/dokumenter`, aktiv: aktivId === "oversikt" },
-  ];
+  const punkter = tnHovedmeny({ aktiv: "dokumenter", groupId, visTrenerflater: rolle === "TRENER" || bruker.role === "ADMIN", kanAdministrere: rolle === "TRENER" || bruker.role === "ADMIN" });
 
   const rader: TnDokumentRadVisning[] = dokumenter.map((d) => ({
     attachmentId: d.attachmentId,
