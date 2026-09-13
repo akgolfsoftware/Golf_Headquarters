@@ -30,8 +30,9 @@ Oppdatert 13.09.2026. Appen er fortsatt under arbeid og ikke klarert for åpen l
 - **R-J samtykke:** Helse og deling bruker samme 16-årsregel. I main via PR #867. [Kontroll](design-audit/samtykke-r-j-2026-09-13.md).
 - **J05 / P09 / J14:** Testhistorikk, økt-tilbakemelding, AgenticOS-spor, spørsmål og melding til tildelt coach er i main via PR #858, #859, #861, #863 og #864.
 - **R-I utstyrsbag:** Forelder avvises. I main via PR #869. [Kontroll](design-audit/handlingstilgang-utstyrsbag-2026-09-13.md).
-- **O02 / helse:** Åpne PR #866 og #868. Ikke flettet.
-- **R-I admin-spiller:** Opprett og rediger spiller avviser uvedkommende. [Kontroll](design-audit/handlingstilgang-admin-spiller-2026-09-13.md).
+- **R-I admin-spiller:** Opprett og rediger spiller avviser uvedkommende. I main via PR #870. [Kontroll](design-audit/handlingstilgang-admin-spiller-2026-09-13.md).
+- **O02 Workbench-publisering:** Coach uten stalltilgang avvises. Snapshot bruker norsk mandag. Denne leveransen. [Kontroll](design-audit/workbench-o02-publisering-2026-09-13.md).
+- **R-I helse:** PR #868 åpen.
 
 ## Allerede i main
 

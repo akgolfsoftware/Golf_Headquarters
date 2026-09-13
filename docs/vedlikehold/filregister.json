@@ -1,10 +1,10 @@
 {
   "metode": "git ls-files -co --exclude-standard; eksisterende filer; genererte registerfiler utelatt. Kun metadata, ikke kundedata eller miljøverdier.",
   "telling": {
-    "prosjektfiler": 5283,
+    "prosjektfiler": 5285,
     "sidefiler": 480,
     "prismamodeller": 196,
-    "enhetstestfiler": 386,
+    "enhetstestfiler": 387,
     "nettlesertestfiler": 41,
     "trainLockTegninger": 219
   },
@@ -5725,6 +5725,11 @@
       "sti": "docs/design-audit/wang-d2-wang-teknisk-reise-2026-09-12.md",
       "omrade": "dokumentasjon",
       "byte": 896
+    },
+    {
+      "sti": "docs/design-audit/workbench-o02-publisering-2026-09-13.md",
+      "omrade": "dokumentasjon",
+      "byte": 1116
     },
     {
       "sti": "docs/design-guide-terminologi.md",
@@ -25845,6 +25850,11 @@
       "sti": "src/lib/workbench/perioder.ts",
       "omrade": "appkode",
       "byte": 2008
+    },
+    {
+      "sti": "src/lib/workbench/publish-actions.test.ts",
+      "omrade": "test",
+      "byte": 8540
     },
     {
       "sti": "src/lib/workbench/publish-actions.ts",
