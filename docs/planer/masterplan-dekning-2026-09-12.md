@@ -29,7 +29,7 @@ Opprettet 12.09.2026. Dette er sporbarhetsregisteret under [masterplanen](../MAS
 | G10 | Turnering/talent | Talentpakken | Identitet i sesonghelper prøvd. Produksjonsimport krever autorisasjon |
 | G11 | Banedata/trener | BG-06 | Planlagt/delvis; datakvalitet og delingsregler først |
 | O01 | AgencyOS hjem/stall | D2-AO/D3 | Teknisk stall-porte og kort-tilgang rettet; visuell pilot venter på D0 |
-| O02 | Workbench | D2-AO | Delvis; publisering uten dublett/bortfall |
+| O02 | Workbench | D2-AO | Plan-publisering avviser uvedkommende og bruker norsk mandag (PR #866, ikke flettet). Gruppeplan uten dublett/bortfall gjenstår. [Kontroll](../design-audit/workbench-o02-publisering-2026-09-13.md) |
 | O03 | WANG/GFGK | D2-WANG/D3 | Teknisk uke/elev-reise bygget; IUP krever coach/admin og samme Toppidrett-gruppe. Innlogget og visuell kontroll gjenstår. [Kontroll](../design-audit/wang-d2-wang-teknisk-reise-2026-09-12.md) |
 | O04 | Team Norway | D2-TN/D3 | Teknisk reise bygget; poster/dokumenter låst til kanonisk gruppe. Innlogget og visuell kontroll gjenstår. [Kontroll](../design-audit/team-norway-d2-tn-teknisk-reise-2026-09-12.md) |
 | O05 | Forelder/delt innsyn | Forelderpakken | Godkjent eierskap, barnbytte uten identitetsblanding, avvist skriving, ugyldig/utløpt lenke og tilbakekalling er prøvd. Betaling for barn og innlogget reise gjenstår. [Kontroll](../design-audit/forelder-o05-delt-innsyn-2026-09-12.md) |
@@ -51,7 +51,7 @@ Detaljert innhold og kildegrunnlag står i [funksjonsregisteret](funksjonsregist
 | J01 konto → første nytte | P01, O07 |
 | J02 I dag → Plan → økt → Live → oppsummering | P02–P04; R-E og D3 |
 | J03 mål → plan → faktisk fremgang | P03, P05, G07 |
-| J04 coach ser behov → planlegger → publiserer → følger opp | O01–O02, P09 |
+| J04 coach ser behov → planlegger → publiserer → følger opp | O01–O02, P09. Publiseringshandling prøvd i PR #866 |
 | J05 test tildeles → føres → korrigeres → historikk | P07, O04 |
 | J06 WANG uke → økt → elev/IUP → rapport | P08, O03 |
 | J07 melding/råd → relevant økt eller resultat | P09, O01 |

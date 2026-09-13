@@ -7,6 +7,7 @@ import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { sendPush } from "@/lib/push/send";
 import { logError } from "@/lib/error-tracking";
+import { mondayOf } from "@/lib/workbench/session-move-math";
 import type { PlanStatus } from "@/generated/prisma/client";
 
 /** Coach kan sende første gang (DRAFT/REJECTED) og sende oppdatering (ACTIVE/ACCEPTED). */
@@ -14,13 +15,8 @@ const PUBLISHABLE: PlanStatus[] = ["DRAFT", "REJECTED", "ACTIVE", "ACCEPTED"];
 
 /* ── WB4: publiser-diff ──────────────────────────────────────
    Snapshot av øktene lagres ved hver publisering; neste publisering
-   diffes mot den (lagt til / fjernet / endret + belastnings-impact). */
-function mandagDenneUka(): Date {
-  const d = new Date();
-  d.setHours(0, 0, 0, 0);
-  d.setDate(d.getDate() - ((d.getDay() + 6) % 7));
-  return d;
-}
+   diffes mot den (lagt til / fjernet / endret + belastnings-impact).
+   Ukesvindu: norsk mandag via mondayOf, samme som øvrig Workbench-datomatte. */
 
 const SnapshotSchema = z.array(
   z.object({
@@ -46,7 +42,7 @@ async function hentPlanOgOkter(targetUserId: string) {
       sessions: {
         // Diff-vinduet: inneværende uke (fra mandag) og fremover — det er
         // dette spilleren forholder seg til når planen publiseres.
-        where: { scheduledAt: { gte: mandagDenneUka() } },
+        where: { scheduledAt: { gte: mondayOf(new Date()) } },
         orderBy: { scheduledAt: "asc" },
         select: { id: true, title: true, scheduledAt: true, durationMin: true, pyramidArea: true },
       },
