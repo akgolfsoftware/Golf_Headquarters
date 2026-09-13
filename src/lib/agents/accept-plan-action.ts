@@ -23,9 +23,9 @@ async function claimPendingAction(actionId: string): Promise<boolean> {
 }
 
 /**
- * Godkjenner en PlanAction og kjører executor. Ved kjøringsfeil settes status
- * tilbake til PENDING. Etter at executor har returnert, forblir handlingen
- * PROCESSING hvis statuslagringen feiler, slik at sideeffekten ikke kan gjentas.
+ * Godkjenner en PlanAction og kjører executor. Etter at utføringen har startet,
+ * forblir handlingen PROCESSING ved feil fordi executor kan ha rukket å lagre
+ * en delhandling. Blind retry ville da kunne gjenta sideeffekten.
  * Ved coach-redigering snapshotes originalforslaget til `originalSuggestion`
  * og `editedBeforeApproval` settes via kanonisk JSON-diff — grunnlaget for
  * «godkjent uendret»-metrikken i eval-suiten.
@@ -59,14 +59,9 @@ export async function acceptAndApplyPlanAction(
   try {
     exec = await executePlanAction(actionId);
   } catch (err) {
-    try {
-      await prisma.planAction.updateMany({
-        where: { id: actionId, status: "PROCESSING" },
-        data: { status: "PENDING", updatedAt: new Date() },
-      });
-    } catch {
-      // En mislykket reset skal ikke lekke databasefeilen til klienten.
-    }
+    // Utføreren omfatter flere varige trinn. Et kast kan bety både «ingenting
+    // lagret» og «delvis lagret». Behold derfor PROCESSING til et menneske har
+    // avstemt faktisk resultat; automatisk PENDING ville åpnet for duplikater.
     try {
       await prisma.agentRun.create({
         data: planActionFeilSpor({

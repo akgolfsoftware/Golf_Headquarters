@@ -3,9 +3,11 @@ import { before, beforeEach, mock, test } from "node:test";
 
 let status = "PENDING";
 let failExec = false;
+let failExecEtterEffekt = false;
 let failAcceptedWrite = false;
 let failOkRunWrite = false;
 let executeKall = 0;
+let varigeEffekter = 0;
 const runs: Array<{ status: string; error?: string; output?: { actionId?: string; utfall?: string } }> = [];
 
 mock.module("@/lib/agents/plan-action-executor", {
@@ -13,6 +15,10 @@ mock.module("@/lib/agents/plan-action-executor", {
     executePlanAction: async () => {
       executeKall += 1;
       assert.equal(status, "PROCESSING");
+      if (failExecEtterEffekt) {
+        varigeEffekter += 1;
+        throw new Error("varsel feilet etter varig delhandling");
+      }
       if (failExec) throw new Error("postgresql://secret@db/internal_table kari@example.test");
       return { applied: true, summary: "Økt lagt til", sessionsAdded: 1, sessionsRemoved: 0, sessionsModified: 0 };
     },
@@ -70,9 +76,11 @@ before(async () => {
 beforeEach(() => {
   status = "PENDING";
   failExec = false;
+  failExecEtterEffekt = false;
   failAcceptedWrite = false;
   failOkRunWrite = false;
   executeKall = 0;
+  varigeEffekter = 0;
   runs.length = 0;
 });
 
@@ -87,16 +95,32 @@ test("godkjenning kjører forslaget og logger spor med actionId", async () => {
   assert.equal(runs[0]?.output?.utfall, "ACCEPTED");
 });
 
-test("kjøringsfeil lar forslaget stå pending og logger renset spor", async () => {
+test("kjøringsfeil låser forslaget for avstemming og logger renset spor", async () => {
   failExec = true;
   await assert.rejects(() => acceptAndApplyPlanAction("pa-1"), /execution-failed/);
-  assert.equal(status, "PENDING");
+  assert.equal(status, "PROCESSING");
   assert.equal(executeKall, 1);
   assert.equal(runs[0]?.status, "ERROR");
   assert.equal(runs[0]?.output?.actionId, "pa-1");
   assert.equal(runs[0]?.output?.utfall, "ERROR");
   assert.equal(runs[0]?.error?.includes("kari@"), false);
   assert.equal(runs[0]?.error?.includes("postgresql://"), false);
+});
+
+test("delvis utføring før kast kan ikke gjentas med blind retry", async () => {
+  failExecEtterEffekt = true;
+
+  await assert.rejects(
+    () => acceptAndApplyPlanAction("pa-1"),
+    /execution-failed/,
+  );
+  assert.equal(status, "PROCESSING");
+  assert.equal(varigeEffekter, 1);
+
+  const nyttForsok = await acceptAndApplyPlanAction("pa-1");
+  assert.equal(nyttForsok.status, "UNCHANGED");
+  assert.equal(varigeEffekter, 1);
+  assert.equal(executeKall, 1);
 });
 
 test("allerede behandlet forslag kjøres ikke på nytt", async () => {
