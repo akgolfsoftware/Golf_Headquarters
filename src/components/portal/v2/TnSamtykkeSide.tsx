@@ -23,6 +23,7 @@ import { useState, useTransition } from "react";
 import { TL } from "@/lib/v2/train-lock";
 import { Kort, Icon, StatusPill } from "@/components/v2";
 import { Bryter } from "@/components/v2/skjema";
+import { TnLogo } from "@/components/team-norway/core";
 
 export type TnOrganisasjon = {
   gruppeId: string;
@@ -136,6 +137,7 @@ export function TnSamtykkeSide({
         return (
           <Kort key={org.gruppeId}>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              {/team norway/i.test(org.navn) ? <TnLogo hoyde={26} /> : null}
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontFamily: TL.font.sans, fontSize: 16, fontWeight: 700, color: TL.text, letterSpacing: "-0.02em" }}>{org.navn}</div>
               </div>

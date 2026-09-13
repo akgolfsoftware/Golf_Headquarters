@@ -1,9 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import { useId, type ComponentProps, type CSSProperties, type ReactNode } from "react";
 import { TN } from "@/lib/v2/team-norway";
 import { Icon } from "@/components/v2/icon";
 import styles from "./tn-kontroller.module.css";
+import teamNorwayLogo from "../../../designsystem/team-norway/assets/logo/team-norway-golf.png";
 
 /**
  * Team Norway — delte primitiver (Claw batch 3, 01.09.2026).
@@ -24,6 +26,38 @@ import styles from "./tn-kontroller.module.css";
  */
 
 // ───────────────────────── Kort ─────────────────────────
+
+/**
+ * Den offisielle Team Norway-logoen fra Claw-pakken. Merket gjenskapes aldri
+ * med tekst eller CSS. På mørke flater følger den hvite platen med komponenten.
+ */
+export function TnLogo({
+  hoyde = 32,
+  prioritet = false,
+}: {
+  hoyde?: number;
+  prioritet?: boolean;
+}) {
+  return (
+    <span
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        minHeight: Math.max(44, hoyde + 16),
+        padding: "8px 10px",
+        borderRadius: TN.radius.sm,
+        background: TN.white,
+      }}
+    >
+      <Image
+        src={teamNorwayLogo}
+        alt="Team Norway Golf"
+        priority={prioritet}
+        style={{ width: "auto", height: hoyde, objectFit: "contain" }}
+      />
+    </span>
+  );
+}
 
 export function TnKort({
   children,
@@ -198,27 +232,21 @@ export function TnRail({
     >
       <div
         style={{
-          background: TN.white,
-          border: `1px solid ${TN.borderSubtle}`,
-          borderRadius: TN.radius.md,
-          padding: "11px 12px",
           display: "flex",
           alignItems: "center",
-          gap: 10,
+          gap: 8,
+          minWidth: 0,
         }}
       >
-        <span style={{ width: 9, height: 24, borderRadius: 3, background: TN.red600, flexShrink: 0 }} />
-        <div style={{ minWidth: 0 }}>
-          <div style={{ fontFamily: TN.font.body, fontSize: TN.text.sm, fontWeight: TN.weight.bold, color: TN.navy900 }}>
-            {orgNavn}
-          </div>
+        <TnLogo hoyde={30} prioritet />
+        <div style={{ minWidth: 0, flex: 1 }}>
+          <span className="sr-only">{orgNavn}</span>
           <div
             style={{
               fontFamily: TN.font.mono,
               fontSize: TN.text.micro,
               letterSpacing: TN.tracking.eyebrow,
               color: TN.ink400,
-              marginTop: 1,
               textTransform: "uppercase",
             }}
           >

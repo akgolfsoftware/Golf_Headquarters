@@ -1,9 +1,10 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import type { TnTilgangRad, TnTilgangStatus } from "@/lib/domain/tn-tilgang";
-import { TnAvatarInitialer, TnPille, TnRail, type TnMenyPunkt } from "./core";
+import { TnAvatarInitialer, TnPille, TnRail } from "./core";
 import { TnDataTable } from "./tn-data-table";
 import { TnRailMobil } from "./rail-mobil";
+import { tnHovedmeny } from "./tn-shell";
 import styles from "./tn-tilgang-visning.module.css";
 
 /**
@@ -17,11 +18,6 @@ import styles from "./tn-tilgang-visning.module.css";
 export type TnTilgangVisningsrad = TnTilgangRad & { status: TnTilgangStatus };
 
 const dato = new Intl.DateTimeFormat("nb-NO", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "UTC" });
-const meny: TnMenyPunkt[] = [
-  { type: "overskrift", label: "Administrasjon" },
-  { type: "lenke", label: "Trenere og tilgang", href: "/team-norway/tilgang", aktiv: true },
-];
-
 function Rolle({ rad }: { rad: TnTilgangVisningsrad }) {
   return <TnPille tone={rad.rolle === "COACH" ? "navy" : "nøytral"}>{rad.rolle === "COACH" ? "Trener" : "Hjelpetrener"}</TnPille>;
 }
@@ -34,8 +30,9 @@ function Periode({ rad }: { rad: TnTilgangVisningsrad }) {
   return <span className={styles.periode}>{dato.format(rad.joinedAt)} → {rad.endedAt ? dato.format(rad.endedAt) : "åpen"}</span>;
 }
 
-export function TnTilgangVisning({ brukerNavn, gruppeNavn, rader, valgtId, skjema }: {
+export function TnTilgangVisning({ brukerNavn, gruppeId, gruppeNavn, rader, valgtId, skjema }: {
   brukerNavn: string;
+  gruppeId?: string;
   gruppeNavn: string;
   rader: TnTilgangVisningsrad[];
   valgtId?: string;
@@ -43,6 +40,7 @@ export function TnTilgangVisning({ brukerNavn, gruppeNavn, rader, valgtId, skjem
 }) {
   const valgt = rader.find((rad) => rad.userId === valgtId);
   const lenke = (id: string) => `/team-norway/tilgang?valgt=${encodeURIComponent(id)}`;
+  const meny = tnHovedmeny({ aktiv: "tilgang", groupId: gruppeId, kanAdministrere: true });
 
   return (
     <div className={styles.skall}>

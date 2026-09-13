@@ -3,8 +3,9 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { hentSpillerpostTidslinje } from "@/lib/domain/tn-post";
 import { TN } from "@/lib/v2/team-norway";
-import { TnRail, TnAvatarInitialer, TnPille, type TnMenyPunkt } from "@/components/team-norway/core";
+import { TnRail, TnAvatarInitialer, TnPille } from "@/components/team-norway/core";
 import { TnRailMobil } from "@/components/team-norway/rail-mobil";
+import { tnHovedmeny } from "@/components/team-norway/tn-shell";
 import { TnPostKomponer } from "@/components/team-norway/tn-post-komponer";
 import { TnPostTidslinje, type TnTidslinjePost } from "@/components/team-norway/tn-post-tidslinje";
 import { opprettSpillerpostAction } from "@/app/team-norway/tn-post-actions";
@@ -51,10 +52,7 @@ export default async function SpillerpostPage({ params }: { params: Promise<{ sp
     return opprettSpillerpostAction(spillerId, input);
   }
 
-  const punkter: TnMenyPunkt[] = [
-    { type: "overskrift", label: "Kommunikasjon" },
-    { type: "lenke", label: "Poster til utøver", href: `/team-norway/spiller/${spillerId}`, aktiv: true },
-  ];
+  const punkter = tnHovedmeny({ aktiv: "spillere", kanAdministrere: erTrenerHer || bruker.role === "ADMIN" });
 
   const poster: TnTidslinjePost[] = tidslinje.map((p) => ({
     id: p.id,

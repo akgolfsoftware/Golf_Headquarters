@@ -30,6 +30,7 @@ export default async function TilgangPage({ searchParams }: { searchParams: Prom
   return (
     <TnTilgangVisning
       brukerNavn={bruker.name ?? "Ukjent"}
+      gruppeId={gruppe.id}
       gruppeNavn={gruppe.name}
       rader={rader.map((rad) => ({ ...rad, status: tnTilgangStatus(rad) }))}
       valgtId={valgtRad?.userId}

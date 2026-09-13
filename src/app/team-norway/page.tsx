@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { TnKort, TnPille, TnRail, type TnMenyPunkt } from "@/components/team-norway/core";
+import { TnKort, TnPille, TnRail } from "@/components/team-norway/core";
 import { TnRailMobil } from "@/components/team-norway/rail-mobil";
+import { tnHovedmeny } from "@/components/team-norway/tn-shell";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentTnOversiktForBruker } from "@/lib/domain/tn-tilgang";
 import { TN } from "@/lib/v2/team-norway";
@@ -23,26 +24,11 @@ export default async function TeamNorwayOversiktPage() {
 
   const gruppeHref = `/team-norway/${side.gruppe.id}`;
   const erSpillerIGruppe = side.rolle === "PLAYER";
-  const punkter: TnMenyPunkt[] = [
-    { type: "overskrift", label: "Team Norway" },
-    { type: "lenke", label: "Oversikt", href: "/team-norway", aktiv: true },
-  ];
-
-  // Ressurslenker er kun synlige når den samme serverkontrollen fant et
-  // aktivt medlemskap. Lenken i seg selv gir aldri tilgang til ressursen.
-  if (side.erAktivtMedlem) {
-    punkter.push(
-      { type: "lenke", label: "Gruppeposter", href: gruppeHref },
-      { type: "lenke", label: "Dokumenter", href: `${gruppeHref}/dokumenter` },
-    );
-  }
-  if (erSpillerIGruppe) {
-    punkter.push({
-      type: "lenke",
-      label: "Egen testføring i PlayerHQ",
-      href: "/portal/tren/tester/team-norway",
-    });
-  }
+  const punkter = tnHovedmeny({
+    aktiv: "oversikt",
+    groupId: side.erAktivtMedlem ? side.gruppe.id : undefined,
+    kanAdministrere: bruker.role === "ADMIN" || side.rolle === "COACH",
+  });
 
   const lenkeStil = {
     minHeight: 44,
