@@ -2,7 +2,7 @@
 
 ## Resultat
 
-PR #883 samlet masterplanen, 192 funksjonskort, statusregisteret, Future Development-undersøkelsen, designbeslutninger og nattens kontrollbevis i `main`. Merge-commit: `04948c05da754e45323e0902ef6fd13aa21f3b90`.
+PR #883 samlet masterplanen, 192 funksjonskort, statusregisteret, Future Development-undersøkelsen, designbeslutninger og nattens kontrollbevis i `main`. PR #884 sluttførte bevaringspakken og oppryddingsrapporten. Merge-commit etter #884: `ab8c421b60d233e80e776746b305c520797c62ee`.
 
 Git hadde 19 registrerte ekstra arbeidskopier i tillegg til hovedarbeidsområdet. Seksten helt rene arbeidskopier ble fjernet først. Tre arbeidskopier hadde lokale forskjeller og ble først fjernet etter at innholdet var avstemt og de unike variantene var pushet til GitHub:
 
@@ -24,11 +24,11 @@ Arkivfilene er historiske arbeidsøyeblikk. Gjeldende status skal leses i [maste
 
 ## Sluttkontroll
 
-- `git worktree list` viser bare hovedarbeidsområdet; alle 19 ekstra arbeidskopier er fjernet.
+- `git worktree list` viser bare hovedarbeidsområdet; 19 tidligere registrerte arbeidskopier og én senere opprettet, ren Claude-arbeidskopi er fjernet.
 - En 1,1 GB foreldreløs restmappe fra den gamle helsegrenen var ikke lenger registrert av Git. De fire berørte kildefilene var byte-identiske med `main`; resten var gamle byggfiler, pakker og utdaterte dokumentkopier. Mappen er flyttet til macOS-papirkurven som `akgolf-hq-orphan-r-i-helse-skriv-2026-09-13` og kan gjenopprettes.
 - `.worktrees` inneholder etter dette ingen filer.
 - En ignorert 1,5 MB testutdata-mappe under `tests/visual/ut` fikk kodekontrollen til å lese bygget JavaScript som kildekode. Den er flyttet til papirkurven som `akgolf-hq-tests-visual-ut-2026-09-13` og kan gjenopprettes. Ny `npm run lint` har bare prosjektets tre kjente advarsler og ingen feil.
-- 20 avstemte, utdaterte lokale grener er slettet.
+- 21 avstemte, utdaterte lokale grener er slettet.
 - Den gamle eksterne grenen `grok/r-i-helse-skriv-2026-09-13` er slettet etter at den tilsvarende helseleveransen ble bekreftet i `main` via PR #872.
-- Før sluttsynk-PR-en er flettet finnes bare `main` og den aktive `codex/sluttsynk-opprydding-2026-09-13` lokalt og på GitHub. Sluttsynkgrenen slettes etter merge.
-- `main` peker på PR #883s merge-commit før denne sluttsynken. Ingen ulagrede filer ligger i hovedarbeidsområdet.
+- Etter PR #884 er både den lokale og eksterne sluttsynkgrenen slettet. Bare `main` gjenstår lokalt og på GitHub.
+- `main` peker på PR #884s merge-commit. Ingen ulagrede filer ligger i hovedarbeidsområdet.
