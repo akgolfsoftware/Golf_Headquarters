@@ -259,8 +259,9 @@ test.describe("P0 innlogget spillerreise", () => {
 
   test("tillatt coach ser økta; uvedkommende avvises uten innhold", async ({ page }) => {
     test.setTimeout(360_000);
+    // Coach lander på /admin etter innlogging; spillere på /portal.
     await loggInn(page, coachEpost, coachPassord);
-    await expect(page).toHaveURL(/\/portal(\/|$|\?)/);
+    await expect(page).toHaveURL(/\/(portal|admin)(\/|$|\?)/, { timeout: 90_000 });
     await page.goto(`/portal/live/${wbId}/summary`, { waitUntil: "domcontentloaded" });
     await expect(page.getByRole("heading", { name: "P0 Workbench" })).toBeVisible({ timeout: 60_000 });
     await expectSlag(page, wbTall);
@@ -274,7 +275,7 @@ test.describe("P0 innlogget spillerreise", () => {
 
     await loggUt(page);
     await loggInn(page, fremmedCoachEpost, fremmedCoachPassord);
-    await expect(page).toHaveURL(/\/portal(\/|$|\?)|\/admin/, { timeout: 90_000 });
+    await expect(page).toHaveURL(/\/(portal|admin)(\/|$|\?)/, { timeout: 90_000 });
     await expectAvvist(page, wbId, "P0 Workbench", "wb");
     await expectAvvist(page, v2Id, "P0 V2 Innspill", "v2");
     await expectAvvist(page, planId, "P0 Eldre plan", "plan");
