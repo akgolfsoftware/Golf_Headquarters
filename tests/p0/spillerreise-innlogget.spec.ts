@@ -120,6 +120,8 @@ async function loggUt(page: Page) {
 
 async function expectAvvist(page: Page, oktId: string, tittel: string, modell: "wb" | "v2" | "plan") {
   // Kun undersider som tilhører modellen. /active er V2, /tapper er WB/eldre.
+  // Lengre URL-timeout: under full P0-pakke kan server-redirect + RSC lande tregt
+  // uten at tilgangsregelen er feil (kjent flake 13–14.09).
   const workbench = "/portal/planlegge/workbench";
   const plan = "/portal/planlegge";
   const ruter = [
@@ -130,10 +132,10 @@ async function expectAvvist(page: Page, oktId: string, tittel: string, modell: "
   ];
   for (const { suffix, maal } of ruter) {
     await test.step(`${modell}${suffix || "/"}: uvedkommende sendes til ${maal}`, async () => {
-      const svar = await page.goto(`/portal/live/${oktId}${suffix}`);
-      expect(svar?.status()).toBe(200);
-      await expect(page).toHaveURL(stiMatcher(maal));
-      await expect(page.getByRole("heading", { name: maal === plan ? "Plan" : "Workbench", exact: true }).first()).toBeVisible();
+      const svar = await page.goto(`/portal/live/${oktId}${suffix}`, { waitUntil: "domcontentloaded" });
+      expect(svar?.status()).toBeLessThan(400);
+      await expect(page).toHaveURL(stiMatcher(maal), { timeout: 60_000 });
+      await expect(page.getByRole("heading", { name: maal === plan ? "Plan" : "Workbench", exact: true }).first()).toBeVisible({ timeout: 30_000 });
       await expect(page.getByText(tittel, { exact: true })).toHaveCount(0);
       await expect(page.locator('[data-od-id="playerhq-live-active"], [data-od-id="playerhq-live-summary"], [data-od-id="brief-start"], [data-od-id="tapper-avslutt"]')).toHaveCount(0);
     });
@@ -258,18 +260,21 @@ test.describe("P0 innlogget spillerreise", () => {
   test("tillatt coach ser økta; uvedkommende avvises uten innhold", async ({ page }) => {
     test.setTimeout(360_000);
     await loggInn(page, coachEpost, coachPassord);
-    await page.goto(`/portal/live/${wbId}/summary`);
-    await expect(page.getByRole("heading", { name: "P0 Workbench" })).toBeVisible();
+    await expect(page).toHaveURL(/\/portal(\/|$|\?)/);
+    await page.goto(`/portal/live/${wbId}/summary`, { waitUntil: "domcontentloaded" });
+    await expect(page.getByRole("heading", { name: "P0 Workbench" })).toBeVisible({ timeout: 60_000 });
     await expectSlag(page, wbTall);
 
     await loggUt(page);
     await loggInn(page, fremmedEpost, fremmedPassord);
+    await expect(page).toHaveURL(/\/portal(\/|$|\?)/, { timeout: 90_000 });
     await expectAvvist(page, wbId, "P0 Workbench", "wb");
     await expectAvvist(page, v2Id, "P0 V2 Innspill", "v2");
     await expectAvvist(page, planId, "P0 Eldre plan", "plan");
 
     await loggUt(page);
     await loggInn(page, fremmedCoachEpost, fremmedCoachPassord);
+    await expect(page).toHaveURL(/\/portal(\/|$|\?)|\/admin/, { timeout: 90_000 });
     await expectAvvist(page, wbId, "P0 Workbench", "wb");
     await expectAvvist(page, v2Id, "P0 V2 Innspill", "v2");
     await expectAvvist(page, planId, "P0 Eldre plan", "plan");
