@@ -29,6 +29,21 @@ const fremmedPassord = krev("P0_FOREIGN_PASSWORD");
 const wbId = krev("P0_WB_ID");
 const fremmedWbId = krev("P0_FREMMED_WB_ID");
 
+function stiMatcher(sti: string) {
+  return (url: URL) => url.pathname === sti && url.search === "";
+}
+
+async function ventPaSti(page: Page, sti: string, timeout = 90_000) {
+  await expect(page).toHaveURL(stiMatcher(sti), { timeout });
+}
+
+/** WB-økter starter som PUBLISHED — tapper-siden krever IN_PROGRESS. Samme brief→start-flyt som spillerreise-innlogget.spec.ts. */
+async function startOktOgApneTapper(page: Page, sessionId: string) {
+  await page.goto(`/portal/live/${sessionId}/brief`);
+  await page.locator('[data-od-id="brief-start"]').click({ timeout: 20_000 });
+  await ventPaSti(page, `/portal/live/${sessionId}/tapper`);
+}
+
 async function lukkCookie(page: Page) {
   const btn = page.getByRole("button", { name: "Kun nødvendige", exact: true });
   try {
@@ -108,7 +123,7 @@ test.describe("P0 innlogget privat lokal lagring (R-C)", () => {
     test.setTimeout(120_000);
 
     await loggInnUtenAOppdrag(page, spillerEpost, spillerPassord);
-    await page.goto(`/portal/live/${wbId}/tapper`);
+    await startOktOgApneTapper(page, wbId);
     await expect(page.getByText("slag denne økta", { exact: true })).toBeVisible();
 
     // Simuler at nettet forsvinner under en økt — lagringen skal da falle
@@ -134,7 +149,7 @@ test.describe("P0 innlogget privat lokal lagring (R-C)", () => {
     // dette er nøyaktig scenarioet R-C skal beskytte mot (delt enhet, ingen
     // eksplisitt utlogging).
     await loggInnUtenAOppdrag(page, fremmedEpost, fremmedPassord);
-    await page.goto(`/portal/live/${fremmedWbId}/tapper`);
+    await startOktOgApneTapper(page, fremmedWbId);
     await expect(page.getByText("slag denne økta", { exact: true })).toBeVisible();
     // Fremmed sin teller skal starte på 0 — ALDRI arve spillerens kølagte tall.
     await expect(tellerLocator(page)).toHaveText("0");
