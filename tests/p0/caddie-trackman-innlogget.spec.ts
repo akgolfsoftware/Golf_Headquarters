@@ -136,4 +136,44 @@ test.describe("P0 innlogget TrackMan CSV-import (R-D)", () => {
     await expect(page.getByText(/slag ·.*matchet til teknisk plan/)).toBeVisible({ timeout: 30_000 });
     await expect(page.getByText("1 økt", { exact: true })).toBeVisible();
   });
+
+  test("HTML Multi Group Report med eksplisitte enheter importeres og vises i listen", async ({ page }) => {
+    await loggInn(page, spillerEpost, spillerPassord);
+    await page.goto("/portal/analysere/trackman");
+    // CSV-testen over har allerede lagt inn 1 økt i samme kjøring — denne
+    // testen bruker en ANNEN dato (12. i stedet for 13.) slik at importen
+    // blir en ny, egen økt i stedet for en «ligner eksisterende»-kollisjon.
+    await expect(page.getByText("1 økt", { exact: true })).toBeVisible();
+
+    await page.getByRole("button", { name: "Last opp CSV / HTML" }).click();
+    await page.getByRole("button", { name: "Multi Group HTML-rapport" }).click();
+    await page.getByRole("button", { name: "Neste" }).click();
+
+    const html = `
+      <html><body>
+        <div>Club Speed (mph)</div>
+        <div>Ball Speed (mph)</div>
+        <div>Total Distance (m)</div>
+        <div>9/12/2026 P0 HTML Session 2026-09-12</div>
+        <section>2026-09-12 7i SevenIron Hide
+          1. 75 0 0 0 0 110 0 1.3 140 0
+          Average 75 0 0 0 0 110 0 1.3 140 0
+          Consistency 0 0 0 0 0 0 0 0 0 0
+        </section>
+      </body></html>
+    `;
+    await page.locator('input[type="file"]').setInputFiles({
+      name: "p0-trackman.html",
+      mimeType: "text/html",
+      buffer: Buffer.from(html, "utf8"),
+    });
+    await expect(page.getByText("1 slag parset", { exact: false })).toBeVisible();
+
+    await page.getByRole("button", { name: "Neste" }).click();
+    await page.getByRole("button", { name: "Neste" }).click();
+    await page.getByRole("button", { name: "Bekreft og importer" }).click();
+
+    await expect(page.getByText(/slag ·.*matchet til teknisk plan/)).toBeVisible({ timeout: 30_000 });
+    await expect(page.getByText("2 økter", { exact: true })).toBeVisible();
+  });
 });
