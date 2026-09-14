@@ -1,6 +1,8 @@
 # R-E — innlogget abonnement-/tilgangsnivåreise 13.09.2026
 
-Gren: `worktree-dapper-hatching-gem`, lokal commit `62803ae9d`. Ikke pushet, ikke PR, ikke flettet. Ingen visuell portering, ingen produksjonsdata, ingen betaling.
+**Oppdatert:** flettet til `main` via PR #886, merge-commit `a6f184695`. Se [Caddie/TrackMan-oppfølgingen](caddie-trackman-r-e-2026-09-13.md) for resten av R-E. Teksten under er bevart som opprinnelig skrevet før fletting.
+
+Gren (opprinnelig): `worktree-dapper-hatching-gem`, lokal commit `62803ae9d`. Ingen visuell portering, ingen produksjonsdata, ingen betaling.
 
 ## Hva som er prøvd
 
