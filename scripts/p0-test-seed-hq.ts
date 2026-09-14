@@ -139,6 +139,10 @@ async function main() {
   const passord = randomBytes(18).toString("base64url");
   const { y, m, d } = osloDatoDeler();
   const dato = new Date(Date.UTC(y, m - 1, d));
+  // R-C-øktene dateres i GÅR — «I dag»-hjemskjermen i spillerreise-testen
+  // forventer nøyaktig WB_ID som dagens økt, og en ekstra dagens-dato-rad
+  // for samme spiller forstyrrer den forventningen.
+  const datoIGaar = new Date(dato.getTime() - 24 * 60 * 60 * 1000);
   const v2Start = osloInstant(y, m, d, 10, 0);
   const v2Slutt = osloInstant(y, m, d, 11, 0);
   const planStart = osloInstant(y, m, d, 14, 0);
@@ -278,7 +282,7 @@ async function main() {
         id: LOKAL_WB_ID,
         playerId: spiller.id,
         coachId: coach.id,
-        date: dato,
+        date: datoIGaar,
         startMinute: 9 * 60,
         durationMinutes: 50,
         title: "P0 Workbench lokal lagring",
