@@ -26,7 +26,9 @@ const spillerPassord = krev("P0_PLAYER_PASSWORD");
 const spillerId = krev("P0_PLAYER_ID");
 const fremmedEpost = krev("P0_FOREIGN_EMAIL");
 const fremmedPassord = krev("P0_FOREIGN_PASSWORD");
-const wbId = krev("P0_WB_ID");
+// Egen økt, ALDRI P0_WB_ID — den deles med spillerreise-innlogget.spec.ts,
+// som forventer null tapp på den fra start.
+const wbId = krev("P0_LOKAL_WB_ID");
 const fremmedWbId = krev("P0_FREMMED_WB_ID");
 
 function stiMatcher(sti: string) {
