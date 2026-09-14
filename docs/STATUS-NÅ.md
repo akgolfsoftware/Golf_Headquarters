@@ -1,6 +1,6 @@
 # Status nå — AK Golf HQ
 
-Oppdatert 13.09.2026. Appen er fortsatt under arbeid og ikke klarert for åpen lansering. [Masterplanen](MASTERPLAN-GJENSTAAENDE.md) eier prioritert neste arbeid og den komplette restlisten.
+Oppdatert 14.09.2026. Appen er fortsatt under arbeid og ikke klarert for åpen lansering. [Masterplanen](MASTERPLAN-GJENSTAAENDE.md) eier prioritert neste arbeid og den komplette restlisten.
 
 ## Denne samlingen
 
@@ -38,21 +38,23 @@ Oppdatert 13.09.2026. Appen er fortsatt under arbeid og ikke klarert for åpen l
 - **TrackMan fotoimport:** PR #877 krever eksplisitte enheter i fotoresultatet før forhåndsvisning og lagring. Parser- og komponentprøver er grønne. Reell bildepresisjon, personvernsertifisering av bildeoverføring og full innlogget importreise er ikke bevist.
 - **Team Norway Claw:** PR #878 samlet den avgrensede Team Norway-flaten som Anders godkjente. 82 målrettede tester og full kvalitetskontroll bestod. Godkjenningen gjelder Team Norway-flaten, ikke hele Claude Design-systemet.
 - **Avhengighetssikkerhet:** PR #879 og #880 oppdaterte Next.js til 16.3.3 og rettet kompatible underpakker. `npm audit` gikk fra 20 funn med 1 kritisk til 5 uten kritiske eller moderate funn. De fem restene er oppstrøms-/kompatibilitetsblokker i Prisma CLI og esbuild. [Kontroll og avgrensning](vedlikehold/avhengighetssikkerhet-2026-09-13.md).
-- **R-A–R-E innlogget kontroll — komplett innenfor det som er trygt uten AI-nøkkel og ekte betaling:** fire spec-filer (11 tester) mot isolert HQ-Supabase, kjørt gjentatte ganger sammen og hver for seg. Abonnement/tilgangsnivå (TALENT vs. FULL) er i main via PR #886. Caddie-tilgang (API, ingen side finnes ennå), TrackMan CSV+HTML-import og privat lokal lagring (R-C, to-brukers offline/kølagt-scenario uten manuell opprydding) er klare og verifiserte, pushet som PR. Gjenstående, bevisst udekket: Caddie sitt faktiske AI-svar og TrackMan foto-kilde — begge krever `ANTHROPIC_API_KEY`, som aldri skal inn i et sky-testmiljø. [Abonnement](design-audit/abonnement-tilgang-r-e-2026-09-13.md) · [Caddie/TrackMan](design-audit/caddie-trackman-r-e-2026-09-13.md) · [Lokal lagring](design-audit/lokal-lagring-r-c-2026-09-14.md).
+- **R-A–R-E innlogget kontroll — komplett innenfor det som er trygt uten AI-nøkkel og ekte betaling:** fire spec-filer (11 tester) mot isolert HQ-Supabase, kjørt gjentatte ganger sammen og hver for seg. Abonnement/tilgangsnivå (TALENT vs. FULL) er i main via PR #886 (`a6f184695`). Caddie-tilgang (API, ingen side finnes ennå) og TrackMan CSV+HTML-import er i main via PR #887 (`e565264b6`). Privat lokal lagring (R-C, to-brukers offline/kølagt-scenario uten manuell opprydding) er i main via PR #888 (`0fd4e593d`). Gjenstående, bevisst udekket: Caddie sitt faktiske AI-svar og TrackMan foto-kilde — begge krever `ANTHROPIC_API_KEY`, som aldri skal inn i et sky-testmiljø. [Abonnement](design-audit/abonnement-tilgang-r-e-2026-09-13.md) · [Caddie/TrackMan](design-audit/caddie-trackman-r-e-2026-09-13.md) · [Lokal lagring](design-audit/lokal-lagring-r-c-2026-09-14.md).
 
 ## Allerede i main
 
-GitHub `main` peker etter siste kontrollerte merge på `731f2566f` via PR #880. P0-TEST innlogget reise er samlet via PR #865. DataGolf/GolfBox og tidligere rettinger er samlet via PR #833/#834. Seks porteringspakker er samlet via PR #835. Manuell SG er samlet via PR #836. Claude Codes første PH-06-testpakke er samlet via PR #837, merge `97ff9b1bb`; både main-CI og produksjonens automatiske røyktest bestod for denne versjonen. Røyktesten er ikke en komplett innlogget brukerreise.
+GitHub `main` peker etter siste kontrollerte merge på `0fd4e593d` via PR #888 (R-C lokal lagring). R-E abonnement (#886) og Caddie/TrackMan CSV+HTML (#887) ligger også i main. Tidligere avhengighetssikkerhet via PR #880. P0-TEST innlogget reise er samlet via PR #865. DataGolf/GolfBox og tidligere rettinger er samlet via PR #833/#834. Seks porteringspakker er samlet via PR #835. Manuell SG er samlet via PR #836. Claude Codes første PH-06-testpakke er samlet via PR #837, merge `97ff9b1bb`; både main-CI og produksjonens automatiske røyktest bestod for denne versjonen. Røyktesten er ikke en komplett innlogget brukerreise.
 
 Tidligere kontroll av Vercel bekreftet `2807d4d08` som publisert kode og prøvde utlogget innlogging/videresending. Dette er et datert bevis, ikke en påstand om nåværende produksjonsversjon. Ingen manuell utrulling, miljøendring eller åpning av offentlig booking inngår i denne samlingen.
 
 ## Det som gjenstår
 
-1. **Fullført 14.09 innenfor trygt omfang** — se R-A–R-E-punktet over. Caddie sitt AI-svar og TrackMan foto-kilde er bevisst udekket (krever `ANTHROPIC_API_KEY`, som ikke skal inn i et sky-testmiljø); dette gjenstår til Anders vurderer hvordan den testes trygt.
-2. Resterende PlayerHQ-, AgencyOS-, Team Norway- og WANG-skjermer, koblet til valgte kilder og reelle handlinger.
-3. Innlogget booking-/betalingsreise med Stripe-testnøkkel, og betaling for barn. Serverregler for kollisjon, credits, oppsigelse, forelder-eierskap og tilbakekalling er prøvd uten reell betaling.
-4. Visuell vurdering med Anders, kontrast/tilgjengelighet, full alarm-/gjenopprettingsprøve mot isolert Docker-base og dokumentert faktisk produksjonsreise før lansering. L7 er ikke bestått.
-5. Følg opp de fem kjente npm-funnene når Prisma og Serwist/esbuild har kompatible rettede versjoner. Ingen tvungen hovedversjon eller nedgradering skal brukes. [Avhengighetskontroll](vedlikehold/avhengighetssikkerhet-2026-09-13.md).
+**Arbeidsrekkefølge 14.09:** ferdigstill funksjonell kode først → Anders leverer Claude Design-status → Code Xpert evaluerer dekning/kvalitet → først deretter D0-lås og portering. Se [Neste oppgaver](MASTERPLAN-GJENSTAAENDE.md#neste-oppgaver-i-rekkefølge).
+
+1. **KODE-A/B** — lukke innloggede reiser/handlinger som allerede har serverregler (inkl. Plan/Workbench-rest og R-I-inventaret), stabilisere `spillerreise`-flake, deretter Stripe-testreise (booking/betaling/barn).
+2. **KODE-C (valgfri)** — Caddie AI-svar og TrackMan foto bare med autorisert trygt nøkkeloppsett; ellers forblir de udekket. R-A–R-E innenfor trygt omfang er allerede i main (#886–#888).
+3. **DESIGN-EVAL** — når Anders leverer Claude Design-status: evaluer om pakken dekker det vi trenger, gap mot kode/reiser, og hvordan designet blir best mulig uten å overstyre Atletisk intelligens.
+4. **Etter evaluering** — D0/D1, visuell vurdering, kontrast/tilgjengelighet, L7 alarm/gjenoppretting og kontrollert produksjonsreise.
+5. Følg opp de fem kjente npm-funnene når Prisma og Serwist/esbuild har kompatible rettede versjoner. [Avhengighetskontroll](vedlikehold/avhengighetssikkerhet-2026-09-13.md).
 
 Stripe-testmiljø og innloggede testroller trengs for betalingsreisen. Tidligere avvist produksjonsendring for funksjonssikkerhet krever konkret miljøautorisasjon. Ingen reell betaling, varslingsutsending, migrasjon eller databaseoppsettsendring er gjennomført i denne pakken.
 

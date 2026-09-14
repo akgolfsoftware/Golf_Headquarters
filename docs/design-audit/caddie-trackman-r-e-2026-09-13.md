@@ -1,6 +1,8 @@
 # R-E — innlogget Caddie-tilgang og TrackMan CSV/HTML-import 13.09–14.09.2026
 
-Gren: `codex/etter-merge-2026-09-14`, oppå PR #886/#887 (main `e565264b`). Ingen visuell portering, ingen produksjonsdata, ingen reell AI-modellrespons, ingen betaling.
+**Oppdatert:** flettet til `main` via PR #887, merge-commit `e565264b6`. Ingen visuell portering, ingen produksjonsdata, ingen reell AI-modellrespons, ingen betaling.
+
+Gren (opprinnelig): `codex/etter-merge-2026-09-14`, oppå PR #886.
 
 ## Hva som er prøvd
 
