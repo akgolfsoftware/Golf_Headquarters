@@ -1,9 +1,10 @@
 # Status nå — AK Golf HQ
 
-Oppdatert 13.09.2026. Appen er fortsatt under arbeid og ikke klarert for åpen lansering. [Masterplanen](MASTERPLAN-GJENSTAAENDE.md) eier prioritert neste arbeid og den komplette restlisten.
+Oppdatert 14.09.2026. Appen er fortsatt under arbeid og ikke klarert for åpen lansering. [Masterplanen](MASTERPLAN-GJENSTAAENDE.md) eier prioritert neste arbeid og den komplette restlisten.
 
 ## Denne samlingen
 
+- **R-I søskentester (plans + grupper):** `admin/plans/[planId]/actions.ts` (16 handlinger, 22 tester) og `admin/grupper/[id]/actions.ts` (5 handlinger, 9 tester) hadde allerede korrekt eierskapskontroll i koden, men ingen regresjonstest. Begge har nå full avvisningstestdekning. 48 admin-mutasjonsfiler gjenstår uten søskentest. [Kontroll](design-audit/handlingstilgang-plans-grupper-2026-09-14.md).
 - **Entydig masterplan:** Train-lock er ikke lenger låst som visuell autoritet i styringsdokumentene. Når Anders velger en komplett Claude-pakke med `selectedForBuilding: true`, er den eneste visuelle fasiten for registrert omfang. PlayerHQ, AgencyOS, Team Norway og WANG er obligatoriske kjerner; alle øvrige brukerflater må bruke samme fundament gjennom navngitte profiler/mønstre. Masterplanen har nå P0-, D0–D6- og L0–L8-porter samt [sporbarhet for 35 funksjonsfamilier og 17 hovedreiser](planer/masterplan-dekning-2026-09-12.md).
 - **Ny designretning:** Claude Design-koordinatoren har kontrollert kandidat v0.4.7: 26 av 35 funksjonsfamilier, 15 av 17 hovedreiser med klikkbar deldekning og 64 av 480 registrerte ruter. Åtte reiser er merket komplette i designregisteret. Kandidaten består av 159 filer med SHA-256 `17b1c35c7c214819d436cc85e46bb300778d7c24bc6d7d467d1222409d8694b3`, men har fortsatt `selectedForBuilding: false` og kan derfor ikke brukes som samlet byggebestilling. Eksisterende UI bevares som funksjons- og implementasjonsgrunnlag, ikke som visuell fasit. Den siste repo-lagrede [pakkekontrollen](design-audit/claude-design-v0-3-3-2026-09-12.md) er historisk underlag.
 - **Grok-start:** Grok 4.6 kan starte med innlogget spillerreise, tilgangstester, serverregler og teknisk skjermkartlegging uten å låse det nye uttrykket. [Avgrenset Terminal-plan og startprompt](planer/grok-4-6-start-2026-09-12.md).
