@@ -38,6 +38,28 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
 
 ## Beslutningene (september 2026)
 
+- **WORKBENCH-MOTOREN: SPILLERENS WORKBENCHV2 ER DEN ENE, WORKBENCHSESSION ER TABELLEN, NY UKE
+  STARTER ALDRI TOM (Anders 15.09.2026, i økt):** tre svar på anbefalingene om Workbench-status
+  (punkt 1, 2 og 5). Målt samme dag: `src/components/portal/v2/WorkbenchV2.tsx` (3 319 linjer:
+  uke, måned, årsplan-canvas, turneringsfane, AI-forslag) mot `src/components/workbench/WorkbenchUke.tsx`
+  (587 linjer, kun uke), og to økt-tabeller som ikke deler data (`WorkbenchSession` :6165 og
+  `TrainingPlanSession` :1323 i `prisma/schema.prisma`).
+  1. **Spillerens `WorkbenchV2` er den ene motoren.** Coach får samme komponent med stall-velger
+     og gruppe-modus oppå. `WorkbenchUke` bygges ikke videre; det som bare finnes der
+     (serie, «lagre som mal», inspektør mot WB-fasit) flyttes inn i motoren.
+  2. **`WorkbenchSession` er økt-tabellen som overlever.** Den har allerede gruppe-felt, serie,
+     mal, godkjenning og «ikke delta». Spillerens `TrainingPlanSession`-økter migreres inn dit.
+     Åpent: `TrainingSessionV2` (gjennomføring/live) — avgjøres i OW-3 når migreringen tegnes.
+  3. **Ny uke starter aldri tom.** «Kopier forrige uke» er standard startpunkt for både coach og
+     spiller. Handlingene finnes (`coachDuplicateWeek`, `duplicateWorkbenchWeek`); de blir
+     default, ikke valg. Erstattes av årsplan-forslaget når OW-5 er bygget.
+  **Begrunnelse:** spillerens Workbench er den mest komplette; gruppeplanlegging på to tabeller
+  gir to kopier av hver gruppeøkt; tom uke er den største tidstyven per uke i dag.
+  **Overstyrer:** WB-serien som strukturfasit for *coachens egen komponent* (§PLAN-FASIT,
+  WORKBENCH-KANON 02.09, punkt 2) — WB-strukturen gjelder fortsatt som tegning, men bygges i
+  `WorkbenchV2`, ikke i `WorkbenchUke`. Presiserer OW-3 og OW-5 i arbeidslisten.
+  **Arbeidet:** `docs/MASTERPLAN-GJENSTAAENDE.md` OW-3 (presisert), OW-3b og OW-5a (nye).
+
 - **ORDBOK-MASTER FØRST, SÅ ÉN ØKT-MODELL, SÅ GRUPPEPLANLEGGING — REKKEFØLGEN ER LÅST (Anders
   15.09.2026, i økt):** svar på forslagslisten i `docs/beslutningsgrunnlag/ordbok-og-workbench-analyse-2026-09-15.md`.
   Anders bestilte én master for alle ord, koder og tall i trening, årsplan, perioder, styrke,

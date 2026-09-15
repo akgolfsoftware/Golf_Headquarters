@@ -169,6 +169,8 @@ Tre øktmodeller sameksisterer **bevisst** og skal **ikke slås sammen som oppry
   `TrainingSessionV2` → `TrainingPlanSession` → `WorkbenchSession`.
 - Enkelte skriveflyter speiler data mellom modeller, men dette betyr ikke at alle tre
   er én felles sannhet. Hver overgang må testes i den aktuelle spillerreisen.
+  **Besluttet 15.09.2026:** `WorkbenchSession` er tabellen som overlever; `TrainingPlanSession`
+  migreres inn (OW-3 i arbeidslisten). Inntil da gjelder rekkefølgen over.
 - Workbench er primærpunktet for planlegging — planlegge er ett trykkpunkt dit, ikke en meny.
 
 ---
