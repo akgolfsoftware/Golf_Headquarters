@@ -222,7 +222,7 @@ tom og venter. Kortet:
 │ på lange jern.                               │
 │                                              │
 │ FORESLÅTT ØVELSE                             │
-│ Albue-vegg mot P6 · CS40 · M1 · PR1          │  ← AKFormelChip (finnes)
+│ Albue-vegg mot P6 · Lav hastighet · Innendørs │  ← AKFormelChip (finnes)
 │ [ bytt øvelse ]                              │  ← tekstlenke, ikke knapp
 │                                              │
 │ NESTE SJEKKPUNKT                             │
@@ -297,8 +297,8 @@ er skjermer. Dette er data som forsvinner hvis det er feil.
 ```
 ┌──────────────────────────┐
 │ Øyvind Rohjan        ✕   │
-│ TEK · TEE · L-BALL       │  ← forhåndsutfylt AK-formel,
-│ CS60 · M2 · PR2          │     trykk for å endre
+│ TEK · Utslag · Lav hast. │  ← forhåndsutfylt AK-formel,
+│ Treningsområde · Alene   │     trykk for å endre
 │                          │
 │                          │
 │        ┌────────┐        │
@@ -405,10 +405,11 @@ tråden mellom to økter uten å huske den selv?** Den måles ved å spørre ett
 
 `GOLF_PROMPT` i `src/lib/transcribe.ts` inneholder generiske golftermer på engelsk
 («swing path», «low point», «smash factor») og **null AK/MORAD-terminologi**.
-Whisper har derfor ingen sjanse på «P6», «CS60», «L-BALL» eller «M2».
+Whisper har derfor ingen sjanse på «P6», «Chip», «Lav hastighet» eller «Observert».
 
-Fiks før spike: utvid glossaret med P1.0–P10.0, CS20–CS100, L-fasene, M0–M5,
-PR1–PR5, AK-stigen og kategoriene A–K. Det er en strengendring.
+Fiks før spike: utvid glossaret med P1.0–P10.0, de 19 områdene, motorikk (Uten ball · Lav
+hastighet · Automatikk), belastning, press og kategoriene A–K — alt fra
+`docs/ordbok-master-trening.md`. Det er en strengendring.
 
 **Deretter** spike: 10 ekte opptak fra rangen, mål feilrate på AK-termer. Er den
 fortsatt høy, er neste steg etterbehandling som mapper lydlike treff til kanoniske

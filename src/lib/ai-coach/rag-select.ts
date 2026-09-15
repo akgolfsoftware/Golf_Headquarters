@@ -14,7 +14,7 @@ const TAG_MAP: Record<string, string[]> = {
   APP: ["morad-p7", "morad-fault-face-open", "sg-to-morad"],
   ARG: ["morad-drill", "morad-fault-casting"],
   PUTT: ["confidence-bands"],
-  TEK: ["morad-p4", "canon-l-fase"],
+  TEK: ["morad-p4"],
 };
 
 export function selectKnowledgeFiles(context: {

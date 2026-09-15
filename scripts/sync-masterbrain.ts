@@ -65,13 +65,6 @@ const KILDER: readonly Kilde[] = [
     hensikt: "RAG-tekster — må embeddes til knowledge_chunks separat",
   },
   {
-    fra: "processed/rules",
-    til: "processed/rules",
-    endelser: [".json", ".md"],
-    rekursivt: false,
-    hensikt: "MORAD-ordbok, terminologi og diagnostiske regler",
-  },
-  {
     fra: "training-data",
     til: "training-data",
     endelser: [".jsonl", ".md"],

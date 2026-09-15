@@ -38,6 +38,73 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
 
 ## Beslutningene (september 2026)
 
+- **CLAUDE DESIGN: MASTEREN INN, WORKBENCH V0.7 BESTILLES, INGEN PAKKE VELGES FØR 390-KONTROLL
+  (Anders 15.09.2026, i økt):** fire svar etter lesing av prosjektet «AgencyOS Hjem designsystem»
+  (`047cfd41`, kandidat v0.4.17/18, retning Atletisk intelligens) via delelenke i Chrome. Målt der
+  15.09: `selectedForBuilding: false` i alle registre, 62 skjermer (57 klikkprøvd, 3 ikke tegnet),
+  Workbench v0.6 eneste Workbench-fasit (WB-05–WB-10, CAL-01), kalenderfamilie ikke startet,
+  ordkilden oppgitt som `uploads/ORDBOK-TRENINGSPLANLEGGING-2026-09-08.md` (slettet i repoet 15.09).
+  1. **Masteren er eneste ordkilde i Claude Design.** `docs/ordbok-master-trening.md` lastes opp
+     i prosjektet og erstatter 08.09-ordboken i `AGENCYOS-AUTORITET.md` §1. Anders slipper filen inn.
+  2. **Én Workbench-runde, v0.7, bestilles** med: fasilitet først (sted med rangelengde, lengste
+     putt, radar filtrerer øvelsesforslag), reps totalt og per motorikk-steg på hver øvelse,
+     gruppeuke med kopi til hver spiller, delt økt med blokker og ansvarlig trener, og teknisk
+     plan koblet til P-oppgaver og TrackMan-mål. Claude skriver prompten.
+  3. **Ingen pakke får `selectedForBuilding: true`** før Workbench v0.7 og kalenderfamilien
+     (dag/uke/måned/agenda) er sett av Anders på 390 px.
+  4. **Ved valg speiles `leveranse/` inn i repoet som ny designmappe**, og Train-lock-vaktene
+     (`scripts/check-fasit-sitering.mjs`, `check-fasitdekning-baseline.mjs`) pekes om til den.
+  **Overstyrer:** ingen tidligere beslutning — presiserer D0 (arbeidslisten rad 1) med en
+  konkret port. Kandidatnummeret i arbeidslisten og `designsystem/README.md` (v0.4.10) er utdatert
+  og rettet til v0.4.17/18.
+  **Arbeidet:** `docs/MASTERPLAN-GJENSTAAENDE.md` rad 1 · D0 (presisert) og nye rader CD-1–CD-3.
+
+- **WORKBENCH-MOTOREN: SPILLERENS WORKBENCHV2 ER DEN ENE, WORKBENCHSESSION ER TABELLEN, NY UKE
+  STARTER ALDRI TOM (Anders 15.09.2026, i økt):** tre svar på anbefalingene om Workbench-status
+  (punkt 1, 2 og 5). Målt samme dag: `src/components/portal/v2/WorkbenchV2.tsx` (3 319 linjer:
+  uke, måned, årsplan-canvas, turneringsfane, AI-forslag) mot `src/components/workbench/WorkbenchUke.tsx`
+  (587 linjer, kun uke), og to økt-tabeller som ikke deler data (`WorkbenchSession` :6165 og
+  `TrainingPlanSession` :1323 i `prisma/schema.prisma`).
+  1. **Spillerens `WorkbenchV2` er den ene motoren.** Coach får samme komponent med stall-velger
+     og gruppe-modus oppå. `WorkbenchUke` bygges ikke videre; det som bare finnes der
+     (serie, «lagre som mal», inspektør mot WB-fasit) flyttes inn i motoren.
+  2. **`WorkbenchSession` er økt-tabellen som overlever.** Den har allerede gruppe-felt, serie,
+     mal, godkjenning og «ikke delta». Spillerens `TrainingPlanSession`-økter migreres inn dit.
+     Åpent: `TrainingSessionV2` (gjennomføring/live) — avgjøres i OW-3 når migreringen tegnes.
+  3. **Ny uke starter aldri tom.** «Kopier forrige uke» er standard startpunkt for både coach og
+     spiller. Handlingene finnes (`coachDuplicateWeek`, `duplicateWorkbenchWeek`); de blir
+     default, ikke valg. Erstattes av årsplan-forslaget når OW-5 er bygget.
+  **Begrunnelse:** spillerens Workbench er den mest komplette; gruppeplanlegging på to tabeller
+  gir to kopier av hver gruppeøkt; tom uke er den største tidstyven per uke i dag.
+  **Overstyrer:** WB-serien som strukturfasit for *coachens egen komponent* (§PLAN-FASIT,
+  WORKBENCH-KANON 02.09, punkt 2) — WB-strukturen gjelder fortsatt som tegning, men bygges i
+  `WorkbenchV2`, ikke i `WorkbenchUke`. Presiserer OW-3 og OW-5 i arbeidslisten.
+  **Arbeidet:** `docs/MASTERPLAN-GJENSTAAENDE.md` OW-3 (presisert), OW-3b og OW-5a (nye).
+
+- **ORDBOK-MASTER FØRST, SÅ ÉN ØKT-MODELL, SÅ GRUPPEPLANLEGGING — REKKEFØLGEN ER LÅST (Anders
+  15.09.2026, i økt):** svar på forslagslisten i `docs/beslutningsgrunnlag/ordbok-og-workbench-analyse-2026-09-15.md`.
+  Anders bestilte én master for alle ord, koder og tall i trening, årsplan, perioder, styrke,
+  tester, turnering, statistikk og TrackMan (`docs/ordbok-master-trening.md`, utkast, PR #893),
+  og valgte deretter denne rekkefølgen for arbeidet:
+  **Serie:** (10) masteren godkjennes og de gamle ordbøkene slettes → (7+9) vokabularet lever i
+  koden med generert ordbok og vakt mot utgåtte ord i `npm run verify` → (6) én økt-modell:
+  `WorkbenchSession` og `TrainingPlanSession` slås sammen → (1) gruppeuke i Workbench: én
+  gruppeøkt kopieres til hver spiller (WB-08/09/10 er fasit) → (2) årsplanens øktbudsjett,
+  gruppetider, skoleplan og turneringer fyller uka automatisk, coach retter → (3) uke-maler
+  per periode og kategori → (4) styrkeøkter og testdag inn i Workbench → (5) delt økt med
+  blokker og ansvarlig trener per blokk (tegnes først).
+  **Parallelt:** (8) AI-laget (Caddie, agenter, RAG) leser masteren, ikke CANON v3.5 → (11)
+  hver beslutning inn i arbeidslisten samme dag med `/beslutning` → (12) tegn før bygg, én
+  skjerm om gangen → (13) `/design-login` så masteren og de tre manglende skjermene kommer
+  inn i Claude Design.
+  **Begrunnelse:** coach planlegger i dag hver spiller for seg, fra null, i to systemer som
+  ikke deler økt. Gruppeplanlegging bygget på to økt-modeller blir feil grunnmur.
+  **Overstyrer:** «Fasit for ordforrådet: `docs/ordbok-master-trening.md`» i
+  §ALLE TRENINGSPLANREGLER LÅST OPP (18.08.2026) — masteren er ordforrådets fasit når den er
+  godkjent; 18.08-fila slettes. Overstyrer også «Separate modeller beholdes» for Plan/Live i
+  arbeidslisten — modellene skal slås sammen (punkt 6).
+  **Arbeidet:** `docs/MASTERPLAN-GJENSTAAENDE.md` §Ordbok og Workbench-planlegging, rader OW-1–OW-9.
+
 - **COACH-MENYEN: PROTOTYPEN VINNER — AX-01 REVERSERES (Anders 09.09.2026, i økt):** svar på
   beslutningskø punkt 32. Valget sto mellom AX-01 (`AX-01 Skall rail og tabbar.dc.html`, låst
   25.08.2026 — Stall · Workbench · Kø · Jarvis · Meg, 232px Mac-rail med tekst) og prototypen
@@ -974,7 +1041,7 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
   pensjonert.** Vokabularet består (pyramide, områder, motorikk/belastning/press, perioder,
   blokk-typer, kategorier) — som frie merkelapper, aldri krav. Eneste regler som gjenstår er
   tekniske forretningsregler (dobbelbooking-sperre, credits, GDPR) — de er ikke treningsregler.
-  Fasit for ordforrådet: `docs/vokabular-planlegging-2026-08-18.md`. Gjeninnfør ALDRI en
+  Fasit for ordforrådet: `docs/ordbok-master-trening.md` (fra 15.09.2026; 18.08-fila er utgått). Gjeninnfør ALDRI en
   treningsregel (tak, minimum, sperre, «invariant», validering av plan mot metodikk) uten ny,
   eksplisitt beslutning fra Anders. Utgått samtidig: L-fasene (både L-CTRL/L-BALL/L-COMP og
   L_KROPP…L_AUTO som UI-begrep), CS-nivåer, M0–M5, PR1–PR5 — formelen er

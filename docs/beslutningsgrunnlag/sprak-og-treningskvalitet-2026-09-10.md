@@ -4,7 +4,7 @@
 
 ## Utført
 
-- Workbench: rettet seks puttebånd fra meter til fot og visningsnavnene Utslag, Golfslag og Banespill etter `docs/FASIT-AK-GOLF-HQ.md`. Lagrede identifikatorer er uendret.
+- Workbench: rettet seks puttebånd fra meter til fot og visningsnavnene Utslag, Golfslag og Banespill etter `docs/ordbok-master-trening.md`. Lagrede identifikatorer er uendret.
 - Publisering: pågående, gjennomførte og overhoppede økter kan ikke overskrives til publisert. Gjentatt publisering av en allerede publisert økt beholder tidspunktet. En ugyldig økt i et publiseringsutvalg gir ingen skriving.
 - Ordboken har fått tydelig kildeavklaring: eldre kategori-, avstands- og prosentregler skal ikke overstyre dagens fagfasit.
 - Testbatteriet er sammenlignet med brukerens Excel-v3. Se [egen kontroll](team-norway-excel-v3-kontroll.md).

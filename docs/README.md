@@ -12,7 +12,7 @@
 | Prosjektets design-skill og hovedprompt | [AK HQ Designarbeid](design-system/ak-hq-designarbeid.md) |
 | Grok 4.6 mens nytt design lages | [Teknisk startplan og Terminal-prompt](planer/grok-4-6-start-2026-09-12.md) |
 | Låste produktregler | [BUSINESS-RULES.md](platform/BUSINESS-RULES.md) |
-| Treningsfag | [Faglig fasit](FASIT-AK-GOLF-HQ.md), [begrepsordbok](ordbok-ak-golf-konsept.md), [planleggingsordbok](ORDBOK-TRENINGSPLANLEGGING-2026-09-08.md) |
+| Treningsfag | [Ordbok-master for trening, tall og TrackMan](ordbok-master-trening.md) (koder, navn, betydning), [staving av appord](ordbok-ak-golf-konsept.md) |
 | Samlet språk, ord og skjermtekst | [Språk og ordbok – arbeidsutgave for gjennomgang](skjermtekst/ak-golf-hq-sprak-og-ordbok.md) – gjeldende regler, kildeoppføringer og åpne ordvalg |
 | Tester og drift | [Testing](testing.md), [drift](runbook.md), [visuell kontroll](../tests/visual/README.md) |
 | Sikkerhet og personvern i AI-arbeid | [ak-sikkerhet](../.claude/skills/ak-sikkerhet/SKILL.md), [ak-personvern](../.claude/skills/ak-personvern/SKILL.md), [SECURITY.md](../SECURITY.md), [GDPR](gdpr/datakart.md) |
