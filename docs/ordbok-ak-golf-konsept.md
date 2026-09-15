@@ -394,8 +394,6 @@ ALLTID uppercase og i rekkefølgen `FYS · TEK · SLAG · SPILL · TURN` (dot-se
 | Periodisering / Periode | periodisering / periode | flertall: perioder; «periode-blokk», «periode-fase» med bindestrek |
 | Mac O'Grady-fasene | Mac O'Grady-fasene | apostrof beholdes. Seks faser: grunntrening (base) · oppbygging (build) · spesialisering (specific) · konkurranse (peak) · overgang (transition) · hvile (recovery). Skjema-enum uppercase: GRUNNTRENING/OPPBYGGING/SPESIALISERING/KONKURRANSE/OVERGANG/HVILE. NB: eget vokabular — ikke det samme som `PeriodeType` i §9 |
 | Blokk-praksis / Random-praksis / Differensiell-praksis | blokk-praksis / random-praksis / differensiell-praksis | bindestrek; «variabel praksis» uten |
-| CS-maks | CS-maks | bindestrek |
-| CS-nivåer i tekst | CS20 … CS100 | UPPERCASE + tall, ingen mellomrom. Ni nivåer (canon v3.5) — CS75 o.l. finnes ikke |
 | Belastning / Volum / Intensitet | belastning / volum / intensitet | «Belastning: Lav/Medium/Høy» |
 
 ## B5. Trening — økter & drills

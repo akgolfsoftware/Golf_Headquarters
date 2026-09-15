@@ -1,5 +1,9 @@
 # Taksonomi-verifikasjon — steg 0 foran D1–D6
 
+> **Historisk måling (14.08.2026).** Områdelisten på 16 koder og sju puttebånd under er
+> utgått; gjeldende er 19 områder i `docs/ordbok-master-trening.md` kap. 2. Beholdes fordi
+> `src/lib/portal/gapping-data.ts` siterer §c.
+
 **Dato:** 2026-08-14 · **Kilde:** `designsystem/paper/kart/prompt-code-session-implementering.md` §step_0_gate
 **Metode:** lest mot `prisma/schema.prisma` (5325 linjer) + `src/lib/taxonomy.ts`. Alle påstander har filsti.
 

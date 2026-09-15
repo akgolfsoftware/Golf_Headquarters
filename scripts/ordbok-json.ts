@@ -87,7 +87,7 @@ const UNNTAK = new Set([
 function* filer(dir: string): Generator<string> {
   for (const n of readdirSync(dir)) {
     const p = join(dir, n);
-    if (n === "node_modules" || n === "masterbrain" || n === "ai-coach") continue;
+    if (n === "node_modules" || n === "generated" || n === "masterbrain" || n === "ai-coach") continue;
     if (statSync(p).isDirectory()) yield* filer(p);
     else if (/\.(ts|tsx)$/.test(n)) yield p;
   }

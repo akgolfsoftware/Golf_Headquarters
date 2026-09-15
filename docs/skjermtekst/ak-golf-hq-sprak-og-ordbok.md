@@ -1,6 +1,6 @@
 # AK Golf HQ — samlet språk, ord og uttrykk
 
-**Versjon:** 0.2, oppdatert 12.09.2026. **Status:** arbeidsutgave for gjennomgang med Anders, ikke ferdig språkgodkjent.
+**Versjon:** 0.2, oppdatert 12.09.2026. **Kildeendring 15.09.2026:** S1, S2 og S4 er erstattet av én master (`docs/ordbok-master-trening.md`); sitatene fra S1/S2/S4 i del 7–8 er historiske utdrag av slettede filer. **Status:** arbeidsutgave for gjennomgang med Anders, ikke ferdig språkgodkjent.
 
 Dette dokumentet samler det dokumenterte språket for PlayerHQ, AgencyOS, AgenticOS, booking, forelder og tilhørende markeds- og e-postflater. Det inneholder språkregler, fagord, tekniske motstykker, eksisterende skjermtekster og et avklaringsregister i én fil.
 
@@ -2893,10 +2893,10 @@ Kildefilene er lest lokalt. Fingeravtrykket identifiserer nøyaktig kildeinnhold
 
 | ID | Kilde | SHA-256 |
 |---|---|---|
-| S1 | [Treningsfaglig fasit](../ordbok-master-trening.md) · `docs/ordbok-master-trening.md` | `bfaf5a6714dcd5697bb5141863352867c35fe8abd0a86f75a3ce544f0b8a5dfb` |
-| S2 | [Planleggingsordbok 08.09](../ordbok-master-trening.md) · `docs/ordbok-master-trening.md` | `8832b1e34fb659fead6c683a4ca7abf15cad5a68501d395e108ce4621e2d7f77` |
+| S1 | [Ordbok-master for trening, tall og TrackMan](../ordbok-master-trening.md) · `docs/ordbok-master-trening.md` (fra 15.09.2026; erstatter den slettede fasiten 19.08) | se `git log` — filen er under gjennomgang |
+| S2 | Planleggingsordbok 08.09 — **slettet 15.09.2026**, innholdet er i S1 | historisk fingeravtrykk `8832b1e3…` |
 | S3 | [Konsept- og UI-ordbok](../ordbok-ak-golf-konsept.md) · `docs/ordbok-ak-golf-konsept.md` | `4d1be1453803a3c2b95731f1d0d9ac31d71cdf369553ab6c18fdb17d86dd17ce` |
-| S4 | [Visning, tall og knappeord](../ordbok-master-trening.md) · `docs/ordbok-master-trening.md` | `1aefdff152a6c59043235673b181cc026d0173240cfb55399bf22644bdc92ade` |
+| S4 | Design-guide terminologi — **slettet 15.09.2026**; §2 tall og enheter er S1 kapittel 16 | historisk fingeravtrykk `1aefdff1…` |
 | S5 | [Tidligere hovedskjermtekster](skjerm-tekst-hovedskjermer.md) · `docs/skjermtekst/skjerm-tekst-hovedskjermer.md` | `137884164f840565015d216da04f38a3d5487f06fb4bcfb9baa5a038ae9d30de` |
 | S6 | [Produktregler](../platform/BUSINESS-RULES.md) · `docs/platform/BUSINESS-RULES.md` | `ff648c8fe840b160ea1fd63186ab08bc248bbdb0e11f031dffaf05e455d2bf19` |
 | S7 | [Merkespråk og TrackMan-navn](../../designsystem/ak-golf/guidelines/08-sprak.md) · `designsystem/ak-golf/guidelines/08-sprak.md` | `b303458145a9f8d6986b8f7fc113f193cdf0ab8cf083b8982c45277035e9b220` |

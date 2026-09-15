@@ -1,6 +1,6 @@
 # Ordbok — trening, planlegging, tall og TrackMan (MASTER)
 
-**Status: GJELDENDE KILDE fra 15.09.2026, under Anders' gjennomgang.** Dette er den ene
+**Status: GJELDENDE KILDE fra 15.09.2026, under Anders' gjennomgang. Sist utvidet 15.09 kveld (familier, dose, treningssted, gruppeøkt, delt økt, teknisk plan).** Dette er den ene
 masteren for alle ord, koder og tall i AK Golf HQ som handler om trening, årsplan,
 periodeplan, styrketrening, tester, turnering, statistikk og TrackMan. De eldre ordbøkene ble
 slettet 15.09.2026 (kapittel 18). Anders retter fortløpende; avklaringene i kapittel 19 er
@@ -58,6 +58,24 @@ Putting måles i **fot**. Alt annet i **meter**.
 
 **Hva som telles per område:** golfslag telles i slag, putting i putter, banespill i hull,
 styrke i serier og repetisjoner, kondisjon i segmenter, bevegelighet i minutter.
+
+### 2.1 Områdefamilier (nivået over områdene)
+
+Brukes som første valg i filtre og velgere, så listen på 19 ikke vises på én gang.
+
+| Kode | Navn | Områder |
+|---|---|---|
+| FULLSVING | Fullsving | Utslag, Innspill ~200/150/100/50 m |
+| NAERSPILL | Nærspill | Chip, Pitch, Lob |
+| BUNKER | Bunker | Bunker |
+| PUTT | Putt | de seks puttebåndene |
+| FYS | Fysisk | Styrke, Kondisjon, Bevegelighet |
+| BANE | Bane | Banespill |
+
+Familien styrer hvilke akser som vises: fullsving har motorikk, nærspill og putt har ikke,
+bunker har i tillegg sandtrinn, FYS har egne parametere.
+Avvik: Claude Design la 15.09 Bunker under Nærspill (fem familier). Koden har seks
+(avklaring 12).
 
 Avvik: eldre kodefiler har 17 områder med sju puttebånd, og én visningsfil har putting i
 meter. Denne tabellen vinner (allerede vedtatt 19.08.2026).
@@ -135,7 +153,7 @@ sanden», MED_BALL «Med ball»), og FYS har bare sine egne parametere (kapittel
 
 Bestemt 12.09.2026: skjermordet er **«øvelse»**, aldri «drill». Kodene beholdes.
 
-### 3.6 Hvordan mengde telles
+### 3.6 Dose — hvordan mengde telles på en øvelse
 
 | Kode | Navn | Betyr |
 |---|---|---|
@@ -143,6 +161,19 @@ Bestemt 12.09.2026: skjermordet er **«øvelse»**, aldri «drill». Kodene beho
 | BALLER_SLATT | Baller slått | Antall baller |
 | TID | Tid | Minutter |
 | SETT_REPS | Sett × reps | Serier og repetisjoner |
+
+Hver øvelse har i tillegg **tid** (minutter) og, for fullsving, **reps per motorikk-steg**:
+
+| Felt | Navn | Betyr |
+|---|---|---|
+| repAntall | Reps totalt | Antall svinger eller baller |
+| planRepsUtenBall | Uten ball | Reps uten ball |
+| planRepsLavFart | Lav hastighet | Reps i lav hastighet |
+| planRepsAuto | Automatikk | Reps i full fart |
+
+De tre summerer til totalen. Standardverdier hentes fra øvelsesbiblioteket. Summen av tid
+per øvelse vises mot øktens varighet. Skjermordet er «dose» kun som overskrift, aldri som
+fritekstfelt.
 
 ### 3.7 Måte å trene på
 
@@ -266,6 +297,24 @@ TIME «Time» · PROVE «Prøve» · HELDAGSPROVE «Heldagsprøve» · EKSAMEN �
 
 MAN, TIR, ONS, TOR, FRE, LOR, SON.
 
+### 5.5 Treningssted (fasilitet)
+
+Velges først når en økt lages. Stedet forteller hva som er mulig, og filtrerer øvelsesforslag.
+Aldri en sperre.
+
+| Felt | Navn | Betyr |
+|---|---|---|
+| name | Navn | «GFGK range», «Treningslokalet», «Hjemme» |
+| type | Type | KLUBBANLEGG «Klubbanlegg» · SIMULATOR «Simulator» · TRENINGSSENTER «Treningssenter» · HJEMME «Hjemme» |
+| isIndoor | Inne/ute | |
+| rangeLengdeM | Rangelengde | Meter |
+| maksPuttLengdeM | Lengste putt | Lagres i meter, vises i fot |
+| radarMerke | Radar | TrackMan · FlightScope · R10 · Mevo+ · ingen |
+| capabilities | Utstyr og flater | Fra listen i 8.9 (samme liste som øvelsenes krav) |
+
+En øvelse som krever noe stedet ikke har, vises dempet med årsak («Krever radar»). Gruppetid
+skal ha et sted, og gruppeøkter arver det (avklaring 13: hvem eier stedet).
+
 ## 6. Økten — fra plan til gjennomført
 
 ### 6.1 Planstatus (hele planen, coach ↔ spiller)
@@ -317,6 +366,30 @@ SYK «Syk» · SKADE «Skade» · REISE «Reise» · VAER «Vær» · ANNET «An
 
 En økt som gjentas (f.eks. hver mandag). Endring gjelder DENNE, DENNE_OG_FREMOVER eller
 HELE_SERIEN.
+
+### 6.7 Gruppeøkt — ordene rundt
+
+| Felt / ord | Navn | Betyr |
+|---|---|---|
+| groupId | Gruppe | Hvilken gruppe økten kom fra |
+| sourceGroupSessionId | Opphav | Gruppeøkten spillerens kopi stammer fra |
+| hiddenByPlayer | Ikke delta | Spilleren har skjult gruppeøkten fra sin plan |
+| — | Avviker fra gruppen | Spillerens kopi er endret og følger ikke lenger gruppeøkten |
+| needsPlayerApproval / approvalStatus | Venter på svar · Godtatt · Avvist | Publisert økt som spilleren skal svare på |
+
+Regel: gruppeøkten planlegges i grupperegi og lagres hos hver spiller. Endring i gruppeøkten
+går til alle som ikke har endret sin kopi.
+
+### 6.8 Delt økt og blokker (forslag, ikke i kode ennå)
+
+En økt kan deles i blokker med start og slutt inne i økten. Hver blokk har én ansvarlig
+coach og kan ha egne øvelser.
+
+| Felt (forslag) | Navn | Betyr |
+|---|---|---|
+| blokkStart / blokkSlutt | Fra – til | Tid inne i økten |
+| ansvarligCoachId | Ansvarlig | Én person, med organisasjon som merke: AK Golf Academy · Team Norway · WANG |
+| — | Individuell · Felles | Blokktype |
 
 ## 7. Grupper og programmer
 
@@ -682,9 +755,26 @@ Beskrivende språk til teknisk plan og videoanalyse. Ikke krav. Aldri i markedst
 | P9.0 | Høyre arm parallell gjennom |
 | P10.0 | Finish |
 
-Teknisk oppgave: PENDING «Venter» · ACTIVE «Aktiv» · DONE «Ferdig» · ARCHIVED «Arkivert».
-Spor: PAA_VEI «På vei» · STAGNERER · FERDIG · INAKTIV · AVSLAATT.
-Oppgavetype: TEKNISK · TAKTISK · MENTALT · SOSIALT.
+### 15.1 Teknisk utviklingsplan
+
+Planen har status DRAFT «Utkast» · ACTIVE «Aktiv» · ARCHIVED «Arkivert», kan knyttes til en
+periode, og kan ha variant A/B. Under planen ligger P-posisjonene (P1.0–P10.0), én kan være
+**hovedfokus**. Under hver P ligger oppgavene.
+
+| Felt | Navn | Betyr |
+|---|---|---|
+| tittel / beskrivelse | Oppgave | Hva som skal gjøres |
+| bildeUrl / videoUrl | Bilde · Video | Referanse |
+| pyramide / omraade / koller | Treningstype · Område · Køller | Hvor oppgaven trenes |
+| kategori | Type | TEKNISK · TAKTISK · MENTALT · SOSIALT |
+| repsMaalDry / Lav / Full | Reps-mål | Uten ball · Lav hastighet · Automatikk (samme tre steg som 3.1) |
+| repsGjortDry / Lav / Full | Reps gjort | Registrert i økt eller fra TrackMan |
+| status | Status | PENDING «Venter» · ACTIVE «Aktiv» · DONE «Ferdig» · ARCHIVED «Arkivert» |
+| trackStatus | Spor | PAA_VEI «På vei» · STAGNERER «Stagnerer» · FERDIG «Ferdig» · INAKTIV «Inaktiv» · AVSLAATT «Avslått» |
+
+TrackMan-mål på en oppgave: se 14.7. Hvert TrackMan-slag kan knyttes til en oppgave og teller
+mot målet. Forslag til endring i planen (ny oppgave, arkiver, omprioriter, endre stikkord,
+juster mål, køllemål) er alltid forslag coach godkjenner: PENDING · ACCEPTED · REJECTED · EDITED.
 
 ## 16. Tall og enheter (skriveregler)
 
@@ -720,6 +810,8 @@ Oppgavetype: TEKNISK · TAKTISK · MENTALT · SOSIALT.
 | LIFE-koder, AK-stigen og Voksen-modellen som data | Tatt ut av fasiten 19.08.2026 |
 | ELITE som app-nivå | Finnes ikke. GFGK Elite er et gruppenavn |
 | «Drill», «logge», «føre» på skjerm | Øvelse, registrere |
+| «Dose» som fritekst | Tid + reps totalt + reps per motorikk-steg (3.6) |
+| Reps-stegene «dry / lav / full» som skjermord | Uten ball · Lav hastighet · Automatikk |
 
 ## 18. Hva dette dokumentet erstattet (slettet 15.09.2026)
 
@@ -752,3 +844,7 @@ Oppgavetype: TEKNISK · TAKTISK · MENTALT · SOSIALT.
 10. **DNF**: «Ikke fullført» (fasit) eller «Startet, men trakk» (ordbok 08.09)?
 11. **GFGK-grupper**: hvilken kode får Basis og Utvikling (BREDDE? JENTER?), eller skal
     kodene byttes til MINI/BASIS/UTVIKLING/ELITE?
+12. **Bunker som egen familie** (koden, seks familier) eller under Nærspill (Claude Design
+    15.09, fem)? Anbefaling: egen familie, fordi bunker har sandtrinn som ingen andre har.
+13. **Hvem eier treningsstedet**: spilleren (i dag), coachen, eller begge? Anbefaling: begge,
+    gruppens sted eies av coachen.
