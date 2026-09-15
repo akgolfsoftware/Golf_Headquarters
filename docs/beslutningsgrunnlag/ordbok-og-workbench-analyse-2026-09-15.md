@@ -13,6 +13,12 @@ og de er uenige om antall treningsområder (16/17/19), puttebånd (5/6/7), enhet
 
 ## 2. Hva som er utdatert og bør bort
 
+**Utført 15.09.2026 (Anders: «Slett de gamle ordbøkene etter §2»):** hele §2.1 er slettet
+og lenkene pekt om. Av §2.2 er dokumentdelen gjort (konsept-ordboken krympet til del B,
+`ordbok.json` generert fra masteren, MANIFEST rettet). Kodefilene i §2.2 (`taxonomy.ts`,
+`workbench-hybrid/taxonomy.ts`, `bompa-perioder.ts`, `periode-helpers.ts`,
+`canon-methodology.json`) er OW-2 og OW-P i arbeidslisten og er ikke rørt.
+
 ### 2.1 Slett (ingen kode leser dem, innholdet er tatt inn i masteren eller er utgått)
 
 | Fil | Hvorfor | Må gjøres samtidig |

@@ -8,7 +8,7 @@ Les `docs/platform/AGENT-BRIEF.md` før du endrer filer. `START-HER.md` er innga
 
 - Anders' gjeldende beskjed styrer oppgaven. Tidligere bestillinger i arkiv er ikke nye kjøreordrer.
 - Produkt og forretningsregler: `docs/platform/BUSINESS-RULES.md`.
-- Treningsfag og begreper: `docs/FASIT-AK-GOLF-HQ.md` og ordbøkene i `docs/`.
+- Treningsfag og begreper: `docs/ordbok-master-trening.md` og ordbøkene i `docs/`.
 - Designstatus og eksisterende referanser: `designsystem/README.md`. Bruk den konkrete versjonen Anders velger for den aktuelle byggeoppgaven; gamle tegninger og beslutninger er ikke automatisk gjeldende fasit.
 - Faktisk oppførsel: koden og testene. Dokumentert intensjon er ikke bevis på ferdig funksjon.
 - Nåstatus: `docs/STATUS-NÅ.md`. Arbeidsliste: `docs/MASTERPLAN-GJENSTAAENDE.md`. Historikk ligger under `docs/arkiv/`.

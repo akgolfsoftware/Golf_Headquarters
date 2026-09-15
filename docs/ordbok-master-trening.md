@@ -1,9 +1,10 @@
-# Ordbok — trening, planlegging, tall og TrackMan (MASTER, utkast)
+# Ordbok — trening, planlegging, tall og TrackMan (MASTER)
 
-**Status: UTKAST til Anders' godkjenning, 15.09.2026.** Når Anders har rettet og godkjent
-dette dokumentet, er det den ene masteren for alle ord, koder og tall i AK Golf HQ som
-handler om trening, årsplan, periodeplan, styrketrening, statistikk og TrackMan. Da slettes
-eller arkiveres alle eldre ordbøker (se «Hva dette erstatter» nederst).
+**Status: GJELDENDE KILDE fra 15.09.2026, under Anders' gjennomgang.** Dette er den ene
+masteren for alle ord, koder og tall i AK Golf HQ som handler om trening, årsplan,
+periodeplan, styrketrening, tester, turnering, statistikk og TrackMan. De eldre ordbøkene ble
+slettet 15.09.2026 (kapittel 18). Anders retter fortløpende; avklaringene i kapittel 19 er
+fortsatt åpne.
 
 **Slik leser du dokumentet:** Hver tabell har tre kolonner: **Kode** (det som lagres i
 databasen — endres aldri ved språkvask), **Navn** (det spilleren og coachen ser på skjermen)
@@ -334,6 +335,10 @@ HELE_SERIEN.
 | PLATFORM_ONLY | Selvbetjent (ingen coach) |
 
 Offentlig navn er «AK Golf Academy» (bestemt 12.09.2026). Kodene beholdes.
+
+GFGK-juniorgruppene heter Mini · Basis · Utvikling · Elite på gfgkjunior.no, mens koden har
+MINI · BREDDE · JENTER · ELITE. Hvilken kode Basis og Utvikling tilsvarer, er ikke avklart
+(avklaring 11).
 
 ### 7.2 Roller i en gruppe
 
@@ -716,15 +721,19 @@ Oppgavetype: TEKNISK · TAKTISK · MENTALT · SOSIALT.
 | ELITE som app-nivå | Finnes ikke. GFGK Elite er et gruppenavn |
 | «Drill», «logge», «føre» på skjerm | Øvelse, registrere |
 
-## 18. Hva dette dokumentet erstatter (ved godkjenning)
+## 18. Hva dette dokumentet erstattet (slettet 15.09.2026)
 
-- `docs/FASIT-AK-GOLF-HQ.md` — innholdet er tatt inn her uendret.
+- `docs/FASIT-AK-GOLF-HQ.md` (Anders 19.08.2026) — innholdet er tatt inn her uendret.
 - `docs/ORDBOK-TRENINGSPLANLEGGING-2026-09-08.md` — tatt inn her.
 - `docs/vokabular-planlegging-2026-08-18.md` — utgått.
-- `docs/ordbok-ak-golf-konsept.md` del A §1–§16 — tatt inn eller utgått. Del B (staving av
-  vanlige appord) flyttes til språkdokumentet i `docs/skjermtekst/`.
-- `docs/design-guide-terminologi.md` §2 (tall og enheter) — tatt inn i kapittel 16.
-- `docs/ordbok.json` — genereres på nytt fra dette dokumentet.
+- `docs/ordbok-ak-golf-konsept.md` del A — slettet. Del B (staving av vanlige appord) står
+  igjen i samme fil.
+- `docs/design-guide-terminologi.md` — §2 (tall og enheter) er kapittel 16 her, resten var
+  utgått.
+- `src/lib/masterbrain/processed/rules/` og de to CANON-filene i RAG-korpuset (L-faser,
+  prosentkrav) — slettet, AI-laget skal ikke lese dem.
+- `docs/ordbok.json` — genereres nå fra dette dokumentet og Prisma-skjemaet
+  (`npx tsx scripts/ordbok-json.ts`).
 
 ## 19. Avklaringer Anders må ta (svar med nummer)
 
@@ -741,3 +750,5 @@ Oppgavetype: TEKNISK · TAKTISK · MENTALT · SOSIALT.
 8. **Uketyper (4.4)** fra WANG-årshjulet: skal de bli data i appen, eller kun tekst?
 9. **Vinderetning og lie** på slag: brukes disse i dag? Hvis ikke, stryke fra masteren.
 10. **DNF**: «Ikke fullført» (fasit) eller «Startet, men trakk» (ordbok 08.09)?
+11. **GFGK-grupper**: hvilken kode får Basis og Utvikling (BREDDE? JENTER?), eller skal
+    kodene byttes til MINI/BASIS/UTVIKLING/ELITE?

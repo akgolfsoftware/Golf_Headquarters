@@ -2171,50 +2171,6 @@
     "word_count": 148
   },
   {
-    "chunk_id": "morad-011",
-    "file_path": "rag-corpus/morad/canon-l-fase-overrides.md",
-    "source": "knowledge/entities + processed/rules",
-    "section": "L-fase overrides",
-    "tags": [
-      "canon",
-      "l-fase",
-      "override"
-    ],
-    "topics": [
-      "l-fase",
-      "motorisk"
-    ],
-    "relevance": [
-      "AiPlanGeneration",
-      "CoachHQ",
-      "RAG",
-      "MORAD"
-    ],
-    "word_count": 124
-  },
-  {
-    "chunk_id": "morad-012",
-    "file_path": "rag-corpus/morad/canon-pyramide-ak-formel.md",
-    "source": "knowledge/entities + processed/rules",
-    "section": "Pyramide AK-formel",
-    "tags": [
-      "canon",
-      "pyramide",
-      "period"
-    ],
-    "topics": [
-      "pyramide",
-      "periodisering"
-    ],
-    "relevance": [
-      "AiPlanGeneration",
-      "CoachHQ",
-      "RAG",
-      "MORAD"
-    ],
-    "word_count": 105
-  },
-  {
     "chunk_id": "morad-013",
     "file_path": "rag-corpus/morad/sg-to-morad-mapping.md",
     "source": "knowledge/entities + processed/rules",

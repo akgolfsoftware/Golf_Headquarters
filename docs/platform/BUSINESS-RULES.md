@@ -352,7 +352,7 @@ Implementasjon: `src/lib/v2/tema-default.ts` + `src/app/layout.tsx` + `src/compo
 De 13 tidligere CANON-invariantene og kodehåndhevelsen under `src/lib/canon/` ble
 pensjonert 18. august 2026. De er historikk, ikke produktregler eller aktive
 implementasjonskrav. Gjeldende treningsbegreper og beslutninger finnes i
-`docs/FASIT-AK-GOLF-HQ.md`, ordbøkene og `.claude/rules/beslutninger.md`.
+`docs/ordbok-master-trening.md`, ordbøkene og `.claude/rules/beslutninger.md`.
 
 Club Speed-beslutningen fra 1. september gjelder fortsatt: motorikk er AUTO, og
 «uten ball» er en egenskap ved øvelsen, ikke et eget motorikksteg. Se

@@ -28,6 +28,7 @@ Generert med `npm run prosjekt:register`. Kategoriene er veivisere basert på na
 | Kontroll / rapport — les skriptet for eventuelle sideeffekter | [scripts/check-fasitdekning-baseline.mjs](<check-fasitdekning-baseline.mjs>) |
 | Kontroll / rapport — les skriptet for eventuelle sideeffekter | [scripts/check-ingen-paper.mjs](<check-ingen-paper.mjs>) |
 | Kontroll / rapport — les skriptet for eventuelle sideeffekter | [scripts/check-project-structure.mjs](<check-project-structure.mjs>) |
+| Kontroll / rapport — les skriptet for eventuelle sideeffekter | [scripts/check-sensitive-route-guards.mjs](<check-sensitive-route-guards.mjs>) |
 | Kontroll / rapport — les skriptet for eventuelle sideeffekter | [scripts/check-signalfarge-tekst.mjs](<check-signalfarge-tekst.mjs>) |
 | Kontroll / rapport — les skriptet for eventuelle sideeffekter | [scripts/check-tl-kontrast.mjs](<check-tl-kontrast.mjs>) |
 | Kontroll / rapport — les skriptet for eventuelle sideeffekter | [scripts/check-token-gap.mjs](<check-token-gap.mjs>) |

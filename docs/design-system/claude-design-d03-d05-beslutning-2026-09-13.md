@@ -111,7 +111,7 @@ Elevene er mindreårige. Navn og spillerlister skal aldri vises på den åpne si
 
 ## Kilder kontrollert
 
-- `docs/FASIT-AK-GOLF-HQ.md`
+- `docs/ordbok-master-trening.md`
 - `docs/skjermtekst/ak-golf-hq-sprak-og-ordbok.md`
 - `src/components/portal/live/use-live-session.ts`
 - `src/components/portal/live/DrillLogger.tsx`

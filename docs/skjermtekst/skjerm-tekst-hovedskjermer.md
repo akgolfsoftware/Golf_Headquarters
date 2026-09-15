@@ -6,7 +6,7 @@
 
 Den faktiske norske teksten som står PÅ skjermene, for **PlayerHQ** (spiller),
 **AgencyOS** (coach) og **markedsflatene** (akgolf.no). Styrt av ordboken
-(`docs/design-guide-terminologi.md` lag 2 + `docs/ordbok-ak-golf-konsept.md` lag 1).
+(`docs/ordbok-master-trening.md` lag 2 + `docs/ordbok-ak-golf-konsept.md` lag 1).
 Skrevet 5. juli 2026. Kopier rett inn i design/implementasjon.
 
 > **⚠ Dette dokumentet eier TEKST, ikke utseende (presisert 05.08.2026; utseende-regelen

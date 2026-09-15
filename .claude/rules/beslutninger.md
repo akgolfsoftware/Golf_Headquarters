@@ -56,7 +56,7 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
   inn i Claude Design.
   **Begrunnelse:** coach planlegger i dag hver spiller for seg, fra null, i to systemer som
   ikke deler økt. Gruppeplanlegging bygget på to økt-modeller blir feil grunnmur.
-  **Overstyrer:** «Fasit for ordforrådet: `docs/vokabular-planlegging-2026-08-18.md`» i
+  **Overstyrer:** «Fasit for ordforrådet: `docs/ordbok-master-trening.md`» i
   §ALLE TRENINGSPLANREGLER LÅST OPP (18.08.2026) — masteren er ordforrådets fasit når den er
   godkjent; 18.08-fila slettes. Overstyrer også «Separate modeller beholdes» for Plan/Live i
   arbeidslisten — modellene skal slås sammen (punkt 6).
