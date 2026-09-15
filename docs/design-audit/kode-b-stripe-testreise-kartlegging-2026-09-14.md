@@ -87,4 +87,4 @@ Alt med testkort `4242 4242 4242 4242`. Ingen reell belastning, ingen produksjon
 - At noen Stripe-reise er kjørt med ekte nøkkel, verken test eller live.
 - At de mockede testene over beviser at ekte Stripe-svar tolkes riktig.
 - At betaling for barn (O05) er prøvd som innlogget reise.
-- At prisene finnes i live-modus. Beslutningskø punkt 28 (årspris-ID i live) er fortsatt åpen.
+- At prisene finnes i live-modus. **Målt 15.09:** Performance og Performance Pro finnes i live, PlayerHQ 299 kr/mnd og 2 690 kr/år gjør det ikke. Beslutningskø punkt 28 er dermed besvart, men ikke utført — Anders må opprette de to PlayerHQ-prisene. [Priskontroll](../beslutningsgrunnlag/stripe-live-priskontroll-2026-09-15.md).
