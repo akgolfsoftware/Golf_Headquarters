@@ -240,3 +240,38 @@ eksplisitt aliastabell for navnvarianter; ikke anta felles ID på tvers.
 1. **Lisens vs scrape:** søker vi offisielle avtaler (GolfBox API, WAGR-lisens, Clippd partner-API) — eller aksepterer vi widget/HTML-scraping i gråsonen for v1?
 2. **Kommersiell aggregator:** kjøper vi Sportradar/Data Sports Group for dame + asiatiske live (sparer 6+ skjøre scrapere), eller utelater vi de live foreløpig?
 3. **Dybde:** holder kalender + leaderboard, eller skal vi ha per-runde/hull-for-hull der det finnes (mye tyngre)?
+
+---
+
+## Faktisk arkitektur pr. 2026-09-15 — konsolidert til to eiere
+
+Kartleggingen 2026-09-14 (`docs/beslutningsgrunnlag/golfdata-kartlegging-2026-09-14.md`) fant at
+setningen «LIVE (GH Actions + Vercel cron)» over dekket over at **tre uavhengige systemer**
+delvis gjorde samme jobb, og at to konkrete veier inn i `public`-schemaet (det appen leser)
+aldri hadde vært automatiske. Ryddet til to tydelige eiere samme dag:
+
+| Eier | Ansvar | Repo |
+|---|---|---|
+| **Cron inni AK Golf HQ-appen selv** (`scrape-golfbox.ts`, agentene `golfbox-schedule`/`golfbox-leaderboards`/`golfbox-link-backfill`) | Rå GolfBox-scraping (`sourceOrigin=GOLFBOX`) rett til `public` | `akgolf-hq` |
+| **`ak-golf-pipelines`** (GitHub Actions, Python) | Alt annet: DataGolf, Nordic League, Olyo/Srixon/Østlandstour/NorgesCup, WAGR, college — henter til `dashboard`-schemaet, og (nytt) speiler videre til `public` der det er godkjent | `ak-golf-pipelines` |
+
+Den tredje, gamle mekanismen — tre `launchd`-jobber på Mac Mini (`com.akgolf.norske-turneringer`,
+`com.akgolf.datagolf-public-sync`, `com.akgolf.datagolf-historical`) som importerte fra lokale
+fil-eksporter i `~/ak-golf-data` — er avviklet 2026-09-15 (arkivert, ikke slettet:
+`~/Library/LaunchAgents/_arkivert-2026-09-15/README.md`). De pekte på to nå-slettede
+prosjektmapper (`ak-golf-talenthq`, `ak-golf-intelligence`) og hadde feilet hver kjøring siden
+minst 13.09.2026.
+
+**Rettet i `ak-golf-pipelines` samme dag (PR #1–#3):**
+- `nordic-league-sync.yml` feilet hver dag 03.–14.09 på et 120-sekunders database-tidsavbrudd
+  ved oppdatering av materialiserte oversikter — satt til 600s, verifisert i produksjon
+  (`mv_player_unified_timeline` tok faktisk 173,5s).
+- `datagolf-public-sync.yml` (DataGolf → `public`) var manuell-only siden opprettelse, **0
+  kjøringer noensinne** — nå automatisert mandag 07:00 UTC.
+- Olyo/Srixon/Østlandstour/NorgesCup hadde **ingen** vei til `public` i det hele tatt, verken
+  automatisk eller manuell — ny writer (`pipelines/golfbox/writers/public_db.py`) speiler dette
+  ukentlig, trigget av at `junior-tours-sync.yml` er ferdig. Spillermatching bruker navn +
+  fødselsår (ny kolonne `dashboard.tournament_results.birth_year`) siden GolfBox-junior/amatør-
+  data ikke har noen stabil spiller-ID — ved reell tvetydighet hopper writeren over og logger
+  til `dashboard.ingestion_skipped` i stedet for å gjette. `regions_tour`/`nordic_league`/`wagr`/
+  ren klubbgolf er bevisst UTENFOR dette omfanget; egen beslutning kreves før de tas med.
