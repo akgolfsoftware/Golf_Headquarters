@@ -1826,7 +1826,7 @@ Kilde: S5, `docs/skjermtekst/skjerm-tekst-hovedskjermer.md`. Utdraget er sitert 
 > > «uten ball» er en egenskap ved øvelsen, ikke eget motorikk-steg.
 >
 > **Rolle-regel (viktig):** Spiller ser KUN klarspråk (Innspill/Nærspill, «% av maksfart»).
-> Coach ser kode + navn (`TEK · INN150 · L-BALL · CS70 · M2 · PR2`). Markedsflatene bruker
+> Coach ser kode + navn (`TEK · Innspill ~150 m · Lav hastighet · Treningsområde · Alene`). Markedsflatene bruker
 > ekte coach **{offentlig coachnavn}** (aldri demo-spilleren), humanisert tekst uten em-strek.
 >
 > ## Fasit-regler brukt her (fra ordboken)

@@ -222,7 +222,7 @@ tom og venter. Kortet:
 │ på lange jern.                               │
 │                                              │
 │ FORESLÅTT ØVELSE                             │
-│ Albue-vegg mot P6 · CS40 · M1 · PR1          │  ← AKFormelChip (finnes)
+│ Albue-vegg mot P6 · Lav hastighet · Innendørs │  ← AKFormelChip (finnes)
 │ [ bytt øvelse ]                              │  ← tekstlenke, ikke knapp
 │                                              │
 │ NESTE SJEKKPUNKT                             │
@@ -297,8 +297,8 @@ er skjermer. Dette er data som forsvinner hvis det er feil.
 ```
 ┌──────────────────────────┐
 │ Øyvind Rohjan        ✕   │
-│ TEK · TEE · L-BALL       │  ← forhåndsutfylt AK-formel,
-│ CS60 · M2 · PR2          │     trykk for å endre
+│ TEK · Utslag · Lav hast. │  ← forhåndsutfylt AK-formel,
+│ Treningsområde · Alene   │     trykk for å endre
 │                          │
 │                          │
 │        ┌────────┐        │
