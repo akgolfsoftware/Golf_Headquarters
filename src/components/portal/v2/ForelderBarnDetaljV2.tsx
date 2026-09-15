@@ -12,6 +12,12 @@ import { TL } from "@/lib/v2/train-lock";
  * fasit-innholdet — de dekker mer historikk enn malen viser, og URL-en
  * (?tab=) skal ikke fjernes.
  *
+ * Avvik:
+ *   - Ingen riggrad; fasiten er Paper, ikke portert til Train-lock (se de
+ *     ærlige avvikene under). OW-2 (15.09.2026): DNF-teksten rettet fra
+ *     «Fullførte ikke» til «Ikke fullført» (ordbok-masteren) — ren
+ *     tekstretting, ikke en visuell portering.
+ *
  * Ærlige avvik fra fasiten (dokumentert, ikke fabrikkert):
  * - Ingen "klasse"-felt (fasitens «Elite 1») finnes i datamodellen — droppet.
  * - Ingen fast tilknyttet coach-relasjon per spiller — «coach X»-teksten i
@@ -142,7 +148,7 @@ const TURNERING_STATUS: Record<string, string> = {
   CONFIRMED: "Påmeldt",
   WITHDRAWN: "Trukket",
   COMPLETED: "Gjennomført",
-  DNF: "Fullførte ikke",
+  DNF: "Ikke fullført",
 };
 
 /* ── Faner til Paper-fasitens sider (Uka er denne siden) ─────────────── */

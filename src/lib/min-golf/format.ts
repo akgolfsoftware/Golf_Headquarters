@@ -30,9 +30,9 @@ export function fmtKortDato(dato: Date): string {
   return new Intl.DateTimeFormat("nb-NO", { day: "numeric", month: "short" }).format(dato);
 }
 
-/** SG-aksenes klarspråk (kanon): OTT Tee-slag · APP Innspill · ARG Nærspill · PUTT Putting. */
+/** SG-aksenes klarspråk (kanon): OTT Utslag · APP Innspill · ARG Nærspill · PUTT Putting. */
 export const SG_KLARSPRAK: Record<"OTT" | "APP" | "ARG" | "PUTT", string> = {
-  OTT: "Tee-slag",
+  OTT: "Utslag",
   APP: "Innspill",
   ARG: "Nærspill",
   PUTT: "Putting",

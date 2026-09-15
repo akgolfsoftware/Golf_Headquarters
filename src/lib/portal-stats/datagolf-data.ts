@@ -78,7 +78,7 @@ export type DataGolfData = {
 };
 
 const KAT_NAVN: Record<DataGolfKode, string> = {
-  OTT: "Tee-slag",
+  OTT: "Utslag",
   APP: "Innspill",
   ARG: "Nærspill",
   PUTT: "Putting",

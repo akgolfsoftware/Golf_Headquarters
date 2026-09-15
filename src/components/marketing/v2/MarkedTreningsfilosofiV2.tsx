@@ -45,8 +45,8 @@ const PYRAMIDE: { kort: string; navn: string; tekst: string }[] = [
 ];
 
 const SG: { kort: string; navn: string; tekst: string }[] = [
-  { kort: "OTT", navn: "Off The Tee", tekst: "Drives og lengde-slag fra utslag" },
-  { kort: "APP", navn: "Approach", tekst: "Innspill til grønn fra fairway/rough" },
+  { kort: "OTT", navn: "Utslag", tekst: "Drives og lengde-slag fra utslag" },
+  { kort: "APP", navn: "Innspill", tekst: "Innspill til grønn fra fairway/rough" },
   { kort: "ARG", navn: "Nærspill", tekst: "Chip, pitch og korthold" },
   { kort: "PUTT", navn: "Putting", tekst: "Alle slag på grønnen" },
 ];

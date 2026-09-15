@@ -43,7 +43,7 @@ export type TmHubData = {
 };
 
 const AKSE: { id: SgAkseVisning["id"]; etikett: string }[] = [
-  { id: "OTT", etikett: "Tee" },
+  { id: "OTT", etikett: "Utslag" },
   { id: "APP", etikett: "Innspill" },
   { id: "ARG", etikett: "Rundt" },
   { id: "PUTT", etikett: "Putt" },
