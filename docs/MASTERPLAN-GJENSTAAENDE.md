@@ -1,6 +1,6 @@
 # Arbeidsliste — AK Golf HQ
 
-Oppdatert 14.09.2026. Denne filen eier rekkefølge og gjenstående arbeid. [Status nå](STATUS-NÅ.md) oppsummerer leveransen. [Funksjonsregisteret](planer/funksjonsregister-2026-09-11.md) bevarer hele produktbredden; eldre bestillinger er samlet i [planarkivet](arkiv/opprydding-2026-09-10/masterplan-gjenstaaende.md).
+Oppdatert 15.09.2026. Denne filen eier rekkefølge og gjenstående arbeid. [Status nå](STATUS-NÅ.md) oppsummerer leveransen. [Funksjonsregisteret](planer/funksjonsregister-2026-09-11.md) bevarer hele produktbredden; eldre bestillinger er samlet i [planarkivet](arkiv/opprydding-2026-09-10/masterplan-gjenstaaende.md).
 
 ## Gjeldende bestilling og design
 
@@ -85,7 +85,7 @@ Kandidat v0.4.10 er fortsatt en delpakke og har ikke `selectedForBuilding: true`
 | R-E Caddie-tilgang og TrackMan CSV/HTML | ADMIN slipper forbi `/api/caddie/chat`-gaten (ekte cookies, ingen side finnes ennå); COACH og uinnlogget avvises 401. Full skjermflyt for TrackMan CSV- OG HTML-import med eksplisitte enheter | Lokale commits på `codex/etter-merge-2026-09-14`. **Ikke pushet, ikke PR, ikke flettet.** [Kontroll](design-audit/caddie-trackman-r-e-2026-09-13.md) |
 | R-C privat lokal lagring | Ekte to-brukers offline/kølagt-scenario på samme nettleser-context uten manuell opprydding: spillerens kølagte tapper-telling er eier-navnerommet i IndexedDB, en fremmed spiller som logger inn rett etter arver aldri tellingen | Lokale commits på `codex/etter-merge-2026-09-14`. **Ikke pushet, ikke PR, ikke flettet.** [Kontroll](design-audit/lokal-lagring-r-c-2026-09-14.md) |
 
-| KODE-A · P0-flake, O02-gruppeplan, R-I godkjenninger | Flaken i `spillerreise-innlogget.spec.ts` rettet ved rot (dev-kompilert målrute ventet på 20 s expect-grense i stedet for fila sin 90 s navigasjonsgrense). Gruppeutrulling låst mot dublett OG mot bortfall av spillerens egne økter. Søskentest for godkjenningsflaten | Gren `claude/kode-a-kode-b-masterplan-rvq63p`. Full P0-pakke 11/11 grønn (6,0 min) mot isolert HQ-Supabase + spec alene 4/4; 11 nye enhetstester. [Kontroll](design-audit/kode-a-flake-og-o02-2026-09-14.md) |
+| KODE-A · P0-flake, O02-gruppeplan, R-I godkjenninger | Flaken i `spillerreise-innlogget.spec.ts` rettet ved rot (dev-kompilert målrute ventet på 20 s expect-grense i stedet for fila sin 90 s navigasjonsgrense). Gruppeutrulling låst mot dublett OG mot bortfall av spillerens egne økter. Søskentest for godkjenningsflaten | I main via PR #890, merge `e37f835`. Full P0-pakke 11/11 grønn to ganger (6,0 og 6,9 min, den andre på nyoppsatt stack) + spec alene 4/4; full `npm run verify` grønn lokalt og i CI; 11 nye enhetstester. **Status: flettet, men sluttsynkronisering gjenstår — Notion-oppgaven er ikke oppdatert.** [Kontroll](design-audit/kode-a-flake-og-o02-2026-09-14.md) |
 | KODE-B · Stripe-testreise (R4–R9) | Kartlagt og blokkert: ingen `STRIPE_*` i miljøet. Sju nødvendige variabler listet eksakt; mocket dekning (28 tester) skilt fra det som faktisk mangler | Ingen kode, ingen nøkkel gjettet, ingen belastning. [Kartlegging og blokkering](design-audit/kode-b-stripe-testreise-kartlegging-2026-09-14.md) |
 | KODE-C · Caddie AI-svar og TrackMan foto | Utsatt, ikke startet — krever `ANTHROPIC_API_KEY` som ikke skal inn i sky-testmiljø | Eier: Anders. [Begrunnelse og gjenopptak](design-audit/kode-c-utsatt-2026-09-14.md) |
 
