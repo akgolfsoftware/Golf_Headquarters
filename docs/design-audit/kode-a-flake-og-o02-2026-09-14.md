@@ -37,12 +37,24 @@ live-nøkler holdt uten omvei.
 |---|---|---|
 | Bare spec-fila | 4 tester | **4 passed (3,3 min)** |
 | Full P0-pakke | 11 tester, alle fire spec-filer | **11 passed (6,0 min)** |
+| Full P0-pakke, ny stack (15.09 kl. 05) | 11 tester, alle fire spec-filer | **11 passed (6,9 min)** |
 
-Den fulle pakken er nettopp betingelsen flaken oppsto i. Den er grønn etter fiksen.
+Den fulle pakken er nettopp betingelsen flaken oppsto i. Den er grønn etter fiksen, og
+den andre fulle kjøringen ble gjort på en nyoppsatt stack etter at containeren hadde
+startet på nytt — altså ikke på en varm cache fra den første.
 
-**Ærlig begrensning:** to kjøringer, ikke tjue. En tidsbestemt flake kan ikke bevises
+**Ærlig begrensning:** tre kjøringer, ikke tjue. En tidsbestemt flake kan ikke bevises
 borte av et endelig antall grønne kjøringer — men årsaken er forstått og fjernet, ikke
 maskert med en blind retry. `retries: 0` i konfigurasjonen er beholdt med vilje.
+
+## 1b. Full kvalitetsgate kjørt lokalt
+
+`npm run verify` (15.09) — `verify:static` + `npm test` + `npm run build` + serwist —
+avsluttet med kode 0. Byggingen produserte samme precache-manifest som Vercel-byggingen:
+**527 URL-er, 11,6 MB**. Det er den samme byggingen Vercel fullførte uten feil før den
+falt på sitt eget `process-and-upload-routes`-steg, og det er grunnlaget for at
+Vercel-statusen på PR #890 er avvist som ikke denne PR-ens. Repoets egen `verify`-sjekk
+i GitHub Actions er også grønn på samme commit.
 
 ## 2. O02-rest: gruppeplan uten dublett og uten bortfall av spillerens egne økter
 
