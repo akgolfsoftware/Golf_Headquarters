@@ -1,10 +1,11 @@
 # Ordbok — trening, planlegging, tall og TrackMan (MASTER)
 
-**Status: GJELDENDE KILDE fra 15.09.2026, under Anders' gjennomgang. Sist utvidet 15.09 kveld (familier, dose, treningssted, gruppeøkt, delt økt, teknisk plan).** Dette er den ene
-masteren for alle ord, koder og tall i AK Golf HQ som handler om trening, årsplan,
+**Status: GJELDENDE KILDE fra 15.09.2026. Alle 13 avklaringer i kapittel 19 er svart av Anders
+15.09.2026 kveld; svarene er lagt inn i kapitlene under og kapittel 19 er fasit for dem.** Dette
+er den ene masteren for alle ord, koder og tall i AK Golf HQ som handler om trening, årsplan,
 periodeplan, styrketrening, tester, turnering, statistikk og TrackMan. De eldre ordbøkene ble
-slettet 15.09.2026 (kapittel 18). Anders retter fortløpende; avklaringene i kapittel 19 er
-fortsatt åpne.
+slettet 15.09.2026 (kapittel 18). Der koden fortsatt avviker fra masteren, står raden merket
+**Avvik** med hvilken arbeidsrad (OW-x i `docs/MASTERPLAN-GJENSTAAENDE.md`) som retter den.
 
 **Slik leser du dokumentet:** Hver tabell har tre kolonner: **Kode** (det som lagres i
 databasen — endres aldri ved språkvask), **Navn** (det spilleren og coachen ser på skjermen)
@@ -66,16 +67,16 @@ Brukes som første valg i filtre og velgere, så listen på 19 ikke vises på é
 | Kode | Navn | Områder |
 |---|---|---|
 | FULLSVING | Fullsving | Utslag, Innspill ~200/150/100/50 m |
-| NAERSPILL | Nærspill | Chip, Pitch, Lob |
-| BUNKER | Bunker | Bunker |
+| NAERSPILL | Nærspill | Chip, Pitch, Lob, Bunker |
 | PUTT | Putt | de seks puttebåndene |
 | FYS | Fysisk | Styrke, Kondisjon, Bevegelighet |
 | BANE | Bane | Banespill |
 
 Familien styrer hvilke akser som vises: fullsving har motorikk, nærspill og putt har ikke,
-bunker har i tillegg sandtrinn, FYS har egne parametere.
-Avvik: Claude Design la 15.09 Bunker under Nærspill (fem familier). Koden har seks
-(avklaring 12).
+FYS har egne parametere. Sandtrinn (3.4) er en egenskap på bunker-øvelser inne i Nærspill,
+ikke en egen familie.
+Bestemt 15.09.2026 (avklaring 12): fem familier, Bunker under Nærspill — som Claude Design.
+Avvik: koden har seks familier med BUNKER som egen. Rettes i OW-2.
 
 Avvik: eldre kodefiler har 17 områder med sju puttebånd, og én visningsfil har putting i
 meter. Denne tabellen vinner (allerede vedtatt 19.08.2026).
@@ -89,10 +90,13 @@ PYRAMIDE_OMRÅDE_MOTORIKK_BELASTNING_PRESS
 Eksempel: `TEK_CHIP_LAV_HAST_TRENINGSOMRAADE_ALENE` = teknisk chip-øvelse i lav hastighet,
 på treningsområdet, uten at noen ser på.
 
-Formelen settes på **øvelsen** (drill/øvelse/test i økten). Økten arver fra øvelsene. (Åpen
-avklaring A06 — se kapittel 19.)
+Formelen settes på **øvelsen** (drill/øvelse/test i økten). Økten viser summen av øvelsene.
+Bestemt 15.09.2026 (avklaring 4).
 
 ### 3.1 Motorikk — læringssteg (gjelder fullsving)
+
+Bestemt 15.09.2026 (avklaring 5): motorikk gjelder kun fullsving. Nærspill og putt har ingen
+motorikk-akse; bunker har sandtrinn (3.4) i stedet.
 
 | Kode | Navn | Betyr |
 |---|---|---|
@@ -208,8 +212,10 @@ de begrenser ikke hva som kan planlegges.
 | HELDAGSSAMLING | Heldagssamling | Samling, heldagsformat |
 
 Skjermnavn er alltid det fulle ordet: «Grunnperiode», ikke «GRUNN».
+Bestemt 15.09.2026 (avklaring 1): alle åtte er periodetyper i årsplanen.
 Avvik: koden har to periodelister. Den ene mangler EVALUERING, den andre mangler TESTUKE og
-samlingene. En gammel kalender lagrer EVALUERING som TURNERING og FERIE som GRUNN.
+samlingene. En gammel kalender lagrer EVALUERING som TURNERING og FERIE som GRUNN. Rettes i
+OW-2 (én liste med alle åtte).
 
 ### 4.2 Det en periode inneholder
 
@@ -231,10 +237,24 @@ BYGG → BYGG → TOPP → DELOAD i fireukers sykluser.
 | TOPP | Toppuke | Høy kvalitet, spissing |
 | DELOAD | Avlastingsuke | Redusert belastning |
 
-### 4.4 Uketyper rundt turnering (fra WANG-årshjulet, brukt i tekst, ikke som data)
+### 4.4 Uketyper (fra WANG-årshjulet)
 
-Utviklingsuke · Pre-turnering · Turneringsuke · Overgangsuke · Avslutningsuke · Samlingsuke ·
-Testuke · Ferieuke · Eksamensblokkert.
+| Kode | Navn |
+|---|---|
+| UTVIKLING | Utviklingsuke |
+| PRE_TURNERING | Pre-turnering |
+| TURNERING | Turneringsuke |
+| OVERGANG | Overgangsuke |
+| AVSLUTNING | Avslutningsuke |
+| SAMLING | Samlingsuke |
+| TEST | Testuke |
+| FERIE | Ferieuke |
+| EKSAMEN | Eksamensblokkert |
+
+Bestemt 15.09.2026 (avklaring 8): uketype blir data i appen — ett felt per uke i årsplanen,
+valgfritt, aldri et krav. Uke-malene (OW-6) kan knyttes til uketype.
+Avvik: finnes ikke i koden ennå. Nytt felt godkjennes særskilt i OW-6; kodene over er forslag
+til feltverdier og kan justeres når feltet tegnes.
 
 ### 4.5 Treningsblokk-merker — strekninger mellom holdepunkter
 
@@ -279,9 +299,12 @@ De to må ikke blandes.
 | TURNERING | Turnering | Turneringsdeltakelse |
 | REISE | Reise | Reisetid |
 | TEST | Test | Testgjennomføring |
-| — | Sjekkpunkt | Avtale eller merkedag (finnes ikke i kode ennå) |
-| — | Helse | Helse og restitusjon (finnes ikke i kode ennå) |
+| SJEKKPUNKT | Sjekkpunkt | Avtale eller merkedag. Finnes i datamodellen (`src/lib/domain/workbench/`), ingen skjerm bruker den ennå |
+| HELSE | Helse | Helse og restitusjon. Finnes i datamodellen, ingen skjerm bruker den ennå |
 | — | Gruppeøkt | Fellesøkt, coach eier (finnes som felt på økt, ikke egen type) |
+
+Bestemt 15.09.2026 (avklaring 6): Sjekkpunkt og Helse beholdes og bygges senere. Skjermen
+tegnes i Claude Design før bygging (tegn-før-bygg-regelen).
 
 ### 5.2 Opptatt-blokker (spillerens egne)
 
@@ -313,7 +336,12 @@ Aldri en sperre.
 | capabilities | Utstyr og flater | Fra listen i 8.9 (samme liste som øvelsenes krav) |
 
 En øvelse som krever noe stedet ikke har, vises dempet med årsak («Krever radar»). Gruppetid
-skal ha et sted, og gruppeøkter arver det (avklaring 13: hvem eier stedet).
+skal ha et sted, og gruppeøkter arver det.
+
+Bestemt 15.09.2026 (avklaring 13): **både spiller og coach eier treningssteder.** Spilleren
+eier sine egne (som i dag). Coachen eier stedene som brukes i gruppetid og gruppeøkter; en
+gruppeøkt som kopieres til spilleren beholder coachens sted.
+Avvik: i koden eier bare spilleren stedet. Coach-eide steder bygges i OW-4.
 
 ## 6. Økten — fra plan til gjennomført
 
@@ -400,8 +428,8 @@ coach og kan ha egne øvelser.
 | WANG_TOPPIDRETT | WANG Toppidrett |
 | WANG_UNG | WANG Ung |
 | GFGK_MINI | GFGK Mini |
-| GFGK_BREDDE | GFGK Bredde |
-| GFGK_JENTER | GFGK Jenter |
+| GFGK_BASIS | GFGK Basis |
+| GFGK_UTVIKLING | GFGK Utvikling |
 | GFGK_ELITE | GFGK Elite |
 | AK_ACADEMY | AK Golf Academy |
 | AK_ACADEMY_JUNIOR | AK Golf Academy Junior |
@@ -409,9 +437,11 @@ coach og kan ha egne øvelser.
 
 Offentlig navn er «AK Golf Academy» (bestemt 12.09.2026). Kodene beholdes.
 
-GFGK-juniorgruppene heter Mini · Basis · Utvikling · Elite på gfgkjunior.no, mens koden har
-MINI · BREDDE · JENTER · ELITE. Hvilken kode Basis og Utvikling tilsvarer, er ikke avklart
-(avklaring 11).
+Bestemt 15.09.2026 (avklaring 11): GFGK-gruppene følger AK-stigen — Mini · Basis · Utvikling ·
+Elite, samme navn som på gfgkjunior.no.
+Avvik: koden har GFGK_MINI · GFGK_BREDDE · GFGK_JENTER · GFGK_ELITE. BREDDE og JENTER er
+utgått (kapittel 17) og migreres til BASIS/UTVIKLING i OW-2; hvilke spillere som går hvor,
+avgjør Anders per spiller ved migreringen. Datamigreringen godkjennes særskilt.
 
 ### 7.2 Roller i en gruppe
 
@@ -437,7 +467,7 @@ Power og plyometri lagres under STYRKE. Stabilitet og balanse lagres under STYRK
 | KONDISJON | Kondisjon | KONDISJON |
 | BEVEGELIGHET | Bevegelighet | BEVEGELIGHET |
 | MOBILITET | Mobilitet | Avvik: gammelt navn på Bevegelighet, skal ut |
-| AKTIVERING | Aktivering | Oppvarming, Avvik: uten område |
+| AKTIVERING | Aktivering | Oppvarming før økt (reps og sett). Bestemt 15.09.2026 (avklaring 7): beholdes |
 
 ### 8.3 Muskelgrupper
 
@@ -565,7 +595,7 @@ Vitne: PENDING «Venter» · ATTESTED «Bekreftet» · REJECTED «Avvist».
 | CONFIRMED | Bekreftet | Bekreftet påmelding |
 | WITHDRAWN | Trukket | Trukket før start |
 | COMPLETED | Gjennomført | Spilt ferdig |
-| DNF | Ikke fullført | Startet, men fullførte ikke |
+| DNF | Ikke fullført | Startet, men fullførte ikke. Bestemt 15.09.2026 (avklaring 10). Avvik: foreldreflaten viser «Fullførte ikke» — rettes i OW-2 |
 
 ### 11.2 Prioritet og planlagt nivå
 
@@ -594,6 +624,8 @@ DROP.
 
 TEE · FAIRWAY · SEMI_ROUGH · ROUGH · DEEP_ROUGH · BUNKER · GREEN · WATER · OOB · TREES.
 Vind: STILLE · MEDVIND · MOTVIND · VENSTRE · HOYRE.
+Bestemt 15.09.2026 (avklaring 9): lie og vind beholdes. Lie er et felt på slaget i basen;
+vindretning brukes i SG-hubens avstandsjustering.
 
 ### 12.4 Rundetype
 
@@ -613,14 +645,15 @@ turnering · trening. Score alltid brutto.
 | — | Tee til green | Total uten putting |
 
 SG skrives med fortegn og komma: +1,2 / −0,4, alltid med referanse og periode.
-Avvik: koden har tre ulike navnesett («Off the tee», «Tee-slag», «Utslag»). Velg ett —
-forslag: «Utslag», samme ord som treningsområdet.
+Bestemt 15.09.2026 (avklaring 2): «Utslag» overalt, samme ord som treningsområdet.
+Avvik: koden har tre navnesett («Off the tee», «Tee-slag», «Utslag»). Rettes i OW-2.
 
 ### 13.2 SG per treningsområde (lagres på runden)
 
 Utslag · Innspill 200/150/100/50 · Chip · Pitch · Lob · Bunker · Putt per bånd.
+Bestemt 15.09.2026 (avklaring 3): rundens puttebånd rettes til de seks i kapittel 2.
 Avvik: rundens puttebånd er fortsatt den gamle sjudelingen (0–3, 3–5, 5–10, 10–15, 15–25,
-25–40, 40+). Kapittel 2 har seks bånd.
+25–40, 40+). Rettes ved neste datamigrering av rundedata, godkjennes særskilt.
 
 ### 13.3 Hvor slaget endte (for SG-beregning)
 
@@ -809,6 +842,9 @@ juster mål, køllemål) er alltid forslag coach godkjenner: PENDING · ACCEPTED
 | Bompa-periodene (GRUNNTRENING/OPPBYGGING/OVERGANG/HVILE) i AI-teksten | Kapittel 4.1 |
 | LIFE-koder, AK-stigen og Voksen-modellen som data | Tatt ut av fasiten 19.08.2026 |
 | ELITE som app-nivå | Finnes ikke. GFGK Elite er et gruppenavn |
+| GFGK_BREDDE, GFGK_JENTER | GFGK_BASIS, GFGK_UTVIKLING (avklaring 11, migrering i OW-2) |
+| BUNKER som egen områdefamilie | Nærspill (avklaring 12). BUNKER som *område* består |
+| «Fullførte ikke» | Ikke fullført (avklaring 10) |
 | «Drill», «logge», «føre» på skjerm | Øvelse, registrere |
 | «Dose» som fritekst | Tid + reps totalt + reps per motorikk-steg (3.6) |
 | Reps-stegene «dry / lav / full» som skjermord | Uten ball · Lav hastighet · Automatikk |
@@ -827,24 +863,22 @@ juster mål, køllemål) er alltid forslag coach godkjenner: PENDING · ACCEPTED
 - `docs/ordbok.json` — genereres nå fra dette dokumentet og Prisma-skjemaet
   (`npx tsx scripts/ordbok-json.ts`).
 
-## 19. Avklaringer Anders må ta (svar med nummer)
+## 19. Avklaringer — svart av Anders 15.09.2026
 
-1. **Periodeliste.** Skal EVALUERING inn i årsplanens periodetype, slik at koden får alle
-   åtte fra kapittel 4.1? Anbefaling: ja.
-2. **SG-navn.** «Utslag», «Tee-slag» eller «Off the tee» for OTT på skjerm? Anbefaling:
-   Utslag, samme ord som treningsområdet.
-3. **Puttebånd på runden.** Skal rundens SG-puttebånd rettes til de seks fra kapittel 2?
-   Anbefaling: ja, ved neste datamigrering.
-4. **AK-formelen på økt eller øvelse (A06).** Anbefaling: på øvelsen. Økten viser summen.
-5. **Motorikk utenfor fullsving.** Nærspill og putting har ikke motorikk i dag. Riktig?
-6. **Sjekkpunkt og Helse** som blokk-typer i kalenderen: bygge, eller stryke fra listen?
-7. **AKTIVERING** som FYS-type: beholde som oppvarming, eller stryke?
-8. **Uketyper (4.4)** fra WANG-årshjulet: skal de bli data i appen, eller kun tekst?
-9. **Vinderetning og lie** på slag: brukes disse i dag? Hvis ikke, stryke fra masteren.
-10. **DNF**: «Ikke fullført» (fasit) eller «Startet, men trakk» (ordbok 08.09)?
-11. **GFGK-grupper**: hvilken kode får Basis og Utvikling (BREDDE? JENTER?), eller skal
-    kodene byttes til MINI/BASIS/UTVIKLING/ELITE?
-12. **Bunker som egen familie** (koden, seks familier) eller under Nærspill (Claude Design
-    15.09, fem)? Anbefaling: egen familie, fordi bunker har sandtrinn som ingen andre har.
-13. **Hvem eier treningsstedet**: spilleren (i dag), coachen, eller begge? Anbefaling: begge,
-    gruppens sted eies av coachen.
+Alle 13 er lagt inn i kapitlene over. Tabellen er fasit hvis noe spriker.
+
+| Nr | Spørsmål | Svar | Følger av det |
+|---|---|---|---|
+| 1 | Periodeliste | Alle åtte fra 4.1 inn i koden | OW-2 |
+| 2 | SG-navn for OTT | Utslag | OW-2 |
+| 3 | Puttebånd på runden | Rettes til de seks i kapittel 2 | Neste datamigrering, godkjennes særskilt |
+| 4 | AK-formelen på økt eller øvelse | På øvelsen; økten viser summen | Ingen kodeendring nå |
+| 5 | Motorikk utenfor fullsving | Kun fullsving | Ingen kodeendring |
+| 6 | Sjekkpunkt og Helse | Beholdes, bygges senere | Tegnes før bygging |
+| 7 | AKTIVERING som FYS-type | Beholdes som oppvarming | Ingen kodeendring |
+| 8 | Uketyper | Data i appen | Nytt felt, godkjennes særskilt i OW-6 |
+| 9 | Vindretning og lie | Begge beholdes | Ingen kodeendring |
+| 10 | DNF | «Ikke fullført» | OW-2 (foreldreflaten) |
+| 11 | GFGK-grupper | MINI · BASIS · UTVIKLING · ELITE | Migrering i OW-2, godkjennes særskilt |
+| 12 | Bunker | Under Nærspill, fem familier | OW-2 (koden har seks) |
+| 13 | Treningssted, eier | Både spiller og coach; gruppens sted eies av coach | OW-4 |
