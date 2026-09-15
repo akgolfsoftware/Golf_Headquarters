@@ -38,6 +38,30 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
 
 ## Beslutningene (september 2026)
 
+- **ORDBOK-MASTER FØRST, SÅ ÉN ØKT-MODELL, SÅ GRUPPEPLANLEGGING — REKKEFØLGEN ER LÅST (Anders
+  15.09.2026, i økt):** svar på forslagslisten i `docs/beslutningsgrunnlag/ordbok-og-workbench-analyse-2026-09-15.md`.
+  Anders bestilte én master for alle ord, koder og tall i trening, årsplan, perioder, styrke,
+  tester, turnering, statistikk og TrackMan (`docs/ordbok-master-trening.md`, utkast, PR #893),
+  og valgte deretter denne rekkefølgen for arbeidet:
+  **Serie:** (10) masteren godkjennes og de gamle ordbøkene slettes → (7+9) vokabularet lever i
+  koden med generert ordbok og vakt mot utgåtte ord i `npm run verify` → (6) én økt-modell:
+  `WorkbenchSession` og `TrainingPlanSession` slås sammen → (1) gruppeuke i Workbench: én
+  gruppeøkt kopieres til hver spiller (WB-08/09/10 er fasit) → (2) årsplanens øktbudsjett,
+  gruppetider, skoleplan og turneringer fyller uka automatisk, coach retter → (3) uke-maler
+  per periode og kategori → (4) styrkeøkter og testdag inn i Workbench → (5) delt økt med
+  blokker og ansvarlig trener per blokk (tegnes først).
+  **Parallelt:** (8) AI-laget (Caddie, agenter, RAG) leser masteren, ikke CANON v3.5 → (11)
+  hver beslutning inn i arbeidslisten samme dag med `/beslutning` → (12) tegn før bygg, én
+  skjerm om gangen → (13) `/design-login` så masteren og de tre manglende skjermene kommer
+  inn i Claude Design.
+  **Begrunnelse:** coach planlegger i dag hver spiller for seg, fra null, i to systemer som
+  ikke deler økt. Gruppeplanlegging bygget på to økt-modeller blir feil grunnmur.
+  **Overstyrer:** «Fasit for ordforrådet: `docs/vokabular-planlegging-2026-08-18.md`» i
+  §ALLE TRENINGSPLANREGLER LÅST OPP (18.08.2026) — masteren er ordforrådets fasit når den er
+  godkjent; 18.08-fila slettes. Overstyrer også «Separate modeller beholdes» for Plan/Live i
+  arbeidslisten — modellene skal slås sammen (punkt 6).
+  **Arbeidet:** `docs/MASTERPLAN-GJENSTAAENDE.md` §Ordbok og Workbench-planlegging, rader OW-1–OW-9.
+
 - **COACH-MENYEN: PROTOTYPEN VINNER — AX-01 REVERSERES (Anders 09.09.2026, i økt):** svar på
   beslutningskø punkt 32. Valget sto mellom AX-01 (`AX-01 Skall rail og tabbar.dc.html`, låst
   25.08.2026 — Stall · Workbench · Kø · Jarvis · Meg, 232px Mac-rail med tekst) og prototypen
@@ -974,7 +998,7 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
   pensjonert.** Vokabularet består (pyramide, områder, motorikk/belastning/press, perioder,
   blokk-typer, kategorier) — som frie merkelapper, aldri krav. Eneste regler som gjenstår er
   tekniske forretningsregler (dobbelbooking-sperre, credits, GDPR) — de er ikke treningsregler.
-  Fasit for ordforrådet: `docs/vokabular-planlegging-2026-08-18.md`. Gjeninnfør ALDRI en
+  Fasit for ordforrådet: `docs/ordbok-master-trening.md` (fra 15.09.2026; 18.08-fila er utgått). Gjeninnfør ALDRI en
   treningsregel (tak, minimum, sperre, «invariant», validering av plan mot metodikk) uten ny,
   eksplisitt beslutning fra Anders. Utgått samtidig: L-fasene (både L-CTRL/L-BALL/L-COMP og
   L_KROPP…L_AUTO som UI-begrep), CS-nivåer, M0–M5, PR1–PR5 — formelen er
