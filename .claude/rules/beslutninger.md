@@ -38,6 +38,27 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
 
 ## Beslutningene (september 2026)
 
+- **CLAUDE DESIGN: MASTEREN INN, WORKBENCH V0.7 BESTILLES, INGEN PAKKE VELGES FØR 390-KONTROLL
+  (Anders 15.09.2026, i økt):** fire svar etter lesing av prosjektet «AgencyOS Hjem designsystem»
+  (`047cfd41`, kandidat v0.4.17/18, retning Atletisk intelligens) via delelenke i Chrome. Målt der
+  15.09: `selectedForBuilding: false` i alle registre, 62 skjermer (57 klikkprøvd, 3 ikke tegnet),
+  Workbench v0.6 eneste Workbench-fasit (WB-05–WB-10, CAL-01), kalenderfamilie ikke startet,
+  ordkilden oppgitt som `uploads/ORDBOK-TRENINGSPLANLEGGING-2026-09-08.md` (slettet i repoet 15.09).
+  1. **Masteren er eneste ordkilde i Claude Design.** `docs/ordbok-master-trening.md` lastes opp
+     i prosjektet og erstatter 08.09-ordboken i `AGENCYOS-AUTORITET.md` §1. Anders slipper filen inn.
+  2. **Én Workbench-runde, v0.7, bestilles** med: fasilitet først (sted med rangelengde, lengste
+     putt, radar filtrerer øvelsesforslag), reps totalt og per motorikk-steg på hver øvelse,
+     gruppeuke med kopi til hver spiller, delt økt med blokker og ansvarlig trener, og teknisk
+     plan koblet til P-oppgaver og TrackMan-mål. Claude skriver prompten.
+  3. **Ingen pakke får `selectedForBuilding: true`** før Workbench v0.7 og kalenderfamilien
+     (dag/uke/måned/agenda) er sett av Anders på 390 px.
+  4. **Ved valg speiles `leveranse/` inn i repoet som ny designmappe**, og Train-lock-vaktene
+     (`scripts/check-fasit-sitering.mjs`, `check-fasitdekning-baseline.mjs`) pekes om til den.
+  **Overstyrer:** ingen tidligere beslutning — presiserer D0 (arbeidslisten rad 1) med en
+  konkret port. Kandidatnummeret i arbeidslisten og `designsystem/README.md` (v0.4.10) er utdatert
+  og rettet til v0.4.17/18.
+  **Arbeidet:** `docs/MASTERPLAN-GJENSTAAENDE.md` rad 1 · D0 (presisert) og nye rader CD-1–CD-3.
+
 - **WORKBENCH-MOTOREN: SPILLERENS WORKBENCHV2 ER DEN ENE, WORKBENCHSESSION ER TABELLEN, NY UKE
   STARTER ALDRI TOM (Anders 15.09.2026, i økt):** tre svar på anbefalingene om Workbench-status
   (punkt 1, 2 og 5). Målt samme dag: `src/components/portal/v2/WorkbenchV2.tsx` (3 319 linjer:
