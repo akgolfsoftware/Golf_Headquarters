@@ -29,18 +29,24 @@ const PRACTICE_TO_PYRAMID: Record<PracticeType, PyramidArea> = {
 // akse, men mockupen merker hvert bånd med en aksefarge). Meldt i gaps.
 const PERIODE_TO_AKSE: Record<PeriodeType, AkseKey> = {
   GRUNN: "FYS",
-  SPESIALISERING: "TEK",
+  SPESIAL: "TEK",
   TURNERING: "TURN",
   EVALUERING: "SPILL",
+  TESTUKE: "FYS",
   FERIE: "FYS",
+  TRENINGSSAMLING: "TEK",
+  HELDAGSSAMLING: "SPILL",
 };
 
 const PERIODE_NAVN: Record<PeriodeType, string> = {
   GRUNN: "Grunnperiode",
-  SPESIALISERING: "Spesialisering",
+  SPESIAL: "Spesialisering",
   TURNERING: "Konkurranse",
   EVALUERING: "Evaluering",
+  TESTUKE: "Testuke",
   FERIE: "Hvile",
+  TRENINGSSAMLING: "Treningssamling",
+  HELDAGSSAMLING: "Heldagssamling",
 };
 
 const MND_KORT = ["jan", "feb", "mar", "apr", "mai", "jun", "jul", "aug", "sep", "okt", "nov", "des"] as const;

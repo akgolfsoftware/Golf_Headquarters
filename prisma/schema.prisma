@@ -86,6 +86,8 @@ enum LPhase {
   GRUNN
   SPESIAL
   TURNERING
+  // OW-2 (15.09.2026): ordbok-masteren §4.1 — åttende og siste periodetype.
+  EVALUERING
   // 8c.1 (Anders 2026-07-12): fire nye periodetyper på årsplan-tidslinja.
   TESTUKE
   FERIE
@@ -419,12 +421,17 @@ enum PracticeType {
   SPILL_TEST
 }
 
+// OW-2 (15.09.2026): samme åtte verdier som LPhase, samme skrivemåte (SPESIAL,
+// ikke SPESIALISERING) — ordbok-masteren §4.1 sier én liste, ikke to.
 enum PeriodeType {
   GRUNN
-  SPESIALISERING
+  SPESIAL
   TURNERING
   EVALUERING
+  TESTUKE
   FERIE
+  TRENINGSSAMLING
+  HELDAGSSAMLING
 }
 
 // Workbench v2 — Sprint 1 enums
