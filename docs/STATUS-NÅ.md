@@ -69,3 +69,8 @@ Stripe-testmiljø og innloggede testroller trengs for betalingsreisen. Tidligere
 Aktiv designutforsking: nytt Design System v0.1 med «Atletisk intelligens» for hele den brukerrettede appen, med fire obligatoriske kjerner og navngitte profiler/mønstre for øvrige flater. Train-lock, Claw/Team Norway, WANG-speilet og dagens kode bevarer funksjon, historikk og tidligere portering, men er ikke visuell fasit for den nye retningen. [Designstatus](../designsystem/README.md) og [port-audit](design-audit/portering-fire-flater-2026-09-10.md). Det siste kontrollerte ruteinventaret har 480 sideruter i designinventaret; målt 12.09 mot koden er det 479 `page.tsx`. Dette er ikke antall ferdige design. [Teknisk kart](planer/teknisk-rute-tilstandskart-2026-09-12.md).
 
 [Historisk status](arkiv/opprydding-2026-09-10/status-nå.md), [tidligere teknisk kontroll](beslutningsgrunnlag/teknisk-lanseringskontroll-2026-09-10.md) og Git-historikken bevarer tidligere hendelser. Bygget, testet, sett av Anders, flettet og publisert kontrollert er ulike statuser.
+
+## DESIGN-EVAL 2026-09-16 morgen
+
+**2026-09-16 morgen:** Fortsatt ingen ny Claude Design-zip (v0.4.19 / TN Claw v0.3). Siste kjente kandidat: v0.4.18 (`design-latest-12.zip`), `selectedForBuilding: false`. Full eval utsatt. Se `DESIGN-EVAL-2026-09-16-morgen.md`.
+
