@@ -15,6 +15,10 @@ import type { WindDir } from "@/generated/prisma/enums";
 import type { HvileLie, LoggetSlag } from "@/lib/runde-logg/types";
 import { Caps, Icon } from "@/components/v2";
 import { AvstandVelger, type AvstandKontekst } from "./avstand-velger";
+import { EndShotKategoriVelger, PuttDetaljerVelger } from "./slag-resultat-detaljer";
+import { utledShotType } from "@/lib/runde-logg/bygg-shot-rader";
+import type { EndShotKategori } from "@/generated/prisma/enums";
+import type { PuttRegistrering } from "@/lib/runde-logg/types";
 
 const LIES: Array<{ id: HvileLie; label: string }> = [
   { id: "FAIRWAY", label: "Fairway" },
@@ -70,8 +74,11 @@ export function SlagEditor({
   const [kolle, setKolle] = useState("");
   const [vind, setVind] = useState<WindDir | undefined>(defaultVind);
   const [notat, setNotat] = useState("");
+  const [endShotKategori, setEndShotKategori] = useState<EndShotKategori | null>(null);
+  const [putt, setPutt] = useState<PuttRegistrering | null>(null);
 
   const erPutt = startLie === "GREEN";
+  const shotType = utledShotType(slagNr === 1, par, startLie, startAvstand);
   const kontekst: AvstandKontekst =
     lie === "GREEN"
       ? "GREEN"
@@ -94,12 +101,19 @@ export function SlagEditor({
     setStraffe(false);
     setKolle("");
     setNotat("");
+    setEndShotKategori(null);
+    setPutt(null);
   };
 
-  const felles = (): Pick<LoggetSlag, "kolle" | "vind" | "notat"> => ({
+  const felles = (): Pick<
+    LoggetSlag,
+    "kolle" | "vind" | "notat" | "endShotKategori" | "putt"
+  > => ({
     ...(kolle.trim() ? { kolle: kolle.trim() } : {}),
     ...(vind ? { vind } : {}),
     ...(notat.trim() ? { notat: notat.trim() } : {}),
+    ...(!erPutt && endShotKategori ? { endShotKategori } : {}),
+    ...(erPutt && putt ? { putt } : {}),
   });
 
   const lagre = () => {
@@ -205,6 +219,10 @@ export function SlagEditor({
         <Icon name="flag" size={17} />I HULL
       </button>
 
+      {erPutt && (
+        <PuttDetaljerVelger key={slagNr} verdi={putt} onVerdi={setPutt} />
+      )}
+
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         <span
           style={{
@@ -259,6 +277,15 @@ export function SlagEditor({
         </div>
         {lie && (
           <AvstandVelger kontekst={kontekst} hullLengde={hullLengde} verdi={avstand} onVerdi={setAvstand} />
+        )}
+        {lie && !erPutt && (
+          <EndShotKategoriVelger
+            key={slagNr}
+            shotType={shotType}
+            straffe={straffe}
+            verdi={endShotKategori}
+            onVerdi={setEndShotKategori}
+          />
         )}
       </div>
 
