@@ -571,6 +571,40 @@
       "RECOVERY",
       "DROP"
     ],
+    "EndShotKategori": [
+      "IN_PLAY",
+      "MINOR_MISS",
+      "MAJOR_MISS",
+      "GREEN_HIT",
+      "LETT",
+      "MIDDELS",
+      "VANSKELIG",
+      "PENALTY_1",
+      "PENALTY_2"
+    ],
+    "PuttBreakRetning": [
+      "VENSTRE_HOYRE",
+      "HOYRE_VENSTRE",
+      "OPPOVER",
+      "NEDOVER"
+    ],
+    "PuttSlopeAlvorlighet": [
+      "SVAK",
+      "MODERAT",
+      "KRAFTIG"
+    ],
+    "PuttLinjeMiss": [
+      "VENSTRE",
+      "HOYRE",
+      "PAA_LINJE"
+    ],
+    "PuttFartUtfall": [
+      "HOLED",
+      "FORBI",
+      "KORT",
+      "SONE_FORBI",
+      "SONE_KORT"
+    ],
     "TestVisibility": [
       "PRIVATE",
       "COACH",

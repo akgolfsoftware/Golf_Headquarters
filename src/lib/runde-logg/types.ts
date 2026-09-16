@@ -15,7 +15,15 @@
  * jf. `meterTilFot()` i src/lib/min-golf/format.ts).
  */
 
-import type { ShotLie, WindDir } from "@/generated/prisma/enums";
+import type {
+  ShotLie,
+  WindDir,
+  EndShotKategori,
+  PuttBreakRetning,
+  PuttSlopeAlvorlighet,
+  PuttLinjeMiss,
+  PuttFartUtfall,
+} from "@/generated/prisma/enums";
 
 /**
  * Underlag en ball kan bli liggende på etter et slag.
@@ -32,6 +40,19 @@ export type SlagResultat =
   | { iHull: true }
   | { iHull: false; lie: HvileLie; avstandTilHull: number };
 
+/**
+ * Putting-detaljer for ETT putt-slag (kun når startLie = GREEN). Valgfritt
+ * i sin helhet — null/utelatt betyr «ikke logget», samme konvensjon som
+ * HoleScore.putts/fairway/gir.
+ */
+export type PuttRegistrering = {
+  breakRetning: PuttBreakRetning;
+  slopeAlvorlighet: PuttSlopeAlvorlighet;
+  /** Utelates når fartUtfall = HOLED. */
+  linjeMiss?: PuttLinjeMiss;
+  fartUtfall: PuttFartUtfall;
+};
+
 export type LoggetSlag = {
   resultat: SlagResultat;
   /** Kølle brukt (fritekst fra spillerens bag, f.eks. "Driver", "PW"). */
@@ -43,6 +64,10 @@ export type LoggetSlag = {
   /** Ballen gikk i vann/OOB på dette slaget — resultat er posisjon etter drop. */
   straffe?: boolean;
   notat?: string;
+  /** Kun for ikke-putt-slag (tee/approach/short game) — se gyldigeEndShotKategorier(). */
+  endShotKategori?: EndShotKategori;
+  /** Kun for putt-slag. */
+  putt?: PuttRegistrering;
 };
 
 export type LoggetHull = {
