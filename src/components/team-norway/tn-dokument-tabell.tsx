@@ -35,7 +35,7 @@ function formatterDato(iso: string): string {
 }
 
 /** TN-11 dokumentbibliotek — fil, opplaster, sist oppdatert, lesekvittering. */
-export function TnDokumentTabell({ rader }: { rader: TnDokumentRadVisning[] }) {
+export function TnDokumentTabell({ rader, visSeHvem = false }: { rader: TnDokumentRadVisning[]; visSeHvem?: boolean }) {
   if (rader.length === 0) {
     return (
       <div style={{ background: TN.surfaceCard, borderRadius: TN.radius.lg, boxShadow: TN.shadow.sm, padding: 24, fontFamily: TN.font.body, fontSize: TN.text.sm, color: TN.textSecondary }}>
@@ -89,9 +89,9 @@ export function TnDokumentTabell({ rader }: { rader: TnDokumentRadVisning[] }) {
                 {fileTypeLabel(r.fileType)}
               </span>
               <div style={{ minWidth: 0 }}>
-                <div style={{ fontFamily: TN.font.body, fontSize: TN.text.sm, fontWeight: TN.weight.semibold, color: TN.navy900, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                <a href={`/api/team-norway/vedlegg/${encodeURIComponent(r.attachmentId)}`} style={{ display: "block", fontFamily: TN.font.body, fontSize: TN.text.sm, fontWeight: TN.weight.semibold, color: TN.navy900, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                   {r.fileName}
-                </div>
+                </a>
                 <div
                   style={{
                     fontFamily: TN.font.mono,
@@ -119,7 +119,7 @@ export function TnDokumentTabell({ rader }: { rader: TnDokumentRadVisning[] }) {
                   {r.apnet} av {r.totalt}
                 </span>
               </div>
-              <TnSeHvem postId={r.postId} />
+              {visSeHvem && <TnSeHvem postId={r.postId} />}
             </div>
           </div>
         );

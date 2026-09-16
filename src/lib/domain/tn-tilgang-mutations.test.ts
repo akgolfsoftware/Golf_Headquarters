@@ -167,3 +167,23 @@ test("serialiseringskonflikt prøves på nytt", async () => {
   assert.equal(transaksjonsforsok, 2);
   assert.equal(updateKall, 1);
 });
+
+test("sportssjef og admin kan ikke endre medlemskap i fremmed gruppe", async () => {
+  for (const role of ["COACH", "ADMIN"] as const) {
+    const input = { caller: { id: "tn-sjef", role }, groupId: "wang-gruppe", targetUserId: "trener-1" };
+    await assert.rejects(avsluttTilgang(input), /Team Norway-gruppe/);
+    await assert.rejects(settTilgang({ ...input, rolle: "ASSISTANT", fraIso: "2026-09-14", tilIso: null }), /Team Norway-gruppe/);
+  }
+  assert.equal(transaksjonsforsok, 0);
+  assert.equal(updateKall, 0);
+  assert.equal(upsertData, null);
+});
+
+test("ugyldig rolle, kalenderdato og omvendt intervall avvises før transaksjon", async () => {
+  const input = { caller: { id: "sjef", role: "ADMIN" as const }, groupId: "tn-gruppe", targetUserId: "trener-1", rolle: "ASSISTANT" as const, fraIso: "2026-09-14", tilIso: null as string | null };
+  for (const datoer of [{ fraIso: "2026-02-30" }, { fraIso: "ugyldig" }, { tilIso: "2026-02-30" }, { tilIso: "2026-09-13" }, { tilIso: "2026-09-14" }]) {
+    await assert.rejects(settTilgang({ ...input, ...datoer }), /datointervall/);
+  }
+  await assert.rejects(settTilgang({ ...input, rolle: "ADMIN" as "ASSISTANT" }));
+  assert.equal(transaksjonsforsok, 0);
+});
