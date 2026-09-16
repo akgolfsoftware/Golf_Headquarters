@@ -131,27 +131,36 @@ Hver fase avsluttes med `npm run verify` grønt og egen commit/PR. Ingen fase sl
    produksjon en periode. `resolve-live-session.ts` renskrives til kun `TrainingSessionV2` →
    `WorkbenchSession`.
 
-## 6. Åpne spørsmål til Anders (må avklares før fase 1–3 starter)
+## 6. Beslutninger (Anders 16.09.2026: «gjør din anbefaling på disse 5 oppgavene»)
 
-1. **Enum vs. String på `WorkbenchSession`.** `WorkbenchSession` lagrer i dag `status`,
-   `blockType`, `environment`, `practiceType` som rå `String` («for å slippe å utvide et delt
-   enum i prod», ifølge feltkommentaren). `TrainingPlanSession` bruker ekte Prisma-enumer.
-   Skal de nye feltene (`skillArea`, `environment` osv.) være ekte enumer eller strenger på
-   `WorkbenchSession`? Ekte enum gir typesikkerhet; streng er konsistent med resten av
-   modellen og unngår en ny «utvid delt enum i prod»-runde.
-2. **L-fase/M-miljø/CS-nivå — skal de videreføres i det hele tatt?** Dette er utgåtte v1-koder
-   (§17 i ordbok-masteren). De 12 gamle radene kan ha verdier her, men skal ny kode noensinne
-   kunne SKRIVE dem på en `WorkbenchSession`, eller kun lese dem historisk (frosset)?
-3. **`generertFraId`-formatet i `v2-sync.ts`.** I dag pekes `TrainingSessionV2` mot en
-   `TrainingPlanSession.id`. Når kilden blir `WorkbenchSession`, må eksisterende
-   `training_sessions_v2`-rader med `generertFra: WORKBENCH_PLAN` (4 rader i dag) vurderes:
-   peker de allerede mot riktig id-rom, eller må de også migreres?
-4. **Rekkefølge på fase 5-gruppene.** Foreslått A→E over følger «det som er synlig for
-   spilleren/coachen først». Er det en annen rekkefølge Anders vil prioritere (f.eks.
-   agent-pipelinen før statistikken, siden agentene skriver tilbake til planen)?
-5. **Ferdig-kriterium per fase.** Skal hver av de 5 lesegruppene i fase 5 skjermbilde-testes
-   (jf. skjermbilde-gaten i CLAUDE.md) før commit, eller holder komponent-/enhetstester siden
-   dette er en bakenforliggende datakilde-bytte uten UI-endring?
+1. **Enum vs. String på `WorkbenchSession`: String.** Konsistent med feltene modellen
+   allerede har (`status`, `blockType`, `environment`, `practiceType`) og med den uttalte
+   begrunnelsen i feltkommentaren («for å slippe å utvide et delt enum i prod»). Validering
+   skjer i zod-skjema på inngangen (samme mønster som `PeriodeInputSchema` i
+   `src/lib/workbench/perioder.ts`), ikke på databasenivå. Et blandet enum/streng-skjema på
+   samme modell ville vært forvirrende uten reell gevinst.
+2. **L-fase/M-miljø/CS-nivå: kun historisk lesing, aldri ny skriving.** Feltene legges til som
+   nullable strenger for å bære de 12 gamle radenes verdier videre. Ingen ny
+   opprett-/rediger-skjema (verken skjerm eller server action) eksponerer dem — de er utgått
+   per §17 i ordbok-masteren, og 18.08-beslutningen fjernet allerede all regelhåndheving rundt
+   dem. Et UI som viser en gammel økt kan fortsatt lese verdien; et UI som lager en ny økt skal
+   aldri tilby feltet.
+3. **`generertFraId` i `v2-sync.ts`: verifisert 16.09.2026 — ingenting å migrere.** Sjekket
+   direkte i basen: alle fire `training_sessions_v2`-rader med `generertFra: WORKBENCH_PLAN`
+   har en `generertFraId` som IKKE finnes i verken `training_plan_sessions` eller
+   `workbench_sessions` i dag — kildeøkten er alt slettet, referansen er allerede foreldreløs.
+   Dette er en eksisterende, liten datakvalitets-svakhet (uavhengig av OW-3) og krever ingen
+   handling i denne migreringen. Fremtidige speilinger fra `WorkbenchSession` starter rent.
+4. **Rekkefølge på fase 5-gruppene: A→E som foreslått, uendret.** Live-flyt først (det
+   spilleren faktisk ser midt i en økt), deretter agent-pipelinen (skriver tilbake til planen —
+   feil der forplanter seg), så statistikk/rapporter, forelder/Caddie, og resten.
+5. **Ferdig-kriterium per fase: ingen skjermbilde-gate som standard.** Dette er et bytte av
+   datakilde bak eksisterende skjermer og ruter, ikke nytt/endret skjermarbeid — CLAUDE.md sin
+   skjermbilde-gate gjelder skjermarbeid. Unntak: hvis en enkeltfil i en lesegruppe viser seg å
+   kreve en reell rendrings-/markup-endring (ikke bare datahenting), får DEN filen
+   skjermbilde-sjekk før commit. Standard ferdig-kriterium per fase er component-/enhetstester
+   grønne + `npm run verify` grønt + (der relevant) en innlogget reise mot samme mønster som
+   P0-TEST-pakken.
 
 ## 7. Ikke i denne planen
 
