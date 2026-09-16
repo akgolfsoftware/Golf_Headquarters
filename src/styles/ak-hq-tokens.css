@@ -1,0 +1,197 @@
+/* AK Golf HQ Design System — tokens v0.4.3.
+   KOPI, ikke kilde. Kilden er `design-system/tokens.json` i designpakken
+   «AK Golf HQ Design v0.4.17», generert til CSS av `generer-tokens.js`
+   13.09.2026. Endres tokenene, kjøres generatoren i designpakken og
+   resultatet kopieres hit — denne fila redigeres aldri for hånd.
+
+   Verdiene er identiske med kilden. Formen er ikke: hex er skrevet med små
+   bokstaver, deklarasjonene er gruppert med blanke linjer, og rgba()/
+   cubic-bezier() har mellomrom etter komma — for å følge appens egen
+   formatering. En diff mot kilden må derfor sammenligne VERDIER, ikke tegn.
+
+   Hvorfor fila finnes: Workbench v0.12 (prototypen
+   `AgencyOS Workbench v0.12.dc.html`) er tegnet mot disse variablene.
+   Ingen andre flater i appen leste `--ak-*` da fila kom inn, så
+   deklarasjonene her endrer ingenting av seg selv — de blir først
+   synlige gjennom `AK_SCOPE` (src/components/workbench/wb-ak-scope.ts),
+   som mapper dem inn på `--v2-*`/`--color-*` lokalt på Workbench-roten.
+   Samme metode som `TL_SCOPE` bruker for Train-lock.
+
+   UTELATT MED VILJE fra den genererte kilden — to regler som ville
+   truffet HELE appen, ikke bare Workbench:
+     1. `:where(a, button, …):focus-visible { outline: … }`
+     2. `@media (prefers-reduced-motion) { *, *::before, *::after { … } }`
+   Begge hører hjemme i Workbench-skopet, ikke globalt. Appen har allerede
+   egne regler for fokus og redusert bevegelse.
+
+   Enhet følger verditype, slik at variabelen kan settes rett inn i sin
+   CSS-egenskap: skriftstørrelse, rom, radius, kant, ikon og trykkflate i px;
+   linjehøyde som forholdstall uten enhet; varighet i ms; vekt, lag og
+   opasitet uten enhet. Kontroll: `font-size: var(--ak-grunn-typografi-skala-base)`
+   skal gi 15px.
+
+   Kontrastmerknad fra kilden: natt-500 var #726C60, som gir 3,30:1 mot
+   natt-850 #1C1B1A — under 4,5:1 og dermed ikke brukbar til nødvendig liten
+   tekst. Verdien er #9A9488, som gir 5,31:1 mot #1C1B1A og 4,52:1 mot
+   #2E2C29. natt-300 #A8A49C er anbefalt for sekundær tekst i mørk fokusmodus. */
+
+:root {
+  --ak-grunn-farge-sand-100: #faf8f3;
+  --ak-grunn-farge-sand-150: #f1eee8;
+  --ak-grunn-farge-sand-200: #e4e0d8;
+  --ak-grunn-farge-sand-300: #e6e3dd;
+  --ak-grunn-farge-sand-400: #d6d2c9;
+  --ak-grunn-farge-sand-500: #c9c5bc;
+  --ak-grunn-farge-grafitt-400: #8a8680;
+  --ak-grunn-farge-grafitt-500: #6b6862;
+  --ak-grunn-farge-grafitt-600: #46443f;
+  --ak-grunn-farge-grafitt-700: #3c3a36;
+  --ak-grunn-farge-grafitt-800: #2a2926;
+  --ak-grunn-farge-grafitt-900: #141413;
+  --ak-grunn-farge-rust-100: #fbebea;
+  --ak-grunn-farge-rust-300: #e3b1aa;
+  --ak-grunn-farge-rust-500: #d81e20;
+  --ak-grunn-farge-rust-600: #9b2415;
+  --ak-grunn-farge-amber-100: #fbf4e4;
+  --ak-grunn-farge-amber-300: #d8c48f;
+  --ak-grunn-farge-amber-600: #8a6a12;
+  --ak-grunn-farge-amber-700: #6b5410;
+  --ak-grunn-farge-hvit: #ffffff;
+  --ak-grunn-farge-natt-300: #a8a49c;
+  --ak-grunn-farge-natt-500: #9a9488;
+  --ak-grunn-farge-natt-600: #3c3a36;
+  --ak-grunn-farge-natt-700: #2e2c29;
+  --ak-grunn-farge-natt-800: #1f1d1a;
+  --ak-grunn-farge-natt-850: #1c1b1a;
+  --ak-grunn-farge-natt-900: #1a1918;
+  --ak-grunn-farge-bla-100: #ecf0f6;
+  --ak-grunn-farge-bla-300: #8fb4d8;
+  --ak-grunn-farge-bla-600: #2b4c7e;
+  --ak-grunn-farge-bla-700: #1d3557;
+
+  /* AVVIK FRA KILDEN, med vilje. Kilden navngir familiene direkte
+     ("Oswald", "Archivo", "IBM Plex Mono") fordi designmiljøet hentet dem fra
+     Google Fonts over nett. Appen laster dem i stedet med `next/font/google`
+     i src/app/layout.tsx, som selvhoster filene og eksponerer dem som
+     `--font-oswald`, `--font-archivo` og `--font-ibm-plex-mono`.
+     Vi peker derfor på next/font-variabelen FØRST og beholder det navngitte
+     familienavnet som reserve, slik at fasitens fallback-kjede står igjen
+     hvis en variabel mangler. Ingen ny familie er innført. */
+  --ak-grunn-typografi-familie-display: var(--font-oswald), "Oswald", "Archivo", sans-serif;
+  --ak-grunn-typografi-familie-tekst: var(--font-archivo), "Archivo", "Helvetica Neue", Helvetica, sans-serif;
+  --ak-grunn-typografi-familie-meta: var(--font-ibm-plex-mono), "IBM Plex Mono", ui-monospace, monospace;
+  /* 3xs: kun mono-meta i uppercase med sperring ≥ 0.08em · aldri brødtekst · ingenting under 10px */
+  --ak-grunn-typografi-skala-3xs: 10px;
+  --ak-grunn-typografi-skala-2xs: 11px;
+  --ak-grunn-typografi-skala-xs: 13px;
+  --ak-grunn-typografi-skala-sm: 14px;
+  --ak-grunn-typografi-skala-base: 15px;
+  --ak-grunn-typografi-skala-md: 17px;
+  --ak-grunn-typografi-skala-lg: 21px;
+  --ak-grunn-typografi-skala-xl: 29px;
+  --ak-grunn-typografi-skala-2xl: 36px;
+  --ak-grunn-typografi-skala-3xl: 44px;
+  --ak-grunn-typografi-linje-tett: 1.04;
+  --ak-grunn-typografi-linje-overskrift: 1.1;
+  --ak-grunn-typografi-linje-tekst: 1.55;
+  --ak-grunn-typografi-linje-liste: 1.5;
+  --ak-grunn-typografi-vekt-normal: 400;
+  --ak-grunn-typografi-vekt-medium: 500;
+  --ak-grunn-typografi-vekt-halvfet: 600;
+  --ak-grunn-typografi-vekt-fet: 700;
+  --ak-grunn-typografi-sperring-meta: 0.12em;
+  --ak-grunn-typografi-sperring-etikett: 0.04em;
+
+  --ak-grunn-mellomrom-1: 4px;
+  --ak-grunn-mellomrom-2: 6px;
+  --ak-grunn-mellomrom-3: 8px;
+  --ak-grunn-mellomrom-4: 12px;
+  --ak-grunn-mellomrom-5: 14px;
+  --ak-grunn-mellomrom-6: 15px;
+  --ak-grunn-mellomrom-7: 18px;
+  --ak-grunn-mellomrom-8: 24px;
+  --ak-grunn-mellomrom-9: 32px;
+  --ak-grunn-mellomrom-10: 48px;
+
+  --ak-grunn-radius-sm: 5px;
+  --ak-grunn-radius-md: 9px;
+  --ak-grunn-radius-lg: 14px;
+  --ak-grunn-radius-pille: 999px;
+  --ak-grunn-kant-tynn: 1px;
+  --ak-grunn-kant-markert: 2px;
+  --ak-grunn-skygge-loftet: 0 1px 2px rgba(20, 20, 19, 0.06);
+  --ak-grunn-skygge-overlegg: 0 8px 28px rgba(20, 20, 19, 0.18);
+
+  --ak-grunn-bevegelse-varighet-umiddelbar: 80ms;
+  --ak-grunn-bevegelse-varighet-rask: 140ms;
+  --ak-grunn-bevegelse-varighet-standard: 200ms;
+  --ak-grunn-bevegelse-varighet-overlegg: 260ms;
+  --ak-grunn-bevegelse-kurve-ut: cubic-bezier(0.2, 0.8, 0.3, 1);
+  --ak-grunn-bevegelse-kurve-inn: cubic-bezier(0.4, 0, 1, 1);
+
+  --ak-grunn-lag-innhold: 0;
+  --ak-grunn-lag-klebrig: 10;
+  --ak-grunn-lag-overlegg: 100;
+  --ak-grunn-lag-dialog: 200;
+  --ak-grunn-lag-varsel: 300;
+  --ak-grunn-trykkflate-min: 48px;
+  --ak-grunn-trykkflate-romslig: 52px;
+
+  /* Modus · lys. Workbench er lys flate; mørk fokusmodus gjelder bare Live. */
+  --ak-modus-bakgrunn: #e6e3dd;
+  --ak-modus-flate: #faf8f3;
+  --ak-modus-flatehevet: #ffffff;
+  --ak-modus-tekst: #141413;
+  --ak-modus-tekstsekundaer: #46443f;
+  --ak-modus-tekstdempet: #6b6862;
+  --ak-modus-kant: #c9c5bc;
+  --ak-modus-kantsvak: #e4e0d8;
+  --ak-modus-handling: #9b2415;
+  --ak-modus-handlinghover: #d81e20;
+  --ak-modus-fokus: #9b2415;
+  --ak-modus-fare: #9b2415;
+  --ak-modus-fareflate: #fbebea;
+  --ak-modus-farekant: #e3b1aa;
+  --ak-modus-advarsel: #6b5410;
+  --ak-modus-advarselflate: #fbf4e4;
+  --ak-modus-advarselkant: #d8c48f;
+  --ak-modus-informasjon: #1d3557;
+  --ak-modus-informasjonflate: #ecf0f6;
+
+  /* Akse-/pyramidefarger for øktbudsjettet FYS · TEK · SLAG · SPILL · TURN.
+     IKKE i den genererte tokenfila — hentet fra prototypens egen definisjon
+     (`const PYR = { FYS: T.bla6, TEK: T.graf8, SLAG: T.rust6, SPILL: T.graf4,
+     TURN: T.amber6 }` i AgencyOS Workbench v0.12.dc.html) og skrevet ut her
+     som navngitte variabler.
+
+     Merk: ingen av de fem er grønne. Appens egne `--v2-ax-fys` (#1a7745) og
+     `--v2-ax-spill` (#5a7200) ER grønne, og overstyres derfor i AK_SCOPE —
+     ellers ville Workbench brutt regelen «ingen grønn statusfarge» fra
+     AUTORITET.md. Fargen står aldri alene: aksen har alltid tekst ved siden av. */
+  --ak-akse-fys: var(--ak-grunn-farge-bla-600);
+  --ak-akse-tek: var(--ak-grunn-farge-grafitt-800);
+  --ak-akse-slag: var(--ak-grunn-farge-rust-600);
+  --ak-akse-spill: var(--ak-grunn-farge-grafitt-400);
+  --ak-akse-turn: var(--ak-grunn-farge-amber-600);
+}
+
+/* Mørk fokusmodus. Aktiveres med [data-modus="fokus"] — den er ikke et tema
+   brukeren velger fritt, og Workbench bruker den ikke. Tatt med for at
+   tokensettet skal være komplett mot kilden. */
+[data-modus="fokus"] {
+  --ak-modus-bakgrunn: #1c1b1a;
+  --ak-modus-flate: #2e2c29;
+  --ak-modus-flatehevet: #3c3a36;
+  --ak-modus-tekst: #faf8f3;
+  --ak-modus-tekstsekundaer: #a8a49c;
+  --ak-modus-tekstdempet: #9a9488;
+  --ak-modus-kant: #3c3a36;
+  --ak-modus-handling: #ee4b44;
+  --ak-modus-handlinghover: #f0705f;
+  --ak-modus-fokus: #ee4b44;
+  --ak-modus-fare: #f0705f;
+  --ak-modus-fareflate: #22100f;
+  --ak-modus-farekant: #6b1a18;
+  --ak-modus-advarsel: #e3b95f;
+  --ak-modus-advarselflate: #201e1c;
+}
