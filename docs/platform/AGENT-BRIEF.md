@@ -47,7 +47,7 @@ Gamle `v2`, `legacy` og `athletic`-navn betyr ikke automatisk at en fil kan slet
 
 ## Viktige tekniske grenser
 
-- Flere øktmodeller eksisterer samtidig. Workbench, TrainingSessionV2 og TrainingPlanSession skal ikke slås sammen som opprydding. Samsvar mellom dem må testes i den aktuelle spillerreisen.
+- Flere øktmodeller eksisterer samtidig. Workbench, TrainingSessionV2 og TrainingPlanSession skal ikke slås sammen som opprydding. Samsvar mellom dem må testes i den aktuelle spillerreisen. Sammenslåingen av Workbench og TrainingPlanSession er bestilt som OW-3 (beslutning 15.09.2026) og følger [migreringsplanen](../planer/ow-3-en-oekt-modell-2026-09-16.md) fase for fase; fase 1–2 er gjort.
 - `prisma.config.ts` laster lokal miljøkonfigurasjon. Generering av klient er noe annet enn å endre databasen. Ikke kjør data- eller skjemaskript for å få en dokumentkontroll grønn.
 - Migrasjonshistorikken er ufullstendig for en tom database. Følg [fallgruvene](../../.claude/rules/gotchas.md); en separat test-VM har [egen oppskrift](../utvikling/lokal-testdatabase.md).
 - `next.config.ts` bruker `withMDX(nextConfig)`. Service worker bygges separat med Serwist i `npm run build`. Bevar de faktiske kommandoene og eksportene.
