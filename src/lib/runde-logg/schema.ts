@@ -16,6 +16,29 @@ export const hvileLieSchema = z.enum([
   "TREES",
 ]);
 
+export const endShotKategoriSchema = z.enum([
+  "IN_PLAY",
+  "MINOR_MISS",
+  "MAJOR_MISS",
+  "GREEN_HIT",
+  "LETT",
+  "MIDDELS",
+  "VANSKELIG",
+  "PENALTY_1",
+  "PENALTY_2",
+]);
+
+export const puttSchema = z
+  .object({
+    breakRetning: z.enum(["VENSTRE_HOYRE", "HOYRE_VENSTRE", "OPPOVER", "NEDOVER"]),
+    slopeAlvorlighet: z.enum(["SVAK", "MODERAT", "KRAFTIG"]),
+    linjeMiss: z.enum(["VENSTRE", "HOYRE", "PAA_LINJE"]).optional(),
+    fartUtfall: z.enum(["HOLED", "FORBI", "KORT", "SONE_FORBI", "SONE_KORT"]),
+  })
+  .refine((p) => !(p.fartUtfall === "HOLED" && p.linjeMiss), {
+    message: "linjeMiss kan ikke settes når putten er holt",
+  });
+
 export const resultatSchema = z.discriminatedUnion("iHull", [
   z.object({ iHull: z.literal(true) }),
   z.object({
@@ -33,6 +56,8 @@ export const slagSchema = z
     mental: z.number().int().min(1).max(5).optional(),
     straffe: z.boolean().optional(),
     notat: z.string().max(500).optional(),
+    endShotKategori: endShotKategoriSchema.optional(),
+    putt: puttSchema.optional(),
   })
   // Straffe på hole-out-slaget ville blitt stille ignorert av hullTilSgShots
   // (som returnerer ved iHull før straffen leses) — avvis eksplisitt.
