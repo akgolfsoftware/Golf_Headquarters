@@ -98,14 +98,25 @@ før bygging, ikke antas.
 Hver fase avsluttes med `npm run verify` grønt og egen commit/PR. Ingen fase sletter
 `TrainingPlanSession`-modellen før alle lesere er flyttet og verifisert.
 
-1. **Skjemautvidelse (additiv).** Legg de nye valgfrie feltene fra §3 til `WorkbenchSession`
-   (og evt. barnetabell-utvidelse). Kjøres kirurgisk mot `DIRECT_URL`
-   (`ALTER TABLE ... ADD COLUMN IF NOT EXISTS`), aldri `migrate dev`/`db push`/`migrate deploy`
-   (gotchas.md). Ingen lesere/skrivere endres ennå.
-2. **Datamigrering (12 rader).** Ett engangsskript kopierer de 12 `training_plan_sessions`-
-   radene inn i `workbench_sessions` med feltmapping fra §3. Idempotent, kjørbart flere ganger
-   (skip rader som allerede har en matchende `WorkbenchSession`, f.eks. via et midlertidig
-   `migrertFraTrainingPlanSessionId`-felt som fjernes i fase 6).
+1. **Skjemautvidelse (additiv). GJORT 16.09.2026.** 11 nye valgfrie felt lagt til
+   `WorkbenchSession` (§3), kjørt kirurgisk mot `DIRECT_URL`
+   (`scripts/ow3-fase1-utvid-workbench-session-2026-09-16.ts`, `ALTER TABLE ... ADD COLUMN
+   IF NOT EXISTS`, idempotent). Ingen barnetabell-utvidelse — `session_drills`,
+   `training_plan_session_logs`, `clubs_practiced` var alle tomme og trengs ikke før en
+   eventuell fremtidig behov oppstår. `npm run verify` grønt (tsc, lint, 2799 tester, build).
+   Ingen lesere/skrivere endret ennå.
+2. **Datamigrering (12 rader). GJORT 16.09.2026.** `scripts/ow3-fase2-migrer-training-plan-
+   sessions-2026-09-16.ts` kopierte alle 12 `training_plan_sessions`-rader inn i
+   `workbench_sessions` (`workbench_sessions` gikk fra 9 til 21 rader). Idempotent — verifisert
+   ved å kjøre skriptet to ganger (andre kjøring: 0 migrert, 12 hoppet over). `coachId` var
+   `null` på alle 12 kilderadene (via `TrainingPlan.createdById`) — falt tilbake til Anders'
+   ADMIN-bruker, samme mønster som andre eksisterende rader for samme testspiller
+   (`screentest@akgolf.test`). Underveis oppdaget: `date`/`startMinute` beregnes korrekt fra
+   Oslo-lokal tid, men et par egne diagnoseskript (rå `pg`-klient, ikke Prisma) viste
+   feilaktige klokkeslett fordi node-postgres tolker `timestamp`/`date`-kolonner uten tidssone
+   via *prosessens* lokale TZ — ikke en feil i selve migreringen eller i appens Prisma-lag
+   (som konsekvent bruker UTC-tolkning av naive tidsstempler). Ikke undersøkt videre — påvirker
+   kun engangs-diagnoseskript, ikke kjørende kode.
 3. **Ny-skriving stanses mot `TrainingPlanSession`.** `/portal/planlegge/workbench/actions.ts`
    og støttefilene (`session-actions.ts`, `session-update.ts`, `session-move.ts`,
    `duplicate-week.ts`, `duplicate-session.ts`, `apply-template-actions.ts`) skrives om til å

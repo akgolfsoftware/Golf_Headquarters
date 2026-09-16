@@ -6217,6 +6217,25 @@ model WorkbenchSession {
   // aldri. Agency ser den fortsatt, markert SKJULT.
   hiddenByPlayer Boolean @default(false)
 
+  // OW-3 (16.09.2026): felt fra TrainingPlanSession (eldre planlegger), lagt til
+  // additivt for å ta imot migrerte rader. Streng, ikke enum — samme begrunnelse
+  // som status/blockType/environment over (docs/planer/ow-3-en-oekt-modell-2026-09-16.md §6.1).
+  planId      String?
+  rationale   String?
+  skillArea   String?
+  pressureLevel String?
+  pPosisjoner String[] @default([])
+  maalsetning String?
+  liveSnapshot Json?
+  // Utgåtte v1-koder (ordbok-masteren §17). Kun historisk lesing av migrerte
+  // rader — ingen ny skjerm/action skal noensinne skrive disse (§6.2 i planen).
+  lFase   String?
+  miljo   String?
+  csNivaa String?
+  // Midlertidig sporingsfelt for idempotent backfill fra training_plan_sessions
+  // (OW-3 fase 2). Fjernes i fase 6 når training_plan_sessions slettes.
+  migrertFraTrainingPlanSessionId String? @unique
+
   drills WorkbenchDrill[]
 
   @@index([playerId, date])
