@@ -40,6 +40,7 @@ Hele prosjektmappen er kartlagt på filnivå, inkludert ignorerte filer og gener
 | `data/` | Importmal og private lokale eksportfiler. Kun metadata kartlagt; innhold og plassering beholdt. |
 | `.claude/` | Regler, felles skills/hooks, kommandoer og lokalt verktøyoppsett. Foreldede kildehenvisninger rettet. |
 | `.agents/`, `.codex/` | Felles innhold via relative pekere; lokale innstillinger bevart. Ingen uavhengige kopier av reglene. |
+| `.design-sync/` | `/design-sync`-verktøyet: virtuell pakke, byggeskript og håndlagde forhåndsvisninger som synker appens ekte komponenter til et Claude Design-prosjekt. `previews/` og konfigurasjon committes; generert maskinstate (`.cache/`, `pkg/types`, `pkg/css`, `node_modules`) er ignorert. Rører aldri `src/`. |
 | `.grok/` | Grok-arbeidsflyt. Leser felles prosjekt- og designinstruks først. |
 | `.github/`, `.husky/` | CI og Git-kontroller. Eksisterende kjøring beholdt; én lesende struktur-/lenkekontroll lagt til CI. Ingen publisering utløst. |
 | `.vscode/`, `.claude/launch.json` | Startoppsett ryddet for slettede midlertidige mapper og andre prosjekter. |
