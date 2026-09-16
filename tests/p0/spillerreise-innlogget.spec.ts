@@ -36,6 +36,15 @@ async function lagreSpor(page: Page) {
   aktiveSpor.delete(page);
 }
 
+/**
+ * Målrutene for avvisning (`/portal/planlegge` og `.../workbench`) kompileres av
+ * `next dev` FØRSTE gang de treffes. I full pakke kunne den kompileringen ta
+ * lengre tid enn standard 20 s expect-grense, og avvisningsprøven feilet på
+ * ventetid framfor på oppførsel. Redirect-ventingen bruker derfor samme
+ * 90 s-grense som `ventPaSti` ellers i fila.
+ */
+const REDIRECT_TIMEOUT = 90_000;
+
 function stiMatcher(sti: string) {
   return (url: URL) => url.pathname === sti && url.search === "";
 }
@@ -120,8 +129,6 @@ async function loggUt(page: Page) {
 
 async function expectAvvist(page: Page, oktId: string, tittel: string, modell: "wb" | "v2" | "plan") {
   // Kun undersider som tilhører modellen. /active er V2, /tapper er WB/eldre.
-  // Lengre URL-timeout: under full P0-pakke kan server-redirect + RSC lande tregt
-  // uten at tilgangsregelen er feil (kjent flake 13–14.09).
   const workbench = "/portal/planlegge/workbench";
   const plan = "/portal/planlegge";
   const ruter = [
@@ -132,13 +139,28 @@ async function expectAvvist(page: Page, oktId: string, tittel: string, modell: "
   ];
   for (const { suffix, maal } of ruter) {
     await test.step(`${modell}${suffix || "/"}: uvedkommende sendes til ${maal}`, async () => {
-      const svar = await page.goto(`/portal/live/${oktId}${suffix}`, { waitUntil: "domcontentloaded" });
-      expect(svar?.status()).toBeLessThan(400);
-      await expect(page).toHaveURL(stiMatcher(maal), { timeout: 60_000 });
-      await expect(page.getByRole("heading", { name: maal === plan ? "Plan" : "Workbench", exact: true }).first()).toBeVisible({ timeout: 30_000 });
+      const svar = await page.goto(`/portal/live/${oktId}${suffix}`);
+      expect(svar?.status()).toBe(200);
+      await expect(page).toHaveURL(stiMatcher(maal), { timeout: REDIRECT_TIMEOUT });
+      await expect(
+        page.getByRole("heading", { name: maal === plan ? "Plan" : "Workbench", exact: true }).first(),
+      ).toBeVisible({ timeout: REDIRECT_TIMEOUT });
       await expect(page.getByText(tittel, { exact: true })).toHaveCount(0);
       await expect(page.locator('[data-od-id="playerhq-live-active"], [data-od-id="playerhq-live-summary"], [data-od-id="brief-start"], [data-od-id="tapper-avslutt"]')).toHaveCount(0);
     });
+  }
+}
+
+/**
+ * Besøk begge avvisnings-målrutene én gang som innlogget bruker, slik at
+ * dev-serveren kompilerer dem FØR selve avvisningsprøven måler redirecten.
+ * Dette er testrigg, ikke en reparasjon av navigasjon: prøven under bruker
+ * fortsatt bare ekte redirect fra live-ruta.
+ */
+async function varmOppAvvisningsMaal(page: Page) {
+  for (const sti of ["/portal/planlegge", "/portal/planlegge/workbench"]) {
+    await page.goto(sti);
+    await expect(page).toHaveURL(stiMatcher(sti), { timeout: REDIRECT_TIMEOUT });
   }
 }
 
@@ -258,24 +280,22 @@ test.describe("P0 innlogget spillerreise", () => {
   });
 
   test("tillatt coach ser økta; uvedkommende avvises uten innhold", async ({ page }) => {
-    test.setTimeout(360_000);
-    // Coach lander på /admin etter innlogging; spillere på /portal.
+    test.setTimeout(600_000);
     await loggInn(page, coachEpost, coachPassord);
-    await expect(page).toHaveURL(/\/(portal|admin)(\/|$|\?)/, { timeout: 90_000 });
-    await page.goto(`/portal/live/${wbId}/summary`, { waitUntil: "domcontentloaded" });
-    await expect(page.getByRole("heading", { name: "P0 Workbench" })).toBeVisible({ timeout: 60_000 });
+    await page.goto(`/portal/live/${wbId}/summary`);
+    await expect(page.getByRole("heading", { name: "P0 Workbench" })).toBeVisible();
     await expectSlag(page, wbTall);
 
     await loggUt(page);
     await loggInn(page, fremmedEpost, fremmedPassord);
-    await expect(page).toHaveURL(/\/portal(\/|$|\?)/, { timeout: 90_000 });
+    await varmOppAvvisningsMaal(page);
     await expectAvvist(page, wbId, "P0 Workbench", "wb");
     await expectAvvist(page, v2Id, "P0 V2 Innspill", "v2");
     await expectAvvist(page, planId, "P0 Eldre plan", "plan");
 
     await loggUt(page);
     await loggInn(page, fremmedCoachEpost, fremmedCoachPassord);
-    await expect(page).toHaveURL(/\/(portal|admin)(\/|$|\?)/, { timeout: 90_000 });
+    await varmOppAvvisningsMaal(page);
     await expectAvvist(page, wbId, "P0 Workbench", "wb");
     await expectAvvist(page, v2Id, "P0 V2 Innspill", "v2");
     await expectAvvist(page, planId, "P0 Eldre plan", "plan");

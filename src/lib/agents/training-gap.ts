@@ -26,7 +26,7 @@ const MIN_RUNDER = 3;
 const OMRAADER: SgCategory[] = ["OTT", "APP", "ARG", "PUTT"];
 
 const OMRAADE_LABEL: Record<SgCategory, string> = {
-  OTT: "Tee-slag (OTT)",
+  OTT: "Utslag (OTT)",
   APP: "Innspill (APP)",
   ARG: "Around-the-green (ARG)",
   PUTT: "Putting",

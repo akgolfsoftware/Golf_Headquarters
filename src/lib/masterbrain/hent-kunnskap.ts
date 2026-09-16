@@ -101,22 +101,64 @@ function json(verdi: unknown): string {
 // Fasitfilene — hver vet hvordan den presenterer seg selv for en modell
 // ---------------------------------------------------------------------------
 
+/**
+ * Gjeldende periodeliste (ordbok-masteren §4.1, OW-2 15.09–16.09.2026).
+ *
+ * Den synkede `canon-methodology.json.periods` har kun tre verdier (GRUNN/
+ * SPES/TURN, gamle stavemåter) og er derfor IKKE brukt her — CANON-fila
+ * oppdateres kun ved `npm run sync:masterbrain` fra det separate
+ * masterbrain-repoet, og skal aldri redigeres direkte i denne appen (se
+ * fil-kommentaren øverst). Denne listen speiler i stedet Prisma-enumene
+ * LPhase/PeriodeType, som nå har samme åtte verdier og samme stavemåte.
+ */
+const GJELDENDE_PERIODER = {
+  GRUNN: "Grunnperiode — fundament, fysisk og teknisk",
+  SPESIAL: "Spesialiseringsperiode — slag og spissing",
+  TURNERING: "Turneringsperiode — konkurranse og vedlikehold",
+  EVALUERING: "Evaluering — testing, analyse, planlegging av neste periode",
+  TESTUKE: "Testuke — samlet testgjennomføring",
+  FERIE: "Ferie — fri",
+  TRENINGSSAMLING: "Treningssamling — samling, dagsformat",
+  HELDAGSSAMLING: "Heldagssamling — samling, heldagsformat",
+};
+
+/**
+ * CANON-periode-ID → gjeldende Prisma-verdi (LPhase/PeriodeType).
+ *
+ * Erstatter `mikroperiodisering.periodenavn_oversettelsestabell` (synket
+ * data, samme regel som over — redigeres aldri direkte). Den tabellen siterer
+ * dessuten en fil (`canon-period-adjustment.ts`) som er slettet fra denne
+ * appen (18.08.2026-beslutningen fjernet all regelhåndheving), og hadde
+ * `SPESIALISERING` som mål-verdi — ugyldig etter OW-2 (16.09.2026), som
+ * omdøpte PeriodeType.SPESIALISERING til SPESIAL.
+ */
+const CANON_TIL_PRISMA_PERIODE = {
+  GRUNN: "GRUNN",
+  SPES: "SPESIAL",
+  TURN: "TURNERING",
+};
+
 const CANON: Fasitfil = {
   fil: "knowledge/concepts/canon-methodology.json",
   versjon: felt(canonMethodology, "version", "ukjent"),
   status: "FASIT",
   blokk: () =>
     [
-      "## CANON — kategorier, pyramide, L-faser og perioder",
+      "## CANON — kategorier og pyramide",
       "",
       "Pyramidens standardfordeling:",
       json(canonMethodology.pyramid_defaults),
       "",
-      "L-faser (CS-spenn, miljø, TEK-andel):",
-      json(canonMethodology.l_faser),
+      "L-faser, CS-nivåer (CS20–CS100), M-miljø (M0–M5) og PR-press (PR1–PR5) er",
+      "AVSKAFFET (Anders 18.08.2026, bekreftet i masterbrain REDIGER-HER.md) —",
+      "foreslå dem ALDRI, uansett hva canon-methodology.json ellers sier om dem.",
+      "Gjeldende merkelapp på en øvelse er PYRAMIDE_OMRÅDE_MOTORIKK_BELASTNING_PRESS",
+      "med motorikk UTEN_BALL/LAV_HAST/AUTO, belastning",
+      "INNENDORS/TRENINGSOMRÅDE/BANE/KONKURRANSE, press",
+      "ALENE/OBSERVERT/KONKURRANSE/TURNERING (ordbok-masteren §3).",
       "",
-      "Perioder:",
-      json(canonMethodology.periods),
+      "Perioder (årets rytme, kun merkelapper — ingen håndhevet grense):",
+      json(GJELDENDE_PERIODER),
     ].join("\n"),
 };
 
@@ -142,7 +184,7 @@ const MIKROPERIODISERING: Fasitfil = {
       "",
       "VIKTIG — periodenavn skrives ulikt i CANON og i databasen.",
       "Skriv aldri CANON-strengen rått til et Prisma-felt. Oversett først:",
-      json(mikroperiodisering.periodenavn_oversettelsestabell),
+      json(CANON_TIL_PRISMA_PERIODE),
     ].join("\n"),
 };
 

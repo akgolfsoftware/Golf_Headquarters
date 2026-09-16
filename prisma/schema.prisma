@@ -86,6 +86,8 @@ enum LPhase {
   GRUNN
   SPESIAL
   TURNERING
+  // OW-2 (15.09.2026): ordbok-masteren §4.1 — åttende og siste periodetype.
+  EVALUERING
   // 8c.1 (Anders 2026-07-12): fire nye periodetyper på årsplan-tidslinja.
   TESTUKE
   FERIE
@@ -266,7 +268,7 @@ enum PRPress {
 }
 
 // ---------------------------------------------------------------------------
-// AK-formel v2 (fasit: docs/FASIT-AK-GOLF-HQ.md + spec-treningsplanlegging).
+// AK-formel v2 (fasit: docs/ordbok-master-trening.md + spec-treningsplanlegging).
 // Merkelapper, aldri krav — ingen treningsregel håndheves (beslutning 18.08).
 // Enum-verdiene er ASCII med norsk visningslag i src/lib/domain/ak-formel-v2.ts.
 // v1-enumene over (LFase, CSNivaa, MMiljo, PRPress) beholdes som historiske
@@ -419,12 +421,17 @@ enum PracticeType {
   SPILL_TEST
 }
 
+// OW-2 (15.09.2026): samme åtte verdier som LPhase, samme skrivemåte (SPESIAL,
+// ikke SPESIALISERING) — ordbok-masteren §4.1 sier én liste, ikke to.
 enum PeriodeType {
   GRUNN
-  SPESIALISERING
+  SPESIAL
   TURNERING
   EVALUERING
+  TESTUKE
   FERIE
+  TRENINGSSAMLING
+  HELDAGSSAMLING
 }
 
 // Workbench v2 — Sprint 1 enums
@@ -1721,6 +1728,45 @@ enum ShotType {
   DROP
 }
 
+enum EndShotKategori {
+  IN_PLAY
+  MINOR_MISS
+  MAJOR_MISS
+  GREEN_HIT
+  LETT
+  MIDDELS
+  VANSKELIG
+  PENALTY_1
+  PENALTY_2
+}
+
+enum PuttBreakRetning {
+  VENSTRE_HOYRE
+  HOYRE_VENSTRE
+  OPPOVER
+  NEDOVER
+}
+
+enum PuttSlopeAlvorlighet {
+  SVAK
+  MODERAT
+  KRAFTIG
+}
+
+enum PuttLinjeMiss {
+  VENSTRE
+  HOYRE
+  PAA_LINJE
+}
+
+enum PuttFartUtfall {
+  HOLED
+  FORBI
+  KORT
+  SONE_FORBI
+  SONE_KORT
+}
+
 model Shot {
   id            String   @id @default(cuid())
   roundId       String
@@ -1747,11 +1793,29 @@ model Shot {
   targetY     Float?
   mentalScore Int?   @db.SmallInt // 1-5
 
+  endShotKategori EndShotKategori?
+  puttDetail      PuttDetail?
+
   round Round @relation(fields: [roundId], references: [id], onDelete: Cascade)
 
   @@unique([roundId, holeNumber, shotNumber])
   @@index([roundId, holeNumber])
   @@map("shots")
+}
+
+model PuttDetail {
+  id               String                @id @default(cuid())
+  shotId           String                @unique
+  lengdeFot        Float
+  breakRetning     PuttBreakRetning
+  slopeAlvorlighet PuttSlopeAlvorlighet
+  linjeMiss        PuttLinjeMiss?
+  fartUtfall       PuttFartUtfall
+  createdAt        DateTime              @default(now())
+
+  shot Shot @relation(fields: [shotId], references: [id], onDelete: Cascade)
+
+  @@map("putt_details")
 }
 
 // Persistert live-tapper: baller per kølle per plan-økt (skrives debounced fra
@@ -6209,6 +6273,25 @@ model WorkbenchSession {
   // Skjuler økten i Agenda/"I dag" og listevisninger for spilleren — SLETTER
   // aldri. Agency ser den fortsatt, markert SKJULT.
   hiddenByPlayer Boolean @default(false)
+
+  // OW-3 (16.09.2026): felt fra TrainingPlanSession (eldre planlegger), lagt til
+  // additivt for å ta imot migrerte rader. Streng, ikke enum — samme begrunnelse
+  // som status/blockType/environment over (docs/planer/ow-3-en-oekt-modell-2026-09-16.md §6.1).
+  planId      String?
+  rationale   String?
+  skillArea   String?
+  pressureLevel String?
+  pPosisjoner String[] @default([])
+  maalsetning String?
+  liveSnapshot Json?
+  // Utgåtte v1-koder (ordbok-masteren §17). Kun historisk lesing av migrerte
+  // rader — ingen ny skjerm/action skal noensinne skrive disse (§6.2 i planen).
+  lFase   String?
+  miljo   String?
+  csNivaa String?
+  // Midlertidig sporingsfelt for idempotent backfill fra training_plan_sessions
+  // (OW-3 fase 2). Fjernes i fase 6 når training_plan_sessions slettes.
+  migrertFraTrainingPlanSessionId String? @unique
 
   drills WorkbenchDrill[]
 

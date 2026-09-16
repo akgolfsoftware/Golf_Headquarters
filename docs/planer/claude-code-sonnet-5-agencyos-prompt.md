@@ -20,7 +20,7 @@ Kopier hele XML-blokken til en ny Claude Code-økt med Sonnet 5. Kjør fra prosj
   <autoritative-kilder>
     <kilde prioritet="1">Anders' bestilling i denne prompten.</kilde>
     <kilde prioritet="2">AGENTS.md og docs/platform/AGENT-BRIEF.md.</kilde>
-    <kilde prioritet="3">docs/platform/BUSINESS-RULES.md og docs/FASIT-AK-GOLF-HQ.md for produkt og treningsfag.</kilde>
+    <kilde prioritet="3">docs/platform/BUSINESS-RULES.md og docs/ordbok-master-trening.md for produkt og treningsfag.</kilde>
     <kilde prioritet="4">designsystem/README.md og .claude/skills/ak-hq-design/SKILL.md med relevante referanser.</kilde>
     <kilde prioritet="5">Koden og testene som bevis på dagens oppførsel.</kilde>
   </autoritative-kilder>

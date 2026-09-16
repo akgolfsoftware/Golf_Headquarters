@@ -32,6 +32,7 @@ const BAAND_ETIKETT: Record<LPhase, string> = {
   GRUNN: "Grunn",
   SPESIAL: "Spesialisering",
   TURNERING: "Turnering",
+  EVALUERING: "Evaluering",
   TESTUKE: "Testuke",
   FERIE: "Ferie",
   TRENINGSSAMLING: "Treningssamling",

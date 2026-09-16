@@ -1,16 +1,7 @@
 # WANG Toppidrett — øktmal (felles struktur for alle økter)
 
-> **UTGÅTT (se `.claude/rules/beslutninger.md`, «ALLE TRENINGSPLANREGLER LÅST OPP», 2026-08-18):**
-> `lFase`, `csNivaa`, `miljo` (M0–M5) og `prPress` (PR1–PR5) er IKKE aktive databasefelt/UI-begreper
-> lenger — all regel-håndheving (inkl. «minimum CS50 for balltrening») er slettet fra koden.
-> Gjeldende v2-format er `PYRAMIDE_OMRADE_MOTORIKK_BELASTNING_PRESS` med motorikk
-> UTEN_BALL/LAV_HAST/AUTO og press ALENE/OBSERVERT/KONKURRANSE/TURNERING — dette dokumentet
-> styrer aktivt WANG-arbeid og må leses mot v2-formatet, ikke mot feltene under.
->
-> **Club Speed (Anders, 2026-09-01):** klassifiseres motorikk **AUTO** — «uten ball» er en
-> egenskap ved øvelsen (hastighetstrening med stav/kølle uten balltreff), ikke et eget
-> motorikk-steg. Gjelder «Intensitet (CS)»-feltet (rad 5 under) og CS50–70-tallene i
-> «Periodespesifikk vri» — ingen av dem skal lenger leses som CS-nivå-prosentskala.
+> **Vokabular:** feltene under leses mot `docs/ordbok-master-trening.md` (15.09.2026). Radene
+> 4–7 er skrevet om til de fem AK-aksene; L-fase, CS, M0–M5 og PR1–PR5 er utgått.
 
 Kilde: `wang-treningsokt`-skillen (autoritativ) + AK-formel-feltene i AK Golf HQ.
 Formål: én felles øktstruktur som alle M/O/F-økter (08:00–10:00) følger, differensiert per VG-trinn
@@ -32,9 +23,6 @@ og lenket til kompetansemål. Feltene finnes allerede i databasen — denne male
 | 06 | **KPI + dagbok-prompt** | Én målbar verdi + ett refleksjonsspørsmål |
 | 07 | **Notater fra trener** | Tom seksjon Anders fyller inn |
 
-> **UTGÅTT (beslutninger.md 2026-08-18):** kolonnen «Finnes i AK Golf HQ som» under
-> (`lFase`/`csNivaa`/`miljo`/`prPress`) beskriver pensjonerte felt — se varselet øverst i fila.
-
 ## De 8 obligatoriske øvelsesfeltene → mapping til AK-formel i AK Golf HQ
 Hver øvelse (oppvarming og hoveddel) har alle 8. Kolonnen til høyre viser at feltet **allerede finnes**
 i databasen (`SessionDrill`/`TrainingDrillV2` + AK-formel-enums) — vi gjenbruker, bygger ikke nytt.
@@ -43,18 +31,15 @@ i databasen (`SessionDrill`/`TrainingDrillV2` + AK-formel-enums) — vi gjenbruk
 |---|-------------------------------|---------|--------------------------|
 | 1 | Navn | fritekst | drill-navn |
 | 2 | Beskrivelse | fritekst | drill-beskrivelse |
-| 3 | Treningsområde | 16 soner (Tee · Innspill 200+/150–200/100–150/50–100 · Chip · Pitch · Lob · Bunker · Putt 0–3/3–5/5–10/10–15/15–25/25–40/40+) | `skillArea` (grov: TEE_TOTAL/TILNAERMING/AROUND_GREEN/PUTTING/SPILL) — **mapping trengs: 16 → 5** |
-| 4 | Læringsfase | Kropp · Arm · Kølle · Ball · Auto | `lFase` = L_KROPP/L_ARM/L_KOLLE/L_BALL/L_AUTO ✓ |
-| 5 | Intensitet (CS) | 50–100 % | `csNivaa` = CS50–CS100 ✓ |
-| 6 | Miljø | Off-course · Innendørs · Range · Øvingsfelt · Bane trening · Bane turnering | `miljo` = M0–M5 — **mapping trengs: navngitt ↔ M0–M5** |
-| 7 | Belastning (PR) | Ingen · Selvmonitorering · Sosial · Konkurranse · Turnering | `prPress` = PR1–PR5 ✓ |
-| 8 | Antall reps/mål | fritekst/tall | `repType` (SVINGER/BALLER/TID/SETT_REPS) + verdi ✓ |
+| 3 | Treningsområde | 19 områder (master kap. 2): Utslag · Innspill ~200/150/100/50 m · Chip · Pitch · Lob · Bunker · Putt 0–3/3–5/5–10/10–25/25–40/40+ fot · Styrke · Kondisjon · Bevegelighet · Banespill | `omraadeKode` ✓ |
+| 4 | Motorikk (kun fullsving) | Uten ball · Lav hastighet · Automatikk | `motorikk` ✓ |
+| 5 | Belastning (miljø) | Innendørs · Treningsområde · Bane · Konkurranse | `belastning` ✓ |
+| 6 | Press (hvem ser på) | Alene · Observert · Konkurranse · Turnering | `press` ✓ |
+| 7 | Dimensjon | Sikte, startretning, kurve, høyde … (master kap. 3.4) | `dimensjon` ✓ |
+| 8 | Dose | tid + reps totalt + reps per motorikk-steg | `repType`, `repAntall`, `planRepsUtenBall/LavFart/Auto` ✓ |
 | + | Pyramide (settes på øvelsen) | FYS · TEK · SLAG · SPILL · TURN | `pyramidArea` ✓ |
 
-**To mapping-oppgaver identifisert** (håndteres i systemsteget):
-- Treningsområde: øktmalen har 16 fine soner, AK Golf HQ har 5 grove. Enten utvide `skillArea`, eller
-  legge de 16 som en underinndeling. Avklares når vi bygger øktredigeringen.
-- Miljø: øktmalens navngitte miljøer må mappes til M0–M5 (eller motsatt) så tallene stemmer.
+Ingen mapping gjenstår: alle åtte felt finnes i AK-formel v2 (`src/lib/domain/ak-formel-v2.ts`).
 
 ## Differensiering per trinn (via kompetansemål)
 Samme øvelse, ulikt læringsutbytte. Eksempel (wedge-drill):

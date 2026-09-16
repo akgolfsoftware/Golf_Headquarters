@@ -108,15 +108,11 @@ og blir derfor ikke funnet ved søk: `sg-trackman-021.md`, `sg-trackman-040.md`,
 | `specs/` | Tekniske spesifikasjoner — ikke fagkunnskap |
 | `archive/` | Historikk. **Aldri fagkunnskap.** |
 
-### Advarsel om `processed/rules/`
+### `processed/rules/` er slettet (15.09.2026)
 
-Denne mappa inneholder **utdaterte kopier** av MORAD-filene:
-`morad-checkpoints.json`, `morad-fault-drill-mapping.json`,
-`sg-to-morad-faults.json`, `morad-ordbok-v2.json`.
-
-De er ikke oppdatert med sammenslåingen 31. juli og speiler ikke fasiten.
-Historisk brukt som mellomlager for kopiering inn i appen. **Ikke les dem.**
-Fasiten er `knowledge/`.
+Mappa inneholdt utdaterte kopier av MORAD-filene og ble fjernet fra appen 15.09.2026
+(beslutning: ordbok-master først). Fasiten er `knowledge/`. Kildemappa i Masterbrain-repoet
+synkes ikke lenger hit (`scripts/sync-masterbrain.ts`).
 
 ---
 

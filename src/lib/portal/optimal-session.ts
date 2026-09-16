@@ -21,7 +21,7 @@ const SG_TO_PYR: Record<SgCategory, PyramidArea> = {
 };
 
 const SG_LABEL: Record<SgCategory, string> = {
-  OTT: "Tee",
+  OTT: "Utslag",
   APP: "Innspill",
   ARG: "Nærspill",
   PUTT: "Putting",

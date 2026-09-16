@@ -161,7 +161,7 @@ export const QUIZ_SPORSMAL: QuizSporsmal[] = [
 ];
 
 export const KATEGORI_LABELS: Record<QuizSporsmal["kategori"], string> = {
-  OTT: "Off the Tee",
+  OTT: "Utslag",
   APP: "Approach",
   ARG: "Nærspill",
   PUTT: "Putting",

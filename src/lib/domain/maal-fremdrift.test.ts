@@ -31,7 +31,7 @@ test("erSgOmrade skiller ekte områder fra søppel", () => {
 });
 
 test("SG-områdenavnene følger AK-fasiten", () => {
-  assert.equal(SG_OMRADE_NAVN.OTT, "Tee Total");
+  assert.equal(SG_OMRADE_NAVN.OTT, "Utslag");
   assert.equal(SG_OMRADE_NAVN.APP, "Innspill");
   assert.equal(SG_OMRADE_NAVN.ARG, "Nærspill");
   assert.equal(SG_OMRADE_NAVN.PUTT, "Putting");

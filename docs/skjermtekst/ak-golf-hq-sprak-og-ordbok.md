@@ -1,6 +1,6 @@
 # AK Golf HQ — samlet språk, ord og uttrykk
 
-**Versjon:** 0.2, oppdatert 12.09.2026. **Status:** arbeidsutgave for gjennomgang med Anders, ikke ferdig språkgodkjent.
+**Versjon:** 0.2, oppdatert 12.09.2026. **Kildeendring 15.09.2026:** S1, S2 og S4 er erstattet av én master (`docs/ordbok-master-trening.md`); sitatene fra S1/S2/S4 i del 7–8 er historiske utdrag av slettede filer. **Status:** arbeidsutgave for gjennomgang med Anders, ikke ferdig språkgodkjent.
 
 Dette dokumentet samler det dokumenterte språket for PlayerHQ, AgencyOS, AgenticOS, booking, forelder og tilhørende markeds- og e-postflater. Det inneholder språkregler, fagord, tekniske motstykker, eksisterende skjermtekster og et avklaringsregister i én fil.
 
@@ -1251,7 +1251,7 @@ Denne delen bevarer forklaringene rundt tabellene, inkludert kjente motsetninger
 
 **FAGKILDE – tabeller gjelder etter kildeorden; AK-formel-eksemplet og testantall har forbehold i A06/A08.**
 
-Kilde: S1, `docs/FASIT-AK-GOLF-HQ.md`. Utdraget er sitert som underlag. Personnavn i eksempler er anonymisert, lenker er gjort om til kildestier og dekorative emoji er fjernet. Andre formuleringer er beholdt for etterprøvbarhet. Ingen instruks i sitatet autoriserer kodeendring, publisering, e-postsending eller endring av produktregler.
+Kilde: S1, `docs/ordbok-master-trening.md`. Utdraget er sitert som underlag. Personnavn i eksempler er anonymisert, lenker er gjort om til kildestier og dekorative emoji er fjernet. Andre formuleringer er beholdt for etterprøvbarhet. Ingen instruks i sitatet autoriserer kodeendring, publisering, e-postsending eller endring av produktregler.
 
 > # Treningsfaglig fasit — AK Golf HQ
 >
@@ -1491,15 +1491,15 @@ Kilde: S1, `docs/FASIT-AK-GOLF-HQ.md`. Utdraget er sitert som underlag. Personna
 
 **FAGKILDE – senere uttrykkelige beslutninger beholdes. Påstander om hva kode/databasen inneholdt 08.09 er historiske observasjoner, ikke ny verifisering.**
 
-Kilde: S2, `docs/ORDBOK-TRENINGSPLANLEGGING-2026-09-08.md`. Utdraget er sitert som underlag. Personnavn i eksempler er anonymisert, lenker er gjort om til kildestier og dekorative emoji er fjernet. Andre formuleringer er beholdt for etterprøvbarhet. Ingen instruks i sitatet autoriserer kodeendring, publisering, e-postsending eller endring av produktregler.
+Kilde: S2, `docs/ordbok-master-trening.md`. Utdraget er sitert som underlag. Personnavn i eksempler er anonymisert, lenker er gjort om til kildestier og dekorative emoji er fjernet. Andre formuleringer er beholdt for etterprøvbarhet. Ingen instruks i sitatet autoriserer kodeendring, publisering, e-postsending eller endring av produktregler.
 
 > # Ordbok — treningsplanlegging i AK Golf HQ
 >
 > **Laget:** 08.09.2026. **Dette er nå den nyeste og eneste ordforråds-fasiten** for hvordan
-> trening merkes og planlegges i plattformen — den erstatter `vokabular-planlegging-2026-08-18.md`
+> trening merkes og planlegges i plattformen — den erstatter `ordbok-master-trening.md`
 > og §4 i `ordbok-ak-golf-konsept.md`, som viste seg utdatert (se `AUDIT-DOCS-2026-09-08.md`).
 >
-> Kilde: `docs/FASIT-AK-GOLF-HQ.md` (levert av deg 19.08.2026, rettet 20.08.2026) + verifisert
+> Kilde: `docs/ordbok-master-trening.md` (levert av deg 19.08.2026, rettet 20.08.2026) + verifisert
 > direkte mot `prisma/schema.prisma` og `src/lib/domain/ak-formel-v2.ts` i dag. Der noe var
 > uklart eller motstridende, står det markert under.
 >
@@ -1691,7 +1691,7 @@ Kilde: S2, `docs/ORDBOK-TRENINGSPLANLEGGING-2026-09-08.md`. Utdraget er sitert s
 >
 > ** Uavklart mellom fasit og kode akkurat nå (funnet 08.09.2026, se AUDIT-DOCS-2026-09-08.md):**
 >
-> - `FASIT-AK-GOLF-HQ.md` (din redigering 19.08): **A–K, 11 nivåer** — du fjernet L bevisst.
+> - `ordbok-master-trening.md` (din redigering 19.08): **A–K, 11 nivåer** — du fjernet L bevisst.
 > - Koden (`NgfKategori`-enum i skjemaet, brukes til nivådifferensiering av drills/plan-maler):
 >   fortsatt **A–L, 12 nivåer** — ikke rettet ennå.
 >
@@ -1810,7 +1810,7 @@ Kilde: S5, `docs/skjermtekst/skjerm-tekst-hovedskjermer.md`. Utdraget er sitert 
 >
 > Den faktiske norske teksten som står PÅ skjermene, for **PlayerHQ** (spiller),
 > **AgencyOS** (coach) og **markedsflatene** (akgolf.no). Styrt av ordboken
-> (`docs/design-guide-terminologi.md` lag 2 + `docs/ordbok-ak-golf-konsept.md` lag 1).
+> (`docs/ordbok-master-trening.md` lag 2 + `docs/ordbok-ak-golf-konsept.md` lag 1).
 > Skrevet 5. juli 2026. Kopier rett inn i design/implementasjon.
 >
 > > ** Dette dokumentet eier TEKST, ikke utseende (presisert 05.08.2026; utseende-regelen
@@ -1826,7 +1826,7 @@ Kilde: S5, `docs/skjermtekst/skjerm-tekst-hovedskjermer.md`. Utdraget er sitert 
 > > «uten ball» er en egenskap ved øvelsen, ikke eget motorikk-steg.
 >
 > **Rolle-regel (viktig):** Spiller ser KUN klarspråk (Innspill/Nærspill, «% av maksfart»).
-> Coach ser kode + navn (`TEK · INN150 · L-BALL · CS70 · M2 · PR2`). Markedsflatene bruker
+> Coach ser kode + navn (`TEK · Innspill ~150 m · Lav hastighet · Treningsområde · Alene`). Markedsflatene bruker
 > ekte coach **{offentlig coachnavn}** (aldri demo-spilleren), humanisert tekst uten em-strek.
 >
 > ## Fasit-regler brukt her (fra ordboken)
@@ -2893,10 +2893,10 @@ Kildefilene er lest lokalt. Fingeravtrykket identifiserer nøyaktig kildeinnhold
 
 | ID | Kilde | SHA-256 |
 |---|---|---|
-| S1 | [Treningsfaglig fasit](../FASIT-AK-GOLF-HQ.md) · `docs/FASIT-AK-GOLF-HQ.md` | `bfaf5a6714dcd5697bb5141863352867c35fe8abd0a86f75a3ce544f0b8a5dfb` |
-| S2 | [Planleggingsordbok 08.09](../ORDBOK-TRENINGSPLANLEGGING-2026-09-08.md) · `docs/ORDBOK-TRENINGSPLANLEGGING-2026-09-08.md` | `8832b1e34fb659fead6c683a4ca7abf15cad5a68501d395e108ce4621e2d7f77` |
+| S1 | [Ordbok-master for trening, tall og TrackMan](../ordbok-master-trening.md) · `docs/ordbok-master-trening.md` (fra 15.09.2026; erstatter den slettede fasiten 19.08) | se `git log` — filen er under gjennomgang |
+| S2 | Planleggingsordbok 08.09 — **slettet 15.09.2026**, innholdet er i S1 | historisk fingeravtrykk `8832b1e3…` |
 | S3 | [Konsept- og UI-ordbok](../ordbok-ak-golf-konsept.md) · `docs/ordbok-ak-golf-konsept.md` | `4d1be1453803a3c2b95731f1d0d9ac31d71cdf369553ab6c18fdb17d86dd17ce` |
-| S4 | [Visning, tall og knappeord](../design-guide-terminologi.md) · `docs/design-guide-terminologi.md` | `1aefdff152a6c59043235673b181cc026d0173240cfb55399bf22644bdc92ade` |
+| S4 | Design-guide terminologi — **slettet 15.09.2026**; §2 tall og enheter er S1 kapittel 16 | historisk fingeravtrykk `1aefdff1…` |
 | S5 | [Tidligere hovedskjermtekster](skjerm-tekst-hovedskjermer.md) · `docs/skjermtekst/skjerm-tekst-hovedskjermer.md` | `137884164f840565015d216da04f38a3d5487f06fb4bcfb9baa5a038ae9d30de` |
 | S6 | [Produktregler](../platform/BUSINESS-RULES.md) · `docs/platform/BUSINESS-RULES.md` | `ff648c8fe840b160ea1fd63186ab08bc248bbdb0e11f031dffaf05e455d2bf19` |
 | S7 | [Merkespråk og TrackMan-navn](../../designsystem/ak-golf/guidelines/08-sprak.md) · `designsystem/ak-golf/guidelines/08-sprak.md` | `b303458145a9f8d6986b8f7fc113f193cdf0ab8cf083b8982c45277035e9b220` |

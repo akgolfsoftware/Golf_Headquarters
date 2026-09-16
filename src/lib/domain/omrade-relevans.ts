@@ -89,9 +89,15 @@ export function relevansFor(omraade: OmraadeKode): Relevans {
     case "FULLSVING":
       return { ...INGEN, motorikk: true, belastning: true, press: true, dimensjon: true };
     case "NAERSPILL":
-      return { ...INGEN, belastning: true, press: true, dimensjon: true };
-    case "BUNKER":
-      return { ...INGEN, belastning: true, press: true, dimensjon: true, sandTrinn: true };
+      // Bunker er del av Nærspill-familien, men har i tillegg sand-trappen —
+      // et eget to-verdis felt kun bunker-øvelser skal vise (§2.1 i masteren).
+      return {
+        ...INGEN,
+        belastning: true,
+        press: true,
+        dimensjon: true,
+        sandTrinn: omraade === "BUNKER",
+      };
     case "PUTT":
       return { ...INGEN, belastning: true, press: true, dimensjon: true };
     case "BANE":

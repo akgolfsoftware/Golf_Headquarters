@@ -1,232 +1,205 @@
 {
   "$schema": "ordbok-lag-3",
-  "versjon": "2026-07-03",
+  "versjon": "2026-09-16",
   "kilder": {
-    "canon": "MasterBrain CANON v3.5 (canon-methodology.json + l-faser.json)",
-    "ordbok": "docs/ordbok-ak-golf-konsept.md",
-    "designGuide": "docs/design-guide-terminologi.md",
-    "schema": "prisma/schema.prisma"
+    "master": "docs/ordbok-master-trening.md",
+    "schema": "prisma/schema.prisma",
+    "kode": "src/lib/domain/ak-formel-v2.ts"
   },
-  "canonSjekket": true,
-  "konsept": {
-    "pyramide": {
-      "omraader": [
-        "FYS",
-        "TEK",
-        "SLAG",
-        "SPILL",
-        "TURN"
-      ],
-      "labels": {
-        "FYS": "Fysisk",
-        "TEK": "Teknisk",
-        "SLAG": "Slag",
-        "SPILL": "Spill",
-        "TURN": "Turnering"
-      },
-      "fargerLysFlate": {
-        "FYS": "#005840",
-        "TEK": "#B8852A",
-        "SLAG": "#2563EB",
-        "SPILL": "#D1F843",
-        "TURN": "#A32D2D"
-      },
-      "fargerWorkbenchMork": {
-        "FYS": "#56C59A",
-        "TEK": "#E8A33D",
-        "SLAG": "#84A9FF",
-        "SPILL": "#D1F843",
-        "TURN": "#F2908C"
-      }
+  "pyramide": {
+    "FYS": "Fysisk",
+    "TEK": "Teknisk",
+    "SLAG": "Golfslag",
+    "SPILL": "Spill",
+    "TURN": "Turnering"
+  },
+  "omraader": [
+    {
+      "kode": "TEE_TOTAL",
+      "label": "Utslag",
+      "familie": "FULLSVING",
+      "enhet": "m",
+      "repsEnhet": "SLAG"
     },
-    "lFaser": {
-      "rekkefolge": [
-        "L_KROPP",
-        "L_ARM",
-        "L_KOLLE",
-        "L_BALL",
-        "L_AUTO"
-      ],
-      "verdier": {
-        "L_KROPP": {
-          "cs": "CS20-40",
-          "miljo": "M0-M1",
-          "tekProsent": "60-80",
-          "ball": false
-        },
-        "L_ARM": {
-          "cs": "CS20-50",
-          "miljo": "M1-M2",
-          "tekProsent": "50-70",
-          "ball": "minimal"
-        },
-        "L_KOLLE": {
-          "cs": "CS50-70",
-          "miljo": "M2-M3",
-          "tekProsent": "40-60",
-          "ball": false
-        },
-        "L_BALL": {
-          "cs": "CS60-80",
-          "miljo": "M3-M4",
-          "tekProsent": "30-50",
-          "ball": true
-        },
-        "L_AUTO": {
-          "cs": "CS80-100",
-          "miljo": "M4-M5",
-          "tekProsent": "20-40",
-          "ball": true
-        }
-      },
-      "prioritetsregel": "L_KROPP og L_ARM overstyrer all SG-prioritering"
+    {
+      "kode": "INNSPILL_200",
+      "label": "Innspill ~200 m",
+      "familie": "FULLSVING",
+      "enhet": "m",
+      "repsEnhet": "SLAG"
     },
-    "cs": {
-      "betyr": "Club Speed (% av spillerens maks)",
-      "nivaaer": [
-        "CS20",
-        "CS30",
-        "CS40",
-        "CS50",
-        "CS60",
-        "CS70",
-        "CS80",
-        "CS90",
-        "CS100"
-      ],
-      "kodeStatus": "Prisma-enum CSNivaa har kun CS50-CS100 — CS20/30/40 venter migrering"
+    {
+      "kode": "INNSPILL_150",
+      "label": "Innspill ~150 m",
+      "familie": "FULLSVING",
+      "enhet": "m",
+      "repsEnhet": "SLAG"
     },
-    "miljo": {
-      "nivaaer": [
-        "M0",
-        "M1",
-        "M2",
-        "M3",
-        "M4",
-        "M5"
-      ],
-      "beskrivelser": {
-        "M0": "Kontrollert range/rom, ingen mål, ingen ball",
-        "M1": "Kontrollert range, enkelt mål",
-        "M2": "Driving range med definerte mål og distanser",
-        "M3": "Baneøving uten konkurranse",
-        "M4": "Bane med scoringsfokus, simulert konkurranse",
-        "M5": "Faktiske turneringsforhold"
-      }
+    {
+      "kode": "INNSPILL_100",
+      "label": "Innspill ~100 m",
+      "familie": "FULLSVING",
+      "enhet": "m",
+      "repsEnhet": "SLAG"
     },
-    "press": {
-      "nivaaer": [
-        "PR1",
-        "PR2",
-        "PR3",
-        "PR4",
-        "PR5"
-      ],
-      "beskrivelser": {
-        "PR1": "Minimalt press — ren teknikk-drill",
-        "PR2": "Lett press — mål definert, ingen konkurranse",
-        "PR3": "Moderat press — scoringssystem eller partner",
-        "PR4": "Høyt press — simulert turnering eller poeng på spill",
-        "PR5": "Maksimalt press — faktisk turneringssituasjon"
-      }
+    {
+      "kode": "INNSPILL_50",
+      "label": "Innspill ~50 m",
+      "familie": "FULLSVING",
+      "enhet": "m",
+      "repsEnhet": "SLAG"
     },
-    "treningsomraader": {
-      "enhetPutting": "ft",
-      "enhetInnspill": "m (kode i dag) / yards (intelligence-taksonomi)",
-      "alle": [
-        "TEE",
-        "INN200",
-        "INN150",
-        "INN100",
-        "INN50",
-        "CHIP",
-        "PITCH",
-        "LOB",
-        "BUNKER",
-        "PUTT0_3",
-        "PUTT3_6",
-        "PUTT6_10",
-        "PUTT10_20",
-        "PUTT20_40",
-        "PUTT40P",
-        "SPILL"
-      ]
+    {
+      "kode": "CHIP",
+      "label": "Chip",
+      "familie": "NAERSPILL",
+      "enhet": "m",
+      "repsEnhet": "SLAG"
     },
-    "sg": {
-      "kategorier": {
-        "OTT": "Tee-slag",
-        "APP": "Innspill",
-        "ARG": "Nærspill",
-        "PUTT": "Putting"
-      },
-      "format": "komma-desimal med fortegn, f.eks. +1,2",
-      "positivFarge": "text-success",
-      "negativFarge": "text-destructive"
+    {
+      "kode": "PITCH",
+      "label": "Pitch",
+      "familie": "NAERSPILL",
+      "enhet": "m",
+      "repsEnhet": "SLAG"
     },
-    "spillerkategorierCanon": {
-      "skala": "A-K",
-      "retning": "A = komplett nybegynner (HCP 54+) → K = tour-proff (+4 eller bedre)",
-      "kodeStatus": "NgfKategori (A-L, A=elite) og SPILLERKATEGORIER har MOTSATT retning — migrering utestår"
+    {
+      "kode": "LOB",
+      "label": "Lob",
+      "familie": "NAERSPILL",
+      "enhet": "m",
+      "repsEnhet": "SLAG"
     },
-    "forbudteTermer": [
-      {
-        "forbudt": "elev",
-        "bruk": "spiller"
-      },
-      {
-        "forbudt": "trener (alene)",
-        "bruk": "coach"
-      },
-      {
-        "forbudt": "goal",
-        "bruk": "mål"
-      },
-      {
-        "forbudt": "session",
-        "bruk": "økt"
-      },
-      {
-        "forbudt": "workout",
-        "bruk": "økt"
-      },
-      {
-        "forbudt": "stats",
-        "bruk": "statistikk"
-      },
-      {
-        "forbudt": "schedule",
-        "bruk": "plan / kalender"
-      },
-      {
-        "forbudt": "subscription",
-        "bruk": "abonnement"
-      },
-      {
-        "forbudt": "kort spill / kortspill",
-        "bruk": "nærspill"
-      },
-      {
-        "forbudt": "rundt green (som ARG-label)",
-        "bruk": "nærspill"
-      },
-      {
-        "forbudt": "Error",
-        "bruk": "Noe gikk galt"
-      },
-      {
-        "forbudt": "emoji i UI",
-        "bruk": "Lucide-ikoner"
-      }
-    ],
-    "formatRegler": {
-      "desimal": "komma",
-      "tusenskille": "mellomrom",
-      "tid": "24h (09:00)",
-      "periodeSkille": "tankestrek (—)",
-      "puttingAvstand": "alltid ft",
-      "hcpFortegn": "+3,5 / −3,5 (ekte minus-tegn)",
-      "kpiTall": "JetBrains Mono"
+    {
+      "kode": "BUNKER",
+      "label": "Bunker",
+      "familie": "NAERSPILL",
+      "enhet": "m",
+      "repsEnhet": "SLAG"
+    },
+    {
+      "kode": "PUTT_0_3",
+      "label": "Putt 0–3 fot",
+      "familie": "PUTT",
+      "enhet": "ft",
+      "repsEnhet": "PUTTER"
+    },
+    {
+      "kode": "PUTT_3_5",
+      "label": "Putt 3–5 fot",
+      "familie": "PUTT",
+      "enhet": "ft",
+      "repsEnhet": "PUTTER"
+    },
+    {
+      "kode": "PUTT_5_10",
+      "label": "Putt 5–10 fot",
+      "familie": "PUTT",
+      "enhet": "ft",
+      "repsEnhet": "PUTTER"
+    },
+    {
+      "kode": "PUTT_10_25",
+      "label": "Putt 10–25 fot",
+      "familie": "PUTT",
+      "enhet": "ft",
+      "repsEnhet": "PUTTER"
+    },
+    {
+      "kode": "PUTT_25_40",
+      "label": "Putt 25–40 fot",
+      "familie": "PUTT",
+      "enhet": "ft",
+      "repsEnhet": "PUTTER"
+    },
+    {
+      "kode": "PUTT_40_PLUSS",
+      "label": "Putt 40+ fot",
+      "familie": "PUTT",
+      "enhet": "ft",
+      "repsEnhet": "PUTTER"
+    },
+    {
+      "kode": "STYRKE",
+      "label": "Styrke",
+      "familie": "FYS",
+      "enhet": null,
+      "repsEnhet": "SERIER_REPS"
+    },
+    {
+      "kode": "KONDISJON",
+      "label": "Kondisjon",
+      "familie": "FYS",
+      "enhet": null,
+      "repsEnhet": "SEGMENTER"
+    },
+    {
+      "kode": "BEVEGELIGHET",
+      "label": "Bevegelighet",
+      "familie": "FYS",
+      "enhet": null,
+      "repsEnhet": "MINUTTER"
+    },
+    {
+      "kode": "BANE",
+      "label": "Banespill",
+      "familie": "BANE",
+      "enhet": null,
+      "repsEnhet": "HULL"
     }
+  ],
+  "motorikk": {
+    "UTEN_BALL": "Uten ball",
+    "LAV_HAST": "Lav hastighet",
+    "AUTO": "Automatikk"
+  },
+  "belastning": {
+    "INNENDORS": "Innendørs",
+    "TRENINGSOMRAADE": "Treningsområde",
+    "BANE": "Bane",
+    "KONKURRANSE": "Konkurranse"
+  },
+  "press": {
+    "ALENE": "Alene",
+    "OBSERVERT": "Observert",
+    "KONKURRANSE": "Konkurranse",
+    "TURNERING": "Turnering"
+  },
+  "dimensjon": {
+    "SIKTE": "Sikte og oppstilling",
+    "STARTRETNING": "Startretning",
+    "KURVE": "Kurve",
+    "HOYDE": "Høyde",
+    "TREFFPUNKT": "Treffpunkt",
+    "LENGDEKONTROLL": "Lengdekontroll",
+    "SPINN": "Spinn",
+    "LANDINGSPUNKT": "Landingspunkt",
+    "UTRULLING": "Utrulling",
+    "KOLLEVALG": "Køllevalg",
+    "BOUNCE_BRUK": "Bruk av bounce",
+    "SANDINNGANG": "Sandinngang",
+    "LIE_VARIASJON": "Lie-variasjon",
+    "GREENLESING": "Greenlesing",
+    "BALLSTART": "Ballstart",
+    "SPILLEFORMAT": "Spilleformat",
+    "STRATEGIOPPGAVE": "Strategioppgave"
+  },
+  "sg": {
+    "kategorier": {
+      "OTT": "Utslag",
+      "APP": "Innspill",
+      "ARG": "Nærspill",
+      "PUTT": "Putting"
+    },
+    "format": "+1,2 / −0,4"
+  },
+  "format": {
+    "desimal": "komma",
+    "tusenskille": "mellomrom",
+    "tid": "24h (09:00)",
+    "putting": "fot",
+    "avstand": "meter",
+    "hastighet": "mph"
   },
   "prismaEnums": {
     "UserRole": [
@@ -278,10 +251,16 @@
       "SPILL",
       "TURN"
     ],
+    "PeriodGoalStatus": [
+      "IKKE_STARTET",
+      "PAA_VEI",
+      "NAADD"
+    ],
     "LPhase": [
       "GRUNN",
       "SPESIAL",
       "TURNERING",
+      "EVALUERING",
       "TESTUKE",
       "FERIE",
       "TRENINGSSAMLING",
@@ -359,8 +338,7 @@
       "H",
       "I",
       "J",
-      "K",
-      "L"
+      "K"
     ],
     "SubscriptionStatus": [
       "ACTIVE",
@@ -425,6 +403,92 @@
       "PR4",
       "PR5"
     ],
+    "Omraade": [
+      "TEE_TOTAL",
+      "INNSPILL_200",
+      "INNSPILL_150",
+      "INNSPILL_100",
+      "INNSPILL_50",
+      "CHIP",
+      "PITCH",
+      "LOB",
+      "BUNKER",
+      "PUTT_0_3",
+      "PUTT_3_5",
+      "PUTT_5_10",
+      "PUTT_10_25",
+      "PUTT_25_40",
+      "PUTT_40_PLUSS",
+      "STYRKE",
+      "KONDISJON",
+      "BEVEGELIGHET",
+      "BANE"
+    ],
+    "Motorikk": [
+      "UTEN_BALL",
+      "LAV_HAST",
+      "AUTO"
+    ],
+    "Belastning": [
+      "INNENDORS",
+      "TRENINGSOMRAADE",
+      "BANE",
+      "KONKURRANSE"
+    ],
+    "Press": [
+      "ALENE",
+      "OBSERVERT",
+      "KONKURRANSE",
+      "TURNERING"
+    ],
+    "OmradeDimensjon": [
+      "SIKTE",
+      "STARTRETNING",
+      "KURVE",
+      "HOYDE",
+      "TREFFPUNKT",
+      "LENGDEKONTROLL",
+      "SPINN",
+      "LANDINGSPUNKT",
+      "UTRULLING",
+      "KOLLEVALG",
+      "BOUNCE_BRUK",
+      "SANDINNGANG",
+      "LIE_VARIASJON",
+      "GREENLESING",
+      "BALLSTART",
+      "SPILLEFORMAT",
+      "STRATEGIOPPGAVE"
+    ],
+    "SandTrinn": [
+      "UTEN_BALL_I_SAND",
+      "MED_BALL"
+    ],
+    "InnslagType": [
+      "DRILL",
+      "OVELSE",
+      "TEST",
+      "TEKNISK_OPPGAVE"
+    ],
+    "OktAvbruddAarsak": [
+      "SYK",
+      "SKADE",
+      "REISE",
+      "VAER",
+      "ANNET"
+    ],
+    "KondisjonSegmentType": [
+      "OPPVARMING",
+      "DRAG",
+      "HVILE",
+      "NEDJOGG"
+    ],
+    "FasilitetType": [
+      "KLUBBANLEGG",
+      "SIMULATOR",
+      "TRENINGSSENTER",
+      "HJEMME"
+    ],
     "TaskKategori": [
       "TEKNISK",
       "TAKTISK",
@@ -445,10 +509,13 @@
     ],
     "PeriodeType": [
       "GRUNN",
-      "SPESIALISERING",
+      "SPESIAL",
       "TURNERING",
       "EVALUERING",
-      "FERIE"
+      "TESTUKE",
+      "FERIE",
+      "TRENINGSSAMLING",
+      "HELDAGSSAMLING"
     ],
     "GoalCategory": [
       "OUTCOME",
@@ -504,11 +571,55 @@
       "RECOVERY",
       "DROP"
     ],
+    "EndShotKategori": [
+      "IN_PLAY",
+      "MINOR_MISS",
+      "MAJOR_MISS",
+      "GREEN_HIT",
+      "LETT",
+      "MIDDELS",
+      "VANSKELIG",
+      "PENALTY_1",
+      "PENALTY_2"
+    ],
+    "PuttBreakRetning": [
+      "VENSTRE_HOYRE",
+      "HOYRE_VENSTRE",
+      "OPPOVER",
+      "NEDOVER"
+    ],
+    "PuttSlopeAlvorlighet": [
+      "SVAK",
+      "MODERAT",
+      "KRAFTIG"
+    ],
+    "PuttLinjeMiss": [
+      "VENSTRE",
+      "HOYRE",
+      "PAA_LINJE"
+    ],
+    "PuttFartUtfall": [
+      "HOLED",
+      "FORBI",
+      "KORT",
+      "SONE_FORBI",
+      "SONE_KORT"
+    ],
     "TestVisibility": [
       "PRIVATE",
       "COACH",
       "GROUP",
       "ACADEMY"
+    ],
+    "TestWitnessStatus": [
+      "PENDING",
+      "ATTESTED",
+      "REJECTED"
+    ],
+    "TestAttestationMode": [
+      "DIGITAL",
+      "MANUAL",
+      "NONE"
     ],
     "TestSessionStatus": [
       "IN_PROGRESS",
@@ -674,6 +785,23 @@
       "PIN",
       "BLOCK",
       "PRIORITER"
+    ],
+    "SakKanal": [
+      "EPOST",
+      "SMS",
+      "IMESSAGE",
+      "TELEGRAM",
+      "ANROP",
+      "KALENDER",
+      "TASK",
+      "LYD"
+    ],
+    "SakStatus": [
+      "VENTER",
+      "GODKJENT",
+      "AVVIST",
+      "UTFORT",
+      "UTLOPT"
     ]
   }
 }
