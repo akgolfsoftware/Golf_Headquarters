@@ -433,7 +433,7 @@ Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>"
 - Test: `src/lib/runde-logg/bygg-shot-rader.test.ts` (ny fil — finnes ikke fra før)
 
 **Interfaces:**
-- Consumes: `utledShotType` (uendret), `meterTilFot` fra `@/lib/min-golf/format.ts`, `LoggetHull`/`LoggetSlag`/`PuttRegistrering` (Task 2), `node:crypto` `randomUUID`.
+- Consumes: `utledShotType` (uendret), `meterTilFot` fra `@/lib/min-golf/format`, `LoggetHull`/`LoggetSlag`/`PuttRegistrering` (Task 2), `node:crypto` `randomUUID`.
 - Produces: utvidet `ShotRad` (nå med `id: string`, `endShotKategori: EndShotKategori | null`), `PuttDetailRad`, `byggShotRader(hull: LoggetHull): ShotRad[]`, `splitShotRader(rader: ShotRad[]): { shots: Omit<ShotRad, "puttDetail">[]; putts: PuttDetailRad[] }` — brukes av Task 5.
 
 - [ ] **Step 1: Skriv failende test**
@@ -567,7 +567,7 @@ import type {
   ShotType,
   WindDir,
 } from "@/generated/prisma/enums";
-import { meterTilFot } from "@/lib/min-golf/format.ts";
+import { meterTilFot } from "@/lib/min-golf/format";
 
 /** Deterministisk ShotType fra kontekst — dokumentert konvensjon, ikke gjettverk. */
 export function utledShotType(
@@ -1213,16 +1213,12 @@ Legg til import øverst i `slag-editor.tsx`:
 
 ```typescript
 import { EndShotKategoriVelger, PuttDetaljerVelger } from "./slag-resultat-detaljer";
-import { utledShotType } from "@/lib/runde-logg/end-shot-kategori";
+import { utledShotType } from "@/lib/runde-logg/bygg-shot-rader";
 import type { EndShotKategori } from "@/generated/prisma/enums";
 import type { PuttRegistrering } from "@/lib/runde-logg/types";
 ```
 
-`utledShotType` bor i `bygg-shot-rader.ts`, ikke `end-shot-kategori.ts` (rett import):
-
-```typescript
-import { utledShotType } from "@/lib/runde-logg/bygg-shot-rader";
-```
+`utledShotType` bor i `bygg-shot-rader.ts` (Task 4), ikke i `end-shot-kategori.ts` (Task 3) — bruk kun importen over.
 
 Legg til to nye `useState` rett under de eksisterende (etter `const [notat, setNotat] = useState("");`):
 
