@@ -117,12 +117,18 @@ Hver fase avsluttes med `npm run verify` grønt og egen commit/PR. Ingen fase sl
    via *prosessens* lokale TZ — ikke en feil i selve migreringen eller i appens Prisma-lag
    (som konsekvent bruker UTC-tolkning av naive tidsstempler). Ikke undersøkt videre — påvirker
    kun engangs-diagnoseskript, ikke kjørende kode.
-3. **Ny-skriving stanses mot `TrainingPlanSession`.** `/portal/planlegge/workbench/actions.ts`
-   og støttefilene (`session-actions.ts`, `session-update.ts`, `session-move.ts`,
-   `duplicate-week.ts`, `duplicate-session.ts`, `apply-template-actions.ts`) skrives om til å
-   bruke `wb-actions.ts`/`domain/workbench/operations.ts` i stedet for å konstruere egne
-   `TrainingPlanSession`-spørringer. Dette er den STØRSTE enkeltfasen — samme rute
-   (`/portal/planlegge/workbench`), ny modell under.
+3. **Ny-skriving stanses mot `TrainingPlanSession`. IKKE STARTET — kartlagt 16.09.2026, viste
+   seg større enn antatt.** `/portal/planlegge/workbench/page.tsx` rendrer allerede riktig
+   komponent (`WorkbenchV2`, samme som OW-3b peker mot), men henter data via
+   `load-context.ts` → `load-workbench.ts` (1048 linjer) og skriver via
+   `src/app/portal/planlegge/workbench/actions.ts` (720 linjer) — begge mot
+   `TrainingPlanSession`, med egen tolkning av status, serie og godkjenning.
+   `wb-actions.ts` (motoren som allerede betjener `/admin/workbench/[playerId]` via
+   `WorkbenchUke`, IKKE `WorkbenchV2`) har en annen datastruktur — det finnes ingen
+   direkte snarvei. En trygg omlegging krever en felt-for-felt re-implementasjon av disse
+   ~1700 linjene mot `workbench_sessions`, og bør gjøres i en økt der resultatet kan
+   testes i nettleseren underveis — ikke kun typesjekkes blindt. Dette er STØRSTE
+   enkeltfasen, som antatt, men konkret større i praksis enn kartleggingen i §1 fanget opp.
 4. **`v2-sync.ts` re-pekes.** Speilingen til `TrainingSessionV2` bytter kilde fra
    `TrainingPlanSession` til `WorkbenchSession`. `resolve-live-session.ts` går fra tre til to
    trinn.
