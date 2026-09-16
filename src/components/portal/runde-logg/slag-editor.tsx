@@ -17,6 +17,7 @@ import { Caps, Icon } from "@/components/v2";
 import { AvstandVelger, type AvstandKontekst } from "./avstand-velger";
 import { EndShotKategoriVelger, PuttDetaljerVelger } from "./slag-resultat-detaljer";
 import { utledShotType } from "@/lib/runde-logg/bygg-shot-rader";
+import { gyldigeEndShotKategorier } from "@/lib/runde-logg/end-shot-kategori";
 import type { EndShotKategori } from "@/generated/prisma/enums";
 import type { PuttRegistrering } from "@/lib/runde-logg/types";
 
@@ -112,7 +113,11 @@ export function SlagEditor({
     ...(kolle.trim() ? { kolle: kolle.trim() } : {}),
     ...(vind ? { vind } : {}),
     ...(notat.trim() ? { notat: notat.trim() } : {}),
-    ...(!erPutt && endShotKategori ? { endShotKategori } : {}),
+    ...(!erPutt &&
+    endShotKategori &&
+    gyldigeEndShotKategorier(shotType, straffe).includes(endShotKategori)
+      ? { endShotKategori }
+      : {}),
     ...(erPutt && putt ? { putt } : {}),
   });
 
