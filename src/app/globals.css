@@ -699,12 +699,14 @@ html[data-v2-tema="dark"] ::selection {
  * Tokenlaget bak `AgencyOS Workbench v0.12.dc.html`. Importen endrer NULL
  * piksler av seg selv: ingen eksisterende skjerm leser disse navnene. De blir
  * først synlige gjennom AK_SCOPE (src/components/workbench/wb-ak-scope.ts),
- * som mapper dem inn på --v2-*/--color-* lokalt på Workbench-roten — samme
- * metode som TL_SCOPE bruker for Train-lock.
+ * som mapper dem inn på v2- og color-variablene lokalt på Workbench-roten —
+ * samme metode som TL_SCOPE bruker for Train-lock.
+ * (Stjerne umiddelbart fulgt av skråstrek lukker en CSS-kommentar, så
+ * glob-mønstre som «v2-stjerne-skråstrek» skrives ut med ord her.)
  *
  * MERK NAVNEFELLA: merkevaren over eier `--ak-grunn` og `--ak-grunn-senk`
  * (bakgrunnsfarger i marked/(marketing)). Designsystemet her eier
- * `--ak-grunn-farge-*`, `--ak-grunn-typografi-*`, `--ak-grunn-radius-*` osv.,
+ * `--ak-grunn-farge-…`, `--ak-grunn-typografi-…`, `--ak-grunn-radius-…` osv.,
  * der «grunn» betyr primitivlaget. Navnene er ulike strenger og kolliderer
  * ikke, men de ligner — les hele variabelnavnet før du antar hvilket sett en
  * verdi kommer fra.
