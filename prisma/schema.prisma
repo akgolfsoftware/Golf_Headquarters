@@ -1728,6 +1728,45 @@ enum ShotType {
   DROP
 }
 
+enum EndShotKategori {
+  IN_PLAY
+  MINOR_MISS
+  MAJOR_MISS
+  GREEN_HIT
+  LETT
+  MIDDELS
+  VANSKELIG
+  PENALTY_1
+  PENALTY_2
+}
+
+enum PuttBreakRetning {
+  VENSTRE_HOYRE
+  HOYRE_VENSTRE
+  OPPOVER
+  NEDOVER
+}
+
+enum PuttSlopeAlvorlighet {
+  SVAK
+  MODERAT
+  KRAFTIG
+}
+
+enum PuttLinjeMiss {
+  VENSTRE
+  HOYRE
+  PAA_LINJE
+}
+
+enum PuttFartUtfall {
+  HOLED
+  FORBI
+  KORT
+  SONE_FORBI
+  SONE_KORT
+}
+
 model Shot {
   id            String   @id @default(cuid())
   roundId       String
@@ -1754,11 +1793,29 @@ model Shot {
   targetY     Float?
   mentalScore Int?   @db.SmallInt // 1-5
 
+  endShotKategori EndShotKategori?
+  puttDetail      PuttDetail?
+
   round Round @relation(fields: [roundId], references: [id], onDelete: Cascade)
 
   @@unique([roundId, holeNumber, shotNumber])
   @@index([roundId, holeNumber])
   @@map("shots")
+}
+
+model PuttDetail {
+  id               String                @id @default(cuid())
+  shotId           String                @unique
+  lengdeFot        Float
+  breakRetning     PuttBreakRetning
+  slopeAlvorlighet PuttSlopeAlvorlighet
+  linjeMiss        PuttLinjeMiss?
+  fartUtfall       PuttFartUtfall
+  createdAt        DateTime              @default(now())
+
+  shot Shot @relation(fields: [shotId], references: [id], onDelete: Cascade)
+
+  @@map("putt_details")
 }
 
 // Persistert live-tapper: baller per kølle per plan-økt (skrives debounced fra
