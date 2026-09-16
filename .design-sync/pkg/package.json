@@ -1,0 +1,8 @@
+{
+  "name": "akgolf-hq-komponenter",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Virtuell pakke for Claude Design-synken: peker på appens ekte komponenter i src/components. Ingen kode bor her.",
+  "module": "index.ts",
+  "types": "types/.design-sync/pkg/index.d.ts"
+}

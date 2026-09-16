@@ -1,0 +1,1 @@
+../../../../src/components/v2/fysisk.tsx

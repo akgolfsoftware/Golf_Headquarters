@@ -1,0 +1,48 @@
+// GENERERT av .design-sync/gen-scope.mjs — ikke rediger for hånd.
+// Eksportlista for Claude Design-synken: appens ekte komponenter, ingen reimplementasjon.
+import "./process-shim"; // må stå først: next/link leser process.env ved lasting
+export { Button } from "../../src/components/ui/button";
+export { Input } from "../../src/components/ui/input";
+export { Textarea } from "../../src/components/ui/textarea";
+export { Select } from "../../src/components/ui/select";
+export { Checkbox } from "../../src/components/ui/checkbox";
+export { Radio, RadioGroup } from "../../src/components/ui/radio";
+export { Switch } from "../../src/components/ui/switch";
+export { Skeleton, SkeletonText, SkeletonCard } from "../../src/components/ui/skeleton";
+export { KPICard } from "../../src/components/ui/kpi-card";
+export { Tabs, TabList, Tab, TabPanel } from "../../src/components/ui/tabs";
+export { Breadcrumb } from "../../src/components/ui/breadcrumb";
+export { ProgressBar } from "../../src/components/ui/progress-bar";
+export { ProgressRing } from "../../src/components/ui/progress-ring";
+export { Tooltip } from "../../src/components/ui/tooltip";
+export { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogBody, DialogFooter, DialogClose } from "../../src/components/ui/dialog";
+export { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter, SheetClose } from "../../src/components/ui/sheet";
+export { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuCheckboxItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuShortcut } from "../../src/components/ui/dropdown-menu";
+export { LogoAK, Caps, Tittel, DeltaChip, StatusPill, Tag, SevChip, AkseChip, MikroMeta, Kort, TallHero, KpiFlis, PillTabs, PillVelger, FilterChips, CTAPill, TilbakeLenke, Knapp, AvatarInit, AvatarFoto, AmbientBakgrunn, Rad, FordelingHode, FordelingRad, AkseBar, Prikker, NivaSkala, Trend, InnsiktChip, TomTilstand, IkonRail, Sidebar, BunnNav, Skjerm } from "../../src/components/v2/core";
+export { Icon } from "../../src/components/v2/icon";
+export { RingMaaler, ProgresjonsBar, VarmeKart, DataTabell, SgTotal, SgKategorier, SgTrendKort, MiniSpark, Scorekort, TigerFive, Gapping, LaunchWindow, StrikeSmash, SlagLekkasje, Diagnose, NesteFokus, KategoriKrav, SpillerTilstand, Pyramide, PercentilBar } from "../../src/components/v2/datavis";
+export { CompareChart, HullStripe, LengdeAvvik, LoadChart, Radar, RadarProfil, StatStrip, DispersionPlot, TrajectoryPlot, KolleStatKort, TrackmanSammendrag, KategoriFjell, KategoriStige, TidsPyramide, FeaturedCard } from "../../src/components/v2/spesialviz";
+export { OktKort, OektKort, BookingKort, KvitteringKort, VarselRad, MeldingsTraad, DeltakerListe, TestResultatKort, TurneringNedtelling, FakturaRad, SamtykkeKort, SpillerKort, FokusSpillerBlokk, AnbefalingsKort, LiveBar, VideoKort } from "../../src/components/v2/domene";
+export { Bit, LFaseBadge, AKFormelChip, BenchmarkBadge, DiffKort, FleksMerke, LiveStatus, NivaStige, OppgaveKort, SGSplittKort, VelvaereKort, TidsVelger, BarnProgresjonKort } from "../../src/components/v2/domene2";
+export { Inndata, ProfilFelt, Velger, TekstOmraade, Bryter, Avkryssing, RadioGruppe, SegmentertFaner, ValgKort, Glider, Stegteller, DatoVelger, KodeInput, SkjemaFelt, Veiviser, NpsSkala, IkonChipVelger } from "../../src/components/v2/skjema";
+export { Modal, Ark, Skuff, Popover, Verktoytips, Toast, Banner, KommandoPalett } from "../../src/components/v2/overlays";
+export { SpillerGruppeVeksler, Paginering, Trekkspill, Skjelett, Skilje, Stegviser, KanbanKolonne, HjelpPopover, ValideringsChip, DataForhaandsvisning, TemaVeksler } from "../../src/components/v2/struktur";
+export { UkeGrid, TidsGrid, Tidslinje, Periodeplan, MndKalender, DagStripe, AgendaRad, VisningsVelger } from "../../src/components/v2/kalender";
+export { TimeGrid } from "../../src/components/v2/time-grid";
+export { MasterDetalj, Inspektorpanel, InspektorTom, InspektorKpi, InspektorBlokk, InspektorLinje } from "../../src/components/v2/inspektorpanel";
+export { AiMerke, SamtaleBoble, SamtaleSkriver, SamtaleFeil, SendKnapp, Skrivefelt, ForslagRad } from "../../src/components/v2/samtale";
+export { MuskelgruppeChip, SettRepsLogger, TonnasjeHero, IntervallBlokk, PulsSoneVelger, FysOktKort, AutoProgresjon } from "../../src/components/v2/fysisk";
+export { SporChip, PRail, KravRad, MilepaelKort, LaeringsTrapp, UtviklingsplanOversikt, TalentProfil, CoachGodkjenning } from "../../src/components/v2/utviklingsplan";
+export { TipTall, AiTipKort, ListeIkon, UlestPrikk, RadMeta } from "../../src/components/v2/tilbakemelding";
+export { HjelpTips, HvorforDette } from "../../src/components/v2/hjelp";
+export { Ark as WbArk, ZoomBrodsmule, FlyttTilArk, PreviewArk, Ring, MaalStripe, SerieVelger, EgentreningVindu } from "../../src/components/v2/wb-mobil";
+export { PalettSok } from "../../src/components/v2/wb-composer";
+export { Composer } from "../../src/components/v2/composer";
+export { BunnArk } from "../../src/components/v2/bunn-ark";
+export { Dropzone } from "../../src/components/v2/dropzone";
+export { UkeStripe } from "../../src/components/v2/compliance-viz";
+export { PyramideSyklusChip } from "../../src/components/v2/pyramide-syklus";
+export { V2Laster } from "../../src/components/v2/laster";
+export { V2Feil } from "../../src/components/v2/feil-laste";
+export { TemaHeaderKnapp } from "../../src/components/v2/tema";
+export { ToppbarHoyde } from "../../src/components/v2/toppbar-hoyde";

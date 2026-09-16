@@ -1,0 +1,468 @@
+{
+  "projectId": "1d6130c4-d4e7-4595-a000-714fe3a5e659",
+  "shape": "package",
+  "pkg": "akgolf-hq-komponenter",
+  "globalName": "AkGolfHQ",
+  "buildCmd": "node .design-sync/build.mjs",
+  "srcDir": "scope",
+  "tsconfig": "../../tsconfig.json",
+  "cssEntry": "css/entry.css",
+  "extraFonts": [
+    "fonts/fonts-local.css"
+  ],
+  "guidelinesGlob": [
+    "../../docs/ordbok-master-trening.md",
+    "../../.claude/skills/ak-hq-design/references/atletisk-intelligens.md"
+  ],
+  "overrides": {
+    "Dialog": {
+      "cardMode": "single",
+      "viewport": "900x640",
+      "primaryStory": "NyOkt"
+    },
+    "Sheet": {
+      "cardMode": "single",
+      "viewport": "900x640"
+    },
+    "SheetContent": {
+      "cardMode": "single",
+      "viewport": "900x640"
+    },
+    "SheetHeader": {
+      "cardMode": "single",
+      "viewport": "900x640"
+    },
+    "SheetTitle": {
+      "cardMode": "single",
+      "viewport": "900x640"
+    },
+    "SheetDescription": {
+      "cardMode": "single",
+      "viewport": "900x640"
+    },
+    "SheetFooter": {
+      "cardMode": "single",
+      "viewport": "900x640"
+    },
+    "SheetClose": {
+      "cardMode": "single",
+      "viewport": "900x640"
+    },
+    "DialogContent": {
+      "cardMode": "single",
+      "viewport": "900x640"
+    },
+    "DialogHeader": {
+      "cardMode": "single",
+      "viewport": "900x640"
+    },
+    "DialogTitle": {
+      "cardMode": "single",
+      "viewport": "900x640"
+    },
+    "DialogDescription": {
+      "cardMode": "single",
+      "viewport": "900x640"
+    },
+    "DialogBody": {
+      "cardMode": "single",
+      "viewport": "900x640"
+    },
+    "DialogFooter": {
+      "cardMode": "single",
+      "viewport": "900x640"
+    },
+    "DialogClose": {
+      "cardMode": "single",
+      "viewport": "900x640"
+    },
+    "Modal": {
+      "cardMode": "single",
+      "viewport": "900x640"
+    },
+    "Ark": {
+      "cardMode": "single",
+      "viewport": "900x640"
+    },
+    "Skuff": {
+      "cardMode": "single",
+      "viewport": "900x640"
+    },
+    "Popover": {
+      "cardMode": "single",
+      "viewport": "900x640"
+    },
+    "Verktoytips": {
+      "cardMode": "single",
+      "viewport": "900x640"
+    },
+    "Toast": {
+      "cardMode": "single",
+      "viewport": "900x640"
+    },
+    "Banner": {
+      "cardMode": "single",
+      "viewport": "900x640"
+    },
+    "KommandoPalett": {
+      "cardMode": "single",
+      "viewport": "900x640"
+    },
+    "BunnArk": {
+      "cardMode": "single",
+      "viewport": "900x640"
+    },
+    "WbArk": {
+      "cardMode": "single",
+      "viewport": "900x640"
+    },
+    "PreviewArk": {
+      "cardMode": "single",
+      "viewport": "900x640"
+    },
+    "FlyttTilArk": {
+      "cardMode": "single",
+      "viewport": "900x640"
+    },
+    "DropdownMenu": {
+      "cardMode": "single",
+      "viewport": "900x640"
+    },
+    "DropdownMenuTrigger": {
+      "cardMode": "single",
+      "viewport": "900x640"
+    },
+    "DropdownMenuContent": {
+      "cardMode": "single",
+      "viewport": "900x640"
+    },
+    "DropdownMenuItem": {
+      "cardMode": "single",
+      "viewport": "900x640"
+    },
+    "DropdownMenuCheckboxItem": {
+      "cardMode": "single",
+      "viewport": "900x640"
+    },
+    "DropdownMenuLabel": {
+      "cardMode": "single",
+      "viewport": "900x640"
+    },
+    "DropdownMenuSeparator": {
+      "cardMode": "single",
+      "viewport": "900x640"
+    },
+    "DropdownMenuShortcut": {
+      "cardMode": "single",
+      "viewport": "900x640"
+    },
+    "DataTabell": {
+      "cardMode": "column"
+    },
+    "UkeGrid": {
+      "cardMode": "column"
+    },
+    "TidsGrid": {
+      "cardMode": "column"
+    },
+    "Tidslinje": {
+      "cardMode": "column"
+    },
+    "Periodeplan": {
+      "cardMode": "column"
+    },
+    "MndKalender": {
+      "cardMode": "column"
+    },
+    "TimeGrid": {
+      "cardMode": "column"
+    },
+    "Scorekort": {
+      "cardMode": "column"
+    },
+    "VarmeKart": {
+      "cardMode": "column"
+    },
+    "MasterDetalj": {
+      "cardMode": "column"
+    },
+    "Inspektorpanel": {
+      "cardMode": "column"
+    },
+    "UtviklingsplanOversikt": {
+      "cardMode": "column"
+    },
+    "KanbanKolonne": {
+      "cardMode": "column"
+    },
+    "Sidebar": {
+      "cardMode": "column"
+    },
+    "IkonRail": {
+      "cardMode": "column"
+    },
+    "Skjerm": {
+      "cardMode": "column"
+    },
+    "AmbientBakgrunn": {
+      "cardMode": "column"
+    },
+    "Veiviser": {
+      "cardMode": "column"
+    },
+    "Composer": {
+      "cardMode": "column"
+    },
+    "PalettSok": {
+      "cardMode": "column"
+    },
+    "EgentreningVindu": {
+      "cardMode": "column"
+    },
+    "SerieVelger": {
+      "cardMode": "column"
+    }
+  },
+  "componentSrcMap": {
+    "AgendaRad": "scope/kalender/kalender.tsx",
+    "AiMerke": "scope/samtale/samtale.tsx",
+    "AiTipKort": "scope/tilbakemelding/tilbakemelding.tsx",
+    "AKFormelChip": "scope/domene/domene2.tsx",
+    "AkseBar": "scope/kjerne/core.tsx",
+    "AkseChip": "scope/kjerne/core.tsx",
+    "AmbientBakgrunn": "scope/kjerne/core.tsx",
+    "AnbefalingsKort": "scope/domene/domene.tsx",
+    "Ark": "scope/overlegg/overlays.tsx",
+    "AutoProgresjon": "scope/fysisk/fysisk.tsx",
+    "AvatarFoto": "scope/kjerne/core.tsx",
+    "AvatarInit": "scope/kjerne/core.tsx",
+    "Avkryssing": "scope/skjema/skjema.tsx",
+    "Banner": "scope/overlegg/overlays.tsx",
+    "BarnProgresjonKort": "scope/domene/domene2.tsx",
+    "BenchmarkBadge": "scope/domene/domene2.tsx",
+    "Bit": "scope/domene/domene2.tsx",
+    "BookingKort": "scope/domene/domene.tsx",
+    "Breadcrumb": "scope/molekyler/breadcrumb.tsx",
+    "Bryter": "scope/skjema/skjema.tsx",
+    "BunnArk": "scope/workbench/bunn-ark.tsx",
+    "BunnNav": "scope/kjerne/core.tsx",
+    "Button": "scope/primitiver/button.tsx",
+    "Caps": "scope/kjerne/core.tsx",
+    "Checkbox": "scope/primitiver/checkbox.tsx",
+    "CoachGodkjenning": "scope/utviklingsplan/utviklingsplan.tsx",
+    "CompareChart": "scope/spesialviz/spesialviz.tsx",
+    "Composer": "scope/workbench/composer.tsx",
+    "CTAPill": "scope/kjerne/core.tsx",
+    "DagStripe": "scope/kalender/kalender.tsx",
+    "DataForhaandsvisning": "scope/struktur/struktur.tsx",
+    "DataTabell": "scope/datavis/datavis.tsx",
+    "DatoVelger": "scope/skjema/skjema.tsx",
+    "DeltaChip": "scope/kjerne/core.tsx",
+    "DeltakerListe": "scope/domene/domene.tsx",
+    "Diagnose": "scope/datavis/datavis.tsx",
+    "Dialog": "scope/dialoger/dialog.tsx",
+    "DialogBody": "scope/dialoger/dialog.tsx",
+    "DialogClose": "scope/dialoger/dialog.tsx",
+    "DialogContent": "scope/dialoger/dialog.tsx",
+    "DialogDescription": "scope/dialoger/dialog.tsx",
+    "DialogFooter": "scope/dialoger/dialog.tsx",
+    "DialogHeader": "scope/dialoger/dialog.tsx",
+    "DialogTitle": "scope/dialoger/dialog.tsx",
+    "DiffKort": "scope/domene/domene2.tsx",
+    "DispersionPlot": "scope/spesialviz/spesialviz.tsx",
+    "DropdownMenu": "scope/dialoger/dropdown-menu.tsx",
+    "DropdownMenuCheckboxItem": "scope/dialoger/dropdown-menu.tsx",
+    "DropdownMenuContent": "scope/dialoger/dropdown-menu.tsx",
+    "DropdownMenuItem": "scope/dialoger/dropdown-menu.tsx",
+    "DropdownMenuLabel": "scope/dialoger/dropdown-menu.tsx",
+    "DropdownMenuSeparator": "scope/dialoger/dropdown-menu.tsx",
+    "DropdownMenuShortcut": "scope/dialoger/dropdown-menu.tsx",
+    "DropdownMenuTrigger": "scope/dialoger/dropdown-menu.tsx",
+    "Dropzone": "scope/workbench/dropzone.tsx",
+    "EgentreningVindu": "scope/workbench/wb-mobil.tsx",
+    "FakturaRad": "scope/domene/domene.tsx",
+    "FeaturedCard": "scope/spesialviz/spesialviz.tsx",
+    "FilterChips": "scope/kjerne/core.tsx",
+    "FleksMerke": "scope/domene/domene2.tsx",
+    "FlyttTilArk": "scope/workbench/wb-mobil.tsx",
+    "FokusSpillerBlokk": "scope/domene/domene.tsx",
+    "FordelingHode": "scope/kjerne/core.tsx",
+    "FordelingRad": "scope/kjerne/core.tsx",
+    "ForslagRad": "scope/samtale/samtale.tsx",
+    "FysOktKort": "scope/fysisk/fysisk.tsx",
+    "Gapping": "scope/datavis/datavis.tsx",
+    "Glider": "scope/skjema/skjema.tsx",
+    "HjelpPopover": "scope/struktur/struktur.tsx",
+    "HjelpTips": "scope/tilbakemelding/hjelp.tsx",
+    "HullStripe": "scope/spesialviz/spesialviz.tsx",
+    "HvorforDette": "scope/tilbakemelding/hjelp.tsx",
+    "Icon": "scope/ikoner/icon.tsx",
+    "IkonChipVelger": "scope/skjema/skjema.tsx",
+    "IkonRail": "scope/kjerne/core.tsx",
+    "Inndata": "scope/skjema/skjema.tsx",
+    "InnsiktChip": "scope/kjerne/core.tsx",
+    "Input": "scope/primitiver/input.tsx",
+    "InspektorBlokk": "scope/inspektor/inspektorpanel.tsx",
+    "InspektorKpi": "scope/inspektor/inspektorpanel.tsx",
+    "InspektorLinje": "scope/inspektor/inspektorpanel.tsx",
+    "Inspektorpanel": "scope/inspektor/inspektorpanel.tsx",
+    "InspektorTom": "scope/inspektor/inspektorpanel.tsx",
+    "IntervallBlokk": "scope/fysisk/fysisk.tsx",
+    "KanbanKolonne": "scope/struktur/struktur.tsx",
+    "KategoriFjell": "scope/spesialviz/spesialviz.tsx",
+    "KategoriKrav": "scope/datavis/datavis.tsx",
+    "KategoriStige": "scope/spesialviz/spesialviz.tsx",
+    "Knapp": "scope/kjerne/core.tsx",
+    "KodeInput": "scope/skjema/skjema.tsx",
+    "KolleStatKort": "scope/spesialviz/spesialviz.tsx",
+    "KommandoPalett": "scope/overlegg/overlays.tsx",
+    "Kort": "scope/kjerne/core.tsx",
+    "KPICard": "scope/molekyler/kpi-card.tsx",
+    "KpiFlis": "scope/kjerne/core.tsx",
+    "KravRad": "scope/utviklingsplan/utviklingsplan.tsx",
+    "KvitteringKort": "scope/domene/domene.tsx",
+    "LaeringsTrapp": "scope/utviklingsplan/utviklingsplan.tsx",
+    "LaunchWindow": "scope/datavis/datavis.tsx",
+    "LengdeAvvik": "scope/spesialviz/spesialviz.tsx",
+    "LFaseBadge": "scope/domene/domene2.tsx",
+    "ListeIkon": "scope/tilbakemelding/tilbakemelding.tsx",
+    "LiveBar": "scope/domene/domene.tsx",
+    "LiveStatus": "scope/domene/domene2.tsx",
+    "LoadChart": "scope/spesialviz/spesialviz.tsx",
+    "LogoAK": "scope/kjerne/core.tsx",
+    "MaalStripe": "scope/workbench/wb-mobil.tsx",
+    "MasterDetalj": "scope/inspektor/inspektorpanel.tsx",
+    "MeldingsTraad": "scope/domene/domene.tsx",
+    "MikroMeta": "scope/kjerne/core.tsx",
+    "MilepaelKort": "scope/utviklingsplan/utviklingsplan.tsx",
+    "MiniSpark": "scope/datavis/datavis.tsx",
+    "MndKalender": "scope/kalender/kalender.tsx",
+    "Modal": "scope/overlegg/overlays.tsx",
+    "MuskelgruppeChip": "scope/fysisk/fysisk.tsx",
+    "NesteFokus": "scope/datavis/datavis.tsx",
+    "NivaSkala": "scope/kjerne/core.tsx",
+    "NivaStige": "scope/domene/domene2.tsx",
+    "NpsSkala": "scope/skjema/skjema.tsx",
+    "OektKort": "scope/domene/domene.tsx",
+    "OktKort": "scope/domene/domene.tsx",
+    "OppgaveKort": "scope/domene/domene2.tsx",
+    "Paginering": "scope/struktur/struktur.tsx",
+    "PalettSok": "scope/workbench/wb-composer.tsx",
+    "PercentilBar": "scope/datavis/datavis.tsx",
+    "Periodeplan": "scope/kalender/kalender.tsx",
+    "PillTabs": "scope/kjerne/core.tsx",
+    "PillVelger": "scope/kjerne/core.tsx",
+    "Popover": "scope/overlegg/overlays.tsx",
+    "PRail": "scope/utviklingsplan/utviklingsplan.tsx",
+    "PreviewArk": "scope/workbench/wb-mobil.tsx",
+    "Prikker": "scope/kjerne/core.tsx",
+    "ProfilFelt": "scope/skjema/skjema.tsx",
+    "ProgresjonsBar": "scope/datavis/datavis.tsx",
+    "ProgressBar": "scope/molekyler/progress-bar.tsx",
+    "ProgressRing": "scope/molekyler/progress-ring.tsx",
+    "PulsSoneVelger": "scope/fysisk/fysisk.tsx",
+    "Pyramide": "scope/datavis/datavis.tsx",
+    "PyramideSyklusChip": "scope/workbench/pyramide-syklus.tsx",
+    "Rad": "scope/kjerne/core.tsx",
+    "Radar": "scope/spesialviz/spesialviz.tsx",
+    "RadarProfil": "scope/spesialviz/spesialviz.tsx",
+    "Radio": "scope/primitiver/radio.tsx",
+    "RadioGroup": "scope/primitiver/radio.tsx",
+    "RadioGruppe": "scope/skjema/skjema.tsx",
+    "RadMeta": "scope/tilbakemelding/tilbakemelding.tsx",
+    "Ring": "scope/workbench/wb-mobil.tsx",
+    "RingMaaler": "scope/datavis/datavis.tsx",
+    "SamtaleBoble": "scope/samtale/samtale.tsx",
+    "SamtaleFeil": "scope/samtale/samtale.tsx",
+    "SamtaleSkriver": "scope/samtale/samtale.tsx",
+    "SamtykkeKort": "scope/domene/domene.tsx",
+    "Scorekort": "scope/datavis/datavis.tsx",
+    "SegmentertFaner": "scope/skjema/skjema.tsx",
+    "Select": "scope/primitiver/select.tsx",
+    "SendKnapp": "scope/samtale/samtale.tsx",
+    "SerieVelger": "scope/workbench/wb-mobil.tsx",
+    "SettRepsLogger": "scope/fysisk/fysisk.tsx",
+    "SevChip": "scope/kjerne/core.tsx",
+    "SgKategorier": "scope/datavis/datavis.tsx",
+    "SGSplittKort": "scope/domene/domene2.tsx",
+    "SgTotal": "scope/datavis/datavis.tsx",
+    "SgTrendKort": "scope/datavis/datavis.tsx",
+    "Sheet": "scope/dialoger/sheet.tsx",
+    "SheetClose": "scope/dialoger/sheet.tsx",
+    "SheetContent": "scope/dialoger/sheet.tsx",
+    "SheetDescription": "scope/dialoger/sheet.tsx",
+    "SheetFooter": "scope/dialoger/sheet.tsx",
+    "SheetHeader": "scope/dialoger/sheet.tsx",
+    "SheetTitle": "scope/dialoger/sheet.tsx",
+    "Sidebar": "scope/kjerne/core.tsx",
+    "Skeleton": "scope/primitiver/skeleton.tsx",
+    "SkeletonCard": "scope/primitiver/skeleton.tsx",
+    "SkeletonText": "scope/primitiver/skeleton.tsx",
+    "Skilje": "scope/struktur/struktur.tsx",
+    "Skjelett": "scope/struktur/struktur.tsx",
+    "SkjemaFelt": "scope/skjema/skjema.tsx",
+    "Skjerm": "scope/kjerne/core.tsx",
+    "Skrivefelt": "scope/samtale/samtale.tsx",
+    "Skuff": "scope/overlegg/overlays.tsx",
+    "SlagLekkasje": "scope/datavis/datavis.tsx",
+    "SpillerGruppeVeksler": "scope/struktur/struktur.tsx",
+    "SpillerKort": "scope/domene/domene.tsx",
+    "SpillerTilstand": "scope/datavis/datavis.tsx",
+    "SporChip": "scope/utviklingsplan/utviklingsplan.tsx",
+    "StatStrip": "scope/spesialviz/spesialviz.tsx",
+    "StatusPill": "scope/kjerne/core.tsx",
+    "Stegteller": "scope/skjema/skjema.tsx",
+    "Stegviser": "scope/struktur/struktur.tsx",
+    "StrikeSmash": "scope/datavis/datavis.tsx",
+    "Switch": "scope/primitiver/switch.tsx",
+    "Tab": "scope/molekyler/tabs.tsx",
+    "TabList": "scope/molekyler/tabs.tsx",
+    "TabPanel": "scope/molekyler/tabs.tsx",
+    "Tabs": "scope/molekyler/tabs.tsx",
+    "Tag": "scope/kjerne/core.tsx",
+    "TalentProfil": "scope/utviklingsplan/utviklingsplan.tsx",
+    "TallHero": "scope/kjerne/core.tsx",
+    "TekstOmraade": "scope/skjema/skjema.tsx",
+    "TemaHeaderKnapp": "scope/skall/tema.tsx",
+    "TemaVeksler": "scope/struktur/struktur.tsx",
+    "TestResultatKort": "scope/domene/domene.tsx",
+    "Textarea": "scope/primitiver/textarea.tsx",
+    "TidsGrid": "scope/kalender/kalender.tsx",
+    "Tidslinje": "scope/kalender/kalender.tsx",
+    "TidsPyramide": "scope/spesialviz/spesialviz.tsx",
+    "TidsVelger": "scope/domene/domene2.tsx",
+    "TigerFive": "scope/datavis/datavis.tsx",
+    "TilbakeLenke": "scope/kjerne/core.tsx",
+    "TimeGrid": "scope/kalender/time-grid.tsx",
+    "TipTall": "scope/tilbakemelding/tilbakemelding.tsx",
+    "Tittel": "scope/kjerne/core.tsx",
+    "Toast": "scope/overlegg/overlays.tsx",
+    "TomTilstand": "scope/kjerne/core.tsx",
+    "TonnasjeHero": "scope/fysisk/fysisk.tsx",
+    "Tooltip": "scope/molekyler/tooltip.tsx",
+    "ToppbarHoyde": "scope/skall/toppbar-hoyde.tsx",
+    "TrackmanSammendrag": "scope/spesialviz/spesialviz.tsx",
+    "TrajectoryPlot": "scope/spesialviz/spesialviz.tsx",
+    "Trekkspill": "scope/struktur/struktur.tsx",
+    "Trend": "scope/kjerne/core.tsx",
+    "TurneringNedtelling": "scope/domene/domene.tsx",
+    "UkeGrid": "scope/kalender/kalender.tsx",
+    "UkeStripe": "scope/workbench/compliance-viz.tsx",
+    "UlestPrikk": "scope/tilbakemelding/tilbakemelding.tsx",
+    "UtviklingsplanOversikt": "scope/utviklingsplan/utviklingsplan.tsx",
+    "V2Feil": "scope/tilstander/feil-laste.tsx",
+    "V2Laster": "scope/tilstander/laster.tsx",
+    "ValgKort": "scope/skjema/skjema.tsx",
+    "ValideringsChip": "scope/struktur/struktur.tsx",
+    "VarmeKart": "scope/datavis/datavis.tsx",
+    "VarselRad": "scope/domene/domene.tsx",
+    "Veiviser": "scope/skjema/skjema.tsx",
+    "Velger": "scope/skjema/skjema.tsx",
+    "VelvaereKort": "scope/domene/domene2.tsx",
+    "Verktoytips": "scope/overlegg/overlays.tsx",
+    "VideoKort": "scope/domene/domene.tsx",
+    "VisningsVelger": "scope/kalender/kalender.tsx",
+    "WbArk": "scope/workbench/wb-mobil.tsx",
+    "ZoomBrodsmule": "scope/workbench/wb-mobil.tsx"
+  }
+}

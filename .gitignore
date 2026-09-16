@@ -90,10 +90,9 @@ ds-bundle/
 .design-sync/learnings/
 .design-sync/node_modules
 .design-sync/compiled-tailwind.css
-# Regenererbar design-sync-scaffolding (skill bygger disse på nytt; stubs feiler lint).
+# Regenererbar design-sync-scaffolding (stubs bygges på nytt av skillen og feiler lint).
+# previews/ og overrides/ er håndlagde synk-innganger og SKAL committes (design-sync 16.09.2026).
 .design-sync/stubs/
-.design-sync/previews/
-.design-sync/overrides/
 tsconfig.sync.json
 tmp/
 .standardplan-work/
@@ -120,3 +119,6 @@ graphify-out/
 /.codex/config.toml
 /.codex/hooks.json
 /.codex/environments/
+.design-sync/pkg/types/
+.design-sync/pkg/css/
+.design-sync/pkg/fonts/

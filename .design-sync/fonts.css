@@ -1,0 +1,13 @@
+/* Fontene appen laster via next/font/google (src/app/layout.tsx), gjort tilgjengelige for
+   Claude Design som de samme CSS-variablene. Vektene speiler layout.tsx: Archivo har bevisst
+   ikke 700 (fontgjennomgangen F3, 15.09.2026). */
+@import url("https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Geist:wght@300..700&family=Geist+Mono:wght@400..600&family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400..700;1,400..700&family=Oswald:wght@500;600;700&family=Poppins:wght@400;500;600;700&display=swap");
+:root {
+  --font-poppins: "Poppins", system-ui, sans-serif;
+  --font-lora: "Lora", Georgia, serif;
+  --font-ibm-plex-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --font-archivo: "Archivo", system-ui, sans-serif;
+  --font-oswald: "Oswald", system-ui, sans-serif;
+  --font-geist-sans: "Geist", system-ui, sans-serif;
+  --font-geist-mono: "Geist Mono", ui-monospace, monospace;
+}

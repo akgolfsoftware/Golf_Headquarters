@@ -1,0 +1,1 @@
+../../../../src/components/v2/laster.tsx
