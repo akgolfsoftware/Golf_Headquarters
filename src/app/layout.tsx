@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { cookies, headers } from "next/headers";
-import { Geist, Geist_Mono, IBM_Plex_Mono, Lora, Poppins } from "next/font/google";
+import { Archivo, Geist, Geist_Mono, IBM_Plex_Mono, Lora, Oswald, Poppins } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { InstallPrompt } from "@/components/portal/install-prompt";
@@ -39,6 +39,30 @@ const ibmPlexMono = IBM_Plex_Mono({
   weight: ["400", "500", "600"],
   subsets: ["latin"],
   display: "swap",
+});
+
+// AK Golf HQ Design System v0.4.3 — de to familiene appen manglet.
+// Meta/tall-familien er IBM Plex Mono, som allerede lastes over.
+// Vektene er nøyaktig de fasiten oppgir (design-system/fonts.md, 15.09.2026):
+// Archivo 400/500/600 og Oswald 500/600/700. Archivo har BEVISST ikke 700 —
+// fontgjennomgangen F3 fant at `font-weight: 700` på Archivo ga kunstig fet
+// skrift, og fasiten satte maks til 600. Laster vi 700 her, kommer den feilen
+// tilbake som en ekte vekt og ingen oppdager det.
+// preload: false fordi bare Workbench bruker dem — samme valg som Geist.
+const archivo = Archivo({
+  variable: "--font-archivo",
+  weight: ["400", "500", "600"],
+  subsets: ["latin"],
+  display: "swap",
+  preload: false,
+});
+
+const oswald = Oswald({
+  variable: "--font-oswald",
+  weight: ["500", "600", "700"],
+  subsets: ["latin"],
+  display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -188,7 +212,7 @@ export default async function RootLayout({
   return (
     <html
       lang="nb"
-      className={`${poppins.variable} ${lora.variable} ${ibmPlexMono.variable} ${geist.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${poppins.variable} ${lora.variable} ${ibmPlexMono.variable} ${geist.variable} ${geistMono.variable} ${archivo.variable} ${oswald.variable} h-full antialiased`}
       data-train-lock={trainLockVersjonForRute(path)}
       {...(mork ? { "data-v2-tema": "dark" } : {})}
       suppressHydrationWarning
