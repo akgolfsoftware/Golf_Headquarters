@@ -8,7 +8,7 @@
 
 **Tech Stack:** Next.js App Router, Prisma (Postgres via `pg`-adapter), zod, React (TL/Train-lock-komponenter), `node --test`.
 
-**Spec:** [docs/superpowers/specs/2026-09-16-utvidet-slagregistrering-design.md](../specs/2026-09-16-utvidet-slagregistrering-design.md)
+**Spec:** [2026-09-16-utvidet-slagregistrering-design.md](2026-09-16-utvidet-slagregistrering-design.md)
 
 ## Global Constraints
 
@@ -1335,8 +1335,8 @@ gh pr create --title "Utvidet slagregistrering: end-shot-kategorier og putting-d
 - Live rundeføringen (`slag-editor.tsx`) fanger nå end-shot-resultatkategori for tee/approach/short game-slag og break/slope/linje/fartutfall for putt-slag.
 - Kun datafangst — analyseskjermer (trend/dispersion/proximity) er egen, senere leveranse.
 
-Spec: docs/superpowers/specs/2026-09-16-utvidet-slagregistrering-design.md
-Plan: docs/superpowers/plans/2026-09-16-utvidet-slagregistrering.md
+Spec: docs/planer/2026-09-16-utvidet-slagregistrering-design.md
+Plan: docs/planer/2026-09-16-utvidet-slagregistrering-plan.md
 
 ## Test plan
 - [ ] `npm run verify` grønt
