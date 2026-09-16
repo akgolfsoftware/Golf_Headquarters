@@ -76,7 +76,7 @@ Familien styrer hvilke akser som vises: fullsving har motorikk, nærspill og put
 FYS har egne parametere. Sandtrinn (3.4) er en egenskap på bunker-øvelser inne i Nærspill,
 ikke en egen familie.
 Bestemt 15.09.2026 (avklaring 12): fem familier, Bunker under Nærspill — som Claude Design.
-Avvik: koden har seks familier med BUNKER som egen. Rettes i OW-2.
+Rettet i OW-2 (15.09.2026): koden hadde seks familier med BUNKER som egen — nå fem, Bunker under Nærspill.
 
 Avvik: eldre kodefiler har 17 områder med sju puttebånd, og én visningsfil har putting i
 meter. Denne tabellen vinner (allerede vedtatt 19.08.2026).
@@ -213,9 +213,13 @@ de begrenser ikke hva som kan planlegges.
 
 Skjermnavn er alltid det fulle ordet: «Grunnperiode», ikke «GRUNN».
 Bestemt 15.09.2026 (avklaring 1): alle åtte er periodetyper i årsplanen.
-Avvik: koden har to periodelister. Den ene mangler EVALUERING, den andre mangler TESTUKE og
-samlingene. En gammel kalender lagrer EVALUERING som TURNERING og FERIE som GRUNN. Rettes i
-OW-2 (én liste med alle åtte).
+Rettet i OW-2 (15.09.2026): koden hadde to periodelister (Prisma-enumene LPhase og PeriodeType).
+LPhase manglet EVALUERING, PeriodeType manglet TESTUKE og samlingene, og PeriodeType skrev
+SPESIAL som SPESIALISERING. Alle tre er nå like og komplette (åtte verdier, samme skrivemåte),
+lagt til additivt (`ALTER TYPE ... ADD VALUE` / `RENAME VALUE`, 0 rader berørt — begge
+tabellene med reell bruk hadde under 10 rader hver, verifisert før endringen). Den gamle
+kalenderen (`periode-helpers.ts`) leser nå LPhase direkte i stedet for å gjette EVALUERING→
+TURNERING og FERIE→GRUNN.
 
 ### 4.2 Det en periode inneholder
 
@@ -646,7 +650,9 @@ turnering · trening. Score alltid brutto.
 
 SG skrives med fortegn og komma: +1,2 / −0,4, alltid med referanse og periode.
 Bestemt 15.09.2026 (avklaring 2): «Utslag» overalt, samme ord som treningsområdet.
-Avvik: koden har tre navnesett («Off the tee», «Tee-slag», «Utslag»). Rettes i OW-2.
+Rettet i OW-2 (15.09.2026): koden hadde tre navnesett («Off the tee», «Tee-slag», «Utslag») for
+appens egen visning — nå «Utslag» alle steder. PGA Tour/DataGolf-referansesider som siterer
+proffenes egen engelske terminologi er bevisst urørt.
 
 ### 13.2 SG per treningsområde (lagres på runden)
 

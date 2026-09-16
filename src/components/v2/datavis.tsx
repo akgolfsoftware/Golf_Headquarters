@@ -396,7 +396,7 @@ export interface SgKategori {
   sg: number;
 }
 const SGK_DEMO: SgKategori[] = [{ akse: "OTT", sg: 0.3 }, { akse: "APP", sg: 0.6 }, { akse: "ARG", sg: -0.4 }, { akse: "PUTT", sg: -1.2 }];
-const SGK_NAVN: Record<string, string> = { OTT: "Tee-slag", APP: "Innspill", ARG: "Nærspill", PUTT: "Putting" };
+const SGK_NAVN: Record<string, string> = { OTT: "Utslag", APP: "Innspill", ARG: "Nærspill", PUTT: "Putting" };
 export interface SgKategorierProps {
   kategorier?: SgKategori[];
   baseline?: string;
@@ -948,7 +948,7 @@ export interface NesteFokusProps {
   enTingNa?: boolean;
 }
 export function NesteFokus({ omrade = "Putting innenfor 6 ft er største lekkasje", akse = "PUTT", sgTap = "−1,2", baseline = "Broadie scratch", begrunnelse = "Innslagsprosenten på 3–6 ft ligger 7 pp under nivåkravet — det koster deg mest per runde.", handlingTekst = "Legg inn treningsøkt", formelAkse = null, handlingHref, enTingNa = false }: NesteFokusProps) {
-  const AKSE: Record<string, string> = { OTT: "Tee-slag", APP: "Innspill", ARG: "Nærspill", PUTT: "Putting" };
+  const AKSE: Record<string, string> = { OTT: "Utslag", APP: "Innspill", ARG: "Nærspill", PUTT: "Putting" };
   return (
     <Kort tint>
       {enTingNa && (

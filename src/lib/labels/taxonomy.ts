@@ -38,6 +38,7 @@ export const LPHASE_LABEL: Record<LPhase, string> = {
   GRUNN:           "Grunnperiode",
   SPESIAL:         "Spesialiseringsperiode",
   TURNERING:       "Turneringsperiode",
+  EVALUERING:      "Evaluering",
   TESTUKE:         "Testuke",
   FERIE:           "Ferie",
   TRENINGSSAMLING: "Treningssamling",
@@ -48,6 +49,7 @@ export const LPHASE_BESKRIVELSE: Record<LPhase, string> = {
   GRUNN:           "Fysisk og teknisk grunnlag — basiskapasitet",
   SPESIAL:         "Spesialisert trening mot sesongens krav",
   TURNERING:       "Kampforberedelse og prestasjon under press",
+  EVALUERING:      "Testing, analyse og planlegging av neste periode",
   TESTUKE:         "Kontrollpunkt — tester som måler fremgangen",
   FERIE:           "Fri fra organisert trening — restitusjon",
   TRENINGSSAMLING: "Samling over flere dager med høy treningstetthet",
@@ -59,6 +61,7 @@ export const LPHASE_FARGE: Record<LPhase, string> = {
   GRUNN:           "var(--v2-ax-fys)",
   SPESIAL:         "var(--v2-ax-tek)",
   TURNERING:       "var(--v2-ax-turn)",
+  EVALUERING:      "var(--v2-mut)",
   TESTUKE:         "var(--v2-info)",
   FERIE:           "var(--v2-mut)",
   TRENINGSSAMLING: "var(--v2-ax-slag)",
@@ -94,6 +97,11 @@ export const LPHASE_REKKEFOLGE: LPhase[] = [
   "GRUNN",
   "SPESIAL",
   "TURNERING",
+  "EVALUERING",
+  "TESTUKE",
+  "FERIE",
+  "TRENINGSSAMLING",
+  "HELDAGSSAMLING",
 ];
 
 export const PRESSURE_LABEL: Record<PressureLevel, string> = {

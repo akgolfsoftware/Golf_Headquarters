@@ -47,7 +47,7 @@ export const PYRAMIDE_LABEL: Record<PyramideKode, string> = {
  * SLAG, SPILL eller TURN — pyramide og område er uavhengige akser overalt
  * (Anders 20.08). Familien sier bare hvilke felter området har.
  */
-export type OmraadeFamilie = "FULLSVING" | "NAERSPILL" | "BUNKER" | "PUTT" | "FYS" | "BANE";
+export type OmraadeFamilie = "FULLSVING" | "NAERSPILL" | "PUTT" | "FYS" | "BANE";
 
 /** Putteavstander i fot, resten i meter (fasiten). FYS og bane har ingen. */
 export type Enhet = "m" | "ft" | null;
@@ -103,7 +103,7 @@ export const OMRAADER: readonly OmraadeDef[] = [
   { kode: "CHIP", label: "Chip", familie: "NAERSPILL", enhet: "m", repsEnhet: "SLAG" },
   { kode: "PITCH", label: "Pitch", familie: "NAERSPILL", enhet: "m", repsEnhet: "SLAG" },
   { kode: "LOB", label: "Lob", familie: "NAERSPILL", enhet: "m", repsEnhet: "SLAG" },
-  { kode: "BUNKER", label: "Bunker", familie: "BUNKER", enhet: "m", repsEnhet: "SLAG" },
+  { kode: "BUNKER", label: "Bunker", familie: "NAERSPILL", enhet: "m", repsEnhet: "SLAG" },
   { kode: "PUTT_0_3", label: "Putt 0–3 fot", familie: "PUTT", enhet: "ft", repsEnhet: "PUTTER" },
   { kode: "PUTT_3_5", label: "Putt 3–5 fot", familie: "PUTT", enhet: "ft", repsEnhet: "PUTTER" },
   { kode: "PUTT_5_10", label: "Putt 5–10 fot", familie: "PUTT", enhet: "ft", repsEnhet: "PUTTER" },

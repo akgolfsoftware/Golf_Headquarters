@@ -29,7 +29,7 @@ const DAGER = 60;
 type SgKode = "OTT" | "APP" | "ARG" | "PUTT";
 
 const LABEL: Record<SgKode, string> = {
-  OTT: "Tee-slag (OTT)",
+  OTT: "Utslag (OTT)",
   APP: "Innspill (APP)",
   ARG: "Around-the-green (ARG)",
   PUTT: "Putting",

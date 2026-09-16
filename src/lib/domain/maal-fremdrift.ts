@@ -16,9 +16,9 @@
 export const SG_OMRADER = ["OTT", "APP", "ARG", "PUTT"] as const;
 export type SgOmrade = (typeof SG_OMRADER)[number];
 
-/** Norsk fasit-navn (AK-formelen): Tee Total · Innspill · Nærspill · Putting. */
+/** Norsk fasit-navn (AK-formelen): Utslag · Innspill · Nærspill · Putting. */
 export const SG_OMRADE_NAVN: Record<SgOmrade, string> = {
-  OTT: "Tee Total",
+  OTT: "Utslag",
   APP: "Innspill",
   ARG: "Nærspill",
   PUTT: "Putting",

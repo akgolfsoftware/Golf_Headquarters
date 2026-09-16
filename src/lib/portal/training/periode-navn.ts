@@ -19,12 +19,14 @@ import type { PeriodeType } from "@/generated/prisma/client";
  */
 const NAVN_TIL_TYPE: Record<string, PeriodeType> = {
   grunn: "GRUNN",
-  spes: "SPESIALISERING",
-  spesialisering: "SPESIALISERING",
+  spes: "SPESIAL",
+  spesialisering: "SPESIAL",
   turn: "TURNERING",
   "turn-rest": "TURNERING",
   turnering: "TURNERING",
-  testuke: "EVALUERING",
+  // OW-2 (15.09.2026): PeriodeType har nå TESTUKE — «testuke» skal ikke lenger
+  // gjettes som EVALUERING (ordbok-masteren §4.1).
+  testuke: "TESTUKE",
   evaluering: "EVALUERING",
   ferie: "FERIE",
 };

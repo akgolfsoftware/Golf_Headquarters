@@ -108,7 +108,7 @@ const STED_MULIGHETER = [
 
 // SG-kategoriene spilleren fyller inn per periode i steg 4.
 const SG_FELT = [
-  { key: "sgOtt" as const, label: "Fra tee", hint: "OTT" },
+  { key: "sgOtt" as const, label: "Utslag", hint: "OTT" },
   { key: "sgApp" as const, label: "Innspill", hint: "APP" },
   { key: "sgArg" as const, label: "Nærspill", hint: "ARG" },
   { key: "sgPutt" as const, label: "Putting", hint: "PUTT" },

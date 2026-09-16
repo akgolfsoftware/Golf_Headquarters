@@ -91,18 +91,24 @@ export type PeriodeFarge = {
 
 export const PERIODE_FARGER: Record<PeriodeType, PeriodeFarge> = {
   GRUNN: { bg: "#003B2A", text: "#FFFFFF", pattern: "solid" },
-  SPESIALISERING: { bg: "hsl(var(--primary))", text: "#FFFFFF", pattern: "solid" },
+  SPESIAL: { bg: "hsl(var(--primary))", text: "#FFFFFF", pattern: "solid" },
   TURNERING: { bg: "hsl(var(--accent))", text: "hsl(var(--foreground))", pattern: "solid" },
   EVALUERING: { bg: "hsl(var(--muted-foreground))", text: "#FFFFFF", pattern: "solid" },
+  TESTUKE: { bg: "hsl(var(--muted-foreground))", text: "#FFFFFF", pattern: "diagonal-stripe" },
   FERIE: { bg: "hsl(var(--secondary))", text: "hsl(var(--muted-foreground))", pattern: "diagonal-stripe" },
+  TRENINGSSAMLING: { bg: "hsl(var(--accent))", text: "hsl(var(--foreground))", pattern: "diagonal-stripe" },
+  HELDAGSSAMLING: { bg: "hsl(var(--primary))", text: "#FFFFFF", pattern: "diagonal-stripe" },
 };
 
 export const PERIODE_LABELS: Record<PeriodeType, string> = {
   GRUNN: "Grunnperiode",
-  SPESIALISERING: "Spesialisering",
-  TURNERING: "Turnering",
+  SPESIAL: "Spesialiseringsperiode",
+  TURNERING: "Turneringsperiode",
   EVALUERING: "Evaluering",
+  TESTUKE: "Testuke",
   FERIE: "Ferie",
+  TRENINGSSAMLING: "Treningssamling",
+  HELDAGSSAMLING: "Heldagssamling",
 };
 
 // ---------------------------------------------------------------------------
@@ -145,10 +151,13 @@ export const LFASE_ANBEFALT_CS: Record<LFase, CSNivaa[]> = {
 export const PyramidAreaSchema = z.enum(["FYS", "TEK", "SLAG", "SPILL", "TURN"]);
 export const PeriodeTypeSchema = z.enum([
   "GRUNN",
-  "SPESIALISERING",
+  "SPESIAL",
   "TURNERING",
   "EVALUERING",
+  "TESTUKE",
   "FERIE",
+  "TRENINGSSAMLING",
+  "HELDAGSSAMLING",
 ]);
 export const PracticeTypeSchema = z.enum(["BLOKK", "RANDOM", "KONKURRANSE", "SPILL_TEST"]);
 export const LFaseSchema = z.enum(["L_KROPP", "L_ARM", "L_KOLLE", "L_BALL", "L_AUTO"]);

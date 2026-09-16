@@ -1,6 +1,6 @@
 {
   "$schema": "ordbok-lag-3",
-  "versjon": "2026-09-15",
+  "versjon": "2026-09-16",
   "kilder": {
     "master": "docs/ordbok-master-trening.md",
     "schema": "prisma/schema.prisma",
@@ -73,7 +73,7 @@
     {
       "kode": "BUNKER",
       "label": "Bunker",
-      "familie": "BUNKER",
+      "familie": "NAERSPILL",
       "enhet": "m",
       "repsEnhet": "SLAG"
     },
@@ -260,6 +260,7 @@
       "GRUNN",
       "SPESIAL",
       "TURNERING",
+      "EVALUERING",
       "TESTUKE",
       "FERIE",
       "TRENINGSSAMLING",
@@ -508,10 +509,13 @@
     ],
     "PeriodeType": [
       "GRUNN",
-      "SPESIALISERING",
+      "SPESIAL",
       "TURNERING",
       "EVALUERING",
-      "FERIE"
+      "TESTUKE",
+      "FERIE",
+      "TRENINGSSAMLING",
+      "HELDAGSSAMLING"
     ],
     "GoalCategory": [
       "OUTCOME",

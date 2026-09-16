@@ -9,6 +9,7 @@ const PHASE_LABEL: Record<LPhase, string> = {
   GRUNN: "Grunnperiode",
   SPESIAL: "Spesialiseringsperiode",
   TURNERING: "Turneringsperiode",
+  EVALUERING: "Evaluering",
   TESTUKE: "Testuke",
   FERIE: "Ferie",
   TRENINGSSAMLING: "Treningssamling",
