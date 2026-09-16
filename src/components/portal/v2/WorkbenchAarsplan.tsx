@@ -42,12 +42,12 @@ import type { LPhase } from "@/generated/prisma/client";
 
 const DND_MIME = "application/x-akgolf-wb";
 const MND_KORT = ["jan", "feb", "mar", "apr", "mai", "jun", "jul", "aug", "sep", "okt", "nov", "des"];
-const PERIODE_TYPER: LPhase[] = ["GRUNN", "SPESIAL", "TURNERING", "TESTUKE", "FERIE", "TRENINGSSAMLING", "HELDAGSSAMLING"];
+const PERIODE_TYPER: LPhase[] = ["GRUNN", "SPESIAL", "TURNERING", "EVALUERING", "TESTUKE", "FERIE", "TRENINGSSAMLING", "HELDAGSSAMLING"];
 const OMRAADER = ["FYS", "TEK", "SLAG", "SPILL", "TURN"] as const;
 
 /** Default varighet (dager) per type ved slipp — alt kan justeres i popupen. */
 const DEFAULT_DAGER: Record<string, number> = {
-  GRUNN: 28, SPESIAL: 28, TURNERING: 14, TESTUKE: 7, FERIE: 7, TRENINGSSAMLING: 3, HELDAGSSAMLING: 1,
+  GRUNN: 28, SPESIAL: 28, TURNERING: 14, EVALUERING: 7, TESTUKE: 7, FERIE: 7, TRENINGSSAMLING: 3, HELDAGSSAMLING: 1,
 };
 
 function tilISO(d: Date): string {

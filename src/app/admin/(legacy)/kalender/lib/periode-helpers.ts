@@ -5,14 +5,17 @@
 import { PeriodeTypeSchema } from "@/lib/portal/training/ak-taxonomy";
 import type { PeriodBlock, PeriodeType, LPhase } from "@/generated/prisma/client";
 
+// OW-2 (15.09.2026): LPhase og PeriodeType har nå samme åtte verdier
+// (ordbok-masteren §4.1) — dette er en ren identitet, ikke en lossy mapping.
 export const TIL_LPHASE: Record<PeriodeType, LPhase> = {
   GRUNN: "GRUNN",
-  SPESIALISERING: "SPESIAL",
+  SPESIAL: "SPESIAL",
   TURNERING: "TURNERING",
-  // EVALUERING og FERIE lagres som TURNERING / GRUNN inntil schema utvides;
-  // den ekte verdien serialiseres i notes-prefix.
-  EVALUERING: "TURNERING",
-  FERIE: "GRUNN",
+  EVALUERING: "EVALUERING",
+  TESTUKE: "TESTUKE",
+  FERIE: "FERIE",
+  TRENINGSSAMLING: "TRENINGSSAMLING",
+  HELDAGSSAMLING: "HELDAGSSAMLING",
 };
 
 export const FRA_NOTES_PREFIKS = /^\[periode:([A-Z]+)\]\s*/;
@@ -33,8 +36,8 @@ export function lesPeriodeType(
     const parsed = PeriodeTypeSchema.safeParse(match[1]);
     if (parsed.success) return parsed.data;
   }
-  // Fallback: bruk LPhase
-  if (block.lPhase === "GRUNN") return "GRUNN";
-  if (block.lPhase === "SPESIAL") return "SPESIALISERING";
+  // LPhase og PeriodeType har samme verdisett (OW-2) — les direkte, ingen gjetting.
+  const parsedLPhase = PeriodeTypeSchema.safeParse(block.lPhase);
+  if (parsedLPhase.success) return parsedLPhase.data;
   return "TURNERING";
 }

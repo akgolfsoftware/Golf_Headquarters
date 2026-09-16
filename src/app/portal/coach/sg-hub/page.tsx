@@ -22,7 +22,7 @@ const COACH_SG = { ott: 0.8, app: 0.9, arg: 0.2, putt: 0.6 } as const;
 type SgKey = keyof typeof COACH_SG;
 
 const SG_KATEGORIER: { key: SgKey; label: string; navn: string }[] = [
-  { key: "ott", label: "OTT", navn: "Tee-slag" },
+  { key: "ott", label: "OTT", navn: "Utslag" },
   { key: "app", label: "APP", navn: "Innspill" },
   { key: "arg", label: "ARG", navn: "Nærspill" },
   { key: "putt", label: "PUTT", navn: "Putting" },

@@ -19,7 +19,7 @@ import { AkseChip, Caps, Kort, StatusPill, InnsiktChip, AvatarInit } from "./cor
 function mono(size: number, color: string = TL.text, weight: number = 700): CSSProperties {
   return { fontFamily: TL.font.mono, fontSize: size, fontWeight: weight, color, fontVariantNumeric: "tabular-nums" };
 }
-const KAT_NAVN: Record<string, string> = { OTT: "Tee-slag", APP: "Innspill", ARG: "Nærspill", PUTT: "Putting" };
+const KAT_NAVN: Record<string, string> = { OTT: "Utslag", APP: "Innspill", ARG: "Nærspill", PUTT: "Putting" };
 
 export interface BitProps {
   icon?: string;

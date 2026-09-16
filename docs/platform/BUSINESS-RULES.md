@@ -175,6 +175,8 @@ Tre øktmodeller sameksisterer **bevisst** og skal **ikke slås sammen som oppry
   `TrainingSessionV2` → `TrainingPlanSession` → `WorkbenchSession`.
 - Enkelte skriveflyter speiler data mellom modeller, men dette betyr ikke at alle tre
   er én felles sannhet. Hver overgang må testes i den aktuelle spillerreisen.
+  **Besluttet 15.09.2026:** `WorkbenchSession` er tabellen som overlever; `TrainingPlanSession`
+  migreres inn (OW-3 i arbeidslisten). Inntil da gjelder rekkefølgen over.
 - Workbench er primærpunktet for planlegging — planlegge er ett trykkpunkt dit, ikke en meny.
 
 ---
@@ -358,7 +360,7 @@ Implementasjon: `src/lib/v2/tema-default.ts` + `src/app/layout.tsx` + `src/compo
 De 13 tidligere CANON-invariantene og kodehåndhevelsen under `src/lib/canon/` ble
 pensjonert 18. august 2026. De er historikk, ikke produktregler eller aktive
 implementasjonskrav. Gjeldende treningsbegreper og beslutninger finnes i
-`docs/FASIT-AK-GOLF-HQ.md`, ordbøkene og `.claude/rules/beslutninger.md`.
+`docs/ordbok-master-trening.md`, ordbøkene og `.claude/rules/beslutninger.md`.
 
 Club Speed-beslutningen fra 1. september gjelder fortsatt: motorikk er AUTO, og
 «uten ball» er en egenskap ved øvelsen, ikke et eget motorikksteg. Se

@@ -21,7 +21,7 @@ export type WorkbenchFokus = {
 };
 
 export const SG_FOKUS_LABEL: Record<SgKategori, string> = {
-  OTT: "Tee-slag",
+  OTT: "Utslag",
   APP: "Innspill",
   ARG: "Nærspill",
   PUTT: "Putting",

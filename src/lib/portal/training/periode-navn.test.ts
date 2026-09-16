@@ -6,9 +6,9 @@ describe("periodeTypeFraNavn", () => {
   // De fem navnene som faktisk ligger i prod 2026-07-29.
   test("mapper navnene som finnes i basen", () => {
     assert.equal(periodeTypeFraNavn("GRUNN"), "GRUNN");
-    assert.equal(periodeTypeFraNavn("SPES"), "SPESIALISERING");
+    assert.equal(periodeTypeFraNavn("SPES"), "SPESIAL");
     assert.equal(periodeTypeFraNavn("TURN"), "TURNERING");
-    assert.equal(periodeTypeFraNavn("Testuke"), "EVALUERING");
+    assert.equal(periodeTypeFraNavn("Testuke"), "TESTUKE");
   });
 
   // Anders 2026-07-29: restsesongen av turneringsperioden, ikke oppbygging.
@@ -18,7 +18,7 @@ describe("periodeTypeFraNavn", () => {
 
   test("tåler store/små bokstaver og mellomrom", () => {
     assert.equal(periodeTypeFraNavn("  grunn "), "GRUNN");
-    assert.equal(periodeTypeFraNavn("TESTUKE"), "EVALUERING");
+    assert.equal(periodeTypeFraNavn("TESTUKE"), "TESTUKE");
   });
 
   // Kjernen: ukjent navn skal gi null, ikke en tilfeldig periode. Gjetting her

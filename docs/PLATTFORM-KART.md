@@ -217,7 +217,7 @@ masterbrain/
       drills.json             ← kun godkjente (eller pek til ovelsesbank/godkjent/)
       ordbok.json             ← MORAD-termer du har rettet
     concepts/
-      ak-formel-v2.json       ← 17 områder, putting i fot, ingen L/CS/M/PR
+      ak-formel-v2.json       ← 19 områder, putting i fot, ingen L/CS/M/PR
       putting-framework.json  ← søsken til fullsving, ikke P1–P10
       short-game.json         ← nærspill som eget hode
       canon-methodology.json  ← vokabular, ikke sperrer (18. aug.)
@@ -243,7 +243,7 @@ masterbrain/
 
 **Innhold — rekkefølge som gir mest**
 
-1. Rett loven som lyver (A = elite, 17 områder, utgått L/CS).
+1. Rett loven som lyver (A = elite, 19 områder, utgått L/CS).
 2. Putting fra Mac (1–300 fot) som eget JSON — du retter først.
 3. Én drill-kategori om gangen inn i `godkjent/`.
 4. Short game (Seve/vått) som søsken.

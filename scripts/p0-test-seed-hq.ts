@@ -19,6 +19,19 @@ export const FREMMED_COACH_EPOST = "p0-fremmed-coach@akgolf.test";
 export const TALENT_EPOST = "p0-talent@akgolf.test";
 export const ADMIN_EPOST = "p0-admin@akgolf.test";
 export const WB_ID = "p0-wb-okt";
+// Egen økt for R-C (lokal lagring) — deler ALDRI id med WB_ID: den testen
+// starter/tapper på den, og ville forkludret spillerreise-innlogget.spec.ts
+// sin forventning om at WB_ID starter PUBLISHED med null tapp.
+export const LOKAL_WB_ID = "p0-wb-okt-lokal-lagring";
+export const FREMMED_WB_ID = "p0-wb-okt-fremmed";
+// Egen økt for P03 (innlogget ny/rediger/flytt) — deler ALDRI id med WB_ID:
+// flytte-testen endrer dato og startminutt, og spillerreise-innlogget.spec.ts
+// forventer at WB_ID ligger på dagens dato kl. 09:00.
+export const FLYTT_WB_ID = "p0-wb-okt-flytt";
+// «Rediger økt» vises bare når økta har en planSessionId, og den finnes bare på
+// plan-modellen. P03 får derfor sin EGEN planøkt i stedet for å låne PLAN_ID,
+// som spillerreise-innlogget.spec.ts gjennomfører og dermed avslutter.
+export const REDIGER_PLAN_ID = "p0-plan-okt-rediger";
 export const V2_ID = "p0-v2-okt";
 export const PLAN_ID = "p0-plan-okt";
 export const WB_TALL = 5;
@@ -134,6 +147,10 @@ async function main() {
   const passord = randomBytes(18).toString("base64url");
   const { y, m, d } = osloDatoDeler();
   const dato = new Date(Date.UTC(y, m - 1, d));
+  // R-C-øktene dateres i GÅR — «I dag»-hjemskjermen i spillerreise-testen
+  // forventer nøyaktig WB_ID som dagens økt, og en ekstra dagens-dato-rad
+  // for samme spiller forstyrrer den forventningen.
+  const datoIGaar = new Date(dato.getTime() - 24 * 60 * 60 * 1000);
   const v2Start = osloInstant(y, m, d, 10, 0);
   const v2Slutt = osloInstant(y, m, d, 11, 0);
   const planStart = osloInstant(y, m, d, 14, 0);
@@ -218,16 +235,21 @@ async function main() {
     });
 
     await prisma.sessionBallLog.deleteMany({
-      where: { planSessionId: { in: [WB_ID, PLAN_ID] } },
+      where: { planSessionId: { in: [WB_ID, LOKAL_WB_ID, FREMMED_WB_ID, FLYTT_WB_ID, PLAN_ID] } },
     });
     await prisma.trainingSessionV2.deleteMany({
       where: { OR: [{ id: V2_ID }, { studentId: spiller.id, title: { startsWith: "P0 " } }] },
     });
     await prisma.workbenchSession.deleteMany({
-      where: { OR: [{ id: WB_ID }, { playerId: spiller.id, title: { startsWith: "P0 " } }] },
+      where: {
+        OR: [
+          { id: { in: [WB_ID, LOKAL_WB_ID, FREMMED_WB_ID, FLYTT_WB_ID] } },
+          { playerId: { in: [spiller.id, fremmed.id] }, title: { startsWith: "P0 " } },
+        ],
+      },
     });
     await prisma.trainingPlanSession.deleteMany({
-      where: { OR: [{ id: PLAN_ID }, { title: { startsWith: "P0 " } }] },
+      where: { OR: [{ id: { in: [PLAN_ID, REDIGER_PLAN_ID] } }, { title: { startsWith: "P0 " } }] },
     });
 
     await prisma.workbenchSession.create({
@@ -248,6 +270,104 @@ async function main() {
         publishedBy: coach.id,
         location: "Range",
         notes: "Syntetisk Workbench-økt",
+        drills: {
+          create: [{
+            title: "Innspill 50-80 m",
+            description: "Syntetisk drill",
+            durationMinutes: 50,
+            sortOrder: 0,
+            akFormel: { pyramid: "TEK", area: "CHIP", label: "TEK · Chip" },
+          }],
+        },
+      },
+    });
+
+    // R-C (privat lokal lagring): spillerens EGEN, dedikerte økt — atskilt
+    // fra WB_ID slik at spillerreise-innlogget.spec.ts sin forventning om
+    // null tapp på WB_ID ikke forstyrres av R-C-testens offline-tapping.
+    await prisma.workbenchSession.create({
+      data: {
+        id: LOKAL_WB_ID,
+        playerId: spiller.id,
+        coachId: coach.id,
+        date: datoIGaar,
+        startMinute: 9 * 60,
+        durationMinutes: 50,
+        title: "P0 Workbench lokal lagring",
+        pyramid: "TEK",
+        status: "PUBLISHED",
+        blockType: "OEKT",
+        origin: "COACH",
+        createdBy: coach.id,
+        publishedAt: new Date(),
+        publishedBy: coach.id,
+        location: "Range",
+        notes: "Syntetisk Workbench-økt for R-C (privat lokal lagring)",
+        drills: {
+          create: [{
+            title: "Innspill 50-80 m",
+            description: "Syntetisk drill",
+            durationMinutes: 50,
+            sortOrder: 0,
+            akFormel: { pyramid: "TEK", area: "CHIP", label: "TEK · Chip" },
+          }],
+        },
+      },
+    });
+
+    // P03 (innlogget ny/rediger/flytt): spillerens EGEN, dedikerte økt som
+    // flytte-testen kan endre dato og klokkeslett på uten å røre WB_ID.
+    // Ligger kl. 14:00 for å skille seg fra 09:00-øktene i samme uke.
+    await prisma.workbenchSession.create({
+      data: {
+        id: FLYTT_WB_ID,
+        playerId: spiller.id,
+        coachId: coach.id,
+        date: dato,
+        startMinute: 14 * 60,
+        durationMinutes: 50,
+        title: "P0 Workbench flytt",
+        pyramid: "TEK",
+        status: "PUBLISHED",
+        blockType: "OEKT",
+        origin: "COACH",
+        createdBy: coach.id,
+        publishedAt: new Date(),
+        publishedBy: coach.id,
+        location: "Range",
+        notes: "Syntetisk Workbench-økt for P03 (ny/rediger/flytt)",
+        drills: {
+          create: [{
+            title: "Innspill 50-80 m",
+            description: "Syntetisk drill",
+            durationMinutes: 50,
+            sortOrder: 0,
+            akFormel: { pyramid: "TEK", area: "CHIP", label: "TEK · Chip" },
+          }],
+        },
+      },
+    });
+
+    // R-C (privat lokal lagring): fremmed trenger sin EGEN økt for å bevise
+    // at innlasting av tapper-siden aldri viser spillerens kølagte tellinger.
+    await prisma.workbenchSession.create({
+      data: {
+        id: FREMMED_WB_ID,
+        playerId: fremmed.id,
+        coachId: coach.id,
+        date: dato,
+        startMinute: 9 * 60,
+        durationMinutes: 50,
+        title: "P0 Workbench fremmed",
+        pyramid: "TEK",
+        status: "PUBLISHED",
+        blockType: "OEKT",
+        origin: "COACH",
+        createdBy: coach.id,
+        publishedAt: new Date(),
+        publishedBy: coach.id,
+        location: "Range",
+        notes: "Syntetisk Workbench-økt for fremmed spiller (R-C)",
         drills: {
           create: [{
             title: "Innspill 50-80 m",
@@ -339,6 +459,33 @@ async function main() {
       },
     });
 
+    // P03 (innlogget rediger): egen planøkt, slik at «Rediger økt»-lenken finnes
+    // uten at testen er avhengig av at PLAN_ID ennå er uavsluttet.
+    await prisma.trainingPlanSession.create({
+      data: {
+        id: REDIGER_PLAN_ID,
+        planId: "p0-plan",
+        scheduledAt: new Date(planStart.getTime() + 3 * 60 * 60 * 1000),
+        durationMin: 40,
+        title: "P0 Plan rediger",
+        pyramidArea: "TEK",
+        status: "PLANNED",
+        location: "Short game",
+        maalsetning: "Syntetisk mål",
+        rationale: "Syntetisk planøkt for P03 (rediger)",
+        drills: {
+          create: [{
+            exerciseId: ovelse.id,
+            repsSets: `${PLAN_TALL} baller`,
+            orderIndex: 0,
+            pyramidArea: "TEK",
+            repType: "BALLER_SLATT",
+            repAntall: PLAN_TALL,
+          }],
+        },
+      },
+    });
+
     writeFileSync(
       CREDS_FIL,
       [
@@ -354,7 +501,13 @@ async function main() {
         `P0_TALENT_PASSWORD=${passord}`,
         `P0_ADMIN_EMAIL=${ADMIN_EPOST}`,
         `P0_ADMIN_PASSWORD=${passord}`,
+        `P0_PLAYER_ID=${spiller.id}`,
+        `P0_FOREIGN_ID=${fremmed.id}`,
         `P0_WB_ID=${WB_ID}`,
+        `P0_LOKAL_WB_ID=${LOKAL_WB_ID}`,
+        `P0_FREMMED_WB_ID=${FREMMED_WB_ID}`,
+        `P0_FLYTT_WB_ID=${FLYTT_WB_ID}`,
+        `P0_REDIGER_PLAN_ID=${REDIGER_PLAN_ID}`,
         `P0_V2_ID=${V2_ID}`,
         `P0_PLAN_ID=${PLAN_ID}`,
         `P0_WB_TALL=${WB_TALL}`,

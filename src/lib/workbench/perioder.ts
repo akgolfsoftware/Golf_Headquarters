@@ -40,7 +40,7 @@ export function budsjettSum(b: SessionBudget | null): number {
 /** 8c.2 — input-kontrakt for opprett/oppdater periode (delt server/klient). */
 export const PeriodeInputSchema = z
   .object({
-    lPhase: z.enum(["GRUNN", "SPESIAL", "TURNERING", "TESTUKE", "FERIE", "TRENINGSSAMLING", "HELDAGSSAMLING"]),
+    lPhase: z.enum(["GRUNN", "SPESIAL", "TURNERING", "EVALUERING", "TESTUKE", "FERIE", "TRENINGSSAMLING", "HELDAGSSAMLING"]),
     /** YYYY-MM-DD (lokal dag). */
     startDato: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
     sluttDato: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),

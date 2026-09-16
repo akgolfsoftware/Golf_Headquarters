@@ -46,6 +46,7 @@ const LPHASE_NAVN: Record<LPhase, string> = {
   GRUNN: "Grunnperiode",
   SPESIAL: "Spesialisering",
   TURNERING: "Turneringsperiode",
+  EVALUERING: "Evaluering",
   TESTUKE: "Testuke",
   FERIE: "Ferie",
   TRENINGSSAMLING: "Treningssamling",

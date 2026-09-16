@@ -8,7 +8,7 @@ import { notifyMany } from "@/lib/notifications";
 import { beregnSgFraShots, beregnGranulaerSgFraShots } from "@/lib/runde-logg/shots-til-sg";
 import { avgjorSgSkriving } from "@/lib/domain/sg-skriving";
 import { hullSchema } from "@/lib/runde-logg/schema";
-import { byggShotRader } from "@/lib/runde-logg/bygg-shot-rader";
+import { byggShotRader, splitShotRader } from "@/lib/runde-logg/bygg-shot-rader";
 import { deriverRundeScore } from "@/lib/runde-logg/deriver-hullscore";
 import { synkroniserSgFraRunder } from "@/lib/portal-stats/sg-bro";
 import { ShotLie, ShotType, WindDir } from "@/generated/prisma/client";
@@ -480,9 +480,13 @@ export async function lagreHullKjede(
 
   await prisma.$transaction(async (tx) => {
     await tx.shot.deleteMany({ where: { roundId, holeNumber: data.holeNumber } });
+    const { shots, putts } = splitShotRader(byggShotRader(hullMedPar));
     await tx.shot.createMany({
-      data: byggShotRader(hullMedPar).map((rad) => ({ ...rad, roundId })),
+      data: shots.map((rad) => ({ ...rad, roundId })),
     });
+    if (putts.length > 0) {
+      await tx.puttDetail.createMany({ data: putts });
+    }
     await tx.holeScore.update({
       where: { roundId_holeNumber: { roundId, holeNumber: data.holeNumber } },
       data: { putts: derivert.putts, fairway: derivert.fairway, gir: derivert.gir },

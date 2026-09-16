@@ -39,6 +39,11 @@
  * for coachtest (basen nullstilt 30.08.2026). tsc/eslint grønt, kode
  * gjennomgått mot skjemaet felt for felt.
  *
+ * Avvik:
+ *   - Ingen riggrad ennå for denne siden.
+ *   - OW-2 (15.09.2026): OTT-visningsnavnet rettet fra «Tee-slag» til «Utslag»
+ *     (ordbok-masteren §13.1) — ren tekstretting, ikke en visuell portering.
+ *
  * Server component.
  */
 
@@ -79,7 +84,7 @@ const NB_LONG = new Intl.DateTimeFormat("nb-NO", { day: "numeric", month: "long"
 const NB_DATE = new Intl.DateTimeFormat("nb-NO", { day: "2-digit", month: "short", year: "numeric" });
 
 const OMRADE_NAVN: Record<SgCategory, string> = {
-  OTT: "Tee-slag",
+  OTT: "Utslag",
   APP: "Innspill",
   ARG: "Nærspill",
   PUTT: "Putting",

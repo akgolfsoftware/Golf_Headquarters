@@ -73,8 +73,22 @@ test("sg-diagnose bærer med seg hypotese-regelen", () => {
 test("periodisering inkluderer oversettelsestabellen for periodenavn", () => {
   const k = hentMasterbrainKunnskap("periodisering");
   const tekst = k.blokker.join("\n");
-  assert.match(tekst, /SPESIALISERING/);
+  assert.match(tekst, /SPESIAL/);
+  assert.doesNotMatch(tekst, /SPESIALISERING/);
   assert.match(tekst, /Skriv aldri CANON-strengen rått/);
+});
+
+test("CANON-blokken siterer ikke avskaffede L-faser/CS/M/PR-koder som data", () => {
+  // OW-P (masterplanen), knyttet til 18.08.2026-beslutningen: Caddie skal
+  // ikke foreslå regler som er avskaffet, selv om den synkede
+  // canon-methodology.json fortsatt inneholder dem. Prosa-notatet om at de
+  // ER avskaffet (og nevner kodene som eksempel) er greit — det som ikke
+  // skal forekomme er den rå JSON-dumpen av l_faser/scale_definitions.
+  const k = hentMasterbrainKunnskap("plan-generering");
+  const tekst = k.blokker.join("\n");
+  assert.doesNotMatch(tekst, /"L-KROPP"|"L-ARM"|"L-KØLLE"|"L-BALL"|"L-AUTO"/);
+  assert.doesNotMatch(tekst, /"level":\s*"CS/);
+  assert.match(tekst, /AVSKAFFET/);
 });
 
 test("plan-generering siterer ikke invarianter som regler", () => {

@@ -20,7 +20,7 @@ import { rundeTilSgShots } from "@/lib/runde-logg/til-sg-shots";
 import { deriverRundeScore } from "@/lib/runde-logg/deriver-hullscore";
 import { beregnGranulaerSg } from "@/lib/runde-logg/granulaer-sg";
 import { hullSchema } from "@/lib/runde-logg/schema";
-import { byggShotRader } from "@/lib/runde-logg/bygg-shot-rader";
+import { byggShotRader, splitShotRader } from "@/lib/runde-logg/bygg-shot-rader";
 
 // ---------------------------------------------------------------------------
 // Validering (JSON-blob-regelen: alt fra klienten zod-valideres).
@@ -108,11 +108,14 @@ export async function lagreLoggetRunde(
       select: { id: true },
     });
 
+    const alleRader = runde.hull.flatMap((h) => byggShotRader(h));
+    const { shots, putts } = splitShotRader(alleRader);
     await tx.shot.createMany({
-      data: runde.hull.flatMap((h) =>
-        byggShotRader(h).map((rad) => ({ ...rad, roundId: opprettet.id })),
-      ),
+      data: shots.map((rad) => ({ ...rad, roundId: opprettet.id })),
     });
+    if (putts.length > 0) {
+      await tx.puttDetail.createMany({ data: putts });
+    }
 
     await tx.holeScore.createMany({
       data: hullScores.map((h) => ({

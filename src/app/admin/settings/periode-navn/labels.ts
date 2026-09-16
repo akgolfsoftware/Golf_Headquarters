@@ -9,10 +9,13 @@ import type { PeriodeType } from "@/generated/prisma/client";
 
 const PERIODE_LABEL: Record<PeriodeType, string> = {
   GRUNN: "Grunnperiode",
-  SPESIALISERING: "Spesialisering",
-  TURNERING: "Turneringsfase",
+  SPESIAL: "Spesialiseringsperiode",
+  TURNERING: "Turneringsperiode",
   EVALUERING: "Evaluering",
+  TESTUKE: "Testuke",
   FERIE: "Ferie",
+  TRENINGSSAMLING: "Treningssamling",
+  HELDAGSSAMLING: "Heldagssamling",
 };
 
 export type PeriodeNavnLabel = { verdi: PeriodeType; navn: string };

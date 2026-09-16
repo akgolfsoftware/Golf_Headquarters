@@ -13,7 +13,7 @@ AK Golf HQ samler offentlig nettsted, coachingbooking, PlayerHQ og AgencyOS i é
 | Spørsmål | Kilde |
 |---|---|
 | Hva skal produktet gjøre? | [Nordstjernen](NORDSTJERNE.md), [produktreglene](BUSINESS-RULES.md) |
-| Hva betyr treningsbegrepene? | [Treningsfaglig fasit](../FASIT-AK-GOLF-HQ.md), ordbøkene via [dokumentoversikten](../README.md) |
+| Hva betyr treningsbegrepene? | [Treningsfaglig fasit](../ordbok-master-trening.md), ordbøkene via [dokumentoversikten](../README.md) |
 | Hvordan skal skjermen se ut? | [Designarbeid og referanser](../../designsystem/README.md); alle skjermer revideres i Claude Design, og eksisterende design er ikke låst |
 | Hva gjør funksjonen faktisk? | Koden, testene og en målt kundereise |
 | Hva gjenstår? | [Arbeidslisten](../MASTERPLAN-GJENSTAAENDE.md) |
