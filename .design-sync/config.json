@@ -221,6 +221,54 @@
     },
     "SerieVelger": {
       "cardMode": "column"
+    },
+    "AutoProgresjon": {
+      "cardMode": "column"
+    },
+    "SettRepsLogger": {
+      "cardMode": "column"
+    },
+    "Icon": {
+      "cardMode": "column"
+    },
+    "AgendaRad": {
+      "cardMode": "column"
+    },
+    "VisningsVelger": {
+      "cardMode": "column"
+    },
+    "BunnNav": {
+      "cardMode": "column"
+    },
+    "CTAPill": {
+      "cardMode": "column"
+    },
+    "Knapp": {
+      "cardMode": "column"
+    },
+    "PillVelger": {
+      "cardMode": "column"
+    },
+    "Tittel": {
+      "cardMode": "column"
+    },
+    "HullStripe": {
+      "cardMode": "column"
+    },
+    "RadarProfil": {
+      "cardMode": "column"
+    },
+    "Paginering": {
+      "cardMode": "column"
+    },
+    "Skjelett": {
+      "cardMode": "column"
+    },
+    "CoachGodkjenning": {
+      "cardMode": "column"
+    },
+    "ZoomBrodsmule": {
+      "cardMode": "column"
     }
   },
   "componentSrcMap": {
@@ -230,7 +278,6 @@
     "AKFormelChip": "scope/domene/domene2.tsx",
     "AkseBar": "scope/kjerne/core.tsx",
     "AkseChip": "scope/kjerne/core.tsx",
-    "AmbientBakgrunn": "scope/kjerne/core.tsx",
     "AnbefalingsKort": "scope/domene/domene.tsx",
     "Ark": "scope/overlegg/overlays.tsx",
     "AutoProgresjon": "scope/fysisk/fysisk.tsx",
@@ -324,7 +371,6 @@
     "LaeringsTrapp": "scope/utviklingsplan/utviklingsplan.tsx",
     "LaunchWindow": "scope/datavis/datavis.tsx",
     "LengdeAvvik": "scope/spesialviz/spesialviz.tsx",
-    "LFaseBadge": "scope/domene/domene2.tsx",
     "ListeIkon": "scope/tilbakemelding/tilbakemelding.tsx",
     "LiveBar": "scope/domene/domene.tsx",
     "LiveStatus": "scope/domene/domene2.tsx",

@@ -39,6 +39,10 @@ const GRUPPER = {
 // Navnekollisjon: overlays.Ark er den kanoniske `Ark`; wb-mobil sin eksporteres som WbArk
 // (samme alias som src/components/v2/index.ts bruker).
 const ALIAS = { 'v2/wb-mobil.tsx': { Ark: 'WbArk' } };
+// Utgåtte/ikke-renderbare komponenter — se .design-sync/NOTES.md §Bevisst utenfor omfanget.
+// LFaseBadge: utgått (beslutning 05.08.2026), skal ikke tilbys som byggbar i Claude Design.
+// AmbientBakgrunn: rendrer null uten PROFIL.src (settes av appen i runtime) — ingen statisk tilstand.
+const EKSKLUDER_EKSPORT = new Set(['LFaseBadge', 'AmbientBakgrunn']);
 
 const indexLines = ['// GENERERT av .design-sync/gen-scope.mjs — ikke rediger for hånd.',
   '// Eksportlista for Claude Design-synken: appens ekte komponenter, ingen reimplementasjon.',
@@ -52,7 +56,7 @@ for (const [rel, gruppe] of Object.entries(GRUPPER)) {
   const names = [];
   for (const m of text.matchAll(/^export (?:default )?(?:function|const|class) ([A-Z][A-Za-z0-9]*)\b/gm)) {
     const n = m[1];
-    if (/^[A-Z0-9]+$/.test(n) || names.includes(n)) continue; // ALL_CAPS-konstanter er ikke komponenter
+    if (/^[A-Z0-9]+$/.test(n) || names.includes(n) || EKSKLUDER_EKSPORT.has(n)) continue; // ALL_CAPS-konstanter er ikke komponenter
     names.push(n);
   }
   const exports = names.map((n) => {

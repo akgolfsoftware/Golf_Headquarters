@@ -36,6 +36,56 @@ Anders' tegneprosjekt og skal ALDRI være mål for denne synken.
 - `AmbientBakgrunn` (`v2/core.tsx`): rendrer `null` uten `PROFIL.src`, som settes av appen i runtime;
   ingen statisk tilstand å vise. Begge ekskluderes i `EKSKLUDER_EKSPORT` i `gen-scope.mjs`.
 
+## Runde 2 (16.09, 100 komponenter, 322 celler) — resultat og funn
+
+314/322 good, 8 needs-work — alle åtte er reelle kildefeil, ikke previewfeil (se under). Detaljer i
+git-historikken (`.design-sync/learnings/W2-*.md` er slettet etter fold-inn, samme mønster som runde 1).
+
+**Ekskludert fra pakken (gen-scope.mjs `EKSKLUDER_EKSPORT`):** `LFaseBadge` (utgått 05.08.2026) og
+`AmbientBakgrunn` (rendrer `null` uten `PROFIL.src`, som er runtime-state appen setter — ingen statisk
+tilstand). Begge fjernet fra `index.ts`/`componentSrcMap`; deres previews fra runde 1 er slettet.
+
+**Reelle kildefeil funnet, IKKE rettet (se Kildefunn-seksjonen under for full liste):**
+- `Periodeplan` (kalender.tsx): `PP_RAMP`-fargene er hardkodet mørke uansett tema, og hvit tekst
+  velges kun for de to SISTE fasene — resten av fasenavnene blir mørkt-på-mørkt. 3 celler needs-work.
+- `Verktoytips` (overlays.tsx): fast grafitt-bakgrunn med `TL.text` (mørk) — uleselig i lys modus.
+  1 celle needs-work (`SgTotalt`).
+- `TonnasjeHero`: intern `requestAnimationFrame`-opptelling (900 ms) uten prop for å slå av; fangsten
+  tar bildet midtveis (88–90 % av sluttverdi) uansett props. Ikke rettbart fra preview-laget — krever
+  enten en `instant`/`animert=false`-prop i kilden, eller at fangsten venter på `settle()`. 3 celler
+  needs-work.
+
+**Mekanisk fra full validate, rettet:** 16 komponenter fikk `cardMode: "column"` i `cfg.overrides`
+(AutoProgresjon, SettRepsLogger, Icon, AgendaRad, VisningsVelger, BunnNav, CTAPill, Knapp, PillVelger,
+Tittel, HullStripe, RadarProfil, Paginering, Skjelett, CoachGodkjenning, ZoomBrodsmule) — cellene var
+bredere enn rutenett-cellen i enkelt-modus. Grader ble carried forward (presentasjonsendring).
+**Triagert, ikke rettet:** `[FONT_MISSING] Cambria` er Tailwind v4s innebygde `--font-serif`-stabel
+(`ui-serif, Georgia, Cambria, …`) — ingen komponent bruker `font-serif`; systemfont, ikke et hull.
+
+**Mønstre bekreftet fra runde 2** (utover runde 1s liste): kontekst-krevende deler (Inspektorpanel,
+MasterDetalj, Tabs-familien) skrives som hele foreldrekomposisjonen med cellenavn som peker på delen i
+fokus. `MasterDetalj` sitt lg-brekkpunkt (1024 px) ligger over fangstens 900 px — løst med
+`data-ds-desktop` + scoped `<style>` i selve cellen (ingen config-endring nødvendig). Props-løse
+komponenter (`ToppbarHoyde`) vises ærlig som «rendrer ikke noe synlig» i én celle. `Composer`/chat-UI
+bruker samme `SamtaleBoble`-mønster fra runde 1.
+
+**Kildefunn fra runde 2** (ikke rettet — meldes videre, ingen `src/`-endring):
+- `FysOktKort`: ikonnavn `move`/`heart-pulse` finnes ikke i `icon.tsx` → «?»-fallback.
+- `SporChip` STAGNERER-tonen kan ha lav kontrast på tint-bakgrunn i lys modus (kjent Train-lock-klasse).
+- `HjelpTips`/`HvorforDette` mangler `open`/`defaultOpen`-prop — utvidet innhold kan aldri vises statisk.
+- `PreviewArk` sin default `formel`-prop (`wb-mobil.tsx`) bruker utgått L-fase/CS-vokabular.
+- `Ark`/`WbArk` mangler `BunnArk`s backdrop/fokus-felle/Escape-håndtering.
+- `wb-composer.tsx` sin `PalettSok`-placeholder sier «drill» — ordboka sier «øvelse».
+- `ProgressRing`/`ProgressBar`/`KPICard` (shadcn-laget) har ingen kontrastvakt på signalfarger.
+- Tabs-familien mangler overflow-fade/chevron som `PillTabs` har.
+- `Switch` sin eneste app-bruk (`PreferencesCard.tsx`) kobler seg til en ekstern `<label>` via
+  komponentens interne `useId()` — skjørt mønster ved refaktorering.
+- Ti primitiver/molekyler har ingen faktisk forbruker i `src/components` utenfor egen ui-fil.
+- `SendKnapp`, `Verktoytips`, `KommandoPalett` har ingen forbrukere i `src/` utenfor egen kildefil.
+- To ulike send-ikoner: `Skrivefelt`s innebygde knapp bruker papirfly, `SendKnapp` dokumenterer pil.
+- `Popover` markerer alltid første rad uten at noen prop styrer det.
+- `Banner`-CTA på 9 %-tonet warn-flate er under kontrastkravet i lys modus (kjent Train-lock-klasse).
+
 ## Fonter
 
 Appen laster fonter via `next/font/google` (CSS-variabler `--font-poppins` osv. settes av Next).
