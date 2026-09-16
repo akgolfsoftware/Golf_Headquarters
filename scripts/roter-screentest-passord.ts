@@ -36,9 +36,17 @@ async function main() {
   // 1+2: sett nytt passord på begge testbrukerne
   const { data: liste, error: listeFeil } = await admin.auth.admin.listUsers({ perPage: 1000 });
   if (listeFeil) throw listeFeil;
+  // En manglende bruker skal ALDRI avbryte loopen midtveis — det setter nytt
+  // passord i Supabase for brukerne som allerede er behandlet uten å nå steg
+  // 3 (skrive til .env.local), som låser dem ute (oppdaget 2026-09-16: en
+  // manglende screentest-parent-bruker kastet etter screentest+coachtest var
+  // rotert, og det nye passordet gikk tapt).
   for (const epost of BRUKERE) {
     const bruker = liste.users.find((u) => u.email === epost);
-    if (!bruker) throw new Error(`Fant ikke ${epost} i Supabase Auth`);
+    if (!bruker) {
+      console.log(`ADVARSEL: fant ikke ${epost} i Supabase Auth — hopper over`);
+      continue;
+    }
     const { error } = await admin.auth.admin.updateUserById(bruker.id, { password: nytt });
     if (error) throw error;
     console.log(`Passord satt: ${epost}`);
