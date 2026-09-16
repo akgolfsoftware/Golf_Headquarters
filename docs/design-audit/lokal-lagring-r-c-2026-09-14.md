@@ -1,6 +1,8 @@
 # R-C — innlogget ende-til-ende-kontroll av privat lokal lagring 14.09.2026
 
-Gren: `codex/etter-merge-2026-09-14`, oppå PR #886/#887 (main `e565264b`). Ingen visuell portering, ingen produksjonsdata, ingen betaling.
+**Oppdatert:** flettet til `main` via PR #888, merge-commit `0fd4e593d`. Ingen visuell portering, ingen produksjonsdata, ingen betaling.
+
+Gren (opprinnelig): `codex/etter-merge-2026-09-14`, oppå PR #886/#887.
 
 Dette lukker det eksplisitte gapet fra [`lokal-lagring-personvern-2026-09-11.md`](lokal-lagring-personvern-2026-09-11.md): «Autentisert ende-til-ende-kontroll i en ekte brukerøkt gjenstår til pakken er integrert og et egnet testmiljø er tilgjengelig.» Det testmiljøet (isolert HQ-Supabase, samme som P0-TEST) er nå tilgjengelig.
 

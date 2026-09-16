@@ -83,10 +83,15 @@ const eslintConfig = defineConfig([
   // Override default ignores of eslint-config-next.
   globalIgnores([
     ".next/**",
+    "**/.next/**",
     ".vercel/**",
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Nestede git worktrees (codex/claude-agenter) lever fysisk inne i repo-treet
+    // og har egne .next-/build-mapper — uten dette leser lint fra rot deres
+    // kompilerte output som om det var kildekode i denne grenen.
+    ".worktrees/**",
     // Ikke-app-kode: arkiv (gitignored disk-rester), skill-filer, design-handover
     // og statiske assets. Disse er ikke en del av appen og skal aldri lintes (de
     // inneholder standalone .jsx-eksempler uten imports → falske jsx-no-undef-errors).

@@ -31,12 +31,12 @@ Denne arbeidskopien har `.env.local` symlenket inn (normalt dev-oppsett), og P0-
 ## Begrensninger
 
 - `.env.local` leses ikke, som i P0-TEST. Nøkler i `/tmp/ak-hq-p0.status.env`, syntetiske passord i `/tmp/ak-hq-p0-creds.env` (ikke Git).
-- Kun abonnement-/tilgangsnivådelen av R-E-oppgaven («Caddie-, TrackMan-, lokal lagrings- og abonnementsreise») er dekket her. Caddie-chat, TrackMan-import og privat lokal lagring har fortsatt ingen tilsvarende innlogget browserreise — se masterplanen.
+- Kun abonnement-/tilgangsnivådelen av R-E-oppgaven er dekket i denne kontrollen. Caddie-gate, TrackMan CSV/HTML og privat lokal lagring er senere dekket og flettet via PR #887/#888 — se masterplanen.
 - Ingen visuell godkjenning. Ingen produksjonsreise. Ingen reell betaling.
-- Endringen er en lokal commit i denne arbeidskopien. Ikke pushet, ikke PR, ikke flettet til `main`, ikke synkronisert til Notion.
+- Denne leveransen er flettet til `main` via PR #886 (`a6f184695`). Notion-sluttsynk av Tasks følger egen arbeidsregel.
 
 ## Ikke påstått
 
-- At Caddie/TrackMan/lokal lagring er innlogget prøvd.
+- At Caddie AI-svar eller TrackMan foto-kilde er innlogget prøvd (CSV/HTML og Caddie-gate er dekket i #887; R-C i #888).
 - At dette er lansert eller produksjonsverifisert.
 - At den pre-eksisterende flaken i `spillerreise-innlogget.spec.ts` er rettet.
