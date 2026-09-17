@@ -1922,8 +1922,10 @@ model TestResult {
   witnessStatus   TestWitnessStatus   @default(PENDING)
   attestationMode TestAttestationMode @default(NONE)
   createdAt       DateTime            @default(now())
-  // TN-trenerføring (2026-09-14, additiv kildekode — IKKE migrert/kjørt mot
-  // noen database ennå, se docs/design-audit/team-norway-testdag-modellforslag-2026-09-14.md).
+  // TN-trenerføring (2026-09-14, additiv — se
+  // docs/design-audit/team-norway-testdag-modellforslag-2026-09-14.md).
+  // DDL: scripts/add-tn-testdag-2026-09-17.ts (idempotent, kjøres mot
+  // DIRECT_URL FØR denne grenen merges — kolonnen finnes ikke i basen før da).
   // Null = spilleren registrerte selv (bakoverkompatibelt for all eksisterende
   // data). Satt = coachen som førte testen PÅ VEGNE AV spilleren — `userId`
   // er ALLTID spilleren/subjektet, aldri coachen.
@@ -2024,9 +2026,11 @@ model TestAssignment {
   @@map("test_assignments")
 }
 
-/// Team Norway testdag (2026-09-14, additiv kildekode — IKKE migrert/kjørt
-/// mot noen database ennå). Se docs/design-audit/team-norway-testdag-
-/// modellforslag-2026-09-14.md for begrunnelse og reisen den dekker. Kø-/
+/// Team Norway testdag (2026-09-14, additiv). Se docs/design-audit/team-
+/// norway-testdag-modellforslag-2026-09-14.md for begrunnelse og reisen den
+/// dekker. DDL: scripts/add-tn-testdag-2026-09-17.ts (idempotent, kjøres mot
+/// DIRECT_URL FØR denne grenen merges — tabellene finnes ikke i basen før da,
+/// og fire kodestier spør allerede mot dem). Kø-/
 /// statuslag over EKSISTERENDE TestSession/TestResult — ingen parallell
 /// resultatmodell. `testDefinitionId` peker på den ALLEREDE OPPRETTEDE,
 /// versjonerte `TestDefinition`-raden (scoringRule = TN_VERSION på
