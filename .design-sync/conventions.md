@@ -57,6 +57,13 @@ inline `style` med variablene over i stedet for å gjette klassenavn.
   `chevron-right`, `clock`, `dumbbell`, `flag`, `plus`, `search`, `target`, `trending-up`,
   `trending-down`, `trophy`, `user`, `users`, `x`. Ukjent navn gir tomt ikon.
 
+## Kjente begrensninger (ikke rettet i denne synken)
+
+- `Periodeplan`: fasefargene kan bli mørk tekst på mørk bunn — sjekk kontrast før bruk, ikke stol på
+  standardfargene for fasenavn.
+- `Verktoytips`: kan være uleselig i lyst tema (fast mørk bakgrunn) — bruk med forsiktighet på lyse flater.
+- `TonnasjeHero`: teller opp ved innlasting; et statisk skjermbilde kan vise et tall midtveis i tellingen.
+
 ## Ett eksempel (bygget fra en verifisert forhåndsvisning)
 
 ```jsx

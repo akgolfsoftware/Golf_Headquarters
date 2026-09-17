@@ -510,5 +510,6 @@
     "VisningsVelger": "scope/kalender/kalender.tsx",
     "WbArk": "scope/workbench/wb-mobil.tsx",
     "ZoomBrodsmule": "scope/workbench/wb-mobil.tsx"
-  }
+  },
+  "readmeHeader": ".design-sync/conventions.md"
 }
