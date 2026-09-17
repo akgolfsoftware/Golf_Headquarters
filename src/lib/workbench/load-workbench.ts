@@ -22,7 +22,7 @@
  */
 
 import { prisma } from "@/lib/prisma";
-import type { LPhase, PyramidArea, SkillArea } from "@/generated/prisma/client";
+import type { LPhase, Prisma, PyramidArea, SessionStatus, SkillArea } from "@/generated/prisma/client";
 import { PYR_REKKEFOLGE } from "@/lib/pyramide";
 import { adherencePct, oktCompliance } from "@/lib/workbench/compliance";
 import { kategoriFraFritekst, SG_FOKUS_LABEL, type WorkbenchFokus } from "@/lib/workbench/fokus";
@@ -37,6 +37,8 @@ import {
   type PlanWeekSessionInput,
 } from "@/lib/workbench/merge-week-sessions";
 import type { Axis, WeekDay, WeekEvent } from "@/lib/workbench/week-types";
+import { lokalDatoTilKolonne, SPILLER_SYNLIGE_STATUSER } from "@/lib/workbench/wb-map";
+import { EnvironmentSchema, PyramidAreaSchema } from "@/lib/domain/workbench/schemas";
 
 // ───────── Eksportert data-form ─────────
 // Hver del er optional: mangler kilde → komponenten bruker v10-demo.
@@ -200,23 +202,89 @@ function mondayOf(d: Date): Date {
   return m;
 }
 
-// Felles select for uke-økter — samme felt-sett som de eksisterende loaderne.
-const SESSION_SELECT = {
+// OW-3 fase 3: planleggeren leser nå WorkbenchSession/WorkbenchDrill i stedet
+// for TrainingPlanSession/SessionDrill — samme WorkbenchData-kontrakt ut.
+const WB_SESSION_SELECT = {
   id: true,
-  scheduledAt: true,
-  durationMin: true,
+  date: true,
+  startMinute: true,
+  durationMinutes: true,
   title: true,
-  pyramidArea: true,
+  pyramid: true,
   environment: true,
   status: true,
   lFase: true,
   csNivaa: true,
   miljo: true,
+  planId: true,
+  hiddenByPlayer: true,
   // G3: kildesporing — brukes til å undertrykke gruppeslots som alt er
   // rullet ut som plan-økter (vis planøkta, ikke gruppetiden i tillegg).
-  sourceGroupId: true,
+  groupId: true,
   _count: { select: { drills: true } },
 } as const;
+type WbSessionRow = Prisma.WorkbenchSessionGetPayload<{ select: typeof WB_SESSION_SELECT }>;
+
+// WorkbenchSession.status (DRAFT|SCHEDULED|PUBLISHED|IN_PROGRESS|COMPLETED|
+// CANCELLED|SKIPPED, fri streng) → SessionStatus (compliance-vokabularet).
+// PUBLISHED er etterfølgeren til gammel PLANNED (samme mapping som fase 2-
+// migreringsskriptet brukte andre veien).
+const WB_STATUS_TIL_SESSION_STATUS: Record<string, SessionStatus> = {
+  DRAFT: "PLANNED",
+  SCHEDULED: "PLANNED",
+  PUBLISHED: "PLANNED",
+  IN_PROGRESS: "ACTIVE",
+  COMPLETED: "COMPLETED",
+  CANCELLED: "CANCELLED",
+  SKIPPED: "SKIPPED",
+};
+
+/** `date` (@db.Date, UTC-midnatt for lokal kalenderdag) + startMinute → lokal Date,
+ *  samme lese-konvensjon som TrainingPlanSession.scheduledAt (lokale getters i Oslo). */
+function wbScheduledAt(date: Date, startMinute: number): Date {
+  return new Date(
+    date.getUTCFullYear(),
+    date.getUTCMonth(),
+    date.getUTCDate(),
+    0,
+    startMinute,
+  );
+}
+
+/**
+ * Spiller-synlighet for en WorkbenchSession-rad: økt-nivå status/skjult
+ * (samme regel coach-motoren selv håndhever, SPILLER_SYNLIGE_STATUSER) —
+ * PLUSS, for rader som fortsatt stammer fra en migrert TrainingPlanSession
+ * (planId satt), at den planen faktisk er sendt/aktiv. Sistnevnte bevarer
+ * dagens plan-nivå-godkjenning for de 12 migrerte radene; nye økter fra
+ * coachens Workbench-motor har ingen planId og styres av økt-status alene.
+ */
+function erSpillerSynlig(
+  row: { status: string; hiddenByPlayer: boolean; planId: string | null },
+  synligePlanIder: ReadonlySet<string>,
+): boolean {
+  if (row.hiddenByPlayer) return false;
+  if (!(SPILLER_SYNLIGE_STATUSER as readonly string[]).includes(row.status)) return false;
+  if (row.planId) return synligePlanIder.has(row.planId);
+  return true;
+}
+
+function wbRowToPlanRow(row: WbSessionRow): PlanWeekSessionInput {
+  const pyramid = PyramidAreaSchema.safeParse(row.pyramid);
+  const environment = EnvironmentSchema.safeParse(row.environment);
+  return {
+    id: row.id,
+    scheduledAt: wbScheduledAt(row.date, row.startMinute),
+    durationMin: row.durationMinutes,
+    title: row.title,
+    pyramidArea: pyramid.success ? pyramid.data : "TEK",
+    environment: environment.success ? environment.data : null,
+    status: WB_STATUS_TIL_SESSION_STATUS[row.status] ?? "PLANNED",
+    lFase: row.lFase,
+    miljo: row.miljo,
+    _count: row._count,
+  };
+}
 
 /**
  * Kjernen: gitt en bruker-id, bygg `WorkbenchData` fra ekte Prisma-data.
@@ -265,9 +333,18 @@ export async function loadWorkbenchData(
       ? { userId, status: { in: playerVisibleStatuses } }
       : { userId };
 
+  // WorkbenchSession.date er @db.Date (UTC-midnatt for en lokal kalenderdag) —
+  // konverter grensene fra lokale Date-objekter til samme kolonne-representasjon.
+  const weekStartDato = lokalDatoTilKolonne(weekStart);
+  const weekEndDato = lokalDatoTilKolonne(weekEnd);
+  const monthStartDato = lokalDatoTilKolonne(monthStart);
+  const monthEndDato = lokalDatoTilKolonne(monthEnd);
+  const tredtiDagerDato = lokalDatoTilKolonne(tretti);
+  const naaDato = lokalDatoTilKolonne(now);
+
   const [
-    weekSessions,
-    last30Sessions,
+    weekSessionsRaw,
+    last30SessionsRaw,
     goals,
     entries,
     player,
@@ -279,17 +356,17 @@ export async function loadWorkbenchData(
     groupMemberships,
     planTemplates,
     fysiskPlan,
-    monthPlanSessions,
+    monthPlanSessionsRaw,
     monthV2SessionsRaw,
+    synligePlanIderRader,
   ] = await Promise.all([
-    prisma.trainingPlanSession.findMany({
-      where: { plan: planFilter, scheduledAt: { gte: weekStart, lt: weekEnd } },
-      orderBy: { scheduledAt: "asc" },
-      select: SESSION_SELECT,
+    prisma.workbenchSession.findMany({
+      where: { playerId: userId, date: { gte: weekStartDato, lt: weekEndDato } },
+      select: WB_SESSION_SELECT,
     }),
-    prisma.trainingPlanSession.findMany({
-      where: { plan: planFilter, scheduledAt: { gte: tretti, lt: now } },
-      select: { pyramidArea: true, durationMin: true, scheduledAt: true },
+    prisma.workbenchSession.findMany({
+      where: { playerId: userId, date: { gte: tredtiDagerDato, lte: naaDato } },
+      select: WB_SESSION_SELECT,
     }),
     prisma.goal.findMany({
       where: { userId, status: "ACTIVE" },
@@ -443,9 +520,9 @@ export async function loadWorkbenchData(
     // Månedsaggregat (månedsvisningen i Workbench-zoomen): kun feltene
     // dag-cellene trenger. Plan + v2 lukes for dubletter via generertFraId
     // under, samme regel som mergeWeekSessions.
-    prisma.trainingPlanSession.findMany({
-      where: { plan: planFilter, scheduledAt: { gte: monthStart, lt: monthEnd } },
-      select: { id: true, scheduledAt: true, durationMin: true, pyramidArea: true },
+    prisma.workbenchSession.findMany({
+      where: { playerId: userId, date: { gte: monthStartDato, lt: monthEndDato } },
+      select: WB_SESSION_SELECT,
     }),
     prisma.trainingSessionV2.findMany({
       where: { studentId: userId, startTime: { gte: monthStart, lt: monthEnd } },
@@ -458,6 +535,9 @@ export async function loadWorkbenchData(
         practiceType: true,
       },
     }),
+    opts?.viewer === "player"
+      ? prisma.trainingPlan.findMany({ where: { userId, status: { in: playerVisibleStatuses } }, select: { id: true } })
+      : Promise.resolve([] as { id: string }[]),
   ]);
 
   // Filtrer bort V2-speil av coach-utkast for spiller-visning.
@@ -469,6 +549,23 @@ export async function loadWorkbenchData(
   const monthV2Sessions = monthV2SessionsRaw.filter(
     (v) => !(v.generertFraId && skjulteMnd.has(v.generertFraId)),
   );
+
+  // Spiller-synlighet: økt-status/skjult-flagg alene for nye Workbench-motor-
+  // økter (ingen planId); pluss plan-nivå godkjenning for migrerte rader med
+  // planId (samme regel opprettholdt for de 12 gamle radene fra fase 2).
+  const synligePlanIder = new Set(synligePlanIderRader.map((p) => p.id));
+  const spillerFiltrer = (rows: WbSessionRow[]): WbSessionRow[] =>
+    opts?.viewer === "player" ? rows.filter((r) => erSpillerSynlig(r, synligePlanIder)) : rows;
+
+  const weekSessions: (PlanWeekSessionInput & { groupId: string | null })[] = spillerFiltrer(
+    weekSessionsRaw,
+  ).map((r) => ({ ...wbRowToPlanRow(r), groupId: r.groupId }));
+  // Presist 7/28-dagers-vindu — date-kolonnen er kun dag-grov, filtrer på
+  // faktisk scheduledAt etter mapping (samme presisjon som TrainingPlanSession).
+  const last30Sessions = spillerFiltrer(last30SessionsRaw)
+    .map(wbRowToPlanRow)
+    .filter((s) => s.scheduledAt >= tretti && s.scheduledAt < now);
+  const monthPlanSessions = spillerFiltrer(monthPlanSessionsRaw).map(wbRowToPlanRow);
 
   // Aktiv periode-blokk (dagens dato innenfor start/slutt) → ukevolum-mål + coach-fokus.
   // Gjenbruker seasonPlan.periodBlocks (allerede hentet til Gantt) — ingen egen spørring.
@@ -513,7 +610,7 @@ export async function loadWorkbenchData(
       (slot) =>
         !weekSessions.some(
           (s) =>
-            s.sourceGroupId === slot.groupId &&
+            s.groupId === slot.groupId &&
             overlapper(
               s.scheduledAt,
               new Date(s.scheduledAt.getTime() + s.durationMin * 60_000),

@@ -37,6 +37,14 @@ export function fraDatoKolonne(d: Date): string {
   return d.toISOString().slice(0, 10);
 }
 
+/**
+ * Lokal Date (server-lokal veggklokke, f.eks. fra dateForDayIndex) → samme
+ * kalenderdag som `date`-kolonnen (UTC-midnatt). Klokkeslettet i `d` ignoreres.
+ */
+export function lokalDatoTilKolonne(d: Date): Date {
+  return new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+}
+
 function mapDrill(row: WorkbenchDrillRow): Drill {
   return {
     id: row.id,
