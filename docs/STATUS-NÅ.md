@@ -1,9 +1,11 @@
 # Status nå — AK Golf HQ
 
-Oppdatert 17.09.2026 (natt). Appen er fortsatt under arbeid og ikke klarert for åpen lansering. [Masterplanen](MASTERPLAN-GJENSTAAENDE.md) eier prioritert neste arbeid og den komplette restlisten.
+Oppdatert 17.09.2026 (formiddag). Appen er fortsatt under arbeid og ikke klarert for åpen lansering. [Masterplanen](MASTERPLAN-GJENSTAAENDE.md) eier prioritert neste arbeid og den komplette restlisten.
 
 ## Denne samlingen
 
+- **Masterplanen er avstemt for lansering 17.09 formiddag.** `main` er `8d2ccb9` (PR #914); Vercel produksjon er READY på samme commit fra kl. 09:39, men den commiten inneholder kun dokumenter og synkverktøy — ingen brukerflate er endret, og ingen lanseringsport skiftet status. Planen sier nå eksplisitt hvilke fire ting som eies av Anders og sperrer lansering: designvalget (D0), Stripe-testnøkler + PlayerHQ-priser i live (L2), miljøautorisasjon for alarm/gjenoppretting/rollback (L7) og gjennomsyn av PR #910. Ingen lanseringsdato er satt — den kan først settes når D0 er lukket.
+- **Tre åpne PR-er 17.09:** #910 (Team Norway-demo, WIP, ikke sett av Anders), #911 (utkast, CD-4–CD-7) og #915 (utkast 17.09: beslutningen om at Workbench skal ha ekte dra-og-slipp også i koden og på mobil — mobil-/dagsvisningen er klikk-basert i produksjon i dag; desktop-uka har ekte drag fra før).
 - **`/design-sync` fullført 17.09 natt.** 238 av appens ekte `ui`/`v2`-komponenter speilet til Claude Design-prosjektet «AK Golf HQ — komponenter fra kode» (virtuell pakke, ingen `src/`-endring) — 763 håndlagde forhåndsvisningsceller, 756 gradert god. 7 needs-work-celler er reelle kildefeil (Periodeplan-fargekontrast, Verktoytips lys modus, TonnasjeHero-telleanimasjon), dokumentert i `.design-sync/NOTES.md`, ikke rettet. Prosjektet er ikke koblet til `selectedForBuilding` — det er et eget kodesynk-prosjekt, ikke Anders' tegneprosjekt. Samme PR (#914) som masterplan-oppdateringen under.
 - **Masterplanen er oppdatert for lansering 16.09 kveld.** Lanseringsportene L0–L8 har fått status og bevis: ingen port er bestått; L2 (Stripe) venter på Anders, L7 på miljøautorisasjon, L0/L3/L4 på designvalget D0. Alt som er flettet 15.–16.09 er ført inn, og CD-4–CD-7 fra utkastet PR #911 er tatt inn i planen. [Masterplan](MASTERPLAN-GJENSTAAENDE.md).
 - **R-I er fullført 16.09.** Alle 53 admin-mutasjonsfiler har søskentest; 0 gjenstår. Serien endret ingen produksjonskode. PR #896–#908 i main. [Siste batch](design-audit/handlingstilgang-r-i-siste-batch-2026-09-16.md).
