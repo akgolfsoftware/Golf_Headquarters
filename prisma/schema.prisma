@@ -1430,6 +1430,7 @@ model ExerciseDefinition {
 
   createdByUser   User?                @relation("ExerciseCreator", fields: [createdBy], references: [id], onDelete: SetNull)
   sessionDrills   SessionDrill[]
+  workbenchDrills WorkbenchDrill[]
   coachDirektiver CoachDrillDirectiv[]
   fysOvelseRader  FysOvelseRad[]
 
@@ -6316,9 +6317,36 @@ model WorkbenchDrill {
   techniqueFocus  String?
   sourceId        String?
   sortOrder       Int
+  // Ekte kobling til øvelsesbanken (Anders 17.09.2026: «kun én database for
+  // øvelser — WorkbenchDrills og øvelser skal være det eksakt samme»).
+  // Nullbar i DB for additiv migrering av eksisterende rader; nye drills fra en
+  // øvelse i banken skal alltid sette denne, samme kontrakt som SessionDrill.exerciseId.
+  exerciseId      String?
+  // Dosefelt (OW-3 fase 3 · 2026-09-17) — speiler SessionDrill sine tellemåte-,
+  // volum- og L-trapp-felt. String i stedet for RepType-enum, konsistent med
+  // beslutningen 16.09.2026 §6 pkt. 1 (unngå å utvide et delt enum i prod);
+  // validert i zod ved lesing/skriving, aldri på databasenivå.
+  repType          String?
+  repAntall        Int? // antall svinger (SVINGER_UTEN_BALL) eller baller (BALLER_SLATT)
+  repMinutter      Int? // minutter (TID)
+  repSett          Int? // sett (SETT_REPS)
+  repReps          Int? // reps per sett (SETT_REPS)
+  // Planlagt L-trapp (AK-formel): reps per læringsfase. Kun historisk lesing —
+  // ingen nytt opprett-/rediger-skjema skal skrive disse (samme regel som
+  // lFase/miljo/csNivaa på WorkbenchSession, beslutningen §6 pkt. 2).
+  planRepsUtenBall Int?
+  planRepsLavFart  Int?
+  planRepsAuto     Int?
+  // Kobling til teknisk-plan-oppgave — løs referanse (ingen @relation), samme
+  // mønster som migrertFraTrainingPlanSessionId på WorkbenchSession. Slås opp
+  // direkte mot PositionTask ved lesing.
+  positionTaskId   String?
 
-  session WorkbenchSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  session  WorkbenchSession    @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  exercise ExerciseDefinition? @relation(fields: [exerciseId], references: [id])
 
   @@index([sessionId, sortOrder])
+  @@index([positionTaskId])
+  @@index([exerciseId])
   @@map("workbench_drills")
 }
