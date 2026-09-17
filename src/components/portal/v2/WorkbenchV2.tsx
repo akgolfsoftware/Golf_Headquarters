@@ -1451,6 +1451,29 @@ function byggDager(data: WorkbenchData): DagKol[] {
   });
 }
 
+/** Kollisjonsvarsel (ikke sperre — jf. CLAUDE.md «invarianter er anbefalinger»):
+ *  to økter samme dag med overlappende klokkeslett. Ren tidsberegning på
+ *  allerede lastede økter — krever ingen ny data eller databaseendring. */
+export type OktKollisjon = { dow: string; a: WeekEvent; b: WeekEvent };
+function finnKollisjonerIUke(dager: DagKol[]): OktKollisjon[] {
+  const funnet: OktKollisjon[] = [];
+  for (const dag of dager) {
+    const okter = dag.events.filter((e) => !e.tournament);
+    for (let i = 0; i < okter.length; i++) {
+      for (let j = i + 1; j < okter.length; j++) {
+        const a = okter[i];
+        const b = okter[j];
+        const aStart = a.h * 60 + (a.m ?? 0);
+        const aSlutt = aStart + a.durMin;
+        const bStart = b.h * 60 + (b.m ?? 0);
+        const bSlutt = bStart + b.durMin;
+        if (aStart < bSlutt && bStart < aSlutt) funnet.push({ dow: dag.dow, a, b });
+      }
+    }
+  }
+  return funnet;
+}
+
 /* ── Topp-bar ──────────────────────────────────────────── */
 function Felt({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -1955,6 +1978,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
   // Pending (optimistiske) økter er IKKE valgbare — de har ingen ekte id ennå,
   // så «Valgt økt»-panelet (flytt/slett) ville feilet på dem. Vises kun i tidslinja.
   const alleEvents = useMemo(() => dager.flatMap((d) => d.events).filter((e) => e.id && !erOptimistisk(e.id)), [dager]);
+  const kollisjoner = useMemo(() => finnKollisjonerIUke(dager), [dager]);
 
   // Ekte serverdata har landet (router.refresh() etter en vellykket mutasjon) —
   // de optimistiske overleggene har gjort jobben sin og lukes. Reset skjer
@@ -2529,6 +2553,21 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
             >
               <Icon name="x" size={14} />
             </button>
+          </div>
+        </Kort>
+      )}
+      {/* Kollisjonsvarsel — kun uke-zoom (der klokkeslett er synlig og relevant).
+          Aldri en sperre, jf. CLAUDE.md «invarianter er anbefalinger». */}
+      {nivaa === "uke" && kollisjoner.length > 0 && (
+        <Kort pad="10px 14px" style={{ border: `1px solid color-mix(in srgb, ${TL.warn} 35%, ${TL.hair})` }}>
+          <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
+            <Icon name="alert-triangle" size={14} style={{ color: TL.mute, flex: "none", marginTop: 2 }} />
+            <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.4 }}>
+              {kollisjoner.length === 1 ? "1 kollisjon i tid denne uka: " : `${kollisjoner.length} kollisjoner i tid denne uka: `}
+              {kollisjoner
+                .map((k) => `${k.dow} ${toKl(k.a.h, k.a.m ?? 0)} «${k.a.ttl}» / ${toKl(k.b.h, k.b.m ?? 0)} «${k.b.ttl}»`)
+                .join(" · ")}
+            </p>
           </div>
         </Kort>
       )}
