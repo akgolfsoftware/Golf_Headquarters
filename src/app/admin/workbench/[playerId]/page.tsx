@@ -1,8 +1,10 @@
 /**
- * AgencyOS — Workbench (uke / måned / år).
+ * AgencyOS — Workbench (coach-variant).
  *
- * Uke er redigerflaten. Måned og år er leseflater (C1): klikk dag/uke
- * åpner uken, årscelle åpner måneden — ingen redigering der.
+ * Samme motor som spilleren (WorkbenchV2) — se .claude/rules/beslutninger.md
+ * §WORKBENCH-MOTOREN (15.09.2026): spillerens WorkbenchV2 er DEN ENE
+ * Workbench-motoren, coach får den med stall-velger + gruppevelger oppå
+ * (CoachWorkbenchMount). Den gamle uke-only WorkbenchUke er erstattet her.
  */
 
 import { notFound } from "next/navigation";
@@ -11,36 +13,40 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { mondayOf, monthStartOf } from "@/lib/domain/workbench/operations";
-import type { WorkbenchMode } from "@/lib/domain/workbench/types";
-import { loadMonth, loadSources, loadWeek, loadYear } from "@/lib/workbench/wb-actions";
-import { UI } from "@/lib/domain/workbench/labels";
-import { parseVisning } from "@/lib/workbench/visning-url";
-import { WorkbenchUke } from "@/components/workbench/WorkbenchUke";
-import { WorkbenchLeseflate } from "@/components/workbench/WorkbenchLeseflate";
-import { WorkbenchFeil } from "@/components/workbench/WorkbenchFeil";
-import { TL_SCOPE } from "@/components/workbench/wb-tl-scope";
+import { loadWorkbenchContext } from "@/lib/workbench/load-context";
+import { parseWeekOffset } from "@/lib/workbench/session-move-math";
+import { lesPreferences } from "@/lib/preferences";
+import { hentSpillerSteder } from "@/lib/workbench/spiller-steder";
+import { CoachWorkbenchMount } from "@/components/admin/v2/CoachWorkbenchMount";
+import type { WorkbenchV2Actions } from "@/components/portal/v2/WorkbenchV2";
+import {
+  coachAddWorkbenchSession,
+  coachMoveWorkbenchSession,
+  coachUpdateWorkbenchSession,
+  coachRemoveWorkbenchSession,
+  coachDuplicateWeek,
+  coachLagrePeriode,
+  coachSlettPeriode,
+  coachDuplicateSession,
+  coachHentNotater,
+  coachLagreNotat,
+} from "@/lib/workbench/session-actions";
+import { publishWorkbenchPlan, hentPubliserDiff } from "@/lib/workbench/publish-actions";
+import { coachApplyWorkbenchTemplate } from "@/lib/workbench/apply-template-actions";
+import { coachSokTekniskOppgaver } from "@/lib/workbench/teknisk-oppgave-sok";
+import { coachBekreftTurneringEntry } from "@/lib/workbench/turnering-actions";
 
 export const dynamic = "force-dynamic";
 
 type Props = {
   params: Promise<{ playerId: string }>;
-  searchParams: Promise<{ vis?: string; uke?: string; maned?: string; aar?: string }>;
+  searchParams: Promise<{ uke?: string }>;
 };
 
-const ISO_DATO = /^\d{4}-\d{2}-\d{2}$/;
-const ISO_MANED = /^\d{4}-\d{2}$/;
-const ISO_AAR = /^\d{4}$/;
-
-function osloIdag(): string {
-  return new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Oslo" }).format(new Date());
-}
-
-export default async function WorkbenchUkePage({ params, searchParams }: Props) {
+export default async function CoachWorkbenchPage({ params, searchParams }: Props) {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
   const { playerId } = await params;
   const sp = await searchParams;
-  const visning = parseVisning(sp.vis);
 
   const spiller = await prisma.user.findFirst({
     where: { AND: [coachScopedPlayerWhere(user), { id: playerId }] },
@@ -48,75 +54,65 @@ export default async function WorkbenchUkePage({ params, searchParams }: Props) 
   });
   if (!spiller) notFound();
 
-  const idag = osloIdag();
-  const mode: WorkbenchMode = { kind: "AGENCY", subjectId: playerId, sources: ["OEKTER"] };
-  const navn = spiller.name ?? UI.unnamedPlayer;
-
-  if (visning === "maned") {
-    const raw = sp.maned && ISO_MANED.test(sp.maned) ? `${sp.maned}-01` : monthStartOf(idag);
-    const manedRes = await loadMonth({ monthStart: raw, mode, playerId });
-    return (
-      <div style={TL_SCOPE}>
-        <V2Shell bredde="full" aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name ?? undefined}>
-          {manedRes.ok ? (
-            <WorkbenchLeseflate
-              playerId={playerId}
-              spillerNavn={navn}
-              visning="maned"
-              maned={manedRes.data}
-              aar={null}
-            />
-          ) : (
-            <WorkbenchFeil melding={manedRes.error} />
-          )}
-        </V2Shell>
-      </div>
-    );
-  }
-
-  if (visning === "aar") {
-    const year = sp.aar && ISO_AAR.test(sp.aar) ? Number(sp.aar) : Number(idag.slice(0, 4));
-    const aarRes = await loadYear({ year, mode, playerId });
-    return (
-      <div style={TL_SCOPE}>
-        <V2Shell bredde="full" aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name ?? undefined}>
-          {aarRes.ok ? (
-            <WorkbenchLeseflate
-              playerId={playerId}
-              spillerNavn={navn}
-              visning="aar"
-              maned={null}
-              aar={aarRes.data}
-            />
-          ) : (
-            <WorkbenchFeil melding={aarRes.error} />
-          )}
-        </V2Shell>
-      </div>
-    );
-  }
-
-  const weekStart = mondayOf(sp.uke && ISO_DATO.test(sp.uke) ? sp.uke : idag);
-
-  const [ukeRes, kilderRes] = await Promise.all([
-    loadWeek({ weekStart, mode, playerId }),
-    loadSources({ playerId, weekStart }),
+  const [roster, groups] = await Promise.all([
+    prisma.user.findMany({
+      where: coachScopedPlayerWhere(user),
+      select: { id: true, name: true },
+      orderBy: { name: "asc" },
+    }),
+    prisma.group.findMany({
+      where: user.role === "COACH" ? { coachId: user.id } : {},
+      select: { id: true, name: true },
+      orderBy: { name: "asc" },
+    }),
   ]);
 
+  const weekOffset = parseWeekOffset(sp.uke);
+  const [ctx, { wbMode }, steder] = await Promise.all([
+    loadWorkbenchContext(playerId, weekOffset, { viewer: "coach" }),
+    Promise.resolve(lesPreferences(user)),
+    hentSpillerSteder(playerId),
+  ]);
+
+  const actions: WorkbenchV2Actions = {
+    addSession: coachAddWorkbenchSession.bind(null, playerId),
+    moveSession: coachMoveWorkbenchSession.bind(null, playerId),
+    updateSession: coachUpdateWorkbenchSession.bind(null, playerId),
+    removeSession: coachRemoveWorkbenchSession.bind(null, playerId),
+    // 8c.5: publish/publishDiff tar playerId som første argument for coach —
+    // samme funksjon som spillerens (den binder undefined der i stedet).
+    publish: publishWorkbenchPlan.bind(null, playerId),
+    publishDiff: hentPubliserDiff.bind(null, playerId),
+    duplicateWeek: coachDuplicateWeek.bind(null, playerId),
+    duplicateSession: coachDuplicateSession.bind(null, playerId),
+    lagrePeriode: coachLagrePeriode.bind(null, playerId),
+    slettPeriode: coachSlettPeriode.bind(null, playerId),
+    applyTemplate: (templateId: string) => coachApplyWorkbenchTemplate(playerId, templateId),
+    searchTeknisk: coachSokTekniskOppgaver.bind(null, playerId),
+    bekreftTurnering: coachBekreftTurneringEntry.bind(null, playerId),
+    coachNotat: {
+      hent: coachHentNotater.bind(null, playerId),
+      lagre: coachLagreNotat.bind(null, playerId),
+    },
+    // acceptPlan/rejectPlan og suggestWeek/applySuggestion er spiller-eksklusive
+    // (jf. kommentarene i WorkbenchV2Sheets.tsx) — utelatt her skjuler knappene.
+  };
+
   return (
-    <div style={TL_SCOPE}>
-      <V2Shell bredde="full" aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name ?? undefined}>
-        {ukeRes.ok ? (
-          <WorkbenchUke
-            playerId={playerId}
-            spillerNavn={navn}
-            uke={ukeRes.data}
-            kilder={kilderRes.ok ? kilderRes.data : []}
-          />
-        ) : (
-          <WorkbenchFeil melding={ukeRes.error} />
-        )}
-      </V2Shell>
-    </div>
+    <V2Shell bredde="full" aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name ?? undefined}>
+      <CoachWorkbenchMount
+        players={roster.map((p) => ({ id: p.id, navn: p.name ?? "Ukjent" }))}
+        groups={groups}
+        currentPlayerId={playerId}
+        playerName={spiller.name ?? "Ukjent"}
+        coachName={user.name ?? "Coach"}
+        data={ctx?.data}
+        insights={ctx?.insights ?? null}
+        planStatus={ctx?.planStatus ?? null}
+        actions={actions}
+        wbMode={wbMode}
+        steder={steder}
+      />
+    </V2Shell>
   );
 }

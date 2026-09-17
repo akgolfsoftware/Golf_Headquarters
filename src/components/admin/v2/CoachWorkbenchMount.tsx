@@ -22,6 +22,7 @@ import { WorkbenchV2, type WorkbenchV2Actions } from "@/components/portal/v2/Wor
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
 import type { WorkbenchInsights } from "@/lib/workbench/types";
 import type { PlanStatus } from "@/generated/prisma/client";
+import type { SpillerStedValg } from "@/components/portal/v2/WorkbenchV2Sheets";
 
 export interface CoachRosterPlayer {
   id: string;
@@ -46,6 +47,8 @@ export interface CoachWorkbenchMountProps {
   actions?: WorkbenchV2Actions;
   /** B40 §3 — coachens egen Standard/Pro-preferanse (lesPreferences(user).wbMode). */
   wbMode?: "standard" | "pro";
+  /** Aktiv spillers treningssteder fra onboarding — hurtigvalg for «Hvor» i økt-arket. */
+  steder?: SpillerStedValg[];
 }
 
 /**
@@ -73,6 +76,7 @@ export function CoachWorkbenchMount({
   planStatus,
   actions,
   wbMode,
+  steder,
 }: CoachWorkbenchMountProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -179,6 +183,7 @@ export function CoachWorkbenchMount({
         planStatus={planStatus ?? null}
         actions={actions}
         wbMode={wbMode}
+        steder={steder}
       />
     </div>
   );
