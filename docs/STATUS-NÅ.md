@@ -1,9 +1,10 @@
 # Status nå — AK Golf HQ
 
-Oppdatert 16.09.2026 (kveld). Appen er fortsatt under arbeid og ikke klarert for åpen lansering. [Masterplanen](MASTERPLAN-GJENSTAAENDE.md) eier prioritert neste arbeid og den komplette restlisten.
+Oppdatert 17.09.2026 (natt). Appen er fortsatt under arbeid og ikke klarert for åpen lansering. [Masterplanen](MASTERPLAN-GJENSTAAENDE.md) eier prioritert neste arbeid og den komplette restlisten.
 
 ## Denne samlingen
 
+- **`/design-sync` fullført 17.09 natt.** 238 av appens ekte `ui`/`v2`-komponenter speilet til Claude Design-prosjektet «AK Golf HQ — komponenter fra kode» (virtuell pakke, ingen `src/`-endring) — 763 håndlagde forhåndsvisningsceller, 756 gradert god. 7 needs-work-celler er reelle kildefeil (Periodeplan-fargekontrast, Verktoytips lys modus, TonnasjeHero-telleanimasjon), dokumentert i `.design-sync/NOTES.md`, ikke rettet. Prosjektet er ikke koblet til `selectedForBuilding` — det er et eget kodesynk-prosjekt, ikke Anders' tegneprosjekt. Samme PR (#914) som masterplan-oppdateringen under.
 - **Masterplanen er oppdatert for lansering 16.09 kveld.** Lanseringsportene L0–L8 har fått status og bevis: ingen port er bestått; L2 (Stripe) venter på Anders, L7 på miljøautorisasjon, L0/L3/L4 på designvalget D0. Alt som er flettet 15.–16.09 er ført inn, og CD-4–CD-7 fra utkastet PR #911 er tatt inn i planen. [Masterplan](MASTERPLAN-GJENSTAAENDE.md).
 - **R-I er fullført 16.09.** Alle 53 admin-mutasjonsfiler har søskentest; 0 gjenstår. Serien endret ingen produksjonskode. PR #896–#908 i main. [Siste batch](design-audit/handlingstilgang-r-i-siste-batch-2026-09-16.md).
 - **Ordbok og Workbench-motoren (OW) 15.–16.09:** OW-1 (PR #893), OW-2 delvis (PR #897, enum-verdier rettet additivt i basen), OW-3 fase 1–2 (PR #898: `WorkbenchSession` utvidet, 12 planøkter migrert), fase 3 kartlagt og bevisst ikke startet (PR #900), OW-P Caddie-vokabular (PR #901). Funn i [v0.12-kartleggingen](planer/workbench-v012-kartlegging-2026-09-16.md): dosefeltene finnes bare på den gamle drill-modellen og må avklares før fase 3.
