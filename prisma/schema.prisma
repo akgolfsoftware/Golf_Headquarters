@@ -572,9 +572,12 @@ model User {
   rounds               Round[]
   gameplanHull         GameplanHull[]
   gameplanSoner        GameplanSone[]
-  testResults          TestResult[]
-  testResultsAsWitness TestResult[]      @relation("TestWitness")
-  testSessions         TestSession[]
+  testResults           TestResult[]
+  testResultsAsWitness  TestResult[]          @relation("TestWitness")
+  testResultsRecorded   TestResult[]          @relation("TestResultRecordedBy")
+  testSessions          TestSession[]
+  testDaysAsCoach       TestDay[]             @relation("TestDayCoach")
+  testDayParticipations TestDayParticipant[]  @relation("TestDayPlayer")
   testAssignments      TestAssignment[]  @relation("PlayerTestAssignments")
   coachTestAssignments TestAssignment[]  @relation("CoachTestAssignments")
   trackManSessions     TrackManSession[]
@@ -1881,6 +1884,7 @@ model TestDefinition {
   sessions    TestSession[]
   assignments TestAssignment[]
   linkedGoals Goal[]
+  testDays    TestDay[]
 
   @@index([createdById, isCustom])
   @@index([visibility, isCustom])
@@ -1918,14 +1922,26 @@ model TestResult {
   witnessStatus   TestWitnessStatus   @default(PENDING)
   attestationMode TestAttestationMode @default(NONE)
   createdAt       DateTime            @default(now())
+  // TN-trenerføring (2026-09-14, additiv — se
+  // docs/design-audit/team-norway-testdag-modellforslag-2026-09-14.md).
+  // DDL: scripts/add-tn-testdag-2026-09-17.ts (idempotent, kjøres mot
+  // DIRECT_URL FØR denne grenen merges — kolonnen finnes ikke i basen før da).
+  // Null = spilleren registrerte selv (bakoverkompatibelt for all eksisterende
+  // data). Satt = coachen som førte testen PÅ VEGNE AV spilleren — `userId`
+  // er ALLTID spilleren/subjektet, aldri coachen.
+  recordedById    String?
 
-  user    User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  test    TestDefinition @relation(fields: [testId], references: [id])
-  shots   TestShot[]
-  witness User?          @relation("TestWitness", fields: [witnessUserId], references: [id], onDelete: SetNull)
+  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  test       TestDefinition @relation(fields: [testId], references: [id])
+  shots      TestShot[]
+  witness    User?          @relation("TestWitness", fields: [witnessUserId], references: [id], onDelete: SetNull)
+  recordedBy User?          @relation("TestResultRecordedBy", fields: [recordedById], references: [id], onDelete: SetNull)
+
+  testDayParticipant TestDayParticipant?
 
   @@index([userId, takenAt])
   @@index([witnessUserId])
+  @@index([recordedById])
   @@map("test_results")
 }
 
@@ -1973,6 +1989,8 @@ model TestSession {
   user User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   test TestDefinition @relation(fields: [testId], references: [id])
 
+  testDayParticipant TestDayParticipant?
+
   @@index([userId, status])
   @@index([testId, status])
   @@map("test_sessions")
@@ -2006,6 +2024,81 @@ model TestAssignment {
   @@index([coachId, status])
   @@index([testId])
   @@map("test_assignments")
+}
+
+/// Team Norway testdag (2026-09-14, additiv). Se docs/design-audit/team-
+/// norway-testdag-modellforslag-2026-09-14.md for begrunnelse og reisen den
+/// dekker. DDL: scripts/add-tn-testdag-2026-09-17.ts (idempotent, kjøres mot
+/// DIRECT_URL FØR denne grenen merges — tabellene finnes ikke i basen før da,
+/// og fire kodestier spør allerede mot dem). Kø-/
+/// statuslag over EKSISTERENDE TestSession/TestResult — ingen parallell
+/// resultatmodell. `testDefinitionId` peker på den ALLEREDE OPPRETTEDE,
+/// versjonerte `TestDefinition`-raden (scoringRule = TN_VERSION på
+/// opprettelsestidspunktet) — ikke den mutable live-katalogen — slik at en
+/// testdag beholder stabil protokollversjon selv om katalogen endres senere.
+enum TestDayStatus {
+  PLANNED
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum TestDayParticipantStatus {
+  PENDING
+  DONE
+  SKIPPED
+  ABSENT
+}
+
+model TestDay {
+  id               String        @id @default(cuid())
+  groupId          String
+  coachId          String
+  title            String
+  location         String?
+  scheduledAt      DateTime
+  testDefinitionId String
+  status           TestDayStatus @default(PLANNED)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @default(now()) @updatedAt
+
+  group          Group                @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  coach          User                 @relation("TestDayCoach", fields: [coachId], references: [id], onDelete: Cascade)
+  testDefinition TestDefinition       @relation(fields: [testDefinitionId], references: [id], onDelete: Cascade)
+  participants   TestDayParticipant[]
+
+  @@index([groupId, status])
+  @@index([coachId])
+  @@map("test_days")
+}
+
+model TestDayParticipant {
+  id        String                   @id @default(cuid())
+  testDayId String
+  playerId  String
+  // Rekkefølge i køen ved opprettelse — revisjonssikker sammen med
+  // @@unique([testDayId, order]) under.
+  order     Int
+  status    TestDayParticipantStatus @default(PENDING)
+  // Peker på TestSession.id mens forsøket pågår, TestResult.id når
+  // fullført — samme rader som selve testføringen (egen- eller trenerført)
+  // skriver. @unique på begge gjør at én økt/ett resultat aldri kan
+  // gjenbrukes av to deltakerrader.
+  sessionId String?                  @unique
+  resultId  String?                  @unique
+  createdAt DateTime                 @default(now())
+  updatedAt DateTime                 @default(now()) @updatedAt
+
+  testDay TestDay      @relation(fields: [testDayId], references: [id], onDelete: Cascade)
+  player  User         @relation("TestDayPlayer", fields: [playerId], references: [id], onDelete: Cascade)
+  session TestSession? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+  result  TestResult?  @relation(fields: [resultId], references: [id], onDelete: SetNull)
+
+  @@unique([testDayId, playerId])
+  @@unique([testDayId, order])
+  @@index([testDayId, status])
+  @@index([playerId])
+  @@map("test_day_participants")
 }
 
 model TrackManSession {
@@ -3353,6 +3446,7 @@ model Group {
   coach     User?           @relation("CoachOfGroup", fields: [coachId], references: [id], onDelete: SetNull)
   members   GroupMember[]
   schedules GroupSchedule[]
+  testDays  TestDay[]
 
   @@index([coachId])
   @@map("groups")

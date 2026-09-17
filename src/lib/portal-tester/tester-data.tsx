@@ -77,7 +77,10 @@ export type AxisGroup = {
 };
 
 export type PlannedTest = {
+  /** TestSession.id — IKKE testdefinisjonens id. Bruk `testId` for det. */
   id: string;
+  /** TestDefinition.id — samme id som `TestRow.id`/`href` peker på. */
+  testId: string;
   name: string;
   axis: Axis;
   /** "PÅGÅR" (IN_PROGRESS) eller "PLANLAGT". */
@@ -134,13 +137,13 @@ function isToday(d: Date, now: Date): boolean {
 }
 
 /** Norsk tall-format: maks 2 desimaler, komma som desimalskille. */
-function fmtNum(n: number): string {
+export function fmtNum(n: number): string {
   const rounded = Math.round(n * 100) / 100;
   return rounded.toLocaleString("nb-NO", { maximumFractionDigits: 2 });
 }
 
 /** Heuristikk: scoringRule som beskriver tid/avvik/spredning = lavere er bedre. */
-function deriveLowerIsBetter(scoringRule: string): boolean {
+export function deriveLowerIsBetter(scoringRule: string): boolean {
   const t = scoringRule.toLowerCase();
   return /(spredning|avvik|sekund|\bsek\b|\bs\b|\btid\b|dispersion|spread|deviation|sideavvik|laser)/.test(
     t,
@@ -299,6 +302,7 @@ export async function loadTesterScreen(user: {
       s.status === ("IN_PROGRESS" as TestSessionStatus) ? "ongoing" : "planned";
     return {
       id: s.id,
+      testId: s.testId,
       name: s.test.name,
       axis: AREA_TIL_AXIS[s.test.pyramidArea],
       state,

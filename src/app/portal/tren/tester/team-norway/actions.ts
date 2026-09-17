@@ -26,6 +26,17 @@ export async function saveTnTest(input: unknown): Promise<TnSaveResult> {
     const saved = await prisma.$transaction(async tx => {
       const existing = await tx.testSession.findUnique({ where: { id: data.sessionId } });
       if (existing && (existing.userId !== user.id || existing.testId !== definitionId)) throw new Error("Økten er ikke tilgjengelig.");
+      // Integrasjonsvakt (2026-09-14): en økt en TRENER opprettet for en
+      // testdag (TestDayParticipant.sessionId) er samme rad som spillerens
+      // egen TestSession (userId = spilleren) — uten denne sjekken kunne
+      // egenføringen redigert/avbrutt et trenerutkast og gjort
+      // TestDayParticipant/recordedById-koblingen inkonsistent. Egenføring
+      // rører ALDRI en testdag-koblet økt; spilleren må vente på at coachen
+      // fører eller frigir den via testdag-flyten.
+      if (existing) {
+        const testdagKobling = await tx.testDayParticipant.findFirst({ where: { sessionId: existing.id }, select: { id: true } });
+        if (testdagKobling) throw new Error("Økten hører til en testdag ført av trener og kan ikke endres her.");
+      }
       const state = existing ? TnSessionSchema.safeParse(existing.scoringData) : null;
       if (existing && (!state?.success || state.data.protocolId !== p.id || state.data.count !== data.count)) throw new Error("Protokollen er endret. Start en ny test og behold dette utkastet.");
       if (existing?.status === "COMPLETED" && data.intent === "complete") {
