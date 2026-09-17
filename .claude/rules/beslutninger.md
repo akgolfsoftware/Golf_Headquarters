@@ -38,6 +38,32 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
 
 ## Beslutningene (september 2026)
 
+- **WORKBENCH DRA-OG-SLIPP: EKTE DRAG BYGGES — OGSÅ PÅ MOBIL, IKKE BARE I PROTOTYPEN (Anders
+  17.09.2026, i chat):** svar på det åpne spørsmålet i CD-4 (`docs/MASTERPLAN-GJENSTAAENDE.md`).
+  Utløst av at Anders selv prøvde å flytte en økt i den kjørende appen og opplevde at det ikke
+  var ekte drag.
+
+  **Verifisert i koden samme dag, i to lag:**
+  1. Claude Design-prototypen (`AgencyOS Workbench v0.12.dc.html`) viser flytting av økt som
+     klikk-velg → klikk-mål (`flytter`/`flyttPos`) — kjent fra før (`qa/deviations.json`, PR #911).
+  2. **Ny oppdagelse 17.09, ikke bare en prototype-unøyaktighet:** den ekte appens `DagNivaa`-
+     komponent (`src/components/portal/v2/WorkbenchV2.tsx:1082`) har samme klikk-baserte
+     «Flytt»-knapp, og `WorkbenchV2Mobil.tsx`s `WBTidslinjeMobil` (kommentert eksplisitt som
+     «touch-erstatning for musdrag») gjenbruker den. Mobilvisningen — appens viktigste flate —
+     er altså klikk-basert i produksjon i dag, ikke bare i designtegningen.
+  3. **Desktop-ukevisningen (`WBTidslinje`, samme fil) har derimot ekte peker-drag allerede**
+     (dnd-kit, PR #839 11.09.2026: `DndContext`/`useDraggable`/`useDroppable`) — den fungerer og
+     skal ikke bygges om.
+
+  **Beslutning: bygges om til ekte dra-og-slipp.** Klikk-velg-mønsteret består IKKE som permanent
+  løsning — alternativet CD-4 satte opp («Anders godkjenner klikk-velg eksplisitt») er dermed
+  avvist. Mobil-/dagvisningen skal ha samme ekte, touch-egnede drag som desktop-uken allerede har.
+  Når koden er rettet, korrigeres også Claude Design-prototypen til å vise ekte drag, så
+  porteringen (CD-3/CD-7) ikke gjeninnfører klikk-mønsteret.
+
+  **Krever kodeendring.** **Arbeidet:** `docs/MASTERPLAN-GJENSTAAENDE.md` rad «1d · CD-4»
+  (omskrevet).
+
 - **OW-3 OG SLAGREGISTRERING — REGISTRERT I ETTERTID (Anders 16.09.2026, i økt):** to beslutninger tatt og bygget
   16.09 uten egen blokk her (samme feilklasse som TM-03 03.09). Fanget i masterplan-oppdateringen 16.09 kveld.
   1. **OW-3, fem valg (Anders: «gjør din anbefaling på disse 5 oppgavene»):** `WorkbenchSession` bruker String, ikke
