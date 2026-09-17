@@ -37,7 +37,7 @@ import {
   type PlanWeekSessionInput,
 } from "@/lib/workbench/merge-week-sessions";
 import type { Axis, WeekDay, WeekEvent } from "@/lib/workbench/week-types";
-import { SPILLER_SYNLIGE_STATUSER } from "@/lib/workbench/wb-map";
+import { lokalDatoTilKolonne, SPILLER_SYNLIGE_STATUSER } from "@/lib/workbench/wb-map";
 import { EnvironmentSchema, PyramidAreaSchema } from "@/lib/domain/workbench/schemas";
 
 // ───────── Eksportert data-form ─────────
@@ -335,13 +335,12 @@ export async function loadWorkbenchData(
 
   // WorkbenchSession.date er @db.Date (UTC-midnatt for en lokal kalenderdag) —
   // konverter grensene fra lokale Date-objekter til samme kolonne-representasjon.
-  const toWbDato = (d: Date): Date => new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-  const weekStartDato = toWbDato(weekStart);
-  const weekEndDato = toWbDato(weekEnd);
-  const monthStartDato = toWbDato(monthStart);
-  const monthEndDato = toWbDato(monthEnd);
-  const tredtiDagerDato = toWbDato(tretti);
-  const naaDato = toWbDato(now);
+  const weekStartDato = lokalDatoTilKolonne(weekStart);
+  const weekEndDato = lokalDatoTilKolonne(weekEnd);
+  const monthStartDato = lokalDatoTilKolonne(monthStart);
+  const monthEndDato = lokalDatoTilKolonne(monthEnd);
+  const tredtiDagerDato = lokalDatoTilKolonne(tretti);
+  const naaDato = lokalDatoTilKolonne(now);
 
   const [
     weekSessionsRaw,

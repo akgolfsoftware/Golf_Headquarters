@@ -6,8 +6,6 @@
  */
 
 import {
-  executeSessionUpdate,
-  skrivSessionDrills,
   OktDrillSchema,
   type OktDrillInput,
   type SessionUpdateInput,
@@ -17,15 +15,20 @@ import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
-import { dateForDayIndex, executeSessionMove, mondayOf, weekRefDate } from "@/lib/workbench/session-move";
+import { mondayOf, weekRefDate } from "@/lib/workbench/session-move-math";
 import { logError } from "@/lib/error-tracking";
 import { generateWeekSuggestions, VariantSchema, type WeekSuggestion } from "@/lib/ai-plan/week-suggest";
-import { deleteV2ForPlanSession, upsertV2ForPlanSession } from "@/lib/workbench/v2-sync";
 import { sanitizeAkFormel, type AkFormelInput } from "@/lib/workbench/ak-formel";
-import { duplicateWeekCore } from "@/lib/workbench/duplicate-week";
 import { opprettPeriodeCore, oppdaterPeriodeCore, slettPeriodeCore } from "@/lib/workbench/periode-core";
-import { duplicateSessionCore } from "@/lib/workbench/duplicate-session";
 import { varsleCoachOmPlanendring } from "@/lib/notifications/plan-endring";
+import {
+  createWbSession,
+  duplicateWbSession,
+  duplicateWbWeek,
+  moveWbSession,
+  removeWbSession,
+  updateWbSession,
+} from "@/lib/workbench/wb-session-write";
 
 // ============================================================================
 // PERIODE
@@ -237,57 +240,26 @@ export async function applySuggestedWeek(
     return { ok: false, error: "Ugyldig forslag — prøv å generere på nytt." };
   }
 
-  // Heng øktene på spillerens nyeste/aktive plan (samme som addWorkbenchSession).
-  let plan = await prisma.trainingPlan.findFirst({
-    where: { userId: user.id },
-    orderBy: [{ isActive: "desc" }, { updatedAt: "desc" }],
-    select: { id: true },
-  });
-  if (!plan) {
-    plan = await prisma.trainingPlan.create({
-      data: {
-        userId: user.id,
-        name: "Min plan",
-        startDate: new Date(),
-        status: "ACTIVE",
-        isActive: true,
-      },
-      select: { id: true },
-    });
-  }
-
   // Klokkeslett: første økt per dag 09:00, deretter stables etter varighet
   // (samme idiom som scheduleTemplateWeek).
   const minuttPerDag = new Map<number, number>();
-  const ref = weekRefDate(weekOffset ?? 0);
   let count = 0;
 
   for (const okt of [...parsed.data.sessions].sort((a, b) => a.day - b.day)) {
     const cursor = minuttPerDag.get(okt.day) ?? 9 * 60;
     minuttPerDag.set(okt.day, cursor + okt.durationMin);
 
-    const created = await prisma.trainingPlanSession.create({
-      data: {
-        planId: plan.id,
-        title: okt.title.slice(0, 120),
-        scheduledAt: dateForDayIndex(okt.day, Math.floor(cursor / 60), cursor % 60, ref),
-        durationMin: okt.durationMin,
-        pyramidArea: okt.pyramidArea,
-        status: "PLANNED",
-      },
-      select: { id: true, title: true, scheduledAt: true, durationMin: true, pyramidArea: true },
-    });
-
-    await upsertV2ForPlanSession({
-      planSessionId: created.id,
+    const created = await createWbSession(prisma, {
       playerId: user.id,
-      title: created.title,
-      scheduledAt: created.scheduledAt,
-      durationMin: created.durationMin,
-      pyramidArea: created.pyramidArea,
-      miljo: null,
+      dayIndex: okt.day,
+      hour: Math.floor(cursor / 60),
+      minute: cursor % 60,
+      weekOffset: weekOffset ?? 0,
+      durationMin: okt.durationMin,
+      title: okt.title.slice(0, 120),
+      pyramidArea: okt.pyramidArea,
     });
-    count++;
+    if (created.ok) count++;
   }
   if (count > 0) await varsleCoachOmPlanendring(user.id, "OPPRETTET");
 
@@ -521,7 +493,7 @@ export async function moveWorkbenchSession(
   weekOffset = 0,
 ): Promise<{ ok: boolean; error?: string }> {
   const user = await requirePortalUser();
-  const result = await executeSessionMove(prisma, {
+  const result = await moveWbSession(prisma, {
     sessionId,
     playerId: user.id,
     dayIndex,
@@ -538,7 +510,7 @@ export async function updateWorkbenchSession(
   patch: SessionUpdateInput,
 ): Promise<{ ok: boolean; error?: string }> {
   const user = await requirePortalUser();
-  const result = await executeSessionUpdate(prisma, {
+  const result = await updateWbSession(prisma, {
     sessionId,
     playerId: user.id,
     patch,
@@ -572,98 +544,33 @@ export async function addWorkbenchSession(input: {
   const drillsParsed = z.array(OktDrillSchema).max(20).optional().safeParse(input.drills);
   if (!drillsParsed.success) return { ok: false, error: "Ugyldig drill-liste" };
 
-  // Heng økta på spillerens nyeste/aktive plan, eller opprett en hvis ingen finnes.
-  let plan = await prisma.trainingPlan.findFirst({
-    where: { userId: user.id },
-    orderBy: [{ isActive: "desc" }, { updatedAt: "desc" }],
-    select: { id: true },
-  });
-  if (!plan) {
-    plan = await prisma.trainingPlan.create({
-      data: {
-        userId: user.id,
-        name: "Min plan",
-        startDate: new Date(),
-        status: "ACTIVE",
-        isActive: true,
-      },
-      select: { id: true },
-    });
-  }
-
-  const ak = sanitizeAkFormel(input.akFormel);
-  const created = await prisma.trainingPlanSession.create({
-    data: {
-      planId: plan.id,
-      title: input.title.trim().slice(0, 120) || "Ny økt",
-      scheduledAt: dateForDayIndex(
-        input.dayIndex,
-        input.hour,
-        input.minute,
-        weekRefDate(input.weekOffset ?? 0),
-      ),
-      durationMin: Math.max(5, Math.min(480, Math.round(input.durMin))),
-      pyramidArea: area,
-      lFase: ak.lFase,
-      miljo: ak.miljo,
-      csNivaa: ak.csNivaa,
-      pressureLevel: ak.pressureLevel,
-      pPosisjoner: ak.pPosisjoner,
-      location: input.location?.trim().slice(0, 160) || null,
-      maalsetning: input.maalsetning?.trim().slice(0, 300) || null,
-      status: "PLANNED",
-    },
-    select: {
-      id: true,
-      title: true,
-      scheduledAt: true,
-      durationMin: true,
-      pyramidArea: true,
-      location: true,
-      maalsetning: true,
-    },
-  });
-
-  // Driller skrives FØR V2-speilingen, så live-økta får dem med seg.
-  if (drillsParsed.data && drillsParsed.data.length > 0) {
-    await skrivSessionDrills(prisma, {
-      sessionId: created.id,
-      drills: drillsParsed.data,
-      fallbackPyramidArea: created.pyramidArea,
-      playerId: user.id,
-    });
-  }
-
-  await upsertV2ForPlanSession({
-    planSessionId: created.id,
+  const created = await createWbSession(prisma, {
     playerId: user.id,
-    title: created.title,
-    scheduledAt: created.scheduledAt,
-    durationMin: created.durationMin,
-    pyramidArea: created.pyramidArea,
-    miljo: ak.miljo,
-    location: created.location,
-    maalsetning: created.maalsetning,
+    dayIndex: input.dayIndex,
+    hour: input.hour,
+    minute: input.minute,
+    weekOffset: input.weekOffset ?? 0,
+    durationMin: input.durMin,
+    title: input.title,
+    pyramidArea: area,
+    akFormel: input.akFormel,
+    drills: drillsParsed.data,
+    location: input.location,
+    maalsetning: input.maalsetning,
   });
+  if (!created.ok) return created;
   await varsleCoachOmPlanendring(user.id, "OPPRETTET");
 
   revalidatePath("/portal/planlegge/workbench");
-  return { ok: true, sessionId: created.id };
+  return { ok: true, sessionId: created.sessionId };
 }
 
 export async function removeWorkbenchSession(
   sessionId: string,
 ): Promise<{ ok: boolean; error?: string }> {
   const user = await requirePortalUser();
-  const session = await prisma.trainingPlanSession.findUnique({
-    where: { id: sessionId },
-    select: { id: true, plan: { select: { userId: true } } },
-  });
-  if (!session || session.plan.userId !== user.id) {
-    return { ok: false, error: "Økt ikke funnet" };
-  }
-  await deleteV2ForPlanSession(sessionId);
-  await prisma.trainingPlanSession.delete({ where: { id: sessionId } });
+  const result = await removeWbSession(prisma, { sessionId, playerId: user.id });
+  if (!result.ok) return result;
   await varsleCoachOmPlanendring(user.id, "SLETTET");
   revalidatePath("/portal/planlegge/workbench");
   return { ok: true };
@@ -674,7 +581,7 @@ export async function duplicateWorkbenchWeek(
   targetWeekOffset = 0,
 ): Promise<{ ok: boolean; count?: number; error?: string }> {
   const user = await requirePortalUser();
-  const result = await duplicateWeekCore(user.id, targetWeekOffset);
+  const result = await duplicateWbWeek(prisma, user.id, targetWeekOffset);
   if (result.ok) {
     await varsleCoachOmPlanendring(user.id, "OPPRETTET");
     revalidatePath("/portal/planlegge/workbench");
@@ -711,7 +618,7 @@ export async function duplicateWorkbenchSession(
   sessionId: string,
 ): Promise<{ ok: boolean; sessionId?: string; error?: string }> {
   const user = await requirePortalUser();
-  const result = await duplicateSessionCore(user.id, sessionId);
+  const result = await duplicateWbSession(prisma, user.id, sessionId);
   if (result.ok) {
     await varsleCoachOmPlanendring(user.id, "OPPRETTET");
     revalidatePath("/portal/planlegge/workbench");
