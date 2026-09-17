@@ -38,6 +38,21 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
 
 ## Beslutningene (september 2026)
 
+- **OW-3 OG SLAGREGISTRERING — REGISTRERT I ETTERTID (Anders 16.09.2026, i økt):** to beslutninger tatt og bygget
+  16.09 uten egen blokk her (samme feilklasse som TM-03 03.09). Fanget i masterplan-oppdateringen 16.09 kveld.
+  1. **OW-3, fem valg (Anders: «gjør din anbefaling på disse 5 oppgavene»):** `WorkbenchSession` bruker String, ikke
+     enum (zod på inngangen); L-fase/M-miljø/CS-nivå bæres kun som historisk lesing, aldri ny skriving;
+     `generertFraId` i `v2-sync.ts` har ingenting å migrere (alle fire referanser var alt foreldreløse); fase 5
+     leses om i rekkefølgen A→E; ingen skjermbilde-gate som standard for rent kildebytte. Fase 1–2 er bygget
+     (PR #898). Grunnlag: `docs/planer/ow-3-en-oekt-modell-2026-09-16.md` §6.
+  2. **Utvidet slagregistrering godkjent — kun datafangst:** `Shot.endShotKategori` og `putt_details` (additiv DDL,
+     PR #906) for TrackMan-kategoriene tee/approach/short game/putting. Registreres hull for hull i den eksisterende
+     live-flyten; hurtigmodus røres ikke; `lengdeFot` i fot med vilje. Analyseskjermene er egne, senere leveranser.
+     Spec: `docs/planer/2026-09-16-utvidet-slagregistrering-design.md`.
+  **Overstyrer:** ingenting; presiserer §WORKBENCH-MOTOREN (15.09). **Åpent, ikke besluttet:** dosefeltene på
+  `WorkbenchDrill` før OW-3 fase 3 (kartlegging §3) og CD-4 (dra-og-slipp mot klikk-velg).
+  **Arbeidet:** `docs/MASTERPLAN-GJENSTAAENDE.md` OW-3 (presisert), rad «Utvidet slagregistrering», rad 6 og CD-4.
+
 - **CLAUDE DESIGN: MASTEREN INN, WORKBENCH V0.7 BESTILLES, INGEN PAKKE VELGES FØR 390-KONTROLL
   (Anders 15.09.2026, i økt):** fire svar etter lesing av prosjektet «AgencyOS Hjem designsystem»
   (`047cfd41`, kandidat v0.4.17/18, retning Atletisk intelligens) via delelenke i Chrome. Målt der

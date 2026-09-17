@@ -106,6 +106,14 @@ const eslintConfig = defineConfig([
     // prosjektet 605a48cc. Fasit å måle mot, ikke appkode — standalone .jsx uten
     // imports, egen støtte-runtime. Importeres aldri av src/ og skal aldri lintes.
     "designsystem/**",
+    // design-sync (Claude Design-synk, 16.09.2026): konverter-kopi og generert
+    // maskinstate — aldri appkode. De håndlagde previews i .design-sync/previews/
+    // lintes fortsatt (de committes og går gjennom lint-staged).
+    ".ds-sync/**",
+    "ds-bundle/**",
+    ".design-sync/.cache/**",
+    ".design-sync/pkg/types/**",
+    ".design-sync/pkg/css/**",
   ]),
 ]);
 

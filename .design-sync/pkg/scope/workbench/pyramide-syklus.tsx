@@ -1,0 +1,1 @@
+../../../../src/components/v2/pyramide-syklus.tsx

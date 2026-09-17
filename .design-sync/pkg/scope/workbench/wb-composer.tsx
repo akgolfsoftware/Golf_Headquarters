@@ -1,0 +1,1 @@
+../../../../src/components/v2/wb-composer.tsx
