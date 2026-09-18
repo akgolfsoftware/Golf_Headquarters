@@ -1,0 +1,52 @@
+<div style="width:1440px;background:var(--surface-card);border:1px solid var(--status-amber);border-radius:var(--radius-lg);overflow:hidden;font-variant-numeric:tabular-nums">
+<div style="background:var(--status-amber-bg);padding:14px 24px;display:flex;align-items:center;gap:12px">
+<span style="width:3px;height:20px;border-radius:var(--radius-full);background:var(--status-amber);flex-shrink:0"></span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--status-amber-text);font-weight:var(--weight-semibold)">LÅST · KREVER EGET SAMTYKKE TIL NGF PER UTØVER</span>
+<div style="flex:1"></div>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--status-amber-text)">IKKE I PILOTEN HØSTEN 2026</span>
+</div>
+<div style="padding:24px;display:flex;gap:28px">
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:baseline;gap:12px">
+<span style="font-size:var(--text-h3);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading)">NTG Bærum · navnevisning</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">9 TN-UTØVERE</span>
+</div>
+<div style="border:1px solid var(--border-subtle);border-radius:var(--radius-md);overflow:hidden">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) 130px 150px 210px;gap:0 14px;padding:10px 18px;background:var(--ink-50);border-bottom:1px solid var(--border-subtle)">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">UTØVER</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TRINN</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">PROFIL</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">SAMTYKKE TIL NGF</span>
+</div>
+<sc-for list="{{ laasteRader }}" as="r" hint-placeholder-count="5">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) 130px 150px 210px;gap:0 14px;padding:12px 18px;border-bottom:1px solid var(--border-subtle);align-items:center">
+<div style="min-width:0;display:flex;align-items:center;gap:10px">
+<span style="width:26px;height:26px;border-radius:var(--radius-full);background:var(--ink-100);flex-shrink:0"></span>
+<span ref="{{ r.navnRef }}" style="height:12px;border-radius:var(--radius-full);background:var(--ink-200)"></span>
+</div>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary)">{{ r.trinn }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary)">{{ r.profil }}</span>
+<span ref="{{ r.samtykkeRef }}" style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;padding:4px 8px;border-radius:var(--radius-xs);justify-self:start;font-weight:var(--weight-semibold)">{{ r.samtykke }}</span>
+</div>
+</sc-for>
+<div style="padding:12px 18px;background:var(--ink-50);font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TALT 25.08.2026 · SAMTYKKEREGISTER V1 · AK</div>
+</div>
+</div>
+<div style="width:452px;flex-shrink:0;display:flex;flex-direction:column;gap:14px">
+<div style="background:var(--ink-50);border-radius:var(--radius-md);padding:18px;display:flex;flex-direction:column;gap:10px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">HVA SOM MÅ TIL FØR NAVN VISES</span>
+<sc-for list="{{ vilkaar }}" as="v" hint-placeholder-count="3">
+<div style="display:flex;align-items:flex-start;gap:10px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary);flex-shrink:0;padding-top:2px">{{ v.nr }}</span>
+<span style="font-size:var(--text-sm);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">{{ v.tekst }}</span>
+</div>
+</sc-for>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div role="button" style="min-height:48px;border-radius:var(--radius-full);background:var(--navy-900);color:var(--white);opacity:.45;display:flex;align-items:center;justify-content:center;font-size:var(--text-base);font-weight:var(--weight-semibold)">Vis navn</div>
+<span style="font-size:var(--text-xs);color:var(--status-amber-text);line-height:var(--leading-normal);text-wrap:pretty">Knappen er ikke deaktivert fordi noe mangler i grensesnittet. Den er deaktivert fordi hjemmelen ikke finnes: null av ni har samtykket til at NGF ser navnet sitt i en skoleliste.</span>
+<span style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Blir varianten åpnet en gang i framtiden, er den fortsatt <strong>ikke standard</strong>: aggregat er utgangspunktet, navn er et bevisst valg med eget spor i loggen.</span>
+</div>
+</div>
+</div>
+</div>

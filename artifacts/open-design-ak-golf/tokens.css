@@ -1,0 +1,153 @@
+/* AK Golf Academy — compiled tokens. App law. Do not add green, purple, claw, or WANG. */
+/* Marketing --fs-mkt-* lives in tokens/marketing.css in the Claude zip. Never use in apps. */
+/* Oswald (Display), Archivo (Brød), IBM Plex Mono (Meta).
+   Served from Google Fonts — no licensed binaries were supplied with the brief.
+   Replace these @import lines with local @font-face rules if self-hosting. */
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Archivo:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap");
+:root{
+/* ---- Sand (flater) ---- */
+--sand-100:#faf8f3;
+--sand-150:#f1eee8;
+--sand-200:#e6e3dd;
+--white:#fff;
+
+/* ---- Grafitt (blekk) ---- */
+--graphite-900:#141413;
+--graphite-800:#2a2926;
+--graphite-600:#46443f;
+--graphite-500:#6b6862;
+--graphite-400:#8a8680;
+
+/* ---- Rust (handling — eneste handlingsfarge) ---- */
+--rust-600:#9b2415;
+--rust-hover:#d81e20;
+--rust-100:#fbebea;
+
+/* ---- Amber (KUN advarsel) ---- */
+--amber-700:#8a6a12;
+--amber-50:#fbf4e4;
+
+/* ---- Blå (KUN lenke / info) ---- */
+--blue-800:#1d3557;
+
+/* ---- Semantiske alias ---- */
+--surface-page:var(--sand-200);
+--surface-flat:var(--sand-100);
+--surface-raised:var(--white);
+--surface-sunken:var(--sand-150);
+--surface-focus:var(--graphite-900);
+
+--text-primary:var(--graphite-900);
+--text-body:var(--graphite-800);
+--text-secondary:var(--graphite-600);
+--text-muted:var(--graphite-500);
+--text-faint:var(--graphite-400);
+--text-inverse:var(--sand-100);
+
+--border-hairline:#ddd9d1;
+--border-strong:#c9c4ba;
+--border-ink:var(--graphite-900);
+
+--action:var(--rust-600);
+--action-hover:var(--rust-hover);
+--action-tint:var(--rust-100);
+--action-text:var(--white);
+
+--warn:var(--amber-700);
+--warn-tint:var(--amber-50);
+--link:var(--blue-800);
+--info:var(--blue-800);
+
+--focus-ring:var(--graphite-900);
+}
+:root{
+--font-display:"Oswald","Oswald Fallback",system-ui,sans-serif;
+--font-body:"Archivo","Archivo Fallback",system-ui,sans-serif;
+--font-meta:"IBM Plex Mono",ui-monospace,monospace;
+
+/* Skala — 10 trinn, ingen andre størrelser */
+--fs-10:10px;--fs-11:11px;--fs-13:13px;--fs-14:14px;--fs-15:15px;
+--fs-17:17px;--fs-21:21px;--fs-26:26px;--fs-29:29px;--fs-40:40px;
+
+--lh-tight:1.05; /* @kind font */
+--lh-snug:1.2; /* @kind font */
+--lh-normal:1.45; /* @kind font */
+--lh-loose:1.6; /* @kind font */
+
+--tracking-kicker:0.11em;
+--tracking-kicker-min:0.08em;
+--tracking-kicker-max:0.14em;
+--tracking-display:-0.01em;
+--tracking-meta:0.02em;
+
+--fw-light:300; /* @kind font */
+--fw-regular:400; /* @kind font */
+--fw-medium:500; /* @kind font */
+--fw-semibold:600; /* @kind font */
+--fw-bold:700; /* @kind font */
+
+/* Semantiske roller */
+--type-kicker:var(--fw-semibold) var(--fs-11)/var(--lh-snug) var(--font-display);
+--type-title-xl:var(--fw-semibold) var(--fs-40)/var(--lh-tight) var(--font-display);
+--type-title-l:var(--fw-semibold) var(--fs-29)/var(--lh-tight) var(--font-display);
+--type-title-m:var(--fw-semibold) var(--fs-21)/var(--lh-snug) var(--font-display);
+--type-title-s:var(--fw-semibold) var(--fs-17)/var(--lh-snug) var(--font-display);
+--type-lead:var(--fw-regular) var(--fs-17)/var(--lh-normal) var(--font-body);
+--type-body:var(--fw-regular) var(--fs-15)/var(--lh-normal) var(--font-body);
+--type-body-s:var(--fw-regular) var(--fs-14)/var(--lh-normal) var(--font-body);
+--type-label:var(--fw-medium) var(--fs-13)/var(--lh-snug) var(--font-body);
+--type-meta:var(--fw-regular) var(--fs-11)/var(--lh-snug) var(--font-meta);
+--type-meta-xs:var(--fw-regular) var(--fs-10)/var(--lh-snug) var(--font-meta);
+--type-metric:var(--fw-medium) var(--fs-26)/var(--lh-tight) var(--font-display);
+}
+:root{
+/* 4 / 8 rutenett — ingen mellomverdier */
+--space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:20px;
+--space-6:24px;--space-8:32px;--space-10:40px;--space-12:48px;--space-16:64px;--space-20:80px;
+
+--radius-sharp:0;
+--radius:2px;
+--radius-lg:2px;
+
+--border-w:1px;
+--border-w-accent:2px;
+
+--shadow-raised:0 1px 0 rgba(20,20,19,.05);
+--shadow-panel:0 1px 2px rgba(20,20,19,.06);
+--shadow-sheet:0 -8px 32px rgba(20,20,19,.16);
+--shadow-inspector:-1px 0 0 var(--border-hairline);
+--shadow-focus:0 0 0 2px var(--surface-flat),0 0 0 4px var(--graphite-900);
+}
+:root{
+--rail-w:236px;          /* desktop */
+--rail-icon-w:64px;      /* iPad */
+--inspector-w:372px;
+--topbar-h:56px;
+--tabbar-h:56px;
+--hit-min:44px;
+--content-max:920px;
+--bp-mobile:390px;
+--bp-tablet:834px;
+--bp-desktop:1440px;
+--gutter-mobile:16px;
+--gutter-tablet:24px;
+--gutter-desktop:32px;
+}
+:root{
+--dur-fast:150ms;/* @kind other */
+--dur:200ms;/* @kind other */
+--dur-slow:250ms;/* @kind other */
+--dur-press:120ms;/* @kind other */
+/* Innebygde CSS-easinger er for svake. Disse er de samme familiene, sterkere kurve. */
+--ease-out:cubic-bezier(.23,1,.32,1);/* @kind other */
+--ease-in-out:cubic-bezier(.77,0,.175,1);/* @kind other */
+--ease-drawer:cubic-bezier(.32,.72,0,1);/* @kind other */
+--ease-color:ease;/* @kind other */
+--press-scale:.97;/* @kind other */
+}
+/* Redusert bevegelse betyr mindre og mykere — ikke ingenting.
+   Farge og opasitet beholdes (de hjelper forståelsen), bevegelse fjernes. */
+@media (prefers-reduced-motion:reduce){
+:root{--dur-fast:120ms;/* @kind other */--dur:120ms;/* @kind other */--dur-slow:120ms;/* @kind other */--dur-press:1ms;/* @kind other */--press-scale:1;/* @kind other */}
+*,*::before,*::after{animation-duration:1ms!important;animation-iteration-count:1!important;transition-property:opacity,color,background-color,border-color,box-shadow,filter!important}
+}

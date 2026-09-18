@@ -1,0 +1,152 @@
+<div style="width:1440px;height:1024px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;font-variant-numeric:tabular-nums">
+
+<div style="width:252px;flex-shrink:0;background:var(--surface-card);border-right:1px solid var(--border-subtle);display:flex;flex-direction:column;padding:20px 14px 18px;gap:18px">
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:14px;display:flex;flex-direction:column;align-items:flex-start;gap:9px">
+<img src="../../assets/logo/team-norway-golf.png" alt="Team Norway Golf" style="height:46px;width:auto;display:block">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">NGF · JUNIORLANDSLAG</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:2px;flex:1;min-height:0;overflow:hidden">
+<sc-for list="{{ meny }}" as="m" hint-placeholder-count="10">
+<sc-if value="{{ m.isHeading }}" hint-placeholder-val="{{ false }}">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);padding:14px 12px 6px">{{ m.label }}</div>
+</sc-if>
+<sc-if value="{{ m.isItem }}" hint-placeholder-val="{{ true }}">
+<div ref="{{ m.ref }}" style="height:40px;border-radius:var(--radius-xs);padding:0 10px;display:flex;align-items:center;gap:10px">
+<span ref="{{ m.markRef }}" style="width:3px;height:18px;border-radius:var(--radius-full);flex-shrink:0"></span>
+<span style="font-size:var(--text-sm);font-weight:var(--weight-medium)">{{ m.label }}</span>
+</div>
+</sc-if>
+</sc-for>
+</div>
+</div>
+
+<div style="flex:1;min-width:0;display:flex;flex-direction:column">
+<div style="height:64px;flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);display:flex;align-items:center;padding:0 28px;gap:16px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">TEAM NORWAY</span>
+<span style="color:var(--ink-300)">/</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">ADMINISTRASJON</span>
+<span style="color:var(--ink-300)">/</span>
+<span style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Trenere og tilgang</span>
+<div style="flex:1"></div>
+<div style="display:flex;align-items:center;gap:8px;padding:6px 12px;border-radius:var(--radius-full);background:var(--navy-50);border:1px solid var(--navy-100)">
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--navy-700)">DU ER SPORTSSJEF · KAN GI TILGANG</span>
+</div>
+</div>
+
+<div style="flex:1;min-height:0;overflow:hidden;display:flex">
+
+<div style="flex:1;min-width:0;padding:26px 28px;display:flex;flex-direction:column;gap:18px;overflow:hidden">
+<div style="display:flex;align-items:flex-end;gap:20px">
+<div style="min-width:0">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">ADMINISTRASJON · TILGANG</div>
+<h2 style="font-size:var(--text-h2);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:6px 0 0">9 personer med tilgang</h2>
+</div>
+<div style="flex:1"></div>
+<div role="button" style="min-height:48px;padding:0 22px;border-radius:var(--radius-full);background:var(--navy-900);color:var(--white);display:flex;align-items:center;font-size:var(--text-base);font-weight:var(--weight-semibold)">Legg til trener</div>
+</div>
+
+<div style="background:var(--navy-50);border:1px solid var(--navy-100);border-radius:var(--radius-md);padding:14px 16px;display:flex;align-items:flex-start;gap:12px">
+<span style="width:3px;height:34px;border-radius:var(--radius-full);background:var(--navy-600);flex-shrink:0"></span>
+<span style="font-size:var(--text-sm);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty"><strong>Rollen settes per gruppe.</strong> En person kan være trener i én gruppe og hjelpetrener i en annen. Fjernes den siste gruppen, mister personen all tilgang — det finnes ingen tilgang uten gruppe.</span>
+</div>
+
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);display:flex;flex-direction:column;overflow:hidden">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) 262px 84px 72px;gap:0 14px;padding:10px 20px;border-bottom:1px solid var(--border-subtle);background:var(--ink-50)">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">PERSON</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">GRUPPER PERSONEN NÅR</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">AKTIV PERIODE</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary);text-align:right">STATUS</span>
+</div>
+<div>
+<sc-for list="{{ personer }}" as="p" hint-placeholder-count="7">
+<div role="button" onClick="{{ p.onClick }}" ref="{{ p.rowRef }}" style="display:grid;grid-template-columns:minmax(0,1fr) 262px 84px 72px;gap:0 14px;padding:13px 20px;border-bottom:1px solid var(--border-subtle);align-items:center;min-height:56px">
+<div style="min-width:0;display:flex;align-items:center;gap:9px">
+<span ref="{{ p.markRef }}" style="width:3px;height:26px;border-radius:var(--radius-full);flex-shrink:0"></span>
+<span style="width:34px;height:34px;border-radius:var(--radius-full);background:var(--navy-100);color:var(--navy-800);font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);display:flex;align-items:center;justify-content:center;flex-shrink:0">{{ p.init }}</span>
+<div style="min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ p.navn }}</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ p.epost }}</div>
+</div>
+</div>
+<div style="min-width:0;display:flex;flex-direction:column;gap:4px">
+<sc-for list="{{ p.tilganger }}" as="t" hint-placeholder-count="2">
+<div style="display:flex;align-items:center;gap:8px;min-width:0">
+<span ref="{{ t.rolleRef }}" style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;padding:3px 7px;border-radius:var(--radius-xs);flex-shrink:0">{{ t.rolle }}</span>
+<span style="font-size:var(--text-xs);color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0">{{ t.gruppe }}</span>
+</div>
+</sc-for>
+<sc-if value="{{ p.ingenGruppe }}" hint-placeholder-val="{{ false }}">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--status-amber-text);font-weight:var(--weight-semibold)">INGEN GRUPPER TILDELT · NÅR INGENTING</span>
+</sc-if>
+</div>
+<span ref="{{ p.tilRef }}" style="font-family:var(--font-mono);font-size:var(--text-xs);white-space:nowrap">{{ p.periode }}</span>
+<span ref="{{ p.statusRef }}" style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;padding:4px 8px;border-radius:var(--radius-xs);justify-self:end;font-weight:var(--weight-semibold)">{{ p.status }}</span>
+</div>
+</sc-for>
+</div>
+<div style="padding:12px 20px;background:var(--ink-50);display:flex;align-items:center;gap:10px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TILGANG ENDRET 08.09.2026 · TILGANGSLOGG V1 · AK · ALLE NAVN OG ADRESSER ER EKSEMPLER</span>
+<div style="flex:1"></div>
+<span role="button" style="font-size:var(--text-xs);font-weight:var(--weight-semibold);color:var(--navy-600)">Se full tilgangslogg</span>
+</div>
+</div>
+<div style="flex:1;min-height:0"></div>
+</div>
+
+<div style="width:400px;flex-shrink:0;border-left:1px solid var(--border-subtle);background:var(--surface-card);padding:22px 24px;display:flex;flex-direction:column;gap:14px;overflow:hidden">
+<div style="display:flex;align-items:center;gap:12px">
+<span style="width:44px;height:44px;border-radius:var(--radius-full);background:var(--navy-100);color:var(--navy-800);font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-semibold);display:flex;align-items:center;justify-content:center;flex-shrink:0">{{ valgt.init }}</span>
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ valgt.navn }}</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary);margin-top:2px">{{ valgt.epost }}</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:9px;flex-shrink:0">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">ROLLE PER GRUPPE</span>
+<sc-for list="{{ valgtGrupper }}" as="g" hint-placeholder-count="4">
+<div ref="{{ g.kortRef }}" style="border-radius:var(--radius-sm);padding:11px 13px;display:flex;flex-direction:column;gap:9px">
+<div style="display:flex;align-items:baseline;gap:10px">
+<span style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ g.navn }}</span>
+<div style="flex:1"></div>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);flex-shrink:0">{{ g.meta }}</span>
+</div>
+<div style="display:flex;gap:7px">
+<sc-for list="{{ g.valg }}" as="v" hint-placeholder-count="3">
+<div role="button" onClick="{{ v.onClick }}" ref="{{ v.ref }}" style="flex:1;min-height:44px;padding:0 8px;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;font-size:var(--text-xs);font-weight:var(--weight-semibold);white-space:nowrap">{{ v.label }}</div>
+</sc-for>
+</div>
+</div>
+</sc-for>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">AKTIV PERIODE</span>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+<div style="display:flex;flex-direction:column;gap:6px">
+<label style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">FRA</label>
+<input value="{{ valgt.fra }}" onChange="{{ onFra }}" placeholder="dd.mm.åååå" style="height:48px;border:1px solid var(--border-default);border-radius:var(--radius-sm);padding:0 14px;font-family:var(--font-mono);font-size:var(--text-base);color:var(--ink-900);background:var(--white);outline:none;width:100%;box-sizing:border-box">
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<label style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">TIL</label>
+<input value="{{ valgt.til }}" onChange="{{ onTil }}" placeholder="åpen" style="height:48px;border:1px solid var(--border-default);border-radius:var(--radius-sm);padding:0 14px;font-family:var(--font-mono);font-size:var(--text-base);color:var(--ink-900);background:var(--white);outline:none;width:100%;box-sizing:border-box">
+</div>
+</div>
+<span style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Tom «til» betyr åpen tilgang. Er datoen passert, står raden som <strong>utløpt</strong> og personen kommer ikke inn — tilgangen slettes ikke, slik at loggen består.</span>
+</div>
+
+<div ref="{{ rekkeviddeRef }}" style="border-radius:var(--radius-sm);padding:14px;display:flex;flex-direction:column;gap:7px;flex-shrink:0">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">HVA {{ valgt.fornavn }} FAKTISK NÅR</span>
+<span style="font-size:var(--text-h3);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading)">{{ rekkevidde }}</span>
+<span style="font-size:var(--text-xs);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">{{ rekkeviddeTekst }}</span>
+</div>
+
+<div style="display:flex;gap:10px">
+<div role="button" style="flex:1;min-height:48px;border-radius:var(--radius-full);background:var(--navy-900);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:var(--text-base);font-weight:var(--weight-semibold)">Lagre tilgang</div>
+<div role="button" style="min-height:48px;padding:0 18px;border-radius:var(--radius-full);border:1px solid var(--status-red);display:flex;align-items:center;font-size:var(--text-base);font-weight:var(--weight-semibold);color:var(--status-red-text)">Avslutt</div>
+</div>
+</div>
+
+</div>
+</div>
+</div>

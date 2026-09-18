@@ -1,0 +1,34 @@
+<div style="width:390px;background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;flex-direction:column">
+<div style="background:var(--navy-900);padding:18px 20px 16px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--navy-100)">Tirsdag 16. september</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--navy-100);border:1px dashed var(--navy-400);border-radius:var(--radius-full);padding:4px 10px;white-space:nowrap">Nivå ikke satt</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:3px">
+<span style="font-size:var(--text-h2);font-weight:var(--weight-bold);color:var(--white);letter-spacing:var(--tracking-heading);line-height:1.1">Jonas Lien</span>
+<span style="font-size:var(--text-sm);color:var(--navy-100)">Ny i Team Norway junior</span>
+</div>
+</div>
+<div style="padding:22px 20px 26px;display:flex;flex-direction:column;gap:20px;background:var(--surface-page)">
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:20px;display:flex;flex-direction:column;gap:8px">
+<span style="font-size:var(--text-h3);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading)">Ingen moduler på ennå</span>
+<span style="font-size:var(--text-sm);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Treneren setter nivået ditt først. Da får du bare de delene av planen som gjelder deg — ikke hele arket.</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">Dette kan du gjøre nå</span>
+<sc-for list="{{ tomRader }}" as="r" hint-placeholder-count="2">
+<div role="button" style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer">
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px">
+<span style="font-size:var(--text-base);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ r.navn }}</span>
+<span style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">{{ r.sub }}</span>
+</div>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--navy-800);background:var(--navy-50);border-radius:var(--radius-full);padding:6px 10px;white-space:nowrap;flex-shrink:0">Åpne</span>
+</div>
+</sc-for>
+</div>
+<div style="display:flex;align-items:flex-start;gap:10px;background:var(--status-amber-bg);border-radius:var(--radius-sm);padding:12px 14px">
+<span style="width:7px;height:7px;border-radius:var(--radius-full);background:var(--status-amber);flex-shrink:0;margin-top:5px"></span>
+<span style="font-size:var(--text-xs);color:var(--status-amber-text);line-height:var(--leading-normal);text-wrap:pretty">Anders er varslet. Nivået bekreftes av trener, aldri automatisk.</span>
+</div>
+</div>
+</div>

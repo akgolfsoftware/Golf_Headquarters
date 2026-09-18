@@ -1,0 +1,92 @@
+<div style="width:1440px;height:900px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+
+<div style="flex-shrink:0;height:60px;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);display:flex;align-items:center;padding:0 32px;gap:14px">
+<span style="width:8px;height:22px;border-radius:3px;background:var(--red-600);flex-shrink:0"></span>
+<span style="font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--navy-900)">Player HQ</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">FORELDREVISNING</span>
+<div style="flex:1"></div>
+<span style="font-size:var(--text-sm);color:var(--text-secondary)">Marit Hovden · foresatt for Emma (16)</span>
+</div>
+
+<div style="flex:1;min-height:0;display:flex;justify-content:center;overflow:hidden;padding:28px 32px 0">
+<div style="width:900px;display:flex;flex-direction:column;gap:18px;min-height:0">
+
+<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-shrink:0">
+<div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DELING · 1 ORGANISASJON KOBLET</div>
+<h2 style="font-size:var(--text-h1);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:5px 0 0">Hvem ser Emmas data</h2>
+</div>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">SIST ENDRET 12.08.2026</span>
+</div>
+
+<div style="flex-shrink:0;background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);overflow:hidden;display:flex;flex-direction:column">
+<div style="padding:20px 24px;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--border-subtle)">
+<span style="width:6px;height:38px;border-radius:var(--radius-full);background:var(--red-600);flex-shrink:0"></span>
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-h3);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading)">Team Norway Junior</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);margin-top:2px">NORGES GOLFFORBUND · KOBLET 04.03.2026</div>
+</div>
+<span style="display:flex;align-items:center;gap:8px;background:var(--status-green-bg);border-radius:var(--radius-full);padding:6px 14px;flex-shrink:0">
+<span style="width:7px;height:7px;border-radius:var(--radius-full);background:var(--status-green)"></span>
+<span style="font-size:var(--text-xs);font-weight:var(--weight-semibold);color:var(--status-green-text)">Deler nå</span>
+</span>
+</div>
+
+<sc-for list="{{ brytere }}" as="b" hint-placeholder-count="2">
+<div style="padding:18px 24px;display:flex;align-items:flex-start;gap:20px;border-bottom:1px solid var(--border-subtle)">
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-base);font-weight:var(--weight-bold);color:var(--navy-900)">{{ b.tittel }}</div>
+<div style="font-size:var(--text-sm);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">{{ b.beskrivelse }}</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:2px">
+<sc-for list="{{ b.punkter }}" as="p" hint-placeholder-count="4">
+<span ref="{{ p.ref }}" style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;padding:4px 9px;border-radius:var(--radius-xs)">{{ p.label }}</span>
+</sc-for>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:12px;flex-shrink:0;padding-top:2px">
+<span ref="{{ b.tekstRef }}" style="font-size:var(--text-sm);font-weight:var(--weight-semibold);width:56px;text-align:right">{{ b.status }}</span>
+<div role="button" ref="{{ b.sporRef }}" style="width:52px;height:30px;border-radius:var(--radius-full);padding:3px;display:flex;align-items:center">
+<span ref="{{ b.knappRef }}" style="width:24px;height:24px;border-radius:var(--radius-full);background:var(--white);box-shadow:var(--shadow-sm);display:block"></span>
+</div>
+</div>
+</div>
+</sc-for>
+
+<div style="padding:16px 24px;display:flex;align-items:center;gap:16px;background:var(--surface-page)">
+<span style="flex:1;min-width:0;font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Trekker du tilbake, mister Team Norway tilgang umiddelbart. Data som allerede er ført i en testprotokoll blir stående hos forbundet som dokumentasjon på gjennomført test.</span>
+<div role="button" style="height:40px;padding:0 18px;border-radius:var(--radius-full);border:1px solid var(--status-red);display:flex;align-items:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--status-red-text);flex-shrink:0">Trekk tilbake all deling</div>
+</div>
+</div>
+
+<div style="flex:1;min-height:0;display:flex;gap:16px;overflow:hidden;padding-bottom:24px">
+<div style="flex:1;min-width:0;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:18px 20px;display:flex;flex-direction:column;gap:12px;overflow:hidden">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DETTE DELES AKKURAT NÅ</span>
+<sc-for list="{{ deles }}" as="d" hint-placeholder-count="4">
+<div style="display:flex;align-items:flex-start;gap:10px">
+<span style="width:7px;height:7px;border-radius:var(--radius-full);background:var(--status-green);flex-shrink:0;margin-top:7px"></span>
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-medium);color:var(--navy-900)">{{ d.navn }}</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);margin-top:1px">{{ d.detalj }}</div>
+</div>
+</div>
+</sc-for>
+<div style="flex:1;min-height:0"></div>
+</div>
+<div style="flex:1;min-width:0;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:18px 20px;display:flex;flex-direction:column;gap:12px;overflow:hidden">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DETTE DELES IKKE</span>
+<sc-for list="{{ delesIkke }}" as="d" hint-placeholder-count="4">
+<div style="display:flex;align-items:flex-start;gap:10px">
+<span style="width:7px;height:7px;border-radius:var(--radius-full);background:var(--ink-300);flex-shrink:0;margin-top:7px"></span>
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-medium);color:var(--text-secondary)">{{ d.navn }}</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);margin-top:1px">{{ d.detalj }}</div>
+</div>
+</div>
+</sc-for>
+<div style="flex:1;min-height:0"></div>
+</div>
+</div>
+
+</div>
+</div>
+</div>

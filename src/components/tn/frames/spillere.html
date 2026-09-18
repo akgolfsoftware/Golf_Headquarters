@@ -1,0 +1,79 @@
+<div style="width:1440px;height:900px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;font-variant-numeric:tabular-nums">
+<div style="width:232px;flex-shrink:0;background:var(--surface-card);border-right:1px solid var(--border-subtle);display:flex;flex-direction:column;padding:22px 14px 18px;gap:24px">
+<div style="display:flex;align-items:center;gap:10px;padding:0 8px">
+<img src="../../assets/logo/team-norway-golf.png" alt="Team Norway Golf" style="height:42px;width:auto;display:block">
+</div>
+<div style="display:flex;flex-direction:column;gap:2px">
+<sc-for list="{{ meny }}" as="m" hint-placeholder-count="11">
+<sc-if value="{{ m.isHeading }}" hint-placeholder-val="{{ false }}">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);padding:14px 12px 6px">{{ m.label }}</div>
+</sc-if>
+<sc-if value="{{ m.isItem }}" hint-placeholder-val="{{ true }}">
+<div ref="{{ m.ref }}" style="height:40px;border-radius:var(--radius-xs);padding:0 10px;display:flex;align-items:center;gap:10px">
+<span ref="{{ m.markRef }}" style="width:3px;height:18px;border-radius:var(--radius-full);flex-shrink:0"></span>
+<span style="font-size:var(--text-sm);font-weight:var(--weight-medium)">{{ m.label }}</span>
+<div style="flex:1"></div>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">{{ m.badge }}</span>
+</div>
+</sc-if>
+</sc-for>
+</div>
+<div style="flex:1"></div>
+<div style="border-top:1px solid var(--border-subtle);padding-top:14px;display:flex;align-items:center;gap:10px">
+<span style="width:32px;height:32px;border-radius:var(--radius-full);background:var(--navy-100);color:var(--navy-800);font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);display:flex;align-items:center;justify-content:center;flex-shrink:0">AK</span>
+<div style="min-width:0"><div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Anders K.</div><div style="font-size:var(--text-micro);color:var(--text-secondary)">Sportssjef · Team Norway</div></div>
+</div>
+</div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;padding:28px 32px;gap:22px">
+<div style="display:flex;align-items:flex-end;justify-content:space-between">
+<div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TIRSDAG 25. AUGUST</div>
+<h2 style="font-size:var(--text-h1);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:6px 0 0">Hjem</h2>
+</div>
+<div role="button" style="height:44px;padding:0 22px;border-radius:var(--radius-full);background:var(--navy-900);color:var(--white);font-size:var(--text-sm);font-weight:var(--weight-bold);display:flex;align-items:center">Ny post</div>
+</div>
+<div style="flex:1;min-height:0;display:flex;gap:20px;align-items:stretch">
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">KREVER DEG NÅ</div>
+<sc-for list="{{ kreverMac }}" as="k" hint-placeholder-count="4">
+<div style="background:var(--surface-card);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:16px 18px;display:flex;gap:14px;align-items:center;min-height:44px">
+<span ref="{{ k.dotRef }}" style="width:8px;height:8px;border-radius:var(--radius-full);flex-shrink:0"></span>
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ k.title }}</div>
+<div style="font-size:var(--text-xs);color:var(--text-secondary);margin-top:3px">{{ k.meta }}</div>
+</div>
+<span style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--text-secondary)">{{ k.count }}</span>
+<span role="button" style="height:40px;padding:0 16px;border-radius:var(--radius-full);border:1px solid var(--border-default);font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900);display:flex;align-items:center;white-space:nowrap">{{ k.action }}</span>
+</div>
+</sc-for>
+<div style="font-size:var(--text-xs);color:var(--text-secondary)">Eksempeltall. Sortert etter hvor lenge saken har ventet.</div>
+<div style="flex:1;min-height:0"></div>
+</div>
+<div style="width:380px;flex-shrink:0;background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-md);padding:24px;display:flex;flex-direction:column;gap:18px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">NESTE SAMLING</div>
+<div>
+<div style="font-size:var(--text-h3);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);line-height:var(--leading-snug)">Høstsamling Fornebu</div>
+<div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--text-primary);margin-top:8px">12.–15. oktober · Oslo GK</div>
+<div style="font-size:var(--text-xs);color:var(--text-secondary);margin-top:4px">Fire dager · tre trenere</div>
+</div>
+<div style="display:flex;gap:10px">
+<div style="flex:1;background:var(--ink-50);border-radius:var(--radius-sm);padding:12px"><div style="font-family:var(--font-mono);font-size:var(--text-h3);font-weight:var(--weight-semibold);color:var(--navy-900)">14</div><div style="font-size:var(--text-xs);color:var(--text-secondary)">påmeldt</div></div>
+<div style="flex:1;background:var(--ink-50);border-radius:var(--radius-sm);padding:12px"><div style="font-family:var(--font-mono);font-size:var(--text-h3);font-weight:var(--weight-semibold);color:var(--navy-900)">11</div><div style="font-size:var(--text-xs);color:var(--text-secondary)">bekreftet</div></div>
+<div style="flex:1;background:var(--ink-50);border-radius:var(--radius-sm);padding:12px"><div style="font-family:var(--font-mono);font-size:var(--text-h3);font-weight:var(--weight-semibold);color:var(--text-tertiary)">3</div><div style="font-size:var(--text-xs);color:var(--text-secondary)">mangler</div></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">REISEDOKUMENTER</div>
+<sc-for list="{{ reisedok }}" as="d" hint-placeholder-count="3">
+<div style="min-height:44px;background:var(--ink-50);border-radius:var(--radius-sm);padding:0 14px;display:flex;align-items:center;gap:10px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-eyebrow);color:var(--text-tertiary);flex-shrink:0;width:62px">{{ d.type }}</span>
+<span style="flex:1;min-width:0;font-size:var(--text-sm);font-weight:var(--weight-medium);color:var(--navy-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ d.name }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary);flex-shrink:0">{{ d.read }}</span>
+</div>
+</sc-for>
+</div>
+<div style="flex:1"></div>
+<div role="button" style="height:48px;border-radius:var(--radius-full);background:var(--navy-900);color:var(--white);font-size:var(--text-base);font-weight:var(--weight-bold);display:flex;align-items:center;justify-content:center">Åpne samlingen</div>
+</div>
+</div>
+</div>
+</div>

@@ -1,0 +1,28 @@
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">10.12</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:6px 16px 12px;display:flex;align-items:center;gap:8px">
+<div role="button" style="width:44px;height:44px;flex-shrink:0;margin-left:-12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--navy-600)">‹</div>
+<div style="min-width:0;flex:1">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">NY GRUPPE · 8 UTØVERE</div>
+<h2 style="font-size:var(--text-h3);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:1px 0 0">TN Jenter 2009</h2>
+</div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:16px;display:flex;flex-direction:column;gap:14px">
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:20px;display:flex;flex-direction:column;gap:12px">
+<div style="font-size:var(--text-h3);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading);line-height:var(--leading-snug);text-wrap:pretty">Ingen poster ennå</div>
+<div style="font-size:var(--text-sm);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Her samles postene dine til gruppen — beskjeder, reiseinfo, filer og møtelenker. Alt blir liggende og kan søkes opp senere av både utøvere og foresatte.</div>
+<div style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Gruppen ble opprettet 30.08.2026. De 8 utøverne ser flaten allerede.</div>
+</div>
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:16px;display:flex;flex-direction:column;gap:10px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">VANLIGE FØRSTEPOSTER</span>
+<sc-for list="{{ forslag }}" as="f" hint-placeholder-count="3">
+<div role="button" style="min-height:44px;display:flex;align-items:center;gap:10px;border-top:1px solid var(--border-subtle);padding-top:10px">
+<span style="flex:1;min-width:0;font-size:var(--text-sm);color:var(--navy-900);line-height:var(--leading-snug);text-wrap:pretty">{{ f.label }}</span>
+<span style="font-size:16px;color:var(--text-tertiary);flex-shrink:0">›</span>
+</div>
+</sc-for>
+</div>
+<div style="flex:1;min-height:0"></div>
+<div role="button" style="height:48px;flex-shrink:0;border-radius:var(--radius-full);background:var(--navy-900);display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--white)">Skriv første post</div>
+</div>
+</div>

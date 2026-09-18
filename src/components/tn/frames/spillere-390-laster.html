@@ -1,0 +1,51 @@
+<div style="width:390px;height:844px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="height:44px;flex-shrink:0;background:var(--surface-card);display:flex;align-items:flex-end;padding:0 20px 4px"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-medium);color:var(--navy-900)">09.41</span></div>
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:8px 20px 16px;display:flex;align-items:center;gap:14px">
+<div role="button" style="width:44px;height:44px;flex-shrink:0;margin-left:-12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--navy-600)">‹</div>
+<span style="width:52px;height:52px;border-radius:var(--radius-full);background:var(--navy-100);color:var(--navy-800);font-family:var(--font-mono);font-size:var(--text-base);font-weight:var(--weight-semibold);display:flex;align-items:center;justify-content:center;flex-shrink:0">ØR</span>
+<div style="min-width:0">
+<h2 style="font-size:var(--text-h3);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:0">Ørjan Rustad</h2>
+<div style="font-size:var(--text-xs);color:var(--text-secondary);margin-top:3px">Oslo GK · 17 år · trinn 1 delt</div>
+</div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:16px;display:flex;flex-direction:column;gap:14px">
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:18px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:baseline;justify-content:space-between">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">FYSISKE TESTER</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">AK GOLF · FYS v3</span>
+</div>
+<sc-for list="{{ testrader }}" as="t" hint-placeholder-count="4">
+<div style="display:flex;align-items:baseline;gap:10px">
+<span style="flex:1;min-width:0;font-size:var(--text-sm);font-weight:var(--weight-medium);color:var(--text-primary)">{{ t.navn }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ t.verdi }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);color:var(--text-tertiary);width:64px;text-align:right;flex-shrink:0">{{ t.kilde }}</span>
+</div>
+</sc-for>
+<div style="border-top:1px solid var(--border-subtle);padding-top:10px;display:flex;flex-direction:column;gap:5px"><span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MÅLT 14.03.2026 · TN-BATTERI Q1 V3 · AK</span><span style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Testdag Bærum. Protokollversjonen låses ved første bruk, og et resultat kan ikke flyttes til en annen versjon.</span></div>
+</div>
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);border:1px solid var(--border-subtle);padding:18px;display:flex;flex-direction:column;gap:12px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TURNERINGER 2026</span>
+<sc-for list="{{ turneringer }}" as="t" hint-placeholder-count="3">
+<div style="display:flex;align-items:baseline;gap:10px">
+<span style="flex:1;min-width:0;font-size:var(--text-sm);font-weight:var(--weight-medium);color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ t.navn }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ t.res }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary);width:44px;text-align:right;flex-shrink:0">{{ t.dato }}</span>
+</div>
+</sc-for>
+</div>
+<div style="background:var(--navy-50);border:1px solid var(--navy-100);border-radius:var(--radius-lg);padding:18px;display:flex;flex-direction:column;gap:8px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--navy-700)">TRINN 2 · IKKE DELT</span>
+<div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900);line-height:var(--leading-normal);text-wrap:pretty">Treningsplan og analyse er ikke delt med Team Norway.</div>
+<div style="font-size:var(--text-xs);color:var(--navy-800);line-height:var(--leading-normal);text-wrap:pretty">Spilleren, eller foresatt for mindreårige, styrer dette selv. Ikke delt er ikke det samme som ikke målt.</div>
+</div>
+<div style="flex:1;min-height:0"></div>
+</div>
+<div style="height:76px;flex-shrink:0;background:var(--surface-card);border-top:1px solid var(--border-subtle);display:flex;align-items:flex-start;padding:8px 8px 0">
+<sc-for list="{{ tabs3 }}" as="t" hint-placeholder-count="5">
+<div ref="{{ t.ref }}" style="flex:1;min-width:0;height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
+<span ref="{{ t.barRef }}" style="width:22px;height:3px;border-radius:var(--radius-full)"></span>
+<span style="font-size:var(--text-xs);font-weight:var(--weight-semibold)">{{ t.label }}</span>
+</div>
+</sc-for>
+</div>
+</div>

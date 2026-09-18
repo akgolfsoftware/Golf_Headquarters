@@ -1,0 +1,126 @@
+<div style="width:1440px;height:900px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:22px 32px;display:flex;align-items:flex-end;justify-content:space-between;gap:24px">
+<div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TEAM NORWAY · JUNIOR · PERIODE: KONKURRANSE 01.06–07.09</div>
+<div style="display:flex;align-items:baseline;gap:14px;margin-top:6px">
+<span style="color:var(--ink-400);font-size:17px">‹</span>
+<h2 style="font-size:var(--text-h1);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:0">August 2026</h2>
+<span style="color:var(--ink-400);font-size:17px">›</span>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:12px">
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--ink-400)">Sist endret 04.09.2026 · Anders K.</span>
+<a href="../periodeplan/Periodeplan.dc.html" style="height:44px;padding:0 20px;border-radius:var(--radius-full);border:1px solid var(--border-default);font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900);display:flex;align-items:center;text-decoration:none">Periodeplan</a>
+<a href="../workbench/Workbench.dc.html" style="height:44px;padding:0 22px;border-radius:var(--radius-full);background:var(--navy-900);color:var(--white);font-size:var(--text-sm);font-weight:var(--weight-bold);display:flex;align-items:center;text-decoration:none">Åpne uke 35</a>
+</div>
+</div>
+
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:0 32px 20px;display:flex;gap:44px">
+<sc-for list="{{ maanedstall }}" as="t" hint-placeholder-count="4">
+<div style="display:flex;flex-direction:column;gap:4px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">{{ t.label }}</span>
+<div style="display:flex;align-items:baseline;gap:7px">
+<span ref="{{ t.verdiRef }}" style="font-family:var(--font-mono);font-size:var(--text-h2);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-heading);line-height:1">{{ t.verdi }}</span>
+<span style="font-size:var(--text-sm);color:var(--text-secondary)">{{ t.enhet }}</span>
+</div>
+<span ref="{{ t.avvikRef }}" style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.06em">{{ t.avvik }}</span>
+</div>
+</sc-for>
+<div style="flex:1"></div>
+<div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MOT PERIODEPLANEN</span>
+<span style="font-size:var(--text-base);font-weight:var(--weight-bold);color:var(--status-amber-text)">2 avvik, begge begrunnet</span>
+<span style="font-size:var(--text-xs);color:var(--ink-400)">Systemet konkluderer ikke — avvik er underlag.</span>
+</div>
+</div>
+
+<div style="flex:1;min-height:0;display:flex;overflow:hidden">
+
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;padding:22px 28px;gap:12px;overflow:auto">
+<div style="display:flex;align-items:baseline;gap:14px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">UKENE I MÅNEDEN</span>
+<span style="font-size:var(--text-xs);color:var(--ink-400)">Fokus er én setning per uke. Er det to, er det ikke fokus.</span>
+</div>
+
+<sc-for list="{{ uker }}" as="u" hint-placeholder-count="5">
+<div ref="{{ u.kortRef }}" style="background:var(--surface-card);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:16px 20px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:flex-start;gap:18px">
+<div style="width:78px;flex-shrink:0">
+<div style="font-family:var(--font-display);font-size:var(--text-h3);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900)">{{ u.nr }}</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);color:var(--text-tertiary);margin-top:2px">{{ u.datoer }}</div>
+</div>
+<div style="flex:1;min-width:0">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">FOKUS</div>
+<div style="font-size:var(--text-base);font-weight:var(--weight-semibold);color:var(--navy-900);line-height:var(--leading-snug);margin-top:4px;text-wrap:pretty">{{ u.fokus }}</div>
+<div style="font-size:var(--text-xs);color:var(--text-secondary);margin-top:5px">{{ u.begrunnelse }}</div>
+</div>
+<div style="width:132px;flex-shrink:0">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">VOLUM</div>
+<div style="display:flex;align-items:baseline;gap:6px;margin-top:4px">
+<span style="font-family:var(--font-mono);font-size:var(--text-lg);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ u.timer }}</span>
+<span style="font-size:var(--text-xs);color:var(--text-secondary)">{{ u.mot }}</span>
+</div>
+<div style="height:6px;border-radius:var(--radius-full);background:var(--ink-100);overflow:hidden;margin-top:6px">
+<div ref="{{ u.barRef }}" style="height:100%"></div>
+</div>
+</div>
+<span ref="{{ u.merkeRef }}" style="flex-shrink:0;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);padding:5px 10px;border-radius:var(--radius-full);white-space:nowrap">{{ u.merke }}</span>
+</div>
+
+<sc-if value="{{ u.harAvvik }}" hint-placeholder-val="{{ false }}">
+<div ref="{{ u.avvikRef }}" style="border-radius:var(--radius-sm);padding:12px 14px;display:flex;gap:11px;align-items:flex-start">
+<span ref="{{ u.avvikDotRef }}" style="width:7px;height:7px;border-radius:var(--radius-full);flex-shrink:0;margin-top:6px"></span>
+<div style="flex:1;min-width:0">
+<div ref="{{ u.avvikTittelRef }}" style="font-size:var(--text-sm);font-weight:var(--weight-bold)">{{ u.avvikTittel }}</div>
+<div ref="{{ u.avvikTekstRef }}" style="font-size:var(--text-xs);line-height:var(--leading-normal);margin-top:3px;text-wrap:pretty">{{ u.avvikTekst }}</div>
+<div ref="{{ u.avvikKildeRef }}" style="font-family:var(--font-mono);font-size:var(--text-micro);margin-top:5px">{{ u.avvikKilde }}</div>
+</div>
+</div>
+</sc-if>
+</div>
+</sc-for>
+</div>
+
+<div style="width:392px;flex-shrink:0;border-left:1px solid var(--border-subtle);background:var(--surface-card);padding:22px;display:flex;flex-direction:column;gap:18px;overflow:auto">
+<div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DETTE SA PERIODEPLANEN</div>
+<div style="font-size:var(--text-base);font-weight:var(--weight-semibold);color:var(--navy-900);margin-top:6px">Konkurranse · 01.06–07.09</div>
+<div style="font-size:var(--text-sm);color:var(--text-primary);line-height:var(--leading-normal);margin-top:5px;text-wrap:pretty">Toppe mot NM junior og Titleist Tour. Vedlikehold fys, høy spillmengde, teknisk arbeid holdes lite.</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:11px">
+<sc-for list="{{ krav }}" as="k" hint-placeholder-count="4">
+<div style="display:flex;flex-direction:column;gap:5px;padding-bottom:11px;border-bottom:1px solid var(--border-subtle)">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px">
+<span style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ k.navn }}</span>
+<span ref="{{ k.statusRef }}" style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);flex-shrink:0">{{ k.status }}</span>
+</div>
+<div style="display:flex;align-items:center;gap:10px">
+<div style="flex:1;height:6px;border-radius:var(--radius-full);background:var(--ink-100);overflow:hidden">
+<div ref="{{ k.barRef }}" style="height:100%"></div>
+</div>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary);width:78px;text-align:right;flex-shrink:0">{{ k.tall }}</span>
+</div>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--ink-400)">{{ k.kilde }}</span>
+</div>
+</sc-for>
+</div>
+
+<div style="border-top:1px solid var(--border-subtle);padding-top:16px;display:flex;flex-direction:column;gap:11px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">AVVIK I DENNE MÅNEDEN</span>
+<sc-for list="{{ avvikliste }}" as="a" hint-placeholder-count="2">
+<div style="display:flex;gap:11px;align-items:flex-start">
+<span ref="{{ a.dotRef }}" style="width:7px;height:7px;border-radius:var(--radius-full);flex-shrink:0;margin-top:6px"></span>
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900);line-height:var(--leading-snug)">{{ a.tittel }}</div>
+<div style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);margin-top:3px;text-wrap:pretty">{{ a.tekst }}</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--ink-400);margin-top:4px">{{ a.kilde }}</div>
+</div>
+</div>
+</sc-for>
+<div style="font-size:var(--text-xs);color:var(--ink-400);line-height:var(--leading-normal);text-wrap:pretty">Et avvik er ikke en feil. Det er en beslutning noen tok, med navn og dato — så neste periodeplan kan bygge på den.</div>
+</div>
+</div>
+</div>
+</div>

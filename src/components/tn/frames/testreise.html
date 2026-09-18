@@ -1,0 +1,250 @@
+<div style="max-width:1200px;margin:0 auto;display:flex;flex-direction:column;gap:16px">
+
+<div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:12px 16px">
+<img src="../../assets/logo/team-norway-golf.png" alt="Team Norway Golf" style="height:26px;width:auto;display:block">
+<div style="min-width:0">
+<div style="font-family:var(--font-display);font-size:var(--text-base);font-weight:var(--weight-bold);letter-spacing:-.02em">Testreisen</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.12em;color:var(--text-secondary)">TN-04 → TN-05 → TN-03</div>
+</div>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.1em;background:var(--status-amber-bg);color:var(--status-amber-text);border-radius:var(--radius-full);padding:5px 11px">PROTOTYPE · SIMULERT — INGENTING SENDES</span>
+<div style="flex:1"></div>
+<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.1em;color:var(--text-secondary)">SER SOM</span>
+<sc-if value="{{ orgErAk }}" hint-placeholder-val="{{ false }}"><div style="display:flex;border:1px solid var(--border-default);border-radius:var(--radius-full);overflow:hidden">
+<div onClick="{{ orgAk }}" role="button" data-pressable style="padding:9px 15px;min-height:34px;display:flex;align-items:center;cursor:pointer;font-size:var(--text-xs);font-weight:var(--weight-semibold);background:var(--navy-900);color:var(--white)">AK Golf</div>
+<div onClick="{{ orgTn }}" role="button" data-pressable style="padding:9px 15px;min-height:34px;display:flex;align-items:center;cursor:pointer;font-size:var(--text-xs);font-weight:var(--weight-semibold);background:var(--surface-card);color:var(--text-secondary)">Team Norway</div>
+</div></sc-if><sc-if value="{{ orgErTn }}" hint-placeholder-val="{{ true }}"><div style="display:flex;border:1px solid var(--border-default);border-radius:var(--radius-full);overflow:hidden">
+<div onClick="{{ orgAk }}" role="button" data-pressable style="padding:9px 15px;min-height:34px;display:flex;align-items:center;cursor:pointer;font-size:var(--text-xs);font-weight:var(--weight-semibold);background:var(--surface-card);color:var(--text-secondary)">AK Golf</div>
+<div onClick="{{ orgTn }}" role="button" data-pressable style="padding:9px 15px;min-height:34px;display:flex;align-items:center;cursor:pointer;font-size:var(--text-xs);font-weight:var(--weight-semibold);background:var(--navy-900);color:var(--white)">Team Norway</div>
+</div></sc-if>
+</div>
+</div>
+
+<div style="display:flex;gap:6px;flex-wrap:wrap">
+<sc-for list="{{ steg }}" as="s" hint-placeholder-count="4">
+<sc-if value="{{ s.aktiv }}" hint-placeholder-val="{{ false }}"><div onClick="{{ s.velg }}" role="button" style="padding:8px 13px;min-height:34px;display:flex;align-items:center;border-radius:var(--radius-full);font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.08em;cursor:pointer;background:var(--navy-900);color:var(--white);border:1px solid var(--navy-900)">{{ s.label }}</div></sc-if>
+<sc-if value="{{ s.apen }}" hint-placeholder-val="{{ true }}"><div onClick="{{ s.velg }}" role="button" style="padding:8px 13px;min-height:34px;display:flex;align-items:center;border-radius:var(--radius-full);font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.08em;cursor:pointer;background:var(--surface-card);color:var(--navy-800);border:1px solid var(--border-subtle)">{{ s.label }}</div></sc-if>
+<sc-if value="{{ s.laast }}" hint-placeholder-val="{{ false }}"><div style="padding:8px 13px;min-height:34px;display:flex;align-items:center;border-radius:var(--radius-full);font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.08em;background:var(--surface-card);color:var(--ink-400);border:1px solid var(--border-subtle)">{{ s.label }}</div></sc-if>
+</sc-for>
+</div>
+
+<sc-if value="{{ erLaster }}" hint-placeholder-val="{{ true }}">
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:22px;display:flex;flex-direction:column;gap:12px">
+<div style="width:180px;height:14px;border-radius:var(--radius-full);background:var(--ink-100)"></div>
+<div style="width:70%;height:12px;border-radius:var(--radius-full);background:var(--ink-100)"></div>
+<div style="width:45%;height:12px;border-radius:var(--radius-full);background:var(--ink-100)"></div>
+<div style="font-size:var(--text-xs);color:var(--text-secondary)">Henter protokoller …</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ erKildefeil }}" hint-placeholder-val="{{ false }}">
+<div style="background:var(--status-red-bg);border:1px solid var(--status-red);border-radius:var(--radius-lg);padding:18px 20px;display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-base);font-weight:var(--weight-bold);color:var(--navy-900)">Kunne ikke hente protokollene</div>
+<div style="font-size:var(--text-sm);color:var(--text-primary);text-wrap:pretty">Én eier svarer ikke (simulert feiltilstand). Sist kjente liste kan være ufullstendig — skru av «Simuler kildefeil» i Tweaks for å hente på nytt.</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ erBibliotek }}" hint-placeholder-val="{{ false }}">
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:clamp(14px,2.5vw,24px);display:flex;flex-direction:column;gap:16px">
+<div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.14em;color:var(--text-secondary)">TN-04 · DELT MELLOM AK GOLF, WANG OG TEAM NORWAY</div>
+<h1 style="font-family:var(--font-display);font-size:var(--text-h2);font-weight:var(--weight-black);letter-spacing:-.02em;margin:4px 0 0">Testprotokoller</h1>
+</div>
+<input value="{{ sok }}" onChange="{{ settSok }}" placeholder="Søk i {{ antall }} protokoller" style="height:48px;border:1px solid var(--border-default);border-radius:var(--radius-full);padding:0 20px;font-size:var(--text-sm);font-family:var(--font-body);background:var(--surface-page);outline:none;max-width:520px" style-focus="border-color:var(--navy-600)">
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<sc-for list="{{ kategorier }}" as="k" hint-placeholder-count="5">
+<sc-if value="{{ k.aktiv }}" hint-placeholder-val="{{ false }}"><div onClick="{{ k.velg }}" role="button" data-pressable style="padding:8px 14px;min-height:34px;display:flex;align-items:center;cursor:pointer;border-radius:var(--radius-full);border:1px solid var(--navy-900);background:var(--navy-900);color:var(--white);font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.1em">{{ k.navn }}</div></sc-if>
+<sc-if value="{{ k.inaktiv }}" hint-placeholder-val="{{ true }}"><div onClick="{{ k.velg }}" role="button" data-pressable style="padding:8px 14px;min-height:34px;display:flex;align-items:center;cursor:pointer;border-radius:var(--radius-full);border:1px solid var(--border-default);background:var(--surface-card);color:var(--text-secondary);font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.1em">{{ k.navn }}</div></sc-if>
+</sc-for>
+</div>
+<sc-if value="{{ tomtSok }}" hint-placeholder-val="{{ false }}">
+<div style="border:1px dashed var(--border-default);border-radius:var(--radius-md);padding:26px;text-align:center;color:var(--text-secondary);font-size:var(--text-sm)">Ingen protokoller matcher «{{ sok }}» i {{ katNavn }}. Tøm søket eller bytt kategori.</div>
+</sc-if>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(260px,100%),1fr));gap:12px">
+<sc-for list="{{ protokoller }}" as="p" hint-placeholder-count="6">
+<div onClick="{{ p.velg }}" role="button" data-pressable style="background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:14px 16px;display:flex;flex-direction:column;gap:8px;cursor:pointer;min-height:44px" style-hover="border-color:var(--navy-400);box-shadow:var(--shadow-sm)">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+<span style="font-size:var(--text-base);font-weight:var(--weight-bold);color:var(--navy-900)">{{ p.navn }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--navy-600)">v{{ p.versjon }}</span>
+</div>
+<div style="font-size:var(--text-xs);color:var(--text-secondary);line-height:1.5;text-wrap:pretty">{{ p.kort }}</div>
+<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+<sc-if value="{{ p.erAk }}" hint-placeholder-val="{{ true }}"><span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.1em;padding:4px 9px;border-radius:var(--radius-sm);background:var(--navy-900);color:var(--white)">{{ p.eier }}</span></sc-if><sc-if value="{{ p.erTn }}" hint-placeholder-val="{{ false }}"><span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.1em;padding:4px 9px;border-radius:var(--radius-sm);background:var(--navy-100);color:var(--navy-800)">{{ p.eier }}</span></sc-if>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.08em;color:var(--text-tertiary)">{{ p.meta }}</span>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ erDetalj }}" hint-placeholder-val="{{ false }}">
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:clamp(14px,2.5vw,24px);display:flex;flex-direction:column;gap:16px">
+<div onClick="{{ tilBibliotek }}" role="button" data-pressable style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--navy-600);cursor:pointer;min-height:44px;display:flex;align-items:center;gap:6px">‹ TESTPROTOKOLLER</div>
+<div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.14em;color:var(--text-secondary)">TN-05 · TESTBATTERI / {{ pKat }}</div>
+<h1 style="font-family:var(--font-display);font-size:var(--text-h2);font-weight:var(--weight-black);letter-spacing:-.02em;margin:4px 0 0">{{ pNavn }}</h1>
+<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px">
+<sc-if value="{{ erEier }}" hint-placeholder-val="{{ true }}"><span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.1em;padding:4px 9px;border-radius:var(--radius-sm);background:var(--navy-900);color:var(--white)">DU EIER DENNE</span></sc-if><sc-if value="{{ erMottaker }}" hint-placeholder-val="{{ false }}"><span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.1em;padding:4px 9px;border-radius:var(--radius-sm);background:var(--navy-100);color:var(--navy-800)">EID AV {{ pEier }}</span></sc-if>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary)">GJELDENDE v{{ pVersjon }} · LÅST {{ pLaast }}</span>
+</div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:12px">
+<div style="background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:16px;display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.14em;color:var(--text-secondary)">HVA PROTOKOLLEN MÅLER</div>
+<div style="font-size:var(--text-sm);line-height:1.6;text-wrap:pretty">{{ pMaler }}</div>
+<div style="display:flex;gap:10px;flex-wrap:wrap">
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:9px 13px"><div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.12em;color:var(--text-tertiary)">ENHET</div><div style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-800)">{{ pEnhet }}</div></div>
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:9px 13px"><div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.12em;color:var(--text-tertiary)">RETNING</div><div style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-800)">{{ pRetning }}</div></div>
+</div>
+</div>
+<div style="background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:16px;display:flex;flex-direction:column;gap:8px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.14em;color:var(--text-secondary)">VERSJONSHISTORIKK</div>
+<sc-for list="{{ historikk }}" as="h" hint-placeholder-count="3">
+<div style="display:flex;align-items:baseline;gap:10px;padding:7px 0;border-bottom:1px solid var(--ink-100)">
+<sc-if value="{{ h.erUtkast }}" hint-placeholder-val="{{ false }}"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-bold);color:var(--ink-500);min-width:30px">{{ h.v }}</span></sc-if><sc-if value="{{ h.erLaast }}" hint-placeholder-val="{{ true }}"><span style="font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-bold);color:var(--navy-800);min-width:30px">{{ h.v }}</span></sc-if>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary);flex:1">{{ h.info }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--navy-800)">{{ h.malinger }}</span>
+</div>
+</sc-for>
+<sc-if value="{{ erEier }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:6px"><x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="secondary" size="sm" onClick="{{ lagUtkast }}" hint-size="190px,44px">Ny versjon (utkast)</x-import></div>
+</sc-if>
+<sc-if value="{{ erMottaker }}" hint-placeholder-val="{{ false }}">
+<div style="font-size:var(--text-xs);color:var(--text-secondary);line-height:1.55;text-wrap:pretty;margin-top:6px">Du bruker denne — <strong>{{ pEier }}</strong> eier den. Mottakeren har ingen versjonshandling; trenger Team Norway noe annet, opprettes en egen TN-protokoll.</div>
+</sc-if>
+</div>
+</div>
+<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="primary" size="md" onClick="{{ tilGruppe }}" hint-size="200px,48px">Start fellestesting</x-import>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.08em;color:var(--text-tertiary)">FØRES MOT v{{ pVersjon }} — RESULTAT PEKER ALLTID PÅ VERSJONEN</span>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ erGruppe }}" hint-placeholder-val="{{ false }}">
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:clamp(14px,2.5vw,24px);display:flex;flex-direction:column;gap:16px">
+<div onClick="{{ tilDetalj }}" role="button" data-pressable style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--navy-600);cursor:pointer;min-height:44px;display:flex;align-items:center;gap:6px">‹ {{ pNavn }} · v{{ pVersjon }}</div>
+<div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.14em;color:var(--text-secondary)">TN-03 · STEG 2 AV 3 · {{ pNavn }}</div>
+<h1 style="font-family:var(--font-display);font-size:var(--text-h2);font-weight:var(--weight-black);letter-spacing:-.02em;margin:4px 0 0">Velg gruppe</h1>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));gap:12px">
+<sc-for list="{{ grupper }}" as="g" hint-placeholder-count="2">
+<div onClick="{{ g.velg }}" role="button" data-pressable style="background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:16px;display:flex;flex-direction:column;gap:8px;cursor:pointer" style-hover="border-color:var(--navy-400);box-shadow:var(--shadow-sm)">
+<div style="display:flex;align-items:baseline;justify-content:space-between"><span style="font-size:var(--text-base);font-weight:var(--weight-bold);color:var(--navy-900)">{{ g.navn }}</span><span style="color:var(--navy-600)">›</span></div>
+<div style="font-size:var(--text-xs);color:var(--text-secondary)">{{ g.antall }} syntetiske deltakere · {{ g.fort }}</div>
+<div style="height:6px;border-radius:var(--radius-full);background:var(--ink-100);overflow:hidden"><div ref="{{ g.barRef }}" style="width:0%;height:100%;background:var(--navy-600)"></div></div>
+</div>
+</sc-for>
+</div>
+<div style="font-size:var(--text-xs);color:var(--text-tertiary)">Alle deltakere er syntetiske eksempler («eks.»). Ingen reelle personer, ingen sendinger.</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ erForing }}" hint-placeholder-val="{{ false }}">
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:clamp(14px,2.5vw,24px);display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+<div onClick="{{ tilGruppe }}" role="button" data-pressable style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--navy-600);cursor:pointer;min-height:44px;display:flex;align-items:center">‹ GRUPPER</div>
+<div style="flex:1"></div>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary)">{{ pNavn }} · v{{ pVersjon }} · {{ gNavn }}</span>
+</div>
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap">
+<span style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ fortLabel }}</span>
+<div onClick="{{ tilResultat }}" role="button" data-pressable style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--navy-600);cursor:pointer;min-height:44px;display:flex;align-items:center">TIL OPPSUMMERING ›</div>
+</div>
+<div style="height:6px;border-radius:var(--radius-full);background:var(--ink-100);overflow:hidden"><div ref="{{ framdriftRef }}" style="width:0%;height:100%;background:var(--navy-600)"></div></div>
+<div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start">
+<div style="flex:1 1 250px;min-width:min(240px,100%);border:1px solid var(--border-subtle);border-radius:var(--radius-md);overflow:hidden">
+<div style="padding:11px 14px;border-bottom:1px solid var(--border-subtle);font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.14em;color:var(--text-secondary)">KØ · TRYKK FOR Å REDIGERE</div>
+<div style="max-height:420px;overflow:auto">
+<sc-for list="{{ koRader }}" as="r" hint-placeholder-count="6">
+<div onClick="{{ r.velg }}" role="button" ref="{{ r.radRef }}" style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;min-height:44px;cursor:pointer;border-bottom:1px solid var(--ink-100);border-left:3px solid transparent">
+<span style="font-size:var(--text-sm);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.navn }}</span>
+<span ref="{{ r.verdiRef }}" style="font-family:var(--font-mono);font-size:var(--text-xs);white-space:nowrap;color:var(--ink-400)">{{ r.verdi }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="flex:2 1 320px;min-width:min(280px,100%);display:flex;flex-direction:column;gap:12px">
+<div style="background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:18px;display:flex;flex-direction:column;gap:12px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.14em;color:var(--text-secondary)">STÅR FOR TUR · {{ idxLabel }}</div>
+<div style="font-family:var(--font-display);font-size:var(--text-h3);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:-.02em">{{ aktivNavn }}</div>
+<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+<input value="{{ felt }}" onChange="{{ settFelt }}" inputMode="decimal" placeholder="{{ feltPlaceholder }}" style="height:56px;width:min(220px,100%);border:1px solid var(--border-default);border-radius:var(--radius-md);padding:0 16px;font-family:var(--font-mono);font-size:var(--text-h3);font-weight:var(--weight-semibold);color:var(--navy-900);background:var(--surface-card);outline:none" style-focus="border-color:var(--navy-600)">
+<span style="font-family:var(--font-mono);font-size:var(--text-sm);color:var(--text-secondary)">{{ pEnhet }}</span>
+</div>
+<sc-if value="{{ harFeltFeil }}" hint-placeholder-val="{{ false }}">
+<div style="font-size:var(--text-xs);color:var(--status-red);font-weight:var(--weight-semibold)">{{ feltFeil }}</div>
+</sc-if>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="primary" size="md" onClick="{{ foer }}" hint-size="150px,48px">{{ foerLabel }}</x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="secondary" size="md" onClick="{{ forrige }}" hint-size="110px,48px">‹ Forrige</x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="secondary" size="md" onClick="{{ hoppOver }}" hint-size="120px,48px">Hopp over</x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="secondary" size="md" onClick="{{ ikkeMott }}" hint-size="115px,48px">Ikke møtt</x-import>
+</div>
+<sc-if value="{{ erLagrer }}" hint-placeholder-val="{{ false }}"><div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.1em;color:var(--text-secondary)">LAGRER · SIMULERT …</div></sc-if>
+<sc-if value="{{ erLagret }}" hint-placeholder-val="{{ false }}"><div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.1em;color:var(--status-green)">LAGRET (SIMULERT) — INGENTING SENDT</div></sc-if>
+<sc-if value="{{ erLagringsfeil }}" hint-placeholder-val="{{ false }}"><div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.08em;color:var(--status-red)">LAGRINGSFEIL (SIMULERT) — VERDIEN STÅR LOKALT. TRYKK «FØR OG NESTE» FOR Å PRØVE IGJEN.</div></sc-if>
+</div>
+<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px;border:1px dashed var(--border-default);border-radius:var(--radius-md)">
+<sc-if value="{{ simPaa }}" hint-placeholder-val="{{ false }}"><div onClick="{{ toggleSimFeil }}" role="button" data-pressable style="padding:8px 14px;min-height:34px;display:flex;align-items:center;cursor:pointer;border-radius:var(--radius-full);border:1px solid var(--status-red);background:var(--status-red-bg);color:var(--status-red);font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.1em">SIMULER LAGRINGSFEIL: PÅ</div></sc-if><sc-if value="{{ simAv }}" hint-placeholder-val="{{ true }}"><div onClick="{{ toggleSimFeil }}" role="button" data-pressable style="padding:8px 14px;min-height:34px;display:flex;align-items:center;cursor:pointer;border-radius:var(--radius-full);border:1px solid var(--border-default);background:var(--surface-card);color:var(--text-secondary);font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.1em">SIMULER LAGRINGSFEIL: AV</div></sc-if>
+<span style="font-size:var(--text-xs);color:var(--text-tertiary);text-wrap:pretty">Demonstrerer lagringsfeil-tilstanden — føringen blir stående lokalt til den «lagres» på nytt.</span>
+</div>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ erResultat }}" hint-placeholder-val="{{ false }}">
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:clamp(14px,2.5vw,24px);display:flex;flex-direction:column;gap:16px">
+<div onClick="{{ tilForing }}" role="button" data-pressable style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--navy-600);cursor:pointer;min-height:44px;display:flex;align-items:center">‹ TILBAKE TIL FØRINGEN — DATAENE STÅR</div>
+<div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.14em;color:var(--text-secondary)">TN-03 · OPPSUMMERING · {{ pNavn }} v{{ pVersjon }} · {{ gNavn }}</div>
+<h1 style="font-family:var(--font-display);font-size:var(--text-h2);font-weight:var(--weight-black);letter-spacing:-.02em;margin:4px 0 0">{{ resTittel }}</h1>
+</div>
+<div style="display:flex;gap:18px;flex-wrap:wrap">
+<div><span style="font-family:var(--font-mono);font-size:var(--text-h3);font-weight:var(--weight-bold);color:var(--navy-900)">{{ antFort }}</span><span style="font-size:var(--text-xs);color:var(--text-secondary)"> ført</span></div>
+<div><span style="font-family:var(--font-mono);font-size:var(--text-h3);font-weight:var(--weight-bold);color:var(--ink-700)">{{ antHopp }}</span><span style="font-size:var(--text-xs);color:var(--text-secondary)"> hoppet over</span></div>
+<div><span style="font-family:var(--font-mono);font-size:var(--text-h3);font-weight:var(--weight-bold);color:var(--status-red)">{{ antIkke }}</span><span style="font-size:var(--text-xs);color:var(--text-secondary)"> ikke møtt</span></div>
+<div><span style="font-family:var(--font-mono);font-size:var(--text-h3);font-weight:var(--weight-bold);color:var(--ink-400)">{{ antVenter }}</span><span style="font-size:var(--text-xs);color:var(--text-secondary)"> gjenstår</span></div>
+</div>
+<div style="border:1px solid var(--border-subtle);border-radius:var(--radius-md);overflow:hidden">
+<sc-for list="{{ resRader }}" as="r" hint-placeholder-count="6">
+<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--ink-100)">
+<span style="font-size:var(--text-sm);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.navn }}</span>
+<span ref="{{ r.verdiRef }}" style="font-family:var(--font-mono);font-size:var(--text-sm);white-space:nowrap;color:var(--ink-400)">{{ r.verdi }}</span>
+</div>
+</sc-for>
+</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.06em;color:var(--text-secondary);text-wrap:pretty">{{ kildeLinje }}</div>
+<div ref="{{ attRammeRef }}" style="border:1px solid var(--border-subtle);background:var(--surface-page);border-radius:var(--radius-md);padding:14px 16px;display:flex;flex-direction:column;gap:8px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.14em;color:var(--text-secondary)">ATTESTERING · SIMULERT</div>
+<div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ attTekst }}</div>
+<sc-if value="{{ attVenter }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="secondary" size="sm" onClick="{{ attGodkjenn }}" hint-size="160px,44px">Godkjenn (vitne)</x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="secondary" size="sm" onClick="{{ attAvvis }}" hint-size="130px,44px">Avvis (vitne)</x-import>
+</div>
+</sc-if>
+<sc-if value="{{ attAvvist }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+<span style="font-size:var(--text-xs);color:var(--status-red);text-wrap:pretty">Målingene står som utkast til et vitne bekrefter dem.</span>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="secondary" size="sm" onClick="{{ attReset }}" hint-size="150px,44px">Send på nytt</x-import>
+</div>
+</sc-if>
+</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="secondary" size="md" onClick="{{ nyRunde }}" hint-size="190px,48px">Ny runde (nullstill)</x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="secondary" size="md" onClick="{{ tilBibliotek }}" hint-size="170px,48px">Til biblioteket</x-import>
+</div>
+</div>
+</sc-if>
+
+<div style="font-size:var(--text-xs);color:var(--text-tertiary);display:flex;gap:14px;flex-wrap:wrap;padding:2px 4px">
+<span>Referansebrettene (statisk spesifikasjon):</span>
+<a href="../tn-protokollbibliotek/TnProtokollbibliotek.dc.html" style="color:var(--navy-600)">TN-04</a>
+<a href="../tn-protokolldetalj/TnProtokolldetalj.dc.html" style="color:var(--navy-600)">TN-05</a>
+<a href="../tn-fellestesting/TnFellestesting.dc.html" style="color:var(--navy-600)">TN-03</a>
+</div>
+</div>

@@ -1,0 +1,41 @@
+<div style="width:1440px;height:520px;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+<div style="flex-shrink:0;border-bottom:1px solid var(--border-subtle);padding:24px 32px;display:flex;align-items:flex-start;gap:20px">
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:8px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">TESTBATTERI / GOLFSLAG</span>
+<h2 style="font-size:var(--text-h1);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:0">Innspill Basis</h2>
+<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;background:var(--ink-100);color:var(--ink-700);padding:4px 9px;border-radius:var(--radius-xs)">EID AV AK GOLF ACADEMY</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary)">DU BRUKER v4 · LÅST 12.08.2026</span>
+</div>
+</div>
+<div style="width:280px;flex-shrink:0;background:var(--ink-50);border-radius:var(--radius-md);padding:16px;display:flex;flex-direction:column;gap:6px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">INGEN HANDLING HER</span>
+<span style="font-size:var(--text-sm);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Team Norway bruker protokollen, men endrer den ikke. Trenger dere en annen variant, opprett en egen TN-protokoll — da eier dere versjonene selv.</span>
+</div>
+</div>
+<div style="flex:1;min-height:0;display:flex">
+<div style="flex:1;min-width:0;padding:22px 32px;display:flex;flex-direction:column;gap:12px;overflow:hidden">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">STEGENE I v4 — LESES, ENDRES IKKE</span>
+<sc-for list="{{ stegLite }}" as="s" hint-placeholder-count="4">
+<div style="display:flex;align-items:center;gap:14px;min-height:40px;border-bottom:1px solid var(--border-subtle)">
+<span style="width:26px;height:26px;flex-shrink:0;border-radius:var(--radius-xs);background:var(--ink-100);color:var(--text-secondary);font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);display:flex;align-items:center;justify-content:center">{{ s.nr }}</span>
+<span style="flex:1;min-width:0;font-size:var(--text-sm);color:var(--text-primary)">{{ s.navn }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary);flex-shrink:0">{{ s.krav }}</span>
+</div>
+</sc-for>
+<div style="flex:1;min-height:0"></div>
+</div>
+<div style="width:400px;flex-shrink:0;border-left:1px solid var(--border-subtle);padding:22px 24px;display:flex;flex-direction:column;gap:12px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">VERSJONSHISTORIKK · KUN LESING</span>
+<sc-for list="{{ versjonerLite }}" as="v" hint-placeholder-count="3">
+<div style="display:flex;align-items:baseline;gap:10px;min-height:36px;border-bottom:1px solid var(--border-subtle);padding-bottom:8px">
+<span style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900);width:30px;flex-shrink:0">{{ v.nr }}</span>
+<span style="flex:1;min-width:0;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">{{ v.last }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-sm);color:var(--text-secondary);flex-shrink:0">{{ v.malinger }}</span>
+</div>
+</sc-for>
+<span style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Deres 96 målinger ligger på v4. Hvis AK Golf lager v5, blir de liggende på v4 — de flytter seg aldri.</span>
+<div style="flex:1"></div>
+</div>
+</div>
+</div>

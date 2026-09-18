@@ -1,0 +1,80 @@
+<div style="width:390px;background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;flex-direction:column">
+
+<div style="background:var(--navy-900);padding:18px 20px 16px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--navy-100)">Tirsdag 16. september</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--white);background:rgba(255,255,255,.14);border-radius:var(--radius-full);padding:4px 10px;white-space:nowrap">Toppidrett</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:3px">
+<span style="font-size:var(--text-h2);font-weight:var(--weight-bold);color:var(--white);letter-spacing:var(--tracking-heading);line-height:1.1">Ingrid Vestby</span>
+<span style="font-size:var(--text-sm);color:var(--navy-100)">Uke 38 · fokus 30–70 m</span>
+</div>
+</div>
+
+<div style="padding:22px 20px 26px;display:flex;flex-direction:column;gap:24px;background:var(--surface-page)">
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;gap:8px">
+<span style="width:7px;height:7px;border-radius:var(--radius-full);background:var(--status-amber);flex-shrink:0"></span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">Venter på meg</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">{{ megTall }}</span>
+</div>
+<sc-for list="{{ megRader }}" as="r" hint-placeholder-count="3">
+<div role="button" style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:transform 120ms cubic-bezier(.23,1,.32,1)" style-active="transform:scale(.985)">
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px">
+<div style="display:flex;align-items:center;gap:8px">
+<span style="font-size:var(--text-base);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ r.navn }}</span>
+<span ref="{{ r.eierRef }}" style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;border-radius:var(--radius-xs);padding:2px 6px;white-space:nowrap">{{ r.eier }}</span>
+</div>
+<span style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">{{ r.sub }}</span>
+</div>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--navy-800);background:var(--navy-50);border-radius:var(--radius-full);padding:6px 10px;white-space:nowrap;flex-shrink:0">{{ r.cta }}</span>
+</div>
+</sc-for>
+<sc-if value="{{ megTom }}" hint-placeholder-val="{{ false }}">
+<div style="background:var(--status-green-bg);border-radius:var(--radius-md);padding:16px;display:flex;flex-direction:column;gap:3px">
+<span style="font-size:var(--text-base);font-weight:var(--weight-bold);color:var(--status-green-text)">Alt kvittert</span>
+<span style="font-size:var(--text-xs);color:var(--status-green-text);line-height:var(--leading-normal);text-wrap:pretty">Ingenting venter på deg i dag. Neste økt er onsdag.</span>
+</div>
+</sc-if>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;gap:8px">
+<span style="width:7px;height:7px;border-radius:var(--radius-full);background:var(--ink-300);flex-shrink:0"></span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">Venter på trener</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);color:var(--text-tertiary)">{{ trenerTall }}</span>
+</div>
+<sc-for list="{{ trenerRader }}" as="r" hint-placeholder-count="2">
+<div style="background:var(--white);border:1px dashed var(--ink-300);border-radius:var(--radius-md);padding:14px 16px;display:flex;flex-direction:column;gap:3px">
+<div style="display:flex;align-items:center;gap:8px">
+<span style="font-size:var(--text-base);font-weight:var(--weight-medium);color:var(--ink-700)">{{ r.navn }}</span>
+<span ref="{{ r.eierRef }}" style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;border-radius:var(--radius-xs);padding:2px 6px;white-space:nowrap">{{ r.eier }}</span>
+</div>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">{{ r.sub }}</span>
+</div>
+</sc-for>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;gap:8px">
+<span style="width:7px;height:7px;border-radius:var(--radius-full);background:var(--red-600);flex-shrink:0"></span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">Neste samtale</span>
+</div>
+<div style="background:var(--navy-50);border:1px solid var(--navy-100);border-radius:var(--radius-md);padding:16px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+<span style="font-size:var(--text-base);font-weight:var(--weight-bold);color:var(--navy-900)">Torsdag 18.09 · 14:30</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--navy-800);white-space:nowrap">Anders K.</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:5px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">Agenda · tre punkter</span>
+<span style="font-size:var(--text-xs);color:var(--navy-800);line-height:var(--leading-normal);text-wrap:pretty">Måltavle Q4 · utviklingssjekk Mentalt · turneringsplan november</span>
+</div>
+<div role="button" style="height:44px;border-radius:var(--radius-sm);background:var(--navy-900);color:var(--white);font-size:var(--text-sm);font-weight:var(--weight-semibold);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform 120ms cubic-bezier(.23,1,.32,1)" style-active="transform:scale(.985)">Forbered samtalen</div>
+</div>
+</div>
+
+<div role="button" style="height:48px;border-radius:var(--radius-sm);border:1px solid var(--border-default);background:var(--white);color:var(--navy-900);font-size:var(--text-sm);font-weight:var(--weight-semibold);display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer">Hele planen<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">{{ modulTall }}</span></div>
+
+</div>
+</div>

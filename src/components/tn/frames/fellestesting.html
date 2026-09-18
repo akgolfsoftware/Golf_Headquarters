@@ -1,0 +1,130 @@
+<div style="width:1440px;height:900px;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;font-variant-numeric:tabular-nums">
+<div style="width:232px;flex-shrink:0;background:var(--surface-card);border-right:1px solid var(--border-subtle);display:flex;flex-direction:column;padding:22px 14px 18px;gap:24px">
+<div style="display:flex;align-items:center;gap:10px;padding:0 8px">
+<img src="../../assets/logo/team-norway-golf.png" alt="Team Norway Golf" style="height:44px;width:auto;display:block">
+</div>
+<div style="display:flex;flex-direction:column;gap:14px">
+<sc-for list="{{ meny }}" as="m" hint-placeholder-count="8">
+<sc-if value="{{ m.isHeading }}" hint-placeholder-val="{{ false }}">
+<div style="padding:6px 10px 0;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">{{ m.label }}</div>
+</sc-if>
+<sc-if value="{{ m.isItem }}" hint-placeholder-val="{{ true }}">
+<div ref="{{ m.ref }}" style="height:40px;border-radius:var(--radius-sm);padding:0 10px;display:flex;align-items:center;gap:10px">
+<span ref="{{ m.markRef }}" style="width:3px;height:18px;border-radius:var(--radius-full);flex-shrink:0"></span>
+<span style="font-size:var(--text-sm);font-weight:var(--weight-semibold)">{{ m.label }}</span>
+</div>
+</sc-if>
+</sc-for>
+</div>
+<div style="flex:1"></div>
+<div style="border-top:1px solid var(--border-subtle);padding-top:14px;display:flex;align-items:center;gap:10px">
+<span style="width:32px;height:32px;border-radius:var(--radius-full);background:var(--navy-100);color:var(--navy-800);font-size:var(--text-xs);font-weight:var(--weight-bold);display:flex;align-items:center;justify-content:center;flex-shrink:0">AK</span>
+<div style="min-width:0"><div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Anders K.</div><div style="font-size:var(--text-xs);color:var(--text-secondary)">Kun egne grupper</div></div>
+</div>
+</div>
+
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;background:var(--surface-page)">
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:20px 28px;display:flex;align-items:center;gap:20px">
+<div style="min-width:0">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">FELLESTESTING · 25. AUGUST</div>
+<h2 style="font-size:var(--text-h2);color:var(--navy-900);margin-top:3px">Clubhead speed</h2>
+</div>
+<div style="display:flex;gap:8px;align-items:center">
+<span style="height:28px;padding:0 12px;border-radius:var(--radius-full);background:var(--navy-100);color:var(--navy-800);font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);display:flex;align-items:center">EIER AK GOLF</span>
+<span style="height:28px;padding:0 12px;border-radius:var(--radius-full);background:var(--ink-100);color:var(--ink-700);font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);display:flex;align-items:center">v2 · LÅST 12.01.2026</span>
+<span style="height:28px;padding:0 12px;border-radius:var(--radius-full);background:var(--ink-100);color:var(--ink-700);font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);display:flex;align-items:center">TN-BATTERI Q3</span>
+</div>
+<div style="flex:1"></div>
+<div style="text-align:right">
+<div style="font-family:var(--font-mono);font-size:var(--text-h3);font-weight:var(--weight-semibold);color:var(--navy-900)">7 / 14</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">FØRT</div>
+</div>
+<div role="button" style="height:44px;padding:0 20px;border-radius:var(--radius-full);border:1px solid var(--border-default);display:flex;align-items:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Avslutt testdag</div>
+</div>
+
+<div style="flex:1;min-height:0;display:flex;gap:20px;padding:20px 28px">
+<div style="width:300px;flex-shrink:0;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);display:flex;flex-direction:column;overflow:hidden">
+<div style="padding:16px 18px 12px;display:flex;align-items:baseline;justify-content:space-between;border-bottom:1px solid var(--border-subtle)">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">KØ</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary)">Team Norway Junior</span>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:8px">
+<sc-for list="{{ koMac }}" as="k" hint-placeholder-count="14">
+<div ref="{{ k.rowRef }}" style="border-radius:var(--radius-sm);padding:9px 10px;display:flex;align-items:center;gap:10px;min-height:44px">
+<span ref="{{ k.markRef }}" style="width:3px;height:24px;border-radius:var(--radius-full);flex-shrink:0"></span>
+<span ref="{{ k.dotRef }}" style="width:8px;height:8px;border-radius:var(--radius-full);flex-shrink:0"></span>
+<span ref="{{ k.navnRef }}" style="flex:1;min-width:0;font-size:var(--text-sm);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ k.navn }}</span>
+<span ref="{{ k.verdiRef }}" style="font-family:var(--font-mono);font-size:var(--text-xs);flex-shrink:0">{{ k.verdi }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:16px">
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:26px;display:flex;flex-direction:column;gap:22px">
+<div style="display:flex;align-items:center;gap:14px">
+<span style="width:4px;height:46px;border-radius:var(--radius-full);background:var(--red-600);flex-shrink:0"></span>
+<div style="flex:1;min-width:0">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">STÅR FOR TUR · 8 AV 14</div>
+<div style="font-size:var(--text-h2);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading);margin-top:2px">Jonas Bratlie — eksempel</div>
+</div>
+<div style="text-align:right;flex-shrink:0">
+<div style="font-size:var(--text-sm);color:var(--text-secondary)">Forrige måling</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-lg);font-weight:var(--weight-semibold);color:var(--navy-900)">109,8 mph</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);color:var(--text-secondary);margin-top:2px">14.03.2026 · v2</div>
+</div>
+</div>
+<div style="display:flex;gap:20px;align-items:flex-end">
+<div style="flex:1;min-width:0;border:1px solid var(--border-default);border-radius:var(--radius-md);padding:18px 22px;display:flex;align-items:baseline;gap:10px">
+<span style="font-family:var(--font-mono);font-size:64px;font-weight:var(--weight-semibold);color:var(--navy-900);letter-spacing:-.03em;line-height:1">112,4</span>
+<span style="font-size:var(--text-h3);font-weight:var(--weight-semibold);color:var(--text-secondary)">mph</span>
+<div style="flex:1"></div>
+<div style="display:flex;gap:8px">
+<sc-for list="{{ nudgeMac }}" as="n" hint-placeholder-count="4">
+<div role="button" style="width:60px;height:52px;border-radius:var(--radius-sm);background:var(--ink-50);border:1px solid var(--border-subtle);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ n.label }}</div>
+</sc-for>
+</div>
+</div>
+<div role="button" style="width:260px;height:88px;flex-shrink:0;border-radius:var(--radius-md);background:var(--navy-900);color:var(--white);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;box-shadow:var(--shadow-md)">
+<span style="font-size:var(--text-lg);font-weight:var(--weight-bold)">Før og neste</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);opacity:.72">ENTER</span>
+</div>
+</div>
+<div style="display:flex;gap:10px;align-items:center">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">FORSØK</span>
+<sc-for list="{{ forsokMac }}" as="f" hint-placeholder-count="3">
+<div role="button" ref="{{ f.ref }}" style="height:44px;padding:0 22px;border-radius:var(--radius-sm);display:flex;align-items:center;font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-semibold)">{{ f.label }}</div>
+</sc-for>
+<div style="flex:1"></div>
+<div role="button" style="height:44px;padding:0 18px;border-radius:var(--radius-full);border:1px solid var(--border-default);display:flex;align-items:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Hopp over</div>
+<div role="button" style="height:44px;padding:0 18px;border-radius:var(--radius-full);border:1px solid var(--border-default);display:flex;align-items:center;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Rett opp forrige</div>
+</div>
+</div>
+
+<div style="flex:1;min-height:0;display:flex;gap:16px">
+<div style="flex:1;min-width:0;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:18px 20px;display:flex;flex-direction:column;gap:12px;overflow:hidden">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">FØRT I DAG</span>
+<sc-for list="{{ fort }}" as="f" hint-placeholder-count="5">
+<div style="display:flex;align-items:baseline;gap:12px;min-height:30px">
+<span style="width:150px;flex-shrink:0;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ f.navn }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900);width:80px;flex-shrink:0">{{ f.verdi }}</span>
+<span style="flex:1;min-width:0;font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ f.kilde }}</span>
+<span role="button" style="font-size:var(--text-xs);font-weight:var(--weight-semibold);color:var(--navy-600);flex-shrink:0">Rett</span>
+</div>
+</sc-for>
+</div>
+<div style="width:300px;flex-shrink:0;background:var(--navy-50);border:1px solid var(--navy-100);border-radius:var(--radius-lg);padding:18px 20px;display:flex;flex-direction:column;gap:10px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--navy-700)">HVEM KAN SE DETTE</span>
+<div style="font-size:var(--text-sm);color:var(--navy-900);line-height:var(--leading-normal);text-wrap:pretty">Målingen følger spilleren. AK Golf, WANG Toppidrett og Team Norway ser den der spilleren, eller foresatt, har samtykket.</div>
+<div style="font-size:var(--text-xs);color:var(--navy-800);line-height:var(--leading-normal);text-wrap:pretty">Attestering: Anders K. er vitne. Målingene står som <strong>venter</strong> til de er attestert.</div>
+<div style="flex:1"></div>
+<div style="display:flex;align-items:baseline;justify-content:space-between;border-top:1px solid var(--navy-100);padding-top:10px">
+<span style="font-size:var(--text-xs);color:var(--navy-800)">Venter på attestering</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">7</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>

@@ -1,0 +1,141 @@
+<div style="width:1440px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;font-variant-numeric:tabular-nums">
+
+<div style="width:232px;flex-shrink:0;background:var(--surface-card);border-right:1px solid var(--border-subtle);display:flex;flex-direction:column;padding:20px 14px 18px;gap:20px">
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:14px;display:flex;flex-direction:column;align-items:flex-start;gap:9px">
+<img src="../../assets/logo/team-norway-golf.png" alt="Team Norway Golf" style="height:42px;width:auto;display:block">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">JUNIOR</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:2px;flex:1;min-height:0">
+<sc-for list="{{ meny }}" as="m" hint-placeholder-count="10">
+<sc-if value="{{ m.isHeading }}" hint-placeholder-val="{{ false }}">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);padding:14px 12px 6px">{{ m.label }}</div>
+</sc-if>
+<sc-if value="{{ m.isItem }}" hint-placeholder-val="{{ true }}">
+<div ref="{{ m.ref }}" style="height:40px;border-radius:var(--radius-xs);padding:0 10px;display:flex;align-items:center;gap:10px">
+<span ref="{{ m.markRef }}" style="width:3px;height:18px;border-radius:var(--radius-full);flex-shrink:0"></span>
+<span style="font-size:var(--text-sm);font-weight:var(--weight-medium)">{{ m.label }}</span>
+</div>
+</sc-if>
+</sc-for>
+</div>
+</div>
+
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;padding:28px 32px 32px;gap:16px">
+<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:24px">
+<div style="min-width:0">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">ADMINISTRASJON · IUP-MODULER</div>
+<h2 style="font-size:var(--text-h1);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:6px 0 0">IUP-modulkart</h2>
+</div>
+<div style="display:flex;gap:8px;flex-shrink:0">
+<sc-for list="{{ nivaer }}" as="n" hint-placeholder-count="3">
+<div role="button" ref="{{ n.ref }}" onClick="{{ n.velg }}" style="height:44px;padding:0 18px;border-radius:var(--radius-full);font-size:var(--text-sm);font-weight:var(--weight-semibold);display:flex;align-items:center;gap:8px;white-space:nowrap;cursor:pointer;transition:transform 120ms cubic-bezier(.23,1,.32,1)" style-active="transform:scale(.97)">{{ n.label }}<span style="font-family:var(--font-mono);font-size:var(--text-micro);opacity:.75;white-space:nowrap">{{ n.snitt }}</span></div>
+</sc-for>
+</div>
+</div>
+
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:20px 24px;display:flex;align-items:center;gap:28px;flex-shrink:0">
+<div style="display:flex;flex-direction:column;gap:4px;min-width:0">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">VALGT NIVÅ</span>
+<span style="font-size:var(--text-h3);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading)">{{ valgt.label }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary)">{{ valgt.kriterier }}</span>
+</div>
+<div style="width:1px;height:52px;background:var(--border-subtle);flex-shrink:0"></div>
+<div style="display:flex;gap:24px">
+<div style="display:flex;flex-direction:column;gap:4px"><span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">PÅ</span><span style="font-family:var(--font-mono);font-size:var(--text-h2);font-weight:var(--weight-bold);color:var(--navy-900);line-height:1">{{ valgt.paa }}</span></div>
+<div style="display:flex;flex-direction:column;gap:4px"><span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">VALGFRI</span><span style="font-family:var(--font-mono);font-size:var(--text-h2);font-weight:var(--weight-bold);color:var(--navy-600);line-height:1">{{ valgt.valgfri }}</span></div>
+<div style="display:flex;flex-direction:column;gap:4px"><span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">AV</span><span style="font-family:var(--font-mono);font-size:var(--text-h2);font-weight:var(--weight-bold);color:var(--text-tertiary);line-height:1">{{ valgt.av }}</span></div>
+</div>
+<div style="width:1px;height:52px;background:var(--border-subtle);flex-shrink:0"></div>
+<div style="display:flex;flex-direction:column;gap:4px;min-width:0;flex:1">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">FRA ARKET</span>
+<span style="font-size:var(--text-sm);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">{{ valgt.note }}</span>
+</div>
+<div style="display:flex;align-items:center;gap:10px;background:var(--status-amber-bg);border-radius:var(--radius-sm);padding:10px 14px;flex-shrink:0">
+<span style="width:7px;height:7px;border-radius:var(--radius-full);background:var(--status-amber);flex-shrink:0"></span>
+<div style="min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--status-amber-text)">Grensene er forslag</div>
+<div style="font-size:var(--text-xs);color:var(--status-amber-text);line-height:var(--leading-normal)">Snittgrensene 80 og 74 er ikke vedtatt</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;gap:20px;align-items:flex-start">
+<div style="flex:1;min-width:0;background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:20px 24px;display:flex;flex-direction:column;gap:4px">
+<div style="display:flex;align-items:flex-end;gap:12px;padding-bottom:8px;border-bottom:1px solid var(--border-subtle)">
+<span style="flex:1;min-width:0;white-space:nowrap;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">MODUL · FANE I ARKET</span>
+<sc-for list="{{ nivaer }}" as="n" hint-placeholder-count="3">
+<span ref="{{ n.headRef }}" style="width:100px;flex-shrink:0;text-align:center;white-space:nowrap;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;padding:4px 0;border-radius:var(--radius-xs)">{{ n.label }}</span>
+</sc-for>
+<span style="width:72px;flex-shrink:0;text-align:center;white-space:nowrap;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">BOR I</span>
+<span style="width:84px;flex-shrink:0;text-align:center;white-space:nowrap;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">INNGANG</span>
+</div>
+<sc-for list="{{ rader }}" as="r" hint-placeholder-count="12">
+<sc-if value="{{ r.isGroup }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;gap:10px;padding:18px 0 6px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--navy-900);font-weight:var(--weight-bold)">{{ r.label }}</span>
+<span style="font-size:var(--text-xs);color:var(--text-secondary)">{{ r.sub }}</span>
+</div>
+</sc-if>
+<sc-if value="{{ r.isRow }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;align-items:center;gap:12px;min-height:46px;border-bottom:1px solid var(--ink-100)">
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-base);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ r.navn }}</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">{{ r.fane }}</div>
+</div>
+<sc-for list="{{ r.celler }}" as="c" hint-placeholder-count="3">
+<div ref="{{ c.colRef }}" style="width:100px;flex-shrink:0;display:flex;justify-content:center;align-self:stretch;align-items:center">
+<span ref="{{ c.ref }}" style="min-width:64px;text-align:center;white-space:nowrap;padding:5px 10px;border-radius:var(--radius-full);font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;font-weight:var(--weight-semibold)">{{ c.label }}</span>
+</div>
+</sc-for>
+<span ref="{{ r.borRef }}" style="width:72px;white-space:nowrap;flex-shrink:0;text-align:center;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;padding:3px 0;border-radius:var(--radius-xs)">{{ r.bor }}</span>
+<span style="width:84px;flex-shrink:0;text-align:center;white-space:nowrap;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">{{ r.inngang }}</span>
+</div>
+</sc-if>
+</sc-for>
+<div style="display:flex;gap:18px;padding-top:14px;flex-wrap:wrap">
+<span style="display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)"><span style="width:10px;height:10px;border-radius:var(--radius-full);background:var(--navy-900)"></span>PÅ · del av planen</span>
+<span style="display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)"><span style="width:10px;height:10px;border-radius:var(--radius-full);background:var(--navy-50);border:1px solid var(--navy-400)"></span>VALGFRI · trener eller spiller slår på</span>
+<span style="display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)"><span style="width:10px;height:10px;border-radius:var(--radius-full);border:1px dashed var(--ink-300)"></span>AV · vises ikke for spilleren</span>
+<span style="display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">PHQ · finnes eller bygges i Player HQ, tegnes aldri her &nbsp; TN · Team Norway-flaten (Claw)</span>
+</div>
+</div>
+
+<div style="width:300px;flex-shrink:0;display:flex;flex-direction:column;gap:16px">
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:20px 22px;display:flex;flex-direction:column;gap:14px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">SLIK SETTES NIVÅET</span>
+<sc-for list="{{ regler }}" as="g" hint-placeholder-count="4">
+<div style="display:flex;gap:12px;align-items:flex-start">
+<span style="width:26px;height:26px;border-radius:var(--radius-full);background:var(--navy-900);color:var(--white);font-family:var(--font-mono);font-size:var(--text-xs);font-weight:var(--weight-bold);display:flex;align-items:center;justify-content:center;flex-shrink:0">{{ g.n }}</span>
+<div style="min-width:0;display:flex;flex-direction:column;gap:2px">
+<span style="font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--navy-900)">{{ g.t }}</span>
+<span style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">{{ g.d }}</span>
+</div>
+</div>
+</sc-for>
+</div>
+
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:20px 22px;display:flex;flex-direction:column;gap:12px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TO INNGANGER · SAMME DATA</span>
+<div style="display:flex;gap:10px">
+<div style="flex:1;min-width:0;background:var(--navy-50);border:1px solid var(--navy-100);border-radius:var(--radius-sm);padding:12px">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--navy-900)">Skriv selv</div>
+<div style="font-size:var(--text-xs);color:var(--navy-800);line-height:var(--leading-normal);text-wrap:pretty">Skjema, alle felt synlige. For spilleren som liker å tenke på papir.</div>
+</div>
+<div style="flex:1;min-width:0;background:var(--navy-50);border:1px solid var(--navy-100);border-radius:var(--radius-sm);padding:12px">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--navy-900)">Samtale</div>
+<div style="font-size:var(--text-xs);color:var(--navy-800);line-height:var(--leading-normal);text-wrap:pretty">Treneren leder, ett spørsmål om gangen. Notatene fyller de samme feltene.</div>
+</div>
+</div>
+<span style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">Inngangen velges per spiller, ikke per modul. Kolonnen «Inngang» viser standarden — samtale der arket i dag krever mest skriving.</span>
+</div>
+
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:20px 22px;display:flex;flex-direction:column;gap:10px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">PÅ HVER ØKT · ALLE NIVÅER</span>
+<span style="font-size:var(--text-sm);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Spilleren møter aldri kartet. Hen møter ett «I dag»-kort: ukens fokus, dagens økt, ett prosessmål å kvittere, oppvarming. Resten ligger bak.</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);border:1px dashed var(--ink-300);border-radius:var(--radius-xs);padding:4px 8px;align-self:flex-start;white-space:nowrap">IKKE TEGNET · NESTE SKJERM</span>
+</div>
+</div>
+</div>
+
+</div>
+</div>

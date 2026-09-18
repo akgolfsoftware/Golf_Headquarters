@@ -1,0 +1,121 @@
+<div style="width:1440px;height:1240px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;font-variant-numeric:tabular-nums">
+
+<div style="width:252px;flex-shrink:0;background:var(--surface-card);border-right:1px solid var(--border-subtle);display:flex;flex-direction:column;padding:20px 14px 18px;gap:18px">
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:14px;display:flex;flex-direction:column;align-items:flex-start;gap:9px">
+<img src="../../assets/logo/team-norway-golf.png" alt="Team Norway Golf" style="height:46px;width:auto;display:block">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">NGF · JUNIORLANDSLAG</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:2px;flex:1;min-height:0;overflow:hidden">
+<sc-for list="{{ meny }}" as="m" hint-placeholder-count="14">
+<sc-if value="{{ m.isHeading }}" hint-placeholder-val="{{ false }}">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);padding:14px 12px 6px">{{ m.label }}</div>
+</sc-if>
+<sc-if value="{{ m.isItem }}" hint-placeholder-val="{{ true }}">
+<div ref="{{ m.ref }}" style="height:40px;border-radius:var(--radius-xs);padding:0 10px;display:flex;align-items:center;gap:10px">
+<span ref="{{ m.markRef }}" style="width:3px;height:18px;border-radius:var(--radius-full);flex-shrink:0"></span>
+<span style="font-size:var(--text-sm);font-weight:var(--weight-medium)">{{ m.label }}</span>
+</div>
+</sc-if>
+</sc-for>
+</div>
+</div>
+
+<div style="flex:1;min-width:0;display:flex;flex-direction:column">
+<div style="height:64px;flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);display:flex;align-items:center;padding:0 28px;gap:16px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">TEAM NORWAY</span>
+<span style="color:var(--ink-300)">/</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">DATA</span>
+<span style="color:var(--ink-300)">/</span>
+<span style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Turneringer</span>
+<div style="flex:1"></div>
+<div style="display:flex;align-items:center;gap:8px;padding:6px 12px;border-radius:var(--radius-full);background:var(--navy-50);border:1px solid var(--navy-100)">
+<span style="width:7px;height:7px;border-radius:var(--radius-full);background:var(--status-green);flex-shrink:0"></span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--navy-700)">GOLFBOX · SYNKET 07.09.2026 06:12</span>
+</div>
+</div>
+
+<div style="flex:1;min-height:0;overflow:hidden;padding:26px 28px;display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;align-items:flex-end;gap:20px;flex-wrap:wrap">
+<div style="min-width:0">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DATA · TURNERINGER</div>
+<h2 style="font-size:var(--text-h1);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:6px 0 0">Sesongen 2026</h2>
+</div>
+<div style="flex:1"></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<sc-for list="{{ filtre }}" as="f" hint-placeholder-count="5">
+<div role="button" ref="{{ f.ref }}" style="min-height:44px;padding:0 16px;border-radius:var(--radius-full);display:flex;align-items:center;font-size:var(--text-sm);font-weight:var(--weight-semibold)">{{ f.label }}</div>
+</sc-for>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:16px;flex:1;min-height:0">
+
+<div style="flex:0 0 auto;min-width:0;background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);display:flex;flex-direction:column;overflow:hidden">
+<div style="padding:18px 20px 14px;display:flex;align-items:baseline;gap:10px;border-bottom:1px solid var(--border-subtle)">
+<span style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Kommende</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TERMINLISTE · GOLFBOX</span>
+</div>
+<div style="display:grid;grid-template-columns:96px minmax(0,1fr) 130px 96px 96px;gap:0 14px;padding:10px 20px;border-bottom:1px solid var(--border-subtle);background:var(--ink-50)">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DATO</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TURNERING</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TOUR</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary);text-align:right">PÅMELDT</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary);text-align:right">GOLFBOX</span>
+</div>
+<div>
+<sc-for list="{{ kommende }}" as="k" hint-placeholder-count="7">
+<div style="display:grid;grid-template-columns:96px minmax(0,1fr) 130px 96px 96px;gap:0 14px;padding:12px 20px;border-bottom:1px solid var(--border-subtle);align-items:center">
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary)">{{ k.dato }}</span>
+<div style="min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ k.navn }}</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);margin-top:2px">{{ k.bane }}</div>
+</div>
+<span ref="{{ k.tourRef }}" style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;padding:4px 8px;border-radius:var(--radius-xs);justify-self:start">{{ k.tour }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900);text-align:right">{{ k.pameldt }}</span>
+<span role="button" style="font-size:var(--text-xs);font-weight:var(--weight-semibold);color:var(--navy-600);text-align:right">Åpne</span>
+</div>
+</sc-for>
+</div>
+<div style="padding:12px 20px;border-top:1px solid var(--border-subtle);font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">PÅMELDT = TN-UTØVERE I FELTET · TALT 07.09.2026 · TERMINLISTE V1 · SYNK</div>
+</div>
+
+<div style="flex:0 0 auto;min-width:0;background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);display:flex;flex-direction:column;overflow:hidden">
+<div style="padding:18px 20px 14px;display:flex;align-items:baseline;gap:10px;border-bottom:1px solid var(--border-subtle)">
+<span style="font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">Historikk</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MÅLT · IKKE VURDERT</span>
+</div>
+<div style="display:grid;grid-template-columns:88px minmax(0,1fr) 296px 64px 118px 72px 76px;gap:0 14px;padding:10px 20px;border-bottom:1px solid var(--border-subtle);background:var(--ink-50)">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DATO</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">UTØVER</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">KILDE</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary);text-align:right">PLASS</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary);text-align:right">RUNDER</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary);text-align:right">TIL PAR</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary);text-align:right">MOT FELT</span>
+</div>
+<div>
+<sc-for list="{{ historikk }}" as="h" hint-placeholder-count="8">
+<div ref="{{ h.rowRef }}" style="display:grid;grid-template-columns:88px minmax(0,1fr) 296px 64px 118px 72px 76px;gap:0 14px;padding:12px 20px;border-bottom:1px solid var(--border-subtle);align-items:center">
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary)">{{ h.dato }}</span>
+<div style="min-width:0;display:flex;align-items:center;gap:8px">
+<span ref="{{ h.markRef }}" style="width:3px;height:22px;border-radius:var(--radius-full);flex-shrink:0"></span>
+<div ref="{{ h.navnRef }}" style="font-size:var(--text-sm);font-weight:var(--weight-semibold);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0">{{ h.utover }}</div>
+</div>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ h.kilde }}</span>
+<span ref="{{ h.plassRef }}" style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-semibold);text-align:right">{{ h.plass }}</span>
+<span ref="{{ h.runderRef }}" style="font-family:var(--font-mono);font-size:var(--text-xs);text-align:right">{{ h.runder }}</span>
+<span ref="{{ h.parRef }}" style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-semibold);text-align:right">{{ h.tilPar }}</span>
+<span ref="{{ h.feltRef }}" style="font-family:var(--font-mono);font-size:var(--text-xs);text-align:right">{{ h.motFelt }}</span>
+</div>
+</sc-for>
+</div>
+<div style="padding:12px 20px;border-top:1px solid var(--border-subtle);display:flex;align-items:center;gap:10px;background:var(--ink-50)">
+<span style="width:3px;height:16px;border-radius:var(--radius-full);background:var(--red-600);flex-shrink:0"></span>
+<span style="font-size:var(--text-xs);color:var(--text-primary)">Rød markør = utøveren du står i. <strong>MOT FELT</strong> er til par minus feltets snitt samme runde — ikke en vurdering.</span>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</div>

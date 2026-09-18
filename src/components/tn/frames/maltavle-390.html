@@ -1,0 +1,145 @@
+<div style="width:1440px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;font-variant-numeric:tabular-nums">
+
+<div style="width:232px;flex-shrink:0;background:var(--surface-card);border-right:1px solid var(--border-subtle);display:flex;flex-direction:column;padding:20px 14px 18px;gap:20px">
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:14px;display:flex;flex-direction:column;align-items:flex-start;gap:9px">
+<img src="../../assets/logo/team-norway-golf.png" alt="Team Norway Golf" style="height:42px;width:auto;display:block">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">JUNIOR</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:2px;flex:1;min-height:0;overflow:hidden">
+<sc-for list="{{ meny }}" as="m" hint-placeholder-count="12">
+<sc-if value="{{ m.isHeading }}" hint-placeholder-val="{{ false }}">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);padding:14px 12px 6px">{{ m.label }}</div>
+</sc-if>
+<sc-if value="{{ m.isItem }}" hint-placeholder-val="{{ true }}">
+<div ref="{{ m.ref }}" style="height:40px;border-radius:var(--radius-xs);padding:0 10px;display:flex;align-items:center;gap:10px">
+<span ref="{{ m.markRef }}" style="width:3px;height:18px;border-radius:var(--radius-full);flex-shrink:0"></span>
+<span style="font-size:var(--text-sm);font-weight:var(--weight-medium)">{{ m.label }}</span>
+</div>
+</sc-if>
+</sc-for>
+</div>
+</div>
+
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;padding:28px 32px;gap:16px;min-height:0">
+<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:24px">
+<div style="min-width:0">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">SPILLERUTVIKLING · MÅLTAVLE</div>
+<h2 style="font-size:var(--text-h1);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:6px 0 0">Ingrid Vestby</h2>
+</div>
+<div style="display:flex;gap:8px;flex-shrink:0">
+<sc-for list="{{ visninger }}" as="s" hint-placeholder-count="3">
+<div role="button" ref="{{ s.ref }}" onClick="{{ s.velg }}" style="height:44px;padding:0 18px;border-radius:var(--radius-full);font-size:var(--text-sm);font-weight:var(--weight-semibold);display:flex;align-items:center;gap:8px;cursor:pointer;white-space:nowrap;transition:transform 120ms cubic-bezier(.23,1,.32,1)" style-active="transform:scale(.97)">{{ s.label }}<span style="font-family:var(--font-mono);font-size:var(--text-micro);opacity:.75">{{ s.tall }}</span></div>
+</sc-for>
+</div>
+</div>
+
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:20px 24px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;flex-shrink:0">
+<div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary);white-space:nowrap">SESONG</span>
+<span style="font-size:var(--text-h3);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading);white-space:nowrap">2026 · kvartal 3 av 4</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary);white-space:nowrap">HISTORIKK 2023–2025 · MÅL 2026 OG 2027</span>
+</div>
+<div style="width:1px;height:52px;background:var(--border-subtle);flex-shrink:0"></div>
+<div style="display:flex;gap:24px;flex-shrink:0">
+<div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0"><span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary);white-space:nowrap">MÅL SATT</span><span style="font-family:var(--font-mono);font-size:var(--text-h2);font-weight:var(--weight-bold);color:var(--navy-900);line-height:1;white-space:nowrap">{{ malSatt }}</span></div>
+<div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0"><span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary);white-space:nowrap">MÅLTE RADER</span><span style="font-family:var(--font-mono);font-size:var(--text-h2);font-weight:var(--weight-bold);color:var(--navy-600);line-height:1">{{ malteRader }}</span></div>
+<div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0"><span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary);white-space:nowrap">VENTER PÅ DATA</span><span style="font-family:var(--font-mono);font-size:var(--text-h2);font-weight:var(--weight-bold);color:var(--text-tertiary);line-height:1">{{ venter }}</span></div>
+</div>
+<div style="width:1px;height:52px;background:var(--border-subtle);flex-shrink:0"></div>
+<div style="display:flex;align-items:center;gap:10px;background:var(--navy-50);border:1px solid var(--navy-100);border-radius:var(--radius-sm);padding:10px 14px;flex-shrink:0">
+<span style="width:7px;height:7px;border-radius:var(--radius-full);background:var(--navy-600);flex-shrink:0"></span>
+<div style="min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--navy-900)">Spilleren eier målkolonnene</div>
+<div style="font-size:var(--text-xs);color:var(--navy-800);line-height:var(--leading-normal)">Treneren foreslår i samtale · historikk kan ingen endre</div>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:10px;background:var(--status-amber-bg);border-radius:var(--radius-sm);padding:10px 14px;flex-shrink:0">
+<span style="width:7px;height:7px;border-radius:var(--radius-full);background:var(--status-amber);flex-shrink:0"></span>
+<div style="min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--status-amber-text)">Arket har 2022–24</div>
+<div style="font-size:var(--text-xs);color:var(--status-amber-text);line-height:var(--leading-normal)">Kolonnene flyttes med sesongen</div>
+</div>
+</div>
+</div>
+
+<div style="flex:1;min-height:0;display:flex;gap:20px;align-items:flex-start">
+<div style="flex:1;min-width:0;background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:20px 24px;display:flex;flex-direction:column;gap:4px">
+
+<div style="display:flex;align-items:flex-end;gap:10px;padding-bottom:8px;border-bottom:1px solid var(--border-subtle);flex-shrink:0">
+<span style="flex:1;min-width:0;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">RAD · KILDE</span>
+<sc-for list="{{ kolonner }}" as="k" hint-placeholder-count="9">
+<span ref="{{ k.ref }}" style="flex-shrink:0;text-align:right;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;white-space:nowrap">{{ k.label }}</span>
+</sc-for>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:2px">
+<sc-for list="{{ rader }}" as="r" hint-placeholder-count="14">
+<sc-if value="{{ r.isGroup }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;gap:10px;padding:14px 0 5px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--navy-900);font-weight:var(--weight-bold)">{{ r.label }}</span>
+<span style="font-size:var(--text-xs);color:var(--text-secondary)">{{ r.sub }}</span>
+<sc-if value="{{ r.lavere }}" hint-placeholder-val="{{ false }}">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--navy-700);background:var(--navy-100);padding:2px 7px;border-radius:var(--radius-xs);white-space:nowrap">Lavere er bedre</span>
+</sc-if>
+</div>
+</sc-if>
+<sc-if value="{{ r.isRow }}" hint-placeholder-val="{{ true }}">
+<div role="button" ref="{{ r.radRef }}" onClick="{{ r.velg }}" style="display:flex;align-items:center;gap:10px;min-height:42px;border-bottom:1px solid var(--ink-100);border-radius:var(--radius-xs);padding:0 6px;cursor:pointer">
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-base);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ r.navn }}</div>
+<div ref="{{ r.kildeRef }}" style="font-family:var(--font-mono);font-size:var(--text-micro)">{{ r.kildeKort }}</div>
+</div>
+<sc-for list="{{ r.celler }}" as="c" hint-placeholder-count="9">
+<span ref="{{ c.ref }}" style="flex-shrink:0;text-align:right;font-family:var(--font-mono);white-space:nowrap">{{ c.v }}</span>
+</sc-for>
+</div>
+</sc-if>
+</sc-for>
+</div>
+
+<div style="display:flex;gap:18px;padding-top:12px;flex-wrap:wrap;flex-shrink:0;border-top:1px solid var(--border-subtle)">
+<span style="display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)"><span style="width:10px;height:10px;border-radius:var(--radius-full);background:var(--navy-900)"></span>Målt · kildelinje på raden</span>
+<span style="display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)"><span style="width:10px;height:10px;border-radius:var(--radius-full);background:var(--navy-50);border:1px solid var(--navy-400)"></span>Mål satt av spilleren</span>
+<span style="display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)"><span style="width:10px;height:10px;border-radius:var(--radius-full);border:1px dashed var(--ink-300)"></span>Ikke satt · ikke spilt ennå</span>
+<span style="display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--status-amber-text)"><span style="width:10px;height:10px;border-radius:var(--radius-full);background:var(--status-amber-bg);border:1px solid var(--status-amber)"></span>Venter på data · aldri et tall</span>
+</div>
+</div>
+
+<div style="width:300px;flex-shrink:0;display:flex;flex-direction:column;gap:14px">
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:20px;display:flex;flex-direction:column;gap:12px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">RADEN I DETALJ</span>
+<div style="display:flex;flex-direction:column;gap:3px">
+<span style="font-size:var(--text-h3);font-weight:var(--weight-bold);color:var(--navy-900);letter-spacing:var(--tracking-heading);text-wrap:pretty">{{ valgt.navn }}</span>
+<span ref="{{ valgt.kildeRef }}" style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase">{{ valgt.kilde }}</span>
+</div>
+<div style="display:flex;gap:10px">
+<div style="flex:1;min-width:0;background:var(--navy-50);border:1px solid var(--navy-100);border-radius:var(--radius-sm);padding:11px 12px;display:flex;flex-direction:column;gap:2px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">Nå</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">{{ valgt.na }}</span>
+</div>
+<div style="flex:1;min-width:0;background:var(--navy-50);border:1px solid var(--navy-100);border-radius:var(--radius-sm);padding:11px 12px;display:flex;flex-direction:column;gap:2px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">Mål 2026</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-lg);font-weight:var(--weight-bold);color:var(--navy-900)">{{ valgt.mal }}</span>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:4px;border-top:1px solid var(--border-subtle);padding-top:10px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">Hvordan raden måles</span>
+<span style="font-size:var(--text-xs);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">{{ valgt.hvordan }}</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:4px;border-top:1px solid var(--border-subtle);padding-top:10px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">Referanse · TN-21</span>
+<span style="font-size:var(--text-xs);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">{{ valgt.referanse }}</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:4px;border-top:1px solid var(--border-subtle);padding-top:10px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">Målet er satt av</span>
+<span style="font-size:var(--text-xs);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">{{ valgt.satt }}</span>
+</div>
+</div>
+<div style="background:var(--navy-50);border:1px solid var(--navy-100);border-radius:var(--radius-lg);padding:18px;display:flex;flex-direction:column;gap:8px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--navy-700)">HVA TAVLEN IKKE ER</span>
+<span style="font-size:var(--text-sm);color:var(--navy-900);line-height:var(--leading-normal);text-wrap:pretty">Ingen totalscore og ingen rangering mot de andre. Tavlen har ingen «grønn hvis i mål»-logikk heller — om målet er nådd er en samtale, ikke en farge.</span>
+</div>
+</div>
+</div>
+</div>
+</div>

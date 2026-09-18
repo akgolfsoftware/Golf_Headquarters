@@ -1,0 +1,6 @@
+attachments/
+screenshots/
+artifacts/
+.git/
+*.zip
+MASTER-LOOP-PROMPT.md

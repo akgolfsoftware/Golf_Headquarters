@@ -1,0 +1,220 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Oswald", "Archivo", sans-serif;
+  --font-sans: "Archivo", "Helvetica Neue", Helvetica, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --text-3xs: 10px;
+  --text-3xs--line-height: 1.2;
+  --text-2xs: 11px;
+  --text-2xs--line-height: 1.3;
+  --text-xs: 13px;
+  --text-xs--line-height: 1.45;
+  --text-sm: 14px;
+  --text-sm--line-height: 1.5;
+  --text-base: 15px;
+  --text-base--line-height: 1.55;
+  --text-md: 17px;
+  --text-md--line-height: 1.2;
+  --text-lg: 21px;
+  --text-lg--line-height: 1.1;
+  --text-xl: 26px;
+  --text-xl--line-height: 1.12;
+  --text-2xl: 29px;
+  --text-2xl--line-height: 1.1;
+  --text-3xl: 40px;
+  --text-3xl--line-height: 1.08;
+
+  --leading-tett: 1.04;
+  --leading-overskrift: 1.1;
+  --leading-tekst: 1.55;
+
+  --tracking-etikett: 0.04em;
+  --tracking-seksjon: 0.08em;
+  --tracking-meta: 0.12em;
+  --tracking-merke: 0.14em;
+  --tracking-display: 0.02em;
+
+  --color-sand-100: #faf8f3;
+  --color-sand-150: #f1eee8;
+  --color-sand-200: #e4e0d8;
+  --color-sand-300: #e6e3dd;
+  --color-sand-400: #d6d2c9;
+  --color-sand-500: #c9c5bc;
+
+  --color-grafitt-400: #8a8680;
+  --color-grafitt-500: #6b6862;
+  --color-grafitt-600: #46443f;
+  --color-grafitt-700: #3c3a36;
+  --color-grafitt-800: #2a2926;
+  --color-grafitt-900: #141413;
+
+  --color-rust-100: #fbebea;
+  --color-rust-300: #e3b1aa;
+  --color-rust-500: #d81e20;
+  --color-rust-600: #9b2415;
+
+  --color-amber-100: #fbf4e4;
+  --color-amber-300: #d8c48f;
+  --color-amber-600: #8a6a12;
+  --color-amber-700: #6b5410;
+
+  --color-bla-100: #ecf0f6;
+  --color-bla-600: #2b4c7e;
+  --color-bla-700: #1d3557;
+
+  --color-natt-300: #b7b3ab;
+  --color-natt-700: #2f2e2b;
+
+  --color-page: #e6e3dd;
+  --color-flate: #faf8f3;
+  --color-hevet: #ffffff;
+  --color-ink: #141413;
+  --color-handling: #9b2415;
+  --color-handling-hover: #d81e20;
+
+  --color-wang-navy: #17446f;
+  --color-wang-teal: #2e857d;
+  --color-wang-mint: #49ca9f;
+  --color-wang-burgunder: #ae0034;
+  --color-wang-orange: #f47b20;
+  --color-wang-pink: #d12a5c;
+  --color-wang-app: #fcfafa;
+  --color-wang-subtle: #f5f4f1;
+  --color-wang-card: #ffffff;
+  --color-wang-ink: #0c0705;
+  --color-wang-muted: #6b6460;
+  --color-wang-faint: #9c9690;
+  --color-wang-line: #e8e4df;
+  --color-wang-deep: #0f172a;
+
+  --color-tn-navy: #012b5d;
+  --color-tn-navy-800: #01234c;
+  --color-tn-navy-700: #033c7a;
+  --color-tn-navy-600: #0a5199;
+  --color-tn-navy-400: #4a85c0;
+  --color-tn-navy-100: #e3ecf6;
+  --color-tn-navy-50: #f2f7fc;
+  --color-tn-red: #d70232;
+  --color-tn-red-700: #a80126;
+  --color-tn-red-100: #fce3e8;
+  --color-tn-ink: #0c1219;
+  --color-tn-muted: #5e6e7f;
+  --color-tn-faint: #647280;
+  --color-tn-line: #dce2e8;
+  --color-tn-page: #f6f8fa;
+  --color-tn-card: #ffffff;
+  --color-tn-sunken: #edf1f4;
+  --color-tn-ok: #0e8a43;
+  --color-tn-ok-text: #076530;
+  --color-tn-ok-bg: #e4f4ea;
+  --color-tn-warn: #b87503;
+  --color-tn-warn-text: #8a5602;
+  --color-tn-warn-bg: #fdf1dc;
+  --color-tn-err: #c2352b;
+  --color-tn-err-text: #96241c;
+  --color-tn-err-bg: #fbe8e6;
+
+  --font-wang-brand: "Montserrat", "Archivo", sans-serif;
+  --font-wang-body: "Quattrocento Sans", "Archivo", sans-serif;
+  --font-tn: "Schibsted Grotesk", "Archivo", sans-serif;
+  --font-tn-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --radius-sm: 5px;
+  --radius-control: 6px;
+  --radius-md: 9px;
+  --radius-lg: 14px;
+  --radius-pill: 999px;
+  --radius-wang-card: 24px;
+  --radius-wang-chip: 999px;
+
+  --shadow-loftet: 0 1px 2px rgba(20, 20, 19, 0.06);
+  --shadow-overlegg: 0 8px 28px rgba(20, 20, 19, 0.18);
+  --shadow-wang: 0 8px 24px rgba(23, 68, 111, 0.08);
+  --shadow-tn: 0 2px 4px rgba(6, 17, 31, 0.05), 0 8px 20px -6px rgba(6, 17, 31, 0.12);
+  --radius-tn-xs: 6px;
+  --radius-tn-sm: 10px;
+  --radius-tn-md: 14px;
+  --radius-tn-lg: 20px;
+
+  --width-rail: 236px;
+  --width-inspector: 372px;
+  --width-icon-rail: 64px;
+  --width-wang-rail: 260px;
+  --spacing-wang-rail: 260px;
+  --width-tn-rail: 252px;
+  --spacing-tn-rail: 252px;
+  --height-header: 60px;
+  --height-search: 34px;
+  --height-compact: 44px;
+  --height-touch: 48px;
+  --height-cta: 60px;
+  --height-nav: 72px;
+  --text-hero: 60px;
+  --text-hero--line-height: 0.9;
+  --text-display-lg: 34px;
+  --text-display-lg--line-height: 1.02;
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-flate);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
+
+  :where(a, button, [role="button"], input, select, textarea, [tabindex]):focus-visible {
+    outline: 2px solid var(--color-handling);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+  }
+  .font-meta {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+  .writing-vertical {
+    writing-mode: vertical-rl;
+  }
+
+  .font-wang-brand {
+    font-family: var(--font-wang-brand);
+  }
+  .font-wang-body {
+    font-family: var(--font-wang-body);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

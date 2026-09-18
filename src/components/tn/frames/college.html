@@ -1,0 +1,119 @@
+<div style="width:1440px;height:900px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:24px 32px;display:flex;align-items:flex-end;justify-content:space-between;gap:24px">
+<div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TEAM NORWAY · COLLEGE · SESONG 2026/27</div>
+<h2 style="font-size:var(--text-h1);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:6px 0 0">Collegegruppen</h2>
+</div>
+<div style="display:flex;align-items:center;gap:12px">
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--ink-400)">Talt 08.09.2026 · gruppemedlemskap v1 · AK</span>
+<a href="../tn-manedsplan/TnManedsplan.dc.html" style="height:44px;padding:0 20px;border-radius:var(--radius-full);border:1px solid var(--border-default);font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900);display:flex;align-items:center;text-decoration:none">Månedsplan</a>
+<div role="button" style="height:44px;padding:0 22px;border-radius:var(--radius-full);background:var(--navy-900);color:var(--white);font-size:var(--text-sm);font-weight:var(--weight-bold);display:flex;align-items:center">Registrer studieår</div>
+</div>
+</div>
+
+<div style="flex-shrink:0;background:var(--status-amber-bg);padding:12px 32px;display:flex;align-items:flex-start;gap:10px">
+<span style="width:7px;height:7px;border-radius:var(--radius-full);background:var(--status-amber);flex-shrink:0;margin-top:6px"></span>
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--status-amber-text)">Studieår finnes ikke i datamodellen i dag</div>
+<div style="font-size:var(--text-xs);color:var(--status-amber-text);line-height:var(--leading-normal);margin-top:3px;text-wrap:pretty">Årene under er ført manuelt av treneren og er ikke maskinlesbare. Feltet må legges på gruppemedlemskapet, ikke på brukeren — en spiller kan være år 2 i college og samtidig år 1 i Team Norway.</div>
+</div>
+</div>
+
+<div style="flex:1;min-height:0;display:flex;overflow:hidden">
+
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;padding:24px 28px;gap:18px;overflow:auto">
+<div style="display:flex;align-items:baseline;gap:14px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">STUDIEÅR</span>
+<span style="font-size:var(--text-xs);color:var(--ink-400)">Sortert på år, ikke navn — man leter etter et årskull.</span>
+</div>
+
+<sc-for list="{{ aarskull }}" as="a" hint-placeholder-count="5">
+<div style="display:flex;flex-direction:column;gap:9px">
+<div style="display:flex;align-items:center;gap:12px">
+<span style="font-family:var(--font-display);font-size:var(--text-h3);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900)">{{ a.tittel }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);color:var(--text-tertiary)">{{ a.antall }}</span>
+<div style="flex:1;height:1px;background:var(--border-subtle)"></div>
+<span style="font-size:var(--text-xs);color:var(--text-secondary)">{{ a.fase }}</span>
+</div>
+
+<sc-if value="{{ a.tom }}" hint-placeholder-val="{{ false }}">
+<div style="padding:12px 16px;border:1px dashed var(--border-default);border-radius:var(--radius-md);font-size:var(--text-sm);color:var(--ink-400)">Ingen spillere på dette året nå.</div>
+</sc-if>
+
+<sc-for list="{{ a.spillere }}" as="s" hint-placeholder-count="2">
+<div style="background:var(--surface-card);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:15px 18px;display:flex;align-items:center;gap:18px;min-height:44px">
+<span style="width:34px;height:34px;border-radius:var(--radius-full);background:var(--navy-100);color:var(--navy-800);font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);display:flex;align-items:center;justify-content:center;flex-shrink:0">{{ s.init }}</span>
+<div style="width:186px;flex-shrink:0;min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ s.navn }}</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);color:var(--text-tertiary);margin-top:2px">{{ s.alder }}</div>
+</div>
+<div style="width:210px;flex-shrink:0;min-width:0">
+<div style="font-size:var(--text-sm);color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ s.skole }}</div>
+<div style="font-size:var(--text-xs);color:var(--text-secondary);margin-top:2px">{{ s.divisjon }}</div>
+</div>
+<div style="flex:1;min-width:0">
+<div ref="{{ s.hjemRef }}" style="font-size:var(--text-sm);font-weight:var(--weight-semibold)">{{ s.hjem }}</div>
+<div style="font-size:var(--text-xs);color:var(--text-secondary);margin-top:2px">{{ s.hjemKilde }}</div>
+</div>
+<span ref="{{ s.statusRef }}" style="flex-shrink:0;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);padding:5px 10px;border-radius:var(--radius-full)">{{ s.status }}</span>
+<a href="../utover-dashboard/UtoverDashboard.dc.html" style="flex-shrink:0;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);color:var(--navy-600);text-decoration:none">ÅPNE</a>
+</div>
+</sc-for>
+</div>
+</sc-for>
+</div>
+
+<div style="width:452px;flex-shrink:0;border-left:1px solid var(--border-subtle);background:var(--surface-card);padding:24px;display:flex;flex-direction:column;gap:18px;overflow:auto">
+<div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TO KALENDERE SOM IKKE MØTES</div>
+<div style="font-size:var(--text-sm);color:var(--text-primary);line-height:var(--leading-normal);margin-top:6px;text-wrap:pretty">Den amerikanske collegesesongen går høst og vår med mesterskap i mai. Den norske sesongen starter i mai. Spilleren lander hjem midt i norsk sesong, rett etter sitt eget toppunkt.</div>
+</div>
+
+<div style="display:flex;padding-left:92px">
+<sc-for list="{{ maneder }}" as="m" hint-placeholder-count="12">
+<div style="flex:1;text-align:center"><span style="font-family:var(--font-mono);font-size:9px;letter-spacing:.06em;color:var(--ink-400)">{{ m.label }}</span></div>
+</sc-for>
+</div>
+
+<sc-for list="{{ kalenderrader }}" as="r" hint-placeholder-count="4">
+<div style="display:flex;align-items:center;gap:0">
+<div style="width:92px;flex-shrink:0;padding-right:10px">
+<div style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.1em;color:var(--text-secondary)">{{ r.label }}</div>
+</div>
+<div style="flex:1;position:relative;height:34px;background:repeating-linear-gradient(to right,transparent 0 calc(8.3333% - 1px),var(--ink-100) calc(8.3333% - 1px) 8.3333%)">
+<sc-for list="{{ r.band }}" as="b" hint-placeholder-count="2">
+<div ref="{{ b.ref }}" style="position:absolute;top:7px;height:20px;border-radius:var(--radius-xs);display:flex;align-items:center;padding:0 7px;overflow:hidden">
+<span style="font-family:var(--font-mono);font-size:8.5px;letter-spacing:.08em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ b.label }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-for>
+
+<div style="font-size:var(--text-xs);color:var(--ink-400);line-height:var(--leading-normal);text-wrap:pretty">Kilde: NCAA-terminliste 2026/27 lest 08.09.2026 · norsk sesong fra NGF-terminlisten · hjemkomst oppgitt av spilleren selv.</div>
+
+<div style="border-top:1px solid var(--border-subtle);padding-top:16px;display:flex;flex-direction:column;gap:12px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">HVA DETTE BETYR FOR PLANEN</span>
+<sc-for list="{{ konsekvenser }}" as="k" hint-placeholder-count="3">
+<div style="display:flex;gap:11px;align-items:flex-start">
+<span ref="{{ k.dotRef }}" style="width:7px;height:7px;border-radius:var(--radius-full);flex-shrink:0;margin-top:6px"></span>
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900);line-height:var(--leading-snug)">{{ k.tittel }}</div>
+<div style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);margin-top:3px;text-wrap:pretty">{{ k.tekst }}</div>
+</div>
+</div>
+</sc-for>
+</div>
+
+<div style="border-top:1px solid var(--border-subtle);padding-top:16px;display:flex;flex-direction:column;gap:9px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">HJEMME I NORGE NÅ</span>
+<div style="display:flex;align-items:baseline;gap:10px">
+<span style="font-family:var(--font-mono);font-size:var(--text-display);font-weight:var(--weight-semibold);color:var(--navy-900);letter-spacing:var(--tracking-display);line-height:1">0</span>
+<span style="font-size:var(--text-base);font-weight:var(--weight-semibold);color:var(--text-secondary)">av 6 spillere</span>
+</div>
+<span style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal)">Alle er i høstsesongen ute. Første hjemkomst 08.05.2027.</span>
+</div>
+</div>
+</div>
+</div>

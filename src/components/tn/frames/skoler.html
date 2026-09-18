@@ -1,0 +1,89 @@
+<div style="width:1440px;height:900px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;font-variant-numeric:tabular-nums">
+<div style="width:232px;flex-shrink:0;background:var(--surface-card);border-right:1px solid var(--border-subtle);display:flex;flex-direction:column;padding:20px 14px 18px;gap:20px">
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:14px;display:flex;flex-direction:column;align-items:flex-start;gap:9px">
+<img src="../../assets/logo/team-norway-golf.png" alt="Team Norway Golf" style="height:42px;width:auto;display:block">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">JUNIOR</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:2px;flex:1;min-height:0;overflow:hidden">
+<sc-for list="{{ meny }}" as="m" hint-placeholder-count="12">
+<sc-if value="{{ m.isHeading }}" hint-placeholder-val="{{ false }}">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);padding:14px 12px 6px">{{ m.label }}</div>
+</sc-if>
+<sc-if value="{{ m.isItem }}" hint-placeholder-val="{{ true }}">
+<div ref="{{ m.ref }}" style="height:40px;border-radius:var(--radius-xs);padding:0 10px;display:flex;align-items:center;gap:10px">
+<span ref="{{ m.markRef }}" style="width:3px;height:18px;border-radius:var(--radius-full);flex-shrink:0"></span>
+<span style="font-size:var(--text-sm);font-weight:var(--weight-medium)">{{ m.label }}</span>
+</div>
+</sc-if>
+</sc-for>
+</div>
+</div>
+
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;padding:28px 32px 0;gap:18px;min-height:0">
+<div style="display:flex;align-items:flex-end;justify-content:space-between">
+<div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">SKOLER · AGGREGAT PÅ SKOLENIVÅ</div>
+<h2 style="font-size:var(--text-h1);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:6px 0 0">Skoleoversikt</h2>
+</div>
+<div style="display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:var(--radius-full);background:var(--navy-50);border:1px solid var(--navy-100)">
+<span style="width:7px;height:7px;border-radius:var(--radius-full);background:var(--navy-600);flex-shrink:0"></span>
+<span style="font-size:var(--text-xs);font-weight:var(--weight-semibold);color:var(--navy-900)">Ingen navn på denne flaten</span>
+</div>
+</div>
+
+<div style="display:flex;gap:14px;flex-shrink:0">
+<div style="flex:1;background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:20px;display:flex;flex-direction:column;gap:6px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">TN-UTØVERE I ALT</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-h1);font-weight:var(--weight-semibold);color:var(--navy-900);letter-spacing:var(--tracking-heading)">37</span>
+<span style="font-size:var(--text-xs);color:var(--text-secondary)">Fordelt på 5 toppidrettsgymnas og 4 klubbutøvere</span>
+</div>
+<div style="flex:1;background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:20px;display:flex;flex-direction:column;gap:6px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MED KOMPLETT PROFIL</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-h1);font-weight:var(--weight-semibold);color:var(--navy-900);letter-spacing:var(--tracking-heading)">18</span>
+<span style="font-size:var(--text-xs);color:var(--text-secondary)">Talt 25.08.2026 · profilkrav v2 · AK</span>
+</div>
+<div style="flex:1;background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:20px;display:flex;flex-direction:column;gap:6px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">MÅLT I TESTPERIODEN</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-h1);font-weight:var(--weight-semibold);color:var(--navy-900);letter-spacing:var(--tracking-heading)">24</span>
+<span style="font-size:var(--text-xs);color:var(--text-secondary)">Uke 34–36 · minst én protokoll ført</span>
+</div>
+<div style="flex:1;background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:20px;display:flex;flex-direction:column;gap:6px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">DU HAR TILGANG TIL</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-h1);font-weight:var(--weight-semibold);color:var(--navy-900);letter-spacing:var(--tracking-heading)">2</span>
+<span style="font-size:var(--text-xs);color:var(--text-secondary)">Skoler med gruppe du er trener for</span>
+</div>
+</div>
+
+<div style="flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;align-items:flex-end;gap:14px;padding:0 18px 2px;flex-shrink:0">
+<span style="width:300px;flex-shrink:0;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">SKOLE</span>
+<span style="width:76px;flex-shrink:0;text-align:right;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">UTØVERE</span>
+<span style="flex:1;min-width:0;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">DEKNINGSGRAD</span>
+<span style="width:120px;flex-shrink:0;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">MÅLT UKE 34–36</span>
+<span style="width:150px;flex-shrink:0;text-align:right;font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">DIN TILGANG</span>
+</div>
+<sc-for list="{{ skoler }}" as="s" hint-placeholder-count="6">
+<div ref="{{ s.rowRef }}" style="border-radius:var(--radius-md);padding:14px 18px;display:flex;align-items:center;gap:14px;min-height:44px;flex-shrink:0">
+<div style="width:300px;flex-shrink:0;min-width:0">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ s.navn }}</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);margin-top:2px">{{ s.sted }}</div>
+</div>
+<span style="width:76px;flex-shrink:0;text-align:right;font-family:var(--font-mono);font-size:var(--text-base);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ s.utovere }}</span>
+<div style="flex:1;min-width:0;display:flex;align-items:center;gap:12px">
+<div style="flex:1;min-width:0;height:8px;border-radius:var(--radius-full);background:var(--ink-100);overflow:hidden"><div ref="{{ s.barRef }}" style="height:100%;border-radius:var(--radius-full)"></div></div>
+<span style="width:74px;flex-shrink:0;font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary)">{{ s.dekning }}</span>
+</div>
+<span style="width:120px;flex-shrink:0;font-family:var(--font-mono);font-size:var(--text-sm);color:var(--text-primary)">{{ s.malt }}</span>
+<div style="width:150px;flex-shrink:0;display:flex;justify-content:flex-end">
+<span ref="{{ s.tilgangRef }}" style="font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;padding:4px 9px;border-radius:var(--radius-xs)">{{ s.tilgang }}</span>
+</div>
+</div>
+</sc-for>
+<div style="flex:1;min-height:0"></div>
+<div style="background:var(--navy-50);border:1px solid var(--navy-100);border-radius:var(--radius-md);padding:14px 18px;display:flex;align-items:flex-start;gap:12px;flex-shrink:0;margin-bottom:24px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--navy-700);flex-shrink:0;padding-top:2px">PERSONVERN</span>
+<span style="flex:1;min-width:0;font-size:var(--text-sm);color:var(--navy-900);line-height:var(--leading-normal);text-wrap:pretty"><strong>Aggregat er ikke en visningsinnstilling — det er hjemmelen.</strong> Spilleren samtykker til at <em>sin egen skole</em> følger utviklingen sin. Det samtykket følger ikke med til forbundet: NGF er en annen behandlingsansvarlig, og en skoleliste med navn ville vært en ny utlevering til en ny part uten eget grunnlag. Derfor teller denne flaten — den navngir ikke. En skole med under tre TN-utøvere står som «under 3», fordi to av to lett kan identifiseres uansett hvor tallet står. Navn finnes bare inne i en gruppe du selv er trener for, der grunnlaget er tilgangen din til gruppen.</span>
+</div>
+</div>
+</div>
+</div>

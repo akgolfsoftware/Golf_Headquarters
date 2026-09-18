@@ -1,0 +1,109 @@
+<div style="width:1440px;height:900px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;font-variant-numeric:tabular-nums">
+<div style="width:232px;flex-shrink:0;background:var(--surface-card);border-right:1px solid var(--border-subtle);display:flex;flex-direction:column;padding:20px 14px 18px;gap:20px">
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:14px;display:flex;flex-direction:column;align-items:flex-start;gap:9px">
+<img src="../../assets/logo/team-norway-golf.png" alt="Team Norway Golf" style="height:42px;width:auto;display:block">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">JUNIOR</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:2px;flex:1;min-height:0;overflow:hidden">
+<sc-for list="{{ meny }}" as="m" hint-placeholder-count="12">
+<sc-if value="{{ m.isHeading }}" hint-placeholder-val="{{ false }}">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);padding:14px 12px 6px">{{ m.label }}</div>
+</sc-if>
+<sc-if value="{{ m.isItem }}" hint-placeholder-val="{{ true }}">
+<div ref="{{ m.ref }}" style="height:40px;border-radius:var(--radius-xs);padding:0 10px;display:flex;align-items:center;gap:10px">
+<span ref="{{ m.markRef }}" style="width:3px;height:18px;border-radius:var(--radius-full);flex-shrink:0"></span>
+<span style="font-size:var(--text-sm);font-weight:var(--weight-medium)">{{ m.label }}</span>
+</div>
+</sc-if>
+</sc-for>
+</div>
+</div>
+
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;min-height:0">
+<div style="flex-shrink:0;background:var(--surface-card);border-bottom:1px solid var(--border-subtle);padding:24px 32px;display:flex;align-items:flex-start;gap:20px">
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">TESTBATTERI</span>
+<span style="color:var(--ink-300)">/</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">GOLFSLAG</span>
+</div>
+<h2 style="font-size:var(--text-h1);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:0">Innspill Basis</h2>
+<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;background:var(--navy-900);color:var(--white);padding:4px 9px;border-radius:var(--radius-xs)">DU EIER DENNE</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary)">AK GOLF ACADEMY · GJELDENDE v4 · LÅST 12.08.2026</span>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;flex-shrink:0">
+<div role="button" style="height:44px;padding:0 22px;border-radius:var(--radius-full);background:var(--navy-900);color:var(--white);font-size:var(--text-sm);font-weight:var(--weight-bold);display:flex;align-items:center">Ny versjon</div>
+<span style="font-size:var(--text-xs);color:var(--text-secondary);text-align:right;max-width:220px;line-height:var(--leading-normal);text-wrap:pretty">v4 er låst. En endring blir v5; de 412 målingene på v4 flytter seg ikke.</span>
+</div>
+</div>
+
+<div style="flex:1;min-height:0;display:flex;overflow:hidden">
+<div style="flex:1;min-width:0;padding:24px 32px;display:flex;flex-direction:column;gap:18px;overflow:hidden">
+<div style="background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:22px;display:flex;flex-direction:column;gap:14px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">HVA PROTOKOLLEN MÅLER</span>
+<div style="font-size:var(--text-lg);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Nærhet delt på lengde for hvert innspill. Resultatet er en prosent — <strong>lavere er bedre</strong>. En junior på 8,2 % ligger på elitenivå for sin gruppe.</div>
+<div style="display:flex;gap:12px;flex-wrap:wrap">
+<div style="background:var(--ink-50);border-radius:var(--radius-sm);padding:12px 16px;display:flex;flex-direction:column;gap:2px;min-width:130px"><span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">ENHET</span><span style="font-family:var(--font-mono);font-size:var(--text-base);font-weight:var(--weight-semibold);color:var(--navy-900)">prosent</span></div>
+<div style="background:var(--ink-50);border-radius:var(--radius-sm);padding:12px 16px;display:flex;flex-direction:column;gap:2px;min-width:130px"><span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">RETNING</span><span style="font-family:var(--font-mono);font-size:var(--text-base);font-weight:var(--weight-semibold);color:var(--navy-900)">lavere = bedre</span></div>
+<div style="background:var(--ink-50);border-radius:var(--radius-sm);padding:12px 16px;display:flex;flex-direction:column;gap:2px;min-width:130px"><span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">BATTERI</span><span style="font-family:var(--font-mono);font-size:var(--text-base);font-weight:var(--weight-semibold);color:var(--navy-900)">TN-batteri Q3</span></div>
+</div>
+</div>
+<div style="flex:1;min-height:0;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:22px;display:flex;flex-direction:column;gap:12px;overflow:hidden">
+<div style="display:flex;align-items:baseline;justify-content:space-between">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">STEGENE I v4</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary)">6 STASJONER</span>
+</div>
+<sc-for list="{{ steg }}" as="s" hint-placeholder-count="6">
+<div style="display:flex;align-items:center;gap:14px;min-height:44px;border-bottom:1px solid var(--border-subtle)">
+<span style="width:28px;height:28px;flex-shrink:0;border-radius:var(--radius-xs);background:var(--navy-50);color:var(--navy-800);font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);display:flex;align-items:center;justify-content:center">{{ s.nr }}</span>
+<span style="flex:1;min-width:0;font-size:var(--text-sm);font-weight:var(--weight-medium);color:var(--text-primary)">{{ s.navn }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary);width:130px;text-align:right;flex-shrink:0">{{ s.krav }}</span>
+</div>
+</sc-for>
+<div style="flex:1;min-height:0"></div>
+</div>
+</div>
+
+<div style="width:400px;flex-shrink:0;border-left:1px solid var(--border-subtle);background:var(--surface-card);padding:24px;display:flex;flex-direction:column;gap:16px;overflow:hidden">
+<div style="display:flex;flex-direction:column;gap:10px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">VERSJONSHISTORIKK</span>
+<sc-for list="{{ versjoner }}" as="v" hint-placeholder-count="4">
+<div ref="{{ v.rowRef }}" style="border-radius:var(--radius-sm);padding:12px 14px;display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;align-items:baseline;gap:10px">
+<span ref="{{ v.nrRef }}" style="font-family:var(--font-mono);font-size:var(--text-base);font-weight:var(--weight-semibold)">{{ v.nr }}</span>
+<span ref="{{ v.merkeRef }}" style="font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;padding:2px 7px;border-radius:var(--radius-xs)">{{ v.merke }}</span>
+<div style="flex:1"></div>
+<span style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ v.malinger }}</span>
+</div>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">{{ v.last }}</span>
+<span style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">{{ v.endring }}</span>
+</div>
+</sc-for>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">BRUKES AV</span>
+<sc-for list="{{ brukere }}" as="b" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:10px;min-height:36px">
+<span ref="{{ b.markRef }}" style="width:3px;height:18px;border-radius:var(--radius-full);flex-shrink:0"></span>
+<span style="flex:1;min-width:0;font-size:var(--text-sm);color:var(--text-primary)">{{ b.navn }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary)">{{ b.antall }}</span>
+</div>
+</sc-for>
+</div>
+<div style="background:var(--navy-50);border:1px solid var(--navy-100);border-radius:var(--radius-sm);padding:14px;display:flex;flex-direction:column;gap:8px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--navy-700)">ATTESTERING PÅ v4</span>
+<sc-for list="{{ attest }}" as="a" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:10px;min-height:32px">
+<span ref="{{ a.badgeRef }}" style="padding:3px 8px;border-radius:var(--radius-full);font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;flex-shrink:0">{{ a.merke }}</span>
+<span style="flex:1;min-width:0;font-size:var(--text-xs);color:var(--navy-800)">{{ a.tekst }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900);flex-shrink:0">{{ a.tall }}</span>
+</div>
+</sc-for>
+</div>
+<div style="flex:1"></div>
+</div>
+</div>
+</div>
+</div>

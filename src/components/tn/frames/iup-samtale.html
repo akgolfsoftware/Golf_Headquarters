@@ -1,0 +1,131 @@
+<div style="width:1194px;background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;flex-direction:column;font-variant-numeric:tabular-nums">
+
+<div style="background:var(--navy-900);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:24px">
+<div style="display:flex;align-items:center;gap:16px;min-width:0">
+<img src="../../assets/logo/team-norway-golf.png" alt="Team Norway Golf" style="height:30px;width:auto;display:block">
+<div style="width:1px;height:30px;background:rgba(255,255,255,.18)"></div>
+<div style="display:flex;flex-direction:column;gap:2px;min-width:0">
+<span style="font-size:var(--text-base);font-weight:var(--weight-bold);color:var(--white)">Ingrid Vestby · Anders Kristiansen</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--navy-100)">Samtale 18.09.2026 · startet 14:31</span>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:10px;flex-shrink:0">
+<span ref="{{ statusRef }}" style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;border-radius:var(--radius-full);padding:6px 12px;white-space:nowrap">{{ statusTekst }}</span>
+</div>
+</div>
+
+<div style="display:flex;align-items:stretch;min-height:596px">
+
+<div style="width:268px;flex-shrink:0;background:var(--surface-card);border-right:1px solid var(--border-subtle);padding:22px 18px;display:flex;flex-direction:column;gap:20px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">Agenda · fra «I dag»</span>
+<sc-for list="{{ agenda }}" as="a" hint-placeholder-count="3">
+<div role="button" ref="{{ a.ref }}" onClick="{{ a.velg }}" style="border-radius:var(--radius-sm);padding:12px 14px;display:flex;gap:11px;align-items:flex-start;cursor:pointer;transition:transform 120ms cubic-bezier(.23,1,.32,1)" style-active="transform:scale(.985)">
+<span ref="{{ a.prikkRef }}" style="width:9px;height:9px;border-radius:var(--radius-full);flex-shrink:0;margin-top:5px"></span>
+<div style="min-width:0;display:flex;flex-direction:column;gap:2px">
+<span style="font-size:var(--text-sm);font-weight:var(--weight-semibold)">{{ a.tittel }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;opacity:.75">{{ a.status }}</span>
+</div>
+</div>
+</sc-for>
+</div>
+<div style="height:1px;background:var(--border-subtle)"></div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">Forrige samtale</span>
+<div style="background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:13px 14px;display:flex;flex-direction:column;gap:7px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">12.06.2026 · signert</span>
+<span style="font-size:var(--text-xs);color:var(--text-primary);line-height:var(--leading-normal);text-wrap:pretty">Vi sa: mer rutine før første slag. Tre av fire turneringer siden er gjennomført med rutinen.</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--navy-800)">Åpne hele</span>
+</div>
+</div>
+<div style="flex:1"></div>
+<div style="background:var(--navy-50);border:1px solid var(--navy-100);border-radius:var(--radius-sm);padding:12px 14px;display:flex;flex-direction:column;gap:3px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">Samme flate</span>
+<span style="font-size:var(--text-xs);color:var(--navy-800);line-height:var(--leading-normal);text-wrap:pretty">Spilleren ser dette på sin egen skjerm i møtet. Ingen skjult trenerkolonne.</span>
+</div>
+</div>
+
+<div style="flex:1;min-width:0;padding:28px 32px;display:flex;flex-direction:column;gap:22px">
+<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px">
+<div style="min-width:0;display:flex;flex-direction:column;gap:5px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">{{ eyebrow }}</span>
+<h2 style="font-size:var(--text-h2);font-weight:var(--weight-bold);letter-spacing:var(--tracking-heading);color:var(--navy-900);margin:0;text-wrap:pretty">{{ sporsmal }}</h2>
+</div>
+<div style="display:flex;gap:8px;flex-shrink:0">
+<div role="button" onClick="{{ forrige }}" style="height:40px;padding:0 16px;border-radius:var(--radius-full);border:1px solid var(--border-default);background:var(--white);color:var(--navy-900);font-size:var(--text-sm);font-weight:var(--weight-semibold);display:flex;align-items:center;cursor:pointer;white-space:nowrap">Forrige</div>
+<div role="button" onClick="{{ neste }}" style="height:40px;padding:0 18px;border-radius:var(--radius-full);background:var(--navy-900);color:var(--white);font-size:var(--text-sm);font-weight:var(--weight-semibold);display:flex;align-items:center;cursor:pointer;white-space:nowrap;transition:transform 120ms cubic-bezier(.23,1,.32,1)" style-active="transform:scale(.97)">Neste spørsmål</div>
+</div>
+</div>
+
+<div style="display:flex;gap:20px;align-items:stretch;flex:1;min-height:0">
+
+<div style="flex:1;min-width:0;background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:22px;display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="width:26px;height:26px;border-radius:var(--radius-full);background:var(--navy-900);color:var(--white);font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-bold);display:flex;align-items:center;justify-content:center;flex-shrink:0">IV</span>
+<span style="font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--navy-900)">Ingrids svar</span>
+<sc-if value="{{ harSkala }}" hint-placeholder-val="{{ true }}"><span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary)">Skala 1–4</span></sc-if>
+</div>
+<div style="display:flex;gap:10px">
+<sc-for list="{{ skala }}" as="s" hint-placeholder-count="4">
+<div role="button" ref="{{ s.ref }}" onClick="{{ s.velg }}" style="flex:1;min-width:0;border-radius:var(--radius-sm);padding:14px 10px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;transition:transform 120ms cubic-bezier(.23,1,.32,1)" style-active="transform:scale(.97)">
+<span style="font-family:var(--font-mono);font-size:var(--text-h2);font-weight:var(--weight-bold);line-height:1">{{ s.n }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;text-align:center">{{ s.label }}</span>
+</div>
+</sc-for>
+</div>
+<div style="display:flex;flex-direction:column;gap:7px;flex:1;min-height:0">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">Med egne ord</span>
+<div ref="{{ svarRef }}" style="flex:1;min-height:104px;border:1px solid var(--border-default);border-radius:var(--radius-sm);padding:13px 14px;font-size:var(--text-sm);line-height:var(--leading-normal);color:var(--text-primary);text-wrap:pretty">{{ svarTekst }}</div>
+<span ref="{{ sporRef }}" style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase">{{ sporTekst }}</span>
+</div>
+<div style="display:flex;align-items:center;gap:10px;background:var(--ink-50);border-radius:var(--radius-sm);padding:11px 13px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);white-space:nowrap">Sist · 12.06</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--navy-900)">{{ sistVerdi }}</span>
+<span style="font-size:var(--text-xs);color:var(--text-secondary);line-height:var(--leading-normal);text-wrap:pretty">{{ sistTekst }}</span>
+</div>
+</div>
+
+<div style="width:340px;flex-shrink:0;background:var(--white);border:1px solid var(--border-subtle);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:22px;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="width:26px;height:26px;border-radius:var(--radius-full);background:var(--red-600);color:var(--white);font-family:var(--font-mono);font-size:var(--text-micro);font-weight:var(--weight-bold);display:flex;align-items:center;justify-content:center;flex-shrink:0">AK</span>
+<span style="font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--navy-900)">Trenerens notat</span>
+</div>
+<div style="flex:1;min-height:128px;border:1px solid var(--border-default);border-radius:var(--radius-sm);padding:13px 14px;font-size:var(--text-sm);line-height:var(--leading-normal);color:var(--text-primary);text-wrap:pretty">{{ notat }}</div>
+<div style="display:flex;flex-direction:column;gap:7px">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">Avtalt her</span>
+<div style="background:var(--navy-50);border:1px solid var(--navy-100);border-radius:var(--radius-sm);padding:12px 13px;display:flex;flex-direction:column;gap:3px">
+<span style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">Rutine før første slag i alle turneringer</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--navy-800)">Blir prosessmål · frist 31.10</span>
+</div>
+</div>
+<div role="button" ref="{{ vegneRef }}" onClick="{{ vekslVegne }}" style="border-radius:var(--radius-sm);padding:12px 13px;display:flex;align-items:flex-start;gap:10px;cursor:pointer">
+<span ref="{{ vegneBoksRef }}" style="width:16px;height:16px;border-radius:var(--radius-xs);flex-shrink:0;margin-top:2px"></span>
+<div style="min-width:0;display:flex;flex-direction:column;gap:2px">
+<span style="font-size:var(--text-xs);font-weight:var(--weight-bold)">Jeg skriver svaret for Ingrid</span>
+<span style="font-size:var(--text-micro);line-height:var(--leading-normal);text-wrap:pretty">Svaret merkes med navn og klokkeslett. Ingrid kan endre det etterpå.</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div style="border-top:1px solid var(--border-subtle);background:var(--surface-card);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:24px">
+<div style="display:flex;gap:28px;align-items:center;min-width:0">
+<sc-for list="{{ signaturer }}" as="s" hint-placeholder-count="2">
+<div style="display:flex;align-items:center;gap:10px;min-width:0">
+<span ref="{{ s.prikkRef }}" style="width:9px;height:9px;border-radius:var(--radius-full);flex-shrink:0"></span>
+<div style="display:flex;flex-direction:column;gap:1px;min-width:0">
+<span style="font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--navy-900)">{{ s.navn }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-secondary)">{{ s.status }}</span>
+</div>
+</div>
+</sc-for>
+</div>
+<div style="display:flex;align-items:center;gap:14px;flex-shrink:0">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-tertiary);white-space:nowrap">{{ lasTekst }}</span>
+<div role="button" ref="{{ lasKnappRef }}" onClick="{{ veksleLas }}" style="height:44px;padding:0 20px;border-radius:var(--radius-sm);font-size:var(--text-sm);font-weight:var(--weight-semibold);display:flex;align-items:center;cursor:pointer;white-space:nowrap;transition:transform 120ms cubic-bezier(.23,1,.32,1)" style-active="transform:scale(.98)">{{ lasKnapp }}</div>
+</div>
+</div>
+
+</div>

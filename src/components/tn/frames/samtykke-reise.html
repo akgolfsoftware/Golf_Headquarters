@@ -1,0 +1,152 @@
+<div style="max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:16px">
+
+<div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:12px 16px">
+<img src="../../assets/logo/team-norway-golf.png" alt="Team Norway Golf" style="height:26px;width:auto;display:block">
+<div style="min-width:0">
+<div style="font-family:var(--font-display);font-size:var(--text-base);font-weight:var(--weight-bold);letter-spacing:-.02em">Samtykke til deling</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.12em;color:var(--text-secondary)">TN-12 · REISE</div>
+</div>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.1em;background:var(--status-amber-bg);color:var(--status-amber-text);border-radius:var(--radius-full);padding:5px 11px">PROTOTYPE · SIMULERT — INGEN SAMTYKKEENDRINGER SENDES</span>
+<div style="flex:1"></div>
+<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.1em;color:var(--text-secondary)">KONTEKST</span>
+<sc-for list="{{ kontekster }}" as="c" hint-placeholder-count="3">
+<sc-if value="{{ c.aktivK }}" hint-placeholder-val="{{ false }}"><div onClick="{{ c.velg }}" onKeyDown="{{ c.tast }}" tabIndex="0" role="button" data-pressable style="padding:8px 13px;min-height:34px;display:flex;align-items:center;cursor:pointer;border-radius:var(--radius-full);border:1px solid var(--navy-900);background:var(--navy-900);color:var(--white);font-size:var(--text-xs);font-weight:var(--weight-semibold)" style-focus="outline:2px solid var(--navy-600);outline-offset:2px">{{ c.label }}</div></sc-if>
+<sc-if value="{{ c.inaktivK }}" hint-placeholder-val="{{ true }}"><div onClick="{{ c.velg }}" onKeyDown="{{ c.tast }}" tabIndex="0" role="button" data-pressable style="padding:8px 13px;min-height:34px;display:flex;align-items:center;cursor:pointer;border-radius:var(--radius-full);border:1px solid var(--border-default);background:var(--surface-card);color:var(--text-secondary);font-size:var(--text-xs);font-weight:var(--weight-semibold)" style-focus="outline:2px solid var(--navy-600);outline-offset:2px">{{ c.label }}</div></sc-if>
+</sc-for>
+</div>
+</div>
+
+<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 16px;background:var(--navy-50);border:1px solid var(--border-subtle);border-radius:var(--radius-md)">
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.12em;color:var(--navy-600)">FELLESFLATE</span>
+<span style="font-size:var(--text-xs);color:var(--ink-700);text-wrap:pretty">Denne skjermen bor i PlayerHQ/Forelder — fellesflaten for spiller og foresatt. Du kom hit fra Team Norway for å styre hva miljøene kan se. TN-innslaget er tegnet i Claw-profil, uten arvet visuell lås.</span>
+<div style="flex:1"></div>
+<a href="../tn-samtykke/TnSamtykke.dc.html" style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--navy-600);text-decoration:none;white-space:nowrap;min-height:34px;display:flex;align-items:center">‹ TILBAKE TIL TN-12-BRETTET</a>
+</div>
+
+<sc-if value="{{ erLaster }}" hint-placeholder-val="{{ true }}">
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:22px;display:flex;flex-direction:column;gap:12px">
+<div style="width:200px;height:14px;border-radius:var(--radius-full);background:var(--ink-100)"></div>
+<div style="width:65%;height:12px;border-radius:var(--radius-full);background:var(--ink-100)"></div>
+<div style="font-size:var(--text-xs);color:var(--text-secondary)">Henter samtykkestatus …</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ erHentefeil }}" hint-placeholder-val="{{ false }}">
+<div style="background:var(--status-red-bg);border:1px solid var(--status-red);border-radius:var(--radius-lg);padding:16px 20px;display:flex;flex-direction:column;gap:6px">
+<div style="font-size:var(--text-base);font-weight:var(--weight-bold);color:var(--navy-900)">Kunne ikke hente samtykkestatus</div>
+<div style="font-size:var(--text-sm);text-wrap:pretty">Simulert feiltilstand. Listen under viser <strong>sist kjente status ({{ idag }})</strong> — endringer er sperret til hentingen lykkes, så en bryter aldri kan stå i utakt med det som faktisk er lagret.</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ erOrg }}" hint-placeholder-val="{{ false }}">
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:clamp(14px,2.5vw,24px);display:flex;flex-direction:column;gap:14px">
+<div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.14em;color:var(--text-secondary)">STEG 1 AV 2 · {{ spillerLinje }}</div>
+<h1 style="font-family:var(--font-display);font-size:var(--text-h2);font-weight:var(--weight-black);letter-spacing:-.02em;margin:4px 0 0">Hvem deler {{ spillerFornavn }} med?</h1>
+<div style="font-size:var(--text-sm);color:var(--text-secondary);margin-top:6px;text-wrap:pretty">Medlemskap i et miljø gir aldri deling i seg selv — deling krever et eget samtykke for hvert miljø. Velg et miljø for å se nøyaktig hva som deles.</div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:12px">
+<sc-for list="{{ orger }}" as="o" hint-placeholder-count="3">
+<div onClick="{{ o.velg }}" onKeyDown="{{ o.tast }}" tabIndex="0" role="button" data-pressable style="background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:16px;display:flex;flex-direction:column;gap:8px;cursor:pointer;min-height:44px" style-hover="border-color:var(--navy-400);box-shadow:var(--shadow-sm)" style-focus="outline:2px solid var(--navy-600);outline-offset:2px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px"><span style="font-size:var(--text-base);font-weight:var(--weight-bold);color:var(--navy-900)">{{ o.navn }}</span><span style="color:var(--navy-600)">›</span></div>
+<div ref="{{ o.statusRef }}" style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.06em;color:var(--text-secondary);line-height:1.6">{{ o.status }}</div>
+<div style="font-size:var(--text-xs);color:var(--text-tertiary)">{{ o.medlemskap }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ erDeling }}" hint-placeholder-val="{{ false }}">
+<div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:clamp(14px,2.5vw,24px);display:flex;flex-direction:column;gap:16px">
+<div onClick="{{ tilOrg }}" onKeyDown="{{ tilOrgTast }}" tabIndex="0" role="button" data-pressable style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--navy-600);cursor:pointer;min-height:44px;display:flex;align-items:center;gap:6px" style-focus="outline:2px solid var(--navy-600);outline-offset:2px">‹ ALLE MILJØER</div>
+<div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.14em;color:var(--text-secondary)">STEG 2 AV 2 · {{ spillerLinje }}</div>
+<h1 style="font-family:var(--font-display);font-size:var(--text-h2);font-weight:var(--weight-black);letter-spacing:-.02em;margin:4px 0 0">{{ oNavn }}</h1>
+<div style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary);margin-top:6px">{{ sistLagret }}</div>
+</div>
+
+<sc-if value="{{ erUtlopt }}" hint-placeholder-val="{{ false }}">
+<div style="background:var(--status-amber-bg);border:1px solid var(--border-default);border-radius:var(--radius-md);padding:14px 16px;display:flex;flex-direction:column;gap:4px">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--navy-900)">Medlemskapet er avsluttet ({{ oAvsluttet }})</div>
+<div style="font-size:var(--text-xs);color:var(--ink-700);text-wrap:pretty">Deling krever aktivt medlemskap i miljøet — den stoppet da medlemskapet tok slutt, uansett hva samtykket sier. Historikken under er bevart, men bryterne er låst.</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ erMindrearigSelv }}" hint-placeholder-val="{{ false }}">
+<div style="background:var(--navy-50);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:14px 16px;display:flex;flex-direction:column;gap:4px">
+<div style="font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--navy-900)">En foresatt må samtykke for deg</div>
+<div style="font-size:var(--text-xs);color:var(--ink-700);text-wrap:pretty">Du er under 16 år — da er det en foresatt som styrer delingen. En foresatt kan endre eller trekke delingen fra foreldrekontoen. Bytt kontekst øverst for å se foresatt-blikket.</div>
+</div>
+</sc-if>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));gap:12px">
+<div style="background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:16px;display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">
+<div style="font-size:var(--text-base);font-weight:var(--weight-bold);color:var(--navy-900)">Del testresultater og statistikk</div>
+<sc-if value="{{ bryterPaa }}" hint-placeholder-val="{{ false }}"><div onClick="{{ bryterKlikk }}" onKeyDown="{{ bryterTast }}" tabIndex="0" role="switch" aria-checked="true" ref="{{ bryterRef }}" style="width:52px;height:30px;flex-shrink:0;border-radius:var(--radius-full);background:var(--navy-600);position:relative;cursor:pointer" style-focus="outline:2px solid var(--navy-600);outline-offset:2px"><span style="position:absolute;top:3px;right:3px;width:24px;height:24px;border-radius:var(--radius-full);background:var(--white)"></span></div></sc-if>
+<sc-if value="{{ bryterAv }}" hint-placeholder-val="{{ true }}"><div onClick="{{ bryterKlikk }}" onKeyDown="{{ bryterTast }}" tabIndex="0" role="switch" aria-checked="false" ref="{{ bryterRef }}" style="width:52px;height:30px;flex-shrink:0;border-radius:var(--radius-full);background:var(--ink-300);position:relative;cursor:pointer" style-focus="outline:2px solid var(--navy-600);outline-offset:2px"><span style="position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:var(--radius-full);background:var(--white)"></span></div></sc-if>
+</div>
+<sc-if value="{{ tekstMyndig }}" hint-placeholder-val="{{ true }}"><div style="font-size:var(--text-xs);color:var(--ink-700);line-height:1.6;text-wrap:pretty">Ansvarlige i dette miljøet får se testresultatene og spillstatistikken — du kan trekke samtykket når som helst, og treningen påvirkes aldri av valget.</div></sc-if>
+<sc-if value="{{ tekstMindrearig }}" hint-placeholder-val="{{ false }}"><div style="font-size:var(--text-xs);color:var(--ink-700);line-height:1.6;text-wrap:pretty">Ansvarlige i dette miljøet får se testresultatene og spillstatistikken. En foresatt kan endre eller trekke delingen fra foreldrekontoen — treningen påvirkes aldri av valget.</div></sc-if>
+<div style="display:flex;flex-direction:column;gap:6px;font-size:var(--text-xs);color:var(--ink-700);line-height:1.55">
+<div><strong>De ser:</strong> hvilke tester som er tatt, når, score og benchmarknivå · antall runder, snittscore og SG-hovedtall.</div>
+<div><strong>De ser ikke:</strong> treningsplanen, notater, helsedata eller annet innhold i appen.</div>
+<div><strong>Gjelder kun dette miljøet</strong> — aldri andre grupper eller tredjeparter.</div>
+<sc-if value="{{ tekstMyndig }}" hint-placeholder-val="{{ true }}"><div><strong>Trekkes når som helst</strong> — delingen stopper umiddelbart.</div></sc-if>
+<sc-if value="{{ tekstMindrearig }}" hint-placeholder-val="{{ false }}"><div><strong>En foresatt kan endre eller trekke delingen</strong> fra foreldrekontoen — delingen stopper umiddelbart.</div></sc-if>
+</div>
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.06em;color:var(--text-tertiary)">SAMTYKKETEKST VERSJON 2026-08-16</div>
+<sc-if value="{{ harLagringsfeil }}" hint-placeholder-val="{{ false }}">
+<div style="font-size:var(--text-xs);color:var(--status-red);font-weight:var(--weight-semibold);text-wrap:pretty">Lagringsfeil (simulert) — endringen ble IKKE lagret, og bryteren er satt tilbake til sist bekreftede deling.</div>
+</sc-if>
+</div>
+
+<div style="background:var(--surface-page);border:1px dashed var(--border-default);border-radius:var(--radius-md);padding:16px;display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">
+<div style="font-size:var(--text-base);font-weight:var(--weight-bold);color:var(--ink-500)">Del komplett profil</div>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.1em;background:var(--status-amber-bg);color:var(--status-amber-text);border-radius:var(--radius-sm);padding:4px 9px;white-space:nowrap">IKKE TILGJENGELIG</span>
+</div>
+<div style="font-size:var(--text-xs);color:var(--ink-700);line-height:1.6;text-wrap:pretty">Deling av treningsplan, TrackMan-data, analyse og fremgang er ikke tilgjengelig ennå — i dag kan bare testresultater og statistikk deles. Blir utvidet deling åpnet, kommer den som et eget valg her.</div>
+<div style="width:52px;height:30px;border-radius:var(--radius-full);background:var(--ink-100);position:relative;opacity:.6"><span style="position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:var(--radius-full);background:var(--white)"></span></div>
+</div>
+</div>
+
+<div style="border:1px solid var(--border-subtle);border-radius:var(--radius-md);overflow:hidden">
+<div style="padding:11px 14px;border-bottom:1px solid var(--border-subtle);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.14em;color:var(--text-secondary)">HISTORIKK — HVER ENDRING BEVARES; ET TREKK SKJULER ALDRI TIDLIGERE VALG</span></div>
+<sc-if value="{{ tomHistorikk }}" hint-placeholder-val="{{ false }}">
+<div style="padding:18px 14px;font-size:var(--text-xs);color:var(--text-tertiary)">Ingen samtykkehandlinger registrert mot dette miljøet ennå.</div>
+</sc-if>
+<sc-for list="{{ historikk }}" as="h" hint-placeholder-count="2">
+<div style="display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid var(--ink-100);flex-wrap:wrap">
+<span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--navy-800);white-space:nowrap">{{ h.dato }}</span>
+<span ref="{{ h.ref }}" style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.08em;color:var(--navy-800)">{{ h.handling }}</span>
+<span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.06em;color:var(--text-tertiary)">{{ h.detalj }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ erBekreft }}" hint-placeholder-val="{{ false }}">
+<div style="background:var(--surface-card);border:1px solid var(--navy-600);border-radius:var(--radius-lg);box-shadow:var(--shadow-md);padding:clamp(14px,2.5vw,24px);display:flex;flex-direction:column;gap:12px">
+<div style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.14em;color:var(--text-secondary)">BEKREFTELSE · SIMULERT LAGRING</div>
+<div style="font-family:var(--font-display);font-size:var(--text-h3);font-weight:var(--weight-bold);color:var(--navy-900)">{{ bekreftTittel }}</div>
+<div style="font-size:var(--text-sm);color:var(--ink-700);line-height:1.6;text-wrap:pretty">{{ bekreftTekst }}</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="primary" size="md" onClick="{{ bekreft }}" hint-size="170px,48px">{{ bekreftKnapp }}</x-import>
+<x-import component-from-global-scope="ClawDesignTeamNorwayGolf_a03bf9.Button" variant="secondary" size="md" onClick="{{ avbryt }}" hint-size="110px,48px">Avbryt</x-import>
+<sc-if value="{{ erLagrer }}" hint-placeholder-val="{{ false }}"><span style="font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.1em;color:var(--text-secondary)">LAGRER · SIMULERT …</span></sc-if>
+</div>
+</div>
+</sc-if>
+
+<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px;border:1px dashed var(--border-default);border-radius:var(--radius-md)">
+<sc-if value="{{ simPaa }}" hint-placeholder-val="{{ false }}"><div onClick="{{ toggleSim }}" tabIndex="0" role="button" data-pressable style="padding:8px 14px;min-height:34px;display:flex;align-items:center;cursor:pointer;border-radius:var(--radius-full);border:1px solid var(--status-red);background:var(--status-red-bg);color:var(--status-red);font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.1em" style-focus="outline:2px solid var(--navy-600);outline-offset:2px">SIMULER LAGRINGSFEIL: PÅ</div></sc-if>
+<sc-if value="{{ simAv }}" hint-placeholder-val="{{ true }}"><div onClick="{{ toggleSim }}" tabIndex="0" role="button" data-pressable style="padding:8px 14px;min-height:34px;display:flex;align-items:center;cursor:pointer;border-radius:var(--radius-full);border:1px solid var(--border-default);background:var(--surface-card);color:var(--text-secondary);font-family:var(--font-mono);font-size:var(--text-micro);letter-spacing:.1em" style-focus="outline:2px solid var(--navy-600);outline-offset:2px">SIMULER LAGRINGSFEIL: AV</div></sc-if>
+<span style="font-size:var(--text-xs);color:var(--text-tertiary);text-wrap:pretty">Feilet lagring gjenoppretter sist bekreftede deling — bryteren blir aldri stående i en tilstand som ikke er lagret.</span>
+<div style="flex:1"></div>
+</div>
+
+</div>
