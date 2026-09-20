@@ -1,12 +1,8 @@
 "use client";
 
 /**
- * Visnings-pillene i Workbench-topplinjen.
- *
- * Fasit: designsystem/train-lock/A-01 Mac Uke Pro.dc.html (Årsplan · Måned ·
- * Uke · Økt-segmentet): ytre pille 36 px #1C1C1E radius 999 padding 3/gap 2,
- * indre 30 px, caps 10/600/0.06em, aktiv = hvit pille med sort tekst.
- * Avvik (PX-2): «Økt» finnes ikke som egen rute ennå — kun tre piller.
+ * Åtte Workbench-pills. Fasit: radius 2, treff 44, setningsform, aktiv grafitt.
+ * Rust brukes ikke her.
  */
 
 import Link from "next/link";
@@ -16,8 +12,13 @@ import { workbenchUrl, type WbVisning } from "@/lib/workbench/visning-url";
 
 const VALG: { id: WbVisning; label: string }[] = [
   { id: "aar", label: UI.visAar },
+  { id: "periode", label: UI.visPeriode },
   { id: "maned", label: UI.visManed },
   { id: "uke", label: UI.visUke },
+  { id: "okt", label: UI.visOkt },
+  { id: "stall", label: UI.visStall },
+  { id: "live", label: UI.visLive },
+  { id: "min", label: UI.visMin },
 ];
 
 export function VisningPiller({
@@ -38,13 +39,11 @@ export function VisningPiller({
       role="tablist"
       aria-label="Visning"
       style={{
-        height: 36,
-        background: TL.dock,
-        borderRadius: TL.radius.pill,
+        minHeight: 44,
         display: "flex",
         alignItems: "center",
-        padding: 3,
-        gap: 2,
+        flexWrap: "wrap",
+        gap: 4,
       }}
     >
       {VALG.map((v) => {
@@ -56,18 +55,19 @@ export function VisningPiller({
             aria-selected={on}
             href={workbenchUrl(playerId, v.id, { uke, maned, aar })}
             style={{
-              height: 30,
-              borderRadius: TL.radius.pill,
-              display: "flex",
+              minHeight: 44,
+              borderRadius: 2,
+              display: "inline-flex",
               alignItems: "center",
               padding: "0 12px",
-              fontSize: 10,
-              fontWeight: 600,
-              letterSpacing: "0.06em",
-              textTransform: "uppercase",
+              fontSize: 13,
+              fontWeight: 500,
+              letterSpacing: 0,
+              textTransform: "none",
               textDecoration: "none",
-              color: on ? TL.onFill : TL.mute,
+              color: on ? TL.onFill : TL.text,
               background: on ? TL.fill : "transparent",
+              border: on ? "none" : `1px solid ${TL.hair}`,
             }}
           >
             {v.label}
