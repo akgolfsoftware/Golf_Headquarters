@@ -1,0 +1,20 @@
+/* AgencyOS-lov for live WorkbenchV2. Ikke ny palett. */
+[data-wb-lov] {
+  background: #f2f1ed;
+  color: #111111;
+}
+[data-wb-lov][data-surface="live"] {
+  background: #1c1b1a;
+  color: #f4efe6;
+}
+[data-wb-lov] [data-paper-en-ting] {
+  background: #9b2415 !important;
+  color: #f4efe6 !important;
+  border-radius: 2px !important;
+  min-height: 44px;
+}
+[data-wb-lov] button,
+[data-wb-lov] [class*="kort"],
+[data-wb-lov] [class*="Kort"] {
+  border-radius: 2px;
+}
