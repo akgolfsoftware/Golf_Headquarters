@@ -1,12 +1,30 @@
 /**
- * URL-er for Workbench Uke / Måned / År. Spilleren ligger i stien,
- * visningen i query — bytte visning beholder samme spiller.
+ * URL-er for Workbench-pills. Spilleren ligger i stien, visningen i query.
  */
 
-export type WbVisning = "uke" | "maned" | "aar";
+export type WbVisning =
+  | "aar"
+  | "periode"
+  | "maned"
+  | "uke"
+  | "okt"
+  | "stall"
+  | "live"
+  | "min";
+
+const ALLE: readonly WbVisning[] = [
+  "aar",
+  "periode",
+  "maned",
+  "uke",
+  "okt",
+  "stall",
+  "live",
+  "min",
+];
 
 export function parseVisning(raw: string | undefined): WbVisning {
-  if (raw === "maned" || raw === "aar") return raw;
+  if (raw && (ALLE as readonly string[]).includes(raw)) return raw as WbVisning;
   return "uke";
 }
 
@@ -17,9 +35,11 @@ export function workbenchUrl(
 ): string {
   const q = new URLSearchParams();
   if (visning !== "uke") q.set("vis", visning);
-  if (visning === "uke" && ref.uke) q.set("uke", ref.uke);
+  if ((visning === "uke" || visning === "min" || visning === "okt") && ref.uke) {
+    q.set("uke", ref.uke);
+  }
   if (visning === "maned" && ref.maned) q.set("maned", ref.maned);
-  if (visning === "aar" && ref.aar) q.set("aar", ref.aar);
+  if ((visning === "aar" || visning === "periode") && ref.aar) q.set("aar", ref.aar);
   const qs = q.toString();
   return `/admin/workbench/${playerId}${qs ? `?${qs}` : ""}`;
 }
