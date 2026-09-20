@@ -1,7 +1,5 @@
 /* Valgt kilde: Player HQ Train lock (4).zip, tokens/colors.css + typography.css.
-   Dette laget gjelder bare PlayerHQ/AgencyOS. Rotmarkøren omfatter også
-   dialoger som rendres direkte i body. Resten av v3-porteringen føres i
-   docs/design-audit/portering-fire-flater-2026-09-10.md. */
+   Fasit 20.09.2026: inspector 340 · kilde 236. */
 html[data-train-lock="4"] {
   --tl-font-sans: var(--font-geist-sans), "Helvetica Neue", Helvetica, Arial, sans-serif;
   --tl-font-mono: var(--font-geist-mono), ui-monospace, monospace;
@@ -9,29 +7,24 @@ html[data-train-lock="4"] {
   --font-display: var(--tl-font-sans);
   --font-mono: var(--tl-font-mono);
   --v2-font-mono: var(--tl-font-mono);
-
-  /* Eldre komponenter leser font-loaderens navn direkte. Aliasene holder
-     valgt familie konsistent mens de samme skjermene portes videre. */
   --font-poppins: var(--font-geist-sans);
   --font-ibm-plex-mono: var(--font-geist-mono);
   --tl-text-caps-sm: 11px;
-  --tl-r-card: 24px;
-  --tl-r-sheet: 32px 32px 0 0;
-
+  --tl-r-card: 2px;
+  --tl-r-sheet: 2px 2px 0 0;
+  --tl-artefakt: 340px;
+  --tl-kilder: 236px;
   --tl-scene: #F2F1ED;
   --tl-elev: #FFFFFF;
   --tl-dock: #E9E9EB;
   --tl-hair: #E6E4DF;
   --tl-dim: #DDDDDE;
   --tl-text: #111111;
-  /* Lesbarhetsavvik: kildens #6E6E73 gir 4,18 på dock. Denne gir 4,50. */
   --tl-mute: #69696E;
   --tl-fill: #000000;
   --tl-on-fill: #FFFFFF;
   --tl-warm: #D4611A;
   --tl-warm-ink: #B85C3D;
-  /* Warm-ink holder for liten tekst på hvite kort, men ikke på papir.
-     Eldre tekstkonsumenter bruker derfor nøytral tekst i lyst tema. */
   --tl-warm-text: var(--tl-text);
   --tl-warm-tint: #D4611A1F;
   --tl-ok: #34C759;
