@@ -10,7 +10,10 @@ import { lesKildeDataTransfer } from "./wb-drag";
 import { harHake, STATUS_CAPS, WARM } from "./wb-visuelt";
 
 const DAGKORT = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
-const WB_HOUR_PX = 48;
+/** Fasit Claude Design 20.09.2026: timerad 32 px, 05:00–22:00, merkelapp hver time. */
+const WB_HOUR_PX = 32;
+const WB_START_HOUR = 5;
+const WB_END_HOUR = 22;
 
 export function osloIdag(): string {
   return new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Oslo" }).format(new Date());
@@ -53,6 +56,8 @@ export function WeekGrid({
       <TimeGrid
         days={days}
         hourPx={WB_HOUR_PX}
+        startHour={WB_START_HOUR}
+        endHour={WB_END_HOUR}
         bordered={false}
         style={{ background: "transparent" }}
         onEmptyClick={(slot) => {
