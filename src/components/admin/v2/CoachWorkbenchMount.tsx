@@ -1,28 +1,14 @@
 "use client";
 
-/**
- * COACH-WORKBENCH — v2 (retning C «Presis»). Tynn coach-innpakning rundt den
- * delte WorkbenchV2 (src/components/portal/v2/WorkbenchV2.tsx): den samme
- * tidslinje/bibliotek/balanse-flaten, men med coach-kontekst på toppen —
- * spiller-velger + roster — slik den ekte /admin/spillere/[id]/workbench gir.
- *
- * Ærlighet (prosjekt-regel): kun v2-komponenter fra "@/components/v2"; ingen
- * ad-hoc UI-komponenter (kun layout-divs, som i de andre v2-mountene). EKTE
- * roster fra Prisma — ingen fabrikerte spillere. Velger navigerer til
- * /admin/spillere/<id>/workbench (spiller-id i path-segmentet, ?uke= bevares)
- * og serveren laster den valgte spillerens EKTE plandata på nytt.
- * Ingen roster → ærlig tom-tilstand.
- */
-
 import { useRouter, useSearchParams } from "next/navigation";
 import { Caps, Kort, TomTilstand, AvatarInit, Velger, TilbakeLenke, type VelgerIdValg } from "@/components/v2";
 import { TL } from "@/lib/v2/train-lock";
-
 import { WorkbenchV2, type WorkbenchV2Actions } from "@/components/portal/v2/WorkbenchV2";
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
 import type { WorkbenchInsights } from "@/lib/workbench/types";
 import type { PlanStatus } from "@/generated/prisma/client";
 import type { SpillerStedValg } from "@/components/portal/v2/WorkbenchV2Sheets";
+import "@/styles/workbench-lov.css";
 
 export interface CoachRosterPlayer {
   id: string;
@@ -30,32 +16,19 @@ export interface CoachRosterPlayer {
 }
 
 export interface CoachWorkbenchMountProps {
-  /** 8c.3: gruppevelger — valg navigerer til gruppens egen workbench/årsplan. */
   groups?: { id: string; name: string }[];
-  /** Full roster (EKTE spillere) for velgeren. */
   players: CoachRosterPlayer[];
-  /** Aktiv spiller-id (fra rutens params.id). Null = tom stall. */
   currentPlayerId: string | null;
-  /** Navnet på aktiv spiller (for topp-bar i WorkbenchV2). */
   playerName: string;
   coachName: string;
-  /** WorkbenchV2-datakontrakt — uendret fra loadWorkbenchContext. */
   data?: WorkbenchData;
   insights?: WorkbenchInsights | null;
   planStatus?: PlanStatus | null;
-  /** Skrivesiden, bundet til aktiv spiller (coachAddWorkbenchSession m.fl.). */
   actions?: WorkbenchV2Actions;
-  /** B40 §3 — coachens egen Standard/Pro-preferanse (lesPreferences(user).wbMode). */
   wbMode?: "standard" | "pro";
-  /** Aktiv spillers treningssteder fra onboarding — hurtigvalg for «Hvor» i økt-arket. */
   steder?: SpillerStedValg[];
 }
 
-/**
- * Id-baserte valg for velgeren — verdi og React-key er spiller-id (alltid
- * unik), aldri visningsnavnet. Ved navnekollisjon disambiguerer etiketten med
- * de SISTE fire id-tegnene (cuid-er deler prefiks, så starten skiller ikke).
- */
 function byggValg(players: CoachRosterPlayer[]): VelgerIdValg[] {
   const antallPerNavn = new Map<string, number>();
   for (const p of players) antallPerNavn.set(p.navn, (antallPerNavn.get(p.navn) ?? 0) + 1);
@@ -86,18 +59,13 @@ export function CoachWorkbenchMount({
       <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         <Caps>Coach-workbench · {coachName}</Caps>
         <Kort>
-          <TomTilstand
-            icon="users"
-            title="Ingen spillere i stallen"
-            sub="Legg til spillere for å planlegge trening i Workbench."
-          />
+          <TomTilstand icon="users" title="Ingen spillere i stallen" sub="Legg til spillere for å planlegge trening i Workbench." />
         </Kort>
       </div>
     );
   }
 
   const options = byggValg(players);
-
   const bytt = (id: string) => {
     if (id && id !== currentPlayerId) {
       const uke = searchParams.get("uke");
@@ -107,44 +75,21 @@ export function CoachWorkbenchMount({
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+    <div data-wb-lov="1" style={{ display: "flex", flexDirection: "column", gap: 16, background: "#F2F1ED", color: "#111111" }}>
       <TilbakeLenke href={`/admin/spillere/${currentPlayerId}`}>Tilbake til {playerName}</TilbakeLenke>
-      {/* Coach-kontekstbar: hvem planlegger + spiller-velger (roster) */}
       <Kort pad="12px 16px">
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 14,
-            flexWrap: "wrap",
-          }}
-        >
+        <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
             <AvatarInit navn={coachName} size={32} />
             <div style={{ minWidth: 0 }}>
               <Caps size={9}>Coach</Caps>
-              <div
-                style={{
-                  fontFamily: TL.font.sans,
-                  fontSize: 13,
-                  fontWeight: 600,
-                  color: TL.text,
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                }}
-              >
+              <div style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                 {coachName}
               </div>
             </div>
           </div>
           <div style={{ marginLeft: "auto", minWidth: 220, flex: "1 1 260px", maxWidth: 360 }}>
-            <Velger
-              label="Planlegger for"
-              options={options}
-              value={currentPlayerId}
-              onChange={bytt}
-            />
+            <Velger label="Planlegger for" options={options} value={currentPlayerId} onChange={bytt} />
           </div>
           {groups && groups.length > 0 && (
             <div style={{ minWidth: 180, flex: "0 1 220px" }}>
@@ -158,22 +103,11 @@ export function CoachWorkbenchMount({
               />
             </div>
           )}
-          <span
-            style={{
-              fontFamily: TL.font.mono,
-              fontSize: 9,
-              fontWeight: 700,
-              letterSpacing: "0.05em",
-              textTransform: "uppercase",
-              color: TL.mute,
-              flex: "none",
-            }}
-          >
+          <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: TL.mute, flex: "none" }}>
             {players.length} spillere
           </span>
         </div>
       </Kort>
-
       <WorkbenchV2
         data={data}
         insights={insights ?? null}
