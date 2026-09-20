@@ -1,0 +1,39 @@
+--- a/src/components/portal/v2/WorkbenchV2.tsx
++++ b/src/components/portal/v2/WorkbenchV2.tsx
+@@ -70,7 +70,6 @@
+   snapYToSlot,
+ } from "@/components/v2";
+ import { PalettSok } from "@/components/v2/wb-composer";
+-import { TemaHeaderKnapp } from "@/components/v2/tema";
+ import { ForslagArk, NyOktArk, RedigerOktArk, ValgtOktSeksjon, type WorkbenchV2Actions, type NyOktInput, type OktArkDrill, type SpillerStedValg, type DrillTreff } from "./WorkbenchV2Sheets";
+ import { WorkbenchAarsplan, PeriodePalett, WBPeriodeStrip } from "./WorkbenchAarsplan";
+ import type { WeekSuggestion } from "@/lib/ai-plan/week-suggest";
+@@ -82,7 +81,7 @@
+ import { sokOvelser, hentOktKomponist, hentMalOktDrills } from "@/lib/workbench/ovelse-sok";
+ import type { WorkbenchInsights } from "@/lib/workbench/types";
+ import type { WeekEvent } from "@/lib/workbench/week-types";
+-import type { PlanStatus, LFase } from "@/generated/prisma/client";
++import type { PlanStatus } from "@/generated/prisma/client";
+ import { fmtVarighet, fmtTimer, toKl } from "@/lib/workbench/v2-format";
+ import {
+   sesongvindu,
+@@ -96,19 +95,10 @@
+ } from "@/lib/workbench/turnering-plan";
+ import { WEEK_OFFSET_MIN, WEEK_OFFSET_MAX } from "@/lib/workbench/session-move-math";
+ import { setWbMode } from "@/lib/workbench/wb-mode-action";
+-import { faseLabel } from "@/lib/ak-formel-visning";
++import { UI } from "@/lib/domain/workbench/labels";
+ 
+ export type { WorkbenchV2Actions } from "./WorkbenchV2Sheets";
+ 
+-/** Klarspråk for L-fase i tidslinje — tåler null/ukjent uten å kaste. */
+-function faseLabelSafe(lFase: string): string {
+-  try {
+-    return faseLabel(lFase as LFase);
+-  } catch {
+-    return lFase;
+-  }
+-}
+-
+ /* ── Konstanter ────────────────────────────────────────── */
+ const DOW7 = ["MAN", "TIR", "ONS", "TOR", "FRE", "LØR", "SØN"];
