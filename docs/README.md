@@ -1,37 +1,14 @@
 # Dokumentoversikt
 
-**Start i [START-HER.md](../START-HER.md).** Dokumentene nedenfor har ulike roller; en historisk måling, en produktbeskrivelse og en godkjent designtegning er ikke samme type kilde.
+**Start i [START-HER.md](../START-HER.md).**
 
 | Du trenger | Les |
 |---|---|
-| Nåstatus | [STATUS-NÅ.md](STATUS-NÅ.md) |
-| Gjeldende arbeid og bevarte bestillinger | [Arbeidslisten](MASTERPLAN-GJENSTAAENDE.md) |
-| Funksjonsbredde og produktavklaringer | [Funksjonsregister](planer/funksjonsregister-2026-09-11.md), [produktintervju](planer/produktplan-og-intervju-2026-09-11.md) |
+| Fasit (chrome, Workbench, port) | [FASIT.md](FASIT.md) |
+| Treningsfag og skjermord | [Ordbok-master](ordbok-master-trening.md), [staving](ordbok-ak-golf-konsept.md) |
 | Prosjekt og kodekart | [Agent Brief](platform/AGENT-BRIEF.md) |
-| Designarbeid og eksisterende referanser | [Designkartet](../designsystem/README.md) |
-| Prosjektets design-skill og hovedprompt | [AK HQ Designarbeid](design-system/ak-hq-designarbeid.md) |
-| Grok 4.6 mens nytt design lages | [Teknisk startplan og Terminal-prompt](planer/grok-4-6-start-2026-09-12.md) |
 | Låste produktregler | [BUSINESS-RULES.md](platform/BUSINESS-RULES.md) |
-| Treningsfag | [Ordbok-master for trening, tall og TrackMan](ordbok-master-trening.md) (koder, navn, betydning), [staving av appord](ordbok-ak-golf-konsept.md) |
-| Samlet språk, ord og skjermtekst | [Språk og ordbok – arbeidsutgave for gjennomgang](skjermtekst/ak-golf-hq-sprak-og-ordbok.md) – gjeldende regler, kildeoppføringer og åpne ordvalg |
-| Tester og drift | [Testing](testing.md), [drift](runbook.md), [visuell kontroll](../tests/visual/README.md) |
-| Sikkerhet og personvern i AI-arbeid | [ak-sikkerhet](../.claude/skills/ak-sikkerhet/SKILL.md), [ak-personvern](../.claude/skills/ak-personvern/SKILL.md), [SECURITY.md](../SECURITY.md), [GDPR](gdpr/datakart.md) |
-| Hva oppryddingen gjorde | [Prosjektkart og kontrollresultat](vedlikehold/prosjektkart.md), [flyttelogg](vedlikehold/flyttelogg-2026-09-10.json) |
-| Siste kode-/grensamling | [Grengjennomgang 12.09](vedlikehold/grengjennomgang-2026-09-12.md), [samling og opprydding 11.09](vedlikehold/samling-og-opprydding-2026-09-11.md) |
-| Alle dokumenter, også historiske | [Dokumentregister](vedlikehold/dokumentregister.md) |
+| Tester og drift | [Testing](testing.md), [runbook](runbook.md) |
+| Sikkerhet | [SECURITY.md](../SECURITY.md), [GDPR](gdpr/datakart.md) |
 
-## Hvor nytt materiale skal ligge
-
-- `platform/`: produktregler, kontrakter og teknisk oversikt.
-- `planer/`: daterte underplaner. Rekkefølgen eies av arbeidslisten, ikke hver enkelt plan.
-- `beslutningsgrunnlag/` og `design-audit/`: daterte funn og målinger, med metode og begrensninger.
-- `referanse/`: underlag som bevares, blant annet Masterbrain-pakken. Ikke prosjektinstrukser.
-- `design-system/`: hvordan tema og design er koblet til appen; designreferansene bor i `designsystem/` i prosjektroten. Eksisterende design er under revisjon, ikke låst.
-- `treningsplanlegger/`, `marketing/`, `merkevare/`, `skjermtekst/`: fag- og innholdsunderlag for de navngitte områdene.
-- `integrasjoner/`, `epost-maler/`, `sikkerhet/`, `gdpr/`, `juridisk/`, `qa/`: fagspesifikke dokumenter; ikke automatisk verifisert av kodekontrollene.
-- `natt/`: bevarte Workbench-kontrakter på stabile stier, ikke en aktiv nattplan.
-- `utvikling/`: miljøspesifikke utviklingsoppskrifter.
-- `vedlikehold/`: prosjektkart, inventar og strukturregler.
-- `arkiv/`: utgåtte instrukser og historikk. Begynn aldri et nytt arbeid her.
-
-Eksisterende rotfiler med fagordbøker og produktspecifikasjoner beholder navn der kode og dokumenter siterer dem. Nye dokumenter får små bokstaver og bindestrek. Ikke opprett et nytt «master»- eller «status»-dokument ved siden av de gjeldende.
+`docs/planer`, `docs/arkiv`, `docs/natt`, `docs/design-audit` og rotmappen `designsystem/` er utgått. Ikke start nytt arbeid der.
