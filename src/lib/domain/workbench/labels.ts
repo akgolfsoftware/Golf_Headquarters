@@ -1,6 +1,5 @@
 /**
  * Norwegian UI strings for Workbench — single source of truth.
- * Never hard-code Norwegian in components; import from here.
  */
 
 import type {
@@ -87,21 +86,32 @@ export const UI = {
   visStall: "Stall",
   visLive: "Live",
   visMin: "Min kalender",
+  formelMotorikk: "Motorikk",
+  formelBelastning: "Belastning",
+  formelPress: "Press",
+  formelHensikt: "Hensikt",
+  formelMate: "Måte",
+  formelMal: "Målsetning",
+  formelHintMotorikk: "Stige: uten ball → lav hastighet → automatikk.",
+  formelHintBelastning: "Miljø: innendørs → treningsområde → bane → konkurranse. Ikke kg.",
+  formelHintPress: "Alene → observert → konkurranse → turnering.",
+  formelHintHensikt: "Bare FYS: øke styrke · vedlikehold · restitusjon.",
+  formelHintMate: "Hvordan økten gjennomføres.",
+  formelHintMal: "Hva økten skal flytte.",
+  formelHintPyramide: "FYS · TEK · SLAG · SPILL · TURN.",
+  formelHintOmrade: "Hvor på anlegget. Putt i fot, ellers meter.",
+  sourcesNivaa: "Plan",
+  sourcesStall: "Stall",
   monthNavPrev: "Forrige måned",
   monthNavNext: "Neste måned",
   yearNavPrev: "Forrige år",
   yearNavNext: "Neste år",
   weekdayShort: ["Ma", "Ti", "On", "To", "Fr", "Lø", "Sø"] as const,
-  monthNames: [
-    "Januar","Februar","Mars","April","Mai","Juni",
-    "Juli","August","September","Oktober","November","Desember",
-  ] as const,
+  monthNames: ["Januar","Februar","Mars","April","Mai","Juni","Juli","August","September","Oktober","November","Desember"] as const,
   emptyMonthTitle: "Måneden er tom",
-  emptyMonthBody:
-    "Måneden er tom. Start med en ukemal, eller legg inn den første økten der du vet den skal ligge.",
+  emptyMonthBody: "Måneden er tom. Start med en ukemal, eller legg inn den første økten der du vet den skal ligge.",
   moreCount: (n: number) => `+${n} mer`,
-  weekHours: (uke: number, count: number, hours: string) =>
-    `Uke ${uke} · ${count} økter · ${hours} t`,
+  weekHours: (uke: number, count: number, hours: string) => `Uke ${uke} · ${count} økter · ${hours} t`,
   yearSeason: (year: number) => `Sesong ${year}`,
   yearHours: (count: number, hours: string) => `${count} økter · ${hours} t`,
   monthHint: "Måneden viser ikke klokketid — åpne uken for å endre tid.",
@@ -153,15 +163,12 @@ export const UI = {
   removeDrillLabel: "Fjern øvelse",
   incompleteDrill: "Mangler info",
   publishConfirmTitle: "Publiser til spilleren?",
-  publishConfirmBody:
-    "Økten blir synlig i spillerens «I dag» og plan. Du kan trekke den tilbake senere.",
+  publishConfirmBody: "Økten blir synlig i spillerens «I dag» og plan. Du kan trekke den tilbake senere.",
   publishSuccess: "Publisert",
   publishing: "Publiserer …",
   alreadyPublished: "Allerede publisert",
-  publishTodayWarnOne:
-    "Én av øktene er i dag og dukker opp i spillerens «I dag» med en gang.",
-  publishTodayWarnMany: (antall: number) =>
-    `${antall} av øktene er i dag og dukker opp i spillerens «I dag» med en gang.`,
+  publishTodayWarnOne: "Én av øktene er i dag og dukker opp i spillerens «I dag» med en gang.",
+  publishTodayWarnMany: (antall: number) => `${antall} av øktene er i dag og dukker opp i spillerens «I dag» med en gang.`,
   publishOverlapWarnTitle: "Overlapp i valgte økter",
   publishVelgAlle: "Velg alle",
   publishValgtAvTotalt: (valgt: number, totalt: number) => `${valgt} av ${totalt} valgt`,
@@ -169,8 +176,7 @@ export const UI = {
   publishRadOpptatt: "Opptatt",
   publishValgte: (n: number) => `Publiser valgte · ${n}`,
   publishAlle: (n: number) => `Publiser alle · ${n}`,
-  budgetLabel: (plannedH: string, targetH: string) =>
-    `Ukevolum ${plannedH} t · mål ${targetH} t`,
+  budgetLabel: (plannedH: string, targetH: string) => `Ukevolum ${plannedH} t · mål ${targetH} t`,
   overlapWarn: "Overlapp med annen økt",
   sourcesTitle: "Kilder",
   sourcesDrills: "Øvelsesbank",
@@ -272,9 +278,7 @@ export function formatMinutes(m: number): string {
 }
 
 export function formatTime(minute: number): string {
-  const h = Math.floor(minute / 60)
-    .toString()
-    .padStart(2, "0");
+  const h = Math.floor(minute / 60).toString().padStart(2, "0");
   const m = (minute % 60).toString().padStart(2, "0");
   return `${h}:${m}`;
 }
