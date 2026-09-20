@@ -1,34 +1,5 @@
 "use client";
 
-/**
- * WorkbenchUke — orkestreringen av Agency-uka (natt-plan Loop 2, PX-2).
- *
- * Fasit (kanon for struktur og brekkpunkter, Anders 02.09.2026, D2):
- * designsystem/train-lock/WB-01 Uke minimum.dc.html — Mac (WB-01a), iPad
- * (WB-01b), iPhone (WB-01c) og etter-publisering (WB-01d).
- * Fasit (kun Mac-pikselnivå der WB-01 mangler detalj — border, radius,
- * skygge, eksakte px): designsystem/train-lock/A-01 Mac Uke Pro.dc.html.
- *
- * A-07 (Standard/Pro-toggle + Balanse-kolonne) og A-08 (Coach/Spiller-
- * rolletoggle) er IKKE lenger fasit for denne skjermen — WB-01 tegner
- * verken en tredje Balanse-kolonne eller noen rolle-/nivåtoggle i topplinjen.
- * De to «avvikene» PX-2 dokumenterte mot dem er dermed ikke avvik lenger,
- * bare et supersedert fasit-valg (D2 avgjorde WB- vs. A-serien 02.09.2026).
- *
- * Kjente avvik mot WB-01 (verifisert 02.09.2026):
- * - Kilder-panelet (SourcesPanel) grupperer Drills/Maler/Tidligere uker —
- *   WB-01a viser Ukemaler/Standardøkter/Øvelsesbank. Ulik gruppering, samme
- *   dra-inn-mønster.
- * - A-12/WB-01b: iPad-bruddpunktet bruker lg-terskelen og full uke-rutenett,
- *   ikke WB-01bs egen 250 px-skinne med tellinger i kildepanelet.
- * - A-13/WB-01c: mobil viser rutenettet, ikke WB-01cs dagstripe + agenda-
- *   liste med «+»-ark og «Flytt økt»-kort (Velg dag/Velg tid).
- *
- * Eier tilstanden (valgt økt, dialoger, laster/feil) og oversetter
- * `WbResultat` fra server-actions til norsk copy + toast. Domenet er rent,
- * actions eier sideeffektene, denne filen eier bare skjermen.
- */
-
 import { useCallback, useMemo, useState, useTransition, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -38,27 +9,16 @@ import { BunnArk } from "@/components/v2/bunn-ark";
 import { TL } from "@/lib/v2/train-lock";
 import { addDays, isoWeekNumber, mondayOf, validateWeek } from "@/lib/domain/workbench/operations";
 import { AREA_LABEL, formatHours, PYRAMID_LABEL, UI } from "@/lib/domain/workbench/labels";
-import type {
-  SourceItem,
-  WeekViewModel,
-  WorkbenchSession,
-} from "@/lib/domain/workbench/types";
-import type { RecurrencePolicy } from "@/lib/domain/workbench/types";
+import type { SourceItem, WeekViewModel, WorkbenchSession, RecurrencePolicy } from "@/lib/domain/workbench/types";
 import { addDrill, addDrillFromSource, createSession, createSessionFromSource, createSessionSeries, deleteSession, deleteSessionSeries, loadWeek, moveSession, publishSessions, removeDrill, reorderDrills, setSessionTemplate, unpublishSession } from "@/lib/workbench/wb-actions";
 import { CreateSessionModal, type NyOktVerdier } from "./CreateSessionModal";
 import { PublishConfirmDialog } from "./PublishConfirmDialog";
 import { SessionInspector, type FlyttVerdier, type LeggTilDrillVerdier } from "./SessionInspector";
 import { SourcesPanel } from "./SourcesPanel";
-import { TL_SCOPE } from "./wb-tl-scope";
 import { osloIdag, WeekGrid } from "./WeekGrid";
 import { VisningPiller } from "./VisningPiller";
 
-type Props = {
-  playerId: string;
-  spillerNavn: string;
-  uke: WeekViewModel;
-  kilder: SourceItem[];
-};
+type Props = { playerId: string; spillerNavn: string; uke: WeekViewModel; kilder: SourceItem[] };
 
 export function WorkbenchUke({ playerId, spillerNavn, uke, kilder }: Props) {
   const router = useRouter();
@@ -69,50 +29,23 @@ export function WorkbenchUke({ playerId, spillerNavn, uke, kilder }: Props) {
   const [valgtePubliser, setValgtePubliser] = useState<Set<string>>(new Set());
   const [feil, setFeil] = useState<string | null>(null);
   const [travel, start] = useTransition();
-
   const idag = osloIdag();
   const alleOkter = useMemo(() => week.days.flatMap((d) => d.sessions), [week]);
   const utkast = useMemo(() => alleOkter.filter((s) => s.status === "DRAFT"), [alleOkter]);
-  /** Overlapp-VARSEL for hele uka (aldri en sperre — invariant 1). Vises i publiser-dialogen. */
   const valideringsnotater = useMemo(() => validateWeek(alleOkter), [alleOkter]);
-  /** Øktene et overlapp-varsel peker på — WB-03: holdes automatisk utenfor "Publiser valgte". */
-  const opptattIder = useMemo(
-    () => new Set(valideringsnotater.map((n) => n.sessionId).filter((id): id is string => !!id)),
-    [valideringsnotater],
-  );
-  const valgt = useMemo(
-    () => alleOkter.find((s) => s.id === valgtId) ?? null,
-    [alleOkter, valgtId],
-  );
+  const opptattIder = useMemo(() => new Set(valideringsnotater.map((n) => n.sessionId).filter((id): id is string => !!id)), [valideringsnotater]);
+  const valgt = useMemo(() => alleOkter.find((s) => s.id === valgtId) ?? null, [alleOkter, valgtId]);
 
-  /** Henter uka på nytt etter en skriving. Feil her er en tilstand, ikke en stille no-op. */
   const lastPaaNytt = useCallback(async () => {
-    const res = await loadWeek({
-      weekStart: week.weekStart,
-      mode: week.mode,
-      playerId,
-      targetMinutes: week.budget.targetMinutes,
-    });
-    if (res.ok) {
-      setWeek(res.data);
-      setFeil(null);
-    } else {
-      setFeil(res.error);
-    }
+    const res = await loadWeek({ weekStart: week.weekStart, mode: week.mode, playerId, targetMinutes: week.budget.targetMinutes });
+    if (res.ok) { setWeek(res.data); setFeil(null); } else { setFeil(res.error); }
   }, [playerId, week.weekStart, week.mode, week.budget.targetMinutes]);
 
-  function kjor<T>(
-    handling: () => Promise<{ ok: true; data: T } | { ok: false; error: string }>,
-    vedSuksess: (data: T) => void,
-  ) {
+  function kjor<T>(handling: () => Promise<{ ok: true; data: T } | { ok: false; error: string }>, vedSuksess: (data: T) => void) {
     start(async () => {
       try {
         const res = await handling();
-        if (!res.ok) {
-          setFeil(res.error);
-          toast.error(res.error);
-          return;
-        }
+        if (!res.ok) { setFeil(res.error); toast.error(res.error); return; }
         setFeil(null);
         await lastPaaNytt();
         vedSuksess(res.data);
@@ -124,92 +57,27 @@ export function WorkbenchUke({ playerId, spillerNavn, uke, kilder }: Props) {
   }
 
   function byttUke(retning: -1 | 1) {
-    const ny = mondayOf(addDays(week.weekStart, retning * 7));
-    router.push(`/admin/workbench/${playerId}?uke=${ny}`);
+    router.push(`/admin/workbench/${playerId}?uke=${mondayOf(addDays(week.weekStart, retning * 7))}`);
   }
 
-  /** Delt mellom desktop-panelet (fast kolonne) og mobil-bunn-arket — samme handlinger. */
   const inspectorNode = (
     <SessionInspector
-      key={
-        valgt ? `${valgt.id}:${valgt.date}:${valgt.startMinute}:${valgt.durationMinutes}` : "tom"
-      }
+      key={valgt ? `${valgt.id}:${valgt.date}:${valgt.startMinute}:${valgt.durationMinutes}` : "tom"}
       session={valgt}
       travel={travel}
-      onFlytt={(v: FlyttVerdier) => {
-        if (!valgt) return;
-        kjor(
-          () =>
-            moveSession({
-              sessionId: valgt.id,
-              newDate: v.newDate,
-              newStartMinute: v.newStartMinute,
-              newDurationMinutes: v.newDurationMinutes,
-            }),
-          () => toast.success(UI.toastSessionMoved),
-        );
-      }}
-      onPubliser={() => {
-        if (!valgt) return;
-        kjor(
-          () => publishSessions([valgt.id]),
-          () => toast.success(UI.publishSuccess),
-        );
-      }}
-      onTrekkTilbake={() => {
-        if (!valgt) return;
-        kjor(
-          () => unpublishSession(valgt.id),
-          () => toast.success(UI.toastUnpublished),
-        );
-      }}
+      onFlytt={(v: FlyttVerdier) => { if (!valgt) return; kjor(() => moveSession({ sessionId: valgt.id, newDate: v.newDate, newStartMinute: v.newStartMinute, newDurationMinutes: v.newDurationMinutes }), () => toast.success(UI.toastSessionMoved)); }}
+      onPubliser={() => { if (!valgt) return; kjor(() => publishSessions([valgt.id]), () => toast.success(UI.publishSuccess)); }}
+      onTrekkTilbake={() => { if (!valgt) return; kjor(() => unpublishSession(valgt.id), () => toast.success(UI.toastUnpublished)); }}
       onSlett={(policy: RecurrencePolicy) => {
         if (!valgt) return;
         const id = valgt.id;
-        if (!valgt.seriesId) {
-          kjor(
-            () => deleteSession(id),
-            () => {
-              setValgtId(null);
-              toast.success(UI.toastSessionDeleted);
-            },
-          );
-          return;
-        }
-        kjor(
-          () => deleteSessionSeries({ sessionId: id, policy }),
-          ({ slettet }) => {
-            setValgtId(null);
-            toast.success(UI.toastSeriesDeleted(slettet));
-          },
-        );
+        if (!valgt.seriesId) { kjor(() => deleteSession(id), () => { setValgtId(null); toast.success(UI.toastSessionDeleted); }); return; }
+        kjor(() => deleteSessionSeries({ sessionId: id, policy }), ({ slettet }) => { setValgtId(null); toast.success(UI.toastSeriesDeleted(slettet)); });
       }}
-      onLagreSomMal={(isTemplate: boolean) => {
-        if (!valgt) return;
-        kjor(
-          () => setSessionTemplate(valgt.id, isTemplate),
-          () => toast.success(isTemplate ? UI.toastTemplateSaved : UI.toastTemplateRemoved),
-        );
-      }}
+      onLagreSomMal={(isTemplate: boolean) => { if (!valgt) return; kjor(() => setSessionTemplate(valgt.id, isTemplate), () => toast.success(isTemplate ? UI.toastTemplateSaved : UI.toastTemplateRemoved)); }}
       onLeggTilDrill={(v: LeggTilDrillVerdier) => {
         if (!valgt) return;
-        kjor(
-          () =>
-            addDrill({
-              sessionId: valgt.id,
-              drill: {
-                title: v.title,
-                durationMinutes: v.durationMinutes,
-                akFormel: {
-                  pyramid: v.pyramid,
-                  area: v.area,
-                  label: `${PYRAMID_LABEL[v.pyramid]} · ${AREA_LABEL[v.area]}`,
-                },
-                description: v.description,
-              },
-            }),
-          () => toast.success(UI.toastDrillAdded),
-        );
+        kjor(() => addDrill({ sessionId: valgt.id, drill: { title: v.title, durationMinutes: v.durationMinutes, akFormel: { pyramid: v.pyramid, area: v.area, label: `${PYRAMID_LABEL[v.pyramid]} · ${AREA_LABEL[v.area]}` }, description: v.description } }), () => toast.success(UI.toastDrillAdded));
       }}
       onFlyttDrill={(drillId, retning) => {
         if (!valgt) return;
@@ -218,369 +86,67 @@ export function WorkbenchUke({ playerId, spillerNavn, uke, kilder }: Props) {
         if (idx < 0 || nyIdx < 0 || nyIdx >= valgt.drills.length) return;
         const rekkefolge = valgt.drills.map((d) => d.id);
         [rekkefolge[idx], rekkefolge[nyIdx]] = [rekkefolge[nyIdx], rekkefolge[idx]];
-        kjor(
-          () => reorderDrills({ sessionId: valgt.id, orderedDrillIds: rekkefolge }),
-          () => {},
-        );
+        kjor(() => reorderDrills({ sessionId: valgt.id, orderedDrillIds: rekkefolge }), () => {});
       }}
-      onFjernDrill={(drillId) => {
-        if (!valgt) return;
-        kjor(
-          () => removeDrill({ sessionId: valgt.id, drillId }),
-          () => toast.success(UI.toastDrillRemoved),
-        );
-      }}
+      onFjernDrill={(drillId) => { if (!valgt) return; kjor(() => removeDrill({ sessionId: valgt.id, drillId }), () => toast.success(UI.toastDrillRemoved)); }}
     />
   );
 
   return (
-    <div
-      style={{
-        ...TL_SCOPE,
-        display: "grid",
-        gap: 16,
-        minWidth: 0,
-        background: "var(--tl-scene)",
-        color: "var(--tl-text)",
-        fontFamily: "var(--tl-font-sans)",
-      }}
-    >
-      <Topplinje
-        playerId={playerId}
-        spillerNavn={spillerNavn}
-        week={week}
-        antallUtkast={utkast.length}
-        travel={travel}
-        onForrige={() => byttUke(-1)}
-        onNeste={() => byttUke(1)}
-        onIdag={() => router.push(`/admin/workbench/${playerId}?uke=${mondayOf(idag)}`)}
-        onNyOkt={() => setNyOkt({ dato: week.days[0]?.date ?? idag, startMinutt: 16 * 60 })}
-        onPubliser={() => {
-          // WB-03: alle utkast er forhåndsvalgt, unntatt de med et overlapp-varsel.
-          setValgtePubliser(new Set(utkast.filter((s) => !opptattIder.has(s.id)).map((s) => s.id)));
-          setPubliserApen(true);
-        }}
-      />
-
+    <div style={{ display: "grid", gap: 16, minWidth: 0, background: "#F2F1ED", color: "#111111", fontFamily: "var(--tl-font-sans)" }}>
+      <Topplinje playerId={playerId} spillerNavn={spillerNavn} week={week} antallUtkast={utkast.length} travel={travel} onForrige={() => byttUke(-1)} onNeste={() => byttUke(1)} onIdag={() => router.push(`/admin/workbench/${playerId}?uke=${mondayOf(idag)}`)} onNyOkt={() => setNyOkt({ dato: week.days[0]?.date ?? idag, startMinutt: 16 * 60 })} onPubliser={() => { setValgtePubliser(new Set(utkast.filter((s) => !opptattIder.has(s.id)).map((s) => s.id))); setPubliserApen(true); }} />
       {feil && (
-        <div
-          role="alert"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-            padding: "11px 13px",
-            borderRadius: TL.radius.card,
-            border: `1px solid color-mix(in srgb, ${TL.danger} 35%, transparent)`,
-            background: `color-mix(in srgb, ${TL.danger} 8%, transparent)`,
-          }}
-        >
+        <div role="alert" style={{ display: "flex", alignItems: "center", gap: 10, padding: "11px 13px", borderRadius: 2, border: `1px solid color-mix(in srgb, ${TL.danger} 35%, transparent)`, background: `color-mix(in srgb, ${TL.danger} 8%, transparent)` }}>
           <Icon name="triangle-alert" size={15} style={{ color: TL.danger }} />
           <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text, flex: 1 }}>{feil}</span>
-          <Knapp ghost onClick={() => void lastPaaNytt()}>
-            {UI.retry}
-          </Knapp>
+          <Knapp ghost onClick={() => void lastPaaNytt()}>{UI.retry}</Knapp>
         </div>
       )}
-
-      {/* Kolonnebredder låst av D2-beslutning 3: kilder TL.skall.kilder (220),
-          inspektør TL.skall.artefakt (380). */}
-      <div
-        className="grid grid-cols-1 lg:grid-cols-[var(--wb-kilder)_minmax(0,1fr)_var(--wb-artefakt)]"
-        style={{
-          gap: 16,
-          minWidth: 0,
-          alignItems: "start",
-          ["--wb-kilder" as string]: TL.skall.kilder,
-          ["--wb-artefakt" as string]: TL.skall.artefakt,
-        }}
-      >
+      <div className="grid grid-cols-1 lg:grid-cols-[var(--wb-kilder)_minmax(0,1fr)_var(--wb-artefakt)]" style={{ gap: 16, minWidth: 0, alignItems: "start", ["--wb-kilder" as string]: TL.skall.kilder, ["--wb-artefakt" as string]: TL.skall.artefakt }}>
         <div className="hidden lg:block" style={{ minWidth: 0 }}>
-          <SourcesPanel kilder={kilder} />
+          <SourcesPanel kilder={kilder} playerId={playerId} uke={week.weekStart} maned={week.weekStart.slice(0, 7)} aar={week.weekStart.slice(0, 4)} />
         </div>
-
         <div style={{ minWidth: 0 }}>
-          <WeekGrid
-            week={week}
-            selectedSessionId={valgtId}
-            onSelectSession={setValgtId}
-            onCreateAt={(dato, startMinutt) => setNyOkt({ dato, startMinutt })}
-            onDropSource={(dato, startMinutt, sourceId) => {
-              kjor(
-                () => createSessionFromSource({ playerId, sourceId, date: dato, startMinute: startMinutt }),
-                (okt) => {
-                  setValgtId(okt.id);
-                  toast.success(UI.toastSourceDropped);
-                },
-              );
-            }}
-            onDropDrillOnSession={(sessionId, sourceId) => {
-              kjor(
-                () => addDrillFromSource({ sessionId, sourceId }),
-                () => toast.success(UI.toastDrillDroppedOnSession),
-              );
-            }}
-          />
+          <WeekGrid week={week} selectedSessionId={valgtId} onSelectSession={setValgtId} onCreateAt={(dato, startMinutt) => setNyOkt({ dato, startMinutt })} onDropSource={(dato, startMinutt, sourceId) => { kjor(() => createSessionFromSource({ playerId, sourceId, date: dato, startMinute: startMinutt }), (okt) => { setValgtId(okt.id); toast.success(UI.toastSourceDropped); }); }} onDropDrillOnSession={(sessionId, sourceId) => { kjor(() => addDrillFromSource({ sessionId, sourceId }), () => toast.success(UI.toastDrillDroppedOnSession)); }} />
         </div>
-
-        <div className="hidden lg:block" style={{ minWidth: 0 }}>
-          {inspectorNode}
-        </div>
+        <div className="hidden lg:block" style={{ minWidth: 0 }}>{inspectorNode}</div>
       </div>
-
-      {/* Mobil (< lg): inspektøren er ellers helt utilgjengelig, se gotchas §Cookie-banner
-          for bunn-forankret-mønsteret BunnArk selv arver (kjent, ikke løst her). */}
       <div className="lg:hidden">
-        <BunnArk
-          open={valgtId !== null}
-          onClose={() => setValgtId(null)}
-          tittel={valgt?.title ?? UI.inspectorTitle}
-        >
-          {inspectorNode}
-        </BunnArk>
+        <BunnArk open={valgtId !== null} onClose={() => setValgtId(null)} tittel={valgt?.title ?? UI.inspectorTitle}>{inspectorNode}</BunnArk>
       </div>
-
-      <CreateSessionModal
-        key={nyOkt ? `${nyOkt.dato}:${nyOkt.startMinutt}` : "lukket"}
-        open={nyOkt !== null}
-        dato={nyOkt?.dato ?? idag}
-        startMinutt={nyOkt?.startMinutt ?? 16 * 60}
-        lagrer={travel}
-        onLukk={() => setNyOkt(null)}
-        onOpprett={(v: NyOktVerdier) => {
-          const { repeatWeeks, ...felter } = v;
-          if (repeatWeeks > 1) {
-            kjor(
-              () => createSessionSeries({ playerId, ...felter, repeatWeeks }),
-              (okter: WorkbenchSession[]) => {
-                setNyOkt(null);
-                setValgtId(okter[0]?.id ?? null);
-                toast.success(UI.toastSeriesCreated(okter.length));
-              },
-            );
-            return;
-          }
-          kjor(
-            () => createSession({ playerId, ...felter }),
-            (okt: WorkbenchSession) => {
-              setNyOkt(null);
-              setValgtId(okt.id);
-              toast.success(UI.toastDraftCreated);
-            },
-          );
-        }}
-      />
-
-      <PublishConfirmDialog
-        open={publiserApen}
-        okter={utkast}
-        idag={idag}
-        spillerNavn={spillerNavn}
-        notater={valideringsnotater}
-        opptattIder={opptattIder}
-        valgte={valgtePubliser}
-        onVeksle={(id) =>
-          setValgtePubliser((prev) => {
-            const neste = new Set(prev);
-            if (neste.has(id)) neste.delete(id);
-            else neste.add(id);
-            return neste;
-          })
-        }
-        onVelgAlle={() =>
-          setValgtePubliser((prev) =>
-            prev.size === utkast.length ? new Set() : new Set(utkast.map((s) => s.id)),
-          )
-        }
-        publiserer={travel}
-        onLukk={() => setPubliserApen(false)}
-        onPubliserValgte={() => {
-          const ider = utkast.filter((s) => valgtePubliser.has(s.id)).map((s) => s.id);
-          if (ider.length === 0) return;
-          kjor(
-            () => publishSessions(ider),
-            (publiserte: WorkbenchSession[]) => {
-              setPubliserApen(false);
-              toast.success(
-                publiserte.length === 1
-                  ? UI.toastPublishedOne
-                  : UI.toastPublishedMany(publiserte.length),
-              );
-            },
-          );
-        }}
-        onPubliserAlle={() => {
-          kjor(
-            () => publishSessions(utkast.map((s) => s.id)),
-            (publiserte: WorkbenchSession[]) => {
-              setPubliserApen(false);
-              toast.success(
-                publiserte.length === 1
-                  ? UI.toastPublishedOne
-                  : UI.toastPublishedMany(publiserte.length),
-              );
-            },
-          );
-        }}
-      />
+      <CreateSessionModal key={nyOkt ? `${nyOkt.dato}:${nyOkt.startMinutt}` : "lukket"} open={nyOkt !== null} dato={nyOkt?.dato ?? idag} startMinutt={nyOkt?.startMinutt ?? 16 * 60} lagrer={travel} onLukk={() => setNyOkt(null)} onOpprett={(v: NyOktVerdier) => {
+        const { repeatWeeks, ...felter } = v;
+        if (repeatWeeks > 1) { kjor(() => createSessionSeries({ playerId, ...felter, repeatWeeks }), (okter: WorkbenchSession[]) => { setNyOkt(null); setValgtId(okter[0]?.id ?? null); toast.success(UI.toastSeriesCreated(okter.length)); }); return; }
+        kjor(() => createSession({ playerId, ...felter }), (okt: WorkbenchSession) => { setNyOkt(null); setValgtId(okt.id); toast.success(UI.toastDraftCreated); });
+      }} />
+      <PublishConfirmDialog open={publiserApen} okter={utkast} idag={idag} spillerNavn={spillerNavn} notater={valideringsnotater} opptattIder={opptattIder} valgte={valgtePubliser} onVeksle={(id) => setValgtePubliser((prev) => { const neste = new Set(prev); if (neste.has(id)) neste.delete(id); else neste.add(id); return neste; })} onVelgAlle={() => setValgtePubliser((prev) => prev.size === utkast.length ? new Set() : new Set(utkast.map((s) => s.id)))} publiserer={travel} onLukk={() => setPubliserApen(false)} onPubliserValgte={() => { const ider = utkast.filter((s) => valgtePubliser.has(s.id)).map((s) => s.id); if (ider.length === 0) return; kjor(() => publishSessions(ider), (publiserte: WorkbenchSession[]) => { setPubliserApen(false); toast.success(publiserte.length === 1 ? UI.toastPublishedOne : UI.toastPublishedMany(publiserte.length)); }); }} onPubliserAlle={() => { kjor(() => publishSessions(utkast.map((s) => s.id)), (publiserte: WorkbenchSession[]) => { setPubliserApen(false); toast.success(publiserte.length === 1 ? UI.toastPublishedOne : UI.toastPublishedMany(publiserte.length)); }); }} />
     </div>
   );
 }
 
-/**
- * Topplinjen — fasit A-01: spillernavnet ER tittelen (26/700/−0.01em) med
- * caps «utkast»-merke ved siden av, deretter visnings-pillene, og helt til
- * høyre «+ Ny økt» (hairline-pille 36) + den ENE hvite primæren «Publiser»
- * (36 px pille, 13/700). Under: brødsmulen «Sesong 2026 › August › Uke 34».
- * Uke-navigasjonen (‹ I dag ›) er beholdt som funksjon — fasiten navigerer
- * via brødsmule/minikalender som ikke er bygget ennå (avvik, PX-2).
- */
-function Topplinje({
-  playerId,
-  spillerNavn,
-  week,
-  antallUtkast,
-  travel,
-  onForrige,
-  onNeste,
-  onIdag,
-  onNyOkt,
-  onPubliser,
-}: {
-  playerId: string;
-  spillerNavn: string;
-  week: WeekViewModel;
-  antallUtkast: number;
-  travel: boolean;
-  onForrige: () => void;
-  onNeste: () => void;
-  onIdag: () => void;
-  onNyOkt: () => void;
-  onPubliser: () => void;
-}) {
+function Topplinje({ playerId, spillerNavn, week, antallUtkast, travel, onForrige, onNeste, onIdag, onNyOkt, onPubliser }: { playerId: string; spillerNavn: string; week: WeekViewModel; antallUtkast: number; travel: boolean; onForrige: () => void; onNeste: () => void; onIdag: () => void; onNyOkt: () => void; onPubliser: () => void }) {
   const ukeNr = isoWeekNumber(week.weekStart);
   const manedNavn = UI.monthNames[Number(week.weekStart.slice(5, 7)) - 1];
-  const pillestil: CSSProperties = {
-    height: 36,
-    borderRadius: 9999,
-    minHeight: 36,
-    padding: "0 16px",
-    background: "transparent",
-    border: "none",
-    boxShadow: `inset 0 0 0 1px ${TL.draftBorder}`,
-    fontSize: 13,
-    fontWeight: 600,
-    color: TL.text,
-  };
-
+  const ghost: CSSProperties = { minHeight: 44, borderRadius: 2, padding: "0 12px" };
   return (
     <div style={{ display: "grid", gap: 8, minWidth: 0 }}>
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          alignItems: "center",
-          gap: 14,
-          minWidth: 0,
-        }}
-      >
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 14, minWidth: 0 }}>
         <div style={{ display: "flex", alignItems: "baseline", gap: 10, minWidth: 0 }}>
-          <span
-            style={{
-              fontFamily: TL.font.sans,
-              fontSize: 26,
-              fontWeight: 700,
-              letterSpacing: "-0.01em",
-              color: TL.text,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-          >
-            {spillerNavn}
-          </span>
-          {antallUtkast > 0 && (
-            <span
-              style={{
-                fontFamily: TL.font.sans,
-                fontSize: 11,
-                fontWeight: 600,
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                color: TL.mute,
-                fontVariantNumeric: "tabular-nums",
-                whiteSpace: "nowrap",
-              }}
-            >
-              {UI.draftCountBadge(antallUtkast)}
-            </span>
-          )}
+          <span style={{ fontFamily: TL.font.sans, fontSize: 26, fontWeight: 700, letterSpacing: "-0.01em", color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{spillerNavn}</span>
+          {antallUtkast > 0 && <span style={{ fontFamily: TL.font.sans, fontSize: 11, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute, fontVariantNumeric: "tabular-nums" }}>{UI.draftCountBadge(antallUtkast)}</span>}
         </div>
-
-        <VisningPiller
-          playerId={playerId}
-          visning="uke"
-          uke={week.weekStart}
-          maned={week.weekStart.slice(0, 7)}
-          aar={week.weekStart.slice(0, 4)}
-        />
-
-        <div style={{ display: "flex", gap: 10, marginLeft: "auto", alignItems: "center", flexWrap: "wrap" }}>
-          <Knapp ghost icon="chevron-left" onClick={onForrige} style={{ minHeight: 36, padding: "0 10px" }}>
-            {UI.weekNavPrev}
-          </Knapp>
-          <Knapp ghost onClick={onIdag} style={{ minHeight: 36, padding: "0 10px" }}>
-            {UI.today}
-          </Knapp>
-          <Knapp ghost icon="chevron-right" onClick={onNeste} style={{ minHeight: 36, padding: "0 10px" }}>
-            {UI.weekNavNext}
-          </Knapp>
-          {/* A-01: «+ Ny økt» = hairline-pille, aldri fylt. */}
-          <Knapp ghost icon="plus" onClick={onNyOkt} style={pillestil}>
-            {UI.createSession}
-          </Knapp>
-          {/* A-01: den ENE hvite primæren. Disabled = dim flate (A-03-mønster). */}
-          <Knapp
-            enTing
-            disabled={antallUtkast === 0 || travel}
-            onClick={onPubliser}
-            style={{
-              height: 36,
-              minHeight: 36,
-              borderRadius: 9999,
-              padding: "0 18px",
-              fontSize: 13,
-              fontWeight: 700,
-              ...(antallUtkast === 0 || travel
-                ? { background: TL.dim, color: TL.mute }
-                : null),
-            }}
-          >
-            {UI.publish}
-          </Knapp>
+        <VisningPiller playerId={playerId} visning="uke" uke={week.weekStart} maned={week.weekStart.slice(0, 7)} aar={week.weekStart.slice(0, 4)} />
+        <div style={{ display: "flex", gap: 8, marginLeft: "auto", alignItems: "center", flexWrap: "wrap" }}>
+          <Knapp ghost icon="chevron-left" onClick={onForrige} style={ghost}>{UI.weekNavPrev}</Knapp>
+          <Knapp ghost onClick={onIdag} style={ghost}>{UI.today}</Knapp>
+          <Knapp ghost icon="chevron-right" onClick={onNeste} style={ghost}>{UI.weekNavNext}</Knapp>
+          <Knapp ghost icon="plus" onClick={onNyOkt} style={ghost}>{UI.createSession}</Knapp>
+          <Knapp enTing disabled={antallUtkast === 0 || travel} onClick={onPubliser} style={{ minHeight: 44, borderRadius: 2, padding: "0 18px", fontSize: 13, fontWeight: 600, ...(antallUtkast === 0 || travel ? { background: TL.dim, color: TL.mute } : { background: "#9B2415", color: "#F4EFE6" }) }}>{UI.publish}</Knapp>
         </div>
       </div>
-
-      {/* Brødsmule (A-01): «Sesong 2026 › August › Uke 34». */}
-      <div
-        style={{
-          fontFamily: TL.font.sans,
-          fontSize: 13,
-          color: TL.mute,
-          fontVariantNumeric: "tabular-nums",
-        }}
-      >
-        {UI.yearSeason(Number(week.weekStart.slice(0, 4)))}
-        <span style={{ margin: "0 4px" }}>›</span>
-        {manedNavn}
-        <span style={{ margin: "0 4px" }}>›</span>
-        <span style={{ color: TL.text, fontWeight: 600 }}>{UI.weekCrumb(ukeNr)}</span>
-        <span style={{ marginLeft: 12 }}>
-          {UI.budgetLabel(
-            formatHours(week.budget.plannedMinutes),
-            formatHours(week.budget.targetMinutes),
-          )}
-        </span>
+      <div style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
+        {UI.yearSeason(Number(week.weekStart.slice(0, 4)))}<span style={{ margin: "0 4px" }}>›</span>{manedNavn}<span style={{ margin: "0 4px" }}>›</span><span style={{ color: TL.text, fontWeight: 600 }}>{UI.weekCrumb(ukeNr)}</span>
+        <span style={{ marginLeft: 12 }}>{UI.budgetLabel(formatHours(week.budget.plannedMinutes), formatHours(week.budget.targetMinutes))}</span>
       </div>
     </div>
   );
