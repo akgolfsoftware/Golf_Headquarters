@@ -74,7 +74,6 @@ export const SOURCE_FILTER_LABEL: Record<SourceFilter, string> = {
 };
 
 export const UI = {
-  // Shell
   titleAgency: "Workbench",
   titlePlayer: "Min uke",
   weekNavPrev: "Forrige uke",
@@ -83,24 +82,19 @@ export const UI = {
   visUke: "Uke",
   visManed: "Måned",
   visAar: "År",
+  visPeriode: "Periode",
+  visOkt: "Økt",
+  visStall: "Stall",
+  visLive: "Live",
+  visMin: "Min kalender",
   monthNavPrev: "Forrige måned",
   monthNavNext: "Neste måned",
   yearNavPrev: "Forrige år",
   yearNavNext: "Neste år",
   weekdayShort: ["Ma", "Ti", "On", "To", "Fr", "Lø", "Sø"] as const,
   monthNames: [
-    "Januar",
-    "Februar",
-    "Mars",
-    "April",
-    "Mai",
-    "Juni",
-    "Juli",
-    "August",
-    "September",
-    "Oktober",
-    "November",
-    "Desember",
+    "Januar","Februar","Mars","April","Mai","Juni",
+    "Juli","August","September","Oktober","November","Desember",
   ] as const,
   emptyMonthTitle: "Måneden er tom",
   emptyMonthBody:
@@ -113,8 +107,6 @@ export const UI = {
   monthHint: "Måneden viser ikke klokketid — åpne uken for å endre tid.",
   yearHint: "Klikk en måned for å åpne den. Årscellen kan ikke redigeres.",
   openWeek: "Åpne uke",
-
-  // Årsplan — periodebånd og valgt-periode-panel (WB-06)
   periodsTitle: "Perioder",
   periodsHint: "Klikk et bånd for å se balanse og turneringer",
   noPeriods: "Ingen perioder lagt inn for dette året.",
@@ -124,8 +116,6 @@ export const UI = {
   periodTournamentsTitle: "Turneringer i perioden",
   noPeriodTournaments: "Ingen turneringer i perioden.",
   periodWeeks: (n: number) => `${n} ${n === 1 ? "uke" : "uker"}`,
-
-  // Actions
   createSession: "Ny økt",
   moveSession: "Flytt",
   publish: "Publiser",
@@ -134,29 +124,23 @@ export const UI = {
   save: "Lagre",
   cancel: "Avbryt",
   delete: "Slett",
-  addDrill: "Legg til drill",
+  addDrill: "Legg til øvelse",
   fromSources: "Fra kilder",
-
-  // Empty
   emptyWeekTitle: "Ingen økter denne uken",
   emptyWeekBody: "Opprett en økt eller dra inn fra kilder til venstre.",
   emptyWeekHint: "Klikk i uka for å legge inn en økt.",
   emptySources: "Ingen kilder å vise",
   emptySourcesTitle: "Ingen kilder lastet",
   emptySourcesBody: "Øvelsesbank og maler kobles på senere.",
-  emptyDrills: "Ingen drills ennå — legg til fra kilder eller lag ny.",
-
-  // Inspector
+  emptyDrills: "Ingen øvelser ennå — legg til fra kilder eller lag ny.",
   inspectorTitle: "Økt",
   duration: "Varighet",
   start: "Start",
-  pyramid: "Område",
+  pyramid: "Pyramide",
   notes: "Notater",
-  drills: "Drills",
+  drills: "Øvelser",
   publishedAt: "Publisert",
   draftBadge: "Utkast — kun synlig for deg",
-
-  // Drill-skjema
   drillTitle: "Navn",
   drillTitlePlaceholder: "F.eks. Wedge 60 m",
   drillPyramid: "Pyramide",
@@ -168,8 +152,6 @@ export const UI = {
   moveDrillDown: "Flytt ned",
   removeDrillLabel: "Fjern øvelse",
   incompleteDrill: "Mangler info",
-
-  // Publish flow
   publishConfirmTitle: "Publiser til spilleren?",
   publishConfirmBody:
     "Økten blir synlig i spillerens «I dag» og plan. Du kan trekke den tilbake senere.",
@@ -181,22 +163,15 @@ export const UI = {
   publishTodayWarnMany: (antall: number) =>
     `${antall} av øktene er i dag og dukker opp i spillerens «I dag» med en gang.`,
   publishOverlapWarnTitle: "Overlapp i valgte økter",
-  // WB-03: per-økt-utvelgelse i publiser-dialogen
   publishVelgAlle: "Velg alle",
   publishValgtAvTotalt: (valgt: number, totalt: number) => `${valgt} av ${totalt} valgt`,
   publishRadUtkast: "Utkast",
   publishRadOpptatt: "Opptatt",
   publishValgte: (n: number) => `Publiser valgte · ${n}`,
   publishAlle: (n: number) => `Publiser alle · ${n}`,
-
-  // Budget
   budgetLabel: (plannedH: string, targetH: string) =>
     `Ukevolum ${plannedH} t · mål ${targetH} t`,
-
-  // Conflict
   overlapWarn: "Overlapp med annen økt",
-
-  // Sources panel
   sourcesTitle: "Kilder",
   sourcesDrills: "Øvelsesbank",
   sourcesTemplates: "Maler",
@@ -205,8 +180,6 @@ export const UI = {
   dragHint: "Dra inn i uken",
   toastSourceDropped: "Lagt inn fra kilder",
   toastDrillDroppedOnSession: "Øvelsen er lagt til økten",
-
-  // Serie ("gjenta")
   repeatLabel: "Gjenta",
   repeatOnce: "Kun denne uken",
   repeatWeeks: (n: number) => `Ukentlig i ${n} uker`,
@@ -217,14 +190,10 @@ export const UI = {
   seriesEditHint: (handling: string) => `Del av en serie. Gjelder for «${handling}» over.`,
   toastSeriesCreated: (antall: number) => `${antall} økter opprettet i serien`,
   toastSeriesDeleted: (antall: number) => `${antall} økter slettet`,
-
-  // Mal
   saveAsTemplate: "Lagre som mal",
   removeAsTemplate: "Fjern som mal",
   toastTemplateSaved: "Lagret som mal — dukker opp i kildepanelet",
   toastTemplateRemoved: "Fjernet som mal",
-
-  // Player consumption
   playerNoSessions: "Ingen planlagte økter i dag",
   playerNextSession: "Neste økt",
   startSession: "Start økt",
@@ -237,8 +206,6 @@ export const UI = {
   sessionCompletedTitle: "Økt fullført",
   sessionSkippedTitle: "Hoppet over",
   backToToday: "Tilbake til I dag",
-
-  // Ny økt-skjema
   createSessionBody: "Økten lagres som utkast. Den er kun synlig for deg til du publiserer.",
   titleField: "Tittel",
   titlePlaceholder: "F.eks. Wedge 60–100 m",
@@ -247,13 +214,9 @@ export const UI = {
   invalidStartTime: "Ugyldig starttidspunkt.",
   creating: "Oppretter …",
   create: "Opprett",
-
-  // Feiltilstand
   weekFetchErrorTitle: "Kunne ikke hente uka",
   retry: "Prøv igjen",
   unknownError: "Noe gikk galt. Prøv igjen.",
-
-  // Toasts (WorkbenchUke)
   toastSessionMoved: "Økten er flyttet",
   toastSessionDeleted: "Økten er slettet",
   toastDrillAdded: "Øvelse lagt til",
@@ -262,40 +225,24 @@ export const UI = {
   toastDraftCreated: "Utkast opprettet — kun synlig for deg",
   toastPublishedOne: "1 økt publisert",
   toastPublishedMany: (antall: number) => `${antall} økter publisert`,
-
-  // Inspektør — tomt/lagre-tilstand
   inspectorEmptyBody: "Velg en økt i uka for å se og endre den.",
   saving: "Lagrer …",
   dateLabel: "Dato",
   timeLabel: "Tid",
   sessionAboutLabel: "Om økten",
   durationValueLabel: "Varer",
-
-  // Fallback
   unnamedPlayer: "Spiller",
-
-  // Topplinje (fasit A-01: «Sesong 2026 › August › Uke 34» + caps «Utkast»)
   weekCrumb: (n: number) => `Uke ${n}`,
   draftCountBadge: (n: number) => (n === 1 ? "1 utkast" : `${n} utkast`),
-
-  // Publiser-dialog (fasit A-01d)
   publishConfirmHeading: (n: number) => (n === 1 ? "Publiser 1 økt?" : `Publiser ${n} økter?`),
   publishConfirmKicker: (uke: number, navn: string) => `Uke ${uke} · ${navn}`,
-
-  // Ny økt-modal (fasit A-03: «ingen formel her»)
-  createSessionFormelHint: "Formelen settes på første drill etter Lagre — ikke her.",
+  createSessionFormelHint: "Formelen settes på første øvelse etter Lagre — ikke her.",
   createSave: "Lagre økt",
-
-  // Drill-skjema (fasit A-03b/A-03c)
-  drillSave: "Lagre drill",
+  drillSave: "Lagre øvelse",
   drillMissingCaps: "Mangler",
   addDrillShort: "+ Legg til",
-
-  // Økt-kort / inspektør (fasit A-02)
   coachNoteLabel: "Coach-notat",
   drillsCaps: "Øvelser",
-
-  // Godkjenning (Loop 3T/B6) — se resolvePlayerApproval
   approvalFromCoach: "Forslag fra coach",
   approvalFromGroup: "Forslag fra gruppe",
   approvalAccept: "Godta",
@@ -306,8 +253,6 @@ export const UI = {
   approvalRejected: "Avvist — skjult i planen din",
   approvalRejectHint: "Skjuler økten hos deg. Den slettes ikke, og coachen/gruppen ser ingen endring.",
   approvalDrillsCount: (n: number) => `${n} ${n === 1 ? "øvelse" : "øvelser"}`,
-
-  // Godkjenning — agency-visning (SessionInspector, A-09-mønster)
   approvalStatusLabel: "Godkjenning",
   approvalStatusPending: "Venter på spilleren",
   approvalStatusAccepted: "Godtatt av spilleren",
@@ -334,10 +279,6 @@ export function formatTime(minute: number): string {
   return `${h}:${m}`;
 }
 
-/**
- * Norsk klokkevisning «16.00» (Train-lock: «Norsk format … 09.00»).
- * KUN for visning — `<input type="time">` krever fortsatt `formatTime` (HH:MM).
- */
 export function formatKlokke(minute: number): string {
   return formatTime(minute).replace(":", ".");
 }
