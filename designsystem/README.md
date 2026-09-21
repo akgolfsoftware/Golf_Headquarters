@@ -52,6 +52,22 @@ Tabellen viser hvor materialet og dagens implementasjon finnes. Versjonsvalget f
 | Team Norway `/team-norway` | [Claw / Team Norway](team-norway/handover/PORTING.md) | Team Norway-pakkens tokenbro; delte analyseflater har Train-lock-struktur |
 | Lokale utkast / tidligere godkjente tillegg | [Canvas](canvas/README.md) | Se den enkelte referansen. |
 
+### Trenerprototypene for Team Norway og WANG
+
+De to trenerflatene har hver sin klikkbare prototype i Claude Design. De er arbeidsflaten
+for videre skjermarbeid på disse områdene, og de bruker **hvert sitt designsystem** — Team
+Norway Golf for TN, WANG Toppidrett for WANG. Visuelle valg skal ikke krysse mellom dem.
+
+| Flate | Prosjekt i Claude Design | Mappe | Omfang |
+|---|---|---|---|
+| Team Norway | Claw Design — Team Norway Golf | `templates/tn-coach-demo/` | TN-00–TN-27, 34 dyp-lenker, ni menypunkter |
+| WANG | WANG Toppidrett Designsystem | `templates/wang-coach-demo/` | 59 skjermer, åtte menygrupper |
+
+Begge er kontrollert 21.09.2026: hver rute er åpnet og målt, uten JavaScript-feil.
+Kjente gap står i hver prototypes `readme.md` (og `kontroll-og-gap.md` for Team Norway).
+Speilene under `team-norway/` og `wang/` i dette repoet er eldre og beholdes som
+byggeunderlag for ruter, roller og datamodell — ikke som skjermfasit.
+
 
 [Tema-dokumentet](../docs/design-system/TEMA-LYS-MORK.md) beskriver dagens kode. Det fastsetter ikke tema eller fonter i neste design. Historiske `Fasit:`-kommentarer dokumenterer opphav, ikke en aktuell godkjenning.
 
