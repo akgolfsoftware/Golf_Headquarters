@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
@@ -137,6 +138,15 @@ export default async function SpillerpostPage({ params }: { params: Promise<{ sp
               </span>
             )}
           </div>
+
+          {/* TN-utvidelse 14.09.2026: tydelig fane tilbake til spillerens
+              faste inngang — post er ikke lenger eneste vei inn på spilleren. */}
+          <nav aria-label="Spillerfaner" style={{ display: "flex", gap: 4, flexWrap: "wrap", borderBottom: `1px solid ${TN.navy100}` }}>
+            <Link href={`/team-norway/spiller/${spillerId}/oversikt`} style={{ minHeight: 44, display: "inline-flex", alignItems: "center", padding: "0 14px", fontSize: TN.text.sm, fontWeight: TN.weight.semibold, color: TN.textSecondary, borderBottom: "2px solid transparent", textDecoration: "none" }}>Oversikt</Link>
+            <span aria-current="page" style={{ minHeight: 44, display: "inline-flex", alignItems: "center", padding: "0 14px", fontSize: TN.text.sm, fontWeight: TN.weight.bold, color: TN.navy900, borderBottom: `2px solid ${TN.navy900}` }}>Post</span>
+            <Link href={`/team-norway/spiller/${spillerId}/tester`} style={{ minHeight: 44, display: "inline-flex", alignItems: "center", padding: "0 14px", fontSize: TN.text.sm, fontWeight: TN.weight.semibold, color: TN.textSecondary, borderBottom: "2px solid transparent", textDecoration: "none" }}>Tester</Link>
+            <Link href={`/team-norway/spiller/${spillerId}/analyse`} style={{ minHeight: 44, display: "inline-flex", alignItems: "center", padding: "0 14px", fontSize: TN.text.sm, fontWeight: TN.weight.semibold, color: TN.textSecondary, borderBottom: "2px solid transparent", textDecoration: "none" }}>Analyse</Link>
+          </nav>
 
           {erTrenerHer && <TnPostKomponer send={publiserSpillerpost} plassholder={`Skriv en post til ${spiller.name?.split(" ")[0] ?? "spilleren"} …`} />}
 

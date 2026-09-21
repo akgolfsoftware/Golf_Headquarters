@@ -153,18 +153,7 @@ export async function opprettGruppeDokument(input: {
   fileSize: number | null;
   path: string;
 }): Promise<{ id: string }> {
-  if (!(await erTeamNorwayGruppe(input.groupId))) {
-    throw new Error("Du er ikke trener i denne gruppen");
-  }
-  const lovlig = await erAktivtMedlem(input.groupId, input.forfatterId);
-  if (!lovlig) throw new Error("Du er ikke trener i denne gruppen");
-  const rolle = await prisma.groupMember.findFirst({
-    where: { groupId: input.groupId, userId: input.forfatterId, ...aktivtMedlemskapWhere() },
-    select: { role: true },
-  });
-  if (rolle?.role !== "COACH" && rolle?.role !== "ASSISTANT") {
-    throw new Error("Kun trenere kan laste opp dokumenter til gruppen");
-  }
+  await krevDokumentOpplastingstilgang(input.groupId, input.forfatterId);
   return prisma.tnPost.create({
     data: {
       groupId: input.groupId,
@@ -236,11 +225,18 @@ async function forfatterNavnPerId(authorUserIds: readonly string[]): Promise<Map
   return new Map(brukere.map((b) => [b.id, b.name ?? "Ukjent"]));
 }
 
-/** Gruppens tidslinje — null hvis viewer ikke er aktivt medlem (IDOR-port). */
+/**
+ * Gruppens tidslinje — null hvis viewer ikke har faktisk lesetilgang
+ * (IDOR-port). Bruker samme rolleoppslag som `hentViewerRolleIGruppe`, som
+ * i tillegg til aktive medlemmer (trener/spiller) også gir godkjente
+ * foresatte for et av gruppens spillere tilgang — uten eget medlemskap.
+ * Retter et tidligere avvik der denne funksjonen kun sjekket
+ * `erAktivtMedlem` og dermed stengte ute foresatte som `hentViewerRolleIGruppe`
+ * allerede regner som gyldige lesere.
+ */
 export async function hentGruppetidslinje(groupId: string, viewerId: string): Promise<TnPostMedKvittering[] | null> {
-  if (!(await erTeamNorwayGruppe(groupId))) return null;
-  const erMedlem = await erAktivtMedlem(groupId, viewerId);
-  if (!kanSeGruppepost(erMedlem)) return null;
+  const rolle = await hentViewerRolleIGruppe(groupId, viewerId);
+  if (!kanSeGruppepost(rolle !== null)) return null;
 
   const [poster, spillerIder] = await Promise.all([
     prisma.tnPost.findMany({
@@ -466,4 +462,49 @@ export async function hentPostLesekvitteringNavnForViewer(
   }
 
   return null;
+}
+
+/** Samme ressursport brukes før filskriving og før postlagring. */
+export async function krevDokumentOpplastingstilgang(groupId: string, forfatterId: string): Promise<void> {
+  if (!(await erTeamNorwayGruppe(groupId))) {
+    throw new Error("Du er ikke trener i denne gruppen");
+  }
+  const lovlig = await erAktivtMedlem(groupId, forfatterId);
+  if (!lovlig) throw new Error("Du er ikke trener i denne gruppen");
+  const rolle = await prisma.groupMember.findFirst({
+    where: { groupId: groupId, userId: forfatterId, ...aktivtMedlemskapWhere() },
+    select: { role: true },
+  });
+  if (rolle?.role !== "COACH" && rolle?.role !== "ASSISTANT") {
+    throw new Error("Kun trenere kan laste opp dokumenter til gruppen");
+  }
+}
+
+/**
+ * Les samme post som vedlegget faktisk tilhører; klienten får aldri velge
+ * lagringssti. Gruppestien bruker samme rolleoppslag som
+ * `hentGruppetidslinje` (`hentViewerRolleIGruppe`) — en godkjent foresatt
+ * uten eget medlemskap får dermed lastet ned vedlegg fra gruppeposter, akkurat
+ * som hen allerede kan lese dem i tidslinjen. Tidligere sjekket denne stien
+ * kun `erAktivtMedlem`, som stengte foresatte ute.
+ */
+export async function hentTnVedleggForViewer(attachmentId: string, viewerId: string) {
+  const vedlegg = await prisma.tnPostAttachment.findUnique({
+    where: { id: attachmentId },
+    select: { id: true, path: true, fileName: true, fileType: true, fileSize: true,
+      post: { select: { id: true, groupId: true, mottakerUserId: true } } },
+  });
+  if (!vedlegg) return null;
+  const post = vedlegg.post;
+  if (post.groupId) {
+    const rolle = await hentViewerRolleIGruppe(post.groupId, viewerId);
+    if (!rolle) return null;
+  } else if (post.mottakerUserId) {
+    const spillerId = post.mottakerUserId;
+    if (!kanSeSpillerpost({ viewerId, spillerId,
+      viewerErGodkjentForesattForSpilleren: viewerId !== spillerId && await erGodkjentForesattFor(viewerId, spillerId),
+      viewerErTrenerForSpilleren: viewerId !== spillerId && await erAktivTrenerIGruppeMedSpiller(viewerId, spillerId),
+    })) return null;
+  } else return null;
+  return vedlegg;
 }
