@@ -1,5 +1,16 @@
 # SKJERMREGISTER — alle 35 skjermer i `/team-wang`
 
+> **Gjeldende interaktiv prototype ligger i Claude Design, ikke her.**
+> Prosjektet «WANG Toppidrett Designsystem», mappa `templates/wang-coach-demo/`.
+> Den dekker **59 skjermer** i åtte menygrupper, med hash-ruting (`#område/skjerm#variant`),
+> åtte grupper i sidemenyen på desktop og fem primærfaner på mobil. Eget internt register
+> ligger i `screens.js` og vises under System › Skjermoversikt.
+>
+> Registeret under er fortsatt gyldig som **byggeunderlag** for `/team-wang`: ruter, roller,
+> tilgang og datamodell. De 35 radene er elev- og foresattflaten. Trenerflaten —
+> arbeidsbenk, oppmøte, testdag, testkø, rangering, samtykke, organisasjon og
+> helsepersonellvisning — finnes bare i prototypen.
+
 Én rad per skjerm. Sortert etter status: **bygget** → **kan bygges nå** → **venter på datamodell**
 → **venter på beslutning**. Innenfor hver gruppe i skjerm-ID-rekkefølge.
 

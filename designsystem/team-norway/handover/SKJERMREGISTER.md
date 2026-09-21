@@ -1,5 +1,17 @@
 # SKJERMREGISTER — TN-00 til TN-21 og de generelle malene
 
+> **Gjeldende interaktiv prototype ligger i Claude Design, ikke her.**
+> Prosjektet «Claw Design — Team Norway Golf», mappa `templates/tn-coach-demo/`.
+> Den dekker **TN-00 til TN-27** i én klikkbar demo med 34 dyp-lenker, ni menypunkter på
+> desktop og fem primærfaner på mobil. Tre id-er er bevisst slått sammen med en navngitt
+> visning: TN-11 i Grupper → Filer, TN-14 i samlingsdetaljen og TN-16 i Arbeidsbenk → Måned.
+> Registeret i prototypen (`readme.md` der) er fasit for hvilke skjermer som finnes, og
+> `kontroll-og-gap.md` sier hva som er klikktestet og hva som gjenstår.
+>
+> Registeret under er fortsatt gyldig som **byggeunderlag**: ruter, roller, datamodell og
+> komponentnavn. Det er ikke oppdatert med TN-22 til TN-27 (IUP-flatene) eller med
+> Arbeidsbenk, Meldinger, Uttak og Min profil slik prototypen tegner dem.
+
 Én rad per skjerm. Sortert slik at det som kan bygges nå står øverst.
 Alle designfiler ligger under `designsystem/team-norway/templates/`.
 
