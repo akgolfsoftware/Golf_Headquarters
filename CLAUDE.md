@@ -5,7 +5,8 @@ Felles prosjektinstruks er [AGENTS.md](AGENTS.md). Les deretter [Agent Brief](do
 Denne filen har ingen egen designkanon, arbeidsplan eller ferdigstatus. Alle verktøy bruker de samme kildene:
 
 - [Start her](START-HER.md) — hvor arbeidet begynner.
-- [Designarbeid og referanser](designsystem/README.md) — eksisterende design er ikke låst; alle skjermer revideres i Claude Design.
+- [Gjeldende designautoritet](docs/design-system/design-autoritet.md) — AK Golf Design System og «App design» gjelder; Train-lock og Paper er utgående og spørres ikke om på nytt.
+- [Designarbeid og referanser](designsystem/README.md) — status, leveranser og historiske kilder.
 - [Status nå](docs/STATUS-NÅ.md) og [arbeidsliste](docs/MASTERPLAN-GJENSTAAENDE.md).
 - [Beslutninger](.claude/rules/beslutninger.md) og [tekniske fallgruver](.claude/rules/gotchas.md).
 

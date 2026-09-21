@@ -2,7 +2,7 @@
 
 Les `docs/platform/AGENT-BRIEF.md` før du endrer filer. `START-HER.md` er inngangen for både mennesker og AI-verktøy.
 
-**Designstatus 12.09.2026:** Anders starter blankt i Claude Design og utvikler AK Golf HQ Design System v0.1 for hele den brukerrettede appen. PlayerHQ, AgencyOS, Team Norway og WANG er obligatoriske kjerner; øvrige brukerflater får navngitte profiler/mønstre i samme system. Aktiv smaksretning er «Atletisk intelligens»: sportslig PlayerHQ, operativt rolig AgencyOS og mørk fokusmodus når oppgaven krever det. Når Anders velger en komplett pakke med `selectedForBuilding: true`, er den eneste visuelle fasiten for registrert omfang. Eksisterende design, navigasjon, fonter, farger og komponentvalg er arbeidsunderlag, ikke visuell fasit. Se `designsystem/README.md` og `.claude/skills/ak-hq-design/references/atletisk-intelligens.md`.
+**Designautoritet 21.09.2026 (bindende):** AK Golf Design System og Claude Design-prosjektet «App design» gjelder. Train-lock og Paper er utgående og spørres aldri om på nytt. Bygg videre på siste faktiske versjon i «App design». Kilde: `docs/design-system/design-autoritet.md`. Se også `designsystem/README.md`.
 
 ## Kildeorden
 
@@ -23,13 +23,13 @@ Koden ligger i dette prosjektet. Ikke kopier eksterne agentkataloger inn i repoe
 
 ## Skjermarbeid
 
-Bruk den prosjektspesifikke skillen [AK HQ Design](.claude/skills/ak-hq-design/SKILL.md) ved brukerreiser, komponenter, wireframes, UI og designoverlevering. Les [Atletisk intelligens](.claude/skills/ak-hq-design/references/atletisk-intelligens.md) for den aktive retningen. Skillen samler arbeidsmåte og kvalitetskrav; Design System v0.1 utvikles fra blankt lerret og visuelle valg forblir åpne til Anders velger en versjon for den aktuelle byggeoppgaven. Startpakken og hovedprompten nås fra [designarbeidet](docs/design-system/ak-hq-designarbeid.md).
+Bruk den prosjektspesifikke skillen [AK HQ Design](.claude/skills/ak-hq-design/SKILL.md) ved brukerreiser, komponenter, wireframes, UI og designoverlevering. Designretning og system er avgjort i [design-autoritet.md](docs/design-system/design-autoritet.md); skillen eier bare arbeidsmåten. Startpakken og hovedprompten nås fra [designarbeidet](docs/design-system/ak-hq-designarbeid.md).
 
-Bruk `designsystem/README.md` til å forstå dagens kilder og status. Train-lock, AK Golf, WANG, Team Norway og Canvas er eksisterende referanser, ikke låste valg. Ikke gjennomfør gamle porteringsplaner automatisk mens Anders reviderer designet i Claude Design.
+Bruk `designsystem/README.md` til å forstå dagens kilder og status. Train-lock og Paper er utgående (funksjonsinventar, ikke fasit). Ikke gjennomfør gamle porteringsplaner automatisk.
 
 Før skjermbygging: identifiser valgt designversjon, brukerreise, skjermer og tilstander. En bestilt versjon kan bygges selv om andre deler fortsatt utforskes. Bruk felles komponenter og designverdier for den valgte retningen. Avklar manglende designvalg før avhengig bygging; tekniske feil kan behandles uavhengig når rettingen er bestilt.
 
-En skjerm er ferdig når funksjonen virker og Anders har sett appen ved siden av den valgte designversjonen: mobil 390 px og desktop, avtalte temaer og relevante tomme, lastende og feiltilstander. Registrer referanse, kontroll og avvik. Eksisterende Train-lock-kontrakter og kontroller beskriver dagens implementasjon; de må vurderes mot en ny bestilt retning. En token-import, en sitering eller grønn byggkontroll er ikke en visuell godkjenning.
+En skjerm er ferdig når funksjonen virker og Anders har sett appen ved siden av den valgte designversjonen: mobil 390 px og desktop, avtalte temaer og relevante tomme, lastende og feiltilstander. Registrer referanse, kontroll og avvik. Eksisterende Train-lock-kontrakter og kontroller beskriver bare dagens kode, ikke ønsket design. En token-import, en sitering eller grønn byggkontroll er ikke en visuell godkjenning.
 
 ## Data og sikkerhet
 
