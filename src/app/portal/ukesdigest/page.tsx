@@ -1,6 +1,8 @@
 /**
  * PlayerHQ · Ukesdigest (D3).
- * Fasit: designsystem/paper/fase2/playerhq/playerhq-ukesdigest.html
+ * Designkilde: ingen gjeldende. Den siterte Paper-fasiten er slettet
+ * (Paper fjernet fra plattformen 30.08.2026), og skjermen er ikke tegnet
+ * på nytt i AK Golf Design System. Kilde ved videre arbeid: designautoriteten.
  *
  * Spillerens uke med samme tall og samme nevner som coachens ukesrapport.
  * Leser kun — ingenting på denne flaten skriver.

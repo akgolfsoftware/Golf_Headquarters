@@ -1,6 +1,8 @@
 /**
  * Ukesdigest — spillerens uke (D3).
- * Fasit: designsystem/paper/fase2/playerhq/playerhq-ukesdigest.html
+ * Designkilde: ingen gjeldende. Den siterte Paper-fasiten er slettet
+ * (Paper fjernet fra plattformen 30.08.2026), og skjermen er ikke tegnet
+ * på nytt i AK Golf Design System. Kilde ved videre arbeid: designautoriteten.
  *
  * Fire seksjoner i fasitens rekkefølge: Gjennomført · Slik slo du · Neste uke ·
  * Verdt å vite. Nevneren står i klartekst overalt, og den hoppede økta telles
