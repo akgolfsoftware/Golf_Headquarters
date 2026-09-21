@@ -1,8 +1,7 @@
 # Planlegging, trening og analyse: design- og kodeplan
 
-**Status 21.09.2026:** Aktiv gjennomføringsplan. Fagvalg og begreper eies fortsatt av
-[`docs/treningsplanlegging.md`](../treningsplanlegging.md) og
-[`docs/ordbok.md`](../ordbok.md). Visuell retning eies av AK Golf Design System og siste valgte
+**Status 21.09.2026:** Aktiv gjennomføringsplan. Fagvalg, språk og begreper eies av den ene masteren,
+[`docs/treningsplanlegging.md`](../treningsplanlegging.md). Visuell retning eies av AK Golf Design System og siste valgte
 versjon i Claude Design-prosjektet «App design».
 
 Første sammenhengende del er bygget:
