@@ -192,30 +192,24 @@ export function InnstillingerIntegrasjonerV2({ data }: { data: InnstillingerInte
   const tilkoblet: Integrasjon[] = [];
   const tilgjengelig: Integrasjon[] = [];
 
-  // ── TrackMan (ekte backing: trackManSession) ──────────────────────
-  if (data.tm.tilkoblet) {
-    tilkoblet.push({
-      navn: "TrackMan Performance Studio",
-      kategori: "Shot-data · Range-økter",
-      beskrivelse:
-        "Klubb-data, ballhastighet, launch og spin per slag fra studio-økter ved AK Golf-anlegget.",
-      ikon: "radar",
-      tilkoblet: true,
-      data: [
-        { k: "Sist synket", v: data.tm.sistSynket },
-        { k: "Siste økt", v: data.tm.sisteOkt ?? "—" },
-      ],
-    });
-  } else {
-    tilgjengelig.push({
-      navn: "TrackMan Connect",
-      kategori: "Range-økter · Shot-data",
-      beskrivelse:
-        "Klubb-data, ballhastighet, launch og spin per slag. Kobles automatisk fra studio-økter ved AK Golf-anlegget.",
-      ikon: "radar",
-      tilkoblet: false,
-    });
-  }
+  // ── TrackMan ──────────────────────────────────────────────────────
+  //
+  // Det finnes INGEN løpende TrackMan-forbindelse i appen. Økter kommer inn
+  // ved at noen importerer en CSV, en HTML-rapport eller et foto av skjermen
+  // (lib/trackman/parse-*.ts). Fram til 21.09.2026 ble «det finnes minst én
+  // importert økt» vist som «Tilkoblet» med «Sist synket» — som lovet en
+  // automatisk dataflyt som ikke finnes. Importerte økter er ikke bevis på
+  // en forbindelse, så TrackMan står i listen over tilgjengelige kilder og
+  // forteller i stedet når det sist kom data inn.
+  tilgjengelig.push({
+    navn: "TrackMan",
+    kategori: "Shot-data · importeres manuelt",
+    beskrivelse: data.tm.tilkoblet
+      ? `Klubb-data, ballhastighet, launch og spin per slag. Økter importeres fra CSV, rapport eller foto — det er ingen automatisk forbindelse. Sist importert: ${data.tm.sistSynket}${data.tm.sisteOkt ? ` · ${data.tm.sisteOkt}` : ""}.`
+      : "Klubb-data, ballhastighet, launch og spin per slag. Økter importeres fra CSV, rapport eller foto — det er ingen automatisk forbindelse.",
+    ikon: "radar",
+    tilkoblet: false,
+  });
 
   // ── Google Calendar (ekte backing: googleCalendarConnection) ──────
   if (data.gcal.tilkoblet) {

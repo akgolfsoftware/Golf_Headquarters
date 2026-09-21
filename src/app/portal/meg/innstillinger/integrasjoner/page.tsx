@@ -46,13 +46,15 @@ export default async function IntegrasjonerPage() {
       .catch(() => null),
   ]);
 
-  const tmConnected = tmCount > 0;
+  // Ikke en forbindelse: dette betyr bare at det finnes importerte økter.
+  // Se InnstillingerIntegrasjonerV2 for hvorfor det ikke vises som «Tilkoblet».
+  const tmHarImporterteOkter = tmCount > 0;
   const gcalConnected = !!gcal;
 
   // Kun ekte tilkoblinger telles. Ingen «alltid-på demo».
   const data: InnstillingerIntegrasjonerData = {
     tm: {
-      tilkoblet: tmConnected,
+      tilkoblet: tmHarImporterteOkter,
       sistSynket: formatSync(tmLast?.recordedAt),
       sisteOkt: tmLast ? `${tmLast.shotCount} slag · ${tmLast.source ?? "TrackMan"}` : null,
     },
