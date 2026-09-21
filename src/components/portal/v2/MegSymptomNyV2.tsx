@@ -398,7 +398,7 @@ export function MegSymptomNyV2() {
           <Kort pad="14px 16px">
             <Bryter
               label="Be om time hos fysio"
-              sub="Vi sender forespørsel til medisinsk team — de kontakter deg innen 24 t."
+              sub="Valget lagres ikke ennå, og ingen forespørsel sendes. Ta kontakt med coachen din om du trenger fysio."
               checked={requestFysio}
               onChange={setRequestFysio}
             />

@@ -189,7 +189,9 @@ export async function cancelBooking(bookingId: string) {
     if (creditRefunded) {
       refundTekst = "Credit returnert.";
     } else if (stripeRefundFeilet) {
-      refundTekst = "Refundering feilet — vi behandler den manuelt innen 24 timer.";
+      // Ingen bindende behandlingstid: appen kan ikke love på coachens vegne
+      // når en manuell refusjon er gjennomført (PH-12-kontroll 21.09.2026).
+      refundTekst = "Timen er avbestilt, men refusjonen gikk ikke gjennom. Den må følges opp manuelt — ta kontakt hvis du ikke hører noe.";
     } else if (stripeRefundOk) {
       refundTekst = "Refusjon underveis.";
     } else if (outcome.lateCancelNoRefund) {

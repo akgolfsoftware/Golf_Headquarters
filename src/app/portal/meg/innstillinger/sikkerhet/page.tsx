@@ -6,9 +6,9 @@
  * /portal/meg/sikkerhet er nå redirect hit; passord-/e-post-skjemaene derfra
  * er flyttet inn i InnstillingerSikkerhetV2. Auth-guard og score-heuristikk
  * uendret:
- *   - Sikkerhetsscore utledet ærlig fra hva vi faktisk vet (e-post bekreftet
- *     → 80, ellers 55; 2FA-flagg finnes ikke på User ennå, så +20 opptjenes
- *     via 2FA-flyten).
+ *   - Ingen sikkerhetsscore: 2FA-flagget finnes ikke på User, så appen kan
+ *     ikke vurdere kontoens sikkerhet. Den viser tilstandene den kjenner
+ *     (e-post registrert, siste innlogging) og lenker til tofaktor-flyten.
  *   - Endre passord/e-post: skjema klientside mot Supabase Auth (i
  *     komponenten). Glemt passord: lenke til /auth/forgot-password.
  *     Tofaktor: lenke til den ekte TOTP-flyten på /portal/meg/sikkerhet/2fa.
@@ -35,15 +35,13 @@ function formatSiste(d: Date | null | undefined): string {
 export default async function SikkerhetPage() {
   const user = await requirePortalUser({ kreverTilgang: "INGEN" });
 
-  // Ærlig score: passord (Supabase-konto) gir basis, e-post bekreftet løfter,
-  // 2FA-aktivering gir resten. Vi har ikke 2FA-flagg på User enda, så toppen
-  // (+20) opptjenes via 2FA-flyten — derav 80 som realistisk nåverdi.
+  // Vi har ikke 2FA-flagg på User, så appen kan ikke vurdere kontoens
+  // sikkerhet samlet. Den viser tilstandene den faktisk kjenner.
   const harEpost = !!user.email;
-  const score = harEpost ? 80 : 55;
 
   return (
     <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <InnstillingerSikkerhetV2 data={{ score, sisteInnlogging: formatSiste(user.lastLoginAt) }} />
+      <InnstillingerSikkerhetV2 data={{ harEpost, sisteInnlogging: formatSiste(user.lastLoginAt) }} />
     </V2Shell>
   );
 }

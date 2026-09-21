@@ -1,38 +1,32 @@
 "use client";
 import { TL } from "@/lib/v2/train-lock";
 /**
- * PlayerHQ Innstillinger · Sikkerhet — v2 Presis + B-pakke (score først, full CTA).
+ * PlayerHQ Innstillinger · Sikkerhet.
+ *
+ * Avvik:
+ *   - PH-12-kontroll 21.09.2026: «Sikkerhetsscore 80 / 100 · Sterk» er fjernet.
+ *     Tallet var `harEpost ? 80 : 55` — to hardkodede verdier uten måling bak
+ *     seg, vist med progresjonsbar og en dom («Sterk»). Appen vet ikke om
+ *     kontoen har tofaktor (flagget finnes ikke på User), så den kan ikke
+ *     vurdere sikkerheten. Nå vises de tilstandene vi faktisk kjenner.
  */
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import { ReauthModal } from "@/components/auth/reauth-modal";
 import { InnstillingerHode } from "@/components/portal/v2/InnstillingerHode";
 import { createClient } from "@/lib/supabase/client";
-import { Caps, Kort, Rad, StatusPill, TallHero, ProgresjonsBar, Icon, Inndata, Knapp, type StatusTone } from "@/components/v2";
+import { Caps, Kort, Rad, StatusPill, Icon, Inndata, Knapp } from "@/components/v2";
 /* ── Datakontrakt ──────────────────────────────────────────────────── */
 
 export type InnstillingerSikkerhetData = {
-  /** Ærlig score fra page.tsx-heuristikken (e-post bekreftet → 80, ellers 55). */
-  score: number;
+  /** Har kontoen en e-postadresse registrert? Det er det vi faktisk vet. */
+  harEpost: boolean;
   /** Ferdigformatert siste innlogging (nb-NO), eller «Ukjent». */
   sisteInnlogging: string;
 };
 
 /* ── Hjelpere ──────────────────────────────────────────────────────── */
-
-/** true på klient etter mount når viewport < 768px (styrer kun tallstørrelser). */
-function useMobile(): boolean {
-  const [m, setM] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const oppdater = () => setM(mq.matches);
-    oppdater();
-    mq.addEventListener("change", oppdater);
-    return () => mq.removeEventListener("change", oppdater);
-  }, []);
-  return m;
-}
 
 /** Rundt ikon-emblem foran en rad (samme idiom som InnstillingerV2). */
 function SeksjonIkon({ name, farge }: { name: string; farge?: string }) {
@@ -76,12 +70,10 @@ function krevesReauth(msg: string): boolean {
 /* ── Skjerm ────────────────────────────────────────────────────────── */
 
 export function InnstillingerSikkerhetV2({ data }: { data: InnstillingerSikkerhetData }) {
-  const mobile = useMobile();
   const supabase = createClient();
-  const { score, sisteInnlogging } = data;
+  const { harEpost, sisteInnlogging } = data;
 
-  const niva = score >= 80 ? "Sterk" : "Grei";
-  const tone: StatusTone = score >= 80 ? "up" : "warn";
+
 
   // ── Endre passord ──
   const [nyttPassord, setNyttPassord] = useState("");
@@ -158,32 +150,31 @@ export function InnstillingerSikkerhetV2({ data }: { data: InnstillingerSikkerhe
     <div data-paper-wave-g="innstillingersikkerhet" data-paper-portal-innstillinger-sikkerhet data-paper-slug="playerhq-innstillinger" style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <InnstillingerHode tittel="Sikkerhet" undertekst="Innstillinger" tilbakeHref="/portal/meg/innstillinger" />
 
-      {/* B: score/status først */}
-      <Kort tint>
-        <TallHero
-          label="Sikkerhetsscore"
-          value={score}
-          unit="/ 100"
-          size={mobile ? 44 : 52}
-          action={<StatusPill tone={tone}>{niva}</StatusPill>}
-          hjelp="sikkerhetsscore"
+      {/* Hva vi faktisk vet om kontoen — ingen samlet vurdering. */}
+      <Kort tint eyebrow="Kontoens sikkerhet">
+        <Rad
+          title="E-postadresse"
+          sub={harEpost ? "Registrert på kontoen" : "Ikke registrert"}
+          trailing={<StatusPill tone={harEpost ? "up" : "warn"}>{harEpost ? "Ja" : "Nei"}</StatusPill>}
         />
-        <div style={{ marginTop: 16 }}>
-          <ProgresjonsBar variant="bar" value={score} max={100} label={null} showValue={false} />
-        </div>
-        <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.6, margin: "12px 0 0" }}>
-          Sist innlogget: {sisteInnlogging}. Aktiver tofaktor for +20.
-        </p>
+        <Rad
+          title="Tofaktor"
+          sub="Appen kjenner ikke status. Åpne tofaktor for å se og endre."
+          trailing={<StatusPill tone="info">Ukjent</StatusPill>}
+        />
+        <Rad
+          title="Sist innlogget"
+          sub={sisteInnlogging}
+          last
+        />
       </Kort>
 
-      {score < 100 && (
-        <Link href="/portal/meg/sikkerhet/2fa" style={{ textDecoration: "none", display: "block" }}>
-          <span style={{
-            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
-            borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
-          }}>Aktiver tofaktor</span>
-        </Link>
-      )}
+      <Link href="/portal/meg/sikkerhet/2fa" style={{ textDecoration: "none", display: "block" }}>
+        <span style={{
+          display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
+          borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
+        }}>Åpne tofaktor</span>
+      </Link>
 
       {/* Endre passord + Endre e-post */}
       <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: 16, alignItems: "start" }}>

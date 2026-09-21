@@ -15,7 +15,11 @@ export const dynamic = "force-dynamic";
 
 const FAQ = [
   { q: "Hva kan AI-coachen ikke gjøre?", a: "Den erstatter ikke coach. Den foreslår basert på dine tall — du bestemmer." },
-  { q: "Er AI-data privat?", a: "Ja. Dataene dine brukes bare til din egen assistent, ikke til å trene andres modell." },
+  // Funksjonen er ikke i drift, så det finnes ingen databehandling å beskrive
+  // ennå. En bastant garanti her ville vært en påstand vi ikke kan stå inne
+  // for (PH-12-kontroll 21.09.2026: ingen udokumenterte påstander om
+  // modelltrening). Vilkårene oppgis når funksjonen faktisk kommer.
+  { q: "Hva skjer med dataene mine?", a: "AI-coachen er ikke i drift, så ingen av dataene dine brukes av den i dag. Hvordan de behandles blir dokumentert her før den kan slås på." },
   { q: "Erstatter AI-coachen Anders?", a: "Nei. Den er et ekstra lag mellom øktene — coach-beslutninger står fast." },
 ] as const;
 
@@ -48,7 +52,8 @@ export default async function AiCoachPage() {
         action={<StatusPill tone="info">Kommer snart</StatusPill>}
       />
       <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: 0, lineHeight: 1.45, maxWidth: "36ch" }}>
-        Personlig assistent som leser dataene dine og foreslår neste steg.
+        Planlagt assistent som skal lese dataene dine og foreslå neste steg.
+        Den er ikke i drift, og ingenting på denne siden kan slås på ennå.
       </p>
 
       <Kort>
@@ -69,7 +74,7 @@ export default async function AiCoachPage() {
           </span>
           <div>
             <div style={{ fontFamily: TL.font.sans, fontSize: 15, fontWeight: 700, color: TL.text }}>
-              Hva AI-coach gjør
+              Hva AI-coach skal gjøre
             </div>
             <div style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, marginTop: 2 }}>
               Personlig · datadrevet · coach-assistent
@@ -79,7 +84,17 @@ export default async function AiCoachPage() {
         <ul style={{ margin: "14px 0 0", padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 8 }}>
           {FEATURES.map((f) => (
             <li key={f} style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
-              <Icon name="check" size={14} style={{ color: TL.text, marginTop: 2, flex: "none" }} />
+              {/* Ikke et avkrysset punkt: ingenting av dette er bygget ennå. */}
+              <span
+                style={{
+                  width: 5,
+                  height: 5,
+                  borderRadius: "50%",
+                  background: TL.mute,
+                  marginTop: 7,
+                  flex: "none",
+                }}
+              />
               <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text, lineHeight: 1.45 }}>{f}</span>
             </li>
           ))}
