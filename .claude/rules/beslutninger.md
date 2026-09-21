@@ -19,7 +19,7 @@ Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved kon
 
 - Ingen treningsregel er låst: ingen invarianter, tak, minimum eller plan-validering mot metodikk (18.08). Vokabularet består som frie merkelapper. Gjeninnfør aldri en regel uten ny beslutning.
 - AK-formel v2: `PYRAMIDE_OMRADE_MOTORIKK_BELASTNING_PRESS`. Motorikk UTEN_BALL/LAV_HAST/AUTO, press ALENE/OBSERVERT/KONKURRANSE/TURNERING. L-faser, CS, M0–M5 og PR1–PR5 er utgått. v3 er skrotet.
-- Ordbok: `docs/ordbok-master-trening.md` (Codex arbeider med `docs/ordbok.md`; sjekk hvilken som er godkjent før du siterer).
+- Ordbok: `docs/ordbok.md` (erstatter `ordbok-master-trening.md`; `docs/ordbok.json` genereres).
 - TrackMan-parametere på engelsk med stor forbokstav (Attack Angle, Club Path, Smash Factor).
 - Tester planlegges i Workbench; resultat synkes til talentprofilen.
 
