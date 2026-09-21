@@ -68,17 +68,48 @@ test("beregnGoalProgress — HCP_TARGET, ROUNDS_PER_MONTH, SESSION_FREQUENCY, TE
     assert.equal(ingenData.hasData, false, "ingen registrert HCP -> ingen data");
     assert.equal(ingenData.status, "no-data");
 
-    // start=54, mål=8, range=46. hcp=31 -> reise=23 -> 23/46=50 %.
-    const underveis = await beregnGoalProgress(mal, { hcp: 31 });
+    // Uten lagret startverdi finnes ingen ærlig nevner. Fram til 21.09.2026
+    // antok koden at alle startet på HCP 54, som gjorde en spiller på vei fra
+    // 20 til 10 «89 % i mål» når hen faktisk var halvveis. Nå vises det målte
+    // tallet og hva som gjenstår, men ingen prosent.
+    const utenStart = await beregnGoalProgress(mal, { hcp: 31 });
+    assert.equal(utenStart.hasData, false, "ukjent utgangspunkt -> ingen fremdriftsprosent");
+    assert.equal(utenStart.status, "no-data");
+    assert.equal(utenStart.value, 31, "HCP er målt og skal vises selv uten prosent");
+    assert.match(utenStart.detail, /31,0|31\.0/);
+    assert.match(utenStart.detail, /23,0|23\.0/, "gjenstående slag er regnbart uten startverdi");
+
+    // Med lagret startverdi er reisen ekte: fra 20 til 8 er 12 slag, og på
+    // HCP 14 har spilleren gått 6 av dem.
+    const medStart = lagMal({
+      type: "HCP_TARGET",
+      targetValue: 8,
+      payload: { hcpStart: 20 },
+    });
+    const underveis = await beregnGoalProgress(medStart, { hcp: 14 });
     assert.equal(underveis.hasData, true);
     assert.equal(underveis.pct, 50);
     assert.equal(underveis.status, "on-track");
-    assert.equal(underveis.value, 31);
+    assert.equal(underveis.value, 14);
 
-    // hcp under målverdien -> forbi 100 %, klippes til 100 og markeres oppnådd.
-    const oppnadd = await beregnGoalProgress(mal, { hcp: 6 });
+    // Under målverdien -> klippes til 100 og markeres oppnådd.
+    const oppnadd = await beregnGoalProgress(medStart, { hcp: 6 });
     assert.equal(oppnadd.pct, 100);
     assert.equal(oppnadd.status, "achieved");
+
+    // Målet er nådd selv uten startverdi — det krever ingen nevner.
+    const oppnaddUtenStart = await beregnGoalProgress(mal, { hcp: 6 });
+    assert.equal(oppnaddUtenStart.status, "achieved");
+    assert.equal(oppnaddUtenStart.pct, 100);
+
+    // En startverdi på feil side av målet er ubrukelig som nevner.
+    const ugyldigStart = lagMal({
+      type: "HCP_TARGET",
+      targetValue: 8,
+      payload: { hcpStart: 4 },
+    });
+    const avvist = await beregnGoalProgress(ugyldigStart, { hcp: 14 });
+    assert.equal(avvist.hasData, false, "start lavere enn målet gir ingen meningsfull reise");
   }
 
   // ── ROUNDS_PER_MONTH ────────────────────────────────────────────────

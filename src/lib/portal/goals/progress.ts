@@ -39,8 +39,23 @@ export type GoalProgressContext = {
 
 const ROLLING_WINDOW_DAYS = 7;
 const ROUNDS_WINDOW_DAYS = 30;
-// Standard maks-HCP ved onboarding — samme antakelse som mål-hub har brukt siden før.
-const HCP_START = 54;
+
+/**
+ * Spillerens HCP da målet ble satt, lest fra `Goal.payload.hcpStart`.
+ *
+ * Fram til 21.09.2026 antok fremdriften at alle startet på HCP 54 (den gamle
+ * maks-grensen ved onboarding). For en spiller på vei fra 20 til 10 ga det
+ * «89 % i mål» ved HCP 15, mens hen reelt var halvveis. Antakelsen ble dermed
+ * lest som spillerens faktiske utgangspunkt, som den aldri var.
+ *
+ * Uten en lagret startverdi finnes ingen ærlig nevner, og da vises ingen
+ * prosent — samme regel som SG-mål allerede følger (`sgStart`).
+ */
+function lesHcpStart(payload: unknown): number | null {
+  if (!payload || typeof payload !== "object" || Array.isArray(payload)) return null;
+  const v = (payload as Record<string, unknown>).hcpStart;
+  return typeof v === "number" && Number.isFinite(v) ? v : null;
+}
 
 function clampPct(value: number): number {
   if (!Number.isFinite(value)) return 0;
@@ -65,15 +80,38 @@ function progressHcp(goal: GoalForProgress, hcp: number | null): GoalProgress {
   if (hcp == null || goal.targetValue == null) {
     return ingenData("Ingen HCP registrert ennå");
   }
-  const range = Math.max(0.1, HCP_START - goal.targetValue);
-  const reise = Math.max(0, HCP_START - hcp);
-  const pct = clampPct((reise / range) * 100);
   const delta = +(hcp - goal.targetValue).toFixed(1);
-  const detail =
-    delta > 0
-      ? `${hcp.toFixed(1)} nå · trenger ${delta.toFixed(1)} til`
-      : `Mål nådd! HCP ${hcp.toFixed(1)}`;
-  return { pct, status: statusFromPct(pct), hasData: true, value: hcp, detail };
+
+  // Målet er nådd — det krever ingen nevner å slå fast.
+  if (delta <= 0) {
+    return {
+      pct: 100,
+      status: "achieved",
+      hasData: true,
+      value: hcp,
+      detail: `Mål nådd! HCP ${hcp.toFixed(1)}`,
+    };
+  }
+
+  const start = lesHcpStart(goal.payload);
+  // Startverdien må ligge på riktig side av målet, ellers er reisen ikke en reise.
+  if (start == null || start <= goal.targetValue) {
+    return {
+      ...ingenData(
+        `${hcp.toFixed(1)} nå · ${delta.toFixed(1)} til målet · utgangspunkt ikke registrert`,
+      ),
+      value: hcp,
+    };
+  }
+
+  const pct = clampPct(((start - hcp) / (start - goal.targetValue)) * 100);
+  return {
+    pct,
+    status: statusFromPct(pct),
+    hasData: true,
+    value: hcp,
+    detail: `${hcp.toFixed(1)} nå · trenger ${delta.toFixed(1)} til · fra ${start.toFixed(1)}`,
+  };
 }
 
 async function progressRoundsPerMonth(goal: GoalForProgress, now: Date): Promise<GoalProgress> {
