@@ -7,7 +7,7 @@ import { toast } from "sonner";
 
 import { AREA_LABEL, formatMinutes, formatTime, STATUS_LABEL, UI } from "@/lib/domain/workbench/labels";
 import { isoWeekNumber } from "@/lib/domain/workbench/operations";
-import type { Drill, SourceItem, TrainingArea, WeekViewModel, WorkbenchSession } from "@/lib/domain/workbench/types";
+import type { Drill, PlanningGoalSummary, SourceItem, TrainingArea, WeekViewModel, WorkbenchSession } from "@/lib/domain/workbench/types";
 import {
   addDrill,
   loadWeek,
@@ -28,6 +28,7 @@ type Props = {
   selectedSessionId?: string;
   kilder: SourceItem[];
   roster?: { id: string; navn: string }[];
+  goals?: PlanningGoalSummary[];
 };
 
 const MOTORIKK: Record<string, string> = {
@@ -89,7 +90,7 @@ function formel(session: WorkbenchSession, drill: Drill | undefined) {
   ];
 }
 
-export function WorkbenchOkt({ playerId, spillerNavn, uke, selectedSessionId, kilder, roster = [] }: Props) {
+export function WorkbenchOkt({ playerId, spillerNavn, uke, selectedSessionId, kilder, roster = [], goals = [] }: Props) {
   const router = useRouter();
   const [week, setWeek] = useState(uke);
   const [sessionId, setSessionId] = useState(selectedSessionId ?? sesjonerI(uke)[0]?.id ?? "");
@@ -146,7 +147,7 @@ export function WorkbenchOkt({ playerId, spillerNavn, uke, selectedSessionId, ki
   return (
     <div className="wb-layout wb-session-layout">
       <aside className="wb-sources">
-        <SourcesPanel kilder={kilder} playerId={playerId} uke={week.weekStart} maned={week.weekStart.slice(0, 7)} aar={week.weekStart.slice(0, 4)} />
+        <SourcesPanel kilder={kilder} playerId={playerId} uke={week.weekStart} maned={week.weekStart.slice(0, 7)} aar={week.weekStart.slice(0, 4)} goals={goals} />
         <nav className="wb-roster" aria-label="Spillere i stallen">
           <span className="wb-kicker">Stall</span>
           {roster.map((p) => (

@@ -61,6 +61,19 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
   });
   if (!spiller) notFound();
 
+  const activeGoals = await prisma.goal.findMany({
+    where: { userId: playerId, status: "ACTIVE" },
+    select: { id: true, title: true, category: true, targetDate: true },
+    orderBy: [{ category: "asc" }, { targetDate: "asc" }, { createdAt: "desc" }],
+    take: 8,
+  });
+  const goals = activeGoals.map((goal) => ({
+    id: goal.id,
+    title: goal.title,
+    category: goal.category,
+    targetDate: goal.targetDate?.toISOString() ?? null,
+  }));
+
   const weekStart = ukeStartFraParam(sp.uke);
   const mode = { kind: "AGENCY" as const, subjectId: playerId, sources: [] };
   const visning = parseVisning(sp.vis);
@@ -88,6 +101,7 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
           spillerNavn={spiller.name ?? "Ukjent"}
           aar={yearRes.data}
           kilder={kilderRes.ok ? kilderRes.data : []}
+          goals={goals}
         />
       </WorkbenchShell>
     );
@@ -116,6 +130,7 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
           spillerNavn={spiller.name ?? "Ukjent"}
           maned={monthRes.data}
           kilder={kilderRes.ok ? kilderRes.data : []}
+          goals={goals}
         />
       </WorkbenchShell>
     );
@@ -144,6 +159,7 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
           spillerNavn={spiller.name ?? "Ukjent"}
           periode={periodRes.data}
           kilder={kilderRes.ok ? kilderRes.data : []}
+          goals={goals}
         />
       </WorkbenchShell>
     );
@@ -220,6 +236,7 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
           uke={weekRes.data}
           selectedSessionId={sp.okt}
           kilder={kilderRes.ok ? kilderRes.data : []}
+          goals={goals}
         />
       </WorkbenchShell>
     );
@@ -234,6 +251,7 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
         spillerNavn={spiller.name ?? "Ukjent"}
         uke={weekRes.data}
         kilder={kilderRes.ok ? kilderRes.data : []}
+        goals={goals}
       />
     </WorkbenchShell>
   );

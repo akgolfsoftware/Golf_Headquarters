@@ -327,6 +327,13 @@ export type SourceFilter =
   | "HELSE"
   | "GRUPPE";
 
+export interface PlanningGoalSummary {
+  id: string;
+  title: string;
+  category: "OUTCOME" | "PROCESS";
+  targetDate: string | null;
+}
+
 // ─── Commands (write side) ────────────────────────────────────────
 
 export interface CreateSessionCommand {

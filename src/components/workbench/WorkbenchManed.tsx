@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { addMonths } from "@/lib/domain/workbench/operations";
 import { formatHours, UI } from "@/lib/domain/workbench/labels";
-import type { MonthViewModel, PyramidArea, SourceItem } from "@/lib/domain/workbench/types";
+import type { MonthViewModel, PlanningGoalSummary, PyramidArea, SourceItem } from "@/lib/domain/workbench/types";
 import { workbenchUrl } from "@/lib/workbench/visning-url";
 import { osloIdag } from "./WeekGrid";
 import { SourcesPanel } from "./SourcesPanel";
@@ -16,6 +16,7 @@ type Props = {
   maned: MonthViewModel;
   kilder: SourceItem[];
   roster?: { id: string; navn: string }[];
+  goals?: PlanningGoalSummary[];
 };
 
 const PYRAMIDER: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
@@ -24,7 +25,7 @@ function timer(minutter: number): string {
   return minutter > 0 ? `${formatHours(minutter)} t` : "—";
 }
 
-export function WorkbenchManed({ playerId, spillerNavn, maned, kilder, roster = [] }: Props) {
+export function WorkbenchManed({ playerId, spillerNavn, maned, kilder, roster = [], goals = [] }: Props) {
   const router = useRouter();
   const idag = osloIdag();
   const [aar, manedNummer] = maned.monthStart.split("-").map(Number);
@@ -40,7 +41,7 @@ export function WorkbenchManed({ playerId, spillerNavn, maned, kilder, roster = 
 
   return <div className="wb-layout">
     <aside className="wb-sources">
-      <SourcesPanel kilder={kilder} playerId={playerId} maned={maned.monthStart.slice(0, 7)} aar={String(aar)} />
+      <SourcesPanel kilder={kilder} playerId={playerId} maned={maned.monthStart.slice(0, 7)} aar={String(aar)} goals={goals} />
       <nav className="wb-roster" aria-label="Spillere i stallen"><span className="wb-kicker">Stall</span>{roster.map((spiller) => <Link key={spiller.id} href={`/admin/workbench/${spiller.id}?vis=maned&maned=${maned.monthStart.slice(0, 7)}`} aria-current={spiller.id === playerId ? "page" : undefined}>{spiller.navn}<small>Spiller</small></Link>)}</nav>
     </aside>
 
