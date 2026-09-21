@@ -6,6 +6,10 @@
  * Fasit: designsystem/train-lock/A-03b Ny drill tom.dc.html
  * Fasit: designsystem/train-lock/A-03c Ny drill fylt.dc.html
  * Fasit: designsystem/train-lock/A-02 Mac Okt Naerspill.dc.html (Øvelser-listen)
+ * Avvik:
+ *   - I valgt Workbench 20.09 følger felt lys flate og radius 2 fra workbench-selected.css.
+ *   - Øvelseshandlingene brytes til ny linje i detaljpanelet på 340 px; eldre mørke referanser er historiske.
+ *   - Lagring/fjerning og panelbredde er prøvd innlogget lokalt; ingen egen kalibrert riggrad for denne tilstanden.
  *
  * Fasit-stil: rader 15/600 + meta 13 mute tabular med border-bottom hairline
  * (aldri kort-ramme), «+ Legg til» som 13/600 mute tekst. Skjemaet: caps-
@@ -95,6 +99,7 @@ export function DrillListEditor({
             return (
               <li
                 key={d.id}
+                className="wb-drill-row"
                 style={{
                   display: "flex",
                   alignItems: "baseline",
@@ -164,7 +169,7 @@ export function DrillListEditor({
                     {UI.drillMissingCaps}
                   </span>
                 )}
-                <div style={{ display: "flex", gap: 2, flex: "none" }}>
+                <div className="wb-drill-actions" style={{ display: "flex", gap: 2, flex: "none" }}>
                   <IkonKnapp
                     icon="arrow-up"
                     title={UI.moveDrillUp}

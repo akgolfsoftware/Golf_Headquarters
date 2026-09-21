@@ -24,6 +24,7 @@ const TYPE_LABELS: Record<string, string> = {
 
 export type MaalWidgetMaal = {
   id: string;
+  kategori: "OUTCOME" | "PROCESS";
   tittel: string;
   /** Kort type-etikett: HCP / RUNDER / SG / ØKTER / TEST / MÅL */
   typeLabel: string;
@@ -61,7 +62,7 @@ export async function getMaalWidgetData(userId: string, limit = 3): Promise<Maal
       orderBy: [{ targetDate: "asc" }, { createdAt: "desc" }],
       take: limit,
       select: {
-        id: true, userId: true, type: true, title: true, status: true,
+        id: true, userId: true, type: true, category: true, title: true, status: true,
         targetValue: true, targetDate: true, createdAt: true, payload: true,
         linkedPyramidArea: true, linkedTestId: true,
       },
@@ -81,6 +82,7 @@ export async function getMaalWidgetData(userId: string, limit = 3): Promise<Maal
 
       return {
         id: g.id,
+        kategori: g.category,
         tittel: g.title,
         typeLabel: TYPE_LABELS[g.type] ?? "MÅL",
         pct: progress.pct,

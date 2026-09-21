@@ -1,5 +1,8 @@
 # PORTING — fra Train-lock-skjerm til kode
 
+> **UTGÅTT PORTERINGSINSTRUKS 21.09.2026:** Ikke start nye porter fra denne filen. Train-lock
+> er bare historikk og funksjonsinventar. Bruk [gjeldende designautoritet](../../docs/design-system/design-autoritet.md).
+
 Målgruppe: Claude Code i AK Golf HQ-repoet (Next.js 16.2 · React 19 · TS strict · Tailwind v4 · shadcn).
 Mål: porten skal være **pikselnær mot .dc.html-filen**, ikke «inspirert av». Design-filen er fasit; er koden uenig, er koden feil.
 

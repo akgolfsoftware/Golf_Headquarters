@@ -1,6 +1,6 @@
 # AK HQ Design — start arbeidet her
 
-**Opprettet 10.09.2026 og oppdatert 11.09.2026.** Én prosjektspesifikk arbeidsmåte for hele appens design. Anders starter blankt i Claude Design og lager Design System v0.1 med retningen [Atletisk intelligens](../../.claude/skills/ak-hq-design/references/atletisk-intelligens.md). Eksisterende visuelle valg er arbeidsunderlag, ikke fasit. Målet om komplett app før åpen lansering med booking og betaling står ved lag.
+**Opprettet 10.09.2026 og oppdatert 21.09.2026.** Én prosjektspesifikk arbeidsmåte for hele appens design. [AK Golf Design System og «App design»](design-autoritet.md) er valgt designautoritet. Arbeidet viderefører dagens system og siste faktiske prosjektversjon. Train-lock og Paper er utgående og skal ikke brukes som visuell kilde eller tas opp som et nytt valg. Målet om komplett app før åpen lansering med booking og betaling står ved lag.
 
 ## Bruk i prosjektet
 
@@ -15,7 +15,7 @@ Last inn ferdighetspakken, Anders' visuelle smaksreferanser og [hovedprompten](.
 Kort inngang når pakken er lagt ved:
 
 ```text
-Bruk den vedlagte AK HQ Design-pakken og Anders' smaksreferanser. Les SKILL.md, references/atletisk-intelligens.md og kjør oppgaven i assets/hovedprompt.md. Start blankt og skap AK Golf HQ Design System v0.1 sammen med pilotskjermene. Eksisterende design er bare funksjonelt og teknisk arbeidsunderlag. Dokumenter skjermdekning, tilstander og formater.
+Bruk den vedlagte AK HQ Design-pakken og AK Golf Design System i prosjektet «App design». Les SKILL.md, docs/design-system/design-autoritet.md og relevant oppgave. Viderefør siste faktiske prosjektversjon. Train-lock og Paper er bare historisk funksjonsunderlag. Dokumenter skjermdekning, tilstander og formater. Ikke spør på nytt hvilket designsystem som gjelder.
 ```
 
 ## Dette følger med
@@ -48,4 +48,4 @@ npm run prosjekt:sjekk
 
 Dette kjører ingen app, database eller integrasjon. Inventarskriptet overskriver bare sine to genererte filer, aldri manuelle designvalg. Pakkens testfil kan kjøres med `node --test .claude/skills/ak-hq-design/scripts/kartlegg-skjermer.test.mjs`.
 
-Videre designstatus og rekkefølge føres i [arbeidslisten](../MASTERPLAN-GJENSTAAENDE.md). En ferdig regelpakke er ikke ferdig UI; faktisk wireframing, tegning, prototyping og brukervurdering gjenstår.
+Videre designstatus og rekkefølge føres i [arbeidslisten · historisk Git-versjon](https://github.com/akgolfsoftware/Golf_Headquarters/blob/a235444b0f7287b0ce7270c28b32d34517711a2f/docs/MASTERPLAN-GJENSTAAENDE.md). En ferdig regelpakke er ikke ferdig UI; faktisk wireframing, tegning, prototyping og brukervurdering gjenstår.

@@ -8,7 +8,7 @@
 
 **Varig regel:** vedlikehold én kilde per tema. Ikke dupliser styrende tekst mellom AI-verktøy. Ikke kall en funksjon ferdig ut fra en sitering, tokenimport eller gammel statuslinje.
 
-[Full tidligere feillogg](arkiv/opprydding-2026-09-10/feillogg.md) er bevart. Nye læringspunkter skal beskrive konkret årsak, retting og hvordan gjentakelse hindres.
+[Full tidligere feillogg · historisk Git-versjon](https://github.com/akgolfsoftware/Golf_Headquarters/blob/c2d44fc1c34ef24275df30d605a620859431cc69/docs/arkiv/opprydding-2026-09-10/feillogg.md) er bevart. Nye læringspunkter skal beskrive konkret årsak, retting og hvordan gjentakelse hindres.
 
 ## 11.09.2026 — dokumentcommit skjuler samlet Vercel-bygg
 

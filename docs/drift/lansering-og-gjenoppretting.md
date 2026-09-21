@@ -33,7 +33,7 @@ Arbeidsoppskrift 10.09.2026. En lokal gjenopprettingsprøve med syntetiske data 
 | Varsling ved faktisk driftsfeil | Ikke prøvd |
 | Ny behandling av feilet betaling i testmiljø | Ikke prøvd |
 | Sikkerhetskopiens dekning og tidspunkt | Ikke verifisert |
-| Gjenoppretting til separat miljø | Lokal prøve 12.09 kveld: 196 tabeller, bevart booking og kollisjonsvern, 1,06 s. Samme isolat som 10.09. Produksjonskopi gjenstår. [Kontroll](../design-audit/docker-launch-tester-2026-09-12.md) |
+| Gjenoppretting til separat miljø | Lokal prøve 12.09 kveld: 196 tabeller, bevart booking og kollisjonsvern, 1,06 s. Samme isolat som 10.09. Produksjonskopi gjenstår. [Kontroll · historisk Git-versjon](https://github.com/akgolfsoftware/Golf_Headquarters/blob/139894e5bd22e3c6426fda48307a8ac71df71dd1/docs/design-audit/docker-launch-tester-2026-09-12.md) |
 | Målt gjenopprettingstid og datatap | Lokal liten testdatabase 12.09: 1,06 sekunder, syntetisk booking bevart. 10.09: 2,59 sekunder. Produksjon ikke målt |
 | Tilbakeføring av utrulling med kompatibelt skjema | Regel enhetstestet: produksjonstilbakeføring avvist uten uttrykkelig autorisasjon. Vercel-rollback ikke kjørt |
 

@@ -1,5 +1,8 @@
 # Train-lock — synkstatus
 
+> **HISTORISK 21.09.2026:** Synken er frosset som sporbarhet. Den skal ikke brukes til å
+> gjeninnføre Train-lock. Se [gjeldende designautoritet](../../docs/design-system/design-autoritet.md).
+
 **Sist synket: 08.09.2026 kl 15:47 fra mappa «Player HQ Train lock» i Nedlastinger
 (samme innhold som `Player HQ Train lock.zip`, tidsstemplet 08.09 15:47) — verifisert
 med sha256 fil for fil mot repoets forrige tilstand (synk 01.09). Destinasjon er

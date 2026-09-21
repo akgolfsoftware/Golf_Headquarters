@@ -163,6 +163,11 @@ export interface WorkbenchSession {
   practiceType?: PracticeType;
   location?: string;
   notes?: string;
+  /** Felter fra den kanoniske øktmodellen, brukt når migrerte økter vises. */
+  rationale?: string;
+  skillArea?: string;
+  pressureLevel?: string;
+  maalsetning?: string;
 
   drills: Drill[];
 
@@ -439,7 +444,7 @@ export interface LockedBlock {
   startMinute: number;
   durationMinutes: number;
   title: string;
-  kind: "SKOLE" | "BOOKING" | "TURNERING" | "REISE" | "HELSE";
+  kind: "SKOLE" | "BOOKING" | "TURNERING" | "REISE" | "HELSE" | "OPPTATT";
   dimmed: true;
 }
 
@@ -454,6 +459,7 @@ export interface WeekViewModel {
 export interface MonthDayLine {
   title: string;
   durationMinutes: number;
+  pyramid: PyramidArea;
   /** Turnering/test vises som hairline, ikke fylt. */
   hairline: boolean;
 }
@@ -477,12 +483,16 @@ export interface MonthViewModel {
   label: string;
   weeks: MonthWeekRow[];
   budget: WeekBudget;
+  sessionCount: number;
   weekSummaries: Array<{
     weekStart: string;
     weekNumber: number;
     sessionCount: number;
     minutes: number;
   }>;
+  plannedToDateMinutes: number;
+  completedMinutes: number;
+  completedByPyramid: Record<PyramidArea, number>;
   empty: boolean;
   mode: WorkbenchMode;
 }
@@ -522,6 +532,9 @@ export interface YearPeriodBand {
   aktiv: boolean;
   /** Timer per pyramideområde innenfor perioden — WB-06 høyrepanel «Balanse». */
   balanseTimer: Record<PyramidArea, number>;
+  plannedMinutes: number;
+  plannedToDateMinutes: number;
+  completedMinutes: number;
   turneringer: { navn: string; dato: string }[];
 }
 
@@ -530,5 +543,38 @@ export interface YearViewModel {
   months: YearMonthRow[];
   periods: YearPeriodBand[];
   budget: WeekBudget;
+  plannedToDateMinutes: number;
+  completedMinutes: number;
+  completedByPyramid: Record<PyramidArea, number>;
+  mode: WorkbenchMode;
+}
+
+export interface PeriodWeekRow {
+  weekStart: string;
+  weekNumber: number;
+  minutes: number;
+  completedMinutes: number;
+  sessionCount: number;
+  dominantPyramid: PyramidArea | null;
+}
+
+export interface PeriodPyramidRow {
+  pyramid: PyramidArea;
+  plannedMinutes: number;
+  completedMinutes: number;
+  sharePct: number;
+  focus: string | null;
+}
+
+export interface PeriodViewModel {
+  year: number;
+  period: YearPeriodBand | null;
+  periods: YearPeriodBand[];
+  sessions: WorkbenchSession[];
+  weeks: PeriodWeekRow[];
+  distribution: PeriodPyramidRow[];
+  plannedMinutes: number;
+  plannedToDateMinutes: number;
+  completedMinutes: number;
   mode: WorkbenchMode;
 }

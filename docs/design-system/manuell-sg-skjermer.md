@@ -1,8 +1,11 @@
 # Manuell SG — komplett skjermleveranse
 
+> **HISTORISK DESIGNRETNING (21.09.2026):** Funksjonskartet kan brukes, men Train-lock-, font-
+> og temavalget nedenfor er overstyrt av [gjeldende designautoritet](design-autoritet.md).
+
 **Versjon 11.09.2026.** Funksjonskode `c6352c2d2`, basert på main `2807d4d08`. Anders har bestilt innlegging i main og et komplett designunderlag. Retning: valgt Train-lock ZIP (4), Geist/Geist Mono, prosjektets lyse og mørke tema.
 
-Skjermene er implementert. Dette dokumentet beskriver den faktiske leveransen og den lokale designpakken. Se [funksjonskortet](../planer/funksjon-manuell-sg.md) for regler, lagring, tilgang og alle 21 felt.
+Skjermene er implementert. Dette dokumentet beskriver den faktiske leveransen og den lokale designpakken. Se [funksjonskortet · historisk Git-versjon](https://github.com/akgolfsoftware/Golf_Headquarters/blob/0b9c9dc57fb79f9dbb009f5a126bc40834700890/docs/planer/funksjon-manuell-sg.md) for regler, lagring, tilgang og alle 21 felt.
 
 ## Skjermkart
 

@@ -1,14 +1,13 @@
 /**
- * V1 cutover: A1-indeksbyttet (`--dropp-gammel-indeks`).
+ * Abonnementenes unikhet etter at A1-engangsskriptet er tatt ut av repoet.
  *
- * Scriptet dropper den gamle unike indeksen `subscriptions_userId_key` slik at
- * én bruker kan ha både COACHING- og PLAYERHQ-rad. Det er destruktivt mot
- * prod og skal ALDRI kjøres herfra. Denne fila låser kun at:
- *   1. Prisma-skjemaet allerede har (userId, kind)-unikhet, ikke userId alene.
- *   2. DROP INDEX i scriptet ligger bak eksplisitt flagg.
- *   3. Scriptet bor i scripts/arkiv/ (sjekklisten pekte tidligere på scripts/).
+ * Commit 25067d76e slettet scripts/arkiv/add-abonnement-v2-2026-08-16.ts.
+ * Testene skal ikke kreve at destruktiv engangskode gjenopprettes. De låser at:
+ *   1. Begge tidligere skriptstier fortsatt er borte, også fra npm-kommandoer.
+ *   2. Prisma har (userId, kind)-unikhet, ikke userId alene.
  *
- * Om flagget er kjørt i prod kan ikke leses fra git. Anders sjekker:
+ * Faktiske indekser i prod kan ikke bevises fra Git. En separat autorisert
+ * databasekontroll må eventuelt lese:
  *   SELECT indexname FROM pg_indexes WHERE tablename = 'subscriptions';
  * Skal ha subscriptions_userId_kind_key. Skal IKKE ha subscriptions_userId_key.
  */
@@ -28,44 +27,32 @@ function subscriptionModell(schema: string): string {
   return m[0];
 }
 
-test("A1-scriptet ligger i scripts/arkiv/ — ikke den gamle scripts/-stien", () => {
-  assert.equal(existsSync(SCRIPT), true, `Mangler ${SCRIPT}`);
-  assert.equal(
-    existsSync(GAMMEL_STI),
-    false,
-    "Gammel sti scripts/add-abonnement-v2-2026-08-16.ts finnes igjen — oppdater sjekklisten.",
-  );
-});
-
-test("DROP INDEX kjører kun med --dropp-gammel-indeks (aldri ubetinget)", () => {
-  const src = readFileSync(SCRIPT, "utf8");
-  const dropLinjer = src
-    .split("\n")
-    .map((l, i) => ({ l, i }))
-    .filter(({ l }) => /DROP INDEX/i.test(l));
-  assert.equal(
-    dropLinjer.length,
-    1,
-    `Forventet nøyaktig én DROP INDEX, fant ${dropLinjer.length}`,
-  );
-
-  const flaggLinje = src.split("\n").findIndex((l) =>
-    l.includes('process.argv.includes("--dropp-gammel-indeks")'),
-  );
-  assert.ok(flaggLinje >= 0, "Mangler --dropp-gammel-indeks-grenen");
-  assert.ok(
-    dropLinjer[0].i > flaggLinje,
-    "DROP INDEX står utenfor --dropp-gammel-indeks-grenen",
-  );
-  assert.match(src, /DROP INDEX IF EXISTS "subscriptions_userId_key"/);
+test("Det utgåtte A1-engangsskriptet er ikke gjeninnført eller koblet til npm", () => {
+  for (const sti of [SCRIPT, GAMMEL_STI]) {
+    assert.equal(existsSync(sti), false, `Utgått databaseskript er gjeninnført: ${sti}`);
+  }
+  const pakke = JSON.parse(readFileSync(join(ROT, "package.json"), "utf8"));
+  for (const [navn, kommando] of Object.entries(pakke.scripts ?? {})) {
+    assert.doesNotMatch(
+      String(kommando),
+      /add-abonnement-v2-2026-08-16/,
+      `npm-kommandoen ${navn} peker på det utgåtte databaseskriptet`,
+    );
+  }
 });
 
 test("Prisma-skjemaet har unikhet på (userId, kind), ikke userId alene", () => {
   const modell = subscriptionModell(readFileSync(SCHEMA, "utf8"));
-  assert.match(modell, /@@unique\(\[userId, kind\]\)/);
+  const utenKommentarer = modell.replace(/\/\/[^\n]*/g, "");
+  assert.match(utenKommentarer, /@@unique\(\s*\[\s*userId\s*,\s*kind\s*\]/);
   assert.equal(
-    /@@unique\(\[userId\]\)/.test(modell),
+    /@@unique\(\s*\[\s*userId\s*\]/.test(utenKommentarer),
     false,
     "Subscription har @@unique([userId]) igjen — da kan ikke COACHING og PLAYERHQ sameksistere.",
+  );
+  assert.doesNotMatch(
+    utenKommentarer,
+    /^\s*userId\s+[^\n]*@(unique|id)\b/m,
+    "Subscription.userId må ikke ha @unique eller @id — én spiller må kunne ha begge abonnementstyper.",
   );
 });

@@ -7,7 +7,7 @@ mer kondisjon, mer styrke — individuell fordeling per spiller). Faglig forankr
 plyometrikk — jf. CLAUDE.md §4. Stryk/legg til fritt; dette er innlastingslisten, ikke en
 ferdig fasit.
 
-**Rettet 20.08 (runde 2, Anders):** FYS-området i `docs/ordbok-master-trening.md` er nå
+**Rettet 20.08 (runde 2, Anders):** FYS-området i `docs/ordbok.md` er nå
 **Styrke · Kondisjon · Bevegelighet** (tre offisielle områdekoder — kondisjon lagt til,
 mobilitet omdøpt bevegelighet). De syv arbeidskategoriene under er beholdt for lesbarhet i
 øvelsesbanken (de gir bedre struktur for coach enn tre grove bøtter), men hver kategori

@@ -15,9 +15,9 @@
 
 ## Arkiv
 
-[Arkiverte verktøy](arkiv/README.md) er historikk. De åtte verktøyene i `arkiv/design-foer-train-lock/` er sperret for kjøring og erstattet av Train-lock-riggen. `speil:paper` er fjernet fra npm. Den gamle `verify.mjs` i prosjektroten var en databaseprobe, ikke en kodekontroll; den ligger nå sperret i arkivet.
+[Arkiverte verktøy · historisk Git-versjon](https://github.com/akgolfsoftware/Golf_Headquarters/blob/f93949c82b113be0bbc0bd437b219dfae9f6a13b/scripts/arkiv/README.md) er historikk. De åtte verktøyene i `arkiv/design-foer-train-lock/` er sperret for kjøring og erstattet av Train-lock-riggen. `speil:paper` er fjernet fra npm. Den gamle `verify.mjs` i prosjektroten var en databaseprobe, ikke en kodekontroll; den ligger nå sperret i arkivet.
 
-[Gamle bruksoppskrifter](arkiv/bruk-foer-opprydding.md) er bevart, men kan beskrive utgåtte tilgangsnivåer eller datakilder. Ikke bruk dem som lanseringsstatus.
+[Gamle bruksoppskrifter · historisk Git-versjon](https://github.com/akgolfsoftware/Golf_Headquarters/blob/24fc3d959c0589f4bf6cb2a408bf3e58dea740a7/scripts/arkiv/bruk-foer-opprydding.md) er bevart, men kan beskrive utgåtte tilgangsnivåer eller datakilder. Ikke bruk dem som lanseringsstatus.
 
 ## Lokale driftsjobber
 

@@ -8,7 +8,7 @@ Anders bestilte fullføring av neste oppgaver, fletting av ferdig arbeid, oppryd
 - PH-06 med valgt resultathierarki, synlige lagrede ord/vurdering, feilbehandling og interaktiv rigg med appens skrifter.
 - Separate, atomiske oppdateringer av notat-/vurderingsfelt. Vurdering og planspeil lagres i én transaksjon; ingen databaseoppsett eller migrasjon er endret.
 - Tre dokumenter fra produktplan/intervju-grenen, bevart som arbeidsunderlag. Funksjonsregisteret omfatter også baneguide, vind og eldre bestillinger, med tydelige avklaringer.
-- Én oppdatert [masterplan](../MASTERPLAN-GJENSTAAENDE.md), [nåstatus](../STATUS-NÅ.md), arbeidsdeling og korrigert PH-06-rapport. Tidligere påstand om ferdig PH-06 i PR #837 er ikke videreført.
+- Én oppdatert [masterplan · historisk Git-versjon](https://github.com/akgolfsoftware/Golf_Headquarters/blob/a235444b0f7287b0ce7270c28b32d34517711a2f/docs/MASTERPLAN-GJENSTAAENDE.md), [nåstatus · historisk Git-versjon](https://github.com/akgolfsoftware/Golf_Headquarters/blob/b700ce0089a8bf48f6b269c9682af2373e696287/docs/STATUS-N%C3%85.md), arbeidsdeling og korrigert PH-06-rapport. Tidligere påstand om ferdig PH-06 i PR #837 er ikke videreført.
 
 ## Grenregnskap
 

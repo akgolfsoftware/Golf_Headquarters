@@ -1,5 +1,8 @@
 # Valgt Train-lock — ZIP (4)
 
+> **TIDLIGERE VALG — UTGÅENDE 21.09.2026:** Pakkens kildefiler bevares som historikk. De er
+> ikke lenger visuell fasit. Se [gjeldende designautoritet](../../../docs/design-system/design-autoritet.md).
+
 Anders valgte `Player HQ Train lock (4).zip` for PlayerHQ og AgencyOS 10.09.2026. ZIP-ens SHA-256 er `2bfe81ac5d3f131e5a667fca28205732119e2f6c36c0b50178b57953626fbd85`.
 
 Denne mappen bevarer de kildefilene som er brukt til det nye felleslaget og Nå-kortet. Innholdet er kopiert uendret; komponentfilnavn er normalisert til kebab-case. Resten av pakken ligger i det private kildearkivet, omtalt i [porteringsrapporten](../../../docs/design-audit/portering-fire-flater-2026-09-10.md).

@@ -2,8 +2,8 @@
 name: ak-hq-design
 description: "Planlegg, tegn og vurder AK Golf HQs brukerreiser, komponenter, wireframes og responsive UI, og klargjør en sammenhengende designoverlevering. Bruk ved designarbeid i PlayerHQ, AgencyOS, booking, marked, forelder og øvrige flater i dette prosjektet."
 metadata:
-  version: "4"
-  reviewed: "2026-09-13"
+  version: "6"
+  reviewed: "2026-09-21"
   short-description: "Samlet designarbeid for hele AK Golf HQ"
 ---
 
@@ -13,8 +13,9 @@ Utvikle et presist og lett forståelig golfprodukt. Arbeid fra faktiske brukerop
 
 ## Utgangspunkt og kildeorden
 
-- Anders' siste bestilling styrer. **Utforskede design er åpne for revisjon; uttrykkelig valgte delomfang beholder sin autoritet.** Historiske designpakker, ZIP-instrukser og skill-eksempler er ikke nye valg. Kontroller aktuell status i `designsystem/README.md` og daterte beslutninger.
-- **Designsystemet er avgjort (21.09.2026):** AK Golf Design System / «App design». Les `docs/design-system/design-autoritet.md` først; det vinner over alt annet i denne skillen. Bygg videre på siste faktiske versjon i «App design»; ikke start blankt og ikke spør om Train-lock/Paper. [Atletisk intelligens](references/atletisk-intelligens.md) er bakgrunn for tone, ikke fasit.
+- Anders' siste bestilling styrer. **AK Golf Design System og Claude Design-prosjektet «App design» er valgt designautoritet fra 21.09.2026.** Les [den styrende beslutningen](../../../docs/design-system/design-autoritet.md) først. Systemvalget er ikke en åpen kandidat.
+- Train-lock og Paper er utgående. Bruk dem bare som historikk og funksjonsinventar, aldri som visuell kilde eller skjult standard. Ikke spør Anders på nytt om de skal gjelde.
+- Viderefør siste faktiske versjon i «App design» og bevar nyere rettinger. Historiske designpakker, ZIP-instrukser og skill-eksempler er ikke nye valg. En konkret skjermvariant er et forslag inntil Anders velger den for bygging.
 - Team Norways Claw-pakke er valgt for egne `/team-norway/*`-skjermer, jf. [beslutningen 13.09.2026](../../../docs/design-system/team-norway-claw-valgt-2026-09-13.md). Den omfatter hele profilen, ikke bare aksentfargen. En samlet ny kandidat erstatter ikke dette valget uten Anders' uttrykkelige beslutning.
 - I repoet: les `AGENTS.md`, `docs/platform/AGENT-BRIEF.md` og aktuell `designsystem/README.md`. Bruk produktregler og fagordbøker for funksjon og begreper; eldre visuelle regler i dem er underordnet den siste designavklaringen.
 - I Claude Design eller annet miljø uten repo: bruk det vedlagte inventaret og konteksten nedenfor. Si hva du kan se. Et eksportert filinventar beviser ikke tilgang, ferdig kode eller funksjon.
@@ -32,6 +33,7 @@ Utvikle et presist og lett forståelig golfprodukt. Arbeid fra faktiske brukerop
 | Vurdering / overlevering | [Overlevering og bevis](references/overlevering.md); undersøk faktisk tegning/prototype før visuelle påstander |
 | Prompt til Claude Design | [Hovedprompt](assets/hovedprompt.md), sammen med denne skillen og referansene |
 | Videreføring, tokenportering eller eksportkontroll | [Videreføring og tokenkontroll](references/videreforing-og-tokenkontroll.md), siste faktiske kandidat og gjeldende produktvalg |
+| Workbench fra Claude Design til app, inkludert skjermsammenligning | [Workbench: design, kode og bevis](references/workbench-design-og-kode.md), valgt eksport og aktuell arbeidsplan |
 
 Les bare underlaget oppgaven krever. En liten knappeendring skal ikke utløse en full plattformgjennomgang.
 
@@ -39,7 +41,7 @@ Les bare underlaget oppgaven krever. En liten knappeendring skal ikke utløse en
 
 1. **Kartlegg:** knytt faktiske ruter, modalvinduer, roller og systemtilstander til brukerreiser og skjermfamilier. Bevar alle funksjoner. Et gammelt rutenavn er ikke tillatelse til sletting. Se inventaret og skjermomfanget.
 2. **Wireframe:** tegn informasjonsrekkefølge, hovedhandling, navigasjon og relevante tilstander før detaljering. Vis samme oppgave på mobil og bred skjerm. Bruk felles mønstre med dokumenterte unntak.
-3. **Kalibrer retningen:** start med AgencyOS Hjem, spillerreisen I dag → økt → Live → oppsummering og en Analyse-skjerm når oppgaven gjelder hele appen. Skill faglige kvalitetskrav fra visuelle forslag. Bruk sportslig energi, operativ ro og fokusmodus som deler av samme system, ikke som separate stiler.
+3. **Kalibrer retningen:** start med AgencyOS Hjem, spillerreisen I dag → økt → Live → oppsummering og en Analyse-skjerm når oppgaven gjelder Design System v0.1. Skill faglige kvalitetskrav fra visuelle forslag. Bruk sportslig energi, operativ ro og fokusmodus som deler av samme system, ikke som separate stiler.
 4. **Samordne komponentene:** dokumenter grunnverdier, betydningsbaserte verdier og komponentverdier som faktisk brukes i skjermene. Koble valgt designversjon til eksisterende komponenter når kode skal bygges; ikke la dagens tokens styre utforskingen og ikke opprett et nytt parallelt system av vane.
 5. **Fullfør familiene:** bruk avtalt retning gjennom alle registrerte flater og formater. En pilot er ikke slutten på en bestilling som gjelder hele appen. Fortsett med avklart arbeid; noter konkrete produktspørsmål som blokkerer avhengige deler.
 6. **Prøv og lever:** gå gjennom flytene, kontroller formatene, registrer funn og oppdater dekningsregisteret. Oppgi valgt versjon, bevis og det som gjenstår. En grønn teknisk kontroll eller et skjermbilde er ikke alene brukerens godkjenning.
@@ -59,7 +61,7 @@ Ved videreføring er funksjonssammenheng en egen kontroll: mål → plan → øk
 
 [Filinventar](assets/ruteinventar.json) og [CSV](assets/ruteinventar.csv) er genererte observasjoner, **ikke** et vedtak om like mange unike skjermdesign. Aktuelle antall står i filen og endres når prosjektet endres.
 
-Kryssjekk også [funksjonsfamiliene](../../../docs/planer/funksjonsregister-2026-09-11.md) og [de detaljerte funksjonskortene](../../../docs/planer/funksjonsforbedringer-og-intervju-2026-09-13.md), eller en dokumentert etterfølger. Skill forslag, vedtatt omfang og implementert oppførsel. Bruk navnerom: `FAM:P11` (venner) er ikke `KORT:P11` (årsplan). Hvert relevant kort trenger konkret skjerm/mønster, handling, tilstand og kontroll; en familierepresentant beviser ikke full dekning. Generer JSON og CSV fra samme grunnlag og beregn antall fra radene.
+Kryssjekk også [funksjonsfamiliene · historisk Git-versjon](https://github.com/akgolfsoftware/Golf_Headquarters/blob/7990858379739eaba9c62797dd3c42026c2bb863/docs/planer/funksjonsregister-2026-09-11.md) og [de detaljerte funksjonskortene · historisk Git-versjon](https://github.com/akgolfsoftware/Golf_Headquarters/blob/a9a3cf846539e3e4ea588c54be7a3fa302191457/docs/planer/funksjonsforbedringer-og-intervju-2026-09-13.md), eller en dokumentert etterfølger. Skill forslag, vedtatt omfang og implementert oppførsel. Bruk navnerom: `FAM:P11` (venner) er ikke `KORT:P11` (årsplan). Hvert relevant kort trenger konkret skjerm/mønster, handling, tilstand og kontroll; en familierepresentant beviser ikke full dekning. Generer JSON og CSV fra samme grunnlag og beregn antall fra radene.
 
 Fra prosjektroten kan du lese tellingen med:
 

@@ -40,7 +40,7 @@ export const IDAG_UI = {
   seSpredning: "Se spredning",
   feilCaps: "Ingen forbindelse",
   feilTittel: "Fikk ikke lastet dagen din",
-  feilBrød: "Sjekk nettet og prøv igjen. Økta ligger lagret.",
+  feilBrød: "Prøv igjen når du er på nett. Vi kunne ikke hente dagen din.",
   provIgjen: "Prøv igjen",
   ingenOktCaps: "Ingen økt",
   ingenOktTittel: "Ingen økt i dag. Anders har ikke lagt inn.",

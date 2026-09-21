@@ -14,6 +14,7 @@ export type MalGoalStatus = "on-track" | "behind" | "achieved" | "no-data";
 
 export interface MalGoalRad {
   id: string;
+  category: "OUTCOME" | "PROCESS";
   type: string;
   title: string;
   pct: number;
@@ -26,6 +27,8 @@ export interface MalGoalRad {
 
 export interface MalHubData {
   antall: number;
+  antallResultat: number;
+  antallProsess: number;
   goals: MalGoalRad[];
   milepael: { tittel: string; dato: string } | null;
 }
@@ -67,7 +70,11 @@ export function MalHubV2({ data }: { data: MalHubData }) {
   // Pre-eksisterende, ubrukt (jf. JSDoc over) — rørt kun for å unngå
   // lint-max-warnings-0 på filen, ikke ryddet bort (ikke del av denne PR-en).
   const _mobile = useMobile();
-  const { antall, goals, milepael } = data;
+  const { antall, antallResultat, antallProsess, goals, milepael } = data;
+  const grupper = [
+    { label: "Resultatmål", forklaring: "Resultatet du arbeider mot", goals: goals.filter((goal) => goal.category === "OUTCOME") },
+    { label: "Prosessmål", forklaring: "Handlingene som skal føre deg dit", goals: goals.filter((goal) => goal.category === "PROCESS") },
+  ];
 
   return (
     <div data-paper-wave-g="malhub" data-paper-portal-mal style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
@@ -85,7 +92,7 @@ export function MalHubV2({ data }: { data: MalHubData }) {
       </div>
 
       {/* B: én primær CTA full */}
-      <Link href="/portal/planlegge/bygger" style={{ textDecoration: "none", display: "block" }}>
+      <Link href="/portal/ai/mal-bygger" style={{ textDecoration: "none", display: "block" }}>
         <span style={{
                 display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", padding: "10px 16px",
                 borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600, minHeight: 56,
@@ -93,19 +100,16 @@ export function MalHubV2({ data }: { data: MalHubData }) {
         </span>
       </Link>
 
-      {/* Videre-lenke — SMART-veiviser (skiller seg fra CTA-en over: den bygger
-          en hel treningsplan fra mal, denne formulerer ett SMART-mål med AI-hjelp).
-          Ordinær rad, ingen ny clay-CTA. */}
-      <Link href="/portal/ai/mal-bygger" style={{ textDecoration: "none", display: "block" }}>
+      <Link href="/portal/planlegge/bygger" style={{ textDecoration: "none", display: "block" }}>
         <Kort hover>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <Icon name="sparkles" size={16} style={{ color: TL.mute, flex: "none" }} />
             <div style={{ flex: 1, minWidth: 0 }}>
               <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text }}>
-                AI mål-bygger
+                Bygg treningsplan
               </span>
               <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 1 }}>
-                Formuler ett SMART-mål steg for steg
+                Lag en plan som følger målene dine
               </span>
             </div>
             <Icon name="chevron-right" size={15} style={{ color: TL.mute, flex: "none" }} />
@@ -129,10 +133,34 @@ export function MalHubV2({ data }: { data: MalHubData }) {
         </Kort>
       )}
 
+      {goals.length > 0 && (
+        <Kort>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 16 }}>
+            <div>
+              <Caps size={9}>Resultatmål</Caps>
+              <strong style={{ display: "block", marginTop: 4, fontFamily: TL.font.sans, fontSize: 24, color: TL.text }}>{antallResultat}</strong>
+              <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute }}>Det du ønsker å oppnå</span>
+            </div>
+            <div>
+              <Caps size={9}>Prosessmål</Caps>
+              <strong style={{ display: "block", marginTop: 4, fontFamily: TL.font.sans, fontSize: 24, color: TL.text }}>{antallProsess}</strong>
+              <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute }}>Det du skal gjøre jevnlig</span>
+            </div>
+          </div>
+        </Kort>
+      )}
+
       {/* Mål-liste */}
       {goals.length > 0 ? (
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          {goals.map((g) => {
+        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+          {grupper.map((gruppe) => gruppe.goals.length > 0 && (
+            <section key={gruppe.label} aria-label={gruppe.label}>
+              <div style={{ marginBottom: 10 }}>
+                <Caps>{gruppe.label}</Caps>
+                <span style={{ display: "block", marginTop: 3, fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute }}>{gruppe.forklaring}</span>
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          {gruppe.goals.map((g) => {
             const c = farge(g.status, g.pct);
             return (
               <Link key={g.id} href={`/portal/mal/goal/${g.id}`} style={{ textDecoration: "none" }}>
@@ -164,6 +192,9 @@ export function MalHubV2({ data }: { data: MalHubData }) {
               </Link>
             );
           })}
+              </div>
+            </section>
+          ))}
         </div>
       ) : (
         <Kort>

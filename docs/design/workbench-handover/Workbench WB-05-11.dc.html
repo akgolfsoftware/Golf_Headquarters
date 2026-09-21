@@ -1,0 +1,916 @@
+<!DOCTYPE html><html lang="nb"><head><meta charset="utf-8"><meta name="design_doc_mode" content="canvas"><title>Workbench WB-05–11</title>
+<link rel="stylesheet" href="tokens/fonts.css"><link rel="stylesheet" href="tokens/colors.css"><link rel="stylesheet" href="tokens/typography.css">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#e6e3dd;font:var(--type-body);color:var(--text-primary)}
+a{color:var(--link);text-decoration:none}a:hover{color:var(--graphite-900)}
+.frame{position:absolute;background:#F2F1ED;border:1px solid var(--border-hairline);overflow:hidden;display:flex;flex-direction:column}
+.frame-tag{position:absolute;font:var(--type-meta);letter-spacing:var(--tracking-meta);text-transform:uppercase;color:var(--text-muted)}
+/* ---- chrome ---- */
+.top{height:56px;flex:0 0 56px;display:flex;align-items:center;gap:18px;padding:0 16px;background:var(--white);border-bottom:1px solid var(--border-hairline)}
+.top img{height:30px;display:block}
+.nav{display:flex;gap:2px}
+.nav button{appearance:none;border:0;background:none;min-height:44px;padding:0 12px;border-radius:2px;font:var(--fw-medium) var(--fs-14)/1.2 var(--font-body);color:var(--text-body);cursor:pointer;white-space:nowrap}
+.nav button:hover{background:var(--sand-150)}
+.nav button[aria-current=page]{background:var(--sand-150);box-shadow:inset 0 -2px 0 var(--graphite-900);color:var(--graphite-900);font-weight:600}
+.who{margin-left:auto;display:flex;align-items:center;gap:8px;font:var(--type-meta);color:var(--text-muted)}
+.who b{font:var(--fw-medium) var(--fs-13)/1.2 var(--font-body);color:var(--text-body)}
+/* ---- body grid ---- */
+.wb{flex:1;min-height:0;display:grid;grid-template-columns:236px minmax(0,1fr) 340px}
+.wb.nokilde{grid-template-columns:minmax(0,1fr) 340px}
+.wb.nokilde>.kilder{display:none}
+.kilder{border-right:1px solid var(--border-hairline);background:var(--sand-100);padding:14px 12px;display:flex;flex-direction:column;gap:14px;overflow:auto}
+.kgrp{display:flex;flex-direction:column;gap:2px}
+.kicker{font:var(--fw-semibold) var(--fs-11)/1.2 var(--font-body);letter-spacing:var(--tracking-kicker);text-transform:uppercase;color:var(--text-muted)}
+.kgrp .kicker{margin-bottom:6px}
+.krow{appearance:none;text-align:left;border:1px solid transparent;background:none;border-radius:2px;min-height:44px;padding:6px 10px;display:flex;flex-direction:column;justify-content:center;gap:2px;cursor:pointer;font:var(--type-body-s);color:var(--text-body)}
+.krow:hover{background:var(--sand-150)}
+.krow[aria-current=true]{background:var(--white);border-color:var(--border-strong);font-weight:600}
+.krow em{font:var(--type-meta-xs);letter-spacing:var(--tracking-meta);font-style:normal;color:var(--text-muted)}
+.main{min-width:0;display:flex;flex-direction:column;background:#F2F1ED}
+.pillrow{display:flex;gap:6px;padding:10px 20px;border-bottom:1px solid var(--border-hairline);background:#F2F1ED;overflow-x:auto;scrollbar-width:none}
+.pillrow::-webkit-scrollbar{display:none}
+.pill{appearance:none;min-height:44px;padding:0 14px;border:1px solid var(--border-hairline);border-radius:2px;background:var(--white);font:var(--fw-medium) var(--fs-13)/1.2 var(--font-body);color:var(--text-body);cursor:pointer;white-space:nowrap}
+.pill:hover{border-color:var(--border-strong)}
+.pill[aria-pressed=true]{background:var(--graphite-900);border-color:var(--graphite-900);color:var(--sand-100);font-weight:600}
+.body{flex:1;min-height:0;overflow:auto;padding:20px}
+.body[hidden]{display:none}
+/* ---- periode ---- */
+.phead{display:flex;align-items:flex-end;gap:16px;margin-bottom:18px}
+.phead h1{font:var(--type-title-l);margin:0;letter-spacing:var(--tracking-display)}
+.phead>div:first-child{flex:0 0 auto}
+.phead .sub{flex:1;min-width:0;font:var(--type-meta);letter-spacing:var(--tracking-meta);color:var(--text-muted);padding-bottom:5px}
+.pub{appearance:none;margin-left:auto;flex:0 0 auto;white-space:nowrap;min-height:44px;padding:0 18px;border:0;border-radius:2px;background:var(--rust-600);color:#F4EFE6;font:var(--fw-semibold) var(--fs-15)/1.2 var(--font-body);cursor:pointer}
+.pub:hover{background:var(--rust-hover)}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:20px}
+.card{background:var(--white);border:1px solid var(--border-hairline);border-radius:2px;padding:12px 14px}
+.card .kicker{display:block;margin-bottom:8px}
+.card .metric{display:block}
+.metric{font:var(--type-metric);letter-spacing:var(--tracking-display)}
+.metric small{font:var(--fw-regular) var(--fs-13)/1.2 var(--font-body);color:var(--text-muted);margin-left:6px}
+.meter{height:6px;background:var(--sand-200);border-radius:2px;overflow:hidden;margin-top:10px}
+.meter i{display:block;height:100%;background:var(--graphite-900)}
+.split{display:flex;gap:2px;margin-top:4px}
+.split div{height:26px;border-radius:2px;display:flex;align-items:center;justify-content:center;font:var(--type-meta-xs);letter-spacing:var(--tracking-meta);color:var(--sand-100)}
+.sec{margin-bottom:20px}
+.sec>.kicker{margin-bottom:10px}
+/* tidslinje */
+.tl{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:4px}
+.blk{position:relative;appearance:none;text-align:left;color:var(--text-primary);border:1px solid var(--border-hairline);border-top:3px solid var(--graphite-400);border-radius:2px;background:var(--white);min-height:104px;padding:8px 9px;cursor:pointer;display:flex;flex-direction:column;gap:4px}
+.blk:hover{border-color:var(--border-strong)}
+.blk[aria-pressed=true]{border-color:var(--graphite-900);background:var(--sand-100)}
+.blk[data-type=utvikling]{border-top-color:var(--graphite-900)}
+.blk[data-type=vedlikehold]{border-top-color:var(--graphite-400)}
+.blk[data-type=turnering]{border-top-color:var(--amber-700)}
+.blk .uk{font:var(--type-meta);letter-spacing:var(--tracking-meta);color:var(--text-muted)}
+.blk .ty{font:var(--fw-medium) var(--fs-11)/1.25 var(--font-body);color:var(--text-primary)}
+.blk .vo{margin-top:auto;font:var(--type-meta);letter-spacing:var(--tracking-meta);color:var(--text-body)}
+.blk .bar{height:4px;background:var(--sand-200);border-radius:2px;overflow:hidden}
+.blk .bar i{display:block;height:100%;background:var(--graphite-900)}
+.blk.naa::after{content:"Nå";position:absolute;bottom:-1px;right:-1px;background:var(--graphite-900);color:var(--sand-100);font:var(--type-meta-xs);letter-spacing:var(--tracking-meta);padding:2px 5px}
+/* pyramide */
+.pyr{background:var(--white);border:1px solid var(--border-hairline);border-radius:2px}
+.pyr table{width:100%;border-collapse:collapse}
+.pyr th{text-align:left;padding:8px 14px;border-bottom:1px solid var(--border-hairline);font:var(--fw-regular) var(--fs-10)/1.2 var(--font-meta);letter-spacing:var(--tracking-kicker);text-transform:uppercase;color:var(--text-muted)}
+.pyr td{padding:9px 14px;border-bottom:1px solid var(--border-hairline);font:var(--type-body-s);vertical-align:middle}
+.pyr tr:last-child td{border-bottom:0}
+.pyr .lag{display:flex;align-items:center;gap:9px;font-weight:500}
+.pyr .stav{width:4px;height:17px;background:var(--graphite-600);border-radius:2px}
+.num{font:var(--fw-medium) var(--fs-13)/1.2 var(--font-meta);letter-spacing:var(--tracking-meta);cursor:help;border-bottom:1px dotted var(--border-strong)}
+.pyr .mtr{width:120px}
+/* popover */
+.pop{position:relative}
+.pop>.bub{position:absolute;left:0;top:calc(100% + 6px);z-index:9;min-width:210px;max-width:280px;background:var(--graphite-900);color:var(--sand-100);border-radius:2px;padding:8px 10px;font:var(--fw-regular) var(--fs-13)/1.4 var(--font-body);opacity:0;visibility:hidden;transition:opacity .12s}
+.pop>.bub b{display:block;font:var(--fw-regular) var(--fs-11)/1.3 var(--font-meta);letter-spacing:var(--tracking-meta);color:var(--natt-300);margin-bottom:3px}
+.pop:hover>.bub,.pop:focus-within>.bub{opacity:1;visibility:visible}
+.pop.up>.bub{top:auto;bottom:calc(100% + 6px)}
+.pop.rt>.bub{left:auto;right:0}
+/* inspector */
+.insp{width:340px;border-left:1px solid var(--border-hairline);background:var(--sand-100);padding:16px 14px;overflow:auto;display:flex;flex-direction:column;gap:16px}
+.insp h2{font:var(--type-title-s);margin:0;letter-spacing:var(--tracking-display)}
+.insp .lead{font:var(--type-meta);letter-spacing:var(--tracking-meta);color:var(--text-muted);margin:4px 0 0}
+.fml{display:flex;flex-direction:column}
+.fml .row{display:grid;grid-template-columns:104px minmax(0,1fr);gap:10px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--border-hairline)}
+.fml .row:last-child{border-bottom:0}
+.fml .lbl{display:flex;align-items:center;gap:5px;font:var(--fw-medium) var(--fs-13)/1.3 var(--font-body);color:var(--text-secondary)}
+.q{appearance:none;border:1px solid var(--border-strong);background:none;border-radius:2px;width:15px;height:15px;line-height:1;padding:0;font:var(--fw-regular) var(--fs-10)/1 var(--font-meta);color:var(--text-muted);cursor:help;flex:0 0 auto}
+.fml .val{font:var(--type-body-s);color:var(--text-primary)}
+.fml .val.tom{font-family:var(--font-meta);color:var(--text-faint)}
+.insp .pub{margin-left:0;width:100%;justify-content:center}
+.insp .ghost{appearance:none;min-height:44px;border:1px solid var(--border-strong);background:var(--white);border-radius:2px;font:var(--fw-medium) var(--fs-14)/1.2 var(--font-body);color:var(--text-body);cursor:pointer}
+.m .kicker{letter-spacing:var(--tracking-kicker-min)}
+.insp .ghost:hover{background:var(--sand-150)}
+/* uke */
+.uke{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.dag{border:1px solid var(--border-hairline);border-radius:2px;background:var(--white);min-height:250px;padding:8px;display:flex;flex-direction:column;gap:6px}
+.dag>.kicker{display:flex;justify-content:space-between}
+.okt{border:1px solid var(--border-hairline);border-left:3px solid var(--graphite-600);border-radius:2px;background:var(--sand-100);padding:7px 8px;min-height:44px;display:flex;flex-direction:column;gap:3px;cursor:pointer}
+.okt:hover{border-color:var(--border-strong)}
+.okt .t{font:var(--fw-medium) var(--fs-13)/1.25 var(--font-body)}
+.okt .m{font:var(--type-meta-xs);letter-spacing:var(--tracking-meta);color:var(--text-muted)}
+.okt[data-lag=TURN]{border-left-color:var(--amber-700)}
+.okt[data-lag=SLAG]{border-left-color:var(--graphite-500)}
+.okt[data-lag=FYS]{border-left-color:var(--graphite-800)}
+.okt[data-lag=SPILL]{border-left-color:var(--graphite-400)}
+.tom{font:var(--type-meta);letter-spacing:var(--tracking-meta);color:var(--text-faint);padding:4px 2px}
+/* kommer-ark */
+.ark{background:var(--white);border:1px solid var(--border-hairline);border-radius:2px;padding:24px;max-width:520px}
+.ark h2{font:var(--type-title-m);margin:6px 0 8px;letter-spacing:var(--tracking-display)}
+.ark p{margin:0;font:var(--type-body);color:var(--text-secondary);max-width:44ch;text-wrap:pretty}
+/* ---- maned ---- */
+.mtop{display:flex;align-items:flex-end;gap:14px;margin-bottom:14px}
+.mtop h1{font:var(--type-title-l);margin:0;letter-spacing:var(--tracking-display)}
+.mtop .yr{font:var(--type-title-s);color:var(--text-muted);padding-bottom:3px;letter-spacing:var(--tracking-display)}
+.mtop .sub{font:var(--type-meta);letter-spacing:var(--tracking-meta);color:var(--text-muted);padding-bottom:5px}
+.mtop .gmp{margin-left:auto;text-align:right}
+.mtop .gmp .kicker{display:block;margin-bottom:3px}
+.mfd{display:flex;flex-direction:column;align-items:flex-start;gap:7px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border-hairline)}
+.mfd .tags{display:flex;gap:6px;flex-wrap:wrap}
+.mfd .kicker{display:flex;align-items:center;gap:5px}
+.lagtag{display:flex;align-items:center;gap:6px;background:var(--white);border:1px solid var(--border-hairline);border-radius:2px;min-height:30px;padding:0 8px;font:var(--fw-medium) var(--fs-13)/1.2 var(--font-body)}
+.lagtag .num{font-size:var(--fs-11)}
+.lagtag i{width:4px;height:16px;border-radius:2px;display:block}
+.mhd{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;margin-bottom:4px}
+.mhd span{font:var(--fw-regular) var(--fs-10)/1.2 var(--font-meta);letter-spacing:var(--tracking-kicker);text-transform:uppercase;color:var(--text-muted);padding-left:2px}
+.mnd{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.dc{position:relative;appearance:none;text-align:left;color:var(--text-primary);border:1px solid var(--border-hairline);border-radius:2px;background:var(--white);min-height:96px;padding:6px;display:flex;flex-direction:column;gap:3px;cursor:pointer;overflow:hidden}
+.dc:hover{border-color:var(--border-strong)}
+.dc[aria-pressed=true]{border-color:var(--graphite-900);background:var(--sand-100)}
+.dc.ut{background:var(--sand-150);border-color:var(--border-hairline);cursor:default}
+.dc.ut .dt,.dc.ut .ingen{color:var(--text-faint)}
+.dc.naa{box-shadow:inset 0 2px 0 var(--graphite-900)}
+.dc .dt{font:var(--fw-medium) var(--fs-13)/1.2 var(--font-meta);letter-spacing:var(--tracking-meta);color:var(--text-secondary)}
+.dc .band{font:var(--fw-regular) var(--fs-10)/1.2 var(--font-meta);letter-spacing:var(--tracking-kicker);text-transform:uppercase;background:var(--sand-150);border-left:3px solid var(--graphite-400);border-radius:2px;padding:3px 5px;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dc .band[data-band=turnering]{border-left-color:var(--amber-700)}
+.ml{font:var(--fw-regular) var(--fs-11)/1.25 var(--font-body);background:var(--sand-100);border:1px solid var(--border-hairline);border-left:3px solid var(--graphite-600);border-radius:2px;padding:3px 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ml[data-lag=FYS]{border-left-color:var(--graphite-800)}
+.ml[data-lag=TEK]{border-left-color:var(--graphite-900)}
+.ml[data-lag=SLAG]{border-left-color:var(--graphite-500)}
+.ml[data-lag=SPILL]{border-left-color:var(--graphite-400)}
+.ml[data-lag=TURN]{border-left-color:var(--amber-700)}
+.mer{margin-top:auto;font:var(--fw-regular) var(--fs-10)/1.2 var(--font-meta);letter-spacing:var(--tracking-meta);color:var(--text-muted)}
+.ingen{font:var(--fw-regular) var(--fs-11)/1.2 var(--font-meta);color:var(--text-faint);padding-left:2px}
+.dagpop{position:absolute;left:0;top:calc(100% + 4px);z-index:20;min-width:230px;background:var(--graphite-900);color:var(--sand-100);border-radius:2px;padding:9px 11px;font:var(--fw-regular) var(--fs-13)/1.45 var(--font-body);opacity:0;visibility:hidden;transition:opacity .12s}
+.dagpop b{display:block;font:var(--fw-regular) var(--fs-11)/1.3 var(--font-meta);letter-spacing:var(--tracking-meta);color:var(--natt-300);margin-bottom:4px}
+.dagpop ul{margin:0;padding-left:15px}
+.dcw{position:relative;display:flex}
+.dcw .dc{flex:1}
+.dcw:hover .dagpop{opacity:1;visibility:visible}
+.dcw.rt .dagpop{left:auto;right:0}
+.dcw.up .dagpop{top:auto;bottom:calc(100% + 4px)}
+/* ---- ar ---- */
+.aks{position:relative;height:16px;margin-bottom:4px}
+.aks span{position:absolute;top:0;font:var(--fw-regular) var(--fs-10)/1.2 var(--font-meta);letter-spacing:var(--tracking-kicker);text-transform:uppercase;color:var(--text-muted)}
+.tmarks{position:relative;height:12px}
+.tmark{position:absolute;top:2px;width:7px;height:7px;background:var(--amber-700);transform:rotate(45deg) translateX(-50%);transform-origin:left top}
+.tmark.st{position:static;display:inline-block;transform:rotate(45deg);margin-right:3px}
+.trk{position:relative;height:92px;background:var(--sand-150);border:1px solid var(--border-hairline);border-radius:2px}
+.segw{position:absolute;top:0;bottom:0;padding:3px}
+.seg{appearance:none;width:100%;height:100%;text-align:left;color:var(--text-primary);background:var(--white);border:1px solid var(--border-hairline);border-radius:2px;padding:6px 7px;cursor:pointer;display:flex;flex-direction:column;gap:2px;overflow:hidden}
+.seg:hover{border-color:var(--border-strong)}
+.seg[aria-pressed=true]{border-color:var(--graphite-900);background:var(--sand-100)}
+.seg .sn{font:var(--fw-semibold) var(--fs-11)/1.15 var(--font-body);overflow-wrap:anywhere;hyphens:auto}
+.seg .su,.mseg .su{font:var(--fw-regular) var(--fs-10)/1.3 var(--font-meta);letter-spacing:var(--tracking-meta);color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tk{display:flex;gap:1px;margin-top:auto}
+.tk i{display:block;flex:1;height:6px;border-radius:2px;background:var(--graphite-400)}
+.tk i[data-uke=utvikling]{background:var(--graphite-900)}
+.tk i[data-uke=vedlikehold]{background:var(--graphite-400)}
+.tk i[data-uke=turnering]{background:var(--amber-700)}
+.segw .dagpop{top:calc(100% + 4px)}
+.segw:hover .dagpop{opacity:1;visibility:visible}
+.segw.rt .dagpop{left:auto;right:0}
+.leg{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:10px 0 18px}
+.leg .li{display:flex;align-items:center;gap:6px;font:var(--type-body-s);color:var(--text-secondary)}
+.leg .li i{display:block;width:14px;height:6px;border-radius:2px;background:var(--graphite-400)}
+.leg .li i[data-uke=utvikling]{background:var(--graphite-900)}
+.leg .li i[data-uke=turnering]{background:var(--amber-700)}
+.leg .lt{font:var(--type-meta);letter-spacing:var(--tracking-meta);color:var(--text-muted);margin-left:auto}
+.mono2{font:var(--fw-regular) var(--fs-13)/1.2 var(--font-meta);letter-spacing:var(--tracking-meta);color:var(--text-secondary)}
+.msegs{display:flex;flex-direction:column;gap:6px}
+.mseg{appearance:none;text-align:left;color:var(--text-primary);background:var(--white);border:1px solid var(--border-hairline);border-radius:2px;min-height:56px;padding:8px 10px;cursor:pointer;display:flex;flex-direction:column;gap:3px}
+.mseg[aria-pressed=true]{border-color:var(--graphite-900);background:var(--sand-100)}
+.mseg .sn{font:var(--fw-semibold) var(--fs-13)/1.2 var(--font-body)}
+.m .leg{gap:10px}
+.m .leg .lt{display:none}
+/* ---- okt ---- */
+.fgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
+.fk{background:var(--white);border:1px solid var(--border-hairline);border-radius:2px;padding:8px 10px;min-height:56px;display:flex;flex-direction:column;gap:3px}
+.fl{display:flex;align-items:center;gap:5px;font:var(--fw-medium) var(--fs-11)/1.2 var(--font-body);letter-spacing:var(--tracking-kicker-min);text-transform:uppercase;color:var(--text-muted)}
+.fv{font:var(--type-body-s);color:var(--text-primary)}
+.fv.tom{font-family:var(--font-meta);color:var(--text-faint)}
+.ovl{display:flex;flex-direction:column;gap:4px}
+.ovw{position:relative}
+.ovw:hover .dagpop{opacity:1;visibility:visible}
+.ovw.up .dagpop{top:auto;bottom:calc(100% + 4px)}
+.ov{appearance:none;width:100%;text-align:left;color:var(--text-primary);display:grid;grid-template-columns:28px minmax(0,1fr) 68px 64px 76px;align-items:center;gap:10px;min-height:48px;padding:6px 12px;background:var(--white);border:1px solid var(--border-hairline);border-left:3px solid var(--graphite-600);border-radius:2px;cursor:pointer}
+.ov:hover{border-color:var(--border-strong)}
+.ov[aria-pressed=true]{border-color:var(--graphite-900);background:var(--sand-100)}
+.ov[data-lag=FYS]{border-left-color:var(--graphite-800)}
+.ov[data-lag=TEK]{border-left-color:var(--graphite-900)}
+.ov[data-lag=SLAG]{border-left-color:var(--graphite-500)}
+.ov[data-lag=SPILL]{border-left-color:var(--graphite-400)}
+.ov[data-lag=TURN]{border-left-color:var(--amber-700)}
+.onr{font:var(--fw-regular) var(--fs-11)/1.2 var(--font-meta);letter-spacing:var(--tracking-meta);color:var(--text-faint)}
+.onm{font:var(--fw-medium) var(--fs-14)/1.3 var(--font-body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.olg,.okl,.ovv{font:var(--fw-regular) var(--fs-11)/1.2 var(--font-meta);letter-spacing:var(--tracking-meta);color:var(--text-muted)}
+.ovv{text-align:right}
+.msub{margin:-8px 0 14px;font:var(--type-meta);letter-spacing:var(--tracking-meta);color:var(--text-muted)}
+.m .fgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.m .ov{grid-template-columns:22px minmax(0,1fr) 54px 60px;gap:8px;padding:6px 10px}
+.m .onm{font-size:var(--fs-13)}
+/* ---- stall ---- */
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.chip{appearance:none;min-height:44px;padding:0 14px;border:1px solid var(--border-hairline);border-radius:2px;background:var(--white);font:var(--fw-medium) var(--fs-13)/1.2 var(--font-body);color:var(--text-body);cursor:pointer;white-space:nowrap}
+.chip:hover{border-color:var(--border-strong)}
+.chip[aria-pressed=true]{background:var(--graphite-900);border-color:var(--graphite-900);color:var(--sand-100);font-weight:600}
+.stl{display:flex;flex-direction:column;gap:4px}
+.stw{position:relative}
+.stw:hover .dagpop{opacity:1;visibility:visible}
+.stw.up .dagpop{top:auto;bottom:calc(100% + 4px)}
+.st{appearance:none;width:100%;text-align:left;color:var(--text-primary);display:grid;grid-template-columns:150px minmax(0,1fr) 190px 60px 110px;align-items:center;gap:12px;min-height:52px;padding:6px 12px;background:var(--white);border:1px solid var(--border-hairline);border-left:3px solid var(--graphite-600);border-radius:2px;cursor:pointer}
+.st:hover{border-color:var(--border-strong)}
+.st[aria-pressed=true]{border-color:var(--graphite-900);background:var(--sand-100)}
+.st[data-lag=FYS]{border-left-color:var(--graphite-800)}
+.st[data-lag=TEK]{border-left-color:var(--graphite-900)}
+.st[data-lag=SLAG]{border-left-color:var(--graphite-500)}
+.st[data-lag=SPILL]{border-left-color:var(--graphite-400)}
+.st[data-lag=TURN]{border-left-color:var(--amber-700)}
+.sp{font:var(--fw-medium) var(--fs-13)/1.3 var(--font-body);color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stt{font:var(--fw-medium) var(--fs-14)/1.3 var(--font-body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sd,.slg{font:var(--fw-regular) var(--fs-11)/1.2 var(--font-meta);letter-spacing:var(--tracking-meta);color:var(--text-muted)}
+.ss{font:var(--fw-medium) var(--fs-13)/1.2 var(--font-body);color:var(--text-secondary);text-align:right}
+.ss[data-s=Utkast]{color:var(--text-muted)}
+.ss[data-s=Gjennomført]{color:var(--text-primary)}
+.stom{font:var(--fw-regular) var(--fs-13)/1.2 var(--font-meta);color:var(--text-faint);margin:10px 2px}
+.m .st{grid-template-columns:minmax(0,1fr) 92px;gap:4px 10px;padding:8px 10px;min-height:64px}
+.m .sp{grid-column:1;font-size:var(--fs-11)}
+.m .ss{grid-column:2;grid-row:1}
+.m .stt{grid-column:1;grid-row:2}
+.m .sd{grid-column:1/-1;grid-row:3}
+/* ---- live ---- */
+.frame[data-surface=live]{background:var(--natt-850);border-color:var(--natt-700)}
+.frame[data-surface=live] .top{background:var(--natt-900);border-bottom-color:var(--natt-700)}
+.frame[data-surface=live] .nav button{color:var(--sand-100)}
+.frame[data-surface=live] .nav button:hover{background:var(--natt-700)}
+.frame[data-surface=live] .nav button[aria-current=page]{background:var(--natt-700);box-shadow:inset 0 -2px 0 var(--sand-100)}
+.frame[data-surface=live] .who{color:var(--natt-300)}
+.frame[data-surface=live] .who b{color:var(--sand-100)}
+.frame[data-surface=live] .pillrow{background:var(--natt-850);border-bottom-color:var(--natt-700)}
+.frame[data-surface=live] .pill{background:var(--natt-700);border-color:var(--natt-700);color:var(--sand-100)}
+.frame[data-surface=live] .pill[aria-pressed=true]{background:var(--sand-100);border-color:var(--sand-100);color:var(--natt-900)}
+.frame[data-surface=live] .main,.frame[data-surface=live] .body{background:var(--natt-850)}
+.frame[data-surface=live] .insp,.frame[data-surface=live] .ark-b{background:var(--natt-900);border-left-color:var(--natt-700);border-top-color:var(--natt-700)}
+.frame[data-surface=live] .kicker,.frame[data-surface=live] .lead{color:var(--natt-300)}
+.frame[data-surface=live] h1,.frame[data-surface=live] h2{color:var(--sand-100)}
+.frame[data-surface=live] .fml .row{border-bottom-color:var(--natt-700)}
+.frame[data-surface=live] .lbl{color:var(--natt-300)}
+.frame[data-surface=live] .val{color:var(--sand-100)}
+.frame[data-surface=live] .val.tom{color:var(--natt-500)}
+.frame[data-surface=live] .q{border-color:var(--natt-500);color:var(--natt-300)}
+.frame[data-surface=live] .ghost{background:var(--natt-700);border-color:var(--natt-700);color:var(--sand-100)}
+.frame[data-surface=live] .grip{background:var(--natt-700)}
+.frame[data-surface=live] *:focus-visible{outline:2px solid var(--sand-100);outline-offset:2px}
+.lhead{display:flex;align-items:flex-end;gap:16px;margin-bottom:16px}
+.lhead h1{font:var(--type-title-l);margin:0;letter-spacing:var(--tracking-display);color:var(--sand-100)}
+.lmeta{font:var(--type-meta);letter-spacing:var(--tracking-meta);color:var(--natt-300);padding-bottom:5px}
+.klokke{margin-left:auto;font:var(--fw-semibold) var(--fs-29)/1 var(--font-display);letter-spacing:var(--tracking-display);color:var(--sand-100)}
+.lgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;margin-bottom:18px}
+.lcard{background:var(--natt-900);border:1px solid var(--natt-700);border-radius:2px;padding:14px 16px}
+.lcard h2{font:var(--type-title-s);margin:6px 0 0;letter-spacing:var(--tracking-display)}
+.lmal{margin:4px 0 0;font:var(--type-body-s);color:var(--natt-300)}
+.cpad{display:flex;align-items:center;gap:14px;margin-top:14px}
+.cbtn{appearance:none;width:44px;height:44px;border:1px solid var(--natt-500);background:none;border-radius:2px;color:var(--sand-100);font:var(--fw-regular) var(--fs-21)/1 var(--font-body);cursor:pointer}
+.cbtn:hover{background:var(--natt-700)}
+.cval{font:var(--type-live-num);color:var(--sand-100);min-width:72px;text-align:center}
+.ctxt{display:block;margin-top:6px;font:var(--type-meta);letter-spacing:var(--tracking-meta);color:var(--natt-300)}
+.srl{display:flex;flex-direction:column;margin-top:8px}
+.sr{display:grid;grid-template-columns:minmax(0,1fr) 84px 110px;align-items:center;gap:10px;min-height:44px;border-bottom:1px solid var(--natt-700)}
+.sr:last-child{border-bottom:0}
+.srn{font:var(--fw-medium) var(--fs-14)/1.3 var(--font-body);color:var(--sand-100)}
+.srv{font:var(--fw-regular) var(--fs-13)/1.2 var(--font-meta);letter-spacing:var(--tracking-meta);color:var(--natt-300)}
+.srs{font:var(--type-body-s);color:var(--natt-300);text-align:right}
+.lact{display:flex;gap:6px;margin-top:12px}
+.lbtn{appearance:none;flex:1;min-height:44px;border:1px solid var(--natt-500);background:none;border-radius:2px;color:var(--sand-100);font:var(--fw-medium) var(--fs-14)/1.2 var(--font-body);cursor:pointer}
+.lbtn:hover{background:var(--natt-700)}
+.lvl{display:flex;flex-direction:column;gap:3px}
+.lv{display:grid;grid-template-columns:24px minmax(0,1fr) 70px 120px;align-items:center;gap:10px;min-height:44px;padding:0 12px;background:var(--natt-900);border:1px solid var(--natt-700);border-radius:2px}
+.lv.na{border-color:var(--sand-100)}
+.lnr{font:var(--fw-regular) var(--fs-11)/1.2 var(--font-meta);letter-spacing:var(--tracking-meta);color:var(--natt-500)}
+.lnm{font:var(--fw-medium) var(--fs-14)/1.3 var(--font-body);color:var(--sand-100);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lvv{font:var(--fw-regular) var(--fs-11)/1.2 var(--font-meta);letter-spacing:var(--tracking-meta);color:var(--natt-300)}
+.lst{font:var(--type-body-s);color:var(--natt-300);text-align:right}
+.m .lgrid{grid-template-columns:minmax(0,1fr)}
+.m .lhead{flex-wrap:wrap;gap:8px}
+.m .lhead h1{font:var(--type-title-m)}
+.m .lv{grid-template-columns:20px minmax(0,1fr) 96px;gap:8px;padding:0 10px}
+.m .lvv{display:none}
+/* ---- uke: timekalender ---- */
+.tg{display:grid;grid-template-columns:56px repeat(7,minmax(0,1fr));border:1px solid var(--border-hairline);border-radius:2px;background:var(--white)}
+.tg.m1{grid-template-columns:52px minmax(0,1fr)}
+.tgh{border-bottom:1px solid var(--border-hairline)}
+.tgd{display:flex;align-items:center;gap:5px;min-height:28px;padding:0 8px;border-bottom:1px solid var(--border-hairline);border-left:1px solid var(--border-hairline);font:var(--fw-regular) var(--fs-10)/1.2 var(--font-meta);letter-spacing:var(--tracking-kicker);text-transform:uppercase;color:var(--text-muted)}
+.tgd b{font-weight:500;color:var(--text-primary)}
+.tgb{min-height:30px;padding:3px 4px;border-bottom:1px solid var(--border-hairline);border-left:1px solid var(--border-hairline);background:var(--sand-100)}
+.band{display:block;font:var(--fw-regular) var(--fs-10)/1.2 var(--font-meta);letter-spacing:var(--tracking-kicker);text-transform:uppercase;background:var(--sand-150);border-left:3px solid var(--graphite-400);border-radius:2px;padding:5px 6px;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tgg{display:flex;flex-direction:column}
+.tgt{height:32px;display:block;padding:0 8px 0 0;text-align:right;font:var(--fw-regular) var(--fs-10)/1 var(--font-meta);letter-spacing:var(--tracking-meta);color:var(--text-muted);transform:translateY(-5px)}
+.tgk{position:relative;height:576px;border-left:1px solid var(--border-hairline);background:repeating-linear-gradient(to bottom,var(--white) 0,var(--white) 31px,var(--border-hairline) 31px,var(--border-hairline) 32px)}
+.chip-okt{position:absolute;left:2px;right:2px;min-width:0;appearance:none;text-align:left;display:flex;flex-direction:column;gap:1px;justify-content:center;min-height:44px;padding:4px 6px;border:1px solid var(--border-hairline);border-left:3px solid var(--graphite-600);border-radius:2px;background:var(--sand-100);cursor:pointer;overflow:hidden;color:var(--text-primary)}
+.chip-okt:hover{border-color:var(--border-strong);z-index:4}
+.chip-okt.ov{left:auto;right:2px;width:46%;background:var(--white);z-index:3}
+.chip-okt.base{right:auto;width:52%}
+.chip-okt.base .ct,.chip-okt.ov .ct{font-size:var(--fs-10)}
+.chip-okt[data-lag=FYS]{border-left-color:var(--graphite-800)}
+.chip-okt[data-lag=TEK]{border-left-color:var(--graphite-900)}
+.chip-okt[data-lag=SLAG]{border-left-color:var(--graphite-500)}
+.chip-okt[data-lag=SPILL]{border-left-color:var(--graphite-400)}
+.chip-okt[data-lag=TURN]{border-left-color:var(--amber-700)}
+.cn{font:var(--fw-medium) var(--fs-11)/1.2 var(--font-body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ct{font:var(--fw-regular) var(--fs-10)/1.2 var(--font-meta);letter-spacing:var(--tracking-meta);color:var(--text-muted)}
+.naalinje{position:absolute;left:0;right:0;height:1px;background:var(--graphite-900);z-index:5}
+.naalinje i{position:absolute;left:-3px;top:-2.5px;width:6px;height:6px;background:var(--graphite-900);border-radius:2px;display:block}
+.m .tgt{font-size:var(--fs-10)}
+/* ---- mobil ---- */
+.m .top{gap:12px;padding:0 12px}
+.m .nav{display:none}
+.m .wb{grid-template-columns:minmax(0,1fr)}
+.m .kilder,.m .insp{display:none}
+.m .body{padding:14px}
+.m .pillrow{padding:8px 12px}
+.m .mnd,.m .mhd{gap:3px}
+.m .dc{min-height:52px;padding:4px;gap:2px}
+.m .dc .dt{font-size:11px}
+.m .bars{display:flex;gap:2px}
+.m .bars i{display:block;width:100%;height:4px;border-radius:2px;background:var(--graphite-600)}
+.m .bars i[data-lag=FYS]{background:var(--graphite-800)}
+.m .bars i[data-lag=TEK]{background:var(--graphite-900)}
+.m .bars i[data-lag=SLAG]{background:var(--graphite-500)}
+.m .bars i[data-lag=SPILL]{background:var(--graphite-400)}
+.m .bars i[data-lag=TURN]{background:var(--amber-700)}
+.m .mtop{flex-wrap:wrap;gap:8px}
+.m .mtop h1{font:var(--type-title-m)}
+.m .mtop .gmp{margin-left:auto}
+.m .mfd{gap:6px}
+.m .lagtag{min-height:30px;padding:0 8px;font-size:11px}
+.m .cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.m .cards .card:nth-child(3){grid-column:1/-1}
+.m .card{padding:10px 12px}
+.m .metric{font:var(--type-title-m);letter-spacing:var(--tracking-display)}
+.m .metric small{display:block;margin:2px 0 0}
+.m .tl{grid-auto-flow:row;grid-auto-columns:auto}
+.m .blk{min-height:0;flex-direction:row;align-items:center;gap:10px;border-top:1px solid var(--border-hairline);border-left:3px solid var(--graphite-400);min-height:56px}
+.m .blk[data-type=utvikling]{border-left-color:var(--graphite-900)}
+.m .blk[data-type=vedlikehold]{border-left-color:var(--graphite-400)}
+.m .blk[data-type=turnering]{border-left-color:var(--amber-700)}
+.m .blk .vo{margin-top:0;margin-left:auto}
+.m .blk .bar{display:none}
+.m .phead h1{font:var(--type-title-m)}
+.m .pub{display:none}
+.m .uke{grid-template-columns:minmax(0,1fr)}
+.m .dag{min-height:0}
+.ark-b{position:absolute;z-index:30;left:0;right:0;bottom:0;background:var(--white);border-top:1px solid var(--border-strong);border-radius:2px 2px 0 0;padding:12px 14px 14px;display:flex;flex-direction:column;gap:10px;box-shadow:0 -8px 24px rgba(20,20,19,.08)}
+.ark-b .grip{width:36px;height:3px;border-radius:2px;background:var(--border-strong);align-self:center}
+.ark-b .fml .row{grid-template-columns:96px minmax(0,1fr);padding:6px 0}
+.mact{display:flex;gap:8px}
+.mact .pub{display:block;margin:0;flex:1}
+.mact .ghost{appearance:none;min-height:44px;padding:0 14px;border:1px solid var(--border-strong);background:var(--white);border-radius:2px;font:var(--fw-medium) var(--fs-14)/1.2 var(--font-body);color:var(--text-body);cursor:pointer}
+</style></head><body>
+
+<div class="frame-tag" style="left:0;top:-22px">WB-05–11 · Workbench · Periode · coach · 1440</div>
+<div class="frame" data-frame style="left:0;top:0;width:1440px;height:880px">
+  <header class="top"><img src="assets/logo-ak-golf-hq.svg" alt="AK Golf HQ">
+    <nav class="nav"><button type="button">Hjem</button><button type="button">Innboks</button><button type="button">Kalender</button><button type="button">Stall</button><button type="button" aria-current="page">Workbench</button><button type="button">Godkjenninger</button></nav>
+    <div class="who">coach · <b>Anders Kristiansen</b></div>
+  </header>
+  <div class="wb">
+    <aside class="kilder">
+      <div class="kgrp"><span class="kicker">Tidsnivå</span>
+        <button type="button" class="krow">År<em>2026</em></button>
+        <button type="button" class="krow" aria-current="true">Periode<em>Grunnperiode · uke 34–41</em></button>
+        <button type="button" class="krow">Måned<em>September</em></button>
+        <button type="button" class="krow">Uke<em>Uke 38</em></button>
+      </div>
+      <div class="kgrp"><span class="kicker">Øktbank</span>
+        <button type="button" class="krow">Maler<em>12</em></button>
+        <button type="button" class="krow">Økter<em>48</em></button>
+        <button type="button" class="krow">Øvelser<em>134</em></button>
+      </div>
+      <div class="kgrp"><span class="kicker">Stall</span>
+        <button type="button" class="krow" aria-current="true">Øyvind Rojahn<em>Spiller</em></button>
+        <button type="button" class="krow">Nora Five<em>Spiller</em></button>
+        <button type="button" class="krow">Jonas Berge<em>Spiller</em></button>
+      </div>
+    </aside>
+    <main class="main">
+      <div class="pillrow" data-pills>
+        <button type="button" class="pill" data-p="ar">År</button>
+        <button type="button" class="pill" data-p="periode" aria-pressed="true">Periode</button>
+        <button type="button" class="pill" data-p="maned">Måned</button>
+        <button type="button" class="pill" data-p="uke">Uke</button>
+        <button type="button" class="pill" data-p="okt">Økt</button>
+        <button type="button" class="pill" data-p="stall">Stall</button>
+        <button type="button" class="pill" data-p="live">Live</button>
+        <button type="button" class="pill" data-p="minkalender">Min kalender</button>
+      </div>
+
+      <section class="body" data-b="periode">
+        <div class="phead">
+          <div><span class="kicker">Grunnperiode</span><h1>Uke 34–41</h1></div>
+          <span class="sub">Øyvind Rojahn · 8 uker · 2 turneringer</span>
+          <button type="button" class="pub">Publiser periode</button>
+        </div>
+
+        <div class="cards">
+          <div class="card"><span class="kicker">Periodevolum</span>
+            <div class="pop"><span class="metric num" style="border:0" title="Volum måles i timer. Økter er telling ved siden av, ikke erstatning.">39,5 t<small>28 økter</small></span>
+              <div class="bub"><b>Periodevolum</b>Volum måles i timer. Økter er telling ved siden av, ikke erstatning.</div></div>
+          </div>
+          <div class="card"><span class="kicker">Gjennomført mot plan</span>
+            <div class="pop"><span class="metric num" style="border:0" title="Gjennomført mot plan — timer gjennomført av timer planlagt hittil i perioden.">21 t<small>av 22,5 t</small></span>
+              <div class="bub"><b>Gjennomført mot plan</b>Timer gjennomført av timer planlagt hittil i perioden. Tomt felt = —</div></div>
+            <div class="meter"><i style="width:93%"></i></div>
+          </div>
+          <div class="card"><span class="kicker">Fordeling</span>
+            <div class="split">
+              <div style="flex:8;background:var(--graphite-800)">FYS</div>
+              <div style="flex:12;background:var(--graphite-900)">TEK</div>
+              <div style="flex:9.5;background:var(--graphite-500)">SLAG</div>
+              <div style="flex:6;background:var(--graphite-600)">SPILL</div>
+              <div style="flex:4;background:var(--amber-700)">TURN</div>
+            </div>
+            <div class="meter" style="background:none;height:auto;margin-top:8px"><span style="font:var(--type-meta);letter-spacing:var(--tracking-meta);color:var(--text-muted)">Putt ligger i fot under SLAG</span></div>
+          </div>
+        </div>
+
+        <section class="sec"><span class="kicker">Tidslinje</span>
+          <div class="tl">
+            <div class="pop"><button type="button" class="blk" data-type="utvikling" data-uke="34"><span class="uk">Uke 34</span><span class="ty">Utviklingsuke</span><span class="vo">6 t</span><span class="bar"><i style="width:100%"></i></span></button>
+              <div class="bub">Grunnperiode · utviklingsuke · Utslag · 6 t planlagt</div></div>
+            <div class="pop"><button type="button" class="blk" data-type="utvikling" data-uke="35"><span class="uk">Uke 35</span><span class="ty">Utviklingsuke</span><span class="vo">6 t</span><span class="bar"><i style="width:100%"></i></span></button>
+              <div class="bub">Grunnperiode · utviklingsuke · Utslag · 6 t planlagt</div></div>
+            <div class="pop"><button type="button" class="blk" data-type="vedlikehold" data-uke="36"><span class="uk">Uke 36</span><span class="ty">Vedlikeholdsuke</span><span class="vo">4 t</span><span class="bar"><i style="width:100%"></i></span></button>
+              <div class="bub">Grunnperiode · vedlikeholdsuke · — · 4 t planlagt</div></div>
+            <div class="pop"><button type="button" class="blk" data-type="utvikling" data-uke="37" aria-pressed="true"><span class="uk">Uke 37</span><span class="ty">Utviklingsuke</span><span class="vo">6,5 t</span><span class="bar"><i style="width:85%"></i></span></button>
+              <div class="bub">Grunnperiode · utviklingsuke · Innspill 40–60 m · 6,5 t planlagt</div></div>
+            <div class="pop"><button type="button" class="blk naa" data-type="turnering" data-uke="38"><span class="uk">Uke 38</span><span class="ty">Turneringsuke</span><span class="vo">3,5 t</span><span class="bar"><i style="width:40%"></i></span></button>
+              <div class="bub">Grunnperiode · turneringsuke · Narvik Open · 3,5 t planlagt</div></div>
+            <div class="pop rt"><button type="button" class="blk" data-type="utvikling" data-uke="39"><span class="uk">Uke 39</span><span class="ty">Utviklingsuke</span><span class="vo">6 t</span><span class="bar"><i style="width:0"></i></span></button>
+              <div class="bub">Grunnperiode · utviklingsuke · Nærspill · 6 t planlagt</div></div>
+            <div class="pop rt"><button type="button" class="blk" data-type="vedlikehold" data-uke="40"><span class="uk">Uke 40</span><span class="ty">Vedlikeholdsuke</span><span class="vo">4 t</span><span class="bar"><i style="width:0"></i></span></button>
+              <div class="bub">Grunnperiode · vedlikeholdsuke · — · 4 t planlagt</div></div>
+            <div class="pop rt"><button type="button" class="blk" data-type="turnering" data-uke="41"><span class="uk">Uke 41</span><span class="ty">Turneringsuke</span><span class="vo">3,5 t</span><span class="bar"><i style="width:0"></i></span></button>
+              <div class="bub">Grunnperiode · turneringsuke · NM junior · 3,5 t planlagt</div></div>
+          </div>
+        </section>
+
+        <section class="sec"><span class="kicker">Fordeling på pyramiden</span>
+          <div class="pyr"><table>
+            <thead><tr><th style="width:150px">Lag</th><th style="width:110px">Planlagt</th><th style="width:130px">Gjennomført</th><th>Andel av periodevolum</th><th style="width:150px">Hovedfokus</th></tr></thead>
+            <tbody>
+              <tr><td><span class="lag"><i class="stav" style="background:var(--graphite-800)"></i>FYS</span></td>
+                <td><span class="pop up"><span class="num" title="FYS · 8 t planlagt · 4,5 t gjennomført">8 t</span><span class="bub">FYS · 8 t planlagt · 4,5 t gjennomført</span></span></td>
+                <td><span class="pop up"><span class="num" title="FYS · 8 t planlagt · 4,5 t gjennomført">4,5 t</span><span class="bub">FYS · 8 t planlagt · 4,5 t gjennomført</span></span></td>
+                <td><span class="meter mtr"><i style="width:20%"></i></span></td><td>Øke styrke</td></tr>
+              <tr><td><span class="lag"><i class="stav" style="background:var(--graphite-900)"></i>TEK</span></td>
+                <td><span class="pop up"><span class="num" title="TEK · 12 t planlagt · 6,5 t gjennomført">12 t</span><span class="bub">TEK · 12 t planlagt · 6,5 t gjennomført</span></span></td>
+                <td><span class="pop up"><span class="num" title="TEK · 12 t planlagt · 6,5 t gjennomført">6,5 t</span><span class="bub">TEK · 12 t planlagt · 6,5 t gjennomført</span></span></td>
+                <td><span class="meter mtr"><i style="width:30%"></i></span></td><td>Ballflukt</td></tr>
+              <tr><td><span class="lag"><i class="stav" style="background:var(--graphite-500)"></i>SLAG</span></td>
+                <td><span class="pop up"><span class="num" title="SLAG · 9,5 t planlagt · 5 t gjennomført">9,5 t</span><span class="bub">SLAG · 9,5 t planlagt · 5 t gjennomført</span></span></td>
+                <td><span class="pop up"><span class="num" title="SLAG · 9,5 t planlagt · 5 t gjennomført">5 t</span><span class="bub">SLAG · 9,5 t planlagt · 5 t gjennomført</span></span></td>
+                <td><span class="meter mtr"><i style="width:24%"></i></span></td><td>Innspill 40–60 m</td></tr>
+              <tr><td><span class="lag"><i class="stav" style="background:var(--graphite-600)"></i>SPILL</span></td>
+                <td><span class="pop up"><span class="num" title="SPILL · 6 t planlagt · 3 t gjennomført">6 t</span><span class="bub">SPILL · 6 t planlagt · 3 t gjennomført</span></span></td>
+                <td><span class="pop up"><span class="num" title="SPILL · 6 t planlagt · 3 t gjennomført">3 t</span><span class="bub">SPILL · 6 t planlagt · 3 t gjennomført</span></span></td>
+                <td><span class="meter mtr"><i style="width:15%"></i></span></td><td>Baneplan</td></tr>
+              <tr><td><span class="lag"><i class="stav" style="background:var(--amber-700)"></i>TURN</span></td>
+                <td><span class="pop up"><span class="num" title="TURN · 4 t planlagt · 2 t gjennomført">4 t</span><span class="bub">TURN · 4 t planlagt · 2 t gjennomført</span></span></td>
+                <td><span class="pop up"><span class="num" title="TURN · 4 t planlagt · 2 t gjennomført">2 t</span><span class="bub">TURN · 4 t planlagt · 2 t gjennomført</span></span></td>
+                <td><span class="meter mtr"><i style="width:11%"></i></span></td><td>—</td></tr>
+            </tbody>
+          </table></div>
+        </section>
+      </section>
+
+      <section class="body" data-b="uke" hidden><div class="phead"><div><span class="kicker">Utviklingsuke</span><h1>Uke 37</h1></div><span class="sub">Øyvind Rojahn · 15.–21. september · 6,5 t planlagt · 5,5 t gjennomført</span><button type="button" class="pub">Publiser uke</button></div><div class="tg"><div class="tgh"></div><span class="tgd">Man <b>15.</b></span><span class="tgd">Tir <b>16.</b></span><span class="tgd">Ons <b>17.</b></span><span class="tgd">Tor <b>18.</b></span><span class="tgd">Fre <b>19.</b></span><span class="tgd">Lør <b>20.</b></span><span class="tgd">Søn <b>21.</b></span><div class="tgh"></div><div class="tgb"></div><div class="tgb"></div><div class="tgb"><span class="band">Skole</span></div><div class="tgb"></div><div class="tgb"></div><div class="tgb"></div><div class="tgb"></div><div class="tgg"><span class="tgt">05:00</span><span class="tgt">06:00</span><span class="tgt">07:00</span><span class="tgt">08:00</span><span class="tgt">09:00</span><span class="tgt">10:00</span><span class="tgt">11:00</span><span class="tgt">12:00</span><span class="tgt">13:00</span><span class="tgt">14:00</span><span class="tgt">15:00</span><span class="tgt">16:00</span><span class="tgt">17:00</span><span class="tgt">18:00</span><span class="tgt">19:00</span><span class="tgt">20:00</span><span class="tgt">21:00</span><span class="tgt">22:00</span></div><div class="tgk"><button type="button" class="chip-okt" data-lag="FYS" style="top:64px;height:44px"><span class="cn">Styrke underkropp</span><span class="ct">07:00–08:15</span></button><button type="button" class="chip-okt" data-lag="TEK" style="top:352px;height:44px"><span class="cn">Ballflukt · jern</span><span class="ct">16:00–17:00</span></button></div><div class="tgk"><button type="button" class="chip-okt base" data-lag="SLAG" style="top:352px;height:48px"><span class="cn">Innspill 40–60 m</span><span class="ct">16:00–17:30</span></button><button type="button" class="chip-okt ov" data-lag="TEK" style="top:368px;height:44px"><span class="cn">Video · gjennomgang</span><span class="ct">16:30–17:00</span></button><span class="naalinje" style="top:374.4px"><i></i></span></div><div class="tgk"><button type="button" class="chip-okt" data-lag="FYS" style="top:64px;height:44px"><span class="cn">Vedlikehold</span><span class="ct">07:00–07:45</span></button></div><div class="tgk"><button type="button" class="chip-okt" data-lag="SLAG" style="top:352px;height:44px"><span class="cn">Nærspill · fot</span><span class="ct">16:00–17:00</span></button></div><div class="tgk"></div><div class="tgk"><button type="button" class="chip-okt" data-lag="SPILL" style="top:160px;height:64px"><span class="cn">Baneplan · 9 hull</span><span class="ct">10:00–12:00</span></button></div><div class="tgk"></div></div></section>
+    <section class="body" data-b="ar" hidden><div class="mtop"><div><span class="kicker">Øyvind Rojahn</span><h1>2026</h1></div><span class="sub">1. januar – 31. desember · 6 perioder</span><div class="gmp"><span class="kicker">Gjennomført mot plan</span><span class="pop rt"><span class="num" title="Gjennomført mot plan — timer gjennomført av timer planlagt hittil i året.">177 t av 184,5 t</span><span class="bub">Gjennomført mot plan — timer gjennomført av timer planlagt hittil i året. Tomt = —</span></span></div></div><div class="mfd"><span class="kicker">Fordeling <button type="button" class="q" title="Pyramide — FYS · TEK · SLAG · SPILL · TURN.">?</button></span><span class="tags"><span class="pop"><span class="lagtag"><i style="background:var(--graphite-800)"></i>FYS<span class="num" style="border:0" title="FYS · 44 t planlagt · 32 t gjennomført">32 t av 44 t</span></span><span class="bub">FYS · 44 t planlagt · 32 t gjennomført</span></span><span class="pop"><span class="lagtag"><i style="background:var(--graphite-900)"></i>TEK<span class="num" style="border:0" title="TEK · 66 t planlagt · 48 t gjennomført">48 t av 66 t</span></span><span class="bub">TEK · 66 t planlagt · 48 t gjennomført</span></span><span class="pop"><span class="lagtag"><i style="background:var(--graphite-500)"></i>SLAG<span class="num" style="border:0" title="SLAG · 58 t planlagt · 42 t gjennomført">42 t av 58 t</span></span><span class="bub">SLAG · 58 t planlagt · 42 t gjennomført</span></span><span class="pop"><span class="lagtag"><i style="background:var(--graphite-600)"></i>SPILL<span class="num" style="border:0" title="SPILL · 46 t planlagt · 34 t gjennomført">34 t av 46 t</span></span><span class="bub">SPILL · 46 t planlagt · 34 t gjennomført</span></span><span class="pop"><span class="lagtag"><i style="background:var(--amber-700)"></i>TURN<span class="num" style="border:0" title="TURN · 33,5 t planlagt · 21 t gjennomført">21 t av 33,5 t</span></span><span class="bub">TURN · 33,5 t planlagt · 21 t gjennomført</span></span></span></div><div class="aks"><span style="left:0%">jan</span><span style="left:8.333333333333332%">feb</span><span style="left:16.666666666666664%">mar</span><span style="left:25%">apr</span><span style="left:33.33333333333333%">mai</span><span style="left:41.66666666666667%">jun</span><span style="left:50%">jul</span><span style="left:58.333333333333336%">aug</span><span style="left:66.66666666666666%">sep</span><span style="left:75%">okt</span><span style="left:83.33333333333334%">nov</span><span style="left:91.66666666666666%">des</span></div><div class="tmarks"><span class="tmark" style="left:45.19076923076923%" title="Turnering · uke 24 · Sørlandsslaget"></span><span class="tmark" style="left:58.65230769230769%" title="Turnering · uke 31 · Norgescup"></span><span class="tmark" style="left:72.11384615384615%" title="Turnering · uke 38 · Narvik Open"></span><span class="tmark" style="left:83.65230769230769%" title="Turnering · uke 44 · NM junior"></span></div><div class="trk"><div class="segw" style="left:0%;width:23.076923076923077%"><button type="button" class="seg" data-gaa="periode" data-t="Grunnperiode" data-u="uke 1–12" data-pl="62 t" data-gj="60 t"><span class="sn">Grunnperiode</span><span class="su">uke 1–12 · 62 t</span><span class="tk"><i data-uke="utvikling"></i><i data-uke="utvikling"></i><i data-uke="utvikling"></i><i data-uke="vedlikehold"></i><i data-uke="utvikling"></i><i data-uke="utvikling"></i><i data-uke="utvikling"></i><i data-uke="vedlikehold"></i><i data-uke="utvikling"></i><i data-uke="utvikling"></i><i data-uke="utvikling"></i><i data-uke="vedlikehold"></i></span></button><div class="dagpop">Grunnperiode · Fysisk base · 62 t planlagt · 60 t gjennomført</div></div><div class="segw" style="left:23.076923076923077%;width:17.307692307692307%"><button type="button" class="seg" data-gaa="periode" data-t="Spesialiseringsperiode" data-u="uke 13–21" data-pl="48 t" data-gj="46 t"><span class="sn">Spesialiseringsperiode</span><span class="su">uke 13–21 · 48 t</span><span class="tk"><i data-uke="utvikling"></i><i data-uke="utvikling"></i><i data-uke="vedlikehold"></i><i data-uke="utvikling"></i><i data-uke="utvikling"></i><i data-uke="vedlikehold"></i><i data-uke="utvikling"></i><i data-uke="utvikling"></i><i data-uke="vedlikehold"></i></span></button><div class="dagpop">Spesialiseringsperiode · Ballflukt · 48 t planlagt · 46 t gjennomført</div></div><div class="segw" style="left:40.38461538461539%;width:23.076923076923077%"><button type="button" class="seg" data-gaa="periode" data-t="Turneringsperiode" data-u="uke 22–33" data-pl="52 t" data-gj="50 t"><span class="sn">Turneringsperiode</span><span class="su">uke 22–33 · 52 t</span><span class="tk"><i data-uke="turnering"></i><i data-uke="vedlikehold"></i><i data-uke="utvikling"></i><i data-uke="turnering"></i><i data-uke="vedlikehold"></i><i data-uke="utvikling"></i><i data-uke="turnering"></i><i data-uke="vedlikehold"></i><i data-uke="utvikling"></i><i data-uke="turnering"></i><i data-uke="vedlikehold"></i><i data-uke="utvikling"></i></span></button><div class="dagpop">Turneringsperiode · Turneringsspill · 52 t planlagt · 50 t gjennomført</div></div><div class="segw" style="left:63.46153846153846%;width:15.384615384615385%"><button type="button" class="seg" data-gaa="periode" aria-pressed="true" data-t="Grunnperiode" data-u="uke 34–41" data-pl="39,5 t" data-gj="21 t"><span class="sn">Grunnperiode</span><span class="su">uke 34–41 · 39,5 t</span><span class="tk"><i data-uke="utvikling"></i><i data-uke="utvikling"></i><i data-uke="utvikling"></i><i data-uke="vedlikehold"></i><i data-uke="utvikling"></i><i data-uke="utvikling"></i><i data-uke="utvikling"></i><i data-uke="vedlikehold"></i></span></button><div class="dagpop">Grunnperiode · Innspill 40–60 m · 39,5 t planlagt · 21 t gjennomført</div></div><div class="segw rt" style="left:78.84615384615384%;width:9.615384615384617%"><button type="button" class="seg" data-gaa="periode" data-t="Turneringsperiode" data-u="uke 42–46" data-pl="22 t" data-gj="—"><span class="sn">Turneringsperiode</span><span class="su">uke 42–46 · 22 t</span><span class="tk"><i data-uke="turnering"></i><i data-uke="vedlikehold"></i><i data-uke="utvikling"></i><i data-uke="turnering"></i><i data-uke="vedlikehold"></i></span></button><div class="dagpop">Turneringsperiode · NM junior · 22 t planlagt · — gjennomført</div></div><div class="segw rt" style="left:88.46153846153845%;width:11.538461538461538%"><button type="button" class="seg" data-gaa="periode" data-t="Spesialiseringsperiode" data-u="uke 47–52" data-pl="24 t" data-gj="—"><span class="sn">Spesialiseringsperiode</span><span class="su">uke 47–52 · 24 t</span><span class="tk"><i data-uke="utvikling"></i><i data-uke="utvikling"></i><i data-uke="vedlikehold"></i><i data-uke="utvikling"></i><i data-uke="utvikling"></i><i data-uke="vedlikehold"></i></span></button><div class="dagpop">Spesialiseringsperiode · — · 24 t planlagt · — gjennomført</div></div></div><div class="leg"><span class="li"><i data-uke="utvikling"></i>utviklingsuke</span><span class="li"><i data-uke="vedlikehold"></i>vedlikeholdsuke</span><span class="li"><i data-uke="turnering"></i>turneringsuke</span><span class="li"><b class="tmark st"></b>turnering</span><span class="lt">Turneringer: uke 24 Sørlandsslaget · uke 31 Norgescup · uke 38 Narvik Open · uke 44 NM junior</span></div><section class="sec"><span class="kicker">Perioder</span><div class="pyr"><table><thead><tr><th style="width:230px">Periode</th><th style="width:110px">Uker</th><th style="width:150px">Gjennomført mot plan</th><th style="width:160px">Belastning</th><th>Målsetning</th></tr></thead><tbody><tr><td><span class="lag">Grunnperiode</span></td><td><span class="mono2">uke 1–12</span></td><td><span class="pop up"><span class="num" title="Gjennomført mot plan — timer gjennomført av timer planlagt hittil i perioden.">60 t av 62 t</span><span class="bub">Grunnperiode · 62 t planlagt · 60 t gjennomført</span></span></td><td><span class="pop up"><span class="num" title="Belastning — Miljø: innendørs → treningsområde → bane → konkurranse. Ikke kg.">Innendørs</span><span class="bub">Belastning — Miljø: innendørs → treningsområde → bane → konkurranse. Ikke kg.</span></span></td><td>Fysisk base</td></tr><tr><td><span class="lag">Spesialiseringsperiode</span></td><td><span class="mono2">uke 13–21</span></td><td><span class="pop up"><span class="num" title="Gjennomført mot plan — timer gjennomført av timer planlagt hittil i perioden.">46 t av 48 t</span><span class="bub">Spesialiseringsperiode · 48 t planlagt · 46 t gjennomført</span></span></td><td><span class="pop up"><span class="num" title="Belastning — Miljø: innendørs → treningsområde → bane → konkurranse. Ikke kg.">Treningsområde</span><span class="bub">Belastning — Miljø: innendørs → treningsområde → bane → konkurranse. Ikke kg.</span></span></td><td>Ballflukt</td></tr><tr><td><span class="lag">Turneringsperiode</span></td><td><span class="mono2">uke 22–33</span></td><td><span class="pop up"><span class="num" title="Gjennomført mot plan — timer gjennomført av timer planlagt hittil i perioden.">50 t av 52 t</span><span class="bub">Turneringsperiode · 52 t planlagt · 50 t gjennomført</span></span></td><td><span class="pop up"><span class="num" title="Belastning — Miljø: innendørs → treningsområde → bane → konkurranse. Ikke kg.">Konkurranse</span><span class="bub">Belastning — Miljø: innendørs → treningsområde → bane → konkurranse. Ikke kg.</span></span></td><td>Turneringsspill</td></tr><tr><td><span class="lag">Grunnperiode</span></td><td><span class="mono2">uke 34–41</span></td><td><span class="pop up"><span class="num" title="Gjennomført mot plan — timer gjennomført av timer planlagt hittil i perioden.">21 t av 39,5 t</span><span class="bub">Grunnperiode · 39,5 t planlagt · 21 t gjennomført</span></span></td><td><span class="pop up"><span class="num" title="Belastning — Miljø: innendørs → treningsområde → bane → konkurranse. Ikke kg.">Treningsområde</span><span class="bub">Belastning — Miljø: innendørs → treningsområde → bane → konkurranse. Ikke kg.</span></span></td><td>Innspill 40–60 m</td></tr><tr><td><span class="lag">Turneringsperiode</span></td><td><span class="mono2">uke 42–46</span></td><td><span class="pop up"><span class="num" title="Gjennomført mot plan — timer gjennomført av timer planlagt hittil i perioden.">— av 22 t</span><span class="bub">Turneringsperiode · 22 t planlagt · — gjennomført</span></span></td><td><span class="pop up"><span class="num" title="Belastning — Miljø: innendørs → treningsområde → bane → konkurranse. Ikke kg.">Konkurranse</span><span class="bub">Belastning — Miljø: innendørs → treningsområde → bane → konkurranse. Ikke kg.</span></span></td><td>NM junior</td></tr><tr><td><span class="lag">Spesialiseringsperiode</span></td><td><span class="mono2">uke 47–52</span></td><td><span class="pop up"><span class="num" title="Gjennomført mot plan — timer gjennomført av timer planlagt hittil i perioden.">— av 24 t</span><span class="bub">Spesialiseringsperiode · 24 t planlagt · — gjennomført</span></span></td><td><span class="pop up"><span class="num" title="Belastning — Miljø: innendørs → treningsområde → bane → konkurranse. Ikke kg.">Bane</span><span class="bub">Belastning — Miljø: innendørs → treningsområde → bane → konkurranse. Ikke kg.</span></span></td><td>—</td></tr></tbody></table></div></section></section>
+      <section class="body" data-b="maned" hidden><div class="mtop"><div><span class="kicker">Grunnperiode · uke 34–41</span><h1>September</h1></div><span class="yr">2026</span><span class="sub">Øyvind Rojahn</span><div class="gmp"><span class="kicker">Gjennomført mot plan</span><span class="pop rt"><span class="num" title="Gjennomført mot plan — timer gjennomført av timer planlagt hittil i perioden.">21 t av 22,5 t</span><span class="bub">Gjennomført mot plan — timer gjennomført av timer planlagt hittil i perioden. Tomt = —</span></span></div></div><div class="mfd"><span class="kicker">Fordeling <button type="button" class="q" title="Pyramide — FYS · TEK · SLAG · SPILL · TURN.">?</button></span><span class="tags"><span class="pop"><span class="lagtag"><i style="background:var(--graphite-800)"></i>FYS<span class="num" style="border:0" title="FYS · 8 t planlagt · 4,5 t gjennomført">4,5 t av 8 t</span></span><span class="bub">FYS · 8 t planlagt · 4,5 t gjennomført</span></span><span class="pop"><span class="lagtag"><i style="background:var(--graphite-900)"></i>TEK<span class="num" style="border:0" title="TEK · 12 t planlagt · 6,5 t gjennomført">6,5 t av 12 t</span></span><span class="bub">TEK · 12 t planlagt · 6,5 t gjennomført</span></span><span class="pop"><span class="lagtag"><i style="background:var(--graphite-500)"></i>SLAG<span class="num" style="border:0" title="SLAG · 9,5 t planlagt · 5 t gjennomført">5 t av 9,5 t</span></span><span class="bub">SLAG · 9,5 t planlagt · 5 t gjennomført</span></span><span class="pop"><span class="lagtag"><i style="background:var(--graphite-600)"></i>SPILL<span class="num" style="border:0" title="SPILL · 6 t planlagt · 3 t gjennomført">3 t av 6 t</span></span><span class="bub">SPILL · 6 t planlagt · 3 t gjennomført</span></span><span class="pop"><span class="lagtag"><i style="background:var(--amber-700)"></i>TURN<span class="num" style="border:0" title="TURN · 4 t planlagt · 2 t gjennomført">2 t av 4 t</span></span><span class="bub">TURN · 4 t planlagt · 2 t gjennomført</span></span></span></div><div class="mhd"><span>Man</span><span>Tir</span><span>Ons</span><span>Tor</span><span>Fre</span><span>Lør</span><span>Søn</span></div><div class="mnd"><div class="dcw"><button type="button" class="dc"><span class="dt">1.</span><span class="ml" data-lag="FYS">Styrke underkropp</span><span class="ml" data-lag="TEK">Ballflukt · jern</span></button><div class="dagpop"><b>1. september · utviklingsuke</b><ul><li>FYS · Styrke underkropp</li><li>TEK · Ballflukt · jern</li></ul></div></div><div class="dcw"><button type="button" class="dc"><span class="dt">2.</span><span class="ml" data-lag="SLAG">Innspill 40–60 m</span></button><div class="dagpop"><b>2. september · utviklingsuke</b><ul><li>SLAG · Innspill 40–60 m</li></ul></div></div><div class="dcw"><button type="button" class="dc"><span class="dt">3.</span><span class="ml" data-lag="FYS">Vedlikehold</span></button><div class="dagpop"><b>3. september · utviklingsuke</b><ul><li>FYS · Vedlikehold</li></ul></div></div><div class="dcw"><button type="button" class="dc"><span class="dt">4.</span><span class="ml" data-lag="SLAG">Nærspill · fot</span></button><div class="dagpop"><b>4. september · utviklingsuke</b><ul><li>SLAG · Nærspill · fot</li></ul></div></div><div class="dcw rt"><button type="button" class="dc"><span class="dt">5.</span><span class="ingen">—</span></button><div class="dagpop"><b>5. september · utviklingsuke</b>Ingen økter planlagt.</div></div><div class="dcw rt"><button type="button" class="dc"><span class="dt">6.</span><span class="ml" data-lag="SPILL">Baneplan · 9 hull</span></button><div class="dagpop"><b>6. september · utviklingsuke</b><ul><li>SPILL · Baneplan · 9 hull</li></ul></div></div><div class="dcw rt"><button type="button" class="dc"><span class="dt">7.</span><span class="ingen">—</span></button><div class="dagpop"><b>7. september · utviklingsuke</b>Ingen økter planlagt.</div></div><div class="dcw"><button type="button" class="dc"><span class="dt">8.</span><span class="band" data-band="skole">Skole</span><span class="ml" data-lag="FYS">Vedlikehold</span></button><div class="dagpop"><b>8. september · vedlikeholdsuke</b><ul><li>FYS · Vedlikehold</li></ul></div></div><div class="dcw"><button type="button" class="dc"><span class="dt">9.</span><span class="ml" data-lag="TEK">Ballflukt · jern</span></button><div class="dagpop"><b>9. september · vedlikeholdsuke</b><ul><li>TEK · Ballflukt · jern</li></ul></div></div><div class="dcw"><button type="button" class="dc"><span class="dt">10.</span><span class="ingen">—</span></button><div class="dagpop"><b>10. september · vedlikeholdsuke</b>Ingen økter planlagt.</div></div><div class="dcw"><button type="button" class="dc"><span class="dt">11.</span><span class="ml" data-lag="SLAG">Putting · 3–5 fot</span></button><div class="dagpop"><b>11. september · vedlikeholdsuke</b><ul><li>SLAG · Putting · 3–5 fot</li></ul></div></div><div class="dcw rt"><button type="button" class="dc"><span class="dt">12.</span><span class="ingen">—</span></button><div class="dagpop"><b>12. september · vedlikeholdsuke</b>Ingen økter planlagt.</div></div><div class="dcw rt"><button type="button" class="dc"><span class="dt">13.</span><span class="ml" data-lag="SPILL">Baneplan · 18 hull</span></button><div class="dagpop"><b>13. september · vedlikeholdsuke</b><ul><li>SPILL · Baneplan · 18 hull</li></ul></div></div><div class="dcw rt"><button type="button" class="dc"><span class="dt">14.</span><span class="ingen">—</span></button><div class="dagpop"><b>14. september · vedlikeholdsuke</b>Ingen økter planlagt.</div></div><div class="dcw"><button type="button" class="dc" aria-pressed="true"><span class="dt">15.</span><span class="ml" data-lag="FYS">Styrke underkropp</span><span class="ml" data-lag="TEK">Ballflukt · jern</span></button><div class="dagpop"><b>15. september · utviklingsuke</b><ul><li>FYS · Styrke underkropp</li><li>TEK · Ballflukt · jern</li></ul></div></div><div class="dcw"><button type="button" class="dc"><span class="dt">16.</span><span class="ml" data-lag="SLAG">Innspill 40–60 m</span></button><div class="dagpop"><b>16. september · utviklingsuke</b><ul><li>SLAG · Innspill 40–60 m</li></ul></div></div><div class="dcw"><button type="button" class="dc"><span class="dt">17.</span><span class="ml" data-lag="FYS">Vedlikehold</span></button><div class="dagpop"><b>17. september · utviklingsuke</b><ul><li>FYS · Vedlikehold</li></ul></div></div><div class="dcw"><button type="button" class="dc"><span class="dt">18.</span><span class="ml" data-lag="SLAG">Nærspill · fot</span></button><div class="dagpop"><b>18. september · utviklingsuke</b><ul><li>SLAG · Nærspill · fot</li></ul></div></div><div class="dcw rt"><button type="button" class="dc"><span class="dt">19.</span><span class="ingen">—</span></button><div class="dagpop"><b>19. september · utviklingsuke</b>Ingen økter planlagt.</div></div><div class="dcw rt"><button type="button" class="dc"><span class="dt">20.</span><span class="ml" data-lag="SPILL">Baneplan · 9 hull</span></button><div class="dagpop"><b>20. september · utviklingsuke</b><ul><li>SPILL · Baneplan · 9 hull</li></ul></div></div><div class="dcw rt"><button type="button" class="dc"><span class="dt">21.</span><span class="ingen">—</span></button><div class="dagpop"><b>21. september · utviklingsuke</b>Ingen økter planlagt.</div></div><div class="dcw up"><button type="button" class="dc naa"><span class="dt">22.</span><span class="ml" data-lag="FYS">Vedlikehold</span></button><div class="dagpop"><b>22. september · turneringsuke</b><ul><li>FYS · Vedlikehold</li></ul></div></div><div class="dcw up"><button type="button" class="dc"><span class="dt">23.</span><span class="ml" data-lag="TEK">Ballflukt · jern</span></button><div class="dagpop"><b>23. september · turneringsuke</b><ul><li>TEK · Ballflukt · jern</li></ul></div></div><div class="dcw up"><button type="button" class="dc"><span class="dt">24.</span><span class="ingen">—</span></button><div class="dagpop"><b>24. september · turneringsuke</b>Ingen økter planlagt.</div></div><div class="dcw up"><button type="button" class="dc"><span class="dt">25.</span><span class="band" data-band="turnering">Narvik Open</span><span class="ml" data-lag="TURN">Innspill før runde</span></button><div class="dagpop"><b>25. september · turneringsuke</b><ul><li>TURN · Innspill før runde</li></ul></div></div><div class="dcw rt up"><button type="button" class="dc"><span class="dt">26.</span><span class="band" data-band="turnering">Narvik Open</span><span class="ml" data-lag="TURN">Runde 1</span></button><div class="dagpop"><b>26. september · turneringsuke</b><ul><li>TURN · Runde 1</li></ul></div></div><div class="dcw rt up"><button type="button" class="dc"><span class="dt">27.</span><span class="band" data-band="turnering">Narvik Open</span><span class="ml" data-lag="TURN">Runde 2</span></button><div class="dagpop"><b>27. september · turneringsuke</b><ul><li>TURN · Runde 2</li></ul></div></div><div class="dcw rt up"><button type="button" class="dc"><span class="dt">28.</span><span class="ingen">—</span></button><div class="dagpop"><b>28. september · turneringsuke</b>Ingen økter planlagt.</div></div><div class="dcw up"><button type="button" class="dc"><span class="dt">29.</span><span class="ml" data-lag="FYS">Styrke overkropp</span><span class="ml" data-lag="TEK">Ballflukt · driver</span><span class="ml" data-lag="SLAG">Nærspill · fot</span><span class="mer">+1 mer</span></button><div class="dagpop"><b>29. september · utviklingsuke</b><ul><li>FYS · Styrke overkropp</li><li>TEK · Ballflukt · driver</li><li>SLAG · Nærspill · fot</li><li>SPILL · Baneplan · 9 hull</li></ul></div></div><div class="dcw up"><button type="button" class="dc"><span class="dt">30.</span><span class="ml" data-lag="SLAG">Innspill 40–60 m</span></button><div class="dagpop"><b>30. september · utviklingsuke</b><ul><li>SLAG · Innspill 40–60 m</li></ul></div></div><div class="dc ut"><span class="dt">1. okt</span><span class="ingen">—</span></div><div class="dc ut"><span class="dt">2. okt</span><span class="ingen">—</span></div><div class="dc ut"><span class="dt">3. okt</span><span class="ingen">—</span></div><div class="dc ut"><span class="dt">4. okt</span><span class="ingen">—</span></div><div class="dc ut"><span class="dt">5. okt</span><span class="ingen">—</span></div></div></section>
+      <section class="body" data-b="okt" hidden><div class="phead"><div><span class="kicker">Uke 37 · utviklingsuke</span><h1>Innspill 40–60 m</h1></div><span class="sub">Øyvind Rojahn · tirsdag 16. september · 16:00–17:30 · 1 t 30 min · Treningsområde</span><button type="button" class="pub">Publiser økt</button></div><section class="sec"><span class="kicker">Formel</span><div class="fgrid"><div class="fk"><span class="fl">Pyramide <button type="button" class="q" title="Pyramide — FYS · TEK · SLAG · SPILL · TURN.">?</button></span><span class="fv">SLAG</span></div><div class="fk"><span class="fl">Område <button type="button" class="q" title="Område — Hvor på anlegget. Putt i fot, ellers meter.">?</button></span><span class="fv">Innspill · 40–60 m</span></div><div class="fk"><span class="fl">Motorikk <button type="button" class="q" title="Motorikk — Stige: uten ball → lav hastighet → automatikk.">?</button></span><span class="fv">Lav hastighet</span></div><div class="fk"><span class="fl">Belastning <button type="button" class="q" title="Belastning — Miljø: innendørs → treningsområde → bane → konkurranse. Ikke kg.">?</button></span><span class="fv">Treningsområde</span></div><div class="fk"><span class="fl">Press <button type="button" class="q" title="Press — Alene → observert → konkurranse → turnering.">?</button></span><span class="fv">Observert</span></div><div class="fk"><span class="fl">Hensikt <button type="button" class="q" title="Hensikt — Bare FYS: øke styrke · vedlikehold · restitusjon.">?</button></span><span class="fv tom">—</span></div><div class="fk"><span class="fl">Måte <button type="button" class="q" title="Måte — Hvordan økten gjennomføres.">?</button></span><span class="fv">Blokk · 3 × 12 baller</span></div><div class="fk"><span class="fl">Målsetning <button type="button" class="q" title="Målsetning — Hva økten skal flytte.">?</button></span><span class="fv">Samle spredning innenfor 6 m</span></div></div></section><section class="sec"><span class="kicker">Øvelser</span><div class="ovl"><div class="ovw"><button type="button" class="ov" data-ov="1" data-lag="FYS" data-n="Oppvarming · dynamisk" data-l="16:00 · 10 min" data-f="FYS|—|Uten ball|Treningsområde|Alene|Vedlikehold|Sirkel · 2 runder|Klar kropp før første ball"><span class="onr">1</span><span class="onm">Oppvarming · dynamisk</span><span class="olg">FYS</span><span class="okl">16:00</span><span class="ovv">10 min</span></button><div class="dagpop"><b>Økt · Innspill 40–60 m</b>Treningsområde · 16:00–17:30<br>Målsetning: Samle spredning innenfor 6 m<br>Fokus: Innspill 40–60 m<ul><li>16:00 · Oppvarming · dynamisk</li><li>16:10 · Kalibrering 40 m</li><li>16:25 · Avstandskontroll 40–60 m</li><li>16:55 · Spredningstest 50 m</li><li>17:15 · Nedtrapping · putting 3–5 fot</li></ul></div></div><div class="ovw"><button type="button" class="ov" data-ov="1" data-lag="SLAG" data-n="Kalibrering 40 m" data-l="16:10 · 15 min" data-f="SLAG|Innspill · 40 m|Lav hastighet|Treningsområde|Alene|—|Blokk · 20 baller|Treffe lengde på 40 m"><span class="onr">2</span><span class="onm">Kalibrering 40 m</span><span class="olg">SLAG</span><span class="okl">16:10</span><span class="ovv">15 min</span></button><div class="dagpop"><b>Økt · Innspill 40–60 m</b>Treningsområde · 16:00–17:30<br>Målsetning: Samle spredning innenfor 6 m<br>Fokus: Innspill 40–60 m<ul><li>16:00 · Oppvarming · dynamisk</li><li>16:10 · Kalibrering 40 m</li><li>16:25 · Avstandskontroll 40–60 m</li><li>16:55 · Spredningstest 50 m</li><li>17:15 · Nedtrapping · putting 3–5 fot</li></ul></div></div><div class="ovw"><button type="button" class="ov" data-ov="1" data-lag="SLAG" aria-pressed="true" data-n="Avstandskontroll 40–60 m" data-l="16:25 · 30 min" data-f="SLAG|Innspill · 40–60 m|Lav hastighet|Treningsområde|Observert|—|Blokk · 3 × 12 baller|Samle spredning innenfor 6 m"><span class="onr">3</span><span class="onm">Avstandskontroll 40–60 m</span><span class="olg">SLAG</span><span class="okl">16:25</span><span class="ovv">30 min</span></button><div class="dagpop"><b>Økt · Innspill 40–60 m</b>Treningsområde · 16:00–17:30<br>Målsetning: Samle spredning innenfor 6 m<br>Fokus: Innspill 40–60 m<ul><li>16:00 · Oppvarming · dynamisk</li><li>16:10 · Kalibrering 40 m</li><li>16:25 · Avstandskontroll 40–60 m</li><li>16:55 · Spredningstest 50 m</li><li>17:15 · Nedtrapping · putting 3–5 fot</li></ul></div></div><div class="ovw up"><button type="button" class="ov" data-ov="1" data-lag="SLAG" data-n="Spredningstest 50 m" data-l="16:55 · 20 min" data-f="SLAG|Innspill · 50 m|Automatikk|Treningsområde|Observert|—|Test · 15 baller|Måle spredning mot forrige uke"><span class="onr">4</span><span class="onm">Spredningstest 50 m</span><span class="olg">SLAG</span><span class="okl">16:55</span><span class="ovv">20 min</span></button><div class="dagpop"><b>Økt · Innspill 40–60 m</b>Treningsområde · 16:00–17:30<br>Målsetning: Samle spredning innenfor 6 m<br>Fokus: Innspill 40–60 m<ul><li>16:00 · Oppvarming · dynamisk</li><li>16:10 · Kalibrering 40 m</li><li>16:25 · Avstandskontroll 40–60 m</li><li>16:55 · Spredningstest 50 m</li><li>17:15 · Nedtrapping · putting 3–5 fot</li></ul></div></div><div class="ovw up"><button type="button" class="ov" data-ov="1" data-lag="SLAG" data-n="Nedtrapping · putting 3–5 fot" data-l="17:15 · 15 min" data-f="SLAG|Putting · 3–5 fot|Automatikk|Treningsområde|Alene|—|Stige · 10 putter|Avslutte på treff"><span class="onr">5</span><span class="onm">Nedtrapping · putting 3–5 fot</span><span class="olg">SLAG</span><span class="okl">17:15</span><span class="ovv">15 min</span></button><div class="dagpop"><b>Økt · Innspill 40–60 m</b>Treningsområde · 16:00–17:30<br>Målsetning: Samle spredning innenfor 6 m<br>Fokus: Innspill 40–60 m<ul><li>16:00 · Oppvarming · dynamisk</li><li>16:10 · Kalibrering 40 m</li><li>16:25 · Avstandskontroll 40–60 m</li><li>16:55 · Spredningstest 50 m</li><li>17:15 · Nedtrapping · putting 3–5 fot</li></ul></div></div></div></section></section>
+      <section class="body" data-b="stall" hidden><div class="phead"><div><span class="kicker">Stall</span><h1>Økter til oppfølging</h1></div><span class="sub">Øyvind Rojahn · 8 økter · 3 utkast</span></div><div class="chips"><button type="button" class="chip" data-chip="Alle" aria-pressed="true">Alle</button><button type="button" class="chip" data-chip="Utkast">Utkast</button><button type="button" class="chip" data-chip="Delt">Delt</button><button type="button" class="chip" data-chip="Gjennomført">Gjennomført</button></div><div class="stl"><div class="stw"><button type="button" class="st" data-st="1" data-lag="SLAG" aria-pressed="true" data-n="Innspill 40–60 m" data-l="tirsdag 16. september · 1 t 30 min" data-f="SLAG|Innspill · 40–60 m|Lav hastighet|Treningsområde|Observert|—|Blokk · 3 × 12 baller|Samle spredning innenfor 6 m"><span class="sp">Øyvind Rojahn</span><span class="stt">Innspill 40–60 m</span><span class="sd">tirsdag 16. september</span><span class="slg">SLAG</span><span class="ss" data-s="Delt">Delt</span></button><div class="dagpop">tirsdag 16. september · utviklingsuke · 1 t 30 min</div></div><div class="stw"><button type="button" class="st" data-st="1" data-lag="FYS" data-n="Styrke underkropp" data-l="mandag 15. september · 1 t 15 min" data-f="FYS|—|Uten ball|Innendørs|Alene|Øke styrke|Grunnprogram · 5 øvelser|Bygge base før spesialisering"><span class="sp">Øyvind Rojahn</span><span class="stt">Styrke underkropp</span><span class="sd">mandag 15. september</span><span class="slg">FYS</span><span class="ss" data-s="Gjennomført">Gjennomført</span></button><div class="dagpop">mandag 15. september · utviklingsuke · 1 t 15 min</div></div><div class="stw"><button type="button" class="st" data-st="1" data-lag="TEK" data-n="Ballflukt · jern" data-l="mandag 15. september · 1 t" data-f="TEK|Utslag · jern|Lav hastighet|Treningsområde|Alene|—|Blokk · 40 baller|Senke ballflukt på 7-jern"><span class="sp">Øyvind Rojahn</span><span class="stt">Ballflukt · jern</span><span class="sd">mandag 15. september</span><span class="slg">TEK</span><span class="ss" data-s="Gjennomført">Gjennomført</span></button><div class="dagpop">mandag 15. september · utviklingsuke · 1 t</div></div><div class="stw"><button type="button" class="st" data-st="1" data-lag="FYS" data-n="Vedlikehold" data-l="onsdag 17. september · 45 min" data-f="FYS|—|Uten ball|Innendørs|Alene|Vedlikehold|Sirkel · 3 runder|Holde styrke gjennom uken"><span class="sp">Øyvind Rojahn</span><span class="stt">Vedlikehold</span><span class="sd">onsdag 17. september</span><span class="slg">FYS</span><span class="ss" data-s="Delt">Delt</span></button><div class="dagpop">onsdag 17. september · utviklingsuke · 45 min</div></div><div class="stw"><button type="button" class="st" data-st="1" data-lag="SLAG" data-n="Nærspill · fot" data-l="torsdag 18. september · 1 t" data-f="SLAG|Nærspill · 3–15 fot|Automatikk|Treningsområde|Alene|—|Stige · 20 slag|Treffe landingspunkt oftere"><span class="sp">Øyvind Rojahn</span><span class="stt">Nærspill · fot</span><span class="sd">torsdag 18. september</span><span class="slg">SLAG</span><span class="ss" data-s="Utkast">Utkast</span></button><div class="dagpop">torsdag 18. september · utviklingsuke · 1 t</div></div><div class="stw up"><button type="button" class="st" data-st="1" data-lag="SPILL" data-n="Baneplan · 9 hull" data-l="lørdag 20. september · 2 t" data-f="SPILL|Bane · hull 1–9|Automatikk|Bane|Observert|—|Spill · 9 hull med plan|Følge planen hull for hull"><span class="sp">Øyvind Rojahn</span><span class="stt">Baneplan · 9 hull</span><span class="sd">lørdag 20. september</span><span class="slg">SPILL</span><span class="ss" data-s="Utkast">Utkast</span></button><div class="dagpop">lørdag 20. september · utviklingsuke · 2 t</div></div><div class="stw up"><button type="button" class="st" data-st="1" data-lag="TURN" data-n="Innspill før runde" data-l="torsdag 25. september · 1 t" data-f="TURN|Innspill · 40–60 m|Automatikk|Konkurranse|Turnering|—|Rutine · 30 min|Finne rytme før første runde"><span class="sp">Øyvind Rojahn</span><span class="stt">Innspill før runde</span><span class="sd">torsdag 25. september</span><span class="slg">TURN</span><span class="ss" data-s="Utkast">Utkast</span></button><div class="dagpop">torsdag 25. september · turneringsuke · 1 t</div></div><div class="stw up"><button type="button" class="st" data-st="1" data-lag="TURN" data-n="Runde 1" data-l="fredag 26. september · —" data-f="TURN|Bane · 18 hull|Automatikk|Konkurranse|Turnering|—|Turneringsrunde|Spille planen under press"><span class="sp">Øyvind Rojahn</span><span class="stt">Runde 1</span><span class="sd">fredag 26. september</span><span class="slg">TURN</span><span class="ss" data-s="Utkast">Utkast</span></button><div class="dagpop">fredag 26. september · turneringsuke · —</div></div></div><p class="stom" hidden>—</p></section>
+      <section class="body" data-b="live" hidden><div class="lhead"><div><span class="kicker">Økt pågår</span><h1>Innspill 40–60 m</h1></div><span class="lmeta">Øyvind Rojahn · start 16:00 · Treningsområde</span><span class="klokke">00:42:10</span></div>
+<div class="lgrid">
+ <section class="lcard"><span class="kicker">Øvelse 3 av 5</span><h2>Avstandskontroll 40–60 m</h2><p class="lmal">Samle spredning innenfor 6 m</p>
+  <div class="cpad"><button type="button" class="cbtn" aria-label="Trekk fra ett slag">−</button><span class="cval">27</span><button type="button" class="cbtn" aria-label="Legg til ett slag">+</button></div>
+  <span class="ctxt">slag i serie 2 av 3</span></section>
+ <section class="lcard"><span class="kicker">Serier</span><div class="srl"><div class="sr"><span class="srn">Serie 1</span><span class="srv">12 slag</span><span class="srs">Gjennomført</span></div><div class="sr"><span class="srn">Serie 2</span><span class="srv">12 slag</span><span class="srs">Pågår</span></div><div class="sr"><span class="srn">Serie 3</span><span class="srv">—</span><span class="srs">Ikke startet</span></div></div>
+  <div class="lact"><button type="button" class="lbtn">Legg til serie</button><button type="button" class="lbtn">Fjern serie</button></div></section>
+</div>
+<section class="sec"><span class="kicker">Øvelser i økten</span><div class="lvl"><div class="lv"><span class="lnr">1</span><span class="lnm">Oppvarming · dynamisk</span><span class="lvv">10 min</span><span class="lst">Gjennomført</span></div><div class="lv"><span class="lnr">2</span><span class="lnm">Kalibrering 40 m</span><span class="lvv">15 min</span><span class="lst">Gjennomført</span></div><div class="lv na"><span class="lnr">3</span><span class="lnm">Avstandskontroll 40–60 m</span><span class="lvv">30 min</span><span class="lst">Pågår</span></div><div class="lv"><span class="lnr">4</span><span class="lnm">Spredningstest 50 m</span><span class="lvv">20 min</span><span class="lst">Ikke startet</span></div><div class="lv"><span class="lnr">5</span><span class="lnm">Nedtrapping · putting 3–5 fot</span><span class="lvv">15 min</span><span class="lst">Ikke startet</span></div></div></section></section>
+      <section class="body" data-b="minkalender" hidden><div class="phead"><div><span class="kicker">Min kalender</span><h1>Uke 37</h1></div><span class="sub">Anders Kristiansen · 15.–21. september · 10 økter · 16,5 t</span></div><div class="tg"><div class="tgh"></div><span class="tgd">Man <b>15.</b></span><span class="tgd">Tir <b>16.</b></span><span class="tgd">Ons <b>17.</b></span><span class="tgd">Tor <b>18.</b></span><span class="tgd">Fre <b>19.</b></span><span class="tgd">Lør <b>20.</b></span><span class="tgd">Søn <b>21.</b></span><div class="tgh"></div><div class="tgb"></div><div class="tgb"></div><div class="tgb"></div><div class="tgb"></div><div class="tgb"><span class="band">Bedriftsdag</span></div><div class="tgb"></div><div class="tgb"></div><div class="tgg"><span class="tgt">05:00</span><span class="tgt">06:00</span><span class="tgt">07:00</span><span class="tgt">08:00</span><span class="tgt">09:00</span><span class="tgt">10:00</span><span class="tgt">11:00</span><span class="tgt">12:00</span><span class="tgt">13:00</span><span class="tgt">14:00</span><span class="tgt">15:00</span><span class="tgt">16:00</span><span class="tgt">17:00</span><span class="tgt">18:00</span><span class="tgt">19:00</span><span class="tgt">20:00</span><span class="tgt">21:00</span><span class="tgt">22:00</span></div><div class="tgk"><button type="button" class="chip-okt" data-lag="TEK" style="top:96px;height:44px"><span class="cn">Nora Five · enkelttime</span><span class="ct">08:00–09:00</span></button><button type="button" class="chip-okt" data-lag="TEK" style="top:352px;height:44px"><span class="cn">Øyvind Rojahn · økt</span><span class="ct">16:00–17:00</span></button></div><div class="tgk"><button type="button" class="chip-okt" data-lag="SLAG" style="top:128px;height:48px"><span class="cn">Gruppetrening · junior</span><span class="ct">09:00–10:30</span></button><button type="button" class="chip-okt" data-lag="SLAG" style="top:352px;height:48px"><span class="cn">Øyvind Rojahn · økt</span><span class="ct">16:00–17:30</span></button><span class="naalinje" style="top:374.4px"><i></i></span></div><div class="tgk"><button type="button" class="chip-okt" data-lag="SPILL" style="top:160px;height:44px"><span class="cn">Foreldresamtale · Berge</span><span class="ct">10:00–11:00</span></button><button type="button" class="chip-okt" data-lag="TEK" style="top:256px;height:64px"><span class="cn">Studio · enkelttimer</span><span class="ct">13:00–15:00</span></button></div><div class="tgk"><button type="button" class="chip-okt" data-lag="SLAG" style="top:128px;height:48px"><span class="cn">Gruppetrening · voksen</span><span class="ct">09:00–10:30</span></button><button type="button" class="chip-okt" data-lag="SLAG" style="top:352px;height:44px"><span class="cn">Øyvind Rojahn · økt</span><span class="ct">16:00–17:00</span></button></div><div class="tgk"><button type="button" class="chip-okt" data-lag="SPILL" style="top:160px;height:96px"><span class="cn">Bedriftsdag · bane</span><span class="ct">10:00–13:00</span></button></div><div class="tgk"><button type="button" class="chip-okt" data-lag="SPILL" style="top:160px;height:64px"><span class="cn">Baneøkt · Rojahn og Five</span><span class="ct">10:00–12:00</span></button></div><div class="tgk"></div></div></section>
+    </main>
+
+    <aside class="insp">
+      <div><span class="kicker">Valgt uke</span><h2>Uke 37 · utviklingsuke</h2><p class="lead">Grunnperiode · 6,5 t planlagt · 5,5 t gjennomført</p></div>
+      <div><span class="kicker">Formel</span>
+        <div class="fml">
+          <div class="row"><span class="lbl">Pyramide <button type="button" class="q" title="Pyramide — FYS · TEK · SLAG · SPILL · TURN.">?</button></span><span class="val">SLAG</span></div>
+          <div class="row"><span class="lbl">Område <button type="button" class="q" title="Område — Hvor på anlegget. Putt i fot, ellers meter.">?</button></span><span class="val">Innspill · 40–60 m</span></div>
+          <div class="row"><span class="lbl">Motorikk <button type="button" class="q" title="Motorikk — Stige: uten ball → lav hastighet → automatikk.">?</button></span><span class="val">Lav hastighet</span></div>
+          <div class="row"><span class="lbl">Belastning <button type="button" class="q" title="Belastning — Miljø: innendørs → treningsområde → bane → konkurranse. Ikke kg.">?</button></span><span class="val">Treningsområde</span></div>
+          <div class="row"><span class="lbl">Press <button type="button" class="q" title="Press — Alene → observert → konkurranse → turnering.">?</button></span><span class="val">Observert</span></div>
+          <div class="row"><span class="lbl">Hensikt <button type="button" class="q" title="Hensikt — Bare FYS: øke styrke · vedlikehold · restitusjon.">?</button></span><span class="val tom">—</span></div>
+          <div class="row"><span class="lbl">Måte <button type="button" class="q" title="Måte — Hvordan økten gjennomføres.">?</button></span><span class="val">Blokk · 3 × 12 baller</span></div>
+          <div class="row"><span class="lbl">Målsetning <button type="button" class="q" title="Målsetning — Hva økten skal flytte.">?</button></span><span class="val">Samle spredning innenfor 6 m</span></div>
+        </div>
+      </div>
+      <button type="button" class="ghost">Åpne uke</button>
+    </aside>
+  </div>
+</div>
+
+<div class="frame-tag" style="left:1520px;top:-22px">WB-05–11 · Periode · coach · 390</div>
+<div class="frame m" data-frame style="left:1520px;top:0;width:390px;height:844px">
+  <header class="top"><img src="assets/logo-ak-golf-hq.svg" alt="AK Golf HQ"><div class="who">coach · <b>Anders K.</b></div></header>
+  <div class="wb"><main class="main">
+    <div class="pillrow" data-pills>
+      <button type="button" class="pill" data-p="ar">År</button>
+      <button type="button" class="pill" data-p="periode" aria-pressed="true">Periode</button>
+      <button type="button" class="pill" data-p="maned">Måned</button>
+      <button type="button" class="pill" data-p="uke">Uke</button>
+      <button type="button" class="pill" data-p="okt">Økt</button>
+      <button type="button" class="pill" data-p="stall">Stall</button>
+      <button type="button" class="pill" data-p="live">Live</button>
+      <button type="button" class="pill" data-p="minkalender">Min kalender</button>
+    </div>
+    <section class="body" data-b="periode" style="padding-bottom:400px">
+      <div class="phead"><div><span class="kicker">Grunnperiode</span><h1>Uke 34–41</h1></div></div>
+      <p class="sub" style="margin:-10px 0 14px;font:var(--type-meta);letter-spacing:var(--tracking-meta);color:var(--text-muted)">Øyvind Rojahn · 8 uker · 2 turneringer</p>
+      <div class="cards">
+        <div class="card"><span class="kicker">Periodevolum</span><span class="metric">39,5 t<small>28 økter</small></span></div>
+        <div class="card"><span class="kicker">Gjennomført mot plan</span><span class="metric">21 t<small>av 22,5 t</small></span><div class="meter"><i style="width:93%"></i></div></div>
+        <div class="card"><span class="kicker">Fordeling</span>
+          <div class="split"><div style="flex:8;background:var(--graphite-800)">FYS</div><div style="flex:12;background:var(--graphite-900)">TEK</div><div style="flex:9.5;background:var(--graphite-500)">SLAG</div><div style="flex:6;background:var(--graphite-600)">SPILL</div><div style="flex:4;background:var(--amber-700)">TURN</div></div>
+        </div>
+      </div>
+      <section class="sec"><span class="kicker">Tidslinje</span>
+        <div class="tl">
+          <button type="button" class="blk" data-type="utvikling"><span class="uk">Uke 34</span><span class="ty">Utviklingsuke</span><span class="vo">6 t</span></button>
+          <button type="button" class="blk" data-type="utvikling"><span class="uk">Uke 35</span><span class="ty">Utviklingsuke</span><span class="vo">6 t</span></button>
+          <button type="button" class="blk" data-type="vedlikehold"><span class="uk">Uke 36</span><span class="ty">Vedlikeholdsuke</span><span class="vo">4 t</span></button>
+          <button type="button" class="blk" data-type="utvikling" aria-pressed="true"><span class="uk">Uke 37</span><span class="ty">Utviklingsuke</span><span class="vo">6,5 t</span></button>
+          <button type="button" class="blk naa" data-type="turnering"><span class="uk">Uke 38</span><span class="ty">Turneringsuke</span><span class="vo">3,5 t</span></button>
+          <button type="button" class="blk" data-type="utvikling"><span class="uk">Uke 39</span><span class="ty">Utviklingsuke</span><span class="vo">6 t</span></button>
+          <button type="button" class="blk" data-type="vedlikehold"><span class="uk">Uke 40</span><span class="ty">Vedlikeholdsuke</span><span class="vo">4 t</span></button>
+          <button type="button" class="blk" data-type="turnering"><span class="uk">Uke 41</span><span class="ty">Turneringsuke</span><span class="vo">3,5 t</span></button>
+        </div>
+      </section>
+    </section>
+    <section class="body" data-b="uke" hidden style="padding-bottom:400px"><div class="phead"><div><span class="kicker">Utviklingsuke</span><h1>Uke 37</h1></div></div><p class="msub">Øyvind Rojahn · tirsdag 16. september · utviklingsuke</p><div class="tg m1"><div class="tgh"></div><span class="tgd">Tir <b>16.</b></span><div class="tgh"></div><div class="tgb"></div><div class="tgg"><span class="tgt">05:00</span><span class="tgt">06:00</span><span class="tgt">07:00</span><span class="tgt">08:00</span><span class="tgt">09:00</span><span class="tgt">10:00</span><span class="tgt">11:00</span><span class="tgt">12:00</span><span class="tgt">13:00</span><span class="tgt">14:00</span><span class="tgt">15:00</span><span class="tgt">16:00</span><span class="tgt">17:00</span><span class="tgt">18:00</span><span class="tgt">19:00</span><span class="tgt">20:00</span><span class="tgt">21:00</span><span class="tgt">22:00</span></div><div class="tgk"><button type="button" class="chip-okt base" data-lag="SLAG" style="top:352px;height:48px"><span class="cn">Innspill 40–60 m</span><span class="ct">16:00–17:30</span></button><button type="button" class="chip-okt ov" data-lag="TEK" style="top:368px;height:44px"><span class="cn">Video · gjennomgang</span><span class="ct">16:30–17:00</span></button><span class="naalinje" style="top:374.4px"><i></i></span></div></div></section>
+    <section class="body" data-b="ar" hidden style="padding-bottom:400px"><div class="mtop"><div><span class="kicker">Øyvind Rojahn</span><h1>2026</h1></div><span class="sub">1. januar – 31. desember · 6 perioder</span><div class="gmp"><span class="kicker">Gjennomført mot plan</span><span class="pop rt"><span class="num" title="Gjennomført mot plan — timer gjennomført av timer planlagt hittil i året.">177 t av 184,5 t</span><span class="bub">Gjennomført mot plan — timer gjennomført av timer planlagt hittil i året. Tomt = —</span></span></div></div><div class="msegs"><button type="button" class="mseg" data-gaa="periode" data-t="Grunnperiode" data-u="uke 1–12" data-pl="62 t" data-gj="60 t"><span class="sn">Grunnperiode</span><span class="su">uke 1–12 · 60 t av 62 t</span><span class="tk"><i data-uke="utvikling"></i><i data-uke="utvikling"></i><i data-uke="utvikling"></i><i data-uke="vedlikehold"></i><i data-uke="utvikling"></i><i data-uke="utvikling"></i><i data-uke="utvikling"></i><i data-uke="vedlikehold"></i><i data-uke="utvikling"></i><i data-uke="utvikling"></i><i data-uke="utvikling"></i><i data-uke="vedlikehold"></i></span></button><button type="button" class="mseg" data-gaa="periode" data-t="Spesialiseringsperiode" data-u="uke 13–21" data-pl="48 t" data-gj="46 t"><span class="sn">Spesialiseringsperiode</span><span class="su">uke 13–21 · 46 t av 48 t</span><span class="tk"><i data-uke="utvikling"></i><i data-uke="utvikling"></i><i data-uke="vedlikehold"></i><i data-uke="utvikling"></i><i data-uke="utvikling"></i><i data-uke="vedlikehold"></i><i data-uke="utvikling"></i><i data-uke="utvikling"></i><i data-uke="vedlikehold"></i></span></button><button type="button" class="mseg" data-gaa="periode" data-t="Turneringsperiode" data-u="uke 22–33" data-pl="52 t" data-gj="50 t"><span class="sn">Turneringsperiode</span><span class="su">uke 22–33 · 50 t av 52 t</span><span class="tk"><i data-uke="turnering"></i><i data-uke="vedlikehold"></i><i data-uke="utvikling"></i><i data-uke="turnering"></i><i data-uke="vedlikehold"></i><i data-uke="utvikling"></i><i data-uke="turnering"></i><i data-uke="vedlikehold"></i><i data-uke="utvikling"></i><i data-uke="turnering"></i><i data-uke="vedlikehold"></i><i data-uke="utvikling"></i></span></button><button type="button" class="mseg" data-gaa="periode" aria-pressed="true" data-t="Grunnperiode" data-u="uke 34–41" data-pl="39,5 t" data-gj="21 t"><span class="sn">Grunnperiode</span><span class="su">uke 34–41 · 21 t av 39,5 t</span><span class="tk"><i data-uke="utvikling"></i><i data-uke="utvikling"></i><i data-uke="utvikling"></i><i data-uke="vedlikehold"></i><i data-uke="utvikling"></i><i data-uke="utvikling"></i><i data-uke="utvikling"></i><i data-uke="vedlikehold"></i></span></button><button type="button" class="mseg" data-gaa="periode" data-t="Turneringsperiode" data-u="uke 42–46" data-pl="22 t" data-gj="—"><span class="sn">Turneringsperiode</span><span class="su">uke 42–46 · — av 22 t</span><span class="tk"><i data-uke="turnering"></i><i data-uke="vedlikehold"></i><i data-uke="utvikling"></i><i data-uke="turnering"></i><i data-uke="vedlikehold"></i></span></button><button type="button" class="mseg" data-gaa="periode" data-t="Spesialiseringsperiode" data-u="uke 47–52" data-pl="24 t" data-gj="—"><span class="sn">Spesialiseringsperiode</span><span class="su">uke 47–52 · — av 24 t</span><span class="tk"><i data-uke="utvikling"></i><i data-uke="utvikling"></i><i data-uke="vedlikehold"></i><i data-uke="utvikling"></i><i data-uke="utvikling"></i><i data-uke="vedlikehold"></i></span></button></div><div class="leg"><span class="li"><i data-uke="utvikling"></i>utviklingsuke</span><span class="li"><i data-uke="vedlikehold"></i>vedlikeholdsuke</span><span class="li"><i data-uke="turnering"></i>turneringsuke</span></div></section>
+    <section class="body" data-b="maned" hidden style="padding-bottom:400px"><div class="mtop"><div><span class="kicker">Grunnperiode · uke 34–41</span><h1>September</h1></div><span class="yr">2026</span><span class="sub">Øyvind Rojahn</span><div class="gmp"><span class="kicker">Gjennomført mot plan</span><span class="pop rt"><span class="num" title="Gjennomført mot plan — timer gjennomført av timer planlagt hittil i perioden.">21 t av 22,5 t</span><span class="bub">Gjennomført mot plan — timer gjennomført av timer planlagt hittil i perioden. Tomt = —</span></span></div></div><div class="mhd"><span>Man</span><span>Tir</span><span>Ons</span><span>Tor</span><span>Fre</span><span>Lør</span><span>Søn</span></div><div class="mnd"><button type="button" class="dc"><span class="dt">1.</span><span class="bars"><i data-lag="FYS"></i><i data-lag="TEK"></i></span></button><button type="button" class="dc"><span class="dt">2.</span><span class="bars"><i data-lag="SLAG"></i></span></button><button type="button" class="dc"><span class="dt">3.</span><span class="bars"><i data-lag="FYS"></i></span></button><button type="button" class="dc"><span class="dt">4.</span><span class="bars"><i data-lag="SLAG"></i></span></button><button type="button" class="dc"><span class="dt">5.</span><span class="bars">—</span></button><button type="button" class="dc"><span class="dt">6.</span><span class="bars"><i data-lag="SPILL"></i></span></button><button type="button" class="dc"><span class="dt">7.</span><span class="bars">—</span></button><button type="button" class="dc"><span class="dt">8.</span><span class="bars"><i data-lag="FYS"></i></span></button><button type="button" class="dc"><span class="dt">9.</span><span class="bars"><i data-lag="TEK"></i></span></button><button type="button" class="dc"><span class="dt">10.</span><span class="bars">—</span></button><button type="button" class="dc"><span class="dt">11.</span><span class="bars"><i data-lag="SLAG"></i></span></button><button type="button" class="dc"><span class="dt">12.</span><span class="bars">—</span></button><button type="button" class="dc"><span class="dt">13.</span><span class="bars"><i data-lag="SPILL"></i></span></button><button type="button" class="dc"><span class="dt">14.</span><span class="bars">—</span></button><button type="button" class="dc" aria-pressed="true"><span class="dt">15.</span><span class="bars"><i data-lag="FYS"></i><i data-lag="TEK"></i></span></button><button type="button" class="dc"><span class="dt">16.</span><span class="bars"><i data-lag="SLAG"></i></span></button><button type="button" class="dc"><span class="dt">17.</span><span class="bars"><i data-lag="FYS"></i></span></button><button type="button" class="dc"><span class="dt">18.</span><span class="bars"><i data-lag="SLAG"></i></span></button><button type="button" class="dc"><span class="dt">19.</span><span class="bars">—</span></button><button type="button" class="dc"><span class="dt">20.</span><span class="bars"><i data-lag="SPILL"></i></span></button><button type="button" class="dc"><span class="dt">21.</span><span class="bars">—</span></button><button type="button" class="dc naa"><span class="dt">22.</span><span class="bars"><i data-lag="FYS"></i></span></button><button type="button" class="dc"><span class="dt">23.</span><span class="bars"><i data-lag="TEK"></i></span></button><button type="button" class="dc"><span class="dt">24.</span><span class="bars">—</span></button><button type="button" class="dc"><span class="dt">25.</span><span class="bars"><i data-lag="TURN"></i></span></button><button type="button" class="dc"><span class="dt">26.</span><span class="bars"><i data-lag="TURN"></i></span></button><button type="button" class="dc"><span class="dt">27.</span><span class="bars"><i data-lag="TURN"></i></span></button><button type="button" class="dc"><span class="dt">28.</span><span class="bars">—</span></button><button type="button" class="dc"><span class="dt">29.</span><span class="bars"><i data-lag="FYS"></i><i data-lag="TEK"></i><i data-lag="SLAG"></i></span></button><button type="button" class="dc"><span class="dt">30.</span><span class="bars"><i data-lag="SLAG"></i></span></button><div class="dc ut"><span class="dt">1.</span></div><div class="dc ut"><span class="dt">2.</span></div><div class="dc ut"><span class="dt">3.</span></div><div class="dc ut"><span class="dt">4.</span></div><div class="dc ut"><span class="dt">5.</span></div></div></section>
+    <section class="body" data-b="okt" hidden style="padding-bottom:400px"><div class="phead"><div><span class="kicker">Uke 37 · utviklingsuke</span><h1>Innspill 40–60 m</h1></div></div><p class="msub">Øyvind Rojahn · tirsdag 16. september · 16:00–17:30 · 1 t 30 min · Treningsområde</p><section class="sec"><span class="kicker">Formel</span><div class="fgrid"><div class="fk"><span class="fl">Pyramide <button type="button" class="q" title="Pyramide — FYS · TEK · SLAG · SPILL · TURN.">?</button></span><span class="fv">SLAG</span></div><div class="fk"><span class="fl">Område <button type="button" class="q" title="Område — Hvor på anlegget. Putt i fot, ellers meter.">?</button></span><span class="fv">Innspill · 40–60 m</span></div><div class="fk"><span class="fl">Motorikk <button type="button" class="q" title="Motorikk — Stige: uten ball → lav hastighet → automatikk.">?</button></span><span class="fv">Lav hastighet</span></div><div class="fk"><span class="fl">Belastning <button type="button" class="q" title="Belastning — Miljø: innendørs → treningsområde → bane → konkurranse. Ikke kg.">?</button></span><span class="fv">Treningsområde</span></div><div class="fk"><span class="fl">Press <button type="button" class="q" title="Press — Alene → observert → konkurranse → turnering.">?</button></span><span class="fv">Observert</span></div><div class="fk"><span class="fl">Hensikt <button type="button" class="q" title="Hensikt — Bare FYS: øke styrke · vedlikehold · restitusjon.">?</button></span><span class="fv tom">—</span></div><div class="fk"><span class="fl">Måte <button type="button" class="q" title="Måte — Hvordan økten gjennomføres.">?</button></span><span class="fv">Blokk · 3 × 12 baller</span></div><div class="fk"><span class="fl">Målsetning <button type="button" class="q" title="Målsetning — Hva økten skal flytte.">?</button></span><span class="fv">Samle spredning innenfor 6 m</span></div></div></section><section class="sec"><span class="kicker">Øvelser</span><div class="ovl"><button type="button" class="ov" data-ov="1" data-lag="FYS" data-n="Oppvarming · dynamisk" data-l="16:00 · 10 min" data-f="FYS|—|Uten ball|Treningsområde|Alene|Vedlikehold|Sirkel · 2 runder|Klar kropp før første ball"><span class="onr">1</span><span class="onm">Oppvarming · dynamisk</span><span class="okl">16:00</span><span class="ovv">10 min</span></button><button type="button" class="ov" data-ov="1" data-lag="SLAG" data-n="Kalibrering 40 m" data-l="16:10 · 15 min" data-f="SLAG|Innspill · 40 m|Lav hastighet|Treningsområde|Alene|—|Blokk · 20 baller|Treffe lengde på 40 m"><span class="onr">2</span><span class="onm">Kalibrering 40 m</span><span class="okl">16:10</span><span class="ovv">15 min</span></button><button type="button" class="ov" data-ov="1" data-lag="SLAG" aria-pressed="true" data-n="Avstandskontroll 40–60 m" data-l="16:25 · 30 min" data-f="SLAG|Innspill · 40–60 m|Lav hastighet|Treningsområde|Observert|—|Blokk · 3 × 12 baller|Samle spredning innenfor 6 m"><span class="onr">3</span><span class="onm">Avstandskontroll 40–60 m</span><span class="okl">16:25</span><span class="ovv">30 min</span></button><button type="button" class="ov" data-ov="1" data-lag="SLAG" data-n="Spredningstest 50 m" data-l="16:55 · 20 min" data-f="SLAG|Innspill · 50 m|Automatikk|Treningsområde|Observert|—|Test · 15 baller|Måle spredning mot forrige uke"><span class="onr">4</span><span class="onm">Spredningstest 50 m</span><span class="okl">16:55</span><span class="ovv">20 min</span></button><button type="button" class="ov" data-ov="1" data-lag="SLAG" data-n="Nedtrapping · putting 3–5 fot" data-l="17:15 · 15 min" data-f="SLAG|Putting · 3–5 fot|Automatikk|Treningsområde|Alene|—|Stige · 10 putter|Avslutte på treff"><span class="onr">5</span><span class="onm">Nedtrapping · putting 3–5 fot</span><span class="okl">17:15</span><span class="ovv">15 min</span></button></div></section></section>
+    <section class="body" data-b="stall" hidden style="padding-bottom:400px"><div class="phead"><div><span class="kicker">Stall</span><h1>Økter til oppfølging</h1></div><span class="sub">Øyvind Rojahn · 8 økter · 3 utkast</span></div><div class="chips"><button type="button" class="chip" data-chip="Alle" aria-pressed="true">Alle</button><button type="button" class="chip" data-chip="Utkast">Utkast</button><button type="button" class="chip" data-chip="Delt">Delt</button><button type="button" class="chip" data-chip="Gjennomført">Gjennomført</button></div><div class="stl"><button type="button" class="st" data-st="1" data-lag="SLAG" aria-pressed="true" data-n="Innspill 40–60 m" data-l="tirsdag 16. september · 1 t 30 min" data-f="SLAG|Innspill · 40–60 m|Lav hastighet|Treningsområde|Observert|—|Blokk · 3 × 12 baller|Samle spredning innenfor 6 m"><span class="sp">Øyvind Rojahn</span><span class="stt">Innspill 40–60 m</span><span class="sd">tirsdag 16. september · 1 t 30 min</span><span class="ss" data-s="Delt">Delt</span></button><button type="button" class="st" data-st="1" data-lag="FYS" data-n="Styrke underkropp" data-l="mandag 15. september · 1 t 15 min" data-f="FYS|—|Uten ball|Innendørs|Alene|Øke styrke|Grunnprogram · 5 øvelser|Bygge base før spesialisering"><span class="sp">Øyvind Rojahn</span><span class="stt">Styrke underkropp</span><span class="sd">mandag 15. september · 1 t 15 min</span><span class="ss" data-s="Gjennomført">Gjennomført</span></button><button type="button" class="st" data-st="1" data-lag="TEK" data-n="Ballflukt · jern" data-l="mandag 15. september · 1 t" data-f="TEK|Utslag · jern|Lav hastighet|Treningsområde|Alene|—|Blokk · 40 baller|Senke ballflukt på 7-jern"><span class="sp">Øyvind Rojahn</span><span class="stt">Ballflukt · jern</span><span class="sd">mandag 15. september · 1 t</span><span class="ss" data-s="Gjennomført">Gjennomført</span></button><button type="button" class="st" data-st="1" data-lag="FYS" data-n="Vedlikehold" data-l="onsdag 17. september · 45 min" data-f="FYS|—|Uten ball|Innendørs|Alene|Vedlikehold|Sirkel · 3 runder|Holde styrke gjennom uken"><span class="sp">Øyvind Rojahn</span><span class="stt">Vedlikehold</span><span class="sd">onsdag 17. september · 45 min</span><span class="ss" data-s="Delt">Delt</span></button><button type="button" class="st" data-st="1" data-lag="SLAG" data-n="Nærspill · fot" data-l="torsdag 18. september · 1 t" data-f="SLAG|Nærspill · 3–15 fot|Automatikk|Treningsområde|Alene|—|Stige · 20 slag|Treffe landingspunkt oftere"><span class="sp">Øyvind Rojahn</span><span class="stt">Nærspill · fot</span><span class="sd">torsdag 18. september · 1 t</span><span class="ss" data-s="Utkast">Utkast</span></button><button type="button" class="st" data-st="1" data-lag="SPILL" data-n="Baneplan · 9 hull" data-l="lørdag 20. september · 2 t" data-f="SPILL|Bane · hull 1–9|Automatikk|Bane|Observert|—|Spill · 9 hull med plan|Følge planen hull for hull"><span class="sp">Øyvind Rojahn</span><span class="stt">Baneplan · 9 hull</span><span class="sd">lørdag 20. september · 2 t</span><span class="ss" data-s="Utkast">Utkast</span></button><button type="button" class="st" data-st="1" data-lag="TURN" data-n="Innspill før runde" data-l="torsdag 25. september · 1 t" data-f="TURN|Innspill · 40–60 m|Automatikk|Konkurranse|Turnering|—|Rutine · 30 min|Finne rytme før første runde"><span class="sp">Øyvind Rojahn</span><span class="stt">Innspill før runde</span><span class="sd">torsdag 25. september · 1 t</span><span class="ss" data-s="Utkast">Utkast</span></button><button type="button" class="st" data-st="1" data-lag="TURN" data-n="Runde 1" data-l="fredag 26. september · —" data-f="TURN|Bane · 18 hull|Automatikk|Konkurranse|Turnering|—|Turneringsrunde|Spille planen under press"><span class="sp">Øyvind Rojahn</span><span class="stt">Runde 1</span><span class="sd">fredag 26. september · —</span><span class="ss" data-s="Utkast">Utkast</span></button></div><p class="stom" hidden>—</p></section>
+    <section class="body" data-b="live" hidden style="padding-bottom:400px"><div class="lhead"><div><span class="kicker">Økt pågår</span><h1>Innspill 40–60 m</h1></div><span class="lmeta">Øyvind Rojahn · start 16:00 · Treningsområde</span><span class="klokke">00:42:10</span></div>
+<div class="lgrid">
+ <section class="lcard"><span class="kicker">Øvelse 3 av 5</span><h2>Avstandskontroll 40–60 m</h2><p class="lmal">Samle spredning innenfor 6 m</p>
+  <div class="cpad"><button type="button" class="cbtn" aria-label="Trekk fra ett slag">−</button><span class="cval">27</span><button type="button" class="cbtn" aria-label="Legg til ett slag">+</button></div>
+  <span class="ctxt">slag i serie 2 av 3</span></section>
+ <section class="lcard"><span class="kicker">Serier</span><div class="srl"><div class="sr"><span class="srn">Serie 1</span><span class="srv">12 slag</span><span class="srs">Gjennomført</span></div><div class="sr"><span class="srn">Serie 2</span><span class="srv">12 slag</span><span class="srs">Pågår</span></div><div class="sr"><span class="srn">Serie 3</span><span class="srv">—</span><span class="srs">Ikke startet</span></div></div>
+  <div class="lact"><button type="button" class="lbtn">Legg til serie</button><button type="button" class="lbtn">Fjern serie</button></div></section>
+</div>
+<section class="sec"><span class="kicker">Øvelser i økten</span><div class="lvl"><div class="lv"><span class="lnr">1</span><span class="lnm">Oppvarming · dynamisk</span><span class="lvv">10 min</span><span class="lst">Gjennomført</span></div><div class="lv"><span class="lnr">2</span><span class="lnm">Kalibrering 40 m</span><span class="lvv">15 min</span><span class="lst">Gjennomført</span></div><div class="lv na"><span class="lnr">3</span><span class="lnm">Avstandskontroll 40–60 m</span><span class="lvv">30 min</span><span class="lst">Pågår</span></div><div class="lv"><span class="lnr">4</span><span class="lnm">Spredningstest 50 m</span><span class="lvv">20 min</span><span class="lst">Ikke startet</span></div><div class="lv"><span class="lnr">5</span><span class="lnm">Nedtrapping · putting 3–5 fot</span><span class="lvv">15 min</span><span class="lst">Ikke startet</span></div></div></section></section>
+    <section class="body" data-b="minkalender" hidden style="padding-bottom:400px"><div class="phead"><div><span class="kicker">Min kalender</span><h1>Uke 37</h1></div></div><p class="msub">Anders Kristiansen · tirsdag 16. september · 2 økter · 2,5 t</p><div class="tg m1"><div class="tgh"></div><span class="tgd">Tir <b>16.</b></span><div class="tgh"></div><div class="tgb"></div><div class="tgg"><span class="tgt">05:00</span><span class="tgt">06:00</span><span class="tgt">07:00</span><span class="tgt">08:00</span><span class="tgt">09:00</span><span class="tgt">10:00</span><span class="tgt">11:00</span><span class="tgt">12:00</span><span class="tgt">13:00</span><span class="tgt">14:00</span><span class="tgt">15:00</span><span class="tgt">16:00</span><span class="tgt">17:00</span><span class="tgt">18:00</span><span class="tgt">19:00</span><span class="tgt">20:00</span><span class="tgt">21:00</span><span class="tgt">22:00</span></div><div class="tgk"><button type="button" class="chip-okt" data-lag="SLAG" style="top:128px;height:48px"><span class="cn">Gruppetrening · junior</span><span class="ct">09:00–10:30</span></button><button type="button" class="chip-okt" data-lag="SLAG" style="top:352px;height:48px"><span class="cn">Øyvind Rojahn · økt</span><span class="ct">16:00–17:30</span></button><span class="naalinje" style="top:374.4px"><i></i></span></div></div></section>
+  </main></div>
+  <div class="ark-b" data-ark><span class="grip"></span>
+    <div><span class="kicker">Valgt uke</span><h2 style="font:var(--type-title-s);margin:4px 0 0">Uke 37 · utviklingsuke</h2></div>
+    <div class="fml">
+      <div class="row"><span class="lbl">Pyramide <button type="button" class="q" title="Pyramide — FYS · TEK · SLAG · SPILL · TURN.">?</button></span><span class="val">SLAG</span></div>
+      <div class="row"><span class="lbl">Område <button type="button" class="q" title="Område — Hvor på anlegget. Putt i fot, ellers meter.">?</button></span><span class="val">Innspill · 40–60 m</span></div>
+      <div class="row"><span class="lbl">Belastning <button type="button" class="q" title="Belastning — Miljø: innendørs → treningsområde → bane → konkurranse. Ikke kg.">?</button></span><span class="val">Treningsområde</span></div>
+      <div class="row"><span class="lbl">Hensikt <button type="button" class="q" title="Hensikt — Bare FYS: øke styrke · vedlikehold · restitusjon.">?</button></span><span class="val tom">—</span></div>
+    </div>
+    <div class="mact"><button type="button" class="ghost">Åpne uke</button><button type="button" class="pub">Publiser periode</button></div>
+  </div>
+</div>
+
+<script>
+document.querySelectorAll("[data-frame]").forEach(function(f){
+  var pills=f.querySelectorAll("[data-pills] .pill"),bodies=f.querySelectorAll(".body"),ark=f.querySelector("[data-ark]");
+  pills.forEach(function(p){p.addEventListener("click",function(){
+    pills.forEach(function(x){x.setAttribute("aria-pressed",x===p?"true":"false")});
+    bodies.forEach(function(b){b.hidden=b.dataset.b!==p.dataset.p});
+    settInsp();
+    if(ark)ark.style.display=(p.dataset.p==="periode"||p.dataset.p==="uke"||p.dataset.p==="maned"||p.dataset.p==="ar"||p.dataset.p==="okt"||p.dataset.p==="stall"||p.dataset.p==="live")?"flex":"none";
+  })});
+  var FNAVN=["Pyramide","Område","Motorikk","Belastning","Press","Hensikt","Måte","Målsetning"],
+      vals=[].slice.call(f.querySelectorAll(".fml .val")),
+      valsNavn=vals.map(function(v){var l=v.parentNode.querySelector(".lbl");return l?l.textContent.replace("?","").trim():""}),
+      valsOrg=vals.map(function(v){return{t:v.textContent,c:v.className}}),
+      pub=f.querySelector("[data-ark] .pub"),
+      pubOrg=pub?pub.textContent:"",
+      knapp=f.querySelector(".insp .ghost")||f.querySelector("[data-ark] .ghost"),
+      knappOrg=knapp?{t:knapp.textContent,c:knapp.className}:null,
+      erInsp=!!f.querySelector(".insp .ghost"),
+      hode=f.querySelector(".insp .kicker")||f.querySelector("[data-ark] .kicker"),
+      tittel=hode?hode.parentNode.querySelector("h2"):null,
+      lead=hode?hode.parentNode.querySelector(".lead"):null,
+      org=hode?{k:hode.textContent,t:tittel?tittel.textContent:"",l:lead?lead.textContent:""}:null,
+      uker=["mandag","tirsdag","onsdag","torsdag","fredag","lørdag","søndag"],
+      dager=[].slice.call(f.querySelectorAll(".mnd .dc"));
+  function dagTekst(d){var i=dager.indexOf(d),n=d.querySelector(".dt").textContent.replace(".","").trim();
+    return uker[i%7]+" "+n+". september"}
+  function okterTekst(d){var l=[].slice.call(d.querySelectorAll(".ml")).map(function(x){return x.textContent});
+    return l.length?l.join(" · "):"—"}
+  var wb=f.querySelector(".wb");
+  var logo=f.querySelector(".top img"),
+      kgrp=[].slice.call(f.querySelectorAll(".kilder .kgrp")),
+      kgrpOrg=kgrp.map(function(g){return g.innerHTML});
+  function settKilder(pn){
+    if(!kgrp.length)return;
+    if(pn==="minkalender"){
+      kgrp[0].innerHTML='<span class="kicker">Tidsnivå</span><button type="button" class="krow">Uke<em>Uke 37</em></button><button type="button" class="krow" aria-current="true">Min kalender<em>15.–21. september</em></button>';
+      kgrp[1].innerHTML='<span class="kicker">Egne maler</span><button type="button" class="krow">Enkelttime · studio<em>60 min</em></button><button type="button" class="krow">Enkelttime · bane<em>90 min</em></button><button type="button" class="krow">Gruppetrening<em>90 min</em></button><button type="button" class="krow">Foreldresamtale<em>45 min</em></button>';
+      kgrp[2].innerHTML='<span class="kicker">Bookinger</span><button type="button" class="krow">Nora Five<em>mandag 08:00</em></button><button type="button" class="krow">Bedriftsdag<em>fredag 10:00</em></button><button type="button" class="krow">Foreldresamtale · Berge<em>onsdag 10:00</em></button>';
+    }else{kgrp.forEach(function(g,i){g.innerHTML=kgrpOrg[i]})}
+  }
+  function settKilde(){var pa=f.querySelector("[data-pills] .pill[aria-pressed=true]"),pn=pa?pa.dataset.p:"";
+    if(wb)wb.classList.toggle("nokilde",pn==="stall"||pn==="live");
+    settKilder(pn);
+    if(pn==="live"){f.setAttribute("data-surface","live");if(logo)logo.src="assets/logo-ak-golf-hq-negative.svg"}
+    else{f.removeAttribute("data-surface");if(logo)logo.src="assets/logo-ak-golf-hq.svg"}}
+  function settInsp(){settKilde();if(!hode)return;
+    var mnd=f.querySelector(".pill[data-p=maned][aria-pressed=true]"),
+        valgt=f.querySelector(".mnd .dc[aria-pressed=true]");
+    if(pub){var pa=f.querySelector("[data-pills] .pill[aria-pressed=true]"),pn=pa?pa.dataset.p:"";
+      pub.textContent=pn==="okt"?"Publiser økt":pn==="maned"?"Publiser måned":pn==="ar"?"Publiser år":pn==="uke"?"Publiser uke":pn==="stall"?"Publiser stall":pn==="live"?"START ØKT":pubOrg}
+    if(knapp)knapp.hidden=false;
+    var per=f.querySelector(".pill[data-p=periode][aria-pressed=true]");
+    if(per&&org){vals.forEach(function(v,i){v.textContent=valsOrg[i].t;v.className=valsOrg[i].c});
+      hode.textContent="Valgt periode";if(tittel)tittel.textContent="Grunnperiode · uke 34–41";if(lead)lead.textContent="39,5 t planlagt · 21 t gjennomført";
+      if(knapp&&knappOrg){knapp.textContent="Åpne uke";knapp.className=knappOrg.c}
+      return}
+    var mk=f.querySelector(".pill[data-p=minkalender][aria-pressed=true]");
+    if(mk){var mf=["TEK","Studio","Lav hastighet","Innendørs","Alene","—","Enkelttime · 60 min","Rette opp ballflukt på jern"],mv={};
+      FNAVN.forEach(function(n,i){mv[n]=mf[i]});
+      vals.forEach(function(v,i){var x=mv[valsNavn[i]]||"—";v.textContent=x;v.className=x!=="—"?"val":"val tom"});
+      hode.textContent="Valgt økt";if(tittel)tittel.textContent="Øyvind Rojahn · økt";if(lead)lead.textContent="tirsdag 16. september · 16:00–17:30";
+      if(knapp&&knappOrg){knapp.textContent="Åpne økt";knapp.className=erInsp?"ghost":knappOrg.c}
+      if(pub)pub.hidden=true;
+      return}
+    if(pub)pub.hidden=false;
+    var live=f.querySelector(".pill[data-p=live][aria-pressed=true]");
+    if(live){var lf=["SLAG","Nærspill · 3–15 fot","Automatikk","Treningsområde","Alene","—","Stige · 20 slag","Treffe landingspunkt oftere"],lv={};
+      FNAVN.forEach(function(n,i){lv[n]=lf[i]});
+      vals.forEach(function(v,i){var x=lv[valsNavn[i]]||"—";v.textContent=x;v.className=x!=="—"?"val":"val tom"});
+      hode.textContent="Neste i planen";if(tittel)tittel.textContent="Nærspill · fot";if(lead)lead.textContent="torsdag 18. september · 1 t";
+      if(knapp&&knappOrg){if(erInsp){knapp.textContent="START ØKT";knapp.className="pub";knapp.hidden=false}else{knapp.hidden=true}}
+      return}
+    var stall=f.querySelector(".pill[data-p=stall][aria-pressed=true]"),
+        vs=f.querySelector("[data-st][aria-pressed=true]");
+    if(stall&&vs){var sa=vs.dataset.f.split("|"),sv={};FNAVN.forEach(function(n,i){sv[n]=sa[i]});
+      vals.forEach(function(v,i){var x=sv[valsNavn[i]]||"—";v.textContent=x;v.className=x!=="—"?"val":"val tom"});
+      hode.textContent="Valgt økt";if(tittel)tittel.textContent=vs.dataset.n;if(lead)lead.textContent=vs.dataset.l;
+      if(knapp&&knappOrg){knapp.textContent="Godkjenn økt";knapp.className=erInsp?"pub":knappOrg.c}
+      return}
+    var okt=f.querySelector(".pill[data-p=okt][aria-pressed=true]"),
+        vo=f.querySelector("[data-ov][aria-pressed=true]");
+    if(okt&&vo){var fa=vo.dataset.f.split("|"),fv={};FNAVN.forEach(function(n,i){fv[n]=fa[i]});
+      vals.forEach(function(v,i){var x=fv[valsNavn[i]]||"—";v.textContent=x;v.className=x!=="—"?"val":"val tom"});
+      hode.textContent="Valgt øvelse";if(tittel)tittel.textContent=vo.dataset.n;if(lead)lead.textContent=vo.dataset.l;
+      if(knapp&&knappOrg){knapp.textContent="Åpne øvelse";knapp.className=knappOrg.c}
+      return}
+    vals.forEach(function(v,i){v.textContent=valsOrg[i].t;v.className=valsOrg[i].c});
+    var aar=f.querySelector(".pill[data-p=ar][aria-pressed=true]"),
+        vp=f.querySelector("[data-gaa=periode][aria-pressed=true]");
+    if(knapp&&knappOrg){if(aar){knapp.textContent="Åpne periode";knapp.className=knappOrg.c}else{knapp.textContent=knappOrg.t;knapp.className=knappOrg.c}}
+    if(aar&&vp){hode.textContent="Valgt periode";if(tittel)tittel.textContent=vp.dataset.t+" · "+vp.dataset.u;if(lead)lead.textContent=vp.dataset.pl+" planlagt · "+vp.dataset.gj+" gjennomført";return}
+    if(mnd&&valgt){hode.textContent="Valgt dag";if(tittel)tittel.textContent=dagTekst(valgt);if(lead)lead.textContent=okterTekst(valgt)}
+    else if(org){hode.textContent=org.k;if(tittel)tittel.textContent=org.t;if(lead)lead.textContent=org.l}}
+  f.querySelectorAll(".dc:not(.ut)").forEach(function(d){d.addEventListener("click",function(){
+    f.querySelectorAll(".dc").forEach(function(x){x.setAttribute("aria-pressed",x===d?"true":"false")});
+    settInsp();
+  })});
+  f.querySelectorAll("[data-st]").forEach(function(s){s.addEventListener("click",function(){
+    f.querySelectorAll("[data-st]").forEach(function(x){x.setAttribute("aria-pressed",x===s?"true":"false")});
+    settInsp();
+  })});
+  f.querySelectorAll(".chip").forEach(function(c){c.addEventListener("click",function(){
+    f.querySelectorAll(".chip").forEach(function(x){x.setAttribute("aria-pressed",x===c?"true":"false")});
+    var v=c.dataset.chip,n=0;
+    f.querySelectorAll("[data-st]").forEach(function(r){
+      var vis=v==="Alle"||r.querySelector(".ss").dataset.s===v,w=r.closest(".stw")||r;
+      w.hidden=!vis;if(vis)n++});
+    var tom=f.querySelector(".stom");if(tom)tom.hidden=n>0;
+  })});
+  f.querySelectorAll("[data-ov]").forEach(function(o){o.addEventListener("click",function(){
+    f.querySelectorAll("[data-st]").forEach(function(s){s.addEventListener("click",function(){
+    f.querySelectorAll("[data-st]").forEach(function(x){x.setAttribute("aria-pressed",x===s?"true":"false")});
+    settInsp();
+  })});
+  f.querySelectorAll(".chip").forEach(function(c){c.addEventListener("click",function(){
+    f.querySelectorAll(".chip").forEach(function(x){x.setAttribute("aria-pressed",x===c?"true":"false")});
+    var v=c.dataset.chip,n=0;
+    f.querySelectorAll("[data-st]").forEach(function(r){
+      var vis=v==="Alle"||r.querySelector(".ss").dataset.s===v,w=r.closest(".stw")||r;
+      w.hidden=!vis;if(vis)n++});
+    var tom=f.querySelector(".stom");if(tom)tom.hidden=n>0;
+  })});
+  f.querySelectorAll("[data-ov]").forEach(function(x){x.setAttribute("aria-pressed",x===o?"true":"false")});
+    settInsp();
+  })});
+  f.querySelectorAll("[data-gaa=periode]").forEach(function(s){s.addEventListener("click",function(){
+    f.querySelectorAll("[data-st]").forEach(function(s){s.addEventListener("click",function(){
+    f.querySelectorAll("[data-st]").forEach(function(x){x.setAttribute("aria-pressed",x===s?"true":"false")});
+    settInsp();
+  })});
+  f.querySelectorAll(".chip").forEach(function(c){c.addEventListener("click",function(){
+    f.querySelectorAll(".chip").forEach(function(x){x.setAttribute("aria-pressed",x===c?"true":"false")});
+    var v=c.dataset.chip,n=0;
+    f.querySelectorAll("[data-st]").forEach(function(r){
+      var vis=v==="Alle"||r.querySelector(".ss").dataset.s===v,w=r.closest(".stw")||r;
+      w.hidden=!vis;if(vis)n++});
+    var tom=f.querySelector(".stom");if(tom)tom.hidden=n>0;
+  })});
+  f.querySelectorAll("[data-ov]").forEach(function(o){o.addEventListener("click",function(){
+    f.querySelectorAll("[data-st]").forEach(function(s){s.addEventListener("click",function(){
+    f.querySelectorAll("[data-st]").forEach(function(x){x.setAttribute("aria-pressed",x===s?"true":"false")});
+    settInsp();
+  })});
+  f.querySelectorAll(".chip").forEach(function(c){c.addEventListener("click",function(){
+    f.querySelectorAll(".chip").forEach(function(x){x.setAttribute("aria-pressed",x===c?"true":"false")});
+    var v=c.dataset.chip,n=0;
+    f.querySelectorAll("[data-st]").forEach(function(r){
+      var vis=v==="Alle"||r.querySelector(".ss").dataset.s===v,w=r.closest(".stw")||r;
+      w.hidden=!vis;if(vis)n++});
+    var tom=f.querySelector(".stom");if(tom)tom.hidden=n>0;
+  })});
+  f.querySelectorAll("[data-ov]").forEach(function(x){x.setAttribute("aria-pressed",x===o?"true":"false")});
+    settInsp();
+  })});
+  f.querySelectorAll("[data-gaa=periode]").forEach(function(x){x.setAttribute("aria-pressed",x===s?"true":"false")});
+    settInsp();
+  })});
+  if(knapp)knapp.addEventListener("click",function(){
+    if(!f.querySelector(".pill[data-p=ar][aria-pressed=true]"))return;
+    var pp=f.querySelector(".pill[data-p=periode]");if(pp)pp.click();
+  });
+  settInsp();
+  f.querySelectorAll(".blk").forEach(function(b){b.addEventListener("click",function(){
+    var FNAVN=["Pyramide","Område","Motorikk","Belastning","Press","Hensikt","Måte","Målsetning"],
+      vals=[].slice.call(f.querySelectorAll(".fml .val")),
+      valsNavn=vals.map(function(v){var l=v.parentNode.querySelector(".lbl");return l?l.textContent.replace("?","").trim():""}),
+      valsOrg=vals.map(function(v){return{t:v.textContent,c:v.className}}),
+      pub=f.querySelector("[data-ark] .pub"),
+      pubOrg=pub?pub.textContent:"",
+      knapp=f.querySelector(".insp .ghost")||f.querySelector("[data-ark] .ghost"),
+      knappOrg=knapp?{t:knapp.textContent,c:knapp.className}:null,
+      erInsp=!!f.querySelector(".insp .ghost"),
+      hode=f.querySelector(".insp .kicker")||f.querySelector("[data-ark] .kicker"),
+      tittel=hode?hode.parentNode.querySelector("h2"):null,
+      lead=hode?hode.parentNode.querySelector(".lead"):null,
+      org=hode?{k:hode.textContent,t:tittel?tittel.textContent:"",l:lead?lead.textContent:""}:null,
+      uker=["mandag","tirsdag","onsdag","torsdag","fredag","lørdag","søndag"],
+      dager=[].slice.call(f.querySelectorAll(".mnd .dc"));
+  function dagTekst(d){var i=dager.indexOf(d),n=d.querySelector(".dt").textContent.replace(".","").trim();
+    return uker[i%7]+" "+n+". september"}
+  function okterTekst(d){var l=[].slice.call(d.querySelectorAll(".ml")).map(function(x){return x.textContent});
+    return l.length?l.join(" · "):"—"}
+  var wb=f.querySelector(".wb");
+  var logo=f.querySelector(".top img"),
+      kgrp=[].slice.call(f.querySelectorAll(".kilder .kgrp")),
+      kgrpOrg=kgrp.map(function(g){return g.innerHTML});
+  function settKilder(pn){
+    if(!kgrp.length)return;
+    if(pn==="minkalender"){
+      kgrp[0].innerHTML='<span class="kicker">Tidsnivå</span><button type="button" class="krow">Uke<em>Uke 37</em></button><button type="button" class="krow" aria-current="true">Min kalender<em>15.–21. september</em></button>';
+      kgrp[1].innerHTML='<span class="kicker">Egne maler</span><button type="button" class="krow">Enkelttime · studio<em>60 min</em></button><button type="button" class="krow">Enkelttime · bane<em>90 min</em></button><button type="button" class="krow">Gruppetrening<em>90 min</em></button><button type="button" class="krow">Foreldresamtale<em>45 min</em></button>';
+      kgrp[2].innerHTML='<span class="kicker">Bookinger</span><button type="button" class="krow">Nora Five<em>mandag 08:00</em></button><button type="button" class="krow">Bedriftsdag<em>fredag 10:00</em></button><button type="button" class="krow">Foreldresamtale · Berge<em>onsdag 10:00</em></button>';
+    }else{kgrp.forEach(function(g,i){g.innerHTML=kgrpOrg[i]})}
+  }
+  function settKilde(){var pa=f.querySelector("[data-pills] .pill[aria-pressed=true]"),pn=pa?pa.dataset.p:"";
+    if(wb)wb.classList.toggle("nokilde",pn==="stall"||pn==="live");
+    settKilder(pn);
+    if(pn==="live"){f.setAttribute("data-surface","live");if(logo)logo.src="assets/logo-ak-golf-hq-negative.svg"}
+    else{f.removeAttribute("data-surface");if(logo)logo.src="assets/logo-ak-golf-hq.svg"}}
+  function settInsp(){settKilde();if(!hode)return;
+    var mnd=f.querySelector(".pill[data-p=maned][aria-pressed=true]"),
+        valgt=f.querySelector(".mnd .dc[aria-pressed=true]");
+    if(pub){var pa=f.querySelector("[data-pills] .pill[aria-pressed=true]"),pn=pa?pa.dataset.p:"";
+      pub.textContent=pn==="okt"?"Publiser økt":pn==="maned"?"Publiser måned":pn==="ar"?"Publiser år":pn==="uke"?"Publiser uke":pn==="stall"?"Publiser stall":pn==="live"?"START ØKT":pubOrg}
+    if(knapp)knapp.hidden=false;
+    var per=f.querySelector(".pill[data-p=periode][aria-pressed=true]");
+    if(per&&org){vals.forEach(function(v,i){v.textContent=valsOrg[i].t;v.className=valsOrg[i].c});
+      hode.textContent="Valgt periode";if(tittel)tittel.textContent="Grunnperiode · uke 34–41";if(lead)lead.textContent="39,5 t planlagt · 21 t gjennomført";
+      if(knapp&&knappOrg){knapp.textContent="Åpne uke";knapp.className=knappOrg.c}
+      return}
+    var mk=f.querySelector(".pill[data-p=minkalender][aria-pressed=true]");
+    if(mk){var mf=["TEK","Studio","Lav hastighet","Innendørs","Alene","—","Enkelttime · 60 min","Rette opp ballflukt på jern"],mv={};
+      FNAVN.forEach(function(n,i){mv[n]=mf[i]});
+      vals.forEach(function(v,i){var x=mv[valsNavn[i]]||"—";v.textContent=x;v.className=x!=="—"?"val":"val tom"});
+      hode.textContent="Valgt økt";if(tittel)tittel.textContent="Øyvind Rojahn · økt";if(lead)lead.textContent="tirsdag 16. september · 16:00–17:30";
+      if(knapp&&knappOrg){knapp.textContent="Åpne økt";knapp.className=erInsp?"ghost":knappOrg.c}
+      if(pub)pub.hidden=true;
+      return}
+    if(pub)pub.hidden=false;
+    var live=f.querySelector(".pill[data-p=live][aria-pressed=true]");
+    if(live){var lf=["SLAG","Nærspill · 3–15 fot","Automatikk","Treningsområde","Alene","—","Stige · 20 slag","Treffe landingspunkt oftere"],lv={};
+      FNAVN.forEach(function(n,i){lv[n]=lf[i]});
+      vals.forEach(function(v,i){var x=lv[valsNavn[i]]||"—";v.textContent=x;v.className=x!=="—"?"val":"val tom"});
+      hode.textContent="Neste i planen";if(tittel)tittel.textContent="Nærspill · fot";if(lead)lead.textContent="torsdag 18. september · 1 t";
+      if(knapp&&knappOrg){if(erInsp){knapp.textContent="START ØKT";knapp.className="pub";knapp.hidden=false}else{knapp.hidden=true}}
+      return}
+    var stall=f.querySelector(".pill[data-p=stall][aria-pressed=true]"),
+        vs=f.querySelector("[data-st][aria-pressed=true]");
+    if(stall&&vs){var sa=vs.dataset.f.split("|"),sv={};FNAVN.forEach(function(n,i){sv[n]=sa[i]});
+      vals.forEach(function(v,i){var x=sv[valsNavn[i]]||"—";v.textContent=x;v.className=x!=="—"?"val":"val tom"});
+      hode.textContent="Valgt økt";if(tittel)tittel.textContent=vs.dataset.n;if(lead)lead.textContent=vs.dataset.l;
+      if(knapp&&knappOrg){knapp.textContent="Godkjenn økt";knapp.className=erInsp?"pub":knappOrg.c}
+      return}
+    var okt=f.querySelector(".pill[data-p=okt][aria-pressed=true]"),
+        vo=f.querySelector("[data-ov][aria-pressed=true]");
+    if(okt&&vo){var fa=vo.dataset.f.split("|"),fv={};FNAVN.forEach(function(n,i){fv[n]=fa[i]});
+      vals.forEach(function(v,i){var x=fv[valsNavn[i]]||"—";v.textContent=x;v.className=x!=="—"?"val":"val tom"});
+      hode.textContent="Valgt øvelse";if(tittel)tittel.textContent=vo.dataset.n;if(lead)lead.textContent=vo.dataset.l;
+      if(knapp&&knappOrg){knapp.textContent="Åpne øvelse";knapp.className=knappOrg.c}
+      return}
+    vals.forEach(function(v,i){v.textContent=valsOrg[i].t;v.className=valsOrg[i].c});
+    var aar=f.querySelector(".pill[data-p=ar][aria-pressed=true]"),
+        vp=f.querySelector("[data-gaa=periode][aria-pressed=true]");
+    if(knapp&&knappOrg){if(aar){knapp.textContent="Åpne periode";knapp.className=knappOrg.c}else{knapp.textContent=knappOrg.t;knapp.className=knappOrg.c}}
+    if(aar&&vp){hode.textContent="Valgt periode";if(tittel)tittel.textContent=vp.dataset.t+" · "+vp.dataset.u;if(lead)lead.textContent=vp.dataset.pl+" planlagt · "+vp.dataset.gj+" gjennomført";return}
+    if(mnd&&valgt){hode.textContent="Valgt dag";if(tittel)tittel.textContent=dagTekst(valgt);if(lead)lead.textContent=okterTekst(valgt)}
+    else if(org){hode.textContent=org.k;if(tittel)tittel.textContent=org.t;if(lead)lead.textContent=org.l}}
+  f.querySelectorAll(".dc:not(.ut)").forEach(function(d){d.addEventListener("click",function(){
+    f.querySelectorAll(".dc").forEach(function(x){x.setAttribute("aria-pressed",x===d?"true":"false")});
+    settInsp();
+  })});
+  f.querySelectorAll("[data-st]").forEach(function(s){s.addEventListener("click",function(){
+    f.querySelectorAll("[data-st]").forEach(function(x){x.setAttribute("aria-pressed",x===s?"true":"false")});
+    settInsp();
+  })});
+  f.querySelectorAll(".chip").forEach(function(c){c.addEventListener("click",function(){
+    f.querySelectorAll(".chip").forEach(function(x){x.setAttribute("aria-pressed",x===c?"true":"false")});
+    var v=c.dataset.chip,n=0;
+    f.querySelectorAll("[data-st]").forEach(function(r){
+      var vis=v==="Alle"||r.querySelector(".ss").dataset.s===v,w=r.closest(".stw")||r;
+      w.hidden=!vis;if(vis)n++});
+    var tom=f.querySelector(".stom");if(tom)tom.hidden=n>0;
+  })});
+  f.querySelectorAll("[data-ov]").forEach(function(o){o.addEventListener("click",function(){
+    f.querySelectorAll("[data-st]").forEach(function(s){s.addEventListener("click",function(){
+    f.querySelectorAll("[data-st]").forEach(function(x){x.setAttribute("aria-pressed",x===s?"true":"false")});
+    settInsp();
+  })});
+  f.querySelectorAll(".chip").forEach(function(c){c.addEventListener("click",function(){
+    f.querySelectorAll(".chip").forEach(function(x){x.setAttribute("aria-pressed",x===c?"true":"false")});
+    var v=c.dataset.chip,n=0;
+    f.querySelectorAll("[data-st]").forEach(function(r){
+      var vis=v==="Alle"||r.querySelector(".ss").dataset.s===v,w=r.closest(".stw")||r;
+      w.hidden=!vis;if(vis)n++});
+    var tom=f.querySelector(".stom");if(tom)tom.hidden=n>0;
+  })});
+  f.querySelectorAll("[data-ov]").forEach(function(x){x.setAttribute("aria-pressed",x===o?"true":"false")});
+    settInsp();
+  })});
+  f.querySelectorAll("[data-gaa=periode]").forEach(function(s){s.addEventListener("click",function(){
+    f.querySelectorAll("[data-st]").forEach(function(s){s.addEventListener("click",function(){
+    f.querySelectorAll("[data-st]").forEach(function(x){x.setAttribute("aria-pressed",x===s?"true":"false")});
+    settInsp();
+  })});
+  f.querySelectorAll(".chip").forEach(function(c){c.addEventListener("click",function(){
+    f.querySelectorAll(".chip").forEach(function(x){x.setAttribute("aria-pressed",x===c?"true":"false")});
+    var v=c.dataset.chip,n=0;
+    f.querySelectorAll("[data-st]").forEach(function(r){
+      var vis=v==="Alle"||r.querySelector(".ss").dataset.s===v,w=r.closest(".stw")||r;
+      w.hidden=!vis;if(vis)n++});
+    var tom=f.querySelector(".stom");if(tom)tom.hidden=n>0;
+  })});
+  f.querySelectorAll("[data-ov]").forEach(function(o){o.addEventListener("click",function(){
+    f.querySelectorAll("[data-st]").forEach(function(s){s.addEventListener("click",function(){
+    f.querySelectorAll("[data-st]").forEach(function(x){x.setAttribute("aria-pressed",x===s?"true":"false")});
+    settInsp();
+  })});
+  f.querySelectorAll(".chip").forEach(function(c){c.addEventListener("click",function(){
+    f.querySelectorAll(".chip").forEach(function(x){x.setAttribute("aria-pressed",x===c?"true":"false")});
+    var v=c.dataset.chip,n=0;
+    f.querySelectorAll("[data-st]").forEach(function(r){
+      var vis=v==="Alle"||r.querySelector(".ss").dataset.s===v,w=r.closest(".stw")||r;
+      w.hidden=!vis;if(vis)n++});
+    var tom=f.querySelector(".stom");if(tom)tom.hidden=n>0;
+  })});
+  f.querySelectorAll("[data-ov]").forEach(function(x){x.setAttribute("aria-pressed",x===o?"true":"false")});
+    settInsp();
+  })});
+  f.querySelectorAll("[data-gaa=periode]").forEach(function(x){x.setAttribute("aria-pressed",x===s?"true":"false")});
+    settInsp();
+  })});
+  if(knapp)knapp.addEventListener("click",function(){
+    if(!f.querySelector(".pill[data-p=ar][aria-pressed=true]"))return;
+    var pp=f.querySelector(".pill[data-p=periode]");if(pp)pp.click();
+  });
+  settInsp();
+  f.querySelectorAll(".blk").forEach(function(x){x.setAttribute("aria-pressed",x===b?"true":"false")});
+  })});
+});
+</script>
+</body></html>

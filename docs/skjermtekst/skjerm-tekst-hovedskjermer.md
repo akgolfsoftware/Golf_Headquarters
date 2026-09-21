@@ -1,18 +1,17 @@
 # Skjerm-tekst — alle flater (copy-deck)
 
-> **DESIGN-REFERANSENE SUPERSEDERT 25.08.2026:** Train-lock er designfasit for alle
-> PlayerHQ/AgencyOS-skjermer — «Claude Paper vinner alltid»- og font-linjene under er
-> historikk. Selve UI-COPYEN (norsk tekst, ordbok-basert) gjelder fortsatt som copy-kilde.
+> **DESIGNREFERANSENE ER HISTORIKK 21.09.2026:** Både Train-lock og Paper er utgående.
+> [Gjeldende designautoritet](../design-system/design-autoritet.md) styrer utseendet. Selve
+> UI-copyen (norsk tekst, ordbok-basert) kan fortsatt brukes som språkkilde.
 
 Den faktiske norske teksten som står PÅ skjermene, for **PlayerHQ** (spiller),
 **AgencyOS** (coach) og **markedsflatene** (akgolf.no). Styrt av ordboken
-(`docs/ordbok-master-trening.md` lag 2 + `docs/ordbok-ak-golf-konsept.md` lag 1).
+(`docs/ordbok.md` lag 2 + `docs/ordbok.md` lag 1).
 Skrevet 5. juli 2026. Kopier rett inn i design/implementasjon.
 
 > **⚠ Dette dokumentet eier TEKST, ikke utseende (presisert 05.08.2026; utseende-regelen
-> oppdatert 25.08.2026).** Punktene om font, knappeform og farge under er fra den avviklede
-> Presis-æraen. Utseende styres nå av **Train-lock** (25.08.2026 — alle PlayerHQ/AgencyOS-
-> skjermer; 05.08-regelen «Claude Paper vinner alltid» er historikk). Bruk denne fila kun til
+> oppdatert 21.09.2026).** Punktene om font, knappeform og farge under er fra avviklede
+> retninger. Utseende styres nå av **AK Golf Design System og «App design»**. Bruk denne fila kun til
 > ordlyd, tallformat og rolle-regler.
 
 > **UTGÅTT (se `.claude/rules/beslutninger.md`, «ALLE TRENINGSPLANREGLER LÅST OPP», 2026-08-18):**

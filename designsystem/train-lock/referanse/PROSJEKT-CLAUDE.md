@@ -1,5 +1,8 @@
 # Player HQ Train lock — prosjektinstruks
 
+> **UTGÅTT PROSJEKTINSTRUKS 21.09.2026:** Dette prosjektet har ingen visuell myndighet. Bruk
+> [gjeldende designautoritet](../../../docs/design-system/design-autoritet.md).
+
 Dette prosjektet er designfasiten for AK Golf HQ. ~200 skjermfiler i Train-lock-stil.
 
 **Før du endrer eller lager noe:**

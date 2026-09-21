@@ -2,7 +2,7 @@
 
 Bestilt av Anders 10.09.2026. Lim inn hele blokken i samtalen der den aktuelle designretningen for AK Golf HQ allerede utvikles. Prompten beskriver funksjon og datakrav; den velger ikke en ny visuell retning.
 
-Grunnlag: [implementert spillerverktøy](../planer/datagolf-spillerverktoy-2026-09-10.md) og [dataanalyse](../beslutningsgrunnlag/datagolf-analyse-og-anbefaling-2026-09-10.md). Eksempeltallene nedenfor er syntetiske. Dokumentet er en designbestilling, ikke en visuell godkjenning eller produksjonskontroll.
+Grunnlag: [implementert spillerverktøy · historisk Git-versjon](https://github.com/akgolfsoftware/Golf_Headquarters/blob/b2d074e8c761c269654ea02264742acb15007386/docs/planer/datagolf-spillerverktoy-2026-09-10.md) og [dataanalyse](../beslutningsgrunnlag/datagolf-analyse-og-anbefaling-2026-09-10.md). Eksempeltallene nedenfor er syntetiske. Dokumentet er en designbestilling, ikke en visuell godkjenning eller produksjonskontroll.
 
 ```xml
 <oppgave>

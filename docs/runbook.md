@@ -31,4 +31,4 @@
 
 Lagre daterte, anonymiserte kontrollnotater i `docs/beslutningsgrunnlag/`. Ikke fyll inn antatt backupplan, prisnivå eller tidsløfte fra hukommelsen.
 
-[Runbook før oppryddingen](arkiv/opprydding-2026-09-10/runbook.md) er bevart som historikk. Den inneholder uverifiserte påstander og er ikke en gjeldende kjøreoppskrift.
+[Runbook før oppryddingen · historisk Git-versjon](https://github.com/akgolfsoftware/Golf_Headquarters/blob/814403d0fd4000d7f37036a79ace51665316097d/docs/arkiv/opprydding-2026-09-10/runbook.md) er bevart som historikk. Den inneholder uverifiserte påstander og er ikke en gjeldende kjøreoppskrift.

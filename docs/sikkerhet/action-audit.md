@@ -39,7 +39,7 @@
 `scripts/check-action-auth.mjs` — kjøres i `npm run verify`. Feiler hvis en
 `"use server"`-fil under `src/app`, `src/lib` eller `src/components` mangler
 auth-import, eller hvis en kjent tilgangsvakt importeres uten å kalles. Import
-alene er ikke autorisasjon. [R-I-kontroll](../design-audit/handlingstilgang-r-i-2026-09-12.md).
+alene er ikke autorisasjon. [R-I-kontroll · historisk Git-versjon](https://github.com/akgolfsoftware/Golf_Headquarters/blob/acc644781c89fe746dc42ee22d41c84f3805cbb1/docs/design-audit/handlingstilgang-r-i-2026-09-12.md).
 
 ## Tester
 

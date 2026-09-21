@@ -1,10 +1,7 @@
-/* Skjerm-speilet skeleton (P4): samme layout som HjemV2 —
-   hode m/avatar+CTA · dagstripe · (SG-hero+trend | dagens plan) · snarveier · KPI-rad.
-   Fungerer også som fallback for /portal-underruter uten egen loading.tsx
-   (Next.js nærmeste-ancestor-mønster). */
-
+"use client";
+import { usePathname } from "next/navigation";
 import { V2Laster } from "@/components/v2/laster";
-
+import { PH01Loading } from "@/components/portal/v2/idag/IDagSelected";
 export default function Loading() {
-  return <V2Laster variant="hjem" />;
+  return usePathname() === "/portal" ? <PH01Loading /> : <V2Laster variant="hjem" />;
 }

@@ -1,3 +1,6 @@
+> **HISTORISK SYNKLOGG 21.09.2026:** Gir ingen visuell autoritet. Se
+> [gjeldende designautoritet](../../../docs/design-system/design-autoritet.md).
+
 repo: akgolfsoftware/Golf_Headquarters
 branch: main
 

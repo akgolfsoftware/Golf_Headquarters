@@ -2,14 +2,15 @@
 
 Les `docs/platform/AGENT-BRIEF.md` før du endrer filer. `START-HER.md` er inngangen for både mennesker og AI-verktøy.
 
-**Designautoritet 21.09.2026 (bindende):** AK Golf Design System og Claude Design-prosjektet «App design» gjelder. Train-lock og Paper er utgående og spørres aldri om på nytt. Bygg videre på siste faktiske versjon i «App design». Kilde: `docs/design-system/design-autoritet.md`. Se også `designsystem/README.md`.
+**Gjeldende designautoritet 21.09.2026:** [AK Golf Design System og «App design»](docs/design-system/design-autoritet.md) styrer alt nytt designarbeid i AK Golf HQ. Dette er et bindende systemvalg, ikke en åpen kandidat. Train-lock og Paper er utgående og kan bare brukes som historikk eller funksjonsinventar. Det skal aldri spørres på nytt om de skal gjelde. Bare en ny, uttrykkelig beskjed fra Anders kan endre dette.
 
 ## Kildeorden
 
 - Anders' gjeldende beskjed styrer oppgaven. Tidligere bestillinger i arkiv er ikke nye kjøreordrer.
 - Produkt og forretningsregler: `docs/platform/BUSINESS-RULES.md`.
-- Treningsfag og begreper: `docs/ordbok-master-trening.md` og ordbøkene i `docs/`.
-- Designstatus og eksisterende referanser: `designsystem/README.md`. Bruk den konkrete versjonen Anders velger for den aktuelle byggeoppgaven; gamle tegninger og beslutninger er ikke automatisk gjeldende fasit.
+- Språk og begreper: `docs/ordbok.md` (eneste språk-master).
+- Årsplan, perioder og valg i Workbench: `docs/treningsplanlegging.md`.
+- Designautoritet: `docs/design-system/design-autoritet.md`, deretter `designsystem/README.md`. Bruk den konkrete skjermversjonen Anders velger innen det gjeldende systemet; gamle tegninger og beslutninger er historikk.
 - Faktisk oppførsel: koden og testene. Dokumentert intensjon er ikke bevis på ferdig funksjon.
 - Nåstatus: `docs/STATUS-NÅ.md`. Arbeidsliste: `docs/MASTERPLAN-GJENSTAAENDE.md`. Historikk ligger under `docs/arkiv/`.
 
@@ -23,13 +24,13 @@ Koden ligger i dette prosjektet. Ikke kopier eksterne agentkataloger inn i repoe
 
 ## Skjermarbeid
 
-Bruk den prosjektspesifikke skillen [AK HQ Design](.claude/skills/ak-hq-design/SKILL.md) ved brukerreiser, komponenter, wireframes, UI og designoverlevering. Designretning og system er avgjort i [design-autoritet.md](docs/design-system/design-autoritet.md); skillen eier bare arbeidsmåten. Startpakken og hovedprompten nås fra [designarbeidet](docs/design-system/ak-hq-designarbeid.md).
+Bruk den prosjektspesifikke skillen [AK HQ Design](.claude/skills/ak-hq-design/SKILL.md) ved brukerreiser, komponenter, wireframes, UI og designoverlevering. [Gjeldende designautoritet](docs/design-system/design-autoritet.md) styrer system og retning. Skillen samler arbeidsmåte og kvalitetskrav; konkrete skjermvarianter kan fortsatt velges før bygging uten at systemvalget åpnes på nytt. Startpakken og hovedprompten nås fra [designarbeidet](docs/design-system/ak-hq-designarbeid.md).
 
-Bruk `designsystem/README.md` til å forstå dagens kilder og status. Train-lock og Paper er utgående (funksjonsinventar, ikke fasit). Ikke gjennomfør gamle porteringsplaner automatisk.
+Bruk `designsystem/README.md` til å forstå dagens kilder og status. Train-lock og Paper er utgående. Ikke gjennomfør gamle porteringsplaner automatisk mens Anders viderefører designet i Claude Design.
 
 Før skjermbygging: identifiser valgt designversjon, brukerreise, skjermer og tilstander. En bestilt versjon kan bygges selv om andre deler fortsatt utforskes. Bruk felles komponenter og designverdier for den valgte retningen. Avklar manglende designvalg før avhengig bygging; tekniske feil kan behandles uavhengig når rettingen er bestilt.
 
-En skjerm er ferdig når funksjonen virker og Anders har sett appen ved siden av den valgte designversjonen: mobil 390 px og desktop, avtalte temaer og relevante tomme, lastende og feiltilstander. Registrer referanse, kontroll og avvik. Eksisterende Train-lock-kontrakter og kontroller beskriver bare dagens kode, ikke ønsket design. En token-import, en sitering eller grønn byggkontroll er ikke en visuell godkjenning.
+En skjerm er ferdig når funksjonen virker og Anders har sett appen ved siden av den valgte designversjonen: mobil 390 px og desktop, avtalte temaer og relevante tomme, lastende og feiltilstander. Registrer referanse, kontroll og avvik. Eksisterende Train-lock-kontrakter og kontroller beskriver dagens implementasjon; de må vurderes mot en ny bestilt retning. En token-import, en sitering eller grønn byggkontroll er ikke en visuell godkjenning.
 
 ## Data og sikkerhet
 
@@ -38,6 +39,8 @@ Ved endring i `src/`, `prisma/`, innlogging, betaling, filer, logger eller AI: l
 Hemmeligheter hører hjemme i ignorerte miljøfiler. Ikke skriv ut, kopier til dokumentasjon eller commit verdiene. Persondata skal ikke inn i sky-prompts, logger eller offentlig Git. Bruk syntetiske testdata. Ikke kjør seed-, import-, betalings-, e-post- eller databaseendringer som del av en dokumentkontroll.
 
 Ikke endre databaseskjema, tilgangsregler, produksjonsoppsett eller `vercel.json` uten autorisasjon for den konkrete endringen. Les `.claude/rules/gotchas.md` før databasearbeid. Migrasjonshistorikken bygger ikke en tom database korrekt; ikke kjør `migrate dev`, `db push` eller `migrate deploy` mot den hostede basen. Oppskriften i `docs/utvikling/lokal-testdatabase.md` gjelder kun en separat, tom testdatabase.
+
+**Forhåndsgodkjent lokal testing (Anders, 21.09.2026):** Som del av bestilt utvikling kan agenten automatisk starte Docker, opprette og vedlikeholde et separat lokalt Supabase-testmiljø, etablere prosjektets skjema der og opprette syntetiske testkontoer og testdata. Lagring, flytting, sletting av egne syntetiske testdata og publiseringsflyt kan prøves i dette miljøet uten nye godkjenningsspørsmål. Bruk egen prosjektidentitet, egne porter og separat, ignorert miljø-/Prisma-konfigurasjon. Kontroller at alle database- og Auth-mål er lokale før oppretting eller skriving; eksponer tjenestene bare lokalt. Ikke kopier produksjonsdata eller produksjonshemmeligheter, endre eksisterende miljøfiler eller sende e-post, betalinger eller andre ekte eksterne handlinger. Behold appens tilgangsvakter. Unntaket gjelder bare dette isolerte testmiljøet; hostede databaser, produksjonsoppsett, tilgangsregler i appen og deploy/publisering av appen krever fortsatt konkret autorisasjon.
 
 ## Git-arbeidsflyt
 

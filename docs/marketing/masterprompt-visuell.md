@@ -1,16 +1,20 @@
 # Masterprompt — AK Golf visuell produksjon (Higgsfield)
 
-Gjenbrukbar prompt-mal for alle bilder/video til ak-golf-website. Bygget på
-Claude Paper-fasiten (akgolf-hq `designsystem/paper/`) og de 30 ekte fotoene
+> **UTGÅTT VISUELL PROMPT 21.09.2026:** Paper er utgående. Ikke bruk paletten eller prompten
+> nedenfor som ny visuell kilde. Ny produksjon skal først avstemmes mot
+> [gjeldende designautoritet](../design-system/design-autoritet.md).
+
+Historisk prompt-mal for bilder/video til ak-golf-website. Den ble bygget på
+Claude Paper (`designsystem/paper/`) og de 30 ekte fotoene
 i `public/brand/foto/`. Modell: GPT Image 2 (`gpt_image_2`), 16:9, 2k.
 
-## Regler (gjelder alltid)
+## Historiske regler (skal ikke brukes som ny designbestilling)
 
 1. **Ekte foto vinner.** Generer kun det som ikke finnes blant de 30 ekte
    Academy-fotoene. Coaching-scener med mennesker = alltid ekte foto.
 2. **Aldri stock-følelse.** Ingen glisende modeller, ingen high-five,
    ingen kunstig gyllen glød, ingen «passion»-estetikk.
-3. **Paper-paletten er lyssettingen:** krem/ivory-highlights (#FAF9F5),
+3. **Utgått Paper-palett var lyssettingen:** krem/ivory-highlights (#FAF9F5),
    blekk-mørke skygger (#141413), varm men dempet — aldri mettet HDR.
    Oransje (#D97757) kun som liten aksent (skjermglow, ball-markering).
 4. **Norsk kontekst:** nordisk lys, ikke California. Innendørs-scener er

@@ -14,16 +14,17 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import type { Prisma } from "@/generated/prisma/client";
+import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
+import { coachScopedPlayerWhere, harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { loadStallen } from "@/lib/admin/stallen-data";
 import {
   addDays,
   addDrill as addDrillPure,
   applySeriesPatch,
   buildMonthViewModel,
+  buildPeriodViewModel,
   buildWeekViewModel,
   buildYearViewModel,
   createSession as createSessionPure,
@@ -43,6 +44,7 @@ import type {
   AKFormel,
   RecurrencePolicy,
   MonthViewModel,
+  PeriodViewModel,
   SourceItem,
   WeekViewModel,
   WorkbenchMode,
@@ -50,6 +52,18 @@ import type {
   YearViewModel,
 } from "@/lib/domain/workbench/types";
 import { UI } from "@/lib/domain/workbench/labels";
+import { weekLockedBlocks } from "@/lib/workbench/locked-blocks";
+import {
+  initialWorkbenchLiveSnapshot,
+  parseWorkbenchLiveSnapshot,
+  type WorkbenchLiveData,
+} from "@/lib/workbench/live";
+import { osloInstant } from "@/lib/jarvis/dagen";
+import {
+  osloDatoOgMinutt,
+  type MinKalenderData,
+  type MinKalenderItem,
+} from "@/lib/workbench/min-calendar";
 import {
   AkFormelSchema,
   BlockTypeSchema,
@@ -185,6 +199,23 @@ const AddDrillFromSourceSchema = z.object({
   sourceId: z.string().min(1),
 });
 
+const SaveWorkbenchLiveSchema = z.object({
+  sessionId: z.string().min(1),
+  totalSec: z.number().int().min(0).max(604800),
+  drills: z.array(z.object({
+    drillId: z.string().min(1),
+    reps: z.number().int().min(0).max(5000),
+    elapsedSec: z.number().int().min(0).max(86400),
+    status: z.enum(["done", "active", "queued"]),
+  })).max(100),
+  seriesTargets: z.record(z.string(), z.number().int().min(1).max(12)),
+});
+
+const StartNextWorkbenchLiveSchema = z.object({
+  currentSessionId: z.string().min(1).optional(),
+  nextSessionId: z.string().min(1),
+});
+
 /** Prisma `create`-data delt av `createSession`/`createSessionSeries`/`createSessionFromSource`. */
 function sessionOpprettelseData(s: WorkbenchSession) {
   return {
@@ -222,7 +253,7 @@ function sessionOpprettelseData(s: WorkbenchSession) {
 
 /**
  * Hele uka for én spiller — coach-siden. Inneholder DRAFT.
- * Låste blokker (skole, booking) er tomme i Loop 1; de kobles på i Loop 2.
+ * Tar med spillerens egne opptattblokker og skolerute etter tilgangsvakten.
  */
 export async function loadWeek(params: {
   weekStart: string;
@@ -255,14 +286,241 @@ export async function loadWeek(params: {
     orderBy: [{ date: "asc" }, { startMinute: "asc" }],
   });
 
+  const spiller = await prisma.user.findUnique({ where: { id: params.playerId }, select: { schoolYear: true } });
+  const nesteUke = new Date(fra);
+  nesteUke.setUTCDate(nesteUke.getUTCDate() + 7);
+  const [busy, school] = await Promise.all([
+    prisma.playerBusyBlock.findMany({
+      where: { userId: params.playerId, startAt: { lt: nesteUke } },
+      select: { id: true, title: true, startAt: true, endAt: true, recurring: true, isPrivate: true, kind: true },
+    }),
+    spiller?.schoolYear ? prisma.schoolScheduleEntry.findMany({
+      where: { date: { gte: fra, lt: nesteUke }, OR: [{ classYear: spiller.schoolYear }, { classYear: null }] },
+      select: { id: true, title: true, date: true, category: true },
+    }) : Promise.resolve([]),
+  ]);
+
   const vm = buildWeekViewModel(
     weekStart.data,
     rows.map(mapSession),
-    [],
+    weekLockedBlocks(weekStart.data, busy, school),
     params.mode,
     params.targetMinutes ?? 0,
   );
   return { ok: true, data: vm };
+}
+
+export type StallFollowupData = {
+  sessions: WorkbenchSession[];
+  pendingPlanActionIds: string[];
+  from: string;
+  to: string;
+};
+
+/**
+ * Stallens oppfølgingsliste for valgt spiller. Vinduet er to uker fra valgt
+ * mandag, slik at coachen kan vurdere utkast, delte og gjennomførte økter i én
+ * kort liste. Tilgangsvakten kjøres før første databasespørring.
+ */
+export async function loadStallFollowup(params: {
+  weekStart: string;
+  playerId: string;
+}): Promise<WbResultat<StallFollowupData>> {
+  const parsed = IsoDateSchema.safeParse(params.weekStart);
+  if (!parsed.success) return { ok: false, error: "Ugyldig ukestart." };
+
+  const viewer = await kreverTilgangTilSpiller(params.playerId);
+  if (!viewer) return { ok: false, error: INGEN_TILGANG };
+
+  const from = mondayOf(parsed.data);
+  const to = addDays(from, 13);
+  const sessions = await lastOkterIVindu(params.playerId, from, to, viewer.id);
+  const actionIds = sessions
+    .filter((session) => session.isAgentProposal && session.planActionId)
+    .map((session) => session.planActionId as string);
+  const pending = actionIds.length > 0
+    ? await prisma.planAction.findMany({
+        where: { id: { in: actionIds }, status: "PENDING", userId: params.playerId },
+        select: { id: true },
+      })
+    : [];
+
+  return {
+    ok: true,
+    data: {
+      sessions,
+      pendingPlanActionIds: pending.map((action) => action.id),
+      from,
+      to,
+    },
+  };
+}
+
+/** Live-flaten viser én pågående økt og nærmeste publiserte økt i valgt toukersvindu. */
+export async function loadWorkbenchLive(params: {
+  weekStart: string;
+  playerId: string;
+}): Promise<WbResultat<WorkbenchLiveData>> {
+  const parsed = IsoDateSchema.safeParse(params.weekStart);
+  if (!parsed.success) return { ok: false, error: "Ugyldig ukestart." };
+
+  const viewer = await kreverTilgangTilSpiller(params.playerId);
+  if (!viewer) return { ok: false, error: INGEN_TILGANG };
+
+  const from = mondayOf(parsed.data);
+  const to = addDays(from, 13);
+  const rows = await prisma.workbenchSession.findMany({
+    where: {
+      playerId: params.playerId,
+      date: { gte: tilDatoKolonne(from), lte: tilDatoKolonne(to) },
+      status: { in: ["IN_PROGRESS", "PUBLISHED"] },
+      hiddenByPlayer: false,
+      needsPlayerApproval: false,
+    },
+    include: { drills: true },
+    orderBy: [{ date: "asc" }, { startMinute: "asc" }],
+  });
+  const eligible = rows.filter((row) => row.approvalStatus !== "REJECTED");
+  const currentRow = eligible.find((row) => row.status === "IN_PROGRESS") ?? null;
+  const published = eligible.filter((row) => row.status === "PUBLISHED");
+  const currentKey = currentRow ? `${fraDatoKolonne(currentRow.date)}:${String(currentRow.startMinute).padStart(4, "0")}` : "";
+  const nextRow = currentRow
+    ? published.find((row) => `${fraDatoKolonne(row.date)}:${String(row.startMinute).padStart(4, "0")}` > currentKey) ?? published[0] ?? null
+    : published[0] ?? null;
+  const current = currentRow ? mapSession(currentRow) : null;
+
+  return {
+    ok: true,
+    data: {
+      current,
+      next: nextRow ? mapSession(nextRow) : null,
+      snapshot: currentRow && current
+        ? parseWorkbenchLiveSnapshot(currentRow.liveSnapshot, current.drills.map((drill) => drill.id), current.updatedAt)
+        : null,
+      from,
+      to,
+    },
+  };
+}
+
+/** Coachens egen uke: egne Workbench-økter og bookinger, uten skrivehandlinger. */
+export async function loadMinCalendar(params: {
+  weekStart: string;
+  playerId: string;
+}): Promise<WbResultat<MinKalenderData>> {
+  const parsed = IsoDateSchema.safeParse(params.weekStart);
+  if (!parsed.success) return { ok: false, error: "Ugyldig ukestart." };
+
+  const access = await kreverTilgangTilSpiller(params.playerId);
+  if (!access) return { ok: false, error: INGEN_TILGANG };
+  const viewer = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
+  const weekStart = mondayOf(parsed.data);
+  const weekEnd = addDays(weekStart, 7);
+  const [year, month, day] = weekStart.split("-").map(Number);
+  const [endYear, endMonth, endDay] = weekEnd.split("-").map(Number);
+  const bookingStart = osloInstant(year, month, day, 0, 0);
+  const bookingEnd = osloInstant(endYear, endMonth, endDay, 0, 0);
+
+  const [sessionRows, bookingRows, templateRows] = await Promise.all([
+    prisma.workbenchSession.findMany({
+      where: {
+        coachId: viewer.id,
+        date: { gte: tilDatoKolonne(weekStart), lt: tilDatoKolonne(weekEnd) },
+        status: { not: "CANCELLED" },
+      },
+      include: { drills: true },
+      orderBy: [{ date: "asc" }, { startMinute: "asc" }],
+    }),
+    prisma.booking.findMany({
+      where: {
+        coachId: viewer.id,
+        startAt: { gte: bookingStart, lt: bookingEnd },
+        status: { in: ["PENDING", "CONFIRMED", "COMPLETED"] },
+      },
+      select: {
+        id: true,
+        startAt: true,
+        endAt: true,
+        guestName: true,
+        user: { select: { name: true } },
+        serviceType: { select: { name: true } },
+      },
+      orderBy: { startAt: "asc" },
+    }),
+    prisma.workbenchSession.findMany({
+      where: { coachId: viewer.id, isTemplate: true },
+      select: { id: true, title: true, durationMinutes: true },
+      orderBy: { updatedAt: "desc" },
+      take: 8,
+    }),
+  ]);
+
+  const playerIds = [...new Set(sessionRows.map((row) => row.playerId))];
+  const players = playerIds.length
+    ? await prisma.user.findMany({
+        where: { AND: [coachScopedPlayerWhere(viewer), { id: { in: playerIds } }] },
+        select: { id: true, name: true },
+      })
+    : [];
+  const playerNames = new Map(players.map((player) => [player.id, player.name ?? UI.unnamedPlayer]));
+
+  const items: MinKalenderItem[] = sessionRows
+    .filter((row) => playerNames.has(row.playerId))
+    .map((row) => {
+      const session = mapSession(row);
+      return {
+        id: `workbench:${row.id}`,
+        kind: "WORKBENCH" as const,
+        date: session.date,
+        startMinute: session.startMinute,
+        durationMinutes: session.durationMinutes,
+        title: `${playerNames.get(row.playerId)} · ${session.title}`,
+        subtitle: session.title,
+        pyramid: session.pyramid,
+        href: `/admin/workbench/${row.playerId}?vis=okt&uke=${weekStart}&okt=${row.id}`,
+        session,
+      };
+    });
+
+  for (const booking of bookingRows) {
+    const start = osloDatoOgMinutt(booking.startAt);
+    const durationMinutes = Math.max(15, Math.round((booking.endAt.getTime() - booking.startAt.getTime()) / 60_000));
+    const name = booking.user?.name ?? booking.guestName ?? "Booking";
+    items.push({
+      id: `booking:${booking.id}`,
+      kind: "BOOKING",
+      date: start.date,
+      startMinute: start.minute,
+      durationMinutes,
+      title: `${name} · ${booking.serviceType.name}`,
+      subtitle: booking.serviceType.name,
+      href: `/admin/bookinger/${booking.id}`,
+    });
+  }
+
+  const now = osloDatoOgMinutt(new Date());
+  return {
+    ok: true,
+    data: {
+      weekStart,
+      days: Array.from({ length: 7 }, (_, index) => {
+        const date = addDays(weekStart, index);
+        return { date, items: items.filter((item) => item.date === date).sort((a, b) => a.startMinute - b.startMinute || a.id.localeCompare(b.id)) };
+      }),
+      templates: templateRows.map((row) => ({ id: row.id, title: row.title, subtitle: `${row.durationMinutes} min` })),
+      bookings: bookingRows.map((row) => ({
+        id: row.id,
+        title: row.user?.name ?? row.guestName ?? "Booking",
+        subtitle: `${osloDatoOgMinutt(row.startAt).date} · ${formatMinutt(osloDatoOgMinutt(row.startAt).minute)}`,
+      })),
+      todayIso: now.date,
+      nowMinute: now.minute,
+    },
+  };
+}
+
+function formatMinutt(minute: number): string {
+  return `${String(Math.floor(minute / 60)).padStart(2, "0")}:${String(minute % 60).padStart(2, "0")}`;
 }
 
 async function lastOkterIVindu(
@@ -310,6 +568,7 @@ export async function loadMonth(params: {
   const sessions = await lastOkterIVindu(params.playerId, gridStart, gridEnd, viewer.id);
   const [y, m] = monthStart.split("-").map(Number);
   const label = `${UI.monthNames[m - 1]} ${y}`;
+  const idagIso = new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Oslo" }).format(new Date());
   return {
     ok: true,
     data: buildMonthViewModel(
@@ -318,6 +577,7 @@ export async function loadMonth(params: {
       params.mode,
       params.targetMinutes ?? 0,
       label,
+      idagIso,
     ),
   };
 }
@@ -395,6 +655,83 @@ export async function loadYear(params: {
       periodInput,
       tournamentEvents,
       testEvents,
+      idagIso,
+    ),
+  };
+}
+
+/** Periodeplan — lagrede PeriodBlock-data og faktiske økter for valgt periode. */
+export async function loadPeriod(params: {
+  year: number;
+  mode: WorkbenchMode;
+  playerId: string;
+  periodId?: string;
+}): Promise<WbResultat<PeriodViewModel>> {
+  if (!Number.isInteger(params.year) || params.year < 2000 || params.year > 2100) {
+    return { ok: false, error: "Ugyldig år." };
+  }
+  const viewer = await kreverTilgangTilSpiller(params.playerId);
+  if (!viewer) return { ok: false, error: INGEN_TILGANG };
+
+  const yearStart = new Date(Date.UTC(params.year, 0, 1));
+  const yearEnd = new Date(Date.UTC(params.year, 11, 31, 23, 59, 59));
+  const [sessions, seasonPlan, tournamentEntries] = await Promise.all([
+    lastOkterIVindu(params.playerId, `${params.year}-01-01`, `${params.year}-12-31`, viewer.id),
+    prisma.seasonPlan.findFirst({
+      where: { userId: params.playerId, year: params.year },
+      include: { periodBlocks: { orderBy: { startDate: "asc" } } },
+    }),
+    prisma.tournamentEntry.findMany({
+      where: {
+        userId: params.playerId,
+        entryStatus: { not: "WITHDRAWN" },
+        OR: [
+          { tournament: { startDate: { gte: yearStart, lte: yearEnd } } },
+          { manualDate: { gte: yearStart, lte: yearEnd } },
+        ],
+      },
+      select: {
+        tournament: { select: { name: true, startDate: true } },
+        manualName: true,
+        manualDate: true,
+      },
+    }),
+  ]);
+
+  const idagIso = new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Oslo" }).format(new Date());
+  const periodInput = (seasonPlan?.periodBlocks ?? []).map((block) => ({
+    id: block.id,
+    type: block.lPhase,
+    startDate: fraDatoKolonne(block.startDate),
+    endDate: fraDatoKolonne(block.endDate),
+    focus: block.focus,
+  }));
+  const tournamentEvents = tournamentEntries
+    .map((entry) => {
+      const navn = entry.tournament?.name ?? entry.manualName;
+      const dato = entry.tournament?.startDate ?? entry.manualDate;
+      return navn && dato ? { navn, dato: fraDatoKolonne(dato) } : null;
+    })
+    .filter((entry): entry is { navn: string; dato: string } => entry !== null);
+  const year = buildYearViewModel(
+    params.year,
+    sessions,
+    params.mode,
+    0,
+    periodInput,
+    tournamentEvents,
+    [],
+    idagIso,
+  );
+
+  return {
+    ok: true,
+    data: buildPeriodViewModel(
+      params.year,
+      year.periods,
+      params.periodId ?? null,
+      sessions,
+      params.mode,
       idagIso,
     ),
   };
@@ -1140,10 +1477,17 @@ async function settStatus(
   if (!["PUBLISHED", "IN_PROGRESS"].includes(row.status)) {
     return { ok: false, error: "Økten kan ikke endres fra denne statusen." };
   }
+  const liveSnapshot = status === "IN_PROGRESS" && row.liveSnapshot == null
+    ? initialWorkbenchLiveSnapshot(row.drills.sort((a, b) => a.sortOrder - b.sortOrder).map((drill) => drill.id))
+    : null;
   const result = await prisma.workbenchSession.updateMany({
     where: { id: sessionId, playerId: row.playerId, status: row.status, updatedAt: row.updatedAt,
       hiddenByPlayer: false, needsPlayerApproval: false },
-    data: { status },
+    data: {
+      status,
+      ...(liveSnapshot ? { liveSnapshot: liveSnapshot as unknown as Prisma.InputJsonValue } : {}),
+      ...(status !== "IN_PROGRESS" ? { liveSnapshot: Prisma.DbNull } : {}),
+    },
   });
   if (result.count !== 1) return { ok: false, error: "Økten ble endret samtidig. Last inn på nytt før du fortsetter." };
   return lagreOgHent(sessionId);
@@ -1166,6 +1510,97 @@ export async function skipSession(
   sessionId: string,
 ): Promise<WbResultat<WorkbenchSession>> {
   return settStatus(sessionId, "SKIPPED");
+}
+
+/** Avslutter pågående økt og starter neste i én transaksjon. */
+export async function startNextWorkbenchLiveSession(input: unknown): Promise<WbResultat<WorkbenchSession>> {
+  const parsed = StartNextWorkbenchLiveSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: "Ugyldig øktvalg." };
+  if (!parsed.data.currentSessionId) return startSession(parsed.data.nextSessionId);
+  if (parsed.data.currentSessionId === parsed.data.nextSessionId) return { ok: false, error: "Velg en annen økt." };
+
+  const [currentAccess, nextAccess] = await Promise.all([
+    hentMedTilgang(parsed.data.currentSessionId),
+    hentMedTilgang(parsed.data.nextSessionId),
+  ]);
+  if ("feil" in currentAccess) return { ok: false, error: currentAccess.feil };
+  if ("feil" in nextAccess) return { ok: false, error: nextAccess.feil };
+  const current = currentAccess.row;
+  const next = nextAccess.row;
+  if (current.playerId !== next.playerId) return { ok: false, error: INGEN_TILGANG };
+  if (current.status !== "IN_PROGRESS" || next.status !== "PUBLISHED") {
+    return { ok: false, error: "Øktene er endret. Last inn på nytt før du fortsetter." };
+  }
+  if (next.hiddenByPlayer || next.needsPlayerApproval || next.approvalStatus === "REJECTED") {
+    return { ok: false, error: "Neste økt må være synlig og godkjent før start." };
+  }
+  const nextSnapshot = initialWorkbenchLiveSnapshot(
+    [...next.drills].sort((a, b) => a.sortOrder - b.sortOrder).map((drill) => drill.id),
+  );
+
+  try {
+    await prisma.$transaction(async (tx) => {
+      const completed = await tx.workbenchSession.updateMany({
+        where: { id: current.id, playerId: current.playerId, status: "IN_PROGRESS", updatedAt: current.updatedAt },
+        data: { status: "COMPLETED", liveSnapshot: Prisma.DbNull },
+      });
+      const started = await tx.workbenchSession.updateMany({
+        where: {
+          id: next.id,
+          playerId: next.playerId,
+          status: "PUBLISHED",
+          updatedAt: next.updatedAt,
+          hiddenByPlayer: false,
+          needsPlayerApproval: false,
+        },
+        data: { status: "IN_PROGRESS", liveSnapshot: nextSnapshot as unknown as Prisma.InputJsonValue },
+      });
+      if (completed.count !== 1 || started.count !== 1) throw new Error("collision");
+    });
+  } catch {
+    return { ok: false, error: "Øktene ble endret samtidig. Last inn på nytt før du fortsetter." };
+  }
+  revalider(next.playerId);
+  return lagreOgHent(next.id);
+}
+
+/** Lagrer absolutt live-status. Klienten køer kallene, så optimistisk lås avviser gamle overskrivinger. */
+export async function saveWorkbenchLiveSnapshot(input: unknown): Promise<WbResultat<{ updatedAtISO: string }>> {
+  const parsed = SaveWorkbenchLiveSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: "Ugyldig live-data." };
+
+  const treff = await hentMedTilgang(parsed.data.sessionId);
+  if ("feil" in treff) return { ok: false, error: treff.feil };
+  const row = treff.row;
+  if (row.status !== "IN_PROGRESS" || row.hiddenByPlayer || row.needsPlayerApproval || row.approvalStatus === "REJECTED") {
+    return { ok: false, error: "Økten er ikke pågående." };
+  }
+
+  const expectedIds = [...row.drills].sort((a, b) => a.sortOrder - b.sortOrder).map((drill) => drill.id);
+  const incoming = new Map(parsed.data.drills.map((drill) => [drill.drillId, drill]));
+  if (incoming.size !== expectedIds.length || expectedIds.some((id) => !incoming.has(id))) {
+    return { ok: false, error: "Øvelsene stemmer ikke med økten." };
+  }
+  if (parsed.data.drills.filter((drill) => drill.status === "active").length > 1) {
+    return { ok: false, error: "Bare én øvelse kan pågå om gangen." };
+  }
+
+  const current = parseWorkbenchLiveSnapshot(row.liveSnapshot, expectedIds, row.updatedAt.toISOString());
+  const updatedAtISO = new Date().toISOString();
+  const snapshot = {
+    startedAtISO: current.startedAtISO,
+    totalSec: parsed.data.totalSec,
+    updatedAtISO,
+    drills: expectedIds.map((id) => incoming.get(id)!),
+    seriesTargets: Object.fromEntries(expectedIds.map((id) => [id, parsed.data.seriesTargets[id] ?? 3])),
+  };
+  const result = await prisma.workbenchSession.updateMany({
+    where: { id: row.id, playerId: row.playerId, status: "IN_PROGRESS", updatedAt: row.updatedAt },
+    data: { liveSnapshot: snapshot as unknown as Prisma.InputJsonValue },
+  });
+  if (result.count !== 1) return { ok: false, error: "Økten ble endret samtidig. Prøv igjen." };
+  revalider(row.playerId);
+  return { ok: true, data: { updatedAtISO } };
 }
 
 // ─── Godkjenning (Loop 3T / B6) ─────────────────────────────────────────────
