@@ -7,6 +7,7 @@
  */
 
 import type { MaalSpor, PlanNivaa, PlanNivaaKilde } from "@/lib/domain/maal-plannivaa";
+import type { OvelseDetaljer } from "@/lib/domain/workbench/ovelse-detaljer";
 
 // ─── Vocabulary enums (from VOKABULAR.md) ─────────────────────────────────
 
@@ -98,6 +99,8 @@ export interface AKFormel {
   press?: Press;
   /** Human-readable chip string, e.g. "TEK · Chip · Lav hast · Alene" */
   label: string;
+  /** Valg i trinn 3–8: sted, måleutstyr, hastighet, teknisk fokus, mengde og målfelt. */
+  detaljer?: OvelseDetaljer;
 }
 
 export interface Drill {

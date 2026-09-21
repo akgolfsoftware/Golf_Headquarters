@@ -20,10 +20,10 @@ export const PYRAMID_LABEL: Record<PyramidArea, string> = {
 
 export const AREA_LABEL: Record<TrainingArea, string> = {
   TEE: "Utslag",
-  INNSPILL_200: "Innspill 200 m",
-  INNSPILL_150: "Innspill 150 m",
-  INNSPILL_100: "Innspill 100 m",
-  INNSPILL_50: "Innspill 50 m",
+  INNSPILL_200: "Innspill 200 m og lengre",
+  INNSPILL_150: "Innspill 150–200 m",
+  INNSPILL_100: "Innspill 100–150 m",
+  INNSPILL_50: "Innspill 50–100 m",
   CHIP: "Chip",
   PITCH: "Pitch",
   LOB: "Lob",
