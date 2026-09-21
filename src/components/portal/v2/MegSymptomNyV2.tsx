@@ -117,8 +117,10 @@ export function MegSymptomNyV2() {
           note: note || undefined,
           requestFysio,
         });
-      } catch {
-        setError("Kunne ikke lagre symptom.");
+      } catch (e) {
+        // Handlingen er ikke i drift og sier det selv — vis dens egen ordlyd,
+        // aldri en generisk feil som kan leses som et forbigående problem.
+        setError(e instanceof Error ? e.message : "Kunne ikke lagre symptom.");
       }
     });
   }
@@ -131,6 +133,27 @@ export function MegSymptomNyV2() {
         <h1 style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 26, letterSpacing: "-0.02em", color: TL.text, margin: "10px 0 0", lineHeight: 1.1 }}>
           Legg til <em style={{ fontStyle: "italic", color: TL.fill }}>symptom</em>
         </h1>
+      </div>
+
+      {/* Skjemaet har ingen lagring bak seg ennå. Det skal stå her, før
+          utfyllingen — ikke som en feil etter tre steg. */}
+      <div
+        role="status"
+        style={{
+          background: TL.elev,
+          borderRadius: TL.radius.card,
+          padding: "14px 16px",
+          fontFamily: TL.font.sans,
+          fontSize: 14,
+          lineHeight: 1.5,
+          color: TL.mute,
+        }}
+      >
+        <strong style={{ display: "block", fontWeight: 600, color: TL.text, marginBottom: 4 }}>
+          Ikke i drift ennå
+        </strong>
+        Symptomregistrering kan ikke lagres i appen i dag. Du kan se skjemaet,
+        men ingenting blir tatt vare på. Si fra til coachen din om plagen.
       </div>
 
       {/* Stegindikator */}

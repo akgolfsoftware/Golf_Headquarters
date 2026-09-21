@@ -1,7 +1,5 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { krevManuellHelseSamtykke } from "@/lib/health/samtykke";
 
@@ -17,21 +15,29 @@ export type LogSymptomInput = {
   requestFysio: boolean;
 };
 
+/** Meldingen skjermen viser i stedet for et lagringsløfte appen ikke kan holde. */
+export const SYMPTOM_IKKE_TILGJENGELIG =
+  "Symptomregistrering er ikke i drift ennå. Ingenting av det du har skrevet er lagret. " +
+  "Si fra til coachen din om plagen i mellomtiden.";
+
 /**
- * logSymptom — registrerer et nytt symptom i helse-loggen.
- * Lagrer som rad i HealthCheck-tabellen (eller dedikert SymptomLog
- * dersom skjemaet utvides). For nå brukes en stub som validerer auth.
+ * logSymptom — IKKE I DRIFT.
+ *
+ * Det finnes ingen tabell å skrive symptomet til ennå. Fram til 21.09.2026
+ * gjorde denne handlingen `void input` og sendte spilleren tilbake til
+ * helsesiden, som så ut nøyaktig som en vellykket lagring: skjemaet lukket
+ * seg, ingen feil kom. Spilleren satt igjen og trodde plagen var registrert,
+ * og coachen så den aldri. Et lagringsløfte appen ikke kan holde er verre enn
+ * ingen funksjon, særlig for en helseopplysning, så handlingen sier nå fra.
+ *
+ * Samtykkeporten står før avvisningen med vilje: smerte, kroppsregion og
+ * ønske om fysio er helseopplysninger (art. 9), og porten skal være på plass
+ * den dagen skrivingen faktisk kobles på.
  */
 export async function logSymptom(input: LogSymptomInput) {
   const user = await requireConsentingUser();
-
-  // Smerte, kroppsregion og ønske om fysio er helseopplysninger (art. 9) —
-  // porten må stå her allerede nå, ellers er den glemt den dagen stubben
-  // under byttes ut med en ekte skriving.
   await krevManuellHelseSamtykke(user.id);
 
   void input;
-  // I produksjon: prisma.symptomLog.create({ ... })
-  revalidatePath("/portal/meg/helse");
-  redirect("/portal/meg/helse");
+  throw new Error(SYMPTOM_IKKE_TILGJENGELIG);
 }
