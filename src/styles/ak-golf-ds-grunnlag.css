@@ -1,9 +1,16 @@
 /* src/styles/ak-golf-ds-grunnlag.css
    designsystem/ak-golf-ds/tokens/base.css scopet under .ak-ds.
 
-   Masterens fil setter html/body/a/*/:focus-visible/::selection globalt. I Next
-   er all CSS global, så de ville truffet /portal og /admin ved klientnavigasjon.
+   Masterens fil setter html, body, a, universalvelgeren, :focus-visible og
+   ::selection globalt. I Next er all CSS global, så de ville truffet /portal
+   og /admin ved klientnavigasjon.
    Reglene er de samme — selektorene er prefikset.
+
+   Scopet er `:where(.ak-ds)`, ikke `.ak-ds`. Grunnen: masterens regler står
+   på elementer (`a`, `*`, `:focus-visible`) og skal kunne overstyres av én
+   klasse i en sidedel — slik `.door{text-decoration:none}` gjør i tegningen.
+   Et vanlig klassescope ville løftet vekten og gjort dem uslåelige; `:where`
+   teller null og gir nøyaktig masterens egen vekt.
 
    Denne fila er HÅNDSKREVET, ikke generert: base.css er elleve linjer og
    stabil, og en generisk selektor-omskriver ville vært mer skjør enn nyttig.
@@ -22,11 +29,11 @@
   -webkit-font-smoothing: antialiased;
 }
 
-.ak-ds *,
-.ak-ds *::before,
-.ak-ds *::after { box-sizing: border-box }
+:where(.ak-ds) *,
+:where(.ak-ds) *::before,
+:where(.ak-ds) *::after { box-sizing: border-box }
 
-.ak-ds a {
+:where(.ak-ds) a {
   color: var(--link);
   text-decoration: underline;
   text-decoration-thickness: 1px;
@@ -34,19 +41,19 @@
 }
 
 /* rollen, ikke råverdien — graphite-900 på Live er usynlig */
-.ak-ds a:hover { color: var(--text-primary) }
+:where(.ak-ds) a:hover { color: var(--text-primary) }
 
-.ak-ds :focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px }
+:where(.ak-ds) :focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px }
 
 /* Grafitt ring på grafitt flate er ingen ring. Alt som står på mørk grunn
    arver sand-ringen — ellers er tastaturnavigasjon usynlig der. */
-.ak-ds .aos-panel--focus :focus-visible,
-.ak-ds .mkt-cta :focus-visible,
-.ak-ds .mkt-nav--dark :focus-visible,
-.ak-ds .mkt-sec--dark :focus-visible,
-.ak-ds .mkt-stats--dark :focus-visible,
-.ak-ds .band :focus-visible,
-.ak-ds .cta :focus-visible,
-.ak-ds [data-ground="dark"] :focus-visible { outline-color: var(--focus-ring-inverse) }
+:where(.ak-ds) .aos-panel--focus :focus-visible,
+:where(.ak-ds) .mkt-cta :focus-visible,
+:where(.ak-ds) .mkt-nav--dark :focus-visible,
+:where(.ak-ds) .mkt-sec--dark :focus-visible,
+:where(.ak-ds) .mkt-stats--dark :focus-visible,
+:where(.ak-ds) .band :focus-visible,
+:where(.ak-ds) .cta :focus-visible,
+:where(.ak-ds) [data-ground="dark"] :focus-visible { outline-color: var(--focus-ring-inverse) }
 
-.ak-ds ::selection { background: var(--action-tint); color: var(--graphite-900) }
+:where(.ak-ds) ::selection { background: var(--action-tint); color: var(--graphite-900) }
