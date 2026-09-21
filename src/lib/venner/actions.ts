@@ -17,7 +17,7 @@ import { prisma } from "@/lib/prisma";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { lesPreferences } from "@/lib/preferences";
 import { hentSpillerAkKategori } from "@/lib/domain/spiller-kategori";
-import { translateMiljo, translatePraksistype } from "@/lib/portal/translate-taxonomy";
+import { byggOktFeedElement, byggRundeFeedElement, type VennFeedElement } from "./feed";
 
 const VENN_SELECT = {
   id: true,
@@ -252,13 +252,7 @@ export async function fjernVennViaBrukerId(vennUserId: string): Promise<FjernVen
 
 /* ── Venn-profil: hero + privacy-safe økt-feed ──────────────────────── */
 
-export type VennFeedElement = {
-  id: string;
-  slag: "runde" | "okt";
-  tittel: string;
-  detalj: string;
-  dato: string; // ISO
-};
+export type { VennFeedElement };
 
 export type VennProfilData = {
   venn: VennRad;
@@ -322,32 +316,25 @@ export async function hentVennProfil(vennUserId: string): Promise<VennProfilData
     }),
     prisma.trainingSessionV2.findMany({
       where: { studentId: vennUserId, status: "COMPLETED" },
-      select: {
-        id: true,
-        startTime: true,
-        practiceType: true,
-        miljo: true,
-      },
+      // Kun id og tidspunkt: praksistype og miljø er AK-taksonomi, og en venn
+      // skal ikke kunne lese coachens treningsopplegg. Feltene hentes derfor
+      // ikke i det hele tatt — da kan de heller ikke lekke ut senere.
+      select: { id: true, startTime: true },
       orderBy: { startTime: "desc" },
       take: 10,
     }),
   ]);
 
   const feed: VennFeedElement[] = [
-    ...runder.map((r) => ({
-      id: `runde-${r.id}`,
-      slag: "runde" as const,
-      tittel: r.roundType === "turnering" ? "Spilte en turneringsrunde" : "Spilte en runde",
-      detalj: r.course.name,
-      dato: r.playedAt.toISOString(),
-    })),
-    ...okter.map((o) => ({
-      id: `okt-${o.id}`,
-      slag: "okt" as const,
-      tittel: `Fullførte ${translatePraksistype(o.practiceType).toLowerCase()}-økt`,
-      detalj: translateMiljo(o.miljo),
-      dato: o.startTime.toISOString(),
-    })),
+    ...runder.map((r) =>
+      byggRundeFeedElement({
+        id: r.id,
+        playedAt: r.playedAt,
+        roundType: r.roundType,
+        baneNavn: r.course.name,
+      }),
+    ),
+    ...okter.map(byggOktFeedElement),
   ].sort((a, b) => new Date(b.dato).getTime() - new Date(a.dato).getTime());
 
   return { venn, erVenn: true, synligAv: true, feed };
