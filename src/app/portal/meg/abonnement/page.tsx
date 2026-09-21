@@ -16,6 +16,7 @@ import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { MegAbonnementV2, type MegAbonnementData } from "@/components/portal/v2/MegAbonnementV2";
 import { TilbakeLenke } from "@/components/v2";
 import { pakkeNavn } from "@/lib/domain/abonnement";
+import { byggKvitteringLinje } from "@/lib/portal-abonnement/kvittering";
 
 export const dynamic = "force-dynamic";
 
@@ -57,14 +58,12 @@ export default async function AbonnementPage({
     kanOppgradere,
     kanEndreKort,
     kanAvbestille,
+    // Linja bygges av lib/portal-abonnement/kvittering.ts: status, valuta og
+    // refundert beløp står der, og manglende felt blir «—» i stedet for å
+    // falle stille ut.
     fakturaer: abo.fakturaer.slice(0, 5).map((f) => ({
       id: f.id,
-      tittel: f.description ?? "Betaling",
-      meta: (() => {
-        const belop = `${(f.amountOre / 100).toLocaleString("nb-NO")} kr`;
-        const dato = formatDato(f.paidAt);
-        return dato ? `${dato} · ${belop}` : belop;
-      })(),
+      ...byggKvitteringLinje(f),
     })),
     flagg: {
       ok: sp.ok === "1",

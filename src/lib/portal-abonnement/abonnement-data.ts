@@ -9,6 +9,7 @@
  */
 
 import { prisma } from "@/lib/prisma";
+import { KVITTERING_STATUSER } from "./kvittering";
 
 export type FakturaType = "BOOKING" | "SUBSCRIPTION" | "INVOICE" | "OTHER";
 
@@ -16,6 +17,12 @@ export type FakturaRad = {
   id: string;
   paidAt: Date | null;
   amountOre: number;
+  /** Beløp tilbakeført til kortet. 0 = ingen refusjon. */
+  amountRefundedOre: number;
+  /** Valutaen betalingen faktisk ble gjort i — aldri antatt å være kroner. */
+  currency: string | null;
+  /** SUCCEEDED | REFUNDED | PARTIALLY_REFUNDED. */
+  status: string | null;
   type: FakturaType;
   stripeInvoiceId: string | null;
   description: string | null;
@@ -70,13 +77,20 @@ export async function getAbonnementData(
       },
     }),
     prisma.payment.findMany({
-      where: { userId, status: "SUCCEEDED" },
+      // Refunderte betalinger har skjedd på kortet og skal ikke forsvinne fra
+      // kvitteringslista. Fram til 21.09.2026 filtrerte denne på SUCCEEDED
+      // alene, så både REFUNDED og PARTIALLY_REFUNDED ble usynlige for
+      // spilleren — mens forelderportalen hele tiden har vist dem.
+      where: { userId, status: { in: [...KVITTERING_STATUSER] } },
       orderBy: { paidAt: "desc" },
       take: 12,
       select: {
         id: true,
         paidAt: true,
         amountOre: true,
+        amountRefundedOre: true,
+        currency: true,
+        status: true,
         type: true,
         stripeInvoiceId: true,
         description: true,
