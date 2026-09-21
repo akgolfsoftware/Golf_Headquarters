@@ -1,13 +1,13 @@
 "use client";
 
 /**
- * PlayerHQ Runder — Train-lock-porten.
- * Fasit: designsystem/train-lock/PH-11 Analyse runder.dc.html
- * Avvik:
- *   - Bestilt manuell SG har en tydelig lenke til eksisterende rundeskjema.
- * H1 «Runder» 34/700 + mute sub «N runder i måned · snitt X», liste-rader
- * (bane / dato · hull — score + til par / SG — chevron). Live-føring består
- * som skjermens ene hvite CTA under listen.
+ * PlayerHQ Runder (PH-07) — liste over de 50 siste rundene.
+ *
+ * Sannhetsregler, se `lib/portal-runder/runde-omfang.ts`:
+ *   - Mot par vises bare når runden har scorekort. Ellers «—».
+ *   - Brutto er summen av spilte hull. Ni hull måles mot par 36, ikke 72.
+ *   - Bruttosnittet i undertittelen gjelder 18-hullsrunder alene.
+ *   - SG vises bare med kjent metode, og estimat merkes som estimat.
  */
 
 import Link from "next/link";
@@ -41,19 +41,21 @@ const MND_LANG = [
 ];
 const UKEDAG = ["Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag"];
 
-/** PH-11-sub på rad: «Søndag 17.08 · 18 hull». */
-function radSub(d: Date, hull?: number | null): string {
+/** Sub på rad: «Søndag 17.08 · 18 hull», eller «· hull ikke ført» når scorekortet mangler. */
+function radSub(d: Date, hull: number | null): string {
   const dd = String(d.getDate()).padStart(2, "0");
   const mm = String(d.getMonth() + 1).padStart(2, "0");
-  return `${UKEDAG[d.getDay()]} ${dd}.${mm}${hull ? ` · ${hull} hull` : ""}`;
+  const hullTekst = hull == null ? "hull ikke ført" : `${hull} hull`;
+  return `${UKEDAG[d.getDay()]} ${dd}.${mm} · ${hullTekst}`;
 }
 
 function komma(n: number, desimaler = 1): string {
   return n.toFixed(desimaler).replace(".", ",");
 }
 
-/** Score til par: 0 → «E», ellers signert (+3 / −2 med U+2212). */
-function tilParTxt(v: number): string {
+/** Score til par: ukjent → «—», 0 → «E», ellers signert (+3 / −2 med U+2212). */
+function tilParTxt(v: number | null): string {
+  if (v == null) return "—";
   if (v === 0) return "E";
   return v > 0 ? `+${v}` : `−${Math.abs(v)}`;
 }
@@ -74,7 +76,7 @@ export function RunderV2({ data }: { data: RunderV2Data }) {
     ? null
     : [
         iMnd > 0 ? `${iMnd} runde${iMnd === 1 ? "" : "r"} i ${MND_LANG[naa.getMonth()]}` : `${kpis.total} runder`,
-        kpis.snittScore != null ? `snitt ${komma(kpis.snittScore)}` : null,
+        kpis.snitt18 != null ? `snitt ${komma(kpis.snitt18.snitt)} over 18 hull` : null,
       ]
         .filter(Boolean)
         .join(" · ");
@@ -141,7 +143,7 @@ export function RunderV2({ data }: { data: RunderV2Data }) {
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 15, fontWeight: 600, color: TL.text }}>{r.courseName}</div>
                 <div style={{ marginTop: 2, fontSize: 13, fontWeight: 400, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
-                  {radSub(r.playedAt)}
+                  {radSub(r.playedAt, r.antallSpilteHull)}
                 </div>
               </div>
               <div style={{ textAlign: "right", flex: "none" }}>
@@ -149,7 +151,18 @@ export function RunderV2({ data }: { data: RunderV2Data }) {
                   {r.score} <span style={{ color: TL.mute }}>{tilParTxt(r.vsPar)}</span>
                 </div>
                 <div style={{ marginTop: 2, fontSize: 13, fontWeight: 400, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
-                  SG {r.sgTotal == null ? "–" : fmtSg(r.sgTotal)}
+                  {r.sg.vis ? (
+                    <>
+                      SG {fmtSg(r.sg.verdi)}
+                      {r.sg.erEstimat && (
+                        <span style={{ marginLeft: 4, fontVariantNumeric: "normal" }} title={r.sg.forklaring}>
+                          (estimat)
+                        </span>
+                      )}
+                    </>
+                  ) : (
+                    "SG —"
+                  )}
                 </div>
               </div>
               <ChevronRight size={16} strokeWidth={2} style={{ color: TL.mute, flex: "none" }} />

@@ -8,10 +8,6 @@ import { prisma } from "@/lib/prisma";
 import { sikreBaneBro } from "@/lib/portal/bane-bro";
 import { parTemplate } from "@/lib/portal-runder/par-template";
 import { synkroniserSgFraRunder } from "@/lib/portal-stats/sg-bro";
-import { estimerHullFraTotal } from "@/lib/runde-logg/estimer-fra-total";
-import { beregnSg } from "@/lib/domain/sg";
-import { beregnGranulaerSg } from "@/lib/runde-logg/granulaer-sg";
-import { rundeTilSgShots } from "@/lib/runde-logg/til-sg-shots";
 import { hentManuelleSgFelt, validerManuellSg, SG_ALLE_FELT, type ManuellSgInput } from "@/lib/portal-runder/manuell-sg";
 
 /**
@@ -145,46 +141,18 @@ export async function logRoundManual(input: LogRoundManualInput) {
       ? holeScores.reduce((sum, h) => sum + h.strokes, 0)
       : input.score;
 
-  // «Bare totalen» (RU-04): ingen hull-detaljer, ingen legacy holeScores, og
-  // ingen håndtastet SG — eneste vei til ET SG-tall er å fordele totalen over
-  // en syntetisk 18-hulls kjede (samme motor som hurtigmodusen i live-føringen,
-  // se estimer-fra-total.ts) og merke resultatet "estimert", ALDRI "beregnet".
-  // Den syntetiske kjeden brukes KUN til å regne SG — ingen HoleScore-rader
-  // skrives fra den (holeScores forblir tom, som før): per-hull strokes/putt
-  // her er oppdiktet fordeling, ikke noe spilleren faktisk førte, og PH-12
-  // (urørt av denne loopen) har ingen EST-merking å vise dem med.
-  let sgEstimat: ReturnType<typeof beregnSg> | null = null;
-  let granulaerEstimat: ReturnType<typeof beregnGranulaerSg> | null = null;
-  if (holeScores.length === 0 && !sg.harTall) {
-    try {
-      const syntetiskHull = estimerHullFraTotal({
-        score: input.score,
-        putts: input.putts ?? null,
-        coursePar: course.par,
-      });
-      const sgShots = rundeTilSgShots(syntetiskHull);
-      sgEstimat = beregnSg(sgShots);
-      granulaerEstimat = beregnGranulaerSg(syntetiskHull, sgShots);
-    } catch {
-      // Ugyldig input for syntetisering (f.eks. urealistisk score) — lagre
-      // uten SG heller enn å kaste og miste hele registreringen.
-      sgEstimat = null;
-      granulaerEstimat = null;
-    }
-  }
-
-  const sgTotal = sg.harTall ? sg.verdier.sgTotal : sgEstimat?.total ?? null;
-  const sgSource: "manual" | "estimert" | null =
-    sg.harTall ? "manual" : sgEstimat != null ? "estimert" : null;
-  const sgData = sg.harTall ? sg.verdier : {
-    ...sg.verdier,
-    sgOtt: sgEstimat?.ott ?? null,
-    sgApp: sgEstimat?.app ?? null,
-    sgArg: sgEstimat?.arg ?? null,
-    sgPutt: sgEstimat?.putt ?? null,
-    ...granulaerEstimat,
-    sgTotal,
-  };
+  // «Bare totalen»: ingen hull-detaljer og ingen håndtastet SG gir INGEN SG.
+  //
+  // Fram til 21.09.2026 fordelte koden her totalscoren over en syntetisk
+  // 18-hulls kjede og lagret resultatet som sgSource "estimert". Det er to
+  // påstander appen ikke kan stå inne for: at runden var 18 hull, og at
+  // slagene fordelte seg slik. En nihullsrunde fikk et attenhulls SG-tall.
+  // Designkontrollen slo fast at en totalrunde uten scorekort skal vise SG
+  // som «—» (funn PH-07: «ikke fabriker hull eller SG»), så tallet skrives
+  // ikke lenger. Eldre rader med sgSource "estimert" beholdes urørt og
+  // merkes som estimat ved visning — se lib/portal-runder/runde-omfang.ts.
+  const sgSource: "manual" | null = sg.harTall ? "manual" : null;
+  const sgData = sg.verdier;
   const requestRoundId = base.data.requestId ? `manual-${user.id}-${base.data.requestId}` : undefined;
   const data = {
     userId: user.id, courseId: base.data.courseId,

@@ -9,6 +9,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { SG_ALLE_FELT, type ManuellSgVerdier } from "@/lib/portal-runder/manuell-sg";
+import { utledRundeOmfang, sgVisning } from "@/lib/portal-runder/runde-omfang";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { RundeDetaljV2, type RundeDetaljData } from "@/components/portal/v2/RundeDetaljV2";
 
@@ -58,13 +59,12 @@ export default async function RundeDetaljPage({
     .sort(([a], [b]) => a - b)
     .map(([nr, h]) => ({ nr, par: h.par, score: h.score, sg: null }));
 
-  // Delvis runde (færre hull på scorekortet): mål mot par for de SPILTE
-  // hullene — «8 slag mot par 72» ville vært løgn for en 2-hulls runde.
-  const antallSpilteHull = runde.holeScores.length > 0 ? runde.holeScores.length : 18;
-  const par =
-    runde.holeScores.length > 0
-      ? runde.holeScores.reduce((sum, h) => sum + h.par, 0)
-      : runde.course.par;
+  // Par og mot par kommer fra scorekortet. Uten scorekort vet vi ikke om
+  // runden var ni eller atten hull, og da er begge deler ukjent — å anta 18
+  // hull og banens totalpar gjorde en nihullsrunde til «−30 mot par 72».
+  // Felles regel: lib/portal-runder/runde-omfang.ts.
+  const omfang = utledRundeOmfang(runde.holeScores, runde.score);
+  const sg = sgVisning(runde.sgTotal, runde.sgSource);
 
   // Kjede-status for SG: per scoret hull — er slag-kjeden komplett?
   // (samme regel som shots-til-sg: slag + straffer == strokes, alle avstander satt)
@@ -140,10 +140,10 @@ export default async function RundeDetaljPage({
       month: "long",
       year: "numeric",
     }),
-    score: runde.score,
-    par,
-    antallSpilteHull,
-    sgTotal: runde.sgTotal,
+    score: omfang.brutto,
+    par: omfang.par,
+    antallSpilteHull: omfang.antallSpilteHull,
+    sg,
     sgKategorier,
     sgSource: runde.sgSource,
     manuellSg: Object.fromEntries(SG_ALLE_FELT.map(({ key }) => [key, runde[key]])) as ManuellSgVerdier,

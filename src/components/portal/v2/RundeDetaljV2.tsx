@@ -12,6 +12,7 @@ import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import { ManuellSgRedigering } from "@/components/portal/runde-ny/manuell-sg-redigering";
 import { SG_DETALJGRUPPER, type ManuellSgVerdier } from "@/lib/portal-runder/manuell-sg";
+import type { SgVisning } from "@/lib/portal-runder/runde-omfang";
 import { UpGameImportModal } from "@/app/portal/mal/runder/[id]/upgame-import-modal";
 import { Kort, Rad, StatusPill, MikroMeta, TomTilstand, KpiFlis, SgKategorier, HjelpTips, type ScorekortHull, type SgKategori } from "@/components/v2";
 /* ── Data-kontrakt ─────────────────────────────────────────────────── */
@@ -53,11 +54,14 @@ export type RundeDetaljData = {
   nettoppLagret?: boolean;
   baneNavn: string;
   datoTekst: string;
+  /** Brutto: summen av spilte hull når scorekortet finnes. */
   score: number;
-  /** Sum av par for spilte hull (delvis runde) — ikke alltid banens fulle par. */
-  par: number;
-  antallSpilteHull: number;
-  sgTotal: number | null;
+  /** Sum av par for spilte hull. null = ukjent (ingen scorekort) → «—». */
+  par: number | null;
+  /** null = ukjent rundelengde. */
+  antallSpilteHull: number | null;
+  /** SG med metode, eller skjult når metoden mangler. */
+  sg: SgVisning;
   /** Kun kategorier med registrert SG (null-verdier er filtrert bort på serveren). */
   sgKategorier: SgKategori[];
   /** "beregnet" = fra slag-kjeden, "manual" = håndtastet, "estimert" = fra score. */
@@ -77,8 +81,9 @@ export type RundeDetaljData = {
 
 /* ── Rene hjelpere ─────────────────────────────────────────────────── */
 
-/** Kort par-differanse med retning: «+2», «−1», «E». */
-function tilKortParTekst(diff: number): string {
+/** Kort par-differanse med retning: «+2», «−1», «E». Ukjent par → «—». */
+function tilKortParTekst(diff: number | null): string {
+  if (diff == null) return "—";
   if (diff === 0) return "E";
   return diff > 0 ? `+${diff}` : `−${Math.abs(diff)}`;
 }
@@ -124,9 +129,10 @@ function BucketKort({
 /* ── Skjermen ──────────────────────────────────────────────────────── */
 
 export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
-  const diff = data.score - data.par;
+  // Uten scorekort er par ukjent, og da er mot par ukjent — ikke 0.
+  const diff = data.par == null ? null : data.score - data.par;
   const harHull = data.hull.length > 0;
-  const sgTotalTekst = sgTekst(data.sgTotal);
+  const sgTotalTekst = data.sg.vis ? sgTekst(data.sg.verdi) : "—";
 
   const g = data.granulaerSg;
   const detaljVerdier = data.manuellSg ?? Object.fromEntries(Object.entries(g).map(([key, value]) =>
@@ -166,13 +172,18 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
           }}
         >
           {data.datoTekst}
-          {data.antallSpilteHull > 0 ? ` · ${data.antallSpilteHull} hull` : ""} · {data.score} slag ({tilKortParTekst(diff)})
+          {data.antallSpilteHull != null ? ` · ${data.antallSpilteHull} hull` : " · hull ikke ført"} · {data.score} slag ({tilKortParTekst(diff)})
         </div>
       </div>
       <div className="grid grid-cols-3" style={{ gap: 8 }}>
         <KpiFlis label="Score (brutto)" value={String(data.score)} instant />
         <KpiFlis label="Mot par" value={tilKortParTekst(diff)} instant />
-        <KpiFlis label="SG totalt" value={sgTotalTekst} hjelp="sgTotal" instant />
+        <KpiFlis
+          label={data.sg.vis && data.sg.erEstimat ? "SG totalt (estimat)" : "SG totalt"}
+          value={sgTotalTekst}
+          hjelp="sgTotal"
+          instant
+        />
       </div>
 
       {/* GO V2: rett etter lagring er dette en KVITTERING, ikke en handlings-meny.
@@ -185,15 +196,12 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
             <p style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text, margin: 0 }}>
               Runden er lagret
             </p>
-            {data.sgSource === "manual" ? <StatusPill tone="up">SG registrert</StatusPill>
-              : data.sgTotal != null && <StatusPill tone="up">{data.sgSource === "estimert" ? "SG estimert" : "SG klar"}</StatusPill>}
+            {data.sg.vis && <StatusPill tone="up">{data.sg.etikett}</StatusPill>}
           </div>
           <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, margin: "6px 0 0" }}>
-            {data.sgSource === "manual"
-              ? "SG-tallene dine er lagret. Du kan legge til eller endre tallene under."
-              : data.sgTotal != null
-                ? "Strokes Gained er klar — se tallene under."
-              : "Mangler hull-score for full Strokes Gained. Neste steg står rett under."}
+            {data.sg.vis
+              ? data.sg.forklaring
+              : "Runden har ingen Strokes Gained ennå. Før hull for hull, eller registrer tallene manuelt — neste steg står rett under."}
           </p>
         </Kort>
       )}
@@ -222,13 +230,20 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
         </Link>
       )}
 
-      {data.sgSource === "manual" && (
+      {/* Metoden bak SG-tallet sies alltid — et tall uten kilde er ikke en måling. */}
+      {data.sg.vis && (
         <p style={{ fontFamily: TL.font.sans, color: TL.mute, fontSize: 14, lineHeight: 1.5, margin: 0 }}>
-          Manuelt registrert SG. Tomme felt betyr at verdien ikke er registrert.
+          <strong style={{ fontWeight: 600, color: TL.text }}>{data.sg.etikett}.</strong>{" "}
+          {data.sg.forklaring}
+          {data.sg.metode === "manual" && " Tomme felt betyr at verdien ikke er registrert."}
         </p>
       )}
-      {data.sgSource === "estimert" && (
-        <p style={{ fontFamily: TL.font.sans, color: TL.mute, fontSize: 14, lineHeight: 1.5, margin: 0 }}>SG er estimert fra score, ikke beregnet fra faktiske slag.</p>
+      {/* Et komplett hullkort er ikke i seg selv et SG-tall. */}
+      {!data.sg.vis && harHull && (
+        <p style={{ fontFamily: TL.font.sans, color: TL.mute, fontSize: 14, lineHeight: 1.5, margin: 0 }}>
+          Scorekortet er ført, men Strokes Gained krever i tillegg avstand per slag eller
+          manuelt registrerte SG-tall. Uten det vises SG som «—».
+        </p>
       )}
       {data.erEier && data.manuellSg && (
         <ManuellSgRedigering roundId={data.id} verdier={data.manuellSg} kilde={data.sgSource} />
@@ -305,7 +320,7 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
                 <tfoot>
                   <tr>
                     <td style={{ padding: "8px 4px 0", fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>Sum</td>
-                    <td style={{ padding: "8px 4px 0", textAlign: "right", fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>{data.par}</td>
+                    <td style={{ padding: "8px 4px 0", textAlign: "right", fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>{data.par ?? "—"}</td>
                     <td style={{ padding: "8px 4px 0", textAlign: "right", fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>{data.score}</td>
                     <td
                       style={{
@@ -313,7 +328,7 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
                         textAlign: "right",
                         fontFamily: TL.font.mono,
                         fontSize: 11,
-                        color: diff > 0 ? TL.danger : diff < 0 ? TL.ok : TL.mute,
+                        color: diff == null ? TL.mute : diff > 0 ? TL.danger : diff < 0 ? TL.ok : TL.mute,
                       }}
                     >
                       {tilKortParTekst(diff)}
