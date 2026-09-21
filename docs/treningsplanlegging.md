@@ -681,8 +681,13 @@ konkurranse som Press og Treningsmåte (kapittel 15).
 `INNSPILL_150` «150–200 m», `INNSPILL_100` «100–150 m», `INNSPILL_50` «50–100 m». Ingen
 datamigrering.
 
-**Hastighet i prosent.** Lagres som valgfritt tall (25, 50, 75 eller 100) sammen med
-læringssteget. Se `HASTIGHET_PROSENT` i `src/lib/domain/ak-formel-v2.ts`.
+**Hastighet i prosent.** Lagres som `detaljer.hastighetProsent` (25, 50, 75 eller 100) på
+øvelsens `akFormel`, uten databaseendring. Se `HASTIGHET_PROSENT` i
+`src/lib/domain/ak-formel-v2.ts` og `src/lib/domain/workbench/ovelse-detaljer.ts`, som også eier
+sted, måleutstyr, treningsmåte, mengde og målfelt.
+
+**Stavemåte i koden.** Workbench skriver miljøverdien `TRENINGSOMRADE` (én A), mens
+AK-formelen skriver `TRENINGSOMRAADE`. Skjemaet skriver Workbench-varianten.
 
 **AK-formelen:** `PYRAMIDE_OMRÅDE_MOTORIKK_BELASTNING_PRESS`. Den merker den enkelte øvelsen
 eller testen. Databasen beholder de finkornede enum-verdiene; `ak-formel-v2.ts` er broen.
@@ -695,4 +700,6 @@ eller testen. Databasen beholder de finkornede enum-verdiene; `ak-formel-v2.ts` 
 | Hvilke TrackMan-parametere som foreslås per teknisk fokus | Ikke avklart |
 | Om intensitet i Fysisk angis med sone, RPE, puls eller flere | Ikke avklart |
 | Om flere tekniske fokus per øvelse skal tillates | Nei i dag: maksimalt ett |
-| Bygging av øvelsesskjemaet for kapittel 12–17 | Se gjennomføringsplanen |
+| Øvelsesskjemaet for kapittel 9–17 | Bygget i Workbench Økt (`OvelseSkjema.tsx`). Ikke vist til Anders ennå; mangler skjermbilde på 390 px og desktop |
+| Redigering av eksisterende øvelse med de nye feltene | Ikke bygget: skjemaet legger til nye øvelser |
+| Kondisjon: intensitetssone og segmenter | Ikke bygget, venter på avklaring av sone, RPE eller puls |

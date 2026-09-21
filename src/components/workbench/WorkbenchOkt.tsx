@@ -7,7 +7,8 @@ import { toast } from "sonner";
 
 import { AREA_LABEL, formatMinutes, formatTime, STATUS_LABEL, UI } from "@/lib/domain/workbench/labels";
 import { isoWeekNumber } from "@/lib/domain/workbench/operations";
-import type { Drill, PlanningGoalSummary, SourceItem, TrainingArea, WeekViewModel, WorkbenchSession } from "@/lib/domain/workbench/types";
+import type { Drill, PlanningGoalSummary, SourceItem, WeekViewModel, WorkbenchSession } from "@/lib/domain/workbench/types";
+import type { OvelseInput } from "@/lib/domain/workbench/ovelse-utkast";
 import {
   addDrill,
   loadWeek,
@@ -18,6 +19,15 @@ import {
   unpublishSession,
 } from "@/lib/workbench/wb-actions";
 import { workbenchUrl } from "@/lib/workbench/visning-url";
+import { DIMENSJON_LABEL, SAND_TRINN_LABEL } from "@/lib/domain/ak-formel-v2";
+import {
+  hastighetTekst,
+  MAALEUTSTYR_LABEL,
+  mengdeTekst,
+  stedTekst,
+  TRENINGSMAATE_LABEL,
+} from "@/lib/domain/workbench/ovelse-detaljer";
+import { OvelseSkjema } from "./OvelseSkjema";
 import { SourcesPanel } from "./SourcesPanel";
 import { VisningPiller } from "./VisningPiller";
 
@@ -76,8 +86,30 @@ function ovelseStart(session: WorkbenchSession, index: number): number {
   return session.startMinute + session.drills.slice(0, index).reduce((sum, drill) => sum + drill.durationMinutes, 0);
 }
 
+function detaljRader(drill: Drill | undefined) {
+  const d = drill?.akFormel.detaljer;
+  if (!d) return [];
+  const rader: Array<{ label: string; hint: string; value: string | undefined }> = [
+    { label: "Sted", hint: "Hvor øvelsen gjennomføres", value: stedTekst(d.sted) },
+    { label: "Måleutstyr", hint: "Hvordan øvelsen måles", value: d.maaleutstyr ? MAALEUTSTYR_LABEL[d.maaleutstyr] : undefined },
+    { label: "Hastighet", hint: "Prosent av spillerens Club Speed", value: hastighetTekst(d.hastighetProsent) },
+    { label: "Teknisk fokus", hint: "Ett fokus per øvelse", value: d.tekniskFokus ? DIMENSJON_LABEL[d.tekniskFokus] : undefined },
+    { label: "Sandtrinn", hint: "Bare bunker", value: d.sandTrinn ? SAND_TRINN_LABEL[d.sandTrinn] : undefined },
+    { label: "Treningsmåte", hint: "Hvordan spilleren skal trene", value: d.treningsmaate ? TRENINGSMAATE_LABEL[d.treningsmaate] : undefined },
+    { label: "Mengde", hint: "Hvor mye som skal gjøres", value: mengdeTekst(d.mengde) },
+    { label: "Målemetode", hint: "Hvordan målet måles", value: d.mal?.malemetode },
+    { label: "Resultatkrav", hint: "Hva som må til for å nå målet", value: d.mal?.resultatkrav },
+    { label: "Notat", hint: "Fritekst", value: d.mal?.notat },
+  ];
+  return rader.filter((r): r is { label: string; hint: string; value: string } => r.value !== undefined);
+}
+
 function formel(session: WorkbenchSession, drill: Drill | undefined) {
   const f = drill?.akFormel ?? session.drills[0]?.akFormel;
+  return [...formelGrunn(session, drill, f), ...detaljRader(drill)];
+}
+
+function formelGrunn(session: WorkbenchSession, drill: Drill | undefined, f: Drill["akFormel"] | undefined) {
   return [
     { label: UI.pyramid, hint: UI.formelHintPyramide, value: f?.pyramid ?? session.pyramid },
     { label: UI.drillArea, hint: UI.formelHintOmrade, value: f ? AREA_LABEL[f.area] : session.skillArea ?? "—" },
@@ -205,7 +237,7 @@ export function WorkbenchOkt({ playerId, spillerNavn, uke, selectedSessionId, ki
       </main>
 
       <aside className="wb-inspector">
-        {session ? <SessionEditor session={session} drill={selectedDrill} drillIndex={selectedDrillIndex} travel={travel} formula={formula} onMove={(date, startMinute, durationMinutes) => run(() => moveSession({ sessionId: session.id, newDate: date, newStartMinute: startMinute, newDurationMinutes: durationMinutes }), () => toast.success(UI.toastSessionMoved))} onAdd={(title, durationMinutes, description, techniqueFocus, area) => run(() => addDrill({ sessionId: session.id, drill: { title, durationMinutes, description: description || undefined, techniqueFocus: techniqueFocus || undefined, akFormel: { pyramid: session.pyramid, area, label: `${session.pyramid} · ${AREA_LABEL[area]}` } } }), () => toast.success(UI.toastDrillAdded))} onReorder={(direction) => { if (!selectedDrill || selectedDrillIndex < 0) return; const nextIndex = selectedDrillIndex + direction; if (nextIndex < 0 || nextIndex >= session.drills.length) return; const ids = session.drills.map((item) => item.id); [ids[selectedDrillIndex], ids[nextIndex]] = [ids[nextIndex], ids[selectedDrillIndex]]; run(() => reorderDrills({ sessionId: session.id, orderedDrillIds: ids }), () => {}); }} onRemove={() => { if (!selectedDrill) return; run(() => removeDrill({ sessionId: session.id, drillId: selectedDrill.id }), () => { setDrillId(""); toast.success(UI.toastDrillRemoved); }); }} /> : <p className="wb-empty">Velg eller opprett en økt i ukevisningen.</p>}
+        {session ? <SessionEditor session={session} drill={selectedDrill} drillIndex={selectedDrillIndex} travel={travel} formula={formula} onMove={(date, startMinute, durationMinutes) => run(() => moveSession({ sessionId: session.id, newDate: date, newStartMinute: startMinute, newDurationMinutes: durationMinutes }), () => toast.success(UI.toastSessionMoved))} onAdd={(ovelse) => run(() => addDrill({ sessionId: session.id, drill: ovelse }), () => toast.success(UI.toastDrillAdded))} onReorder={(direction) => { if (!selectedDrill || selectedDrillIndex < 0) return; const nextIndex = selectedDrillIndex + direction; if (nextIndex < 0 || nextIndex >= session.drills.length) return; const ids = session.drills.map((item) => item.id); [ids[selectedDrillIndex], ids[nextIndex]] = [ids[nextIndex], ids[selectedDrillIndex]]; run(() => reorderDrills({ sessionId: session.id, orderedDrillIds: ids }), () => {}); }} onRemove={() => { if (!selectedDrill) return; run(() => removeDrill({ sessionId: session.id, drillId: selectedDrill.id }), () => { setDrillId(""); toast.success(UI.toastDrillRemoved); }); }} /> : <p className="wb-empty">Velg eller opprett en økt i ukevisningen.</p>}
       </aside>
 
       {session ? <aside className="wb-mobile-summary wb-session-mobile" aria-label="Valgt øvelse"><div className="wb-grip" aria-hidden /><span className="wb-kicker">{selectedDrill ? `Øvelse ${selectedDrillIndex + 1} av ${session.drills.length}` : "Valgt økt"}</span><h2>{selectedDrill?.title ?? session.title}</h2><p>{selectedDrill ? `${formatTime(ovelseStart(session, selectedDrillIndex))} · ${formatMinutes(selectedDrill.durationMinutes)}` : formatMinutes(session.durationMinutes)}</p><dl>{formula.map((item) => <div key={item.label}><dt>{item.label}</dt><dd>{item.value}</dd></div>)}</dl><div className="wb-mobile-actions"><Link className="wb-quiet wb-inline-link" href={workbenchUrl(playerId, "uke", { uke: week.weekStart })}>{UI.openWeek}</Link>{session.status === "DRAFT" ? <button type="button" className="wb-publish" disabled={travel} onClick={() => run(() => publishSessions([session.id]), () => toast.success(UI.publishSuccess))}>Publiser økt</button> : null}</div></aside> : null}
@@ -220,18 +252,13 @@ function SessionEditor({ session, drill, drillIndex, travel, formula, onMove, on
   travel: boolean;
   formula: Array<{ label: string; hint: string; value: string }>;
   onMove: (date: string, startMinute: number, durationMinutes: number) => void;
-  onAdd: (title: string, durationMinutes: number, description: string, techniqueFocus: string, area: TrainingArea) => void;
+  onAdd: (ovelse: OvelseInput) => void;
   onReorder: (direction: -1 | 1) => void;
   onRemove: () => void;
 }) {
   const [date, setDate] = useState(session.date);
   const [start, setStart] = useState(formatTime(session.startMinute));
   const [duration, setDuration] = useState(session.durationMinutes);
-  const [title, setTitle] = useState("");
-  const [drillDuration, setDrillDuration] = useState(15);
-  const [description, setDescription] = useState("");
-  const [techniqueFocus, setTechniqueFocus] = useState("");
-  const [area, setArea] = useState<TrainingArea>(drill?.akFormel.area ?? session.drills[0]?.akFormel.area ?? "BANE");
   const [hours, minutes] = start.split(":").map(Number);
   const changed = date !== session.date || hours * 60 + minutes !== session.startMinute || duration !== session.durationMinutes;
 
@@ -249,13 +276,6 @@ function SessionEditor({ session, drill, drillIndex, travel, formula, onMove, on
       <button type="button" className="wb-quiet" disabled={travel || !changed || !Number.isFinite(hours) || !Number.isFinite(minutes)} onClick={() => onMove(date, hours * 60 + minutes, duration)}>{UI.save}</button>
     </details>
 
-    <details className="wb-session-edit">
-      <summary>{UI.addDrill}</summary>
-      <label>{UI.drillTitle}<input value={title} onChange={(event) => setTitle(event.target.value)} placeholder={UI.drillTitlePlaceholder} /></label>
-      <div><label>{UI.drillArea}<select value={area} onChange={(event) => setArea(event.target.value as TrainingArea)}>{Object.entries(AREA_LABEL).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label><label>{UI.drillDuration}<input type="number" min={1} max={600} value={drillDuration} onChange={(event) => setDrillDuration(Number(event.target.value))} /></label></div>
-      <label>{UI.formelMate}<input value={description} onChange={(event) => setDescription(event.target.value)} placeholder="Hvordan øvelsen gjennomføres" /></label>
-      <label>{UI.formelMal}<input value={techniqueFocus} onChange={(event) => setTechniqueFocus(event.target.value)} placeholder="Hva øvelsen skal flytte" /></label>
-      <button type="button" className="wb-quiet" disabled={travel || !title.trim() || !Number.isFinite(drillDuration)} onClick={() => { onAdd(title.trim(), drillDuration, description.trim(), techniqueFocus.trim(), area); setTitle(""); setDescription(""); setTechniqueFocus(""); }}>{UI.addDrill}</button>
-    </details>
+    <OvelseSkjema standardPyramide={session.pyramid} disabled={travel} onSubmit={onAdd} />
   </div>;
 }

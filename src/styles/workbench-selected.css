@@ -528,3 +528,5 @@
   .wb-min-calendar .wb-calendar-day .wb-day-heading { display: flex; height: 44px; }
   .wb-min-mobile { position: static; width: auto; height: auto; margin: 0 14px 14px; padding: 14px; box-shadow: none; }
 }
+.wb-ovelse .wb-kicker { display: block; margin: 14px 0 2px; }
+.wb-ovelse-feil { margin: 8px 0; color: var(--wb-ink); font-size: 12px; }
