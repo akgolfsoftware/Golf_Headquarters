@@ -40,10 +40,15 @@ export interface StatistikkMetrikkV2Data {
   deltaLabel: string | null;
   deltaDir: "up" | "down";
   deltaSub: string; // "vs forrige 30 d" / "ny baseline — første 30 d med data"
-  /** vs kategori-snitt (A1-referanse, statisk proxy til ekte benchmark finnes). */
+  /**
+   * Avvik mot en referanse med kjent kilde, eller «—» når ingen slik finnes.
+   * `harReferanse: false` betyr at disiplinen mangler en referanse vi kan stå
+   * inne for — da vises ingen grønn/rød vurdering, bare forklaringen.
+   */
   benchmarkDiffLabel: string;
   benchmarkPositiv: boolean;
-  benchmarkSnittLabel: string; // "Snitt A1 = 12,0 t (referanse)"
+  benchmarkSnittLabel: string;
+  harReferanse: boolean;
   /** Tredje flis: Total tid 90 d (pyramid) eller Beste 90 d (SG). */
   tredjeLabel: string;
   tredjeVerdi: string;
@@ -117,11 +122,20 @@ export function StatistikkMetrikkV2({ data }: { data: StatistikkMetrikkV2Data })
             </Kort>
             <Kort>
               <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
-                <Caps size={9}>Mot kategori-snitt</Caps>
+                <Caps size={9}>{data.harReferanse ? "Mot referanse" : "Referanse"}</Caps>
                 <HjelpTips k="kategoriSnitt" size={11} />
               </span>
               <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: 12 }}>
-                <span style={{ fontFamily: TL.font.mono, fontSize: 30, fontWeight: 700, color: data.benchmarkPositiv ? TL.ok : TL.danger, fontVariantNumeric: "tabular-nums" }}>
+                <span
+                  style={{
+                    fontFamily: TL.font.mono,
+                    fontSize: 30,
+                    fontWeight: 700,
+                    // Uten referanse finnes ingen vurdering å farge — «—» er nøytral.
+                    color: !data.harReferanse ? TL.mute : data.benchmarkPositiv ? TL.ok : TL.danger,
+                    fontVariantNumeric: "tabular-nums",
+                  }}
+                >
                   {data.benchmarkDiffLabel}
                 </span>
               </div>

@@ -8,6 +8,11 @@
  * `src/lib/trackman/dispersion-map.ts` (computeTrackManDispersionMap).
  *
  * Fasit: designsystem/train-lock/TM-07 Hullkart komponenter.dc.html
+ * Avvik:
+ *   - PH-08-kontroll 21.09.2026: bøttelinja sier nå «% av slagene innenfor 1σ»
+ *     i stedet for «% innenfor 1σ». Tallene er målte andeler av denne øktas
+ *     slag, ikke konfidensnivået til ellipsen, og ordlyden skal ikke kunne
+ *     leses som en garanti.
  * Fasit: designsystem/train-lock/TM-08 Okt med hullkart.dc.html
  * Fasit: designsystem/train-lock/HANDOFF.md §LANSERINGSKJERNE (TM-11) +
  * §TRACKMAN (TM-00 TmDispersionPlot) + TM-08f (slag-ark fra prikk).

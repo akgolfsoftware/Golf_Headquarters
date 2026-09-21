@@ -35,8 +35,17 @@ type MetricInfo = {
   yMax: number;
   /** Format-funksjon for verdier. */
   format: (n: number) => string;
-  /** Benchmark-snitt for kategori A1 (proxy). */
-  benchmark: number;
+  /**
+   * Referanseverdi å måle spilleren mot — KUN når den har en kilde vi kan
+   * oppgi. null = ingen referanse, og da vises ingen sammenligning.
+   *
+   * Fram til 21.09.2026 sto det her fem hardkodede timetall (12/22/18/14/8)
+   * som ble presentert til spilleren som «Snitt A1 = 12,0 t (referanse)» med
+   * signert grønt/rødt avvik. Tallene hadde ingen kilde og ingen måling bak
+   * seg. TruthLayer-regelen er at alt appen påstår om en spiller skal kunne
+   * spores til en måling med dato og kilde, så de er fjernet framfor å pyntes.
+   */
+  referanse: { verdi: number; forklaring: string } | null;
 };
 
 const METRICS: Record<string, MetricInfo> = {
@@ -51,7 +60,7 @@ const METRICS: Record<string, MetricInfo> = {
     yMin: 0,
     yMax: 25,
     format: (n) => `${n.toFixed(1).replace(".", ",")} t`,
-    benchmark: 12,
+    referanse: null,
   },
   tek: {
     slug: "tek",
@@ -63,7 +72,7 @@ const METRICS: Record<string, MetricInfo> = {
     yMin: 0,
     yMax: 40,
     format: (n) => `${n.toFixed(1).replace(".", ",")} t`,
-    benchmark: 22,
+    referanse: null,
   },
   slag: {
     slug: "slag",
@@ -75,7 +84,7 @@ const METRICS: Record<string, MetricInfo> = {
     yMin: 0,
     yMax: 40,
     format: (n) => `${n.toFixed(1).replace(".", ",")} t`,
-    benchmark: 18,
+    referanse: null,
   },
   spill: {
     slug: "spill",
@@ -87,7 +96,7 @@ const METRICS: Record<string, MetricInfo> = {
     yMin: 0,
     yMax: 25,
     format: (n) => `${n.toFixed(1).replace(".", ",")} t`,
-    benchmark: 14,
+    referanse: null,
   },
   turn: {
     slug: "turn",
@@ -99,7 +108,7 @@ const METRICS: Record<string, MetricInfo> = {
     yMin: 0,
     yMax: 25,
     format: (n) => `${n.toFixed(1).replace(".", ",")} t`,
-    benchmark: 8,
+    referanse: null,
   },
   // SG-disipliner
   "sg-tee": {
@@ -112,7 +121,10 @@ const METRICS: Record<string, MetricInfo> = {
     yMin: -1,
     yMax: 2,
     format: (n) => formatSg(n),
-    benchmark: 0,
+    referanse: {
+      verdi: 0,
+      forklaring: "0 = referansefeltet. Over null er slag spart mot det.",
+    },
   },
   "sg-approach": {
     slug: "sg-approach",
@@ -124,7 +136,10 @@ const METRICS: Record<string, MetricInfo> = {
     yMin: -1,
     yMax: 2,
     format: (n) => formatSg(n),
-    benchmark: 0,
+    referanse: {
+      verdi: 0,
+      forklaring: "0 = referansefeltet. Over null er slag spart mot det.",
+    },
   },
   "sg-around-green": {
     slug: "sg-around-green",
@@ -136,7 +151,10 @@ const METRICS: Record<string, MetricInfo> = {
     yMin: -1,
     yMax: 2,
     format: (n) => formatSg(n),
-    benchmark: 0,
+    referanse: {
+      verdi: 0,
+      forklaring: "0 = referansefeltet. Over null er slag spart mot det.",
+    },
   },
   "sg-putting": {
     slug: "sg-putting",
@@ -148,7 +166,10 @@ const METRICS: Record<string, MetricInfo> = {
     yMin: -1,
     yMax: 2,
     format: (n) => formatSg(n),
-    benchmark: 0,
+    referanse: {
+      verdi: 0,
+      forklaring: "0 = referansefeltet. Over null er slag spart mot det.",
+    },
   },
 };
 
@@ -305,7 +326,8 @@ export default async function MetricDrillDownPage({
         }, null)
     : null;
 
-  const benchmarkDiff = verdi30d - info.benchmark;
+  const referanse = info.referanse;
+  const benchmarkDiff = referanse ? verdi30d - referanse.verdi : null;
 
   const nyBaseline = forrige30d === 0 && info.kind === "sg";
 
@@ -323,9 +345,14 @@ export default async function MetricDrillDownPage({
       : `${delta >= 0 ? "+" : "−"}${info.format(Math.abs(delta))}`,
     deltaDir: delta >= 0 ? "up" : "down",
     deltaSub: nyBaseline ? "ny baseline — første 30 d med data" : "vs forrige 30 d",
-    benchmarkDiffLabel: `${benchmarkDiff >= 0 ? "+" : "−"}${info.format(Math.abs(benchmarkDiff))}`,
-    benchmarkPositiv: benchmarkDiff >= 0,
-    benchmarkSnittLabel: `Snitt A1 = ${info.format(info.benchmark)} (referanse)`,
+    benchmarkDiffLabel:
+      benchmarkDiff == null
+        ? "—"
+        : `${benchmarkDiff >= 0 ? "+" : "−"}${info.format(Math.abs(benchmarkDiff))}`,
+    benchmarkPositiv: benchmarkDiff != null && benchmarkDiff >= 0,
+    benchmarkSnittLabel:
+      referanse?.forklaring ?? "Ingen referanse med kjent kilde for denne disiplinen.",
+    harReferanse: referanse != null,
     tredjeLabel: info.kind === "pyramid" ? "Total tid 90 d" : "Beste 90 d",
     tredjeVerdi:
       info.kind === "pyramid"

@@ -4,6 +4,12 @@
  * TrackManSessionDetail — TM-11 «TrackMan-økt-detalj», hovedskjermen for én
  * TrackMan-økt.
  * Fasit: designsystem/train-lock/TM-11 Okt-detalj komplett.dc.html
+ * Avvik:
+ *   - PH-08-kontroll 21.09.2026: σ-velgeren har fått en forklaring på at 1σ/2σ
+ *     beskriver den målte spredningen i denne økta, ikke en prosentgaranti for
+ *     neste slag. Uten den leses «1σ» lett som en dekningsprosent.
+ *   - Blandede køller sier fra eksplisitt (result.blandedeKoller): ett kart
+ *     viser én kølle, og en spredning over flere beskriver ingen sving.
  * Fasit: designsystem/train-lock/PH-14 TrackMan detalj.dc.html
  * Fasit: designsystem/train-lock/TM-00 Komponenter.dc.html (KPI-stripe:
  * TmKpiStrip — 2×2 på iPhone, 4 i rad fra 768px — og TmFindingList-radformen).
