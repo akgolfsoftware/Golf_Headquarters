@@ -87,6 +87,25 @@ løpende forbindelse — økter importeres fra CSV, rapport eller foto. TrackMan
 står nå blant de tilgjengelige kildene med tidspunkt for siste import. Google
 Calendar er urørt; den har ekte OAuth-backing.
 
+### PH-12 Meg — vennefeeden røpet treningsopplegget
+Feeden viste «Fullførte variasjon-økt · Bane-simulering» — `practiceType` og
+`miljo` fra AK-taksonomien, bare oversatt til norsk. Det brøt regelen som står
+i filens eget hode: venner ser kun at en økt skjedde. Feltene hentes ikke lenger
+i spørringen. Regelen ligger nå i `lib/venner/feed.ts` med test som avviser hvert
+fagord. Banenavn på runder blir stående — det er hvor noen spilte golf, ikke
+treningsopplegg.
+
+### PH-12 Meg — abonnementstilstandene vises hver for seg
+PRO-kortet sto med «Aktiv» og «Fornyes {dato}» uansett tilstand. Et oppsagt
+abonnement fornyes ikke — datoen er når tilgangen slutter — og en prøveperiode
+er ikke et betalende abonnement. Stripe-statusen sendes nå inn, og kortet
+velger merke og datolinje etter den: Aktiv / Prøveperiode / Betaling mangler /
+Avsluttet.
+
+### PH-12 Meg — slettet Paper-fasit i ukesdigest
+Begge ukesdigest-filene siterte en Paper-fil som ble slettet 30.08.2026.
+Filhodet sier nå at skjermen ikke har en gjeldende designkilde.
+
 ## Verifisert uten funn
 
 - **PH-09 Tester:** PEI krever positiv målavstand (`test-scoring.ts`), Gate
@@ -108,13 +127,27 @@ Calendar er urørt; den har ekte OAuth-backing.
   flyten på personvernsiden i stedet for en «kommer snart»-plassholder.
 - **PH-12 utstyr:** bæreavstander hentes fra målte TrackMan-data
   (`hentGapping`), ikke utledet fra utstyrsnavn.
+- **PH-12 venner:** søk krever minst to tegn; eksisterende relasjoner og en
+  selv filtreres ut av treffene; `Friendship` har unik-indeks på paret; kun
+  mottaker kan svare på en forespørsel; økt-synlighet er av som standard.
+- **PH-12 helsesamtykke:** fire separate formål (`WEARABLE_HELSE`,
+  `MANUELL_HELSE`, `COACH_INNSYN`, `COACH_DETALJ`) som aldri slås sammen;
+  under 16 avvises for rollen `SELV` (foresattflyt); samtykket kreves kun ved
+  helseskriving, ikke i treningsplanleggingen; ekstern-leser-scopet er per
+  gruppe og slipper aldri planer, notater eller helse gjennom
+  test-/statistikk-samtykke.
+- **PH-12 utviklingsplan:** read-only, AI-forslag står som «venter på coach»,
+  og P1–P10 og læringstrappen leses fra `TechnicalPlan` — oppslagstabellene
+  navngir bare posisjoner som finnes i kilden.
+- **PH-12 ukesdigest:** ingen påstand om automatisk utsendelsesdag.
 
 ## Ikke gjort
 
-- **PH-12 Meg, gjenstående flater:** venner (søk, forespørsler, duplikater),
-  helsesamtykkets fire separate formål og foresattflyt under 16,
-  abonnementstilstandene (gratis/aktiv/prøve/forfalt/avsluttet) og
-  utviklingsplan/ukesdigest er ikke gjennomgått.
+- **Kvitteringer i abonnementet:** fakturalista viser beløp og dato fra
+  `Payment`-radene, men er ikke gjennomgått mot kravet om «faktiske felt
+  eller —» for hvert enkelt felt.
+- **Mål-flatens øvrige typer:** `ROUNDS_PER_MONTH`, `SESSION_FREQUENCY` og
+  `TEST_SCORE` er ikke gjennomgått på samme måte som HCP og SG.
 - **PH-02 harmonisering:** de 20 statiske referansene mot Live-/FYS-modellene er
   ikke rørt. De ligger i Claude Design-prototypen, ikke i appkoden.
 - **Visuell port** av PH-07–PH-11 mot de nye skjermdesignene.
