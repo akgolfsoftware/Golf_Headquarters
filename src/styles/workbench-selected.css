@@ -530,3 +530,4 @@
 }
 .wb-ovelse .wb-kicker { display: block; margin: 14px 0 2px; }
 .wb-ovelse-feil { margin: 8px 0; color: var(--wb-ink); font-size: 12px; }
+.wb-session-edit.wb-ovelse > div { grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); }
