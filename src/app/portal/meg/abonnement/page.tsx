@@ -52,6 +52,7 @@ export default async function AbonnementPage({
     gratis,
     pakkeNavn: planNavn,
     fornyes: formatDato(abo.nesteTrekk),
+    aboStatus: abo.status,
     betalingFeilet,
     kanOppgradere,
     kanEndreKort,

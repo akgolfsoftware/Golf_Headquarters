@@ -32,8 +32,18 @@ export type MegAbonnementData = {
   gratis: boolean;
   /** Coaching-pakkens navn når gratis via pakke, ellers null. */
   pakkeNavn: string | null;
-  /** Ferdigformatert neste-trekk-dato (status-hero + avbestilt-banner). */
+  /**
+   * Ferdigformatert periodeslutt-dato. Om den betyr «fornyes» eller
+   * «tilgang til» avhenger av `aboStatus` — se `HeroStatus`.
+   */
   fornyes: string | null;
+  /**
+   * Abonnementets faktiske tilstand fra Stripe: ACTIVE, TRIALING, PAST_DUE,
+   * CANCELLED — eller null når det ikke finnes noe abonnement. De skal vises
+   * hver for seg; et oppsagt abonnement fornyes ikke, og en prøveperiode er
+   * ikke et betalende abonnement.
+   */
+  aboStatus: string | null;
   /** Siste betaling feilet (PAST_DUE) → varsel-banner. */
   betalingFeilet: boolean;
   kanOppgradere: boolean;
@@ -178,17 +188,56 @@ function HeroOppgrader({ mobile }: { mobile: boolean }) {
   );
 }
 
-/** Aktiv betalende PRO (uten pakke) → pris + fornyes-dato. */
-function HeroStatus({ fornyes, mobile }: { fornyes: string | null; mobile: boolean }) {
+/**
+ * PRO-kortet (uten coaching-pakke).
+ *
+ * Fram til 21.09.2026 sto det «Aktiv» og «Fornyes {dato}» uansett tilstand.
+ * Et oppsagt abonnement fornyes ikke — datoen er når tilgangen slutter — og
+ * en prøveperiode er ikke et betalende abonnement. Begge ble framstilt som
+ * en aktiv fornyelse.
+ */
+function HeroStatus({
+  fornyes,
+  aboStatus,
+  mobile,
+}: {
+  fornyes: string | null;
+  aboStatus: string | null;
+  mobile: boolean;
+}) {
+  const oppsagt = aboStatus === "CANCELLED";
+  const prove = aboStatus === "TRIALING";
+  const forfalt = aboStatus === "PAST_DUE";
+
+  const merke = oppsagt
+    ? { tone: "warn" as const, tekst: "Avsluttet" }
+    : prove
+      ? { tone: "info" as const, tekst: "Prøveperiode" }
+      : forfalt
+        ? { tone: "warn" as const, tekst: "Betaling mangler" }
+        : { tone: "up" as const, tekst: "Aktiv" };
+
+  const datolinje = (() => {
+    if (!fornyes) {
+      return oppsagt
+        ? "Tilgangen løper ut inneværende periode."
+        : "Løper måned for måned, uten binding.";
+    }
+    if (oppsagt) return `Avsluttet. Du har tilgang til ${fornyes}.`;
+    if (prove) return `Prøveperioden varer til ${fornyes}. Da starter betalingen.`;
+    if (forfalt) return `Siste betaling gikk ikke gjennom. Perioden gjelder til ${fornyes}.`;
+    return `Fornyes ${fornyes}`;
+  })();
+
   return (
     <Kort tint pad="24px 24px 26px" style={{ borderColor: `color-mix(in srgb,${TL.fill} 32%,transparent)` }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
         <Caps color={TL.fill}>PlayerHQ Pro</Caps>
-        <StatusPill tone="up">Aktiv</StatusPill>
+        <StatusPill tone={merke.tone}>{merke.tekst}</StatusPill>
       </div>
       <Pris tall="299" mobile={mobile} />
       <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: "12px 0 0" }}>
-        {fornyes ? `Fornyes ${fornyes}` : "Løper måned for måned, uten binding."}
+        {datolinje}
       </p>
     </Kort>
   );
@@ -236,7 +285,7 @@ function useMobile(): boolean {
 
 export function MegAbonnementV2({ data }: { data: MegAbonnementData }) {
   const mobile = useMobile();
-  const { hero, gratis, pakkeNavn, fornyes, betalingFeilet, kanOppgradere, kanEndreKort, kanAvbestille, fakturaer, flagg } = data;
+  const { hero, gratis, pakkeNavn, fornyes, aboStatus, betalingFeilet, kanOppgradere, kanEndreKort, kanAvbestille, fakturaer, flagg } = data;
 
   // Handlinger — bygges dynamisk, siste rad markeres for kant-fri bunn.
   const handlinger: { href: string; ic: string; l: string; sub: string }[] = [];
@@ -288,7 +337,7 @@ export function MegAbonnementV2({ data }: { data: MegAbonnementData }) {
       {hero === "oppgrader" ? (
         <HeroOppgrader mobile={mobile} />
       ) : hero === "status" ? (
-        <HeroStatus fornyes={fornyes} mobile={mobile} />
+        <HeroStatus fornyes={fornyes} aboStatus={aboStatus} mobile={mobile} />
       ) : (
         <HeroGratis pakkeNavn={pakkeNavn} />
       )}
