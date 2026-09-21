@@ -67,7 +67,9 @@ export function MaalWidget({ data }: { data: MaalWidgetData }) {
             >
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginBottom: 6 }}>
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 8, minWidth: 0 }}>
-                  <Caps size={9} style={{ display: "inline", color: TL.mute }}>{m.typeLabel}</Caps>
+                  <Caps size={9} style={{ display: "inline", color: TL.mute }}>
+                    {m.kategori === "OUTCOME" ? "Resultatmål" : "Prosessmål"} · {m.typeLabel}
+                  </Caps>
                   <span
                     style={{
                       fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text,

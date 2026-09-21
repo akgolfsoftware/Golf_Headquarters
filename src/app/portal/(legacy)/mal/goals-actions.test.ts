@@ -7,6 +7,7 @@ import { mock, test } from "node:test";
 let bruker = { id: "spiller-a", role: "PLAYER" as const };
 let slettet = 0;
 let oppdatert = 0;
+let sisteOppdatering: Record<string, unknown> | null = null;
 let goal = { id: "maal-1", userId: "spiller-a", payload: {} as Record<string, unknown> };
 
 mock.module("next/cache", { namedExports: { revalidatePath: () => undefined } });
@@ -32,8 +33,9 @@ mock.module("@/lib/prisma", {
           slettet += 1;
           return {};
         },
-        update: async () => {
+        update: async (args: { data: Record<string, unknown> }) => {
           oppdatert += 1;
+          sisteOppdatering = args.data;
           return {};
         },
       },
@@ -49,6 +51,7 @@ test.beforeEach(() => {
   bruker = { id: "spiller-a", role: "PLAYER" };
   slettet = 0;
   oppdatert = 0;
+  sisteOppdatering = null;
   goal = { id: "maal-1", userId: "spiller-a", payload: {} };
 });
 
@@ -70,4 +73,18 @@ test("slettGoal sletter eget mål", async () => {
   const { slettGoal } = await actions();
   await assert.rejects(() => slettGoal("maal-1"), /REDIRECT:\/portal\/mal/);
   assert.equal(slettet, 1);
+});
+
+test("endreGoal lagrer valgt måltype", async () => {
+  const { endreGoal } = await actions();
+  await endreGoal("maal-1", {
+    type: "FREE_TEXT",
+    category: "PROCESS",
+    title: "Trene putting tre ganger per uke",
+    targetValue: null,
+    targetDate: null,
+  });
+
+  assert.equal(oppdatert, 1);
+  assert.equal(sisteOppdatering?.category, "PROCESS");
 });
