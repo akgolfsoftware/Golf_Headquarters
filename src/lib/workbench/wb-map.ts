@@ -78,6 +78,10 @@ export function mapSession(row: WbRow): WorkbenchSession {
     practiceType: practiceType.success ? practiceType.data : undefined,
     location: row.location ?? undefined,
     notes: row.notes ?? undefined,
+    rationale: row.rationale ?? undefined,
+    skillArea: row.skillArea ?? undefined,
+    pressureLevel: row.pressureLevel ?? undefined,
+    maalsetning: row.maalsetning ?? undefined,
     drills: [...row.drills]
       .sort((a, b) => a.sortOrder - b.sortOrder)
       .map(mapDrill),

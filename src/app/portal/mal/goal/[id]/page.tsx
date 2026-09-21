@@ -160,6 +160,7 @@ export default async function GoalDetailPage({
 
   const data: MalDetaljV2Data = {
     id: goal.id,
+    category: goal.category,
     typeLabel: goalTypeLabelNorsk(goal.type),
     tittel: goal.title,
     goalType: goal.type,
@@ -185,6 +186,7 @@ export default async function GoalDetailPage({
     erEget: isOwnGoal,
     initial: {
       title: goal.title,
+      category: goal.category,
       type: goal.type,
       targetValue: goal.targetValue,
       targetDate: goal.targetDate ? goal.targetDate.toISOString().slice(0, 10) : null,

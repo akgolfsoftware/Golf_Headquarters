@@ -1,8 +1,9 @@
 # NORDSTJERNE — AK Golf HQ
 
 > **Hva er dette?** Den ene setningen alt skal måles mot. Les denne først — alltid.
-> Ved konflikt: denne fila vinner over all annen dokumentasjon unntatt
-> `docs/platform/BUSINESS-RULES.md` (låste forretningsregler).
+> Ved konflikt om produktet: denne fila vinner over annen produktdokumentasjon unntatt
+> `docs/platform/BUSINESS-RULES.md` (låste forretningsregler). Visuelle valg eies av
+> [`docs/design-system/design-autoritet.md`](../design-system/design-autoritet.md).
 
 ---
 
@@ -63,7 +64,7 @@ CS-progresjonen er pensjonert og skal ikke gjeninnføres som krav.
 
 Club Speed-beslutningen fra 1. september gjelder: motorikk er AUTO, og «uten ball»
 er en egenskap ved øvelsen, ikke et eget motorikksteg. Se
-`docs/ordbok-ak-golf-konsept.md` §3.
+`docs/ordbok.md` §3.
 
 ---
 

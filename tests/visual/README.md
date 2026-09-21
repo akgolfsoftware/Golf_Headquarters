@@ -1,4 +1,8 @@
-# Train-lock sign-off-rigg
+# Historisk Train-lock-sammenligningsrigg
+
+> **STATUS 21.09.2026:** Train-lock er utgående og er ikke lenger sign-off-kilde. Selve
+> målemetoden kan gjenbrukes mot en valgt leveranse fra «App design». Se
+> [`docs/design-system/design-autoritet.md`](../../docs/design-system/design-autoritet.md).
 
 Løser PORTING.md §5 sitt savn: en maskinell pixel-nærhets-sjekk mellom en
 Train-lock-fasit (`.dc.html`) og den faktisk bygde skjermen — ikke bare
@@ -194,7 +198,7 @@ Første måling av innebygde fasitpaneler, mot prod som `coachtest@akgolf.test`:
 Begge står som `ukalibrert` / `kjent-layoutavvik`: appens panel er bredere enn
 fasitrammen og har annen seksjons-/datasammensetning, så tallet er dokumentasjon,
 ikke et signal. Kommandoer, bilder og begrunnelse:
-[`docs/design-audit/2026-09-08/rigg-panelmodus-ao/`](../../docs/design-audit/2026-09-08/rigg-panelmodus-ao/README.md).
+[`docs/design-audit/2026-09-08/rigg-panelmodus-ao/` · historisk Git-versjon](https://github.com/akgolfsoftware/Golf_Headquarters/blob/7348a6e4465b56a7e479f85c785a5409ef361aad/docs/design-audit/2026-09-08/rigg-panelmodus-ao/README.md).
 
 ## Nattlig kjøring (fase 1, økt 6 — 08.09.2026)
 

@@ -1,5 +1,9 @@
 # FØR / UNDER / ETTER — designspesifikasjon og pilot
 
+> **DESIGNMERKNAD 21.09.2026:** Alle eldre designvedtak i denne spesifikasjonen, inkludert Paper
+> og Train-lock, er historikk. Bevar funksjonsflyten, men tegn den med
+> [gjeldende designautoritet](design-system/design-autoritet.md).
+
 Status: utkast til godkjenning · 2026-07-31 · gren `feature/for-under-etter-spec`
 
 > **⚠ §2 «Designsystem-beslutning: C, smalt» ER HISTORIKK (overstyrt 2026-08-03).**
@@ -409,7 +413,7 @@ Whisper har derfor ingen sjanse på «P6», «Chip», «Lav hastighet» eller «
 
 Fiks før spike: utvid glossaret med P1.0–P10.0, de 19 områdene, motorikk (Uten ball · Lav
 hastighet · Automatikk), belastning, press og kategoriene A–K — alt fra
-`docs/ordbok-master-trening.md`. Det er en strengendring.
+`docs/ordbok.md`. Det er en strengendring.
 
 **Deretter** spike: 10 ekte opptak fra rangen, mål feilrate på AK-termer. Er den
 fortsatt høy, er neste steg etterbehandling som mapper lydlike treff til kanoniske

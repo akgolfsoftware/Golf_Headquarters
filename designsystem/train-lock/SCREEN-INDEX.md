@@ -1,5 +1,8 @@
 # SCREEN-INDEX — Player HQ Train lock
 
+> **HISTORISK REGISTER 21.09.2026:** Brukes bare til å finne tidligere funksjoner og filer.
+> Det velger ingen visuell fasit. Se [gjeldende designautoritet](../../docs/design-system/design-autoritet.md).
+
 Autogenerert 2026-08-26. Oppdatert 08.09.2026: **219 skjermfiler** (DG-10–DG-17 inn). Kolonner: fil · rammer i filen · breakpoints funnet i markup · skjermetiketter (`data-screen-label`).
 
 Les **DESIGN-SYSTEM.md** før du endrer noe. Endrer du en fil, oppdater raden her.

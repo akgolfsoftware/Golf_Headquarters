@@ -1,0 +1,92 @@
+:root{
+/* ---- Sand (flater) ---- */
+--sand-100:#faf8f3;
+--sand-150:#f1eee8;
+--sand-200:#e6e3dd;
+--white:#fff;
+
+/* ---- Grafitt (blekk) ---- */
+--graphite-900:#141413;
+--graphite-800:#2a2926;
+--graphite-600:#46443f;
+--graphite-500:#6b6862;
+--graphite-400:#8a8680;
+
+/* ---- Rust (handling — eneste handlingsfarge) ---- */
+--rust-600:#9b2415;
+--rust-hover:#d81e20;
+--rust-100:#fbebea;
+
+/* ---- Amber (KUN advarsel) ---- */
+--amber-700:#8a6a12;
+--amber-50:#fbf4e4;
+
+/* ---- Blå (KUN lenke / info) ---- */
+--blue-800:#1d3557;
+
+/* ---- Semantiske alias ---- */
+--surface-page:var(--sand-200);
+--surface-flat:var(--sand-100);
+--surface-raised:var(--white);
+--surface-sunken:var(--sand-150);
+--surface-focus:var(--graphite-900);
+
+--text-primary:var(--graphite-900);
+--text-body:var(--graphite-800);
+--text-secondary:var(--graphite-600);
+--text-muted:var(--graphite-500);
+--text-faint:var(--graphite-400);
+--text-inverse:var(--sand-100);
+
+--border-hairline:#ddd9d1;
+--border-strong:#c9c4ba;
+--border-ink:var(--graphite-900);
+
+--action:var(--rust-600);
+--action-hover:var(--rust-hover);
+--action-tint:var(--rust-100);
+--action-text:var(--white);
+
+--warn:var(--amber-700);
+--warn-tint:var(--amber-50);
+--link:var(--blue-800);
+--info:var(--blue-800);
+
+--focus-ring:var(--graphite-900);
+--focus-ring-inverse:var(--sand-100);
+
+/* ---- Natt (KUN eid av [data-surface=live]) ---- */
+--natt-900:#141413;
+--natt-850:#1c1b1a;
+--natt-700:#2e2c29;
+--natt-500:#6b6560;
+--natt-300:#a8a49c;
+
+/* ---- Domene (KLASSIFIKASJON — aldri handling) ----
+   Lovlig bruk: 4px stav, kicker, DomainMeter-fyll.
+   Forbudt: knapper, lenker, topplinje, tab-bar. */
+--domene-slag:var(--rust-600);
+--domene-spill:var(--graphite-600);
+--domene-fys:var(--graphite-800);
+--domene-turn:var(--amber-700);
+--domene-tek:var(--graphite-900);
+}
+
+/* ---- Live: én flate, ikke dark mode ---- */
+[data-surface="live"]{
+--surface-page:var(--natt-900);
+--surface-flat:var(--natt-850);
+--surface-raised:var(--natt-700);
+--surface-sunken:var(--natt-850);
+--text-primary:var(--sand-100);
+--text-body:var(--sand-100);
+--text-secondary:var(--natt-300);
+--text-muted:var(--natt-300);
+--text-faint:var(--natt-500);
+--text-inverse:var(--graphite-900);
+--border-hairline:var(--natt-700);
+--border-strong:var(--natt-700);
+--action:var(--rust-600);
+--action-hover:var(--rust-hover);
+--focus-ring:var(--focus-ring-inverse);
+}

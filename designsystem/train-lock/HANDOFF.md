@@ -1,5 +1,8 @@
 # AK Golf HQ · Train — HANDOFF (én fil)
 
+> **UTGÅENDE 21.09.2026:** Bevar som funksjonsinventar og historikk. Den styrer ikke ny
+> utforming. Se [gjeldende designautoritet](../../docs/design-system/design-autoritet.md).
+
 PIXEL = look-fasit · MAL = IA-fasit (vinner ved konflikt) · UAVKLART = eier beslutter. Oppdatert 24.08.2026.
 
 **Scene er #000000 i alle filer** (ikke #0A0A0A) — lys modus #FFFFFF. Én hvit (lys: sort) primær CTA per skjerm; alle andre handlinger er dim #2C2C2E / #DDDDDE eller ren tekst. Aktiv fane, valgt dag/luke og aktiv live-tapper er TILSTAND, ikke CTA — de teller ikke mot regelen. Ingen linear/radial-gradient noe sted; `repeating-linear-gradient` er tillatt KUN som timeline-hairline i rutenett. Foto-flater er flat elev (#161616 / #F2F2F2) med caps-etikett.

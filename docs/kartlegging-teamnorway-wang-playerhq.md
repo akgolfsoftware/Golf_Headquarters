@@ -1,5 +1,9 @@
 # Kartlegging: PlayerHQ ↔ WANG Toppidrett ↔ Team Norway
 
+> **DESIGNMERKNAD 21.09.2026:** Kartleggingen bevarer funksjon og tilgang. Visuelle henvisninger
+> til Train-lock/Paper er historikk. [AK Golf Design System og «App design»](design-system/design-autoritet.md)
+> styrer nytt design.
+
 Ren kartlegging, ingen kodeendringer. Skrevet 30.08.2026 mot gjeldende kode i `akgolfsoftware/Golf_Headquarters` (main). Spiller-ID-er brukt der eksempler trengs, aldri navn på mindreårige.
 
 ---

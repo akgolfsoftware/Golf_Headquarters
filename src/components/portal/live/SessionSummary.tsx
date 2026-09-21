@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Check } from "lucide-react";
 import "./session-summary.css";
 import type { LiveV2Summary } from "./types";
+import { fysVisningsrader, golfLoggTall, lesFysRegistrering } from "@/lib/portal-live/fys-registrering";
 import { SpillerVurderingForm } from "./SpillerVurderingForm";
 import { LiveLoopNav } from "./LiveLoopNav";
 import { WhyDetails } from "./WhyDetails";
@@ -61,11 +62,13 @@ function tidTekst(min: number): string {
 /** Deterministisk utkast av øktas faktiske tall + drillnavn — ingen AI-kall. */
 function byggUtkast(data: LiveV2Summary, notater: LiveNotat[]): string {
   const deler: string[] = [];
+  const golf = golfLoggTall(data.drills, data.existingLogs);
+  const totalReps = data.drills.some(d => d.pyramide === "FYS") ? golf.totalReps : data.totalReps;
   const min = Math.round(data.durationSec / 60);
   if (data.drills.length > 0) {
     deler.push(
       `${data.title}: ${data.drillsCompleted} av ${data.drills.length} øvelser` +
-        `${data.totalReps > 0 ? ` og ${data.totalReps} repetisjoner` : ""}` +
+        `${totalReps > 0 ? ` og ${totalReps} repetisjoner` : ""}` +
         `${min > 0 ? ` på ${tidTekst(min)}` : ""}.`,
     );
   } else if (min > 0) {
@@ -73,11 +76,12 @@ function byggUtkast(data: LiveV2Summary, notater: LiveNotat[]): string {
   } else {
     deler.push(`${data.title}: økt gjennomført.`);
   }
-  const treff = data.existingLogs.reduce((s, l) => s + l.repsHit, 0);
-  if (treff > 0 && data.totalReps > 0) {
-    deler.push(`${treff} av ${data.totalReps} reps markert som treff.`);
+  const treff = golf.treff;
+  if (treff > 0 && totalReps > 0) {
+    deler.push(`${treff} av ${totalReps} reps markert som treff.`);
   }
   const mestVolum = data.drills
+    .filter(d => d.pyramide !== "FYS")
     .map((d) => ({ d, log: data.existingLogs.find((l) => l.drillId === d.id) }))
     .filter((x) => (x.log?.repsTotal ?? 0) > 0)
     .sort((a, b) => (b.log?.repsTotal ?? 0) - (a.log?.repsTotal ?? 0))[0];
@@ -123,14 +127,14 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }:
   const minutter = Math.round(data.durationSec / 60);
   const planVindu = Math.round((Date.parse(data.endTimeISO) - Date.parse(data.scheduledAtISO)) / 60_000);
   const planMinutter = planVindu > 0 ? planVindu : data.drills.reduce((sum, d) => sum + d.durationMinutes, 0);
-  const planReps = data.drills.reduce((sum, d) => sum + d.plannedReps, 0);
-  const treff = data.existingLogs.reduce((sum, log) => sum + log.repsHit, 0);
+  const { planReps, treff, totalReps: golfReps } = golfLoggTall(data.drills, data.existingLogs);
+  const totalReps = data.drills.some(d => d.pyramide === "FYS") ? golfReps : data.totalReps;
   const harOvelser = !erTapper && data.drills.length > 0;
-  const harTall = erTapper || harOvelser || data.totalReps > 0 || data.durationSec > 0;
+  const harTall = erTapper || harOvelser || totalReps > 0 || data.durationSec > 0;
   const hoved = harOvelser
     ? { tittel: "Øvelser ferdig", verdi: data.drillsCompleted, av: data.drills.length }
-    : erTapper || data.totalReps > 0
-      ? { tittel: erTapper ? "Slag registrert" : "Repetisjoner registrert", verdi: data.totalReps, av: null }
+    : erTapper || totalReps > 0
+      ? { tittel: erTapper ? "Slag registrert" : "Repetisjoner registrert", verdi: totalReps, av: null }
       : { tittel: "Varighet", verdi: tidTekst(minutter), av: null };
 
   function lagre() {
@@ -183,10 +187,10 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }:
               <p className="ph06-muted">Ingen tall ble logget i denne økta. Du kan fortsatt skrive en oppsummering.</p>
             </>}
           </section>
-          {!erTapper && (data.totalReps > 0 || data.durationSec > 0 || planReps > 0) && <dl className="ph06-metrics ph06-card">
+          {!erTapper && (totalReps > 0 || data.durationSec > 0 || planReps > 0) && <dl className="ph06-metrics ph06-card">
             {data.durationSec > 0 && <div><dt>Varighet</dt><dd>{tidTekst(minutter)}</dd>{planMinutter > 0 && <small>Planlagt {tidTekst(planMinutter)}</small>}</div>}
-            {(data.totalReps > 0 || planReps > 0) && <div><dt>Repetisjoner</dt><dd>{data.totalReps}</dd>{planReps > 0 && <small>Planlagt {planReps}</small>}</div>}
-            {data.existingLogs.length > 0 && data.totalReps > 0 && <div><dt>Markert som treff</dt><dd>{treff} <span>av {data.totalReps}</span></dd></div>}
+            {(totalReps > 0 || planReps > 0) && <div><dt>Repetisjoner</dt><dd>{totalReps}</dd>{planReps > 0 && <small>Planlagt {planReps}</small>}</div>}
+            {data.existingLogs.length > 0 && totalReps > 0 && <div><dt>Markert som treff</dt><dd>{treff} <span>av {totalReps}</span></dd></div>}
           </dl>}
           {erTapper && <p className="ph06-muted">Tid, treffkvalitet og fullføring per øvelse er ikke registrert i denne økta.</p>}
           {harTall && <WhyDetails odId="etter-why-tall" punkter={erTapper ? [
@@ -194,16 +198,21 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }:
             "Planlagt tid er ikke målt treningstid. Ingen treffkvalitet er beregnet.",
           ] : [
             "Ferdige øvelser følger dine ferdigmarkeringer. På eldre økter brukes den dokumenterte tellingen fra loggene.",
-            "Repetisjoner og treff summeres fra øvelsesloggene. Varighet kommer fra øktklokka, eller første og siste logg på eldre økter.",
+            "Repetisjoner og treff summeres bare fra golføvelser. Fysisk trening vises med egne enheter per øvelse. Varighet kommer fra øktklokka, eller første og siste logg på eldre økter.",
             "Én økt er ett datapunkt. Ingen måloppnåelse eller Strokes Gained er beregnet her.",
           ]} />}
           {harOvelser && <details className="ph06-card ph06-details">
             <summary>Plan mot gjennomført</summary>
             {data.drills.map((drill) => {
               const log = data.existingLogs.find((l) => l.drillId === drill.id);
+              const fys = drill.pyramide === "FYS" ? lesFysRegistrering(log?.notes) : null;
               return <div key={drill.id} className="ph06-drill">
                 <h3>{drill.name}</h3>
-                <p>{log ? `${log.repsTotal}${drill.plannedReps > 0 ? ` av ${drill.plannedReps}` : ""} repetisjoner · ${log.repsHit} treff` : "Ingen registrering"}</p>
+                {drill.pyramide === "FYS" ? fys ? <>
+                  <dl>{fysVisningsrader(fys).map(rad => <div key={rad.label}><dt>{rad.label}</dt><dd>{rad.verdi}</dd></div>)}</dl>
+                  {fys.notat && <p>{fys.notat}</p>}
+                </> : <p>{log?.notes || "Ingen detaljer registrert"}</p> :
+                  <p>{log ? `${log.repsTotal}${drill.plannedReps > 0 ? ` av ${drill.plannedReps}` : ""} repetisjoner · ${log.repsHit} treff` : "Ingen registrering"}</p>}
                 {data.completedDrillIds && <small>{data.completedDrillIds.includes(drill.id) ? "Markert ferdig" : "Ikke markert ferdig"}</small>}
               </div>;
             })}

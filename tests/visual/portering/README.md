@@ -1,5 +1,9 @@
 # Komponentprøver for porteringen
 
+> **STATUS 21.09.2026:** Prøvene bevarer teknisk regresjonsdekning. Train-lock/Paper i gamle
+> referansebilder eller filnavn er historikk og gir ingen visuell godkjenning. Ny visuell kontroll
+> bruker [gjeldende designautoritet](../../../docs/design-system/design-autoritet.md).
+
 TN-18 prøves med de faktiske appkomponentene, syntetiske personer og kontrollerte serversvar. Next-ruting simuleres. Dette er ikke en innlogget ende-til-ende-prøve eller visuell godkjenning av hele skjermen.
 
 Kjør fra prosjektroten, med Python Playwright og Chromium installert:

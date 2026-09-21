@@ -51,6 +51,7 @@ async function mapGoalRow(goal: Goal, hcp: number | null): Promise<MalGoalRad> {
     progress.status === "on-track" && progress.pct >= 80 ? "Nær mål" : STATUS_LABELS[progress.status];
   return {
     id: goal.id,
+    category: goal.category,
     type: typeLabel(goal.type),
     title: goal.title,
     pct: progress.pct,
@@ -90,6 +91,8 @@ export default async function V2MalPreviewPage() {
 
   const data: MalHubData = {
     antall: goals.length,
+    antallResultat: goals.filter((goal) => goal.category === "OUTCOME").length,
+    antallProsess: goals.filter((goal) => goal.category === "PROCESS").length,
     goals: await Promise.all(goals.map((g) => mapGoalRow(g, user.hcp))),
     milepael: sisteMilepael
       ? {

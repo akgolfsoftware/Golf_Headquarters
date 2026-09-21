@@ -1,5 +1,9 @@
 # DESIGN-SYSTEM — Train-lock
 
+> **UTGÅENDE 21.09.2026:** Denne filen er historisk og har ingen visuell myndighet. Bruk
+> [gjeldende designautoritet](../../docs/design-system/design-autoritet.md). Ord som «fasit»
+> nedenfor beskriver bare den tidligere leveransen.
+
 Én fasit for alle flater: Player HQ · Workbench · AgencyOS · AgenticOS · Jarvis · Foreldreportal.
 `HANDOFF.md` er historikken og IA-fasiten. **Denne filen er look-fasiten.** Ved konflikt vinner HANDOFF på struktur, DESIGN-SYSTEM på visuelle verdier.
 

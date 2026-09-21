@@ -1,6 +1,6 @@
 /**
- * PlayerHQ I dag — Train-lock PH-01 (telefon + Mac).
- * Dataene er de samme som før; Paper-chatten er tatt ut av skjermen.
+ * PlayerHQ I dag — valgt AK Golf Design System PH-01 v1.0.
+ * Eksisterende tilgang, datalasting og øktmodeller beholdes.
  */
 
 import { redirect } from "next/navigation";
@@ -9,7 +9,6 @@ import { getDashboardData } from "@/app/portal/actions";
 import { getGjennomforeData } from "@/lib/portal-gjennomfore/gjennomfore-data";
 import { loadPlayerDay } from "@/lib/workbench/wb-actions";
 import { dagNavnLang } from "@/lib/uke-helpers";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { getTrackManTeaser } from "@/lib/trackman/teaser";
 import { getTesterLiveKort } from "@/lib/portal-tester/tester-live-kort";
 import { formatSg } from "@/lib/sg";
@@ -30,7 +29,9 @@ import {
   osloMinuttAvDogen,
   velgIDagTilstand,
 } from "@/lib/portal/idag-visning";
-import { IDagTrainLock, type NaaKort } from "@/components/portal/v2/idag/IDagTrainLock";
+import type { NaaKort } from "@/components/portal/v2/idag/IDagTrainLock";
+import { IDagSelected } from "@/components/portal/v2/idag/IDagSelected";
+import { skjulLaastPlanData } from "@/lib/portal/ph01-visning";
 import { IDagCaddie } from "@/components/portal/v2/idag/IDagCaddie";
 import { PushOptInBanner } from "@/components/portal/push-opt-in-banner";
 import type { PlayerDaySession } from "@/lib/workbench/wb-actions";
@@ -41,15 +42,11 @@ export const metadata = { title: "I dag · PlayerHQ" };
 const OSLO_ISO_FMT = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Oslo" });
 const OSLO_MANED = new Intl.DateTimeFormat("nb-NO", { month: "long", timeZone: "Europe/Oslo" });
 
-function storForbokstav(s: string): string {
-  if (!s) return s;
-  return s.charAt(0).toUpperCase() + s.slice(1);
-}
-
 export default async function PortalHjemPage() {
   const user = await requirePortalUser({ kreverTilgang: "TALENT" });
   if (user.role === "PARENT") redirect("/forelder");
   if (user.role === "GUEST") redirect("/admin/kalender");
+  const planLaast = user.role === "PLAYER" && user.tilgang.nivaa !== "FULL";
 
   const naa = await hentEffektivNaa(user.email);
   const iDag = OSLO_ISO_FMT.format(naa);
@@ -63,7 +60,7 @@ export default async function PortalHjemPage() {
     await Promise.all([
       getDashboardData(user.id, naa),
       getGjennomforeData(user.id, naa),
-      user.role === "PLAYER" && user.tilgang.nivaa !== "FULL"
+      planLaast
         ? Promise.resolve({ ok: true as const, data: { date: iDag, sessions: [], nextSessionId: null } })
         : loadPlayerDay({ playerId: user.id, date: iDag }),
       getTrackManTeaser(user.id),
@@ -78,7 +75,7 @@ export default async function PortalHjemPage() {
   const godkjenninger = sessions.filter((s) => s.needsPlayerApproval);
   const pagaende = synlige.find((s) => s.status === "IN_PROGRESS") ?? null;
   const startbar =
-    synlige.find((s) => s.status === "PUBLISHED" || s.status === "SCHEDULED") ?? null;
+    synlige.find((s) => !erHvileTittel(s.title) && (s.status === "PUBLISHED" || s.status === "SCHEDULED")) ?? null;
   const fullfortWb =
     synlige.find((s) => s.status === "COMPLETED" && !erHvileTittel(s.title)) ?? null;
   const fullfortGjennomfore = gjennomfore.fullfortIdag.at(-1) ?? null;
@@ -172,49 +169,46 @@ export default async function PortalHjemPage() {
     ferdige: new Set(kalender.ferdigeDager),
   });
 
-  const fangstOkt = gjennomfore.nesteOkt ?? gjennomfore.fullfortIdag.at(-1) ?? null;
+  const synligPlan = skjulLaastPlanData(planLaast, {
+    naa: naaKort,
+    neste,
+    hendelser: agenda,
+    godkjenninger,
+    fangstOkt: gjennomfore.nesteOkt ?? gjennomfore.fullfortIdag.at(-1) ?? null,
+    valgtOktId,
+    okterUke: ukeAntall.total,
+    fullfortUke: ukeAntall.completed,
+    prikker,
+    weekProgress: data.weekProgress,
+  });
 
   return (
-    <V2Shell
-      bredde="full"
-      hoyde="skjerm"
-      aktiv="hjem"
-      nav={PLAYERHQ_NAV}
-      navn={data.user.name}
-      avatarUrl={data.user.avatarUrl}
-      composer={
-        <IDagCaddie
-          plassering="mac"
-          placeholder={tilstand === "pagar" ? IDAG_UI.loggCaddie : IDAG_UI.sporCaddie}
-          fangstFormel={fangstOkt?.formel ?? null}
-          oktLabel={fangstOkt ? `${fangstOkt.tittel} · ${fangstOkt.meta}` : null}
-        />
-      }
-    >
-      <PushOptInBanner />
-      <IDagTrainLock
+    <IDagSelected
+        planLaast={planLaast}
+        sgVerdi={data.kpiStats.sgBreakdown.app}
+        weekProgress={synligPlan.weekProgress}
+        caddie={<IDagCaddie plassering="mac" placeholder={tilstand === "pagar" ? IDAG_UI.loggCaddie : IDAG_UI.sporCaddie} fangstFormel={synligPlan.fangstOkt?.formel ?? null} oktLabel={synligPlan.fangstOkt ? `${synligPlan.fangstOkt.tittel} · ${synligPlan.fangstOkt.meta}` : null} />}
         datoLinje={datoLinje}
         navn={data.user.name}
         avatarUrl={data.user.avatarUrl}
         hilsen={`${data.greeting}, ${data.user.fornavn}`}
-        valgtOktId={valgtOktId}
-        fullfortMinutter={data.weekProgress.completedMin}
-        maanedNavn={storForbokstav(OSLO_MANED.format(naa))}
-        prikker={prikker}
-        tilstand={tilstand}
-        naa={naaKort}
-        neste={neste}
+        valgtOktId={synligPlan.valgtOktId}
+        fullfortMinutter={synligPlan.weekProgress.completedMin}
+        maanedNavn={OSLO_MANED.format(naa)}
+        prikker={synligPlan.prikker}
+        tilstand={planLaast ? "tom-uke" : tilstand}
+        naa={synligPlan.naa}
+        neste={synligPlan.neste}
         sgInnspill={formatSg(data.kpiStats.sgBreakdown.app)}
-        okterUke={ukeAntall.total}
-        fullfortUke={ukeAntall.completed}
+        okterUke={synligPlan.okterUke}
+        fullfortUke={synligPlan.fullfortUke}
         ukeNummer={data.weekNumber}
-        ukeFremdrift={data.weekProgress.plannedMin > 0 ? data.weekProgress.completedMin / data.weekProgress.plannedMin : undefined}
+        ukeFremdrift={synligPlan.weekProgress.plannedMin > 0 ? synligPlan.weekProgress.completedMin / synligPlan.weekProgress.plannedMin : undefined}
         trackman={trackman}
         testerLive={testerLive}
-        godkjenninger={godkjenninger}
+        godkjenninger={synligPlan.godkjenninger}
         dagLabel={`${dagNavnLang(naa)} ${dagNr}.`}
-        hendelser={agenda}
-      />
-    </V2Shell>
+        hendelser={synligPlan.hendelser}
+      ><PushOptInBanner /></IDagSelected>
   );
 }

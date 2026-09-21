@@ -5,6 +5,8 @@
    Logger til feillogg via reportClientError. */
 
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
+import { PH01Error } from "@/components/portal/v2/idag/IDagSelected";
 import { V2Feil } from "@/components/v2/feil-laste";
 import { reportClientError } from "@/lib/report-client-error";
 
@@ -15,6 +17,7 @@ export default function PortalError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const pathname = usePathname();
   useEffect(() => {
     reportClientError({
       context: "portal-error",
@@ -26,6 +29,7 @@ export default function PortalError({
     });
   }, [error]);
 
+  if (pathname === "/portal") return <PH01Error reset={reset} />;
   return (
     <V2Feil
       reset={reset}

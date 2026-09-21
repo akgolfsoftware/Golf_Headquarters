@@ -1,6 +1,23 @@
 # Designarbeid og referanser
 
-## Aktiv ny produktretning — oppdatert 13.09.2026
+## Gjeldende designautoritet — 21.09.2026
+
+[AK Golf Design System og Claude Design-prosjektet «App design»](../docs/design-system/design-autoritet.md)
+styrer alt nytt designarbeid. Train-lock og Paper er utgående og har ingen visuell autoritet,
+selv om eldre dokumenter eller kode bruker ordene «låst», «valgt» eller «fasit». Det skal ikke
+spørres om dette på nytt. Eldre materiale under brukes bare til funksjonsdekning, sporbarhet og
+kontrollert overgang.
+
+## Aktiv Workbench-leveranse — 20.09.2026
+
+Anders har bestilt portering av den konkrete Workbench-masteren med åtte piller.
+[Overleveringen](../docs/workbench-handover.md) peker til kontrollert HTML, 16 PNG-er,
+manifest og filhasher. Rust er kun de avtalte handlingene; øvrige kort og fyll er
+grafitt. Denne bestillingen styrer Workbench-omfanget foran eldre kandidatstatus
+under. `selectedForBuilding` i designprosjektet er ikke endret. Appens visuelle
+og funksjonelle kontroll føres separat i [arbeidsplanen](../docs/planer/workbench-design-og-kode-natt-2026-09-20.md).
+
+## Historisk produktretning før systemvalget — oppdatert 13.09.2026
 
 Arbeidet startet fra blankt lerret i Claude Design og videreføres nå som ett **AK Golf HQ Design System** for hele den brukerrettede appen. PlayerHQ, AgencyOS, Team Norway og WANG er de fire prioriterte kjernene. Booking, marked, innlogging/konto, forelder, delt innsyn og systemtilstander skal bruke samme fundament gjennom navngitte profiler og mønstre. Arbeidsretningen heter **Atletisk intelligens**: sportslig og oppslukende PlayerHQ, rolig og presis AgencyOS, tid som ryggrad og mørk fokusmodus bare der oppgaven trenger konsentrasjon.
 
@@ -8,13 +25,13 @@ Arbeidet startet fra blankt lerret i Claude Design og videreføres nå som ett *
 
 Se [den sentrale retningskontrakten](../.claude/skills/ak-hq-design/references/atletisk-intelligens.md). Anders' bildesett fra 11.09 styrer visuell smak. Eksisterende Train-lock, Paper, v2 og tidligere designpakker brukes til funksjonsdekning og implementasjonsforståelse, ikke som visuell fasit i denne utforskingen.
 
-Siste repo-kontrollerte samlede kandidat er **v0.4.10**; prosjektet står 16.09.2026 på v0.4.17/18 med Workbench **v0.12** (fem AK-akser), ikke kontrollert i repoet som samlet pakke; morgenrutinen 16.09 fant ingen ny eksport. Pakkens tokensett v0.4.3 ligger i koden som tokenlag (`src/styles/ak-hq-tokens.css`, PR #912) uten å endre noen skjerm — forarbeid, ikke fasit. Port før valg: se arbeidslisten CD-1–CD-7. Den dekker 32 av 35 funksjonsfamilier, alle 17 hovedreiser med klikkbar dekning og 72 av de opprinnelig registrerte 480 rutene som egne klikkbare flater; ti reiser er merket komplette i designregisteret. Kontrollert eksport har SHA-256 `01fdb517a840593ff5c2828eac90ee0710c0fea222198b263b1e43187f6c1801`. Kandidaten oppgir fortsatt `selectedForBuilding: false` og er derfor ikke en samlet byggebestilling. P11, O11 og O12 mangler fortsatt produktvalg og klikkbar familiedekning; øvrige bevisgrenser står i [masterplanen](../docs/MASTERPLAN-GJENSTAAENDE.md). Den eldre [v0.3.3-kontrollen](../docs/design-audit/claude-design-v0-3-3-2026-09-12.md) bevares som historisk kontrollgrunnlag.
+Siste repo-kontrollerte samlede kandidat er **v0.4.10**; prosjektet står 16.09.2026 på v0.4.17/18 med Workbench **v0.12** (fem AK-akser), ikke kontrollert i repoet som samlet pakke; morgenrutinen 16.09 fant ingen ny eksport. Pakkens tokensett v0.4.3 ligger i koden som tokenlag (`src/styles/ak-hq-tokens.css`, PR #912) uten å endre noen skjerm — forarbeid, ikke fasit. Port før valg: se arbeidslisten CD-1–CD-7. Den dekker 32 av 35 funksjonsfamilier, alle 17 hovedreiser med klikkbar dekning og 72 av de opprinnelig registrerte 480 rutene som egne klikkbare flater; ti reiser er merket komplette i designregisteret. Kontrollert eksport har SHA-256 `01fdb517a840593ff5c2828eac90ee0710c0fea222198b263b1e43187f6c1801`. Kandidaten oppgir fortsatt `selectedForBuilding: false` og er derfor ikke en samlet byggebestilling. P11, O11 og O12 mangler fortsatt produktvalg og klikkbar familiedekning; øvrige bevisgrenser står i [masterplanen · historisk Git-versjon](https://github.com/akgolfsoftware/Golf_Headquarters/blob/a235444b0f7287b0ce7270c28b32d34517711a2f/docs/MASTERPLAN-GJENSTAAENDE.md). Den eldre [v0.3.3-kontrollen · historisk Git-versjon](https://github.com/akgolfsoftware/Golf_Headquarters/blob/f58904991c759b439891b46969f3ac9b03414b0f/docs/design-audit/claude-design-v0-3-3-2026-09-12.md) bevares som historisk kontrollgrunnlag.
 
-Når en komplett pakke er valgt for bygging, er den eneste visuelle autoriteten for omfanget i pakken. Den ferdige pakken må inkludere de fire kjernene og navngi profil/mønster for øvrige brukerflater før lansering. Gamle designverdier og regler skal ikke overleve som skjulte standarder. De kan bare eksistere midlertidig mens en konkret brukerreise erstattes og prøves. Komplett krav til designomfang og Groks portering står i [Claude Design → Grok-kontrakten](../docs/planer/claude-design-til-grok-portering-2026-09-12.md).
+Når en komplett pakke er valgt for bygging, er den eneste visuelle autoriteten for omfanget i pakken. Den ferdige pakken må inkludere de fire kjernene og navngi profil/mønster for øvrige brukerflater før lansering. Gamle designverdier og regler skal ikke overleve som skjulte standarder. De kan bare eksistere midlertidig mens en konkret brukerreise erstattes og prøves. Komplett krav til designomfang og Groks portering står i [Claude Design → Grok-kontrakten · historisk Git-versjon](https://github.com/akgolfsoftware/Golf_Headquarters/blob/007dd4e14e2a60882b30fe86105b3023100bc53e/docs/planer/claude-design-til-grok-portering-2026-09-12.md).
 
-## Tidligere portering og nåværende implementasjon
+## Historisk portering og nåværende implementasjon
 
-**Valgt for den bestilte porteringen 10.09.2026:** Anders har valgt Train-lock for PlayerHQ og AgencyOS, Claw / Team Norway for interne Team Norway-skjermer og WANG for WANG-skjermene. Bestillingen gjelder alle skjermene i disse fire områdene. Se [valgte kilder og kontrollstatus](../docs/design-audit/portering-fire-flater-2026-09-10.md).
+**Valgt for den bestilte porteringen 10.09.2026:** Anders har valgt Train-lock for PlayerHQ og AgencyOS, Claw / Team Norway for interne Team Norway-skjermer og WANG for WANG-skjermene. Bestillingen gjelder alle skjermene i disse fire områdene. Se [valgte kilder og kontrollstatus · historisk Git-versjon](https://github.com/akgolfsoftware/Golf_Headquarters/blob/5c87ebf7ae61200b651d72feb10cc24fd3978afe/docs/design-audit/portering-fire-flater-2026-09-10.md).
 
 Byggegrunnlaget er `Player HQ Train lock (4).zip`, `Claw Design — Team Norway Golf.zip` og det eksisterende WANG-speilet. De to leverte ZIP-filene er inspisert og identifisert med SHA-256. Team Norway-pakkens 230 sammenlignbare designfiler er identiske med speilet; Train-lock har nyere filer som må kobles til hver portert reise.
 
@@ -44,7 +61,7 @@ Tabellen viser hvor materialet og dagens implementasjon finnes. Versjonsvalget f
 2. Når Anders velger en versjon for bygging, registrer designlenke eller eksport med versjon/dato, tilhørende skjermer, hovedhandlinger og overganger. Ta med mobil, desktop og relevante tomme, lastende, feil- og fullført-tilstander. Registrer avtalte temaer.
 3. Bygg og vurder denne reisen samlet. Vis appen ved siden av valgt versjon, dokumenter funksjonstester og kjente avvik, og registrer Anders' vurdering. Andre skjermer kan fortsatt være under utforsking.
 
-Byggestatus og rekkefølge føres i [arbeidslisten](../docs/MASTERPLAN-GJENSTAAENDE.md). En komplett app før lansering er fortsatt målet; levering i gjennomgåtte deler endrer ikke dette målet.
+Byggestatus og rekkefølge føres i [arbeidslisten · historisk Git-versjon](https://github.com/akgolfsoftware/Golf_Headquarters/blob/a235444b0f7287b0ce7270c28b32d34517711a2f/docs/MASTERPLAN-GJENSTAAENDE.md). En komplett app før lansering er fortsatt målet; levering i gjennomgåtte deler endrer ikke dette målet.
 
 ## Bevaring og tekniske kontroller
 

@@ -7,6 +7,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore
 import { Check, Pause, Play } from "lucide-react";
 import type { LiveV2Session, LiveCoachPanelData } from "./types";
 import { plannedVolumText } from "./types";
+import { fysVisningsrader, lesFysRegistrering } from "@/lib/portal-live/fys-registrering";
 import { DrillLogger } from "./DrillLogger";
 import { LiveCoachPanel } from "./LiveCoachPanel";
 import { useLiveSession } from "./use-live-session";
@@ -53,6 +54,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
   const cancelButton = useRef<HTMLButtonElement>(null);
   const noteInput = useRef<HTMLTextAreaElement>(null);
   const active = live.drills.find((d) => d.status === "active");
+  const aktivFys = active?.pyramide === "FYS" ? lesFysRegistrering(active.logNotes) : null;
   const selected = live.drills.find((d) => d.id === selectedId) ?? active ?? live.drills[0];
   const completedCount = live.drills.filter((d) => d.status === "done").length;
   const ready = live.drills.length > 0 && completedCount === live.drills.length;
@@ -125,8 +127,11 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
             <h2>{ready ? "Alle øvelsene er markert ferdige" : active?.name ?? "Ingen øvelser i planen"}</h2>
             {active && <>
               <p className={s.meta}>{[active.durationMinutes > 0 ? `${active.durationMinutes} min` : null, plannedVolumText(active)].filter(Boolean).join(" · ")}</p>
-              <div className={s.count}><strong>{active.repsTotal}</strong><span>{active.plannedReps > 0 ? `av ${active.plannedReps} reps` : "registrert"}{active.repsHit > 0 && active.pyramide !== "FYS" ? ` · ${active.repsHit} treff` : ""}</span></div>
-              {active.plannedReps > 0 && <progress aria-label="Registreringer i aktiv øvelse" max={active.plannedReps} value={Math.min(active.repsTotal, active.plannedReps)} />}
+              {active.pyramide === "FYS" ? <p className={s.description}>{aktivFys
+                ? fysVisningsrader(aktivFys).map(rad => `${rad.label}: ${rad.verdi}`).join(" · ")
+                : active.logNotes || "Ingen detaljer registrert"}</p> :
+                <div className={s.count}><strong>{active.repsTotal}</strong><span>{active.plannedReps > 0 ? `av ${active.plannedReps} reps` : "registrert"}{active.repsHit > 0 ? ` · ${active.repsHit} treff` : ""}</span></div>}
+              {active.pyramide !== "FYS" && active.plannedReps > 0 && <progress aria-label="Registreringer i aktiv øvelse" max={active.plannedReps} value={Math.min(active.repsTotal, active.plannedReps)} />}
             </>}
             {!active && <p className={s.description}>{ready ? "Du kan rette registreringene eller avslutte når du er klar." : "Du kan bruke notater og Caddie, og avslutte økta når du er klar."}</p>}
             {ready && <button className={s.primary} disabled={!enabled} onClick={() => setConfirm(true)}>Avslutt og se oppsummering</button>}

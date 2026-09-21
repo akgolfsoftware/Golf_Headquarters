@@ -1,8 +1,10 @@
-# Train-lock — designfasit (speil av zip)
+# Train-lock — utgående historisk speil
 
-**Dette er designfasiten for ALLE skjermer i PlayerHQ og AgencyOS** (Anders 25.08.2026 —
-CLAUDE.md invariant 2, `.claude/rules/beslutninger.md` øverste beslutning). Paper
-(`designsystem/paper/`) er historikk. Sync-detaljer: `SYNC-STATUS.md`.
+> **UTGÅENDE 21.09.2026:** Dette er ikke lenger designfasit for noen ny skjerm. Bruk det bare
+> som funksjonsinventar, overgangskart og historikk. [AK Golf Design System og «App design»](../../docs/design-system/design-autoritet.md)
+> styrer nytt design. Eldre ord som «fasit», «lock» og «valgt» i denne mappen er historiske.
+
+Dette var tidligere designfasit for PlayerHQ og AgencyOS. Sync-detaljer: `SYNC-STATUS.md`.
 
 ## Nøkkelfiler (les først)
 

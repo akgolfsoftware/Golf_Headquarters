@@ -12,6 +12,9 @@
  * Fasit (kun Mac-piksel): designsystem/train-lock/A-01d Publish confirm.dc.html
  * — caps-kicker «Uke 36 · Øyvind Rohjan», tittel 26/700/−0.02em, økt-liste
  * som #161616-kort radius 16.
+ * Avvik:
+ * - Periodevisningen sender en egen periode-kicker til samme dialog. Struktur,
+ *   valg og publiseringshandling er uendret; bare nivånavnet erstatter Uke.
  *
  * Ikke bygget fra WB-03 (ekte datamangel, ikke portefeil): «ENDRET»-status
  * (krever å spore om en allerede publisert-lik økt er redigert siden sist —
@@ -82,6 +85,8 @@ type Props = {
   idag: string;
   /** Til caps-kickeren «Uke 36 · Øyvind Rohjan» (A-01d). */
   spillerNavn?: string;
+  /** Valgfri kicker for publisering på et annet nivå, for eksempel en periode. */
+  kicker?: string;
   /** VARSEL fra validateWeek (f.eks. overlapp) — informerer, sperrer aldri (invariant 1). */
   notater?: ValidationNote[];
   /** Økt-ider et overlapp-varsel peker på — WB-03: status «Opptatt», forhåndsvalgt av. */
@@ -101,6 +106,7 @@ export function PublishConfirmDialog({
   okter,
   idag,
   spillerNavn,
+  kicker,
   notater = [],
   opptattIder = new Set(),
   valgte,
@@ -120,7 +126,7 @@ export function PublishConfirmDialog({
     <Dialog open={open} onOpenChange={(o) => !o && onLukk()}>
       <DialogContent size="md">
         <DialogHeader>
-          {spillerNavn && (
+          {(kicker || spillerNavn) && (
             <div
               style={{
                 fontFamily: TL.font.sans,
@@ -132,7 +138,7 @@ export function PublishConfirmDialog({
                 fontVariantNumeric: "tabular-nums",
               }}
             >
-              {UI.publishConfirmKicker(ukeNr, spillerNavn)}
+              {kicker ?? UI.publishConfirmKicker(ukeNr, spillerNavn!)}
             </div>
           )}
           <DialogTitle className="text-[26px] font-bold tracking-[-0.02em]">

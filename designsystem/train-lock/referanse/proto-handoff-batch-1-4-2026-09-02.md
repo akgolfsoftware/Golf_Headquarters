@@ -1,5 +1,8 @@
 # HANDOFF-oppføringer for den klikkbare prototypen, batch 1–4 (02.09.2026)
 
+> **HISTORISK 21.09.2026:** Bevares bare for sporbarhet og funksjonsinventar. Se
+> [gjeldende designautoritet](../../../docs/design-system/design-autoritet.md).
+
 > Fire seksjoner fra Claude Design-prosjektets HANDOFF.md (zip 05.09.2026), tatt ut her fordi zip-ens HANDOFF ellers mangler repoets rettelser fra 03.09. Flettes inn i `designsystem/train-lock/HANDOFF.md` i fase 1 økt 8 (designport-planen). Prototypen selv er ikke synket inn — se `PROTOTYPE-PLAN-2026-09-02.md`.
 
 ## 02.09.2026 — Klikkbar prototype, batch 4 (`proto/`)
@@ -37,4 +40,3 @@
 - Tilstandsendring som virker: onboarding 1–3 → I dag; Start økt → Live med tellende Treff/Kant/Bom (siste tapper hvit, 12 baller avslutter automatisk) → Økt ferdig med faktiske tall og mål-tekst (under mål = mute, aldri rød) → I dag viser FULLFØRT med warm hake og «Se recap»; Analyse «I vindu i dag» leser samme tall; prikk-måneden fyller 22. Ukjente mål viser «Ikke tegnet i prototypen ennå» + skjerm-ID i stedet for blank flate.
 - Fargegrammatikk håndhevet i prototypen: SG-stolper og 8-ukers spark er `shot`-sand, negativ 0.4; fremdriftsbar i Nå-kort er hierarki (hvit).
 - Neste: batch 2 (Analyse-tre, Meg-barn, booking på tre skall), deretter coach-skallet.
-

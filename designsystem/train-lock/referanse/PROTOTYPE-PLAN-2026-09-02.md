@@ -1,5 +1,8 @@
 # PROTOTYPE-PLAN — kopi fra Claude Design-prosjektet «Player HQ Train lock» (zip 05.09.2026)
 
+> **HISTORISK 21.09.2026:** Ikke bruk som ny design- eller byggeplan. Se
+> [gjeldende designautoritet](../../../docs/design-system/design-autoritet.md).
+
 > Referanse, ikke fasit. Prototypen (`proto/` i prosjektet) er IKKE synket inn i repoet: coach-menyen der (Cockpit · Innboks · Stall · Kalender · Workbench) strider mot AX-01 (Anders 25.08.2026) og koden, Plan-fanen bygger på utgått P-05, og fonten er SF Pro. Avgjøres i designport-beslutning 7 (`docs/superpowers/plans/2026-09-05-komplett-designport.md` §6). Kilde: Drive `claude-cowork/akgolf-hq/innkommende/2026-09-05-player-hq-train-lock.zip`.
 
 # PROTOTYPE-PLAN — klikkbar prototype av hele AK Golf HQ

@@ -36,6 +36,10 @@
    #2E2C29. natt-300 #A8A49C er anbefalt for sekundær tekst i mørk fokusmodus. */
 
 :root {
+  /* Workbench WB-05-11, valgt 20.09.2026. Bevarer masterens eksakte verdier. */
+  --ak-workbench-flate: #f2f1ed;
+  --ak-workbench-tekst: #111111;
+  --ak-workbench-pa-handling: #f4efe6;
   --ak-grunn-farge-sand-100: #faf8f3;
   --ak-grunn-farge-sand-150: #f1eee8;
   --ak-grunn-farge-sand-200: #e4e0d8;

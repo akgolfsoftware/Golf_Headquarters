@@ -1,0 +1,129 @@
+{
+  "kilde": "https://claude.ai/design/p/830e7bce-eaba-465b-848c-26f73bd0f2d3",
+  "dato": "2026-09-20",
+  "arkiv": "Workbench uke-kroppen (1).zip",
+  "arkiv_sha256": "bf1ab3b3122abf87c6c2b89e042cfd3ec6c0ffe4113cc99c85085bade6336ceb",
+  "repo_ved_import": "96aa1503f",
+  "filer": [
+    {
+      "fil": "SKILL.md",
+      "sha256": "353c5a9d472fcd783a3c7eefabba4aa65c7424556ef1b87bd84165171ec7b6a4",
+      "bytes": 2727
+    },
+    {
+      "fil": "WB-ar-coach-normal-1440.png",
+      "sha256": "1ae7c697af934f9d12873c33ef18199085390d25b4788678db745fd1c1f220e1",
+      "bytes": 535295
+    },
+    {
+      "fil": "WB-ar-coach-normal-390.png",
+      "sha256": "a9b631b17dd9f2c56542b62ec98050169afe953adc04a60d1dcd09e41ed1a375",
+      "bytes": 173361
+    },
+    {
+      "fil": "WB-live-coach-normal-1440.png",
+      "sha256": "f00889c548f4f8b886caea6fdcc243ccbf04aea285baec7af725fb80b1a172c5",
+      "bytes": 357237
+    },
+    {
+      "fil": "WB-live-coach-normal-390.png",
+      "sha256": "5ef7e442815e0d311a7b3a97c348e200f60daf8179c8efbf8fd628f976a38a32",
+      "bytes": 147673
+    },
+    {
+      "fil": "WB-maned-coach-normal-1440.png",
+      "sha256": "ea7429a4e1658043117de30165ae2e8f073a4441ca78499eca990b68a7210732",
+      "bytes": 450872
+    },
+    {
+      "fil": "WB-maned-coach-normal-390.png",
+      "sha256": "49efeb22d08efaba413954a39fd51e9d9f6c296efdf0fcf94adaa2cddf866406",
+      "bytes": 164500
+    },
+    {
+      "fil": "WB-minkalender-coach-normal-1440.png",
+      "sha256": "3f80d332483114f385d4521b2b994e6c694800fbb503dd747cc05c1a1dd758dd",
+      "bytes": 427803
+    },
+    {
+      "fil": "WB-minkalender-coach-normal-390.png",
+      "sha256": "60aa2626908a08a9f90f2f431620c0af037abfd04da665b92b23f50a0385e7c0",
+      "bytes": 123806
+    },
+    {
+      "fil": "WB-okt-coach-normal-1440.png",
+      "sha256": "b5c20caec43e99553ae8da118ae73a697e83026478fb9eae4cc441ee958eb625",
+      "bytes": 435946
+    },
+    {
+      "fil": "WB-okt-coach-normal-390.png",
+      "sha256": "6027f807bf90712776d35414b9e8b4a6bd76dab865ce32d3f4767cbd8ceb9f3c",
+      "bytes": 187586
+    },
+    {
+      "fil": "WB-periode-coach-normal-1440.png",
+      "sha256": "7893d69065dd26e270238997d9362ae898e40eb12af0c51e89bdbd02c72cae4f",
+      "bytes": 427971
+    },
+    {
+      "fil": "WB-periode-coach-normal-390.png",
+      "sha256": "5ec3df7eb246edac6c5640f9d780eaa498b71e2720a0dcd2656132321933dcb4",
+      "bytes": 160869
+    },
+    {
+      "fil": "WB-stall-coach-normal-1440.png",
+      "sha256": "5424dfb2ece10603d2c5e8e9246bb62b0bed1454faf9ff8478bd373e5a4c13d5",
+      "bytes": 404105
+    },
+    {
+      "fil": "WB-stall-coach-normal-390.png",
+      "sha256": "300a29df9d33edfbc30e117b857b749ecfb95cda2b8f90e77132dc7b9aca4057",
+      "bytes": 191053
+    },
+    {
+      "fil": "WB-uke-coach-normal-1440.png",
+      "sha256": "16f8d382fed8bfc62ec00001c46a9b9405c7af77a1b86134d90775bb2e5f16f9",
+      "bytes": 402060
+    },
+    {
+      "fil": "WB-uke-coach-normal-390.png",
+      "sha256": "883b2e17fe81bf7a691dc03f9ab45d462618a5d2b9eb5a84fb98f92f3a0a509d",
+      "bytes": 137910
+    },
+    {
+      "fil": "Workbench WB-05-11.dc.html",
+      "sha256": "698d32eda1455b0dedaadd36b6d12e5121820326d226a81077a43592e54518c0",
+      "bytes": 137837
+    },
+    {
+      "fil": "assets/logo-ak-golf-hq-negative.svg",
+      "sha256": "05acb1d66876924e806519b199cb8daabd5bf6cb49f84d3a832d0270910d8cb2",
+      "bytes": 12179
+    },
+    {
+      "fil": "assets/logo-ak-golf-hq.svg",
+      "sha256": "1bccc99893124f3c719ca77246c1fc340cf1abb41f187cfb64f4c82a760ab850",
+      "bytes": 12179
+    },
+    {
+      "fil": "manifest.md",
+      "sha256": "ea920e975737697c9c9c156993b4a30ce577041b0b270ab5c1488e3b61953422",
+      "bytes": 2816
+    },
+    {
+      "fil": "tokens/colors.css",
+      "sha256": "c5d12b5a41fd2047566a5bf1661aacd4907a4091a53f06d89ff9a67e48d901d0",
+      "bytes": 2366
+    },
+    {
+      "fil": "tokens/fonts.css",
+      "sha256": "5667ce8d23e816da580aa66455ea8c76428c04fddc1fe538afdbc0aad394d116",
+      "bytes": 446
+    },
+    {
+      "fil": "tokens/typography.css",
+      "sha256": "aae20d24b2e0560751ff5fe22c490bb709736770f87ea01df60635edc32f8969",
+      "bytes": 2534
+    }
+  ]
+}

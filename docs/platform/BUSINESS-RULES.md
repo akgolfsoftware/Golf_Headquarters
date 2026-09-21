@@ -128,7 +128,7 @@ Implementasjon: `src/lib/domain/sg.ts`.
 - Dette er en **visningsregel**, ikke en re-kalibrering: selve datafangsten og
   `BENCHMARK_PUTT`-tabellen i `src/lib/domain/sg.ts` forblir meter-indeksert internt (kilden er
   Team Norway IUP-referansen, målt i meter). Kun det brukeren ser konverteres til fot.
-- Matcher repoets egen ordbok (`docs/ordbok-ak-golf-konsept.md`: «Putting ALLTID i fot (ft), aldri
+- Matcher repoets egen ordbok (`docs/ordbok.md`: «Putting ALLTID i fot (ft), aldri
   meter», MasterBrain CANON v3.5) — koden har foreløpig ikke fulgt denne regelen overalt.
 - Gjenbruk `meterTilFot()` fra `src/lib/min-golf/format.ts` — ikke lag en ny konverterer.
 
@@ -354,8 +354,8 @@ Implementasjon: `src/lib/v2/tema-default.ts` + `src/app/layout.tsx` + `src/compo
 De 13 tidligere CANON-invariantene og kodehåndhevelsen under `src/lib/canon/` ble
 pensjonert 18. august 2026. De er historikk, ikke produktregler eller aktive
 implementasjonskrav. Gjeldende treningsbegreper og beslutninger finnes i
-`docs/ordbok-master-trening.md`, ordbøkene og `.claude/rules/beslutninger.md`.
+`docs/ordbok.md`, ordbøkene og `.claude/rules/beslutninger.md`.
 
 Club Speed-beslutningen fra 1. september gjelder fortsatt: motorikk er AUTO, og
 «uten ball» er en egenskap ved øvelsen, ikke et eget motorikksteg. Se
-`docs/ordbok-ak-golf-konsept.md` §3.
+`docs/ordbok.md` §3.
