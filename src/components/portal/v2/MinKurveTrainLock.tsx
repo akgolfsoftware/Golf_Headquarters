@@ -15,6 +15,11 @@
  * TruthLayer: alle tall kommer ferdig regnet fra `byggMinKurve` (ren, testet).
  * Denne komponenten regner ingenting selv utover geometri.
  *
+ * Avvik:
+ *   - PH-10-kontroll 21.09.2026: kurven oppgir nå hvor mange deltakelser i
+ *     utvalget som ikke kunne tegnes (cut, trukket, påmeldt, ufullstendig).
+ *     Uten det så fire deltakelser med to cut ut som to turneringer.
+ *
  * Bevisst avvik fra fasiten: turneringsradene er ikke trykkbare — det finnes
  * ingen detaljside for en enkelt turnering på spillerflaten, og en press-
  * tilstand uten mål er en falsk affordanse.
@@ -424,6 +429,11 @@ export function MinKurveTrainLock({ kurve, dataSistHentet, sesongLenker, program
               </div>
               <span style={{ fontSize: 13, color: TL.mute, ...tab }}>{kildeLinje}</span>
             </div>
+            {kurve.utenResultatTekst && (
+              <p role="note" style={{ margin: "10px 0 0", ...meta13 }}>
+                {kurve.utenResultatTekst}
+              </p>
+            )}
 
             <Flate pad={22} style={{ marginTop: 18 }}>
               <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 16 }}>
@@ -475,6 +485,11 @@ export function MinKurveTrainLock({ kurve, dataSistHentet, sesongLenker, program
                 ["Turneringer", String(kurve.grunnlag.turneringer)],
                 ["Runder", String(kurve.grunnlag.runder)],
                 ["Beste runde", kurve.grunnlag.besteRunde ? `${fmtToPar(kurve.grunnlag.besteRunde.toPar)} · ${fmtDato(kurve.grunnlag.besteRunde.dato)}` : "—"],
+                // Cut, trukket og påmeldt tegnes ikke, men skal telles — ellers
+                // ser fire deltakelser med to cut ut som to turneringer.
+                ...(kurve.utenResultat > 0
+                  ? [["Ikke tegnet", String(kurve.utenResultat)] as [string, string]]
+                  : []),
                 ["Data hentet", dataSistHentet ? fmtDato(dataSistHentet) : "—"],
               ].map(([k, v], i, arr) => (
                 <div key={k} style={{ display: "flex", alignItems: "center", gap: 12, padding: "13px 0", borderBottom: i < arr.length - 1 ? `1px solid ${TL.hair}` : "none" }}>
@@ -518,6 +533,11 @@ export function MinKurveTrainLock({ kurve, dataSistHentet, sesongLenker, program
           )}
           {kildeLinje}
         </div>
+        {kurve.utenResultatTekst && (
+          <p role="note" style={{ margin: "10px 0 0", ...meta13 }}>
+            {kurve.utenResultatTekst}
+          </p>
+        )}
 
         <div style={{ marginTop: 18, display: "flex", gap: 10 }}>
           <YEtiketter yAkse={kurve.yAkse} bredde={30} padding="2px 0 30px" />

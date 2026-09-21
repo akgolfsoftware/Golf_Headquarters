@@ -165,3 +165,47 @@ test("fmtToPar bruker norsk desimaltegn og fortegn", () => {
   assert.equal(fmtToPar(0), "0,0");
   assert.equal(fmtToPar(-2), "−2,0");
 });
+
+// ── Utelatte deltakelser (PH-10-kontroll 21.09.2026) ───────────────────────
+
+test("kurven oppgir hvor mange deltakelser som ikke kunne tegnes", () => {
+  // Fire deltakelser i samme sesong: to fullførte, én cut, én spilleren trakk
+  // seg fra. Kurven kan bare tegne de to — men skal ikke la spilleren tro at
+  // hen bare har spilt to turneringer.
+  const r = byggMinKurve(
+    [
+      rad({ navn: "Åpning", startDato: new Date(2026, 3, 1), toparTotal: 8, rundescorer: [76, 76] }),
+      rad({ navn: "Cut", startDato: new Date(2026, 4, 1), toparTotal: 12, rundescorer: [84], status: "CUT" }),
+      rad({ navn: "Trakk seg", startDato: new Date(2026, 5, 1), toparTotal: 6, rundescorer: [78], status: "WITHDREW" }),
+      rad({ navn: "Sesongslutt", startDato: new Date(2026, 6, 1), toparTotal: 4, rundescorer: [74, 74] }),
+    ],
+    true,
+  );
+  assert.equal(r.punkter.length, 2, "bare fullstendige resultater tegnes");
+  assert.equal(r.utenResultat, 2, "cut og trukket skal telles, ikke forsvinne");
+  assert.match(r.utenResultatTekst, /2/);
+  assert.match(r.utenResultatTekst, /ikke tegnet|ikke med/i);
+});
+
+test("ingen utelatte gir ingen setning om utelatte", () => {
+  const r = byggMinKurve(
+    [rad({ navn: "Én", startDato: new Date(2026, 3, 1), toparTotal: 8, rundescorer: [76, 76] })],
+    true,
+  );
+  assert.equal(r.utenResultat, 0);
+  assert.equal(r.utenResultatTekst, "");
+});
+
+test("utelatte telles kun i valgt sesong", () => {
+  const r = byggMinKurve(
+    [
+      rad({ navn: "I fjor cut", startDato: new Date(2025, 4, 1), toparTotal: 12, rundescorer: [84], status: "CUT" }),
+      rad({ navn: "I år", startDato: new Date(2026, 3, 1), toparTotal: 8, rundescorer: [76, 76] }),
+      rad({ navn: "I år cut", startDato: new Date(2026, 5, 1), toparTotal: 12, rundescorer: [84], status: "CUT" }),
+    ],
+    true,
+    "2026",
+  );
+  assert.equal(r.valgtSesong, 2026);
+  assert.equal(r.utenResultat, 1, "fjorårets cut hører ikke til årets sesongtall");
+});

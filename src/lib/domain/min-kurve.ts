@@ -82,6 +82,14 @@ export type MinKurve = {
   /** Y-akse for kurven: hele slag, tre etiketter (topp, midt, bunn). */
   yAkse: { min: number; maks: number; etiketter: number[] };
   kilder: string[];
+  /**
+   * Deltakelser i valgt sesong som IKKE kunne tegnes — cut, trukket, påmeldt,
+   * diskvalifisert eller ufullstendig registrert. De hører med i bildet: uten
+   * dette tallet kan fire deltakelser med to cut se ut som to turneringer.
+   */
+  utenResultat: number;
+  /** Hel setning om de utelatte, eller tom streng når ingen er utelatt. */
+  utenResultatTekst: string;
   /** Klarspråk når det ikke er noe å tegne. Tom streng når det er det. */
   tomGrunn: string;
 };
@@ -99,6 +107,8 @@ const TOM_KURVE: Omit<MinKurve, "koblet" | "tomGrunn"> = {
   grunnlag: { turneringer: 0, runder: 0, besteRunde: null },
   yAkse: { min: 0, maks: 0, etiketter: [] },
   kilder: [],
+  utenResultat: 0,
+  utenResultatTekst: "",
 };
 
 const TALL = new Intl.NumberFormat("nb-NO", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
@@ -120,6 +130,18 @@ export function fmtSlag(v: number): string {
 
 function rund1(v: number): number {
   return Math.round(v * 10) / 10;
+}
+
+const AAR_FMT = new Intl.DateTimeFormat("en", { timeZone: "Europe/Oslo", year: "numeric" });
+function aaretFor(d: Date): number {
+  return Number(AAR_FMT.format(d));
+}
+
+/** Sier hvor mange deltakelser kurven ikke kunne tegne, og hvorfor. */
+function utenResultatTekstFor(antall: number): string {
+  if (antall === 0) return "";
+  const n = antall === 1 ? "Én deltakelse" : `${antall} deltakelser`;
+  return `${n} i dette utvalget er ikke tegnet i kurven — cut, trukket, påmeldt eller ufullstendig registrert. De står i listen under.`;
 }
 
 /**
@@ -238,11 +260,20 @@ export function byggMinKurve(
     return { ...TOM_KURVE, koblet: true, tomGrunn: "Ingen fullstendige turneringsresultater kan vises i kurven ennå. Se resultatlisten for tilgjengelige runder." };
   }
 
-  const sesonger = [...new Set(alle.map((p) => Number(new Intl.DateTimeFormat("en", { timeZone: "Europe/Oslo", year: "numeric" }).format(p.dato))))].sort((a, b) => b - a);
+  const sesonger = [...new Set(alle.map((p) => aaretFor(p.dato)))].sort((a, b) => b - a);
   const valgtSesong = velgSesong(sesonger, onsketSesong);
-  const punkter = valgtSesong === "alle" ? alle : alle.filter((p) => Number(new Intl.DateTimeFormat("en", { timeZone: "Europe/Oslo", year: "numeric" }).format(p.dato)) === valgtSesong);
+  const punkter = valgtSesong === "alle" ? alle : alle.filter((p) => aaretFor(p.dato) === valgtSesong);
 
   const kilder = [...new Set(rader.map((r) => r.kilde).filter((k): k is string => !!k))].sort();
+
+  // Deltakelser som ikke ble punkter. Telles i samme utvalg som kurven, så
+  // sesongvalget ikke drar med seg fjorårets cut.
+  const tegnedeIder = new Set(alle.map((p) => p.turneringId));
+  const utenResultat = rader.filter(
+    (r) =>
+      !tegnedeIder.has(r.turneringId) &&
+      (valgtSesong === "alle" || aaretFor(r.startDato) === valgtSesong),
+  ).length;
 
   if (punkter.length === 0) {
     // Kan bare skje ved et sesongvalg uten treff — velgSesong faller ellers
@@ -253,6 +284,8 @@ export function byggMinKurve(
       sesonger,
       valgtSesong,
       kilder,
+      utenResultat,
+      utenResultatTekst: utenResultatTekstFor(utenResultat),
       tomGrunn: "Ingen turneringer i denne sesongen.",
     };
   }
@@ -298,6 +331,8 @@ export function byggMinKurve(
     },
     yAkse: yAkseFor(punkter),
     kilder,
+    utenResultat,
+    utenResultatTekst: utenResultatTekstFor(utenResultat),
     tomGrunn: "",
   };
 }
