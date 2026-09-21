@@ -1,5 +1,9 @@
 # Team Norway Golf — designsystem
 
+> **MYNDIGHET 21.09.2026:** Dette er en organisasjonsprofil under det gjeldende AK Golf Design
+> System, bare der profilen er uttrykkelig valgt. Train-lock/Paper-henvisninger lenger nede er
+> historikk. Se [gjeldende designautoritet](../../docs/design-system/design-autoritet.md).
+
 Designsystem for Norges Golfforbunds toppidrettssatsing. Bygget fra bunnen av rundt logoens to farger, med Team Norway-uttrykket som referanse for mørke flater og grafisk temperament.
 
 Systemet arver **ingen** visuelle valg fra tidligere PowerPoint-, Word- eller Excel-materiale. Det materialet er behandlet som **innhold og terminologi** — språket er bevart, formen er ny.

@@ -1,6 +1,6 @@
 {
-  "sitert": 153,
+  "sitert": 144,
   "av": 219,
-  "sistEndret": "2026-09-08",
-  "grunn": "DG-14 stasjon (alle slag) siterer DG-13, DG-14, DG-14L og DG-15."
+  "sistEndret": "2026-09-21",
+  "grunn": "Anders godkjente uttrykkelig 21.09.2026 kildebyttet 153 til 144: gamle Workbench-referanser A-01c, A-02b, A-02c, A-04, A-09, A-11, A-18, WB-00 og WB-01 er erstattet som visuell fasit av valgt Claude Design-pakke. check-workbench-handover er obligatorisk i verify:static og kontrollerer 24 kildefiler og 16 PNG-er. Funksjons- og bildebevis kreves fortsatt per fane. Se docs/design-audit/workbench-kontrollretting-2026-09-21.md. Øvrig Train-lock-kontroll beholdes; ingen publiserings- eller databaseautorisasjon."
 }

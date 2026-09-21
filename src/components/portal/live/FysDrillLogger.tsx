@@ -17,6 +17,7 @@
  */
 
 import { useState } from "react";
+import { fysLoggState } from "@/lib/portal-live/fys-registrering";
 import type { LiveV2Drill, DrillRepState } from "./types";
 import { SettRepsLogger, type SettRad, PulsSoneVelger } from "@/components/v2/fysisk";
 import { Stegteller } from "@/components/v2/skjema";
@@ -33,10 +34,6 @@ function fysModalitet(drill: LiveV2Drill): FysModalitet {
   }
   if (drill.fysTreningstype === "bevegelighet") return "bevegelighet";
   return "styrke";
-}
-
-function kgTekst(n: number): string {
-  return Number.isInteger(n) ? String(n) : n.toFixed(1).replace(".", ",");
 }
 
 export type FysDrillLoggerProps = {
@@ -84,39 +81,25 @@ export function FysDrillLogger({ drill, onChange }: FysDrillLoggerProps) {
 
   const erHold = drill.fysBevegelighetType === "hold";
 
-  function medNotat(tekst: string): string {
-    return notat.trim() ? `${tekst} — ${notat.trim()}` : tekst;
-  }
-
-  function meldStyrke(sett: SettRad[], nyttNotat?: string) {
+  function meldStyrke(sett: SettRad[], nyttNotat = notat) {
     setSisteSett(sett);
-    const totalReps = sett.reduce((s, r) => s + r.reps, 0);
-    const kjerne = `Styrke: ${sett.map((r) => `${kgTekst(r.vekt)} kg × ${r.reps}`).join(" · ")}`;
-    onChange({
-      repsTotal: totalReps,
-      repsWithoutBall: 0,
-      repsLowSpeed: 0,
-      repsAutomatic: 0,
-      repsHit: totalReps,
-      logNotes: nyttNotat !== undefined ? (nyttNotat.trim() ? `${kjerne} — ${nyttNotat.trim()}` : kjerne) : medNotat(kjerne),
-    });
+    onChange(fysLoggState({ type: "styrke", sett, notat: nyttNotat }));
   }
 
-  function meldKondisjon(nesteSone: string, nesteVarighet: number) {
-    const kjerne = `Kondisjon: ${nesteVarighet} min i sone ${nesteSone.replace("S", "")}`;
-    onChange({ repsTotal: nesteVarighet, repsWithoutBall: 0, repsLowSpeed: 0, repsAutomatic: 0, repsHit: nesteVarighet, logNotes: medNotat(kjerne) });
+  function meldKondisjon(nesteSone: string, nesteVarighet: number, nyttNotat = notat) {
+    onChange(fysLoggState({ type: "kondisjon", minutter: nesteVarighet, sone: nesteSone, notat: nyttNotat }));
   }
 
-  function meldBevegelighet(reps: number, hold: number) {
-    const verdi = erHold ? hold : reps;
-    const kjerne = erHold ? `Bevegelighet: hold ${hold} sek` : `Bevegelighet: ${reps} reps`;
-    onChange({ repsTotal: verdi, repsWithoutBall: 0, repsLowSpeed: 0, repsAutomatic: 0, repsHit: verdi, logNotes: medNotat(kjerne) });
+  function meldBevegelighet(reps: number, hold: number, nyttNotat = notat) {
+    onChange(fysLoggState(erHold
+      ? { type: "hold", sekunder: hold, notat: nyttNotat }
+      : { type: "reps", repetisjoner: reps, notat: nyttNotat }));
   }
 
   function håndterNotat(v: string) {
     setNotat(v);
-    if (modalitet === "kondisjon") meldKondisjon(sone, varighetMin);
-    else if (modalitet === "bevegelighet") meldBevegelighet(bevegelseReps, holdSek);
+    if (modalitet === "kondisjon") meldKondisjon(sone, varighetMin, v);
+    else if (modalitet === "bevegelighet") meldBevegelighet(bevegelseReps, holdSek, v);
     else meldStyrke(sisteSett, v);
   }
 

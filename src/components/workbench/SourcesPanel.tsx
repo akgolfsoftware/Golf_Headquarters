@@ -30,13 +30,12 @@ export function SourcesPanel({ kilder, playerId, uke, maned, aar }: Props) {
         { id: "periode" as const, label: UI.visPeriode },
         { id: "maned" as const, label: UI.visManed },
         { id: "uke" as const, label: UI.visUke },
-        { id: "stall" as const, label: UI.visStall },
       ]
     : [];
   return (
     <aside aria-label={UI.sourcesTitle} style={{ minWidth: 0 }}>
       <div style={{ fontFamily: TL.font.sans, fontSize: 11, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>
-        {UI.sourcesTitle}
+        {playerId ? UI.timeLevels : UI.sourcesTitle}
       </div>
       {nivaa.length > 0 ? (
         <div style={{ marginTop: 10, display: "grid", gap: 2 }}>

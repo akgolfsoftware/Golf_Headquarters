@@ -75,7 +75,7 @@ export function CoachWorkbenchMount({
   };
 
   return (
-    <div data-wb-lov="1" style={{ display: "flex", flexDirection: "column", gap: 16, background: "#F2F1ED", color: "#111111" }}>
+    <div data-wb-lov="1" style={{ display: "flex", flexDirection: "column", gap: 16, background: "var(--ak-workbench-flate)", color: "var(--ak-workbench-tekst)" }}>
       <TilbakeLenke href={`/admin/spillere/${currentPlayerId}`}>Tilbake til {playerName}</TilbakeLenke>
       <Kort pad="12px 16px">
         <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>

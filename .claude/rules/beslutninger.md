@@ -2,13 +2,33 @@
 
 Gjeldende beslutninger fra Anders. Gjelder til han endrer dem. Nyeste først.
 
-## Gjeldende designavklaring — 12.09.2026
+## Gjeldende designautoritet — 21.09.2026
 
-Anders arbeider parallelt i Claude Design med alle skjermer og sier: «Ingenting av det som ligger i prosjektet nå er låst.» Eksisterende design er arbeidsunderlag under revisjon. Eldre krav om Train-lock, bestemte fonter, farger, temaer, menyer eller annen utforming er ikke bindende for videre designarbeid, selv om de nedenfor eller i leveransepakker kalles «låst» eller «fasit».
+Anders har valgt **AK Golf Design System** som system for hele AK Golf-paraplyen og Claude
+Design-prosjektet **«App design»** som aktiv arbeidsflate for AK Golf HQ. Arbeidet fra i dag og
+fremover skal bygge videre på dette. Valget er bindende på systemnivå.
+
+**Train-lock og Paper er utgående.** De kan bevares i kode og historikk under kontrollert
+overgang og brukes til å finne funksjoner, men de er aldri visuell fasit eller grunnlag for nye
+skjermer. Eldre tekst som sier at de er «låst», «valgt» eller «fasit», er overstyrt.
+
+Claude Code og Claude Design eier designarbeidet; Codex eier implementeringen i appkoden. Ingen
+agent skal spørre Anders på nytt om AK Golf Design System, Train-lock eller Paper skal gjelde.
+Bare en ny, uttrykkelig beslutning fra Anders kan åpne dette igjen. Konkrete skjermvarianter innen
+det valgte systemet kan fortsatt velges før de bygges.
+
+Full kilde og identifikatorer: [designautoriteten](../../docs/design-system/design-autoritet.md).
+
+## Tidligere designavklaring — 12.09.2026
+
+Historisk avklaring fra før systemvalget 21.09.2026. Den beholdes som bakgrunn, men kan ikke
+overstyre designautoriteten over.
+
+Anders arbeidet parallelt i Claude Design med alle skjermer og sa: «Ingenting av det som ligger i prosjektet nå er låst.» Eksisterende design var arbeidsunderlag under revisjon. Eldre krav om Train-lock, bestemte fonter, farger, temaer, menyer eller annen utforming var ikke bindende for videre designarbeid, selv om de nedenfor eller i leveransepakker ble kalt «låst» eller «fasit».
 
 Når Anders velger en komplett og ferdig Claude Design-pakke med `selectedForBuilding: true`, er pakkens visuelle autoritets-ID eneste visuelle fasit for registrert omfang. Den komplette pakken skal dekke PlayerHQ, AgencyOS, Team Norway og WANG. Øvrige brukerflater skal bruke samme fundament gjennom navngitte profiler/mønstre før lansering. Gamle visuelle regler fjernes kontrollert etter erstatning og kan ikke bli liggende som skjulte standarder. Produkt-, fag-, tilgangs-, data-, personvern-, sikkerhets- og betalingsregler endres ikke av designvalget.
 
-Bruk [designstatus og referanser](../../designsystem/README.md) og registrer valgt versjon før en konkret skjermbygging. Gamle portplaner skal ikke settes i gang automatisk. [Arbeidslisten](../../docs/MASTERPLAN-GJENSTAAENDE.md) beskriver neste anbefalte gjennomgang og skiller den fra bestilt arbeid. Personvern, tilgangskontroll og krav til trygg databehandling videreføres.
+Bruk [designstatus og referanser](../../designsystem/README.md) og registrer valgt versjon før en konkret skjermbygging. Gamle portplaner skal ikke settes i gang automatisk. [Arbeidslisten · historisk Git-versjon](https://github.com/akgolfsoftware/Golf_Headquarters/blob/a235444b0f7287b0ce7270c28b32d34517711a2f/docs/MASTERPLAN-GJENSTAAENDE.md) beskriver neste anbefalte gjennomgang og skiller den fra bestilt arbeid. Personvern, tilgangskontroll og krav til trygg databehandling videreføres.
 
 ## Tidligere beslutningsgrunnlag
 

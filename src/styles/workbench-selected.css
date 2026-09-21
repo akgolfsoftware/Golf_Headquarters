@@ -1,0 +1,530 @@
+/* Fasit: docs/design/workbench-handover, valgt 20.09.2026. Kun Workbench. */
+.wb-app {
+  color-scheme: light;
+  --wb-sand: #F2F1ED; --wb-panel: #FAF8F3; --wb-white: #FFFFFF;
+  --wb-ink: #141413; --wb-body: #2a2926; --wb-muted: #6b6862; --wb-border: #ddd9d1; --wb-strong: #c9c4ba;
+  --wb-fys: #2a2926; --wb-tek: #141413; --wb-slag: #6b6862; --wb-spill: #8a8680; --wb-turn: #8a6a12;
+  --tl-font-sans: var(--font-archivo), Arial, sans-serif;
+  --tl-font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --tl-scene: var(--wb-sand); --tl-elev: var(--wb-white); --tl-dock: var(--wb-panel);
+  --tl-hair: var(--wb-border); --tl-dim: var(--wb-border); --tl-text: var(--wb-ink); --tl-mute: var(--wb-muted);
+  --tl-fill: var(--wb-ink); --tl-on-fill: var(--wb-white); --tl-warm: var(--wb-ink); --tl-warm-ink: var(--wb-ink);
+  --tl-r-card: 2px; --tl-r-sheet: 2px 2px 0 0; --tl-artefakt: 340px; --tl-kilder: 236px;
+  min-height: 100dvh; background: var(--wb-sand); color: var(--wb-ink); font-family: var(--tl-font-sans); font-size: 15px;
+}
+.wb-app * { box-sizing: border-box; }
+.wb-app button, .wb-app select, .wb-app input { font-family: inherit; }
+/* Delte skjemafelt skal følge valgt lys Workbench, også med mørkt app-tema. */
+.wb-app input, .wb-app select, .wb-app textarea {
+  min-width: 0; max-width: 100%; background: var(--wb-white); color: var(--wb-ink);
+  border-color: var(--wb-strong); border-radius: 2px;
+}
+.wb-app .v2-press { border-radius: 2px !important; }
+.wb-app .wb-drill-row { flex-wrap: wrap; }
+.wb-app .wb-drill-actions { margin-left: auto; }
+.wb-app a { text-decoration: none; }
+.wb-app :focus-visible { outline: 2px solid var(--wb-ink); outline-offset: 2px; }
+.wb-top { height: 56px; display: flex; align-items: center; gap: 18px; padding: 0 16px; border-bottom: 1px solid var(--wb-border); background: var(--wb-white); }
+.wb-top img { display: block; height: 30px; width: auto; filter: none; }
+.wb-top nav { display: flex; gap: 2px; }
+.wb-top nav a { display: flex; align-items: center; min-height: 44px; padding: 0 12px; border-radius: 2px; color: var(--wb-body); font-size: 14px; font-weight: 500; white-space: nowrap; }
+.wb-top nav a[aria-current] { background: var(--wb-sand); box-shadow: inset 0 -2px 0 var(--wb-ink); font-weight: 600; }
+.wb-who { margin-left: auto; display: flex; gap: 8px; font-size: 11px; color: var(--wb-muted); }
+.wb-who b { font-size: 13px; font-weight: 500; color: var(--wb-body); }
+.wb-mobile-menu { display: none; }
+.wb-layout { display: grid; grid-template-columns: 236px minmax(0,1fr) 340px; min-height: calc(100dvh - 56px); }
+.wb-sources { border-right: 1px solid var(--wb-border); background: var(--wb-panel); padding: 14px 12px; min-width: 0; }
+.wb-main { min-width: 0; }
+.wb-pills { padding: 10px 20px; border-bottom: 1px solid var(--wb-border); }
+.wb-body { padding: 20px; }
+.wb-inspector { border-left: 1px solid var(--wb-border); background: var(--wb-panel); padding: 16px 14px; min-width: 0; }
+.wb-kicker { display: block; margin: 0 0 6px; font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--wb-muted); }
+.wb-heading { display: flex; gap: 16px; align-items: flex-end; margin: 0 0 18px; }
+.wb-heading h1 { margin: 0; font: 600 29px/1.05 var(--font-oswald), sans-serif; letter-spacing: -.01em; white-space: nowrap; }
+.wb-heading .wb-sub { flex: 1; font: 400 11px/1.2 var(--tl-font-mono); color: var(--wb-muted); padding-bottom: 5px; }
+.wb-publish { min-height: 44px; padding: 0 18px; border: 0; border-radius: 2px; background: var(--ak-grunn-farge-rust-600); color: var(--ak-workbench-pa-handling); font-size: 15px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+.wb-publish:disabled { opacity: .5; cursor: default; }
+.wb-controls { display: flex; gap: 6px; align-items: center; margin: 10px 0; flex-wrap: wrap; }
+.wb-quiet { min-height: 44px; padding: 0 12px; background: var(--wb-white); color: var(--wb-body); border: 1px solid var(--wb-strong); border-radius: 2px; cursor: pointer; font-size: 13px; }
+.wb-roster { margin-top: 24px; }
+.wb-roster a { min-height: 44px; padding: 8px 10px; display: flex; flex-direction: column; color: var(--wb-body); border: 1px solid transparent; border-radius: 2px; font-size: 14px; }
+.wb-roster a[aria-current] { border-color: var(--wb-strong); background: var(--wb-white); font-weight: 600; }
+.wb-roster small { color: var(--wb-muted); font: 400 10px/1.4 var(--tl-font-mono); }
+.wb-week-summary h2 { font: 600 17px/1.2 var(--font-oswald), sans-serif; margin: 0; }
+.wb-week-summary p { font: 400 11px/1.4 var(--tl-font-mono); color: var(--wb-muted); margin: 4px 0 24px; }
+.wb-week-summary dl { margin: 0 0 22px; }
+.wb-week-summary dl div { display: grid; grid-template-columns: 104px 1fr; gap: 10px; padding: 11px 0; border-bottom: 1px solid var(--wb-border); }
+.wb-week-summary dt { font-size: 13px; font-weight: 500; color: var(--wb-body); }
+.wb-week-summary dd { margin: 0; font-size: 14px; }
+.wb-mobile-summary { display: none; }
+@media(max-width:1023px) {
+  .wb-top { gap: 12px; padding: 0 12px; }
+  .wb-top > nav, .wb-who { display: none; }
+  .wb-mobile-menu { display: block; margin-left: auto; position: relative; }
+  .wb-mobile-menu summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font-size: 13px; }
+  .wb-mobile-menu nav { position: absolute; z-index: 40; right: 0; top: 44px; flex-direction: column; background: var(--wb-white); border: 1px solid var(--wb-border); padding: 6px; }
+  .wb-layout { grid-template-columns: minmax(0,1fr); }
+  .wb-sources, .wb-inspector { display: none; }
+  .wb-pills { padding: 8px 12px; }
+  .wb-body { padding: 14px; }
+  .wb-heading { flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
+  .wb-heading .wb-sub { flex-basis: 100%; order: 3; padding: 0; }
+  .wb-heading .wb-publish { margin-left: auto; font-size: 13px; padding: 0 12px; }
+  .wb-mobile-summary { display: block; margin-top: 12px; }
+}
+.wb-calendar { display: grid; grid-template-columns: 56px repeat(7,minmax(0,1fr)); border: 1px solid var(--wb-border); border-radius: 2px; background: var(--wb-white); }
+.wb-calendar-day { min-width: 0; border-left: 1px solid var(--wb-border); }
+.wb-day-heading { height: 28px; display: flex; align-items: center; gap: 5px; padding: 0 8px; border-bottom: 1px solid var(--wb-border); font: 400 10px/1.2 var(--tl-font-mono); text-transform: uppercase; letter-spacing: .08em; color: var(--wb-muted); }
+.wb-day-heading b { color: var(--wb-ink); font-weight: 500; }
+.wb-band { height: 30px; padding: 3px 4px; border-bottom: 1px solid var(--wb-border); background: var(--wb-panel); overflow-y: auto; }
+.wb-band span { display: block; background: var(--wb-sand); border-left: 3px solid var(--wb-spill); border-radius: 2px; padding: 5px 6px; font: 400 10px/1.2 var(--tl-font-mono); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.wb-calendar-axis > span { display: block; height: 32px; padding-right: 8px; text-align: right; transform: translateY(-5px); color: var(--wb-muted); font: 400 10px/1 var(--tl-font-mono); }
+.wb-day-hours { height: 576px; position: relative; background: repeating-linear-gradient(to bottom,var(--wb-white) 0,var(--wb-white) 31px,var(--wb-border) 31px,var(--wb-border) 32px); }
+.wb-session { position: absolute; min-height: 44px; min-width: 0; appearance: none; border: 1px solid var(--wb-border); border-left: 3px solid var(--wb-tek); border-radius: 2px; background: var(--wb-panel); color: var(--wb-ink); padding: 4px 6px; display: flex; flex-direction: column; justify-content: center; gap: 1px; text-align: left; cursor: pointer; overflow: hidden; }
+.wb-session > span { font-size: 11px; font-weight: 500; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
+.wb-session small { font: 400 10px/1.2 var(--tl-font-mono); color: var(--wb-muted); }
+.wb-session[data-lag="FYS"] { border-left-color: var(--wb-fys); }
+.wb-session[data-lag="SLAG"] { border-left-color: var(--wb-slag); }
+.wb-session[data-lag="SPILL"] { border-left-color: var(--wb-spill); }
+.wb-session[data-lag="TURN"] { border-left-color: var(--wb-turn); }
+.wb-session[aria-pressed="true"],.wb-session[data-drag-over="true"] { outline: 2px solid var(--wb-ink); outline-offset: -2px; z-index: 3; }
+.wb-session:hover { border-color: var(--wb-strong); z-index: 4; }
+.wb-day-picker { display: none; }
+.wb-empty { font-size: 13px; color: var(--wb-muted); }
+@media(max-width:1023px) {
+  .wb-calendar { grid-template-columns: 52px minmax(0,1fr); }
+  .wb-calendar-day[data-mobile-selected="false"] { display: none; }
+  .wb-day-picker { display: flex; gap: 4px; margin-bottom: 12px; }
+  .wb-day-picker button { flex: 1; min-width: 0; min-height: 44px; border: 1px solid var(--wb-border); border-radius: 2px; background: var(--wb-white); color: var(--wb-body); font-size: 10px; }
+  .wb-day-picker b { display: block; font-size: 13px; }
+  .wb-day-picker [aria-pressed="true"] { background: var(--wb-ink); color: var(--wb-white); }
+}
+/* Arbeidsflaten ruller innenfor skallet; handlingene ligger etter kalenderen. */
+@media(min-width:1024px) {
+  .wb-layout { height: calc(100dvh - 56px); min-height: 0; }
+  .wb-main { display: flex; flex-direction: column; min-height: 0; }
+  .wb-body { display: flex; flex-direction: column; overflow: auto; flex: 1; }
+  .wb-body > section { flex: 0 0 auto; }
+  .wb-controls { order: 2; }
+  .wb-sources, .wb-inspector { overflow: auto; }
+}
+.wb-app [role="dialog"] > div:last-child { border-radius: 2px; background: var(--wb-panel); color: var(--wb-ink); }
+.wb-app [role="dialog"] button, .wb-app [role="dialog"] input, .wb-app [role="dialog"] select { border-radius: 2px; }
+.wb-day-switch { display: none; }
+@media(max-width:1023px) {
+  .wb-heading h1 { font-size: 21px; }
+  .wb-heading > .wb-publish { display: none; }
+  .wb-heading .wb-sub { font-size: 11px; line-height: 1.3; }
+  .wb-controls { margin: 0 0 12px; }
+  .wb-body { padding-bottom: 310px; }
+  .wb-day-picker[data-open="false"], .wb-day-desktop { display: none; }
+  .wb-day-switch { display: flex; width: 100%; min-height: 44px; height: 44px; background: var(--wb-white); border: 0; border-bottom: 1px solid var(--wb-border); text-align: left; cursor: pointer; }
+  .wb-calendar-axis .wb-day-heading { height: 44px; }
+  .wb-mobile-summary { display: flex; flex-direction: column; position: fixed; z-index: 20; left: 0; right: 0; bottom: 0; height: 292px; padding: 12px 14px 14px; background: var(--wb-white); border: 1px solid var(--wb-strong); border-radius: 2px 2px 0 0; box-shadow: 0 -8px 24px rgb(20 20 19 / 8%); gap: 8px; overflow: auto; }
+  .wb-grip { width: 36px; height: 3px; flex: 0 0 3px; background: var(--wb-strong); border-radius: 2px; align-self: center; margin-bottom: 6px; }
+  .wb-mobile-summary .wb-kicker { margin: 0; }
+  .wb-mobile-summary h2 { margin: 0; font: 600 17px/1.2 var(--font-oswald), sans-serif; }
+  .wb-mobile-summary dl { margin: 4px 0; }
+  .wb-mobile-summary dl div { display: grid; grid-template-columns: 96px 1fr; gap: 10px; padding: 6px 0; border-bottom: 1px solid var(--wb-border); font-size: 14px; line-height: 1.4; }
+  .wb-mobile-summary dl div:last-child { border: 0; }
+  .wb-mobile-summary dd { margin: 0; }
+  .wb-mobile-summary dt { color: var(--wb-body); font-weight: 500; }
+  .wb-mobile-actions { display: flex; gap: 8px; margin-top: auto; }
+  .wb-mobile-actions .wb-publish { flex: 1; }
+}
+@media(max-width:1023px) {
+  .wb-body { display: flex; flex-direction: column; }
+  .wb-controls { order: 2; }
+  .wb-mobile-menu summary { gap: 8px; white-space: nowrap; }
+  .wb-mobile-menu summary span { font: 400 11px/1.2 var(--tl-font-mono); color: var(--wb-muted); }
+  .wb-mobile-menu summary b { font-size: 13px; font-weight: 500; }
+}
+.wb-player-select { display: grid; gap: 6px; margin-bottom: 18px; font-size: 13px; }
+.wb-player-select select { min-height: 44px; width: 100%; padding: 0 10px; border: 1px solid var(--wb-strong); border-radius: 2px; background: var(--wb-white); color: var(--wb-body); }
+
+/* Periode — WB-05 valgt Claude Design-master. */
+.wb-period-body { gap: 20px; }
+.wb-period-cards { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; }
+.wb-period-card { min-height: 132px; padding: 16px; border: 1px solid var(--wb-strong); border-radius: 2px; background: var(--wb-white); }
+.wb-period-card strong { display: block; margin-top: 14px; font: 600 28px/1 var(--font-oswald),sans-serif; }
+.wb-period-card strong small { display: block; margin-top: 7px; color: var(--wb-muted); font: 400 11px/1.2 var(--tl-font-mono); }
+.wb-period-card > small { display: block; margin-top: 10px; color: var(--wb-muted); font: 400 10px/1.2 var(--tl-font-mono); }
+.wb-period-meter { display: block; height: 5px; margin-top: 16px; background: var(--wb-border); overflow: hidden; }
+.wb-period-meter > i { display: block; height: 100%; background: var(--wb-ink); }
+.wb-period-split { display: flex; height: 32px; margin-top: 18px; overflow: hidden; }
+.wb-period-split span { min-width: 34px; display: flex; align-items: center; justify-content: center; color: var(--wb-white); font: 500 10px/1 var(--tl-font-mono); }
+.wb-period-split [data-lag="FYS"] { background: var(--wb-fys); }
+.wb-period-split [data-lag="TEK"] { background: var(--wb-tek); }
+.wb-period-split [data-lag="SLAG"] { background: var(--wb-slag); }
+.wb-period-split [data-lag="SPILL"] { background: var(--wb-spill); }
+.wb-period-split [data-lag="TURN"] { background: var(--wb-turn); }
+.wb-period-section { display: grid; gap: 8px; }
+.wb-period-timeline { display: grid; grid-template-columns: repeat(auto-fit,minmax(112px,1fr)); gap: 6px; }
+.wb-period-week { min-height: 112px; padding: 12px; border: 1px solid var(--wb-strong); border-radius: 2px; background: var(--wb-white); color: var(--wb-ink); }
+.wb-period-week > span { display: block; font-weight: 600; }
+.wb-period-week small { display: block; min-height: 17px; margin-top: 7px; color: var(--wb-muted); font: 400 10px/1.2 var(--tl-font-mono); }
+.wb-period-week b { display: block; margin-top: 10px; font: 500 16px/1 var(--font-oswald),sans-serif; }
+.wb-period-week > i { display: block; height: 3px; margin-top: 12px; background: var(--wb-border); }
+.wb-period-week > i span { display: block; height: 100%; background: var(--wb-ink); }
+.wb-period-table-wrap { overflow-x: auto; border: 1px solid var(--wb-strong); border-radius: 2px; background: var(--wb-white); }
+.wb-period-table { width: 100%; min-width: 680px; border-collapse: collapse; font-size: 13px; }
+.wb-period-table th { padding: 10px 12px; border-bottom: 1px solid var(--wb-strong); color: var(--wb-muted); font: 500 10px/1.2 var(--tl-font-mono); text-align: left; }
+.wb-period-table td { padding: 12px; border-bottom: 1px solid var(--wb-border); }
+.wb-period-table tbody tr:last-child td { border-bottom: 0; }
+.wb-period-table .wb-period-meter { width: 100%; min-width: 100px; margin: 0; }
+.wb-period-lag { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+.wb-period-lag > i { width: 3px; height: 20px; background: var(--wb-ink); }
+.wb-period-lag > i[data-lag="FYS"] { background: var(--wb-fys); }
+.wb-period-lag > i[data-lag="TEK"] { background: var(--wb-tek); }
+.wb-period-lag > i[data-lag="SLAG"] { background: var(--wb-slag); }
+.wb-period-lag > i[data-lag="SPILL"] { background: var(--wb-spill); }
+.wb-period-lag > i[data-lag="TURN"] { background: var(--wb-turn); }
+.wb-period-summary ul { margin: -8px 0 20px; padding-left: 18px; color: var(--wb-body); font-size: 13px; }
+.wb-period-summary li { margin: 6px 0; }
+.wb-period-error { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid var(--wb-strong); background: var(--wb-white); font-size: 13px; }
+.wb-period-error button { margin-left: auto; }
+.wb-period-empty { min-height: 220px; display: grid; place-content: center; text-align: center; border: 1px solid var(--wb-strong); background: var(--wb-white); }
+.wb-period-empty p { color: var(--wb-muted); font-size: 13px; }
+@media(max-width:1023px) {
+  .wb-period-cards { grid-template-columns: 1fr; }
+  .wb-period-body { padding-bottom: 310px; }
+  .wb-period-timeline { display: flex; overflow-x: auto; }
+  .wb-period-week { flex: 0 0 126px; }
+  .wb-mobile-summary .wb-period-summary p { margin-bottom: 4px; }
+  .wb-mobile-actions .wb-quiet { display: inline-flex; align-items: center; justify-content: center; }
+}
+
+/* Måned — WB-05 valgt Claude Design-master. */
+.wb-month-body { gap: 18px; }
+.wb-month-heading { display: flex; align-items: flex-end; gap: 14px; }
+.wb-month-heading h1 { margin: 0; font: 600 29px/1.05 var(--font-oswald),sans-serif; }
+.wb-month-heading .wb-sub { flex: 1; padding-bottom: 4px; color: var(--wb-muted); font: 400 11px/1.2 var(--tl-font-mono); }
+.wb-month-year { padding-bottom: 2px; color: var(--wb-body); font: 500 18px/1 var(--font-oswald),sans-serif; }
+.wb-month-progress { min-width: 190px; }
+.wb-month-progress b { display: block; font: 500 15px/1.2 var(--tl-font-mono); }
+.wb-month-progress .wb-period-meter { margin-top: 8px; }
+.wb-month-controls { display: flex; gap: 6px; }
+.wb-month-distribution { display: grid; gap: 8px; padding: 12px 0; border-top: 1px solid var(--wb-border); border-bottom: 1px solid var(--wb-border); }
+.wb-month-distribution > div { display: flex; gap: 6px; overflow-x: auto; }
+.wb-month-tag { min-height: 38px; min-width: 116px; display: inline-flex; align-items: center; gap: 7px; flex: 1 1 116px; padding: 0 9px; border: 1px solid var(--wb-border); background: var(--wb-white); font: 600 11px/1 var(--tl-font-mono); }
+.wb-month-tag > i { width: 3px; height: 20px; background: var(--wb-ink); }
+.wb-month-tag > i[data-lag="FYS"] { background: var(--wb-fys); }
+.wb-month-tag > i[data-lag="TEK"] { background: var(--wb-tek); }
+.wb-month-tag > i[data-lag="SLAG"] { background: var(--wb-slag); }
+.wb-month-tag > i[data-lag="SPILL"] { background: var(--wb-spill); }
+.wb-month-tag > i[data-lag="TURN"] { background: var(--wb-turn); }
+.wb-month-tag b { margin-left: auto; color: var(--wb-muted); font-weight: 400; white-space: nowrap; }
+.wb-month-calendar { min-width: 0; border: 1px solid var(--wb-strong); background: var(--wb-white); }
+.wb-month-weekdays,.wb-month-days { display: grid; grid-template-columns: repeat(7,minmax(0,1fr)); }
+.wb-month-weekdays span { padding: 8px; color: var(--wb-muted); font: 600 10px/1.2 var(--tl-font-mono); letter-spacing: .08em; text-transform: uppercase; }
+.wb-month-day { min-height: 96px; min-width: 0; padding: 7px 8px; border-top: 1px solid var(--wb-border); border-left: 1px solid var(--wb-border); color: var(--wb-ink); }
+.wb-month-day:nth-child(7n+1) { border-left: 0; }
+.wb-month-day[data-in-month="false"] { opacity: .38; }
+.wb-month-day[aria-current="date"] { box-shadow: inset 0 0 0 2px var(--wb-ink); }
+.wb-month-date { display: block; margin-bottom: 7px; font: 500 11px/1 var(--tl-font-mono); }
+.wb-month-lines { display: grid; gap: 4px; }
+.wb-month-lines > span { min-width: 0; padding-left: 6px; border-left: 3px solid var(--wb-tek); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; font-weight: 500; }
+.wb-month-lines > span[data-lag="FYS"] { border-left-color: var(--wb-fys); }
+.wb-month-lines > span[data-lag="SLAG"] { border-left-color: var(--wb-slag); }
+.wb-month-lines > span[data-lag="SPILL"] { border-left-color: var(--wb-spill); }
+.wb-month-lines > span[data-lag="TURN"] { border-left-color: var(--wb-turn); }
+.wb-month-lines small { color: var(--wb-muted); font: 400 10px/1.2 var(--tl-font-mono); }
+.wb-month-bars { display: none; }
+.wb-month-week-list { display: grid; }
+.wb-month-week-list a { min-height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 8px; border-top: 1px solid var(--wb-border); color: var(--wb-body); }
+.wb-month-week-list b { font-size: 13px; }
+.wb-month-week-list span { color: var(--wb-muted); font: 400 10px/1.2 var(--tl-font-mono); }
+@media(max-width:1023px) {
+  .wb-month-body { padding-bottom: 310px; }
+  .wb-month-heading { flex-wrap: wrap; gap: 8px; }
+  .wb-month-heading h1 { font-size: 21px; }
+  .wb-month-heading .wb-sub { flex-basis: 100%; order: 4; padding: 0; }
+  .wb-month-progress { flex: 1; min-width: 160px; margin-left: auto; }
+  .wb-month-controls { order: 2; }
+  .wb-month-distribution { display: none; }
+  .wb-month-weekdays span { padding: 7px 2px; text-align: center; font-size: 9px; }
+  .wb-month-day { min-height: 62px; padding: 7px 5px; }
+  .wb-month-date { font-size: 10px; }
+  .wb-month-lines { display: none; }
+  .wb-month-bars { display: flex; gap: 2px; align-items: center; min-height: 9px; color: var(--wb-muted); font: 400 9px/1 var(--tl-font-mono); }
+  .wb-month-bars i { width: 4px; height: 9px; background: var(--wb-tek); }
+  .wb-month-bars i[data-lag="FYS"] { background: var(--wb-fys); }
+  .wb-month-bars i[data-lag="SLAG"] { background: var(--wb-slag); }
+  .wb-month-bars i[data-lag="SPILL"] { background: var(--wb-spill); }
+  .wb-month-bars i[data-lag="TURN"] { background: var(--wb-turn); }
+  .wb-month-summary .wb-mobile-actions { margin-top: auto; }
+}
+
+/* År — WB-06 valgt Claude Design-master. */
+.wb-year-body { gap: 18px; }
+.wb-year-heading { display: flex; align-items: flex-end; gap: 14px; }
+.wb-year-heading h1 { margin: 0; font: 600 32px/1 var(--font-oswald),sans-serif; }
+.wb-year-heading .wb-sub { flex: 1; padding-bottom: 4px; color: var(--wb-muted); font: 400 11px/1.2 var(--tl-font-mono); }
+.wb-year-progress { min-width: 210px; }
+.wb-year-progress b { display: block; font: 500 15px/1.2 var(--tl-font-mono); }
+.wb-year-progress .wb-period-meter { margin-top: 8px; }
+.wb-year-controls { display: flex; gap: 6px; }
+.wb-year-distribution { display: grid; gap: 8px; padding: 12px 0; border-top: 1px solid var(--wb-border); border-bottom: 1px solid var(--wb-border); }
+.wb-year-distribution > div { display: flex; gap: 6px; overflow-x: auto; }
+.wb-year-timeline { min-width: 0; }
+.wb-year-month-axis { display: grid; grid-template-columns: repeat(12,minmax(0,1fr)); color: var(--wb-muted); font: 500 9px/1.2 var(--tl-font-mono); text-transform: uppercase; }
+.wb-year-month-axis span { padding: 0 0 7px 4px; border-left: 1px solid var(--wb-border); }
+.wb-year-track { position: relative; height: 92px; border: 1px solid var(--wb-strong); background: repeating-linear-gradient(to right,var(--wb-white) 0,var(--wb-white) calc(8.333% - 1px),var(--wb-border) calc(8.333% - 1px),var(--wb-border) 8.333%); overflow: hidden; }
+.wb-year-track button { appearance: none; position: absolute; top: 8px; bottom: 8px; min-width: 48px; padding: 9px 10px; border: 1px solid var(--wb-strong); border-radius: 2px; background: var(--wb-panel); color: var(--wb-ink); text-align: left; cursor: pointer; overflow: hidden; }
+.wb-year-track button[aria-pressed="true"] { background: var(--wb-white); box-shadow: inset 0 0 0 2px var(--wb-ink); }
+.wb-year-track button b,.wb-year-track button small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wb-year-track button b { font-size: 11px; }
+.wb-year-track button small { margin-top: 5px; color: var(--wb-muted); font: 400 9px/1.2 var(--tl-font-mono); }
+.wb-year-track button > span { display: flex; gap: 2px; margin-top: 9px; }
+.wb-year-track button i,.wb-year-legend i { display: inline-block; width: 12px; height: 3px; background: var(--wb-ink); }
+.wb-year-track [data-uke="vedlikehold"],.wb-year-legend [data-uke="vedlikehold"] { background: var(--wb-muted); }
+.wb-year-track [data-uke="turnering"],.wb-year-legend [data-uke="turnering"] { background: var(--wb-turn); }
+.wb-year-legend { display: flex; gap: 18px; padding-top: 9px; color: var(--wb-muted); font: 400 10px/1.2 var(--tl-font-mono); }
+.wb-year-legend span { display: flex; align-items: center; gap: 6px; }
+.wb-year-periods { display: grid; gap: 8px; }
+.wb-year-periods .wb-period-table button { appearance: none; min-height: 32px; padding: 0; border: 0; background: transparent; color: var(--wb-ink); font-weight: 600; cursor: pointer; text-align: left; }
+.wb-year-periods tr[data-selected="true"] { background: var(--wb-panel); box-shadow: inset 3px 0 0 var(--wb-ink); }
+.wb-year-summary ul { margin: -8px 0 20px; padding-left: 18px; color: var(--wb-body); font-size: 13px; }
+.wb-year-summary li { margin: 6px 0; }
+.wb-year-summary .wb-mobile-actions .wb-quiet { display: inline-flex; align-items: center; justify-content: center; }
+@media(max-width:1023px) {
+  .wb-year-body { padding-bottom: 310px; }
+  .wb-year-heading { flex-wrap: wrap; gap: 8px; }
+  .wb-year-heading h1 { font-size: 24px; }
+  .wb-year-heading .wb-sub { flex-basis: 100%; order: 4; padding: 0; }
+  .wb-year-progress { flex: 1; min-width: 160px; margin-left: auto; }
+  .wb-year-controls { order: 2; }
+  .wb-year-distribution,.wb-year-month-axis,.wb-year-periods { display: none; }
+  .wb-year-track { display: flex; gap: 6px; height: auto; border: 0; background: transparent; overflow-x: auto; }
+  .wb-year-track button { position: static; flex: 0 0 174px; min-height: 94px; padding: 12px; background: var(--wb-white); }
+  .wb-year-track button b { font-size: 12px; }
+  .wb-year-track button small { white-space: normal; }
+  .wb-year-legend { gap: 12px; overflow-x: auto; }
+  .wb-year-legend span { white-space: nowrap; }
+  .wb-year-summary .wb-mobile-actions { margin-top: auto; }
+}
+
+/* Økt — WB-07 valgt Claude Design-master. */
+.wb-session-body { gap: 20px; }
+.wb-session-heading { margin-bottom: 0; }
+.wb-session-picker { display: grid; grid-template-columns: auto minmax(220px,420px); align-items: center; gap: 12px; color: var(--wb-muted); font: 500 11px/1.2 var(--tl-font-mono); }
+.wb-session-picker select { min-height: 44px; padding: 0 10px; }
+.wb-session-section { display: grid; gap: 8px; }
+.wb-session-formula { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); border-top: 1px solid var(--wb-strong); border-left: 1px solid var(--wb-strong); background: var(--wb-white); }
+.wb-session-formula > div { min-height: 92px; padding: 13px 14px; border-right: 1px solid var(--wb-strong); border-bottom: 1px solid var(--wb-strong); }
+.wb-session-formula span { display: flex; align-items: center; gap: 5px; color: var(--wb-muted); font: 500 10px/1.2 var(--tl-font-mono); }
+.wb-session-formula b { display: block; margin-top: 13px; font-size: 14px; line-height: 1.35; }
+.wb-session-formula b[data-empty="true"] { color: var(--wb-muted); font-weight: 400; }
+.wb-help { width: 18px; height: 18px; padding: 0; border: 1px solid var(--wb-border); border-radius: 50%; background: var(--wb-white); color: var(--wb-muted); font: 600 10px/1 var(--tl-font-mono); cursor: help; }
+.wb-session-drills { display: grid; border-top: 1px solid var(--wb-strong); }
+.wb-session-drills button { appearance: none; min-height: 58px; display: grid; grid-template-columns: 32px minmax(0,1fr) 62px 62px 72px; align-items: center; gap: 10px; padding: 0 12px; border: 1px solid var(--wb-strong); border-top: 0; border-left: 3px solid var(--wb-tek); background: var(--wb-white); color: var(--wb-ink); text-align: left; cursor: pointer; }
+.wb-session-drills button[data-lag="FYS"] { border-left-color: var(--wb-fys); }
+.wb-session-drills button[data-lag="SLAG"] { border-left-color: var(--wb-slag); }
+.wb-session-drills button[data-lag="SPILL"] { border-left-color: var(--wb-spill); }
+.wb-session-drills button[data-lag="TURN"] { border-left-color: var(--wb-turn); }
+.wb-session-drills button[aria-pressed="true"] { background: var(--wb-panel); box-shadow: inset 0 0 0 2px var(--wb-ink); }
+.wb-session-drills button > span { color: var(--wb-muted); font: 500 11px/1 var(--tl-font-mono); }
+.wb-session-drills button > b { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; }
+.wb-session-drills button > em { font: 600 10px/1 var(--tl-font-mono); font-style: normal; }
+.wb-session-drills button > small { color: var(--wb-muted); font: 400 10px/1.2 var(--tl-font-mono); text-align: right; }
+.wb-session-empty { min-height: 120px; display: grid; place-content: center; border: 1px solid var(--wb-strong); background: var(--wb-white); color: var(--wb-muted); font-size: 13px; }
+.wb-inline-link { display: inline-flex; align-items: center; justify-content: center; width: fit-content; }
+.wb-session-editor h2 { margin: 0; font: 600 18px/1.2 var(--font-oswald),sans-serif; }
+.wb-session-editor > p { margin: 5px 0 16px; color: var(--wb-muted); font: 400 11px/1.4 var(--tl-font-mono); }
+.wb-session-editor dl { margin: 0; }
+.wb-session-editor dl div { display: grid; grid-template-columns: 94px minmax(0,1fr); gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--wb-border); }
+.wb-session-editor dt { color: var(--wb-muted); font-size: 12px; }
+.wb-session-editor dd { margin: 0; font-size: 13px; overflow-wrap: anywhere; }
+.wb-session-editor-actions { display: flex; flex-wrap: wrap; gap: 6px; margin: 14px 0; }
+.wb-session-editor-actions .wb-quiet { min-height: 38px; padding: 0 9px; font-size: 11px; }
+.wb-session-edit { padding: 12px 0; border-top: 1px solid var(--wb-border); }
+.wb-session-edit summary { min-height: 32px; font-size: 13px; font-weight: 600; cursor: pointer; }
+.wb-session-edit label { display: grid; gap: 5px; margin: 9px 0; color: var(--wb-muted); font-size: 11px; }
+.wb-session-edit > div { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.wb-session-edit input,.wb-session-edit select { min-height: 40px; width: 100%; padding: 0 8px; color: var(--wb-ink); font-size: 13px; }
+.wb-session-mobile > p { margin: 0; color: var(--wb-muted); font: 400 11px/1.3 var(--tl-font-mono); }
+@media(max-width:1180px) and (min-width:1024px) {
+  .wb-session-formula { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .wb-session-drills button { grid-template-columns: 28px minmax(0,1fr) 52px 64px; }
+  .wb-session-drills button > em { display: none; }
+}
+@media(max-width:1023px) {
+  .wb-session-body { padding-bottom: 410px; }
+  .wb-session-formula { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .wb-session-formula > div { min-height: 82px; padding: 11px; }
+  .wb-session-picker { grid-template-columns: 1fr; gap: 5px; }
+  .wb-session-drills button { grid-template-columns: 26px minmax(0,1fr) 48px 58px; gap: 6px; padding: 0 9px; }
+  .wb-session-drills button > em { display: none; }
+  .wb-session-drills button > b { font-size: 13px; }
+  .wb-session-mobile { height: 392px; }
+  .wb-session-mobile dl { overflow: auto; }
+  .wb-session-mobile .wb-inline-link { flex: 1; }
+}
+
+/* Stall — WB-08 valgt Claude Design-master. Ingen kildekolonne. */
+.wb-stall-layout { grid-template-columns: minmax(0,1fr) 340px; }
+.wb-stall-body { gap: 14px; }
+.wb-stall-heading { align-items: flex-end; margin-bottom: 0; }
+.wb-stall-heading > div { display: grid; gap: 1px; }
+.wb-stall-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.wb-stall-filters { display: flex; gap: 5px; overflow-x: auto; }
+.wb-stall-filters button { min-height: 44px; padding: 0 14px; flex: 0 0 auto; border: 1px solid var(--wb-strong); border-radius: 2px; background: var(--wb-white); color: var(--wb-body); font-size: 13px; cursor: pointer; }
+.wb-stall-filters button[aria-pressed="true"] { border-color: var(--wb-ink); background: var(--wb-ink); color: var(--wb-white); }
+.wb-stall-window { display: flex; align-items: center; gap: 8px; }
+.wb-stall-window .wb-quiet { width: 44px; padding: 0; }
+.wb-stall-window span { white-space: nowrap; color: var(--wb-muted); font: 400 10px/1.2 var(--tl-font-mono); }
+.wb-stall-list { display: grid; border-top: 1px solid var(--wb-strong); background: var(--wb-white); }
+.wb-stall-list-head,.wb-stall-list > button { display: grid; grid-template-columns: minmax(100px,1fr) minmax(180px,2fr) 112px 112px 104px; align-items: center; gap: 10px; }
+.wb-stall-list-head { min-height: 36px; padding: 0 12px; border: 1px solid var(--wb-strong); border-top: 0; color: var(--wb-muted); font: 500 10px/1.2 var(--tl-font-mono); }
+.wb-stall-list > button { appearance: none; min-height: 58px; padding: 7px 12px; border: 1px solid var(--wb-strong); border-top: 0; border-left: 3px solid var(--wb-tek); background: var(--wb-white); color: var(--wb-ink); text-align: left; cursor: pointer; }
+.wb-stall-list > button[data-lag="FYS"] { border-left-color: var(--wb-fys); }
+.wb-stall-list > button[data-lag="SLAG"] { border-left-color: var(--wb-slag); }
+.wb-stall-list > button[data-lag="SPILL"] { border-left-color: var(--wb-spill); }
+.wb-stall-list > button[data-lag="TURN"] { border-left-color: var(--wb-turn); }
+.wb-stall-list > button[aria-pressed="true"] { background: var(--wb-panel); box-shadow: inset 0 0 0 2px var(--wb-ink); }
+.wb-stall-list > button b { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; }
+.wb-stall-list > button span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--wb-body); font-size: 13px; }
+.wb-stall-list > button small { display: none; color: var(--wb-muted); font: 400 10px/1.2 var(--tl-font-mono); }
+.wb-stall-list > button em { width: fit-content; padding: 4px 6px; border: 1px solid var(--wb-border); border-radius: 2px; background: var(--wb-panel); color: var(--wb-body); font: 500 10px/1 var(--tl-font-mono); font-style: normal; }
+.wb-stall-summary dl { margin-bottom: 14px; }
+.wb-stall-summary .wb-mobile-actions { display: flex; gap: 6px; margin-top: 14px; }
+.wb-stall-summary .wb-mobile-actions > * { flex: 1; }
+.wb-stall-summary .wb-stall-note { margin: 8px 0; padding: 9px; border: 1px solid var(--wb-border); color: var(--wb-body); }
+.wb-stall-week-link { display: inline-block; margin-top: 16px; color: var(--wb-body); font-size: 12px; text-decoration: underline; text-underline-offset: 3px; }
+@media(max-width:1180px) and (min-width:1024px) {
+  .wb-stall-list-head,.wb-stall-list > button { grid-template-columns: minmax(86px,1fr) minmax(150px,2fr) 100px 92px; }
+  .wb-stall-list-head span:nth-child(4),.wb-stall-list > button span[data-label="Pyramide"] { display: none; }
+}
+@media(max-width:1023px) {
+  .wb-stall-layout { grid-template-columns: minmax(0,1fr); }
+  .wb-stall-body { padding-bottom: 410px; }
+  .wb-stall-toolbar { align-items: stretch; flex-direction: column; }
+  .wb-stall-window { justify-content: space-between; }
+  .wb-stall-list-head { display: none; }
+  .wb-stall-list > button { grid-template-columns: minmax(0,1fr) auto; gap: 5px 12px; padding: 10px; }
+  .wb-stall-list > button b { grid-column: 1; grid-row: 2; }
+  .wb-stall-list > button span[data-label="Spiller"] { grid-column: 1; grid-row: 1; font-weight: 500; }
+  .wb-stall-list > button span[data-label="Dato"],.wb-stall-list > button span[data-label="Pyramide"] { display: none; }
+  .wb-stall-list > button small { display: block; grid-column: 1 / -1; grid-row: 3; }
+  .wb-stall-list > button em { grid-column: 2; grid-row: 1; }
+  .wb-stall-mobile { height: 392px; }
+  .wb-stall-mobile > .wb-stall-summary { min-height: 0; display: flex; flex: 1; flex-direction: column; }
+  .wb-stall-mobile .wb-stall-summary dl { overflow: auto; }
+}
+
+/* Live — WB-09 valgt Claude Design-master. Hele flaten er mørk, rust kun START ØKT. */
+.wb-app[data-surface="live"] {
+  color-scheme: dark;
+  --wb-live-page: #141413; --wb-live-flat: #1c1b1a; --wb-live-raised: #2e2c29;
+  --wb-live-strong: #6b6560; --wb-live-muted: #a8a49c; --wb-live-text: #F2F1ED;
+  --wb-sand: var(--wb-live-flat); --wb-panel: var(--wb-live-page); --wb-white: var(--wb-live-page);
+  --wb-ink: var(--wb-live-text); --wb-body: var(--wb-live-text); --wb-muted: var(--wb-live-muted);
+  --wb-border: var(--wb-live-raised); --wb-strong: var(--wb-live-strong);
+  background: var(--wb-live-flat); color: var(--wb-live-text);
+}
+.wb-app[data-surface="live"] .wb-top { background: var(--wb-live-page); border-bottom-color: var(--wb-live-raised); }
+.wb-app[data-surface="live"] .wb-top nav a { color: var(--wb-live-text); }
+.wb-app[data-surface="live"] .wb-top nav a[aria-current] { background: var(--wb-live-raised); box-shadow: inset 0 -2px 0 var(--wb-live-text); }
+.wb-app[data-surface="live"] .wb-who { color: var(--wb-live-muted); }
+.wb-app[data-surface="live"] .wb-who b { color: var(--wb-live-text); }
+.wb-app[data-surface="live"] :focus-visible { outline-color: var(--wb-live-text); }
+.wb-live-layout { grid-template-columns: minmax(0,1fr) 340px; background: var(--wb-live-flat); }
+.wb-live-layout .wb-pills { background: var(--wb-live-flat); border-bottom-color: var(--wb-live-raised); }
+.wb-live-body { background: var(--wb-live-flat); }
+.wb-live-heading { display: flex; align-items: flex-end; gap: 16px; margin-bottom: 16px; }
+.wb-live-heading h1 { margin: 0; color: var(--wb-live-text); font: 600 29px/1.05 var(--font-oswald),sans-serif; letter-spacing: -.01em; }
+.wb-live-meta { padding-bottom: 5px; color: var(--wb-live-muted); font: 400 11px/1.2 var(--tl-font-mono); }
+.wb-live-clock { margin-left: auto; color: var(--wb-live-text); font: 600 29px/1 var(--font-oswald),sans-serif; letter-spacing: -.01em; }
+.wb-live-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; margin-bottom: 18px; }
+.wb-live-card { min-width: 0; padding: 14px 16px; border: 1px solid var(--wb-live-raised); border-radius: 2px; background: var(--wb-live-page); }
+.wb-live-card h2 { margin: 6px 0 0; color: var(--wb-live-text); font: 600 18px/1.15 var(--font-oswald),sans-serif; }
+.wb-live-card > p { margin: 4px 0 0; color: var(--wb-live-muted); font-size: 13px; }
+.wb-live-counter { display: flex; align-items: center; gap: 14px; margin-top: 14px; }
+.wb-live-counter button { width: 44px; height: 44px; padding: 0; border: 1px solid var(--wb-live-strong); border-radius: 2px; background: transparent; color: var(--wb-live-text); font-size: 21px; cursor: pointer; }
+.wb-live-counter button:hover,.wb-live-actions button:hover,.wb-live-exercises button:hover { background: var(--wb-live-raised); }
+.wb-live-counter strong { min-width: 72px; text-align: center; color: var(--wb-live-text); font: 600 42px/1 var(--font-oswald),sans-serif; }
+.wb-live-counter-label { display: block; margin-top: 6px; color: var(--wb-live-muted); font: 400 11px/1.2 var(--tl-font-mono); }
+.wb-live-series { display: flex; flex-direction: column; margin-top: 8px; }
+.wb-live-series > div { min-height: 44px; display: grid; grid-template-columns: minmax(0,1fr) 84px 110px; align-items: center; gap: 10px; border-bottom: 1px solid var(--wb-live-raised); }
+.wb-live-series > div:last-child { border-bottom: 0; }
+.wb-live-series b { color: var(--wb-live-text); font-size: 14px; }
+.wb-live-series span { color: var(--wb-live-muted); font: 400 13px/1.2 var(--tl-font-mono); }
+.wb-live-series em { color: var(--wb-live-muted); font-size: 13px; font-style: normal; text-align: right; }
+.wb-live-actions { display: flex; gap: 6px; margin-top: 12px; }
+.wb-live-actions button,.wb-live-finish { min-height: 44px; flex: 1; padding: 0 12px; border: 1px solid var(--wb-live-strong); border-radius: 2px; background: transparent; color: var(--wb-live-text); font-size: 14px; font-weight: 600; cursor: pointer; }
+.wb-live-actions button:disabled { opacity: .45; cursor: default; }
+.wb-live-exercises { display: grid; gap: 3px; }
+.wb-live-exercises > div { display: grid; gap: 3px; }
+.wb-live-exercises > div > button { appearance: none; min-height: 44px; display: grid; grid-template-columns: 24px minmax(0,1fr) 70px 120px; align-items: center; gap: 10px; padding: 0 12px; border: 1px solid var(--wb-live-raised); border-radius: 2px; background: var(--wb-live-page); color: var(--wb-live-text); text-align: left; cursor: pointer; }
+.wb-live-exercises > div > button[aria-current] { border-color: var(--wb-live-text); }
+.wb-live-exercises button > span { color: var(--wb-live-strong); font: 400 11px/1.2 var(--tl-font-mono); }
+.wb-live-exercises button > b { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; }
+.wb-live-exercises button > small { color: var(--wb-live-muted); font: 400 11px/1.2 var(--tl-font-mono); }
+.wb-live-exercises button > em { color: var(--wb-live-muted); font-size: 13px; font-style: normal; text-align: right; }
+.wb-live-finish { width: fit-content; min-width: 180px; margin-top: 10px; flex: 0 0 auto; }
+.wb-live-inspector { background: var(--wb-live-page); border-left-color: var(--wb-live-raised); }
+.wb-live-next h2 { margin: 0; color: var(--wb-live-text); font: 600 18px/1.2 var(--font-oswald),sans-serif; }
+.wb-live-next > p { margin: 5px 0 22px; color: var(--wb-live-muted); font: 400 11px/1.4 var(--tl-font-mono); }
+.wb-live-next dl { margin: 0 0 20px; }
+.wb-live-next dl div { display: grid; grid-template-columns: 104px minmax(0,1fr); gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--wb-live-raised); }
+.wb-live-next dt { color: var(--wb-live-muted); font-size: 13px; }
+.wb-live-next dd { margin: 0; color: var(--wb-live-text); font-size: 14px; overflow-wrap: anywhere; }
+.wb-live-next dd[data-empty="true"] { color: var(--wb-live-strong); }
+.wb-live-next .wb-publish { width: 100%; }
+.wb-live-empty { min-height: 260px; display: grid; place-content: center; text-align: center; border: 1px solid var(--wb-live-raised); background: var(--wb-live-page); }
+.wb-live-empty h1 { margin: 0; font: 600 29px/1.1 var(--font-oswald),sans-serif; }
+.wb-live-empty p,.wb-live-load-error { color: var(--wb-live-muted); font-size: 13px; }
+.wb-live-load-error { padding: 24px; }
+@media(max-width:1023px) {
+  .wb-app[data-surface="live"] .wb-mobile-menu summary { color: var(--wb-live-text); }
+  .wb-app[data-surface="live"] .wb-mobile-menu nav { background: var(--wb-live-page); border-color: var(--wb-live-raised); }
+  .wb-live-layout { grid-template-columns: minmax(0,1fr); }
+  .wb-live-body { padding-bottom: 400px; }
+  .wb-live-heading { flex-wrap: wrap; gap: 8px; }
+  .wb-live-heading h1 { font-size: 21px; }
+  .wb-live-meta { flex-basis: calc(100% - 118px); padding: 0; }
+  .wb-live-clock { margin-left: auto; font-size: 24px; }
+  .wb-live-grid { grid-template-columns: minmax(0,1fr); }
+  .wb-live-exercises > div > button { grid-template-columns: 20px minmax(0,1fr) 96px; gap: 8px; padding: 0 10px; }
+  .wb-live-exercises button > small { display: none; }
+  .wb-live-mobile { height: 360px; display: flex; flex-direction: column; background: var(--wb-live-page); border-color: var(--wb-live-raised); box-shadow: 0 -8px 24px rgb(0 0 0 / 22%); }
+  .wb-live-mobile .wb-grip { background: var(--wb-live-raised); }
+  .wb-live-mobile .wb-live-next { min-height: 0; display: flex; flex: 1; flex-direction: column; }
+  .wb-live-mobile .wb-live-next dl { min-height: 0; overflow: auto; }
+  .wb-live-mobile .wb-live-next .wb-publish { margin-top: auto; }
+}
+
+/* Min kalender — WB-12 valgt Claude Design-master. */
+.wb-min-body { gap: 14px; }
+.wb-min-heading { margin-bottom: 0; }
+.wb-min-heading > div { display: grid; gap: 1px; }
+.wb-min-mobile-meta { display: none; }
+.wb-min-week-nav { display: flex; gap: 5px; margin-left: auto; }
+.wb-min-week-nav .wb-quiet:first-child,.wb-min-week-nav .wb-quiet:last-child { width: 44px; padding: 0; }
+.wb-min-levels { display: grid; gap: 2px; margin: 6px 0 16px; }
+.wb-min-levels a { min-height: 44px; display: flex; flex-direction: column; justify-content: center; padding: 6px 10px; border: 1px solid transparent; border-radius: 2px; color: var(--wb-body); font-size: 14px; }
+.wb-min-levels a[aria-current] { border-color: var(--wb-strong); background: var(--wb-white); font-weight: 600; }
+.wb-min-levels small { margin-top: 3px; color: var(--wb-muted); font: 400 10px/1.2 var(--tl-font-mono); }
+.wb-min-sources { margin-top: 16px; }
+.wb-min-sources > div { min-height: 44px; display: flex; flex-direction: column; justify-content: center; padding: 5px 10px; }
+.wb-min-sources b { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
+.wb-min-sources small,.wb-min-sources p { margin: 3px 0 0; color: var(--wb-muted); font: 400 10px/1.3 var(--tl-font-mono); }
+.wb-min-calendar { flex: 0 0 auto; }
+.wb-min-day-switch { appearance: none; width: 100%; height: 100%; padding: 0; border: 0; background: transparent; color: inherit; font: inherit; letter-spacing: inherit; text-align: left; text-transform: inherit; cursor: pointer; }
+.wb-min-now { position: absolute; z-index: 5; left: 0; right: 0; height: 1px; background: var(--wb-ink); pointer-events: none; }
+.wb-min-now i { position: absolute; left: -4px; top: -4px; width: 8px; height: 8px; border-radius: 50%; background: var(--wb-ink); }
+.wb-min-summary .wb-kicker:nth-of-type(2) { margin-top: 18px; }
+.wb-min-open { width: 100%; display: inline-flex; align-items: center; justify-content: center; }
+.wb-min-mobile { display: none; }
+@media(min-width:1024px) {
+  .wb-min-week-nav { position: absolute; right: 360px; top: 118px; }
+}
+@media(max-width:1023px) {
+  .wb-min-body { padding-bottom: 14px; }
+  .wb-min-heading { flex-wrap: wrap; }
+  .wb-min-desktop-meta { display: none; }
+  .wb-min-mobile-meta { display: block; flex-basis: 100%; }
+  .wb-min-week-nav { margin-left: 0; order: 2; }
+  .wb-min-calendar .wb-calendar-day .wb-day-heading { display: flex; height: 44px; }
+  .wb-min-mobile { position: static; width: auto; height: auto; margin: 0 14px 14px; padding: 14px; box-shadow: none; }
+}

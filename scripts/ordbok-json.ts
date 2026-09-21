@@ -1,14 +1,12 @@
 /**
  * Genererer docs/ordbok.json (maskinlesbar ordbok) og VALIDERER underveis:
  *   1. Alle Prisma-enums (navn + verdier) hentes rett fra prisma/schema.prisma.
- *   2. Masteren (docs/ordbok-master-trening.md) må nevne hver verdi i de trenings-
- *      relevante enumene — ellers exit 1. Da kan ikke dokument og kode skli fra hverandre.
+ *   2. Planleggingsmasteren må nevne hver verdi i den aktive AK-formelen — ellers exit 1.
  *   3. Ingen utgåtte koder (L-faser, CS20–40, M0–M5, PR1–PR5, gamle områdekoder) får
  *      brukes i nye kodefiler utenfor migreringsbroene — ellers exit 1.
  *
  * Kjør: npx tsx scripts/ordbok-json.ts
- * Kilde for betydning og skjermnavn: docs/ordbok-master-trening.md. Denne fila gjentar
- * ikke betydningen — den speiler kodens lister og peker på masteren.
+ * Kilder for betydning og skjermnavn: docs/ordbok.md og docs/treningsplanlegging.md.
  */
 
 import { readFileSync, writeFileSync, readdirSync, statSync } from "node:fs";
@@ -24,7 +22,7 @@ import {
 
 const ROT = process.cwd();
 const SCHEMA = join(ROT, "prisma/schema.prisma");
-const MASTER = join(ROT, "docs/ordbok-master-trening.md");
+const MASTER = join(ROT, "docs/treningsplanlegging.md");
 const UT = join(ROT, "docs/ordbok.json");
 
 // ── 1. Prisma-enums fra schema ─────────────────────────────────────
@@ -41,10 +39,6 @@ for (const m of schema.matchAll(/^enum\s+(\w+)\s*\{([^}]*)\}/gm)) {
 // ── 2. Masteren må dekke de treningsrelevante enumene ──────────────
 const MAA_DEKKES = [
   "PyramidArea", "Omraade", "Motorikk", "Belastning", "Press", "OmradeDimensjon", "SandTrinn",
-  "InnslagType", "RepType", "PracticeType", "DrillPracticeType", "LPhase", "PlanStatus",
-  "SessionStatusV2", "OktAvbruddAarsak", "KondisjonSegmentType", "TournamentEntryStatus",
-  "NgfKategori", "PlayerProgram", "SgCategory", "InsightCategory", "TrackManEnvironment",
-  "RepHastighet", "PeriodGoalStatus", "GoalCategory", "TaskKategori", "DrillFasilitet",
 ];
 const master = readFileSync(MASTER, "utf-8");
 const mangler: string[] = [];
@@ -56,7 +50,7 @@ for (const navn of MAA_DEKKES) {
   }
 }
 if (mangler.length > 0) {
-  console.error("Enum-verdier i schema som IKKE er nevnt i docs/ordbok-master-trening.md:\n" +
+  console.error("Verdier i den aktive AK-formelen som IKKE er nevnt i docs/treningsplanlegging.md:\n" +
     mangler.map((n) => ` - ${n}`).join("\n"));
   process.exit(1);
 }
@@ -100,7 +94,7 @@ for (const p of filer(join(ROT, "src"))) {
   linjer.forEach((l, i) => { if (UTGAATT.test(l)) treff.push(`${rel}:${i + 1}`); });
 }
 if (treff.length > 0) {
-  console.error("Utgåtte koder brukt utenfor migreringsbroene (se docs/ordbok-master-trening.md kap. 17):\n" +
+  console.error("Utgåtte koder brukt utenfor migreringsbroene:\n" +
     treff.map((t) => ` - ${t}`).join("\n"));
   process.exit(1);
 }
@@ -110,7 +104,8 @@ const ut = {
   $schema: "ordbok-lag-3",
   versjon: new Date().toISOString().slice(0, 10),
   kilder: {
-    master: "docs/ordbok-master-trening.md",
+    master: "docs/ordbok.md",
+    planlegging: "docs/treningsplanlegging.md",
     schema: "prisma/schema.prisma",
     kode: "src/lib/domain/ak-formel-v2.ts",
   },

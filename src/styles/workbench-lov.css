@@ -1,15 +1,15 @@
 /* AgencyOS-lov for live WorkbenchV2. Ikke ny palett. */
 [data-wb-lov] {
-  background: #f2f1ed;
-  color: #111111;
+  background: var(--ak-workbench-flate);
+  color: var(--ak-workbench-tekst);
 }
 [data-wb-lov][data-surface="live"] {
   background: #1c1b1a;
-  color: #f4efe6;
+  color: var(--ak-workbench-pa-handling);
 }
 [data-wb-lov] [data-paper-en-ting] {
-  background: #9b2415 !important;
-  color: #f4efe6 !important;
+  background: var(--ak-grunn-farge-rust-600) !important;
+  color: var(--ak-workbench-pa-handling) !important;
   border-radius: 2px !important;
   min-height: 44px;
 }

@@ -1,4 +1,4 @@
-> **Dokumentstatus 10.09.2026:** dette er et underlag, ikke en bekreftelse på dagens leveranse. Gjeldende status er `docs/STATUS-NÅ.md`, kodekartet er `docs/platform/AGENT-BRIEF.md`, og visuelt design velges i `designsystem/README.md`.
+> **Dokumentstatus 21.09.2026:** dette er et produktunderlag, ikke en visuell fasit eller en bekreftelse på dagens leveranse. Gjeldende design er `docs/design-system/design-autoritet.md`; Train-lock og Paper-vedtak lenger nede er historikk. Kodekartet er `docs/platform/AGENT-BRIEF.md`.
 
 > STATUS: skrevet før designsystem-revisjonen juli 2026 — design-beslutninger i dag: `.claude/rules/beslutninger.md` §Tema/design (design-system-regel.md er slettet)
 
@@ -45,21 +45,22 @@ AK Golf HQ er en helintegrert plattform som gir golfcoacher og spillere felles v
 
 ---
 
-## Skjerm-gate (LÅST REGEL)
+## Skjerm-gate (gjeldende regel 21.09.2026)
 
-> **ENDRET 25.08.2026, oppdatert 01.09.2026:** Designfasit er **Train-lock** for alle skjermer i
-> PlayerHQ og AgencyOS (Anders, i økt). Claude Paper og port-dokumentene under er historikk.
-> Fasit-zip er nå committet i `designsystem/train-lock/` — `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`
-> er slettet 30.08.2026; gjeldende plan er `docs/MASTERPLAN-GJENSTAAENDE.md`.
+> **AK Golf Design System og «App design» er visuell autoritet.** Train-lock og Paper er
+> utgående og kan bare brukes til funksjonsinventar og historikk. Se
+> [`docs/design-system/design-autoritet.md`](../design-system/design-autoritet.md).
 
 **FØR** du bygger, endrer eller kobler en skjerm:
-1. Sjekk om skjermen har Train-lock-fasit i `designsystem/train-lock/SCREEN-INDEX.md` — mangler den: STOPP og spør Anders.
-2. Sjekk `docs/MASTERPLAN-GJENSTAAENDE.md` — hvilket STEG/session hører skjermen til, og hva er status?
-3. Jobb mot ferdig-definisjonen der (verify + skjermbilde-gate, se `.claude/rules/beslutninger.md`).
+1. Finn den valgte skjermversjonen i «App design» og registrer prosjekt, fil, versjon og dato.
+2. Les faktisk kode og produktregler slik at alle funksjoner, roller og tilstander bevares.
+3. Jobb mot ferdig-definisjonen for den aktuelle leveransen og sammenlign app mot design.
+
+Ikke spør på nytt om AK Golf Design System, Train-lock eller Paper skal gjelde. Hvis flere nye
+skjermvarianter finnes, avklar bare hvilken konkret variant som skal bygges.
 
 En skjerm er **ikke ferdig** før ferdig-definisjonen er oppfylt og Anders har SETT skjermbildet:
-mobil 390px + desktop, lys og mørk, fasit ved siden av, alle fire tilstander, maks én oransje handling,
-klikk-verifisert.
+mobil 390 px + desktop, valgt design ved siden av, relevante tilstander og klikk-verifisert funksjon.
 
 ---
 

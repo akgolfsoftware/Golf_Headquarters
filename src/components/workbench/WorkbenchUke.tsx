@@ -1,11 +1,13 @@
 "use client";
 
-import { useCallback, useMemo, useState, useTransition, type CSSProperties } from "react";
+import { useCallback, useMemo, useState, useTransition } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Knapp } from "@/components/v2/core";
 import { Icon } from "@/components/v2/icon";
 import { BunnArk } from "@/components/v2/bunn-ark";
+import { useInspektorSynlig } from "@/components/v2/inspektorpanel";
 import { TL } from "@/lib/v2/train-lock";
 import { addDays, isoWeekNumber, mondayOf, validateWeek } from "@/lib/domain/workbench/operations";
 import { AREA_LABEL, formatHours, PYRAMID_LABEL, UI } from "@/lib/domain/workbench/labels";
@@ -18,13 +20,15 @@ import { SourcesPanel } from "./SourcesPanel";
 import { osloIdag, WeekGrid } from "./WeekGrid";
 import { VisningPiller } from "./VisningPiller";
 
-type Props = { playerId: string; spillerNavn: string; uke: WeekViewModel; kilder: SourceItem[] };
+type Props = { playerId: string; spillerNavn: string; uke: WeekViewModel; kilder: SourceItem[]; roster?: { id: string; navn: string }[] };
 
-export function WorkbenchUke({ playerId, spillerNavn, uke, kilder }: Props) {
+export function WorkbenchUke({ playerId, spillerNavn, uke, kilder, roster = [] }: Props) {
   const router = useRouter();
+  const inspectorSynlig = useInspektorSynlig();
   const [week, setWeek] = useState<WeekViewModel>(uke);
   const [valgtId, setValgtId] = useState<string | null>(null);
   const [nyOkt, setNyOkt] = useState<{ dato: string; startMinutt: number } | null>(null);
+  const [ukeArkApen, setUkeArkApen] = useState(false);
   const [publiserApen, setPubliserApen] = useState(false);
   const [valgtePubliser, setValgtePubliser] = useState<Set<string>>(new Set());
   const [feil, setFeil] = useState<string | null>(null);
@@ -93,7 +97,14 @@ export function WorkbenchUke({ playerId, spillerNavn, uke, kilder }: Props) {
   );
 
   return (
-    <div style={{ display: "grid", gap: 16, minWidth: 0, background: "#F2F1ED", color: "#111111", fontFamily: "var(--tl-font-sans)" }}>
+    <div className="wb-layout">
+      <aside className="wb-sources">
+        <SourcesPanel kilder={kilder} playerId={playerId} uke={week.weekStart} maned={week.weekStart.slice(0, 7)} aar={week.weekStart.slice(0, 4)} />
+        <nav className="wb-roster" aria-label="Spillere i stallen"><span className="wb-kicker">Stall</span>{roster.map(p => <Link key={p.id} href={`/admin/workbench/${p.id}?uke=${week.weekStart}`} aria-current={p.id === playerId ? "page" : undefined}>{p.navn}<small>Spiller</small></Link>)}</nav>
+      </aside>
+      <main className="wb-main">
+        <div className="wb-pills"><VisningPiller playerId={playerId} visning="uke" uke={week.weekStart} maned={week.weekStart.slice(0, 7)} aar={week.weekStart.slice(0, 4)} /></div>
+        <div className="wb-body">
       <Topplinje playerId={playerId} spillerNavn={spillerNavn} week={week} antallUtkast={utkast.length} travel={travel} onForrige={() => byttUke(-1)} onNeste={() => byttUke(1)} onIdag={() => router.push(`/admin/workbench/${playerId}?uke=${mondayOf(idag)}`)} onNyOkt={() => setNyOkt({ dato: week.days[0]?.date ?? idag, startMinutt: 16 * 60 })} onPubliser={() => { setValgtePubliser(new Set(utkast.filter((s) => !opptattIder.has(s.id)).map((s) => s.id))); setPubliserApen(true); }} />
       {feil && (
         <div role="alert" style={{ display: "flex", alignItems: "center", gap: 10, padding: "11px 13px", borderRadius: 2, border: `1px solid color-mix(in srgb, ${TL.danger} 35%, transparent)`, background: `color-mix(in srgb, ${TL.danger} 8%, transparent)` }}>
@@ -102,17 +113,19 @@ export function WorkbenchUke({ playerId, spillerNavn, uke, kilder }: Props) {
           <Knapp ghost onClick={() => void lastPaaNytt()}>{UI.retry}</Knapp>
         </div>
       )}
-      <div className="grid grid-cols-1 lg:grid-cols-[var(--wb-kilder)_minmax(0,1fr)_var(--wb-artefakt)]" style={{ gap: 16, minWidth: 0, alignItems: "start", ["--wb-kilder" as string]: TL.skall.kilder, ["--wb-artefakt" as string]: TL.skall.artefakt }}>
-        <div className="hidden lg:block" style={{ minWidth: 0 }}>
-          <SourcesPanel kilder={kilder} playerId={playerId} uke={week.weekStart} maned={week.weekStart.slice(0, 7)} aar={week.weekStart.slice(0, 4)} />
-        </div>
-        <div style={{ minWidth: 0 }}>
           <WeekGrid week={week} selectedSessionId={valgtId} onSelectSession={setValgtId} onCreateAt={(dato, startMinutt) => setNyOkt({ dato, startMinutt })} onDropSource={(dato, startMinutt, sourceId) => { kjor(() => createSessionFromSource({ playerId, sourceId, date: dato, startMinute: startMinutt }), (okt) => { setValgtId(okt.id); toast.success(UI.toastSourceDropped); }); }} onDropDrillOnSession={(sessionId, sourceId) => { kjor(() => addDrillFromSource({ sessionId, sourceId }), () => toast.success(UI.toastDrillDroppedOnSession)); }} />
+
         </div>
-        <div className="hidden lg:block" style={{ minWidth: 0 }}>{inspectorNode}</div>
-      </div>
+      </main>
+      {!valgt && <aside className="wb-mobile-summary" aria-label={UI.selectedWeekTitle}>
+        <div className="wb-grip" aria-hidden />
+        <span className="wb-kicker">{UI.selectedWeekTitle}</span><h2>{UI.weekCrumb(isoWeekNumber(week.weekStart))}</h2>
+        <dl>{[UI.pyramid, UI.drillArea, UI.formelBelastning, UI.formelHensikt].map(label => <div key={label}><dt>{label}</dt><dd>—</dd></div>)}</dl>
+        <div className="wb-mobile-actions"><button type="button" className="wb-quiet" onClick={() => setUkeArkApen(true)}>{UI.openWeek}</button><button type="button" className="wb-publish" disabled={!utkast.length || travel} onClick={() => { setValgtePubliser(new Set(utkast.filter(s => !opptattIder.has(s.id)).map(s => s.id))); setPubliserApen(true); }}>{UI.publishWeek}</button></div>
+      </aside>}
+      <aside className="wb-inspector">{valgt ? inspectorNode : <WeekSummary week={week} onNyOkt={() => setNyOkt({ dato: week.weekStart, startMinutt: 16 * 60 })} />}</aside>
       <div className="lg:hidden">
-        <BunnArk open={valgtId !== null} onClose={() => setValgtId(null)} tittel={valgt?.title ?? UI.inspectorTitle}>{inspectorNode}</BunnArk>
+        <BunnArk open={!inspectorSynlig && (valgtId !== null || ukeArkApen)} onClose={() => { setValgtId(null); setUkeArkApen(false); }} tittel={valgt?.title ?? UI.selectedWeekTitle}>{valgt ? inspectorNode : <WeekSummary week={week} playerId={playerId} roster={roster} onSelectPlayer={id => router.push(`/admin/workbench/${id}?uke=${week.weekStart}`)} onNyOkt={() => { setUkeArkApen(false); setNyOkt({ dato: week.weekStart, startMinutt: 16 * 60 }); }} />}</BunnArk>
       </div>
       <CreateSessionModal key={nyOkt ? `${nyOkt.dato}:${nyOkt.startMinutt}` : "lukket"} open={nyOkt !== null} dato={nyOkt?.dato ?? idag} startMinutt={nyOkt?.startMinutt ?? 16 * 60} lagrer={travel} onLukk={() => setNyOkt(null)} onOpprett={(v: NyOktVerdier) => {
         const { repeatWeeks, ...felter } = v;
@@ -124,30 +137,33 @@ export function WorkbenchUke({ playerId, spillerNavn, uke, kilder }: Props) {
   );
 }
 
-function Topplinje({ playerId, spillerNavn, week, antallUtkast, travel, onForrige, onNeste, onIdag, onNyOkt, onPubliser }: { playerId: string; spillerNavn: string; week: WeekViewModel; antallUtkast: number; travel: boolean; onForrige: () => void; onNeste: () => void; onIdag: () => void; onNyOkt: () => void; onPubliser: () => void }) {
+function Topplinje({ spillerNavn, week, antallUtkast, travel, onForrige, onNeste, onIdag, onNyOkt, onPubliser }: { playerId: string; spillerNavn: string; week: WeekViewModel; antallUtkast: number; travel: boolean; onForrige: () => void; onNeste: () => void; onIdag: () => void; onNyOkt: () => void; onPubliser: () => void }) {
   const ukeNr = isoWeekNumber(week.weekStart);
-  const manedNavn = UI.monthNames[Number(week.weekStart.slice(5, 7)) - 1];
-  const ghost: CSSProperties = { minHeight: 44, borderRadius: 2, padding: "0 12px" };
-  return (
-    <div style={{ display: "grid", gap: 8, minWidth: 0 }}>
-      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 14, minWidth: 0 }}>
-        <div style={{ display: "flex", alignItems: "baseline", gap: 10, minWidth: 0 }}>
-          <span style={{ fontFamily: TL.font.sans, fontSize: 26, fontWeight: 700, letterSpacing: "-0.01em", color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{spillerNavn}</span>
-          {antallUtkast > 0 && <span style={{ fontFamily: TL.font.sans, fontSize: 11, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute, fontVariantNumeric: "tabular-nums" }}>{UI.draftCountBadge(antallUtkast)}</span>}
-        </div>
-        <VisningPiller playerId={playerId} visning="uke" uke={week.weekStart} maned={week.weekStart.slice(0, 7)} aar={week.weekStart.slice(0, 4)} />
-        <div style={{ display: "flex", gap: 8, marginLeft: "auto", alignItems: "center", flexWrap: "wrap" }}>
-          <Knapp ghost icon="chevron-left" onClick={onForrige} style={ghost}>{UI.weekNavPrev}</Knapp>
-          <Knapp ghost onClick={onIdag} style={ghost}>{UI.today}</Knapp>
-          <Knapp ghost icon="chevron-right" onClick={onNeste} style={ghost}>{UI.weekNavNext}</Knapp>
-          <Knapp ghost icon="plus" onClick={onNyOkt} style={ghost}>{UI.createSession}</Knapp>
-          <Knapp enTing disabled={antallUtkast === 0 || travel} onClick={onPubliser} style={{ minHeight: 44, borderRadius: 2, padding: "0 18px", fontSize: 13, fontWeight: 600, ...(antallUtkast === 0 || travel ? { background: TL.dim, color: TL.mute } : { background: "#9B2415", color: "#F4EFE6" }) }}>{UI.publish}</Knapp>
-        </div>
-      </div>
-      <div style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
-        {UI.yearSeason(Number(week.weekStart.slice(0, 4)))}<span style={{ margin: "0 4px" }}>›</span>{manedNavn}<span style={{ margin: "0 4px" }}>›</span><span style={{ color: TL.text, fontWeight: 600 }}>{UI.weekCrumb(ukeNr)}</span>
-        <span style={{ marginLeft: 12 }}>{UI.budgetLabel(formatHours(week.budget.plannedMinutes), formatHours(week.budget.targetMinutes))}</span>
-      </div>
+  const gjennomfort = week.days.flatMap(d => d.sessions).filter(s => s.status === "COMPLETED").reduce((sum, s) => sum + s.durationMinutes, 0);
+  return <>
+    <div className="wb-heading">
+      <div><span className="wb-kicker">{UI.weekPlan}</span><h1>Uke {ukeNr}</h1></div>
+      <span className="wb-sub">{spillerNavn} · {week.budget.plannedMinutes ? `${formatHours(week.budget.plannedMinutes)} t` : "—"} planlagt · {gjennomfort ? `${formatHours(gjennomfort)} t gjennomført` : "— gjennomført"}</span>
+      <button type="button" className="wb-publish" disabled={!antallUtkast || travel} onClick={onPubliser}>{UI.publishWeek}</button>
     </div>
-  );
+    <div className="wb-controls" aria-label="Ukehandlinger">
+      <button type="button" className="wb-quiet" aria-label={UI.weekNavPrev} onClick={onForrige}>‹</button>
+      <button type="button" className="wb-quiet" onClick={onIdag}>{UI.today}</button>
+      <button type="button" className="wb-quiet" aria-label={UI.weekNavNext} onClick={onNeste}>›</button>
+      <button type="button" className="wb-quiet" onClick={onNyOkt}>{UI.createSession}</button>
+    </div>
+  </>;
+}
+
+function WeekSummary({ week, onNyOkt, playerId, roster = [], onSelectPlayer }: { week: WeekViewModel; onNyOkt: () => void; playerId?: string; roster?: { id: string; navn: string }[]; onSelectPlayer?: (id: string) => void }) {
+  return <section className="wb-week-summary" aria-label={UI.selectedWeekTitle}>
+    <span className="wb-kicker">{UI.selectedWeekTitle}</span>
+    <h2>Uke {isoWeekNumber(week.weekStart)}</h2>
+    <p>{week.budget.plannedMinutes ? `${formatHours(week.budget.plannedMinutes)} t` : "—"} planlagt · mål {week.budget.targetMinutes ? `${formatHours(week.budget.targetMinutes)} t` : "—"}</p>
+    {onSelectPlayer && <label className="wb-player-select">{UI.planFor}<select value={playerId} onChange={e => onSelectPlayer(e.target.value)}>{roster.map(p => <option key={p.id} value={p.id}>{p.navn}</option>)}</select></label>}
+    <span className="wb-kicker">{UI.formulaTitle}</span>
+    <dl>{[UI.pyramid, UI.drillArea, UI.formelMotorikk, UI.formelBelastning, UI.formelPress, UI.formelHensikt, UI.formelMate, UI.formelMal].map(label => <div key={label}><dt>{label}</dt><dd>—</dd></div>)}</dl>
+    <p>{UI.inspectorEmptyBody}</p>
+    <button type="button" className="wb-quiet" onClick={onNyOkt}>{UI.createSession}</button>
+  </section>;
 }

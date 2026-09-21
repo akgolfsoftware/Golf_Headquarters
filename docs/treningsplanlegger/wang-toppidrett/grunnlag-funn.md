@@ -94,7 +94,7 @@ Merk: versjon B legger **NGF/testuker i august (uke 34–35)** og en **intern te
   | SPILL | 5% | 25% | 25% |
   | TURN | 0% | 5% | 35% |
 - **Fasestruktur GRUNN:** BUILD → STAB → TEST. (Kilden koblet dette til CS-nivå og L-fase —
-  utgått; les mot motorikk-stegene i `docs/ordbok-master-trening.md`. Research-notat, ikke byggeordre.)
+  utgått; les mot motorikk-stegene i `docs/ordbok.md`. Research-notat, ikke byggeordre.)
 - **Teknisk plan (MORAD P1–P10)** per VG-år: VG1 GRUNN-prioritet P1–P4 (nøkkel P4), VG2 P5–P7 (nøkkel P7 impact), VG3 P8–P10 + mentalt spill (nøkkel P10 finish). Full prioriteringsmatrise P1–P10 (BUILD/STAB/AUTO) per VG-år finnes.
 - **TrackMan-referansetall** per kategori D/E/F (club speed, ball speed, smash factor, carry driver/7-jern).
 - **NGF Team Norway testbatteri** (11 tester, 3 kjøringer = 33 pr spiller) med normtall for D/E/F.

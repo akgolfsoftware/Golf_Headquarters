@@ -90,7 +90,7 @@ export function SessionInspector({
         utkast ? (
           <>
             <Knapp ghost onClick={() => onSlett(slettPolicy)} disabled={travel}>{UI.delete}</Knapp>
-            <Knapp enTing onClick={onPubliser} disabled={travel} style={{ background: "#9B2415", color: "#F4EFE6", borderRadius: 2 }}>{UI.publish}</Knapp>
+            <Knapp enTing onClick={onPubliser} disabled={travel} style={{ background: "var(--ak-grunn-farge-rust-600)", color: "var(--ak-workbench-pa-handling)", borderRadius: 2 }}>{UI.publish}</Knapp>
           </>
         ) : (
           <Knapp ghost onClick={onTrekkTilbake} disabled={travel}>{UI.unpublish}</Knapp>
@@ -111,7 +111,7 @@ export function SessionInspector({
             <Felt label={UI.start}><Input type="time" step={1800} value={start} onChange={(e) => setStart(e.target.value)} /></Felt>
             <Felt label={UI.duration}>
               <Select value={varighet} onChange={(e) => setVarighet(Number(e.target.value))}>
-                {VARIGHETER.map((v) => <option key={v} value={v}>{v} min</option>)}
+                {[...new Set([...VARIGHETER, session.durationMinutes])].sort((a, b) => a - b).map((v) => <option key={v} value={v}>{v} min</option>)}
               </Select>
             </Felt>
           </div>

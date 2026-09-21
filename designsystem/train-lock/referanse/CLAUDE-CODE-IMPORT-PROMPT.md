@@ -1,3 +1,6 @@
+> **UTGÅTT PROMPT 21.09.2026 — IKKE KJØR:** Train-lock er ikke designfasit. Bruk
+> `docs/design-system/design-autoritet.md` og «App design».
+
 <role>
 Du er senior frontend-engineer på AK Golf HQ.
 Stack: Next.js 16.2 + React 19 + TypeScript strict + Tailwind v4 + shadcn.

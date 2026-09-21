@@ -1,5 +1,9 @@
 # designsystem/canvas — skjermer tegnet før de bygges
 
+> **HISTORISK ARBEIDSFLYT 21.09.2026:** Canvasfiler kan brukes som tidligere funksjonsunderlag,
+> men Train-lock er ikke lenger fasit. Nytt design skjer i «App design» med
+> [gjeldende designautoritet](../../docs/design-system/design-autoritet.md).
+
 Arbeidsfilene bak canvasene som tegnes i Claude Design før en skjerm kodes
 (Anders 30.08.2026, se `.claude/rules/beslutninger.md` §TEGN SKJERMEN FØR DU BYGGER DEN).
 
@@ -11,11 +15,11 @@ endres filene her og canvasen seedes på nytt til samme URL.
 
 | Mappe | Hva det er |
 |---|---|
-| `train-lock/` | **Fasiten.** 429 rammer levert fra Claude Design. Leses, endres aldri. |
-| `canvas/` | **Utkastene.** Skjermer vi tegner selv før bygging, i Train-locks språk. |
+| `train-lock/` | Historisk speil med 429 rammer. Kun funksjonsinventar og sporbarhet. |
+| `canvas/` | Historiske utkast fra den tidligere Train-lock-arbeidsflyten. |
 
-Finnes det en tegnet Train-lock-fasit for skjermen, er den fasit — canvasen her
-gjenskaper den i den sammenhengen skjermen faktisk skal stå i. Finnes ingen fasit
+Finnes det en gammel Train-lock-tegning for skjermen, er den fortsatt bare historikk — canvasen her
+viser den tidligere sammenhengen. Finnes ingen gammel tegning
 (nye IA-flater som Kø), er canvasen her utkastet Anders godkjenner.
 
 ## Slik seeder du en canvas på nytt

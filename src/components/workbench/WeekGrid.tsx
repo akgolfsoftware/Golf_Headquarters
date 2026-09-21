@@ -1,20 +1,16 @@
 "use client";
 
 import { useState, type CSSProperties, type DragEvent } from "react";
-import { TimeGrid, timeGridBlockStyle, type TimeGridDay } from "@/components/v2/time-grid";
-import { Icon } from "@/components/v2/icon";
-import { TL } from "@/lib/v2/train-lock";
 import { formatHours, formatKlokke, UI } from "@/lib/domain/workbench/labels";
 import type { WeekViewModel, WorkbenchSession } from "@/lib/domain/workbench/types";
+import { calendarLanes } from "@/lib/workbench/calendar-layout";
 import { lesKildeDataTransfer } from "./wb-drag";
-import { harHake, STATUS_CAPS, WARM } from "./wb-visuelt";
+import { STATUS_CAPS } from "./wb-visuelt";
 
 const DAGKORT = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
-/** Fasit Claude Design 20.09.2026: timerad 32 px, 05:00–22:00, merkelapp hver time. */
-const WB_HOUR_PX = 32;
-const WB_START_HOUR = 5;
-const WB_END_HOUR = 22;
-
+const START = 5 * 60;
+const HOUR_PX = 32;
+const HOURS = Array.from({ length: 18 }, (_, i) => i + 5);
 export function osloIdag(): string {
   return new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Oslo" }).format(new Date());
 }
@@ -28,109 +24,48 @@ type Props = {
   onDropDrillOnSession?: (sessionId: string, sourceId: string) => void;
 };
 
-export function WeekGrid({
-  week,
-  selectedSessionId,
-  onSelectSession,
-  onCreateAt,
-  onDropSource,
-  onDropDrillOnSession,
-}: Props) {
-  const idag = osloIdag();
-  const days: TimeGridDay[] = week.days.map((d, i) => ({
-    id: d.date,
-    dow: DAGKORT[i] ?? "",
-    date: String(Number(d.date.slice(8, 10))),
-    today: d.date === idag,
-  }));
-  const antallOkter = week.days.reduce((sum, d) => sum + d.sessions.length, 0);
-
-  return (
-    <div style={{ position: "relative", minWidth: 0 }}>
-      {antallOkter === 0 && (
-        <div aria-hidden style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6, zIndex: 4, pointerEvents: "none" }}>
-          <span style={{ fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>{UI.emptyWeekTitle}</span>
-          <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute }}>{UI.emptyWeekHint}</span>
-        </div>
-      )}
-      <TimeGrid
-        days={days}
-        hourPx={WB_HOUR_PX}
-        startHour={WB_START_HOUR}
-        endHour={WB_END_HOUR}
-        bordered={false}
-        style={{ background: "transparent" }}
-        onEmptyClick={(slot) => {
-          const dag = week.days[slot.dayIndex];
-          if (dag) onCreateAt(dag.date, slot.startMin);
-        }}
-        onDropSlot={
-          onDropSource
-            ? (slot, e) => {
-                const dag = week.days[slot.dayIndex];
-                const sourceId = lesKildeDataTransfer(e);
-                if (dag && sourceId) onDropSource(dag.date, slot.startMin, sourceId);
-              }
-            : undefined
-        }
-        renderDay={(i) => {
-          const dag = week.days[i];
-          if (!dag) return null;
-          return (
-            <>
-              {dag.lockedBlocks.map((b) => (
-                <div key={b.id} aria-hidden style={{ ...timeGridBlockStyle(b.startMinute, b.durationMinutes, undefined, WB_HOUR_PX), background: TL.elev, borderRadius: 2, opacity: 0.55, pointerEvents: "none", padding: "5px 7px", fontFamily: TL.font.sans, fontSize: 10, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute, overflow: "hidden" }}>
-                  {b.title}
-                </div>
-              ))}
-              {dag.sessions.map((s) => (
-                <OktKort key={s.id} session={s} valgt={s.id === selectedSessionId} onClick={() => onSelectSession(s.id)} onDropDrill={onDropDrillOnSession ? (sourceId) => onDropDrillOnSession(s.id, sourceId) : undefined} />
-              ))}
-            </>
-          );
-        }}
-      />
+export function WeekGrid({ week, selectedSessionId, onSelectSession, onCreateAt, onDropSource, onDropDrillOnSession }: Props) {
+  const [dayIndex, setDayIndex] = useState(0);
+  const [dayPickerOpen, setDayPickerOpen] = useState(false);
+  const count = week.days.reduce((n,d) => n + d.sessions.length, 0);
+  function slot(e: { clientY: number; currentTarget: HTMLElement }) {
+    const top = e.currentTarget.getBoundingClientRect().top;
+    return Math.min(22 * 60, Math.max(START, START + Math.floor((e.clientY-top) / HOUR_PX * 2) * 30));
+  }
+  return <section aria-label={UI.calendarTitle}>
+    <div className="wb-day-picker" data-open={dayPickerOpen} aria-label={UI.selectDay}>{week.days.map((day,i) => <button key={day.date} type="button" aria-pressed={dayIndex === i} onClick={() => { setDayIndex(i); setDayPickerOpen(false); }}>{DAGKORT[i]}<b>{Number(day.date.slice(8))}.</b></button>)}</div>
+    {count === 0 && <p className="wb-empty">{UI.emptyWeekTitle} · {UI.emptyWeekHint}</p>}
+    <div className="wb-calendar">
+      <div className="wb-calendar-axis"><div className="wb-day-heading"/><div className="wb-band"/>{HOURS.map(h => <span key={h}>{String(h).padStart(2,"0")}:00</span>)}</div>
+      {week.days.map((day,i) => {
+        const lanes = calendarLanes(day.sessions);
+        return <div key={day.date} className="wb-calendar-day" data-mobile-selected={dayIndex === i}>
+          <div className="wb-day-heading wb-day-desktop">{DAGKORT[i]} <b>{Number(day.date.slice(8))}.</b></div>
+          <button type="button" className="wb-day-heading wb-day-switch" aria-label={`${UI.selectDay}: ${DAGKORT[i]} ${Number(day.date.slice(8))}.`} aria-expanded={dayPickerOpen} onClick={() => setDayPickerOpen(p => !p)}>{DAGKORT[i]} <b>{Number(day.date.slice(8))}.</b></button>
+          <div className="wb-band">{day.lockedBlocks.map(b => <span key={b.id} title={`${b.title} · ${formatKlokke(b.startMinute)} · ${formatHours(b.durationMinutes)} t`}>{b.title}</span>)}</div>
+          <div className="wb-day-hours" onClick={e => {if(e.target === e.currentTarget)onCreateAt(day.date,slot(e));}} onDragOver={onDropSource ? e => e.preventDefault() : undefined} onDrop={onDropSource ? e => { e.preventDefault(); const id=lesKildeDataTransfer(e);if(id)onDropSource(day.date,slot(e),id); } : undefined}>
+            {day.sessions.map(s => <OktKort key={s.id} session={s} lane={lanes.get(s.id)!} valgt={s.id === selectedSessionId} onClick={() => onSelectSession(s.id)} onDropDrill={onDropDrillOnSession ? id => onDropDrillOnSession(s.id,id) : undefined}/>) }
+          </div>
+        </div>;
+      })}
     </div>
-  );
+  </section>;
 }
-
-function OktKort({ session, valgt, onClick, onDropDrill }: { session: WorkbenchSession; valgt: boolean; onClick: () => void; onDropDrill?: (sourceId: string) => void }) {
-  const utkast = session.status === "DRAFT";
-  const hake = harHake(session.status);
-  const skjultHosSpiller = !!session.hiddenByPlayer;
-  const venterGodkjenning = !!session.needsPlayerApproval;
-  const [dragOver, setDragOver] = useState(false);
-  const formelTekst = (session.drills[0]?.akFormel.label ?? session.pyramid).toUpperCase();
-  const statusTekst = skjultHosSpiller ? UI.hiddenByPlayerBadge : venterGodkjenning ? UI.approvalPendingBadge : STATUS_CAPS[session.status];
-  const stil: CSSProperties = {
-    ...timeGridBlockStyle(session.startMinute, session.durationMinutes, undefined, WB_HOUR_PX),
-    textAlign: "left",
-    appearance: "none",
-    cursor: "pointer",
-    overflow: "hidden",
-    padding: "4px 7px",
-    minHeight: 44,
-    borderRadius: 2,
-    border: "none",
-    background: utkast ? "transparent" : TL.dock,
-    boxShadow: valgt ? `inset 0 0 0 2px ${TL.text}` : dragOver ? `inset 0 0 0 2px ${TL.text}` : utkast ? `inset 0 0 0 1px ${TL.draftBorder}` : "none",
-    zIndex: valgt ? 3 : 2,
-    opacity: skjultHosSpiller ? 0.45 : 1,
+function OktKort({ session, lane, valgt, onClick, onDropDrill }: { session: WorkbenchSession; lane: { lane: number; count: number }; valgt: boolean; onClick: () => void; onDropDrill?: (id: string) => void }) {
+  const [dragOver,setDragOver]=useState(false);
+  const start = Math.max(START,session.startMinute);
+  const end = Math.min(23*60,session.startMinute+session.durationMinutes);
+  const outside = session.startMinute < START || session.startMinute >= 23*60;
+  const style: CSSProperties = {
+    top: Math.max(0, Math.min(532,(start-START)/60*HOUR_PX)),
+    height: Math.max(44,(end-start)/60*HOUR_PX),
+    left: `calc(${lane.lane/lane.count*100}% + 2px)`, width: `calc(${100/lane.count}% - 4px)`,
+    opacity: session.hiddenByPlayer ? .45 : 1,
   };
-  return (
-    <button type="button" className="v2-focus" onClick={onClick} aria-pressed={valgt} title={`${session.title} · ${formatKlokke(session.startMinute)} · ${formatHours(session.durationMinutes)} t · ${statusTekst}`} style={stil} onDragOver={onDropDrill ? (e: DragEvent<HTMLButtonElement>) => { e.preventDefault(); setDragOver(true); } : undefined} onDragLeave={onDropDrill ? () => setDragOver(false) : undefined} onDrop={onDropDrill ? (e: DragEvent<HTMLButtonElement>) => { e.preventDefault(); e.stopPropagation(); setDragOver(false); const sourceId = lesKildeDataTransfer(e); if (sourceId) onDropDrill(sourceId); } : undefined}>
-      <span style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 4 }}>
-        <span style={{ fontFamily: TL.font.sans, fontSize: 10, fontWeight: 600, letterSpacing: "0.02em", color: TL.mute, whiteSpace: "nowrap", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis" }}>{formelTekst}</span>
-        {hake && !skjultHosSpiller && !venterGodkjenning ? (
-          <Icon name="check" size={11} style={{ color: WARM, flexShrink: 0 }} />
-        ) : session.seriesId ? (
-          <span style={{ fontSize: 10, fontWeight: 600, color: TL.mute, flexShrink: 0 }}>↻</span>
-        ) : venterGodkjenning || skjultHosSpiller ? (
-          <span style={{ fontSize: 10, fontWeight: 600, color: TL.mute, flexShrink: 0 }}>!</span>
-        ) : null}
-      </span>
-      <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, lineHeight: 1.25, color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{session.title}</span>
-      <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 11, fontWeight: 400, color: TL.mute, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>{formatKlokke(session.startMinute)} · {formatHours(session.durationMinutes)} t</span>
-    </button>
-  );
+  const status = session.hiddenByPlayer ? UI.hiddenByPlayerBadge : session.needsPlayerApproval ? UI.approvalPendingBadge : STATUS_CAPS[session.status];
+  const drop = onDropDrill ? (e: DragEvent<HTMLButtonElement>) => { e.preventDefault();e.stopPropagation();setDragOver(false);const id=lesKildeDataTransfer(e);if(id)onDropDrill(id); } : undefined;
+  return <button type="button" className="wb-session" data-lag={session.pyramid} data-drag-over={dragOver} aria-pressed={valgt} style={style} onClick={onClick} title={`${session.title} · ${formatKlokke(session.startMinute)} · ${formatHours(session.durationMinutes)} t · ${status}`} onDragOver={onDropDrill ? e=>{e.preventDefault();setDragOver(true);} : undefined} onDragLeave={()=>setDragOver(false)} onDrop={drop}>
+    <span>{session.title}</span><small>{formatKlokke(session.startMinute).replace(".",":")}–{formatKlokke(session.startMinute+session.durationMinutes).replace(".",":")}{outside ? " · utenfor aksen" : ""}</small>
+    {(session.needsPlayerApproval || session.hiddenByPlayer) && <small>{status}</small>}
+  </button>;
 }

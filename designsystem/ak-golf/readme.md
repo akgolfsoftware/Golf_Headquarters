@@ -1,5 +1,9 @@
 # AK Golf — designsystem
 
+> **HISTORISK SPEIL 21.09.2026:** Dette er et eldre designsystemspeil. Dagens valgte system er
+> **AK Golf Design System** `87aa23fb-8eac-4ca4-aaa0-7a636f4318ff` i «App design». Bruk
+> [gjeldende designautoritet](../../docs/design-system/design-autoritet.md) før dette materialet.
+
 **Versjon 1.0.0 · 02.09.2026 · eier: Anders Kristiansen.** Endringer: se §10 og
 `CHANGELOG.md`.
 

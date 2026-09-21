@@ -23,6 +23,7 @@ import type {
   YearMonthRow,
   YearPeriodBand,
   PeriodType,
+  PeriodViewModel,
   WorkbenchMode,
   RecurrencePolicy,
   SeriesContentPatch,
@@ -64,7 +65,8 @@ export function createSession(
   now = new Date().toISOString()
 ): WorkbenchSession {
   const start = clampMinute(snapToGrid(cmd.startMinute));
-  const duration = Math.max(15, snapToGrid(cmd.durationMinutes || 60));
+  // Rutenettet gjelder starttid, ikke valgt varighet (f.eks. 45 eller 75 min).
+  const duration = Math.max(15, Math.round(cmd.durationMinutes || 60));
 
   const drills: Drill[] = (cmd.drills ?? []).map((d, i) => ({
     ...d,
@@ -154,7 +156,7 @@ export function moveSession(
   const start = clampMinute(snapToGrid(cmd.newStartMinute));
   const duration =
     cmd.newDurationMinutes !== undefined
-      ? Math.max(15, snapToGrid(cmd.newDurationMinutes))
+      ? Math.max(15, Math.round(cmd.newDurationMinutes))
       : session.durationMinutes;
 
   return {
@@ -378,6 +380,7 @@ export function buildMonthViewModel(
   mode: WorkbenchMode,
   targetMinutes = 0,
   monthLabel: string,
+  todayIso?: string,
 ): MonthViewModel {
   const last = lastDayOfMonth(monthStart);
   const gridStart = mondayOf(monthStart);
@@ -401,16 +404,20 @@ export function buildMonthViewModel(
         .slice()
         .sort((a, b) => a.startMinute - b.startMinute);
       const aktive = aktiveOkter(dags);
-      weekMinutes += aktive.reduce((n, s) => n + s.durationMinutes, 0);
-      weekCount += aktive.length;
+      const erIManeden = date >= monthStart && date <= last;
+      if (erIManeden) {
+        weekMinutes += aktive.reduce((n, s) => n + s.durationMinutes, 0);
+        weekCount += aktive.length;
+      }
       const shown = aktive.slice(0, MAX_MONTH_LINES);
       days.push({
         date,
         dayOfMonth: Number(date.slice(8, 10)),
-        inMonth: date >= monthStart && date <= last,
+        inMonth: erIManeden,
         lines: shown.map((s) => ({
           title: s.title,
           durationMinutes: s.durationMinutes,
+          pyramid: s.pyramid,
           hairline: s.blockType === "TURNERING" || s.blockType === "TEST",
         })),
         restCount: Math.max(0, aktive.length - MAX_MONTH_LINES),
@@ -430,13 +437,24 @@ export function buildMonthViewModel(
   );
   const budget = computeBudget(inMonth);
   budget.targetMinutes = targetMinutes;
+  const cutoff = todayIso ?? last;
+  const toDate = inMonth.filter((session) => session.date <= cutoff);
+  const plannedToDateMinutes = toDate.reduce((sum, session) => sum + session.durationMinutes, 0);
+  const completed = toDate.filter((session) => session.status === "COMPLETED");
+  const completedMinutes = completed.reduce((sum, session) => sum + session.durationMinutes, 0);
+  const completedByPyramid = { ...TOM_BALANSE };
+  for (const session of completed) completedByPyramid[session.pyramid] += session.durationMinutes;
 
   return {
     monthStart,
     label: monthLabel,
     weeks,
     budget,
+    sessionCount: inMonth.length,
     weekSummaries,
+    plannedToDateMinutes,
+    completedMinutes,
+    completedByPyramid,
     empty: inMonth.length === 0,
     mode,
   };
@@ -511,6 +529,14 @@ export function buildYearViewModel(
   const yearStartDag = dagNummer(`${year}-01-01`);
   const yearDager = dagNummer(`${year + 1}-01-01`) - yearStartDag;
   const idagDag = idagIso ? dagNummer(idagIso) : dagNummer(`${year}-01-01`) - 1; // aldri aktiv uten idag
+  const cutoff = idagIso ?? `${year - 1}-12-31`;
+  const aarsOkter = aktiveOkter(sessions).filter((session) => session.date.startsWith(`${year}-`));
+  const hittil = aarsOkter.filter((session) => session.date <= cutoff);
+  const plannedToDateMinutes = hittil.reduce((sum, session) => sum + session.durationMinutes, 0);
+  const gjennomfort = hittil.filter((session) => session.status === "COMPLETED");
+  const completedMinutes = gjennomfort.reduce((sum, session) => sum + session.durationMinutes, 0);
+  const completedByPyramid = { ...TOM_BALANSE };
+  for (const session of gjennomfort) completedByPyramid[session.pyramid] += session.durationMinutes;
 
   const periods: YearPeriodBand[] = [...periodInput]
     .sort((a, b) => (a.startDate < b.startDate ? -1 : 1))
@@ -520,11 +546,13 @@ export function buildYearViewModel(
       const widthPct = Math.max(0, ((endDag - startDag + 1) / yearDager) * 100);
       const balanseTimer = { ...TOM_BALANSE };
       const turneringer: { navn: string; dato: string }[] = [];
-      for (const s of aktiveOkter(sessions)) {
+      const periodeOkter = aarsOkter.filter((s) => s.date >= p.startDate && s.date <= p.endDate);
+      for (const s of periodeOkter) {
         if (s.date >= p.startDate && s.date <= p.endDate) {
           balanseTimer[s.pyramid] += s.durationMinutes / 60;
         }
       }
+      const periodeHittil = periodeOkter.filter((session) => session.date <= cutoff);
       for (const e of tournaments) {
         if (e.dato >= p.startDate && e.dato <= p.endDate) turneringer.push(e);
       }
@@ -537,11 +565,66 @@ export function buildYearViewModel(
         widthPct,
         aktiv: startDag <= idagDag && idagDag <= endDag,
         balanseTimer,
+        plannedMinutes: periodeOkter.reduce((sum, session) => sum + session.durationMinutes, 0),
+        plannedToDateMinutes: periodeHittil.reduce((sum, session) => sum + session.durationMinutes, 0),
+        completedMinutes: periodeHittil.filter((session) => session.status === "COMPLETED").reduce((sum, session) => sum + session.durationMinutes, 0),
         turneringer: turneringer.sort((a, b) => (a.dato < b.dato ? -1 : 1)),
       };
     });
 
-  return { year, months, periods, budget, mode };
+  return { year, months, periods, budget, plannedToDateMinutes, completedMinutes, completedByPyramid, mode };
+}
+
+/** Periodevisning fra lagrede PeriodBlock-data og faktiske Workbench-økter. */
+export function buildPeriodViewModel(
+  year: number,
+  periods: YearPeriodBand[],
+  selectedPeriodId: string | null,
+  sessions: WorkbenchSession[],
+  mode: WorkbenchMode,
+  todayIso: string,
+): PeriodViewModel {
+  const period = periods.find((p) => p.id === selectedPeriodId)
+    ?? periods.find((p) => p.aktiv)
+    ?? periods[0]
+    ?? null;
+  if (!period) {
+    return { year, period: null, periods, sessions: [], weeks: [], distribution: [], plannedMinutes: 0, plannedToDateMinutes: 0, completedMinutes: 0, mode };
+  }
+
+  const active = aktiveOkter(sessions).filter((s) => s.date >= period.startDate && s.date <= period.endDate);
+  const plannedMinutes = active.reduce((sum, s) => sum + s.durationMinutes, 0);
+  const toDate = active.filter((s) => s.date <= todayIso);
+  const plannedToDateMinutes = toDate.reduce((sum, s) => sum + s.durationMinutes, 0);
+  const completedMinutes = toDate.filter((s) => s.status === "COMPLETED").reduce((sum, s) => sum + s.durationMinutes, 0);
+
+  const weeks: PeriodViewModel["weeks"] = [];
+  for (let cursor = mondayOf(period.startDate); cursor <= period.endDate; cursor = addDays(cursor, 7)) {
+    const end = addDays(cursor, 6);
+    const list = active.filter((s) => s.date >= cursor && s.date <= end);
+    weeks.push({
+      weekStart: cursor,
+      weekNumber: isoWeekNumber(cursor),
+      minutes: list.reduce((sum, s) => sum + s.durationMinutes, 0),
+      completedMinutes: list.filter((s) => s.status === "COMPLETED").reduce((sum, s) => sum + s.durationMinutes, 0),
+      sessionCount: list.length,
+      dominantPyramid: dominantPyramid(list),
+    });
+  }
+
+  const distribution = PYRAMID_ORDER.map((pyramid) => {
+    const list = active.filter((s) => s.pyramid === pyramid);
+    const planned = list.reduce((sum, s) => sum + s.durationMinutes, 0);
+    return {
+      pyramid,
+      plannedMinutes: planned,
+      completedMinutes: list.filter((s) => s.status === "COMPLETED").reduce((sum, s) => sum + s.durationMinutes, 0),
+      sharePct: plannedMinutes > 0 ? Math.round(planned / plannedMinutes * 100) : 0,
+      focus: planned > 0 && period.focus ? period.focus : null,
+    };
+  });
+
+  return { year, period, periods, sessions: active, weeks, distribution, plannedMinutes, plannedToDateMinutes, completedMinutes, mode };
 }
 
 // ─── Validation (soft — never blocks) ───────────────────────────────────────

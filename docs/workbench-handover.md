@@ -1,7 +1,13 @@
 # Workbench-handover — 20.09.2026
 
 Kilde: Claude Design, master `Workbench WB-05-11.dc.html` + 16 PNG i `workbench-handover/`.
-PNG-filene ligger i Claude Design, ikke i dette repoet ennå.
+Master, 16 PNG-er i 2×, manifest, SKILL, logoer og designverdier er importert til
+[`docs/design/workbench-handover/`](design/workbench-handover/manifest.md).
+Kilden er [Workbench uke-kroppen](https://claude.ai/design/p/830e7bce-eaba-465b-848c-26f73bd0f2d3).
+Importen 20.09 inkluderer Anders' avklaring: grafitt på øktkort og fordelinger,
+rust bare på Publiser / Godkjenn / START ØKT. Periode har «Valgt periode».
+Se [importkontroll og gjenstående arbeid](design-audit/workbench-handover-import-2026-09-20.md).
+Import er ikke visuell godkjenning av appen. `selectedForBuilding` er ikke endret.
 
 ## Chrome (låst)
 
@@ -29,4 +35,4 @@ PNG-filene ligger i Claude Design, ikke i dette repoet ennå.
 ## Kode pushet 20.09.2026
 
 - `src/components/workbench/WeekGrid.tsx` — `startHour=5`, `endHour=22`, `hourPx=32`
-- Øvrige piller venter på master-HTML/PNG fra Claude Design
+- Øvrige piller venter på portering. Master-HTML og PNG-er finnes nå i mappen over.
