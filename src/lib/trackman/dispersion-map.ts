@@ -80,6 +80,15 @@ export type DispersionBuckets = {
 export type DispersionMapResult = {
   n: number;
   hasEllipse: boolean;
+  /**
+   * Køllen kartet gjelder. Ett kart viser ÉN kølle — en ellipse over driver og
+   * pitchingwedge sammen beskriver ingen sving. null betyr at kalleren sendte
+   * flere køller (eller ingen slag); da er spredningstallene ikke til å stole
+   * på, og flaten skal si hvilken kølle den viser før den tegner noe.
+   */
+  kolle: string | null;
+  /** True når input inneholdt mer enn én kølle — se `kolle`. */
+  blandedeKoller: boolean;
   /** Ellipse ved 1σ (39,35 % konfidens) — null under MIN_SHOTS_FOR_ELLIPSE. */
   oneSigmaEllipse: DispersionEllipse | null;
   /** Ellipse ved 2σ (86,47 % konfidens) — null under MIN_SHOTS_FOR_ELLIPSE. */
@@ -193,8 +202,23 @@ export function generateCaddieSentence(offlineBias: number | null, n: number): s
  * TM-08f. Rent uttrekk + regning — ingen JSX, ingen Prisma-kall.
  */
 export function computeTrackManDispersionMap(shots: TrackManDispersionShot[]): DispersionMapResult {
-  const points = trackmanToPoints(shots);
+  // Bare slag med BÅDE side og carry kan plasseres på kartet. Vi filtrerer
+  // først og lager punktene fra den filtrerte lista, slik at punkt nr. i alltid
+  // hører til slag nr. i. (Fram til 21.09.2026 ble `points[i]` slått opp med
+  // indeksen i den ufiltrerte lista, så ett slag uten side forskjøv alle
+  // etterfølgende slag over på feil punkt og feil bøtte — og da kan ikke kart
+  // og tabell peke på samme slag.)
+  const plasserbare = shots.filter(
+    (s) => s.side != null && s.carryDistance != null,
+  );
+  const points = trackmanToPoints(plasserbare);
   const n = points.length;
+
+  // Ett kart per kølle: kalleren grupperer, men resultatet sier hvilken kølle
+  // tallene gjelder, så en blanding aldri kan presenteres som én spredning.
+  const unikeKoller = [...new Set(plasserbare.map((s) => s.club))];
+  const blandedeKoller = unikeKoller.length > 1;
+  const kolle = unikeKoller.length === 1 ? unikeKoller[0] : null;
 
   const carries = shots.map((s) => s.carryDistance).filter((v): v is number => v != null);
   const smashes = shots.map((s) => s.smashFactor).filter((v): v is number => v != null);
@@ -223,13 +247,8 @@ export function computeTrackManDispersionMap(shots: TrackManDispersionShot[]): D
 
   const bucketCounts: Record<DispersionBucketKey, number> = { good: 0, acceptable: 0, disaster: 0 };
 
-  const mappedShots: DispersionMapShot[] = shots
-    .map((shot, i) => {
-      // trackmanToPoints filtrerer bort ugyldige slag — punktrekkefølgen
-      // matcher rekkefølgen av gyldige shots i inputlisten.
-      return { shot, point: points[i] as DispersionPoint | undefined };
-    })
-    .filter((x): x is { shot: TrackManDispersionShot; point: DispersionPoint } => x.point != null)
+  const mappedShots: DispersionMapShot[] = plasserbare
+    .map((shot, i) => ({ shot, point: points[i] }))
     .map(({ shot, point }) => {
       let bucket: DispersionBucketKey | null = null;
       if (hasEllipse && oneSigma?.ellipse) {
@@ -250,6 +269,8 @@ export function computeTrackManDispersionMap(shots: TrackManDispersionShot[]): D
   return {
     n,
     hasEllipse,
+    kolle,
+    blandedeKoller,
     oneSigmaEllipse: oneSigma?.ellipse ?? null,
     twoSigmaEllipse: twoSigma?.ellipse ?? null,
     meanCarry,

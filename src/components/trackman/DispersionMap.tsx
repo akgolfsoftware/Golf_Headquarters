@@ -198,8 +198,9 @@ export function DispersionBucketBar({
           color: TL.mute,
         }}
       >
-        <span>{pct(good)} % innenfor 1σ</span>
-        <span>{pct(acceptable)} % 1–2σ</span>
+        {/* Målte andeler av slagene i denne økta — ikke en konfidensgaranti. */}
+        <span>{pct(good)} % av slagene innenfor 1σ</span>
+        <span>{pct(acceptable)} % mellom 1σ og 2σ</span>
         <span>{pct(disaster)} % utenfor 2σ</span>
       </div>
     </div>

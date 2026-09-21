@@ -298,6 +298,36 @@ export function TrackManSessionDetail({ club, dateText, sourceLabel, result, all
             Bias-pil
           </button>
         </div>
+        {/* σ beskriver formen på DENNE øktas spredning — det er ikke et løfte
+            om hvor neste slag lander. Uten denne linja leses «1σ» lett som en
+            prosentgaranti (PH-08-kontroll 21.09.2026). */}
+        <p
+          style={{
+            fontFamily: TL.font.sans,
+            fontSize: 12,
+            lineHeight: 1.45,
+            color: TL.mute,
+            margin: "0 0 8px",
+          }}
+        >
+          {result.hasEllipse
+            ? "Ringen viser hvor tett slagene i denne økta ligger — 1σ er kjernen, 2σ favner også de løsere slagene. Det beskriver spredningen som er målt, ikke hvor neste slag lander."
+            : "For få slag med både carry og retning til å tegne en spredningsring. Prikkene står, ringen kommer fra 8 slag."}
+        </p>
+        {result.blandedeKoller && (
+          <p
+            style={{
+              fontFamily: TL.font.sans,
+              fontSize: 12,
+              lineHeight: 1.45,
+              color: TL.mute,
+              margin: "0 0 8px",
+            }}
+          >
+            Slagene er fra flere køller. Én spredning over ulike køller beskriver
+            ingen sving — velg én kølle for å lese kartet.
+          </p>
+        )}
 
         <DispersionMap
           shots={result.shots}
