@@ -2,10 +2,16 @@
 
 Rekkefølge når kilder krangler. Øverst vinner.
 
-1. Ordbok — `docs/ordbok-master-trening.md` + `docs/ordbok-ak-golf-konsept.md`
-2. Chrome-lov — denne filen
-3. Workbench-master fra Claude Design (én fil, åtte pills)
-4. ds-core / `src/components`
+1. Designautoritet — `docs/design-system/design-autoritet.md`
+2. Ordbok og språk — `docs/ordbok.md` (eneste master)
+3. Treningsplanlegging — `docs/treningsplanlegging.md`
+4. Chrome-lov — denne filen
+5. Gjeldende skjermleveranse fra Claude Design
+6. ds-core / `src/components`
+
+AK Golf Design System og «App design» gjelder. Train-lock og Paper er utgående og kan ikke
+overstyre denne filen gjennom eldre dokumenter, minne eller kode. Denne beslutningen skal ikke
+spørres om på nytt.
 
 PNG er bevis, ikke lov.
 
@@ -39,6 +45,10 @@ Forbudt på skjerm: session, drill, range, tee, approach, elev, atlet, deload, b
 Claude Design → én HTML-master → React i `src/` → preview i appen.
 Godkjenning skjer i appen, ikke i en zip.
 
-## Utgått (skal vekk fra repo)
+## Historikk og gjeldende bestilling
 
-`designsystem/` · `.design-sync/previews` · `docs/arkiv` · `docs/design-audit` · `docs/natt` · `docs/planer` · `scripts/arkiv` · `public/kino`
+Eldre tegninger, planer og rapporter er historiske referanser, ikke en ny
+arbeidsordre. Anders' bestilling 20.09 krever at historikken bevares.
+Den kontrollerte Workbench-pakken og aktive arbeidsrekkefølgen nås fra
+[overleveringen](workbench-handover.md). Nye daterte planer og målinger følger
+mappeplasseringen i AGENTS.md. Denne filen gir ingen slettetillatelse.

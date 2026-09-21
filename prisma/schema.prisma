@@ -268,7 +268,7 @@ enum PRPress {
 }
 
 // ---------------------------------------------------------------------------
-// AK-formel v2 (fasit: docs/ordbok-master-trening.md + spec-treningsplanlegging).
+// AK-formel v2 (fasit: docs/ordbok.md + spec-treningsplanlegging).
 // Merkelapper, aldri krav — ingen treningsregel håndheves (beslutning 18.08).
 // Enum-verdiene er ASCII med norsk visningslag i src/lib/domain/ak-formel-v2.ts.
 // v1-enumene over (LFase, CSNivaa, MMiljo, PRPress) beholdes som historiske

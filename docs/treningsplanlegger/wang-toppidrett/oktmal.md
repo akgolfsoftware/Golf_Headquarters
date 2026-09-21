@@ -1,6 +1,6 @@
 # WANG Toppidrett — øktmal (felles struktur for alle økter)
 
-> **Vokabular:** feltene under leses mot `docs/ordbok-master-trening.md` (15.09.2026). Radene
+> **Vokabular:** feltene under leses mot `docs/ordbok.md` (15.09.2026). Radene
 > 4–7 er skrevet om til de fem AK-aksene; L-fase, CS, M0–M5 og PR1–PR5 er utgått.
 
 Kilde: `wang-treningsokt`-skillen (autoritativ) + AK-formel-feltene i AK Golf HQ.

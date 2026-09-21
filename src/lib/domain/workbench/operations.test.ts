@@ -21,6 +21,7 @@ import {
   buildWeekViewModel,
   buildMonthViewModel,
   buildYearViewModel,
+  buildPeriodViewModel,
   monthStartOf,
   lastDayOfMonth,
   addMonths,
@@ -51,6 +52,21 @@ describe("snapToGrid", () => {
     assert.equal(snapToGrid(560), 570);
     assert.equal(snapToGrid(0), 0);
   });
+});
+
+describe("valgt øktvarighet", () => {
+  for (const durationMinutes of [15, 45, 75]) {
+    it(`beholder ${durationMinutes} minutter ved oppretting og flytting`, () => {
+      const session = createSession({ ...baseCmd, durationMinutes });
+      assert.equal(session.durationMinutes, durationMinutes);
+      const moved = moveSession(createSession(baseCmd), {
+        sessionId: session.id, newDate: session.date,
+        newStartMinute: 545, newDurationMinutes: durationMinutes,
+      });
+      assert.equal(moved.durationMinutes, durationMinutes);
+      assert.equal(moved.startMinute, 540);
+    });
+  }
 });
 
 describe("mondayOf", () => {
@@ -301,6 +317,32 @@ describe("måned og år", () => {
     assert.equal(month.empty, true);
   });
 
+  it("buildMonthViewModel: gjennomført mot plan hittil summeres uten fremtidige økter", () => {
+    const completed = {
+      ...createSession({ ...baseCmd, date: "2026-09-02", durationMinutes: 90, pyramid: "TEK" }),
+      status: "COMPLETED" as const,
+    };
+    const planned = createSession({ ...baseCmd, date: "2026-09-10", durationMinutes: 60, pyramid: "SLAG" });
+    const future = createSession({ ...baseCmd, date: "2026-09-25", durationMinutes: 120, pyramid: "SPILL" });
+    const month = buildMonthViewModel("2026-09-01", [completed, planned, future], mode, 0, "September 2026", "2026-09-15");
+    assert.equal(month.plannedToDateMinutes, 150);
+    assert.equal(month.completedMinutes, 90);
+    assert.equal(month.completedByPyramid.TEK, 90);
+    assert.equal(month.completedByPyramid.SPILL, 0);
+    assert.equal(month.budget.plannedMinutes, 270);
+  });
+
+  it("buildMonthViewModel: ukesammendrag teller ikke dager utenfor måneden", () => {
+    const september = createSession({ ...baseCmd, date: "2026-09-29", durationMinutes: 60 });
+    const oktober = createSession({ ...baseCmd, date: "2026-10-03", durationMinutes: 120 });
+    const month = buildMonthViewModel("2026-10-01", [september, oktober], mode, 0, "Oktober 2026");
+    assert.equal(month.sessionCount, 1);
+    assert.equal(month.weekSummaries[0].sessionCount, 1);
+    assert.equal(month.weekSummaries[0].minutes, 120);
+    assert.equal(month.weeks[0].days[1].inMonth, false);
+    assert.equal(month.weeks[0].days[1].lines.length, 1);
+  });
+
   it("cancelled økter telles ikke i dominant pyramide eller år-timer", () => {
     const tek = createSession({ ...baseCmd, date: "2026-03-10", pyramid: "TEK" });
     const fys = {
@@ -316,12 +358,15 @@ describe("måned og år", () => {
   });
 
   it("buildYearViewModel: periodebånd, balanse og turnering·test-kolonne (WB-06)", () => {
-    const tekMars = createSession({
-      ...baseCmd,
-      date: "2026-03-10",
-      pyramid: "TEK",
-      durationMinutes: 120,
-    });
+    const tekMars = {
+      ...createSession({
+        ...baseCmd,
+        date: "2026-03-10",
+        pyramid: "TEK",
+        durationMinutes: 120,
+      }),
+      status: "COMPLETED" as const,
+    };
     const slagJuli = createSession({
       ...baseCmd,
       date: "2026-07-15",
@@ -356,6 +401,13 @@ describe("måned og år", () => {
     assert.equal(turn.aktiv, true);
     assert.equal(grunn.balanseTimer.TEK, 2); // 120 min = 2t, i mars → grunn
     assert.equal(turn.balanseTimer.SLAG, 3); // 180 min = 3t, i juli → turnering
+    assert.equal(year.plannedToDateMinutes, 300);
+    assert.equal(year.completedMinutes, 120);
+    assert.equal(year.completedByPyramid.TEK, 120);
+    assert.equal(grunn.plannedMinutes, 120);
+    assert.equal(grunn.completedMinutes, 120);
+    assert.equal(turn.plannedMinutes, 180);
+    assert.equal(turn.completedMinutes, 0);
     assert.equal(turn.turneringer.length, 1);
     assert.equal(turn.turneringer[0].navn, "Sommertour Moss");
     assert.equal(grunn.turneringer.length, 0); // turneringen er i juli, ikke i grunn-vinduet
@@ -364,6 +416,66 @@ describe("måned og år", () => {
     assert.deepEqual(year.months[0].eventLabels, ["Vintertest 24.01"]);
     assert.deepEqual(year.months[6].eventLabels, ["Sommertour Moss 15.07"]);
     assert.deepEqual(year.months[1].eventLabels, []);
+  });
+
+  it("buildPeriodViewModel: velger aktiv periode og summerer plan mot gjennomført", () => {
+    const completed = {
+      ...createSession({ ...baseCmd, date: "2026-08-25", durationMinutes: 90, pyramid: "TEK" }),
+      status: "COMPLETED" as const,
+    };
+    const planned = createSession({ ...baseCmd, date: "2026-09-01", durationMinutes: 60, pyramid: "FYS" });
+    const cancelled = {
+      ...createSession({ ...baseCmd, date: "2026-08-26", durationMinutes: 180, pyramid: "SLAG" }),
+      status: "CANCELLED" as const,
+    };
+    const outside = createSession({ ...baseCmd, date: "2026-10-01", durationMinutes: 240, pyramid: "TURN" });
+    const perioder = [
+      {
+        id: "grunn",
+        type: "GRUNN" as const,
+        startDate: "2026-08-24",
+        endDate: "2026-09-06",
+        focus: "Stabil treningsrytme",
+        widthPct: 4,
+        aktiv: true,
+        balanseTimer: { FYS: 0, TEK: 0, SLAG: 0, SPILL: 0, TURN: 0, PERS: 0 },
+        plannedMinutes: 0,
+        plannedToDateMinutes: 0,
+        completedMinutes: 0,
+        turneringer: [],
+      },
+    ];
+
+    const periode = buildPeriodViewModel(
+      2026,
+      perioder,
+      null,
+      [completed, planned, cancelled, outside],
+      mode,
+      "2026-08-28",
+    );
+
+    assert.equal(periode.period?.id, "grunn");
+    assert.equal(periode.sessions.length, 2);
+    assert.equal(periode.plannedMinutes, 150);
+    assert.equal(periode.plannedToDateMinutes, 90);
+    assert.equal(periode.completedMinutes, 90);
+    assert.equal(periode.weeks.length, 2);
+    assert.equal(periode.weeks[0].weekNumber, 35);
+    assert.equal(periode.weeks[0].minutes, 90);
+    assert.equal(periode.weeks[1].minutes, 60);
+    assert.equal(periode.distribution.find((row) => row.pyramid === "TEK")?.sharePct, 60);
+    assert.equal(periode.distribution.find((row) => row.pyramid === "FYS")?.sharePct, 40);
+    assert.equal(periode.distribution.find((row) => row.pyramid === "SLAG")?.plannedMinutes, 0);
+  });
+
+  it("buildPeriodViewModel: tom når årsplanen ikke har perioder", () => {
+    const periode = buildPeriodViewModel(2026, [], null, [createSession(baseCmd)], mode, "2026-08-24");
+    assert.equal(periode.period, null);
+    assert.deepEqual(periode.sessions, []);
+    assert.deepEqual(periode.weeks, []);
+    assert.deepEqual(periode.distribution, []);
+    assert.equal(periode.plannedMinutes, 0);
   });
 });
 

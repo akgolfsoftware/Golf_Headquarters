@@ -1,5 +1,8 @@
 # PROTOTYPE-PLAN — klikkbar prototype av hele AK Golf HQ
 
+> **HISTORISK 21.09.2026:** Ikke bruk som ny design- eller byggeplan. Se
+> [gjeldende designautoritet](../../../docs/design-system/design-autoritet.md).
+
 Mål: én fil per skall der du kan klikke deg gjennom alle skjermer. Tre skall: **iPhone 393**, **iPad 1180×820** (skinne 250) / 834 (tab bar), **Mac 1440×900** (rail). Samme dataverden (Øyvind, Anders, uke 34, 22.08.2026) på alle skall.
 
 ## 0. Prinsipp

@@ -1,5 +1,9 @@
 # Stripe-cutover-sjekkliste — betaling starter 1. september 2026
 
+> **DESIGNMERKNAD 21.09.2026:** Betalingsflyt og kontrollpunkter kan brukes. Paper- og
+> Train-lock-farger nedenfor er historikk og skal erstattes i en egen, kontrollert Stripe-
+> brandingoppgave etter [gjeldende designautoritet](../design-system/design-autoritet.md).
+
 > Opprettet 2026-08-16 (plan A2). Dette er Anders' manuelle løype for å
 > verifisere hele betalingskjeden i Stripe TEST-modus før live-nøklene slås på.
 > Koden er `now`-parameterisert og enhetstestet — denne listen dekker det
@@ -40,13 +44,14 @@ dashbordet. Speil tabellen over (samme navn, beskrivelser og priser).
 
 > **Flagget 01.09.2026 (revisjonsøkt) — IKKE verifisert, kun observert:** tabellen under satte
 > Stripe checkout-brandingen til Paper-fasitens farger 16.08.2026. Paper (inkl. `--p-*`-tokens)
-> er fysisk slettet fra repoet 30.08.2026, og designfasit er nå Train-lock (`--tl-*`). Ingen i
+> er fysisk slettet fra repoet 30.08.2026, og den daværende etterfølgeren var Train-lock
+> (`--tl-*`). Begge er utgående etter beslutningen 21.09.2026. Ingen i
 > denne revisjonen har sjekket om noen har oppdatert selve Stripe-checkout-siden etter det —
 > dette er en driftsrisiko (checkout kan fortsatt vise Paper-farger i produksjon), ikke en
 > bekreftet feil. Sjekk faktisk Stripe-innstillingen (`/v1/_unstable/settings/brand`) før neste
 > betalingsrelaterte endring, og oppdater denne tabellen deretter.
 
-Merkevare-innstillingene ble satt til Paper-fasitens farger via connectoren
+Merkevare-innstillingene ble historisk satt til Paper-fasitens farger via connectoren
 (`/v1/_unstable/settings/brand`), verifisert med skjermbilde av en ekte
 testbetalingsside — status 16.08.2026, se varsel over:
 

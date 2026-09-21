@@ -1,6 +1,6 @@
 # Ordbok, opprydding og Workbench — analyse og forslag
 
-**15.09.2026.** Grunnlag for `docs/ordbok-master-trening.md` (utkast). Alt under er målt i
+**15.09.2026.** Grunnlag for `docs/ordbok.md` (utkast). Alt under er målt i
 repoet samme dag: 3 kartlegginger (dokumenter, kode, Workbench), alle funn har sti og
 linje i kartleggingsrapportene. Ingenting er slettet ennå — sletting venter på Anders.
 
@@ -37,7 +37,7 @@ og lenkene pekt om. Av §2.2 er dokumentdelen gjort (konsept-ordboken krympet ti
 
 | Fil | Problem | Forslag |
 |---|---|---|
-| `docs/ordbok-ak-golf-konsept.md` (1112 linjer) | `scripts/ordbok-json.ts` leser den og feiler hvis et Prisma-enum ikke er nevnt. Del A §1–§16 er 60 % utgått, men §4 (16 områder) og §9 (prosentkrav per periode) er **ikke** merket utgått | Del A slettes. Del B (staving av vanlige appord) flyttes til `docs/skjermtekst/ak-golf-hq-sprak-og-ordbok.md`. Skriptet pekes på masteren |
+| `docs/ordbok.md` (1112 linjer) | `scripts/ordbok-json.ts` leser den og feiler hvis et Prisma-enum ikke er nevnt. Del A §1–§16 er 60 % utgått, men §4 (16 områder) og §9 (prosentkrav per periode) er **ikke** merket utgått | Del A slettes. Del B (staving av vanlige appord) flyttes til `docs/ordbok.md`. Skriptet pekes på masteren |
 | `docs/ordbok.json` | Generert 03.07.2026 (versjonsfelt), inneholder L-faser med CS-bånd som fasit. Leses av `TreningLoggV2.tsx:14` (kun kommentar) og en Caddie-test | Generer på nytt fra masteren. Kjør skriptet i `npm run verify` så den ikke blir gammel igjen |
 | `src/lib/masterbrain/knowledge/concepts/canon-methodology.json` | CANON v3.5 med L-faser, ni CS-nivåer, invarianter. Lastes av `hent-kunnskap.ts:22` og AI-agentene | Merk seksjonene `l_faser`, `cs_levels`, `invariants` som `historisk: true`, eller ta dem ut. AI-coachen svarer i dag med regler som ikke finnes |
 | `src/lib/taxonomy.ts` | 17 områder, sju puttebånd, 7-listen for kategorier, CS/M/PR-tabeller. Driver fortsatt deler av UI | Reduser til det masteren har. Alt annet flyttes til `ak-formel-v2.ts` |
@@ -77,7 +77,7 @@ strammes til én linje som peker på masteren).
 4. **AI-laget må lese masteren, ikke CANON v3.5.** Caddie og agentene henter i dag
    prosentkrav og L-faser fra `canon-methodology.json` og RAG-korpuset. Etter opprydding
    svarer de fortsatt med regler Anders har avskaffet.
-5. **Én språkfil for skjermord.** `docs/skjermtekst/ak-golf-hq-sprak-og-ordbok.md` (2 928
+5. **Én språkfil for skjermord.** `docs/ordbok.md` (2 928
    linjer) er arbeidsutgaven for staving og knappeord. Masteren dekker fag og data. De to
    skal ikke overlappe: masteren eier koder og betydning, språkfilen eier tone, staving og
    skjermtekst.
@@ -130,7 +130,7 @@ Claude Design-tilkoblingen virket ikke i denne økten (krever `/design-login` i 
 interaktiv terminal). Klar til å sendes når den er oppe:
 
 - **Ordboken som referansefil** i Train-lock-prosjektet (`a5152cf9`): last opp
-  `docs/ordbok-master-trening.md` som `referanse/ordbok-master.md`, så alle nye skjermer
+  `docs/ordbok.md` som `referanse/ordbok-master.md`, så alle nye skjermer
   bruker samme ord.
 - **Tegn tre skjermer som mangler fasit:** (a) gruppeuke i Workbench med gruppeøkt som
   kopieres til spillere, (b) delt økt med blokker og ansvarlig trener, (c) testdag med
@@ -141,7 +141,7 @@ interaktiv terminal). Klar til å sendes når den er oppe:
 
 ## 7. Neste steg
 
-1. Anders leser `docs/ordbok-master-trening.md`, retter og svarer på de ti avklaringene.
+1. Anders leser `docs/ordbok.md`, retter og svarer på de ti avklaringene.
 2. Claude gjør slettelisten i 2.1 og krympingen i 2.2 i én PR, med lenkeretting.
 3. Claude kjører `/design-login` sammen med Anders og laster masteren inn i Claude Design.
 4. Workbench-rekkefølgen i 5.2 registreres med `/beslutning` i MASTERPLAN.

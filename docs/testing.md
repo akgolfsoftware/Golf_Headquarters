@@ -59,7 +59,7 @@ Tyngdepunktet ligger i `src/lib/domain/` (SG, hcp, ak-kategori, fys-score),
 
 - `src/lib/auth/guards-avvis.test.ts` — beviser at guardene AVVISER, ikke bare at
   de importeres. `scripts/check-action-auth.mjs` dekker import og ubrukt kall.
-  Handlingene selv prøves i [R-I-kontrollen](design-audit/handlingstilgang-r-i-2026-09-12.md).
+  Handlingene selv prøves i [R-I-kontrollen · historisk Git-versjon](https://github.com/akgolfsoftware/Golf_Headquarters/blob/acc644781c89fe746dc42ee22d41c84f3805cbb1/docs/design-audit/handlingstilgang-r-i-2026-09-12.md).
 - `src/lib/auth/coach-scope-idor.test.ts` — IDOR-regresjoner. Importerer ekte
   produksjonskode fra `booking-scope.ts`. **Legg aldri en lokal kopi av
   produksjonslogikk her** — det var nettopp et slikt speil som drev fra

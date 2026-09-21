@@ -1,5 +1,10 @@
 # Claude Design — komplett overlevering til kode
 
+> **HISTORISK PROMPT — IKKE KJØR (21.09.2026):** Denne bestillingen starter fra Train-lock og
+> er overstyrt. Bruk [gjeldende designautoritet](design-autoritet.md) og den oppdaterte
+> AK HQ Design-skillen. AK Golf Design System og «App design» gjelder; Train-lock og Paper er
+> utgående.
+
 10.09.2026. Bruk i den eksisterende Claude Design-samtalen sammen med den vedlagte pakken og de nyeste prototypene. Dette er en bestilling av design og overlevering, ikke en påstand om at hele appen er ferdig. Fortsett med valgt modell i Claude Design; bruk grundig analyse dersom miljøet tilbyr det. Ingen ny modell eller pris er verifisert her; arbeidet bruker gjeldende abonnement/kvote.
 
 Kopier hele blokken:

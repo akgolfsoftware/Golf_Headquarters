@@ -1,5 +1,9 @@
 # `designsystem/team-norway/` — lokalt speil
 
+> **MYNDIGHET 21.09.2026:** AK Golf Design System og «App design» eier plattformens felles
+> visuelle grunnlag. Dette speilet kan bare styre en uttrykkelig valgt Team Norway-profil;
+> Train-lock/Paper-henvisninger er historikk. Se [gjeldende designautoritet](../../docs/design-system/design-autoritet.md).
+
 Speil av Claude Design-prosjektet **«Claw Design — Team Norway Golf»**
 (namespace `ClawDesignTeamNorwayGolf_a03bf9`). Sist synket **08.09.2026** fra
 `~/Downloads/Claw Design — Team Norway Golf.zip` (22:03). Forrige synk: 30.08.2026.

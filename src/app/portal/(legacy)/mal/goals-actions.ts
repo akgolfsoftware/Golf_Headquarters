@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
-import { Prisma, PyramidArea } from "@/generated/prisma/client";
+import { GoalCategory, Prisma, PyramidArea } from "@/generated/prisma/client";
 import { nonEmpty, isoDate } from "@/lib/validation/schemas";
 import { notify } from "@/lib/notifications";
 import { resolveCoachIdForPlayer } from "@/lib/workbench/v2-sync";
@@ -14,6 +14,7 @@ import { hentSgSnittPerOmrade } from "@/lib/portal/sg-omrade-snitt";
 
 const GoalInputSchema = z.object({
   type: z.string().min(1, "Type er påkrevd"),
+  category: z.nativeEnum(GoalCategory),
   title: nonEmpty(500),
   targetValue: z.number().nullable().optional(),
   targetDate: isoDate.nullable().optional(),
@@ -30,6 +31,7 @@ const AvbrytGoalSchema = z.object({
 
 export type GoalInput = {
   type: string;
+  category: GoalCategory;
   title: string;
   targetValue?: number | null;
   targetDate?: string | null;
@@ -83,6 +85,7 @@ export async function createGoal(input: GoalInput) {
     data: {
       userId: user.id,
       type: input.type,
+      category: input.category,
       title: input.title.trim(),
       targetValue: input.targetValue ?? null,
       targetDate: input.targetDate ? new Date(input.targetDate) : null,
@@ -213,6 +216,7 @@ export async function endreGoal(goalId: string, input: GoalInput) {
     where: { id: goalId },
     data: {
       type: input.type,
+      category: input.category,
       title: input.title.trim(),
       targetValue: input.targetValue ?? null,
       targetDate: input.targetDate ? new Date(input.targetDate) : null,

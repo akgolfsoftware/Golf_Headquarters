@@ -9,10 +9,10 @@ Git hadde 19 registrerte ekstra arbeidskopier i tillegg til hovedarbeidsområdet
 | Arbeidskopi | Lokal forskjell | Bevaring eller beslutning |
 |---|---|---|
 | `future-development` | Markedsundersøkelse og en duplisert sluttsynkregel i `AGENTS.md`/masterplan | Undersøkelsen finnes identisk i `main`. Sluttsynkregelen finnes i gjeldende masterplan. Den lokale `AGENTS.md`-kopien beholdes ikke fordi gjeldende prosjektinstruks sier at fellesinstruksen bare vedlikeholdes i masterfilen |
-| `nattarbeid-2026-09-13` | Fire ulagrede dokumenter; ett statusregister hadde mer detaljert historisk delstatus | De tre øvrige dokumentene finnes identisk i `main`. Den detaljerte 02:55-varianten er bevart ordrett som [arkivert koordinatorstatus](../arkiv/opprydding-2026-09-13/funksjonsforbedringer-nattstatus-koordinator.md) |
-| `p0-streng-reise-2026-09-13` | Tre modifiserte testfiler og én detaljert rapport | Testfilene er byte-identiske med `main`. Den lengre rapportvarianten er bevart ordrett som [arkivert arbeidskopi](../arkiv/opprydding-2026-09-13/p0-streng-reise-arbeidskopi.md) |
+| `nattarbeid-2026-09-13` | Fire ulagrede dokumenter; ett statusregister hadde mer detaljert historisk delstatus | De tre øvrige dokumentene finnes identisk i `main`. Den detaljerte 02:55-varianten er bevart ordrett som [arkivert koordinatorstatus · historisk Git-versjon](https://github.com/akgolfsoftware/Golf_Headquarters/blob/163ce6c10c2ff0ecb4b6da2255d0cf28a4efd197/docs/arkiv/opprydding-2026-09-13/funksjonsforbedringer-nattstatus-koordinator.md) |
+| `p0-streng-reise-2026-09-13` | Tre modifiserte testfiler og én detaljert rapport | Testfilene er byte-identiske med `main`. Den lengre rapportvarianten er bevart ordrett som [arkivert arbeidskopi · historisk Git-versjon](https://github.com/akgolfsoftware/Golf_Headquarters/blob/3924f7a9f5847e787ec987a5c283c0b504319895/docs/arkiv/opprydding-2026-09-13/p0-streng-reise-arbeidskopi.md) |
 
-Arkivfilene er historiske arbeidsøyeblikk. Gjeldende status skal leses i [masterplanen](../MASTERPLAN-GJENSTAAENDE.md), ikke utledes fra gamle «pågår»-tekster i arkivet.
+Arkivfilene er historiske arbeidsøyeblikk. Gjeldende status skal leses i [masterplanen · historisk Git-versjon](https://github.com/akgolfsoftware/Golf_Headquarters/blob/a235444b0f7287b0ce7270c28b32d34517711a2f/docs/MASTERPLAN-GJENSTAAENDE.md), ikke utledes fra gamle «pågår»-tekster i arkivet.
 
 ## Kontrollgrunnlag
 

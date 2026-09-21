@@ -111,8 +111,8 @@ Elevene er mindreårige. Navn og spillerlister skal aldri vises på den åpne si
 
 ## Kilder kontrollert
 
-- `docs/ordbok-master-trening.md`
-- `docs/skjermtekst/ak-golf-hq-sprak-og-ordbok.md`
+- `docs/ordbok.md`
+- `docs/ordbok.md`
 - `src/components/portal/live/use-live-session.ts`
 - `src/components/portal/live/DrillLogger.tsx`
 - `docs/planer/claude-design-til-grok-portering-2026-09-12.md`

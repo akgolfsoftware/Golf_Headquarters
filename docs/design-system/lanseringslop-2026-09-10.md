@@ -1,6 +1,6 @@
 # Fra designoverlevering til åpen lansering
 
-10.09.2026. Dette er gjennomføringsdetaljer under [gjeldende arbeidsliste](../MASTERPLAN-GJENSTAAENDE.md), ikke et nytt eller redusert lanseringsomfang. Anders ønsker komplett app med booking og betaling før åpen lansering.
+10.09.2026. Dette er gjennomføringsdetaljer under [gjeldende arbeidsliste · historisk Git-versjon](https://github.com/akgolfsoftware/Golf_Headquarters/blob/a235444b0f7287b0ce7270c28b32d34517711a2f/docs/MASTERPLAN-GJENSTAAENDE.md), ikke et nytt eller redusert lanseringsomfang. Anders ønsker komplett app med booking og betaling før åpen lansering.
 
 **Raskeste forsvarlige vei er å ferdigstille sammenhengende skjermfamilier, mens kode, integrasjoner og driftskontroll går parallelt.** Full designpakke trenger ikke være ferdig før første valgte familie bygges. Ingen bestemt lanseringsdato kan bekreftes før funksjonshull, fagspørsmål og faktiske integrasjoner er kontrollert.
 

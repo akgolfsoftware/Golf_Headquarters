@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Icon } from "@/components/v2/icon";
 import { TL } from "@/lib/v2/train-lock";
 import { UI } from "@/lib/domain/workbench/labels";
-import type { SourceItem } from "@/lib/domain/workbench/types";
+import type { PlanningGoalSummary, SourceItem } from "@/lib/domain/workbench/types";
 import { workbenchUrl } from "@/lib/workbench/visning-url";
 import { settKildeDataTransfer } from "./wb-drag";
 
@@ -15,6 +15,7 @@ type Props = {
   uke?: string;
   maned?: string;
   aar?: string;
+  goals?: PlanningGoalSummary[];
 };
 
 const GRUPPER: { kind: SourceItem["kind"]; tittel: string; ikon: string }[] = [
@@ -23,20 +24,19 @@ const GRUPPER: { kind: SourceItem["kind"]; tittel: string; ikon: string }[] = [
   { kind: "PREVIOUS_WEEK", tittel: UI.sourcesPrevious, ikon: "history" },
 ];
 
-export function SourcesPanel({ kilder, playerId, uke, maned, aar }: Props) {
+export function SourcesPanel({ kilder, playerId, uke, maned, aar, goals = [] }: Props) {
   const nivaa = playerId
     ? [
         { id: "aar" as const, label: UI.visAar },
         { id: "periode" as const, label: UI.visPeriode },
         { id: "maned" as const, label: UI.visManed },
         { id: "uke" as const, label: UI.visUke },
-        { id: "stall" as const, label: UI.visStall },
       ]
     : [];
   return (
     <aside aria-label={UI.sourcesTitle} style={{ minWidth: 0 }}>
       <div style={{ fontFamily: TL.font.sans, fontSize: 11, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>
-        {UI.sourcesTitle}
+        {playerId ? UI.timeLevels : UI.sourcesTitle}
       </div>
       {nivaa.length > 0 ? (
         <div style={{ marginTop: 10, display: "grid", gap: 2 }}>
@@ -47,6 +47,7 @@ export function SourcesPanel({ kilder, playerId, uke, maned, aar }: Props) {
           ))}
         </div>
       ) : null}
+      {goals.length > 0 ? <MaalSpor goals={goals} /> : null}
       {kilder.length === 0 ? (
         <div style={{ display: "flex", gap: 8, alignItems: "flex-start", marginTop: 10 }}>
           <Icon name="layers" size={14} style={{ color: TL.mute, marginTop: 2 }} />
@@ -77,6 +78,39 @@ export function SourcesPanel({ kilder, playerId, uke, maned, aar }: Props) {
         </div>
       )}
     </aside>
+  );
+}
+
+function MaalSpor({ goals }: { goals: PlanningGoalSummary[] }) {
+  const grupper = [
+    { category: "OUTCOME" as const, label: "Resultatmål" },
+    { category: "PROCESS" as const, label: "Prosessmål" },
+  ];
+  return (
+    <section aria-label="Aktive mål" style={{ marginTop: 14, paddingTop: 12, borderTop: `1px solid ${TL.hair}` }}>
+      <div style={{ fontFamily: TL.font.sans, fontSize: 11, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>
+        Målsetninger
+      </div>
+      {grupper.map((gruppe) => {
+        const rader = goals.filter((goal) => goal.category === gruppe.category);
+        if (rader.length === 0) return null;
+        return (
+          <div key={gruppe.category} style={{ marginTop: 10 }}>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 11, fontWeight: 600, color: TL.mute }}>{gruppe.label}</div>
+            {rader.map((goal) => (
+              <div key={goal.id} style={{ padding: "7px 0", borderBottom: `1px solid ${TL.hair}` }}>
+                <div style={{ fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 600, color: TL.text, lineHeight: 1.35 }}>{goal.title}</div>
+                {goal.targetDate ? (
+                  <div style={{ marginTop: 2, fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>
+                    Frist {goal.targetDate.slice(8, 10)}.{goal.targetDate.slice(5, 7)}.{goal.targetDate.slice(0, 4)}
+                  </div>
+                ) : null}
+              </div>
+            ))}
+          </div>
+        );
+      })}
+    </section>
   );
 }
 

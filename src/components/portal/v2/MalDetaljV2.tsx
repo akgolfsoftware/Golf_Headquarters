@@ -11,7 +11,7 @@ import { Caps, Kort, Knapp, StatusPill, ProgresjonsBar, NivaStige, Inndata, Velg
 import { Icon } from "@/components/v2/icon";
 import { avbrytGoal, endreGoal, markeerGoalSomOppnaadd, type GoalInput } from "@/app/portal/(legacy)/mal/goals-actions";
 import { PYR_REKKEFOLGE, PYR_LABEL } from "@/lib/pyramide";
-import type { PyramidArea } from "@/generated/prisma/client";
+import type { GoalCategory, PyramidArea } from "@/generated/prisma/client";
 import { SG_OMRADER, SG_OMRADE_NAVN, erSgOmrade } from "@/lib/domain/maal-fremdrift";
 export type MalStigeTrinn = {
   code: string;
@@ -23,6 +23,7 @@ export type MalTestOption = { id: string; name: string };
 
 export type MalDetaljV2Data = {
   id: string;
+  category: GoalCategory;
   typeLabel: string;
   tittel: string;
   goalType: string;
@@ -46,6 +47,7 @@ export type MalDetaljV2Data = {
   erEget: boolean;
   initial: {
     title: string;
+    category: GoalCategory;
     type: string;
     targetValue: number | null;
     targetDate: string | null;
@@ -207,6 +209,7 @@ function EndreModal({
   onConfirm: (input: GoalInput) => void;
 }) {
   const [title, setTitle] = useState(initial.title);
+  const [category, setCategory] = useState<GoalCategory>(initial.category);
   const [type, setType] = useState(initial.type);
   const [targetValue, setTargetValue] = useState<string>(
     initial.targetValue != null ? String(initial.targetValue) : "",
@@ -220,6 +223,7 @@ function EndreModal({
 
   const dirty =
     title !== initial.title ||
+    category !== initial.category ||
     type !== initial.type ||
     targetValue !== (initial.targetValue != null ? String(initial.targetValue) : "") ||
     targetDate !== (initial.targetDate ?? "") ||
@@ -235,6 +239,7 @@ function EndreModal({
     if (!title.trim() || manglerOmrade) return;
     onConfirm({
       type,
+      category,
       title,
       targetValue: targetValue ? Number(targetValue) : null,
       targetDate: targetDate || null,
@@ -250,6 +255,17 @@ function EndreModal({
   return (
     <ModalSkall eyebrow="Mål · Endre" tittel="Endre mål" onClose={onClose}>
       <div style={{ display: "flex", flexDirection: "column", gap: 14, marginTop: 16 }}>
+        <div>
+          <Caps size={9} style={{ marginBottom: 8 }}>Måltype</Caps>
+          <FilterChips
+            items={["Resultatmål", "Prosessmål"]}
+            active={[category === "OUTCOME" ? "Resultatmål" : "Prosessmål"]}
+            onToggle={(label) => setCategory(label === "Resultatmål" ? "OUTCOME" : "PROCESS")}
+          />
+          <span style={{ display: "block", marginTop: 6, fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute }}>
+            {category === "OUTCOME" ? "Det du ønsker å oppnå." : "Det du skal gjøre jevnlig for å nå resultatet."}
+          </span>
+        </div>
         <Inndata label="Tittel" value={title} onChange={setTitle} />
         <Velger label="Type" options={GOAL_TYPES} value={type} onChange={setType} />
         {erSg && (
@@ -397,6 +413,7 @@ export function MalDetaljV2({ data, testOptions = [] }: { data: MalDetaljV2Data;
       {/* Header */}
       <div>
         <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+          <StatusPill tone="info">{data.category === "OUTCOME" ? "Resultatmål" : "Prosessmål"}</StatusPill>
           <Caps color={TL.fill}>{data.typeLabel}</Caps>
           {data.goalType === "HCP_TARGET" && <HjelpTips k="hcp" size={12} />}
           {data.goalType === "SG_AREA" && <HjelpTips k="sgOmrade" size={12} />}

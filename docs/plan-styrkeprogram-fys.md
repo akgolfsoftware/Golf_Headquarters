@@ -1,5 +1,8 @@
 # Plan — WANGs styrkeprogram inn i FYS-søylen (ikke frittstående funksjon)
 
+> **DESIGNMERKNAD 21.09.2026:** Planens funksjons- og datakartlegging kan brukes. Alle visuelle
+> Train-lock/Paper-henvisninger er overstyrt av [gjeldende designautoritet](design-system/design-autoritet.md).
+
 **Status:** UTKAST — venter på Anders' godkjenning før noe kodes (per
 `ak-master-claude-operativsystem.md`: nummerert plan, godkjenning FØR kode).
 **Omfang:** kun planlegging. Ingen kode, ingen migrasjoner, ingen skjermtegning i denne PR-en.

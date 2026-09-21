@@ -16,7 +16,7 @@
     "ak-golf-tokens:write": "node scripts/ak-golf-tokens.mjs --write",
     "check:doc-lenker": "node scripts/check-doc-lenker.mjs",
     "check:fasit-sitering": "node scripts/check-fasit-sitering.mjs",
-    "verify:static": "prisma validate && prisma generate && tsc --noEmit && npm run lint && node scripts/check-action-auth.mjs && node scripts/check-token-gap.mjs && node scripts/check-critical-imports.mjs && node scripts/check-sensitive-route-guards.mjs && node scripts/check-ingen-paper.mjs && node scripts/check-fasit-sitering.mjs && node scripts/check-v2shell-bredde.mjs && node scripts/ak-golf-tokens.mjs && node scripts/check-ak-golf-kits.mjs --rask && npm run prosjekt:sjekk && node scripts/check-tl-kontrast.mjs && node scripts/check-fasitdekning-baseline.mjs && node scripts/check-signalfarge-tekst.mjs && tsx scripts/ordbok-json.ts",
+    "verify:static": "prisma validate && prisma generate && tsc --noEmit && npm run lint && node scripts/check-action-auth.mjs && node scripts/check-token-gap.mjs && node scripts/check-critical-imports.mjs && node scripts/check-sensitive-route-guards.mjs && node scripts/check-ingen-paper.mjs && node scripts/check-fasit-sitering.mjs && node scripts/check-v2shell-bredde.mjs && node scripts/ak-golf-tokens.mjs && node scripts/check-ak-golf-kits.mjs --rask && npm run prosjekt:sjekk && node scripts/check-tl-kontrast.mjs && node scripts/check-workbench-handover.mjs && node scripts/check-fasitdekning-baseline.mjs && node scripts/check-signalfarge-tekst.mjs && tsx scripts/ordbok-json.ts",
     "verify": "npm run verify:static && npm test && npm run build",
     "postinstall": "prisma generate",
     "db:seed": "tsx prisma/seed.ts",
@@ -52,7 +52,8 @@
     "check:critical-imports": "node scripts/check-critical-imports.mjs",
     "check:sensitive-route-guards": "node scripts/check-sensitive-route-guards.mjs",
     "prosjekt:sjekk": "node scripts/check-project-structure.mjs && node scripts/check-doc-lenker.mjs",
-    "prosjekt:register": "node scripts/prosjekt-register.mjs --write"
+    "prosjekt:register": "node scripts/prosjekt-register.mjs --write",
+    "check:workbench-handover": "node scripts/check-workbench-handover.mjs"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.85",
