@@ -120,5 +120,28 @@
         "repo": "obra/superpowers"
       }
     }
+  },
+  "skillOverrides": {
+    "design-taste-frontend": "off",
+    "emil-design-eng": "off",
+    "frontend-design": "off",
+    "animate": "off",
+    "find-animation-opportunities": "off",
+    "improve-animations": "off",
+    "review-animations": "off",
+    "design-system": "off",
+    "web-design-guidelines": "off",
+    "hallmark": "off",
+    "high-end-visual-design": "off",
+    "minimalist-ui": "off",
+    "redesign-existing-projects": "off",
+    "anti-ui-slop": "off",
+    "image-to-code": "off",
+    "apple-design": "off",
+    "better-ui": "off",
+    "ui-ux-pro-max": "off",
+    "brandkit": "off",
+    "extract-design-system": "off",
+    "animation-vocabulary": "off"
   }
 }
