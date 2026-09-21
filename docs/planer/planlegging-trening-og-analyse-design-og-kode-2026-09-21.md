@@ -13,8 +13,23 @@ Første sammenhengende del er bygget:
   år, periode, måned, uke og økt.
 - Synlige Workbench-begreper er presisert til **Læringssteg** og **Treningsmiljø**.
 
-Neste byggetrinn er å la målene knyttes til konkrete perioder, uker og økter, og deretter
-koble gjennomført trening og analyse tilbake til samme målspor.
+Andre byggetrinn (23.09.2026) er bygget uten ny modell eller databaseendring:
+
+- Et mål hører til ett planleggingsnivå: år, periode, måned, uke eller økt. Valget lagres som
+  `planNivaa` i `Goal.payload` og settes i «Endre mål» i PlayerHQ. Uten valg foreslås nivået fra
+  fristen (ingen frist = år, ≤1 dag = økt, ≤7 dager = uke, ≤35 = måned, ≤120 = periode, ellers år).
+  Visningen skiller alltid mellom valgt og foreslått nivå.
+- I coachens Workbench viser hvert mål type, tittel, frist, nivå, fremdrift (samme
+  `beregnGoalProgress` som PlayerHQ), planlagt/gjennomført/uteblitt og et regelbasert neste tiltak.
+- Sporet regnes bare for mål koblet til et pyramide-område (`linkedPyramidArea`, i dag kun
+  øktfrekvensmål). Øvrige mål viser fremdrift uten øktteller, ikke en oppdiktet null.
+- Kode: `src/lib/domain/maal-plannivaa.ts` (logikk), `src/lib/workbench/maal-spor.ts` (henting etter
+  at coachens tilgang er kontrollert).
+
+Gjenstår: knytte enkeltmål til en konkret periode-, uke- eller økt-rad (i dag kobles de til
+nivå, ikke til en bestemt rad), vise sporet i spillerens egen måldetalj, koble testresultater og
+analysesignaler inn i «neste tiltak», og la nivå styre hvilke mål som løftes frem i hver
+Workbench-visning.
 
 ## 1. Produktmålet
 

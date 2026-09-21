@@ -6,6 +6,8 @@
  * Norwegian UI labels live in ui/labels.ts — never hard-code strings here.
  */
 
+import type { MaalSpor, PlanNivaa, PlanNivaaKilde } from "@/lib/domain/maal-plannivaa";
+
 // ─── Vocabulary enums (from VOKABULAR.md) ─────────────────────────────────
 
 export type PyramidArea = "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN";
@@ -332,6 +334,21 @@ export interface PlanningGoalSummary {
   title: string;
   category: "OUTCOME" | "PROCESS";
   targetDate: string | null;
+  /** Norsk typenavn (Handicap, Øktfrekvens …). */
+  typeLabel: string;
+  /** Planleggingsnivå målet hører til, og om nivået er valgt eller foreslått fra fristen. */
+  planNivaa: PlanNivaa;
+  planNivaaKilde: PlanNivaaKilde;
+  /** Fra beregnGoalProgress — hasData=false betyr «ingen data ennå», aldri 0 %. */
+  fremdrift: {
+    pct: number;
+    hasData: boolean;
+    status: "on-track" | "behind" | "achieved" | "no-data";
+    detail: string;
+  };
+  /** Planlagt/gjennomført/uteblitt i nivåets vindu. Null når målet ikke er koblet til et øktområde. */
+  spor: MaalSpor | null;
+  nesteTiltak: string;
 }
 
 // ─── Commands (write side) ────────────────────────────────────────

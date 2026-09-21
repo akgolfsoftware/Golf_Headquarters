@@ -21,6 +21,7 @@ import { loadMinCalendar, loadMonth, loadPeriod, loadStallFollowup, loadWeek, lo
 import { mondayOf } from "@/lib/domain/workbench/operations";
 import { parseWeekOffset } from "@/lib/workbench/session-move-math";
 import { parseVisning } from "@/lib/workbench/visning-url";
+import { hentMaalSpor } from "@/lib/workbench/maal-spor";
 
 export const dynamic = "force-dynamic";
 
@@ -61,18 +62,7 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
   });
   if (!spiller) notFound();
 
-  const activeGoals = await prisma.goal.findMany({
-    where: { userId: playerId, status: "ACTIVE" },
-    select: { id: true, title: true, category: true, targetDate: true },
-    orderBy: [{ category: "asc" }, { targetDate: "asc" }, { createdAt: "desc" }],
-    take: 8,
-  });
-  const goals = activeGoals.map((goal) => ({
-    id: goal.id,
-    title: goal.title,
-    category: goal.category,
-    targetDate: goal.targetDate?.toISOString() ?? null,
-  }));
+  const goals = await hentMaalSpor(playerId);
 
   const weekStart = ukeStartFraParam(sp.uke);
   const mode = { kind: "AGENCY" as const, subjectId: playerId, sources: [] };
