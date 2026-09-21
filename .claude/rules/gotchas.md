@@ -1,6 +1,6 @@
 # Fallgruver — AK Golf HQ
 
-Kun regelen. Bakgrunn, målinger og feilsøking per punkt: [gotchas-full.md](../../docs/arkiv/instruks-2026-09-21/gotchas-full.md) (søk på overskriften). Legger du til en ny, skriv regelen her i 1–3 linjer og detaljene i arkivfilen.
+Kun regelen. Bakgrunn, målinger og feilsøking per punkt ligger i Git-historikken (`docs/arkiv/instruks-2026-09-21/gotchas-full.md`, fjernet fra repoet; søk på overskriften). Legger du til en ny, skriv regelen her i 1–3 linjer.
 
 ## Database
 ### Schema-endringer: `migrate dev`, `db push` OG `migrate deploy` er ALLE blokkert — bruk kirurgisk `db execute`

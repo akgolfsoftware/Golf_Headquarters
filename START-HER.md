@@ -10,7 +10,7 @@
 6. [Felles AI-instruks](AGENTS.md).
 
 Aktivt arbeid 20.09.2026: [Workbench-overlevering](docs/workbench-handover.md)
-og [arbeidsplan](docs/planer/workbench-design-og-kode-natt-2026-09-20.md).
+og arbeidsplan (fjernet fra repoet; ligger i Git-historikken).
 Eldre planer og eksportpakker er historikk, ikke nye kjøreordrer. Bevar historikken.
 
 Kjør `npm run prosjekt:sjekk` for struktur.

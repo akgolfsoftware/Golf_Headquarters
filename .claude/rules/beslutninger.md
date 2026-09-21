@@ -1,6 +1,6 @@
 # Beslutninger — AK Golf HQ
 
-Kun det som gjelder nå. Full historikk (1 207 linjer, alle overstyrte valg): [beslutninger-full.md](../../docs/arkiv/instruks-2026-09-21/beslutninger-full.md). Gamle blokker der er historikk, aldri byggeordre.
+Kun det som gjelder nå. Full historikk (1 207 linjer, alle overstyrte valg) ligger i Git-historikken (`docs/arkiv/instruks-2026-09-21/beslutninger-full.md`, fjernet fra repoet). Gamle blokker der er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit og inn i `docs/MASTERPLAN-GJENSTAAENDE.md`).
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 

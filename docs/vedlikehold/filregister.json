@@ -1,10 +1,10 @@
 {
   "metode": "git ls-files -co --exclude-standard; eksisterende filer; genererte registerfiler utelatt. Kun metadata, ikke kundedata eller miljøverdier.",
   "telling": {
-    "prosjektfiler": 5728,
+    "prosjektfiler": 5634,
     "sidefiler": 496,
     "prismamodeller": 197,
-    "enhetstestfiler": 485,
+    "enhetstestfiler": 490,
     "nettlesertestfiler": 41,
     "trainLockTegninger": 219
   },
@@ -88,7 +88,7 @@
     {
       "sti": ".claude/rules/beslutninger.md",
       "omrade": "prosjektoppsett",
-      "byte": 99056
+      "byte": 4934
     },
     {
       "sti": ".claude/rules/gfgk-junior.md",
@@ -98,7 +98,7 @@
     {
       "sti": ".claude/rules/gotchas.md",
       "omrade": "prosjektoppsett",
-      "byte": 35583
+      "byte": 4357
     },
     {
       "sti": ".claude/rules/mulligan-drift.md",
@@ -113,7 +113,7 @@
     {
       "sti": ".claude/settings.json",
       "omrade": "prosjektoppsett",
-      "byte": 3001
+      "byte": 3674
     },
     {
       "sti": ".claude/skills-install/akgolf-hq-design-skills.zip",
@@ -1810,521 +1810,6 @@
       "sti": ".design-sync/pkg/tsconfig.types.json",
       "omrade": "prosjektoppsett",
       "byte": 301
-    },
-    {
-      "sti": ".design-sync/previews/AgendaRad.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 2192
-    },
-    {
-      "sti": ".design-sync/previews/AiMerke.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1510
-    },
-    {
-      "sti": ".design-sync/previews/AiTipKort.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1406
-    },
-    {
-      "sti": ".design-sync/previews/AKFormelChip.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1341
-    },
-    {
-      "sti": ".design-sync/previews/AkseBar.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 908
-    },
-    {
-      "sti": ".design-sync/previews/AkseChip.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1079
-    },
-    {
-      "sti": ".design-sync/previews/AnbefalingsKort.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1385
-    },
-    {
-      "sti": ".design-sync/previews/Ark.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1695
-    },
-    {
-      "sti": ".design-sync/previews/AutoProgresjon.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1508
-    },
-    {
-      "sti": ".design-sync/previews/AvatarFoto.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1296
-    },
-    {
-      "sti": ".design-sync/previews/AvatarInit.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 826
-    },
-    {
-      "sti": ".design-sync/previews/Avkryssing.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1040
-    },
-    {
-      "sti": ".design-sync/previews/Banner.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1306
-    },
-    {
-      "sti": ".design-sync/previews/BarnProgresjonKort.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1353
-    },
-    {
-      "sti": ".design-sync/previews/BenchmarkBadge.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 932
-    },
-    {
-      "sti": ".design-sync/previews/Bit.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 766
-    },
-    {
-      "sti": ".design-sync/previews/BookingKort.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1190
-    },
-    {
-      "sti": ".design-sync/previews/Breadcrumb.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1084
-    },
-    {
-      "sti": ".design-sync/previews/Bryter.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1288
-    },
-    {
-      "sti": ".design-sync/previews/BunnArk.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 4991
-    },
-    {
-      "sti": ".design-sync/previews/BunnNav.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1271
-    },
-    {
-      "sti": ".design-sync/previews/Button.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1269
-    },
-    {
-      "sti": ".design-sync/previews/Caps.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1094
-    },
-    {
-      "sti": ".design-sync/previews/Checkbox.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1930
-    },
-    {
-      "sti": ".design-sync/previews/CoachGodkjenning.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 2771
-    },
-    {
-      "sti": ".design-sync/previews/CompareChart.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 2136
-    },
-    {
-      "sti": ".design-sync/previews/Composer.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 2587
-    },
-    {
-      "sti": ".design-sync/previews/CTAPill.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 997
-    },
-    {
-      "sti": ".design-sync/previews/DagStripe.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1301
-    },
-    {
-      "sti": ".design-sync/previews/DataForhaandsvisning.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 574
-    },
-    {
-      "sti": ".design-sync/previews/DataTabell.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 2532
-    },
-    {
-      "sti": ".design-sync/previews/DatoVelger.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1602
-    },
-    {
-      "sti": ".design-sync/previews/DeltaChip.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 883
-    },
-    {
-      "sti": ".design-sync/previews/DeltakerListe.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1051
-    },
-    {
-      "sti": ".design-sync/previews/Diagnose.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 2215
-    },
-    {
-      "sti": ".design-sync/previews/Dialog.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1204
-    },
-    {
-      "sti": ".design-sync/previews/DialogBody.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 4857
-    },
-    {
-      "sti": ".design-sync/previews/DialogClose.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 3217
-    },
-    {
-      "sti": ".design-sync/previews/DialogContent.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 4079
-    },
-    {
-      "sti": ".design-sync/previews/DialogDescription.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1699
-    },
-    {
-      "sti": ".design-sync/previews/DialogFooter.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 2491
-    },
-    {
-      "sti": ".design-sync/previews/DialogHeader.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1878
-    },
-    {
-      "sti": ".design-sync/previews/DialogTitle.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1930
-    },
-    {
-      "sti": ".design-sync/previews/DiffKort.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 909
-    },
-    {
-      "sti": ".design-sync/previews/DispersionPlot.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 2528
-    },
-    {
-      "sti": ".design-sync/previews/DropdownMenu.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 4046
-    },
-    {
-      "sti": ".design-sync/previews/DropdownMenuCheckboxItem.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 3723
-    },
-    {
-      "sti": ".design-sync/previews/DropdownMenuContent.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 3127
-    },
-    {
-      "sti": ".design-sync/previews/DropdownMenuItem.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 3827
-    },
-    {
-      "sti": ".design-sync/previews/DropdownMenuLabel.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 2329
-    },
-    {
-      "sti": ".design-sync/previews/DropdownMenuSeparator.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 2456
-    },
-    {
-      "sti": ".design-sync/previews/DropdownMenuShortcut.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 2849
-    },
-    {
-      "sti": ".design-sync/previews/DropdownMenuTrigger.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 3842
-    },
-    {
-      "sti": ".design-sync/previews/Dropzone.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1780
-    },
-    {
-      "sti": ".design-sync/previews/EgentreningVindu.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1332
-    },
-    {
-      "sti": ".design-sync/previews/FakturaRad.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1192
-    },
-    {
-      "sti": ".design-sync/previews/FeaturedCard.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 2084
-    },
-    {
-      "sti": ".design-sync/previews/FilterChips.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 643
-    },
-    {
-      "sti": ".design-sync/previews/FleksMerke.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 638
-    },
-    {
-      "sti": ".design-sync/previews/FlyttTilArk.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 2964
-    },
-    {
-      "sti": ".design-sync/previews/FokusSpillerBlokk.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1167
-    },
-    {
-      "sti": ".design-sync/previews/FordelingHode.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1134
-    },
-    {
-      "sti": ".design-sync/previews/FordelingRad.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 2069
-    },
-    {
-      "sti": ".design-sync/previews/ForslagRad.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 2156
-    },
-    {
-      "sti": ".design-sync/previews/FysOktKort.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 2250
-    },
-    {
-      "sti": ".design-sync/previews/Gapping.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 2459
-    },
-    {
-      "sti": ".design-sync/previews/Glider.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 980
-    },
-    {
-      "sti": ".design-sync/previews/HjelpPopover.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 781
-    },
-    {
-      "sti": ".design-sync/previews/HjelpTips.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1736
-    },
-    {
-      "sti": ".design-sync/previews/HullStripe.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1320
-    },
-    {
-      "sti": ".design-sync/previews/HvorforDette.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1279
-    },
-    {
-      "sti": ".design-sync/previews/Icon.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 3565
-    },
-    {
-      "sti": ".design-sync/previews/IkonChipVelger.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1700
-    },
-    {
-      "sti": ".design-sync/previews/IkonRail.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1760
-    },
-    {
-      "sti": ".design-sync/previews/Inndata.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1222
-    },
-    {
-      "sti": ".design-sync/previews/InnsiktChip.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1012
-    },
-    {
-      "sti": ".design-sync/previews/Input.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1763
-    },
-    {
-      "sti": ".design-sync/previews/InspektorBlokk.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 2470
-    },
-    {
-      "sti": ".design-sync/previews/InspektorKpi.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1923
-    },
-    {
-      "sti": ".design-sync/previews/InspektorLinje.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 2200
-    },
-    {
-      "sti": ".design-sync/previews/Inspektorpanel.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 3812
-    },
-    {
-      "sti": ".design-sync/previews/InspektorTom.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 679
-    },
-    {
-      "sti": ".design-sync/previews/IntervallBlokk.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1698
-    },
-    {
-      "sti": ".design-sync/previews/KanbanKolonne.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1393
-    },
-    {
-      "sti": ".design-sync/previews/KategoriFjell.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1023
-    },
-    {
-      "sti": ".design-sync/previews/KategoriKrav.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 2067
-    },
-    {
-      "sti": ".design-sync/previews/KategoriStige.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1638
-    },
-    {
-      "sti": ".design-sync/previews/Knapp.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1224
-    },
-    {
-      "sti": ".design-sync/previews/KodeInput.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 688
-    },
-    {
-      "sti": ".design-sync/previews/KolleStatKort.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1561
-    },
-    {
-      "sti": ".design-sync/previews/KommandoPalett.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 2924
-    },
-    {
-      "sti": ".design-sync/previews/Kort.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 2609
-    },
-    {
-      "sti": ".design-sync/previews/KPICard.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1942
-    },
-    {
-      "sti": ".design-sync/previews/KpiFlis.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1479
-    },
-    {
-      "sti": ".design-sync/previews/KravRad.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 2359
-    },
-    {
-      "sti": ".design-sync/previews/KvitteringKort.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1474
-    },
-    {
-      "sti": ".design-sync/previews/LaeringsTrapp.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1099
-    },
-    {
-      "sti": ".design-sync/previews/LaunchWindow.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 2233
-    },
-    {
-      "sti": ".design-sync/previews/LengdeAvvik.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1494
-    },
-    {
-      "sti": ".design-sync/previews/ListeIkon.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1721
-    },
-    {
-      "sti": ".design-sync/previews/LiveBar.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 1184
-    },
-    {
-      "sti": ".design-sync/previews/LiveStatus.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 753
-    },
-    {
-      "sti": ".design-sync/previews/LoadChart.tsx",
-      "omrade": "prosjektoppsett",
-      "byte": 954
     },
     {
       "sti": ".design-sync/previews/LogoAK.tsx",
@@ -4609,7 +4094,7 @@
     {
       "sti": "designsystem/README.md",
       "omrade": "designkilde",
-      "byte": 8978
+      "byte": 9918
     },
     {
       "sti": "designsystem/team-norway/_adherence.oxlintrc.json",
@@ -5044,7 +4529,7 @@
     {
       "sti": "designsystem/team-norway/handover/SKJERMREGISTER.md",
       "omrade": "designkilde",
-      "byte": 9748
+      "byte": 10596
     },
     {
       "sti": "designsystem/team-norway/handover/TILGANGSMATRISE.md",
@@ -7394,7 +6879,7 @@
     {
       "sti": "designsystem/wang/SKJERMREGISTER.md",
       "omrade": "designkilde",
-      "byte": 8383
+      "byte": 9105
     },
     {
       "sti": "designsystem/wang/styles.css",
@@ -7592,44 +7077,9 @@
       "byte": 4421
     },
     {
-      "sti": "docs/design-audit/train-lock-kontrast.md",
+      "sti": "docs/demo-sprak-og-treningsplanlegging.md",
       "omrade": "dokumentasjon",
-      "byte": 8402
-    },
-    {
-      "sti": "docs/design-audit/workbench-aar-kontroll-2026-09-21.md",
-      "omrade": "dokumentasjon",
-      "byte": 2094
-    },
-    {
-      "sti": "docs/design-audit/workbench-handover-import-2026-09-20.md",
-      "omrade": "dokumentasjon",
-      "byte": 5188
-    },
-    {
-      "sti": "docs/design-audit/workbench-kontrollretting-2026-09-21.md",
-      "omrade": "dokumentasjon",
-      "byte": 15955
-    },
-    {
-      "sti": "docs/design-audit/workbench-maned-kontroll-2026-09-21.md",
-      "omrade": "dokumentasjon",
-      "byte": 2252
-    },
-    {
-      "sti": "docs/design-audit/workbench-okt-kontroll-2026-09-21.md",
-      "omrade": "dokumentasjon",
-      "byte": 2224
-    },
-    {
-      "sti": "docs/design-audit/workbench-periode-kontroll-2026-09-21.md",
-      "omrade": "dokumentasjon",
-      "byte": 2165
-    },
-    {
-      "sti": "docs/design-audit/workbench-uke-kontroll-2026-09-21.md",
-      "omrade": "dokumentasjon",
-      "byte": 7153
+      "byte": 22937
     },
     {
       "sti": "docs/design-system/ak-hq-designarbeid.md",
@@ -7942,14 +7392,9 @@
       "byte": 19777
     },
     {
-      "sti": "docs/planer/workbench-design-og-kode-natt-2026-09-20.md",
-      "omrade": "datert-plan",
-      "byte": 23133
-    },
-    {
       "sti": "docs/platform/AGENT-BRIEF.md",
       "omrade": "dokumentasjon",
-      "byte": 5861
+      "byte": 5841
     },
     {
       "sti": "docs/platform/BOOKING-POLICY.md",
@@ -8014,7 +7459,7 @@
     {
       "sti": "docs/README.md",
       "omrade": "dokumentasjon",
-      "byte": 1200
+      "byte": 1193
     },
     {
       "sti": "docs/referanse/design/2026-09-04-marked-ak-golf-port-design.md",
@@ -8239,7 +7684,7 @@
     {
       "sti": "docs/workbench-handover.md",
       "omrade": "dokumentasjon",
-      "byte": 1957
+      "byte": 1923
     },
     {
       "sti": "eslint.config.mjs",
@@ -14774,7 +14219,7 @@
     {
       "sti": "src/app/admin/workbench/[playerId]/page.tsx",
       "omrade": "appkode",
-      "byte": 8105
+      "byte": 9439
     },
     {
       "sti": "src/app/admin/workspace/error.tsx",
@@ -16034,12 +15479,12 @@
     {
       "sti": "src/app/portal/(legacy)/mal/goals-actions.test.ts",
       "omrade": "test",
-      "byte": 2228
+      "byte": 2757
     },
     {
       "sti": "src/app/portal/(legacy)/mal/goals-actions.ts",
       "omrade": "appkode",
-      "byte": 7955
+      "byte": 8099
     },
     {
       "sti": "src/app/portal/(legacy)/mal/layout.tsx",
@@ -16514,7 +15959,7 @@
     {
       "sti": "src/app/portal/error.tsx",
       "omrade": "appkode",
-      "byte": 947
+      "byte": 1164
     },
     {
       "sti": "src/app/portal/fysisk/actions.test.ts",
@@ -16619,7 +16064,7 @@
     {
       "sti": "src/app/portal/loading.tsx",
       "omrade": "appkode",
-      "byte": 403
+      "byte": 308
     },
     {
       "sti": "src/app/portal/mal/bygger/actions.ts",
@@ -16634,7 +16079,7 @@
     {
       "sti": "src/app/portal/mal/goal/[id]/page.tsx",
       "omrade": "appkode",
-      "byte": 7506
+      "byte": 7566
     },
     {
       "sti": "src/app/portal/mal/leaderboard/page.tsx",
@@ -16644,7 +16089,7 @@
     {
       "sti": "src/app/portal/mal/page.tsx",
       "omrade": "appkode",
-      "byte": 3937
+      "byte": 4125
     },
     {
       "sti": "src/app/portal/mal/runder/[id]/actions.ts",
@@ -17144,7 +16589,7 @@
     {
       "sti": "src/app/portal/page.tsx",
       "omrade": "appkode",
-      "byte": 8646
+      "byte": 8934
     },
     {
       "sti": "src/app/portal/planlegge/bygger/actions.ts",
@@ -19714,7 +19159,7 @@
     {
       "sti": "src/components/portal/live/FysDrillLogger.tsx",
       "omrade": "appkode",
-      "byte": 7811
+      "byte": 7082
     },
     {
       "sti": "src/components/portal/live/index.ts",
@@ -19729,7 +19174,7 @@
     {
       "sti": "src/components/portal/live/LiveActive.tsx",
       "omrade": "appkode",
-      "byte": 13717
+      "byte": 14156
     },
     {
       "sti": "src/components/portal/live/LiveBrief.tsx",
@@ -19774,7 +19219,7 @@
     {
       "sti": "src/components/portal/live/SessionSummary.tsx",
       "omrade": "appkode",
-      "byte": 13107
+      "byte": 13805
     },
     {
       "sti": "src/components/portal/live/SessionTimer.tsx",
@@ -20317,6 +19762,11 @@
       "byte": 5709
     },
     {
+      "sti": "src/components/portal/v2/idag/idag-selected.module.css",
+      "omrade": "appkode",
+      "byte": 9143
+    },
+    {
       "sti": "src/components/portal/v2/idag/idag-train-lock.module.css",
       "omrade": "appkode",
       "byte": 3899
@@ -20325,6 +19775,11 @@
       "sti": "src/components/portal/v2/idag/IDagCaddie.tsx",
       "omrade": "appkode",
       "byte": 4356
+    },
+    {
+      "sti": "src/components/portal/v2/idag/IDagSelected.tsx",
+      "omrade": "appkode",
+      "byte": 17856
     },
     {
       "sti": "src/components/portal/v2/idag/IDagTrainLock.tsx",
@@ -20399,12 +19854,12 @@
     {
       "sti": "src/components/portal/v2/MalDetaljV2.tsx",
       "omrade": "appkode",
-      "byte": 18236
+      "byte": 19161
     },
     {
       "sti": "src/components/portal/v2/MalHubV2.tsx",
       "omrade": "appkode",
-      "byte": 7781
+      "byte": 9422
     },
     {
       "sti": "src/components/portal/v2/MegAbonnementV2.tsx",
@@ -21589,7 +21044,7 @@
     {
       "sti": "src/components/widgets/MaalWidget.tsx",
       "omrade": "appkode",
-      "byte": 3527
+      "byte": 3630
     },
     {
       "sti": "src/components/widgets/StallOkterWidget.tsx",
@@ -21659,7 +21114,7 @@
     {
       "sti": "src/components/workbench/VisningPiller.tsx",
       "omrade": "appkode",
-      "byte": 2096
+      "byte": 2651
     },
     {
       "sti": "src/components/workbench/wb-ak-scope.ts",
@@ -21702,9 +21157,19 @@
       "byte": 4068
     },
     {
+      "sti": "src/components/workbench/WorkbenchLive.tsx",
+      "omrade": "appkode",
+      "byte": 12138
+    },
+    {
       "sti": "src/components/workbench/WorkbenchManed.tsx",
       "omrade": "appkode",
       "byte": 6297
+    },
+    {
+      "sti": "src/components/workbench/WorkbenchMinKalender.tsx",
+      "omrade": "appkode",
+      "byte": 9279
     },
     {
       "sti": "src/components/workbench/WorkbenchOkt.tsx",
@@ -21719,12 +21184,12 @@
     {
       "sti": "src/components/workbench/WorkbenchShell.tsx",
       "omrade": "appkode",
-      "byte": 1529
+      "byte": 1662
     },
     {
       "sti": "src/components/workbench/WorkbenchStall.tsx",
       "omrade": "appkode",
-      "byte": 9399
+      "byte": 10182
     },
     {
       "sti": "src/components/workbench/WorkbenchUke.tsx",
@@ -26162,6 +25627,16 @@
       "byte": 1280
     },
     {
+      "sti": "src/lib/portal-live/fys-registrering.test.ts",
+      "omrade": "test",
+      "byte": 2228
+    },
+    {
+      "sti": "src/lib/portal-live/fys-registrering.ts",
+      "omrade": "appkode",
+      "byte": 3978
+    },
+    {
       "sti": "src/lib/portal-live/live-access.test.ts",
       "omrade": "test",
       "byte": 2603
@@ -26574,7 +26049,7 @@
     {
       "sti": "src/lib/portal/idag-visning.ts",
       "omrade": "appkode",
-      "byte": 5955
+      "byte": 5969
     },
     {
       "sti": "src/lib/portal/legacy-plan-week-data.ts",
@@ -26615,6 +26090,16 @@
       "sti": "src/lib/portal/optimal-session.ts",
       "omrade": "appkode",
       "byte": 2256
+    },
+    {
+      "sti": "src/lib/portal/ph01-visning.test.ts",
+      "omrade": "test",
+      "byte": 3062
+    },
+    {
+      "sti": "src/lib/portal/ph01-visning.ts",
+      "omrade": "appkode",
+      "byte": 2142
     },
     {
       "sti": "src/lib/portal/plan-data.test.ts",
@@ -27804,7 +27289,7 @@
     {
       "sti": "src/lib/widgets/maal-widget-data.ts",
       "omrade": "appkode",
-      "byte": 3238
+      "byte": 3319
     },
     {
       "sti": "src/lib/widgets/stall-okter-data.test.ts",
@@ -27892,6 +27377,21 @@
       "byte": 3024
     },
     {
+      "sti": "src/lib/workbench/live-switch.test.ts",
+      "omrade": "test",
+      "byte": 2644
+    },
+    {
+      "sti": "src/lib/workbench/live.test.ts",
+      "omrade": "test",
+      "byte": 1133
+    },
+    {
+      "sti": "src/lib/workbench/live.ts",
+      "omrade": "appkode",
+      "byte": 2458
+    },
+    {
       "sti": "src/lib/workbench/load-context.ts",
       "omrade": "appkode",
       "byte": 1307
@@ -27899,7 +27399,7 @@
     {
       "sti": "src/lib/workbench/load-tilgang.test.ts",
       "omrade": "test",
-      "byte": 4780
+      "byte": 5642
     },
     {
       "sti": "src/lib/workbench/load-workbench.ts",
@@ -27925,6 +27425,16 @@
       "sti": "src/lib/workbench/merge-week-sessions.ts",
       "omrade": "appkode",
       "byte": 3033
+    },
+    {
+      "sti": "src/lib/workbench/min-calendar.test.ts",
+      "omrade": "test",
+      "byte": 567
+    },
+    {
+      "sti": "src/lib/workbench/min-calendar.ts",
+      "omrade": "appkode",
+      "byte": 1166
     },
     {
       "sti": "src/lib/workbench/ovelse-sok.ts",
@@ -28059,12 +27569,12 @@
     {
       "sti": "src/lib/workbench/visning-url.test.ts",
       "omrade": "test",
-      "byte": 1721
+      "byte": 1919
     },
     {
       "sti": "src/lib/workbench/visning-url.ts",
       "omrade": "appkode",
-      "byte": 1282
+      "byte": 1304
     },
     {
       "sti": "src/lib/workbench/wb-actions.plan-skriv.test.ts",
@@ -28074,7 +27584,7 @@
     {
       "sti": "src/lib/workbench/wb-actions.ts",
       "omrade": "appkode",
-      "byte": 45689
+      "byte": 57908
     },
     {
       "sti": "src/lib/workbench/wb-map.test.ts",
@@ -28174,12 +27684,12 @@
     {
       "sti": "src/styles/workbench-selected.css",
       "omrade": "appkode",
-      "byte": 34959
+      "byte": 45248
     },
     {
       "sti": "START-HER.md",
       "omrade": "prosjektoppsett",
-      "byte": 967
+      "byte": 955
     },
     {
       "sti": "supabase-meg/migrations/0001_init.sql",
@@ -28505,6 +28015,26 @@
       "sti": "tests/visual/lys-morkt-royk.spec.ts",
       "omrade": "test",
       "byte": 15032
+    },
+    {
+      "sti": "tests/visual/playerhq-ph01/fixture.tsx",
+      "omrade": "test",
+      "byte": 5054
+    },
+    {
+      "sti": "tests/visual/playerhq-ph01/README.md",
+      "omrade": "test",
+      "byte": 402
+    },
+    {
+      "sti": "tests/visual/playerhq-ph01/screenshot.mjs",
+      "omrade": "test",
+      "byte": 5063
+    },
+    {
+      "sti": "tests/visual/playerhq-ph01/server.mjs",
+      "omrade": "test",
+      "byte": 4361
     },
     {
       "sti": "tests/visual/playerhq-summary/build-tailwind.mjs",

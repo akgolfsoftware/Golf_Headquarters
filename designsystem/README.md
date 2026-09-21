@@ -15,7 +15,7 @@ Anders har bestilt portering av den konkrete Workbench-masteren med åtte piller
 manifest og filhasher. Rust er kun de avtalte handlingene; øvrige kort og fyll er
 grafitt. Denne bestillingen styrer Workbench-omfanget foran eldre kandidatstatus
 under. `selectedForBuilding` i designprosjektet er ikke endret. Appens visuelle
-og funksjonelle kontroll føres separat i [arbeidsplanen](../docs/planer/workbench-design-og-kode-natt-2026-09-20.md).
+og funksjonelle kontroll føres separat i arbeidsplanen (fjernet fra repoet; ligger i Git-historikken).
 
 ## Historisk produktretning før systemvalget — oppdatert 13.09.2026
 
