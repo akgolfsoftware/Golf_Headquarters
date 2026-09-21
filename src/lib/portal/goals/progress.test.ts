@@ -138,6 +138,17 @@ test("beregnGoalProgress — HCP_TARGET, ROUNDS_PER_MONTH, SESSION_FREQUENCY, TE
     const oppnadd = await beregnGoalProgress(mal, { hcp: null });
     assert.equal(oppnadd.pct, 100);
     assert.equal(oppnadd.status, "achieved");
+
+    // Uten målverdi finnes ingen nevner. Fram til 21.09.2026 ble den antatt
+    // å være 1, så to runder ga «2 av 1 · 100 % · Mål nådd».
+    const utenMaal = lagMal({ type: "ROUNDS_PER_MONTH", targetValue: null });
+    roundsCountInWindow = 2;
+    const uten = await beregnGoalProgress(utenMaal, { hcp: null });
+    assert.equal(uten.hasData, false, "ingen målverdi -> ingen fremdriftsprosent");
+    assert.equal(uten.status, "no-data");
+    assert.equal(uten.value, 2, "antall runder er målt og skal vises");
+    assert.match(uten.detail, /2/);
+    assert.match(uten.detail, /ingen målverdi|mål ikke satt/i);
   }
 
   // ── SESSION_FREQUENCY ───────────────────────────────────────────────
@@ -171,6 +182,16 @@ test("beregnGoalProgress — HCP_TARGET, ROUNDS_PER_MONTH, SESSION_FREQUENCY, TE
     const oppnadd = await beregnGoalProgress(mal, { hcp: null });
     assert.equal(oppnadd.pct, 100);
     assert.equal(oppnadd.status, "achieved");
+
+    const utenMaal = lagMal({
+      type: "SESSION_FREQUENCY",
+      targetValue: null,
+      linkedPyramidArea: "SLAG",
+    });
+    sessionCountInWindow = 2;
+    const uten = await beregnGoalProgress(utenMaal, { hcp: null });
+    assert.equal(uten.hasData, false, "ingen målverdi -> ingen fremdriftsprosent");
+    assert.equal(uten.value, 2, "antall økter er målt og skal vises");
   }
 
   // ── TEST_SCORE ──────────────────────────────────────────────────────
@@ -211,6 +232,17 @@ test("beregnGoalProgress — HCP_TARGET, ROUNDS_PER_MONTH, SESSION_FREQUENCY, TE
     const overMaal = await beregnGoalProgress(mal, { hcp: null });
     assert.equal(overMaal.pct, 100, "over mål klippes til 100 %, ikke over");
     assert.equal(overMaal.status, "achieved");
+
+    // Uten målverdi ble målet satt til spillerens EGEN siste score, slik at
+    // `score >= target` alltid var sant: ethvert resultat ble rapportert som
+    // oppnådd, mot et mål spilleren aldri satte.
+    const utenMaal = lagMal({ type: "TEST_SCORE", targetValue: null, linkedTestId: "test-1" });
+    latestTestResult = { score: 42 };
+    const uten = await beregnGoalProgress(utenMaal, { hcp: null });
+    assert.equal(uten.hasData, false, "ingen målverdi -> ingen fremdriftsprosent");
+    assert.notEqual(uten.status, "achieved", "et mål uten målverdi kan ikke være nådd");
+    assert.equal(uten.value, 42, "siste testresultat er målt og skal vises");
+    assert.match(uten.detail, /42/);
   }
 
   // ── SG_AREA ─────────────────────────────────────────────────────────

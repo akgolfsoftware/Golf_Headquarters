@@ -76,6 +76,21 @@ function ingenData(detail: string): GoalProgress {
   return { pct: 0, status: "no-data", hasData: false, value: null, detail };
 }
 
+/**
+ * Et mål uten målverdi har ingen nevner, og da finnes ingen ærlig prosent.
+ *
+ * Fram til 21.09.2026 ble nevneren antatt: runder og økter falt tilbake på 1
+ * (to runder ble «2 av 1 · Mål nådd»), og testmål falt tilbake på spillerens
+ * EGEN siste score, slik at ethvert resultat ble rapportert som oppnådd mot
+ * et mål spilleren aldri satte. Målverdi er valgfritt når målet opprettes, så
+ * dette traff helt vanlige mål.
+ *
+ * Det målte tallet vises fortsatt — det er en faktisk observasjon.
+ */
+function utenMaalverdi(value: number, detail: string): GoalProgress {
+  return { ...ingenData(detail), value };
+}
+
 function progressHcp(goal: GoalForProgress, hcp: number | null): GoalProgress {
   if (hcp == null || goal.targetValue == null) {
     return ingenData("Ingen HCP registrert ennå");
@@ -115,7 +130,7 @@ function progressHcp(goal: GoalForProgress, hcp: number | null): GoalProgress {
 }
 
 async function progressRoundsPerMonth(goal: GoalForProgress, now: Date): Promise<GoalProgress> {
-  const target = goal.targetValue ?? 1;
+  const target = goal.targetValue;
   const windowStart = daysAgo(now, ROUNDS_WINDOW_DAYS);
   const count = await prisma.round.count({
     where: { userId: goal.userId, playedAt: { gte: windowStart } },
@@ -126,6 +141,12 @@ async function progressRoundsPerMonth(goal: GoalForProgress, now: Date): Promise
       select: { id: true },
     });
     if (!noenGang) return ingenData("Ingen runder registrert ennå");
+  }
+  if (target == null || target <= 0) {
+    return utenMaalverdi(
+      count,
+      `${count} runder siste ${ROUNDS_WINDOW_DAYS} dager · ingen målverdi satt`,
+    );
   }
   const pct = clampPct((count / target) * 100);
   return {
@@ -140,7 +161,7 @@ async function progressRoundsPerMonth(goal: GoalForProgress, now: Date): Promise
 async function progressSessionFrequency(goal: GoalForProgress, now: Date): Promise<GoalProgress> {
   if (!goal.linkedPyramidArea) return ingenData("Ingen treningskategori valgt");
 
-  const target = goal.targetValue ?? 1;
+  const target = goal.targetValue;
   const windowStart = daysAgo(now, ROLLING_WINDOW_DAYS);
   const omrade = goal.linkedPyramidArea;
   const sessionFilter = {
@@ -194,6 +215,12 @@ async function progressSessionFrequency(goal: GoalForProgress, now: Date): Promi
     }
   }
 
+  if (target == null || target <= 0) {
+    return utenMaalverdi(
+      count,
+      `${count} ${PYR_LABEL[omrade].toLowerCase()}-økter siste ${ROLLING_WINDOW_DAYS} dager · ingen målverdi satt`,
+    );
+  }
   const pct = clampPct((count / target) * 100);
   return {
     pct,
@@ -258,8 +285,11 @@ async function progressTestScore(goal: GoalForProgress): Promise<GoalProgress> {
   });
   if (!latest) return ingenData("Ingen testresultat registrert ennå");
 
-  const target = goal.targetValue ?? latest.score;
-  const pct = target > 0 ? clampPct((latest.score / target) * 100) : 0;
+  const target = goal.targetValue;
+  if (target == null || target <= 0) {
+    return utenMaalverdi(latest.score, `${latest.score} poeng · ingen målverdi satt`);
+  }
+  const pct = clampPct((latest.score / target) * 100);
   const status: GoalProgressStatus = latest.score >= target ? "achieved" : statusFromPct(pct);
   return {
     pct,
