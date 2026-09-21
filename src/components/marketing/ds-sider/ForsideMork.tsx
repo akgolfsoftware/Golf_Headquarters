@@ -51,7 +51,7 @@ const HOLD = 0.042;
 const KAPITLER = ["Start", "Metode", "Coaching", "Player HQ", "Akademiet", "Kontakt"];
 
 const MAATER = [
-  { nr: "01", navn: "Enkelttime på bane", hvor: "ONSØY GK" },
+  { nr: "01", navn: "Enkelttime på bane", hvor: "FREDRIKSTAD" },
   { nr: "02", navn: "Enkelttime i studio", hvor: "INNENDØRS · HELÅR" },
   { nr: "03", navn: "Gruppetrening", hvor: "FAST GRUPPE" },
   { nr: "04", navn: "Foreldresamtale og veiledning", hvor: "FOR JUNIORFORELDRE" },
@@ -686,10 +686,7 @@ export function ForsideMork() {
         <div className={`${s.st} ${s.stC}`} id="kontakt" data-at="0.875" data-to="1.01">
           <span className={s.k}>Ta kontakt</span>
           <h2>Én time forteller mer enn ti tips.</h2>
-          <p>
-            Skriv hva du spiller i dag og hva du vil bli bedre på. Jeg svarer innen to
-            virkedager.
-          </p>
+          <p>Skriv hva du spiller i dag og hva du vil bli bedre på.</p>
           <div className={s.acts}>
             <a className={`${s.btn} ${s.btnP}`} href="mailto:post@akgolf.no">
               Book en time
@@ -699,7 +696,7 @@ export function ForsideMork() {
             </a>
           </div>
           <p className={s.m} style={{ marginTop: 28 }}>
-            ONSØY GK · FREDRIKSTAD · POST@AKGOLF.NO
+            FREDRIKSTAD · POST@AKGOLF.NO
           </p>
         </div>
       </section>
