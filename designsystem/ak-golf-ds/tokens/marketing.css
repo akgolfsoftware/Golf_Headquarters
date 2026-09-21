@@ -1,0 +1,31 @@
+/* GENERERT fra tokens.json av tokens/build.mjs. IKKE REDIGER — endringer overskrives. */
+:root{
+/* ---- Uttrykkslaget — KUN web, sosialt og marked. Appene bruker aldri disse. ---- */
+/* ---- Editorial display-trinn over app-skalaen ---- */
+--fs-mkt-56:56px;--fs-mkt-72:72px;--fs-mkt-96:96px;--fs-mkt-128:128px;
+/* ---- Foto og scrim ---- */
+--scrim-bottom:linear-gradient(to top,rgba(20,20,19,.94) 0%,rgba(20,20,19,.80) 34%,rgba(20,20,19,.52) 62%,rgba(20,20,19,.18) 86%,rgba(20,20,19,.06) 100%);/* @kind other */
+--scrim-flat:rgba(20,20,19,.58);
+--scrim-side:linear-gradient(to right,rgba(20,20,19,.92) 0%,rgba(20,20,19,.74) 38%,rgba(20,20,19,.34) 68%,rgba(20,20,19,.08) 100%);/* @kind other */
+--mkt-credit:rgba(250,248,243,.6);
+--photo-ratio-hero:16/9;/* @kind other */
+--photo-ratio-portrait:4/5;/* @kind other */
+--photo-ratio-wide:3/2;/* @kind other */
+/* ---- Mørke marked-flater ---- */
+--mkt-dark:#141413;
+--mkt-dark-2:#2a2926;
+--mkt-ink-on-dark:#faf8f3;
+--mkt-ink-on-dark-2:#c9c4ba;
+--mkt-rule-on-dark:#46443f;
+/* ---- Sidemål ---- */
+--mkt-max:1240px;
+--mkt-measure:68ch;/* @kind other */
+--mkt-gutter:32px;
+--mkt-section:96px;
+--mkt-section-tight:64px;
+/* ---- Merkets egen rød — kun i logofilen, aldri som UI-farge ---- */
+--mark-red:#b83217;/* @kind color */
+--mark-ink:#1f1d1a;/* @kind color */
+--mark-rule:#d2ccc0;/* @kind color */
+--mark-red-negative:#d81e20;/* @kind color */
+}

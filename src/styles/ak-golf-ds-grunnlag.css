@@ -1,0 +1,52 @@
+/* src/styles/ak-golf-ds-grunnlag.css
+   designsystem/ak-golf-ds/tokens/base.css scopet under .ak-ds.
+
+   Masterens fil setter html/body/a/*/:focus-visible/::selection globalt. I Next
+   er all CSS global, så de ville truffet /portal og /admin ved klientnavigasjon.
+   Reglene er de samme — selektorene er prefikset.
+
+   Denne fila er HÅNDSKREVET, ikke generert: base.css er elleve linjer og
+   stabil, og en generisk selektor-omskriver ville vært mer skjør enn nyttig.
+   Endres base.css i masteren, endres denne. Samme mønster som
+   ak-golf-grunnlag.css bruker for det eldre merkesystemet.
+
+   Utelatt med vilje: `html{-webkit-text-size-adjust:100%}` — global og allerede
+   satt av produktet. */
+
+.ak-ds {
+  margin: 0;
+  background: var(--surface-page);
+  color: var(--text-body);
+  font: var(--type-body);
+  text-wrap: pretty;
+  -webkit-font-smoothing: antialiased;
+}
+
+.ak-ds *,
+.ak-ds *::before,
+.ak-ds *::after { box-sizing: border-box }
+
+.ak-ds a {
+  color: var(--link);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+/* rollen, ikke råverdien — graphite-900 på Live er usynlig */
+.ak-ds a:hover { color: var(--text-primary) }
+
+.ak-ds :focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px }
+
+/* Grafitt ring på grafitt flate er ingen ring. Alt som står på mørk grunn
+   arver sand-ringen — ellers er tastaturnavigasjon usynlig der. */
+.ak-ds .aos-panel--focus :focus-visible,
+.ak-ds .mkt-cta :focus-visible,
+.ak-ds .mkt-nav--dark :focus-visible,
+.ak-ds .mkt-sec--dark :focus-visible,
+.ak-ds .mkt-stats--dark :focus-visible,
+.ak-ds .band :focus-visible,
+.ak-ds .cta :focus-visible,
+.ak-ds [data-ground="dark"] :focus-visible { outline-color: var(--focus-ring-inverse) }
+
+.ak-ds ::selection { background: var(--action-tint); color: var(--graphite-900) }
