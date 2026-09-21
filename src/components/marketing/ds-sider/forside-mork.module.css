@@ -1,0 +1,526 @@
+/* Forsiden — mørk, filmatisk. Anders' valg 21.09.2026.
+ *
+ * Tegning: `ui_kits/akgolf-web/hjem-scroll.html` i Claude Design-prosjektet
+ * «AK Golf Design System» (87aa23fb). Verdiene er tegningens egne, ordrett.
+ *
+ * VIKTIG FOR NESTE ØKT — dette er IKKE en feil:
+ * Tegningen står UTENFOR designsystemets tokenlag. Den linker ikke `web.css`
+ * og har sin egen palett (--ink, --sand, --rust) med verdier systemet ikke
+ * har: --rust-glow, --rust-soft, glød under knapper. Den bruker også effekter
+ * systemets bevegelseslov ikke tillater: partikler, filmkorn, vignett, egen
+ * musepeker og overganger på 700–800 ms. Designsystemets egen `readme.md`
+ * anbefaler den lyse `hjem.html` i stedet. Anders er forelagt begge deler og
+ * har valgt denne. Ikke «rett» den tilbake til tokens uten ny beslutning.
+ *
+ * Derfor laster ruta heller ikke `ak-golf-ds.css` og bærer ingen `.ak-ds`:
+ * to paletter på samme flate ville vært verre enn én som står for seg selv.
+ *
+ * CSS-modul fordi klassenavnene (.btn, .door, .st, .grid, .feat) er korte og
+ * ville kollidert globalt i Next. Tegningens id-er er blitt klasser av samme
+ * grunn; `html.mo` er blitt `.mo` på rota.
+ */
+
+.rot {
+  --ink: #0e0d0c;
+  --ink-2: #141413;
+  --ink-3: #1c1b19;
+  --ink-4: #2a2926;
+  --sand: #faf8f3;
+  --sand-dim: #c9c4ba;
+  --sand-faint: #8a8680;
+  --rule: #46443f;
+  --rust: #9b2415;
+  --rust-lit: #d81e20;
+  --rust-glow: rgba(216, 30, 32, .35);
+  --dur: 200ms;
+  --ease: cubic-bezier(.2, .6, .2, 1);
+
+  position: relative;
+  min-height: 100vh;
+  margin: 0;
+  background: var(--ink);
+  color: var(--sand-dim);
+  font: 400 15px/1.5 var(--mork-body);
+  /* `clip`, ikke `hidden`: tegningen setter dette på <body>, der nettleseren
+     lar rullingen tilhøre vinduet. Her står det på et vanlig element, og
+     `hidden` ville laget en egen rulleboks — da klebrer bilderammen seg til
+     boksen i stedet for til skjermen, og fotoet ruller bort. `clip` klipper
+     uten å lage rulleboks. */
+  overflow-x: clip;
+  text-wrap: pretty;
+}
+
+:where(.rot) *,
+:where(.rot) *::before,
+:where(.rot) *::after { box-sizing: border-box }
+
+:where(.rot) a { color: var(--sand); text-decoration: none }
+:where(.rot) a:hover { color: var(--rust-lit) }
+
+.k {
+  font: 600 11px/1.2 var(--mork-display);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--sand-faint);
+  display: block;
+}
+.kRust { color: var(--rust-lit) }
+.m { font: 400 11px/1.3 var(--mork-meta); letter-spacing: .02em; color: var(--sand-faint) }
+.rule { width: 64px; height: 3px; background: var(--rust); border: 0; margin: 28px 0 14px }
+
+/* ---- musepeker ---- */
+.cd,
+.cr {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  border-radius: 50%;
+  z-index: 9998;
+  display: none;
+}
+.cd {
+  width: 6px;
+  height: 6px;
+  background: var(--sand);
+  mix-blend-mode: difference;
+  margin: -3px 0 0 -3px;
+}
+.cr {
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(250, 248, 243, .28);
+  margin: -18px 0 0 -18px;
+  z-index: 9997;
+  transition:
+    width var(--dur) var(--ease),
+    height var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
+}
+.cr.hot {
+  width: 56px;
+  height: 56px;
+  margin: -28px 0 0 -28px;
+  border-color: var(--rust-lit);
+  box-shadow: 0 0 24px var(--rust-glow);
+}
+.mo .cd,
+.mo .cr { display: block }
+@media (hover: none), (pointer: coarse) {
+  .cd, .cr, .mo .cd, .mo .cr { display: none }
+}
+
+/* ---- sjikt over alt ---- */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  opacity: .018;
+  background-repeat: repeat;
+  background-size: 256px 256px;
+}
+.vig {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  pointer-events: none;
+  background: radial-gradient(ellipse 120% 100% at 50% 40%, transparent 62%, rgba(14, 13, 12, .3) 100%);
+}
+.parts {
+  position: fixed;
+  inset: 0;
+  z-index: 15;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 800ms var(--ease);
+}
+.mo .parts { opacity: .42 }
+
+/* ---- laster ---- */
+/* Lasteren er skjult som standard og vises bare når JavaScript faktisk kjører.
+   Ellers ville et dødt svart teppe ligget over siden uten JS. */
+.load { display: none }
+.rot.laster .load { display: flex }
+.load {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--ink);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  transition: opacity 600ms var(--ease), filter 600ms var(--ease);
+}
+.load.out { opacity: 0; filter: blur(8px); pointer-events: none }
+.bm {
+  font: 600 22px/1 var(--mork-display);
+  letter-spacing: .38em;
+  text-transform: uppercase;
+  color: var(--sand);
+}
+.ln { width: 1px; height: 40px; background: linear-gradient(to bottom, transparent, var(--rule)) }
+.bar { width: 140px; height: 2px; background: var(--ink-4); overflow: hidden }
+.fill { height: 100%; width: 0; background: linear-gradient(90deg, var(--rust), var(--rust-lit)) }
+.pct { font: 400 10px/1 var(--mork-meta); letter-spacing: .2em; color: var(--sand-faint) }
+
+/* ---- kapittelskinne ---- */
+.chap {
+  display: none;
+  position: fixed;
+  right: 26px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 50;
+}
+.mo .chap { display: flex; flex-direction: column; align-items: flex-end; gap: 0 }
+.c { display: flex; align-items: center; gap: 10px; height: 54px; justify-content: flex-end }
+.lbl {
+  font: 600 9px/1 var(--mork-display);
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--sand-faint);
+  opacity: 0;
+  transform: translateX(6px);
+  transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
+  white-space: nowrap;
+}
+.c:hover .lbl,
+.c.on .lbl { opacity: 1; transform: none }
+.dot {
+  width: 5px;
+  height: 5px;
+  background: var(--rule);
+  flex: none;
+  transition:
+    background var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+}
+.c.on .dot { background: var(--rust-lit); box-shadow: 0 0 14px var(--rust-glow); transform: scale(1.5) }
+.trk { width: 1px; height: 49px; background: var(--ink-4); margin-right: 2px; position: relative }
+.trk i { position: absolute; inset: 0 0 auto 0; height: 0; background: var(--rust); display: block }
+@media (max-width: 900px) {
+  .chap, .mo .chap { display: none }
+}
+
+/* ---- scenen ---- */
+.stage { position: relative }
+.mo .stage { height: 720vh }
+.sticky { position: relative; height: 100vh; overflow: hidden }
+.mo .sticky { position: sticky; top: 0 }
+.cv { display: block; width: 100%; height: 100% }
+/* ÉN scrim. Det tidligere bygget stablet en venstregradient, en bunngradient,
+   et rust-skjær og en tung vignett på samme bilde — fire lag med gjørme. */
+.grad { position: absolute; inset: 0; z-index: 1; pointer-events: none }
+.gradB {
+  background: linear-gradient(to top,
+    rgba(14, 13, 12, .94) 0%,
+    rgba(14, 13, 12, .72) 20%,
+    rgba(14, 13, 12, .26) 44%,
+    rgba(14, 13, 12, .04) 66%,
+    transparent 82%);
+}
+.gradL {
+  background: linear-gradient(100deg,
+    rgba(14, 13, 12, .88) 0%,
+    rgba(14, 13, 12, .66) 30%,
+    rgba(14, 13, 12, .24) 52%,
+    transparent 70%);
+}
+
+/* ---- tekstfeltene ---- */
+/* Uten bevegelse: en helt vanlig redaksjonell side. `.mo` gjør den om til
+   det filmatiske overlegget. */
+.st {
+  position: relative;
+  z-index: 10;
+  max-width: min(700px, 92vw);
+  margin: 0 auto 104px;
+  padding: 0 5vw;
+}
+.st::before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 1px;
+  background: var(--ink-4);
+  margin-bottom: 30px;
+}
+/* heroen står inne i bilderammen, over den sterke enden av scrimen */
+.hero {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100vh;
+  max-width: none;
+  margin: 0;
+  padding: 0 6vw 8vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.hero::before { display: none }
+.hero + .st { margin-top: 112px }
+.mo .st {
+  position: fixed;
+  left: 6%;
+  top: 50%;
+  margin: -1px 0 0;
+  padding: 0;
+  max-width: min(620px, 52vw);
+  opacity: 0;
+  transform: translateX(-22px);
+  filter: blur(6px);
+  transition: opacity 700ms var(--ease), transform 700ms var(--ease), filter 700ms var(--ease);
+  pointer-events: none;
+}
+.mo .st.on { opacity: 1; transform: none; filter: none; pointer-events: auto }
+/* Heroen må stå ETTER `.mo .st`: i tegningen er den en id og vinner uansett
+   rekkefølge, her er begge én klasse og den siste vinner. */
+.mo .hero {
+  position: fixed;
+  top: auto;
+  bottom: 9vh;
+  left: 6%;
+  right: auto;
+  height: auto;
+  padding: 0;
+  justify-content: flex-start;
+}
+.stC { text-align: center }
+.mo .stC { left: 50%; transform: translate(-50%, 0) scale(.98); max-width: min(760px, 86vw) }
+.mo .stC.on { transform: translate(-50%, 0) }
+.st h1,
+.st h2 {
+  font-family: var(--mork-display);
+  font-weight: 600;
+  letter-spacing: -.015em;
+  line-height: .98;
+  color: var(--sand);
+  margin: 14px 0 0;
+}
+.st h1 { font-size: clamp(38px, 5.2vw, 78px); text-shadow: 0 2px 40px rgba(14, 13, 12, .5) }
+.st h2 { font-size: clamp(30px, 3.6vw, 52px) }
+.st p {
+  font: 300 clamp(16px, 1.35vw, 20px)/1.55 var(--mork-body);
+  color: var(--sand-dim);
+  margin: 18px 0 0;
+  max-width: 42ch;
+}
+.hero p { max-width: 34ch }
+.stC p { margin-left: auto; margin-right: auto }
+.heroLogo { height: 26px; display: block; align-self: flex-start; margin: 0 auto 34px 0; opacity: .92 }
+.sp { display: inline-block }
+.mo .sp { opacity: 0; transform: translateY(.4em); transition: opacity 500ms var(--ease), transform 500ms var(--ease) }
+.mo .on .sp { opacity: 1; transform: none }
+
+/* ---- to dører ---- */
+.doors { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 36px; max-width: 620px }
+.door {
+  position: relative;
+  background: #171614;
+  border: 1px solid #302d29;
+  padding: 22px 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+.door::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--rust);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 260ms var(--ease);
+}
+.door:hover { background: #1e1c19; border-color: #46443f }
+.door:hover::after { transform: scaleX(1) }
+.door .t {
+  font: 600 21px/1.1 var(--mork-display);
+  color: var(--sand);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.door .t i {
+  font: 400 11px/1 var(--mork-meta);
+  font-style: normal;
+  letter-spacing: .02em;
+  color: var(--rust-lit);
+}
+.door .d { font: 400 13px/1.5 var(--mork-body); color: var(--sand-dim) }
+.door .p {
+  font: 400 10px/1.2 var(--mork-meta);
+  letter-spacing: .12em;
+  color: var(--sand-faint);
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid #262421;
+}
+@media (max-width: 700px) {
+  .doors { grid-template-columns: 1fr }
+}
+
+/* ---- knapper ---- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 26px;
+  font: 600 13px/1 var(--mork-display);
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  border-radius: 2px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition:
+    background var(--dur) var(--ease),
+    color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+}
+.btnP { background: var(--rust); color: #fff }
+.btnP:hover { background: var(--rust-lit); color: #fff; box-shadow: 0 0 30px var(--rust-glow) }
+.btnG { background: transparent; color: var(--sand); border-color: rgba(250, 248, 243, .42) }
+.btnG:hover { background: var(--sand); color: var(--ink); border-color: var(--sand) }
+.btn:active { transform: scale(.97) }
+.acts { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 28px }
+.stC .acts { justify-content: center }
+
+/* ---- lister og celler ---- */
+.feat { list-style: none; margin: 26px 0 0; padding: 0; display: flex; flex-direction: column }
+.feat li {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 16px;
+  align-items: baseline;
+  padding: 14px 0;
+  border-top: 1px solid var(--ink-4);
+}
+.feat li:last-child { border-bottom: 1px solid var(--ink-4) }
+.feat .i { font: 400 10px/1.4 var(--mork-meta); letter-spacing: .02em; color: var(--rust-lit) }
+.feat .n { font: 500 16px/1.3 var(--mork-body); color: var(--sand) }
+.feat .v { font: 400 11px/1.3 var(--mork-meta); letter-spacing: .02em; color: var(--sand-faint); text-align: right }
+.gcells { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; margin-top: 26px; background: var(--ink-4) }
+.gcell {
+  background: rgba(250, 248, 243, .03);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: background var(--dur) var(--ease);
+}
+.gcell:hover { background: rgba(250, 248, 243, .07) }
+.gcell .t { font: 600 15px/1.2 var(--mork-display); color: var(--sand) }
+.gcell .d { font: 400 12px/1.45 var(--mork-body); color: var(--sand-dim) }
+.st blockquote {
+  margin: 0;
+  font: 300 clamp(24px, 3vw, 40px)/1.22 var(--mork-display);
+  letter-spacing: -.01em;
+  color: var(--sand);
+}
+.qmark { font: 600 84px/.6 var(--mork-display); color: var(--rust); display: block; margin-bottom: 8px }
+
+/* ---- bildearkiv ---- */
+.gal { position: relative; z-index: 20; background: var(--ink); padding: 120px 5vw 80px }
+.galHd { max-width: 1240px; margin: 0 auto 48px; border-bottom: 1px solid var(--ink-4); padding-bottom: 24px }
+.galHd h2 {
+  font: 600 clamp(28px, 3.4vw, 48px)/1.02 var(--mork-display);
+  letter-spacing: -.012em;
+  color: var(--sand);
+  margin: 8px 0 0;
+}
+.grid {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  grid-auto-rows: 210px;
+}
+/* `position: relative` er lagt til her: bildene er next/image med `fill`, så
+   mengden nedlastede piksler følger skjermen. Usynlig forskjell fra tegningen. */
+.grid figure { margin: 0; overflow: hidden; background: var(--ink-3); position: relative }
+.mo .grid figure { opacity: 0; transform: translateY(28px); transition: opacity 800ms var(--ease), transform 800ms var(--ease) }
+.mo .grid figure.in { opacity: 1; transform: none }
+.tall { grid-row: span 2 }
+.grid img { width: 100%; height: 100%; object-fit: cover; display: block; transition: filter 700ms var(--ease) }
+.grid figure:hover img { filter: brightness(1.12) saturate(1.05) }
+@media (max-width: 860px) {
+  .grid { grid-template-columns: 1fr 1fr; grid-auto-rows: 170px }
+}
+
+.ft { position: relative; z-index: 20; background: var(--ink-2); border-top: 1px solid var(--ink-4); padding: 56px 5vw }
+.ftIn {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+.ft .bm { font: 600 20px/1 var(--mork-display); letter-spacing: .3em; text-transform: uppercase; color: var(--sand) }
+
+@media (prefers-reduced-motion: reduce) {
+  .rot *, .rot *::before, .rot *::after { transition-duration: 1ms !important; animation: none !important }
+  .grain, .parts, .vig { display: none }
+}
+
+/* ---- mobil: tegningens egen rolige variant ----
+ * Tegningen er tegnet for 1440 × 900 og har ingen mobilvariant. Låst til
+ * skjermen på 390 px blir tekstfeltene høyere enn skjermen, og de nederste
+ * punktene i listene er umulige å nå — de ligger utenfor kanten, og siden
+ * ruller videre i stedet for å vise dem. Målt 22.09.2026.
+ *
+ * Her faller mobilen tilbake til tilstanden tegningen selv definerer når
+ * bevegelsen er av: bilderammen står stille øverst, feltene ligger etter
+ * hverandre nedover. Ingenting er funnet på — men mobilen får dermed ikke
+ * den filmatiske rullingen. Det er en åpen beslutning for Anders.
+ *
+ * 700 px er tegningens eget brekkpunkt (der dørene går fra to til én). */
+@media (max-width: 700px) {
+  .mo .stage { height: auto }
+  .mo .sticky { position: relative }
+  .mo .st {
+    position: relative;
+    left: auto;
+    top: auto;
+    margin: 0 auto 104px;
+    padding: 0 5vw;
+    max-width: min(700px, 92vw);
+    opacity: 1;
+    transform: none;
+    filter: none;
+    pointer-events: auto;
+  }
+  .mo .hero {
+    position: absolute;
+    top: 0;
+    bottom: auto;
+    left: 0;
+    right: 0;
+    height: 100vh;
+    max-width: none;
+    margin: 0;
+    padding: 0 6vw 8vh;
+    justify-content: flex-end;
+  }
+  .mo .stC { left: auto; transform: none; max-width: min(700px, 92vw) }
+  .mo .sp { opacity: 1; transform: none }
+  .mo .grid figure { opacity: 1; transform: none }
+}
