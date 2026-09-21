@@ -106,6 +106,22 @@ Avsluttet.
 Begge ukesdigest-filene siterte en Paper-fil som ble slettet 30.08.2026.
 Filhodet sier nå at skjermen ikke har en gjeldende designkilde.
 
+### PH-12 Meg — refunderte betalinger forsvant fra kvitteringslista
+Spillerens abonnementsliste hentet bare `status: "SUCCEEDED"`. En refundert
+eller delvis refundert betaling falt dermed helt ut — spilleren så ingen spor
+av en transaksjon som faktisk har skjedd på kortet. Forelderportalen har hele
+tiden vist «Refundert {dato}». `currency` ble også ignorert, så alt ble vist
+som kroner. Regelen ligger nå i `lib/portal-abonnement/kvittering.ts` med test:
+dato, beløp i faktisk valuta, status, tilbakeført beløp — og «—» der et felt
+mangler.
+
+### PH-12 Meg — mål uten målverdi fikk en oppfunnet nevner
+Målverdi er valgfritt, men alle tre gjenstående måltypene antok en nevner når
+den manglet. `ROUNDS_PER_MONTH` og `SESSION_FREQUENCY` falt tilbake på 1 («2 av
+1 runder · Mål nådd»), og `TEST_SCORE` falt tilbake på spillerens egen siste
+score, slik at ethvert resultat ble rapportert som oppnådd. Uten målverdi vises
+nå ingen prosent, men det målte tallet står.
+
 ## Verifisert uten funn
 
 - **PH-09 Tester:** PEI krever positiv målavstand (`test-scoring.ts`), Gate
@@ -140,14 +156,16 @@ Filhodet sier nå at skjermen ikke har en gjeldende designkilde.
   og P1–P10 og læringstrappen leses fra `TechnicalPlan` — oppslagstabellene
   navngir bare posisjoner som finnes i kilden.
 - **PH-12 ukesdigest:** ingen påstand om automatisk utsendelsesdag.
+- **PH-12 testmål, TN v3:** avviser den gamle høyere-er-bedre-poengformelen
+  eksplisitt i stedet for å regne feil på signerte TN-scorer.
+- **PH-12 faktura-detaljsiden:** håndterte `REFUNDED` og `PARTIALLY_REFUNDED`
+  riktig fra før — det var bare listen som filtrerte dem bort.
 
 ## Ikke gjort
 
-- **Kvitteringer i abonnementet:** fakturalista viser beløp og dato fra
-  `Payment`-radene, men er ikke gjennomgått mot kravet om «faktiske felt
-  eller —» for hvert enkelt felt.
-- **Mål-flatens øvrige typer:** `ROUNDS_PER_MONTH`, `SESSION_FREQUENCY` og
-  `TEST_SCORE` er ikke gjennomgått på samme måte som HCP og SG.
+- **PH-02 harmonisering:** de 20 statiske referansene mot Live-/FYS-modellene
+  lever i Claude Design-prototypen, ikke i appkoden.
+- **Visuell port** av PH-07–PH-12 mot skjermene i «App design».
 - **PH-02 harmonisering:** de 20 statiske referansene mot Live-/FYS-modellene er
   ikke rørt. De ligger i Claude Design-prototypen, ikke i appkoden.
 - **Visuell port** av PH-07–PH-11 mot de nye skjermdesignene.
