@@ -700,6 +700,7 @@ eller testen. Databasen beholder de finkornede enum-verdiene; `ak-formel-v2.ts` 
 | Hvilke TrackMan-parametere som foreslås per teknisk fokus | Ikke avklart |
 | Om intensitet i Fysisk angis med sone, RPE, puls eller flere | Ikke avklart |
 | Om flere tekniske fokus per øvelse skal tillates | Nei i dag: maksimalt ett |
-| Øvelsesskjemaet for kapittel 9–17 | Bygget i Workbench Økt (`OvelseSkjema.tsx`). Ikke vist til Anders ennå; mangler skjermbilde på 390 px og desktop |
+| Øvelsesskjemaet for kapittel 9–17 | Bygget i Workbench Økt (`OvelseSkjema.tsx`): inspektør på desktop, bunnark på mobil under 1024 px. Sett i komponentprøve, ikke i innlogget app |
 | Redigering av eksisterende øvelse med de nye feltene | Ikke bygget: skjemaet legger til nye øvelser |
+| Flytt opp/ned og fjern øvelse på mobil | Ikke bygget: bare «Legg til øvelse» har mobilvei |
 | Kondisjon: intensitetssone og segmenter | Ikke bygget, venter på avklaring av sone, RPE eller puls |

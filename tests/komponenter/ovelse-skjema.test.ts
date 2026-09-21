@@ -45,3 +45,14 @@ test("Sted foreslås i grenens rekkefølge, og alle seks hovedmiljøer er valgba
     assert.ok(html.includes(t), `mangler «${t}»`);
   }
 });
+
+test("bunnarket for mobil er skjult til det åpnes, og har lukk og legg til-knapp", () => {
+  const lukket = renderToStaticMarkup(createElement(OvelseSkjema, { standardPyramide: "TEK", disabled: false, onSubmit: () => undefined, modus: "ark", apen: false }));
+  assert.ok(/class="wb-ark"[^>]*hidden/.test(lukket) || /hidden=""[^>]*class="wb-ark"|<div[^>]*hidden[^>]*wb-ark/.test(lukket), "arket skal være skjult når det er lukket");
+  const apent = renderToStaticMarkup(createElement(OvelseSkjema, { standardPyramide: "TEK", disabled: false, onSubmit: () => undefined, modus: "ark", apen: true }));
+  assert.ok(!/<div[^>]*wb-ark"[^>]*hidden/.test(apent), "arket skal ikke være skjult når det er åpent");
+  for (const tekst of ['role="dialog"', 'aria-modal="true"', "Lukk", "Legg til øvelse", "1 · Hensikt", "8 · Mål"]) {
+    assert.ok(apent.includes(tekst), `mangler «${tekst}»`);
+  }
+  assert.ok(!apent.includes("<details"), "arket skal ikke være en utfellbar seksjon");
+});

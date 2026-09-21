@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
   DIMENSJON_LABEL,
@@ -35,7 +35,13 @@ type Props = {
   /** Pyramiden økten har; brukes som første valg. */
   standardPyramide: PyramidArea;
   disabled: boolean;
-  onSubmit: (ovelse: OvelseInput) => void;
+  /** Kalles med øvelsen. `ferdig` tømmer skjemaet og skal kalles først når lagringen har lyktes. */
+  onSubmit: (ovelse: OvelseInput, ferdig: () => void) => void;
+  /** «panel» er utfellbar seksjon i inspektøren (desktop). «ark» er bunnark på mobil. */
+  modus?: "panel" | "ark";
+  /** Kun for «ark»: om arket er åpent. Utkastet beholdes når det lukkes. */
+  apen?: boolean;
+  onLukk?: () => void;
 };
 
 /**
@@ -43,7 +49,7 @@ type Props = {
  * vises, og pyramiden filtrerer bort felt som ikke hører hjemme i grenen. Hver gren har
  * sitt eget utkast, så et valg i én gren aldri overskriver en annen.
  */
-export function OvelseSkjema({ standardPyramide, disabled, onSubmit }: Props) {
+export function OvelseSkjema({ standardPyramide, disabled, onSubmit, modus = "panel", apen = false, onLukk }: Props) {
   const [pyramide, setPyramide] = useState<PyramidArea>(standardPyramide);
   const [utkast, setUtkast] = useState(tommeUtkast);
   const [title, setTitle] = useState("");
@@ -69,16 +75,32 @@ export function OvelseSkjema({ standardPyramide, disabled, onSubmit }: Props) {
       return;
     }
     setFeil(null);
-    onSubmit(res.ovelse);
-    setTitle("");
-    setDescription("");
-    setUtkast(tommeUtkast());
+    onSubmit(res.ovelse, () => {
+      setTitle("");
+      setDescription("");
+      setUtkast(tommeUtkast());
+    });
   }
 
-  return (
-    <details className="wb-session-edit wb-ovelse">
-      <summary>{UI.addDrill}</summary>
+  const arkRef = useRef<HTMLDivElement>(null);
+  const ark = modus === "ark";
+  const lukkRef = useRef(onLukk);
+  useEffect(() => { lukkRef.current = onLukk; });
+  useEffect(() => {
+    if (!ark || !apen) return;
+    arkRef.current?.focus();
+    const tidligere = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const tast = (e: KeyboardEvent) => { if (e.key === "Escape") lukkRef.current?.(); };
+    window.addEventListener("keydown", tast);
+    return () => {
+      document.body.style.overflow = tidligere;
+      window.removeEventListener("keydown", tast);
+    };
+  }, [ark, apen]);
 
+  const felter = (
+    <>
       <label>{UI.drillTitle}<input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={UI.drillTitlePlaceholder} /></label>
 
       <span className="wb-kicker">1 · Hensikt</span>
@@ -216,7 +238,29 @@ export function OvelseSkjema({ standardPyramide, disabled, onSubmit }: Props) {
       <label>{UI.formelMate}<input value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Hvordan øvelsen gjennomføres" /></label>
 
       {feil ? <p role="alert" className="wb-ovelse-feil">{feil}</p> : null}
-      <button type="button" className="wb-quiet" disabled={disabled || !title.trim()} onClick={send}>{UI.addDrill}</button>
-    </details>
+      {ark ? null : <button type="button" className="wb-quiet" disabled={disabled || !title.trim()} onClick={send}>{UI.addDrill}</button>}
+    </>
+  );
+
+  if (!ark) {
+    return (
+      <details className="wb-session-edit wb-ovelse">
+        <summary>{UI.addDrill}</summary>
+        {felter}
+      </details>
+    );
+  }
+
+  return (
+    <div className="wb-ark" role="dialog" aria-modal="true" aria-label={UI.addDrill} hidden={!apen} ref={arkRef} tabIndex={-1}>
+      <div className="wb-ark-hode">
+        <b>{UI.addDrill}</b>
+        <button type="button" className="wb-quiet" onClick={onLukk}>Lukk</button>
+      </div>
+      <div className="wb-ark-innhold wb-session-edit wb-ovelse">{felter}</div>
+      <div className="wb-ark-fot">
+        <button type="button" className="wb-publish" disabled={disabled || !title.trim()} onClick={send}>{UI.addDrill}</button>
+      </div>
+    </div>
   );
 }

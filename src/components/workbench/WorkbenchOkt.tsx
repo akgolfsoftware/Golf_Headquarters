@@ -170,6 +170,20 @@ export function WorkbenchOkt({ playerId, spillerNavn, uke, selectedSessionId, ki
     });
   }
 
+  const [arkApen, setArkApen] = useState(false);
+
+  function leggTilOvelse(ovelse: OvelseInput, ferdig: () => void) {
+    if (!session) return;
+    run(
+      () => addDrill({ sessionId: session.id, drill: ovelse }),
+      () => {
+        toast.success(UI.toastDrillAdded);
+        ferdig();
+        setArkApen(false);
+      },
+    );
+  }
+
   function selectSession(id: string) {
     setSessionId(id);
     setDrillId("");
@@ -237,10 +251,11 @@ export function WorkbenchOkt({ playerId, spillerNavn, uke, selectedSessionId, ki
       </main>
 
       <aside className="wb-inspector">
-        {session ? <SessionEditor session={session} drill={selectedDrill} drillIndex={selectedDrillIndex} travel={travel} formula={formula} onMove={(date, startMinute, durationMinutes) => run(() => moveSession({ sessionId: session.id, newDate: date, newStartMinute: startMinute, newDurationMinutes: durationMinutes }), () => toast.success(UI.toastSessionMoved))} onAdd={(ovelse) => run(() => addDrill({ sessionId: session.id, drill: ovelse }), () => toast.success(UI.toastDrillAdded))} onReorder={(direction) => { if (!selectedDrill || selectedDrillIndex < 0) return; const nextIndex = selectedDrillIndex + direction; if (nextIndex < 0 || nextIndex >= session.drills.length) return; const ids = session.drills.map((item) => item.id); [ids[selectedDrillIndex], ids[nextIndex]] = [ids[nextIndex], ids[selectedDrillIndex]]; run(() => reorderDrills({ sessionId: session.id, orderedDrillIds: ids }), () => {}); }} onRemove={() => { if (!selectedDrill) return; run(() => removeDrill({ sessionId: session.id, drillId: selectedDrill.id }), () => { setDrillId(""); toast.success(UI.toastDrillRemoved); }); }} /> : <p className="wb-empty">Velg eller opprett en økt i ukevisningen.</p>}
+        {session ? <SessionEditor session={session} drill={selectedDrill} drillIndex={selectedDrillIndex} travel={travel} formula={formula} onMove={(date, startMinute, durationMinutes) => run(() => moveSession({ sessionId: session.id, newDate: date, newStartMinute: startMinute, newDurationMinutes: durationMinutes }), () => toast.success(UI.toastSessionMoved))} onAdd={leggTilOvelse} onReorder={(direction) => { if (!selectedDrill || selectedDrillIndex < 0) return; const nextIndex = selectedDrillIndex + direction; if (nextIndex < 0 || nextIndex >= session.drills.length) return; const ids = session.drills.map((item) => item.id); [ids[selectedDrillIndex], ids[nextIndex]] = [ids[nextIndex], ids[selectedDrillIndex]]; run(() => reorderDrills({ sessionId: session.id, orderedDrillIds: ids }), () => {}); }} onRemove={() => { if (!selectedDrill) return; run(() => removeDrill({ sessionId: session.id, drillId: selectedDrill.id }), () => { setDrillId(""); toast.success(UI.toastDrillRemoved); }); }} /> : <p className="wb-empty">Velg eller opprett en økt i ukevisningen.</p>}
       </aside>
 
-      {session ? <aside className="wb-mobile-summary wb-session-mobile" aria-label="Valgt øvelse"><div className="wb-grip" aria-hidden /><span className="wb-kicker">{selectedDrill ? `Øvelse ${selectedDrillIndex + 1} av ${session.drills.length}` : "Valgt økt"}</span><h2>{selectedDrill?.title ?? session.title}</h2><p>{selectedDrill ? `${formatTime(ovelseStart(session, selectedDrillIndex))} · ${formatMinutes(selectedDrill.durationMinutes)}` : formatMinutes(session.durationMinutes)}</p><dl>{formula.map((item) => <div key={item.label}><dt>{item.label}</dt><dd>{item.value}</dd></div>)}</dl><div className="wb-mobile-actions"><Link className="wb-quiet wb-inline-link" href={workbenchUrl(playerId, "uke", { uke: week.weekStart })}>{UI.openWeek}</Link>{session.status === "DRAFT" ? <button type="button" className="wb-publish" disabled={travel} onClick={() => run(() => publishSessions([session.id]), () => toast.success(UI.publishSuccess))}>Publiser økt</button> : null}</div></aside> : null}
+      {session ? <aside className="wb-mobile-summary wb-session-mobile" aria-label="Valgt øvelse"><div className="wb-grip" aria-hidden /><span className="wb-kicker">{selectedDrill ? `Øvelse ${selectedDrillIndex + 1} av ${session.drills.length}` : "Valgt økt"}</span><h2>{selectedDrill?.title ?? session.title}</h2><p>{selectedDrill ? `${formatTime(ovelseStart(session, selectedDrillIndex))} · ${formatMinutes(selectedDrill.durationMinutes)}` : formatMinutes(session.durationMinutes)}</p><dl>{formula.map((item) => <div key={item.label}><dt>{item.label}</dt><dd>{item.value}</dd></div>)}</dl><div className="wb-mobile-actions"><button type="button" className="wb-quiet wb-mobile-add" disabled={travel} onClick={() => setArkApen(true)}>{UI.addDrill}</button><Link className="wb-quiet wb-inline-link" href={workbenchUrl(playerId, "uke", { uke: week.weekStart })}>{UI.openWeek}</Link>{session.status === "DRAFT" ? <button type="button" className="wb-publish" disabled={travel} onClick={() => run(() => publishSessions([session.id]), () => toast.success(UI.publishSuccess))}>Publiser økt</button> : null}</div></aside> : null}
+      {session ? <OvelseSkjema modus="ark" apen={arkApen} onLukk={() => setArkApen(false)} standardPyramide={session.pyramid} disabled={travel} onSubmit={leggTilOvelse} /> : null}
     </div>
   );
 }
@@ -252,7 +267,7 @@ function SessionEditor({ session, drill, drillIndex, travel, formula, onMove, on
   travel: boolean;
   formula: Array<{ label: string; hint: string; value: string }>;
   onMove: (date: string, startMinute: number, durationMinutes: number) => void;
-  onAdd: (ovelse: OvelseInput) => void;
+  onAdd: (ovelse: OvelseInput, ferdig: () => void) => void;
   onReorder: (direction: -1 | 1) => void;
   onRemove: () => void;
 }) {
