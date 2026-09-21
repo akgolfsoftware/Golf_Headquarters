@@ -702,5 +702,5 @@ eller testen. Databasen beholder de finkornede enum-verdiene; `ak-formel-v2.ts` 
 | Om flere tekniske fokus per øvelse skal tillates | Nei i dag: maksimalt ett |
 | Øvelsesskjemaet for kapittel 9–17 | Bygget i Workbench Økt (`OvelseSkjema.tsx`): inspektør på desktop, bunnark på mobil under 1024 px. Sett i komponentprøve, ikke i innlogget app |
 | Redigering av eksisterende øvelse med de nye feltene | Ikke bygget: skjemaet legger til nye øvelser |
-| Flytt opp/ned og fjern øvelse på mobil | Ikke bygget: bare «Legg til øvelse» har mobilvei |
+| Flytt opp/ned og fjern øvelse på mobil | Bygget i «Valgt øvelse»-arket; fjerning krever bekreftelse. Sett i komponentprøve, ikke i innlogget app |
 | Kondisjon: intensitetssone og segmenter | Ikke bygget, venter på avklaring av sone, RPE eller puls |

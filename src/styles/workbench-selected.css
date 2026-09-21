@@ -547,3 +547,14 @@
   .wb-ark-fot .wb-publish { width: 100%; min-height: 48px; }
 }
 @media(min-width:1024px) { .wb-ark { display: none !important; } }
+/* Flytt opp/ned og fjern for valgt øvelse på mobil */
+.wb-mobile-ovelse { display: none; }
+@media(max-width:1023px) {
+  .wb-session-mobile { height: 408px; }
+  .wb-session-mobile .wb-mobile-ovelse { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; flex: 1 1 100%; }
+  .wb-session-mobile .wb-mobile-ovelse .wb-quiet { min-height: 44px; padding: 0 6px; display: inline-flex; align-items: center; justify-content: center; }
+  .wb-session-mobile .wb-mobile-ovelse .wb-quiet:disabled { opacity: .45; }
+  .wb-session-mobile .wb-mobile-bekreft { grid-template-columns: 1fr 1fr; }
+  .wb-session-mobile .wb-mobile-bekreft p { grid-column: 1 / -1; margin: 0; font-size: 14px; line-height: 1.35; overflow-wrap: anywhere; }
+  .wb-session-mobile .wb-mobile-bekreft .wb-publish { min-height: 44px; }
+}

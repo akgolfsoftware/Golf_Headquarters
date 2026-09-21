@@ -40,6 +40,7 @@ if (okt) {
       hastighetProsent: 50, tekniskFokus: "LENGDEKONTROLL", sted: { hoved: "INNENDORS_GOLF", delvalg: "Simulator" },
       maaleutstyr: "MED_TRACKMAN", treningsmaate: "BLOKK", mengde: { enhet: "SLAG", antall: 30 }, mal: { resultatkrav: "20 av 30 innenfor målområdet" },
     }, "LAV_HAST"),
+    drill("d2", "Putt 3–5 fot, ballstart", "STYRKE", "FYS", { mengde: { enhet: "SERIER", antall: 4, reps: 6 } }),
   ];
   createRoot(document.getElementById("root")!).render(
     <WorkbenchShell coachName="Anders Kristiansen" playerId="syntetisk-spiller">
