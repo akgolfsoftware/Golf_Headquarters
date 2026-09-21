@@ -48,11 +48,44 @@ hardkodede timetall (12/22/18/14/8) under etiketten «Snitt A1 = 12,0 t
 eller kilde. Pyramide-disiplinene har nå ingen referanse og viser «—» uten
 fargevurdering; SG-disiplinene beholder nullpunktet, men kalles referansefeltet.
 
+### PH-10 Min kurve — si hvor mange deltakelser som ikke er tegnet
+Kurven tegner bare fullstendige resultater; cut, trukket, påmeldt og
+ufullstendig registrerte filtreres bort av `tilPunkt`. Riktig, men kurven sa
+ikke fra. Fire deltakelser der to endte i cut så ut som to turneringer.
+`byggMinKurve` teller nå de utelatte i samme utvalg som kurven og gir en hel
+setning om dem.
+
 ### PH-12 Meg — symptomregistrering later ikke som den lagrer
 `logSymptom` gjorde `void input` og redirectet til helsesiden. Det så ut som en
 vellykket lagring. Skjermen sier nå fra før utfyllingen at funksjonen ikke er i
 drift, og handlingen avviser. Samtykkeporten for helseopplysninger står før
 avvisningen.
+
+### PH-12 Meg — HCP-fremdrift antok at alle startet på 54
+`progressHcp` brukte `HCP_START = 54` som nevner. For en spiller på vei fra 20
+til 10 ga det «89 % i mål» ved HCP 15, mens hen reelt var halvveis. Startverdien
+leses nå fra `Goal.payload.hcpStart`, samme mønster som SG-mål (`sgStart`). Uten
+lagret start vises ingen prosent, men HCP og gjenstående slag står.
+
+### PH-12 Meg — sikkerhetsscoren og to løfter uten dekning
+- «Sikkerhetsscore 80 / 100 · Sterk» var `harEpost ? 80 : 55`: to hardkodede
+  tall uten måling, vist med progresjonsbar og en dom. Appen vet ikke om
+  kontoen har tofaktor (flagget finnes ikke på `User`). Nå vises tilstandene
+  den faktisk kjenner.
+- Refusjonsfeil lovet «vi behandler den manuelt innen 24 timer» — en
+  behandlingstid appen ikke kan love på coachens vegne.
+- Fysio-bryteren i symptomskjemaet lovet kontakt innen 24 t i en flyt som
+  ikke lagrer noe.
+- AI-coach-siden var merket «Kommer snart», men FAQ ga en bastant garanti om
+  modelltrening og funksjonslista sto med avkryssede punkter. Begge beskrev
+  en funksjon som ikke finnes.
+
+### PH-12 Meg — TrackMan vises ikke som en tilkobling
+Integrasjonssiden satte «tilkoblet» til `tmCount > 0`: finnes minst én
+importert økt, sto TrackMan som «Tilkoblet» med «Sist synket». Det finnes ingen
+løpende forbindelse — økter importeres fra CSV, rapport eller foto. TrackMan
+står nå blant de tilgjengelige kildene med tidspunkt for siste import. Google
+Calendar er urørt; den har ekte OAuth-backing.
 
 ## Verifisert uten funn
 
@@ -62,14 +95,26 @@ avvisningen.
   som prosentpoeng, og egne SG-tall trekkes ikke fra proffens nivå når
   sammenligningsgrunnlaget er ukjent.
 - **PH-12 booking:** ombooking krever strengt mer enn 24 timer (`h > 24`);
-  nøyaktig 24 nektes. Kontosletting er formulert som forespørsel.
+  nøyaktig 24 nektes. Kontosletting er formulert som forespørsel. Credit og
+  refusjon holdes adskilt i avbestillingsvarselet.
+- **PH-10 Min kurve:** sesongvelgeren viser de to nyeste sesongene pluss
+  «Alle»; snittet oppgir faktisk antall turneringer bak seg; plassering vises
+  bare for fullførte og alltid som «i klassen»; `resultatStatus` oversetter
+  CUT/WITHDREW/REGISTERED/DQ til ærlig norsk i listen under kurven.
+- **PH-12 varsler:** `oppdaterPreferences` merger (`{...eksisterende.notif,
+  ...input.notif}`) og bevarer ukjente nøkler — ett valg overskriver ikke de
+  andre.
+- **PH-12 eksport:** `/innstillinger/eksport` redirecter til den ekte
+  flyten på personvernsiden i stedet for en «kommer snart»-plassholder.
+- **PH-12 utstyr:** bæreavstander hentes fra målte TrackMan-data
+  (`hentGapping`), ikke utledet fra utstyrsnavn.
 
 ## Ikke gjort
 
-- **PH-10 Min kurve:** ikke gjennomgått.
-- **PH-12 Meg for øvrig:** mål, utstyr, venner, varsler, personvern,
-  integrasjoner, abonnement — kontrakten dekker ~30 underskjermer og er ikke
-  behandlet utover symptom-stubben og de to verifiserte punktene over.
+- **PH-12 Meg, gjenstående flater:** venner (søk, forespørsler, duplikater),
+  helsesamtykkets fire separate formål og foresattflyt under 16,
+  abonnementstilstandene (gratis/aktiv/prøve/forfalt/avsluttet) og
+  utviklingsplan/ukesdigest er ikke gjennomgått.
 - **PH-02 harmonisering:** de 20 statiske referansene mot Live-/FYS-modellene er
   ikke rørt. De ligger i Claude Design-prototypen, ikke i appkoden.
 - **Visuell port** av PH-07–PH-11 mot de nye skjermdesignene.
