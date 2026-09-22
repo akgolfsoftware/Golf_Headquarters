@@ -11,6 +11,15 @@
  * TrackMan-mål per kølle, Pyramide-fordeling, Coach & aktivitet.
  * OppgaveModal (skjema) og server actions (createTask/updateTaskBasics/logReps)
  * er uendret. Drag-and-drop er fortsatt ikke aktiv (grip-håndtak vises).
+ *
+ * Avvik:
+ *   - Ingen riggrad: skjermen krever en teknisk plan med posisjoner og oppgaver,
+ *     og det finnes ingen fixture for den ennå.
+ *   - Paper-fasiten (playerhq-teknisk-plan.html) som siteres lenger ned er utgått
+ *     per designbeslutningen 21.09; kommentaren beholdes som sporbarhet for
+ *     tom-tilstandens innhold, ikke som visuell autoritet.
+ *   - Skjermen står fortsatt på Train-lock-tokens (TL.*) og skal flyttes til
+ *     AK Golf Design System i eget steg.
  */
 
 import Link from "next/link";
