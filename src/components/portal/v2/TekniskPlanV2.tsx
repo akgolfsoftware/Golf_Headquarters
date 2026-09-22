@@ -84,6 +84,7 @@ export interface TekniskTaskKortProps {
   pyramide: PyramidArea;
   omraade: string;
   koller: string[];
+  /** v2-akser (22.09): læringssteg, teknisk fokus, måleutstyr, sted, press. */
   lFase?: string;
   cs?: string;
   m?: string;
