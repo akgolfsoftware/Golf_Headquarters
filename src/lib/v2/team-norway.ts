@@ -103,6 +103,17 @@ export const TN = {
   textOnDark: "var(--tn-text-on-dark)",
   textOnDarkMuted: "var(--tn-text-on-dark-muted)",
 
+  /** Skinnen (sidemenyen) — alltid navy. Ingen hvit strek inni. */
+  rail: {
+    bg: "var(--tn-rail-bg)",
+    active: "var(--tn-rail-active)",
+    /** 3 px strek foran aktiv rad. Identitet, aldri tekst. */
+    marker: "var(--tn-rail-marker)",
+    text: "var(--tn-rail-text)",
+    muted: "var(--tn-rail-muted)",
+    on: "var(--tn-rail-on)",
+  },
+
   accentPrimary: "var(--tn-accent-primary)",
   accentSecondary: "var(--tn-accent-secondary)",
   link: "var(--tn-link)",
@@ -179,6 +190,7 @@ export const TN = {
     micro: "var(--tn-text-micro)",
   },
   weight: {
+    light: "var(--tn-weight-light)",
     regular: 400,
     medium: 500,
     semibold: 600,

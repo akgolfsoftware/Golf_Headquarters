@@ -31,6 +31,7 @@ import {
   TnShell,
   TnSidehode,
   TnTomtilstand,
+  tnRolleNavn,
   type TnAktivSide,
 } from "./tn-shell";
 import { TnKort, TnPille } from "./core";
@@ -57,16 +58,9 @@ const dato = new Intl.DateTimeFormat("nb-NO", { day: "2-digit", month: "short", 
 const datoTid = new Intl.DateTimeFormat("nb-NO", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Oslo" });
 const tall = new Intl.NumberFormat("nb-NO", { maximumFractionDigits: 1 });
 
-function rolleNavn(rolle: string) {
-  if (rolle === "COACH") return "Trener";
-  if (rolle === "ASSISTANT") return "Hjelpetrener";
-  if (rolle === "PLAYER") return "Spiller";
-  return rolle;
-}
-
 function Chrome({ aktiv, brukerNavn, kontekst, children }: { aktiv: TnAktivSide; brukerNavn: string; kontekst: TnArbeidskontekst; children: ReactNode }) {
   return (
-    <TnShell aktiv={aktiv} brukerNavn={brukerNavn} rolle={rolleNavn(kontekst.rolle)} groupId={kontekst.gruppe.id} visTrenerflater={!kontekst.erSpiller} kanAdministrere={kontekst.kanAdministrere}>
+    <TnShell aktiv={aktiv} brukerNavn={brukerNavn} rolle={tnRolleNavn(kontekst.rolle)} groupId={kontekst.gruppe.id} visTrenerflater={!kontekst.erSpiller} kanAdministrere={kontekst.kanAdministrere}>
       {children}
     </TnShell>
   );

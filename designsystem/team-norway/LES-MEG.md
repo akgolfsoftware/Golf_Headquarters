@@ -1,8 +1,13 @@
 # `designsystem/team-norway/` — lokalt speil
 
-> **MYNDIGHET 21.09.2026:** AK Golf Design System og «App design» eier plattformens felles
-> visuelle grunnlag. Dette speilet kan bare styre en uttrykkelig valgt Team Norway-profil;
-> Train-lock/Paper-henvisninger er historikk. Se [gjeldende designautoritet](../../docs/design-system/design-autoritet.md).
+> **MYNDIGHET 22.09.2026 — dette speilet er IKKE lenger visuell fasit for appen.**
+> `/team-norway/*` eies av det skarpe Team Norway-språket i Claude Design-prosjektet
+> «Team Norway App»: Jost/Lato, hjørner 0 · 2 · 4, ingen skygger, kvadratisk avatar,
+> navy sidemeny. Rød er fortsatt `#D70232` og navy `#012B5D`. Se
+> [beslutningen](../../.claude/rules/beslutninger.md) §TEAM NORWAY-APPEN BYTTER DESIGNSPRÅK.
+> Speilet beholdes som **funksjonsinventar og historikk** — skjermregister, datamodell,
+> tilgangsmatrise og åpne beslutninger gjelder uendret. Verdiene under beskriver Claw slik
+> det var, ikke slik appen skal se ut.
 
 Speil av Claude Design-prosjektet **«Claw Design — Team Norway Golf»**
 (namespace `ClawDesignTeamNorwayGolf_a03bf9`). Sist synket **08.09.2026** fra
@@ -52,7 +57,7 @@ sporbar opprinnelse i merket. Overstyrer `#D50431` i N-D2, som er rettet i MASTE
 `#BA0C2F` og `#EF2B2D` i `talenthq` er henholdsvis det norske og det amerikanske flaggets
 rødfarge — plassholdere, ikke logoen.
 
-**3. Myndighet — AVGJORT: dette systemet eier `/team-norway/*`.** (Anders 30.08.2026.)
+**3. Myndighet — OMGJORT 22.09.2026.** Dette systemet eide `/team-norway/*` fra 30.08.2026. Fra 22.09 eier «Team Norway App» appflaten; teksten under er historikk.
 Train-lock eier plattformflatene (PlayerHQ, AgencyOS, Forelder). Ingen skjerm har to fasiter.
 Overstyrer N7-formuleringen «tegn organisasjonsflaten i Train-lock» for Team Norways del.
 **WANG-flatens stil er IKKE avgjort av dette** — se MASTERPLAN beslutningskø punkt 22.
