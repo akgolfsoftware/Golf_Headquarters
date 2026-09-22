@@ -15,6 +15,21 @@ Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved kon
 - Ingen `className="dark"`; tema styres bare av `data-v2-tema` på `<html>`. Mørk er standard på `/portal` og `/admin`, lys på `/auth` og `/forelder` og landingssidene (`src/lib/v2/tema-default.ts`).
 - Ikke bruk `accent` som tekstfarge på `primary`; bruk `-foreground`-paret.
 
+## Aldri sidelengs rulling (Anders 22.09.2026, bindende)
+
+Ingen skjerm, flate, rad, liste eller egen struktur skal kreve at brukeren drar skjermen
+sidelengs. Gjelder alle områder (`/portal`, `/admin`, `/forelder`, marked, `/auth`, WANG,
+Team Norway), alle bredder og alle tilstander — også piller, faner, tabeller, kortrader og
+verktøyrader vi bygger selv.
+
+- Løsningen er ombrekking (`flex-wrap`), stabling, kortere kolonner eller oppdeling.
+  Aldri `overflow-x:auto` på en rad brukeren må se hele.
+- Flex- og grid-beholdere med tekst som ikke brytes MÅ ha `minWidth: 0` (se gotchas §UI).
+- Kontrolleres maskinelt per skjerm i begge bredder og hver tilstand: ingen node utenfor
+  rammen, og `scrollWidth === clientWidth`. Bevis føres i skjermens manifest, port 4.
+- Trengs sidelengs rulling likevel, er det et avvik som legges fram for Anders før det
+  bygges — ikke et valg som tas underveis.
+
 ## Treningsfag
 
 - Ingen treningsregel er låst: ingen invarianter, tak, minimum eller plan-validering mot metodikk (18.08). Vokabularet består som frie merkelapper. Gjeninnfør aldri en regel uten ny beslutning.
