@@ -1,7 +1,7 @@
 {
   "metode": "git ls-files -co --exclude-standard; eksisterende filer; genererte registerfiler utelatt. Kun metadata, ikke kundedata eller miljøverdier.",
   "telling": {
-    "prosjektfiler": 5634,
+    "prosjektfiler": 5646,
     "sidefiler": 496,
     "prismamodeller": 197,
     "enhetstestfiler": 490,
@@ -43,7 +43,7 @@
     {
       "sti": ".claude/hooks/beskytt.mjs",
       "omrade": "prosjektoppsett",
-      "byte": 4932
+      "byte": 7124
     },
     {
       "sti": ".claude/hooks/env-lenke.mjs",
@@ -2529,7 +2529,7 @@
     {
       "sti": ".gitignore",
       "omrade": "prosjektoppsett",
-      "byte": 2681
+      "byte": 2948
     },
     {
       "sti": ".grok/workflows/skjerm-mot-fasit.rhai",
@@ -4094,7 +4094,7 @@
     {
       "sti": "designsystem/README.md",
       "omrade": "designkilde",
-      "byte": 9933
+      "byte": 9855
     },
     {
       "sti": "designsystem/team-norway/_adherence.oxlintrc.json",
@@ -6967,6 +6967,16 @@
       "byte": 447
     },
     {
+      "sti": "docs/arkiv/instruks-2026-09-21/beslutninger-full.md",
+      "omrade": "historikk",
+      "byte": 97769
+    },
+    {
+      "sti": "docs/arkiv/instruks-2026-09-21/gotchas-full.md",
+      "omrade": "historikk",
+      "byte": 35583
+    },
+    {
       "sti": "docs/beslutningsgrunnlag/claude-design-datagolf-h2-04-review-2026-09-10.md",
       "omrade": "dokumentasjon",
       "byte": 8647
@@ -7080,6 +7090,51 @@
       "sti": "docs/demo-sprak-og-treningsplanlegging.md",
       "omrade": "dokumentasjon",
       "byte": 22937
+    },
+    {
+      "sti": "docs/design-audit/workbench-aar-kontroll-2026-09-21.md",
+      "omrade": "dokumentasjon",
+      "byte": 2094
+    },
+    {
+      "sti": "docs/design-audit/workbench-handover-import-2026-09-20.md",
+      "omrade": "dokumentasjon",
+      "byte": 5188
+    },
+    {
+      "sti": "docs/design-audit/workbench-kontrollretting-2026-09-21.md",
+      "omrade": "dokumentasjon",
+      "byte": 15955
+    },
+    {
+      "sti": "docs/design-audit/workbench-live-kontroll-2026-09-21.md",
+      "omrade": "dokumentasjon",
+      "byte": 3784
+    },
+    {
+      "sti": "docs/design-audit/workbench-maned-kontroll-2026-09-21.md",
+      "omrade": "dokumentasjon",
+      "byte": 2252
+    },
+    {
+      "sti": "docs/design-audit/workbench-okt-kontroll-2026-09-21.md",
+      "omrade": "dokumentasjon",
+      "byte": 2224
+    },
+    {
+      "sti": "docs/design-audit/workbench-periode-kontroll-2026-09-21.md",
+      "omrade": "dokumentasjon",
+      "byte": 2165
+    },
+    {
+      "sti": "docs/design-audit/workbench-stall-kontroll-2026-09-21.md",
+      "omrade": "dokumentasjon",
+      "byte": 3422
+    },
+    {
+      "sti": "docs/design-audit/workbench-uke-kontroll-2026-09-21.md",
+      "omrade": "dokumentasjon",
+      "byte": 7153
     },
     {
       "sti": "docs/design-system/ak-hq-designarbeid.md",
@@ -7392,9 +7447,14 @@
       "byte": 19777
     },
     {
+      "sti": "docs/planer/workbench-design-og-kode-natt-2026-09-20.md",
+      "omrade": "datert-plan",
+      "byte": 24157
+    },
+    {
       "sti": "docs/platform/AGENT-BRIEF.md",
       "omrade": "dokumentasjon",
-      "byte": 5861
+      "byte": 5779
     },
     {
       "sti": "docs/platform/BOOKING-POLICY.md",
@@ -7459,7 +7519,7 @@
     {
       "sti": "docs/README.md",
       "omrade": "dokumentasjon",
-      "byte": 1200
+      "byte": 1089
     },
     {
       "sti": "docs/referanse/design/2026-09-04-marked-ak-golf-port-design.md",
@@ -7684,7 +7744,7 @@
     {
       "sti": "docs/workbench-handover.md",
       "omrade": "dokumentasjon",
-      "byte": 1957
+      "byte": 1859
     },
     {
       "sti": "eslint.config.mjs",
@@ -27689,7 +27749,7 @@
     {
       "sti": "START-HER.md",
       "omrade": "prosjektoppsett",
-      "byte": 967
+      "byte": 893
     },
     {
       "sti": "supabase-meg/migrations/0001_init.sql",
