@@ -4,6 +4,56 @@ Kun det som gjelder nå. Full historikk (1 207 linjer, alle overstyrte valg): [b
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## Utfordringer skal leve (Anders 22.09.2026, bindende)
+
+**Utfordringsfunksjonen beholdes og bygges ferdig.** I dag er den død: `opprettUtfordring`
+i `src/app/portal/(legacy)/utfordringer/actions.ts` er ferdig skrevet med revisjonsspor og
+automatisk deltakelse for eier, men **har ingen kallere** — `/portal/utfordringer/ny` er en
+videresending rett tilbake til lista. Ingen kan opprette en utfordring, og finnes det ingen
+utfordringer, er hele flaten tom.
+
+- **Deltakere velges fra venner og gruppa, aldri ved delt lenke.** Du huker av hvem som skal
+  få utfordringen, og de får varsel i appen. Kilder: `Friendship` med `status = "ACCEPTED"`,
+  og `GroupMember` med `endedAt: null` i gruppene du selv er med i. En coach kan i tillegg
+  velge fra stallen sin. **Ingen lenke som åpner en utfordring for hvem som helst** — de
+  fleste deltakerne er mindreårige, og en delbar lenke omgår samtykket.
+- **Scoren får en retning.** `reberegnRanger` sorterer i dag alltid synkende, og skjemaet sier
+  «Høyere er bedre». Det gjør «færrest putter» og «kortest samlet avstand» umulig å rangere
+  riktig. `DrillChallenge` trenger et felt som sier om høyest eller lavest vinner, satt når
+  utfordringen lages.
+- **«Opprett utfordring» bærer rust.** Handlingen forplikter: den lager noe andre blir med i
+  og rangert i, på linje med Publiser og Send. Dette er en anvendelse av
+  §Rust følger handlingen, ikke ordet — ikke et unntak fra den. **Avslutt utfordring er
+  grafitt** i et kort med rustkant, som alle avslutninger.
+- **En avsluttet utfordring heter «Avsluttet», ikke «Fullført».** Den er avsluttet av eieren;
+  den er ikke nødvendigvis fullført av deg.
+- **Utfordringer teller ikke som trening.** De går ikke inn i planen, ikke i analysene og ikke
+  til coachen. Registrert score lever bare i utfordringen.
+
+Tegningen er PH-15 i Claude Design-prosjektet «App design» (`830e7bce`), med manifest i
+`playerhq-handover/PH-15-manifest.md`. Port 7 gjenstår.
+
+**Arbeidet dette utløser** — ingen arbeidsliste finnes etter b700ce008, derfor står den her:
+
+1. **Bygg `/portal/utfordringer/ny` som ekte skjerm** og kall `opprettUtfordring`. Fjern
+   videresendingen i `src/app/portal/(legacy)/utfordringer/ny/page.tsx`. Ferdig når en spiller
+   kan lage en utfordring og lande på detaljen for den, som deltaker.
+2. **Legg til deltakervelgeren** i ny-skjermen: venner (`Friendship` ACCEPTED) og medlemmer av
+   egne grupper (`GroupMember`, `endedAt: null`), med varsel via `notify()` til hver valgt.
+   Coach ser i tillegg stallen sin. Ferdig når ingen kan bli med uten å ha blitt valgt.
+3. **Gi scoren en retning** i `DrillChallenge` (additiv kolonne via `db execute`, se
+   gotchas §Database), og la `reberegnRanger` sortere etter den. Ferdig når en utfordring der
+   lavest vinner får riktig resultatliste.
+4. **Legg en inngang fra Meg.** `/portal/utfordringer` har tilbakelenke til `/portal/meg`, men
+   ingenting i Meg lenker dit — eneste veier inn er Cmd+K og `/portal/utenfor-banen`.
+5. **Rett språket:** «Fullført» → «Avsluttet» i `UtfordringerV2` og `UtfordringDetaljV2`;
+   manglende plassering vises som tankestrek, ikke bindestrek; fjern «Del utfordringen og
+   inviter andre til å bli med» fra tomteksten, som lover noe som ikke finnes.
+6. **Notatfeltet over flere linjer.** Et notat på to setninger kan i dag skrives, men ikke
+   leses tilbake — feltet er enlinjes og ruller sitt eget innhold.
+
+Port 7 (Anders har sett skjermen) gjelder som for alle andre skjermer.
+
 ## TEAM NORWAY-APPEN BYTTER DESIGNSPRÅK (Anders 22.09.2026, bindende)
 
 **Det skarpe Team Norway-språket eier `/team-norway/*`. Claw er utgående for appen.** Fasit blir et nytt Claude Design-prosjekt «Team Norway App», avledet av «Team Norway Golf Design System» (`3416f258`): Jost display, Lato brødtekst, IBM Plex Mono på tall, hjørner 0 · 2 · 4, ingen skygger, ingen sirkler, kvadratisk avatar, lukket ikonsett på 20.
