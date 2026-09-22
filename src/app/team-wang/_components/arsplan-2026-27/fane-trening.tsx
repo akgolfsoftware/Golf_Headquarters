@@ -112,7 +112,7 @@ function Hero() {
         <div
           style={{
             position: "relative",
-            borderTop: "1px solid rgba(255,255,255,.2)",
+            borderTop: "1px solid var(--overlay-on-dark-12)",
             display: "flex",
             flexWrap: "wrap",
             gap: 24,

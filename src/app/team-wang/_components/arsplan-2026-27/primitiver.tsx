@@ -117,7 +117,7 @@ export function SeksjonHode({
 
 /**
  * Kortflate — restylet 22.09.2026 mot samme designfasit: hvit flate, 4 px
- * radius, 1 px `#D2D2D2`-kant, ingen skygge (erstatter forrige runde,
+ * radius, 1 px `var(--neutral-200)`-kant, ingen skygge (erstatter forrige runde,
  * runde-20-med-skygge-kort). `style.borderTop` kan fortsatt sette en farget
  * 3–4 px topplinje for periode-/aksefarge, slik designet gjør på kortene.
  */
@@ -135,7 +135,7 @@ export function WangKort({
       style={{
         background: "var(--white)",
         borderRadius: 4,
-        border: "1px solid var(--neutral-200, #D2D2D2)",
+        border: "1px solid var(--neutral-200)",
         padding,
         boxSizing: "border-box",
         ...style,
@@ -175,7 +175,7 @@ export function PillGruppe({
             padding: "7px 16px",
             minHeight: 36,
             borderRadius: 999,
-            border: `1px solid ${v.aktiv ? aktivBg : "var(--neutral-200, #D2D2D2)"}`,
+            border: `1px solid ${v.aktiv ? aktivBg : "var(--neutral-200)"}`,
             background: v.aktiv ? aktivBg : "var(--white)",
             color: v.aktiv ? aktivFg : "var(--text-primary)",
             cursor: "pointer",
