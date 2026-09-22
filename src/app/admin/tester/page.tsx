@@ -16,6 +16,8 @@
 import { requireCapability } from "@/lib/auth/requireCapability";
 import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
+import { parseForScoring, lavereErBedre } from "@/lib/portal-tester/test-scoring";
+import { formaterTestVerdi, formaterTestDelta } from "@/lib/portal-tester/format-verdi";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { InnsiktHubNav } from "@/components/admin/v2/agency-hub-subnav";
 
@@ -33,9 +35,15 @@ function datoLabel(d: Date): string {
   return d.toLocaleDateString("nb-NO", { day: "2-digit", month: "2-digit" });
 }
 
-/** Brutto score-format: heltall som-er, ellers 1 desimal med komma. */
-function fmtScore(n: number): string {
-  return Number.isInteger(n) ? String(n) : n.toFixed(1).replace(".", ",");
+/**
+ * Er endringen for liten til å bety noe? Terskelen må være relativ, ikke
+ * absolutt: den gamle grensen på 0,05 tilsvarte 5 prosentpoeng for en
+ * PEI-test — nesten hele spennet fra Scratch til PGA-nivå ble «Stabilt» —
+ * mens den var meningsløst streng for en drivertest målt i meter.
+ */
+function erUbetydelig(diff: number, forrige: number): boolean {
+  if (forrige === 0) return diff === 0;
+  return Math.abs(diff / forrige) < 0.01;
 }
 
 export default async function V2AdminTesterPage() {
@@ -66,19 +74,20 @@ export default async function V2AdminTesterPage() {
         takenAt: true,
         score: true,
         user: { select: { id: true, name: true } },
-        test: { select: { name: true } },
+        test: { select: { name: true, protocol: true } },
       },
     }),
     prisma.testResult.count({ where: { takenAt: { gte: d30 } } }),
     prisma.testResult.count({ where: { takenAt: { gte: d7 } } }),
   ]);
 
-  // Snitt-score siste 30 d (samme heuristikk som fasit-flaten)
+  // Antall ULIKE tester i bruk siste 30 d. Her sto tidligere en «Snitt-score»
+  // som summerte score på tvers av alle tester og delte på antallet — den
+  // blandet PEI-brøker, kilo, meter, poeng og sekunder i ett tall og var
+  // meningsløst uansett scoring-type. Et snitt over ulike måleenheter finnes
+  // ikke; dekningen gjør det.
   const siste30 = resultater.filter((r) => r.takenAt >= d30);
-  const snittScore =
-    siste30.length > 0
-      ? Math.round(siste30.reduce((acc, r) => acc + r.score, 0) / siste30.length)
-      : null;
+  const testerIBruk = new Set(siste30.map((r) => r.test.name)).size;
 
   // Delta: sammenlign score med forrige TestResult for samme spiller + test
   const perSpillerTest = new Map<string, number[]>();
@@ -106,21 +115,23 @@ export default async function V2AdminTesterPage() {
       const serie = perSpillerTest.get(`${r.user.id}::${r.test.name}`) ?? [];
       // Serie er sortert desc — indeks 0 = siste, indeks 1 = forrige
       const forrige = serie[1] ?? null;
+      // Scoring-typen bærer både enheten og retningen. Uten den ble en
+      // PEI-brøk vist som «0,0», og enhver økning regnet som «Bedre» — feil
+      // for alle tester der lavere er bedre (PEI, tid, spredning).
+      const { kind } = parseForScoring(r.test.protocol);
+      const bedreErLavere = lavereErBedre(kind);
       let delta: string | null = null;
       let deltaDir: "up" | "down" | null = null;
       let status: AdminTesterStatus = "Ferdig";
       if (forrige !== null) {
         const diff = r.score - forrige;
-        if (Math.abs(diff) < 0.05) {
+        if (erUbetydelig(diff, forrige)) {
           status = "Stabilt";
-        } else if (diff > 0) {
-          delta = `+${fmtScore(diff)}`;
-          deltaDir = "up";
-          status = "Bedre";
         } else {
-          delta = fmtScore(diff);
-          deltaDir = "down";
-          status = "Svakere";
+          const forbedring = bedreErLavere ? diff < 0 : diff > 0;
+          delta = formaterTestDelta({ kind, delta: diff });
+          deltaDir = forbedring ? "up" : "down";
+          status = forbedring ? "Bedre" : "Svakere";
         }
       }
       return {
@@ -128,7 +139,7 @@ export default async function V2AdminTesterPage() {
         spillerId: r.user.id,
         navn: r.user.name,
         test: r.test.name,
-        resultat: fmtScore(r.score),
+        resultat: formaterTestVerdi({ kind, verdi: r.score }),
         delta,
         deltaDir,
         dato: datoLabel(r.takenAt),
@@ -142,7 +153,7 @@ export default async function V2AdminTesterPage() {
   const data: AdminTesterV2Data = {
     kpis: [
       { label: "Tester utført", value: String(antall30) },
-      { label: "Snitt-score", value: snittScore !== null ? String(snittScore) : "—", accent: true },
+      { label: "Tester i bruk", value: testerIBruk > 0 ? String(testerIBruk) : "—", accent: true },
       { label: "Sist uke", value: String(antall7) },
       { label: "Pågår nå", value: String(paagaaende.length), varsle: paagaaende.length > 0 },
     ],

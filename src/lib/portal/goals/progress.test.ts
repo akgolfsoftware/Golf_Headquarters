@@ -27,7 +27,9 @@ test("beregnGoalProgress — HCP_TARGET, ROUNDS_PER_MONTH, SESSION_FREQUENCY, TE
   let roundsEverExists = false;
   let sessionCountInWindow = 0;
   let sessionEverExists = false;
-  let latestTestResult: { score: number } | null = null;
+  // `test.protocol` bærer scoring-typen; null gir fallback-kind, altså
+  // høyere-er-bedre — samme oppførsel som før protokollen ble tatt med.
+  let latestTestResult: { score: number; test: { protocol: unknown } } | null = null;
   let sgRounds: { sgOtt: number | null; sgApp: number | null; sgArg: number | null; sgPutt: number | null }[] = [];
 
   t.mock.module("@/lib/prisma", {
@@ -156,7 +158,7 @@ test("beregnGoalProgress — HCP_TARGET, ROUNDS_PER_MONTH, SESSION_FREQUENCY, TE
     const ingenData = await beregnGoalProgress(mal, { hcp: null });
     assert.equal(ingenData.hasData, false, "ingen testresultat registrert -> ingen data");
 
-    latestTestResult = { score: 2 };
+    latestTestResult = { score: 2, test: { protocol: null } };
     const tn = await beregnGoalProgress(lagMal({ type: "TEST_SCORE", targetValue: 1, linkedTestId: "tn-v3-wedge-variation" }), { hcp: null });
     assert.equal(tn.hasData, false, "TN må ikke bruke gammel høyere-er-bedre-poengformel");
     assert.equal(tn.status, "no-data");
@@ -166,20 +168,45 @@ test("beregnGoalProgress — HCP_TARGET, ROUNDS_PER_MONTH, SESSION_FREQUENCY, TE
     assert.equal(bakPlan.status, "behind");
     assert.equal(bakPlan.value, 2);
 
-    latestTestResult = { score: 6 };
+    latestTestResult = { score: 6, test: { protocol: null } };
     const paaSporet = await beregnGoalProgress(mal, { hcp: null });
     assert.equal(paaSporet.pct, 75);
     assert.equal(paaSporet.status, "on-track");
 
-    latestTestResult = { score: 8 };
+    latestTestResult = { score: 8, test: { protocol: null } };
     const oppnadd = await beregnGoalProgress(mal, { hcp: null });
     assert.equal(oppnadd.pct, 100);
     assert.equal(oppnadd.status, "achieved");
 
-    latestTestResult = { score: 10 };
+    latestTestResult = { score: 10, test: { protocol: null } };
     const overMaal = await beregnGoalProgress(mal, { hcp: null });
     assert.equal(overMaal.pct, 100, "over mål klippes til 100 %, ikke over");
     assert.equal(overMaal.status, "achieved");
+  }
+
+  // ── TEST_SCORE med PEI (lavere er bedre, brøk vs prosent) ───────────
+  // Regresjonsvakt 22.09.2026: PEI-score lagres som brøk (0,038 = 3,8 %),
+  // mens målverdien settes i prosent. Den gamle formelen regnet
+  // 0,038 / 4,8 = 0,8 % fremdrift og krevde at score skulle OVER målet —
+  // et PEI-mål kunne dermed aldri bli oppnådd.
+  {
+    const peiProtokoll = { scoringMode: "pei_average", steps: [{ shots: 10, target: 100 }] };
+    const mal = lagMal({ type: "TEST_SCORE", targetValue: 4.8, linkedTestId: "pei-bane" });
+
+    latestTestResult = { score: 0.038, test: { protocol: peiProtokoll } };
+    const naadd = await beregnGoalProgress(mal, { hcp: null });
+    assert.equal(naadd.status, "achieved", "3,8 % er bedre enn målet 4,8 % — skal være oppnådd");
+    assert.equal(naadd.pct, 100);
+
+    latestTestResult = { score: 0.09, test: { protocol: peiProtokoll } };
+    const ikkeNaadd = await beregnGoalProgress(mal, { hcp: null });
+    assert.notEqual(ikkeNaadd.status, "achieved", "9 % er dårligere enn målet 4,8 %");
+    assert.ok(ikkeNaadd.pct > 0 && ikkeNaadd.pct < 100, `fremdrift skal være meningsfull, fikk ${ikkeNaadd.pct}`);
+
+    assert.ok(
+      ikkeNaadd.detail.includes("9,00 %"),
+      `detaljteksten skal vise prosent, ikke brøk — fikk «${ikkeNaadd.detail}»`,
+    );
   }
 
   // ── SG_AREA ─────────────────────────────────────────────────────────

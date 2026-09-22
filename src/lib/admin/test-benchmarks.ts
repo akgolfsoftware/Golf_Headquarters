@@ -11,6 +11,7 @@
  */
 
 import { z } from "zod";
+import { peiSomProsent } from "@/lib/portal-tester/format-verdi";
 
 export const benchmarkLevelSchema = z.object({
   id: z.string(),
@@ -71,12 +72,15 @@ function formatLevelValue(n: number): string {
 
 /**
  * PEI finnes historisk både som ratio (0,057) og prosent (5,7) i lagrede
- * scores. Benchmarks-verdiene er alltid prosent; ratio-verdier (≤ 1,5)
- * normaliseres før sammenligning.
+ * scores. Benchmarks-verdiene er alltid prosent; ratio-verdier normaliseres
+ * før sammenligning.
+ *
+ * Selve heuristikken eies av `peiSomProsent` i portal-tester/format-verdi.ts,
+ * slik at visning og sammenligning ikke kan drifte fra hverandre — det var
+ * nettopp det som skjedde med `beregnBenchmarkNivaa` i talent-sync.ts.
  */
 function normalizeMeasured(unit: Benchmarks["unit"], value: number): number {
-  if (unit === "pei_percent" && value <= 1.5) return value * 100;
-  return value;
+  return unit === "pei_percent" ? peiSomProsent(value) : value;
 }
 
 export type AchievedLevel = {

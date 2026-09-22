@@ -55,6 +55,7 @@ bør vurdere om det holder, eller om et aktivt avkrysnings-samtykke må inn i on
 | AI-chat (spiller) | `CoachingSession.messages` (JSON), `CaddieMessage`, `CaddieConversation` | AI-coach / caddie | Avtale; AVKLAR: egen info om at innhold sendes til Anthropic | Erklæringen lover «kan slettes når som helst» — AVKLAR: selvbetjent slette-knapp finnes ikke i dag |
 | Coach-notater om spiller | `CoachNote` | Coachens private notater | Berettiget interesse | Som konto; NB: omfattes av spillerens innsynsrett |
 | Mål/prestasjoner/sosialt | `Goal`, `Achievement`, `Friendship`, `DrillChallenge`, `ChallengeParticipant` | Motivasjon/sosialt | Avtale | Som konto |
+| Kobling til turneringshistorikk | Schema `dashboard` i samme database, eid av repoet ak-golf-pipelines (ikke Prisma): `profile_links` (hq_user_id, person_id, metode, status, bevis), `profile_lookups` (hq_user_id, tidspunkt, antall treff) | Vise spillerens egne GolfBox-resultater i `/portal/meg/resultater`, etter at spilleren selv har bekreftet «Er dette deg?» | Berettiget interesse for koblingen; selve resultatene er offentlig publisert av forbund/arrangør. AVKLAR: se punkt 11 | `profile_lookups` er rate-begrensning og kan slettes etter 30 dager. `profile_links` som konto. Sletting: `dashboard.delete_profile_data(hq_user_id)`, **ikke koblet til kontosletting ennå** |
 
 ## 5. Video og lyd
 
@@ -108,3 +109,4 @@ bør vurdere om det holder, eller om et aktivt avkrysnings-samtykke må inn i on
 8. **Stripe-kunde og Supabase Auth-bruker** slettes ikke av cleanup-cronen (kun Prisma-rader) — rutine trengs.
 9. **Storage-filer** (video, lyd-chunks, vedlegg, avatar) slettes ikke ved kontosletting — kun DB-rader kaskaderes.
 10. **Video/bilde av mindreårige** — eget samtykkepunkt for foresatte?
+11. **Profilkobling til GolfBox-historikk** (`/portal/meg/resultater`) — (a) LØST: kontosletting kaller `dashboard.delete_profile_data(hq_user_id)` (`src/lib/gdpr/slett-eksterne-data.ts`). (b) DELVIS: spillere under 16 år, eller uten fødselsdato, kan ikke koble seg selv (`byggOppslag`); trenergodkjenning som vei videre er ikke bygd, og krever en databasefunksjon i ak-golf-pipelines. Navn og fødselsdato er fortsatt selvoppgitt, så dette er ikke identitetskontroll. (c) ÅPEN: GolfBox-vilkårene for bruk av resultatdata er ikke funnet eller verifisert (NGF eier den nasjonale databasen, GolfBox AS er leverandør). Avklar med NGF før profilene deles med Team Norway, WANG eller foreldre.

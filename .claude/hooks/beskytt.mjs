@@ -8,6 +8,8 @@
  */
 
 import { readFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import path from "node:path";
 
 function svar(decision, reason) {
   process.stdout.write(
@@ -105,6 +107,88 @@ if (tool === "Bash") {
     [seg(String.raw`git\s+branch\s+-D\b`), "tvungen gren-sletting"],
     [/\.env\.local\b/, "kommando som rører .env.local"],
   ];
+  // ── Slettevakt: dokumenter andre dokumenter lenker til ────────────────────
+  // Bakgrunn (21.09.2026): en opprydding slettet 27 filer rett i main som
+  // «utgått». 13 av dem var lenket fra aktive dokumenter (START-HER.md,
+  // dokumentregister.md, .claude/rules/*), så check-doc-lenker ble rød på main
+  // og felte verify på en urelatert PR. Vakten fanger det i økten — før commit
+  // — i stedet for som rød CI en time senere. `ask`, ikke `deny`: sletting er
+  // legitim når lenken ryddes i samme slengen, og da godkjenner Anders.
+  const slett = cmd.match(
+    new RegExp(SEG + String.raw`(?:git\s+rm|rm)\s+([^;&|]+)`),
+  );
+  if (slett) {
+    const mål = slett[2]
+      .split(/\s+/)
+      .filter((t) => t && !t.startsWith("-"))
+      .map((t) => t.replace(/^['"]|['"]$/g, ""));
+    for (const m of mål) {
+      if (!/\.md$/i.test(m)) continue; // kun dokumenter; kode har egne vakter
+      const navn = path.basename(m);
+      let treff = "";
+      try {
+        // Hvem lenker til dette filnavnet? Arkiv og daterte underlag er unntatt
+        // i check-doc-lenker og skal ikke utløse vakten her heller.
+        treff = execFileSync(
+          "grep",
+          ["-rl", "--include=*.md", "-F", navn, "docs", ".claude", "designsystem", "START-HER.md", "AGENTS.md", "CLAUDE.md"],
+          { encoding: "utf-8", stdio: ["ignore", "pipe", "ignore"] },
+        );
+      } catch {
+        continue; // ingen treff (grep exit 1) → ingen lenker → slipp gjennom
+      }
+      const lenkere = treff
+        .split("\n")
+        .filter((f) => f && !f.startsWith("docs/arkiv/") && f !== m);
+      if (lenkere.length > 0) {
+        svar(
+          "ask",
+          `SLETTEVAKT: ${m} er lenket fra ${lenkere.length} ` +
+            `${lenkere.length === 1 ? "aktivt dokument" : "aktive dokumenter"}: ${lenkere.slice(0, 4).join(", ")}` +
+            `${lenkere.length > 4 ? " m.fl." : ""}. Sletter du filen, blir check-doc-lenker rød på main. ` +
+            `Rydd lenkene i samme endring, eller la filen stå.`,
+        );
+      }
+    }
+  }
+
+  // ── Kollisjonsvakt: jobber en annen økt på de samme filene? ───────────────
+  // Bakgrunn (21.09.2026): #927 og #928 fikset samme feil samtidig med motsatt
+  // strategi — den ene hentet slettede filer tilbake, den andre fjernet
+  // lenkene til dem. Begge ble merget, og resultatet ble halvveis. Repoet har
+  // 15 arbeidsmapper og 10 åpne PR-er samtidig, så dette er normaltilstanden.
+  // Vakten spør i det øyeblikket en ny PR opprettes, der kollisjonen blir dyr.
+  if (/(^|[;&|(]\s*)gh\s+pr\s+create\b/.test(cmd)) {
+    let gren = "";
+    try {
+      gren = execFileSync("git", ["branch", "--show-current"], {
+        encoding: "utf-8",
+        stdio: ["ignore", "pipe", "ignore"],
+      }).trim();
+    } catch {
+      gren = "";
+    }
+    if (gren && gren !== "main") {
+      try {
+        execFileSync("node", ["scripts/hvem-jobber-hvor.mjs", "--overlapp", gren], {
+          encoding: "utf-8",
+          stdio: ["ignore", "pipe", "ignore"],
+        });
+        // exit 0 → ingen overlapp, slipp gjennom
+      } catch (e) {
+        const rapport = String(e.stdout ?? "").trim();
+        if (rapport) {
+          svar(
+            "ask",
+            `KOLLISJONSVAKT — en annen økt rører de samme filene:\n\n${rapport}\n\n` +
+              `Les den PR-en før du oppretter denne. Godkjenn når du har sjekket at ` +
+              `de to endringene ikke trekker i hver sin retning.`,
+          );
+        }
+      }
+    }
+  }
+
   for (const [re, hva] of askMønstre) {
     if (re.test(cmd)) {
       svar("ask", `NIVÅ 2: ${hva} — krever eksplisitt godkjenning fra Anders før den kjøres.`);
