@@ -18,6 +18,9 @@ import type { Kandidat } from "./typer";
 
 export type ProfilGrunnlag = { name: string; dateOfBirth: Date | null };
 
+/** Under denne alderen kan spilleren ikke koble seg selv; trener må godkjenne. */
+export const MIN_ALDER_SELVKOBLING = 16;
+
 export type Oppslag = {
   golfId: string | null;
   navn: string | null;
@@ -38,7 +41,16 @@ export function normaliserGolfId(input: string | null | undefined): string | nul
 export function byggOppslag(
   bruker: ProfilGrunnlag,
   golfIdInput?: string | null,
+  naa: Date = new Date(),
 ): { ok: true; oppslag: Oppslag } | { ok: false; feil: string } {
+  // Selvoppgitt fødselsdato er ikke identitetskontroll, så barn kobler ikke selv.
+  // Ukjent fødselsdato behandles likt: vi kan ikke vite at spilleren er 16.
+  if (!bruker.dateOfBirth) {
+    return { ok: false, feil: "Legg inn fødselsdatoen din i profilen for å koble resultatene dine." };
+  }
+  if (alder(bruker.dateOfBirth, naa) < MIN_ALDER_SELVKOBLING) {
+    return { ok: false, feil: "Spillere under 16 år kobles av treneren sin. Snakk med treneren din." };
+  }
   const oppgitt = (golfIdInput ?? "").trim();
   const golfId = oppgitt ? normaliserGolfId(oppgitt) : null;
   if (oppgitt && !golfId) {
@@ -50,6 +62,16 @@ export function byggOppslag(
     return { ok: false, feil: "Legg inn fødselsdatoen din i profilen, eller oppgi golf-ID." };
   }
   return { ok: true, oppslag: { golfId, navn, fodselsaar } };
+}
+
+/** Hele år på dato `naa` (UTC, som resten av modulen). */
+function alder(fodt: Date, naa: Date): number {
+  let a = naa.getUTCFullYear() - fodt.getUTCFullYear();
+  const foerFoedselsdag =
+    naa.getUTCMonth() < fodt.getUTCMonth() ||
+    (naa.getUTCMonth() === fodt.getUTCMonth() && naa.getUTCDate() < fodt.getUTCDate());
+  if (foerFoedselsdag) a -= 1;
+  return a;
 }
 
 function ord(navn: string): string[] {

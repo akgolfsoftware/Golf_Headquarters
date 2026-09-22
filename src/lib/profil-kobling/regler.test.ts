@@ -6,6 +6,9 @@ import type { Kandidat } from "./typer";
 // Kun fiktive personer (AGENTS.md §Data og sikkerhet).
 const PIA = { name: "Pia Egenes", dateOfBirth: new Date("2009-04-12T00:00:00Z") };
 
+// Fast dato så testene ikke sklir med kalenderen.
+const NAA = new Date("2026-09-22T12:00:00Z");
+
 const kandidat = (over: Partial<Kandidat> = {}): Kandidat => ({
   person_id: 1,
   name: "Pia Marie Egenes",
@@ -32,22 +35,32 @@ describe("normaliserGolfId", () => {
 
 describe("byggOppslag", () => {
   it("henter navn og fødselsår fra profilen, ikke fra klienten", () => {
-    const r = byggOppslag(PIA, "");
+    const r = byggOppslag(PIA, "", NAA);
     assert.deepEqual(r, { ok: true, oppslag: { golfId: null, navn: "Pia Egenes", fodselsaar: 2009 } });
   });
   it("tar med golf-ID når den er oppgitt", () => {
-    const r = byggOppslag(PIA, "303-579");
+    const r = byggOppslag(PIA, "303-579", NAA);
     assert.equal(r.ok && r.oppslag.golfId, "303579");
   });
   it("uten fødselsdato og uten golf-ID gir en beskjed, ikke et gjett", () => {
-    const r = byggOppslag({ name: "Pia Egenes", dateOfBirth: null }, "");
+    const r = byggOppslag({ name: "Pia Egenes", dateOfBirth: null }, "", NAA);
     assert.equal(r.ok, false);
   });
-  it("uten fødselsdato går det an med golf-ID", () => {
-    assert.equal(byggOppslag({ name: "Pia Egenes", dateOfBirth: null }, "303-579").ok, true);
+  it("uten fødselsdato kobles det ikke, heller ikke med golf-ID", () => {
+    assert.equal(byggOppslag({ name: "Pia Egenes", dateOfBirth: null }, "303-579", NAA).ok, false);
+  });
+  it("under 16 år kobles ikke av spilleren selv", () => {
+    const barn = { name: "Ola Barn", dateOfBirth: new Date("2011-03-01T00:00:00Z") };
+    assert.equal(byggOppslag(barn, "303-579", NAA).ok, false);
+  });
+  it("dagen før 16-årsdagen er fortsatt for ung, selve dagen går det an", () => {
+    const fodt = new Date("2010-09-22T00:00:00Z");
+    const spiller = { name: "Kari Test", dateOfBirth: fodt };
+    assert.equal(byggOppslag(spiller, "303-579", new Date("2026-09-21T12:00:00Z")).ok, false);
+    assert.equal(byggOppslag(spiller, "303-579", new Date("2026-09-22T12:00:00Z")).ok, true);
   });
   it("en golf-ID som ikke er gyldig gir en feil, den ignoreres ikke stille", () => {
-    const r = byggOppslag(PIA, "12");
+    const r = byggOppslag(PIA, "12", NAA);
     assert.equal(r.ok, false);
   });
 });
