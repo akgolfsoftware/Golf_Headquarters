@@ -1,7 +1,7 @@
 # Beslutninger — AK Golf HQ
 
 Kun det som gjelder nå. Full historikk (1 207 linjer, alle overstyrte valg): [beslutninger-full.md](../../docs/arkiv/instruks-2026-09-21/beslutninger-full.md). Gamle blokker der er historikk, aldri byggeordre.
-Ny beslutning registreres med `/beslutning` (skriver hit og inn i `docs/MASTERPLAN-GJENSTAAENDE.md`).
+Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
 ## Design (Anders 21.09.2026, bindende)
@@ -29,6 +29,47 @@ verktøyrader vi bygger selv.
   rammen, og `scrollWidth === clientWidth`. Bevis føres i skjermens manifest, port 4.
 - Trengs sidelengs rulling likevel, er det et avvik som legges fram for Anders før det
   bygges — ikke et valg som tas underveis.
+
+## Rust følger handlingen, ikke ordet (Anders 22.09.2026, bindende)
+
+**Rust `#9B2415` bæres av den bekreftende handlingen på skjermen — uansett hva den heter.**
+Merge, Send, Legg i kalenderen, Publiser, Godkjenn og START ØKT er samme handling med riktig
+navn, og alle bærer rust. Dette avløser formuleringen «rust kun på Publiser, Godkjenn og
+START ØKT», som beskrev de tre stedene regelen var prøvd, ikke prinsippet bak den.
+
+Bakgrunn: køen (`/admin/ko`) har ulike handlingsord per kilde, hentet fra
+`AdminGodkjenningerTrainLock.tsx`. Å kalle alt «Godkjenn» for å få rust ville skjult at et
+Caddie-utkast faktisk sender en e-post ut av huset.
+
+- **Alt annet er grafitt.** Test: gjør knappen det saken ber om, eller noe annet? Åpne økt,
+  Fortsett økt, Prøv igjen, Lagre, Kjør og Slå sammen avgjør ingenting — de er grafitt.
+- **Sletting bærer aldri rust.** Rust betyr godkjenn; en sletting er det motsatte. Den
+  bekreftende knappen i en sletting er grafitt i et kort med rustkant.
+- **Én rust per skjerm.** Står to bekreftende handlinger synlig samtidig, bærer den valgte
+  saken rust og resten grafitt.
+- Domenefarge blir aldri en handling. Signalfargene bærer aldri lesbar tekst alene.
+
+Krever ingen kodeendring nå — regelen styrer designarbeidet i Claude Design «App design»
+(`SKILL.md` §Rust). Den gjelder appkoden når AgencyOS-skjermene bygges.
+
+## Hurtigknappen gjelder alle AgencyOS-skjermer (Anders 22.09.2026, bindende)
+
+Den flyttbare svarte hurtigknappen skal finnes på **alle skjermer i AgencyOS**, ikke bare Hjem.
+Fire hurtighandlinger: ny økt i Workbench · ny melding til spiller · registrer runde · spør
+Jarvis.
+
+- Den bor i **én delt modul**, ikke som kopiert kode per skjerm: i designprosjektet
+  `agencyos-handover/ag-hurtigknapp.css` og `.js`. Bygges den i appen, skal den være én
+  komponent brukt av skallet — ikke én per side.
+- Faste regler: 56 × 56 px grafitt, radius 2 · kan dras hvor som helst og klemmes 8 px fra
+  hver kant · drag åpner ikke menyen (under fem piksler er et trykk) · menyen snur når den
+  ellers ville gått utenfor flaten.
+- **Ikke avklart: om den også gjelder PlayerHQ.** Legg den ikke på spillerflaten før Anders
+  har sagt det.
+
+Byggeoppgave når AgencyOS-skallet bygges: knappen hører til skallet (`src/components/v2/shell.tsx`),
+ikke til den enkelte siden. Ferdig når den står på hver `/admin`-side, husker posisjonen sin,
+og ikke kan dras ut av syne.
 
 ## Treningsfag
 
