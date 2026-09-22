@@ -1,17 +1,59 @@
 /**
- * Marketing Forside (akgolf.no). OFFENTLIG flate: ingen auth-guard, ingen
- * dataloader (dette er markedsføringssiden, ikke en datadrevet app-skjerm).
+ * Forsiden (akgolf.no). OFFENTLIG flate: ingen auth-guard, ingen dataloader.
  *
- * Siden 2026-08-28 (Anders): «Reisen» — scroll-drevet, 3D-animert forside
- * med de ekte Academy-bildene (MarkedForsideReise). Copy og palett er
- * videreført fra ak-golf-website-porten (lys Paper, ekte foto); bevegelsen
- * er bygget uten nye avhengigheter. Skallet (nav/footer) eies fortsatt av
- * `(marketing)/layout.tsx`; denne siden tegner aldri eget chrome.
- * MarkedForside (statisk forgjenger) beholdes til reisen er signert.
+ * Siden 22.09.2026 (Anders): den mørke, filmatiske forsiden. Tegning:
+ * `ui_kits/akgolf-web/hjem-scroll.html` i Claude Design-prosjektet
+ * «AK Golf Design System» (87aa23fb).
+ *
+ * MERK — dette er IKKE en forglemmelse: flaten laster ikke `ak-golf-ds.css`
+ * og bærer ingen `.ak-ds`. Tegningen har sin egen palett og står utenfor
+ * designsystemets tokenlag. Se toppen av `forside-mork.module.css`.
+ *
+ * Siden tegner sitt eget skall (topplinje og bunn), og står derfor i
+ * `EGET_SKALL` i `(marketing)/layout.tsx` — ellers ville skallet kommet dobbelt.
  */
 
-import { MarkedForsideReise } from "@/components/marketing/landing/MarkedForsideReise";
+import { Archivo, IBM_Plex_Mono, Oswald } from "next/font/google";
+import type { CSSProperties } from "react";
+
+import { ForsideMork } from "@/components/marketing/ds-sider/ForsideMork";
+
+/* Vektene er de tegningen faktisk bruker, ikke hele familiene:
+   Oswald 300 (sitatet) og 600 (alt annet display), Archivo 300/400/500,
+   IBM Plex Mono 400. Alt annet ville vært nedlastning uten bruk. */
+const oswald = Oswald({
+  variable: "--font-mork-display",
+  weight: ["300", "600"],
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const archivo = Archivo({
+  variable: "--font-mork-body",
+  weight: ["300", "400", "500"],
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const plexMono = IBM_Plex_Mono({
+  variable: "--font-mork-meta",
+  weight: ["400"],
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const FONT_KLASSER = `${oswald.variable} ${archivo.variable} ${plexMono.variable}`;
+
+const FONT_VARS = {
+  "--mork-display": "var(--font-mork-display), system-ui, sans-serif",
+  "--mork-body": "var(--font-mork-body), system-ui, sans-serif",
+  "--mork-meta": "var(--font-mork-meta), ui-monospace, monospace",
+} as CSSProperties;
 
 export default function MarketingHjemPage() {
-  return <MarkedForsideReise />;
+  return (
+    <div className={FONT_KLASSER} style={FONT_VARS}>
+      <ForsideMork />
+    </div>
+  );
 }

@@ -92,6 +92,17 @@ export function tnHovedmeny({
   return punkter;
 }
 
+/**
+ * Rollen skrives likt overalt. Uten dette sto det «COACH» på én skjerm og
+ * «Trener» på en annen, i samme skinne.
+ */
+export function tnRolleNavn(rolle: string) {
+  if (rolle === "COACH") return "Trener";
+  if (rolle === "ASSISTANT") return "Hjelpetrener";
+  if (rolle === "PLAYER") return "Spiller";
+  return rolle;
+}
+
 export function TnShell({
   aktiv,
   brukerNavn,
@@ -99,6 +110,7 @@ export function TnShell({
   groupId,
   visTrenerflater,
   kanAdministrere,
+  flate = "standard",
   children,
 }: {
   aktiv: TnAktivSide;
@@ -107,17 +119,28 @@ export function TnShell({
   groupId?: string;
   visTrenerflater: boolean;
   kanAdministrere: boolean;
+  /**
+   * «full» dropper innholdsmarg og maksbredde for skjermer som har sin egen
+   * flate — i dag bare liste/detalj på Trenere og tilgang. Skinnen, menyen,
+   * organisasjonsnavnet og brukerfoten er de samme uansett; det er DER
+   * spriken oppsto, ikke i innholdet.
+   */
+  flate?: "standard" | "full";
   children: ReactNode;
 }) {
   const punkter = tnHovedmeny({ aktiv, groupId, visTrenerflater, kanAdministrere });
   return (
     <div style={{ display: "flex", minHeight: "100dvh", background: TN.surfacePage, color: TN.textPrimary, fontFamily: TN.font.body }}>
       <TnRail punkter={punkter} bruker={{ navn: brukerNavn, rolle }} orgNavn="Team Norway Golf" orgUndertittel="Prestasjon" />
-      <div style={{ flex: 1, minWidth: 0 }}>
+      <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
         <TnRailMobil punkter={punkter} orgNavn="Team Norway Golf" />
-        <main style={{ width: "100%", maxWidth: TN.maxContent, padding: "clamp(20px, 4vw, 48px)", display: "flex", flexDirection: "column", gap: 24 }}>
-          {children}
-        </main>
+        {flate === "full" ? (
+          children
+        ) : (
+          <main style={{ width: "100%", maxWidth: TN.maxContent, padding: "clamp(20px, 4vw, 48px)", display: "flex", flexDirection: "column", gap: 24 }}>
+            {children}
+          </main>
+        )}
       </div>
     </div>
   );

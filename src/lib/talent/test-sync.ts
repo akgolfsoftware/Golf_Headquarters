@@ -18,6 +18,8 @@ import { tnComparableResult } from "@/lib/portal-tester/tn-integration";
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@/generated/prisma/client";
 import { parseBenchmarks } from "@/lib/admin/test-benchmarks";
+import { parseForScoring } from "@/lib/portal-tester/test-scoring";
+import { erPeiKind } from "@/lib/portal-tester/format-verdi";
 import {
   beregnTestNivaaer,
   utledMilepaeler,
@@ -73,7 +75,15 @@ export async function syncTalentEtterTest(userId: string): Promise<void> {
       const tn = tnComparableResult(r.test.id, r.score, r.details);
       return tn ? [{ ...base, benchmarks: null, comparisonKey: tn.comparisonKey, direction: tn.direction, unit: tn.unit }] : [];
     }
-    return [{ ...base, benchmarks: parseBenchmarks(r.test.protocol) }];
+    // Enheten må følge med også for CANON-testene, ikke bare TN. Uten den
+    // viste talentprofilen en PEI-brøk som «0,0» — den traff else-grenen
+    // fordi `unit` bare ble satt i tn-v3-grenen over.
+    const { kind } = parseForScoring(r.test.protocol);
+    return [{
+      ...base,
+      benchmarks: parseBenchmarks(r.test.protocol),
+      unit: erPeiKind(kind) ? "PEI" : undefined,
+    }];
   });
 
   const nyeNivaaer = beregnTestNivaaer(resultater);

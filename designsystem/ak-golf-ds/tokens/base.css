@@ -1,0 +1,12 @@
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--surface-page);color:var(--text-body);font:var(--type-body);text-wrap:pretty;-webkit-font-smoothing:antialiased}
+*,*::before,*::after{box-sizing:border-box}
+a{color:var(--link);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px}
+a:hover{color:var(--text-primary)} /* rollen, ikke råverdien — graphite-900 på Live er usynlig */
+:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+/* Grafitt ring på grafitt flate er ingen ring. Alt som står på mørk grunn
+   arver sand-ringen — ellers er tastaturnavigasjon usynlig der. */
+.aos-panel--focus :focus-visible,.mkt-cta :focus-visible,.mkt-nav--dark :focus-visible,
+.mkt-sec--dark :focus-visible,.mkt-stats--dark :focus-visible,.band :focus-visible,
+.cta :focus-visible,[data-ground="dark"] :focus-visible{outline-color:var(--focus-ring-inverse)}
+::selection{background:var(--action-tint);color:var(--graphite-900)}

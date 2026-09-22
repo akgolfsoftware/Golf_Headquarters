@@ -167,6 +167,26 @@ export const BELASTNING_LABEL: Record<BelastningKode, string> = {
 export const PRESS_KODER = ["ALENE", "OBSERVERT", "KONKURRANSE", "TURNERING"] as const;
 export type PressKode = (typeof PRESS_KODER)[number];
 
+export const MAALEUTSTYR_KODER = [
+  "TRACKMAN",
+  "FLIGHTSCOPE",
+  "GARMIN_R10",
+  "MEVO_PLUS",
+  "ANNET",
+  "UTEN",
+] as const;
+export type MaaleutstyrKode = (typeof MAALEUTSTYR_KODER)[number];
+
+/** Master: treningsplanlegging-og-sprak-gjennomgang.md trinn 4 (Anders 22.09). */
+export const MAALEUTSTYR_LABEL: Record<MaaleutstyrKode, string> = {
+  TRACKMAN: "TrackMan",
+  FLIGHTSCOPE: "FlightScope",
+  GARMIN_R10: "Garmin R10",
+  MEVO_PLUS: "Mevo+",
+  ANNET: "Annen radar",
+  UTEN: "Uten måleutstyr",
+};
+
 export const PRESS_LABEL: Record<PressKode, string> = {
   ALENE: "Alene",
   OBSERVERT: "Observert",

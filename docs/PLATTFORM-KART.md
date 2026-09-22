@@ -113,7 +113,7 @@ Dette er pengesiden. Den er den største åpne sprekken i det kundene ser.
 | **Planlagt** | Workdesk som erstatter Messenger, e-post og Excel. Poster (ikke chat). Tester. Uttak (appen konkluderer aldri). Oversikt med dekningskort. Pilot høsten 2026. |
 | **Kodet** | Tre sider: gruppeposter, post til én spiller, dokumenter med lesekvittering. Samtykke i PlayerHQ/Forelder. |
 | **Ferdig** | Grunnmur. Ikke et arbeidsområde du kan gi til TN-trenere ennå. |
-| **Mangler design** | Malene finnes (Claw). Mangler: oversikt, fellestesting, uttak, rangliste, skoler, samling, årsplan, kalender, workbench, testprotokoller. Ingen TN-forside. |
+| **Mangler design** | Malene finnes, men i utgått språk (Claw). Fra 22.09.2026 gjelder «Team Norway App». Mangler: oversikt, fellestesting, uttak, rangliste, skoler, samling, årsplan, kalender, workbench, testprotokoller. Ingen TN-forside. |
 | **Mangler** | Video/bilde i poster. Pilot. Føringsskjerm testdag (N8). `test_shots`-tabell i prod. |
 
 ### 8. TrackMan
@@ -145,7 +145,7 @@ Uten ekte TrackMan-tall kan ikke merket si «vi måler» i en demo.
 | **Planlagt** | PGA, LIV m.fl. live. Historikk på flere tourer. «Powered by Data Golf» på alle sider. |
 | **Kodet** | Cron `datagolf-sync`. Attribusjon på `/stats`. Databro `dg_*`. |
 | **Ferdig** | Offentlig stats: ja. Inne i PlayerHQ-analyse: delvis (N12 gjenstår som produktflate). |
-| **Mangler design** | AnalyseTerminal, spredning, kohort, ResultatVsFelt — Train-lock (ikke Claw). TN skal bare legge logo/farge oppå. |
+| **Mangler design** | AnalyseTerminal, spredning, kohort, ResultatVsFelt — Train-lock (ikke TN-systemet). TN skal bare legge logo/farge oppå. |
 | **Mangler** | Dame-tourer (LPGA/LET) — utenfor DataGolf. DP World live. Tre motorer må aldri blandes (SG / DataGolf / GolfBox). |
 
 ### 11. Turneringsresultater samlet (`/stats` + PlayerHQ)

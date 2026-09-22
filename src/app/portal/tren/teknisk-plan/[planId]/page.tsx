@@ -11,6 +11,15 @@
  * TrackMan-mål per kølle, Pyramide-fordeling, Coach & aktivitet.
  * OppgaveModal (skjema) og server actions (createTask/updateTaskBasics/logReps)
  * er uendret. Drag-and-drop er fortsatt ikke aktiv (grip-håndtak vises).
+ *
+ * Avvik:
+ *   - Ingen riggrad: skjermen krever en teknisk plan med posisjoner og oppgaver,
+ *     og det finnes ingen fixture for den ennå.
+ *   - Paper-fasiten (playerhq-teknisk-plan.html) som siteres lenger ned er utgått
+ *     per designbeslutningen 21.09; kommentaren beholdes som sporbarhet for
+ *     tom-tilstandens innhold, ikke som visuell autoritet.
+ *   - Skjermen står fortsatt på Train-lock-tokens (TL.*) og skal flyttes til
+ *     AK Golf Design System i eget steg.
  */
 
 import Link from "next/link";
@@ -22,7 +31,7 @@ import { TL } from "@/lib/v2/train-lock";
 
 import { Caps, Kort, KpiFlis, StatusPill, TilbakeLenke, type StatusTone } from "@/components/v2";
 import { PPosisjonSeksjon, PlanSammendragKort, TrackmanMaalKort, PyramideFordelingKort, CoachAktivitetKort, TomPlan, type PyramidArea, type KolleMaalRad, type KolleStatus, type AktivitetRad } from "@/components/portal/v2/TekniskPlanV2";
-import { P_POSITIONS, omraadeToTab } from "@/components/teknisk-plan/constants";
+import { P_POSITIONS, omraadeToTab, omraadeTilKode, omraadeVisning } from "@/components/teknisk-plan/constants";
 import type { OppgaveDraft } from "@/components/teknisk-plan/oppgave-modal";
 // Beholdes KUN for OppgaveModal-ens egne tp-*-klasser (tp-btn/tp-tag/tp-task) —
 // v2-presentasjonen under bruker ingen tp-klasser, og reglene er .tp-scopet.
@@ -33,6 +42,8 @@ import { TekniskPlanFullsvingShell } from "@/components/portal/v2/TekniskPlanFul
 import { erFullsving } from "@/lib/teknisk-plan/fullsving";
 import { TekniskPlanVisning, type EnTingLes, type FokusLes } from "@/components/teknisk-plan/teknisk-plan-visning";
 import { loadNesteOkt } from "@/lib/portal/load-neste-okt";
+import { sorterPosisjoner, medFasitNavn } from "@/lib/teknisk-plan/sorter-posisjoner";
+import { MOTORIKK_LABEL, DIMENSJON_LABEL, MAALEUTSTYR_LABEL, PRESS_LABEL } from "@/lib/domain/ak-formel-v2";
 export const dynamic = "force-dynamic";
 
 interface PageProps {
@@ -182,12 +193,8 @@ export default async function PlanBuilderPage({ params }: PageProps) {
     };
   });
 
-  // Sort positions by sortOrder; show "hovedfokus" first
-  const sortedPositions = [...plan.positions].sort((a, b) => {
-    if (a.hovedfokus && !b.hovedfokus) return -1;
-    if (!a.hovedfokus && b.hovedfokus) return 1;
-    return a.sortOrder - b.sortOrder;
-  });
+  // Hovedfokus først, mellomposisjoner samlet under sin hoved-P, fasitnavn.
+  const sortedPositions = sorterPosisjoner(plan.positions.map(medFasitNavn));
 
   const fullsvingTasks = allTasks
     .filter((t) => erFullsving(t.slagType))
@@ -394,13 +401,15 @@ export default async function PlanBuilderPage({ params }: PageProps) {
                       tittel: t.tittel,
                       beskrivelse: t.beskrivelse ?? "",
                       pyramide: t.pyramide as PyramidArea,
-                      omraadeTab: omraadeToTab(t.omraade),
-                      omraade: t.omraade,
+                      omraadeTab: omraadeToTab(t.omraadeKode ?? omraadeTilKode(t.omraade) ?? "TEE_TOTAL"),
+                      omraadeKode: t.omraadeKode ?? omraadeTilKode(t.omraade) ?? "TEE_TOTAL",
+                      omraade: t.omraadeKode ? omraadeVisning(t.omraadeKode) : t.omraade,
                       koller: t.koller,
-                      lFase: t.lFase ?? undefined,
-                      cs: t.cs ?? undefined,
-                      m: t.miljo ?? undefined,
-                      pr: t.prPress ?? undefined,
+                      motorikk: t.motorikk ?? undefined,
+                      belastning: t.belastning ?? undefined,
+                      press: t.press ?? undefined,
+                      dimensjon: t.dimensjon ?? undefined,
+                      maaleutstyr: t.maaleutstyr ?? undefined,
                       kategori: t.kategori ?? undefined,
                       bildeUrl: t.bildeUrl ?? undefined,
                       videoUrl: t.videoUrl ?? undefined,
@@ -450,10 +459,10 @@ export default async function PlanBuilderPage({ params }: PageProps) {
                           pyramide: t.pyramide as PyramidArea,
                           omraade: t.omraade,
                           koller: t.koller,
-                          lFase: t.lFase ?? undefined,
-                          cs: t.cs ?? undefined,
-                          m: t.miljo ?? undefined,
-                          pr: t.prPress ?? undefined,
+                          lFase: t.motorikk ? MOTORIKK_LABEL[t.motorikk] : undefined,
+                          cs: t.dimensjon ? DIMENSJON_LABEL[t.dimensjon] : undefined,
+                          m: t.maaleutstyr ? MAALEUTSTYR_LABEL[t.maaleutstyr] : undefined,
+                          pr: t.press ? PRESS_LABEL[t.press] : undefined,
                           reps: {
                             dry: { current: t.repsGjortDry, target: t.repsMaalDry },
                             lav: { current: t.repsGjortLav, target: t.repsMaalLav },

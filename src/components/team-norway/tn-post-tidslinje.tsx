@@ -209,7 +209,7 @@ export function TnPostTidslinje({
         style={{
           background: TN.surfaceCard,
           borderRadius: TN.radius.lg,
-          boxShadow: TN.shadow.sm,
+          border: `1px solid ${TN.borderSubtle}`,
           padding: 20,
           display: "flex",
           flexDirection: "column",
@@ -251,7 +251,7 @@ export function TnPostTidslinje({
             style={{
               background: TN.surfaceCard,
               borderRadius: TN.radius.lg,
-              boxShadow: TN.shadow.sm,
+              border: `1px solid ${TN.borderSubtle}`,
               padding: "14px 18px",
               display: "flex",
               flexDirection: "column",

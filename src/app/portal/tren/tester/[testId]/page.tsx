@@ -36,6 +36,7 @@ import { testTilgangWhere } from "@/lib/portal-tester/test-tilgang";
 import { FEATURES } from "@/lib/features";
 import { parseProtocol, type ScorekortForsok } from "@/lib/portal-tester/protocol";
 import { parseForScoring, lavereErBedre, ScoringDetailsSchema } from "@/lib/portal-tester/test-scoring";
+import { formaterTestVerdi, formaterTestDelta } from "@/lib/portal-tester/format-verdi";
 import { gateMaalFraProtokoll } from "@/lib/domain/tester-live";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { TL } from "@/lib/v2/train-lock";
@@ -59,7 +60,11 @@ function grupperSteg(
   return [...m.values()];
 }
 
-/** Norsk tall-format: maks 2 desimaler, komma som desimalskille. */
+/**
+ * Rent heltall til gate-heroen, der enheten står som egen tekst ved siden av
+ * («7» + «OK av 10»). Alle andre verdier på siden går gjennom
+ * formaterTestVerdi, som kjenner scoring-typen og dermed enheten.
+ */
 function fmtNum(n: number): string {
   return (Math.round(n * 100) / 100).toLocaleString("nb-NO", { maximumFractionDigits: 2 });
 }
@@ -139,7 +144,7 @@ export default async function TestDetaljSpillerPage({
     } else {
       const bedre = lavere == null ? null : lavere ? diff < 0 : diff > 0;
       trend = {
-        text: `${diff > 0 ? "+" : "−"}${fmtNum(Math.abs(diff))} vs forrige måling`,
+        text: `${formaterTestDelta({ kind: scoringSpec.kind, delta: diff })} vs forrige måling`,
         tone: bedre == null ? "flat" : bedre ? "pos" : "neg",
       };
     }
@@ -421,7 +426,7 @@ export default async function TestDetaljSpillerPage({
                         whiteSpace: "nowrap",
                       }}
                     >
-                      {fmtNum(r.score)}
+                      {formaterTestVerdi({ kind: scoringSpec.kind, verdi: r.score, shotsCount: gateShotsCount })}
                     </span>
                   </div>
                 );
@@ -491,8 +496,9 @@ export default async function TestDetaljSpillerPage({
                 </li>
                 {siste && nestSiste ? (
                   <li style={{ marginBottom: 8 }}>
-                    Beregning: trenden er siste måling mot nest siste — {fmtNum(siste.score)} mot{" "}
-                    {fmtNum(nestSiste.score)}.
+                    Beregning: trenden er siste måling mot nest siste —{" "}
+                    {formaterTestVerdi({ kind: scoringSpec.kind, verdi: siste.score, shotsCount: gateShotsCount })} mot{" "}
+                    {formaterTestVerdi({ kind: scoringSpec.kind, verdi: nestSiste.score, shotsCount: gateShotsCount })}.
                   </li>
                 ) : (
                   <li style={{ marginBottom: 8 }}>

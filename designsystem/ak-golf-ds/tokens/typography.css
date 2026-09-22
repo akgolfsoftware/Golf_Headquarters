@@ -1,0 +1,36 @@
+/* GENERERT fra tokens.json av tokens/build.mjs. IKKE REDIGER — endringer overskrives. */
+:root{
+/* ---- TYPOGRAFI-LOV — tre familier, ingen fjerde ---- */
+--font-display:"Oswald","Oswald Fallback",system-ui,sans-serif;
+--font-body:"Archivo","Archivo Fallback",system-ui,sans-serif;
+--font-meta:"IBM Plex Mono","IBM Plex Mono Fallback",ui-monospace,monospace;
+--font-mono:var(--font-meta); /* Bakoverkompatibelt alias. */
+/* ---- Skala — 10 trinn, ingen andre størrelser ---- */
+--fs-10:10px;--fs-11:11px;--fs-13:13px;--fs-14:14px;--fs-15:15px;--fs-17:17px;--fs-21:21px;--fs-26:26px;--fs-29:29px;--fs-40:40px;
+--lh-tight:1.05;/* @kind font */
+--lh-snug:1.2;/* @kind font */
+--lh-normal:1.45;/* @kind font */
+--lh-loose:1.6;/* @kind font */
+--tracking-kicker:0.08em; /* 0.11 brakk «Godkjenninger» og «TRENINGSOMRÅDE» */
+--tracking-kicker-min:0.06em;
+--tracking-kicker-max:0.08em;
+--tracking-display:-0.01em;
+--tracking-meta:0.02em;
+--fw-regular:400;/* @kind font */
+--fw-medium:500;/* @kind font */
+--fw-semibold:600;/* @kind font */
+/* ---- Semantiske roller ---- */
+--type-kicker:var(--fw-semibold) var(--fs-11)/var(--lh-snug) var(--font-body); /* under 17 px = Archivo, aldri Oswald */
+--type-title-xl:var(--fw-semibold) var(--fs-40)/var(--lh-tight) var(--font-display);
+--type-title-l:var(--fw-semibold) var(--fs-29)/var(--lh-tight) var(--font-display);
+--type-title-m:var(--fw-semibold) var(--fs-21)/var(--lh-snug) var(--font-display);
+--type-title-s:var(--fw-semibold) var(--fs-17)/var(--lh-snug) var(--font-display);
+--type-lead:var(--fw-regular) var(--fs-17)/var(--lh-normal) var(--font-body);
+--type-body:var(--fw-regular) var(--fs-15)/var(--lh-normal) var(--font-body);
+--type-body-s:var(--fw-regular) var(--fs-14)/var(--lh-normal) var(--font-body);
+--type-label:var(--fw-medium) var(--fs-13)/var(--lh-snug) var(--font-body);
+--type-meta:var(--fw-regular) var(--fs-11)/var(--lh-snug) var(--font-meta);
+--type-meta-xs:var(--fw-regular) var(--fs-10)/var(--lh-snug) var(--font-meta);
+--type-metric:var(--fw-semibold) var(--fs-26)/var(--lh-tight) var(--font-display);
+--type-live-num:var(--fw-semibold) var(--fs-40)/1 var(--font-display); /* Live-tall og CountPad-verdi */
+}

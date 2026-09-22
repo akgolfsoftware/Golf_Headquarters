@@ -23,6 +23,7 @@
  */
 
 import type { ScoringKind } from "./test-scoring";
+import { formaterTestVerdi } from "./format-verdi";
 
 export type HubGruppe = "golfslag" | "teknikk" | "andre";
 
@@ -63,44 +64,21 @@ export function hubGruppeForNavn(navn: string): HubGruppe {
 }
 
 /**
- * Høyre-verdi på hub-raden — TE-00 korttype-copy («4,26 % · 0,04»,
- * «7 OK av 10», «7 p»). Bruker KUN tall som allerede finnes i
- * scoreTest()-resultatet (score, shotsCount fra protokollen) — ingen nye
- * felt, ingen fabrikkerte konfidens-/spredningstall. PEI vises derfor med
- * ÉTT tall (prosent), ikke fasitens to («· 0,04») — se gap-notat i PR-en.
+ * Høyre-verdi på hub-raden («4,26 %», «7 OK av 10», «7 p»). Bruker KUN tall
+ * som allerede finnes i scoreTest()-resultatet (score, shotsCount fra
+ * protokollen) — ingen nye felt, ingen fabrikkerte konfidens-/spredningstall.
+ *
+ * Selve formateringen eies av format-verdi.ts, som er den ene kilden for
+ * hvordan en testverdi vises.
  */
 export function formatHubVerdi(params: {
   scoringKind: ScoringKind;
   latestRaw: number | null;
   shotsCount: number;
 }): string {
-  const { scoringKind, latestRaw, shotsCount } = params;
-  if (latestRaw == null) return "—";
-
-  switch (scoringKind) {
-    case "pei_average":
-    case "pei_total": {
-      // Score er lagret som ratio (nærhet/lengde) — fasiten viser prosent.
-      const pct = (latestRaw * 100).toLocaleString("nb-NO", { maximumFractionDigits: 2, minimumFractionDigits: 2 });
-      return `${pct} %`;
-    }
-    case "count_ok":
-      return shotsCount > 0 ? `${fmt(latestRaw, 0)} OK av ${shotsCount}` : `${fmt(latestRaw, 0)} OK`;
-    case "hit_rate":
-      return `${fmt(latestRaw, 0)} %`;
-    case "points_total":
-    case "sum":
-      return `${fmt(latestRaw, 0)} p`;
-    case "carry_average":
-    case "distance_average":
-      return `${fmt(latestRaw, 1)} m`;
-    case "time_seconds":
-      return `${fmt(latestRaw, 2)} s`;
-    default:
-      return fmt(latestRaw, 2);
-  }
-}
-
-function fmt(n: number, d: number): string {
-  return n.toLocaleString("nb-NO", { maximumFractionDigits: d });
+  return formaterTestVerdi({
+    kind: params.scoringKind,
+    verdi: params.latestRaw,
+    shotsCount: params.shotsCount,
+  });
 }
