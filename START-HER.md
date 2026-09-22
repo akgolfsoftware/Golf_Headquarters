@@ -9,8 +9,7 @@
 5. [Agent Brief](docs/platform/AGENT-BRIEF.md) — hvor koden bor.
 6. [Felles AI-instruks](AGENTS.md).
 
-Aktivt arbeid 20.09.2026: [Workbench-overlevering](docs/workbench-handover.md)
-og [arbeidsplan](docs/planer/workbench-design-og-kode-natt-2026-09-20.md).
+Aktivt arbeid 20.09.2026: [Workbench-overlevering](docs/workbench-handover.md).
 Eldre planer og eksportpakker er historikk, ikke nye kjøreordrer. Bevar historikken.
 
 Kjør `npm run prosjekt:sjekk` for struktur.
