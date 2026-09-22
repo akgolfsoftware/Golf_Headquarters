@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { brukerStatusOrd, brukerStatusTone } from "@/lib/domain/bruker-status";
 import {
   hentTnArbeidskontekst,
   hentTnManedsplan,
@@ -66,6 +67,32 @@ function Chrome({ aktiv, brukerNavn, kontekst, children }: { aktiv: TnAktivSide;
   );
 }
 
+/**
+ * Uttakskriteriene, hver for seg (Anders, bindende).
+ * Resultater, prestasjoner og prosess/adferd summeres aldri til én uttaksscore.
+ * Skjermen har derfor ingen sumkolonne, og skal ikke få en.
+ */
+const UTTAKSKRITERIER = [
+  {
+    nummer: "Kriterium 1",
+    tittel: "Resultater",
+    tekst: "Registrerte bruttoresultater og plasseringer. Grunnlaget ligger i Rangliste og er uendret her.",
+    kilde: "Kilde: registrerte turneringsresultater",
+  },
+  {
+    nummer: "Kriterium 2",
+    tittel: "Prestasjoner",
+    tekst: "Testresultater og målinger fra fellestesting. Antall tester i tabellen over sier hvor mye som faktisk er målt.",
+    kilde: "Kilde: TN-batteriet, fellestesting",
+  },
+  {
+    nummer: "Kriterium 3",
+    tittel: "Prosess og adferd",
+    tekst: "Trenerens vurdering av arbeid, oppmøte og holdning. Ikke registrert i noen modell i dag — feltet står tomt framfor å gjette.",
+    kilde: "Kilde: ingen — krever godkjent vurderingsmodell",
+  },
+] as const;
+
 function spillerRader(rader: TnSpillerRad[]) {
   return rader.map((spiller) => ({
     spiller: <Link href={`/team-norway/spiller/${spiller.id}`} style={{ color: TN.navy700, fontWeight: TN.weight.semibold }}>{spiller.navn}</Link>,
@@ -73,7 +100,7 @@ function spillerRader(rader: TnSpillerRad[]) {
     plan: spiller.aktivPlan ?? "Ingen aktiv plan",
     tester: spiller.tester,
     siste: spiller.sisteTest ? dato.format(spiller.sisteTest) : "Ingen resultater",
-    status: <TnPille tone={spiller.status === "AKTIV" ? "green" : "amber"}>{spiller.status}</TnPille>,
+    status: <TnPille tone={brukerStatusTone(spiller.status)}>{brukerStatusOrd(spiller.status)}</TnPille>,
   }));
 }
 
@@ -131,8 +158,20 @@ export async function TnRegistrertSkjerm({ skjerm, id }: { skjerm: Skjerm; id?: 
       return (
         <Chrome aktiv="uttak" brukerNavn={brukerNavn} kontekst={data.kontekst}>
           <TnSidehode overlinje="Uttak · Beslutningsstøtte" tittel="Uttaksliste" ingress="Systemet samler grunnlaget, men konkluderer aldri automatisk hvem som skal tas ut." />
-          <TnDataTable caption="Uttaksgrunnlag" kolonner={[{ key: "spiller", label: "Spiller" }, { key: "plan", label: "Plan" }, { key: "tester", label: "Tester", align: "right" }, { key: "status", label: "Status" }]} rader={spillerRader(data.rader).map((rad) => ({ spiller: rad.spiller, plan: rad.plan, tester: rad.tester, status: rad.status }))} empty="Ingen spillere er tilgjengelige for vurdering." />
           <TnTomtilstand tittel="Tre kriterier skal vurderes hver for seg" tekst="Resultater, prestasjoner og prosess/adferd skal ikke summeres til én automatisk uttaksscore. En egen, sporbar vurderingsmodell må godkjennes før vurderinger kan lagres." />
+          <TnDataTable caption="Uttaksgrunnlag" kolonner={[{ key: "spiller", label: "Spiller" }, { key: "plan", label: "Plan" }, { key: "tester", label: "Tester", align: "right" }, { key: "status", label: "Status" }]} rader={spillerRader(data.rader).map((rad) => ({ spiller: rad.spiller, plan: rad.plan, tester: rad.tester, status: rad.status }))} empty="Ingen spillere er tilgjengelige for vurdering." />
+          <TnSeksjon tittel="De tre kriteriene" forklaring="Vurderes hver for seg. Skjermen viser tre kolonner med grunnlag og ingen fjerde kolonne med sum — en samlescore ville gjort et trenerskjønn om til et tall ingen kan gå god for.">
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 260px), 1fr))", gap: 16 }}>
+              {UTTAKSKRITERIER.map((kriterium) => (
+                <TnKort key={kriterium.tittel}>
+                  <p style={{ margin: 0, fontFamily: TN.font.mono, fontSize: TN.text.micro, letterSpacing: TN.tracking.eyebrow, textTransform: "uppercase", color: TN.textSecondary }}>{kriterium.nummer}</p>
+                  <h3 style={{ margin: "10px 0 0", color: TN.navy900, fontSize: TN.text.h3, letterSpacing: TN.tracking.heading }}>{kriterium.tittel}</h3>
+                  <p style={{ margin: "10px 0 0", color: TN.textSecondary, fontSize: TN.text.sm, lineHeight: TN.leading.normal }}>{kriterium.tekst}</p>
+                  <p style={{ margin: "16px 0 0", paddingTop: 14, borderTop: `1px solid ${TN.borderSubtle}`, fontFamily: TN.font.mono, fontSize: TN.text.micro, color: TN.textSecondary }}>{kriterium.kilde}</p>
+                </TnKort>
+              ))}
+            </div>
+          </TnSeksjon>
         </Chrome>
       );
     }
@@ -143,7 +182,7 @@ export async function TnRegistrertSkjerm({ skjerm, id }: { skjerm: Skjerm; id?: 
       <Chrome aktiv={erCollege ? "college" : "spillere"} brukerNavn={brukerNavn} kontekst={data.kontekst}>
         <TnSidehode overlinje={erCollege ? "Daglig · College" : "Daglig · Spillerutvikling"} tittel={erCollege ? "Collegegruppen" : "Spillere"} ingress={erCollege ? "Collegeinformasjon leses fra spillerprofilen. NCAA-kollisjoner krever fortsatt en egen datamodell." : "Samlet inngang til spillerens plan, tester og sporbare Team Norway-poster."} />
         {!erCollege ? <TnMetrikkRutenett><TnMetrikk etikett="Spillere" verdi={rader.length} /><TnMetrikk etikett="Med aktiv plan" verdi={rader.filter((spiller) => spiller.aktivPlan).length} tone="green" /><TnMetrikk etikett="Mangler testresultat" verdi={rader.filter((spiller) => spiller.tester === 0).length} tone="amber" /></TnMetrikkRutenett> : null}
-        <TnDataTable caption={erCollege ? "Collegegruppen" : "Team Norway-spillere"} kolonner={erCollege ? [{ key: "spiller", label: "Spiller" }, { key: "skole", label: "College / skole" }, { key: "ar", label: "År" }, { key: "status", label: "Status" }] : [{ key: "spiller", label: "Spiller" }, { key: "hcp", label: "HCP", align: "right" }, { key: "plan", label: "Aktiv plan" }, { key: "tester", label: "Tester", align: "right" }, { key: "status", label: "Status" }]} rader={erCollege ? rader.map((spiller) => ({ spiller: <Link href={`/team-norway/spiller/${spiller.id}`} style={{ color: TN.navy700, fontWeight: TN.weight.semibold }}>{spiller.navn}</Link>, skole: spiller.skole ?? "Ikke registrert", ar: spiller.skolear ?? "Ukjent", status: <TnPille tone={spiller.status === "AKTIV" ? "green" : "amber"}>{spiller.status}</TnPille> })) : spillerRader(rader).map((rad) => ({ spiller: rad.spiller, hcp: rad.hcp, plan: rad.plan, tester: rad.tester, status: rad.status }))} empty={erCollege ? "Ingen spillere har registrert college i profilen." : "Ingen aktive spillere i Team Norway-gruppen."} />
+        <TnDataTable caption={erCollege ? "Collegegruppen" : "Team Norway-spillere"} kolonner={erCollege ? [{ key: "spiller", label: "Spiller" }, { key: "skole", label: "College / skole" }, { key: "ar", label: "År" }, { key: "status", label: "Status" }] : [{ key: "spiller", label: "Spiller" }, { key: "hcp", label: "HCP", align: "right" }, { key: "plan", label: "Aktiv plan" }, { key: "tester", label: "Tester", align: "right" }, { key: "status", label: "Status" }]} rader={erCollege ? rader.map((spiller) => ({ spiller: <Link href={`/team-norway/spiller/${spiller.id}`} style={{ color: TN.navy700, fontWeight: TN.weight.semibold }}>{spiller.navn}</Link>, skole: spiller.skole ?? "Ikke registrert", ar: spiller.skolear ?? "Ukjent", status: <TnPille tone={brukerStatusTone(spiller.status)}>{brukerStatusOrd(spiller.status)}</TnPille> })) : spillerRader(rader).map((rad) => ({ spiller: rad.spiller, hcp: rad.hcp, plan: rad.plan, tester: rad.tester, status: rad.status }))} empty={erCollege ? "Ingen spillere har registrert college i profilen." : "Ingen aktive spillere i Team Norway-gruppen."} />
       </Chrome>
     );
   }
@@ -154,6 +193,7 @@ export async function TnRegistrertSkjerm({ skjerm, id }: { skjerm: Skjerm; id?: 
     return (
       <Chrome aktiv="rangliste" brukerNavn={brukerNavn} kontekst={data.kontekst}>
         <TnSidehode overlinje="Uttak · Resultatgrunnlag" tittel="Rangliste" ingress="Viser registrerte bruttoresultater og plasseringer. Manglende data vises som ukjent og påvirker ikke uttak automatisk." />
+        <TnTomtilstand tittel="Kun brutto" tekst="Alle tall er ekte slag. Snittplassering og brutto score er gjennomsnitt av de registrerte startene — ikke en rangering systemet har regnet seg fram til, og ikke et uttak. En spiller uten starter står nederst fordi ingenting er registrert, ikke fordi hun er dårligst." />
         <TnDataTable caption="Resultatgrunnlag" kolonner={[{ key: "spiller", label: "Spiller" }, { key: "starter", label: "Starter", align: "right" }, { key: "plassering", label: "Snittplassering", align: "right" }, { key: "score", label: "Brutto score", align: "right" }, { key: "tester", label: "Tester", align: "right" }]} rader={data.rader.map((spiller) => ({ spiller: spiller.navn, starter: spiller.starter, plassering: spiller.snittplassering === null ? "Ukjent" : tall.format(spiller.snittplassering), score: spiller.bruttoScore === null ? "Ukjent" : tall.format(spiller.bruttoScore), tester: spiller.tester }))} empty="Ingen turneringsresultater er registrert for gruppen." />
       </Chrome>
     );
@@ -192,7 +232,8 @@ export async function TnRegistrertSkjerm({ skjerm, id }: { skjerm: Skjerm; id?: 
       <Chrome aktiv="skoler" brukerNavn={brukerNavn} kontekst={data.kontekst}>
         <TnSidehode overlinje="Skoler · Oversikt" tittel="Skoleoversikt" ingress="Skole og trinn kommer fra spillerprofilene. Uregistrerte verdier holdes synlige som datagap." />
         <TnMetrikkRutenett><TnMetrikk etikett="Skoler" verdi={data.skoler.filter((rad) => rad.skole !== "Ikke registrert").length} /><TnMetrikk etikett="Spillere" verdi={data.skoler.reduce((sum, rad) => sum + rad.spillere.length, 0)} /><TnMetrikk etikett="Mangler skole" verdi={data.skoler.find((rad) => rad.skole === "Ikke registrert")?.spillere.length ?? 0} tone="amber" /></TnMetrikkRutenett>
-        <TnDataTable caption="Skoler" kolonner={[{ key: "skole", label: "Skole" }, { key: "spillere", label: "Spillere", align: "right" }, { key: "trinn", label: "Trinn" }]} rader={data.skoler.map((rad) => ({ skole: rad.skole, spillere: rad.spillere.length, trinn: [...new Set(rad.spillere.map((spiller) => spiller.skolear).filter(Boolean))].join(" · ") || "Ukjent" }))} />
+        <TnDataTable caption="Skoler" kolonner={[{ key: "skole", label: "Skole" }, { key: "spillere", label: "Spillere", align: "right" }, { key: "trinn", label: "Trinn" }]} rader={data.skoler.map((rad) => ({ skole: rad.skole, spillere: rad.spillere.length, trinn: [...new Set(rad.spillere.map((spiller) => spiller.skolear).filter(Boolean))].join(" · ") || "Ukjent" }))} empty="Ingen spillere er tildelt Team Norway-gruppen." />
+        <TnTomtilstand tittel="«Ikke registrert» er en egen rad, ikke en skole" tekst="Spillere uten skole i profilen samles i sin egen rad. Den skjules ikke og slås ikke sammen med de andre — da ville totalen sett riktig ut mens profilene fortsatt sto tomme. Trinn settes sammen av verdiene som faktisk står i profilene i hver gruppe; står ingen av dem fylt ut, står det «Ukjent»." />
       </Chrome>
     );
   }
