@@ -38,7 +38,7 @@ function formatterDato(iso: string): string {
 export function TnDokumentTabell({ rader }: { rader: TnDokumentRadVisning[] }) {
   if (rader.length === 0) {
     return (
-      <div style={{ background: TN.surfaceCard, borderRadius: TN.radius.lg, boxShadow: TN.shadow.sm, padding: 24, fontFamily: TN.font.body, fontSize: TN.text.sm, color: TN.textSecondary }}>
+      <div style={{ background: TN.surfaceCard, borderRadius: TN.radius.lg, border: `1px solid ${TN.borderSubtle}`, padding: 24, fontFamily: TN.font.body, fontSize: TN.text.sm, color: TN.textSecondary }}>
         Ingen filer delt ennå.
       </div>
     );
@@ -61,7 +61,7 @@ export function TnDokumentTabell({ rader }: { rader: TnDokumentRadVisning[] }) {
             style={{
               background: TN.surfaceCard,
               borderRadius: TN.radius.md,
-              boxShadow: TN.shadow.sm,
+              border: `1px solid ${TN.borderSubtle}`,
               padding: "12px 16px",
               display: "flex",
               alignItems: "center",

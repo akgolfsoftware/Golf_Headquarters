@@ -6,6 +6,7 @@ import { TN } from "@/lib/v2/team-norway";
 import { Icon } from "@/components/v2/icon";
 import styles from "./tn-kontroller.module.css";
 import teamNorwayLogo from "../../../designsystem/team-norway/assets/logo/team-norway-golf.png";
+import teamNorwayLogoHvit from "../../../designsystem/team-norway/assets/logo/team-norway-golf-knockout-white.png";
 
 /**
  * Team Norway — delte primitiver (Claw batch 3, 01.09.2026).
@@ -28,15 +29,18 @@ import teamNorwayLogo from "../../../designsystem/team-norway/assets/logo/team-n
 // ───────────────────────── Kort ─────────────────────────
 
 /**
- * Den offisielle Team Norway-logoen fra Claw-pakken. Merket gjenskapes aldri
- * med tekst eller CSS. På mørke flater følger den hvite platen med komponenten.
+ * Den offisielle Team Norway-logoen. Merket gjenskapes aldri med tekst eller
+ * CSS. På mørk flate brukes knockout-utgaven direkte — ingen hvit plate bak
+ * merket (Anders 22.09.2026: ingen hvite flater eller streker i skinnen).
  */
 export function TnLogo({
   hoyde = 32,
   prioritet = false,
+  paaMork = false,
 }: {
   hoyde?: number;
   prioritet?: boolean;
+  paaMork?: boolean;
 }) {
   return (
     <span
@@ -44,13 +48,13 @@ export function TnLogo({
         display: "inline-flex",
         alignItems: "center",
         minHeight: Math.max(44, hoyde + 16),
-        padding: "8px 10px",
+        padding: paaMork ? 0 : "8px 10px",
         borderRadius: TN.radius.sm,
-        background: TN.white,
+        background: paaMork ? "transparent" : TN.white,
       }}
     >
       <Image
-        src={teamNorwayLogo}
+        src={paaMork ? teamNorwayLogoHvit : teamNorwayLogo}
         alt="Team Norway Golf"
         priority={prioritet}
         style={{ width: "auto", height: hoyde, objectFit: "contain" }}
@@ -73,7 +77,8 @@ export function TnKort({
       style={{
         background: TN.surfaceCard,
         borderRadius: TN.radius.lg,
-        boxShadow: TN.shadow.sm,
+        // Systemet har ingen skygger. Flater skilles med én hårstrek.
+        border: `1px solid ${TN.borderSubtle}`,
         padding,
         fontFamily: TN.font.body,
         ...style,
@@ -125,9 +130,12 @@ export function TnPille({ children, tone = "nøytral" }: { children: ReactNode; 
 export function TnAvatarInitialer({
   navn,
   size = 30,
+  paaMork = false,
 }: {
   navn: string;
   size?: number;
+  /** Hvit plate med navy bokstaver — for bruk på skinnen og andre mørke flater. */
+  paaMork?: boolean;
 }) {
   const initialer = navn
     .split(/\s+/)
@@ -141,8 +149,8 @@ export function TnAvatarInitialer({
         width: size,
         height: size,
         borderRadius: TN.radius.full,
-        background: TN.ink200,
-        color: TN.ink700,
+        background: paaMork ? TN.white : TN.ink200,
+        color: paaMork ? TN.navy900 : TN.ink700,
         fontFamily: TN.font.mono,
         fontSize: TN.text.xs,
         display: "inline-flex",
@@ -223,10 +231,10 @@ export function TnRail({
       style={{
         width: 252,
         flexShrink: 0,
-        background: TN.surfaceCard,
-        borderRight: `1px solid ${TN.borderSubtle}`,
+        background: TN.rail.bg,
+        color: TN.rail.on,
         flexDirection: "column",
-        padding: "20px 14px 18px",
+        padding: "26px 14px 18px",
         gap: 20,
       }}
     >
@@ -238,7 +246,7 @@ export function TnRail({
           minWidth: 0,
         }}
       >
-        <TnLogo hoyde={30} prioritet />
+        <TnLogo hoyde={30} prioritet paaMork />
         <div style={{ minWidth: 0, flex: 1 }}>
           <span className="sr-only">{orgNavn}</span>
           <div
@@ -246,7 +254,7 @@ export function TnRail({
               fontFamily: TN.font.mono,
               fontSize: TN.text.micro,
               letterSpacing: TN.tracking.eyebrow,
-              color: TN.ink400,
+              color: TN.rail.muted,
               textTransform: "uppercase",
             }}
           >
@@ -265,8 +273,8 @@ export function TnRail({
                 fontSize: TN.text.micro,
                 letterSpacing: TN.tracking.eyebrow,
                 textTransform: "uppercase",
-                color: TN.ink400,
-                padding: "14px 12px 6px",
+                color: TN.rail.muted,
+                padding: "18px 12px 6px",
               }}
             >
               {p.label}
@@ -277,15 +285,16 @@ export function TnRail({
               href={p.href}
               aria-current={p.aktiv ? "page" : undefined}
               style={{
-                height: 40,
+                minHeight: 44,
                 borderRadius: TN.radius.xs,
-                padding: "0 10px",
+                padding: "4px 10px",
                 display: "flex",
                 alignItems: "center",
                 gap: 10,
                 textDecoration: "none",
-                background: p.aktiv ? TN.navy100 : "transparent",
-                color: p.aktiv ? TN.navy900 : TN.textSecondary,
+                background: p.aktiv ? TN.rail.active : "transparent",
+                color: p.aktiv ? TN.rail.on : TN.rail.text,
+                fontWeight: p.aktiv ? TN.weight.bold : TN.weight.regular,
               }}
             >
               <span
@@ -293,7 +302,7 @@ export function TnRail({
                   width: 3,
                   height: 18,
                   borderRadius: TN.radius.full,
-                  background: p.aktiv ? TN.red600 : "transparent",
+                  background: p.aktiv ? TN.rail.marker : "transparent",
                   flexShrink: 0,
                 }}
               />
@@ -301,17 +310,18 @@ export function TnRail({
                 {p.label}
               </span>
               {p.badge && (
-                <span style={{ fontFamily: TN.font.mono, fontSize: TN.text.micro, color: TN.ink400 }}>{p.badge}</span>
+                <span style={{ fontFamily: TN.font.mono, fontSize: TN.text.micro, color: p.aktiv ? TN.rail.on : TN.rail.muted }}>{p.badge}</span>
               )}
             </a>
           ),
         )}
       </div>
 
-      <div style={{ borderTop: `1px solid ${TN.borderSubtle}`, paddingTop: 14, display: "flex", alignItems: "center", gap: 10 }}>
-        <TnAvatarInitialer navn={bruker.navn} size={32} />
+      {/* Ingen hvit strek i skinnen (Anders 22.09.2026) — foten skilles med luft. */}
+      <div style={{ marginTop: 18, paddingTop: 14, display: "flex", alignItems: "center", gap: 10 }}>
+        <TnAvatarInitialer navn={bruker.navn} size={32} paaMork />
         <div style={{ minWidth: 0, flex: 1 }}>
-          <div style={{ fontFamily: TN.font.body, fontSize: TN.text.sm, fontWeight: TN.weight.semibold, color: TN.navy900 }}>
+          <div style={{ fontFamily: TN.font.body, fontSize: TN.text.sm, fontWeight: TN.weight.bold, color: TN.rail.on }}>
             {bruker.navn}
           </div>
           <div
@@ -320,14 +330,14 @@ export function TnRail({
               fontSize: TN.text.micro,
               letterSpacing: TN.tracking.eyebrow,
               textTransform: "uppercase",
-              color: TN.textSecondary,
+              color: TN.rail.muted,
               marginTop: 1,
             }}
           >
             {bruker.rolle}
           </div>
         </div>
-        <Icon name="chevron-up" size={14} style={{ color: TN.ink400 }} />
+        <Icon name="chevron-up" size={14} style={{ color: TN.rail.muted }} />
       </div>
     </div>
   );

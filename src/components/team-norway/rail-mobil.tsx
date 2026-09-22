@@ -18,7 +18,8 @@ export function TnRailMobil({ punkter, orgNavn }: { punkter: TnMenyPunkt[]; orgN
   const [apen, setApen] = useState(false);
   const menyId = useId();
   const knappRef = useRef<HTMLButtonElement>(null);
-  const lenker = punkter.filter((p): p is Extract<TnMenyPunkt, { type: "lenke" }> => p.type === "lenke");
+  // Gruppeoverskriftene vises også på mobil. Desktop og mobil skal ha samme
+  // meny — ikke to ulike inndelinger av de samme punktene.
 
   return (
     <div className="flex lg:hidden" style={{ flexDirection: "column", width: "100%" }}>
@@ -29,12 +30,11 @@ export function TnRailMobil({ punkter, orgNavn }: { punkter: TnMenyPunkt[]; orgN
           alignItems: "center",
           justifyContent: "space-between",
           padding: "0 16px",
-          borderBottom: `1px solid ${TN.borderSubtle}`,
-          background: TN.surfaceCard,
+          background: TN.rail.bg,
         }}
       >
         <span style={{ display: "inline-flex", alignItems: "center", minWidth: 0 }}>
-          <TnLogo hoyde={24} prioritet />
+          <TnLogo hoyde={24} prioritet paaMork />
           <span className="sr-only">{orgNavn}</span>
         </span>
         <button
@@ -46,7 +46,7 @@ export function TnRailMobil({ punkter, orgNavn }: { punkter: TnMenyPunkt[]; orgN
           aria-label={apen ? "Lukk meny" : "Åpne meny"}
           style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", minWidth: 44, minHeight: 44, background: "none", border: "none", padding: 8, cursor: "pointer" }}
         >
-          <Icon name={apen ? "x" : "menu"} size={20} style={{ color: TN.navy900 }} />
+          <Icon name={apen ? "x" : "menu"} size={20} style={{ color: TN.rail.on }} />
         </button>
       </div>
       {apen && (
@@ -59,32 +59,61 @@ export function TnRailMobil({ punkter, orgNavn }: { punkter: TnMenyPunkt[]; orgN
               knappRef.current?.focus();
             }
           }}
-          style={{ display: "flex", flexDirection: "column", padding: "6px 10px", gap: 2, background: TN.surfaceCard, borderBottom: `1px solid ${TN.borderSubtle}` }}
+          style={{ display: "flex", flexDirection: "column", padding: "6px 10px 12px", gap: 2, background: TN.rail.bg }}
         >
-          {lenker.map((p) => (
-            <a
-              key={`${p.href}-${p.label}`}
-              href={p.href}
-              aria-current={p.aktiv ? "page" : undefined}
-              onClick={() => setApen(false)}
-              style={{
-                height: 44,
-                borderRadius: TN.radius.xs,
-                padding: "0 10px",
-                display: "flex",
-                alignItems: "center",
-                gap: 10,
-                textDecoration: "none",
-                background: p.aktiv ? TN.navy100 : "transparent",
-                color: p.aktiv ? TN.navy900 : TN.textSecondary,
-                fontFamily: TN.font.body,
-                fontSize: TN.text.sm,
-                fontWeight: TN.weight.medium,
-              }}
-            >
-              {p.label}
-            </a>
-          ))}
+          {punkter.map((p, i) =>
+            p.type === "overskrift" ? (
+              <div
+                key={`h-${i}`}
+                style={{
+                  fontFamily: TN.font.mono,
+                  fontSize: TN.text.micro,
+                  letterSpacing: TN.tracking.eyebrow,
+                  textTransform: "uppercase",
+                  color: TN.rail.muted,
+                  padding: "16px 10px 6px",
+                }}
+              >
+                {p.label}
+              </div>
+            ) : (
+              <a
+                key={`${p.href}-${p.label}`}
+                href={p.href}
+                aria-current={p.aktiv ? "page" : undefined}
+                onClick={() => setApen(false)}
+                style={{
+                  minHeight: 44,
+                  borderRadius: TN.radius.xs,
+                  padding: "4px 10px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  textDecoration: "none",
+                  background: p.aktiv ? TN.rail.active : "transparent",
+                  color: p.aktiv ? TN.rail.on : TN.rail.text,
+                  fontFamily: TN.font.body,
+                  fontSize: TN.text.sm,
+                  fontWeight: p.aktiv ? TN.weight.bold : TN.weight.regular,
+                }}
+              >
+                <span
+                  aria-hidden="true"
+                  style={{
+                    width: 3,
+                    height: 18,
+                    borderRadius: TN.radius.full,
+                    background: p.aktiv ? TN.rail.marker : "transparent",
+                    flexShrink: 0,
+                  }}
+                />
+                <span style={{ flex: 1, minWidth: 0 }}>{p.label}</span>
+                {p.badge && (
+                  <span style={{ fontFamily: TN.font.mono, fontSize: TN.text.micro, color: p.aktiv ? TN.rail.on : TN.rail.muted }}>{p.badge}</span>
+                )}
+              </a>
+            ),
+          )}
         </nav>
       )}
     </div>
