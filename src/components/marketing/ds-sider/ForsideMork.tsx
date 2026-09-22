@@ -87,6 +87,26 @@ const PLAYERHQ = [
   { tittel: "Meg", tekst: "Din historikk, dine mål." },
 ];
 
+/**
+ * Festepunkt per bilde: hvor i bildet motivet står, som brøk av bredde og høyde.
+ * Beskjæringen (både canvas-rammen og arkivet) holder dette punktet i samme
+ * relative posisjon i ruta, så personer og baller ikke kuttes når ruta er
+ * smalere eller høyere enn fotoet. Mangler bildet her, brukes midten.
+ */
+const FESTE: Record<string, [number, number]> = {
+  "hero-bunker-shot.jpg": [0.4, 0.58], // spilleren står venstre for midten, lavt
+  "AK-Golf-Academy-34.webp": [0.35, 0.5], // køllehodene og hånden, venstre halvdel
+  "AK-Golf-Academy-32.webp": [0.42, 0.45], // to på fairway, litt venstre og over midten
+  "AK-Golf-Academy-38.webp": [0.47, 0.5], // hånden med ballen
+  "AK-Golf-Academy-31.webp": [0.48, 0.55], // to som går, under midten
+  "AK-Golf-Academy-35.webp": [0.5, 0.6], // ballen ligger under midten
+  "AK-Golf-Academy-44.webp": [0.48, 0.45], // fugleperspektiv, spillerne over midten
+  "AK-Golf-Academy-33.webp": [0.28, 0.6], // den som slår står i venstre tredjedel
+  "AK-Golf-Academy-30.webp": [0.47, 0.55], // to som går, under midten
+  "AK-Golf-Academy-6.webp": [0.48, 0.5], // den som slår, midt i bildet
+};
+const feste = (fil: string): [number, number] => FESTE[fil] ?? [0.5, 0.5];
+
 /** Bildearkivet: fil og om ruta er dobbelt høy. */
 const ARKIV: Array<[string, boolean]> = [
   ["AK-Golf-Academy-35.webp", false],
@@ -219,7 +239,12 @@ export function ForsideMork() {
     const vb = () => window.innerWidth || document.documentElement.clientWidth || 0;
     const vh = () => window.innerHeight || document.documentElement.clientHeight || 0;
 
-    function dekk(im: HTMLImageElement, skala: number): [number, number, number, number] {
+    function dekk(
+      im: HTMLImageElement,
+      skala: number,
+      fx: number,
+      fy: number,
+    ): [number, number, number, number] {
       const ir = im.width / im.height;
       const cr = CW / CH;
       let w: number;
@@ -231,12 +256,14 @@ export function ForsideMork() {
         w = CW * skala;
         h = w / ir;
       }
-      return [(CW - w) / 2, (CH - h) / 2, w, h];
+      /* Som object-position: festepunktet i bildet legges på samme brøk av ruta. */
+      return [(CW - w) * fx, (CH - h) * fy, w, h];
     }
 
     function mal(im: HTMLImageElement | undefined, alfa: number, kb: number) {
       if (!im || !im.complete || !CW) return;
-      const b = dekk(im, 1.05 + kb * 0.05);
+      const [fx, fy] = feste(SEKVENS[bilder.indexOf(im)] ?? "");
+      const b = dekk(im, 1.05 + kb * 0.05, fx, fy);
       rammeCx.globalAlpha = alfa;
       rammeCx.drawImage(im, b[0], b[1], b[2], b[3]);
       rammeCx.globalAlpha = 1;
@@ -763,6 +790,7 @@ export function ForsideMork() {
                 alt="AK Golf — bane og studio"
                 fill
                 sizes="(max-width: 860px) 50vw, 33vw"
+                style={{ objectPosition: `${feste(fil)[0] * 100}% ${feste(fil)[1] * 100}%` }}
               />
             </figure>
           ))}
