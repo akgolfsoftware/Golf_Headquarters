@@ -58,7 +58,7 @@ function Timeplan() {
                       fontSize: 11,
                       lineHeight: 1.35,
                       padding: "6px 8px",
-                      borderRadius: 8,
+                      borderRadius: 4,
                       background: trening ? "var(--tint-teal)" : spisefri ? "var(--neutral-50)" : "var(--neutral-50)",
                       color: trening ? "var(--wang-teal-text)" : "var(--text-secondary)",
                       fontWeight: trening ? 700 : 400,

@@ -89,30 +89,32 @@ function Hero() {
           <div
             style={{
               fontFamily: "var(--font-brand)",
-              fontWeight: 700,
-              fontSize: 12,
-              letterSpacing: "0.05em",
+              fontWeight: 500,
+              fontSize: 11,
+              letterSpacing: "0.18em",
               textTransform: "uppercase",
-              color: "var(--wang-mint)",
-              marginBottom: 12,
+              color: "var(--white)",
+              marginBottom: 10,
             }}
           >
-            WANG Toppidrett Fredrikstad · Toppidrett golf
+            Toppidrett golf · skoleåret 2026/27
           </div>
           <h1
             style={{
               fontFamily: "var(--font-brand)",
-              fontWeight: 800,
-              fontSize: "clamp(30px,6.5vw,52px)",
-              lineHeight: 1.05,
+              fontWeight: 300,
+              fontSize: "clamp(30px,6.5vw,44px)",
+              letterSpacing: "-0.015em",
+              lineHeight: 1.1,
               margin: 0,
             }}
           >
-            Årsplan 2026/27
+            Hele treningsåret, slik vi har planlagt det
           </h1>
-          <p style={{ fontSize: "clamp(15px,2.2vw,17px)", color: "var(--text-on-dark-78)", maxWidth: 620, marginTop: 16 }}>
-            Hele treningsåret samlet: årshjul, periodisering, månedsplan, den faste
-            treningsuken og øktplaner med kompetansemål per trinn.
+          <p style={{ fontSize: "clamp(15px,2.2vw,17px)", lineHeight: 1.55, color: "var(--text-on-dark-78)", maxWidth: 620, marginTop: 14 }}>
+            Fem perioder, 44 uker og tre økter i uka. Vi bygger teknikk om vinteren,
+            kalibrerer om våren og presterer i turnering — felles for VG1 til VG3,
+            med egne mål per trinn.
           </p>
         </div>
       </Wrap>

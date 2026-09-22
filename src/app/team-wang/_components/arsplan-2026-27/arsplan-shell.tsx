@@ -144,7 +144,7 @@ export function WangArsplanShell({ startFane = "trening" }: { startFane?: Arspla
           style={{
             margin: "clamp(36px,6vw,56px) 0",
             padding: "20px 24px",
-            borderRadius: 20,
+            borderRadius: 4,
             background: "var(--tint-teal)",
             display: "flex",
             alignItems: "center",

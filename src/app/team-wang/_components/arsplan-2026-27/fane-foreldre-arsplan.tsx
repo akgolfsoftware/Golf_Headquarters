@@ -39,7 +39,7 @@ function Ukessammendrag() {
         <>
           <div
             style={{
-              borderRadius: 26,
+              borderRadius: 4,
               padding: "clamp(22px,3.4vw,32px)",
               color: "var(--white)",
               background:
@@ -184,7 +184,7 @@ function Praktisk() {
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(160px,1fr))", gap: 8 }}>
           {SKOLERUTE.map(([maaned, tekst, uke]) => (
-            <div key={tekst} style={{ background: "var(--neutral-50)", borderRadius: 10, padding: 10, minWidth: 0 }}>
+            <div key={tekst} style={{ background: "var(--neutral-50)", borderRadius: 4, padding: 10, minWidth: 0 }}>
               <div style={{ fontSize: 11, fontWeight: 700, color: "var(--text-secondary)" }}>
                 {maaned} · {uke}
               </div>
