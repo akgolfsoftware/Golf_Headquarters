@@ -2,8 +2,7 @@
   "$schema": "ordbok-lag-3",
   "versjon": "2026-09-21",
   "kilder": {
-    "master": "docs/ordbok.md",
-    "planlegging": "docs/treningsplanlegging.md",
+    "master": "docs/treningsplanlegging.md",
     "schema": "prisma/schema.prisma",
     "kode": "src/lib/domain/ak-formel-v2.ts"
   },
@@ -24,28 +23,28 @@
     },
     {
       "kode": "INNSPILL_200",
-      "label": "Innspill ~200 m",
+      "label": "Innspill 200 m og lengre",
       "familie": "FULLSVING",
       "enhet": "m",
       "repsEnhet": "SLAG"
     },
     {
       "kode": "INNSPILL_150",
-      "label": "Innspill ~150 m",
+      "label": "Innspill 150–200 m",
       "familie": "FULLSVING",
       "enhet": "m",
       "repsEnhet": "SLAG"
     },
     {
       "kode": "INNSPILL_100",
-      "label": "Innspill ~100 m",
+      "label": "Innspill 100–150 m",
       "familie": "FULLSVING",
       "enhet": "m",
       "repsEnhet": "SLAG"
     },
     {
       "kode": "INNSPILL_50",
-      "label": "Innspill ~50 m",
+      "label": "Innspill 50–100 m",
       "familie": "FULLSVING",
       "enhet": "m",
       "repsEnhet": "SLAG"

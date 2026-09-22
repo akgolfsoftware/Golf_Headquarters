@@ -6,6 +6,9 @@
  * Norwegian UI labels live in ui/labels.ts — never hard-code strings here.
  */
 
+import type { MaalSpor, PlanNivaa, PlanNivaaKilde } from "@/lib/domain/maal-plannivaa";
+import type { OvelseDetaljer } from "@/lib/domain/workbench/ovelse-detaljer";
+
 // ─── Vocabulary enums (from VOKABULAR.md) ─────────────────────────────────
 
 export type PyramidArea = "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN";
@@ -96,6 +99,8 @@ export interface AKFormel {
   press?: Press;
   /** Human-readable chip string, e.g. "TEK · Chip · Lav hast · Alene" */
   label: string;
+  /** Valg i trinn 3–8: sted, måleutstyr, hastighet, teknisk fokus, mengde og målfelt. */
+  detaljer?: OvelseDetaljer;
 }
 
 export interface Drill {
@@ -326,6 +331,28 @@ export type SourceFilter =
   | "TESTER"
   | "HELSE"
   | "GRUPPE";
+
+export interface PlanningGoalSummary {
+  id: string;
+  title: string;
+  category: "OUTCOME" | "PROCESS";
+  targetDate: string | null;
+  /** Norsk typenavn (Handicap, Øktfrekvens …). */
+  typeLabel: string;
+  /** Planleggingsnivå målet hører til, og om nivået er valgt eller foreslått fra fristen. */
+  planNivaa: PlanNivaa;
+  planNivaaKilde: PlanNivaaKilde;
+  /** Fra beregnGoalProgress — hasData=false betyr «ingen data ennå», aldri 0 %. */
+  fremdrift: {
+    pct: number;
+    hasData: boolean;
+    status: "on-track" | "behind" | "achieved" | "no-data";
+    detail: string;
+  };
+  /** Planlagt/gjennomført/uteblitt i nivåets vindu. Null når målet ikke er koblet til et øktområde. */
+  spor: MaalSpor | null;
+  nesteTiltak: string;
+}
 
 // ─── Commands (write side) ────────────────────────────────────────
 

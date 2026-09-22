@@ -1,10 +1,10 @@
 {
   "metode": "git ls-files -co --exclude-standard; eksisterende filer; genererte registerfiler utelatt. Kun metadata, ikke kundedata eller miljøverdier.",
   "telling": {
-    "prosjektfiler": 5634,
+    "prosjektfiler": 5659,
     "sidefiler": 496,
     "prismamodeller": 197,
-    "enhetstestfiler": 490,
+    "enhetstestfiler": 495,
     "nettlesertestfiler": 41,
     "trainLockTegninger": 219
   },
@@ -88,7 +88,7 @@
     {
       "sti": ".claude/rules/beslutninger.md",
       "omrade": "prosjektoppsett",
-      "byte": 4916
+      "byte": 5528
     },
     {
       "sti": ".claude/rules/gfgk-junior.md",
@@ -98,7 +98,7 @@
     {
       "sti": ".claude/rules/gotchas.md",
       "omrade": "prosjektoppsett",
-      "byte": 4361
+      "byte": 4447
     },
     {
       "sti": ".claude/rules/mulligan-drift.md",
@@ -2529,7 +2529,7 @@
     {
       "sti": ".gitignore",
       "omrade": "prosjektoppsett",
-      "byte": 2681
+      "byte": 2948
     },
     {
       "sti": ".grok/workflows/skjerm-mot-fasit.rhai",
@@ -2564,7 +2564,7 @@
     {
       "sti": "AGENTS.md",
       "omrade": "prosjektoppsett",
-      "byte": 7381
+      "byte": 7413
     },
     {
       "sti": "CLAUDE.md",
@@ -4094,7 +4094,7 @@
     {
       "sti": "designsystem/README.md",
       "omrade": "designkilde",
-      "byte": 9933
+      "byte": 9855
     },
     {
       "sti": "designsystem/team-norway/_adherence.oxlintrc.json",
@@ -6967,6 +6967,16 @@
       "byte": 447
     },
     {
+      "sti": "docs/arkiv/instruks-2026-09-21/beslutninger-full.md",
+      "omrade": "historikk",
+      "byte": 97769
+    },
+    {
+      "sti": "docs/arkiv/instruks-2026-09-21/gotchas-full.md",
+      "omrade": "historikk",
+      "byte": 35583
+    },
+    {
       "sti": "docs/beslutningsgrunnlag/claude-design-datagolf-h2-04-review-2026-09-10.md",
       "omrade": "dokumentasjon",
       "byte": 8647
@@ -7077,9 +7087,54 @@
       "byte": 4421
     },
     {
-      "sti": "docs/demo-sprak-og-treningsplanlegging.md",
+      "sti": "docs/design-audit/train-lock-kontrast.md",
       "omrade": "dokumentasjon",
-      "byte": 22937
+      "byte": 8402
+    },
+    {
+      "sti": "docs/design-audit/workbench-aar-kontroll-2026-09-21.md",
+      "omrade": "dokumentasjon",
+      "byte": 2094
+    },
+    {
+      "sti": "docs/design-audit/workbench-handover-import-2026-09-20.md",
+      "omrade": "dokumentasjon",
+      "byte": 5188
+    },
+    {
+      "sti": "docs/design-audit/workbench-kontrollretting-2026-09-21.md",
+      "omrade": "dokumentasjon",
+      "byte": 15955
+    },
+    {
+      "sti": "docs/design-audit/workbench-live-kontroll-2026-09-21.md",
+      "omrade": "dokumentasjon",
+      "byte": 3784
+    },
+    {
+      "sti": "docs/design-audit/workbench-maned-kontroll-2026-09-21.md",
+      "omrade": "dokumentasjon",
+      "byte": 2252
+    },
+    {
+      "sti": "docs/design-audit/workbench-okt-kontroll-2026-09-21.md",
+      "omrade": "dokumentasjon",
+      "byte": 2224
+    },
+    {
+      "sti": "docs/design-audit/workbench-periode-kontroll-2026-09-21.md",
+      "omrade": "dokumentasjon",
+      "byte": 2165
+    },
+    {
+      "sti": "docs/design-audit/workbench-stall-kontroll-2026-09-21.md",
+      "omrade": "dokumentasjon",
+      "byte": 3422
+    },
+    {
+      "sti": "docs/design-audit/workbench-uke-kontroll-2026-09-21.md",
+      "omrade": "dokumentasjon",
+      "byte": 7153
     },
     {
       "sti": "docs/design-system/ak-hq-designarbeid.md",
@@ -7289,7 +7344,7 @@
     {
       "sti": "docs/FASIT.md",
       "omrade": "dokumentasjon",
-      "byte": 2121
+      "byte": 2147
     },
     {
       "sti": "docs/feillogg.md",
@@ -7374,12 +7429,12 @@
     {
       "sti": "docs/ordbok.json",
       "omrade": "dokumentasjon",
-      "byte": 14525
+      "byte": 14512
     },
     {
       "sti": "docs/ordbok.md",
       "omrade": "dokumentasjon",
-      "byte": 14492
+      "byte": 324
     },
     {
       "sti": "docs/patches/wb-v2-lov.patch",
@@ -7392,9 +7447,19 @@
       "byte": 19777
     },
     {
+      "sti": "docs/planer/planlegging-trening-og-analyse-design-og-kode-2026-09-21.md",
+      "omrade": "datert-plan",
+      "byte": 14004
+    },
+    {
+      "sti": "docs/planer/workbench-design-og-kode-natt-2026-09-20.md",
+      "omrade": "datert-plan",
+      "byte": 24157
+    },
+    {
       "sti": "docs/platform/AGENT-BRIEF.md",
       "omrade": "dokumentasjon",
-      "byte": 5861
+      "byte": 5750
     },
     {
       "sti": "docs/platform/BOOKING-POLICY.md",
@@ -7459,7 +7524,7 @@
     {
       "sti": "docs/README.md",
       "omrade": "dokumentasjon",
-      "byte": 1200
+      "byte": 1051
     },
     {
       "sti": "docs/referanse/design/2026-09-04-marked-ak-golf-port-design.md",
@@ -7619,7 +7684,7 @@
     {
       "sti": "docs/treningsplanlegging.md",
       "omrade": "dokumentasjon",
-      "byte": 9188
+      "byte": 35784
     },
     {
       "sti": "docs/turnering-datakilder.md",
@@ -7684,7 +7749,7 @@
     {
       "sti": "docs/workbench-handover.md",
       "omrade": "dokumentasjon",
-      "byte": 1957
+      "byte": 1859
     },
     {
       "sti": "eslint.config.mjs",
@@ -11114,7 +11179,7 @@
     {
       "sti": "scripts/ordbok-json.ts",
       "omrade": "verktoy",
-      "byte": 5255
+      "byte": 5612
     },
     {
       "sti": "scripts/ow3-fase1-utvid-workbench-session-2026-09-16.ts",
@@ -14219,7 +14284,7 @@
     {
       "sti": "src/app/admin/workbench/[playerId]/page.tsx",
       "omrade": "appkode",
-      "byte": 9439
+      "byte": 9662
     },
     {
       "sti": "src/app/admin/workspace/error.tsx",
@@ -15479,12 +15544,12 @@
     {
       "sti": "src/app/portal/(legacy)/mal/goals-actions.test.ts",
       "omrade": "test",
-      "byte": 2757
+      "byte": 4152
     },
     {
       "sti": "src/app/portal/(legacy)/mal/goals-actions.ts",
       "omrade": "appkode",
-      "byte": 8099
+      "byte": 8659
     },
     {
       "sti": "src/app/portal/(legacy)/mal/layout.tsx",
@@ -16079,7 +16144,7 @@
     {
       "sti": "src/app/portal/mal/goal/[id]/page.tsx",
       "omrade": "appkode",
-      "byte": 7566
+      "byte": 7671
     },
     {
       "sti": "src/app/portal/mal/leaderboard/page.tsx",
@@ -19854,7 +19919,7 @@
     {
       "sti": "src/components/portal/v2/MalDetaljV2.tsx",
       "omrade": "appkode",
-      "byte": 19161
+      "byte": 20104
     },
     {
       "sti": "src/components/portal/v2/MalHubV2.tsx",
@@ -21092,6 +21157,11 @@
       "byte": 9159
     },
     {
+      "sti": "src/components/workbench/OvelseSkjema.tsx",
+      "omrade": "appkode",
+      "byte": 11778
+    },
+    {
       "sti": "src/components/workbench/PublishConfirmDialog.tsx",
       "omrade": "appkode",
       "byte": 13674
@@ -21104,7 +21174,7 @@
     {
       "sti": "src/components/workbench/SourcesPanel.tsx",
       "omrade": "appkode",
-      "byte": 4248
+      "byte": 7063
     },
     {
       "sti": "src/components/workbench/StallDagV2.tsx",
@@ -21144,7 +21214,7 @@
     {
       "sti": "src/components/workbench/WorkbenchAar.tsx",
       "omrade": "appkode",
-      "byte": 8399
+      "byte": 8479
     },
     {
       "sti": "src/components/workbench/WorkbenchFeil.tsx",
@@ -21164,7 +21234,7 @@
     {
       "sti": "src/components/workbench/WorkbenchManed.tsx",
       "omrade": "appkode",
-      "byte": 6297
+      "byte": 6377
     },
     {
       "sti": "src/components/workbench/WorkbenchMinKalender.tsx",
@@ -21174,12 +21244,12 @@
     {
       "sti": "src/components/workbench/WorkbenchOkt.tsx",
       "omrade": "appkode",
-      "byte": 16476
+      "byte": 18239
     },
     {
       "sti": "src/components/workbench/WorkbenchPeriode.tsx",
       "omrade": "appkode",
-      "byte": 10167
+      "byte": 10247
     },
     {
       "sti": "src/components/workbench/WorkbenchShell.tsx",
@@ -21194,7 +21264,7 @@
     {
       "sti": "src/components/workbench/WorkbenchUke.tsx",
       "omrade": "appkode",
-      "byte": 14645
+      "byte": 14723
     },
     {
       "sti": "src/components/workbench/YearGrid.tsx",
@@ -23424,12 +23494,12 @@
     {
       "sti": "src/lib/domain/ak-formel-v2.test.ts",
       "omrade": "test",
-      "byte": 4370
+      "byte": 5478
     },
     {
       "sti": "src/lib/domain/ak-formel-v2.ts",
       "omrade": "appkode",
-      "byte": 12307
+      "byte": 13545
     },
     {
       "sti": "src/lib/domain/ak-kategori.ts",
@@ -23645,6 +23715,16 @@
       "sti": "src/lib/domain/maal-fremdrift.ts",
       "omrade": "appkode",
       "byte": 1732
+    },
+    {
+      "sti": "src/lib/domain/maal-plannivaa.test.ts",
+      "omrade": "test",
+      "byte": 4097
+    },
+    {
+      "sti": "src/lib/domain/maal-plannivaa.ts",
+      "omrade": "appkode",
+      "byte": 6909
     },
     {
       "sti": "src/lib/domain/min-kurve.ts",
@@ -23939,7 +24019,7 @@
     {
       "sti": "src/lib/domain/workbench/labels.ts",
       "omrade": "appkode",
-      "byte": 11582
+      "byte": 11604
     },
     {
       "sti": "src/lib/domain/workbench/operations.test.ts",
@@ -23952,9 +24032,39 @@
       "byte": 23973
     },
     {
+      "sti": "src/lib/domain/workbench/ovelse-detaljer.test.ts",
+      "omrade": "test",
+      "byte": 7802
+    },
+    {
+      "sti": "src/lib/domain/workbench/ovelse-detaljer.ts",
+      "omrade": "appkode",
+      "byte": 12559
+    },
+    {
+      "sti": "src/lib/domain/workbench/ovelse-rekkefolge.test.ts",
+      "omrade": "test",
+      "byte": 817
+    },
+    {
+      "sti": "src/lib/domain/workbench/ovelse-rekkefolge.ts",
+      "omrade": "appkode",
+      "byte": 418
+    },
+    {
+      "sti": "src/lib/domain/workbench/ovelse-utkast.test.ts",
+      "omrade": "test",
+      "byte": 3633
+    },
+    {
+      "sti": "src/lib/domain/workbench/ovelse-utkast.ts",
+      "omrade": "appkode",
+      "byte": 5766
+    },
+    {
       "sti": "src/lib/domain/workbench/schemas.ts",
       "omrade": "appkode",
-      "byte": 4803
+      "byte": 4906
     },
     {
       "sti": "src/lib/domain/workbench/stall-dag.test.ts",
@@ -23969,7 +24079,7 @@
     {
       "sti": "src/lib/domain/workbench/types.ts",
       "omrade": "appkode",
-      "byte": 15503
+      "byte": 16548
     },
     {
       "sti": "src/lib/email.ts",
@@ -27417,6 +27527,16 @@
       "byte": 2926
     },
     {
+      "sti": "src/lib/workbench/maal-spor.test.ts",
+      "omrade": "test",
+      "byte": 3264
+    },
+    {
+      "sti": "src/lib/workbench/maal-spor.ts",
+      "omrade": "appkode",
+      "byte": 4081
+    },
+    {
       "sti": "src/lib/workbench/map-template-week.ts",
       "omrade": "appkode",
       "byte": 3550
@@ -27584,7 +27704,7 @@
     {
       "sti": "src/lib/workbench/wb-actions.ts",
       "omrade": "appkode",
-      "byte": 57908
+      "byte": 58130
     },
     {
       "sti": "src/lib/workbench/wb-map.test.ts",
@@ -27684,12 +27804,12 @@
     {
       "sti": "src/styles/workbench-selected.css",
       "omrade": "appkode",
-      "byte": 45248
+      "byte": 47654
     },
     {
       "sti": "START-HER.md",
       "omrade": "prosjektoppsett",
-      "byte": 967
+      "byte": 964
     },
     {
       "sti": "supabase-meg/migrations/0001_init.sql",
@@ -27967,6 +28087,11 @@
       "byte": 15307
     },
     {
+      "sti": "tests/komponenter/ovelse-skjema.test.ts",
+      "omrade": "test",
+      "byte": 3170
+    },
+    {
       "sti": "tests/komponenter/sg-detaljer.test.ts",
       "omrade": "test",
       "byte": 688
@@ -28204,7 +28329,7 @@
     {
       "sti": "tests/visual/workbench/fixture.tsx",
       "omrade": "test",
-      "byte": 2270
+      "byte": 3782
     },
     {
       "sti": "tests/visual/workbench/README.md",
@@ -28214,7 +28339,7 @@
     {
       "sti": "tests/visual/workbench/server.mjs",
       "omrade": "test",
-      "byte": 5025
+      "byte": 5302
     },
     {
       "sti": "tsconfig.json",

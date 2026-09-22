@@ -6,6 +6,7 @@
 
 import { z } from "zod";
 import type { AKFormel } from "./types";
+import { OvelseDetaljerSchema } from "./ovelse-detaljer";
 
 export const PyramidAreaSchema = z.enum(["FYS", "TEK", "SLAG", "SPILL", "TURN"]);
 
@@ -59,6 +60,7 @@ export const AkFormelSchema = z.object({
   belastning: BelastningSchema.optional(),
   press: PressSchema.optional(),
   label: z.string(),
+  detaljer: OvelseDetaljerSchema.optional(),
 });
 
 /**

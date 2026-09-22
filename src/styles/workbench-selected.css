@@ -528,3 +528,33 @@
   .wb-min-calendar .wb-calendar-day .wb-day-heading { display: flex; height: 44px; }
   .wb-min-mobile { position: static; width: auto; height: auto; margin: 0 14px 14px; padding: 14px; box-shadow: none; }
 }
+.wb-ovelse .wb-kicker { display: block; margin: 14px 0 2px; }
+.wb-ovelse-feil { margin: 8px 0; color: var(--wb-ink); font-size: 12px; }
+.wb-session-edit.wb-ovelse > div { grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); }
+/* Mobilvei til «Legg til øvelse»: knapp i valgt-økt-arket og bunnark med skjemaet */
+.wb-mobile-add { display: none; }
+.wb-ark { display: none; }
+@media(max-width:1023px) {
+  .wb-session-mobile .wb-mobile-actions { flex-wrap: wrap; }
+  .wb-session-mobile .wb-mobile-add { display: inline-flex; align-items: center; justify-content: center; flex: 1 1 100%; min-height: 44px; }
+  .wb-session-mobile { height: 348px; }
+  .wb-ark:not([hidden]) { display: flex; flex-direction: column; position: fixed; z-index: 60; inset: 0; background: var(--wb-white); outline: none; }
+  .wb-ark-hode { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 14px; border-bottom: 1px solid var(--wb-border); font: 600 16px/1.2 var(--font-oswald), sans-serif; }
+  .wb-ark-hode .wb-quiet { min-height: 44px; padding: 0 14px; }
+  .wb-ark-innhold { flex: 1; overflow: auto; padding: 4px 14px 16px; border-top: 0; overscroll-behavior: contain; }
+  .wb-ark-innhold input, .wb-ark-innhold select { min-height: 44px; font-size: 16px; }
+  .wb-ark-fot { padding: 10px 14px calc(10px + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px)); border-top: 1px solid var(--wb-border); background: var(--wb-white); }
+  .wb-ark-fot .wb-publish { width: 100%; min-height: 48px; }
+}
+@media(min-width:1024px) { .wb-ark { display: none !important; } }
+/* Flytt opp/ned og fjern for valgt øvelse på mobil */
+.wb-mobile-ovelse { display: none; }
+@media(max-width:1023px) {
+  .wb-session-mobile { height: 408px; }
+  .wb-session-mobile .wb-mobile-ovelse { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; flex: 1 1 100%; }
+  .wb-session-mobile .wb-mobile-ovelse .wb-quiet { min-height: 44px; padding: 0 6px; display: inline-flex; align-items: center; justify-content: center; }
+  .wb-session-mobile .wb-mobile-ovelse .wb-quiet:disabled { opacity: .45; }
+  .wb-session-mobile .wb-mobile-bekreft { grid-template-columns: 1fr 1fr; }
+  .wb-session-mobile .wb-mobile-bekreft p { grid-column: 1 / -1; margin: 0; font-size: 14px; line-height: 1.35; overflow-wrap: anywhere; }
+  .wb-session-mobile .wb-mobile-bekreft .wb-publish { min-height: 44px; }
+}

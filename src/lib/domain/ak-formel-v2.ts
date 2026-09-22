@@ -1,7 +1,7 @@
 /**
  * AK-formel v2 — kanonisk vokabular for treningsplanlegging.
  *
- * Fasit: `docs/ordbok.md` (15.09.2026, bygger på Anders' fasit 19.08.2026).
+ * Fasit: `docs/treningsplanlegging.md` (15.09.2026, bygger på Anders' fasit 19.08.2026).
  * Formelen er en MERKELAPP,
  * aldri et krav — ingen regel håndheves noe sted (beslutning 18.08.2026).
  *
@@ -96,10 +96,10 @@ export type OmraadeKode = (typeof OMRAADE_KODER)[number];
 
 export const OMRAADER: readonly OmraadeDef[] = [
   { kode: "TEE_TOTAL", label: "Utslag", familie: "FULLSVING", enhet: "m", repsEnhet: "SLAG" },
-  { kode: "INNSPILL_200", label: "Innspill ~200 m", familie: "FULLSVING", enhet: "m", repsEnhet: "SLAG" },
-  { kode: "INNSPILL_150", label: "Innspill ~150 m", familie: "FULLSVING", enhet: "m", repsEnhet: "SLAG" },
-  { kode: "INNSPILL_100", label: "Innspill ~100 m", familie: "FULLSVING", enhet: "m", repsEnhet: "SLAG" },
-  { kode: "INNSPILL_50", label: "Innspill ~50 m", familie: "FULLSVING", enhet: "m", repsEnhet: "SLAG" },
+  { kode: "INNSPILL_200", label: "Innspill 200 m og lengre", familie: "FULLSVING", enhet: "m", repsEnhet: "SLAG" },
+  { kode: "INNSPILL_150", label: "Innspill 150–200 m", familie: "FULLSVING", enhet: "m", repsEnhet: "SLAG" },
+  { kode: "INNSPILL_100", label: "Innspill 100–150 m", familie: "FULLSVING", enhet: "m", repsEnhet: "SLAG" },
+  { kode: "INNSPILL_50", label: "Innspill 50–100 m", familie: "FULLSVING", enhet: "m", repsEnhet: "SLAG" },
   { kode: "CHIP", label: "Chip", familie: "NAERSPILL", enhet: "m", repsEnhet: "SLAG" },
   { kode: "PITCH", label: "Pitch", familie: "NAERSPILL", enhet: "m", repsEnhet: "SLAG" },
   { kode: "LOB", label: "Lob", familie: "NAERSPILL", enhet: "m", repsEnhet: "SLAG" },
@@ -144,6 +144,38 @@ export const MOTORIKK_LABEL: Record<MotorikkKode, string> = {
   LAV_HAST: "Lav hastighet",
   AUTO: "Automatikk",
 };
+
+/**
+ * Hastighet i læringssteg: prosent av spillerens Club Speed. Låst av Anders
+ * 21.09.2026 (docs/treningsplanlegging.md kap. 19). Ikke den utgåtte CS-skalaen.
+ * Lav hastighet er 25, 50 eller 75 %; Automatikk er 100 %; Uten ball har ingen.
+ */
+export const HASTIGHET_PROSENT = [25, 50, 75, 100] as const;
+export type HastighetProsent = (typeof HASTIGHET_PROSENT)[number];
+
+const HASTIGHET_PER_STEG: Record<MotorikkKode, readonly HastighetProsent[]> = {
+  UTEN_BALL: [],
+  LAV_HAST: [25, 50, 75],
+  AUTO: [100],
+};
+
+export function erHastighetProsent(verdi: unknown): verdi is HastighetProsent {
+  return typeof verdi === "number" && (HASTIGHET_PROSENT as readonly number[]).includes(verdi);
+}
+
+/** Hastighetsnivåene som er lov for et læringssteg. */
+export function hastighetForMotorikk(motorikk: MotorikkKode): readonly HastighetProsent[] {
+  return HASTIGHET_PER_STEG[motorikk];
+}
+
+/** Læringssteg og hastighet gjelder bare fullsving (Utslag og Innspill). */
+export function hastighetGjelderOmraade(kode: OmraadeKode): boolean {
+  return omraadeFamilie(kode) === "FULLSVING";
+}
+
+export function hastighetLabel(prosent: HastighetProsent): string {
+  return `${prosent} % av Club Speed`;
+}
 
 /**
  * Enum-verdiene er ASCII (INNENDORS, TRENINGSOMRAADE) med norsk visningslag —

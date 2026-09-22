@@ -52,6 +52,7 @@ import type {
   YearViewModel,
 } from "@/lib/domain/workbench/types";
 import { UI } from "@/lib/domain/workbench/labels";
+import { vaskDetaljer } from "@/lib/domain/workbench/ovelse-detaljer";
 import { weekLockedBlocks } from "@/lib/workbench/locked-blocks";
 import {
   initialWorkbenchLiveSnapshot,
@@ -102,6 +103,7 @@ export type WbResultat<T> =
  * ugyldige verdier forbi typesjekken (CLAUDE.md invariant 6).
  */
 function akFormelTilJson(f: AKFormel): Prisma.InputJsonObject {
+  const detaljer = vaskDetaljer(f.pyramid, f.area, f.motorikk, f.detaljer);
   return {
     pyramid: f.pyramid,
     area: f.area,
@@ -109,6 +111,7 @@ function akFormelTilJson(f: AKFormel): Prisma.InputJsonObject {
     ...(f.motorikk ? { motorikk: f.motorikk } : {}),
     ...(f.belastning ? { belastning: f.belastning } : {}),
     ...(f.press ? { press: f.press } : {}),
+    ...(detaljer ? { detaljer: detaljer as Prisma.InputJsonObject } : {}),
   };
 }
 

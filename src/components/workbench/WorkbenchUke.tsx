@@ -11,7 +11,7 @@ import { useInspektorSynlig } from "@/components/v2/inspektorpanel";
 import { TL } from "@/lib/v2/train-lock";
 import { addDays, isoWeekNumber, mondayOf, validateWeek } from "@/lib/domain/workbench/operations";
 import { AREA_LABEL, formatHours, PYRAMID_LABEL, UI } from "@/lib/domain/workbench/labels";
-import type { SourceItem, WeekViewModel, WorkbenchSession, RecurrencePolicy } from "@/lib/domain/workbench/types";
+import type { PlanningGoalSummary, SourceItem, WeekViewModel, WorkbenchSession, RecurrencePolicy } from "@/lib/domain/workbench/types";
 import { addDrill, addDrillFromSource, createSession, createSessionFromSource, createSessionSeries, deleteSession, deleteSessionSeries, loadWeek, moveSession, publishSessions, removeDrill, reorderDrills, setSessionTemplate, unpublishSession } from "@/lib/workbench/wb-actions";
 import { CreateSessionModal, type NyOktVerdier } from "./CreateSessionModal";
 import { PublishConfirmDialog } from "./PublishConfirmDialog";
@@ -20,9 +20,9 @@ import { SourcesPanel } from "./SourcesPanel";
 import { osloIdag, WeekGrid } from "./WeekGrid";
 import { VisningPiller } from "./VisningPiller";
 
-type Props = { playerId: string; spillerNavn: string; uke: WeekViewModel; kilder: SourceItem[]; roster?: { id: string; navn: string }[] };
+type Props = { playerId: string; spillerNavn: string; uke: WeekViewModel; kilder: SourceItem[]; roster?: { id: string; navn: string }[]; goals?: PlanningGoalSummary[] };
 
-export function WorkbenchUke({ playerId, spillerNavn, uke, kilder, roster = [] }: Props) {
+export function WorkbenchUke({ playerId, spillerNavn, uke, kilder, roster = [], goals = [] }: Props) {
   const router = useRouter();
   const inspectorSynlig = useInspektorSynlig();
   const [week, setWeek] = useState<WeekViewModel>(uke);
@@ -99,7 +99,7 @@ export function WorkbenchUke({ playerId, spillerNavn, uke, kilder, roster = [] }
   return (
     <div className="wb-layout">
       <aside className="wb-sources">
-        <SourcesPanel kilder={kilder} playerId={playerId} uke={week.weekStart} maned={week.weekStart.slice(0, 7)} aar={week.weekStart.slice(0, 4)} />
+        <SourcesPanel kilder={kilder} playerId={playerId} uke={week.weekStart} maned={week.weekStart.slice(0, 7)} aar={week.weekStart.slice(0, 4)} goals={goals} />
         <nav className="wb-roster" aria-label="Spillere i stallen"><span className="wb-kicker">Stall</span>{roster.map(p => <Link key={p.id} href={`/admin/workbench/${p.id}?uke=${week.weekStart}`} aria-current={p.id === playerId ? "page" : undefined}>{p.navn}<small>Spiller</small></Link>)}</nav>
       </aside>
       <main className="wb-main">
