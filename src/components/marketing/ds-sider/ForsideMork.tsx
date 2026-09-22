@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useRef } from "react";
 
 import s from "./forside-mork.module.css";
@@ -16,7 +17,7 @@ import s from "./forside-mork.module.css";
  * Tegningen står utenfor designsystemets tokenlag og bruker effekter systemets
  * bevegelseslov ikke tillater. Designsystemets egen `readme.md` anbefaler den
  * lyse `hjem.html` i stedet. Anders er forelagt begge deler og har valgt denne.
- * Den lyse ligger på `/forside-ny-lys` til han har bestemt seg endelig.
+ * Valget ble endelig 22.09.2026, og den lyse varianten er slettet.
  * Ikke «rett» denne tilbake til tokens uten ny beslutning fra Anders.
  *
  * Alt som beveger seg er imperativt og lever i én effekt: canvas tegnes 60
@@ -27,9 +28,15 @@ import s from "./forside-mork.module.css";
  * redaksjonell side: bilderammen står stille på første bilde, tekstfeltene
  * ligger etter hverandre, og alt innhold er synlig.
  *
- * Ett tillegg til tegningen: lenkene i dørene og knappene ruller til sitt
- * kapittel. I tegningen peker de på id-er som er `position: fixed` når
- * bevegelsen er på, og da skjer det ingenting når man klikker.
+ * Ett tillegg til tegningen: lenkene i dørene og knappene peker på ekte ruter
+ * (`/booking`, `/playerhq`, `/priser`, `/kontakt`), ikke på id-er i siden.
+ * Tegningens egne ankre virket uansett ikke: de peker på felt som er
+ * `position: fixed` når bevegelsen er på. Bunnen har lenkene videre, fordi
+ * flaten tegner sitt eget skall og ikke har noen topplinje.
+ *
+ * Mobil (Anders 22.09.2026): under 700 px er mekanikken en annen — fotoet
+ * blir liggende klebrig bak, og kapitlene renner over det som vanlige
+ * blokker. Se mobilblokken nederst i `forside-mork.module.css`.
  */
 
 const FOTO = "/images/akgolf/";
@@ -47,6 +54,15 @@ const SEKVENS = [
 /** Kapitlenes midtpunkt i rullingen, og hvor lenge bildet står helt stille. */
 const MIDT = [0.065, 0.215, 0.375, 0.535, 0.695, 0.875];
 const HOLD = 0.042;
+
+/** Bunnens lenker videre — forsiden har ingen topplinje å navigere fra. */
+const VIDERE: Array<[string, string]> = [
+  ["Book time", "/booking"],
+  ["Player HQ", "/playerhq"],
+  ["Priser", "/priser"],
+  ["Turneringer", "/turneringer"],
+  ["Kontakt", "/kontakt"],
+];
 
 const KAPITLER = ["Start", "Metode", "Coaching", "Player HQ", "Akademiet", "Kontakt"];
 
@@ -113,6 +129,7 @@ export function ForsideMork() {
     const felt = alle<HTMLElement>(`.${s.st}`);
     const kapitler = alle<HTMLElement>(`.${s.c}`);
     const spor = alle<HTMLElement>(`.${s.trk} > i`);
+    const stripe = finn<HTMLElement>(`.${s.prog} > i`);
     const figurer = alle<HTMLElement>("figure");
 
     if (!scene || !klebrig || !lerret || !partikler) return;
@@ -323,6 +340,35 @@ export function ForsideMork() {
       return n;
     }
 
+    /* Under 700 px er scenen innholdsstyrt, ikke 720vh. Da stemmer ikke
+       MIDT-brøkene lenger, og bildet må lese seg selv ut av hvor panelene
+       faktisk står. Samme brekkpunkt som CSS-modulens mobilblokk. */
+    const mobilSpm = window.matchMedia("(max-width: 700px)");
+
+    function flytPos(): number {
+      const n = felt.length - 1;
+      if (n < 1) return 0;
+      const m = (vh() || 1) * 0.46;
+      const sentre = felt.map((el) => {
+        const r = el.getBoundingClientRect();
+        return r.top + r.height / 2;
+      });
+      if (m <= sentre[0]) return 0;
+      if (m >= sentre[n]) return n;
+      for (let i = 0; i < n; i++) {
+        if (m > sentre[i + 1]) continue;
+        const spenn = sentre[i + 1] - sentre[i];
+        const f = spenn > 0 ? (m - sentre[i]) / spenn : 0;
+        /* Samme hold som på desktop: bildet står stille rundt hvert kapittel
+           og skifter i overgangen mellom dem. */
+        return i + Math.max(0, Math.min(1, (f - 0.28) / 0.44));
+      }
+      return n;
+    }
+
+    /** Hvilket bilde hører til der vi er nå — uansett hvilken mekanikk som gjelder. */
+    const bildeNaa = () => (mobilSpm.matches ? flytPos() : bildePos(fremdrift()));
+
     const fremdrift = () => {
       const r = scene.getBoundingClientRect();
       return Math.max(0, Math.min(1, -r.top / (r.height - window.innerHeight)));
@@ -337,6 +383,7 @@ export function ForsideMork() {
       let aktiv = 0;
       for (let j = 0; j < MIDT.length; j++) if (raa >= MIDT[j] - 0.05) aktiv = j;
       kapitler.forEach((c, i) => c.classList.toggle(s.on, i === aktiv));
+      if (stripe) stripe.style.width = `${Math.max(0, Math.min(1, raa)) * 100}%`;
       spor.forEach((t, i) => {
         const start = MIDT[i];
         const slutt = MIDT[i + 1] ?? 1;
@@ -355,7 +402,7 @@ export function ForsideMork() {
       if (!levende) return;
       sisteRaf = Date.now();
       const raa = fremdrift();
-      maalF = bildePos(raa);
+      maalF = bildeNaa();
       naaF += (maalF - naaF) * (rolig ? 1 : 0.11);
       tegn(naaF);
       settTilstand(raa);
@@ -367,7 +414,7 @@ export function ForsideMork() {
       settTilstand(raa);
       /* requestAnimationFrame står stille i skjulte faner — siden skal likevel stemme */
       if (Date.now() - sisteRaf > 250) {
-        naaF = bildePos(raa);
+        naaF = bildeNaa();
         tegn(naaF);
       }
     };
@@ -376,6 +423,12 @@ export function ForsideMork() {
 
     /* ---- kapittelskinne og lenker som ruller ---- */
     function rullTil(kapittel: number) {
+      if (mobilSpm.matches) {
+        /* Panelene ligger i samme rekkefølge som MIDT og SEKVENS. På mobil
+           er de vanlige blokker, så de kan rulles til direkte. */
+        felt[kapittel]?.scrollIntoView({ behavior: "smooth", block: "center" });
+        return;
+      }
       const vil = MIDT[kapittel];
       const r = sceneEl.getBoundingClientRect();
       const topp = r.top + window.scrollY;
@@ -389,18 +442,6 @@ export function ForsideMork() {
       c.addEventListener("click", klikk);
       opprydding.push(() => c.removeEventListener("click", klikk));
     });
-
-    const ANKER: Record<string, number> = { "#coaching": 2, "#playerhq": 3, "#kontakt": 5 };
-    const paaAnker = (e: MouseEvent) => {
-      const a = (e.target as Element | null)?.closest?.("a");
-      if (!a) return;
-      const href = a.getAttribute("href") ?? "";
-      if (!(href in ANKER)) return;
-      e.preventDefault();
-      rullTil(ANKER[href]);
-    };
-    node.addEventListener("click", paaAnker);
-    opprydding.push(() => node.removeEventListener("click", paaAnker));
 
     /* ---- bildearkivet: avdekking og parallakse ---- */
     const io = new IntersectionObserver(
@@ -550,6 +591,10 @@ export function ForsideMork() {
         <span className={s.pct}>0 %</span>
       </div>
 
+      <div className={s.prog} aria-hidden="true">
+        <i />
+      </div>
+
       <nav className={s.chap} aria-label="Kapitler">
         {KAPITLER.map((navn, i) => (
           <div key={navn}>
@@ -588,7 +633,7 @@ export function ForsideMork() {
             hurtigkur, ingen mirakelgrep.
           </p>
           <div className={s.doors}>
-            <a className={s.door} href="#coaching">
+            <Link className={s.door} href="/booking">
               <span className={s.t}>
                 Coaching<i>01</i>
               </span>
@@ -596,14 +641,14 @@ export function ForsideMork() {
                 Enkelttime på bane eller i studio. Gruppetrening. Foreldresamtale.
               </span>
               <span className={s.p}>BOOK TIME</span>
-            </a>
-            <a className={s.door} href="#playerhq">
+            </Link>
+            <Link className={s.door} href="/playerhq">
               <span className={s.t}>
                 Player HQ<i>02</i>
               </span>
               <span className={s.d}>Appen for deg som trener videre mellom timene.</span>
               <span className={s.p}>299 KR / MND</span>
-            </a>
+            </Link>
           </div>
         </div>
 
@@ -634,12 +679,12 @@ export function ForsideMork() {
             ))}
           </ul>
           <div className={s.acts}>
-            <a className={`${s.btn} ${s.btnP}`} href="#kontakt">
+            <Link className={`${s.btn} ${s.btnP}`} href="/booking">
               Book en time
-            </a>
-            <span className={s.m} style={{ alignSelf: "center" }}>
-              PRIS OPPGIS VED HENVENDELSE
-            </span>
+            </Link>
+            <Link className={s.m} style={{ alignSelf: "center" }} href="/priser">
+              SE PRISER
+            </Link>
           </div>
         </div>
 
@@ -659,9 +704,9 @@ export function ForsideMork() {
             ))}
           </div>
           <div className={s.acts}>
-            <a className={`${s.btn} ${s.btnG}`} href="#kontakt">
+            <Link className={`${s.btn} ${s.btnG}`} href="/playerhq">
               Se Player HQ
-            </a>
+            </Link>
           </div>
         </div>
 
@@ -688,12 +733,12 @@ export function ForsideMork() {
           <h2>Én time forteller mer enn ti tips.</h2>
           <p>Skriv hva du spiller i dag og hva du vil bli bedre på.</p>
           <div className={s.acts}>
-            <a className={`${s.btn} ${s.btnP}`} href="mailto:post@akgolf.no">
+            <Link className={`${s.btn} ${s.btnP}`} href="/booking">
               Book en time
-            </a>
-            <a className={`${s.btn} ${s.btnG}`} href="#playerhq">
-              Prøv Player HQ
-            </a>
+            </Link>
+            <Link className={`${s.btn} ${s.btnG}`} href="/kontakt">
+              Skriv til meg
+            </Link>
           </div>
           <p className={s.m} style={{ marginTop: 28 }}>
             FREDRIKSTAD · POST@AKGOLF.NO
@@ -727,6 +772,15 @@ export function ForsideMork() {
       <footer className={s.ft}>
         <div className={s.ftIn}>
           <span className={s.bm}>AK Golf</span>
+          {/* Forsiden tegner sitt eget skall og har ingen topplinje. Uten disse
+              lenkene er resten av nettstedet uten inngang herfra. */}
+          <nav className={s.ftNav} aria-label="Sider">
+            {VIDERE.map(([tekst, rute]) => (
+              <Link key={rute} href={rute}>
+                {tekst}
+              </Link>
+            ))}
+          </nav>
           <span className={s.m}>AK GOLF · FREDRIKSTAD · ALLE BILDER ER AK GOLFS EGNE</span>
         </div>
       </footer>

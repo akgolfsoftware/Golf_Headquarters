@@ -206,6 +206,26 @@
   .chap, .mo .chap { display: none }
 }
 
+/* ---- framdriftsstripe ----
+ * Kapittelskinnen krever plass i høyre marg og forsvinner under 900 px.
+ * Under der forteller en 2 px stripe det samme: hvor langt inn i historien
+ * man er. Vises bare når bevegelsen faktisk er på. */
+.prog {
+  display: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 2px;
+  z-index: 60;
+  pointer-events: none;
+  background: rgba(250, 248, 243, .1);
+}
+.prog i { display: block; height: 100%; width: 0; background: var(--rust-lit) }
+@media (max-width: 900px) {
+  .mo .prog { display: block }
+}
+
 /* ---- scenen ---- */
 .stage { position: relative }
 .mo .stage { height: 720vh }
@@ -475,34 +495,66 @@
   flex-wrap: wrap;
 }
 .ft .bm { font: 600 20px/1 var(--mork-display); letter-spacing: .3em; text-transform: uppercase; color: var(--sand) }
+.ftNav { display: flex; flex-wrap: wrap; gap: 8px 26px }
+.ftNav a {
+  font: 600 11px/1.2 var(--mork-display);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--sand-dim);
+  transition: color var(--dur) var(--ease);
+}
+.ftNav a:hover { color: var(--rust-lit) }
 
 @media (prefers-reduced-motion: reduce) {
   .rot *, .rot *::before, .rot *::after { transition-duration: 1ms !important; animation: none !important }
   .grain, .parts, .vig { display: none }
 }
 
-/* ---- mobil: tegningens egen rolige variant ----
- * Tegningen er tegnet for 1440 × 900 og har ingen mobilvariant. Låst til
- * skjermen på 390 px blir tekstfeltene høyere enn skjermen, og de nederste
- * punktene i listene er umulige å nå — de ligger utenfor kanten, og siden
- * ruller videre i stedet for å vise dem. Målt 22.09.2026.
+/* ---- mobil: samme film, annen mekanikk (Anders 22.09.2026) ----
+ * Tegningen er tegnet for 1440 × 900 og har ingen mobilvariant. På desktop
+ * låses hvert tekstfelt til skjermen med `position: fixed`. På 390 px blir
+ * feltene høyere enn skjermen, og de nederste punktene i listene er umulige
+ * å nå — de ligger utenfor kanten, og siden ruller videre i stedet for å
+ * vise dem. Målt 22.09.2026.
  *
- * Her faller mobilen tilbake til tilstanden tegningen selv definerer når
- * bevegelsen er av: bilderammen står stille øverst, feltene ligger etter
- * hverandre nedover. Ingenting er funnet på — men mobilen får dermed ikke
- * den filmatiske rullingen. Det er en åpen beslutning for Anders.
+ * Her er grepet et annet: fotoet blir liggende klebrig bak, og kapitlene
+ * renner normalt over det. Da kan ingenting havne utenfor skjermen, samtidig
+ * som bildet fortsatt skifter for hvert kapittel og rullingen er den samme
+ * filmen. Scenehøyden er ikke lenger 720vh, men det innholdet faktisk tar.
+ *
+ * Fordi scenehøyden er innholdsstyrt, kan bildet ikke lenger følge MIDT-
+ * brøkene. På mobil leses bildeposisjonen ut av panelenes egen geometri
+ * (`flytPos()` i komponenten). Framdriftsstripen bruker fortsatt scenens
+ * framdrift, som gjelder uansett høyde.
  *
  * 700 px er tegningens eget brekkpunkt (der dørene går fra to til én). */
 @media (max-width: 700px) {
   .mo .stage { height: auto }
-  .mo .sticky { position: relative }
+  .mo .sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100svh;
+    z-index: 0;
+  }
+  /* Ett jevnt slør over hele fotoet. På desktop står teksten alltid over den
+     mørke venstre enden av scrimen; på mobil ruller den over hele bildet, og
+     da må sløret gjelde hele flaten. */
+  .mo .sticky::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: rgba(14, 13, 12, .62);
+  }
   .mo .st {
     position: relative;
     left: auto;
     top: auto;
-    margin: 0 auto 104px;
-    padding: 0 5vw;
-    max-width: min(700px, 92vw);
+    margin: 0 auto 88px;
+    padding: 0 6vw;
+    max-width: 100%;
     opacity: 1;
     transform: none;
     filter: none;
@@ -515,12 +567,20 @@
     left: 0;
     right: 0;
     height: 100vh;
+    height: 100svh;
     max-width: none;
     margin: 0;
-    padding: 0 6vw 8vh;
+    padding: 0 6vw 9vh;
     justify-content: flex-end;
   }
-  .mo .stC { left: auto; transform: none; max-width: min(700px, 92vw) }
+  /* Den klebrige blokken er allerede første skjerm — heroen ligger over den,
+     og neste felt skal starte rett etter uten ekstra luft. */
+  .hero + .st { margin-top: 0 }
+  .mo .stC { left: auto; transform: none; max-width: 100% }
   .mo .sp { opacity: 1; transform: none }
   .mo .grid figure { opacity: 1; transform: none }
+
+  /* Navn og sted får ikke plass ved siden av hverandre på 390 px. */
+  .feat li { grid-template-columns: auto 1fr; row-gap: 4px }
+  .feat .v { grid-column: 2; text-align: left }
 }

@@ -27,10 +27,9 @@ import { kanBrukeInnebygdBooking } from "@/lib/booking/offentlig-booking";
  *
  * UNNTAK — flater som tegner sitt eget skall og ville fått DOBBELT her:
  *  - `/stats/*` (~45 ruter): eget produkt, egen mørk MRamme, egen bølge (W7).
- *  - `/forside-ny` og `/forside-ny-lys`: de to nye forsidene (21.09.2026).
- *    Begge tegningene har sin egen topplinje og bunn og laster sine egne
- *    fonter — ikke det eldre merkesystemets. Den mørke står i tillegg helt
- *    utenfor tokenlaget og bærer ingen `.ak-ds`.
+ *  - `/` forsiden (Anders 22.09.2026): den mørke, filmatiske tegningen har
+ *    sin egen bunn og laster sine egne fonter — ikke det eldre merkesystemets.
+ *    Den står i tillegg helt utenfor tokenlaget og bærer ingen `.ak-ds`.
  *  - `/booking` KUN når den innebygde bookingen er åpen: Train-lock-flate
  *    (Anders 28.08.2026) med egen topplinje. Pauset booking er en vanlig
  *    landingsside og får skallet.
@@ -69,7 +68,9 @@ const FONT_VARS = {
   "--ak-mono": "var(--font-ak-mono), ui-monospace, SFMono-Regular, Menlo, monospace",
 } as CSSProperties;
 
-const EGET_SKALL = ["/stats", "/forside-ny", "/forside-ny-lys"];
+/* «/» matcher trygt her: sjekken under er `path === p` eller `path` som
+   starter med `${p}/`, og «//» finnes ikke. */
+const EGET_SKALL = ["/", "/stats"];
 
 export default async function MarketingLayout({
   children,
