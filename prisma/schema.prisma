@@ -360,6 +360,20 @@ enum SandTrinn {
   MED_BALL
 }
 
+/// Hvordan øvelsen måles (master: treningsplanlegging-og-sprak-gjennomgang.md
+/// trinn 4, Anders 22.09). Fast liste, aldri fritekst og aldri utledet fra om
+/// øvelsen er inne eller ute. Spilleren oppgir selv hvilken enhet han står på
+/// (PlayerFacility.radarMerke). Senere versjon: teknisk plan tilpasses
+/// parametrene hver enhet faktisk måler.
+enum Maaleutstyr {
+  TRACKMAN
+  FLIGHTSCOPE
+  GARMIN_R10
+  MEVO_PLUS
+  ANNET
+  UTEN
+}
+
 /// Hva et innslag i en økt er.
 enum InnslagType {
   DRILL
@@ -4945,6 +4959,19 @@ model PositionTask {
   // Typet område (fasitens 17). `omraade` over er fri tekst og beholdes som
   // historisk lesefelt.
   omraadeKode Omraade?
+
+  // --- v2-akser (22.09.2026) ----------------------------------------------
+  // Erstatter lFase/cs/miljo/prPress over, som er utgått (beslutning 21.09).
+  // Hvilke akser som i det hele tatt gjelder området styres av
+  // src/lib/domain/omrade-relevans.ts — et visningsfilter, aldri en regel.
+  motorikk    Motorikk?
+  belastning  Belastning?
+  press       Press?
+  // Teknisk fokus — én per oppgave, valgfritt (Anders 22.09). Følger med når
+  // oppgaven dras inn i en økt.
+  dimensjon   OmradeDimensjon?
+  sandTrinn   SandTrinn?
+  maaleutstyr Maaleutstyr?
 
   // Statusrapporten er løpende, ikke bestått/ikke bestått: store tekniske
   // oppgaver blir ofte aldri «fullført», og tilbakefall etter turneringshelger

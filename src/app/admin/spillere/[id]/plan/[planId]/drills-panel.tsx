@@ -27,7 +27,7 @@ import {
   type TmGoalDraft,
   type HitRateGoalDraft,
 } from "@/components/teknisk-plan/oppgave-modal";
-import { SG_BUCKETS, type PyramidArea } from "@/components/teknisk-plan/constants";
+import { OMRAADE_FANER, omraadeVisning, type PyramidArea } from "@/components/teknisk-plan/constants";
 import {
   createTask,
   updateTaskBasics,
@@ -72,7 +72,7 @@ interface DrillsPanelProps {
 
 /** Tom draft for "Legg til drill". */
 function emptyDraft(target: { pNummer: string; pName: string }): OppgaveDraft {
-  const omraadeTab = "Tee" as keyof typeof SG_BUCKETS;
+  const omraadeTab = "Utslag" as const;
   return {
     pNummer: target.pNummer,
     pName: target.pName,
@@ -80,7 +80,8 @@ function emptyDraft(target: { pNummer: string; pName: string }): OppgaveDraft {
     beskrivelse: "",
     pyramide: "TEK",
     omraadeTab,
-    omraade: SG_BUCKETS[omraadeTab][0],
+    omraadeKode: OMRAADE_FANER[omraadeTab][0],
+    omraade: omraadeVisning(OMRAADE_FANER[omraadeTab][0]),
     koller: [],
     repsMaalDry: 0,
     repsMaalLav: 0,
@@ -134,12 +135,14 @@ function draftToTaskInput(planId: string, draft: OppgaveDraft): TaskInput {
     tittel: draft.tittel,
     beskrivelse: draft.beskrivelse || undefined,
     pyramide: draft.pyramide,
+    omraadeKode: draft.omraadeKode,
     omraade: draft.omraade,
     koller: draft.koller,
-    lFase: draft.lFase ?? null,
-    cs: draft.cs ?? null,
-    miljo: draft.m ?? null,
-    prPress: draft.pr ?? null,
+    motorikk: draft.motorikk ?? null,
+    belastning: draft.belastning ?? null,
+    press: draft.press ?? null,
+    dimensjon: draft.dimensjon ?? null,
+    maaleutstyr: draft.maaleutstyr ?? null,
     kategori: draft.kategori ?? null,
     repsMaalDry: draft.repsMaalDry,
     repsMaalLav: draft.repsMaalLav,
@@ -152,15 +155,19 @@ function draftToTaskInput(planId: string, draft: OppgaveDraft): TaskInput {
 /** updateTaskBasics tar bare basis-feltene (ikke planId/P/tmGoals/hitRateGoals). */
 function draftToBasicsPatch(draft: OppgaveDraft) {
   return {
+    pNummer: draft.pNummer,
+    pName: draft.pName,
     tittel: draft.tittel,
     beskrivelse: draft.beskrivelse || undefined,
     pyramide: draft.pyramide,
+    omraadeKode: draft.omraadeKode,
     omraade: draft.omraade,
     koller: draft.koller,
-    lFase: draft.lFase ?? null,
-    cs: draft.cs ?? null,
-    miljo: draft.m ?? null,
-    prPress: draft.pr ?? null,
+    motorikk: draft.motorikk ?? null,
+    belastning: draft.belastning ?? null,
+    press: draft.press ?? null,
+    dimensjon: draft.dimensjon ?? null,
+    maaleutstyr: draft.maaleutstyr ?? null,
     kategori: draft.kategori ?? null,
     repsMaalDry: draft.repsMaalDry,
     repsMaalLav: draft.repsMaalLav,

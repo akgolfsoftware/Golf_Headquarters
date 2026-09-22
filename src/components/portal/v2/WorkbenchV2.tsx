@@ -11,6 +11,13 @@
 
 import { parseWorkbenchStart } from "@/lib/workbench/start-prefill";
 import { TL } from "@/lib/v2/train-lock";
+import { formaterTall } from "@/lib/format-tall";
+import {
+  filtrerTekniskePanelOppgaver,
+  merkelapper,
+  tekniskOppgaveTilDrill,
+  type TekniskPanelOppgave,
+} from "@/lib/workbench/teknisk-plan-panel-typer";
 
 /**
  * WORKBENCH — v2 (retning C «Presis»). Flaggskipet: delt av coach og spiller
@@ -178,7 +185,8 @@ function statusLabel(s: PlanStatus | null | undefined): { l: string; tone: "info
 type WbDragData =
   | { kind: "move"; sessionId: string; event: WeekEvent }
   | { kind: "add"; title: string; durMin: number; akse?: AkseKey }
-  | { kind: "mal"; templateId: string; name: string; sessionCount: number; varighetUker: number };
+  | { kind: "mal"; templateId: string; name: string; sessionCount: number; varighetUker: number }
+  | { kind: "teknisk"; oppgave: TekniskPanelOppgave };
 
 /** Pointer-Y (skjermkoordinat ved slipp) → {hour, minute} snappet til nærmeste
  *  GRID_SLOT_MIN, relativt til toppen av dag-kolonnen den slippes i. Erstatter
@@ -278,8 +286,14 @@ function WBDragOverlayInnhold({ data }: { data: WbDragData }) {
     );
   }
   const akse = data.kind === "add" ? data.akse : undefined;
-  const tittel = data.kind === "add" ? data.title : data.name;
-  const sub = data.kind === "add" ? fmtVarighet(data.durMin) : `${data.sessionCount} økter · ${data.varighetUker} uker`;
+  const tittel =
+    data.kind === "add" ? data.title : data.kind === "mal" ? data.name : data.oppgave.tittel;
+  const sub =
+    data.kind === "add"
+      ? fmtVarighet(data.durMin)
+      : data.kind === "mal"
+        ? `${data.sessionCount} økter · ${data.varighetUker} uker`
+        : `${data.oppgave.pNummer} · ${data.oppgave.undertekst}`;
   return (
     <div style={{ width: 200, display: "flex", flexDirection: "column", gap: 4, padding: "8px 10px", borderRadius: 10, background: TL.dock, border: `1px dashed ${TL.hair}`, boxShadow: `0 10px 28px ${TL.scrim}`, cursor: "grabbing" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
@@ -380,6 +394,79 @@ function WBTidslinje({ dager, valgt, onVelg, kanFlytteOkter, kanLeggeTil, kanBru
   );
 }
 
+/* ── Teknisk utvikling (bibliotek-fane) ────────────────── */
+/** Én filterrad: «Slag», «Kølle» eller «Lengde». Trykk på valgt chip nullstiller. */
+function TekniskFilterRad({ label, valg, valgt, onVelg }: {
+  label: string;
+  valg: { verdi: string; label: string }[];
+  valgt: string | null;
+  onVelg: (v: string | null) => void;
+}) {
+  return (
+    <div style={{ display: "flex", gap: 4, flexWrap: "wrap", alignItems: "center" }}>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 8, color: TL.mute, textTransform: "uppercase", letterSpacing: "0.04em", flex: "none" }}>{label}</span>
+      {valg.map((v) => {
+        const on = valgt === v.verdi;
+        return (
+          <button
+            key={v.verdi}
+            type="button"
+            onClick={() => onVelg(on ? null : v.verdi)}
+            className="v2-press v2-focus"
+            aria-pressed={on}
+            style={{ appearance: "none", cursor: "pointer", fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, padding: "3px 8px", borderRadius: 9999, border: `1px solid ${on ? "transparent" : TL.hair}`, background: on ? TL.fill : TL.dock, color: on ? TL.onFill : TL.mute, letterSpacing: "0.04em" }}
+          >
+            {v.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+
+/** Ett dragbart oppgavekort fra spillerens tekniske plan. Egen komponent fordi
+ *  dnd-kit sin `useDraggable` er en hook (kan ikke kalles i en `.map()`). */
+function WBTekniskKort({ o, onLegg }: { o: TekniskPanelOppgave; onLegg?: (o: TekniskPanelOppgave) => void }) {
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+    id: `teknisk:${o.id}`,
+    data: { kind: "teknisk", oppgave: o } satisfies WbDragData,
+  });
+  const lapper = merkelapper(o);
+  return (
+    <button
+      ref={setNodeRef}
+      type="button"
+      onClick={onLegg ? () => onLegg(o) : undefined}
+      {...attributes}
+      {...listeners}
+      className="v2-press v2-focus"
+      style={{ appearance: "none", textAlign: "left", width: "100%", padding: "8px 9px", borderRadius: 10, background: TL.dock, border: `1px ${o.hovedfokus ? "solid" : "dashed"} ${o.hovedfokus ? TL.fill : TL.hair}`, cursor: "grab", minWidth: 0, touchAction: "none", opacity: isDragging ? 0.35 : 1 }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 0 }}>
+        <span style={{ fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, color: TL.mute, flex: "none" }}>{o.pNummer}</span>
+        <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, fontWeight: 600, color: TL.text, flex: 1, minWidth: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{o.tittel}</span>
+        {onLegg && <Icon name="plus" size={10} style={{ color: TL.mute, flex: "none" }} />}
+      </div>
+      <div style={{ fontFamily: TL.font.mono, fontSize: 8.5, color: TL.mute, marginTop: 4, minWidth: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+        {o.undertekst}
+      </div>
+      {(lapper.length > 0 || o.restTotalt > 0) && (
+        <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginTop: 4 }}>
+          {lapper.map((l) => (
+            <span key={l} style={{ fontFamily: TL.font.mono, fontSize: 8, color: TL.mute, border: `1px solid ${TL.hair}`, borderRadius: 9999, padding: "1px 6px" }}>{l}</span>
+          ))}
+          {o.restTotalt > 0 && (
+            <span style={{ fontFamily: TL.font.mono, fontSize: 8, color: TL.text, border: `1px solid ${TL.hair}`, borderRadius: 9999, padding: "1px 6px" }}>
+              {formaterTall(o.restTotalt)} igjen
+            </span>
+          )}
+        </div>
+      )}
+    </button>
+  );
+}
+
 /* ── Bibliotek (venstre) ───────────────────────────────── */
 function PalettBrikke({ pid, tittel, akse, durMin, sub, onClick }: { pid: string; tittel: string; akse?: AkseKey; durMin?: number; sub: string; onClick?: () => void }) {
   // Dragbar når den er klikkbar (skriveside finnes): dras rett inn på et
@@ -476,7 +563,7 @@ function WBGruppetider({ slots }: { slots: NonNullable<WorkbenchData["groupSlots
 }
 
 
-export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukMal, visPerioder, onLeggDrillIValgt, proMode = true, skjulTittel = false }: {
+export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukMal, visPerioder, onLeggDrillIValgt, onLeggTekniskOppgave, proMode = true, skjulTittel = false }: {
   data: WorkbenchData;
   tab: string; setTab: (t: string) => void;
   sok: string; setSok: (s: string) => void;
@@ -488,6 +575,8 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
   visPerioder?: boolean;
   /** 8c.6: Driller-fanen — klikk legger drillen i VALGT økt. Uten = lesevisning. */
   onLeggDrillIValgt?: (drill: { exerciseId: string; navn: string }) => Promise<{ ok: boolean; error?: string }>;
+  /** Teknisk-fanen — klikk åpner Ny økt forhåndsutfylt. Uten = lesevisning. */
+  onLeggTekniskOppgave?: (o: TekniskPanelOppgave) => void;
   /** B40 §3/§5: mal-biblioteket er Pro-only. Default true — samme som Workbench for øvrig. */
   proMode?: boolean;
   /** Mobil: MobilFold-headeren viser allerede «Bibliotek» — dropp den interne. */
@@ -502,10 +591,17 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
   const effectiveTab = !proMode && tab === "maler" ? "okter" : tab;
   // PP-3 fasit .libtabs: Maler | Økter | Drills | Turn.
   const faner = proMode
-    ? [["maler", "Maler"], ["okter", "Økter"], ["driller", "Drills"], ["turn", "Turn."]]
-    : [["okter", "Økter"], ["driller", "Drills"], ["turn", "Turn."]];
+    ? [["maler", "Maler"], ["okter", "Økter"], ["driller", "Drills"], ["teknisk", "Teknisk"], ["turn", "Turn."]]
+    : [["okter", "Økter"], ["driller", "Drills"], ["teknisk", "Teknisk"], ["turn", "Turn."]];
   const maler = (data.planTemplates ?? []).filter((m) => treff(m.name));
   const okter = (data.paletteItems ?? []).filter((b) => treff(b.title) && (!akseFilter || b.cat === akseFilter));
+  // Teknisk-fanen: spillerens tekniske plan. Filtrene fylles fra planen selv,
+  // så det aldri står et valg som ikke finnes.
+  const tekniskPanel = data.tekniskPanel ?? null;
+  const [tekSlag, setTekSlag] = useState<string | null>(null);
+  const [tekKolle, setTekKolle] = useState<string | null>(null);
+  const [tekOmraade, setTekOmraade] = useState<string | null>(null);
+  const [tekKunRest, setTekKunRest] = useState(false);
   // Driller-fanen: øvelsesbanken via server-søk (debounced).
   const [driller, setDriller] = useState<DrillTreff[]>([]);
   const [drillMelding, setDrillMelding] = useState<string | null>(null);
@@ -558,7 +654,7 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
           <PeriodePalett />
         </div>
       )}
-      {effectiveTab !== "maler" && effectiveTab !== "turn" && (
+      {effectiveTab !== "maler" && effectiveTab !== "turn" && effectiveTab !== "teknisk" && (
         <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }} data-wb-aksefilter>
           {([null, "FYS", "TEK", "SLAG", "SPILL", "TURN"] as (AkseKey | null)[]).map((f) => {
             const on = akseFilter === f;
@@ -631,6 +727,88 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
               </div>
             ));
           })()}
+        </div>
+      )}
+      {effectiveTab === "teknisk" && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 6 }} data-wb-tekniskfane>
+          {!tekniskPanel || tekniskPanel.oppgaver.length === 0 ? (
+            <TomTilstand
+              icon="target"
+              title="Ingen teknisk plan"
+              sub="Spilleren har ingen aktiv teknisk plan med oppgaver. Bygg planen først, så kan oppgavene dras inn her."
+            />
+          ) : (
+            <>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 8.5, color: TL.mute }}>
+                {onLeggTekniskOppgave
+                  ? "Dra en oppgave inn i uka, eller trykk for å legge den i en ny økt."
+                  : `${tekniskPanel.planNavn} (lesevisning).`}
+              </span>
+              {/* Filtre: slag, kølle og lengde — bare verdier som finnes i planen. */}
+              {tekniskPanel.filtre.slag.length > 0 && (
+                <TekniskFilterRad
+                  label="Slag"
+                  valg={tekniskPanel.filtre.slag.map((s) => ({ verdi: s, label: s }))}
+                  valgt={tekSlag}
+                  onVelg={setTekSlag}
+                />
+              )}
+              {tekniskPanel.filtre.koller.length > 1 && (
+                <TekniskFilterRad
+                  label="Kølle"
+                  valg={tekniskPanel.filtre.koller.map((k) => ({ verdi: k, label: k }))}
+                  valgt={tekKolle}
+                  onVelg={setTekKolle}
+                />
+              )}
+              {tekniskPanel.filtre.omraader.length > 1 && (
+                <TekniskFilterRad
+                  label="Lengde"
+                  valg={tekniskPanel.filtre.omraader.map((o) => ({ verdi: o.kode, label: o.label }))}
+                  valgt={tekOmraade}
+                  onVelg={setTekOmraade}
+                />
+              )}
+              <button
+                type="button"
+                onClick={() => setTekKunRest(!tekKunRest)}
+                className="v2-press v2-focus"
+                style={{ appearance: "none", cursor: "pointer", alignSelf: "flex-start", fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, padding: "4px 8px", borderRadius: 9999, border: `1px solid ${tekKunRest ? "transparent" : TL.hair}`, background: tekKunRest ? TL.fill : TL.dock, color: tekKunRest ? TL.onFill : TL.mute, letterSpacing: "0.04em" }}
+                aria-pressed={tekKunRest}
+              >
+                Bare med arbeid igjen
+              </button>
+              {(() => {
+                const treff = filtrerTekniskePanelOppgaver(tekniskPanel.oppgaver, {
+                  sok,
+                  slag: tekSlag,
+                  kolle: tekKolle,
+                  omraade: (tekOmraade as TekniskPanelOppgave["omraadeKode"]) ?? null,
+                  kunRest: tekKunRest,
+                });
+                if (treff.length === 0) {
+                  return <TomTilstand icon="target" title="Ingen treff" sub="Ingen oppgaver matcher filtrene. Nullstill ett av dem." />;
+                }
+                // Gruppert per hoved-P, slik planen selv er bygget.
+                const grupper: { p: string; navn: string; oppgaver: TekniskPanelOppgave[] }[] = [];
+                for (const o of treff) {
+                  const siste = grupper[grupper.length - 1];
+                  if (siste && siste.p === o.pHoved) siste.oppgaver.push(o);
+                  else grupper.push({ p: o.pHoved, navn: o.pNavn, oppgaver: [o] });
+                }
+                return grupper.map((g) => (
+                  <div key={g.p} style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+                    <span style={{ fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, color: TL.mute, letterSpacing: "0.04em", textTransform: "uppercase" }}>
+                      {g.p.replace(".0", "")} · {g.navn}
+                    </span>
+                    {g.oppgaver.map((o) => (
+                      <WBTekniskKort key={o.id} o={o} onLegg={onLeggTekniskOppgave} />
+                    ))}
+                  </div>
+                ));
+              })()}
+            </>
+          )}
         </div>
       )}
       {tab === "driller" && (
@@ -2308,6 +2486,41 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
   // Dra en bibliotek-brikke inn på et klokkeslett → BEKREFTELSES-POPUP
   // (Anders-logikken: dra til canvas → popup der alt kan justeres, eller bare
   // bekreft). Arket åpnes forhåndsutfylt med brikken + dag/tid fra slippunktet.
+  /**
+   * Teknisk oppgave → forhåndsutfylt Ny økt (Anders 22.09). Slaget, lengden,
+   * læringssteget og restmålet følger med, og drillen kobles til oppgaven via
+   * `positionTaskId` slik at reps logges tilbake til planen ved fullføring.
+   *
+   * Restmålet er et FORSLAG, ikke et krav: coachen kan overskrive tallene i
+   * arket før økta opprettes (ingen treningsregel håndheves, 18.08).
+   */
+  const tekniskOppgaveTilPrefill = (o: TekniskPanelOppgave) => {
+    const f = tekniskOppgaveTilDrill(o);
+    const akse = f.nyPyramidArea as AkseKey;
+    const drill: OktArkDrill = {
+      navn: f.navn,
+      minutter: null,
+      sett: null,
+      reps: null,
+      nivaa: f.nivaa,
+      planRepsUtenBall: f.planRepsUtenBall,
+      planRepsLavFart: f.planRepsLavFart,
+      planRepsAuto: f.planRepsAuto,
+      nyPyramidArea: akse,
+      nyOmraade: f.nyOmraade,
+      nyBeskrivelse: f.nyBeskrivelse,
+      positionTaskId: f.positionTaskId,
+      positionTaskTittel: f.positionTaskTittel,
+    };
+    return { title: f.navn, durMin: 60, akse, drills: [drill] };
+  };
+
+  const leggTekniskOppgave = (o: TekniskPanelOppgave) => {
+    setNyOktPrefill(tekniskOppgaveTilPrefill(o));
+    setNyOktSted(null);
+    setNyOktApen(true);
+  };
+
   const handleDropAdd = (
     item: { title: string; durMin: number; akse?: AkseKey },
     dayIndex: number,
@@ -2347,6 +2560,14 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
       handleDropAdd({ title: payload.title, durMin: payload.durMin, akse: payload.akse }, dayIndex, hour, minute);
     } else if (payload.kind === "mal") {
       setMalBekreft({ templateId: payload.templateId, name: payload.name, sessionCount: payload.sessionCount, varighetUker: payload.varighetUker });
+    } else if (payload.kind === "teknisk") {
+      // Samme Y→klokkeslett-utregning som «add»-grenen.
+      const activatorEvent = event.activatorEvent as PointerEvent | undefined;
+      const pointerY = (activatorEvent?.clientY ?? over.rect.top) + event.delta.y;
+      const { hour, minute } = tidFraPointerY(pointerY, over.rect.top);
+      setNyOktPrefill(tekniskOppgaveTilPrefill(payload.oppgave));
+      setNyOktSted({ dayIndex, tid: `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}` });
+      setNyOktApen(true);
     }
   };
 
@@ -2790,7 +3011,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
         {/* MIDTSONE (fasit .wbmid): Bibliotek | lerret | Inspektør — egen scroll per kolonne, min-w-0 overalt */}
         <div className="grid md:grid-cols-[200px_minmax(0,1fr)_300px] xl:grid-cols-[232px_minmax(0,1fr)_340px]" style={{ minHeight: 0 }}>
           <div aria-label="Bibliotek" style={{ minWidth: 0, minHeight: 0, overflowY: "auto", padding: "12px 12px 12px 0", borderRight: `1px solid ${TL.hair}` }}>
-        <WBBibliotek data={data} tab={tab} setTab={setTab} sok={sok} setSok={setSok} onVelgOkt={actions ? velgFraBibliotek : undefined} onBrukMal={actions?.applyTemplate ? brukMalFraBibliotek : undefined} visPerioder={nivaa === "ar" && !!actions?.lagrePeriode} onLeggDrillIValgt={actions?.updateSession ? leggDrillIValgt : undefined} proMode={proMode} />
+        <WBBibliotek data={data} tab={tab} setTab={setTab} sok={sok} setSok={setSok} onVelgOkt={actions ? velgFraBibliotek : undefined} onBrukMal={actions?.applyTemplate ? brukMalFraBibliotek : undefined} visPerioder={nivaa === "ar" && !!actions?.lagrePeriode} onLeggDrillIValgt={actions?.updateSession ? leggDrillIValgt : undefined} onLeggTekniskOppgave={actions ? leggTekniskOppgave : undefined} proMode={proMode} />
           </div>
           <div style={{ minWidth: 0, minHeight: 0, display: "flex", flexDirection: "column" }}>
             <WBPeriodeBand data={data} onTilAarsplan={() => setNivaa("ar")} />
@@ -3157,7 +3378,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
             onLukk={() => setMobilSheet(null)}
           >
             {mobilSheet === "bibliotek" ? (
-              <WBBibliotek data={data} tab={tab} setTab={setTab} sok={sok} setSok={setSok} onVelgOkt={actions ? velgFraBibliotek : undefined} onBrukMal={actions?.applyTemplate ? brukMalFraBibliotek : undefined} visPerioder={nivaa === "ar" && !!actions?.lagrePeriode} onLeggDrillIValgt={actions?.updateSession ? leggDrillIValgt : undefined} proMode={proMode} skjulTittel />
+              <WBBibliotek data={data} tab={tab} setTab={setTab} sok={sok} setSok={setSok} onVelgOkt={actions ? velgFraBibliotek : undefined} onBrukMal={actions?.applyTemplate ? brukMalFraBibliotek : undefined} visPerioder={nivaa === "ar" && !!actions?.lagrePeriode} onLeggDrillIValgt={actions?.updateSession ? leggDrillIValgt : undefined} onLeggTekniskOppgave={actions ? leggTekniskOppgave : undefined} proMode={proMode} skjulTittel />
             ) : (
               <WBBalanse
                 skjulTittel

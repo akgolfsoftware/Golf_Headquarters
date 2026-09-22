@@ -31,7 +31,7 @@ Denne masteren styrer ordvalg i appen.
 |---|---|
 | Nytt uttrykk eller konkret valg | Anders' uttrykkelige beslutning for den aktuelle flaten |
 | Treningsmodell og faglige definisjoner | Denne masterens treningsdel og senere uttrykkelige beslutninger fra Anders |
-| Planleggingsbegreper og dimensjoner | [Treningsplanlegging](treningsplanlegging.md) |
+| Planleggingsbegreper og dimensjoner | [Språk og treningsplanlegging — gjennomgang](treningsplanlegging-og-sprak-gjennomgang.md) (master for valgtreet), med [Treningsplanlegging](treningsplanlegging.md) som forenklet oversikt |
 | Produktnavn, abonnement, booking og tilgang | Denne masteren og gjeldende produktregler |
 | Vanlige appord og staving | Denne masterens ordregister og skriveregler |
 | Tall, enheter og knappeord | Denne masterens regler for tall, enheter, handlinger og statuser |

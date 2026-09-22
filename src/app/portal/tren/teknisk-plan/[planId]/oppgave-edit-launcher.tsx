@@ -20,15 +20,18 @@ import { skalerBilde, MAKS_ACTION_BYTES } from "@/lib/klient/skaler-avatar";
 
 function draftToBasicsPatch(draft: OppgaveDraft) {
   return {
+    pNummer: draft.pNummer,
+    pName: draft.pName,
     tittel: draft.tittel,
     beskrivelse: draft.beskrivelse || undefined,
     pyramide: draft.pyramide,
     omraade: draft.omraade,
     koller: draft.koller,
-    lFase: draft.lFase ?? null,
-    cs: draft.cs ?? null,
-    miljo: draft.m ?? null,
-    prPress: draft.pr ?? null,
+    motorikk: draft.motorikk ?? null,
+    belastning: draft.belastning ?? null,
+    press: draft.press ?? null,
+    dimensjon: draft.dimensjon ?? null,
+    maaleutstyr: draft.maaleutstyr ?? null,
     kategori: draft.kategori ?? null,
     repsMaalDry: draft.repsMaalDry,
     repsMaalLav: draft.repsMaalLav,

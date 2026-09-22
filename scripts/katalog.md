@@ -11,6 +11,7 @@ Generert med `npm run prosjekt:register`. Kategoriene er veivisere basert på na
 | Data / integrasjon — kan skrive eller sende | [scripts/add-datagolf-tak-2026-09-08.ts](<add-datagolf-tak-2026-09-08.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/add-drift-rutiner-2026-08-30.ts](<add-drift-rutiner-2026-08-30.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/add-slag-detaljer-2026-09-16.ts](<add-slag-detaljer-2026-09-16.ts>) |
+| Data / integrasjon — kan skrive eller sende | [scripts/add-teknisk-plan-v2-akser-2026-09-22.ts](<add-teknisk-plan-v2-akser-2026-09-22.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/add-tn-post-2026-09-01.ts](<add-tn-post-2026-09-01.ts>) |
 | Test / bilde — kontroller miljø og testkonto | [scripts/agency-shot.mjs](<agency-shot.mjs>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/ak-golf-tokens.mjs](<ak-golf-tokens.mjs>) |
@@ -20,6 +21,7 @@ Generert med `npm run prosjekt:register`. Kategoriene er veivisere basert på na
 | Test / bilde — kontroller miljø og testkonto | [scripts/b6-godkjenning-shots.mjs](<b6-godkjenning-shots.mjs>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/backfill-golfbox-results.ts](<backfill-golfbox-results.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/backfill-golfbox-sesonger.ts](<backfill-golfbox-sesonger.ts>) |
+| Data / integrasjon — kan skrive eller sende | [scripts/backfill-omraade-kode-2026-09-22.ts](<backfill-omraade-kode-2026-09-22.ts>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/bootstrap-turneringer.ts](<bootstrap-turneringer.ts>) |
 | Kontroll / rapport — les skriptet for eventuelle sideeffekter | [scripts/check-action-auth.mjs](<check-action-auth.mjs>) |
 | Kontroll / rapport — les skriptet for eventuelle sideeffekter | [scripts/check-ak-golf-kits.mjs](<check-ak-golf-kits.mjs>) |
@@ -52,6 +54,7 @@ Generert med `npm run prosjekt:register`. Kategoriene er veivisere basert på na
 | Verktøy / drift — les kontrakten før kjøring | [scripts/generate-icons.mjs](<generate-icons.mjs>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/generate-pwa-splash.mjs](<generate-pwa-splash.mjs>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/generer-app-ikoner.mjs](<generer-app-ikoner.mjs>) |
+| Verktøy / drift — les kontrakten før kjøring | [scripts/hvem-jobber-hvor.mjs](<hvem-jobber-hvor.mjs>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/import-bane-osm.ts](<import-bane-osm.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/import-beta-users.ts](<import-beta-users.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/import-clippd-college.ts](<import-clippd-college.ts>) |

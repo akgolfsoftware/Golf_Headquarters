@@ -18,23 +18,32 @@
 import { useState, type FormEvent } from "react";
 import { X, Check, Camera, Play, Sparkles, Search, GripVertical, Plus, Trash2 } from "lucide-react";
 import {
-  FASE_STEG_KEYS,
-  PRESS_NIVAA_KEYS,
-  lFaseTilSteg,
-  stegTilLFase,
-  stegLabel,
-  faseLabel,
-  pressTilNivaa,
-  nivaaTilPress,
-  pressNivaaLabel,
-} from "@/lib/ak-formel-visning";
+  MOTORIKK_KODER,
+  MOTORIKK_LABEL,
+  BELASTNING_KODER,
+  BELASTNING_LABEL,
+  PRESS_KODER,
+  PRESS_LABEL,
+  MAALEUTSTYR_KODER,
+  MAALEUTSTYR_LABEL,
+  DIMENSJON_LABEL,
+  type MotorikkKode,
+  type BelastningKode,
+  type PressKode,
+  type MaaleutstyrKode,
+  type DimensjonKode,
+} from "@/lib/domain/ak-formel-v2";
+import { dimensjonerFor, relevansFor } from "@/lib/domain/omrade-relevans";
 import {
   KOLLER,
-  L_PHASES,
-  CS_LEVELS,
-  M_LEVELS,
-  PR_LEVELS,
-  SG_BUCKETS,
+  P_POSITIONS,
+  hovedP,
+  mellomposisjonerFor,
+  pNavn,
+  OMRAADE_FANER,
+  omraadeVisning,
+  type OmraadeFane,
+  type OmraadeKode,
   HIT_RATE_PROTOCOLS,
   type HitRateProtocol,
   type PyramidArea,
@@ -43,14 +52,7 @@ import "./oppgave-modal.css";
 
 const PYRAMIDES: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
 
-const SG_TAB_LABEL: Record<keyof typeof SG_BUCKETS, string> = {
-  Tee: "Tee",
-  "Approach (m)": "Approach",
-  "Around Green": "Around Green",
-  "Putt (m)": "Putt",
-};
-
-type SGTab = keyof typeof SG_BUCKETS;
+type SGTab = OmraadeFane;
 
 export interface TmGoalDraft {
   id: string;
@@ -89,12 +91,17 @@ export interface OppgaveDraft {
   beskrivelse: string;
   pyramide: PyramidArea;
   omraadeTab: SGTab;
+  /** Typet område (fasitens liste). `omraade` er visningsetiketten, avledet. */
+  omraadeKode: OmraadeKode;
   omraade: string;
   koller: string[];
-  lFase?: typeof L_PHASES[number];
-  cs?: typeof CS_LEVELS[number];
-  m?: typeof M_LEVELS[number];
-  pr?: typeof PR_LEVELS[number];
+  /** v2-akser (22.09). L-fase, CS, Miljø og Press er utgått. */
+  motorikk?: MotorikkKode;
+  belastning?: BelastningKode;
+  press?: PressKode;
+  /** Teknisk fokus — én per oppgave, valgfritt. */
+  dimensjon?: DimensjonKode;
+  maaleutstyr?: MaaleutstyrKode;
   kategori?: TaskKategori;
   bildeUrl?: string;
   videoUrl?: string;
@@ -122,6 +129,8 @@ interface OppgaveModalProps {
   onUploadMedia?: (file: File, kind: "bilde" | "video") => Promise<string>;
 }
 
+const AVANSERT_P_NOKKEL = "tp-avansert-p";
+
 function uid() {
   return Math.random().toString(36).slice(2, 10);
 }
@@ -140,6 +149,23 @@ export function OppgaveModal({ open, onClose, initial, onSubmit, isEditing, onLo
   const [loggingReps, setLoggingReps] = useState(false);
   const [uploading, setUploading] = useState<"bilde" | "video" | null>(null);
   const [mediaError, setMediaError] = useState<string | null>(null);
+  // Avansert P-velger (mellomposisjoner) — per-nettleser-bekvemmelighet, aldri fasit.
+  const [avansertP, setAvansertPState] = useState<boolean>(() => {
+    try { return window.localStorage.getItem(AVANSERT_P_NOKKEL) === "1"; } catch { return false; }
+  });
+  function setAvansertP(v: boolean) {
+    setAvansertPState(v);
+    try { window.localStorage.setItem(AVANSERT_P_NOKKEL, v ? "1" : "0"); } catch { /* privat modus o.l. */ }
+  }
+  const relevans = relevansFor(draft.omraadeKode);
+  const dimensjoner = dimensjonerFor(draft.omraadeKode);
+
+  function velgOmraade(tab: SGTab, kode: OmraadeKode) {
+    setDraft((d) => ({ ...d, omraadeTab: tab, omraadeKode: kode, omraade: omraadeVisning(kode) }));
+  }
+  function velgP(num: string) {
+    setDraft((d) => ({ ...d, pNummer: num, pName: pNavn(num) }));
+  }
 
   if (!open) return null;
 
@@ -315,6 +341,49 @@ export function OppgaveModal({ open, onClose, initial, onSubmit, isEditing, onLo
             </div>
             <div className="section-row">
               <div className="field-stack">
+                <span className="field-label">
+                  P-posisjon{" "}
+                  <span style={{ color: "hsl(var(--muted-foreground))", fontWeight: 500 }}>· {draft.pNummer} {pNavn(draft.pNummer)}</span>
+                </span>
+                <div className="seg cols-5" role="group" aria-label="Hovedposisjon P1 til P10">
+                  {P_POSITIONS.map((p) => (
+                    <button
+                      type="button"
+                      key={p.num}
+                      className={hovedP(draft.pNummer) === p.num ? "active" : ""}
+                      title={p.name}
+                      onClick={() => velgP(p.num)}
+                    >
+                      <span className="dot" />{p.num.replace(".0", "")}
+                    </button>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  className={`chip ${avansertP ? "active" : ""}`}
+                  aria-pressed={avansertP}
+                  onClick={() => setAvansertP(!avansertP)}
+                  style={{ alignSelf: "flex-start" }}
+                >
+                  {avansertP ? "Avansert: mellomposisjoner vises" : "Avansert: vis mellomposisjoner"}
+                </button>
+                {avansertP && mellomposisjonerFor(hovedP(draft.pNummer)).length > 0 && (
+                  <div className="seg cols-5" role="group" aria-label={`Mellomposisjoner under ${hovedP(draft.pNummer)}`}>
+                    {[{ num: hovedP(draft.pNummer), name: pNavn(hovedP(draft.pNummer)) }, ...mellomposisjonerFor(hovedP(draft.pNummer))].map((p) => (
+                      <button
+                        type="button"
+                        key={p.num}
+                        className={draft.pNummer === p.num ? "active" : ""}
+                        title={p.name}
+                        onClick={() => velgP(p.num)}
+                      >
+                        <span className="dot" />{p.num}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div className="field-stack">
                 <label className="field-label" htmlFor="f-title">Tittel</label>
                 <input
                   id="f-title"
@@ -381,43 +450,40 @@ export function OppgaveModal({ open, onClose, initial, onSubmit, isEditing, onLo
 
               <div className="field-stack">
                 <span className="field-label">
-                  Område{" "}
+                  Treningsområde{" "}
                   <span style={{ color: "hsl(var(--muted-foreground))", fontWeight: 500 }}>· Strokes Gained</span>
                 </span>
                 <p className="field-helper">
-                  Matcher SG-buckets. Velg én hoved-kategori, deretter sub-område.
+                  Velg område, deretter lengde. Putting i fot, meter i parentes.
                 </p>
                 <div className="area-tabs">
-                  {(Object.keys(SG_BUCKETS) as SGTab[]).map((tab) => (
+                  {(Object.keys(OMRAADE_FANER) as SGTab[]).map((tab) => (
                     <button
                       type="button"
                       key={tab}
                       className={`area-tab ${tab === draft.omraadeTab ? "active" : ""}`}
-                      onClick={() => {
-                        const buckets = SG_BUCKETS[tab];
-                        patch({ omraadeTab: tab, omraade: buckets[0] });
-                      }}
+                      onClick={() => velgOmraade(tab, OMRAADE_FANER[tab][0])}
                     >
-                      {SG_TAB_LABEL[tab]}
+                      {tab}
                       <span className="meta">
-                        {SG_BUCKETS[tab].length === 1
-                          ? SG_BUCKETS[tab][0]
-                          : `${SG_BUCKETS[tab].length} sub`}
+                        {OMRAADE_FANER[tab].length === 1
+                          ? omraadeVisning(OMRAADE_FANER[tab][0])
+                          : `${OMRAADE_FANER[tab].length} valg`}
                       </span>
                     </button>
                   ))}
                 </div>
                 <div className="area-sub">
-                  <span className="area-sub-label">{SG_TAB_LABEL[draft.omraadeTab]} · velg sub-område</span>
+                  <span className="area-sub-label">{draft.omraadeTab} · velg lengde eller slag</span>
                   <div className="chip-row">
-                    {SG_BUCKETS[draft.omraadeTab].map((sub) => (
+                    {OMRAADE_FANER[draft.omraadeTab].map((kode) => (
                       <button
                         type="button"
-                        key={sub}
-                        className={`chip ${sub === draft.omraade ? "active" : ""}`}
-                        onClick={() => patch({ omraade: sub })}
+                        key={kode}
+                        className={`chip ${kode === draft.omraadeKode ? "active" : ""}`}
+                        onClick={() => velgOmraade(draft.omraadeTab, kode)}
                       >
-                        {sub}
+                        {omraadeVisning(kode)}
                       </button>
                     ))}
                   </div>
@@ -445,50 +511,71 @@ export function OppgaveModal({ open, onClose, initial, onSubmit, isEditing, onLo
             </div>
           </section>
 
-          {/* 3. MODALITET */}
+          {/* 3. GJENNOMFØRING */}
           <section className="section">
             <div className="section-head">
               <span className="num">
-                <b>3</b> Trenings-modalitet{" "}
-                <span style={{ color: "hsl(var(--muted-foreground))" }}>· MORAD</span>
+                <b>3</b> Gjennomføring{" "}
+                <span style={{ color: "hsl(var(--muted-foreground))" }}>
+                  · {relevans.motorikk ? "full sving" : "ingen læringssteg for dette området"}
+                </span>
               </span>
             </div>
 
             <div className="modality-grid">
+              {relevans.motorikk && (
+                <ModalitySeg
+                  label="Læringssteg"
+                  helper="Uten ball → Lav hastighet → Automatikk. Gjelder bare full sving."
+                  options={MOTORIKK_KODER}
+                  value={draft.motorikk}
+                  onChange={(v) => patch({ motorikk: v })}
+                  cols={3}
+                  labelFor={(k) => MOTORIKK_LABEL[k]}
+                />
+              )}
+              {relevans.dimensjon && dimensjoner.length > 0 && (
+                <ModalitySeg
+                  label="Teknisk fokus"
+                  helper="Én per oppgave. Følger med når oppgaven legges inn i en økt."
+                  options={dimensjoner}
+                  value={draft.dimensjon}
+                  onChange={(v) => patch({ dimensjon: draft.dimensjon === v ? undefined : v })}
+                  cols={dimensjoner.length > 3 ? 4 : 3}
+                  labelFor={(k) => DIMENSJON_LABEL[k]}
+                />
+              )}
               <ModalitySeg
-                label="Læringsfase"
-                helper="Uten ball → Lav hastighet → Auto."
-                options={FASE_STEG_KEYS}
-                value={lFaseTilSteg(draft.lFase) ?? undefined}
-                onChange={(v) => patch({ lFase: stegTilLFase(v, draft.lFase) ?? undefined })}
+                label="Måleutstyr"
+                helper="Fast liste. Velges her, aldri gjettet ut fra sted."
+                options={MAALEUTSTYR_KODER}
+                value={draft.maaleutstyr}
+                onChange={(v) => patch({ maaleutstyr: draft.maaleutstyr === v ? undefined : v })}
                 cols={3}
-                labelFor={stegLabel}
+                labelFor={(k) => MAALEUTSTYR_LABEL[k]}
               />
-              <ModalitySeg
-                label="CS-nivå · hastighet"
-                helper="CS50 ≈ halv-tempo, CS100 ≈ full."
-                options={CS_LEVELS}
-                value={draft.cs}
-                onChange={(v) => patch({ cs: v })}
-                cols={6}
-              />
-              <ModalitySeg
-                label="M · miljø"
-                helper="M0 = ingen distraksjon, M5 = full press."
-                options={M_LEVELS}
-                value={draft.m}
-                onChange={(v) => patch({ m: v })}
-                cols={6}
-              />
-              <ModalitySeg
-                label="Press"
-                helper="Fri → Krav → Utfordring → Konkurranse."
-                options={PRESS_NIVAA_KEYS}
-                value={pressTilNivaa(draft.pr) ?? undefined}
-                onChange={(v) => patch({ pr: nivaaTilPress(v, draft.pr) ?? undefined })}
-                cols={4}
-                labelFor={pressNivaaLabel}
-              />
+              {relevans.belastning && (
+                <ModalitySeg
+                  label="Sted og miljø"
+                  helper="Konteksten treningen skjer i."
+                  options={BELASTNING_KODER}
+                  value={draft.belastning}
+                  onChange={(v) => patch({ belastning: v })}
+                  cols={4}
+                  labelFor={(k) => BELASTNING_LABEL[k]}
+                />
+              )}
+              {relevans.press && (
+                <ModalitySeg
+                  label="Press"
+                  helper="Hvem ser på, og hvilken situasjon trenes."
+                  options={PRESS_KODER}
+                  value={draft.press}
+                  onChange={(v) => patch({ press: v })}
+                  cols={4}
+                  labelFor={(k) => PRESS_LABEL[k]}
+                />
+              )}
             </div>
           </section>
 
@@ -753,10 +840,11 @@ export function OppgaveModal({ open, onClose, initial, onSubmit, isEditing, onLo
                     ) : draft.koller.length > 1 ? (
                       <span className="tp-tag club">{draft.koller.length} KØLLER</span>
                     ) : null}
-                    {draft.lFase ? <span className="tp-tag lphase">{faseLabel(draft.lFase)}</span> : null}
-                    {draft.cs ? <span className="tp-tag cs">{draft.cs}</span> : null}
-                    {draft.m ? <span className="tp-tag">{draft.m}</span> : null}
-                    {draft.pr ? <span className="tp-tag">{draft.pr}</span> : null}
+                    {draft.motorikk ? <span className="tp-tag lphase">{MOTORIKK_LABEL[draft.motorikk].toUpperCase()}</span> : null}
+                    {draft.dimensjon ? <span className="tp-tag cs">{DIMENSJON_LABEL[draft.dimensjon].toUpperCase()}</span> : null}
+                    {draft.maaleutstyr ? <span className="tp-tag">{MAALEUTSTYR_LABEL[draft.maaleutstyr].toUpperCase()}</span> : null}
+                    {draft.belastning ? <span className="tp-tag">{BELASTNING_LABEL[draft.belastning].toUpperCase()}</span> : null}
+                    {draft.press ? <span className="tp-tag">{PRESS_LABEL[draft.press].toUpperCase()}</span> : null}
                   </div>
                 </div>
               </div>

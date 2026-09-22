@@ -113,6 +113,7 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | dokumentasjon | [docs/treningsplanlegger/wang-toppidrett/kompetansemaal.md](<../treningsplanlegger/wang-toppidrett/kompetansemaal.md>) |
 | dokumentasjon | [docs/treningsplanlegger/wang-toppidrett/oktmal.md](<../treningsplanlegger/wang-toppidrett/oktmal.md>) |
 | dokumentasjon | [docs/treningsplanlegger/wang-toppidrett/systembygging-plan.md](<../treningsplanlegger/wang-toppidrett/systembygging-plan.md>) |
+| dokumentasjon | [docs/treningsplanlegging-og-sprak-gjennomgang.md](<../treningsplanlegging-og-sprak-gjennomgang.md>) |
 | dokumentasjon | [docs/treningsplanlegging.md](<../treningsplanlegging.md>) |
 | dokumentasjon | [docs/turnering-datakilder.md](<../turnering-datakilder.md>) |
 | dokumentasjon | [docs/utvikling/lokal-testdatabase.md](<../utvikling/lokal-testdatabase.md>) |

@@ -1,6 +1,6 @@
 {
   "$schema": "ordbok-lag-3",
-  "versjon": "2026-09-21",
+  "versjon": "2026-09-22",
   "kilder": {
     "master": "docs/ordbok.md",
     "planlegging": "docs/treningsplanlegging.md",
@@ -464,6 +464,14 @@
     "SandTrinn": [
       "UTEN_BALL_I_SAND",
       "MED_BALL"
+    ],
+    "Maaleutstyr": [
+      "TRACKMAN",
+      "FLIGHTSCOPE",
+      "GARMIN_R10",
+      "MEVO_PLUS",
+      "ANNET",
+      "UTEN"
     ],
     "InnslagType": [
       "DRILL",
