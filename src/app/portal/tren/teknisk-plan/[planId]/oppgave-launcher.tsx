@@ -105,10 +105,11 @@ function draftToTaskInput(planId: string, draft: OppgaveDraft): TaskInput {
     omraadeKode: draft.omraadeKode,
     omraade: draft.omraade,
     koller: draft.koller,
-    lFase: draft.lFase ?? null,
-    cs: draft.cs ?? null,
-    miljo: draft.m ?? null, // m → miljo
-    prPress: draft.pr ?? null, // pr → prPress
+    motorikk: draft.motorikk ?? null,
+    belastning: draft.belastning ?? null,
+    press: draft.press ?? null,
+    dimensjon: draft.dimensjon ?? null,
+    maaleutstyr: draft.maaleutstyr ?? null,
     repsMaalDry: draft.repsMaalDry,
     repsMaalLav: draft.repsMaalLav,
     repsMaalFull: draft.repsMaalFull,

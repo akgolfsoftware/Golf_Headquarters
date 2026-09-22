@@ -25,7 +25,21 @@ import { nonEmpty } from "@/lib/validation/schemas";
 import { applyPositionTaskReps } from "@/lib/teknisk-plan/apply-reps";
 import { ensurePlanAccess } from "@/lib/teknisk-plan/ensure-plan-access";
 import { pHovedNummer, pNavn, omraadeVisning } from "@/components/teknisk-plan/constants";
-import { OMRAADE_KODER, type OmraadeKode } from "@/lib/domain/ak-formel-v2";
+import {
+  OMRAADE_KODER,
+  MOTORIKK_KODER,
+  BELASTNING_KODER,
+  PRESS_KODER,
+  MAALEUTSTYR_KODER,
+  DIMENSJON_KODER,
+  type OmraadeKode,
+  type MotorikkKode,
+  type BelastningKode,
+  type PressKode,
+  type MaaleutstyrKode,
+  type DimensjonKode,
+} from "@/lib/domain/ak-formel-v2";
+import { vaskMotRelevans } from "@/lib/domain/omrade-relevans";
 
 const PNummerSchema = z
   .string()
@@ -41,6 +55,11 @@ const TaskInputSchema = z.object({
   pyramide: z.string().min(1, "Pyramide-område er påkrevd"),
   omraade: z.string().min(1, "Område er påkrevd"),
   omraadeKode: z.enum(OMRAADE_KODER).optional(),
+  motorikk: z.enum(MOTORIKK_KODER).nullish(),
+  belastning: z.enum(BELASTNING_KODER).nullish(),
+  press: z.enum(PRESS_KODER).nullish(),
+  dimensjon: z.enum(DIMENSJON_KODER).nullish(),
+  maaleutstyr: z.enum(MAALEUTSTYR_KODER).nullish(),
   koller: z.array(z.string()),
   repsMaalDry: z.number().int().min(0),
   repsMaalLav: z.number().int().min(0),
@@ -87,7 +106,17 @@ export interface TaskInput {
   omraade: string;
   /** Typet område. Når satt, utledes `omraade`-etiketten fra koden. */
   omraadeKode?: OmraadeKode | null;
+  /** v2-akser (22.09). Vaskes mot relevansmatrisen før lagring. */
+  motorikk?: MotorikkKode | null;
+  belastning?: BelastningKode | null;
+  press?: PressKode | null;
+  dimensjon?: DimensjonKode | null;
+  maaleutstyr?: MaaleutstyrKode | null;
   koller: string[];
+  /**
+   * Utgått (beslutning 21.09): L-fase, CS, Miljø og Press. Beholdes i typen så
+   * eldre kallere ikke brekker, men skrives ikke lenger — se `vasketeAkser`.
+   */
   lFase?: LFase | null;
   cs?: CSNivaa | null;
   miljo?: MMiljo | null;
@@ -123,6 +152,42 @@ async function findOrCreatePosition(planId: string, pNummer: string, _pName: str
   });
 }
 
+/**
+ * Akser som ikke gjelder området lagres aldri (relevansmatrisen er et
+ * visningsfilter — men et skjult felt skal heller ikke smugles inn via API-et).
+ * Måleutstyr gjelder alle områder og vaskes ikke.
+ */
+function vasketeAkser(input: {
+  omraadeKode?: OmraadeKode | null;
+  motorikk?: MotorikkKode | null;
+  belastning?: BelastningKode | null;
+  press?: PressKode | null;
+  dimensjon?: DimensjonKode | null;
+}) {
+  if (!input.omraadeKode) {
+    return {
+      motorikk: input.motorikk ?? null,
+      belastning: input.belastning ?? null,
+      press: input.press ?? null,
+      dimensjon: input.dimensjon ?? null,
+    };
+  }
+  const vasket = vaskMotRelevans({
+    omraade: input.omraadeKode,
+    motorikk: input.motorikk ?? null,
+    belastning: input.belastning ?? null,
+    press: input.press ?? null,
+    dimensjon: input.dimensjon ?? null,
+    sandTrinn: null,
+  });
+  return {
+    motorikk: vasket.motorikk,
+    belastning: vasket.belastning,
+    press: vasket.press,
+    dimensjon: vasket.dimensjon,
+  };
+}
+
 export async function createTask(input: TaskInput) {
   TaskInputSchema.parse(input);
   const { user } = await ensurePlanAccess(input.planId);
@@ -143,11 +208,9 @@ export async function createTask(input: TaskInput) {
       pyramide: input.pyramide,
       omraade: input.omraadeKode ? omraadeVisning(input.omraadeKode) : input.omraade,
       omraadeKode: input.omraadeKode ?? null,
+      ...vasketeAkser(input),
+      maaleutstyr: input.maaleutstyr ?? null,
       koller: input.koller,
-      lFase: input.lFase ?? null,
-      cs: input.cs ?? null,
-      miljo: input.miljo ?? null,
-      prPress: input.prPress ?? null,
       kategori: input.kategori ?? null,
       repsMaalDry: input.repsMaalDry,
       repsMaalLav: input.repsMaalLav,
@@ -244,11 +307,9 @@ export async function updateTaskBasics(
       pyramide: patch.pyramide,
       omraade: patch.omraadeKode ? omraadeVisning(patch.omraadeKode) : patch.omraade,
       omraadeKode: patch.omraadeKode ?? undefined,
+      ...vasketeAkser({ ...patch, omraadeKode: patch.omraadeKode ?? task.omraadeKode }),
+      maaleutstyr: patch.maaleutstyr ?? null,
       koller: patch.koller,
-      lFase: patch.lFase ?? null,
-      cs: patch.cs ?? null,
-      miljo: patch.miljo ?? null,
-      prPress: patch.prPress ?? null,
       kategori: patch.kategori ?? null,
       repsMaalDry: patch.repsMaalDry,
       repsMaalLav: patch.repsMaalLav,

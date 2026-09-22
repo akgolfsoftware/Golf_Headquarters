@@ -34,6 +34,7 @@ import { erFullsving } from "@/lib/teknisk-plan/fullsving";
 import { TekniskPlanVisning, type EnTingLes, type FokusLes } from "@/components/teknisk-plan/teknisk-plan-visning";
 import { loadNesteOkt } from "@/lib/portal/load-neste-okt";
 import { sorterPosisjoner, medFasitNavn } from "@/lib/teknisk-plan/sorter-posisjoner";
+import { MOTORIKK_LABEL, DIMENSJON_LABEL, MAALEUTSTYR_LABEL, PRESS_LABEL } from "@/lib/domain/ak-formel-v2";
 export const dynamic = "force-dynamic";
 
 interface PageProps {
@@ -395,10 +396,11 @@ export default async function PlanBuilderPage({ params }: PageProps) {
                       omraadeKode: t.omraadeKode ?? omraadeTilKode(t.omraade) ?? "TEE_TOTAL",
                       omraade: t.omraadeKode ? omraadeVisning(t.omraadeKode) : t.omraade,
                       koller: t.koller,
-                      lFase: t.lFase ?? undefined,
-                      cs: t.cs ?? undefined,
-                      m: t.miljo ?? undefined,
-                      pr: t.prPress ?? undefined,
+                      motorikk: t.motorikk ?? undefined,
+                      belastning: t.belastning ?? undefined,
+                      press: t.press ?? undefined,
+                      dimensjon: t.dimensjon ?? undefined,
+                      maaleutstyr: t.maaleutstyr ?? undefined,
                       kategori: t.kategori ?? undefined,
                       bildeUrl: t.bildeUrl ?? undefined,
                       videoUrl: t.videoUrl ?? undefined,
@@ -448,10 +450,10 @@ export default async function PlanBuilderPage({ params }: PageProps) {
                           pyramide: t.pyramide as PyramidArea,
                           omraade: t.omraade,
                           koller: t.koller,
-                          lFase: t.lFase ?? undefined,
-                          cs: t.cs ?? undefined,
-                          m: t.miljo ?? undefined,
-                          pr: t.prPress ?? undefined,
+                          lFase: t.motorikk ? MOTORIKK_LABEL[t.motorikk] : undefined,
+                          cs: t.dimensjon ? DIMENSJON_LABEL[t.dimensjon] : undefined,
+                          m: t.maaleutstyr ? MAALEUTSTYR_LABEL[t.maaleutstyr] : undefined,
+                          pr: t.press ? PRESS_LABEL[t.press] : undefined,
                           reps: {
                             dry: { current: t.repsGjortDry, target: t.repsMaalDry },
                             lav: { current: t.repsGjortLav, target: t.repsMaalLav },

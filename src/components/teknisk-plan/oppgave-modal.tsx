@@ -18,26 +18,28 @@
 import { useState, type FormEvent } from "react";
 import { X, Check, Camera, Play, Sparkles, Search, GripVertical, Plus, Trash2 } from "lucide-react";
 import {
-  FASE_STEG_KEYS,
-  PRESS_NIVAA_KEYS,
-  lFaseTilSteg,
-  stegTilLFase,
-  stegLabel,
-  faseLabel,
-  pressTilNivaa,
-  nivaaTilPress,
-  pressNivaaLabel,
-} from "@/lib/ak-formel-visning";
+  MOTORIKK_KODER,
+  MOTORIKK_LABEL,
+  BELASTNING_KODER,
+  BELASTNING_LABEL,
+  PRESS_KODER,
+  PRESS_LABEL,
+  MAALEUTSTYR_KODER,
+  MAALEUTSTYR_LABEL,
+  DIMENSJON_LABEL,
+  type MotorikkKode,
+  type BelastningKode,
+  type PressKode,
+  type MaaleutstyrKode,
+  type DimensjonKode,
+} from "@/lib/domain/ak-formel-v2";
+import { dimensjonerFor, relevansFor } from "@/lib/domain/omrade-relevans";
 import {
   KOLLER,
   P_POSITIONS,
   hovedP,
   mellomposisjonerFor,
   pNavn,
-  L_PHASES,
-  CS_LEVELS,
-  M_LEVELS,
-  PR_LEVELS,
   OMRAADE_FANER,
   omraadeVisning,
   type OmraadeFane,
@@ -93,10 +95,13 @@ export interface OppgaveDraft {
   omraadeKode: OmraadeKode;
   omraade: string;
   koller: string[];
-  lFase?: typeof L_PHASES[number];
-  cs?: typeof CS_LEVELS[number];
-  m?: typeof M_LEVELS[number];
-  pr?: typeof PR_LEVELS[number];
+  /** v2-akser (22.09). L-fase, CS, Miljø og Press er utgått. */
+  motorikk?: MotorikkKode;
+  belastning?: BelastningKode;
+  press?: PressKode;
+  /** Teknisk fokus — én per oppgave, valgfritt. */
+  dimensjon?: DimensjonKode;
+  maaleutstyr?: MaaleutstyrKode;
   kategori?: TaskKategori;
   bildeUrl?: string;
   videoUrl?: string;
@@ -152,6 +157,9 @@ export function OppgaveModal({ open, onClose, initial, onSubmit, isEditing, onLo
     setAvansertPState(v);
     try { window.localStorage.setItem(AVANSERT_P_NOKKEL, v ? "1" : "0"); } catch { /* privat modus o.l. */ }
   }
+  const relevans = relevansFor(draft.omraadeKode);
+  const dimensjoner = dimensjonerFor(draft.omraadeKode);
+
   function velgOmraade(tab: SGTab, kode: OmraadeKode) {
     setDraft((d) => ({ ...d, omraadeTab: tab, omraadeKode: kode, omraade: omraadeVisning(kode) }));
   }
@@ -503,50 +511,71 @@ export function OppgaveModal({ open, onClose, initial, onSubmit, isEditing, onLo
             </div>
           </section>
 
-          {/* 3. MODALITET */}
+          {/* 3. GJENNOMFØRING */}
           <section className="section">
             <div className="section-head">
               <span className="num">
-                <b>3</b> Trenings-modalitet{" "}
-                <span style={{ color: "hsl(var(--muted-foreground))" }}>· MORAD</span>
+                <b>3</b> Gjennomføring{" "}
+                <span style={{ color: "hsl(var(--muted-foreground))" }}>
+                  · {relevans.motorikk ? "full sving" : "ingen læringssteg for dette området"}
+                </span>
               </span>
             </div>
 
             <div className="modality-grid">
+              {relevans.motorikk && (
+                <ModalitySeg
+                  label="Læringssteg"
+                  helper="Uten ball → Lav hastighet → Automatikk. Gjelder bare full sving."
+                  options={MOTORIKK_KODER}
+                  value={draft.motorikk}
+                  onChange={(v) => patch({ motorikk: v })}
+                  cols={3}
+                  labelFor={(k) => MOTORIKK_LABEL[k]}
+                />
+              )}
+              {relevans.dimensjon && dimensjoner.length > 0 && (
+                <ModalitySeg
+                  label="Teknisk fokus"
+                  helper="Én per oppgave. Følger med når oppgaven legges inn i en økt."
+                  options={dimensjoner}
+                  value={draft.dimensjon}
+                  onChange={(v) => patch({ dimensjon: draft.dimensjon === v ? undefined : v })}
+                  cols={dimensjoner.length > 3 ? 4 : 3}
+                  labelFor={(k) => DIMENSJON_LABEL[k]}
+                />
+              )}
               <ModalitySeg
-                label="Læringsfase"
-                helper="Uten ball → Lav hastighet → Auto."
-                options={FASE_STEG_KEYS}
-                value={lFaseTilSteg(draft.lFase) ?? undefined}
-                onChange={(v) => patch({ lFase: stegTilLFase(v, draft.lFase) ?? undefined })}
+                label="Måleutstyr"
+                helper="Fast liste. Velges her, aldri gjettet ut fra sted."
+                options={MAALEUTSTYR_KODER}
+                value={draft.maaleutstyr}
+                onChange={(v) => patch({ maaleutstyr: draft.maaleutstyr === v ? undefined : v })}
                 cols={3}
-                labelFor={stegLabel}
+                labelFor={(k) => MAALEUTSTYR_LABEL[k]}
               />
-              <ModalitySeg
-                label="CS-nivå · hastighet"
-                helper="CS50 ≈ halv-tempo, CS100 ≈ full."
-                options={CS_LEVELS}
-                value={draft.cs}
-                onChange={(v) => patch({ cs: v })}
-                cols={6}
-              />
-              <ModalitySeg
-                label="M · miljø"
-                helper="M0 = ingen distraksjon, M5 = full press."
-                options={M_LEVELS}
-                value={draft.m}
-                onChange={(v) => patch({ m: v })}
-                cols={6}
-              />
-              <ModalitySeg
-                label="Press"
-                helper="Fri → Krav → Utfordring → Konkurranse."
-                options={PRESS_NIVAA_KEYS}
-                value={pressTilNivaa(draft.pr) ?? undefined}
-                onChange={(v) => patch({ pr: nivaaTilPress(v, draft.pr) ?? undefined })}
-                cols={4}
-                labelFor={pressNivaaLabel}
-              />
+              {relevans.belastning && (
+                <ModalitySeg
+                  label="Sted og miljø"
+                  helper="Konteksten treningen skjer i."
+                  options={BELASTNING_KODER}
+                  value={draft.belastning}
+                  onChange={(v) => patch({ belastning: v })}
+                  cols={4}
+                  labelFor={(k) => BELASTNING_LABEL[k]}
+                />
+              )}
+              {relevans.press && (
+                <ModalitySeg
+                  label="Press"
+                  helper="Hvem ser på, og hvilken situasjon trenes."
+                  options={PRESS_KODER}
+                  value={draft.press}
+                  onChange={(v) => patch({ press: v })}
+                  cols={4}
+                  labelFor={(k) => PRESS_LABEL[k]}
+                />
+              )}
             </div>
           </section>
 
@@ -811,10 +840,11 @@ export function OppgaveModal({ open, onClose, initial, onSubmit, isEditing, onLo
                     ) : draft.koller.length > 1 ? (
                       <span className="tp-tag club">{draft.koller.length} KØLLER</span>
                     ) : null}
-                    {draft.lFase ? <span className="tp-tag lphase">{faseLabel(draft.lFase)}</span> : null}
-                    {draft.cs ? <span className="tp-tag cs">{draft.cs}</span> : null}
-                    {draft.m ? <span className="tp-tag">{draft.m}</span> : null}
-                    {draft.pr ? <span className="tp-tag">{draft.pr}</span> : null}
+                    {draft.motorikk ? <span className="tp-tag lphase">{MOTORIKK_LABEL[draft.motorikk].toUpperCase()}</span> : null}
+                    {draft.dimensjon ? <span className="tp-tag cs">{DIMENSJON_LABEL[draft.dimensjon].toUpperCase()}</span> : null}
+                    {draft.maaleutstyr ? <span className="tp-tag">{MAALEUTSTYR_LABEL[draft.maaleutstyr].toUpperCase()}</span> : null}
+                    {draft.belastning ? <span className="tp-tag">{BELASTNING_LABEL[draft.belastning].toUpperCase()}</span> : null}
+                    {draft.press ? <span className="tp-tag">{PRESS_LABEL[draft.press].toUpperCase()}</span> : null}
                   </div>
                 </div>
               </div>
