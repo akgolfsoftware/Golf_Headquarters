@@ -11,7 +11,7 @@ import { useState } from "react";
 
 import { FORELDREMOTER, SKOLERUTE, TRINN, TRINN_ORD, UKESRAPPORTER, moteTekst, nesteFredagTekst } from "../../_data/arsplan-fasit-2026-27";
 import { SPAN_START_ISO } from "../../_data/wang-plan";
-import { Seksjon, SeksjonHode, WangKort, useOsloIdagIso } from "./primitiver";
+import { FaneHero, Seksjon, SeksjonHode, WangKort, useOsloIdagIso } from "./primitiver";
 
 function Ukessammendrag() {
   const [apen, setApen] = useState<number | null>(null);
@@ -200,6 +200,11 @@ function Praktisk() {
 export function FaneForeldreArsplan() {
   return (
     <div>
+      <FaneHero
+        eyebrow="Foresatte"
+        tittel="Ukens sammendrag og praktisk info"
+        ingress="Trener skriver et kort sammendrag hver fredag. Det handler om gruppen, aldri om enkeltelever."
+      />
       <Ukessammendrag />
       <Foreldremoter />
       <Praktisk />

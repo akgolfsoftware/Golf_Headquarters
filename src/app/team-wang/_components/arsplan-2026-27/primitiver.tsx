@@ -272,3 +272,57 @@ export function klampTilIntervall(isoDato: string, startIso: string, sluttIso: s
   if (isoDato > sluttIso) return sluttIso;
   return isoDato;
 }
+
+/**
+ * Delt hero for Skole-/Kalender-/Foreldre-fanen — samme navy gradient og
+ * tynne overskriftsvekt som Treningsfanens hero, uten fotoseksjon (designets
+ * foto er ikke overført til appen ennå). Treningsfanens hero har egen,
+ * rikere variant (Sted-/trener-bånd) og bruker ikke denne.
+ */
+export function FaneHero({ eyebrow, tittel, ingress }: { eyebrow: string; tittel: string; ingress: string }) {
+  return (
+    <div
+      style={{
+        position: "relative",
+        overflow: "hidden",
+        background:
+          "linear-gradient(160deg, color-mix(in srgb, var(--wang-navy) 82%, white) 0%, var(--wang-navy) 55%, color-mix(in srgb, var(--wang-navy) 82%, black) 100%)",
+        color: "var(--white)",
+      }}
+    >
+      <Wrap>
+        <div style={{ padding: "clamp(32px,5.5vw,44px) 0" }}>
+          <p
+            style={{
+              margin: "0 0 10px",
+              fontFamily: "var(--font-brand)",
+              fontWeight: 500,
+              fontSize: 11,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: "var(--white)",
+            }}
+          >
+            {eyebrow}
+          </p>
+          <h1
+            style={{
+              margin: 0,
+              fontFamily: "var(--font-brand)",
+              fontWeight: 300,
+              fontSize: "clamp(26px,5vw,38px)",
+              letterSpacing: "-0.015em",
+              lineHeight: 1.12,
+              maxWidth: "26ch",
+            }}
+          >
+            {tittel}
+          </h1>
+          <p style={{ fontSize: "clamp(14.5px,2vw,17px)", lineHeight: 1.55, color: "var(--text-on-dark-78)", maxWidth: 560, marginTop: 12 }}>
+            {ingress}
+          </p>
+        </div>
+      </Wrap>
+    </div>
+  );
+}

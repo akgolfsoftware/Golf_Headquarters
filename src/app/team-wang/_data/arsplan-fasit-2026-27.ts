@@ -731,14 +731,14 @@ export const MND: MndRad[] = [
   ["August 2026", "TURN", "Sesongform: siste sommerturneringer mens formen er på topp. NGF-testperioden starter.", ["Skolestart uke 34", "NGF/Team Norway-tester fra uke 35"]],
   ["September", "TURN", "Turneringsuker med vedlikeholdstrening — restitusjon og mental gjennomgang mellom starter.", ["Tester avsluttes uke 36", "Turneringshelger (terminliste)"]],
   ["Oktober", "TURN", "Sommersesongen avsluttes og banen stenger. Testuke 43 setter IUP-baseline før vinteren.", ["Høstferie uke 40", "Testuke og IUP-samtaler uke 43"]],
-  ["November", "GRUNN", "GRUNN start: bygge ny teknikk innendørs — kropp og arm før ball. Tung FYS-blokk.", ["Treningslokalet: nett, putting, TrackMan"]],
-  ["Desember", "GRUNN", "Full teknisk trening fram til jul. Egentreningsplan for ferien.", ["Juleferie uke 52–53"]],
-  ["Januar 2027", "GRUNN", "Fellessamling med WANG Oslo — deretter full teknisk trening.", ["WANG-samling 4.–10. jan"]],
-  ["Februar", "GRUNN", "Teknisk sjekk uke 6 og ny fellessamling uke 7 før vinterferien.", ["Intern teknisk sjekk uke 6", "Samling 15.–21. feb · vinterferie uke 8"]],
+  ["November", "GRUNN", "GRUNN start: bygge ny teknikk innendørs — kropp og arm før ball. Tung FYS-blokk.", ["Treningslokalet: nett, putting, TrackMan", "Hospitering annen idrett uke 47", "Fys-test 27.11"]],
+  ["Desember", "GRUNN", "Full teknisk trening fram til jul. Egentreningsplan for ferien.", ["Hospitering annen idrett uke 51", "Juleferie uke 52–53"]],
+  ["Januar 2027", "GRUNN", "Full teknisk trening til fellessamlingen i Alicante 16.–30. januar.", ["Fys-test 08.01", "WANG-fellessamling Alicante 16.–30. jan (14 dager)"]],
+  ["Februar", "GRUNN", "Teknisk sjekk uke 6, ingen samling denne måneden.", ["Intern teknisk sjekk uke 6", "Fys-test 19.02 · vinterferie uke 8"]],
   ["Mars", "SPES", "GRUNN avsluttes med test og IUP-sjekk uke 10. SPES fra uke 11: teknikk skal bli slag.", ["Test og IUP uke 10", "Påskeferie uke 12"]],
-  ["April", "SPES", "Ut på GFGK fra ca. 5. april — overføring til bane og kalibrering av avstander.", ["Utesesongen åpner", "Kalibrering fullført uke 16"]],
-  ["Mai", "TURN", "Turneringssesong: Norgescup, Østlandstour og Srixon Tour. Kjente slag, ingen ny teknikk.", ["Fri Kr. himmelfart 6. mai og 17. mai"]],
-  ["Juni", "TURN", "Turneringstopp og evaluering — sesong- og skoleårsavslutning uke 24.", ["NM-perioden", "IUP-evaluering og avslutning uke 24"]],
+  ["April", "SPES", "Ut på GFGK fra ca. 5. april — overføring til bane og kalibrering av avstander.", ["Fys-test 02.04", "Utesesongen åpner", "Kalibrering fullført uke 16"]],
+  ["Mai", "TURN", "Turneringssesong: Norgescup, Østlandstour og Srixon Tour. Kjente slag, ingen ny teknikk.", ["Fri Kr. himmelfart 6. mai og 17. mai", "VG3 skriftlig eksamen uke 20"]],
+  ["Juni", "TURN", "Turneringstopp og evaluering — sesong- og skoleårsavslutning uke 24.", ["Fys-test 11.06", "Eksamensperiode uke 21–22", "IUP-evaluering og avslutning uke 24"]],
 ];
 
 // ---- Kompetansemål (Toppidrett + Kroppsøving per trinn) -------------------

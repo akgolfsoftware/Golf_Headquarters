@@ -19,7 +19,7 @@ import { useMemo, useState, type CSSProperties } from "react";
 
 import { ARSPLAN_EVENTS, PERIODER, FASER, faseForPeriode, type HendelseType } from "../../_data/arsplan-fasit-2026-27";
 import { d, WD_SHORT } from "../../_data/wang-plan";
-import { Chip, PillGruppe, Seksjon, SeksjonHode, WangKort, leggTilDager, mandagAv } from "./primitiver";
+import { Chip, FaneHero, PillGruppe, Seksjon, SeksjonHode, WangKort, leggTilDager, mandagAv } from "./primitiver";
 
 const TYPE_INFO: Record<HendelseType, { navn: string; farge: string; tint: string }> = {
   okt: { navn: "Trening og samling", farge: "var(--wang-teal-text)", tint: "var(--tint-teal)" },
@@ -303,8 +303,14 @@ export function FaneKalenderArsplan({ onGaaTilTrening }: { onGaaTilTrening: () =
   const mandag = useMemo(() => mandagAv(valgtDag), [valgtDag]);
 
   return (
+    <div>
+      <FaneHero
+        eyebrow="Kalender"
+        tittel="Alt som skjer, dag for dag"
+        ingress="Økter, samlinger, turneringer, tester, prøver og skolefri i samme kalender. Velg en dag for å se hva som står på den."
+      />
     <Seksjon id="kalender">
-      <SeksjonHode nr={1} label="Fire visninger" tittel="Kalender" ingress="Tidslinje, uke, måned eller år — trykk en dag for å se hendelsene og hoppe til planen." />
+      <SeksjonHode label="Fire visninger" tittel="Kalender" ingress="Tidslinje, uke, måned eller år — trykk en dag for å se hendelsene og hoppe til planen." />
       <PillGruppe
         valg={(["Tidslinje", "Uke", "Måned", "År"] as const).map((v) => ({
           label: v,
@@ -404,6 +410,7 @@ export function FaneKalenderArsplan({ onGaaTilTrening }: { onGaaTilTrening: () =
 
       <ValgtDagKort valgtDag={valgtDag} onGaaTilTrening={onGaaTilTrening} />
     </Seksjon>
+    </div>
   );
 }
 

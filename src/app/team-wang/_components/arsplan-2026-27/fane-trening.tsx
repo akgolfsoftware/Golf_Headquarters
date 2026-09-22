@@ -1,8 +1,15 @@
 "use client";
 
 // Trening-fanen: Hero + Årshjul + Periodisering (pyramide) + Månedsplan +
-// Ukeplan + Øktplaner. Fasit: designsystem/wang/fasit/arsplan-2026-27/
-// WANG Arsplan 2026-27.dc.html, seksjonene #arsplan–#oktplaner.
+// Ukeplan + Øktplaner. Restylet 22.09.2026 strukturelt mot Claude Design-
+// prosjektet «Årsplan Golf WANG Golf Fredrikstad»
+// (claude.ai/design/p/779d22c8-1828-46d6-ab11-9fad5472e06f,
+// templates/wang-golf-fellesside/GolfTrening.dc.html) — todelt månedsgrid med
+// ukenummer-piller og full ukertabell, 2-kolonners kort for månedsplan og
+// den faste treningsuka, timet øktplan-tabell. Pyramiden er BEVISST forskjellig
+// fra designets faste måltall — Anders valgte 22.09.2026 å beholde live
+// beregning fra øktmalens blokker (se `beregnPyramide`), ikke periodebrevets
+// faste prosenter.
 
 import { useState } from "react";
 
@@ -19,7 +26,6 @@ import {
   UKER,
   beregnPyramide,
   faseForPeriode,
-  oktFormler,
   type Trinn as TrinnType,
 } from "../../_data/arsplan-fasit-2026-27";
 import { d, iso } from "../../_data/wang-plan";
@@ -36,7 +42,7 @@ import {
   useOsloIdagIso,
 } from "./primitiver";
 
-const MND_KORT = ["Aug", "Sep", "Okt", "Nov", "Des", "Jan", "Feb", "Mar", "Apr", "Mai", "Jun"];
+const UKEDAG_NAVN = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
 
 const SESONG_START = UKER[0][1];
 const SESONG_SLUTT = (() => {
@@ -70,22 +76,8 @@ function Hero() {
           pointerEvents: "none",
         }}
       />
-      <div
-        aria-hidden
-        style={{
-          position: "absolute",
-          top: 20,
-          right: 60,
-          width: 250,
-          height: 250,
-          borderRadius: "50%",
-          border: "1.5px solid var(--wang-mint)",
-          opacity: 0.2,
-          pointerEvents: "none",
-        }}
-      />
       <Wrap>
-        <div style={{ padding: "clamp(40px,7vw,72px) 0 clamp(32px,5vw,48px)", position: "relative" }}>
+        <div style={{ padding: "clamp(40px,7vw,64px) 0 clamp(24px,4vw,32px)", position: "relative" }}>
           <div
             style={{
               fontFamily: "var(--font-brand)",
@@ -117,17 +109,50 @@ function Hero() {
             med egne mål per trinn.
           </p>
         </div>
+        <div
+          style={{
+            position: "relative",
+            borderTop: "1px solid rgba(255,255,255,.2)",
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 24,
+            padding: "18px 0 20px",
+          }}
+        >
+          <div>
+            <p style={{ margin: 0, fontFamily: "var(--font-brand)", fontWeight: 500, fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--wang-mint)" }}>
+              Sted
+            </p>
+            <p style={{ margin: "4px 0 0", fontFamily: "var(--font-brand)", fontWeight: 500, fontSize: 15 }}>
+              GFGK · Treningslokalet
+            </p>
+          </div>
+          <div>
+            <p style={{ margin: 0, fontFamily: "var(--font-brand)", fontWeight: 500, fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--wang-mint)" }}>
+              Sportssjef og trener
+            </p>
+            <p style={{ margin: "4px 0 0", fontFamily: "var(--font-brand)", fontWeight: 500, fontSize: 15 }}>
+              Anders Kristiansen
+            </p>
+          </div>
+        </div>
       </Wrap>
     </div>
   );
 }
 
-const UKEDAG_NAVN = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
-
-function DenneUken() {
+/** Uka man står i (Oslo-korrekt, klampet til sesongen), som UKER-indeks. */
+function useNaIdx(): number {
   const naaIso = useOsloIdagIso(SESONG_START);
   const klampet = klampTilIntervall(naaIso, SESONG_START, SESONG_SLUTT);
   const mandag = mandagAv(klampet);
+  const idx = UKER.findIndex(([, m]) => m === mandag);
+  return idx >= 0 ? idx : 0;
+}
+
+function UkePreview({ idx }: { idx: number }) {
+  const [uke, mandag, fase, type, notat] = UKER[idx];
+  const f = FASER[fase];
   const dager = Array.from({ length: 7 }, (_, i) => leggTilDager(mandag, i));
   const okter = dager
     .map((isoDato, i) => ({
@@ -135,158 +160,165 @@ function DenneUken() {
       dagNavn: UKEDAG_NAVN[i],
       hendelser: (ARSPLAN_EVENTS[isoDato] ?? []).filter((h) => h.type === "okt"),
     }))
-    .filter((d) => d.hendelser.length > 0);
+    .filter((d2) => d2.hendelser.length > 0);
+  const sluttIso = leggTilDager(mandag, 6);
 
   return (
-    <Seksjon id="denne-uken">
-      <WangKort style={{ borderTop: "4px solid var(--wang-mint)" }}>
-        <div style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 15, marginBottom: 12 }}>
-          Denne uken
+    <WangKort style={{ borderColor: "var(--wang-navy)", background: "var(--tint-navy)" }}>
+      <p style={{ margin: "0 0 10px", fontFamily: "var(--font-brand)", fontWeight: 500, fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--text-secondary)" }}>
+        Uka vi står i
+      </p>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 20, alignItems: "flex-start" }}>
+        <div style={{ minWidth: 150 }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
+            <span style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 17 }}>Uke {uke}</span>
+            <Chip farge={f.tekst} tint={f.tint}>
+              {type}
+            </Chip>
+          </div>
+          <p style={{ margin: "4px 0 0", fontSize: 12, color: "var(--text-secondary)" }}>
+            {mandag.slice(8, 10)}.{mandag.slice(5, 7)}.–{sluttIso.slice(8, 10)}.{sluttIso.slice(5, 7)}
+          </p>
+          {notat ? <p style={{ margin: "8px 0 0", fontSize: 13.5, maxWidth: 260 }}>{notat}</p> : null}
         </div>
-        {okter.length === 0 ? (
-          <div style={{ fontSize: 13.5, color: "var(--text-secondary)" }}>
-            Ingen planlagte økter denne uken — se årshjulet under.
-          </div>
-        ) : (
-          <div style={{ display: "grid", gap: 12 }}>
-            {okter.map((d) => (
-              <div key={d.isoDato} style={{ display: "flex", flexWrap: "wrap", gap: "4px 12px", alignItems: "baseline" }}>
-                <div style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 13.5, minWidth: 90 }}>
-                  {d.dagNavn}
-                </div>
-                {d.hendelser.map((h, i) => (
-                  <span key={i} style={{ fontSize: 13, color: "var(--text-secondary)" }}>
-                    {h.time ? h.time + " · " : ""}
-                    {h.label}
-                  </span>
-                ))}
+        <div style={{ flex: "1 1 260px", minWidth: 0, display: "flex", flexDirection: "column", gap: 7 }}>
+          {okter.length ? (
+            okter.map((d2) => (
+              <div key={d2.isoDato} style={{ display: "grid", gridTemplateColumns: "62px minmax(0,1fr)", gap: 8, alignItems: "baseline" }}>
+                <span style={{ fontFamily: "var(--font-brand)", fontWeight: 500, fontSize: 12, color: "var(--text-secondary)" }}>{d2.dagNavn}</span>
+                <span style={{ minWidth: 0, fontSize: 13.5 }}>
+                  {d2.hendelser.map((h) => h.label).join(" · ")}
+                </span>
               </div>
-            ))}
-          </div>
-        )}
-      </WangKort>
-    </Seksjon>
+            ))
+          ) : (
+            <p style={{ margin: 0, fontSize: 13, color: "var(--text-secondary)" }}>Ingen økter denne uka.</p>
+          )}
+        </div>
+      </div>
+    </WangKort>
   );
 }
 
 function Arshjul() {
-  const [pekM, setPekM] = useState<number | null>(null);
-  const [apenP, setApenP] = useState<string>("TURN");
-  const pm = pekM ?? 0;
-  const fase = FASER[MND[pm][1]];
-  const [navn, , tema, hendelser] = MND[pm];
+  const naIdx = useNaIdx();
+  const [apenM, setApenM] = useState<number | null>(null);
+  const [valgtUke, setValgtUke] = useState<number | null>(null);
+
+  const apenMnd = apenM ?? new Date(UKER[naIdx][1] + "T00:00:00Z").getUTCMonth();
+  const forsteMnd = new Date(UKER[0][1] + "T00:00:00Z").getUTCMonth();
 
   return (
     <Seksjon id="arsplan">
-      <SeksjonHode nr={1} label="Årshjulet" tittel="Årsplan uke 34 → uke 24" ingress="Pek eller trykk på en måned for å se fase, tema og hendelser." />
-      <WangKort>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(11, 1fr)", gap: 6, alignItems: "end", height: 90 }}>
-          {MND.map(([, f], i) => {
-            const aktiv = pekM === i || (pekM === null && i === 0);
+      <SeksjonHode label="Årshjulet" tittel="44 uker, uke 34 til uke 24" ingress="Uka du står i vises øverst. Velg en uke i rutenettet for å bytte, eller en måned for å se alle ukene i den måneden." />
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginBottom: 16 }}>
+        {(["TURN", "TEST", "GRUNN", "SPES", "FERIE"] as const).map((k) => (
+          <span key={k} style={{ display: "inline-flex", alignItems: "center", gap: 7, fontFamily: "var(--font-brand)", fontWeight: 500, fontSize: 12 }}>
+            <span style={{ width: 12, height: 12, borderRadius: 3, background: FASER[k].farge, display: "inline-block" }} />
+            {FASER[k].navn}
+          </span>
+        ))}
+      </div>
+
+      <UkePreview idx={valgtUke ?? naIdx} />
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 12, marginTop: 16 }}>
+        {MND.map(([navn, faseKey], i) => {
+          const uker = UKER.filter(([, mandag]) => new Date(mandag + "T00:00:00Z").getUTCMonth() === (i + forsteMnd) % 12);
+          const apen = apenMnd === (i + forsteMnd) % 12;
+          return (
+            <WangKort
+              key={navn}
+              padding={16}
+              style={{ cursor: "pointer", borderColor: apen ? "var(--wang-navy)" : undefined }}
+            >
+              <button
+                type="button"
+                onClick={() => setApenM((i + forsteMnd) % 12)}
+                style={{ all: "unset", cursor: "pointer", display: "block", width: "100%" }}
+              >
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
+                  <span style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 15 }}>{navn}</span>
+                  <span style={{ fontSize: 11, color: "var(--text-secondary)" }}>{uker.length} uker</span>
+                </div>
+                <span style={{ display: "block", fontSize: 11, color: "var(--text-secondary)", marginTop: 2 }}>{FASER[faseKey].navn}</span>
+                <div style={{ display: "flex", gap: 4, marginTop: 10, flexWrap: "wrap" }}>
+                  {uker.map((u) => {
+                    const uf = FASER[u[2]];
+                    const idx = UKER.findIndex((x) => x[0] === u[0] && x[1] === u[1]);
+                    const valgt = idx === (valgtUke ?? naIdx);
+                    return (
+                      <span
+                        key={u[0] + u[1]}
+                        style={{
+                          flex: 1,
+                          minWidth: 28,
+                          textAlign: "center",
+                          padding: "4px 2px",
+                          borderRadius: 4,
+                          border: valgt ? "2px solid var(--wang-navy)" : "1px solid transparent",
+                          background: uf.tint,
+                          fontFamily: "var(--font-brand)",
+                          fontWeight: 500,
+                          fontSize: 11,
+                        }}
+                      >
+                        {u[0]}
+                      </span>
+                    );
+                  })}
+                </div>
+              </button>
+            </WangKort>
+          );
+        })}
+      </div>
+
+      <WangKort style={{ marginTop: 16 }}>
+        <div style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 17, marginBottom: 4 }}>
+          {MND[(apenMnd - forsteMnd + 12) % 12]?.[0]}
+        </div>
+        <div style={{ overflowX: "hidden" }}>
+          {UKER.filter(([, mandag]) => new Date(mandag + "T00:00:00Z").getUTCMonth() === apenMnd).map((u) => {
+            const [uke, mandag, fase, type, notat] = u;
+            const idx = UKER.findIndex((x) => x[0] === uke && x[1] === mandag);
+            const f = FASER[fase];
+            const sluttIso = leggTilDager(mandag, 6);
             return (
               <button
-                key={i}
+                key={uke + mandag}
                 type="button"
-                onMouseEnter={() => setPekM(i)}
-                onMouseLeave={() => setPekM(null)}
-                onClick={() => setPekM(i)}
+                onClick={() => setValgtUke(idx)}
                 style={{
-                  border: "none",
-                  background: "none",
+                  all: "unset",
                   cursor: "pointer",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  gap: 6,
-                  padding: 0,
+                  display: "grid",
+                  gridTemplateColumns: "64px minmax(0,1fr)",
+                  gap: 12,
+                  width: "100%",
+                  padding: "12px 4px",
+                  borderTop: "1px solid var(--neutral-100)",
+                  boxSizing: "border-box",
                 }}
               >
-                <div
-                  style={{
-                    width: "100%",
-                    height: aktiv ? 40 : 30,
-                    borderRadius: 6,
-                    background: FASER[f].farge,
-                    opacity: aktiv ? 1 : 0.42,
-                    transition: "height 200ms, opacity 200ms",
-                  }}
-                />
-                <span
-                  style={{
-                    fontFamily: "var(--font-brand)",
-                    fontSize: 11,
-                    fontWeight: aktiv ? 800 : 600,
-                    color: aktiv ? "var(--wang-navy)" : "var(--text-secondary)",
-                  }}
-                >
-                  {MND_KORT[i]}
+                <span style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 15 }}>{uke}</span>
+                <span style={{ minWidth: 0 }}>
+                  <span style={{ display: "block", fontSize: 12.5, color: "var(--text-secondary)" }}>
+                    {mandag.slice(8, 10)}.{mandag.slice(5, 7)}–{sluttIso.slice(8, 10)}.{sluttIso.slice(5, 7)}.{mandag.slice(0, 4)}
+                  </span>
+                  <span style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center", marginTop: 4 }}>
+                    <Chip farge={f.tekst} tint={f.tint}>
+                      {f.navn}
+                    </Chip>
+                    <span style={{ fontFamily: "var(--font-brand)", fontWeight: 500, fontSize: 13 }}>{type}</span>
+                  </span>
+                  {notat ? <span style={{ display: "block", fontSize: 13.5, marginTop: 4 }}>{notat}</span> : null}
                 </span>
               </button>
             );
           })}
         </div>
-        <div style={{ marginTop: 20, padding: 16, borderRadius: 14, background: fase.tint }}>
-          <Chip farge={fase.tekst} tint="var(--text-on-dark-dim)">
-            {fase.navn}
-          </Chip>
-          <div style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 16, marginTop: 8 }}>{navn}</div>
-          <p style={{ fontSize: 14, color: "var(--text-secondary)", marginTop: 4 }}>{tema}</p>
-          {hendelser?.length ? (
-            <ul style={{ margin: "8px 0 0", paddingLeft: 18, fontSize: 13.5, color: "var(--text-secondary)" }}>
-              {hendelser.map((h) => (
-                <li key={h}>{h}</li>
-              ))}
-            </ul>
-          ) : null}
-        </div>
       </WangKort>
-
-      <div style={{ display: "grid", gap: 12, marginTop: 16 }}>
-        {PERIODER.map((p) => {
-          const f = FASER[faseForPeriode(p.id)];
-          const apen = apenP === p.id;
-          return (
-            <WangKort key={p.id} style={{ padding: 0, overflow: "hidden" }}>
-              <button
-                type="button"
-                onClick={() => setApenP(apen ? "" : p.id)}
-                style={{
-                  width: "100%",
-                  textAlign: "left",
-                  border: "none",
-                  background: "none",
-                  cursor: "pointer",
-                  padding: "16px 20px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  gap: 12,
-                }}
-              >
-                <div>
-                  <Chip farge={f.tekst} tint={f.tint}>
-                    {p.navn}
-                  </Chip>
-                  <div style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 15, marginTop: 6 }}>
-                    {p.uker} · {p.datoer}
-                  </div>
-                </div>
-                <span style={{ fontSize: 20, color: "var(--text-secondary)" }}>{apen ? "−" : "+"}</span>
-              </button>
-              {apen ? (
-                <div style={{ padding: "0 20px 20px" }}>
-                  <p style={{ fontSize: 14, color: "var(--text-secondary)" }}>{p.fokus}</p>
-                  <ul style={{ margin: "8px 0 0", paddingLeft: 18, fontSize: 13.5, color: "var(--text-secondary)" }}>
-                    {p.nokkel.map((k) => (
-                      <li key={k}>{k}</li>
-                    ))}
-                  </ul>
-                </div>
-              ) : null}
-            </WangKort>
-          );
-        })}
-      </div>
     </Seksjon>
   );
 }
@@ -298,10 +330,27 @@ function Periodisering() {
 
   return (
     <Seksjon id="periodisering">
-      <SeksjonHode nr={2} label="Pyramiden" tittel="Periodisering" ingress="Fordelingen beregnes fra planlagte øvelser og egentrening — endres pyramiden i øktplanen, endres tallene her automatisk." />
+      <SeksjonHode label="Fem perioder" tittel="Perioder med hver sin hensikt" ingress="Periodene bestemmer hva øktene inneholder." />
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 12, marginBottom: 24 }}>
+        {PERIODER.map((p) => {
+          const f = FASER[faseForPeriode(p.id)];
+          return (
+            <WangKort key={p.id} style={{ borderTop: `3px solid ${f.farge}` }}>
+              <p style={{ margin: 0, fontFamily: "var(--font-brand)", fontWeight: 500, fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--text-secondary)" }}>
+                {p.uker}
+              </p>
+              <p style={{ margin: "2px 0 10px", fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 19 }}>{p.navn}</p>
+              <p style={{ margin: 0, fontSize: 12.5, color: "var(--text-secondary)" }}>{p.datoer}</p>
+              <p style={{ margin: "8px 0 0", fontSize: 14, lineHeight: 1.5 }}>{p.fokus}</p>
+            </WangKort>
+          );
+        })}
+      </div>
+
+      <SeksjonHode label="Pyramiden" tittel="Pyramiden i perioden" ingress="Fordelingen beregnes fra planlagte øvelser og egentrening — endres pyramiden i øktplanen, endres tallene her automatisk." />
       <PillGruppe
         valg={(["GRUNN", "SPES", "TURN"] as const).map((k) => ({
-          label: k + " · " + FASER[k].navn,
+          label: k,
           aktiv: k === pyr,
           onVelg: () => setPyr(k),
         }))}
@@ -341,51 +390,30 @@ function Periodisering() {
 function Manedsplan() {
   return (
     <Seksjon id="manedsplan">
-      <SeksjonHode nr={3} label="Tidslinje" tittel="Månedsplan" />
-      <div style={{ display: "flex", gap: 16, marginBottom: 16, flexWrap: "wrap" }}>
-        {(["okt", "prove", "skole", "hendelse"] as const).map((t) => (
-          <div key={t} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12.5, color: "var(--text-secondary)" }}>
-            <span
-              style={{
-                width: 8,
-                height: 8,
-                borderRadius: "50%",
-                background:
-                  t === "okt" ? "var(--wang-teal)" : t === "prove" ? "var(--cat-purple)" : t === "skole" ? "var(--cat-blue)" : "var(--cat-orange)",
-              }}
-            />
-            {t === "okt" ? "Trening" : t === "prove" ? "Test/prøve" : t === "skole" ? "Skole/ferie" : "Konkurranse"}
-          </div>
-        ))}
-      </div>
-      <div style={{ display: "grid", gap: 0 }}>
-        {MND.map(([navn, faseKey, tema], i) => {
+      <SeksjonHode label="Tidslinje" tittel="Elleve måneder, kort fortalt" />
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 12 }}>
+        {MND.map(([navn, faseKey, tema, hendelser]) => {
           const f = FASER[faseKey];
-          const formler = oktFormler(faseKey as "GRUNN" | "SPES" | "TURN");
           return (
-            <div key={navn} style={{ display: "grid", gridTemplateColumns: "16px 1fr", gap: 16 }}>
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                <div style={{ width: 12, height: 12, borderRadius: "50%", background: f.farge, marginTop: 4 }} />
-                {i < MND.length - 1 ? <div style={{ flex: 1, width: 2, background: "var(--border-subtle)" }} /> : null}
-              </div>
-              <div style={{ paddingBottom: 24 }}>
+            <WangKort key={navn} padding={20}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "baseline" }}>
+                <span style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 17 }}>{navn}</span>
                 <Chip farge={f.tekst} tint={f.tint}>
-                  {f.navn}
+                  {faseKey}
                 </Chip>
-                <div style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 15, marginTop: 6 }}>{navn}</div>
-                <p style={{ fontSize: 13.5, color: "var(--text-secondary)", marginTop: 2 }}>{tema}</p>
-                {formler.length ? (
-                  <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 8 }}>
-                    {formler.map((form) => (
-                      <Chip key={form.id} farge="var(--text-primary)" tint="var(--neutral-50)">
-                        {form.omrade}
-                        {form.reps ? " · " + form.reps : ""}
-                      </Chip>
-                    ))}
-                  </div>
-                ) : null}
               </div>
-            </div>
+              <p style={{ margin: "6px 0 0", fontFamily: "var(--font-brand)", fontWeight: 500, fontSize: 13.5, color: "var(--text-secondary)" }}>{tema}</p>
+              {hendelser?.length ? (
+                <ul style={{ margin: "10px 0 0", padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 6 }}>
+                  {hendelser.map((h) => (
+                    <li key={h} style={{ display: "flex", gap: 8, fontSize: 13.5, lineHeight: 1.4 }}>
+                      <span style={{ color: "var(--wang-teal-text)" }}>·</span>
+                      <span>{h}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+            </WangKort>
           );
         })}
       </div>
@@ -396,29 +424,23 @@ function Manedsplan() {
 function Ukeplan() {
   return (
     <Seksjon id="ukeplan">
-      <SeksjonHode nr={4} label="Fast mal" tittel="Ukeplan" />
-      <WangKort style={{ borderTop: "4px solid var(--wang-mint)" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8, marginBottom: 16 }}>
-          <div style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 15 }}>
-            VG1–VG3 samlet · 3 økter/uke · 6 timer
-          </div>
-          <div style={{ fontSize: 13, color: "var(--text-secondary)" }}>Skoleåret 2026/27</div>
-        </div>
-        <div style={{ display: "grid", gap: 12 }}>
-          {["Mandag", "Onsdag", "Fredag"].map((dag) => (
-            <div key={dag} style={{ display: "flex", flexWrap: "wrap", gap: "4px 12px", alignItems: "baseline", minWidth: 0 }}>
-              <div style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 13.5, minWidth: 72 }}>{dag}</div>
-              <div style={{ fontSize: 13, color: "var(--text-secondary)", minWidth: 90 }}>08:00–10:00</div>
-              <div style={{ fontSize: 13, color: "var(--text-secondary)", flex: "1 1 220px", minWidth: 0 }}>
-                Felles øktmal: oppvarming, tre øvelser etter periodens pyramide, KPI og dagbok
-              </div>
+      <SeksjonHode label="Den faste treningsuka" tittel="Mandag, onsdag og fredag 08:00–10:00" ingress="Øktene ligger i blokk 1 på timeplanen og er skoletid. Innholdet i den enkelte økta kommer fra trenerens plan og kan endres i løpet av uka." />
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 12 }}>
+        {[
+          { dag: "Mandag", tema: "Teknikk og styrke" },
+          { dag: "Onsdag", tema: "Slag og avstand" },
+          { dag: "Fredag", tema: "Spill og turnering" },
+        ].map((d2) => (
+          <WangKort key={d2.dag} padding={20}>
+            <div style={{ display: "flex", justifyContent: "space-between", gap: 8, alignItems: "baseline" }}>
+              <span style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 18 }}>{d2.dag}</span>
+              <span style={{ fontSize: 12.5, color: "var(--text-secondary)" }}>08:00–10:00</span>
             </div>
-          ))}
-        </div>
-        <div style={{ marginTop: 16, padding: 12, borderRadius: 12, background: "var(--neutral-50)", fontSize: 12.5, color: "var(--text-secondary)" }}>
-          Individuell FYS/egentrening kommer i tillegg — omfang følger periodens pyramide.
-        </div>
-      </WangKort>
+            <p style={{ margin: "8px 0 0", fontFamily: "var(--font-brand)", fontWeight: 500, fontSize: 14, color: "var(--wang-teal-text)" }}>{d2.tema}</p>
+            <p style={{ margin: "8px 0 0", fontSize: 13.5, color: "var(--text-secondary)" }}>Kommer fra trenerens plan i AK Golf HQ.</p>
+          </WangKort>
+        ))}
+      </div>
     </Seksjon>
   );
 }
@@ -427,49 +449,61 @@ function Oktplaner({ trinn }: { trinn: TrinnType | "Alle trinn" }) {
   const trinnValgte: TrinnType[] = trinn === "Alle trinn" ? ["VG1", "VG2", "VG3"] : [trinn];
   return (
     <Seksjon id="oktplaner">
-      <SeksjonHode nr={5} label="Per periode" tittel="Øktplaner" />
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(290px, 1fr))", gap: 16 }}>
+      <SeksjonHode label="Øktplaner" tittel="Tre maler, én per periode" ingress="Malene viser hvordan en økt er bygget opp i hver periode. Målene er ulike per trinn, og eleven jobber mot sitt eget i den individuelle utviklingsplanen." />
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 16 }}>
         {OKTER.map((okt) => {
           const f = FASER[okt.periode];
           const mal = okt.maal.filter((_, j) => trinnValgte.includes((["VG1", "VG2", "VG3"] as const)[j]));
           return (
-            <WangKort key={okt.tittel} style={{ borderTop: "4px solid " + f.farge }}>
-              <Chip farge={f.tekst} tint={f.tint}>
-                {f.navn}
-              </Chip>
-              <div style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 16, marginTop: 8 }}>{okt.tittel}</div>
-              <div style={{ fontSize: 12.5, color: "var(--text-secondary)" }}>{okt.meta}</div>
-              <p style={{ fontSize: 13.5, color: "var(--text-secondary)", marginTop: 6 }}>{okt.fokus}</p>
-              <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 10 }}>
-                {okt.blokker
-                  .filter((b) => b.omraade)
-                  .map((b, i) => (
-                    <Chip
-                      key={i}
-                      farge={AKSER[AKSE_ORD.indexOf(b.akse!)]?.farge ?? "var(--text-primary)"}
-                      tint="var(--neutral-50)"
-                    >
-                      {b.omraade ? OMRAADE_LABEL[b.omraade] : ""} · {b.reps}
-                    </Chip>
-                  ))}
+            <WangKort key={okt.tittel} style={{ padding: 0, overflow: "hidden" }}>
+              <div style={{ padding: "16px 18px", borderBottom: "1px solid var(--neutral-100)", borderLeft: `3px solid ${f.farge}` }}>
+                <div style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 17 }}>{okt.tittel}</div>
+                <div style={{ fontSize: 12.5, color: "var(--text-secondary)", marginTop: 2 }}>{okt.meta}</div>
               </div>
-              <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid var(--border-subtle)" }}>
-                <div style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 12.5, marginBottom: 6 }}>
+              <div>
+                {okt.blokker.map((b, i) => (
+                  <div
+                    key={i}
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "58px minmax(0,1fr) auto",
+                      gap: 10,
+                      alignItems: "baseline",
+                      padding: "9px 18px",
+                      borderTop: i === 0 ? undefined : "1px solid var(--neutral-100)",
+                    }}
+                  >
+                    <span style={{ fontFamily: "var(--font-brand)", fontWeight: 500, fontSize: 12, color: "var(--text-secondary)" }}>{b.tid}</span>
+                    <span style={{ minWidth: 0 }}>
+                      <span style={{ display: "block", fontSize: 13.5 }}>{b.del}</span>
+                      <span style={{ display: "block", fontSize: 11.5, color: "var(--text-secondary)" }}>
+                        {b.innhold}
+                        {b.omraade ? " · " + OMRAADE_LABEL[b.omraade] : ""}
+                        {b.min ? " · " + b.min + " min" : ""}
+                      </span>
+                    </span>
+                    {b.akse ? (
+                      <Chip farge={AKSER[AKSE_ORD.indexOf(b.akse)]?.farge ?? "var(--text-primary)"} tint="var(--neutral-50)">
+                        {b.akse}
+                      </Chip>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+              <div style={{ padding: "16px 18px", background: "var(--neutral-50)" }}>
+                <div style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 11.5, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--text-secondary)", marginBottom: 8 }}>
                   {trinn === "Alle trinn" ? "Mål per trinn" : "Mål for " + trinn}
                 </div>
                 {mal.map((m, j) => (
-                  <div key={j} style={{ fontSize: 12.5, color: "var(--text-secondary)", marginBottom: 4 }}>
+                  <p key={j} style={{ margin: "0 0 8px", fontSize: 13.5, lineHeight: 1.5 }}>
+                    <span style={{ fontFamily: "var(--font-brand)", fontWeight: 700 }}>{trinnValgte[j]}. </span>
                     {m.tekst} <span style={{ opacity: 0.7 }}>— {m.kilde}</span>
-                  </div>
+                  </p>
                 ))}
               </div>
             </WangKort>
           );
         })}
-      </div>
-      <div style={{ marginTop: 16, fontSize: 12.5, color: "var(--text-secondary)" }}>
-        Ny teknikk starter alltid i kropp/arm, aldri rett på ball. Minimum CS50 i balltrening.
-        KPI og dagbok inngår i hver økt. Testuker overtar hele øktmalen.
       </div>
     </Seksjon>
   );
@@ -485,8 +519,7 @@ export function FaneTrening({
   return (
     <div>
       <Hero />
-      <DenneUken />
-      <div style={{ marginTop: 32 }}>
+      <div style={{ marginTop: 24 }}>
         <Wrap>
           <PillGruppe
             valg={(["Alle trinn", "VG1", "VG2", "VG3"] as const).map((t) => ({

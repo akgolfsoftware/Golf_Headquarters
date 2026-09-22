@@ -21,7 +21,7 @@ import {
   moteTekst,
   type Trinn as TrinnType,
 } from "../../_data/arsplan-fasit-2026-27";
-import { PillGruppe, Seksjon, SeksjonHode, WangKort } from "./primitiver";
+import { FaneHero, PillGruppe, Seksjon, SeksjonHode, WangKort } from "./primitiver";
 
 function Timeplan() {
   const [klasseId, setKlasseId] = useState(KLASSER[0].id);
@@ -182,6 +182,11 @@ export function FaneSkole({
 }) {
   return (
     <div>
+      <FaneHero
+        eyebrow="Skole"
+        tittel="Timeplan, prøver og kompetansemål"
+        ingress="Treningen ligger 1. til 3. time mandag, onsdag og fredag. Resten av dagen er vanlig skole. Prøver og eksamen settes av skolen."
+      />
       <Timeplan />
       <Kompetansemaal trinn={trinn} />
       <Prover trinn={trinn} />
