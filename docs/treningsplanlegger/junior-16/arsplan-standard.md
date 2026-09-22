@@ -50,7 +50,7 @@ Ukesmål ca. **20+ timer hele året**. Turneringsrunder teller med. Bare innhold
 | GRUNN tidlig | 5 (4 økter) | 12 | 3 | 0 | 0 | Arbeidsforslag — **AVKLARES** |
 | GRUNN sen | 5 (4 økter) | 9 | 6 | 0 | 0 | Arbeidsforslag — **AVKLARES** |
 | SPESIALISERING | 3 | 4 | 7 | 5 | 1 | Valgt av Anders som arbeidstall |
-| TURNERING | — | — | — | — | — | **Låses ikke ennå.** Innholdet avklares først |
+| TURNERING | — | — | — | — | — | Innholdet fordeles 50/50 mellom de to sporene (§7). Timetall **låses ikke ennå** |
 
 Avgjort:
 - I GRUNN er FYS og TEK hovedbolkene. FYS = 4 økter, maks ca. 5 t/uke. Litt SLAG.
@@ -163,7 +163,13 @@ Avgjort av Anders: uka settes sammen av to spor.
 
 Regel fra fagkildene: ingen treningsråd på under 8 runder med data. Slag fra tee og innspill trenger ca. 12 runder,
 nærspill og putting ca. 24, før tallene er til å stole på. Før det er tallene et retningssignal.
-Fordelingen mellom de to sporene, og timene — **AVKLARES** i neste runde.
+**Avgjort 22.09.2026 (Anders):** i alle turneringsuker (uke 17–42) fordeles øktinnholdet utover rundene fast
+**50/50** mellom de to sporene. Begrunnelse: «Begge sporene må få tid hele sesongen.» Claude anbefalte kortsiktig
+spor i selve turneringsuka; Anders valgte 50/50. Beslutning: `.claude/rules/beslutninger.md` §STANDARD ÅRSPLAN JUNIOR 16.
+
+**AVKLARES:** samspillet med §6. Ved A-turneringer (nedtrapping 7–14 dager, ingen ny teknikk siste 2–4 uker) og i
+pre-turneringsuker kan den langsiktige halvdelen ikke være et nytt teknisk steg. Forslag: da er den vedlikehold av
+det som sitter, og halvdelen beholdes. Timetallene i TURNERING avklares fortsatt.
 
 ## 8. Testplan
 
@@ -216,7 +222,7 @@ WANG og GFGK Elite allerede bruker. Foresatte er med for spillere under 16 år.
 
 ## 13. Åpent — tas med Anders én ting om gangen
 
-1. Innhold og timer i TURNERING (fordeling mellom langsiktig og kortsiktig spor).
+1. ~~Innhold i TURNERING~~ — avgjort 50/50 (22.09.2026, §7). Igjen: samspill med A-turneringer (§7) og timetall.
 2. Periodegrensene i §3.
 3. Tidlig og sen GRUNN — stemmer tallene 5/12/3 og 5/9/6?
 4. Antall private timer per uke.

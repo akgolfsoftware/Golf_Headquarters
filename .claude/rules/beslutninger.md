@@ -1,7 +1,7 @@
 # Beslutninger — AK Golf HQ
 
 Kun det som gjelder nå. Full historikk (1 207 linjer, alle overstyrte valg): [beslutninger-full.md](../../docs/arkiv/instruks-2026-09-21/beslutninger-full.md). Gamle blokker der er historikk, aldri byggeordre.
-Ny beslutning registreres med `/beslutning` (skriver hit og inn i `docs/MASTERPLAN-GJENSTAAENDE.md`).
+Ny beslutning registreres med `/beslutning` (skriver hit. `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet 20.09.2026; arbeidet føres der det hører hjemme, f.eks. i et fagdokument).
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
 ## Design (Anders 21.09.2026, bindende)
@@ -19,6 +19,7 @@ Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved kon
 
 - Ingen treningsregel er låst: ingen invarianter, tak, minimum eller plan-validering mot metodikk (18.08). Vokabularet består som frie merkelapper. Gjeninnfør aldri en regel uten ny beslutning.
 - AK-formel v2: `PYRAMIDE_OMRADE_MOTORIKK_BELASTNING_PRESS`. Motorikk UTEN_BALL/LAV_HAST/AUTO, press ALENE/OBSERVERT/KONKURRANSE/TURNERING. L-faser, CS, M0–M5 og PR1–PR5 er utgått. v3 er skrotet.
+- **STANDARD ÅRSPLAN JUNIOR 16, TURNERINGSUKER 50/50 (Anders 22.09.2026, i økt):** Uke 17–42 fordeles fast 50/50 mellom langsiktig spor (neste steg i teknisk utviklingsplan) og kortsiktig spor (området med mest slag tapt). Hvorfor: «Begge sporene må få tid hele sesongen.» Valgt mot Claudes anbefaling (kortsiktig i selve turneringsuka). Uavklart: A-turneringer beholder nedtrapping og ingen ny teknikk siste 2–4 uker, så langsiktig halvdel må da bety vedlikehold. Krever ingen kodeendring ennå — ingenting bygges før hele dokumentet er godkjent. Arbeid: `docs/treningsplanlegger/junior-16/arsplan-standard.md` §7 og §13 punkt 1. Masterplanen er fjernet (20.09), så det finnes ingen arbeidsliste å føre rader i.
 - Ordbok: `docs/ordbok.md` (erstatter `ordbok-master-trening.md`; `docs/ordbok.json` genereres).
 - TrackMan-parametere på engelsk med stor forbokstav (Attack Angle, Club Path, Smash Factor).
 - Tester planlegges i Workbench; resultat synkes til talentprofilen.
