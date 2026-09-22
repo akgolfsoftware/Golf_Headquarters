@@ -638,164 +638,170 @@ export function ForsideMork() {
         ))}
       </nav>
 
-      <section className={s.stage}>
-        <div className={s.sticky}>
-          <canvas className={s.cv} />
-          <div className={`${s.grad} ${s.gradL}`} />
-          <div className={`${s.grad} ${s.gradB}`} />
-        </div>
-
-        <div className={`${s.st} ${s.hero}`} data-at="0" data-to="0.155">
-          {/* Logofila bærer merkefargene selv — derfor <img>, ikke maskert ikon. */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            className={s.heroLogo}
-            src="/logos/logo-ak-golf-academy-negative.svg"
-            alt="AK Golf"
-          />
-          <span className={s.k}>Fredrikstad · coaching siden 2018</span>
-          <h1>Bedre golf, over tid.</h1>
-          <p>
-            Coaching med Anders Kristiansen — på bane, i studio og i gruppe. Ingen
-            hurtigkur, ingen mirakelgrep.
-          </p>
-          <div className={s.doors}>
-            <Link className={s.door} href="/booking">
-              <span className={s.t}>
-                Coaching<i>01</i>
-              </span>
-              <span className={s.d}>
-                Enkelttime på bane eller i studio. Gruppetrening. Foreldresamtale.
-              </span>
-              <span className={s.p}>BOOK TIME</span>
-            </Link>
-            <Link className={s.door} href="/playerhq">
-              <span className={s.t}>
-                Player HQ<i>02</i>
-              </span>
-              <span className={s.d}>Appen for deg som trener videre mellom timene.</span>
-              <span className={s.p}>299 KR / MND</span>
-            </Link>
+      {/* Forsiden tegner sitt eget skall, så `<main>` kommer ikke lenger fra
+          `(marketing)/layout.tsx`. Uten det har siden ingen hovedregion å hoppe
+          til for skjermleser og tastatur — og `landing-page.spec.ts` fant den
+          ikke. Kapittelskinnen og bunnen står utenfor, som de skal. */}
+      <main className={s.hoved}>
+        <section className={s.stage}>
+          <div className={s.sticky}>
+            <canvas className={s.cv} />
+            <div className={`${s.grad} ${s.gradL}`} />
+            <div className={`${s.grad} ${s.gradB}`} />
           </div>
-        </div>
 
-        <div className={s.st} data-at="0.215" data-to="0.30">
-          <span className={s.qmark}>&ldquo;</span>
-          <blockquote>
-            Vi forteller deg ikke hva vi tror. Vi viser hva vi har sett, og så bestemmer vi
-            sammen.
-          </blockquote>
-          <hr className={s.rule} />
-          <span className={s.m}>ANDERS KRISTIANSEN · TRENER · SITAT TIL GODKJENNING</span>
-        </div>
+          <div className={`${s.st} ${s.hero}`} data-at="0" data-to="0.155">
+            {/* Logofila bærer merkefargene selv — derfor <img>, ikke maskert ikon. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              className={s.heroLogo}
+              src="/logos/logo-ak-golf-academy-negative.svg"
+              alt="AK Golf"
+            />
+            <span className={s.k}>Fredrikstad · coaching siden 2018</span>
+            <h1>Bedre golf, over tid.</h1>
+            <p>
+              Coaching med Anders Kristiansen — på bane, i studio og i gruppe. Ingen
+              hurtigkur, ingen mirakelgrep.
+            </p>
+            <div className={s.doors}>
+              <Link className={s.door} href="/booking">
+                <span className={s.t}>
+                  Coaching<i>01</i>
+                </span>
+                <span className={s.d}>
+                  Enkelttime på bane eller i studio. Gruppetrening. Foreldresamtale.
+                </span>
+                <span className={s.p}>BOOK TIME</span>
+              </Link>
+              <Link className={s.door} href="/playerhq">
+                <span className={s.t}>
+                  Player HQ<i>02</i>
+                </span>
+                <span className={s.d}>Appen for deg som trener videre mellom timene.</span>
+                <span className={s.p}>299 KR / MND</span>
+              </Link>
+            </div>
+          </div>
 
-        <div className={s.st} id="coaching" data-at="0.375" data-to="0.465">
-          <span className={`${s.k} ${s.kRust}`}>Coaching</span>
-          <h2>Fem måter å jobbe sammen</h2>
-          <p>
-            Alt starter med en time. Hva som følger etter den, bestemmer vi når vi vet hva
-            du trenger.
-          </p>
-          <ul className={s.feat}>
-            {MAATER.map((m) => (
-              <li key={m.nr}>
-                <span className={s.i}>{m.nr}</span>
-                <span className={s.n}>{m.navn}</span>
-                <span className={s.v}>{m.hvor}</span>
-              </li>
+          <div className={s.st} data-at="0.215" data-to="0.30">
+            <span className={s.qmark}>&ldquo;</span>
+            <blockquote>
+              Vi forteller deg ikke hva vi tror. Vi viser hva vi har sett, og så bestemmer vi
+              sammen.
+            </blockquote>
+            <hr className={s.rule} />
+            <span className={s.m}>ANDERS KRISTIANSEN · TRENER · SITAT TIL GODKJENNING</span>
+          </div>
+
+          <div className={s.st} id="coaching" data-at="0.375" data-to="0.465">
+            <span className={`${s.k} ${s.kRust}`}>Coaching</span>
+            <h2>Fem måter å jobbe sammen</h2>
+            <p>
+              Alt starter med en time. Hva som følger etter den, bestemmer vi når vi vet hva
+              du trenger.
+            </p>
+            <ul className={s.feat}>
+              {MAATER.map((m) => (
+                <li key={m.nr}>
+                  <span className={s.i}>{m.nr}</span>
+                  <span className={s.n}>{m.navn}</span>
+                  <span className={s.v}>{m.hvor}</span>
+                </li>
+              ))}
+            </ul>
+            <div className={s.acts}>
+              <Link className={`${s.btn} ${s.btnP}`} href="/booking">
+                Book en time
+              </Link>
+              <Link className={s.m} style={{ alignSelf: "center" }} href="/priser">
+                SE PRISER
+              </Link>
+            </div>
+          </div>
+
+          <div className={s.st} id="playerhq" data-at="0.535" data-to="0.625">
+            <span className={`${s.k} ${s.kRust}`}>Player HQ · 299 kr/mnd</span>
+            <h2>Appen mellom timene</h2>
+            <p>
+              For satsende juniorer og for voksne som vil bli bedre. Samme app, samme plan,
+              ulik mengde.
+            </p>
+            <div className={s.gcells}>
+              {PLAYERHQ.map((p) => (
+                <div key={p.tittel} className={s.gcell}>
+                  <span className={s.t}>{p.tittel}</span>
+                  <span className={s.d}>{p.tekst}</span>
+                </div>
+              ))}
+            </div>
+            <div className={s.acts}>
+              <Link className={`${s.btn} ${s.btnG}`} href="/playerhq">
+                Se Player HQ
+              </Link>
+            </div>
+          </div>
+
+          <div className={s.st} data-at="0.695" data-to="0.785">
+            <span className={s.k}>Akademiet</span>
+            <h2>For dem som vil lenger</h2>
+            <p>
+              AK Golf Academy er det tetteste sporet: helårsplan, fast oppfølging og Player
+              HQ inkludert. Få plasser, opptak etter prøvetime.
+            </p>
+            <ul className={s.feat}>
+              {AKADEMIET.map((a) => (
+                <li key={a.navn}>
+                  <span className={s.i}>→</span>
+                  <span className={s.n}>{a.navn}</span>
+                  <span className={s.v}>{a.hvor}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className={`${s.st} ${s.stC}`} id="kontakt" data-at="0.875" data-to="1.01">
+            <span className={s.k}>Ta kontakt</span>
+            <h2>Én time forteller mer enn ti tips.</h2>
+            <p>Skriv hva du spiller i dag og hva du vil bli bedre på.</p>
+            <div className={s.acts}>
+              <Link className={`${s.btn} ${s.btnP}`} href="/booking">
+                Book en time
+              </Link>
+              <Link className={`${s.btn} ${s.btnG}`} href="/kontakt">
+                Skriv til meg
+              </Link>
+            </div>
+            <p className={s.m} style={{ marginTop: 28 }}>
+              FREDRIKSTAD · POST@AKGOLF.NO
+            </p>
+          </div>
+        </section>
+
+        <section className={s.gal}>
+          <div className={s.galHd}>
+            <span className={s.k}>Bildearkiv</span>
+            <h2>Fra banen og studioet</h2>
+          </div>
+          <div className={s.grid}>
+            {ARKIV.map(([fil, hoy], i) => (
+              <figure
+                key={fil}
+                className={hoy ? s.tall : undefined}
+                data-parallax={(i % 2 ? -1 : 1) * (10 + i * 3)}
+              >
+                <Image
+                  src={`${FOTO}${fil}`}
+                  alt="AK Golf — bane og studio"
+                  fill
+                  sizes="(max-width: 860px) 50vw, 33vw"
+                  style={{ objectPosition: `${feste(fil)[0] * 100}% ${feste(fil)[1] * 100}%` }}
+                />
+              </figure>
             ))}
-          </ul>
-          <div className={s.acts}>
-            <Link className={`${s.btn} ${s.btnP}`} href="/booking">
-              Book en time
-            </Link>
-            <Link className={s.m} style={{ alignSelf: "center" }} href="/priser">
-              SE PRISER
-            </Link>
           </div>
-        </div>
-
-        <div className={s.st} id="playerhq" data-at="0.535" data-to="0.625">
-          <span className={`${s.k} ${s.kRust}`}>Player HQ · 299 kr/mnd</span>
-          <h2>Appen mellom timene</h2>
-          <p>
-            For satsende juniorer og for voksne som vil bli bedre. Samme app, samme plan,
-            ulik mengde.
-          </p>
-          <div className={s.gcells}>
-            {PLAYERHQ.map((p) => (
-              <div key={p.tittel} className={s.gcell}>
-                <span className={s.t}>{p.tittel}</span>
-                <span className={s.d}>{p.tekst}</span>
-              </div>
-            ))}
-          </div>
-          <div className={s.acts}>
-            <Link className={`${s.btn} ${s.btnG}`} href="/playerhq">
-              Se Player HQ
-            </Link>
-          </div>
-        </div>
-
-        <div className={s.st} data-at="0.695" data-to="0.785">
-          <span className={s.k}>Akademiet</span>
-          <h2>For dem som vil lenger</h2>
-          <p>
-            AK Golf Academy er det tetteste sporet: helårsplan, fast oppfølging og Player
-            HQ inkludert. Få plasser, opptak etter prøvetime.
-          </p>
-          <ul className={s.feat}>
-            {AKADEMIET.map((a) => (
-              <li key={a.navn}>
-                <span className={s.i}>→</span>
-                <span className={s.n}>{a.navn}</span>
-                <span className={s.v}>{a.hvor}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className={`${s.st} ${s.stC}`} id="kontakt" data-at="0.875" data-to="1.01">
-          <span className={s.k}>Ta kontakt</span>
-          <h2>Én time forteller mer enn ti tips.</h2>
-          <p>Skriv hva du spiller i dag og hva du vil bli bedre på.</p>
-          <div className={s.acts}>
-            <Link className={`${s.btn} ${s.btnP}`} href="/booking">
-              Book en time
-            </Link>
-            <Link className={`${s.btn} ${s.btnG}`} href="/kontakt">
-              Skriv til meg
-            </Link>
-          </div>
-          <p className={s.m} style={{ marginTop: 28 }}>
-            FREDRIKSTAD · POST@AKGOLF.NO
-          </p>
-        </div>
-      </section>
-
-      <section className={s.gal}>
-        <div className={s.galHd}>
-          <span className={s.k}>Bildearkiv</span>
-          <h2>Fra banen og studioet</h2>
-        </div>
-        <div className={s.grid}>
-          {ARKIV.map(([fil, hoy], i) => (
-            <figure
-              key={fil}
-              className={hoy ? s.tall : undefined}
-              data-parallax={(i % 2 ? -1 : 1) * (10 + i * 3)}
-            >
-              <Image
-                src={`${FOTO}${fil}`}
-                alt="AK Golf — bane og studio"
-                fill
-                sizes="(max-width: 860px) 50vw, 33vw"
-                style={{ objectPosition: `${feste(fil)[0] * 100}% ${feste(fil)[1] * 100}%` }}
-              />
-            </figure>
-          ))}
-        </div>
-      </section>
+        </section>
+      </main>
 
       <footer className={s.ft}>
         <div className={s.ftIn}>

@@ -226,6 +226,10 @@
   .mo .prog { display: block }
 }
 
+/* Hovedregionen er bare et landemerke: ingen egen posisjon eller z-indeks, så
+   den lager ingen ny stablingskontekst og rører ikke feltenes `position: fixed`. */
+.hoved { display: block }
+
 /* ---- scenen ---- */
 .stage { position: relative }
 .mo .stage { height: 720vh }
