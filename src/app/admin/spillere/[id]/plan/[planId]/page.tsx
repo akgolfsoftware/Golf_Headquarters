@@ -20,6 +20,7 @@ import { omraadeToTab, type PyramidArea } from "@/components/teknisk-plan/consta
 import type { OppgaveDraft } from "@/components/teknisk-plan/oppgave-modal";
 import { PlanToolbar } from "./plan-toolbar";
 import { DrillsPanel, type DrillRow } from "./drills-panel";
+import { sorterPosisjoner, medFasitNavn } from "@/lib/teknisk-plan/sorter-posisjoner";
 
 export const dynamic = "force-dynamic";
 
@@ -77,16 +78,12 @@ export default async function SpillerPlanDetaljPage({
 
   if (!spiller || !plan || plan.userId !== id) notFound();
 
-  const sortedPositions = [...plan.positions].sort((a, b) => {
-    if (a.hovedfokus && !b.hovedfokus) return -1;
-    if (!a.hovedfokus && b.hovedfokus) return 1;
-    return a.sortOrder - b.sortOrder;
-  });
+  const sortedPositions = sorterPosisjoner(plan.positions.map(medFasitNavn));
   const defaultTarget = sortedPositions[0]
     ? { pNummer: sortedPositions[0].pNummer, pName: sortedPositions[0].navn }
     : { pNummer: "P7.0", pName: "Impact" };
 
-  const drills: DrillRow[] = plan.positions.flatMap((pos) =>
+  const drills: DrillRow[] = sortedPositions.flatMap((pos) =>
     pos.tasks.map((t): DrillRow => {
       const repsTarget = t.repsMaalDry + t.repsMaalLav + t.repsMaalFull;
       const repsDone = t.repsGjortDry + t.repsGjortLav + t.repsGjortFull;

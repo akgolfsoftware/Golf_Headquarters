@@ -33,6 +33,7 @@ import { TekniskPlanFullsvingShell } from "@/components/portal/v2/TekniskPlanFul
 import { erFullsving } from "@/lib/teknisk-plan/fullsving";
 import { TekniskPlanVisning, type EnTingLes, type FokusLes } from "@/components/teknisk-plan/teknisk-plan-visning";
 import { loadNesteOkt } from "@/lib/portal/load-neste-okt";
+import { sorterPosisjoner, medFasitNavn } from "@/lib/teknisk-plan/sorter-posisjoner";
 export const dynamic = "force-dynamic";
 
 interface PageProps {
@@ -182,12 +183,8 @@ export default async function PlanBuilderPage({ params }: PageProps) {
     };
   });
 
-  // Sort positions by sortOrder; show "hovedfokus" first
-  const sortedPositions = [...plan.positions].sort((a, b) => {
-    if (a.hovedfokus && !b.hovedfokus) return -1;
-    if (!a.hovedfokus && b.hovedfokus) return 1;
-    return a.sortOrder - b.sortOrder;
-  });
+  // Hovedfokus først, mellomposisjoner samlet under sin hoved-P, fasitnavn.
+  const sortedPositions = sorterPosisjoner(plan.positions.map(medFasitNavn));
 
   const fullsvingTasks = allTasks
     .filter((t) => erFullsving(t.slagType))

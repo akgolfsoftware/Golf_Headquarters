@@ -30,6 +30,10 @@ import {
 } from "@/lib/ak-formel-visning";
 import {
   KOLLER,
+  P_POSITIONS,
+  hovedP,
+  mellomposisjonerFor,
+  pNavn,
   L_PHASES,
   CS_LEVELS,
   M_LEVELS,
@@ -122,6 +126,8 @@ interface OppgaveModalProps {
   onUploadMedia?: (file: File, kind: "bilde" | "video") => Promise<string>;
 }
 
+const AVANSERT_P_NOKKEL = "tp-avansert-p";
+
 function uid() {
   return Math.random().toString(36).slice(2, 10);
 }
@@ -140,6 +146,17 @@ export function OppgaveModal({ open, onClose, initial, onSubmit, isEditing, onLo
   const [loggingReps, setLoggingReps] = useState(false);
   const [uploading, setUploading] = useState<"bilde" | "video" | null>(null);
   const [mediaError, setMediaError] = useState<string | null>(null);
+  // Avansert P-velger (mellomposisjoner) — per-nettleser-bekvemmelighet, aldri fasit.
+  const [avansertP, setAvansertPState] = useState<boolean>(() => {
+    try { return window.localStorage.getItem(AVANSERT_P_NOKKEL) === "1"; } catch { return false; }
+  });
+  function setAvansertP(v: boolean) {
+    setAvansertPState(v);
+    try { window.localStorage.setItem(AVANSERT_P_NOKKEL, v ? "1" : "0"); } catch { /* privat modus o.l. */ }
+  }
+  function velgP(num: string) {
+    setDraft((d) => ({ ...d, pNummer: num, pName: pNavn(num) }));
+  }
 
   if (!open) return null;
 
@@ -314,6 +331,49 @@ export function OppgaveModal({ open, onClose, initial, onSubmit, isEditing, onLo
               <span className="num"><b>1</b> Beskrivelse</span>
             </div>
             <div className="section-row">
+              <div className="field-stack">
+                <span className="field-label">
+                  P-posisjon{" "}
+                  <span style={{ color: "hsl(var(--muted-foreground))", fontWeight: 500 }}>· {draft.pNummer} {pNavn(draft.pNummer)}</span>
+                </span>
+                <div className="seg cols-5" role="group" aria-label="Hovedposisjon P1 til P10">
+                  {P_POSITIONS.map((p) => (
+                    <button
+                      type="button"
+                      key={p.num}
+                      className={hovedP(draft.pNummer) === p.num ? "active" : ""}
+                      title={p.name}
+                      onClick={() => velgP(p.num)}
+                    >
+                      <span className="dot" />{p.num.replace(".0", "")}
+                    </button>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  className={`chip ${avansertP ? "active" : ""}`}
+                  aria-pressed={avansertP}
+                  onClick={() => setAvansertP(!avansertP)}
+                  style={{ alignSelf: "flex-start" }}
+                >
+                  {avansertP ? "Avansert: mellomposisjoner vises" : "Avansert: vis mellomposisjoner"}
+                </button>
+                {avansertP && mellomposisjonerFor(hovedP(draft.pNummer)).length > 0 && (
+                  <div className="seg cols-5" role="group" aria-label={`Mellomposisjoner under ${hovedP(draft.pNummer)}`}>
+                    {[{ num: hovedP(draft.pNummer), name: pNavn(hovedP(draft.pNummer)) }, ...mellomposisjonerFor(hovedP(draft.pNummer))].map((p) => (
+                      <button
+                        type="button"
+                        key={p.num}
+                        className={draft.pNummer === p.num ? "active" : ""}
+                        title={p.name}
+                        onClick={() => velgP(p.num)}
+                      >
+                        <span className="dot" />{p.num}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
               <div className="field-stack">
                 <label className="field-label" htmlFor="f-title">Tittel</label>
                 <input

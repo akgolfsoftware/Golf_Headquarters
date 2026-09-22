@@ -152,6 +152,8 @@ function draftToTaskInput(planId: string, draft: OppgaveDraft): TaskInput {
 /** updateTaskBasics tar bare basis-feltene (ikke planId/P/tmGoals/hitRateGoals). */
 function draftToBasicsPatch(draft: OppgaveDraft) {
   return {
+    pNummer: draft.pNummer,
+    pName: draft.pName,
     tittel: draft.tittel,
     beskrivelse: draft.beskrivelse || undefined,
     pyramide: draft.pyramide,

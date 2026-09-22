@@ -24,10 +24,16 @@ import type { Prisma } from "@/generated/prisma/client";
 import { nonEmpty } from "@/lib/validation/schemas";
 import { applyPositionTaskReps } from "@/lib/teknisk-plan/apply-reps";
 import { ensurePlanAccess } from "@/lib/teknisk-plan/ensure-plan-access";
+import { pHovedNummer, pNavn } from "@/components/teknisk-plan/constants";
+
+const PNummerSchema = z
+  .string()
+  .regex(/^P\d{1,2}\.\d$/, "Posisjonsnummer må være på formen P4.0 eller P4.1")
+  .refine((v) => pHovedNummer(v) !== null, "Posisjonsnummer må være P1 til P10");
 
 const TaskInputSchema = z.object({
   planId: z.string().min(1, "Plan-ID er påkrevd"),
-  pNummer: z.string().min(1, "Posisjonsnummer er påkrevd"),
+  pNummer: PNummerSchema,
   pName: z.string().min(1, "Posisjonsnavn er påkrevd"),
   tittel: nonEmpty(500),
   beskrivelse: z.string().max(2000).optional(),
@@ -90,11 +96,13 @@ export interface TaskInput {
   hitRateGoals?: HitRateGoalInput[];
 }
 
-async function findOrCreatePosition(planId: string, pNummer: string, pName: string) {
+// Navnet utledes alltid fra fasitlista (pNavn) — klientens pName er bare visning.
+async function findOrCreatePosition(planId: string, pNummer: string, _pName: string) {
   const existing = await prisma.technicalPlanPosition.findFirst({
     where: { planId, pNummer },
   });
   if (existing) return existing;
+  const navn = pNavn(pNummer);
 
   const lastSort = await prisma.technicalPlanPosition.findFirst({
     where: { planId },
@@ -105,7 +113,7 @@ async function findOrCreatePosition(planId: string, pNummer: string, pName: stri
     data: {
       planId,
       pNummer,
-      navn: pName,
+      navn,
       sortOrder: (lastSort?.sortOrder ?? -1) + 1,
     },
   });
@@ -197,18 +205,35 @@ export async function createTask(input: TaskInput) {
 
 export async function updateTaskBasics(
   taskId: string,
-  patch: Partial<Omit<TaskInput, "planId" | "pNummer" | "pName" | "tmGoals" | "hitRateGoals">>,
+  patch: Partial<Omit<TaskInput, "planId" | "tmGoals" | "hitRateGoals">>,
 ) {
   const task = await prisma.positionTask.findUnique({
     where: { id: taskId },
-    include: { position: { select: { planId: true } } },
+    include: { position: { select: { planId: true, pNummer: true } } },
   });
   if (!task) throw new Error("Oppgave ikke funnet");
   const { user } = await ensurePlanAccess(task.position.planId);
 
+  // Flytt til annen P-posisjon (også mellomposisjon) når pNummer er endret.
+  let nyPositionId: string | undefined;
+  let nySortOrder: number | undefined;
+  if (patch.pNummer && patch.pNummer !== task.position.pNummer) {
+    PNummerSchema.parse(patch.pNummer);
+    const pos = await findOrCreatePosition(task.position.planId, patch.pNummer, patch.pName ?? "");
+    const last = await prisma.positionTask.findFirst({
+      where: { positionId: pos.id },
+      orderBy: { sortOrder: "desc" },
+      select: { sortOrder: true },
+    });
+    nyPositionId = pos.id;
+    nySortOrder = (last?.sortOrder ?? -1) + 1;
+  }
+
   const updated = await prisma.positionTask.update({
     where: { id: taskId },
     data: {
+      positionId: nyPositionId,
+      sortOrder: nySortOrder,
       tittel: patch.tittel,
       beskrivelse: patch.beskrivelse,
       pyramide: patch.pyramide,

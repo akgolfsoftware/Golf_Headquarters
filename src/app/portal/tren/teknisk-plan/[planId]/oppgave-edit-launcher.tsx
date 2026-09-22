@@ -20,6 +20,8 @@ import { skalerBilde, MAKS_ACTION_BYTES } from "@/lib/klient/skaler-avatar";
 
 function draftToBasicsPatch(draft: OppgaveDraft) {
   return {
+    pNummer: draft.pNummer,
+    pName: draft.pName,
     tittel: draft.tittel,
     beskrivelse: draft.beskrivelse || undefined,
     pyramide: draft.pyramide,
