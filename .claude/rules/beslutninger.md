@@ -27,6 +27,24 @@ Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved kon
 
 Ferdig skjerm krever fortsatt at Anders har sett den (port 7).
 
+## AK-stigen har fire trinn, og Knøtt får egen gruppe (Anders 22.09.2026, bindende)
+
+**Knøtt (11–12 år) er ikke et trinn i AK-stigen.** Stigen er Mini → Basis → Utvikling →
+Elite. Aldersgruppen skal likevel ha sin egen gruppe, og den gruppen hører hjemme **ved siden
+av stigen** — sammen med WANG Toppidrett — ikke som et hull i den.
+
+**Rollen ASSISTANT heter «Assist Coach» på skjerm.** Tidligere sto det «Hjelpecoach» og
+«Hjelpetrener» om hverandre i koden. Coach heter «Coach», spiller heter «Spiller».
+
+Gjennomført i denne beslutningen: `AK_STIGEN_TRINN` har fire trinn, `vedSidenAv` erstatter
+`overStigen` (liste, ikke ett felt), og rolleordene i `GruppeDetaljV2` er rettet. Tegningen er
+AG-03c i Claude Design-prosjektet «App design».
+
+**Gjenstår:** gruppen «GFGK Junior Knøtt U12» finnes ikke i basen ennå. Den må opprettes —
+enten manuelt, eller ved at den legges inn i `GFGK_BOOTSTRAP_GRUPPER` med egen kanonisk slug.
+Uavklart: om den offentlige juniorsiden (`/junior`), som i dag beskriver **fem** trinn med
+Knøtt som det andre, skal skrives om. Den endrer publisert markedstekst og venter på Anders.
+
 ## Design (Anders 21.09.2026, bindende)
 
 **AK Golf Design System og Claude Design-prosjektet «App design» gjelder.** Train-lock og Paper er utgående: ingen visuell fasit, bare funksjonsinventar. Spør aldri på nytt om dette. Kilde og ID-er: [design-autoritet.md](../../docs/design-system/design-autoritet.md).
