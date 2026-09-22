@@ -616,7 +616,7 @@ Dette feltet vises bare når området er fullsving.
 | 1 | Puttingavstand | Fot er primær, meter kan vises i parentes | Teknisk plan og Workbench viser fot (m) |
 | 2 | Måleutstyr | Fast liste: TrackMan og annen radar, aldri gjettet fra sted | Felt på oppgave og øvelse |
 | 3 | Teknisk fokus | Eget felt per område på oppgaven i teknisk plan | Følger med inn i økta |
-| 4 |  |  |  |
+| 4 | Måleutstyr, liste | TrackMan · FlightScope · Garmin R10 · Mevo+ · Annet · Uten måleutstyr. Spilleren oppgir selv hvilken enhet han står på | Senere versjon: teknisk plan tilpasses parametrene hver enhet faktisk måler |
 | 5 |  |  |  |
 | 6 |  |  |  |
 | 7 |  |  |  |
@@ -624,6 +624,7 @@ Dette feltet vises bare når området er fullsving.
 
 ## 16. Parkeringsplass
 
+- Senere versjon: optimaliser teknisk plan etter hvilke parametere hver måleenhet har (TrackMan-mål bare der enheten måler dem). (Anders 22.09)
 - 
 - 
 - 
