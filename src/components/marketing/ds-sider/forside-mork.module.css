@@ -530,13 +530,22 @@
  * 700 px er tegningens eget brekkpunkt (der dørene går fra to til én). */
 @media (max-width: 700px) {
   .mo .stage { height: auto }
+  /* Negativ bunnmarg: den klebrige blokken tar ikke plass i flyten, så
+     kapitlene begynner på toppen av scenen og ruller over fotoet fra første
+     piksel. Den blir fortsatt klebrig — det er flyten som endres, ikke
+     klebringen. */
   .mo .sticky {
     position: sticky;
     top: 0;
     height: 100vh;
     height: 100svh;
+    margin-bottom: -100vh;
+    margin-bottom: -100svh;
     z-index: 0;
   }
+  /* Venstregradienten er tegnet for tekst i venstre halvdel. På mobil står
+     teksten i hele bredden, og da er det bare sløret som trengs. */
+  .mo .gradL { display: none }
   /* Ett jevnt slør over hele fotoet. På desktop står teksten alltid over den
      mørke venstre enden av scrimen; på mobil ruller den over hele bildet, og
      da må sløret gjelde hele flaten. */
@@ -546,7 +555,7 @@
     inset: 0;
     z-index: 2;
     pointer-events: none;
-    background: rgba(14, 13, 12, .62);
+    background: rgba(14, 13, 12, .72);
   }
   .mo .st {
     position: relative;
@@ -560,25 +569,41 @@
     filter: none;
     pointer-events: auto;
   }
+  /* Heroen er en vanlig blokk på mobil, ikke en låst 100vh-ramme: dørene er
+     høye nok til å renne ut av rammen på 390 px. `min-height` holder den på
+     én skjerm når den får plass, og lar den vokse når den ikke gjør det. */
   .mo .hero {
-    position: absolute;
-    top: 0;
+    position: relative;
+    top: auto;
     bottom: auto;
-    left: 0;
-    right: 0;
-    height: 100vh;
-    height: 100svh;
-    max-width: none;
-    margin: 0;
-    padding: 0 6vw 9vh;
+    left: auto;
+    right: auto;
+    height: auto;
+    min-height: 100vh;
+    min-height: 100svh;
+    max-width: 100%;
+    margin: 0 0 88px;
+    padding: 12vh 6vw 7vh;
     justify-content: flex-end;
   }
-  /* Den klebrige blokken er allerede første skjerm — heroen ligger over den,
-     og neste felt skal starte rett etter uten ekstra luft. */
   .hero + .st { margin-top: 0 }
-  .mo .stC { left: auto; transform: none; max-width: 100% }
+  /* `.mo .stC.on` veier tyngre enn `.mo .stC` — mediespørringen gir ingen
+     ekstra vekt. Uten den aktive varianten her drar `translate(-50%)` hele
+     kontaktfeltet en halv skjermbredde ut til venstre. Målt 22.09.2026. */
+  .mo .stC,
+  .mo .stC.on { left: auto; transform: none; max-width: 100% }
   .mo .sp { opacity: 1; transform: none }
   .mo .grid figure { opacity: 1; transform: none }
+
+  /* Den dempede metafargen (--sand-faint) er tegnet for tekst som ligger i
+     det mørke venstrefeltet på desktop. På mobil ligger den over hele fotoet,
+     og der falt den til 2,8-3,0:1 - under kravet på 4,5:1 for liten tekst
+     (målt 22.09.2026). `--sand-dim` løfter den til rundt 6:1. `.kRust` er
+     unntatt: den er signalfarge, ikke dempet tekst. */
+  .mo .k:not(.kRust),
+  .mo .m,
+  .mo .feat .v,
+  .mo .door .p { color: var(--sand-dim) }
 
   /* Navn og sted får ikke plass ved siden av hverandre på 390 px. */
   .feat li { grid-template-columns: auto 1fr; row-gap: 4px }
