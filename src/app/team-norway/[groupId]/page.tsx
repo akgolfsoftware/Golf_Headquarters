@@ -4,9 +4,8 @@ import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentGruppepostSide } from "@/lib/domain/tn-post";
 import { TN } from "@/lib/v2/team-norway";
-import { TnAvatarInitialer, TnRail } from "@/components/team-norway/core";
-import { TnRailMobil } from "@/components/team-norway/rail-mobil";
-import { tnHovedmeny } from "@/components/team-norway/tn-shell";
+import { TnAvatarInitialer } from "@/components/team-norway/core";
+import { TnShell } from "@/components/team-norway/tn-shell";
 import { TnPostKomponer } from "@/components/team-norway/tn-post-komponer";
 import { TnPostTidslinje, type TnTidslinjePost } from "@/components/team-norway/tn-post-tidslinje";
 import { opprettGruppepostAction } from "@/app/team-norway/tn-post-actions";
@@ -39,7 +38,7 @@ export default async function GruppepostPage({ params }: { params: Promise<{ gro
 
   const { rolle } = side;
   const erTrener = rolle === "TRENER";
-  const punkter = tnHovedmeny({ aktiv: "gruppeposter", groupId, visTrenerflater: erTrener || bruker.role === "ADMIN", kanAdministrere: erTrener || bruker.role === "ADMIN" });
+  const harTrenertilgang = erTrener || bruker.role === "ADMIN";
 
   const poster: TnTidslinjePost[] = side.tidslinje.map((p) => ({
     id: p.id,
@@ -87,23 +86,16 @@ export default async function GruppepostPage({ params }: { params: Promise<{ gro
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        minHeight: "100vh",
-        background: TN.surfacePage,
-        fontFamily: TN.font.body,
-        fontVariantNumeric: "tabular-nums",
-      }}
+    <TnShell
+      aktiv="gruppeposter"
+      brukerNavn={bruker.name ?? "Ukjent"}
+      rolle={rolleEtikett}
+      groupId={groupId}
+      visTrenerflater={harTrenertilgang}
+      kanAdministrere={harTrenertilgang}
+      flate="full"
     >
-      <TnRail
-        punkter={punkter}
-        bruker={{ navn: bruker.name ?? "Ukjent", rolle: rolleEtikett }}
-        orgNavn="Team Norway"
-        orgUndertittel="Junior"
-      />
-      <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
-        <TnRailMobil punkter={punkter} orgNavn="Team Norway" />
+      <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", fontVariantNumeric: "tabular-nums" }}>
 
         <div
           style={{
@@ -388,6 +380,6 @@ export default async function GruppepostPage({ params }: { params: Promise<{ gro
           </div>
         )}
       </div>
-    </div>
+    </TnShell>
   );
 }

@@ -3,9 +3,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { hentGruppeDokumenter, hentViewerRolleIGruppe } from "@/lib/domain/tn-post";
 import { TN } from "@/lib/v2/team-norway";
-import { TnRail } from "@/components/team-norway/core";
-import { TnRailMobil } from "@/components/team-norway/rail-mobil";
-import { tnHovedmeny } from "@/components/team-norway/tn-shell";
+import { TnShell, TnSidehode } from "@/components/team-norway/tn-shell";
 import { TnDokumentOpplasting } from "@/components/team-norway/tn-dokument-opplasting";
 import { TnDokumentTabell, type TnDokumentRadVisning } from "@/components/team-norway/tn-dokument-tabell";
 import { opprettGruppeDokumentAction } from "@/app/team-norway/tn-post-actions";
@@ -34,7 +32,7 @@ export default async function DokumenterPage({ params }: { params: Promise<{ gro
     return opprettGruppeDokumentAction(groupId, form);
   }
 
-  const punkter = tnHovedmeny({ aktiv: "dokumenter", groupId, visTrenerflater: rolle === "TRENER" || bruker.role === "ADMIN", kanAdministrere: rolle === "TRENER" || bruker.role === "ADMIN" });
+  const erTrener = rolle === "TRENER" || bruker.role === "ADMIN";
 
   const rader: TnDokumentRadVisning[] = dokumenter.map((d) => ({
     attachmentId: d.attachmentId,
@@ -50,53 +48,38 @@ export default async function DokumenterPage({ params }: { params: Promise<{ gro
   }));
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: TN.surfacePage, fontFamily: TN.font.body }}>
-      <TnRail
-        punkter={punkter}
-        bruker={{ navn: bruker.name ?? "Ukjent", rolle: rolle === "TRENER" ? "Trener" : rolle === "SPILLER" ? "Spiller" : "Foresatt" }}
-        orgNavn="Team Norway"
-        orgUndertittel="Junior"
+    <TnShell
+      aktiv="dokumenter"
+      brukerNavn={bruker.name ?? "Ukjent"}
+      rolle={rolle === "TRENER" ? "Trener" : rolle === "SPILLER" ? "Spiller" : "Foresatt"}
+      groupId={groupId}
+      visTrenerflater={erTrener}
+      kanAdministrere={erTrener}
+    >
+      <TnSidehode
+        overlinje={`Dokumenter · ${gruppe.name}`}
+        tittel="Delte filer"
+        ingress="Vedlegg fra poster og frittstående opplastinger i samme liste, med lesekvittering per fil."
       />
-      <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
-        <TnRailMobil punkter={punkter} orgNavn="Team Norway" />
-        <div style={{ flex: 1, minWidth: 0, padding: "28px 32px", display: "flex", flexDirection: "column", gap: 20, maxWidth: 900 }}>
-          <div>
-            <div
-              style={{
-                fontFamily: TN.font.mono,
-                fontSize: TN.text.micro,
-                letterSpacing: TN.tracking.eyebrow,
-                textTransform: "uppercase",
-                color: TN.textSecondary,
-              }}
-            >
-              Dokumenter · {gruppe.name}
-            </div>
-            <h1 style={{ fontSize: TN.text.h1, fontWeight: TN.weight.bold, letterSpacing: TN.tracking.heading, color: TN.navy900, margin: "4px 0 0" }}>
-              Delte filer
-            </h1>
-          </div>
 
-          {rolle === "TRENER" && <TnDokumentOpplasting last={lastOppDokument} />}
+      {rolle === "TRENER" && <TnDokumentOpplasting last={lastOppDokument} />}
 
-          <TnDokumentTabell rader={rader} />
+      <TnDokumentTabell rader={rader} />
 
-          <div
-            style={{
-              background: TN.navy50,
-              border: `1px solid ${TN.navy100}`,
-              borderRadius: TN.radius.md,
-              padding: "12px 16px",
-              fontFamily: TN.font.body,
-              fontSize: TN.text.sm,
-              color: TN.navy900,
-              lineHeight: TN.leading.normal,
-            }}
-          >
-            Utøvere under 18 står med fornavn og etternavn her — denne flaten ses av gruppens medlemmer og foresatte.
-          </div>
-        </div>
+      <div
+        style={{
+          background: TN.navy50,
+          border: `1px solid ${TN.navy100}`,
+          borderRadius: TN.radius.md,
+          padding: "12px 16px",
+          fontFamily: TN.font.body,
+          fontSize: TN.text.sm,
+          color: TN.navy900,
+          lineHeight: TN.leading.normal,
+        }}
+      >
+        Utøvere under 18 står med fornavn og etternavn her — denne flaten ses av gruppens medlemmer og foresatte.
       </div>
-    </div>
+    </TnShell>
   );
 }
