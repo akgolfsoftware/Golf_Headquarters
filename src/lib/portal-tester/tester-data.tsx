@@ -14,6 +14,7 @@
 import { prisma } from "@/lib/prisma";
 import { testTilgangWhere } from "@/lib/portal-tester/test-tilgang";
 import { parseForScoring, type ScoringKind } from "@/lib/portal-tester/test-scoring";
+import { formaterTestVerdi, formaterTestDelta } from "@/lib/portal-tester/format-verdi";
 import { hubGruppeForNavn, type HubGruppe } from "@/lib/portal-tester/hub-gruppe";
 import type { PyramidArea, TestSessionStatus } from "@/generated/prisma/client";
 
@@ -133,11 +134,6 @@ function isToday(d: Date, now: Date): boolean {
   return d.toDateString() === now.toDateString();
 }
 
-/** Norsk tall-format: maks 2 desimaler, komma som desimalskille. */
-function fmtNum(n: number): string {
-  const rounded = Math.round(n * 100) / 100;
-  return rounded.toLocaleString("nb-NO", { maximumFractionDigits: 2 });
-}
 
 /** Heuristikk: scoringRule som beskriver tid/avvik/spredning = lavere er bedre. */
 function deriveLowerIsBetter(scoringRule: string): boolean {
@@ -227,15 +223,18 @@ export async function loadTesterScreen(user: {
     const last = attempts > 0 ? hist[hist.length - 1] : null;
     const prev = attempts > 1 ? hist[hist.length - 2] : null;
 
+    // Scoring-typen må være kjent FØR delta formateres — ellers vises en
+    // PEI-endring som rå brøk («+0,01» i stedet for «+1,00 pp»).
+    const spec = parseForScoring(def.protocol);
+
     let delta: TestRow["delta"] = null;
     let verdict: Verdict = "new";
     if (last && prev) {
       const raw = last.score - prev.score;
       const improved = lowerIsBetter ? raw < 0 : raw > 0;
       const worsened = lowerIsBetter ? raw > 0 : raw < 0;
-      const sign = raw > 0 ? "+" : raw < 0 ? "−" : "±";
       delta = {
-        text: `${sign}${fmtNum(Math.abs(raw))}`,
+        text: raw === 0 ? "±0" : formaterTestDelta({ kind: spec.kind, delta: raw }),
         tone: improved ? "pos" : worsened ? "neg" : "flat",
       };
       verdict = improved ? "gain" : worsened ? "drop" : "hold";
@@ -243,7 +242,6 @@ export async function loadTesterScreen(user: {
       verdict = "signal"; // første måling — baseline satt
     }
 
-    const spec = parseForScoring(def.protocol);
     const forfallRaw = forfallByTest.get(def.id) ?? null;
 
     const row: TestRow = {
@@ -251,7 +249,7 @@ export async function loadTesterScreen(user: {
       name: def.name,
       axis,
       rule: def.scoringRule.trim(),
-      latest: last ? fmtNum(last.score) : null,
+      latest: last ? formaterTestVerdi({ kind: spec.kind, verdi: last.score, shotsCount: spec.shots.length }) : null,
       latestRaw: last ? last.score : null,
       latestDate: last ? dateLabel(last.takenAt) : null,
       delta,

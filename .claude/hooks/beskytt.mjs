@@ -152,6 +152,43 @@ if (tool === "Bash") {
     }
   }
 
+  // ── Kollisjonsvakt: jobber en annen økt på de samme filene? ───────────────
+  // Bakgrunn (21.09.2026): #927 og #928 fikset samme feil samtidig med motsatt
+  // strategi — den ene hentet slettede filer tilbake, den andre fjernet
+  // lenkene til dem. Begge ble merget, og resultatet ble halvveis. Repoet har
+  // 15 arbeidsmapper og 10 åpne PR-er samtidig, så dette er normaltilstanden.
+  // Vakten spør i det øyeblikket en ny PR opprettes, der kollisjonen blir dyr.
+  if (/(^|[;&|(]\s*)gh\s+pr\s+create\b/.test(cmd)) {
+    let gren = "";
+    try {
+      gren = execFileSync("git", ["branch", "--show-current"], {
+        encoding: "utf-8",
+        stdio: ["ignore", "pipe", "ignore"],
+      }).trim();
+    } catch {
+      gren = "";
+    }
+    if (gren && gren !== "main") {
+      try {
+        execFileSync("node", ["scripts/hvem-jobber-hvor.mjs", "--overlapp", gren], {
+          encoding: "utf-8",
+          stdio: ["ignore", "pipe", "ignore"],
+        });
+        // exit 0 → ingen overlapp, slipp gjennom
+      } catch (e) {
+        const rapport = String(e.stdout ?? "").trim();
+        if (rapport) {
+          svar(
+            "ask",
+            `KOLLISJONSVAKT — en annen økt rører de samme filene:\n\n${rapport}\n\n` +
+              `Les den PR-en før du oppretter denne. Godkjenn når du har sjekket at ` +
+              `de to endringene ikke trekker i hver sin retning.`,
+          );
+        }
+      }
+    }
+  }
+
   for (const [re, hva] of askMønstre) {
     if (re.test(cmd)) {
       svar("ask", `NIVÅ 2: ${hva} — krever eksplisitt godkjenning fra Anders før den kjøres.`);

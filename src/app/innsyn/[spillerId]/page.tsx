@@ -17,6 +17,8 @@ import { effectiveCapabilities } from "@/lib/auth/effective-capabilities";
 import { Capability } from "@/lib/auth/cbac";
 import { harEksternLeserTilgang } from "@/lib/auth/ekstern-leser-scope";
 import { parseBenchmarks, achievedLevel } from "@/lib/admin/test-benchmarks";
+import { parseForScoring } from "@/lib/portal-tester/test-scoring";
+import { formaterTestVerdi } from "@/lib/portal-tester/format-verdi";
 import { prisma } from "@/lib/prisma";
 import { TL } from "@/lib/v2/train-lock";
 
@@ -232,6 +234,9 @@ export default async function InnsynSpillerPage({
                     const nivaa = benchmarks
                       ? achievedLevel(benchmarks, resultat.score)
                       : null;
+                    // Scoring-typen bærer enheten. Uten den ble en PEI-brøk
+                    // vist som «0,0» rett ved siden av nivået «PGA topp 40».
+                    const { kind } = parseForScoring(resultat.test.protocol);
                     return (
                       <tr key={resultat.id}>
                         <td style={{ fontFamily: TL.font.sans, fontSize: 13, padding: "8px 12px 8px 0", borderBottom: `1px solid ${TL.hair}` }}>
@@ -241,7 +246,7 @@ export default async function InnsynSpillerPage({
                           {OSLO_DATO.format(resultat.takenAt)}
                         </td>
                         <td style={{ fontFamily: TL.font.mono, fontSize: 13, padding: "8px 12px 8px 0", borderBottom: `1px solid ${TL.hair}` }}>
-                          {fmtTall(resultat.score)}
+                          {formaterTestVerdi({ kind, verdi: resultat.score })}
                         </td>
                         <td style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, padding: "8px 0", borderBottom: `1px solid ${TL.hair}` }}>
                           {nivaa?.label ?? "—"}

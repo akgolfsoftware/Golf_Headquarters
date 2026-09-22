@@ -19,6 +19,8 @@
 // Typer
 // ---------------------------------------------------------------------------
 
+import { formaterFortegn } from "@/lib/format-tall";
+
 export type SgCategory = "OTT" | "APP" | "ARG" | "PUTT";
 
 export type SgOutcome = "FAIRWAY" | "ROUGH" | "GREEN" | "SAND" | "RECOVERY" | "HOLED";
@@ -255,14 +257,17 @@ export function beregnSg(shots: ReadonlyArray<SgShot>): SgResultat {
 /**
  * Formaterer en SG-verdi til norsk visningsformat med eksplisitt fortegn.
  *
+ * Minustegnet er ekte minus «−» (U+2212), ikke ASCII-bindestrek. Denne
+ * funksjonen var den eneste i kodebasen som brukte bindestrek; alle andre
+ * SG-formatere brukte ekte minus, så samme tall kunne se ulikt ut på to
+ * flater ved siden av hverandre. Ekte minus har dessuten samme bredde som
+ * «+» og linjerer derfor i tallkolonner.
+ *
  * @example
  *   formaterSg(1.234)  → "+1,2"
- *   formaterSg(-0.78)  → "-0,8"
+ *   formaterSg(-0.78)  → "−0,8"
  *   formaterSg(0)      → "0,0"
  */
 export function formaterSg(sg: number): string {
-  const avrundet = Math.round(sg * 10) / 10;
-  if (avrundet === 0) return "0,0";
-  const abs = Math.abs(avrundet).toFixed(1).replace(".", ",");
-  return avrundet > 0 ? `+${abs}` : `-${abs}`;
+  return formaterFortegn(sg, 1);
 }

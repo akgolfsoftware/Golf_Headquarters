@@ -29,7 +29,6 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | dokumentasjon | [docs/beslutningsgrunnlag/teknisk-lanseringskontroll-2026-09-10.md](<../beslutningsgrunnlag/teknisk-lanseringskontroll-2026-09-10.md>) |
 | dokumentasjon | [docs/beslutningsgrunnlag/teknisk-retting-2026-09-10.md](<../beslutningsgrunnlag/teknisk-retting-2026-09-10.md>) |
 | dokumentasjon | [docs/demo-sprak-og-treningsplanlegging.md](<../demo-sprak-og-treningsplanlegging.md>) |
-| dokumentasjon | [docs/design-audit/train-lock-kontrast.md](<../design-audit/train-lock-kontrast.md>) |
 | dokumentasjon | [docs/design-audit/workbench-aar-kontroll-2026-09-21.md](<../design-audit/workbench-aar-kontroll-2026-09-21.md>) |
 | dokumentasjon | [docs/design-audit/workbench-handover-import-2026-09-20.md](<../design-audit/workbench-handover-import-2026-09-20.md>) |
 | dokumentasjon | [docs/design-audit/workbench-kontrollretting-2026-09-21.md](<../design-audit/workbench-kontrollretting-2026-09-21.md>) |
