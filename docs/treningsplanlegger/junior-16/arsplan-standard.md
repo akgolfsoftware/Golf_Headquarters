@@ -30,7 +30,10 @@ Kilde: `region-satsing/kunnskap/nivaalinje/nivaalinje-16-gutter.md`.
 
 ## 3. Periodene
 
-Forslag til grenser — **AVKLARES**. Kildene har fire ulike sett; dette følger WANG-årshjulet i repoet.
+**Avgjort 22.09.2026 (Anders):** periodegrensene er **individuelle for hver spiller**. Tabellen under er en standard
+å starte fra, ikke en fast ramme. Utgangspunkt er WANG-årshjulet (`arshjul-2026-2027.md`: GRUNN til uke 10, SPES uke 11–16,
+TURN fra uke 17) og Team Norways grenser. Forskjell fra WANG: uke 43 er egen evalueringsuke her, og juleferien står som egen
+pause. Jeg har ikke lest Team Norways grenser på nytt i denne runden; kildene har fire ulike sett, så avvik mot dem er ikke sjekket.
 
 | Periode | Uker | Datoer | Hovedsak |
 |---|---|---|---|
@@ -223,7 +226,7 @@ WANG og GFGK Elite allerede bruker. Foresatte er med for spillere under 16 år.
 ## 13. Åpent — tas med Anders én ting om gangen
 
 1. ~~Innhold i TURNERING~~ — avgjort 50/50 (22.09.2026, §7). Igjen: samspill med A-turneringer (§7) og timetall.
-2. Periodegrensene i §3.
+2. ~~Periodegrensene i §3~~ — avgjort: individuelle per spiller, WANG/Team Norway som utgangspunkt (22.09.2026).
 3. Tidlig og sen GRUNN — stemmer tallene 5/12/3 og 5/9/6?
 4. Antall private timer per uke.
 5. WANG-samlinger: uke 35/41 eller uke 1/7?
