@@ -1,0 +1,17 @@
+/* GENERERT fra tokens.json av tokens/build.mjs. IKKE REDIGER — endringer overskrives. */
+:root{
+/* ---- 4 / 8 rutenett — ingen mellomverdier ---- */
+--space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:20px;--space-6:24px;--space-8:32px;--space-10:40px;--space-12:48px;--space-16:64px;--space-20:80px;
+--radius-sharp:0;
+--radius:2px;
+--radius-lg:2px;
+--radius-card:20px; /* KUN ytre app-kort */
+--radius-full:999px; /* KUN avatar og statusprikk */
+--border-w:1px;
+--border-w-accent:2px;
+--shadow-raised:0 1px 0 rgba(20,20,19,.05);
+--shadow-panel:0 1px 2px rgba(20,20,19,.06);
+--shadow-sheet:0 -8px 32px rgba(20,20,19,.16);
+--shadow-inspector:-1px 0 0 var(--border-hairline);
+--shadow-focus:0 0 0 2px var(--surface-flat),0 0 0 4px var(--graphite-900);
+}

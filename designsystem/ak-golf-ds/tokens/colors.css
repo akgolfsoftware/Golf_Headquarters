@@ -1,0 +1,180 @@
+/* GENERERT fra tokens.json av tokens/build.mjs. IKKE REDIGER — endringer overskrives. */
+:root{
+/* ---- Sand (flater) ---- */
+--sand-100:#faf8f3;
+--sand-150:#f1eee8;
+--sand-200:#e6e3dd;
+--sand-300:#ddd9d1; /* Hårstrek. Kun via --border-hairline. */
+--sand-400:#c9c4ba; /* Sterk strek. Kun via --border-strong. */
+/* ---- Sand (flater) ---- */
+--white:#fff;
+/* ---- Grafitt (blekk) ---- */
+--graphite-900:#141413;
+--graphite-800:#2a2926;
+--graphite-600:#46443f;
+--graphite-500:#686560; /* Mørknet fra #6b6862 21.09.2026 — 4.34 mot --surface-page var under AA. Nå 4.53. */
+--graphite-400:#8a8680;
+/* ---- Rust (handling — eneste handlingsfarge) ---- */
+--rust-600:#9b2415;
+--rust-hover:#d81e20;
+--rust-200:#e9c6c2; /* Handlingsstrek på tintet panel. */
+--rust-100:#fbebea;
+/* ---- Amber (KUN advarsel) ---- */
+--amber-700:#7e6110; /* Mørknet fra #8a6a12 21.09.2026 — 3.95 mot --surface-page var under AA. Nå 4.55. */
+--amber-200:#e4d5a8; /* Advarselsstrek. Erstatter dupletten #e8dcb8. */
+--amber-50:#fbf4e4;
+/* ---- Blå (KUN lenke / info) ---- */
+--blue-800:#1d3557;
+/* ---- Natt (KUN eid av [data-surface=live]) ---- */
+--natt-900:#141413;
+--natt-850:#1c1b1a;
+--natt-700:#2e2c29;
+--natt-500:#6b6560;
+--natt-300:#a8a49c;
+/* ---- Data-hues (råverdi — bruk role.data) ---- */
+--hue-petrol:#006675;
+--hue-indigo:#434d97;
+--hue-skog:#13662b;
+--hue-plomme:#7f366a;
+--hue-kobber:#844000; /* Varmest av datafargene. Aldri på en flate som kan forveksles med en knapp. */
+--hue-vinrod:#863359; /* Fortegn under null. dE 0,093 fra --rust-600 og 0,031 fra --hue-plomme: derfor kan fortegn og kategori aldri stå i samme graf. */
+--hue-trinn-1:#e0eaeb;
+--hue-trinn-2:#a0b5b9;
+--hue-trinn-3:#6b8990;
+--hue-trinn-4:#3e636c;
+--hue-trinn-5:#123f4a;
+/* ---- Data-hues på Live (råverdi) ---- */
+--hue-live-petrol:#2cb2bf;
+--hue-live-indigo:#8a99e3;
+--hue-live-skog:#6cb177;
+--hue-live-plomme:#cc83b4;
+--hue-live-kobber:#d18c56;
+--hue-live-vinrod:#d481a2;
+--hue-live-trinn-1:#24505a;
+--hue-live-trinn-2:#466f78;
+--hue-live-trinn-3:#6c9198;
+--hue-live-trinn-4:#96b8be;
+--hue-live-trinn-5:#c8e6e9;
+/* ---- Semantiske alias — dette laget bruker komponentene ---- */
+--surface-page:var(--sand-200);
+--surface-flat:var(--sand-100);
+--surface-raised:var(--white);
+--surface-sunken:var(--sand-150);
+--surface-hover:var(--sand-150); /* Pekeflate på lys grunn. */
+--surface-disabled:var(--sand-150); /* Inaktiv kontrollflate. */
+--surface-ink:var(--graphite-900); /* Blekkflate — valgt pill, avatar, avkrysning, fokuspanel, solid knapp. */
+--surface-ink-hover:var(--graphite-800);
+--surface-inverse:var(--sand-100); /* Lys flate på blekk — ghost-inverse ved peker. */
+--surface-focus:var(--graphite-900);
+--text-primary:var(--graphite-900);
+--text-body:var(--graphite-800);
+--text-secondary:var(--graphite-600);
+--text-muted:var(--graphite-500);
+--text-faint:var(--graphite-400);
+--text-inverse:var(--sand-100);
+--text-inverse-soft:var(--sand-150); /* Sekundærtekst på blekkflate. */
+--border-hairline:var(--sand-300);
+--border-strong:var(--sand-400);
+--border-ink:var(--graphite-900);
+--border-control:var(--graphite-500); /* Kontrollgrense (felt, ghost-knapp, pill, avkrysning). Holder 3:1 mot alle flater, også --surface-page (4.53) — ingen unntaksregel. */
+--border-warn:var(--amber-200);
+--border-action:var(--rust-200);
+--border-inverse:var(--natt-700); /* Strek på blekk- og Live-flate. */
+--border-on-ink:rgba(250,248,243,.55); /* Ghost-inverse-kant på blekk. Sand-100 med alfa. */
+--action:var(--rust-600);
+--action-hover:var(--rust-hover);
+--action-tint:var(--rust-100);
+--action-text:var(--white);
+--warn:var(--amber-700);
+--warn-tint:var(--amber-50);
+--link:var(--blue-800);
+--info:var(--blue-800);
+--scrim-dialog:rgba(20,20,19,.4); /* Dialogteppe. Grafitt-900 med alfa. */
+--focus-ring:var(--graphite-900);
+--focus-ring-inverse:var(--sand-100);
+/* ---- KLASSIFIKASJON — aldri handling.
+   Lovlig bruk: 4px stav, kicker, DomainMeter-fyll, punkt i graf.
+   Forbudt: knapper, lenker, topplinje, tab-bar.
+   Fem egne hues fra datapaletten 21.09.2026 — før det lånte pyramiden rust og amber, og de fem lagene var ikke til å skille fra hverandre. ---- */
+--domene-fys:var(--hue-petrol);
+--domene-tek:var(--hue-indigo);
+--domene-slag:var(--hue-skog);
+--domene-spill:var(--hue-plomme);
+--domene-turn:var(--hue-kobber);
+/* ---- DATAROLLER — kun fyll, strek og punkt inne i en målekomponent.
+   Forbudt: tekst som skal leses, knapper, lenker, chrome, kant på kontroll.
+   Fargen klassifiserer aldri alene: kategorien står i etiketten, fortegnet i tallet, rekkefølgen i posisjonen. Ta bort all farge, og grafen skal fortsatt kunne leses.
+   To krav, ikke ett: isolerte merker (punkt, stav, linje) holder 3:1 mot flaten — stigen holder 1,4:1 mellom naboer og bærer alltid --border-hairline mot flaten.
+   En graf er enten kategorisk eller fortegnsbærende. Aldri begge: --data-under ligger dE 0,031 fra --data-k4. ---- */
+--data-k1:var(--hue-petrol); /* Kategori 1 av 5. Rekkefølgen er fast — plukk aldri midt i lista. Ingen sjette kategori: trenger grafen en sjette, er grafen feil. */
+--data-k2:var(--hue-indigo);
+--data-k3:var(--hue-skog);
+--data-k4:var(--hue-plomme);
+--data-k5:var(--hue-kobber);
+--data-felt:var(--graphite-500); /* Referanse: feltsnitt, normalen, forrige periode. Alltid nøytral — sammenlikningsgrunnlaget er ikke en kategori. */
+--data-over:var(--hue-skog); /* Over null / over mål. Fortegnet står i tallet uansett. */
+--data-under:var(--hue-vinrod); /* Under null / under mål. Ikke en feiltilstand — bruk aldri --warn eller --action til dette. */
+--data-niva-1:var(--hue-trinn-1); /* Ordinal stige, 5 trinn: pyramidenivå, avstandsbånd, tetthet. Etiketten hentes fra --data-ink-niva-N, aldri valgt i øyemål. */
+--data-niva-2:var(--hue-trinn-2);
+--data-niva-3:var(--hue-trinn-3);
+--data-niva-4:var(--hue-trinn-4);
+--data-niva-5:var(--hue-trinn-5);
+--data-ink-kat:var(--sand-100); /* Etikett oppå kategori-, felt- og fortegnsfyll. Holder 6,27:1 eller bedre på alle åtte. */
+--data-ink-niva-1:var(--graphite-900); /* Stigen skifter blekk der målingen sier den må: trinn 1–3 grafitt, 4–5 sand. På Live snur det ved trinn 3. */
+--data-ink-niva-2:var(--graphite-900);
+--data-ink-niva-3:var(--graphite-900);
+--data-ink-niva-4:var(--sand-100);
+--data-ink-niva-5:var(--sand-100);
+}
+[data-surface="live"]{
+/* ---- Live: én flate, ikke dark mode. Overstyrer bare rollelaget. ---- */
+--surface-page:var(--natt-900);
+--surface-flat:var(--natt-850);
+--surface-raised:var(--natt-700);
+--surface-sunken:var(--natt-850);
+--surface-hover:var(--natt-700);
+--surface-disabled:var(--natt-700);
+--text-primary:var(--sand-100);
+--text-body:var(--sand-100);
+--text-secondary:var(--natt-300);
+--text-muted:var(--natt-300);
+--text-faint:var(--natt-500);
+--text-inverse:var(--graphite-900);
+--text-inverse-soft:var(--natt-300);
+--border-hairline:var(--natt-700);
+--border-strong:var(--natt-700);
+--border-control:var(--natt-300); /* Live hadde ingen kontrollgrense som holdt 3:1 — natt-700 ga 1.30 mot Live flat. Nå 7.03. */
+--action:var(--rust-600); /* Bare som fyll med --action-text over. Rust som tekst eller strek på Live er 2.18:1. */
+--action-tint:var(--natt-700);
+--link:var(--sand-100); /* Blå lenke på natt er 1.39:1. På Live er lenker understreket, ikke blå. */
+--warn:var(--amber-200);
+--warn-tint:var(--natt-700);
+--action-hover:var(--rust-hover);
+--scrim-dialog:rgba(20,20,19,.4); /* Dialogteppe. Grafitt-900 med alfa. */
+--focus-ring:var(--focus-ring-inverse);
+/* ---- Datafargene på Live. Samme rollenavn, lysere verdi — de mørke kategorifargene faller til under 2:1 mot natt-900 og forsvinner. ---- */
+--data-k1:var(--hue-live-petrol);
+--data-k2:var(--hue-live-indigo);
+--data-k3:var(--hue-live-skog);
+--data-k4:var(--hue-live-plomme);
+--data-k5:var(--hue-live-kobber);
+--data-felt:var(--natt-300);
+--data-over:var(--hue-live-skog);
+--data-under:var(--hue-live-vinrod);
+--data-niva-1:var(--hue-live-trinn-1);
+--data-niva-2:var(--hue-live-trinn-2);
+--data-niva-3:var(--hue-live-trinn-3);
+--data-niva-4:var(--hue-live-trinn-4);
+--data-niva-5:var(--hue-live-trinn-5);
+--data-ink-kat:var(--graphite-900); /* På Live er kategorifargene de lyse — blekket snur. */
+--data-ink-niva-1:var(--sand-100); /* Stigen snur på Live: trinn 1–2 sand, 3–5 grafitt. */
+--data-ink-niva-2:var(--sand-100);
+--data-ink-niva-3:var(--graphite-900);
+--data-ink-niva-4:var(--graphite-900);
+--data-ink-niva-5:var(--graphite-900);
+--domene-fys:var(--hue-live-petrol);
+--domene-tek:var(--hue-live-indigo);
+--domene-slag:var(--hue-live-skog);
+--domene-spill:var(--hue-live-plomme);
+--domene-turn:var(--hue-live-kobber);
+}

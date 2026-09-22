@@ -1,0 +1,333 @@
+/* GENERERT av scripts/ak-golf-ds-tokens.mjs fra designsystem/ak-golf-ds/tokens/.
+   IKKE REDIGER — kjør skriptet på nytt. Masterens `:root` er byttet til
+   `.ak-ds` så tokenene ikke lekker inn i /portal og /admin. */
+
+/* ---- tokens/colors.css ---- */
+/* GENERERT fra tokens.json av tokens/build.mjs. IKKE REDIGER — endringer overskrives. */
+.ak-ds {
+/* ---- Sand (flater) ---- */
+--sand-100:#faf8f3;
+--sand-150:#f1eee8;
+--sand-200:#e6e3dd;
+--sand-300:#ddd9d1; /* Hårstrek. Kun via --border-hairline. */
+--sand-400:#c9c4ba; /* Sterk strek. Kun via --border-strong. */
+/* ---- Sand (flater) ---- */
+--white:#fff;
+/* ---- Grafitt (blekk) ---- */
+--graphite-900:#141413;
+--graphite-800:#2a2926;
+--graphite-600:#46443f;
+--graphite-500:#686560; /* Mørknet fra #6b6862 21.09.2026 — 4.34 mot --surface-page var under AA. Nå 4.53. */
+--graphite-400:#8a8680;
+/* ---- Rust (handling — eneste handlingsfarge) ---- */
+--rust-600:#9b2415;
+--rust-hover:#d81e20;
+--rust-200:#e9c6c2; /* Handlingsstrek på tintet panel. */
+--rust-100:#fbebea;
+/* ---- Amber (KUN advarsel) ---- */
+--amber-700:#7e6110; /* Mørknet fra #8a6a12 21.09.2026 — 3.95 mot --surface-page var under AA. Nå 4.55. */
+--amber-200:#e4d5a8; /* Advarselsstrek. Erstatter dupletten #e8dcb8. */
+--amber-50:#fbf4e4;
+/* ---- Blå (KUN lenke / info) ---- */
+--blue-800:#1d3557;
+/* ---- Natt (KUN eid av [data-surface=live]) ---- */
+--natt-900:#141413;
+--natt-850:#1c1b1a;
+--natt-700:#2e2c29;
+--natt-500:#6b6560;
+--natt-300:#a8a49c;
+/* ---- Data-hues (råverdi — bruk role.data) ---- */
+--hue-petrol:#006675;
+--hue-indigo:#434d97;
+--hue-skog:#13662b;
+--hue-plomme:#7f366a;
+--hue-kobber:#844000; /* Varmest av datafargene. Aldri på en flate som kan forveksles med en knapp. */
+--hue-vinrod:#863359; /* Fortegn under null. dE 0,093 fra --rust-600 og 0,031 fra --hue-plomme: derfor kan fortegn og kategori aldri stå i samme graf. */
+--hue-trinn-1:#e0eaeb;
+--hue-trinn-2:#a0b5b9;
+--hue-trinn-3:#6b8990;
+--hue-trinn-4:#3e636c;
+--hue-trinn-5:#123f4a;
+/* ---- Data-hues på Live (råverdi) ---- */
+--hue-live-petrol:#2cb2bf;
+--hue-live-indigo:#8a99e3;
+--hue-live-skog:#6cb177;
+--hue-live-plomme:#cc83b4;
+--hue-live-kobber:#d18c56;
+--hue-live-vinrod:#d481a2;
+--hue-live-trinn-1:#24505a;
+--hue-live-trinn-2:#466f78;
+--hue-live-trinn-3:#6c9198;
+--hue-live-trinn-4:#96b8be;
+--hue-live-trinn-5:#c8e6e9;
+/* ---- Semantiske alias — dette laget bruker komponentene ---- */
+--surface-page:var(--sand-200);
+--surface-flat:var(--sand-100);
+--surface-raised:var(--white);
+--surface-sunken:var(--sand-150);
+--surface-hover:var(--sand-150); /* Pekeflate på lys grunn. */
+--surface-disabled:var(--sand-150); /* Inaktiv kontrollflate. */
+--surface-ink:var(--graphite-900); /* Blekkflate — valgt pill, avatar, avkrysning, fokuspanel, solid knapp. */
+--surface-ink-hover:var(--graphite-800);
+--surface-inverse:var(--sand-100); /* Lys flate på blekk — ghost-inverse ved peker. */
+--surface-focus:var(--graphite-900);
+--text-primary:var(--graphite-900);
+--text-body:var(--graphite-800);
+--text-secondary:var(--graphite-600);
+--text-muted:var(--graphite-500);
+--text-faint:var(--graphite-400);
+--text-inverse:var(--sand-100);
+--text-inverse-soft:var(--sand-150); /* Sekundærtekst på blekkflate. */
+--border-hairline:var(--sand-300);
+--border-strong:var(--sand-400);
+--border-ink:var(--graphite-900);
+--border-control:var(--graphite-500); /* Kontrollgrense (felt, ghost-knapp, pill, avkrysning). Holder 3:1 mot alle flater, også --surface-page (4.53) — ingen unntaksregel. */
+--border-warn:var(--amber-200);
+--border-action:var(--rust-200);
+--border-inverse:var(--natt-700); /* Strek på blekk- og Live-flate. */
+--border-on-ink:rgba(250,248,243,.55); /* Ghost-inverse-kant på blekk. Sand-100 med alfa. */
+--action:var(--rust-600);
+--action-hover:var(--rust-hover);
+--action-tint:var(--rust-100);
+--action-text:var(--white);
+--warn:var(--amber-700);
+--warn-tint:var(--amber-50);
+--link:var(--blue-800);
+--info:var(--blue-800);
+--scrim-dialog:rgba(20,20,19,.4); /* Dialogteppe. Grafitt-900 med alfa. */
+--focus-ring:var(--graphite-900);
+--focus-ring-inverse:var(--sand-100);
+/* ---- KLASSIFIKASJON — aldri handling.
+   Lovlig bruk: 4px stav, kicker, DomainMeter-fyll, punkt i graf.
+   Forbudt: knapper, lenker, topplinje, tab-bar.
+   Fem egne hues fra datapaletten 21.09.2026 — før det lånte pyramiden rust og amber, og de fem lagene var ikke til å skille fra hverandre. ---- */
+--domene-fys:var(--hue-petrol);
+--domene-tek:var(--hue-indigo);
+--domene-slag:var(--hue-skog);
+--domene-spill:var(--hue-plomme);
+--domene-turn:var(--hue-kobber);
+/* ---- DATAROLLER — kun fyll, strek og punkt inne i en målekomponent.
+   Forbudt: tekst som skal leses, knapper, lenker, chrome, kant på kontroll.
+   Fargen klassifiserer aldri alene: kategorien står i etiketten, fortegnet i tallet, rekkefølgen i posisjonen. Ta bort all farge, og grafen skal fortsatt kunne leses.
+   To krav, ikke ett: isolerte merker (punkt, stav, linje) holder 3:1 mot flaten — stigen holder 1,4:1 mellom naboer og bærer alltid --border-hairline mot flaten.
+   En graf er enten kategorisk eller fortegnsbærende. Aldri begge: --data-under ligger dE 0,031 fra --data-k4. ---- */
+--data-k1:var(--hue-petrol); /* Kategori 1 av 5. Rekkefølgen er fast — plukk aldri midt i lista. Ingen sjette kategori: trenger grafen en sjette, er grafen feil. */
+--data-k2:var(--hue-indigo);
+--data-k3:var(--hue-skog);
+--data-k4:var(--hue-plomme);
+--data-k5:var(--hue-kobber);
+--data-felt:var(--graphite-500); /* Referanse: feltsnitt, normalen, forrige periode. Alltid nøytral — sammenlikningsgrunnlaget er ikke en kategori. */
+--data-over:var(--hue-skog); /* Over null / over mål. Fortegnet står i tallet uansett. */
+--data-under:var(--hue-vinrod); /* Under null / under mål. Ikke en feiltilstand — bruk aldri --warn eller --action til dette. */
+--data-niva-1:var(--hue-trinn-1); /* Ordinal stige, 5 trinn: pyramidenivå, avstandsbånd, tetthet. Etiketten hentes fra --data-ink-niva-N, aldri valgt i øyemål. */
+--data-niva-2:var(--hue-trinn-2);
+--data-niva-3:var(--hue-trinn-3);
+--data-niva-4:var(--hue-trinn-4);
+--data-niva-5:var(--hue-trinn-5);
+--data-ink-kat:var(--sand-100); /* Etikett oppå kategori-, felt- og fortegnsfyll. Holder 6,27:1 eller bedre på alle åtte. */
+--data-ink-niva-1:var(--graphite-900); /* Stigen skifter blekk der målingen sier den må: trinn 1–3 grafitt, 4–5 sand. På Live snur det ved trinn 3. */
+--data-ink-niva-2:var(--graphite-900);
+--data-ink-niva-3:var(--graphite-900);
+--data-ink-niva-4:var(--sand-100);
+--data-ink-niva-5:var(--sand-100);
+}
+[data-surface="live"]{
+/* ---- Live: én flate, ikke dark mode. Overstyrer bare rollelaget. ---- */
+--surface-page:var(--natt-900);
+--surface-flat:var(--natt-850);
+--surface-raised:var(--natt-700);
+--surface-sunken:var(--natt-850);
+--surface-hover:var(--natt-700);
+--surface-disabled:var(--natt-700);
+--text-primary:var(--sand-100);
+--text-body:var(--sand-100);
+--text-secondary:var(--natt-300);
+--text-muted:var(--natt-300);
+--text-faint:var(--natt-500);
+--text-inverse:var(--graphite-900);
+--text-inverse-soft:var(--natt-300);
+--border-hairline:var(--natt-700);
+--border-strong:var(--natt-700);
+--border-control:var(--natt-300); /* Live hadde ingen kontrollgrense som holdt 3:1 — natt-700 ga 1.30 mot Live flat. Nå 7.03. */
+--action:var(--rust-600); /* Bare som fyll med --action-text over. Rust som tekst eller strek på Live er 2.18:1. */
+--action-tint:var(--natt-700);
+--link:var(--sand-100); /* Blå lenke på natt er 1.39:1. På Live er lenker understreket, ikke blå. */
+--warn:var(--amber-200);
+--warn-tint:var(--natt-700);
+--action-hover:var(--rust-hover);
+--scrim-dialog:rgba(20,20,19,.4); /* Dialogteppe. Grafitt-900 med alfa. */
+--focus-ring:var(--focus-ring-inverse);
+/* ---- Datafargene på Live. Samme rollenavn, lysere verdi — de mørke kategorifargene faller til under 2:1 mot natt-900 og forsvinner. ---- */
+--data-k1:var(--hue-live-petrol);
+--data-k2:var(--hue-live-indigo);
+--data-k3:var(--hue-live-skog);
+--data-k4:var(--hue-live-plomme);
+--data-k5:var(--hue-live-kobber);
+--data-felt:var(--natt-300);
+--data-over:var(--hue-live-skog);
+--data-under:var(--hue-live-vinrod);
+--data-niva-1:var(--hue-live-trinn-1);
+--data-niva-2:var(--hue-live-trinn-2);
+--data-niva-3:var(--hue-live-trinn-3);
+--data-niva-4:var(--hue-live-trinn-4);
+--data-niva-5:var(--hue-live-trinn-5);
+--data-ink-kat:var(--graphite-900); /* På Live er kategorifargene de lyse — blekket snur. */
+--data-ink-niva-1:var(--sand-100); /* Stigen snur på Live: trinn 1–2 sand, 3–5 grafitt. */
+--data-ink-niva-2:var(--sand-100);
+--data-ink-niva-3:var(--graphite-900);
+--data-ink-niva-4:var(--graphite-900);
+--data-ink-niva-5:var(--graphite-900);
+--domene-fys:var(--hue-live-petrol);
+--domene-tek:var(--hue-live-indigo);
+--domene-slag:var(--hue-live-skog);
+--domene-spill:var(--hue-live-plomme);
+--domene-turn:var(--hue-live-kobber);
+}
+
+/* ---- tokens/typography.css ---- */
+/* GENERERT fra tokens.json av tokens/build.mjs. IKKE REDIGER — endringer overskrives. */
+.ak-ds {
+/* ---- TYPOGRAFI-LOV — tre familier, ingen fjerde ---- */
+--font-display:"Oswald","Oswald Fallback",system-ui,sans-serif;
+--font-body:"Archivo","Archivo Fallback",system-ui,sans-serif;
+--font-meta:"IBM Plex Mono","IBM Plex Mono Fallback",ui-monospace,monospace;
+--font-mono:var(--font-meta); /* Bakoverkompatibelt alias. */
+/* ---- Skala — 10 trinn, ingen andre størrelser ---- */
+--fs-10:10px;--fs-11:11px;--fs-13:13px;--fs-14:14px;--fs-15:15px;--fs-17:17px;--fs-21:21px;--fs-26:26px;--fs-29:29px;--fs-40:40px;
+--lh-tight:1.05;/* @kind font */
+--lh-snug:1.2;/* @kind font */
+--lh-normal:1.45;/* @kind font */
+--lh-loose:1.6;/* @kind font */
+--tracking-kicker:0.08em; /* 0.11 brakk «Godkjenninger» og «TRENINGSOMRÅDE» */
+--tracking-kicker-min:0.06em;
+--tracking-kicker-max:0.08em;
+--tracking-display:-0.01em;
+--tracking-meta:0.02em;
+--fw-regular:400;/* @kind font */
+--fw-medium:500;/* @kind font */
+--fw-semibold:600;/* @kind font */
+/* ---- Semantiske roller ---- */
+--type-kicker:var(--fw-semibold) var(--fs-11)/var(--lh-snug) var(--font-body); /* under 17 px = Archivo, aldri Oswald */
+--type-title-xl:var(--fw-semibold) var(--fs-40)/var(--lh-tight) var(--font-display);
+--type-title-l:var(--fw-semibold) var(--fs-29)/var(--lh-tight) var(--font-display);
+--type-title-m:var(--fw-semibold) var(--fs-21)/var(--lh-snug) var(--font-display);
+--type-title-s:var(--fw-semibold) var(--fs-17)/var(--lh-snug) var(--font-display);
+--type-lead:var(--fw-regular) var(--fs-17)/var(--lh-normal) var(--font-body);
+--type-body:var(--fw-regular) var(--fs-15)/var(--lh-normal) var(--font-body);
+--type-body-s:var(--fw-regular) var(--fs-14)/var(--lh-normal) var(--font-body);
+--type-label:var(--fw-medium) var(--fs-13)/var(--lh-snug) var(--font-body);
+--type-meta:var(--fw-regular) var(--fs-11)/var(--lh-snug) var(--font-meta);
+--type-meta-xs:var(--fw-regular) var(--fs-10)/var(--lh-snug) var(--font-meta);
+--type-metric:var(--fw-semibold) var(--fs-26)/var(--lh-tight) var(--font-display);
+--type-live-num:var(--fw-semibold) var(--fs-40)/1 var(--font-display); /* Live-tall og CountPad-verdi */
+}
+
+/* ---- tokens/spacing.css ---- */
+/* GENERERT fra tokens.json av tokens/build.mjs. IKKE REDIGER — endringer overskrives. */
+.ak-ds {
+/* ---- 4 / 8 rutenett — ingen mellomverdier ---- */
+--space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:20px;--space-6:24px;--space-8:32px;--space-10:40px;--space-12:48px;--space-16:64px;--space-20:80px;
+--radius-sharp:0;
+--radius:2px;
+--radius-lg:2px;
+--radius-card:20px; /* KUN ytre app-kort */
+--radius-full:999px; /* KUN avatar og statusprikk */
+--border-w:1px;
+--border-w-accent:2px;
+--shadow-raised:0 1px 0 rgba(20,20,19,.05);
+--shadow-panel:0 1px 2px rgba(20,20,19,.06);
+--shadow-sheet:0 -8px 32px rgba(20,20,19,.16);
+--shadow-inspector:-1px 0 0 var(--border-hairline);
+--shadow-focus:0 0 0 2px var(--surface-flat),0 0 0 4px var(--graphite-900);
+}
+
+/* ---- tokens/layout.css ---- */
+/* GENERERT fra tokens.json av tokens/build.mjs. IKKE REDIGER — endringer overskrives. */
+.ak-ds {
+/* ---- LAG 1 — PRIMITIVER (rå tall, ingen mening) ---- */
+--size-44:44px;
+--size-56:56px;
+--size-64:64px;
+--size-236:236px;
+--size-340:340px;
+--size-920:920px;
+/* ---- LAG 2 — SEMANTIKK (hva tallet betyr i merket) ---- */
+--topbar-h:var(--size-56);
+--tabbar-h:var(--size-56);
+--hit-min:var(--size-44);
+--content-max:var(--size-920);
+--bp-mobile:390px;
+--bp-tablet:834px;
+--bp-desktop:1440px;
+--gutter-mobile:16px;
+--gutter-tablet:24px;
+--gutter-desktop:32px;
+/* ---- LAG 3 — KOMPONENT (bindes til ett navngitt element) ---- */
+--inspector-w:var(--size-340); /* Inspector340. 372 er FORBUDT. */
+--sourcepanel-w:var(--size-236); /* Workbench-kildepanel. Ikke en rail. */
+/* ---- FORKASTET — ikke app-laget. Står kun så eldre ds-web-sider ikke knekker.
+   Venstre navigasjonsrail er ute av AgencyOS og PlayerHQ. Ikke bruk i HQ. ---- */
+--rail-w:var(--size-236);
+--rail-icon-w:var(--size-64);
+}
+
+/* ---- tokens/motion.css ---- */
+/* GENERERT fra tokens.json av tokens/build.mjs. IKKE REDIGER — endringer overskrives. */
+.ak-ds {
+/* ---- Taket: 150–250 ms, trykk 0.97, ingen shimmer. ---- */
+--dur-fast:150ms;/* @kind other */
+--dur:200ms;/* @kind other */
+--dur-slow:250ms;/* @kind other */
+--dur-press:120ms;/* @kind other */
+/* ---- Innebygde CSS-easinger er for svake. Disse er de samme familiene, sterkere kurve. ---- */
+--ease-out:cubic-bezier(.23,1,.32,1);/* @kind other */
+--ease-in-out:cubic-bezier(.77,0,.175,1);/* @kind other */
+--ease-drawer:cubic-bezier(.32,.72,0,1);/* @kind other */
+--ease-color:ease;/* @kind other */
+--press-scale:0.97;/* @kind other */
+}
+@media (prefers-reduced-motion:reduce){
+.ak-ds {
+/* ---- Redusert bevegelse betyr mindre og mykere — ikke ingenting.
+   Farge og opasitet beholdes (de hjelper forståelsen), bevegelse fjernes. ---- */
+--dur-fast:120ms;/* @kind other */
+--dur:120ms;/* @kind other */
+--dur-slow:120ms;/* @kind other */
+--dur-press:1ms;/* @kind other */
+--press-scale:1;/* @kind other */
+}
+}
+
+/* ---- tokens/marketing.css ---- */
+/* GENERERT fra tokens.json av tokens/build.mjs. IKKE REDIGER — endringer overskrives. */
+.ak-ds {
+/* ---- Uttrykkslaget — KUN web, sosialt og marked. Appene bruker aldri disse. ---- */
+/* ---- Editorial display-trinn over app-skalaen ---- */
+--fs-mkt-56:56px;--fs-mkt-72:72px;--fs-mkt-96:96px;--fs-mkt-128:128px;
+/* ---- Foto og scrim ---- */
+--scrim-bottom:linear-gradient(to top,rgba(20,20,19,.94) 0%,rgba(20,20,19,.80) 34%,rgba(20,20,19,.52) 62%,rgba(20,20,19,.18) 86%,rgba(20,20,19,.06) 100%);/* @kind other */
+--scrim-flat:rgba(20,20,19,.58);
+--scrim-side:linear-gradient(to right,rgba(20,20,19,.92) 0%,rgba(20,20,19,.74) 38%,rgba(20,20,19,.34) 68%,rgba(20,20,19,.08) 100%);/* @kind other */
+--mkt-credit:rgba(250,248,243,.6);
+--photo-ratio-hero:16/9;/* @kind other */
+--photo-ratio-portrait:4/5;/* @kind other */
+--photo-ratio-wide:3/2;/* @kind other */
+/* ---- Mørke marked-flater ---- */
+--mkt-dark:#141413;
+--mkt-dark-2:#2a2926;
+--mkt-ink-on-dark:#faf8f3;
+--mkt-ink-on-dark-2:#c9c4ba;
+--mkt-rule-on-dark:#46443f;
+/* ---- Sidemål ---- */
+--mkt-max:1240px;
+--mkt-measure:68ch;/* @kind other */
+--mkt-gutter:32px;
+--mkt-section:96px;
+--mkt-section-tight:64px;
+/* ---- Merkets egen rød — kun i logofilen, aldri som UI-farge ---- */
+--mark-red:#b83217;/* @kind color */
+--mark-ink:#1f1d1a;/* @kind color */
+--mark-rule:#d2ccc0;/* @kind color */
+--mark-red-negative:#d81e20;/* @kind color */
+}
+

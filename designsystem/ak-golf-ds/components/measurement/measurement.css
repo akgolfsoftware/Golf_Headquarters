@@ -1,0 +1,152 @@
+/* Målelaget. Tall er målt, kildeført og datert — ellers vises de ikke.
+   Plex Mono bærer alle målte verdier. Oswald bare der tallet er en overskrift. */
+.aos-kilde{display:flex;align-items:baseline;gap:var(--space-2);flex-wrap:wrap;font:var(--type-meta);letter-spacing:var(--tracking-meta);color:var(--text-muted)}
+.aos-kilde__navn{color:var(--text-secondary)}
+.aos-kilde__skille{color:var(--text-faint)}
+.aos-ingen{display:flex;flex-direction:column;gap:var(--space-1);border:var(--border-w) dashed var(--border-control);border-radius:var(--radius);padding:var(--space-3) var(--space-4);background:var(--surface-sunken)}
+.aos-ingen__k{font:var(--type-kicker);letter-spacing:var(--tracking-kicker);text-transform:uppercase;color:var(--text-muted)}
+.aos-ingen__t{margin:0;font:var(--type-body-s);color:var(--text-secondary);max-width:54ch}
+
+.aos-tblk{display:flex;flex-direction:column;gap:var(--space-1);min-width:0}
+.aos-tblk__label{font:var(--type-kicker);letter-spacing:var(--tracking-kicker);text-transform:uppercase;color:var(--text-muted)}
+.aos-tblk__v{font:var(--type-metric);letter-spacing:var(--tracking-display);color:var(--text-primary);display:flex;align-items:baseline;gap:var(--space-2);font-variant-numeric:tabular-nums}
+.aos-tblk--stor .aos-tblk__v{font:var(--type-live-num);letter-spacing:var(--tracking-display)}
+.aos-tblk__v--tom{color:var(--text-muted)}
+.aos-tblk__e{font:var(--type-meta);letter-spacing:var(--tracking-meta);color:var(--text-muted)}
+.aos-tblk__d{font:var(--type-meta);letter-spacing:var(--tracking-meta);color:var(--text-secondary);font-variant-numeric:tabular-nums}
+.aos-tblk__n{margin:0;font:var(--type-body-s);color:var(--text-secondary);max-width:46ch}
+
+.aos-frad{margin:0;padding:0;list-style:none;display:flex;flex-direction:column}
+.aos-frad__r{display:flex;align-items:baseline;justify-content:space-between;gap:var(--space-4);padding:var(--space-2) 0;border-bottom:var(--border-w) solid var(--border-hairline)}
+.aos-frad__r:last-child{border-bottom:0}
+.aos-frad__n{font:var(--type-body-s);color:var(--text-body);min-width:0}
+.aos-frad__v{font:var(--fw-medium) var(--fs-14)/1.2 var(--font-meta);letter-spacing:var(--tracking-meta);color:var(--text-primary);white-space:nowrap;font-variant-numeric:tabular-nums;display:flex;align-items:baseline;gap:var(--space-1)}
+.aos-frad__e{color:var(--text-muted);font-weight:var(--fw-regular)}
+.aos-frad__v--tom{color:var(--text-muted)}
+
+.aos-akse{display:flex;flex-direction:column;gap:var(--space-1);min-width:0}
+.aos-akse__tikk{display:flex;justify-content:space-between;align-items:flex-start;height:7px;border-top:var(--border-w) solid var(--border-strong)}
+.aos-akse__tikk i{display:block;width:var(--border-w);height:6px;background:var(--border-strong)}
+.aos-akse__merker{display:flex;justify-content:space-between;gap:var(--space-2)}
+.aos-akse__m{font:var(--type-meta-xs);letter-spacing:var(--tracking-meta);color:var(--text-muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.aos-akse__enhet{font:var(--type-meta-xs);letter-spacing:var(--tracking-meta);color:var(--text-muted);align-self:flex-end;margin-top:var(--space-1)}
+
+.aos-mstokk{display:flex;flex-direction:column;gap:var(--space-2);min-width:0}
+.aos-mstokk__spor{position:relative;height:30px;background:var(--surface-sunken);border:var(--border-w) solid var(--border-hairline);border-radius:var(--radius)}
+.aos-mstokk__t{position:absolute;top:0;width:var(--border-w);height:7px;background:var(--border-strong)}
+.aos-mstokk__maal{position:absolute;top:-4px;bottom:-4px;width:var(--border-w-accent);background:var(--text-faint)}
+.aos-mstokk__naa{position:absolute;top:-5px;bottom:-5px;width:3px;background:var(--text-primary)}
+.aos-mstokk__felt{position:absolute;top:0;bottom:0;background:var(--surface-hover)}
+.aos-mstokk__tall{display:flex;justify-content:space-between;gap:var(--space-2);font:var(--type-meta-xs);letter-spacing:var(--tracking-meta);color:var(--text-muted);font-variant-numeric:tabular-nums}
+.aos-mstokk__v{font:var(--fw-medium) var(--fs-14)/1.2 var(--font-meta);letter-spacing:var(--tracking-meta);color:var(--text-primary);font-variant-numeric:tabular-nums}
+
+.aos-tser{display:flex;flex-direction:column;gap:var(--space-2);min-width:0}
+.aos-tser__svg{display:block;width:100%;height:auto}
+.aos-tser__grid{stroke:var(--border-hairline)}
+.aos-tser__maal{stroke:var(--border-strong);stroke-dasharray:4 4}
+.aos-tser__linje{fill:none;stroke:var(--serie,var(--text-primary));stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.aos-tser__p{fill:var(--surface-flat);stroke:var(--serie,var(--text-primary));stroke-width:2}
+.aos-tser__p--siste{fill:var(--serie,var(--text-primary))}
+.aos-tser__felt{stroke:var(--data-felt);stroke-width:2;stroke-dasharray:2 4}
+.aos-tser__feltm{font:var(--fw-regular) var(--fs-10)/1 var(--font-meta);letter-spacing:var(--tracking-meta);fill:var(--text-muted)}
+.aos-tser__m{font:var(--fw-regular) var(--fs-10)/1 var(--font-meta);letter-spacing:var(--tracking-meta);fill:var(--text-muted)}
+
+.aos-spred{display:flex;flex-direction:column;gap:var(--space-2);min-width:0}
+.aos-spred__svg{display:block;width:100%;height:auto;background:var(--surface-flat);border:var(--border-w) solid var(--border-hairline)}
+.aos-spred__ring{fill:none;stroke:var(--border-hairline)}
+.aos-spred__kryss{stroke:var(--border-strong)}
+.aos-spred__p{fill:var(--serie,var(--text-primary));fill-opacity:.7}
+.aos-spred__p--slag{fill:var(--domene-slag)}
+.aos-spred__p--spill{fill:var(--domene-spill)}
+.aos-spred__p--fys{fill:var(--domene-fys)}
+.aos-spred__p--turn{fill:var(--domene-turn)}
+.aos-spred__p--tek{fill:var(--domene-tek)}
+.aos-spred__m{font:var(--fw-regular) var(--fs-10)/1 var(--font-meta);letter-spacing:var(--tracking-meta);fill:var(--text-muted)}
+
+.aos-ford{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:var(--space-2);min-width:0}
+.aos-ford__r{display:grid;grid-template-columns:minmax(64px,128px) minmax(0,1fr) auto;gap:var(--space-3);align-items:center}
+.aos-ford__n{font:var(--type-body-s);color:var(--text-body);min-width:0}
+.aos-ford__spor{position:relative;height:14px;background:var(--surface-sunken);border-radius:var(--radius)}
+.aos-ford__fyll{position:absolute;inset:0 auto 0 0;background:var(--serie,var(--text-primary));border-radius:var(--radius)}
+.aos-ford__fyll--dempet{background:var(--text-faint)}
+.aos-ford__v{font:var(--fw-medium) var(--fs-13)/1.2 var(--font-meta);letter-spacing:var(--tracking-meta);color:var(--text-primary);font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* Datafarge-velger. Én klasse setter --serie, og hver graf leser den med blekket som fallback.
+   Kategori og fortegn kan ikke stå i samme graf — se kontrast.md. */
+.aos-k1{--serie:var(--data-k1)}
+.aos-k2{--serie:var(--data-k2)}
+.aos-k3{--serie:var(--data-k3)}
+.aos-k4{--serie:var(--data-k4)}
+.aos-k5{--serie:var(--data-k5)}
+.aos-felt{--serie:var(--data-felt)}
+.aos-over{--serie:var(--data-over)}
+.aos-under{--serie:var(--data-under)}
+.aos-n1{--serie:var(--data-niva-1);--serie-ink:var(--data-ink-niva-1)}
+.aos-n2{--serie:var(--data-niva-2);--serie-ink:var(--data-ink-niva-2)}
+.aos-n3{--serie:var(--data-niva-3);--serie-ink:var(--data-ink-niva-3)}
+.aos-n4{--serie:var(--data-niva-4);--serie-ink:var(--data-ink-niva-4)}
+.aos-n5{--serie:var(--data-niva-5);--serie-ink:var(--data-ink-niva-5)}
+/* Stigen ligger inntil flaten i den lyse enden og bærer derfor alltid hårstrek. Målt 1,4:1 trinn-til-trinn. */
+.aos-stige{border:var(--border-w) solid var(--border-hairline)}
+
+/* Pyramide — de fem lagene som målt volum. Bredden er andel av største lag, ikke av summen.
+   FYS er grunnflaten og står nederst; rekkefølgen er lovbestemt og kan ikke sorteres bort. */
+.aos-pyr{display:flex;flex-direction:column;gap:var(--space-2);min-width:0}
+.aos-pyr__lag{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:var(--space-1)}
+.aos-pyr__l{display:grid;grid-template-columns:minmax(52px,64px) minmax(0,1fr) auto;gap:var(--space-3);align-items:center}
+.aos-pyr__kode{font:var(--type-kicker);letter-spacing:var(--tracking-kicker);text-transform:uppercase;color:var(--text-secondary)}
+.aos-pyr__spor{display:flex;justify-content:center;height:26px}
+.aos-pyr__band{display:flex;align-items:center;justify-content:center;min-width:2px;background:var(--serie,var(--data-felt));border-radius:var(--radius)}
+.aos-pyr__navn{font:var(--fw-medium) var(--fs-11)/1 var(--font-meta);letter-spacing:var(--tracking-meta);color:var(--data-ink-kat);padding:0 var(--space-2);white-space:nowrap;overflow:hidden}
+.aos-pyr__band--tom{background:var(--surface-sunken);border:var(--border-w) dashed var(--border-control);width:100%}
+.aos-pyr__v{font:var(--fw-medium) var(--fs-13)/1.2 var(--font-meta);letter-spacing:var(--tracking-meta);color:var(--text-primary);font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right}
+.aos-pyr__v--tom{color:var(--text-muted)}
+.aos-pyr__sum{display:flex;align-items:baseline;justify-content:space-between;gap:var(--space-4);margin:var(--space-2) 0 0;padding-top:var(--space-2);border-top:var(--border-w) solid var(--border-hairline)}
+.aos-pyr__sumn{font:var(--type-kicker);letter-spacing:var(--tracking-kicker);text-transform:uppercase;color:var(--text-muted)}
+.aos-pyr__sumv{font:var(--fw-medium) var(--fs-14)/1.2 var(--font-meta);letter-spacing:var(--tracking-meta);color:var(--text-primary);font-variant-numeric:tabular-nums}
+
+/* Detalj — nøkkelinformasjon på hold og fokus. Samme panel på hvert merke i hele appen:
+   stolpe, punkt, bånd, lag, nål. Ett mønster, ikke ett per graf.
+   Loven: et merke som bærer detalj MÅ kunne fokuseres (regel 15 — hover-uten-fokus),
+   og detaljen gjentar tall som alt står i komponenten. Den er aldri eneste sted en
+   verdi bor — ellers ville grafen mistet informasjon på trykk, på touch og i skjermleser.
+   Bare opasitet animeres. Et panel som også flytter seg, flytter seg bort fra pekeren. */
+.aos-mark{position:relative;min-width:0;outline:0}
+.aos-mark:focus-visible{outline:var(--border-w-accent) solid var(--focus-ring);outline-offset:2px;border-radius:var(--radius)}
+.aos-detalj{position:absolute;left:50%;bottom:calc(100% + var(--space-2));transform:translateX(-50%);width:max-content;max-width:232px;display:flex;flex-direction:column;gap:var(--space-1);padding:var(--space-2) var(--space-3);background:var(--surface-raised);border:var(--border-w) solid var(--border-strong);border-radius:var(--radius);box-shadow:var(--shadow-panel);opacity:0;visibility:hidden;pointer-events:none;z-index:3;transition:opacity var(--dur-fast) var(--ease-out)}
+.aos-mark:hover>.aos-detalj,.aos-mark:focus-visible>.aos-detalj,.aos-mark[data-apen="ja"]>.aos-detalj{opacity:1;visibility:visible}
+.aos-detalj--start{left:0;transform:none}
+.aos-detalj--slutt{left:auto;right:0;transform:none}
+.aos-detalj--under{bottom:auto;top:calc(100% + var(--space-2))}
+.aos-detalj__n{font:var(--type-kicker);letter-spacing:var(--tracking-kicker);text-transform:uppercase;color:var(--text-muted)}
+.aos-detalj__v{font:var(--fw-medium) var(--fs-17)/1.1 var(--font-meta);letter-spacing:var(--tracking-meta);color:var(--text-primary);font-variant-numeric:tabular-nums}
+.aos-detalj__e{font:var(--fw-regular) var(--fs-11)/1 var(--font-meta);letter-spacing:var(--tracking-meta);color:var(--text-muted)}
+.aos-detalj__r{display:flex;align-items:baseline;justify-content:space-between;gap:var(--space-4);font:var(--type-meta);letter-spacing:var(--tracking-meta);color:var(--text-secondary);white-space:nowrap}
+.aos-detalj__r b{font-weight:var(--fw-medium);color:var(--text-primary);font-variant-numeric:tabular-nums}
+.aos-detalj__note{margin:0;font:var(--type-body-s);color:var(--text-secondary);max-width:26ch;white-space:normal}
+.aos-detalj__k{margin:0;padding-top:var(--space-1);border-top:var(--border-w) solid var(--border-hairline);font:var(--type-meta-xs);letter-spacing:var(--tracking-meta);color:var(--text-muted)}
+
+/* Punktlag — treffflaten over en SVG-graf. Punktet tegnes i SVG, men det du holder over
+   er en 24 px HTML-flate oppå (WCAG 2.5.8: 24 px med avstand). Uten dette laget må
+   pekeren treffe en sirkel på 8 px, og tastaturet kommer ikke til i det hele tatt. */
+.aos-lag{position:relative;min-width:0}
+.aos-punkt{position:absolute;width:24px;height:24px;margin:-12px 0 0 -12px;display:block;outline:0}
+.aos-punkt:focus-visible{outline:var(--border-w-accent) solid var(--focus-ring);outline-offset:0;border-radius:var(--radius-full)}
+.aos-punkt>.aos-detalj{bottom:calc(100% - var(--space-2))}
+
+/* Spredning over banen. Fotoet er ikke dekor — det er flaten slaget faktisk landet på.
+   To ting gjør det lovlig: flaten blir Live (`data-surface="live"`), så rollene slår om til
+   natt-verdier som alt er målt; og hvert merke bærer sin egen MOTSTREK, slik at punktet
+   holder mot både en mørk grasskygge og en lys himmelflekk. Da trenger ikke fotoet å måles.
+   Skalaen står i en målt brikke, ikke fritt over bildet. */
+.aos-spred__lag{overflow:hidden;border:var(--border-w) solid var(--border-inverse)}
+.aos-spred__foto{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.aos-spred__scrim{position:absolute;inset:0;display:block;background:var(--scrim-foto)}
+.aos-spred--foto .aos-spred__svg{position:relative;background:none;border:0}
+.aos-spred--foto .aos-spred__ring{stroke:var(--text-muted);stroke-opacity:.55}
+.aos-spred--foto .aos-spred__kryss{stroke:var(--text-primary)}
+.aos-spred--foto .aos-spred__p{stroke:var(--data-ink-kat);stroke-width:1.5;fill-opacity:1}
+.aos-spred--foto .aos-spred__m{display:none}
+.aos-spred__p--apen{stroke:var(--focus-ring);stroke-width:2}
+.aos-spred__skala{position:absolute;top:var(--space-2);right:var(--space-2);padding:2px var(--space-2);background:var(--surface-raised);border:var(--border-w) solid var(--border-inverse);border-radius:var(--radius);font:var(--type-meta-xs);letter-spacing:var(--tracking-meta);color:var(--text-primary);font-variant-numeric:tabular-nums}
+.aos-spred__kreditt{font:var(--type-meta-xs);letter-spacing:var(--tracking-meta);color:var(--text-muted)}
