@@ -7,8 +7,7 @@ Les dette før du endrer filer. [START-HER.md](../../START-HER.md) er inngangen.
 Gjeldende visuell autoritet er [AK Golf Design System og «App design»](../design-system/design-autoritet.md).
 Train-lock og Paper er utgående. Eldre navn i kode beskriver overgangstilstand, ikke ny designretning.
 
-Aktiv Workbench-bestilling 20.09.2026: [overlevering og kildepakke](../workbench-handover.md)
-og [gjeldende arbeidsplan](../planer/workbench-design-og-kode-natt-2026-09-20.md).
+Aktiv Workbench-bestilling 20.09.2026: [overlevering og kildepakke](../workbench-handover.md).
 Lenker merket «historisk Git-versjon» bevarer fjernede dokumenter; de er ikke
 nye kjøreordrer eller bevis på dagens status.
 
