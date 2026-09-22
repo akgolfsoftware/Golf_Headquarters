@@ -472,7 +472,7 @@ export function ForsideMork() {
         if (r.bottom < 0 || r.top > H) continue;
         const c = (r.top + r.height / 2 - H / 2) / H;
         const im = el.querySelector("img");
-        if (im) im.style.transform = `translateY(${(c * Number(el.dataset.parallax)).toFixed(1)}px)`;
+        if (im) im.style.transform = `translateY(${Math.round(c * Number(el.dataset.parallax) * 10) / 10}px)`;
       }
       parId = requestAnimationFrame(parallakse);
     }
