@@ -11,6 +11,8 @@ import { PYR_LABEL } from "@/lib/pyramide";
 import { lesSgMaal, SG_OMRADE_NAVN } from "@/lib/domain/maal-fremdrift";
 import { hentSgSnittPerOmrade } from "@/lib/portal/sg-omrade-snitt";
 import { unikFullforteFrekvensOkter } from "./frekvens-okter";
+import { parseForScoring, lavereErBedre } from "@/lib/portal-tester/test-scoring";
+import { formaterTestVerdi, erPeiKind, peiSomProsent } from "@/lib/portal-tester/format-verdi";
 
 export type GoalProgressStatus = "on-track" | "behind" | "achieved" | "no-data";
 
@@ -216,19 +218,42 @@ async function progressTestScore(goal: GoalForProgress): Promise<GoalProgress> {
   const latest = await prisma.testResult.findFirst({
     where: { userId: goal.userId, testId: goal.linkedTestId },
     orderBy: { takenAt: "desc" },
-    select: { score: true },
+    select: { score: true, test: { select: { protocol: true } } },
   });
   if (!latest) return ingenData("Ingen testresultat registrert ennå");
 
-  const target = goal.targetValue ?? latest.score;
-  const pct = target > 0 ? clampPct((latest.score / target) * 100) : 0;
-  const status: GoalProgressStatus = latest.score >= target ? "achieved" : statusFromPct(pct);
+  // Scoring-typen avgjør både enhet og retning. Uten den ble en PEI-brøk
+  // (0,038) målt mot et mål i prosent (4,8) med «høyere er bedre» — feil
+  // skala og feil vei, så et oppnådd PEI-mål aldri kunne registreres.
+  const { kind } = parseForScoring(latest.test.protocol);
+  const lavereBedre = lavereErBedre(kind);
+  const naa = erPeiKind(kind) ? peiSomProsent(latest.score) : latest.score;
+
+  if (goal.targetValue == null) {
+    return ingenData(`${formaterTestVerdi({ kind, verdi: latest.score })} målt · ingen målverdi satt`);
+  }
+  const target = goal.targetValue;
+
+  // Lavere-er-bedre snur brøken: fremdrift er hvor langt ned mot målet man har
+  // kommet, ikke hvor stor verdien er.
+  const pct = lavereBedre
+    ? naa > 0
+      ? clampPct((target / naa) * 100)
+      : 100
+    : target > 0
+      ? clampPct((naa / target) * 100)
+      : 0;
+  const naadd = lavereBedre ? naa <= target : naa >= target;
+  const status: GoalProgressStatus = naadd ? "achieved" : statusFromPct(pct);
+
   return {
     pct,
     status,
     hasData: true,
     value: latest.score,
-    detail: `${latest.score} poeng · mål ${target}`,
+    // Målverdien er allerede i visningsenhet (prosent for PEI), og
+    // normaliseringen lar den stå.
+    detail: `${formaterTestVerdi({ kind, verdi: latest.score })} · mål ${formaterTestVerdi({ kind, verdi: target })}`,
   };
 }
 
