@@ -47,7 +47,7 @@
 | Utropstegn | Brukes ikke i systemtekst |  |
 | Emoji | Brukes ikke i grensesnittet |  |
 | TrackMan-parametere | Engelsk navn med stor forbokstav og norsk forklaring |  |
-| Puttingavstand | Fot |  |
+| Puttingavstand | Fot |  Fot er primær (matcher statistikk og Strokes Gained). Meter kan vises i parentes. (Anders 22.09) |
 | Andre avstander | Meter |  |
 | Score | Brutto, aldri netto |  |
 
@@ -494,7 +494,7 @@ FYS → Styrke → Fysisk treningssted → Styrkerom → Tilgjengelig utstyr
 |---|---|---|
 | Med TrackMan | Slagene måles med TrackMan |  |
 | Uten TrackMan | Øvelsen gjennomføres uten TrackMan-data |  |
-| Annet måleutstyr | FlightScope, R10, Mevo+ eller annet utstyr |  |
+| Annet måleutstyr | FlightScope, R10, Mevo+ eller annet utstyr | Måleutstyr skal være en fast liste med riktig utstyr (TrackMan og annen radar), ikke fritekst. (Anders 22.09) |
 | Ikke relevant | Øvelsen trenger ikke måleutstyr |  |
 
 TrackMan skal være et tydelig valg i planleggingen, ikke noe coachen må gjette ut fra om
@@ -527,6 +527,8 @@ Dette feltet vises bare når området er fullsving.
 | Spill/test | Spillnær oppgave eller testprotokoll |  |
 
 ### C. Teknisk eller taktisk fokus
+
+**Beslutning (Anders 22.09):** Teknisk fokus per område skal være et eget felt i oppgaven i teknisk plan, så det følger med når oppgaven dras inn i en økt.
 
 | Område | Valg | Ønsket endring |
 |---|---|---|
@@ -611,9 +613,9 @@ Dette feltet vises bare når området er fullsving.
 
 | Nr. | Tema | Beslutning | Oppfølging |
 |---:|---|---|---|
-| 1 |  |  |  |
-| 2 |  |  |  |
-| 3 |  |  |  |
+| 1 | Puttingavstand | Fot er primær, meter kan vises i parentes | Teknisk plan og Workbench viser fot (m) |
+| 2 | Måleutstyr | Fast liste: TrackMan og annen radar, aldri gjettet fra sted | Felt på oppgave og øvelse |
+| 3 | Teknisk fokus | Eget felt per område på oppgaven i teknisk plan | Følger med inn i økta |
 | 4 |  |  |  |
 | 5 |  |  |  |
 | 6 |  |  |  |
