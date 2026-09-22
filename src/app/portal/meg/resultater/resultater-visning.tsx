@@ -9,6 +9,7 @@
 
 import { TL } from "@/lib/v2/train-lock";
 import { fmtSg as fortegn } from "@/lib/v2/format";
+import { formaterProsent, formaterTall } from "@/lib/format-tall";
 import { Kort, KpiFlis, Caps, TomTilstand } from "@/components/v2/core";
 import { DataTabell, type DataTabellColumn } from "@/components/v2/datavis";
 import type { ProfilResultater, ProfilRunde } from "@/lib/profil-kobling/typer";
@@ -16,9 +17,8 @@ import type { ProfilResultater, ProfilRunde } from "@/lib/profil-kobling/typer";
 const sans = { fontFamily: TL.font.sans } as const;
 const mono = { fontFamily: TL.font.mono, fontVariantNumeric: "tabular-nums" } as const;
 
-const tall = (v: number | null | undefined, d = 1): string =>
-  v == null ? "—" : v.toFixed(d).replace(".", ",");
-const prosent = (v: number | null | undefined): string => (v == null ? "—" : `${tall(v)} %`);
+const tall = (v: number | null | undefined): string => formaterTall(v, 1, true);
+const prosent = (v: number | null | undefined): string => formaterProsent(v, 1, true);
 const fort = (v: number | null | undefined): string => (v == null ? "—" : fortegn(v));
 
 const KOLONNER: DataTabellColumn[] = [
