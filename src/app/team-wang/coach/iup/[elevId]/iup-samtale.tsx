@@ -40,7 +40,12 @@ export interface IupMaaling {
   id: string;
   navn: string;
   akse: AkAkse;
-  verdi: number;
+  /**
+   * Ferdig formatert måling med enhet («3,80 %», «7 OK av 10»). Var tidligere
+   * et rått tall, som ble rendret som «0.038» — med punktum, og uten at noen
+   * kunne se at det egentlig betød 3,8 %.
+   */
+  verdi: string;
   datoIso: string;
 }
 
