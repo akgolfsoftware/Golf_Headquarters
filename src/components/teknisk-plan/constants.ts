@@ -9,19 +9,91 @@
 /** De fem pyramide-aksene. Farger hentes fra --pyr-* i globals.css. */
 export type PyramidArea = "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN";
 
-export const SG_BUCKETS = {
-  Tee: ["Tee Total"],
-  "Approach (m)": ["App 200+", "App 150-200", "App 100-150", "App 50-100"],
-  "Around Green": ["Chip", "Pitch", "Lob", "Bunker"],
-  "Putt (m)": ["Putt 0-3", "Putt 3-5", "Putt 5-10", "Putt 10-15", "Putt 15-25", "Putt 25-40", "Putt 40+"],
-} as const;
+import { OMRAADER, erOmraadeKode, type OmraadeKode } from "@/lib/domain/ak-formel-v2";
 
-/** Finn hvilken SG-hovedfane et lagret sub-område hører til (for å forhåndsvelge fanen i modalen). */
-export function omraadeToTab(omraade: string): keyof typeof SG_BUCKETS {
-  for (const tab of Object.keys(SG_BUCKETS) as (keyof typeof SG_BUCKETS)[]) {
-    if ((SG_BUCKETS[tab] as readonly string[]).includes(omraade)) return tab;
+export type { OmraadeKode };
+
+/**
+ * Områdefanene i oppgaveskjemaet (master: treningsplanlegging-og-sprak-gjennomgang.md §7).
+ * Én typet liste — den samme som databasen (`Omraade`) og Workbench bruker.
+ * Putting måles i fot (Strokes Gained); meter vises i parentes.
+ */
+export const OMRAADE_FANER = {
+  Utslag: ["TEE_TOTAL"],
+  Innspill: ["INNSPILL_200", "INNSPILL_150", "INNSPILL_100", "INNSPILL_50"],
+  "Nærspill": ["CHIP", "PITCH", "LOB", "BUNKER"],
+  Putting: ["PUTT_0_3", "PUTT_3_5", "PUTT_5_10", "PUTT_10_25", "PUTT_25_40", "PUTT_40_PLUSS"],
+} as const satisfies Record<string, readonly OmraadeKode[]>;
+
+export type OmraadeFane = keyof typeof OMRAADE_FANER;
+
+const FOT_TIL_M = 0.3048;
+function m(fot: number): string {
+  return (fot * FOT_TIL_M).toLocaleString("nb-NO", { maximumFractionDigits: 1 });
+}
+
+/** Visningsnavn. Putting: fot først, meter i parentes (Anders 22.09). */
+export function omraadeVisning(kode: OmraadeKode): string {
+  switch (kode) {
+    case "TEE_TOTAL": return "Tee Total";
+    case "INNSPILL_200": return "Innspill 200 m +";
+    case "INNSPILL_150": return "Innspill 150–200 m";
+    case "INNSPILL_100": return "Innspill 100–150 m";
+    case "INNSPILL_50": return "Innspill 50–100 m";
+    case "PUTT_0_3": return `Putt 0–3 fot (0–${m(3)} m)`;
+    case "PUTT_3_5": return `Putt 3–5 fot (${m(3)}–${m(5)} m)`;
+    case "PUTT_5_10": return `Putt 5–10 fot (${m(5)}–${m(10)} m)`;
+    case "PUTT_10_25": return `Putt 10–25 fot (${m(10)}–${m(25)} m)`;
+    case "PUTT_25_40": return `Putt 25–40 fot (${m(25)}–${m(40)} m)`;
+    case "PUTT_40_PLUSS": return `Putt 40+ fot (${m(40)} m +)`;
+    default: {
+      const def = OMRAADER.find((o) => o.kode === kode);
+      return def ? def.label : kode;
+    }
   }
-  return "Tee";
+}
+
+/** Fanen et område hører til. Områder utenfor fanene (FYS, BANE) → Utslag som nøytral start. */
+export function omraadeToTab(kode: OmraadeKode | string): OmraadeFane {
+  for (const fane of Object.keys(OMRAADE_FANER) as OmraadeFane[]) {
+    if ((OMRAADE_FANER[fane] as readonly string[]).includes(kode)) return fane;
+  }
+  return "Utslag";
+}
+
+/**
+ * Gamle fritekst-områder (før 22.09.2026) → typet kode. Brukes av
+ * migreringsskriptet og som fallback for rader som ennå ikke har kode.
+ * «Putt 10-15» og «Putt 15-25» slås sammen til PUTT_10_25 (fasitens inndeling).
+ */
+const GAMMELT_OMRAADE: Record<string, OmraadeKode> = {
+  "Tee Total": "TEE_TOTAL",
+  "App 200+": "INNSPILL_200",
+  "App 150-200": "INNSPILL_150",
+  "App 100-150": "INNSPILL_100",
+  "App 50-100": "INNSPILL_50",
+  Chip: "CHIP",
+  Pitch: "PITCH",
+  Lob: "LOB",
+  Bunker: "BUNKER",
+  "Putt 0-3": "PUTT_0_3",
+  "Putt 3-5": "PUTT_3_5",
+  "Putt 5-10": "PUTT_5_10",
+  "Putt 10-15": "PUTT_10_25",
+  "Putt 15-25": "PUTT_10_25",
+  "Putt 10-25": "PUTT_10_25",
+  "Putt 25-40": "PUTT_25_40",
+  "Putt 40+": "PUTT_40_PLUSS",
+};
+
+export function omraadeTilKode(verdi: string | null | undefined): OmraadeKode | null {
+  if (!verdi) return null;
+  const v = verdi.trim();
+  if (erOmraadeKode(v)) return v;
+  if (GAMMELT_OMRAADE[v]) return GAMMELT_OMRAADE[v];
+  // Nye visningsnavn (lagret som `omraade`-etikett) skal også kunne leses tilbake.
+  const treff = OMRAADER.find((o) => omraadeVisning(o.kode) === v || o.label === v);
+  return treff ? treff.kode : null;
 }
 
 export const KOLLER = [

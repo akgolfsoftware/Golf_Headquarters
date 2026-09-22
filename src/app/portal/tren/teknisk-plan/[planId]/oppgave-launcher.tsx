@@ -24,7 +24,7 @@ import {
   type TmGoalDraft,
   type HitRateGoalDraft,
 } from "@/components/teknisk-plan/oppgave-modal";
-import { SG_BUCKETS } from "@/components/teknisk-plan/constants";
+import { OMRAADE_FANER, omraadeVisning } from "@/components/teknisk-plan/constants";
 import { createTask, type TaskInput } from "../actions";
 
 /** En P-posisjon kan velges som mål for ny oppgave. */
@@ -35,7 +35,7 @@ export interface PositionTarget {
 
 /** Tom draft for en ny oppgave i gitt posisjon (samme defaults som modalens UI). */
 function emptyDraft(target: PositionTarget): OppgaveDraft {
-  const omraadeTab = "Tee" as keyof typeof SG_BUCKETS;
+  const omraadeTab = "Utslag" as const;
   return {
     pNummer: target.pNummer,
     pName: target.pName,
@@ -43,7 +43,8 @@ function emptyDraft(target: PositionTarget): OppgaveDraft {
     beskrivelse: "",
     pyramide: "TEK",
     omraadeTab,
-    omraade: SG_BUCKETS[omraadeTab][0],
+    omraadeKode: OMRAADE_FANER[omraadeTab][0],
+    omraade: omraadeVisning(OMRAADE_FANER[omraadeTab][0]),
     koller: [],
     repsMaalDry: 0,
     repsMaalLav: 0,
@@ -101,6 +102,7 @@ function draftToTaskInput(planId: string, draft: OppgaveDraft): TaskInput {
     beskrivelse: draft.beskrivelse || undefined,
     pyramide: draft.pyramide,
     // omraadeTab er kun UI-state for sub-fane-valg — sendes ikke videre.
+    omraadeKode: draft.omraadeKode,
     omraade: draft.omraade,
     koller: draft.koller,
     lFase: draft.lFase ?? null,

@@ -22,7 +22,7 @@ import { TL } from "@/lib/v2/train-lock";
 
 import { Caps, Kort, KpiFlis, StatusPill, TilbakeLenke, type StatusTone } from "@/components/v2";
 import { PPosisjonSeksjon, PlanSammendragKort, TrackmanMaalKort, PyramideFordelingKort, CoachAktivitetKort, TomPlan, type PyramidArea, type KolleMaalRad, type KolleStatus, type AktivitetRad } from "@/components/portal/v2/TekniskPlanV2";
-import { P_POSITIONS, omraadeToTab } from "@/components/teknisk-plan/constants";
+import { P_POSITIONS, omraadeToTab, omraadeTilKode, omraadeVisning } from "@/components/teknisk-plan/constants";
 import type { OppgaveDraft } from "@/components/teknisk-plan/oppgave-modal";
 // Beholdes KUN for OppgaveModal-ens egne tp-*-klasser (tp-btn/tp-tag/tp-task) —
 // v2-presentasjonen under bruker ingen tp-klasser, og reglene er .tp-scopet.
@@ -391,8 +391,9 @@ export default async function PlanBuilderPage({ params }: PageProps) {
                       tittel: t.tittel,
                       beskrivelse: t.beskrivelse ?? "",
                       pyramide: t.pyramide as PyramidArea,
-                      omraadeTab: omraadeToTab(t.omraade),
-                      omraade: t.omraade,
+                      omraadeTab: omraadeToTab(t.omraadeKode ?? omraadeTilKode(t.omraade) ?? "TEE_TOTAL"),
+                      omraadeKode: t.omraadeKode ?? omraadeTilKode(t.omraade) ?? "TEE_TOTAL",
+                      omraade: t.omraadeKode ? omraadeVisning(t.omraadeKode) : t.omraade,
                       koller: t.koller,
                       lFase: t.lFase ?? undefined,
                       cs: t.cs ?? undefined,

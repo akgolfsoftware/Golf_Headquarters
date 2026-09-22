@@ -38,7 +38,10 @@ import {
   CS_LEVELS,
   M_LEVELS,
   PR_LEVELS,
-  SG_BUCKETS,
+  OMRAADE_FANER,
+  omraadeVisning,
+  type OmraadeFane,
+  type OmraadeKode,
   HIT_RATE_PROTOCOLS,
   type HitRateProtocol,
   type PyramidArea,
@@ -47,14 +50,7 @@ import "./oppgave-modal.css";
 
 const PYRAMIDES: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
 
-const SG_TAB_LABEL: Record<keyof typeof SG_BUCKETS, string> = {
-  Tee: "Tee",
-  "Approach (m)": "Approach",
-  "Around Green": "Around Green",
-  "Putt (m)": "Putt",
-};
-
-type SGTab = keyof typeof SG_BUCKETS;
+type SGTab = OmraadeFane;
 
 export interface TmGoalDraft {
   id: string;
@@ -93,6 +89,8 @@ export interface OppgaveDraft {
   beskrivelse: string;
   pyramide: PyramidArea;
   omraadeTab: SGTab;
+  /** Typet område (fasitens liste). `omraade` er visningsetiketten, avledet. */
+  omraadeKode: OmraadeKode;
   omraade: string;
   koller: string[];
   lFase?: typeof L_PHASES[number];
@@ -153,6 +151,9 @@ export function OppgaveModal({ open, onClose, initial, onSubmit, isEditing, onLo
   function setAvansertP(v: boolean) {
     setAvansertPState(v);
     try { window.localStorage.setItem(AVANSERT_P_NOKKEL, v ? "1" : "0"); } catch { /* privat modus o.l. */ }
+  }
+  function velgOmraade(tab: SGTab, kode: OmraadeKode) {
+    setDraft((d) => ({ ...d, omraadeTab: tab, omraadeKode: kode, omraade: omraadeVisning(kode) }));
   }
   function velgP(num: string) {
     setDraft((d) => ({ ...d, pNummer: num, pName: pNavn(num) }));
@@ -441,43 +442,40 @@ export function OppgaveModal({ open, onClose, initial, onSubmit, isEditing, onLo
 
               <div className="field-stack">
                 <span className="field-label">
-                  Område{" "}
+                  Treningsområde{" "}
                   <span style={{ color: "hsl(var(--muted-foreground))", fontWeight: 500 }}>· Strokes Gained</span>
                 </span>
                 <p className="field-helper">
-                  Matcher SG-buckets. Velg én hoved-kategori, deretter sub-område.
+                  Velg område, deretter lengde. Putting i fot, meter i parentes.
                 </p>
                 <div className="area-tabs">
-                  {(Object.keys(SG_BUCKETS) as SGTab[]).map((tab) => (
+                  {(Object.keys(OMRAADE_FANER) as SGTab[]).map((tab) => (
                     <button
                       type="button"
                       key={tab}
                       className={`area-tab ${tab === draft.omraadeTab ? "active" : ""}`}
-                      onClick={() => {
-                        const buckets = SG_BUCKETS[tab];
-                        patch({ omraadeTab: tab, omraade: buckets[0] });
-                      }}
+                      onClick={() => velgOmraade(tab, OMRAADE_FANER[tab][0])}
                     >
-                      {SG_TAB_LABEL[tab]}
+                      {tab}
                       <span className="meta">
-                        {SG_BUCKETS[tab].length === 1
-                          ? SG_BUCKETS[tab][0]
-                          : `${SG_BUCKETS[tab].length} sub`}
+                        {OMRAADE_FANER[tab].length === 1
+                          ? omraadeVisning(OMRAADE_FANER[tab][0])
+                          : `${OMRAADE_FANER[tab].length} valg`}
                       </span>
                     </button>
                   ))}
                 </div>
                 <div className="area-sub">
-                  <span className="area-sub-label">{SG_TAB_LABEL[draft.omraadeTab]} · velg sub-område</span>
+                  <span className="area-sub-label">{draft.omraadeTab} · velg lengde eller slag</span>
                   <div className="chip-row">
-                    {SG_BUCKETS[draft.omraadeTab].map((sub) => (
+                    {OMRAADE_FANER[draft.omraadeTab].map((kode) => (
                       <button
                         type="button"
-                        key={sub}
-                        className={`chip ${sub === draft.omraade ? "active" : ""}`}
-                        onClick={() => patch({ omraade: sub })}
+                        key={kode}
+                        className={`chip ${kode === draft.omraadeKode ? "active" : ""}`}
+                        onClick={() => velgOmraade(draft.omraadeTab, kode)}
                       >
-                        {sub}
+                        {omraadeVisning(kode)}
                       </button>
                     ))}
                   </div>

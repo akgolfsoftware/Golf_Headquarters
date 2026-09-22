@@ -16,7 +16,7 @@ import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { TL } from "@/lib/v2/train-lock";
 
 import { Caps, Tittel, Kort, KpiFlis, StatusPill, MikroMeta, TomTilstand } from "@/components/v2";
-import { omraadeToTab, type PyramidArea } from "@/components/teknisk-plan/constants";
+import { omraadeToTab, omraadeTilKode, omraadeVisning, type PyramidArea } from "@/components/teknisk-plan/constants";
 import type { OppgaveDraft } from "@/components/teknisk-plan/oppgave-modal";
 import { PlanToolbar } from "./plan-toolbar";
 import { DrillsPanel, type DrillRow } from "./drills-panel";
@@ -99,7 +99,8 @@ export default async function SpillerPlanDetaljPage({
           ? `${Math.round(((primaryHit.currentHits ?? 0) / primaryHit.currentBatchSize) * 100)}%`
           : "—";
 
-      const omraadeTab = omraadeToTab(t.omraade);
+      const omraadeKode = t.omraadeKode ?? omraadeTilKode(t.omraade) ?? "TEE_TOTAL";
+      const omraadeTab = omraadeToTab(omraadeKode);
 
       const draft: OppgaveDraft = {
         id: t.id,
@@ -109,7 +110,8 @@ export default async function SpillerPlanDetaljPage({
         beskrivelse: t.beskrivelse ?? "",
         pyramide: t.pyramide as PyramidArea,
         omraadeTab,
-        omraade: t.omraade,
+        omraadeKode,
+        omraade: t.omraadeKode ? omraadeVisning(t.omraadeKode) : t.omraade,
         koller: t.koller,
         lFase: t.lFase ?? undefined,
         cs: t.cs ?? undefined,

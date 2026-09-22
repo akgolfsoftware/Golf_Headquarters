@@ -24,7 +24,8 @@ import type { Prisma } from "@/generated/prisma/client";
 import { nonEmpty } from "@/lib/validation/schemas";
 import { applyPositionTaskReps } from "@/lib/teknisk-plan/apply-reps";
 import { ensurePlanAccess } from "@/lib/teknisk-plan/ensure-plan-access";
-import { pHovedNummer, pNavn } from "@/components/teknisk-plan/constants";
+import { pHovedNummer, pNavn, omraadeVisning } from "@/components/teknisk-plan/constants";
+import { OMRAADE_KODER, type OmraadeKode } from "@/lib/domain/ak-formel-v2";
 
 const PNummerSchema = z
   .string()
@@ -39,6 +40,7 @@ const TaskInputSchema = z.object({
   beskrivelse: z.string().max(2000).optional(),
   pyramide: z.string().min(1, "Pyramide-område er påkrevd"),
   omraade: z.string().min(1, "Område er påkrevd"),
+  omraadeKode: z.enum(OMRAADE_KODER).optional(),
   koller: z.array(z.string()),
   repsMaalDry: z.number().int().min(0),
   repsMaalLav: z.number().int().min(0),
@@ -83,6 +85,8 @@ export interface TaskInput {
   beskrivelse?: string;
   pyramide: PyramidArea;
   omraade: string;
+  /** Typet område. Når satt, utledes `omraade`-etiketten fra koden. */
+  omraadeKode?: OmraadeKode | null;
   koller: string[];
   lFase?: LFase | null;
   cs?: CSNivaa | null;
@@ -137,7 +141,8 @@ export async function createTask(input: TaskInput) {
       tittel: input.tittel,
       beskrivelse: input.beskrivelse,
       pyramide: input.pyramide,
-      omraade: input.omraade,
+      omraade: input.omraadeKode ? omraadeVisning(input.omraadeKode) : input.omraade,
+      omraadeKode: input.omraadeKode ?? null,
       koller: input.koller,
       lFase: input.lFase ?? null,
       cs: input.cs ?? null,
@@ -237,7 +242,8 @@ export async function updateTaskBasics(
       tittel: patch.tittel,
       beskrivelse: patch.beskrivelse,
       pyramide: patch.pyramide,
-      omraade: patch.omraade,
+      omraade: patch.omraadeKode ? omraadeVisning(patch.omraadeKode) : patch.omraade,
+      omraadeKode: patch.omraadeKode ?? undefined,
       koller: patch.koller,
       lFase: patch.lFase ?? null,
       cs: patch.cs ?? null,
