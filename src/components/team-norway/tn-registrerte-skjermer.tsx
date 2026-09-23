@@ -40,7 +40,7 @@ import {
   type TnAktivSide,
 } from "./tn-shell";
 import { TnKort, TnPille } from "./core";
-import { TnKnapp, TnNotis, TnSeksjonDS, TnSidehodeDS, TnTabell, TnTallrad, TnUkjent } from "./tn-skjerm";
+import { TnKnapp, TnMerkelapp, TnNotis, TnSeksjonDS, TnSidehodeDS, TnTabell, TnTallrad, TnUkjent } from "./tn-skjerm";
 
 type Skjerm =
   | "spillere"
@@ -298,10 +298,19 @@ export async function TnRegistrertSkjerm({ skjerm, id, dagId }: { skjerm: Skjerm
     if (!data) notFound();
     return (
       <Chrome aktiv="manedsplan" brukerNavn={brukerNavn} kontekst={data.kontekst}>
-        <TnSidehode overlinje="Daglig · Plan" tittel="Månedsplan" ingress="Gruppeøkter og periodisering leses direkte fra AK Golf HQs planleggingsmodeller." />
-        <TnMetrikkRutenett><TnMetrikk etikett="Gruppeøkter" verdi={data.okter.length} /><TnMetrikk etikett="Perioder" verdi={data.perioder.length} /><TnMetrikk etikett="Publisert avvik" verdi="Ikke beregnet" tone="amber" forklaring="Modellen mangler fortsatt en godkjent avviksberegning." /></TnMetrikkRutenett>
-        <TnSeksjon tittel="Økter"><TnDataTable caption="Månedsplanens økter" kolonner={[{ key: "tid", label: "Tid" }, { key: "okt", label: "Økt" }, { key: "sted", label: "Sted" }, { key: "type", label: "Type" }]} rader={data.okter.map((okt) => ({ tid: datoTid.format(okt.startAt), okt: okt.title, sted: okt.location ?? "Ikke registrert", type: okt.kind ?? "Trening" }))} empty="Ingen gruppeøkter er registrert i perioden." /></TnSeksjon>
-        <TnSeksjon tittel="Periodisering"><TnDataTable caption="Periodisering" kolonner={[{ key: "fase", label: "Fase" }, { key: "periode", label: "Periode" }, { key: "fokus", label: "Fokus" }, { key: "volum", label: "Ukevolum", align: "right" }]} rader={data.perioder.map((periode) => ({ fase: <TnPille tone="navy">{periode.lPhase}</TnPille>, periode: `${dato.format(periode.startDate)}–${dato.format(periode.endDate)}`, fokus: periode.focus ?? "Ikke registrert", volum: periode.weeklyVolMin === null && periode.weeklyVolMax === null ? "Ukjent" : `${periode.weeklyVolMin ?? 0}–${periode.weeklyVolMax ?? "?"} min` }))} empty="Ingen gruppeperioder er registrert." /></TnSeksjon>
+        <TnSidehodeDS overlinje="Daglig · Plan" tittel="Månedsplan" ingress="Gruppeøkter og periodisering leses direkte fra AK Golf HQs planleggingsmodeller." />
+        <TnTallrad tall={[{ verdi: data.okter.length, etikett: "Gruppeøkter" }, { verdi: data.perioder.length, etikett: "Perioder" }, { verdi: "Ikke beregnet", etikett: "Publisert avvik" }]} />
+        <TnNotis tittel="Avvik beregnes ikke.">Modellen mangler en godkjent avviksberegning, så feltet står tomt framfor å vise et tall ingen kan gå god for.</TnNotis>
+        <TnSeksjonDS tittel="Økter" antall={`${data.okter.length} i perioden`}>
+          {data.okter.length === 0 ? <TnUkjent>Ingen gruppeøkter er registrert i perioden.</TnUkjent> : (
+            <TnTabell caption="Månedsplanens økter" kolonner={[{ key: "tid", label: "Tid" }, { key: "okt", label: "Økt" }, { key: "sted", label: "Sted" }, { key: "type", label: "Type" }]} rader={data.okter.map((okt) => ({ tid: datoTid.format(okt.startAt), okt: okt.title, sted: okt.location ?? <TnUkjent>Ikke registrert</TnUkjent>, type: <TnMerkelapp>{okt.kind ?? "Trening"}</TnMerkelapp> }))} />
+          )}
+        </TnSeksjonDS>
+        <TnSeksjonDS tittel="Periodisering" antall={`${data.perioder.length} perioder`}>
+          {data.perioder.length === 0 ? <TnUkjent>Ingen gruppeperioder er registrert.</TnUkjent> : (
+            <TnTabell caption="Periodisering" kolonner={[{ key: "fase", label: "Fase" }, { key: "periode", label: "Periode" }, { key: "fokus", label: "Fokus" }, { key: "volum", label: "Ukevolum", tall: true }]} rader={data.perioder.map((periode) => ({ fase: <TnMerkelapp variant="navy">{periode.lPhase}</TnMerkelapp>, periode: `${datoNumerisk.format(periode.startDate)}–${datoNumerisk.format(periode.endDate)}`, fokus: periode.focus ?? <TnUkjent>Ikke registrert</TnUkjent>, volum: periode.weeklyVolMin === null && periode.weeklyVolMax === null ? <TnUkjent /> : `${periode.weeklyVolMin ?? 0}–${periode.weeklyVolMax ?? "?"} min` }))} />
+          )}
+        </TnSeksjonDS>
       </Chrome>
     );
   }

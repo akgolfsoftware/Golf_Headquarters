@@ -92,6 +92,35 @@ export function TnTabell({ caption, kolonner, rader }: { caption: string; kolonn
   );
 }
 
+export function TnMerkelapp({ children, variant }: { children: ReactNode; variant?: "ok" | "vent" | "navy" }) {
+  const klasse = variant === "ok" ? `${s.merkelapp} ${s.merkelappOk}` : variant === "vent" ? `${s.merkelapp} ${s.merkelappVent}` : variant === "navy" ? `${s.merkelapp} ${s.merkelappNavy}` : s.merkelapp;
+  return <span className={klasse}>{children}</span>;
+}
+
+export function TnFotnote({ children }: { children: ReactNode }) {
+  return <p className={s.fotnote}>{children}</p>;
+}
+
+export function TnKnapperad({ children }: { children: ReactNode }) {
+  return <div className={s.knapperad}>{children}</div>;
+}
+
+/** Rad med paneler (kriterier e.l.) — hvert panel: overskrift, tittel, tekst og kildefot. */
+export function TnPanelrad({ paneler }: { paneler: Array<{ hode: string; tittel: string; tekst: string; kilde?: string }> }) {
+  return (
+    <div className={s.paneler}>
+      {paneler.map((p) => (
+        <div key={p.tittel} className={s.panel}>
+          <p className={s.panelHode}>{p.hode}</p>
+          <p className={s.panelTittel}>{p.tittel}</p>
+          <p className={s.panelTekst}>{p.tekst}</p>
+          {p.kilde ? <div className={s.panelFot}><p className={s.kilde}>{p.kilde}</p></div> : null}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export function TnUkjent({ children = "Ukjent" }: { children?: ReactNode }) {
   return <span className={s.ukjent}>{children}</span>;
 }

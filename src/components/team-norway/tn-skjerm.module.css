@@ -132,6 +132,57 @@
 .tallKolonne { text-align: right; font-family: var(--tn-font-mono); font-variant-numeric: tabular-nums; }
 .ukjent { color: var(--tn-text-secondary); }
 
+.merkelapp {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border: 1px solid var(--tn-border-subtle);
+  font-family: var(--tn-font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tn-ink-700);
+  white-space: nowrap;
+}
+.merkelappOk { border-color: var(--tn-status-green); color: var(--tn-status-green-text); }
+.merkelappVent { border-color: var(--tn-red-700); color: var(--tn-red-700); }
+.merkelappNavy { background: var(--tn-navy-900); border-color: var(--tn-navy-900); color: var(--tn-white); }
+
+.fotnote { margin: 0; font-size: 13.5px; line-height: 1.6; color: var(--tn-text-secondary); }
+
+.paneler {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 20px;
+}
+.panel { border: 1px solid var(--tn-border-subtle); padding: 24px; min-width: 0; }
+.panelHode {
+  margin: 0;
+  font-family: var(--tn-font-display);
+  font-size: 9.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--tn-text-secondary);
+}
+.panelTittel {
+  margin: 10px 0 0;
+  font-family: var(--tn-font-display);
+  font-size: 19px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.panelTekst { margin: 11px 0 0; font-size: 14px; line-height: 1.6; }
+.panelFot { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--tn-border-subtle); }
+.kilde {
+  margin: 0;
+  font-family: var(--tn-font-mono);
+  font-size: 11px;
+  line-height: 1.7;
+  letter-spacing: 0.04em;
+  color: var(--tn-text-secondary);
+}
+.knapperad { display: flex; flex-wrap: wrap; gap: 12px; }
+
 @media (max-width: 900px) {
   .handling { width: 100%; }
   .handling .knapp { flex: 1 1 auto; }
