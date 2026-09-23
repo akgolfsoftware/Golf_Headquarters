@@ -64,6 +64,24 @@ const VIDERE: Array<[string, string]> = [
   ["Kontakt", "/kontakt"],
 ];
 
+/** De to dørene fra heroen. Samme ord brukes i desktop- og mobilutgaven. */
+const DORER: Array<{ tittel: string; nr: string; tekst: string; fot: string; rute: string }> = [
+  {
+    tittel: "Coaching",
+    nr: "01",
+    tekst: "Enkelttime på bane eller i studio. Gruppetrening. Foreldresamtale.",
+    fot: "BOOK TIME",
+    rute: "/booking",
+  },
+  {
+    tittel: "Player HQ",
+    nr: "02",
+    tekst: "Appen for deg som trener videre mellom timene.",
+    fot: "299 KR / MND",
+    rute: "/playerhq",
+  },
+];
+
 const KAPITLER = ["Start", "Metode", "Coaching", "Player HQ", "Akademiet", "Kontakt"];
 
 const MAATER = [
@@ -106,6 +124,35 @@ const FESTE: Record<string, [number, number]> = {
   "AK-Golf-Academy-6.webp": [0.48, 0.5], // den som slår, midt i bildet
 };
 const feste = (fil: string): [number, number] => FESTE[fil] ?? [0.5, 0.5];
+
+/**
+ * Ett kapittelbilde som sin egen skjerm — bare på mobil (Anders 22.09.2026).
+ *
+ * På desktop males bildene på canvas mens teksten ligger låst oppå. På en
+ * telefon fyller et 3:2-foto hele skjermen, og motivet ligger nødvendigvis midt
+ * i den: uansett hvor teksten plasseres, havner den oppå noen. Derfor får bildet
+ * hele skjermen for seg selv her, og teksten sin egen på ren mørk bunn.
+ *
+ * `feste()` gir samme beskjæringspunkt som canvas-rammen bruker, så et foto ser
+ * likt ut uansett flate.
+ */
+function MobilFoto({ nr }: { nr: number }) {
+  const fil = SEKVENS[nr];
+  if (!fil) return null;
+  const [fx, fy] = feste(fil);
+  return (
+    <div className={s.mfoto} aria-hidden="true">
+      <Image
+        src={`${FOTO}${fil}`}
+        alt=""
+        fill
+        priority={nr === 0}
+        sizes="100vw"
+        style={{ objectPosition: `${fx * 100}% ${fy * 100}%` }}
+      />
+    </div>
+  );
+}
 
 /** Bildearkivet: fil og om ruta er dobbelt høy. */
 const ARKIV: Array<[string, boolean]> = [
@@ -664,25 +711,41 @@ export function ForsideMork() {
               Coaching med Anders Kristiansen — på bane, i studio og i gruppe. Ingen
               hurtigkur, ingen mirakelgrep.
             </p>
-            <div className={s.doors}>
-              <Link className={s.door} href="/booking">
-                <span className={s.t}>
-                  Coaching<i>01</i>
-                </span>
-                <span className={s.d}>
-                  Enkelttime på bane eller i studio. Gruppetrening. Foreldresamtale.
-                </span>
-                <span className={s.p}>BOOK TIME</span>
-              </Link>
-              <Link className={s.door} href="/playerhq">
-                <span className={s.t}>
-                  Player HQ<i>02</i>
-                </span>
-                <span className={s.d}>Appen for deg som trener videre mellom timene.</span>
-                <span className={s.p}>299 KR / MND</span>
-              </Link>
+            {/* Dørene hører til heroen på desktop. På mobil står de i sin egen
+                blokk etter det første bildet — se `.mobilDorer` under. Bare én
+                av de to er i DOM-en om gangen (`display: none` skjuler helt). */}
+            <div className={`${s.doors} ${s.kunBredt}`}>
+              {DORER.map((d) => (
+                <Link key={d.rute} className={s.door} href={d.rute}>
+                  <span className={s.t}>
+                    {d.tittel}
+                    <i>{d.nr}</i>
+                  </span>
+                  <span className={s.d}>{d.tekst}</span>
+                  <span className={s.p}>{d.fot}</span>
+                </Link>
+              ))}
             </div>
           </div>
+
+          <MobilFoto nr={0} />
+
+          <div className={`${s.st} ${s.mobilDorer}`}>
+            <div className={s.doors}>
+              {DORER.map((d) => (
+                <Link key={d.rute} className={s.door} href={d.rute}>
+                  <span className={s.t}>
+                    {d.tittel}
+                    <i>{d.nr}</i>
+                  </span>
+                  <span className={s.d}>{d.tekst}</span>
+                  <span className={s.p}>{d.fot}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          <MobilFoto nr={1} />
 
           <div className={s.st} data-at="0.215" data-to="0.30">
             <span className={s.qmark}>&ldquo;</span>
@@ -693,6 +756,8 @@ export function ForsideMork() {
             <hr className={s.rule} />
             <span className={s.m}>ANDERS KRISTIANSEN · TRENER · SITAT TIL GODKJENNING</span>
           </div>
+
+          <MobilFoto nr={2} />
 
           <div className={s.st} id="coaching" data-at="0.375" data-to="0.465">
             <span className={`${s.k} ${s.kRust}`}>Coaching</span>
@@ -720,6 +785,8 @@ export function ForsideMork() {
             </div>
           </div>
 
+          <MobilFoto nr={3} />
+
           <div className={s.st} id="playerhq" data-at="0.535" data-to="0.625">
             <span className={`${s.k} ${s.kRust}`}>Player HQ · 299 kr/mnd</span>
             <h2>Appen mellom timene</h2>
@@ -742,6 +809,8 @@ export function ForsideMork() {
             </div>
           </div>
 
+          <MobilFoto nr={4} />
+
           <div className={s.st} data-at="0.695" data-to="0.785">
             <span className={s.k}>Akademiet</span>
             <h2>For dem som vil lenger</h2>
@@ -759,6 +828,8 @@ export function ForsideMork() {
               ))}
             </ul>
           </div>
+
+          <MobilFoto nr={5} />
 
           <div className={`${s.st} ${s.stC}`} id="kontakt" data-at="0.875" data-to="1.01">
             <span className={s.k}>Ta kontakt</span>
