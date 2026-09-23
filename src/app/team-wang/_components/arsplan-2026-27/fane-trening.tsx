@@ -465,34 +465,40 @@ function Oktplaner({ trinn }: { trinn: TrinnType | "Alle trinn" }) {
   );
 }
 
+export type TreningSide = "arsplan" | "periodisering" | "manedsplan" | "ukeplan" | "oktplaner";
+
 export function FaneTrening({
+  side,
   trinn,
   onTrinn,
 }: {
+  side: TreningSide;
   trinn: TrinnType | "Alle trinn";
   onTrinn: (t: TrinnType | "Alle trinn") => void;
 }) {
   return (
     <div>
       <Hero />
-      <div style={{ marginTop: 24 }}>
-        <Wrap>
-          <PillGruppe
-            valg={(["Alle trinn", "VG1", "VG2", "VG3"] as const).map((t) => ({
-              label: t === "Alle trinn" ? t : t + " · " + TRINN[t].fag,
-              aktiv: t === trinn,
-              onVelg: () => onTrinn(t),
-            }))}
-            aktivBg="var(--wang-mint)"
-            aktivFg="var(--wang-navy-deep-text)"
-          />
-        </Wrap>
-      </div>
-      <Arshjul />
-      <Periodisering />
-      <Manedsplan />
-      <Ukeplan />
-      <Oktplaner trinn={trinn} />
+      {side === "oktplaner" ? (
+        <div style={{ marginTop: 24 }}>
+          <Wrap>
+            <PillGruppe
+              valg={(["Alle trinn", "VG1", "VG2", "VG3"] as const).map((t) => ({
+                label: t === "Alle trinn" ? t : t + " · " + TRINN[t].fag,
+                aktiv: t === trinn,
+                onVelg: () => onTrinn(t),
+              }))}
+              aktivBg="var(--wang-mint)"
+              aktivFg="var(--wang-navy-deep-text)"
+            />
+          </Wrap>
+        </div>
+      ) : null}
+      {side === "arsplan" ? <Arshjul /> : null}
+      {side === "periodisering" ? <Periodisering /> : null}
+      {side === "manedsplan" ? <Manedsplan /> : null}
+      {side === "ukeplan" ? <Ukeplan /> : null}
+      {side === "oktplaner" ? <Oktplaner trinn={trinn} /> : null}
     </div>
   );
 }
