@@ -4,6 +4,67 @@ Kun det som gjelder nå. Full historikk (1 207 linjer, alle overstyrte valg): [b
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## AG-03b Oppfølgingskø: «Løst» blir egen status, og designrunden for PlayerHQ/AgencyOS er ferdig (Anders 23.09.2026, bindende)
+
+**Oppfølgingskøens «Løst»-kolonne får en eksplisitt status på saken i basen, satt av coach
+med ett trykk — aldri avledet automatisk av at spilleren igjen følger planen.** Kolonnen har
+stått tom siden AG-03b ble kartlagt, fordi ingen modell fanger at en sak er løst. Foreslått
+til Codex: én additiv tabell `FollowUpCase` (`userId` unik, `status`:
+`RISK | WATCH | CHECK | RESOLVED`, `reasonKey`, `setById`, `setAt`, `resolvedAt`,
+`resolvedById`), opprettet kirurgisk med `CREATE TABLE IF NOT EXISTS` — se gotchas §Database.
+Detaljer og ytterligere fjorten funn (bl.a. at dagens `Signal`-baserte tilnærming glemmer en
+løst sak etter sju dager, og ikke vet hvem som satte statusen): `agencyos-handover/AG-03b-manifest.md`.
+
+**Samtidig: designrunden startet 21.09 er nå ferdig for tre av fem områder.** PlayerHQ (18
+skjermer), AgencyOS (19 skjermer) og Lag-og-skole-koblingen (LS-03 GFGK Junior) har alle
+bevis for de seks første portene i `DEKNINGSREGISTER.md` (Claude Design-prosjektet
+«App design», `830e7bce`) — 38 skjermer totalt. Markedsområdet (MK-01–06, ~70 ruter) er
+bevisst ikke tegnet ennå (Anders 23.09: «vent med markedssidene») og blokkerer ikke
+porting av de tre ferdige områdene.
+
+**Arbeidet dette utløser** — ingen arbeidsliste finnes etter b700ce008, derfor står den her:
+
+1. **Port 7 må gjøres først, skjerm for skjerm.** Ingen av de 38 skjermene har Anders' ja
+   ennå. Gjennomgangen skjer i Claude Design-prosjektet «App design» (`830e7bce`) — mobil
+   390 px og desktop, lys og mørk, tom/laster/feil. Uten dette kan Codex ikke starte porting
+   av en gitt skjerm, uansett hvor ferdig designet er.
+2. **Fire datamodell-tillegg må inn før tilhørende skjerm kan kobles til ekte data**
+   (additive, kirurgisk `db execute`, aldri `migrate`/`db push` — se gotchas §Database):
+   - `FollowUpCase`-tabellen over, for AG-03b.
+   - `ExerciseDefinition`: nye felt for treningsområde, motorikk, belastning og press (AK-formel
+     v2), som i dag ligger på økten, ikke på øvelsen — kreves for AG-11b.
+   - GFGK Junior: `hent-gfgk-data.ts` må slå opp på kanonisk gruppe-slug fra `bootstrap.ts`,
+     ikke på tekststrengen «GFGK Junior Mini U10» — ellers faller fire offentlige sider
+     stille tilbake til designtekst ved en omdøping. Se `gfgk-handover/LS-03-manifest.md`.
+   - Caddie-samtale: `getOrCreateActiveConversation()` har null kallere i dag, og eneste
+     chat-kaller sender tom `conversationId` — uten dette kan forslagsflyten i AG-14 aldri
+     lagre et utkast. Se `agencyos-handover/AG-14-manifest.md`.
+3. **Fire navnevalg venter på Anders før tekst fryses i kode** — hver er én linje å rette
+   når svaret foreligger:
+   - «Watch»-kolonnen i AG-03b: behold engelsk, eller bytt til «Følg med»?
+   - Caddie-navnet i UI: koden sier «Coach AI», «AI-coach» og «AI om {fornavn}» om hverandre
+     for samme funksjon (PH-16). Ordboken sier «Caddie».
+   - «Merge» (AG-04) vs. «Slå sammen» (AG-10) er samme handling med to navn og to rust-svar.
+   - PS-01 (ny spillerprofil-side) overlapper med spillerkortet i AG-03s inspektør — behold
+     begge og koble dem (anbefalt), eller slå sammen til én?
+4. **Fire «ingen kan gjøre X»-hull må bygges sammen med skjermen, ikke bare tegnes rundt**,
+   ellers ser skjermen ferdig ut uten å virke:
+   - Administrator-Caddie (AG-14): fire API-ruter og seksten verktøy finnes i koden, men
+     ingen side har noensinne rendret dem.
+   - Øvelsesredigering (AG-11b): ingen kan i dag opprette eller endre en øvelse noe sted i
+     appen, verken admin eller coach.
+   - Bookingbekreftelse i AgencyOS (AG-06, eldre funn, ikke løst i denne runden): en coach
+     kan ikke bekrefte eller avvise en booking noe sted i AgencyOS.
+   - Utfordringer (PH-15): kodesiden er bygget (PR #948), men selve ny-skjermen fra
+     tegningen er ikke portert ennå.
+5. **Selve portingen:** hver av de 38 skjermene bygges fra sitt manifest
+   (`playerhq-handover/`, `agencyos-handover/`, `auth-handover/`, `gfgk-handover/` i
+   Claude Design-prosjektet) til ekte Next.js-kode, koblet til de delte skallmodulene som
+   allerede er spesifisert (`fo-skall.js`, `ag-mobilmeny.css/.js`, `ag-hurtigknapp.css/.js`).
+6. **Etter porting, før lansering:** full `npm run verify`, skjermsammenligning mot valgt
+   Claude Design-versjon (`designsystem/README.md`-mønsteret), og Stripe-live/røyktest
+   sist, som BUSINESS-RULES krever.
+
 ## Utfordringer skal leve (Anders 22.09.2026, bindende)
 
 **Utfordringsfunksjonen beholdes og bygges ferdig.** I dag er den død: `opprettUtfordring`
