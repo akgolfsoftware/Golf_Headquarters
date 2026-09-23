@@ -1442,6 +1442,14 @@ model ExerciseDefinition {
   imageUrl     String?            @map("image_url") // Supabase Storage URL for bilde/screenshot
   muscleGroups String[]           @default([]) @map("muscle_groups") // ["glutes","hamstrings",...]
 
+  // AK-formel v2-aksene på selve øvelsen (AG-11b, 23.09.2026) — akslene lå
+  // tidligere kun på økten/innslaget (SessionDrill, PositionTask), ikke på
+  // øvelsen selv. Gjenbruker eksisterende enums, ingen nye typer.
+  omraadeKode Omraade?
+  motorikk    Motorikk?
+  belastning  Belastning?
+  press       Press?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -5802,6 +5810,28 @@ model DriftRutine {
 
   @@index([userId, aktiv, frekvens])
   @@map("drift_rutiner")
+}
+
+/// Oppfølgingskøens «Løst»-status (AG-03b, beslutning 23.09.2026): eksplisitt,
+/// satt av coach med ett trykk — erstatter det tidligere Signal-baserte
+/// overstyringssporet (kind OPPFOLGING_STATUS), som glemte status etter sju
+/// dager og ikke visste hvem som satte den. Én aktiv sak per spiller.
+model FollowUpCase {
+  id     String @id @default(cuid())
+  userId String @unique
+
+  /// "risk" | "watch" | "check" | "ok" — matcher QueueStatus i
+  /// src/app/admin/queue/status.ts.
+  status       String
+  setById      String
+  setAt        DateTime  @default(now())
+  resolvedAt   DateTime?
+  resolvedById String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("follow_up_cases")
 }
 
 model KommandoChat {

@@ -1,8 +1,9 @@
 "use client";
 import { TL } from "@/lib/v2/train-lock";
 /**
- * PlayerHQ AI-coach — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
- * T.* only. Lys PlayerHQ.
+ * PlayerHQ Caddie — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Lys PlayerHQ. Navnet er «Caddie» overalt i grensesnittet
+ * (beslutning 23.09.2026) — filnavn/komponentnavn beholdes uendret.
  */
 
 import { useEffect, useRef, useState } from "react";
@@ -13,7 +14,7 @@ import { Caps, Tittel, Kort, Knapp, TomTilstand, AiMerke, SamtaleBoble, SamtaleS
 /* ── Datakontrakt (1:1 med den ekte siden) ─────────────────────────── */
 
 export type CoachAIData = {
-  /** Effektiv tier — GRATIS ⇒ Pro-gate (AI-coach er Pro-funksjon). */
+  /** Effektiv tier — GRATIS ⇒ Pro-gate (Caddie er Pro-funksjon). */
   tier: Tier;
   /** Spillerens fornavn (tittel + identitetsmerke). */
   fornavn: string;
@@ -64,7 +65,7 @@ export function CoachAIV2({ data }: { data: CoachAIData }) {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [meldinger]);
 
-  // Pro-gate — AI-coach krever Pro (samme regel som den ekte siden).
+  // Pro-gate — Caddie krever Pro (samme regel som den ekte siden).
   if (tier === "GRATIS") return <ProGate mobile={mobile} />;
 
   async function send() {
@@ -134,16 +135,16 @@ export function CoachAIV2({ data }: { data: CoachAIData }) {
 
   function eksporter() {
     const md = meldinger
-      .map((m) => `## ${m.role === "user" ? "Du" : "AI-coach"}\n\n${m.content}\n`)
+      .map((m) => `## ${m.role === "user" ? "Du" : "Caddie"}\n\n${m.content}\n`)
       .join("\n");
     const blob = new Blob(
-      [`# AI-coach chat\n\nEksportert ${new Date().toISOString()}\n\n${md}`],
+      [`# Caddie-chat\n\nEksportert ${new Date().toISOString()}\n\n${md}`],
       { type: "text/markdown;charset=utf-8" },
     );
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `ai-coach-chat-${new Date().toISOString().slice(0, 10)}.md`;
+    a.download = `caddie-chat-${new Date().toISOString().slice(0, 10)}.md`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -157,7 +158,7 @@ export function CoachAIV2({ data }: { data: CoachAIData }) {
       {/* Hode */}
       <div>
         <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Coach AI</h1>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Caddie</h1>
           <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>Assistent</span>
         </div>
       </div>
@@ -167,7 +168,7 @@ export function CoachAIV2({ data }: { data: CoachAIData }) {
         <div style={{ display: "grid", gridTemplateRows: "auto 1fr auto", height: "100%", minHeight: 0 }}>
           {/* Identitetsstripe + verktøy */}
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap", padding: "14px 16px", borderBottom: `1px solid ${TL.hair}` }}>
-            <AiMerke navn={`AI om ${fornavn}`} sub="Personlig kontekst" />
+            <AiMerke navn={`Caddie om ${fornavn}`} sub="Personlig kontekst" />
             <div style={{ display: "flex", gap: 8 }}>
               <Knapp ghost icon="download" onClick={eksporter} disabled={tom}>Eksporter</Knapp>
               <Knapp ghost icon="plus" onClick={nySamtale} disabled={sender}>Ny samtale</Knapp>
@@ -181,7 +182,7 @@ export function CoachAIV2({ data }: { data: CoachAIData }) {
                 <TomTilstand
                   icon="sparkles"
                   title="Hva vil du jobbe med i dag?"
-                  sub="Spør om treningsforslag, analyse av siste runder eller hjelp til å lage en plan. AI-coach kjenner profilen din."
+                  sub="Spør om treningsforslag, analyse av siste runder eller hjelp til å lage en plan. Caddie kjenner profilen din."
                 />
                 <ForslagRad items={FORSLAG} onPick={setInput} sentrert />
               </div>
@@ -216,14 +217,14 @@ function ProGate({ mobile }: { mobile: boolean }) {
   return (
     <div data-paper-portal-coach-ai data-paper-slug="playerhq-coach-hub" style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div>
-        <Caps>PlayerHQ · AI-coach</Caps>
+        <Caps>PlayerHQ · Caddie</Caps>
         <div style={{ marginTop: 10 }}>
           <Tittel mobile={mobile} em="Pro.">Krever</Tittel>
         </div>
       </div>
       <Kort tint>
         <p style={{ fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute, lineHeight: 1.6, margin: "0 0 16px" }}>
-          AI-coach er en del av Pro-abonnementet.
+          Caddie er en del av Pro-abonnementet.
         </p>
         <Link href="/portal/meg/abonnement" style={{ textDecoration: "none", alignSelf: "flex-start" }}>
           <Knapp icon="arrow-up-right">Oppgrader til Pro</Knapp>

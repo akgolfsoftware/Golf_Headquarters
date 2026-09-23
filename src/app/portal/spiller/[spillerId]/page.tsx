@@ -174,9 +174,13 @@ export default async function SpillerDetaljPage({ params }: Props) {
     },
   };
 
+  // PS-01 (beslutning 23.09.2026): koblet med AG-03s inspektør — en coach som
+  // kom fra stallen skal tilbake dit, ikke til sin egen PlayerHQ-forside.
+  const tilbakeHref = erCoachMedTilgang ? `/admin/spillere?profil=${spillerId}` : "/portal";
+
   return (
     <V2Shell bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal">Tilbake</TilbakeLenke>
+      <TilbakeLenke href={tilbakeHref}>{erCoachMedTilgang ? "Tilbake til stallen" : "Tilbake"}</TilbakeLenke>
       <SpillerDetaljV2 data={data} />
     </V2Shell>
   );
