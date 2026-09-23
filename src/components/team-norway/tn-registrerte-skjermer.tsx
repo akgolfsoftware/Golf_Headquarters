@@ -40,7 +40,7 @@ import {
   type TnAktivSide,
 } from "./tn-shell";
 import { TnKort, TnPille } from "./core";
-import { TnKnapp, TnMerkelapp, TnNotis, TnSeksjonDS, TnSidehodeDS, TnTabell, TnTallrad, TnUkjent } from "./tn-skjerm";
+import { TnFotnote, TnKnapp, TnMerkelapp, TnNotis, TnSeksjonDS, TnSidehodeDS, TnTabell, TnTallrad, TnUkjent } from "./tn-skjerm";
 
 type Skjerm =
   | "spillere"
@@ -259,11 +259,26 @@ export async function TnRegistrertSkjerm({ skjerm, id, dagId }: { skjerm: Skjerm
 
     const erCollege = skjerm === "college";
     const rader = erCollege ? data.rader.filter((spiller) => /college|university|universitet/i.test(spiller.skole ?? "")) : data.rader;
+    const utenPlan = rader.filter((spiller) => !spiller.aktivPlan).length;
     return (
       <Chrome aktiv={erCollege ? "college" : "spillere"} brukerNavn={brukerNavn} kontekst={data.kontekst}>
-        <TnSidehode overlinje={erCollege ? "Daglig · College" : "Daglig · Spillerutvikling"} tittel={erCollege ? "Collegegruppen" : "Spillere"} ingress={erCollege ? "Collegeinformasjon leses fra spillerprofilen. NCAA-kollisjoner krever fortsatt en egen datamodell." : "Samlet inngang til spillerens plan, tester og sporbare Team Norway-poster."} />
-        {!erCollege ? <TnMetrikkRutenett><TnMetrikk etikett="Spillere" verdi={rader.length} /><TnMetrikk etikett="Med aktiv plan" verdi={rader.filter((spiller) => spiller.aktivPlan).length} tone="green" /><TnMetrikk etikett="Mangler testresultat" verdi={rader.filter((spiller) => spiller.tester === 0).length} tone="amber" /></TnMetrikkRutenett> : null}
-        <TnDataTable caption={erCollege ? "Collegegruppen" : "Team Norway-spillere"} kolonner={erCollege ? [{ key: "spiller", label: "Spiller" }, { key: "skole", label: "College / skole" }, { key: "ar", label: "År" }, { key: "status", label: "Status" }] : [{ key: "spiller", label: "Spiller" }, { key: "hcp", label: "HCP", align: "right" }, { key: "plan", label: "Aktiv plan" }, { key: "tester", label: "Tester", align: "right" }, { key: "status", label: "Status" }]} rader={erCollege ? rader.map((spiller) => ({ spiller: <Link href={`/team-norway/spiller/${spiller.id}/oversikt`} style={{ color: TN.navy700, fontWeight: TN.weight.semibold }}>{spiller.navn}</Link>, skole: spiller.skole ?? "Ikke registrert", ar: spiller.skolear ?? "Ukjent", status: <TnPille tone={brukerStatusTone(spiller.status)}>{brukerStatusOrd(spiller.status)}</TnPille> })) : spillerRader(rader).map((rad) => ({ spiller: rad.spiller, hcp: rad.hcp, plan: rad.plan, tester: rad.tester, status: rad.status }))} empty={erCollege ? "Ingen spillere har registrert college i profilen." : "Ingen aktive spillere i Team Norway-gruppen."} />
+        <TnSidehodeDS overlinje={erCollege ? "Daglig · College" : "Daglig · Spillerutvikling"} tittel={erCollege ? "Collegegruppen" : "Spillere"} ingress={erCollege ? "Collegeinformasjon leses fra spillerprofilen. NCAA-kollisjoner krever fortsatt en egen datamodell." : "Samlet inngang til spillerens plan, tester og sporbare Team Norway-poster."} />
+        {!erCollege ? <TnTallrad tall={[{ verdi: rader.length, etikett: "Spillere" }, { verdi: rader.filter((spiller) => spiller.aktivPlan).length, etikett: "Med aktiv plan" }, { verdi: rader.filter((spiller) => spiller.tester === 0).length, etikett: "Mangler testresultat" }]} /> : null}
+        <TnSeksjonDS tittel={erCollege ? "Spillere med college" : "Team Norway-spillere"} antall={erCollege ? `${rader.length} av ${data.rader.length}` : `${rader.length} i gruppen`}>
+          {rader.length === 0 ? <TnUkjent>{erCollege ? "Ingen spillere har registrert college i profilen." : "Ingen aktive spillere i Team Norway-gruppen."}</TnUkjent> : erCollege ? (
+            <TnTabell caption="Collegegruppen" kolonner={[{ key: "spiller", label: "Spiller" }, { key: "skole", label: "College / skole" }, { key: "ar", label: "År" }, { key: "status", label: "Status" }]} rader={rader.map((spiller) => ({ spiller: <Link href={`/team-norway/spiller/${spiller.id}/oversikt`}>{spiller.navn}</Link>, skole: spiller.skole ?? <TnUkjent>Ikke registrert</TnUkjent>, ar: spiller.skolear ?? <TnUkjent />, status: <TnMerkelapp variant={spiller.status === "AKTIV" ? "ok" : undefined}>{brukerStatusOrd(spiller.status)}</TnMerkelapp> }))} />
+          ) : (
+            <TnTabell caption="Team Norway-spillere" kolonner={[{ key: "spiller", label: "Spiller" }, { key: "hcp", label: "HCP", tall: true }, { key: "plan", label: "Aktiv plan" }, { key: "tester", label: "Tester", tall: true }, { key: "status", label: "Status" }]} rader={rader.map((spiller) => ({ spiller: <Link href={`/team-norway/spiller/${spiller.id}/oversikt`}>{spiller.navn}</Link>, hcp: spiller.hcp === null ? <TnUkjent /> : tall.format(spiller.hcp), plan: spiller.aktivPlan ?? <TnUkjent>Ingen aktiv plan</TnUkjent>, tester: spiller.tester, status: <TnMerkelapp variant={spiller.status === "AKTIV" ? "ok" : undefined}>{brukerStatusOrd(spiller.status)}</TnMerkelapp> }))} />
+          )}
+        </TnSeksjonDS>
+        {erCollege ? (
+          <>
+            <TnNotis tittel="To ord, to betydninger.">«Ikke registrert» betyr at feltet står tomt i profilen. «Ukjent» betyr at vi ikke vet. De blandes aldri — det er appens egne ord, og de skal bety det samme her.</TnNotis>
+            <TnNotis tittel="Ikke bygget ennå.">Kollisjoner mot NCAA-kalenderen vises ikke her. Det krever en egen datamodell for terminlister, og den finnes ikke.</TnNotis>
+          </>
+        ) : utenPlan > 0 ? (
+          <TnFotnote>{utenPlan} {utenPlan === 1 ? "spiller står" : "spillere står"} uten aktiv plan. Det er ikke en feil i listen — det er {utenPlan === 1 ? "en spiller som ikke har" : `${utenPlan} spillere som ikke har`} kommet i gang. Listen sier det, og konkluderer ikke.</TnFotnote>
+        ) : null}
       </Chrome>
     );
   }
