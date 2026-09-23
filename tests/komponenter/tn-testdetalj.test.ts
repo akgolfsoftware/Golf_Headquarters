@@ -24,6 +24,8 @@ import type { TnSpillerTilgang } from "@/lib/domain/tn-arbeidsflate";
 const CORE_CSS = new URL("../../src/components/team-norway/tn-kontroller.module.css", import.meta.url).pathname;
 const LOGO_PNG = new URL("../../designsystem/team-norway/assets/logo/team-norway-golf.png", import.meta.url).pathname;
 mock.module(CORE_CSS, { defaultExport: {} });
+const SKJERM_CSS = new URL("../../src/components/team-norway/tn-skjerm.module.css", import.meta.url).pathname;
+mock.module(SKJERM_CSS, { defaultExport: {} });
 const LOGO_HVIT_PNG = new URL("../../designsystem/team-norway/assets/logo/team-norway-golf-knockout-white.png", import.meta.url).pathname;
 mock.module(LOGO_PNG, { defaultExport: { src: "/logo.png", width: 1, height: 1 } });
 mock.module(LOGO_HVIT_PNG, { defaultExport: { src: "/logo-hvit.png", width: 1, height: 1 } });
