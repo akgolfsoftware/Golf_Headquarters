@@ -1,5 +1,5 @@
 /**
- * AI Coach — /portal/meg/innstillinger/ai-coach — B-pakke.
+ * Caddie-innstillinger — /portal/meg/innstillinger/ai-coach — B-pakke.
  * Oversikt først, én grønn CTA (disabled til V2), vei videre til hjelp.
  */
 
@@ -14,9 +14,9 @@ import { InnstillingerHode } from "@/components/portal/v2/InnstillingerHode";
 export const dynamic = "force-dynamic";
 
 const FAQ = [
-  { q: "Hva kan AI-coachen ikke gjøre?", a: "Den erstatter ikke coach. Den foreslår basert på dine tall — du bestemmer." },
+  { q: "Hva kan Caddie ikke gjøre?", a: "Den erstatter ikke coach. Den foreslår basert på dine tall — du bestemmer." },
   { q: "Er AI-data privat?", a: "Ja. Dataene dine brukes bare til din egen assistent, ikke til å trene andres modell." },
-  { q: "Erstatter AI-coachen Anders?", a: "Nei. Den er et ekstra lag mellom øktene — coach-beslutninger står fast." },
+  { q: "Erstatter Caddie Anders?", a: "Nei. Den er et ekstra lag mellom øktene — coach-beslutninger står fast." },
 ] as const;
 
 const FEATURES = [
@@ -42,7 +42,7 @@ export default async function AiCoachPage() {
       }}
     >
       <InnstillingerHode
-        tittel="AI-coach"
+        tittel="Caddie"
         undertekst="Innstillinger"
         tilbakeHref="/portal/meg/innstillinger"
         action={<StatusPill tone="info">Kommer snart</StatusPill>}
@@ -69,7 +69,7 @@ export default async function AiCoachPage() {
           </span>
           <div>
             <div style={{ fontFamily: TL.font.sans, fontSize: 15, fontWeight: 700, color: TL.text }}>
-              Hva AI-coach gjør
+              Hva Caddie gjør
             </div>
             <div style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, marginTop: 2 }}>
               Personlig · datadrevet · coach-assistent
@@ -107,7 +107,7 @@ export default async function AiCoachPage() {
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         <div style={{ opacity: 0.45, pointerEvents: "none" }} aria-disabled="true">
           <CTAPill icon="sparkles" full>
-            Aktiver AI-coach (kommer)
+            Aktiver Caddie (kommer)
           </CTAPill>
         </div>
         <Link href="/portal/meg/help" style={{ textDecoration: "none", textAlign: "center" }}>

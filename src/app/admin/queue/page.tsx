@@ -2,12 +2,11 @@
  * AgencyOS Oppfølgingskø — v2 (retning C «Presis»). Coachens kontrolltårn:
  * "Hvem trenger en samtale denne uka?" Rekomponert fra legacy (admin/
  * (legacy)/queue): KPI-strip, aktivitets-stripe, 4-kolonners kanban
- * (Risiko/Watch/Sjekk inn/Løst) med signal-kort per spiller.
+ * (Risiko/Følg med/Sjekk inn/Løst) med signal-kort per spiller.
  *
  * All klassifiserings-logikk beholdt 1:1 (aktiv plan, inaktivitet,
- * SG-fall). Ekte Prisma. Ærlig tomtilstand per kolonne.
- * NB: "Løst"-kolonnen er fortsatt tom-placeholder inntil en
- * CoachingTask-modell finnes (arvet TODO, ikke min endring).
+ * SG-fall). Ekte Prisma. «Løst» er FollowUpCase (beslutning 23.09.2026,
+ * AG-03b) — satt av coach med ett trykk, ingen tidsbegrensning.
  */
 
 import Link from "next/link";
@@ -85,20 +84,17 @@ export default async function OppfolgingsKoPage() {
     else check.push(kort);
   }
 
-  // I5: coachens manuelle overstyringer siste 7 dager (Signal
-  // OPPFOLGING_STATUS — skrevet når et kort flyttes til en annen kolonne).
-  const sjuDager = new Date();
-  sjuDager.setDate(sjuDager.getDate() - 7);
-  const overstyringer = await prisma.signal.findMany({
-    where: { kind: "OPPFOLGING_STATUS", computedAt: { gte: sjuDager } },
-    orderBy: { computedAt: "desc" },
-    select: { userId: true, payload: true },
+  // I5: coachens manuelle overstyringer (FollowUpCase — én rad per spiller,
+  // ingen tidsbegrensning; beslutning 23.09.2026, AG-03b).
+  const overstyringer = await prisma.followUpCase.findMany({
+    where: { userId: { in: players.map((p) => p.id) } },
+    select: { userId: true, status: true },
   });
   const overstyrt = new Map<string, Status>();
   for (const o of overstyringer) {
-    if (overstyrt.has(o.userId)) continue; // nyeste vinner
-    const st = (o.payload as { status?: string } | null)?.status;
-    if (st === "risk" || st === "watch" || st === "check" || st === "ok") overstyrt.set(o.userId, st);
+    if (o.status === "risk" || o.status === "watch" || o.status === "check" || o.status === "ok") {
+      overstyrt.set(o.userId, o.status);
+    }
   }
 
   const ok: Kort_[] = [];
@@ -118,7 +114,7 @@ export default async function OppfolgingsKoPage() {
 
   const kolonner: { status: Status; tittel: string; beskrivelse: string; kort: Kort_[] }[] = [
     { status: "risk", tittel: "Risiko", beskrivelse: "Krever en samtale innen 48 timer.", kort: risk },
-    { status: "watch", tittel: "Watch", beskrivelse: "Trender feil retning — følg med.", kort: watch },
+    { status: "watch", tittel: "Følg med", beskrivelse: "Trender feil retning — følg med.", kort: watch },
     { status: "check", tittel: "Sjekk inn", beskrivelse: "Lett oppdatering — kjapp melding holder.", kort: check },
     { status: "ok", tittel: "Løst · siste 7d", beskrivelse: "Tett-tett. Du kan markere «ikke vis» per sak.", kort: ok },
   ];
@@ -155,7 +151,7 @@ export default async function OppfolgingsKoPage() {
         {/* KPI-strip */}
         <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: 16 }}>
           <KpiFlis label="Risiko" value={risk.length} delta="krever samtale < 48 t" />
-          <KpiFlis label="Watch" value={watch.length} delta="trender feil retning" />
+          <KpiFlis label="Følg med" value={watch.length} delta="trender feil retning" />
           <KpiFlis label="Sjekk inn" value={check.length} delta="lett oppdatering" />
           <KpiFlis label="Løst · 7d" value={ok.length} delta="markert ferdig" />
         </div>
