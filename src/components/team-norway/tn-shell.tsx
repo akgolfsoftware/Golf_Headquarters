@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 
 import { TnKort, TnPille, TnRail, type TnMenyPunkt, type TnPilleTone } from "./core";
 import { TnRailMobil } from "./rail-mobil";
+import { TnSeksjonDS, TnSidehodeDS } from "./tn-skjerm";
 import { TN } from "@/lib/v2/team-norway";
 
 /**
@@ -152,27 +153,8 @@ export function TnShell({
   );
 }
 
-export function TnSidehode({
-  overlinje,
-  tittel,
-  ingress,
-  handling,
-}: {
-  overlinje: string;
-  tittel: string;
-  ingress: string;
-  handling?: ReactNode;
-}) {
-  return (
-    <header style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 20, flexWrap: "wrap" }}>
-      <div style={{ minWidth: 0 }}>
-        <p style={{ margin: 0, fontFamily: TN.font.mono, fontSize: TN.text.micro, letterSpacing: TN.tracking.eyebrow, textTransform: "uppercase", color: TN.textSecondary }}>{overlinje}</p>
-        <h1 style={{ margin: "6px 0 0", fontFamily: TN.font.display, fontSize: "clamp(1.75rem, 4vw, 2.5rem)", lineHeight: TN.leading.tight, letterSpacing: TN.tracking.heading, color: TN.navy900 }}>{tittel}</h1>
-        <p style={{ margin: "10px 0 0", maxWidth: 720, color: TN.textSecondary, lineHeight: TN.leading.normal }}>{ingress}</p>
-      </div>
-      {handling}
-    </header>
-  );
+export function TnSidehode({ overlinje, tittel, ingress, handling }: { overlinje: string; tittel: string; ingress: string; handling?: ReactNode }) {
+  return <TnSidehodeDS overlinje={overlinje} tittel={tittel} ingress={ingress} handling={handling} />;
 }
 
 export function TnMetrikk({ etikett, verdi, forklaring, tone = "navy" }: { etikett: string; verdi: ReactNode; forklaring?: string; tone?: TnPilleTone }) {
@@ -190,15 +172,7 @@ export function TnMetrikkRutenett({ children }: { children: ReactNode }) {
 }
 
 export function TnSeksjon({ tittel, forklaring, children }: { tittel: string; forklaring?: string; children: ReactNode }) {
-  return (
-    <section style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-      <div>
-        <h2 style={{ margin: 0, color: TN.navy900, fontSize: TN.text.h3, letterSpacing: TN.tracking.heading }}>{tittel}</h2>
-        {forklaring ? <p style={{ margin: "5px 0 0", color: TN.textSecondary, fontSize: TN.text.sm, lineHeight: TN.leading.normal }}>{forklaring}</p> : null}
-      </div>
-      {children}
-    </section>
-  );
+  return <TnSeksjonDS tittel={tittel} forklaring={forklaring}>{children}</TnSeksjonDS>;
 }
 
 export function TnTomtilstand({ tittel, tekst, handling }: { tittel: string; tekst: string; handling?: ReactNode }) {

@@ -40,6 +40,7 @@ import {
   type TnAktivSide,
 } from "./tn-shell";
 import { TnKort, TnPille } from "./core";
+import { TnKnapp, TnNotis, TnSeksjonDS, TnSidehodeDS, TnTabell, TnTallrad, TnUkjent } from "./tn-skjerm";
 
 type Skjerm =
   | "spillere"
@@ -61,6 +62,7 @@ type Skjerm =
 
 const dato = new Intl.DateTimeFormat("nb-NO", { day: "2-digit", month: "short", year: "numeric", timeZone: "Europe/Oslo" });
 const datoTid = new Intl.DateTimeFormat("nb-NO", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Oslo" });
+const datoNumerisk = new Intl.DateTimeFormat("nb-NO", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "Europe/Oslo" });
 const tall = new Intl.NumberFormat("nb-NO", { maximumFractionDigits: 1 });
 
 function Chrome({ aktiv, brukerNavn, kontekst, children }: { aktiv: TnAktivSide; brukerNavn: string; kontekst: TnArbeidskontekst; children: ReactNode }) {
@@ -148,9 +150,28 @@ export async function TnRegistrertSkjerm({ skjerm, id, dagId }: { skjerm: Skjerm
     }
 
     const testdager = await hentTnTestdager(bruker);
+    const ko = [...spillerside.rader].sort((a, b) => a.tester - b.tester || a.navn.localeCompare(b.navn, "nb-NO"));
+    const utenResultat = ko.filter((r) => r.tester === 0).length;
     return (
       <Chrome aktiv="fellestesting" brukerNavn={brukerNavn} kontekst={spillerside.kontekst}>
-        <TnSidehode overlinje="Daglig · Test" tittel="Fellestesting" ingress="Opprett en testdag med valgt protokoll og deltakere, eller fortsett en påbegynt." handling={<TnLenke href="/team-norway/protokoller">Se protokoller</TnLenke>} />
+        <TnSidehodeDS overlinje="Daglig · Test" tittel="Fellestesting" ingress="Velg spiller og protokoll. Selve skåringen bruker AK Golf HQs versjonerte testmotor." handling={<TnKnapp primar href="/team-norway/protokoller">Velg protokoll</TnKnapp>} />
+        <TnTallrad tall={[
+          { verdi: spillerside.rader.length, etikett: "Spillere" },
+          { verdi: protokoller.length, etikett: "Protokoller" },
+          { verdi: spillerside.rader.reduce((sum, r) => sum + r.tester, 0), etikett: "Registrerte tester" },
+        ]} />
+        <TnNotis tittel="Ukjent er ukjent.">En spiller uten resultat står som ukjent, aldri som null. Null er en måling; ukjent er fravær av måling.</TnNotis>
+        <TnSeksjonDS tittel="Spillerkø" antall={`${utenResultat} uten resultat`}>
+          <TnTabell
+            caption="Spillerkø for fellestesting"
+            kolonner={[{ key: "spiller", label: "Spiller" }, { key: "resultater", label: "Resultater", tall: true }, { key: "siste", label: "Siste test" }]}
+            rader={ko.map((r) => ({
+              spiller: <Link href={`/team-norway/spiller/${r.id}/oversikt`}>{r.navn}</Link>,
+              resultater: r.tester,
+              siste: r.sisteTest ? datoNumerisk.format(r.sisteTest) : <TnUkjent />,
+            }))}
+          />
+        </TnSeksjonDS>
         {testdager && testdager.dager.length > 0 && (
           <TnSeksjon tittel="Testdager">
             <TnDataTable

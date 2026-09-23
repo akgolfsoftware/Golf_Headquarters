@@ -1,0 +1,151 @@
+/* Innholdsklasser fra Claude Design-prosjektet «Team Norway App» (app/skall.css).
+   Kun tokens fra src/styles/team-norway-tokens.css. Ingen sidelengs rulling:
+   alt brekker om, tabellen stables til kort under 900 px. Hjørner 0 · 2 · 4,
+   ingen skygger. Avstand mellom blokkene eies av TnShell (gap), ikke av klassene. */
+
+.sidehode {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding-bottom: 26px;
+  border-bottom: 1px solid var(--tn-border-subtle);
+}
+.sidehodeTekst { min-width: 0; flex: 1 1 320px; }
+.overlinje {
+  margin: 0;
+  font-family: var(--tn-font-display);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--tn-text-secondary);
+}
+.tittel {
+  margin: 12px 0 0;
+  font-family: var(--tn-font-display);
+  font-weight: var(--tn-weight-light);
+  font-size: clamp(26px, 5vw, 36px);
+  line-height: 1.1;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--tn-text-primary);
+}
+.ingress {
+  margin: 12px 0 0;
+  max-width: 64ch;
+  font-size: 15px;
+  line-height: var(--tn-leading-normal);
+  color: var(--tn-text-secondary);
+}
+.handling { display: flex; gap: 10px; flex-wrap: wrap; }
+
+.knapp {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1px solid var(--tn-navy-900);
+  border-radius: var(--tn-radius-sm);
+  background: var(--tn-white);
+  color: var(--tn-navy-900);
+  font-family: var(--tn-font-body);
+  font-size: 14px;
+  font-weight: var(--tn-weight-bold);
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.knapp:hover { background: var(--tn-navy-50); }
+.knappPrimar { background: var(--tn-navy-900); color: var(--tn-white); }
+.knappPrimar:hover { background: var(--tn-navy-800); }
+.knapp:focus-visible { outline: 2px solid var(--tn-red-600); outline-offset: 2px; }
+
+.tallrad {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+  gap: 1px;
+  background: var(--tn-border-subtle);
+  border: 1px solid var(--tn-border-subtle);
+}
+.tall { background: var(--tn-white); padding: 20px 22px; min-width: 0; }
+.tallVerdi {
+  font-family: var(--tn-font-mono);
+  font-size: 28px;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  color: var(--tn-navy-900);
+}
+.tallEtikett { margin-top: 6px; font-size: 13px; color: var(--tn-text-secondary); overflow-wrap: anywhere; }
+
+.notis {
+  margin: 0;
+  padding: 16px 18px;
+  border: 1px solid var(--tn-border-subtle);
+  border-left: 3px solid var(--tn-navy-900);
+  background: var(--tn-ink-50);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.seksjon { display: flex; flex-direction: column; gap: 12px; min-width: 0; margin-top: 12px; }
+.seksjonHode {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--tn-navy-900);
+}
+.seksjonHode h2 {
+  margin: 0;
+  font-family: var(--tn-font-display);
+  font-weight: var(--tn-weight-regular);
+  font-size: 15px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--tn-navy-900);
+}
+.seksjonAntall { font-family: var(--tn-font-mono); font-size: 12px; color: var(--tn-text-secondary); }
+.seksjonForklaring { margin: 0; font-size: 14px; line-height: 1.6; color: var(--tn-text-secondary); }
+
+.tabell { width: 100%; border-collapse: collapse; font-size: 14px; }
+.tabell caption { text-align: left; font-size: 13px; color: var(--tn-text-secondary); padding-bottom: 10px; }
+.tabell th, .tabell td {
+  text-align: left;
+  padding: 12px 14px 12px 0;
+  border-bottom: 1px solid var(--tn-border-subtle);
+  overflow-wrap: anywhere;
+}
+.tabell th {
+  font-family: var(--tn-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--tn-text-secondary);
+  font-weight: var(--tn-weight-regular);
+}
+.tabell a { color: var(--tn-navy-900); font-weight: var(--tn-weight-semibold); }
+.tabell a:hover { color: var(--tn-red-700); }
+.tallKolonne { text-align: right; font-family: var(--tn-font-mono); font-variant-numeric: tabular-nums; }
+.ukjent { color: var(--tn-text-secondary); }
+
+@media (max-width: 900px) {
+  .handling { width: 100%; }
+  .handling .knapp { flex: 1 1 auto; }
+  .tabell thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .tabell tr { display: block; border-bottom: 1px solid var(--tn-border-subtle); padding: 12px 0; }
+  .tabell td { display: flex; gap: 12px; border: 0; padding: 4px 0; }
+  .tabell td::before {
+    content: attr(data-etikett);
+    flex: 0 0 42%;
+    font-family: var(--tn-font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--tn-text-secondary);
+  }
+  .tallKolonne { text-align: left; }
+}
