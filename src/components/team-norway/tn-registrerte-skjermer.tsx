@@ -280,7 +280,7 @@ export async function TnRegistrertSkjerm({ skjerm, id, dagId }: { skjerm: Skjerm
             <TnTabell caption="Resultatgrunnlag" kolonner={[{ key: "spiller", label: "Spiller" }, { key: "starter", label: "Starter", tall: true }, { key: "plassering", label: "Snittplassering", tall: true }, { key: "score", label: "Brutto score", tall: true }, { key: "tester", label: "Tester", tall: true }]} rader={data.rader.map((spiller) => ({ spiller: spiller.navn, starter: spiller.starter, plassering: spiller.snittplassering === null ? <TnUkjent /> : tall.format(spiller.snittplassering), score: spiller.bruttoScore === null ? <TnUkjent /> : tall.format(spiller.bruttoScore), tester: spiller.tester }))} />
           )}
         </TnSeksjonDS>
-        {utenStarter > 0 ? <TnFotnote>{utenStarter} uten starter. Spillere uten starter står nederst fordi de ikke har registrerte resultater, ikke fordi de er dårligst — og «Ukjent» betyr akkurat det.</TnFotnote> : null}
+        {utenStarter > 0 ? <TnFotnote>Spillere uten starter ({utenStarter}) står nederst fordi de ikke har registrerte resultater, ikke fordi de er dårligst — og «Ukjent» betyr akkurat det.</TnFotnote> : null}
       </Chrome>
     );
   }
@@ -292,8 +292,24 @@ export async function TnRegistrertSkjerm({ skjerm, id, dagId }: { skjerm: Skjerm
     if (skjerm === "samlingsdetalj" && !valgt) notFound();
     return (
       <Chrome aktiv="samlinger" brukerNavn={brukerNavn} kontekst={data.kontekst}>
-        <TnSidehode overlinje="Daglig · Samlinger" tittel={valgt?.name ?? "Samlingspunkt"} ingress={valgt ? `${dato.format(valgt.startDate)}–${dato.format(valgt.endDate)}${valgt.location ? ` · ${valgt.location}` : ""}` : "Samlinger fra AK Golf HQs spillerplaner, samlet på gruppenivå."} handling={valgt ? <TnLenke href="/team-norway/samlinger">Alle samlinger</TnLenke> : undefined} />
-        {valgt ? <><TnMetrikkRutenett><TnMetrikk etikett="Deltakere" verdi={valgt.antallDeltakere} /><TnMetrikk etikett="Fra" verdi={dato.format(valgt.startDate)} /><TnMetrikk etikett="Til" verdi={dato.format(valgt.endDate)} /></TnMetrikkRutenett><TnKort><p style={{ margin: 0, color: TN.textSecondary, lineHeight: TN.leading.normal }}>{valgt.notes ?? "Ingen programdetaljer er registrert på samlingen."}</p></TnKort></> : <TnDataTable caption="Samlinger" kolonner={[{ key: "samling", label: "Samling" }, { key: "periode", label: "Periode" }, { key: "sted", label: "Sted" }, { key: "deltakere", label: "Deltakere", align: "right" }]} rader={data.samlinger.map((samling) => ({ samling: <Link href={`/team-norway/samlinger/${samling.id}`} style={{ color: TN.navy700, fontWeight: TN.weight.semibold }}>{samling.name}</Link>, periode: `${dato.format(samling.startDate)}–${dato.format(samling.endDate)}`, sted: samling.location ?? "Ikke registrert", deltakere: samling.antallDeltakere }))} empty="Ingen samlinger er registrert for Team Norway-spillerne." />}
+        {valgt ? (
+          <>
+            <TnSidehode overlinje="Daglig · Samlinger" tittel={valgt.name} ingress={`${dato.format(valgt.startDate)}–${dato.format(valgt.endDate)}${valgt.location ? ` · ${valgt.location}` : ""}`} handling={<TnLenke href="/team-norway/samlinger">Alle samlinger</TnLenke>} />
+            <TnMetrikkRutenett><TnMetrikk etikett="Deltakere" verdi={valgt.antallDeltakere} /><TnMetrikk etikett="Fra" verdi={dato.format(valgt.startDate)} /><TnMetrikk etikett="Til" verdi={dato.format(valgt.endDate)} /></TnMetrikkRutenett>
+            <TnKort><p style={{ margin: 0, color: TN.textSecondary, lineHeight: TN.leading.normal }}>{valgt.notes ?? "Ingen programdetaljer er registrert på samlingen."}</p></TnKort>
+          </>
+        ) : (
+          <>
+            <TnSidehodeDS overlinje="Daglig · Samlinger" tittel="Samlingspunkt" ingress="Samlinger fra AK Golf HQs spillerplaner, samlet på gruppenivå." />
+            <TnTallrad tall={[{ verdi: data.samlinger.length, etikett: "Planlagte samlinger" }, { verdi: data.samlinger.reduce((sum, samling) => sum + samling.antallDeltakere, 0), etikett: "Påmeldinger totalt" }, { verdi: data.samlinger.length === 0 ? <TnUkjent /> : Math.min(...data.samlinger.map((samling) => samling.antallDeltakere)), etikett: "Færrest på én samling" }]} />
+            <TnSeksjonDS tittel="Samlinger" antall={`${data.samlinger.length} planlagte`}>
+              {data.samlinger.length === 0 ? <TnUkjent>Ingen samlinger er registrert for Team Norway-spillerne.</TnUkjent> : (
+                <TnTabell caption="Samlinger" kolonner={[{ key: "samling", label: "Samling" }, { key: "periode", label: "Periode" }, { key: "sted", label: "Sted" }, { key: "deltakere", label: "Deltakere", tall: true }]} rader={data.samlinger.map((samling) => ({ samling: <Link href={`/team-norway/samlinger/${samling.id}`}>{samling.name}</Link>, periode: `${datoNumerisk.format(samling.startDate)}–${datoNumerisk.format(samling.endDate)}`, sted: samling.location ?? <TnUkjent>Ikke registrert</TnUkjent>, deltakere: samling.antallDeltakere }))} />
+              )}
+            </TnSeksjonDS>
+            {data.samlinger.some((samling) => !samling.location) ? <TnFotnote>Sted som ikke er bekreftet står som ikke registrert — appens egne ord. Manglende anlegg skal være synlig her, ikke først når noen spør.</TnFotnote> : null}
+          </>
+        )}
       </Chrome>
     );
   }
