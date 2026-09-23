@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { brukerStatusOrd, brukerStatusTone } from "@/lib/domain/bruker-status";
+import { brukerStatusOrd } from "@/lib/domain/bruker-status";
 import {
   hentTnArbeidskontekst,
   hentTnManedsplan,
@@ -19,7 +19,6 @@ import {
   hentTnTrenere,
   hentTnTurneringer,
   type TnArbeidskontekst,
-  type TnSpillerRad,
 } from "@/lib/domain/tn-arbeidsflate";
 import { TN_CATALOG } from "@/lib/portal-tester/tn-catalog";
 import { TN } from "@/lib/v2/team-norway";
@@ -40,7 +39,7 @@ import {
   type TnAktivSide,
 } from "./tn-shell";
 import { TnKort, TnPille } from "./core";
-import { TnFotnote, TnKnapp, TnMerkelapp, TnNotis, TnSeksjonDS, TnSidehodeDS, TnTabell, TnTallrad, TnUkjent } from "./tn-skjerm";
+import { TnFotnote, TnKnapp, TnMerkelapp, TnNotis, TnPanelrad, TnSeksjonDS, TnSidehodeDS, TnTabell, TnTallrad, TnUkjent } from "./tn-skjerm";
 
 type Skjerm =
   | "spillere"
@@ -98,17 +97,6 @@ const UTTAKSKRITERIER = [
     kilde: "Kilde: ingen — krever godkjent vurderingsmodell",
   },
 ] as const;
-
-function spillerRader(rader: TnSpillerRad[]) {
-  return rader.map((spiller) => ({
-    spiller: <Link href={`/team-norway/spiller/${spiller.id}/oversikt`} style={{ color: TN.navy700, fontWeight: TN.weight.semibold }}>{spiller.navn}</Link>,
-    hcp: spiller.hcp === null ? "Ukjent" : tall.format(spiller.hcp),
-    plan: spiller.aktivPlan ?? "Ingen aktiv plan",
-    tester: spiller.tester,
-    siste: spiller.sisteTest ? dato.format(spiller.sisteTest) : "Ingen resultater",
-    status: <TnPille tone={brukerStatusTone(spiller.status)}>{brukerStatusOrd(spiller.status)}</TnPille>,
-  }));
-}
 
 export async function TnRegistrertSkjerm({ skjerm, id, dagId }: { skjerm: Skjerm; id?: string; dagId?: string }) {
   const bruker = await requirePortalUser({ kreverTilgang: "INGEN" });
@@ -238,21 +226,17 @@ export async function TnRegistrertSkjerm({ skjerm, id, dagId }: { skjerm: Skjerm
     if (skjerm === "uttak") {
       return (
         <Chrome aktiv="uttak" brukerNavn={brukerNavn} kontekst={data.kontekst}>
-          <TnSidehode overlinje="Uttak · Beslutningsstøtte" tittel="Uttaksliste" ingress="Systemet samler grunnlaget, men konkluderer aldri automatisk hvem som skal tas ut." />
-          <TnTomtilstand tittel="Tre kriterier skal vurderes hver for seg" tekst="Resultater, prestasjoner og prosess/adferd skal ikke summeres til én automatisk uttaksscore. En egen, sporbar vurderingsmodell må godkjennes før vurderinger kan lagres." />
-          <TnDataTable caption="Uttaksgrunnlag" kolonner={[{ key: "spiller", label: "Spiller" }, { key: "plan", label: "Plan" }, { key: "tester", label: "Tester", align: "right" }, { key: "status", label: "Status" }]} rader={spillerRader(data.rader).map((rad) => ({ spiller: rad.spiller, plan: rad.plan, tester: rad.tester, status: rad.status }))} empty="Ingen spillere er tilgjengelige for vurdering." />
-          <TnSeksjon tittel="De tre kriteriene" forklaring="Vurderes hver for seg. Skjermen viser tre kolonner med grunnlag og ingen fjerde kolonne med sum — en samlescore ville gjort et trenerskjønn om til et tall ingen kan gå god for.">
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 260px), 1fr))", gap: 16 }}>
-              {UTTAKSKRITERIER.map((kriterium) => (
-                <TnKort key={kriterium.tittel}>
-                  <p style={{ margin: 0, fontFamily: TN.font.mono, fontSize: TN.text.micro, letterSpacing: TN.tracking.eyebrow, textTransform: "uppercase", color: TN.textSecondary }}>{kriterium.nummer}</p>
-                  <h3 style={{ margin: "10px 0 0", color: TN.navy900, fontSize: TN.text.h3, letterSpacing: TN.tracking.heading }}>{kriterium.tittel}</h3>
-                  <p style={{ margin: "10px 0 0", color: TN.textSecondary, fontSize: TN.text.sm, lineHeight: TN.leading.normal }}>{kriterium.tekst}</p>
-                  <p style={{ margin: "16px 0 0", paddingTop: 14, borderTop: `1px solid ${TN.borderSubtle}`, fontFamily: TN.font.mono, fontSize: TN.text.micro, color: TN.textSecondary }}>{kriterium.kilde}</p>
-                </TnKort>
-              ))}
-            </div>
-          </TnSeksjon>
+          <TnSidehodeDS overlinje="Uttak · Beslutningsstøtte" tittel="Uttaksliste" ingress="Systemet samler grunnlaget, men konkluderer aldri automatisk hvem som skal tas ut." />
+          <TnNotis tittel="Tre kriterier skal vurderes hver for seg.">Resultater, prestasjoner og prosess/adferd skal ikke summeres til én automatisk uttaksscore. En egen, sporbar vurderingsmodell må godkjennes før vurderinger kan lagres.</TnNotis>
+          <TnSeksjonDS tittel="Uttaksgrunnlag" antall={`${data.rader.length} spillere`}>
+            {data.rader.length === 0 ? <TnUkjent>Ingen spillere er tilgjengelige for vurdering.</TnUkjent> : (
+              <TnTabell caption="Uttaksgrunnlag" kolonner={[{ key: "spiller", label: "Spiller" }, { key: "plan", label: "Plan" }, { key: "tester", label: "Tester", tall: true }, { key: "status", label: "Status" }]} rader={data.rader.map((spiller) => ({ spiller: <Link href={`/team-norway/spiller/${spiller.id}/oversikt`}>{spiller.navn}</Link>, plan: spiller.aktivPlan ?? <TnUkjent>Ingen aktiv plan</TnUkjent>, tester: spiller.tester, status: <TnMerkelapp variant={spiller.status === "AKTIV" ? "ok" : undefined}>{brukerStatusOrd(spiller.status)}</TnMerkelapp> }))} />
+            )}
+          </TnSeksjonDS>
+          <TnSeksjonDS tittel="De tre kriteriene" antall="Vurderes hver for seg">
+            <TnPanelrad paneler={UTTAKSKRITERIER.map((k) => ({ hode: k.nummer, tittel: k.tittel, tekst: k.tekst, kilde: k.kilde }))} />
+          </TnSeksjonDS>
+          <TnFotnote>Skjermen viser tre kolonner med grunnlag og ingen fjerde kolonne med sum. Det er med vilje: en samlescore ville gjort et trenerskjønn om til et tall noen kunne peke på uten å kunne gå god for det.</TnFotnote>
         </Chrome>
       );
     }
