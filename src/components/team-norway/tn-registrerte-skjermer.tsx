@@ -270,11 +270,17 @@ export async function TnRegistrertSkjerm({ skjerm, id, dagId }: { skjerm: Skjerm
   if (skjerm === "rangliste") {
     const data = await hentTnRangliste(bruker);
     if (!data || data.kontekst.erSpiller) notFound();
+    const utenStarter = data.rader.filter((spiller) => spiller.starter === 0).length;
     return (
       <Chrome aktiv="rangliste" brukerNavn={brukerNavn} kontekst={data.kontekst}>
-        <TnSidehode overlinje="Uttak · Resultatgrunnlag" tittel="Rangliste" ingress="Viser registrerte bruttoresultater og plasseringer. Manglende data vises som ukjent og påvirker ikke uttak automatisk." />
-        <TnTomtilstand tittel="Kun brutto" tekst="Alle tall er ekte slag. Snittplassering og brutto score er gjennomsnitt av de registrerte startene — ikke en rangering systemet har regnet seg fram til, og ikke et uttak. En spiller uten starter står nederst fordi ingenting er registrert, ikke fordi hun er dårligst." />
-        <TnDataTable caption="Resultatgrunnlag" kolonner={[{ key: "spiller", label: "Spiller" }, { key: "starter", label: "Starter", align: "right" }, { key: "plassering", label: "Snittplassering", align: "right" }, { key: "score", label: "Brutto score", align: "right" }, { key: "tester", label: "Tester", align: "right" }]} rader={data.rader.map((spiller) => ({ spiller: spiller.navn, starter: spiller.starter, plassering: spiller.snittplassering === null ? "Ukjent" : tall.format(spiller.snittplassering), score: spiller.bruttoScore === null ? "Ukjent" : tall.format(spiller.bruttoScore), tester: spiller.tester }))} empty="Ingen turneringsresultater er registrert for gruppen." />
+        <TnSidehodeDS overlinje="Uttak · Resultatgrunnlag" tittel="Rangliste" ingress="Viser registrerte bruttoresultater og plasseringer. Manglende data vises som ukjent og påvirker ikke uttak automatisk." />
+        <TnNotis tittel="Kun brutto.">Alle tall er ekte slag. Snittplassering og brutto score er gjennomsnitt av de registrerte startene — ikke en rangering systemet har regnet seg fram til, og ikke et uttak.</TnNotis>
+        <TnSeksjonDS tittel="Resultatgrunnlag" antall={`${data.rader.length} spillere · ${utenStarter} uten starter`}>
+          {data.rader.length === 0 ? <TnUkjent>Ingen turneringsresultater er registrert for gruppen.</TnUkjent> : (
+            <TnTabell caption="Resultatgrunnlag" kolonner={[{ key: "spiller", label: "Spiller" }, { key: "starter", label: "Starter", tall: true }, { key: "plassering", label: "Snittplassering", tall: true }, { key: "score", label: "Brutto score", tall: true }, { key: "tester", label: "Tester", tall: true }]} rader={data.rader.map((spiller) => ({ spiller: spiller.navn, starter: spiller.starter, plassering: spiller.snittplassering === null ? <TnUkjent /> : tall.format(spiller.snittplassering), score: spiller.bruttoScore === null ? <TnUkjent /> : tall.format(spiller.bruttoScore), tester: spiller.tester }))} />
+          )}
+        </TnSeksjonDS>
+        {utenStarter > 0 ? <TnFotnote>{utenStarter} uten starter. Spillere uten starter står nederst fordi de ikke har registrerte resultater, ikke fordi de er dårligst — og «Ukjent» betyr akkurat det.</TnFotnote> : null}
       </Chrome>
     );
   }
@@ -317,12 +323,22 @@ export async function TnRegistrertSkjerm({ skjerm, id, dagId }: { skjerm: Skjerm
   if (skjerm === "skoler") {
     const data = await hentTnSkoler(bruker);
     if (!data || data.kontekst.erSpiller) notFound();
+    const antallSkoler = data.skoler.filter((rad) => rad.skole !== "Ikke registrert").length;
+    const utenSkole = data.skoler.find((rad) => rad.skole === "Ikke registrert")?.spillere.length ?? 0;
     return (
       <Chrome aktiv="skoler" brukerNavn={brukerNavn} kontekst={data.kontekst}>
-        <TnSidehode overlinje="Skoler · Oversikt" tittel="Skoleoversikt" ingress="Skole og trinn kommer fra spillerprofilene. Uregistrerte verdier holdes synlige som datagap." />
-        <TnMetrikkRutenett><TnMetrikk etikett="Skoler" verdi={data.skoler.filter((rad) => rad.skole !== "Ikke registrert").length} /><TnMetrikk etikett="Spillere" verdi={data.skoler.reduce((sum, rad) => sum + rad.spillere.length, 0)} /><TnMetrikk etikett="Mangler skole" verdi={data.skoler.find((rad) => rad.skole === "Ikke registrert")?.spillere.length ?? 0} tone="amber" /></TnMetrikkRutenett>
-        <TnDataTable caption="Skoler" kolonner={[{ key: "skole", label: "Skole" }, { key: "spillere", label: "Spillere", align: "right" }, { key: "trinn", label: "Trinn" }]} rader={data.skoler.map((rad) => ({ skole: rad.skole, spillere: rad.spillere.length, trinn: [...new Set(rad.spillere.map((spiller) => spiller.skolear).filter(Boolean))].join(" · ") || "Ukjent" }))} empty="Ingen spillere er tildelt Team Norway-gruppen." />
-        <TnTomtilstand tittel="«Ikke registrert» er en egen rad, ikke en skole" tekst="Spillere uten skole i profilen samles i sin egen rad. Den skjules ikke og slås ikke sammen med de andre — da ville totalen sett riktig ut mens profilene fortsatt sto tomme. Trinn settes sammen av verdiene som faktisk står i profilene i hver gruppe; står ingen av dem fylt ut, står det «Ukjent»." />
+        <TnSidehodeDS overlinje="Skoler · Oversikt" tittel="Skoleoversikt" ingress="Skole og trinn kommer fra spillerprofilene. Uregistrerte verdier holdes synlige som datagap." />
+        <TnTallrad tall={[{ verdi: antallSkoler, etikett: "Skoler" }, { verdi: data.skoler.reduce((sum, rad) => sum + rad.spillere.length, 0), etikett: "Spillere" }, { verdi: utenSkole, etikett: "Mangler skole" }]} />
+        <TnSeksjonDS tittel="Skoler" antall={utenSkole > 0 ? `${antallSkoler} skoler + 1 datagap` : `${antallSkoler} skoler`}>
+          {data.skoler.length === 0 ? <TnUkjent>Ingen spillere er tildelt Team Norway-gruppen.</TnUkjent> : (
+            <TnTabell caption="Skoler" kolonner={[{ key: "skole", label: "Skole" }, { key: "spillere", label: "Spillere", tall: true }, { key: "trinn", label: "Trinn" }]} rader={data.skoler.map((rad) => {
+              const trinn = [...new Set(rad.spillere.map((spiller) => spiller.skolear).filter(Boolean))].join(" · ");
+              return { skole: rad.skole === "Ikke registrert" ? <TnUkjent>Ikke registrert</TnUkjent> : rad.skole, spillere: rad.spillere.length, trinn: trinn || <TnUkjent /> };
+            })} />
+          )}
+        </TnSeksjonDS>
+        {utenSkole > 0 ? <TnNotis tittel={`${utenSkole} ${utenSkole === 1 ? "spiller mangler" : "spillere mangler"} skole.`}>«Ikke registrert» er en egen rad, ikke en skole. Den skjules ikke og slås ikke sammen med de andre — da ville totalen sett riktig ut mens profilene fortsatt sto tomme.</TnNotis> : null}
+        <TnFotnote>Trinn er satt sammen av verdiene som faktisk står i profilene i hver gruppe. Står ingen av dem fylt ut, står det «Ukjent» — aldri et anslag.</TnFotnote>
       </Chrome>
     );
   }
