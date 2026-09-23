@@ -4,6 +4,7 @@
 // 25.08.2026). Egen, isolert primitiv-fil for den nye fasiten — rører ikke
 // `../primitiver.tsx` som den kjørende `/team-wang`-siden bruker i dag.
 
+import Image from "next/image";
 import { useSyncExternalStore, type CSSProperties, type ReactNode } from "react";
 
 import { d, iso } from "../../_data/wang-plan";
@@ -279,19 +280,45 @@ export function klampTilIntervall(isoDato: string, startIso: string, sluttIso: s
  * foto er ikke overført til appen ennå). Treningsfanens hero har egen,
  * rikere variant (Sted-/trener-bånd) og bruker ikke denne.
  */
-export function FaneHero({ eyebrow, tittel, ingress }: { eyebrow: string; tittel: string; ingress: string }) {
+export function FaneHero({
+  eyebrow,
+  tittel,
+  ingress,
+  foto,
+  fotoAlt,
+}: {
+  eyebrow: string;
+  tittel: string;
+  ingress: string;
+  /** Foto-sti under /public, f.eks. "/team-wang/hero/skole-fotball.jpg". Uten foto: navy gradient som før. */
+  foto?: string;
+  fotoAlt?: string;
+}) {
   return (
     <div
       style={{
         position: "relative",
         overflow: "hidden",
-        background:
-          "linear-gradient(160deg, color-mix(in srgb, var(--wang-navy) 82%, white) 0%, var(--wang-navy) 55%, color-mix(in srgb, var(--wang-navy) 82%, black) 100%)",
+        background: foto ? "var(--navy-deep)" : "var(--grad-hero-line)",
         color: "var(--white)",
       }}
     >
+      {foto ? (
+        <>
+          <Image
+            src={foto}
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            style={{ objectFit: "cover", objectPosition: "center 20%" }}
+          />
+          <div style={{ position: "absolute", inset: 0, background: "var(--grad-hero-photo)" }} aria-hidden />
+          {fotoAlt ? <span style={{ position: "absolute", width: 1, height: 1, overflow: "hidden" }}>{fotoAlt}</span> : null}
+        </>
+      ) : null}
       <Wrap>
-        <div style={{ padding: "clamp(32px,5.5vw,44px) 0" }}>
+        <div style={{ padding: "clamp(32px,5.5vw,44px) 0", position: "relative" }}>
           <p
             style={{
               margin: "0 0 10px",

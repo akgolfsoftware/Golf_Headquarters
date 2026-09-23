@@ -11,6 +11,7 @@
 // beregning fra øktmalens blokker (se `beregnPyramide`), ikke periodebrevets
 // faste prosenter.
 
+import Image from "next/image";
 import { useState } from "react";
 
 import {
@@ -57,11 +58,20 @@ function Hero() {
       style={{
         position: "relative",
         overflow: "hidden",
-        background:
-          "linear-gradient(160deg, color-mix(in srgb, var(--wang-navy) 82%, white) 0%, var(--wang-navy) 55%, color-mix(in srgb, var(--wang-navy) 82%, black) 100%)",
+        background: "var(--navy-deep)",
         color: "var(--white)",
       }}
     >
+      <Image
+        src="/team-wang/hero/trening-golf.jpg"
+        alt=""
+        fill
+        priority
+        sizes="100vw"
+        style={{ objectFit: "cover", objectPosition: "center 30%" }}
+      />
+      <div style={{ position: "absolute", inset: 0, background: "var(--grad-hero-photo)" }} aria-hidden />
+      <span style={{ position: "absolute", width: 1, height: 1, overflow: "hidden" }}>WANG-elev slår ut på Gamle Fredrikstad GK</span>
       <div
         aria-hidden
         style={{

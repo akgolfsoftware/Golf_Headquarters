@@ -204,6 +204,8 @@ export function FaneForeldreArsplan() {
         eyebrow="Foresatte"
         tittel="Ukens sammendrag og praktisk info"
         ingress="Trener skriver et kort sammendrag hver fredag. Det handler om gruppen, aldri om enkeltelever."
+        foto="/team-wang/hero/foreldre-roing.jpg"
+        fotoAlt="To WANG-elever i robåt"
       />
       <Ukessammendrag />
       <Foreldremoter />

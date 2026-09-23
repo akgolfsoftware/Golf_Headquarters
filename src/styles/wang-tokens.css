@@ -82,6 +82,14 @@
     var(--wang-navy) 55%,
     color-mix(in srgb, var(--wang-navy) 82%, black) 100%
   );
+  /* Mørk navy-tone over heltebilder — fasitens gradient (WangGolfFellesside.dc.html),
+     så hvit heltekst holder kontrast over hele bildet, mørkest nederst. */
+  --grad-hero-photo: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--navy-deep) 55%, transparent) 0%,
+    color-mix(in srgb, var(--navy-deep) 78%, transparent) 55%,
+    color-mix(in srgb, var(--navy-deep) 90%, transparent) 100%
+  );
 
   /* ---- Semantiske aliaser ---- */
   --color-primary: var(--wang-navy);

@@ -195,6 +195,8 @@ export function FaneSkole({
         eyebrow="Skole"
         tittel="Timeplan, prøver og kompetansemål"
         ingress="Treningen ligger 1. til 3. time mandag, onsdag og fredag. Resten av dagen er vanlig skole. Prøver og eksamen settes av skolen."
+        foto="/team-wang/hero/skole-fotball.jpg"
+        fotoAlt="WANG-elev i keeperhansker med ball"
       />
       <Timeplan />
       <Kompetansemaal trinn={trinn} />
