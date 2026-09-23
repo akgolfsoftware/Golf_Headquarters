@@ -1257,19 +1257,25 @@ function MndNivaa({ data, onVelgDato }: { data: WorkbenchData; onVelgDato: (dato
 }
 
 /* ── Dag-nivå (agenda for valgt/i-dag) ─────────────────── */
-export function DagNivaa({ dag, valgt, onVelg, dager, onFlytt }: {
+export function DagNivaa({ dag, valgt, onVelg, dager, onFlytt, dragSessionId }: {
   dag: DagKol | null;
   valgt: string | null;
   onVelg: (id: string) => void;
   /** Ukas dager — kun for "flytt til dag"-velgeren. Uten = ingen flytt-mulighet (samme touch-vei som knappen selv). */
   dager?: DagKol[];
   onFlytt?: (sessionId: string, dayIndex: number) => void;
+  /** Id på økten som akkurat nå dras (WorkbenchV2s `activeDrag`, felles dnd-kit-kontekst
+   *  som allerede omslutter hele komponenten) — åpner dag-målene uten forhåndsklikk,
+   *  slik at ekte pointer-/touch-drag fungerer (Anders 17.09.2026, beslutninger.md
+   *  §WORKBENCH DRA-OG-SLIPP). Uten prop: kun klikk-veien virker (tastatur/skjermleser). */
+  dragSessionId?: string | null;
 }) {
   const [flyttId, setFlyttId] = useState<string | null>(null);
   if (!dag || dag.events.length === 0) {
     return <Kort><TomTilstand icon="calendar" title="Ingen økter" sub="Ingen planlagte økter denne dagen." /></Kort>;
   }
   const denneDagIndex = dager?.findIndex((d) => d.dato === dag.dato && d.dow === dag.dow) ?? -1;
+  const dragbar = !!onFlytt && !!dager;
   return (
     // Fasit: designsystem/train-lock/P-06 iPhone Dag ark.dc.html (rad-geometri:
     // fast 44px tidskolonne, caps-metalinje, hairline mellom rader i én kortflate
@@ -1278,79 +1284,144 @@ export function DagNivaa({ dag, valgt, onVelg, dager, onFlytt }: {
     // Desktop: designsystem/train-lock/P-01 Mac Uke.dc.html. P-05 er utgått (02.09.2026).
     <Kort eyebrow={`${dag.dow} ${dag.dato} · tidslinje`} action={<Caps size={9}>{dag.events.length} økter</Caps>} pad="4px 16px">
       <div style={{ display: "flex", flexDirection: "column" }}>
-        {dag.events.map((o, j) => {
-          const ak = o.eb as AkseKey;
-          const sel = !!o.id && valgt === o.id;
-          const pending = erOptimistisk(o.id);
-          const flyttApen = !!o.id && flyttId === o.id;
-          return (
-            <div
-              key={o.id ?? j}
-              className="v2-fade-in"
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                padding: "10px 0",
-                borderTop: j === 0 ? "none" : `1px solid ${TL.hair}`,
-                opacity: pending ? 0.6 : 1,
-              }}
-            >
-              <div
-                onClick={() => o.id && !pending && onVelg(o.id)}
-                style={{ display: "flex", gap: 12, cursor: pending ? "default" : "pointer" }}
-              >
-                <span style={{ width: 44, flex: "none", fontFamily: TL.font.mono, fontSize: 11, fontWeight: 600, color: TL.mute, paddingTop: 2 }}>
-                  {toKl(o.h, o.m)}
-                </span>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 600, letterSpacing: "0.04em", color: TL.mute, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                    {AKSE_NAVN[ak] || o.eb}
-                    {sel && " · valgt"}
-                  </div>
-                  <div style={{ fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text, marginTop: 2 }}>
-                    {o.ttl} · {fmtVarighet(o.durMin)}
-                  </div>
-                </div>
-                {sel && <Icon name="check" size={12} style={{ color: TL.fill, flex: "none", alignSelf: "center" }} />}
-              </div>
-              {onFlytt && dager && !pending && o.id && (
-                <>
-                  <button
-                    type="button"
-                    onClick={(e) => { e.stopPropagation(); setFlyttId(flyttApen ? null : o.id!); }}
-                    className="v2-press v2-focus"
-                    style={{ appearance: "none", cursor: "pointer", marginTop: 8, display: "inline-flex", alignItems: "center", gap: 5, background: "transparent", border: "none", padding: 0, fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: TL.fill }}
-                  >
-                    <Icon name="calendar" size={11} />
-                    {flyttApen ? "Avbryt" : "Flytt til annen dag"}
-                  </button>
-                  {flyttApen && (
-                    <div className="v2-fade-in" style={{ display: "flex", gap: 5, marginTop: 8, flexWrap: "wrap" }}>
-                      {dager.map((d, i) => {
-                        const erDenneDagen = i === denneDagIndex;
-                        return (
-                          <button
-                            key={i}
-                            type="button"
-                            disabled={erDenneDagen}
-                            onClick={(e) => { e.stopPropagation(); setFlyttId(null); onFlytt(o.id!, i); }}
-                            className="v2-press v2-focus"
-                            style={{ appearance: "none", cursor: erDenneDagen ? "default" : "pointer", width: 34, height: 34, borderRadius: 9, background: erDenneDagen ? TL.dim : TL.elev, border: `1px solid ${erDenneDagen ? TL.hair : TL.hair}`, fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, color: erDenneDagen ? TL.mute : TL.mute, opacity: erDenneDagen ? 0.5 : 1 }}
-                            title={`${d.dow} ${d.dato}`}
-                          >
-                            {d.dow.slice(0, 2)}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
-          );
-        })}
+        {dag.events.map((o, j) => (
+          <DagNivaaRad
+            key={o.id ?? j}
+            o={o}
+            forsteRad={j === 0}
+            valgt={!!o.id && valgt === o.id}
+            onVelg={onVelg}
+            dager={dager}
+            denneDagIndex={denneDagIndex}
+            onFlytt={onFlytt}
+            dragbar={dragbar}
+            apen={!!o.id && (flyttId === o.id || dragSessionId === o.id)}
+            onToggleApen={() => o.id && setFlyttId((cur) => (cur === o.id ? null : (o.id as string)))}
+            onLukk={() => setFlyttId(null)}
+          />
+        ))}
       </div>
     </Kort>
+  );
+}
+
+/** Én rad i DagNivaa — egen komponent fordi dnd-kit sin `useDraggable`
+ *  må kalles per rad (samme mønster som TLBlokk i uke-tidslinja). Dras
+ *  inn i WorkbenchV2s eksisterende `DndContext` (ingen ny kontekst her). */
+function DagNivaaRad({ o, forsteRad, valgt, onVelg, dager, denneDagIndex, onFlytt, dragbar, apen, onToggleApen, onLukk }: {
+  o: WeekEvent;
+  forsteRad: boolean;
+  valgt: boolean;
+  onVelg: (id: string) => void;
+  dager?: DagKol[];
+  denneDagIndex: number;
+  onFlytt?: (sessionId: string, dayIndex: number) => void;
+  dragbar: boolean;
+  apen: boolean;
+  onToggleApen: () => void;
+  onLukk: () => void;
+}) {
+  const ak = o.eb as AkseKey;
+  const pending = erOptimistisk(o.id);
+  const kanDra = dragbar && !pending && !!o.id;
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+    id: `session:${o.id ?? "dagrad"}`,
+    data: kanDra ? ({ kind: "move", sessionId: o.id as string, event: o } satisfies WbDragData) : undefined,
+    disabled: !kanDra,
+  });
+  return (
+    <div
+      ref={setNodeRef}
+      {...(kanDra ? attributes : undefined)}
+      {...(kanDra ? listeners : undefined)}
+      className="v2-fade-in"
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        padding: "10px 0",
+        borderTop: forsteRad ? "none" : `1px solid ${TL.hair}`,
+        opacity: isDragging ? 0.4 : pending ? 0.6 : 1,
+        touchAction: kanDra ? "none" : undefined,
+      }}
+    >
+      <div
+        onClick={() => o.id && !pending && onVelg(o.id)}
+        style={{ display: "flex", gap: 12, cursor: pending ? "default" : kanDra ? "grab" : "pointer" }}
+      >
+        <span style={{ width: 44, flex: "none", fontFamily: TL.font.mono, fontSize: 11, fontWeight: 600, color: TL.mute, paddingTop: 2 }}>
+          {toKl(o.h, o.m)}
+        </span>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 600, letterSpacing: "0.04em", color: TL.mute, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+            {AKSE_NAVN[ak] || o.eb}
+            {valgt && " · valgt"}
+          </div>
+          <div style={{ fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text, marginTop: 2 }}>
+            {o.ttl} · {fmtVarighet(o.durMin)}
+          </div>
+        </div>
+        {valgt && <Icon name="check" size={12} style={{ color: TL.fill, flex: "none", alignSelf: "center" }} />}
+      </div>
+      {onFlytt && dager && !pending && o.id && (
+        <>
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); onToggleApen(); }}
+            className="v2-press v2-focus"
+            style={{ appearance: "none", cursor: "pointer", marginTop: 8, display: "inline-flex", alignItems: "center", gap: 5, background: "transparent", border: "none", padding: 0, fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: TL.fill }}
+          >
+            <Icon name="calendar" size={11} />
+            {apen ? "Avbryt" : "Flytt til annen dag"}
+          </button>
+          {apen && (
+            <div className="v2-fade-in" style={{ display: "flex", gap: 5, marginTop: 8, flexWrap: "wrap" }}>
+              {dager.map((d, i) => (
+                <DagFlyttMaal
+                  key={i}
+                  d={d}
+                  i={i}
+                  erDenneDagen={i === denneDagIndex}
+                  onKlikk={() => { onLukk(); onFlytt(o.id!, i); }}
+                />
+              ))}
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
+/** Ett dag-mål i "Flytt til annen dag" — droppbart (`day-${i}`, samme
+ *  id-mønster som uke-tidslinjas dag-kolonner) i tillegg til klikkbart. */
+function DagFlyttMaal({ d, i, erDenneDagen, onKlikk }: { d: DagKol; i: number; erDenneDagen: boolean; onKlikk: () => void }) {
+  const { setNodeRef, isOver } = useDroppable({ id: `day-${i}`, disabled: erDenneDagen });
+  const treff = isOver && !erDenneDagen;
+  return (
+    <button
+      ref={setNodeRef}
+      type="button"
+      disabled={erDenneDagen}
+      onClick={(e) => { e.stopPropagation(); onKlikk(); }}
+      className="v2-press v2-focus"
+      style={{
+        appearance: "none",
+        cursor: erDenneDagen ? "default" : "pointer",
+        width: 34,
+        height: 34,
+        borderRadius: 9,
+        background: erDenneDagen ? TL.dim : treff ? TL.fill : TL.elev,
+        border: `1px solid ${treff ? TL.fill : TL.hair}`,
+        fontFamily: TL.font.mono,
+        fontSize: 9,
+        fontWeight: 700,
+        color: erDenneDagen ? TL.mute : treff ? TL.scene : TL.mute,
+        opacity: erDenneDagen ? 0.5 : 1,
+      }}
+      title={`${d.dow} ${d.dato}`}
+    >
+      {d.dow.slice(0, 2)}
+    </button>
   );
 }
 
@@ -2719,6 +2790,8 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
     (data.seasonBlocks ?? []).length === 0 &&
     pendingAdds.length === 0;
   const visColdstartTips = heltTom && !!actions && nivaa !== "ar" && !coldstartTipsLukket;
+  // Hvilken økt som akkurat nå dras — åpner DagNivaas dag-mål uten forhåndsklikk (CD-4).
+  const dragSessionId = activeDrag?.kind === "move" ? activeDrag.sessionId : null;
 
   return (
     <DndContext
@@ -3089,6 +3162,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
                   onVelg={velgOgAapne}
                   dager={dager}
                   onFlytt={actions ? handleDropMove : undefined}
+                  dragSessionId={dragSessionId}
                 />
               )}
               {valgtOkt && aktivDag && aktivDag.events.length > 1 && (
@@ -3294,7 +3368,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
           />
         )}
         {nivaa === "uke" && data.groupSlots && <WBGruppetider slots={data.groupSlots} />}
-        {nivaa === "uke" && <div key="uke" className="v2-fade-in"><WBTidslinjeMobil dager={dager} valgt={valgtOkt?.id ?? null} onVelg={velgOgAapne} onFlytt={actions ? handleDropMove : undefined} /></div>}
+        {nivaa === "uke" && <div key="uke" className="v2-fade-in"><WBTidslinjeMobil dager={dager} valgt={valgtOkt?.id ?? null} onVelg={velgOgAapne} onFlytt={actions ? handleDropMove : undefined} dragSessionId={dragSessionId} /></div>}
         {nivaa === "uke" && proMode && <WBBelastning data={data} />}
         {nivaa === "ar" && (
           <div key="ar" className="v2-fade-in">
@@ -3319,6 +3393,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
                 onVelg={velgOgAapne}
                 dager={dager}
                 onFlytt={actions ? handleDropMove : undefined}
+                dragSessionId={dragSessionId}
               />
             )}
           </div>
