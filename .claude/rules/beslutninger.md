@@ -4,6 +4,46 @@ Kun det som gjelder nå. Full historikk (1 207 linjer, alle overstyrte valg): [b
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## Forelder-skallet bruker hamburger, som AgencyOS og PlayerHQ (Anders 23.09.2026, bindende)
+
+**`/forelder` skal ha samme navigasjonsmønster som AgencyOS og PlayerHQ: hamburgermeny på
+mobil, topplinje med fire mål + «Mer» på desktop.** `MOBILMENY-BESLUTNING.md` (i Claude
+Design-prosjektet «App design», `830e7bce`) navngav tidligere kun AgencyOS og PlayerHQ —
+den gjelder fra nå av forelder også.
+
+Bakgrunn: fire designagenter tegnet FO-01 til FO-04 parallelt i samme økt og endte med tre
+ulike skall, fordi ingen felles mal fantes — verken i koden (`src/components/v2/shell.tsx`
+har i dag fast bunnrad + 64 px ikonskinne for forelder, ikke hamburger) eller i en
+beslutning. FO-01 fulgte koden (bunnrad/ikonskinne), FO-02 landet midt mellom (bunnrad på
+mobil, topplinje på desktop), FO-03 brukte allerede hamburger/topplinje. FO-02 flagget
+sprikET selv og ba om én avgjørelse før retting, i stedet for et tredje gjetteforsøk.
+
+**Skallet skal ligge i én delt modul, ikke dupliseres i hver skjerm** — samme lærdom som
+hurtigknappen og mobilmenyen i AgencyOS (`agencyos-handover/ag-mobilmeny.css/.js`,
+`ag-hurtigknapp.css/.js`). I Claude Design-prosjektet: `playerhq-handover/fo-skall.js` +
+tilhørende del av `ph-flate.css`. I kodeimplementasjonen: samme prinsipp — ett skall
+`src/components/v2/shell.tsx` (eller en egen forelder-variant av det) endres én gang, ikke
+per side.
+
+**Overstyrer:** dagens faktiske oppførsel i `src/components/v2/shell.tsx` for `/forelder`
+(`BunnNavLenker`/`IkonRailNav`), som forblir riktig for `/portal` og er uendret der.
+
+**Arbeidet dette utløser** — ingen arbeidsliste finnes etter b700ce008, derfor står den her:
+
+1. **Rett FO-01, FO-02 og FO-04 i Claude Design** til hamburger på mobil / topplinje med
+   fire mål + «Mer» på desktop — FO-03 er allerede riktig og kan brukes som fasit. Bygg den
+   delte modulen (`fo-skall.js`) i samme slag, ikke etterpå. Mål alle fire på nytt (begge
+   rammer, lys og mørk — merk: forelder er lys som standard).
+2. **Implementer i kode:** `src/components/v2/shell.tsx` — forelderflaten (`erAgency`/
+   `erPlayer` er i dag begge `false` for `/forelder`, se kartleggingen i
+   `playerhq-handover/FO-*-manifest.md`) skal rendre samme hamburger/topplinje-mønster som
+   AgencyOS/PlayerHQ bruker, ikke `BunnNavLenker`/`IkonRailNav`.
+3. **Oppdater `MOBILMENY-BESLUTNING.md`** i Claude Design-prosjektet til å navngi forelder
+   som tredje flate under samme mønster.
+
+Port 7 (Anders har sett skjermene) gjelder som for alle andre skjermer — de fire FO-rettingene
+er ikke ferdige før det.
+
 ## AG-03b Oppfølgingskø: «Løst» blir egen status, og designrunden for PlayerHQ/AgencyOS er ferdig (Anders 23.09.2026, bindende)
 
 **Oppfølgingskøens «Løst»-kolonne får en eksplisitt status på saken i basen, satt av coach
