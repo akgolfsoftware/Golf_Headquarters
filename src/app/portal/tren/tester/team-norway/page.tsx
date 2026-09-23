@@ -26,7 +26,17 @@ export default async function TeamNorwayTests({ searchParams }: { searchParams: 
     const stored = row.testResultId ? await prisma.testResult.findFirst({ where: { id: row.testResultId, userId: user.id, testId: row.testId } }) : null;
     const saved = TnResultSchema.safeParse(stored?.details);
     if (row.status === "COMPLETED" && (!saved.success || saved.data.protocolId !== p.id || saved.data.count !== state.data.count)) notFound();
-    content = <TnScorecard savedResult={saved.success ? saved.data : undefined} key={row.id} protocol={p} initial={{ sessionId: row.id, revision: state.data.revision, values: state.data.values, notes: state.data.notes, status: row.status }} />;
+    // Integrasjonsvakt: en PÅGÅENDE økt en trener fører i en testdag er
+    // samme TestSession-rad (userId = spilleren). Egenføringens redigerbare
+    // scorecard skal ALDRI vises for den — spilleren ser en kort, read-only
+    // beskjed i stedet. Et FULLFØRT resultat vises fortsatt normalt (det er
+    // spillerens egen, ekte historikk).
+    const testdagKobling = row.status === "IN_PROGRESS" ? await prisma.testDayParticipant.findFirst({ where: { sessionId: row.id }, select: { id: true } }) : null;
+    content = testdagKobling ? (
+      <p>Denne økten føres av en trener som del av en testdag og kan ikke redigeres her.</p>
+    ) : (
+      <TnScorecard savedResult={saved.success ? saved.data : undefined} key={row.id} protocol={p} initial={{ sessionId: row.id, revision: state.data.revision, values: state.data.values, notes: state.data.notes, status: row.status }} />
+    );
   } else if (query.test) {
     const p = tnProtocol(query.test, query.count === undefined ? undefined : Number(query.count));
     if (!p) notFound();
@@ -36,6 +46,8 @@ export default async function TeamNorwayTests({ searchParams }: { searchParams: 
   } else {
     const assignments = await prisma.testAssignment.findMany({ where: { playerId: user.id, status: "OPEN", testId: { startsWith: "tn-v3-" } }, orderBy: [{ dueDate: "asc" }, { createdAt: "asc" }], select: { id: true, testId: true, dueDate: true, note: true } });
     const sessions = await prisma.testSession.findMany({ where: { userId: user.id, testId: { startsWith: "tn-v3-" } }, orderBy: { startedAt: "desc" }, take: 100 });
+    const testdagKoblinger = await prisma.testDayParticipant.findMany({ where: { sessionId: { in: sessions.map((s) => s.id) } }, select: { sessionId: true } });
+    const kobledeSessionIder = new Set(testdagKoblinger.map((k) => k.sessionId));
     content = <><h1>Team Norway-tester</h1><p>Velg test og variant. Resultater fra denne utgaven holdes atskilt fra eldre testregler.</p><p>{TN_VERSION}</p>
       <h2>Tildelt av coach</h2>{assignments.length === 0 ? <p>Ingen åpne tildelinger.</p> : <ul>{assignments.map(a => {
         const p = tnFromDefinitionId(a.testId);
@@ -45,7 +57,13 @@ export default async function TeamNorwayTests({ searchParams }: { searchParams: 
       <h2>Dine registreringer</h2>{sessions.length === 0 ? <p>Ingen registreringer ennå.</p> : <ul>{sessions.map(s => {
         const state = TnSessionSchema.safeParse(s.scoringData);
         if (!state.success) return null;
-        return <li key={s.id}><Link href={`?session=${s.id}`}>{tnProtocol(state.data.protocolId)?.name ?? state.data.protocolId} · {state.data.count} forsøk · {s.status === "COMPLETED" ? "Fullført" : s.status === "ABORTED" ? "Ufullstendig" : "Utkast"} · {s.startedAt.toLocaleDateString("nb-NO", { timeZone: "Europe/Oslo" })}</Link></li>;
+        const tekst = `${tnProtocol(state.data.protocolId)?.name ?? state.data.protocolId} · ${state.data.count} forsøk · ${s.status === "COMPLETED" ? "Fullført" : s.status === "ABORTED" ? "Ufullstendig" : "Utkast"} · ${s.startedAt.toLocaleDateString("nb-NO", { timeZone: "Europe/Oslo" })}`;
+        // Pågående testdag-førte økter er IKKE en lenke her — de kan ikke
+        // redigeres i egenføring uansett (samme vakt som over).
+        if (s.status === "IN_PROGRESS" && kobledeSessionIder.has(s.id)) {
+          return <li key={s.id}>{tekst} · Styres av trener (testdag)</li>;
+        }
+        return <li key={s.id}><Link href={`?session=${s.id}`}>{tekst}</Link></li>;
       })}</ul>}
       <h2>Testvarianter</h2><ul>{TN_CATALOG.map(p => <li key={p.id} style={{ paddingBlock: 8 }}><Link href={`?test=${p.id}`}>{p.name} · {p.rows.length} forsøk</Link>{p.blocked && <span> · råregistrering tilgjengelig, testregel avventes</span>}</li>)}</ul>
     </>;

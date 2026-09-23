@@ -640,6 +640,18 @@
       "COMPLETED",
       "CANCELLED"
     ],
+    "TestDayStatus": [
+      "PLANNED",
+      "ACTIVE",
+      "COMPLETED",
+      "CANCELLED"
+    ],
+    "TestDayParticipantStatus": [
+      "PENDING",
+      "DONE",
+      "SKIPPED",
+      "ABSENT"
+    ],
     "TrackManEnvironment": [
       "SIMULATOR_INDOOR",
       "NET_INDOOR",

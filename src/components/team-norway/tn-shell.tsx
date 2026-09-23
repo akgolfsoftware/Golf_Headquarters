@@ -10,7 +10,8 @@ import { TN } from "@/lib/v2/team-norway";
  * Fasit: designsystem/team-norway/templates/tn-skall/TnSkall.dc.html
  * Avvik:
  *   - Menypunkter uten egen datamodell åpner en ærlig tomtilstand, ikke demo-data.
- *   - Analyse og DataGolf går til AK Golf HQs eksisterende funksjonsflater.
+ *   - Analyse (14.09.2026) er TN-egen gruppeanalyse (/team-norway/analyse),
+ *     ikke lenger den innloggede brukerens PlayerHQ-analyse.
  *   - Ingen riggrad: den visuelle riggen dekker ikke Claw ennå.
  */
 
@@ -31,7 +32,9 @@ export type TnAktivSide =
   | "referansenivaer"
   | "tilgang"
   | "inviter"
-  | "apparatet";
+  | "apparatet"
+  | "analyse"
+  | "workbench";
 
 function lenke(label: string, href: string, id: TnAktivSide, aktiv: TnAktivSide, badge?: string): TnMenyPunkt {
   return { type: "lenke", label, href, aktiv: aktiv === id, badge };
@@ -77,8 +80,11 @@ export function tnHovedmeny({
     ...(visTrenerflater ? [lenke("Testprotokoller", "/team-norway/protokoller", "protokoller", aktiv)] : []),
     lenke("Turneringer", "/team-norway/turneringer", "turneringer", aktiv),
     lenke("Referansenivåer", "/team-norway/referansenivaer", "referansenivaer", aktiv),
-    { type: "lenke", label: "Analyse", href: "/portal/analysere" },
-    { type: "lenke", label: "DataGolf", href: "/portal/analysere/datagolf" },
+    // Gruppeanalyse gjelder valgt testdag/protokoll for TN-gruppen — ALDRI
+    // den innloggede brukerens egen PlayerHQ-kontekst (/portal/analysere),
+    // som var feil skop her. En spillers egen analyse nås fra spillerens
+    // egen oversiktsside (fane), ikke fra denne globale menyen.
+    ...(visTrenerflater ? [lenke("Analyse", "/team-norway/analyse", "analyse", aktiv)] : []),
   ];
 
   if (kanAdministrere) {
@@ -210,5 +216,71 @@ export function TnLenke({ href, children, fremhevet = false }: { href: string; c
     <Link href={href} style={{ minHeight: 44, display: "inline-flex", alignItems: "center", padding: fremhevet ? "0 18px" : 0, borderRadius: TN.radius.full, background: fremhevet ? TN.navy900 : "transparent", color: fremhevet ? TN.white : TN.navy700, fontWeight: TN.weight.semibold, fontSize: TN.text.sm, textDecoration: fremhevet ? "none" : "underline", textUnderlineOffset: 4 }}>
       {children}
     </Link>
+  );
+}
+
+export type TnSpillerFane = "post" | "oversikt" | "tester" | "analyse" | "workbench" | "teknisk-plan" | "evaluering";
+
+/**
+ * Fast spillerhode + fanebar — brukes på ALLE spillerscopede TN-ruter
+ * (post, oversikt, tester, analyse, og planøktens workbench/teknisk-plan/
+ * evaluering) slik at spilleren forblir tydelig fastholdt i overskriften
+ * uansett hvilken fane man er på. «Post» beholder sin egen, eksisterende
+ * rute (/team-norway/spiller/[id]) uendret — denne baren gjør den nåbar
+ * som en tydelig fane i stedet for eneste inngang.
+ *
+ * Plan/Teknisk plan/Evaluering er nå EKTE faner i samme nav (med
+ * `aria-current`), ikke en løsrevet lenkerad under — planøktens sider kan
+ * derfor sette `aktiv="workbench"`/`"teknisk-plan"`/`"evaluering"` uten
+ * cast og faktisk få fanen markert aktiv.
+ *
+ * `kanAdministrere`-navnet er beholdt for bakoverkompatibilitet med
+ * kalleren i planøktens ruter (ikke en omdøping som bryter planfiler),
+ * men betydningen her er LESETILGANG (COACH/ASSISTANT/ADMIN — dvs.
+ * `!erSpiller`), ikke skrivetilgang: en ASSISTANT skal se disse fanene
+ * selv om de ikke kan redigere planen selv (de underliggende rutene har
+ * sin egen skrivevakt). Kall med `!kontekst.erSpiller`, ikke
+ * `kontekst.kanAdministrere` (se coordination.md for planøkten).
+ */
+export function TnSpillerFaner({ spillerId, spillerNavn, aktiv, kanAdministrere }: { spillerId: string; spillerNavn: string; aktiv: TnSpillerFane; kanAdministrere: boolean }) {
+  const kjernefaner: { id: TnSpillerFane; label: string; href: string }[] = [
+    { id: "oversikt", label: "Oversikt", href: `/team-norway/spiller/${spillerId}/oversikt` },
+    { id: "post", label: "Post", href: `/team-norway/spiller/${spillerId}` },
+    { id: "tester", label: "Tester", href: `/team-norway/spiller/${spillerId}/tester` },
+    { id: "analyse", label: "Analyse", href: `/team-norway/spiller/${spillerId}/analyse` },
+  ];
+  const planfaner: { id: TnSpillerFane; label: string; href: string }[] = kanAdministrere
+    ? [
+        { id: "workbench", label: "Plan (Workbench)", href: `/team-norway/workbench?spiller=${spillerId}` },
+        { id: "teknisk-plan", label: "Teknisk plan", href: `/team-norway/spiller/${spillerId}/teknisk-plan` },
+        { id: "evaluering", label: "Evaluering", href: `/team-norway/spiller/${spillerId}/evaluering` },
+      ]
+    : [];
+  const faner = [...kjernefaner, ...planfaner];
+  return (
+    <header style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+      <div>
+        <p style={{ margin: 0, fontFamily: TN.font.mono, fontSize: TN.text.micro, letterSpacing: TN.tracking.eyebrow, textTransform: "uppercase", color: TN.textSecondary }}>Spiller</p>
+        <h1 style={{ margin: "6px 0 0", fontFamily: TN.font.display, fontSize: "clamp(1.75rem, 4vw, 2.25rem)", lineHeight: TN.leading.tight, color: TN.navy900 }}>{spillerNavn}</h1>
+      </div>
+      <nav aria-label="Spillerfaner" style={{ display: "flex", gap: 4, flexWrap: "wrap", borderBottom: `1px solid ${TN.borderSubtle}` }}>
+        {faner.map((f) => (
+          <Link
+            key={f.id}
+            href={f.href}
+            aria-current={aktiv === f.id ? "page" : undefined}
+            style={{
+              minHeight: 44, display: "inline-flex", alignItems: "center", padding: "0 14px",
+              fontSize: TN.text.sm, fontWeight: aktiv === f.id ? TN.weight.bold : TN.weight.semibold,
+              color: aktiv === f.id ? TN.navy900 : TN.textSecondary,
+              borderBottom: aktiv === f.id ? `2px solid ${TN.navy900}` : "2px solid transparent",
+              textDecoration: "none",
+            }}
+          >
+            {f.label}
+          </Link>
+        ))}
+      </nav>
+    </header>
   );
 }

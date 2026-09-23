@@ -6,7 +6,6 @@ import { TN } from "@/lib/v2/team-norway";
 import { TnShell, TnSidehode } from "@/components/team-norway/tn-shell";
 import { TnDokumentOpplasting } from "@/components/team-norway/tn-dokument-opplasting";
 import { TnDokumentTabell, type TnDokumentRadVisning } from "@/components/team-norway/tn-dokument-tabell";
-import { opprettGruppeDokumentAction } from "@/app/team-norway/tn-post-actions";
 
 /**
  * TN-11 Dokumentdeling — designfasit
@@ -26,11 +25,6 @@ export default async function DokumenterPage({ params }: { params: Promise<{ gro
 
   const dokumenter = await hentGruppeDokumenter(groupId, bruker.id);
   if (!dokumenter) notFound();
-
-  async function lastOppDokument(form: FormData) {
-    "use server";
-    return opprettGruppeDokumentAction(groupId, form);
-  }
 
   const erTrener = rolle === "TRENER" || bruker.role === "ADMIN";
 
@@ -62,9 +56,9 @@ export default async function DokumenterPage({ params }: { params: Promise<{ gro
         ingress="Vedlegg fra poster og frittstående opplastinger i samme liste, med lesekvittering per fil."
       />
 
-      {rolle === "TRENER" && <TnDokumentOpplasting last={lastOppDokument} />}
+      {rolle === "TRENER" && <TnDokumentOpplasting groupId={groupId} />}
 
-      <TnDokumentTabell rader={rader} />
+      <TnDokumentTabell rader={rader} visSeHvem={rolle === "TRENER"} />
 
       <div
         style={{

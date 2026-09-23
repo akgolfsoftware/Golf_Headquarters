@@ -14,6 +14,8 @@ import {
   hentTnSamlinger,
   hentTnSkoler,
   hentTnSpillere,
+  hentTnTestdag,
+  hentTnTestdager,
   hentTnTrenere,
   hentTnTurneringer,
   type TnArbeidskontekst,
@@ -24,6 +26,8 @@ import { TN } from "@/lib/v2/team-norway";
 import { TnDataTable } from "./tn-data-table";
 import { TnInviterSpiller } from "./tn-inviter-spiller";
 import { TnManuellTurnering } from "./tn-manuell-turnering";
+import { TnOpprettTestdag } from "./tn-testdag-opprett";
+import { TnTestdagKo } from "./tn-testdag-ko";
 import {
   TnLenke,
   TnMetrikk,
@@ -95,7 +99,7 @@ const UTTAKSKRITERIER = [
 
 function spillerRader(rader: TnSpillerRad[]) {
   return rader.map((spiller) => ({
-    spiller: <Link href={`/team-norway/spiller/${spiller.id}`} style={{ color: TN.navy700, fontWeight: TN.weight.semibold }}>{spiller.navn}</Link>,
+    spiller: <Link href={`/team-norway/spiller/${spiller.id}/oversikt`} style={{ color: TN.navy700, fontWeight: TN.weight.semibold }}>{spiller.navn}</Link>,
     hcp: spiller.hcp === null ? "Ukjent" : tall.format(spiller.hcp),
     plan: spiller.aktivPlan ?? "Ingen aktiv plan",
     tester: spiller.tester,
@@ -104,9 +108,75 @@ function spillerRader(rader: TnSpillerRad[]) {
   }));
 }
 
-export async function TnRegistrertSkjerm({ skjerm, id }: { skjerm: Skjerm; id?: string }) {
+export async function TnRegistrertSkjerm({ skjerm, id, dagId }: { skjerm: Skjerm; id?: string; dagId?: string }) {
   const bruker = await requirePortalUser({ kreverTilgang: "INGEN" });
   const brukerNavn = bruker.name ?? "Ukjent";
+
+  if (skjerm === "fellestesting") {
+    const spillerside = await hentTnSpillere(bruker);
+    if (!spillerside || spillerside.kontekst.erSpiller) notFound();
+    const protokoller = TN_CATALOG.filter((p) => !p.blocked && !p.variableCount).map((p) => ({ id: p.id, navn: p.name }));
+    const spillere = spillerside.rader.map((r) => ({ id: r.id, navn: r.navn }));
+
+    if (dagId) {
+      const valgt = await hentTnTestdag(bruker, dagId);
+      if (!valgt) notFound();
+      return (
+        <Chrome aktiv="fellestesting" brukerNavn={brukerNavn} kontekst={valgt.kontekst}>
+          <TnSidehode overlinje="Daglig · Test" tittel={valgt.dag.title} ingress={`${valgt.dag.protokollNavn}${valgt.dag.location ? ` · ${valgt.dag.location}` : ""} · ${datoTid.format(valgt.dag.scheduledAt)}`} handling={<TnLenke href="/team-norway/fellestesting">Alle testdager</TnLenke>} />
+          {(() => {
+            const antallFort = valgt.dag.deltakere.filter((d) => d.status === "DONE").length;
+            const antallTotalt = valgt.dag.deltakere.length;
+            const fremdriftPct = antallTotalt === 0 ? 0 : Math.round((antallFort / antallTotalt) * 100);
+            return (
+              // Kompakt Claw-føringshode (valgt TN-03) — de tre store metrikk-
+              // kortene skjøv første spillerrad ut av 844px-mobilskjermen.
+              <TnKort padding={12} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+                  <span style={{ fontFamily: TN.font.mono, fontSize: TN.text.sm, fontWeight: TN.weight.semibold, color: TN.navy900 }}>{antallFort} av {antallTotalt} ført</span>
+                  <TnPille tone={valgt.dag.status === "COMPLETED" ? "green" : "amber"}>{valgt.dag.status === "ACTIVE" ? "Pågår" : valgt.dag.status === "COMPLETED" ? "Avsluttet" : valgt.dag.status}</TnPille>
+                </div>
+                <div style={{ height: 4, borderRadius: TN.radius.full, background: TN.ink100, overflow: "hidden" }} role="progressbar" aria-valuenow={fremdriftPct} aria-valuemin={0} aria-valuemax={100}>
+                  <div style={{ width: `${fremdriftPct}%`, height: "100%", background: TN.navy600, borderRadius: TN.radius.full }} />
+                </div>
+              </TnKort>
+            );
+          })()}
+          <TnTestdagKo dag={valgt.dag} kanSkrive={valgt.kontekst.kanAdministrere} />
+        </Chrome>
+      );
+    }
+
+    const testdager = await hentTnTestdager(bruker);
+    return (
+      <Chrome aktiv="fellestesting" brukerNavn={brukerNavn} kontekst={spillerside.kontekst}>
+        <TnSidehode overlinje="Daglig · Test" tittel="Fellestesting" ingress="Opprett en testdag med valgt protokoll og deltakere, eller fortsett en påbegynt." handling={<TnLenke href="/team-norway/protokoller">Se protokoller</TnLenke>} />
+        {testdager && testdager.dager.length > 0 && (
+          <TnSeksjon tittel="Testdager">
+            <TnDataTable
+              caption="Testdager"
+              kolonner={[{ key: "title", label: "Testdag" }, { key: "tid", label: "Tidspunkt" }, { key: "status", label: "Status" }, { key: "fremdrift", label: "Fremdrift", align: "right" }]}
+              rader={testdager.dager.map((d) => ({
+                title: <Link href={`/team-norway/fellestesting?dag=${d.id}`} style={{ color: TN.navy700, fontWeight: TN.weight.semibold }}>{d.title}</Link>,
+                tid: datoTid.format(d.scheduledAt),
+                status: <TnPille tone={d.status === "COMPLETED" ? "green" : d.status === "ACTIVE" ? "amber" : "nøytral"}>{d.status === "ACTIVE" ? "Pågår" : d.status === "COMPLETED" ? "Avsluttet" : d.status}</TnPille>,
+                fremdrift: `${d.antallFullfort} / ${d.antallDeltakere}`,
+              }))}
+            />
+          </TnSeksjon>
+        )}
+        {spillerside.kontekst.kanAdministrere ? (
+          <TnSeksjon tittel="Ny testdag">
+            <TnKort>
+              <TnOpprettTestdag spillere={spillere} protokoller={protokoller} />
+            </TnKort>
+          </TnSeksjon>
+        ) : (
+          <TnTomtilstand tittel="Kun trenere kan starte en testdag" tekst="Du har innsyn som hjelpetrener. Be en trener i gruppen om å starte testdagen." />
+        )}
+      </Chrome>
+    );
+  }
 
   if (skjerm === "protokoller" || skjerm === "protokolldetalj") {
     const kontekst = await hentTnArbeidskontekst(bruker);
@@ -139,20 +209,10 @@ export async function TnRegistrertSkjerm({ skjerm, id }: { skjerm: Skjerm; id?: 
     );
   }
 
-  if (skjerm === "spillere" || skjerm === "fellestesting" || skjerm === "uttak" || skjerm === "college") {
+  if (skjerm === "spillere" || skjerm === "uttak" || skjerm === "college") {
     const data = await hentTnSpillere(bruker);
     if (!data) notFound();
-    if (["spillere", "fellestesting", "uttak"].includes(skjerm) && data.kontekst.erSpiller) notFound();
-
-    if (skjerm === "fellestesting") {
-      return (
-        <Chrome aktiv="fellestesting" brukerNavn={brukerNavn} kontekst={data.kontekst}>
-          <TnSidehode overlinje="Daglig · Test" tittel="Fellestesting" ingress="Velg spiller og protokoll. Selve skåringen bruker AK Golf HQs versjonerte testmotor." handling={<TnLenke href="/team-norway/protokoller" fremhevet>Velg protokoll</TnLenke>} />
-          <TnMetrikkRutenett><TnMetrikk etikett="Spillere" verdi={data.rader.length} /><TnMetrikk etikett="Protokoller" verdi={TN_CATALOG.length} /><TnMetrikk etikett="Registrerte tester" verdi={data.rader.reduce((sum, spiller) => sum + spiller.tester, 0)} /></TnMetrikkRutenett>
-          <TnSeksjon tittel="Spillerkø" forklaring="Ukjent resultat vises som ukjent, aldri som null."><TnDataTable caption="Spillerkø for fellestesting" kolonner={[{ key: "spiller", label: "Spiller" }, { key: "tester", label: "Resultater", align: "right" }, { key: "siste", label: "Siste test" }, { key: "handling", label: "Neste steg" }]} rader={data.rader.map((spiller) => ({ spiller: spiller.navn, tester: spiller.tester, siste: spiller.sisteTest ? dato.format(spiller.sisteTest) : "Ukjent", handling: <Link href={`/team-norway/spiller/${spiller.id}`} style={{ color: TN.navy700 }}>Åpne spiller</Link> }))} empty="Ingen spillere er tildelt Team Norway-gruppen." /></TnSeksjon>
-        </Chrome>
-      );
-    }
+    if (["spillere", "uttak"].includes(skjerm) && data.kontekst.erSpiller) notFound();
 
     if (skjerm === "uttak") {
       return (
@@ -182,7 +242,7 @@ export async function TnRegistrertSkjerm({ skjerm, id }: { skjerm: Skjerm; id?: 
       <Chrome aktiv={erCollege ? "college" : "spillere"} brukerNavn={brukerNavn} kontekst={data.kontekst}>
         <TnSidehode overlinje={erCollege ? "Daglig · College" : "Daglig · Spillerutvikling"} tittel={erCollege ? "Collegegruppen" : "Spillere"} ingress={erCollege ? "Collegeinformasjon leses fra spillerprofilen. NCAA-kollisjoner krever fortsatt en egen datamodell." : "Samlet inngang til spillerens plan, tester og sporbare Team Norway-poster."} />
         {!erCollege ? <TnMetrikkRutenett><TnMetrikk etikett="Spillere" verdi={rader.length} /><TnMetrikk etikett="Med aktiv plan" verdi={rader.filter((spiller) => spiller.aktivPlan).length} tone="green" /><TnMetrikk etikett="Mangler testresultat" verdi={rader.filter((spiller) => spiller.tester === 0).length} tone="amber" /></TnMetrikkRutenett> : null}
-        <TnDataTable caption={erCollege ? "Collegegruppen" : "Team Norway-spillere"} kolonner={erCollege ? [{ key: "spiller", label: "Spiller" }, { key: "skole", label: "College / skole" }, { key: "ar", label: "År" }, { key: "status", label: "Status" }] : [{ key: "spiller", label: "Spiller" }, { key: "hcp", label: "HCP", align: "right" }, { key: "plan", label: "Aktiv plan" }, { key: "tester", label: "Tester", align: "right" }, { key: "status", label: "Status" }]} rader={erCollege ? rader.map((spiller) => ({ spiller: <Link href={`/team-norway/spiller/${spiller.id}`} style={{ color: TN.navy700, fontWeight: TN.weight.semibold }}>{spiller.navn}</Link>, skole: spiller.skole ?? "Ikke registrert", ar: spiller.skolear ?? "Ukjent", status: <TnPille tone={brukerStatusTone(spiller.status)}>{brukerStatusOrd(spiller.status)}</TnPille> })) : spillerRader(rader).map((rad) => ({ spiller: rad.spiller, hcp: rad.hcp, plan: rad.plan, tester: rad.tester, status: rad.status }))} empty={erCollege ? "Ingen spillere har registrert college i profilen." : "Ingen aktive spillere i Team Norway-gruppen."} />
+        <TnDataTable caption={erCollege ? "Collegegruppen" : "Team Norway-spillere"} kolonner={erCollege ? [{ key: "spiller", label: "Spiller" }, { key: "skole", label: "College / skole" }, { key: "ar", label: "År" }, { key: "status", label: "Status" }] : [{ key: "spiller", label: "Spiller" }, { key: "hcp", label: "HCP", align: "right" }, { key: "plan", label: "Aktiv plan" }, { key: "tester", label: "Tester", align: "right" }, { key: "status", label: "Status" }]} rader={erCollege ? rader.map((spiller) => ({ spiller: <Link href={`/team-norway/spiller/${spiller.id}/oversikt`} style={{ color: TN.navy700, fontWeight: TN.weight.semibold }}>{spiller.navn}</Link>, skole: spiller.skole ?? "Ikke registrert", ar: spiller.skolear ?? "Ukjent", status: <TnPille tone={brukerStatusTone(spiller.status)}>{brukerStatusOrd(spiller.status)}</TnPille> })) : spillerRader(rader).map((rad) => ({ spiller: rad.spiller, hcp: rad.hcp, plan: rad.plan, tester: rad.tester, status: rad.status }))} empty={erCollege ? "Ingen spillere har registrert college i profilen." : "Ingen aktive spillere i Team Norway-gruppen."} />
       </Chrome>
     );
   }
@@ -244,7 +304,7 @@ export async function TnRegistrertSkjerm({ skjerm, id }: { skjerm: Skjerm; id?: 
     return (
       <Chrome aktiv="turneringer" brukerNavn={brukerNavn} kontekst={data.kontekst}>
         <TnSidehode overlinje="Data · Brutto score" tittel="Turneringsoversikt" ingress="Turneringer, planer og resultater kommer fra AK Golf HQs felles turneringsmotor." handling={data.kontekst.erSpiller ? <TnLenke href="/team-norway/turneringer/ny" fremhevet>Legg inn turnering</TnLenke> : undefined} />
-        <TnDataTable caption="Turneringer" kolonner={[{ key: "turnering", label: "Turnering" }, { key: "dato", label: "Dato" }, { key: "sted", label: "Sted" }, { key: "kilde", label: "Kilde" }, { key: "spillere", label: "Spillere", align: "right" }]} rader={data.turneringer.map((turnering) => ({ turnering: turnering.name, dato: dato.format(turnering.startDate), sted: turnering.location ?? "Ikke registrert", kilde: <TnPille tone={turnering.sourceOrigin === "MANUAL" ? "nøytral" : "info"}>{turnering.sourceOrigin ?? "Ukjent"}</TnPille>, spillere: new Set([...turnering.entries.map((rad) => rad.userId), ...turnering.results.map((rad) => rad.userId)]).size }))} empty="Ingen Team Norway-turneringer er koblet til spillernes planer eller resultater." />
+        <TnDataTable caption="Turneringer" kolonner={[{ key: "turnering", label: "Turnering" }, { key: "dato", label: "Dato" }, { key: "sted", label: "Sted" }, { key: "kilde", label: "Kilde" }, { key: "spillere", label: "Spillere", align: "right" }]} rader={data.turneringer.map((turnering) => ({ turnering: turnering.name, dato: turnering.startDate ? dato.format(turnering.startDate) : "Dato ikke registrert", sted: turnering.location ?? "Ikke registrert", kilde: <TnPille tone={turnering.sourceOrigin === "MANUAL" ? "nøytral" : "info"}>{turnering.sourceOrigin ?? "Ukjent"}</TnPille>, spillere: new Set([...turnering.entries.map((rad) => rad.userId), ...turnering.results.map((rad) => rad.userId)]).size }))} empty="Ingen Team Norway-turneringer er koblet til spillernes planer eller resultater." />
       </Chrome>
     );
   }
@@ -280,7 +340,7 @@ export async function TnRegistrertSkjerm({ skjerm, id }: { skjerm: Skjerm; id?: 
   if (skjerm === "inviter") {
     const kontekst = await hentTnArbeidskontekst(bruker);
     if (!kontekst?.kanAdministrere) notFound();
-    return <Chrome aktiv="inviter" brukerNavn={brukerNavn} kontekst={kontekst}><TnSidehode overlinje="Administrasjon · Medlemmer" tittel="Inviter spiller" ingress="Invitasjonen bruker AK Golf HQs eksisterende gruppe- og e-postflyt." /><TnKort><TnInviterSpiller groupId={kontekst.gruppe.id} /></TnKort></Chrome>;
+    return <Chrome aktiv="inviter" brukerNavn={brukerNavn} kontekst={kontekst}><TnSidehode overlinje="Administrasjon · Medlemmer" tittel="Inviter spiller" ingress="Inviter spillere til Team Norway og følg status for hver invitasjon." /><TnKort><TnInviterSpiller groupId={kontekst.gruppe.id} /></TnKort></Chrome>;
   }
 
   notFound();

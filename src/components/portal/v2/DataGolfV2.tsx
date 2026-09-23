@@ -12,7 +12,7 @@ import { TurneringshistorikkTrainLock } from "./TurneringshistorikkTrainLock";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useTransition, type CSSProperties, type ReactNode } from "react";
 import { TL } from "@/lib/v2/train-lock";
-import type { SpillerverktoyData } from "@/lib/datagolf/player-tool-data";
+import type { DataGolfKildestatus, SpillerverktoyData } from "@/lib/datagolf/player-tool-data";
 import type { UtfordringResultat } from "@/lib/datagolf/challenge";
 import { bandEtikett, fellesRunder, rundeOppsummering, SG_FELT, skillDifferanse,
   turneringer, visTall, type HistoriskRunde, type Proff } from "@/lib/datagolf/player-tool";
@@ -54,9 +54,11 @@ function Ferdighet({ pro, mot }: { pro: Proff; mot: Proff | null }) {
     <Merknad>Samme skala på begge sider av null. Dette er en modellberegning, ikke et sesongsnitt eller en garantert rundescore. Forskjell vises bare for samme kildeuttak.</Merknad>
   </Seksjon>;
 }
-function Resultater({ rounds, name }: { rounds: HistoriskRunde[]; name: string }) {
+function Resultater({ rounds, name, status }: { rounds: HistoriskRunde[]; name: string; status: DataGolfKildestatus | null }) {
   return <Seksjon title={`Turneringer · ${name}`}>
-    {rounds.length === 0 ? <p style={muted}>Ingen runder er tilgjengelige for dette utvalget.</p> : <>
+    {rounds.length === 0 ? <p style={muted}>{status === "ikke-konfigurert" ? "Rundehistorikken fra DataGolf er ikke tilgjengelig i denne versjonen ennå."
+      : status === "feil" ? "Rundehistorikken kunne ikke lastes. Prøv igjen."
+      : "Ingen runder er registrert i dette utvalget."}</p> : <>
       <p style={muted}>Siste {rounds.length} importerte runder. Datoen tilhører turneringen; eksakt spilledag kan mangle. En turnering kan være delvis med i utvalget.</p>
       {turneringer(rounds).map(e => <details key={e.id} style={{ padding: "16px 0", borderBottom: `1px solid ${TL.hair}` }}>
         <summary style={{ cursor: "pointer", minHeight: 44 }}><strong>{e.name}</strong><br />
@@ -83,10 +85,25 @@ export function DataGolfV2({ data, historikk }: DataGolfProps) {
     startTransition(() => router.replace(`/portal/analysere/datagolf?${params.toString()}`, { scroll: false }));
   }
   const pro = data.proff;
-  if (!pro) return <div data-screen="DG-01"><h1 style={{ fontSize: 34 }}>DataGolf</h1>
-    <p style={muted}>{data.kildefeil ? "DataGolf-data kunne ikke hentes. Prøv igjen." : "Proffreferansene er ikke tilgjengelige ennå."}</p>
-    <button type="button" style={felt} onClick={() => router.refresh()}>Prøv igjen</button>
-    <TurneringshistorikkTrainLock h={data.turneringshistorikk} /></div>;
+  const manglerReferanse = Object.values(data.kildestatus).includes("ikke-konfigurert");
+  const proffStatus = data.kildestatus.profiler;
+  const provIgjen = <button type="button" disabled={pending} style={felt}
+    onClick={() => startTransition(() => router.refresh())}>{pending ? "Henter …" : "Prøv igjen"}</button>;
+  if (!pro) return <div data-screen="DG-01" aria-busy={pending} style={{ display: "grid", gap: 20, color: TL.text }}>
+    <h1 style={{ fontSize: 34 }}>DataGolf</h1>
+    <p role={data.kildefeil ? "alert" : "status"} style={muted}>{proffStatus === "ikke-konfigurert"
+      ? "Proffsammenligning er ikke tilgjengelig i denne versjonen ennå. Egne resultater vises nedenfor."
+      : proffStatus === "feil" ? "Proffreferansene kunne ikke lastes. Prøv igjen. Egne resultater vises nedenfor."
+      : "Ingen proffreferanser er lagt inn ennå. Egne resultater vises nedenfor."}</p>
+    {data.kildefeil && provIgjen}
+    <Seksjon title="Dine registrerte runder">
+      {data.egne.count ? <p>{visTall(data.egne.score.value)} slag i brutto rundesnitt · {data.egne.count} runder · {data.egneKilde}.</p>
+        : <p style={muted}>Ingen fullstendige 18-hullsrunder er tilgjengelige ennå.</p>}
+      <Link href="/portal/mal/runder/ny" style={{ display: "inline-flex", minHeight: 48, alignItems: "center", textDecoration: "underline" }}>Registrer runde</Link>
+    </Seksjon>
+    <TurneringshistorikkTrainLock h={data.turneringshistorikk} />
+    <Utfordringer historikk={historikk} />
+  </div>;
   const mot = data.mot;
   const scorer = data.proffRunder.flatMap(r => r.score == null ? [] : [r.score]);
   const a = rundeOppsummering(data.proffRunder);
@@ -100,7 +117,9 @@ export function DataGolfV2({ data, historikk }: DataGolfProps) {
   return <div data-screen="DG-01" aria-busy={pending} style={{ color: TL.text, fontVariantNumeric: "tabular-nums", display: "grid", gap: 20, paddingTop: 16 }}>
     <header><h1 style={{ fontSize: 34, fontWeight: 700, letterSpacing: "-0.02em" }}>Hvor god er proffen?</h1>
       <p style={{ ...muted, marginTop: 8 }}>Utforsk tallene, sammenlign med deg selv og prøv en utfordring. Du trenger ingen egen DataGolf-profil.</p></header>
-    {data.kildefeil && <p role="alert">Deler av datakilden er utilgjengelige. Visningen kan være ufullstendig. <button onClick={() => router.refresh()} style={{ textDecoration: "underline" }}>Prøv igjen</button></p>}
+    {data.kildefeil && <div role="alert"><p style={muted}>Deler av DataGolf-tallene kunne ikke lastes. Manglende tall vises som —.</p>{provIgjen}</div>}
+    {manglerReferanse && <p role="status" style={muted}>Deler av proffreferansene er ikke tilgjengelige i denne versjonen ennå. Egne resultater og tilgjengelige innspillreferanser kan fortsatt brukes.</p>}
+    {data.brukerTakReserve && <p style={muted}>Proffutvalget kommer fra lagrede innspillreferanser. Beregnet ferdighetsnivå er ikke tilgjengelig.</p>}
     <div style={grid}>
       <label style={{ display: "grid", gap: 8 }}>Søk etter proff<input type="search" value={sok} onChange={e => setSok(e.target.value)} placeholder="Navn" style={felt} /></label>
       <label style={{ display: "grid", gap: 8 }}>Velg proff · {data.proffer.length} i utvalget<select value={pro.dgId} onChange={e => velg("pro", e.target.value)} style={felt}>
@@ -160,12 +179,22 @@ export function DataGolfV2({ data, historikk }: DataGolfProps) {
         <Merknad>Gode slag følger DataGolfs definisjon innenfor intervallet. Putting per fot og bunkerprofiler for enkeltproffer inngår ikke i denne datakilden.</Merknad>
       </Seksjon>
     </>}
-    {fane === "resultater" && <div style={grid}><Resultater rounds={data.proffRunder} name={pro.name} />{mot && <Resultater rounds={data.motRunder} name={mot.name} />}</div>}
+    {fane === "resultater" && <div style={grid}><Resultater rounds={data.proffRunder} name={pro.name} status={data.kildestatus.proffRunder} />{mot && <Resultater rounds={data.motRunder} name={mot.name} status={data.kildestatus.motRunder} />}</div>}
     {fane === "resultater" && <>
       <TurneringshistorikkTrainLock h={data.turneringshistorikk} />
       <Link href="/portal/tren/turneringer" style={{ display: "inline-flex", minHeight: 48, alignItems: "center", textDecoration: "underline" }}>Se turneringskalenderen</Link>
     </>}
-    <Seksjon title="Dine siste utfordringer">
+    <Utfordringer historikk={historikk} />
+    <footer style={muted}>Data powered by <a href="https://datagolf.com" target="_blank" rel="noopener noreferrer" style={{ textDecoration: "underline" }}>DataGolf</a>. <a href="https://datagolf.com/frequently-asked-questions" target="_blank" rel="noopener noreferrer" style={{ textDecoration: "underline" }}>Slik beregnes tallene</a>. Manglende verdier vises som —.</footer>
+  </div>;
+}
+function ComparisonRow({ label, unit, a, b }: { label: string; unit: string; a: { value: number | null; count: number }; b: { value: number | null; count: number } }) {
+  return <tr><th scope="row" style={{ padding: "12px 4px", fontWeight: 400 }}>{label}</th>{[a, b].map((m, i) => <td key={i} style={{ padding: "12px 4px" }}><strong>{visTall(m.value)} {unit}</strong><br /><small style={muted}>{m.count} runder</small></td>)}</tr>;
+}
+
+function Utfordringer({ historikk }: Pick<DataGolfProps, "historikk">) {
+  return (
+<Seksjon title="Dine siste utfordringer">
       {!historikk.length ? <p style={muted}>Prøv en innspillutfordring for å lagre ditt første resultat.</p> : historikk.map(r => <div key={r.id} style={{ padding: "12px 0", borderBottom: `1px solid ${TL.hair}` }}>
         <strong>{r.inne}/10 innenfor målet</strong> · {STASJON_SLAG.find(s => s.id === r.slag)?.etikett ?? r.slag}
         <p style={muted}>{dato(r.completedAt)} · {r.source === "datagolf" ? r.name : "Egen treningsregel"} · {r.carry != null ? `${visTall(r.carry)} m · ` : ""}{r.lie} · mål {visTall(r.target)} {r.unit ?? ""}</p>
@@ -173,9 +202,5 @@ export function DataGolfV2({ data, historikk }: DataGolfProps) {
       </div>)}
       <Merknad>Sammenlign egne forsøk med samme avstand, leie og treningsmål. Referansen kan endres når DataGolf oppdateres.</Merknad>
     </Seksjon>
-    <footer style={muted}>Data powered by <a href="https://datagolf.com" target="_blank" rel="noopener noreferrer" style={{ textDecoration: "underline" }}>DataGolf</a>. <a href="https://datagolf.com/frequently-asked-questions" target="_blank" rel="noopener noreferrer" style={{ textDecoration: "underline" }}>Slik beregnes tallene</a>. Manglende verdier vises som —.</footer>
-  </div>;
-}
-function ComparisonRow({ label, unit, a, b }: { label: string; unit: string; a: { value: number | null; count: number }; b: { value: number | null; count: number } }) {
-  return <tr><th scope="row" style={{ padding: "12px 4px", fontWeight: 400 }}>{label}</th>{[a, b].map((m, i) => <td key={i} style={{ padding: "12px 4px" }}><strong>{visTall(m.value)} {unit}</strong><br /><small style={muted}>{m.count} runder</small></td>)}</tr>;
+  );
 }

@@ -142,6 +142,8 @@ mock.module("@/lib/prisma", {
               return { id: row.id };
             },
           },
+          // Ingen av J05-reisens økter er koblet til en trenerført testdag.
+          testDayParticipant: { findFirst: async () => null },
         });
         sessions = next;
         results = records;
