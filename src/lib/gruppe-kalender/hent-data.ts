@@ -33,21 +33,27 @@ function ukedagFraDato(d: Date): number {
  * Henter offentlig-trygg kalenderdata for én gruppe: faste ukentlige
  * treningstider, sesongperioder (+ kompetansemål), samlinger og
  * skole-hendelser for periodenes skoleår. Ingen spillernavn eller personlig data.
+ *
+ * `gruppeSlug` (kanonisk identitet, `src/lib/domain/grupper.ts`) prøves først
+ * når den er oppgitt — en omdøping av gruppen i AgencyOS endrer da ikke
+ * hvilken rad som treffes. `gruppeNavn` er fallback for rader uten slug,
+ * samme mønster som `bootstrap.ts` (LS-03-funnet, 23.09.2026).
  */
 export async function hentGruppeKalenderData(
   gruppeNavn: string,
+  gruppeSlug?: string,
 ): Promise<GruppeKalenderData | null> {
-  const gruppe = await prisma.group.findFirst({
-    where: { name: gruppeNavn },
-    select: {
-      id: true,
-      name: true,
-      schedules: {
-        where: { recurring: "WEEKLY" },
-        orderBy: { startAt: "asc" },
-      },
+  const select = {
+    id: true,
+    name: true,
+    schedules: {
+      where: { recurring: "WEEKLY" as const },
+      orderBy: { startAt: "asc" as const },
     },
-  });
+  };
+  const gruppe =
+    (gruppeSlug ? await prisma.group.findUnique({ where: { slug: gruppeSlug }, select }) : null) ??
+    (await prisma.group.findFirst({ where: { name: gruppeNavn }, select }));
   if (!gruppe) return null;
 
   const [perioderRader, samlingerRader] = await Promise.all([

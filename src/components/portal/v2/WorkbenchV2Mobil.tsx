@@ -17,14 +17,21 @@ import { TL } from "@/lib/v2/train-lock";
  * (Anders 02.09.2026, beslutninger.md §PLAN-FASIT, WORKBENCH-KANON OG
  * BETALINGSTEST): den tegner CS/M-vokabular fra før opplåsingen 18.08 og en
  * annen IA. Siteringen ble byttet 05.09.2026 (A1) — layouten er uendret.
- * GAP-notatet fra Ø5 står fortsatt: fasiten (P-06) tegner dagen som ett ark
- * over uken; denne komponenten beholder dag-stripe-velger + ett-dag-av-gangen
- * (samme mønster som «I dag»/PH-familien) — å bygge om til fasitens
- * ark-navigasjon er en IA-endring, ikke en pikseljustering.
  *
  * Ærlighet (prosjekt-regel): ingen egne data-antakelser — gjenbruker
  * WorkbenchV2s DagNivaa (samme agenda-rendering som desktop Økt-nivå) og
  * ekte data fra WorkbenchData. Ingen felt uten kilde i datamodellen vises.
+ *
+ * Avvik:
+ *   - Ingen riggrad: verken P-06 eller P-07 har en rad i tests/visual/skjerm-mapping.ts ennå.
+ *   - GAP fra Ø5 består: fasiten (P-06) tegner dagen som ett ark over uken; denne
+ *     komponenten beholder dag-stripe-velger + ett-dag-av-gangen (samme mønster som
+ *     «I dag»/PH-familien) — å bygge om til fasitens ark-navigasjon er en IA-endring,
+ *     ikke en pikseljustering.
+ *   - «Flytt til annen dag» er ekte pointer-/touch-drag siden 17.09.2026 (beslutninger.md
+ *     §WORKBENCH DRA-OG-SLIPP, CD-4) — DagNivaas rader er dnd-kit `useDraggable` inn i
+ *     WorkbenchV2s felles `DndContext`. Klikk-veien (knapp → velg dag) består uendret som
+ *     tastatur-/skjermleser-vei; ingen av fasitene tegner selve drag-interaksjonen.
  */
 
 import { useState, type ReactNode } from "react";
@@ -39,12 +46,15 @@ export function WBTidslinjeMobil({
   valgt,
   onVelg,
   onFlytt,
+  dragSessionId,
 }: {
   dager: DagKol[];
   valgt: string | null;
   onVelg: (id: string) => void;
-  /** "Flytt til annen dag"-knapp på hver økt — touch-erstatning for musdrag. Uten = skjult. */
+  /** "Flytt til annen dag" på hver økt — ekte drag (pointer/touch) + klikk-fallback. Uten = skjult. */
   onFlytt?: (sessionId: string, dayIndex: number) => void;
+  /** Id på økten som akkurat nå dras — se DagNivaa i WorkbenchV2.tsx. */
+  dragSessionId?: string | null;
 }) {
   const defaultDag = dager.find((d) => d.today) ?? dager.find((d) => d.events.length > 0) ?? dager[0] ?? null;
   const [valgtDato, setValgtDato] = useState<number | null>(defaultDag ? Number(defaultDag.dato) : null);
@@ -53,7 +63,7 @@ export function WBTidslinjeMobil({
   return (
     <div  data-paper-slug="workbench-mobil" style={{ display: "flex", flexDirection: "column", gap: 12 }}>
       <DagStripe days={stripeDays} value={valgtDato} onChange={(date) => setValgtDato(date)} />
-      <DagNivaa dag={aktivDag ?? null} valgt={valgt} onVelg={onVelg} dager={dager} onFlytt={onFlytt} />
+      <DagNivaa dag={aktivDag ?? null} valgt={valgt} onVelg={onVelg} dager={dager} onFlytt={onFlytt} dragSessionId={dragSessionId} />
     </div>
   );
 }

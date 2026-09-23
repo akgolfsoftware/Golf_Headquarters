@@ -4,7 +4,7 @@
 // designsystem/wang/fasit/arsplan-2026-27/WANG Arsplan 2026-27.dc.html,
 // seksjonene #skoleplan/#kompetansemaal/#prover.
 
-import { Fragment, useState } from "react";
+import { useState } from "react";
 
 import {
   FORELDREMOTER,
@@ -21,7 +21,7 @@ import {
   moteTekst,
   type Trinn as TrinnType,
 } from "../../_data/arsplan-fasit-2026-27";
-import { PillGruppe, Seksjon, SeksjonHode, WangKort } from "./primitiver";
+import { FaneHero, PillGruppe, Seksjon, SeksjonHode, WangKort } from "./primitiver";
 
 function Timeplan() {
   const [klasseId, setKlasseId] = useState(KLASSER[0].id);
@@ -33,47 +33,56 @@ function Timeplan() {
       <PillGruppe
         valg={KLASSER.map((k) => ({ label: k.id, aktiv: k.id === klasseId, onVelg: () => setKlasseId(k.id) }))}
       />
-      <WangKort style={{ marginTop: 16, overflowX: "auto" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "110px repeat(5, minmax(0,1fr))", gap: 6, minWidth: 640 }}>
-          <div />
-          {DAGER.map((d) => (
-            <div key={d} style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 12.5, textAlign: "center", padding: "6px 0" }}>
-              {d}
-            </div>
-          ))}
-          {TIMER.map(([label, tid], radI) => (
-            <Fragment key={label}>
-              <div style={{ fontSize: 11.5, color: "var(--text-secondary)", paddingTop: 8 }}>
-                <div style={{ fontWeight: 700 }}>{label}</div>
-                <div>{tid}</div>
-              </div>
-              {klasse.plan[radI]?.map((celle, dagI) => {
+      {/* Én dag per kort, ombrekkes med repeat(auto-fill, minmax(…)) — aldri
+          sidelengs rulling, ikke engang smalere enn 320 px (Anders 22.09.2026,
+          beslutninger.md §Aldri sidelengs rulling). Kortene vokser til flere
+          per rad på brede skjermer i stedet for å kreve en fast tabellbredde. */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 12, marginTop: 16 }}>
+        {DAGER.map((d, dagI) => (
+          <WangKort key={d} padding={14}>
+            <div style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 13.5, marginBottom: 8 }}>{d}</div>
+            <div style={{ display: "grid", gap: 6 }}>
+              {TIMER.map(([label, tid], radI) => {
+                const celle = klasse.plan[radI]?.[dagI] ?? "";
                 const trening = celle === "Trening" || celle.startsWith("Trening /");
                 const spisefri = celle === "Spisefri";
                 return (
                   <div
-                    key={dagI}
+                    key={label}
                     style={{
-                      minWidth: 0,
-                      fontSize: 11,
-                      lineHeight: 1.35,
-                      padding: "6px 8px",
-                      borderRadius: 8,
-                      background: trening ? "var(--tint-teal)" : spisefri ? "var(--neutral-50)" : "var(--neutral-50)",
-                      color: trening ? "var(--wang-teal-text)" : "var(--text-secondary)",
-                      fontWeight: trening ? 700 : 400,
-                      overflowWrap: "anywhere",
-                      whiteSpace: "normal",
+                      display: "grid",
+                      gridTemplateColumns: "70px minmax(0,1fr)",
+                      gap: 8,
+                      alignItems: "baseline",
                     }}
                   >
-                    {celle || "–"}
+                    <div style={{ fontSize: 10.5, color: "var(--text-secondary)", lineHeight: 1.3 }}>
+                      <div style={{ fontWeight: 700 }}>{label}</div>
+                      <div>{tid}</div>
+                    </div>
+                    <div
+                      style={{
+                        minWidth: 0,
+                        fontSize: 11,
+                        lineHeight: 1.35,
+                        padding: "6px 8px",
+                        borderRadius: 4,
+                        background: trening ? "var(--tint-teal)" : spisefri ? "var(--neutral-50)" : "var(--neutral-50)",
+                        color: trening ? "var(--wang-teal-text)" : "var(--text-secondary)",
+                        fontWeight: trening ? 700 : 400,
+                        overflowWrap: "anywhere",
+                        whiteSpace: "normal",
+                      }}
+                    >
+                      {celle || "–"}
+                    </div>
                   </div>
                 );
               })}
-            </Fragment>
-          ))}
-        </div>
-      </WangKort>
+            </div>
+          </WangKort>
+        ))}
+      </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px,1fr))", gap: 16, marginTop: 16 }}>
         <WangKort>
@@ -182,6 +191,13 @@ export function FaneSkole({
 }) {
   return (
     <div>
+      <FaneHero
+        eyebrow="Skole"
+        tittel="Timeplan, prøver og kompetansemål"
+        ingress="Treningen ligger 1. til 3. time mandag, onsdag og fredag. Resten av dagen er vanlig skole. Prøver og eksamen settes av skolen."
+        foto="/team-wang/hero/skole-fotball.jpg"
+        fotoAlt="WANG-elev i keeperhansker med ball"
+      />
       <Timeplan />
       <Kompetansemaal trinn={trinn} />
       <Prover trinn={trinn} />
