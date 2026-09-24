@@ -12,7 +12,7 @@ AK Golf HQ bygges for å bli verdens ledende coaching- og treningsplattform for 
 
 ### 1.1 Inngangsporten: Norges Golfforbund (NGF) og Team Norway
 * **Målgruppe:** De cirka 1 000 aktive konkurransejuniorene i Norge (Srixon Tour, Narvesen Tour, WANG Toppidrett, NTG og forbundsgrupper).
-* **Tilbud:** Forbundsmodell til **199 kr/mnd** (`PLAYERHQ_JUNIOR_MND`). En rimelig månedssum som foreldre og spillere enkelt aksepterer, med en verdi som langt overgår konkurrentene.
+* **Tilbud:** Fast pris på **299 kr/mnd** eller **2 690 kr/år** for alle spillere. Team Norway får kun intern-skjermene (`/team-norway/*`) gratis mot at de promoterer appen for Anders.
 * **Verdiproposisjon:**
   * Komplett teknisk plan fra P1 til P10 (MORAD-standard) med automatisk milepælsbekreftelse fra TrackMan.
   * Live-registrering på treningsfeltet med Whisper tale-til-tekst.
@@ -71,9 +71,9 @@ Per 24. september 2026 er kodebasen fullt kvalitetssikret med **3 445 automatise
   4. Finpusse oppgave-rekkefølge med den nye dra-og-slipp-funksjonen.
 
 ### Fase 2: Kommersiell lansering mot konkurransejuniorer (Uke 41–43)
-* **Formål:** Rulle ut tilbudet om 199 kr/mnd til Norges ~1 000 konkurransejuniorer via NGF-samarbeid og Team Norway.
+* **Formål:** Rulle ut tilbudet om 299 kr/mnd til Norges ~1 000 konkurransejuniorer via NGF-samarbeid og Team Norway-promotering.
 * **Oppgaver:**
-  1. Åpne landingssiden for juniorer (`/junior`) med Stripe-betaling for månedsabonnement.
+  1. Åpne landingssiden for juniorer (`/junior`) med Stripe-betaling for månedsabonnement (299 kr/mnd).
   2. Sende ut velkomst- og onboardinglenke via trenere og forbundskanaler.
   3. Automatisk hente spillernes historiske turneringsresultater idet de logger inn.
   4. Sikre at foresatte godkjenner samtykke i tråd med personvernreglene for idrettsutøvere.

@@ -33,8 +33,8 @@ export const abonnementKindSchema = z.enum(ABONNEMENT_KIND);
 /** Priser i øre — kanon (Anders 2026-08-16 / 2026-09-24). */
 export const PLAYERHQ_PRIS_MND_ORE = 299_00;
 export const PLAYERHQ_PRIS_AAR_ORE = 2_690_00;
-/** Junior / Forbundstilbud (Team Norway & NGF): 199 kr/mnd. */
-export const PLAYERHQ_PRIS_JUNIOR_MND_ORE = 199_00;
+/** Fast pris 299 kr/mnd for alle spillere (Anders 2026-09-24). Team Norway får kun internflater gratis mot promotering. */
+export const PLAYERHQ_PRIS_JUNIOR_MND_ORE = 299_00;
 /** 299 × 12 − 2 690 = 898 kr spart per år. */
 export const PLAYERHQ_AAR_BESPARELSE_ORE = PLAYERHQ_PRIS_MND_ORE * 12 - PLAYERHQ_PRIS_AAR_ORE;
 
