@@ -44,6 +44,7 @@ import { TekniskPlanVisning, type EnTingLes, type FokusLes } from "@/components/
 import { loadNesteOkt } from "@/lib/portal/load-neste-okt";
 import { sorterPosisjoner, medFasitNavn } from "@/lib/teknisk-plan/sorter-posisjoner";
 import { MOTORIKK_LABEL, DIMENSJON_LABEL, MAALEUTSTYR_LABEL, PRESS_LABEL } from "@/lib/domain/ak-formel-v2";
+import { computeTrackManDispersionMap } from "@/lib/trackman/dispersion-map";
 export const dynamic = "force-dynamic";
 
 interface PageProps {
@@ -222,6 +223,42 @@ export default async function PlanBuilderPage({ params }: PageProps) {
       };
     });
 
+  const latestTmSession = await prisma.trackManSession.findFirst({
+    where: { userId: user.id },
+    orderBy: { recordedAt: "desc" },
+    include: {
+      shots: {
+        orderBy: { shotNumber: "asc" },
+        take: 50,
+      },
+    },
+  });
+
+  const dispersionResult =
+    latestTmSession && latestTmSession.shots.length > 0
+      ? computeTrackManDispersionMap(
+          latestTmSession.shots.map((s) => ({
+            id: s.id,
+            shotNumber: s.shotNumber,
+            club: s.club,
+            side: s.side,
+            carryDistance: s.carryDistance,
+            totalDistance: s.totalDistance,
+            smashFactor: s.smashFactor,
+            launchAngle: s.launchAngle,
+            faceToPath: s.faceToPath,
+          })),
+        )
+      : null;
+
+  const latestSessionDate = latestTmSession
+    ? latestTmSession.recordedAt.toLocaleDateString("nb-NO", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      })
+    : null;
+
   const periodLabel = formatPeriode(plan.startDato);
 
   // Standard mål-posisjon for de generiske "Ny oppgave"-knappene: planens
@@ -340,7 +377,11 @@ export default async function PlanBuilderPage({ params }: PageProps) {
         {/* Innhold: posisjoner + sidebar */}
         <div className="grid grid-cols-1 lg:grid-cols-[1.6fr_1fr]" style={{ gap: 16 }}>
           <section style={{ display: "flex", flexDirection: "column", gap: 16, minWidth: 0 }}>
-            <TekniskPlanFullsvingShell fullsvingTasks={fullsvingTasks}>
+            <TekniskPlanFullsvingShell
+              fullsvingTasks={fullsvingTasks}
+              dispersion={dispersionResult}
+              latestSessionDate={latestSessionDate}
+            >
               {({ onlyFullsving }) => (
                 <>
             {sortedPositions.length === 0 ? (

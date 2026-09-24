@@ -223,6 +223,12 @@ export async function importTrackMan(
       smashFactor: number | null;
       carryDistance: number | null;
       side: number | null;
+      clubPath?: number | null;
+      faceAngle?: number | null;
+      faceToPath?: number | null;
+      attackAngle?: number | null;
+      launchAngle?: number | null;
+      spinRate?: number | null;
     }>
   >();
 
@@ -238,6 +244,12 @@ export async function importTrackMan(
         smashFactor: shot.smashFactor,
         carryDistance: shot.carryMeters,
         side: shot.sideMeters,
+        clubPath: shot.clubPath,
+        faceAngle: shot.faceAngle,
+        faceToPath: shot.faceToPath,
+        attackAngle: shot.attackAngle,
+        launchAngle: shot.launchAngleDeg,
+        spinRate: shot.spinRateRpm,
       });
       matchedByTask.set(match.taskId, list);
     }
@@ -256,6 +268,7 @@ export async function importTrackMan(
       faceToPath: shot.faceToPath,
       clubPath: shot.clubPath,
       faceAngle: shot.faceAngle,
+      attackAngle: shot.attackAngle,
       positionTaskId: match.taskId,
       matchSource: match.matchSource,
       matchConfidence: match.matchConfidence,
