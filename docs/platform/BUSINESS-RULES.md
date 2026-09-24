@@ -50,8 +50,10 @@ Sist oppdatert: 2026-08-17 (dato rettet — §Abonnement og tilgang er fra 2026-
 
 ### Betalt tilgang
 
-- **299 kr/mnd** eller **2 690 kr/år** (Anders-beslutning 2026-08-16 — årsprisen ER nå
-  kanon: «tre måneder gratis — spar 898 kr»; 299 × 9 = 2 691).
+- **299 kr/mnd** eller **2 690 kr/år** for **ALLE spillere** (Anders-beslutning
+  2026-08-16 / 2026-09-24 — flat pris 299 kr/mnd for alle spillere, ingen 199 kr juniorpris.
+  Team Norway får kun de interne `/team-norway/*`-skjermene gratis mot at de promoterer
+  appen for Anders). Årsprisen ER nå kanon: «tre måneder gratis — spar 898 kr»; 299 × 9 = 2 691.
 - Betaling via Stripe. Abonnement lagres i `Subscription`-tabellen — én rad per
   `(userId, kind)` der kind er `COACHING` eller `PLAYERHQ` (siden 2026-08-16 kan en
   spiller ha begge samtidig).

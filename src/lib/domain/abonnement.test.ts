@@ -83,10 +83,10 @@ test("planNavn dekker alle planene og gir null for ukjent/null", () => {
   assert.equal(planNavn(null), null);
 });
 
-test("prisene er kanon: 299/mnd, 2 690/år, junior 199/mnd, 898 kr spart («tre måneder gratis»)", () => {
+test("prisene er kanon: 299/mnd for alle spillere, 2 690/år, 898 kr spart («tre måneder gratis»)", () => {
   assert.equal(PLAYERHQ_PRIS_MND_ORE, 29_900);
   assert.equal(PLAYERHQ_PRIS_AAR_ORE, 269_000);
-  assert.equal(PLAYERHQ_PRIS_JUNIOR_MND_ORE, 19_900);
+  assert.equal(PLAYERHQ_PRIS_JUNIOR_MND_ORE, 29_900);
   assert.equal(PLAYERHQ_AAR_BESPARELSE_ORE, 89_800);
   // «Tre måneder gratis»: 9 måneder dekker årsprisen (299 × 9 = 2 691 ≈ 2 690).
   assert.ok(PLAYERHQ_PRIS_AAR_ORE <= PLAYERHQ_PRIS_MND_ORE * 9);
