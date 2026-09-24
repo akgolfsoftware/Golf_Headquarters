@@ -143,6 +143,19 @@ export function IDagSelected(p: IDagSelectedProps) {
         {approvals.map((g) => <Approval key={g.id} okt={g} onDone={(id) => setAnswered((prev) => [...prev, id])} />)}
         {hero}
         <div className={styles.stats}><section className={styles.stat}><Kicker>Økter denne uken</Kicker><div className={styles.number}>{p.planLaast || failed || p.okterUke === 0 ? "—" : <>{p.fullfortUke ?? 0}<small> av {p.okterUke}</small></>}</div><p className={styles.caption}>{p.planLaast ? "Krever full tilgang." : failed ? "Ikke tilgjengelig uten nett." : p.weekProgress.plannedMin > 0 ? `${p.weekProgress.completedMin} av ${p.weekProgress.plannedMin} planlagte minutter` : "Ingen planlagte minutter."}</p>{!p.planLaast && !failed && p.weekProgress.plannedMin > 0 && <progress aria-label="Ukefremdrift" max={p.weekProgress.plannedMin} value={p.weekProgress.completedMin} />}</section><SG value={failed ? null : p.sgVerdi} label={p.sgInnspill} unavailable={failed} /></div>
+        <section className={`${styles.card} ${styles.roundCard}`} aria-label="Runde og statistikk">
+          <div className={styles.row}>
+            <Kicker>Runde og statistikk</Kicker>
+            <Link className={styles.textLink} href="/portal/mal/runder">Tidligere runder ›</Link>
+          </div>
+          <p className={styles.roundText}>
+            Har du spilt en runde? Fyll inn SG-tall fra UpGame/Arccos på 30 sekunder, eller før slag for slag.
+          </p>
+          <div className={styles.actions}>
+            <ButtonLink href="/portal/mal/runder/ny" quiet>Fyll inn fra annen app</ButtonLink>
+            <ButtonLink href="/portal/runde/logg" quiet>Før slag for slag</ButtonLink>
+          </div>
+        </section>
         <section><div className={styles.row}><Kicker>Resten av dagen</Kicker>{!failed && <button className={styles.textLink} onClick={() => dialog.current?.showModal()}>Hele dagen</button>}</div>{failed ? <ul className={styles.agenda}><li><div><span className={styles.mono}>—</span><span className={styles.eventText}><strong>Ikke tilgjengelig nå</strong><small>Dagen hentes når du er på nett.</small></span></div></li></ul> : <Agenda events={events} />}</section>
         {p.testerLive && <section className={styles.card}><Kicker>Test pågår · {p.testerLive.testNavn}</Kicker><p className={styles.mono}>{p.testerLive.fremdrift}</p><ButtonLink href={`/portal/tren/tester/${p.testerLive.testId}/gjennomfor`}>Fortsett testen</ButtonLink></section>}
         {p.trackman && <Link className={styles.card} href={`/portal/analysere/trackman/${p.trackman.sessionId}`}><Kicker>Siste TrackMan · {p.trackman.club} · {p.trackman.dateText}</Kicker><p>{p.trackman.sentence}</p><span className={styles.textLink}>Se spredning ›</span></Link>}

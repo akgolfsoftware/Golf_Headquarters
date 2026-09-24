@@ -40,14 +40,14 @@ export default async function NyRundePage() {
           </div>
         </div>
 
-        {/* To kilder: før egne slag, eller registrer eksisterende SG-tall. */}
+        {/* To kilder: før egne slag, eller registrer eksisterende SG-tall fra annen app. */}
         <Kort pad="12px 18px">
           <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: 0, lineHeight: 1.6 }}>
-            Har du SG-tall fra før? Registrer dem i enkel eller avansert visning under. Du kan også{" "}
+            Har du SG-tall fra en annen app (f.eks. UpGame, Arccos, Shot Scope eller turnering)? Registrer dem i enkel eller avansert visning under på 30 sekunder. Du kan også{" "}
             <Link href="/portal/runde/logg" style={{ color: TL.fill, fontWeight: 600, textDecoration: "none" }}>
               føre runden slag for slag
             </Link>{" "}
-            for å beregne SG fra registrerte slag.
+            for automatisk beregning av alle kategorier.
           </p>
         </Kort>
 

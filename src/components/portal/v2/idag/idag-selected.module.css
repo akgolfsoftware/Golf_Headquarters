@@ -98,3 +98,5 @@
   .dialog { padding: 16px; }
 }
 @media (max-width: 359px) { .stats { grid-template-columns: minmax(0,1fr); } .actions { grid-template-columns: minmax(0,1fr); } }
+.roundCard { border-left: 3px solid var(--ak-grunn-farge-sand-400); }
+.roundText { margin: 6px 0 10px; font-size: 13px; color: var(--ph-muted); line-height: 1.5; }
