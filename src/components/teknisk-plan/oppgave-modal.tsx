@@ -48,7 +48,29 @@ import {
   type HitRateProtocol,
   type PyramidArea,
 } from "./constants";
+import { sokOvelser } from "@/lib/workbench/ovelse-sok";
+import { TL } from "@/lib/v2/train-lock";
 import "./oppgave-modal.css";
+
+function getEmbedUrl(url?: string): string | null {
+  if (!url) return null;
+  try {
+    const u = new URL(url);
+    if (u.hostname.includes("youtube.com")) {
+      const v = u.searchParams.get("v");
+      if (v) return `https://www.youtube.com/embed/${v}`;
+    }
+    if (u.hostname === "youtu.be") {
+      const v = u.pathname.slice(1);
+      if (v) return `https://www.youtube.com/embed/${v}`;
+    }
+    if (u.hostname.includes("vimeo.com")) {
+      const m = /\/(\d+)/.exec(u.pathname);
+      if (m) return `https://player.vimeo.com/video/${m[1]}`;
+    }
+  } catch {}
+  return null;
+}
 
 const PYRAMIDES: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
 
@@ -149,6 +171,48 @@ export function OppgaveModal({ open, onClose, initial, onSubmit, isEditing, onLo
   const [loggingReps, setLoggingReps] = useState(false);
   const [uploading, setUploading] = useState<"bilde" | "video" | null>(null);
   const [mediaError, setMediaError] = useState<string | null>(null);
+
+  // Øvelsesbank-søk
+  const [drillSearchOpen, setDrillSearchOpen] = useState(false);
+  const [drillQuery, setDrillQuery] = useState("");
+  const [drillResults, setDrillResults] = useState<
+    Array<{ id: string; name: string; pyramidArea: string }>
+  >([]);
+  const [isSearchingDrills, setIsSearchingDrills] = useState(false);
+  const [drillNames, setDrillNames] = useState<Record<string, string>>({});
+
+  async function handleDrillSearch(q: string) {
+    setDrillQuery(q);
+    setIsSearchingDrills(true);
+    try {
+      const res = await sokOvelser(q, draft.pyramide);
+      setDrillResults(res);
+      setDrillNames((prev) => {
+        const next = { ...prev };
+        for (const item of res) {
+          next[item.id] = item.name;
+        }
+        return next;
+      });
+    } catch {
+      // Ignorer søkefeil
+    } finally {
+      setIsSearchingDrills(false);
+    }
+  }
+
+  function toggleDrill(id: string, name?: string) {
+    if (name) {
+      setDrillNames((prev) => ({ ...prev, [id]: name }));
+    }
+    setDraft((d) => {
+      const exists = d.drillIds.includes(id);
+      return {
+        ...d,
+        drillIds: exists ? d.drillIds.filter((x) => x !== id) : [...d.drillIds, id],
+      };
+    });
+  }
   // Avansert P-velger (mellomposisjoner) — per-nettleser-bekvemmelighet, aldri fasit.
   const [avansertP, setAvansertPState] = useState<boolean>(() => {
     try { return window.localStorage.getItem(AVANSERT_P_NOKKEL) === "1"; } catch { return false; }
@@ -587,15 +651,13 @@ export function OppgaveModal({ open, onClose, initial, onSubmit, isEditing, onLo
                 <span style={{ color: "hsl(var(--muted-foreground))" }}>· valgfritt</span>
               </span>
             </div>
-            {!isEditing || !onUploadMedia ? (
-              <p className="field-helper">Lagre oppgaven først, så kan du legge til bilde og video.</p>
-            ) : (
+            {isEditing && onUploadMedia ? (
               <div className="media-grid">
                 <label className={`media-slot ${draft.videoUrl ? "has-file" : ""}`}>
                   <span className="ic" aria-hidden>{uploading === "video" ? <Sparkles size={14} /> : <Play size={14} />}</span>
                   <span className="copy">
                     <span className="nm">
-                      {uploading === "video" ? "Laster opp …" : draft.videoUrl ? "Video lagt til" : "Legg til video"}
+                      {uploading === "video" ? "Laster opp …" : draft.videoUrl ? "Video lagt til" : "Last opp video"}
                     </span>
                     <span className="meta">MP4 / MOV · max 50 MB</span>
                   </span>
@@ -611,7 +673,7 @@ export function OppgaveModal({ open, onClose, initial, onSubmit, isEditing, onLo
                   <span className="ic" aria-hidden>{uploading === "bilde" ? <Sparkles size={14} /> : <Camera size={14} />}</span>
                   <span className="copy">
                     <span className="nm">
-                      {uploading === "bilde" ? "Laster opp …" : draft.bildeUrl ? "Bilde lagt til" : "Legg til bilde"}
+                      {uploading === "bilde" ? "Laster opp …" : draft.bildeUrl ? "Bilde lagt til" : "Last opp bilde"}
                     </span>
                     <span className="meta">JPG / PNG / WEBP · max 5 MB</span>
                   </span>
@@ -624,7 +686,36 @@ export function OppgaveModal({ open, onClose, initial, onSubmit, isEditing, onLo
                   />
                 </label>
               </div>
-            )}
+            ) : null}
+
+            {/* Direkte lenke for video og bilde */}
+            <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 10 }}>
+              <div>
+                <label className="field-label" style={{ fontSize: 11, marginBottom: 4, display: "block" }}>
+                  Videolenke (YouTube, Vimeo eller MP4):
+                </label>
+                <input
+                  type="url"
+                  className="field-input"
+                  placeholder="https://www.youtube.com/watch?v=... eller https://..."
+                  value={draft.videoUrl ?? ""}
+                  onChange={(e) => patch({ videoUrl: e.target.value })}
+                />
+              </div>
+              <div>
+                <label className="field-label" style={{ fontSize: 11, marginBottom: 4, display: "block" }}>
+                  Bildelenke (URL):
+                </label>
+                <input
+                  type="url"
+                  className="field-input"
+                  placeholder="https://..."
+                  value={draft.bildeUrl ?? ""}
+                  onChange={(e) => patch({ bildeUrl: e.target.value })}
+                />
+              </div>
+            </div>
+
             {mediaError && (
               <p className="field-helper" style={{ color: "hsl(var(--destructive))", marginTop: 8 }}>{mediaError}</p>
             )}
@@ -637,11 +728,22 @@ export function OppgaveModal({ open, onClose, initial, onSubmit, isEditing, onLo
               />
             )}
             {draft.videoUrl && (
-              <video
-                src={draft.videoUrl}
-                controls
-                style={{ marginTop: 12, maxHeight: 200, borderRadius: 10, display: "block" }}
-              />
+              getEmbedUrl(draft.videoUrl) ? (
+                <div style={{ marginTop: 12, borderRadius: 10, overflow: "hidden", aspectRatio: "16 / 9", maxHeight: 240, width: "100%" }}>
+                  <iframe
+                    src={getEmbedUrl(draft.videoUrl)!}
+                    style={{ width: "100%", height: "100%", border: 0 }}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
+              ) : (
+                <video
+                  src={draft.videoUrl}
+                  controls
+                  style={{ marginTop: 12, maxHeight: 200, borderRadius: 10, display: "block", width: "100%" }}
+                />
+              )
             )}
           </section>
 
@@ -786,16 +888,101 @@ export function OppgaveModal({ open, onClose, initial, onSubmit, isEditing, onLo
               <span className="num"><b>8</b> Linkede drills fra øvelsesbanken</span>
               <span className="helper">{draft.drillIds.length} valgt</span>
             </div>
-            <div className="chip-row">
+            <div className="chip-row" style={{ flexWrap: "wrap", gap: 8 }}>
               {draft.drillIds.map((id) => (
-                <span key={id} className="drill-chip selected">
-                  <span className="id">#{id}</span>
+                <span
+                  key={id}
+                  className="drill-chip selected"
+                  style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 10px", borderRadius: 6 }}
+                >
+                  <span className="id">{drillNames[id] ?? `#${id.slice(0, 8)}`}</span>
+                  <button
+                    type="button"
+                    onClick={() => toggleDrill(id)}
+                    aria-label="Fjern drill"
+                    style={{
+                      background: "transparent",
+                      border: "none",
+                      color: "inherit",
+                      cursor: "pointer",
+                      padding: 0,
+                      display: "inline-flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <X size={12} aria-hidden />
+                  </button>
                 </span>
               ))}
-              <button type="button" className="drill-chip action">
-                <Search size={11} aria-hidden /> Søk i drill-bibliotek
+              <button
+                type="button"
+                className="drill-chip action"
+                onClick={() => {
+                  const nextState = !drillSearchOpen;
+                  setDrillSearchOpen(nextState);
+                  if (nextState && drillResults.length === 0) {
+                    handleDrillSearch("");
+                  }
+                }}
+              >
+                <Search size={11} aria-hidden /> {drillSearchOpen ? "Lukk øvelsessøk" : "Søk i øvelsesbanken"}
               </button>
             </div>
+
+            {drillSearchOpen && (
+              <div
+                style={{
+                  marginTop: 12,
+                  padding: 12,
+                  background: TL.dim,
+                  borderRadius: 8,
+                  border: `1px solid ${TL.hair}`,
+                }}
+              >
+                <input
+                  type="text"
+                  placeholder="Søk i øvelsesbanken …"
+                  value={drillQuery}
+                  onChange={(e) => handleDrillSearch(e.target.value)}
+                  className="field-input"
+                  style={{ width: "100%", marginBottom: 8 }}
+                />
+                {isSearchingDrills ? (
+                  <p className="field-helper">Leter i øvelsesbanken …</p>
+                ) : drillResults.length === 0 ? (
+                  <p className="field-helper">Ingen øvelser funnet for {draft.pyramide}.</p>
+                ) : (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 6, maxHeight: 180, overflowY: "auto" }}>
+                    {drillResults.map((dr) => {
+                      const isSelected = draft.drillIds.includes(dr.id);
+                      return (
+                        <div
+                          key={dr.id}
+                          onClick={() => toggleDrill(dr.id, dr.name)}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            padding: "6px 10px",
+                            borderRadius: 6,
+                            background: isSelected ? TL.fill : TL.elev,
+                            color: isSelected ? TL.onFill : TL.text,
+                            cursor: "pointer",
+                            fontSize: 12,
+                          }}
+                        >
+                          <span style={{ fontWeight: 600 }}>{dr.name}</span>
+                          <span style={{ fontSize: 10, opacity: 0.8 }}>
+                            {isSelected ? "Valgt (klikk for å fjerne)" : "Legg til"}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
+
             <p className="field-helper" style={{ marginTop: 10 }}>
               Når disse drillene loggføres i en treningsøkt, telles reps automatisk mot oppgaven.
             </p>
