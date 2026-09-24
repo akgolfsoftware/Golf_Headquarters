@@ -81,7 +81,33 @@ export function WorkbenchUke({ playerId, spillerNavn, uke, kilder, roster = [] }
       onLagreSomMal={(isTemplate: boolean) => { if (!valgt) return; kjor(() => setSessionTemplate(valgt.id, isTemplate), () => toast.success(isTemplate ? UI.toastTemplateSaved : UI.toastTemplateRemoved)); }}
       onLeggTilDrill={(v: LeggTilDrillVerdier) => {
         if (!valgt) return;
-        kjor(() => addDrill({ sessionId: valgt.id, drill: { title: v.title, durationMinutes: v.durationMinutes, akFormel: { pyramid: v.pyramid, area: v.area, label: `${PYRAMID_LABEL[v.pyramid]} · ${AREA_LABEL[v.area]}` }, description: v.description } }), () => toast.success(UI.toastDrillAdded));
+        const etiketter = [PYRAMID_LABEL[v.pyramid], AREA_LABEL[v.area]];
+        if (v.motorikk) etiketter.push(v.motorikk === "UTEN_BALL" ? "Uten ball" : v.motorikk === "LAV_HAST" ? "Lav hastighet" : "Automatikk");
+        if (v.belastning) etiketter.push(v.belastning === "INNENDORS" ? "Innendørs" : v.belastning === "TRENINGSOMRADE" ? "Treningsområde" : v.belastning === "BANE" ? "Bane" : "Konkurranse");
+        if (v.press) etiketter.push(v.press === "ALENE" ? "Alene" : v.press === "OBSERVERT" ? "Observert" : v.press === "KONKURRANSE" ? "Konkurranse" : "Turnering");
+        const descParts = [v.description, v.mengde].filter(Boolean);
+        const samletBeskrivelse = descParts.length > 0 ? descParts.join(" · ") : undefined;
+        kjor(
+          () =>
+            addDrill({
+              sessionId: valgt.id,
+              drill: {
+                title: v.title,
+                durationMinutes: v.durationMinutes,
+                akFormel: {
+                  pyramid: v.pyramid,
+                  area: v.area,
+                  motorikk: v.motorikk,
+                  belastning: v.belastning,
+                  press: v.press,
+                  label: etiketter.join(" · "),
+                },
+                techniqueFocus: v.techniqueFocus,
+                description: samletBeskrivelse,
+              },
+            }),
+          () => toast.success(UI.toastDrillAdded)
+        );
       }}
       onFlyttDrill={(drillId, retning) => {
         if (!valgt) return;

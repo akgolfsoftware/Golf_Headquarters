@@ -9,10 +9,11 @@
 
 import type { ExerciseDefinition } from "@/generated/prisma/client";
 import { AREA_LABEL, PYRAMID_LABEL } from "@/lib/domain/workbench/labels";
-import type { AKFormel, PyramidArea, SourceItem, TrainingArea } from "@/lib/domain/workbench/types";
+import type { AKFormel, Motorikk, PyramidArea, SourceItem, TrainingArea } from "@/lib/domain/workbench/types";
 import { mapSession, type WbRow } from "./wb-map";
+import type { TekniskPanelOppgave } from "./teknisk-plan-panel-typer";
 
-const PREFIX = { DRILL: "drill", MAL: "mal", FORRIGE: "forrige" } as const;
+const PREFIX = { DRILL: "drill", MAL: "mal", FORRIGE: "forrige", TEK: "tek" } as const;
 
 export function drillSourceId(exerciseId: string): string {
   return `${PREFIX.DRILL}:${exerciseId}`;
@@ -23,10 +24,14 @@ export function malSourceId(sessionId: string): string {
 export function forrigeSourceId(sessionId: string): string {
   return `${PREFIX.FORRIGE}:${sessionId}`;
 }
+export function tekSourceId(taskId: string): string {
+  return `${PREFIX.TEK}:${taskId}`;
+}
 
 export type ParsedSourceId =
   | { kind: "DRILL"; exerciseId: string }
   | { kind: "MAL" | "FORRIGE"; sessionId: string }
+  | { kind: "TEK"; taskId: string }
   | null;
 
 export function parseSourceId(sourceId: string): ParsedSourceId {
@@ -38,7 +43,14 @@ export function parseSourceId(sourceId: string): ParsedSourceId {
   if (prefix === PREFIX.DRILL) return { kind: "DRILL", exerciseId: id };
   if (prefix === PREFIX.MAL) return { kind: "MAL", sessionId: id };
   if (prefix === PREFIX.FORRIGE) return { kind: "FORRIGE", sessionId: id };
+  if (prefix === PREFIX.TEK) return { kind: "TEK", taskId: id };
   return null;
+}
+
+export function omraadeKodeTilTrainingArea(kode: string | null | undefined): TrainingArea {
+  if (!kode) return "TEE";
+  if (kode === "TEE_TOTAL") return "TEE";
+  return kode as TrainingArea;
 }
 
 /**
@@ -122,4 +134,50 @@ export function templateToSourceItem(row: WbRow): SourceItem {
 
 export function previousWeekToSourceItem(row: WbRow, ukedag: string): SourceItem {
   return sessionRowToSourceItem(row, "PREVIOUS_WEEK", forrigeSourceId(row.id), ukedag);
+}
+
+export function tekniskOppgaveToSourceItem(oppgave: TekniskPanelOppgave): SourceItem {
+  const omrade = omraadeKodeTilTrainingArea(oppgave.omraadeKode);
+  const akFormel: AKFormel = {
+    pyramid: "TEK",
+    area: omrade,
+    motorikk: (oppgave.motorikk as Motorikk) ?? undefined,
+    label: `Teknisk · ${oppgave.pNummer} ${oppgave.pNavn}`,
+  };
+
+  const restTekst =
+    oppgave.restTotalt > 0
+      ? `Rest: ${oppgave.restTotalt} ${oppgave.repsEnhet ? oppgave.repsEnhet.toLowerCase() : "reps"}`
+      : "Mål fullført";
+
+  const subtitle = oppgave.undertekst
+    ? `${oppgave.undertekst} · ${restTekst}`
+    : restTekst;
+
+  return {
+    id: tekSourceId(oppgave.id),
+    kind: "TEK",
+    title: `${oppgave.pNummer} · ${oppgave.tittel}`,
+    subtitle,
+    pyramid: "TEK",
+    area: omrade,
+    durationMinutes: 20,
+    drill: {
+      title: `${oppgave.pNummer} ${oppgave.tittel}`,
+      description: oppgave.dimensjon
+        ? `${oppgave.dimensjon}${oppgave.koller.length > 0 ? ` (${oppgave.koller.join(", ")})` : ""}`
+        : oppgave.slagNavn ?? undefined,
+      durationMinutes: 20,
+      techniqueFocus: oppgave.pNummer,
+      akFormel,
+      sourceId: oppgave.id,
+    },
+    positionTaskId: oppgave.id,
+    tags: [
+      oppgave.pNummer,
+      ...oppgave.koller,
+      ...(oppgave.dimensjon ? [oppgave.dimensjon] : []),
+      ...(oppgave.hovedfokus ? ["HOVEDFOKUS"] : []),
+    ],
+  };
 }

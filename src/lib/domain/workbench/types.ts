@@ -112,17 +112,19 @@ export interface Drill {
 
 export interface SourceItem {
   id: string;
-  kind: "DRILL" | "TEMPLATE" | "PROGRAM" | "PREVIOUS_WEEK";
+  kind: "DRILL" | "TEMPLATE" | "PROGRAM" | "PREVIOUS_WEEK" | "TEK";
   title: string;
   subtitle?: string;
   pyramid?: PyramidArea;
   area?: TrainingArea;
   durationMinutes?: number;
-  /** Full drill payload when kind === DRILL */
+  /** Full drill payload when kind === DRILL or TEK */
   drill?: Omit<Drill, "id" | "order">;
   /** Template payload when kind === TEMPLATE */
   templateSessions?: WorkbenchSessionDraft[];
   tags?: string[];
+  /** For TEK items: position task ID for sync back to technical plan */
+  positionTaskId?: string;
 }
 
 /** Where a session came from — drives approval + propagation */
