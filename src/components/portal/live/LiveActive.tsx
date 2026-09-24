@@ -144,7 +144,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
   };
 
 
-  return <div className={s.page} data-od-id="playerhq-live-active" data-phase={live.phase}>
+  return <div className={s.page} data-od-id="playerhq-live-active" data-phase={live.phase} data-surface="live">
     <header className={s.header}>
       <h1 className={s.eyebrow}>Live · {data.title}</h1>
       <button ref={finishButton} className={s.secondary} disabled={!enabled} onClick={() => setConfirm(true)}>Avslutt</button>
@@ -192,6 +192,32 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
                   <DrillLogger drill={d} state={d} onChange={(value) => live.change(d.id, value)} onAdjust={(bucket, delta) => live.adjust(d.id, bucket, delta)} onComplete={() => { live.mark(d.id, d.status !== "done"); setSelectedId(null); }} done={d.status === "done"} />
                 </div>)}
               </fieldset>
+              <div className={s.voiceSection}>
+                <VoiceRangeRecorder
+                  sessionId={data.sessionId}
+                  compact
+                  onMemoSaved={(obs) => {
+                    if (obs.suggestedReps && active) {
+                      const r = obs.suggestedReps;
+                      if (r.dry > 0) live.adjust(active.id, "repsWithoutBall", r.dry);
+                      if (r.lav > 0) live.adjust(active.id, "repsLowSpeed", r.lav);
+                      if (r.full > 0) live.adjust(active.id, "repsAutomatic", r.full);
+                    }
+                    const ny: LiveNotat = {
+                      t: fmt(live.totalSec),
+                      tekst: `[Tale] ${obs.club ?? ""}${obs.position ? ` · ${obs.position}` : ""}: ${obs.rawTranscript}`.trim(),
+                    };
+                    const updated = [ny, ...notes];
+                    const key = noteKey(eierId, data.sessionId);
+                    if (key) {
+                      try {
+                        sessionStorage.setItem(key, JSON.stringify(updated));
+                        window.dispatchEvent(new Event("akhq-live-notes"));
+                      } catch {}
+                    }
+                  }}
+                />
+              </div>
             </> : <p className={s.description}>Det er ingen øvelser å registrere på.</p>}
           </div>
           {(active?.description || active?.notes || data.maalsetning || data.coachComment) && <details className={s.context}><summary>Øvelsen og coachens beskjed</summary>{active?.description && <p>{active.description}</p>}{active?.notes && active.notes !== active.description && <p>{active.notes}</p>}{data.maalsetning && <p>{data.maalsetning}</p>}{data.coachComment && <p>{data.coachComment}</p>}</details>}
