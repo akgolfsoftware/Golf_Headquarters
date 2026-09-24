@@ -29,6 +29,10 @@ export { Breadcrumb } from "./breadcrumb";
 export { ProgressBar } from "./progress-bar";
 export { ProgressRing } from "./progress-ring";
 export { Tooltip } from "./tooltip";
+export { AthleticHeroCard } from "./athletic-hero-card";
+export type { AthleticHeroCardProps } from "./athletic-hero-card";
+export { SwissMetricGrid } from "./swiss-metric-grid";
+export type { SwissMetricItem, SwissMetricGridProps } from "./swiss-metric-grid";
 
 // Overlays
 export {
