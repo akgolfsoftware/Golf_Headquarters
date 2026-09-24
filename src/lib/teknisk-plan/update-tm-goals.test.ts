@@ -37,4 +37,17 @@ describe("TM-mål aggregat (snitt/std)", () => {
   it("filtrerer null", () => {
     assert.equal(mean(nums([1.4, null, 1.6])), 1.5);
   });
+
+  it("regner korrekt for svingbane (club path) og blad mot bane (face to path)", () => {
+    const paths = [2.2, 1.8, 2.0];
+    assert.equal(mean(paths), 2.0);
+
+    const faceToPath = [-1.5, -0.5, -1.0];
+    assert.equal(mean(faceToPath), -1.0);
+  });
+
+  it("regner korrekt for angrepsvinkel (attack angle)", () => {
+    const aoa = [-3.0, -4.0, -3.5];
+    assert.equal(mean(aoa), -3.5);
+  });
 });

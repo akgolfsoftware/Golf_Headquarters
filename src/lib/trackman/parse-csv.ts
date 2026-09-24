@@ -26,6 +26,10 @@ export type TrackManShot = {
   launchAngleDeg: number | null;
   spinRateRpm: number | null;
   sideMeters: number | null;
+  attackAngleDeg?: number | null;
+  clubPathDeg?: number | null;
+  faceAngleDeg?: number | null;
+  faceToPathDeg?: number | null;
   notes: string | null;
   /**
    * Enheter som sto eksplisitt i kildeoverskriften. Manglende felt betyr at
@@ -89,6 +93,10 @@ const COLUMN_ALIASES: Record<CsvField, string[]> = {
   launchAngleDeg: ["launch", "launch angle", "launch angle (deg)"],
   spinRateRpm: ["spin", "spin rate", "spin rate (rpm)"],
   sideMeters: ["side", "side total"],
+  attackAngleDeg: ["attack angle", "attack angle (deg)", "attackangle", "angrepsvinkel", "innfallsvinkel"],
+  clubPathDeg: ["club path", "club path (deg)", "clubpath", "klubbane", "svingbane"],
+  faceAngleDeg: ["face angle", "face angle (deg)", "faceangle", "bladvinkel", "køllebladvinkel"],
+  faceToPathDeg: ["face to path", "face to path (deg)", "facetopath", "face-to-path", "blad mot bane"],
   notes: ["note", "notes", "comment", "kommentar"],
 };
 
@@ -187,7 +195,13 @@ function erTillattEnhetsverdi(field: CsvField, value: string): boolean {
   if (field === "carryMeters" || field === "totalMeters" || field === "sideMeters") {
     return /^(?:m|meters?|metres?|yds?|yards?|ft|feet|cm)$/.test(token);
   }
-  if (field === "launchAngleDeg") {
+  if (
+    field === "launchAngleDeg" ||
+    field === "attackAngleDeg" ||
+    field === "clubPathDeg" ||
+    field === "faceAngleDeg" ||
+    field === "faceToPathDeg"
+  ) {
     return /^(?:deg|degrees?|grader?|°)$/.test(token);
   }
   if (field === "spinRateRpm") return token === "rpm";
@@ -382,6 +396,14 @@ export function parseTrackManCsv(csv: string): TrackManParseResult {
         headerMap.spinRateRpm ? parseNumber(row[headerMap.spinRateRpm.index]) : null,
       sideMeters:
         headerMap.sideMeters ? parseNumber(row[headerMap.sideMeters.index]) : null,
+      attackAngleDeg:
+        headerMap.attackAngleDeg ? parseNumber(row[headerMap.attackAngleDeg.index]) : null,
+      clubPathDeg:
+        headerMap.clubPathDeg ? parseNumber(row[headerMap.clubPathDeg.index]) : null,
+      faceAngleDeg:
+        headerMap.faceAngleDeg ? parseNumber(row[headerMap.faceAngleDeg.index]) : null,
+      faceToPathDeg:
+        headerMap.faceToPathDeg ? parseNumber(row[headerMap.faceToPathDeg.index]) : null,
       notes: headerMap.notes ? row[headerMap.notes.index]?.trim() || null : null,
       ...(sourceUnits ? { sourceUnits } : {}),
     };

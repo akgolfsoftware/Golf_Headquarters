@@ -7,6 +7,12 @@ export type ShotMetrics = {
   smashFactor: number | null;
   carryDistance: number | null;
   side: number | null;
+  clubPath?: number | null;
+  faceAngle?: number | null;
+  faceToPath?: number | null;
+  attackAngle?: number | null;
+  launchAngle?: number | null;
+  spinRate?: number | null;
 };
 
 function progressTowardTarget(
@@ -85,6 +91,24 @@ function seriesForMetric(metric: string, shots: ShotMetrics[]): number[] {
       return nums(shots.map((s) => s.ballSpeed));
     case "side_std":
       return nums(shots.map((s) => (s.side != null ? s.side : null)));
+    case "club_path_mean":
+    case "club_path_std":
+      return nums(shots.map((s) => s.clubPath ?? null));
+    case "face_angle_mean":
+    case "face_angle_std":
+      return nums(shots.map((s) => s.faceAngle ?? null));
+    case "face_to_path_mean":
+    case "face_to_path_std":
+      return nums(shots.map((s) => s.faceToPath ?? null));
+    case "attack_angle_mean":
+    case "attack_angle_std":
+      return nums(shots.map((s) => s.attackAngle ?? null));
+    case "launch_angle_mean":
+    case "launch_angle_std":
+      return nums(shots.map((s) => s.launchAngle ?? null));
+    case "spin_rate_mean":
+    case "spin_rate_std":
+      return nums(shots.map((s) => s.spinRate ?? null));
     default:
       return [];
   }
@@ -103,6 +127,7 @@ function aggregateMetric(metric: string, shots: ShotMetrics[]): number | null {
 /**
  * Oppdaterer TmGoals for én oppgave basert på **alle** matchede slag i økten.
  * mean → snitt, std → standardavvik. HIT_RATE hoppes over.
+ * Evaluerer deretter 2-spors milepælsstatus for oppgaven (trackStatus & status).
  */
 export async function updateTmGoalsFromSessionAggregate(
   taskId: string,
@@ -161,7 +186,68 @@ export async function updateTmGoalsFromSessionAggregate(
     updated++;
   }
 
+  // Evaluerer 2-spors milepæl for oppgaven
+  await evaluateTaskMilestoneStatus(taskId, now);
+
   return updated;
+}
+
+/**
+ * Evaluerer om en PositionTask har nådd milepæl basert på rep-spor og TM-spor.
+ */
+export async function evaluateTaskMilestoneStatus(
+  taskId: string,
+  now: Date = new Date(),
+): Promise<void> {
+  const task = await prisma.positionTask.findUnique({
+    where: { id: taskId },
+    include: {
+      tmGoals: true,
+    },
+  });
+
+  if (!task) return;
+
+  const nonHitRateGoals = task.tmGoals.filter((g) => g.targetType !== "HIT_RATE");
+  const allGoalsInTarget =
+    nonHitRateGoals.length > 0 && nonHitRateGoals.every((g) => g.inTarget);
+  const repsGjort =
+    (task.repsGjortDry ?? 0) + (task.repsGjortLav ?? 0) + (task.repsGjortFull ?? 0);
+  const repsMaal =
+    (task.repsMaalDry ?? 0) + (task.repsMaalLav ?? 0) + (task.repsMaalFull ?? 0);
+  const repsComplete = repsMaal > 0 && repsGjort >= repsMaal;
+
+  const updateData: {
+    lastRepLoggedAt: Date;
+    trackStatusUpdatedAt: Date;
+    status?: "PENDING" | "ACTIVE" | "DONE" | "ARCHIVED";
+    trackStatus?: "PAA_VEI" | "STAGNERER" | "FERDIG" | "INAKTIV" | "AVSLAATT";
+    estimatedCompleteAt?: Date | null;
+  } = {
+    lastRepLoggedAt: now,
+    trackStatusUpdatedAt: now,
+  };
+
+  if (allGoalsInTarget && repsComplete) {
+    updateData.status = "DONE";
+    updateData.trackStatus = "FERDIG";
+    updateData.estimatedCompleteAt = now;
+  } else if (allGoalsInTarget) {
+    updateData.trackStatus = "PAA_VEI";
+    if (task.status === "PENDING") {
+      updateData.status = "ACTIVE";
+    }
+  } else if (repsGjort > 0) {
+    updateData.trackStatus = "PAA_VEI";
+    if (task.status === "PENDING") {
+      updateData.status = "ACTIVE";
+    }
+  }
+
+  await prisma.positionTask.update({
+    where: { id: taskId },
+    data: updateData,
+  });
 }
 
 /**

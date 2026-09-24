@@ -15,6 +15,7 @@ import s from "./live-active.module.css";
 import { useLokalDataEier } from "@/lib/offline-queue/eier-context";
 import { byggLagringsNokkel } from "@/lib/offline-queue/eier-scope";
 import { sendOktNotatTilCoach } from "@/lib/portal-live/actions";
+import { VoiceRangeRecorder } from "@/components/shared/VoiceRangeRecorder";
 import type { PyramidArea } from "@/generated/prisma/enums";
 
 type LiveNotat = { t: string; tekst: string };
@@ -282,7 +283,26 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
             </div>
           </div>
           <div hidden={mode !== "notes"} className={s.notes}>
-            <label className={s.selectLabel} htmlFor="live-note">Notat fra økta</label>
+            <div style={{ marginBottom: 16 }}>
+              <VoiceRangeRecorder
+                sessionId={data.sessionId}
+                onMemoSaved={(obs) => {
+                  const ny: LiveNotat = {
+                    t: fmt(live.totalSec),
+                    tekst: `[Tale] ${obs.club ?? ""}${obs.position ? ` · ${obs.position}` : ""}: ${obs.rawTranscript}`.trim(),
+                  };
+                  const updated = [ny, ...notes];
+                  const key = noteKey(eierId, data.sessionId);
+                  if (key) {
+                    try {
+                      sessionStorage.setItem(key, JSON.stringify(updated));
+                      window.dispatchEvent(new Event("akhq-live-notes"));
+                    } catch {}
+                  }
+                }}
+              />
+            </div>
+            <label className={s.selectLabel} htmlFor="live-note">Skriv eller rediger notat</label>
             <textarea id="live-note" ref={noteInput} rows={4} value={text} disabled={!enabled} onChange={(event) => setText(event.target.value)} placeholder="Hva vil du huske?" />
             <button className={s.primary} disabled={!enabled || !text.trim()} onClick={addNote}>Legg til notat</button>
             <p className={s.meta}>Notatene beholdes i denne fanen og følger med til oppsummeringen.</p>

@@ -43,12 +43,20 @@ describe("csvShotsToCanonical", () => {
         launchAngleDeg: 18,
         spinRateRpm: 6000,
         sideMeters: 2,
+        attackAngleDeg: -3.5,
+        clubPathDeg: 2.1,
+        faceAngleDeg: 0.8,
+        faceToPathDeg: -1.3,
         notes: null,
       },
     ]);
     assert.equal(out[0]?.club, "7 Iron");
     assert.ok((out[0]?.clubSpeedMph ?? 0) > 80);
     assert.equal(out[0]?.carryMeters, 150);
+    assert.equal(out[0]?.attackAngle, -3.5);
+    assert.equal(out[0]?.clubPath, 2.1);
+    assert.equal(out[0]?.faceAngle, 0.8);
+    assert.equal(out[0]?.faceToPath, -1.3);
   });
 });
 
