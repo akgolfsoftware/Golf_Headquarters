@@ -19,6 +19,7 @@ export function stripeKlient(): Stripe {
 export const STRIPE_PRICE_ID_PRO = process.env.STRIPE_PRICE_ID_PRO ?? "";
 // PlayerHQ årlig — 2 690 kr/år («tre måneder gratis», Anders 2026-08-16).
 export const STRIPE_PRICE_ID_PRO_AAR = process.env.STRIPE_PRICE_ID_PRO_AAR ?? "";
+export const STRIPE_PRICE_ID_JUNIOR = process.env.STRIPE_PRICE_ID_JUNIOR ?? "";
 export const STRIPE_PRICE_ID_PERFORMANCE =
   process.env.STRIPE_PRICE_ID_PERFORMANCE ?? "";
 export const STRIPE_PRICE_ID_PERFORMANCE_PRO =
@@ -43,6 +44,7 @@ export function tierForPriceId(
   if (
     priceId === STRIPE_PRICE_ID_PRO ||
     priceId === STRIPE_PRICE_ID_PRO_AAR ||
+    priceId === STRIPE_PRICE_ID_JUNIOR ||
     priceId === STRIPE_PRICE_ID_PERFORMANCE ||
     priceId === STRIPE_PRICE_ID_PERFORMANCE_PRO
   ) {
@@ -55,10 +57,11 @@ export function tierForPriceId(
 // da får raden aldri tilgang (girPlayerHqTilgang i domain/abonnement.ts).
 export function planForPriceId(
   priceId: string | null | undefined,
-): "PLAYERHQ_MND" | "PLAYERHQ_AAR" | "PERFORMANCE" | "PERFORMANCE_PRO" | null {
+): "PLAYERHQ_MND" | "PLAYERHQ_AAR" | "PLAYERHQ_JUNIOR_MND" | "PERFORMANCE" | "PERFORMANCE_PRO" | null {
   if (!priceId) return null;
   if (priceId === STRIPE_PRICE_ID_PRO) return "PLAYERHQ_MND";
   if (priceId === STRIPE_PRICE_ID_PRO_AAR) return "PLAYERHQ_AAR";
+  if (priceId === STRIPE_PRICE_ID_JUNIOR) return "PLAYERHQ_JUNIOR_MND";
   if (priceId === STRIPE_PRICE_ID_PERFORMANCE) return "PERFORMANCE";
   if (priceId === STRIPE_PRICE_ID_PERFORMANCE_PRO) return "PERFORMANCE_PRO";
   return null;

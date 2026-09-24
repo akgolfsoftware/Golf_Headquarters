@@ -3,8 +3,8 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { startSession, logDrillReps, completeSession } from "@/app/portal/(fullscreen)/live/[sessionId]/actions";
 import { lagreLiveDrillUtkast, lesLiveDrillUtkast, slettLiveDrillUtkast, synkLiveDrillKo } from "@/lib/offline-queue/live-drill-queue";
-import { adjustLiveRep, livePayload, markLiveDrill, restoreLiveState, type LiveState, type RepBucket } from "@/lib/portal-live/live-state";
-import type { LiveV2Session, DrillRepState } from "./types";
+import { adjustLiveRep, livePayload, markLiveDrill, restoreLiveState, addLiveDrill, swapLiveDrill, removeLiveDrill, type LiveState, type RepBucket } from "@/lib/portal-live/live-state";
+import type { LiveV2Session, DrillRepState, LiveV2Drill } from "./types";
 
 type Phase = "starting" | "active" | "start-error" | "finishing" | "finish-error" | "finished";
 type Saving = "saved" | "saving" | "offline" | "error" | "local-error";
@@ -123,5 +123,8 @@ export function useLiveSession(data: LiveV2Session, eierId: string | null) {
     change: (id: string, values: DrillRepState) => { if (phaseRef.current === "active") persist({ ...latest.current, drills: latest.current.drills.map((d) => d.id === id ? { ...d, ...values } : d) }); },
     adjust: (id: string, bucket: RepBucket, delta: number) => { if (phaseRef.current === "active") persist(adjustLiveRep(latest.current, id, bucket, delta)); },
     mark: (id: string, done: boolean) => { if (phaseRef.current === "active") persist(markLiveDrill(latest.current, id, done)); },
+    addDrill: (drill: { name: string; durationMinutes?: number; pyramide?: LiveV2Drill["pyramide"]; plannedReps?: number }) => { if (phaseRef.current === "active") persist(addLiveDrill(latest.current, drill)); },
+    swapDrill: (id: string, newName: string, durationMinutes?: number) => { if (phaseRef.current === "active") persist(swapLiveDrill(latest.current, id, newName, durationMinutes)); },
+    removeDrill: (id: string) => { if (phaseRef.current === "active") persist(removeLiveDrill(latest.current, id)); },
   };
 }

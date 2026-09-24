@@ -155,3 +155,93 @@ export async function backfillTournamentResultsForLinkedUsers(
 
   return { users: users.length, mirrored };
 }
+
+/**
+ * Koble én enkelt bruker til PublicPlayer og speil turneringsresultater umiddelbart.
+ * Brukes ved profilopprettelse, onboarding og profil-oppdatering.
+ */
+export async function linkAndSyncUserTournamentResults(
+  prisma: PrismaClient,
+  userId: string,
+): Promise<{ linked: boolean; publicPlayerId?: string; mirrored: number }> {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { id: true, name: true, publicPlayerId: true },
+  });
+  if (!user) return { linked: false, mirrored: 0 };
+
+  let publicPlayerId = user.publicPlayerId;
+
+  if (!publicPlayerId) {
+    const k = normalizePlayerName(user.name);
+    if (!k) return { linked: false, mirrored: 0 };
+
+    const candidates = await prisma.publicPlayer.findMany({
+      where: { isActive: true },
+      select: {
+        id: true,
+        name: true,
+        linkedUser: { select: { id: true } },
+      },
+    });
+
+    const matching = candidates.filter(
+      (p) => normalizePlayerName(p.name) === k,
+    );
+
+    if (matching.length === 1) {
+      const target = matching[0];
+      if (!target.linkedUser || target.linkedUser.id === user.id) {
+        try {
+          await prisma.user.update({
+            where: { id: user.id },
+            data: { publicPlayerId: target.id },
+          });
+          publicPlayerId = target.id;
+        } catch {
+          // Unngå krasj hvis en race condition oppstår
+        }
+      }
+    }
+  }
+
+  if (!publicPlayerId) {
+    return { linked: false, mirrored: 0 };
+  }
+
+  const entries = await prisma.publicPlayerEntry.findMany({
+    where: { playerId: publicPlayerId, tournament: { mergedIntoId: null } },
+    select: {
+      tournamentId: true,
+      position: true,
+      scoreToPar: true,
+      totalScore: true,
+      status: true,
+    },
+  });
+
+  let mirrored = 0;
+  for (const e of entries) {
+    const score =
+      e.scoreToPar != null
+        ? e.scoreToPar
+        : e.totalScore != null
+          ? e.totalScore
+          : null;
+    if (e.position == null && score == null) continue;
+
+    const r = await prisma.$transaction((tx) =>
+      mirrorTournamentResultForLinkedUser(tx, {
+        tournamentId: e.tournamentId,
+        publicPlayerId: publicPlayerId!,
+        position: e.position,
+        scoreToPar: e.scoreToPar,
+        totalScore: e.totalScore,
+        publicEntryStatus: e.status,
+      }),
+    );
+    if (r.mirrored) mirrored++;
+  }
+
+  return { linked: true, publicPlayerId, mirrored };
+}

@@ -14,6 +14,7 @@ import "server-only";
  */
 
 import { prisma } from "@/lib/prisma";
+import { beregnStyrkeprogram, type StyrkeloftKode } from "@/lib/domain/fys/styrkeprogram";
 
 /* Gyldige økt-typer i modellen (FysOkt.type er fri TEXT). */
 const FYS_TYPER = ["styrke", "rotasjon", "mobilitet", "kondisjon"] as const;
@@ -38,6 +39,8 @@ export interface FysStyrkeOvelse {
   /** Spøkelsesverdier fra forrige økt — tom til modellen bærer historikk. */
   sist: FysSettRad[];
   vektSteg: number;
+  prosent1RM?: number;
+  anbefaltKg?: number;
 }
 export interface FysIntervall {
   id: string;
@@ -92,8 +95,46 @@ function lesSettData(raw: unknown): FysSettRad[] {
 }
 
 export async function getFysiskData(userId: string): Promise<FysiskViewData> {
-  const bruker = await prisma.user.findUnique({ where: { id: userId }, select: { name: true } });
+  const [bruker, sisteHelse, testDefs] = await Promise.all([
+    prisma.user.findUnique({ where: { id: userId }, select: { name: true } }),
+    prisma.healthEntry.findFirst({
+      where: { userId, weightKg: { not: null } },
+      orderBy: { date: "desc" },
+      select: { weightKg: true },
+    }),
+    prisma.testDefinition.findMany({
+      where: {
+        name: {
+          in: ["Trapbar Deadlift", "Benkpress", "Knebøy", "Back Squat", "Markløft"],
+        },
+      },
+      select: { id: true, name: true },
+    }),
+  ]);
   const spillerNavn = bruker?.name ?? "Spiller";
+
+  const testResults =
+    testDefs.length > 0
+      ? await prisma.testResult.findMany({
+          where: { userId, testId: { in: testDefs.map((d) => d.id) } },
+          orderBy: { takenAt: "desc" },
+          select: { testId: true, score: true },
+        })
+      : [];
+
+  const maks1RMMap = new Map<StyrkeloftKode, number>();
+  for (const tr of testResults) {
+    const def = testDefs.find((d) => d.id === tr.testId);
+    if (!def) continue;
+    const n = def.name.toLowerCase();
+    if ((n.includes("deadlift") || n.includes("markløft")) && !maks1RMMap.has("MARKLOFT")) {
+      maks1RMMap.set("MARKLOFT", tr.score);
+    } else if (n.includes("benkpress") && !maks1RMMap.has("BENKPRESS")) {
+      maks1RMMap.set("BENKPRESS", tr.score);
+    } else if ((n.includes("knebøy") || n.includes("squat")) && !maks1RMMap.has("KNEBOY")) {
+      maks1RMMap.set("KNEBOY", tr.score);
+    }
+  }
 
   // Aktiv plan først (nyeste startdato); ellers nyeste plan uansett status.
   const plan =
@@ -156,15 +197,43 @@ export async function getFysiskData(userId: string): Promise<FysiskViewData> {
       settTotalt += 1;
       repsTotalt += s.reps;
     }
+
+    const n = r.navn.toLowerCase();
+    const loftKode: StyrkeloftKode | null =
+      n.includes("markløft") || n.includes("deadlift")
+        ? "MARKLOFT"
+        : n.includes("benkpress") || n.includes("bench")
+          ? "BENKPRESS"
+          : n.includes("knebøy") || n.includes("squat")
+            ? "KNEBOY"
+            : null;
+
+    let prosent1RM: number | undefined;
+    let anbefaltKg: number | undefined;
+
+    if (loftKode && maks1RMMap.has(loftKode)) {
+      const ettRepMaksKg = maks1RMMap.get(loftKode) ?? null;
+      const kroppsvektKg = sisteHelse?.weightKg ?? null;
+      const ukeNummer = Math.max(1, Math.min(6, (valgtUke.sortOrder ?? 0) + 1));
+      const prog = beregnStyrkeprogram({ loft: loftKode, ettRepMaksKg, kroppsvektKg });
+      const ukeProg = prog.find((u) => u.uke === ukeNummer) ?? prog[0];
+      if (ukeProg && ukeProg.sett.length > 0) {
+        prosent1RM = ukeProg.sett[0].belastningPst;
+        anbefaltKg = ukeProg.sett[0].belastningKg ?? undefined;
+      }
+    }
+
     // Vis logget data hvis den finnes; ellers plan-stillas (planlagt antall sett,
-    // logget kg om satt / 0, planlagt rep-mål). Ikke fabrikkering — plan-tall + 0.
+    // beregnet anbefalt vekt eller logget kg, planlagt rep-mål).
     const startSett: FysSettRad[] =
       logget.length > 0
         ? logget
-        : Array.from({ length: Math.max(1, r.sett) }, () => ({
-            vekt: r.loggBelastningKg ?? 0,
-            reps: r.repsMax ?? r.repsMin ?? 0,
-          }));
+        : anbefaltKg != null && anbefaltKg > 0
+          ? [{ vekt: anbefaltKg, reps: r.repsMax ?? r.repsMin ?? 8 }]
+          : Array.from({ length: Math.max(1, r.sett) }, () => ({
+              vekt: r.loggBelastningKg ?? 0,
+              reps: r.repsMax ?? r.repsMin ?? 0,
+            }));
     styrke.push({
       id: r.id,
       navn: r.navn,
@@ -172,6 +241,8 @@ export async function getFysiskData(userId: string): Promise<FysiskViewData> {
       startSett,
       sist: [],
       vektSteg: 2.5,
+      prosent1RM,
+      anbefaltKg,
     });
   }
 

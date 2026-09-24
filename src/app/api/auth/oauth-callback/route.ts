@@ -5,6 +5,7 @@ import { safeRedirectPath } from "@/lib/security/safe-redirect";
 import { logError } from "@/lib/error-tracking";
 import { rateLimit } from "@/lib/rate-limit";
 import { getClientIp } from "@/lib/security/same-origin";
+import { linkAndSyncUserTournamentResults } from "@/lib/turneringer/link-public-players";
 
 export const runtime = "nodejs";
 
@@ -92,6 +93,9 @@ export async function GET(req: NextRequest) {
             coachId: null,
           },
         });
+
+        // Automatisk kobling mot turneringshistorikk
+        await linkAndSyncUserTournamentResults(prisma, nyBruker.id);
       }
     }
   } catch (error) {

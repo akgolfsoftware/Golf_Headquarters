@@ -166,6 +166,8 @@ export function FysiskV2({ data }: { data: FysiskViewData }) {
               sist={o.sist}
               startSett={o.startSett}
               vektSteg={o.vektSteg}
+              prosent1RM={o.prosent1RM}
+              anbefaltKg={o.anbefaltKg}
             />
           ))}
         </div>

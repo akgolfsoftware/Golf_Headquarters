@@ -42,7 +42,7 @@ const base = `http://127.0.0.1:${server.address().port}/`;
 let chromium;
 try { ({ chromium } = await import("playwright")); } catch { console.warn("check-ak-golf-kits: playwright ikke installert — hopper over."); process.exit(0); }
 let nettleser;
-try { nettleser = await chromium.launch(); } catch (e) { console.warn("check-ak-golf-kits: fant ikke Chromium (npx playwright install chromium) — hopper over."); process.exit(0); }
+try { nettleser = await chromium.launch(); } catch (_e) { console.warn("check-ak-golf-kits: fant ikke Chromium (npx playwright install chromium) — hopper over."); process.exit(0); }
 
 const FORBUDT = [/lorem ipsum/i, /angrepsvinkel/i, /[!]/, /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/u];
 const BREDDER = rask ? [390, 1440] : [390, 768, 1440];
