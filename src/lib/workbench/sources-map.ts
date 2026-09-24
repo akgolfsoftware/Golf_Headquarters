@@ -75,6 +75,10 @@ export function exerciseToSourceItem(rad: ExerciseDefinition): SourceItem {
     area: omrade,
     label: `${PYRAMID_LABEL[pyramid]} · ${AREA_LABEL[omrade]}`,
   };
+  const sgTags = rad.skillArea ? [`SG: ${rad.skillArea}`] : [];
+  const moradTags = rad.morad ? ["MORAD"] : [];
+  const combinedTags = [...new Set([...(rad.tags || []), ...sgTags, ...moradTags])];
+
   return {
     id: drillSourceId(rad.id),
     kind: "DRILL",
@@ -90,7 +94,7 @@ export function exerciseToSourceItem(rad: ExerciseDefinition): SourceItem {
       akFormel,
       sourceId: rad.id,
     },
-    tags: rad.tags,
+    tags: combinedTags,
   };
 }
 
