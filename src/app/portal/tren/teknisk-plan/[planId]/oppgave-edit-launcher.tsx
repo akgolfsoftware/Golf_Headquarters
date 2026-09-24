@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation";
 import { useToast } from "@/components/shared/toast-provider";
 import { TekniskTaskKort, type TekniskTaskKortProps } from "@/components/portal/v2/TekniskPlanV2";
 import { OppgaveModal, type OppgaveDraft } from "@/components/teknisk-plan/oppgave-modal";
-import { updateTaskBasics, logReps } from "../actions";
+import { updateTaskBasics, logReps, startLiveSessionForTask } from "../actions";
 import { uploadTaskMedia } from "@/lib/storage/task-media";
 import { skalerBilde, MAKS_ACTION_BYTES } from "@/lib/klient/skaler-avatar";
 
@@ -24,6 +24,8 @@ function draftToBasicsPatch(draft: OppgaveDraft) {
     pName: draft.pName,
     tittel: draft.tittel,
     beskrivelse: draft.beskrivelse || undefined,
+    bildeUrl: draft.bildeUrl,
+    videoUrl: draft.videoUrl,
     pyramide: draft.pyramide,
     omraade: draft.omraade,
     koller: draft.koller,
@@ -50,10 +52,25 @@ export function OppgaveEditLauncher({ taskId, draft, cardProps }: OppgaveEditLau
   const toast = useToast();
   const [open, setOpen] = useState(false);
   const [openSeq, setOpenSeq] = useState(0);
+  const [startingOkt, setStartingOkt] = useState(false);
 
   function openEdit() {
     setOpenSeq((n) => n + 1);
     setOpen(true);
+  }
+
+  async function handleStartOkt() {
+    setStartingOkt(true);
+    try {
+      const res = await startLiveSessionForTask(taskId);
+      if (res.ok && res.url) {
+        toast.success("Starter live-økt på oppgaven …");
+        router.push(res.url);
+      }
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Kunne ikke starte økt.");
+      setStartingOkt(false);
+    }
   }
 
   async function handleSubmit(next: OppgaveDraft) {
@@ -73,7 +90,12 @@ export function OppgaveEditLauncher({ taskId, draft, cardProps }: OppgaveEditLau
 
   return (
     <>
-      <TekniskTaskKort {...cardProps} onClick={openEdit} />
+      <TekniskTaskKort
+        {...cardProps}
+        onClick={openEdit}
+        onStartOkt={handleStartOkt}
+        isStartingOkt={startingOkt}
+      />
       {open && (
         <OppgaveModal
           key={openSeq}

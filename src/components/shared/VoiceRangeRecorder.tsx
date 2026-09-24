@@ -215,7 +215,7 @@ export function VoiceRangeRecorder({
           style={{
             fontFamily: TL.font.sans,
             fontSize: 12,
-            color: TL.warn,
+            color: TL.text,
             margin: "8px 0 0",
           }}
         >

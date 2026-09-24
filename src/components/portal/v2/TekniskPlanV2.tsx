@@ -93,6 +93,9 @@ export interface TekniskTaskKortProps {
   isNew?: boolean;
   onMoreClick?: () => void;
   onClick?: () => void;
+  dragHandleProps?: Record<string, unknown>;
+  onStartOkt?: () => void;
+  isStartingOkt?: boolean;
 }
 
 export function TekniskTaskKort(props: TekniskTaskKortProps) {
@@ -113,6 +116,7 @@ export function TekniskTaskKort(props: TekniskTaskKortProps) {
           onClick={(e) => e.stopPropagation()}
           aria-label="Dra for å sortere"
           style={{ display: "inline-flex", color: TL.mute, cursor: "grab", marginTop: 1, flex: "none" }}
+          {...props.dragHandleProps}
         >
           <Icon name="grip-vertical" size={13} />
         </span>
@@ -178,6 +182,38 @@ export function TekniskTaskKort(props: TekniskTaskKortProps) {
         <RepKolonne navn="LAV" rep={props.reps.lav} />
         <RepKolonne navn="FULL" rep={props.reps.full} />
       </div>
+
+      {props.onStartOkt && (
+        <div style={{ marginTop: 12, display: "flex", justifyContent: "flex-end" }}>
+          <button
+            type="button"
+            className="v2-press"
+            disabled={props.isStartingOkt}
+            onClick={(e) => {
+              e.stopPropagation();
+              props.onStartOkt?.();
+            }}
+            style={{
+              appearance: "none",
+              border: `1px solid ${TL.hair}`,
+              background: TL.dim,
+              borderRadius: 6,
+              padding: "5px 10px",
+              fontFamily: TL.font.sans,
+              fontSize: 12,
+              fontWeight: 600,
+              color: TL.text,
+              cursor: props.isStartingOkt ? "wait" : "pointer",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+            }}
+          >
+            <Icon name="play" size={12} />
+            {props.isStartingOkt ? "Starter økt …" : "Start økt på oppgaven"}
+          </button>
+        </div>
+      )}
     </Kort>
   );
 
