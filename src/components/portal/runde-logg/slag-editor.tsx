@@ -77,6 +77,8 @@ export function SlagEditor({
   const [notat, setNotat] = useState("");
   const [endShotKategori, setEndShotKategori] = useState<EndShotKategori | null>(null);
   const [putt, setPutt] = useState<PuttRegistrering | null>(null);
+  const [targetAvstand, setTargetAvstand] = useState<string>("");
+  const [pinAvstand, setPinAvstand] = useState<string>("");
 
   const erPutt = startLie === "GREEN";
   const shotType = utledShotType(slagNr === 1, par, startLie, startAvstand);
@@ -104,11 +106,13 @@ export function SlagEditor({
     setNotat("");
     setEndShotKategori(null);
     setPutt(null);
+    setTargetAvstand("");
+    setPinAvstand("");
   };
 
   const felles = (): Pick<
     LoggetSlag,
-    "kolle" | "vind" | "notat" | "endShotKategori" | "putt"
+    "kolle" | "vind" | "notat" | "endShotKategori" | "putt" | "targetAvstand" | "pinAvstand"
   > => ({
     ...(kolle.trim() ? { kolle: kolle.trim() } : {}),
     ...(vind ? { vind } : {}),
@@ -119,6 +123,12 @@ export function SlagEditor({
       ? { endShotKategori }
       : {}),
     ...(erPutt && putt ? { putt } : {}),
+    ...(!erPutt && targetAvstand && Number(targetAvstand) > 0
+      ? { targetAvstand: Number(targetAvstand) }
+      : {}),
+    ...(!erPutt && pinAvstand && Number(pinAvstand) > 0
+      ? { pinAvstand: Number(pinAvstand) }
+      : {}),
   });
 
   const lagre = () => {
@@ -283,6 +293,27 @@ export function SlagEditor({
         {lie && (
           <AvstandVelger kontekst={kontekst} hullLengde={hullLengde} verdi={avstand} onVerdi={setAvstand} />
         )}
+        {lie && avstand != null && !erPutt && startAvstand - avstand > 0 && (
+          <div
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              alignSelf: "flex-start",
+              padding: "4px 10px",
+              borderRadius: 9999,
+              background: TL.dim,
+              border: `1px solid ${TL.hair}`,
+              fontFamily: TL.font.mono,
+              fontSize: 11,
+              fontWeight: 600,
+              color: TL.text,
+            }}
+          >
+            <span style={{ color: TL.mute }}>Beregnet slaglengde:</span>
+            <span style={{ fontWeight: 700 }}>{Math.round(startAvstand - avstand)} m</span>
+          </div>
+        )}
         {lie && !erPutt && (
           <EndShotKategoriVelger
             key={slagNr}
@@ -316,6 +347,80 @@ export function SlagEditor({
               }}
             />
           </div>
+          {!erPutt && (
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+              <div>
+                <label
+                  style={{
+                    display: "block",
+                    fontFamily: TL.font.mono,
+                    fontSize: 9.5,
+                    fontWeight: 700,
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
+                    color: TL.mute,
+                    marginBottom: 4,
+                  }}
+                >
+                  Mål / Target (m)
+                </label>
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  value={targetAvstand}
+                  onChange={(e) => setTargetAvstand(e.target.value)}
+                  placeholder="f.eks. 145"
+                  style={{
+                    width: "100%",
+                    height: 40,
+                    borderRadius: 10,
+                    padding: "0 12px",
+                    background: TL.dock,
+                    border: `1px solid ${TL.hair}`,
+                    color: TL.text,
+                    fontFamily: TL.font.mono,
+                    fontSize: 13,
+                    outline: "none",
+                  }}
+                />
+              </div>
+              <div>
+                <label
+                  style={{
+                    display: "block",
+                    fontFamily: TL.font.mono,
+                    fontSize: 9.5,
+                    fontWeight: 700,
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
+                    color: TL.mute,
+                    marginBottom: 4,
+                  }}
+                >
+                  Flagg / Pin (m)
+                </label>
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  value={pinAvstand}
+                  onChange={(e) => setPinAvstand(e.target.value)}
+                  placeholder={String(startAvstand)}
+                  style={{
+                    width: "100%",
+                    height: 40,
+                    borderRadius: 10,
+                    padding: "0 12px",
+                    background: TL.dock,
+                    border: `1px solid ${TL.hair}`,
+                    color: TL.text,
+                    fontFamily: TL.font.mono,
+                    fontSize: 13,
+                    outline: "none",
+                  }}
+                />
+              </div>
+            </div>
+          )}
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
             {VIND.map((v) => (
               <button

@@ -89,4 +89,30 @@ describe("byggShotRader — endShotKategori og putt", () => {
     assert.equal("puttDetail" in shots[0], false);
     assert.equal(putts[0].shotId, shots[1].id);
   });
+
+  it("støtter pinAvstand og targetAvstand (UpGame-mønster)", () => {
+    const hull: LoggetHull = {
+      holeNumber: 4,
+      par: 4,
+      lengdeMeter: 380,
+      slag: [
+        {
+          resultat: { iHull: false, lie: "FAIRWAY", avstandTilHull: 155 },
+          pinAvstand: 385,
+          targetAvstand: 240,
+        },
+        {
+          resultat: { iHull: true },
+          pinAvstand: 155,
+          targetAvstand: 150,
+          notat: "Siktet senter green",
+        },
+      ],
+    };
+    const rader = byggShotRader(hull);
+    assert.equal(rader[0].distanceToPin, 385);
+    assert.equal(rader[0].notes, "[Mål: 240m]");
+    assert.equal(rader[1].distanceToPin, 155);
+    assert.equal(rader[1].notes, "[Mål: 150m] Siktet senter green");
+  });
 });

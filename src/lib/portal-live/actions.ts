@@ -200,3 +200,59 @@ export async function saveSessionV2VideoNote(input: SaveVideoNoteInput): Promise
   revalidatePath(`/portal/live/${parsed.data.sessionId}/active`);
   return { ok: true };
 }
+
+export const SendOktNotatTilCoachInput = z.object({
+  sessionId: z.string().min(1),
+  tekst: z.string().min(1).max(2000),
+  drillNavn: z.string().optional(),
+});
+export type SendOktNotatTilCoachInput = z.infer<typeof SendOktNotatTilCoachInput>;
+
+/**
+ * Sender et notat eller spørsmål direkte fra pågående live-økt til spillerens coach.
+ * Varsler coach i AgencyOS-innboksen via notify().
+ */
+export async function sendOktNotatTilCoach(
+  input: SendOktNotatTilCoachInput
+): Promise<{ ok: boolean; error?: string }> {
+  const user = await requirePortalUser({ allow: ["PLAYER"] });
+  const parsed = SendOktNotatTilCoachInput.safeParse(input);
+  if (!parsed.success) return { ok: false, error: "Ugyldig notat eller økt." };
+
+  const session = await prisma.trainingSessionV2.findUnique({
+    where: { id: parsed.data.sessionId },
+    select: {
+      id: true,
+      title: true,
+      coachId: true,
+      hostId: true,
+      studentId: true,
+    },
+  });
+
+  let coachId = session?.coachId ?? session?.hostId;
+  if (!coachId || coachId === user.id) {
+    const enrollering = await prisma.playerEnrollment.findFirst({
+      where: { userId: user.id, endedAt: null, coachId: { not: null } },
+      select: { coachId: true },
+    });
+    coachId = enrollering?.coachId ?? null;
+  }
+
+  if (!coachId) {
+    return { ok: false, error: "Du har ingen registrert coach å sende notatet til." };
+  }
+
+  const { notify } = await import("@/lib/notifications");
+  const prefix = parsed.data.drillNavn ? `[${parsed.data.drillNavn}] ` : "";
+  await notify({
+    userId: coachId,
+    type: "melding",
+    title: `${user.name || "Spiller"} sendte et notat fra live-økt`,
+    body: `${prefix}${parsed.data.tekst}`,
+    link: `/admin/planlegge/workbench?spiller=${user.id}`,
+  });
+
+  return { ok: true };
+}
+
