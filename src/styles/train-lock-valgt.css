@@ -1,17 +1,17 @@
 /* Valgt kilde: Player HQ Train lock (4).zip, tokens/colors.css + typography.css.
    Fasit 20.09.2026: inspector 340 · kilde 236. */
 html[data-train-lock="4"] {
-  --tl-font-sans: var(--font-geist-sans), "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --tl-font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --tl-font-sans: var(--font-ibm-plex-sans), "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --tl-font-mono: var(--font-ibm-plex-mono), ui-monospace, monospace;
   --font-sans: var(--tl-font-sans);
   --font-display: var(--tl-font-sans);
   --font-mono: var(--tl-font-mono);
   --v2-font-mono: var(--tl-font-mono);
-  --font-poppins: var(--font-geist-sans);
-  --font-ibm-plex-mono: var(--font-geist-mono);
+  --font-poppins: var(--font-ibm-plex-sans);
+  --font-ibm-plex-mono: var(--font-ibm-plex-mono);
   --tl-text-caps-sm: 11px;
-  --tl-r-card: 2px;
-  --tl-r-sheet: 2px 2px 0 0;
+  --tl-r-card: 8px;
+  --tl-r-sheet: 12px 12px 0 0;
   --tl-artefakt: 340px;
   --tl-kilder: 236px;
   --tl-scene: #F2F1ED;

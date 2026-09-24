@@ -81,8 +81,8 @@
      Vi peker derfor på next/font-variabelen FØRST og beholder det navngitte
      familienavnet som reserve, slik at fasitens fallback-kjede står igjen
      hvis en variabel mangler. Ingen ny familie er innført. */
-  --ak-grunn-typografi-familie-display: var(--font-oswald), "Oswald", "Archivo", sans-serif;
-  --ak-grunn-typografi-familie-tekst: var(--font-archivo), "Archivo", "Helvetica Neue", Helvetica, sans-serif;
+  --ak-grunn-typografi-familie-display: var(--font-ibm-plex-sans), "IBM Plex Sans", sans-serif;
+  --ak-grunn-typografi-familie-tekst: var(--font-ibm-plex-sans), "IBM Plex Sans", "Helvetica Neue", Helvetica, sans-serif;
   --ak-grunn-typografi-familie-meta: var(--font-ibm-plex-mono), "IBM Plex Mono", ui-monospace, monospace;
   /* 3xs: kun mono-meta i uppercase med sperring ≥ 0.08em · aldri brødtekst · ingenting under 10px */
   --ak-grunn-typografi-skala-3xs: 10px;

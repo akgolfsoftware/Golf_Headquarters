@@ -131,7 +131,7 @@ html[data-v2-tema="dark"] {
   --sand-900: #101613;
 
   /* Typografi */
-  --font-ui: var(--tl-font-sans);
+  --font-ui: var(--font-ibm-plex-sans), var(--tl-font-sans);
   --text-11: 0.6875rem;
   --text-12: 0.75rem;
   --text-13: 0.8125rem;
@@ -387,8 +387,8 @@ html[data-v2-tema="dark"] {
   --radius-md: calc(var(--radius) - 4px);
   --radius-sm: calc(var(--radius) - 8px);
 
-  --font-sans: var(--font-poppins), Arial, system-ui, sans-serif;
-  --font-display: var(--font-poppins), Arial, system-ui, sans-serif;
+  --font-sans: var(--font-ibm-plex-sans), var(--font-poppins), Arial, system-ui, sans-serif;
+  --font-display: var(--font-ibm-plex-sans), var(--font-poppins), Arial, system-ui, sans-serif;
   --font-mono: var(--font-ibm-plex-mono), ui-monospace, monospace;
 
   /* Pyramide-utility-aliaser: bg-pyr-fys, text-pyr-tek, border-pyr-slag, ...

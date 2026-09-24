@@ -13,40 +13,30 @@
  * `EGET_SKALL` i `(marketing)/layout.tsx` — ellers ville skallet kommet dobbelt.
  */
 
-import { Archivo, IBM_Plex_Mono, Oswald } from "next/font/google";
+import { IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import type { CSSProperties } from "react";
 
 import { ForsideMork } from "@/components/marketing/ds-sider/ForsideMork";
 
-/* Vektene er de tegningen faktisk bruker, ikke hele familiene:
-   Oswald 300 (sitatet) og 600 (alt annet display), Archivo 300/400/500,
-   IBM Plex Mono 400. Alt annet ville vært nedlastning uten bruk. */
-const oswald = Oswald({
+const plexSans = IBM_Plex_Sans({
   variable: "--font-mork-display",
-  weight: ["300", "600"],
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const archivo = Archivo({
-  variable: "--font-mork-body",
-  weight: ["300", "400", "500"],
+  weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
   display: "swap",
 });
 
 const plexMono = IBM_Plex_Mono({
   variable: "--font-mork-meta",
-  weight: ["400"],
+  weight: ["400", "500", "600"],
   subsets: ["latin"],
   display: "swap",
 });
 
-const FONT_KLASSER = `${oswald.variable} ${archivo.variable} ${plexMono.variable}`;
+const FONT_KLASSER = `${plexSans.variable} ${plexMono.variable}`;
 
 const FONT_VARS = {
   "--mork-display": "var(--font-mork-display), system-ui, sans-serif",
-  "--mork-body": "var(--font-mork-body), system-ui, sans-serif",
+  "--mork-body": "var(--font-mork-display), system-ui, sans-serif",
   "--mork-meta": "var(--font-mork-meta), ui-monospace, monospace",
 } as CSSProperties;
 
