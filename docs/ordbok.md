@@ -80,6 +80,10 @@ Gjeldende retning:
 | Abonnement | Ikke «subscription» |
 | Nærspill | Ikke «kortspill», «kort spill» eller «rundt green» som etikett |
 | Restitusjon | Ikke «recovery» når det betyr hvile og restitusjon |
+| Teknisk plan | P1–P10 arbeidsplan; ikke «teknikkplan» |
+| Arbeidsoppgave | Oppgave under en P-posisjon; skilles fra «øvelse» under en økt |
+| Rundelogg | Slag-for-slag registrering med putting i fot og Target vs Pin |
+| Ekstern statistikk | Hurtigutfylling av SG-tall fra UpGame, Arccos, Shot Scope eller turnering |
 | I dag, i går, i morgen, denne uka | Skriv uttrykkene samlet |
 
 **Øvelse er standardordet i brukergrensesnittet.** Bruk «øvelse», «øvelser» og
@@ -142,10 +146,10 @@ Disse ordene beskriver produktet. Faktiske priser og rettigheter styres av produ
 
 | Begrep | Betydning og språklig grense |
 |---|---|
-| Gratis / Pro | Appens brukerrettede nivånavn i produktreglene; ikke Premium eller Plus |
-| FULL / TALENT / INGEN | Interne tilgangsutfall, ikke automatisk etiketter som brukeren skal se |
+| TALENT / FULL | Brukerrettede nivånavn i PlayerHQ. FULL: fast pris 299 kr/mnd eller 2 690 kr/år for alle spillere. TALENT: gratis profil med åpent testbatteri og analyse. Ikke «Pro», «Premium» eller «Plus». |
+| Fast pris 299 kr | Fast pris på 299 kr/mnd eller 2 690 kr/år for alle spillere (ingen 199 kr juniorpris, Anders 24.09.2026). Team Norway får kun interne flater (/team-norway/*) gratis mot at de promoterer appen. |
 | Talentprofil | Gratis profil med avgrenset funksjonstilgang; ikke synonym for aktiv prøveperiode |
-| Performance / Performance Pro | Coaching-pakker, ikke appnivåer |
+| Performance / Performance Pro | Coaching-pakker (2 eller 4 økter/mnd), ikke appnivåer |
 | Coaching-time | Brukerrettet enhet for coaching-bookinger; ikke «credit» |
 | GFGK Elite | Gruppenavn, ikke appnivå |
 | Prøveperiode | Tidsavgrenset tilgang etter gjeldende produktregler |
@@ -168,6 +172,8 @@ Beløp, rabatter og besparelser hentes alltid fra gjeldende tilbudskilde.
 - **Belastning i AK-formelen:** Innendørs, Treningsområde, Bane, Konkurranse. Dette beskriver miljø, ikke en anstrengelsesskala.
 - **Press:** Alene, Observert, Konkurranse, Turnering.
 - **AK-formelen:** PYRAMIDE_OMRÅDE_MOTORIKK_BELASTNING_PRESS. Formelen merker den enkelte øvelsen eller testen.
+- **Teknisk plan (MORAD P1 til P10):** P1 (Adresse) til P10 (Finish). Dette er det interne fagspråket for bevegelsesanalyse. Mac O'Grady og navnet MORAD nevnes aldri offentlig eller i markedsføring, men P-posisjonene (P1–P10) brukes konsekvent i tekniske verktøy.
+- **Statistikk og to kilder:** To likeverdige innganger til Strokes Gained: (1) Slag-for-slag i appens rundelogg med putting i fot og Pin/Target, eller (2) Hurtigutfylling av SG-tall fra andre apper (UpGame, Arccos, turnering). Begge mater samme beregningsmotor og avleder SG-gapet.
 - **Spillerkategori:** A–K, 11 nivåer, A er best. Kategorien beskriver brutto snittscore, ikke tilgang til trening. HCP er ikke samme måling.
 - **Perioder og treningsblokker:** Frie merkelapper, ikke automatiske treningsforbud. Bruk fulle periodenavn i skjermen.
 - **Økt, øvelse, repetisjon, sett og resultat:** Dette er ulike nivåer. Ett registrert trykk eller oppmøte er ikke automatisk én fullført øvelse eller et prestasjonsresultat.
@@ -178,7 +184,7 @@ Beløp, rabatter og besparelser hentes alltid fra gjeldende tilbudskilde.
 
 ### 4.1 Handlingsord
 
-Lagre · Ferdig · Bekreft · Fortsett · Send · Gjenoppta · Importer · Marker oppnådd · Avbryt · Lukk · Tilbake · Pause · Endre · Rediger · Vis · Skjul · Last ned · Eksporter · Be om hjelp · Marker som lest · Slett · Neste · Forrige · Be om økt · Registrer ny økt · Start økt · Avslutt · Se mer · Se alle · Åpne · Send melding · Oppgrader til Pro.
+Lagre · Ferdig · Bekreft · Fortsett · Send · Gjenoppta · Importer · Marker oppnådd · Avbryt · Lukk · Tilbake · Pause · Endre · Rediger · Vis · Skjul · Last ned · Eksporter · Be om hjelp · Marker som lest · Slett · Neste · Forrige · Be om økt · Registrer ny økt · Start økt · Avslutt · Se mer · Se alle · Åpne · Send melding · Oppgrader til Full.
 
 Bruk ordet som beskriver den faktiske handlingen. «Ferdig» sier ikke om noe også lagres.
 
@@ -254,5 +260,6 @@ en generell erstatning for publisert eller aktiv.
 | Subscription | Abonnement |
 | Kortspill / rundt green | Nærspill |
 | Ferdig som universell status | Den presise statusen: lagret, publisert, gjennomført eller utført |
-| Premium / Plus | Gjeldende produktnivå |
+| Pro / Premium / Plus | TALENT (gratis) eller FULL (betalt) |
+| Oswald / Archivo | IBM Plex Sans (display/body) og IBM Plex Mono (tall/meta) |
 | Emoji i UI | Tekst eller et relevant ikon |
