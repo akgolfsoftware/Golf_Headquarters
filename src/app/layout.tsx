@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { cookies, headers } from "next/headers";
-import { Archivo, Geist, Geist_Mono, IBM_Plex_Mono, Lora, Oswald, Poppins } from "next/font/google";
+import { Archivo, Geist, Geist_Mono, IBM_Plex_Mono, IBM_Plex_Sans, Lora, Oswald, Poppins } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { InstallPrompt } from "@/components/portal/install-prompt";
@@ -37,6 +37,13 @@ const lora = Lora({
 const ibmPlexMono = IBM_Plex_Mono({
   variable: "--font-ibm-plex-mono",
   weight: ["400", "500", "600"],
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const ibmPlexSans = IBM_Plex_Sans({
+  variable: "--font-ibm-plex-sans",
+  weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
   display: "swap",
 });
@@ -212,7 +219,7 @@ export default async function RootLayout({
   return (
     <html
       lang="nb"
-      className={`${poppins.variable} ${lora.variable} ${ibmPlexMono.variable} ${geist.variable} ${geistMono.variable} ${archivo.variable} ${oswald.variable} h-full antialiased`}
+      className={`${ibmPlexSans.variable} ${ibmPlexMono.variable} ${poppins.variable} ${lora.variable} ${geist.variable} ${geistMono.variable} ${archivo.variable} ${oswald.variable} h-full antialiased`}
       data-train-lock={trainLockVersjonForRute(path)}
       {...(mork ? { "data-v2-tema": "dark" } : {})}
       suppressHydrationWarning

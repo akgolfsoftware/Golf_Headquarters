@@ -45,3 +45,16 @@ designsystemet.
 
 Produktregler, tilgang, personvern, sikkerhet og datamodeller endres ikke automatisk av denne
 designbeslutningen.
+
+## Typografi- og presisjonsbeslutning — 24.09.2026
+
+Anders har 24.09.2026 bestilt oppgradering til det komplette AK Golf Design Systemet:
+
+1. **Typografi:**
+   - **IBM Plex Sans** (400, 500, 600, 700) er enhetlig skrifttype for overskrifter (display), knapper, menyer og brødtekst i hele appen. Oswald og Archivo er formelt utgått.
+   - **IBM Plex Mono** (400, 500, 600) er skrifttype for alle tall, klokkeslett, TrackMan-vinkler, yardages, prosenter og metadata.
+2. **Geometri og taktil radius:**
+   - Standardiseres til 8 px for kort, knapper, innboksrader og kontroller (12 px for ark/modaler, 999 px for piller/badges). Klossete 0–2 px-verdier utgår.
+3. **Visuelt hierarki:**
+   - Oppgaven og øvelsesnavnet er det primære blikkfanget. Kategorier og akser (FYS, TEK, SLAG, SPILL, TURN) tones ned til diskrete, elegante merkelapper (badges) med dempet fargetone.
+
