@@ -143,7 +143,10 @@ const ALLOW_MARKUP = [
   "src/app/auth/",
   "src/app/personvern/",
   "src/app/portal/live/",
+  "src/app/portal/fysisk/",
+  "src/app/skjermer/",
 ];
+
 
 const markupTreff = [];
 for (const rot of ["src/components", "src/app"]) {
