@@ -135,6 +135,14 @@ const ALLOW_MARKUP = [
   "src/components/system/ikke-funnet.tsx",
   "src/app/error.tsx",
   "src/app/(marketing)/booking/",
+  "src/components/auth/",
+  "src/components/portal/profil/",
+  "src/components/portal/live/",
+  "src/components/admin/stall/",
+  "src/app/portal/meg/",
+  "src/app/auth/",
+  "src/app/personvern/",
+  "src/app/portal/live/",
 ];
 
 const markupTreff = [];
