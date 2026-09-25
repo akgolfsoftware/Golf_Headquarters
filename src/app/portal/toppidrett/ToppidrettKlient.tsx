@@ -9,8 +9,9 @@ import {
   StrokesGainedDeepDive,
   TrackmanGappingView,
   KategoriOversikt,
+  StyrkeProgramView,
 } from "@/components/portal/toppidrett";
-import { Layers, MapPin, Target, Award, Compass, BarChart2 } from "lucide-react";
+import { Layers, MapPin, Target, Award, Compass, BarChart2, Dumbbell } from "lucide-react";
 
 export interface ToppidrettKlientProps {
   user: {
@@ -22,7 +23,7 @@ export interface ToppidrettKlientProps {
 
 export function ToppidrettKlient({ user }: ToppidrettKlientProps) {
   const [aktivFane, setAktivFane] = useState<
-    "ytelse" | "banekart" | "sg" | "gapping" | "kategori" | "maal"
+    "ytelse" | "banekart" | "sg" | "gapping" | "kategori" | "maal" | "fys"
   >("ytelse");
 
   return (
@@ -136,6 +137,19 @@ export function ToppidrettKlient({ user }: ToppidrettKlientProps) {
             <Layers className="h-3.5 w-3.5" />
             <span>Målkaskade</span>
           </button>
+
+          <button
+            type="button"
+            onClick={() => setAktivFane("fys")}
+            className={`flex items-center gap-2 px-3.5 py-2 rounded-lg font-sans text-xs font-semibold whitespace-nowrap transition-colors ${
+              aktivFane === "fys"
+                ? "bg-[#141413] text-white"
+                : "bg-white border border-[#DDD9D1] text-black/70 hover:bg-[#F1EEE8]"
+            }`}
+          >
+            <Dumbbell className="h-3.5 w-3.5" />
+            <span>Styrkeprogram (FYS)</span>
+          </button>
         </div>
 
         {/* Aktiv skjermvisning */}
@@ -146,6 +160,7 @@ export function ToppidrettKlient({ user }: ToppidrettKlientProps) {
           {aktivFane === "gapping" && <TrackmanGappingView />}
           {aktivFane === "kategori" && <KategoriOversikt spillerScore={73.4} />}
           {aktivFane === "maal" && <HierarkiskMaalTracker />}
+          {aktivFane === "fys" && <StyrkeProgramView />}
         </div>
       </main>
     </div>

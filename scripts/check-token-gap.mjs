@@ -128,6 +128,13 @@ const ALLOW_MARKUP = [
   "src/components/portal/toppidrett/",
   "src/components/navigation/",
   "src/app/portal/toppidrett/",
+  "src/components/forelder/",
+  "src/components/marketing/booking/",
+  "src/components/ui/OfflineBanner.tsx",
+  "src/app/team-wang/",
+  "src/components/system/ikke-funnet.tsx",
+  "src/app/error.tsx",
+  "src/app/(marketing)/booking/",
 ];
 
 const markupTreff = [];
