@@ -44,6 +44,26 @@ export type Belastning = "INNENDORS" | "TRENINGSOMRADE" | "BANE" | "KONKURRANSE"
 
 export type Press = "ALENE" | "OBSERVERT" | "KONKURRANSE" | "TURNERING";
 
+// ─── Pyramide-fokus og adaptive treningstyper (Anders 25.09.2026) ───────────
+export type TurneringFokus = "TRENING" | "UTVIKLING" | "PRESTASJON";
+export type SpillFokus = "SCORING" | "SPILLOEVELSE" | "BANESTRATEGI" | "TESTER";
+export type GolfslagFokus = "BALLSTART" | "SKRU" | "HOYDER" | "SPINKONTROLL" | "TESTER";
+export type TeknikkFokus = "UTVIKLING" | "VEDLIKEHOLD" | "TESTER";
+export type FysiskFokus = "STYRKE" | "KONDISJON" | "BEVEGELIGHET" | "TESTER";
+export type KondisjonType = "INTERVALL" | "LANGKJORING";
+
+export type MoradPosisjon =
+  | "P1.0"
+  | "P2.0"
+  | "P3.0"
+  | "P4.0"
+  | "P5.0"
+  | "P6.0"
+  | "P7.0"
+  | "P8.0"
+  | "P9.0"
+  | "P10.0";
+
 export type PeriodLabel =
   | "GRUNN"
   | "SPESIAL"
