@@ -13,6 +13,7 @@ import { AnalyticsLoader } from "@/components/shared/analytics-loader";
 import { onsketTema } from "@/lib/v2/tema-default";
 import { trainLockVersjonForRute } from "@/lib/v2/valgt-design";
 import { TrainLockDesignSynk } from "@/components/shared/train-lock-design-synk";
+import { OfflineBanner } from "@/components/ui/OfflineBanner";
 import "./globals.css";
 
 // Geist/Geist Mono er valgt for PlayerHQ/AgencyOS i ZIP (4), 10.09.2026.
@@ -226,6 +227,7 @@ export default async function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <TrainLockDesignSynk />
+        <OfflineBanner />
         {/* Tema: satt på <html> via cookie + path (SSR). V2Shell synker ved toggle. */}
         {children}
         <InstallPrompt />
