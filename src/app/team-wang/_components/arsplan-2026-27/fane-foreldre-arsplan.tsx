@@ -203,9 +203,10 @@ export function FaneForeldreArsplan() {
       <FaneHero
         eyebrow="Foresatte"
         tittel="Ukens sammendrag og praktisk info"
-        ingress="Trener skriver et kort sammendrag hver fredag. Det handler om gruppen, aldri om enkeltelever."
+        ingress="Trener skriver et kort sammendrag hver fredag. Det handler om gruppen som helhet, aldri om enkeltelever."
         foto="/team-wang/hero/foreldre-roing.jpg"
         fotoAlt="To WANG-elever i robåt"
+        fotoPosisjon="40% 0%"
       />
       <Ukessammendrag />
       <Foreldremoter />

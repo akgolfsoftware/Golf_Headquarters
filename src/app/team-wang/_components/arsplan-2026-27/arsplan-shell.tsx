@@ -8,7 +8,7 @@
 import { useState } from "react";
 import Image from "next/image";
 
-import { FaneTrening } from "./fane-trening";
+import { FaneTrening, type TreningSide } from "./fane-trening";
 import { FaneSkole } from "./fane-skole";
 import { FaneKalenderArsplan } from "./fane-kalender-arsplan";
 import { FaneForeldreArsplan } from "./fane-foreldre-arsplan";
@@ -24,14 +24,15 @@ const NAV: { key: ArsplanFane; label: string }[] = [
   { key: "foreldre", label: "Foreldre" },
 ];
 
-const SEKUNDAER: Record<ArsplanFane, { href: string; label: string }[]> = {
-  trening: [
-    { href: "#arsplan", label: "Årsplan" },
-    { href: "#periodisering", label: "Periodisering" },
-    { href: "#manedsplan", label: "Månedsplan" },
-    { href: "#ukeplan", label: "Ukeplan" },
-    { href: "#oktplaner", label: "Øktplaner" },
-  ],
+export const TRENING_SIDER: { key: TreningSide; label: string }[] = [
+  { key: "arsplan", label: "Årsplan" },
+  { key: "periodisering", label: "Periodisering" },
+  { key: "manedsplan", label: "Månedsplan" },
+  { key: "ukeplan", label: "Ukeplan" },
+  { key: "oktplaner", label: "Øktplaner" },
+];
+
+const SEKUNDAER: Record<Exclude<ArsplanFane, "trening">, { href: string; label: string }[]> = {
   skole: [
     { href: "#skoleplan", label: "Timeplan" },
     { href: "#kompetansemaal", label: "Kompetansemål" },
@@ -45,12 +46,24 @@ const SEKUNDAER: Record<ArsplanFane, { href: string; label: string }[]> = {
   ],
 };
 
-export function WangArsplanShell({ startFane = "trening" }: { startFane?: ArsplanFane }) {
+export function WangArsplanShell({
+  startFane = "trening",
+  startSide = "arsplan",
+}: {
+  startFane?: ArsplanFane;
+  startSide?: TreningSide;
+}) {
   const [fane, setFane] = useState<ArsplanFane>(startFane);
+  const [side, setSide] = useState<TreningSide>(startSide);
   const [trinn, setTrinn] = useState<Trinn | "Alle trinn">("Alle trinn");
 
   function byttFane(f: ArsplanFane) {
     setFane(f);
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function byttSide(s: TreningSide) {
+    setSide(s);
     if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -110,32 +123,61 @@ export function WangArsplanShell({ startFane = "trening" }: { startFane?: Arspla
       <div style={{ borderBottom: "1px solid var(--border-subtle)", background: "var(--surface-card)" }}>
         <Wrap>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap", padding: "12px 0" }}>
-            {SEKUNDAER[fane].map((s) => (
-              <a
-                key={s.href}
-                href={s.href}
-                style={{
-                  textDecoration: "none",
-                  fontFamily: "var(--font-brand)",
-                  fontWeight: 700,
-                  fontSize: 12.5,
-                  padding: "8px 15px",
-                  borderRadius: 999,
-                  background: "var(--neutral-50)",
-                  color: "var(--text-primary)",
-                }}
-              >
-                {s.label}
-              </a>
-            ))}
+            {fane === "trening"
+              ? TRENING_SIDER.map((s) => {
+                  const aktiv = s.key === side;
+                  return (
+                    <button
+                      key={s.key}
+                      type="button"
+                      aria-current={aktiv ? "page" : undefined}
+                      onClick={() => byttSide(s.key)}
+                      style={{
+                        fontFamily: "var(--font-brand)",
+                        fontWeight: 700,
+                        fontSize: 12.5,
+                        padding: "8px 15px",
+                        minHeight: 40,
+                        borderRadius: 999,
+                        border: "none",
+                        cursor: "pointer",
+                        background: aktiv ? "var(--wang-navy)" : "var(--neutral-50)",
+                        color: aktiv ? "var(--white)" : "var(--text-primary)",
+                      }}
+                    >
+                      {s.label}
+                    </button>
+                  );
+                })
+              : SEKUNDAER[fane].map((s) => (
+                  <a
+                    key={s.href}
+                    href={s.href}
+                    style={{
+                      textDecoration: "none",
+                      fontFamily: "var(--font-brand)",
+                      fontWeight: 700,
+                      fontSize: 12.5,
+                      padding: "8px 15px",
+                      borderRadius: 999,
+                      background: "var(--neutral-50)",
+                      color: "var(--text-primary)",
+                    }}
+                  >
+                    {s.label}
+                  </a>
+                ))}
           </div>
         </Wrap>
       </div>
 
       <main key={fane} className={fadeUpClass}>
-        {fane === "trening" ? <FaneTrening trinn={trinn} onTrinn={setTrinn} /> : null}
+        {fane === "trening" ? <FaneTrening side={side} trinn={trinn} onTrinn={setTrinn} /> : null}
         {fane === "skole" ? <FaneSkole trinn={trinn} onTrinn={setTrinn} /> : null}
-        {fane === "kalender" ? <FaneKalenderArsplan onGaaTilTrening={() => byttFane("trening")} /> : null}
+        {fane === "kalender" ? <FaneKalenderArsplan onGaaTilTrening={() => {
+            setSide("periodisering");
+            byttFane("trening");
+          }} /> : null}
         {fane === "foreldre" ? <FaneForeldreArsplan /> : null}
       </main>
 

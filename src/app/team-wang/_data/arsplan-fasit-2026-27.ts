@@ -118,7 +118,7 @@ export const UKER: UkeRad[] = [
   [15, "2027-04-12", "SPES", "Utviklingsuke", ""],
   [16, "2027-04-19", "SPES", "Avslutningsuke", "Kalibrering fullført"],
   [17, "2027-04-26", "TURN", "Pre-turnering", "TURN start"],
-  [18, "2027-05-03", "TURN", "Turneringsuke", "Kr. himmelfart 6. mai — fri to/fre"],
+  [18, "2027-05-03", "TURN", "Turneringsuke", "Kristi himmelfartsdag 6. mai — fri to/fre"],
   [19, "2027-05-10", "TURN", "Turneringsuke", "VG2 tverrfaglig eksamen denne uka — eksamen (hverdager) og turnering (helg) krasjer ikke"],
   [20, "2027-05-17", "TURN", "Turneringsuke", "17. mai — fri mandag"],
   [21, "2027-05-24", "TURN", "Turneringsuke", "Eksamensperiode starter, alle tre trinn — ingen fellesøkter for elever i eksamen. Krasjer ikke med turnering (hverdager vs. helg)"],
@@ -737,7 +737,7 @@ export const MND: MndRad[] = [
   ["Februar", "GRUNN", "Teknisk sjekk uke 6, ingen samling denne måneden.", ["Intern teknisk sjekk uke 6", "Fys-test 19.02 · vinterferie uke 8"]],
   ["Mars", "SPES", "GRUNN avsluttes med test og IUP-sjekk uke 10. SPES fra uke 11: teknikk skal bli slag.", ["Test og IUP uke 10", "Påskeferie uke 12"]],
   ["April", "SPES", "Ut på GFGK fra ca. 5. april — overføring til bane og kalibrering av avstander.", ["Fys-test 02.04", "Utesesongen åpner", "Kalibrering fullført uke 16"]],
-  ["Mai", "TURN", "Turneringssesong: Norgescup, Østlandstour og Srixon Tour. Kjente slag, ingen ny teknikk.", ["Fri Kr. himmelfart 6. mai og 17. mai", "VG3 skriftlig eksamen uke 20"]],
+  ["Mai", "TURN", "Turneringssesong: Norgescup, Østlandstour og Srixon Tour. Kjente slag, ingen ny teknikk.", ["Fri Kristi himmelfartsdag 6. mai og 17. mai", "VG3 skriftlig eksamen uke 20"]],
   ["Juni", "TURN", "Turneringstopp og evaluering — sesong- og skoleårsavslutning uke 24.", ["Fys-test 11.06", "Eksamensperiode uke 21–22", "IUP-evaluering og avslutning uke 24"]],
 ];
 
@@ -804,61 +804,61 @@ export const TRINN_KRO: Record<Trinn, FagInfo> = {
 
 export const KM: Record<Trinn, string[]> = {
   VG1: [
-    "vise og utvikle ferdigheter i idretten og gjennomføre systematisk og målrettet trening",
-    "dokumentere og evaluere en valgt treningsperiode",
-    "kjenne til ulike treningsformer, metoder, tester og øvelser som er relevante for ferdighetsutvikling i idretten, og bruke disse til å utvikle egne ferdigheter",
-    "gjennomføre basistrening og skadeforebyggende tiltak som gir grunnlag for økt treningsbelastning",
-    "forstå forholdet mellom totalbelastning og restitusjon",
-    "beskrive mentale forberedelser til trening og konkurranse",
-    "bruke lyst- og lekbetonte oppvarmingsøvelser, aktiviteter, treningsformer og konkurranser for å stimulere til økt motivasjon",
-    "vise god samhandling og respektfull treningsatferd",
+    "Vise og utvikle ferdigheter i idretten og gjennomføre systematisk og målrettet trening",
+    "Dokumentere og evaluere en valgt treningsperiode",
+    "Kjenne til ulike treningsformer, metoder, tester og øvelser som er relevante for ferdighetsutvikling i idretten, og bruke disse til å utvikle egne ferdigheter",
+    "Gjennomføre basistrening og skadeforebyggende tiltak som gir grunnlag for økt treningsbelastning",
+    "Forstå forholdet mellom totalbelastning og restitusjon",
+    "Beskrive mentale forberedelser til trening og konkurranse",
+    "Bruke lyst- og lekbetonte oppvarmingsøvelser, aktiviteter, treningsformer og konkurranser for å stimulere til økt motivasjon",
+    "Vise god samhandling og respektfull treningsatferd",
   ],
   VG2: [
-    "vise og videreutvikle ferdigheter som er sentrale for å prestere i konkurranser i idretten",
-    "gjennomføre systematisk og målrettet trening, og dokumentere og analysere resultatet av denne treningen",
-    "gjøre rede for og gjennomføre relevante tester",
-    "utvikle basisegenskaper og integrere skadeforebyggende tiltak i de daglige treningsrutinene",
-    "gjøre rede for hvordan økt treningsmengde og totalbelastning stiller krav til organisering, planlegging, restitusjon og ernæring",
-    "beskrive et utviklingsløp fra eget utgangspunkt og til ønsket nivå på kort og lang sikt",
-    "reflektere over egne mentale behov og rutiner før, under og etter trening og i forbindelse med konkurranse",
-    "gjøre rede for og bruke lyst- og lekbetonte aktiviteter, øvelser, treningsformer og konkurranser som kan stimulere til økt motivasjon",
-    "utforske hvordan aktiviteter, øvelser, trening og konkurranse påvirker motivasjon og ferdighetsutvikling",
-    "opptre på en måte som bidrar til et godt lærings- og utviklingsmiljø",
+    "Vise og videreutvikle ferdigheter som er sentrale for å prestere i konkurranser i idretten",
+    "Gjennomføre systematisk og målrettet trening, og dokumentere og analysere resultatet av denne treningen",
+    "Gjøre rede for og gjennomføre relevante tester",
+    "Utvikle basisegenskaper og integrere skadeforebyggende tiltak i de daglige treningsrutinene",
+    "Gjøre rede for hvordan økt treningsmengde og totalbelastning stiller krav til organisering, planlegging, restitusjon og ernæring",
+    "Beskrive et utviklingsløp fra eget utgangspunkt og til ønsket nivå på kort og lang sikt",
+    "Reflektere over egne mentale behov og rutiner før, under og etter trening og i forbindelse med konkurranse",
+    "Gjøre rede for og bruke lyst- og lekbetonte aktiviteter, øvelser, treningsformer og konkurranser som kan stimulere til økt motivasjon",
+    "Utforske hvordan aktiviteter, øvelser, trening og konkurranse påvirker motivasjon og ferdighetsutvikling",
+    "Opptre på en måte som bidrar til et godt lærings- og utviklingsmiljø",
   ],
   VG3: [
-    "vise og utvikle ferdigheter som kan forbedre prestasjonen i konkurransesituasjoner",
-    "dokumentere, analysere og reflektere over gjennomført trening i lys av egne mål og resultater",
-    "utarbeide planer og gjennomføre langsiktig, systematisk og målrettet trening i idretten med utgangspunkt i idrettens krav og egen kapasitet",
-    "videreutvikle basisegenskaper som er sentrale for ferdighetsutvikling",
-    "anvende skadeforebyggende øvelser og vurdere hvordan disse kan integreres i trening og forberedelse til konkurranse",
-    "gjennomføre mentale forberedelser og mental trening, og reflektere over hvordan dette kan påvirke ferdighetsutvikling",
-    "utforske og reflektere over hvordan aktiviteter, øvelser, trening og konkurranse påvirker motivasjon og ferdighetsutvikling",
-    "opptre på en måte som fremmer treningsarbeidet og samhandlingen, og som bidrar til et trygt, positivt og godt utviklingsmiljø",
+    "Vise og utvikle ferdigheter som kan forbedre prestasjonen i konkurransesituasjoner",
+    "Dokumentere, analysere og reflektere over gjennomført trening i lys av egne mål og resultater",
+    "Utarbeide planer og gjennomføre langsiktig, systematisk og målrettet trening i idretten med utgangspunkt i idrettens krav og egen kapasitet",
+    "Videreutvikle basisegenskaper som er sentrale for ferdighetsutvikling",
+    "Anvende skadeforebyggende øvelser og vurdere hvordan disse kan integreres i trening og forberedelse til konkurranse",
+    "Gjennomføre mentale forberedelser og mental trening, og reflektere over hvordan dette kan påvirke ferdighetsutvikling",
+    "Utforske og reflektere over hvordan aktiviteter, øvelser, trening og konkurranse påvirker motivasjon og ferdighetsutvikling",
+    "Opptre på en måte som fremmer treningsarbeidet og samhandlingen, og som bidrar til et trygt, positivt og godt utviklingsmiljø",
   ],
 };
 
 export const KM_KRO: Record<Trinn, string[]> = {
   VG1: [
-    "trene på og skape nye varianter av lek, bevegelsesaktivitet og dans sammen med andre",
-    "planlegge og gjennomføre metoder for øvelse og trening for å oppnå individuelle mål, også når man ikke fullt ut kan delta i aktiviteten",
-    "bruke egne ferdigheter og kunnskaper til å samarbeide og bidra til å gjøre andre gode i aktivitet og samspill",
-    "forebygge skader ved bevegelsesaktiviteter og utføre grunnleggende førstehjelp",
-    "bruke kart og digitale verktøy på en måte som sikrer trygg ferdsel for seg selv og for andre",
-    "bruke lokale tradisjoner for ferdsel i naturen under vekslende årstider",
+    "Trene på og skape nye varianter av lek, bevegelsesaktivitet og dans sammen med andre",
+    "Planlegge og gjennomføre metoder for øvelse og trening for å oppnå individuelle mål, også når man ikke fullt ut kan delta i aktiviteten",
+    "Bruke egne ferdigheter og kunnskaper til å samarbeide og bidra til å gjøre andre gode i aktivitet og samspill",
+    "Forebygge skader ved bevegelsesaktiviteter og utføre grunnleggende førstehjelp",
+    "Bruke kart og digitale verktøy på en måte som sikrer trygg ferdsel for seg selv og for andre",
+    "Bruke lokale tradisjoner for ferdsel i naturen under vekslende årstider",
   ],
   VG2: [
-    "gjennomføre leker, idrettsaktiviteter og andre bevegelsesaktiviteter og forstå hvordan ulike aktiviteter påvirker og utvikler koordinasjon, styrke, utholdenhet og bevegelighet",
-    "utføre trening på egen hånd og reflektere over hvordan fysisk aktivitet kan fremme god psykisk og fysisk helse og bidra til en helsefremmende livsstil etter avsluttet skolegang og i framtidig arbeidsliv",
-    "praktisere regler for å delta i ulike bevegelsesaktiviteter og medvirke til læring for andre",
-    "planlegge og gjennomføre uteaktiviteter til ulike årstider, der formålet er å ha gode naturopplevelser",
-    "praktisere bærekraftig ferdsel i naturen og gjennomføre friluftslivsaktiviteter i nærområdet",
+    "Gjennomføre leker, idrettsaktiviteter og andre bevegelsesaktiviteter og forstå hvordan ulike aktiviteter påvirker og utvikler koordinasjon, styrke, utholdenhet og bevegelighet",
+    "Utføre trening på egen hånd og reflektere over hvordan fysisk aktivitet kan fremme god psykisk og fysisk helse og bidra til en helsefremmende livsstil etter avsluttet skolegang og i framtidig arbeidsliv",
+    "Praktisere regler for å delta i ulike bevegelsesaktiviteter og medvirke til læring for andre",
+    "Planlegge og gjennomføre uteaktiviteter til ulike årstider, der formålet er å ha gode naturopplevelser",
+    "Praktisere bærekraftig ferdsel i naturen og gjennomføre friluftslivsaktiviteter i nærområdet",
   ],
   VG3: [
-    "øve på og utvikle kunnskaper og ferdigheter i ulike bevegelsesaktiviteter ut fra egne forutsetninger",
-    "planlegge, gjennomføre og vurdere egentrening og forklare hvordan dette kan medvirke til en fysisk aktiv og helsefremmende livsstil etter avsluttet skolegang",
-    "beskrive og drøfte sammenhenger mellom bevegelse, kropp, trening og helse i samfunnet",
-    "samarbeide om å løse praktiske oppgaver i et læringsfellesskap og ut fra øvelse og aktivitet reflektere over hvordan egen medvirkning kan påvirke andre",
-    "planlegge og gjennomføre uteaktiviteter og friluftslivsaktiviteter i nærområdet",
+    "Øve på og utvikle kunnskaper og ferdigheter i ulike bevegelsesaktiviteter ut fra egne forutsetninger",
+    "Planlegge, gjennomføre og vurdere egentrening og forklare hvordan dette kan medvirke til en fysisk aktiv og helsefremmende livsstil etter avsluttet skolegang",
+    "Beskrive og drøfte sammenhenger mellom bevegelse, kropp, trening og helse i samfunnet",
+    "Samarbeide om å løse praktiske oppgaver i et læringsfellesskap og ut fra øvelse og aktivitet reflektere over hvordan egen medvirkning kan påvirke andre",
+    "Planlegge og gjennomføre uteaktiviteter og friluftslivsaktiviteter i nærområdet",
   ],
 };
 
@@ -1076,7 +1076,7 @@ export const SKOLERUTE: [string, string, string][] = [
   ["Januar", "Første skoledag: mandag 4. januar", "Uke 2"],
   ["Februar", "Vinterferie", "Uke 8"],
   ["Mars", "Påskeferie", "Uke 12–13"],
-  ["Mai", "Kristi himmelfart 6. mai · 17. mai · 2. pinsedag", "Uke 18 og 20"],
+  ["Mai", "Kristi himmelfartsdag 6. mai · 17. mai · 2. pinsedag", "Uke 18 og 20"],
   ["Juni", "Siste skoledag: fredag 18. juni", "Uke 25"],
 ];
 
@@ -1183,7 +1183,7 @@ export function byggEvents(): Record<string, KalenderHendelse[]> {
     if (uke === 43) add(mandag, { type: "prove", label: "Testuke — IUP-baseline" });
     if (uke === 6) add(dagIso(mandag, 4), { type: "prove", label: "Intern teknisk sjekk" });
     if (uke === 10) add(dagIso(mandag, 4), { type: "prove", label: "Test og IUP-sjekk" });
-    if (uke === 18) add(dagIso(mandag, 3), { type: "hendelse", label: "Fri · Kr. himmelfart" });
+    if (uke === 18) add(dagIso(mandag, 3), { type: "hendelse", label: "Fri · Kristi himmelfartsdag" });
     if (uke === 20) add(mandag, { type: "hendelse", label: "17. mai — fri" });
     if (uke === 24) add(dagIso(mandag, 4), { type: "hendelse", label: "Sesong- og skoleårsavslutning" });
     // Fysiske tester — cirka hver 6. uke, lagt inn av Anders 22.09.2026.

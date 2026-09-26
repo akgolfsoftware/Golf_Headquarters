@@ -274,11 +274,13 @@ export function klampTilIntervall(isoDato: string, startIso: string, sluttIso: s
   return isoDato;
 }
 
+/** Felles høyde på fotoflaten i alle fire faner-heroene, slik at bildene er like store. */
+export const HERO_MIN_HOYDE = "clamp(260px, 30vw, 300px)";
+
 /**
- * Delt hero for Skole-/Kalender-/Foreldre-fanen — samme navy gradient og
- * tynne overskriftsvekt som Treningsfanens hero, uten fotoseksjon (designets
- * foto er ikke overført til appen ennå). Treningsfanens hero har egen,
- * rikere variant (Sted-/trener-bånd) og bruker ikke denne.
+ * Delt hero for alle fire faner. Fotoflaten har fast minimumshøyde og teksten
+ * er sentrert vertikalt, så bildene blir like store. `fotoPosisjon` peker
+ * beskjæringen mot motivets ansikt (x y i prosent).
  */
 export function FaneHero({
   eyebrow,
@@ -286,6 +288,8 @@ export function FaneHero({
   ingress,
   foto,
   fotoAlt,
+  fotoPosisjon = "50% 20%",
+  bunn,
 }: {
   eyebrow: string;
   tittel: string;
@@ -293,63 +297,70 @@ export function FaneHero({
   /** Foto-sti under /public, f.eks. "/team-wang/hero/skole-fotball.jpg". Uten foto: navy gradient som før. */
   foto?: string;
   fotoAlt?: string;
+  fotoPosisjon?: string;
+  /** Innhold under fotoflaten (f.eks. sted- og trenerbånd), utenfor den like store fotoflaten. */
+  bunn?: ReactNode;
 }) {
   return (
-    <div
-      style={{
-        position: "relative",
-        overflow: "hidden",
-        background: foto ? "var(--navy-deep)" : "var(--grad-hero-line)",
-        color: "var(--white)",
-      }}
-    >
-      {foto ? (
-        <>
-          <Image
-            src={foto}
-            alt=""
-            fill
-            priority
-            sizes="100vw"
-            style={{ objectFit: "cover", objectPosition: "center 20%" }}
-          />
-          <div style={{ position: "absolute", inset: 0, background: "var(--grad-hero-photo)" }} aria-hidden />
-          {fotoAlt ? <span style={{ position: "absolute", width: 1, height: 1, overflow: "hidden" }}>{fotoAlt}</span> : null}
-        </>
-      ) : null}
-      <Wrap>
-        <div style={{ padding: "clamp(32px,5.5vw,44px) 0", position: "relative" }}>
-          <p
-            style={{
-              margin: "0 0 10px",
-              fontFamily: "var(--font-brand)",
-              fontWeight: 500,
-              fontSize: 11,
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-              color: "var(--white)",
-            }}
-          >
-            {eyebrow}
-          </p>
-          <h1
-            style={{
-              margin: 0,
-              fontFamily: "var(--font-brand)",
-              fontWeight: 300,
-              fontSize: "clamp(26px,5vw,38px)",
-              letterSpacing: "-0.015em",
-              lineHeight: 1.12,
-              maxWidth: "26ch",
-            }}
-          >
-            {tittel}
-          </h1>
-          <p style={{ fontSize: "clamp(14.5px,2vw,17px)", lineHeight: 1.55, color: "var(--text-on-dark-78)", maxWidth: 560, marginTop: 12 }}>
-            {ingress}
-          </p>
-        </div>
-      </Wrap>
+    <div style={{ background: foto ? "var(--navy-deep)" : "var(--grad-hero-line)", color: "var(--white)" }}>
+      <div
+        style={{
+          position: "relative",
+          overflow: "hidden",
+          minHeight: HERO_MIN_HOYDE,
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        {foto ? (
+          <>
+            <Image
+              src={foto}
+              alt=""
+              fill
+              priority
+              sizes="100vw"
+              style={{ objectFit: "cover", objectPosition: fotoPosisjon }}
+            />
+            <div style={{ position: "absolute", inset: 0, background: "var(--grad-hero-photo)" }} aria-hidden />
+            {fotoAlt ? <span style={{ position: "absolute", width: 1, height: 1, overflow: "hidden" }}>{fotoAlt}</span> : null}
+          </>
+        ) : null}
+        <Wrap>
+          <div style={{ padding: "clamp(32px,5.5vw,44px) 0", position: "relative" }}>
+            <p
+              style={{
+                margin: "0 0 10px",
+                fontFamily: "var(--font-brand)",
+                fontWeight: 500,
+                fontSize: 11,
+                letterSpacing: "0.18em",
+                textTransform: "uppercase",
+                color: "var(--white)",
+              }}
+            >
+              {eyebrow}
+            </p>
+            <h1
+              style={{
+                margin: 0,
+                fontFamily: "var(--font-brand)",
+                fontWeight: 300,
+                fontSize: "clamp(26px,5vw,38px)",
+                letterSpacing: "-0.015em",
+                lineHeight: 1.12,
+                maxWidth: "26ch",
+              }}
+            >
+              {tittel}
+            </h1>
+            <p style={{ fontSize: "clamp(14.5px,2vw,17px)", lineHeight: 1.55, color: "var(--text-on-dark-78)", maxWidth: 560, marginTop: 12 }}>
+              {ingress}
+            </p>
+          </div>
+        </Wrap>
+      </div>
+      {bunn}
     </div>
   );
 }

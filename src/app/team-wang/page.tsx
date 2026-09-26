@@ -1,4 +1,5 @@
-import { WangArsplanShell, type ArsplanFane } from "./_components/arsplan-2026-27/arsplan-shell";
+import { WangArsplanShell, TRENING_SIDER, type ArsplanFane } from "./_components/arsplan-2026-27/arsplan-shell";
+import type { TreningSide } from "./_components/arsplan-2026-27/fane-trening";
 
 // Fellesside for WANG Toppidrett Fredrikstad – golfgruppa. ÅPEN uten innlogging
 // slik at lenken kan deles med elever og foreldre. Trygt fordi siden ikke viser
@@ -18,11 +19,12 @@ const FANER: ArsplanFane[] = ["trening", "skole", "kalender", "foreldre"];
 export default async function TeamWangPage({
   searchParams,
 }: {
-  searchParams: Promise<{ fane?: string }>;
+  searchParams: Promise<{ fane?: string; side?: string }>;
 }) {
-  const { fane } = await searchParams;
+  const { fane, side } = await searchParams;
   const start: ArsplanFane = FANER.includes(fane as ArsplanFane)
     ? (fane as ArsplanFane)
     : "trening";
-  return <WangArsplanShell startFane={start} />;
+  const startSide: TreningSide = TRENING_SIDER.some((s) => s.key === side) ? (side as TreningSide) : "arsplan";
+  return <WangArsplanShell startFane={start} startSide={startSide} />;
 }

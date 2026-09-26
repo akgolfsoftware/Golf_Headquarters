@@ -307,9 +307,10 @@ export function FaneKalenderArsplan({ onGaaTilTrening }: { onGaaTilTrening: () =
       <FaneHero
         eyebrow="Kalender"
         tittel="Alt som skjer, dag for dag"
-        ingress="Økter, samlinger, turneringer, tester, prøver og skolefri i samme kalender. Velg en dag for å se hva som står på den."
+        ingress="Økter, samlinger, turneringer, tester, prøver og skolefri ligger i samme kalender. Trykk på en dag, så ser du hva som står på den."
         foto="/team-wang/hero/kalender-langrenn.jpg"
         fotoAlt="WANG-elev i langrenn"
+        fotoPosisjon="55% 8%"
       />
     <Seksjon id="kalender">
       <SeksjonHode label="Fire visninger" tittel="Kalender" ingress="Tidslinje, uke, måned eller år — trykk en dag for å se hendelsene og hoppe til planen." />

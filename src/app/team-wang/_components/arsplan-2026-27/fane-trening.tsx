@@ -11,7 +11,6 @@
 // beregning fra øktmalens blokker (se `beregnPyramide`), ikke periodebrevets
 // faste prosenter.
 
-import Image from "next/image";
 import { useState } from "react";
 
 import {
@@ -32,6 +31,7 @@ import {
 import { d, iso } from "../../_data/wang-plan";
 import {
   Chip,
+  FaneHero,
   PillGruppe,
   Seksjon,
   SeksjonHode,
@@ -53,101 +53,47 @@ const SESONG_SLUTT = (() => {
 })();
 
 function Hero() {
+  const etikett = {
+    margin: 0,
+    fontFamily: "var(--font-brand)",
+    fontWeight: 500,
+    fontSize: 11,
+    letterSpacing: "0.18em",
+    textTransform: "uppercase",
+    color: "var(--wang-mint)",
+  } as const;
+  const verdi = { margin: "4px 0 0", fontFamily: "var(--font-brand)", fontWeight: 500, fontSize: 15 } as const;
   return (
-    <div
-      style={{
-        position: "relative",
-        overflow: "hidden",
-        background: "var(--navy-deep)",
-        color: "var(--white)",
-      }}
-    >
-      <Image
-        src="/team-wang/hero/trening-golf.jpg"
-        alt=""
-        fill
-        priority
-        sizes="100vw"
-        style={{ objectFit: "cover", objectPosition: "center 30%" }}
-      />
-      <div style={{ position: "absolute", inset: 0, background: "var(--grad-hero-photo)" }} aria-hidden />
-      <span style={{ position: "absolute", width: 1, height: 1, overflow: "hidden" }}>WANG-elev slår ut på Gamle Fredrikstad GK</span>
-      <div
-        aria-hidden
-        style={{
-          position: "absolute",
-          top: -80,
-          right: -60,
-          width: 420,
-          height: 420,
-          borderRadius: "50%",
-          border: "1.5px solid var(--wang-mint)",
-          opacity: 0.2,
-          pointerEvents: "none",
-        }}
-      />
-      <Wrap>
-        <div style={{ padding: "clamp(40px,7vw,64px) 0 clamp(24px,4vw,32px)", position: "relative" }}>
+    <FaneHero
+      eyebrow="Toppidrett golf · skoleåret 2026/27"
+      tittel="Hele treningsåret, uke for uke"
+      ingress="Fem perioder over 44 uker og tre økter i uka. Vi bygger teknikk om vinteren, kalibrerer om våren og prøver den i turnering. Felles ramme for VG1 til VG3, med egne mål for hvert trinn."
+      foto="/team-wang/hero/trening-golf.jpg"
+      fotoAlt="WANG-elev slår ut på Gamle Fredrikstad GK"
+      fotoPosisjon="47% 6%"
+      bunn={
+        <Wrap>
           <div
             style={{
-              fontFamily: "var(--font-brand)",
-              fontWeight: 500,
-              fontSize: 11,
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-              color: "var(--white)",
-              marginBottom: 10,
+              borderTop: "1px solid var(--overlay-on-dark-12)",
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 24,
+              padding: "18px 0 20px",
             }}
           >
-            Toppidrett golf · skoleåret 2026/27
+            <div>
+              <p style={etikett}>Sted</p>
+              <p style={verdi}>GFGK · Treningslokalet</p>
+            </div>
+            <div>
+              <p style={etikett}>Sportssjef og trener</p>
+              <p style={verdi}>Anders Kristiansen</p>
+            </div>
           </div>
-          <h1
-            style={{
-              fontFamily: "var(--font-brand)",
-              fontWeight: 300,
-              fontSize: "clamp(30px,6.5vw,44px)",
-              letterSpacing: "-0.015em",
-              lineHeight: 1.1,
-              margin: 0,
-            }}
-          >
-            Hele treningsåret, slik vi har planlagt det
-          </h1>
-          <p style={{ fontSize: "clamp(15px,2.2vw,17px)", lineHeight: 1.55, color: "var(--text-on-dark-78)", maxWidth: 620, marginTop: 14 }}>
-            Fem perioder, 44 uker og tre økter i uka. Vi bygger teknikk om vinteren,
-            kalibrerer om våren og presterer i turnering — felles for VG1 til VG3,
-            med egne mål per trinn.
-          </p>
-        </div>
-        <div
-          style={{
-            position: "relative",
-            borderTop: "1px solid var(--overlay-on-dark-12)",
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 24,
-            padding: "18px 0 20px",
-          }}
-        >
-          <div>
-            <p style={{ margin: 0, fontFamily: "var(--font-brand)", fontWeight: 500, fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--wang-mint)" }}>
-              Sted
-            </p>
-            <p style={{ margin: "4px 0 0", fontFamily: "var(--font-brand)", fontWeight: 500, fontSize: 15 }}>
-              GFGK · Treningslokalet
-            </p>
-          </div>
-          <div>
-            <p style={{ margin: 0, fontFamily: "var(--font-brand)", fontWeight: 500, fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--wang-mint)" }}>
-              Sportssjef og trener
-            </p>
-            <p style={{ margin: "4px 0 0", fontFamily: "var(--font-brand)", fontWeight: 500, fontSize: 15 }}>
-              Anders Kristiansen
-            </p>
-          </div>
-        </div>
-      </Wrap>
-    </div>
+        </Wrap>
+      }
+    />
   );
 }
 
@@ -519,34 +465,40 @@ function Oktplaner({ trinn }: { trinn: TrinnType | "Alle trinn" }) {
   );
 }
 
+export type TreningSide = "arsplan" | "periodisering" | "manedsplan" | "ukeplan" | "oktplaner";
+
 export function FaneTrening({
+  side,
   trinn,
   onTrinn,
 }: {
+  side: TreningSide;
   trinn: TrinnType | "Alle trinn";
   onTrinn: (t: TrinnType | "Alle trinn") => void;
 }) {
   return (
     <div>
       <Hero />
-      <div style={{ marginTop: 24 }}>
-        <Wrap>
-          <PillGruppe
-            valg={(["Alle trinn", "VG1", "VG2", "VG3"] as const).map((t) => ({
-              label: t === "Alle trinn" ? t : t + " · " + TRINN[t].fag,
-              aktiv: t === trinn,
-              onVelg: () => onTrinn(t),
-            }))}
-            aktivBg="var(--wang-mint)"
-            aktivFg="var(--wang-navy-deep-text)"
-          />
-        </Wrap>
-      </div>
-      <Arshjul />
-      <Periodisering />
-      <Manedsplan />
-      <Ukeplan />
-      <Oktplaner trinn={trinn} />
+      {side === "oktplaner" ? (
+        <div style={{ marginTop: 24 }}>
+          <Wrap>
+            <PillGruppe
+              valg={(["Alle trinn", "VG1", "VG2", "VG3"] as const).map((t) => ({
+                label: t === "Alle trinn" ? t : t + " · " + TRINN[t].fag,
+                aktiv: t === trinn,
+                onVelg: () => onTrinn(t),
+              }))}
+              aktivBg="var(--wang-mint)"
+              aktivFg="var(--wang-navy-deep-text)"
+            />
+          </Wrap>
+        </div>
+      ) : null}
+      {side === "arsplan" ? <Arshjul /> : null}
+      {side === "periodisering" ? <Periodisering /> : null}
+      {side === "manedsplan" ? <Manedsplan /> : null}
+      {side === "ukeplan" ? <Ukeplan /> : null}
+      {side === "oktplaner" ? <Oktplaner trinn={trinn} /> : null}
     </div>
   );
 }
