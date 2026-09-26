@@ -3230,6 +3230,7 @@ model SeasonPlan {
   user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   periodBlocks      PeriodBlock[]
   tournamentEntries TournamentEntry[]
+  weekPlans         WeekPlan[]
 
   @@unique([userId, year])
   @@index([userId])
@@ -3283,6 +3284,56 @@ model GroupPeriodBlock {
   @@index([groupId, startDate])
   @@map("group_period_blocks")
 }
+
+// Oppgave 2: Gjør uken til et reelt objekt (WeekPlan)
+enum WeekType {
+  UTVIKLING
+  VEDLIKEHOLD
+  TURNERING
+}
+
+enum WeekNote {
+  FERIE
+  TEST
+  SAMLING
+  EVALUERING
+  PRE_TURNERING
+  TEKNIKK_UKE
+}
+
+model WeekPlan {
+  id                 String     @id @default(cuid())
+  playerId           String
+  seasonPlanId       String?
+  isoYear            Int
+  weekNumber         Int
+  weekType           WeekType   @default(UTVIKLING)
+  notes              WeekNote[] @default([])
+  plannedHoursFys    Float?
+  plannedHoursTek    Float?
+  plannedHoursSlag   Float?
+  plannedHoursSpill  Float?
+  plannedHoursTurn   Float?
+  repTargetDry       Int?
+  repTargetLowSpeed  Int?
+  repTargetFullSpeed Int?
+  repTargetPutting   Int?
+  repTargetShortGame Int?
+  repetitionTargets  Json?
+  loadCeiling        Int?
+  customNotes        String?
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+
+  seasonPlan SeasonPlan? @relation(fields: [seasonPlanId], references: [id], onDelete: SetNull)
+
+  @@unique([playerId, isoYear, weekNumber])
+  @@index([playerId])
+  @@index([seasonPlanId])
+  @@index([isoYear, weekNumber])
+  @@map("week_plans")
+}
+
 
 // WANG-årsplan (Anders 2026-08-15): elevens EGNE fokusområder for én periode —
 // det andre sporet i årsplanen, avtalt med trener i IUP-samtalen.

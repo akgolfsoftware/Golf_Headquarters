@@ -28,6 +28,7 @@ import type {
   RecurrencePolicy,
   SeriesContentPatch,
   ApprovalStatus,
+  WeekPlanData,
 } from "./types";
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -304,7 +305,8 @@ export function buildWeekViewModel(
   sessions: WorkbenchSession[],
   lockedBlocks: DayColumn["lockedBlocks"][] = [],
   mode: WorkbenchMode,
-  targetMinutes = 0
+  targetMinutes = 0,
+  weekPlan: WeekPlanData | null = null,
 ): WeekViewModel {
   const days: DayColumn[] = [];
   for (let i = 0; i < 7; i++) {
@@ -324,7 +326,7 @@ export function buildWeekViewModel(
   const budget = computeBudget(sessions);
   budget.targetMinutes = targetMinutes;
 
-  return { weekStart, days, budget, mode };
+  return { weekStart, days, budget, mode, weekPlan };
 }
 
 const PYRAMID_ORDER: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];

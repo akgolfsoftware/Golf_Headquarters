@@ -28,6 +28,7 @@ import {
   buildWeekViewModel,
   buildYearViewModel,
   createSession as createSessionPure,
+  isoWeekNumber,
   lastDayOfMonth,
   mondayOf,
   monthStartOf,
@@ -48,6 +49,9 @@ import type {
   MonthViewModel,
   PeriodViewModel,
   SourceItem,
+  WeekNote,
+  WeekPlanData,
+  WeekType,
   WeekViewModel,
   WorkbenchMode,
   WorkbenchSession,
@@ -294,7 +298,7 @@ export async function loadWeek(params: {
   const spiller = await prisma.user.findUnique({ where: { id: params.playerId }, select: { schoolYear: true } });
   const nesteUke = new Date(fra);
   nesteUke.setUTCDate(nesteUke.getUTCDate() + 7);
-  const [busy, school] = await Promise.all([
+  const [busy, school, weekPlanRow] = await Promise.all([
     prisma.playerBusyBlock.findMany({
       where: { userId: params.playerId, startAt: { lt: nesteUke } },
       select: { id: true, title: true, startAt: true, endAt: true, recurring: true, isPrivate: true, kind: true },
@@ -303,7 +307,41 @@ export async function loadWeek(params: {
       where: { date: { gte: fra, lt: nesteUke }, OR: [{ classYear: spiller.schoolYear }, { classYear: null }] },
       select: { id: true, title: true, date: true, category: true },
     }) : Promise.resolve([]),
+    prisma.weekPlan.findUnique({
+      where: {
+        playerId_isoYear_weekNumber: {
+          playerId: params.playerId,
+          isoYear: parseInt(weekStart.data.slice(0, 4), 10),
+          weekNumber: isoWeekNumber(weekStart.data),
+        },
+      },
+    }),
   ]);
+
+  const mappedWeekPlan: WeekPlanData | null = weekPlanRow
+    ? {
+        id: weekPlanRow.id,
+        playerId: weekPlanRow.playerId,
+        seasonPlanId: weekPlanRow.seasonPlanId,
+        isoYear: weekPlanRow.isoYear,
+        weekNumber: weekPlanRow.weekNumber,
+        weekType: weekPlanRow.weekType as WeekType,
+        notes: weekPlanRow.notes as WeekNote[],
+        plannedHoursFys: weekPlanRow.plannedHoursFys,
+        plannedHoursTek: weekPlanRow.plannedHoursTek,
+        plannedHoursSlag: weekPlanRow.plannedHoursSlag,
+        plannedHoursSpill: weekPlanRow.plannedHoursSpill,
+        plannedHoursTurn: weekPlanRow.plannedHoursTurn,
+        repTargetDry: weekPlanRow.repTargetDry,
+        repTargetLowSpeed: weekPlanRow.repTargetLowSpeed,
+        repTargetFullSpeed: weekPlanRow.repTargetFullSpeed,
+        repTargetPutting: weekPlanRow.repTargetPutting,
+        repTargetShortGame: weekPlanRow.repTargetShortGame,
+        repetitionTargets: weekPlanRow.repetitionTargets as Record<string, unknown> | null,
+        loadCeiling: weekPlanRow.loadCeiling,
+        customNotes: weekPlanRow.customNotes,
+      }
+    : null;
 
   const vm = buildWeekViewModel(
     weekStart.data,
@@ -311,8 +349,114 @@ export async function loadWeek(params: {
     weekLockedBlocks(weekStart.data, busy, school),
     params.mode,
     params.targetMinutes ?? 0,
+    mappedWeekPlan,
   );
   return { ok: true, data: vm };
+}
+
+export type SaveWeekPlanInput = {
+  playerId: string;
+  isoYear: number;
+  weekNumber: number;
+  weekType: WeekType;
+  notes: WeekNote[];
+  plannedHoursFys?: number | null;
+  plannedHoursTek?: number | null;
+  plannedHoursSlag?: number | null;
+  plannedHoursSpill?: number | null;
+  plannedHoursTurn?: number | null;
+  repTargetDry?: number | null;
+  repTargetLowSpeed?: number | null;
+  repTargetFullSpeed?: number | null;
+  repTargetPutting?: number | null;
+  repTargetShortGame?: number | null;
+  loadCeiling?: number | null;
+  customNotes?: string | null;
+};
+
+export async function saveWeekPlan(
+  input: SaveWeekPlanInput
+): Promise<WbResultat<WeekPlanData>> {
+  const viewer = await kreverTilgangTilSpiller(input.playerId);
+  if (!viewer) return { ok: false, error: INGEN_TILGANG };
+
+  const seasonPlan = await prisma.seasonPlan.findFirst({
+    where: { userId: input.playerId, year: input.isoYear },
+    select: { id: true },
+  });
+
+  const row = await prisma.weekPlan.upsert({
+    where: {
+      playerId_isoYear_weekNumber: {
+        playerId: input.playerId,
+        isoYear: input.isoYear,
+        weekNumber: input.weekNumber,
+      },
+    },
+    create: {
+      playerId: input.playerId,
+      seasonPlanId: seasonPlan?.id ?? null,
+      isoYear: input.isoYear,
+      weekNumber: input.weekNumber,
+      weekType: input.weekType,
+      notes: input.notes,
+      plannedHoursFys: input.plannedHoursFys,
+      plannedHoursTek: input.plannedHoursTek,
+      plannedHoursSlag: input.plannedHoursSlag,
+      plannedHoursSpill: input.plannedHoursSpill,
+      plannedHoursTurn: input.plannedHoursTurn,
+      repTargetDry: input.repTargetDry,
+      repTargetLowSpeed: input.repTargetLowSpeed,
+      repTargetFullSpeed: input.repTargetFullSpeed,
+      repTargetPutting: input.repTargetPutting,
+      repTargetShortGame: input.repTargetShortGame,
+      loadCeiling: input.loadCeiling,
+      customNotes: input.customNotes,
+    },
+    update: {
+      seasonPlanId: seasonPlan?.id ?? undefined,
+      weekType: input.weekType,
+      notes: input.notes,
+      plannedHoursFys: input.plannedHoursFys,
+      plannedHoursTek: input.plannedHoursTek,
+      plannedHoursSlag: input.plannedHoursSlag,
+      plannedHoursSpill: input.plannedHoursSpill,
+      plannedHoursTurn: input.plannedHoursTurn,
+      repTargetDry: input.repTargetDry,
+      repTargetLowSpeed: input.repTargetLowSpeed,
+      repTargetFullSpeed: input.repTargetFullSpeed,
+      repTargetPutting: input.repTargetPutting,
+      repTargetShortGame: input.repTargetShortGame,
+      loadCeiling: input.loadCeiling,
+      customNotes: input.customNotes,
+    },
+  });
+
+  return {
+    ok: true,
+    data: {
+      id: row.id,
+      playerId: row.playerId,
+      seasonPlanId: row.seasonPlanId,
+      isoYear: row.isoYear,
+      weekNumber: row.weekNumber,
+      weekType: row.weekType as WeekType,
+      notes: row.notes as WeekNote[],
+      plannedHoursFys: row.plannedHoursFys,
+      plannedHoursTek: row.plannedHoursTek,
+      plannedHoursSlag: row.plannedHoursSlag,
+      plannedHoursSpill: row.plannedHoursSpill,
+      plannedHoursTurn: row.plannedHoursTurn,
+      repTargetDry: row.repTargetDry,
+      repTargetLowSpeed: row.repTargetLowSpeed,
+      repTargetFullSpeed: row.repTargetFullSpeed,
+      repTargetPutting: row.repTargetPutting,
+      repTargetShortGame: row.repTargetShortGame,
+      repetitionTargets: row.repetitionTargets as Record<string, unknown> | null,
+      loadCeiling: row.loadCeiling,
+      customNotes: row.customNotes,
+    },
+  };
 }
 
 export type StallFollowupData = {

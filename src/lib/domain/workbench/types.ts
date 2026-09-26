@@ -470,11 +470,45 @@ export interface LockedBlock {
   dimmed: true;
 }
 
+export type WeekType = "UTVIKLING" | "VEDLIKEHOLD" | "TURNERING";
+
+export type WeekNote =
+  | "FERIE"
+  | "TEST"
+  | "SAMLING"
+  | "EVALUERING"
+  | "PRE_TURNERING"
+  | "TEKNIKK_UKE";
+
+export interface WeekPlanData {
+  id?: string;
+  playerId: string;
+  seasonPlanId?: string | null;
+  isoYear: number;
+  weekNumber: number;
+  weekType: WeekType;
+  notes: WeekNote[];
+  plannedHoursFys?: number | null;
+  plannedHoursTek?: number | null;
+  plannedHoursSlag?: number | null;
+  plannedHoursSpill?: number | null;
+  plannedHoursTurn?: number | null;
+  repTargetDry?: number | null;
+  repTargetLowSpeed?: number | null;
+  repTargetFullSpeed?: number | null;
+  repTargetPutting?: number | null;
+  repTargetShortGame?: number | null;
+  repetitionTargets?: Record<string, unknown> | null;
+  loadCeiling?: number | null;
+  customNotes?: string | null;
+}
+
 export interface WeekViewModel {
   weekStart: string;
   days: DayColumn[];
   budget: WeekBudget;
   mode: WorkbenchMode;
+  weekPlan?: WeekPlanData | null;
 }
 
 /** Én synlig linje i en månedscelle (maks tre + «+N mer»). */
