@@ -1,6 +1,8 @@
 /**
  * AK Golf HQ — markedsside CASES (/cases), Paper.
  * Fasit: designsystem/paper/fase2/marketing/marketing-katalog.html.
+ * Avvik:
+ *   - Kartleggingsøkt er fjernet fra teksten (beslutninger.md §KARTLEGGINGSØKT FJERNES, 26.09.2026).
  * Ekte copy speilet fra (mlegacy)/cases/page.tsx. Turneringer hentes fra DB
  * i page.tsx (server) og sendes inn som prop.
  */
@@ -18,7 +20,7 @@ export function MarkedCasesV2({ tournaments }: { tournaments: CasesTournament[] 
         <PkIng>Turneringer og resultater fra spillere i AK Golf-programmet — fulgt live, ikke fortalt i etterkant.</PkIng>
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
           <PkCta href="/booking" clay>
-            Book kartleggings-økt
+            Book time
           </PkCta>
           <PkCta href="/turneringer" ghost icon={null}>
             Se turneringskalenderen
@@ -95,11 +97,11 @@ export function MarkedCasesV2({ tournaments }: { tournaments: CasesTournament[] 
               <PkSekt>Klar for din suksesshistorie?</PkSekt>
             </div>
             <p style={{ fontFamily: "var(--tl-font-sans)", fontSize: 14.5, color: "var(--tl-mute)", margin: "10px 0 0", maxWidth: 460 }}>
-              Start med en kartleggings-økt — vi anbefaler 90 minutter, til vanlig timepris. Vi finner ut hva som stopper deg, og legger en plan for å komme videre.
+              Start med en time. Vi finner ut hva som stopper deg, og legger en plan for å komme videre.
             </p>
             <div style={{ marginTop: 22, display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "center" }}>
               <PkCta href="/booking" clay>
-                Book kartleggings-økt
+                Book time
               </PkCta>
               <PkCta href="/kontakt" ghost icon={null}>
                 Snakk med oss

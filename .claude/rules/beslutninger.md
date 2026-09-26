@@ -28,8 +28,7 @@ publiserte økter med passert slutt», uten tidsvindu) som etterlevelsestall.
 2. **Markedssidene:** fjern «kartleggingsøkt»/«kartleggings-økt» fra `MarkedNav.tsx` (hoved-
    knappen «Book kartleggingsøkt», to steder), `MarkedCasesV2.tsx`, `MarkedSuksessV2.tsx`,
    `MarkedKontaktV2.tsx`, `MarkedBookingV2.tsx` og metadata i `src/app/(marketing)/suksess/page.tsx`.
-   Ferdig når `grep -ri kartleggings src/components/marketing src/app/\(marketing\)` gir 0 treff.
-   Åpent: hva hovedknappen i markedsmenyen skal hete i stedet — venter på Anders.
+   Hovedknappen heter «Book time» (Anders 26.09). **Gjort 26.09** i samme PR som beslutningen.
 3. **Tjenestelista i basen:** sjekk om `ServiceType` (og Stripe-produktene) har en
    kartleggingsøkt. Finnes den: deaktiver, ikke slett (eksisterende bookinger peker på den).
    Ferdig når den ikke kan bookes.
