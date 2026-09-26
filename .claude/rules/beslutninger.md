@@ -4,6 +4,58 @@ Kun det som gjelder nå. Full historikk (1 207 linjer, alle overstyrte valg): [b
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## PIPELINES ER ENESTE KILDE FOR TURNERINGSRESULTATER (Anders 26.09.2026, bindende)
+
+**`ak-golf-pipelines` er det eneste som henter inn turneringsresultater. HQ sin egen
+GolfBox-skraper slutter å skrive resultater.** Anders: «Så vi ikke gjør dobbelt med arbeid i
+fremtiden.» Bakgrunn: analysen 26.09 fant at to systemer skriver samme GolfBox-turnering til
+`public.tournaments` med ulik nøkkel (HQ: GolfBox-RID; pipelines: internt løpenummer), og at
+nivåtallene (mot feltet, slag bak vinner, justert for vanskelighet) bare finnes i pipelines'
+rålager. Kilde: `docs/beslutningsgrunnlag/turneringsdata-spillerprofiler-analyse-2026-09-26.md`.
+
+- **Resultater** (deltakelser, runder, plassering, score, nivåtall) skrives til `public.*` kun
+  av `pipelines/golfbox/writers/public_db.py`, hver mandag. HQ-jobben
+  `.github/workflows/scrape-golfbox.yml` (hver time 06–20 UTC, `syncGolfBoxLeaderboards`)
+  skal ikke lenger skrive resultater.
+- **Kalender og frister** (kommende turneringer, `entryCloses`, `registrationUrl`) beholdes i
+  HQ: Vercel-cron `turneringer-ngf` (`syncGolfBoxSchedules`) og `norge-mandag-sync`. De henter
+  ikke resultater i dag heller.
+- **WANG-profiler vises i HQ `/team-wang`**, mot samme base. `wang-toppidrett` er et annet
+  prosjekt med egen base og holdes utenfor. Anders: «WANG Toppidrett-appen er et komplett annet
+  prosjekt som ikke har med WANG-skjermen i AK Golf å gjøre.»
+- **«AK12»** i bestillingen 26.09 utgår — Anders vet ikke selv hva det var. Skjermlisten er
+  PlayerHQ, AgencyOS, Team Norway, WANG og rangskjermene.
+
+**Overstyrer:** «to eiere»-oppsettet fra 15.09 i `docs/turnering-datakilder.md` (HQ-cron eide rå
+GolfBox-resultater) og «Kodet»-raden for GolfBox i `docs/PLATTFORM-KART.md`. Begge rettet 26.09.
+
+**Arbeidet dette utløser** — ingen arbeidsliste finnes etter b700ce008, derfor står den her.
+Rekkefølge og kontroller står i analysen §7; her er det beslutningen krever:
+
+1. **Mål dublettene før byttet.** Spørringen i analysen §4b mot `public.tournaments`. Ferdig
+   når tallet er kjent og eksisterende dubletter er slått sammen via `mergedIntoId`
+   (`/admin/tournaments/dubletter`).
+2. **Pipelines bruker samme nøkkel som HQ:** GolfBox-RID som `sourceId`, funn på tvers av
+   opphav, i `pipelines/golfbox/writers/public_db.py` (i dag: `dashboard.tournaments.id`).
+   Ferdig når spørringen i §4b gir 0 rader etter en mandagskjøring.
+3. **Identitet og beregning inn i mandagsjobben:** `pipelines.identity` → `pipelines.sg` →
+   `refresh_views` i `junior-tours-sync.yml`. Ferdig når `dashboard.modell_kjoring` får ny rad
+   hver mandag.
+4. **Pipelines dekker det HQ-skraperen dekket:** `SOURCE_TO_ORIGIN` utvides med ren «golfbox»
+   (NM, senior, midam, klubb), `regions_tour` og `manual`; `tour` settes per kilde, ikke fast
+   `junior-no`. Ferdig når hvert `sourceOrigin` HQ skrev i dag har en pipelines-kilde.
+5. **HQ slutter å skrive resultater:** `scrape-golfbox.yml` settes til `--mode=schedule`
+   (eller slås av), `syncGolfBoxLeaderboards` fjernes fra `scripts/scrape-golfbox.ts`, og
+   `scripts/backfill-golfbox-results.ts` arkiveres. Skjer først når 1–4 er grønne, ikke før.
+   Ferdig når ingen `public_player_entries` får `updatedAt` fra HQ etter byttet.
+6. **Vakt:** HQ `sync-vaktbikkje` (mandag 08:00) varsler når pipelines' mandagskjede mangler
+   eller er rød. Ferdig når simulert rød kjøring gir varsel.
+7. **WANG-profil i `/team-wang`** bygges fra samme datamodul som PlayerHQ og AgencyOS
+   (analysen §6 og §7 steg 6 og 10). Ingen kobling mot `wang-toppidrett`.
+
+Uendret: `public.*` er fortsatt det appen leser; Prisma eier kolonnene, og pipelines legger
+aldri til kolonner. DataGolf vises aldri for andre enn Anders.
+
 ## PRECISION ATHLETICS ER DESIGNSYSTEMET FOR AK GOLF HQ (Anders 26.09.2026, bindende)
 
 **Claude Design-prosjektet «AK Golf Precision Athletics» (`7d7c2994-cf63-4c5f-9bdc-fdaf67655a70`)
@@ -45,6 +97,7 @@ Team Norway og WANG er utenfor; de har egne systemer og egne arbeidsmapper.
    fortsatt; bare tegningene mangler. Dekkes av punkt 3.
 
 Pekerne er rettet i samme PR: `design-autoritet.md`, `designsystem/README.md`, `ak-hq-design`-skillen.
+
 
 ## AG-03b Oppfølgingskø: «Løst» blir egen status, og designrunden for PlayerHQ/AgencyOS er ferdig (Anders 23.09.2026, bindende)
 

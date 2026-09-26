@@ -10,10 +10,14 @@ Generert med `npm run prosjekt:register`. Kategoriene er veivisere basert på na
 | Data / integrasjon — kan skrive eller sende | [scripts/add-daily-active-users-2026-09-02.ts](<add-daily-active-users-2026-09-02.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/add-datagolf-tak-2026-09-08.ts](<add-datagolf-tak-2026-09-08.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/add-drift-rutiner-2026-08-30.ts](<add-drift-rutiner-2026-08-30.ts>) |
+| Data / integrasjon — kan skrive eller sende | [scripts/add-exercise-definition-v2-akser-2026-09-23.ts](<add-exercise-definition-v2-akser-2026-09-23.ts>) |
+| Data / integrasjon — kan skrive eller sende | [scripts/add-follow-up-case-2026-09-23.ts](<add-follow-up-case-2026-09-23.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/add-slag-detaljer-2026-09-16.ts](<add-slag-detaljer-2026-09-16.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/add-teknisk-plan-v2-akser-2026-09-22.ts](<add-teknisk-plan-v2-akser-2026-09-22.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/add-tn-post-2026-09-01.ts](<add-tn-post-2026-09-01.ts>) |
+| Data / integrasjon — kan skrive eller sende | [scripts/add-utfordring-retning-2026-09-22.ts](<add-utfordring-retning-2026-09-22.ts>) |
 | Test / bilde — kontroller miljø og testkonto | [scripts/agency-shot.mjs](<agency-shot.mjs>) |
+| Verktøy / drift — les kontrakten før kjøring | [scripts/ak-golf-ds-tokens.mjs](<ak-golf-ds-tokens.mjs>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/ak-golf-tokens.mjs](<ak-golf-tokens.mjs>) |
 | Test / bilde — kontroller miljø og testkonto | [scripts/app-shot.mjs](<app-shot.mjs>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/apply-workbench-rls-2026-08-25.ts](<apply-workbench-rls-2026-08-25.ts>) |
@@ -167,6 +171,7 @@ Generert med `npm run prosjekt:register`. Kategoriene er veivisere basert på na
 | Verktøy / drift — les kontrakten før kjøring | [scripts/skjerm-kart.ts](<skjerm-kart.ts>) |
 | Test / bilde — kontroller miljø og testkonto | [scripts/smoke-test.sh](<smoke-test.sh>) |
 | Test / bilde — kontroller miljø og testkonto | [scripts/smoke-workbench-2026-08-25.ts](<smoke-workbench-2026-08-25.ts>) |
+| Verktøy / drift — les kontrakten før kjøring | [scripts/speil-ak-golf-ds.mjs](<speil-ak-golf-ds.mjs>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/speil-ak-golf.mjs](<speil-ak-golf.mjs>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/sql/launch-function-access.sql](<sql/launch-function-access.sql>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/sql/launch-function-search-path-and-keys.sql](<sql/launch-function-search-path-and-keys.sql>) |
