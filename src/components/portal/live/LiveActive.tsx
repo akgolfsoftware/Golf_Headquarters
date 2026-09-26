@@ -14,6 +14,9 @@ import { useLiveSession } from "./use-live-session";
 import s from "./live-active.module.css";
 import { useLokalDataEier } from "@/lib/offline-queue/eier-context";
 import { byggLagringsNokkel } from "@/lib/offline-queue/eier-scope";
+import { sendOktNotatTilCoach } from "@/lib/portal-live/actions";
+import { VoiceRangeRecorder } from "@/components/shared/VoiceRangeRecorder";
+import type { PyramidArea } from "@/generated/prisma/enums";
 
 type LiveNotat = { t: string; tekst: string };
 const fmt = (sec: number) => `${String(Math.floor(sec / 60)).padStart(2, "0")}:${String(sec % 60).padStart(2, "0")}`;
@@ -102,7 +105,46 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
     window.dispatchEvent(new Event("akhq-live-notes")); setText(""); setNoteError(false); noteInput.current?.focus();
   };
 
-  return <div className={s.page} data-od-id="playerhq-live-active" data-phase={live.phase}>
+  const [showAddDrill, setShowAddDrill] = useState(false);
+  const [newDrillName, setNewDrillName] = useState("");
+  const [newDrillMinutes, setNewDrillMinutes] = useState(15);
+  const [newDrillAkse, setNewDrillAkse] = useState<PyramidArea>("TEK");
+  const [coachSendStatus, setCoachSendStatus] = useState<string | null>(null);
+
+  const handleAddDrill = () => {
+    const name = newDrillName.trim();
+    if (!name) return;
+    live.addDrill({
+      name,
+      durationMinutes: Math.max(1, newDrillMinutes),
+      pyramide: newDrillAkse,
+      plannedReps: 20,
+    });
+    setNewDrillName("");
+    setShowAddDrill(false);
+  };
+
+  const handleSendNoteToCoach = async (notatTekst: string) => {
+    setCoachSendStatus("Sender til coach …");
+    try {
+      const res = await sendOktNotatTilCoach({
+        sessionId: data.sessionId,
+        tekst: notatTekst,
+        drillNavn: active?.name,
+      });
+      if (res.ok) {
+        setCoachSendStatus("Sendt til coach");
+        setTimeout(() => setCoachSendStatus(null), 3000);
+      } else {
+        setCoachSendStatus(res.error ?? "Kunne ikke sende");
+      }
+    } catch {
+      setCoachSendStatus("Sending feilet");
+    }
+  };
+
+
+  return <div className={s.page} data-od-id="playerhq-live-active" data-phase={live.phase} data-surface="live">
     <header className={s.header}>
       <h1 className={s.eyebrow}>Live · {data.title}</h1>
       <button ref={finishButton} className={s.secondary} disabled={!enabled} onClick={() => setConfirm(true)}>Avslutt</button>
@@ -150,23 +192,159 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
                   <DrillLogger drill={d} state={d} onChange={(value) => live.change(d.id, value)} onAdjust={(bucket, delta) => live.adjust(d.id, bucket, delta)} onComplete={() => { live.mark(d.id, d.status !== "done"); setSelectedId(null); }} done={d.status === "done"} />
                 </div>)}
               </fieldset>
+              <div className={s.voiceSection}>
+                <VoiceRangeRecorder
+                  sessionId={data.sessionId}
+                  compact
+                  onMemoSaved={(obs) => {
+                    if (obs.suggestedReps && active) {
+                      const r = obs.suggestedReps;
+                      if (r.dry > 0) live.adjust(active.id, "repsWithoutBall", r.dry);
+                      if (r.lav > 0) live.adjust(active.id, "repsLowSpeed", r.lav);
+                      if (r.full > 0) live.adjust(active.id, "repsAutomatic", r.full);
+                    }
+                    const ny: LiveNotat = {
+                      t: fmt(live.totalSec),
+                      tekst: `[Tale] ${obs.club ?? ""}${obs.position ? ` · ${obs.position}` : ""}: ${obs.rawTranscript}`.trim(),
+                    };
+                    const updated = [ny, ...notes];
+                    const key = noteKey(eierId, data.sessionId);
+                    if (key) {
+                      try {
+                        sessionStorage.setItem(key, JSON.stringify(updated));
+                        window.dispatchEvent(new Event("akhq-live-notes"));
+                      } catch {}
+                    }
+                  }}
+                />
+              </div>
             </> : <p className={s.description}>Det er ingen øvelser å registrere på.</p>}
           </div>
           {(active?.description || active?.notes || data.maalsetning || data.coachComment) && <details className={s.context}><summary>Øvelsen og coachens beskjed</summary>{active?.description && <p>{active.description}</p>}{active?.notes && active.notes !== active.description && <p>{active.notes}</p>}{data.maalsetning && <p>{data.maalsetning}</p>}{data.coachComment && <p>{data.coachComment}</p>}</details>}
-          <ol className={s.drills} hidden={mode !== "list"}>
-            {live.drills.map((d) => <li key={d.id} className={s.drill}>
-              <button className={s.check} aria-label={`${d.status === "done" ? "Fjern ferdigmarkering for" : "Marker ferdig"} ${d.name}`} aria-pressed={d.status === "done"} disabled={!enabled} onClick={() => live.mark(d.id, d.status !== "done")}>{d.status === "done" ? <Check size={20} aria-hidden /> : d.index}</button>
-              <div><h3>{d.name}</h3><p className={s.meta}>{d.repsTotal} registrert{d.status === "active" ? " · pågår" : d.status === "done" ? " · ferdig" : ""}</p></div>
-              <button className={s.textButton} onClick={() => { setSelectedId(d.id); setMode("now"); }}>Registrer<span className={s.srOnly}> på {d.name}</span></button>
-            </li>)}
-          </ol>
+          <div hidden={mode !== "list"}>
+            <ol className={s.drills}>
+              {live.drills.map((d) => <li key={d.id} className={s.drill}>
+                <button className={s.check} aria-label={`${d.status === "done" ? "Fjern ferdigmarkering for" : "Marker ferdig"} ${d.name}`} aria-pressed={d.status === "done"} disabled={!enabled} onClick={() => live.mark(d.id, d.status !== "done")}>{d.status === "done" ? <Check size={20} aria-hidden /> : d.index}</button>
+                <div><h3>{d.name}</h3><p className={s.meta}>{d.repsTotal} registrert{d.status === "active" ? " · pågår" : d.status === "done" ? " · ferdig" : ""}</p></div>
+                <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+                  <button className={s.textButton} onClick={() => { setSelectedId(d.id); setMode("now"); }}>Registrer<span className={s.srOnly}> på {d.name}</span></button>
+                  {d.status !== "done" && live.drills.length > 1 && (
+                    <button
+                      className={s.textButton}
+                      style={{ color: "var(--tl-mute)", padding: "4px 8px" }}
+                      title="Fjern øvelse fra denne økta"
+                      onClick={() => live.removeDrill(d.id)}
+                    >
+                      Fjern
+                    </button>
+                  )}
+                </div>
+              </li>)}
+            </ol>
+            <div style={{ marginTop: 16 }}>
+              {!showAddDrill ? (
+                <button
+                  className={s.secondary}
+                  style={{ width: "100%" }}
+                  disabled={!enabled}
+                  onClick={() => setShowAddDrill(true)}
+                >
+                  + Legg til øvelse underveis
+                </button>
+              ) : (
+                <div style={{ padding: 14, borderRadius: 16, background: "var(--tl-elev)", border: "1px solid var(--tl-hair)", display: "flex", flexDirection: "column", gap: 10 }}>
+                  <label className={s.selectLabel} htmlFor="new-drill-name">Navn på ny øvelse</label>
+                  <input
+                    id="new-drill-name"
+                    type="text"
+                    value={newDrillName}
+                    onChange={(e) => setNewDrillName(e.target.value)}
+                    placeholder="f.eks. Putting 3 meter, Wedges 60m"
+                    style={{ width: "100%", minHeight: 40, padding: "8px 12px", border: "1px solid var(--tl-hair)", background: "var(--tl-scene)", color: "var(--tl-text)", borderRadius: 8 }}
+                  />
+                  <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                    <label className={s.selectLabel} htmlFor="new-drill-min" style={{ margin: 0 }}>Varighet (min):</label>
+                    <input
+                      id="new-drill-min"
+                      type="number"
+                      min={1}
+                      max={120}
+                      value={newDrillMinutes}
+                      onChange={(e) => setNewDrillMinutes(Number(e.target.value))}
+                      style={{ width: 64, minHeight: 36, padding: "4px 8px", border: "1px solid var(--tl-hair)", background: "var(--tl-scene)", color: "var(--tl-text)", borderRadius: 8 }}
+                    />
+                  </div>
+                  <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
+                    {(["TEK", "SLAG", "SPILL", "FYS", "TURN"] as const).map((a) => {
+                      const on = newDrillAkse === a;
+                      return (
+                        <button
+                          key={a}
+                          type="button"
+                          onClick={() => setNewDrillAkse(a)}
+                          style={{
+                            appearance: "none",
+                            padding: "4px 8px",
+                            borderRadius: 6,
+                            border: "1px solid var(--tl-hair)",
+                            background: on ? "var(--tl-dim)" : "transparent",
+                            color: on ? "var(--tl-text)" : "var(--tl-mute)",
+                            fontSize: "0.75rem",
+                            fontWeight: 700,
+                            fontFamily: "var(--tl-font-mono)",
+                            cursor: "pointer",
+                          }}
+                        >
+                          {a}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", marginTop: 4 }}>
+                    <button className={s.textButton} onClick={() => setShowAddDrill(false)}>Avbryt</button>
+                    <button className={s.primary} style={{ width: "auto", minHeight: 38, padding: "8px 16px", marginTop: 0 }} disabled={!newDrillName.trim()} onClick={handleAddDrill}>Legg til</button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
           <div hidden={mode !== "notes"} className={s.notes}>
-            <label className={s.selectLabel} htmlFor="live-note">Notat fra økta</label>
+            <div style={{ marginBottom: 16 }}>
+              <VoiceRangeRecorder
+                sessionId={data.sessionId}
+                onMemoSaved={(obs) => {
+                  const ny: LiveNotat = {
+                    t: fmt(live.totalSec),
+                    tekst: `[Tale] ${obs.club ?? ""}${obs.position ? ` · ${obs.position}` : ""}: ${obs.rawTranscript}`.trim(),
+                  };
+                  const updated = [ny, ...notes];
+                  const key = noteKey(eierId, data.sessionId);
+                  if (key) {
+                    try {
+                      sessionStorage.setItem(key, JSON.stringify(updated));
+                      window.dispatchEvent(new Event("akhq-live-notes"));
+                    } catch {}
+                  }
+                }}
+              />
+            </div>
+            <label className={s.selectLabel} htmlFor="live-note">Skriv eller rediger notat</label>
             <textarea id="live-note" ref={noteInput} rows={4} value={text} disabled={!enabled} onChange={(event) => setText(event.target.value)} placeholder="Hva vil du huske?" />
             <button className={s.primary} disabled={!enabled || !text.trim()} onClick={addNote}>Legg til notat</button>
             <p className={s.meta}>Notatene beholdes i denne fanen og følger med til oppsummeringen.</p>
             {noteError && <p role="alert">Notatet kunne ikke lagres. Teksten står igjen; prøv på nytt.</p>}
-            {notes.length === 0 ? <p className={s.description}>Ingen notater ennå.</p> : <ol className={s.noteList}>{notes.map((note, index) => <li key={`${note.t}-${index}`}><time>{note.t}</time><p>{note.tekst}</p></li>)}</ol>}
+            {coachSendStatus && <p role="status" style={{ fontSize: "0.8125rem", color: "var(--tl-text)", margin: "6px 0", fontStyle: "italic" }}>{coachSendStatus}</p>}
+            {notes.length === 0 ? <p className={s.description}>Ingen notater ennå.</p> : <ol className={s.noteList}>{notes.map((note, index) => <li key={`${note.t}-${index}`}>
+              <time>{note.t}</time>
+              <p>{note.tekst}</p>
+              <button
+                className={s.textButton}
+                style={{ fontSize: "0.75rem", padding: "4px 0", color: "var(--tl-mute)" }}
+                onClick={() => handleSendNoteToCoach(note.tekst)}
+              >
+                Send notat til trenerens innboks
+              </button>
+            </li>)}</ol>}
           </div>
         </section>
       </div>

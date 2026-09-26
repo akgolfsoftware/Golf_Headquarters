@@ -13,6 +13,7 @@ import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { lesPreferences, lesRaaPreferences, type UserPreferences } from "@/lib/preferences";
 import type { ProfileData } from "@/components/portal/profile/ProfileShell";
+import { linkAndSyncUserTournamentResults } from "@/lib/turneringer/link-public-players";
 
 export async function hentProfil(): Promise<ProfileData> {
   const user = await requireConsentingUser();
@@ -74,6 +75,14 @@ export async function oppdaterProfil(input: {
       dateOfBirth: input.dateOfBirth ?? user.dateOfBirth,
     },
   });
+
+  if ((input.name && input.name.trim() !== user.name) || !user.publicPlayerId) {
+    try {
+      await linkAndSyncUserTournamentResults(prisma, user.id);
+    } catch {
+      // Ikke blokker profil-lagring hvis ekstern sync feiler
+    }
+  }
 
   revalidatePath("/portal");
   revalidatePath("/portal/meg");

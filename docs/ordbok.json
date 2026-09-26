@@ -1,6 +1,6 @@
 {
   "$schema": "ordbok-lag-3",
-  "versjon": "2026-09-23",
+  "versjon": "2026-09-25",
   "kilder": {
     "master": "docs/ordbok.md",
     "planlegging": "docs/treningsplanlegging.md",

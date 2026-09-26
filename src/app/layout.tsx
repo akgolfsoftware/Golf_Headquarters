@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { cookies, headers } from "next/headers";
-import { Archivo, Geist, Geist_Mono, IBM_Plex_Mono, Lora, Oswald, Poppins } from "next/font/google";
+import { Archivo, Geist, Geist_Mono, IBM_Plex_Mono, IBM_Plex_Sans, Lora, Oswald, Poppins } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { InstallPrompt } from "@/components/portal/install-prompt";
@@ -13,6 +13,7 @@ import { AnalyticsLoader } from "@/components/shared/analytics-loader";
 import { onsketTema } from "@/lib/v2/tema-default";
 import { trainLockVersjonForRute } from "@/lib/v2/valgt-design";
 import { TrainLockDesignSynk } from "@/components/shared/train-lock-design-synk";
+import { OfflineBanner } from "@/components/ui/OfflineBanner";
 import "./globals.css";
 
 // Geist/Geist Mono er valgt for PlayerHQ/AgencyOS i ZIP (4), 10.09.2026.
@@ -37,6 +38,13 @@ const lora = Lora({
 const ibmPlexMono = IBM_Plex_Mono({
   variable: "--font-ibm-plex-mono",
   weight: ["400", "500", "600"],
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const ibmPlexSans = IBM_Plex_Sans({
+  variable: "--font-ibm-plex-sans",
+  weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
   display: "swap",
 });
@@ -212,13 +220,14 @@ export default async function RootLayout({
   return (
     <html
       lang="nb"
-      className={`${poppins.variable} ${lora.variable} ${ibmPlexMono.variable} ${geist.variable} ${geistMono.variable} ${archivo.variable} ${oswald.variable} h-full antialiased`}
+      className={`${ibmPlexSans.variable} ${ibmPlexMono.variable} ${poppins.variable} ${lora.variable} ${geist.variable} ${geistMono.variable} ${archivo.variable} ${oswald.variable} h-full antialiased`}
       data-train-lock={trainLockVersjonForRute(path)}
       {...(mork ? { "data-v2-tema": "dark" } : {})}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
         <TrainLockDesignSynk />
+        <OfflineBanner />
         {/* Tema: satt på <html> via cookie + path (SSR). V2Shell synker ved toggle. */}
         {children}
         <InstallPrompt />

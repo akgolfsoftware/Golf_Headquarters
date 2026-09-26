@@ -64,7 +64,6 @@ export default async function OktDetalj({ params }: Props) {
 
   if (!booking || booking.userId !== user.id) notFound();
 
-  // eslint-disable-next-line react-hooks/purity
   const timerTilStart = hoursUntil(booking.startAt);
   const kanAvbestille = (booking.status === "PENDING" || booking.status === "CONFIRMED") && timerTilStart > 0;
   const kanFaaRefusjon = timerTilStart > AVBESTILLING_FRIST_TIMER;

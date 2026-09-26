@@ -16,7 +16,7 @@ function targets(text) {
   const result = [];
   const body = text.replace(/^```[^\n]*\n[\s\S]*?^```[^\n]*$/gm, '').replace(/`[^`\n]*`/g, '');
   const start = /\]\(/g;
-  for (let m; (m = start.exec(body));) {
+  while (start.exec(body)) {
     let depth = 1, i = start.lastIndex;
     for (; i < body.length && depth; i++) {
       if (body[i] === '\\') { i++; continue; }

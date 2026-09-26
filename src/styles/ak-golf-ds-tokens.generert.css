@@ -188,8 +188,8 @@
 /* GENERERT fra tokens.json av tokens/build.mjs. IKKE REDIGER — endringer overskrives. */
 .ak-ds {
 /* ---- TYPOGRAFI-LOV — tre familier, ingen fjerde ---- */
---font-display:"Oswald","Oswald Fallback",system-ui,sans-serif;
---font-body:"Archivo","Archivo Fallback",system-ui,sans-serif;
+--font-display:"IBM Plex Sans","IBM Plex Sans Fallback",system-ui,sans-serif;
+--font-body:"IBM Plex Sans","IBM Plex Sans Fallback",system-ui,sans-serif;
 --font-meta:"IBM Plex Mono","IBM Plex Mono Fallback",ui-monospace,monospace;
 --font-mono:var(--font-meta); /* Bakoverkompatibelt alias. */
 /* ---- Skala — 10 trinn, ingen andre størrelser ---- */

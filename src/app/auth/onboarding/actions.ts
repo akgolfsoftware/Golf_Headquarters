@@ -18,6 +18,7 @@ import { logError } from "@/lib/error-tracking";
 import { phone, email, optStr } from "@/lib/validation/schemas";
 import { byggTreningPreferanser, fasiliteterTilFacilityPrefs, sesongmaalTilTittel } from "@/lib/onboarding/trening-preferanser";
 import { APP_URL } from "@/lib/app-url";
+import { linkAndSyncUserTournamentResults } from "@/lib/turneringer/link-public-players";
 
 const SaveOnboardingProfileSchema = z.object({
   phone: phone.nullable().optional(),
@@ -385,6 +386,13 @@ async function fullforOnboardingSideEffekter(
     }
   } catch (error) {
     await logError({ context: "onboarding.complete.goals", error, userId });
+  }
+
+  // 3) Auto-koble til PublicPlayer og hente inn historiske turneringsresultater
+  try {
+    await linkAndSyncUserTournamentResults(prisma, userId);
+  } catch (error) {
+    await logError({ context: "onboarding.complete.tournament-sync", error, userId });
   }
 }
 

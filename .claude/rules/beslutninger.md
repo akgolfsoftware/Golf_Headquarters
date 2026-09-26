@@ -241,7 +241,7 @@ og ikke kan dras ut av syne.
 
 ## Produkt og tilgang
 
-- Nivåer FULL / TALENT / INGEN, avgjort av `resolveTilgang` i `src/lib/feature-flags.ts`. FULL: 299 kr/mnd eller 2 690 kr/år. ELITE finnes ikke. Detaljer: BUSINESS-RULES §Abonnement.
+- Nivåer FULL / TALENT / INGEN, avgjort av `resolveTilgang` i `src/lib/feature-flags.ts`. FULL: 299 kr/mnd eller 2 690 kr/år for alle spillere (ingen 199 kr juniorpris, Anders 24.09.2026). ELITE finnes ikke. Detaljer: BUSINESS-RULES §Abonnement.
 - PlayerHQ har fire faner: I dag · Plan · Analyse · Meg. Coach-menyen følger prototypen fra 02.09 (Cockpit, Innboks, Stall, Kalender, Workbench + Mer).
 - Én inngang per funksjon: én adresse, gamle adresser blir redirects, ingenting fjernes.
 - Coachflaten kalles AgencyOS (`/admin`), aldri CoachHQ. Demo: spiller Øyvind Rohjan, coach Anders Kristiansen.
@@ -256,7 +256,7 @@ og ikke kan dras ut av syne.
 - Kartleggingsøkt er ikke gratis: 90 min til vanlig timepris. Prisen leses fra `ServiceType.priceOre`, aldri hardkodet.
 - Mulligan knyttes ikke direkte til AK Golf-merket; AK Golf promoterer bare.
 - Ingen «Vi svarer innen én virkedag» før Jarvis er i drift.
-- Team Norway: eget system, rød `#D70232`, navy `#012B5D`, kun for `/team-norway/*` — visuell fasit er §TEAM NORWAY-APPEN BYTTER DESIGNSPRÅK, ikke Claw. Analyse og DataGolf for TN er delte plattformflater.
+- Team Norway: eget system, rød `#D70232`, navy `#012B5D`, kun for `/team-norway/*` — visuell fasit er §TEAM NORWAY-APPEN BYTTER DESIGNSPRÅK, ikke Claw. Team Norway får kun interne skjermer gratis mot at de promoterer appen (Anders 24.09.2026). Analyse og DataGolf for TN er delte plattformflater.
 - WANG har eget system (`src/styles/wang-tokens.css`). Junior Academy og GFGK Junior er ulike ting.
 
 ## Data (brytes disse, blir tallene feil)

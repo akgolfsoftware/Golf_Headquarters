@@ -10,7 +10,7 @@ designfiler, planer, minner, kommentarer eller kode vinner dette dokumentet.
 - Arbeid som Anders bestiller og viderefører i dette prosjektet fra 21.09.2026, skal bruke dette
   designsystemet og bygge videre på siste faktiske versjon i prosjektet.
 - Designsystem-ID: `87aa23fb-8eac-4ca4-aaa0-7a636f4318ff`.
-- App design-prosjekt-ID: `830e7bce-eaba-465b-848c-26f73bd0f2d3`.
+- App design-prosjekt-ID: `7d7c2994-cf63-4c5f-9bdc-fdaf67655a70` (Precision Athletics, opprettet 25.09.2026; tidligere prosjekt `830e7bce` beholdt som arkiv).
 
 Dette er et bindende valg av designsystem og visuell retning. Det skal ikke behandles som en
 åpen kandidat eller en midlertidig smakstest.
@@ -45,3 +45,16 @@ designsystemet.
 
 Produktregler, tilgang, personvern, sikkerhet og datamodeller endres ikke automatisk av denne
 designbeslutningen.
+
+## Typografi- og presisjonsbeslutning — 24.09.2026
+
+Anders har 24.09.2026 bestilt oppgradering til det komplette AK Golf Design Systemet:
+
+1. **Typografi:**
+   - **IBM Plex Sans** (400, 500, 600, 700) er enhetlig skrifttype for overskrifter (display), knapper, menyer og brødtekst i hele appen. Oswald og Archivo er formelt utgått.
+   - **IBM Plex Mono** (400, 500, 600) er skrifttype for alle tall, klokkeslett, TrackMan-vinkler, yardages, prosenter og metadata.
+2. **Geometri og taktil radius:**
+   - Standardiseres til 8 px for kort, knapper, innboksrader og kontroller (12 px for ark/modaler, 999 px for piller/badges). Klossete 0–2 px-verdier utgår.
+3. **Visuelt hierarki:**
+   - Oppgaven og øvelsesnavnet er det primære blikkfanget. Kategorier og akser (FYS, TEK, SLAG, SPILL, TURN) tones ned til diskrete, elegante merkelapper (badges) med dempet fargetone.
+

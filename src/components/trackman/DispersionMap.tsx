@@ -11,6 +11,8 @@
  * Fasit: designsystem/train-lock/TM-08 Okt med hullkart.dc.html
  * Fasit: designsystem/train-lock/HANDOFF.md §LANSERINGSKJERNE (TM-11) +
  * §TRACKMAN (TM-00 TmDispersionPlot) + TM-08f (slag-ark fra prikk).
+ * Avvik:
+ *   - Satellitt- og UpGame-modus er lagt til som visningsmodus utover den stiliserte Train-lock-tegningen.
  * Tokens: KUN TL.* (train-lock.ts) — aldri T.* (Paper). Terreng-fargene bak
  * kartet er komponent-scopet (HoleMap.tsx), se forklaring der.
  *
@@ -50,6 +52,8 @@ export interface DispersionMapProps {
   showBiasArrow: boolean;
   /** TM-07: "tee" (driver/tre — helhullkart) eller "approach" (jern/wedge — greenkart). */
   variant?: HoleMapVariant;
+  /** "satellite" (realistiske banefarger, fargekodede prikker, bulls-eye som UpGame) eller "classic" (stilisert grå). */
+  mode?: "classic" | "satellite";
 }
 
 export function DispersionMap({
@@ -62,6 +66,7 @@ export function DispersionMap({
   onSelectShot,
   showBiasArrow,
   variant = "approach",
+  mode = "satellite",
 }: DispersionMapProps) {
   const ellipse = sigma === 1 ? oneSigmaEllipse : twoSigmaEllipse;
   const anchor = HOLE_MAP_TARGET[variant];
@@ -85,8 +90,9 @@ export function DispersionMap({
   return (
     <div
       className="tm-holemap-terrain"
+      data-mode={mode}
       style={{
-        background: TL.elev,
+        background: mode === "satellite" ? "var(--hm-sat-bg)" : TL.elev,
         border: `1px solid ${TL.hair}`,
         borderRadius: TL.radius.card,
         padding: 4,
@@ -102,6 +108,15 @@ export function DispersionMap({
         <HoleMapTerrain variant={variant} />
         <HoleMapTargetLine variant={variant} target={{ x: anchor.x, y: anchor.y }} />
 
+        {/* Bulls-eye siktepunkt i satellitt-modus (UpGame-stil) */}
+        {mode === "satellite" && (
+          <g>
+            <circle cx={anchor.x} cy={anchor.y} r={9} stroke="var(--hm-sat-bullseye)" strokeWidth={1.2} fill="none" opacity={0.85} />
+            <circle cx={anchor.x} cy={anchor.y} r={4.5} stroke="var(--hm-sat-bullseye)" strokeWidth={0.8} fill="none" opacity={0.65} />
+            <circle cx={anchor.x} cy={anchor.y} r={1.8} fill="var(--hm-sat-bullseye)" />
+          </g>
+        )}
+
         {/* 1σ/2σ-ellipse — kun når hasEllipse. */}
         {hasEllipse && ellipse && (
           <g
@@ -112,9 +127,10 @@ export function DispersionMap({
               cy={0}
               rx={ellipse.semiMinor * (toX(1) - toX(0))}
               ry={ellipse.semiMajor * (toY(0) - toY(1))}
-              fill={TL.viz.ellipseFill}
-              stroke={TL.viz.ellipseLine}
-              strokeWidth={1}
+              fill={mode === "satellite" ? (sigma === 1 ? "var(--hm-sat-e1-fill)" : "var(--hm-sat-e2-fill)") : TL.viz.ellipseFill}
+              stroke={mode === "satellite" ? (sigma === 1 ? "var(--hm-sat-e1-stroke)" : "var(--hm-sat-e2-stroke)") : TL.viz.ellipseLine}
+              strokeWidth={mode === "satellite" ? 1.5 : 1}
+              strokeDasharray={mode === "satellite" ? (sigma === 1 ? "4 3" : "2 2") : undefined}
             />
           </g>
         )}
@@ -137,23 +153,31 @@ export function DispersionMap({
           </marker>
         </defs>
 
-        {/* Prikker — #B08968, siste/valgt slag TL.fill-ring, outliers dempet. */}
+        {/* Prikker — i satellittmodus fargekodet som UpGame (grønn/gul/rød med hvit kant). */}
         {shots.map((s) => {
           const cx = toX(s.point.lateral);
           const cy = toY(s.point.distance);
           const isSelected = s.id === selectedShotId;
           const isLast = s.id === lastShotId;
           const isOutlier = s.bucket === "disaster";
-          const r = isSelected || isLast ? 5 : 4;
+          const r = isSelected || isLast ? 5.5 : 4;
+          const dotFill = mode === "satellite"
+            ? (s.bucket === "good" ? "var(--hm-sat-good)" : s.bucket === "acceptable" ? "var(--hm-sat-warn)" : "var(--hm-sat-disaster)")
+            : TL.viz.dot;
+          const dotStroke = mode === "satellite"
+            ? (isSelected || isLast ? "var(--hm-sat-ring)" : "var(--hm-sat-edge)")
+            : (isSelected || isLast ? TL.fill : "none");
+          const dotStrokeWidth = mode === "satellite" ? (isSelected || isLast ? 2 : 1) : (isSelected || isLast ? 2 : 0);
+
           return (
             <g key={s.id}>
               <circle
                 cx={cx}
                 cy={cy}
                 r={r}
-                fill={TL.viz.dot}
-                stroke={isSelected || isLast ? TL.fill : "none"}
-                strokeWidth={isSelected || isLast ? 2 : 0}
+                fill={dotFill}
+                stroke={dotStroke}
+                strokeWidth={dotStrokeWidth}
                 onClick={() => onSelectShot(s)}
                 role="button"
                 tabIndex={0}

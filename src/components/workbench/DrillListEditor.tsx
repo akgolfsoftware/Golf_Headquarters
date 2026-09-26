@@ -28,8 +28,39 @@ import { Textarea } from "@/components/ui/textarea";
 import { Icon } from "@/components/v2/icon";
 import { TL } from "@/lib/v2/train-lock";
 
-import { AREA_LABEL, UI } from "@/lib/domain/workbench/labels";
-import type { PyramidArea, TrainingArea } from "@/lib/domain/workbench/types";
+import {
+  AREA_LABEL,
+  UI,
+  TURNERING_FOKUS_LABEL,
+  SPILL_FOKUS_LABEL,
+  GOLFSLAG_FOKUS_LABEL,
+  TEKNIKK_FOKUS_LABEL,
+  FYSISK_FOKUS_LABEL,
+  MORAD_POSISJONER,
+} from "@/lib/domain/workbench/labels";
+import type {
+  Belastning,
+  Motorikk,
+  Press,
+  PyramidArea,
+  TrainingArea,
+  MoradPosisjon,
+} from "@/lib/domain/workbench/types";
+import {
+  DIMENSJON_LABEL,
+  MOTORIKK_LABEL,
+  PRESS_LABEL,
+  type OmraadeKode,
+} from "@/lib/domain/ak-formel-v2";
+import {
+  dimensjonerFor,
+  relevansFor,
+} from "@/lib/domain/omrade-relevans";
+
+function toOmraadeKode(area: TrainingArea): OmraadeKode {
+  if (area === "TEE") return "TEE_TOTAL";
+  return area as OmraadeKode;
+}
 
 const OMRADE_GRUPPER: { label: string; areas: TrainingArea[] }[] = [
   { label: "Full sving", areas: ["TEE", "INNSPILL_200", "INNSPILL_150", "INNSPILL_100", "INNSPILL_50"] },
@@ -45,8 +76,16 @@ export type DrillListItem = {
   id: string;
   title: string;
   durationMinutes: number;
-  akFormel: { pyramid: PyramidArea; area: TrainingArea; label: string };
+  akFormel: {
+    pyramid: PyramidArea;
+    area: TrainingArea;
+    motorikk?: Motorikk;
+    belastning?: Belastning;
+    press?: Press;
+    label: string;
+  };
   description?: string;
+  techniqueFocus?: string;
 };
 
 export type LeggTilDrillVerdier = {
@@ -55,6 +94,11 @@ export type LeggTilDrillVerdier = {
   pyramid: PyramidArea;
   area: TrainingArea;
   description?: string;
+  motorikk?: Motorikk;
+  belastning?: Belastning;
+  press?: Press;
+  techniqueFocus?: string;
+  mengde?: string;
 };
 
 function drillErKomplett(d: DrillListItem): boolean {
@@ -85,6 +129,47 @@ export function DrillListEditor({
   const [omrade, setOmrade] = useState<TrainingArea>("TEE");
   const [varighet, setVarighet] = useState(15);
   const [beskrivelse, setBeskrivelse] = useState("");
+  const [motorikk, setMotorikk] = useState<Motorikk>("LAV_HAST");
+  const [dimensjon, setDimensjon] = useState<string>("");
+  const [belastning, setBelastning] = useState<Belastning>("TRENINGSOMRADE");
+  const [press, setPress] = useState<Press>("ALENE");
+  const [mengde, setMengde] = useState("");
+  const [fokus, setFokus] = useState<string>("");
+  const [moradP, setMoradP] = useState<MoradPosisjon | "">("");
+
+  const omraadeKode = toOmraadeKode(omrade);
+  const relevans = relevansFor(omraadeKode);
+  const tilgjengeligeDimensjoner = dimensjonerFor(omraadeKode);
+
+  function velgPyramid(p: PyramidArea) {
+    setPyramid(p);
+    setFokus("");
+    setMoradP("");
+    if (p === "FYS") {
+      setOmrade("STYRKE");
+      setBelastning("INNENDORS");
+      setPress("ALENE");
+    } else if (p === "TURN") {
+      setOmrade("BANE");
+      setBelastning("KONKURRANSE");
+      setPress("TURNERING");
+      setFokus("PRESTASJON");
+    } else if (p === "SPILL") {
+      setOmrade("BANE");
+      setBelastning("BANE");
+      setPress("KONKURRANSE");
+    }
+  }
+
+  function nullstill() {
+    setVisSkjema(false);
+    setTittel("");
+    setBeskrivelse("");
+    setDimensjon("");
+    setMengde("");
+    setFokus("");
+    setMoradP("");
+  }
 
   return (
     <div style={{ display: "grid", gap: 10 }}>
@@ -125,6 +210,23 @@ export function DrillListEditor({
                   >
                     {d.title || UI.drillTitlePlaceholder}
                   </span>
+                  {d.akFormel?.label ? (
+                    <span
+                      style={{
+                        display: "block",
+                        fontFamily: TL.font.sans,
+                        fontSize: 11,
+                        color: TL.mute,
+                        marginTop: 1,
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {d.akFormel.label}
+                      {d.techniqueFocus ? ` · ${d.techniqueFocus}` : ""}
+                    </span>
+                  ) : null}
                   {d.description ? (
                     <span
                       style={{
@@ -216,7 +318,7 @@ export function DrillListEditor({
                     type="button"
                     className="v2-press v2-focus"
                     aria-pressed={on}
-                    onClick={() => setPyramid(p)}
+                    onClick={() => velgPyramid(p)}
                     style={{
                       appearance: "none",
                       height: 32,
@@ -243,6 +345,234 @@ export function DrillListEditor({
               })}
             </div>
           </Felt>
+
+          {/* Adaptiv fokus- og formelvelger (Anders 25.09.2026) */}
+          {pyramid === "TURN" && (
+            <Felt label="Turneringstype">
+              <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                {(["TRENING", "UTVIKLING", "PRESTASJON"] as const).map((tf) => {
+                  const on = fokus === tf;
+                  return (
+                    <button
+                      key={tf}
+                      type="button"
+                      className="v2-press v2-focus"
+                      aria-pressed={on}
+                      onClick={() => setFokus(tf)}
+                      style={{
+                        appearance: "none",
+                        height: 32,
+                        borderRadius: 9999,
+                        border: "none",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        padding: "0 12px",
+                        fontFamily: TL.font.sans,
+                        fontSize: 11,
+                        fontWeight: 600,
+                        cursor: "pointer",
+                        background: on ? TL.fill : "transparent",
+                        color: on ? TL.onFill : TL.mute,
+                        boxShadow: on ? "none" : `inset 0 0 0 1px ${TL.hair}`,
+                      }}
+                    >
+                      {TURNERING_FOKUS_LABEL[tf]}
+                    </button>
+                  );
+                })}
+              </div>
+            </Felt>
+          )}
+
+          {pyramid === "SPILL" && (
+            <Felt label="Spillfokus">
+              <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                {(["SCORING", "SPILLOEVELSE", "BANESTRATEGI", "TESTER"] as const).map((sf) => {
+                  const on = fokus === sf;
+                  return (
+                    <button
+                      key={sf}
+                      type="button"
+                      className="v2-press v2-focus"
+                      aria-pressed={on}
+                      onClick={() => setFokus(sf)}
+                      style={{
+                        appearance: "none",
+                        height: 32,
+                        borderRadius: 9999,
+                        border: "none",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        padding: "0 12px",
+                        fontFamily: TL.font.sans,
+                        fontSize: 11,
+                        fontWeight: 600,
+                        cursor: "pointer",
+                        background: on ? TL.fill : "transparent",
+                        color: on ? TL.onFill : TL.mute,
+                        boxShadow: on ? "none" : `inset 0 0 0 1px ${TL.hair}`,
+                      }}
+                    >
+                      {SPILL_FOKUS_LABEL[sf]}
+                    </button>
+                  );
+                })}
+              </div>
+            </Felt>
+          )}
+
+          {pyramid === "SLAG" && (
+            <Felt label="Slagfokus">
+              <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                {(["BALLSTART", "SKRU", "HOYDER", "SPINKONTROLL", "TESTER"] as const).map((gf) => {
+                  const on = fokus === gf;
+                  return (
+                    <button
+                      key={gf}
+                      type="button"
+                      className="v2-press v2-focus"
+                      aria-pressed={on}
+                      onClick={() => setFokus(gf)}
+                      style={{
+                        appearance: "none",
+                        height: 32,
+                        borderRadius: 9999,
+                        border: "none",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        padding: "0 12px",
+                        fontFamily: TL.font.sans,
+                        fontSize: 11,
+                        fontWeight: 600,
+                        cursor: "pointer",
+                        background: on ? TL.fill : "transparent",
+                        color: on ? TL.onFill : TL.mute,
+                        boxShadow: on ? "none" : `inset 0 0 0 1px ${TL.hair}`,
+                      }}
+                    >
+                      {GOLFSLAG_FOKUS_LABEL[gf]}
+                    </button>
+                  );
+                })}
+              </div>
+            </Felt>
+          )}
+
+          {pyramid === "TEK" && (
+            <>
+              <Felt label="Teknikkfokus">
+                <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                  {(["UTVIKLING", "VEDLIKEHOLD", "TESTER"] as const).map((tf) => {
+                    const on = fokus === tf;
+                    return (
+                      <button
+                        key={tf}
+                        type="button"
+                        className="v2-press v2-focus"
+                        aria-pressed={on}
+                        onClick={() => setFokus(tf)}
+                        style={{
+                          appearance: "none",
+                          height: 32,
+                          borderRadius: 9999,
+                          border: "none",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          padding: "0 12px",
+                          fontFamily: TL.font.sans,
+                          fontSize: 11,
+                          fontWeight: 600,
+                          cursor: "pointer",
+                          background: on ? TL.fill : "transparent",
+                          color: on ? TL.onFill : TL.mute,
+                          boxShadow: on ? "none" : `inset 0 0 0 1px ${TL.hair}`,
+                        }}
+                      >
+                        {TEKNIKK_FOKUS_LABEL[tf]}
+                      </button>
+                    );
+                  })}
+                </div>
+              </Felt>
+              <Felt label="Svingposisjon (MORAD P1–P10)">
+                <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+                  {MORAD_POSISJONER.map((mp) => {
+                    const on = moradP === mp.id;
+                    return (
+                      <button
+                        key={mp.id}
+                        type="button"
+                        className="v2-press v2-focus"
+                        title={mp.beskrivelse}
+                        aria-pressed={on}
+                        onClick={() => setMoradP(on ? "" : mp.id)}
+                        style={{
+                          appearance: "none",
+                          height: 28,
+                          borderRadius: 6,
+                          border: "none",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          padding: "0 8px",
+                          fontFamily: TL.font.sans,
+                          fontSize: 11,
+                          fontWeight: 600,
+                          cursor: "pointer",
+                          background: on ? TL.fill : "transparent",
+                          color: on ? TL.onFill : TL.mute,
+                          boxShadow: on ? "none" : `inset 0 0 0 1px ${TL.hair}`,
+                        }}
+                      >
+                        {mp.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </Felt>
+            </>
+          )}
+
+          {pyramid === "FYS" && (
+            <Felt label="Fysisk fokus">
+              <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                {(["STYRKE", "KONDISJON", "BEVEGELIGHET", "TESTER"] as const).map((ff) => {
+                  const on = fokus === ff;
+                  return (
+                    <button
+                      key={ff}
+                      type="button"
+                      className="v2-press v2-focus"
+                      aria-pressed={on}
+                      onClick={() => {
+                        setFokus(ff);
+                        if (ff === "STYRKE") setOmrade("STYRKE");
+                        if (ff === "KONDISJON") setOmrade("KONDISJON");
+                        if (ff === "BEVEGELIGHET") setOmrade("BEVEGELIGHET");
+                      }}
+                      style={{
+                        appearance: "none",
+                        height: 32,
+                        borderRadius: 9999,
+                        border: "none",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        padding: "0 12px",
+                        fontFamily: TL.font.sans,
+                        fontSize: 11,
+                        fontWeight: 600,
+                        cursor: "pointer",
+                        background: on ? TL.fill : "transparent",
+                        color: on ? TL.onFill : TL.mute,
+                        boxShadow: on ? "none" : `inset 0 0 0 1px ${TL.hair}`,
+                      }}
+                    >
+                      {FYSISK_FOKUS_LABEL[ff]}
+                    </button>
+                  );
+                })}
+              </div>
+            </Felt>
+          )}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <Felt label={UI.drillArea}>
               <Select value={omrade} onChange={(e) => setOmrade(e.target.value as TrainingArea)}>
@@ -267,6 +597,101 @@ export function DrillListEditor({
               />
             </Felt>
           </div>
+          {relevans.motorikk && (
+            <Felt label="Motorikk (læringssteg)">
+              <div style={{ display: "flex", gap: 6 }}>
+                {(["UTEN_BALL", "LAV_HAST", "AUTO"] as const).map((m) => {
+                  const on = motorikk === m;
+                  return (
+                    <button
+                      key={m}
+                      type="button"
+                      className="v2-press v2-focus"
+                      aria-pressed={on}
+                      onClick={() => setMotorikk(m)}
+                      style={{
+                        appearance: "none",
+                        height: 32,
+                        borderRadius: 9999,
+                        border: "none",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        padding: "0 12px",
+                        fontFamily: TL.font.sans,
+                        fontSize: 11,
+                        fontWeight: 600,
+                        cursor: "pointer",
+                        background: on ? TL.fill : "transparent",
+                        color: on ? TL.onFill : TL.mute,
+                        boxShadow: on ? "none" : `inset 0 0 0 1px ${TL.hair}`,
+                      }}
+                    >
+                      {MOTORIKK_LABEL[m]}
+                    </button>
+                  );
+                })}
+              </div>
+            </Felt>
+          )}
+
+          {relevans.dimensjon && tilgjengeligeDimensjoner.length > 0 && (
+            <Felt label="Teknisk fokus (dimensjon)">
+              <Select value={dimensjon} onChange={(e) => setDimensjon(e.target.value)}>
+                <option value="">Ingen valgt</option>
+                {tilgjengeligeDimensjoner.map((d) => (
+                  <option key={d} value={d}>
+                    {DIMENSJON_LABEL[d]}
+                  </option>
+                ))}
+              </Select>
+            </Felt>
+          )}
+
+          {(relevans.belastning || relevans.press) && (
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+              {relevans.belastning && (
+                <Felt label="Belastning (miljø)">
+                  <Select value={belastning} onChange={(e) => setBelastning(e.target.value as Belastning)}>
+                    {(["INNENDORS", "TRENINGSOMRADE", "BANE", "KONKURRANSE"] as const).map((b) => (
+                      <option key={b} value={b}>
+                        {b === "INNENDORS" ? "Innendørs" : b === "TRENINGSOMRADE" ? "Treningsområde" : b === "BANE" ? "Bane" : "Konkurranse"}
+                      </option>
+                    ))}
+                  </Select>
+                </Felt>
+              )}
+              {relevans.press && (
+                <Felt label="Press">
+                  <Select value={press} onChange={(e) => setPress(e.target.value as Press)}>
+                    {(["ALENE", "OBSERVERT", "KONKURRANSE", "TURNERING"] as const).map((pr) => (
+                      <option key={pr} value={pr}>
+                        {PRESS_LABEL[pr]}
+                      </option>
+                    ))}
+                  </Select>
+                </Felt>
+              )}
+            </div>
+          )}
+
+          <Felt label="Mengde">
+            <Input
+              value={mengde}
+              onChange={(e) => setMengde(e.target.value)}
+              placeholder={
+                omraadeKode.startsWith("PUTT")
+                  ? "F.eks. 20 putter"
+                  : omraadeKode === "BANE"
+                  ? "F.eks. 9 hull"
+                  : omraadeKode === "STYRKE"
+                  ? "F.eks. 4 serier × 6 reps"
+                  : omraadeKode === "KONDISJON" || omraadeKode === "BEVEGELIGHET"
+                  ? "F.eks. 20 min"
+                  : "F.eks. 30 slag"
+              }
+            />
+          </Felt>
+
           <Felt label={UI.drillDescription}>
             <Textarea
               value={beskrivelse}
@@ -281,11 +706,7 @@ export function DrillListEditor({
             <button
               type="button"
               className="v2-focus"
-              onClick={() => {
-                setVisSkjema(false);
-                setTittel("");
-                setBeskrivelse("");
-              }}
+              onClick={nullstill}
               style={{
                 appearance: "none",
                 background: "transparent",
@@ -301,7 +722,13 @@ export function DrillListEditor({
               {UI.cancel}
             </button>
             {(() => {
-              const ugyldig = disabled || tittel.trim() === "" || !(varighet > 0);
+              const samletFokus = [
+                moradP || null,
+                fokus || null,
+                relevans.dimensjon && dimensjon ? dimensjon : null,
+              ].filter(Boolean).join(" · ");
+              const autoTitle = tittel.trim() || `${AREA_LABEL[omrade]}${samletFokus ? ` · ${samletFokus}` : ""}`;
+              const ugyldig = disabled || !(varighet > 0) || autoTitle.trim() === "";
               return (
                 <button
                   type="button"
@@ -309,15 +736,18 @@ export function DrillListEditor({
                   disabled={ugyldig}
                   onClick={() => {
                     onLeggTil({
-                      title: tittel.trim(),
+                      title: autoTitle,
                       durationMinutes: varighet,
                       pyramid,
                       area: omrade,
                       description: beskrivelse.trim() || undefined,
+                      motorikk: relevans.motorikk ? motorikk : undefined,
+                      belastning: relevans.belastning ? belastning : undefined,
+                      press: relevans.press ? press : undefined,
+                      techniqueFocus: samletFokus || undefined,
+                      mengde: mengde.trim() || undefined,
                     });
-                    setVisSkjema(false);
-                    setTittel("");
-                    setBeskrivelse("");
+                    nullstill();
                   }}
                   style={{
                     appearance: "none",

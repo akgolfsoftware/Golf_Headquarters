@@ -23,6 +23,7 @@ export type CanonicalShot = {
   faceToPath: number | null;
   clubPath: number | null;
   faceAngle: number | null;
+  attackAngle: number | null;
 };
 
 function round2(n: number): number {
@@ -75,9 +76,10 @@ export function csvShotsToCanonical(shots: CsvShot[]): CanonicalShot[] {
     launchAngleDeg: s.launchAngleDeg,
     spinRateRpm: s.spinRateRpm,
     sideMeters: distanceToMeters(s.sideMeters, s.sourceUnits?.side),
-    faceToPath: null,
-    clubPath: null,
-    faceAngle: null,
+    faceToPath: s.faceToPathDeg ?? null,
+    clubPath: s.clubPathDeg ?? null,
+    faceAngle: s.faceAngleDeg ?? null,
+    attackAngle: s.attackAngleDeg ?? null,
   }));
 }
 
@@ -104,6 +106,7 @@ export function htmlReportToCanonical(report: TrackManHtmlReport): CanonicalShot
         faceToPath: Number.isFinite(shot.faceToPath) ? shot.faceToPath : null,
         clubPath: Number.isFinite(shot.clubPath) ? shot.clubPath : null,
         faceAngle: Number.isFinite(shot.faceAngle) ? shot.faceAngle : null,
+        attackAngle: null,
       });
     }
   }

@@ -42,6 +42,8 @@ import {
 import { buildStallDagViewModel, type StallDagViewModel } from "@/lib/domain/workbench/stall-dag";
 import type {
   AKFormel,
+  Drill,
+  Motorikk,
   RecurrencePolicy,
   MonthViewModel,
   PeriodViewModel,
@@ -86,10 +88,13 @@ import {
 } from "@/lib/workbench/wb-map";
 import {
   exerciseToSourceItem,
+  omraadeKodeTilTrainingArea,
   parseSourceId,
   previousWeekToSourceItem,
+  tekniskOppgaveToSourceItem,
   templateToSourceItem,
 } from "@/lib/workbench/sources-map";
+import { hentTekniskPanel } from "@/lib/workbench/teknisk-plan-panel";
 
 // ─── Resultattype ───────────────────────────────────────────────────────────
 
@@ -805,7 +810,7 @@ export async function loadSources(params: {
   const forrigeTil = new Date(ukeStart);
   forrigeTil.setUTCDate(forrigeTil.getUTCDate() - 1);
 
-  const [ovelser, maler, forrigeUke] = await Promise.all([
+  const [ovelser, maler, forrigeUke, tekniskPanel] = await Promise.all([
     prisma.exerciseDefinition.findMany({
       where: {
         OR: [
@@ -829,9 +834,15 @@ export async function loadSources(params: {
       orderBy: { date: "asc" },
       take: 20,
     }),
+    hentTekniskPanel(params.playerId),
   ]);
 
+  const tekniskeKilder: SourceItem[] = tekniskPanel?.oppgaver
+    ? tekniskPanel.oppgaver.map(tekniskOppgaveToSourceItem)
+    : [];
+
   const data: SourceItem[] = [
+    ...tekniskeKilder,
     ...ovelser.map(exerciseToSourceItem),
     ...maler.map(templateToSourceItem),
     ...forrigeUke.map((row) => {
@@ -1085,6 +1096,43 @@ export async function createSessionFromSource(input: {
       drills: [drill],
       createdBy: erCoach ? "COACH" : "PLAYER",
     });
+  } else if (kilde.kind === "TEK") {
+    const task = await prisma.positionTask.findUnique({
+      where: { id: kilde.taskId },
+      include: { position: true },
+    });
+    if (!task) return { ok: false, error: "Fant ikke teknisk oppgave." };
+
+    const omrade = omraadeKodeTilTrainingArea(task.omraadeKode);
+    const formelLabel = `Teknisk · ${task.position.pNummer} ${task.position.navn}`;
+    const drill: Omit<Drill, "id" | "order"> = {
+      title: `${task.position.pNummer} ${task.tittel}`,
+      description: task.dimensjon
+        ? `${task.dimensjon}${task.koller.length > 0 ? ` (${task.koller.join(", ")})` : ""}`
+        : task.slagNavn ?? undefined,
+      durationMinutes: 20,
+      techniqueFocus: task.position.pNummer,
+      sourceId: task.id,
+      akFormel: {
+        pyramid: "TEK",
+        area: omrade,
+        motorikk: (task.motorikk as Motorikk) ?? undefined,
+        label: formelLabel,
+      },
+    };
+
+    utkast = createSessionPure({
+      playerId: parsed.data.playerId,
+      coachId: viewer.id,
+      date: parsed.data.date,
+      startMinute: parsed.data.startMinute,
+      durationMinutes: drill.durationMinutes,
+      title: `${task.position.pNummer} · ${task.tittel}`,
+      pyramid: "TEK",
+      drills: [drill],
+      notes: task.dimensjon ? `Fokus: ${task.dimensjon}. Køller: ${task.koller.join(", ")}` : undefined,
+      createdBy: erCoach ? "COACH" : "PLAYER",
+    });
   } else {
     const rad = await prisma.workbenchSession.findUnique({
       where: { id: kilde.sessionId },
@@ -1127,7 +1175,7 @@ export async function createSessionFromSource(input: {
   return { ok: true, data: mapSession(rad2) };
 }
 
-/** Dra en øvelse fra kildepanelet rett inn i en eksisterende økt. */
+/** Dra en øvelse eller teknisk oppgave fra kildepanelet rett inn i en eksisterende økt. */
 export async function addDrillFromSource(input: {
   sessionId: string;
   sourceId: string;
@@ -1138,14 +1186,43 @@ export async function addDrillFromSource(input: {
   }
 
   const kilde = parseSourceId(parsed.data.sourceId);
-  if (!kilde || kilde.kind !== "DRILL") {
-    return { ok: false, error: "Kun øvelser kan dras inn på en eksisterende økt." };
+  if (!kilde || (kilde.kind !== "DRILL" && kilde.kind !== "TEK")) {
+    return { ok: false, error: "Kun øvelser og tekniske oppgaver kan dras inn på en eksisterende økt." };
   }
 
-  const rad = await prisma.exerciseDefinition.findUnique({ where: { id: kilde.exerciseId } });
-  if (!rad) return { ok: false, error: "Fant ikke øvelsen." };
-  const drill = exerciseToSourceItem(rad).drill;
-  if (!drill) return { ok: false, error: "Fant ikke øvelsen." };
+  let drill: Omit<Drill, "id" | "order"> | undefined;
+
+  if (kilde.kind === "DRILL") {
+    const rad = await prisma.exerciseDefinition.findUnique({ where: { id: kilde.exerciseId } });
+    if (!rad) return { ok: false, error: "Fant ikke øvelsen." };
+    drill = exerciseToSourceItem(rad).drill;
+    if (!drill) return { ok: false, error: "Fant ikke øvelsen." };
+  } else if (kilde.kind === "TEK") {
+    const task = await prisma.positionTask.findUnique({
+      where: { id: kilde.taskId },
+      include: { position: true },
+    });
+    if (!task) return { ok: false, error: "Fant ikke teknisk oppgave." };
+    const omrade = omraadeKodeTilTrainingArea(task.omraadeKode);
+    const formelLabel = `Teknisk · ${task.position.pNummer} ${task.position.navn}`;
+    drill = {
+      title: `${task.position.pNummer} ${task.tittel}`,
+      description: task.dimensjon
+        ? `${task.dimensjon}${task.koller.length > 0 ? ` (${task.koller.join(", ")})` : ""}`
+        : task.slagNavn ?? undefined,
+      durationMinutes: 20,
+      techniqueFocus: task.position.pNummer,
+      sourceId: task.id,
+      akFormel: {
+        pyramid: "TEK",
+        area: omrade,
+        motorikk: (task.motorikk as Motorikk) ?? undefined,
+        label: formelLabel,
+      },
+    };
+  }
+
+  if (!drill) return { ok: false, error: "Kunne ikke hente kilden." };
 
   return addDrill({ sessionId: parsed.data.sessionId, drill });
 }

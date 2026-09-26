@@ -13,6 +13,8 @@
  *
  * Fasit: designsystem/train-lock/TM-07 Hullkart komponenter.dc.html
  * Fasit: designsystem/train-lock/TM-09 Mini-kart og runde.dc.html
+ * Avvik:
+ *   - Satellitt-modus med naturtro farger er lagt til i tillegg til de gråtonede Train-lock-tegningene.
  * (kun TM-09a/b/f «Analyse mini» — "mini"-størrelsen pakker inn samme
  * hullkart 240×120. TM-09c/d/e «Hull-detalj» — rundens skudd PÅ hvert hull,
  * tee→innspill→putt langs en bane-polylinje — er IKKE bygget: det krever
@@ -104,6 +106,25 @@ export function HoleMapTerrainStyle() {
   --hm-bunker: #C7C7C7;
   --hm-tee: #BEBEBE;
 }
+.tm-holemap-terrain[data-mode="satellite"] {
+  --hm-rough: #1a331c;
+  --hm-fairway: #2d6129;
+  --hm-green: #3b8034;
+  --hm-green-2: #48993f;
+  --hm-bunker: #dfcca6;
+  --hm-tee: #224d20;
+  --hm-sat-bg: #162417;
+  --hm-sat-bullseye: #ef4444;
+  --hm-sat-e1-fill: rgba(56, 189, 248, 0.18);
+  --hm-sat-e1-stroke: #38bdf8;
+  --hm-sat-e2-fill: rgba(251, 146, 60, 0.12);
+  --hm-sat-e2-stroke: #fb923c;
+  --hm-sat-good: #22c55e;
+  --hm-sat-warn: #facc15;
+  --hm-sat-disaster: #ef4444;
+  --hm-sat-ring: #ffffff;
+  --hm-sat-edge: rgba(0, 0, 0, 0.45);
+}
 html[data-v2-tema="dark"] .tm-holemap-terrain {
   --hm-rough: #141414;
   --hm-fairway: #1A1A1A;
@@ -111,6 +132,25 @@ html[data-v2-tema="dark"] .tm-holemap-terrain {
   --hm-green-2: #202020;
   --hm-bunker: #2A2A2A;
   --hm-tee: #2C2C2E;
+}
+html[data-v2-tema="dark"] .tm-holemap-terrain[data-mode="satellite"] {
+  --hm-rough: #122414;
+  --hm-fairway: #1e451b;
+  --hm-green: #295c24;
+  --hm-green-2: #34732e;
+  --hm-bunker: #c4b087;
+  --hm-tee: #183816;
+  --hm-sat-bg: #0d170e;
+  --hm-sat-bullseye: #f87171;
+  --hm-sat-e1-fill: rgba(56, 189, 248, 0.22);
+  --hm-sat-e1-stroke: #38bdf8;
+  --hm-sat-e2-fill: rgba(251, 146, 60, 0.16);
+  --hm-sat-e2-stroke: #fb923c;
+  --hm-sat-good: #22c55e;
+  --hm-sat-warn: #facc15;
+  --hm-sat-disaster: #f87171;
+  --hm-sat-ring: #ffffff;
+  --hm-sat-edge: rgba(0, 0, 0, 0.65);
 }
 `}</style>
   );

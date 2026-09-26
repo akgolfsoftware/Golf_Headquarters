@@ -11,6 +11,7 @@ import {
   planNavn,
   PLAYERHQ_PRIS_MND_ORE,
   PLAYERHQ_PRIS_AAR_ORE,
+  PLAYERHQ_PRIS_JUNIOR_MND_ORE,
   PLAYERHQ_AAR_BESPARELSE_ORE,
 } from "@/lib/domain/abonnement";
 
@@ -77,13 +78,15 @@ test("pakkeNavn: 4+ = Performance Pro, 1-3 = Performance, 0 = null", () => {
 test("planNavn dekker alle planene og gir null for ukjent/null", () => {
   assert.equal(planNavn("PLAYERHQ_MND"), "PlayerHQ månedlig");
   assert.equal(planNavn("PLAYERHQ_AAR"), "PlayerHQ årlig");
+  assert.equal(planNavn("PLAYERHQ_JUNIOR_MND"), "PlayerHQ Junior (Forbund)");
   assert.equal(planNavn("PERFORMANCE_PRO"), "Performance Pro");
   assert.equal(planNavn(null), null);
 });
 
-test("prisene er kanon: 299/mnd, 2 690/år, 898 kr spart («tre måneder gratis»)", () => {
+test("prisene er kanon: 299/mnd for alle spillere, 2 690/år, 898 kr spart («tre måneder gratis»)", () => {
   assert.equal(PLAYERHQ_PRIS_MND_ORE, 29_900);
   assert.equal(PLAYERHQ_PRIS_AAR_ORE, 269_000);
+  assert.equal(PLAYERHQ_PRIS_JUNIOR_MND_ORE, 29_900);
   assert.equal(PLAYERHQ_AAR_BESPARELSE_ORE, 89_800);
   // «Tre måneder gratis»: 9 måneder dekker årsprisen (299 × 9 = 2 691 ≈ 2 690).
   assert.ok(PLAYERHQ_PRIS_AAR_ORE <= PLAYERHQ_PRIS_MND_ORE * 9);

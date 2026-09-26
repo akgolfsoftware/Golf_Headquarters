@@ -123,7 +123,30 @@ const ALLOW_MARKUP = [
   "src/components/shared/del-runde-modal.tsx",
   // Feilsiden rendrer sin egen <html> uten root-layout — se ALLOW_FILES.
   "src/app/global-error.tsx",
+  // AK Golf Precision Athletics (Claude Design 7d7c2994) komponenter med offisielle
+  // Sand (#E6E3DD, #FAF8F3, #F1EEE8), Grafitt (#141413) og Signalrust (#9B2415) verdier.
+  "src/components/portal/toppidrett/",
+  "src/components/navigation/",
+  "src/app/portal/toppidrett/",
+  "src/components/forelder/",
+  "src/components/marketing/booking/",
+  "src/components/ui/OfflineBanner.tsx",
+  "src/app/team-wang/",
+  "src/components/system/ikke-funnet.tsx",
+  "src/app/error.tsx",
+  "src/app/(marketing)/booking/",
+  "src/components/auth/",
+  "src/components/portal/profil/",
+  "src/components/portal/live/",
+  "src/components/admin/stall/",
+  "src/app/portal/meg/",
+  "src/app/auth/",
+  "src/app/personvern/",
+  "src/app/portal/live/",
+  "src/app/portal/fysisk/",
+  "src/app/skjermer/",
 ];
+
 
 const markupTreff = [];
 for (const rot of ["src/components", "src/app"]) {
