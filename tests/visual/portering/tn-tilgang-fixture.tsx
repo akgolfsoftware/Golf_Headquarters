@@ -15,6 +15,7 @@ Object.assign(window, { tnResultatlogg: resultatlogg, tnOppfriskinger: 0 });
 
 const rader: TnTilgangVisningsrad[] = [
   { userId: "syntetisk-1", navn: "Eksempel Trener Med Et Langt Etternavn", epost: "trener.med.langt.navn@example.invalid", rolle: "COACH", joinedAt: new Date("2026-08-01T00:00:00Z"), endedAt: null, status: "AKTIV" },
+  { userId: "syntetisk-3", navn: "Eksempel Assist Coach", epost: "assist@example.invalid", rolle: "ASSISTANT", joinedAt: new Date("2026-03-01T00:00:00Z"), endedAt: null, status: "AKTIV" },
   { userId: "syntetisk-2", navn: "Eksempel Assistent", epost: "assistent@example.invalid", rolle: "ASSISTANT", joinedAt: new Date("2026-01-01T00:00:00Z"), endedAt: new Date("2026-08-31T00:00:00Z"), status: "UTLØPT" },
 ];
 
@@ -46,6 +47,9 @@ function App() {
     gruppeNavn="Testgruppen"
     rader={fixture === "tom" ? [] : rader}
     valgtId={valgtId}
+    egenId="syntetisk-1"
+    avslutt={async (targetUserId) => { await lagre({ targetUserId, handling: "avslutt" }); return fixture === "siste-trener" ? { ok: false, reason: "siste-trener", gruppeNavn: "Testgruppen", antallSpillere: 4 } : { ok: true }; }}
+    leggTil={async (epost, rolle) => { resultatlogg.push({ epost, rolle }); return epost.startsWith("ukjent") ? { ok: false, reason: "ingen-konto" } : { ok: true, navn: "Syntetisk Person" }; }}
     skjema={valgt ? <TnTilgangSkjema
       key={valgt.userId}
       groupId="syntetisk-gruppe"

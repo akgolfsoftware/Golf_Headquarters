@@ -273,3 +273,46 @@ function parseDatoStrengUtc(iso: string): Date | null {
   if (!m) return null;
   return new Date(Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3])));
 }
+
+export type TnLeggTilResultat =
+  | { ok: true; navn: string }
+  | { ok: false; reason: "ingen-konto" | "er-spiller" | "har-tilgang" };
+
+/**
+ * TN-19 «Legg til trener»: gir en eksisterende AK Golf-konto trener- eller
+ * Assist Coach-rolle i Team Norway-gruppen. Gruppen slås opp her, aldri fra
+ * klienten. En aktiv spiller i gruppen gjøres aldri om til trener — det er
+ * et uttak, ikke en tilgang. Invitasjon av personer uten konto finnes ikke ennå.
+ */
+export async function leggTilTrener(input: {
+  caller: { id: string; role: UserRole };
+  epost: string;
+  rolle: TnTrenerRolle;
+}): Promise<TnLeggTilResultat> {
+  const lovlig = await erSportssjef(input.caller);
+  if (!lovlig) throw new Error("Du er ikke sportssjef");
+  const gruppe = await hentTeamNorwayGruppe();
+  if (!gruppe) throw new Error("Team Norway-gruppen finnes ikke");
+
+  const person = await prisma.user.findFirst({
+    where: { email: { equals: input.epost.trim(), mode: "insensitive" }, deletedAt: null },
+    select: { id: true, name: true, email: true },
+  });
+  if (!person) return { ok: false, reason: "ingen-konto" };
+
+  return medSerialiserbarTilgangsoppdatering(async (tx) => {
+    const rad = await tx.groupMember.findUnique({
+      where: { groupId_userId: { groupId: gruppe.id, userId: person.id } },
+      select: { role: true, endedAt: true },
+    });
+    const aktiv = rad && (!rad.endedAt || rad.endedAt.getTime() > Date.now());
+    if (aktiv && rad.role === "PLAYER") return { ok: false as const, reason: "er-spiller" as const };
+    if (aktiv) return { ok: false as const, reason: "har-tilgang" as const };
+    await tx.groupMember.upsert({
+      where: { groupId_userId: { groupId: gruppe.id, userId: person.id } },
+      create: { groupId: gruppe.id, userId: person.id, role: input.rolle, joinedAt: new Date(), endedAt: null },
+      update: { role: input.rolle, joinedAt: new Date(), endedAt: null },
+    });
+    return { ok: true as const, navn: person.name ?? person.email ?? "Personen" };
+  });
+}

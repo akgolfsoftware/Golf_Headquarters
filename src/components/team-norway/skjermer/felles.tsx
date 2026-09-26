@@ -50,3 +50,6 @@ export function heltallParam(verdi: string | string[] | undefined, min: number, 
   const n = Number(Array.isArray(verdi) ? verdi[0] : verdi);
   return Number.isInteger(n) && n >= min && n <= max ? n : standard;
 }
+
+/** Spiller på college i USA (skolefeltet i profilen). Norske universiteter hører til Skoleoversikt. */
+export const ER_COLLEGE = /college|university/i;

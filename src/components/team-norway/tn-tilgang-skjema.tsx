@@ -97,7 +97,7 @@ export function TnTilgangSkjema({
           </span>
         </div>
         <span style={{ fontSize: TN.text.sm, color: TN.textPrimary, lineHeight: TN.leading.normal }}>
-          Gi en annen person trenerrollen i gruppen først. Hjelpetrener er ikke nok — publisering krever trener.
+          Gi en annen person trenerrollen i gruppen først. Assist Coach er ikke nok — publisering krever trener.
         </span>
         <TnKnapp variant="sekundaer" onClick={() => setFeil(null)}>
           Tilbake
@@ -144,7 +144,7 @@ export function TnTilgangSkjema({
                   cursor: pending ? "not-allowed" : "pointer",
                 }}
               >
-                {v === "COACH" ? "Trener" : "Hjelpetrener"}
+                {v === "COACH" ? "Trener" : "Assist Coach"}
               </button>
             );
           })}

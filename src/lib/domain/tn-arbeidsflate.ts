@@ -5,6 +5,7 @@ import { aktivtSpillerMedlemskapWhere } from "@/lib/domain/grupper";
 import { hentTnOversiktForBruker } from "@/lib/domain/tn-tilgang";
 import { prisma } from "@/lib/prisma";
 import { TN_CATALOG, TN_VERSION, tnProtocol } from "@/lib/portal-tester/tn-catalog";
+import { aggregerRangliste } from "./tn-rangliste";
 
 /**
  * Datalag for TN-00–TN-21.
@@ -159,34 +160,47 @@ export async function hentTnTurneringer(bruker: TnBruker) {
   return { kontekst, turneringer };
 }
 
-export async function hentTnRangliste(bruker: TnBruker) {
+/**
+ * Starter, snittplassering og brutto snitt per spiller fra de offentlige
+ * resultatene (public_player_entries/rounds, kanonisk kilde). Med `aar` telles
+ * bare turneringer som startet det året (Oslo).
+ */
+export async function hentTnRangliste(bruker: TnBruker, aar?: number) {
   const spillerside = await hentTnSpillere(bruker);
   if (!spillerside) return null;
-  const ider = spillerside.rader.map((spiller) => spiller.id);
-  const resultater = await prisma.tournamentResult.findMany({
-    where: { userId: { in: ider } },
-    select: { userId: true, position: true, score: true, tournament: { select: { startDate: true } } },
+  const koblinger = await prisma.user.findMany({
+    where: { id: { in: spillerside.rader.map((spiller) => spiller.id) }, publicPlayerId: { not: null } },
+    select: { id: true, publicPlayerId: true },
   });
-  const perSpiller = new Map<string, { starter: number; plasseringSum: number; plasseringer: number; scoreSum: number; scorer: number }>();
-  for (const resultat of resultater) {
-    const rad = perSpiller.get(resultat.userId) ?? { starter: 0, plasseringSum: 0, plasseringer: 0, scoreSum: 0, scorer: 0 };
-    rad.starter += 1;
-    if (resultat.position !== null) { rad.plasseringSum += resultat.position; rad.plasseringer += 1; }
-    if (resultat.score !== null) { rad.scoreSum += resultat.score; rad.scorer += 1; }
-    perSpiller.set(resultat.userId, rad);
+  const entries = await prisma.publicPlayerEntry.findMany({
+    where: {
+      playerId: { in: koblinger.map((k) => k.publicPlayerId!) },
+      tournament: { mergedIntoId: null, ...(aar ? { startDate: { gte: new Date(Date.UTC(aar - 1, 11, 31, 12)), lt: new Date(Date.UTC(aar, 11, 31, 12)) } } : {}) },
+    },
+    select: {
+      playerId: true, status: true, position: true, scoreToPar: true, totalScore: true, rounds: true, klasseNavn: true,
+      roundDetails: { select: { roundNumber: true, score: true, toPar: true, source: true } },
+      tournament: { select: { startDate: true } },
+    },
+  });
+  const perSpiller = new Map<string, typeof entries>();
+  for (const entry of entries) {
+    if (aar && osloAar(entry.tournament.startDate) !== aar) continue;
+    perSpiller.set(entry.playerId, [...(perSpiller.get(entry.playerId) ?? []), entry]);
   }
+  const publicId = new Map(koblinger.map((k) => [k.id, k.publicPlayerId!]));
   return {
     kontekst: spillerside.kontekst,
     rader: spillerside.rader.map((spiller) => {
-      const resultat = perSpiller.get(spiller.id);
-      return {
-        ...spiller,
-        starter: resultat?.starter ?? 0,
-        snittplassering: resultat?.plasseringer ? resultat.plasseringSum / resultat.plasseringer : null,
-        bruttoScore: resultat?.scorer ? resultat.scoreSum / resultat.scorer : null,
-      };
+      const tall = aggregerRangliste(perSpiller.get(publicId.get(spiller.id) ?? "") ?? []);
+      return { ...spiller, ...tall, bruttoScore: tall.bruttoSnitt, koblet: publicId.has(spiller.id) };
     }),
   };
+}
+
+const osloAarFormat = new Intl.DateTimeFormat("en-GB", { year: "numeric", timeZone: "Europe/Oslo" });
+function osloAar(dato: Date) {
+  return Number(osloAarFormat.format(dato));
 }
 
 export async function hentTnSamlinger(bruker: TnBruker) {
@@ -246,16 +260,4 @@ export async function hentTnTrenere(bruker: TnBruker) {
     orderBy: { user: { name: "asc" } },
   });
   return { kontekst, rader };
-}
-
-export async function hentTnReferansenivaer(bruker: TnBruker) {
-  const kontekst = await hentTnArbeidskontekst(bruker);
-  if (!kontekst) return null;
-  const rader = TN_CATALOG.flatMap((protokoll) =>
-    protokoll.rows
-      .filter((rad) => rad.target !== undefined)
-      .slice(0, 6)
-      .map((rad) => ({ protokollId: protokoll.id, protokoll: protokoll.name, mal: rad.label, verdi: rad.target ?? null })),
-  );
-  return { kontekst, versjon: TN_VERSION, rader };
 }

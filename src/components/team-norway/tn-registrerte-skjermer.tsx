@@ -6,10 +6,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { brukerStatusOrd, brukerStatusTone } from "@/lib/domain/bruker-status";
 import {
   hentTnArbeidskontekst,
-  hentTnRangliste,
-  hentTnReferansenivaer,
   hentTnSamlinger,
-  hentTnSkoler,
   hentTnSpillere,
   hentTnTurneringer,
   type TnArbeidskontekst,
@@ -38,11 +35,8 @@ type Skjerm =
   | "samlinger"
   | "samlingsdetalj"
   | "uttak"
-  | "rangliste"
-  | "skoler"
   | "turneringer"
   | "turnering-ny"
-  | "referansenivaer"
   | "inviter";
 
 const dato = new Intl.DateTimeFormat("nb-NO", { day: "2-digit", month: "short", year: "numeric", timeZone: "Europe/Oslo" });
@@ -137,18 +131,6 @@ export async function TnRegistrertSkjerm({ skjerm, id }: { skjerm: Skjerm; id?: 
     notFound();
   }
 
-  if (skjerm === "rangliste") {
-    const data = await hentTnRangliste(bruker);
-    if (!data || data.kontekst.erSpiller) notFound();
-    return (
-      <Chrome aktiv="rangliste" brukerNavn={brukerNavn} kontekst={data.kontekst}>
-        <TnSidehode overlinje="Uttak · Resultatgrunnlag" tittel="Rangliste" ingress="Viser registrerte bruttoresultater og plasseringer. Manglende data vises som ukjent og påvirker ikke uttak automatisk." />
-        <TnTomtilstand tittel="Kun brutto" tekst="Alle tall er ekte slag. Snittplassering og brutto score er gjennomsnitt av de registrerte startene — ikke en rangering systemet har regnet seg fram til, og ikke et uttak. En spiller uten starter står nederst fordi ingenting er registrert, ikke fordi hun er dårligst." />
-        <TnDataTable caption="Resultatgrunnlag" kolonner={[{ key: "spiller", label: "Spiller" }, { key: "starter", label: "Starter", align: "right" }, { key: "plassering", label: "Snittplassering", align: "right" }, { key: "score", label: "Brutto score", align: "right" }, { key: "tester", label: "Tester", align: "right" }]} rader={data.rader.map((spiller) => ({ spiller: spiller.navn, starter: spiller.starter, plassering: spiller.snittplassering === null ? "Ukjent" : tall.format(spiller.snittplassering), score: spiller.bruttoScore === null ? "Ukjent" : tall.format(spiller.bruttoScore), tester: spiller.tester }))} empty="Ingen turneringsresultater er registrert for gruppen." />
-      </Chrome>
-    );
-  }
-
   if (skjerm === "samlinger" || skjerm === "samlingsdetalj") {
     const data = await hentTnSamlinger(bruker);
     if (!data) notFound();
@@ -158,19 +140,6 @@ export async function TnRegistrertSkjerm({ skjerm, id }: { skjerm: Skjerm; id?: 
       <Chrome aktiv="samlinger" brukerNavn={brukerNavn} kontekst={data.kontekst}>
         <TnSidehode overlinje="Daglig · Samlinger" tittel={valgt?.name ?? "Samlingspunkt"} ingress={valgt ? `${dato.format(valgt.startDate)}–${dato.format(valgt.endDate)}${valgt.location ? ` · ${valgt.location}` : ""}` : "Samlinger fra AK Golf HQs spillerplaner, samlet på gruppenivå."} handling={valgt ? <TnLenke href="/team-norway/samlinger">Alle samlinger</TnLenke> : undefined} />
         {valgt ? <><TnMetrikkRutenett><TnMetrikk etikett="Deltakere" verdi={valgt.antallDeltakere} /><TnMetrikk etikett="Fra" verdi={dato.format(valgt.startDate)} /><TnMetrikk etikett="Til" verdi={dato.format(valgt.endDate)} /></TnMetrikkRutenett><TnKort><p style={{ margin: 0, color: TN.textSecondary, lineHeight: TN.leading.normal }}>{valgt.notes ?? "Ingen programdetaljer er registrert på samlingen."}</p></TnKort></> : <TnDataTable caption="Samlinger" kolonner={[{ key: "samling", label: "Samling" }, { key: "periode", label: "Periode" }, { key: "sted", label: "Sted" }, { key: "deltakere", label: "Deltakere", align: "right" }]} rader={data.samlinger.map((samling) => ({ samling: <Link href={`/team-norway/samlinger/${samling.id}`} style={{ color: TN.navy700, fontWeight: TN.weight.semibold }}>{samling.name}</Link>, periode: `${dato.format(samling.startDate)}–${dato.format(samling.endDate)}`, sted: samling.location ?? "Ikke registrert", deltakere: samling.antallDeltakere }))} empty="Ingen samlinger er registrert for Team Norway-spillerne." />}
-      </Chrome>
-    );
-  }
-
-  if (skjerm === "skoler") {
-    const data = await hentTnSkoler(bruker);
-    if (!data || data.kontekst.erSpiller) notFound();
-    return (
-      <Chrome aktiv="skoler" brukerNavn={brukerNavn} kontekst={data.kontekst}>
-        <TnSidehode overlinje="Skoler · Oversikt" tittel="Skoleoversikt" ingress="Skole og trinn kommer fra spillerprofilene. Uregistrerte verdier holdes synlige som datagap." />
-        <TnMetrikkRutenett><TnMetrikk etikett="Skoler" verdi={data.skoler.filter((rad) => rad.skole !== "Ikke registrert").length} /><TnMetrikk etikett="Spillere" verdi={data.skoler.reduce((sum, rad) => sum + rad.spillere.length, 0)} /><TnMetrikk etikett="Mangler skole" verdi={data.skoler.find((rad) => rad.skole === "Ikke registrert")?.spillere.length ?? 0} tone="amber" /></TnMetrikkRutenett>
-        <TnDataTable caption="Skoler" kolonner={[{ key: "skole", label: "Skole" }, { key: "spillere", label: "Spillere", align: "right" }, { key: "trinn", label: "Trinn" }]} rader={data.skoler.map((rad) => ({ skole: rad.skole, spillere: rad.spillere.length, trinn: [...new Set(rad.spillere.map((spiller) => spiller.skolear).filter(Boolean))].join(" · ") || "Ukjent" }))} empty="Ingen spillere er tildelt Team Norway-gruppen." />
-        <TnTomtilstand tittel="«Ikke registrert» er en egen rad, ikke en skole" tekst="Spillere uten skole i profilen samles i sin egen rad. Den skjules ikke og slås ikke sammen med de andre — da ville totalen sett riktig ut mens profilene fortsatt sto tomme. Trinn settes sammen av verdiene som faktisk står i profilene i hver gruppe; står ingen av dem fylt ut, står det «Ukjent»." />
       </Chrome>
     );
   }
@@ -190,17 +159,6 @@ export async function TnRegistrertSkjerm({ skjerm, id }: { skjerm: Skjerm; id?: 
     const kontekst = await hentTnArbeidskontekst(bruker);
     if (!kontekst || !kontekst.erSpiller) notFound();
     return <Chrome aktiv="turneringer" brukerNavn={brukerNavn} kontekst={kontekst}><TnSidehode overlinje="Data · Manuell kilde" tittel="Legg inn turnering selv" ingress="Brukes når turneringen ikke finnes i katalogen." /><TnKort><TnManuellTurnering /></TnKort></Chrome>;
-  }
-
-  if (skjerm === "referansenivaer") {
-    const data = await hentTnReferansenivaer(bruker);
-    if (!data) notFound();
-    return (
-      <Chrome aktiv="referansenivaer" brukerNavn={brukerNavn} kontekst={data.kontekst}>
-        <TnSidehode overlinje={`Data · ${data.versjon}`} tittel="Referansenivåer" ingress="Viser bare målverdier som finnes eksplisitt i den versjonerte protokollkilden." />
-        <TnDataTable caption="Referansenivåer" kolonner={[{ key: "protokoll", label: "Protokoll" }, { key: "mal", label: "Måling" }, { key: "verdi", label: "Referanse", align: "right" }]} rader={data.rader.map((rad) => ({ protokoll: data.kontekst.erSpiller ? rad.protokoll : <Link href={`/team-norway/protokoller/${rad.protokollId}`} style={{ color: TN.navy700 }}>{rad.protokoll}</Link>, mal: rad.mal, verdi: rad.verdi ?? "Ukjent" }))} empty="Ingen eksplisitte referanseverdier finnes i protokollkilden." />
-      </Chrome>
-    );
   }
 
   if (skjerm === "inviter") {

@@ -5,7 +5,7 @@ import { brukerStatusOrd } from "@/lib/domain/bruker-status";
 import { hentTnRangliste, hentTnSamlinger } from "@/lib/domain/tn-arbeidsflate";
 import { TN } from "@/lib/v2/team-norway";
 import { TnDatoRad, TnEtikett, TnFlate, TnFlatehode, TnFotnote, TnInitialer, TnMangler, TnSkjermhode } from "../tn-flate";
-import { SkjermRamme, hentSkjermbruker, periode } from "./felles";
+import { ER_COLLEGE, SkjermRamme, hentSkjermbruker, periode } from "./felles";
 
 /**
  * TN-06 College og USA.
@@ -21,7 +21,6 @@ import { SkjermRamme, hentSkjermbruker, periode } from "./felles";
  */
 
 const tall = new Intl.NumberFormat("nb-NO", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
-const ER_COLLEGE = /college|university|universitet/i;
 
 function Felt({ etikett, children, mono = false }: { etikett: string; children: React.ReactNode; mono?: boolean }) {
   return (
@@ -64,7 +63,7 @@ export async function TnCollegeSkjerm() {
           </div>
         ))}
         {spillere.length === 0 ? <TnMangler>Ingen spillere har registrert college eller universitet i profilen. Skolen settes i spillerprofilen.</TnMangler> : null}
-        <TnFotnote>Brutto snitt er ekte slag i alle registrerte starter. Konferanse, klasse og WAGR er ikke koblet til ennå.</TnFotnote>
+        <TnFotnote>Brutto snitt er ekte slag per runde i alle registrerte starter. Konferanse, klasse og WAGR er ikke koblet til ennå.</TnFotnote>
       </TnFlate>
 
       <TnFlate>

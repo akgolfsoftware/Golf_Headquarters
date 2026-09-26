@@ -1,121 +1,101 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { TN } from "@/lib/v2/team-norway";
 import { Icon } from "@/components/v2/icon";
-import { TnLogo, type TnMenyPunkt } from "./core";
+import { TnAvatarInitialer, TnLogo, TnMenygruppe, type TnBunnValg, type TnMenyGruppe } from "./core";
 
 /**
- * Mobil-erstatning for `TnRail` under Tailwind sitt default `lg`-brekkpunkt
- * (1024px, se `className="flex lg:hidden"` under - ingen
- * `tailwind.config.*` eller `@theme`-override i dette prosjektet endrer
- * det). Nær, men ikke identisk med Train-lock sin `TL_BREKK.macRail`
- * (1101px) - samme følelse på tvers av de to designsystemene selv om de
- * aldri deler kode. Ingen organisasjons-switcher her - se Task 1.4s
- * hode-kommentar i planen.
+ * Mobilmenyen under Tailwinds `lg`-brekkpunkt (1024 px), der `TnRail` skjules.
+ * Fasit: «Team Norway App delivery» (bc3e41fc), runde 26.09: fast bunnlinje
+ * med fire valg per rolle og «Mer», som åpner et ark med alle gruppene utfoldet.
+ * Avvik:
+ *   - Topplinjen viser logo og initialer, ingen egen menyknapp — «Mer» i
+ *     bunnlinjen er eneste vei til resten. Bunnlinjen legger til
+ *     `--ak-cookie-h` og safe-area (gotchas §UI).
  */
-export function TnRailMobil({ punkter, orgNavn }: { punkter: TnMenyPunkt[]; orgNavn: string }) {
-  const [apen, setApen] = useState(false);
-  const menyId = useId();
-  const knappRef = useRef<HTMLButtonElement>(null);
-  // Gruppeoverskriftene vises også på mobil. Desktop og mobil skal ha samme
-  // meny — ikke to ulike inndelinger av de samme punktene.
+export function TnRailMobil({ grupper, bunn, brukerNavn, orgNavn }: { grupper: TnMenyGruppe[]; bunn: TnBunnValg[]; brukerNavn: string; orgNavn: string }) {
+  const [mer, setMer] = useState(false);
+  const arkId = useId();
+  const merRef = useRef<HTMLButtonElement>(null);
+  const fastAktiv = bunn.some((b) => b.aktiv);
+
+  useEffect(() => {
+    if (!mer) return;
+    const lukk = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setMer(false);
+        merRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", lukk);
+    return () => window.removeEventListener("keydown", lukk);
+  }, [mer]);
+
+  const valgStil = (aktiv: boolean) => ({
+    flex: "1 1 0",
+    minWidth: 0,
+    minHeight: 56,
+    display: "flex",
+    flexDirection: "column" as const,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 3,
+    textDecoration: "none",
+    background: aktiv ? TN.rail.active : "transparent",
+    borderTop: `3px solid ${aktiv ? TN.rail.marker : "transparent"}`,
+    borderLeft: "none",
+    borderRight: "none",
+    borderBottom: "none",
+    color: aktiv ? TN.rail.on : TN.rail.text,
+    fontFamily: TN.font.body,
+    fontSize: 11.5,
+    fontWeight: aktiv ? TN.weight.bold : TN.weight.regular,
+    cursor: "pointer",
+    padding: 0,
+  });
 
   return (
-    <div className="flex lg:hidden" style={{ flexDirection: "column", width: "100%" }}>
-      <div
-        style={{
-          height: 56,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "0 16px",
-          background: TN.rail.bg,
-        }}
-      >
+    <div className="lg:hidden" style={{ width: "100%" }}>
+      <div style={{ height: 56, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 16px", background: TN.rail.bg }}>
         <span style={{ display: "inline-flex", alignItems: "center", minWidth: 0 }}>
           <TnLogo hoyde={24} prioritet paaMork />
           <span className="sr-only">{orgNavn}</span>
         </span>
-        <button
-          ref={knappRef}
-          type="button"
-          onClick={() => setApen((v) => !v)}
-          aria-expanded={apen}
-          aria-controls={menyId}
-          aria-label={apen ? "Lukk meny" : "Åpne meny"}
-          style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", minWidth: 44, minHeight: 44, background: "none", border: "none", padding: 8, cursor: "pointer" }}
-        >
-          <Icon name={apen ? "x" : "menu"} size={20} style={{ color: TN.rail.on }} />
-        </button>
+        <TnAvatarInitialer navn={brukerNavn} size={32} paaMork />
       </div>
-      {apen && (
+
+      {mer ? (
         <nav
-          id={menyId}
-          aria-label="Team Norway"
-          onKeyDown={(event) => {
-            if (event.key === "Escape") {
-              setApen(false);
-              knappRef.current?.focus();
-            }
-          }}
-          style={{ display: "flex", flexDirection: "column", padding: "6px 10px 12px", gap: 2, background: TN.rail.bg }}
+          id={arkId}
+          aria-label="Alle sider"
+          style={{ position: "fixed", left: 0, right: 0, top: 0, bottom: "calc(59px + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px))", zIndex: 40, background: TN.rail.bg, overflowY: "auto", padding: "12px 12px 20px", display: "flex", flexDirection: "column", gap: 10 }}
         >
-          {punkter.map((p, i) =>
-            p.type === "overskrift" ? (
-              <div
-                key={`h-${i}`}
-                style={{
-                  fontFamily: TN.font.mono,
-                  fontSize: TN.text.micro,
-                  letterSpacing: TN.tracking.eyebrow,
-                  textTransform: "uppercase",
-                  color: TN.rail.muted,
-                  padding: "16px 10px 6px",
-                }}
-              >
-                {p.label}
-              </div>
-            ) : (
-              <a
-                key={`${p.href}-${p.label}`}
-                href={p.href}
-                aria-current={p.aktiv ? "page" : undefined}
-                onClick={() => setApen(false)}
-                style={{
-                  minHeight: 44,
-                  borderRadius: TN.radius.xs,
-                  padding: "4px 10px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 10,
-                  textDecoration: "none",
-                  background: p.aktiv ? TN.rail.active : "transparent",
-                  color: p.aktiv ? TN.rail.on : TN.rail.text,
-                  fontFamily: TN.font.body,
-                  fontSize: TN.text.sm,
-                  fontWeight: p.aktiv ? TN.weight.bold : TN.weight.regular,
-                }}
-              >
-                <span
-                  aria-hidden="true"
-                  style={{
-                    width: 3,
-                    height: 18,
-                    borderRadius: TN.radius.full,
-                    background: p.aktiv ? TN.rail.marker : "transparent",
-                    flexShrink: 0,
-                  }}
-                />
-                <span style={{ flex: 1, minWidth: 0 }}>{p.label}</span>
-                {p.badge && (
-                  <span style={{ fontFamily: TN.font.mono, fontSize: TN.text.micro, color: p.aktiv ? TN.rail.on : TN.rail.muted }}>{p.badge}</span>
-                )}
-              </a>
-            ),
-          )}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 0 0 10px" }}>
+            <span style={{ fontFamily: TN.font.display, fontSize: 13, letterSpacing: "0.2em", textTransform: "uppercase", color: TN.rail.on }}>Meny</span>
+            <button type="button" onClick={() => { setMer(false); merRef.current?.focus(); }} aria-label="Lukk meny" style={{ minWidth: 44, minHeight: 44, display: "inline-flex", alignItems: "center", justifyContent: "center", background: "none", border: "none", cursor: "pointer" }}>
+              <Icon name="x" size={20} style={{ color: TN.rail.on }} />
+            </button>
+          </div>
+          {grupper.map((g) => <TnMenygruppe key={g.id} gruppe={g} alltidApen onVelg={() => setMer(false)} />)}
         </nav>
-      )}
+      ) : null}
+
+      <nav
+        aria-label="Hovedvalg"
+        style={{ position: "fixed", left: 0, right: 0, bottom: 0, zIndex: 41, display: "flex", background: TN.rail.bg, paddingBottom: "calc(env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px))" }}
+      >
+        {bunn.map((b) => (
+          <a key={b.href} href={b.href} aria-current={b.aktiv && !mer ? "page" : undefined} style={valgStil(b.aktiv && !mer)}>
+            <Icon name={b.ikon} size={20} />
+            <span style={{ maxWidth: "100%", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{b.label}</span>
+          </a>
+        ))}
+        <button ref={merRef} type="button" onClick={() => setMer((v) => !v)} aria-expanded={mer} aria-controls={arkId} style={valgStil(mer || !fastAktiv)}>
+          <Icon name="more-horizontal" size={20} />
+          <span>Mer</span>
+        </button>
+      </nav>
     </div>
   );
 }
