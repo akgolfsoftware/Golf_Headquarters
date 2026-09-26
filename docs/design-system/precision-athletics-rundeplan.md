@@ -22,8 +22,8 @@ lagt i prosjektet som `skjermliste.md`). Beslutning: [beslutninger.md](../../.cl
 | 2 | PlayerHQ PH-01–09 + felles skjermkatalog (velger for skjerm/bredde/tema/tilstand) + `oversikt.html` | Ferdig 26.09 — 478 tilfeller totalt, 0 avvik. Katalog: `ui_kits/playerhq/index.html`, oversikt: `oversikt.html` |
 | 3 | PlayerHQ PH-10–15 (plan, Workbench, planbygger, øvelser, tester) + rettelse: runde med 9 hull, «Registrer runde» fra I dag | Ferdig 26.09 — 670 tilfeller totalt, 0 avvik. Åpne spørsmål: «Venter på coach» mangler i ordmasteren; dra-håndtak 32 px (under 44 px) |
 | 4 | PlayerHQ PH-16–20 (analyse, TrackMan, runder, mål og talent, gameplan) + rettelser: dra-håndtak 44 px, konflikt ved økt oppå opptatt tid, «Venter på coach» og 10-slagsregelen merket uavklart | Ferdig 26.09 — 830 tilfeller totalt, 0 avvik. Uavhengig kontroll avbrutt, kjøres i runde 5 |
-| 5 | PlayerHQ PH-21–26 (coach, Caddie, booking, Meg, abonnement, utenfor banen) + fargeregel i hele systemet, toppliste PH-19 | Sendt 26.09 — kjører |
-| 6 | AgencyOS AG-01–06 (Hjem, Kø, oppfølgingskø, innboks, kalender, booking) | |
+| 5 | PlayerHQ PH-21–26 (coach, Caddie, booking, Meg, abonnement, utenfor banen) + fargeregel i hele systemet, toppliste PH-19 | Ferdig 26.09 — 1 022 tilfeller totalt, 0 avvik. Fargeregelen i readme (regel 4) og `guidelines/farge.html`; Workbench i AgencyOS kontrollert av Claude Code. Uavhengig kontroll av runde 4–5 avbrutt to ganger, kjøres i runde 6. Åpne spørsmål: klippekort bare for privattime 60 min? Break-tabellen er modell, ikke måling |
+| 6 | AgencyOS AG-01–06 (Hjem, Kø, oppfølgingskø, innboks, kalender, booking) + hurtigknapp i skallet, «Løst» som egen status, bekreft/avvis booking, tellemåling av hardkodede farger | Sendt 26.09 — kjører. Bestilling: `~/ak-brain/claude-code/prompter/precision-runde6-bestilling.txt` |
 | 7 | AgencyOS AG-07–12 (stall, spiller 360, analyse, teknisk plan, Workbench, øktark) | |
 | 8 | AgencyOS AG-13–18 (live-tavle, plan og maler, tester, grupper, turneringer, TrackMan) | |
 | 9 | AgencyOS AG-19–24 (Caddie/Jarvis, økonomi, oppgaver, innsikt, oppsett, drift) | |
