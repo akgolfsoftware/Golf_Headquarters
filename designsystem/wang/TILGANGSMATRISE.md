@@ -20,7 +20,10 @@ vilje. Les dette **før** du skriver UI, ikke etter.
    hvem som kan gi tilgang — aldri en tom side og aldri en ny innloggingsprompt.
 
 Roller: `Åpen` (uten innlogging) · `Elev` · `Foresatt` · `Trener` (rolle på gruppe ved én skole) ·
-`Sportssjef` (ved én skole) · `Admin` (ved én skole) · `Kontaktlærer`.
+`Sportssjef` (ved én skole) · `Kontaktlærer` · `Rektor` · `Toppidrettssjef`
+(Anders 26.09.2026, `.claude/rules/beslutninger.md` §WANG: FEM ANSATTROLLER). Assist Coach og Admin
+brukes ikke i WANG. Der tabellen under fortsatt nevner Admin, er det uavklart hvem som tar oppgaven.
+Hva Rektor og Toppidrettssjef ser, er ikke avklart.
 
 ---
 
@@ -82,7 +85,7 @@ og skolens egne karakterer fra vitnemålet. Ingenting annet i `/team-wang` er i 
 
 | Rolle | Ser ikke |
 |---|---|
-| **Sportssjef ved en annen WANG-skole** | Vurderingstall, notat og skolekarakterer. Ser **kun** at kandidaten er flagget, med status, tidsstempel og ansvarlig — det er hele D3. |
+| **Sportssjef ved en annen WANG-skole** | Vurderingstall, notat, skolekarakterer og innholdet i kommunikasjonen. Ser **kun** den felles siden (D3): hvem som har stjernemerket kandidaten, og hvem som har kommunisert med kandidaten eller foresatte, og når (Anders 26.09.2026). |
 | **Trener uten ansvar for kandidaten** | Alt, også ved egen skole |
 | **Admin** | Vurderingen. Admin styrer registre og roller, ikke rekruttering. |
 | **Kandidaten selv** | Vurderingstallene, notatet, rangeringen, og at koordineringstråden finnes |
@@ -99,9 +102,8 @@ og skolens egne karakterer fra vitnemålet. Ingenting annet i `/team-wang` er i 
 - Notatfeltet er fritekst om en mindreårig. Det skal ikke logges, speiles eller sendes videre.
 - Koordineringstråden (D3) er intern mellom skolene og skal aldri kunne nås av kandidat, foresatt
   eller elev — heller ikke via lenke.
-- **Personvern må avklares før D3 bygges:** hvor mye én skole får se om en annen skoles kontakt med
-  en mindreårig kandidat. Tegningen viser status, tidsstempel og ansvarlig. Om det er for mye er
-  ikke et designspørsmål.
+- **Avklart 26.09.2026:** D3 er én felles side for alle WANG-skoler. Den viser stjernemarkeringer og
+  en kontaktlogg (hvem, skole, når, elev eller foresatt), aldri innholdet i kommunikasjonen.
 
 ---
 
