@@ -40,6 +40,13 @@ const nextConfig: NextConfig = {
   // /admin/bookings/ny beholdes uendret for å unngå å bryte interne lenker.
   async redirects() {
     return [
+      // NGF Spillerranking domeneredirect
+      {
+        source: "/",
+        has: [{ type: "host", value: "ngf-spillerranking.vercel.app" }],
+        destination: "/team-norway/rangliste",
+        permanent: false,
+      },
       // CoachHQ duplikatkonsolidering — engelsk → norsk, deltagamle → kanoniske.
       // Sub-paths (:path*) inkludert for å fange opp underruter etter sletting.
       { source: "/admin/bookings", destination: "/admin/bookinger", permanent: true },
