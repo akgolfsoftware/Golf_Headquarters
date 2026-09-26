@@ -182,9 +182,13 @@ Negativ-case output inkluderer `negative_case: true`, tom `recommendations[]`, o
 | GRUNN period | ≥3 | 11 |
 | SPESIALISERING period | ≥3 | 10 |
 | TURNERING period | ≥3 | 6 |
-| Beginner categories A–C | ≥2 | 5 (ex-002, 003, 004, 018, 023) |
-| Elite categories H–K | ≥3 | 11 (ex-007, 009–013, 017, 019, 020, 022, 024) |
+| Nybegynner (historisk merket A–C i treningsdata) | ≥2 | 5 (ex-002, 003, 004, 018, 023) |
+| Elite (historisk merket H–K i treningsdata) | ≥3 | 11 (ex-007, 009–013, 017, 019, 020, 022, 024) |
 | All 10 MORAD faults covered | ✓ | All 10 appear as primary or secondary fault |
+
+> **VIKTIG OM A–K-SKALAEN (PENSJONERT RETNING I EKSEMPLENE):**
+> Eksempelfilene i denne mappen ble generert under en eldre, nå **pensjonert** definisjon hvor A var nybegynner og K var tour-elite.
+> **Gjeldende og eneste autoritative fasit er `src/lib/domain/ak-kategori.ts`**, hvor **Kategori A er World Elite (< 68 slag)** og **Kategori K er Nybegynner (100+ slag)**. Eksemplene her beholdes kun som syntaktisk referanse for chain-of-thought formater.
 
 ---
 

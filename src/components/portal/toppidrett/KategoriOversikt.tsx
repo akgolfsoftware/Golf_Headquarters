@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { formaterTall } from "@/lib/format-tall";
+import { AK_BANDS, kategoriFraSnittscore, type AkBand } from "@/lib/domain/ak-kategori";
 
 export interface KategoriDefinisjon {
   id: string; // f.eks. "D"
@@ -15,6 +16,29 @@ export interface KategoriDefinisjon {
   beskrivelse: string;
 }
 
+const STATS_PER_KATEGORI: Record<
+  string,
+  {
+    girProsent: number;
+    driverCarryMeter: number;
+    putterPerRunde: number;
+    upAndDownProsent: number;
+    beskrivelse: string;
+  }
+> = {
+  A: { girProsent: 72, driverCarryMeter: 285, putterPerRunde: 28.2, upAndDownProsent: 68, beskrivelse: "Internasjonalt tour-nivå (DP World Tour / PGA Tour)." },
+  B: { girProsent: 68, driverCarryMeter: 275, putterPerRunde: 28.8, upAndDownProsent: 64, beskrivelse: "Challenge Tour / Nordic League toppspiller." },
+  C: { girProsent: 64, driverCarryMeter: 265, putterPerRunde: 29.4, upAndDownProsent: 60, beskrivelse: "Norgescup topp / Elite amatør." },
+  D: { girProsent: 60, driverCarryMeter: 255, putterPerRunde: 30.1, upAndDownProsent: 56, beskrivelse: "Scratch-spiller / Toppidrett junior." },
+  E: { girProsent: 54, driverCarryMeter: 245, putterPerRunde: 31.0, upAndDownProsent: 52, beskrivelse: "Satsende junior / HCP 1–3." },
+  F: { girProsent: 48, driverCarryMeter: 235, putterPerRunde: 31.8, upAndDownProsent: 46, beskrivelse: "Etablert turneringsspiller / HCP 4–6." },
+  G: { girProsent: 42, driverCarryMeter: 225, putterPerRunde: 32.5, upAndDownProsent: 40, beskrivelse: "Klubbspiller med ambisjon / HCP 7–10." },
+  H: { girProsent: 34, driverCarryMeter: 210, putterPerRunde: 33.5, upAndDownProsent: 34, beskrivelse: "Aktiv klubbspiller / HCP 11–15." },
+  I: { girProsent: 26, driverCarryMeter: 195, putterPerRunde: 34.5, upAndDownProsent: 28, beskrivelse: "HCP 16–20." },
+  J: { girProsent: 18, driverCarryMeter: 180, putterPerRunde: 36.0, upAndDownProsent: 22, beskrivelse: "HCP 21–28." },
+  K: { girProsent: 10, driverCarryMeter: 160, putterPerRunde: 38.0, upAndDownProsent: 15, beskrivelse: "Nybegynner / HCP 29–54." },
+};
+
 export function KategoriOversikt({
   spillerScore = 73.4,
   className = "",
@@ -24,24 +48,20 @@ export function KategoriOversikt({
 }) {
   const [valgtScore, setValgtScore] = useState<number>(spillerScore);
 
-  const kategorier: KategoriDefinisjon[] = [
-    { id: "A", navn: "Kategori A", snittScoreFra: 64, snittScoreTil: 67.9, girProsent: 72, driverCarryMeter: 285, putterPerRunde: 28.2, upAndDownProsent: 68, beskrivelse: "Internasjonalt tour-nivå (DP World Tour / PGA Tour)." },
-    { id: "B", navn: "Kategori B", snittScoreFra: 68, snittScoreTil: 69.9, girProsent: 68, driverCarryMeter: 275, putterPerRunde: 28.8, upAndDownProsent: 64, beskrivelse: "Challenge Tour / Nordic League toppspiller." },
-    { id: "C", navn: "Kategori C", snittScoreFra: 70, snittScoreTil: 71.9, girProsent: 64, driverCarryMeter: 265, putterPerRunde: 29.4, upAndDownProsent: 60, beskrivelse: "Norgescup topp / Elite amatør." },
-    { id: "D", navn: "Kategori D", snittScoreFra: 72, snittScoreTil: 73.9, girProsent: 60, driverCarryMeter: 255, putterPerRunde: 30.1, upAndDownProsent: 56, beskrivelse: "Scratch-spiller / Toppidrett junior." },
-    { id: "E", navn: "Kategori E", snittScoreFra: 74, snittScoreTil: 76.9, girProsent: 54, driverCarryMeter: 245, putterPerRunde: 31.0, upAndDownProsent: 52, beskrivelse: "Satsende junior / HCP 1–3." },
-    { id: "F", navn: "Kategori F", snittScoreFra: 77, snittScoreTil: 79.9, girProsent: 48, driverCarryMeter: 235, putterPerRunde: 31.8, upAndDownProsent: 46, beskrivelse: "Etablert turneringsspiller / HCP 4–6." },
-    { id: "G", navn: "Kategori G", snittScoreFra: 80, snittScoreTil: 83.9, girProsent: 42, driverCarryMeter: 225, putterPerRunde: 32.5, upAndDownProsent: 40, beskrivelse: "Klubbspiller med ambisjon / HCP 7–10." },
-    { id: "H", navn: "Kategori H", snittScoreFra: 84, snittScoreTil: 88.9, girProsent: 34, driverCarryMeter: 210, putterPerRunde: 33.5, upAndDownProsent: 34, beskrivelse: "Aktiv klubbspiller / HCP 11–15." },
-    { id: "I", navn: "Kategori I", snittScoreFra: 89, snittScoreTil: 93.9, girProsent: 26, driverCarryMeter: 195, putterPerRunde: 34.5, upAndDownProsent: 28, beskrivelse: "HCP 16–20." },
-    { id: "J", navn: "Kategori J", snittScoreFra: 94, snittScoreTil: 99.9, girProsent: 18, driverCarryMeter: 180, putterPerRunde: 36.0, upAndDownProsent: 22, beskrivelse: "HCP 21–28." },
-    { id: "K", navn: "Kategori K", snittScoreFra: 100, snittScoreTil: 110, girProsent: 10, driverCarryMeter: 160, putterPerRunde: 38.0, upAndDownProsent: 15, beskrivelse: "Nybegynner / HCP 29–54." },
-  ];
+  const kategorier: KategoriDefinisjon[] = AK_BANDS.map((b) => {
+    const stats = STATS_PER_KATEGORI[b.kategori] ?? STATS_PER_KATEGORI.D;
+    return {
+      id: b.kategori,
+      navn: `Kategori ${b.kategori}`,
+      snittScoreFra: b.min ?? 60,
+      snittScoreTil: b.max ?? 115,
+      ...stats,
+    };
+  });
 
-  // Finn gjeldende kategori basert på slider
+  const gjeldendeBand: AkBand = kategoriFraSnittscore(valgtScore);
   const aktivKat =
-    kategorier.find((k) => valgtScore >= k.snittScoreFra && valgtScore <= k.snittScoreTil) ||
-    kategorier[3]; // Fallback til D
+    kategorier.find((k) => k.id === gjeldendeBand.kategori) || kategorier[3];
 
   return (
     <div className={`space-y-6 ${className}`}>
