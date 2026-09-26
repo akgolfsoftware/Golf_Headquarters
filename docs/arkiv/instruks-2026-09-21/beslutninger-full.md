@@ -1242,3 +1242,10 @@ aldri bygget (målt 30.08.2026: sju av ni beslutninger fra 26.–30.08 fantes ik
   tilbake (fra anthropics/skills) som del av plugin-oppsettet i CLAUDE.md §Skill-bruk —
   brukes nå for generell designretning, men Train-lock overstyrer alltid dens konkrete valg.
   `design-vendor` er fortsatt fjernet.
+
+## Overstyrt 26.09.2026: kartleggingsøkt
+
+Tidligere punkt under §Merke og tekst: «Kartleggingsøkt er ikke gratis: 90 min til vanlig
+timepris. Prisen leses fra `ServiceType.priceOre`, aldri hardkodet.» Erstattet av
+§KARTLEGGINGSØKT FJERNES, OG ETTERLEVELSE ER TID MOT PLAN i `.claude/rules/beslutninger.md`
+(Anders 26.09.2026: kartleggingsøkt finnes ikke lenger).

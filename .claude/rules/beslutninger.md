@@ -4,6 +4,44 @@ Kun det som gjelder nå. Full historikk (1 207 linjer, alle overstyrte valg): [b
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## KARTLEGGINGSØKT FJERNES, OG ETTERLEVELSE ER TID MOT PLAN (Anders 26.09.2026, bindende)
+
+Svar på de åpne punktene etter runde 6 og 7 i Precision Athletics (AG-06, AG-09, PH-23).
+
+- **Kartleggingsøkt finnes ikke lenger.** Anders: «Fjern alt som heter kartleggingsøkt.» Ingen
+  tjeneste, knapp, pris, klipp eller tekst skal hete kartleggingsøkt — verken i appen, på
+  markedssidene eller i Claude Design-prosjektet (`7d7c2994`). Det avgjør også spørsmålet om
+  kartleggingsøkt trekker klipp: den finnes ikke.
+- **Etterlevelse er gjennomført tid mot planlagt tid, siste fire uker.** Anders: «Ja jeg ønsker
+  gjennomført til planlagt.» Minutter på gjennomførte økter delt på minutter på planlagte økter
+  med passert sluttid. Fremtidige økter teller ikke. Mangler forfalte økter, vises «—».
+
+**Overstyrer:** «Kartleggingsøkt er ikke gratis: 90 min til vanlig timepris» under §Merke og
+tekst (flyttet til arkivet). Og telle-regelen i `src/lib/domain/etterlevelse.ts` («4/5 ·
+publiserte økter med passert slutt», uten tidsvindu) som etterlevelsestall.
+
+**Arbeidet dette utløser** — ingen arbeidsliste finnes etter b700ce008, derfor står den her:
+
+1. **Claude Design (`7d7c2994`):** fjern kartleggingsøkt fra alle skjermer, data og
+   `oversikt.html` (bl.a. AG-06 tjenester og pris, PH-23 klipp). Merk etterlevelse som avklart
+   i AG-09. Ferdig når et søk etter «kartlegging» i prosjektet gir 0 treff i skjermfilene.
+2. **Markedssidene:** fjern «kartleggingsøkt»/«kartleggings-økt» fra `MarkedNav.tsx` (hoved-
+   knappen «Book kartleggingsøkt», to steder), `MarkedCasesV2.tsx`, `MarkedSuksessV2.tsx`,
+   `MarkedKontaktV2.tsx`, `MarkedBookingV2.tsx` og metadata i `src/app/(marketing)/suksess/page.tsx`.
+   Hovedknappen heter «Book time» (Anders 26.09). **Gjort 26.09** i samme PR som beslutningen.
+3. **Tjenestelista i basen:** sjekk om `ServiceType` (og Stripe-produktene) har en
+   kartleggingsøkt. Finnes den: deaktiver, ikke slett (eksisterende bookinger peker på den).
+   Ferdig når den ikke kan bookes.
+4. **Én etterlevelse i koden:** i dag finnes to mål — `etterlevelse()` teller økter uten
+   tidsvindu (ukesrapport, digest, forelder), og `adherencePct()` i
+   `src/lib/workbench/compliance.ts` vekter minutter (Workbench, plan-motoren). Samle dem på
+   minutt-regelen med fire ukers vindu, og vis samme tall på alle flater. Ferdig når
+   ukesrapport, digest, forelder, stall og Workbench viser samme prosent for samme spiller, med
+   tester som låser fire-ukersvinduet.
+
+Treff på «kartlegging» i betydningen *kartlegge noe* (arkitektur-kartlegging, datakartlegging,
+kolonnekartlegging, GFGK-sesongens testperiode, øvelsestags) er ikke tjenesten og røres ikke.
+
 ## Klippekort, rust i avslutt-dialoger og «Følg med» (Anders 26.09.2026, bindende)
 
 Svar på de åpne punktene etter runde 5 i Precision Athletics (PH-23, PH-25, AG-03).
@@ -373,7 +411,7 @@ og ikke kan dras ut av syne.
 
 - MORAD og Mac O'Grady nevnes aldri offentlig. P-posisjoner som internt fagspråk består.
 - Ingen vitnesbyrd, sitater eller stjerner. Vis målingen.
-- Kartleggingsøkt er ikke gratis: 90 min til vanlig timepris. Prisen leses fra `ServiceType.priceOre`, aldri hardkodet.
+- Priser leses fra `ServiceType.priceOre`, aldri hardkodet. Kartleggingsøkt er fjernet (§KARTLEGGINGSØKT FJERNES).
 - Mulligan knyttes ikke direkte til AK Golf-merket; AK Golf promoterer bare.
 - Ingen «Vi svarer innen én virkedag» før Jarvis er i drift.
 - Team Norway: eget system, rød `#D70232`, navy `#012B5D`, kun for `/team-norway/*` — visuell fasit er §TEAM NORWAY-APPEN BYTTER DESIGNSPRÅK, ikke Claw. Analyse og DataGolf for TN er delte plattformflater.
