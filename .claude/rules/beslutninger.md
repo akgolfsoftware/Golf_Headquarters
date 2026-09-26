@@ -4,6 +4,37 @@ Kun det som gjelder nå. Full historikk (1 207 linjer, alle overstyrte valg): [b
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## WANG: FEM ANSATTROLLER, OG SKOLENE DELER ÉN KOORDINERINGSSIDE (Anders 26.09.2026, bindende)
+
+Svar på spørsmålene etter runde 14 i Claude Design «WANG Golf UI prototype» (`6cfa623c`).
+
+- **Ansattrollene i WANG er Sportssjef, Trener, Kontaktlærer, Rektor og Toppidrettssjef.** Elev,
+  Foresatt og Åpen består som brukerroller. **Assist Coach og Admin brukes ikke i WANG.**
+  «Assist Coach» (§AK-stigen, 22.09) gjelder fortsatt AK Golf utenfor `/team-wang`.
+- **Skolene deler én felles side** (D3 / WANG-33). Der ser hver WANG-skole hvem som har
+  stjernemerket hvilken spiller, og hvem ved hvilken skole som har kommunisert med eleven eller de
+  foresatte, og når. Innholdet i kommunikasjonen, vurderingstall, notater og skolekarakterer blir
+  hos skolen som eier dem (uendret fra `designsystem/wang/TILGANGSMATRISE.md`).
+
+**Overstyrer:** `Admin`-rollen i `designsystem/wang/TILGANGSMATRISE.md`, Mia Holts Assist Coach-rolle
+i prototypens batch 7, og «personvern mellom skoler er ikke avklart» i
+`designsystem/wang/APNE-BESLUTNINGER.md` §6.
+
+**Arbeidet dette utløser** — ingen arbeidsliste finnes etter b700ce008, derfor står den her:
+
+1. **Prototypen, runde 15** (`6cfa623c`): bytt Assist Coach og Admin i alle filer, legg Rektor og
+   Toppidrettssjef i rollevelgeren, og gjør WANG-33 til den felles siden: stjernemarkering per skole
+   og en kontaktlogg (hvem, skole, når, med elev eller foresatt), uten meldingsinnhold. Fjern merket
+   «Designforslag · personvern mellom skoler er ikke avklart». Ferdig når Designs måling er 0 avvik
+   i 390/1280 og Anders har sett skjermen.
+2. **Tilgangsmatrisen** (`designsystem/wang/TILGANGSMATRISE.md`): rollelinjen og D3 er rettet i denne
+   beslutningen. D2, D4 og D11 peker fortsatt på Admin til punkt 3 er avklart.
+3. **Åpent, venter på Anders:** hvem tar Admins oppgaver (timeplanføring D4, plasser D2, roller
+   D11), og hva ser Rektor og Toppidrettssjef? Ikke bygg tilgang for de to før det er svart.
+4. **Datamodell før D3 kan bygges:** stjernemarkering per skole og en kontaktlogg per kandidat
+   (skole, person, tidspunkt, mottaker elev/foresatt) — additivt via `db execute`, se gotchas
+   §Database. Kontaktloggen lagrer aldri meldingsinnhold.
+
 ## KARTLEGGINGSØKT FJERNES, OG ETTERLEVELSE ER TID MOT PLAN (Anders 26.09.2026, bindende)
 
 Svar på de åpne punktene etter runde 6 og 7 i Precision Athletics (AG-06, AG-09, PH-23).
