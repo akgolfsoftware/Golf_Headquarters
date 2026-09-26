@@ -6,6 +6,8 @@
  * og putting (kortputt, mellomputt, lengdeputt), samt repetisjonstyper (full fart, lav fart, tørrsving).
  *
  * Fasit: designsystem/train-lock/PH-05 Live.dc.html
+ * Avvik:
+ * - Utvidet med repetisjonstyper og områder for AK-formelen.
  */
 
 import { useEffect, useRef, useState } from "react";
@@ -616,10 +618,8 @@ export function TapperShell({
             style={{
               display: "grid",
               gridTemplateColumns:
-                activeArea === "NAERSPILL"
+                activeArea === "NAERSPILL" || activeArea === "PUTTING"
                   ? "repeat(4, 1fr)"
-                  : activeArea === "PUTTING"
-                  ? "repeat(3, 1fr)"
                   : "repeat(3, 1fr)",
               gap: 8,
               marginBottom: 10,
@@ -708,13 +708,14 @@ export function TapperShell({
                   data-od-id={`tapper-putting-${p.baseId}`}
                   className="v2-press v2-focus"
                   style={{
-                    minHeight: 56,
+                    minHeight: 52,
+                    padding: "4px 2px",
                     border: `1px solid ${TL.hair}`,
                     borderRadius: TL.radius.card,
                     background: TL.scene,
                     color: TL.text,
                     fontFamily: TL.font.sans,
-                    fontSize: 12.5,
+                    fontSize: 11.5,
                     fontWeight: 500,
                     cursor: "pointer",
                     display: "flex",
@@ -723,12 +724,13 @@ export function TapperShell({
                     justifyContent: "center",
                     gap: 1,
                     minWidth: 0,
+                    textAlign: "center",
                   }}
                 >
-                  <span>{p.name}</span>
-                  <span style={{ fontFamily: TL.font.mono, fontSize: 9.5, color: TL.mute }}>
+                  <span style={{ overflow: "hidden", textOverflow: "ellipsis", maxWidth: "100%" }}>{p.name}</span>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 9, color: TL.mute }}>
                     {activeRepType === "FULL_SPEED"
-                      ? "1 putt"
+                      ? "1 rep"
                       : activeRepType === "LOW_SPEED"
                       ? "lav fart"
                       : "tørrsving"}
