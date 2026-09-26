@@ -20,7 +20,7 @@ er aggregert i fire plattformer:
 | Anker | Dekker | Status hos oss | Tilgang |
 |---|---|---|---|
 | **DataGolf** | Herre-proff (5 tourer live, 22 historisk) | ✅ integrert | Betalt API ($30/mnd Scratch Plus) |
-| **GolfBox** | Europeisk amatør-scoring: **alt norsk** (NGF, Olyo, Srixon, Garmin NC, regioner) + R&A + EGA + Nordic League | LIVE (GH Actions + Vercel cron `turneringer-ngf`) | Offentlig JSON på scores.golfbox.dk (ToS-gråsone) eller offisielt API via avtale |
+| **GolfBox** | Europeisk amatør-scoring: **alt norsk** (NGF, Olyo, Srixon, Garmin NC, regioner) + R&A + EGA + Nordic League | LIVE. Resultater kun via `ak-golf-pipelines` (Anders 26.09.2026, `.claude/rules/beslutninger.md`); HQ-cron `turneringer-ngf` = kalender og frister | Offentlig JSON på scores.golfbox.dk (ToS-gråsone) eller offisielt API via avtale |
 | **WAGR (R&A)** | Amatør-ranking + identitet + counting events globalt (~4 300/år, 8 300+ spillere) | manuell import finnes | Udokumentert backend-API + CSV-eksport i UI (lisens uavklart) |
 | **Clippd** | College: NCAA D1/2/3 + NAIA + NJCAA (offisiell fra 2023) | stub finnes | Lukket partner-API (Next.js/Supabase-SPA) |
 
@@ -252,7 +252,7 @@ aldri hadde vært automatiske. Ryddet til to tydelige eiere samme dag:
 
 | Eier | Ansvar | Repo |
 |---|---|---|
-| **Cron inni AK Golf HQ-appen selv** (`scrape-golfbox.ts`, agentene `golfbox-schedule`/`golfbox-leaderboards`/`golfbox-link-backfill`) | Rå GolfBox-scraping (`sourceOrigin=GOLFBOX`) rett til `public` | `akgolf-hq` |
+| **Cron inni AK Golf HQ-appen selv** (`scrape-golfbox.ts`, agentene `golfbox-schedule`/`golfbox-leaderboards`/`golfbox-link-backfill`) | Rå GolfBox-scraping (`sourceOrigin=GOLFBOX`) rett til `public`. **Overstyrt 26.09.2026:** slutter å skrive resultater, beholder kalender og frister — se `.claude/rules/beslutninger.md` §PIPELINES ER ENESTE KILDE FOR TURNERINGSRESULTATER | `akgolf-hq` |
 | **`ak-golf-pipelines`** (GitHub Actions, Python) | Alt annet: DataGolf, Nordic League, Olyo/Srixon/Østlandstour/NorgesCup, WAGR, college — henter til `dashboard`-schemaet, og (nytt) speiler videre til `public` der det er godkjent | `ak-golf-pipelines` |
 
 Den tredje, gamle mekanismen — tre `launchd`-jobber på Mac Mini (`com.akgolf.norske-turneringer`,

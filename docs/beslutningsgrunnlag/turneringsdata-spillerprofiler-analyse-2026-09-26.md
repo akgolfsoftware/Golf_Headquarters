@@ -9,7 +9,7 @@ Bestillingen (Anders 26.09): all turneringsstatistikk fra GolfBox skal henge på
 spillerprofilen, turnering for turnering, med brutto score, til par, slag vunnet eller
 tapt mot startfeltet, slag bak vinner, justert for banens vanskelighet. Profilene
 oppdateres automatisk hver mandag og vises i PlayerHQ, AgencyOS, Team Norway, WANG og
-rangskjermene. («AK12» i bestillingen er uavklart — se §8.)
+rangskjermene. («AK12» i bestillingen utgår — Anders 26.09, se §8.)
 
 ---
 
@@ -25,9 +25,10 @@ rangskjermene. («AK12» i bestillingen er uavklart — se §8.)
   grønne for første gang. Men identitetsløseren og beregningsmotoren står ikke i noen
   jobb — de ble kjørt for hånd 22.09. Uten dem blir nye runder liggende uten spiller og
   uten tall.
-- **To systemer skriver til samme app-tabeller med ulik nøkkel.** HQ sin egen daglige
-  jobb og pipelines sin mandagsjobb nøkler samme GolfBox-turnering forskjellig. Det gir
-  dubletter. Må sjekkes i basen før noe mer bygges (§4b).
+- **To systemer skriver til samme app-tabeller med ulik nøkkel.** HQ sin egen GolfBox-jobb
+  (GitHub Actions, hver time) og pipelines sin mandagsjobb nøkler samme GolfBox-turnering
+  forskjellig. Det gir dubletter. Må sjekkes i basen før noe mer bygges (§4b).
+  **Besluttet 26.09: pipelines blir eneste kilde** (`.claude/rules/beslutninger.md`).
 - **Anbefaling:** én kilde (pipelines), én identitet (`dashboard.persons`), én kopi til
   appen med de fem nivåtallene, én mandagskjede med vakt, og én datamodul i HQ som alle
   fem flatene leser fra. Rekkefølge i §7.
@@ -49,9 +50,12 @@ GolfBox (scores.golfbox.dk)
    │       golfbox_public_sync (etter jobben)→ public.tournaments, public_player_entries,
    │                                            public_player_rounds  (score/plassering/til par)
    │
-   └──► akgolf-hq selv (Vercel cron, daglig 04:30 + mandag 06:00)
-           /api/cron/turneringer-ngf         → samme public-tabeller, egen skraper (TypeScript)
-           /api/cron/norge-mandag-sync       → navnekobling User ↔ PublicPlayer, backfill, dedupe
+   └──► akgolf-hq selv
+           .github/workflows/scrape-golfbox.yml (hver time 06–20 UTC)
+                                             → samme public-tabeller, egen skraper (TypeScript,
+                                                syncGolfBoxLeaderboards)      [SKAL SLUTTE, 26.09]
+           /api/cron/turneringer-ngf (daglig 04:30)   → kalender og frister, navnekobling, speil
+           /api/cron/norge-mandag-sync (mandag 06:00) → kalender, navnekobling, backfill, dedupe
 
 Appen leser:
    PlayerHQ Meg → Resultater ........ dashboard (via funksjonen profile_results)   ← eneste med nivåtall
@@ -70,9 +74,11 @@ Tre ting å merke seg i bildet:
    `slag_bak_vinner`. `v_person_sesong` gir sesongsnitt og `persentil_kull`.
    `v_person_monster` gir birdie-, bogey- og dobbeltrate og snitt per par 3/4/5.
    `get_full_player_profile(person_id)` pakker hele profilen som JSON.
-3. **HQ har sin egen GolfBox-skraper i tillegg.** Den er den som faktisk har holdt
-   norske resultater ferske i appen (kartlegging 14.09), og den har den kjente
-   svakheten at «første klasse-forekomst» kan være netto (minnenotat 30.08).
+3. **HQ har sin egen GolfBox-skraper i tillegg** (GitHub Actions-jobben
+   `scrape-golfbox.yml`, hver time, `syncGolfBoxLeaderboards`). Den er den som faktisk har
+   holdt norske resultater ferske i appen (kartlegging 14.09), og den har den kjente
+   svakheten at «første klasse-forekomst» kan være netto (minnenotat 30.08). Vercel-cronene
+   `turneringer-ngf` og `norge-mandag-sync` henter bare kalender og kobler navn.
 
 ---
 
@@ -133,7 +139,7 @@ mye skjerm som tegnes. Dette er hovedjobben.
 
 ### b. To skrivere, ulik nøkkel → dubletter
 
-| | HQ-cron (`golfbox-sync.ts`) | Pipelines (`writers/public_db.py`) |
+| | HQ Actions `scrape-golfbox.yml` (`golfbox-sync.ts`) | Pipelines (`writers/public_db.py`) |
 |---|---|---|
 | `sourceId` i `public.tournaments` | GolfBox-RID (`competitionId`) | **`dashboard.tournaments.id`** (intern løpenummer) |
 | Finner eksisterende ved | RID på tvers av alle GolfBox-opphav | kun eget opphav + eget løpenummer |
@@ -246,7 +252,7 @@ Valgene bak bildet:
 
 | Valg | Anbefaling | Hvorfor |
 |---|---|---|
-| Hvem skriver norske resultater til appen | **Pipelines alene.** HQ-cron `turneringer-ngf` beholdes for kalender og kommende turneringer, ikke resultater | Pipelines har medlemsnummer, hull og feltsnitt; HQ-skraperen har netto-svakheten |
+| Hvem skriver norske resultater til appen | **Pipelines alene (besluttet 26.09).** HQ-jobben `scrape-golfbox.yml` slutter å skrive resultater; cron `turneringer-ngf` beholdes for kalender og frister | Pipelines har medlemsnummer, hull og feltsnitt; HQ-skraperen har netto-svakheten. Anders: «så vi ikke gjør dobbelt med arbeid» |
 | Nøkkel i `public.tournaments` | **GolfBox-RID som `sourceId`**, ett opphav per RID | Det HQ allerede bruker; fjerner dublettkilden |
 | Spilleridentitet i appen | `public_players.personId` → `dashboard.persons.id`. Én person = én `PublicPlayer` | Medlemsnummer slår navn + fødselsår |
 | Kobling bruker ↔ profil | `profile_links` (spillerens eget ja) er fasit. `User.publicPlayerId` settes fra den, ikke motsatt. Coach kan fortsatt koble i AgencyOS, men det lager en `pending` som spilleren (eller forelder) bekrefter | Personvern for mindreårige; én sannhet |
@@ -266,9 +272,8 @@ Valgene bak bildet:
 | **AgencyOS · Spiller** | `/admin/spillere/[id]` (+ `/analyse`, `/turnering-kobling`) | turneringer i oversikts-bento, historikk i analyse | `public` | Egen «Turneringer»-fane (er ikke lenket i dag), nivåtall, stall-sammenligning (coachens verktøy) |
 | **Team Norway · Rangliste (TN-07)** | `/team-norway/rangliste` | snitt plassering, snitt brutto score | `tournament_results` (speil til bruker) | Rangerer på rå score → feil. Skal bruke justert snitt, mot feltet, starter, persentil. Fortsatt «ikke et uttak» |
 | **Team Norway · Spiller** | `/team-norway/spiller/[id]` | poster og tidslinje (TN-10) | — | Ny profilside med turneringshistorikk. Krever databehandleravtale før TN-trenere ser mindreårige |
-| **WANG** | `/team-wang` i HQ (skall) · `wang-toppidrett` (egen base `uusntbykpmfojmvifyua`, ingen turneringsdata) | ingenting | — | Beslutning: vises i HQ `/team-wang` (rett mot samme base) eller i WANG-appen (krever API fra HQ). Anbefalt: HQ |
+| **WANG** | `/team-wang` i HQ (skall) | ingenting | — | Besluttet 26.09: vises i HQ `/team-wang`, samme base. `wang-toppidrett` (egen base) er et annet prosjekt og holdes utenfor |
 | **Rangskjermene** | `ngf-junior-dashboard` (Vite, egen Vercel) · `/stats/leaderboards`, `/stats/spillere/[slug]`, `/stats/klubber`, `/stats/regions` | ranking fra CSV-uttrekk (`intern_nivaakart`) · offentlige stats fra `public` | CSV på Drive · `public` | Dashboardet er utenfor mandagskjeden. PR #955 ruter domenet til `/team-norway/rangliste`. Offentlige stats: barnevern-regelen (født 2008+ uten samtykke vises aldri) |
-| **AK12** | ? | — | — | Uavklart hva dette er (§8) |
 
 Felles for alle: **måling, dato og kilde på hvert tall** (TruthLayer), strek når verdien
 mangler, aldri estimat uten merking. DataGolf-tall aldri på flater andre enn Anders ser.
@@ -303,9 +308,11 @@ Hvert steg har en kontroll. Steget er ikke ferdig før kontrollen er grønn.
 7. **Koblingen samles.** `User.publicPlayerId` utledes av bekreftet `profile_link`; coach-
    kobling lager `pending`. Engangs-avstemming av de 9+ koblede spillerne.
    *Kontroll:* ingen bruker med to ulike personer; ingen bekreftet kobling uten ja.
-8. **HQ-cron slutter å skrive resultater.** `turneringer-ngf` beholder kalender/frister.
+8. **HQ slutter å skrive resultater (besluttet 26.09).** `scrape-golfbox.yml` går over til
+   kalender-modus eller slås av; `syncGolfBoxLeaderboards` fjernes fra
+   `scripts/scrape-golfbox.ts`. `turneringer-ngf` beholder kalender og frister.
    `norge-mandag-sync` slutter med navnematch og backfill.
-   *Kontroll:* ingen `public_player_entries` med `updatedAt` fra HQ-cron etter byttet.
+   *Kontroll:* ingen `public_player_entries` med `updatedAt` fra HQ etter byttet.
 9. **Vakt.** Pipelines skriver status; HQ `sync-vaktbikkje` (mandag 08:00) varsler Anders
    ved manglende rad eller rød jobb.
    *Kontroll:* simulert rød kjøring gir varsel.
@@ -320,17 +327,18 @@ Steg 1–3 kan starte nå. Steg 4–5 er den egentlige jobben. Steg 10 skal ikke
 
 ## 8. Spørsmål til Anders
 
-1. **AK12** — hva er det? Null treff i HQ, pipelines, designsystem og ak-brain. Er det
-   den åpne AK Golf-siden (`/stats`), AK-stigen, eller noe annet?
-2. **Skal HQ sin egen GolfBox-skraper slutte å skrive resultater** (steg 8)? Den har
-   holdt appen fersk til nå, og byttet betyr at pipelines må være stabil først.
-3. **WANG:** profil i HQ `/team-wang` (samme base, enklest) eller i WANG-appen (egen
-   base, krever API)? Anbefaler HQ.
-4. **Ren «GolfBox» uten serie (30 150 runder), Regions Tour og manuelle turneringer** —
-   skal de også til appen? I dag stopper de i rålageret.
-5. **Nordic League** finnes bare via DataGolf. Regelen 21.09 sier DataGolf vises aldri
+**Avklart 26.09** (registrert i `.claude/rules/beslutninger.md` §PIPELINES ER ENESTE KILDE
+FOR TURNERINGSRESULTATER): AK12 utgår. Pipelines er eneste kilde for resultater, og
+HQ-skraperen slutter. WANG-profilen bor i HQ `/team-wang`; WANG-appen holdes utenfor.
+
+Fortsatt åpne:
+
+1. **Ren «GolfBox» uten serie (30 150 runder), Regions Tour og manuelle turneringer** —
+   skal de også til appen? I dag stopper de i rålageret. (Beslutningen sier at pipelines skal
+   dekke det HQ-skraperen dekket, så svaret er trolig ja — men serie-merkingen må gjøres.)
+2. **Nordic League** finnes bare via DataGolf. Regelen 21.09 sier DataGolf vises aldri
    for andre. Står den? (Åpent siden 22.09.)
-6. **Databehandleravtale med Team Norway og WANG** før noen av deres trenere ser
+3. **Databehandleravtale med Team Norway og WANG** før noen av deres trenere ser
    mindreårige spilleres tall. Er den i gang?
 
 ---
