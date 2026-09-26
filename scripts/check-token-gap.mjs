@@ -145,7 +145,12 @@ const ALLOW_MARKUP = [
   "src/app/portal/live/",
   "src/app/portal/fysisk/",
   "src/app/skjermer/",
+  "src/components/team-norway/app/",
+  "src/app/team-norway/",
+  "src/components/wang/",
 ];
+
+
 
 
 const markupTreff = [];

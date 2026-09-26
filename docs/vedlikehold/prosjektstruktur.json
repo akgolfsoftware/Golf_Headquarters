@@ -17,7 +17,9 @@
     ".nvmrc",
     ".superpowers",
     ".vercel",
+    ".vercelignore",
     ".vscode",
+
     ".worktrees",
     "AGENTS.md",
     "CLAUDE.md",
