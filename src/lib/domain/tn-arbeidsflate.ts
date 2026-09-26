@@ -52,7 +52,11 @@ export type TnSpillerRad = {
   status: string;
   tester: number;
   sisteTest: Date | null;
+  sisteTestNavn: string | null;
   aktivPlan: string | null;
+  planStart: Date | null;
+  planSlutt: Date | null;
+  fodselsdato: Date | null;
 };
 
 export async function hentTnSpillere(bruker: TnBruker) {
@@ -62,30 +66,30 @@ export async function hentTnSpillere(bruker: TnBruker) {
   const [spillere, tester, planer] = await Promise.all([
     prisma.user.findMany({
       where: { id: { in: spillerIder }, deletedAt: null },
-      select: { id: true, name: true, hcp: true, homeClub: true, school: true, schoolYear: true, userStatus: true },
+      select: { id: true, name: true, hcp: true, homeClub: true, school: true, schoolYear: true, userStatus: true, dateOfBirth: true },
       orderBy: { name: "asc" },
     }),
     prisma.testResult.findMany({
       where: { userId: { in: spillerIder } },
-      select: { userId: true, takenAt: true },
+      select: { userId: true, takenAt: true, test: { select: { name: true } } },
       orderBy: { takenAt: "desc" },
     }),
     prisma.trainingPlan.findMany({
       where: { userId: { in: spillerIder }, isActive: true },
-      select: { userId: true, name: true, updatedAt: true },
+      select: { userId: true, name: true, startDate: true, endDate: true, updatedAt: true },
       orderBy: { updatedAt: "desc" },
     }),
   ]);
 
-  const testPerSpiller = new Map<string, { antall: number; siste: Date | null }>();
+  const testPerSpiller = new Map<string, { antall: number; siste: Date | null; navn: string | null }>();
   for (const test of tester) {
-    const rad = testPerSpiller.get(test.userId) ?? { antall: 0, siste: null };
+    const rad = testPerSpiller.get(test.userId) ?? { antall: 0, siste: null, navn: null };
     rad.antall += 1;
-    rad.siste ??= test.takenAt;
+    if (!rad.siste) { rad.siste = test.takenAt; rad.navn = test.test.name; }
     testPerSpiller.set(test.userId, rad);
   }
-  const planPerSpiller = new Map<string, string>();
-  for (const plan of planer) if (!planPerSpiller.has(plan.userId)) planPerSpiller.set(plan.userId, plan.name);
+  const planPerSpiller = new Map<string, (typeof planer)[number]>();
+  for (const plan of planer) if (!planPerSpiller.has(plan.userId)) planPerSpiller.set(plan.userId, plan);
 
   const rader: TnSpillerRad[] = spillere.map((spiller) => ({
     id: spiller.id,
@@ -97,7 +101,11 @@ export async function hentTnSpillere(bruker: TnBruker) {
     status: spiller.userStatus,
     tester: testPerSpiller.get(spiller.id)?.antall ?? 0,
     sisteTest: testPerSpiller.get(spiller.id)?.siste ?? null,
-    aktivPlan: planPerSpiller.get(spiller.id) ?? null,
+    sisteTestNavn: testPerSpiller.get(spiller.id)?.navn ?? null,
+    aktivPlan: planPerSpiller.get(spiller.id)?.name ?? null,
+    planStart: planPerSpiller.get(spiller.id)?.startDate ?? null,
+    planSlutt: planPerSpiller.get(spiller.id)?.endDate ?? null,
+    fodselsdato: spiller.dateOfBirth,
   }));
   return { kontekst, rader };
 }
@@ -199,12 +207,10 @@ export async function hentTnSamlinger(bruker: TnBruker) {
   return { kontekst, samlinger: [...samlinger.values()].map((deltakere) => ({ ...deltakere[0]!, antallDeltakere: deltakere.length })) };
 }
 
-export async function hentTnManedsplan(bruker: TnBruker) {
+/** Henter gruppeøkter og perioder i [fra, til). Kalleren velger vinduet (TN-11 bruker hele kalenderuker rundt valgt måned). */
+export async function hentTnManedsplan(bruker: TnBruker, fra: Date, til: Date) {
   const kontekst = await hentTnArbeidskontekst(bruker);
   if (!kontekst) return null;
-  const naa = new Date();
-  const fra = new Date(Date.UTC(naa.getUTCFullYear(), naa.getUTCMonth() - 1, 1));
-  const til = new Date(Date.UTC(naa.getUTCFullYear(), naa.getUTCMonth() + 2, 1));
   const [okter, perioder] = await Promise.all([
     prisma.groupSchedule.findMany({
       where: { groupId: kontekst.gruppe.id, startAt: { gte: fra, lt: til } },
