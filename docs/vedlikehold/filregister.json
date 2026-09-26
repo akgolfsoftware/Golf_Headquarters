@@ -1,7 +1,7 @@
 {
   "metode": "git ls-files -co --exclude-standard; eksisterende filer; genererte registerfiler utelatt. Kun metadata, ikke kundedata eller miljøverdier.",
   "telling": {
-    "prosjektfiler": 5720,
+    "prosjektfiler": 5722,
     "sidefiler": 496,
     "prismamodeller": 198,
     "enhetstestfiler": 502,
@@ -88,7 +88,7 @@
     {
       "sti": ".claude/rules/beslutninger.md",
       "omrade": "prosjektoppsett",
-      "byte": 20650
+      "byte": 26127
     },
     {
       "sti": ".claude/rules/gfgk-junior.md",
@@ -223,7 +223,7 @@
     {
       "sti": ".claude/skills/ak-hq-design/SKILL.md",
       "omrade": "prosjektoppsett",
-      "byte": 9839
+      "byte": 10070
     },
     {
       "sti": ".claude/skills/ak-merkevare/SKILL.md",
@@ -4209,7 +4209,7 @@
     {
       "sti": "designsystem/README.md",
       "omrade": "designkilde",
-      "byte": 10037
+      "byte": 10126
     },
     {
       "sti": "designsystem/team-norway-app/LES-MEG.md",
@@ -7094,7 +7094,7 @@
     {
       "sti": "docs/arkiv/instruks-2026-09-21/beslutninger-full.md",
       "omrade": "historikk",
-      "byte": 97769
+      "byte": 100410
     },
     {
       "sti": "docs/arkiv/instruks-2026-09-21/gotchas-full.md",
@@ -7214,7 +7214,7 @@
     {
       "sti": "docs/beslutningsgrunnlag/turneringsdata-spillerprofiler-analyse-2026-09-26.md",
       "omrade": "dokumentasjon",
-      "byte": 22246
+      "byte": 22887
     },
     {
       "sti": "docs/demo-sprak-og-treningsplanlegging.md",
@@ -7299,7 +7299,7 @@
     {
       "sti": "docs/design-system/design-autoritet.md",
       "omrade": "dokumentasjon",
-      "byte": 2416
+      "byte": 2520
     },
     {
       "sti": "docs/design-system/lanseringslop-2026-09-10.md",
@@ -7310,6 +7310,16 @@
       "sti": "docs/design-system/manuell-sg-skjermer.md",
       "omrade": "dokumentasjon",
       "byte": 6048
+    },
+    {
+      "sti": "docs/design-system/precision-athletics-rundeplan.md",
+      "omrade": "dokumentasjon",
+      "byte": 2535
+    },
+    {
+      "sti": "docs/design-system/skjermliste-precision-athletics.md",
+      "omrade": "dokumentasjon",
+      "byte": 13273
     },
     {
       "sti": "docs/design-system/team-norway-claw-valgt-2026-09-13.md",
@@ -7639,7 +7649,7 @@
     {
       "sti": "docs/PLATTFORM-KART.md",
       "omrade": "dokumentasjon",
-      "byte": 14270
+      "byte": 14399
     },
     {
       "sti": "docs/qa/knapp-audit-lansering.md",
@@ -7849,7 +7859,7 @@
     {
       "sti": "docs/turnering-datakilder.md",
       "omrade": "dokumentasjon",
-      "byte": 18651
+      "byte": 18926
     },
     {
       "sti": "docs/utvikling/lokal-testdatabase.md",

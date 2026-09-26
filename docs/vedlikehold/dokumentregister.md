@@ -48,6 +48,8 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | dokumentasjon | [docs/design-system/design-autoritet.md](<../design-system/design-autoritet.md>) |
 | dokumentasjon | [docs/design-system/lanseringslop-2026-09-10.md](<../design-system/lanseringslop-2026-09-10.md>) |
 | dokumentasjon | [docs/design-system/manuell-sg-skjermer.md](<../design-system/manuell-sg-skjermer.md>) |
+| dokumentasjon | [docs/design-system/precision-athletics-rundeplan.md](<../design-system/precision-athletics-rundeplan.md>) |
+| dokumentasjon | [docs/design-system/skjermliste-precision-athletics.md](<../design-system/skjermliste-precision-athletics.md>) |
 | dokumentasjon | [docs/design-system/team-norway-claw-valgt-2026-09-13.md](<../design-system/team-norway-claw-valgt-2026-09-13.md>) |
 | dokumentasjon | [docs/design-system/TEMA-LYS-MORK.md](<../design-system/TEMA-LYS-MORK.md>) |
 | dokumentasjon | [docs/design/workbench-handover/manifest.md](<../design/workbench-handover/manifest.md>) |
