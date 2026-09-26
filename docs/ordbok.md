@@ -189,6 +189,9 @@ og «registrering» for resultat, oppmøte og gjennomføring. «Lagre» betyr at
 **Blokktrening og variasjonstrening er treningsmetoder.** Bruk «øvelse» når grensesnittet
 teller innholdet i økten, for eksempel «1 av 3 øvelser». En «treningsblokk» er et datospenn.
 
+**Klokkeslett skrives med punktum, aldri kolon** (Anders 21.09.2026). Det heter `16.00`, `07.30`
+og `16.00–17.30`. Gjelder all skjermtekst og alle designfiler. Tankestrek mellom fra og til.
+
 ### 4.2 Tydelig betydning
 
 | Handling / tilstand | Hva teksten må bety |
