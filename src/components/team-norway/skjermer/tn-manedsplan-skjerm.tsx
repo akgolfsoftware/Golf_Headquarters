@@ -5,7 +5,7 @@ import { hentTnManedsplan, hentTnSamlinger, hentTnTurneringer } from "@/lib/doma
 import { byggManedsplan, dagnokkel, manedsvindu, type TnHendelse, type TnPlanDag } from "@/lib/domain/tn-manedsplan";
 import { TN } from "@/lib/v2/team-norway";
 import { TnEtikett, TnFilterknapper, type TnFilterValg, TnFlate, TnFotnote, TnMangler, TnSkjermhode } from "../tn-flate";
-import { MANEDER_LANG, SkjermRamme, heltallParam, hentSkjermbruker, osloDag } from "./felles";
+import { MANEDER_LANG, SkjermRamme, heltallParam, hentSkjermbruker, osloDag, medDato } from "./felles";
 
 /**
  * TN-11 Månedsplan.
@@ -106,7 +106,7 @@ export async function TnManedsplanSkjerm({ sokeparametre }: { sokeparametre: Rec
     maned,
     okter: data.okter,
     perioder: data.perioder,
-    turneringer: turneringsdata?.turneringer ?? [],
+    turneringer: medDato(turneringsdata?.turneringer ?? []),
     samlinger: samlingsdata?.samlinger ?? [],
   });
 

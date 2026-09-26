@@ -38,6 +38,12 @@ Sist oppdatert: 2026-08-17 (dato rettet — §Abonnement og tilgang er fra 2026-
    alltid `false`). De tre gjenstående veiene over (prøveperiode, coaching-pakke, AK-gruppe) er
    de eneste aktive fra og med 2. september.
 
+### Team Norway — kommersielt mål (Anders 2026-09-14)
+
+Team Norway skal kunne bruke trenerflatene tilnærmet gratis. Spillerlisenser koster penger og er den betalte delen av tilbudet. Trenerens organisasjonstilgang og spillerens PlayerHQ-lisens skal derfor behandles som ulike forhold i produkt- og skjermplanleggingen.
+
+«Tilnærmet gratis» er ikke en fastsatt nullpris. Denne avklaringen fastsetter verken lisenspris, hvem som betaler (spiller, foresatt eller organisasjon), lisenspakker eller hvilke eventuelle gratis spillerfunksjoner som inngår. Generelle gruppefordeler ovenfor skal ikke tolkes som et nytt vedtak om gratis Team Norway-spillerlisenser. Dette er et kommersielt mål, ikke dokumentasjon på implementert fakturering eller endrede tilgangsregler.
+
 ### TALENT — gratis, låst profil (Anders 2026-08-16)
 
 - `User.profilType = "TALENT"` (TalentHQ-inngangen: `?kilde=talenthq`-registrering eller

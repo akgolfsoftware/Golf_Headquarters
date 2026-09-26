@@ -229,7 +229,7 @@ Private arbeidsnotater, spillerens innhold og det delte sammendraget skal ha tyd
 
 | Gjelder | Bruk |
 |---|---|
-| Plan | Utkast · Venter på spiller · Godtatt · Avvist · Aktiv · Arkivert |
+| Plan | Utkast · Venter på spiller · Venter på coach · Godtatt · Avvist · Aktiv · Arkivert |
 | Økt | Planlagt · Pågår · Gjennomført · Avlyst · Hoppet over |
 | Publisering | Ikke publisert · Publiserer · Publisert · Trukket tilbake |
 | Lagring | Ikke lagret · Lagrer · Lagret · Kunne ikke lagres |

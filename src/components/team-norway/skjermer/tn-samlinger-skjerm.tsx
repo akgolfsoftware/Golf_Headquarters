@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { hentTnSamlinger, hentTnTurneringer } from "@/lib/domain/tn-arbeidsflate";
 import { TN } from "@/lib/v2/team-norway";
 import { TnDatoRad, TnEtikett, TnFlate, TnFlatehode, TnFotnote, TnKorttittel, TnMangler, TnSkjermhode } from "../tn-flate";
-import { MANEDER, MANEDER_LANG, SkjermRamme, datoKort, heltallParam, hentSkjermbruker, osloDag, periode } from "./felles";
+import { MANEDER, MANEDER_LANG, SkjermRamme, datoKort, heltallParam, hentSkjermbruker, osloDag, periode, medDato } from "./felles";
 
 /**
  * TN-04 Samlinger og terminliste.
@@ -31,7 +31,7 @@ export async function TnSamlingerSkjerm({ sokeparametre, valgtId }: { sokeparame
 
   const hendelser: Hendelse[] = [
     ...data.samlinger.map((s) => ({ type: "samling" as const, tittel: s.name, fra: s.startDate, til: s.endDate, sted: s.location, id: s.id })),
-    ...(turneringsdata?.turneringer ?? []).map((t) => ({ type: "turnering" as const, tittel: t.name, fra: t.startDate, til: t.endDate ?? t.startDate, sted: t.location, id: t.id })),
+    ...medDato(turneringsdata?.turneringer ?? []).map((t) => ({ type: "turnering" as const, tittel: t.name, fra: t.startDate, til: t.endDate ?? t.startDate, sted: t.location, id: t.id })),
   ].sort((a, b) => a.fra.getTime() - b.fra.getTime());
 
   const iManed = (h: Hendelse, a: number, m: number) => {

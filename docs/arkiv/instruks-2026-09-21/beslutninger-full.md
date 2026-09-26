@@ -2,6 +2,43 @@
 
 Gjeldende beslutninger fra Anders. Gjelder til han endrer dem. Nyeste først.
 
+## Overstyrt 26.09.2026 av §PRECISION ATHLETICS ER DESIGNSYSTEMET FOR AK GOLF HQ
+
+Teksten under gjaldt til 26.09.2026. Se `.claude/rules/beslutninger.md` for det som gjelder nå.
+
+### Rust følger handlingen, ikke ordet (Anders 22.09.2026, bindende)
+
+**Rust `#9B2415` bæres av den bekreftende handlingen på skjermen — uansett hva den heter.**
+Merge, Send, Legg i kalenderen, Publiser, Godkjenn og START ØKT er samme handling med riktig
+navn, og alle bærer rust. Dette avløser formuleringen «rust kun på Publiser, Godkjenn og
+START ØKT», som beskrev de tre stedene regelen var prøvd, ikke prinsippet bak den.
+
+Bakgrunn: køen (`/admin/ko`) har ulike handlingsord per kilde, hentet fra
+`AdminGodkjenningerTrainLock.tsx`. Å kalle alt «Godkjenn» for å få rust ville skjult at et
+Caddie-utkast faktisk sender en e-post ut av huset.
+
+- **Alt annet er grafitt.** Test: gjør knappen det saken ber om, eller noe annet? Åpne økt,
+  Fortsett økt, Prøv igjen, Lagre, Kjør og Slå sammen avgjør ingenting — de er grafitt.
+- **Sletting bærer aldri rust.** Rust betyr godkjenn; en sletting er det motsatte. Den
+  bekreftende knappen i en sletting er grafitt i et kort med rustkant.
+- **Én rust per skjerm.** Står to bekreftende handlinger synlig samtidig, bærer den valgte
+  saken rust og resten grafitt.
+- Domenefarge blir aldri en handling. Signalfargene bærer aldri lesbar tekst alene.
+
+Krever ingen kodeendring nå — regelen styrer designarbeidet i Claude Design «App design»
+(`SKILL.md` §Rust). Den gjelder appkoden når AgencyOS-skjermene bygges.
+
+### Design (Anders 21.09.2026, bindende)
+
+**AK Golf Design System og Claude Design-prosjektet «App design» gjelder.** Train-lock og Paper er utgående: ingen visuell fasit, bare funksjonsinventar. Spør aldri på nytt om dette. Kilde og ID-er: [design-autoritet.md](../../docs/design-system/design-autoritet.md).
+- Kode med Train-lock-/Paper-/`v2`-navn beholdes til funksjonene er flyttet. Navnene gir ingen autoritet.
+- Claude Code/Design eier designet; Codex bygger det i appkoden.
+- Konkret skjermvariant innen systemet kan Anders fortsatt velge før bygging.
+- Ferdig skjerm = funksjonen virker og Anders har sett den (mobil 390 px + desktop, lys og mørk, tom/laster/feil).
+- Paper er fjernet fra plattformen; vakten `scripts/check-ingen-paper.mjs` kjører i `npm run verify`.
+- Ingen `className="dark"`; tema styres bare av `data-v2-tema` på `<html>`. Mørk er standard på `/portal` og `/admin`, lys på `/auth` og `/forelder` og landingssidene (`src/lib/v2/tema-default.ts`).
+- Ikke bruk `accent` som tekstfarge på `primary`; bruk `-foreground`-paret.
+
 ## Gjeldende designavklaring — 12.09.2026
 
 Anders arbeider parallelt i Claude Design med alle skjermer og sier: «Ingenting av det som ligger i prosjektet nå er låst.» Eksisterende design er arbeidsunderlag under revisjon. Eldre krav om Train-lock, bestemte fonter, farger, temaer, menyer eller annen utforming er ikke bindende for videre designarbeid, selv om de nedenfor eller i leveransepakker kalles «låst» eller «fasit».

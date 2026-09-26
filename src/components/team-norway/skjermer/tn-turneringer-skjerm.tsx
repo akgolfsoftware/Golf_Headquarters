@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { hentTnTurneringer } from "@/lib/domain/tn-arbeidsflate";
 import { TN } from "@/lib/v2/team-norway";
 import { TnDatoRad, TnFilterknapper, TnFlate, TnFlatehode, TnFotnote, TnMangler, TnSkjermhode, TnStatusmerke } from "../tn-flate";
-import { MANEDER, SkjermRamme, hentSkjermbruker, osloDag, periode } from "./felles";
+import { MANEDER, SkjermRamme, hentSkjermbruker, osloDag, periode, medDato } from "./felles";
 
 /**
  * TN-07 Turneringer og reise.
@@ -26,13 +26,15 @@ export async function TnTurneringerSkjerm({ sokeparametre }: { sokeparametre: Re
 
   const visning: Visning = sokeparametre.vis === "fullforte" ? "fullforte" : "kommende";
   const naa = new Date().getTime();
-  const slutt = (t: (typeof data.turneringer)[number]) => (t.endDate ?? t.startDate).getTime();
-  const kommende = data.turneringer.filter((t) => slutt(t) >= naa).sort((a, b) => a.startDate.getTime() - b.startDate.getTime());
-  const fullforte = data.turneringer.filter((t) => slutt(t) < naa);
+  const slutt = (t: { startDate: Date; endDate: Date | null }) => (t.endDate ?? t.startDate).getTime();
+  const daterte = medDato(data.turneringer);
+  const utenDato = data.turneringer.filter((t) => t.startDate === null);
+  const kommende = [...daterte.filter((t) => slutt(t) >= naa).sort((a, b) => a.startDate.getTime() - b.startDate.getTime()), ...utenDato];
+  const fullforte = daterte.filter((t) => slutt(t) < naa);
   const liste = visning === "kommende" ? kommende : fullforte;
 
   const aar = osloDag(new Date()).aar;
-  const perManed = MANEDER.map((navn, i) => ({ navn, turneringer: liste.filter((t) => { const d = osloDag(t.startDate); return d.aar === aar && d.maned === i + 1; }) }));
+  const perManed = MANEDER.map((navn, i) => ({ navn, turneringer: liste.filter((t) => { if (!t.startDate) return false; const d = osloDag(t.startDate); return d.aar === aar && d.maned === i + 1; }) }));
 
   return (
     <SkjermRamme aktiv="turneringer" brukerNavn={bruker.name} kontekst={data.kontekst}>
@@ -79,7 +81,7 @@ export async function TnTurneringerSkjerm({ sokeparametre }: { sokeparametre: Re
           return (
             <TnDatoRad
               key={t.id}
-              dato={periode(t.startDate, t.endDate ?? t.startDate)}
+              dato={t.startDate ? periode(t.startDate, t.endDate ?? t.startDate) : "Dato mangler"}
               datoBredde={104}
               tittel={t.name}
               tekst={`${t.location ?? "Sted ikke registrert"} · ${visning === "kommende" ? `${pameldte} på planen` : `${t.results.length} med resultat${beste !== null ? ` · beste plass ${beste}` : ""}`}`}

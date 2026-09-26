@@ -53,3 +53,8 @@ export function heltallParam(verdi: string | string[] | undefined, min: number, 
 
 /** Spiller på college i USA (skolefeltet i profilen). Norske universiteter hører til Skoleoversikt. */
 export const ER_COLLEGE = /college|university/i;
+
+/** Turneringer med kjent startdato. Manuelle turneringer uten dato har ingen plass i en tidslinje. */
+export function medDato<T extends { startDate: Date | null }>(liste: T[]): (T & { startDate: Date })[] {
+  return liste.filter((t): t is T & { startDate: Date } => t.startDate !== null);
+}

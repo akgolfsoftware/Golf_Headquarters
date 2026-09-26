@@ -13,6 +13,7 @@ import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 import { pushGruppeTime } from "@/lib/google-calendar-kilder";
 import { FRA_EPOST, resendKlient } from "@/lib/email";
+import { escapeHtml } from "@/lib/email/templates/shared";
 import { email as epostSchema } from "@/lib/validation/schemas";
 import { logError } from "@/lib/error-tracking";
 
@@ -166,24 +167,60 @@ export type InviterSpillereResultat =
       ok: true;
       /** Eksisterende spillere lagt til (eller reaktivert) i gruppen. */
       lagtTil: string[];
-      /** Nye pending-profiler opprettet + invitasjons-e-post forsøkt sendt. */
+      /** Nye profiler og medlemskap opprettet, uavhengig av e-postlevering. */
+      opprettet: string[];
+      /** Invitasjoner bekreftet mottatt av e-postleverandøren. */
       invitert: string[];
       /** E-poster som ikke gikk gjennom, med årsak per rad. */
       feilet: { epost: string; feil: string }[];
     }
   | { ok: false; feil: string };
 
+/** Byggeren for selve invitasjons-e-posten — delt mellom førstegangsopprettelse og retry. */
+async function sendInvitasjonsEpost(input: { epost: string; coachNavn: string; gruppeNavn: string }): Promise<boolean> {
+  if (!process.env.RESEND_API_KEY) return false;
+  try {
+    const klient = resendKlient();
+    const levert = await klient.emails.send({
+      from: FRA_EPOST,
+      to: input.epost,
+      subject: `Du er invitert til ${input.gruppeNavn} i AK Golf HQ`,
+      html: `<!doctype html>
+<html lang="nb"><body style="font-family: system-ui, sans-serif; max-width: 580px; margin: 32px auto; color: #0A1F17;">
+  <h1 style="font-size: 24px; font-weight: 600;">Hei —</h1>
+  <p>${escapeHtml(input.coachNavn)} har invitert deg til gruppen «${escapeHtml(input.gruppeNavn)}» i AK Golf HQ.</p>
+  <p>Opprett en gratis testprofil — testbatteri, stats og SG-registrering — med denne e-postadressen (${escapeHtml(input.epost)}):</p>
+  <p><a href="https://akgolf.no/auth/signup?kilde=talenthq&epost=${encodeURIComponent(input.epost)}" style="display:inline-block;padding:12px 24px;background:#141413;color:#FAF9F5;text-decoration:none;border-radius:6px;font-weight:600;">Opprett profil</a></p>
+</body></html>`,
+    });
+    return !levert.error;
+  } catch {
+    return false;
+  }
+}
+
+/** Meldingen `leggTilGruppemedlem` gir når raden allerede er et aktivt medlemskap — brukt til å skille «allerede medlem» fra en reell tilgangsfeil ved retry. */
+const ALLEREDE_MEDLEM_MØNSTER = /allerede medlem/i;
+
 /**
  * Batch-gruppeinvitasjon på e-post (plan T3).
  *
- * Per e-post: finnes brukeren allerede → gjenbruk HELE porten i
- * leggTilGruppemedlem (coach-scoping + soft-end-reaktivering + audit) — en
- * annen coachs spiller gir «Fant ikke spilleren», bevisst: e-postinvitasjon
- * skal ikke omgå coach-scopingen. Finnes ingen bruker → opprett pending-User
- * (mønsteret fra admin «Ny spiller»/inviter coach: placeholder-authId som
- * claimPendingAccountByEmail kobler til ekte Supabase-konto ved første
- * innlogging) med profilType TALENT / profilKilde TALENTHQ (gratis låst
- * testprofil), meld inn i gruppen og send invitasjons-e-post via Resend.
+ * Per e-post: finnes brukeren allerede → to grener.
+ *  1. Ordinær, registrert bruker (authId er en ekte Supabase-id): gjenbruk
+ *     HELE porten i leggTilGruppemedlem (coach-scoping + soft-end-
+ *     reaktivering + audit) — en annen coachs spiller gir «Fant ikke
+ *     spilleren», bevisst: e-postinvitasjon skal ikke omgå coach-scopingen.
+ *     Ingen e-post sendes — personen har allerede en konto.
+ *  2. Uklaimet invitasjon (authId starter med `pending-`, role PLAYER — egen
+ *     tidligere opprettet placeholder som aldri ble fullført): retry. Ingen
+ *     ny bruker opprettes, rolle/samtykke røres ikke — kun samme
+ *     medlemskapsport kalt på nytt (idempotent når medlemskapet allerede er
+ *     aktivt) og et nytt forsøk på å sende invitasjons-e-posten.
+ * Finnes ingen bruker → opprett pending-User (mønsteret fra admin «Ny
+ * spiller»/inviter coach: placeholder-authId som claimPendingAccountByEmail
+ * kobler til ekte Supabase-konto ved første innlogging) med profilType
+ * TALENT / profilKilde TALENTHQ (gratis låst testprofil), meld inn i gruppen
+ * og send invitasjons-e-post via Resend.
  */
 export async function inviterSpillereTilGruppe(
   groupId: string,
@@ -197,13 +234,11 @@ export async function inviterSpillereTilGruppe(
     return { ok: false, feil: parsed.error.issues[0]?.message ?? "Ugyldig input." };
   }
 
-  // Eierskap + gruppenavn (til e-posten) i samme spørring — samme port som
-  // eierGruppen(): COACH når kun egne grupper, ADMIN alle.
+  if (!(await eierGruppen(coach, parsed.data.groupId))) {
+    return { ok: false, feil: "Fant ikke gruppen." };
+  }
   const gruppe = await prisma.group.findFirst({
-    where: {
-      id: parsed.data.groupId,
-      ...(coach.role === "COACH" ? { coachId: coach.id } : {}),
-    },
+    where: { id: parsed.data.groupId },
     select: { id: true, name: true },
   });
   if (!gruppe) return { ok: false, feil: "Fant ikke gruppen." };
@@ -213,6 +248,7 @@ export async function inviterSpillereTilGruppe(
 
   const lagtTil: string[] = [];
   const invitert: string[] = [];
+  const opprettet: string[] = [];
   const feilet: { epost: string; feil: string }[] = [];
 
   for (const epost of eposter) {
@@ -223,13 +259,48 @@ export async function inviterSpillereTilGruppe(
 
     const eksisterende = await prisma.user.findFirst({
       where: { email: { equals: epost, mode: "insensitive" } },
-      select: { id: true },
+      select: { id: true, email: true, authId: true, role: true },
     });
 
     if (eksisterende) {
-      const res = await leggTilGruppemedlem(gruppe.id, eksisterende.id);
-      if (res.ok) lagtTil.push(epost);
-      else feilet.push({ epost, feil: res.feil });
+      const erUklaimetInvitasjon = eksisterende.authId.startsWith("pending-") && eksisterende.role === "PLAYER";
+
+      if (!erUklaimetInvitasjon) {
+        // Ordinær, registrert bruker: uendret flyt, ingen e-post sendes.
+        const res = await leggTilGruppemedlem(gruppe.id, eksisterende.id);
+        if (res.ok) lagtTil.push(epost);
+        else feilet.push({ epost, feil: res.feil });
+        continue;
+      }
+
+      // Retry på en tidligere invitasjon som aldri ble klaimet. Samme port
+      // som førstegangsinnmelding sikrer medlemskapet uten å opprette en
+      // duplikat eller røre rolle/samtykke — «allerede medlem» her betyr at
+      // medlemskapet allerede står riktig, ikke en tilgangsfeil.
+      const medlemskapRes = await leggTilGruppemedlem(gruppe.id, eksisterende.id);
+      if (!medlemskapRes.ok && !ALLEREDE_MEDLEM_MØNSTER.test(medlemskapRes.feil)) {
+        feilet.push({ epost, feil: medlemskapRes.feil });
+        continue;
+      }
+
+      const sendtNaa = await sendInvitasjonsEpost({ epost: eksisterende.email, coachNavn: coach.name, gruppeNavn: gruppe.name });
+      if (sendtNaa) {
+        invitert.push(epost);
+      } else {
+        feilet.push({
+          epost,
+          feil: process.env.RESEND_API_KEY
+            ? "Medlemmet finnes allerede, men invitasjonen kunne ikke sendes på nytt. Prøv igjen."
+            : "Medlemmet finnes allerede. E-postutsending er ikke konfigurert.",
+        });
+      }
+
+      await audit({
+        actorId: coach.id,
+        action: "group_member.invite_resent",
+        target: `Group:${gruppe.id}/User:${eksisterende.id}`,
+        metadata: { invitasjonSendt: sendtNaa },
+      });
       continue;
     }
 
@@ -250,40 +321,29 @@ export async function inviterSpillereTilGruppe(
         return u;
       });
 
+      opprettet.push(epost);
+
       // Invitasjons-e-post via Resend hvis konfigurert — feiler aldri hardt
       // (mønster fra inviterCoach). ?epost= prefiller registreringsskjemaet.
-      if (process.env.RESEND_API_KEY) {
-        try {
-          const klient = resendKlient();
-          await klient.emails.send({
-            from: FRA_EPOST,
-            to: ny.email,
-            subject: `Du er invitert til ${gruppe.name} i AK Golf HQ`,
-            html: `<!doctype html>
-<html lang="nb"><body style="font-family: system-ui, sans-serif; max-width: 580px; margin: 32px auto; color: #0A1F17;">
-  <h1 style="font-size: 24px; font-weight: 600;">Hei —</h1>
-  <p>${coach.name} har invitert deg til gruppen «${gruppe.name}» i AK Golf HQ.</p>
-  <p>Opprett en gratis testprofil — testbatteri, stats og SG-registrering — med denne e-postadressen (${ny.email}):</p>
-  <p><a href="https://akgolf.no/auth/signup?kilde=talenthq&epost=${encodeURIComponent(ny.email)}" style="display:inline-block;padding:12px 24px;background:#141413;color:#FAF9F5;text-decoration:none;border-radius:6px;font-weight:600;">Opprett profil</a></p>
-</body></html>`,
-          });
-        } catch (error) {
-          await logError({
-            context: "admin.grupper.inviterSpillere.epost",
-            error,
-            severity: "warn",
-          });
-        }
+      const sendtNaa = await sendInvitasjonsEpost({ epost: ny.email, coachNavn: coach.name, gruppeNavn: gruppe.name });
+      if (sendtNaa) {
+        invitert.push(epost);
+      } else {
+        feilet.push({
+          epost,
+          feil: process.env.RESEND_API_KEY
+            ? "Medlemmet er opprettet, men invitasjonen kunne ikke sendes."
+            : "Medlemmet er opprettet. E-postutsending er ikke konfigurert.",
+        });
       }
 
       await audit({
         actorId: coach.id,
         action: "group_member.invited",
         target: `Group:${gruppe.id}/User:${ny.id}`,
-        metadata: { epost, profilType: "TALENT" },
+        metadata: { profilType: "TALENT", invitasjonSendt: sendtNaa },
       });
 
-      invitert.push(epost);
     } catch (e) {
       // P2002: kappløp på unik e-post (parallell invitasjon/registrering).
       if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
@@ -296,7 +356,7 @@ export async function inviterSpillereTilGruppe(
   }
 
   revalidatePath(`/admin/grupper/${gruppe.id}`);
-  return { ok: true, lagtTil, invitert, feilet };
+  return { ok: true, lagtTil, opprettet, invitert, feilet };
 }
 
 /**

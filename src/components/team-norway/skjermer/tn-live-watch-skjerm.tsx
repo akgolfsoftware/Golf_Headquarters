@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { hentTnTurneringer } from "@/lib/domain/tn-arbeidsflate";
 import { TN } from "@/lib/v2/team-norway";
 import { TnDatoRad, TnFlate, TnFlatehode, TnFotnote, TnMangler, TnSkjermhode, TnStatusmerke } from "../tn-flate";
-import { SkjermRamme, hentSkjermbruker, periode } from "./felles";
+import { SkjermRamme, hentSkjermbruker, periode, medDato } from "./felles";
 
 /**
  * TN-08 Live Watch.
@@ -21,7 +21,7 @@ export async function TnLiveWatchSkjerm() {
   if (!data) notFound();
 
   const naa = new Date().getTime();
-  const pagar = data.turneringer
+  const pagar = medDato(data.turneringer)
     .filter((t) => t.startDate.getTime() <= naa && (t.endDate ?? t.startDate).getTime() + 24 * 60 * 60 * 1000 > naa)
     .sort((a, b) => a.startDate.getTime() - b.startDate.getTime());
 
