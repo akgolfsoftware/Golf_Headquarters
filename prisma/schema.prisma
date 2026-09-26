@@ -1847,11 +1847,14 @@ model PuttDetail {
 // tapper-flaten). Plain planSessionId uten @relation — additivt og isolert,
 // samme mønster som trainingSessionV2Id på Booking.
 model SessionBallLog {
-  id            String   @id @default(cuid())
-  planSessionId String
-  club          String
-  count         Int      @default(0)
-  updatedAt     DateTime @default(now()) @updatedAt
+  id             String   @id @default(cuid())
+  planSessionId  String
+  club           String
+  count          Int      @default(0)
+  area           String?
+  category       String?
+  repetitionType String?
+  updatedAt      DateTime @default(now()) @updatedAt
 
   @@unique([planSessionId, club])
   @@index([planSessionId])

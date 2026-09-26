@@ -1,21 +1,11 @@
 "use client";
 
 /**
- * PlayerHQ · Slagteller-shell — Paper-port W1 (fase2).
+ * PlayerHQ · Slagteller- og repetisjonsshell.
+ * Støtter full sving (køller), nærspill (chip, pitch, lob, bunker)
+ * og putting (kortputt, mellomputt, lengdeputt), samt repetisjonstyper (full fart, lav fart, tørrsving).
+ *
  * Fasit: designsystem/train-lock/PH-05 Live.dc.html
- * Avvik:
- *   - Kølleteller med aggregert telling, ikke PH-05s øvelsesregistrering.
- *   - Teknisk retting av lagring/avslutning; ny visuell retning avventer Claude Design.
- *
- * Struktur per fasit: topp (tilbake + Slagteller + økt-sub) → stort tellertall
- * «slag denne økta» → «siste slag kl. X» med Angre → fordeling per kølle →
- * bunnfestet fangstflate med kølleknapper (60px-mål) + clay «Avslutt og lagre».
- *
- * Databegrensning (bevisst): persisteringen er dagens SessionBallLog-
- * AGGREGATER (saveTapperCounts) — ingen Shot-skriving. «Siste slag kl. X» og
- * Angre bæres derfor av LOKAL state i denne shell-en (kun tapp gjort i denne
- * nettleserøkta); uten lokale tapp utelates raden ærlig. Debounce, offline-kø
- * (leggIKo/tomKo) og gjenopptak fra initialCounts er uendret.
  */
 
 import { useEffect, useRef, useState } from "react";
@@ -29,8 +19,27 @@ import type { LiveCoachPanelData } from "@/components/portal/live/types";
 import { saveTapperCounts, finishTapperSession } from "./actions";
 import { leggIKo, tomKo } from "@/lib/offline-queue/tapper-queue";
 import { useLokalDataEier } from "@/lib/offline-queue/eier-context";
+import {
+  RepetitionArea,
+  RepetitionType,
+  REPETITION_AREAS,
+  REPETITION_TYPES,
+  SHORT_GAME_TARGETS,
+  PUTTING_TARGETS,
+  buildRepKey,
+  parseRepKey,
+  formatRepLabel,
+} from "@/lib/domain/workbench/reps";
 
 type Club = { id: string; name: string };
+
+type LogEntry = {
+  club: string;
+  count: number;
+  area?: string | null;
+  category?: string | null;
+  repetitionType?: string | null;
+};
 
 type Props = {
   sessionId: string;
@@ -41,10 +50,11 @@ type Props = {
   coachPanel: LiveCoachPanelData;
   /** Tidligere lagrede tellinger (session_ball_logs) — gjenopptak etter refresh. */
   initialCounts?: Record<string, number>;
+  initialLogs?: LogEntry[];
 };
 
-/** Lokalt tapp denne nettleserøkta — bærer «siste slag kl. X» + Angre. */
-type Tapp = { clubId: string; kl: string };
+/** Lokalt tapp denne nettleserøkta — bærer «siste rep kl. X» + Angre. */
+type Tapp = { key: string; label: string; kl: string };
 
 const OSLO_KL = new Intl.DateTimeFormat("nb-NO", {
   hour: "2-digit",
@@ -52,9 +62,20 @@ const OSLO_KL = new Intl.DateTimeFormat("nb-NO", {
   timeZone: "Europe/Oslo",
 });
 
-export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCounts }: Props) {
+export function TapperShell({
+  sessionId,
+  oktLabel,
+  clubs,
+  coachPanel,
+  initialCounts,
+  initialLogs,
+}: Props) {
   const router = useRouter();
   const eierId = useLokalDataEier();
+
+  const [activeArea, setActiveArea] = useState<RepetitionArea>("FULL_SVING");
+  const [activeRepType, setActiveRepType] = useState<RepetitionType>("FULL_SPEED");
+
   const [counts, setCounts] = useState<Record<string, number>>(() => ({
     ...Object.fromEntries(clubs.map((c) => [c.id, 0])),
     ...(initialCounts ?? {}),
@@ -64,17 +85,89 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
   const [tapp, setTapp] = useState<Tapp[]>([]);
   const [lagreStatus, setLagreStatus] = useState<"ok" | "kolagt" | "gitt-opp">("ok");
 
-  // ── Persistering: debounce + flush (uendret mekanikk) ──────────
+  // Metadata-oppslag for nøkkel
+  function getMeta(key: string) {
+    const { baseId, repType } = parseRepKey(key);
+
+    const clubMatch = clubs.find((c) => c.id === baseId);
+    if (clubMatch) {
+      return {
+        name: formatRepLabel(clubMatch.name, repType),
+        baseName: clubMatch.name,
+        area: "FULL_SVING" as RepetitionArea,
+        category: baseId,
+        repetitionType: repType,
+      };
+    }
+
+    const shortMatch = SHORT_GAME_TARGETS.find((s) => s.baseId === baseId);
+    if (shortMatch) {
+      return {
+        name: formatRepLabel(shortMatch.name, repType),
+        baseName: shortMatch.name,
+        area: "NAERSPILL" as RepetitionArea,
+        category: shortMatch.category,
+        repetitionType: repType,
+      };
+    }
+
+    const puttMatch = PUTTING_TARGETS.find((p) => p.baseId === baseId);
+    if (puttMatch) {
+      return {
+        name: formatRepLabel(puttMatch.name, repType),
+        baseName: puttMatch.name,
+        area: "PUTTING" as RepetitionArea,
+        category: puttMatch.category,
+        repetitionType: repType,
+      };
+    }
+
+    const logMatch = initialLogs?.find((l) => l.club === key);
+    if (logMatch) {
+      return {
+        name: formatRepLabel(logMatch.club, (logMatch.repetitionType as RepetitionType) || repType),
+        baseName: logMatch.club,
+        area: (logMatch.area as RepetitionArea) || "FULL_SVING",
+        category: logMatch.category || logMatch.club,
+        repetitionType: (logMatch.repetitionType as RepetitionType) || repType,
+      };
+    }
+
+    return {
+      name: formatRepLabel(baseId, repType),
+      baseName: baseId,
+      area: "FULL_SVING" as RepetitionArea,
+      category: baseId,
+      repetitionType: repType,
+    };
+  }
+
+  const navnFor = (key: string) => getMeta(key).name;
+
+  // ── Persistering: debounce + flush ──────────
   const countsRef = useRef(counts);
   useEffect(() => {
     countsRef.current = counts;
   }, [counts]);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  function buildPayload() {
+    return Object.entries(countsRef.current).map(([club, count]) => {
+      const meta = getMeta(club);
+      return {
+        club,
+        count,
+        area: meta.area,
+        category: meta.category,
+        repetitionType: meta.repetitionType,
+      };
+    });
+  }
+
   async function lagre(): Promise<boolean> {
     if (saveTimer.current) clearTimeout(saveTimer.current);
     saveTimer.current = null;
-    const payload = Object.entries(countsRef.current).map(([club, count]) => ({ club, count }));
+    const payload = buildPayload();
     try {
       const res = await saveTapperCounts(sessionId, payload);
       if (res.ok) {
@@ -82,10 +175,8 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
         return true;
       }
     } catch {
-      /* nettverksfeil — køes lokalt under, ikke bare et in-memory flagg */
+      /* nettverksfeil — køes lokalt under */
     }
-    // IndexedDB kan i sjeldne tilfeller kaste synkront (f.eks. lukket
-    // forbindelse) — skal aldri hindre avslutt() sin navigering.
     const kolagt = eierId
       ? await leggIKo(eierId, sessionId, payload).catch(() => false)
       : false;
@@ -104,8 +195,6 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
     };
   }, []);
 
-  // Tøm evt. kølagt telling fra en tidligere økt: ved mount og hver gang
-  // nettet kommer tilbake mens siden er åpen.
   useEffect(() => {
     async function synk() {
       if (!eierId) return;
@@ -124,8 +213,7 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
     setFinishError(null);
     if (saveTimer.current) clearTimeout(saveTimer.current);
     try {
-      const result = await finishTapperSession(sessionId,
-        Object.entries(countsRef.current).map(([club, count]) => ({ club, count })));
+      const result = await finishTapperSession(sessionId, buildPayload());
       if (!result.ok) {
         setFinishError(result.error ?? "Økten ble ikke avsluttet. Prøv igjen.");
         return;
@@ -138,10 +226,12 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
     }
   }
 
-  function tappKolle(clubId: string) {
+  function tappElement(baseId: string) {
     if (finishing) return;
-    setCounts((prev) => ({ ...prev, [clubId]: (prev[clubId] ?? 0) + 1 }));
-    setTapp((prev) => [{ clubId, kl: OSLO_KL.format(new Date()) }, ...prev]);
+    const key = buildRepKey(baseId, activeRepType);
+    const label = navnFor(key);
+    setCounts((prev) => ({ ...prev, [key]: (prev[key] ?? 0) + 1 }));
+    setTapp((prev) => [{ key, label, kl: OSLO_KL.format(new Date()) }, ...prev]);
     planleggLagring();
     if (typeof navigator !== "undefined" && "vibrate" in navigator) {
       try {
@@ -158,22 +248,17 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
     if (!siste) return;
     setCounts((prev) => ({
       ...prev,
-      [siste.clubId]: Math.max(0, (prev[siste.clubId] ?? 0) - 1),
+      [siste.key]: Math.max(0, (prev[siste.key] ?? 0) - 1),
     }));
     setTapp((prev) => prev.slice(1));
     planleggLagring();
   }
 
   const totalCount = Object.values(counts).reduce((a, b) => a + b, 0);
-  const navnFor = (id: string) => clubs.find((c) => c.id === id)?.name ?? id;
 
-  // Fordeling: kølleknappenes rekkefølge først, deretter evt. historiske
-  // kølle-nøkler fra tidligere lagringer som ikke lenger er i bagen.
-  const fordelingIds = [
-    ...clubs.map((c) => c.id),
-    ...Object.keys(counts).filter((id) => !clubs.some((c) => c.id === id)),
-  ].filter((id) => (counts[id] ?? 0) > 0);
-  const maks = Math.max(1, ...fordelingIds.map((id) => counts[id] ?? 0));
+  // Fordeling av registrerte repetisjoner
+  const fordelingKeys = Object.keys(counts).filter((key) => (counts[key] ?? 0) > 0);
+  const maks = Math.max(1, ...fordelingKeys.map((key) => counts[key] ?? 0));
 
   return (
     <div
@@ -221,29 +306,54 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
           <Icon name="chevron-left" size={18} />
         </Link>
         <div style={{ minWidth: 0 }}>
-          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600 }}>Slagteller</h1>
-          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600 }}>Slag og repetisjoner</h1>
+          <span
+            style={{
+              display: "block",
+              fontFamily: TL.font.mono,
+              fontSize: 10.5,
+              color: TL.mute,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
             {oktLabel}
           </span>
         </div>
       </header>
 
       {/* Kropp */}
-      <main style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: 16, width: "100%", maxWidth: 720, margin: "0 auto" }}>
+      <main
+        style={{
+          flex: 1,
+          minHeight: 0,
+          overflowY: "auto",
+          padding: 16,
+          width: "100%",
+          maxWidth: 720,
+          margin: "0 auto",
+        }}
+      >
         {finishError && <p role="alert">{finishError}</p>}
-        {/* Feil — slagene ligger trygt lokalt (offline-køen bærer dem) */}
         {lagreStatus !== "ok" && (
           <div
             role="alert"
-            style={{ padding: "16px", background: TL.dock, border: `1px dashed ${TL.hair}`, borderRadius: TL.radius.card, marginBottom: 12 }}
+            style={{
+              padding: "16px",
+              background: TL.dock,
+              border: `1px dashed ${TL.hair}`,
+              borderRadius: TL.radius.card,
+              marginBottom: 12,
+            }}
           >
             <h3 style={{ margin: "0 0 8px", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
-              Slagene ble ikke lagret
+              Tellingene ble ikke lagret
             </h3>
             <p style={{ margin: "0 0 12px", fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute }}>
               {lagreStatus === "gitt-opp"
-                ? "Fikk ikke synket etter flere forsøk — slagene ligger fortsatt trygt på telefonen. Sjekk nettet ditt."
-                : `Nettet forsvant under lagringen. De ${totalCount} slagene ligger trygt på telefonen og sendes automatisk når nettet er tilbake.`}
+                ? "Fikk ikke synket etter flere forsøk — repetisjonene ligger fortsatt trygt på telefonen. Sjekk nettet ditt."
+                : `Nettet forsvant under lagringen. De ${totalCount} repetisjonene ligger trygt på telefonen og sendes automatisk når nettet er tilbake.`}
             </p>
             <button
               type="button"
@@ -271,21 +381,39 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
           </div>
         )}
 
-        {/* Telleren — skjermens hovedoppslag */}
-        <div style={{ textAlign: "center", padding: "24px 0 16px" }}>
-          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10, fontWeight: 500, letterSpacing: "0.09em", textTransform: "uppercase", color: TL.mute }}>
-            slag denne økta
+        {/* Telleren — hovedoppslag */}
+        <div style={{ textAlign: "center", padding: "20px 0 14px" }}>
+          <span
+            style={{
+              display: "block",
+              fontFamily: TL.font.mono,
+              fontSize: 10,
+              fontWeight: 500,
+              letterSpacing: "0.09em",
+              textTransform: "uppercase",
+              color: TL.mute,
+            }}
+          >
+            repetisjoner denne økta
           </span>
-          <div style={{ fontFamily: TL.font.mono, fontSize: 40, fontWeight: 600, fontVariantNumeric: "tabular-nums", lineHeight: 1.1 }}>
+          <div
+            style={{
+              fontFamily: TL.font.mono,
+              fontSize: 44,
+              fontWeight: 600,
+              fontVariantNumeric: "tabular-nums",
+              lineHeight: 1.1,
+              marginTop: 4,
+            }}
+          >
             {totalCount}
           </div>
-          <div style={{ fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute }}>
-            Tapp kølla du slo med — ett tapp per slag.
+          <div style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, marginTop: 4 }}>
+            Velg område og fart nedenfor — ett tapp per slag eller repetisjon.
           </div>
         </div>
 
-        {/* Siste slag + Angre — KUN når lokale tapp finnes (aggregatene fra
-            databasen har ikke tidsstempler, så raden fabrikkeres aldri) */}
+        {/* Siste repetisjon + Angre */}
         {tapp.length > 0 && (
           <div
             style={{
@@ -295,15 +423,23 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
               background: TL.elev,
               border: `1px solid ${TL.hair}`,
               borderRadius: TL.radius.card,
-              padding: "12px 16px",
-              marginBottom: 12,
+              padding: "10px 14px",
+              marginBottom: 14,
               minWidth: 0,
             }}
           >
             <div style={{ flex: 1, minWidth: 0, fontSize: 13, fontFamily: TL.font.sans }}>
-              <span style={{ fontWeight: 600 }}>{navnFor(tapp[0].clubId)}</span>
-              {" · siste slag"}
-              <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
+              <span style={{ fontWeight: 600 }}>{tapp[0].label}</span>
+              {" · sist registrert"}
+              <span
+                style={{
+                  display: "block",
+                  fontFamily: TL.font.mono,
+                  fontSize: 10.5,
+                  color: TL.mute,
+                  fontVariantNumeric: "tabular-nums",
+                }}
+              >
                 kl. {tapp[0].kl}
               </span>
             </div>
@@ -317,10 +453,10 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
-                minHeight: 44,
-                padding: "0 16px",
+                minHeight: 40,
+                padding: "0 14px",
                 fontFamily: TL.font.sans,
-                fontSize: 14,
+                fontSize: 13,
                 fontWeight: 500,
                 background: "transparent",
                 border: `1px solid ${TL.hair}`,
@@ -334,15 +470,26 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
           </div>
         )}
 
-        {/* Fordeling per kølle */}
-        {fordelingIds.length > 0 && (
-          <div>
-            <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10, fontWeight: 500, letterSpacing: "0.09em", textTransform: "uppercase", color: TL.mute }}>
-              fordeling per kølle
+        {/* Fordeling */}
+        {fordelingKeys.length > 0 && (
+          <div style={{ marginTop: 8 }}>
+            <span
+              style={{
+                display: "block",
+                fontFamily: TL.font.mono,
+                fontSize: 10,
+                fontWeight: 500,
+                letterSpacing: "0.09em",
+                textTransform: "uppercase",
+                color: TL.mute,
+                marginBottom: 6,
+              }}
+            >
+              fordeling denne økta
             </span>
-            {fordelingIds.map((id, i) => (
+            {fordelingKeys.map((key, i) => (
               <div
-                key={id}
+                key={key}
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -350,24 +497,41 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
                   padding: "8px 0",
                   fontSize: 13,
                   fontFamily: TL.font.sans,
-                  borderBottom: i === fordelingIds.length - 1 ? "none" : `1px solid ${TL.hair}`,
+                  borderBottom: i === fordelingKeys.length - 1 ? "none" : `1px solid ${TL.hair}`,
                   minWidth: 0,
                 }}
               >
-                <span style={{ minWidth: 64, flex: "none" }}>{navnFor(id)}</span>
-                <span style={{ flex: 1, height: 6, background: TL.dock, borderRadius: TL.radius.pill, overflow: "hidden", minWidth: 0 }}>
+                <span style={{ minWidth: 110, flex: "none", fontWeight: 500 }}>{navnFor(key)}</span>
+                <span
+                  style={{
+                    flex: 1,
+                    height: 6,
+                    background: TL.dock,
+                    borderRadius: TL.radius.pill,
+                    overflow: "hidden",
+                    minWidth: 0,
+                  }}
+                >
                   <span
                     style={{
                       display: "block",
                       height: "100%",
-                      width: `${Math.round(((counts[id] ?? 0) / maks) * 100)}%`,
+                      width: `${Math.round(((counts[key] ?? 0) / maks) * 100)}%`,
                       background: TL.mute,
                       borderRadius: TL.radius.pill,
                     }}
                   />
                 </span>
-                <span style={{ fontFamily: TL.font.mono, fontVariantNumeric: "tabular-nums", minWidth: "2ch", textAlign: "right" }}>
-                  {counts[id]}
+                <span
+                  style={{
+                    fontFamily: TL.font.mono,
+                    fontVariantNumeric: "tabular-nums",
+                    minWidth: "3ch",
+                    textAlign: "right",
+                    fontWeight: 600,
+                  }}
+                >
+                  {counts[key]}
                 </span>
               </div>
             ))}
@@ -375,50 +539,205 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
         )}
       </main>
 
-      {/* Køllene — bunnfestet fangstflate (Kontrakt §4: primær handling
-          bunnfestet på mobil, aldri i scroll-flyt) */}
+      {/* Bunnfestet fangstflate: Område-tabs + Type-chips + Tapp-knapper + Avslutt */}
       <div
         style={{
           flex: "none",
           borderTop: `1px solid ${TL.hair}`,
           background: TL.elev,
-          padding: "12px 16px calc(12px + env(safe-area-inset-bottom))",
+          padding: "10px 16px calc(10px + env(safe-area-inset-bottom))",
         }}
       >
         <div style={{ width: "100%", maxWidth: 720, margin: "0 auto" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 12 }}>
-            {clubs.map((c) => (
-              <button
-                key={c.id}
-                type="button"
-                onClick={() => tappKolle(c.id)}
-                data-od-id={`tapper-klubb-${c.id}`}
-                className="v2-press v2-focus"
-                style={{
-                  minHeight: 60,
-                  border: `1px solid ${TL.hair}`,
-                  borderRadius: TL.radius.card,
-                  background: TL.scene,
-                  color: TL.text,
-                  fontFamily: TL.font.sans,
-                  fontSize: 14,
-                  fontWeight: 500,
-                  cursor: "pointer",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 2,
-                  minWidth: 0,
-                }}
-              >
-                <span>{c.name}</span>
-                <span style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>tapp = 1 slag</span>
-              </button>
-            ))}
+          {/* Område-faner: Full sving | Nærspill | Putting */}
+          <div style={{ display: "flex", gap: 6, marginBottom: 8 }}>
+            {REPETITION_AREAS.map((a) => {
+              const active = activeArea === a.id;
+              return (
+                <button
+                  key={a.id}
+                  type="button"
+                  onClick={() => setActiveArea(a.id)}
+                  data-od-id={`tapper-omraade-${a.id.toLowerCase()}`}
+                  className="v2-press v2-focus"
+                  style={{
+                    flex: 1,
+                    minHeight: 38,
+                    border: active ? `1px solid ${TL.fill}` : `1px solid ${TL.hair}`,
+                    background: active ? TL.fill : "transparent",
+                    color: active ? TL.onFill : TL.mute,
+                    borderRadius: TL.radius.card,
+                    fontFamily: TL.font.sans,
+                    fontSize: 13,
+                    fontWeight: active ? 600 : 500,
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {a.label}
+                </button>
+              );
+            })}
           </div>
-          {/* Kontrakt §3: skjermens ene aksenthandling — avslutter tellingen
-              og lagrer slagene i økta. Kølletappene er selve fangstflaten. */}
+
+          {/* Repetisjonstype-chips: Full fart | Lav fart | Tørrsving */}
+          <div style={{ display: "flex", gap: 6, marginBottom: 10, justifyContent: "center" }}>
+            {REPETITION_TYPES.map((t) => {
+              const active = activeRepType === t.id;
+              return (
+                <button
+                  key={t.id}
+                  type="button"
+                  onClick={() => setActiveRepType(t.id)}
+                  data-od-id={`tapper-type-${t.id.toLowerCase()}`}
+                  className="v2-press v2-focus"
+                  style={{
+                    padding: "4px 10px",
+                    border: active ? `1px solid ${TL.hair}` : "1px solid transparent",
+                    background: active ? TL.dock : "transparent",
+                    color: active ? TL.text : TL.mute,
+                    borderRadius: TL.radius.pill,
+                    fontFamily: TL.font.sans,
+                    fontSize: 11.5,
+                    fontWeight: active ? 600 : 400,
+                    cursor: "pointer",
+                  }}
+                >
+                  {t.label}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Tappeknapper for valgt område */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns:
+                activeArea === "NAERSPILL"
+                  ? "repeat(4, 1fr)"
+                  : activeArea === "PUTTING"
+                  ? "repeat(3, 1fr)"
+                  : "repeat(3, 1fr)",
+              gap: 8,
+              marginBottom: 10,
+            }}
+          >
+            {activeArea === "FULL_SVING" &&
+              clubs.map((c) => (
+                <button
+                  key={c.id}
+                  type="button"
+                  onClick={() => tappElement(c.id)}
+                  data-od-id={`tapper-klubb-${c.id}`}
+                  className="v2-press v2-focus"
+                  style={{
+                    minHeight: 56,
+                    border: `1px solid ${TL.hair}`,
+                    borderRadius: TL.radius.card,
+                    background: TL.scene,
+                    color: TL.text,
+                    fontFamily: TL.font.sans,
+                    fontSize: 13.5,
+                    fontWeight: 500,
+                    cursor: "pointer",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 1,
+                    minWidth: 0,
+                  }}
+                >
+                  <span>{c.name}</span>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 9.5, color: TL.mute }}>
+                    {activeRepType === "FULL_SPEED"
+                      ? "1 slag"
+                      : activeRepType === "LOW_SPEED"
+                      ? "lav fart"
+                      : "tørrsving"}
+                  </span>
+                </button>
+              ))}
+
+            {activeArea === "NAERSPILL" &&
+              SHORT_GAME_TARGETS.map((t) => (
+                <button
+                  key={t.baseId}
+                  type="button"
+                  onClick={() => tappElement(t.baseId)}
+                  data-od-id={`tapper-naerspill-${t.baseId}`}
+                  className="v2-press v2-focus"
+                  style={{
+                    minHeight: 56,
+                    border: `1px solid ${TL.hair}`,
+                    borderRadius: TL.radius.card,
+                    background: TL.scene,
+                    color: TL.text,
+                    fontFamily: TL.font.sans,
+                    fontSize: 13,
+                    fontWeight: 500,
+                    cursor: "pointer",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 1,
+                    minWidth: 0,
+                  }}
+                >
+                  <span>{t.name}</span>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 9.5, color: TL.mute }}>
+                    {activeRepType === "FULL_SPEED"
+                      ? "1 rep"
+                      : activeRepType === "LOW_SPEED"
+                      ? "lav fart"
+                      : "tørrsving"}
+                  </span>
+                </button>
+              ))}
+
+            {activeArea === "PUTTING" &&
+              PUTTING_TARGETS.map((p) => (
+                <button
+                  key={p.baseId}
+                  type="button"
+                  onClick={() => tappElement(p.baseId)}
+                  data-od-id={`tapper-putting-${p.baseId}`}
+                  className="v2-press v2-focus"
+                  style={{
+                    minHeight: 56,
+                    border: `1px solid ${TL.hair}`,
+                    borderRadius: TL.radius.card,
+                    background: TL.scene,
+                    color: TL.text,
+                    fontFamily: TL.font.sans,
+                    fontSize: 12.5,
+                    fontWeight: 500,
+                    cursor: "pointer",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 1,
+                    minWidth: 0,
+                  }}
+                >
+                  <span>{p.name}</span>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 9.5, color: TL.mute }}>
+                    {activeRepType === "FULL_SPEED"
+                      ? "1 putt"
+                      : activeRepType === "LOW_SPEED"
+                      ? "lav fart"
+                      : "tørrsving"}
+                  </span>
+                </button>
+              ))}
+          </div>
+
+          {/* Avslutt og lagre */}
           <button
             type="button"
             disabled={finishing}
@@ -430,7 +749,7 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              minHeight: 56,
+              minHeight: 50,
               width: "100%",
               border: "none",
               borderRadius: TL.radius.card,

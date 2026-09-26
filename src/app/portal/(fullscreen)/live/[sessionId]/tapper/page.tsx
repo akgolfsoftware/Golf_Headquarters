@@ -188,7 +188,7 @@ export default async function LiveTapperPage({
   // Gjenopptak: tidligere lagrede tellinger for økten (session_ball_logs).
   const lagrede = await prisma.sessionBallLog.findMany({
     where: { planSessionId: sessionId },
-    select: { club: true, count: true },
+    select: { club: true, count: true, area: true, category: true, repetitionType: true },
   });
   const initialCounts = Object.fromEntries(lagrede.map((r) => [r.club, r.count]));
 
@@ -199,6 +199,7 @@ export default async function LiveTapperPage({
       clubs={clubs}
       coachPanel={coachPanel}
       initialCounts={initialCounts}
+      initialLogs={lagrede}
     />
   );
 }
