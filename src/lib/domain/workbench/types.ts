@@ -6,6 +6,8 @@
  * Norwegian UI labels live in ui/labels.ts — never hard-code strings here.
  */
 
+import type { SeasonVolumeSummary, BudgetWarning } from "./warnings";
+
 // ─── Vocabulary enums (from VOKABULAR.md) ─────────────────────────────────
 
 export type PyramidArea = "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN";
@@ -255,6 +257,9 @@ export interface WeekBudget {
   plannedMinutes: number;
   targetMinutes: number;
   byPyramid: Record<PyramidArea, number>;
+  seasonVolume?: SeasonVolumeSummary;
+  warnings?: BudgetWarning[];
+  activeWarningsCount?: number;
 }
 
 export interface WorkbenchMode {
