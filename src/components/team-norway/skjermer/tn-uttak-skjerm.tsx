@@ -11,7 +11,7 @@ import { SkjermRamme, hentSkjermbruker } from "./felles";
  * TN-05 Uttak og kriterier.
  * Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm TN-05.
  *
- * Avvik fra designet, fordi dataene ikke finnes eller reglene sier noe annet:
+ * Avvik:
  *   - Kriteriene er de tre bindende (resultater, prestasjoner, prosess og adferd),
  *     ikke designets eksempeltekster per mesterskap. De summeres aldri.
  *   - EM/VM-bryteren er utelatt: ingen mesterskap, frister eller troppsstørrelser

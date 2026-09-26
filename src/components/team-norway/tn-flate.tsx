@@ -10,6 +10,9 @@ import { TN } from "@/lib/v2/team-norway";
  * (bc3e41fc), fila «Team Norway App.dc.html». Hvit flate med én hårstrek,
  * seksjonstittel i sperret Jost over en 2 px navy strek, tall i IBM Plex Mono.
  * Hjørner 2 og 4, ingen skygger, ingen sirkler.
+ * Avvik:
+ *   - Filterknapper og månedsvalg er lenker med valget i adressen, ikke
+ *     klientstate som i prototypen. Da virker de uten JavaScript.
  */
 
 const etikettStil: CSSProperties = {

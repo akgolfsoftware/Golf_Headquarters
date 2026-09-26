@@ -11,7 +11,7 @@ import { SkjermRamme, datoLang, hentSkjermbruker } from "./felles";
  * Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm TN-09.
  * Erstatter den gamle trenerkatalogen (/team-norway/apparatet sender hit).
  *
- * Avvik fra designet, fordi dataene ikke finnes:
+ * Avvik:
  *   - Bare fanen «Fagteam» har data: aktive trenere i Team Norway-gruppen.
  *     Fagpersoner fra Olympiatoppen, oppfølgingsplan per utøver og
  *     samlingsrapport har ingen datamodell og vises ikke.

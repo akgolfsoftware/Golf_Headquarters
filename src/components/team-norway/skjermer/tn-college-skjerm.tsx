@@ -11,7 +11,7 @@ import { SkjermRamme, hentSkjermbruker, periode } from "./felles";
  * TN-06 College og USA.
  * Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm TN-06.
  *
- * Avvik fra designet, fordi dataene ikke finnes:
+ * Avvik:
  *   - Konferanse, klasse, WAGR og siste college-resultat er ikke registrert.
  *     Kortet viser skole og skoleår fra spillerprofilen, og brutto snitt fra
  *     registrerte starter.

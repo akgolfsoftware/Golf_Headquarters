@@ -9,10 +9,10 @@ import { SkjermRamme, hentSkjermbruker, periode } from "./felles";
  * TN-08 Live Watch.
  * Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm TN-08.
  *
- * Avvik fra designet: det finnes ingen live-kilde for hull-for-hull-score.
- * Skjermen viser hvilke turneringer landslagsspillere er i akkurat nå, fra
- * registrerte datoer og påmeldinger, og sier rett ut at live-score mangler.
- * Ingen simulert resultatstrøm.
+ * Avvik:
+ *   - Ingen live-kilde for hull-for-hull-score finnes. Skjermen viser hvilke
+ *     turneringer landslagsspillere er i nå, fra registrerte datoer og
+ *     påmeldinger, og sier rett ut at live-score mangler. Ingen simulert strøm.
  */
 
 export async function TnLiveWatchSkjerm() {

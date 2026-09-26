@@ -10,7 +10,7 @@ import { MANEDER, MANEDER_LANG, SkjermRamme, datoKort, heltallParam, hentSkjermb
  * TN-04 Samlinger og terminliste.
  * Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm TN-04.
  *
- * Avvik fra designet, fordi dataene ikke finnes:
+ * Avvik:
  *   - Mesterskap er ikke egen kategori i turneringsdataene. Årshjulet viser
  *     samlinger og turneringer, ikke mesterskap som eget merke.
  *   - Dagsprogram, romfordeling og pakkeliste har ingen datamodell. Kortet sier
@@ -70,7 +70,7 @@ export async function TnSamlingerSkjerm({ sokeparametre, valgtId }: { sokeparame
             </span>
           </div>
         </TnFlatehode>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(84px, 1fr))", gap: 1, background: TN.navy100, border: `1px solid ${TN.navy100}`, marginTop: 16 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(max(84px, calc(100% / 12)), 1fr))", borderTop: `1px solid ${TN.navy100}`, borderLeft: `1px solid ${TN.navy100}`, marginTop: 16 }}>
           {MANEDER.map((navn, i) => {
             const m = i + 1;
             const aktiv = m === maned;
@@ -82,7 +82,7 @@ export async function TnSamlingerSkjerm({ sokeparametre, valgtId }: { sokeparame
                 scroll={false}
                 aria-current={aktiv ? "true" : undefined}
                 aria-label={`${MANEDER_LANG[i]} ${aar}, ${hendelserIManed.length} hendelser`}
-                style={{ background: aktiv ? TN.navy50 : TN.white, borderTop: `3px solid ${aktiv ? TN.red600 : "transparent"}`, padding: "10px 8px 12px", minHeight: 118, display: "flex", flexDirection: "column", gap: 5, textDecoration: "none", minWidth: 0 }}
+                style={{ background: aktiv ? TN.navy50 : TN.white, borderTop: `3px solid ${aktiv ? TN.red600 : "transparent"}`, borderRight: `1px solid ${TN.navy100}`, borderBottom: `1px solid ${TN.navy100}`, padding: "10px 8px 12px", minHeight: 118, display: "flex", flexDirection: "column", gap: 5, textDecoration: "none", minWidth: 0 }}
               >
                 <span style={{ fontFamily: TN.font.display, fontSize: 12, letterSpacing: "0.18em", color: TN.navy900 }}>{navn}</span>
                 {hendelserIManed.slice(0, 3).map((h) => (

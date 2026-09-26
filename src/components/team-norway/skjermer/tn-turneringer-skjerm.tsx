@@ -10,7 +10,7 @@ import { MANEDER, SkjermRamme, hentSkjermbruker, osloDag, periode } from "./fell
  * TN-07 Turneringer og reise.
  * Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm TN-07.
  *
- * Avvik fra designet, fordi dataene ikke finnes:
+ * Avvik:
  *   - Filteret «Kun EM/VM-kvalifisering» er utelatt: turneringene har ikke
  *     noe felt som sier om de teller i uttaket.
  *   - Uttaksmøte, reiselogistikk og budsjett per utøver har ingen datamodell.
@@ -57,9 +57,9 @@ export async function TnTurneringerSkjerm({ sokeparametre }: { sokeparametre: Re
 
       <TnFlate>
         <TnFlatehode tittel={`Sesongen ${aar}`} merknad={visning === "kommende" ? "Kommende" : "Fullførte"} />
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(84px, 1fr))", gap: 1, background: TN.navy100, border: `1px solid ${TN.navy100}`, marginTop: 16 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(max(84px, calc(100% / 12)), 1fr))", borderTop: `1px solid ${TN.navy100}`, borderLeft: `1px solid ${TN.navy100}`, marginTop: 16 }}>
           {perManed.map((m) => (
-            <div key={m.navn} style={{ background: TN.white, padding: "10px 8px 12px", minHeight: 96, display: "flex", flexDirection: "column", gap: 5, minWidth: 0 }}>
+            <div key={m.navn} style={{ background: TN.white, borderRight: `1px solid ${TN.navy100}`, borderBottom: `1px solid ${TN.navy100}`, padding: "10px 8px 12px", minHeight: 96, display: "flex", flexDirection: "column", gap: 5, minWidth: 0 }}>
               <span style={{ fontFamily: TN.font.display, fontSize: 12, letterSpacing: "0.18em", color: TN.navy900 }}>{m.navn}</span>
               {m.turneringer.slice(0, 3).map((t) => (
                 <span key={t.id} style={{ display: "block", fontSize: 11.5, lineHeight: 1.3, padding: "3px 5px", borderRadius: TN.radius.sm, background: TN.navy100, color: TN.navy900, overflowWrap: "anywhere" }}>{t.name}</span>

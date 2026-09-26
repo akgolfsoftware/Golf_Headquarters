@@ -8,11 +8,11 @@ import { SkjermRamme, hentSkjermbruker } from "./felles";
  * TN-10 Lisens, helse og stipend.
  * Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm TN-10.
  *
- * Avvik fra designet: ingen av de fire områdene har en datamodell i dag
- * (antidoping, helseattest, stipend, kjøregodtgjørelse). Skjermen har samme
- * oppbygning som designet, men hver flate sier hva som mangler. Ingen
- * eksempelbeløp, ingen frister som ikke er registrert, og ingen
- * refusjonsskjema som ikke lagrer noe.
+ * Avvik:
+ *   - Ingen av de fire områdene (antidoping, helseattest, stipend,
+ *     kjøregodtgjørelse) har en datamodell i dag. Hver flate sier hva som
+ *     mangler. Ingen eksempelbeløp, ingen uregistrerte frister, og ikke noe
+ *     refusjonsskjema som ikke lagrer noe.
  */
 
 const OMRADER = [
