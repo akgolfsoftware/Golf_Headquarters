@@ -18,7 +18,9 @@ function tilInputIso(dato: Date): string {
 
 export default async function TilgangPage({ searchParams }: { searchParams: Promise<{ valgt?: string }> }) {
   const { valgt } = await searchParams;
-  const bruker = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  // Trener i Team Norway-gruppen slipper inn uten plattformrolle COACH (Anders 26.09.2026).
+  // erSportssjef er selve sperren: aktiv COACH i TN-gruppen, eller ADMIN.
+  const bruker = await requirePortalUser({ kreverTilgang: "INGEN" });
   if (!await erSportssjef({ id: bruker.id, role: bruker.role })) notFound();
 
   const data = await hentTeamNorwayTilganger();
