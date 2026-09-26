@@ -1,4 +1,6 @@
-import { TnRegistrertSkjerm } from "@/components/team-norway/tn-registrerte-skjermer";
+import { TnSkolerSkjerm } from "@/components/team-norway/skjermer/tn-skoler-skjerm";
 
-/** TN-08. Fasit: designsystem/team-norway/templates/tn-skoler/TnSkoler.dc.html */
-export default function Page() { return <TnRegistrertSkjerm skjerm="skoler" />; }
+/** TN-17. Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm TN-17. */
+export default function Page() {
+  return <TnSkolerSkjerm />;
+}

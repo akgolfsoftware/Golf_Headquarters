@@ -1,4 +1,6 @@
-import { TnRegistrertSkjerm } from "@/components/team-norway/tn-registrerte-skjermer";
+import { TnRanglisteSkjerm } from "@/components/team-norway/skjermer/tn-rangliste-skjerm";
 
-/** TN-07. Fasit: designsystem/team-norway/templates/tn-rangliste/TnRangliste.dc.html */
-export default function Page() { return <TnRegistrertSkjerm skjerm="rangliste" />; }
+/** TN-16. Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm TN-16. */
+export default async function Page({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+  return <TnRanglisteSkjerm sokeparametre={await searchParams} />;
+}

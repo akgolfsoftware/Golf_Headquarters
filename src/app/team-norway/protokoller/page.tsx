@@ -1,4 +1,6 @@
-import { TnRegistrertSkjerm } from "@/components/team-norway/tn-registrerte-skjermer";
+import { TnTestprotokollerSkjerm } from "@/components/team-norway/skjermer/tn-testprotokoller-skjerm";
 
-/** TN-04. Fasit: designsystem/team-norway/templates/tn-protokollbibliotek/TnProtokollbibliotek.dc.html */
-export default function Page() { return <TnRegistrertSkjerm skjerm="protokoller" />; }
+/** TN-15. Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm TN-15. */
+export default async function Page({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+  return <TnTestprotokollerSkjerm sokeparametre={await searchParams} />;
+}

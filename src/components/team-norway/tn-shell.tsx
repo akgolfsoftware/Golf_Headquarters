@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-import { TnKort, TnPille, TnRail, type TnMenyPunkt, type TnPilleTone } from "./core";
+import { TnKort, TnPille, TnRail, type TnBunnValg, type TnMenyGruppe, type TnMenyLenke, type TnPilleTone } from "./core";
 import { TnRailMobil } from "./rail-mobil";
 import { TN } from "@/lib/v2/team-norway";
 
@@ -31,65 +31,110 @@ export type TnAktivSide =
   | "referansenivaer"
   | "tilgang"
   | "inviter"
-  | "apparatet";
+  | "fagapparat"
+  | "live-watch"
+  | "lisens";
 
-function lenke(label: string, href: string, id: TnAktivSide, aktiv: TnAktivSide, badge?: string): TnMenyPunkt {
-  return { type: "lenke", label, href, aktiv: aktiv === id, badge };
+function lenke(label: string, href: string, id: TnAktivSide, aktiv: TnAktivSide): TnMenyLenke {
+  return { label, href, aktiv: aktiv === id };
 }
 
-export function tnHovedmeny({
-  aktiv,
-  groupId,
-  visTrenerflater,
-  kanAdministrere,
-}: {
-  aktiv: TnAktivSide;
-  groupId?: string;
-  visTrenerflater: boolean;
-  kanAdministrere: boolean;
-}): TnMenyPunkt[] {
-  const punkter: TnMenyPunkt[] = [
-    { type: "overskrift", label: "Daglig" },
-    lenke("Oversikt", "/team-norway", "oversikt", aktiv),
-    ...(visTrenerflater ? [lenke("Fellestesting", "/team-norway/fellestesting", "fellestesting", aktiv)] : []),
-    lenke("Samlingspunkt", "/team-norway/samlinger", "samlinger", aktiv),
-    lenke("Collegegruppen", "/team-norway/college", "college", aktiv),
-    lenke("Månedsplan", "/team-norway/manedsplan", "manedsplan", aktiv),
-    ...(visTrenerflater
-      ? [
-          lenke("Spillerutvikling", "/team-norway/spillere", "spillere", aktiv),
-          { type: "overskrift" as const, label: "Uttak" },
-          lenke("Uttaksliste", "/team-norway/uttak", "uttak", aktiv),
-          lenke("Rangliste", "/team-norway/rangliste", "rangliste", aktiv),
-          { type: "overskrift" as const, label: "Skoler" },
-          lenke("Skoleoversikt", "/team-norway/skoler", "skoler", aktiv),
-        ]
-      : []),
-    { type: "overskrift", label: "Kommunikasjon" },
-    ...(groupId
-      ? [
-          lenke("Gruppeposter", `/team-norway/${groupId}`, "gruppeposter", aktiv),
-          lenke("Dokumenter", `/team-norway/${groupId}/dokumenter`, "dokumenter", aktiv),
-        ]
-      : []),
-    { type: "lenke", label: "Samtykke", href: "/portal/meg/innstillinger/personvern/deling" },
-    { type: "overskrift", label: "Data" },
-    ...(visTrenerflater ? [lenke("Testprotokoller", "/team-norway/protokoller", "protokoller", aktiv)] : []),
-    lenke("Turneringer", "/team-norway/turneringer", "turneringer", aktiv),
-    lenke("Referansenivåer", "/team-norway/referansenivaer", "referansenivaer", aktiv),
-    { type: "lenke", label: "Analyse", href: "/portal/analysere" },
-    { type: "lenke", label: "DataGolf", href: "/portal/analysere/datagolf" },
-  ];
+type MenyValg = { aktiv: TnAktivSide; groupId?: string; visTrenerflater: boolean; kanAdministrere: boolean };
 
-  if (kanAdministrere) {
-    punkter.push(
-      { type: "overskrift", label: "Administrasjon" },
-      lenke("Trenere og tilgang", "/team-norway/tilgang", "tilgang", aktiv),
-      lenke("Inviter spiller", "/team-norway/inviter", "inviter", aktiv),
-      lenke("Trenerkatalog", "/team-norway/apparatet", "apparatet", aktiv),
-    );
-  }
-  return punkter;
+/**
+ * Sidemenyen i seks grupper (fasit: «Team Norway App delivery», runde 26.09).
+ * Spilleren ser bare ti skjermer og aldri uttak, fellestesting, fagapparat
+ * eller admin. Tomme grupper tas bort. Spillerprofil står ikke i menyen:
+ * den krever en valgt spiller og nås fra Spillerutvikling.
+ */
+export function tnHovedmeny({ aktiv, groupId, visTrenerflater: t, kanAdministrere }: MenyValg): TnMenyGruppe[] {
+  const grupper: Omit<TnMenyGruppe, "aktiv">[] = [
+    {
+      id: "daglig",
+      label: "Daglig",
+      ikon: "calendar",
+      punkter: [
+        lenke("Oversikt", "/team-norway", "oversikt", aktiv),
+        lenke("Samlinger", "/team-norway/samlinger", "samlinger", aktiv),
+        lenke("Turneringer og reise", "/team-norway/turneringer", "turneringer", aktiv),
+        lenke("Live Watch", "/team-norway/live-watch", "live-watch", aktiv),
+      ],
+    },
+    {
+      id: "spillere",
+      label: "Spillere",
+      ikon: "users",
+      punkter: [
+        ...(t ? [lenke("Spillerutvikling", "/team-norway/spillere", "spillere", aktiv), lenke("Fellestesting", "/team-norway/fellestesting", "fellestesting", aktiv)] : []),
+        lenke("College og USA", "/team-norway/college", "college", aktiv),
+        ...(t ? [lenke("Skoleoversikt", "/team-norway/skoler", "skoler", aktiv)] : []),
+      ],
+    },
+    {
+      id: "uttak",
+      label: "Uttak",
+      ikon: "check",
+      punkter: t
+        ? [
+            lenke("Uttak og kriterier", "/team-norway/uttak", "uttak", aktiv),
+            lenke("Rangliste", "/team-norway/rangliste", "rangliste", aktiv),
+            { label: "DataGolf", href: "/portal/analysere/datagolf", aktiv: false },
+          ]
+        : [],
+    },
+    {
+      id: "plan",
+      label: "Plan og fag",
+      ikon: "clock",
+      punkter: [
+        lenke("Månedsplan", "/team-norway/manedsplan", "manedsplan", aktiv),
+        ...(t
+          ? [
+              lenke("Testprotokoller", "/team-norway/protokoller", "protokoller", aktiv),
+              lenke("Referansenivåer", "/team-norway/referansenivaer", "referansenivaer", aktiv),
+              lenke("Fagapparat", "/team-norway/fagapparat", "fagapparat", aktiv),
+              { label: "Analyse", href: "/portal/analysere", aktiv: false },
+            ]
+          : []),
+      ],
+    },
+    {
+      id: "gruppe",
+      label: "Gruppe",
+      ikon: "mail",
+      punkter: groupId
+        ? [lenke("Gruppeposter", `/team-norway/${groupId}`, "gruppeposter", aktiv), lenke("Dokumenter", `/team-norway/${groupId}/dokumenter`, "dokumenter", aktiv)]
+        : [],
+    },
+    {
+      id: "admin",
+      label: t ? "Meg og admin" : "Meg",
+      ikon: "user",
+      punkter: [
+        lenke("Lisens og økonomi", "/team-norway/lisens-okonomi", "lisens", aktiv),
+        { label: "Samtykke", href: "/portal/meg/innstillinger/personvern/deling", aktiv: false },
+        ...(kanAdministrere ? [lenke("Trenere og tilgang", "/team-norway/tilgang", "tilgang", aktiv), lenke("Inviter spiller", "/team-norway/inviter", "inviter", aktiv)] : []),
+      ],
+    },
+  ];
+  return grupper.filter((g) => g.punkter.length > 0).map((g) => ({ ...g, aktiv: g.punkter.some((p) => p.aktiv) }));
+}
+
+/** Fire faste valg i mobilens bunnlinje. Resten ligger under «Mer». */
+export function tnBunnmeny({ aktiv, visTrenerflater }: MenyValg): TnBunnValg[] {
+  return visTrenerflater
+    ? [
+        { ...lenke("Oversikt", "/team-norway", "oversikt", aktiv), ikon: "menu" },
+        { ...lenke("Samlinger", "/team-norway/samlinger", "samlinger", aktiv), ikon: "calendar" },
+        { label: "Uttak", href: "/team-norway/uttak", aktiv: aktiv === "uttak" || aktiv === "rangliste", ikon: "check" },
+        { label: "Spillere", href: "/team-norway/spillere", aktiv: aktiv === "spillere" || aktiv === "fellestesting" || aktiv === "skoler", ikon: "users" },
+      ]
+    : [
+        { ...lenke("Oversikt", "/team-norway", "oversikt", aktiv), ikon: "menu" },
+        { ...lenke("Samlinger", "/team-norway/samlinger", "samlinger", aktiv), ikon: "calendar" },
+        { ...lenke("Turneringer", "/team-norway/turneringer", "turneringer", aktiv), ikon: "external-link" },
+        { ...lenke("Lisens", "/team-norway/lisens-okonomi", "lisens", aktiv), ikon: "file-text" },
+      ];
 }
 
 /**
@@ -98,7 +143,7 @@ export function tnHovedmeny({
  */
 export function tnRolleNavn(rolle: string) {
   if (rolle === "COACH") return "Trener";
-  if (rolle === "ASSISTANT") return "Hjelpetrener";
+  if (rolle === "ASSISTANT") return "Assist Coach";
   if (rolle === "PLAYER") return "Spiller";
   return rolle;
 }
@@ -128,12 +173,13 @@ export function TnShell({
   flate?: "standard" | "full";
   children: ReactNode;
 }) {
-  const punkter = tnHovedmeny({ aktiv, groupId, visTrenerflater, kanAdministrere });
+  const valg = { aktiv, groupId, visTrenerflater, kanAdministrere };
+  const grupper = tnHovedmeny(valg);
   return (
     <div style={{ display: "flex", minHeight: "100dvh", background: TN.surfacePage, color: TN.textPrimary, fontFamily: TN.font.body }}>
-      <TnRail punkter={punkter} bruker={{ navn: brukerNavn, rolle }} orgNavn="Team Norway Golf" orgUndertittel="Prestasjon" />
+      <TnRail grupper={grupper} bruker={{ navn: brukerNavn, rolle }} orgNavn="Team Norway Golf" orgUndertittel="Prestasjon" />
       <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
-        <TnRailMobil punkter={punkter} orgNavn="Team Norway Golf" />
+        <TnRailMobil grupper={grupper} bunn={tnBunnmeny(valg)} brukerNavn={brukerNavn} orgNavn="Team Norway Golf" />
         {flate === "full" ? (
           children
         ) : (
@@ -141,6 +187,8 @@ export function TnShell({
             {children}
           </main>
         )}
+        {/* Plass til den faste bunnlinjen på mobil, så siste rad aldri skjules bak den. */}
+        <div className="lg:hidden" aria-hidden="true" style={{ flex: "none", height: "calc(64px + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px))" }} />
       </div>
     </div>
   );

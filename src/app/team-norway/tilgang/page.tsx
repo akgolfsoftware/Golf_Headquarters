@@ -1,17 +1,16 @@
 /**
- * TN-18 Trenere og tilgang, valgt Claw-pakke 10.09.2026.
- * Fasit: designsystem/team-norway/templates/tn-trenere-tilgang/TnTrenereTilgang.dc.html
+ * TN-19 Trenere og tilgang.
+ * Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm TN-19.
  * Avvik:
- *   - Én kanonisk TN-gruppe; designets eksempelgrupper opprettes ikke.
- *   - Trenerkatalog og invitasjon er fortsatt egne, uferdige reiser.
- * Tilgang og lagring avgjøres på serveren; radvalget følger URL-en.
+ *   - Skjermavvikene står i tn-tilgang-visning.tsx. Tilgang og lagring
+ *     avgjøres på serveren; valgt person for «Endre» følger URL-en.
  */
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { erSportssjef, hentTeamNorwayTilganger, tnTilgangStatus } from "@/lib/domain/tn-tilgang";
 import { TnTilgangVisning } from "@/components/team-norway/tn-tilgang-visning";
 import { TnTilgangSkjema } from "@/components/team-norway/tn-tilgang-skjema";
-import { avsluttTilgangAction, settTilgangAction } from "./tn-tilgang-actions";
+import { avsluttTilgangAction, leggTilTrenerAction, settTilgangAction } from "./tn-tilgang-actions";
 
 function tilInputIso(dato: Date): string {
   return dato.toISOString().slice(0, 10);
@@ -34,6 +33,9 @@ export default async function TilgangPage({ searchParams }: { searchParams: Prom
       gruppeNavn={gruppe.name}
       rader={rader.map((rad) => ({ ...rad, status: tnTilgangStatus(rad) }))}
       valgtId={valgtRad?.userId}
+      egenId={bruker.id}
+      avslutt={avsluttTilgangAction.bind(null, gruppe.id)}
+      leggTil={leggTilTrenerAction}
       skjema={valgtRad ? (
         <TnTilgangSkjema
           key={valgtRad.userId}

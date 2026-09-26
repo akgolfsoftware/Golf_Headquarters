@@ -11,6 +11,7 @@ await build({
   entryPoints: { live: resolve(root, "tests/visual/portering/live-fixture.tsx"), brief: resolve(root, "tests/visual/portering/brief-fixture.tsx"), plan: resolve(root, "tests/visual/portering/plan-fixture.tsx"), idag: resolve(root, "tests/visual/portering/idag-fixture.tsx"), playernav: resolve(root, "tests/visual/portering/player-nav-fixture.tsx"), wang: resolve(root, "tests/visual/portering/wang-login-fixture.tsx"), fixture: resolve(root, "tests/visual/portering/tn-tilgang-fixture.tsx"), trainlock: resolve(root, "tests/visual/portering/train-lock-fixture.tsx") },
   outdir: output,
   bundle: true,
+  loader: { ".png": "dataurl" },
   format: "iife",
   jsx: "automatic",
   define: { "process.env.NODE_ENV": '"development"' },
