@@ -4,6 +4,20 @@ Kun det som gjelder nå. Full historikk (1 207 linjer, alle overstyrte valg): [b
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## «Venter på coach» er et statusord, og en test teller bare med alle slag (Anders 26.09.2026, bindende)
+
+Avklart etter runde 3 i Precision Athletics (PH-11, PH-12, PH-15).
+
+- **«Venter på coach»** er statusen på en plan spilleren har sendt til coach for godkjenning.
+  Det står ved siden av «Venter på spiller» i `docs/ordbok.md` §5, rad Plan.
+- **En test teller bare når alle slag er registrert.** Avsluttes testen før, blir det ikke noe
+  resultat. PH-15 er tegnet med 10 slag. Koden gjør dette allerede for Team Norway-scorekortet:
+  `saveTnTest` lagrer et `TestResult` bare når `tnValidate` godtar alle forsøk, ellers blir
+  økten `ABORTED` uten resultat.
+
+Krever ingen kodeendring — bekrefter dagens tilstand. Ordboka er rettet i samme PR. I Claude
+Design-prosjektet (`7d7c2994`) fjernes merket «Uavklart — venter på Anders» på begge punktene.
+
 ## PIPELINES ER ENESTE KILDE FOR TURNERINGSRESULTATER (Anders 26.09.2026, bindende)
 
 **`ak-golf-pipelines` er det eneste som henter inn turneringsresultater. HQ sin egen
