@@ -1,10 +1,10 @@
 {
   "metode": "git ls-files -co --exclude-standard; eksisterende filer; genererte registerfiler utelatt. Kun metadata, ikke kundedata eller miljøverdier.",
   "telling": {
-    "prosjektfiler": 5660,
+    "prosjektfiler": 5720,
     "sidefiler": 496,
-    "prismamodeller": 197,
-    "enhetstestfiler": 497,
+    "prismamodeller": 198,
+    "enhetstestfiler": 502,
     "nettlesertestfiler": 41,
     "trainLockTegninger": 219
   },
@@ -88,7 +88,7 @@
     {
       "sti": ".claude/rules/beslutninger.md",
       "omrade": "prosjektoppsett",
-      "byte": 5209
+      "byte": 20650
     },
     {
       "sti": ".claude/rules/gfgk-junior.md",
@@ -223,12 +223,12 @@
     {
       "sti": ".claude/skills/ak-hq-design/SKILL.md",
       "omrade": "prosjektoppsett",
-      "byte": 9758
+      "byte": 9839
     },
     {
       "sti": ".claude/skills/ak-merkevare/SKILL.md",
       "omrade": "prosjektoppsett",
-      "byte": 9544
+      "byte": 9627
     },
     {
       "sti": ".claude/skills/ak-personvern/SKILL.md",
@@ -238,7 +238,7 @@
     {
       "sti": ".claude/skills/ak-prompt-master/SKILL.md",
       "omrade": "prosjektoppsett",
-      "byte": 3883
+      "byte": 3935
     },
     {
       "sti": ".claude/skills/ak-sikkerhet/SKILL.md",
@@ -2564,7 +2564,7 @@
     {
       "sti": "AGENTS.md",
       "omrade": "prosjektoppsett",
-      "byte": 7381
+      "byte": 7473
     },
     {
       "sti": "CLAUDE.md",
@@ -2600,6 +2600,121 @@
       "sti": "data/spillere-mal.csv",
       "omrade": "datamal",
       "byte": 415
+    },
+    {
+      "sti": "designsystem/ak-golf-ds/components/app/app.css",
+      "omrade": "designkilde",
+      "byte": 11204
+    },
+    {
+      "sti": "designsystem/ak-golf-ds/components/buttons/buttons.css",
+      "omrade": "designkilde",
+      "byte": 4635
+    },
+    {
+      "sti": "designsystem/ak-golf-ds/components/components.css",
+      "omrade": "designkilde",
+      "byte": 336
+    },
+    {
+      "sti": "designsystem/ak-golf-ds/components/instrument.css",
+      "omrade": "designkilde",
+      "byte": 1377
+    },
+    {
+      "sti": "designsystem/ak-golf-ds/components/marketing/marketing.css",
+      "omrade": "designkilde",
+      "byte": 14191
+    },
+    {
+      "sti": "designsystem/ak-golf-ds/components/measurement/datagolf.css",
+      "omrade": "designkilde",
+      "byte": 5468
+    },
+    {
+      "sti": "designsystem/ak-golf-ds/components/measurement/measurement.css",
+      "omrade": "designkilde",
+      "byte": 14090
+    },
+    {
+      "sti": "designsystem/ak-golf-ds/components/navigation/navigation.css",
+      "omrade": "designkilde",
+      "byte": 7236
+    },
+    {
+      "sti": "designsystem/ak-golf-ds/components/states/states.css",
+      "omrade": "designkilde",
+      "byte": 1392
+    },
+    {
+      "sti": "designsystem/ak-golf-ds/components/surfaces/surfaces.css",
+      "omrade": "designkilde",
+      "byte": 4290
+    },
+    {
+      "sti": "designsystem/ak-golf-ds/components/typography/typography.css",
+      "omrade": "designkilde",
+      "byte": 1031
+    },
+    {
+      "sti": "designsystem/ak-golf-ds/LES-MEG.md",
+      "omrade": "designkilde",
+      "byte": 1796
+    },
+    {
+      "sti": "designsystem/ak-golf-ds/styles.css",
+      "omrade": "designkilde",
+      "byte": 362
+    },
+    {
+      "sti": "designsystem/ak-golf-ds/tokens.json",
+      "omrade": "designkilde",
+      "byte": 30750
+    },
+    {
+      "sti": "designsystem/ak-golf-ds/tokens/base.css",
+      "omrade": "designkilde",
+      "byte": 986
+    },
+    {
+      "sti": "designsystem/ak-golf-ds/tokens/colors.css",
+      "omrade": "designkilde",
+      "byte": 8674
+    },
+    {
+      "sti": "designsystem/ak-golf-ds/tokens/fonts.css",
+      "omrade": "designkilde",
+      "byte": 1361
+    },
+    {
+      "sti": "designsystem/ak-golf-ds/tokens/layout.css",
+      "omrade": "designkilde",
+      "byte": 1002
+    },
+    {
+      "sti": "designsystem/ak-golf-ds/tokens/marketing.css",
+      "omrade": "designkilde",
+      "byte": 1405
+    },
+    {
+      "sti": "designsystem/ak-golf-ds/tokens/motion.css",
+      "omrade": "designkilde",
+      "byte": 1017
+    },
+    {
+      "sti": "designsystem/ak-golf-ds/tokens/spacing.css",
+      "omrade": "designkilde",
+      "byte": 773
+    },
+    {
+      "sti": "designsystem/ak-golf-ds/tokens/typography.css",
+      "omrade": "designkilde",
+      "byte": 2192
+    },
+    {
+      "sti": "designsystem/ak-golf-ds/web.css",
+      "omrade": "designkilde",
+      "byte": 223
     },
     {
       "sti": "designsystem/ak-golf/_adherence.oxlintrc.json",
@@ -4094,7 +4209,12 @@
     {
       "sti": "designsystem/README.md",
       "omrade": "designkilde",
-      "byte": 9855
+      "byte": 10037
+    },
+    {
+      "sti": "designsystem/team-norway-app/LES-MEG.md",
+      "omrade": "designkilde",
+      "byte": 1467
     },
     {
       "sti": "designsystem/team-norway/_adherence.oxlintrc.json",
@@ -4115,6 +4235,11 @@
       "sti": "designsystem/team-norway/.thumbnail",
       "omrade": "designkilde",
       "byte": 11170
+    },
+    {
+      "sti": "designsystem/team-norway/assets/logo/team-norway-golf-knockout-white.png",
+      "omrade": "designkilde",
+      "byte": 62363
     },
     {
       "sti": "designsystem/team-norway/assets/logo/team-norway-golf-original.jpg",
@@ -4539,7 +4664,7 @@
     {
       "sti": "designsystem/team-norway/LES-MEG.md",
       "omrade": "designkilde",
-      "byte": 4396
+      "byte": 4810
     },
     {
       "sti": "designsystem/team-norway/prompt-batch-2.md",
@@ -7087,6 +7212,11 @@
       "byte": 4421
     },
     {
+      "sti": "docs/beslutningsgrunnlag/turneringsdata-spillerprofiler-analyse-2026-09-26.md",
+      "omrade": "dokumentasjon",
+      "byte": 22246
+    },
+    {
       "sti": "docs/demo-sprak-og-treningsplanlegging.md",
       "omrade": "dokumentasjon",
       "byte": 22937
@@ -7369,7 +7499,7 @@
     {
       "sti": "docs/gdpr/datakart.md",
       "omrade": "dokumentasjon",
-      "byte": 11216
+      "byte": 12597
     },
     {
       "sti": "docs/gdpr/personvernerklaering-utkast.md",
@@ -7509,7 +7639,7 @@
     {
       "sti": "docs/PLATTFORM-KART.md",
       "omrade": "dokumentasjon",
-      "byte": 14197
+      "byte": 14270
     },
     {
       "sti": "docs/qa/knapp-audit-lansering.md",
@@ -7630,6 +7760,36 @@
       "sti": "docs/treningsplanlegger/wang-toppidrett/arshjul-2026-2027.md",
       "omrade": "dokumentasjon",
       "byte": 8866
+    },
+    {
+      "sti": "docs/treningsplanlegger/wang-toppidrett/design-handoff-arsplan-2026-27-v2/kilde/00-terminliste-2027-utkast.md",
+      "omrade": "dokumentasjon",
+      "byte": 2620
+    },
+    {
+      "sti": "docs/treningsplanlegger/wang-toppidrett/design-handoff-arsplan-2026-27-v2/kilde/01-periodebrev.md",
+      "omrade": "dokumentasjon",
+      "byte": 13908
+    },
+    {
+      "sti": "docs/treningsplanlegger/wang-toppidrett/design-handoff-arsplan-2026-27-v2/kilde/02-manedsplan.md",
+      "omrade": "dokumentasjon",
+      "byte": 5876
+    },
+    {
+      "sti": "docs/treningsplanlegger/wang-toppidrett/design-handoff-arsplan-2026-27-v2/kilde/03-ukeplan.md",
+      "omrade": "dokumentasjon",
+      "byte": 19954
+    },
+    {
+      "sti": "docs/treningsplanlegger/wang-toppidrett/design-handoff-arsplan-2026-27-v2/kilde/04-oktmaler.md",
+      "omrade": "dokumentasjon",
+      "byte": 13997
+    },
+    {
+      "sti": "docs/treningsplanlegger/wang-toppidrett/design-handoff-arsplan-2026-27-v2/README.md",
+      "omrade": "dokumentasjon",
+      "byte": 2446
     },
     {
       "sti": "docs/treningsplanlegger/wang-toppidrett/design-handoff-arsplan-2026-27/DATA-KONTRAKT.md",
@@ -7774,7 +7934,7 @@
     {
       "sti": "package.json",
       "omrade": "prosjektoppsett",
-      "byte": 6311
+      "byte": 6357
     },
     {
       "sti": "playwright.config.ts",
@@ -8249,7 +8409,7 @@
     {
       "sti": "prisma/schema.prisma",
       "omrade": "databasekilde",
-      "byte": 217517
+      "byte": 218967
     },
     {
       "sti": "prisma/scripts/map-fasilitet-krav.ts",
@@ -10572,6 +10732,16 @@
       "byte": 2070
     },
     {
+      "sti": "public/logos/logo-ak-golf-academy-negative.svg",
+      "omrade": "offentlig-innhold",
+      "byte": 14117
+    },
+    {
+      "sti": "public/logos/logo-ak-golf-academy.svg",
+      "omrade": "offentlig-innhold",
+      "byte": 14117
+    },
+    {
       "sti": "public/logos/logo-ak-golf-hq-negative.svg",
       "omrade": "offentlig-innhold",
       "byte": 12179
@@ -10655,6 +10825,26 @@
       "sti": "public/team-wang/apple-touch-icon.png",
       "omrade": "offentlig-innhold",
       "byte": 5210
+    },
+    {
+      "sti": "public/team-wang/hero/foreldre-roing.jpg",
+      "omrade": "offentlig-innhold",
+      "byte": 292809
+    },
+    {
+      "sti": "public/team-wang/hero/kalender-langrenn.jpg",
+      "omrade": "offentlig-innhold",
+      "byte": 307702
+    },
+    {
+      "sti": "public/team-wang/hero/skole-fotball.jpg",
+      "omrade": "offentlig-innhold",
+      "byte": 270782
+    },
+    {
+      "sti": "public/team-wang/hero/trening-golf.jpg",
+      "omrade": "offentlig-innhold",
+      "byte": 240910
     },
     {
       "sti": "public/team-wang/icon-192-maskable.png",
@@ -10742,6 +10932,16 @@
       "byte": 1920
     },
     {
+      "sti": "scripts/add-exercise-definition-v2-akser-2026-09-23.ts",
+      "omrade": "verktoy",
+      "byte": 2239
+    },
+    {
+      "sti": "scripts/add-follow-up-case-2026-09-23.ts",
+      "omrade": "verktoy",
+      "byte": 2046
+    },
+    {
       "sti": "scripts/add-slag-detaljer-2026-09-16.ts",
       "omrade": "verktoy",
       "byte": 3774
@@ -10757,9 +10957,19 @@
       "byte": 4061
     },
     {
+      "sti": "scripts/add-utfordring-retning-2026-09-22.ts",
+      "omrade": "verktoy",
+      "byte": 2079
+    },
+    {
       "sti": "scripts/agency-shot.mjs",
       "omrade": "verktoy",
       "byte": 2278
+    },
+    {
+      "sti": "scripts/ak-golf-ds-tokens.mjs",
+      "omrade": "verktoy",
+      "byte": 3003
     },
     {
       "sti": "scripts/ak-golf-tokens.mjs",
@@ -11547,6 +11757,11 @@
       "byte": 2953
     },
     {
+      "sti": "scripts/speil-ak-golf-ds.mjs",
+      "omrade": "verktoy",
+      "byte": 2934
+    },
+    {
       "sti": "scripts/speil-ak-golf.mjs",
       "omrade": "verktoy",
       "byte": 4534
@@ -11832,11 +12047,6 @@
       "byte": 520
     },
     {
-      "sti": "src/app/(marketing)/forside-ak/page.tsx",
-      "omrade": "appkode",
-      "byte": 785
-    },
-    {
       "sti": "src/app/(marketing)/jobb/page.tsx",
       "omrade": "appkode",
       "byte": 519
@@ -11859,7 +12069,7 @@
     {
       "sti": "src/app/(marketing)/layout.tsx",
       "omrade": "appkode",
-      "byte": 3663
+      "byte": 4028
     },
     {
       "sti": "src/app/(marketing)/mulligan/page.tsx",
@@ -11874,7 +12084,7 @@
     {
       "sti": "src/app/(marketing)/page.tsx",
       "omrade": "appkode",
-      "byte": 774
+      "byte": 1928
     },
     {
       "sti": "src/app/(marketing)/personvern/page.tsx",
@@ -13754,17 +13964,17 @@
     {
       "sti": "src/app/admin/queue/actions.test.ts",
       "omrade": "test",
-      "byte": 5231
+      "byte": 5993
     },
     {
       "sti": "src/app/admin/queue/actions.ts",
       "omrade": "appkode",
-      "byte": 1770
+      "byte": 2238
     },
     {
       "sti": "src/app/admin/queue/page.tsx",
       "omrade": "appkode",
-      "byte": 8323
+      "byte": 8089
     },
     {
       "sti": "src/app/admin/queue/status.test.ts",
@@ -13774,7 +13984,7 @@
     {
       "sti": "src/app/admin/queue/status.ts",
       "omrade": "appkode",
-      "byte": 278
+      "byte": 282
     },
     {
       "sti": "src/app/admin/recording/page.tsx",
@@ -15064,7 +15274,7 @@
     {
       "sti": "src/app/gfgk-junior/_data/hent-gfgk-data.ts",
       "omrade": "appkode",
-      "byte": 2567
+      "byte": 3051
     },
     {
       "sti": "src/app/gfgk-junior/_data/veileder-artikler.ts",
@@ -15717,9 +15927,14 @@
       "byte": 16525
     },
     {
+      "sti": "src/app/portal/(legacy)/utfordringer/actions.test.ts",
+      "omrade": "test",
+      "byte": 6110
+    },
+    {
       "sti": "src/app/portal/(legacy)/utfordringer/actions.ts",
       "omrade": "appkode",
-      "byte": 5504
+      "byte": 8354
     },
     {
       "sti": "src/app/portal/(legacy)/utfordringer/loading.tsx",
@@ -16494,7 +16709,7 @@
     {
       "sti": "src/app/portal/meg/innstillinger/ai-coach/page.tsx",
       "omrade": "appkode",
-      "byte": 4726
+      "byte": 4724
     },
     {
       "sti": "src/app/portal/meg/innstillinger/anlegg/page.tsx",
@@ -16600,6 +16815,36 @@
       "sti": "src/app/portal/meg/profil/page.tsx",
       "omrade": "appkode",
       "byte": 2617
+    },
+    {
+      "sti": "src/app/portal/meg/resultater/actions.ts",
+      "omrade": "appkode",
+      "byte": 4983
+    },
+    {
+      "sti": "src/app/portal/meg/resultater/angre-knapp.tsx",
+      "omrade": "appkode",
+      "byte": 907
+    },
+    {
+      "sti": "src/app/portal/meg/resultater/koble-profil.tsx",
+      "omrade": "appkode",
+      "byte": 5493
+    },
+    {
+      "sti": "src/app/portal/meg/resultater/loading.tsx",
+      "omrade": "appkode",
+      "byte": 127
+    },
+    {
+      "sti": "src/app/portal/meg/resultater/page.tsx",
+      "omrade": "appkode",
+      "byte": 2365
+    },
+    {
+      "sti": "src/app/portal/meg/resultater/resultater-visning.tsx",
+      "omrade": "appkode",
+      "byte": 6980
     },
     {
       "sti": "src/app/portal/meg/sikkerhet/2fa/page.tsx",
@@ -16729,7 +16974,7 @@
     {
       "sti": "src/app/portal/spiller/[spillerId]/page.tsx",
       "omrade": "appkode",
-      "byte": 5838
+      "byte": 6141
     },
     {
       "sti": "src/app/portal/statistikk/[metric]/page.tsx",
@@ -17089,7 +17334,7 @@
     {
       "sti": "src/app/team-norway/[groupId]/dokumenter/page.tsx",
       "omrade": "appkode",
-      "byte": 4183
+      "byte": 3112
     },
     {
       "sti": "src/app/team-norway/[groupId]/loading.tsx",
@@ -17099,7 +17344,7 @@
     {
       "sti": "src/app/team-norway/[groupId]/page.tsx",
       "omrade": "appkode",
-      "byte": 14953
+      "byte": 14591
     },
     {
       "sti": "src/app/team-norway/apparatet/page.tsx",
@@ -17129,7 +17374,7 @@
     {
       "sti": "src/app/team-norway/layout.tsx",
       "omrade": "appkode",
-      "byte": 993
+      "byte": 1205
     },
     {
       "sti": "src/app/team-norway/loading.tsx",
@@ -17144,7 +17389,7 @@
     {
       "sti": "src/app/team-norway/page.tsx",
       "omrade": "appkode",
-      "byte": 6584
+      "byte": 3888
     },
     {
       "sti": "src/app/team-norway/protokoller/[id]/page.tsx",
@@ -17184,7 +17429,7 @@
     {
       "sti": "src/app/team-norway/spiller/[spillerId]/page.tsx",
       "omrade": "appkode",
-      "byte": 7067
+      "byte": 5661
     },
     {
       "sti": "src/app/team-norway/spillere/page.tsx",
@@ -17249,32 +17494,32 @@
     {
       "sti": "src/app/team-wang/_components/arsplan-2026-27/arsplan-shell.tsx",
       "omrade": "appkode",
-      "byte": 7009
+      "byte": 7008
     },
     {
       "sti": "src/app/team-wang/_components/arsplan-2026-27/fane-foreldre-arsplan.tsx",
       "omrade": "appkode",
-      "byte": 10124
+      "byte": 10440
     },
     {
       "sti": "src/app/team-wang/_components/arsplan-2026-27/fane-kalender-arsplan.tsx",
       "omrade": "appkode",
-      "byte": 15749
+      "byte": 16097
     },
     {
       "sti": "src/app/team-wang/_components/arsplan-2026-27/fane-skole.tsx",
       "omrade": "appkode",
-      "byte": 7689
+      "byte": 8649
     },
     {
       "sti": "src/app/team-wang/_components/arsplan-2026-27/fane-trening.tsx",
       "omrade": "appkode",
-      "byte": 19274
+      "byte": 23817
     },
     {
       "sti": "src/app/team-wang/_components/arsplan-2026-27/primitiver.tsx",
       "omrade": "appkode",
-      "byte": 6667
+      "byte": 9135
     },
     {
       "sti": "src/app/team-wang/_components/fane-foreldre.tsx",
@@ -17339,7 +17584,7 @@
     {
       "sti": "src/app/team-wang/_data/arsplan-fasit-2026-27.ts",
       "omrade": "appkode",
-      "byte": 50322
+      "byte": 53889
     },
     {
       "sti": "src/app/team-wang/_data/coach-arsplan.ts",
@@ -18099,7 +18344,7 @@
     {
       "sti": "src/components/admin/v2/AkStigenV2.tsx",
       "omrade": "appkode",
-      "byte": 8731
+      "byte": 8950
     },
     {
       "sti": "src/components/admin/v2/analyse/AnalyseHode.tsx",
@@ -18169,7 +18414,7 @@
     {
       "sti": "src/components/admin/v2/GruppeDetaljV2.tsx",
       "omrade": "appkode",
-      "byte": 9410
+      "byte": 9411
     },
     {
       "sti": "src/components/admin/v2/GruppeFaner.tsx",
@@ -18429,7 +18674,7 @@
     {
       "sti": "src/components/admin/v2/StallV2.tsx",
       "omrade": "appkode",
-      "byte": 25277
+      "byte": 25630
     },
     {
       "sti": "src/components/admin/v2/tournaments/AdminTurneringerTrainLock.tsx",
@@ -18767,11 +19012,6 @@
       "byte": 6753
     },
     {
-      "sti": "src/components/marketing/ak-sider/ForsideAK.tsx",
-      "omrade": "appkode",
-      "byte": 11592
-    },
-    {
       "sti": "src/components/marketing/ak-sider/JuniorAK.tsx",
       "omrade": "appkode",
       "byte": 9085
@@ -18852,24 +19092,19 @@
       "byte": 3611
     },
     {
-      "sti": "src/components/marketing/landing/forside-reise.css",
+      "sti": "src/components/marketing/ds-sider/forside-mork.module.css",
       "omrade": "appkode",
-      "byte": 2956
+      "byte": 20035
+    },
+    {
+      "sti": "src/components/marketing/ds-sider/ForsideMork.tsx",
+      "omrade": "appkode",
+      "byte": 29919
     },
     {
       "sti": "src/components/marketing/landing/MarkedBookingPauset.tsx",
       "omrade": "appkode",
       "byte": 4363
-    },
-    {
-      "sti": "src/components/marketing/landing/MarkedForside.tsx",
-      "omrade": "appkode",
-      "byte": 13762
-    },
-    {
-      "sti": "src/components/marketing/landing/MarkedForsideReise.tsx",
-      "omrade": "appkode",
-      "byte": 18997
     },
     {
       "sti": "src/components/marketing/landing/MarkedFot.tsx",
@@ -19629,7 +19864,7 @@
     {
       "sti": "src/components/portal/v2/CoachAIV2.tsx",
       "omrade": "appkode",
-      "byte": 9452
+      "byte": 9552
     },
     {
       "sti": "src/components/portal/v2/CoachHubV2.tsx",
@@ -19899,7 +20134,7 @@
     {
       "sti": "src/components/portal/v2/InnstillingerV2.tsx",
       "omrade": "appkode",
-      "byte": 12622
+      "byte": 12620
     },
     {
       "sti": "src/components/portal/v2/InnstillingerVarslerV2.tsx",
@@ -20269,12 +20504,12 @@
     {
       "sti": "src/components/portal/v2/WorkbenchV2.tsx",
       "omrade": "appkode",
-      "byte": 171882
+      "byte": 185010
     },
     {
       "sti": "src/components/portal/v2/WorkbenchV2Mobil.tsx",
       "omrade": "appkode",
-      "byte": 7099
+      "byte": 7739
     },
     {
       "sti": "src/components/portal/v2/WorkbenchV2Sheets.tsx",
@@ -20674,17 +20909,17 @@
     {
       "sti": "src/components/team-norway/core.tsx",
       "omrade": "appkode",
-      "byte": 12145
+      "byte": 12867
     },
     {
       "sti": "src/components/team-norway/rail-mobil.tsx",
       "omrade": "appkode",
-      "byte": 3431
+      "byte": 4538
     },
     {
       "sti": "src/components/team-norway/tn-data-table.tsx",
       "omrade": "appkode",
-      "byte": 4709
+      "byte": 4680
     },
     {
       "sti": "src/components/team-norway/tn-dokument-opplasting.tsx",
@@ -20694,7 +20929,7 @@
     {
       "sti": "src/components/team-norway/tn-dokument-tabell.tsx",
       "omrade": "appkode",
-      "byte": 5802
+      "byte": 5832
     },
     {
       "sti": "src/components/team-norway/tn-inviter-spiller.tsx",
@@ -20714,22 +20949,22 @@
     {
       "sti": "src/components/team-norway/tn-post-komponer.tsx",
       "omrade": "appkode",
-      "byte": 4505
+      "byte": 4472
     },
     {
       "sti": "src/components/team-norway/tn-post-tidslinje.tsx",
       "omrade": "appkode",
-      "byte": 11054
+      "byte": 11084
     },
     {
       "sti": "src/components/team-norway/tn-registrerte-skjermer.tsx",
       "omrade": "appkode",
-      "byte": 21023
+      "byte": 23973
     },
     {
       "sti": "src/components/team-norway/tn-shell.tsx",
       "omrade": "appkode",
-      "byte": 7803
+      "byte": 8593
     },
     {
       "sti": "src/components/team-norway/tn-tilgang-skjema.tsx",
@@ -20739,12 +20974,12 @@
     {
       "sti": "src/components/team-norway/tn-tilgang-visning.module.css",
       "omrade": "appkode",
-      "byte": 3713
+      "byte": 3562
     },
     {
       "sti": "src/components/team-norway/tn-tilgang-visning.tsx",
       "omrade": "appkode",
-      "byte": 5934
+      "byte": 5661
     },
     {
       "sti": "src/components/teknisk-plan/constants.test.ts",
@@ -22272,9 +22507,14 @@
       "byte": 1278
     },
     {
+      "sti": "src/lib/agencyos/ak-stigen-data.test.ts",
+      "omrade": "test",
+      "byte": 1979
+    },
+    {
       "sti": "src/lib/agencyos/ak-stigen-data.ts",
       "omrade": "appkode",
-      "byte": 4914
+      "byte": 5682
     },
     {
       "sti": "src/lib/agencyos/coach-reise.test.ts",
@@ -23547,6 +23787,16 @@
       "byte": 2301
     },
     {
+      "sti": "src/lib/domain/bruker-status.test.ts",
+      "omrade": "test",
+      "byte": 903
+    },
+    {
+      "sti": "src/lib/domain/bruker-status.ts",
+      "omrade": "appkode",
+      "byte": 990
+    },
+    {
       "sti": "src/lib/domain/cs-progression.ts",
       "omrade": "appkode",
       "byte": 5513
@@ -24234,7 +24484,7 @@
     {
       "sti": "src/lib/gdpr/slett-eksterne-data.ts",
       "omrade": "appkode",
-      "byte": 8705
+      "byte": 9120
     },
     {
       "sti": "src/lib/gdpr/slett-gamle-feillogger.test.ts",
@@ -24319,7 +24569,7 @@
     {
       "sti": "src/lib/gruppe-kalender/hent-data.ts",
       "omrade": "appkode",
-      "byte": 3556
+      "byte": 3995
     },
     {
       "sti": "src/lib/gruppe-kalender/types.ts",
@@ -26392,6 +26642,26 @@
       "byte": 897
     },
     {
+      "sti": "src/lib/profil-kobling/data.ts",
+      "omrade": "appkode",
+      "byte": 4023
+    },
+    {
+      "sti": "src/lib/profil-kobling/regler.test.ts",
+      "omrade": "test",
+      "byte": 4290
+    },
+    {
+      "sti": "src/lib/profil-kobling/regler.ts",
+      "omrade": "appkode",
+      "byte": 4245
+    },
+    {
+      "sti": "src/lib/profil-kobling/typer.ts",
+      "omrade": "appkode",
+      "byte": 3124
+    },
+    {
       "sti": "src/lib/push.ts",
       "omrade": "appkode",
       "byte": 2918
@@ -27349,7 +27619,7 @@
     {
       "sti": "src/lib/v2/team-norway.ts",
       "omrade": "appkode",
-      "byte": 6415
+      "byte": 6801
     },
     {
       "sti": "src/lib/v2/tema-default.ts",
@@ -27534,7 +27804,7 @@
     {
       "sti": "src/lib/workbench/load-workbench.ts",
       "omrade": "appkode",
-      "byte": 38224
+      "byte": 38641
     },
     {
       "sti": "src/lib/workbench/locked-blocks.test.ts",
@@ -27667,6 +27937,21 @@
       "byte": 1609
     },
     {
+      "sti": "src/lib/workbench/teknisk-plan-panel-typer.test.ts",
+      "omrade": "test",
+      "byte": 3573
+    },
+    {
+      "sti": "src/lib/workbench/teknisk-plan-panel-typer.ts",
+      "omrade": "appkode",
+      "byte": 5401
+    },
+    {
+      "sti": "src/lib/workbench/teknisk-plan-panel.ts",
+      "omrade": "appkode",
+      "byte": 4932
+    },
+    {
       "sti": "src/lib/workbench/turnering-actions.ts",
       "omrade": "appkode",
       "byte": 1622
@@ -27747,6 +28032,21 @@
       "byte": 104
     },
     {
+      "sti": "src/styles/ak-golf-ds-grunnlag.css",
+      "omrade": "appkode",
+      "byte": 2367
+    },
+    {
+      "sti": "src/styles/ak-golf-ds-tokens.generert.css",
+      "omrade": "appkode",
+      "byte": 15520
+    },
+    {
+      "sti": "src/styles/ak-golf-ds.css",
+      "omrade": "appkode",
+      "byte": 1483
+    },
+    {
       "sti": "src/styles/ak-golf-grunnlag.css",
       "omrade": "appkode",
       "byte": 3275
@@ -27779,7 +28079,7 @@
     {
       "sti": "src/styles/team-norway-tokens.css",
       "omrade": "appkode",
-      "byte": 8016
+      "byte": 8819
     },
     {
       "sti": "src/styles/train-lock-tokens.css",
@@ -27804,7 +28104,7 @@
     {
       "sti": "src/styles/wang-tokens.css",
       "omrade": "appkode",
-      "byte": 7542
+      "byte": 7956
     },
     {
       "sti": "src/styles/workbench-lov.css",
@@ -27914,7 +28214,7 @@
     {
       "sti": "tests/e2e/bredde-gate.spec.ts",
       "omrade": "test",
-      "byte": 4506
+      "byte": 6152
     },
     {
       "sti": "tests/e2e/coach-scope-idor.spec.ts",
@@ -27974,7 +28274,7 @@
     {
       "sti": "tests/e2e/marked-ak-golf.spec.ts",
       "omrade": "test",
-      "byte": 1521
+      "byte": 1743
     },
     {
       "sti": "tests/e2e/marketing-cta.spec.ts",
@@ -28354,7 +28654,7 @@
     {
       "sti": "vercel.json",
       "omrade": "prosjektoppsett",
-      "byte": 5598
+      "byte": 6449
     }
   ]
 }
