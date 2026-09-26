@@ -4,6 +4,25 @@ Kun det som gjelder nå. Full historikk (1 207 linjer, alle overstyrte valg): [b
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## Klippekort, rust i avslutt-dialoger og «Følg med» (Anders 26.09.2026, bindende)
+
+Svar på de åpne punktene etter runde 5 i Precision Athletics (PH-23, PH-25, AG-03).
+
+- **Klippekortet gjelder coaching-pakkene Performance og Performance Pro**, ikke bare privattime
+  60 min. Anders: «Klippekort er for subscription Performance og Pro». Klippene er pakkens
+  credits (Performance 2, Performance Pro 4 per måned, BUSINESS-RULES §Coaching-pakker); én
+  coachet økt trekker ett klipp. Pakkene vises aldri som app-nivå.
+- **Farger følger gjeldende designsystem.** Anders: «Vil ha farger til gjeldende design system».
+  Bekreftknappen i avslutt-dialogene (Avbestill i PH-23, Avslutt abonnement i PH-25) er rust,
+  fordi rust er signalet for det som avslutter eller ødelegger (§PRECISION ATHLETICS).
+- **Oppfølgingskøens kolonne heter «Følg med»**, ikke «Watch». Avgjør det første av fire
+  navnevalg i AG-03b-blokken under.
+
+Krever ingen kodeendring — bekrefter dagens tilstand: `src/app/admin/queue/status.ts` har
+allerede etiketten «Følg med», og booking trekker klipp fra `Subscription.creditsRemaining`
+(`src/lib/portal-booking/bekreft-data.ts`). I Claude Design-prosjektet (`7d7c2994`) rettes
+antakelsen om klippekort i PH-23 og merket «Uavklart» på «Følg med» fjernes.
+
 ## FARGE BETYR AKSE, OG INGENTING ANNET (Anders 26.09.2026, bindende)
 
 Workbench blandet svart-hvitt (årskurve, periodefelt) med sterke farger (ukefordeling, øktkort).
@@ -162,9 +181,9 @@ porting av de tre ferdige områdene.
    - Caddie-samtale: `getOrCreateActiveConversation()` har null kallere i dag, og eneste
      chat-kaller sender tom `conversationId` — uten dette kan forslagsflyten i AG-14 aldri
      lagre et utkast. Se `agencyos-handover/AG-14-manifest.md`.
-3. **Fire navnevalg venter på Anders før tekst fryses i kode** — hver er én linje å rette
+3. **Navnevalg som venter på Anders (ett avgjort 26.09) før tekst fryses i kode** — hver er én linje å rette
    når svaret foreligger:
-   - «Watch»-kolonnen i AG-03b: behold engelsk, eller bytt til «Følg med»?
+   - ~~«Watch»-kolonnen i AG-03b~~ — avgjort 26.09: «Følg med» (§Klippekort, rust i avslutt-dialoger og «Følg med»).
    - Caddie-navnet i UI: koden sier «Coach AI», «AI-coach» og «AI om {fornavn}» om hverandre
      for samme funksjon (PH-16). Ordboken sier «Caddie».
    - «Merge» (AG-04) vs. «Slå sammen» (AG-10) er samme handling med to navn og to rust-svar.
