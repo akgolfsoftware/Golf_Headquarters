@@ -6407,6 +6407,12 @@ model WorkbenchSession {
   // (OW-3 fase 2). Fjernes i fase 6 når training_plan_sessions slettes.
   migrertFraTrainingPlanSessionId String? @unique
 
+  // Belastning og anstrengelse (sRPE, 26.09.2026):
+  // perceivedEffort: 1–10 (Borg CR-10 / Foster-skala)
+  // actualMinutes: faktisk gjennomført tid i minutter (hvis ulik durationMinutes)
+  perceivedEffort Int?
+  actualMinutes   Int?
+
   drills WorkbenchDrill[]
 
   @@index([playerId, date])

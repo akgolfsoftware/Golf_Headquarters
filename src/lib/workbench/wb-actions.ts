@@ -1727,6 +1727,74 @@ export async function completeSession(
   return settStatus(sessionId, "COMPLETED");
 }
 
+export const UpdateSessionEffortSchema = z.object({
+  sessionId: z.string().min(1),
+  perceivedEffort: z.number().int().min(1).max(10).nullable().optional(),
+  actualMinutes: z.number().int().min(1).max(1440).nullable().optional(),
+});
+
+export type UpdateSessionEffortInput = z.infer<typeof UpdateSessionEffortSchema>;
+
+/**
+ * Oppdaterer opplevd anstrengelse (sRPE 1–10) og faktisk tidsbruk på en økt.
+ * Tilgjengelig for både spiller og coach.
+ */
+export async function updateSessionEffort(
+  input: UpdateSessionEffortInput
+): Promise<WbResultat<WorkbenchSession>> {
+  const parsed = UpdateSessionEffortSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, error: "Ugyldige verdier for anstrengelse eller tid." };
+  }
+
+  const treff = await hentMedTilgang(parsed.data.sessionId);
+  if ("feil" in treff) return { ok: false, error: treff.feil };
+
+  const updated = await prisma.workbenchSession.update({
+    where: { id: parsed.data.sessionId },
+    data: {
+      perceivedEffort: parsed.data.perceivedEffort,
+      actualMinutes: parsed.data.actualMinutes,
+    },
+    include: { drills: true },
+  });
+
+  return { ok: true, data: mapSession(updated) };
+}
+
+/**
+ * Fullfører økten og lagrer samtidig opplevd anstrengelse (sRPE) og faktisk tid.
+ */
+export async function completeSessionWithEffort(
+  input: UpdateSessionEffortInput
+): Promise<WbResultat<WorkbenchSession>> {
+  const parsed = UpdateSessionEffortSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, error: "Ugyldige verdier for anstrengelse eller tid." };
+  }
+
+  const treff = await hentMedTilgang(parsed.data.sessionId);
+  if ("feil" in treff) return { ok: false, error: treff.feil };
+
+  const row = treff.row;
+  if (row.hiddenByPlayer || row.needsPlayerApproval || row.approvalStatus === "REJECTED") {
+    return { ok: false, error: "Økten må være synlig og godkjent før gjennomføring." };
+  }
+
+  const updated = await prisma.workbenchSession.update({
+    where: { id: parsed.data.sessionId },
+    data: {
+      status: "COMPLETED",
+      perceivedEffort: parsed.data.perceivedEffort,
+      actualMinutes: parsed.data.actualMinutes,
+      liveSnapshot: Prisma.DbNull,
+    },
+    include: { drills: true },
+  });
+
+  return { ok: true, data: mapSession(updated) };
+}
+
 export async function skipSession(
   sessionId: string,
 ): Promise<WbResultat<WorkbenchSession>> {

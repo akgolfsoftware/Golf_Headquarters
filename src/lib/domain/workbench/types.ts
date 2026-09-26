@@ -185,6 +185,12 @@ export interface WorkbenchSession {
   practiceType?: PracticeType;
   location?: string;
   notes?: string;
+  /** Opplevd anstrengelse (sRPE): 1–10 (Borg CR-10 / Foster-skala) */
+  perceivedEffort?: number | null;
+  /** Faktisk gjennomført tid i minutter (hvis ulik durationMinutes) */
+  actualMinutes?: number | null;
+  /** Beregnet belastning (sRPE-poeng = minutter × anstrengelse) */
+  load?: number | null;
   /** Felter fra den kanoniske øktmodellen, brukt når migrerte økter vises. */
   rationale?: string;
   skillArea?: string;
