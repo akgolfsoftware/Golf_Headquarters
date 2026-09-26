@@ -28,6 +28,7 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | dokumentasjon | [docs/beslutningsgrunnlag/team-norway-excel-v3-kontroll.md](<../beslutningsgrunnlag/team-norway-excel-v3-kontroll.md>) |
 | dokumentasjon | [docs/beslutningsgrunnlag/teknisk-lanseringskontroll-2026-09-10.md](<../beslutningsgrunnlag/teknisk-lanseringskontroll-2026-09-10.md>) |
 | dokumentasjon | [docs/beslutningsgrunnlag/teknisk-retting-2026-09-10.md](<../beslutningsgrunnlag/teknisk-retting-2026-09-10.md>) |
+| dokumentasjon | [docs/beslutningsgrunnlag/turneringsdata-spillerprofiler-analyse-2026-09-26.md](<../beslutningsgrunnlag/turneringsdata-spillerprofiler-analyse-2026-09-26.md>) |
 | dokumentasjon | [docs/demo-sprak-og-treningsplanlegging.md](<../demo-sprak-og-treningsplanlegging.md>) |
 | dokumentasjon | [docs/design-audit/workbench-aar-kontroll-2026-09-21.md](<../design-audit/workbench-aar-kontroll-2026-09-21.md>) |
 | dokumentasjon | [docs/design-audit/workbench-handover-import-2026-09-20.md](<../design-audit/workbench-handover-import-2026-09-20.md>) |
@@ -47,6 +48,8 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | dokumentasjon | [docs/design-system/design-autoritet.md](<../design-system/design-autoritet.md>) |
 | dokumentasjon | [docs/design-system/lanseringslop-2026-09-10.md](<../design-system/lanseringslop-2026-09-10.md>) |
 | dokumentasjon | [docs/design-system/manuell-sg-skjermer.md](<../design-system/manuell-sg-skjermer.md>) |
+| dokumentasjon | [docs/design-system/precision-athletics-rundeplan.md](<../design-system/precision-athletics-rundeplan.md>) |
+| dokumentasjon | [docs/design-system/skjermliste-precision-athletics.md](<../design-system/skjermliste-precision-athletics.md>) |
 | dokumentasjon | [docs/design-system/team-norway-claw-valgt-2026-09-13.md](<../design-system/team-norway-claw-valgt-2026-09-13.md>) |
 | dokumentasjon | [docs/design-system/TEMA-LYS-MORK.md](<../design-system/TEMA-LYS-MORK.md>) |
 | dokumentasjon | [docs/design/workbench-handover/manifest.md](<../design/workbench-handover/manifest.md>) |
@@ -105,6 +108,12 @@ Start i [dokumentoversikten](../README.md). Designleveranser ligger separat i [d
 | dokumentasjon | [docs/taksonomi-verifikasjon.md](<../taksonomi-verifikasjon.md>) |
 | dokumentasjon | [docs/testing.md](<../testing.md>) |
 | dokumentasjon | [docs/treningsplanlegger/wang-toppidrett/arshjul-2026-2027.md](<../treningsplanlegger/wang-toppidrett/arshjul-2026-2027.md>) |
+| dokumentasjon | [docs/treningsplanlegger/wang-toppidrett/design-handoff-arsplan-2026-27-v2/kilde/00-terminliste-2027-utkast.md](<../treningsplanlegger/wang-toppidrett/design-handoff-arsplan-2026-27-v2/kilde/00-terminliste-2027-utkast.md>) |
+| dokumentasjon | [docs/treningsplanlegger/wang-toppidrett/design-handoff-arsplan-2026-27-v2/kilde/01-periodebrev.md](<../treningsplanlegger/wang-toppidrett/design-handoff-arsplan-2026-27-v2/kilde/01-periodebrev.md>) |
+| dokumentasjon | [docs/treningsplanlegger/wang-toppidrett/design-handoff-arsplan-2026-27-v2/kilde/02-manedsplan.md](<../treningsplanlegger/wang-toppidrett/design-handoff-arsplan-2026-27-v2/kilde/02-manedsplan.md>) |
+| dokumentasjon | [docs/treningsplanlegger/wang-toppidrett/design-handoff-arsplan-2026-27-v2/kilde/03-ukeplan.md](<../treningsplanlegger/wang-toppidrett/design-handoff-arsplan-2026-27-v2/kilde/03-ukeplan.md>) |
+| dokumentasjon | [docs/treningsplanlegger/wang-toppidrett/design-handoff-arsplan-2026-27-v2/kilde/04-oktmaler.md](<../treningsplanlegger/wang-toppidrett/design-handoff-arsplan-2026-27-v2/kilde/04-oktmaler.md>) |
+| dokumentasjon | [docs/treningsplanlegger/wang-toppidrett/design-handoff-arsplan-2026-27-v2/README.md](<../treningsplanlegger/wang-toppidrett/design-handoff-arsplan-2026-27-v2/README.md>) |
 | dokumentasjon | [docs/treningsplanlegger/wang-toppidrett/design-handoff-arsplan-2026-27/DATA-KONTRAKT.md](<../treningsplanlegger/wang-toppidrett/design-handoff-arsplan-2026-27/DATA-KONTRAKT.md>) |
 | dokumentasjon | [docs/treningsplanlegger/wang-toppidrett/design-handoff-arsplan-2026-27/README.md](<../treningsplanlegger/wang-toppidrett/design-handoff-arsplan-2026-27/README.md>) |
 | dokumentasjon | [docs/treningsplanlegger/wang-toppidrett/grunnlag-funn.md](<../treningsplanlegger/wang-toppidrett/grunnlag-funn.md>) |

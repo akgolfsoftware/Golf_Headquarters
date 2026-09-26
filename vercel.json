@@ -4,9 +4,6 @@
   "regions": [
     "arn1"
   ],
-  "functionFailoverRegions": [
-    "fra1"
-  ],
   "ignoreCommand": "git diff --quiet HEAD^ HEAD -- ':!*.md' ':!docs/' ':!.claude/' ':!designsystem/' ':!kart/' ':!screenshots/'",
   "headers": [
     {
