@@ -4,6 +4,48 @@ Kun det som gjelder nå. Full historikk (1 207 linjer, alle overstyrte valg): [b
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## PRECISION ATHLETICS ER DESIGNSYSTEMET FOR AK GOLF HQ (Anders 26.09.2026, bindende)
+
+**Claude Design-prosjektet «AK Golf Precision Athletics» (`7d7c2994-cf63-4c5f-9bdc-fdaf67655a70`)
+er visuell fasit for AK Golf HQ** — PlayerHQ (`/portal`), AgencyOS (`/admin`), forelder, `/auth`,
+booking og statistikk. Anders: «det designsystemet er for selve AK Golf HQ, både player og
+agency OS». Det erstatter «AK Golf Design System» (`87aa23fb`) og «App design» (`830e7bce`) som
+fasit. «App design» finnes ikke lenger i Claude Design (`get_project`: not found, 26.09.2026).
+Team Norway og WANG er utenfor; de har egne systemer og egne arbeidsmapper.
+
+- **Rust er signal, ikke handling.** Primærknappen er grafitt `#141413` med hvit tekst. Rust
+  `#9B2415` brukes bare på det som haster eller ødelegger (sletting, trekk tilbake), Live-pillen
+  og tellere som krever coachens handling — maks én per skjerm. Overstyrer «Rust følger
+  handlingen, ikke ordet» (22.09).
+- **Lyst tema er standard** i `/portal` og `/admin`. Nattema (`data-theme="night"`) brukes i
+  Live-økt og slagregistrering ute; brukeren kan bytte tema selv. Overstyrer «Mørk er standard på
+  `/portal` og `/admin`» (21.09).
+- Markedssidene venter fortsatt (23.09); de beholder verksted-uttrykket til Anders sier noe annet.
+- Uavklart: prosjektets `guidelines/ordmaster.md` (25.09) og `docs/ordbok.md` er to ordlister.
+  Til Anders har valgt, gjelder `docs/ordbok.md` (§Treningsfag).
+- Uendret: aldri sidelengs rulling, port 7 (Anders har sett skjermen), Codex bygger i appkoden.
+
+**Arbeidet dette utløser** — ingen arbeidsliste finnes etter b700ce008, derfor står den her:
+
+1. **Fullfør designsystemet** i `7d7c2994`: rett knapper/tema etter punktene over, legg til
+   manglende komponenter (tabell som blir kortrader, ark, tidslinje, graf-grunnstykker, felt med
+   feilmelding, tom/laster/feil). Fjern Toppidrett- og WANG-kitene fra prosjektet. Ferdig når
+   `readme.md` og komponentkortene dekker alt skjermene under trenger.
+2. **Skjermliste fra appen:** alle `page.tsx` under `/portal`, `/admin`, `/forelder`, `/auth`,
+   booking og `/stats` som ikke er videresendinger, gruppert i skjermtyper. Ferdig når hver rute
+   peker på én skjermtegning i prosjektet.
+3. **Tegn alle skjermene** i mobil 390, iPad 768/1024 og desktop 1280/1440, lys og natt, tom,
+   laster og feil. Claude Code styrer prosjektet via Chrome. Ferdig per skjerm når målingen viser
+   `scrollWidth === clientWidth` i alle bredder og Anders har sett den (port 7).
+4. **Temastandard i koden:** `erMorkFlate()` i `src/lib/v2/tema-default.ts` gjør `/admin` mørk
+   uten lagret valg — skal bli lys. Nattema for Live-økt og slagregistrering bygges sammen med
+   de skjermene.
+5. **38 skjermer fra «App design» må tegnes på nytt.** Blokken «AG-03b» under viser til dem,
+   men prosjektet er borte. Funksjonsfunnene i den blokken (datamodell, navnevalg, hull) står
+   fortsatt; bare tegningene mangler. Dekkes av punkt 3.
+
+Pekerne er rettet i samme PR: `design-autoritet.md`, `designsystem/README.md`, `ak-hq-design`-skillen.
+
 ## AG-03b Oppfølgingskø: «Løst» blir egen status, og designrunden for PlayerHQ/AgencyOS er ferdig (Anders 23.09.2026, bindende)
 
 **Oppfølgingskøens «Løst»-kolonne får en eksplisitt status på saken i basen, satt av coach
@@ -158,13 +200,13 @@ Knøtt som det andre, skal skrives om. Den endrer publisert markedstekst og vent
 
 ## Design (Anders 21.09.2026, bindende)
 
-**AK Golf Design System og Claude Design-prosjektet «App design» gjelder.** Train-lock og Paper er utgående: ingen visuell fasit, bare funksjonsinventar. Spør aldri på nytt om dette. Kilde og ID-er: [design-autoritet.md](../../docs/design-system/design-autoritet.md).
+**Designsystemet er «AK Golf Precision Athletics» — se §PRECISION ATHLETICS øverst.** Train-lock og Paper er utgående: ingen visuell fasit, bare funksjonsinventar. Spør aldri på nytt om dette. Kilde og ID-er: [design-autoritet.md](../../docs/design-system/design-autoritet.md).
 - Kode med Train-lock-/Paper-/`v2`-navn beholdes til funksjonene er flyttet. Navnene gir ingen autoritet.
 - Claude Code/Design eier designet; Codex bygger det i appkoden.
 - Konkret skjermvariant innen systemet kan Anders fortsatt velge før bygging.
 - Ferdig skjerm = funksjonen virker og Anders har sett den (mobil 390 px + desktop, lys og mørk, tom/laster/feil).
 - Paper er fjernet fra plattformen; vakten `scripts/check-ingen-paper.mjs` kjører i `npm run verify`.
-- Ingen `className="dark"`; tema styres bare av `data-v2-tema` på `<html>`. Mørk er standard på `/portal` og `/admin`, lys på `/auth` og `/forelder` og landingssidene (`src/lib/v2/tema-default.ts`).
+- Ingen `className="dark"`; tema styres bare av `data-v2-tema` på `<html>`. Lys er standard overalt; natt i Live-økt og slagregistrering (`src/lib/v2/tema-default.ts`, se §PRECISION ATHLETICS punkt 4).
 - Ikke bruk `accent` som tekstfarge på `primary`; bruk `-foreground`-paret.
 
 ## Aldri sidelengs rulling (Anders 22.09.2026, bindende)
@@ -181,28 +223,6 @@ verktøyrader vi bygger selv.
   rammen, og `scrollWidth === clientWidth`. Bevis føres i skjermens manifest, port 4.
 - Trengs sidelengs rulling likevel, er det et avvik som legges fram for Anders før det
   bygges — ikke et valg som tas underveis.
-
-## Rust følger handlingen, ikke ordet (Anders 22.09.2026, bindende)
-
-**Rust `#9B2415` bæres av den bekreftende handlingen på skjermen — uansett hva den heter.**
-Merge, Send, Legg i kalenderen, Publiser, Godkjenn og START ØKT er samme handling med riktig
-navn, og alle bærer rust. Dette avløser formuleringen «rust kun på Publiser, Godkjenn og
-START ØKT», som beskrev de tre stedene regelen var prøvd, ikke prinsippet bak den.
-
-Bakgrunn: køen (`/admin/ko`) har ulike handlingsord per kilde, hentet fra
-`AdminGodkjenningerTrainLock.tsx`. Å kalle alt «Godkjenn» for å få rust ville skjult at et
-Caddie-utkast faktisk sender en e-post ut av huset.
-
-- **Alt annet er grafitt.** Test: gjør knappen det saken ber om, eller noe annet? Åpne økt,
-  Fortsett økt, Prøv igjen, Lagre, Kjør og Slå sammen avgjør ingenting — de er grafitt.
-- **Sletting bærer aldri rust.** Rust betyr godkjenn; en sletting er det motsatte. Den
-  bekreftende knappen i en sletting er grafitt i et kort med rustkant.
-- **Én rust per skjerm.** Står to bekreftende handlinger synlig samtidig, bærer den valgte
-  saken rust og resten grafitt.
-- Domenefarge blir aldri en handling. Signalfargene bærer aldri lesbar tekst alene.
-
-Krever ingen kodeendring nå — regelen styrer designarbeidet i Claude Design «App design»
-(`SKILL.md` §Rust). Den gjelder appkoden når AgencyOS-skjermene bygges.
 
 ## Hurtigknappen gjelder alle AgencyOS-skjermer (Anders 22.09.2026, bindende)
 

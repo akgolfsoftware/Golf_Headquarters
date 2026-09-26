@@ -1,9 +1,10 @@
 # Designarbeid og referanser
 
-## Gjeldende designautoritet — 21.09.2026
+## Gjeldende designautoritet — 26.09.2026
 
-[AK Golf Design System og Claude Design-prosjektet «App design»](../docs/design-system/design-autoritet.md)
-styrer alt nytt designarbeid. Train-lock og Paper er utgående og har ingen visuell autoritet,
+[Claude Design-prosjektet «AK Golf Precision Athletics»](../docs/design-system/design-autoritet.md)
+(`7d7c2994`) styrer alt nytt designarbeid for AK Golf HQ. Det erstatter «AK Golf Design System»
+og «App design» fra 21.09. Train-lock og Paper er utgående og har ingen visuell autoritet,
 selv om eldre dokumenter eller kode bruker ordene «låst», «valgt» eller «fasit». Det skal ikke
 spørres om dette på nytt. Eldre materiale under brukes bare til funksjonsdekning, sporbarhet og
 kontrollert overgang.
