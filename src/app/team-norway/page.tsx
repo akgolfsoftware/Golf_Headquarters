@@ -1,14 +1,6 @@
 import { notFound } from "next/navigation";
-import { TnKort } from "@/components/team-norway/core";
-import {
-  TnLenke,
-  TnMetrikk,
-  TnMetrikkRutenett,
-  TnSeksjon,
-  TnShell,
-  TnSidehode,
-  tnRolleNavn,
-} from "@/components/team-norway/tn-shell";
+import { TnShell, tnRolleNavn } from "@/components/team-norway/tn-shell";
+import { TnKnapp, TnKnapperad, TnNotis, TnSeksjonDS, TnSidehodeDS, TnTallrad } from "@/components/team-norway/tn-skjerm";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentTnOversiktForBruker } from "@/lib/domain/tn-tilgang";
 import { TN } from "@/lib/v2/team-norway";
@@ -43,50 +35,31 @@ export default async function TeamNorwayOversiktPage() {
       visTrenerflater={!erSpillerIGruppe}
       kanAdministrere={bruker.role === "ADMIN" || side.rolle === "COACH"}
     >
-      <TnSidehode
+      <TnSidehodeDS
         overlinje="Team Norway · TN-02"
         tittel={side.gruppe.name}
         ingress="Oversikten viser aktive medlemskap i den konkrete Team Norway-gruppen."
       />
 
-      <TnMetrikkRutenett>
-        <TnMetrikk
-          etikett="Aktive spillere"
-          verdi={side.antallSpillere}
-          forklaring="Telt fra aktive spiller-medlemskap i gruppen."
-        />
-        <TnMetrikk
-          etikett="Aktive trenere"
-          verdi={side.antallTrenere}
-          forklaring={`Din grupperolle: ${tnRolleNavn(side.rolle)}.`}
-        />
-        <TnKort>
-          <p style={{ margin: 0, color: TN.textSecondary, fontSize: TN.text.sm }}>Datagrunnlag</p>
-          <p style={{ margin: "10px 0 0", color: TN.textPrimary, fontSize: TN.text.base, lineHeight: TN.leading.normal }}>
-            Dekningsgrad og kommende samlinger vises når egne, verifiserte datakilder er koblet til.
-          </p>
-        </TnKort>
-      </TnMetrikkRutenett>
+      <TnTallrad tall={[{ verdi: side.antallSpillere, etikett: "Aktive spillere" }, { verdi: side.antallTrenere, etikett: "Aktive trenere" }]} />
+
+      <TnNotis tittel="Datagrunnlag.">
+        Dekningsgrad og kommende samlinger vises når egne, verifiserte datakilder er koblet til. Til da står feltene tomme framfor å gjette.
+      </TnNotis>
 
       {side.erAktivtMedlem ? (
-        <TnSeksjon tittel="Grupperessurser">
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 20 }}>
-            <TnLenke href={gruppeHref}>Gruppeposter</TnLenke>
-            <TnLenke href={`${gruppeHref}/dokumenter`}>Dokumenter</TnLenke>
-            {erSpillerIGruppe ? (
-              <TnLenke href="/portal/tren/tester/team-norway">
-                Før egne Team Norway-tester i PlayerHQ
-              </TnLenke>
-            ) : null}
-          </div>
-        </TnSeksjon>
+        <TnSeksjonDS tittel="Grupperessurser">
+          <TnKnapperad>
+            <TnKnapp href={gruppeHref}>Gruppeposter</TnKnapp>
+            <TnKnapp href={`${gruppeHref}/dokumenter`}>Dokumenter</TnKnapp>
+            {erSpillerIGruppe ? <TnKnapp href="/portal/tren/tester/team-norway">Før egne Team Norway-tester i PlayerHQ</TnKnapp> : null}
+          </TnKnapperad>
+        </TnSeksjonDS>
       ) : (
-        <TnKort padding={18}>
-          <p style={{ margin: 0, color: TN.textSecondary, fontSize: TN.text.sm, lineHeight: TN.leading.normal }}>
-            Du ser aggregatet som administrator. Gruppeposter, dokumenter og testføring krever egne
-            tilganger og åpnes derfor ikke herfra.
-          </p>
-        </TnKort>
+        <TnNotis>
+          Du ser aggregatet som administrator. Gruppeposter, dokumenter og testføring krever egne
+          tilganger og åpnes derfor ikke herfra.
+        </TnNotis>
       )}
 
       {erSpillerIGruppe ? (
