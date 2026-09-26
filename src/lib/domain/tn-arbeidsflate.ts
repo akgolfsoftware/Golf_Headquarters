@@ -527,6 +527,17 @@ function erTnPersonligDataLeser(kontekst: TnArbeidskontekst, bruker: TnBruker): 
   return bruker.role === "COACH" && (kontekst.rolle === "COACH" || kontekst.rolle === "ASSISTANT");
 }
 
+/**
+ * Gruppeanalysen (/team-norway/analyse): trener eller Assist Coach i
+ * Team Norway-gruppen slipper inn uten plattformrolle COACH (Anders
+ * 26.09.2026). Gjelder KUN gruppeanalysen — spillerprofilens personlige
+ * data bruker fortsatt den strengere `erTnPersonligDataLeser`.
+ */
+function erTnGruppeanalyseLeser(kontekst: TnArbeidskontekst, bruker: TnBruker): boolean {
+  if (bruker.role === "ADMIN") return true;
+  return kontekst.rolle === "COACH" || kontekst.rolle === "ASSISTANT";
+}
+
 export async function hentTnSpillerTilgang(bruker: TnBruker, spillerId: string): Promise<TnSpillerTilgang | null> {
   const kontekst = await hentTnArbeidskontekst(bruker);
   if (!kontekst) return null;
@@ -847,7 +858,7 @@ export type TnGruppeanalyseValg = { kontekst: TnArbeidskontekst; protokoller: { 
 /** Coach/assistent/admin: valgmuligheter for gruppeanalyse (protokoll ELLER testdag). */
 export async function hentTnGruppeanalyseValg(bruker: TnBruker): Promise<TnGruppeanalyseValg | null> {
   const kontekst = await hentTnArbeidskontekst(bruker);
-  if (!kontekst || !erTnPersonligDataLeser(kontekst, bruker)) return null;
+  if (!kontekst || !erTnGruppeanalyseLeser(kontekst, bruker)) return null;
   const testdager = await hentTnTestdager(bruker);
   return {
     kontekst,
@@ -897,7 +908,7 @@ function sorterGruppeanalyse(rader: TnGruppeanalyseRad[], lowerIsBetter: boolean
  */
 export async function hentTnGruppeanalyseResultat(bruker: TnBruker, params: { protokollId?: string; testDayId?: string }): Promise<TnGruppeanalyseResultat | null> {
   const kontekst = await hentTnArbeidskontekst(bruker);
-  if (!kontekst || !erTnPersonligDataLeser(kontekst, bruker)) return null;
+  if (!kontekst || !erTnGruppeanalyseLeser(kontekst, bruker)) return null;
 
   if (params.testDayId) {
     const dag = await prisma.testDay.findFirst({
