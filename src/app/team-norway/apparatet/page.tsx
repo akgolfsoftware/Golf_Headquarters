@@ -1,4 +1,6 @@
-import { TnRegistrertSkjerm } from "@/components/team-norway/tn-registrerte-skjermer";
+import { permanentRedirect } from "next/navigation";
 
-/** TN-20. Fasit: designsystem/team-norway/templates/tn-trenerkatalog/TnTrenerkatalog.dc.html */
-export default function Page() { return <TnRegistrertSkjerm skjerm="apparatet" />; }
+/** Trenerkatalogen er flyttet inn i TN-09 Fagapparat. Gammel adresse sender videre. */
+export default function Page() {
+  permanentRedirect("/team-norway/fagapparat");
+}

@@ -31,7 +31,9 @@ export type TnAktivSide =
   | "referansenivaer"
   | "tilgang"
   | "inviter"
-  | "apparatet";
+  | "fagapparat"
+  | "live-watch"
+  | "lisens";
 
 function lenke(label: string, href: string, id: TnAktivSide, aktiv: TnAktivSide, badge?: string): TnMenyPunkt {
   return { type: "lenke", label, href, aktiv: aktiv === id, badge };
@@ -52,14 +54,17 @@ export function tnHovedmeny({
     { type: "overskrift", label: "Daglig" },
     lenke("Oversikt", "/team-norway", "oversikt", aktiv),
     ...(visTrenerflater ? [lenke("Fellestesting", "/team-norway/fellestesting", "fellestesting", aktiv)] : []),
-    lenke("Samlingspunkt", "/team-norway/samlinger", "samlinger", aktiv),
-    lenke("Collegegruppen", "/team-norway/college", "college", aktiv),
+    lenke("Samlinger", "/team-norway/samlinger", "samlinger", aktiv),
+    ...(visTrenerflater ? [lenke("Uttak og kriterier", "/team-norway/uttak", "uttak", aktiv)] : []),
+    lenke("College og USA", "/team-norway/college", "college", aktiv),
+    lenke("Turneringer og reise", "/team-norway/turneringer", "turneringer", aktiv),
+    lenke("Live Watch", "/team-norway/live-watch", "live-watch", aktiv),
+    ...(visTrenerflater ? [lenke("Fagapparat", "/team-norway/fagapparat", "fagapparat", aktiv)] : []),
+    lenke("Lisens og økonomi", "/team-norway/lisens-okonomi", "lisens", aktiv),
     lenke("Månedsplan", "/team-norway/manedsplan", "manedsplan", aktiv),
     ...(visTrenerflater
       ? [
           lenke("Spillerutvikling", "/team-norway/spillere", "spillere", aktiv),
-          { type: "overskrift" as const, label: "Uttak" },
-          lenke("Uttaksliste", "/team-norway/uttak", "uttak", aktiv),
           lenke("Rangliste", "/team-norway/rangliste", "rangliste", aktiv),
           { type: "overskrift" as const, label: "Skoler" },
           lenke("Skoleoversikt", "/team-norway/skoler", "skoler", aktiv),
@@ -75,7 +80,6 @@ export function tnHovedmeny({
     { type: "lenke", label: "Samtykke", href: "/portal/meg/innstillinger/personvern/deling" },
     { type: "overskrift", label: "Data" },
     ...(visTrenerflater ? [lenke("Testprotokoller", "/team-norway/protokoller", "protokoller", aktiv)] : []),
-    lenke("Turneringer", "/team-norway/turneringer", "turneringer", aktiv),
     lenke("Referansenivåer", "/team-norway/referansenivaer", "referansenivaer", aktiv),
     { type: "lenke", label: "Analyse", href: "/portal/analysere" },
     { type: "lenke", label: "DataGolf", href: "/portal/analysere/datagolf" },
@@ -86,7 +90,6 @@ export function tnHovedmeny({
       { type: "overskrift", label: "Administrasjon" },
       lenke("Trenere og tilgang", "/team-norway/tilgang", "tilgang", aktiv),
       lenke("Inviter spiller", "/team-norway/inviter", "inviter", aktiv),
-      lenke("Trenerkatalog", "/team-norway/apparatet", "apparatet", aktiv),
     );
   }
   return punkter;
@@ -98,7 +101,7 @@ export function tnHovedmeny({
  */
 export function tnRolleNavn(rolle: string) {
   if (rolle === "COACH") return "Trener";
-  if (rolle === "ASSISTANT") return "Hjelpetrener";
+  if (rolle === "ASSISTANT") return "Assist Coach";
   if (rolle === "PLAYER") return "Spiller";
   return rolle;
 }

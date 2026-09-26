@@ -14,7 +14,6 @@ import {
   hentTnSamlinger,
   hentTnSkoler,
   hentTnSpillere,
-  hentTnTrenere,
   hentTnTurneringer,
   type TnArbeidskontekst,
   type TnSpillerRad,
@@ -52,8 +51,7 @@ type Skjerm =
   | "turneringer"
   | "turnering-ny"
   | "referansenivaer"
-  | "inviter"
-  | "apparatet";
+  | "inviter";
 
 const dato = new Intl.DateTimeFormat("nb-NO", { day: "2-digit", month: "short", year: "numeric", timeZone: "Europe/Oslo" });
 const datoTid = new Intl.DateTimeFormat("nb-NO", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Oslo" });
@@ -262,17 +260,6 @@ export async function TnRegistrertSkjerm({ skjerm, id }: { skjerm: Skjerm; id?: 
       <Chrome aktiv="referansenivaer" brukerNavn={brukerNavn} kontekst={data.kontekst}>
         <TnSidehode overlinje={`Data · ${data.versjon}`} tittel="Referansenivåer" ingress="Viser bare målverdier som finnes eksplisitt i den versjonerte protokollkilden." />
         <TnDataTable caption="Referansenivåer" kolonner={[{ key: "protokoll", label: "Protokoll" }, { key: "mal", label: "Måling" }, { key: "verdi", label: "Referanse", align: "right" }]} rader={data.rader.map((rad) => ({ protokoll: data.kontekst.erSpiller ? rad.protokoll : <Link href={`/team-norway/protokoller/${rad.protokollId}`} style={{ color: TN.navy700 }}>{rad.protokoll}</Link>, mal: rad.mal, verdi: rad.verdi ?? "Ukjent" }))} empty="Ingen eksplisitte referanseverdier finnes i protokollkilden." />
-      </Chrome>
-    );
-  }
-
-  if (skjerm === "apparatet") {
-    const data = await hentTnTrenere(bruker);
-    if (!data) notFound();
-    return (
-      <Chrome aktiv="apparatet" brukerNavn={brukerNavn} kontekst={data.kontekst}>
-        <TnSidehode overlinje="Administrasjon · Apparat" tittel="Trenerkatalog" ingress="Katalogen viser aktive trenere i Team Norway-gruppen. Den gir ingen tilgang i seg selv." />
-        <TnDataTable caption="Trenerkatalog" kolonner={[{ key: "navn", label: "Navn" }, { key: "rolle", label: "Rolle" }, { key: "kontakt", label: "Kontakt" }, { key: "siden", label: "Aktiv siden" }]} rader={data.rader.map((rad) => ({ navn: rad.user.name, rolle: <TnPille tone={rad.role === "COACH" ? "navy" : "nøytral"}>{rad.role === "COACH" ? "Trener" : "Hjelpetrener"}</TnPille>, kontakt: data.kontekst.kanAdministrere ? rad.user.email : "Skjult", siden: dato.format(rad.joinedAt) }))} empty="Ingen aktive trenere er registrert." />
       </Chrome>
     );
   }

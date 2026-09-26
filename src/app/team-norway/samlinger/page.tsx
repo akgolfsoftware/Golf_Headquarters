@@ -1,4 +1,6 @@
-import { TnRegistrertSkjerm } from "@/components/team-norway/tn-registrerte-skjermer";
+import { TnSamlingerSkjerm } from "@/components/team-norway/skjermer/tn-samlinger-skjerm";
 
-/** TN-14 listeinngang. Fasit: designsystem/team-norway/templates/tn-samlingspunkt/TnSamlingspunkt.dc.html */
-export default function Page() { return <TnRegistrertSkjerm skjerm="samlinger" />; }
+/** TN-04. Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm TN-04. */
+export default async function Page({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+  return <TnSamlingerSkjerm sokeparametre={await searchParams} />;
+}
