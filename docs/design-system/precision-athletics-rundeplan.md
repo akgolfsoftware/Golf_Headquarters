@@ -20,8 +20,8 @@ lagt i prosjektet som `skjermliste.md`). Beslutning: [beslutninger.md](../../.cl
 |---|---|---|
 | 1 | Fullfør designsystemet: tokenisere AgencyOS-skjermer, slå sammen AgencyOS-kits, flytte WANG til `_utenfor/`, 11 nye komponenter, `guidelines/buttons.html`, readme | Ferdig 26.09 — 210 tilfeller, 0 avvik |
 | 2 | PlayerHQ PH-01–09 + felles skjermkatalog (velger for skjerm/bredde/tema/tilstand) + `oversikt.html` | Ferdig 26.09 — 478 tilfeller totalt, 0 avvik. Katalog: `ui_kits/playerhq/index.html`, oversikt: `oversikt.html` |
-| 3 | PlayerHQ PH-10–15 (plan, Workbench, planbygger, øvelser, tester) + rettelse: runde med 9 hull, «Registrer runde» fra I dag | Sendt 26.09 — sjekk resultat først i neste økt |
-| 4 | PlayerHQ PH-16–20 (analyse, TrackMan, runder, mål og talent, gameplan) | |
+| 3 | PlayerHQ PH-10–15 (plan, Workbench, planbygger, øvelser, tester) + rettelse: runde med 9 hull, «Registrer runde» fra I dag | Ferdig 26.09 — 670 tilfeller totalt, 0 avvik. Åpne spørsmål: «Venter på coach» mangler i ordmasteren; dra-håndtak 32 px (under 44 px) |
+| 4 | PlayerHQ PH-16–20 (analyse, TrackMan, runder, mål og talent, gameplan) + rettelser: dra-håndtak 44 px, konflikt ved økt oppå opptatt tid, «Venter på coach» og 10-slagsregelen merket uavklart | Sendt 26.09 — kjører |
 | 5 | PlayerHQ PH-21–26 (coach, Caddie, booking, Meg, abonnement, utenfor banen) | |
 | 6 | AgencyOS AG-01–06 (Hjem, Kø, oppfølgingskø, innboks, kalender, booking) | |
 | 7 | AgencyOS AG-07–12 (stall, spiller 360, analyse, teknisk plan, Workbench, øktark) | |
