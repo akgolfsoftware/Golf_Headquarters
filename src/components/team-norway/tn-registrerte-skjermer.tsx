@@ -70,7 +70,7 @@ function Chrome({ aktiv, brukerNavn, kontekst, children }: { aktiv: TnAktivSide;
  * Resultater, prestasjoner og prosess/adferd summeres aldri til én uttaksscore.
  * Skjermen har derfor ingen sumkolonne, og skal ikke få en.
  */
-const UTTAKSKRITERIER = [
+export const UTTAKSKRITERIER = [
   {
     nummer: "Kriterium 1",
     tittel: "Resultater",

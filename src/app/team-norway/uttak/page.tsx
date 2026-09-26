@@ -1,4 +1,6 @@
-import { TnRegistrertSkjerm } from "@/components/team-norway/tn-registrerte-skjermer";
+import { TnUttakSkjerm } from "@/components/team-norway/skjermer/tn-uttak-skjerm";
 
-/** TN-06. Fasit: designsystem/team-norway/templates/tn-uttak/TnUttak.dc.html */
-export default function Page() { return <TnRegistrertSkjerm skjerm="uttak" />; }
+/** TN-05. Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm TN-05. */
+export default function Page() {
+  return <TnUttakSkjerm />;
+}
