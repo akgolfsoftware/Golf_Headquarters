@@ -10,7 +10,9 @@ import { startPh01Harness } from "./server.mjs";
 const states = ["normal", "ongoing", "completed", "approval", "rest", "empty-day", "empty-week", "loading", "error", "locked"];
 const devices = [{ name: "mobile", width: 390, height: 844, selector: ".frame.ph" }, { name: "desktop", width: 1440, height: 880, selector: ".frame.dt" }];
 const out = "/private/tmp/ak-hq-ph01-visual-20260921";
-const reference = "/Users/anderskristiansen/Documents/Codex/2026-09-21/ak-golf-hq-designverksted/outputs/playerhq-ph-01-v1.0/ph-01-i-dag-v1.0.html";
+// Gjeldende v1.0 i «App design», hentet 21.09.2026 kveld (etag 1789994883152613) og renset
+// for forhaandsvisningens injiserte blokk. Se les-meg.md i samme mappe.
+const reference = "/Users/anderskristiansen/Documents/Codex/2026-09-21/ak-golf-hq-designverksted/outputs/playerhq-ph-01-v1.0-sky-20260921/ph-01-i-dag-v1.0.html";
 mkdirSync(out, { recursive: true, mode: 0o700 });
 const harness = await startPh01Harness();
 const browser = await chromium.launch({ headless: true });
@@ -69,7 +71,7 @@ try {
 
   await app.goto(`${harness.origin}/?state=locked`);
   const lockedText = await app.locator("body").innerText();
-  assert(!lockedText.includes("Wedge 40–80 m"));
+  assert(!lockedText.includes("Innspill 50 m"));
   assert(!lockedText.includes("Privat økt"));
   assert(await app.getByRole("link", { name: "Tester" }).isVisible());
   result.checks.push("Gratis/TALENT viser åpne flater uten syntetisk planinnhold.");
