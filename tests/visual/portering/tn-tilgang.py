@@ -1,6 +1,7 @@
 """Nettleserprøve av ekte TN-komponenter med syntetiske svar og isolert ruting."""
 import json
 from pathlib import Path
+import re
 from playwright.sync_api import sync_playwright, expect
 
 BASE = "http://127.0.0.1:5441/team-norway/tilgang"
@@ -21,7 +22,7 @@ with sync_playwright() as p:
 
     # DOM inspiseres før interaksjonene. Alle persondata er syntetiske.
     visit()
-    assert page.get_by_role("heading", name="2 personer med tilgang").is_visible()
+    expect(page.get_by_role("heading", name=re.compile("TRENERE OG TILGANG", re.I))).to_be_visible()
     variants = []
     for width in (320, 390, 834, 1440):
         page.set_viewport_size({"width": width, "height": 1000 if width >= 834 else 844})
@@ -39,18 +40,18 @@ with sync_playwright() as p:
 
     page.set_viewport_size({"width": 390, "height": 844})
     visit()
-    page.get_by_role("link", name="Eksempel Trener Med Et Langt Etternavn", exact=False).filter(visible=True).click()
+    page.get_by_role("link", name="Endre", exact=True).filter(visible=True).first.click()
     page.wait_for_load_state("networkidle")
-    expect(page.get_by_role("link", name="Tilbake til trenerlisten")).to_be_visible()
-    expect(page.get_by_role("heading", name="2 personer med tilgang")).not_to_be_visible()
-    page.get_by_role("link", name="Tilbake til trenerlisten").click()
+    expect(page.get_by_role("link", name="Lukk", exact=True)).to_be_visible()
+    expect(page.get_by_role("heading", name=re.compile("ENDRE EKSEMPEL TRENER", re.I))).to_be_visible()
+    page.get_by_role("link", name="Lukk", exact=True).click()
     page.wait_for_load_state("networkidle")
-    expect(page.get_by_role("heading", name="2 personer med tilgang")).to_be_visible()
+    expect(page.get_by_role("heading", name=re.compile("TRENERE OG TILGANG", re.I))).to_be_visible()
 
     # Tastaturmeny, synlig aktiv rute og fokus tilbake ved Escape.
-    menu = page.get_by_role("button", name="Åpne meny")
+    menu = page.get_by_role("button", name="Mer")
     menu.click()
-    link = page.get_by_role("navigation", name="Team Norway").get_by_role("link")
+    link = page.get_by_role("navigation", name="Alle sider").get_by_role("link", name="Trenere og tilgang", exact=True)
     expect(link).to_have_attribute("aria-current", "page")
     link.focus()
     page.keyboard.press("Escape")
@@ -59,16 +60,16 @@ with sync_playwright() as p:
 
     # Nettfeil bevarer valg; neste forsøk får akkurat samme payload.
     visit("?valgt=syntetisk-1&fixture=nettfeil")
-    page.get_by_role("button", name="Hjelpetrener", exact=True).click()
+    page.get_by_role("button", name="Assist Coach", exact=True).click()
     page.get_by_label("Fra", exact=True).fill("2026-09-12")
     page.get_by_label("Til", exact=True).fill("2026-09-30")
     page.get_by_role("button", name="Lagre tilgang", exact=True).click()
     expect(page.get_by_role("button", name="Lagrer …", exact=True)).to_be_disabled()
     # Et nytt submit i samme ventetid må ikke sende et nytt kall.
-    page.locator("form").evaluate("form => form.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}))")
+    page.locator("form").first.evaluate("form => form.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}))")
     expect(page.get_by_role("alert")).to_contain_text("Valgene dine er beholdt")
     expect(page.get_by_label("Fra", exact=True)).to_have_value("2026-09-12")
-    expect(page.get_by_role("button", name="Hjelpetrener", exact=True)).to_have_attribute("aria-pressed", "true")
+    expect(page.get_by_role("button", name="Assist Coach", exact=True)).to_have_attribute("aria-pressed", "true")
     assert page.evaluate("window.tnResultatlogg.length") == 1
     page.get_by_role("button", name="Lagre tilgang", exact=True).click()
     expect(page.get_by_role("status")).to_have_text("Tilgangen er lagret.")

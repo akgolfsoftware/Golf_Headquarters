@@ -9,7 +9,7 @@ TN-18 prøves med de faktiske appkomponentene, syntetiske personer og kontroller
 Kjør fra prosjektroten, med Python Playwright og Chromium installert:
 
 ```sh
-python3 .claude/skills/webapp-testing/scripts/with_server.py --server "node tests/visual/portering/server.mjs" --port 5441 -- python3 tests/visual/portering/tn-tilgang.py
+python3 .claude/skills/webapp-testing/scripts/with_server.py --server "PORTERING_FIXTURE=fixture node tests/visual/portering/server.mjs" --port 5441 -- python3 tests/visual/portering/tn-tilgang.py
 ```
 
 Prøven dekker 320, 390, 834 og 1440 piksler; liste, valgt person, tom, lasting og feil; navigasjon, tastaturmeny, sperret dobbeltlagring, nettfeil og nytt forsøk, siste trener, feltnavn og redusert bevegelse. Resultat og bilder lagres lokalt under `_archive/portering-kontroll-2026-09-10/`, utenfor Git.

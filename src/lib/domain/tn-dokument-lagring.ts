@@ -5,6 +5,7 @@ import { krevDokumentOpplastingstilgang, opprettGruppeDokument } from "./tn-post
 import { uploadFile } from "@/lib/storage/supabase-storage";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { ALLOWED_MIME_TYPES, MAX_FILE_SIZES, STORAGE_BUCKETS } from "@/lib/storage/buckets";
+import type { TnDokumentKategori } from "./tn-post-regler";
 
 const bucket = STORAGE_BUCKETS.TN_POST_VEDLEGG;
 export const MAKS_TN_DOKUMENT_BYTES = MAX_FILE_SIZES[bucket];
@@ -21,7 +22,7 @@ function samsvarerFiltype(bytes: Buffer, mime: string): boolean {
   return false;
 }
 
-export async function lagreTnDokument(groupId: string, forfatterId: string, fil: File): Promise<{ ok: true } | { ok: false; feil: string }> {
+export async function lagreTnDokument(groupId: string, forfatterId: string, fil: File, kategori: TnDokumentKategori | null = null): Promise<{ ok: true } | { ok: false; feil: string }> {
   if (!z.string().min(1).max(200).safeParse(groupId).success) return { ok: false, feil: "Ugyldig gruppe." };
   try {
     await krevDokumentOpplastingstilgang(groupId, forfatterId);
@@ -40,7 +41,7 @@ export async function lagreTnDokument(groupId: string, forfatterId: string, fil:
     const opplastet = await uploadFile({ bucket, path, file: bytes, contentType: fil.type });
     await opprettGruppeDokument({ forfatterId, groupId,
       fileName: fil.name.replace(/[\x00-\x1f\x7f]/g, "").slice(0, 255) || "dokument",
-      fileType: fil.type, fileSize: fil.size, path: opplastet.path });
+      fileType: fil.type, fileSize: fil.size, path: opplastet.path, kategori });
     return { ok: true };
   } catch {
     // Stien er unik og serverlaget. Også rydding hvis signering feiler etter upload.

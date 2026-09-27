@@ -14,8 +14,10 @@ Generert med `npm run prosjekt:register`. Kategoriene er veivisere basert på na
 | Data / integrasjon — kan skrive eller sende | [scripts/add-follow-up-case-2026-09-23.ts](<add-follow-up-case-2026-09-23.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/add-slag-detaljer-2026-09-16.ts](<add-slag-detaljer-2026-09-16.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/add-teknisk-plan-v2-akser-2026-09-22.ts](<add-teknisk-plan-v2-akser-2026-09-22.ts>) |
+| Data / integrasjon — kan skrive eller sende | [scripts/add-tn-handlinger-2026-09-27.ts](<add-tn-handlinger-2026-09-27.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/add-tn-post-2026-09-01.ts](<add-tn-post-2026-09-01.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/add-tn-testdag-2026-09-17.ts](<add-tn-testdag-2026-09-17.ts>) |
+| Data / integrasjon — kan skrive eller sende | [scripts/add-tn-vedlegg-kategori-2026-09-27.ts](<add-tn-vedlegg-kategori-2026-09-27.ts>) |
 | Data / integrasjon — kan skrive eller sende | [scripts/add-utfordring-retning-2026-09-22.ts](<add-utfordring-retning-2026-09-22.ts>) |
 | Test / bilde — kontroller miljø og testkonto | [scripts/agency-shot.mjs](<agency-shot.mjs>) |
 | Verktøy / drift — les kontrakten før kjøring | [scripts/ak-golf-ds-tokens.mjs](<ak-golf-ds-tokens.mjs>) |

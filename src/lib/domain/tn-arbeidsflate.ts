@@ -14,6 +14,8 @@ import { loadTesterScreen, type AxisGroup, type PlannedTest } from "@/lib/portal
 import { parseProtocol, type ScorekortForsok } from "@/lib/portal-tester/protocol";
 import { parseForScoring, lavereErBedre, ScoringDetailsSchema } from "@/lib/portal-tester/test-scoring";
 import { testTilgangWhere } from "@/lib/portal-tester/test-tilgang";
+import { aggregerRangliste } from "./tn-rangliste";
+import { lesTurneringsresultat } from "./turneringsresultat";
 
 /**
  * Datalag for TN-00–TN-21.
@@ -61,7 +63,11 @@ export type TnSpillerRad = {
   status: string;
   tester: number;
   sisteTest: Date | null;
+  sisteTestNavn: string | null;
   aktivPlan: string | null;
+  planStart: Date | null;
+  planSlutt: Date | null;
+  fodselsdato: Date | null;
 };
 
 export async function hentTnSpillere(bruker: TnBruker) {
@@ -71,30 +77,30 @@ export async function hentTnSpillere(bruker: TnBruker) {
   const [spillere, tester, planer] = await Promise.all([
     prisma.user.findMany({
       where: { id: { in: spillerIder }, deletedAt: null },
-      select: { id: true, name: true, hcp: true, homeClub: true, school: true, schoolYear: true, userStatus: true },
+      select: { id: true, name: true, hcp: true, homeClub: true, school: true, schoolYear: true, userStatus: true, dateOfBirth: true },
       orderBy: { name: "asc" },
     }),
     prisma.testResult.findMany({
       where: { userId: { in: spillerIder } },
-      select: { userId: true, takenAt: true },
+      select: { userId: true, takenAt: true, test: { select: { name: true } } },
       orderBy: { takenAt: "desc" },
     }),
     prisma.trainingPlan.findMany({
       where: { userId: { in: spillerIder }, isActive: true },
-      select: { userId: true, name: true, updatedAt: true },
+      select: { userId: true, name: true, startDate: true, endDate: true, updatedAt: true },
       orderBy: { updatedAt: "desc" },
     }),
   ]);
 
-  const testPerSpiller = new Map<string, { antall: number; siste: Date | null }>();
+  const testPerSpiller = new Map<string, { antall: number; siste: Date | null; navn: string | null }>();
   for (const test of tester) {
-    const rad = testPerSpiller.get(test.userId) ?? { antall: 0, siste: null };
+    const rad = testPerSpiller.get(test.userId) ?? { antall: 0, siste: null, navn: null };
     rad.antall += 1;
-    rad.siste ??= test.takenAt;
+    if (!rad.siste) { rad.siste = test.takenAt; rad.navn = test.test.name; }
     testPerSpiller.set(test.userId, rad);
   }
-  const planPerSpiller = new Map<string, string>();
-  for (const plan of planer) if (!planPerSpiller.has(plan.userId)) planPerSpiller.set(plan.userId, plan.name);
+  const planPerSpiller = new Map<string, (typeof planer)[number]>();
+  for (const plan of planer) if (!planPerSpiller.has(plan.userId)) planPerSpiller.set(plan.userId, plan);
 
   const rader: TnSpillerRad[] = spillere.map((spiller) => ({
     id: spiller.id,
@@ -106,7 +112,11 @@ export async function hentTnSpillere(bruker: TnBruker) {
     status: spiller.userStatus,
     tester: testPerSpiller.get(spiller.id)?.antall ?? 0,
     sisteTest: testPerSpiller.get(spiller.id)?.siste ?? null,
-    aktivPlan: planPerSpiller.get(spiller.id) ?? null,
+    sisteTestNavn: testPerSpiller.get(spiller.id)?.navn ?? null,
+    aktivPlan: planPerSpiller.get(spiller.id)?.name ?? null,
+    planStart: planPerSpiller.get(spiller.id)?.startDate ?? null,
+    planSlutt: planPerSpiller.get(spiller.id)?.endDate ?? null,
+    fodselsdato: spiller.dateOfBirth,
   }));
   return { kontekst, rader };
 }
@@ -205,63 +215,80 @@ export async function hentTnTurneringer(bruker: TnBruker) {
   return { kontekst, turneringer };
 }
 
-export async function hentTnRangliste(bruker: TnBruker) {
+/**
+ * Starter, snittplassering og brutto snitt per spiller fra de offentlige
+ * resultatene (public_player_entries/rounds, kanonisk kilde). Med `aar` telles
+ * bare turneringer som startet det året (Oslo).
+ */
+export async function hentTnRangliste(bruker: TnBruker, aar?: number) {
   const spillerside = await hentTnSpillere(bruker);
   if (!spillerside) return null;
-  const ider = spillerside.rader.map((spiller) => spiller.id);
-  const resultater = await prisma.tournamentResult.findMany({
-    where: { userId: { in: ider } },
-    select: { userId: true, position: true, score: true, tournament: { select: { startDate: true } } },
+  const koblinger = await prisma.user.findMany({
+    where: { id: { in: spillerside.rader.map((spiller) => spiller.id) }, publicPlayerId: { not: null } },
+    select: { id: true, publicPlayerId: true },
   });
-  const perSpiller = new Map<string, { starter: number; plasseringSum: number; plasseringer: number; scoreSum: number; scorer: number }>();
-  for (const resultat of resultater) {
-    const rad = perSpiller.get(resultat.userId) ?? { starter: 0, plasseringSum: 0, plasseringer: 0, scoreSum: 0, scorer: 0 };
-    rad.starter += 1;
-    if (resultat.position !== null) { rad.plasseringSum += resultat.position; rad.plasseringer += 1; }
-    if (resultat.score !== null) { rad.scoreSum += resultat.score; rad.scorer += 1; }
-    perSpiller.set(resultat.userId, rad);
+  const entries = await prisma.publicPlayerEntry.findMany({
+    where: {
+      playerId: { in: koblinger.map((k) => k.publicPlayerId!) },
+      tournament: { mergedIntoId: null, ...(aar ? { startDate: { gte: new Date(Date.UTC(aar - 1, 11, 31, 12)), lt: new Date(Date.UTC(aar, 11, 31, 12)) } } : {}) },
+    },
+    select: {
+      playerId: true, status: true, position: true, scoreToPar: true, totalScore: true, rounds: true, klasseNavn: true,
+      roundDetails: { select: { roundNumber: true, score: true, toPar: true, source: true } },
+      tournament: { select: { startDate: true } },
+    },
+  });
+  const perSpiller = new Map<string, typeof entries>();
+  for (const entry of entries) {
+    if (aar && osloAar(entry.tournament.startDate) !== aar) continue;
+    perSpiller.set(entry.playerId, [...(perSpiller.get(entry.playerId) ?? []), entry]);
   }
+  const publicId = new Map(koblinger.map((k) => [k.id, k.publicPlayerId!]));
   return {
     kontekst: spillerside.kontekst,
     rader: spillerside.rader.map((spiller) => {
-      const resultat = perSpiller.get(spiller.id);
-      return {
-        ...spiller,
-        starter: resultat?.starter ?? 0,
-        snittplassering: resultat?.plasseringer ? resultat.plasseringSum / resultat.plasseringer : null,
-        bruttoScore: resultat?.scorer ? resultat.scoreSum / resultat.scorer : null,
-      };
+      const tall = aggregerRangliste(perSpiller.get(publicId.get(spiller.id) ?? "") ?? []);
+      return { ...spiller, ...tall, bruttoScore: tall.bruttoSnitt, koblet: publicId.has(spiller.id) };
     }),
   };
 }
 
+const osloAarFormat = new Intl.DateTimeFormat("en-GB", { year: "numeric", timeZone: "Europe/Oslo" });
+function osloAar(dato: Date) {
+  return Number(osloAarFormat.format(dato));
+}
+
+/**
+ * Samlinger er gruppehendelser med kind «SAMLING» (Anders 27.09.2026), som i
+ * gruppekalenderen. Hele gruppen deltar, så antall deltakere er antall aktive
+ * spillere. Tidligere ble samlinger lest fra `TrainingCamp`, én rad per spiller.
+ */
 export async function hentTnSamlinger(bruker: TnBruker) {
   const kontekst = await hentTnArbeidskontekst(bruker);
   if (!kontekst) return null;
-  const spillerIder = await spillerIderFor(kontekst, bruker.id);
-  const rader = await prisma.trainingCamp.findMany({
-    where: { userId: { in: spillerIder } },
-    select: { id: true, userId: true, name: true, startDate: true, endDate: true, location: true, partner: true, notes: true },
-    orderBy: { startDate: "desc" },
-    take: 150,
-  });
-  const samlinger = new Map<string, typeof rader>();
-  for (const rad of rader) {
-    const nokkel = `${rad.name}|${rad.startDate.toISOString()}|${rad.endDate.toISOString()}`;
-    samlinger.set(nokkel, [...(samlinger.get(nokkel) ?? []), rad]);
-  }
-  return { kontekst, samlinger: [...samlinger.values()].map((deltakere) => ({ ...deltakere[0]!, antallDeltakere: deltakere.length })) };
+  const [rader, antallSpillere] = await Promise.all([
+    prisma.groupSchedule.findMany({
+      where: { groupId: kontekst.gruppe.id, kind: "SAMLING" },
+      select: { id: true, title: true, startAt: true, endAt: true, location: true, description: true },
+      orderBy: { startAt: "desc" },
+      take: 150,
+    }),
+    prisma.groupMember.count({ where: { groupId: kontekst.gruppe.id, ...aktivtSpillerMedlemskapWhere() } }),
+  ]);
+  return {
+    kontekst,
+    samlinger: rader.map((r) => ({ id: r.id, name: r.title, startDate: r.startAt, endDate: r.endAt, location: r.location, notes: r.description, antallDeltakere: antallSpillere })),
+  };
 }
 
-export async function hentTnManedsplan(bruker: TnBruker) {
+/** Henter gruppeøkter og perioder i [fra, til). Kalleren velger vinduet (TN-11 bruker hele kalenderuker rundt valgt måned). */
+export async function hentTnManedsplan(bruker: TnBruker, fra: Date, til: Date) {
   const kontekst = await hentTnArbeidskontekst(bruker);
   if (!kontekst) return null;
-  const naa = new Date();
-  const fra = new Date(Date.UTC(naa.getUTCFullYear(), naa.getUTCMonth() - 1, 1));
-  const til = new Date(Date.UTC(naa.getUTCFullYear(), naa.getUTCMonth() + 2, 1));
   const [okter, perioder] = await Promise.all([
     prisma.groupSchedule.findMany({
-      where: { groupId: kontekst.gruppe.id, startAt: { gte: fra, lt: til } },
+      // Samlinger leses av hentTnSamlinger og legges inn som spenn; her bare øktene.
+      where: { groupId: kontekst.gruppe.id, startAt: { gte: fra, lt: til }, OR: [{ kind: null }, { kind: { not: "SAMLING" } }] },
       select: { id: true, title: true, description: true, startAt: true, endAt: true, location: true, kind: true },
       orderBy: { startAt: "asc" },
     }),
@@ -294,18 +321,6 @@ export async function hentTnTrenere(bruker: TnBruker) {
     orderBy: { user: { name: "asc" } },
   });
   return { kontekst, rader };
-}
-
-export async function hentTnReferansenivaer(bruker: TnBruker) {
-  const kontekst = await hentTnArbeidskontekst(bruker);
-  if (!kontekst) return null;
-  const rader = TN_CATALOG.flatMap((protokoll) =>
-    protokoll.rows
-      .filter((rad) => rad.target !== undefined)
-      .slice(0, 6)
-      .map((rad) => ({ protokollId: protokoll.id, protokoll: protokoll.name, mal: rad.label, verdi: rad.target ?? null })),
-  );
-  return { kontekst, versjon: TN_VERSION, rader };
 }
 
 /**
@@ -517,6 +532,17 @@ export type TnSpillerTilgang = {
 function erTnPersonligDataLeser(kontekst: TnArbeidskontekst, bruker: TnBruker): boolean {
   if (bruker.role === "ADMIN") return true;
   return bruker.role === "COACH" && (kontekst.rolle === "COACH" || kontekst.rolle === "ASSISTANT");
+}
+
+/**
+ * Gruppeanalysen (/team-norway/analyse): trener eller Assist Coach i
+ * Team Norway-gruppen slipper inn uten plattformrolle COACH (Anders
+ * 26.09.2026). Gjelder KUN gruppeanalysen — spillerprofilens personlige
+ * data bruker fortsatt den strengere `erTnPersonligDataLeser`.
+ */
+function erTnGruppeanalyseLeser(kontekst: TnArbeidskontekst, bruker: TnBruker): boolean {
+  if (bruker.role === "ADMIN") return true;
+  return kontekst.rolle === "COACH" || kontekst.rolle === "ASSISTANT";
 }
 
 export async function hentTnSpillerTilgang(bruker: TnBruker, spillerId: string): Promise<TnSpillerTilgang | null> {
@@ -839,7 +865,7 @@ export type TnGruppeanalyseValg = { kontekst: TnArbeidskontekst; protokoller: { 
 /** Coach/assistent/admin: valgmuligheter for gruppeanalyse (protokoll ELLER testdag). */
 export async function hentTnGruppeanalyseValg(bruker: TnBruker): Promise<TnGruppeanalyseValg | null> {
   const kontekst = await hentTnArbeidskontekst(bruker);
-  if (!kontekst || !erTnPersonligDataLeser(kontekst, bruker)) return null;
+  if (!kontekst || !erTnGruppeanalyseLeser(kontekst, bruker)) return null;
   const testdager = await hentTnTestdager(bruker);
   return {
     kontekst,
@@ -889,7 +915,7 @@ function sorterGruppeanalyse(rader: TnGruppeanalyseRad[], lowerIsBetter: boolean
  */
 export async function hentTnGruppeanalyseResultat(bruker: TnBruker, params: { protokollId?: string; testDayId?: string }): Promise<TnGruppeanalyseResultat | null> {
   const kontekst = await hentTnArbeidskontekst(bruker);
-  if (!kontekst || !erTnPersonligDataLeser(kontekst, bruker)) return null;
+  if (!kontekst || !erTnGruppeanalyseLeser(kontekst, bruker)) return null;
 
   if (params.testDayId) {
     const dag = await prisma.testDay.findFirst({
@@ -1137,4 +1163,96 @@ export async function hentTnSpillerAnalyseHub(tilgang: TnSpillerTilgang): Promis
     sgAkser: hub.sgAkser,
     trackman: hub.trackman ? { klubb: hub.trackman.klubb, datoKort: hub.trackman.datoKort, setning: hub.trackman.setning, meta: hub.trackman.meta } : null,
   };
+}
+
+export type TnSpillerTurnering = {
+  navn: string;
+  start: Date;
+  slutt: Date | null;
+  status: string;
+  runder: number;
+  bruttoSnitt: number | null;
+  plassering: string | null;
+};
+
+export type TnSpillerProfil = {
+  navn: string;
+  fodselsdato: Date | null;
+  klubb: string | null;
+  skole: string | null;
+  hcp: number | null;
+  /** Null når spilleren ikke er koblet til en offentlig resultatprofil. */
+  turneringer: TnSpillerTurnering[] | null;
+  /** Brutto snitt og runder for året, fra samme regel som TN-16 Rangliste. */
+  aaret: { runder: number; bruttoSnitt: number | null } | null;
+};
+
+/**
+ * TN-02 Spillerprofil. Krever et allerede verifisert `TnSpillerTilgang`, som de
+ * andre personlige leserne. Turneringene kommer fra de offentlige resultatene
+ * (kanonisk kilde), bare brutto, for turneringer som startet i `aar` (Oslo).
+ */
+export async function hentTnSpillerProfil(tilgang: TnSpillerTilgang, aar: number): Promise<TnSpillerProfil | null> {
+  const spiller = await prisma.user.findFirst({
+    where: { id: tilgang.spillerId, deletedAt: null },
+    select: { name: true, dateOfBirth: true, homeClub: true, school: true, hcp: true, publicPlayerId: true },
+  });
+  if (!spiller) return null;
+  const grunn = { navn: spiller.name ?? tilgang.spillerNavn, fodselsdato: spiller.dateOfBirth, klubb: spiller.homeClub, skole: spiller.school, hcp: spiller.hcp };
+  if (!spiller.publicPlayerId) return { ...grunn, turneringer: null, aaret: null };
+
+  const entries = await prisma.publicPlayerEntry.findMany({
+    where: {
+      playerId: spiller.publicPlayerId,
+      tournament: { mergedIntoId: null, startDate: { gte: new Date(Date.UTC(aar - 1, 11, 31, 12)), lt: new Date(Date.UTC(aar, 11, 31, 12)) } },
+    },
+    select: {
+      status: true, position: true, scoreToPar: true, totalScore: true, rounds: true, klasseNavn: true,
+      roundDetails: { select: { roundNumber: true, score: true, toPar: true, source: true } },
+      tournament: { select: { name: true, startDate: true, endDate: true } },
+    },
+    orderBy: { tournament: { startDate: "desc" } },
+  });
+  const iAaret = entries.filter((e) => osloAar(e.tournament.startDate) === aar);
+  const turneringer = iAaret.map((e) => {
+    const tall = aggregerRangliste([e]);
+    const resultat = lesTurneringsresultat(e);
+    return {
+      navn: e.tournament.name,
+      start: e.tournament.startDate,
+      slutt: e.tournament.endDate,
+      status: e.status,
+      runder: tall.runder,
+      bruttoSnitt: tall.bruttoSnitt,
+      plassering: resultat.plasseringTekst,
+    };
+  });
+  const sum = aggregerRangliste(iAaret);
+  return { ...grunn, turneringer, aaret: { runder: sum.runder, bruttoSnitt: sum.bruttoSnitt } };
+}
+
+// ── Uttak, spillerstatus og college (Anders 27.09.2026) ──
+
+export type TnUttakRad = { id: string; spillerId: string; arrangement: string; status: string; begrunnelse: string | null; decidedAt: Date };
+
+export async function hentTnUttak(kontekst: TnArbeidskontekst): Promise<TnUttakRad[]> {
+  const rader = await prisma.tnUttak.findMany({ where: { groupId: kontekst.gruppe.id }, orderBy: [{ arrangement: "asc" }, { decidedAt: "desc" }] });
+  return rader.map((r) => ({ id: r.id, spillerId: r.userId, arrangement: r.arrangement, status: r.status, begrunnelse: r.begrunnelse, decidedAt: r.decidedAt }));
+}
+
+export type TnSpillerstatusRad = { spillerId: string; lisensStatus: string | null; lisensBetaltDato: Date | null; helseattestUtloper: Date | null; antidopingSignert: Date | null };
+
+/** Status for ett år. Spilleren ser bare sin egen (spillerIderFor). */
+export async function hentTnSpillerstatuser(bruker: TnBruker, kontekst: TnArbeidskontekst, aar: number): Promise<Map<string, TnSpillerstatusRad>> {
+  const ider = await spillerIderFor(kontekst, bruker.id);
+  const rader = await prisma.tnSpillerstatus.findMany({ where: { groupId: kontekst.gruppe.id, aar, userId: { in: ider } } });
+  return new Map(rader.map((r) => [r.userId, { spillerId: r.userId, lisensStatus: r.lisensStatus, lisensBetaltDato: r.lisensBetaltDato, helseattestUtloper: r.helseattestUtloper, antidopingSignert: r.antidopingSignert }]));
+}
+
+export type TnCollegeRad = { spillerId: string; skole: string; status: string; startDato: Date | null; notat: string | null };
+
+export async function hentTnCollege(bruker: TnBruker, kontekst: TnArbeidskontekst): Promise<Map<string, TnCollegeRad>> {
+  const ider = await spillerIderFor(kontekst, bruker.id);
+  const rader = await prisma.tnCollege.findMany({ where: { groupId: kontekst.gruppe.id, userId: { in: ider } } });
+  return new Map(rader.map((r) => [r.userId, { spillerId: r.userId, skole: r.skole, status: r.status, startDato: r.startDato, notat: r.notat }]));
 }
