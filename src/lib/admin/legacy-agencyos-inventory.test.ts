@@ -19,7 +19,7 @@ function* walkPages(dir: string): Generator<string> {
 
 /** Må inneholde redirect( — rene videresendinger uten egen UI. */
 const SKAL_REDIRECTE: string[] = [
-  "stall/page.tsx",
+  // stall/page.tsx er forfremmet til aktiv skjerm (/admin/stall med StallPrecisionView)
   "analysere/page.tsx",
   "coach-workbench/page.tsx",
   "plans/new/page.tsx",

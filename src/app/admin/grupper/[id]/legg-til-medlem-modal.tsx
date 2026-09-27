@@ -22,6 +22,9 @@ const ROLLEVALG: { rolle: GruppemedlemRolle; label: string; entall: string }[] =
   { rolle: "COACH", label: "Trener", entall: "trener" },
 ];
 
+/** Speiler `ALLEREDE_MEDLEM_MØNSTER` i actions.ts — skiller «ingenting å gjøre» fra en reell sendefeil. */
+const ALLEREDE_MEDLEM_MØNSTER = /allerede medlem/i;
+
 function initialer(name: string): string {
   const parts = name.trim().split(/\s+/);
   if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
@@ -132,17 +135,30 @@ export function LeggTilMedlemModal({
     setInviterStatus(null);
     setInviterFeil([]);
     startInviterTransition(async () => {
-      const res = await inviterSpillereTilGruppe(groupId, eposter);
+      let res: Awaited<ReturnType<typeof inviterSpillereTilGruppe>>;
+      try {
+        res = await inviterSpillereTilGruppe(groupId, eposter);
+      } catch {
+        // Nettverksfeil/kastet server action: forrige status blir stående,
+        // vi legger kun til en tydelig feilmelding om selve forsøket.
+        setInviterFeil(["Kunne ikke nå serveren. Sjekk nettforbindelsen og prøv igjen."]);
+        return;
+      }
       if (!res.ok) {
         setInviterFeil([res.feil]);
         return;
       }
       const deler: string[] = [];
-      if (res.lagtTil.length > 0) deler.push(`${res.lagtTil.length} lagt til`);
-      if (res.invitert.length > 0) deler.push(`${res.invitert.length} invitert`);
+      if (res.invitert.length > 0) deler.push(`${res.invitert.length} invitasjon${res.invitert.length === 1 ? "" : "er"} sendt`);
+      if (res.opprettet.length > 0) deler.push(`${res.opprettet.length} ny${res.opprettet.length === 1 ? "" : "e"} testprofil${res.opprettet.length === 1 ? "" : "er"} opprettet`);
+      if (res.lagtTil.length > 0) deler.push(`${res.lagtTil.length} lagt til direkte`);
       setInviterStatus(deler.length > 0 ? deler.join(" · ") : null);
+      // «Allerede medlem» er ferdig behandlet (ingen retry gir nytt utfall) —
+      // skill den fra en reell sendefeil i teksten som vises.
       setInviterFeil(res.feilet.map((f) => `${f.epost}: ${f.feil}`));
-      if (res.feilet.length === 0) setInviterTekst("");
+      const retrybare = res.feilet.filter((f) => !ALLEREDE_MEDLEM_MØNSTER.test(f.feil));
+      if (retrybare.length === 0) setInviterTekst("");
+      else setInviterTekst(retrybare.map((f) => f.epost).join(", "));
       router.refresh();
     });
   }
@@ -304,7 +320,8 @@ export function LeggTilMedlemModal({
             onChange={(e) => setInviterTekst(e.target.value)}
             placeholder={"navn@klubb.no, navn2@klubb.no …"}
             rows={2}
-            className="mt-2 w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
+            disabled={inviterPending}
+            className="mt-2 w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30 disabled:cursor-not-allowed disabled:opacity-60"
             aria-label="E-postadresser som skal inviteres"
           />
           {inviterStatus && (

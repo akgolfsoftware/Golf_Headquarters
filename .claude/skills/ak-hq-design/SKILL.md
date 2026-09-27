@@ -13,9 +13,9 @@ Utvikle et presist og lett forståelig golfprodukt. Arbeid fra faktiske brukerop
 
 ## Utgangspunkt og kildeorden
 
-- Anders' siste bestilling styrer. **AK Golf Design System og Claude Design-prosjektet «App design» er valgt designautoritet fra 21.09.2026.** Les [den styrende beslutningen](../../../docs/design-system/design-autoritet.md) først. Systemvalget er ikke en åpen kandidat.
+- Anders' siste bestilling styrer. **Claude Design-prosjektet «AK Golf Precision Athletics» (`7d7c2994`) er designsystemet for AK Golf HQ fra 26.09.2026** ([beslutninger.md](../../rules/beslutninger.md) §PRECISION ATHLETICS). Grafitt primærknapp, rust kun som signal, lyst tema som standard og nattema ute. Les [den styrende beslutningen](../../../docs/design-system/design-autoritet.md) først. Systemvalget er ikke en åpen kandidat.
 - Train-lock og Paper er utgående. Bruk dem bare som historikk og funksjonsinventar, aldri som visuell kilde eller skjult standard. Ikke spør Anders på nytt om de skal gjelde.
-- Viderefør siste faktiske versjon i «App design» og bevar nyere rettinger. Historiske designpakker, ZIP-instrukser og skill-eksempler er ikke nye valg. En konkret skjermvariant er et forslag inntil Anders velger den for bygging.
+- Viderefør siste faktiske versjon i «AK Golf Precision Athletics» og bevar nyere rettinger. «App design» (`830e7bce`) finnes ikke lenger. Historiske designpakker, ZIP-instrukser og skill-eksempler er ikke nye valg. En konkret skjermvariant er et forslag inntil Anders velger den for bygging.
 - Team Norway har sitt eget språk for egne `/team-norway/*`-skjermer: Claude Design-prosjektet «Team Norway App» (Anders 22.09.2026, [beslutninger.md](../../rules/beslutninger.md) §TEAM NORWAY-APPEN BYTTER DESIGNSPRÅK). Jost/Lato, hjørner 0 · 2 · 4, ingen skygger, navy skinne, rød `#D70232`. Claw-valget 13.09 er historikk. Valget omfatter hele profilen, ikke bare aksentfargen.
 - I repoet: les `AGENTS.md`, `docs/platform/AGENT-BRIEF.md` og aktuell `designsystem/README.md`. Bruk produktregler og fagordbøker for funksjon og begreper; eldre visuelle regler i dem er underordnet den siste designavklaringen.
 - I Claude Design eller annet miljø uten repo: bruk det vedlagte inventaret og konteksten nedenfor. Si hva du kan se. Et eksportert filinventar beviser ikke tilgang, ferdig kode eller funksjon.

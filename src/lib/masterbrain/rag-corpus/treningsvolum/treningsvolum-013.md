@@ -5,7 +5,7 @@ source_section: "## 3.3 Oppmerksomhetsspenn og fokus-kvalitet"
 tags: [volum]
 topics: [treningsvolum]
 lang: no
-relevance: [AiPlanGeneration, CoachHQ, RAG, TechnicalPlan]
+relevance: [AiPlanGeneration, AgencyOS, RAG, TechnicalPlan]
 updated: 2026-06-14
 ---
 

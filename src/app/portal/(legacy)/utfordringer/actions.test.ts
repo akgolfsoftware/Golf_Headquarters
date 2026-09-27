@@ -17,6 +17,7 @@ let deltakerRader: { id: string; score: number | null }[] = [];
 let sisteRankOrder: "asc" | "desc" | null = null;
 let oppdaterteRanker: { id: string; rank: number }[] = [];
 let utfordringHigherIsBetter = true;
+let tilgangAvvist = false;
 
 mock.module("next/cache", { namedExports: { revalidatePath: () => undefined } });
 mock.module("next/navigation", {
@@ -28,6 +29,15 @@ mock.module("next/navigation", {
 });
 mock.module("@/lib/auth/requireConsentingUser", {
   namedExports: { requireConsentingUser: async () => EIER },
+});
+mock.module("@/lib/auth/requirePortalUser", {
+  namedExports: {
+    requirePortalUser: async (options: unknown) => {
+      assert.deepEqual(options, { allow: ["PLAYER", "COACH", "ADMIN"], kreverTilgang: "FULL" });
+      if (tilgangAvvist) throw new Error("ACCESS_DENIED");
+      return EIER;
+    },
+  },
 });
 mock.module("@/lib/audit", { namedExports: { audit: async () => undefined } });
 mock.module("@/lib/notifications", {
@@ -96,6 +106,20 @@ test.beforeEach(() => {
   sisteRankOrder = null;
   oppdaterteRanker = [];
   utfordringHigherIsBetter = true;
+  tilgangAvvist = false;
+});
+
+test("opprettUtfordring avviser direkte kall uten full tilgang", async () => {
+  tilgangAvvist = true;
+  const { opprettUtfordring } = await actions();
+  await assert.rejects(() => opprettUtfordring({ name: "Puttekonkurranse" }), /ACCESS_DENIED/);
+  assert.equal(opprettetChallenge, null);
+});
+
+test("opprettUtfordring validerer input på serveren", async () => {
+  const { opprettUtfordring } = await actions();
+  await assert.rejects(() => opprettUtfordring({ name: " " }), /Kontroller navn/);
+  assert.equal(opprettetChallenge, null);
 });
 
 test("opprettUtfordring avviser deltaker som verken er venn eller gruppemedlem", async () => {

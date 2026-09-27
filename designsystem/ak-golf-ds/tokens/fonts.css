@@ -1,12 +1,8 @@
 /* GENERERT fra tokens.json av tokens/build.mjs. IKKE REDIGER — endringer overskrives. */
-/* Oswald — DISPLAY — bare .aos-title, .aos-metric, kicker over 17 px, Live-tall
-   Archivo — BODY — alt arbeid: chrome, pills, knapper, felt, inspektør, brød, tabbar
-   IBM Plex Mono — META — bare målt data: kl. 16:00, +1,2, 3–5 fot, kilde, SG-kode
-   Ingen fjerde familie i ds-core. Vekter styres i tokens.json.
-   Google Fonts — ingen lisensierte binærfiler fulgte briefen. Bytt til lokale @font-face ved selvhosting. */
-@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@600&family=Archivo:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap");
-/* Fallback-familier med målte metrikker — holder layouten i ro mens webfonten lastes (CLS 0).
-   Målt i nettleser av tools/font-metrics.html. Kjør den på nytt hvis en familie eller vekt endres. */
-@font-face{font-family:"Oswald Fallback";src:local("Arial");size-adjust:91.5%;ascent-override:130.1%;descent-override:31.7%;line-gap-override:0%}
-@font-face{font-family:"Archivo Fallback";src:local("Arial");size-adjust:106.1%;ascent-override:83.0%;descent-override:19.8%;line-gap-override:0%}
+/* IBM Plex Sans — DISPLAY og BODY — alt arbeid: titler, chrome, pills, knapper, felt, inspektør, brød, tabbar
+   IBM Plex Mono — META — bare målt data: kl. 16:00, +1,2, 3–5 fot, kilde, SG-kode, klokkeslett
+   Ingen fjerde familie i ds-core. Vekter styres i tokens.json. */
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap");
+/* Fallback-familier med målte metrikker — holder layouten i ro mens webfonten lastes (CLS 0). */
+@font-face{font-family:"IBM Plex Sans Fallback";src:local("Arial");size-adjust:100%;ascent-override:100%;descent-override:25%;line-gap-override:0%}
 @font-face{font-family:"IBM Plex Mono Fallback";src:local("Courier New");size-adjust:99.7%;ascent-override:102.3%;descent-override:27.1%;line-gap-override:0%}

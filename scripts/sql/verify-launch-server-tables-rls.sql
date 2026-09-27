@@ -17,10 +17,21 @@ BEGIN
         RAISE EXCEPTION 'Unexpected visible rows for role % on table %', client_role, table_name;
       END IF;
     END LOOP;
+    FOREACH table_name IN ARRAY ARRAY['putt_details','week_plans','test_days','test_day_participants','follow_up_cases'] LOOP
+      IF NOT row_security_active(format('public.%I', table_name)::regclass) THEN
+        RAISE EXCEPTION 'RLS inactive for role % on table %', client_role, table_name;
+      END IF;
+      IF has_table_privilege(current_user, format('public.%I', table_name), 'SELECT')
+        OR has_table_privilege(current_user, format('public.%I', table_name), 'INSERT')
+        OR has_table_privilege(current_user, format('public.%I', table_name), 'UPDATE')
+        OR has_table_privilege(current_user, format('public.%I', table_name), 'DELETE') THEN
+        RAISE EXCEPTION 'Client role % retains table privileges on %', client_role, table_name;
+      END IF;
+    END LOOP;
     RESET ROLE;
   END LOOP;
   SET LOCAL ROLE postgres;
-  FOREACH table_name IN ARRAY ARRAY['datagolf_tak','datagolf_tak_band','position_task_maal','tn_posts','tn_post_vedlegg','tn_post_lesekvitteringer','kondisjon_segmenter','daily_active_users','drift_rutiner'] LOOP
+  FOREACH table_name IN ARRAY ARRAY['datagolf_tak','datagolf_tak_band','position_task_maal','tn_posts','tn_post_vedlegg','tn_post_lesekvitteringer','kondisjon_segmenter','daily_active_users','drift_rutiner','putt_details','week_plans','test_days','test_day_participants','follow_up_cases'] LOOP
     IF row_security_active(format('public.%I', table_name)::regclass) THEN
       RAISE EXCEPTION 'Server role unexpectedly restricted on table %', table_name;
     END IF;
@@ -36,4 +47,4 @@ BEGIN
 END
 $verification$;
 COMMIT;
-SELECT 'passed' AS status, 9 AS tables_verified, 18 AS client_reads_denied, 9 AS server_access_checks;
+SELECT 'passed' AS status, 14 AS tables_verified, 28 AS client_reads_denied, 14 AS server_access_checks;

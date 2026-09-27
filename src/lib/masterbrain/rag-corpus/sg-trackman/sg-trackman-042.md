@@ -5,7 +5,7 @@ source_section: "# 22.4 Trackman — Teknologi og parametere"
 tags: [ball-data, club-data, kort-spill, lpga, optimizer, pga-tour, trackman]
 topics: [kortspill, trackman-parametere]
 lang: no
-relevance: [CoachHQ, RAG, SgBaseline, TrackMan, forventetSg]
+relevance: [AgencyOS, RAG, SgBaseline, TrackMan, forventetSg]
 updated: 2026-06-14
 ---
 

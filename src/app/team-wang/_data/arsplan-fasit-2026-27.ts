@@ -806,12 +806,12 @@ export const KM: Record<Trinn, string[]> = {
   VG1: [
     "vise og utvikle ferdigheter i idretten og gjennomføre systematisk og målrettet trening",
     "dokumentere og evaluere en valgt treningsperiode",
-    "kjenne til ulike treningsformer, metoder, tester og øvelser som er relevante for ferdighetsutvikling i idretten, og bruke disse til å utvikle egne ferdigheter",
+    "kjenne til ulike treningsformer, metoder, tester og øvelser som er relevant for ferdighetsutvikling i idretten og kunne bruke disse for å utvikle sin egen ferdighet",
     "gjennomføre basistrening og skadeforebyggende tiltak som gir grunnlag for økt treningsbelastning",
     "forstå forholdet mellom totalbelastning og restitusjon",
     "beskrive mentale forberedelser til trening og konkurranse",
     "bruke lyst- og lekbetonte oppvarmingsøvelser, aktiviteter, treningsformer og konkurranser for å stimulere til økt motivasjon",
-    "vise god samhandling og respektfull treningsatferd",
+    "vise god samhandling og respektfull treningsatferd som bidrar til aktivitetsglede og et godt lærings- og utviklingsmiljø",
   ],
   VG2: [
     "vise og videreutvikle ferdigheter som er sentrale for å prestere i konkurranser i idretten",

@@ -5,7 +5,7 @@ source_section: "(Preamble)"
 tags: [amatør, handicap, volum]
 topics: [implementasjon, treningsvolum]
 lang: no
-relevance: [AiPlanGeneration, CoachHQ, PlayerHQ, RAG, SgBaseline, TechnicalPlan, forventetSg]
+relevance: [AiPlanGeneration, AgencyOS, PlayerHQ, RAG, SgBaseline, TechnicalPlan, forventetSg]
 updated: 2026-06-14
 ---
 

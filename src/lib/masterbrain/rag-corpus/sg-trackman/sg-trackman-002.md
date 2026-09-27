@@ -5,7 +5,7 @@ source_section: "### Innhold og pedagogikk: De forklarende avsnittene gir grunnl
 tags: [sg, trackman]
 topics: [implementasjon, trackman-parametere]
 lang: no
-relevance: [AiPlanGeneration, CoachHQ, RAG, SgBaseline, TrackMan, beregnSg]
+relevance: [AiPlanGeneration, AgencyOS, RAG, SgBaseline, TrackMan, beregnSg]
 updated: 2026-06-14
 ---
 

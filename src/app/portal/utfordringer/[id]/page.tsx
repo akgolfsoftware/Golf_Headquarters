@@ -67,6 +67,7 @@ export default async function UtfordringDetaljPage({
     erDeltaker: !!minDeltakelse,
     minScore: minDeltakelse?.score ?? null,
     minNotes: minDeltakelse?.notes ?? null,
+    higherIsBetter: utfordring.higherIsBetter,
     deltakere: utfordring.participants.map((p) => ({
       id: p.id,
       navn: p.user.name ?? "(uten navn)",

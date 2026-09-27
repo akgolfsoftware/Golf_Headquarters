@@ -5,7 +5,7 @@ source_section: "## Definisjon: Avstanden fra køllehodets geometriske senter ti
 tags: [club-data, trackman]
 topics: [trackman-parametere]
 lang: no
-relevance: [CoachHQ, RAG, TrackMan]
+relevance: [AgencyOS, RAG, TrackMan]
 updated: 2026-06-14
 ---
 

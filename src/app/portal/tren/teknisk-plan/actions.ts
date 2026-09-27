@@ -40,6 +40,7 @@ import {
   type DimensjonKode,
 } from "@/lib/domain/ak-formel-v2";
 import { vaskMotRelevans } from "@/lib/domain/omrade-relevans";
+import { resolveCoachIdForPlayer } from "@/lib/workbench/v2-sync";
 
 const PNummerSchema = z
   .string()
@@ -64,6 +65,8 @@ const TaskInputSchema = z.object({
   repsMaalDry: z.number().int().min(0),
   repsMaalLav: z.number().int().min(0),
   repsMaalFull: z.number().int().min(0),
+  bildeUrl: z.string().max(2000).nullish(),
+  videoUrl: z.string().max(2000).nullish(),
 });
 
 const IdSchema = z.string().min(1, "ID er påkrevd");
@@ -125,6 +128,8 @@ export interface TaskInput {
   repsMaalDry: number;
   repsMaalLav: number;
   repsMaalFull: number;
+  bildeUrl?: string | null;
+  videoUrl?: string | null;
   tmGoals?: TmGoalInput[];
   hitRateGoals?: HitRateGoalInput[];
 }
@@ -205,6 +210,8 @@ export async function createTask(input: TaskInput) {
       sortOrder: (lastSort?.sortOrder ?? -1) + 1,
       tittel: input.tittel,
       beskrivelse: input.beskrivelse,
+      bildeUrl: input.bildeUrl ?? null,
+      videoUrl: input.videoUrl ?? null,
       pyramide: input.pyramide,
       omraade: input.omraadeKode ? omraadeVisning(input.omraadeKode) : input.omraade,
       omraadeKode: input.omraadeKode ?? null,
@@ -304,6 +311,8 @@ export async function updateTaskBasics(
       sortOrder: nySortOrder,
       tittel: patch.tittel,
       beskrivelse: patch.beskrivelse,
+      bildeUrl: patch.bildeUrl !== undefined ? patch.bildeUrl : undefined,
+      videoUrl: patch.videoUrl !== undefined ? patch.videoUrl : undefined,
       pyramide: patch.pyramide,
       omraade: patch.omraadeKode ? omraadeVisning(patch.omraadeKode) : patch.omraade,
       omraadeKode: patch.omraadeKode ?? undefined,
@@ -424,4 +433,65 @@ export async function logReps(
 
   revalidatePath(`/portal/tren/teknisk-plan/${task.position.planId}`);
   return { ok: true };
+}
+
+/**
+ * Starter en pågående live-økt direkte fra en teknisk oppgave.
+ * Kobler øvelsen til oppgaven via `positionTaskId` slik at reps som logges
+ * i økta (eller snakkes inn via Whisper) automatisk oppdaterer teknisk plan.
+ */
+export async function startLiveSessionForTask(taskId: string) {
+  IdSchema.parse(taskId);
+  const task = await prisma.positionTask.findUnique({
+    where: { id: taskId },
+    include: {
+      position: {
+        select: {
+          planId: true,
+          pNummer: true,
+          plan: { select: { userId: true } },
+        },
+      },
+    },
+  });
+  if (!task) throw new Error("Oppgave ikke funnet");
+  const { user } = await ensurePlanAccess(task.position.planId);
+
+  const coachId = await resolveCoachIdForPlayer(task.position.plan.userId);
+
+  const now = new Date();
+  const endTime = new Date(now.getTime() + 45 * 60 * 1000);
+
+  const session = await prisma.trainingSessionV2.create({
+    data: {
+      title: `Teknisk: ${task.position.pNummer} ${task.tittel}`,
+      studentId: task.position.plan.userId,
+      coachId,
+      status: "IN_PROGRESS",
+      startTime: now,
+      endTime,
+      miljo: "M1",
+      practiceType: "BLOKK",
+      isCoachCreated: user.id === coachId,
+      drills: {
+        create: [
+          {
+            name: task.tittel,
+            pyramide: task.pyramide,
+            positionTaskId: task.id,
+            sortOrder: 0,
+            durationMinutes: 30,
+            planRepsUtenBall: task.repsMaalDry > 0 ? task.repsMaalDry : null,
+            planRepsLavFart: task.repsMaalLav > 0 ? task.repsMaalLav : null,
+            planRepsAuto: task.repsMaalFull > 0 ? task.repsMaalFull : null,
+          },
+        ],
+      },
+    },
+  });
+
+  revalidatePath(`/portal/tren/teknisk-plan/${task.position.planId}`);
+  revalidatePath("/portal/live");
+
+  return { ok: true, sessionId: session.id, url: `/portal/live/${session.id}/active` };
 }

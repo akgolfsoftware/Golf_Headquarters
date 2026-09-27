@@ -37,13 +37,14 @@ import type { OppgaveDraft } from "@/components/teknisk-plan/oppgave-modal";
 // v2-presentasjonen under bruker ingen tp-klasser, og reglene er .tp-scopet.
 import "@/components/teknisk-plan/teknisk-plan.css";
 import { OppgaveLauncher, type PositionTarget } from "./oppgave-launcher";
-import { OppgaveEditLauncher } from "./oppgave-edit-launcher";
+import { TekniskPlanSortableTasks, type SortableTaskItem } from "@/components/portal/v2/TekniskPlanSortableTasks";
 import { TekniskPlanFullsvingShell } from "@/components/portal/v2/TekniskPlanFullsvingShell";
 import { erFullsving } from "@/lib/teknisk-plan/fullsving";
 import { TekniskPlanVisning, type EnTingLes, type FokusLes } from "@/components/teknisk-plan/teknisk-plan-visning";
 import { loadNesteOkt } from "@/lib/portal/load-neste-okt";
 import { sorterPosisjoner, medFasitNavn } from "@/lib/teknisk-plan/sorter-posisjoner";
 import { MOTORIKK_LABEL, DIMENSJON_LABEL, MAALEUTSTYR_LABEL, PRESS_LABEL } from "@/lib/domain/ak-formel-v2";
+import { computeTrackManDispersionMap } from "@/lib/trackman/dispersion-map";
 export const dynamic = "force-dynamic";
 
 interface PageProps {
@@ -222,6 +223,42 @@ export default async function PlanBuilderPage({ params }: PageProps) {
       };
     });
 
+  const latestTmSession = await prisma.trackManSession.findFirst({
+    where: { userId: user.id },
+    orderBy: { recordedAt: "desc" },
+    include: {
+      shots: {
+        orderBy: { shotNumber: "asc" },
+        take: 50,
+      },
+    },
+  });
+
+  const dispersionResult =
+    latestTmSession && latestTmSession.shots.length > 0
+      ? computeTrackManDispersionMap(
+          latestTmSession.shots.map((s) => ({
+            id: s.id,
+            shotNumber: s.shotNumber,
+            club: s.club,
+            side: s.side,
+            carryDistance: s.carryDistance,
+            totalDistance: s.totalDistance,
+            smashFactor: s.smashFactor,
+            launchAngle: s.launchAngle,
+            faceToPath: s.faceToPath,
+          })),
+        )
+      : null;
+
+  const latestSessionDate = latestTmSession
+    ? latestTmSession.recordedAt.toLocaleDateString("nb-NO", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      })
+    : null;
+
   const periodLabel = formatPeriode(plan.startDato);
 
   // Standard mål-posisjon for de generiske "Ny oppgave"-knappene: planens
@@ -340,7 +377,11 @@ export default async function PlanBuilderPage({ params }: PageProps) {
         {/* Innhold: posisjoner + sidebar */}
         <div className="grid grid-cols-1 lg:grid-cols-[1.6fr_1fr]" style={{ gap: 16 }}>
           <section style={{ display: "flex", flexDirection: "column", gap: 16, minWidth: 0 }}>
-            <TekniskPlanFullsvingShell fullsvingTasks={fullsvingTasks}>
+            <TekniskPlanFullsvingShell
+              fullsvingTasks={fullsvingTasks}
+              dispersion={dispersionResult}
+              latestSessionDate={latestSessionDate}
+            >
               {({ onlyFullsving }) => (
                 <>
             {sortedPositions.length === 0 ? (
@@ -377,6 +418,87 @@ export default async function PlanBuilderPage({ params }: PageProps) {
                   })
                 : "";
 
+              const sortableItems: SortableTaskItem[] = tasks.map((t, i) => {
+                const hitRateGoals = t.tmGoals.filter((g) => g.targetType === "HIT_RATE");
+                const spreadGoals = t.tmGoals.filter((g) => g.targetType !== "HIT_RATE");
+                const draft: OppgaveDraft = {
+                  id: t.id,
+                  pNummer: position.pNummer,
+                  pName: position.navn,
+                  tittel: t.tittel,
+                  beskrivelse: t.beskrivelse ?? "",
+                  pyramide: t.pyramide as PyramidArea,
+                  omraadeTab: omraadeToTab(t.omraadeKode ?? omraadeTilKode(t.omraade) ?? "TEE_TOTAL"),
+                  omraadeKode: t.omraadeKode ?? omraadeTilKode(t.omraade) ?? "TEE_TOTAL",
+                  omraade: t.omraadeKode ? omraadeVisning(t.omraadeKode) : t.omraade,
+                  koller: t.koller,
+                  motorikk: t.motorikk ?? undefined,
+                  belastning: t.belastning ?? undefined,
+                  press: t.press ?? undefined,
+                  dimensjon: t.dimensjon ?? undefined,
+                  maaleutstyr: t.maaleutstyr ?? undefined,
+                  kategori: t.kategori ?? undefined,
+                  bildeUrl: t.bildeUrl ?? undefined,
+                  videoUrl: t.videoUrl ?? undefined,
+                  repsMaalDry: t.repsMaalDry,
+                  repsMaalLav: t.repsMaalLav,
+                  repsMaalFull: t.repsMaalFull,
+                  repsGjortDry: t.repsGjortDry,
+                  repsGjortLav: t.repsGjortLav,
+                  repsGjortFull: t.repsGjortFull,
+                  tmGoals: spreadGoals.map((g) => ({
+                    id: g.id,
+                    metric: g.metric,
+                    klubb: g.klubb,
+                    baselineValue: g.baselineValue,
+                    targetValue: g.targetValue,
+                    targetType: (g.targetType === "SECONDARY" ? "SECONDARY" : g.targetType === "CAUSAL" ? "CAUSAL" : "PRIMARY") as
+                      | "PRIMARY"
+                      | "SECONDARY"
+                      | "CAUSAL",
+                    comparison: g.comparison as "LESS_THAN" | "GREATER_THAN" | "RANGE" | "EQUAL",
+                  })),
+                  hitRateGoals: hitRateGoals.map((g) => ({
+                    id: g.id,
+                    metric: g.metric,
+                    klubb: g.klubb,
+                    protocol: (g.protocol ?? "ROLLING_WINDOW") as OppgaveDraft["hitRateGoals"][number]["protocol"],
+                    corridorMin: g.corridorMin ?? "",
+                    corridorMax: g.corridorMax ?? "",
+                    requiredHits: g.requiredHits ?? "",
+                    windowSize: g.windowSize ?? "",
+                    currentHits: g.currentHits ?? undefined,
+                    currentBatchSize: g.currentBatchSize ?? undefined,
+                    bestHits: g.bestHits ?? undefined,
+                    currentStreak: g.currentStreak ?? undefined,
+                    inTarget: g.inTarget,
+                  })),
+                  drillIds: [],
+                };
+
+                return {
+                  id: t.id,
+                  draft,
+                  cardProps: {
+                    prio: i + 1,
+                    tittel: t.tittel,
+                    pyramide: t.pyramide as PyramidArea,
+                    omraade: t.omraade,
+                    koller: t.koller,
+                    lFase: t.motorikk ? MOTORIKK_LABEL[t.motorikk] : undefined,
+                    cs: t.dimensjon ? DIMENSJON_LABEL[t.dimensjon] : undefined,
+                    m: t.maaleutstyr ? MAALEUTSTYR_LABEL[t.maaleutstyr] : undefined,
+                    pr: t.press ? PRESS_LABEL[t.press] : undefined,
+                    reps: {
+                      dry: { current: t.repsGjortDry, target: t.repsMaalDry },
+                      lav: { current: t.repsGjortLav, target: t.repsMaalLav },
+                      full: { current: t.repsGjortFull, target: t.repsMaalFull },
+                    },
+                    isNew: isNewThisWeek(t.createdAt),
+                  },
+                };
+              });
+
               return (
                 <PPosisjonSeksjon
                   key={position.id}
@@ -391,88 +513,12 @@ export default async function PlanBuilderPage({ params }: PageProps) {
                   highPrio={position.hovedfokus}
                   defaultOpen={idx === 0}
                 >
-                  {tasks.map((t, i) => {
-                    const hitRateGoals = t.tmGoals.filter((g) => g.targetType === "HIT_RATE");
-                    const spreadGoals = t.tmGoals.filter((g) => g.targetType !== "HIT_RATE");
-                    const draft: OppgaveDraft = {
-                      id: t.id,
-                      pNummer: position.pNummer,
-                      pName: position.navn,
-                      tittel: t.tittel,
-                      beskrivelse: t.beskrivelse ?? "",
-                      pyramide: t.pyramide as PyramidArea,
-                      omraadeTab: omraadeToTab(t.omraadeKode ?? omraadeTilKode(t.omraade) ?? "TEE_TOTAL"),
-                      omraadeKode: t.omraadeKode ?? omraadeTilKode(t.omraade) ?? "TEE_TOTAL",
-                      omraade: t.omraadeKode ? omraadeVisning(t.omraadeKode) : t.omraade,
-                      koller: t.koller,
-                      motorikk: t.motorikk ?? undefined,
-                      belastning: t.belastning ?? undefined,
-                      press: t.press ?? undefined,
-                      dimensjon: t.dimensjon ?? undefined,
-                      maaleutstyr: t.maaleutstyr ?? undefined,
-                      kategori: t.kategori ?? undefined,
-                      bildeUrl: t.bildeUrl ?? undefined,
-                      videoUrl: t.videoUrl ?? undefined,
-                      repsMaalDry: t.repsMaalDry,
-                      repsMaalLav: t.repsMaalLav,
-                      repsMaalFull: t.repsMaalFull,
-                      repsGjortDry: t.repsGjortDry,
-                      repsGjortLav: t.repsGjortLav,
-                      repsGjortFull: t.repsGjortFull,
-                      tmGoals: spreadGoals.map((g) => ({
-                        id: g.id,
-                        metric: g.metric,
-                        klubb: g.klubb,
-                        baselineValue: g.baselineValue,
-                        targetValue: g.targetValue,
-                        targetType: (g.targetType === "SECONDARY" ? "SECONDARY" : g.targetType === "CAUSAL" ? "CAUSAL" : "PRIMARY") as
-                          | "PRIMARY"
-                          | "SECONDARY"
-                          | "CAUSAL",
-                        comparison: g.comparison as "LESS_THAN" | "GREATER_THAN" | "RANGE" | "EQUAL",
-                      })),
-                      hitRateGoals: hitRateGoals.map((g) => ({
-                        id: g.id,
-                        metric: g.metric,
-                        klubb: g.klubb,
-                        protocol: (g.protocol ?? "ROLLING_WINDOW") as OppgaveDraft["hitRateGoals"][number]["protocol"],
-                        corridorMin: g.corridorMin ?? "",
-                        corridorMax: g.corridorMax ?? "",
-                        requiredHits: g.requiredHits ?? "",
-                        windowSize: g.windowSize ?? "",
-                        currentHits: g.currentHits ?? undefined,
-                        currentBatchSize: g.currentBatchSize ?? undefined,
-                        bestHits: g.bestHits ?? undefined,
-                        currentStreak: g.currentStreak ?? undefined,
-                        inTarget: g.inTarget,
-                      })),
-                      drillIds: [],
-                    };
-                    return (
-                      <OppgaveEditLauncher
-                        key={t.id}
-                        taskId={t.id}
-                        draft={draft}
-                        cardProps={{
-                          prio: i + 1,
-                          tittel: t.tittel,
-                          pyramide: t.pyramide as PyramidArea,
-                          omraade: t.omraade,
-                          koller: t.koller,
-                          lFase: t.motorikk ? MOTORIKK_LABEL[t.motorikk] : undefined,
-                          cs: t.dimensjon ? DIMENSJON_LABEL[t.dimensjon] : undefined,
-                          m: t.maaleutstyr ? MAALEUTSTYR_LABEL[t.maaleutstyr] : undefined,
-                          pr: t.press ? PRESS_LABEL[t.press] : undefined,
-                          reps: {
-                            dry: { current: t.repsGjortDry, target: t.repsMaalDry },
-                            lav: { current: t.repsGjortLav, target: t.repsMaalLav },
-                            full: { current: t.repsGjortFull, target: t.repsMaalFull },
-                          },
-                          isNew: isNewThisWeek(t.createdAt),
-                        }}
-                      />
-                    );
-                  })}
+                  {sortableItems.length > 0 ? (
+                    <TekniskPlanSortableTasks
+                      positionId={position.id}
+                      tasks={sortableItems}
+                    />
+                  ) : null}
                   {tasks.length === 0 ? (
                     <OppgaveLauncher
                       planId={plan.id}

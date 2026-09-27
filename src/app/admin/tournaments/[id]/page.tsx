@@ -25,7 +25,7 @@ import { TlCaps, TlInspektorKpi } from "@/components/admin/v2/godkjenninger/tl-i
 import { TournamentForm } from "@/app/admin/tournaments/tournament-form";
 import { ResultForm } from "./result-form";
 import { UnmergeBanner } from "./unmerge-banner";
-import { TournamentEnrollModal, PriorityPill } from "@/components/coachhq/tournament-enroll-modal";
+import { TournamentEnrollModal, PriorityPill } from "@/components/agencyos/tournament-enroll-modal";
 import { FellesmeldingFlyt } from "@/components/admin/v2/fellesmelding-flyt";
 
 /** Nøytralt merke — ingen fargekoding (train-lock.ts §Signal). */
