@@ -906,7 +906,7 @@ export function TeamNorwayAppView({
                   <tbody className="divide-y divide-[#E3ECF6]">
                     {[
                       { rank: 1, navn: "Eirik Lindstrøm", klubb: "Miklagard Golf", wagr: "#48", score: "70.4", status: "Kvalifisert (Auto)" },
-                      { rank: 2, navn: "Magnus Kristiansen", klubb: "Gamle Fredrikstad", wagr: "#92", score: "71.1", status: "Kvalifisert (Auto)" },
+                      { rank: 2, navn: "Magnus Aasheim", klubb: "Gamle Fredrikstad", wagr: "#92", score: "71.1", status: "Kvalifisert (Auto)" },
                       { rank: 3, navn: "Alexander Bøe", klubb: "Oslo Golfklubb", wagr: "#114", score: "71.6", status: mesterskap === "EM" ? "Kvalifisert (Auto)" : "Vurderes (Kaptein)" },
                       { rank: 4, navn: "Henrik Holthe", klubb: "Stavanger Golfklubb", wagr: "#145", score: "72.0", status: "Vurderes (Kaptein)" },
                       { rank: 5, navn: "Sindre Fredriksen", klubb: "Fana Golfklubb", wagr: "#188", score: "72.4", status: "Vurderes (Kaptein)" },
@@ -986,7 +986,7 @@ export function TeamNorwayAppView({
               snittTreTusen: "11:10",
               snittBallSpeed: 173,
               spillere: [
-                { id: "s1", navn: "Magnus Kristiansen", trinn: "VG3", klasse: "Gutter U18", kneboy: 150, trapbar: 190, treTusen: "10:40", ballSpeed: 176, spenst: 59, wedge: 4.1, sisteTurnering: "Srixon Tour #4: 69 (-3)", status: "Oppfylt" },
+                { id: "s1", navn: "Magnus Aasheim", trinn: "VG3", klasse: "Gutter U18", kneboy: 150, trapbar: 190, treTusen: "10:40", ballSpeed: 176, spenst: 59, wedge: 4.1, sisteTurnering: "Srixon Tour #4: 69 (-3)", status: "Oppfylt" },
                 { id: "s2", navn: "Emilie Holst", trinn: "VG2", klasse: "Jenter U18", kneboy: 118, trapbar: 145, treTusen: "11:20", ballSpeed: 154, spenst: 52, wedge: 4.3, sisteTurnering: "NM Junior: 2. plass", status: "Oppfylt" },
                 { id: "s3", navn: "Tobias Svendsen", trinn: "VG2", klasse: "Gutter U18", kneboy: 140, trapbar: 180, treTusen: "11:15", ballSpeed: 171, spenst: 55, wedge: 4.7, sisteTurnering: "Srixon Tour #3: 72 (E)", status: "Oppfylt" },
                 { id: "s4", navn: "Sara Melle", trinn: "VG1", klasse: "Jenter U18", kneboy: 102, trapbar: 128, treTusen: "12:15", ballSpeed: 144, spenst: 45, wedge: 5.4, sisteTurnering: "Garmin NC: 77 (+5)", status: "Nær krav" },
