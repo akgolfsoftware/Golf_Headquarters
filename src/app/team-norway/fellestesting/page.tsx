@@ -1,7 +1,7 @@
-import { TnRegistrertSkjerm } from "@/components/team-norway/tn-registrerte-skjermer";
+import { TnFellestestingSkjerm } from "@/components/team-norway/skjermer/tn-fellestesting-skjerm";
 
-/** TN-03. Fasit: designsystem/team-norway/templates/tn-fellestesting/TnFellestesting.dc.html */
+/** TN-03. Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm TN-03. */
 export default async function Page({ searchParams }: { searchParams: Promise<{ dag?: string }> }) {
   const { dag } = await searchParams;
-  return <TnRegistrertSkjerm skjerm="fellestesting" dagId={dag} />;
+  return <TnFellestestingSkjerm dagId={dag} />;
 }

@@ -15,6 +15,7 @@ import { parseProtocol, type ScorekortForsok } from "@/lib/portal-tester/protoco
 import { parseForScoring, lavereErBedre, ScoringDetailsSchema } from "@/lib/portal-tester/test-scoring";
 import { testTilgangWhere } from "@/lib/portal-tester/test-tilgang";
 import { aggregerRangliste } from "./tn-rangliste";
+import { lesTurneringsresultat } from "./turneringsresultat";
 
 /**
  * Datalag for TN-00–TN-21.
@@ -1156,4 +1157,70 @@ export async function hentTnSpillerAnalyseHub(tilgang: TnSpillerTilgang): Promis
     sgAkser: hub.sgAkser,
     trackman: hub.trackman ? { klubb: hub.trackman.klubb, datoKort: hub.trackman.datoKort, setning: hub.trackman.setning, meta: hub.trackman.meta } : null,
   };
+}
+
+export type TnSpillerTurnering = {
+  navn: string;
+  start: Date;
+  slutt: Date | null;
+  status: string;
+  runder: number;
+  bruttoSnitt: number | null;
+  plassering: string | null;
+};
+
+export type TnSpillerProfil = {
+  navn: string;
+  fodselsdato: Date | null;
+  klubb: string | null;
+  skole: string | null;
+  hcp: number | null;
+  /** Null når spilleren ikke er koblet til en offentlig resultatprofil. */
+  turneringer: TnSpillerTurnering[] | null;
+  /** Brutto snitt og runder for året, fra samme regel som TN-16 Rangliste. */
+  aaret: { runder: number; bruttoSnitt: number | null } | null;
+};
+
+/**
+ * TN-02 Spillerprofil. Krever et allerede verifisert `TnSpillerTilgang`, som de
+ * andre personlige leserne. Turneringene kommer fra de offentlige resultatene
+ * (kanonisk kilde), bare brutto, for turneringer som startet i `aar` (Oslo).
+ */
+export async function hentTnSpillerProfil(tilgang: TnSpillerTilgang, aar: number): Promise<TnSpillerProfil | null> {
+  const spiller = await prisma.user.findFirst({
+    where: { id: tilgang.spillerId, deletedAt: null },
+    select: { name: true, dateOfBirth: true, homeClub: true, school: true, hcp: true, publicPlayerId: true },
+  });
+  if (!spiller) return null;
+  const grunn = { navn: spiller.name ?? tilgang.spillerNavn, fodselsdato: spiller.dateOfBirth, klubb: spiller.homeClub, skole: spiller.school, hcp: spiller.hcp };
+  if (!spiller.publicPlayerId) return { ...grunn, turneringer: null, aaret: null };
+
+  const entries = await prisma.publicPlayerEntry.findMany({
+    where: {
+      playerId: spiller.publicPlayerId,
+      tournament: { mergedIntoId: null, startDate: { gte: new Date(Date.UTC(aar - 1, 11, 31, 12)), lt: new Date(Date.UTC(aar, 11, 31, 12)) } },
+    },
+    select: {
+      status: true, position: true, scoreToPar: true, totalScore: true, rounds: true, klasseNavn: true,
+      roundDetails: { select: { roundNumber: true, score: true, toPar: true, source: true } },
+      tournament: { select: { name: true, startDate: true, endDate: true } },
+    },
+    orderBy: { tournament: { startDate: "desc" } },
+  });
+  const iAaret = entries.filter((e) => osloAar(e.tournament.startDate) === aar);
+  const turneringer = iAaret.map((e) => {
+    const tall = aggregerRangliste([e]);
+    const resultat = lesTurneringsresultat(e);
+    return {
+      navn: e.tournament.name,
+      start: e.tournament.startDate,
+      slutt: e.tournament.endDate,
+      status: e.status,
+      runder: tall.runder,
+      bruttoSnitt: tall.bruttoSnitt,
+      plassering: resultat.plasseringTekst,
+    };
+  });
+  const sum = aggregerRangliste(iAaret);
+  return { ...grunn, turneringer, aaret: { runder: sum.runder, bruttoSnitt: sum.bruttoSnitt } };
 }
