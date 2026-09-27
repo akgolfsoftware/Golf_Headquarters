@@ -17,6 +17,7 @@
 
 import { z } from "zod";
 import type { Benchmarks } from "@/lib/admin/test-benchmarks";
+import { peiSomProsent } from "@/lib/portal-tester/format-verdi";
 
 export const testNivaaSchema = z.object({
   sisteScore: z.number(),
@@ -46,16 +47,26 @@ export interface CanonResultat {
   unit?: string;
 }
 
-/** Beste nivå i stigen som er nådd — null når under hele skalaen. */
+/**
+ * Beste nivå i stigen som er nådd — null når under hele skalaen.
+ *
+ * Målingen normaliseres til benchmark-stigens enhet FØR sammenligning. Uten
+ * det ble en PEI-brøk (0,038) sammenlignet mot en terskel i prosent (4,8) med
+ * «lavere er bedre», som alltid traff — hver eneste PEI-test rapporterte
+ * øverste nivå og skrev falske milepæler til talentprofilen. Søsterfunksjonen
+ * `achievedLevel` i test-benchmarks.ts har alltid normalisert; de to hadde
+ * drevet fra hverandre.
+ */
 export function beregnBenchmarkNivaa(
   score: number,
   benchmarks: Benchmarks | null,
 ): { id: string; label: string } | null {
   if (!benchmarks) return null;
+  const malt = benchmarks.unit === "pei_percent" ? peiSomProsent(score) : score;
   const bedre = (a: number, b: number) =>
     benchmarks.direction === "lower" ? a <= b : a >= b;
   for (const level of benchmarks.levels) {
-    if (bedre(score, level.value)) return { id: level.id, label: level.label };
+    if (bedre(malt, level.value)) return { id: level.id, label: level.label };
   }
   return null;
 }

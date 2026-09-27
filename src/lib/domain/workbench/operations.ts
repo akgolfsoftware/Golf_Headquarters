@@ -28,7 +28,25 @@ import type {
   RecurrencePolicy,
   SeriesContentPatch,
   ApprovalStatus,
+  WeekPlanData,
 } from "./types";
+import {
+  computeBudgetWarnings,
+  computeSeasonVolume,
+  type BudgetWarningsInput,
+  type BudgetWarningsResult,
+  type SeasonVolumeSummary,
+  type BudgetWarning,
+} from "./warnings";
+
+export {
+  computeBudgetWarnings,
+  computeSeasonVolume,
+  type BudgetWarningsInput,
+  type BudgetWarningsResult,
+  type SeasonVolumeSummary,
+  type BudgetWarning,
+};
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
@@ -276,7 +294,10 @@ export function removeDrill(
 
 // ─── Week assembly & budget ─────────────────────────────────────────────────
 
-export function computeBudget(sessions: WorkbenchSession[]): WeekBudget {
+export function computeBudget(
+  sessions: WorkbenchSession[],
+  warningsInput?: BudgetWarningsInput
+): WeekBudget {
   const byPyramid: Record<PyramidArea, number> = {
     FYS: 0,
     TEK: 0,
@@ -292,11 +313,20 @@ export function computeBudget(sessions: WorkbenchSession[]): WeekBudget {
     byPyramid[s.pyramid] = (byPyramid[s.pyramid] ?? 0) + s.durationMinutes;
   }
 
-  return {
+  const budget: WeekBudget = {
     plannedMinutes: planned,
     targetMinutes: 0, // filled by caller from player profile
     byPyramid,
   };
+
+  if (warningsInput) {
+    const warningsResult = computeBudgetWarnings(warningsInput);
+    budget.seasonVolume = warningsResult.seasonVolume;
+    budget.warnings = warningsResult.warnings;
+    budget.activeWarningsCount = warningsResult.activeWarningsCount;
+  }
+
+  return budget;
 }
 
 export function buildWeekViewModel(
@@ -304,7 +334,8 @@ export function buildWeekViewModel(
   sessions: WorkbenchSession[],
   lockedBlocks: DayColumn["lockedBlocks"][] = [],
   mode: WorkbenchMode,
-  targetMinutes = 0
+  targetMinutes = 0,
+  weekPlan: WeekPlanData | null = null,
 ): WeekViewModel {
   const days: DayColumn[] = [];
   for (let i = 0; i < 7; i++) {
@@ -324,7 +355,7 @@ export function buildWeekViewModel(
   const budget = computeBudget(sessions);
   budget.targetMinutes = targetMinutes;
 
-  return { weekStart, days, budget, mode };
+  return { weekStart, days, budget, mode, weekPlan };
 }
 
 const PYRAMID_ORDER: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];

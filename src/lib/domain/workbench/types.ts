@@ -8,6 +8,7 @@
 
 import type { MaalSpor, PlanNivaa, PlanNivaaKilde } from "@/lib/domain/maal-plannivaa";
 import type { OvelseDetaljer } from "@/lib/domain/workbench/ovelse-detaljer";
+import type { SeasonVolumeSummary, BudgetWarning } from "./warnings";
 
 // ─── Vocabulary enums (from VOKABULAR.md) ─────────────────────────────────
 
@@ -15,6 +16,7 @@ export type PyramidArea = "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN";
 
 export type FullSwingArea =
   | "TEE"
+  | "TEE_TOTAL"
   | "INNSPILL_200"
   | "INNSPILL_150"
   | "INNSPILL_100"
@@ -46,6 +48,26 @@ export type Motorikk = "UTEN_BALL" | "LAV_HAST" | "AUTO"; // only full-swing
 export type Belastning = "INNENDORS" | "TRENINGSOMRADE" | "BANE" | "KONKURRANSE";
 
 export type Press = "ALENE" | "OBSERVERT" | "KONKURRANSE" | "TURNERING";
+
+// ─── Pyramide-fokus og adaptive treningstyper (Anders 25.09.2026) ───────────
+export type TurneringFokus = "TRENING" | "UTVIKLING" | "PRESTASJON";
+export type SpillFokus = "SCORING" | "SPILLOEVELSE" | "BANESTRATEGI" | "TESTER";
+export type GolfslagFokus = "BALLSTART" | "SKRU" | "HOYDER" | "SPINKONTROLL" | "TESTER";
+export type TeknikkFokus = "UTVIKLING" | "VEDLIKEHOLD" | "TESTER";
+export type FysiskFokus = "STYRKE" | "KONDISJON" | "BEVEGELIGHET" | "TESTER";
+export type KondisjonType = "INTERVALL" | "LANGKJORING";
+
+export type MoradPosisjon =
+  | "P1.0"
+  | "P2.0"
+  | "P3.0"
+  | "P4.0"
+  | "P5.0"
+  | "P6.0"
+  | "P7.0"
+  | "P8.0"
+  | "P9.0"
+  | "P10.0";
 
 export type PeriodLabel =
   | "GRUNN"
@@ -117,17 +139,19 @@ export interface Drill {
 
 export interface SourceItem {
   id: string;
-  kind: "DRILL" | "TEMPLATE" | "PROGRAM" | "PREVIOUS_WEEK";
+  kind: "DRILL" | "TEMPLATE" | "PROGRAM" | "PREVIOUS_WEEK" | "TEK";
   title: string;
   subtitle?: string;
   pyramid?: PyramidArea;
   area?: TrainingArea;
   durationMinutes?: number;
-  /** Full drill payload when kind === DRILL */
+  /** Full drill payload when kind === DRILL or TEK */
   drill?: Omit<Drill, "id" | "order">;
   /** Template payload when kind === TEMPLATE */
   templateSessions?: WorkbenchSessionDraft[];
   tags?: string[];
+  /** For TEK items: position task ID for sync back to technical plan */
+  positionTaskId?: string;
 }
 
 /** Where a session came from — drives approval + propagation */
@@ -168,6 +192,12 @@ export interface WorkbenchSession {
   practiceType?: PracticeType;
   location?: string;
   notes?: string;
+  /** Opplevd anstrengelse (sRPE): 1–10 (Borg CR-10 / Foster-skala) */
+  perceivedEffort?: number | null;
+  /** Faktisk gjennomført tid i minutter (hvis ulik durationMinutes) */
+  actualMinutes?: number | null;
+  /** Beregnet belastning (sRPE-poeng = minutter × anstrengelse) */
+  load?: number | null;
   /** Felter fra den kanoniske øktmodellen, brukt når migrerte økter vises. */
   rationale?: string;
   skillArea?: string;
@@ -232,6 +262,9 @@ export interface WeekBudget {
   plannedMinutes: number;
   targetMinutes: number;
   byPyramid: Record<PyramidArea, number>;
+  seasonVolume?: SeasonVolumeSummary;
+  warnings?: BudgetWarning[];
+  activeWarningsCount?: number;
 }
 
 export interface WorkbenchMode {
@@ -475,11 +508,45 @@ export interface LockedBlock {
   dimmed: true;
 }
 
+export type WeekType = "UTVIKLING" | "VEDLIKEHOLD" | "TURNERING";
+
+export type WeekNote =
+  | "FERIE"
+  | "TEST"
+  | "SAMLING"
+  | "EVALUERING"
+  | "PRE_TURNERING"
+  | "TEKNIKK_UKE";
+
+export interface WeekPlanData {
+  id?: string;
+  playerId: string;
+  seasonPlanId?: string | null;
+  isoYear: number;
+  weekNumber: number;
+  weekType: WeekType;
+  notes: WeekNote[];
+  plannedHoursFys?: number | null;
+  plannedHoursTek?: number | null;
+  plannedHoursSlag?: number | null;
+  plannedHoursSpill?: number | null;
+  plannedHoursTurn?: number | null;
+  repTargetDry?: number | null;
+  repTargetLowSpeed?: number | null;
+  repTargetFullSpeed?: number | null;
+  repTargetPutting?: number | null;
+  repTargetShortGame?: number | null;
+  repetitionTargets?: Record<string, unknown> | null;
+  loadCeiling?: number | null;
+  customNotes?: string | null;
+}
+
 export interface WeekViewModel {
   weekStart: string;
   days: DayColumn[];
   budget: WeekBudget;
   mode: WorkbenchMode;
+  weekPlan?: WeekPlanData | null;
 }
 
 /** Én synlig linje i en månedscelle (maks tre + «+N mer»). */

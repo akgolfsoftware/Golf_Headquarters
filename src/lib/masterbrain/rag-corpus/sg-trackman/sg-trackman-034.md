@@ -5,7 +5,7 @@ source_section: "## 17.1 Hvordan range-data oversettes til scoring (del 5)"
 tags: [club-data, lpga, pga-tour]
 topics: [lpga-snitt, pga-snitt]
 lang: no
-relevance: [CoachHQ, RAG, SgBaseline, TrackMan, forventetSg]
+relevance: [AgencyOS, RAG, SgBaseline, TrackMan, forventetSg]
 updated: 2026-06-14
 ---
 

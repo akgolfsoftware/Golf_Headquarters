@@ -3,7 +3,7 @@ import { AK } from "@/lib/v2/ak-palett";
 /**
  * PILOT — AgencyOS Plan-bygger · Wizard (6 steg)
  * Dynamic route: /demos/plan-bygger/[1..6] (under (internal) → ADMIN-only)
- * Bygd direkte fra wireframe/design-files-v2/coachhq-A/02-plan-bygger-steg-{1,2,3,5,6}.html + 02-plan-bygger.html
+ * Bygd direkte fra historisk wireframe/design-files-v2/agencyos-A/02-plan-bygger-steg-{1,2,3,5,6}.html + 02-plan-bygger.html
  *
  * Mock-data for Øyvind Rohjan mot Sørlandsåpent 2026. Bytt til Prisma-henting senere.
  */

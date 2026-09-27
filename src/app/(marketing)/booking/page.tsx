@@ -14,10 +14,9 @@ import { BOOKING_ACUITY_URL, kanBrukeInnebygdBooking } from "@/lib/booking/offen
 import { finnNesteLedige } from "./ledige-tider";
 import { MarkedBookingPauset } from "@/components/marketing/landing/MarkedBookingPauset";
 import {
-  MarkedBookingV2,
-  type PaperAbonnement,
-  type PaperTjeneste,
-} from "@/components/marketing/v2/MarkedBookingV2";
+  BookingPrecisionFlow,
+  type BookingPrecisionTjeneste,
+} from "@/components/marketing/booking/BookingPrecisionFlow";
 
 export const metadata: Metadata = {
   title: "Book en time · AK Golf Academy",
@@ -90,7 +89,7 @@ export default async function BookingLanding() {
     }),
   ]);
 
-  const tjenester: PaperTjeneste[] = services
+  const tjenester: BookingPrecisionTjeneste[] = services
     .filter((s) => !erAbonnement(s.name))
     .map((s) => ({
       slug: s.slug,
@@ -107,30 +106,18 @@ export default async function BookingLanding() {
     .sort(sorterSomFasit)
     .map(({ sorterPaa: _sorterPaa, ...t }) => t);
 
-  const abonnement: PaperAbonnement[] = services
-    .filter((s) => erAbonnement(s.name))
-    .map((s) => ({
-      slug: s.slug,
-      navn: s.name,
-      coachNavn: coachEtikett(s.name, fornavn(s.coach?.name)),
-      sorterPaa: fornavn(s.coach?.name),
-      pris: Math.round(s.priceOre / 100),
-      beskrivelse: s.description,
-    }))
-    .sort(sorterSomFasit)
-    .map(({ sorterPaa: _sorterPaa, ...a }) => a);
-
   // Heroens «Neste ledige» skal vise et ekte tidspunkt med en gang. Vi spør for
   // den billigste økta — den er også fra-prisen heroen viser, så tallene hører
   // sammen. Oppslaget bryter på første ledige dag.
   const nesteLedig = tjenester.length ? await finnNesteLedige(tjenester[0].slug) : null;
 
   return (
-    <MarkedBookingV2
-      tjenester={tjenester}
-      abonnement={abonnement}
-      lokasjon={lokasjonRad?.name ?? LOKASJON_FALLBACK}
-      nesteLedigInit={nesteLedig?.tekst ?? null}
-    />
+    <div className="min-h-screen bg-[#FAF8F3] text-[#141413]">
+      <BookingPrecisionFlow
+        tjenester={tjenester}
+        lokasjon={lokasjonRad?.name ?? LOKASJON_FALLBACK}
+        nesteLedigInit={nesteLedig?.tekst ?? null}
+      />
+    </div>
   );
 }

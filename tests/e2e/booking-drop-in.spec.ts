@@ -13,12 +13,16 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("Drop-in booking", () => {
-  test("/booking lister tjenester", async ({ page }) => {
+  test("/booking viser tilgjengelig bookingvei", async ({ page }) => {
     await page.goto("/booking");
     await expect(page).toHaveTitle(/AK Golf|Booking/i);
-    // Forventer at minst én service-card eller link finnes
-    const main = page.locator("main");
-    await expect(main).toContainText(/Pro-time|Trackman|Coaching|Gruppe|book/i);
+    const eksternBooking = page.getByRole("link", { name: "Åpne bookingkalender" });
+    if (await eksternBooking.count()) {
+      await expect(eksternBooking).toHaveAttribute("href", /^https:\/\//);
+    } else {
+      await expect(page.getByRole("heading", { name: "Velg coachingtjeneste" })).toBeVisible();
+      await expect(page.getByRole("heading", { level: 3 }).first()).toBeVisible();
+    }
   });
 
   test("Klikk på service navigerer til service-side", async ({ page }) => {

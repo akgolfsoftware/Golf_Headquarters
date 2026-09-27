@@ -82,12 +82,14 @@ export function byggShotRader(hull: LoggetHull): ShotRad[] {
       shotNumber: i + 1,
       club: slag.kolle ?? null,
       lie: startLie,
-      distanceToPin: startAvstand,
+      distanceToPin: slag.pinAvstand ?? startAvstand,
       windDir: slag.vind ?? null,
       shotType,
       isPenalty: slag.straffe === true,
       mentalScore: slag.mental ?? null,
-      notes: slag.notat ?? null,
+      notes: slag.targetAvstand
+        ? `[Mål: ${slag.targetAvstand}m]${slag.notat ? ` ${slag.notat}` : ""}`
+        : (slag.notat ?? null),
       endShotKategori: erPutt ? null : (slag.endShotKategori ?? null),
       puttDetail:
         erPutt && slag.putt

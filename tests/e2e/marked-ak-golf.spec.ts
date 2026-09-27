@@ -10,7 +10,10 @@ import { expectNoConsoleErrors, gotoAndWait } from "./_helpers";
  * Plan: docs/planer/design/2026-09-04-marked-ak-golf-port.md.
  */
 
-const SIDER = ["/", "/forside-ak", "/coaching", "/junior", "/priser", "/om-oss", "/kontakt", "/vilkar"];
+/* «/» står ikke her: forsiden ble den mørke, filmatiske tegningen 22.09.2026.
+   Den tegner sitt eget skall, har sin egen palett og bærer ingen `.ak-marked`.
+   «/forside-ak» var forhåndsvisningen av kitets forside og er slettet. */
+const SIDER = ["/coaching", "/junior", "/priser", "/om-oss", "/kontakt", "/vilkar"];
 const BREDDER = [390, 1440] as const;
 
 for (const sti of SIDER) {

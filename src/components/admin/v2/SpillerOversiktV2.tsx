@@ -7,17 +7,22 @@
  * 344px / flex / 380px på Mac, stablet på mobil. D3 (Anders 03.09.2026):
  * bygg alt nå.
  *
- * Ikke bygget fra fasiten (bevisst forenklet, ikke fabrikert):
- * - Minikalenderen (måneds-rutenett med treningsdager markert) er utelatt —
- *   samme informasjon (dagens økter, ukeprosent) finnes allerede i «I dag»-
- *   og «Uke»-kortene, og en riktig kalender krever en egen datospørring per
- *   dag i måneden. Kan bygges som eget tillegg senere.
- * - «Ukeaktivitet»-ringen er en enkel prosentbue, ikke fasitens 24-tikks
- *   klokke-SVG — samme tall, enklere gjengivelse.
+ * Avvik:
+ *   - Ingen riggmåling i denne endringen: 22.09.2026 ble bare tallformatet
+ *     rettet (tre verdier over til src/lib/format-tall.ts). Geometrien er
+ *     urørt, så de eksisterende riggradene S3-03a/S3-03b står ved lag uten
+ *     ny måling.
+ *   - Minikalenderen (måneds-rutenett med treningsdager markert) er utelatt —
+ *     samme informasjon (dagens økter, ukeprosent) finnes allerede i «I dag»-
+ *     og «Uke»-kortene, og en riktig kalender krever en egen datospørring per
+ *     dag i måneden. Kan bygges som eget tillegg senere.
+ *   - «Ukeaktivitet»-ringen er en enkel prosentbue, ikke fasitens 24-tikks
+ *     klokke-SVG — samme tall, enklere gjengivelse.
  */
 
 import Link from "next/link";
 import { TL } from "@/lib/v2/train-lock";
+import { formaterTall, formaterFortegn } from "@/lib/format-tall";
 import { Caps, Kort, TomTilstand } from "@/components/v2";
 import type { SpillerOversiktKort } from "@/lib/admin-spiller/spiller-oversikt-data";
 
@@ -135,9 +140,9 @@ export function SpillerOversiktV2({
             )}
           </Kort>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-            {nokkeltall.hcp != null && <Nokkeltall label="Handicap" verdi={nokkeltall.hcp.toFixed(1).replace(".", ",")} />}
+            {nokkeltall.hcp != null && <Nokkeltall label="Handicap" verdi={formaterTall(nokkeltall.hcp, 1, true)} />}
             {nokkeltall.sgSnitt != null && (
-              <Nokkeltall label="SG · 12 uker" verdi={`${nokkeltall.sgSnitt > 0 ? "+" : ""}${nokkeltall.sgSnitt.toFixed(2).replace(".", ",")}`} />
+              <Nokkeltall label="SG · 12 uker" verdi={formaterFortegn(nokkeltall.sgSnitt, 2)} />
             )}
             <Nokkeltall label={`Økter i ${sesong.aar}`} verdi={String(nokkeltall.okterIAar)} />
             <Nokkeltall label="Turneringer spilt" verdi={String(nokkeltall.turneringerSpilt)} />
@@ -209,7 +214,7 @@ export function SpillerOversiktV2({
         <div style={{ display: "flex", flexDirection: "column", gap: 14, minWidth: 0 }}>
           <Kort eyebrow={`Sesong ${sesong.aar}`}>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-              {sesong.snittrunde != null && <Nokkeltall label="Snittrunde" verdi={sesong.snittrunde.toFixed(1)} />}
+              {sesong.snittrunde != null && <Nokkeltall label="Snittrunde" verdi={formaterTall(sesong.snittrunde, 1, true)} />}
               <Nokkeltall label="Turneringer igjen" verdi={String(sesong.turneringerIgjen)} />
             </div>
           </Kort>

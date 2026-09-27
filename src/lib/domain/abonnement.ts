@@ -20,6 +20,7 @@ export type AbonnementKind = (typeof ABONNEMENT_KIND)[number];
 export const ABONNEMENT_PLAN = [
   "PLAYERHQ_MND",
   "PLAYERHQ_AAR",
+  "PLAYERHQ_JUNIOR_MND",
   "PERFORMANCE",
   "PERFORMANCE_PRO",
   "MANUELL",
@@ -29,9 +30,11 @@ export type AbonnementPlan = (typeof ABONNEMENT_PLAN)[number];
 export const abonnementPlanSchema = z.enum(ABONNEMENT_PLAN);
 export const abonnementKindSchema = z.enum(ABONNEMENT_KIND);
 
-/** Priser i øre — kanon (Anders 2026-08-16). Årsprisen = «tre måneder gratis». */
+/** Priser i øre — kanon (Anders 2026-08-16 / 2026-09-24). */
 export const PLAYERHQ_PRIS_MND_ORE = 299_00;
 export const PLAYERHQ_PRIS_AAR_ORE = 2_690_00;
+/** Fast pris 299 kr/mnd for alle spillere (Anders 2026-09-24). Team Norway får kun internflater gratis mot promotering. */
+export const PLAYERHQ_PRIS_JUNIOR_MND_ORE = 299_00;
 /** 299 × 12 − 2 690 = 898 kr spart per år. */
 export const PLAYERHQ_AAR_BESPARELSE_ORE = PLAYERHQ_PRIS_MND_ORE * 12 - PLAYERHQ_PRIS_AAR_ORE;
 
@@ -89,6 +92,8 @@ export function planNavn(plan: string | null): string | null {
       return "PlayerHQ månedlig";
     case "PLAYERHQ_AAR":
       return "PlayerHQ årlig";
+    case "PLAYERHQ_JUNIOR_MND":
+      return "PlayerHQ Junior (Forbund)";
     case "PERFORMANCE":
       return "Performance";
     case "PERFORMANCE_PRO":

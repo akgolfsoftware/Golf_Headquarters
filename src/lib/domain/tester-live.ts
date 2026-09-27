@@ -17,6 +17,7 @@
  */
 
 import { z } from "zod";
+import { formaterTestVerdi } from "@/lib/portal-tester/format-verdi";
 
 export type LiveArtefaktKind = "gate" | "pei";
 
@@ -200,9 +201,14 @@ export function snittPei(forsok: readonly PeiForsok[]): number | null {
   return verdier.reduce((a, b) => a + b, 0) / verdier.length;
 }
 
-/** «4,26 % · 0,04» — PEI vises ALLTID som to tall (Train-lock HANDOFF §TESTER). Aldri ett brøktall. */
+/**
+ * «4,26 %» — PEI vises som prosent, aldri som brøk.
+ *
+ * Tidligere ga denne «4,26 % · 0,04», der halehenget var råverdien. Det er
+ * nettopp det tallet som ikke skal på skjermen: det leses som en måling i seg
+ * selv og forvirrer mot prosenten ved siden av. Train-lock, som krevde de to
+ * tallene, er utgående og gir ingen designautoritet (beslutning 21.09.2026).
+ */
 export function formatPei(pei: number): string {
-  const prosent = (pei * 100).toLocaleString("nb-NO", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  const desimal = pei.toLocaleString("nb-NO", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  return `${prosent} % · ${desimal}`;
+  return formaterTestVerdi({ kind: "pei_average", verdi: pei });
 }

@@ -13,6 +13,7 @@ export const PyramidAreaSchema = z.enum(["FYS", "TEK", "SLAG", "SPILL", "TURN"])
 export const TrainingAreaSchema = z.enum([
   // Full sving
   "TEE",
+  "TEE_TOTAL",
   "INNSPILL_200",
   "INNSPILL_150",
   "INNSPILL_100",
@@ -71,7 +72,7 @@ export const AkFormelSchema = z.object({
 export function parseAkFormel(value: unknown, fallbackLabel: string): AKFormel {
   const parsed = AkFormelSchema.safeParse(value);
   if (parsed.success) return parsed.data;
-  return { pyramid: "TEK", area: "TEE", label: fallbackLabel };
+  return { pyramid: "TEK", area: "TEE_TOTAL", label: fallbackLabel };
 }
 
 export const SessionStatusSchema = z.enum([

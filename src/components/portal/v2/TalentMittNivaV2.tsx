@@ -7,6 +7,7 @@ import { TL } from "@/lib/v2/train-lock";
 
 import { Kort, StatusPill, HjelpTips, RadarProfil, Icon } from "@/components/v2";
 import type { TalentAkseKey } from "./TalentFellesV2";
+import { formaterTestVerdi } from "@/lib/portal-tester/format-verdi";
 
 /** Én rad i «Testresultater · CANON» — bygget fra TalentTracking.testNivaaer (T4-synken). */
 export interface TalentTestNivaaRad {
@@ -177,7 +178,9 @@ function TestNivaaRad({ rad }: { rad: TalentTestNivaaRad }) {
       </p>
       <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: 6 }}>
         <span style={{ fontFamily: TL.font.mono, fontSize: 15, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>
-          {rad.unit === "PEI" ? `${fmt10(rad.sisteScore * 100)} %` : `${fmt10(rad.sisteScore)}${rad.unit ? ` ${rad.unit}` : ""}`}
+          {rad.unit === "PEI"
+            ? formaterTestVerdi({ kind: "pei_average", verdi: rad.sisteScore })
+            : `${fmt10(rad.sisteScore)}${rad.unit ? ` ${rad.unit}` : ""}`}
         </span>
         {rad.benchmarkLabel && (
           <span style={{ fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute }}>{rad.benchmarkLabel}</span>

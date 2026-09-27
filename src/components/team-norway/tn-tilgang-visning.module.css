@@ -1,5 +1,4 @@
-.skall { display: flex; min-height: 100dvh; background: var(--tn-surface-page); font-family: var(--tn-font-body); color: var(--tn-text-primary); }
-.innhold { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+/* Skallet kommer fra TnShell. Her ligger bare liste/detalj-flaten. */
 .arbeidsflate { flex: 1; min-width: 0; display: flex; align-items: stretch; }
 .liste { flex: 1; min-width: 0; padding: 28px 32px; display: flex; flex-direction: column; gap: 20px; }
 .oyenbryn { margin: 0; font-family: var(--tn-font-mono); font-size: var(--tn-text-micro); letter-spacing: var(--tn-tracking-eyebrow); text-transform: uppercase; color: var(--tn-text-secondary); }

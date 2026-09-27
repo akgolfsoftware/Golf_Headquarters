@@ -5,7 +5,7 @@ source_section: "### Nøkkelputte-innsikter fra Trackman-forskning: - Face Angle
 tags: [ball-data, putt, trackman]
 topics: [putting, trackman-parametere]
 lang: no
-relevance: [CoachHQ, RAG, TrackMan]
+relevance: [AgencyOS, RAG, TrackMan]
 updated: 2026-06-14
 ---
 

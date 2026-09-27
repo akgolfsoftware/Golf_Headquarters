@@ -1,0 +1,25 @@
+/* GENERERT fra tokens.json av tokens/build.mjs. IKKE REDIGER — endringer overskrives. */
+:root{
+/* ---- Taket: 150–250 ms, trykk 0.97, ingen shimmer. ---- */
+--dur-fast:150ms;/* @kind other */
+--dur:200ms;/* @kind other */
+--dur-slow:250ms;/* @kind other */
+--dur-press:120ms;/* @kind other */
+/* ---- Innebygde CSS-easinger er for svake. Disse er de samme familiene, sterkere kurve. ---- */
+--ease-out:cubic-bezier(.23,1,.32,1);/* @kind other */
+--ease-in-out:cubic-bezier(.77,0,.175,1);/* @kind other */
+--ease-drawer:cubic-bezier(.32,.72,0,1);/* @kind other */
+--ease-color:ease;/* @kind other */
+--press-scale:0.97;/* @kind other */
+}
+@media (prefers-reduced-motion:reduce){
+:root{
+/* ---- Redusert bevegelse betyr mindre og mykere — ikke ingenting.
+   Farge og opasitet beholdes (de hjelper forståelsen), bevegelse fjernes. ---- */
+--dur-fast:120ms;/* @kind other */
+--dur:120ms;/* @kind other */
+--dur-slow:120ms;/* @kind other */
+--dur-press:1ms;/* @kind other */
+--press-scale:1;/* @kind other */
+}
+}

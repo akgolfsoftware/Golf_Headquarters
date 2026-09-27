@@ -5,7 +5,7 @@ source_section: "## 7.2 Luck vs. Skill Decomposition"
 tags: [app, ball-data, kort-spill, sg, trackman]
 topics: [kortspill]
 lang: en
-relevance: [AiPlanGeneration, CoachHQ, RAG, SgBaseline, TrackMan, beregnSg]
+relevance: [AiPlanGeneration, AgencyOS, RAG, SgBaseline, TrackMan, beregnSg]
 updated: 2026-06-14
 ---
 

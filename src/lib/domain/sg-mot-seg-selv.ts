@@ -32,6 +32,7 @@ export const SG_AKSE_NAVN: Record<SgAkse, string> = {
 /** Én runde, slik den ligger i Round. Null = området ble ikke registrert. */
 export type SgRunde = {
   playedAt: Date;
+  sgTotal?: number | null;
   sgOtt: number | null;
   sgApp: number | null;
   sgArg: number | null;
@@ -207,5 +208,178 @@ export function sammenlignMedSegSelv(
     tidligerePeriode: periodeAv(tidligereRunder),
     grunnlag: `Siste ${nyligeRunder.length} runder mot de ${tidligereRunder.length} før.`,
     harSvar: true,
+  };
+}
+
+// ─── Strokes Gained mot spillerens eget nivå (Task 6) ─────────────────────────
+
+export const PGA_TOUR_BASELINE_LABEL = "PGA Tour (Scratch/Tour-nivå)";
+
+export const TERSKEL_MINIMUM_RUNDER = 8;
+export const TERSKEL_TEE_INNSPILL = 12;
+export const TERSKEL_NAERSPILL_PUTT = 24;
+export const MAKS_BASELINE_RUNDER = 20;
+
+export type OmraadeTerskelStatus = "FOR_LITE_GRUNNLAG" | "INNLEDENDE" | "PALITELIG";
+
+export type SgOmraadeSammenligning = {
+  omraade: SgAkse | "TOTAL";
+  navn: string;
+  /** Resultat mot PGA Tour scratch-baseline (f.eks. for siste runde eller nylige runder). */
+  pgaTourSg: number | null;
+  pgaTourLabel: string;
+  /** Spillerens eget baseline-snitt (siste opptil 20 runder) mot PGA Tour. */
+  spillerBaselineSg: number | null;
+  /** Differanse: pgaTourSg - spillerBaselineSg. Positiv = bedre enn egen normal. */
+  motEgetNivaaSg: number | null;
+  antallRunderIBaseline: number;
+  terskelStatus: OmraadeTerskelStatus;
+  statusTekst: string;
+};
+
+export type SpillerSgMotEgetNivaaResultat = {
+  harSvar: boolean;
+  totalRunder: number;
+  baselineRunderBrukt: number;
+  pgaTourLabel: string;
+  konklusjon: string;
+  grunnlag: string;
+  omraader: SgOmraadeSammenligning[];
+};
+
+const OMRAADE_NAVN: Record<SgAkse | "TOTAL", string> = {
+  TOTAL: "Total",
+  OTT: "Utslag (OTT)",
+  APP: "Innspill (APP)",
+  ARG: "Nærspill (ARG)",
+  PUTT: "Putting (PUTT)",
+};
+
+function hentVerdi(r: SgRunde, omraade: SgAkse | "TOTAL"): number | null {
+  if (omraade === "TOTAL") {
+    if (r.sgTotal != null) return r.sgTotal;
+    const deler = [r.sgOtt, r.sgApp, r.sgArg, r.sgPutt].filter((v): v is number => v != null);
+    return deler.length > 0 ? deler.reduce((a, b) => a + b, 0) : null;
+  }
+  return hentAkse(r, omraade);
+}
+
+/**
+ * Beregner Strokes Gained mot spillerens egen baseline (siste inntil 20 runder)
+ * og sammenligner mot PGA Tour baseline side-om-side.
+ * Håndhever strenge pålitelighetsterskler:
+ *   - <8 runder: for lite grunnlag
+ *   - ~12 runder: pålitelig for utslag (OTT) og innspill (APP)
+ *   - ~24 runder: pålitelig for nærspill (ARG) og putting (PUTT)
+ */
+export function beregnSgMotEgetNivaa(
+  runder: SgRunde[],
+  options?: {
+    sisteRunderAntall?: number;
+    maksBaselineRunder?: number;
+  },
+): SpillerSgMotEgetNivaaResultat {
+  const sortert = [...runder]
+    .filter((r) => r.sgTotal != null || r.sgOtt != null || r.sgApp != null || r.sgArg != null || r.sgPutt != null)
+    .sort((a, b) => b.playedAt.getTime() - a.playedAt.getTime());
+
+  const alleOmraader: (SgAkse | "TOTAL")[] = ["TOTAL", "OTT", "APP", "ARG", "PUTT"];
+
+  if (sortert.length < TERSKEL_MINIMUM_RUNDER) {
+    return {
+      harSvar: false,
+      totalRunder: sortert.length,
+      baselineRunderBrukt: sortert.length,
+      pgaTourLabel: PGA_TOUR_BASELINE_LABEL,
+      konklusjon: `For lite grunnlag: krever minst ${TERSKEL_MINIMUM_RUNDER} runder med slagdata for å etablere en pålitelig egen-baseline (har ${sortert.length} ${sortert.length === 1 ? "runde" : "runder"}).`,
+      grunnlag: `For lite grunnlag (${sortert.length}/${TERSKEL_MINIMUM_RUNDER} runder registrert).`,
+      omraader: alleOmraader.map((omraade) => ({
+        omraade,
+        navn: OMRAADE_NAVN[omraade],
+        pgaTourSg: null,
+        pgaTourLabel: PGA_TOUR_BASELINE_LABEL,
+        spillerBaselineSg: null,
+        motEgetNivaaSg: null,
+        antallRunderIBaseline: sortert.length,
+        terskelStatus: "FOR_LITE_GRUNNLAG",
+        statusTekst: `Mangler data: minimum ${TERSKEL_MINIMUM_RUNDER} runder kreves for egen baseline.`,
+      })),
+    };
+  }
+
+  const maksBaseline = options?.maksBaselineRunder ?? MAKS_BASELINE_RUNDER;
+  const baselineRunder = sortert.slice(0, maksBaseline);
+  const sisteAntall = Math.min(options?.sisteRunderAntall ?? 5, baselineRunder.length);
+  const sisteRunder = sortert.slice(0, sisteAntall);
+
+  const omraader: SgOmraadeSammenligning[] = alleOmraader.map((omraade) => {
+    const baseRes = snittAv(baselineRunder.map((r) => hentVerdi(r, omraade)));
+    const sisteRes = snittAv(sisteRunder.map((r) => hentVerdi(r, omraade)));
+
+    const pgaTourSg = sisteRes.snitt;
+    const spillerBaselineSg = baseRes.snitt;
+    const motEgetNivaaSg =
+      pgaTourSg != null && spillerBaselineSg != null
+        ? rund2(pgaTourSg - spillerBaselineSg)
+        : null;
+
+    let terskelStatus: OmraadeTerskelStatus = "INNLEDENDE";
+    let statusTekst = "";
+
+    if (omraade === "OTT" || omraade === "APP" || omraade === "TOTAL") {
+      if (baseRes.antall >= TERSKEL_TEE_INNSPILL) {
+        terskelStatus = "PALITELIG";
+        statusTekst = `Statistisk pålitelig baseline (${baseRes.antall} runder).`;
+      } else {
+        terskelStatus = "INNLEDENDE";
+        statusTekst = `Innledende tall (har ${baseRes.antall}/${TERSKEL_TEE_INNSPILL} runder for stabil baseline).`;
+      }
+    } else {
+      if (baseRes.antall >= TERSKEL_NAERSPILL_PUTT) {
+        terskelStatus = "PALITELIG";
+        statusTekst = `Statistisk pålitelig baseline (${baseRes.antall} runder).`;
+      } else {
+        terskelStatus = "INNLEDENDE";
+        statusTekst = `Innledende tall (har ${baseRes.antall}/${TERSKEL_NAERSPILL_PUTT} runder pga. høy varians i nærspill/putting).`;
+      }
+    }
+
+    return {
+      omraade,
+      navn: OMRAADE_NAVN[omraade],
+      pgaTourSg,
+      pgaTourLabel: PGA_TOUR_BASELINE_LABEL,
+      spillerBaselineSg,
+      motEgetNivaaSg,
+      antallRunderIBaseline: baseRes.antall,
+      terskelStatus,
+      statusTekst,
+    };
+  });
+
+  const totalOmraade = omraader.find((o) => o.omraade === "TOTAL");
+  let konklusjon = "";
+  if (totalOmraade?.motEgetNivaaSg != null) {
+    if (totalOmraade.motEgetNivaaSg >= MIN_MERKBAR_ENDRING) {
+      konklusjon = `Spilleren presterer over egen baseline (+${totalOmraade.motEgetNivaaSg} slag mot eget ${baselineRunder.length}-runders snitt).`;
+    } else if (totalOmraade.motEgetNivaaSg <= -MIN_MERKBAR_ENDRING) {
+      konklusjon = `Spilleren presterer under egen baseline (${totalOmraade.motEgetNivaaSg} slag mot eget ${baselineRunder.length}-runders snitt).`;
+    } else {
+      konklusjon = `Spilleren presterer stabilt på nivå med egen baseline (${baselineRunder.length}-runders snitt).`;
+    }
+  } else {
+    konklusjon = `Baseline beregnet over ${baselineRunder.length} runder mot PGA Tour referanse.`;
+  }
+
+  const grunnlag = `Spillerens egen baseline bygger på siste ${baselineRunder.length} runder. Sammenlignet mot siste ${sisteRunder.length} ${sisteRunder.length === 1 ? "runde" : "runder"}.`;
+
+  return {
+    harSvar: true,
+    totalRunder: sortert.length,
+    baselineRunderBrukt: baselineRunder.length,
+    pgaTourLabel: PGA_TOUR_BASELINE_LABEL,
+    konklusjon,
+    grunnlag,
+    omraader,
   };
 }

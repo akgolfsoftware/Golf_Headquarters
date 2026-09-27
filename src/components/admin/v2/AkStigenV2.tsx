@@ -30,7 +30,7 @@ function Merknad({ children, dempet }: { children: React.ReactNode; dempet?: boo
 }
 
 export function AkStigenV2({ data }: { data: AkStigenData }) {
-  const { trinn, grupper, overStigen, rester, ukartlagt } = data;
+  const { trinn, grupper, vedSidenAv, rester, ukartlagt } = data;
   const [fane, setFane] = useState<"stigen" | "grupper" | "rydding">("stigen");
 
   const utenGruppe = trinn.filter((t) => !t.gruppeNavn);
@@ -38,7 +38,8 @@ export function AkStigenV2({ data }: { data: AkStigenData }) {
     (t) => t.gruppeNavn && (grupper[t.gruppeNavn]?.medlemmer ?? 0) === 0 && grupper[t.gruppeNavn],
   );
   const totaltISpillere =
-    Object.values(grupper).reduce((n, g) => n + g.medlemmer, 0) + (overStigen?.medlemmer ?? 0);
+    Object.values(grupper).reduce((n, g) => n + g.medlemmer, 0) +
+    vedSidenAv.reduce((n, g) => n + g.medlemmer, 0);
 
   const faner: { id: typeof fane; l: string }[] = [
     { id: "stigen", l: "Stigen" },
@@ -142,18 +143,22 @@ export function AkStigenV2({ data }: { data: AkStigenData }) {
             </div>
           </TlKort>
 
-          {overStigen && (
-            <TlKort eyebrow="Over stigen">
+          {vedSidenAv.length > 0 && (
+            <TlKort eyebrow="Ved siden av stigen">
               <p style={{ margin: "0 0 10px", fontSize: 13, color: TL.mute, lineHeight: 1.5 }}>
-                WANG Toppidrett er ikke et trinn i AK-stigen. Det er neste steg etter Elite.
+                Grupper uten eget trinn. WANG Toppidrett er neste steg etter Elite, og Knøtt er en
+                aldersgruppe med egen gruppe — ikke et trinn i stigen.
               </p>
-              <TlRad
-                title={overStigen.navn}
-                sub={[overStigen.level, overStigen.coachNavn].filter(Boolean).join(" · ")}
-                meta={`${overStigen.medlemmer} spillere`}
-                chevron={false}
-                last
-              />
+              {vedSidenAv.map((g, i) => (
+                <TlRad
+                  key={g.id}
+                  title={g.navn}
+                  sub={[g.level, g.coachNavn].filter(Boolean).join(" · ")}
+                  meta={`${g.medlemmer} spillere`}
+                  chevron={false}
+                  last={i === vedSidenAv.length - 1}
+                />
+              ))}
             </TlKort>
           )}
 

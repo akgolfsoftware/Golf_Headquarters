@@ -5,6 +5,7 @@ import { safeRedirectPath } from "@/lib/security/safe-redirect";
 import { logError } from "@/lib/error-tracking";
 import { rateLimit } from "@/lib/rate-limit";
 import { getClientIp } from "@/lib/security/same-origin";
+import { linkAndSyncUserTournamentResults } from "@/lib/turneringer/link-public-players";
 
 export const runtime = "nodejs";
 
@@ -83,7 +84,7 @@ export async function GET(req: NextRequest) {
             lastLoginAt: new Date(),
           },
         });
-        // Automatisk PLATFORM_ONLY-enrollering — usynlig i CoachHQ inntil coach
+        // Automatisk PLATFORM_ONLY-enrollering — usynlig i AgencyOS inntil coach
         // enrollerer spilleren i et coachingprogram.
         await prisma.playerEnrollment.create({
           data: {
@@ -92,6 +93,9 @@ export async function GET(req: NextRequest) {
             coachId: null,
           },
         });
+
+        // Automatisk kobling mot turneringshistorikk
+        await linkAndSyncUserTournamentResults(prisma, nyBruker.id);
       }
     }
   } catch (error) {

@@ -1,0 +1,58 @@
+/* Målelaget, del 2 — fortegnsbærende og sammenliknende visning.
+   Egen fil framfor tillegg i measurement.css: disse fire kom til samlet
+   21.09.2026 og kan flyttes inn i measurement.css når de har stått en stund.
+   Samme lov gjelder: rolle- og komponentlaget, ingen råverdi, ingen rgba. */
+
+/* SGSplitt — fortegnsbærende splitt rundt null. Nullstreken er midt i sporet,
+   skalaen er symmetrisk. Over null er --data-over, under er --data-under, og
+   fortegnet står i tallet uansett: fargen er redundant, ikke bærende. Fortegn og
+   kategori kan ikke stå i samme graf — --data-under ligger dE 0,031 fra --data-k4. */
+.aos-sgs{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:var(--space-2);min-width:0}
+.aos-sgs__r{display:grid;grid-template-columns:minmax(56px,110px) minmax(0,1fr) auto;gap:var(--space-3);align-items:center}
+.aos-sgs__n{font:var(--type-body-s);color:var(--text-body);min-width:0}
+.aos-sgs__spor{position:relative;height:14px;background:var(--surface-sunken);border-radius:var(--radius)}
+.aos-sgs__null{position:absolute;left:50%;top:-3px;bottom:-3px;width:var(--border-w-accent);background:var(--border-ink)}
+.aos-sgs__bar{position:absolute;top:0;bottom:0;border-radius:var(--radius)}
+.aos-sgs__bar--pos{background:var(--data-over)}
+.aos-sgs__bar--neg{background:var(--data-under)}
+.aos-sgs__v{font:var(--fw-medium) var(--fs-13)/1.2 var(--font-meta);letter-spacing:var(--tracking-meta);color:var(--text-primary);font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right}
+.aos-sgs__v--tom{color:var(--text-muted)}
+.aos-sgs__sum{display:flex;align-items:baseline;justify-content:space-between;gap:var(--space-4);margin:var(--space-3) 0 0;padding-top:var(--space-2);border-top:var(--border-w) solid var(--border-hairline)}
+.aos-sgs__sumn{font:var(--type-kicker);letter-spacing:var(--tracking-kicker);text-transform:uppercase;color:var(--text-muted)}
+.aos-sgs__sumv{font:var(--fw-medium) var(--fs-14)/1.2 var(--font-meta);letter-spacing:var(--tracking-meta);color:var(--text-primary);font-variant-numeric:tabular-nums}
+
+/* Distansestige — stigen er SGSplitt med avstandsbånd som etikett. */
+.aos-dist{min-width:0}
+.aos-dist .aos-sgs__r{grid-template-columns:minmax(72px,124px) minmax(0,1fr) auto}
+
+/* Rangering — sortert tabell. Posisjon telles av komponenten, ikke av dataen. */
+.aos-rang{width:100%;border-collapse:collapse;table-layout:auto}
+.aos-rang thead th{font:var(--type-kicker);letter-spacing:var(--tracking-kicker);text-transform:uppercase;color:var(--text-muted);font-weight:var(--fw-medium);text-align:left;padding:0;border-bottom:var(--border-w) solid var(--border-strong)}
+.aos-rang__hd--tall,.aos-rang__hd--pos{text-align:right}
+.aos-rang__hd--pos{width:36px}
+.aos-rang__sorter{display:inline-flex;align-items:center;gap:var(--space-1);width:100%;min-height:var(--hit-min);padding:0 var(--space-2) 0 0;background:none;border:0;font:inherit;letter-spacing:inherit;text-transform:inherit;color:inherit;cursor:pointer;text-align:inherit}
+.aos-rang__hd--tall .aos-rang__sorter,.aos-rang__hd--pos .aos-rang__sorter{justify-content:flex-end;padding:0 0 0 var(--space-2)}
+.aos-rang__sorter:hover{color:var(--text-primary)}
+.aos-rang__sorter:focus-visible{outline:var(--border-w-accent) solid var(--focus-ring);outline-offset:2px}
+.aos-rang__pil{font:var(--fw-regular) var(--fs-10)/1 var(--font-meta);color:var(--text-secondary)}
+.aos-rang__rad{border-bottom:var(--border-w) solid var(--border-hairline)}
+.aos-rang__rad:last-child{border-bottom:0}
+.aos-rang__rad--merket{background:var(--surface-sunken)}
+.aos-rang__cell{font:var(--type-body-s);color:var(--text-body);padding:var(--space-3) var(--space-2) var(--space-3) 0;vertical-align:baseline}
+.aos-rang__cell--tall,.aos-rang__cell--pos{font:var(--fw-medium) var(--fs-13)/1.2 var(--font-meta);letter-spacing:var(--tracking-meta);color:var(--text-primary);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap;padding-right:0;padding-left:var(--space-2)}
+.aos-rang__cell--pos{color:var(--text-muted)}
+.aos-rang__ingen{color:var(--text-muted)}
+.aos-rang__tom{font:var(--type-body-s);color:var(--text-secondary);padding:var(--space-4) 0}
+
+/* Sammenlikning — to målte størrelser side om side. Nekter blandede kilder. */
+.aos-saml{width:100%;border-collapse:collapse}
+.aos-saml thead th{font:var(--type-kicker);letter-spacing:var(--tracking-kicker);text-transform:uppercase;color:var(--text-muted);font-weight:var(--fw-medium);text-align:left;padding:0 0 var(--space-2) 0;border-bottom:var(--border-w) solid var(--border-strong)}
+.aos-saml__hd--v{text-align:right;padding-left:var(--space-4)}
+.aos-saml__skjul{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.aos-saml__r{border-bottom:var(--border-w) solid var(--border-hairline)}
+.aos-saml__r:last-child{border-bottom:0}
+.aos-saml__n{font:var(--type-body-s);color:var(--text-body);font-weight:var(--fw-regular);text-align:left;padding:var(--space-3) 0;vertical-align:baseline}
+.aos-saml__v{font:var(--fw-medium) var(--fs-14)/1.2 var(--font-meta);letter-spacing:var(--tracking-meta);color:var(--text-primary);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap;padding:var(--space-3) 0 var(--space-3) var(--space-4);vertical-align:baseline}
+.aos-saml__v--diff{color:var(--text-secondary)}
+.aos-saml__e{font-weight:var(--fw-regular);color:var(--text-muted)}
+.aos-saml__ingen{color:var(--text-muted)}

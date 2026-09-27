@@ -5,7 +5,7 @@ source_section: "## SG:Total = SG:Off-the-Tee + SG:Approach-the-Green + SG:Aroun
 tags: [app, benchmarking, broadie, ott, putt, sg]
 topics: [benchmarking, broadie, implementasjon, putting]
 lang: en
-relevance: [AiPlanGeneration, CoachHQ, PlayerHQ, RAG, SgBaseline, beregnSg, diagnostiserSg]
+relevance: [AiPlanGeneration, AgencyOS, PlayerHQ, RAG, SgBaseline, beregnSg, diagnostiserSg]
 updated: 2026-06-14
 ---
 

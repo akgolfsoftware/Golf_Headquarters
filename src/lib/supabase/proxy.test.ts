@@ -25,7 +25,11 @@ for (const shouldRefresh of [false, true]) {
     const { updateSession } = await import("./proxy");
     refresh = shouldRefresh;
     const request = new NextRequest("http://localhost/team-wang/logg-inn", {
-      headers: { "x-nonce": "untrusted-client", "content-security-policy": "script-src *" },
+      headers: {
+        "x-nonce": "untrusted-client",
+        "content-security-policy": "script-src *",
+        ...(shouldRefresh ? { cookie: "sb-auth-token=active" } : {}),
+      },
     });
     const csp = "script-src 'nonce-synthetic-server' 'strict-dynamic'";
     const response = await updateSession(request, "synthetic-server", csp);

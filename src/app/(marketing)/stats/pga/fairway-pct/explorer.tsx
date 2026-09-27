@@ -13,6 +13,7 @@
  */
 
 import { useMemo, useState } from "react";
+import { formaterTall, formaterProsent } from "@/lib/format-tall";
 import { ArrowUp, MapPin, Sparkles } from "lucide-react";
 
 type Datapunkt = {
@@ -154,10 +155,10 @@ export function FairwayPctExplorer({
                       {naermeste.spiller.navn}
                     </p>
                     <p className="mt-1 text-xs text-muted-foreground">
-                      {naermeste.spiller.verdi.toFixed(1)}% (
+                      {formaterProsent(naermeste.spiller.verdi, 1, true)} (
                       {naermeste.diff < 0.1
                         ? "samme"
-                        : `${naermeste.diff.toFixed(1)} pp ${
+                        : `${formaterTall(naermeste.diff, 1, true)} pp ${
                             naermeste.spiller.verdi > dittTall
                               ? "bedre"
                               : "dårligere"

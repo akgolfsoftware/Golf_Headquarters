@@ -24,19 +24,49 @@ import type { Prisma } from "@/generated/prisma/client";
 import { nonEmpty } from "@/lib/validation/schemas";
 import { applyPositionTaskReps } from "@/lib/teknisk-plan/apply-reps";
 import { ensurePlanAccess } from "@/lib/teknisk-plan/ensure-plan-access";
+import { pHovedNummer, pNavn, omraadeVisning } from "@/components/teknisk-plan/constants";
+import {
+  OMRAADE_KODER,
+  MOTORIKK_KODER,
+  BELASTNING_KODER,
+  PRESS_KODER,
+  MAALEUTSTYR_KODER,
+  DIMENSJON_KODER,
+  type OmraadeKode,
+  type MotorikkKode,
+  type BelastningKode,
+  type PressKode,
+  type MaaleutstyrKode,
+  type DimensjonKode,
+} from "@/lib/domain/ak-formel-v2";
+import { vaskMotRelevans } from "@/lib/domain/omrade-relevans";
+import { resolveCoachIdForPlayer } from "@/lib/workbench/v2-sync";
+
+const PNummerSchema = z
+  .string()
+  .regex(/^P\d{1,2}\.\d$/, "Posisjonsnummer må være på formen P4.0 eller P4.1")
+  .refine((v) => pHovedNummer(v) !== null, "Posisjonsnummer må være P1 til P10");
 
 const TaskInputSchema = z.object({
   planId: z.string().min(1, "Plan-ID er påkrevd"),
-  pNummer: z.string().min(1, "Posisjonsnummer er påkrevd"),
+  pNummer: PNummerSchema,
   pName: z.string().min(1, "Posisjonsnavn er påkrevd"),
   tittel: nonEmpty(500),
   beskrivelse: z.string().max(2000).optional(),
   pyramide: z.string().min(1, "Pyramide-område er påkrevd"),
   omraade: z.string().min(1, "Område er påkrevd"),
+  omraadeKode: z.enum(OMRAADE_KODER).optional(),
+  motorikk: z.enum(MOTORIKK_KODER).nullish(),
+  belastning: z.enum(BELASTNING_KODER).nullish(),
+  press: z.enum(PRESS_KODER).nullish(),
+  dimensjon: z.enum(DIMENSJON_KODER).nullish(),
+  maaleutstyr: z.enum(MAALEUTSTYR_KODER).nullish(),
   koller: z.array(z.string()),
   repsMaalDry: z.number().int().min(0),
   repsMaalLav: z.number().int().min(0),
   repsMaalFull: z.number().int().min(0),
+  bildeUrl: z.string().max(2000).nullish(),
+  videoUrl: z.string().max(2000).nullish(),
 });
 
 const IdSchema = z.string().min(1, "ID er påkrevd");
@@ -77,7 +107,19 @@ export interface TaskInput {
   beskrivelse?: string;
   pyramide: PyramidArea;
   omraade: string;
+  /** Typet område. Når satt, utledes `omraade`-etiketten fra koden. */
+  omraadeKode?: OmraadeKode | null;
+  /** v2-akser (22.09). Vaskes mot relevansmatrisen før lagring. */
+  motorikk?: MotorikkKode | null;
+  belastning?: BelastningKode | null;
+  press?: PressKode | null;
+  dimensjon?: DimensjonKode | null;
+  maaleutstyr?: MaaleutstyrKode | null;
   koller: string[];
+  /**
+   * Utgått (beslutning 21.09): L-fase, CS, Miljø og Press. Beholdes i typen så
+   * eldre kallere ikke brekker, men skrives ikke lenger — se `vasketeAkser`.
+   */
   lFase?: LFase | null;
   cs?: CSNivaa | null;
   miljo?: MMiljo | null;
@@ -86,15 +128,19 @@ export interface TaskInput {
   repsMaalDry: number;
   repsMaalLav: number;
   repsMaalFull: number;
+  bildeUrl?: string | null;
+  videoUrl?: string | null;
   tmGoals?: TmGoalInput[];
   hitRateGoals?: HitRateGoalInput[];
 }
 
-async function findOrCreatePosition(planId: string, pNummer: string, pName: string) {
+// Navnet utledes alltid fra fasitlista (pNavn) — klientens pName er bare visning.
+async function findOrCreatePosition(planId: string, pNummer: string, _pName: string) {
   const existing = await prisma.technicalPlanPosition.findFirst({
     where: { planId, pNummer },
   });
   if (existing) return existing;
+  const navn = pNavn(pNummer);
 
   const lastSort = await prisma.technicalPlanPosition.findFirst({
     where: { planId },
@@ -105,10 +151,46 @@ async function findOrCreatePosition(planId: string, pNummer: string, pName: stri
     data: {
       planId,
       pNummer,
-      navn: pName,
+      navn,
       sortOrder: (lastSort?.sortOrder ?? -1) + 1,
     },
   });
+}
+
+/**
+ * Akser som ikke gjelder området lagres aldri (relevansmatrisen er et
+ * visningsfilter — men et skjult felt skal heller ikke smugles inn via API-et).
+ * Måleutstyr gjelder alle områder og vaskes ikke.
+ */
+function vasketeAkser(input: {
+  omraadeKode?: OmraadeKode | null;
+  motorikk?: MotorikkKode | null;
+  belastning?: BelastningKode | null;
+  press?: PressKode | null;
+  dimensjon?: DimensjonKode | null;
+}) {
+  if (!input.omraadeKode) {
+    return {
+      motorikk: input.motorikk ?? null,
+      belastning: input.belastning ?? null,
+      press: input.press ?? null,
+      dimensjon: input.dimensjon ?? null,
+    };
+  }
+  const vasket = vaskMotRelevans({
+    omraade: input.omraadeKode,
+    motorikk: input.motorikk ?? null,
+    belastning: input.belastning ?? null,
+    press: input.press ?? null,
+    dimensjon: input.dimensjon ?? null,
+    sandTrinn: null,
+  });
+  return {
+    motorikk: vasket.motorikk,
+    belastning: vasket.belastning,
+    press: vasket.press,
+    dimensjon: vasket.dimensjon,
+  };
 }
 
 export async function createTask(input: TaskInput) {
@@ -128,13 +210,14 @@ export async function createTask(input: TaskInput) {
       sortOrder: (lastSort?.sortOrder ?? -1) + 1,
       tittel: input.tittel,
       beskrivelse: input.beskrivelse,
+      bildeUrl: input.bildeUrl ?? null,
+      videoUrl: input.videoUrl ?? null,
       pyramide: input.pyramide,
-      omraade: input.omraade,
+      omraade: input.omraadeKode ? omraadeVisning(input.omraadeKode) : input.omraade,
+      omraadeKode: input.omraadeKode ?? null,
+      ...vasketeAkser(input),
+      maaleutstyr: input.maaleutstyr ?? null,
       koller: input.koller,
-      lFase: input.lFase ?? null,
-      cs: input.cs ?? null,
-      miljo: input.miljo ?? null,
-      prPress: input.prPress ?? null,
       kategori: input.kategori ?? null,
       repsMaalDry: input.repsMaalDry,
       repsMaalLav: input.repsMaalLav,
@@ -197,27 +280,45 @@ export async function createTask(input: TaskInput) {
 
 export async function updateTaskBasics(
   taskId: string,
-  patch: Partial<Omit<TaskInput, "planId" | "pNummer" | "pName" | "tmGoals" | "hitRateGoals">>,
+  patch: Partial<Omit<TaskInput, "planId" | "tmGoals" | "hitRateGoals">>,
 ) {
   const task = await prisma.positionTask.findUnique({
     where: { id: taskId },
-    include: { position: { select: { planId: true } } },
+    include: { position: { select: { planId: true, pNummer: true } } },
   });
   if (!task) throw new Error("Oppgave ikke funnet");
   const { user } = await ensurePlanAccess(task.position.planId);
 
+  // Flytt til annen P-posisjon (også mellomposisjon) når pNummer er endret.
+  let nyPositionId: string | undefined;
+  let nySortOrder: number | undefined;
+  if (patch.pNummer && patch.pNummer !== task.position.pNummer) {
+    PNummerSchema.parse(patch.pNummer);
+    const pos = await findOrCreatePosition(task.position.planId, patch.pNummer, patch.pName ?? "");
+    const last = await prisma.positionTask.findFirst({
+      where: { positionId: pos.id },
+      orderBy: { sortOrder: "desc" },
+      select: { sortOrder: true },
+    });
+    nyPositionId = pos.id;
+    nySortOrder = (last?.sortOrder ?? -1) + 1;
+  }
+
   const updated = await prisma.positionTask.update({
     where: { id: taskId },
     data: {
+      positionId: nyPositionId,
+      sortOrder: nySortOrder,
       tittel: patch.tittel,
       beskrivelse: patch.beskrivelse,
+      bildeUrl: patch.bildeUrl !== undefined ? patch.bildeUrl : undefined,
+      videoUrl: patch.videoUrl !== undefined ? patch.videoUrl : undefined,
       pyramide: patch.pyramide,
-      omraade: patch.omraade,
+      omraade: patch.omraadeKode ? omraadeVisning(patch.omraadeKode) : patch.omraade,
+      omraadeKode: patch.omraadeKode ?? undefined,
+      ...vasketeAkser({ ...patch, omraadeKode: patch.omraadeKode ?? task.omraadeKode }),
+      maaleutstyr: patch.maaleutstyr ?? null,
       koller: patch.koller,
-      lFase: patch.lFase ?? null,
-      cs: patch.cs ?? null,
-      miljo: patch.miljo ?? null,
-      prPress: patch.prPress ?? null,
       kategori: patch.kategori ?? null,
       repsMaalDry: patch.repsMaalDry,
       repsMaalLav: patch.repsMaalLav,
@@ -332,4 +433,65 @@ export async function logReps(
 
   revalidatePath(`/portal/tren/teknisk-plan/${task.position.planId}`);
   return { ok: true };
+}
+
+/**
+ * Starter en pågående live-økt direkte fra en teknisk oppgave.
+ * Kobler øvelsen til oppgaven via `positionTaskId` slik at reps som logges
+ * i økta (eller snakkes inn via Whisper) automatisk oppdaterer teknisk plan.
+ */
+export async function startLiveSessionForTask(taskId: string) {
+  IdSchema.parse(taskId);
+  const task = await prisma.positionTask.findUnique({
+    where: { id: taskId },
+    include: {
+      position: {
+        select: {
+          planId: true,
+          pNummer: true,
+          plan: { select: { userId: true } },
+        },
+      },
+    },
+  });
+  if (!task) throw new Error("Oppgave ikke funnet");
+  const { user } = await ensurePlanAccess(task.position.planId);
+
+  const coachId = await resolveCoachIdForPlayer(task.position.plan.userId);
+
+  const now = new Date();
+  const endTime = new Date(now.getTime() + 45 * 60 * 1000);
+
+  const session = await prisma.trainingSessionV2.create({
+    data: {
+      title: `Teknisk: ${task.position.pNummer} ${task.tittel}`,
+      studentId: task.position.plan.userId,
+      coachId,
+      status: "IN_PROGRESS",
+      startTime: now,
+      endTime,
+      miljo: "M1",
+      practiceType: "BLOKK",
+      isCoachCreated: user.id === coachId,
+      drills: {
+        create: [
+          {
+            name: task.tittel,
+            pyramide: task.pyramide,
+            positionTaskId: task.id,
+            sortOrder: 0,
+            durationMinutes: 30,
+            planRepsUtenBall: task.repsMaalDry > 0 ? task.repsMaalDry : null,
+            planRepsLavFart: task.repsMaalLav > 0 ? task.repsMaalLav : null,
+            planRepsAuto: task.repsMaalFull > 0 ? task.repsMaalFull : null,
+          },
+        ],
+      },
+    },
+  });
+
+  revalidatePath(`/portal/tren/teknisk-plan/${task.position.planId}`);
+  revalidatePath("/portal/live");
+
+  return { ok: true, sessionId: session.id, url: `/portal/live/${session.id}/active` };
 }

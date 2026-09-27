@@ -3,7 +3,8 @@
  *
  * `anonymiserBruker` vasker Prisma-radene, men persondata lever også UTENFOR
  * Postgres: Supabase Auth (auth.users), Supabase Storage (avatar, swing-videoer,
- * opptak), Stripe (kunde/abonnement) og gjeste-felt på egne bookinger. Denne
+ * opptak), Stripe (kunde/abonnement), gjeste-felt på egne bookinger og
+ * profilkoblingen i schema `dashboard` (utenfor Prisma). Denne
  * modulen rydder de kildene.
  *
  * Prinsipper:
@@ -73,6 +74,7 @@ export async function slettEksterneBrukerdata(
       plan.push("ville forsøke opptak-opprydding");
     }
     plan.push("ville vaske guestName/guestEmail/guestPhone på egne bookinger");
+    plan.push("ville slette profilkobling og oppslagslogg (dashboard.delete_profile_data)");
     try {
       // Siden A1 kan brukeren ha to abonnement (COACHING + PLAYERHQ) — begge tas.
       const subs = await prisma.subscription.findMany({
@@ -189,6 +191,13 @@ export async function slettEksterneBrukerdata(
     bookingerGjestevasket = res.count;
   } catch (err) {
     feil.push(`booking-gjestevask: ${meld(err)}`);
+  }
+
+  // ── 4b. Profilkobling til resultathistorikk (schema dashboard, eid av ak-golf-pipelines) ──
+  try {
+    await prisma.$queryRaw`SELECT dashboard.delete_profile_data(${userId}::text)`;
+  } catch (err) {
+    feil.push(`profilkobling: ${meld(err)}`);
   }
 
   // ── 5. Stripe: avslutt abonnement + slett kunde ──

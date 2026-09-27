@@ -1,0 +1,15 @@
+.aos-kicker{font:var(--type-kicker);letter-spacing:var(--tracking-kicker);text-transform:uppercase;color:var(--text-muted);display:block}
+.aos-kicker--ink{color:var(--text-primary)}
+.aos-kicker--action{color:var(--action)}
+.aos-kicker--inverse{color:var(--text-inverse-soft)}
+.aos-kicker--tight{letter-spacing:var(--tracking-kicker-min)}
+.aos-kicker--wide{letter-spacing:var(--tracking-kicker-max)}
+.aos-title{font-family:var(--font-display);font-weight:var(--fw-semibold);color:var(--text-primary);letter-spacing:var(--tracking-display);margin:0;line-height:var(--lh-tight)}
+.aos-title--xl{font-size:var(--fs-40)}
+.aos-title--l{font-size:var(--fs-29)}
+.aos-title--m{font-size:var(--fs-21);line-height:var(--lh-snug)}
+.aos-title--s{font-size:var(--fs-17);line-height:var(--lh-snug)}
+.aos-title--inverse{color:var(--text-inverse)}
+.aos-lead{font:var(--type-lead);color:var(--text-secondary);margin:0;max-width:62ch}
+.aos-lead--inverse{color:var(--text-inverse-soft)}
+.aos-head{display:flex;flex-direction:column;gap:var(--space-2)}

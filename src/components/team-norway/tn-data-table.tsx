@@ -43,7 +43,6 @@ export function TnDataTable({
     borderRadius: TN.radius.lg,
     border: `1px solid ${TN.borderSubtle}`,
     background: TN.white,
-    boxShadow: TN.shadow.sm,
   };
 
   if (loading) {

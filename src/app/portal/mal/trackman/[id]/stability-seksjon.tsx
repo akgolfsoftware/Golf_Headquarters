@@ -10,6 +10,7 @@
 
 import { CheckCircle2, AlertTriangle, TrendingUp } from "lucide-react";
 import { TL } from "@/lib/v2/train-lock";
+import { formaterTall, formaterFortegn } from "@/lib/format-tall";
 
 import {
   beregnStabilitet,
@@ -140,9 +141,9 @@ function HeatmapCelle({ stats, paramKey }: { stats: ParamStats; paramKey: ParamK
   if (paramKey === "spinRate") {
     val = `±${Math.round(stats.stddev)}`;
   } else if (paramKey === "smash") {
-    val = `±${stats.stddev.toFixed(2)}`;
+    val = `±${formaterTall(stats.stddev, 2, true)}`;
   } else {
-    val = `±${stats.stddev.toFixed(1)}`;
+    val = `±${formaterTall(stats.stddev, 1, true)}`;
   }
 
   return (
@@ -211,7 +212,8 @@ export function StabilitetSeksjon({ data }: { data: StabilitetData }) {
     const sd = k.params[worst].stddev;
     const unit = PARAM_UNIT[worst];
     if (sd === null) return PARAM_LABEL[worst];
-    return `${PARAM_LABEL[worst]} ±${worst === "spinRate" ? Math.round(sd) : sd.toFixed(worst === "smash" ? 2 : 1)}${unit}`;
+    const sdTekst = worst === "spinRate" ? String(Math.round(sd)) : formaterTall(sd, worst === "smash" ? 2 : 1, true);
+    return `${PARAM_LABEL[worst]} ±${sdTekst}${unit}`;
   }
 
   return (
@@ -245,8 +247,8 @@ export function StabilitetSeksjon({ data }: { data: StabilitetData }) {
           <Callout
             label="Mest stødig"
             klubb={mestStødig.navn}
-            score={`${mestStødig.stabilitetScore.toFixed(1)} / 10`}
-            detail={`Carry ±${mestStødig.params.carry.stddev?.toFixed(1) ?? "—"} m`}
+            score={`${formaterTall(mestStødig.stabilitetScore, 1, true)} / 10`}
+            detail={`Carry ±${formaterTall(mestStødig.params.carry.stddev, 1, true)} m`}
             type="best"
             icon={<CheckCircle2 style={{ height: 14, width: 14 }} />}
           />
@@ -255,7 +257,7 @@ export function StabilitetSeksjon({ data }: { data: StabilitetData }) {
           <Callout
             label="Trenger jobbing"
             klubb={trengerJobbing.navn}
-            score={`${trengerJobbing.stabilitetScore.toFixed(1)} / 10`}
+            score={`${formaterTall(trengerJobbing.stabilitetScore, 1, true)} / 10`}
             detail={worstParam(trengerJobbing)}
             type="worst"
             icon={<AlertTriangle style={{ height: 14, width: 14 }} />}
@@ -338,7 +340,7 @@ export function StabilitetSeksjon({ data }: { data: StabilitetData }) {
                   color: TL.text,
                 }}
               >
-                {k.stabilitetScore.toFixed(1)}
+                {formaterTall(k.stabilitetScore, 1, true)}
                 <small style={{ marginLeft: 2, fontSize: 9, fontWeight: 600, color: TL.mute }}>
                   /10
                 </small>
@@ -401,11 +403,10 @@ export function StabilitetSeksjon({ data }: { data: StabilitetData }) {
                   <span style={{ fontFamily: TL.font.mono, fontSize: 9, lineHeight: 1.3, color: TL.mute }}>
                     Snitt{" "}
                     <strong style={{ color: TL.text }}>
-                      {k.meanSide >= 0 ? "+" : ""}
-                      {k.meanSide.toFixed(1)} m
+                      {formaterFortegn(k.meanSide, 1)} m
                     </strong>{" "}
                     · spred{" "}
-                    <strong style={{ color: TL.text }}>±{k.stddevSide.toFixed(1)}</strong>
+                    <strong style={{ color: TL.text }}>±{formaterTall(k.stddevSide, 1, true)}</strong>
                   </span>
                 </div>
               </div>

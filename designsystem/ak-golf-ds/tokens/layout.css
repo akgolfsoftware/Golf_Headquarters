@@ -1,0 +1,28 @@
+/* GENERERT fra tokens.json av tokens/build.mjs. IKKE REDIGER — endringer overskrives. */
+:root{
+/* ---- LAG 1 — PRIMITIVER (rå tall, ingen mening) ---- */
+--size-44:44px;
+--size-56:56px;
+--size-64:64px;
+--size-236:236px;
+--size-340:340px;
+--size-920:920px;
+/* ---- LAG 2 — SEMANTIKK (hva tallet betyr i merket) ---- */
+--topbar-h:var(--size-56);
+--tabbar-h:var(--size-56);
+--hit-min:var(--size-44);
+--content-max:var(--size-920);
+--bp-mobile:390px;
+--bp-tablet:834px;
+--bp-desktop:1440px;
+--gutter-mobile:16px;
+--gutter-tablet:24px;
+--gutter-desktop:32px;
+/* ---- LAG 3 — KOMPONENT (bindes til ett navngitt element) ---- */
+--inspector-w:var(--size-340); /* Inspector340. 372 er FORBUDT. */
+--sourcepanel-w:var(--size-236); /* Workbench-kildepanel. Ikke en rail. */
+/* ---- FORKASTET — ikke app-laget. Står kun så eldre ds-web-sider ikke knekker.
+   Venstre navigasjonsrail er ute av AgencyOS og PlayerHQ. Ikke bruk i HQ. ---- */
+--rail-w:var(--size-236);
+--rail-icon-w:var(--size-64);
+}

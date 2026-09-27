@@ -26,20 +26,20 @@
     "status": "FASIT. Vokabularet (range/nærspill/putting/spill) er en egen skuddtype-akse, ikke en omskriving av pyramideaksene — se volumfordeling_er_egen_akse_ikke_konflikt.",
     "brackets": [
       {
-        "gruppe": "Junior under HCP 5 / kategori K-L",
-        "merk_kategori": "K/L er NGF-skalaens laveste bånd. AK Golf sin egen A-K-skala har ingen 'L' — koden kollapser NGF-L til AK-K (src/lib/domain/spiller-kategori.ts:40).",
+        "gruppe": "Nybegynner / kategori J-K (snitt 95+)",
+        "merk_kategori": "Kategoriene følger ak-kategori.ts: J (95-100) og K (100+).",
         "range_pct": 60, "naerspill_pluss_putting_pct": 30, "spill_pct": 10
       },
       {
-        "gruppe": "Junior HCP 5-15 / kategori H-J",
+        "gruppe": "Rekrutt og klubb / kategori G-I (snitt 80-95)",
         "range_pct": 40, "naerspill_pct": 30, "putting_pct": 20, "spill_pct": 10
       },
       {
-        "gruppe": "Voksen HCP 0-10 / kategori E-G",
+        "gruppe": "Viderekommen og regional / kategori D-F (snitt 74-80)",
         "range_pct": 30, "naerspill_pct": 30, "putting_pct": 20, "spill_pct": 20
       },
       {
-        "gruppe": "Elite kategori A-D",
+        "gruppe": "Elite kategori A-C (snitt under 74)",
         "range_pct": 25, "naerspill_pct": 25, "putting_pct": 20, "spill_pluss_turneringsprep_pct": 30
       }
     ],

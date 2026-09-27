@@ -5,7 +5,7 @@ source_section: "## 17.1 Hvordan range-data oversettes til scoring (del 1)"
 tags: [baseline, broadie, club-data, formule, sg, trackman]
 topics: [broadie, trackman-parametere]
 lang: no
-relevance: [AiPlanGeneration, CoachHQ, RAG, SgBaseline, TrackMan, beregnSg, forventetSg]
+relevance: [AiPlanGeneration, AgencyOS, RAG, SgBaseline, TrackMan, beregnSg, forventetSg]
 updated: 2026-06-14
 ---
 

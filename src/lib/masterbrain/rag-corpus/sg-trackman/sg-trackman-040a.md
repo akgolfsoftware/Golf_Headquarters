@@ -5,7 +5,7 @@ source_section: "20.5 Tolkningsfeller + 21. Ordliste (del 1)"
 tags: ["amat\u00f8r", "baseline", "handicap", "kategori", "pga-tour", "putt", "sg"]
 topics: ["amator-data", "begrensninger", "implementasjon", "pga-snitt", "putting", "sg-baseline"]
 lang: no
-relevance: ["AiPlanGeneration", "CoachHQ", "PlayerHQ", "RAG", "SgBaseline", "beregnSg", "diagnostiserSg"]
+relevance: ["AiPlanGeneration", "AgencyOS", "PlayerHQ", "RAG", "SgBaseline", "beregnSg", "diagnostiserSg"]
 updated: 2026-06-14
 ---
 

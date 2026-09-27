@@ -6,15 +6,18 @@
  *
  * `format` replaces the old `formatValue` function prop so the component
  * can be used from Server Components (functions are not serializable).
- *   decimal1  → v.toFixed(1)
- *   pct1      → v.toFixed(1) + "%"
- *   decimal2  → v.toFixed(2)
- *   signed2   → (+/-)v.toFixed(2)
- *   signed1   → (+/-)v.toFixed(1)
+ * Norsk tallformat via src/lib/format-tall.ts — komma, mellomrom før %,
+ * ekte minus. Viste tidligere «62.4%» med punktum og uten mellomrom.
+ *   decimal1  → «120,5»
+ *   pct1      → «62,4 %»
+ *   decimal2  → «1,23»
+ *   signed2   → «+0,41» / «−0,05»
+ *   signed1   → «+1,2»
  *   raw       → String(v)  (default)
  */
 
 import { useState } from "react";
+import { formaterTall, formaterProsent, formaterFortegn } from "@/lib/format-tall";
 import { StatsIcon, type StatsIconName } from "./icon";
 import Link from "next/link";
 
@@ -35,11 +38,11 @@ export type LeaderboardFormat =
 function applyFormat(v: number | string, format: LeaderboardFormat): string {
   if (typeof v !== "number") return String(v);
   switch (format) {
-    case "decimal1": return v.toFixed(1);
-    case "pct1":     return v.toFixed(1) + "%";
-    case "decimal2": return v.toFixed(2);
-    case "signed2":  return (v >= 0 ? "+" : "") + v.toFixed(2);
-    case "signed1":  return (v > 0 ? "+" : "") + v.toFixed(1);
+    case "decimal1": return formaterTall(v, 1, true);
+    case "pct1":     return formaterProsent(v, 1, true);
+    case "decimal2": return formaterTall(v, 2, true);
+    case "signed2":  return formaterFortegn(v, 2);
+    case "signed1":  return formaterFortegn(v, 1);
     case "raw":
     default:         return String(v);
   }

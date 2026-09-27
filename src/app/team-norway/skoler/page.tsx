@@ -1,4 +1,12 @@
-import { TnRegistrertSkjerm } from "@/components/team-norway/tn-registrerte-skjermer";
+import { TeamNorwayAppView } from "@/components/team-norway/app/TeamNorwayAppView";
 
-/** TN-08. Fasit: designsystem/team-norway/templates/tn-skoler/TnSkoler.dc.html */
-export default function Page() { return <TnRegistrertSkjerm skjerm="skoler" />; }
+export const metadata = {
+  title: "Team Norway · Toppidrettsskoler & Testoversikt",
+  description: "Nasjonal testoversikt for WANG Toppidrett og WANG Ung toppidrettsskoler.",
+  robots: { index: false, follow: false },
+};
+
+/** TN-06: Toppidrettsskoler og nasjonal testoversikt */
+export default function Page() {
+  return <TeamNorwayAppView initialSkjerm="TN-06" />;
+}
