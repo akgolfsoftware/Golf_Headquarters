@@ -17,5 +17,5 @@ test("mellomposisjoner ligger samlet under hoved-P, hovedfokus først", () => {
 });
 
 test("navn leses fra fasit, ikke fra lagret rad", () => {
-  assert.equal(medFasitNavn({ pNummer: "P5.0", navn: "Transisjon" }).navn, "Halvveis ned (venstre arm parallell, maks lag)");
+  assert.equal(medFasitNavn({ pNummer: "P5.0", navn: "Transisjon" }).navn, "Venstre arm parallell i nedsving");
 });

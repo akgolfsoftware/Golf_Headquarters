@@ -4,6 +4,49 @@ Kun det som gjelder nå. Gamle overstyrte valg er historikk, aldri byggeordre.
 Ny beslutning registreres med `/beslutning` (skriver hit). `docs/MASTERPLAN-GJENSTAAENDE.md` ble fjernet i b700ce008 — krever en beslutning bygging, skriver den det eksplisitt i sin egen blokk.
 Produkt- og forretningsregler eies av `docs/platform/BUSINESS-RULES.md`; ved konflikt vinner den.
 
+## POSISJONSNAVN FØLGER ORDMASTEREN, OG TEKNISK PLAN SPERRER INGENTING (Anders 27.09.2026, bindende)
+
+Avklart etter to designrunder i Claude Design «AK Golf Precision Athletics» (`7d7c2994`), der
+funksjoner fra prototypen «AK Golf Training Motor» (`4917465a`) ble tegnet inn. Prototypen er
+idékilde, ikke visuell fasit: den bruker det gamle designsystemet `87aa23fb`.
+
+- **Posisjonsnavn: ordmasteren gjelder.** Anders: «Ordlisten gjelder.» P1.0 Adresse / Oppstilling ·
+  P2.0 Kølle parallell i baksving · P3.0 Venstre arm parallell i baksving · P4.0 Toppen av
+  baksvingen · P5.0 Venstre arm parallell i nedsving · P6.0 Kølle parallell i nedsving · P7.0
+  Treffpunktet · P8.0 Kølle parallell i gjennomføring · P9.0 Høyre arm parallell i oppfølging ·
+  P10.0 Fullføring og balanse. Kilde: `guidelines/ordmaster.md` §5 i `7d7c2994`.
+- **Kvalitetssjekken vises bare.** Anders: «Bare vises.» Den er aldri krav for å gå videre til
+  neste læringssteg. Rep-mål og treffprotokoll viser også bare status (§Treningsfag).
+- **AK-formelen når en oppgave har flere læringssteg og miljøer:** formelen viser steget spilleren
+  er på og hovedmiljøet. Rep-mål per steg og per miljø lagres hver for seg.
+- **Demospilleren i koden heter Magnus Aasheim** (#980), samme navn som i designet.
+
+**Overstyrer:** navnene i `src/components/teknisk-plan/constants.ts` fra 22.09.2026. De var hentet
+fra `wiki/concepts/morad-posisjonssystem.md` i ak-second-brain, som har venstre arm på P9.0.
+Kildene i samme kunnskapsbase (`wiki/sources/2026-05-11-morad-kb-terminology.md`) har høyre arm.
+For posisjonsnavn avgjør dette også spørsmålet om to ordlister i §PRECISION ATHLETICS.
+
+**Gjort i samme PR:** navnene er rettet i `constants.ts`, `src/lib/taxonomy.ts`,
+`src/lib/domain/workbench/labels.ts` og de to utviklingsplan-visningene, med tester. Teksten «MORAD-arbeid» er fjernet fra `/admin/plan`.
+Lagrede posisjonsnavn i basen leses ikke: `medFasitNavn` henter navnet fra koden.
+
+**Arbeidet dette utløser** — detaljene står i
+[porteringsplanen §9](../../docs/planer/portering-skjermer-2026-09-27.md):
+
+1. **Portering av sju skjermtyper:** AG-10 (utvidet), AG-TP-01 Oppgaveskjema, AG-TP-02 Før og nå,
+   PH-TP-01 Teknisk plan (spiller), AG-15 med testdetalj, PH-A07 og kilde på øktkort i AG-11.
+   Ferdig per skjerm etter oppskriften i porteringsplanen §5, og Anders har sett den (port 7).
+2. **Sju tillegg i datamodellen.** Hvert krever Anders' ja før det legges i basen (additivt via
+   `db execute`, gotchas §Database): to daterte bilder per oppgave, logg for kvalitetssjekk,
+   coachens svar på en registrering, publiseringstidspunkt på planen, testforhold på
+   testresultatet, coachens valg per test og opphav på øvelse i økt.
+3. **Navn som står igjen:** `PeriodeplanPyramideView.tsx` (demoskjerm under `/portal/toppidrett`,
+   som skal videresendes) og `ak-kategorisystem.ts` (hovednavn og underposisjoner, ikke i bruk
+   utenfor egen test). Rettes når filene porteres eller fjernes. Nøkkelordene i `src/lib/voice/whisper-transcribe.ts` er talegjenkjenning og
+   beholdes.
+4. **ak-second-brain:** P9.0 i `wiki/concepts/morad-posisjonssystem.md` rettes til høyre arm i en
+   egen økt i den kunnskapsbasen.
+
 ## WANG I AK GOLF HQ ER BARE FOR SPORTSSJEF OG TRENER, OG MENYEN FÅR SEKS HOVEDPUNKTER (Anders 27.09.2026, bindende)
 
 Anders: «WANG Toppidrett-skjermene som er delt via AK Golf, så skal det være Sportssjef og Trener
@@ -292,6 +335,7 @@ Team Norway og WANG er utenfor; de har egne systemer og egne arbeidsmapper.
 - Markedssidene venter fortsatt (23.09); de beholder verksted-uttrykket til Anders sier noe annet.
 - Uavklart: prosjektets `guidelines/ordmaster.md` (25.09) og `docs/ordbok.md` er to ordlister.
   Til Anders har valgt, gjelder `docs/ordbok.md` (§Treningsfag).
+  Posisjonsnavnene er avgjort 27.09: ordmasteren gjelder (§POSISJONSNAVN FØLGER ORDMASTEREN).
 - Uendret: aldri sidelengs rulling, port 7 (Anders har sett skjermen), Codex bygger i appkoden.
 
 **Arbeidet dette utløser** — ingen arbeidsliste finnes etter b700ce008, derfor står den her:
