@@ -2,9 +2,11 @@
 
 /**
  * I5 · Oppfølgingskøen: flytting med dra-og-slipp eller kortets statusvalg
- * gir coachens manuelle overstyring av det beregnede nivået (7 dagers
- * virkning), lagret som Signal (kind OPPFOLGING_STATUS, payload { status }) —
- * gjenbruk av eksisterende modell, ingen schema-endring. «Løst» = kvittert.
+ * gir coachens manuelle overstyring av det beregnede nivået, lagret som
+ * FollowUpCase — én rad per spiller, ingen tidsbegrensning (beslutning
+ * 23.09.2026, AG-03b). Erstatter det tidligere Signal-baserte sporet
+ * (kind OPPFOLGING_STATUS), som glemte status etter sju dager og ikke visste
+ * hvem som satte den. «Løst» = kvittert (status "ok").
  */
 
 import { z } from "zod";
@@ -36,11 +38,21 @@ export async function settOppfolgingsstatus(
     return { ok: false, error: "Du har ikke tilgang til denne spilleren." };
   }
 
-  await prisma.signal.create({
-    data: {
+  const lost = parsed.data.status === "ok";
+  await prisma.followUpCase.upsert({
+    where: { userId: parsed.data.spillerId },
+    create: {
       userId: parsed.data.spillerId,
-      kind: "OPPFOLGING_STATUS",
-      payload: { status: parsed.data.status },
+      status: parsed.data.status,
+      setById: coach.id,
+      ...(lost ? { resolvedAt: new Date(), resolvedById: coach.id } : {}),
+    },
+    update: {
+      status: parsed.data.status,
+      setById: coach.id,
+      setAt: new Date(),
+      resolvedAt: lost ? new Date() : null,
+      resolvedById: lost ? coach.id : null,
     },
   });
 

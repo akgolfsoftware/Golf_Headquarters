@@ -131,7 +131,7 @@ html[data-v2-tema="dark"] {
   --sand-900: #101613;
 
   /* Typografi */
-  --font-ui: var(--tl-font-sans);
+  --font-ui: var(--font-ibm-plex-sans), var(--tl-font-sans);
   --text-11: 0.6875rem;
   --text-12: 0.75rem;
   --text-13: 0.8125rem;
@@ -387,8 +387,8 @@ html[data-v2-tema="dark"] {
   --radius-md: calc(var(--radius) - 4px);
   --radius-sm: calc(var(--radius) - 8px);
 
-  --font-sans: var(--font-poppins), Arial, system-ui, sans-serif;
-  --font-display: var(--font-poppins), Arial, system-ui, sans-serif;
+  --font-sans: var(--font-ibm-plex-sans), var(--font-poppins), Arial, system-ui, sans-serif;
+  --font-display: var(--font-ibm-plex-sans), var(--font-poppins), Arial, system-ui, sans-serif;
   --font-mono: var(--font-ibm-plex-mono), ui-monospace, monospace;
 
   /* Pyramide-utility-aliaser: bg-pyr-fys, text-pyr-tek, border-pyr-slag, ...
@@ -716,7 +716,7 @@ html[data-v2-tema="dark"] ::selection {
 /* ---------- AK Golf type helpers ----------
  * Speilet fra .claude/skills/ak-golf-hq-design/colors_and_type.css.
  * Tilpasset prosjektets HSL-trippel-konvensjon (hsl(var(--token))).
- * Brukes for hero/KPI/eyebrow-typografi på tvers av PlayerHQ + CoachHQ + Marketing.
+ * Brukes for hero/KPI/eyebrow-typografi på tvers av PlayerHQ + AgencyOS + Marketing.
  */
 .h-display {
   font-family: var(--font-display);

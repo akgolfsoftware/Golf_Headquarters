@@ -11,6 +11,7 @@ import { notify } from "@/lib/notifications";
 import { resolveCoachIdForPlayer } from "@/lib/workbench/v2-sync";
 import { SG_OMRADER, type SgOmrade } from "@/lib/domain/maal-fremdrift";
 import { hentSgSnittPerOmrade } from "@/lib/portal/sg-omrade-snitt";
+import { lesPlanNivaa, medPlanNivaa, PLAN_NIVAAER, type PlanNivaa } from "@/lib/domain/maal-plannivaa";
 
 const GoalInputSchema = z.object({
   type: z.string().min(1, "Type er påkrevd"),
@@ -21,6 +22,7 @@ const GoalInputSchema = z.object({
   linkedPyramidArea: z.nativeEnum(PyramidArea).nullable().optional(),
   linkedTestId: z.string().nullable().optional(),
   sgOmrade: z.enum(SG_OMRADER).nullable().optional(),
+  planNivaa: z.enum(PLAN_NIVAAER).nullable().optional(),
 });
 
 const GoalIdSchema = z.string().min(1, "Mål-ID er påkrevd");
@@ -39,6 +41,8 @@ export type GoalInput = {
   linkedTestId?: string | null;
   /** SG-område for SG_AREA-mål. Kreves for at fremdrift skal kunne måles. */
   sgOmrade?: SgOmrade | null;
+  /** Planleggingsnivå (år/periode/måned/uke/økt). Utelatt = uendret; null = automatisk fra frist. */
+  planNivaa?: PlanNivaa | null;
 };
 
 /**
@@ -78,8 +82,9 @@ export async function createGoal(input: GoalInput) {
   const user = await requireConsentingUser();
   if (!input.title.trim()) throw new Error("missing-title");
 
-  const payload =
-    input.type === "SG_AREA" ? await byggSgPayload(user.id, {}, input.sgOmrade) : null;
+  const sgPayload: Prisma.InputJsonObject =
+    input.type === "SG_AREA" ? await byggSgPayload(user.id, {}, input.sgOmrade) : {};
+  const payload = medPlanNivaa(sgPayload, input.planNivaa) as Prisma.InputJsonObject;
 
   await prisma.goal.create({
     data: {
@@ -91,7 +96,7 @@ export async function createGoal(input: GoalInput) {
       targetDate: input.targetDate ? new Date(input.targetDate) : null,
       linkedPyramidArea: input.linkedPyramidArea ?? null,
       linkedTestId: input.linkedTestId ?? null,
-      ...(payload && Object.keys(payload).length > 0 ? { payload } : {}),
+      ...(Object.keys(payload).length > 0 ? { payload } : {}),
     },
   });
 
@@ -207,10 +212,14 @@ export async function endreGoal(goalId: string, input: GoalInput) {
 
   // SG-felter fjernes hvis målet ikke lenger er et SG-mål — ellers ville et
   // gammelt område ligget igjen og gitt fremdrift for feil ting.
-  const payload =
+  const sgPayload =
     input.type === "SG_AREA"
       ? await byggSgPayload(user.id, eksisterende, input.sgOmrade)
       : await byggSgPayload(user.id, eksisterende, null);
+  const payload = medPlanNivaa(
+    sgPayload,
+    input.planNivaa === undefined ? lesPlanNivaa(eksisterende) : input.planNivaa,
+  ) as Prisma.InputJsonObject;
 
   await prisma.goal.update({
     where: { id: goalId },

@@ -5,7 +5,7 @@ import { useCallback, useMemo, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { validateWeek } from "@/lib/domain/workbench/operations";
 import { formatHours, UI } from "@/lib/domain/workbench/labels";
-import type { PeriodType, PeriodViewModel, SourceItem } from "@/lib/domain/workbench/types";
+import type { PeriodType, PeriodViewModel, PlanningGoalSummary, SourceItem } from "@/lib/domain/workbench/types";
 import { loadPeriod, publishSessions } from "@/lib/workbench/wb-actions";
 import { osloIdag } from "./WeekGrid";
 import { PublishConfirmDialog } from "./PublishConfirmDialog";
@@ -18,6 +18,7 @@ type Props = {
   periode: PeriodViewModel;
   kilder: SourceItem[];
   roster?: { id: string; navn: string }[];
+  goals?: PlanningGoalSummary[];
 };
 
 const PERIODE_LABEL: Record<PeriodType, string> = {
@@ -43,7 +44,7 @@ function timer(minutter: number): string {
   return minutter > 0 ? `${formatHours(minutter)} t` : "—";
 }
 
-export function WorkbenchPeriode({ playerId, spillerNavn, periode: startPeriode, kilder, roster = [] }: Props) {
+export function WorkbenchPeriode({ playerId, spillerNavn, periode: startPeriode, kilder, roster = [], goals = [] }: Props) {
   const [periode, setPeriode] = useState(startPeriode);
   const [publiserApen, setPubliserApen] = useState(false);
   const [valgtePubliser, setValgtePubliser] = useState<Set<string>>(new Set());
@@ -97,7 +98,7 @@ export function WorkbenchPeriode({ playerId, spillerNavn, periode: startPeriode,
   return (
     <div className="wb-layout">
       <aside className="wb-sources">
-        <SourcesPanel kilder={kilder} playerId={playerId} aar={String(periode.year)} />
+        <SourcesPanel kilder={kilder} playerId={playerId} aar={String(periode.year)} goals={goals} />
         <nav className="wb-roster" aria-label="Spillere i stallen">
           <span className="wb-kicker">Stall</span>
           {roster.map((spiller) => (

@@ -88,3 +88,40 @@ test("endreGoal lagrer valgt måltype", async () => {
   assert.equal(oppdatert, 1);
   assert.equal(sisteOppdatering?.category, "PROCESS");
 });
+
+const BASIS_INPUT = {
+  type: "FREE_TEXT",
+  category: "PROCESS" as const,
+  title: "Trene putting tre ganger per uke",
+  targetValue: null,
+  targetDate: null,
+};
+
+test("endreGoal lagrer valgt planleggingsnivå i payload", async () => {
+  const { endreGoal } = await actions();
+  await endreGoal("maal-1", { ...BASIS_INPUT, planNivaa: "UKE" });
+  assert.deepEqual(sisteOppdatering?.payload, { planNivaa: "UKE" });
+});
+
+test("endreGoal uten planNivaa beholder eksisterende valg og andre nøkler", async () => {
+  goal = { ...goal, payload: { planNivaa: "MANED", abandonReason: "x" } };
+  const { endreGoal } = await actions();
+  await endreGoal("maal-1", BASIS_INPUT);
+  assert.deepEqual(sisteOppdatering?.payload, { planNivaa: "MANED", abandonReason: "x" });
+});
+
+test("endreGoal med planNivaa null fjerner valget", async () => {
+  goal = { ...goal, payload: { planNivaa: "MANED" } };
+  const { endreGoal } = await actions();
+  await endreGoal("maal-1", { ...BASIS_INPUT, planNivaa: null });
+  assert.equal(typeof sisteOppdatering?.payload, "object");
+  assert.notEqual(JSON.stringify(sisteOppdatering?.payload).includes("planNivaa"), true);
+});
+
+test("endreGoal avviser ukjent planleggingsnivå", async () => {
+  const { endreGoal } = await actions();
+  await assert.rejects(() =>
+    endreGoal("maal-1", { ...BASIS_INPUT, planNivaa: "DAG" as never }),
+  );
+  assert.equal(oppdatert, 0);
+});

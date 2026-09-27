@@ -8,7 +8,7 @@ Les `docs/platform/AGENT-BRIEF.md` før du endrer filer. `START-HER.md` er innga
 
 - Anders' gjeldende beskjed styrer oppgaven. Tidligere bestillinger i arkiv er ikke nye kjøreordrer.
 - Produkt og forretningsregler: `docs/platform/BUSINESS-RULES.md`.
-- Språk og begreper: `docs/ordbok.md` (eneste språk-master).
+- Språk og begreper: `docs/treningsplanlegging.md` (eneste master for språk og planlegging).
 - Årsplan, perioder og valg i Workbench: `docs/treningsplanlegging.md`.
 - Designautoritet: `docs/design-system/design-autoritet.md`, deretter `designsystem/README.md`. Bruk den konkrete skjermversjonen Anders velger innen det gjeldende systemet; gamle tegninger og beslutninger er historikk.
 - Faktisk oppførsel: koden og testene. Dokumentert intensjon er ikke bevis på ferdig funksjon.

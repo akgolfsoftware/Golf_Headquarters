@@ -24,8 +24,14 @@ export type TrackManShot = {
   carryMeters: number | null;
   totalMeters: number | null;
   launchAngleDeg: number | null;
+  launchDirectionDeg?: number | null;
   spinRateRpm: number | null;
   sideMeters: number | null;
+  targetDistanceRaw?: number | null;
+  attackAngleDeg?: number | null;
+  clubPathDeg?: number | null;
+  faceAngleDeg?: number | null;
+  faceToPathDeg?: number | null;
   notes: string | null;
   /**
    * Enheter som sto eksplisitt i kildeoverskriften. Manglende felt betyr at
@@ -44,6 +50,7 @@ export type TrackManSourceUnits = {
   carry?: TrackManDistanceUnit;
   total?: TrackManDistanceUnit;
   side?: TrackManDistanceUnit;
+  targetDistance?: TrackManDistanceUnit;
 };
 
 type ParsedCsvRows = {
@@ -87,8 +94,14 @@ const COLUMN_ALIASES: Record<CsvField, string[]> = {
   carryMeters: ["carry", "carry distance"],
   totalMeters: ["total", "total distance"],
   launchAngleDeg: ["launch", "launch angle", "launch angle (deg)"],
+  launchDirectionDeg: ["launch direction", "launch dir", "horizontal launch", "horizontal launch angle"],
   spinRateRpm: ["spin", "spin rate", "spin rate (rpm)"],
   sideMeters: ["side", "side total"],
+  targetDistanceRaw: ["target distance", "distance to target", "target length"],
+  attackAngleDeg: ["attack angle", "attack angle (deg)", "attackangle", "angrepsvinkel", "innfallsvinkel"],
+  clubPathDeg: ["club path", "club path (deg)", "clubpath", "klubbane", "svingbane"],
+  faceAngleDeg: ["face angle", "face angle (deg)", "faceangle", "bladvinkel", "køllebladvinkel"],
+  faceToPathDeg: ["face to path", "face to path (deg)", "facetopath", "face-to-path", "blad mot bane"],
   notes: ["note", "notes", "comment", "kommentar"],
 };
 
@@ -152,7 +165,7 @@ function buildHeaderMap(headers: string[]): HeaderMap {
         if (field === "clubSpeedMps" || field === "ballSpeedMps") {
           binding.speedUnit = speedUnitFromHeader(raw);
         }
-        if (field === "carryMeters" || field === "totalMeters" || field === "sideMeters") {
+        if (field === "carryMeters" || field === "totalMeters" || field === "sideMeters" || field === "targetDistanceRaw") {
           binding.distanceUnit = distanceUnitFromHeader(raw);
         }
         map[field] = binding;
@@ -184,10 +197,17 @@ function erTillattEnhetsverdi(field: CsvField, value: string): boolean {
   if (field === "clubSpeedMps" || field === "ballSpeedMps") {
     return /^(?:mph|m\/s|mps|km\/?h|kmh|kph)$/.test(token);
   }
-  if (field === "carryMeters" || field === "totalMeters" || field === "sideMeters") {
+  if (field === "carryMeters" || field === "totalMeters" || field === "sideMeters" || field === "targetDistanceRaw") {
     return /^(?:m|meters?|metres?|yds?|yards?|ft|feet|cm)$/.test(token);
   }
-  if (field === "launchAngleDeg") {
+  if (
+    field === "launchAngleDeg" ||
+    field === "launchDirectionDeg" ||
+    field === "attackAngleDeg" ||
+    field === "clubPathDeg" ||
+    field === "faceAngleDeg" ||
+    field === "faceToPathDeg"
+  ) {
     return /^(?:deg|degrees?|grader?|°)$/.test(token);
   }
   if (field === "spinRateRpm") return token === "rpm";
@@ -222,6 +242,7 @@ function sourceUnitsFromHeaders(
   const carry = headerMap.carryMeters;
   const total = headerMap.totalMeters;
   const side = headerMap.sideMeters;
+  const targetDistance = headerMap.targetDistanceRaw;
   if (clubSpeed) {
     sourceUnits.clubSpeed = clubSpeed.speedUnit ?? speedUnitFromToken(unitRow?.[clubSpeed.index]);
   }
@@ -236,6 +257,9 @@ function sourceUnitsFromHeaders(
   }
   if (side) {
     sourceUnits.side = side.distanceUnit ?? distanceUnitFromToken(unitRow?.[side.index]);
+  }
+  if (targetDistance) {
+    sourceUnits.targetDistance = targetDistance.distanceUnit ?? distanceUnitFromToken(unitRow?.[targetDistance.index]);
   }
   for (const key of Object.keys(sourceUnits) as (keyof TrackManSourceUnits)[]) {
     if (sourceUnits[key] === undefined) delete sourceUnits[key];
@@ -378,10 +402,22 @@ export function parseTrackManCsv(csv: string): TrackManParseResult {
         headerMap.totalMeters ? parseNumber(row[headerMap.totalMeters.index]) : null,
       launchAngleDeg:
         headerMap.launchAngleDeg ? parseNumber(row[headerMap.launchAngleDeg.index]) : null,
+      launchDirectionDeg:
+        headerMap.launchDirectionDeg ? parseNumber(row[headerMap.launchDirectionDeg.index]) : null,
       spinRateRpm:
         headerMap.spinRateRpm ? parseNumber(row[headerMap.spinRateRpm.index]) : null,
       sideMeters:
         headerMap.sideMeters ? parseNumber(row[headerMap.sideMeters.index]) : null,
+      targetDistanceRaw:
+        headerMap.targetDistanceRaw ? parseNumber(row[headerMap.targetDistanceRaw.index]) : null,
+      attackAngleDeg:
+        headerMap.attackAngleDeg ? parseNumber(row[headerMap.attackAngleDeg.index]) : null,
+      clubPathDeg:
+        headerMap.clubPathDeg ? parseNumber(row[headerMap.clubPathDeg.index]) : null,
+      faceAngleDeg:
+        headerMap.faceAngleDeg ? parseNumber(row[headerMap.faceAngleDeg.index]) : null,
+      faceToPathDeg:
+        headerMap.faceToPathDeg ? parseNumber(row[headerMap.faceToPathDeg.index]) : null,
       notes: headerMap.notes ? row[headerMap.notes.index]?.trim() || null : null,
       ...(sourceUnits ? { sourceUnits } : {}),
     };

@@ -88,42 +88,42 @@ export const UKER: UkeRad[] = [
   [38, "2026-09-14", "TURN", "Turneringsuke", ""],
   [39, "2026-09-21", "TURN", "Turneringsuke", ""],
   [40, "2026-09-28", "TURN", "Ferieuke", "Høstferie"],
-  [41, "2026-10-05", "TURN", "Turneringsuke", ""],
-  [42, "2026-10-12", "TURN", "Avslutningsuke", "Banen stenger — TURN avsluttes"],
+  [41, "2026-10-05", "TURN", "Turneringsuke", "Siste ordinære uke før banen stenger — ingen turnering registrert i AK Golf HQs database for denne uka"],
+  [42, "2026-10-12", "TURN", "Avslutningsuke", "TURN → test/GRUNN. Mandag/onsdag IUP-jobbing på skolen i stedet for ordinær mal, torsdag 15.10 testsamling NGF Oslo, fredag 16.10 fysisk test"],
   [43, "2026-10-19", "TEST", "Testuke", "Testuke — IUP-baseline"],
-  [44, "2026-10-26", "GRUNN", "Utviklingsuke", "GRUNN start — ny teknikk"],
-  [45, "2026-11-02", "GRUNN", "Utviklingsuke", ""],
-  [46, "2026-11-09", "GRUNN", "Utviklingsuke", ""],
-  [47, "2026-11-16", "GRUNN", "Utviklingsuke", ""],
-  [48, "2026-11-23", "GRUNN", "Utviklingsuke", ""],
-  [49, "2026-11-30", "GRUNN", "Utviklingsuke", ""],
-  [50, "2026-12-07", "GRUNN", "Utviklingsuke", ""],
-  [51, "2026-12-14", "GRUNN", "Utviklingsuke", ""],
+  [44, "2026-10-26", "GRUNN", "Utviklingsuke", "GRUNN start — ny teknikk, innendørs. Fredag 1 av 4"],
+  [45, "2026-11-02", "GRUNN", "Utviklingsuke", "Fredag 2 av 4"],
+  [46, "2026-11-09", "GRUNN", "Utviklingsuke", "Fredag 3 av 4"],
+  [47, "2026-11-16", "GRUNN", "Utviklingsuke", "Fredag 4 av 4 — hospitering i annen idrett i stedet for teknisk trening"],
+  [48, "2026-11-23", "GRUNN", "Utviklingsuke", "Fredag 1 av 4 (ny runde) — fys-test fredag 27.11 i stedet for teknisk trening"],
+  [49, "2026-11-30", "GRUNN", "Utviklingsuke", "Fredag 2 av 4"],
+  [50, "2026-12-07", "GRUNN", "Utviklingsuke", "Terminprøver/halvårsvurdering. Fredag 3 av 4"],
+  [51, "2026-12-14", "GRUNN", "Utviklingsuke", "Fredag 4 av 4 — hospitering. Ingen ny teknikk rett før ferien"],
   [52, "2026-12-21", "GRUNN", "Ferieuke", "Juleferie"],
   [53, "2026-12-28", "GRUNN", "Ferieuke", "Juleferie"],
-  [1, "2027-01-04", "GRUNN", "Samlingsuke", "WANG fellessamling med Oslo"],
-  [2, "2027-01-11", "GRUNN", "Utviklingsuke", ""],
-  [3, "2027-01-18", "GRUNN", "Utviklingsuke", ""],
-  [4, "2027-01-25", "GRUNN", "Utviklingsuke", ""],
-  [5, "2027-02-01", "GRUNN", "Utviklingsuke", ""],
-  [6, "2027-02-08", "GRUNN", "Utviklingsuke", "Intern teknisk sjekk"],
-  [7, "2027-02-15", "GRUNN", "Samlingsuke", "WANG fellessamling med Oslo"],
+  [1, "2027-01-04", "GRUNN", "Utviklingsuke", "Fys-test fredag 08.01 — fredag 1 av 4"],
+  [2, "2027-01-11", "GRUNN", "Utviklingsuke", "Fredag 2 av 4. Avreise Alicante i helgen 16.–17.01"],
+  [3, "2027-01-18", "GRUNN", "Samlingsuke", "WANG-fellessamling (Alicante, 16.–30.01, 14 dager) — ingen ordinære GFGK-økter"],
+  [4, "2027-01-25", "GRUNN", "Samlingsuke", "WANG-fellessamling (Alicante) — hjemreise helgen 30.–31.01"],
+  [5, "2027-02-01", "GRUNN", "Utviklingsuke", "Full teknisk trening"],
+  [6, "2027-02-08", "GRUNN", "Utviklingsuke", "Intern teknisk sjekk 12.02 — erstatter ordinær økt"],
+  [7, "2027-02-15", "GRUNN", "Utviklingsuke", "Ingen samling denne uka (rettet 22.09.2026). Fys-test fredag 19.02"],
   [8, "2027-02-22", "GRUNN", "Ferieuke", "Vinterferie"],
   [9, "2027-03-01", "GRUNN", "Utviklingsuke", ""],
   [10, "2027-03-08", "GRUNN", "Avslutningsuke", "Test og IUP-sjekk"],
   [11, "2027-03-15", "SPES", "Overgangsuke", "SPES start — teknikk til slag"],
   [12, "2027-03-22", "SPES", "Ferieuke", "Påskeferie"],
-  [13, "2027-03-29", "SPES", "Utviklingsuke", ""],
+  [13, "2027-03-29", "SPES", "Utviklingsuke", "Fortsatt inne — banen åpner uke 14. Fys-test fredag 02.04 i stedet for ordinær SPES-mal"],
   [14, "2027-04-05", "SPES", "Utviklingsuke", "Ute på GFGK"],
   [15, "2027-04-12", "SPES", "Utviklingsuke", ""],
   [16, "2027-04-19", "SPES", "Avslutningsuke", "Kalibrering fullført"],
   [17, "2027-04-26", "TURN", "Pre-turnering", "TURN start"],
-  [18, "2027-05-03", "TURN", "Turneringsuke", "Kr. himmelfart 6. mai — fri to/fre"],
-  [19, "2027-05-10", "TURN", "Turneringsuke", ""],
+  [18, "2027-05-03", "TURN", "Turneringsuke", "Kristi himmelfartsdag 6. mai — fri to/fre"],
+  [19, "2027-05-10", "TURN", "Turneringsuke", "VG2 tverrfaglig eksamen denne uka — eksamen (hverdager) og turnering (helg) krasjer ikke"],
   [20, "2027-05-17", "TURN", "Turneringsuke", "17. mai — fri mandag"],
-  [21, "2027-05-24", "TURN", "Turneringsuke", ""],
-  [22, "2027-05-31", "TURN", "Turneringsuke", ""],
-  [23, "2027-06-07", "TURN", "Turneringsuke", ""],
+  [21, "2027-05-24", "TURN", "Turneringsuke", "Eksamensperiode starter, alle tre trinn — ingen fellesøkter for elever i eksamen. Krasjer ikke med turnering (hverdager vs. helg)"],
+  [22, "2027-05-31", "TURN", "Turneringsuke", "Eksamensperioden fortsetter — krasjer ikke med turnering"],
+  [23, "2027-06-07", "TURN", "Turneringsuke", "Fys-test fredag 11.06 — etter eksamen og etter (ikke før) Lag-NM Junior samme uke (utkast)"],
   [24, "2027-06-14", "TURN", "Avslutningsuke", "Sesongavslutning og IUP"],
 ];
 
@@ -731,14 +731,14 @@ export const MND: MndRad[] = [
   ["August 2026", "TURN", "Sesongform: siste sommerturneringer mens formen er på topp. NGF-testperioden starter.", ["Skolestart uke 34", "NGF/Team Norway-tester fra uke 35"]],
   ["September", "TURN", "Turneringsuker med vedlikeholdstrening — restitusjon og mental gjennomgang mellom starter.", ["Tester avsluttes uke 36", "Turneringshelger (terminliste)"]],
   ["Oktober", "TURN", "Sommersesongen avsluttes og banen stenger. Testuke 43 setter IUP-baseline før vinteren.", ["Høstferie uke 40", "Testuke og IUP-samtaler uke 43"]],
-  ["November", "GRUNN", "GRUNN start: bygge ny teknikk innendørs — kropp og arm før ball. Tung FYS-blokk.", ["Treningslokalet: nett, putting, TrackMan"]],
-  ["Desember", "GRUNN", "Full teknisk trening fram til jul. Egentreningsplan for ferien.", ["Juleferie uke 52–53"]],
-  ["Januar 2027", "GRUNN", "Fellessamling med WANG Oslo — deretter full teknisk trening.", ["WANG-samling 4.–10. jan"]],
-  ["Februar", "GRUNN", "Teknisk sjekk uke 6 og ny fellessamling uke 7 før vinterferien.", ["Intern teknisk sjekk uke 6", "Samling 15.–21. feb · vinterferie uke 8"]],
+  ["November", "GRUNN", "GRUNN start: bygge ny teknikk innendørs — kropp og arm før ball. Tung FYS-blokk.", ["Treningslokalet: nett, putting, TrackMan", "Hospitering annen idrett uke 47", "Fys-test 27.11"]],
+  ["Desember", "GRUNN", "Full teknisk trening fram til jul. Egentreningsplan for ferien.", ["Hospitering annen idrett uke 51", "Juleferie uke 52–53"]],
+  ["Januar 2027", "GRUNN", "Full teknisk trening til fellessamlingen i Alicante 16.–30. januar.", ["Fys-test 08.01", "WANG-fellessamling Alicante 16.–30. jan (14 dager)"]],
+  ["Februar", "GRUNN", "Teknisk sjekk uke 6, ingen samling denne måneden.", ["Intern teknisk sjekk uke 6", "Fys-test 19.02 · vinterferie uke 8"]],
   ["Mars", "SPES", "GRUNN avsluttes med test og IUP-sjekk uke 10. SPES fra uke 11: teknikk skal bli slag.", ["Test og IUP uke 10", "Påskeferie uke 12"]],
-  ["April", "SPES", "Ut på GFGK fra ca. 5. april — overføring til bane og kalibrering av avstander.", ["Utesesongen åpner", "Kalibrering fullført uke 16"]],
-  ["Mai", "TURN", "Turneringssesong: Norgescup, Østlandstour og Srixon Tour. Kjente slag, ingen ny teknikk.", ["Fri Kr. himmelfart 6. mai og 17. mai"]],
-  ["Juni", "TURN", "Turneringstopp og evaluering — sesong- og skoleårsavslutning uke 24.", ["NM-perioden", "IUP-evaluering og avslutning uke 24"]],
+  ["April", "SPES", "Ut på GFGK fra ca. 5. april — overføring til bane og kalibrering av avstander.", ["Fys-test 02.04", "Utesesongen åpner", "Kalibrering fullført uke 16"]],
+  ["Mai", "TURN", "Turneringssesong: Norgescup, Østlandstour og Srixon Tour. Kjente slag, ingen ny teknikk.", ["Fri Kristi himmelfartsdag 6. mai og 17. mai", "VG3 skriftlig eksamen uke 20"]],
+  ["Juni", "TURN", "Turneringstopp og evaluering — sesong- og skoleårsavslutning uke 24.", ["Fys-test 11.06", "Eksamensperiode uke 21–22", "IUP-evaluering og avslutning uke 24"]],
 ];
 
 // ---- Kompetansemål (Toppidrett + Kroppsøving per trinn) -------------------
@@ -806,59 +806,59 @@ export const KM: Record<Trinn, string[]> = {
   VG1: [
     "vise og utvikle ferdigheter i idretten og gjennomføre systematisk og målrettet trening",
     "dokumentere og evaluere en valgt treningsperiode",
-    "kjenne til ulike treningsformer, metoder, tester og øvelser som er relevante for ferdighetsutvikling i idretten, og bruke disse til å utvikle egne ferdigheter",
+    "kjenne til ulike treningsformer, metoder, tester og øvelser som er relevant for ferdighetsutvikling i idretten og kunne bruke disse for å utvikle sin egen ferdighet",
     "gjennomføre basistrening og skadeforebyggende tiltak som gir grunnlag for økt treningsbelastning",
     "forstå forholdet mellom totalbelastning og restitusjon",
     "beskrive mentale forberedelser til trening og konkurranse",
     "bruke lyst- og lekbetonte oppvarmingsøvelser, aktiviteter, treningsformer og konkurranser for å stimulere til økt motivasjon",
-    "vise god samhandling og respektfull treningsatferd",
+    "vise god samhandling og respektfull treningsatferd som bidrar til aktivitetsglede og et godt lærings- og utviklingsmiljø",
   ],
   VG2: [
-    "vise og videreutvikle ferdigheter som er sentrale for å prestere i konkurranser i idretten",
-    "gjennomføre systematisk og målrettet trening, og dokumentere og analysere resultatet av denne treningen",
-    "gjøre rede for og gjennomføre relevante tester",
-    "utvikle basisegenskaper og integrere skadeforebyggende tiltak i de daglige treningsrutinene",
-    "gjøre rede for hvordan økt treningsmengde og totalbelastning stiller krav til organisering, planlegging, restitusjon og ernæring",
-    "beskrive et utviklingsløp fra eget utgangspunkt og til ønsket nivå på kort og lang sikt",
-    "reflektere over egne mentale behov og rutiner før, under og etter trening og i forbindelse med konkurranse",
-    "gjøre rede for og bruke lyst- og lekbetonte aktiviteter, øvelser, treningsformer og konkurranser som kan stimulere til økt motivasjon",
-    "utforske hvordan aktiviteter, øvelser, trening og konkurranse påvirker motivasjon og ferdighetsutvikling",
-    "opptre på en måte som bidrar til et godt lærings- og utviklingsmiljø",
+    "Vise og videreutvikle ferdigheter som er sentrale for å prestere i konkurranser i idretten",
+    "Gjennomføre systematisk og målrettet trening, og dokumentere og analysere resultatet av denne treningen",
+    "Gjøre rede for og gjennomføre relevante tester",
+    "Utvikle basisegenskaper og integrere skadeforebyggende tiltak i de daglige treningsrutinene",
+    "Gjøre rede for hvordan økt treningsmengde og totalbelastning stiller krav til organisering, planlegging, restitusjon og ernæring",
+    "Beskrive et utviklingsløp fra eget utgangspunkt og til ønsket nivå på kort og lang sikt",
+    "Reflektere over egne mentale behov og rutiner før, under og etter trening og i forbindelse med konkurranse",
+    "Gjøre rede for og bruke lyst- og lekbetonte aktiviteter, øvelser, treningsformer og konkurranser som kan stimulere til økt motivasjon",
+    "Utforske hvordan aktiviteter, øvelser, trening og konkurranse påvirker motivasjon og ferdighetsutvikling",
+    "Opptre på en måte som bidrar til et godt lærings- og utviklingsmiljø",
   ],
   VG3: [
-    "vise og utvikle ferdigheter som kan forbedre prestasjonen i konkurransesituasjoner",
-    "dokumentere, analysere og reflektere over gjennomført trening i lys av egne mål og resultater",
-    "utarbeide planer og gjennomføre langsiktig, systematisk og målrettet trening i idretten med utgangspunkt i idrettens krav og egen kapasitet",
-    "videreutvikle basisegenskaper som er sentrale for ferdighetsutvikling",
-    "anvende skadeforebyggende øvelser og vurdere hvordan disse kan integreres i trening og forberedelse til konkurranse",
-    "gjennomføre mentale forberedelser og mental trening, og reflektere over hvordan dette kan påvirke ferdighetsutvikling",
-    "utforske og reflektere over hvordan aktiviteter, øvelser, trening og konkurranse påvirker motivasjon og ferdighetsutvikling",
-    "opptre på en måte som fremmer treningsarbeidet og samhandlingen, og som bidrar til et trygt, positivt og godt utviklingsmiljø",
+    "Vise og utvikle ferdigheter som kan forbedre prestasjonen i konkurransesituasjoner",
+    "Dokumentere, analysere og reflektere over gjennomført trening i lys av egne mål og resultater",
+    "Utarbeide planer og gjennomføre langsiktig, systematisk og målrettet trening i idretten med utgangspunkt i idrettens krav og egen kapasitet",
+    "Videreutvikle basisegenskaper som er sentrale for ferdighetsutvikling",
+    "Anvende skadeforebyggende øvelser og vurdere hvordan disse kan integreres i trening og forberedelse til konkurranse",
+    "Gjennomføre mentale forberedelser og mental trening, og reflektere over hvordan dette kan påvirke ferdighetsutvikling",
+    "Utforske og reflektere over hvordan aktiviteter, øvelser, trening og konkurranse påvirker motivasjon og ferdighetsutvikling",
+    "Opptre på en måte som fremmer treningsarbeidet og samhandlingen, og som bidrar til et trygt, positivt og godt utviklingsmiljø",
   ],
 };
 
 export const KM_KRO: Record<Trinn, string[]> = {
   VG1: [
-    "trene på og skape nye varianter av lek, bevegelsesaktivitet og dans sammen med andre",
-    "planlegge og gjennomføre metoder for øvelse og trening for å oppnå individuelle mål, også når man ikke fullt ut kan delta i aktiviteten",
-    "bruke egne ferdigheter og kunnskaper til å samarbeide og bidra til å gjøre andre gode i aktivitet og samspill",
-    "forebygge skader ved bevegelsesaktiviteter og utføre grunnleggende førstehjelp",
-    "bruke kart og digitale verktøy på en måte som sikrer trygg ferdsel for seg selv og for andre",
-    "bruke lokale tradisjoner for ferdsel i naturen under vekslende årstider",
+    "Trene på og skape nye varianter av lek, bevegelsesaktivitet og dans sammen med andre",
+    "Planlegge og gjennomføre metoder for øvelse og trening for å oppnå individuelle mål, også når man ikke fullt ut kan delta i aktiviteten",
+    "Bruke egne ferdigheter og kunnskaper til å samarbeide og bidra til å gjøre andre gode i aktivitet og samspill",
+    "Forebygge skader ved bevegelsesaktiviteter og utføre grunnleggende førstehjelp",
+    "Bruke kart og digitale verktøy på en måte som sikrer trygg ferdsel for seg selv og for andre",
+    "Bruke lokale tradisjoner for ferdsel i naturen under vekslende årstider",
   ],
   VG2: [
-    "gjennomføre leker, idrettsaktiviteter og andre bevegelsesaktiviteter og forstå hvordan ulike aktiviteter påvirker og utvikler koordinasjon, styrke, utholdenhet og bevegelighet",
-    "utføre trening på egen hånd og reflektere over hvordan fysisk aktivitet kan fremme god psykisk og fysisk helse og bidra til en helsefremmende livsstil etter avsluttet skolegang og i framtidig arbeidsliv",
-    "praktisere regler for å delta i ulike bevegelsesaktiviteter og medvirke til læring for andre",
-    "planlegge og gjennomføre uteaktiviteter til ulike årstider, der formålet er å ha gode naturopplevelser",
-    "praktisere bærekraftig ferdsel i naturen og gjennomføre friluftslivsaktiviteter i nærområdet",
+    "Gjennomføre leker, idrettsaktiviteter og andre bevegelsesaktiviteter og forstå hvordan ulike aktiviteter påvirker og utvikler koordinasjon, styrke, utholdenhet og bevegelighet",
+    "Utføre trening på egen hånd og reflektere over hvordan fysisk aktivitet kan fremme god psykisk og fysisk helse og bidra til en helsefremmende livsstil etter avsluttet skolegang og i framtidig arbeidsliv",
+    "Praktisere regler for å delta i ulike bevegelsesaktiviteter og medvirke til læring for andre",
+    "Planlegge og gjennomføre uteaktiviteter til ulike årstider, der formålet er å ha gode naturopplevelser",
+    "Praktisere bærekraftig ferdsel i naturen og gjennomføre friluftslivsaktiviteter i nærområdet",
   ],
   VG3: [
-    "øve på og utvikle kunnskaper og ferdigheter i ulike bevegelsesaktiviteter ut fra egne forutsetninger",
-    "planlegge, gjennomføre og vurdere egentrening og forklare hvordan dette kan medvirke til en fysisk aktiv og helsefremmende livsstil etter avsluttet skolegang",
-    "beskrive og drøfte sammenhenger mellom bevegelse, kropp, trening og helse i samfunnet",
-    "samarbeide om å løse praktiske oppgaver i et læringsfellesskap og ut fra øvelse og aktivitet reflektere over hvordan egen medvirkning kan påvirke andre",
-    "planlegge og gjennomføre uteaktiviteter og friluftslivsaktiviteter i nærområdet",
+    "Øve på og utvikle kunnskaper og ferdigheter i ulike bevegelsesaktiviteter ut fra egne forutsetninger",
+    "Planlegge, gjennomføre og vurdere egentrening og forklare hvordan dette kan medvirke til en fysisk aktiv og helsefremmende livsstil etter avsluttet skolegang",
+    "Beskrive og drøfte sammenhenger mellom bevegelse, kropp, trening og helse i samfunnet",
+    "Samarbeide om å løse praktiske oppgaver i et læringsfellesskap og ut fra øvelse og aktivitet reflektere over hvordan egen medvirkning kan påvirke andre",
+    "Planlegge og gjennomføre uteaktiviteter og friluftslivsaktiviteter i nærområdet",
   ],
 };
 
@@ -1076,7 +1076,7 @@ export const SKOLERUTE: [string, string, string][] = [
   ["Januar", "Første skoledag: mandag 4. januar", "Uke 2"],
   ["Februar", "Vinterferie", "Uke 8"],
   ["Mars", "Påskeferie", "Uke 12–13"],
-  ["Mai", "Kristi himmelfart 6. mai · 17. mai · 2. pinsedag", "Uke 18 og 20"],
+  ["Mai", "Kristi himmelfartsdag 6. mai · 17. mai · 2. pinsedag", "Uke 18 og 20"],
   ["Juni", "Siste skoledag: fredag 18. juni", "Uke 25"],
 ];
 
@@ -1161,7 +1161,14 @@ export function byggEvents(): Record<string, KalenderHendelse[]> {
       continue;
     }
     if (type === "Samlingsuke") {
-      add(mandag, { type: "okt", label: "Fellessamling med Oslo · 7 dager" });
+      add(mandag, { type: "okt", label: "Fellessamling i Alicante · ingen ordinære GFGK-økter" });
+      continue;
+    }
+    if (uke === 42) {
+      add(dagIso(mandag, 0), { type: "prove", label: "IUP-jobbing (skolen) i stedet for ordinær økt" });
+      add(dagIso(mandag, 2), { type: "prove", label: "IUP-jobbing (skolen) i stedet for ordinær økt" });
+      add(dagIso(mandag, 3), { type: "hendelse", label: "Testsamling NGF Oslo · Team Norway-tester", time: "08:00" });
+      add(dagIso(mandag, 4), { type: "prove", label: "Fysisk test", time: "08:00" });
       continue;
     }
     let dager = [0, 2, 4];
@@ -1176,9 +1183,18 @@ export function byggEvents(): Record<string, KalenderHendelse[]> {
     if (uke === 43) add(mandag, { type: "prove", label: "Testuke — IUP-baseline" });
     if (uke === 6) add(dagIso(mandag, 4), { type: "prove", label: "Intern teknisk sjekk" });
     if (uke === 10) add(dagIso(mandag, 4), { type: "prove", label: "Test og IUP-sjekk" });
-    if (uke === 18) add(dagIso(mandag, 3), { type: "hendelse", label: "Fri · Kr. himmelfart" });
+    if (uke === 18) add(dagIso(mandag, 3), { type: "hendelse", label: "Fri · Kristi himmelfartsdag" });
     if (uke === 20) add(mandag, { type: "hendelse", label: "17. mai — fri" });
     if (uke === 24) add(dagIso(mandag, 4), { type: "hendelse", label: "Sesong- og skoleårsavslutning" });
+    // Fysiske tester — cirka hver 6. uke, lagt inn av Anders 22.09.2026.
+    if (uke === 48) add(dagIso(mandag, 4), { type: "prove", label: "Fysisk test" });
+    if (uke === 1) add(dagIso(mandag, 4), { type: "prove", label: "Fysisk test" });
+    if (uke === 7) add(dagIso(mandag, 4), { type: "prove", label: "Fysisk test" });
+    if (uke === 13) add(dagIso(mandag, 4), { type: "prove", label: "Fysisk test" });
+    if (uke === 23) add(dagIso(mandag, 4), { type: "prove", label: "Fysisk test" });
+    // Hospitering i annen idrett — hver 4. fredag i GRUNN fram til Alicante (Anders 22.09.2026).
+    if (uke === 47) add(dagIso(mandag, 4), { type: "hendelse", label: "Hospitering i annen idrett" });
+    if (uke === 51) add(dagIso(mandag, 4), { type: "hendelse", label: "Hospitering i annen idrett" });
   }
 
   // Skolens egne datoer — skolerute og foreldremøter (skolens PDF-er 2026/27).
@@ -1200,6 +1216,7 @@ export function byggEvents(): Record<string, KalenderHendelse[]> {
     ["2027-03-09", "hendelse", "Foreldremøte VG2 kl. 17:00"],
     ["2027-03-16", "hendelse", "Foreldremøte VG1 kl. 17:00"],
     ["2027-03-22", "skole", "Påskeferie"],
+    ["2027-05-17", "prove", "VG3 skriftlig eksamen (sentralt gitt), denne uka"],
     ["2027-05-24", "prove", "Eksamen uke 21–22"],
     ["2027-06-18", "skole", "Siste skoledag"],
   ];
@@ -1208,6 +1225,13 @@ export function byggEvents(): Record<string, KalenderHendelse[]> {
   // Turneringer høst 2026 (Olyo Juniortour KP3 + Østlandstour 9–11).
   // Vår 2027 (Norgescup/Østlandstour vår/Srixon Tour/NM) MANGLER fortsatt —
   // se src/lib/gruppe-kalender/wang-turneringer.ts, neste steg i innleggingen.
+  // Uke 34 og 39 hentet fra AK Golf HQs turneringsdatabase 22.09.2026 (ikke NGFs
+  // terminliste, som bare dekker våren 2027) — verifiser mot GolfBox før publisering.
+  add("2026-08-19", { type: "prove", label: "Region Tour 5 — kval til Garmin Norgescup 6" });
+  add("2026-08-20", { type: "prove", label: "Torsdagsturneringen · Newey's Trophy/Per Teigens pokal, sponset av Olyo" });
+  add("2026-09-26", { type: "prove", label: "Srixon Tour Finale · Stavanger GK" });
+  add("2026-09-27", { type: "prove", label: "Srixon Tour Finale · Stavanger GK" });
+  add("2026-09-28", { type: "prove", label: "Srixon Tour Finale · Stavanger GK (strekker inn i høstferieuka)" });
   add("2026-09-05", { type: "prove", label: "Olyo KP3 · Mjøsen GK · frist 2. sep" });
   add("2026-09-19", { type: "prove", label: "Olyo KP3 · Skjeberg GK · frist 16. sep" });
   add("2026-09-20", { type: "prove", label: "Olyo · Gamle Fredrikstad GK" });

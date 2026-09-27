@@ -200,7 +200,7 @@ enum SubscriptionStatus {
 
 // Program-tilhørighet for spillere.
 // PLATFORM_ONLY = selvbetjent bruker uten coachrelasjon (GDPR-skille).
-// Alle andre program = synlig i CoachHQ for tildelt coach.
+// Alle andre program = synlig i AgencyOS for tildelt coach.
 enum PlayerProgram {
   WANG_TOPPIDRETT // WANG Toppidrett Fredrikstad
   WANG_UNG // WANG Ung Fredrikstad
@@ -586,9 +586,12 @@ model User {
   rounds               Round[]
   gameplanHull         GameplanHull[]
   gameplanSoner        GameplanSone[]
-  testResults          TestResult[]
-  testResultsAsWitness TestResult[]      @relation("TestWitness")
-  testSessions         TestSession[]
+  testResults           TestResult[]
+  testResultsAsWitness  TestResult[]          @relation("TestWitness")
+  testResultsRecorded   TestResult[]          @relation("TestResultRecordedBy")
+  testSessions          TestSession[]
+  testDaysAsCoach       TestDay[]             @relation("TestDayCoach")
+  testDayParticipations TestDayParticipant[]  @relation("TestDayPlayer")
   testAssignments      TestAssignment[]  @relation("PlayerTestAssignments")
   coachTestAssignments TestAssignment[]  @relation("CoachTestAssignments")
   trackManSessions     TrackManSession[]
@@ -624,7 +627,7 @@ model User {
   planChangeRequestsAsCoach  PlanChangeRequest[]     @relation("PlanChangeCoach")
   tournamentPreparations     TournamentPreparation[]
 
-  // CoachHQ-relasjoner (Fase 2.1)
+  // AgencyOS-relasjoner (Fase 2.1)
   tournamentResults TournamentResult[]
   coachedGroups     Group[]                   @relation("CoachOfGroup")
   groupMemberships  GroupMember[]
@@ -753,7 +756,7 @@ model User {
   trainingLogs TrainingLog[]
 
   // Performance: hot path — filtrere aktive spillere/coacher
-  // (PlayerHQ-lister, CoachHQ-portefølje, talent-tracking).
+  // (PlayerHQ-lister, AgencyOS-portefølje, talent-tracking).
   @@index([role, deletedAt])
   // Valgt coach (G2): oppslag «hvilke spillere har denne coachen som valgt».
   @@index([primaryCoachId])
@@ -1396,6 +1399,9 @@ model ExerciseDefinition {
   durationMin     Int?
   createdBy       String?
   parametersJson  Json?
+  // Utfordringer (DrillChallenge): hvilken vei scoren rangeres for denne
+  // øvelsen. null = ikke definert — utfordringen velger selv (higherIsBetter).
+  higherIsBetter  Boolean?
 
   // Nivå-differensiering (NGF-skala + HCP-range)
   skillArea   SkillArea?
@@ -1438,6 +1444,14 @@ model ExerciseDefinition {
   visibility   ExerciseVisibility @default(PRIVATE)
   imageUrl     String?            @map("image_url") // Supabase Storage URL for bilde/screenshot
   muscleGroups String[]           @default([]) @map("muscle_groups") // ["glutes","hamstrings",...]
+
+  // AK-formel v2-aksene på selve øvelsen (AG-11b, 23.09.2026) — akslene lå
+  // tidligere kun på økten/innslaget (SessionDrill, PositionTask), ikke på
+  // øvelsen selv. Gjenbruker eksisterende enums, ingen nye typer.
+  omraadeKode Omraade?
+  motorikk    Motorikk?
+  belastning  Belastning?
+  press       Press?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1836,11 +1850,14 @@ model PuttDetail {
 // tapper-flaten). Plain planSessionId uten @relation — additivt og isolert,
 // samme mønster som trainingSessionV2Id på Booking.
 model SessionBallLog {
-  id            String   @id @default(cuid())
-  planSessionId String
-  club          String
-  count         Int      @default(0)
-  updatedAt     DateTime @default(now()) @updatedAt
+  id             String   @id @default(cuid())
+  planSessionId  String
+  club           String
+  count          Int      @default(0)
+  area           String?
+  category       String?
+  repetitionType String?
+  updatedAt      DateTime @default(now()) @updatedAt
 
   @@unique([planSessionId, club])
   @@index([planSessionId])
@@ -1895,6 +1912,7 @@ model TestDefinition {
   sessions    TestSession[]
   assignments TestAssignment[]
   linkedGoals Goal[]
+  testDays    TestDay[]
 
   @@index([createdById, isCustom])
   @@index([visibility, isCustom])
@@ -1932,14 +1950,26 @@ model TestResult {
   witnessStatus   TestWitnessStatus   @default(PENDING)
   attestationMode TestAttestationMode @default(NONE)
   createdAt       DateTime            @default(now())
+  // TN-trenerføring (2026-09-14, additiv — se
+  // docs/design-audit/team-norway-testdag-modellforslag-2026-09-14.md).
+  // DDL: scripts/add-tn-testdag-2026-09-17.ts (idempotent, kjøres mot
+  // DIRECT_URL FØR denne grenen merges — kolonnen finnes ikke i basen før da).
+  // Null = spilleren registrerte selv (bakoverkompatibelt for all eksisterende
+  // data). Satt = coachen som førte testen PÅ VEGNE AV spilleren — `userId`
+  // er ALLTID spilleren/subjektet, aldri coachen.
+  recordedById    String?
 
-  user    User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  test    TestDefinition @relation(fields: [testId], references: [id])
-  shots   TestShot[]
-  witness User?          @relation("TestWitness", fields: [witnessUserId], references: [id], onDelete: SetNull)
+  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  test       TestDefinition @relation(fields: [testId], references: [id])
+  shots      TestShot[]
+  witness    User?          @relation("TestWitness", fields: [witnessUserId], references: [id], onDelete: SetNull)
+  recordedBy User?          @relation("TestResultRecordedBy", fields: [recordedById], references: [id], onDelete: SetNull)
+
+  testDayParticipant TestDayParticipant?
 
   @@index([userId, takenAt])
   @@index([witnessUserId])
+  @@index([recordedById])
   @@map("test_results")
 }
 
@@ -1987,6 +2017,8 @@ model TestSession {
   user User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   test TestDefinition @relation(fields: [testId], references: [id])
 
+  testDayParticipant TestDayParticipant?
+
   @@index([userId, status])
   @@index([testId, status])
   @@map("test_sessions")
@@ -2022,15 +2054,92 @@ model TestAssignment {
   @@map("test_assignments")
 }
 
+/// Team Norway testdag (2026-09-14, additiv). Se docs/design-audit/team-
+/// norway-testdag-modellforslag-2026-09-14.md for begrunnelse og reisen den
+/// dekker. DDL: scripts/add-tn-testdag-2026-09-17.ts (idempotent, kjøres mot
+/// DIRECT_URL FØR denne grenen merges — tabellene finnes ikke i basen før da,
+/// og fire kodestier spør allerede mot dem). Kø-/
+/// statuslag over EKSISTERENDE TestSession/TestResult — ingen parallell
+/// resultatmodell. `testDefinitionId` peker på den ALLEREDE OPPRETTEDE,
+/// versjonerte `TestDefinition`-raden (scoringRule = TN_VERSION på
+/// opprettelsestidspunktet) — ikke den mutable live-katalogen — slik at en
+/// testdag beholder stabil protokollversjon selv om katalogen endres senere.
+enum TestDayStatus {
+  PLANNED
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum TestDayParticipantStatus {
+  PENDING
+  DONE
+  SKIPPED
+  ABSENT
+}
+
+model TestDay {
+  id               String        @id @default(cuid())
+  groupId          String
+  coachId          String
+  title            String
+  location         String?
+  scheduledAt      DateTime
+  testDefinitionId String
+  status           TestDayStatus @default(PLANNED)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @default(now()) @updatedAt
+
+  group          Group                @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  coach          User                 @relation("TestDayCoach", fields: [coachId], references: [id], onDelete: Cascade)
+  testDefinition TestDefinition       @relation(fields: [testDefinitionId], references: [id], onDelete: Cascade)
+  participants   TestDayParticipant[]
+
+  @@index([groupId, status])
+  @@index([coachId])
+  @@map("test_days")
+}
+
+model TestDayParticipant {
+  id        String                   @id @default(cuid())
+  testDayId String
+  playerId  String
+  // Rekkefølge i køen ved opprettelse — revisjonssikker sammen med
+  // @@unique([testDayId, order]) under.
+  order     Int
+  status    TestDayParticipantStatus @default(PENDING)
+  // Peker på TestSession.id mens forsøket pågår, TestResult.id når
+  // fullført — samme rader som selve testføringen (egen- eller trenerført)
+  // skriver. @unique på begge gjør at én økt/ett resultat aldri kan
+  // gjenbrukes av to deltakerrader.
+  sessionId String?                  @unique
+  resultId  String?                  @unique
+  createdAt DateTime                 @default(now())
+  updatedAt DateTime                 @default(now()) @updatedAt
+
+  testDay TestDay      @relation(fields: [testDayId], references: [id], onDelete: Cascade)
+  player  User         @relation("TestDayPlayer", fields: [playerId], references: [id], onDelete: Cascade)
+  session TestSession? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+  result  TestResult?  @relation(fields: [resultId], references: [id], onDelete: SetNull)
+
+  @@unique([testDayId, playerId])
+  @@unique([testDayId, order])
+  @@index([testDayId, status])
+  @@index([playerId])
+  @@map("test_day_participants")
+}
+
 model TrackManSession {
-  id          String               @id @default(cuid())
-  userId      String
-  recordedAt  DateTime
-  source      String // "csv-import" | "api"
-  shotCount   Int                  @default(0)
-  rawJson     Json?
-  environment TrackManEnvironment?
-  createdAt   DateTime             @default(now())
+  id               String               @id @default(cuid())
+  userId           String
+  recordedAt       DateTime
+  source           String // "csv-import" | "api"
+  shotCount        Int                  @default(0)
+  rawJson          Json?
+  environment      TrackManEnvironment?
+  targetLineStatus String               @default("UNKNOWN") // UNKNOWN | CONFIRMED | NOT_ALIGNED (brukerbekreftet)
+  targetDistanceM  Float? // valgfritt øktmål i meter; varierer målet per slag, bruk TrackManShot.targetDistanceM
+  createdAt        DateTime             @default(now())
 
   user  User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   shots TrackManShot[]
@@ -2425,7 +2534,7 @@ model WinbackTilbud {
 // Program-enrollering — kobler spiller til program + coach.
 // Én rad per (spiller × program × periode). Historikk beholdes ved endedAt.
 // En spiller kan ha flere aktive enrolleringer simultant (mange-til-mange).
-// GDPR: PLATFORM_ONLY-enrolleringer har coachId = null og er usynlige i CoachHQ.
+// GDPR: PLATFORM_ONLY-enrolleringer har coachId = null og er usynlige i AgencyOS.
 model PlayerEnrollment {
   id         String        @id @default(cuid())
   userId     String
@@ -2543,6 +2652,9 @@ model DrillChallenge {
   endAt       DateTime?
   // ACTIVE | ENDED
   status      String    @default("ACTIVE")
+  // true = høyest score vinner (default). false = lavest vinner (f.eks. færrest putter).
+  // Låst av valgt øvelse (ExerciseDefinition.higherIsBetter) når den er satt.
+  higherIsBetter Boolean @default(true)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
@@ -2857,7 +2969,7 @@ model PushedCalendarEvent {
   @@map("pushed_calendar_events")
 }
 
-// ---------- CoachHQ-modeller (Fase 2.1) ----------
+// ---------- AgencyOS-modeller (Fase 2.1) ----------
 
 model Tournament {
   id        String    @id @default(cuid())
@@ -3216,6 +3328,7 @@ model SeasonPlan {
   user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   periodBlocks      PeriodBlock[]
   tournamentEntries TournamentEntry[]
+  weekPlans         WeekPlan[]
 
   @@unique([userId, year])
   @@index([userId])
@@ -3269,6 +3382,56 @@ model GroupPeriodBlock {
   @@index([groupId, startDate])
   @@map("group_period_blocks")
 }
+
+// Oppgave 2: Gjør uken til et reelt objekt (WeekPlan)
+enum WeekType {
+  UTVIKLING
+  VEDLIKEHOLD
+  TURNERING
+}
+
+enum WeekNote {
+  FERIE
+  TEST
+  SAMLING
+  EVALUERING
+  PRE_TURNERING
+  TEKNIKK_UKE
+}
+
+model WeekPlan {
+  id                 String     @id @default(cuid())
+  playerId           String
+  seasonPlanId       String?
+  isoYear            Int
+  weekNumber         Int
+  weekType           WeekType   @default(UTVIKLING)
+  notes              WeekNote[] @default([])
+  plannedHoursFys    Float?
+  plannedHoursTek    Float?
+  plannedHoursSlag   Float?
+  plannedHoursSpill  Float?
+  plannedHoursTurn   Float?
+  repTargetDry       Int?
+  repTargetLowSpeed  Int?
+  repTargetFullSpeed Int?
+  repTargetPutting   Int?
+  repTargetShortGame Int?
+  repetitionTargets  Json?
+  loadCeiling        Int?
+  customNotes        String?
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+
+  seasonPlan SeasonPlan? @relation(fields: [seasonPlanId], references: [id], onDelete: SetNull)
+
+  @@unique([playerId, isoYear, weekNumber])
+  @@index([playerId])
+  @@index([seasonPlanId])
+  @@index([isoYear, weekNumber])
+  @@map("week_plans")
+}
+
 
 // WANG-årsplan (Anders 2026-08-15): elevens EGNE fokusområder for én periode —
 // det andre sporet i årsplanen, avtalt med trener i IUP-samtalen.
@@ -3367,6 +3530,7 @@ model Group {
   coach     User?           @relation("CoachOfGroup", fields: [coachId], references: [id], onDelete: SetNull)
   members   GroupMember[]
   schedules GroupSchedule[]
+  testDays  TestDay[]
 
   @@index([coachId])
   @@map("groups")
@@ -5238,16 +5402,18 @@ model TrackManShot {
   club String // "7-jern" | "Driver" osv. (parsed fra CSV)
 
   // Ball-data
-  ballSpeed     Float? // mph
-  smashFactor   Float?
-  launchAngle   Float? // grader
-  spinRate      Float? // rpm
-  spinAxis      Float? // grader (sidespinn)
-  carryDistance Float? // meter
-  totalDistance Float? // meter
-  apexHeight    Float? // meter
-  landAngle     Float? // grader
-  side          Float? // meter (dispersion offline)
+  ballSpeed       Float? // mph
+  smashFactor     Float?
+  launchAngle     Float? // grader
+  spinRate        Float? // rpm
+  spinAxis        Float? // grader (sidespinn)
+  launchDirection Float? // grader horisontalt relativt til TrackMan-mållinjen
+  carryDistance   Float? // meter
+  totalDistance   Float? // meter
+  apexHeight      Float? // meter
+  landAngle       Float? // grader
+  side            Float? // meter (dispersion offline)
+  targetDistanceM Float? // meter; fra slagets CSV-felt eller manuelt øktmål
 
   // Klubb-data
   clubSpeed      Float? // mph
@@ -5798,6 +5964,28 @@ model DriftRutine {
   @@map("drift_rutiner")
 }
 
+/// Oppfølgingskøens «Løst»-status (AG-03b, beslutning 23.09.2026): eksplisitt,
+/// satt av coach med ett trykk — erstatter det tidligere Signal-baserte
+/// overstyringssporet (kind OPPFOLGING_STATUS), som glemte status etter sju
+/// dager og ikke visste hvem som satte den. Én aktiv sak per spiller.
+model FollowUpCase {
+  id     String @id @default(cuid())
+  userId String @unique
+
+  /// "risk" | "watch" | "check" | "ok" — matcher QueueStatus i
+  /// src/app/admin/queue/status.ts.
+  status       String
+  setById      String
+  setAt        DateTime  @default(now())
+  resolvedAt   DateTime?
+  resolvedById String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("follow_up_cases")
+}
+
 model KommandoChat {
   id        String   @id @default(cuid())
   userId    String
@@ -6319,6 +6507,12 @@ model WorkbenchSession {
   // Midlertidig sporingsfelt for idempotent backfill fra training_plan_sessions
   // (OW-3 fase 2). Fjernes i fase 6 når training_plan_sessions slettes.
   migrertFraTrainingPlanSessionId String? @unique
+
+  // Belastning og anstrengelse (sRPE, 26.09.2026):
+  // perceivedEffort: 1–10 (Borg CR-10 / Foster-skala)
+  // actualMinutes: faktisk gjennomført tid i minutter (hvis ulik durationMinutes)
+  perceivedEffort Int?
+  actualMinutes   Int?
 
   drills WorkbenchDrill[]
 

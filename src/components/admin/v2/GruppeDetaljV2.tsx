@@ -147,7 +147,7 @@ export function GruppeDetaljV2({
 
       <div className="grid grid-cols-2 sm:grid-cols-4" style={{ gap: 12 }}>
         {[
-          { l: "Medlemmer", v: String(data.antallMedlemmer), s: `${data.antallHjelpetrenere} hjelpecoach` },
+          { l: "Medlemmer", v: String(data.antallMedlemmer), s: `${data.antallHjelpetrenere} assist coach` },
           { l: "Snitt-HCP", v: data.snittHcp, s: undefined },
           { l: "Runder · 90 d", v: String(data.totalRunder), s: undefined },
           { l: "PRO-andel", v: `${data.proAndel} %`, s: undefined },
@@ -238,7 +238,7 @@ export function GruppeDetaljV2({
                   {m.navn}
                 </Link>
               }
-              sub={`${m.homeClub ?? "Klubb ukjent"} · ${m.erTrener ? "Trener" : m.erHjelpetrener ? "Hjelpecoach" : "Spiller"}${m.schoolYear ? ` · ${m.schoolYear}` : ""}`}
+              sub={`${m.homeClub ?? "Klubb ukjent"} · ${m.erTrener ? "Coach" : m.erHjelpetrener ? "Assist Coach" : "Spiller"}${m.schoolYear ? ` · ${m.schoolYear}` : ""}`}
               meta={`HCP ${fmtHcp(m.hcp)}`}
               trailing={<A.FjernMedlemButton groupId={data.id} userId={m.userId} navn={m.navn} />}
               chevron={false}

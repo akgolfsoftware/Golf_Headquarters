@@ -272,6 +272,11 @@ function SpillerSammendrag({ s }: { s: StallV2Player }) {
         <Link href={`/admin/spillere?profil=${s.id}`} style={{ display: "inline-flex", textDecoration: "none" }}>
           <CTAPill ghost>Se profil</CTAPill>
         </Link>
+        {/* PS-01 (beslutning 23.09.2026): full spillerprofil — runder, plan,
+            coaching-økter og mål — samme visning spilleren selv ser. */}
+        <Link href={`/portal/spiller/${s.id}`} style={{ display: "inline-flex", textDecoration: "none" }}>
+          <CTAPill ghost icon="arrow-up-right">Se full profil</CTAPill>
+        </Link>
       </div>
     </Kort>
   );

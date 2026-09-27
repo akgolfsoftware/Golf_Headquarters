@@ -5,7 +5,8 @@ import Link from "next/link";
 import { Icon } from "@/components/v2/icon";
 import { TL } from "@/lib/v2/train-lock";
 import { UI } from "@/lib/domain/workbench/labels";
-import type { SourceItem } from "@/lib/domain/workbench/types";
+import type { PlanningGoalSummary, SourceItem } from "@/lib/domain/workbench/types";
+import { PLAN_NIVAA_LABEL } from "@/lib/domain/maal-plannivaa";
 import { workbenchUrl } from "@/lib/workbench/visning-url";
 import { settKildeDataTransfer } from "./wb-drag";
 
@@ -15,15 +16,17 @@ type Props = {
   uke?: string;
   maned?: string;
   aar?: string;
+  goals?: PlanningGoalSummary[];
 };
 
 const GRUPPER: { kind: SourceItem["kind"]; tittel: string; ikon: string }[] = [
+  { kind: "TEK", tittel: "Teknisk plan (P1–P10)", ikon: "crosshair" },
   { kind: "DRILL", tittel: UI.sourcesDrills, ikon: "dumbbell" },
   { kind: "TEMPLATE", tittel: UI.sourcesTemplates, ikon: "star" },
   { kind: "PREVIOUS_WEEK", tittel: UI.sourcesPrevious, ikon: "history" },
 ];
 
-export function SourcesPanel({ kilder, playerId, uke, maned, aar }: Props) {
+export function SourcesPanel({ kilder, playerId, uke, maned, aar, goals = [] }: Props) {
   const nivaa = playerId
     ? [
         { id: "aar" as const, label: UI.visAar },
@@ -46,6 +49,7 @@ export function SourcesPanel({ kilder, playerId, uke, maned, aar }: Props) {
           ))}
         </div>
       ) : null}
+      {goals.length > 0 ? <MaalSpor goals={goals} /> : null}
       {kilder.length === 0 ? (
         <div style={{ display: "flex", gap: 8, alignItems: "flex-start", marginTop: 10 }}>
           <Icon name="layers" size={14} style={{ color: TL.mute, marginTop: 2 }} />
@@ -79,11 +83,100 @@ export function SourcesPanel({ kilder, playerId, uke, maned, aar }: Props) {
   );
 }
 
-function KildeKort({ kilde }: { kilde: SourceItem }) {
+function MaalSpor({ goals }: { goals: PlanningGoalSummary[] }) {
+  const grupper = [
+    { category: "OUTCOME" as const, label: "Resultatmål" },
+    { category: "PROCESS" as const, label: "Prosessmål" },
+  ];
   return (
-    <li draggable title={UI.dragHint} onDragStart={(e: DragEvent<HTMLLIElement>) => { settKildeDataTransfer(e, kilde.id); e.currentTarget.style.boxShadow = `inset 0 0 0 1px ${TL.draftBorder}`; }} onDragEnd={(e: DragEvent<HTMLLIElement>) => { e.currentTarget.style.boxShadow = "none"; }} style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text, padding: "6px 2px 6px 10px", borderRadius: 2, cursor: "grab", minWidth: 0 }}>
-      <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{kilde.title}</div>
-      {kilde.subtitle && <div style={{ fontSize: 11, fontWeight: 400, color: TL.mute, marginTop: 1 }}>{kilde.subtitle}</div>}
+    <section aria-label="Aktive mål" style={{ marginTop: 14, paddingTop: 12, borderTop: `1px solid ${TL.hair}` }}>
+      <div style={{ fontFamily: TL.font.sans, fontSize: 11, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>
+        Målsetninger
+      </div>
+      {grupper.map((gruppe) => {
+        const rader = goals.filter((goal) => goal.category === gruppe.category);
+        if (rader.length === 0) return null;
+        return (
+          <div key={gruppe.category} style={{ marginTop: 10 }}>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 11, fontWeight: 600, color: TL.mute }}>{gruppe.label}</div>
+            {rader.map((goal) => (
+              <div key={goal.id} style={{ padding: "7px 0", borderBottom: `1px solid ${TL.hair}` }}>
+                <div style={{ fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 600, color: TL.text, lineHeight: 1.35 }}>{goal.title}</div>
+                <div style={{ marginTop: 2, fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>
+                  {goal.typeLabel}
+                  {goal.targetDate ? ` · Frist ${goal.targetDate.slice(8, 10)}.${goal.targetDate.slice(5, 7)}.${goal.targetDate.slice(0, 4)}` : " · Ingen frist"}
+                </div>
+                <div style={{ marginTop: 2, fontFamily: TL.font.sans, fontSize: 11, color: TL.mute }}>
+                  Nivå: {PLAN_NIVAA_LABEL[goal.planNivaa]}
+                  {goal.planNivaaKilde === "foreslatt" ? " (foreslått fra frist)" : ""}
+                </div>
+                <div style={{ marginTop: 2, fontFamily: TL.font.sans, fontSize: 11, color: TL.text }}>
+                  {goal.fremdrift.hasData ? `${goal.fremdrift.pct} % · ${goal.fremdrift.detail}` : `Fremdrift: ${goal.fremdrift.detail}`}
+                </div>
+                {goal.spor ? (
+                  <div style={{ marginTop: 2, fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>
+                    Planlagt {goal.spor.planlagt} · Gjennomført {goal.spor.gjennomfort} · Uteblitt {goal.spor.uteblitt}
+                  </div>
+                ) : null}
+                <div style={{ marginTop: 2, fontFamily: TL.font.sans, fontSize: 11, color: TL.mute, lineHeight: 1.4 }}>
+                  Neste: {goal.nesteTiltak}
+                </div>
+              </div>
+            ))}
+          </div>
+        );
+      })}
+    </section>
+  );
+}
+
+function KildeKort({ kilde }: { kilde: SourceItem }) {
+  const erHovedfokus = kilde.tags?.includes("HOVEDFOKUS");
+  return (
+    <li
+      draggable
+      title={UI.dragHint}
+      onDragStart={(e: DragEvent<HTMLLIElement>) => {
+        settKildeDataTransfer(e, kilde.id);
+        e.currentTarget.style.boxShadow = `inset 0 0 0 1px ${TL.draftBorder}`;
+      }}
+      onDragEnd={(e: DragEvent<HTMLLIElement>) => {
+        e.currentTarget.style.boxShadow = "none";
+      }}
+      style={{
+        fontFamily: TL.font.sans,
+        fontSize: 13,
+        fontWeight: 600,
+        color: TL.text,
+        padding: "6px 4px 6px 10px",
+        borderRadius: 2,
+        cursor: "grab",
+        minWidth: 0,
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 6 }}>
+        <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{kilde.title}</span>
+        {erHovedfokus && (
+          <span
+            style={{
+              fontSize: 9,
+              fontFamily: TL.font.mono,
+              fontWeight: 700,
+              letterSpacing: "0.06em",
+              color: "var(--ak-grunn-farge-rust-600)",
+              textTransform: "uppercase",
+              flexShrink: 0,
+            }}
+          >
+            Fokus
+          </span>
+        )}
+      </div>
+      {kilde.subtitle && (
+        <div style={{ fontSize: 11, fontWeight: 400, color: TL.mute, marginTop: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+          {kilde.subtitle}
+        </div>
+      )}
     </li>
   );
 }

@@ -29,7 +29,13 @@ import {
 import { formatIntervallPunkt } from "@/lib/portal/idag-visning";
 import { oktArkLiveHref } from "@/lib/portal/session-hrefs";
 import type { WorkbenchSession } from "@/lib/domain/workbench/types";
-import { startSession, completeSession, skipSession } from "@/lib/workbench/wb-actions";
+import {
+  startSession,
+  completeSessionWithEffort,
+  skipSession,
+  updateSessionEffort,
+} from "@/lib/workbench/wb-actions";
+import { computeSessionLoad, RPE_SKALA } from "@/lib/domain/workbench/load";
 import { STATUS_CAPS, WARM } from "@/components/workbench/wb-visuelt";
 
 type Handling = "start" | "fullfor" | "hopp-over";
@@ -88,6 +94,34 @@ export function OktArk({ session: initial }: { session: WorkbenchSession }) {
   const [session, setSession] = useState(initial);
   const [travel, startTravel] = useTransition();
   const [aktivHandling, setAktivHandling] = useState<Handling | null>(null);
+  const [valgtEffort, setValgtEffort] = useState<number | null>(session.perceivedEffort ?? null);
+  const [faktiskeMinutter, setFaktiskeMinutter] = useState<string>(
+    session.actualMinutes != null ? String(session.actualMinutes) : String(session.durationMinutes)
+  );
+
+  const parsedMin = parseInt(faktiskeMinutter, 10);
+  const faktiskTid = Number.isFinite(parsedMin) && parsedMin > 0 ? parsedMin : session.durationMinutes;
+  const loadBeregnet = computeSessionLoad({
+    durationMinutes: session.durationMinutes,
+    actualMinutes: faktiskTid,
+    perceivedEffort: valgtEffort,
+  });
+
+  function lagreBelastning() {
+    startTravel(async () => {
+      const res = await updateSessionEffort({
+        sessionId: session.id,
+        perceivedEffort: valgtEffort,
+        actualMinutes: faktiskTid,
+      });
+      if (!res.ok) {
+        toast.error(res.error);
+        return;
+      }
+      setSession(res.data);
+      toast.success("Belastning lagret");
+    });
+  }
 
   function utfor(handling: Handling) {
     setAktivHandling(handling);
@@ -96,7 +130,11 @@ export function OktArk({ session: initial }: { session: WorkbenchSession }) {
         handling === "start"
           ? await startSession(session.id)
           : handling === "fullfor"
-            ? await completeSession(session.id)
+            ? await completeSessionWithEffort({
+                sessionId: session.id,
+                perceivedEffort: valgtEffort,
+                actualMinutes: faktiskTid,
+              })
             : await skipSession(session.id);
       if (!res.ok) {
         toast.error(res.error);
@@ -219,6 +257,102 @@ export function OktArk({ session: initial }: { session: WorkbenchSession }) {
           <button type="button" style={sekundærKnapp} onClick={() => utfor("hopp-over")} disabled={travel}>
             {laster("hopp-over") ? "Lagrer …" : UI.skipSession}
           </button>
+        </div>
+      )}
+
+      {(session.status === "IN_PROGRESS" || session.status === "COMPLETED") && (
+        <div style={{ ...kort, display: "flex", flexDirection: "column", gap: 12 }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <span style={eyebrow}>Opplevd anstrengelse (sRPE)</span>
+            {loadBeregnet != null && (
+              <span style={{ fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, color: TL.warmText }}>
+                {loadBeregnet} belastningspoeng
+              </span>
+            )}
+          </div>
+          <p style={{ margin: 0, fontSize: 12, fontFamily: TL.font.sans, color: TL.mute }}>
+            Hvor anstrengende var økten på en skala fra 1 (veldig lett) til 10 (maksimalt)?
+          </p>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(10, 1fr)", gap: 4 }}>
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => {
+              const aktiv = valgtEffort === num;
+              return (
+                <button
+                  key={num}
+                  type="button"
+                  onClick={() => setValgtEffort(num)}
+                  title={`${num}: ${RPE_SKALA[num]?.kort} — ${RPE_SKALA[num]?.beskrivelse}`}
+                  style={{
+                    height: 36,
+                    borderRadius: 4,
+                    border: `1px solid ${aktiv ? "var(--ak-grunn-farge-rust-600)" : TL.hair}`,
+                    background: aktiv ? "var(--ak-grunn-farge-rust-600)" : TL.dock,
+                    color: aktiv ? TL.onFill : TL.text,
+                    fontFamily: TL.font.mono,
+                    fontSize: 13,
+                    fontWeight: aktiv ? 700 : 500,
+                    cursor: "pointer",
+                    transition: "all 0.15s ease",
+                  }}
+                >
+                  {num}
+                </button>
+              );
+            })}
+          </div>
+
+          {valgtEffort != null && (
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: TL.dock, padding: "6px 10px", borderRadius: 4 }}>
+              <span style={{ fontSize: 12, fontFamily: TL.font.sans, fontWeight: 600, color: TL.text }}>
+                {valgtEffort} / 10 · {RPE_SKALA[valgtEffort]?.kort}
+              </span>
+              <span style={{ fontSize: 11, fontFamily: TL.font.sans, color: TL.mute }}>
+                {RPE_SKALA[valgtEffort]?.beskrivelse}
+              </span>
+            </div>
+          )}
+
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 4 }}>
+            <label style={{ fontSize: 12, fontFamily: TL.font.sans, color: TL.mute, flex: 1 }}>
+              Faktisk varighet (minutter):
+            </label>
+            <input
+              type="number"
+              min="1"
+              max="600"
+              value={faktiskeMinutter}
+              onChange={(e) => setFaktiskeMinutter(e.target.value)}
+              style={{
+                width: 80,
+                height: 32,
+                borderRadius: 4,
+                border: `1px solid ${TL.hair}`,
+                background: TL.dock,
+                color: TL.text,
+                fontFamily: TL.font.mono,
+                fontSize: 13,
+                textAlign: "center",
+              }}
+            />
+          </div>
+
+          {session.status === "COMPLETED" && (
+            <button
+              type="button"
+              onClick={lagreBelastning}
+              disabled={travel}
+              style={{
+                ...sekundærKnapp,
+                marginTop: 6,
+                background: "var(--ak-grunn-farge-rust-600)",
+                color: TL.onFill,
+                border: "none",
+              }}
+            >
+              {travel ? "Lagrer …" : "Lagre belastning"}
+            </button>
+          )}
         </div>
       )}
 

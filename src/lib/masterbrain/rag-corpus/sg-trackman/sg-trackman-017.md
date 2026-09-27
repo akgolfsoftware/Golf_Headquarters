@@ -5,7 +5,7 @@ source_section: "## spinnfrekvens. Det skiller seg fra statisk/stemplet loft for
 tags: [amatør, club-data, lpga, pga-tour, trackman]
 topics: [trackman-parametere]
 lang: no
-relevance: [CoachHQ, PlayerHQ, RAG, SgBaseline, TrackMan, forventetSg]
+relevance: [AgencyOS, PlayerHQ, RAG, SgBaseline, TrackMan, forventetSg]
 updated: 2026-06-14
 ---
 

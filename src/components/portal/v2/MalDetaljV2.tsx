@@ -13,6 +13,7 @@ import { avbrytGoal, endreGoal, markeerGoalSomOppnaadd, type GoalInput } from "@
 import { PYR_REKKEFOLGE, PYR_LABEL } from "@/lib/pyramide";
 import type { GoalCategory, PyramidArea } from "@/generated/prisma/client";
 import { SG_OMRADER, SG_OMRADE_NAVN, erSgOmrade } from "@/lib/domain/maal-fremdrift";
+import { erPlanNivaa, PLAN_NIVAAER, PLAN_NIVAA_LABEL } from "@/lib/domain/maal-plannivaa";
 export type MalStigeTrinn = {
   code: string;
   label: string;
@@ -55,6 +56,8 @@ export type MalDetaljV2Data = {
     linkedTestId: string | null;
     /** SG-område for SG_AREA-mål (OTT/APP/ARG/PUTT) — null hvis ikke satt. */
     sgOmrade: string | null;
+    /** Valgt planleggingsnivå — null = automatisk fra frist. */
+    planNivaa: string | null;
   };
 };
 
@@ -65,6 +68,11 @@ const GOAL_TYPES: Array<{ value: string; label: string }> = [
   { value: "SESSION_FREQUENCY", label: "Øktfrekvens" },
   { value: "TEST_SCORE", label: "Testresultat" },
   { value: "FREE_TEXT", label: "Fritekst" },
+];
+
+const PLAN_NIVAA_VALG: Array<{ value: string; label: string }> = [
+  { value: "", label: "Automatisk fra frist" },
+  ...PLAN_NIVAAER.map((n) => ({ value: n, label: PLAN_NIVAA_LABEL[n] })),
 ];
 
 const PYRAMID_OPTIONS = PYR_REKKEFOLGE.map((a) => ({ value: a, label: PYR_LABEL[a] }));
@@ -218,6 +226,7 @@ function EndreModal({
   const [linkedPyramidArea, setLinkedPyramidArea] = useState<string>(initial.linkedPyramidArea ?? "");
   const [linkedTestId, setLinkedTestId] = useState<string>(initial.linkedTestId ?? "");
   const [sgOmrade, setSgOmrade] = useState<string>(initial.sgOmrade ?? "");
+  const [planNivaa, setPlanNivaa] = useState<string>(initial.planNivaa ?? "");
 
   const erSg = type === "SG_AREA";
 
@@ -229,6 +238,7 @@ function EndreModal({
     targetDate !== (initial.targetDate ?? "") ||
     linkedPyramidArea !== (initial.linkedPyramidArea ?? "") ||
     linkedTestId !== (initial.linkedTestId ?? "") ||
+    planNivaa !== (initial.planNivaa ?? "") ||
     (erSg && sgOmrade !== (initial.sgOmrade ?? ""));
 
   // Et SG-mål uten område kan ikke måles — da blir fremdriften bare «tid som
@@ -249,6 +259,7 @@ function EndreModal({
           : null,
       linkedTestId: type === "TEST_SCORE" && linkedTestId ? linkedTestId : null,
       sgOmrade: erSg && erSgOmrade(sgOmrade) ? sgOmrade : null,
+      planNivaa: erPlanNivaa(planNivaa) ? planNivaa : null,
     });
   }
 
@@ -281,6 +292,12 @@ function EndreModal({
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
           <Inndata label="Målverdi" type="number" value={targetValue} onChange={setTargetValue} placeholder="—" mono />
           <Inndata label="Frist" type="date" value={targetDate} onChange={setTargetDate} mono />
+        </div>
+        <div>
+          <Velger label="Planleggingsnivå" options={PLAN_NIVAA_VALG} value={planNivaa} onChange={setPlanNivaa} />
+          <p style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, lineHeight: 1.55, margin: "8px 0 0" }}>
+            Hvor i planen målet hører hjemme. Coach ser målet på dette nivået i Workbench.
+          </p>
         </div>
         {type === "SESSION_FREQUENCY" && (
           <Velger

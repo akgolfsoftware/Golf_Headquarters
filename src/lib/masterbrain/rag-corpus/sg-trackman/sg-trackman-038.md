@@ -5,7 +5,7 @@ source_section: "## Practical mapping-algoritme:"
 tags: [amatør, baseline, formule, handicap, kategori, putt, sg]
 topics: [beregning, implementasjon, putting, sg-baseline, sg-kategorier]
 lang: no
-relevance: [AiPlanGeneration, CoachHQ, PlayerHQ, RAG, SgBaseline, beregnSg, forventetSg]
+relevance: [AiPlanGeneration, AgencyOS, PlayerHQ, RAG, SgBaseline, beregnSg, forventetSg]
 updated: 2026-06-14
 ---
 

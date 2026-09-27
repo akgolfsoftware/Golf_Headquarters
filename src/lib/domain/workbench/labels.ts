@@ -8,6 +8,13 @@ import type {
   BlockType,
   SourceFilter,
   TrainingArea,
+  TurneringFokus,
+  SpillFokus,
+  GolfslagFokus,
+  TeknikkFokus,
+  FysiskFokus,
+  KondisjonType,
+  MoradPosisjon,
 } from "./types";
 
 export const PYRAMID_LABEL: Record<PyramidArea, string> = {
@@ -20,10 +27,11 @@ export const PYRAMID_LABEL: Record<PyramidArea, string> = {
 
 export const AREA_LABEL: Record<TrainingArea, string> = {
   TEE: "Utslag",
-  INNSPILL_200: "Innspill 200 m",
-  INNSPILL_150: "Innspill 150 m",
-  INNSPILL_100: "Innspill 100 m",
-  INNSPILL_50: "Innspill 50 m",
+  TEE_TOTAL: "Utslag",
+  INNSPILL_200: "Innspill 200 m og lengre",
+  INNSPILL_150: "Innspill 150–200 m",
+  INNSPILL_100: "Innspill 100–150 m",
+  INNSPILL_50: "Innspill 50–100 m",
   CHIP: "Chip",
   PITCH: "Pitch",
   LOB: "Lob",
@@ -93,14 +101,14 @@ export const UI = {
   visStall: "Stall",
   visLive: "Live",
   visMin: "Min kalender",
-  formelMotorikk: "Motorikk",
-  formelBelastning: "Belastning",
+  formelMotorikk: "Læringssteg",
+  formelBelastning: "Treningsmiljø",
   formelPress: "Press",
   formelHensikt: "Hensikt",
   formelMate: "Måte",
   formelMal: "Målsetning",
-  formelHintMotorikk: "Stige: uten ball → lav hastighet → automatikk.",
-  formelHintBelastning: "Miljø: innendørs → treningsområde → bane → konkurranse. Ikke kg.",
+  formelHintMotorikk: "Læringssteg: uten ball → lav hastighet → automatikk.",
+  formelHintBelastning: "Hvor og i hvilken situasjon treningen gjennomføres.",
   formelHintPress: "Alene → observert → konkurranse → turnering.",
   formelHintHensikt: "Bare FYS: øke styrke · vedlikehold · restitusjon.",
   formelHintMate: "Hvordan økten gjennomføres.",
@@ -308,3 +316,55 @@ export function formatHours(minutes: number): string {
   const h = minutes / 60;
   return h % 1 === 0 ? h.toFixed(0) : h.toFixed(1).replace(".", ",");
 }
+
+export const TURNERING_FOKUS_LABEL: Record<TurneringFokus, string> = {
+  TRENING: "Trening",
+  UTVIKLING: "Utvikling",
+  PRESTASJON: "Prestasjon",
+};
+
+export const SPILL_FOKUS_LABEL: Record<SpillFokus, string> = {
+  SCORING: "Scoring",
+  SPILLOEVELSE: "Spilløvelse",
+  BANESTRATEGI: "Banestrategi",
+  TESTER: "Tester",
+};
+
+export const GOLFSLAG_FOKUS_LABEL: Record<GolfslagFokus, string> = {
+  BALLSTART: "Ballstart",
+  SKRU: "Skru",
+  HOYDER: "Høyder",
+  SPINKONTROLL: "Spinnkontroll",
+  TESTER: "Tester",
+};
+
+export const TEKNIKK_FOKUS_LABEL: Record<TeknikkFokus, string> = {
+  UTVIKLING: "Utvikling",
+  VEDLIKEHOLD: "Vedlikehold",
+  TESTER: "Tester",
+};
+
+export const FYSISK_FOKUS_LABEL: Record<FysiskFokus, string> = {
+  STYRKE: "Styrke",
+  KONDISJON: "Kondisjon",
+  BEVEGELIGHET: "Bevegelighet",
+  TESTER: "Tester",
+};
+
+export const KONDISJON_TYPE_LABEL: Record<KondisjonType, string> = {
+  INTERVALL: "Intervall",
+  LANGKJORING: "Langkjøring",
+};
+
+export const MORAD_POSISJONER: { id: MoradPosisjon; label: string; beskrivelse: string }[] = [
+  { id: "P1.0", label: "P1", beskrivelse: "Adresse / Oppstilling" },
+  { id: "P2.0", label: "P2", beskrivelse: "Kølle horisontal baksving" },
+  { id: "P3.0", label: "P3", beskrivelse: "Venstre arm horisontal baksving" },
+  { id: "P4.0", label: "P4", beskrivelse: "Toppen av baksvingen" },
+  { id: "P5.0", label: "P5", beskrivelse: "Venstre arm horisontal nedsving" },
+  { id: "P6.0", label: "P6", beskrivelse: "Kølle horisontal nedsving" },
+  { id: "P7.0", label: "P7", beskrivelse: "Treffpunkt (Impact)" },
+  { id: "P8.0", label: "P8", beskrivelse: "Kølle horisontal gjennomføring" },
+  { id: "P9.0", label: "P9", beskrivelse: "Høyre arm horisontal oppfølging" },
+  { id: "P10.0", label: "P10", beskrivelse: "Fullføring / Balanse" },
+];
