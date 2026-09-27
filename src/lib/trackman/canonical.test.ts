@@ -58,6 +58,23 @@ describe("csvShotsToCanonical", () => {
     assert.equal(out[0]?.faceAngle, 0.8);
     assert.equal(out[0]?.faceToPath, -1.3);
   });
+
+  it("avviser ikke-endelig startretning fra et klientlevert fotoslag", () => {
+    const [shot] = csvShotsToCanonical([{
+      club: "Driver",
+      clubSpeedMps: null,
+      ballSpeedMps: null,
+      smashFactor: null,
+      carryMeters: null,
+      totalMeters: null,
+      launchAngleDeg: null,
+      launchDirectionDeg: Number.POSITIVE_INFINITY,
+      spinRateRpm: null,
+      sideMeters: null,
+      notes: null,
+    }]);
+    assert.equal(shot.launchDirectionDeg, null);
+  });
 });
 
 describe("htmlReportToCanonical", () => {
@@ -83,7 +100,7 @@ describe("htmlReportToCanonical", () => {
               faceToPath: 1,
               smashFactor: 1.35,
               totalDistance: 160,
-              launchDirection: 0,
+              launchDirection: -2.5,
             },
             {
               shotNumber: 2,
@@ -96,7 +113,7 @@ describe("htmlReportToCanonical", () => {
               faceToPath: -1,
               smashFactor: 1.36,
               totalDistance: 162,
-              launchDirection: 0,
+              launchDirection: 1.3,
             },
           ],
           average: {
@@ -131,5 +148,8 @@ describe("htmlReportToCanonical", () => {
     assert.equal(shots[0]?.club, "7-jern");
     assert.equal(shots[0]?.clubSpeedMph, 85);
     assert.equal(shots[0]?.faceToPath, 1);
+    assert.equal(shots[0]?.launchDirectionDeg, -2.5);
+    assert.equal(shots[1]?.launchDirectionDeg, 1.3);
+    assert.equal(shots[0]?.targetDistanceM, null);
   });
 });

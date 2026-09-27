@@ -2130,14 +2130,16 @@ model TestDayParticipant {
 }
 
 model TrackManSession {
-  id          String               @id @default(cuid())
-  userId      String
-  recordedAt  DateTime
-  source      String // "csv-import" | "api"
-  shotCount   Int                  @default(0)
-  rawJson     Json?
-  environment TrackManEnvironment?
-  createdAt   DateTime             @default(now())
+  id               String               @id @default(cuid())
+  userId           String
+  recordedAt       DateTime
+  source           String // "csv-import" | "api"
+  shotCount        Int                  @default(0)
+  rawJson          Json?
+  environment      TrackManEnvironment?
+  targetLineStatus String               @default("UNKNOWN") // UNKNOWN | CONFIRMED | NOT_ALIGNED (brukerbekreftet)
+  targetDistanceM  Float? // valgfritt øktmål i meter; varierer målet per slag, bruk TrackManShot.targetDistanceM
+  createdAt        DateTime             @default(now())
 
   user  User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   shots TrackManShot[]
@@ -5400,16 +5402,18 @@ model TrackManShot {
   club String // "7-jern" | "Driver" osv. (parsed fra CSV)
 
   // Ball-data
-  ballSpeed     Float? // mph
-  smashFactor   Float?
-  launchAngle   Float? // grader
-  spinRate      Float? // rpm
-  spinAxis      Float? // grader (sidespinn)
-  carryDistance Float? // meter
-  totalDistance Float? // meter
-  apexHeight    Float? // meter
-  landAngle     Float? // grader
-  side          Float? // meter (dispersion offline)
+  ballSpeed       Float? // mph
+  smashFactor     Float?
+  launchAngle     Float? // grader
+  spinRate        Float? // rpm
+  spinAxis        Float? // grader (sidespinn)
+  launchDirection Float? // grader horisontalt relativt til TrackMan-mållinjen
+  carryDistance   Float? // meter
+  totalDistance   Float? // meter
+  apexHeight      Float? // meter
+  landAngle       Float? // grader
+  side            Float? // meter (dispersion offline)
+  targetDistanceM Float? // meter; fra slagets CSV-felt eller manuelt øktmål
 
   // Klubb-data
   clubSpeed      Float? // mph
