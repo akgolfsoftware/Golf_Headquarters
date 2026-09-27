@@ -1,7 +1,7 @@
 # Plan: én master for treningsplanlegging og språk
 
-**Dato:** 26. september 2026  
-**Status:** Konsolidering gjennomført 26.09.2026. Dette er historisk plan; [masteren](../treningsplanlegging-og-sprak.md) styrer.  
+**Dato:** 26. september 2026
+**Status:** Konsolidering gjennomført 26.09.2026. Dette er historisk plan; [masteren](../treningsplanlegging-og-sprak.md) styrer.
 **Omfang:** Dokumentstruktur, kildeorden, språk og treningsmodell. Ingen kode- eller databaseskjemaendringer i denne planen.
 
 ## 1. Problem
