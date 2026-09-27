@@ -24,8 +24,10 @@ export type TrackManShot = {
   carryMeters: number | null;
   totalMeters: number | null;
   launchAngleDeg: number | null;
+  launchDirectionDeg?: number | null;
   spinRateRpm: number | null;
   sideMeters: number | null;
+  targetDistanceRaw?: number | null;
   attackAngleDeg?: number | null;
   clubPathDeg?: number | null;
   faceAngleDeg?: number | null;
@@ -48,6 +50,7 @@ export type TrackManSourceUnits = {
   carry?: TrackManDistanceUnit;
   total?: TrackManDistanceUnit;
   side?: TrackManDistanceUnit;
+  targetDistance?: TrackManDistanceUnit;
 };
 
 type ParsedCsvRows = {
@@ -91,8 +94,10 @@ const COLUMN_ALIASES: Record<CsvField, string[]> = {
   carryMeters: ["carry", "carry distance"],
   totalMeters: ["total", "total distance"],
   launchAngleDeg: ["launch", "launch angle", "launch angle (deg)"],
+  launchDirectionDeg: ["launch direction", "launch dir", "horizontal launch", "horizontal launch angle"],
   spinRateRpm: ["spin", "spin rate", "spin rate (rpm)"],
   sideMeters: ["side", "side total"],
+  targetDistanceRaw: ["target distance", "distance to target", "target length"],
   attackAngleDeg: ["attack angle", "attack angle (deg)", "attackangle", "angrepsvinkel", "innfallsvinkel"],
   clubPathDeg: ["club path", "club path (deg)", "clubpath", "klubbane", "svingbane"],
   faceAngleDeg: ["face angle", "face angle (deg)", "faceangle", "bladvinkel", "køllebladvinkel"],
@@ -160,7 +165,7 @@ function buildHeaderMap(headers: string[]): HeaderMap {
         if (field === "clubSpeedMps" || field === "ballSpeedMps") {
           binding.speedUnit = speedUnitFromHeader(raw);
         }
-        if (field === "carryMeters" || field === "totalMeters" || field === "sideMeters") {
+        if (field === "carryMeters" || field === "totalMeters" || field === "sideMeters" || field === "targetDistanceRaw") {
           binding.distanceUnit = distanceUnitFromHeader(raw);
         }
         map[field] = binding;
@@ -192,11 +197,12 @@ function erTillattEnhetsverdi(field: CsvField, value: string): boolean {
   if (field === "clubSpeedMps" || field === "ballSpeedMps") {
     return /^(?:mph|m\/s|mps|km\/?h|kmh|kph)$/.test(token);
   }
-  if (field === "carryMeters" || field === "totalMeters" || field === "sideMeters") {
+  if (field === "carryMeters" || field === "totalMeters" || field === "sideMeters" || field === "targetDistanceRaw") {
     return /^(?:m|meters?|metres?|yds?|yards?|ft|feet|cm)$/.test(token);
   }
   if (
     field === "launchAngleDeg" ||
+    field === "launchDirectionDeg" ||
     field === "attackAngleDeg" ||
     field === "clubPathDeg" ||
     field === "faceAngleDeg" ||
@@ -236,6 +242,7 @@ function sourceUnitsFromHeaders(
   const carry = headerMap.carryMeters;
   const total = headerMap.totalMeters;
   const side = headerMap.sideMeters;
+  const targetDistance = headerMap.targetDistanceRaw;
   if (clubSpeed) {
     sourceUnits.clubSpeed = clubSpeed.speedUnit ?? speedUnitFromToken(unitRow?.[clubSpeed.index]);
   }
@@ -250,6 +257,9 @@ function sourceUnitsFromHeaders(
   }
   if (side) {
     sourceUnits.side = side.distanceUnit ?? distanceUnitFromToken(unitRow?.[side.index]);
+  }
+  if (targetDistance) {
+    sourceUnits.targetDistance = targetDistance.distanceUnit ?? distanceUnitFromToken(unitRow?.[targetDistance.index]);
   }
   for (const key of Object.keys(sourceUnits) as (keyof TrackManSourceUnits)[]) {
     if (sourceUnits[key] === undefined) delete sourceUnits[key];
@@ -392,10 +402,14 @@ export function parseTrackManCsv(csv: string): TrackManParseResult {
         headerMap.totalMeters ? parseNumber(row[headerMap.totalMeters.index]) : null,
       launchAngleDeg:
         headerMap.launchAngleDeg ? parseNumber(row[headerMap.launchAngleDeg.index]) : null,
+      launchDirectionDeg:
+        headerMap.launchDirectionDeg ? parseNumber(row[headerMap.launchDirectionDeg.index]) : null,
       spinRateRpm:
         headerMap.spinRateRpm ? parseNumber(row[headerMap.spinRateRpm.index]) : null,
       sideMeters:
         headerMap.sideMeters ? parseNumber(row[headerMap.sideMeters.index]) : null,
+      targetDistanceRaw:
+        headerMap.targetDistanceRaw ? parseNumber(row[headerMap.targetDistanceRaw.index]) : null,
       attackAngleDeg:
         headerMap.attackAngleDeg ? parseNumber(row[headerMap.attackAngleDeg.index]) : null,
       clubPathDeg:
