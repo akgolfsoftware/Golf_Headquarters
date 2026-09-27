@@ -5,7 +5,7 @@ source_section: "## 2.2 Mark Broadie og opphavet (del 1)"
 tags: [app, broadie, pga-tour, putt, sg]
 topics: [broadie, pga-snitt]
 lang: no
-relevance: [AiPlanGeneration, CoachHQ, RAG, SgBaseline, beregnSg, forventetSg]
+relevance: [AiPlanGeneration, AgencyOS, RAG, SgBaseline, beregnSg, forventetSg]
 updated: 2026-06-14
 ---
 

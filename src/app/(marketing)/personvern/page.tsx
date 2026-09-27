@@ -1,16 +1,10 @@
-/**
- * Marketing Personvern (v2, retning C). Offentlig: ingen auth-guard.
- * Juridisk tekst uendret fra tidligere (mlegacy)/personvern, kun v2-ramme.
- */
+import { PersonvernPrecisionView } from "@/components/portal/profil/PersonvernPrecisionView";
 
-import type { Metadata } from "next";
-import { MarkedPersonvernV2 } from "@/components/marketing/v2/MarkedPersonvernV2";
-
-export const metadata: Metadata = {
-  title: "Personvern · AK Golf",
-  description: "Personvernerklæring for AK Golf-plattformen.",
+export const metadata = {
+  title: "Personvern & GDPR · AK Golf HQ",
+  description: "Dine personopplysninger, innsynsrett, dataeksport og sletteforespørsel.",
 };
 
 export default function PersonvernPage() {
-  return <MarkedPersonvernV2 />;
+  return <PersonvernPrecisionView tilbakeHref="/" />;
 }

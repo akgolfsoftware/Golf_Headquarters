@@ -462,12 +462,12 @@ const COMPETENCE_GOALS: ReadonlyArray<{ classYear: string; curriculumCode: strin
   // Toppidrett 1 (VG1) — kv283
   { classYear: "VG1", curriculumCode: "IDR05-02", text: "vise og utvikle ferdigheter i idretten og gjennomføre systematisk og målrettet trening" },
   { classYear: "VG1", curriculumCode: "IDR05-02", text: "dokumentere og evaluere en valgt treningsperiode" },
-  { classYear: "VG1", curriculumCode: "IDR05-02", text: "kjenne til ulike treningsformer, metoder, tester og øvelser som er relevant for ferdighetsutvikling i idretten, og bruke disse til å utvikle egne ferdigheter" },
+  { classYear: "VG1", curriculumCode: "IDR05-02", text: "kjenne til ulike treningsformer, metoder, tester og øvelser som er relevant for ferdighetsutvikling i idretten og kunne bruke disse for å utvikle sin egen ferdighet" },
   { classYear: "VG1", curriculumCode: "IDR05-02", text: "gjennomføre basistrening og skadeforebyggende tiltak som gir grunnlag for økt treningsbelastning" },
   { classYear: "VG1", curriculumCode: "IDR05-02", text: "forstå forholdet mellom totalbelastning og restitusjon" },
   { classYear: "VG1", curriculumCode: "IDR05-02", text: "beskrive mentale forberedelser til trening og konkurranse" },
   { classYear: "VG1", curriculumCode: "IDR05-02", text: "bruke lyst- og lekbetonte oppvarmingsøvelser, aktiviteter, treningsformer og konkurranser for å stimulere til økt motivasjon" },
-  { classYear: "VG1", curriculumCode: "IDR05-02", text: "vise god samhandling og respektfull treningsatferd" },
+  { classYear: "VG1", curriculumCode: "IDR05-02", text: "vise god samhandling og respektfull treningsatferd som bidrar til aktivitetsglede og et godt lærings- og utviklingsmiljø" },
   // Toppidrett 2 (VG2) — kv284
   { classYear: "VG2", curriculumCode: "IDR05-02", text: "vise og videreutvikle ferdigheter som er sentrale for å prestere i konkurranser i idretten" },
   { classYear: "VG2", curriculumCode: "IDR05-02", text: "gjennomføre systematisk og målrettet trening, og dokumentere og analysere resultatet av denne treningen" },

@@ -1,15 +1,22 @@
 /**
  * GolfBox-scraper for norske amatør/junior-turneringer (delsystem A).
  *
- * Henter terminliste + leaderboard fra GolfBox sine offentlige JSON-handlere
- * (scores.golfbox.dk) for norske tour-/føderasjonskunder. Ingen lisens, ingen
- * innlogging. Se docs/turnering-datakilder.md (§ VERIFISERT).
+ * Henter KUN terminliste (kommende turneringer + påmeldingsfrister) fra
+ * GolfBox sine offentlige JSON-handlere (scores.golfbox.dk) for norske
+ * tour-/føderasjonskunder. Ingen lisens, ingen innlogging.
+ *
+ * Rettet 27.09.2026 (beslutninger.md §PIPELINES ER ENESTE KILDE, punkt 5):
+ * denne skriver IKKE lenger turneringsRESULTATER — det gjør kun
+ * ak-golf-pipelines nå. syncGolfBoxLeaderboards er fjernet herfra (definisjonen
+ * lever fortsatt i golfbox-sync.ts, kalles bare ikke fra dette skriptet).
+ * Lenking (User<->PublicPlayer) og speiling av ALLEREDE innhentede
+ * public_player_entries er intern app-logikk, ikke ekstern datainnhenting —
+ * den kjører fortsatt.
+ *
+ * Se docs/turnering-datakilder.md (§ VERIFISERT).
  *
  * Kjøres av GitHub Actions cron + manuelt:
- *   npx tsx scripts/scrape-golfbox.ts                 # schedule + leaderboards
- *   npx tsx scripts/scrape-golfbox.ts --mode=schedule
- *   npx tsx scripts/scrape-golfbox.ts --mode=leaderboards
- *   npx tsx scripts/scrape-golfbox.ts --limit=5       # MVP-test (færre events)
+ *   npx tsx scripts/scrape-golfbox.ts
  *
  * Delbar logikk: src/lib/turneringer/golfbox-sync.ts
  * (samme kode som Vercel cron turneringer-ngf for schedule).
@@ -20,10 +27,7 @@
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client";
 import { config as loadEnv } from "dotenv";
-import {
-  syncGolfBoxSchedules,
-  syncGolfBoxLeaderboards,
-} from "../src/lib/turneringer/golfbox-sync";
+import { syncGolfBoxSchedules } from "../src/lib/turneringer/golfbox-sync";
 import {
   linkPublicPlayersByExactName,
   backfillTournamentResultsForLinkedUsers,
@@ -34,15 +38,6 @@ loadEnv({ path: ".env.local" });
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
 
-const args = process.argv.slice(2);
-const MODE =
-  (args.find((a) => a.startsWith("--mode="))?.split("=")[1] as
-    | "schedule"
-    | "leaderboards"
-    | "all"
-    | undefined) ?? "all";
-const LIMIT =
-  Number(args.find((a) => a.startsWith("--limit="))?.split("=")[1]) || 0;
 
 async function logRun(
   agentName: string,
@@ -64,9 +59,9 @@ async function logRun(
 }
 
 async function main() {
-  console.log(`[golfbox] mode=${MODE} limit=${LIMIT || "—"}`);
+  console.log("[golfbox] kalender + frister (resultater kommer fra ak-golf-pipelines)");
 
-  if (MODE === "schedule" || MODE === "all") {
+  {
     const start = Date.now();
     try {
       const r = await syncGolfBoxSchedules(prisma);
@@ -81,25 +76,10 @@ async function main() {
     }
   }
 
-  if (MODE === "leaderboards" || MODE === "all") {
-    const start = Date.now();
-    try {
-      const r = await syncGolfBoxLeaderboards(prisma, {
-        limit: LIMIT || undefined,
-      });
-      console.log("[golfbox] leaderboards:", r);
-      const error = r.failedTournaments.length ? new Error(`${r.failedTournaments.length} GolfBox-turneringer var ufullstendige`) : undefined;
-      if (error) process.exitCode = 1;
-      await logRun("golfbox-leaderboards", start, r, error);
-    } catch (err) {
-      process.exitCode = 1;
-      console.error("[golfbox] leaderboards FEIL:", err);
-      await logRun("golfbox-leaderboards", start, null, err);
-    }
-  }
-
-  // Etter data: eksakt navne-link + speil resultater til PlayerHQ-profiler
-  if (MODE === "all" || MODE === "leaderboards") {
+  // Intern app-logikk (ikke ekstern datainnhenting): koble User<->PublicPlayer
+  // på eksakt navn, og speil ALLEREDE innhentede public_player_entries
+  // (skrevet av pipelines) til PlayerHQ-profiler.
+  {
     const start = Date.now();
     try {
       const link = await linkPublicPlayersByExactName(prisma);

@@ -68,6 +68,10 @@ export type LoggetSlag = {
   endShotKategori?: EndShotKategori;
   /** Kun for putt-slag. */
   putt?: PuttRegistrering;
+  /** Sikteavstand i meter (UpGame Target Distance). */
+  targetAvstand?: number;
+  /** Flaggavstand i meter (UpGame Pin Distance). */
+  pinAvstand?: number;
 };
 
 export type LoggetHull = {

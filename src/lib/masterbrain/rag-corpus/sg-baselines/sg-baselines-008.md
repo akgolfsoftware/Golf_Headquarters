@@ -5,7 +5,7 @@ source_section: "## SG:Total = SG:Off-the-Tee + SG:Approach-the-Green + SG:Aroun
 tags: [app, baseline, benchmarking, ott, sg]
 topics: [benchmarking, implementasjon]
 lang: en
-relevance: [AiPlanGeneration, CoachHQ, PlayerHQ, RAG, SgBaseline, beregnSg, diagnostiserSg, forventetSg]
+relevance: [AiPlanGeneration, AgencyOS, PlayerHQ, RAG, SgBaseline, beregnSg, diagnostiserSg, forventetSg]
 updated: 2026-06-14
 ---
 

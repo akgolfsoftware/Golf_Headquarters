@@ -11,6 +11,8 @@ let loseRace = false;
 let assignmentOpen = false;
 let completions = 0;
 let notices = 0;
+/** Simulerer at økten er koblet til en trenerført testdag (TestDayParticipant.sessionId) — egenføring skal da avvises, jf. src/app/portal/tren/tester/team-norway/actions.ts. */
+let koblesTilTestdag = false;
 mock.module("@/lib/auth/requirePortalUser", { namedExports: { requirePortalUser: async () => ({ id: viewer }) } });
 mock.module("@/lib/talent/test-sync", { namedExports: { syncTalentEtterTest: async () => {} } });
 mock.module("next/cache", { namedExports: { revalidatePath: () => {} } });
@@ -27,12 +29,13 @@ mock.module("@/lib/prisma", { namedExports: { prisma: { $transaction: async (run
       update: async ({ where, data }: { where: { id: string }; data: object }) => Object.assign(next[where.id], data),
     },
     testResult: { create: async ({ data }: { data: object }) => { if (failResult) throw new Error("database failure"); records.push(data); return { id: `result-${records.length}` }; } },
+    testDayParticipant: { findFirst: async () => (koblesTilTestdag ? { id: "deltaker-a" } : null) },
   });
   sessions = next; results = records; return out;
 } } } });
 let save: typeof import("@/app/portal/tren/tester/team-norway/actions").saveTnTest;
 before(async () => { save = (await import("@/app/portal/tren/tester/team-norway/actions")).saveTnTest; });
-beforeEach(() => { sessions = {}; results = []; viewer = "player-a"; failResult = false; loseRace = false; assignmentOpen = false; completions = 0; notices = 0; });
+beforeEach(() => { sessions = {}; results = []; viewer = "player-a"; failResult = false; loseRace = false; assignmentOpen = false; completions = 0; notices = 0; koblesTilTestdag = false; });
 const sessionId = "b7f0d4a8-70d6-4d7a-8a73-682ed75ac000";
 const input = () => ({ sessionId, protocolId: "putt-1-3m", count: 25, revision: 0, intent: "complete", values: Object.fromEntries(tnProtocol("putt-1-3m")!.rows.map((_, i) => [String(i + 1), { strokes: 1 }])) });
 test("serveren beregner og lagrer fullføring én gang ved retry", async () => {
@@ -69,6 +72,18 @@ test("resultatfeil ruller fullføring tilbake; samtidighetskonflikt overskriver 
   assert.equal(results.length, 0); assert.equal(sessions[sessionId].status, "IN_PROGRESS");
   failResult = false; loseRace = true;
   assert.equal((await save({ ...input(), revision: 1 })).ok, false);
+  assert.equal(results.length, 0);
+});
+
+test("egenføring avvises når økten er koblet til en trenerført testdag — utkastet forblir uendret", async () => {
+  const draft = { ...input(), intent: "draft" };
+  assert.equal((await save(draft)).ok, true);
+  koblesTilTestdag = true;
+  const svar = await save({ ...draft, revision: 1 });
+  assert.equal(svar.ok, false);
+  if (svar.ok) return;
+  assert.match(svar.error, /testdag/i);
+  assert.equal(sessions[sessionId].status, "IN_PROGRESS");
   assert.equal(results.length, 0);
 });
 

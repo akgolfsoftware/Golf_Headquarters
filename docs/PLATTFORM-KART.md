@@ -133,7 +133,7 @@ Uten ekte TrackMan-tall kan ikke merket si «vi måler» i en demo.
 | | |
 |---|---|
 | **Planlagt** | Alt norsk (NGF, Olyo, Srixon, Garmin NC, regioner) + R&A/EGA der det ligger i GolfBox. |
-| **Kodet** | LIVE. Cron `turneringer-ngf` + `scrape-golfbox`. Klubb og klassekode lagres (fra 31. aug.). |
+| **Kodet** | LIVE. Resultater: `ak-golf-pipelines` er eneste kilde (Anders 26.09.2026). HQ: cron `turneringer-ngf` for kalender og frister; `scrape-golfbox` skal slutte å skrive resultater. Klubb og klassekode lagres (fra 31. aug.). |
 | **Ferdig** | Ja som innhenting for de kartlagte kundene. Offentlige `/stats`-sider viser det. Mindreårige er filtrert (19-års gulv). |
 | **Mangler design** | Ikke et design-gap. |
 | **Mangler** | Klubb-aggregat i pipeline-repoet (leser fortsatt «Øst»). Offisielt GolfBox-API (i dag offentlig widget, gråsone). Etterslep på ferdige turneringer uten resultater. |

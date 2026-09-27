@@ -14,6 +14,7 @@ import { Icon } from "@/components/v2/icon";
 import { TL } from "@/lib/v2/train-lock";
 import { AREA_LABEL, formatMinutes, formatTime, PYRAMID_LABEL, UI } from "@/lib/domain/workbench/labels";
 import type { RecurrencePolicy, WorkbenchSession } from "@/lib/domain/workbench/types";
+import { RPE_SKALA } from "@/lib/domain/workbench/load";
 import { harHake, STATUS_CAPS, WARM } from "./wb-visuelt";
 import { DrillListEditor, type LeggTilDrillVerdier } from "./DrillListEditor";
 
@@ -44,6 +45,7 @@ type Props = {
   onLeggTilDrill: (verdier: LeggTilDrillVerdier) => void;
   onFlyttDrill: (drillId: string, retning: -1 | 1) => void;
   onFjernDrill: (drillId: string) => void;
+  onOppdaterAnstrengelse?: (perceivedEffort: number | null, actualMinutes?: number | null) => void;
 };
 
 function FormelLinje({ label, hint, verdi }: { label: string; hint: string; verdi: string }) {
@@ -61,11 +63,14 @@ export function SessionInspector({
   onLeggTilDrill,
   onFlyttDrill,
   onFjernDrill,
+  onOppdaterAnstrengelse,
 }: Props) {
   const [dag, setDag] = useState(session?.date ?? "");
   const [start, setStart] = useState(session ? formatTime(session.startMinute) : "");
   const [varighet, setVarighet] = useState(session?.durationMinutes ?? 60);
   const [slettPolicy, setSlettPolicy] = useState<RecurrencePolicy>("DENNE");
+  const [effortValg, setEffortValg] = useState<number | null>(session?.perceivedEffort ?? null);
+  const [faktiskTid, setFaktiskTid] = useState<string>(session?.actualMinutes != null ? String(session.actualMinutes) : "");
 
   if (!session) {
     return <InspektorTom tittel={UI.inspectorTitle} tekst={UI.inspectorEmptyBody} />;
@@ -143,6 +148,70 @@ export function SessionInspector({
             {session.isTemplate ? UI.removeAsTemplate : UI.saveAsTemplate}
           </Knapp>
         </div>
+      </InspektorBlokk>
+
+      <InspektorBlokk label="Belastning (sRPE)">
+        <InspektorLinje
+          label="Opplevd anstrengelse"
+          verdi={
+            session.perceivedEffort
+              ? `${session.perceivedEffort}/10 · ${RPE_SKALA[session.perceivedEffort]?.kort ?? ""}`
+              : "Ikke vurdert"
+          }
+        />
+        <InspektorLinje
+          label="Faktisk tid"
+          verdi={
+            session.actualMinutes
+              ? `${session.actualMinutes} min`
+              : `${session.durationMinutes} min (planlagt)`
+          }
+        />
+        <InspektorLinje
+          label="Beregnet belastning"
+          verdi={session.load != null ? `${session.load} sRPE-poeng` : "—"}
+        />
+        {onOppdaterAnstrengelse && (
+          <div style={{ marginTop: 10, display: "grid", gap: 8 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+              <Felt label="RPE (1–10)">
+                <Select
+                  value={effortValg ?? ""}
+                  onChange={(e) => setEffortValg(e.target.value ? Number(e.target.value) : null)}
+                >
+                  <option value="">Ingen (uavklart)</option>
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
+                    <option key={n} value={n}>
+                      {n} - {RPE_SKALA[n]?.kort}
+                    </option>
+                  ))}
+                </Select>
+              </Felt>
+              <Felt label="Faktisk min">
+                <Input
+                  type="number"
+                  min="1"
+                  max="600"
+                  placeholder={String(session.durationMinutes)}
+                  value={faktiskTid}
+                  onChange={(e) => setFaktiskTid(e.target.value)}
+                />
+              </Felt>
+            </div>
+            <Knapp
+              ghost
+              disabled={travel}
+              onClick={() =>
+                onOppdaterAnstrengelse(
+                  effortValg,
+                  faktiskTid.trim() ? parseInt(faktiskTid, 10) : null
+                )
+              }
+            >
+              Lagre belastning
+            </Knapp>
+          </div>
+        )}
       </InspektorBlokk>
 
       {session.seriesId && utkast && (

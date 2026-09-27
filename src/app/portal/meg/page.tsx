@@ -20,7 +20,8 @@ import { getGoals } from "@/app/portal/actions";
 import { prisma } from "@/lib/prisma";
 import { getAbonnementData } from "@/lib/portal-abonnement/abonnement-data";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { MegV2, type MegData } from "@/components/portal/v2/MegV2";
+import type { MegData } from "@/components/portal/v2/MegV2";
+import { SpillerProfilPrecisionView } from "@/components/portal/profil/SpillerProfilPrecisionView";
 import { hentLydSamtykkeStatus } from "@/lib/recording/lyd-samtykke";
 import { pakkeNavn } from "@/lib/domain/abonnement";
 import { FEATURES } from "@/lib/features";
@@ -114,7 +115,14 @@ export default async function V2MegPreviewPage() {
 
   return (
     <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={data.navn} avatarUrl={data.avatarUrl}>
-      <MegV2 data={data} />
+      <SpillerProfilPrecisionView
+        navn={data.navn}
+        avatarUrl={data.avatarUrl}
+        hcp={data.hcp}
+        hjemmeklubb={data.homeClub}
+        snittScore={agg._avg.score ?? 73.4}
+        abonnement={data.abo.planNavn || "Performance Toppidrett"}
+      />
     </V2Shell>
   );
 }

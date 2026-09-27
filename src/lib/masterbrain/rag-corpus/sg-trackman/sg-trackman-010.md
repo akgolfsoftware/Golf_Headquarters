@@ -5,7 +5,7 @@ source_section: "# 6.2 150–200 yards-båndet (74% korrelasjon med Total SG)"
 tags: [app, broadie, pga-tour, sg]
 topics: [broadie, pga-snitt]
 lang: no
-relevance: [AiPlanGeneration, CoachHQ, RAG, SgBaseline, beregnSg, forventetSg]
+relevance: [AiPlanGeneration, AgencyOS, RAG, SgBaseline, beregnSg, forventetSg]
 updated: 2026-06-14
 ---
 

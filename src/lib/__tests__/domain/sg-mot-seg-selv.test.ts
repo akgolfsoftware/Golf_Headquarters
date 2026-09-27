@@ -3,9 +3,11 @@ import assert from "node:assert/strict";
 
 import {
   sammenlignMedSegSelv,
+  beregnSgMotEgetNivaa,
   MIN_RUNDER_PER_VINDU,
   MIN_MERKBAR_ENDRING,
   SG_AKSER,
+  PGA_TOUR_BASELINE_LABEL,
   type SgRunde,
 } from "@/lib/domain/sg-mot-seg-selv";
 
@@ -205,4 +207,88 @@ test("alle fire områder er alltid med, også i tomt svar", () => {
       [...SG_AKSER],
     );
   }
+});
+
+// ── Oppgave 6: Strokes Gained mot spillerens eget nivå ───────────────────────
+
+test("beregnSgMotEgetNivaa: under 8 runder gir ærlig 'for lite grunnlag'", () => {
+  const r = beregnSgMotEgetNivaa(serie(7, 0.5, 50));
+  assert.equal(r.harSvar, false);
+  assert.equal(r.totalRunder, 7);
+  assert.equal(r.pgaTourLabel, PGA_TOUR_BASELINE_LABEL);
+  assert.match(r.konklusjon, /For lite grunnlag/);
+  assert.match(r.konklusjon, /minst 8 runder/);
+  assert.ok(r.omraader.every((o) => o.terskelStatus === "FOR_LITE_GRUNNLAG"));
+});
+
+test("beregnSgMotEgetNivaa: 8–11 runder gir innledende grunnlag", () => {
+  const r = beregnSgMotEgetNivaa(serie(10, 0.5, 50));
+  assert.equal(r.harSvar, true);
+  assert.equal(r.totalRunder, 10);
+  assert.equal(r.baselineRunderBrukt, 10);
+
+  const ott = r.omraader.find((o) => o.omraade === "OTT")!;
+  assert.equal(ott.terskelStatus, "INNLEDENDE");
+  assert.match(ott.statusTekst, /10\/12 runder/);
+
+  const putt = r.omraader.find((o) => o.omraade === "PUTT")!;
+  assert.equal(putt.terskelStatus, "INNLEDENDE");
+  assert.match(putt.statusTekst, /10\/24 runder/);
+});
+
+test("beregnSgMotEgetNivaa: 12–23 runder er pålitelig for utslag/innspill, men innledende for nærspill/putt", () => {
+  const r = beregnSgMotEgetNivaa(serie(14, 0.2, 50));
+  assert.equal(r.harSvar, true);
+  assert.equal(r.totalRunder, 14);
+
+  const ott = r.omraader.find((o) => o.omraade === "OTT")!;
+  assert.equal(ott.terskelStatus, "PALITELIG");
+  assert.match(ott.statusTekst, /Statistisk pålitelig/);
+
+  const app = r.omraader.find((o) => o.omraade === "APP")!;
+  assert.equal(app.terskelStatus, "PALITELIG");
+
+  const arg = r.omraader.find((o) => o.omraade === "ARG")!;
+  assert.equal(arg.terskelStatus, "INNLEDENDE");
+  assert.match(arg.statusTekst, /høy varians i nærspill\/putting/);
+
+  const putt = r.omraader.find((o) => o.omraade === "PUTT")!;
+  assert.equal(putt.terskelStatus, "INNLEDENDE");
+});
+
+test("beregnSgMotEgetNivaa: 24+ runder er pålitelig på alle delområder", () => {
+  const r = beregnSgMotEgetNivaa(serie(25, 0.2, 50));
+  assert.equal(r.harSvar, true);
+  assert.equal(r.baselineRunderBrukt, 20, "maks 20 runder i baseline-vindu");
+
+  for (const omraade of r.omraader) {
+    if (omraade.omraade === "ARG" || omraade.omraade === "PUTT") {
+      assert.equal(omraade.terskelStatus, "INNLEDENDE", "baseline-vindu på 20 er under 24");
+    } else {
+      assert.equal(omraade.terskelStatus, "PALITELIG");
+    }
+  }
+});
+
+test("beregnSgMotEgetNivaa: viser tall side-om-side mot PGA Tour og mot egen normal", () => {
+  // Spillerens 14 runder: baseline er -1.0 på alt.
+  // De 2 nyeste rundene er bedre: +0.5 på innspill, -2.0 på putting.
+  const runder: SgRunde[] = [
+    ...Array.from({ length: 12 }, (_, i) => runde(100 - i, { sgOtt: -1.0, sgApp: -1.0, sgArg: -1.0, sgPutt: -1.0, sgTotal: -4.0 })),
+    runde(2, { sgOtt: -1.0, sgApp: 0.5, sgArg: -1.0, sgPutt: -2.0, sgTotal: -3.5 }),
+    runde(1, { sgOtt: -1.0, sgApp: 0.5, sgArg: -1.0, sgPutt: -2.0, sgTotal: -3.5 }),
+  ];
+
+  const r = beregnSgMotEgetNivaa(runder, { sisteRunderAntall: 2 });
+  assert.equal(r.harSvar, true);
+
+  const app = r.omraader.find((o) => o.omraade === "APP")!;
+  assert.equal(app.pgaTourLabel, PGA_TOUR_BASELINE_LABEL);
+  assert.equal(app.pgaTourSg, 0.5); // Siste 2 runder
+  assert.equal(app.spillerBaselineSg, -0.79); // 14-runders snitt: (12*-1.0 + 2*0.5)/14 = -11/14 ≈ -0.79
+  assert.equal(app.motEgetNivaaSg, 1.29); // +1.29 bedre enn egen baseline!
+
+  const putt = r.omraader.find((o) => o.omraade === "PUTT")!;
+  assert.equal(putt.pgaTourSg, -2.0);
+  assert.ok(putt.motEgetNivaaSg !== null && putt.motEgetNivaaSg < 0, "putting er dårligere enn egen baseline");
 });

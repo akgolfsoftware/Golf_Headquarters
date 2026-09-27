@@ -8,6 +8,28 @@ import {
   type HistoriskRunde, type Proff,
 } from "./player-tool";
 
+export type DataGolfKildestatus = "tilgjengelig" | "tom" | "ikke-konfigurert" | "feil";
+type Kilderesultat<T> = { data: T[]; status: DataGolfKildestatus };
+
+// Prisma kan pakke SQLSTATE i meta.driverAdapterError.cause.
+// Bare manglende tabell/schema betyr manglende datasett; ikke rettighets-,
+// kolonne- eller nettverksfeil. Feiltekst og databaseadresser sendes aldri til UI.
+function manglerDatasett(error: unknown, sett = new Set<object>()): boolean {
+  if (!error || typeof error !== "object" || sett.has(error) || sett.size >= 12) return false;
+  sett.add(error);
+  const e = error as Record<string, unknown>;
+  if ([e.code, e.originalCode].some(code => code === "42P01" || code === "3F000")) return true;
+  return [e.meta, e.cause, e.driverAdapterError].some(neste => manglerDatasett(neste, sett));
+}
+async function lesKilde<T>(hent: () => Promise<T[]>): Promise<Kilderesultat<T>> {
+  try {
+    const data = await hent();
+    return { data, status: data.length ? "tilgjengelig" : "tom" };
+  } catch (error) {
+    return { data: [], status: manglerDatasett(error) ? "ikke-konfigurert" : "feil" };
+  }
+}
+
 export async function hentProffer(): Promise<Proff[]> {
   const raw = await prisma.$queryRaw<unknown[]>`
     select distinct on (s.dg_id) s.dg_id as "dgId", p.name, p.country_iso3 as country,
@@ -19,7 +41,7 @@ export async function hentProffer(): Promise<Proff[]> {
   `;
   return raw.flatMap(row => {
     const parsed = proffSchema.safeParse(row);
-    if (!parsed.success) return [];
+    if (!parsed.success) throw new Error("Ugyldige DataGolf-kildedata");
     const p = parsed.data;
     return [{ ...p, name: visningsnavnFraDataGolf(p.name), asOf: p.asOf.toISOString() }];
   }).sort((a, b) => (b.total ?? -Infinity) - (a.total ?? -Infinity) || a.name.localeCompare(b.name, "nb"));
@@ -43,7 +65,7 @@ export async function hentProffRunder(dgId: number, limit: number): Promise<Hist
   `;
   return raw.flatMap(row => {
     const parsed = historiskRundeSchema.safeParse(row);
-    if (!parsed.success) return [];
+    if (!parsed.success) throw new Error("Ugyldige DataGolf-kildedata");
     const r = parsed.data;
     return [{ ...r, date: r.date?.toISOString() ?? null, importedAt: r.importedAt.toISOString() }];
   });
@@ -52,7 +74,7 @@ export async function hentProffRunder(dgId: number, limit: number): Promise<Hist
 export async function hentSpillerverktoy(userId: string, sp: Record<string, string | string[] | undefined>) {
   const valg = lesValg(sp);
   const [profferResult, user, egne, taker, turneringshistorikk] = await Promise.all([
-    hentProffer().then(data => ({ data, failed: false })).catch(() => ({ data: [] as Proff[], failed: true })),
+    lesKilde(hentProffer),
     prisma.user.findUnique({ where: { id: userId }, select: { publicPlayer: { select: { dataGolfId: true } } } }),
     prisma.round.findMany({ where: { userId }, orderBy: [{ playedAt: "desc" }, { id: "desc" }], take: valg.runder,
       select: { score: true, playedAt: true, holeScores: { select: { holeNumber: true, par: true, strokes: true, fairway: true, gir: true } } } }),
@@ -65,15 +87,16 @@ export async function hentSpillerverktoy(userId: string, sp: Record<string, stri
     total: null, ott: null, app: null, arg: null, putt: null,
     distance: null, accuracy: null,
   }));
-  const proff = proffer.find(p => p.dgId === valg.pro) ?? proffer[0] ?? null;
+  const proff = proffer.find(p => p.dgId === valg.pro) ?? proffer.at(0) ?? null;
   const mot = proffer.find(p => p.dgId === valg.mot && p.dgId !== proff?.dgId) ?? null;
   const egenDgId = user?.publicPlayer?.dataGolfId ?? null;
   const ids = [...new Set([proff?.dgId, mot?.dgId, egenDgId].filter((id): id is number => id != null))];
   const rundeResultater = await Promise.all(ids.map(async id => {
-    try { return { id, data: await hentProffRunder(id, valg.runder), failed: false }; }
-    catch { return { id, data: [] as HistoriskRunde[], failed: true }; }
+    return { id, ...await lesKilde(() => hentProffRunder(id, valg.runder)) };
   }));
   const runder = (id: number | null | undefined) => rundeResultater.find(r => r.id === id)?.data ?? [];
+  const rundestatus = (id: number | null | undefined): DataGolfKildestatus | null =>
+    rundeResultater.find(r => r.id === id)?.status ?? null;
   const approach = (id: number | undefined) => {
     const t = taker.find(t => t.dgPlayerId === id);
     return t ? { asOf: t.asOf.toISOString(), bands: t.bands.map(b => ({
@@ -90,7 +113,14 @@ export async function hentSpillerverktoy(userId: string, sp: Record<string, stri
     egne: egneTall.count ? egneTall : importerteTall, egneRegistrert: egne.length,
     egneKilde: egneTall.count ? "Egne registrerte runder" : "GolfBox-turneringsrunder",
     approach: approach(proff?.dgId), motApproach: approach(mot?.dgId),
-    kildefeil: profferResult.failed || rundeResultater.some(r => r.failed),
+    kildestatus: {
+      profiler: profferResult.status,
+      proffRunder: rundestatus(proff?.dgId),
+      motRunder: rundestatus(mot?.dgId),
+      egneDgRunder: rundestatus(egenDgId),
+    },
+    brukerTakReserve: !profferResult.data.length && taker.length > 0,
+    kildefeil: profferResult.status === "feil" || rundeResultater.some(r => r.status === "feil"),
     turneringshistorikk,
   };
 }

@@ -1,7 +1,7 @@
 "use client";
 
 /* Fase F · design-lab — core-parity (Button/Card/Tag/Input/EmptyState) + tema.
-   AgencyOS / PlayerHQ · aldri «CoachHQ». */
+   AgencyOS / PlayerHQ. */
 
 import Image from "next/image";
 import { useSyncExternalStore, type ReactNode } from "react";
@@ -369,7 +369,7 @@ export function DesignLabV2() {
           barn={
             <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
               <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: 0, lineHeight: 1.5 }}>
-                Paper-port steg 5B: modal/popover r12, ark-topp r12, lukk ≥ 44px (skuff 32px/r-sm), dialog-roller, toast/banner a11y. AgencyOS — aldri CoachHQ.
+                Paper-port steg 5B: modal/popover r12, ark-topp r12, lukk ≥ 44px (skuff 32px/r-sm), dialog-roller, toast/banner a11y. AgencyOS.
               </p>
               <div style={{ overflowX: "auto" }}>
                 <Modal w={520} h={300} />
@@ -390,7 +390,7 @@ export function DesignLabV2() {
                   <li>Lys CTA = forest (lime-token remappet)</li>
                   <li>Mørk: én primær lime per flate</li>
                   <li>Delta = up/down · tom tall = —</li>
-                  <li>Ingen «CoachHQ» i v2-lab</li>
+                  <li>AgencyOS-terminologi i v2-lab</li>
                 </ul>
               </Kort>
             </div>
