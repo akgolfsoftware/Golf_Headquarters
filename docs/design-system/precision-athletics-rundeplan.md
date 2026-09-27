@@ -35,7 +35,7 @@ lagt i prosjektet som `skjermliste.md`). Beslutning: [beslutninger.md](../../.cl
 | 15 | Overlevering til Codex: `overlevering/codex.md` + `tokens.css`, per skjermtype, uavklarte beslutninger, byggerekkefølge; ordmaster til P1.0–P10.0 | Ferdig 27.09 — `overlevering/codex.md` + `index.html` + `tokens.css` (lyst i `:root`, natt i `[data-theme="night"]`). 74 skjermtyper beskrevet med datebehov, åtte byggetrinn, 16 uavklarte punkter. Ordmaster og `ak-vocabulary.js` bruker P1.0–P10.0; endrede skjermer 290 tilfeller, 0 avvik |
 | 16 | Booking bekreftes automatisk (beslutning 27.09): BK-03 og PH-23 uten ventestatus, PlayerHQ-tilbud til gjest. E-postene EP-01 bekreftelse, EP-02 endret time, EP-03 påminnelse, EP-04 avbestilling, EP-05 takk etter coachingtime, EP-06 oppfølging | Ferdig 27.09 — 160 tilfeller, 0 avvik. Katalog `ui_kits/epost/katalog.html` |
 | 17 | Retting: takk innen 24 t, én oppfølging etter 14 dager, appbooking automatisk, gjestebookinger hentes inn på kontoen, kontolenke uten e-post | Ferdig 27.09 — 124 tilfeller, 0 avvik, 80 lenker i overleveringen virker. 2 uavklarte igjen |
-| 18 | Én spillerprofil (AG-08, PS-01 strøket), ST-05 bare ekte Data Golf-tall | |
+| 18 | Én spillerprofil (AG-08, PS-01 strøket), ST-05 bare ekte Data Golf-tall | Ferdig 27.09 — 56 tilfeller, 0 avvik, 80 lenker virker. 0 uavklarte beslutninger. Igjen: fire demodata-merknader som byttes med ekte data før lansering (timepris AG-06, WANG-kostnad og Tripletex-tall AG-20, PGA-navn ST-05) og eksempelhullkartet i PH-20. Neste: port 7 — Anders ser skjermene |
 
 Etter hver runde: oppdater statuskolonnen her. Port 7 (Anders har sett skjermen) føres i
 `oversikt.html` i prosjektet.
