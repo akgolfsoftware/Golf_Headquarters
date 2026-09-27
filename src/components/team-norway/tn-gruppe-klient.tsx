@@ -10,6 +10,8 @@ import { hentLesekvitteringNavnAction, merkPostLestAction, type LesekvitteringNa
 /**
  * Klientdelene av TN-13 Gruppeposter og TN-14 Dokumenter.
  * Fasit: Claude Design «Team Norway App delivery» (bc3e41fc), skjerm TN-13 og TN-14.
+ * Avvik:
+ *   - Avvikene for hver skjerm står i tn-gruppeposter-skjerm.tsx og tn-dokumenter-skjerm.tsx.
  */
 
 type Feilbart = { ok: true } | { ok: false; feil: string };

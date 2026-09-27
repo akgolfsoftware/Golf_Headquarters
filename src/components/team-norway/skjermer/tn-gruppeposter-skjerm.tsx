@@ -27,11 +27,6 @@ export async function TnGruppeposterSkjerm({ groupId }: { groupId: string }) {
   const side = await hentGruppepostSide(groupId, bruker.id);
   if (!side) notFound();
 
-  async function publiser(input: { tekst: string; kind: string }) {
-    "use server";
-    return opprettGruppepostAction(groupId, input);
-  }
-
   const erTrener = side.rolle === "TRENER";
   const harTrenertilgang = erTrener || bruker.role === "ADMIN";
   const rolleEtikett = erTrener ? "Trener" : side.rolle === "SPILLER" ? "Spiller" : "Foresatt";
@@ -56,7 +51,7 @@ export async function TnGruppeposterSkjerm({ groupId }: { groupId: string }) {
       <TnSkjermhode rute={`/team-norway/${groupId}`} tittel="Gruppeposter" ingress={`Beskjeder fra trenerteamet til ${side.gruppeNavn}. ${erTrener ? "Du ser hvem som har lest hva." : "Alle i gruppen ser de samme innleggene."}`} />
 
       <div style={{ maxWidth: 860, width: "100%", display: "flex", flexDirection: "column", gap: 14, minWidth: 0 }}>
-        {erTrener ? <TnInnleggSkjema send={publiser} forfatterNavn={bruker.name ?? "Ukjent"} mottakere={mottakere} /> : null}
+        {erTrener ? <TnInnleggSkjema send={opprettGruppepostAction.bind(null, groupId)} forfatterNavn={bruker.name ?? "Ukjent"} mottakere={mottakere} /> : null}
 
         {innlegg.map((p) => (
           <TnInnleggKort key={p.id} innlegg={p} visHvem={erTrener} kvitter={!erTrener} />
